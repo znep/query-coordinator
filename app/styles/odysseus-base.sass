@@ -2,6 +2,37 @@
 // Not sure on the structural details yet, but here are the starts of styling for a lot of
 // the commont controls that make up Janus-Socrata/Janus-Govstat.
 
+@mixin rich-text
+  h1, h2, h3
+    font-weight: normal
+    letter-spacing: -1px
+
+  h1
+    font-size: 1.8em !important
+
+  p
+    line-height: 1.5em
+    padding-bottom: 1em
+
+  ul
+    list-style-type: circle
+  ol
+    list-style-type: decimal
+
+  ul, ol
+    margin-bottom: 1em
+
+    li
+      margin-bottom: 0.4em
+      margin-left: 1.5em
+
+  .content
+    font-size: 1.45em
+    padding: 0.5em 1em
+
+    span
+      font-size: 1em !important
+
 .datasetIcon
   background-image: url(/stylesheets/images/icons/type_icons_30.png?1)
   height: 30px
@@ -672,35 +703,7 @@
       clear: both
 
   .narrative.text
-    h1, h2, h3
-      font-weight: normal
-      letter-spacing: -1px
-
-    h1
-      font-size: 1.8em !important
-
-    p
-      line-height: 1.5em
-      padding-bottom: 1em
-
-    ul
-      list-style-type: circle
-    ol
-      list-style-type: decimal
-
-    ul, ol
-      margin-bottom: 1em
-
-      li
-        margin-bottom: 0.4em
-        margin-left: 1.5em
-
-    .content
-      font-size: 1.45em
-      padding: 0.5em 1em
-
-      span
-        font-size: 1em !important
+    @include rich-text
 
   .narrative.text.edit
     .textbox .richEdit
@@ -859,15 +862,22 @@
     display: block // TODO: someday with the fancy fade?
 
   &.severity-error
-    .validationMarker, .validationBubble
+    .validationBubble
       background-color: $govstat_color_poor
-    .ss-alert
-      display: none
+    .validationIcon
+      color: $govstat_color_poor
+      &.ss-alert
+        display: none
   &.severity-warning
-    .validationMarker, .validationBubble
+    .validationBubble
       background-color: $govstat_color_flat
-    .ss-delete
-      display: none
+    .validationIcon
+      color: $govstat_color_flat
+      &.ss-delete
+        display: none
+
+    .validationBubble:before
+      border-bottom-color: $govstat_color_flat
 
   .validationMarker
     @include rounded-ends
@@ -877,9 +887,8 @@
     padding: 0.25em
 
     .validationIcon
-      color: #fff
       height: 1em
-      text-shadow: 0 0 1px rgba(0, 0, 0, 0.3)
+      text-shadow: 0 0 1px rgba(0, 0, 0, 0.2)
       width: 1em
 
     .count
@@ -910,8 +919,12 @@
 .issueMessage
   font-size: 1.2em
 
-  &.active .icon .ss-check
+  .icon .ss-delete
     margin-top: -1em
+  &.active.severity-error .icon .ss-delete
+    margin-top: 0
+  &.active.severity-warning .icon .ss-delete
+    margin-top: -2em
 
   .icon
     height: 1em
@@ -927,6 +940,7 @@
   .message
     line-height: 1.2em
     margin-left: 1.5em
+    text-shadow: 0 0 2px rgba(0, 0, 0, 0.3)
 
 
 .awesomebubble .saveAsForm
@@ -1343,9 +1357,10 @@
     position: relative
     z-index: 2
 
-  .dashboardDescription p
+  .dashboardDescription
+    @include rich-text
     color: #000
-    font-size: 2em
+    font-size: 1.6em
     line-height: 1.3em
     padding: 0.5em 0 2em
     @include opacity(0.7)
@@ -1415,6 +1430,8 @@
     padding: 0.3em 0
 
   .dashboardDescription
+    font-size: 1em
+
     .dashboardEditHeader
       margin-right: -2.5em
 
@@ -1426,17 +1443,18 @@
       bottom: 2em
       left: 0
 
-    textarea
+    .richEdit
       background: none
       background-color: #ccc
-      border: none
       @include border-radius(0.15em)
       font-family: 'myriad pro'
-      font-size: 2em
-      height: 12em
-      outline: none
-      padding: 1em
+      font-size: 1.6em
+      min-height: 45px !important // weird hallo thing
+      padding: 1.5em
       width: 100%
+
+      span
+        font-size: 1em !important
 
     label
       display: block

@@ -17,7 +17,9 @@
       title: 'GovStat',
       color: '#002635',
       links: [
-        { icon: 'users', text: 'Users', href: users_path, right: :manage_users }
+        { icon: 'users', text: 'Users', href: users_path, right: :manage_users },
+        { icon: 'linecharts', text: 'Analytics', href: '/admin/analytics',
+          module_available: :advanced_metrics }
       ]
     }, {
       title: 'Data Management',

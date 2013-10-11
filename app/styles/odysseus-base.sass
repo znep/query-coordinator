@@ -33,6 +33,13 @@
     span
       font-size: 1em !important
 
+@mixin popup-lower
+  background: #f7f7f7 url(/stylesheets/images/content/noise.png)
+  @include prefixer(border-radius, 0 0 0.2em 0.2em)
+  margin: -0.9em
+    top: 0
+  overflow: hidden
+
 .datasetIcon
   background-image: url(/stylesheets/images/icons/type_icons_30.png?1)
   height: 30px
@@ -383,11 +390,7 @@
       width: 71em
 
   .cardDetails
-    background: #f7f7f7 url(/stylesheets/images/content/noise.png)
-    @include prefixer(border-radius, 0 0 0.2em 0.2em)
-    margin: -0.9em
-      top: 0
-    overflow: hidden
+    @include popup-lower
 
     .detailSection
       float: left
@@ -941,6 +944,69 @@
     line-height: 1.2em
     margin-left: 1.5em
     text-shadow: 0 0 2px rgba(0, 0, 0, 0.3)
+
+
+.datasetPopup
+  min-width: 45em
+  padding: 0.1em
+
+  .datasetListItem
+    padding-bottom: 1.4em
+    padding-left: 0.5em
+
+    .datasetIcon
+      display: block
+      float: right
+
+    .datasetName
+      font-size: 2.2em
+
+    .byLine
+      font-size: 1.2em
+
+    div
+      display: block
+      margin-left: 0
+
+  .body
+    @include popup-lower
+    border-top: 1px solid $color_chrome_box_border
+    padding: 1em
+
+    .details
+      overflow: hidden
+      padding: 1em 0
+
+      .detail
+        border-right: 1px solid $color_chrome_box_border
+        float: left
+        text-align: right
+        width: 33.33%
+
+        &:last-child
+          border-right: none
+          float: none
+          overflow: hidden
+          width: auto
+
+        .wrapper
+          padding: 1em
+
+        .count
+          color: #999
+          font-size: 3.5em
+          letter-spacing: -1px
+
+        .label
+          color: #444
+          font-size: 1.6em
+
+    .actions
+      background-color: rgba(0, 0, 0, 0.04)
+      @include prefixer(border-radius, 0 0 0.2em 0.2em)
+      margin: -0.9em
+        top: 1em
+      padding: 0.7em
 
 
 .awesomebubble .saveAsForm

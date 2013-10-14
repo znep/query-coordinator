@@ -713,7 +713,7 @@
 
     var dataSelectionDonut = function(options)
     {
-        var bc = dataSelection(Dataset.chart.types.donut, options, Dataset.chart.textAndDateTypes, Dataset.chart.numericTypes, $.t('screens.ds.grid_sidebar.chart.data_selection.chart_definition.label_title'));
+        var bc = dataSelection(Dataset.chart.types.donut, options, Dataset.chart.textualTypes, Dataset.chart.numericTypes, $.t('screens.ds.grid_sidebar.chart.data_selection.chart_definition.label_title'));
         bc.fields.push(autoSortButtonInfo(options, 'donut'));
         bc.fields.push(autoSortButton(options));
         return bc;

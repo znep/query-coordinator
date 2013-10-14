@@ -6,6 +6,7 @@ class View < Model
   attr_accessor :custom_vis_cols, :sodacan
 
   def self.find(options = nil, custom_headers = {}, batch = false, is_anon = false, get_all = false)
+    custom_headers.merge!({'X-Socrata-Federation' => 'Honey Badger'})
     if get_all || options.is_a?(String)
       return super(options, custom_headers, batch, is_anon)
     else
@@ -19,7 +20,8 @@ class View < Model
 
   def self.find_filtered(options)
     path = "/views.json?#{options.to_param}"
-    parse(CoreServer::Base.connection.get_request(path))
+    parse(CoreServer::Base.connection.get_request(path,
+                                                  {'X-Socrata-Federation' => 'Honey Badger'}))
   end
 
   def self.find_by_resource_name(resource_name, is_anon = false)
@@ -28,7 +30,8 @@ class View < Model
 
   def self.find_multiple(ids)
     path = "/#{self.name.pluralize.downcase}.json?" + {'ids' => ids}.to_param
-    parse(CoreServer::Base.connection.get_request(path))
+    parse(CoreServer::Base.connection.get_request(path,
+                                                  {'X-Socrata-Federation' => 'Honey Badger'}))
   end
 
   def self.find_for_user(id)
@@ -222,10 +225,12 @@ class View < Model
 
     if conditions.empty?
       url = "/#{self.class.name.pluralize.downcase}/#{id}/rows.json?#{params.to_param}"
-      meta_and_data = JSON.parse(CoreServer::Base.connection.create_request(url), {:max_nesting => 25})
+      meta_and_data = JSON.parse(CoreServer::Base.connection.get_request(url, {:max_nesting => 25},
+                                 { 'X-Socrata-Federation' => 'Honey Badger' }))
 
       url = "/#{self.class.name.pluralize.downcase}/#{id}/rows.json?method=getAggregates"
-      aggregates = JSON.parse(CoreServer::Base.connection.create_request(url))
+      aggregates = JSON.parse(CoreServer::Base.connection.get_request(url,
+                                 { 'X-Socrata-Federation' => 'Honey Badger' }))
     else
       merged_conditions = self.query.cleaned.merge({'searchString'=>self.searchString}).
         deep_merge(conditions)
@@ -237,10 +242,12 @@ class View < Model
       }.to_json
 
       url = "/#{self.class.name.pluralize.downcase}/INLINE/rows.json?#{params.to_param}"
-      meta_and_data = JSON.parse(CoreServer::Base.connection.create_request(url, request_body), {:max_nesting => 25})
+      meta_and_data = JSON.parse(CoreServer::Base.connection.create_request(url, request_body,
+                                 { 'X-Socrata-Federation' => 'Honey Badger' }), {:max_nesting => 25})
 
       url = "/#{self.class.name.pluralize.downcase}/INLINE/rows.json?method=getAggregates"
-      aggregates = JSON.parse(CoreServer::Base.connection.create_request(url, request_body))
+      aggregates = JSON.parse(CoreServer::Base.connection.create_request(url, request_body,
+                                 { 'X-Socrata-Federation' => 'Honey Badger' }), {:max_nesting => 25})
     end
 
     # grab viewable columns; this is inline rather than a separate method to
@@ -308,7 +315,8 @@ class View < Model
     if result.nil?
       begin
           server_result = JSON.parse(CoreServer::Base.connection.
-                                     create_request(req[:url], req[:request].to_json, {}, true,
+                                     create_request(req[:url], req[:request].to_json,
+                                                    { 'X-Socrata-Federation' => 'Honey Badger' }, true,
                                                     false, is_anon),
                                  {:max_nesting => 25})
           result = { rows: server_result['data'], total_count: server_result['meta']['totalRows'],
@@ -340,7 +348,8 @@ class View < Model
       return result
     end
     req = get_rows_request(per_page, page, merged_conditions, include_meta)
-    result = JSON.parse(CoreServer::Base.connection.create_request(req[:url], req[:request].to_json, {},
+    result = JSON.parse(CoreServer::Base.connection.create_request(req[:url], req[:request].to_json,
+                                                                   { 'X-Socrata-Federation' => 'Honey Badger' },
                                                                    true, false, is_anon),
                         {:max_nesting => 25})
     row_result = include_meta ? result['data'] : result
@@ -377,7 +386,8 @@ class View < Model
     request_body['columns'] = visible_columns(merged_conditions).map {|c| c.to_core}
 
     url = "/views/INLINE/rows.json?#{params.to_param}"
-    result = JSON.parse(CoreServer::Base.connection.create_request(url, request_body.to_json, {},
+    result = JSON.parse(CoreServer::Base.connection.create_request(url, request_body.to_json,
+                                                                   { 'X-Socrata-Federation' => 'Honey Badger' },
                                                                   false, false, is_anon),
                       {:max_nesting => 25})
     if conditions.empty?
@@ -394,39 +404,44 @@ class View < Model
 
     if req_body.nil?
       url = "/#{self.class.name.pluralize.downcase}/#{id}/rows.json?accessType=WEBSITE#{id_params}"
-      return JSON.parse(CoreServer::Base.connection.get_request(url))['data']
+      return JSON.parse(CoreServer::Base.connection.get_request(url, { 'X-Socrata-Federation' => 'Honey Badger' }))['data']
     else
       url = "/#{self.class.name.pluralize.downcase}/INLINE/rows.json?accessType=WEBSITE#{id_params}"
-      return JSON.parse(CoreServer::Base.connection.create_request(url, req_body))['data']
+      return JSON.parse(CoreServer::Base.connection.create_request(url, req_body,
+                                                                   { 'X-Socrata-Federation' => 'Honey Badger' }))['data']
     end
   end
 
   def get_row(row_id, is_anon = false)
     merged_conditions = self.query.cleaned.merge({'searchString'=>self.searchString})
     req = get_rows_request([row_id], 0, merged_conditions, false)
-    JSON.parse(CoreServer::Base.connection.create_request(req[:url], req[:request].to_json, {},
+    JSON.parse(CoreServer::Base.connection.create_request(req[:url], req[:request].to_json,
+                                                          { 'X-Socrata-Federation' => 'Honey Badger' },
                                                           false, false, is_anon),
       {:max_nesting => 25})[0]
   end
 
   def get_row_by_index(row_index)
-    JSON.parse(CoreServer::Base.connection.create_request(
+    JSON.parse(CoreServer::Base.connection.get_request(
       "/#{self.class.name.pluralize.downcase}/#{id}/" +
-      "rows.json?start=#{row_index}&length=1&method=getByIds&asHashes=true"),
+      "rows.json?start=#{row_index}&length=1&method=getByIds&asHashes=true",
+      { 'X-Socrata-Federation' => 'Honey Badger' }),
         {:max_nesting => 25})[0]
   end
 
   def get_row_index(row_id)
-    result = JSON.parse(CoreServer::Base.connection.create_request(
+    result = JSON.parse(CoreServer::Base.connection.get_request(
       "/#{self.class.name.pluralize.downcase}/#{id}/" +
-      "rows.json?ids=#{row_id}&indexesOnly=true&method=getByIds"))
+      "rows.json?ids=#{row_id}&indexesOnly=true&method=getByIds",
+      { 'X-Socrata-Federation' => 'Honey Badger' }))
     return result[row_id.to_s]
   end
 
   def get_sid_by_row_identifier(row_identifier)
     result = CoreServer::Base.connection.get_request(
       "/#{self.class.name.pluralize.downcase}/#{id}/" +
-      "rows?method=getSidByRowIdentifier&id=#{row_identifier}")
+      "rows?method=getSidByRowIdentifier&id=#{row_identifier}",
+      { 'X-Socrata-Federation' => 'Honey Badger' })
     return result
   end
 
@@ -461,7 +476,8 @@ class View < Model
       reqs.each do |req|
         req['columns'] = req['columns'].map {|c| c.to_core}
         r = req.to_json
-        CoreServer::Base.connection.create_request(url, r, {}, true, b_id)
+        CoreServer::Base.connection.create_request(url, r, {'X-Socrata-Federation' => 'Honey Badger'},
+                                                   true, b_id)
       end
     end.each do |r|
       agg_resp = JSON.parse(r['response'], {:max_nesting => 25})

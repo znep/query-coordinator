@@ -2270,6 +2270,7 @@ var Dataset = ServerModel.extend({
 
     makeRequest: function(req)
     {
+        req.headers = $.extend(req.headers, {'X-Socrata-Federation': 'Honey Badger'});
         if (req.inline)
         {
             req.url = '/views/INLINE/rows.json';
@@ -2887,6 +2888,7 @@ Dataset.lookupFromResourceName = function(resourceName, successCallback, errorCa
 {
     $.socrataServer.makeRequest({
         url: '/api/views.json?method=getByResourceName&name=' + resourceName,
+        headers: {'X-Socrata-Federation': 'Honey Badger'},
         success: function(view)
         {
             var ds = new Dataset(view);
@@ -3022,6 +3024,7 @@ Dataset._create = function(clone, id, successCallback, errorCallback, isBatch, i
     {
         $.socrataServer.makeRequest({
             url: '/api/views/' + id + '.json',
+            headers: {'X-Socrata-Federation': 'Honey Badger'},
             success: function(view)
                 {
                     if (_.isUndefined(blist.viewCache[id]))

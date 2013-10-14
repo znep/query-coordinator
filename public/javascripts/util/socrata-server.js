@@ -101,8 +101,6 @@ var ServerModel = Model.extend({
         {
             req.headers = $.extend(req.headers, {'X-Socrata-Auth': 'unauthenticated'});
         }
-        // Always get federated datasets cross-domain
-        req.headers = $.extend(req.headers, {'X-Socrata-Federation': 'Honey Badger'});
 
         if (req.pageCache)
         {

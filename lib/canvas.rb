@@ -728,7 +728,8 @@ module Canvas
       # TODO: query
 
       url = "/views/INLINE/rows.json?method=getAggregates"
-      aggregates = JSON.parse(CoreServer::Base.connection.create_request(url, request_body.to_json))
+      aggregates = JSON.parse(CoreServer::Base.connection.create_request(url, request_body.to_json,
+                                                                         { 'X-Socrata-Federation' => 'Honey Badger' }))
       @value = aggregates.first['value']
     end
 

@@ -582,6 +582,8 @@ var RowSet = ServerModel.extend({
 
     makeRequest: function(args)
     {
+        // Always get federated datasets cross-domain
+        args.headers = $.extend(args.headers, {'X-Socrata-Federation': 'Honey Badger'});
         if (args.inline)
         {
             var d;

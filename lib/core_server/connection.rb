@@ -178,8 +178,6 @@ module CoreServer
 
       # pass/spoof in the current domain cname
       request['X-Socrata-Host'] = CurrentDomain.cname
-      # Always get federated datasets cross-domain
-      request['X-Socrata-Federation'] = 'Honey Badger'
 
       request['X-Socrata-RequestId'] = @@env['action_dispatch.request_id']
       # proxy user agent

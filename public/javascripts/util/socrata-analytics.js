@@ -122,6 +122,8 @@ jQuery.metrics = {
                 $.metrics.increment("domain-intern", "js-page-load-time", js_page_load_time);
                 $.metrics.increment("domain-intern", "js-response-start-time", response_start - nav_start);
                 $.metrics.increment("domain-intern", "js-response-read-time", performance.timing.responseEnd - response_start);
+                // Socrata->Browser latency ( not including dns )
+                $.metrics.increment("domain-intern", "js-connect-time", performance.timing.connectEnd - performance.timing.connectStart);
                 // domComplete is always the value of the *first* state change to complete
                 // subsequent interactive states will not be captured here
                 $.metrics.increment("domain-intern", "js-dom-load-time", js_dom_load_time);

@@ -76,8 +76,6 @@ module ClientAnalyticsHelper
                            browse browse-search
                            other).freeze
 
-  # deprecated
-  PERFORMANCE_BUCKETS=  %w(awesome good ok poor terrible).freeze
   DYNAMIC_METRIC_TYPES =  %w(js-dom-load-samples js-page-load-samples js-page-load-time js-dom-load-time).freeze
 
   DYNAMIC_MARK_METRIC_TYPES  =  %w(js-dom-load-samples js-page-load-samples).freeze
@@ -93,6 +91,7 @@ module ClientAnalyticsHelper
                               domain-intern/js-response-start-time
                               domain-intern/js-response-read-time
                               domain-intern/js-dom-load-time
+                              domain-intern/js-connect-time
                               domain-intern/js-map-one-page-load-time
                               domain-intern/js-map-many-page-load-time
                               domain-intern/js-chart-bar-page-load-time
@@ -138,11 +137,6 @@ module ClientAnalyticsHelper
     ret_val = Array.new(static_metrics)
     FUNCTIONAL_BUCKETS.each do |functional_bucket|
       base_metrics.each do |dynamic_metric|
-        # Performance buckets are deprecated; and can be removed after a few days (there still may)
-        # be some browsers sending us these metrics.
-        PERFORMANCE_BUCKETS.each do |perf_bucket|
-          ret_val.push "domain-intern/#{functional_bucket}-#{perf_bucket}-#{dynamic_metric}"
-        end
         ret_val.push "domain-intern/#{functional_bucket}-#{dynamic_metric}"
       end
     end

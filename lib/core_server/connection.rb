@@ -181,6 +181,7 @@ module CoreServer
       # Always get federated datasets cross-domain
       request['X-Socrata-Federation'] = 'Honey Badger'
 
+      request['X-Socrata-RequestId'] = @@env['action_dispatch.request_id']
       # proxy user agent
       if @@env.present?
         request['X-User-Agent'] = @@env['HTTP_USER_AGENT']

@@ -84,7 +84,13 @@ $.component.GovStat.extend('GovStat Dashboard', 'none', {
         var dbReq = new (blist.require('govstat').models.dashboard.request.
             Fetch)({ dashboardId: cObj._stringSubstitute(cObj._properties.dashboardId) });
         cObj._gsLoad(dbReq, { context: 'default' });
+    },
+    _getAssets: function()
+    {
+        var mainJs = this._super().javascripts;
+        return { javascripts: mainJs.concat([{ assets: 'sanitize-html' }, { assets: 'autolink-html' }, { assets: 'markdown-render' }]) };
     }
+
 });
 
 // Required:

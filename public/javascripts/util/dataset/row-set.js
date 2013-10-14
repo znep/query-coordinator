@@ -775,8 +775,9 @@ var RowSet = ServerModel.extend({
     {
         var rs = this;
 
-        var params = rs._dataset._useSODA2 ? { '$$exclude_system_fields': false } :
-            {method: 'getByIds', asHashes: true};
+        var params = rs._dataset.newBackend ? { '$select': ':*,*' } :
+            rs._dataset._useSODA2 ? { '$$exclude_system_fields': false } :
+                { method: 'getByIds', asHashes: true };
 
         var start;
         if (_.isNumber(startOrIds) && _.isNumber(len))

@@ -796,7 +796,7 @@ class View < Model
   def can_edit?
     data['rights'] && (data['rights'].include?('write') ||
       data['rights'].include?('add') ||
-      data['rights'].include?('delete')) && !is_grouped? && !is_api?
+      data['rights'].include?('delete')) && !is_grouped? && !is_api? && !newBackend
   end
 
   def can_read?
@@ -804,7 +804,7 @@ class View < Model
   end
 
   def can_add?
-    data['rights'] && data['rights'].include?('add')
+    data['rights'] && data['rights'].include?('add') && !newBackend
   end
 
   def has_rights?(right)

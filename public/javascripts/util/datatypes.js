@@ -1354,6 +1354,7 @@ blist.namespace.fetch('blist.datatypes');
             defaultFilterSubColumn: 'human_address',
             deleteable: true,
             priority: 8,
+            disableNBEFilter: true,
             matchValue: function(v)
             {
                 // human_address in a location column is a JSON string; but we really want to compare

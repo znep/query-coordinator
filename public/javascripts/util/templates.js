@@ -28,10 +28,14 @@
     $.templates.downloadsTable = {
         downloadTypes: {
             'normal': [ 'CSV', 'JSON', 'PDF', 'RDF', 'RSS', 'XLS', 'XLSX', 'XML'  ],
+            'nbe': [ 'CSV', 'JSON' ],
             'geo': [ 'KML', 'KMZ', 'Shapefile', 'Original' ]
         },
         directive: {
             'normal': {
+                '.downloadsTable .downloadsList tbody .item': downloadTypesDirective('downloadTypes')
+            },
+            'nbe': {
                 '.downloadsTable .downloadsList tbody .item': downloadTypesDirective('downloadTypes')
             },
             'geo': {

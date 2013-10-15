@@ -149,7 +149,7 @@ var Dataset = ServerModel.extend({
     canEdit: function()
     {
         return (this.hasRight('write') || this.hasRight('add') || this.hasRight('delete')) &&
-            !this.isGrouped() && !this.isAPI();
+            !this.isGrouped() && !this.isAPI() && !this.newBackend;
     },
 
     canUpdate: function()

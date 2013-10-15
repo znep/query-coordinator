@@ -5,6 +5,11 @@
         return !$.isBlank(t.filterConditions) || _.any(t.subColumns, function(st)
             { return !$.isBlank(st.filterConditions); }) ? n : null;
     }));
+    var nbeFilterableTypes = _.compact(_.map(blist.datatypes, function(t, n)
+    {
+        return !t.disableNBEFilter && (!$.isBlank(t.filterConditions) || _.any(t.subColumns, function(st)
+            { return !$.isBlank(st.filterConditions); })) ? n : null;
+    }));
 
     $.Control.extend('pane_unifiedFilter', {
         getTitle: function()
@@ -63,13 +68,15 @@
                         $elem.unifiedFilter({
                             datasets: cpObj.settings.datasets || [ cpObj._view ],
                             rootCondition: cpObj.settings.rootCondition,
-                            filterableColumns: cpObj._view.columnsForType(filterableTypes)});
+                            filterableColumns: cpObj._view.columnsForType(
+                                cpObj._view.newBackend ? nbeFilterableTypes : filterableTypes)});
 
                         cpObj._view.unbind(null, null, cpObj);
                         cpObj._view.bind('columns_changed', function()
                         {
                             $elem.trigger('columns_changed',
-                                { columns: cpObj._view.columnsForType(filterableTypes) });
+                                { columns: cpObj._view.columnsForType(
+                                    cpObj._view.newBackend ? nbeFilterableTypes : filterableTypes) });
                         }, cpObj);
 
                         cpObj._view.bind('clear_temporary', function()

@@ -65,7 +65,7 @@
                 if (cmObj.settings.columnHideEnabled)
                 { features.hide = true; }
 
-                if (cmObj.settings.columnPropertiesEnabled)
+                if (cmObj.settings.columnPropertiesEnabled && !cmObj.settings.view.newBackend)
                 { features.properties = true; }
 
                 // We've got a menu, so add a class
@@ -192,6 +192,7 @@
     {
         var types = [col.renderType].concat(_.values(col.renderType.subColumns || {}));
         return $.isBlank(col.parentColumn) && !cmObj.settings.view.isGrouped() &&
+            !cmObj.settings.view.newBackend &&
             _.any(types, function(t) { return $.subKeyDefined(t, 'filterConditions.details.EQUALS'); });
     };
 

@@ -96,7 +96,7 @@ module Canvas2
       end
       # Tell the DataContext that the contexts used by this widget should be available
       # on the client.
-      if !fully_rendered
+      if !fully_rendered || @properties['forceContext']
          @context_ids.each do |cId|
            DataContext.set_context_as_streaming(cId);
          end

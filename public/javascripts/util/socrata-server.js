@@ -178,12 +178,15 @@ ServerModel.sendBatch = function(successCallback, errorCallback, completeCallbac
     var matchHeaders = br[0].headers || {};
     br = _.reject(br, function(r)
     {
-        if (!_.isEqual(matchHeaders, r.headers))
+        if (_.isEmpty(matchHeaders) && _.isEmpty(r.headers) || _.isEqual(matchHeaders, r.headers))
+        {
+            return false;
+        }
+        else
         {
             extraBatch.push(r);
             return true;
         }
-        return false;
     });
 
     var doSuccess = _.after(extraBatch.length > 0 ? 2 : 1, function()

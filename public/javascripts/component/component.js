@@ -716,6 +716,15 @@
                 this._needsRender = true;
                 return false;
             }
+            // HACK: forceContext is for allowing a page developer to force loading of a context
+            // to work around string substitute not resolving. It is meant to be a temporary fix
+            // until something better and automatic can be put in.
+            if (cObj._properties.forceContext && $.isBlank(cObj._dataContext))
+            {
+                cObj._needsRender = true;
+                if (cObj._updateDataSource(cObj._properties, function() { cObj._render(); }))
+                { return false; }
+            }
 
             if (cObj._properties.requiresContext || cObj._properties.ifValue ||
                     !$.isBlank(cObj._properties.htmlClass) || !_.isEmpty(cObj._properties.htmlAttributes) ||

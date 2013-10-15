@@ -56,14 +56,14 @@ blist.metrics.sitewideShared = {
         },
         {
             id: 'summaryDash',        displayName: 'Total Dashboards',
-            summary: {plus: 'govstat-dash-posts', minus: 'govstat-dash-deletes',
+            summary: {value: 'govstat-total-dash', plus: 'govstat-dash-posts', minus: 'govstat-dash-deletes',
                 verbPhrase: 'dashboards created', verbPhraseSingular: 'dashboards created'
             },
             enabled: blist.configuration.govStatMetricsEnabled || false
         },
         {
             id: 'summaryGoals',        displayName: 'Total Goals',
-            summary: {plus: 'govstat-goal-posts', minus: 'govstat-goal-deletes',
+            summary: {value: 'govstat-total-goals', plus: 'govstat-goal-posts', minus: 'govstat-goal-deletes',
                 verbPhrase: 'goals created', verbPhraseSingular: 'goal created'
             },
             enabled: blist.configuration.govStatMetricsEnabled || false

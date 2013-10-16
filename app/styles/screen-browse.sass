@@ -5,6 +5,12 @@ $browse_background_color: #ffffff
   .action_browse_show &
     padding-top: 0
 
+  .highlight
+    background-color: $search_highlight_color
+    padding:
+      left: 0.3em
+      right: 0.3em
+
   .searchSection
     border: 1px solid #cacaca
     margin-bottom: 1em
@@ -244,6 +250,9 @@ $browse_background_color: #ffffff
                   background: none
 
         .nameDesc
+          div.titleLine
+            white-space: nowrap
+            overflow: hidden
           padding:
             bottom: 0
             left: 0.1em
@@ -457,6 +466,9 @@ $browse_background_color: #ffffff
 
           .rowSearchResults
             margin-right: -19.5em
+            > span
+              display: inline-block
+              margin-top: 0.6em
             .ie7 &
               margin-right: 0
 
@@ -468,14 +480,13 @@ $browse_background_color: #ffffff
             float: right
 
       .rowSearchResults
+        > span
+          font-style: italic
         margin-bottom: 0.6em
         position: relative
         .rowResultCountDisplay
           font-weight: bold
           padding: 0.5em 0
-        .highlight
-          background-color: $search_highlight_color
-          padding: 0.3em
         .rowList
           overflow: hidden
           .row

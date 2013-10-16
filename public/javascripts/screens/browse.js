@@ -1,7 +1,6 @@
 $(function()
 {
     var $browse = $('.browseSection');
-    var spinner = blist.mainSpinner || $browse.loadingSpinner({ showInitially: true });
 
     // alias this method so external scripts can get at it
     var getDS = blist.browse.getDS = function($item)
@@ -184,17 +183,36 @@ $(function()
         expanderExpandedClass: 'expanded'
     });
 
+    // Sad hack: we don't have the stemmed version,
+    // so just highlight the words they typed
+    var searchRegex = blist.browse.searchOptions.q ?
+        new RegExp(blist.browse.searchOptions.q.trim().replace(' ', '|'), 'gi') : '';
+
+    // Assuming that dataset names do not have any html inside them.
+    // Assuming that dataset descriptions only have A tags inside them.
+    $("table tbody tr").find("a.name, span.name, div.description").each(function() {
+        var $this = $(this),
+            a_links = $this.children().map(function()
+                {
+                    var $child = $(this);
+                    $child.html($child.html()
+                        .replace(searchRegex, '<span class="highlight">$&</span>'));
+                    return $child[0].outerHTML;
+                }),
+            text_bits = _.map($this.html().split(/<a.*\/a>/), function(text)
+                { return text.replace(searchRegex, '<span class="highlight">$&</span>'); });
+        $this.html(_.flatten(_.zip(text_bits, a_links)).join(''));
+    });
+
     var renderRows = function()
     {
-        // Sad hack: we don't have the stemmed version,
-        // so just highlight the words they typed
-        var searchRegex = blist.browse.searchOptions.q ?
-            new RegExp(blist.browse.searchOptions.q.trim().replace(' ', '|'), 'gi') : '';
         // Render row search results, if any
         $browse.find('table tbody tr.withRows .rowSearchResults')
             .each(function()
         {
             var $results = $(this);
+            $results.empty(); // Remove span for matching rows.
+
             var ds = getDS($results);
             $results.rowSearchRenderType({ highlight: searchRegex, view: ds,
                 rows: _.map(ds.rowResults, function(r)
@@ -228,12 +246,75 @@ $(function()
                 $display.css('opacity', '');
             });
         });
-        spinner.showHide(false);
+    };
+
+    $.fn.dancingEllipsis = function(options)
+    {
+        var opts = $.extend({}, { text: '', interval: 700 }, options),
+            ellipsis = '',
+            spans = this;
+
+        var interval = setInterval(function()
+        {
+            ellipsis = ellipsis.length >= 3 ? '' : ellipsis + '.';
+            spans.text(opts.text + ellipsis);
+        }, opts.interval);
+
+        return function() { clearInterval(interval); };
+    };
+
+    /*
+        SavePoint uses two strategies: scroll position and mouseover.
+        1) Mouse position is preferred. If a row is hovered over, scroll back to
+        that row on restore. (This is scrollTarget.)
+        2) Scroll position looks for the row that has the closest .offset().top
+        to scrollPos(). (This is $scrollTarget.)
+    */
+    $.fn.savePoint = function()
+    {
+        var $this = this,
+            rowOffsets = this.map(function() { return $(this).offset().top; }),
+            scrollTarget, $scrollTarget,
+            captureTarget = function() { scrollTarget = this; };
+
+        this.mouseover(captureTarget).mouseenter(captureTarget);
+
+        return {
+            save: function()
+            {
+                var scrollPos = $(document).scrollTop(), index = 0, minDelta = Infinity;
+                if (scrollPos < rowOffsets[0]) { return; }
+
+                // Minimize delta between scrollPos and offset.top.
+                _.any(rowOffsets, function(offset, i)
+                {
+                    var delta = Math.abs(scrollPos - offset);
+                    if (delta >= minDelta)
+                    { return true; }
+                    else
+                    { minDelta = delta; }
+                    index = i;
+                });
+
+                $scrollTarget = $this.filter(':eq(' + index + ')');
+            },
+            restore: function()
+            {
+                if (scrollTarget)
+                { $(document).scrollTop($(scrollTarget).offset().top); }
+                else if ($scrollTarget)
+                { $(document).scrollTop($scrollTarget.offset().top); }
+            }
+        };
     };
 
     // Need to load rows related to the search
     if (!$.isBlank(blist.browse.rowCount))
     {
+        var stopEllipsis = $('.rowSearchResults span')
+                .dancingEllipsis({ text: $.t('controls.browse.row_results.matching_rows') }),
+            savePoint = $('table tr').savePoint(); // This order is important.
+
         Dataset.search($.extend({}, blist.browse.searchOptions, { row_count: blist.browse.rowCount }),
             function(results)
             {
@@ -247,11 +328,13 @@ $(function()
                         $browse.find('table tbody tr[data-viewid="' + ds.id + '"]').addClass('withRows');
                     }
                 });
+                savePoint.save();
+                stopEllipsis();
                 renderRows();
+                $(".rowSearchResults > span").text($.t('controls.browse.row_results.no_matching_rows'));
+                savePoint.restore();
             });
     }
-    else
-    { spinner.showHide(false); }
 
     // Handle sidebar facets
     var $searchSect = $browse.find('.searchSection');

@@ -225,11 +225,12 @@ class View < Model
 
     if conditions.empty?
       url = "/#{self.class.name.pluralize.downcase}/#{id}/rows.json?#{params.to_param}"
-      meta_and_data = JSON.parse(CoreServer::Base.connection.get_request(url, {:max_nesting => 25},
-                                 { 'X-Socrata-Federation' => 'Honey Badger' }))
+      meta_and_data = JSON.parse(CoreServer::Base.connection.get_request(url,
+                                                         { 'X-Socrata-Federation' => 'Honey Badger' }),
+                                                         {:max_nesting => 25})
 
       url = "/#{self.class.name.pluralize.downcase}/#{id}/rows.json?method=getAggregates"
-      aggregates = JSON.parse(CoreServer::Base.connection.get_request(url,
+      aggregates = JSON.parse(CoreServer::Base.connection.create_request(url, {},
                                  { 'X-Socrata-Federation' => 'Honey Badger' }))
     else
       merged_conditions = self.query.cleaned.merge({'searchString'=>self.searchString}).

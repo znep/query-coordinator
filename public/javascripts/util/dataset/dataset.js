@@ -701,15 +701,15 @@ var Dataset = ServerModel.extend({
         var parRow;
         if (!$.isBlank(parRowId)) { parRow = this.rowForID(parRowId); }
 
-        data = data || {};
-        var newRow = { data: {}, metadata: {}, invalid: {}, error: {}, changed: {} };
+        data = data || { data: {} };
+        var newRow = { data: {}, metadata: $.extend({}, data.metadata), invalid: {}, error: {}, changed: {} };
         _.each(!$.isBlank(parCol) ? parCol.childColumns : ds.columns, function(c)
         {
-            if (!$.isBlank(data[c.lookup]))
+            if (!$.isBlank(data.data[c.lookup]))
             { newRow.data[c.lookup] = data.data[c.lookup]; }
         });
         newRow.id = 'saving' + _.uniqueId();
-        delete newRow.uuid;
+        delete newRow.data.uuid;
 
         _.each(!$.isBlank(parCol) ? parCol.realChildColumns : ds.realColumns,
             function(c) { newRow.changed[c.lookup] = true; });
@@ -846,7 +846,7 @@ var Dataset = ServerModel.extend({
             {
                 var r = ds.rowForID(rId);
                 if ($.isBlank(r)) { return; }
-                uuid = ds._useSODA2 ? r.id : r.uuid;
+                uuid = ds._useSODA2 ? r.id : r.metadata.uuid;
                 ds._removeRow(r);
             }
             else
@@ -856,7 +856,7 @@ var Dataset = ServerModel.extend({
                     {
                         if (cr.id == rId)
                         {
-                            uuid = ds._useSODA2 ? cr.id : cr.uuid;
+                            uuid = ds._useSODA2 ? cr.id : cr.metadata.uuid;
                             return true;
                         }
                         return false;
@@ -2482,8 +2482,10 @@ var Dataset = ServerModel.extend({
                             ds.columnForID(adjName);
                         var l = $.isBlank(c) ? adjName : c.lookup;
                         req.row.data[l] = v;
+                        req.row.metadata[l] = v;
                     }
                 });
+                req.row.id = req.row.metadata.id;
             }
             else
             {
@@ -2648,7 +2650,7 @@ var Dataset = ServerModel.extend({
         var url = ds._useSODA2 ? '/api/id/' + ds.id : '/views/' + ds.id + '/rows';
         if (!$.isBlank(r.parentRow))
         { url += r.parentRow.id + '/columns/' + r.parentColumn.id + '/subrows'; }
-        url += (ds._useSODA2 ? '' : '/' + r.row.uuid) + '.json';
+        url += (ds._useSODA2 ? '' : '/' + r.row.metadata.uuid) + '.json';
         ds.makeRequest({url: url, type: ds._useSODA2 ? 'POST' : 'PUT', data: JSON.stringify(r.rowData),
             isSODA: ds._useSODA2, batch: isBatch,
             success: rowSaved, error: rowErrored, complete: rowCompleted});

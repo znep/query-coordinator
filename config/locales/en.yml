@@ -402,6 +402,18 @@ en:
       stackedcolumn: Stacked Column Chart
       timeline: Timeline
       treemap: Tree Map
+    chart_types_short:
+      area: Area
+      bar: Bar
+      bubble: Bubble
+      column: Column
+      donut: Donut
+      line: Line
+      pie: Pie
+      stackedbar: Stacked Bar
+      stackedcolumn: Stacked Column
+      timeline: Timeline
+      treemap: Tree Map
     data_types:
       calendar_date: Date & Time
       checkbox: Checkbox

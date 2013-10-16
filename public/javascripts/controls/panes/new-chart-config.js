@@ -729,10 +729,10 @@
     /*** Main config ***/
     chartConfigNS.configChartSelector = function(options) {
         //getting rid of "Chart" at the end of the charttype string
-        var chartTypesCopy = $.extend({}, Dataset.chart.types);
+        var chartTypesCopy = $.extend(true, {}, Dataset.chart.types);
         for (var type in chartTypesCopy)
         {
-            chartTypesCopy[type].text = chartTypesCopy[type].text.replace(' Chart','');
+            chartTypesCopy[type].text = $.t('core.chart_types_short.'+chartTypesCopy[type].value);
         }
 
         //Order the chart types in a custom order

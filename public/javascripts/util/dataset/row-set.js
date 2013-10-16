@@ -484,7 +484,11 @@ var RowSet = ServerModel.extend({
             {
                 if (needReq)
                 {
-                    args.success = gotAggs;
+                    args.success = function(resAggs)
+                    {
+                        gotAggs(_.map(resAggs, function(ra)
+                                { return { columnIdent: ra.fieldName, name: ra.name, value: ra.value }; }));
+                    };
                     _.each(ilViews, function(v)
                     {
                         if ($.isBlank(v)) { return; }
@@ -537,6 +541,8 @@ var RowSet = ServerModel.extend({
                     args.success = function(recAggs)
                     {
                         gotAggs(recAggs);
+                        gotAggs(_.map(recAggs, function(ra)
+                                { return { columnIdent: ra.fieldName, name: ra.name, value: ra.value }; }));
                         callResults();
                     };
                     rs.makeRequest(args);
@@ -895,7 +901,7 @@ var RowSet = ServerModel.extend({
                 //var types = xhr.getResponseHeader('X-SODA2-Types');
                 var newCols = _.map(fields, function(f)
                 {
-                    var c = rs._findColumnForServerName(f);
+                    var c = rs._dataset.findColumnForServerName(f);
                     if ($.isBlank(c))
                     {
                         if (f.startsWith(':'))
@@ -995,140 +1001,15 @@ var RowSet = ServerModel.extend({
         rs.makeRequest(req);
     },
 
-    _findColumnForServerName: function(name, parCol)
-    {
-        var rs = this;
-        name = rs._dataset._useSODA2 ? name : ({sid: 'id', 'id': 'uuid'}[name] || name);
-        var c = $.isBlank(parCol) ? rs._dataset.columnForIdentifier(name) :
-            parCol.childColumnForIdentifier(name);
-
-        if ($.isBlank(c))
-        {
-            if (rs._dataset._useSODA2 && rs._dataset.isGrouped())
-            {
-                // Maybe a group function?
-                var i = name.indexOf('__');
-                var gf = name.slice(i + 2);
-                var mId = name.slice(0, i);
-                c = $.isBlank(parCol) ? rs._dataset.columnForIdentifier(mId) :
-                    parCol.childColumnForIdentifier(mId);
-                if ($.isBlank(c) || c.format.group_function !=
-                    blist.datatypes.groupFunctionFromSoda2(gf))
-                {
-                    // Maybe this is an aggregate column?
-                    i = name.indexOf('_');
-                    var agg = name.slice(0, i);
-                    name = name.slice(i + 1);
-                    c = $.isBlank(parCol) ? rs._dataset.columnForIdentifier(name) :
-                        parCol.childColumnForIdentifier(name);
-                    if ($.isBlank(c) || c.format.grouping_aggregate !=
-                        blist.datatypes.aggregateFromSoda2(agg))
-                    { return null; }
-                }
-            }
-            else
-            { return null; }
-        }
-        return c;
-    },
-
     _addRows: function(newRows, start, skipTranslate)
     {
         var rs = this;
-        var translateRow = function(r, parCol)
-        {
-            var adjVals = { invalid: {}, changed: {}, error: {}, sessionMeta: {}, data: {}, metadata: {} };
-            if (_.any(r, function(val, id)
-            {
-                var newVal = val;
-                var c = rs._findColumnForServerName(id, parCol);
-
-                if ($.isBlank(c))
-                { return true; }
-
-                if (c.isMeta && c.name == 'meta' && _.isString(newVal))
-                { newVal = JSON.parse(newVal || 'null'); }
-
-                if ($.isPlainObject(newVal))
-                {
-                    // First, convert an empty array into a null
-                    // Booleans in the array don't count because location type
-                    // has a flag that may be set even if there is no data.  If
-                    // some type actually cares about only having a boolean,
-                    // this will need to be made more specific
-                    if (_.all(newVal, function(v)
-                        { return $.isBlank(v) || _.isBoolean(v); }))
-                    { newVal = null; }
-                }
-
-                if (rs._dataset._useSODA2 && $.subKeyDefined(c, 'renderType.fromSoQLValue'))
-                { newVal = c.renderType.fromSoQLValue(newVal, c); }
-
-                if (c.renderTypeName == 'checkbox' && newVal === false ||
-                        c.renderTypeName == 'stars' && newVal === 0)
-                { newVal = null; }
-
-                if (c.renderTypeName == 'geospatial' && r[rs._dataset._useSODA2 ? ':id' : 'sid'])
-                { newVal = $.extend({}, newVal, {row_id: r[rs._dataset._useSODA2 ? ':id' : 'sid']}); }
-
-                if (c.dataTypeName == 'nested_table' && _.isArray(newVal))
-                {
-                    newVal = _.map(newVal, function(cr) { return translateRow(cr, c); });
-                    if (_.any(newVal, function(cr) { return _.isNull(cr); }))
-                    { return true; }
-                }
-
-                if (!_.isUndefined(newVal))
-                {
-                    adjVals.data[c.lookup] = newVal;
-                    if (c.isMeta)
-                    { adjVals.metadata[c.lookup.startsWith(':') ?  c.lookup.slice(1) : c.lookup] = newVal; }
-                }
-
-                return false;
-            })) { return null; }
-
-            adjVals.id = adjVals.metadata.id;
-
-            _.each((adjVals.metadata.meta || {}).invalidCells || {}, function(v, cId)
-            {
-                if (!$.isBlank(v))
-                {
-                    var c = !$.isBlank(parCol) ? parCol.childColumnForIdentifier(cId) :
-                        rs._dataset.columnForIdentifier(cId);
-                    if (!$.isBlank(c) && $.isBlank(adjVals.data[c.lookup]))
-                    {
-                        adjVals.invalid[c.lookup] = true;
-                        adjVals.data[c.lookup] = v;
-                    }
-                }
-            });
-            delete (adjVals.metadata.meta || {}).invalidCells;
-
-            _.each((rs._dataset._commentLocations || {})[adjVals.id] || {}, function(v, tcId)
-            {
-                var c = rs._dataset.columnForTCID(tcId);
-                if (!$.isBlank(c))
-                {
-                    adjVals.annotations = adjVals.annotations || {};
-                    adjVals.annotations[c.lookup] =  'comments';
-                }
-            });
-
-            rs._setRowFormatting(adjVals);
-
-            if ($.subKeyDefined(rs._dataset, 'highlights.' + adjVals.id))
-            { rs.markRow('highlight', true, adjVals); }
-
-            return adjVals;
-        };
-
         var adjRows = [];
         var oldRows = [];
         var hasIndex = !$.isBlank(start);
         _.each(newRows, function(r, i)
         {
-            var newRow = skipTranslate ? r : translateRow(r);
+            var newRow = skipTranslate ? r : RowSet.translateRow(r, rs._dataset, rs);
             var ind;
             if (hasIndex)
             { ind = start + i; }
@@ -1300,6 +1181,96 @@ var RowSet = ServerModel.extend({
         { row.icon = relevantCondition.icon; }
     }
 });
+
+RowSet.translateRow = function(r, dataset, rowSet, parCol, skipMissingCols)
+{
+    var adjVals = { invalid: {}, changed: {}, error: {}, sessionMeta: {}, data: {}, metadata: {} };
+    if (_.any(r, function(val, id)
+    {
+        var newVal = val;
+        var c = dataset.findColumnForServerName(id, parCol);
+
+        if ($.isBlank(c))
+        { return !skipMissingCols; }
+
+        if (c.isMeta && c.name == 'meta' && _.isString(newVal))
+        { newVal = JSON.parse(newVal || 'null'); }
+
+        if ($.isPlainObject(newVal))
+        {
+            // First, convert an empty array into a null
+            // Booleans in the array don't count because location type
+            // has a flag that may be set even if there is no data.  If
+            // some type actually cares about only having a boolean,
+            // this will need to be made more specific
+            if (_.all(newVal, function(v) { return $.isBlank(v) || _.isBoolean(v); }))
+            { newVal = null; }
+        }
+
+        if (dataset._useSODA2 && $.subKeyDefined(c, 'renderType.fromSoQLValue'))
+        { newVal = c.renderType.fromSoQLValue(newVal, c); }
+
+        if (c.renderTypeName == 'checkbox' && newVal === false ||
+                c.renderTypeName == 'stars' && newVal === 0)
+        { newVal = null; }
+
+        if (c.renderTypeName == 'geospatial' && r[dataset._useSODA2 ? ':id' : 'sid'])
+        { newVal = $.extend({}, newVal, {row_id: r[dataset._useSODA2 ? ':id' : 'sid']}); }
+
+        if (c.dataTypeName == 'nested_table' && _.isArray(newVal))
+        {
+            newVal = _.map(newVal, function(cr) { return RowSet.translateRow(cr, dataset, rowSet, c); });
+            if (_.any(newVal, function(cr) { return _.isNull(cr); }))
+            { return true; }
+        }
+
+        if (!_.isUndefined(newVal))
+        {
+            adjVals.data[c.lookup] = newVal;
+            if (c.isMeta)
+            { adjVals.metadata[c.lookup.startsWith(':') ?  c.lookup.slice(1) : c.lookup] = newVal; }
+        }
+
+        return false;
+    })) { return null; }
+
+    adjVals.id = adjVals.metadata.id;
+
+    _.each((adjVals.metadata.meta || {}).invalidCells || {}, function(v, cId)
+    {
+        if (!$.isBlank(v))
+        {
+            var c = !$.isBlank(parCol) ? parCol.childColumnForIdentifier(cId) :
+                dataset.columnForIdentifier(cId);
+            if (!$.isBlank(c) && $.isBlank(adjVals.data[c.lookup]))
+            {
+                adjVals.invalid[c.lookup] = true;
+                adjVals.data[c.lookup] = v;
+            }
+        }
+    });
+    delete (adjVals.metadata.meta || {}).invalidCells;
+
+    _.each((dataset._commentLocations || {})[adjVals.id] || {}, function(v, tcId)
+    {
+        var c = dataset.columnForTCID(tcId);
+        if (!$.isBlank(c))
+        {
+            adjVals.annotations = adjVals.annotations || {};
+            adjVals.annotations[c.lookup] =  'comments';
+        }
+    });
+
+    if (!$.isBlank(rowSet))
+    {
+        rowSet._setRowFormatting(adjVals);
+
+        if ($.subKeyDefined(dataset, 'highlights.' + adjVals.id))
+        { rowSet.markRow('highlight', true, adjVals); }
+    }
+
+    return adjVals;
+};
 
 RowSet.getQueryKey = function(query)
 {

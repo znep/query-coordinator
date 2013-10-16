@@ -196,8 +196,9 @@ $(function()
         {
             var $results = $(this);
             var ds = getDS($results);
-            $results.rowSearchRenderType({ highlight: searchRegex,
-                rows: ds.rowResults, view: ds,
+            $results.rowSearchRenderType({ highlight: searchRegex, view: ds,
+                rows: _.map(ds.rowResults, function(r)
+                    { return RowSet.translateRow(r, ds, null, null, true); }),
                 query: blist.browse.searchOptions.q,
                 totalRowResults: ds.rowResultCount });
 

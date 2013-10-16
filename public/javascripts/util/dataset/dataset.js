@@ -993,6 +993,41 @@ var Dataset = ServerModel.extend({
         return r;
     },
 
+    findColumnForServerName: function(name, parCol)
+    {
+        var ds = this;
+        name = ds._useSODA2 ? name : ({sid: 'id', 'id': 'uuid'}[name] || name);
+        var c = $.isBlank(parCol) ? ds.columnForIdentifier(name) : parCol.childColumnForIdentifier(name);
+
+        if ($.isBlank(c))
+        {
+            if (ds._useSODA2 && ds.isGrouped())
+            {
+                // Maybe a group function?
+                var i = name.indexOf('__');
+                var gf = name.slice(i + 2);
+                var mId = name.slice(0, i);
+                c = $.isBlank(parCol) ? ds.columnForIdentifier(mId) : parCol.childColumnForIdentifier(mId);
+                if ($.isBlank(c) || c.format.group_function !=
+                    blist.datatypes.groupFunctionFromSoda2(gf))
+                {
+                    // Maybe this is an aggregate column?
+                    i = name.indexOf('_');
+                    var agg = name.slice(0, i);
+                    name = name.slice(i + 1);
+                    c = $.isBlank(parCol) ? ds.columnForIdentifier(name) :
+                        parCol.childColumnForIdentifier(name);
+                    if ($.isBlank(c) || c.format.grouping_aggregate !=
+                        blist.datatypes.aggregateFromSoda2(agg))
+                    { return null; }
+                }
+            }
+            else
+            { return null; }
+        }
+        return c;
+    },
+
     getAggregates: function(callback, customAggs)
     {
         var ds = this;

@@ -188,21 +188,24 @@ $(function()
     var searchRegex = blist.browse.searchOptions.q ?
         new RegExp(blist.browse.searchOptions.q.trim().replace(' ', '|'), 'gi') : '';
 
-    // Assuming that dataset names do not have any html inside them.
-    // Assuming that dataset descriptions only have A tags inside them.
-    $("table tbody tr").find("a.name, span.name, div.description").each(function() {
-        var $this = $(this),
-            a_links = $this.children().map(function()
-                {
-                    var $child = $(this);
-                    $child.html($child.html()
-                        .replace(searchRegex, '<span class="highlight">$&</span>'));
-                    return $child[0].outerHTML;
-                }),
-            text_bits = _.map($this.html().split(/<a.*\/a>/), function(text)
-                { return text.replace(searchRegex, '<span class="highlight">$&</span>'); });
-        $this.html(_.flatten(_.zip(text_bits, a_links)).join(''));
-    });
+    if (!$.isBlank(searchRegex))
+    {
+        // Assuming that dataset names do not have any html inside them.
+        // Assuming that dataset descriptions only have A tags inside them.
+        $("table tbody tr").find("a.name, span.name, div.description").each(function() {
+            var $this = $(this),
+                a_links = $this.children().map(function()
+                    {
+                        var $child = $(this);
+                        $child.html($child.html()
+                            .replace(searchRegex, '<span class="highlight">$&</span>'));
+                        return $child[0].outerHTML;
+                    }),
+                text_bits = _.map($this.html().split(/<a.*\/a>/), function(text)
+                    { return text.replace(searchRegex, '<span class="highlight">$&</span>'); });
+            $this.html(_.flatten(_.zip(text_bits, a_links)).join(''));
+        });
+    }
 
     var renderRows = function()
     {

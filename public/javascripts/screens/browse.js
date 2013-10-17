@@ -185,7 +185,7 @@ $(function()
 
     // Sad hack: we don't have the stemmed version,
     // so just highlight the words they typed
-    var searchRegex = blist.browse.searchOptions.q ?
+    var searchRegex = $.subKeyDefined(blist, 'browse.searchOptions.q') ?
         new RegExp(blist.browse.searchOptions.q.trim().replace(' ', '|'), 'gi') : '';
 
     if (!$.isBlank(searchRegex))

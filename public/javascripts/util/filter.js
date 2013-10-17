@@ -83,8 +83,8 @@ blist.namespace.fetch('blist.filter');
         },
         check: {
             details: {
-                'IS_BLANK': { text: 'is not checked' },
-                'IS_NOT_BLANK': { text: 'is checked' }
+                'IS_BLANK': { text: 'is not checked', soql: function(c, v) { return 'not ' + c; } },
+                'IS_NOT_BLANK': { text: 'is checked', soql: function(c, v) { return c; } }
             },
             orderedList: ['IS_BLANK', 'IS_NOT_BLANK']
         },
@@ -232,7 +232,10 @@ blist.namespace.fetch('blist.filter');
         else if (_.isArray(v))
         { v = _.map(v, function(vv) { return _.isString(vv) ? "'" + vv + "'" : vv; }); }
         else if (_.isString(v)) { v = "'" + v + "'"; }
-        return '(' + filterOperators[op].soql(fc.columnFieldName +
+        var soqlFunc = filterOperators[op].soql;
+        if ($.subKeyDefined(c, 'renderType.filterConditions.details.' + op + '.soql'))
+        { soqlFunc = c.renderType.filterConditions.details[op].soql; }
+        return '(' + soqlFunc(fc.columnFieldName +
                     (!$.isBlank(fc.subColumn) ? '.' + fc.subColumn : ''), v) + ')';
     };
 

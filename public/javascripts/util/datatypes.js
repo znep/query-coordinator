@@ -1110,6 +1110,17 @@ blist.namespace.fetch('blist.datatypes');
                 return $.isBlank(d) ? '' : d.format('m/d/Y h:i:s A');
             },
             formats: zDateTimeFormats,
+            fromSoQLValue: function(v, col)
+            {
+                var d = v;
+                if (_.isString(v))
+                {
+                    // Don't use Date.parse because the Date.js library improperly ignores the Z (for GMT)
+                    d = new Date(d);
+                    if (!$.isBlank(d)) { d = d.getTime() / 1000; }
+                }
+                return d;
+            },
             inlineType: true,
             matchValue: function(v)
             {
@@ -1124,6 +1135,17 @@ blist.namespace.fetch('blist.datatypes');
             priority: 7,
             rollUpAggregates: nonNumericAggs,
             groupFunctions: dateGroupFunctions,
+            soqlFilterValue: function(v)
+            {
+                var d = v;
+                if (_.isString(v))
+                { d = Date.parse(v); }
+                else if (_.isNumber(v))
+                { d = new Date(v*1000); }
+                if (_.isDate(d))
+                { d = "'" + d.toISOString().replace(/\.\d{3}/, '') + "'"; }
+                return d;
+            },
             sortable: true,
             viewTypes: dateViews
         },

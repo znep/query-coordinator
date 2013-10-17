@@ -112,6 +112,11 @@ d3base.seriesGrouping = {
         var finishedPreprocessing = false;
         var maybeDone = _.after(2, function()
         {
+            // If there isn't a fixedColumn, use the id to sort, which will be
+            // available now that rows have been loaded
+            if ($.isBlank(sg.fixedColumn))
+            { sg.fixedColumn = vizObj._primaryView.metaColumnForName('id'); }
+
             // If we get re-initialized before the two views below finish their
             // getAllRows, we'll be paving over fields in vizObj with some stale
             // data if we call _preprocessSeriesColumns. If this happens,

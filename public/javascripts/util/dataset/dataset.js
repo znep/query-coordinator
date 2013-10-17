@@ -2649,7 +2649,7 @@ var Dataset = ServerModel.extend({
 
         var url = ds._useSODA2 ? '/api/id/' + ds.id : '/views/' + ds.id + '/rows';
         if (!$.isBlank(r.parentRow))
-        { url += r.parentRow.id + '/columns/' + r.parentColumn.id + '/subrows'; }
+        { url += '/' + r.parentRow.id + '/columns/' + r.parentColumn.id + '/subrows'; }
         url += (ds._useSODA2 ? '' : '/' + r.row.metadata.uuid) + '.json';
         ds.makeRequest({url: url, type: ds._useSODA2 ? 'POST' : 'PUT', data: JSON.stringify(r.rowData),
             isSODA: ds._useSODA2, batch: isBatch,

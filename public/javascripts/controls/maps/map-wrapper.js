@@ -194,7 +194,10 @@
                 mapObj.buildSelectFeature();
                 if ((mapObj._displayFormat.viewDefinitions || []).length == mapObj._children.length
                     && _.all(mapObj._children, function(cv) { return !cv.loading; }))
-                { mapObj._onDatasetsLoaded(); }
+                {
+                    mapObj._onDatasetsLoaded();
+                    mapObj.geolocate();
+                }
             }
         },
 

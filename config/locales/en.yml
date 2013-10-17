@@ -1013,6 +1013,7 @@ en:
           marker:
             add_button: Add Annotation
             caption: Caption
+            marker_title: Value Marker
             new_marker_button: Add Marker
             title: Annotations
             value: At Value

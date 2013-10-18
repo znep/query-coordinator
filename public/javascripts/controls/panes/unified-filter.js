@@ -58,6 +58,18 @@
 
         return condition.children.length > 0;
     };
+    // For the default dataset, remove any conditions that try to actually filter; those are disallowed
+    var cleanDefaultFilter = function(localRootCondition)
+    {
+        if ($.isBlank(localRootCondition.value))
+        { return localRootCondition; }
+        if (localRootCondition.value.toUpperCase() != 'AND' &&
+                localRootCondition.value.toUpperCase() != 'OR')
+        { return null; }
+        localRootCondition.children = _.compact(_.map(localRootCondition.children, function(c)
+                { return cleanDefaultFilter(c); }));
+        return localRootCondition;
+    };
 
     // helper to be sure we're fetching the right subcondition given a subcondition.
     // valid components: 'columnFieldName', 'subcolumn', 'value'
@@ -624,6 +636,7 @@
             if ($.subKeyDefined(dataset, '_queryBase.query.filterCondition'))
             {
                 baseRootCondition = $.extend(true, {}, dataset._queryBase.query.filterCondition);
+                baseRootCondition = setUpRoot(baseRootCondition, dataset._queryBase);
                 rootCondition = blist.filter.generateSODA1(blist.filter.subtractQueries(
                             Dataset.translateFilterColumnsToBase(
                                 Dataset.translateFilterCondition(rootCondition, dataset, false), dataset).where,
@@ -632,7 +645,6 @@
             }
 
             rootCondition = setUpRoot(rootCondition, dataset);
-            baseRootCondition = setUpRoot(baseRootCondition, dataset._queryBase);
 
             // are we advanced?
             $pane.toggleClass('advanced', !!rootCondition.metadata.advanced);
@@ -2199,6 +2211,7 @@
                 $pane.find('.normalFilterMode').show();
                 $pane.removeClass('notAdvanced').addClass('editMode advanced');
                 $pane.find('.editModeMessage').effect('highlight', {}, 3000);
+                $pane.find('.filterConditions input').filter(':radio, :checkbox').attr('disabled', true);
                 isEdit = true;
             });
 
@@ -2216,11 +2229,13 @@
                 if (dataset.type == 'blist')
                 {
                     dataset.update({ metadata:
-                        $.extend({}, dataset.metadata, { filterCondition: rootCondition }) });
+                        $.extend({}, dataset.metadata,
+                            { filterCondition: cleanDefaultFilter(rootCondition) }) });
 
                     // just to be sure:
                     var query = dataset.query;
                     delete query.filterCondition;
+                    delete query.namedFilters;
                     dataset.update({ query: query });
                 }
                 else

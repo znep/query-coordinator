@@ -702,7 +702,7 @@ var RowSet = ServerModel.extend({
                 if ($.isBlank(c)) { return null; }
                 var qbC = Dataset.translateColumnToQueryBase(c, rs._dataset);
                 if ($.isBlank(qbC)) { return null; }
-                return qbC.fieldName + (c.ascending ? '' : ' desc');
+                return qbC.fieldName + (ob.ascending ? '' : ' desc');
             })).join(',');
             if ($.isBlank(args.params['$order']))
             { delete args.params['$order']; }

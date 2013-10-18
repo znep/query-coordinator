@@ -764,7 +764,7 @@ var RowSet = ServerModel.extend({
                         }))).join(',');
             var sel = (args.params['$select'] || '').replace(/,\*/, '');
             args.params['$select'] = !$.isBlank(sel) ?
-                (sel + ',' + groupSelect) : groupSelect;
+                (sel + ',count(:id),' + groupSelect) : groupSelect;
         }
         rs._dataset.makeRequest(args);
     },

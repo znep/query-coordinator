@@ -411,10 +411,7 @@ var RowSet = ServerModel.extend({
         delete rs._rows;
         delete rs._rowIDLookup;
         delete rs._aggCache;
-        if (rs._dataset._useSODA2 && !rs._dataset.isGrouped())
-        { rs.getTotalRows(successCallback, errorCallback); }
-        else
-        { rs._loadRows(0, 1, successCallback, errorCallback, true, true); }
+        rs._loadRows(0, 1, successCallback, errorCallback, true, true);
     },
 
     getAggregates: function(callback, customAggs)
@@ -765,8 +762,9 @@ var RowSet = ServerModel.extend({
                             }
                             return null;
                         }))).join(',');
-            args.params['$select'] = !$.isBlank(args.params['$select']) ?
-                (args.params['$select'] + ',' + groupSelect) : groupSelect;
+            var sel = (args.params['$select'] || '').replace(/,\*/, '');
+            args.params['$select'] = !$.isBlank(sel) ?
+                (sel + ',' + groupSelect) : groupSelect;
         }
         rs._dataset.makeRequest(args);
     },
@@ -816,9 +814,9 @@ var RowSet = ServerModel.extend({
         }
 
         if ((fullLoad || (includeMeta || $.isBlank(rs._totalCount) || rs._columnsInvalid) &&
-            !_.isEqual(reqData, rs._curMetaReqMeta)) && (!rs._dataset._useSODA2 || rs._dataset.isGrouped()))
-        { params[rs._dataset._useSODA2 ? '$$meta' : 'meta'] = true; }
-        if ($.isBlank(rs._totalCount) && rs._dataset._useSODA2 && !rs._dataset.isGrouped())
+            !_.isEqual(reqData, rs._curMetaReqMeta)) && !rs._dataset._useSODA2)
+        { params.meta = true; }
+        if ($.isBlank(rs._totalCount) && rs._dataset._useSODA2)
         { params['$$row_count'] = 'approximate'; } // really gives the exact count
 
         var reqId = _.uniqueId();
@@ -992,7 +990,7 @@ var RowSet = ServerModel.extend({
             type: rs._dataset._useSODA2 || fullLoad ? 'GET' : 'POST' };
         if (!rs._dataset._useSODA2 && fullLoad)
         { req.url = '/views/' + rs._dataset.id + '/rows.json'; }
-        if (params.meta || params['$$meta'])
+        if (params.meta)
         {
             rs._curMetaReq = reqId;
             rs._curMetaReqMeta = reqData;

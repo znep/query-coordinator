@@ -277,7 +277,7 @@ class Column < Model
 
   def to_core
     c = data.deep_merge(update_data).with_indifferent_access
-    c['childColumns'] = childColumns.map {|cc| cc.to_core} if childColumns
+    c['childColumns'] = childColumns.map {|cc| cc.is_a?(Column) ? cc.to_core : cc} if childColumns
     Column.to_core(c)
   end
 

@@ -77,13 +77,6 @@ $(function()
             var rt = $.urlParam($button.attr('href'), 'defaultRender');
             if (rt == 'richList') { rt = 'fatrow'; }
 
-            //mixpanel logging
-            $.mixpanelMeta();
-            mixpanel.track(
-            'Changed Render Type Options',
-                { 'Render Type': rt }
-            );
-
             if ($button.data('popupSelect-tip'))
             { return; }
 

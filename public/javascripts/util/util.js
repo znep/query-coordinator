@@ -193,7 +193,7 @@ $.mixpanelMeta = function()
     }
     
     var domain = window.location.hostname;
-    
+    var pathName = window.location.pathname;
     var time = Math.round(new Date().getTime() / 1000) - blist.pageOpened;
     
      mixpanel.register({
@@ -205,6 +205,7 @@ $.mixpanelMeta = function()
         'View Id': viewId,
         'View Type': viewType,
         'Domain': domain,
+        'On Page': pathName,
         'Time Since Page Opened (sec)': time
     });
 }

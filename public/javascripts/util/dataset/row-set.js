@@ -142,6 +142,9 @@ var RowSet = ServerModel.extend({
                 var i = 0;
                 while (i < a.length && a[i] == b[i])
                 { i++; }
+                // Nulls always sort last
+                if ($.isBlank(a[i])) { return 1; }
+                if ($.isBlank(b[i])) { return -1; }
                 return (i == a.length ? 0 : ((a[i] < b[i] ? -1 : 1) * (sorts[i].ascending ? 1 : -1)));
             }), 'row');
             rs._addRows(newRows, 0, true);

@@ -4,7 +4,7 @@
 
 <%- cur_sort = opts[:sort_opts].detect { |s| s[:value] == opts[:sortBy] } -%>
 <%- show_time_period = cur_sort.nil? ? false : cur_sort[:is_time_period] -%>
-<%- in_search = opts[:user_params][:q] -%>
+<%- in_search = opts[:user_params][:q] && opts[:row_count] -%>
 
 <div class="browseSection <%= opts[:facets].length < 1 ? 'noFacets' : '' %>
   <%= opts[:custom_class] || '' %>

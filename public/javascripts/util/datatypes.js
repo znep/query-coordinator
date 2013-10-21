@@ -1340,6 +1340,7 @@ blist.namespace.fetch('blist.datatypes');
             isInlineEdit: true,
             priority: 13,
             rollUpAggregates: _.reject(aggs, function(a) { return a.value == 'sum'; }),
+            soqlFieldWrapper: function(f, op) { return op.endsWith('BLANK') ? f : 'to_number(' + f + ')'; },
             sortable: true
         },
 
@@ -1484,7 +1485,7 @@ blist.namespace.fetch('blist.datatypes');
             alignment: alignment,
             createable: true,
             deleteable: true,
-            filterConditions: blist.filter.groups.numeric,
+            filterConditions: blist.filter.groups.comparable,
             matchValue: function(v, col)
             {
                 if (col.view._useSODA2)

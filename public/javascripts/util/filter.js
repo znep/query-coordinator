@@ -232,11 +232,17 @@ blist.namespace.fetch('blist.filter');
         else if (_.isArray(v))
         { v = _.map(v, function(vv) { return _.isString(vv) ? "'" + vv + "'" : vv; }); }
         else if (_.isString(v)) { v = "'" + v + "'"; }
+
+        var fieldName = fc.columnFieldName;
+        if (!$.isBlank(fc.subColumn)) { fieldName += '.' + fc.subColumn; }
+        if ($.subKeyDefined(c, 'renderType.soqlFieldWrapper'))
+        { fieldName = c.renderType.soqlFieldWrapper(fieldName, op); }
+
         var soqlFunc = filterOperators[op].soql;
         if ($.subKeyDefined(c, 'renderType.filterConditions.details.' + op + '.soql'))
         { soqlFunc = c.renderType.filterConditions.details[op].soql; }
-        return '(' + soqlFunc(fc.columnFieldName +
-                    (!$.isBlank(fc.subColumn) ? '.' + fc.subColumn : ''), v) + ')';
+
+        return '(' + soqlFunc(fieldName, v) + ')';
     };
 
     blist.filter.generateSODA1 = function(fc)

@@ -192,7 +192,7 @@ $(function()
     {
         // Assuming that dataset names do not have any html inside them.
         // Assuming that dataset descriptions only have A tags inside them.
-        $("table tbody tr").find("a.name, span.name, div.description").each(function() {
+        $("table tbody tr").find("a.name, span.name, div.description, span.category, span.tags").each(function() {
             var $this = $(this),
                 a_links = $this.children().map(function()
                     {

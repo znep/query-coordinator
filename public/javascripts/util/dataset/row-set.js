@@ -765,9 +765,9 @@ var RowSet = ServerModel.extend({
                             }
                             return null;
                         }))).join(',');
-            var sel = (args.params['$select'] || '').replace(/,\*/, '');
+            var sel = (args.params['$select'] || '').replace(/:\*,\*/, '');
             args.params['$select'] = !$.isBlank(sel) ?
-                (sel + ',count(:id),' + groupSelect) : groupSelect;
+                (sel + ',' + groupSelect) : groupSelect;
         }
         rs._dataset.makeRequest(args);
     },
@@ -919,6 +919,12 @@ var RowSet = ServerModel.extend({
                     }
                     return c;
                 });
+                if (!_.any(newCols, function(c) { return c.fieldName == ':id'; }) &&
+                        $.isBlank(rs._dataset.metaColumnForName('id')))
+                {
+                    newCols.push({ id: -1, name: 'id', fieldName: ':id',
+                                dataTypeName: 'meta_data', renderTypeName: 'meta_data' });
+                }
                 rs.trigger('metadata_update', [ { columns: newCols } ]);
             }
             // If we loaded without meta but don't have meta available, bail
@@ -1235,6 +1241,14 @@ RowSet.translateRow = function(r, dataset, rowSet, parCol, skipMissingCols)
         return false;
     })) { return null; }
 
+    if ($.isBlank(adjVals.metadata.id))
+    {
+        // Have to make up an id
+        adjVals.metadata.id = 'jsrowid-' + _.uniqueId();
+        var c = dataset.metaColumnForName('id');
+        if (!$.isBlank(c))
+        { adjVals.data[c.lookup] = adjVals.metadata.id; }
+    }
     adjVals.id = adjVals.metadata.id;
 
     _.each((adjVals.metadata.meta || {}).invalidCells || {}, function(v, cId)

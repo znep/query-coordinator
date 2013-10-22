@@ -3301,7 +3301,8 @@ function translateSubFilter(fc, ds, simplify, isHaving)
                 }
 
                 // Don't put in redundant subcolumns (ie, when no sub-column)
-                if (!$.isBlank(c.value) && c.value != col.dataTypeName) { filterQ.subColumn = c.value; }
+                if (!$.isBlank(c.value) && c.value != (col || {}).dataTypeName)
+                { filterQ.subColumn = c.value; }
             }
             else if (c.type == 'literal')
             {

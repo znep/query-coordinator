@@ -1060,7 +1060,8 @@ class View < Model
     if user.nil?
       false
     else
-      self.owner.id == user.id
+      self.owner.id == user.id ||
+        (grants && grants.any? { |p| p.userId == user.id && (p.type || '').downcase == 'owner' })
     end
   end
 

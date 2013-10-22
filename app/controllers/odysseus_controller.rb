@@ -28,6 +28,7 @@ class OdysseusController < ApplicationController
       @script_packages = contents['scripts'] || []
       @objects = contents['objects']
       @contents = contents['markup']
+      @client_version = contents['client_version']
     end
   end
 end

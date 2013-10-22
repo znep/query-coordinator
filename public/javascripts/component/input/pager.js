@@ -305,10 +305,19 @@ var adjustIndex = function(cObj, newChildId)
         var minI = Math.max(0, curIndex - windowLimit);
         var maxI = Math.min(pageCount - 1, curIndex + windowLimit);
 
+        var accessibleText = function(text)
+        {
+            return {tagName: 'span', 'class': 'accessible', contents: text};
+        };
+
+        var accessiblePageText = accessibleText($.t('core.pagination.page'));
+        var accessibleCurrentPageText = accessibleText($.t('core.pagination.current_page'));
+
         if (minI > 0)
         {
             $statusItem.append($.tag({tagName: 'a', href: '#0', 'class': 'pageLink',
-                contents: 1}));
+                contents: [accessiblePageText, 1]
+                    }));
             if (minI > 1)
             {
                 $statusItem.append($.tag({tagName: 'span',
@@ -321,12 +330,13 @@ var adjustIndex = function(cObj, newChildId)
             if (i == curIndex)
             {
                 $statusItem.append($.tag({tagName: 'span', 'class': 'currentPage',
-                    contents: i + 1}));
+                    contents: [accessibleCurrentPageText, i + 1]}));
             }
             else
             {
                 $statusItem.append($.tag({tagName: 'a', href: '#' + i, 'class': 'pageLink',
-                    contents: i + 1}));
+                    contents: [accessiblePageText, i + 1]
+                    }));
             }
         }
 
@@ -338,7 +348,7 @@ var adjustIndex = function(cObj, newChildId)
                     'class': 'pageFillIn', contents: '&hellip;'}));
             }
             $statusItem.append($.tag({tagName: 'a', href: '#' + (pageCount - 1),
-                'class': 'pageLink', contents: pageCount}));
+                'class': 'pageLink', contents: [accessiblePageText, pageCount]}));
         }
     }
     else if (($statusItem = cObj.$contents.find('.childLink')).length > 0)

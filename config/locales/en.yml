@@ -572,6 +572,8 @@ en:
       last_page: Last Page
       next_page: Next Page
       previous_page: Previous Page
+      current_page: Current Page
+      page: page
     precision_style:
       scientific: Scientific (1.0204e+3)
       standard: Standard (1020.4)

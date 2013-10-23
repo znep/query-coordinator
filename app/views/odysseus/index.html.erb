@@ -23,8 +23,8 @@
   <%- @script_packages.each do |pkg| -%>
     <%= include_javascripts pkg %>
   <%- end -%>
-  <script type='text/javascript' src="/socket.io/socket.io.js"></script>
-  <script type='text/javascript' src="/asset/js/client?<%= @client_version %>"></script>
+  <script type="text/javascript" src="/asset/js/socket.io?<%= @client_version %>"></script>
+  <script type="text/javascript" src="/asset/js/client?<%= @client_version %>"></script>
 
   <script type="text/javascript">
     blist.configuration.newChartsEnabled = <%= module_enabled?(:new_charts) || true %>;

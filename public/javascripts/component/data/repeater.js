@@ -463,7 +463,7 @@ $.component.Container.extend('Repeater', 'content', {
             this._map[index] = undefined;
         }
 
-        cloneProperties.childContextId = row.id;
+        cloneProperties.childContextId = row.id.toString();
 
         // Create clone
         var clone = this._map[index] = new $.component.Repeater.Clone(cloneProperties,

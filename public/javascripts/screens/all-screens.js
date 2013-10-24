@@ -233,8 +233,4 @@
          }
       });
 
-    blist.namespace.fetch('blist.nextgen');
-    _.each(window.location.href.match(/\w+=nextgen/g),
-        function(prop) { blist.nextgen[prop.slice(0, prop.indexOf('='))] = true; });
-
 });

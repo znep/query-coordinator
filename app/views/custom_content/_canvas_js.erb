@@ -23,10 +23,6 @@
       blist.configuration.extraContextConfig = <%= safe_json(Canvas2::DataContext.extra_config) %>;
       blist.configuration.privateData = <%= page.private_data?  || staging_lockdown %>;
 
-      blist.configuration.newChartsEnabled = <%= module_enabled?(:new_charts) || true %>;
-      blist.configuration.newMapsEnabled = <%= module_enabled?(:new_maps) == true %>;
-      blist.configuration.oldChartsForced = <%= module_enabled?(:old_charts) == true %>;
-
       $.dataContext.load(page.data, blist.configuration.availableContexts,
         blist.configuration.extraContextConfig);
       $.component.initialize(page.content);

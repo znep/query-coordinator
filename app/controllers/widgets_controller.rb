@@ -1,4 +1,5 @@
 class WidgetsController < ApplicationController
+  before_filter :prepare_feature_flags
   skip_before_filter :require_user, :disable_frame_embedding
   layout 'widgets'
 
@@ -60,5 +61,11 @@ class WidgetsController < ApplicationController
     else
       render
     end
+  end
+
+  private
+  def prepare_feature_flags
+    super
+    CurrentDomain::FeatureFlags.iframe_parameters = CGI.parse(URI.parse(request.referer).query || '')
   end
 end

@@ -4,6 +4,79 @@ require 'core_server/errors'
 class CurrentDomain
   REFRESH_CHECK_TIME = 10
 
+  module FeatureFlags
+    def self.domain_flags=(flags)
+      self.ensure_vars!
+      self.add_keys(@@raw_flags.domain_flags!, flags) # InternalController already jsonifies.
+    end
+
+    def self.request_parameters=(flags)
+      self.ensure_vars!
+      self.add_keys(@@raw_flags.request_parameters!, flags, true, true)
+    end
+
+    def self.iframe_parameters=(flags)
+      self.ensure_vars!
+      self.add_keys(@@raw_flags.iframe_parameters!, flags, true, true)
+    end
+
+    def self.to_json
+      self.derive! unless @@clean
+      @@flags.to_json
+    end
+
+    def self.method_missing(key)
+      self.derive! unless @@clean
+      @@flags.send key
+    end
+
+    private
+    def self.ensure_vars!
+      @@raw_flags ||= Hashie::Mash.new
+    end
+
+    ALLOWED_KEYS = %w( maps charts visualize )
+    def self.add_keys(flags, new_flags, definitely_a_string = false, check_whitelist = false)
+      @@clean = false
+      new_flags.each do |keystring, val|
+        next if check_whitelist && !ALLOWED_KEYS.include?(keystring)
+        recurseable_flags = flags
+
+        keys = keystring.split('.')
+        keys[0...(keys.length-1)].each do |subkey|
+          recurseable_flags = recurseable_flags.send("#{subkey}!".to_sym)
+        end
+
+        val = val.first if val.is_a?(Array) && val.length == 1 # unwrap from CGI.parse
+        val = begin
+          JSON.parse(val, :quirks_mode => true) # auto-booleanize for me
+        rescue JSON::ParserError
+          val
+        end if definitely_a_string
+        recurseable_flags.send("#{keys.last}=".to_sym, val)
+      end
+    end
+
+    def self.derive!
+      @@flags = @@raw_flags.domain_flags.clone
+      @@flags.merge!(@@raw_flags.request_parameters.clone) if @@raw_flags.request_parameters?
+      @@flags.merge!(@@raw_flags.iframe_parameters.clone) if @@raw_flags.iframe_parameters?
+
+      # Legacy support
+      @@flags.maps      = 'nextgen' if @@flags.new_maps
+      @@flags.charts    = 'nextgen'
+      @@flags.charts    = 'old'     if @@flags.old_charts
+      @@flags.visualize = 'nextgen' if @@flags.new_config
+      @@flags.visualize = 'old'     if @@flags.old_chart_config
+
+      # Legacy support that isn't even used! Mostly to prove that it can be done.
+      @@flags.newCharts!.newBarChart  = true if @@flags.newBarChart
+      @@flags.newCharts!.newLineChart = true if @@flags.newLineChart
+
+      @@clean = true
+    end
+  end
+
   def self.load_all
     @@property_store = {}
 

@@ -4,7 +4,7 @@
 class ApplicationController < ActionController::Base
   before_filter :hook_auth_controller,  :create_core_server_connection,
     :disable_frame_embedding, :adjust_format, :patch_microsoft_office, :sync_logged_in_cookie,
-    :require_user, :set_user, :set_meta, :force_utf8_params
+    :require_user, :set_user, :set_meta, :force_utf8_params, :prepare_feature_flags
   helper :all # include all helpers, all the time
   helper_method :current_user
   helper_method :current_user_session
@@ -333,5 +333,11 @@ private
 
   def check_chrome
     @suppress_chrome = params[:hide_chrome] == 'true'
+  end
+
+  def prepare_feature_flags
+    features = CurrentDomain.configuration('feature_set')
+    CurrentDomain::FeatureFlags.domain_flags = features.properties if features
+    CurrentDomain::FeatureFlags.request_parameters = request.query_parameters
   end
 end

@@ -164,7 +164,7 @@ module DatasetsHelper
       t('controls.common.stars.tooltip', { number: (value || 0) }) + '">' +
       '<span class="accessibleValue">Current value: ' + (value || 0).to_s + ' out of 5</span>' +
       (0..5).map do |i|
-      '<span class="starsLabel value-' + i.to_s + (value.to_i == i || (i == 0 && value.nil?) ? ' currentValue' : '') + '">' + i.to_s + '/5</span>'
+      '<span class="starsLabel value-' + i.to_s + (value.to_i == i || (i == 0 && value.nil?) ? ' currentValue' : '') + '"></span>'
       end.join('') +
     '</div>').html_safe
   end

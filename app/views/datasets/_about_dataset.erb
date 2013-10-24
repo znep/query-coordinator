@@ -197,9 +197,9 @@
     </a>
     <dl class="sectionContent">
       <dt><%= t('screens.about.permalink') %></dt>
-      <dd><span class="hardWrap"><%= link_to_url view_url(@view), :rel => 'external' %></span></dd>
+      <dd><span class="hardWrap"><%= link_to_url view_url(@view), :rel => 'external', :title=> 'Permanent link, opens in new window' %><span class='accessible'>(new window)</span></span></dd>
       <dt><%= t('screens.about.short_url') %></dt>
-      <dd><span class="hardWrap"><%= link_to_url short_view_url(@view), :rel => 'external' %></span></dd>
+      <dd><span class="hardWrap"><%= link_to_url short_view_url(@view), :rel => 'external', :title=> 'Short link, opens in new window' %><span class='accessible'>(new window)</span></span></dd>
     </dl>
   </div>
 

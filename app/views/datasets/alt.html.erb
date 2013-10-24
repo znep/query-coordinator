@@ -83,7 +83,7 @@
   <%- end -%>
   <div class="dataGridWrapper">
     <%- if is_grid -%>
-      <%= raw RenderType.table_html('dataGrid', @viewable_columns, @data, @view, @page, @aggregates) %>
+      <%= raw RenderType.table_html('dataGrid', @viewable_columns, @data, @view, (@page - 1) * @per_page, @aggregates) %>
     <%- elsif is_form -%>
       <%= render(:partial => 'displays/form_view') %>
     <%- else -%>

@@ -69,6 +69,7 @@ var ColumnContainer = function(colName, selfUrl, urlBase)
         delete _columnFieldNameLookup[col.fieldName];
         if (col.isMeta) { delete _metaColumnLookup[col.name]; }
         update(this);
+        this.trigger('columns_changed', ['removed']);
     };
 
     // defines: columnsForType, childColumnsForType
@@ -95,6 +96,7 @@ var ColumnContainer = function(colName, selfUrl, urlBase)
         {
             cont[colSet].push(newCol);
             update(cont);
+            cont.trigger('columns_changed', ['added']);
             if (_.isFunction(successCallback))
             { successCallback(forID(cont, newCol.id)); }
         };
@@ -236,21 +238,24 @@ var ColumnContainer = function(colName, selfUrl, urlBase)
     };
 
     // defines: updateColumns, updateChildColumns
-    props['update' + capSet] = function(newCols, forceFull, updateOrder)
+    props['update' + capSet] = function(newCols, forceFull, updateOrder, masterUpdate)
     {
         if ($.isBlank(this[colSet]) && $.isBlank(newCols)) { return; }
 
         var cont = this;
 
+        var changeType;
         if (!$.isBlank(newCols))
         {
             // if we have no columns to begin with just set them
             if ($.isBlank(cont[colSet]))
             {
                 cont[colSet] = newCols;
+                changeType = 'fullSet';
             }
             else
             {
+                var colById = {};
                 _.each(newCols, function(nc, i)
                 {
                     // Columns may or may not be in the list already; they may
@@ -268,6 +273,7 @@ var ColumnContainer = function(colName, selfUrl, urlBase)
                     {
                         if (updateOrder) { cont[colSet].splice(i, 0, nc); }
                         else { cont[colSet].push(nc); }
+                        changeType = 'added';
                     }
                     else
                     {
@@ -277,11 +283,27 @@ var ColumnContainer = function(colName, selfUrl, urlBase)
                         {
                             cont[colSet].splice(ci, 1);
                             cont[colSet].splice(i, 0, c);
+                            changeType = 'moved';
                         }
                         // Update the column object in-place
                         c.update(nc, forceFull, updateOrder);
                     }
+                    colById[nc.id] = true;
                 });
+
+                // If master update, remove any cols not in set
+                if (masterUpdate)
+                {
+                    cont[colSet] = _.reject(cont[colSet], function(c)
+                    {
+                        if (!colById[c.id])
+                        {
+                            cont['clear' + capName](c);
+                            return true;
+                        }
+                        return false;
+                    });
+                }
             }
         }
 
@@ -316,7 +338,8 @@ var ColumnContainer = function(colName, selfUrl, urlBase)
         if (_.any(this[colSet], function(c) { return c.renderType.soda1Only; }))
         { (cont.view || cont)._useSODA2 = false; }
 
-        _.defer(function() { (cont.view || cont).trigger('columns_changed'); });
+        if (!$.isBlank(changeType))
+        { _.defer(function() { (cont.view || cont).trigger('columns_changed', [changeType]); }); }
     };
 
     return props;

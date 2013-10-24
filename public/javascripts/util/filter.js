@@ -245,8 +245,17 @@ blist.namespace.fetch('blist.filter');
         return '(' + soqlFunc(fieldName, v) + ')';
     };
 
-    blist.filter.generateSODA1 = function(fc)
+    blist.filter.generateSODA1 = function(fc, fc2)
     {
+        fc = _.compact([fc, fc2]);
+        if (fc.length > 0)
+        {
+            if (fc.length == 1)
+            { fc = fc[0]; }
+            else
+            { fc = { operator: 'AND', children: fc }; }
+        }
+
         var result = {};
         if (_.isEmpty(fc)) { return result; }
         if (!$.isBlank(fc.metadata))

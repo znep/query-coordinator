@@ -59,16 +59,19 @@ var Dataset = ServerModel.extend({
         delete this.initialMetaColumns;
 
         this._adjustProperties();
-        this._updateGroupings();
+        this._syncQueries();
 
         this.temporary = false;
         this.minorChange = true;
         this.valid = this._checkValidity();
 
         // We need an active row set to start
-        ds._savedRowSet = new RowSet(ds, { orderBys: (ds.query || {}).orderBys,
-            filterCondition: ds.cleanFilters(), groupBys: (ds.query || {}).groupBys,
-            groupFuncs: ds._getGroupedFunctions() },
+        var cleanFC = ds.cleanJsonFilters();
+        ds._savedRowSet = new RowSet(ds, $.extend({}, ds.metadata.jsonQuery,
+                    { where: cleanFC.where, having: cleanFC.having, namedFilters: null }),
+            { orderBys: (ds.query || {}).orderBys,
+                filterCondition: ds.cleanFilters(), groupBys: (ds.query || {}).groupBys,
+                groupFuncs: ds._getGroupedFunctions() },
             null, ds.initialRows);
         delete ds.initialRows;
         ds._activateRowSet(ds._savedRowSet);
@@ -1406,7 +1409,11 @@ var Dataset = ServerModel.extend({
             { ds._queryBase.reload(true); }
         };
         ds.bind('saved', updateSelf, ds);
-        ds.bind('columns_changed', updateSelf, ds);
+        ds.bind('columns_changed', function(changeType)
+        {
+            if (changeType == 'added' || changeType == 'fullSet' || changeType == 'removed')
+            { updateSelf(); }
+        }, ds);
 
         var selfForBase = function()
         {
@@ -1822,6 +1829,56 @@ var Dataset = ServerModel.extend({
         return filters;
     },
 
+    cleanJsonFilters: function(excludeTemporary)
+    {
+        var ds = this;
+        var filters = {};
+        _.each(['where', 'having'], function(k)
+        {
+            if ($.subKeyDefined(ds, 'metadata.jsonQuery.' + k))
+            { filters[k] = $.extend(true, {}, ds.metadata.jsonQuery[k]); }
+        });
+        if ($.subKeyDefined(ds, 'metadata.jsonQuery.namedFilters'))
+        {
+            var newFilters = { where: [], having: [] };
+            _.each(ds.metadata.jsonQuery.namedFilters, function(nf)
+            {
+                if (excludeTemporary && nf.temporary) { return; }
+                // Named filter keys off of main type; so just check displayType and
+                // not renderTypeConfig.visible
+                if (!$.isBlank(nf.displayTypes) &&
+                    !_.include(nf.displayTypes, ds.displayType)) { return; }
+                nf = $.extend(true, {}, nf);
+                delete nf.temporary;
+                delete nf.displayTypes;
+                newFilters.where.push(nf.where);
+                newFilters.having.push(nf.having);
+            });
+            _.each(['where', 'having'], function(k)
+            {
+                newFilters[k] = _.compact(newFilters[k]);
+                if (newFilters[k].length > 0)
+                {
+                    if (_.isEmpty(filters[k]) && newFilters[k].length == 1)
+                    {
+                        filters[k] = _.first(newFilters[k]);
+                    }
+                    else
+                    {
+                        if (_.isEmpty(filters[k]))
+                        { filters[k] = { children: [], operator: 'AND' }; }
+                        else if (filters[k].operator != 'AND')
+                        {
+                            filters[k] = { operator: 'AND', children: [filters[k]] };
+                        }
+                        filters[k].children = (filters[k].children || []).concat(newFilters[k]);
+                    }
+                }
+            });
+        }
+        return filters;
+    },
+
     cleanCopy: function(allowedKeys)
     {
         var dsCopy = this._super(allowedKeys);
@@ -1829,6 +1886,11 @@ var Dataset = ServerModel.extend({
         {
             dsCopy.query.filterCondition = this.cleanFilters();
             delete dsCopy.query.namedFilters;
+        }
+        if ($.subKeyDefined(dsCopy, 'metadata.jsonQuery'))
+        {
+            $.extend(dsCopy.metadata.jsonQuery, this.cleanJsonFilters());
+            delete dsCopy.metadata.jsonQuery.namedFilters;
         }
         return dsCopy;
     },
@@ -1996,15 +2058,6 @@ var Dataset = ServerModel.extend({
             ds.metadata.renderTypeConfig.visible[ds.displayType] = true;
         }
 
-        // Update sorts on each column
-        _.each(ds.realColumns || [], function(c)
-                { delete c.sortAscending; });
-        _.each((ds.query || {}).orderBys || [], function(ob)
-        {
-            var c = ds.columnForID(ob.expression.columnId);
-            if (!$.isBlank(c)) { c.sortAscending = ob.ascending; }
-        });
-
         ds.url = ds._generateUrl();
         ds.fullUrl = ds._generateUrl(true);
         ds.shortUrl = ds._generateShortUrl(true);
@@ -2117,6 +2170,7 @@ var Dataset = ServerModel.extend({
 
         var oldQuery = ds.query || {};
         var oldSearch = ds.searchString;
+        var oldJsonQuery = $.extend(true, {}, ds.metadata.jsonQuery);
         var oldDispFmt = $.extend(true, {}, ds.displayFormat);
         var oldDispType = ds.displayType;
         var oldRTConfig = $.extend(true, {}, ds.metadata.renderTypeConfig);
@@ -2136,25 +2190,9 @@ var Dataset = ServerModel.extend({
         ds._adjustProperties();
 
         if (!$.isBlank(newDS.columns))
-        { ds.updateColumns(newDS.columns, forceFull, updateColOrder); }
+        { ds.updateColumns(newDS.columns, forceFull, updateColOrder, masterUpdate); }
 
-        // Update sorts on each column
-        _.each(ds.realColumns || [], function(c)
-                { delete c.sortAscending; });
-        _.each((ds.query || {}).orderBys || [], function(ob)
-        {
-            var c = ds.columnForID(ob.expression.columnId);
-            if (!$.isBlank(c)) { c.sortAscending = ob.ascending; }
-        });
-
-        // the core server will do this anyway.
-        ds.query = ds.query || {};
-
-        ds._updateGroupings(oldGroupings, oldGroupAggs);
-
-        // Clean out any empty keys in the query
-        _.each(['namedFilters', 'filterCondition', 'orderBys', 'groupBys'],
-            function(k) { if (_.isEmpty(ds.query[k])) { delete ds.query[k]; } });
+        ds._syncQueries(oldJsonQuery, oldQuery, oldGroupings, oldGroupAggs);
 
         var needsDTChange;
         if (!_.isEqual(oldRTConfig.visible, ds.metadata.renderTypeConfig.visible)
@@ -2194,18 +2232,16 @@ var Dataset = ServerModel.extend({
                         { return oldRTConfig.visible[nd] ||
                             ds.metadata.renderTypeConfig.visible[nd]; }); });
 
-        var newQ = { orderBys: ds.query.orderBys, filterCondition: ds.cleanFilters(),
-            groupBys: ds.query.groupBys, groupFuncs: this._getGroupedFunctions() };
-        var newKey = RowSet.getQueryKey({ orderBys: ds.query.orderBys,
-            filterCondition: Dataset.translateFilterCondition(newQ.filterCondition, ds),
-            groupBys: Dataset.translateGroupBys(ds.query.groupBys, ds, newQ.groupFuncs) });
-        if (needQueryChange || (oldSearch != ds.searchString) ||
+        var cleanFC = ds.cleanJsonFilters();
+        var jsonQ = $.extend({}, ds.metadata.jsonQuery,
+                { where: cleanFC.where, having: cleanFC.having, namedFilters: null });
+        var newKey = RowSet.getQueryKey(jsonQ);
+        if (needQueryChange ||
                 ($.subKeyDefined(ds, '_activeRowSet._key') && ds._activeRowSet._key != newKey))
         {
             ds.aggregatesChanged();
             var filterChanged = needQueryChange || ds._activeRowSet._key != newKey;
-            var nonFilterChanged = oldSearch != ds.searchString;
-            if (filterChanged && !nonFilterChanged)
+            if (filterChanged)
             {
                 if (!$.isBlank(ds._availableRowSets[newKey]))
                 { ds._activateRowSet(ds._availableRowSets[newKey]); }
@@ -2214,14 +2250,18 @@ var Dataset = ServerModel.extend({
                     // Find existing set to derive from
                     var parRS = _.detect(_.sortBy(ds._availableRowSets,
                                 function(rs, key) { return -(rs._isComplete ? 1000000 : 1) * key.length; }),
-                            function(rs) { return rs.canDerive(newQ); });
-                    ds._activateRowSet(new RowSet(ds, newQ, parRS));
+                            function(rs) { return rs.canDerive(jsonQ); });
+                    ds._activateRowSet(new RowSet(ds, jsonQ,
+                                { orderBys: (ds.query || {}).orderBys,
+                                    filterCondition: ds.cleanFilters(), groupBys: (ds.query || {}).groupBys,
+                                    groupFuncs: ds._getGroupedFunctions() },
+                                parRS));
                 }
             }
             else
             {
                 // Clear out the rows, since the data is different now
-                ds._invalidateAll(filterChanged || nonFilterChanged);
+                ds._invalidateAll(filterChanged);
             }
             ds.trigger('query_change');
         }
@@ -2256,6 +2296,105 @@ var Dataset = ServerModel.extend({
         var oldValid = ds.valid;
         ds.valid = ds._checkValidity();
         if (!oldValid && ds.valid) { ds.trigger('valid'); }
+    },
+
+    _syncQueries: function(oldJsonQuery, oldQuery, oldGroupings, oldGroupAggs)
+    {
+        var ds = this;
+
+        // the core server will do this anyway.
+        ds.query = ds.query || {};
+        ds.metadata.jsonQuery = ds.metadata.jsonQuery || {};
+
+        // jsonQuery gets priority; if it changes, force update of query
+        if (!_.isUndefined(oldJsonQuery) && !_.isEqual(oldJsonQuery, ds.metadata.jsonQuery) ||
+                !_.isEmpty(ds.metadata.jsonQuery) && _.isEmpty(ds.query))
+        {
+            ds.query.filterCondition = blist.filter.generateSODA1(ds.metadata.jsonQuery.where,
+                    ds.metadata.jsonQuery.having);
+            ds.query.namedFilters = ds.query.namedFilters || {};
+            _.each(ds.metadata.jsonQuery.namedFilters, function(nf, id)
+                {
+                    ds.query.namedFilters[id] = $.extend(blist.filter.generateSODA1(nf.where, nf.having),
+                        { temporary: nf.temporary, displayTypes: nf.displayTypes });
+                });
+            ds.query.orderBys = _.compact(_.map(ds.metadata.jsonQuery.order, function(ob)
+                {
+                    var c = ds.columnForIdentifier(ob.columnFieldName);
+                    if ($.isBlank(c)) { return null; }
+                    return { expression: { columnId: c.id, type: 'column' }, ascending: ob.ascending };
+                }));
+            ds.query.groupBys = _.compact(_.map(ds.metadata.jsonQuery.group, function(g)
+                {
+                    var c = ds.columnForIdentifier(g.columnFieldName);
+                    if ($.isBlank(c)) { return null; }
+                    c.format.group_function = blist.datatypes.groupFunctionFromSoda2(g.groupFunction);
+                    return { columnId: c.id, type: 'column' };
+                }));
+            ds.searchString = ds.metadata.jsonQuery.search;
+            _.each(ds.metadata.jsonQuery.select, function(s)
+                {
+                    var c = ds.columnForIdentifier(s.columnFieldName);
+                    if (!$.isBlank(c) && !$.isBlank(s.aggregate))
+                    { c.format.grouping_aggregate = s.aggregate; }
+                });
+        }
+        else
+        {
+            // update jsonQuery (new version) if query has changed
+            if (!_.isUndefined(oldQuery) && !_.isEqual(oldQuery, ds.query) ||
+                    _.isEmpty(ds.metadata.jsonQuery) && !_.isEmpty(ds.query))
+            {
+                ds.metadata.jsonQuery.group = Dataset.translateGroupBys(
+                        ds.query.groupBys, ds, ds._getGroupedFunctions());
+                var tfc = Dataset.translateFilterCondition(ds.query.filterCondition, ds);
+                ds.metadata.jsonQuery.where = tfc.where;
+                ds.metadata.jsonQuery.having = tfc.having;
+                ds.metadata.jsonQuery.namedFilters = ds.metadata.jsonQuery.namedFilters || {};
+                _.each(ds.query.namedFilters, function(nf, id)
+                    {
+                        var tnf = Dataset.translateFilterCondition(nf, ds);
+                        ds.metadata.jsonQuery.namedFilters[id] = { where: tnf.where, having: tnf.having,
+                            temporary: nf.temporary, displayTypes: nf.displayTypes };
+                    });
+                ds.metadata.jsonQuery.order = _.compact(_.map(ds.query.orderBys, function(ob)
+                    {
+                        var c = ds.columnForIdentifier(ob.expression.columnId);
+                        if ($.isBlank(c)) { return null; }
+                        return { columnFieldName: c.fieldName, ascending: ob.ascending };
+                    }));
+            }
+            ds.metadata.jsonQuery.search = ds.searchString;
+            if (!_.isEmpty(ds.metadata.jsonQuery.group))
+            {
+                ds.metadata.jsonQuery.select = _.compact(_.map(ds.metadata.jsonQuery.group, function(g)
+                { return { columnFieldName: g.columnFieldName }; }).concat(_.map(ds.realColumns, function(c)
+                {
+                    return $.subKeyDefined(c, 'format.grouping_aggregate') ?
+                        { columnFieldName: c.fieldName, aggregate: c.format.grouping_aggregate } :
+                        null;
+                })));
+            }
+            else
+            { delete ds.metadata.jsonQuery.select; }
+        }
+
+        // Clean out any empty keys in the query
+        _.each(['namedFilters', 'filterCondition', 'orderBys', 'groupBys'],
+            function(k) { if (_.isEmpty(ds.query[k])) { delete ds.query[k]; } });
+        // Clean out any empty keys in the new query
+        _.each(['namedFilters', 'group', 'where', 'having', 'search', 'order', 'select'],
+            function(k) { if (_.isEmpty(ds.metadata.jsonQuery[k])) { delete ds.metadata.jsonQuery[k]; } });
+
+        ds._updateGroupings(oldGroupings, oldGroupAggs);
+
+        // Update sorts on each column
+        _.each(ds.realColumns || [], function(c) { delete c.sortAscending; });
+        _.each(ds.metadata.jsonQuery.order || [], function(ob)
+        {
+            var c = ds.columnForIdentifier(ob.columnFieldName);
+            if (!$.isBlank(c)) { c.sortAscending = ob.ascending; }
+        });
     },
 
     _updateGroupings: function(oldGroupings, oldGroupAggs)
@@ -2338,9 +2477,7 @@ var Dataset = ServerModel.extend({
         }
 
         if (!_.isEqual(oldGroupAggs, newGroupAggs))
-        {
-            ds._invalidateAll(false, true);
-        }
+        { ds._invalidateAll(false, true); }
     },
 
     _getGroupedFunctions: function()
@@ -2460,9 +2597,12 @@ var Dataset = ServerModel.extend({
     {
         var ds = this;
         delete ds._availableRowSets;
-        ds._activateRowSet(new RowSet(ds, { orderBys: (ds.query || {}).orderBys,
-            filterCondition: ds.cleanFilters(), groupBys: (ds.query || {}).groupBys,
-            groupFuncs: ds._getGroupedFunctions() }));
+        var cleanFC = ds.cleanJsonFilters();
+        ds._activateRowSet(new RowSet(ds, $.extend({}, ds.metadata.jsonQuery,
+                        { where: cleanFC.where, having: cleanFC.having, namedFilters: null }),
+                    { orderBys: (ds.query || {}).orderBys,
+                        filterCondition: ds.cleanFilters(), groupBys: (ds.query || {}).groupBys,
+                        groupFuncs: ds._getGroupedFunctions() }));
     },
 
     _serverCreateRow: function(req, isBatch)
@@ -3269,7 +3409,6 @@ function translateSubFilter(fc, ds, simplify, isHaving)
         filterQ.children = _.compact(_.map(fc.children, function(c)
         {
             var fcc = translateSubFilter(c, ds, simplify, isHaving);
-            if (!$.isBlank(fcc)) { fcc._parent = filterQ; }
             return fcc;
         }));
         if (simplify)
@@ -3279,7 +3418,6 @@ function translateSubFilter(fc, ds, simplify, isHaving)
             else if (filterQ.children.length == 1)
             {
                 var cf = filterQ.children[0];
-                cf._parent = filterQ._parent;
                 cf.metadata = $.extend(filterQ.metadata, cf.metadata);
                 filterQ = cf;
             }
@@ -3423,8 +3561,11 @@ function cleanViewForSave(ds, allowedKeys)
     var dsCopy = ds.cleanCopy(allowedKeys);
     dsCopy = ds._cleanUnsaveable(dsCopy);
 
+    // cleanCopy already removes namedFilters, so we just need to get the updated fc here
     if (!$.isBlank(dsCopy.query))
     { dsCopy.query.filterCondition = ds.cleanFilters(true); }
+    if ($.subKeyDefined(dsCopy, 'metadata.jsonQuery'))
+    { $.extend(dsCopy.metadata.jsonQuery, ds.cleanJsonFilters(true)); }
 
     return dsCopy;
 };
@@ -3443,6 +3584,8 @@ function cleanViewForCreate(ds)
 
     if (!$.isBlank(dsCopy.query))
     { dsCopy.query.filterCondition = ds.cleanFilters(true); }
+    if ($.subKeyDefined(dsCopy, 'metadata.jsonQuery'))
+    { $.extend(dsCopy.metadata.jsonQuery, ds.cleanJsonFilters(true)); }
 
     return dsCopy;
 };

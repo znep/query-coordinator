@@ -1,7 +1,7 @@
 (function(){
 
 var RowSet = ServerModel.extend({
-    _init: function(ds, query, parRS, initRows)
+    _init: function(ds, jsonQuery, query, parRS, initRows)
     {
         this._super();
 
@@ -16,16 +16,12 @@ var RowSet = ServerModel.extend({
 
         this._parent = parRS;
         this._query = query || {};
-        this._translatedQuery =
-            $.extend({}, this._query, { filterCondition: Dataset.translateFilterCondition(
-                    this._query.filterCondition, this._dataset),
-                groupBys: Dataset.translateGroupBys(this._query.groupBys, this._dataset,
-                    this._query.groupFuncs ) });
+        this._jsonQuery = jsonQuery || {};
         this._loadedCount = 0;
         this._isComplete = false;
-        var fc = this._translatedQuery.filterCondition || {};
-        this._matchesExpr = { where: blist.filter.matchesExpression(fc.where, this._dataset),
-            having: blist.filter.matchesExpression(fc.having, this._dataset) };
+        this._matchesExpr = { where: blist.filter.matchesExpression(this._jsonQuery.where,
+                this._dataset),
+            having: blist.filter.matchesExpression(this._jsonQuery.having, this._dataset) };
 
         if (!_.isEmpty(initRows))
         {
@@ -40,7 +36,7 @@ var RowSet = ServerModel.extend({
     getKey: function()
     {
         if ($.isBlank(this._key))
-        { this._key = RowSet.getQueryKey(this._translatedQuery); }
+        { this._key = RowSet.getQueryKey(this._jsonQuery); }
         return this._key;
     },
 
@@ -103,7 +99,7 @@ var RowSet = ServerModel.extend({
         // If we aren't complete, but can grab data from our parent, pre-emptively do so
         // Also exclude client side filtering on the catalog dataset because its filtering is somewhat unusual.
         if (rs._dataset.resourceName !== "datasets" && !rs._isComplete && (rs._parent || {})._isComplete &&
-                _.isEmpty(rs._translatedQuery.groupBys) && _.isEmpty(rs._parent._translatedQuery.groupBys))
+                _.isEmpty(rs._jsonQuery.group) && _.isEmpty(rs._parent._jsonQuery.group))
         {
             var newRows = _.map(_.select(rs._parent._rows, function(r)
                     { return rs._doesBelong(r); }), function(r) { return $.extend({}, r); });
@@ -114,9 +110,9 @@ var RowSet = ServerModel.extend({
                 return { sorts: [r.id], row: r };
             });
 
-            _.each((rs._translatedQuery.orderBys || []).slice().reverse(), function(ob)
+            _.each((rs._jsonQuery.order || []).slice().reverse(), function(ob)
             {
-                var col = rs._dataset.columnForIdentifier(ob.expression.columnId);
+                var col = rs._dataset.columnForIdentifier(ob.columnFieldName);
                 if ($.isBlank(col)) { return; }
                 _.each(sortVals, function(sv)
                 {
@@ -132,7 +128,7 @@ var RowSet = ServerModel.extend({
                 });
             });
 
-            var sorts = (rs._translatedQuery.orderBys || []).slice();
+            var sorts = (rs._jsonQuery.order || []).slice();
             // Add fake sort for position
             sorts.push({ ascending: true });
             newRows = _.pluck(sortVals.sort(function(l, r)
@@ -635,11 +631,11 @@ var RowSet = ServerModel.extend({
 
     canDerive: function(otherQ)
     {
-        var fc = this._translatedQuery.filterCondition || {};
-        var otherFC = Dataset.translateFilterCondition(otherQ.filterCondition, this._dataset) || {};
-        return canDeriveExpr(fc.where, otherFC.where) && canDeriveExpr(fc.having, otherFC.having) &&
-            _.isEqual(this._translatedQuery.groupBys,
-                    Dataset.translateGroupBys(otherQ.groupBys, this._dataset, otherQ.groupFuncs));
+        return canDeriveExpr(addParents(this._jsonQuery.where, true),
+                addParents(otherQ.where, true)) &&
+            canDeriveExpr(addParents(this._jsonQuery.having, true),
+                    addParents(otherQ.having, true)) &&
+            _.isEqual(this._jsonQuery.group, otherQ.group);
     },
 
     makeRequest: function(args)
@@ -687,18 +683,20 @@ var RowSet = ServerModel.extend({
         args.params = args.params || {};
         args.params['$$version'] = '2.0';
 
-        // Need to take the difference from queryBase, and adjust columns if necessary
-        var adjSearchString = rs._dataset.searchString == rs._dataset._queryBase.searchString ?
-            '' : rs._dataset.searchString;
-        if (!$.isBlank(adjSearchString))
-        { args.params['$q'] = adjSearchString; }
+        var baseQuery = rs._dataset._queryBase.metadata.jsonQuery;
 
-        if (!_.isEmpty(rs._query.orderBys))
+        // Need to take the difference from queryBase, and adjust columns if necessary
+        var adjSearchString = rs._jsonQuery.search == baseQuery.search ?
+            '' : rs._jsonQuery.search;
+        if (!$.isBlank(adjSearchString))
+        { args.params['$search'] = adjSearchString; }
+
+        if (!_.isEmpty(rs._jsonQuery.order))
         {
             // Just apply all orderBys, because they can safely be applied on top without harm
-            args.params['$order'] = _.compact(_.map(rs._query.orderBys, function(ob)
+            args.params['$order'] = _.compact(_.map(rs._jsonQuery.order, function(ob)
             {
-                var c = rs._dataset.columnForIdentifier(ob.expression.columnId);
+                var c = rs._dataset.columnForIdentifier(ob.columnFieldName);
                 if ($.isBlank(c)) { return null; }
                 var qbC = Dataset.translateColumnToQueryBase(c, rs._dataset);
                 if ($.isBlank(qbC)) { return null; }
@@ -708,33 +706,35 @@ var RowSet = ServerModel.extend({
             { delete args.params['$order']; }
         }
 
-        if (!_.isEmpty(rs._translatedQuery.filterCondition))
+        if (!_.isEmpty(rs._jsonQuery.where))
         {
-            var baseFilter = Dataset.translateFilterCondition(rs._dataset._queryBase.cleanFilters(), rs._dataset._queryBase);
             // Can't apply a where on top of a group by
-            if (_.isEmpty(rs._dataset._queryBase.query.groupBys))
+            if (_.isEmpty(baseQuery.group))
             {
                 var soqlWhere = blist.filter.generateSOQLWhere(
                         blist.filter.subtractQueries(Dataset.translateFilterColumnsToBase(
-                                rs._translatedQuery.filterCondition.where, rs._dataset),
+                                rs._jsonQuery.where, rs._dataset),
                             baseFilter.where), rs._dataset._queryBase);
                 args.params['$where'] = !$.isBlank(args.params['$where']) ?
                     (args.params['$where'] + ' and ' + soqlWhere) : soqlWhere;
             }
+        }
+        if (!_.isEmpty(rs._jsonQuery.having))
+        {
             var soqlHaving = blist.filter.generateSOQLWhere(
                     blist.filter.subtractQueries(Dataset.translateFilterColumnsToBase(
-                            rs._translatedQuery.filterCondition.having, rs._dataset),
+                            rs._jsonQuery.having, rs._dataset),
                         baseFilter.having), rs._dataset._queryBase);
             args.params['$having'] = !$.isBlank(args.params['$having']) ?
                 (args.params['$having'] + ' and ' + soqlHaving) : soqlHaving;
         }
 
         // If queryBase has any group bys, we can't add more
-        if (!_.isEmpty(rs._translatedQuery.groupBys) && _.isEmpty(rs._dataset._queryBase.query.groupBys))
+        if (!_.isEmpty(rs._jsonQuery.group) && _.isEmpty(baseQuery.group))
         {
             var soqlGroup = [];
             var groupSelect = [];
-            _.each(rs._translatedQuery.groupBys, function(gb)
+            _.each(rs._jsonQuery.group, function(gb)
             {
                 var qbCF = Dataset.translateColumnToQueryBase(gb.columnFieldName, rs._dataset);
                 if ($.isBlank(qbCF)) { return; }
@@ -754,14 +754,13 @@ var RowSet = ServerModel.extend({
             args.params['$group'] = !$.isBlank(args.params['$group']) ?
                 (args.params['$group'] + ',' + soqlGroup) : soqlGroup;
             groupSelect = groupSelect.concat(
-                    _.compact(_.map(rs._dataset.realColumns, function(c)
+                    _.compact(_.map(rs._jsonQuery.select, function(s)
                         {
-                            if (!$.isBlank(c.format.grouping_aggregate))
+                            if (!$.isBlank(s.aggregate))
                             {
-                                var qbCF = Dataset.translateColumnToQueryBase(c.fieldName, rs._dataset);
+                                var qbCF = Dataset.translateColumnToQueryBase(s.columnFieldName, rs._dataset);
                                 if ($.isBlank(qbCF)) { return null; }
-                                return blist.datatypes.soda2Aggregate(c.format.grouping_aggregate)
-                                    + '(' + qbCF + ')';
+                                return s.aggregate + '(' + qbCF + ')';
                             }
                             return null;
                         }))).join(',');
@@ -774,7 +773,7 @@ var RowSet = ServerModel.extend({
 
     clone: function()
     {
-        return new RowSet(this._dataset, this._query, this._parent);
+        return new RowSet(this._dataset, this._jsonQuery, this._query, this._parent);
     },
 
 
@@ -889,7 +888,7 @@ var RowSet = ServerModel.extend({
                     metaToUpdate.metadata = rs._dataset.metadata;
                 }
                 rs.trigger('metadata_update', [metaToUpdate, !rs._dataset._useSODA2,
-                        !rs._dataset._useSODA2, fullLoad]);
+                        !rs._dataset._useSODA2]);
             }
             // In SODA2 we get basic columns back in the header
             else if (rs._dataset._useSODA2)
@@ -1289,23 +1288,43 @@ RowSet.translateRow = function(r, dataset, rowSet, parCol, skipMissingCols)
 
 RowSet.getQueryKey = function(query)
 {
-    return getSortKey(query.orderBys) + '/' + getGroupKey(query.groupBys) +
-        '/' + blist.filter.getFilterKey((query.filterCondition || {}).where) +
-        '/' + blist.filter.getFilterKey((query.filterCondition || {}).having);
+    return getSortKey(query.order) + '/' + getGroupKey(query.group) +
+        '/' + blist.filter.getFilterKey(query.where) +
+        '/' + blist.filter.getFilterKey(query.having) +
+        '/' + getSelectKey(query.select) +
+        '/' + query.search;
 };
 
 function getSortKey(ob)
 {
     if (_.isEmpty(ob)) { return ''; }
     return '(' + _.map(ob, function(o)
-                { return o.expression.columnId + ':' + o.ascending; }).join('|') + ')';
+                { return o.columnFieldName + ':' + o.ascending; }).join('|') + ')';
 };
 
 function getGroupKey(gb)
 {
     if (_.isEmpty(gb)) { return ''; }
     return '(' + _.map(gb, function(g)
-                { return g.columnFieldName + ': ' + g.groupFunction; }).join('|') + ')';
+                { return g.columnFieldName + ':' + g.groupFunction; }).join('|') + ')';
+};
+
+function getSelectKey(selects)
+{
+    if (_.isEmpty(selects)) { return ''; }
+    return '(' + _.map(selects, function(s)
+                { return s.columnFieldName + ':' + s.aggregate; }).join('|') + ')';
+};
+
+function addParents(fc, safe)
+{
+    if (safe) { fc = $.extend(true, {}, fc); }
+    _.each(fc.children, function(c)
+    {
+        c._parent = fc;
+        addParents(c);
+    });
+    return fc;
 };
 
 function canDeriveExpr(baseFC, otherFC)

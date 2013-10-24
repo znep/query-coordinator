@@ -579,6 +579,7 @@
             };
 
             col.update(column);
+            col.view.trigger('columns_changed');
             if (!col.save(function(c)
                 {
                     if (needsConvert)

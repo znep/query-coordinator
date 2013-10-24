@@ -76,6 +76,11 @@
     <p>This is a <%= @view.display.name.downcase %> based on <%= link_to @view.parent_dataset.name, alt_view_path(@view.parent_dataset) %>.</p>
   <% end %>
 
+  <%- if is_grid -%>
+  <div id="pagination">
+    <%= create_pagination(@row_count, @per_page, @page, view_path(@view) + '/alt?' + @state_param) %>
+  </div>
+  <%- end -%>
   <div class="dataGridWrapper">
     <%- if is_grid -%>
       <%= raw RenderType.table_html('dataGrid', @viewable_columns, @data, @view, @page, @aggregates) %>
@@ -85,11 +90,6 @@
       <%= render(:partial => 'displays/blob') %>
     <%- end -%>
   </div>
-  <%- if is_grid -%>
-  <div id="pagination">
-    <%= create_pagination(@row_count, @per_page, @page, view_path(@view) + '/alt?' + @state_param) %>
-  </div>
-  <%- end -%>
 
   <h2>About</h2>
   <div class="altMeta">

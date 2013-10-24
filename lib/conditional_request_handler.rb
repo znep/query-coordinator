@@ -26,7 +26,7 @@ module ConditionalRequestHandler
 
   def self.set_conditional_request_headers(response, manifest)
     return if manifest.nil?
-    response.headers[ETAG] = manifest.hash
+    response.headers[ETAG] = "\"#{manifest.hash}\""
     response.headers[LAST_MODIFIED] = Time.now.httpdate
     # Set a special header for testing
     response.headers[X_SOCRATA_CONDITIONAL] = "#{response.headers[ETAG]},#{response.headers[LAST_MODIFIED]}"

@@ -6,8 +6,6 @@
 
     var govstatNS = blist.namespace.fetch('blist.govstat');
 
-    var nextgen = blist.namespace.fetch('blist.nextgen');
-
     var goal = new govstatNS.models.Goal({ id: $('.goalUid').text() });
     goal.fetch({
         success: function()

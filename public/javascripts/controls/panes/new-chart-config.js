@@ -3,13 +3,8 @@
 
     /*** Common configuration options ***/
 
-    var isNextGen = (blist.configuration.newChartsEnabled ||
-        $.urlParam(window.location.href, 'charts') == 'nextgen') && $.urlParam(window.location.href, 'charts') != 'old';
-    var forceOldVisualize = $.urlParam(window.location.href, 'visualize') == 'old' || blist.configuration.oldChartConfigForced;
-    var isNewVisualize = $.urlParam(window.location.href, 'visualize') == 'nextgen' || (blist.configuration.newChartConfig && !forceOldVisualize);
-
     var defaultColors;
-    if (isNextGen){
+    if (blist.feature_flags.charts === 'nextgen'){
         defaultColors = blist.defaultColors;
     }
     else{
@@ -36,7 +31,7 @@
         ]
     };
 
-    if (isNextGen)
+    if (blist.feature_flags.charts === 'nextgen')
     {
         var origLegendPos = legendPos;
         legendPos = { onlyIf: false };
@@ -46,7 +41,7 @@
             name: 'displayFormat.renderOther'};
 
     // this should really be a SODA feature anyway, not a display feature
-    if (isNextGen)
+    if (blist.feature_flags.charts === 'nextgen')
     {
         renderOther = { onlyIf: false };
     }
@@ -69,7 +64,7 @@
 
     var advLegend = function() { return { onlyIf: { func: function() { return false; } } } };
 
-    if (isNextGen)
+    if (blist.feature_flags.charts === 'nextgen')
     {
         advLegend = function(chart, options)
         {
@@ -203,7 +198,7 @@
     var valueInBar = { text: $.t('screens.ds.grid_sidebar.chart.valueInBar'), type: 'checkbox',
                        name: 'displayFormat.xAxis.valueInBar', lineClass: 'hasIcon valueInBar', inputFirst: true };
 
-    if (!isNextGen)
+    if (!blist.feature_flags.charts === 'nextgen')
     {
         labelInBar = { onlyIf: false };
         valueInBar = { onlyIf: false };
@@ -350,7 +345,7 @@
     var advancedDataSelection = function(chart, options, colTypes)
     {
         // Using column.cachedContents as a hack because totalRows is rarely available at this time.
-        var tooManyRows = isNextGen && _.any(options.view.realColumns,
+        var tooManyRows = blist.feature_flags.charts === 'nextgen' && _.any(options.view.realColumns,
             function(col) { return $.deepGet(col, 'cachedContents', 'non_null') > 10000; });
 
         var result = subheading(chart, options, $.t('screens.ds.grid_sidebar.chart.data_selection.advanced_data_selection.title'),
@@ -541,7 +536,7 @@
                     options: [ { type: 'static', name: 'yAxisMaxAuto', value: $.t('screens.ds.grid_sidebar.chart.y_axis_formatting.auto') },
                                { type: 'text', name: 'displayFormat.yAxis.max', prompt: $.t('screens.ds.grid_sidebar.chart.y_axis_formatting.axis_prompt'),
                                     extraClass: 'number' }] },
-                isNextGen ?
+                blist.feature_flags.charts === 'nextgen' ?
                     { text: $.t('screens.ds.grid_sidebar.chart.y_axis_formatting.decimals'), type: 'radioGroup', name: 'yAxisDecimalPlaces',
                         defaultValue: 'yAxisDecimalPlacesAuto',
                         options: [ { type: 'static', value: 'Auto', name: 'yAxisDecimalPlacesAuto' },
@@ -623,7 +618,7 @@
 
     var shouldEnableAutoPieSortButton = function(options)
     {
-        return isNextGen && $.subKeyDefined(options.view, 'displayFormat.valueColumns') && !_.isEmpty(options.view.displayFormat.valueColumns) && !hasDefaultPieSort(options);
+        return blist.feature_flags.charts === 'nextgen' && $.subKeyDefined(options.view, 'displayFormat.valueColumns') && !_.isEmpty(options.view.displayFormat.valueColumns) && !hasDefaultPieSort(options);
     };
 
     // We automatically apply a default OrderBy to pie-like charts (descending on first value column),

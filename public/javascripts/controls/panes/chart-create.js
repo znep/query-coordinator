@@ -1,9 +1,6 @@
 (function($)
 {
-    var forceOldCharts = $.urlParam(window.location.href, 'charts') === 'old' || blist.configuration.oldChartsForced;
-    var forceNewCharts = $.urlParam(window.location.href, 'charts') === 'nextgen' || $.deepGet(blist, 'dataset', 'displayFormat', 'nextgen') === true;
-
-    var isNextGen = blist.configuration.newChartsEnabled && !forceOldCharts || forceNewCharts;
+    var isNextGen = blist.feature_flags.charts === 'nextgen' || $.deepGet(blist, 'dataset', 'displayFormat', 'nextgen') === true;
 
     $.Control.extend('pane_chartCreate', {
         _init: function()
@@ -156,10 +153,7 @@
     var isEdit = function(cpObj)
     { return _.include(cpObj._view.metadata.availableDisplayTypes, 'chart'); };
 
-    var forceOldVisualize = $.urlParam(window.location.href, 'visualize') == 'old' || blist.configuration.oldChartConfigForced;
-    var isNewVisualize = $.urlParam(window.location.href, 'visualize') == 'nextgen' || (blist.configuration.newChartConfig && !forceOldVisualize);
-
-    if (($.isBlank(blist.sidebarHidden.visualize) || !blist.sidebarHidden.visualize.chartCreate) && !isNewVisualize)
+    if (($.isBlank(blist.sidebarHidden.visualize) || !blist.sidebarHidden.visualize.chartCreate) && blist.feature_flags.visualize !== 'nextgen')
     { $.gridSidebar.registerConfig('visualize.chartCreate', 'pane_chartCreate', 1, 'chart'); }
 
 })(jQuery);

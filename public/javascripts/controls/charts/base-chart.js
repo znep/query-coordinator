@@ -32,11 +32,8 @@
             }); }
     };
 
-    var forceOldCharts = $.urlParam(window.location.href, 'charts') == 'old' || blist.configuration.oldChartsForced;
-
-    var forceNewCharts = $.urlParam(window.location.href, 'charts') == 'nextgen' || $.deepGet(blist, 'dataset', 'displayFormat', 'nextgen') === true;
-
-    if (blist.configuration.newChartsEnabled && !forceOldCharts || forceNewCharts)
+    if (blist.feature_flags.charts === 'nextgen'
+        || $.deepGet(blist, 'dataset', 'displayFormat', 'nextgen') === true)
     {
         $.extend(chartMapping, {
             'column': 'd3_impl_bar',
@@ -50,9 +47,9 @@
         });
     }
 
-    if (!forceOldCharts)
+    if (blist.feature_flags.charts !== 'old')
     {
-        _.each(blist.configuration.newCharts, function(enabled, chartType)
+        _.each(blist.feature_flags.newCharts, function(enabled, chartType)
         { enabled && nextgenMapper[chartType] && nextgenMapper[chartType](); });
     }
 

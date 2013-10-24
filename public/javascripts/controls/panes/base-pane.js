@@ -3,8 +3,6 @@
     var uniformEnabled = function() { return !$.browser.msie || $.browser.majorVersion > 7; };
     
     //Flag for new visualize tab
-    var forceOldVisualize = $.urlParam(window.location.href, 'visualize') == 'old' || blist.configuration.oldChartConfigForced;
-    var isNewVisualize = $.urlParam(window.location.href, 'visualize') == 'nextgen' || (blist.configuration.newChartConfig && !forceOldVisualize);
     
     $.validator.addMethod('data-notEqualTo', function(value, element, param)
     {

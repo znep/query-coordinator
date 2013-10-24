@@ -20,9 +20,8 @@
     {
         registerConfig: function(name, controlName, priority, displayTypes)
         {
-            var forceOldVisualize = $.urlParam(window.location.href, 'visualize') == 'old' || blist.configuration.oldChartConfigForced;
-            var isNewVisualize = $.urlParam(window.location.href, 'visualize') == 'nextgen' || (blist.configuration.newChartConfig && !forceOldVisualize);
-            if (name == 'new_chart_create' && !isNewVisualize) { return; }
+            if (name == 'new_chart_create' && blist.feature_flags.visualize !== 'nextgen')
+            { return; }
 
             if ($.isBlank(name)) { throw 'Sidebar config requires a name'; }
 

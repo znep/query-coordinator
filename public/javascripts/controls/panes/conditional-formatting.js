@@ -338,9 +338,7 @@
     }, {name: 'conditionalFormatting'}, 'controlPane');
 
 
-    var forceOldVisualize = $.urlParam(window.location.href, 'visualize') == 'old' || blist.configuration.oldChartConfigForced;
-    var isNewVisualize = $.urlParam(window.location.href, 'visualize') == 'nextgen' || (blist.configuration.newChartConfig && !forceOldVisualize);
-    if (!isNewVisualize)
+    if (blist.feature_flags.visualize !== 'nextgen')
     { 
         if ($.isBlank(blist.sidebarHidden.visualize) ||
             !blist.sidebarHidden.visualize.conditionalFormatting)
@@ -348,7 +346,7 @@
     } 
     else 
     {
-        if (($.isBlank(blist.sidebarHidden.new_visualize) || !blist.sidebarHidden.filter.conditionalFormatting) && isNewVisualize)
+        if (($.isBlank(blist.sidebarHidden.new_visualize) || !blist.sidebarHidden.filter.conditionalFormatting) && blist.feature_flags.visualize === 'nextgen')
         { $.gridSidebar.registerConfig('filter.conditionalFormatting', 'pane_conditionalFormatting', 10); }
     }
 

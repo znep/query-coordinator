@@ -752,7 +752,9 @@ $(function()
     };
     konami.load();
 
-    if(blist.feature_flags.visualize === 'nextgen'){
+    var forceOldVisualize = $.urlParam(window.location.href, 'visualize') == 'old' || blist.configuration.oldChartConfigForced;
+    var isNewVisualize = $.urlParam(window.location.href, 'visualize') == 'nextgen' || (blist.configuration.newChartConfig && !forceOldVisualize);
+    if(isNewVisualize){
        $('a.new_visualize').closest('li').show();
     }
 

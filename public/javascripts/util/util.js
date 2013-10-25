@@ -164,8 +164,8 @@ String.prototype.linkify = function(extra)
 
 $.mixpanelMeta = function()
 {
-    var userId = 'n/a',
-        isSocrata = 'n/a',
+    var userId = 'Not Logged In',
+        isSocrata = 'Not Logged In',
         userRoleName = 'n/a',
         datasetOwner = 'n/a',
         viewType = 'n/a', 

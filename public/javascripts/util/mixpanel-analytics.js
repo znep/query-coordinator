@@ -1,68 +1,77 @@
+//Track entering certain pages
+$(document).ready(function() 
+{	
+	//TODO make sure user properties are loaded, otherwise it will always look like the users is not logged in
+	//update the meta properties
+    //$.mixpanelMeta();
+	//mixpanel.track('Entered Page', {'Page type': jQuery.metrics.determine_page_type()});
+});
 
+mixpanel.delegate_links = function (parent, selector, event_name, getProperties) 
+{
+   
+    $(parent || document.body).on('click', selector, function (event) 
+    {
+	    try
+	    {	
+	    	//get the specific properties for the event
+	    	var properties = _.isFunction(getProperties) ? getProperties(event.currentTarget) : {};
+	    	
+	    	var willOpenInNewTab = event.which === 2 || event.metaKey || event.currentTarget.target === '_blank';
+	        properties.url = event.currentTarget.href;
 
-mixpanel.delegate_links = function (parent, selector, event_name, properties) {
-    properties = properties || {};
-    parent = parent || document.body;
-    parent = $(parent);
+	        var callback = function() 
+	        {
+	            if(!willOpenInNewTab) 
+	            {
+	              	window.location = properties.url;
+	            }
+	        }
 
-    parent.on('click', selector, function (event) {
-        var new_tab = event.which === 2 || event.metaKey || event.target.target === '_blank';
+	        if (!willOpenInNewTab) 
+	        {
+	            event.preventDefault();
+	        }
+	        //update the meta properties
+	        $.mixpanelMeta();
 
-        properties.url = event.target.href;
-
-        function callback() {
-            if (new_tab) {
-                return;
-            }
-
-            window.location = properties.url;
+        	//Track!
+        	mixpanel.track(event_name, properties, callback);
         }
-
-        if (!new_tab) {
-            event.preventDefault();
-            setTimeout(callback, 300);
+        catch(e)
+        {
+	        window.location = event.currentTarget.href;
+	        throw e;
         }
-
-        mixpanel.track(event_name, properties, callback);
     });
 };
 
-
-
-
-
-
 //HEADER
-$.mixpanelMeta(); //does this get read before every call? it should update all the meta every time...
-mixpanel.track_links("#siteHeader a", "Clicked Header Item", 
-	function(element) { 
-		var linkType = '';
-		if(element.title != ""){
-			linkType = element.title;
-		}
-		else {linkType = element.text}
+ mixpanel.delegate_links("#siteHeader", "a", "Clicked Header Item", 
+	function(element) 
+	{ 
+		var linkType = (element.title != '') ? element.title : element.text;
 		return { 'Header Item Type': linkType };
 	}
 );
 
 //FOOTER
-mixpanel.track_links("#siteFooter a", "Clicked Footer Item", 
-	function(element) { 
-		var linkType = '';
-		if(element.title != ""){
-			linkType = element.title;
-		}
-		else {linkType = element.text}
+mixpanel.delegate_links("#siteFooter", "a", "Clicked Footer Item", 
+	function(element) 
+	{ 
+		var linkType = (element.title != '') ? linkType = element.title : element.text;
 		return { 'Footer Item Type': linkType };
 	}
 );
 
+//CATALOG
 //Featured Views
-mixpanel.track_links(".featuredViews .featuredView a", "Clicked Featured View");
+mixpanel.delegate_links(".featuredViews .featuredView", "a", "Clicked Featured View");
 
 //Catalog results
-mixpanel.track_links(".gridList .titleLine a", "Clicked Catalog Result",
-	function(element) { 
+mixpanel.delegate_links(".gridList .titleLine", "a", "Clicked Catalog Result",
+	function(element) 
+	{ 
 		var linkNo = parseFloat($(element).closest('.item').find('.index .value').text());
 		var page = $(element).closest('.browseList').find('.pagination .active').text();
 		var pageNo = (page=='')? 1 : parseFloat(page);
@@ -70,16 +79,10 @@ mixpanel.track_links(".gridList .titleLine a", "Clicked Catalog Result",
 	}
 );
 
-//Search Dataset in catalog NEED TO TEST THIS SOMEHOW
-mixpanel.track_forms("input[name='browseSearch']", "Used Search Field",
-	function(element) {
-		return {'Search Term': $("input[name='browseSearch']").value()};
-	}
-);
 
 //SEARCH FACETS
 //View Types/Categories/Topics
-mixpanel.track_links(".facetSection a", "Used Search Facets", 
+mixpanel.delegate_links(".facetSection", "a", "Used Search Facets", 
 	function(element) {
 		facetType = $(element).closest('.facetSection').find('> .title').text();
 		var linkName = element.text;
@@ -88,24 +91,23 @@ mixpanel.track_links(".facetSection a", "Used Search Facets",
 );
 
 //SIDEBAR TRACKING
-mixpanel.track_links("#sidebarOptions a", "Clicked Sidebar Option",
+mixpanel.delegate_links("#sidebarOptions", "a", "Clicked Sidebar Option",
 	function(element){
-		return({'Sidebar Name': element.title});
+		return {'Sidebar Name': element.title};
 	}
 );
 
 //Panes in sidebar (Needs a delegated .on since they are not present in the DOM from the beginning)
-$('#gridSidebar').on("click", 'a.headerLink',
-	function(){
-		mixpanel.track("Clicked Pane in Sidebar",
-		{'Pane Name': $(this).text()});
+mixpanel.delegate_links('#gridSidebar', 'a.headerLink', "Clicked Pane in Sidebar",
+	function(element){
+		return {'Pane Name': element.text};
 	}
 );
 
 //Render Type Options              
-mixpanel.track_links("#renderTypeOptions a", "Changed Render Type Options",
+mixpanel.delegate_links("#renderTypeOptions", "a", "Changed Render Type Options",
 	function(element){
-		return({'Render Type': element.title});
+		return {'Render Type': element.title};
 	}
 );
 

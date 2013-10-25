@@ -359,7 +359,19 @@ $(function()
                     delete newOpts.sortPeriod;
                     newOpts.sortBy = 'relevance';
                 }
-                doBrowse(newOpts);
+
+                if(!mixpanel)
+                {
+                    doBrowse(newOpts);
+                }
+                else
+                {
+                    $.mixpanelMeta();
+                    mixpanel.track("Used Search Field", {}, function()
+                        {
+                            doBrowse(newOpts);
+                        });
+                }
             });
         };
 

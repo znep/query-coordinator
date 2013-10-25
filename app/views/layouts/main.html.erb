@@ -123,7 +123,7 @@ http://www.socrata.com
     <div class="siteInnerWrapper">
 
       <%- if !@suppress_chrome -%>
-      <div id="siteHeader" class="clearfix">
+      <div id="siteHeader" class="clearfix" role="banner">
         <%- if module_enabled?(:govStat) && !@suppress_govstat -%>
           <div class="clearfix">
             <%= render_text_template('{{main_logo}}') %>
@@ -167,7 +167,7 @@ http://www.socrata.com
       <%- if @suppress_content_wrapper -%>
         <%= yield :layout %>
       <%- else -%>
-        <div class="siteContentWrapper">
+        <div class="siteContentWrapper" role="main">
           <%= yield :layout %>
         </div>
       <%- end -%>
@@ -175,7 +175,7 @@ http://www.socrata.com
   </div>
 
   <%- if !@suppress_chrome -%>
-  <div id="siteFooter">
+  <div id="siteFooter" role="contentinfo">
     <a name="footerLinks" tabindex="-1"></a>
     <%= render_domain_template(@page_custom_footer || 'footer_full') %>
   </div>

@@ -5,7 +5,7 @@
 
 <% content_for :skip_links do %>
   <%- unless params[:no_js].present? -%>
-    <%= link_to 'Disable Javascript on this page', '?no_js=true' %>
+    <%= link_to t('core.no_js'), '?no_js=true' %>
   <%- end -%>
 <% end %>
 

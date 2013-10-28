@@ -566,6 +566,7 @@ en:
       roadmap: Roadmap
       satellite: Satellite
       terrain: Terrain
+    no_js: Disable Javascript on this page
     or: or
     pagination:
       first_page: First Page
@@ -577,6 +578,7 @@ en:
     precision_style:
       scientific: Scientific (1.0204e+3)
       standard: Standard (1020.4)
+    required: Required
     share_types:
       contributor: Contributor
       owner: Owner
@@ -624,6 +626,87 @@ en:
     visibility:
       private: private
       public: public
+  dataslate:
+    component:
+      invalid_config: This component does not have a valid configuration
+      loading: Loading, please wait...
+      remove: Remove this component
+      header:
+        height: Height
+      picture:
+        image_source: Image Source
+        original: Original
+        tiny: Tiny (24x24)
+        thumb: Thumb (80x80)
+        medium: Medium (150x150)
+        large: Large (220x220)
+        full_url: Fully-qualified URL to an image
+        title_attr: Title
+        title_attr_prompt: title attribute
+        alt_attr: Alt
+        alt_attr_prompt: alt attribute
+      print:
+        print: Print
+        print_this_page: Print this page
+      share:
+        share: Share
+        this_page: This page
+        subscribe: Subscribe via Email or RSS
+        subscribe_text: Subscribe to Changes
+        facebook: Share on Facebook
+        twitter: Share on Twitter
+        email: Share via Email
+        tweet_contents: 'Check out %{dataset} on %{company}: %{url}'
+        email_contents: '%{dataset} on %{company}'
+    configurator:
+      advanced_components: Advanced Components
+      report_components: Report Components
+    context_picker:
+      view_data: View Data
+      select_dataset: Select Dataset
+    create:
+      title: Create DataSlate Page
+      create_page: Create DataSlate Page
+      page_settings: Page Settings
+      page_title: Page Title
+      page_url: Page URL
+      cancel: Cancel
+      create: Create
+    edit:
+      editing: Editing
+      preview_page: Preview page
+      view_editor: View interactive editor
+      undo: Undo
+      redo: Redo
+      permissions: Permissions
+      settings: Settings
+      save: Save
+      save_as: Save As
+      revert: Revert
+    edit_component:
+      title: Edit Component
+      subtitle: Configure this component
+      no_config: No configuration available for %{component}
+    permissions:
+      title: Page Permissions
+      public: Public
+      public_desc: Viewable by everyone
+      shared: Shared to Site
+      shared_desc: Viewable by all your colleagues, but not the public
+      private: Private
+      private_desc: Viewable by only you
+      cancel: Cancel
+      save: Save
+    edit_properties:
+      title: Available Properties
+      subtitle: Add properties based on the data context to this component
+      no_data: No data set for this component
+    settings:
+      title: Page Settings
+      page_title: Page Title
+      page_url: Path
+      cancel: Cancel
+      save: Save
   error:
     back: Back
     error_500:
@@ -651,6 +734,58 @@ en:
           account_tooltip: View and make changes to your user account.
           my_goals: My Goals
           my_goals_tooltip: See the goals I've created.
+          home: Home
+          data: Data
+          reports: Reports
+          goals: Goals
+          configuration: Configuration
+          account: Account
+          account_options: Account Options
+    reports:
+      manage:
+        title: Manage Reports
+        home: Home
+        reports: Reports
+        your_reports: Your Reports
+        create_new_report: Create New Report
+        edit: Edit
+        delete: Delete
+        copy: Copy
+        owner: owner
+        updated: updated
+        other_reports: Other Reports
+      create:
+        title: Create Report
+        create_report: Create Report
+      component:
+        header: Header
+        title: Title
+        formatted_text: Formatted Text
+        picture: Picture
+        print: Print
+        share: Share
+        chart: Chart
+        map: Map
+        table: Table
+        vertical_layout: Vertical Layout
+        horizontal_layout: Horizontal Layout
+        visualize: Visualize
+        base_map: Base Map
+        map_layer: Map Layer
+      permissions:
+        title: Report Permissions
+      settings:
+        title: Report Settings
+        page_title: Report Title
+  plugins:
+    hallo:
+      body: Body
+      heading: Heading
+      subheading: Subheading
+      bold: bold
+      italic: italic
+      undo: Undo
+      redo: Redo
   screens:
     about:
       actions: Actions

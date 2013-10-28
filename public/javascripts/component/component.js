@@ -436,7 +436,7 @@
             if ($.isBlank(cObj._$removeIcon))
             {
                 cObj._$removeIcon = $.tag2({ _: 'a', className: ['actionIcon', 'removeIcon', 'ss-delete'],
-                    href: '#', title: 'Remove this component' });
+                    href: '#', title: $.t('dataslate.component.remove') });
                 cObj.$dom.append(cObj._$removeIcon);
                 cObj._$removeIcon.click(function(e)
                 {
@@ -787,9 +787,9 @@
                     this.$dom.append($.tag([{tagName: 'div', 'class': 'disabledOverlay'},
                         {tagName: 'span', 'class': 'disabledIcon'},
                         {tagName: 'div', 'class': ['disabledMessage', 'badConfig'],
-                            contents: 'This component does not have a valid configuration'},
+                            contents: $.t('dataslate.component.invalid_config') },
                         {tagName: 'div', 'class': ['disabledMessage', 'notReady'],
-                            contents: 'Loading, please wait...'}]));
+                            contents: $.t('dataslate.component.loading') }]));
                     this._disInit = true;
                 }
                 this.$dom.toggleClass('disabled', isDisabled);
@@ -1217,9 +1217,12 @@
         var result = Model.extend.call(this, prop);
         result.extend = Component.extend;
         if (name) {
+            var translatedName = result.prototype.catalogName; // Hack to make translations happen.
             result.catalogName = result.prototype.catalogName = name;
             result.catalogCategory = result.prototype.catalogCategory = category;
             $.component.registerCatalogType(result);
+            if (translatedName)
+            { result.catalogName = result.prototype.catalogName = translatedName; }
         }
         return result;
     };

@@ -28,11 +28,15 @@ $(function() {
             // Need to load & set-up
             var stylesheets = [ {assets: 'colorpicker'}, {assets: 'base-control-third-party'},
                         {assets: 'base-control'}, {assets: 'configurator'} ];
+            var translations = [ 'dataslate' ];
             if (!blist.configuration.govStat)
             { stylesheets.unshift( {sheet: '/webfonts/ss-standard.css', hasFonts: true} ); }
+            else
+            { translations.push('govstat.reports.component'); }
             blist.util.assetLoading.loadAssets(
                 {javascripts: [{assets: 'configurator'}, {assets: 'shared-editors'}],
                     stylesheets: stylesheets,
+                    translations: translations,
                     templates: ['grid_sidebar'],
                     newModals: ['configurator_permissions', 'configurator_settings'],
                     modals: ['select_dataset?federate=true']},

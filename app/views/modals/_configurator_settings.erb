@@ -1,7 +1,7 @@
 <div class="socrataDialog loading" id="configuratorSettings">
-  <%- name = module_enabled?(:govStat) ? 'Report' : 'Page' -%>
+  <%- prefix = module_enabled?(:govStat) ? 'govstat.reports.settings' : 'dataslate.settings' -%>
   <a href="#close" class="jqmClose cornerClose">Close</a>
-  <h2><%= name %> Settings</h2>
+  <h2><%= t("#{prefix}.title") %></h2>
 
   <div class="loadingOverlay hide">
     <div class="loadingSpinner"></div>
@@ -9,17 +9,17 @@
 
   <form class="commonForm">
     <div class="line">
-      <label for="configuratorSettings_pageTitle"><%= name %> Title</label>
+      <label for="configuratorSettings_pageTitle"><%= t("#{prefix}.page_title") %></label>
       <input type="text" id="configuratorSettings_pageTitle" class="required" name="pageTitle" />
     </div>
     <div class="line">
-      <label for="configuratorSettings_pageUrl">Path</label>
+      <label for="configuratorSettings_pageUrl"><%= t("dataslate.settings.page_url") %></label>
       <input type="text" id="configuratorSettings_pageUrl" class="required" name="pageUrl" />
     </div>
   </form>
   <div class="errorMessage hide"></div>
   <ul class="actions clearfix">
-    <li><a href="#cancel" class="jqmClose button">Cancel</a></li>
-    <li><a href="#save" class="save button">Save</a></li>
+    <li><a href="#cancel" class="jqmClose button"><%= t("dataslate.settings.cancel") %></a></li>
+    <li><a href="#save" class="save button"><%= t("dataslate.settings.save") %></a></li>
   </ul>
 </div>

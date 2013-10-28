@@ -1,5 +1,7 @@
 ;(function($) {
 
+var t = function(str) { return $.t('dataslate.component.picture.' + str); };
+
 $.component.Component.extend('Picture', 'content', {
     _initDom: function()
     {
@@ -27,25 +29,25 @@ $.component.Component.extend('Picture', 'content', {
         if (this._super.apply(this, arguments) === false) { return false; }
 
         var retVal = {schema: [{ fields: [$.extend($.cf.contextPicker(), {required: false})] },
-            { title: 'Image Source', fields: [{ type: 'radioGroup', name: 'imageSource', required: true,
+            { title: t('image_source'), fields: [{ type: 'radioGroup', name: 'imageSource', required: true,
               lineClass: 'noLabel', options: [
                     { type: 'group', options: [
                         { name: 'asset.id', type: 'custom', required: true,
                             editorCallbacks: {create: createAssetUploader, value: assetValue} },
                         { name: 'asset.size', type: 'select', prompt: null, options: [
-                            { text: 'Original', value: '' },
-                            { text: 'Tiny (24x24)', value: 'tiny' },
-                            { text: 'Thumb (80x80)', value: 'thumb' },
-                            { text: 'Medium (150x150)', value: 'medium' },
-                            { text: 'Large (220x220)', value: 'large' }
+                            { text: t('original'), value: '' },
+                            { text: t('tiny'),     value: 'tiny' },
+                            { text: t('thumb'),    value: 'thumb' },
+                            { text: t('medium'),   value: 'medium' },
+                            { text: t('large'),    value: 'large' }
                             ] }
                         ] },
                     { name: 'url', type: 'text', extraClass: 'url', required: true,
-                        prompt: 'Fully-qualified URL to an image' }
+                        prompt: t('full_url') }
                   ] }]
             },
-            { fields: [{ name: 'title', type: 'text', text: 'Title', prompt: 'title attribute' },
-                { name: 'alt', type: 'text', text: 'Alt', prompt: 'alt attribute' }] }
+            { fields: [{ name: 'title', type: 'text', text: t('title_attr'), prompt: t('title_attr_prompt') },
+                { name: 'alt', type: 'text', text: t('alt_attr'), prompt: t('alt_attr_prompt') }] }
         ]};
         return retVal;
     },

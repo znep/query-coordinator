@@ -5,7 +5,7 @@
 <% end %>
 
 <% content_for :skip_links do %>
-  <a href="?no_js=true">Disable Javascript on this page</a>
+  <%= link_to t('core.no_js'), '?no_js=true' %>
 <% end %>
 
 <%= render :partial => 'left_nav' %>

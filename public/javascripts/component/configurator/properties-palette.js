@@ -13,10 +13,10 @@
         },
 
         getTitle: function()
-        { return 'Available Properties'; },
+        { return $.t('dataslate.edit_properties.title'); },
 
         getSubtitle: function()
-        { return 'Add properties based on the data context to this component'; },
+        { return $.t('dataslate.edit_properties.subtitle'); },
 
         isAvailable: function()
         { return !$.isBlank(this.component); },
@@ -65,7 +65,7 @@
                 if (_.isEmpty(comp._dataContext))
                 {
                     return [{
-                        fields: [{ type: 'note', value: 'No data set for this component' }]
+                        fields: [{ type: 'note', value: $.t('dataslate.edit_properties.no_data') }]
                     }];
                 }
 

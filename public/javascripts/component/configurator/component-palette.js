@@ -18,7 +18,7 @@
         },
 
         getTitle: function()
-        { return this.settings.groupName + ' Components'; },
+        { return $.t('dataslate.configurator.' + this.settings.groupName.toLowerCase() + '_components'); },
 
         _getSections: function()
         {

@@ -1,24 +1,25 @@
+<%- prefix = 'govstat.reports.manage' %>
 <% content_for :head do %>
   <%= rendered_stylesheet_tag 'screen-govstat-manage' %>
-  <title>Manage Reports | <%= CurrentDomain.strings.site_title %></title>
+  <title><%= t("#{prefix}.title") %> | <%= CurrentDomain.strings.site_title %></title>
 <% end %>
 
 <div id="manageReportsPage">
   <div class="subnavigation">
     <ul class="breadcrumb">
-      <li class="root"><a class="ss-icon" href="/<%= CurrentDomain.feature?(:govstat_15) ? 'stat' : 'manage' %>">Home</a></li>
+      <li class="root"><a class="ss-icon" href="/<%= CurrentDomain.feature?(:govstat_15) ? 'stat' : 'manage' %>"><%= t("#{prefix}.home") %></a></li>
       <li><span class="ss-icon">navigateright</span></li>
-      <li class="main"><a href="/manage/reports">Reports</a></li>
+      <li class="main"><a href="/manage/reports"><%= t("#{prefix}.reports") %></a></li>
     </ul>
   </div>
 
   <div class="gridFlowLayout nonDS clearfix">
     <div class="categoryItem ownerReports">
-      <div class="categoryTitle"><h2>Your Reports</h2></div>
+      <div class="categoryTitle"><h2><%= t("#{prefix}.your_reports") %></h2></div>
       <div class="clearfix">
         <div class="singleItem addNewItem">
           <a class="primaryAction" href="<%= canvas_create_path %>">
-            <span class="actionDetails ss-compose">Create New Report</span></a>
+            <span class="actionDetails ss-compose"><%= t("#{prefix}.create_new_reports") %></span></a>
         </div>
         <%- @own_reports.each do |report| -%>
           <div class="singleItem">
@@ -26,18 +27,18 @@
               <div class="title"><h2><%= report.name %></h2></div>
               <div class="secondaryAction">
                 <a href="<%= report.path %>?_edit_mode=true" class="button edit">
-                  <span class="actionDetails ss-write">Edit</span></a>
+                  <span class="actionDetails ss-write"><%= t("#{prefix}.edit") %></span></a>
                 <a href="#delete" class="button delete" data-id="<%= report.uid %>"
                   data-oldid="<%= report.path %>">
-                  <span class="actionDetails ss-trash">Delete</span></a>
+                  <span class="actionDetails ss-trash"><%= t("#{prefix}.delete") %></span></a>
                 <a href="#copy" class="button copy" data-id="<%= report.uid %>"
                   data-oldid="<%= report.path %>">
-                  <span class="actionDetails ss-fork">Copy</span></a>
+                  <span class="actionDetails ss-fork"><%= t("#{prefix}.copy") %></span></a>
               </div>
               <div class="primaryAction">
                 <a href="<%= report.path %>"><span class="actionDetails ss-right"></span></a>
               </div>
-              <div class="secondaryMetadata">updated: <%= blist_date(report.updated_at) %></div>
+              <div class="secondaryMetadata"><%= t("#{prefix}.updated") %>: <%= blist_date(report.updated_at) %></div>
             </div>
           </div>
         <%- end -%>
@@ -45,7 +46,7 @@
     </div>
 
     <div class="categoryItem otherReports">
-      <div class="categoryTitle"><h2>Other Reports</h2></div>
+      <div class="categoryTitle"><h2><%= t("#{prefix}.other_reports") %></h2></div>
       <div class="clearfix">
         <%- @other_reports.each do |report| -%>
           <div class="singleItem">
@@ -57,21 +58,21 @@
               <div class="secondaryAction">
                 <%- if CurrentDomain.user_can?(current_user, 'edit_pages' ) -%>
                 <a href="<%= report.path %>?_edit_mode=true" class="button edit">
-                  <span class="actionDetails ss-write">Edit</span></a>
+                  <span class="actionDetails ss-write"><%= t("#{prefix}.edit") %></span></a>
                 <a href="#delete" class="button delete" data-id="<%= report.uid %>"
                   data-oldid="<%= report.path %>">
-                  <span class="actionDetails ss-trash">Delete</span></a>
+                  <span class="actionDetails ss-trash"><%= t("#{prefix}.delete") %></span></a>
                 <%- end -%>
                 <a href="#copy" class="button copy" data-id="<%= report.uid %>"
                   data-oldid="<%= report.path %>">
-                  <span class="actionDetails ss-fork">Copy</span></a>
+                  <span class="actionDetails ss-fork"><%= t("#{prefix}.copy") %></span></a>
               </div>
               <div class="secondaryMetadata">
                 <%- o = report.owner_user
                     if !o.nil? -%>
-                <span class="mdLine">owner: <%= o.displayName %></span>
+                <span class="mdLine"><%= t("#{prefix}.owner") %>: <%= o.displayName %></span>
                 <%- end -%>
-                <span class="mdLine">updated: <%= blist_date(report.updated_at) %></span>
+                <span class="mdLine"><%= t("#{prefix}.updated") %>: <%= blist_date(report.updated_at) %></span>
               </div>
             </div>
           </div>

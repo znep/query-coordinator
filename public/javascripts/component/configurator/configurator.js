@@ -175,7 +175,7 @@
 
             var $top = $.tag2({ _: 'div', className: 'cfEditingBar', contents: [
                 { _: 'div', className: 'editTitle', contents: [
-                    { _: 'span', contents: 'Editing&nbsp;' },
+                    { _: 'span', contents: $.t('dataslate.edit.editing') + '&nbsp;' },
                     { _: 'span', className: 'pageName', contents: page.name }
                 ] },
                 { _: 'ul', className: 'actionBar', contents: [
@@ -184,32 +184,32 @@
                             contents: [
                             { _: 'li', contents:
                                 { _: 'a', href: '#preview', className: ['preview', 'ss-icon'],
-                                    title: 'Preview page', contents: 'desktop' } },
+                                    title: $.t('dataslate.edit.preview_page'), contents: 'desktop' } },
                             { _: 'li', contents:
                                 { _: 'a', href: '#interactive', className: ['interactive', 'ss-icon'],
-                                    title: 'View interactive editor', contents: 'layout' } }
+                                    title: $.t('dataslate.edit.view_editor'), contents: 'layout' } }
                     ] } },
                     { _: 'li', contents:
                         { _: 'a', href: '#undo', className: ['undo', 'button', 'ss-replay'],
-                            contents: 'Undo' } },
+                            contents: $.t('dataslate.edit.undo') } },
                     { _: 'li', contents:
                         { _: 'a', href: '#redo', className: ['redo', 'button', 'ss-refresh'],
-                            contents: 'Redo' } },
+                            contents: $.t('dataslate.edit.redo') } },
                     { _: 'li', className: 'separator', contents:
                         { _: 'a', href: '#permissions', className: ['permissions', 'button', 'ss-users'],
-                            contents: 'Permissions' } },
+                            contents: $.t('dataslate.edit.permissions') } },
                     { _: 'li', contents:
                         { _: 'a', href: '#settings', className: ['settings', 'button', 'ss-settings'],
-                            contents: 'Settings' } },
+                            contents: $.t('dataslate.edit.settings') } },
                     { _: 'li', className: 'separator', contents:
                         { _: 'a', href: '#save', className: ['save', 'button'],
-                            contents: 'Save' } },
+                            contents: $.t('dataslate.edit.save') } },
                     { _: 'li', contents:
                         { _: 'a', href: '#saveCopy', className: ['saveCopy', 'button'],
-                            contents: 'Save As' } },
+                            contents: $.t('dataslate.edit.save_as') } },
                     { _: 'li', contents:
                         { _: 'a', href: '#revert', className: ['revert', 'button'],
-                            contents: 'Revert' } }
+                            contents: $.t('dataslate.edit.revert') } }
                 ] }
             ] });
             $cont.append($top);

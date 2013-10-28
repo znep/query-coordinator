@@ -144,17 +144,17 @@ http://www.socrata.com
             </ul>
           </div>
           <ul class="manageActions">
-            <li class="home"><a href="<%= CurrentDomain.feature?(:govstat_15) ? govstat_root_path : manage_path %>" class="ss-home" title="Home">Home</a></li>
+            <li class="home"><a href="<%= CurrentDomain.feature?(:govstat_15) ? govstat_root_path : manage_path %>" class="ss-home" title="Home"><%= t('govstat.chrome.header.links.home') %></a></li>
             <li class="data"><a href="<%= manage_data_path %>" class="ss-hdd"
-              title="Browse and Manage Data">Data</a></li>
+              title="Browse and Manage Data"><%= t('govstat.chrome.header.links.data') %></a></li>
             <li class="reports"><a href="<%= manage_reports_path %>" class="ss-notepad"
-              title="View and Create Reports">Reports</a></li>
+              title="View and Create Reports"><%= t('govstat.chrome.header.links.reports') %></a></li>
             <%- if CurrentDomain.feature?(:govstat_15) -%>
               <li class="goals"><a href="<%= govstat_goals_path %>" class="ss-checkclipboard"
-                title="Create and Track Goals">Goals</a></li>
+                title="Create and Track Goals"><%= t('govstat.chrome.header.links.goals') %></a></li>
             <%- end -%>
             <li class="config"><a href="<%= manage_site_config_path %>" class="ss-wrench"
-              title="Manage GovStat configuration">Configuration</a></li>
+              title="Manage GovStat configuration"><%= t('govstat.chrome.header.links.configuration') %></a></li>
           </ul>
         <%- else -%>
           <%= render_domain_template(@page_custom_header || 'header_full') %>
@@ -259,8 +259,8 @@ http://www.socrata.com
         $('#siteHeader').append($siteLinks);
         var menu_style = user === undefined ? 'user' : 'list';
         $siteLinks.menu({ menuButtonClass: 'accountButton ss-user',
-          menuButtonContents: user === undefined ? 'Account' : user.displayName,
-          menuButtonTitle: 'Account Options', contents: contents });
+          menuButtonContents: user === undefined ? $.t('govstat.chrome.header.links.account') : user.displayName,
+          menuButtonTitle: $.t('govstat.chrome.header.links.account_options'), contents: contents });
       <%- end -%>
       };
       // We can generally count that main js is evaled before all-screens, but

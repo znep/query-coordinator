@@ -1,5 +1,7 @@
 ;(function($) {
 
+var t = function(str, props) { return $.t('dataslate.component.share.' + str, props); };
+
 $.component.Component.extend('Share', 'actions', {
     _needsOwnContext: true,
 
@@ -16,23 +18,23 @@ $.component.Component.extend('Share', 'actions', {
             this.$shareOpts = $.tag({ tagName: 'ul', 'class': 'hide', contents: [
                 { tagName: 'li', 'class': 'subscribe', 'data-name': 'subscribe', contents: [
                     { tagName: 'a', 'class': 'subscribe', href: '#subscribe',
-                        title: 'Subscribe via Email or RSS',
-                        contents: [ { tagName: 'span', 'class': 'icon', contents: 'Subscribe to Changes' } ]
+                        title: t('subscribe'),
+                        contents: [ { tagName: 'span', 'class': 'icon', contents: t('subscribe_text') } ]
                     }
                 ] },
                 { tagName: 'li', 'class': 'facebook', 'data-name': 'facebook', contents: [
-                    { tagName: 'a', 'class': 'facebook', rel: 'external', title: 'Share on Facebook',
-                        contents: [ { tagName: 'span', 'class': 'icon', contents: 'Share on Facebook' } ]
+                    { tagName: 'a', 'class': 'facebook', rel: 'external', title: t('facebook'),
+                        contents: [ { tagName: 'span', 'class': 'icon', contents: t('facebook') } ]
                     }
                 ] },
                 { tagName: 'li', 'class': 'twitter', 'data-name': 'twitter', contents: [
-                    { tagName: 'a', 'class': 'twitter', rel: 'external', title: 'Share on Twitter',
-                        contents: [ { tagName: 'span', 'class': 'icon', contents: 'Share on Twitter' } ]
+                    { tagName: 'a', 'class': 'twitter', rel: 'external', title: t('twitter'),
+                        contents: [ { tagName: 'span', 'class': 'icon', contents: t('twitter') } ]
                     }
                 ] },
                 { tagName: 'li', 'class': 'email', 'data-name': 'email', contents: [
-                    { tagName: 'a', 'class': 'email', href: '#email', title: 'Share via Email',
-                        contents: [ { tagName: 'span', 'class': 'icon', contents: 'Share via Email' } ]
+                    { tagName: 'a', 'class': 'email', href: '#email', title: t('email'),
+                        contents: [ { tagName: 'span', 'class': 'icon', contents: t('email') } ]
                     }
                 ] }
             ] });
@@ -73,8 +75,8 @@ $.component.Component.extend('Share', 'actions', {
         if (blist.configuration.govStat)
         { return null; }
         return { schema: [{ name: 'shareComponent_type', fields: [
-         { type: 'radioGroup', defaultValue: 'currentPage', name: 'shareType', text: 'Share',
-                options: [ { name: 'currentPage', type: 'static', value: 'This page', isInput: true },
+         { type: 'radioGroup', defaultValue: 'currentPage', name: 'shareType', text: t('share'),
+                options: [ { name: 'currentPage', type: 'static', value: t('this_page'), isInput: true },
                 $.cf.contextPicker() ] }
             ] }], view: this._dataset };
     },
@@ -149,13 +151,12 @@ var renderUpdate = function()
                 'name=' + escape(pageName));
 
         cObj.$shareOpts.find('li[data-name=twitter] a').attr('href',
-                'http://twitter.com/?status=' + escape('Check out ' + pageName + ' on ' +
-            blist.configuration.strings.company + ': ' + pageUrl));
+                'http://twitter.com/?status=' + escape(t('tweet_contents', { dataset: pageName, company: blist.configuration.strings.company, url: pageUrl })));
 
         cObj.$shareOpts.find('li[data-name=subscribe]').addClass('hide');
 
         cObj.$shareOpts.find('li[data-name=email]').find('a').attr('href', 'mailto:?subject=' +
-                escape(pageName + ' on ' + blist.configuration.strings.company) + '&body=' +
+                escape(t('email_contents', { dataset: pageName, company: blist.configuration.strings.company})) + '&body=' +
                 escape(pageUrl));
     }
     else
@@ -165,8 +166,7 @@ var renderUpdate = function()
                 'http://www.facebook.com/share.php?u=' + escape(ds.fullUrl));
 
         cObj.$shareOpts.find('li[data-name=twitter] a').attr('href',
-                'http://twitter.com/?status=' + escape('Check out the ' + ds.name + ' dataset on ' +
-            blist.configuration.strings.company + ': ' + ds.shortUrl));
+                'http://twitter.com/?status=' + escape(t('tweet_contents', { dataset: ds.name, company: blist.configuration.strings.company, url: ds.shortUrl })));
 
         cObj.$shareOpts.find('li[data-name=email]').find('a').attr('href', '#email');
         cObj.$shareOpts.find('li[data-name=subscribe], li[data-name=email]').find('a')

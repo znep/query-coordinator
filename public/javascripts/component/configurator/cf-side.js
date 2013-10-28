@@ -18,26 +18,27 @@
             if (blist.configuration.govStat)
             {
                 // GovStat gets a special sidebar for Report Builder
+                var t = function(name) { return $.t('govstat.reports.component.' + name); };
                 $.cf.edit.addComponentPalette('Report', [
-                        { typeName: 'Header', catalogName: 'Header' },
-                        { typeName: 'Title', catalogName: 'Title' },
-                        { typeName: 'FormattedText', catalogName: 'Formatted Text' },
-                        { typeName: 'Picture', catalogName: 'Picture' },
-                        { typeName: 'Print', catalogName: 'Print' },
-                        { typeName: 'Share', catalogName: 'Share' },
-                        { typeName: 'Visualization', catalogName: 'Chart', icon: 'Chart' },
-                        { typeName: 'Visualization', catalogName: 'Map', icon: 'Map' },
-                        { typeName: 'Visualization', catalogName: 'Table', icon: 'Table' }
+                        { typeName: 'Header', catalogName: t('header') },
+                        { typeName: 'Title', catalogName: t('title') },
+                        { typeName: 'FormattedText', catalogName: t('formatted_text') },
+                        { typeName: 'Picture', catalogName: t('picture') },
+                        { typeName: 'Print', catalogName: t('print') },
+                        { typeName: 'Share', catalogName: t('share') },
+                        { typeName: 'Visualization', catalogName: t('chart'), icon: 'Chart' },
+                        { typeName: 'Visualization', catalogName: t('map'), icon: 'Map' },
+                        { typeName: 'Visualization', catalogName: t('table'), icon: 'Table' }
                     ]);
                 $.cf.edit.addComponentPalette('Advanced', [
-                        { typeName: 'Container', catalogName: 'Vertical Layout', icon: 'VerticalContainer' },
-                        { typeName: 'HorizontalContainer', catalogName: 'Horizontal Layout',
+                        { typeName: 'Container', catalogName: t('vertical_layout'), icon: 'VerticalContainer' },
+                        { typeName: 'HorizontalContainer', catalogName: t('horizontal_layout'),
                             icon: 'HorizontalContainer' },
-                        { typeName: 'Visualization', catalogName: 'Visualize', icon: 'Visualization' },
-                        { typeName: 'Map', catalogName: 'Base Map' },
-                        { typeName: 'MapLayer', catalogName: 'Map Layer' }
+                        { typeName: 'Visualization', catalogName: t('visualize'), icon: 'Visualization' },
+                        { typeName: 'Map', catalogName: t('base_map') },
+                        { typeName: 'MapLayer', catalogName: t('map_layer') }
                     ].concat(_.select($.component.catalog.data.entries, function(e)
-                            { return e.catalogName.endsWith(' Chart'); }))
+                            { return e.typeName.indexOf('Chart') > 0; }))
                 );
             }
             else

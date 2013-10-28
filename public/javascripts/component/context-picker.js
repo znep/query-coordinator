@@ -2,7 +2,7 @@
 
 $.cf.contextPicker = function(options)
 {
-    return {name: 'contextId', required: true, text: 'View Data', type: 'custom',
+    return {name: 'contextId', required: true, text: $.t('dataslate.context_picker.view_data'), type: 'custom',
         editorCallbacks: {create: picker(options), value: pickerValue, validate: pickerValidate}};
 };
 
@@ -18,7 +18,8 @@ var picker = function(options)
 
         var $catalogChooser = $.tag2({ _: 'a', href: '#choose',
             className: ['catalogChooser', 'button', 'ss-database'],
-            title: 'Select Dataset', contents: 'Select Dataset' });
+            title: $.t('dataslate.context_picker.select_dataset'),
+            contents: $.t('dataslate.context_picker.select_dataset') });
         $catalogChooser.on('click', function(e)
         {
             e.preventDefault();

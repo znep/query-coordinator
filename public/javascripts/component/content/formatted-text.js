@@ -13,7 +13,8 @@ $.component.Component.extend('Formatted Text', 'content', {
     {
         return {
             javascripts: [{ assets: 'content-editable' }, { assets: 'markdown-create' }],
-            stylesheets: [{ assets: 'markdown-create' }]
+            stylesheets: [{ assets: 'markdown-create' }],
+            translations: ['plugins.hallo']
         };
     },
 
@@ -277,5 +278,5 @@ $.component.Component.extend('Formatted Text', 'content', {
         // the resize, but once it is dropped, it's time to take our natural
         // size.
         this.$dom.height('');
-    },
+    }
 });

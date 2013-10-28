@@ -1,10 +1,10 @@
 ;(function($) {
     $.Control.extend('pane_propertiesEditor', {
         getTitle: function()
-        { return 'Edit Component'; },
+        { return $.t('dataslate.edit_component.title'); },
 
         getSubtitle: function()
-        { return 'Configure this component'; },
+        { return $.t('dataslate.edit_component.subtitle'); },
 
         isAvailable: function()
         { return !$.isBlank(this.component); },
@@ -49,7 +49,7 @@
             {
                 return [
                     { fields: [ {type: 'note',
-                        value: 'No configuration available for ' + this.component.catalogName} ] }
+                        value: $.t('dataslate.edit_component.no_config', { component: this.component.catalogName }) } ] }
                 ];
             }
 

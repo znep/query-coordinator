@@ -1,10 +1,24 @@
 ;(function() {
 
-_.each($.extend({chart: {text: 'Chart'}}, Dataset.chart.types), function(value, localChartType)
+_.each($.extend({chart: {value: 'Chart'}}, Dataset.chart.types), function(value, localChartType)
 {
-    $.component.Component.extend(value.text.toLowerCase().displayable(),
-        _.include(['area chart', 'bar chart', 'donut chart', 'stacked column chart',
-            'stacked bar chart'], value.text.toLowerCase()) ? 'none' : 'data', {
+    var typeName = value.value.toLowerCase().displayable();
+    switch(value.value)
+    {
+        case 'timeline':                                         break;
+        case 'treemap':       typeName = 'Tree Map';             break;
+        case 'Chart':         typeName = 'Chart';                break;
+        case 'stackedcolumn': typeName = 'Stacked Column Chart'; break;
+        case 'stackedbar':    typeName = 'Stacked Bar Chart';    break;
+        default:              typeName += ' Chart';              break;
+    }
+
+    $.component.Component.extend(typeName,
+        _.include(['area', 'bar', 'donut', 'stackedcolumn', 'stackedbar'],
+            value.value.toLowerCase()) ? 'none' : 'data', {
+
+        catalogName: (value.text || 'Chart').toLowerCase().displayable(),
+
         _init: function()
         {
             this._needsOwnContext = true;

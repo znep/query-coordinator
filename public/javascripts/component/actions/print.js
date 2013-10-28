@@ -63,8 +63,8 @@ $.component.Component.extend('Print', 'actions', {
 
 var doRender = function(cObj)
 {
-    cObj.$link.text(cObj._stringSubstitute(cObj._properties.text || 'Print'));
-    cObj.$link.attr('title', cObj._stringSubstitute(cObj._properties.title || 'Print this page'));
+    cObj.$link.text(cObj._stringSubstitute(cObj._properties.text || $.t('datslate.component.print.print')));
+    cObj.$link.attr('title', cObj._stringSubstitute(cObj._properties.title || $.t('dataslate.component.print.print_this_page')));
     cObj.$link.toggleClass('button', !cObj._properties.notButton);
 };
 

@@ -21,7 +21,7 @@ $.component.Picture.extend('Header', 'content', {
         var retVal = this._super.apply(this, arguments);
         if (retVal === false) { return false; }
 
-        retVal.schema.push({ fields: [{ text: 'Height', type: 'text', name: 'height' }] });
+        retVal.schema.push({ fields: [{ text: $.t('dataslate.component.header.height'), type: 'text', name: 'height' }] });
         return retVal;
     }
 });

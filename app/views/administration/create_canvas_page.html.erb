@@ -1,18 +1,18 @@
 <% content_for :head do %>
   <%- if !module_enabled?(:govStat) -%>
   <link type="text/css" media="all" rel="stylesheet" href="/webfonts/ss-standard.css"/>
-  <title>Create DataSlate Page | <%= CurrentDomain.strings.site_title %></title>
+  <title><%= t('dataslate.create.title') %> | <%= CurrentDomain.strings.site_title %></title>
   <%- end -%>
   <%= rendered_stylesheet_tag 'administration-screen' %>
   <%= rendered_stylesheet_tag 'administration-canvas-pages' %>
   <%- if module_enabled?(:govStat) -%>
   <%= rendered_stylesheet_tag 'administration-govstat' %>
-  <title>Create Report | <%= CurrentDomain.strings.site_title %></title>
+  <title><%= t('govstat.reports.create.title') %> | <%= CurrentDomain.strings.site_title %></title>
   <%- end -%>
 <% end %>
 
 <% content_for :skip_links do %>
-  <a href="?no_js=true">Disable Javascript on this page</a>
+  <%= link_to t('core.no_js'), '?no_js=true' %>
 <% end %>
 
 <%= render :partial => 'left_nav' %>
@@ -21,31 +21,31 @@
   <div class="adminHeader contentmgmt">
     <%- if !module_enabled?(:govStat) -%>
     <span class="icon"></span>
-    <h1>Create DataSlate Page</h1>
+    <h1><%= t('dataslate.create.create_page') %></h1>
     <%- else -%>
-    <h1 class="ss-notepad">Create Report</h1>
+    <h1 class="ss-notepad"><%= t('govstat.reports.create.create_report') %></h1>
     <%- end -%>
   </div>
 
   <%= display_standard_flashes %>
 
   <%= modal :class => 'configuratorSettings', :style => '' do %>
-    <h2>Page Settings</h2>
+    <h2><%= t('dataslate.create.page_settings') %></h2>
 
     <%= form_tag(canvas_create_path, :class => 'commonForm') do %>
       <div class="line pageTitle">
-        <%= label_tag :pageTitle, 'Page Title <span class="accessible">Required</span>'.html_safe,
+        <%= label_tag :pageTitle, "#{t('dataslate.create.page_title')} <span class=\"accessible\">#{t('core.required')}</span>".html_safe,
           :class => 'required' %>
         <%= text_field_tag :pageTitle, @cur_title, :class => 'required' %>
       </div>
       <div class="line pageUrl">
-        <%= label_tag :pageUrl, 'Page URL'.html_safe %>
+        <%= label_tag :pageUrl, t('dataslate.create.page_url').html_safe %>
         <%= text_field_tag :pageUrl, @cur_path %>
       </div>
       <ul class="actions clearfix">
         <li><a href="<%= module_enabled?(:govStat) ? manage_reports_path : canvas_admin_path %>"
-          class="button">Cancel</a></li>
-        <li><input type="submit" value="Create" class="button createAction default" /></li>
+          class="button"><%= t('dataslate.create.cancel') %></a></li>
+        <li><input type="submit" value="<%= t('dataslate.create.create') %>" class="button createAction default" /></li>
       </ul>
     <% end %>
   <%- end -%>

@@ -137,6 +137,7 @@ module ApplicationHelper
   def render_translations(part = nil)
     @rendered_translations ||= Set.new()
     to_render = [part].concat(DEFAULT_TRANSLATIONS).compact.reject {|t| @rendered_translations.include?(t)}
+    to_render << LocalePart.govstat.chrome.header if module_enabled?(:govStat)
     return '' if to_render.empty?
     @rendered_translations = @rendered_translations.merge(to_render)
     content_tag :script, :type => 'text/javascript' do

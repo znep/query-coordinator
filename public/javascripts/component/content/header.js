@@ -9,6 +9,11 @@ $.component.Picture.extend('Header', 'content', {
         $('body').addClass('hasHeader');
     },
 
+    _getEditAssets: function()
+    {
+        return { translations: [ 'dataslate.component.header' ] };
+    },
+
     destroy: function()
     {
         this._super.apply(this, arguments);

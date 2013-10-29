@@ -54,6 +54,11 @@ $.component.Component.extend('Print', 'actions', {
         }
     },
 
+    _getAssets: function()
+    {
+        return { translations: [ 'dataslate.component.print' ] };
+    },
+
     _render: function()
     {
         if (!this._super.apply(this, arguments)) { return false; }
@@ -63,7 +68,7 @@ $.component.Component.extend('Print', 'actions', {
 
 var doRender = function(cObj)
 {
-    cObj.$link.text(cObj._stringSubstitute(cObj._properties.text || $.t('datslate.component.print.print')));
+    cObj.$link.text(cObj._stringSubstitute(cObj._properties.text || $.t('dataslate.component.print.print')));
     cObj.$link.attr('title', cObj._stringSubstitute(cObj._properties.title || $.t('dataslate.component.print.print_this_page')));
     cObj.$link.toggleClass('button', !cObj._properties.notButton);
 };

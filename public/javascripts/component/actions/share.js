@@ -66,7 +66,8 @@ $.component.Component.extend('Share', 'actions', {
         return {
             javascripts: [{assets: 'awesomecomplete'}, {assets: 'share-dialogs'}],
             stylesheets: [{assets: 'share'}],
-            modals: ['email_dataset', 'subscribe_dataset']
+            modals: ['email_dataset', 'subscribe_dataset'],
+            translations: [ 'dataslate.component.share' ]
         };
     },
 

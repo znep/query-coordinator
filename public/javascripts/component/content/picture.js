@@ -20,7 +20,8 @@ $.component.Component.extend('Picture', 'content', {
     _getEditAssets: function()
     {
         return {
-            javascripts: [{ assets: 'image-uploader' }]
+            javascripts: [{ assets: 'image-uploader' }],
+            translations: [ 'dataslate.component.picture' ]
         };
     },
 

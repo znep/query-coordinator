@@ -183,6 +183,8 @@ jQuery.metrics = {
             return "profile";
         } else if (path.match("^/browse")) {
             return "browse" + (window.location.href.indexOf('q=') > -1 ? '-search' : '');
+        } else if ($.subKeyDefined(blist, 'govstat')) {
+            return "govstat"
         }
 
         return "other";

@@ -52,17 +52,14 @@ $(function()
                 enabled: blist.configuration.govStatMetricsEnabled || false},
             {id: 'detailFilters',   displayName: 'Filters',  summary: {
                  plus: 'filters-created',
-                 minus: 'filters-deleted',
                  verbPhrase: 'filters created',
                  verbPhraseSingular: 'filter created' }},
             {id: 'detailCharts',    displayName: 'Charts',   summary: {
                 plus: 'charts-created',
-                minus:'charts-deleted',
                 verbPhrase:'charts created',
                 verbPhraseSingular:'chart created'}},
             {id: 'detailMaps',      displayName: 'Maps',     summary: {
                 plus: 'maps-created',
-                minus:'maps-deleted',
                 verbPhrase:'maps created',
                 verbPhraseSingular:'map created'}},
             {id: 'detailComments',  displayName: 'Comments', summary: {

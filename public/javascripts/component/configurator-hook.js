@@ -29,7 +29,7 @@ $(function() {
             var stylesheets = [ {assets: 'colorpicker'}, {assets: 'base-control-third-party'},
                         {assets: 'base-control'}, {assets: 'configurator'} ];
             var translations = ['dataslate.configurator', 'dataslate.context_picker',
-                                'dataslate.edit', 'dataslate.edit_component',
+                                'dataslate.component', 'dataslate.edit', 'dataslate.edit_component',
                                 'dataslate.edit_properties', 'dataslate.permissions',
                                 'dataslate.settings'];
             if (!blist.configuration.govStat)

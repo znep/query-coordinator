@@ -990,6 +990,13 @@ var Dataset = ServerModel.extend({
             if (c.renderTypeName == 'drop_down_list' && !$.isBlank(r[c.fieldName]))
             { r[c.fieldName] = c.renderType.renderer(r[c.fieldName], c, true); }
         });
+        // For backwards compatibility, make all the meta columns into non-: items
+        // (unless that field is taken by a real column)
+        _.each(this.columns, function(c)
+        {
+            if (c.isMeta && _.isUndefined(r[c.name]))
+            { r[c.name] = r[c.fieldName]; }
+        });
         return r;
     },
 

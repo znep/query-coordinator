@@ -118,7 +118,7 @@ en:
         less_link: Less
         matching_rows: Searching dataset for matching rows
         more_link: More
-        no_matching_rows: No matching rows found.
+        no_matching_rows: No matching rows found
         title_html: ! 'Showing <span class="rowResultCountText"></span> of <span class="totalResultCountText"></span> matching rows <a href="#" class="rowSearchLink">(view results)</a>:'
       search: Search
       sort_period_title: Sort Period
@@ -1113,7 +1113,7 @@ en:
             title: Error Bars
           flyout:
             new_details_button: Add Flyout Details
-            new_values_button: ! ' Add Values'
+            new_values_button: Add Values
             title: Flyout Details
             title_column: Flyout Title
             value: Flyout Values
@@ -1123,12 +1123,8 @@ en:
           labelInBar: Label in Bar
           labels_and_values: Labels and Values
           legend:
-            add_text: ! 'Additional text
-
-'
-            add_text_button: ! 'Add Additional Text
-
-'
+            add_text: Additional text
+            add_text_button: Add Additional Text
             annotations: Describe Annotations
             conditional_formats: Describe Conditional Formats
             custom_entry: Custom Label

@@ -81,7 +81,7 @@
             if (chartObj._dataGrouping)
             {
 
-                var rows = [{invalid: {}}];
+                var rows = [{ invalid: {}, data: {} }];
                 var sortFunctions = [];
                 _.each(chartObj._seriesColumns, function(sc)
                 {
@@ -961,7 +961,7 @@
                 if (axis.isXAxis && !_.isEmpty(chartObj._xCategories))
                 {
                     // Attempt to look up value
-                    var v = lineAt.data[chartObj._xColumn.lookup];
+                    var v = lineAt[chartObj._xColumn.lookup];
                     var i = _.indexOf(chartObj._xCategories, v);
                     if (i < 0 && v > _.first(chartObj._xCategories) &&
                         v < _.last(chartObj._xCategories))

@@ -21,7 +21,7 @@ class ConditionalRequestHandlerTest < ActionController::TestCase
   def test_header_set
     response = ActionDispatch::Response.new
     ConditionalRequestHandler.set_conditional_request_headers(response, @manifest)
-    assert_equal(@manifest.hash, response.headers['ETag'])
+    assert_equal("\"" + @manifest.hash + "\"", response.headers['ETag'])
     assert_equal(@start.httpdate, response.headers['Last-Modified'])
   end
 

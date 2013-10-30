@@ -567,6 +567,17 @@ en:
       satellite: Satellite
       terrain: Terrain
     no_js: Disable Javascript on this page
+    numbers:
+      zero: zero
+      one: one
+      two: two
+      three: three
+      four: four
+      five: five
+      six: six
+      seven: seven
+      eight: eight
+      nine: nine
     or: or
     pagination:
       first_page: First Page
@@ -778,6 +789,10 @@ en:
         title: Report Settings
         page_title: Report Title
   plugins:
+    fileuploader:
+      drop_files: Drop files here to upload
+      upload_a_file: Upload a file
+      failed: Failed
     hallo:
       body: Body
       heading: Heading
@@ -830,6 +845,97 @@ en:
       view_statistics: View Statistics
       visits: Visits
       your: Your Rating
+    dataset_new:
+      title: New Dataset
+      upload_accessible: Upload a new dataset accessibly
+      column_template:
+        name_this_col: Name this column
+        remove: remove
+        options: options
+      crossload:
+        headline: Please indicate where your data file lives.
+        url_prompt: What's the web URL of the file you'd like to import?
+        downloading: Downloading your file...
+        supported: Supported file types are CSV, TSV, and Excel. Supported protocols are HTTP and HTTPS.
+        import: Import
+      finish:
+        headline: Your Dataset has been created.
+        subheadline: Click on Finish to see it!
+      first_page:
+        header: Create a new Dataset
+        prompt: How would you like to create your new Dataset?
+        create: Design from Scratch
+        create_explain: Choose this if you don't already have data you wish to import. You will be able to define a schema for your data, and input it online.
+        import: Import a Data File
+        import_explain: Choose this if you already have a data file on your computer you wish to import. Supported formats are .csv, .tsv, .xls, and .xlsx.
+        mapLayer: Connect with an ESRI Map Layer
+        mapLayer_explain: Choose this if you have an ESRI map layer which you would like to import into the catalog. You will need to provide a URL to the API point where the ESRI layer is stored.
+        shapefile: Import Geospatial Data
+        shapefile_explain: Choose this if you have geospatial data which you would like to import into the catalog.
+        blobby: Upload a Non-Data File
+        blobby_explain: Choose this if you have a file that has data in it but which cannot be imported, such as a PDF, or an image file. It will be imported into the data catalog, but will not be as interactive as real data.
+        external: Link to External Data
+        external_explain: Choose this if you already have data that is being hosted on another server. This data will not be imported.
+      import:
+        headline: Where is this file located?
+        local: On my computer
+        local_explain: Choose this if you have a file that is on the computer you are using.
+        web: On the Internet
+        web_explain: Choose this if you have a file that is already on the Internet and have the URL for it.
+      importing_your_data: Importing your data...
+      import_columns:
+        headline: Specify how &ldquo;<span class="fileName"></span>&rdquo; should be imported.
+        subheadline: Columns to import
+        name: Name
+        data_type: Data Type
+        source_column: Source Column
+        why_choose_now: Why is it important to choose column types now?
+        pending_columns: Please wait while we load your columns...
+        reset_to_preset: Reset to preset
+        suggested_columns: Suggested columns
+        suggested_flat: Suggested columns (no composites)
+        suggested_plus_discrete: Suggested columns (composites and discrete)
+        suggested_alltext: All columns as text
+        set: Set
+        clear_all: Clear All
+        add_new_column: Add New Column
+        headers: Headers
+        headers_instructions: Headers should be ignored and not imported as data. Please indicate how many rows of your source file are headers
+        more_rows: More Rows
+        fewer_rows: Fewer Rows
+        errors_warnings: Errors and Warnings
+        help_message: For help, check out a <a href="%{common_errors}" rel="external">list of common warnings and errors</a>.
+      import_help: <strong>Need help?</strong> We maintain a <a href="%{common_errors}" rel="external">list of common warnings and errors</a> that may help you.
+      import_shapefile:
+        headline: Specify how &ldquo;<span class="fileName"></span>&rdquo; should be imported.
+        subheadline: This shapefile contains <span class="featureCount"></span> features in <span class="layerCount"></span> layers.
+        layers_list: Layers to import
+        name: Name
+        crs: Coordinate Reference System
+        pending: Please wait while we load your layers...
+      import_warnings:
+        headline: Warnings during import
+        subheadline: Please note that some of your data may not have imported correctly.
+        see_docs: <strong>Confused?</strong> Please check out our <a href="%{publisher_link}" rel="external">publisher documentation</a> on importing data for a detailed explanation on how the importer handles data. You may also want to refer to our <a href="%{common_errors}" rel="external">list of common warnings and errors</a>.
+      metadata:
+        prompt: Please describe your data.
+        creative_commons_type: Creative Commons Type
+        esri_map_layer_url: ESRI Map Layer URL
+        esri_source_url: Enter the source URL
+        privacy_security: Privacy & Security
+        public_explain: 'My data is <strong>public</strong>: it can only be modified by me, but everyone can view it'
+        private_explain: My data is <strong>private</strong>
+      processing: Processing...
+      upload_file:
+        no_file_selected: No file selected yet.
+        choose_a_file: Choose a File
+        uploading: Uploading your file...
+        supported_blist: Supported formats are .csv, .tsv, .xls, and .xlsx.
+        supported_shapefile: Supported formats are .kml, .kmz, and .zip (ESRI Shapefile).
+      why_choose_now:
+        line_1: Your data is heavily processed when it is imported, and optimized for consumption for each particular data type. In addition, most data types have special features that will only be activated should the column be set to that type &mdash; location columns, for example, are necessary to create maps.
+        line_2: It is possible to change column types later, but it is a process that takes some time, so it's best to set it all properly up front.
+        close: Close
     ds:
       bar:
         api_unsavable: API views cannot be modified
@@ -1621,6 +1727,8 @@ en:
       dataset_title: Dataset Title
       dataset_title_error: The dataset must have a title.
       dataset_title_prompt: Enter a title
+      dataset_url: Dataset URL
+      dataset_url_prompt: Enter the location of your external dataset
       delete: Delete
       email_address: Email Address
       email_help: This address will not be displayed publicly. If left blank, it will default to your address
@@ -1682,6 +1790,27 @@ en:
         account_html: Hello, <span class="currentUser">Unknown User</span>
         account_tooltip: Your Home
         administration: Administration
+    import_pane:
+      headline_import: Please choose a file to import
+      headline_upload: Please choose a file to upload
+      analyzing: Analyzing your file...
+      uploading: Uploading your file
+      filetype_error_blist: Please choose a CSV, TSV, XLS, or XLSX file.
+      filetype_error_shapefile: Please choose a KML, KMZ, or ZIP file.
+      problem_uploading: There was a problem uploading that file. Please make sure it is valid.
+      problem_importing: There was a problem importing that file. Please make sure it is valid.
+      no_file_selected: No file selected yet.
+      downloading: Downloading your file...
+      unknown_error: An unknown error has occurred
+      assure_accessible: Please ensure that your file is accessible and valid and try again.
+      no_source_column: (No Source Column)
+      combine_multiple_cols: (Combine Multiple Columns...)
+      try_again: Please try again in a bit.
+      rows_imported: %{num} rows imported so far.
+      layer: Layer
+      no_headers: None of your rows are headers.
+      one_header: One of your rows is a header.
+      many_headers: %{num} of your rows are headers.
     link_account:
       success: Your external account has been linked.
     profile:
@@ -1850,6 +1979,11 @@ en:
       third_party_return: Before using these credentials, you must
       third_party_return_create: create a Socrata account
       third_party_return_link: link it to an existing Socrata ID
+    wizard:
+      cancel: Cancel
+      finish: Finish
+      previous: Previous
+      next: Next
   support:
     array:
       last_word_connector: ! ', and '

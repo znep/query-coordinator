@@ -279,10 +279,10 @@
     };
 
     $.fn.wizard.defaults = {
-        cancelText: 'Cancel',
+        cancelText: $.t('screens.wizard.cancel'),
         finishCallback: function() {},
-        finishText: 'Finish',
-        nextText: 'Next',
+        finishText: $.t('screens.wizard.finish'),
+        nextText: $.t('screens.wizard.next'),
         onCancel: '#cancel', // either string (url path), or function (handle it yourself)
         paneConfig: {},
         // keys are values of data-wizardpanename elems that correlate; subkeys are:
@@ -306,7 +306,7 @@
         //   * onLeave: function($paneObject, paneConfig, state)
         //     + fires right before a pane is navigated away from in either direction
         //   * uniform: true/false (default false)
-        prevText: 'Previous',
+        prevText: $.t('screens.wizard.previous'),
         state: {}
     };
 })(jQuery);

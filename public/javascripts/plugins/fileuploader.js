@@ -478,6 +478,8 @@ fileUploader.FileUploader = function(o){
     // call parent constructor
     fileUploader.FileUploaderBasic.apply(this, arguments);
 
+    var t = function(str, props) { return $.t('plugins.fileuploader.' + str, props); };
+
     // additional options
     fileUploader.extend(this._options, {
         element: null,
@@ -485,8 +487,8 @@ fileUploader.FileUploader = function(o){
         listElement: null,
 
         template: '<div class="fileUploader-uploader">' +
-                '<div class="fileUploader-upload-drop-area"><span>Drop files here to upload</span></div>' +
-                '<div class="fileUploader-upload-button">Upload a file</div>' +
+                '<div class="fileUploader-upload-drop-area"><span>' + t('drop_files') + '</span></div>' +
+                '<div class="fileUploader-upload-button">' + t('upload_a_file') + '</div>' +
                 '<ul class="fileUploader-upload-list"></ul>' +
              '</div>',
 
@@ -495,8 +497,8 @@ fileUploader.FileUploader = function(o){
                 '<span class="fileUploader-upload-file"></span>' +
                 '<span class="fileUploader-upload-spinner"></span>' +
                 '<span class="fileUploader-upload-size"></span>' +
-                '<a class="fileUploader-upload-cancel" href="#">Cancel</a>' +
-                '<span class="fileUploader-upload-failed-text">Failed</span>' +
+                '<a class="fileUploader-upload-cancel" href="#">' + $.t('core.dialogs.cancel') + '</a>' +
+                '<span class="fileUploader-upload-failed-text">' + t('failed') + '</span>' +
             '</li>',
 
         classes: {

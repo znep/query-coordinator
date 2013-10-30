@@ -26,20 +26,11 @@ class Column < Model
       'location' => 'Location'
   }
 
-  @@importable_types = {
-    text: 'Plain Text',
-    html: 'Formatted Text',
-    email: 'Email',
-    url: 'Website Link/URL',
-    number: 'Number',
-    money: 'Money',
-    percent: 'Percent',
-    calendar_date: 'Date & Time',
-    date: 'Date & Time (with timezone)',
-    checkbox: 'Checkbox',
-    stars: 'Stars',
-    location: 'Location'
-  }
+  @@importable_types = Hash[ [ 'text', 'html', 'email', 'url',
+                               'number', 'money', 'percent',
+                               'calendar_date', 'date', 'checkbox',
+                               'stars', 'location' ].
+    collect { |type| [ type, I18n.t("core.data_types.#{type}") ] } ]
 
   def self.create(view_id, attributes, parent_id=nil)
     if parent_id.nil?

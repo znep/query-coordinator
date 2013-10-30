@@ -1,278 +1,283 @@
+<%- page = 'screens.dataset_new' -%>
 <% content_for :head do %>
   <%= rendered_stylesheet_tag 'dataset-new' %>
-  <title>New Dataset | <%= CurrentDomain.strings.site_title %></title>
+  <title><%= t("#{page}.title") %> | <%= CurrentDomain.strings.site_title %></title>
 <% end %>
 
 <% content_for :skip_links do %>
-  <a href="<%= upload_datasets_path %>">Upload a new dataset accessibly</a>
+  <a href="<%= upload_datasets_path %>"><%= t("#{page}.upload_accessible") %></a>
 <% end %>
+
+<%- common_errors_support_link = 'http://support.socrata.com/entries/23786838-Import-Warning-and-Errors' %>
 
 <div class="contentBox fixedWidth">
   <form class="newDatasetForm">
-    <h1>Create a new Dataset</h1>
+    <%- prefix = page + '.first_page' -%>
+    <h1><%= t("#{prefix}.header") %></h1>
 
     <%= display_standard_flashes %>
 
     <div class="newDatasetWizard wizard">
       <ul class="clearfix">
         <li class="selectTypePane" data-wizardpanename="selectType">
-          <p class="headline">How would you like to create your new Dataset?</p>
+          <p class="headline"><%= t("#{prefix}.prompt") %></p>
           <ul class="newKindList clearfix">
             <li>
-              <a href="#create" class="create" title="Choose this if you don't already have data you wish to import. You will be able to define a schema for your data, and input it online.">
+              <a href="#create" class="create" title="<%= t("#{prefix}.create_explain") %>">
                 <span class="icon"></span>
-                <p>Design from Scratch</p>
+                <p><%= t("#{prefix}.create") %></p>
               </a>
             </li>
             <li>
-              <a href="#import" class="upload" title="Choose this if you already have a data file on your computer you wish to import. Supported formats are .csv, .tsv, .xls, and .xlsx.">
+              <a href="#import" class="upload" title="<%= t("#{prefix}.import_explain") %>">
                 <span class="icon"></span>
-                <p>Import a Data File</p>
+                <p><%= t("#{prefix}.import") %></p>
               </a>
             </li>
             <%- if CurrentDomain.module_enabled?(:esri_integration) -%>
             <li>
-              <a href="#mapLayer" class="mapLayer" title="Choose this if you have an ESRI map layer which you would like to import into the catalog. You will need to provide a URL to the API point where the ESRI layer is stored.">
+              <a href="#mapLayer" class="mapLayer" title="<%= t("#{prefix}.mapLayer_explain") %>">
                 <span class="icon"></span>
-                <p>Connect with an ESRI Map Layer</p>
+                <p><%= t("#{prefix}.mapLayer") %></p>
               </a>
             </li>
             <%- end -%>
             <%- if CurrentDomain.module_enabled?(:geospatial) -%>
             <li>
-              <a href="#shapefile" class="shapefile" title="Choose this if you have geospatial data which you would like to import into the catalog.">
+              <a href="#shapefile" class="shapefile" title="<%= t("#{prefix}.shapefile_explain") %>">
                 <span class="icon"></span>
-                <p>Import Geospatial Data</p>
+                <p><%= t("#{prefix}.shapefile") %></p>
               </a>
             </li>
             <%- end -%>
             <li>
-              <a href="#blobby" class="blobby" title="Choose this if you have a file that has data in it but which cannot be imported, such as a PDF, or an image file. It will be imported into the data catalog, but will not be as interactive as real data.">
+              <a href="#blobby" class="blobby" title="<%= t("#{prefix}.blobby_explain") %>">
                 <span class="icon"></span>
-                <p>Upload a Non-Data File</p>
+                <p><%= t("#{prefix}.blobby") %></p>
               </a>
             </li>
             <%- if CurrentDomain.member?(current_user) -%>
             <li>
-              <a href="#external" class="external" title="Choose this if you already have data that is being hosted on another server. This data will not be imported.">
+              <a href="#external" class="external" title="<%= t("#{prefix}.external_explain") %>">
                 <span class="icon"></span>
-                <p>Link to External Data</p>
+                <p><%= t("#{prefix}.external") %></p>
               </a>
             </li>
             <%- end -%>
           </ul>
         </li>
+        <%- prefix = page + '.import' -%>
         <li class="selectUploadTypePane" data-wizardpanename="selectUploadType">
-          <p class="headline">Where is this file located?</p>
+          <p class="headline"><%= t("#{prefix}.headline") %></p>
           <ul class="uploadTypeList clearfix">
             <li>
-              <a href="#local" class="byUpload" title="Choose this if you have a file that is on the computer you are using.">
+              <a href="#local" class="byUpload" title="<%= t("#{prefix}.local_explain") %>">
                 <span class="icon"></span>
-                <p>On my computer</p>
+                <p><%= t("#{prefix}.local") %></p>
               </a>
             </li>
             <li>
-              <a href="#web" class="byCrossload" title="Choose this if you have a file that is already on the Internet and have the URL for it.">
+              <a href="#web" class="byCrossload" title="<%= t("#{prefix}.web_explain") %>">
                 <span class="icon"></span>
-                <p>On the Internet</p>
+                <p><%= t("#{prefix}.web") %></p>
               </a>
             </li>
           </ul>
         </li>
+        <%- prefix = page + '.upload_file' -%>
         <li class="uploadFilePane" data-wizardpanename="uploadFile">
           <p class="headline"></p>
           <div class="uploadFileContainer">
-            <div class="uploadFileNameWrapper"><input type="text" class="uploadFileName" readonly="readonly" value="No file selected yet."/></div>
-            <div class="buttonWrapper uploadFileButtonWrapper">Choose a File</div>
+            <div class="uploadFileNameWrapper"><input type="text" class="uploadFileName" readonly="readonly" value="<%= t("#{prefix}.no_file_selected") %>"/></div>
+            <div class="buttonWrapper uploadFileButtonWrapper"><%= t("#{prefix}.choose_a_file") %></div>
             <div class="uploadFileErrorHelp">
-              <p><strong>Need help?</strong> We maintain a <a href="http://support.socrata.com/entries/23786838-Import-Warning-and-Errors" rel="external">list of common warnings and errors</a> that may help you.</p>
+              <p><%= t('screens.dataset_new.import_help', { :common_errors => common_errors_support_link }) %></p>
             </div>
-            <div class="uploadThrobber"><span class="icon"></span><span class="text">Uploading your file...</span></div>
+            <div class="uploadThrobber"><span class="icon"></span><span class="text"><%= t("#{prefix}.uploading") %></span></div>
             <p class="uploadFileFormats">
-              <span class="type type-blist">Supported formats are .csv, .tsv, .xls, and .xlsx.</span>
-              <span class="type type-shapefile">Supported formats are .kml, .kmz, and .zip (ESRI Shapefile).</span>
+              <span class="type type-blist"><%= t("#{prefix}.supported_blist") %></span>
+              <span class="type type-shapefile"><%= t("#{prefix}.supported_shapefile") %></span>
             </p>
           </div>
         </li>
+        <%- prefix = page + '.crossload' -%>
         <li class="crossloadFilePane" data-wizardpanename="crossloadFile">
-          <p class="headline">Please indicate where your data file lives.</p>
+          <p class="headline"><%= t("#{prefix}.headline") %></p>
           <div class="crossloadUrlContainer">
-            <div class="crossloadUrlWrapper"><input type="text" name="crossload_url" class="crossloadUrl required textPrompt" title="What's the web URL of the file you'd like to import?" /></div>
-            <div class="crossloadUrlButtonWrapper"><a href="#import" class="button crossloadUrlButton">Import</a></div>
-            <div class="uploadThrobber"><span class="icon"></span><span class="text">Downloading your file...</span></div>
-            <p class="uploadFileFormats">Supported file types are CSV, TSV, and Excel. Supported protocols are HTTP and HTTPS.</p>
+            <div class="crossloadUrlWrapper"><input type="text" name="crossload_url" class="crossloadUrl required textPrompt" title="<%= t("#{prefix}.url_prompt") %>" /></div>
+            <div class="crossloadUrlButtonWrapper"><a href="#import" class="button crossloadUrlButton"><%= t("#{prefix}.import") %></a></div>
+            <div class="uploadThrobber"><span class="icon"></span><span class="text"><%= t("#{prefix}.downloading") %></span></div>
+            <p class="uploadFileFormats"><%= t("#{prefix}.supported") %></p>
             <div class="flash"></div>
             <div class="importErrorHelpText">
-              <p><strong>Need help?</strong> We maintain a <a href="http://support.socrata.com/entries/23786838-Import-Warning-and-Errors" rel="external">list of common warnings and errors</a> that may help you.</p>
+              <p><%= t('screens.dataset_new.import_help', { :common_errors => common_errors_support_link }) %></p>
             </div>
           </div>
         </li>
+        <%- prefix = page + '.import_columns' -%>
         <li class="importColumnsPane columnsPane" data-wizardpanename="importColumns">
           <div class="flash"></div>
           <div class="importErrorHelpText">
-            <p><strong>Need help?</strong> We maintain a <a href="http://support.socrata.com/entries/23786838-Import-Warning-and-Errors" rel="external">list of common warnings and errors</a> that may help you.</p>
+              <p><%= t('screens.dataset_new.import_help', { :common_errors => common_errors_support_link }) %></p>
           </div>
-          <p class="headline">Specify how &ldquo;<span class="fileName"></span>&rdquo; should be imported.</p>
-          <h2>Columns to import</h2>
+          <p class="headline"><%= raw t("#{prefix}.headline") %></p>
+          <h2><%= t("#{prefix}.subheadline") %></h2>
           <div class="columnsListHeader importListHeader clearfix">
             <div class="columnHandleCell importHandleCell"></div>
-            <div class="columnNameCell">Name</div>
-            <div class="columnTypeCell">Data Type</div>
+            <div class="columnNameCell"><%= t("#{prefix}.name") %></div>
+            <div class="columnTypeCell"><%= t("#{prefix}.data_type") %></div>
             <div class="columnSourceCell">
-              Source Column
+              <%= t("#{prefix}.source_column") %>
               <a href="#" class="alert importTypesMessageLink">
                 <span class="icon"></span>
-                Why is it important to choose column types now?
+                <%= t("#{prefix}.why_choose_now") %>
               </a>
             </div>
           </div>
-          <p class="subheadline pendingColumnsMessage">Please wait while we load your columns...</p>
+          <p class="subheadline pendingColumnsMessage"><%= t("#{prefix}.pending_columns") %></p>
           <ul class="columnsList importList">
           </ul>
           <div class="columnsToolbar clearfix">
             <div class="presets">
-              <label for="columnsPresetsSelect">Reset to preset:</label>
+              <label for="columnsPresetsSelect"><%= t("#{prefix}.reset_to_preset") %>:</label>
               <select class="columnsPresetsSelect">
-                <option value="suggested">Suggested columns</option>
-                <option value="suggestedFlat">Suggested columns (no composites)</option>
-                <option value="suggestedPlusDiscrete">Suggested columns (composites and discrete)</option>
-                <option value="alltext">All columns as text</option>
+                <option value="suggested"><%= t("#{prefix}.suggested_columns") %></option>
+                <option value="suggestedFlat"><%= t("#{prefix}.suggested_flat") %></option>
+                <option value="suggestedPlusDiscrete"><%= t("#{prefix}.suggested_plus_discrete") %></option>
+                <option value="alltext"><%= t("#{prefix}.suggested_alltext") %></option>
               </select>
-              <a class="columnsPresetsButton button" href="#set">Set</a>
+              <a class="columnsPresetsButton button" href="#set"><%= t("#{prefix}.set") %></a>
             </div>
             <div class="actions">
-              <a class="clearColumnsButton button" href="#clear">Clear All</a>
-              <a class="addColumnButton add button" href="#add"><span class="icon"></span>Add New Column</a>
+              <a class="clearColumnsButton button" href="#clear"><%= t("#{prefix}.clear_all") %></a>
+              <a class="addColumnButton add button" href="#add"><span class="icon"></span><%= t("#{prefix}.add_new_column") %></a>
             </div>
           </div>
 
           <hr/>
 
-          <h2>Headers</h2>
-          <p class="instructions">Headers should be ignored and not imported as data.
-            Please indicate how many rows of your source file are headers:</p>
+          <h2><%= t("#{prefix}.headers") %></h2>
+          <p class="instructions"><%= t("#{prefix}.headers_instructions") %>:</p>
           <div class="headersTableWrapper">
             <table class="headersTable"><tbody></tbody></table>
           </div>
           <div class="headersActions clearfix">
             <span class="headersCount"></span>
-            <a href="#more" class="button downArrow moreRowsButton"><span class="icon"></span>More Rows</a>
-            <a href="#less" class="button upArrow lessRowsButton"><span class="icon"></span>Fewer Rows</a>
+            <a href="#more" class="button downArrow moreRowsButton"><span class="icon"></span><%= t("#{prefix}.more_rows") %></a>
+            <a href="#less" class="button upArrow lessRowsButton"><span class="icon"></span><%= t("#{prefix}.fewer_rows") %></a>
           </div>
 
           <div class="warningsSection">
-            <h2>Errors and Warnings</h2>
-            <p class="warningsHelpMessage">For help, check out a <a href="http://support.socrata.com/entries/23786838-Import-Warning-and-Errors" rel="external">list of common warnings and errors</a>.</p>
+            <h2><%= t("#{prefix}.errors_warnings") %></h2>
+            <p class="warningsHelpMessage"><%= t("#{prefix}.help_message", { :common_errors => common_errors_support_link }) %></p>
             <ul class="columnWarningsList"></ul>
           </div>
           <hr/>
         </li>
+        <%- prefix = page + '.import_shapefile' -%>
         <li class="importShapefilePane" data-wizardpanename="importShapefile">
           <div class="flash"></div>
-          <p class="headline">Specify how &ldquo;<span class="fileName"></span>&rdquo; should be imported.</p>
-          <p class="subheadline">This shapefile contains <span class="featureCount"></span> features in
-            <span class="layerCount"></span> layers.</p>
+          <p class="headline"><%= t("#{prefix}.headline") %></p>
+          <p class="subheadline"><%= t("#{prefix}.subheadline") %></p>
 
-          <h2>Layers to import</h2>
+          <h2><%= t("#{prefix}.layers_list") %></h2>
           <div class="layersListHeader importListHeader clearfix">
             <div class="layerHandleCell importHandleCell"></div>
-            <div class="layerNameCell">Name</div>
-            <div class="layerReferenceSystemCell">Coordinate Reference System</div>
+            <div class="layerNameCell"><%= t("#{prefix}.name") %></div>
+            <div class="layerReferenceSystemCell"><%= t("#{prefix}.crs") %></div>
           </div>
-          <p class="subheadline pendingLayersMessage">Please wait while we load your layers...</p>
+          <p class="subheadline pendingLayersMessage"><%= t("#{prefix}.pending") %></p>
           <ul class="layersList importList">
           </ul>
           <hr />
         </li>
         <li class="workingPane" data-wizardpanename="importing">
-          <p class="headline">Importing your data...</p>
+          <p class="headline"><%= t('screens.dataset_new.importing_your_data') %></p>
           <p class="importStatus subheadline"></p>
         </li>
         <li class="importWarningsPane" data-wizardpanename="importWarnings">
-          <p class="headline">Warnings during import</p>
+          <p class="headline"><%= t('screens.dataset_new.import_warnings.headline') %></p>
           <p class="subheadline">
-            Please note that some of your data may not have imported correctly.
+            <%= t('screens.dataset_new.import_warnings.subheadline') %>
           </p>
 
           <ul class="importWarningsList"></ul>
 
-          <p class="seeDocs"><strong>Confused?</strong> Please check out our
-            <a href="http://dev.socrata.com/publisher/import-data-types" rel="external">publisher documentation</a>
-            on importing data for a detailed explanation on how the importer handles data. You may also want to refer to our
-            <a href="http://support.socrata.com/entries/23786838-Import-Warning-and-Errors" rel="external">list of common warnings and errors</a>.</p>
+          <p class="seeDocs"><%= t('screens.dataset_new.import_warnings.see_docs', { :publisher_link => 'http://dev.socrata.com/publisher/import-data-types', :common_errors => common_errors_support_link }) %></p>
         </li>
+        <%- prefix = 'screens.edit_metadata' %>
         <li class="metadataPane" data-wizardpanename="metadata">
           <div class="flash"></div>
-          <p class="headline">Please describe your data.</p>
+          <p class="headline"><%= t("screens.dataset_new.metadata.prompt") %></p>
           <div class="commonForm metadataForm">
             <div class="externalDatasetMetadata">
               <div class="line clearfix">
-                <label class="required">Dataset URL</label>
-                <input type="text" name="external_sources[0]" class="textPrompt url required" title="Enter the location of your external dataset" />
+                <label class="required"><%= t("#{prefix}.dataset_url") %></label>
+                <input type="text" name="external_sources[0]" class="textPrompt url required" title="<%= t("#{prefix}.dataset_url_prompt") %>" />
               </div>
             </div>
 
             <div class="generalMetadata">
               <div class="line clearfix">
-                <label for="view_name" class="required">Dataset Title</label>
-                <%= text_field_tag("view[name]", '', :title => "Enter a title", :class => "textPrompt required") %>
+                <label for="view_name" class="required"><%= t("#{prefix}.dataset_title") %></label>
+                <%= text_field_tag("view[name]", '', :title => t("#{prefix}.dataset_title_prompt"), :class => "textPrompt required") %>
               </div>
 
               <div class="line clearfix">
-                <label for="view_description">Brief Description</label>
-                <%= text_area_tag("view[description]", '', :title => "Enter a description", :class => "textPrompt") %>
+                <label for="view_description"><%= t("#{prefix}.brief_description") %></label>
+                <%= text_area_tag("view[description]", '', :title => t("#{prefix}.brief_description_prompt"), :class => "textPrompt") %>
               </div>
 
               <div class="line clearfix">
-                <label for="view_category">Category</label>
+                <label for="view_category"><%= t("#{prefix}.category") %></label>
                 <%= select_tag("view[category]", category_select_options) %>
               </div>
 
               <div class="line clearfix">
-                <label for="view_tags">Tags / Keywords</label>
-                <%= text_field_tag("view[tags]", '', :title => "Enter keywords", :class => "textPrompt") %>
-                <div class="additionalHelp">Enter one or more keywords separated by commas</div>
+                <label for="view_tags"><%= t("#{prefix}.tags_keywords") %></label>
+                <%= text_field_tag("view[tags]", '', :title => t("#{prefix}.tags_prompt"), :class => "textPrompt") %>
+                <div class="additionalHelp"><%= t("#{prefix}.keywords_help") %></div>
               </div>
             </div>
 
             <div class="mapLayerMetadata">
               <div class="line clearfix">
-                <label for="view_esri_src" class="required">ESRI Map Layer URL</label>
-                <%= text_field_tag('view[esri_src]', '', :title => 'Enter the source URL', :class => 'textPrompt required') %>
+                <label for="view_esri_src" class="required"><%= t('screens.dataset_new.metadata.esri_map_layer_url') %></label>
+                <%= text_field_tag('view[esri_src]', '', :title => t('screens.dataset_new.metadata.esri_source_url'), :class => 'textPrompt required') %>
               </div>
             </div>
 
             <div class="licensingMetadata">
-              <h2>Licensing &amp; Attribution</h2>
+              <h2><%= t('screens.edit_metadata.licensing_attr') %></h2>
 
               <div class="line clearfix">
-                <label for="view_licenseId">Licensing</label>
+                <label for="view_licenseId"><%= t("#{prefix}.licensing") %></label>
                 <%= select_tag("view[licenseId]", license_select_options('')) %>
-                <div class="additionalHelp">Choose licensing terms for people who wish to use this dataset</div>
+                <div class="additionalHelp"><%= t("#{prefix}.licensing_help") %></div>
               </div>
 
               <div class="line creativeCommonsLine clearfix">
-                <label for="view_ccLicenseId" class="required">Creative Commons Type</label>
+                <label for="view_ccLicenseId" class="required"><%= t("screens.dataset_new.metadata.creative_commons_type") %></label>
                 <%= select_tag("view_ccLicenseId", creative_commons_select_options) %>
               </div>
 
               <div class="line clearfix">
-                <label for="view_attribution">Data Provided By</label>
-                <%= text_field_tag("view[attribution]", '', :title => "Individual or Organization", :class => "textPrompt") %>
+                <label for="view_attribution"><%= t("#{prefix}.data_provided_by") %></label>
+                <%= text_field_tag("view[attribution]", '', :title => t("#{prefix}.data_provided_prompt"), :class => "textPrompt") %>
               </div>
 
               <div class="line clearfix">
-                <label for="view_attributionLink">Source Link</label>
-                <%= text_field_tag("view[attributionLink]", '', :title => "Enter Web Address", :class => "textPrompt") %>
+                <label for="view_attributionLink"><%= t("#{prefix}.source_link") %></label>
+                <%= text_field_tag("view[attributionLink]", '', :title => t("#{prefix}.source_link_prompt"), :class => "textPrompt") %>
               </div>
             </div>
 
             <div class="attachmentsMetadata">
-              <h2>Attachments</h2>
+              <h2><%= t("#{prefix}.attachments") %></h2>
 
               <div class="attachments">
                 <div class="line existingAttachmentsContainer clearfix">
-                  <label>Existing Attachments</label>
+                  <label><%= t("#{prefix}.attachments") %></label>
                   <div class="existingAttachments">
                     <ul></ul>
                   </div>
@@ -280,7 +285,7 @@
 
                 <div class="line newAttachmentsContainer clearfix">
                   <label for="attachment_new" class="newAttachmentLabel">&nbsp;</label>
-                  <a class="button uploadLink" href="#upload_attachment">Upload New Attachment</a>
+                  <a class="button uploadLink" href="#upload_attachment"><%= t("#{prefix}.upload_new_attachment") %></a>
                   <span class="uploadAttachmentThrobber"></span>
                 </div>
               </div>
@@ -289,44 +294,46 @@
             <%= render :partial => 'metadata', :locals =>
                 {:meta_fields => nil, :fieldsets => CurrentDomain.property(:fieldsets, :metadata) || []} %>
 
+            <%- prefix = 'screens.dataset_new.metadata' -%>
             <div class="privacyMetadata">
-              <h2>Privacy &amp; Security</h2>
+              <h2><%= t("#{prefix}.privacy_security") %></h2>
 
               <div class="line clearfix">
-                <label>Privacy Settings</label>
+                <label><%= t("#{prefix}.privacy_settings") %></label>
                 <div class="radioblock">
                   <div>
                     <%= radio_button_tag("privacy", "public") %>
                     <label for="privacy_public">
-                      My data is <strong>public</strong>: it can only be modified by me, but everyone can view it
+                      <%= raw t("#{prefix}.public_explain") %>
                     </label>
                   </div>
                   <div>
                     <%= radio_button_tag("privacy", "private", :checked => true) %>
                     <label for="privacy_private">
-                      My data is <strong>private</strong>
+                      <%= raw t("#{prefix}.private_explain") %>
                     </label>
                   </div>
                 </div>
               </div>
 
+              <%- prefix = 'screens.edit_metadata' -%>
               <div class="line clearfix">
-                <label>Contact Email</label>
+                <label><%= t("#{prefix}.contact_email") %></label>
                 <%= text_field_tag('view[privateMetadata][contactEmail]', '',
-                      :title => 'Email Address', :class => 'textPrompt email') %>
-                <div class="additionalHelp">This address will not be displayed publicly. If left blank, it will default to your address</div>
+                      :title => t("#{prefix}.email_address"), :class => 'textPrompt email') %>
+                <div class="additionalHelp"><%= t("#{prefix}.email_help") %></div>
               </div>
             </div>
 
-            <div class="required">Required Field</div>
+            <div class="required"><%= t("#{prefix}.required_field") %></div>
           </div>
         </li>
         <li class="workingPane" data-wizardpanename="working">
-          <p class="headline">Processing...</p>
+          <p class="headline"><%= t('screens.dataset_new.processing') %></p>
         </li>
         <li class="finishPane" data-wizardpanename="finish">
-          <p class="headline">Your Dataset has been created.</p>
-          <p class="subheadline">Click on Finish to see it!</p>
+          <p class="headline"><%= t('screens.dataset_new.finish.headline') %></p>
+          <p class="subheadline"><%= t('screens.dataset_new.finish.subheadline') %></p>
         </li>
       </ul>
     </div>
@@ -334,12 +341,13 @@
 </div>
 
 <% content_for :templates do %>
+  <%- prefix = page + '.column_template' %>
   <ul class="columnsListLine">
     <li class="importColumn">
       <div class="mainLine">
         <div class="columnHandleCell importHandleCell"></div>
         <div class="columnNameCell">
-          <input type="text" class="columnName" title="Name this column"/>
+          <input type="text" class="columnName" title="<%= t("#{prefix}.name_this_col") %>"/>
         </div>
         <div class="columnTypeCell">
           <select class="columnTypeSelect">
@@ -348,8 +356,8 @@
         </div>
         <div class="columnSourceCell"></div>
         <div class="columnActionCell clearfix">
-          <a href="#remove" class="remove icon" title="Remove">remove</a>
-          <a href="#options" class="options icon" title="Options">options</a>
+          <a href="#remove" class="remove icon" title="<%= t("#{prefix}.remove") %>"><%= t("#{prefix}.remove") %></a>
+          <a href="#options" class="options icon" title="<%= t("#{prefix}.options") %>"><%= t("#{prefix}.options") %></a>
         </div>
       </div>
       <div class="detailsLine">
@@ -363,16 +371,13 @@
 <% end %>
 
 <% content_for :modals do %>
+  <%- prefix = page + '.why_choose_now' -%>
   <%= modal :id => 'importTypesMessage' do %>
-    <h2>Why is it important to choose column types now?</h2>
-    <p>Your data is heavily processed when it is imported, and optimized for consumption
-       for each particular data type. In addition, most data types have special features
-       that will only be activated should the column be set to that type &mdash; location
-       columns, for example, are necessary to create maps.</p>
-    <p>It is possible to change column types later, but it is a process that takes some
-       time, so it's best to set it all properly up front.</p>
+    <h2><%= t("#{page}.import_columns.why_choose_now") %></h2>
+    <p><%= t("#{prefix}.line_1") %></p>
+    <p><%= t("#{prefix}.line_2") %></p>
     <div class="finishButtons">
-      <a href="#close" class="button jqmClose">Close</a>
+      <a href="#close" class="button jqmClose"><%= t("#{prefix}.close") %></a>
     </div>
   <%- end -%>
 <% end %>
@@ -380,3 +385,7 @@
 <% content_for :js_footer do %>
   <%= include_javascripts 'dataset-new' %>
 <% end %>
+<%= render_translations LocalePart.screens.import_pane %>
+<%= render_translations LocalePart.screens.wizard %>
+<%= render_translations LocalePart.screens.dataset_new.upload_file %>
+<%= render_translations LocalePart.plugins.fileuploader %>

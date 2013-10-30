@@ -730,9 +730,10 @@ $.arrayToSentence = function(arr, joinWord, separator, alwaysUseSep)
 
 $.wordify = function(num)
 {
-    var numWords = {'0' : 'zero', '1': 'one', '2': 'two', '3': 'three',
-        '4': 'four', '5': 'five', '6': 'six', '7': 'seven', '8': 'eight',
-        '9': 'nine'};
+    var t = function(str) { return $.t('core.numbers.' + str); };
+    var numWords = {'0' : t('zero'), '1': t('one'), '2': t('two'), '3': t('three'),
+        '4': t('four'), '5': t('five'), '6': t('six'), '7': t('seven'), '8': t('eight'),
+        '9': t('nine')};
     return numWords[num.toString()] || num;
 };
 

@@ -13,6 +13,7 @@
 ;(function($){
 
 var importNS = blist.namespace.fetch('blist.importer');
+var t = function(str, props) { return $.t('screens.import_pane.' + str, props); };
 
 // globals
 var scan,
@@ -973,9 +974,14 @@ var addAllColumnsAsText = function()
 // set headers count text
 var setHeadersCountText = function()
 {
-    var wordCount = (headersCount === 0) ? 'None' : $.capitalize($.wordify(headersCount));
-    var phrase = (headersCount === 1) ? ' of your rows is a header.' : ' of your rows are headers.';
-    $headersCount.text(wordCount + phrase);
+    var prefix;
+    if (headersCount === 0)
+    { trans_key = 'no_headers'; }
+    else if (headersCount === 1)
+    { trans_key = 'one_header'; }
+    else
+    { trans_key = 'many_headers'; }
+    $headersCount.text(t(trans_key, { num: $.capitalize($.wordify(headersCount)) }));
 };
 
 // events
@@ -1196,7 +1202,7 @@ importNS.uploadFilePaneConfig = {
     {
         // update text
         var isBlist = state.type == 'blist';
-        $pane.find('.headline').text('Please choose a file to ' + (isBlist ? 'import' : 'upload'));
+        $pane.find('.headline').text(t('headline_' + (isBlist ? 'import' : 'upload')));
         $pane.find('.uploadFileFormats').addClass(state.type);
 
         // uploader
@@ -1241,7 +1247,7 @@ importNS.uploadFilePaneConfig = {
                     {
                         // Only accept ZIP and KML for shapefile.
                         $pane.find('.uploadFileName')
-                            .val('Please choose a KML, KMZ, or ZIP file.')
+                            .val(t('filetype_error_shapefile'))
                             .addClass('error');
                         return false;
                     }
@@ -1250,7 +1256,7 @@ importNS.uploadFilePaneConfig = {
                 {
                     // For all other state.type, accept only data files.
                     $pane.find('.uploadFileName')
-                        .val('Please choose a CSV, TSV, XLS, or XLSX file.')
+                        .val(t('filetype_error_blist'))
                         .addClass('error');
                     return false;
                 }
@@ -1261,17 +1267,17 @@ importNS.uploadFilePaneConfig = {
                     .removeClass('error');
 
                 $uploadThrobber.slideDown()
-                               .find('.text').text('Uploading your file...');
+                               .find('.text').text(t('uploading') + '...');
                 $uploadFileErrorHelp.slideUp();
             },
             onProgress: function(id, fileName, loaded, total)
             {
                 if (loaded < total)
-                    $uploadThrobber.find('.text').text('Uploading your file (' +
+                    $uploadThrobber.find('.text').text(t('uploading') + ' (' +
                                                        (Math.round(loaded / total * 1000) / 10) + '% of ' +
                                                        uploader._formatSize(total) + ')...');
                 else
-                    $uploadThrobber.find('.text').text('Analyzing your file...');
+                    $uploadThrobber.find('.text').text(t('analyzing'));
             },
             onComplete: function(id, fileName, response)
             {
@@ -1280,9 +1286,7 @@ importNS.uploadFilePaneConfig = {
                     $uploadThrobber.slideUp();
                     $uploadFileErrorHelp.slideDown();
                     $pane.find('.uploadFileName')
-                        .val('There was a problem ' +
-                             ((state.type == 'blobby' || state.type == 'shapefile') ? 'uploading' : 'importing') +
-                             ' that file. Please make sure it is valid.')
+                        .val(t('problem_' + ((state.type == 'blobby' || state.type == 'shapefile') ? 'uploading' : 'importing')))
                         .addClass('error');
                     return false;
                 }
@@ -1292,7 +1296,7 @@ importNS.uploadFilePaneConfig = {
                 {
                     $uploadThrobber.slideUp();
                     $uploadFileErrorHelp.slideUp();
-                    $pane.find('.uploadFileName').val('No file selected yet.');
+                    $pane.find('.uploadFileName').val(t('no_file_selected'));
                     if (state.type == 'blobby')
                     {
                         state.submittedView = new Dataset(response);
@@ -1323,7 +1327,7 @@ importNS.crossloadFilePaneConfig = {
             if (command.valid())
             {
                 $this.addClass('disabled');
-                $uploadThrobber.slideDown().find('.text').text('Downloading your file...');
+                $uploadThrobber.slideDown().find('.text').text(t('downloading'));
 
                 var targetUrl = $pane.find('.crossloadUrl').val().trim();
                 $.socrataServer.makeRequest({
@@ -1350,7 +1354,7 @@ importNS.crossloadFilePaneConfig = {
                     },
                     error: function(xhr)
                     {
-                        var msg = 'An unknown error has occurred';
+                        var msg = t('unknown_error');
                         try
                         {
                             msg = JSON.parse(xhr.responseText).message + '.';
@@ -1360,7 +1364,7 @@ importNS.crossloadFilePaneConfig = {
                             msg = '';
                         }
 
-                        $pane.find('.flash').addClass('error').text(msg + ' Please ensure that your file is accessible and valid and try again.');
+                        $pane.find('.flash').addClass('error').text(msg + ' ' + t('assure_accessible'));
                     }
                 });
             }
@@ -1406,9 +1410,9 @@ var prepareColumnsAndUI = function($paneLocal, paneConfig, state, command)
 
     // create an options hash for column-like options
     sourceColumns = [];
-    sourceColumns.push({ value: '', label: '(No Source Column)', 'class': 'special' });
+    sourceColumns.push({ value: '', label: t('no_source_column'), 'class': 'special' });
     sourceColumns = sourceColumns.concat(columnSelectOptions);
-    sourceColumns.push({ value: 'composite', label: '(Combine Multiple Columns...)', 'class': 'special' });
+    sourceColumns.push({ value: 'composite', label: t('combine_multiple_cols'), 'class': 'special' });
 
     // create a couple selects we can clone
     $sourceDropDown = $.tag({
@@ -1841,7 +1845,7 @@ importNS.importingPaneConfig = {
                 setTimeout(function()
                 {
                     submitError = (request.status == 500) ?
-                                   'An unknown error has occurred. Please try again in a bit.' :
+                                   (t('unknown_error') + '. ' + t('try_again')) :
                                    JSON.parse(request.responseText).message;
                     command.prev();
                 }, 2000);
@@ -1850,9 +1854,9 @@ importNS.importingPaneConfig = {
             {
                 if ($.subKeyDefined(response, 'details.progress'))
                 {
-                    var message = response.details.progress + ' rows imported so far.';
+                    var message = t('row_imported', { num: response.details.progress });
                     if ($.subKeyDefined(response, 'details.layer'))
-                        message = "Layer " + response.details.layer + ": " + message;
+                        message = t('layer') + '  ' + response.details.layer + ": " + message;
                     $pane.find('.importStatus').text(message);
                 }
             }

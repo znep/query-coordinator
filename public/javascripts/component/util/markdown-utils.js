@@ -20,4 +20,14 @@
         return converter.makeHtml(markdown);
     };
 
+    // Markdown will munge things like http://my_domain_test.com/, as it thinks
+    // those underscores mean <em> or <strong>.
+    markdownUtilsNS.escapeLinksInMarkdown = function(markdown)
+    {
+        return markdown.replace(blist.util.autolinker.urlMatcher, function(url)
+        {
+            return url.replace(/_/g, "\\_");
+        });
+    };
+
 })();

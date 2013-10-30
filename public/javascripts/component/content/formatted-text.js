@@ -65,7 +65,7 @@ $.component.Component.extend('Formatted Text', 'content', {
             var finalHtmlResult;
             if (!$.isBlank(substitutionTarget))
             {
-                markdown = cObj._stringSubstitute(substitutionTarget);
+                markdown = blist.util.markdown.escapeLinksInMarkdown(cObj._stringSubstitute(substitutionTarget));
                 safeHtmlResult = cObj._safeRenderMarkdown(markdown);
                 finalHtmlResult = blist.util.autolinker.autolinkHtml(safeHtmlResult);
             }

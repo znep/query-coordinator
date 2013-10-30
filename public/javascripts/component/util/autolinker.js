@@ -1,6 +1,8 @@
 ;(function() {
     var autolinkerNS = blist.namespace.fetch('blist.util.autolinker');
 
+    autolinkerNS.urlMatcher = /\b((?:[a-z][\w-]+:(?:\/{1,3}|[a-z0-9%])|www\d{0,3}[.]|[a-z0-9.\-]+[.][a-z]{2,4}\/)(?:[^\s()<>]+|\(([^\s()<>]+|(\([^\s()<>]+\)))*\))+(?:\(([^\s()<>]+|(\([^\s()<>]+\)))*\)|[^\s`!()\[\]{};:'".,<>?«»“”‘’]))/ig;
+    autolinkerNS.hasProtocolMatcher = /[a-z][\w-]+:(?:\/{1,3}|[a-z0-9%])/;
 
     // Given an HTML document or snippet, wrap any bits of text that look like
     // URLs in <a/> tags, unless they're already within an <a/>.
@@ -16,15 +18,12 @@
         {
             // Taken from this fine establishment:
             // http://daringfireball.net/2010/07/improved_regex_for_matching_urls
-            var urlMatcher = /\b((?:[a-z][\w-]+:(?:\/{1,3}|[a-z0-9%])|www\d{0,3}[.]|[a-z0-9.\-]+[.][a-z]{2,4}\/)(?:[^\s()<>]+|\(([^\s()<>]+|(\([^\s()<>]+\)))*\))+(?:\(([^\s()<>]+|(\([^\s()<>]+\)))*\)|[^\s`!()\[\]{};:'".,<>?«»“”‘’]))/ig;
-            var hasProtocolMatcher = /[a-z][\w-]+:(?:\/{1,3}|[a-z0-9%])/;
-
-            var linkifiedHtml = plainText.replace(urlMatcher, function(matchedSubstring)
+            var linkifiedHtml = plainText.replace(autolinkerNS.urlMatcher, function(matchedSubstring)
             {
                 var linkUrl;
                 // The regex matches things like www.socrata.com or socrata.com/foo.html.
                 // If such a protocol-less URI was matched, use the default HTTP protocol.
-                if (hasProtocolMatcher.test(matchedSubstring))
+                if (autolinkerNS.hasProtocolMatcher.test(matchedSubstring))
                 {
                     linkUrl = matchedSubstring;
                 }

@@ -54,9 +54,22 @@ module Canvas2
       markdown = string_substitute(@properties['markdown'])
       url_matcher = /\b((?:[a-z][\w-]+:(?:\/{1,3}|[a-z0-9%])|www\d{0,3}[.]|[a-z0-9.\-]+[.][a-z]{2,4}\/)(?:[^\s()<>]+|\(([^\s()<>]+|(\([^\s()<>]+\)))*\))+(?:\(([^\s()<>]+|(\([^\s()<>]+\)))*\)|[^\s`!()\[\]{};:'".,<>?«»“”‘’]))/i
 
-      markdown = markdown.gsub(url_matcher) do |matched_substring|
+      # Markdown supports a TOC-style hyperlink mode.
+      loc_of_toc = markdown.index(/^\[\d+\]: [^\s]+$/m);
+      escaped_section = ''
+      plain_section = ''
+      if (loc_of_toc)
+        escaped_section = markdown[0..loc_of_toc-1]
+        plain_section = markdown[loc_of_toc..-1]
+      else
+        escaped_section = markdown;
+      end
+
+      escaped_section = escaped_section.gsub(url_matcher) do |matched_substring|
         matched_substring.gsub("_", "\\_")
       end
+
+      markdown = escaped_section + plain_section;
 
       safe_markdown = strip_html_from_markdown(markdown)
       unsafe_html_result = convert_markdown_to_html(safe_markdown)

@@ -160,7 +160,7 @@ $.component.Component.extend('Formatted Text', 'content', {
 
                 if (!$.isBlank(markdown))
                 {
-                    safeHtmlResult = cObj._safeRenderMarkdown(markdown);
+                    safeHtmlResult = cObj._safeRenderMarkdown(blist.util.markdown.escapeLinksInMarkdown(markdown));
                 }
 
                 cObj.$contents.html(safeHtmlResult);

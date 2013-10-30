@@ -116,7 +116,9 @@ zh:
         timeout: 抱歉，本次未能搜索到结果，请稍后再试。
       row_results:
         less_link: 更少
+        matching_rows: 匹配的行
         more_link: 更多
+        no_matching_rows: 没有匹配行
         title_html: 共<span class="totalResultCountText"></span> 匹配数据行 <a href="#" class="rowSearchLink">（查看结果），</a>显示 <span class="rowResultCountText"></span> ：
       search: 搜索
       sort_period_title: 排序时间
@@ -274,6 +276,8 @@ zh:
         simplified_header: 用户以简化模式启动。
         simplified_toggle: 默认设置改为高级。
       main:
+        base_explanation: 
+        base_info: 
         filter: 筛选
         filter_based_on_contents: 基于内容筛选数据集。
         no_conditions: 还未定义条件。
@@ -400,6 +404,18 @@ zh:
       stackedcolumn: 堆叠柱状图
       timeline: 时间线
       treemap: 树型图
+    chart_types_short:
+      area: 
+      bar: 
+      bubble: 
+      column: 
+      donut: 
+      line: 
+      pie: 
+      stackedbar: 
+      stackedcolumn: 
+      timeline: 
+      treemap: 
     data_types:
       calendar_date: 日期和时间
       checkbox: 复选框
@@ -550,15 +566,27 @@ zh:
       roadmap: 路线图
       satellite: 卫星
       terrain: 地形
+    no_js: 
+    numbers:
+      eight: 
+      five: 
+      four: 
+      nine: 
+      seven: 
+      six: 
+      three: 
     or: 或
     pagination:
+      current_page: 
       first_page: 第一页
       last_page: 最后一页
       next_page: 下一页
+      page: 
       previous_page: 上一页
     precision_style:
       scientific: 科学 (1.0204e+3)
       standard: 标准 (1020.4)
+    required: 
     share_types:
       contributor: 参与者
       owner: 所有者
@@ -606,6 +634,87 @@ zh:
     visibility:
       private: 私有
       public: 公共
+  dataslate:
+    component:
+      header:
+        height: 
+      invalid_config: 
+      loading: 
+      picture:
+        alt_attr: 
+        alt_attr_prompt: 
+        full_url: 
+        image_source: 
+        large: 
+        medium: 
+        original: 
+        thumb: 
+        tiny: 
+        title_attr: 
+        title_attr_prompt: 
+      print:
+        print: 
+        print_this_page: 
+      remove: 
+      share:
+        email: 
+        email_contents: 
+        facebook: 
+        share: 
+        subscribe: 
+        subscribe_text: 
+        this_page: 
+        tweet_contents: 
+        twitter: 
+    configurator:
+      advanced_components: 
+      report_components: 
+    context_picker:
+      select_dataset: 
+      view_data: 
+    create:
+      cancel: 
+      create: 
+      create_page: 
+      page_settings: 
+      page_title: 
+      page_url: 
+      title: 
+    edit:
+      editing: 
+      permissions: 
+      preview_page: 
+      redo: 
+      revert: 
+      save: 
+      save_as: 
+      settings: 
+      undo: 
+      view_editor: 
+    edit_component:
+      no_config: 
+      subtitle: 
+      title: 
+    edit_properties:
+      no_data: 
+      subtitle: 
+      title: 
+    permissions:
+      cancel: 
+      private: 
+      private_desc: 
+      public: 
+      public_desc: 
+      save: 
+      shared: 
+      shared_desc: 
+      title: 
+    settings:
+      cancel: 
+      page_title: 
+      page_url: 
+      save: 
+      title: 
   error:
     back: 返回
     error_500:
@@ -630,9 +739,64 @@ zh:
       header:
         links:
           account: 
+          account_options: 
           account_tooltip: 
+          configuration: 
+          data: 
+          goals: 
+          home: 
           my_goals: 
           my_goals_tooltip: 
+          reports: 
+    reports:
+      component:
+        base_map: 
+        chart: 
+        formatted_text: 
+        header: 
+        horizontal_layout: 
+        map: 
+        map_layer: 
+        picture: 
+        print: 
+        share: 
+        table: 
+        title: 
+        vertical_layout: 
+        visualize: 
+      create:
+        create_report: 
+        title: 
+      manage:
+        copy: 
+        create_new_report: 
+        delete: 
+        edit: 
+        home: 
+        other_reports: 
+        owner: 
+        reports: 
+        title: 
+        updated: 
+        your_reports: 
+      permissions:
+        title: 
+      settings:
+        page_title: 
+        title: 
+  plugins:
+    fileuploader:
+      drop_files: 
+      failed: 
+      upload_a_file: 
+    hallo:
+      body: 
+      bold: 
+      heading: 
+      italic: 
+      redo: 
+      subheading: 
+      undo: 
   screens:
     about:
       actions: 操作
@@ -677,6 +841,117 @@ zh:
       view_statistics: 查看统计数据
       visits: 访问次数
       your: 你的评分
+    dataset_edit:
+      append: 
+      append_and_replace: 
+      append_explain: 
+      finish:
+        headline: 
+        subheadline: 
+      headline: 
+      import_columns:
+        destination_column: 
+        destination_data_type: 
+        headline: 
+      import_warnings:
+        see_docs: 
+      replace: 
+      replace_data: 
+      replace_explain: 
+      replace_layer: 
+      title: 
+      upload_accessible: 
+    dataset_new:
+      column_template:
+        name_this_col: 
+        options: 
+        remove: 
+      crossload:
+        downloading: 
+        headline: 
+        import: 
+        supported: 
+        url_prompt: 
+      finish:
+        headline: 
+        subheadline: 
+      first_page:
+        blobby: 
+        blobby_explain: 
+        create: 
+        create_explain: 
+        external: 
+        external_explain: 
+        header: 
+        import: 
+        import_explain: 
+        mapLayer: 
+        mapLayer_explain: 
+        prompt: 
+        shapefile: 
+        shapefile_explain: 
+      import:
+        headline: 
+        local: 
+        local_explain: 
+        web: 
+        web_explain: 
+      import_columns:
+        add_new_column: 
+        clear_all: 
+        data_type: 
+        errors_warnings: 
+        fewer_rows: 
+        headers: 
+        headers_instructions: 
+        headline: 
+        help_message: 
+        more_rows: 
+        name: 
+        pending_columns: 
+        reset_to_preset: 
+        set: 
+        source_column: 
+        subheadline: 
+        suggested_alltext: 
+        suggested_columns: 
+        suggested_flat: 
+        suggested_plus_discrete: 
+        why_choose_now: 
+      import_help: 
+      import_shapefile:
+        crs: 
+        headline: 
+        layers_list: 
+        name: 
+        pending: 
+        subheadline: 
+      import_warnings:
+        headline: 
+        see_docs: 
+        subheadline: 
+      importing_your_data: 
+      metadata:
+        creative_commons_type: 
+        esri_map_layer_url: 
+        esri_source_url: 
+        privacy_security: 
+        private_explain: 
+        prompt: 
+        public_explain: 
+      processing: 
+      title: 
+      upload_accessible: 
+      upload_file:
+        choose_a_file: 
+        no_file_selected: 
+        supported_blist: 
+        supported_shapefile: 
+        uploading: 
+      why_choose_now:
+        close: 
+        line_1: 
+        line_2: 
     ds:
       bar:
         api_unsavable: 不能修改API视图
@@ -993,6 +1268,7 @@ zh:
           marker:
             add_button: 
             caption: 标题
+            marker_title: 
             new_marker_button: 添加标记
             title: ! '%{axis} 标记'
             value: 当值等于
@@ -1467,6 +1743,8 @@ zh:
       dataset_title: 数据集标题
       dataset_title_error: 数据集必须具有标题。
       dataset_title_prompt: 输入标题
+      dataset_url: 
+      dataset_url_prompt: 
       delete: 删除
       email_address: 电子邮件地址
       email_help: 此地址不会公开显示。 如果留空，将默认为您的地址。
@@ -1528,6 +1806,27 @@ zh:
         account_html: 您好，<span class="currentUser"></span>
         account_tooltip: 你的主页
         administration: 管理
+    import_pane:
+      analyzing: 
+      assure_accessible: 
+      combine_multiple_cols: 
+      downloading: 
+      filetype_error_blist: 
+      filetype_error_shapefile: 
+      headline_import: 
+      headline_upload: 
+      layer: 
+      many_headers: 
+      no_file_selected: 
+      no_headers: 
+      no_source_column: 
+      one_header: 
+      problem_importing: 
+      problem_uploading: 
+      rows_imported: 
+      try_again: 
+      unknown_error: 
+      uploading: 
     link_account:
       success: 您的外部账户已关联。
     profile:
@@ -1696,6 +1995,11 @@ zh:
       third_party_return: 在使用这些认证信息前，您必须
       third_party_return_create: 创建Socrata账户
       third_party_return_link: 关联到现有的Socrata用户名
+    wizard:
+      cancel: 
+      finish: 
+      next: 
+      previous: 
   support:
     array:
       last_word_connector: 与

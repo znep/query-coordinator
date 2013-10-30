@@ -116,7 +116,9 @@ hi:
         timeout: क्षमा करें। इस समय परिणाम हासिल नहीं किये जा सकते हें। कृपया बाद में फिर से प्रयास करें।
       row_results:
         less_link: कम
+        matching_rows: मिलान पंक्तियाँ
         more_link: अधिक
+        no_matching_rows: कोई मिलान पंक्तियाँ
         title_html: ! '<span class="totalResultCountText"></span> की<span class="rowResultCountText"></span> मेल खाने वाली पंक्तियाँ <a href="#" class="rowSearchLink">दिखा रहा है (परिणाम देखें)</a>:'
       search: खोजें
       sort_period_title: छांटने की अवधि
@@ -274,6 +276,8 @@ hi:
         simplified_header: प्रयोक्‍ता सरलीकृत मोड से आरंभ करेंगे।
         simplified_toggle: डिफ़ाल्‍ट बैक को उन्‍नत में बदलें।
       main:
+        base_explanation: 
+        base_info: 
         filter: फिल्‍टर करें
         filter_based_on_contents: सामग्री के आधार पर इस डेटासेट को फिल्‍टर करें।
         no_conditions: अभी शर्तें निर्धारित नहीं की गईं।
@@ -400,6 +404,18 @@ hi:
       stackedcolumn: समूहबद्ध कॉलम चार्ट
       timeline: घटनाक्रम
       treemap: वृक्षाकार नक्‍शा
+    chart_types_short:
+      area: 
+      bar: 
+      bubble: 
+      column: 
+      donut: 
+      line: 
+      pie: 
+      stackedbar: 
+      stackedcolumn: 
+      timeline: 
+      treemap: 
     data_types:
       calendar_date: तिथि व समय
       checkbox: चेकबॉक्‍स
@@ -550,15 +566,27 @@ hi:
       roadmap: रोडमैप
       satellite: सैटेलाइट
       terrain: भू-भाग
+    no_js: 
+    numbers:
+      eight: 
+      five: 
+      four: 
+      nine: 
+      seven: 
+      six: 
+      three: 
     or: या
     pagination:
+      current_page: 
       first_page: पहला पृष्‍ठ
       last_page: अंतिम पृष्‍ठ
       next_page: अगला पृष्‍ठ
+      page: 
       previous_page: पिछला पृष्‍ठ
     precision_style:
       scientific: वैज्ञानिक (1.0204e+3)
       standard: स्‍टैंडर्ड (1020.4)
+    required: 
     share_types:
       contributor: योगदानकर्ता
       owner: स्‍वामी
@@ -606,6 +634,87 @@ hi:
     visibility:
       private: निजी
       public: सार्वजनिक
+  dataslate:
+    component:
+      header:
+        height: 
+      invalid_config: 
+      loading: 
+      picture:
+        alt_attr: 
+        alt_attr_prompt: 
+        full_url: 
+        image_source: 
+        large: 
+        medium: 
+        original: 
+        thumb: 
+        tiny: 
+        title_attr: 
+        title_attr_prompt: 
+      print:
+        print: 
+        print_this_page: 
+      remove: 
+      share:
+        email: 
+        email_contents: 
+        facebook: 
+        share: 
+        subscribe: 
+        subscribe_text: 
+        this_page: 
+        tweet_contents: 
+        twitter: 
+    configurator:
+      advanced_components: 
+      report_components: 
+    context_picker:
+      select_dataset: 
+      view_data: 
+    create:
+      cancel: 
+      create: 
+      create_page: 
+      page_settings: 
+      page_title: 
+      page_url: 
+      title: 
+    edit:
+      editing: 
+      permissions: 
+      preview_page: 
+      redo: 
+      revert: 
+      save: 
+      save_as: 
+      settings: 
+      undo: 
+      view_editor: 
+    edit_component:
+      no_config: 
+      subtitle: 
+      title: 
+    edit_properties:
+      no_data: 
+      subtitle: 
+      title: 
+    permissions:
+      cancel: 
+      private: 
+      private_desc: 
+      public: 
+      public_desc: 
+      save: 
+      shared: 
+      shared_desc: 
+      title: 
+    settings:
+      cancel: 
+      page_title: 
+      page_url: 
+      save: 
+      title: 
   error:
     back: पीछे जाएँ
     error_500:
@@ -630,9 +739,64 @@ hi:
       header:
         links:
           account: 
+          account_options: 
           account_tooltip: 
+          configuration: 
+          data: 
+          goals: 
+          home: 
           my_goals: 
           my_goals_tooltip: 
+          reports: 
+    reports:
+      component:
+        base_map: 
+        chart: 
+        formatted_text: 
+        header: 
+        horizontal_layout: 
+        map: 
+        map_layer: 
+        picture: 
+        print: 
+        share: 
+        table: 
+        title: 
+        vertical_layout: 
+        visualize: 
+      create:
+        create_report: 
+        title: 
+      manage:
+        copy: 
+        create_new_report: 
+        delete: 
+        edit: 
+        home: 
+        other_reports: 
+        owner: 
+        reports: 
+        title: 
+        updated: 
+        your_reports: 
+      permissions:
+        title: 
+      settings:
+        page_title: 
+        title: 
+  plugins:
+    fileuploader:
+      drop_files: 
+      failed: 
+      upload_a_file: 
+    hallo:
+      body: 
+      bold: 
+      heading: 
+      italic: 
+      redo: 
+      subheading: 
+      undo: 
   screens:
     about:
       actions: कार्रवाई
@@ -677,6 +841,117 @@ hi:
       view_statistics: आंकड़ें देखें
       visits: विज़ि‍ट
       your: आपकी रेटिंग
+    dataset_edit:
+      append: 
+      append_and_replace: 
+      append_explain: 
+      finish:
+        headline: 
+        subheadline: 
+      headline: 
+      import_columns:
+        destination_column: 
+        destination_data_type: 
+        headline: 
+      import_warnings:
+        see_docs: 
+      replace: 
+      replace_data: 
+      replace_explain: 
+      replace_layer: 
+      title: 
+      upload_accessible: 
+    dataset_new:
+      column_template:
+        name_this_col: 
+        options: 
+        remove: 
+      crossload:
+        downloading: 
+        headline: 
+        import: 
+        supported: 
+        url_prompt: 
+      finish:
+        headline: 
+        subheadline: 
+      first_page:
+        blobby: 
+        blobby_explain: 
+        create: 
+        create_explain: 
+        external: 
+        external_explain: 
+        header: 
+        import: 
+        import_explain: 
+        mapLayer: 
+        mapLayer_explain: 
+        prompt: 
+        shapefile: 
+        shapefile_explain: 
+      import:
+        headline: 
+        local: 
+        local_explain: 
+        web: 
+        web_explain: 
+      import_columns:
+        add_new_column: 
+        clear_all: 
+        data_type: 
+        errors_warnings: 
+        fewer_rows: 
+        headers: 
+        headers_instructions: 
+        headline: 
+        help_message: 
+        more_rows: 
+        name: 
+        pending_columns: 
+        reset_to_preset: 
+        set: 
+        source_column: 
+        subheadline: 
+        suggested_alltext: 
+        suggested_columns: 
+        suggested_flat: 
+        suggested_plus_discrete: 
+        why_choose_now: 
+      import_help: 
+      import_shapefile:
+        crs: 
+        headline: 
+        layers_list: 
+        name: 
+        pending: 
+        subheadline: 
+      import_warnings:
+        headline: 
+        see_docs: 
+        subheadline: 
+      importing_your_data: 
+      metadata:
+        creative_commons_type: 
+        esri_map_layer_url: 
+        esri_source_url: 
+        privacy_security: 
+        private_explain: 
+        prompt: 
+        public_explain: 
+      processing: 
+      title: 
+      upload_accessible: 
+      upload_file:
+        choose_a_file: 
+        no_file_selected: 
+        supported_blist: 
+        supported_shapefile: 
+        uploading: 
+      why_choose_now:
+        close: 
+        line_1: 
+        line_2: 
     ds:
       bar:
         api_unsavable: एपीआई व्‍यू को संशोधित नहीं किया जा सकता है
@@ -993,6 +1268,7 @@ hi:
           marker:
             add_button: 
             caption: कैप्‍शन
+            marker_title: 
             new_marker_button: मार्कर जोड़ें
             title: ! '%{axis} मार्कर'
             value: मूल्‍य पर
@@ -1469,6 +1745,8 @@ hi:
       dataset_title: डेटासेट शीर्षक
       dataset_title_error: डेटासेट का शीर्षक होना चाहिए।
       dataset_title_prompt: शीर्षक दर्ज करें
+      dataset_url: 
+      dataset_url_prompt: 
       delete: हटाएँ
       email_address: ईमेल पता
       email_help: इस पते को सार्वजनिक रूप से प्रदर्शित नहीं किया जाएगा। यदि इसे खाली छोड़ा जाए, तो यहाँ आपका डिफ़ोल्ट पता रख दिया जाएगा
@@ -1530,6 +1808,27 @@ hi:
         account_html: नमस्ते, <span class="currentUser"></span>
         account_tooltip: आपका होम
         administration: प्रशासन
+    import_pane:
+      analyzing: 
+      assure_accessible: 
+      combine_multiple_cols: 
+      downloading: 
+      filetype_error_blist: 
+      filetype_error_shapefile: 
+      headline_import: 
+      headline_upload: 
+      layer: 
+      many_headers: 
+      no_file_selected: 
+      no_headers: 
+      no_source_column: 
+      one_header: 
+      problem_importing: 
+      problem_uploading: 
+      rows_imported: 
+      try_again: 
+      unknown_error: 
+      uploading: 
     link_account:
       success: आपका बाह्य खाता संबंधित कर दिया गया है।
     profile:
@@ -1698,6 +1997,11 @@ hi:
       third_party_return: इस परिचय का उपयोग करने से पहले, आपको
       third_party_return_create: सोक्राटा खाता बनाना चाहिए
       third_party_return_link: वर्तमान सोक्राटा आईडी से इसे जोड़ें
+    wizard:
+      cancel: 
+      finish: 
+      next: 
+      previous: 
   support:
     array:
       last_word_connector: ! ', और'

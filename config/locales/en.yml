@@ -568,24 +568,21 @@ en:
       terrain: Terrain
     no_js: Disable Javascript on this page
     numbers:
-      zero: zero
-      one: one
-      two: two
-      three: three
-      four: four
-      five: five
-      six: six
-      seven: seven
       eight: eight
+      five: five
+      four: four
       nine: nine
+      seven: seven
+      six: six
+      three: three
     or: or
     pagination:
+      current_page: Current Page
       first_page: First Page
       last_page: Last Page
       next_page: Next Page
-      previous_page: Previous Page
-      current_page: Current Page
       page: page
+      previous_page: Previous Page
     precision_style:
       scientific: Scientific (1.0204e+3)
       standard: Standard (1020.4)
@@ -639,85 +636,85 @@ en:
       public: public
   dataslate:
     component:
-      invalid_config: This component does not have a valid configuration
-      loading: Loading, please wait...
-      remove: Remove this component
       header:
         height: Height
+      invalid_config: This component does not have a valid configuration
+      loading: Loading, please wait...
       picture:
-        image_source: Image Source
-        original: Original
-        tiny: Tiny (24x24)
-        thumb: Thumb (80x80)
-        medium: Medium (150x150)
-        large: Large (220x220)
-        full_url: Fully-qualified URL to an image
-        title_attr: Title
-        title_attr_prompt: title attribute
         alt_attr: Alt
         alt_attr_prompt: alt attribute
+        full_url: Fully-qualified URL to an image
+        image_source: Image Source
+        large: Large (220x220)
+        medium: Medium (150x150)
+        original: Original
+        thumb: Thumb (80x80)
+        tiny: Tiny (24x24)
+        title_attr: Title
+        title_attr_prompt: title attribute
       print:
         print: Print
         print_this_page: Print this page
+      remove: Remove this component
       share:
+        email: Share via Email
+        email_contents: ! '%{dataset} on %{company}'
+        facebook: Share on Facebook
         share: Share
-        this_page: This page
         subscribe: Subscribe via Email or RSS
         subscribe_text: Subscribe to Changes
-        facebook: Share on Facebook
+        this_page: This page
+        tweet_contents: ! 'Check out %{dataset} on %{company}: %{url}'
         twitter: Share on Twitter
-        email: Share via Email
-        tweet_contents: 'Check out %{dataset} on %{company}: %{url}'
-        email_contents: '%{dataset} on %{company}'
     configurator:
       advanced_components: Advanced Components
       report_components: Report Components
     context_picker:
-      view_data: View Data
       select_dataset: Select Dataset
+      view_data: View Data
     create:
-      title: Create DataSlate Page
+      cancel: Cancel
+      create: Create
       create_page: Create DataSlate Page
       page_settings: Page Settings
       page_title: Page Title
       page_url: Page URL
-      cancel: Cancel
-      create: Create
+      title: Create DataSlate Page
     edit:
       editing: Editing
-      preview_page: Preview page
-      view_editor: View interactive editor
-      undo: Undo
-      redo: Redo
       permissions: Permissions
-      settings: Settings
+      preview_page: Preview page
+      redo: Redo
+      revert: Revert
       save: Save
       save_as: Save As
-      revert: Revert
+      settings: Settings
+      undo: Undo
+      view_editor: View interactive editor
     edit_component:
-      title: Edit Component
-      subtitle: Configure this component
       no_config: No configuration available for %{component}
+      subtitle: Configure this component
+      title: Edit Component
+    edit_properties:
+      no_data: No data set for this component
+      subtitle: Add properties based on the data context to this component
+      title: Available Properties
     permissions:
-      title: Page Permissions
-      public: Public
-      public_desc: Viewable by everyone
-      shared: Shared to Site
-      shared_desc: Viewable by all your colleagues, but not the public
+      cancel: Cancel
       private: Private
       private_desc: Viewable by only you
-      cancel: Cancel
+      public: Public
+      public_desc: Viewable by everyone
       save: Save
-    edit_properties:
-      title: Available Properties
-      subtitle: Add properties based on the data context to this component
-      no_data: No data set for this component
+      shared: Shared to Site
+      shared_desc: Viewable by all your colleagues, but not the public
+      title: Page Permissions
     settings:
-      title: Page Settings
+      cancel: Cancel
       page_title: Page Title
       page_url: Path
-      cancel: Cancel
       save: Save
+      title: Page Settings
   error:
     back: Back
     error_500:
@@ -742,65 +739,64 @@ en:
       header:
         links:
           account: Account
+          account_options: Account Options
           account_tooltip: View and make changes to your user account.
+          configuration: Configuration
+          data: Data
+          goals: Goals
+          home: Home
           my_goals: My Goals
           my_goals_tooltip: See the goals I've created.
-          home: Home
-          data: Data
           reports: Reports
-          goals: Goals
-          configuration: Configuration
-          account: Account
-          account_options: Account Options
     reports:
-      manage:
-        title: Manage Reports
-        home: Home
-        reports: Reports
-        your_reports: Your Reports
-        create_new_report: Create New Report
-        edit: Edit
-        delete: Delete
-        copy: Copy
-        owner: owner
-        updated: updated
-        other_reports: Other Reports
-      create:
-        title: Create Report
-        create_report: Create Report
       component:
-        header: Header
-        title: Title
+        base_map: Base Map
+        chart: Chart
         formatted_text: Formatted Text
+        header: Header
+        horizontal_layout: Horizontal Layout
+        map: Map
+        map_layer: Map Layer
         picture: Picture
         print: Print
         share: Share
-        chart: Chart
-        map: Map
         table: Table
+        title: Title
         vertical_layout: Vertical Layout
-        horizontal_layout: Horizontal Layout
         visualize: Visualize
-        base_map: Base Map
-        map_layer: Map Layer
+      create:
+        create_report: Create Report
+        title: Create Report
+      manage:
+        copy: Copy
+        create_new_report: Create New Report
+        delete: Delete
+        edit: Edit
+        home: Home
+        other_reports: Other Reports
+        owner: owner
+        reports: Reports
+        title: Manage Reports
+        updated: updated
+        your_reports: Your Reports
       permissions:
         title: Report Permissions
       settings:
-        title: Report Settings
         page_title: Report Title
+        title: Report Settings
   plugins:
     fileuploader:
       drop_files: Drop files here to upload
-      upload_a_file: Upload a file
       failed: Failed
+      upload_a_file: Upload a file
     hallo:
       body: Body
-      heading: Heading
-      subheading: Subheading
       bold: bold
+      heading: Heading
       italic: italic
-      undo: Undo
       redo: Redo
+      subheading: Subheading
+      undo: Undo
   screens:
     about:
       actions: Actions
@@ -846,116 +842,116 @@ en:
       visits: Visits
       your: Your Rating
     dataset_edit:
-      title: Edit Dataset
-      upload_accessible: Upload new data accessibly
-      append_and_replace: Append and Replace data
-      replace_data: Replace data
-      headline: What would you like to do with your uploaded data?
       append: Append
+      append_and_replace: Append and Replace data
       append_explain: You would like the uploaded data to added to the end of your dataset. You will be able to choose how your new data maps to your existing columns.
-      replace: Replace
-      replace_explain: You would like all existing data to be removed and replaced with your uploaded data. You will be able to choose how your new data maps to your existing columns. This operation cannot be undone.
-      replace_layer: Replace Layer
       finish:
         headline: Your Dataset has been updated.
         subheadline: Click on Finish to see it!
+      headline: What would you like to do with your uploaded data?
       import_columns:
-        headline: How does the data in &ldquo;<span class="fileName"></span>&rdquo; relate to your dataset?
         destination_column: Destination Column
         destination_data_type: Destination Data Type
+        headline: How does the data in &ldquo;<span class="fileName"></span>&rdquo; relate to your dataset?
       import_warnings:
         see_docs: <strong>Confused?</strong> Please check out our <a href="%{publisher_link}" rel="external">publisher documentation</a> on importing data for a detailed explanation on how the importer handles data.
+      replace: Replace
+      replace_data: Replace data
+      replace_explain: You would like all existing data to be removed and replaced with your uploaded data. You will be able to choose how your new data maps to your existing columns. This operation cannot be undone.
+      replace_layer: Replace Layer
+      title: Edit Dataset
+      upload_accessible: Upload new data accessibly
     dataset_new:
-      title: New Dataset
-      upload_accessible: Upload a new dataset accessibly
       column_template:
         name_this_col: Name this column
-        remove: remove
         options: options
+        remove: remove
       crossload:
-        headline: Please indicate where your data file lives.
-        url_prompt: What's the web URL of the file you'd like to import?
         downloading: Downloading your file...
-        supported: Supported file types are CSV, TSV, and Excel. Supported protocols are HTTP and HTTPS.
+        headline: Please indicate where your data file lives.
         import: Import
+        supported: Supported file types are CSV, TSV, and Excel. Supported protocols are HTTP and HTTPS.
+        url_prompt: What's the web URL of the file you'd like to import?
       finish:
         headline: Your Dataset has been created.
         subheadline: Click on Finish to see it!
       first_page:
-        header: Create a new Dataset
-        prompt: How would you like to create your new Dataset?
+        blobby: Upload a Non-Data File
+        blobby_explain: Choose this if you have a file that has data in it but which cannot be imported, such as a PDF, or an image file. It will be imported into the data catalog, but will not be as interactive as real data.
         create: Design from Scratch
         create_explain: Choose this if you don't already have data you wish to import. You will be able to define a schema for your data, and input it online.
+        external: Link to External Data
+        external_explain: Choose this if you already have data that is being hosted on another server. This data will not be imported.
+        header: Create a new Dataset
         import: Import a Data File
         import_explain: Choose this if you already have a data file on your computer you wish to import. Supported formats are .csv, .tsv, .xls, and .xlsx.
         mapLayer: Connect with an ESRI Map Layer
         mapLayer_explain: Choose this if you have an ESRI map layer which you would like to import into the catalog. You will need to provide a URL to the API point where the ESRI layer is stored.
+        prompt: How would you like to create your new Dataset?
         shapefile: Import Geospatial Data
         shapefile_explain: Choose this if you have geospatial data which you would like to import into the catalog.
-        blobby: Upload a Non-Data File
-        blobby_explain: Choose this if you have a file that has data in it but which cannot be imported, such as a PDF, or an image file. It will be imported into the data catalog, but will not be as interactive as real data.
-        external: Link to External Data
-        external_explain: Choose this if you already have data that is being hosted on another server. This data will not be imported.
       import:
         headline: Where is this file located?
         local: On my computer
         local_explain: Choose this if you have a file that is on the computer you are using.
         web: On the Internet
         web_explain: Choose this if you have a file that is already on the Internet and have the URL for it.
-      importing_your_data: Importing your data...
       import_columns:
-        headline: Specify how &ldquo;<span class="fileName"></span>&rdquo; should be imported.
-        subheadline: Columns to import
-        name: Name
+        add_new_column: Add New Column
+        clear_all: Clear All
         data_type: Data Type
-        source_column: Source Column
-        why_choose_now: Why is it important to choose column types now?
+        errors_warnings: Errors and Warnings
+        fewer_rows: Fewer Rows
+        headers: Headers
+        headers_instructions: Headers should be ignored and not imported as data. Please indicate how many rows of your source file are headers
+        headline: Specify how &ldquo;<span class="fileName"></span>&rdquo; should be imported.
+        help_message: For help, check out a <a href="%{common_errors}" rel="external">list of common warnings and errors</a>.
+        more_rows: More Rows
+        name: Name
         pending_columns: Please wait while we load your columns...
         reset_to_preset: Reset to preset
+        set: Set
+        source_column: Source Column
+        subheadline: Columns to import
+        suggested_alltext: All columns as text
         suggested_columns: Suggested columns
         suggested_flat: Suggested columns (no composites)
         suggested_plus_discrete: Suggested columns (composites and discrete)
-        suggested_alltext: All columns as text
-        set: Set
-        clear_all: Clear All
-        add_new_column: Add New Column
-        headers: Headers
-        headers_instructions: Headers should be ignored and not imported as data. Please indicate how many rows of your source file are headers
-        more_rows: More Rows
-        fewer_rows: Fewer Rows
-        errors_warnings: Errors and Warnings
-        help_message: For help, check out a <a href="%{common_errors}" rel="external">list of common warnings and errors</a>.
+        why_choose_now: Why is it important to choose column types now?
       import_help: <strong>Need help?</strong> We maintain a <a href="%{common_errors}" rel="external">list of common warnings and errors</a> that may help you.
       import_shapefile:
+        crs: Coordinate Reference System
         headline: Specify how &ldquo;<span class="fileName"></span>&rdquo; should be imported.
-        subheadline: This shapefile contains <span class="featureCount"></span> features in <span class="layerCount"></span> layers.
         layers_list: Layers to import
         name: Name
-        crs: Coordinate Reference System
         pending: Please wait while we load your layers...
+        subheadline: This shapefile contains <span class="featureCount"></span> features in <span class="layerCount"></span> layers.
       import_warnings:
         headline: Warnings during import
-        subheadline: Please note that some of your data may not have imported correctly.
         see_docs: <strong>Confused?</strong> Please check out our <a href="%{publisher_link}" rel="external">publisher documentation</a> on importing data for a detailed explanation on how the importer handles data. You may also want to refer to our <a href="%{common_errors}" rel="external">list of common warnings and errors</a>.
+        subheadline: Please note that some of your data may not have imported correctly.
+      importing_your_data: Importing your data...
       metadata:
-        prompt: Please describe your data.
         creative_commons_type: Creative Commons Type
         esri_map_layer_url: ESRI Map Layer URL
         esri_source_url: Enter the source URL
         privacy_security: Privacy & Security
-        public_explain: 'My data is <strong>public</strong>: it can only be modified by me, but everyone can view it'
         private_explain: My data is <strong>private</strong>
+        prompt: Please describe your data.
+        public_explain: ! 'My data is <strong>public</strong>: it can only be modified by me, but everyone can view it'
       processing: Processing...
+      title: New Dataset
+      upload_accessible: Upload a new dataset accessibly
       upload_file:
-        no_file_selected: No file selected yet.
         choose_a_file: Choose a File
-        uploading: Uploading your file...
+        no_file_selected: No file selected yet.
         supported_blist: Supported formats are .csv, .tsv, .xls, and .xlsx.
         supported_shapefile: Supported formats are .kml, .kmz, and .zip (ESRI Shapefile).
+        uploading: Uploading your file...
       why_choose_now:
+        close: Close
         line_1: Your data is heavily processed when it is imported, and optimized for consumption for each particular data type. In addition, most data types have special features that will only be activated should the column be set to that type &mdash; location columns, for example, are necessary to create maps.
         line_2: It is possible to change column types later, but it is a process that takes some time, so it's best to set it all properly up front.
-        close: Close
     ds:
       bar:
         api_unsavable: API views cannot be modified
@@ -1811,26 +1807,26 @@ en:
         account_tooltip: Your Home
         administration: Administration
     import_pane:
-      headline_import: Please choose a file to import
-      headline_upload: Please choose a file to upload
       analyzing: Analyzing your file...
-      uploading: Uploading your file
+      assure_accessible: Please ensure that your file is accessible and valid and try again.
+      combine_multiple_cols: (Combine Multiple Columns...)
+      downloading: Downloading your file...
       filetype_error_blist: Please choose a CSV, TSV, XLS, or XLSX file.
       filetype_error_shapefile: Please choose a KML, KMZ, or ZIP file.
-      problem_uploading: There was a problem uploading that file. Please make sure it is valid.
-      problem_importing: There was a problem importing that file. Please make sure it is valid.
-      no_file_selected: No file selected yet.
-      downloading: Downloading your file...
-      unknown_error: An unknown error has occurred
-      assure_accessible: Please ensure that your file is accessible and valid and try again.
-      no_source_column: (No Source Column)
-      combine_multiple_cols: (Combine Multiple Columns...)
-      try_again: Please try again in a bit.
-      rows_imported: '%{num} rows imported so far.'
+      headline_import: Please choose a file to import
+      headline_upload: Please choose a file to upload
       layer: Layer
+      many_headers: ! '%{num} of your rows are headers.'
+      no_file_selected: No file selected yet.
       no_headers: None of your rows are headers.
+      no_source_column: (No Source Column)
       one_header: One of your rows is a header.
-      many_headers: '%{num} of your rows are headers.'
+      problem_importing: There was a problem importing that file. Please make sure it is valid.
+      problem_uploading: There was a problem uploading that file. Please make sure it is valid.
+      rows_imported: ! '%{num} rows imported so far.'
+      try_again: Please try again in a bit.
+      unknown_error: An unknown error has occurred
+      uploading: Uploading your file
     link_account:
       success: Your external account has been linked.
     profile:
@@ -2002,8 +1998,8 @@ en:
     wizard:
       cancel: Cancel
       finish: Finish
-      previous: Previous
       next: Next
+      previous: Previous
   support:
     array:
       last_word_connector: ! ', and '

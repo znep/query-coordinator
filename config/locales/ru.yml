@@ -116,7 +116,9 @@ ru:
         timeout: Извините. В настоящее время результаты извлечь невозможно. Попробуйте позже.
       row_results:
         less_link: Меньше
+        matching_rows: соответствующие строки
         more_link: Больше
+        no_matching_rows: Нет соответствующих строк.
         title_html: ! 'Показано <span class="rowResultCountText"></span> из <span class="totalResultCountText"></span> подходящих строк <a href="#" class="rowSearchLink">(смотреть результаты)</a>:'
       search: Поиск
       sort_period_title: Период сортировки
@@ -274,6 +276,8 @@ ru:
         simplified_header: Абоненты будут начинать работу с упрощенного режима.
         simplified_toggle: Изменить стандартную установку снова на расширенный режим.
       main:
+        base_explanation: 
+        base_info: 
         filter: Фильтр
         filter_based_on_contents: Фильтровать этот массив данных по содержанию.
         no_conditions: Критерии еще не определены.
@@ -400,6 +404,18 @@ ru:
       stackedcolumn: Многоярусная прямоугольная диаграмма
       timeline: Временная ось
       treemap: Древовидная карта
+    chart_types_short:
+      area: 
+      bar: 
+      bubble: 
+      column: 
+      donut: 
+      line: 
+      pie: 
+      stackedbar: 
+      stackedcolumn: 
+      timeline: 
+      treemap: 
     data_types:
       calendar_date: Дата и время
       checkbox: Окно флажка
@@ -550,15 +566,27 @@ ru:
       roadmap: Карта автомобильных дорог
       satellite: Спутниковая карта
       terrain: Карта рельефа
+    no_js: 
+    numbers:
+      eight: 
+      five: 
+      four: 
+      nine: 
+      seven: 
+      six: 
+      three: 
     or: или
     pagination:
+      current_page: 
       first_page: Первая страница
       last_page: Последняя страница
       next_page: Следующая страница
+      page: 
       previous_page: Предыдущая страница
     precision_style:
       scientific: Научный (1.0204e+3)
       standard: Стандартный (1020.4)
+    required: 
     share_types:
       contributor: Автор
       owner: Владелец
@@ -606,6 +634,87 @@ ru:
     visibility:
       private: ограниченного доступа
       public: общедоступный
+  dataslate:
+    component:
+      header:
+        height: 
+      invalid_config: 
+      loading: 
+      picture:
+        alt_attr: 
+        alt_attr_prompt: 
+        full_url: 
+        image_source: 
+        large: 
+        medium: 
+        original: 
+        thumb: 
+        tiny: 
+        title_attr: 
+        title_attr_prompt: 
+      print:
+        print: 
+        print_this_page: 
+      remove: 
+      share:
+        email: 
+        email_contents: 
+        facebook: 
+        share: 
+        subscribe: 
+        subscribe_text: 
+        this_page: 
+        tweet_contents: 
+        twitter: 
+    configurator:
+      advanced_components: 
+      report_components: 
+    context_picker:
+      select_dataset: 
+      view_data: 
+    create:
+      cancel: 
+      create: 
+      create_page: 
+      page_settings: 
+      page_title: 
+      page_url: 
+      title: 
+    edit:
+      editing: 
+      permissions: 
+      preview_page: 
+      redo: 
+      revert: 
+      save: 
+      save_as: 
+      settings: 
+      undo: 
+      view_editor: 
+    edit_component:
+      no_config: 
+      subtitle: 
+      title: 
+    edit_properties:
+      no_data: 
+      subtitle: 
+      title: 
+    permissions:
+      cancel: 
+      private: 
+      private_desc: 
+      public: 
+      public_desc: 
+      save: 
+      shared: 
+      shared_desc: 
+      title: 
+    settings:
+      cancel: 
+      page_title: 
+      page_url: 
+      save: 
+      title: 
   error:
     back: Вернуться
     error_500:
@@ -630,9 +739,64 @@ ru:
       header:
         links:
           account: 
+          account_options: 
           account_tooltip: 
+          configuration: 
+          data: 
+          goals: 
+          home: 
           my_goals: 
           my_goals_tooltip: 
+          reports: 
+    reports:
+      component:
+        base_map: 
+        chart: 
+        formatted_text: 
+        header: 
+        horizontal_layout: 
+        map: 
+        map_layer: 
+        picture: 
+        print: 
+        share: 
+        table: 
+        title: 
+        vertical_layout: 
+        visualize: 
+      create:
+        create_report: 
+        title: 
+      manage:
+        copy: 
+        create_new_report: 
+        delete: 
+        edit: 
+        home: 
+        other_reports: 
+        owner: 
+        reports: 
+        title: 
+        updated: 
+        your_reports: 
+      permissions:
+        title: 
+      settings:
+        page_title: 
+        title: 
+  plugins:
+    fileuploader:
+      drop_files: 
+      failed: 
+      upload_a_file: 
+    hallo:
+      body: 
+      bold: 
+      heading: 
+      italic: 
+      redo: 
+      subheading: 
+      undo: 
   screens:
     about:
       actions: Действия
@@ -677,6 +841,117 @@ ru:
       view_statistics: Показать статистику
       visits: Количество посещений
       your: Ваша оценка
+    dataset_edit:
+      append: 
+      append_and_replace: 
+      append_explain: 
+      finish:
+        headline: 
+        subheadline: 
+      headline: 
+      import_columns:
+        destination_column: 
+        destination_data_type: 
+        headline: 
+      import_warnings:
+        see_docs: 
+      replace: 
+      replace_data: 
+      replace_explain: 
+      replace_layer: 
+      title: 
+      upload_accessible: 
+    dataset_new:
+      column_template:
+        name_this_col: 
+        options: 
+        remove: 
+      crossload:
+        downloading: 
+        headline: 
+        import: 
+        supported: 
+        url_prompt: 
+      finish:
+        headline: 
+        subheadline: 
+      first_page:
+        blobby: 
+        blobby_explain: 
+        create: 
+        create_explain: 
+        external: 
+        external_explain: 
+        header: 
+        import: 
+        import_explain: 
+        mapLayer: 
+        mapLayer_explain: 
+        prompt: 
+        shapefile: 
+        shapefile_explain: 
+      import:
+        headline: 
+        local: 
+        local_explain: 
+        web: 
+        web_explain: 
+      import_columns:
+        add_new_column: 
+        clear_all: 
+        data_type: 
+        errors_warnings: 
+        fewer_rows: 
+        headers: 
+        headers_instructions: 
+        headline: 
+        help_message: 
+        more_rows: 
+        name: 
+        pending_columns: 
+        reset_to_preset: 
+        set: 
+        source_column: 
+        subheadline: 
+        suggested_alltext: 
+        suggested_columns: 
+        suggested_flat: 
+        suggested_plus_discrete: 
+        why_choose_now: 
+      import_help: 
+      import_shapefile:
+        crs: 
+        headline: 
+        layers_list: 
+        name: 
+        pending: 
+        subheadline: 
+      import_warnings:
+        headline: 
+        see_docs: 
+        subheadline: 
+      importing_your_data: 
+      metadata:
+        creative_commons_type: 
+        esri_map_layer_url: 
+        esri_source_url: 
+        privacy_security: 
+        private_explain: 
+        prompt: 
+        public_explain: 
+      processing: 
+      title: 
+      upload_accessible: 
+      upload_file:
+        choose_a_file: 
+        no_file_selected: 
+        supported_blist: 
+        supported_shapefile: 
+        uploading: 
+      why_choose_now:
+        close: 
+        line_1: 
+        line_2: 
     ds:
       bar:
         api_unsavable: Виды из ППИ нельзя изменять
@@ -993,6 +1268,7 @@ ru:
           marker:
             add_button: 
             caption: Надпись
+            marker_title: 
             new_marker_button: Добавить маркер
             title: ! '%{axis} Маркер'
             value: При значении
@@ -1467,6 +1743,8 @@ ru:
       dataset_title: Имя массива данных
       dataset_title_error: У набора данных должно быть название.
       dataset_title_prompt: Ввести название
+      dataset_url: 
+      dataset_url_prompt: 
       delete: Удалить
       email_address: Адрес эл. почты
       email_help: Данный адрес не будет отображаться публично. Если это поле не заполняется, по умолчанию будет введен ваш адрес.
@@ -1528,6 +1806,27 @@ ru:
         account_html: Здравствуйте, <span class="currentUser"></span>
         account_tooltip: Домашняя Страница
         administration: Администрирование
+    import_pane:
+      analyzing: 
+      assure_accessible: 
+      combine_multiple_cols: 
+      downloading: 
+      filetype_error_blist: 
+      filetype_error_shapefile: 
+      headline_import: 
+      headline_upload: 
+      layer: 
+      many_headers: 
+      no_file_selected: 
+      no_headers: 
+      no_source_column: 
+      one_header: 
+      problem_importing: 
+      problem_uploading: 
+      rows_imported: 
+      try_again: 
+      unknown_error: 
+      uploading: 
     link_account:
       success: Ваша внешняя учетная запись подключена.
     profile:
@@ -1696,6 +1995,11 @@ ru:
       third_party_return: Прежде чем использовать эти данные (имя и пароль), вы должны
       third_party_return_create: создать регистрационную запись в системе Socrata
       third_party_return_link: связать ее с действующим регистрационным именем в системе Socrata
+    wizard:
+      cancel: 
+      finish: 
+      next: 
+      previous: 
   support:
     array:
       last_word_connector: ! ', и '

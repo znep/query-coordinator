@@ -116,7 +116,9 @@ es:
         timeout: Lo sentimos. Los resultados no se pueden  recuperar en este momento. Por favor, trate de nuevo más tarde.
       row_results:
         less_link: Menos
+        matching_rows: Buscando para filas coincidentes
         more_link: Más
+        no_matching_rows: No filas coincidentes.
         title_html: ! 'Mostrar <span class="rowResultCountText"></span> de <span class="totalResultCountText"></span> filas coincidentes <a href="#" class="rowSearchLink">(ver resultados)</a>:'
       search: Búsqueda
       sort_period_title: Periodo de clasificación
@@ -274,6 +276,8 @@ es:
         simplified_header: Los usuarios comenzarán en el modo simplificado.
         simplified_toggle: Cambiar la opción predeterminada de volver a avanzado.
       main:
+        base_explanation: 
+        base_info: 
         filter: Filtrar
         filter_based_on_contents: Filtrar este conjunto de datos basado en los contenidos.
         no_conditions: No se han definido las condiciones aún.
@@ -408,6 +412,18 @@ es:
       stackedcolumn: Gráfico  de columnas apiladas
       timeline: Línea de tiempo
       treemap: Mapa de árbol
+    chart_types_short:
+      area: 
+      bar: 
+      bubble: 
+      column: 
+      donut: 
+      line: 
+      pie: 
+      stackedbar: 
+      stackedcolumn: 
+      timeline: 
+      treemap: 
     data_types:
       calendar_date: Fecha y hora
       checkbox: Casilla de verificación
@@ -558,15 +574,27 @@ es:
       roadmap: Mapa de carreteras
       satellite: Satélite
       terrain: Terreno
+    no_js: 
+    numbers:
+      eight: 
+      five: 
+      four: 
+      nine: 
+      seven: 
+      six: 
+      three: 
     or: o
     pagination:
+      current_page: 
       first_page: Primera página
       last_page: Última página
       next_page: Página siguiente
+      page: 
       previous_page: Página anterior
     precision_style:
       scientific: Científico (1.0204e+3)
       standard: Estándar (1020.4)
+    required: 
     share_types:
       contributor: Colaborador
       owner: Dueño
@@ -614,6 +642,87 @@ es:
     visibility:
       private: privado
       public: público
+  dataslate:
+    component:
+      header:
+        height: 
+      invalid_config: 
+      loading: 
+      picture:
+        alt_attr: 
+        alt_attr_prompt: 
+        full_url: 
+        image_source: 
+        large: 
+        medium: 
+        original: 
+        thumb: 
+        tiny: 
+        title_attr: 
+        title_attr_prompt: 
+      print:
+        print: 
+        print_this_page: 
+      remove: 
+      share:
+        email: 
+        email_contents: 
+        facebook: 
+        share: 
+        subscribe: 
+        subscribe_text: 
+        this_page: 
+        tweet_contents: 
+        twitter: 
+    configurator:
+      advanced_components: 
+      report_components: 
+    context_picker:
+      select_dataset: 
+      view_data: 
+    create:
+      cancel: 
+      create: 
+      create_page: 
+      page_settings: 
+      page_title: 
+      page_url: 
+      title: 
+    edit:
+      editing: 
+      permissions: 
+      preview_page: 
+      redo: 
+      revert: 
+      save: 
+      save_as: 
+      settings: 
+      undo: 
+      view_editor: 
+    edit_component:
+      no_config: 
+      subtitle: 
+      title: 
+    edit_properties:
+      no_data: 
+      subtitle: 
+      title: 
+    permissions:
+      cancel: 
+      private: 
+      private_desc: 
+      public: 
+      public_desc: 
+      save: 
+      shared: 
+      shared_desc: 
+      title: 
+    settings:
+      cancel: 
+      page_title: 
+      page_url: 
+      save: 
+      title: 
   error:
     back: ! 'Volver '
     error_500:
@@ -638,9 +747,64 @@ es:
       header:
         links:
           account: 
+          account_options: 
           account_tooltip: 
+          configuration: 
+          data: 
+          goals: 
+          home: 
           my_goals: 
           my_goals_tooltip: 
+          reports: 
+    reports:
+      component:
+        base_map: 
+        chart: 
+        formatted_text: 
+        header: 
+        horizontal_layout: 
+        map: 
+        map_layer: 
+        picture: 
+        print: 
+        share: 
+        table: 
+        title: 
+        vertical_layout: 
+        visualize: 
+      create:
+        create_report: 
+        title: 
+      manage:
+        copy: 
+        create_new_report: 
+        delete: 
+        edit: 
+        home: 
+        other_reports: 
+        owner: 
+        reports: 
+        title: 
+        updated: 
+        your_reports: 
+      permissions:
+        title: 
+      settings:
+        page_title: 
+        title: 
+  plugins:
+    fileuploader:
+      drop_files: 
+      failed: 
+      upload_a_file: 
+    hallo:
+      body: 
+      bold: 
+      heading: 
+      italic: 
+      redo: 
+      subheading: 
+      undo: 
   screens:
     about:
       actions: Acciones
@@ -685,6 +849,117 @@ es:
       view_statistics: Ver estadísticas
       visits: Visitas
       your: Su calificación
+    dataset_edit:
+      append: 
+      append_and_replace: 
+      append_explain: 
+      finish:
+        headline: 
+        subheadline: 
+      headline: 
+      import_columns:
+        destination_column: 
+        destination_data_type: 
+        headline: 
+      import_warnings:
+        see_docs: 
+      replace: 
+      replace_data: 
+      replace_explain: 
+      replace_layer: 
+      title: 
+      upload_accessible: 
+    dataset_new:
+      column_template:
+        name_this_col: 
+        options: 
+        remove: 
+      crossload:
+        downloading: 
+        headline: 
+        import: 
+        supported: 
+        url_prompt: 
+      finish:
+        headline: 
+        subheadline: 
+      first_page:
+        blobby: 
+        blobby_explain: 
+        create: 
+        create_explain: 
+        external: 
+        external_explain: 
+        header: 
+        import: 
+        import_explain: 
+        mapLayer: 
+        mapLayer_explain: 
+        prompt: 
+        shapefile: 
+        shapefile_explain: 
+      import:
+        headline: 
+        local: 
+        local_explain: 
+        web: 
+        web_explain: 
+      import_columns:
+        add_new_column: 
+        clear_all: 
+        data_type: 
+        errors_warnings: 
+        fewer_rows: 
+        headers: 
+        headers_instructions: 
+        headline: 
+        help_message: 
+        more_rows: 
+        name: 
+        pending_columns: 
+        reset_to_preset: 
+        set: 
+        source_column: 
+        subheadline: 
+        suggested_alltext: 
+        suggested_columns: 
+        suggested_flat: 
+        suggested_plus_discrete: 
+        why_choose_now: 
+      import_help: 
+      import_shapefile:
+        crs: 
+        headline: 
+        layers_list: 
+        name: 
+        pending: 
+        subheadline: 
+      import_warnings:
+        headline: 
+        see_docs: 
+        subheadline: 
+      importing_your_data: 
+      metadata:
+        creative_commons_type: 
+        esri_map_layer_url: 
+        esri_source_url: 
+        privacy_security: 
+        private_explain: 
+        prompt: 
+        public_explain: 
+      processing: 
+      title: 
+      upload_accessible: 
+      upload_file:
+        choose_a_file: 
+        no_file_selected: 
+        supported_blist: 
+        supported_shapefile: 
+        uploading: 
+      why_choose_now:
+        close: 
+        line_1: 
+        line_2: 
     ds:
       bar:
         api_unsavable: Las vistas de API no se pueden cambiar
@@ -1001,6 +1276,7 @@ es:
           marker:
             add_button: 
             caption: ! 'Pie '
+            marker_title: 
             new_marker_button: Añadir marcador
             title: ! 'Marcador %{axis} '
             value: A un valor
@@ -1475,6 +1751,8 @@ es:
       dataset_title: Titulo de Metadatos
       dataset_title_error: El conjunto de datos debe tener título.
       dataset_title_prompt: Introduzca un título
+      dataset_url: 
+      dataset_url_prompt: 
       delete: Borrar
       email_address: Dirección de Correo Electrónico
       email_help: Esta dirección no se mostrará públicamente. Si se deja en blanco, su dirección aparecerá por defecto
@@ -1536,6 +1814,27 @@ es:
         account_html: Hola, <span class="currentUser"></span>
         account_tooltip: Su Página de inicio
         administration: Administración
+    import_pane:
+      analyzing: 
+      assure_accessible: 
+      combine_multiple_cols: 
+      downloading: 
+      filetype_error_blist: 
+      filetype_error_shapefile: 
+      headline_import: 
+      headline_upload: 
+      layer: 
+      many_headers: 
+      no_file_selected: 
+      no_headers: 
+      no_source_column: 
+      one_header: 
+      problem_importing: 
+      problem_uploading: 
+      rows_imported: 
+      try_again: 
+      unknown_error: 
+      uploading: 
     link_account:
       success: Su cuenta externa ha sido vinculada.
     profile:
@@ -1704,6 +2003,11 @@ es:
       third_party_return: ! 'Antes de usar estas credenciales usted debe:'
       third_party_return_create: crear una cuenta en Socrata
       third_party_return_link: enlazarlas a una identificación de Socrata existente
+    wizard:
+      cancel: 
+      finish: 
+      next: 
+      previous: 
   support:
     array:
       last_word_connector: ! ', y'

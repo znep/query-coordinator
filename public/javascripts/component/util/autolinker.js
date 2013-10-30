@@ -1,6 +1,8 @@
 ;(function() {
     var autolinkerNS = blist.namespace.fetch('blist.util.autolinker');
 
+    // Taken from this fine establishment:
+    // http://daringfireball.net/2010/07/improved_regex_for_matching_urls
     autolinkerNS.urlMatcher = /\b((?:[a-z][\w-]+:(?:\/{1,3}|[a-z0-9%])|www\d{0,3}[.]|[a-z0-9.\-]+[.][a-z]{2,4}\/)(?:[^\s()<>]+|\(([^\s()<>]+|(\([^\s()<>]+\)))*\))+(?:\(([^\s()<>]+|(\([^\s()<>]+\)))*\)|[^\s`!()\[\]{};:'".,<>?«»“”‘’]))/ig;
     autolinkerNS.hasProtocolMatcher = /[a-z][\w-]+:(?:\/{1,3}|[a-z0-9%])/;
 
@@ -16,8 +18,6 @@
 
         var linkifyPlainText = function(plainText)
         {
-            // Taken from this fine establishment:
-            // http://daringfireball.net/2010/07/improved_regex_for_matching_urls
             var linkifiedHtml = plainText.replace(autolinkerNS.urlMatcher, function(matchedSubstring)
             {
                 var linkUrl;

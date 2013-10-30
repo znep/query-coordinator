@@ -19,9 +19,10 @@ mixpanel.delegate_links = function (parent, selector, event_name, getProperties)
             var willOpenInNewTab = event.which === 2 || event.metaKey || event.currentTarget.target === '_blank';
             properties.url = event.currentTarget.href;
 
+            var isDefaultPrevented = event.isDefaultPrevented();
             var callback = function()
             {
-                if (!willOpenInNewTab)
+                if (!willOpenInNewTab && !isDefaultPrevented)
                 {
                     window.location = properties.url;
                 }
@@ -39,7 +40,8 @@ mixpanel.delegate_links = function (parent, selector, event_name, getProperties)
         }
         catch(e)
         {
-            window.location = event.currentTarget.href;
+            if (!isDefaultPrevented)
+            { window.location = event.currentTarget.href; }
             throw e;
         }
     });

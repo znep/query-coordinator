@@ -845,6 +845,26 @@ en:
       view_statistics: View Statistics
       visits: Visits
       your: Your Rating
+    dataset_edit:
+      title: Edit Dataset
+      upload_accessible: Upload new data accessibly
+      append_and_replace: Append and Replace data
+      replace_data: Replace data
+      headline: What would you like to do with your uploaded data?
+      append: Append
+      append_explain: You would like the uploaded data to added to the end of your dataset. You will be able to choose how your new data maps to your existing columns.
+      replace: Replace
+      replace_explain: You would like all existing data to be removed and replaced with your uploaded data. You will be able to choose how your new data maps to your existing columns. This operation cannot be undone.
+      replace_layer: Replace Layer
+      finish:
+        headline: Your Dataset has been updated.
+        subheadline: Click on Finish to see it!
+      import_columns:
+        headline: How does the data in &ldquo;<span class="fileName"></span>&rdquo; relate to your dataset?
+        destination_column: Destination Column
+        destination_data_type: Destination Data Type
+      import_warnings:
+        see_docs: <strong>Confused?</strong> Please check out our <a href="%{publisher_link}" rel="external">publisher documentation</a> on importing data for a detailed explanation on how the importer handles data.
     dataset_new:
       title: New Dataset
       upload_accessible: Upload a new dataset accessibly

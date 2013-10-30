@@ -177,8 +177,8 @@
         <%- prefix = page + '.import_shapefile' -%>
         <li class="importShapefilePane" data-wizardpanename="importShapefile">
           <div class="flash"></div>
-          <p class="headline"><%= t("#{prefix}.headline") %></p>
-          <p class="subheadline"><%= t("#{prefix}.subheadline") %></p>
+          <p class="headline"><%= raw t("#{prefix}.headline") %></p>
+          <p class="subheadline"><%= raw t("#{prefix}.subheadline") %></p>
 
           <h2><%= t("#{prefix}.layers_list") %></h2>
           <div class="layersListHeader importListHeader clearfix">

@@ -9,41 +9,40 @@ $(document).ready(function()
 
 mixpanel.delegate_links = function (parent, selector, event_name, getProperties)
 {
-    // This is breaking all Javascript-hooked URLs
-//    $(parent || document.body).on('click', selector, function (event)
-//    {
-//        try
-//        {
-//            //get the specific properties for the event
-//            var properties = _.isFunction(getProperties) ? getProperties(event.currentTarget) : {};
-//
-//            var willOpenInNewTab = event.which === 2 || event.metaKey || event.currentTarget.target === '_blank';
-//            properties.url = event.currentTarget.href;
-//
-//            var callback = function()
-//            {
-//                if (!willOpenInNewTab)
-//                {
-//                    window.location = properties.url;
-//                }
-//            }
-//
-//            if (!willOpenInNewTab)
-//            {
-//                event.preventDefault();
-//            }
-//            //update the meta properties
-//            $.mixpanelMeta();
-//
-//            //Track!
-//            mixpanel.track(event_name, properties, callback);
-//        }
-//        catch(e)
-//        {
-//            window.location = event.currentTarget.href;
-//            throw e;
-//        }
-//    });
+    $(parent || document.body).on('click', selector, function (event)
+    {
+        try
+        {
+            //get the specific properties for the event
+            var properties = _.isFunction(getProperties) ? getProperties(event.currentTarget) : {};
+
+            var willOpenInNewTab = event.which === 2 || event.metaKey || event.currentTarget.target === '_blank';
+            properties.url = event.currentTarget.href;
+
+            var callback = function()
+            {
+                if (!willOpenInNewTab)
+                {
+                    window.location = properties.url;
+                }
+            }
+
+            if (!willOpenInNewTab)
+            {
+                event.preventDefault();
+            }
+            //update the meta properties
+            $.mixpanelMeta();
+
+            //Track!
+            mixpanel.track(event_name, properties, callback);
+        }
+        catch(e)
+        {
+            window.location = event.currentTarget.href;
+            throw e;
+        }
+    });
 };
 
 //HEADER

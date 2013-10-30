@@ -1826,11 +1826,11 @@ en:
       no_source_column: (No Source Column)
       combine_multiple_cols: (Combine Multiple Columns...)
       try_again: Please try again in a bit.
-      rows_imported: %{num} rows imported so far.
+      rows_imported: '%{num} rows imported so far.'
       layer: Layer
       no_headers: None of your rows are headers.
       one_header: One of your rows is a header.
-      many_headers: %{num} of your rows are headers.
+      many_headers: '%{num} of your rows are headers.'
     link_account:
       success: Your external account has been linked.
     profile:

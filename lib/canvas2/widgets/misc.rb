@@ -1,3 +1,5 @@
+# encoding: UTF-8
+
 module Canvas2
   class Title < CanvasWidget
     def initialize(props, parent = nil, resolver_context = nil)
@@ -50,6 +52,12 @@ module Canvas2
 
     def render_contents
       markdown = string_substitute(@properties['markdown'])
+      url_matcher = /\b((?:[a-z][\w-]+:(?:\/{1,3}|[a-z0-9%])|www\d{0,3}[.]|[a-z0-9.\-]+[.][a-z]{2,4}\/)(?:[^\s()<>]+|\(([^\s()<>]+|(\([^\s()<>]+\)))*\))+(?:\(([^\s()<>]+|(\([^\s()<>]+\)))*\)|[^\s`!()\[\]{};:'".,<>?«»“”‘’]))/i
+
+      markdown = markdown.gsub(url_matcher) do |matched_substring|
+        matched_substring.gsub("_", "\\_")
+      end
+
       safe_markdown = strip_html_from_markdown(markdown)
       unsafe_html_result = convert_markdown_to_html(safe_markdown)
       safe_html_result = sanitize_html(unsafe_html_result)

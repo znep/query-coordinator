@@ -124,7 +124,7 @@
                 var request = { address: where.address };
                 if (where.bounds)
                 {
-                    requestr.bounds = new google.maps.LatLngBounds(
+                    request.bounds = new google.maps.LatLngBounds(
                         new google.maps.LatLng(where.bounds.ymin,where.bounds.xmin),
                         new google.maps.LatLng(where.bounds.ymax,where.bounds.xmax));
                 }

@@ -503,7 +503,7 @@
                 if (!$commentLink)
                 {
                     $commentLink = $('<a href="#Comments" class="commentLink feed" ' +
-                        'title="View comments for this cell"><span class="icon"></span></a>');
+                        'title="' + $.t('controls.grid.view_cell_comments') + '"><span class="icon"></span></a>');
                 }
                 $commentLink.data('rowId', row.id);
                 $commentLink.data('tableColumnId', column.tableColumnId);
@@ -2581,7 +2581,7 @@
                         html.push('<div class="', getColumnClass(col),
                                 ' blist-td blist-tdh blist-column-adder">',
                                 '<div class="blist-column-adder-icon" ',
-                                'title="Add a new column..."></div></div>');
+                                'title="' + $.t('controls.grid.add_column') + '"></div></div>');
                     }
                 }
 
@@ -2611,7 +2611,7 @@
                         html.push('<div class="', getColumnClass(col),
                                 ' blist-td blist-tdh blist-column-adder">',
                                 '<div class="blist-column-adder-icon" ',
-                                'title="Add a new column..."></div></div>');
+                                'title="' + $.t('controls.grid.add_column') + '"></div></div>');
                     }
                 }
             }
@@ -2904,13 +2904,14 @@
                     renderer: function(html, index, renderIndex, row)
                     {
                         row.type == 'blank' ? html.push($.t('controls.grid.new_row')) :
-                            row.noMatch ? html.push('<span title="This row does ',
-                             'not match the current filter">X</span>') :
+                            row.noMatch ? html.push('<span title="'
+                            + $.t('controls.grid.row_does_not_match') + '">X</span>') :
                              html.push('<a href="', model.view.url, '/', row.id, '" ',
-                             'title="View row" class="noInterstitial noRedirPrompt">',
+                             'title="' + $.t('controls.grid.view_row') +
+                             '" class="noInterstitial noRedirPrompt">',
                              (renderIndex + 1), '</a>');
                     },
-                    footerText: 'Totals'});
+                    footerText: $.t('controls.grid.totals')});
                 addColumnStyle(rowNumberColumn);
             }
             if (options.showRowHandle)
@@ -3367,7 +3368,7 @@
                     options.generateHeights ? ' style="height: ' +
                     rowOffset + 'px"' : '',
                     '></div>',
-                    '<div class="sort sort-desc" title="Sort ascending"',
+                    '<div class="sort sort-desc" title="' + $.t('controls.grid.sort_ascending') + '"',
                     options.generateHeights ? ' style="height: ' +
                         rowOffset + 'px"' : '',
                     '></div>',
@@ -3381,7 +3382,7 @@
                     ghostClass, '">' +
                     (options.showAddColumns ?
                         '<div class="blist-column-adder add-column" ' +
-                        'title="Add a new column..."></div>' : '') +
+                        'title="' + $.t('controls.grid.add_column') + '"></div>' : '') +
                     '<div class="indicator-container"></div>' +
                     '</div>');
             }

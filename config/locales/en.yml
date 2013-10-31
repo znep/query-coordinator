@@ -296,6 +296,7 @@ en:
         show_suggested: Show suggested values
         title: Options
     grid:
+      add_column: Add a new column...
       clear_column_filter: Clear Column Filter
       clear_sort: Clear Sort
       click_for_menu: Click for Menu
@@ -315,10 +316,13 @@ en:
       previous: Previous
       sort_ascending: Sort Ascending
       sort_descending: Sort Descending
+      totals: Totals
+      view_cell_comments: View comments for this cell
       view_first_row: View first row
       view_last_row: View last row
       view_next_row: View next row
       view_previous_row: View previous row
+      view_row: View row
       view_single_row: View Single Row Data
       viewing_row_html: Viewing row <span class="curPage"></span> of <span class="totalPages"></span>
     nominate:

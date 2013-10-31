@@ -715,7 +715,7 @@ $.Control.registerMixin('d3_impl_bar', {
 
                 _.each(valueColumns, function(vc, i)
                 {
-                    if (okToAdd && !$.isBlank(row[vc.column.lookup]) && !row.invalid[vc.column.lookup])
+                    if (okToAdd && !$.isBlank(row.data[vc.column.lookup]) && !row.invalid[vc.column.lookup])
                     {
                         cubedData.push(new augmentedRow(i));
                         okToAdd = !cc.stackYSeries;

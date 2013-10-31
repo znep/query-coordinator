@@ -84,6 +84,9 @@
   <div class="dataGridWrapper">
     <%- if is_grid -%>
       <%= raw RenderType.table_html('dataGrid', @viewable_columns, @data, @view, (@page - 1) * @per_page, @aggregates) %>
+      <%- if @row_count == 0 -%>
+        <span class='noDataMessage'><%= t('controls.grid.no_rows') =%></span>
+      <%- end -%>
     <%- elsif is_form -%>
       <%= render(:partial => 'displays/form_view') %>
     <%- else -%>

@@ -52,6 +52,7 @@ Frontend::Application.routes do
       match '/stat/goals/:dashboard_id/edit', :as => 'govstat_dashboard_edit'
       match '/stat/goals/:dashboard_id/:category_id/:goal_id', :as => 'govstat_goal'
       match '/stat/goals/:dashboard_id/:category_id/:goal_id/edit', :as => 'govstat_goal_edit'
+      match '/stat/data', :as => 'govstat_data'
     end
 
     # TEMPORARY HACK for edmonton

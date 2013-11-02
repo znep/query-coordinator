@@ -656,6 +656,9 @@ $chartHeight: 210px
       .marker
         @include transition(2s, opacity)
 
+      .yTick, .xTick
+        @include transitions(opacity 2s, visibility 2s)
+
     &.hasChart
       .measurePull, .measureChart
         display: block
@@ -668,6 +671,9 @@ $chartHeight: 210px
 
       .marker, .yTick, .xTick
         @include opacity(0)
+
+      .yTick
+        visibility: hidden
 
       .projectionLineShadow, .projectionLine, .burndownLineLowShadow, .burndownLineHighShadow, .burndownLine
         stroke-opacity: 0

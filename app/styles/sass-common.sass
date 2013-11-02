@@ -96,6 +96,12 @@ $federated_background_color: #f0f0f0
   -moz-box-shadow: none
   -webkit-box-shadow: none
 
+@mixin transitions($spec...)
+  transition: $spec
+  -moz-transition: $spec
+  -webkit-transition: $spec
+  -o-transition: $spec
+
 @mixin transition($duration, $property)
   @include transition-duration($duration)
   @include transition-property($property)

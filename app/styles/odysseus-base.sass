@@ -116,6 +116,73 @@
     float: right
     margin-top: -0.1em
 
+.datasetCatalogItem
+  border-top: 1px solid $color_chrome_box_border
+  padding: 0.8em 0 0
+
+  &:first-child
+    border-top: none
+
+  .previewButton
+    float: right
+    padding-top: 1em
+    position: relative
+    z-index: 1
+
+  .datasetPopup
+    position: relative
+
+    .head
+      padding-right: 40em
+
+      .datasetIcon
+        float: left
+        margin-right: 1em
+        margin-top: 0.8em
+
+      .byLine
+        margin-left: 3.3em
+
+    .body
+      background: none
+      border: none
+      margin: 0
+      padding: 0
+      position: absolute
+      right: 10em
+      top: 0
+
+      .details
+        border-right: 1px solid $color_chrome_box_border
+        font-size: 0.7em
+        margin-right: 2em
+        padding: 0
+        width: 42em
+
+      .actions
+        display: none
+
+  .preview
+    clear: both
+    height: 0
+    @include opacity(0)
+    padding: 0
+    @include transition(0.5s, height opacity padding)
+
+    &.active
+      height: 35em
+      @include opacity(1)
+      padding: 1em 0
+
+    .datasetRender
+      height: 35em
+
+      .fullHeight
+        height: 100%
+
+      .renderTypeNode ~ .renderTypeNode
+        display: none
+
 .datasetPicker
   .catalogList li
     border-top: 1px solid #ddd
@@ -1298,6 +1365,58 @@
 
       .icon, .text
         color: $govstat_color_action
+
+.manageDataPage
+  h2.manageDataHeader
+    font-size: 4em
+    font-weight: normal
+    letter-spacing: -0.04em
+    padding-bottom: 0.1em
+
+  p.manageDataIntro
+    font-size: 1.8em
+    line-height: 1.4em
+    padding-bottom: 2em
+    padding-left: 0.1em
+
+  .listing > ul
+    clear: both
+    padding-top: 1em
+
+  .catalogTypeEnum
+    float: left
+
+    .manageDataType
+      float: left
+
+    .selectButton
+      background-color: #999
+      height: 9.6em
+      width: 9em
+
+      &.selected, &:hover
+        background-color: #666
+
+      .icon
+        font-size: 4em
+        padding-top: 0.6em
+        text-align: center
+
+      .text
+        font-size: 1.5em
+        text-align: center
+        padding-top: 1.9em
+
+  .catalogList
+    clear: both
+    padding-top: 1em
+
+  .catalog
+    .catalogFacets
+      padding-left: 0.7em
+
+    .facetTypes ul
+      width: 20.2em
 
 .dashboardListPage.page
   .dashboardsHeader

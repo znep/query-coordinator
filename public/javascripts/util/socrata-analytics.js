@@ -114,16 +114,18 @@ jQuery.metrics = {
             var response_start = performance.timing.responseStart;
             // Some browsers appear to return zero for navigationStart
             if (nav_start > 0 && dom_complete > 0 && response_start > 0) {
-
+                var tz = new Date().getTimezoneOffset();
                 var js_page_load_time = dom_complete - nav_start;
                 var js_dom_load_time = dom_complete - performance.timing.domLoading;
 
                 $.metrics.mark("domain-intern", "js-page-load-samples");
                 $.metrics.increment("domain-intern", "js-page-load-time", js_page_load_time);
+                $.metrics.increment("domain-intern", "js-page-load-tz-" + tz + "-time", js_page_load_time);
                 $.metrics.increment("domain-intern", "js-response-start-time", response_start - nav_start);
                 $.metrics.increment("domain-intern", "js-response-read-time", performance.timing.responseEnd - response_start);
                 // Socrata->Browser latency ( not including dns )
                 $.metrics.increment("domain-intern", "js-connect-time", performance.timing.connectEnd - performance.timing.connectStart);
+                $.metrics.increment("domain-intern", "js-connect-tz-" + tz + "-time", performance.timing.connectEnd - performance.timing.connectStart);
                 // domComplete is always the value of the *first* state change to complete
                 // subsequent interactive states will not be captured here
                 $.metrics.increment("domain-intern", "js-dom-load-time", js_dom_load_time);

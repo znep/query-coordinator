@@ -5,6 +5,7 @@
     <%= jquery_include %>
     <%= rendered_stylesheet_tag 'dataset-show' %>
     <%= rendered_stylesheet_tag 'dataset-bare' %>
+    <%= render :partial => 'templates/mixpanel_tracking' %>
   </head>
   <body data-locale="<%= I18n.locale %>" data-defaultlocale="<%= CurrentDomain.default_locale %>">
     <div class="outerContainer">

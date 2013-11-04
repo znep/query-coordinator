@@ -1,7 +1,8 @@
+<%- prefix = 'screens.stats' -%>
 <% content_for :head do %>
   <%= rendered_stylesheet_tag 'dataset-analytics' %>
   <%= rendered_stylesheet_tag 'analytics-shared' %>
-  <title>Dataset Analytics - <%= @view.name %> | <%= CurrentDomain.strings.site_title %></title>
+  <title><%= t("#{prefix}.title") %> - <%= @view.name %> | <%= CurrentDomain.strings.site_title %></title>
 <% end %>
 
 <% content_for :skip_links do %>
@@ -21,7 +22,7 @@
   <div class="contentBox">
     <div class="chartsDisplay container">
       <div class="flash error message errorMessage">
-        <h3>An error occurred loading the metrics data. Please try again later</h3>
+        <h3><%= t("#{prefix}.error_loading") %></h3>
       </div>
     </div>
     <div class="detailDisplay clearfix container"></div>
@@ -54,3 +55,5 @@
     <%= include_javascripts 'dataset-metrics' %>
   <%- end -%>
 <% end %>
+<%= render_translations LocalePart.screens.stats %>
+<%= render_translations LocalePart.plugins.daterangepicker %>

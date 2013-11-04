@@ -362,7 +362,7 @@
         $timeslice.val(initialSpan)
         .daterangepicker({
             dateFormat: opts.displayDateFormat,
-            doneButtonText: 'Apply',
+            doneButtonText: $.t('screens.stats.apply'),
             earliestDate: opts.minimumDate,
             latestDate: today,
             onClose: function() {
@@ -444,11 +444,11 @@
         // means that if the date difference is greater than 4 days,
         // hourly is out of the question and we must slice 'Daily'
         rolloverDays: [
-            {slice: 'Hourly', days: 4},
-            {slice: 'Daily', days: 64},
-            {slice: 'Weekly', days: 128}
+            {slice: $.t('screens.stats.hourly'), days: 4},
+            {slice: $.t('screens.stats.daily'), days: 64},
+            {slice: $.t('screens.stats.weekly'), days: 128}
         ],
-        largestSlice: 'Monthly',
+        largestSlice: $.t('screens.stats.monthly'),
         xOffset: 10,
         yOffset: 5
     };

@@ -279,6 +279,7 @@ http://www.socrata.com
   </div>
 
   <%= yield :js_footer %>
+  <%= render_jquery_ui_translations %>
 
   <%- unless CurrentDomain.theme.js.nil? -%>
     <%- if CurrentDomain.theme.js[:type].to_s == 'static' -%>

@@ -210,7 +210,7 @@ metricsNS.topAppTokensCallback = function($context)
                             '?size=tiny') : '';
 
                     var owner = new User(response.owner);
-                    results.push({linkText: response.name || 'deleted application',
+                    results.push({linkText: response.name || $.t('screens.stats.deleted_application'),
                         extraClass: klass,
                         href: response.owner ? owner.getProfileUrl() + '/app_tokens/' + response.id : null,
                         value: value,
@@ -301,8 +301,8 @@ metricsNS.summarySectionCallback = function($context)
     summaryCalculator('total', '-total');
     summaryCalculator('delta');
 
-    summaryToolTip('total', 'total');
-    summaryToolTip('delta', 'during this time period');
+    summaryToolTip('total', $.t('screens.stats.total'));
+    summaryToolTip('delta', $.t('screens.stats.during_time_period'));
 
     if (mappedData.delta < 0)
     {

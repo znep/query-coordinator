@@ -2,17 +2,18 @@
 
 $(function()
 {
+    var t = function(str, props) { return $.t('screens.stats.' + str, props); };
     // Shared between tabular and non-tabular
-    var viewSummary = {id: 'summaryViews', displayName: 'Views', summary: {
-             plus: 'visits',  verbPhrase: 'pages viewed',
-             verbPhraseSingular: 'page viewed' }};
+    var viewSummary = {id: 'summaryViews', displayName: t('views'), summary: {
+             plus: 'visits',  verbPhrase: t('pages_viewed'),
+             verbPhraseSingular: t('page_viewed') }};
 
     var downloadsAction = (blist.dataset.viewType == 'href' ||
         blist.dataset.viewType == 'blobby') ?  'files-downloaded' : 'downloads';
 
-    var downloadsSummary = {id: 'summaryDownloads', displayName: 'Downloads',
-            summary: { plus: downloadsAction, verbPhrase: 'downloads',
-                       verbPhraseSingular: 'download' }};
+    var downloadsSummary = {id: 'summaryDownloads', displayName: $.capitalize(t('downloads')),
+            summary: { plus: downloadsAction, verbPhrase: t('downloads'),
+                       verbPhraseSingular: t('download') }};
 
     var charts, summaries, details;
     if (blist.dataset.viewType == 'tabular')
@@ -21,51 +22,51 @@ $(function()
             {id: 'performanceChart',
                 loading: blist.metrics.chartLoading,
                 children: _.filter([
-                    {text: 'Bytes Out',    series: [{method: 'bytes-out'}]},
-                    {text: 'Views Loaded', series: [{method: 'view-loaded'}]},
-                    {text: 'GovStat Hits',    series: [{method: 'govstat-total-computes'}], enabled: blist.configuration.govStatMetricsEnabled  || false},
-                    {text: 'Rows Loaded',
-                     series: [{method: 'rows-loaded-api',     label: 'API'},
-                              {method: 'rows-loaded-website', label: 'Website'},
-                              {method: 'rows-loaded-widget',  label: 'SDP'}]}
+                    {text: t('bytes_out'),    series: [{method: 'bytes-out'}]},
+                    {text: t('views_loaded'), series: [{method: 'view-loaded'}]},
+                    {text: t('govstat_hits'), series: [{method: 'govstat-total-computes'}], enabled: blist.configuration.govStatMetricsEnabled  || false},
+                    {text: t('rows_loaded'),
+                     series: [{method: 'rows-loaded-api',     label: t('api')},
+                              {method: 'rows-loaded-website', label: t('website')},
+                              {method: 'rows-loaded-widget',  label: t('sdp')}]}
                 ], function(section) { return section.enabled !== false; })
             }
         ];
         summaries = [
             viewSummary,
             downloadsSummary,
-            {id: 'summaryEmbeds', displayName: 'Embeds', summary: {
-             plus: 'embeds', verbPhrase: 'embeds', verbPhraseSingular: 'embed' }}
+            {id: 'summaryEmbeds', displayName: $.capitalize(t('embeds')), summary: {
+             plus: 'embeds', verbPhrase: t('embeds'), verbPhraseSingular: t('embed') }}
         ];
         details = [
-            {id: 'detailMetricsUsing',   displayName: 'Dependent Metrics',  summary: {
+            {id: 'detailMetricsUsing',   displayName: t('dependent_metrics'),  summary: {
                 plus: 'govstat-metrics-using',
-                verbPhrase: 'metrics backed',
-                verbPhraseSingular: 'metric backed'
+                verbPhrase: t('metrics_backed'),
+                verbPhraseSingular: t('metric_backed')
                 },
                 enabled: blist.configuration.govStatMetricsEnabled || false},
-            {id: 'detailTotalComputes',   displayName: 'Total GovStat Hits',  summary: {
+            {id: 'detailTotalComputes',   displayName: t('total_govstat_hits'),  summary: {
                 plus: 'govstat-total-computes',
-                verbPhrase: 'hits served',
-                verbPhraseSingular: 'hit served'
+                verbPhrase: t('hits_served'),
+                verbPhraseSingular: t('hit_served')
                 },
                 enabled: blist.configuration.govStatMetricsEnabled || false},
-            {id: 'detailFilters',   displayName: 'Filters',  summary: {
+            {id: 'detailFilters',   displayName: t('filters'),  summary: {
                  plus: 'filters-created',
-                 verbPhrase: 'filters created',
-                 verbPhraseSingular: 'filter created' }},
-            {id: 'detailCharts',    displayName: 'Charts',   summary: {
+                 verbPhrase: t('filters_created'),
+                 verbPhraseSingular: t('filter_created') }},
+            {id: 'detailCharts',    displayName: t('charts'),   summary: {
                 plus: 'charts-created',
-                verbPhrase:'charts created',
-                verbPhraseSingular:'chart created'}},
-            {id: 'detailMaps',      displayName: 'Maps',     summary: {
+                verbPhrase: t('charts_created'),
+                verbPhraseSingular: t('chart_created')}},
+            {id: 'detailMaps',      displayName: t('maps'),     summary: {
                 plus: 'maps-created',
-                verbPhrase:'maps created',
-                verbPhraseSingular:'map created'}},
-            {id: 'detailComments',  displayName: 'Comments', summary: {
+                verbPhrase: t('maps_created'),
+                verbPhraseSingular: t('map_created')}},
+            {id: 'detailComments',  displayName: t('comments'), summary: {
                 plus: 'comments-created',
-                verbPhrase:'comments created',
-                verbPhraseSingular:'comment created'}}
+                verbPhrase: t('comments_created'),
+                verbPhraseSingular: t('comment_created')}}
         ];
     }
     else
@@ -73,7 +74,7 @@ $(function()
         charts = [
             {id: 'performanceChart',
                 loading: blist.metrics.chartLoading,
-                children: [ {text: 'Views Loaded', series: [{method: 'view-loaded'}]} ]
+                children: [ {text: t('views_loaded'), series: [{method: 'view-loaded'}]} ]
             }
         ];
         summaries = [
@@ -89,13 +90,13 @@ $(function()
         summarySections: _.filter(summaries, function(section) { return section.enabled !== false; }),
         topListSections: [
             {
-                id: 'topViews', displayName: 'Top Embeds',
-                heading: 'Embeds', className: 'expanding', renderTo: 'leftColumn',
+                id: 'topViews', displayName: t('top_embeds'),
+                heading: $.capitalize(t('embeds')), className: 'expanding', renderTo: 'leftColumn',
                 callback: blist.metrics.urlMapCallback,  top: 'EMBEDS'
             },
             {
-                id: 'topReferrers', displayName: 'Top Referrers',
-                heading: 'Referrals', className: 'expanding', renderTo: 'rightColumn',
+                id: 'topReferrers', displayName: t('top_referrers'),
+                heading: t('referrals'), className: 'expanding', renderTo: 'rightColumn',
                 callback: blist.metrics.urlMapCallback, top: 'REFERRERS'
             }
         ]

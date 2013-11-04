@@ -789,6 +789,73 @@ en:
         page_title: Report Title
         title: Report Settings
   plugins:
+    jquery_ui:
+      done: Done
+      prev: Prev
+      next: Next
+      today: Today
+      sunday: Sunday
+      sunday_short: Sun
+      sunday_min: Su
+      monday: Monday
+      monday_short: Mon
+      monday_min: Mo
+      tuesday: Tuesday
+      tuesday_short: Tue
+      tuesday_min: Tu
+      wednesday: Wednesday
+      wednesday_short: Wed
+      wednesday_min: We
+      thursday: Thursday
+      thursday_short: Thu
+      thursday_min: Th
+      friday: Friday
+      friday_short: Fri
+      friday_min: Fr
+      saturday: Saturday
+      saturday_short: Sat
+      saturday_min: Sa
+      january: January
+      january_short: Jan
+      february: February
+      february_short: Feb
+      march: March
+      march_short: Mar
+      april: April
+      april_short: Apr
+      may: May
+      may_short: May
+      june: June
+      june_short: Jun
+      july: July
+      july_short: Jul
+      august: August
+      august_short: Aug
+      september: September
+      september_short: Sep
+      october: October
+      october_short: Oct
+      november: November
+      november_short: Nov
+      december: December
+      december_short: Dec
+      week_min: Wk
+    daterangepicker:
+      today: Today
+      week_to_date: Week to Date
+      month_to_date: Month to Date
+      year_to_date: Year to Date
+      last_month: Last Month
+      specific_date: Specific Date
+      date_range: Date Range
+      the_week_of: The Week Of...
+      the_month_of: The Month Of...
+      the_year_of: The Year Of...
+      start_date: Start date
+      end_date: End date
+      next: Next
+      prev: Prev
+      done: Done
     fileuploader:
       drop_files: Drop files here to upload
       failed: Failed
@@ -1999,6 +2066,57 @@ en:
       third_party_return: Before using these credentials, you must
       third_party_return_create: create a Socrata account
       third_party_return_link: link it to an existing Socrata ID
+    stats:
+      title: Dataset Analytics
+      error_loading: An error occurred loading the metrics data. Please try again later
+      time_period_unavailable: Metric data is unavailable for this time period
+      select_chart_type: Select a chart type to display from the menu
+      no_data_time_period: No data for this time period
+      name: Name
+      show_more: Show More
+      deleted_application: deleted application
+      total: total
+      during_time_period: during this time period
+      hourly: Hourly
+      daily: Daily
+      weekly: Weekly
+      monthly: Monthly
+      views: Views
+      page_viewed: page viewed
+      pages_viewed: pages viewed
+      download: download
+      downloads: downloads
+      bytes_out: Bytes Out
+      views_loaded: Views Loaded
+      govstat_hits: GovStat Hits
+      rows_loaded: Rows Loaded
+      api: API
+      website: Webspite
+      sdp: SDP
+      embed: embed
+      embeds: embeds
+      dependent_metrics: Dependent Metrics
+      metrics_backed: metrics backed
+      metric_backed: metric backed
+      total_govstat_hits: Total GovStat Hits
+      hit_served: hit served
+      hits_served: hits served
+      filters: Filters
+      filter_created: filter created
+      filters_created: filters created
+      charts: Charts
+      chart_created: chart created
+      charts_created: charts created
+      maps: Maps
+      map_created: map created
+      maps_created: maps created
+      comments: Comments
+      comment_created: comment created
+      comments_created: comments created
+      top_embeds: Top Embeds
+      top_referrers: Top Referrers
+      referrals: Referrals
+      apply: Apply
     wizard:
       cancel: Cancel
       finish: Finish

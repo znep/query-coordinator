@@ -133,7 +133,7 @@ module ApplicationHelper
     end
   end
 
-  DEFAULT_TRANSLATIONS = [ LocalePart.core, LocalePart.account.common, LocalePart.controls.common ]
+  DEFAULT_TRANSLATIONS = [ LocalePart.core, LocalePart.account.common, LocalePart.controls.common, LocalePart.plugins.jquery_ui ]
   def render_translations(part = nil)
     @rendered_translations ||= Set.new()
     to_render = [part].concat(DEFAULT_TRANSLATIONS).compact.reject {|t| @rendered_translations.include?(t)}
@@ -147,6 +147,32 @@ module ApplicationHelper
         {
             return #{safe_json(LocaleCache.render_translations(to_render))};
         });
+      EOS
+        .html_safe
+    end
+  end
+
+  # For altering jquery-ui's regionality because the "correct" way is dumb.
+  def render_jquery_ui_translations
+    content_tag :script, :type => 'text/javascript' do
+      <<-EOS
+      (function() {
+      var months = ['january', 'february', 'march', 'april', 'may', 'june', 'july', 'august',
+                    'september', 'october', 'november', 'december'],
+          days = ['sunday', 'monday', 'tuesday', 'wednesday', 'thursday', 'friday', 'saturday'],
+          t = function(str) { return $.t('plugins.jquery_ui.' + str); };
+      $.datepicker.setDefaults({
+        closeText: t('done'),
+        prevText: t('prev'),
+        nextText: t('next'),
+        currentText: t('today'),
+        monthNames: _.map(months, function(m) { return t(m); }),
+        monthNamesShort: _.map(months, function(m) { return t(m + '_short'); }),
+        dayNames: _.map(days, function(m) { return t(m); }),
+        dayNamesShort: _.map(days, function(m) { return t(m + '_short'); }),
+        dayNamesMin: _.map(days, function(m) { return t(m + '_min'); }),
+        weekHeader: t('week_min')
+      }); })();
       EOS
         .html_safe
     end

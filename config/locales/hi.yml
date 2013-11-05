@@ -296,6 +296,7 @@ hi:
         show_suggested: सुझाये गये मूल्‍य दिखाएँ
         title: विकल्‍प
     grid:
+      add_column: 
       clear_column_filter: कॉलम फिल्‍टर को हटाएँ
       clear_sort: छंटाई को हटाएँ
       click_for_menu: मेनू के लिए क्लिक करें
@@ -315,10 +316,13 @@ hi:
       previous: पिछला
       sort_ascending: आरोही क्रम में छांटें
       sort_descending: अवरोही क्रम में छांटें
+      totals: 
+      view_cell_comments: 
       view_first_row: पहली पंक्ति देखें
       view_last_row: अंतिम पंक्ति देखें
       view_next_row: अगली पंक्ति देखें
       view_previous_row: पिछली पंक्ति देखें
+      view_row: 
       view_single_row: एकल पंक्ति डेटा देखें
       viewing_row_html: पंक्ति <span class="curPage"></span> को देख रहे हैं, कुल <span class="totalPages"></span> पंक्तियाँ हैं
     nominate:
@@ -785,6 +789,22 @@ hi:
         page_title: 
         title: 
   plugins:
+    daterangepicker:
+      date_range: 
+      done: 
+      end_date: 
+      last_month: 
+      month_to_date: 
+      next: 
+      prev: 
+      specific_date: 
+      start_date: 
+      the_month_of: 
+      the_week_of: 
+      the_year_of: 
+      today: 
+      week_to_date: 
+      year_to_date: 
     fileuploader:
       drop_files: 
       failed: 
@@ -797,6 +817,57 @@ hi:
       redo: 
       subheading: 
       undo: 
+    jquery_ui:
+      april: 
+      april_short: 
+      august: 
+      august_short: 
+      december: 
+      december_short: 
+      done: 
+      february: 
+      february_short: 
+      friday: 
+      friday_min: 
+      friday_short: 
+      january: 
+      january_short: 
+      july: 
+      july_short: 
+      june: 
+      june_short: 
+      march: 
+      march_short: 
+      may: 
+      may_short: 
+      monday: 
+      monday_min: 
+      monday_short: 
+      next: 
+      november: 
+      november_short: 
+      october: 
+      october_short: 
+      prev: 
+      saturday: 
+      saturday_min: 
+      saturday_short: 
+      september: 
+      september_short: 
+      sunday: 
+      sunday_min: 
+      sunday_short: 
+      thursday: 
+      thursday_min: 
+      thursday_short: 
+      today: 
+      tuesday: 
+      tuesday_min: 
+      tuesday_short: 
+      wednesday: 
+      wednesday_min: 
+      wednesday_short: 
+      week_min: 
   screens:
     about:
       actions: कार्रवाई
@@ -1997,6 +2068,57 @@ hi:
       third_party_return: इस परिचय का उपयोग करने से पहले, आपको
       third_party_return_create: सोक्राटा खाता बनाना चाहिए
       third_party_return_link: वर्तमान सोक्राटा आईडी से इसे जोड़ें
+    stats:
+      api: 
+      apply: 
+      bytes_out: 
+      chart_created: 
+      charts: 
+      charts_created: 
+      comment_created: 
+      comments: 
+      comments_created: 
+      daily: 
+      deleted_application: 
+      dependent_metrics: 
+      download: 
+      downloads: 
+      during_time_period: 
+      embed: 
+      embeds: 
+      error_loading: 
+      filter_created: 
+      filters: 
+      filters_created: 
+      govstat_hits: 
+      hit_served: 
+      hits_served: 
+      hourly: 
+      map_created: 
+      maps: 
+      maps_created: 
+      metric_backed: 
+      metrics_backed: 
+      monthly: 
+      name: 
+      no_data_time_period: 
+      page_viewed: 
+      pages_viewed: 
+      referrals: 
+      rows_loaded: 
+      sdp: 
+      select_chart_type: 
+      show_more: 
+      time_period_unavailable: 
+      title: 
+      top_embeds: 
+      top_referrers: 
+      total: 
+      total_govstat_hits: 
+      views: 
+      views_loaded: 
+      website: 
+      weekly: 
     wizard:
       cancel: 
       finish: 

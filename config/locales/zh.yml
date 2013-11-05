@@ -296,6 +296,7 @@ zh:
         show_suggested: 显示建议值
         title: 选项
     grid:
+      add_column: 
       clear_column_filter: 清除列筛选
       clear_sort: 清除排序
       click_for_menu: 单击显示菜单
@@ -315,10 +316,13 @@ zh:
       previous: 上一步
       sort_ascending: 按升序排列
       sort_descending: 按降序排列
+      totals: 
+      view_cell_comments: 
       view_first_row: 查看第一列
       view_last_row: 查看最后一列
       view_next_row: 查看下一行
       view_previous_row: 查看前一列
+      view_row: 
       view_single_row: 查看单行的数据
       viewing_row_html: 查看第 <span class="curPage"></span> 行，共 <span class="totalPages"></span> 行
     nominate:
@@ -785,6 +789,22 @@ zh:
         page_title: 
         title: 
   plugins:
+    daterangepicker:
+      date_range: 
+      done: 
+      end_date: 
+      last_month: 
+      month_to_date: 
+      next: 
+      prev: 
+      specific_date: 
+      start_date: 
+      the_month_of: 
+      the_week_of: 
+      the_year_of: 
+      today: 
+      week_to_date: 
+      year_to_date: 
     fileuploader:
       drop_files: 
       failed: 
@@ -797,6 +817,57 @@ zh:
       redo: 
       subheading: 
       undo: 
+    jquery_ui:
+      april: 
+      april_short: 
+      august: 
+      august_short: 
+      december: 
+      december_short: 
+      done: 
+      february: 
+      february_short: 
+      friday: 
+      friday_min: 
+      friday_short: 
+      january: 
+      january_short: 
+      july: 
+      july_short: 
+      june: 
+      june_short: 
+      march: 
+      march_short: 
+      may: 
+      may_short: 
+      monday: 
+      monday_min: 
+      monday_short: 
+      next: 
+      november: 
+      november_short: 
+      october: 
+      october_short: 
+      prev: 
+      saturday: 
+      saturday_min: 
+      saturday_short: 
+      september: 
+      september_short: 
+      sunday: 
+      sunday_min: 
+      sunday_short: 
+      thursday: 
+      thursday_min: 
+      thursday_short: 
+      today: 
+      tuesday: 
+      tuesday_min: 
+      tuesday_short: 
+      wednesday: 
+      wednesday_min: 
+      wednesday_short: 
+      week_min: 
   screens:
     about:
       actions: 操作
@@ -1995,6 +2066,57 @@ zh:
       third_party_return: 在使用这些认证信息前，您必须
       third_party_return_create: 创建Socrata账户
       third_party_return_link: 关联到现有的Socrata用户名
+    stats:
+      api: 
+      apply: 
+      bytes_out: 
+      chart_created: 
+      charts: 
+      charts_created: 
+      comment_created: 
+      comments: 
+      comments_created: 
+      daily: 
+      deleted_application: 
+      dependent_metrics: 
+      download: 
+      downloads: 
+      during_time_period: 
+      embed: 
+      embeds: 
+      error_loading: 
+      filter_created: 
+      filters: 
+      filters_created: 
+      govstat_hits: 
+      hit_served: 
+      hits_served: 
+      hourly: 
+      map_created: 
+      maps: 
+      maps_created: 
+      metric_backed: 
+      metrics_backed: 
+      monthly: 
+      name: 
+      no_data_time_period: 
+      page_viewed: 
+      pages_viewed: 
+      referrals: 
+      rows_loaded: 
+      sdp: 
+      select_chart_type: 
+      show_more: 
+      time_period_unavailable: 
+      title: 
+      top_embeds: 
+      top_referrers: 
+      total: 
+      total_govstat_hits: 
+      views: 
+      views_loaded: 
+      website: 
+      weekly: 
     wizard:
       cancel: 
       finish: 

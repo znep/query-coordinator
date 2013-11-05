@@ -789,73 +789,22 @@ en:
         page_title: Report Title
         title: Report Settings
   plugins:
-    jquery_ui:
-      done: Done
-      prev: Prev
-      next: Next
-      today: Today
-      sunday: Sunday
-      sunday_short: Sun
-      sunday_min: Su
-      monday: Monday
-      monday_short: Mon
-      monday_min: Mo
-      tuesday: Tuesday
-      tuesday_short: Tue
-      tuesday_min: Tu
-      wednesday: Wednesday
-      wednesday_short: Wed
-      wednesday_min: We
-      thursday: Thursday
-      thursday_short: Thu
-      thursday_min: Th
-      friday: Friday
-      friday_short: Fri
-      friday_min: Fr
-      saturday: Saturday
-      saturday_short: Sat
-      saturday_min: Sa
-      january: January
-      january_short: Jan
-      february: February
-      february_short: Feb
-      march: March
-      march_short: Mar
-      april: April
-      april_short: Apr
-      may: May
-      may_short: May
-      june: June
-      june_short: Jun
-      july: July
-      july_short: Jul
-      august: August
-      august_short: Aug
-      september: September
-      september_short: Sep
-      october: October
-      october_short: Oct
-      november: November
-      november_short: Nov
-      december: December
-      december_short: Dec
-      week_min: Wk
     daterangepicker:
+      date_range: Date Range
+      done: Done
+      end_date: End date
+      last_month: Last Month
+      month_to_date: Month to Date
+      next: Next
+      prev: Prev
+      specific_date: Specific Date
+      start_date: Start date
+      the_month_of: The Month Of...
+      the_week_of: The Week Of...
+      the_year_of: The Year Of...
       today: Today
       week_to_date: Week to Date
-      month_to_date: Month to Date
       year_to_date: Year to Date
-      last_month: Last Month
-      specific_date: Specific Date
-      date_range: Date Range
-      the_week_of: The Week Of...
-      the_month_of: The Month Of...
-      the_year_of: The Year Of...
-      start_date: Start date
-      end_date: End date
-      next: Next
-      prev: Prev
-      done: Done
     fileuploader:
       drop_files: Drop files here to upload
       failed: Failed
@@ -868,6 +817,57 @@ en:
       redo: Redo
       subheading: Subheading
       undo: Undo
+    jquery_ui:
+      april: April
+      april_short: Apr
+      august: August
+      august_short: Aug
+      december: December
+      december_short: Dec
+      done: Done
+      february: February
+      february_short: Feb
+      friday: Friday
+      friday_min: Fr
+      friday_short: Fri
+      january: January
+      january_short: Jan
+      july: July
+      july_short: Jul
+      june: June
+      june_short: Jun
+      march: March
+      march_short: Mar
+      may: May
+      may_short: May
+      monday: Monday
+      monday_min: Mo
+      monday_short: Mon
+      next: Next
+      november: November
+      november_short: Nov
+      october: October
+      october_short: Oct
+      prev: Prev
+      saturday: Saturday
+      saturday_min: Sa
+      saturday_short: Sat
+      september: September
+      september_short: Sep
+      sunday: Sunday
+      sunday_min: Su
+      sunday_short: Sun
+      thursday: Thursday
+      thursday_min: Th
+      thursday_short: Thu
+      today: Today
+      tuesday: Tuesday
+      tuesday_min: Tu
+      tuesday_short: Tue
+      wednesday: Wednesday
+      wednesday_min: We
+      wednesday_short: Wed
+      week_min: Wk
   screens:
     about:
       actions: Actions
@@ -2067,56 +2067,56 @@ en:
       third_party_return_create: create a Socrata account
       third_party_return_link: link it to an existing Socrata ID
     stats:
-      title: Dataset Analytics
-      error_loading: An error occurred loading the metrics data. Please try again later
-      time_period_unavailable: Metric data is unavailable for this time period
-      select_chart_type: Select a chart type to display from the menu
-      no_data_time_period: No data for this time period
-      name: Name
-      show_more: Show More
-      deleted_application: deleted application
-      total: total
-      during_time_period: during this time period
-      hourly: Hourly
+      api: API
+      apply: Apply
+      bytes_out: Bytes Out
+      chart_created: chart created
+      charts: Charts
+      charts_created: charts created
+      comment_created: comment created
+      comments: Comments
+      comments_created: comments created
       daily: Daily
-      weekly: Weekly
-      monthly: Monthly
-      views: Views
-      page_viewed: page viewed
-      pages_viewed: pages viewed
+      deleted_application: deleted application
+      dependent_metrics: Dependent Metrics
       download: download
       downloads: downloads
-      bytes_out: Bytes Out
-      views_loaded: Views Loaded
-      govstat_hits: GovStat Hits
-      rows_loaded: Rows Loaded
-      api: API
-      website: Webspite
-      sdp: SDP
+      during_time_period: during this time period
       embed: embed
       embeds: embeds
-      dependent_metrics: Dependent Metrics
-      metrics_backed: metrics backed
-      metric_backed: metric backed
-      total_govstat_hits: Total GovStat Hits
+      error_loading: An error occurred loading the metrics data. Please try again later
+      filter_created: filter created
+      filters: Filters
+      filters_created: filters created
+      govstat_hits: GovStat Hits
       hit_served: hit served
       hits_served: hits served
-      filters: Filters
-      filter_created: filter created
-      filters_created: filters created
-      charts: Charts
-      chart_created: chart created
-      charts_created: charts created
-      maps: Maps
+      hourly: Hourly
       map_created: map created
+      maps: Maps
       maps_created: maps created
-      comments: Comments
-      comment_created: comment created
-      comments_created: comments created
+      metric_backed: metric backed
+      metrics_backed: metrics backed
+      monthly: Monthly
+      name: Name
+      no_data_time_period: No data for this time period
+      page_viewed: page viewed
+      pages_viewed: pages viewed
+      referrals: Referrals
+      rows_loaded: Rows Loaded
+      sdp: SDP
+      select_chart_type: Select a chart type to display from the menu
+      show_more: Show More
+      time_period_unavailable: Metric data is unavailable for this time period
+      title: Dataset Analytics
       top_embeds: Top Embeds
       top_referrers: Top Referrers
-      referrals: Referrals
-      apply: Apply
+      total: total
+      total_govstat_hits: Total GovStat Hits
+      views: Views
+      views_loaded: Views Loaded
+      website: Webspite
+      weekly: Weekly
     wizard:
       cancel: Cancel
       finish: Finish

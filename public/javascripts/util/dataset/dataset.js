@@ -243,7 +243,7 @@ var Dataset = ServerModel.extend({
 
     invalidMessage: function()
     {
-        return this.message || 'Columns required for this view are missing';
+        return this.message || $.t('controls.grid.required_cols_missing');
     },
 
     clean: function()
@@ -1728,9 +1728,7 @@ var Dataset = ServerModel.extend({
         ds.makeRequest({url: '/api/geocoding/' + ds.id + '.json', params: {method: 'pending'},
             success: function(results)
             {
-                successCallback(results.view < 1,
-                    'Rows in the location column are still geocoding. ' +
-                    'Please wait until they are finished to publish this dataset');
+                successCallback(results.view < 1, $.t('controls.grid.geocodes_pending'));
             }});
     },
 
@@ -2981,7 +2979,7 @@ Dataset.getLinkedDatasetOptions = function(linkedDatasetUid, col, $field, curVal
 
                 if (cachedLinkedDatasetOptions[viewUid].length <= 0)
                 {
-                    alert('Dataset ' + viewUid + ' does not have any columns.');
+                    alert($.t('controls.grid.no_columns', { uid: viewUid }));
                 }
                 else
                 {
@@ -3126,7 +3124,7 @@ Dataset._create = function(clone, id, successCallback, errorCallback, isBatch, i
             errorCallback({
                 responseText: JSON.stringify({
                     code: 'permission_denied',
-                    message: 'You do not have access to this view.'
+                    message: $.t('controls.grid.permission_denied')
                 })
             });
         }

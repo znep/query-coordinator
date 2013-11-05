@@ -1,16 +1,17 @@
+<%- prefix = 'screens.thumbnail' %>
 <% content_for :head do %>
   <%- if params[:strip_chrome].present? -%>
     <%= rendered_stylesheet_tag 'strip-chrome' %>
   <%- end -%>
   <%= rendered_stylesheet_tag 'dataset-thumbnail' %>
-  <title>Thumbnail Dataset | <%= CurrentDomain.strings.site_title %></title>
+  <title><%= t("#{prefix}.title") %> | <%= CurrentDomain.strings.site_title %></title>
 <% end %>
 
 <div class="contentBox fixedWidth" id="datasetThumbnail">
   <div class="thumbnailEditContainer clearfix">
     <%- unless params[:strip_chrome].present? -%>
-      <h1>Edit Thumbnail for <%= @view.name %></h1>
-      <a href="<%= view_path(@view) %>" class="returnLink">Return to Dataset</a>
+      <h1><%= t("#{prefix}.edit_thumbnail, :name => @view.name) %></h1>
+      <a href="<%= view_path(@view) %>" class="returnLink"><%= t("#{prefix}.return_to_dataset") %></a>
     <%- end -%>
 
     <%= display_standard_flashes %>
@@ -25,25 +26,25 @@
             <span class="saving"></span>
             <span class="flash saveMessage"></span>
           </div>
-          <%= link_to 'Save Thumbnail', '#save', {:class => 'button default disabled savePreviewButton'} %>
+          <%= link_to t("#{prefix}.save_thumbnail"), '#save', {:class => 'button default disabled savePreviewButton'} %>
           <%- unless params[:strip_chrome].present? -%>
-            <%= link_to 'Discard Changes', view_path(@view), {:class => 'button'} %>
+            <%= link_to t("#{prefix}.discard_changes"), view_path(@view), {:class => 'button'} %>
           <%- end -%>
         </div>
       </form>
       <div class="refreshThumbnail">
-        <a href="#refresh" class="button refresh">Refresh Thumbnail</a>
+        <a href="#refresh" class="button refresh"><%= t("#{prefix}.refresh_thumbnail") %></a>
         <span class="throbber"></span>
       </div>
 
       <div class="flash error mainError">
-        There was an error processing your thumbnail request. Please try again later
+        <%= t("#{prefix}.error_processing") %>
       </div>
 
       <div class="thumbnailPresent">
         <div id="previewContainer">
 
-          <h2>Preview</h2>
+          <h2><%= t("#{prefix}.preview") %></h2>
           <div id="previewThumbnailWrapper">
             <div id="previewThumbnail">
             </div>
@@ -52,11 +53,11 @@
             </div>
           </div>
 
-          <div class="flash warning unsavedWarning">Unsaved</div>
+          <div class="flash warning unsavedWarning"><%= t("#{prefix}.unsaved") %></div>
 
         </div>
 
-        <h2>Full Image</h2>
+        <h2><%= t("#{prefix}.full_image") %></h2>
         <div class="fullThumbContainer">
           <div class="loading"></div>
           <div class="image"></div>
@@ -67,8 +68,7 @@
 
       <div class="noThumbnail">
         <div class="flash warning pleaseWait">
-          There are no thumbnails available for this dataset yet.
-          Please wait while we create one for you.
+          <%= t("#{prefix}.please_wait") %>
         </div>
       </div>
     </div>
@@ -82,3 +82,4 @@
   </script>
   <%= include_javascripts 'screen-dataset-thumbnail' %>
 <% end %>
+<%= render_translations LocalePart.screens.thumbnail %>

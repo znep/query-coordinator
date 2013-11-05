@@ -19,23 +19,21 @@
     {
         $invalidMessage
             .addClass('error')
-            .text('For your privacy, only public datasets may be thumbnailed. ' +
-                  'If you wish to have a preview image, please make this dataset ' +
-                  'public from the Permissions pane of the Manage sidebar.');
+            .text($.t('screens.thumbnail.error_private'));
         return;
     }
     else if (blist.dataset.type == 'blob')
     {
         $invalidMessage
             .addClass('warning')
-            .text('This embedded file cannot be thumbnailed as it cannot be displayed in the browser');
+            .text($.t('screens.thumbnail.error_blob'));
         return;
     }
     else if (!blist.dataset.valid)
     {
         $invalidMessage
             .addClass('warning')
-            .text('This view is invalid and cannot be thumbnailed in its current state');
+            .text($.t('screens.thumbnail.error_invalid'));
         return;
     }
     else
@@ -209,7 +207,7 @@
                 $saveMessage
                     .removeClass('error')
                     .addClass('notice')
-                    .text('Thumbnail saved')
+                    .text($.t('screens.thumbnail.success'))
                     .fadeIn(300, function()
                        { setTimeout(function() {$saveMessage.fadeOut(1000);}, 5000); });
 
@@ -231,7 +229,7 @@
             $saveMessage
               .removeClass('notice')
               .addClass('error')
-              .text('There was a problem saving your thumbnail. Please try again later.')
+              .text($.t('screens.thumbnail.error_generic'))
               .fadeIn();
         });
     });

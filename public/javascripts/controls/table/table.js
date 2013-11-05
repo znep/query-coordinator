@@ -3560,7 +3560,7 @@
             configureSortHeader();
             configureFilterHeaders();
             $outside.toggleClass('indicators-inactive',
-                    ((model.view.query || {}).orderBys || []).length <= 0 &&
+                    ((model.view.metadata.jsonQuery || {}).order || []).length <= 0 &&
                     _.all(columns, function(c)
                         { return $.isBlank(c.currentFilter); }));
 

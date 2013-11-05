@@ -162,12 +162,11 @@
                 // Now construct our beautiful filter
                 var filter;
                 var columnJson = { columnFieldName: filterColumn.fieldName,
-                    type: 'column', value: filterColumn.renderTypeName };
+                    subColumn: filterColumn.renderTypeName };
 
                 if (filterValue == 'null' || filterValue == 'undefined')
                 {
-                    filter = { type: 'operator', value: 'IS_BLANK',
-                        children: [ columnJson ] };
+                    filter = $.extend({ operator: 'IS_BLANK' }, columnJson);
                 }
                 // We only know how to handle date groupings for now
                 else if (!$.isBlank(filterColumn.format.group_function) &&
@@ -196,39 +195,30 @@
                     highValue = !$.isBlank(filterColumn.renderType.stringFormat) ?
                         highValue.toString(filterColumn.renderType.stringFormat) :
                         highValue.getTime() / 1000;
-                    filter = { type: 'operator', value: 'AND',
-                        children: [
-                        { type: 'operator', value: 'GREATER_THAN',
-                            children: [ columnJson, { type: 'literal',
-                                          value: filterColumn.renderType.filterValue(lowValue)
-                                      } ] },
-                        { type: 'operator', value: 'LESS_THAN',
-                            children: [ columnJson, { type: 'literal',
-                                          value: filterColumn.renderType.filterValue(highValue)
-                                      } ] }
+                    filter = { operator: 'AND', children: [
+                        $.extend({ operator: 'GREATER_THAN',
+                            value: filterColumn.renderType.filterValue(lowValue) }, columnJson),
+                        $.extend({ operator: 'LESS_THAN',
+                            value: filterColumn.renderType.filterValue(highValue) }, columnJson)
                         ] };
                 }
                 else
                 {
-                    filter = { type: 'operator', value: 'EQUALS',
-                        children: [
-                            columnJson,
-                            { type: 'literal',
-                                value: $.unescapeQuotes(filterValue) }
-                        ]
-                    };
+                    filter = $.extend({ operator: 'EQUALS', value: $.unescapeQuotes(filterValue) },
+                            columnJson);
                 }
 
-                view.query.namedFilters = view.query.namedFilters || {};
-                view.query.namedFilters['drillDown-' + filterColumn.fieldName] = filter;
+                view.metadata.jsonQuery.namedFilters = view.metadata.jsonQuery.namedFilters || {};
+                view.metadata.jsonQuery.namedFilters['drillDown-' + filterColumn.fieldName] =
+                    { where: filter };
 
                 var drillDownCallBack = function(newView)
                 {
                     datasetObj._view.update(newView, true);
                 };
 
-                var otherGroupBys = _.select(view.query.groupBys || [], function(g)
-                    { return g.columnId != filterColumn.id; });
+                var otherGroupBys = _.select(view.metadata.jsonQuery.group || [], function(g)
+                    { return g.columnFieldName != filterColumn.fieldName; });
 
                 // We need to hide the drilled col, persist other groupings
                 if (otherGroupBys.length > 0)
@@ -250,7 +240,7 @@
                     });
 
                     // Use all group bys except the current drill column
-                    view.query.groupBys = otherGroupBys;
+                    view.metadata.jsonQuery.group = otherGroupBys;
                     drillDownCallBack(view);
                 }
 
@@ -258,6 +248,9 @@
                 else
                 {
                     var currentColumns, parentColumns;
+
+                    // Clear out all grouping aggregates
+                    view.metadata.jsonQuery.select = [];
 
                     // Grab the child column who's tableColumnId is the same as
                     // parentCol
@@ -297,7 +290,7 @@
                                     delete newCol.format.drill_down;
                                     if (!$.isBlank(newCol.format.group_function))
                                     {
-                                        delete newCol.format.group_function
+                                        delete newCol.format.group_function;
                                         newCol.format.view = Column.closestViewFormat(filterColumn, newCol);
                                     }
                                 }
@@ -307,7 +300,7 @@
                         view.columns = translatedColumns;
                         drillDownCallBack(view);
                     }
-                    delete view.query.groupBys;
+                    delete view.metadata.jsonQuery.group;
 
                     currentColumns = datasetObj._view.realColumns;
                     if (datasetObj._view.type == 'blist')

@@ -57,8 +57,8 @@
                 if (cmObj.settings.columnDeleteEnabled &&
                     col.renderType.deleteable &&
                     (!cmObj.settings.view.isGrouped() ||
-                        !_.any(cmObj.settings.view.query.groupBys, function(g)
-                            { return g.columnId == col.id; })))
+                        !_.any(cmObj.settings.view.metadata.jsonQuery.group, function(g)
+                            { return g.columnFieldName == col.fieldName; })))
                 { features.remove = true; }
 
 
@@ -160,22 +160,22 @@
             sort: function(ascending)
             {
                 var cmObj = this;
-                var query = $.extend(true, {}, cmObj.settings.view.query);
+                var md = $.extend(true, {}, cmObj.settings.view.metadata);
+                var query = md.jsonQuery;
                 if ($.isBlank(ascending))
                 {
-                    query.orderBys = _.reject(query.orderBys || [], function(ob)
-                    { return ob.expression.columnId == cmObj.settings.column.id; });
-                    if (query.orderBys.length == 0) { delete query.orderBys; }
+                    query.order = _.reject(query.order || [], function(ob)
+                    { return ob.columnFieldName == cmObj.settings.column.fieldName; });
+                    if (query.order.length == 0) { delete query.order; }
                 }
                 else
                 {
-                    query.orderBys = [{expression:
-                        {columnId: cmObj.settings.column.id, type: 'column'},
-                            ascending: ascending}];
+                    query.order = [{ columnFieldName: cmObj.settings.column.fieldName,
+                        ascending: ascending }];
                 }
 
-                cmObj.settings.view.update({query: query}, false,
-                        (query.orderBys || []).length < 2);
+                cmObj.settings.view.update({ metadata: md }, false,
+                        (query.order || []).length < 2);
             },
 
             clearFilter: function()

@@ -663,6 +663,22 @@ var RowSet = ServerModel.extend({
                     d.query.groupBys = rs._query.groupBys;
                     d.query.filterCondition = rs._query.filterCondition;
                 }
+                if ($.subKeyDefined(d, 'metadata.jsonQuery.select'))
+                {
+                    _.each(d.metadata.jsonQuery.select, function(s)
+                    {
+                        var col = _.detect(d.columns, function(c) { s.columnFieldName == c.fieldName; });
+                        if ($.isBlank(col))
+                        { return; }
+                        if (col instanceof Column)
+                        { col = col.cleanCopy(); }
+                        if (!$.isBlank(s.aggregate))
+                        {
+                            col.format = col.format || {};
+                            col.format.grouping_aggregate = blist.datatypes.aggregateFromSoda2(s.aggregate);
+                        }
+                    });
+                }
                 args.data = JSON.stringify(d);
             }
             rs._dataset.makeRequest(args);
@@ -1093,7 +1109,8 @@ var RowSet = ServerModel.extend({
         }
         if ($.isBlank(col)) { return null; }
 
-        var agg = _.detect(col.renderType.aggregates, function(a) { return a.value == aggName; });
+        var agg = _.detect(col.renderType.aggregates, function(a)
+                { return blist.datatypes.aggregateFromSoda2(a.value) == aggName; });
         if ($.isBlank(agg)) { return null; }
 
         var valuesForRows = function(rows)

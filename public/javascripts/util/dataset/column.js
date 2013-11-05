@@ -214,18 +214,19 @@ var Column = ServerModel.extend({
             return;
         }
 
-        var query = $.extend(true, {}, col.view.query);
+        var md = $.extend(true, {}, col.view.metadata);
+        var query = md.jsonQuery;
 
         // If there is already a filter for this column, clear it out
         col._clearFilterData(query);
 
-        var colItem = { type: 'column', columnId: col.id };
+        var colItem = { columnFieldName: col.fieldName };
         if (!$.isBlank(subColumnType) && _.isString(subColumnType))
         {
             if (col.view._useSODA2)
-            { colItem.value = subColumnType.toLowerCase(); }
+            { colItem.subColumn = subColumnType.toLowerCase(); }
             else
-            { colItem.value = subColumnType.toUpperCase(); }
+            { colItem.subColumn = subColumnType.toUpperCase(); }
         }
 
         // Special handling for human_address in location
@@ -233,25 +234,24 @@ var Column = ServerModel.extend({
         { value = JSON.stringify(value); }
 
         // Update the parent view with the new filter
-        var filterItem = { type: 'operator', value: operator || 'EQUALS', children: [
-            colItem, { type: 'literal', value: value } ] };
+        var filterItem = $.extend({ operator: operator || 'EQUALS', value: value }, colItem);
 
         query.namedFilters = query.namedFilters || {};
-        query.namedFilters['col' + col.id] = filterItem;
+        query.namedFilters['col' + col.id] = { where: filterItem };
 
         // Store the filter in an easier format to deal with elsewhere;
         //  also keep a pointer back to the viewFilter
-        col.currentFilter = {value: value, viewFilter: filterItem};
+        col.currentFilter = { value: value, viewFilter: filterItem };
 
-        col.view.update({query: query});
+        col.view.update({ metadata: md });
     },
 
     clearFilter: function()
     {
         var col = this;
-        var query = $.extend(true, {}, col.view.query);
-        col._clearFilterData(query);
-        col.view.update({query: query});
+        var md = $.extend(true, {}, col.view.metadata);
+        col._clearFilterData(md.jsonQuery);
+        col.view.update({ metadata: md });
     },
 
     remove: function(successCallback, errorCallback, isBatch)
@@ -346,7 +346,7 @@ var Column = ServerModel.extend({
         }
 
         if (!$.isBlank(this.currentFilter) &&
-            $.isBlank(((this.view.query || {}).namedFilters ||
+            $.isBlank(((this.view.metadata.jsonQuery || {}).namedFilters ||
                 {})['col' + this.id]))
         { delete this.currentFilter; }
 
@@ -450,13 +450,15 @@ Column.sanitizeName = function(colName)
     return sname;
 };
 
-Column.closestViewFormat = function(realCol, localCol)
+Column.closestViewFormat = function(realCol, funcOrLocalCol)
 {
-    if (localCol.format.group_function != realCol.format.group_function)
+    var groupFunc = _.isString(funcOrLocalCol) || $.isBlank(funcOrLocalCol) ?
+        funcOrLocalCol : funcOrLocalCol.format.group_function;
+    if (groupFunc != realCol.format.group_function)
     {
         // Fix up view format
         var vt = realCol.renderType.viewTypes;
-        if (_.isFunction(vt)) { vt = vt(localCol, true); }
+        if (_.isFunction(vt)) { vt = vt(groupFunc, true); }
         if (!_.any(vt, function(v) { return v.value == realCol.format.view; }))
         {
             if ($.isBlank(realCol.format.view))

@@ -6,16 +6,16 @@
     var groupableTypes = _.compact(_.map(blist.datatypes, function(t, n)
     { return !$.isBlank(t.rollUpAggregates) ? n : null; }));
 
-    var rollUpFunctions = function(colId)
+    var rollUpFunctions = function(colFN)
     {
-        if ($.isBlank(colId)) { return null; }
-        return this._view.columnForID(colId).dataType.rollUpAggregates;
+        if ($.isBlank(colFN)) { return null; }
+        return this._view.columnForIdentifier(colFN).dataType.rollUpAggregates;
     };
 
-    var groupFunctions = function(colId)
+    var groupFunctions = function(colFN)
     {
-        if ($.isBlank(colId)) { return 'hidden'; }
-        return this._view.columnForID(colId).dataType.groupFunctions || 'hidden';
+        if ($.isBlank(colFN)) { return 'hidden'; }
+        return this._view.columnForIdentifier(colFN).dataType.groupFunctions || 'hidden';
     };
 
     $.Control.extend('pane_sortRollUp', {
@@ -38,18 +38,6 @@
             return !this._view.valid && !isEdit(this) ? $.t('screens.ds.grid_sidebar.base.validation.invalid_view') : $.t('screens.ds.grid_sidebar.sort_rollup.validation.no_eligible_columns');
         },
 
-        _dataPreProcess: function(view)
-        {
-            var cObj = this;
-            _.each(view.query.groupBys, function(gb)
-            {
-                var c = cObj._view.columnForIdentifier(gb.columnId);
-                if ($.subKeyDefined(c, 'format.group_function'))
-                { gb.group_function = c.format.group_function; }
-            });
-            return view;
-        },
-
         _getCurrentData: function()
         { return this._super() || this._view.cleanCopy(); },
 
@@ -60,29 +48,37 @@
             {
                 // Group section
                 sects.push({
-                    title: $.t('screens.ds.grid_sidebar.sort_rollup.rollup.title'), name: 'filterGroup', type: 'selectable',
+                    name: 'filterGroup', type: 'selectable',
+                    title: $.t('screens.ds.grid_sidebar.sort_rollup.rollup.title'),
                     fields: [
-                        { type: 'repeater', addText: $.t('screens.ds.grid_sidebar.sort_rollup.rollup.add_group_button'),
-                            name: 'query.groupBys', minimum: 0,
+                        { type: 'repeater', name: 'metadata.jsonQuery.group', minimum: 0,
+                            addText: $.t('screens.ds.grid_sidebar.sort_rollup.rollup.add_group_button'),
                             field: { type: 'group', options: [
-                                { type: 'columnSelect', text: $.t('screens.ds.grid_sidebar.sort_rollup.rollup.group_by'),
-                                name: 'columnId', notequalto: 'groupColumn',
-                                columns: { type: groupableTypes,
+                                { type: 'columnSelect', name: 'columnFieldName', notequalto: 'groupColumn',
+                                    useFieldName: true,
+                                    text: $.t('screens.ds.grid_sidebar.sort_rollup.rollup.group_by'),
+                                columns: { type: groupableTypes, noDefault: true,
                                     hidden: isEdit(this) || this._view.isGrouped() } },
-                                { type: 'select', text: $.t('screens.ds.grid_sidebar.sort_rollup.rollup.group_function_label'),
-                                    name: 'group_function', prompt: $.t('screens.ds.grid_sidebar.sort_rollup.rollup.group_function_prompt'),
-                                    options: groupFunctions, linkedField: 'columnId' }
+                                { type: 'select', name: 'groupFunction',
+                                    text: $.t('screens.ds.grid_sidebar.sort_rollup.rollup.group_function_label'),
+                                    prompt: $.t('screens.ds.grid_sidebar.sort_rollup.rollup.group_function_prompt'),
+                                    options: groupFunctions, linkedField: 'columnFieldName' }
                             ] }
                         },
-                        {type: 'repeater', addText: $.t('screens.ds.grid_sidebar.sort_rollup.rollup.add_rollup_button'), minimum: 0, name: 'columns',
-                            field: {type: 'group', options: [
-                                {type: 'columnSelect', text: $.t('screens.ds.grid_sidebar.sort_rollup.rollup.roll_up'), name: 'id', required: true,
-                                    notequalto: 'rollUpColumn', columns: {type: groupableTypes,
-                                        hidden: isEdit(this) || this._view.isGrouped()}},
-                                {type: 'select', text: $.t('screens.ds.grid_sidebar.sort_rollup.rollup.function'), required: true,
-                                    name: 'format.grouping_aggregate', prompt: $.t('screens.ds.grid_sidebar.sort_rollup.rollup.roll_up_function'),
-                                    linkedField: 'id', options: rollUpFunctions}
-                            ]}
+                        { type: 'repeater', minimum: 0, name: 'metadata.jsonQuery.select',
+                            addText: $.t('screens.ds.grid_sidebar.sort_rollup.rollup.add_rollup_button'),
+                            field: { type: 'group', options: [
+                                { type: 'columnSelect', name: 'columnFieldName', required: true,
+                                    useFieldName: true,
+                                    text: $.t('screens.ds.grid_sidebar.sort_rollup.rollup.roll_up'),
+                                    notequalto: 'rollUpColumn', columns: { type: groupableTypes,
+                                        noDefault: true,
+                                        hidden: isEdit(this) || this._view.isGrouped() }},
+                                { type: 'select', required: true, name: 'aggregate',
+                                    text: $.t('screens.ds.grid_sidebar.sort_rollup.rollup.function'),
+                                    prompt: $.t('screens.ds.grid_sidebar.sort_rollup.rollup.roll_up_function'),
+                                    linkedField: 'columnFieldName', options: rollUpFunctions }
+                            ] }
                         }
                     ]
                 });
@@ -90,17 +86,21 @@
 
             // Sort section
             sects.push({
-                title: $.t('screens.ds.grid_sidebar.sort_rollup.sort.title'), name: 'filterSort', type: 'selectable',
+                name: 'filterSort', type: 'selectable',
+                title: $.t('screens.ds.grid_sidebar.sort_rollup.sort.title'),
                 fields: [
-                    {type: 'repeater', addText: $.t('screens.ds.grid_sidebar.sort_rollup.sort.add_column_button'), name: 'query.orderBys', minimum: 0,
-                        field: {type: 'group', options: [
-                            {type: 'columnSelect', text: $.t('screens.ds.grid_sidebar.sort_rollup.sort.column'),
-                                name: 'expression.columnId', required: true, notequalto: 'sortColumn',
-                                columns: {type: sortableTypes}},
-                            {type: 'select', text: $.t('screens.ds.grid_sidebar.sort_rollup.sort.direction'),
-                                name: 'ascending', prompt: null, options: [
-                                    {text: $.t('screens.ds.grid_sidebar.sort_rollup.sort.directions.ascending'), value: 'true'},
-                                    {text: $.t('screens.ds.grid_sidebar.sort_rollup.sort.directions.descending'), value: 'false'}
+                    { type: 'repeater', name: 'metadata.jsonQuery.order', minimum: 0,
+                        addText: $.t('screens.ds.grid_sidebar.sort_rollup.sort.add_column_button'),
+                        field: { type: 'group', options: [
+                            { type: 'columnSelect', name: 'columnFieldName', required: true,
+                                notequalto: 'sortColumn', useFieldName: true,
+                                text: $.t('screens.ds.grid_sidebar.sort_rollup.sort.column'),
+                                columns: { type: sortableTypes } },
+                            { type: 'select', name: 'ascending', prompt: null,
+                                text: $.t('screens.ds.grid_sidebar.sort_rollup.sort.direction'),
+                                options: [
+                                    { text: $.t('screens.ds.grid_sidebar.sort_rollup.sort.directions.ascending'), value: 'true' },
+                                    { text: $.t('screens.ds.grid_sidebar.sort_rollup.sort.directions.descending'), value: 'false' }
                                 ]}
                         ]}
                     }
@@ -129,58 +129,28 @@
             if (!cpObj._super.apply(cpObj, arguments)) { return; }
 
             var filterView = cpObj._getFormValues();
-            var query = $.extend({}, cpObj._view.query);
-            // Copy orders & groups over if set; not sure exactly why this is so specific
-            if (!$.isBlank(filterView.query))
-            {
-                _.each(['orderBys', 'groupBys'], function(by)
-                {
-                    if (!$.isBlank(filterView.query[by]))
-                    { query[by] = filterView.query[by]; }
-                });
-            }
-            filterView.query = query;
+            var md = $.extend(true, {}, cpObj._view.metadata);
+            var query = md.jsonQuery;
+            // Copy orders & groups over always, because this is truth
+            _.each(['order', 'group', 'select'], function(by)
+            { query[by] = ((filterView.metadata || {}).jsonQuery || {})[by]; });
+            filterView.metadata = md;
 
             // Fix up orderBys to be server-compatible
-            _.each(filterView.query.orderBys || [], function(ob)
-            {
-                ob.ascending = (ob.ascending == 'true' || ob.ascending === true);
-                ob.expression.type = 'column';
-            });
+            _.each(filterView.metadata.jsonQuery.order || [], function(ob)
+            { ob.ascending = (ob.ascending == 'true' || ob.ascending === true); });
 
-            filterView.columns = filterView.columns || [];
-
-            // Fix up groupBys to fit format. Also pull out group_function into
-            // existing column, or add a new column
-            if (!_.isEmpty(filterView.query.groupBys))
+            // Only get real group-bys
+            if (!_.isEmpty(filterView.metadata.jsonQuery.group))
             {
-                filterView.query.groupBys = _.select(filterView.query.groupBys,
-                        function(gb)
-                        {
-                            gb.type = 'column';
-                            if (!$.isBlank(gb.group_function))
-                            {
-                                if (!_.any(filterView.columns, function(c)
-                                {
-                                    if (c.id == gb.columnId)
-                                    {
-                                        $.extend(c.format, {}, { group_function: gb.group_function });
-                                        return true;
-                                    }
-                                    return false;
-                                }))
-                                {
-                                    filterView.columns.push({ id: gb.columnId,
-                                        format: { group_function: gb.group_function } });
-                                }
-                                delete gb.group_function;
-                            }
-                            return !$.isBlank(gb.columnId);
-                        });
+                filterView.metadata.jsonQuery.group = _.select(filterView.metadata.jsonQuery.group,
+                        function(gb) { return !$.isBlank(gb.columnFieldName); });
             }
 
-            // We can't have columns with no groupBys
-            if (filterView.columns.length > 0 && (filterView.query.groupBys || []).length < 1)
+            // We can't have aggregates with no groupBys
+            if (_.any(filterView.metadata.jsonQuery.select, function(s)
+                        { return !$.isBlank(s.aggregate); }) &&
+                    _.isEmpty(filterView.metadata.jsonQuery.group))
             {
                 cpObj.$dom().find('.mainError')
                     .text($.t('screens.ds.grid_sidebar.sort_rollup.validation.no_group_bys'));
@@ -188,55 +158,60 @@
                 return;
             }
 
-            // We also can't have any columns set that don't have aggregate or function selected
-            if (_.any(filterView.columns, function(c)
-                { return $.isBlank(c.format) || ($.isBlank(c.format.grouping_aggregate) &&
-                    $.isBlank(c.format.group_function)); }))
+            // We also can't have any aggregates without a function
+            if (!_.isEmpty(filterView.metadata.jsonQuery.group) &&
+                    _.any(filterView.metadata.jsonQuery.select, function(s)
+                        { return $.isBlank(s.aggregate) && !_.any(filterView.metadata.jsonQuery.group,
+                            function(g) { return g.columnFieldName == s.columnFieldName; }); }))
             {
-                cpObj.$dom().find('.mainError').text($.t('screens.ds.grid_sidebar.sort_rollup.validation.no_function'));
+                cpObj.$dom().find('.mainError')
+                    .text($.t('screens.ds.grid_sidebar.sort_rollup.validation.no_function'));
                 cpObj._finishProcessing();
                 return;
             }
 
+            var updatedCols = false;
             // Make new columns have the correct format
-            _.each(filterView.columns, function(c)
+            _.each(filterView.metadata.jsonQuery.group, function(g)
             {
-                var col = cpObj._view.columnForID(c.id);
-                var mergedFmt = $.extend({}, col.format, c.format);
+                var col = cpObj._view.columnForIdentifier(g.columnFieldName);
 
-                var r = Column.closestViewFormat(col, c);
+                var r = Column.closestViewFormat(col,
+                    blist.datatypes.groupFunctionFromSoda2(g.groupFunction));
                 if (!$.isBlank(r))
-                { mergedFmt.view = r; }
-
-                if ($.isBlank(c.format.grouping_aggregate))
-                { delete mergedFmt.grouping_aggregate; }
-                if ($.isBlank(c.format.group_function))
-                { delete mergedFmt.group_function; }
-                c.format = mergedFmt;
+                {
+                    var fmt = $.extend({}, col.format);
+                    fmt.view = r;
+                    col.update({ format: fmt });
+                    updatedCols = true;
+                }
             });
 
             // Clear out any previously-set values on columns that have now been un-set
             _.each(cpObj._view.realColumns, function(c)
             {
                 if ((!$.isBlank(c.format.group_function) || !$.isBlank(c.format.grouping_aggregate)) &&
-                    !_.any(filterView.columns, function(fvc) { return fvc.id == c.id; }))
+                    !_.any(filterView.metadata.jsonQuery.select, function(s)
+                        { return !$.isBlank(s.aggregate) && s.columnFieldName == c.fieldName; }) &&
+                    !_.any(filterView.metadata.jsonQuery.group, function(g)
+                        { return g.columnFieldName == c.fieldName; }))
                 {
                     var fmt = $.extend({}, c.format);
-                    var r = Column.closestViewFormat(c, { format: {} });
+                    var r = Column.closestViewFormat(c, null);
                     if (!$.isBlank(r))
                     { fmt.view = r; }
                     delete fmt.grouping_aggregate;
                     delete fmt.group_function;
-                    filterView.columns.push({ id: c.id, format: fmt });
+                    c.update({ format: fmt });
+                    updatedCols = true;
                 }
             });
 
             var wasInvalid = !cpObj._view.valid;
 
-            // Now do the real update, minus columns if they turned out empty
-            if (_.isEmpty(filterView.columns))
-            { delete filterView.columns; }
-            cpObj._view.update(filterView, false, _.isEmpty(filterView.query.groupBys));
+            // Now do the real update
+            cpObj._view.update(filterView, false, _.isEmpty(filterView.metadata.jsonQuery.group));
+            if (updatedCols) { cpObj._view.trigger('columns_changed'); }
 
             var finishCallback = function()
             {
@@ -259,7 +234,7 @@
     }, {name: 'sortRollUp'}, 'controlPane');
 
     var isEdit = function(cpObj)
-    { return 'grouped' == cpObj._view.type && cpObj._view.hasRight('update_view'); };
+    { return cpObj._view.isGrouped() && cpObj._view.hasRight('update_view'); };
 
     if ($.isBlank(blist.sidebarHidden.filter) || !blist.sidebarHidden.filter.filterDataset)
     { $.gridSidebar.registerConfig('filter.sortRollUp', 'pane_sortRollUp', 3, 'grouped'); }

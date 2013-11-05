@@ -623,7 +623,7 @@ blist.namespace.fetch('blist.datatypes');
 
     // Aggregates
     var aggs = [
-        {text: $.t('core.aggregates.average'), value: 'average', calculate: function(values)
+        {text: $.t('core.aggregates.average'), value: 'avg', calculate: function(values)
             {
                 var count = 0;
                 var sum = _.reduce(values,
@@ -645,7 +645,7 @@ blist.namespace.fetch('blist.datatypes');
                         { return memo + ($.isBlank(v) ? 0 : parseFloat(v)); }, 0);
             }},
 
-        {text: $.t('core.aggregates.maximum'), value: 'maximum',
+        {text: $.t('core.aggregates.maximum'), value: 'max',
             calculate: function(values)
             {
                 return _.reduce(values, function(memo, v)
@@ -655,7 +655,7 @@ blist.namespace.fetch('blist.datatypes');
                         }, null);
             }},
 
-        {text: $.t('core.aggregates.minimum'), value: 'minimum',
+        {text: $.t('core.aggregates.minimum'), value: 'min',
             calculate: function(values)
             {
                 return _.reduce(values, function(memo, v)
@@ -769,11 +769,13 @@ blist.namespace.fetch('blist.datatypes');
         { value: 'date_y', text: 'year', isYear: true }
     ];
 
-    var dateViews = function(col, exclusive)
+    var dateViews = function(funcOrCol, exclusive)
     {
+        var func = _.isString(funcOrCol) || $.isBlank(funcOrCol) ?
+            funcOrCol : funcOrCol.format.group_function;
         return _.select(possibleDateViews, function(dv)
         {
-            switch (col.format.group_function)
+            switch (func)
             {
                 case 'date_ymd':
                     return !dv.value.endsWith('time') && (!exclusive || !dv.isMonth && !dv.isYear);
@@ -787,11 +789,14 @@ blist.namespace.fetch('blist.datatypes');
         });
     };
 
-    var dateGroupFunctions = [
-        { text: $.t('core.group_function.date_day'), value: 'date_ymd' },
-        { text: $.t('core.group_function.date_month'), value: 'date_ym' },
-        { text: $.t('core.group_function.date_year'), value: 'date_y' }
-    ];
+    var dateGroupFunctions = function(prefix)
+    {
+        return [
+            { text: $.t('core.group_function.date_day'), value: prefix + '_trunc_ymd' },
+            { text: $.t('core.group_function.date_month'), value: prefix + '_trunc_ym' },
+            { text: $.t('core.group_function.date_year'), value: prefix + '_trunc_y' }
+        ];
+    };
     blist.datatypes.soda2GroupFunction = function(gf, col)
     {
         if ($.isBlank(gf)) { return gf; }
@@ -1134,7 +1139,7 @@ blist.namespace.fetch('blist.datatypes');
             },
             priority: 7,
             rollUpAggregates: nonNumericAggs,
-            groupFunctions: dateGroupFunctions,
+            groupFunctions: dateGroupFunctions('datez'),
             soqlFilterValue: function(v)
             {
                 var d = v;
@@ -1166,7 +1171,7 @@ blist.namespace.fetch('blist.datatypes');
             inlineType: true,
             priority: 6,
             rollUpAggregates: nonNumericAggs,
-            groupFunctions: dateGroupFunctions,
+            groupFunctions: dateGroupFunctions('date'),
             sortable: true,
             // Giving an exact format to parse is quite a bit faster
             // than a general parse (at least in FF; not as much for IE)

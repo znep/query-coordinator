@@ -107,12 +107,11 @@
             var isPieStyleChart = _.include(['pie', 'donut'], view.displayFormat.chartType)
             var isBrandNewChart = _.isEmpty(originalChartType);
             var isSameChartType = !isBrandNewChart && originalChartType == view.displayFormat.chartType;
-            if ( (isBrandNewChart || isSameChartType) && isPieStyleChart && !$.subKeyDefined(cpObj, '_view.query.orderBys'))
+            if ( (isBrandNewChart || isSameChartType) && isPieStyleChart &&
+                    !$.subKeyDefined(cpObj, '_view.metadata.jsonQuery.order'))
             {
-                view.query = $.extend(view.query, cpObj._view.query,
-                {
-                    orderBys: cpObj._getPieDefaultOrderBy(view.displayFormat.valueColumns)
-                });
+                view.metadata = $.extend(true, view.metadata, cpObj._view.metadata);
+                view.metadata.jsonQuery.order = cpObj._getPieDefaultOrderBy(view.displayFormat.valueColumns);
             }
 
             if (((view.displayFormat.chartType == 'bar') || (view.displayFormat.chartType == 'column')) &&
@@ -148,10 +147,7 @@
                 {
                     return {
                         ascending: false,
-                        expression: {
-                            columnId: cpObj._view.columnForIdentifier(col.fieldName || col.tableColumnId).id,
-                            type: 'column'
-                        }
+                        columnId: cpObj._view.columnForIdentifier(col.fieldName || col.tableColumnId).fieldName
                     };
                 });
         }

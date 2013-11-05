@@ -695,16 +695,13 @@
         { chartObj._seriesRemaindersPending[series.groupId] = []; }
 
         var newDS = chartObj._primaryView.clone();
-        var fc = {type: 'operator', value: 'AND', children: []};
+        var fc = { operator: 'AND', children: [] };
         var hasFilters = false;
         _.each(chartObj._seriesColumns, function(sc)
             {
                 var v = series.seriesValues[sc.column.lookup];
                 if ($.isBlank(v)) { return; }
-                fc.children.push({type: 'operator', value: 'EQUALS', children: [
-                    { type: 'column', columnFieldName: sc.column.fieldName },
-                    { type: 'literal', value: v }
-                ]});
+                fc.children.push({ operator: 'EQUALS', columnFieldName: sc.column.fieldName, value: v });
                 hasFilters = true;
             });
 
@@ -714,9 +711,9 @@
             return;
         }
 
-        var query = $.extend(true, {namedFilters: {}}, newDS.query);
-        query.namedFilters.chartSeriesGroup = fc;
-        newDS.update({query: query});
+        var md = $.extend(true, { jsonQuery: { namedFilters: {} } }, newDS.metadata);
+        md.jsonQuery.namedFilters.chartSeriesGroup = fc;
+        newDS.update({ metadata: md });
 
         var customAggs = {};
         _.each(chartObj._yColumns, function(c) { customAggs[c.data.id] = ['sum']; });

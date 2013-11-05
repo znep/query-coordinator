@@ -169,10 +169,11 @@ jQuery.metrics = {
 
         if (blist.dataset) {
             var extra = _.compact(_.map({
-                    'sort': 'orderBys',
-                    'grouped': 'groupBys',
-                    'filter': 'filterCondition' }, function(qPart, name)
-                { return !_.isEmpty($.deepGet(blist.dataset, 'query', qPart)) ? name : null; }));
+                'order': 'sort',
+                'group': 'grouped',
+                'where': 'filter',
+                'having': 'filter' }, function(name, qPart)
+                { return !_.isEmpty($.deepGet(blist.dataset, 'metadata', 'jsonQuery', qPart)) ? name : null; }));
 
             if (extra.length > 1)
             { return 'dataset-complex'; }

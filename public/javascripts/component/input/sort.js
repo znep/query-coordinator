@@ -309,11 +309,12 @@ var handleSortClear = function(cObj)
     if ($.subKeyDefined(cObj, '_dataContext.column'))
     {
         var ds = cObj._dataContext.column.view;
-        var query = $.extend(true, {}, ds.query);
-        query.orderBys = _.reject(query.orderBys || [], function(ob)
-                { return ob.expression.columnId == cObj._dataContext.column.id; });
-        if (query.orderBys.length == 0) { delete query.orderBys; }
-        ds.update({query: query}, false, (query.orderBys || []).length < 2);
+        var md = $.extend(true, {}, ds.metadata);
+        var query = md.jsonQuery;
+        query.order = _.reject(query.order || [], function(ob)
+                { return ob.columnFieldName == cObj._dataContext.column.fieldName; });
+        if (query.order.length == 0) { delete query.order; }
+        ds.update({ metadata: md }, false, (query.order || []).length < 2);
     }
 };
 

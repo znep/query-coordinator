@@ -25,97 +25,99 @@
             });
         },
 
-        render: function() {
-            var completeRerender = this._super();
+        render: function()
+        {
             var cpObj = this;
-
-            if (completeRerender)
+            cpObj._super(null, null, function(completeRerender)
             {
-            //setup DOM
-                cpObj.$dom().find('.chartTypeSelection .radioLine').each(function(index, node){
-                    $(node).addClass(typeOrder[index])
-                });
+                if (completeRerender)
+                {
+                    //setup DOM
+                    cpObj.$dom().find('.chartTypeSelection .radioLine').each(function(index, node){
+                        $(node).addClass(typeOrder[index])
+                    });
 
-                //Push custom icons into sidebar dom
-                cpObj.$dom().find('.chartTypeSelection .formHeader')
-                    .append($.tag({ tagName: 'div', 'class': ['currentSelection'],
-                        contents: [{ tagName: 'span', 'class': ['selectionName']},
-                                   { tagName: 'span', 'class': ['selectionIcon']}]
-                    }));
+                    //Push custom icons into sidebar dom
+                    cpObj.$dom().find('.chartTypeSelection .formHeader')
+                        .append($.tag({ tagName: 'div', 'class': ['currentSelection'],
+                            contents: [{ tagName: 'span', 'class': ['selectionName']},
+                                       { tagName: 'span', 'class': ['selectionIcon']}]
+                        }));
 
-                //Insert icon elements where needed
-                cpObj.$dom().find('.line.hasIcon')
-                    .after($.tag({ tagName: 'div', 'class': ['lineIcon'] }));
+                    //Insert icon elements where needed
+                    cpObj.$dom().find('.line.hasIcon')
+                        .after($.tag({ tagName: 'div', 'class': ['lineIcon'] }));
 
-                //Repeater add buttons change icon of section
-                cpObj.$dom().find('.hasIcon.repeater .addValue')
-                    .hover(
-                        function() {
-                            $(this).parent().siblings().filter('.lineIcon').addClass('hover');
-                        },
-                        function() {
-                            $(this).parent().siblings().filter('.lineIcon').removeClass('hover');
-                        }
-                );
+                    //Repeater add buttons change icon of section
+                    cpObj.$dom().find('.hasIcon.repeater .addValue')
+                        .hover(
+                            function() {
+                                $(this).parent().siblings().filter('.lineIcon').addClass('hover');
+                            },
+                            function() {
+                                $(this).parent().siblings().filter('.lineIcon').removeClass('hover');
+                            }
+                    );
 
-                if(!cpObj._view.metadata.conditionalFormatting){
-                    cpObj.$dom().find('.conditionalFormattingWarning').hide();
-                };
-                //hide *Required text, people get it
-                cpObj.$dom().find('.mainError+.required').hide();
-
-
-
-                //setup eventing    
-
-                //Add flyout to unavailable chart types telling which columns are required
-                var unavailable = cpObj.$dom().find('.unavailable');
-                for(var i=0; i<unavailable.length; i++){
-                    var type = unavailable[i].className.split(' ')[2];
-                    cpObj.$dom().find('.unavailable.'+type).socrataTip({content: Dataset.chart.types[type].prompt});
-                };
-
-                //takes in classname <'radioLine' ('unavailable')? type>
-                var setHeader = function(type){
-                    var current = type.split(' ')[1];
-                    if(current!='unavailable'){
-                        cpObj.$dom().find('.formSection.chartTypeSelection, .paneContent')
-                        .removeClass(function(i, oldClasses) {
-                            var matches = oldClasses.match(/\S*-selected/);
-                            return ($.isBlank(matches) ? '' : matches.join(' '));
-                        })
-                        .addClass(type+'-selected')
-                        //Set the text to current icon type
-                        .find('.currentSelection .selectionName')
-                        .text(Dataset.chart.types[current].text);
+                    if(!cpObj._view.metadata.conditionalFormatting){
+                        cpObj.$dom().find('.conditionalFormattingWarning').hide();
                     };
+                    //hide *Required text, people get it
+                    cpObj.$dom().find('.mainError+.required').hide();
+
+
+
+                    //setup eventing    
+
+                    //Add flyout to unavailable chart types telling which columns are required
+                    var unavailable = cpObj.$dom().find('.unavailable');
+                    for(var i=0; i<unavailable.length; i++){
+                        var type = unavailable[i].className.split(' ')[2];
+                        cpObj.$dom().find('.unavailable.'+type).socrataTip({content: Dataset.chart.types[type].prompt});
+                    };
+
+                    //takes in classname <'radioLine' ('unavailable')? type>
+                    var setHeader = function(type){
+                        var current = type.split(' ')[1];
+                        if(current!='unavailable'){
+                            cpObj.$dom().find('.formSection.chartTypeSelection, .paneContent')
+                            .removeClass(function(i, oldClasses) {
+                                var matches = oldClasses.match(/\S*-selected/);
+                                return ($.isBlank(matches) ? '' : matches.join(' '));
+                            })
+                            .addClass(type+'-selected')
+                            //Set the text to current icon type
+                            .find('.currentSelection .selectionName')
+                            .text(Dataset.chart.types[current].text);
+                        };
+                    }
+                    if (blist.dataset.displayFormat.chartType){
+                        setHeader('radioLine '+blist.dataset.displayFormat.chartType);
+                    }
+
+                    //Bind section classing to chart-type selection
+                    cpObj.$dom().find('.chartTypeSelection .radioLine').click(function(e) {
+                        setHeader($(e.currentTarget).attr('class'));
+                    });
+
+                    //Clicking minus button repeater triggers rerender
+                    cpObj.$dom().find('.repeater')
+                            .delegate('.removeLink', 'click', function(e) { cpObj._changeHandler($(e.currentTarget));
+                    });
+
+                    //Section hiding animations
+                    cpObj.$dom().find('.formSection.selectable .sectionSelect').click( function(e) {
+                        var $sect = $(e.currentTarget).closest('.formSection');
+
+                        //shown/hidden by base-pane eventing so needs to be shown and then reset to for animation to run
+                        if ($sect.hasClass('collapsed'))
+                        { $sect.find('.sectionContent').show().slideUp({duration: 100, easing: 'linear'}); }
+                        else
+                        { $sect.find('.sectionContent').hide().slideDown({duration: 100, easing: 'linear'}); }
+                    });
+
                 }
-                if (blist.dataset.displayFormat.chartType){
-                    setHeader('radioLine '+blist.dataset.displayFormat.chartType);
-                }
-
-                //Bind section classing to chart-type selection
-                cpObj.$dom().find('.chartTypeSelection .radioLine').click(function(e) {
-                    setHeader($(e.currentTarget).attr('class'));
-                });
-
-                //Clicking minus button repeater triggers rerender
-                cpObj.$dom().find('.repeater')
-                        .delegate('.removeLink', 'click', function(e) { cpObj._changeHandler($(e.currentTarget));
-                });
-
-                //Section hiding animations
-                cpObj.$dom().find('.formSection.selectable .sectionSelect').click( function(e) {
-                    var $sect = $(e.currentTarget).closest('.formSection');
-
-                    //shown/hidden by base-pane eventing so needs to be shown and then reset to for animation to run
-                    if ($sect.hasClass('collapsed'))
-                    { $sect.find('.sectionContent').show().slideUp({duration: 100, easing: 'linear'}); }
-                    else
-                    { $sect.find('.sectionContent').hide().slideDown({duration: 100, easing: 'linear'}); }
-                });
-
-            }
+            });
         },
 
         getTitle: function() {
@@ -237,12 +239,11 @@
 
                 var isPieStyleChart = _.include(['pie', 'donut'], view.displayFormat.chartType)
                 var isSameChartType = !isBrandNewChart && originalChartType == view.displayFormat.chartType;
-                if ( (isBrandNewChart || isSameChartType) && isPieStyleChart && !$.subKeyDefined(cpObj, '_view.query.orderBys'))
+                if ( (isBrandNewChart || isSameChartType) && isPieStyleChart &&
+                        !$.subKeyDefined(cpObj, '_view.metadata.jsonQuery.order'))
                 {
-                    view.query = $.extend(view.query, cpObj._view.query,
-                    {
-                        orderBys: cpObj._getPieDefaultOrderBy(view.displayFormat.valueColumns)
-                    });
+                    view.metadata = $.extend(true, view.metadata, cpObj._view.metadata);
+                    view.metadata.jsonQuery.order = cpObj._getPieDefaultOrderBy(view.displayFormat.valueColumns);
                 }
 
                 if (((view.displayFormat.chartType == 'bar') || (view.displayFormat.chartType == 'column')) &&
@@ -283,10 +284,7 @@
                 {
                     return {
                         ascending: false,
-                        expression: {
-                            columnId: cpObj._view.columnForIdentifier(col.fieldName || col.tableColumnId).id,
-                            type: 'column'
-                        }
+                        columnFieldName: cpObj._view.columnForIdentifier(col.fieldName || col.tableColumnId).fieldName
                     };
                 });
         }

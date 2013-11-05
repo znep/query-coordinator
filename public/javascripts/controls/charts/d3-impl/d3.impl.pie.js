@@ -1082,21 +1082,18 @@ $.Control.registerMixin('d3_impl_pie', {
     {
         var retval = false;
         var view = this._primaryView;
-        if ($.subKeyDefined(view, 'query.orderBys'))
+        if ($.subKeyDefined(view, 'metadata.jsonQuery.order'))
         {
             // NOTE: Keep this in sync with the one in (new-)chart-create.js!
             var defaultOrderBy = _.map(view.displayFormat.valueColumns, function(col)
             {
                 return {
                     ascending: false,
-                    expression: {
-                        columnId: view.columnForIdentifier(col.fieldName || col.tableColumnId).id,
-                        type: 'column'
-                    }
+                    columnFieldName: view.columnForIdentifier(col.fieldName || col.tableColumnId).fieldName
                 };
             });
 
-            retval = _.isEqual(defaultOrderBy, view.query.orderBys);
+            retval = _.isEqual(defaultOrderBy, view.metadata.jsonQuery.order);
         }
 
         this.debugOut('sortedBigToSmall:' + retval);

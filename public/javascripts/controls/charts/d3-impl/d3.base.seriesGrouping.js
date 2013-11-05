@@ -41,7 +41,7 @@ d3base.seriesGrouping = {
 
         // Sort types: natural, alphabetical, arbitrary.
         // natural: the dataset as uploaded.
-        // alphabetical: the relevant column is in query.orderBys.
+        // alphabetical: the relevant column is in metadata.jsonQuery.order.
         // arbitrary: use metadata.displayOrder.
         var sg = vizObj._seriesGrouping = {
             categoryIndexLookup: {},
@@ -49,7 +49,7 @@ d3base.seriesGrouping = {
             fixedColumn: null,
             groupedView: null,
             groupSort: 'natural',
-            hasGroupBys: _.isArray((vizObj._primaryView.query || {}).groupBys),
+            hasGroupBys: vizObj._primaryView.isGrouped(),
             physicalRowsRetreived: 0,
             ready: false,
             sortColumns: null,
@@ -82,31 +82,28 @@ d3base.seriesGrouping = {
         // set up the sort, if we have something to sort by.
         if (vizObj._fixedColumns[0])
         {
-            var orderBys = $.deepGet(vizObj._primaryView, 'query', 'orderBys');
+            var orderBys = $.deepGet(vizObj._primaryView, 'metadata', 'jsonQuery', 'order');
             if (_.any(orderBys,
-                function(ob) { return ob.expression.columnId == vizObj._fixedColumns[0].id; }))
+                function(ob) { return ob.columnFieldName == vizObj._fixedColumns[0].fieldName; }))
             { sg.categorySort = 'alphabetical'; }
 
-            sortedView.update({ query: $.extend({}, sortedView.query, {
-                orderBys: _.map(sortColumns, function(col)
+            var md = $.extend(true, {}, sortedView.metadata);
+            md.jsonQuery.order = _.map(sortColumns, function(col)
+            {
+                var ascending = true;
+                if (orderBys)
                 {
-                    var ascending = true;
-                    if (orderBys)
-                    {
-                        ascending = (_.detect(orderBys, function(ob)
-                            { return ob.expression.columnId == col.id; })
-                            || { ascending: true }).ascending;
-                    }
+                    ascending = (_.detect(orderBys, function(ob)
+                        { return ob.columnFieldName == col.fieldName; })
+                        || { ascending: true }).ascending;
+                }
 
-                    return {
-                        ascending: ascending,
-                        expression: {
-                            columnId: col.id,
-                            type: 'column'
-                        }
-                    };
-                })
-            }) });
+                return {
+                    ascending: ascending,
+                    columnFieldName: col.fieldName
+                };
+            });
+            sortedView.update({ metadata: md });
         }
 
         var finishedPreprocessing = false;
@@ -150,15 +147,12 @@ d3base.seriesGrouping = {
 
         if (vizObj._fixedColumns[0])
         {
-            var categoryGroupBys = (sortedView.query.groupBys || []).concat([
-                {
-                    columnId: vizObj._fixedColumns[0].id,
-                    type: 'column'
-                } ]);
+            var categoryGroupBys = (sortedView.metadata.jsonQuery.group || []).concat([
+                { columnFieldName: vizObj._fixedColumns[0].fieldName } ]);
 
-            categoryGroupedView.update({ query: $.extend({}, sortedView.query, {
-                groupBys: categoryGroupBys
-            }) });
+            var md = $.extend(true, {}, sortedView.metadata);
+            md.jsonQuery.group = categoryGroupBys;
+            categoryGroupedView.update({ metadata: md });
         }
 
         categoryGroupedView.getAllRows(function(rows)
@@ -173,18 +167,15 @@ d3base.seriesGrouping = {
         var seriesGroupedView = sg.seriesGroupedView = sortedView.clone();
         var seriesGroupedColumns = _.without(sortColumns, vizObj._fixedColumns[0]);
 
-        var seriesGroupBys = (seriesGroupedView.query.groupBys || []).concat(
+        var seriesGroupBys = (seriesGroupedView.metadata.jsonQuery.group || []).concat(
             _.map(seriesGroupedColumns, function(col)
             {
-                return {
-                    columnId: col.id,
-                    type: 'column'
-                };
+                return { columnFieldName: col.fieldName };
             }));
 
-        seriesGroupedView.update({ query: $.extend({}, sortedView.query, {
-            groupBys: seriesGroupBys
-        }) });
+        var md = $.extend(true, {}, sortedView.metadata);
+        md.jsonQuery.group = seriesGroupBys;
+        seriesGroupedView.update({ metadata: md });
         seriesGroupedView.getAllRows(function(rows)
         {
             sg.seriesGroupedRows = rows;
@@ -295,10 +286,9 @@ d3base.seriesGrouping = {
             });
         }
         // Sort by position iff there isn't another sort in place. (i.e. natural sort)
-        else if (!_.any($.deepGet(vizObj._primaryView, 'query', 'orderBys'), function(orderBy)
+        else if (!_.any($.deepGet(vizObj._primaryView, 'metadata', 'jsonQuery', 'order'), function(orderBy)
                 { return _.include(sg.sortColumns,
-                    vizObj._primaryView.columnForIdentifier(orderBy.expression.columnFieldName
-                                                         || orderBy.expression.columnId)); }))
+                    vizObj._primaryView.columnForIdentifier(orderBy.columnFieldName)); }))
         {
             sg.groupSort = 'natural';
             sortedRows = _.sortBy(sg.seriesGroupedRows, 'id');

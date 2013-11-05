@@ -173,7 +173,7 @@ var Dataset = ServerModel.extend({
 
     isGrouped: function()
     {
-        return ((this.query || {}).groupBys || []).length > 0;
+        return !_.isEmpty((this.metadata.jsonQuery || {}).group);
     },
 
     isFederated: function()
@@ -352,17 +352,17 @@ var Dataset = ServerModel.extend({
     simpleSort: function(colId, ascending)
     {
         var ds = this;
-        var query = $.extend(true, {}, ds.query);
+        var md = $.extend(true, {}, ds.metadata);
+        var query = md.jsonQuery;
         var col = ds.columnForIdentifier(colId);
         if ($.isBlank(col))
-        { delete query.orderBys; }
+        { delete query.order; }
         else
         {
-            query.orderBys = [{ expression:
-                { columnId: col.id, type: 'column' }, ascending: ascending === true }];
+            query.order = [{ columnFieldName: col.fieldName, ascending: ascending === true }];
         }
 
-        ds.update({query: query}, false, (query.orderBys || []).length < 2);
+        ds.update({ metadata: md }, false, (query.order || []).length < 2);
     },
 
     showRenderType: function(rt, activeUid, force)
@@ -2332,11 +2332,24 @@ var Dataset = ServerModel.extend({
                     return { columnId: c.id, type: 'column' };
                 }));
             ds.searchString = ds.metadata.jsonQuery.search;
+
+            // It's possible select was only set for aggregated columns; so fix it up to have grouped, too
+            if (!_.isEmpty(ds.metadata.jsonQuery.group))
+            {
+                ds.metadata.jsonQuery.select = ds.metadata.jsonQuery.select || [];
+                _.each(ds.metadata.jsonQuery.group.reverse(), function(g)
+                {
+                    if (!_.any(ds.metadata.jsonQuery.select, function(s)
+                        { return s.columnFieldName == g.columnFieldName; }))
+                    { ds.metadata.jsonQuery.select.unshift({ columnFieldName: g.columnFieldName }); }
+                });
+            }
+
             _.each(ds.metadata.jsonQuery.select, function(s)
                 {
                     var c = ds.columnForIdentifier(s.columnFieldName);
                     if (!$.isBlank(c) && !$.isBlank(s.aggregate))
-                    { c.format.grouping_aggregate = s.aggregate; }
+                    { c.format.grouping_aggregate = blist.datatypes.aggregateFromSoda2(s.aggregate); }
                 });
         }
         else
@@ -2371,7 +2384,8 @@ var Dataset = ServerModel.extend({
                 { return { columnFieldName: g.columnFieldName }; }).concat(_.map(ds.realColumns, function(c)
                 {
                     return $.subKeyDefined(c, 'format.grouping_aggregate') ?
-                        { columnFieldName: c.fieldName, aggregate: c.format.grouping_aggregate } :
+                        { columnFieldName: c.fieldName,
+                            aggregate: blist.datatypes.soda2Aggregate(c.format.grouping_aggregate) } :
                         null;
                 })));
             }

@@ -598,14 +598,11 @@
         return _.compact(_.map(view.displayFormat.valueColumns, function(col)
             {
                 var col = view.columnForIdentifier(col.fieldName || col.tableColumnId);
-                if (col && !_.isUndefined(col.id))
+                if (col && !_.isUndefined(col.fieldName))
                 {
                     return {
                         ascending: false,
-                        expression: {
-                            columnId: col.id,
-                            type: 'column'
-                        }
+                        columnFieldName: col.fieldName
                     };
                 }
                 else
@@ -617,10 +614,10 @@
 
     var hasDefaultPieSort = function(options)
     {
-        if ($.subKeyDefined(options.view, 'query.orderBys'))
+        if ($.subKeyDefined(options.view, 'metadata.jsonQuery.order'))
         {
             var defaultOrderBy = getPieDefaultOrderBy(options);
-            return _.isEqual(defaultOrderBy, options.view.query.orderBys);
+            return _.isEqual(defaultOrderBy, options.view.metadata.jsonQuery.order);
         }
         return false;
     };
@@ -663,12 +660,10 @@
 
             $button.on('click', function()
             {
-                var query = $.extend({}, options.view.query,
-                {
-                    orderBys: getPieDefaultOrderBy(options)
-                });
+                var md = $.extend(true, {}, options.view.metadata);
+                md.jsonQuery.order = getPieDefaultOrderBy(options);
 
-                options.view.update({ query: query }, false, true);
+                options.view.update({ metadata: md }, false, true);
             });
 
             autoPieSortCurrentlyVisible = shouldEnableAutoPieSortButton(options);

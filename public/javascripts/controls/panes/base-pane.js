@@ -315,6 +315,7 @@
                        value. Matches are case-insensitive for both the provided
                        names and column names.
                     + noDefault: don't auto-select a column even if an obvious default is available
+                    + useQueryBase: if true, looks at the queryBase dataset, not the primary dataset
                   }
                   + inputFirst: for checkbox, you can opt to move the checkboxes
                       ahead of the labels with this boolean.
@@ -441,8 +442,9 @@
         { this._visible = false; },
 
         /* Render the full pane */
-        render: function(data, isTempData)
+        render: function(data, isTempData, completeCallback)
         {
+            completeCallback = completeCallback || function() {};
             var cpObj = this;
             var $pane = cpObj.$content();
 
@@ -451,19 +453,27 @@
                 if ($.isBlank(cpObj._cachedRender) || !$.isBlank(data))
                 { cpObj._cachedRender = {data: data, isTempData: isTempData}; }
                 cpObj._startProcessing();
-                return false;
+                completeCallback(false);
+                return;
             }
 
             cpObj._finishProcessing();
 
             if (($.isBlank(data) || _.isEqual(data, cpObj._getCurrentData())) && !cpObj._isDirty)
-            { return false; }
+            {
+                completeCallback(false);
+                return;
+            }
 
             $pane.find('.line.custom').each(function() { cleanLine(cpObj, $(this)); });
             $pane.find('[data-customContent]').each(function() { cleanSection(cpObj, $(this)); });
             $pane.empty();
 
-            if (!cpObj.isAvailable()) { return false; }
+            if (!cpObj.isAvailable())
+            {
+                completeCallback(false);
+                return;
+            }
 
             if ($.isBlank(data))
             { data = cpObj._getCurrentData(); }
@@ -481,210 +491,229 @@
             else
             { rData.readOnlyMessage = cpObj._getReadOnlyMessage(); }
 
-            var sectionOnlyIfs = {};
-            var curSectId;
-            var directive = {
-                '.subtitle': 'subtitle',
-                '.subtitleBlock@class+': function(a)
-                { return $.isBlank(a.context.subtitle) ? 'hide' : ''; },
-                '.readOnlyMessage': 'readOnlyMessage',
-                '.readOnlyBlock@class+': function(a)
-                { return $.isBlank(a.context.readOnlyMessage) ? 'hide' : ''; },
-                '.formSection': {
-                    'section<-sections': {
-                        '@class+': function(arg)
-                        {
-                            curSectId = _.uniqueId();
-                            return _.compact([arg.item.type, arg.item.name,
-                            (arg.item.initShow ? 'initShow' : ''),
-                            (arg.item.validateCollapsed ? 'validateCollapsed' : ''),  
-                            (!$.isBlank(arg.item.onlyIf) ||
-                                arg.item.type == 'hidden' ? 'hide' : ''),
-                            (!$.isBlank(arg.item.customContent)) ? 'custom' : '' ].concat(
-                                $.arrayify(arg.item.customClasses)))
-                            .join(' ');
-                        },
-                        '@data-onlyIf': function(arg)
-                        {
-                            if (!$.isBlank(arg.item.onlyIf))
+            var doRender = function()
+            {
+                var sectionOnlyIfs = {};
+                var curSectId;
+                var directive = {
+                    '.subtitle': 'subtitle',
+                    '.subtitleBlock@class+': function(a)
+                    { return $.isBlank(a.context.subtitle) ? 'hide' : ''; },
+                    '.readOnlyMessage': 'readOnlyMessage',
+                    '.readOnlyBlock@class+': function(a)
+                    { return $.isBlank(a.context.readOnlyMessage) ? 'hide' : ''; },
+                    '.formSection': {
+                        'section<-sections': {
+                            '@class+': function(arg)
                             {
-                                var u = _.uniqueId();
-                                sectionOnlyIfs[u] = $.arrayify(arg.item.onlyIf);
-                                return u;
-                            }
-                            return '';
-                        },
-                        '@data-customContent': function(arg)
-                        {
-                            if (!$.isBlank(arg.item.customContent))
+                                curSectId = _.uniqueId();
+                                return _.compact([arg.item.type, arg.item.name,
+                                (arg.item.initShow ? 'initShow' : ''),
+                                (arg.item.validateCollapsed ? 'validateCollapsed' : ''),  
+                                (!$.isBlank(arg.item.onlyIf) ||
+                                    arg.item.type == 'hidden' ? 'hide' : ''),
+                                (!$.isBlank(arg.item.customContent)) ? 'custom' : '' ].concat(
+                                    $.arrayify(arg.item.customClasses)))
+                                .join(' ');
+                            },
+                            '@data-onlyIf': function(arg)
                             {
-                                var u = _.uniqueId();
-                                cpObj._customSections[u] = arg.item.customContent;
-                                return u;
-                            }
-                            return '';
-                        },
-                        '@name': function(arg)
-                        { return (arg.item.name || '') + '_' + curSectId; },
-                        '.formHeader+': 'section.title',
-                        '.formHeader@for': function(arg)
-                        { return (arg.item.name || '') + '_' + curSectId; },
-                        '.formHeader@class+': function(arg)
-                        { return $.isBlank(arg.item.title) ? 'hide' : ''; },
-                        '.sectionSelect@id': function(arg)
-                        { return (arg.item.name || '') + '_' + curSectId; },
-                        '.sectionSelect@name': function(arg)
-                        { return (arg.item.name || '') + '_' + curSectId; },
-                        '.sectionContent+': function(a)
-                        { return _.map(a.item.fields || [], function(f, i)
-                            { return renderLine(cpObj,
-                                {context: $.extend({}, a.context,
-                                    { sectionName: a.item.name,
-                                        sectionOptions: { showIfData: a.item.showIfData } }),
-                                item: f, items: a.item.fields, pos: i}); }
-                            ).join(''); }
-                    }
-                },
-                '.finishButtons > li': {
-                    'button<-finishButtons': {
-                        '.+': function(a)
-                        {
-                            var opts = {text: a.item.text, className: [],
-                                customAttrs: {'data-value': a.item.value,
-                                    'data-loginMsg': a.item.loginMessage}};
-
-                            if (a.item.isDefault)
+                                if (!$.isBlank(arg.item.onlyIf))
+                                {
+                                    var u = _.uniqueId();
+                                    sectionOnlyIfs[u] = $.arrayify(arg.item.onlyIf);
+                                    return u;
+                                }
+                                return '';
+                            },
+                            '@data-customContent': function(arg)
                             {
-                                opts.className.push('arrowButton');
-                                opts.iconClass = 'submit';
+                                if (!$.isBlank(arg.item.customContent))
+                                {
+                                    var u = _.uniqueId();
+                                    cpObj._customSections[u] = arg.item.customContent;
+                                    return u;
+                                }
+                                return '';
+                            },
+                            '@name': function(arg)
+                            { return (arg.item.name || '') + '_' + curSectId; },
+                            '.formHeader+': 'section.title',
+                            '.formHeader@for': function(arg)
+                            { return (arg.item.name || '') + '_' + curSectId; },
+                            '.formHeader@class+': function(arg)
+                            { return $.isBlank(arg.item.title) ? 'hide' : ''; },
+                            '.sectionSelect@id': function(arg)
+                            { return (arg.item.name || '') + '_' + curSectId; },
+                            '.sectionSelect@name': function(arg)
+                            { return (arg.item.name || '') + '_' + curSectId; },
+                            '.sectionContent+': function(a)
+                            { return _.map(a.item.fields || [], function(f, i)
+                                { return renderLine(cpObj,
+                                    {context: $.extend({}, a.context,
+                                        { sectionName: a.item.name,
+                                            sectionOptions: { showIfData: a.item.showIfData } }),
+                                    item: f, items: a.item.fields, pos: i}); }
+                                ).join(''); }
+                        }
+                    },
+                    '.finishButtons > li': {
+                        'button<-finishButtons': {
+                            '.+': function(a)
+                            {
+                                var opts = {text: a.item.text, className: [],
+                                    customAttrs: {'data-value': a.item.value,
+                                        'data-loginMsg': a.item.loginMessage}};
+
+                                if (a.item.isDefault)
+                                {
+                                    opts.className.push('arrowButton');
+                                    opts.iconClass = 'submit';
+                                }
+                                else if (a.item.isCancel)
+                                { opts.iconClass = 'cancel'; }
+
+                                if (a.item.requiresLogin)
+                                { opts.className.push('requiresLogin'); }
+
+                                return $.button(opts, true);
                             }
-                            else if (a.item.isCancel)
-                            { opts.iconClass = 'cancel'; }
-
-                            if (a.item.requiresLogin)
-                            { opts.className.push('requiresLogin'); }
-
-                            return $.button(opts, true);
                         }
                     }
-                }
-            };
+                };
 
-            $pane.append($.renderTemplate('sidebarPane', rData, directive));
-            $pane.toggleClass('readOnly', cpObj._isReadOnly());
+                $pane.append($.renderTemplate('sidebarPane', rData, directive));
+                $pane.toggleClass('readOnly', cpObj._isReadOnly());
 
-            if ($pane.find('label.required').length > 0)
-            { $pane.find('div.required').removeClass('hide'); }
+                if ($pane.find('label.required').length > 0)
+                { $pane.find('div.required').removeClass('hide'); }
 
-            // Dynamically show/hide panes
-            // Pre-run these selectors, because for large panes, it can be slow in IE7
-            var $sections = cpObj.$dom().find('.formSection');
-            var $fields = cpObj.$dom().find('input, select, textarea');
-            _.each(sectionOnlyIfs, function(oif, uid)
-                    { hookUpSectionHiding(cpObj, oif, uid, $sections, $fields); });
+                // Dynamically show/hide panes
+                // Pre-run these selectors, because for large panes, it can be slow in IE7
+                var $sections = cpObj.$dom().find('.formSection');
+                var $fields = cpObj.$dom().find('input, select, textarea');
+                _.each(sectionOnlyIfs, function(oif, uid)
+                        { hookUpSectionHiding(cpObj, oif, uid, $sections, $fields); });
 
-            $pane.find('.formSection.selectable').each(function()
-            {
-                var $s = $(this), hasData = false;
-                $s.find('[data-dataValue]').each(function()
+                $pane.find('.formSection.selectable').each(function()
                 {
-                    // Color inputs always return true, so ignore them.
-                    // Checkboxes always have a dataValue, so check against default.
-                    var $this = $(this),
-                        isCheckbox = $this.attr('type') == 'checkbox',
-                        isColorInput = $this.hasClass('colorInput');
-                    hasData = hasData || (!isColorInput && !isCheckbox)
-                        || (isColorInput
-                        && '['+$this.attr('data-dataValue')+']' != $this.attr('data-defaultValue'))
-                        || (isCheckbox
-                        && $this.attr('data-dataValue') != $this.attr('data-defaultValue'));
+                    var $s = $(this), hasData = false;
+                    $s.find('[data-dataValue]').each(function()
+                    {
+                        // Color inputs always return true, so ignore them.
+                        // Checkboxes always have a dataValue, so check against default.
+                        var $this = $(this),
+                            isCheckbox = $this.attr('type') == 'checkbox',
+                            isColorInput = $this.hasClass('colorInput');
+                        hasData = hasData || (!isColorInput && !isCheckbox)
+                            || (isColorInput
+                            && '['+$this.attr('data-dataValue')+']' != $this.attr('data-defaultValue'))
+                            || (isCheckbox
+                            && $this.attr('data-dataValue') != $this.attr('data-defaultValue'));
+                    });
+
+                    hasData = hasData || $s.hasClass('initShow');
+
+                    $s.toggleClass('collapsed', !hasData);
+                    $s.find('.sectionSelect').value(hasData);
+
                 });
 
-                hasData = hasData || $s.hasClass('initShow');
-
-                $s.toggleClass('collapsed', !hasData);
-                $s.find('.sectionSelect').value(hasData);
-
-            });
-
-            if (!cpObj._isReadOnly())
-            {
-                $pane.find('.formSection.selectable .sectionSelect').bind('click', function(e)
+                if (!cpObj._isReadOnly())
                 {
-                    var $c = $(this);
-                    $c.closest('.formSection').toggleClass('collapsed', !$c.value());
-                }); 
-            }
-
-            hookUpFields(cpObj, $pane);
-
-            $pane.undelegate('.button.addValue', '.paneAddValue');
-            $pane.delegate('.button.addValue', 'click.paneAddValue', function(e)
-            {
-                e.stopImmediatePropagation();
-                e.preventDefault();
-                addRepeaterLine(cpObj, $(this));
-            });
-
-
-            $pane.find('.finishButtons a').bind('click', function(e)
-            {
-                e.preventDefault();
-                var $button = $(this);
-                if ($button.is('.disabled')) { return; }
-
-                cpObj._startProcessing();
-
-                var doCallback = function(finalCallback)
-                { cpObj._finish(data, $button.attr('data-value'), finalCallback); };
-
-                if (!$.isBlank(blist.util.inlineLogin) && $button.is('.requiresLogin'))
-                {
-                    var msg = $button.attr('data-loginMsg') || cpObj.settings.defaultLoginMessage;
-                    blist.util.inlineLogin.verifyUser(
-                        function(isSuccess, successCallback)
-                        {
-                            if (isSuccess) { doCallback(successCallback); }
-                            else
-                            {
-                                $pane.find('.mainError').text(msg);
-                                cpObj._finishProcessing();
-                            }
-                        }, msg);
-                }
-                else
-                { doCallback(); }
-            });
-
-            // Once we've hooked up everything standard, render any custom content.
-            _.each(cpObj._customSections, function(cs, uid)
-            {
-                var $section = $pane.find('[data-customContent="' + uid + '"]');
-                var $sc = $section.find('.sectionContent');
-                if (!$.isBlank(cs.template))
-                {
-                    $sc.addClass(cs.template).append($.renderTemplate(cs.template,
-                            $.extend({}, data, cs.data), cs.directive));
-                }
-
-                if (_.isFunction(cs.callback))
-                { cs.callback.call(cpObj, $sc, data); }
-            });
-
-            cpObj._validator = $pane.submit(function(e)
+                    $pane.find('.formSection.selectable .sectionSelect').bind('click', function(e)
                     {
-                        if ($.isBlank($(this).attr('action')))
-                        { e.preventDefault(); }
-                    })
-                .validate({ignore: ':hidden', errorElement: 'span',
-                    errorPlacement: function($error, $element)
-                        { $error.appendTo($element.closest('.line')); }});
-            $pane.data('form-validator', cpObj._validator);
+                        var $c = $(this);
+                        $c.closest('.formSection').toggleClass('collapsed', !$c.value());
+                    });
+                }
 
-            cpObj._isDirty = false;
-            cpObj._visible = true;
+                hookUpFields(cpObj, $pane);
 
-            return true;
+                $pane.undelegate('.button.addValue', '.paneAddValue');
+                $pane.delegate('.button.addValue', 'click.paneAddValue', function(e)
+                {
+                    e.stopImmediatePropagation();
+                    e.preventDefault();
+                    addRepeaterLine(cpObj, $(this));
+                });
+
+
+                $pane.find('.finishButtons a').bind('click', function(e)
+                {
+                    e.preventDefault();
+                    var $button = $(this);
+                    if ($button.is('.disabled')) { return; }
+
+                    cpObj._startProcessing();
+
+                    var doCallback = function(finalCallback)
+                    { cpObj._finish(data, $button.attr('data-value'), finalCallback); };
+
+                    if (!$.isBlank(blist.util.inlineLogin) && $button.is('.requiresLogin'))
+                    {
+                        var msg = $button.attr('data-loginMsg') || cpObj.settings.defaultLoginMessage;
+                        blist.util.inlineLogin.verifyUser(
+                            function(isSuccess, successCallback)
+                            {
+                                if (isSuccess) { doCallback(successCallback); }
+                                else
+                                {
+                                    $pane.find('.mainError').text(msg);
+                                    cpObj._finishProcessing();
+                                }
+                            }, msg);
+                    }
+                    else
+                    { doCallback(); }
+                });
+
+                // Once we've hooked up everything standard, render any custom content.
+                _.each(cpObj._customSections, function(cs, uid)
+                {
+                    var $section = $pane.find('[data-customContent="' + uid + '"]');
+                    var $sc = $section.find('.sectionContent');
+                    if (!$.isBlank(cs.template))
+                    {
+                        $sc.addClass(cs.template).append($.renderTemplate(cs.template,
+                                $.extend({}, data, cs.data), cs.directive));
+                    }
+
+                    if (_.isFunction(cs.callback))
+                    { cs.callback.call(cpObj, $sc, data); }
+                });
+
+                cpObj._validator = $pane.submit(function(e)
+                        {
+                            if ($.isBlank($(this).attr('action')))
+                            { e.preventDefault(); }
+                        })
+                    .validate({ignore: ':hidden', errorElement: 'span',
+                        errorPlacement: function($error, $element)
+                            { $error.appendTo($element.closest('.line')); }});
+                $pane.data('form-validator', cpObj._validator);
+
+                cpObj._isDirty = false;
+                cpObj._visible = true;
+
+                completeCallback(true);
+            };
+
+            var fieldNeedsQueryBase = function(field)
+            {
+                if (field.type == 'columnSelect')
+                { return field.columns.useQueryBase; }
+                if (field.type == 'repeater')
+                { return fieldNeedsQueryBase(field.field); }
+                if (field.type == 'group')
+                { return _.any(field.options, fieldNeedsQueryBase); }
+                return false;
+            };
+            if (_.any(rData.sections, function(sect)
+                { return _.any(sect.fields, fieldNeedsQueryBase); }))
+            { cpObj._view.getQueryBase(doRender); }
+            else
+            { doRender(); }
         },
 
         reset: function(isSoft)
@@ -1200,17 +1229,19 @@
 
     var renderColumnSelectOptions = function(cpObj, columnsObj, columnIdField, curVal, args)
     {
-        if ($.isBlank(cpObj._view)) { return []; }
+        columnsObj = columnsObj || {};
+        var view = columnsObj.useQueryBase ? (cpObj._view || {})._queryBase : cpObj._view;
+        if ($.isBlank(view)) { return []; }
 
         //cols - save columns allowed for the chart type
         columnIdField = columnIdField || 'id';
-        var cols = cpObj._view.columnsForType((columnsObj || {}).type,
+        var cols = view.columnsForType((columnsObj || {}).type,
             (columnsObj || {}).hidden);
 
         //invalidCols - save not allowed columns too
-        var invalidCols = _.reject(cpObj._view.visibleColumns, function(col){
-            return _.contains(cols, col);
-        }); 
+        var invalidCols = _.reject(view.visibleColumns, function(col)
+        { return _.contains(cols, col); });
+
         if ($.isBlank(curVal) && _.isArray((columnsObj || {}).defaultNames))
         {
             // If we have a set of names to check for, look through them in
@@ -1227,25 +1258,28 @@
         }
 
         var options = [];
-       
+
         _.each(cols, function(c)
-        {   
+        {
             // Handle id/tcId/fieldName
             var cId = c.id;
             var tcId = c.tableColumnId;
             var fName = c.fieldName;
             var selected;
             //in new Visualize do not autopopulate coloumns with only one valid column 
-            if(isNewVisualize){selected = curVal == fName || curVal == tcId || curVal == cId}
-            else{selected = curVal == fName || curVal == tcId || curVal == cId || 
-                    (cols.length == 1 && !columnsObj.noDefault && $.isBlank(curVal))
+            if (isNewVisualize)
+            { selected = curVal == fName || curVal == tcId || curVal == cId; }
+            else
+            {
+                selected = curVal == fName || curVal == tcId || curVal == cId ||
+                    (cols.length == 1 && !columnsObj.noDefault && $.isBlank(curVal));
             };
 
             options.push({tagName: 'option', value: c[columnIdField],
                 selected: selected,
                 contents: $.htmlEscape(c.name)});
         });
-        
+
         var invalidOptions = [];
         _.each(invalidCols, function(c)
          {
@@ -1254,23 +1288,29 @@
          });
 
         //wrap selectables in a group so you can see both allowed and not allowed columns
-      
-        if(_.isEmpty(invalidOptions)){
-            invalidOptions.push({tagName: 'option', contents: $.t('screens.about.none'), disabled: 'disabled'});
-          }
-        if(_.isEmpty(options)){
+        if (_.isEmpty(invalidOptions))
+        {
+            invalidOptions.push({tagName: 'option', contents: $.t('screens.about.none'),
+                disabled: 'disabled'});
+        }
+        if (_.isEmpty(options))
+        {
           options.push({tagName: 'option', contents: $.t('screens.about.none'), disabled: 'disabled'});
         }
+
         //Flyout Title should have option "Auto"
         var t = $.t('screens.ds.grid_sidebar.base.column_select.none_selected');
-        if($.subKeyDefined(args, 'item.origName')){
-          if(args.item.origName == 'displayFormat.titleFlyout'){ t = $.t('screens.ds.grid_sidebar.base.column_select.auto');}}
-        
-        return [{tagName: 'option', value: '', contents: t},
-                {tagName: 'optgroup', label: $.t('screens.ds.grid_sidebar.base.column_select.selectable'), contents: options}, 
-                {tagName: 'optgroup', label: $.t('screens.ds.grid_sidebar.base.column_select.nonselectable'), contents: invalidOptions}];
-        
+        if ($.subKeyDefined(args, 'item.origName'))
+        {
+            if (args.item.origName == 'displayFormat.titleFlyout')
+            { t = $.t('screens.ds.grid_sidebar.base.column_select.auto'); }
+        }
 
+        return [{ tagName: 'option', value: '', contents: t },
+               { tagName: 'optgroup', contents: options,
+                   label: $.t('screens.ds.grid_sidebar.base.column_select.selectable') },
+                { tagName: 'optgroup', contents: invalidOptions,
+                    label: $.t('screens.ds.grid_sidebar.base.column_select.nonselectable') }];
     };
 
     /* Get the common attributes from an item for use with $.tag */

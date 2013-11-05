@@ -55,8 +55,9 @@
 
     var aggregateOptions = function(c)
     {
-        if ($.isBlank(c)) { return 'hidden'; }
-        return c.origColumn.renderType.aggregates || 'hidden';
+        if ($.isBlank(c) || _.isEmpty(c.origColumn.renderType.aggregates)) { return 'hidden'; }
+        return _.map(c.origColumn.renderType.aggregates, function(a)
+            { return $.extend({}, a, { value: blist.datatypes.aggregateFromSoda2(a.value) }); });
     };
 
     var viewOptions = function(c)

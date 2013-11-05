@@ -250,7 +250,8 @@
         var endDate = calView.end.clone();
         var startCol = calObj._startCol;
         var endCol = calObj._endCol;
-        var query = $.extend(true, {}, view.query);
+        var md = $.extend(true, {}, view.metadata);
+        var query = md.jsonQuery;
 
         switch (calObj._queryInterval)
         {
@@ -278,27 +279,21 @@
         if (!$.isBlank(startDate) && !$.isBlank(endDate))
         {
             filterCondition = { temporary: true, displayTypes: ['calendar'],
-                type: 'operator', value: 'OR',
+                operator: 'OR',
                 children: _.map(_.compact([startCol, endCol]), function(col)
                     {
-                        return { type: 'operator', value: 'BETWEEN', children: [
-                            { type: 'column', columnFieldName: col.fieldName },
-                            { type: 'literal', value: dateToServerValue(startDate, col) },
-                            { type: 'literal', value: dateToServerValue(endDate, col) }
-                        ] };
+                        return { operator: 'BETWEEN', columnFieldName: col.fieldName,
+                            value: [dateToServerValue(startDate, col),
+                                dateToServerValue(endDate, col)] };
                     })
             };
             if (!$.isBlank(startCol) && !$.isBlank(endCol))
             {
-                filterCondition.children.push({ type: 'operator', value: 'AND', children: [
-                    { type: 'operator', value: 'LESS_THAN', children: [
-                        { type: 'column', columnFieldName: startCol.fieldName },
-                        { type: 'literal', value: dateToServerValue(startDate, startCol) }
-                    ] },
-                    { type: 'operator', value: 'GREATER_THAN', children: [
-                        { type: 'column', columnFieldName: endCol.fieldName },
-                        { type: 'literal', value: dateToServerValue(endDate, endCol) }
-                    ] }
+                filterCondition.children.push({ operator: 'AND', children: [
+                    { operator: 'LESS_THAN', columnFieldName: startCol.fieldName,
+                        value: dateToServerValue(startDate, startCol) },
+                    { operator: 'GREATER_THAN', columnFieldName: endCol.fieldName,
+                        value: dateToServerValue(endDate, endCol) }
                 ] });
             }
         }
@@ -307,7 +302,7 @@
         { delete query.namedFilters.calViewport; }
         query.namedFilters = $.extend(true, query.namedFilters || {}, { calViewport: filterCondition });
         calObj._ignoreViewChanges = true;
-        view.update({query: query}, false, true);
+        view.update({ metadata: md }, false, true);
         delete calObj._ignoreViewChanges;
     };
 

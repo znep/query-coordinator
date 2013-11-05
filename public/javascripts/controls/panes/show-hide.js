@@ -57,9 +57,8 @@
                 // Filter out columns that can't be displayed
                 cols = _.reject(cols, function(c)
                 {
-                    return $.isBlank(c.format.grouping_aggregate) &&
-                        !_.any(cpObj._view.query.groupBys, function(g)
-                            { return g.columnId == c.id; });
+                    return !_.any(cpObj._view.metadata.jsonQuery.select, function(s)
+                        { return s.columnFieldName == c.fieldName; });
                 });
             }
 

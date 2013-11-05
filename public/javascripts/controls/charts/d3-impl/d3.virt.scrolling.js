@@ -1404,7 +1404,7 @@ $.Control.registerMixin('d3_virt_scrolling', {
                 .remove();
 
         // We do this *once*.
-        if (!cc.valueLabelBuffer)
+        if (!cc.valueLabelBuffer && !_.isEmpty(data))
         {
             // Wait a second for as much to be loaded as possible.
             if (!cc.moveBaseline)

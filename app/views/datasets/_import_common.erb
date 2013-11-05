@@ -1,15 +1,16 @@
+<%- prefix = 'screens.import_common' -%>
 <ul class="layersListLine">
   <li class="importLayer">
     <div class="mainLine line">
       <div class="layerHandleCell importHandleCell"></div>
       <div class="layerNameCell">
-        <input type="text" class="layerName textPrompt required" title="Name this column"/>
+        <input type="text" class="layerName textPrompt required" title="<%= t("#{prefix}.name_this_column") %>"/>
       </div>
       <div class="layerReferenceSystemCell">
       </div>
       <div class="layerReplacingCell">
         <select class="layerReplaceDropdown">
-          <option class="special" value="">(New Layer)</option>
+          <option class="special" value=""><%= t("#{prefix}.new_layer") %></option>
         </select>
       </div>
     </div>
@@ -17,120 +18,120 @@
 </ul>
 <ul class="sourceColumnsListLine">
   <li class="clearfix">
-    <a class="remove removeSourceColumnLineButton" href="#remove"><span class="icon">remove</span></a>
+    <a class="remove removeSourceColumnLineButton" href="#remove"><span class="icon"><%= t("#{prefix}.remove") %></span></a>
     <div class="compositeColumnSourcePlaceholder" data-class="compositeColumnSourceSelect"></div>
     <input type="text" class="staticSourceText"/>
   </li>
 </ul>
 <ul class="columnTransformsListLine">
   <li class="clearfix">
-    <a class="remove removeTransformLineButton" href="#remove"><span class="icon">remove</span></a>
-    <span class="thenText">then</span>
+    <a class="remove removeTransformLineButton" href="#remove"><span class="icon"><%= t("#{prefix}.remove") %></span></a>
+    <span class="thenText"><%= t("#{prefix}.then") %></span>
     <select class="columnTransformOperation">
-      <option value="title">Make Title Case</option>
-      <option value="upper">Make UPPERCASE</option>
-      <option value="lower">Make lowercase</option>
-      <option value="toStateCode">Convert states to 2-letter codes</option>
-      <option value="findReplace">Find and Replace value...</option>
-      <option value="customExpression">Custom Javascript Expression...</option>
+      <option value="title"><%= t("#{prefix}.make_title_case") %></option>
+      <option value="upper"><%= t("#{prefix}.make_upper_case") %></option>
+      <option value="lower"><%= t("#{prefix}.make_lower_case") %></option>
+      <option value="toStateCode"><%= t("#{prefix}.to_state_code") %></option>
+      <option value="findReplace"><%= t("#{prefix}.find_and_replace") %></option>
+      <option value="customExpression"><%= t("#{prefix}.custom_javascript") %></option>
     </select>
     <div class="additionalTransformOptions">
       <div class="findReplaceSection">
-        <label class="findTextLabel">find</label>
+        <label class="findTextLabel"><%= t("#{prefix}.find") %></label>
         <input type="text" class="findText"/>
-        <label class="replaceTextLabel">and replace it with</label>
+        <label class="replaceTextLabel"><%= t("#{prefix}.replace") %></label>
         <input type="text" class="replaceText"/>
         <input type="checkbox" class="caseSensitive"/>
-        <label class="caseSensitiveLabel">case sensitive</label>
+        <label class="caseSensitiveLabel"><%= t("#{prefix}.case_sensitive") %></label>
         <input type="checkbox" class="regex"/>
-        <label class="regexLabel">regex</label>
+        <label class="regexLabel"><%= t("#{prefix}.regular_expression") %></label>
       </div>
       <div class="customExpressionSection">
         <label class="customExpressionLabel"></label>
         <input type="text" class="customExpression"/>
-        <a rel="external" href="http://dev.socrata.com/publishers/import-translations">How do I create a custom Javascript expression?</a>
+        <a rel="external" href="http://dev.socrata.com/publishers/import-translations"><%= t("#{prefix}.create_js_expression") %></a>
       </div>
     </div>
   </li>
 </ul>
 <div class="compositeDetails">
-  <h3>Combine Multiple Columns</h3>
-  <h4>Create one column out of many source columns:</h4>
+  <h3><%= t("#{prefix}.combine_multiple_columns") %></h3>
+  <h4><%= t("#{prefix}.create_composite") %></h4>
   <ul class="sourceColumnsList"></ul>
   <a href="#newSourceColumn" class="button add newSourceColumnButton">
-    <span class="icon"></span>Add new source column
+    <span class="icon"></span><%= t("#{prefix}.new_source_col") %>
   </a>
 </div>
 <div class="locationDetailsOriginal">
-  <h3>Location Source Columns</h3>
-  <h4>Addresses will be geocoded after import is complete.</h4>
+  <h3><%= t("#{prefix}.location_source_col") %></h3>
+  <h4><%= t("#{prefix}.addresses_to_geocode") %></h4>
   <div class="toggleSection">
     <input type="radio" name="locationTypeToggle" class="locationTypeToggle multipleColumns"/>
-    <label class="locationTypeToggleLabel">Import from <strong>multiple columns</strong></label>
+    <label class="locationTypeToggleLabel"><%= raw t("#{prefix}.import_from_multiple") %></label>
   </div>
   <div class="clearfix">
     <fieldset class="left">
-      <legend>Existing Address Columns</legend>
+      <legend><%= t("#{prefix}.existing_cols") %></legend>
       <div class="line locationAddressLine clearfix">
-        <label class="locationAddressLabel" for="locationAddressColumn">Street</label>
+        <label class="locationAddressLabel" for="locationAddressColumn"><%= t("#{prefix}.street") %></label>
         <div class="columnSourcePlaceholder" data-class="locationAddressColumn"></div>
       </div>
       <div class="line locationCityLine clearfix">
-        <label class="locationCityLabel" for="locationCityColumn">City</label>
+        <label class="locationCityLabel" for="locationCityColumn"><%= t("#{prefix}.city") %></label>
         <div class="optionGroup">
           <input type="radio" name="locationCityToggle" class="locationSourceToggle" checked="checked"/>
           <div class="columnSourcePlaceholder" data-class="locationCityColumn"></div>
           <input type="radio" name="locationCityToggle" class="locationSourceToggle"/>
-          <input type="text" class="locationCityStatic textPrompt" title="Enter a custom value"/>
+          <input type="text" class="locationCityStatic textPrompt" title="<%= t("#{prefix}.enter_custom") %>"/>
         </div>
       </div>
       <div class="line locationStateLine clearfix">
-        <label class="locationStateLabel" for="locationStateColumn">State</label>
+        <label class="locationStateLabel" for="locationStateColumn"><%= t("#{prefix}.state") %></label>
         <div class="optionGroup">
           <input type="radio" name="locationStateToggle" class="locationSourceToggle" checked="checked"/>
           <div class="columnSourcePlaceholder" data-class="locationStateColumn"></div>
           <input type="radio" name="locationStateToggle" class="locationSourceToggle"/>
-          <input type="text" class="locationStateStatic textPrompt" title="Enter a custom value"/>
+          <input type="text" class="locationStateStatic textPrompt" title="<%= t("#{prefix}.enter_custom") %>"/>
         </div>
       </div>
       <div class="line locationZipLine clearfix">
-        <label class="locationZipLabel" for="locationZipColumn">Zip</label>
+        <label class="locationZipLabel" for="locationZipColumn"><%= t("#{prefix}.zip") %></label>
         <div class="optionGroup">
           <input type="radio" name="locationZipToggle" class="locationSourceToggle" checked="checked"/>
           <div class="columnSourcePlaceholder" data-class="locationZipColumn"></div>
           <input type="radio" name="locationZipToggle" class="locationSourceToggle"/>
-          <input type="text" class="locationZipStatic textPrompt" title="Enter a custom value"/>
+          <input type="text" class="locationZipStatic textPrompt" title="<%= t("#{prefix}.enter_custom") %>"/>
         </div>
       </div>
     </fieldset>
     <fieldset class="right">
-      <legend>Existing Latitude and Longitude Columns</legend>
+      <legend><%= t("#{prefix}.existing_latlng_cols") %></legend>
       <div class="line locationLatitudeLine clearfix">
-        <label class="locationLatitudeLabel">Latitude</label>
+        <label class="locationLatitudeLabel"><%= t("#{prefix}.latitude") %></label>
         <div class="columnSourcePlaceholder" data-class="locationLatitudeColumn"></div>
       </div>
       <div class="line locationLongitudeLine clearfix">
-        <label class="locationLongitudeLabel">Longitude</label>
+        <label class="locationLongitudeLabel"><%= t("#{prefix}.longitude") %></label>
         <div class="columnSourcePlaceholder" data-class="locationLongitudeColumn"></div>
       </div>
     </fieldset>
   </div>
   <div class="toggleSection">
     <input type="radio" name="locationTypeToggle" class="locationTypeToggle singleColumn"/>
-    <label class="locationTypeToggleLabel">Import from a <strong>single column</strong></label>
+    <label class="locationTypeToggleLabel"><%= raw t("#{prefix}.import_from_single") %></label>
   </div>
   <div class="importSingleColumnSection">
-    <label class="locationSingleColumnLabel">Column</label>
+    <label class="locationSingleColumnLabel"><%= t("#{prefix}.column") %></label>
     <div class="columnSourcePlaceholder" data-class="locationSingleColumn"></div>
-    <p>Column must be <a href="http://dev.socrata.com/publisher/import-data-types" rel="external">properly formatted</a> prior to import.</p>
+    <p><%= raw t("#{prefix}.properly_formatted", { :formatting_link => 'http://dev.socrata.com/publisher/import-data-types' }) %></p>
   </div>
 </div>
 <div class="generalDetails">
-  <h3>Options</h3>
-  <h4>Perform the following transformation upon import:</h4>
+  <h3><%= t("#{prefix}.options") %></h3>
+  <h4><%= t("#{prefix}.transforms") %></h4>
   <ul class="columnTransformsList">
   </ul>
   <a href="#newTransform" class="button add newColumnTransformButton">
-    <span class="icon"></span>Add new transform
+    <span class="icon"></span><%= t("#{prefix}.new_transform") %>
   </a>
 </div>

@@ -41,9 +41,11 @@ jQuery.metrics = {
                 {
                     this.pulses.push({ type: 'start', timestamp: $.metrics.stopwatchFunction() });
                     this.flush(); // Reset debounce timer.
+                    this.started = true;
                 },
                 pulse: function()
                 {
+                    if (!this.started) { return; }
                     this.pulses.push({ type: 'pulse', timestamp: $.metrics.stopwatchFunction() });
                     this.flush(); // Reset debounce timer.
                 },

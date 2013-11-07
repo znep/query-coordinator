@@ -277,6 +277,7 @@ $(function()
     {
         var $this = this,
             rowOffsets = this.map(function() { return $(this).offset().top; }),
+            scrollDelta = 0, // Distance between hover target and top of screen.
             scrollTarget, $scrollTarget,
             captureTarget = function() { scrollTarget = this; };
 
@@ -286,6 +287,12 @@ $(function()
             save: function()
             {
                 var scrollPos = $(document).scrollTop(), index = 0, minDelta = Infinity;
+                if (scrollTarget)
+                {
+                    scrollDelta = $(scrollTarget).offset().top - scrollPos;
+                    return; // Have hover target. Shortcircuit now.
+                }
+
                 if (scrollPos < rowOffsets[0]) { return; }
 
                 // Minimize delta between scrollPos and offset.top.
@@ -300,13 +307,14 @@ $(function()
                 });
 
                 $scrollTarget = $this.filter(':eq(' + index + ')');
+                scrollDelta = $scrollTarget.offset().top - scrollPos;
             },
             restore: function()
             {
                 if (scrollTarget)
-                { $(document).scrollTop($(scrollTarget).offset().top); }
+                { $(document).scrollTop(Math.max($(scrollTarget).offset().top - scrollDelta, 0)); }
                 else if ($scrollTarget)
-                { $(document).scrollTop($scrollTarget.offset().top); }
+                { $(document).scrollTop($scrollTarget.offset().top - scrollDelta); }
             }
         };
     };

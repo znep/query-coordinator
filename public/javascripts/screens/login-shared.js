@@ -4,8 +4,8 @@ $(function() {
     $('.signUpLink:not(.whyLink)').click(function(event)
     {
         event.preventDefault();
-        $('.loginForm').slideUp();
-        $('.signupForm').slideDown();
+        $('.loginForm').hide();
+        $('.signupForm').show();
         $('.rpxPrompt').text($.t('account.common.rpx.prompt.sign_up'));
         $('.thirdPartyLinks .authProvider .description').each(function()
         {
@@ -17,8 +17,8 @@ $(function() {
     $('.signInLink').click(function(event)
     {
         event.preventDefault();
-        $('.signupForm').slideUp();
-        $('.loginForm').slideDown();
+        $('.signupForm').hide();
+        $('.loginForm').show();
         $('.rpxPrompt').text($.t('account.common.rpx.prompt.sign_in'));
         $('.thirdPartyLinks .authProvider .description').each(function()
         {

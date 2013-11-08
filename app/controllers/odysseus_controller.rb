@@ -6,6 +6,7 @@ class OdysseusController < ApplicationController
     req = Net::HTTP::Get.new(uri.request_uri)
 
     req['X-Socrata-Host'] = req['Host'] = CurrentDomain.cname
+    req['X-Socrata-Locale'] = I18n.locale
     req['Cookie'] = request.headers['Cookie']
 
     res = Net::HTTP.start(uri.host, uri.port){ |http| http.request(req) }

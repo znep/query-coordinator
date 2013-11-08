@@ -169,7 +169,7 @@ module ClientAnalyticsHelper
 
   def self.is_allowed(entity, metric)
     # Allow statically defined metrics and timezone timing metrics
-    allowed = ALLOWED_METRICS.include?(entity + '/' + metric) ||  !!(/-tz-[0-9]+-time/ =~ metric)
+    allowed = ALLOWED_METRICS.include?(entity + '/' + metric) ||  !!(/-tz-[-0-9]+-time/ =~ metric)
     allowed
   end
 

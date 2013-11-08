@@ -224,7 +224,8 @@ var Dataset = ServerModel.extend({
 
     isUnpublished: function()
     {
-        return this.publicationStage == 'unpublished';
+        // Pretend nbe dataset is unpublished so it can be edited
+        return this.publicationStage == 'unpublished' || this.newBackend;
     },
 
     isSnapshot: function()
@@ -2561,7 +2562,8 @@ var Dataset = ServerModel.extend({
             data[cL] = row.data[cL];
         });
 
-        var fieldMeta = ds.metaColumnForName('meta').lookup;
+        // Hard-coding here is bad; but sometimes we don't get the meta column back :/
+        var fieldMeta = (ds.metaColumnForName('meta') || {}).lookup || ds._useSODA2 ? ':meta' : 'meta';
 
         // Copy over desired metadata columns
         data[fieldMeta] = row.metadata.meta;

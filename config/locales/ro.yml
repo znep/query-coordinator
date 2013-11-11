@@ -2,2130 +2,2132 @@ ro:
   account:
     common:
       form:
-        confirm_password: 
-        display_name: 
-        email: 
-        forgot_password: 
-        lockout_warning: 
-        no_account: 
-        password: 
-        password_requirements: 
-        password_requirements_html: 
-        password_restrictions: 
-        remember_me: 
-        sign_up_prompt: 
+        confirm_password: Confirmare parolă
+        display_name: Nume afişat
+        email: Adresă de e-mail
+        forgot_password: V-aţi uitat parola?
+        lockout_warning: Din motive de siguranţă, trei tentative de autentificare în decurs de 15 minute vor duce la blocarea contului timp de 30 de minute.
+        no_account: Nu aveţi cont?
+        password: Parolă
+        password_requirements: ! 'Obligatorie. Parola dvs. trebuie să aibă între 8 şi 40 de caractere şi să îndeplinească trei dintre următoarele patru criterii: să conţină o cifră, să conţină o literă mică, să conţină o literă mare, să conţină un simbol ne-alfanumeric (nici literă, nici cifră).'
+        password_requirements_html: <p>Parola dvs. trebuie să aibă <b>între 8 şi 40 de caractere</b> şi să îndeplinească <b>trei dintre următoarele patru criterii</b>:</p><p></p><ul><li>• să conţină o cifră</li><li>• să conţină o literă mică</li><li>• să conţină o literă mare</li><li>• să conţină un simbol ne-alfanumeric (nici literă, nici cifră).</li></ul>
+        password_restrictions: Se aplică restricţii
+        remember_me: Ţine-mă minte
+        sign_up_prompt: Înregistraţi-vă acum
       inline_auth:
-        sign_in_headline: 
-        sign_up_headline: 
+        sign_in_headline: Autentificaţi-vă utilizîndu-vă ID-ul Socrata
+        sign_up_headline: Suntem încântaţi că doriţi să vă înscrieţi pe %{site}!
       rpx:
-        description: 
+        description: Profitaţi de funcţiile suplimentare pe care le oferă aceste conturi şi autentificaţi-vă cu un singur click.
         prompt:
-          sign_in: 
-          sign_up: 
+          sign_in: Sau... Utilizaţi unul dintre aceste conturi pentru a vă autentifica.
+          sign_up: Sau... Utilizaţi unul dintre aceste conturi pentru a vă înscrie.
         providers:
           facebook:
-            sign_in_html: 
-            sign_up_html: 
+            sign_in_html: <strong>Conectaţi-vă</strong> cu Facebook
+            sign_up_html: <strong>Conectaţi-vă</strong> cu Facebook
           google:
-            sign_in_html: 
-            sign_up_html: 
+            sign_in_html: <strong>Autentificaţi-vă</strong> cu Google
+            sign_up_html: <strong>Înregistraţi-vă</strong> cu Google
           openid:
-            sign_in_html: 
-            sign_up_html: 
+            sign_in_html: <strong>Autentificaţi-vă</strong> cu OpenID
+            sign_up_html: <strong>Înregistraţi-vă</strong> cu OpenID
           twitter:
-            sign_in_html: 
-            sign_up_html: 
+            sign_in_html: <strong>Conectaţi-vă</strong> cu Twitter
+            sign_up_html: <strong>Conectaţi-vă</strong> cu Twitter
       validation:
-        mismatch: 
-        terms: 
+        mismatch: Parolele nu se potrivesc.
+        terms: Trebuie să acceptaţi termenii serviciului şi politica de confidenţialitate.
   controls:
     browse:
       actions:
         about:
-          button: 
-          title: 
-        all_options: 
-        clear_all: 
-        clear_facet: 
-        compact_list: 
-        create_dataset: 
-        create_dataset_short: 
-        create_dataset_verb: 
-        dataset_subscribe: 
+          button: Despre
+          title: Despre acest set de date
+        all_options: Vizualizare toate
+        clear_all: Ştergere toate opţiunile
+        clear_facet: (Toate)
+        compact_list: Vizualizare ca listă compactă
+        create_dataset: Creaţi sau încărcaţi propriul dvs. set de date
+        create_dataset_short: Creaţi un set de date
+        create_dataset_verb: Creare
+        dataset_subscribe: Semnaţi modificările acestei vizualizări
         delete:
-          button: 
-          confirm: 
-          title: 
-        expand_section: 
-        less_options: 
+          button: Ştergere
+          confirm: Sunteţi sigur că doriţi să ştergeţi %{dataset}?
+          title: Ştergeţi acest element
+        expand_section: Click pentru a extinde
+        less_options: Vizualizaţi mai puţin
         manage_api:
-          button: 
-          title: 
+          button: Administrare
+          title: Administraţi acest API
         moderation:
-          accept: 
-          reject: 
+          accept: Acceptare
+          reject: Respingere
         permissions:
           change_button:
-            private_html: 
-            public_html: 
-          title: 
-        rich_list: 
-        share_button: 
-        subscribe: 
-        suggest_dataset: 
-        suggest_dataset_short: 
-        suggest_dataset_verb: 
-      back_to_dataset: 
+            private_html: Faceţi public
+            public_html: Faceţi confidenţial
+          title: Modificaţi vizibilitatea publică
+        rich_list: Vizualizare ca listă complexă
+        share_button: Partajare
+        subscribe: Abonare
+        suggest_dataset: Nu aţi găsit ce căutaţi? Sugeraţi un set de date.
+        suggest_dataset_short: Sugeraţi un set de date
+        suggest_dataset_verb: Sugerare
+      back_to_dataset: Înapoi la setul de date
       facets:
-        categories_singular_title: 
-        categories_title: 
-        federated_domains_singular_title: 
-        federated_domains_title: 
+        categories_singular_title: categorie
+        categories_title: Categorii
+        federated_domains_singular_title: domeniu
+        federated_domains_title: Domenii externe
         moderation_status:
-          accepted: 
-          pending: 
-          rejected: 
-        moderation_status_singular_title: 
-        moderation_status_title: 
-        topics_singular_title: 
-        topics_title: 
+          accepted: Acceptat
+          pending: În aşteptare
+          rejected: Respins
+        moderation_status_singular_title: moderare
+        moderation_status_title: Stare moderare
+        topics_singular_title: temă
+        topics_title: Teme
         view_types:
-          apis: 
-          blob: 
-          calendars: 
-          charts: 
-          datasets: 
-          filters: 
-          forms: 
-          href: 
-          maps: 
-          unpublished: 
-        view_types_singular_title: 
-        view_types_title: 
+          apis: API-uri
+          blob: Fişiere şi documente
+          calendars: Calendare
+          charts: Hărţi
+          datasets: Seturi de date
+          filters: Vizualizări filtrate
+          forms: Formulare
+          href: Seturi de date externe
+          maps: Hărţi
+          unpublished: Seturi de date nepublicate
+        view_types_singular_title: tip
+        view_types_title: Vizualizare tipuri
       listing:
-        comment_count: 
-        federation_source: 
-        federation_source_html: 
-        no_results: 
-        result_count: 
+        comment_count: Număr comentarii
+        federation_source: Externalizat din %{source}
+        federation_source_html: Furnizat de %{source_link}
+        no_results: Niciun rezultat
+        result_count: Se afişează %{this} din %{total}
         table_header:
-          name: 
-          popularity: 
-          rss: 
-          type: 
-        timeout: 
+          name: Nume
+          popularity: Popularitate
+          rss: RSS
+          type: Tip
+        timeout: Ne pare rău. Rezultatele nu au putut fi recuperate în acest moment. Vă rugăm să încercaţi mai târziu.
       row_results:
-        less_link: 
-        matching_rows: 
-        more_link: 
-        no_matching_rows: 
-        title_html: 
-      search: 
-      sort_period_title: 
+        less_link: Mai puţin
+        matching_rows: Se caută seturi de date pentru rânduri care se potrivesc
+        more_link: Mai mult
+        no_matching_rows: Nu au fost găsite rânduri care se potrivesc
+        title_html: ! 'Se afişează <span class="rowResultCountText"></span> din <span class="totalResultCountText"></span> rânduri care se potrivesc <a href="#" class="rowSearchLink">(vizualizare rezultate)</a>:'
+      search: Căutare
+      sort_period_title: Perioadă sortare
       sort_periods:
-        month: 
-        week: 
-        year: 
-      sort_title: 
+        month: Luna aceasta
+        week: Săptămâna aceasta
+        year: Anul acesta
+      sort_title: Sortare după
       sorts:
-        alpha: 
-        comments: 
-        last_modified: 
-        most_accessed: 
-        newest: 
-        oldest: 
-        rating: 
-        relevance: 
+        alpha: În ordine alfabetică
+        comments: Cele mai multe comentarii
+        last_modified: Actualizate recent
+        most_accessed: Cele mai accesate
+        newest: Cele mai noi
+        oldest: Cele mai vechi
+        rating: Cele mai apreciate
+        relevance: Cele mai relevante
       title:
-        default: 
+        default: Căutare şi răsfoire seturi de date şi vizualizări
         result:
-          facet: 
-          facet_main: 
-          main: 
-          term: 
+          facet: ! '%{facet_type} din %{facet_value}'
+          facet_main: ! '%{body} asemănătoare'
+          main: Rezultate %{body}
+          term: pentru "%{term}"
     charts:
-      negatives_in_data: 
-      no_data: 
-      other_slice_label: 
+      negatives_in_data: ! 'Tabel nevalabil: sunt prezente valori negative'
+      no_data: Fără date
+      other_slice_label: Altele
       series_grouping:
-        calculating_time: 
-        calculation_running: 
-        drawing_progress: 
-        drawing_running: 
-        pause_button_explanation1: 
-        pause_button_explanation2: 
-        pause_rendering: 
-        rendering_paused: 
-        rendering_progress: 
-        rendering_progress_almost_done: 
-        rendering_progress_minute: 
-        rendering_progress_minutes: 
-        rendering_progress_seconds: 
-        resume_rendering: 
-      zero_only_data: 
+        calculating_time: Se calculează timpul rămas...
+        calculation_running: Se pregătesc datele
+        drawing_progress: Aceasta poate dura un pic...
+        drawing_running: Se desenează tabelul
+        pause_button_explanation1: Sfat! Durează prea mult? Încercaţi să daţi pauză şi să creaţi un filtru
+        pause_button_explanation2: pentru a limita numărul de calcule necesare.
+        pause_rendering: Pauză
+        rendering_paused: Pregătirea datelor a fost pusă în pauză
+        rendering_progress: ! '%{rows_remaining} rânduri rămase.'
+        rendering_progress_almost_done: ! '%{rows_remaining} rows rămase. Doar câteva secunde.'
+        rendering_progress_minute: ! '%{rows_remaining} rânduri rămase. Aproximativ %{time_remaining} minute.'
+        rendering_progress_minutes: ! '%{rows_remaining} rânduri rămase. Aproximativ %{time_remaining} minute.'
+        rendering_progress_seconds: ! '%{rows_remaining} rânduri rămase. Aproximativ %{time_remaining} secunde.'
+        resume_rendering: Reluare
+      zero_only_data: Nicio valoare mai mare decât zero
     common:
-      auth_required: 
+      auth_required: Trebuie să fiţi autentificat pentru a %{action_phrase}
       dataset_picker:
-        button: 
-        title: 
+        button: Alegere
+        title: Alegeţi un set de date pentru a-l utiliza
       expander:
-        collapse: 
-        expand: 
+        collapse: Click pentru a restrânge
+        expand: Click pentru a extinde
       image_upload:
-        button: 
+        button: Încărcare imagine
       rate:
-        auth_action_phrase: 
+        auth_action_phrase: votaţi acest set de date
       share:
-        button_prompt: 
-        button_tooltip: 
+        button_prompt: Socializare
+        button_tooltip: Partajaţi acest set de date
         networks:
-          email: 
-          facebook: 
-          twitter: 
-        share_text: 
+          email: E-mail
+          facebook: Facebook
+          twitter: Twitter
+        share_text: ! 'Uitaţi-vă la setul de date %{name} de pe %{site}: '
       sidebar:
         tabs:
-          about: 
-          discuss: 
-          edit: 
-          embed: 
-          export: 
-          filter: 
-          manage: 
-          moreViews: 
-          visualize: 
+          about: Despre acest set de date
+          discuss: Discuţie
+          edit: Editare
+          embed: Încorporare
+          export: Exportare
+          filter: Filtrare
+          manage: Administrare
+          moreViews: Mai multe vizualizări
+          visualize: Vizualizare
       stars:
-        tooltip: 
+        tooltip: ! '%{number} stele'
       visualization:
-        in_bing: 
-        in_google: 
-        row_details: 
+        in_bing: Vizualizaţi în Bing Maps
+        in_google: Vizualizaţi în Google Maps
+        row_details: Vizualizaţi detaliile pentru acest rând
     embed:
-      create_template_button: 
-      custom_size: 
-      embed: 
-      form_frame: 
-      form_or: 
-      form_plain: 
-      height: 
-      minimum_size: 
-      private_warning: 
-      sdp_template: 
-      size: 
-      template: 
-      width: 
+      create_template_button: Creaţi un nou şablon
+      custom_size: Dimensiune personalizată
+      embed: Încorporaţi acest set de date
+      form_frame: Încorporaţi acest formular într-un cadru
+      form_or: sau
+      form_plain: Încorporaţi acest formular ca HTML simplu
+      height: Înălţime
+      minimum_size: 425x425 este dimensiunea minimă
+      private_warning: Această vizualizare este confidenţială în acest moment. O puteţi previzualiza, dar va fi necesar să o faceţi publică înainte ca ceilalţi să o poată vedea.
+      sdp_template: Şablon Social Data Player
+      size: Dimensiune
+      template: Şablon
+      width: Lăţime
     feed:
       authed_actions:
-        delete_comment: 
-        flag_comment: 
-        post_comment: 
-        rate_comment: 
+        delete_comment: ştergeţi un comentariu
+        flag_comment: Semnalaţi un comentariu
+        post_comment: publicaţi un comentariu
+        rate_comment: votaţi un comentariu
       comment_actions:
-        already_marked_inappropriate: 
-        delete: 
-        delete_confirm: 
-        inappropriate: 
-        marked_inappropriate: 
-        rate_down: 
-        rate_up: 
-        reply: 
+        already_marked_inappropriate: Semnalat
+        delete: Ştergere
+        delete_confirm: Sunteţi sigur? Comentariul dvs. se va pierde.
+        inappropriate: nepotrivit
+        marked_inappropriate: Semnalat!
+        rate_down: Votaţi acest comentariu "Nu-mi place"
+        rate_up: Votaţi acest comentariu "Îmi place"
+        reply: Răspuns
       comment_form:
-        cancel_button: 
-        empty_body_error: 
-        header: 
-        post_button: 
+        cancel_button: Anulare
+        empty_body_error: Cuprinsul comentariului nu poate fi gol
+        header: Comentariu nou
+        post_button: Publicare
       header:
-        add_comment: 
-        cell_comment_header_html: 
-        feed_filter_label: 
-        pending_moderation: 
+        add_comment: Adăugare comentariu
+        cell_comment_header_html: Comentarii pentru rândul <span class="rowName"></span>, coloana <span class="columnName"></span>
+        feed_filter_label: Afişare
+        pending_moderation: Comentariul este trimis şi aşteaptă moderarea
       listing:
-        all_replies: 
-        all_replies_with_count: 
-        last_item: 
-        next_item_page: 
-        no_results: 
-        user_create_action: 
+        all_replies: Vizualizaţi toate replicile
+        all_replies_with_count: Vizualizaţi toate %{count} răspunsurile
+        last_item: Vizualizaţi ultimul element
+        next_item_page: Vizualizaţi următorul %{count} element
+        no_results: Nu există elemente de afişat
+        user_create_action: ! 'creat %{thing}:'
       types:
-        all items: 
-        comments: 
-        views: 
+        all items: toate elementele
+        comments: comentarii
+        views: vizualizări
     filter:
       actions:
-        confirm_modify: 
-        disable_filter: 
-        first_condition: 
-        new_condition_button: 
-        remove_filter: 
-        select_column: 
-        select_operation: 
-        select_subcolumn: 
+        confirm_modify: Această acţiune va elimina toate valorile din filtrul dvs.! Sunteţi sigur că doriţi să faceţi aceasta?
+        disable_filter: Nu filtraţi
+        first_condition: Apăaţi aici pentru a adăuga la filtru prima dvs. condiţie
+        new_condition_button: Adăugare condiţie nouă la filtru
+        remove_filter: Îndepărtaţi filtrul
+        select_column: ! 'Selectaţi o coloană pentru a filtra după:'
+        select_operation: ! 'Selectaţi o operaţie pentru a filtra după:'
+        select_subcolumn: ! 'Selectaţi partea de %{name} pentru a filtra după:'
       edit_default:
-        advanced_body: 
-        advanced_header: 
-        advanced_toggle: 
-        auto_suggested: 
-        cancel_button: 
-        done_button: 
-        instructions: 
-        manual_suggested_html: 
-        mode_button: 
-        mode_message: 
-        save_confirm: 
-        simplified_body: 
-        simplified_header: 
-        simplified_toggle: 
+        advanced_body: Aceasta înseamnă că ei vor avea acces deplin la opţiunile disponibile în filtru. Pentru o utilizare mai organizată, puteţi încerca modul simplificat.
+        advanced_header: Utilizatorii vor începe în modul avansat.
+        advanced_toggle: Modificaţi modul implicit ca simplificat.
+        auto_suggested: Valorile sugerate sunt determinate automat pentru acest tip de operator.
+        cancel_button: Anulare
+        done_button: Gata
+        instructions: ! 'Utilizaţi instrumentele de mai sus pentru a crea filtre, ajusta valori prezentate, selecta numărul de valori sugerate automat, pe care filtrul va încerca să le prezinte, samd. Atunci când veţi fi satisfăcut cu opţiunile prezentate, click pe butonul "Gata" de mai jos, pentru a salva:'
+        manual_suggested_html: Afişare până la <select class="autogeneratedCount"></select> valori sugerate
+        mode_button: Editare filtru implicit
+        mode_message: ! 'În calitate de creator al acestei vizualizări, puteţi defini setul implicit de filtre care va fi prezentat vizitatorilor:'
+        save_confirm: Veţi pierde toate modificările nesalvate, dacă alegeţi să continuaţi. Vă rugăm să salvaţi modificările pe care doriţi să le păstraţi înainte de a continua.
+        simplified_body: Aceasta înseamnă că ei nu vor putea să adauge condiţii noi, să modifice coloane sau operatori de filtre, sau să accesseze meniurile avansate ale filtrelor.
+        simplified_header: Utilizatorii vor începe în modul simplificat.
+        simplified_toggle: Modificaţi modul implicit în avansat.
       main:
-        base_explanation: 
-        base_info: 
-        filter: 
-        filter_based_on_contents: 
-        no_conditions: 
-        no_suggestions: 
-        or: 
-        simplified_message: 
-        simplified_toggle: 
-        tutorial_html: 
-        view_has_no_columns: 
-        view_must_be_valid: 
+        base_explanation: Cu următoarele filtre de bază
+        base_info: Aceste filtre se aplică întotdeauna, împreună cu orice alte filtre suplimentare introduse mai sus. Aceste filtre nu pot fi editate, deoarece nu aveţi permisiunea de a edita vizualizarea curentă, sau pentru că ele provin din vizualizarea sau setul de date părinte.
+        filter: Filtru
+        filter_based_on_contents: Fitraţi acest set de date pe baza conţinutului.
+        no_conditions: Nicio condiţie definită deocamdată.
+        no_suggestions: Nu există valori sugerate pentru această coloană şi acest operator.
+        or: sau
+        simplified_message: Vă aflaţi în modul simplificat.
+        simplified_toggle: Treceţi la modul avansat acum?
+        tutorial_html: Nu aţi mai creat niciun filtru până acum? Vizionaţi un scurt video de instruire <a href="/videos/popup#basic-filtering" rel="video" class="noRedirPrompt">aici</a>.
+        view_has_no_columns: Această vizualizare nu are coloane de filtrat
+        view_must_be_valid: Această vizualizare trebuie să fie valabilă
       menu:
-        match_all: 
-        match_any: 
-        select_many: 
-        select_one: 
-        show_suggested: 
-        title: 
+        match_all: Se potriveşte cu toate condiţiile
+        match_any: Se potriveşte oricărei condiţii
+        select_many: Selectare multe
+        select_one: Selectare una
+        show_suggested: Afişare valori sugerate
+        title: Opţiuni
     grid:
-      add_column: 
-      clear_column_filter: 
-      clear_sort: 
-      click_for_menu: 
-      click_to_sort: 
-      column_info: 
-      delete_column: 
-      delete_row: 
-      delete_warning_multi_column: 
-      delete_warning_single_column: 
-      edit_column_properties: 
-      filter_this_column: 
-      hide_column: 
-      menu: 
-      must_enter_name: 
-      new_row: 
-      no_rows: 
-      previous: 
-      sort_ascending: 
-      sort_descending: 
-      totals: 
-      view_cell_comments: 
-      view_first_row: 
-      view_last_row: 
-      view_next_row: 
-      view_previous_row: 
-      view_row: 
-      view_single_row: 
-      viewing_row_html: просмотр строки <span class="curPage"></span> из <span class="totalPages"></span>
+      add_column: Adăugare coloană nouă
+      clear_column_filter: Ştergere filtru coloană
+      clear_sort: Ştergere sortare
+      click_for_menu: Click pentru meniu
+      click_to_sort: ! 'Click pentru sortare
+
+'
+      column_info: Informaţii coloană
+      delete_column: Ştergere coloană
+      delete_row: Ştergere rând
+      delete_warning_multi_column: Doriţi să ştergeţi coloanele selectate? Toate datele din aceste coloane vor fi eliminate!
+      delete_warning_single_column: Doriţi să ştergeţi coloana selectată? Toate datele din această coloană vor fi eliminate!
+      edit_column_properties: Editare proprietăţi coloană
+      filter_this_column: Filtraţi această coloană
+      hide_column: Ascundere coloană
+      menu: Meniu
+      must_enter_name: Trebuie să introduceţi un nume pentru această coloană
+      new_row: Nou
+      no_rows: Niciun rând de afişat
+      previous: Anterior
+      sort_ascending: Sortare ascendentă
+      sort_descending: Sortare descendentă
+      totals: Totaluri
+      view_cell_comments: Vizualizaţi comentariile acestei celule
+      view_first_row: Vizualizare primul rând
+      view_last_row: Vizualizare ultimul rând
+      view_next_row: Vizualizare următorul rând
+      view_previous_row: Vizualizare rândul anterior
+      view_row: Vizualizare rând
+      view_single_row: Vizualizare date rând unic
+      viewing_row_html: Vizualizare rând <span class="curPage"></span> din <span class="totalPages"></span>
     nominate:
-      all: 
-      approve: 
-      approve_tip: 
-      approved: 
-      attachment: 
-      attachments: 
-      back_to_suggestions: 
-      browse: 
-      cancel: 
-      comments: 
-      contact_author: 
-      dataset_suggestions: 
-      delete_attachment: 
-      delete_confirm: 
-      delete_error: 
-      delete_suggestion: 
-      description: 
-      description_prompt: 
-      details: 
-      edit: 
-      edit_suggestion: 
-      files: 
-      filter_by_status: 
-      form_error: 
-      great_sadness: 
-      greater_success: 
-      message: 
-      message_prompt: 
-      moderate: 
-      moderate_error: 
-      moderate_tip: 
-      needs_moderation: 
-      new: 
-      no_result: 
-      open: 
-      rate_down: 
-      rate_up: 
-      rating: 
-      rating_error: 
-      reject: 
-      reject_tip: 
-      rejected: 
-      remove: 
-      remove_tip: 
-      required: 
-      status: 
-      submit: 
-      submitted_by: 
-      suggest_a_dataset: 
-      suggestion_received: 
-      suggestion_updated: 
-      title: 
-      title_prompt: 
-      user_removed: 
-      user_removed_short: 
+      all: Toate
+      approve: (Aprobare)
+      approve_tip: Aprobaţi această sugestie
+      approved: Aprobat
+      attachment: Ataşament
+      attachments: Ataşamente
+      back_to_suggestions: Înapoi la sugestii set de date
+      browse: Răsfoire
+      cancel: Anulare
+      comments: Comentarii
+      contact_author: Contactaţi-l pe autorul sugestiei
+      dataset_suggestions: Sugestii set de date
+      delete_attachment: ataşament
+      delete_confirm: Sunteţi sigur că doriţ să ştergeţi acest %{type}?
+      delete_error: Eroare la ştergerea %{type}
+      delete_suggestion: sugestie
+      description: Descriere
+      description_prompt: Introduceţi date despre sugestia dvs.
+      details: Detalii
+      edit: (Editare)
+      edit_suggestion: Editaţi această sugestie
+      files: Fişiere
+      filter_by_status: Filtare după stare
+      form_error: Vă rugăm să corectaţi erorile de mai sus
+      great_sadness: Eroare la contactarea autorului sugestiei. Vă rugăm să încercaţi mai târziu.
+      greater_success: Mesajul dvs. a fost trimis către autorul sugestiei
+      message: Mesaj
+      message_prompt: Introduceţi-vă mesajul
+      moderate: (Moderare)
+      moderate_error: Eroare la modificarea stării
+      moderate_tip: Acceptaţi această sugestie şi deschideţi-o pentru vot
+      needs_moderation: Necesită moderare
+      new: Nou
+      no_result: Niciun rezultat
+      open: Deschis
+      rate_down: Nu îmi place
+      rate_up: Îmi place
+      rating: Vot
+      rating_error: Eroare la votarea sugestiei
+      reject: (Respingere)
+      reject_tip: Respingeţi această sugestie
+      rejected: Respins
+      remove: (Eliminare)
+      remove_tip: Eliminaţi această sugestie
+      required: Obligatoriu
+      status: Stare
+      submit: Trimitere
+      submitted_by: Trimis(ă) de
+      suggest_a_dataset: Sugeraţi un set de date
+      suggestion_received: Sugestia dvs. a fost primită şi se află în coada de aşteptare pentru moderare. Va apărea pe această pagină odată ce administratorul o va aproba.
+      suggestion_updated: Sugestia dvs. a fost actualizată
+      title: Titlu
+      title_prompt: Introduceţi un tiltlu
+      user_removed: un utilizator care a fost deja eliminat
+      user_removed_short: Utilizatorul a fost eliminat
   core:
     aggregates:
-      average: 
-      count: 
-      maximum: 
-      minimum: 
-      sum: 
+      average: Medie
+      count: Numărătoare
+      maximum: Maxim
+      minimum: Minim
+      sum: Sumă
     alignment:
-      center: 
-      left: 
-      right: 
+      center: Centru
+      left: Stânga
+      right: Dreapta
     analytics:
-      visit: 
-      visits: 
-    and: 
+      visit: vizualizare
+      visits: vizualizări
+    and: şi
     chart_types:
-      area: 
-      bar: 
-      bubble: 
-      column: 
-      donut: 
-      line: 
-      pie: 
-      stackedbar: 
-      stackedcolumn: 
-      timeline: 
-      treemap: 
+      area: Diagramă zonă
+      bar: Diagramă cu bare
+      bubble: Diagramă balon
+      column: Diagramă coloane
+      donut: Diagramă inelară
+      line: Grafic liniar
+      pie: Diagramă radială
+      stackedbar: Diagramă cu bare stivuite
+      stackedcolumn: Diagramă cu coloane stivuite
+      timeline: Cronologie
+      treemap: Hartă arborescentă
     chart_types_short:
-      area: 
-      bar: 
-      bubble: 
-      column: 
-      donut: 
-      line: 
-      pie: 
-      stackedbar: 
-      stackedcolumn: 
-      timeline: 
-      treemap: 
+      area: Zonă
+      bar: Bară
+      bubble: Balon
+      column: Coloană
+      donut: Diagramă inelară
+      line: Linie
+      pie: Radială
+      stackedbar: Bară stivuită
+      stackedcolumn: Coloană stivuită
+      timeline: Cronologie
+      treemap: Hartă arborescentă
     data_types:
-      calendar_date: 
-      checkbox: 
-      dataset_link: 
-      date: 
-      document: 
-      drop_down_list: 
-      email: 
-      flag: 
-      geospatial: 
-      html: 
-      link: 
-      list: 
-      location: 
-      money: 
-      nested_table: 
-      number: 
-      object: 
-      percent: 
-      phone: 
-      photo: 
-      stars: 
-      text: 
-      url: 
+      calendar_date: Data şi ora
+      checkbox: Casetă de bifare
+      dataset_link: Link set de date
+      date: Dată şi oră (cu fus orar)
+      document: Document
+      drop_down_list: Alegere multiplă
+      email: E-mail
+      flag: Marcaj
+      geospatial: Geospaţial
+      html: Text formatat
+      link: Link coloană
+      list: Listă
+      location: Localizare
+      money: Bani
+      nested_table: Tabel grupat
+      number: Număr
+      object: Obiect
+      percent: Procent
+      phone: Telefon
+      photo: Fotografie (imagine)
+      stars: Stea
+      text: Text simplu
+      url: URL site web
     date_time:
-      centuries_future: 
-      centuries_past: 
-      current_century_future: 
-      current_century_past: 
-      current_day_future: 
-      current_day_past: 
-      current_hour_future: 
-      current_hour_past: 
-      current_minute_future: 
-      current_minute_past: 
-      current_month_future: 
-      current_month_past: 
-      current_week_future: 
-      current_week_past: 
-      current_year_future: 
-      current_year_past: 
-      days_future: 
-      days_past: 
-      hours_future: 
-      hours_past: 
-      minutes_future: 
-      minutes_past: 
-      months_future: 
-      months_past: 
-      single_century_future: 
-      single_century_past: 
-      single_day_future: 
-      single_day_past: 
-      single_hour_future: 
-      single_hour_past: 
-      single_minute_future: 
-      single_minute_past: 
-      single_month_future: 
-      single_month_past: 
-      single_week_future: 
-      single_week_past: 
-      single_year_future: 
-      single_year_past: 
-      unknown: 
-      weeks_future: 
-      weeks_past: 
-      years_future: 
-      years_past: 
+      centuries_future: ! '%{time} secole de acum înainte'
+      centuries_past: ! '%{time} secole în urmă'
+      current_century_future: acest secol
+      current_century_past: acest secol
+      current_day_future: astăzi
+      current_day_past: astăzi
+      current_hour_future: această oră
+      current_hour_past: această oră
+      current_minute_future: acum
+      current_minute_past: acum
+      current_month_future: luna aceasta
+      current_month_past: luna aceasta
+      current_week_future: săptămâna aceasta
+      current_week_past: săptămâna aceasta
+      current_year_future: anul acesta
+      current_year_past: anul acesta
+      days_future: ! '%{time} zile de acum înainte'
+      days_past: ! '%{time} zile în urmă'
+      hours_future: ! '%{time} ore de acum înainte'
+      hours_past: ! '%{time} ore în urmă'
+      minutes_future: ! '%{time} minute de acum înainte'
+      minutes_past: ! '%{time} minute în urmă'
+      months_future: ! '%{time} minute de acum înainte'
+      months_past: ! '%{time} luni în urmă'
+      single_century_future: un secol de acum înainte
+      single_century_past: un secol în urmă
+      single_day_future: mâine
+      single_day_past: ieri
+      single_hour_future: 1 oră de acum înainte
+      single_hour_past: 1 oră în urmă
+      single_minute_future: 1 minut de acum înainte
+      single_minute_past: 1 minut în urmă
+      single_month_future: luna viitoare
+      single_month_past: luna trecută
+      single_week_future: săptămâna viitoare
+      single_week_past: săptămâna trecută
+      single_year_future: anul viitor
+      single_year_past: anul trecut
+      unknown: cândva
+      weeks_future: ! '%{time} săptămâni de acum înainte'
+      weeks_past: ! '%{time} săptămâni în urmă'
+      years_future: ! '%{time} ani de acum înainte'
+      years_past: ! '%{time} ani în urmă'
     dialogs:
-      apply: 
-      cancel: 
-      close: 
-      continue: 
-      create: 
-      delete: 
-      done: 
-      dont_save: 
-      logout: 
-      save: 
+      apply: Aplicare
+      cancel: Anulare
+      close: Închidere
+      continue: Continuare
+      create: Creare
+      delete: Ştergere
+      done: Gata
+      dont_save: Fără salvare
+      logout: Aţi fost deconectat
+      save: Salvare
       session_timeout:
-        notice: 
+        notice: Aţi fost deconectat pentru siguranţa dvs. Vă rugăm să vă autentificaţi pentru a continua.
         warning:
-          belay_button: 
-          body_html: 
-          title: 
-      update: 
+          belay_button: Nu mă deconecta!
+          body_html: Nu am detectat nicio activitate de câteva minute. Pentru confidenţialitate, vă vom deconecta  în <span id="secondsRemaining"></span> secunde.
+          title: Sesiunea dvs. este pe cale să expire.
+      update: Actualizare
     expando:
-      expand: 
-      prompt: 
+      expand: Extindere
+      prompt: Click pentru extindere
     features:
-      allow_comments: 
-      cell_comments: 
+      allow_comments: Se comentează
+      cell_comments: Comentarii celulă
     filters:
       formal:
-        between: 
-        contains: 
-        equals: 
-        greater_than: 
-        greater_than_or_equals: 
-        is_blank: 
-        is_not_blank: 
-        less_than: 
-        less_than_or_equals: 
-        not_contains: 
-        not_equals: 
-        starts_with: 
+        between: între
+        contains: conţine
+        equals: egal cu
+        greater_than: mai mare decât
+        greater_than_or_equals: mai mare sau egal cu
+        is_blank: este goală
+        is_not_blank: nu este goală
+        less_than: mai mic deât
+        less_than_or_equals: mai mic sau egal cu
+        not_contains: nu conţine
+        not_equals: nu este egal cu
+        starts_with: începe cu
       informal:
-        between: 
-        contains: 
-        equals: 
-        greater_than: 
-        greater_than_or_equals: 
-        is_blank: 
-        is_not_blank: 
-        less_than: 
-        less_than_or_equals: 
-        not_contains: 
-        not_equals: 
-        starts_with: 
+        between: este între
+        contains: conţine
+        equals: este
+        greater_than: este mai mare decât
+        greater_than_or_equals: este cel puţin
+        is_blank: este goală
+        is_not_blank: nu este gol
+        less_than: este mai puţin decât
+        less_than_or_equals: este cel mult
+        not_contains: nu conţine
+        not_equals: nu este
+        starts_with: începe cu
     forms:
-      none: 
-      required_field: 
+      none: niciunul(niciuna)
+      required_field: Câmp obligatoriu
     group_function:
-      date_day: 
-      date_month: 
-      date_year: 
+      date_day: Zi
+      date_month: Lună
+      date_year: An
     interstitial:
-      leaving_explanation_html: 
-      leaving_notice_html: 
+      leaving_explanation_html: Acest <span class="datasetType">set de date</span> este găzduit de <a href="\#" rel="external" class="externalDomain">un alt domeniu</a>.
+      leaving_notice_html: Părăsiţi <span class="serverName">%{site_name}</span>
     map_layers:
-      aerial: 
-      bing_aerial: 
-      bing_roadmap: 
-      bing_roadmap_alias: 
-      esri_natural_earth: 
-      esri_natural_earth_alias: 
-      esri_satellite: 
-      esri_us_topo: 
-      esri_us_topo_alias: 
-      esri_world_street_map: 
-      esri_world_street_map_alias: 
-      esri_world_topo: 
-      esri_world_topo_alias: 
-      google_roadmap: 
-      google_roadmap_alias: 
-      google_satellite: 
-      google_terrain: 
-      roadmap: 
-      satellite: 
-      terrain: 
-    no_js: 
+      aerial: Aerian
+      bing_aerial: Bing aerian
+      bing_roadmap: Hartă rutieră Bing
+      bing_roadmap_alias: Bing
+      esri_natural_earth: Natural Earth Map (ESRI)
+      esri_natural_earth_alias: Natural Earth Map
+      esri_satellite: Imagini din satelit (ESRI)
+      esri_us_topo: Harta topografică detaliată a SUA (ESRI)
+      esri_us_topo_alias: Harta topografică a SUA
+      esri_world_street_map: Harta rutieră a lumii (ESRI)
+      esri_world_street_map_alias: Harta rutieră a lumii
+      esri_world_topo: Harta topografică adnotată a lumii (ESRI)
+      esri_world_topo_alias: Harta topografică a lumii
+      google_roadmap: Harta rutieră Google
+      google_roadmap_alias: Google
+      google_satellite: Google Satellite
+      google_terrain: Google Terrain
+      roadmap: Hartă rutieră
+      satellite: Satelit
+      terrain: Teren
+    no_js: Dezactivaţi javascript pe această pagină
     numbers:
-      eight: 
-      five: 
-      four: 
-      nine: 
-      seven: 
-      six: 
-      three: 
-    or: 
+      eight: opt
+      five: cinci
+      four: patru
+      nine: nouă
+      seven: şapte
+      six: şase
+      three: trei
+    or: sau
     pagination:
-      current_page: 
-      first_page: 
-      last_page: 
-      next_page: 
-      page: 
-      previous_page: 
+      current_page: Pagina curentă
+      first_page: Prima pagină
+      last_page: Ultima pagină
+      next_page: Pagina următoare
+      page: pagină
+      previous_page: Pagina anterioară
     precision_style:
-      scientific: 
-      standard: 
-    required: 
+      scientific: ! 'Ştiinţific (1.0204e+3) '
+      standard: Standard (1020.4)
+    required: Obligatoriu
     share_types:
-      contributor: 
-      owner: 
-      view: 
-      viewer: 
+      contributor: Colaborator
+      owner: Proprietar
+      view: Vizualizator
+      viewer: Vizualizator
     validation:
-      accept: 
-      date: 
-      dateISO: 
-      digits: 
-      email: 
-      equalTo: 
-      max: 
-      maxlength: 
-      min: 
-      minlength: 
-      number: 
-      range: 
-      rangelength: 
-      remote: 
-      required: 
-      url: 
+      accept: Vă rugăm să introduceţi o valoare cu o extensie valabilă.
+      date: Vă rugăm să introduceţi o dată valabilă
+      dateISO: Vă rugăm să introduceţi o dată valabilă (ISO).
+      digits: Vă rugăm să introduceţi doar cifre.
+      email: Vă rugăm să introduceţi o adresă de e-mail valabilă.
+      equalTo: Vă rugăm să introduceţi din nou aceeaşi valoare.
+      max: Vă rugăm să introduceţi o valoare mai mică sau egală cu {0}.
+      maxlength: Vă rugăm să nu introduceţi mai mult de {0} caractere.
+      min: Vă rugăm să introduceţi o valoare mai mare sau egală cu {0}.
+      minlength: Vă rugăm să introduceţi cel puţin {0} caractere.
+      number: Vă rugăm să introduceţi un număr valabil.
+      range: Vă rugăm să introduceţi o valoare între {0} şi {1}.
+      rangelength: Vă rugăm să introduceţi o valoare cu o lungime între {0} şi {1}.
+      remote: Vă rugăm să reparaţi acest câmp.
+      required: Acest câmp este obligatoriu.
+      url: Vă rugăm să introduceţi un URL valabil.
     view_types:
-      api: 
-      blob: 
-      calendar: 
-      chart: 
-      dataset: 
-      filter: 
-      form: 
-      group: 
-      grouped: 
-      href: 
-      map: 
-      table: 
-      working_copy: 
+      api: Vizualizare API
+      blob: fişier sau document netabelat
+      calendar: calendar
+      chart: diagramă
+      dataset: set de date
+      filter: vizualizare filtrată
+      form: formular
+      group: vizualizare grupată
+      grouped: vizualizare grupată
+      href: set de date extern
+      map: hartă
+      table: tabel
+      working_copy: copie funcţională
     view_types_plural:
-      api: 
-      calendar: 
-      chart: 
-      filter: 
-      form: 
-      grouped: 
-      map: 
+      api: API-uri
+      calendar: Calendare
+      chart: Diagrame
+      filter: Vizualizări filtrate
+      form: Formulare
+      grouped: Vizualizări grupate
+      map: Hărţi
     visibility:
-      private: 
-      public: 
+      private: confidenţial
+      public: public
   dataslate:
     component:
       header:
-        height: 
-      invalid_config: 
-      loading: 
+        height: Înălţime
+      invalid_config: Această componentă nu are o configuraţie valabilă
+      loading: Se încarcă. Vă rugăm să aşteptaţi...
       picture:
-        alt_attr: 
-        alt_attr_prompt: 
-        full_url: 
-        image_source: 
-        large: 
-        medium: 
-        original: 
-        thumb: 
-        tiny: 
-        title_attr: 
-        title_attr_prompt: 
+        alt_attr: Alt
+        alt_attr_prompt: atribut alt
+        full_url: URL calificat în întregime către o imagine
+        image_source: Sursă imagine
+        large: Mare (220x220)
+        medium: Medie (150x150)
+        original: Originală
+        thumb: Miniatură
+        tiny: Mică (24x24)
+        title_attr: Titlu
+        title_attr_prompt: atribut titlu
       print:
-        print: 
-        print_this_page: 
-      remove: 
+        print: Printare
+        print_this_page: Printaţi această pagină
+      remove: Eliminaţi această componentă
       share:
-        email: 
-        email_contents: 
-        facebook: 
-        share: 
-        subscribe: 
-        subscribe_text: 
-        this_page: 
-        tweet_contents: 
-        twitter: 
+        email: Partajare prin email
+        email_contents: ! '%{dataset} despre %{company}'
+        facebook: Partajare pe Facebook
+        share: Partajare
+        subscribe: Abonare prin e-mail sau RSS
+        subscribe_text: Abonare la modificări
+        this_page: Această pagină
+        tweet_contents: ! 'Uitaţi-vă la %{dataset} de pe %{company}: %{url}'
+        twitter: Partajare pe Twitter
     configurator:
-      advanced_components: 
-      report_components: 
+      advanced_components: Componente avansate
+      report_components: Componente raport
     context_picker:
-      select_dataset: 
-      view_data: 
+      select_dataset: Selectare set de date
+      view_data: Vizualizare date
     create:
-      cancel: 
-      create: 
-      create_page: 
-      page_settings: 
-      page_title: 
-      page_url: 
-      title: 
+      cancel: Anulare
+      create: Creare
+      create_page: Creare pagină dataslate
+      page_settings: Setări pagină
+      page_title: Titlu pagină
+      page_url: URL pagină
+      title: Creare pagină dataslate
     edit:
-      editing: 
-      permissions: 
-      preview_page: 
-      redo: 
-      revert: 
-      save: 
-      save_as: 
-      settings: 
-      undo: 
-      view_editor: 
+      editing: Editare
+      permissions: Permisiuni
+      preview_page: Previzualizaţi această pagină
+      redo: Refacere
+      revert: Revenire
+      save: Salvare
+      save_as: Salvare ca
+      settings: Setări
+      undo: Anulare
+      view_editor: Vizualizare editor interactiv
     edit_component:
-      no_config: 
-      subtitle: 
-      title: 
+      no_config: Nicio configuraţie disponibilă pentru %{component}
+      subtitle: Configuraţi această componentă
+      title: Editare componentă
     edit_properties:
-      no_data: 
-      subtitle: 
-      title: 
+      no_data: Niciun set de date pentru această componentă
+      subtitle: ! 'Adăugare proprietăţi la această componentă pe baza contextului de date '
+      title: Proprietăţi disponibile
     permissions:
-      cancel: 
-      private: 
-      private_desc: 
-      public: 
-      public_desc: 
-      save: 
-      shared: 
-      shared_desc: 
-      title: 
+      cancel: Anulare
+      private: Confidenţial
+      private_desc: Vizibil doar pentru dvs.
+      public: Public
+      public_desc: Vizibil pentru toată lumea
+      save: Salvare
+      shared: Partajare pe site
+      shared_desc: Vizibil pentru toţi colegii dvs., dar nu şi pentru alţii
+      title: Permisiuni pagină
     settings:
-      cancel: 
-      page_title: 
-      page_url: 
-      save: 
-      title: 
+      cancel: Anulare
+      page_title: Titlu pagină
+      page_url: Cale
+      save: salvare
+      title: Setări pagină
   error:
-    back: 
+    back: Înapoi
     error_500:
-      description_html: 
-      somethings_wrong: 
-      were_sorry: 
+      description_html: Vă rugăm să încercaţi din nou în câteva momente, sau <a href="http://support.socrata.com">raportaţi această eroare</a> cu detalile acţiunii pe care încercaţi să o realizaţi.
+      somethings_wrong: Ceva este în neregulă!
+      were_sorry: Ne pare rău, dar a survenit o problemă la procesarea solicitării dvs.
     not_acceptable_406:
-      page_not_found: 
-      were_sorry: 
+      page_not_found: Pagina nu a fost găsită.
+      were_sorry: Ne pare foarte rău, dar pagina solicitată de dvs. nu este disponibilă în formatul solicitat.
     not_found_404:
-      back_to: 
-      description_html: 
-      page_not_found: 
-      were_sorry: 
+      back_to: Înapoi la
+      description_html: Pgina ori nu există, ori a fost mutată. Credem că cel mai bun lucru este să începeţi din nou de la <a href="/">pagina de pornire</a>. Nu ezitaţi să ne contactaţi dacă problema persistă, sau dacă nu găsiţi deloc ceea ce căutaţi. Vă mulţumim.
+      page_not_found: Pagina nu a fost găsită.
+      were_sorry: Ne pare foarte rău, dar pagina solicitată de dvs. nu poate fi găsită.
     permission_denied_403:
-      description_html: 
-      no_permission: 
-      were_sorry: 
-    to_whence_you_came: 
+      description_html: Dacă dvs. consideraţi că aceasta este o eroare, vă rugăm să încercaţi să iaşiţi şi să vă autentificaţi din nou ca un utilizator diferit <a href="/login">aici</a>.
+      no_permission: Nicio permisiune de a accesa resursa.
+      were_sorry: Ne pare rău, dar se pare că nu aveţi permisiunea de a accesa această pagină.
+    to_whence_you_came: de unde aţi venit.
   govstat:
     chrome:
       header:
         links:
-          account: 
-          account_options: 
-          account_tooltip: 
-          configuration: 
-          data: 
-          goals: 
-          home: 
-          my_goals: 
-          my_goals_tooltip: 
-          reports: 
+          account: Cont
+          account_options: Opţiuni cont
+          account_tooltip: Vizualizaţi şi realizaţi modificări la contul dvs. de utilizator
+          configuration: Configurare
+          data: Date
+          goals: Obiective
+          home: Acasă
+          my_goals: Obiectivele mele
+          my_goals_tooltip: Vizualizare obiective create de mine
+          reports: Rapoarte
     reports:
       component:
-        base_map: 
-        chart: 
-        formatted_text: 
-        header: 
-        horizontal_layout: 
-        map: 
-        map_layer: 
-        picture: 
-        print: 
-        share: 
-        table: 
-        title: 
-        vertical_layout: 
-        visualize: 
+        base_map: Hartă de bază
+        chart: Diagramă
+        formatted_text: text formatat
+        header: Antet
+        horizontal_layout: Aranjare orizontală
+        map: Hartă
+        map_layer: Strat hartă
+        picture: Imagine
+        print: Printare
+        share: Partajare
+        table: Tabel
+        title: Titlu
+        vertical_layout: Aranjare verticală
+        visualize: Vizualizare
       create:
-        create_report: 
-        title: 
+        create_report: Creare raport
+        title: Creare raport
       manage:
-        copy: 
-        create_new_report: 
-        delete: 
-        edit: 
-        home: 
-        other_reports: 
-        owner: 
-        reports: 
-        title: 
-        updated: 
-        your_reports: 
+        copy: Copiere
+        create_new_report: Creare raport nou
+        delete: Ştergere
+        edit: Editare
+        home: Acasă
+        other_reports: Alte rapoarte
+        owner: proprietar
+        reports: Rapoarte
+        title: Administrare rapoarte
+        updated: actualizat
+        your_reports: Rapoartele dvs.
       permissions:
-        title: 
+        title: Permisiuni rapoarte
       settings:
-        page_title: 
-        title: 
+        page_title: Titlu raport
+        title: Setări raport
   plugins:
     daterangepicker:
-      date_range: 
-      done: 
-      end_date: 
-      last_month: 
-      month_to_date: 
-      next: 
-      prev: 
-      specific_date: 
-      start_date: 
-      the_month_of: 
-      the_week_of: 
-      the_year_of: 
-      today: 
-      week_to_date: 
-      year_to_date: 
+      date_range: Interval de timp
+      done: Gata
+      end_date: Dată încheiere
+      last_month: Luna trecută
+      month_to_date: Lună până în prezent
+      next: Următor
+      prev: Previzualizare
+      specific_date: Dată specifică
+      start_date: Dată început
+      the_month_of: Luna...
+      the_week_of: Săptămâna...
+      the_year_of: Anul...
+      today: Astăzi
+      week_to_date: Săptămână până în prezent
+      year_to_date: An până în prezent
     fileuploader:
-      drop_files: 
-      failed: 
-      upload_a_file: 
+      drop_files: Trageţi fişierele aici pentru încărcare
+      failed: Eşuat
+      upload_a_file: Încărcaţi un fişier
     hallo:
-      body: 
-      bold: 
-      heading: 
-      italic: 
-      redo: 
-      subheading: 
-      undo: 
+      body: Cuprins
+      bold: aldin
+      heading: Titlu
+      italic: cursiv
+      redo: refacere
+      subheading: Subtitlu
+      undo: Anulare
     jquery_ui:
-      april: 
-      april_short: 
-      august: 
-      august_short: 
-      december: 
-      december_short: 
-      done: 
-      february: 
-      february_short: 
-      friday: 
-      friday_min: 
-      friday_short: 
-      january: 
-      january_short: 
-      july: 
-      july_short: 
-      june: 
-      june_short: 
-      march: 
-      march_short: 
-      may: 
-      may_short: 
-      monday: 
-      monday_min: 
-      monday_short: 
-      next: 
-      november: 
-      november_short: 
-      october: 
-      october_short: 
-      prev: 
-      saturday: 
-      saturday_min: 
-      saturday_short: 
-      september: 
-      september_short: 
-      sunday: 
-      sunday_min: 
-      sunday_short: 
-      thursday: 
-      thursday_min: 
-      thursday_short: 
-      today: 
-      tuesday: 
-      tuesday_min: 
-      tuesday_short: 
-      wednesday: 
-      wednesday_min: 
-      wednesday_short: 
-      week_min: 
+      april: Aprilie
+      april_short: Apr
+      august: aUGUST
+      august_short: aUG
+      december: Decembrie
+      december_short: Dec
+      done: Gata
+      february: Februarie
+      february_short: Feb
+      friday: Vineri
+      friday_min: Vi
+      friday_short: Vin
+      january: Ianuarie
+      january_short: Ian
+      july: Iulie
+      july_short: Iul
+      june: Iunie
+      june_short: Iun
+      march: Martie
+      march_short: Mar
+      may: Mai
+      may_short: Mai
+      monday: Luni
+      monday_min: Lu
+      monday_short: Lu
+      next: Următor
+      november: Noiembrie
+      november_short: Nov
+      october: Octombrie
+      october_short: Oct
+      prev: Anterior
+      saturday: Sâmbătă
+      saturday_min: Sâ
+      saturday_short: Sâm
+      september: Septembrie
+      september_short: Sep
+      sunday: Duminică
+      sunday_min: Du
+      sunday_short: Dum
+      thursday: Joi
+      thursday_min: Jo
+      thursday_short: Joi
+      today: Astăzi
+      tuesday: Marţi
+      tuesday_min: Ma
+      tuesday_short: Mar
+      wednesday: Miercuri
+      wednesday_min: Mi
+      wednesday_short: Mie
+      week_min: Săp
   screens:
     about:
-      actions: 
-      activity: 
-      attachments: 
-      category: 
-      comments: 
-      community: 
-      contact_dataset_owner: 
-      contributors: 
-      created: 
-      data_provided_by: 
-      description: 
-      downloads: 
-      edit_metadata: 
-      flag_dataset: 
-      license: 
-      licensing: 
-      links: 
-      meta: 
-      none: 
-      permalink: 
-      permanent_links: 
-      permissions: 
-      private: 
-      public: 
-      raters: 
-      resource_name: 
-      row_class: 
-      row_count: 
-      row_identifier: 
-      semantics: 
-      short_url: 
-      snapshotted: 
-      source_link: 
-      spatial_extent: 
-      subject_column: 
-      tags: 
-      terms_of_use: 
-      updated: 
-      view_full_page: 
-      view_statistics: 
-      visits: 
-      your: 
+      actions: Acţiuni
+      activity: Activitate
+      attachments: Ataşamente
+      category: Categorie
+      comments: Comentarii
+      community: Voturi comunitate
+      contact_dataset_owner: Contactare proprietar set de date
+      contributors: Colaboratori
+      created: creat
+      data_provided_by: Date furnizate de
+      description: Descriere
+      downloads: Descărcări
+      edit_metadata: Editare metadate
+      flag_dataset: Semnalaţi setul de date
+      license: Licenţă
+      licensing: Acordare licenţă şi atribuţii
+      links: Link-uri
+      meta: Meta
+      none: (niciunul)
+      permalink: Permalink
+      permanent_links: Link-uri permanente
+      permissions: Permisiuni
+      private: Confidenţial
+      public: Public
+      raters: Votanţi
+      resource_name: Nume resursă
+      row_class: Clasă rând
+      row_count: Număr rânduri
+      row_identifier: Identificator rând
+      semantics: Semantice şi RDF
+      short_url: URL scurt
+      snapshotted: captat
+      source_link: Link sursă
+      spatial_extent: Mărime spaţială
+      subject_column: Coloană subiect
+      tags: Etichete
+      terms_of_use: Termeni de utilizare
+      updated: actualizat
+      view_full_page: Vizualizare pagină întreagă
+      view_statistics: Vizualizare statistici
+      visits: Vizite
+      your: Votul dvs.
     dataset_edit:
-      append: 
-      append_and_replace: 
-      append_explain: 
+      append: Adăugare
+      append_and_replace: Adăugare şi înlocuire date
+      append_explain: Doriţi ca datele dvs. încărcate să fie adăugate la finalul setului dvs. de date. Veţi putea alege modul în care noile dvs. date se integrează în coloanele existente.
       finish:
-        headline: 
-        subheadline: 
-      headline: 
+        headline: Setul dvs. de date a fost actualizat.
+        subheadline: Click pe "Încheiere" pentru a-l vizualiza!
+      headline: Ce doriţi să faceţi cu datele încărcate?
       import_columns:
-        destination_column: 
-        destination_data_type: 
-        headline: 
+        destination_column: Coloană destinaţie
+        destination_data_type: Tip date destinaţie
+        headline: Cum se raportează datele din  &ldquo;<span class="fileName"></span>&rdquo; la datele din setul dvs. de date?
       import_warnings:
-        see_docs: 
-      replace: 
-      replace_data: 
-      replace_explain: 
-      replace_layer: 
-      title: 
-      upload_accessible: 
+        see_docs: <strong>Confuz?</strong> Vă rugăm să vă consultaţi <a href="%{publisher_link}" rel="external">documentaţia editorului nostru</a> privind datele importate, pentru o explicaţie detaliată despre modul în care importatorul utilizează datele.
+      replace: Înlocuire
+      replace_data: Înlocuire date
+      replace_explain: Aţi dori ca toate datele existente să fie eliminate şi înlocuite cu datele dvs. încărcate. Veţi putea alege modul în care noile dvs. date se integrează în coloanele dvs. existente. Această operaţie nu poate fi anulată.
+      replace_layer: Înlocuire strat
+      title: Editare set de date
+      upload_accessible: Încărcare date noi în mod accesibil
     dataset_new:
       column_template:
-        name_this_col: 
-        options: 
-        remove: 
+        name_this_col: Numiţi această coloană
+        options: opţiuni
+        remove: eliminare
       crossload:
-        downloading: 
-        headline: 
-        import: 
-        supported: 
-        url_prompt: 
+        downloading: Se descarcă fişierul dvs...
+        headline: Vă rugăm să indicaţi unde este localizat fişierul dvs. de date.
+        import: Importare
+        supported: Tipurile de fişiere suportate sunt CSV, TSV şi Excel. Protocoalele suportate sunt HTTP şi HTTPS.
+        url_prompt: Care este URL-ul web al fişierului pe care doriţi să îl importaţi?
       finish:
-        headline: 
-        subheadline: 
+        headline: Setul dvs. de date a fost creat.
+        subheadline: Click pe "Încheiere" pentru a-l vizualiza!
       first_page:
-        blobby: 
-        blobby_explain: 
-        create: 
-        create_explain: 
-        external: 
-        external_explain: 
-        header: 
-        import: 
-        import_explain: 
-        mapLayer: 
-        mapLayer_explain: 
-        prompt: 
-        shapefile: 
-        shapefile_explain: 
+        blobby: Încărcaţi un fişiere fără date
+        blobby_explain: Alegeţi această opţiune dacă aveţi un fişier care conţine date, dar care nu poate fi importat, precum un PDF sau o imagine. va fi importat în catalogul de date, dar nu va fi la fel de interactiv precum datele reale.
+        create: Design de la zero
+        create_explain: Alegeţi această opţiune în cazul în care nu aveţi încă date pe care doriţi să le importaţi. Veţi putea defini o schemă pentru datele dvs. şi o veţi putea introduce online.
+        external: Link către date externe
+        external_explain: Alegeţi aceasta dacă deja aveţi date care sunt găzduite pe un alt server. Aceste date nu vor fi importate.
+        header: Creaţi un set de date nou
+        import: Importaţi un fiişer de date
+        import_explain: Alegeţi aceasta dacă aveţi deja un fişier de date în computerul dvs., pe care doriţi să le importaţi. Formatele suportate sunt .csv, .tsv, .xls şi .xlsx.
+        mapLayer: Conectaţi-vă cu un strat de hartă ESRI
+        mapLayer_explain: Alegeţi aceasta dacă aveţi un strat de hartă ESRI pe care doriţi să îl importaţi în catalog. Va trebui să furnizaţi un URL la punctul API în care stratul ESRI este stocat.
+        prompt: Cum doriţi să vă creaţi noul set de date?
+        shapefile: Importare date geosapţiale
+        shapefile_explain: Alegeţi aceasta dacă aveţi date geospaţiale pe care doriţi să le importaţi în catalog.
       import:
-        headline: 
-        local: 
-        local_explain: 
-        web: 
-        web_explain: 
+        headline: Unde este localizat fişierul?
+        local: Pe computerul meu
+        local_explain: Alegeţi aceasta dacă aveţi un fişier care se află pe computerul pe care îl utilizaţi.
+        web: Pe internet
+        web_explain: Alegeţi aceasta în cazul în care aveţi un fişier care este deja pe internet şi pentru care aveţi URL-ul.
       import_columns:
-        add_new_column: 
-        clear_all: 
-        data_type: 
-        errors_warnings: 
-        fewer_rows: 
-        headers: 
-        headers_instructions: 
-        headline: 
-        help_message: 
-        more_rows: 
-        name: 
-        pending_columns: 
-        reset_to_preset: 
-        set: 
-        source_column: 
-        subheadline: 
-        suggested_alltext: 
-        suggested_columns: 
-        suggested_flat: 
-        suggested_plus_discrete: 
-        why_choose_now: 
-      import_help: 
+        add_new_column: Adăugare coloană nouă.
+        clear_all: Ştergere toate
+        data_type: Tip date
+        errors_warnings: Erori şi avertismente
+        fewer_rows: Mai puţine rânduri
+        headers: Antete
+        headers_instructions: Antetele trebuie să fie ignorate şi nu importate ca date. Vă rugăm să indicaţi câte rânduri din fişierul dvs. sursă sunt antete.
+        headline: Specificaţi cum &ldquo;<span class="fileName"></span>&rdquo; trebuie să fie importat.
+        help_message: Pentru ajutor, consultaţi o <a href="%{common_errors}" rel="external">listă de avertismente şi erori întâlnite în mod obişnuit</a>.
+        more_rows: Mai multe rânduri
+        name: Nume
+        pending_columns: Vă rugăm să aşteptaţi cât timp vă încărcăm coloanele...
+        reset_to_preset: Resetaţi pentru a preseta
+        set: Setare
+        source_column: Coloană sursă
+        subheadline: Coloane de importat
+        suggested_alltext: Toate coloanele ca text
+        suggested_columns: Coloane sugerate
+        suggested_flat: Coloane sugerate (fără compuşi)
+        suggested_plus_discrete: Coloane sugerate (compuşi şi discretizate)
+        why_choose_now: De ce este important să alegeţi acum tipurile de coloane?
+      import_help: <strong>Aveţi nevoie de ajutor?</strong> Noi păstrăm o <a href="%{common_errors}" rel="external">listă a avertismentelor şi erorilor obişnuite</a>, care v-ar putea ajuta.
       import_shapefile:
-        crs: 
-        headline: 
-        layers_list: 
-        name: 
-        pending: 
-        subheadline: 
+        crs: Coordonată sistem de referinţă
+        headline: Specificaţi modul în care &ldquo;<span class="fileName"></span>&rdquo; trebuie importat.
+        layers_list: Straturi de importat
+        name: Nume
+        pending: Vă rugăm să aşteptaţi cât timp vă importăm straturile...
+        subheadline: Acest shapefile conţine <span class="featureCount"></span> caracteristici în <span class="layerCount"></span> straturi.
       import_warnings:
-        headline: 
-        see_docs: 
-        subheadline: 
-      importing_your_data: 
+        headline: Avertisment în cursul importării
+        see_docs: <strong>Confuz?</strong> Vă rugăm să consultaţi <a href="%{publisher_link}" rel="external">docuemntaţia editorului nostru</a> în privinţa importării datelor, pentru o explicaţie detaliată privind modul în care importatorul utilizează datele. Este posibil să fie necesear să consultaţi şi <a href="%{common_errors}" rel="external">lista noastră de avertismente şi erori întâlnite în mod obişnuit</a>.
+        subheadline: Vă rugăm să reţineţi că unele dintre datele dvs. este posibil să nu fi fost importate corect.
+      importing_your_data: Se importă datele dvs...
       metadata:
-        creative_commons_type: 
-        esri_map_layer_url: 
-        esri_source_url: 
-        privacy_security: 
-        private_explain: 
-        prompt: 
-        public_explain: 
-      processing: 
-      title: 
-      upload_accessible: 
+        creative_commons_type: Tip Creative Commons
+        esri_map_layer_url: URL strat hartă ESRI
+        esri_source_url: Introduceţi URL-ul sursei
+        privacy_security: Confidenţialitate şi siguranţă
+        private_explain: datele mele sunt <strong>confidenţiale</strong>
+        prompt: Vă rugăm să vă descrieţi datele.
+        public_explain: ! 'Datele mele sunt <strong>publice</strong>: pot fi modificate doar de mine, dar pot fi vizualizate de către oricine'
+      processing: Se procesează...
+      title: Set de date nou
+      upload_accessible: Încărcaţi un nou set de date în mod accesibil
       upload_file:
-        choose_a_file: 
-        no_file_selected: 
-        supported_blist: 
-        supported_shapefile: 
-        uploading: 
+        choose_a_file: Alegeţi un fişier
+        no_file_selected: Niciun fişier selectat încă.
+        supported_blist: Formatele suportate sunt .csv, .tsv, .xls şi .xlsx.
+        supported_shapefile: Formatele suportate sunt .kml, .kmz şi .zip (ESRI shapefile).
+        uploading: Se încarcă fişierul...
       why_choose_now:
-        close: 
-        line_1: 
-        line_2: 
+        close: Închidere
+        line_1: Datele dvs. sunt procesate puternic atunci când sunt importate şi optimizate pentru consum pentru fiecare tip particular de date. În plus, cele mai multe tipuri de date au caracteristici speciale, care vor fi activate doar în cazul în care coloana va fi setată pentru acel &mdash; tip. Coloanele de localizare, de exemplu, sunt necesare pentru crearea hărţilor.
+        line_2: Este posibil să modificaţi tipurile de coloane mai târziu, dar acest proces ia timp, deci este mai bine să le setaţi de la început.
     ds:
       bar:
-        api_unsavable: 
-        based_on_html: 
-        based_on_parent_html: 
-        based_on_private_view: 
-        based_on_working_copy_html: 
-        find_prompt: 
+        api_unsavable: Vizualizările API nu pot fi modificate
+        based_on_html: Bazat pe <a class="revertLink currentViewName" href="#revert">%{name}</a>
+        based_on_parent_html: Bazat pe <a class="parentName"></a>
+        based_on_private_view: o vizualizare privată.
+        based_on_working_copy_html: Bazat pe copia funcţională a <a class="revertLink currentViewName" href="#revert">%{name}</a>
+        find_prompt: Găsiţi în acest set de date
         format:
-          bold: 
-          bullet: 
-          color: 
-          italic: 
-          link: 
-          number: 
-          redo: 
-          strike: 
-          underline: 
-          undo: 
-        full_screen: 
-        publish_button: 
-        publish_prompt: 
-        publish_rights: 
-        revert_button: 
-        revert_prompt: 
-        save_as_button: 
-        save_as_prompt: 
-        save_button: 
-        save_progress: 
-        save_prompt: 
-        share_email: 
-        share_facebook: 
-        share_twitter: 
-        snapshot_notice: 
+          bold: Aldin
+          bullet: Listă cu marcatori
+          color: Culoare set de caractere
+          italic: Cursiv
+          link: Link
+          number: Listă numerotată
+          redo: Refacere
+          strike: Tăiat
+          underline: Subliniere
+          undo: Anulare
+        full_screen: Comuare ecran complet
+        publish_button: Publicare set de date
+        publish_prompt: Acest set de date este o copie funcţională şi nu este disponibilă public. Odată ce aţi realizat modificările dorite, acest set de date trebuie să fie publicat pentru a fi disponibil public.
+        publish_rights: Doar un proprietar sau un edior poate oublica acest set de date
+        revert_button: Revenire
+        revert_prompt: Reveniţi la vizualizarea salvată
+        save_as_button: Salvare ca...
+        save_as_prompt: Salvare vizualizare ca...
+        save_button: Salvare
+        save_progress: Se salvează...
+        save_prompt: Salvare vizualizare curentă
+        share_email: Partajare prin e-mail
+        share_facebook: Partajare pe Facebook
+        share_twitter: Partajare pe Twitter
+        snapshot_notice: Aceasta este o versiune publicată anterior a setului de date. Este arhivată şi nu poate fi modificată.
         snapshot_title: 
-        snapshot_title_html: 
-        snapshot_unsavable: 
-        subscribe: 
-        subscribe_prompt: 
-        unpublished_unsavable: 
-        unsaved_title: 
-        view_published_html: 
-        view_type: 
+        snapshot_title_html: Captat %{date}
+        snapshot_unsavable: Seturile de date şi vizualizările captate nu pot fi create sau modificate
+        subscribe: Abonare pentru modificări
+        subscribe_prompt: Abonare prin e-mail sau RSS
+        unpublished_unsavable: Modificările datelor de mai jos sunt salvate automat. Filtrele şi căutările nu pot fi salvate într-o copie funcţională a setului de date. Vă rugăm să creaţi o vizualizare a unui set de date publicat.
+        unsaved_title: Vizualizare nesalvată
+        view_published_html: Vizualizaţi <span class="publishedName">setul de date</span> publicat
+        view_type: Vizualizare ca %{type}
         view_types:
-          calendar: 
-          chart: 
-          fatrow: 
-          map: 
-          page: 
-          table: 
-        working_copy_notice: 
-        working_copy_title: 
+          calendar: calendar
+          chart: diagramă
+          fatrow: listă îmbogăţită
+          map: hartă
+          page: rând unic
+          table: tabel
+        working_copy_notice: Aceasta este o copie a setului de date care vă permite să realizaţi modificări în el. Nu este vizibil celorlalţi până când nu îl publicaţi.
+        working_copy_title: ! '[Copie funcţională]'
       blob:
-        data_extraction: 
-        download: 
-        external_link: 
-        js_required: 
+        data_extraction: Acest instrument sau aplicaţie de extragere a datelor este disponibil prin link-ul din dreapta
+        download: Descărcare
+        external_link: Link extern
+        js_required: Javascript este necesar pentru a rula vizualizatorul de documente în interiorul browser-ului dvs.
         js_required_download:
-          click_here: 
-          prompt_html: 
-        limited_download: 
+          click_here: click aici
+          prompt_html: Pentru a descărca acest fişier în schimb, %{click_here}.
+        limited_download: Acest set de date nu conţine date tabelare şi poate avea o interactivitate limitată, dar este disponibil pentru descărcare.
       column_tip:
-        aggregate: 
-        field_name: 
-        original_name: 
+        aggregate: (%{aggregate} pe %{data_type})
+        field_name: Nume câmp API
+        original_name: Nume original
       dataset_contact:
-        captcha_failed: 
-        error_message: 
+        captcha_failed: Răspuns incorect. Vă rugăm să încercaţi din nou.
+        error_message: A survenit o eroare la trimiterea feedback-ului pentru acest set de date. Vă rugăm să reîncercaţi mai târziu.
         form:
-          email: 
-          email_prompt: 
-          message: 
-          purpose: 
+          email: E-mail-ul dvs.
+          email_prompt: Adresa dvs. de e-mail va fi partajată cu proprietarul acestui set de date, astfel încât el să vă poată răspunde.
+          message: Scurt mesaj
+          purpose: Scop
           purposes:
-            copyright_violation: 
-            offensive_content: 
-            personal_information: 
-            prompt: 
-            spam: 
-          send_button: 
-          subject: 
-        other_subject: 
+            copyright_violation: Încălcare drepturi de autor
+            offensive_content: Conţinut ofensator
+            personal_information: Informaţii personale
+            prompt: -- Selectaţi scopul --
+            spam: Spam sau junk
+          send_button: Trimitere
+          subject: Subiect
+        other_subject: Un vizitator v-a trimis un mesaj despre setul dvs. de date '%{dataset_name}' '%{site}'
         reasons:
-          copyright_violation: 
-          offensive_content: 
-          personal_information: 
-          spam: 
-        subject: 
-        success_message: 
+          copyright_violation: pentru încălcarea drepturilor de autor
+          offensive_content: pentru conţinut ofesantor
+          personal_information: pentru conţinut de informaţii personale
+          spam: ca posibil spam
+        subject: Setul dvs. de date "%{dataset_name}" a fost semnalat %{reason}
+        success_message: ! 'Proprietarul setului de date a fost anunţat. '
         validation:
-          no_body: 
-          no_email: 
-          no_purpose: 
-          no_subject: 
+          no_body: Mesajul trebuie să aibă un cuprins.
+          no_email: Este necesară adresa dvs. de e-mail.
+          no_purpose: Trebuie să selectaţi un scop pentru acest mesaj.
+          no_subject: Trebuie să alegeţi un subiect pentru acest mesaj.
       dataset_status:
-        copy_available: 
-        copy_in_progress: 
+        copy_available: Copia funcţională este disponibilă acum. Butonul "Editare set de date" vă va oferi accesul atunci când veţi fi gata să editaţi.
+        copy_in_progress: Vă rugăm să aşteptaţi până când este realizată o copie funcţională. %{additional}
         copy_in_progress_additional:
-          processing: 
-          queued: 
-        edit_dataset_button: 
-        error_publishing_html: 
-        needs_copy: 
+          processing: În acest moment este în curs de procesare (started %{time})
+          queued: Se află în coadă, aşteptând să fie procesat  (queued %{time}; %{totalQueued} total la coadă)
+        edit_dataset_button: Editare set de date
+        error_publishing_html: A survenit o eroare la realizarea unei copii funcţionale a setului dvs. de date. Vă rugăm <a href="http://support.socrata.com" rel="external">contactaţi echipa de suport tehnic Socrata</a>.
+        needs_copy: Acest set de date este publicat şi nu poate fi editat în mod direct. O copie funcţională %{status} care vă permite să realizaţi toate modificările dorite înainte de a le face disponibile public.
         needs_copy_status:
-          available: 
-          can_be_made: 
+          available: este disponibilă
+          can_be_made: poate fi realizată
       email:
-        add_email: 
-        email_button: 
-        message_prompt: 
-        private_notice: 
-        prompt_html: 
-        remove_email: 
-        success: 
-        title_html: 
+        add_email: Adăugare mai multe
+        email_button: E-mail
+        message_prompt: Introduceţi un emsaj opţional
+        private_notice: ! 'Notă: Acest %{displayName} este în acest moment confidenţial. Trimiterea prin e-mail va oferi acces tuturor destinatarilor.'
+        prompt_html: ! 'Partajaţi <span class="datasetName">%{name}</span> cu următoarele adreese de e-mail:'
+        remove_email: Eliminare
+        success: E-mail-ul dvs. a fost trimis cu succes.
+        title_html: Partajaţi &quot;<span class="datasetName">%{name}</span>&quot;
       grid_sidebar:
         add_column:
           convert_address:
-            city: 
-            city_prompt: 
-            state: 
-            state_prompt: 
-            street: 
-            title: 
-            zip_code: 
-            zip_code_prompt: 
+            city: Oraş
+            city_prompt: Introduceţi un oraş
+            state: Stat
+            state_prompt: Introduceţi un stat
+            street: Stradă
+            title: Utilizaţi coloanele de adresă existente
+            zip_code: Cod poştal
+            zip_code_prompt: Introduceţi un cod poştal
           convert_latlong:
-            latitude: 
-            longitude: 
-            title: 
+            latitude: Latitudine
+            longitude: Longitudine
+            title: Utilizaţi latitudinea şi longitudinea existentă
           multiple_choice:
-            add_option_button: 
-            option: 
-            title: 
+            add_option_button: Adăugare opţiune
+            option: Opţiune
+            title: Opţiuni cu mai multe alegeri
           nested_table:
-            default_column_name: 
-          subtitle: 
-          success: 
-          title: 
+            default_column_name: Fără titlu
+          subtitle: Adăugare coloană nouă la setul dvs. de date
+          success: Coloana dvs. a fost adăugată
+          title: Adăugare coloană
           validation:
-            view_column: 
+            view_column: Nu puteţi adăuga o coloană la o vizualizare
         api:
-          column_ids_title: 
-          endpoint_title: 
-          intro_html: 
-          reference_html: 
-          subtitle: 
-          title: 
+          column_ids_title: ! 'ID-uri coloane:'
+          endpoint_title: ! 'Punct terminal acces API:'
+          intro_html: <strong>Socrata Open Data API</strong> (SODA) permite dezvoltatorilor de software să acceseze datele găzduite în Socrata în mod programatic. Dezvoltatorii pot crea aplicaţii ce utilizează API-urile SODA pentru a vizualiza şi &ldquo;mash-up&rdquo; Socrata lucrează cu date în moduri noi şi captivante. Creaţi o aplicaţie pentru iPhone care vizualizează cheltuielile guvernamentale din zona dvs., o aplicaţie web care permite cetăţenilor să caute potenţiale beneficii guvernamentale pe care le-au scăpat din vedere, sau un serviciu care trimite automat e-mail-uri atunci când la facturile pe care doriţi să le urmăriţi au fost adăugate ştampile noi.
+          reference_html: Pentru a începe să accesaţi acest set de date în mod programatic, utilizaţi puncutl terminal APi furnizat mai jos. pentru mai multe informaţii şi exemple privind modul în care puteţi utiliza Socrata Open Data API, consultaţi <a href="http://dev.socrata.com" rel="external">Documentaţia Dezvoltatorului</a>.
+          subtitle: Accesaţi această %{view_type} prin intermediul SODA
+          title: API
         apis:
-          create_button: 
-          create_button_prompt: 
-          manage_button: 
-          manage_button_prompt: 
-          prompt_existing_html: 
-          prompt_new_html: 
-          subtitle: 
-          title: 
+          create_button: Creaţi un API
+          create_button_prompt: Creaţi o interfaţă destinată programării aplicaţiilor (API) pentru a acorda acces programatic la aceste date.
+          manage_button: Administrare
+          manage_button_prompt: Administraţi API-ul selectat
+          prompt_existing_html: <strong>API-urile existente</strong> pot fi personalizate. Puteţi controla permisiunile, seta limitele de solicitare, vizualiza metrica de utilizare şi edita documentaţia.
+          prompt_new_html: <strong>API Foundry</strong> vă permite să creaţi şi să configuraţi una su mai multe interfeţe destinate programării aplicaţiilor (API) deschisă, bazată pe standarde pentru acest set de date.
+          subtitle: Creaţi şi personalizaţi un API
+          title: API-uri
         append_replace:
           subtitle:
-            immutable: 
-            mutable: 
+            immutable: Încărcaţi un nou fişier de date al cărui conţinut va înlocui datele dvs. existente.
+            mutable: Încărcaţi un nou fişier de date al cărui conţinut va fi adăugat la sau va înlocui datele dvs. existente.
           title:
-            immutable: 
-            mutable: 
+            immutable: Înlocuire
+            mutable: Adăugare şi înlocuire
           wizard_button:
-            immutable: 
-            mutable: 
+            immutable: Lansaţi aplicaţia expert "Înlocuire"
+            mutable: Lansaţi aplicaţia expert "Adăugare şi înlocuire!
         base:
           buttons:
-            apply: 
-            cancel: 
-            create: 
-            done: 
-            remove: 
-            update: 
+            apply: Aplicare
+            cancel: Anulare
+            create: Creare
+            done: Gata
+            remove: Eliminare
+            update: Actualizare
           color_select:
-            prompt: 
+            prompt: Alegere culoare
           column_select:
-            auto: 
-            from_grid: 
-            none_selected: 
-            nonselectable: 
-            prompt: 
-            selectable: 
-            unselect: 
+            auto: Automat
+            from_grid: Selectaţi o coloană din grilă
+            none_selected: Nicio coloană selectată
+            nonselectable: Coloane nevalide
+            prompt: Selectaţi o coloană
+            selectable: Coloane valabile
+            unselect: Deselectare coloană
           datatypes:
-            checkbox: 
-            dataset_link: 
-            date_time: 
-            date_time_timezone: 
-            document: 
-            email: 
-            flag: 
-            formatted_text: 
-            geospatial: 
-            list: 
-            location: 
-            money: 
-            multiple_choice: 
-            nested_table: 
-            number: 
-            object: 
-            percent: 
-            phone: 
-            photo: 
-            plain_text: 
-            star: 
-            website_url: 
+            checkbox: casetă de bifare
+            dataset_link: link set de date
+            date_time: data şi ora
+            date_time_timezone: data şi ora (cu fus orar)
+            document: document
+            email: e-mail
+            flag: semnalare
+            formatted_text: text formatat
+            geospatial: geospaţial
+            list: listă
+            location: localizare
+            money: bani
+            multiple_choice: opţiuni multple
+            nested_table: tabel grupat
+            number: număr
+            object: obiect
+            percent: procent
+            phone: telefon
+            photo: foto (imagine)
+            plain_text: text simplu
+            star: stea
+            website_url: URL site web
           generic_select:
-            prompt: 
+            prompt: Selectaţi o valoare
           validation:
-            at_least: 
-            different_value: 
-            file_format: 
-            identifier_format: 
-            invalid_url: 
-            invalid_value: 
-            invalid_values: 
-            invalid_view: 
-            no_greater: 
-            numeric: 
-            uid_required: 
-            verifying_url: 
+            at_least: Valoarea trebuie să fie cel puţin %{value}
+            different_value: Nu puteţi utiliza această coloană de două ori
+            file_format: Este necesar formatul de fişier %{format}
+            identifier_format: Caracterele identificatorului API valabil sunt litere mici, cifre şi liniuţe de subliniere. Trebuie să înceapă cu o literă şi nu pot conţine liniuţe de subliniere consecutive.
+            invalid_url: Acest URL nu este valabil
+            invalid_value: Această valoare nu este valabilă
+            invalid_values: Au existat probleme cu valorile specificate. Vă rugăm să verificaţi erorile de mai sus.
+            invalid_view: Această vizualizare trebuie să fie valabilă
+            no_greater: Valoarea nu poate fi mai mare decât  %{value}
+            numeric: Valoarea trebuie să fie un număr
+            uid_required: ! 'Aceasta necesită o vizualizare UID 4x4 '
+            verifying_url: Se verifică URL-ul
         calendar:
           dates:
-            end: 
-            start: 
-            title: 
+            end: Data încheierii
+            start: Data începerii
+            title: Date
           information:
-            details: 
-            event_title: 
-            new_details_button: 
-            title: 
-          subtitle: 
-          title: 
+            details: Detalii
+            event_title: Titlu eveniment
+            new_details_button: Adăugare detalii
+            title: Informaţii eveniment
+          subtitle: Vizualizările cu date pot fi afişate într-un format de calendar lunar
+          title: Calendar
           validation:
-            invalid_columns: 
-            viz_limit: 
+            invalid_columns: Această vizualizare are o coloană de dată şi o coloană de text
+            viz_limit: O vizualizare poate avea doar o singură vedere pe ea.
         chart:
-          advanced: 
-          annotation: 
-          auto_update_sort: 
-          auto_update_sort_button: 
-          auto_update_sort_info_donut: 
-          auto_update_sort_info_pie: 
+          advanced: Configurare avansată
+          annotation: Adnotare
+          auto_update_sort: Actualizare automată a ordinii de sortare
+          auto_update_sort_button: Aplicaţi aceasta acum
+          auto_update_sort_info_donut: Diagramele inelare funcţionează cel mai bine atunci când sunt sortate în ordine descendentă orară, din interior spre exterior.
+          auto_update_sort_info_pie: Diagramele radiale funcţionează cel mai bine atunci când sunt sortate în ordine descendentă orară.
           axes:
-            title: 
-            x_axis_title: 
-            x_axis_title_prompt: 
-            y_axis_title: 
-            y_axis_title_prompt: 
-          base_color: 
-          categories: 
-          cdlfmtg_color_override_html: 
+            title: Opţiuni axe
+            x_axis_title: Titlu axă X
+            x_axis_title_prompt: Introduceţi un titlu pentru axa X
+            y_axis_title: Titlu axă Y
+            y_axis_title_prompt: Introduceţi un titlu pentru axa Y
+          base_color: Culoare de bază
+          categories: Categorii
+          cdlfmtg_color_override_html: Culorile sunt anulate de <a href="#Conditional Formatting" class="showConditionalFormatting">formatarea condiţională</a>. Click <a href="#Clear Conditional Formatting" class="clearConditionalFormatting">aici</a> pentru a şterge toate regulile de formatare condiţională existente.
           color_options:
-            column_colors: 
-          color_override_html: 
-          colors: 
-          configuration: 
+            column_colors: Culori coloane
+          color_override_html: Culorile pot fi anulate de <a href="#Conditional Formatting" class="showConditionalFormatting">formatarea condiţională</a>. Click <a href="#Clear Conditional Formatting" class="clearConditionalFormatting">aici</a> pentru a şterge toate regulile de formatare condiţională existente.
+          colors: Culori
+          configuration: Configurare
           data_columns:
-            new_data_column_button: 
-            title: 
-          data_labels: 
+            new_data_column_button: Adăugare coloană de date
+            title: Coloane de date
+          data_labels: Etichete date
           data_selection:
             advanced_data_selection:
-              title: 
+              title: Selectare avansată date
             chart_definition:
-              label_title: 
-              title: 
-              value_title: 
-          date: 
-          details: 
-          draw_line: 
-          dsg_color_override_html: 
+              label_title: Alegere date etichetă
+              title: Definire diagramă
+              value_title: Alegeţi datele valorice
+          date: Dată
+          details: Detalii
+          draw_line: Trasaţi o linie
+          dsg_color_override_html: Vă rugăm să reţineţi că gruparea seriei datelor va anula culorile alese pentru coloanele dvs. de date. Nu vă va anula <a href="#Conditional Formatting" class="showConditionalFormatting">formatarea condiţională</a>
           error_bars:
-            color: 
-            data_high: 
-            data_low: 
-            high: 
-            low: 
-            title: 
+            color: Culoare
+            data_high: Alegere coloană superioară
+            data_low: Alegeţi coloană inferioară
+            high: Superior
+            low: Inferior
+            title: Bare erori
           flyout:
-            new_details_button: 
-            new_values_button: 
-            title: 
-            title_column: 
-            value: 
-          group_extra: 
-          groups: 
-          label: 
-          labelInBar: 
-          labels_and_values: 
+            new_details_button: Adăugare detalii mobile
+            new_values_button: Adăugare valori
+            title: Detalii mobile
+            title_column: Titlu mobil
+            value: Valori mobile
+          group_extra: Grupare valori suplimentare
+          groups: Grupuri
+          label: Etichetă
+          labelInBar: Etichetă în bară
+          labels_and_values: Etichete şi valori
           legend:
-            add_text: 
-            add_text_button: 
-            annotations: 
-            conditional_formats: 
-            custom_entry: 
-            display: 
-            new_custom_entry_button: 
-            position: 
-            position_prompt: 
+            add_text: Text suplimentar
+            add_text_button: Adăugare text suplimentar
+            annotations: Descriere adnotări
+            conditional_formats: Descriere formate condiţionale
+            custom_entry: Etichetă personalizată
+            display: Afişare
+            new_custom_entry_button: Adăugare înregistrare legendă personalizată
+            position: Legendă
+            position_prompt: Alegeţi o poziţie
             positions:
-              bottom: 
-              left: 
-              none: 
-              right: 
-              top: 
-            series: 
-            title: 
-            title_short: 
-            value_markers: 
-            values: 
+              bottom: Jos
+              left: Stânga
+              none: Niciuna
+              right: Dreapta
+              top: Sus
+            series: Descriere serie
+            title: Configurare legendă
+            title_short: Legendă
+            value_markers: Descriere marker-i valoare
+            values: Descriere valori
           marker:
-            add_button: 
-            caption: 
-            marker_title: 
-            new_marker_button: 
-            title: 
-            value: 
-          min_angle: 
-          min_angle_html: 
-          names: 
-          pie_other: 
-          pie_truncate: 
-          point_color: 
-          point_size: 
-          point_title: 
+            add_button: Adăugare adnotare
+            caption: Titlu
+            marker_title: Marker valoare
+            new_marker_button: Adăugare marker
+            title: Adnotări
+            value: La valoare
+          min_angle: Unghi min.
+          min_angle_html: Cel mai mic unghi afişat  (&ordm;)
+          names: Nume
+          pie_other: ! 'Avertisment: %{chart_type} va uni valori distincte (rânduri) dincolo de %{row_limit} într-o categorie "Altele". Încercaţi să creaţi un "roll up" sau un filtru care limitează numărul valorilor şi atunci creaţi o %{chart_type} a acestuia.'
+          pie_truncate: ! 'Avertisment: %{chart_type} va trunchia seturi de date cu mai mult de %{row_limit} valori distincte (rânduri). Încercaţi să creaţi un "roll up" sau un filtru care limitează numărul valorilor şi atunci creaţi o %{chart_type} a acestuia'
+          point_color: Culoare punct
+          point_size: Dimensiune punct
+          point_title: Titlu
           series_group:
-            alphabetize: 
-            group_by: 
-            hideLoadingMsg: 
-            new_column_button: 
-            row_limit_warning: 
-            title: 
+            alphabetize: Aşezare grupuri în ordine alfabetică
+            group_by: Grupare după
+            hideLoadingMsg: Ascundere mesaj de încărcare
+            new_column_button: Adăugare coloană serie
+            row_limit_warning: Gruparea seriei datelor va rula extrem de încet cu atât de multe rânduri.
+            title: Grupare serie date
           setup:
-            title: 
-            type: 
-            type_prompt: 
-          show_lines: 
-          show_percent: 
-          show_points: 
-          show_values: 
-          smooth_line: 
-          subtitle: 
-          title: 
-          treemap_color_html: 
+            title: Setare diagramă
+            type: Tip diagramă
+            type_prompt: Selectaţi un tip de diagramă
+          show_lines: Afişare linii
+          show_percent: Afişare procente  (%)
+          show_points: Afişare puncte
+          show_values: Afişare valori
+          smooth_line: Linie netedă
+          subtitle: Vizualizarea datelor poate fi afişată cu o varietate de diagrame
+          title: Diagramă
+          treemap_color_html: Aceste culori sunt aplicate hărţii arborescente în mod aleatoriu doar pentru crearea distincţiilor vizuale. Ele singure nu au un înţeles specific.
           validation:
-            chart_requires: 
-            chart_requires2: 
-            count: 
-            required_columns: 
-            viz_limit: 
-          value: 
-          valueInBar: 
-          values: 
+            chart_requires: ! '%{chart_type} necesită cel puţin'
+            chart_requires2: ! '%{and} %{count} ale următoarelor tipuri de coloane:'
+            count: ! '%{count}'
+            required_columns: ! '%{chart_type} necesită %{column_types} coloane'
+            viz_limit: O vedere poate avea o singură vizualizare în ea
+          value: Valoare
+          valueInBar: Valoare în bară
+          values: Valori
           y_axis_formatting:
-            abbreviate: 
-            auto: 
-            axis_max: 
-            axis_min: 
-            axis_prompt: 
-            decimals: 
-            no_decimals: 
-            precision: 
-            title: 
+            abbreviate: Abreviaţi
+            auto: Automat
+            axis_max: Axă max.
+            axis_min: Axă min.
+            axis_prompt: Introduceţi un număr
+            decimals: Număr decimale
+            no_decimals: Fără decimale
+            precision: Precizie
+            title: Formatare axă Y
         column_common:
           basic:
-            description: 
-            description_prompt: 
-            name: 
-            name_prompt: 
-            title: 
+            description: Descriere
+            description_prompt: Introduceţi o descriere
+            name: Nume
+            name_prompt: Introduceţi un nume
+            title: Informaţii de bază
           linked_dataset:
-            dataset: 
-            dataset_prompt: 
-            key: 
-            label: 
-            title: 
+            dataset: Set de date
+            dataset_prompt: URL set de date sau UID 4x4
+            key: Coloană cheie
+            label: Coloană etichetă
+            title: Set de date cu link
           type:
-            key: 
-            source: 
-            title: 
-            type: 
-            type_prompt: 
+            key: Cheie
+            source: Sursă
+            title: Tip coloană
+            type: Tip date
+            type_prompt: Selectaţi un tip de date
         column_order:
           columns:
-            title: 
-          prompt_html: 
-          subtitle: 
-          title: 
+            title: Coloane
+          prompt_html: Trageţi coloanele în ordinea pe care o doriţi şi apăsaţi <strong>aplicare</strong> pentru a aplica noua ordine.
+          subtitle: Modificaţi rodinea coloanelor
+          title: Ordine coloane
           validation:
-            valid_columns: 
+            valid_columns: Această vizualizare trebuie să fie valabilă şi trebuie să aibă coloane vizibile.
         column_properties:
           advanced:
-            api_identifier: 
-            new_rdf_button: 
-            semantics: 
-            title: 
-            url: 
+            api_identifier: Identificator API
+            new_rdf_button: Adăugare proprietăţi RDF
+            semantics: Semantice
+            title: Avansat
+            url: Introduceţi URL personalizat
           column_totals:
-            title: 
-            total: 
-            total_prompt: 
+            title: Totaluri coloană
+            total: Total
+            total_prompt: Selectaţi un total de coloană
           display_order:
-            new_item_button: 
-            option: 
-            title: 
+            new_item_button: Adăugare element
+            option: Opţiune
+            title: Ordine afişare (pentru dataslate)
           formatting:
-            alignment: 
-            title: 
-            view_style: 
+            alignment: Aliniere
+            title: Formatare
+            view_style: Vizualizare stil
           link:
-            key: 
-            source: 
-            title: 
+            key: Cheie
+            source: Sursă
+            title: Link
           localization:
-            decimal: 
-            thousands: 
-            title: 
+            decimal: Decimal
+            thousands: Mii
+            title: Localizare
           money:
-            abbreviated: 
-            currency: 
+            abbreviated: Abreviat
+            currency: Monedă
             format_mask_warning: 
-            no_precision: 
-            precision: 
-            title: 
+            no_precision: Niciuna
+            precision: Precizie
+            title: Formatare bani
           multiple_choice:
-            new_option_button: 
-            option: 
-            title: 
+            new_option_button: Adăugare opţiune
+            option: Opţiune
+            title: Opţiuni multiple
           number:
-            display: 
-            no_commas: 
-            no_precision: 
-            precision: 
-            title: 
+            display: Afişare
+            no_commas: Fără virgule
+            no_precision: Niciunul
+            precision: Precizie
+            title: Formatare număr
           number_advanced:
-            format_mask: 
-            format_mask_prompt: 
-            format_mask_warning: 
-            title: 
+            format_mask: Mască formatare
+            format_mask_prompt: ! 'Utilizaţi #s pentru a indica cifre şi alte caractere unde vreţi să meargă; de exemplu, un număr de securitate socială ar fi ###-##-####'
+            format_mask_warning: Aceasta poate anula unele dintre setările de mai sus.
+            title: Formatare avansată
           photo:
-            size: 
-            size_prompt: 
+            size: Dimensiune
+            size_prompt: Alegeţi o dimensiune
             sizes:
-              featured: 
-              large: 
-              medium: 
-              original: 
-              thumb: 
-              tiny: 
-            title: 
-          subtitle: 
-          success: 
-          title: 
+              featured: Prezentat (150x80)
+              large: Mare (220x220)
+              medium: Medie (150x150)
+              original: Originală
+              thumb: Miniatură (80x80)
+              tiny: Mică (24x24)
+            title: Opţiuni fotografie
+          subtitle: Actualizaţi diversele proprietăţi ale acestei coloane
+          success: Coloana dvs. a fost actualizată
+          title: Proprietăţi coloană
           url:
-            base_url: 
-            base_url_prompt: 
-            title: 
+            base_url: URL bază
+            base_url_prompt: Introduceţi prefixul URL obişnuit
+            title: Opţiuni URL
           validation:
-            published: 
-            unsaved: 
+            published: Vă rugăm să realizaţi o copie funcţională a acestui set de date pentru a modifica proprietăţile coloanelor
+            unsaved: Nu puteţi edita proprietăţile coloanelor pentru o vizualizare nesalvată
         conditional_formatting:
-          change_icon: 
+          change_icon: modificare
           conditions:
-            description: 
-            description_prompt: 
+            description: Descriere
+            description_prompt: Descrieţi această potrivire
             item:
-              operator: 
-              subcolumn: 
-              title: 
-            new_condition_button: 
-            new_rule_button: 
-            title: 
+              operator: Selectaţi o comparaţie
+              subcolumn: Selectaţi o sub-coloană
+              title: Condiţie
+            new_condition_button: Adăugare condiţie
+            new_rule_button: Adăugare regulă nouă
+            title: Condiţii
             when:
-              all: 
-              always: 
-              any: 
-            when_title: 
-          format_html: 
-          subtitle: 
-          title: 
+              all: Toate condiţiile
+              always: Înotdeauna
+              any: Orice condiţie
+            when_title: Atunci
+          format_html: Utilizaţi<br />această culoare<br />sau această pictogramă
+          subtitle: Formatarea condiţională vă permite să modificaţi culoarea de fundal a rândurilor pe baza criteriilor personalizate, Fiecăruii rând i se va atribui culoarea primei condiţii potrivite.
+          title: Formatare condiţională
           validation:
-            no_columns: 
-            no_icons: 
+            no_columns: Această vizualizare nu are coloane de filtrat
+            no_icons: Pictogramele sunt relevante doar în vizualizarea ca hartă
         delete:
-          confirm: 
-          delete_button: 
-          subtitle: 
-          title: 
+          confirm: Aceasta va şterge %{view_type} pentru totdeauna. Nu se poate anula! Sunteţi sigur că doriţi să faceţi aceasta?
+          delete_button: Ştergeţi această %{view_type}
+          subtitle: Ştergeţi această %{view_type}
+          title: Ştergere
           warning:
-            api: 
-            published: 
-            view: 
-            working_copy: 
+            api: Ştergerea acestei API va distruge toate aplicaţiile care utilizează această API.
+            published: Ştergerea acestui set de date va şterge şi orice vizualizări asociate lui.
+            view: Ştergerea acestei vizualizări le va afecta doar pe acele vizualizări care se bauzează pe ea.
+            working_copy: Puteţi şterge această copie funcţională şi puteţi realiza una nouă pentru a inversa toate modificările făcute.
         digital_signing:
-          consumer: 
-          generate_button: 
-          intro_html: 
-          publisher: 
-          publisher_generation: 
-          signature_header: 
-          subtitle: 
-          title: 
+          consumer: Pentru a obţine o versiune semnată a acestui set de date este suficient să daţi click pe link-ul de mai jos pentru a genera o cheie şi a începe descărcarea.Cheia şi datele descărcate sunt specifice versiunii actuale a acestui set de date. În cazul în care, în viitor, proprietarul actualizează setul de date, va trebui să reluaţi procesul pentru a obţine noile date. Publicaţi datele descărcate împreună cu cheia pe care o primiţi şi, utilizând instrucţiunile găsite în pachetul descărcat, părţile terţe pot confirma că datele dvs. sunt legale.
+          generate_button: Generaţi şi descărcaţi acum
+          intro_html: Utilizând un <strong>set de date semnat digital</strong>, este posibil să dovediţi prin utilizarea metodelor criptografic securizate că o copie anume a unui set de date Socrata nu a fost alterat. Aceasta este utilă, de exemplu, în cazul în care urmăriţi să publicaţi constatări bazate pe aceste date şi doriţi să le puteţi dovedi integritatea.
+          publisher: pentru a genera o versiune semnată a acestui set de date, este suficient să daţi click pe link-ul de mai jos pentru a genera o cheie. Vă rugăm să reţineţi că în cazul în care, în viitor, veţi actualiza acest set de date, va trebui să reveniţi şi să regereaţi cheia pentru ca utilizatorii să poată avea acces la el. Vă rugăm să reţineţi şi că acest proces implică operaţii asupra datelor în ansamblul lor, aşadar poate dura ceva timp dacă setul dvs. de date este foarte mare sau conţine ataşamente mari.
+          publisher_generation: Doar proprietarii de seturi de date pot genera chei semnate.
+          signature_header: Semnătură
+          subtitle: Exportaţi o versiune a acestor date a căror integritate poate fi verificată mai târziu.
+          title: Semnare digitală
           validation:
-            non_tabular: 
+            non_tabular: Pot fi printate doar datele tabulare
         download:
-          download_as: 
-          geo_header: 
-          layers_header: 
-          subtitle: 
-          title: 
+          download_as: Descărcare ca
+          geo_header: Descărcare date geospaţiale
+          layers_header: Descărcare straturi tabulare
+          subtitle: Descărcaţi o copie a acestui set de date în format static
+          title: Descărcare
         feed:
-          subtitle: 
-          title: 
+          subtitle: Feed-ul discuţiilor vă arată conversaţiile şi activitatea din jurul unui set de date
+          title: Discutaţi
         form:
           information:
-            name: 
-            name_prompt: 
-            public: 
-            success: 
-            success_prompt: 
-            title: 
-          subtitle: 
-          title: 
+            name: Nume
+            name_prompt: Introduceţi un nume
+            public: Public?
+            success: URL succes
+            success_prompt: Introduceţi un URL de pagină web
+            title: Informaţii formular
+          subtitle: Formularele vă permit să colectaţi date de pe site-ul dvs. într-un set de date
+          title: Formular
           validation:
-            no_columns: 
+            no_columns: Această vizualizare trebuie să aibă coloane vizibile ppentru a crea un formular
         map:
           advanced:
-            exclusive: 
-            hide_geolocator: 
-            subtitle: 
-            title: 
-            use_legend: 
+            exclusive: Exclusiv
+            hide_geolocator: Fără geolocator
+            subtitle: Selectaţi "Exclusiv" dacă trebuie afişată doar o hartă de bază o dată.
+            title: Configurare avansată
+            use_legend: Utilizare legendă
           base_layers:
-            alias: 
-            layer: 
-            layer_prompt: 
-            layer_url: 
-            new_base_map_button: 
-            opacity: 
-            subtitle: 
-            title: 
+            alias: Alias
+            layer: Strat
+            layer_prompt: Selectaţi un strat
+            layer_url: URL strat
+            new_base_map_button: Adăugare hartă de bază
+            opacity: Opacitate
+            subtitle: Selectare dintr-o listă a serviciilor de cartografiere şi configurare a modului în care va apărea.
+            title: Hărţi de bază
           data_layer:
-            alias: 
-            alias_prompt: 
-            base_color: 
-            color_high: 
-            color_low: 
+            alias: Alias
+            alias_prompt: Descrieţi setul de date
+            base_color: Culoare de bază
+            color_high: Culoare (Intensă)
+            color_low: Culoare (palidă)
             flyout:
-              details: 
-              labels: 
-              new_details_button: 
-              opacity: 
-              title: 
-              title_column: 
-            highlight_color: 
-            icon: 
-            location: 
-            mondara_note: 
-            opacity: 
-            plot_style: 
-            plot_style_prompt: 
-            point: 
-            point_color: 
-            point_size: 
-            quantity: 
-            region: 
-            region_level_prompt: 
-            region_prompt: 
+              details: Detalii mobile
+              labels: Fără etichete?
+              new_details_button: Adăugare detalii mobile
+              opacity: Opacitate
+              title: Configurare mobilă
+              title_column: Titlu
+            highlight_color: Culoare la trecerea cursorului
+            icon: Pictogramă
+            location: Localizare
+            mondara_note: Straturile Mondara la ora actuală nu mai pot fi personalizate.
+            opacity: Opacitate
+            plot_style: Stil plotare
+            plot_style_prompt: Selectaţi un stil de plotare
+            point: Personalizare punct
+            point_color: Culoare punct
+            point_size: Dimensiune punct
+            quantity: Cantitate
+            region: Regiune
+            region_level_prompt: Selectaţi un nivel de regiune
+            region_prompt: Selectaţi o regiune
           layers:
-            advanced: 
-            config: 
-            custom: 
-            dataset: 
-            edit: 
-            new_data_button: 
-            title: 
+            advanced: Configurare avansată pentru %{name}
+            config: Configurare pentru %{name}
+            custom: Strat personalizat
+            dataset: Set de date
+            edit: editare
+            new_data_button: Adăugare date
+            title: Sumar set de date
           legend:
-            conditional_formats: 
-            custom_entry: 
-            entry_label: 
-            position: 
-            position_prompt: 
+            conditional_formats: ! 'Descriere formatări condiţionale '
+            custom_entry: Adăugare înregistrare legendă personalizată
+            entry_label: Etichetă
+            position: Legendă
+            position_prompt: Alegere poziţie
             positions:
-              bottom_left: 
-              none: 
-              top_right: 
-            title: 
+              bottom_left: Stânga jos
+              none: Niciuna
+              top_right: Dreapta sus
+            title: Configurare legendă
           plots:
-            heatmap: 
-            point: 
-            rastermap: 
+            heatmap: Hartă frontiere
+            point: Hartă punctuală
+            rastermap: Hartă termică
           regions:
-            canada_provinces: 
-            counties: 
-            countries: 
-            state: 
-          subtitle: 
-          title: 
+            canada_provinces: Provincii Canada
+            counties: Districte SUA în
+            countries: Ţări
+            state: State SUA
+          subtitle: Vizualizările cu localizări pot fi afişate ca puncte pe hartă.
+          title: Hartă
           validation:
-            hidden_location_html: 
-            location_column: 
-            viz_limit: 
+            hidden_location_html: Puteţi <a href="#showLoc" title="Show a location column">arăta o coloană de localizare ascunsă</a>.
+            location_column: O coloană de localizare este necesară pentru a crea o hartă.
+            viz_limit: O vizualizare poate avea o singură vedere pe ea.
         ownership:
-          error: 
-          me: 
-          subtitle: 
+          error: A survent o rpoblemă la modificarea dreptului de proprietate. Vă rugăm să încercaţi mai târziu.
+          me: Eu
+          subtitle: Pentru a realiza transferul către un alt utilizator, introduceţi adresa de e-mail sau numele contului ID-ului Socrata, apoi selectaţi contul dorit din lista verticală. Puteţi introduce, de asemenea, URL-ul profilului utilizatorului, dacă îl cunoaşteţi. Doar utilizatorii care au conturi active pot prelua dreptul de proprietate asupra unor seturi de date.
           success:
-            me: 
-            user: 
-          title: 
-          transfer_to: 
+            me: Acum dvs. sunteţi proprietarul
+            user: Dreptul de proprietate a fost transferat cu succes către %{owner}
+          title: Drept de proprietate
+          transfer_to: Transferaţi dreptul de proprietate către
           validation:
-            invalid_user: 
-            no_user: 
-            valid_saved: 
+            invalid_user: Utilizatorul nu a fost recunoscut. Vă rugăm să încercaţi căutarea unui utilizator după nume, e-mail sau URL profil.
+            no_user: Vă rugăm să selectaţi un utilizator.
+            valid_saved: Această vizualizare trebuie să fie valabilă şi salvată.
         permissions:
-          error: 
-          features_html: 
-          status_html: 
-          subtitle: 
-          success: 
-          title: 
+          error: A survenit o eroare la modificarea permisiunilor setului dvs. de date. Vă rugăm să încercaţi mai târziu
+          features_html: Caracteristici suplimentare ale <span class="datasetTypeName">setului de date</span>
+          status_html: Acest <span class="datasetTypeName">set de date</span> este la ora actuală <span class="datasetPublicText">%{visibility}</span>
+          subtitle: Administraţi permisiunile acestei %{view_type}
+          success: Permisiunile dvs. au fost salvate
+          title: Permisiuni
           validation:
-            valid_saved: 
+            valid_saved: Această vizualizare trebuie să fie valabilă şi salvată
         print:
           margins:
-            bottom: 
-            left: 
-            right: 
-            top: 
-          margins_title: 
+            bottom: ! 'Jos:'
+            left: ! 'Stânga:'
+            right: ! 'Dreapta:'
+            top: ! 'Sus:'
+          margins_title: ! 'Margini (inci):'
           options:
-            fit: 
-            header_icons: 
-            headers_every_page: 
-          options_title: 
-          orientation: 
+            fit: Micşorează pentru a potrivi datele pe o singură pagină
+            header_icons: Afişează pictogramele în antetul coloanei
+            headers_every_page: Printează titlurile coloanelor pe fiecare pagină
+          options_title: ! 'Opţiuni:'
+          orientation: ! 'Orientare:'
           orientations:
-            landscape: 
-            portrait: 
-          paper_size: 
+            landscape: Peisaj
+            portrait: Portret
+          paper_size: ! 'Dimensiune hârtie:'
           paper_sizes:
-            a0: 
-            a1: 
-            a2: 
-            a3: 
-            a4: 
-            legal: 
-            letter: 
-            tabloid: 
-          print_button: 
-          subtitle: 
-          title: 
+            a0: A0 (841 x 1189mm)
+            a1: A1 (594 x 841mm)
+            a2: A2 (420 x 594mm)
+            a3: A3 (297 x 420mm)
+            a4: A4 (210 x 297mm)
+            legal: Legal (8.5 x 14 inches)
+            letter: Letter (8.5 x 11 inches)
+            tabloid: Tabletă (11 x 17 inches)
+          print_button: Printare
+          subtitle: Exportaţi acest set de date într-un format PDF printabil
+          title: Printare
           validation:
-            non_tabular: 
+            non_tabular: Pot fi printate doar datele tabulare
         sdp:
-          preview: 
-          subtitle: 
-          title: 
+          preview: Previzualizare
+          subtitle: Social Data Player vă permite să publicaţi acest set de date liber pe internet
+          title: Social Data Player
           validation:
-            public: 
-            valid_saved: 
+            public: Această vizualizare trebuie să fie publică înainte să poată fi publicată
+            valid_saved: Această vizualizare trebuie să fie valabilă şi salvată
         share:
-          error: 
-          loading_shares: 
-          no_shares_html: 
-          notify_button: 
-          notify_success: 
-          prompt_html: 
-          share_button_html: 
-          subtitle: 
-          success: 
-          title: 
+          error: A survenit o eroare la modificarea partajărilor dvs. Vă rugăm să încercaţi din nou mai târziu
+          loading_shares: Se încarcă partajările...
+          no_shares_html: În acest moment nu partajaţi acest <span class="datasetTypeName">set de date</span> cu nimeni
+          notify_button: Notificaţi toate modificările
+          notify_success: Notificare trimisă
+          prompt_html: Acest <span class="datasetTypeName">set de date</span> este <span class="publicOrPrivate">%{visibility} </span> <span class="andSharedHint %{hide}">şi partajat cu:</span>
+          share_button_html: Partajaţi acest <span class="datasetTypeNameUpcase">set de date</span>
+          subtitle: Partajaţi această %{view_type}
+          success: Permisiunile dvs. au fost actualizate
+          title: Partajare
           validation:
-            valid_saved: 
+            valid_saved: Această vizualizare trebuie să fie valabilă şi salvată
         showhide_columns:
           columns:
-            title: 
-          subtitle: 
-          title: 
+            title: Coloane
+          subtitle: Ajustaţi ce coloane sunt vizibile în această vizualizare
+          title: Afişare &amp; Ascundere coloane
         sort_rollup:
           rollup:
-            add_group_button: 
-            add_rollup_button: 
-            function: 
-            group_by: 
-            group_function_label: 
-            group_function_prompt: 
-            roll_up: 
-            roll_up_function: 
-            title: 
+            add_group_button: Adăugare coloane grupare
+            add_rollup_button: Adăugare coloană roll-up
+            function: Funcţie
+            group_by: Grupare după
+            group_function_label: Bazat pe
+            group_function_prompt: Selectează o funcţie de grupare
+            roll_up: Roll-up
+            roll_up_function: Selectaţi o funcţie
+            title: Roll-up-uri &amp; şi detalieri
           sort:
-            add_column_button: 
-            column: 
-            direction: 
+            add_column_button: Adăugare coloană
+            column: Coloană
+            direction: Direcţie
             directions:
-              ascending: 
-              descending: 
-            title: 
-          subtitle: 
-          title: 
+              ascending: Ascendent
+              descending: Descendent
+            title: Sortare
+          subtitle: ! 'Puteţi grupa rândurile la un loc şi puteţi rezuma datele cu un roll-up. '
+          title: Sortare &amp; grupare
           validation:
-            no_eligible_columns: 
-            no_function: 
-            no_group_bys: 
+            no_eligible_columns: Această vizualizare nu are coloane de grupat sau sortat
+            no_function: Fiecare coloană grupată trebuie să aibă o funcţie
+            no_group_bys: Trebuie să grupaţi după cel puţin o coloană pentru a grupa o coloană
         tabs:
           about: Despre
-          discuss: Discuta
+          discuss: Discuţie
           edit: Redacta
-          embed: Distribuiţi
-          export: Exporta
-          filter: Filtra
-          manage: Administra
-          more: 
-          more_views: Mai Multe Vizualizări
-          visualize: Reprezentări
+          embed: Încorporare
+          export: Exportare
+          filter: Filtrare
+          manage: Administrare
+          more: mai mult
+          more_views: Mai multe vizualizări
+          visualize: Vizualizare
         view_list:
-          delete_confirm: 
-          delete_snapshot_confirm: 
+          delete_confirm: Sunteţi sigur că doriţi să ştergeţi %{name}?
+          delete_snapshot_confirm: Sunteţi sigur că doriţi să ştergeţi %{name} (snapshotted %{date})?
           filter:
-            all: 
-          filter_title: 
+            all: Toate vizualizările
+          filter_title: Afişare doar
           item:
-            author_html: 
-            delete: 
-            expand: 
-          no_results: 
+            author_html: <span class="date"></span> după <span class="author"></span>
+            delete: Ştregeţi această vizualizare
+            expand: Click pentru a extinde
+          no_results: Nu există rezultate
           no_results_html: 
           pagination:
-            last: 
-            next: 
-          search: 
+            last: Vedeţi cea mai recentă vizualizare
+            next: Vedeţi următoarele %{count} vizualizări
+          search: Căutare vizualizări
           snapshots:
-            subtitle: 
-            title: 
+            subtitle: Vedeţi versiunile publicate anterior ale acestui set de date
+            title: Capatări set de date
           sort:
-            alphaAscending: 
-            dateAscending: 
-            dateDescending: 
-            popularity: 
-          sort_title: 
+            alphaAscending: A-Z
+            dateAscending: De la cele mai vechi la cele mai recente
+            dateDescending: Cele mai recente
+            popularity: Popularitate
+          sort_title: Sortare după
           views:
-            subtitle: 
-            title: 
+            subtitle: Vedeţi filtrele, hărţile, diagramele şi alte vizualizări din acest set de date
+            title: Vizualizări
         visualize:
-          choose_type: 
+          choose_type: Tip vizualizare
       save_dialog:
         descriptions:
-          leaving: 
-          reload_save: 
-          reload_update: 
+          leaving: Aveţi date nesalvate care se vor pierde dacă părăsiţi această pagină. Vă rugăm să alegeţi dacă doriţi sau nu să salvaţi această vizualizare înainte de a ieşi, sau alegeţi "Anulare" pentru reveni la pagină.
+          reload_save: Această modificare necesită o reîncărcare. Puteţi apăsa "Salvare" pentru salva şi vizualiza modificările sau puteţi apăsa "Anulare" pentru a rămâne pe această pagină.
+          reload_update: Această modificare necesită o reâncărcare. Puteţi actualiza această vizualizare sau salva o nouă vizualizare ca să vedeţi modificările sau puteţi apăsa "Anulare" pentru a rămâne pe această pagină.
         form:
-          new_name: 
+          new_name: ! 'Introduceţi un nume pentru noua dvs. vizualizare:'
         titles:
-          normal: 
-          prompt: 
+          normal: Salvare vizualizare
+          prompt: Doriţi să salvaţi vizualizarea?
         validation:
-          auth_required: 
-          view_name_required: 
+          auth_required: Trebuie să fiţi autentificat pentru a salva o vizualizare
+          view_name_required: Este necesar un denumire de vizualizare
       subscribe:
-        google_reader: 
-        intro_html: 
-        rss: 
-        rss_program: 
-        subscribe_button: 
-        subscribe_html: 
-        subscribed_html: 
-        title_html: 
-        unsubscribe: 
+        google_reader: Adăugare la Google Reader
+        intro_html: ! '<strong>Pentru a vă abona la <span class="datasetName">%{name}</span> setul de date printr-un cititor RSS</strong>, utilizaţi unul dintre următoarele link-uri:'
+        rss: Descărcare ca RSS
+        rss_program: Deschideţi în "Program extern"
+        subscribe_button: Abonaţi-vă prin e-mail
+        subscribe_html: <strong>Pentru a primi notificări prin e-mail</strong> atunci când date noi vor fi publicate, bifaţi caseta "Abonare" de mai jos.
+        subscribed_html: <strong>În acest moment sunteţi abonat la acest <span class="datasetTypeName">set de date</span> prin e-mail</strong> şi veţi primi notificări atunci când vor fi publicate date noi.
+        title_html: Abonaţi-vă la &quot;<span class="datasetName">%{name}</span>&quot; <span class="datasetTypeNameUpcase">setul de date</span>
+        unsubscribe: Dacă nu doriţi să mai primiţi notificări, debifaţi caseta "Abonare" de mai jos.
     edit_metadata:
-      additional_source: 
-      alternative_access_prompt: 
-      api_endpoint: 
-      attachments: 
-      brief_description: 
-      brief_description_prompt: 
-      cancel: 
-      category: 
-      contact_email: 
-      contact_information: 
-      custom: 
-      custom_error: 
-      data_provided_by: 
-      data_provided_prompt: 
-      data_provider_required: 
-      dataset_title: 
-      dataset_title_error: 
-      dataset_title_prompt: 
-      dataset_url: 
-      dataset_url_prompt: 
-      delete: 
-      email_address: 
-      email_help: 
-      existing_attachments: 
-      external_confirm: 
-      external_dataset: 
-      external_id: 
-      external_id_prompt: 
-      external_identifier: 
-      file_type: 
-      general_information: 
-      keywords_help: 
-      license_help: 
-      license_type: 
-      licensing: 
-      licensing_attr: 
-      list: 
-      metadata_help: 
-      new_attachment: 
-      none: 
-      northwest_latitude: 
-      northwest_longitude: 
-      optional: 
-      private_help: 
-      remove_image: 
-      required_field: 
-      resource_name: 
-      resource_name_prompt: 
-      return: 
-      row_class: 
-      row_identifier: 
-      save: 
-      save_changes: 
-      semantics_rdf: 
-      source_link: 
-      source_link_error: 
-      source_link_prompt: 
-      southeast_latitude: 
-      southeast_longitude: 
-      spatial_extent: 
-      subject_column: 
-      tags_keywords: 
-      tags_prompt: 
-      thumbnail_image: 
-      upload_error: 
-      upload_help: 
-      upload_image: 
-      upload_new_attachment: 
+      additional_source: Sursă suplimentară
+      alternative_access_prompt: Introduceţi un punct alternativ de acces pentru acest set de date
+      api_endpoint: Punct terminal API
+      attachments: Ataşamente
+      brief_description: Scurtă descriere
+      brief_description_prompt: Introduceţi o descriere
+      cancel: Anulare
+      category: Categorie
+      contact_email: E-mail de contact
+      contact_information: Date de contact
+      custom: Personalizat
+      custom_error: Clasa semanticei personalizate trebuie să fie URL.
+      data_provided_by: Date furnizate de
+      data_provided_prompt: Individ sau organizaţie
+      data_provider_required: Trebuie să specificaţi furnizorul datelor (atribuire)
+      dataset_title: Titlu set de date
+      dataset_title_error: Setul de date trebie să aibă un titlu
+      dataset_title_prompt: Introduceţi un titlu
+      dataset_url: URL set de date
+      dataset_url_prompt: Introduceţi localizarea setului dvs. de date extern
+      delete: Ştergere
+      email_address: Adresă de e-mail
+      email_help: Această adresă nu va fi afişată public. Dacă este lăsată goală, va fi trecută implicit adresa dvs.
+      existing_attachments: Ataşamente existente
+      external_confirm: Sunteţi sigur că doriţi să eliminaţi acest set de date extern?
+      external_dataset: Seturi de date externe
+      external_id: ID extern
+      external_id_prompt: Introduceţi-vă ID-ul extern
+      external_identifier: Identificator extern
+      file_type: Tip fişier
+      general_information: Informaţii generale
+      keywords_help: Introduceţi unnul sau mai multe cuvinte cheie separate de virgule
+      license_help: Alegeţi termenii de acordare a licenţei pentru persoanele care doresc să utilizeze acest set de date.
+      license_type: Tip de licenţă
+      licensing: Acordare licenţă
+      licensing_attr: Acordare licenţă şi atribuire
+      list: Listă
+      metadata_help: Acest câmp a fost marcat ca fiind confidenţial de către organizaţia dvs. şi nu este vizualizabil public.
+      new_attachment: Ataşament nou
+      none: (niciunul)
+      northwest_latitude: Latitudine nordvestică
+      northwest_longitude: Longitudine nordvestică
+      optional: Opţional
+      private_help: Acest câmp a fost marcat ca fiind confidenţial de către organizaţia dvs. şi nu este vizualizabil public
+      remove_image: Eliminare imagine
+      required_field: Câmp obligatoriu
+      resource_name: Nume resursă
+      resource_name_prompt: Introduceţi un nume de resursă
+      return: Reveniţi la setul de date
+      row_class: Clasă rând
+      row_identifier: Identificator rând
+      save: Salvare
+      save_changes: Salvare modificare
+      semantics_rdf: Semantice şi RDF
+      source_link: Link sursă
+      source_link_error: Acesta nu pare să fie un URL valabil.
+      source_link_prompt: Introduceţi adresa web
+      southeast_latitude: Latitudine sudestică
+      southeast_longitude: Longitudine sudestică
+      spatial_extent: Extindere spaţială
+      subject_column: Coloană subiect
+      tags_keywords: Etichete/Cuvinte cheie
+      tags_prompt: Introduceţi cuvintele cheie
+      thumbnail_image: Imagine miniaturală
+      upload_error: Vă rugăm să selectaţi un fişier de imagine valabil
+      upload_help: Această imagine va fi decupată într-un pătrat
+      upload_image: Încărcare imagine
+      upload_new_attachment: Încărcare ataşament nou
     forgot_password:
-      already_authenticated: 
-      failed: 
+      already_authenticated: ! 'Nu se poate reseta parola: sunteţi deja autentificat.'
+      failed: A survenit o problemă la trimiterea solicitării de resetare a parolei. Vă rugăm să încercaţi din nou.
       form:
-        reset_password_button: 
-      prompt: 
-      success: 
-      title: 
+        reset_password_button: Resetare parolă
+      prompt: Dacă v-aţi uitat parola, vă putem trimite un e-mail cu un link de resetare a parolei.
+      success: Vă mulţumim. Un e-mail a fost trimis la contul înregistrat cu informaţii ulterioare.
+      title: Recuperaţi-vă parola
     header:
       links:
-        account_html: 
-        account_tooltip: 
-        administration: 
+        account_html: Bună, <span class="currentUser">utilizator necunoscut</span>
+        account_tooltip: Pagina dvs. de pornire
+        administration: Administrare
     import_pane:
-      analyzing: 
-      assure_accessible: 
-      combine_multiple_cols: 
-      downloading: 
-      filetype_error_blist: 
-      filetype_error_shapefile: 
-      headline_import: 
-      headline_upload: 
-      layer: 
-      many_headers: 
-      no_file_selected: 
-      no_headers: 
-      no_source_column: 
-      one_header: 
-      problem_importing: 
-      problem_uploading: 
-      rows_imported: 
-      try_again: 
-      unknown_error: 
-      uploading: 
+      analyzing: Se analizează fişierul dvs...
+      assure_accessible: Vă rugăm să vă asiguraţi că fişierul dvs. este accesibil şi valabil şi încercaţi din nou.
+      combine_multiple_cols: (Combinaţi coloane multiple...)
+      downloading: Fişierul dvs. se descarcă...
+      filetype_error_blist: Vă rugăm să alegeţi un fişier CSV, TSV, XLS sau XLSX.
+      filetype_error_shapefile: Vă rugăm să alegeţi un fişier KML, KMZ sau ZIP.
+      headline_import: Vă rugăm să alegeţi un fişier de importat
+      headline_upload: Vă rugăm să alegeţi un fişier de încărcat
+      layer: Strat
+      many_headers: ! '%{num} din rândurile dvs. sunt antete.'
+      no_file_selected: Niciun fişier selectat încă.
+      no_headers: Niciunul dintre rândurile dvs. nu este antet.
+      no_source_column: (Nicio coloană sursă)
+      one_header: Unul dintre rândurile dvs. este antet.
+      problem_importing: A survenit o problemă la importarea acelui fişier. Vă rugăm să vă asiguraţi că este valid.
+      problem_uploading: A survenit o problemă la importarea acelui fişier. Vă rugăm să vă asiguraţi că este valid.
+      rows_imported: ! '%{num} rânduri importate până acum.'
+      try_again: Vă rugăm să încercaţi din nou peste puţin timp.
+      unknown_error: A survenit o eroare necunoscută
+      uploading: Se încarcă fişierul dvs.
     link_account:
-      success: 
+      success: Contul dvs. extern a fost conectat.
     profile:
       app_tokens:
         item:
-          app_token: 
-          description: 
-          edit_token_link: 
-          name: 
-          no_thumbnail: 
-          organization: 
-          secret_token: 
-          show_secret_link: 
-          website: 
-        manage_link: 
-        no_applications: 
-        title: 
+          app_token: Token aplicaţie
+          description: Descriere
+          edit_token_link: Editare
+          name: Nume
+          no_thumbnail: Nicio miniatură
+          organization: Organizaţie
+          secret_token: Token secret
+          show_secret_link: Afişare token secret
+          website: Site web
+        manage_link: Administrare
+        no_applications: Nu aţi creat încă nicio aplicaţie. Click "Administrare" în dreapta pentru a începe.
+        title: Aplicaţiile utilizatorului %{user}
       bar:
-        edit_settings_link: 
-        follow_link: 
-        join_date: 
-        last_seen_date: 
-        message_link: 
-        unfollow_link: 
+        edit_settings_link: Editare setări cont
+        follow_link: Urmăriţi
+        join_date: Înregistrat în
+        last_seen_date: Ultima autentificare pe
+        message_link: Trimitere mesaj
+        unfollow_link: Anulaţi urmărirea
       browse:
-        owned_datasets: 
-        shared_datasets: 
-        title: 
+        owned_datasets: Deţinut de mine
+        shared_datasets: Partajat cu mine
+        title: Seturile de date ale utilizatorului %{user}
       contact:
-        message: 
-        message_prompt: 
-        subject: 
-        subject_prompt: 
-        title: 
+        message: Mesaj
+        message_prompt: Introduceţi-vă mesajul
+        subject: Subiect
+        subject_prompt: Introduceţi un subiect
+        title: Contactaţi utilizatorul
       edit:
         account:
-          add_openid_button: 
-          confirm_email: 
-          confirm_password: 
-          connect_openid: 
-          current_email: 
+          add_openid_button: Adăugare OpenID sau cont extern
+          confirm_email: Confirmare e-mail
+          confirm_password: Confirmare parolă
+          connect_openid: Autentificaţi-vă utilizându-vă acreditările Facebook, Twitter, Google sau alte acreditări părţi terţe.
+          current_email: E-mail actual
           email:
             interests:
-              account_provisioned: 
-              any_view_created: 
-              comment_to_moderate: 
-              nomination_created: 
-              nomination_moderated: 
-              privileged_account_created: 
-              user_affected: 
-              view_made_public: 
-            policy: 
-            send_error: 
-            send_success: 
-            subtitle: 
-            title: 
-          learn_openid: 
-          new_email: 
-          new_password: 
-          no_openid: 
-          old_password: 
-          password: 
-          password_prompt: 
-          password_restrictions_html: 
-          title: 
+              account_provisioned: Un cont privilegiat este aprovizionat pentru utilizare ulterioară
+              any_view_created: Orice vizualizare este creată
+              comment_to_moderate: Un comentariu este trimis şi necesită moderare
+              nomination_created: Este creată o nouă nominalizare
+              nomination_moderated: Este moderată orice nominalizare
+              privileged_account_created: Un utilizator îşi crează contul privilegiat
+              user_affected: Acţiuni care vă afectează în mod direct, precum răspunsuri la comentarii şi actualizări de status
+              view_made_public: Orice vizualizare este făcută publică
+            policy: ! '%{site} vă respectă intimitatea şi nu vă va trimite niciodată e-mail-uri de marketing prin intermediul listei sale şi nici nu va da e-mail-ul dvs. unei terţe părţi. E-mail-urile trimise de pe acest site includ notificări privind contul şi actualizări la seturile de date pe care le-aţi creat sau la care v-aţi abonat.'
+            send_error: A survenit o problemă la trimiterea e-mail-ului dvs. Vă rugăm să încercaţi mai târziu.
+            send_success: Mesajul dvs. a fost trimis
+            subtitle: Abonaţi-vă la evenimente individuale bifând caseta asociată.
+            title: Notificări e-mail
+          learn_openid: Aflaţi despre OpenID
+          new_email: E-mail nou
+          new_password: Parolă nouă
+          no_openid: Încă nu aveţi niciun identificator OpenID asociat cu acest cont.
+          old_password: Parolă veche
+          password: Parolă
+          password_prompt: (Pentru siguranţa dvs.)
+          password_restrictions_html: ! '(Se aplică restricţiile <span class="icon">&nbsp;</span>) '
+          title: Setări cont
         app_tokens:
-          application_name: 
-          application_name_prompt: 
-          callback_prefix: 
-          callback_prefix_help_html: 
-          callback_prefix_prompt: 
-          create_error: 
-          create_success: 
-          delete_confirm: 
-          delete_error: 
-          delete_success: 
-          description: 
-          description_prompt: 
-          new_app_button: 
-          organization: 
-          organization_prompt: 
-          public: 
-          save_success: 
-          thumbnail: 
-          title: 
-          title_full: 
-          title_single: 
-          website: 
-          website_prompt: 
-        back_link: 
+          application_name: Nume aplicaţie
+          application_name_prompt: Introduceţi un nume pentru aplicaţia dvs.
+          callback_prefix: Prefix apel returnat
+          callback_prefix_help_html: De exemplu dacă aplicaţia dvs. va returna apelul la <span class="code">https://my-domain.com/socrata-app/oauth/validated</span> şi <span class="code">https://my-domain.com/socrata-app/profile</span>, veţi dori să furnizaţi <span class="code">https://my-domain.com/socrata-app</span> ca prefixul dvs. Vă rugăm să reţineţi că trebuie să includeţi cel puţin întregul nume al domeniului.
+          callback_prefix_prompt: Furnizaţi prefixul url-ului securizat (https) pentru retunarea apelului atunci când utilizaţi OAuth
+          create_error: ! 'A survenit o eroare la crearea token-ului aplicaţiei dvs.: %{message}'
+          create_success: Aplicaţia dvs. a fost creată
+          delete_confirm: Sunteţi sigur că doriţi să ştergeţi aceasta? app_token corespondent nu va mai fi valabil
+          delete_error: ! 'A survenit o eroare la ştergerea token-ului aplicaţiei: %{message}'
+          delete_success: Aplicaţia dvs. a fost ştearsă
+          description: Descriere
+          description_prompt: Introduceţi o descriere pentru aplicaţia dvs.
+          new_app_button: Creaţi o aplicaţie nouă
+          organization: Organizaţie
+          organization_prompt: Introduceţi organiizaţia responsabilă de această aplicaţie
+          public: Public?
+          save_success: Aplicaţia dvs. a fost salvată cu succes
+          thumbnail: Miniatură
+          title: Token-uri aplicaţie
+          title_full: Aplicaţiile dvs.
+          title_single: Editare token aplicaţie
+          website: Site web
+          website_prompt: Furnizaţi un link către această aplicaţie sau către site-ul organizaţiei
+        back_link: Înapoi la profilul meu
         image:
-          error: 
-          success: 
-          title: 
-          upload_image_button: 
+          error: ! 'Eroare la încărcarea noii imagini: %{message}'
+          success: Imaginea dvs. a fost actualizată
+          title: Imagine profil
+          upload_image_button: Încărcaţi o nouă imagine
         info:
-          city: 
-          country: 
+          city: Oraş
+          country: Ţară
           description:
-            prompt: 
-            title: 
-          display_name: 
-          first_name: 
+            prompt: Introduceţi orice informaţie pe care aţi dori să o împărtăşiţi
+            title: Descriere
+          display_name: Nume afişat
+          first_name: Prenume
           interests:
-            prompt: 
-            title: 
-          last_name: 
-          link_prompt: 
-          organization: 
-          state: 
-          title: 
-          title_full: 
-          user_title: 
-        success: 
+            prompt: Introduceţi-vă interesele
+            title: Interese
+          last_name: Nume
+          link_prompt: Introduceţi URL-ul
+          organization: Organizaţie
+          state: Stat
+          title: Informaţii de bază
+          title_full: Informaţii de bază
+          user_title: Titlu
+        success: Profilul dvs. a fost actualizat cu succes.
         validation:
-          email_mismatch: 
-          image_format: 
-          invalid_links: 
-          no_display_name: 
-          no_password_no_openid: 
-          password_mismatch: 
-          user_missing: 
+          email_mismatch: Noile e-mail-uri nu se potrivesc
+          image_format: Vă rugăm să selectaţi un tip de imagine valabilă (PNG, JPG sau GIF)
+          invalid_links: A survenit o problemă la actualizarea link-urilor dvs. %{message}
+          no_display_name: ! 'Eroare: "Nume afişat" este obligatoriu'
+          no_password_no_openid: Nu puteţi elimina toate identificatoarele dvs. OpenID înainte de a seta o parolă
+          password_mismatch: Noile parole nu se potrivesc
+          user_missing: Acest utilizator nu poate fi găsit, sau a fost şters.
       info:
-        edit_link: 
-        external_links: 
-        interests: 
+        edit_link: Editare
+        external_links: Link-uri externe
+        interests: Interese
         links:
-          facebook: 
-          flickr: 
-          my_blog: 
-          my_company: 
-          my_site: 
-          twitter: 
-        no_description: 
-        other_ext_link: 
-        title: 
+          facebook: Facebook
+          flickr: Flickr
+          my_blog: Blogul meu
+          my_company: Compania mea
+          my_site: Site-ul meu
+          twitter: Twitter
+        no_description: Nu a fost furnizată nicio descriere
+        other_ext_link: Altele
+        title: ! 'Informaţii de bază '
       sidebar:
-        all_contacts_link: 
-        edit_image_link: 
-        followers: 
-        following: 
-        hide_contacts_link: 
+        all_contacts_link: Vizualizare toate
+        edit_image_link: Editare imagine
+        followers: Persoane care vă urmăresc
+        following: Vă urmăresc
+        hide_contacts_link: Ascundere
     reset_password:
-      failed: 
+      failed: A survenit o problemă la resetarea parolei dvs. Vă rugăm să încercaţi din nou.
       form:
-        reset_password_button: 
-      prompt: 
-      success: 
-      title: 
+        reset_password_button: Resetare parolă
+      prompt: Bine aţi revenit! Vă rugăm să selectaţi o nouă parolă.
+      success: Parola a fost resetată cu succes.
+      title: Resetare parolă
     sign_in:
-      failed: 
+      failed: Nu s-a putut realiza autentificarea cu acea adresă de e-mail şi parolă. Vă rugăm să încercaţi din nou
       form:
-        sign_in_button: 
-      headline: 
-      mismatch: 
-      prompt_html: 
-      tips_html: 
+        sign_in_button: Autentificare
+      headline: Autentificaţi-vă pe %{site}
+      mismatch: Parolele nu se potrivesc. Vă rugăm să încercaţi din nou
+      prompt_html: Autentificaţi-vă cu <strong>Socrata ID</strong>
+      tips_html: Utilizaţi-vă e-mail-ul şi parola pentru a vă autentifica în toate site-urile <strong>dezvoltate de <a href="http://www.socrata.com" rel="external">Socrata</a></strong>.
     sign_up:
       form:
-        create_account_button: 
-        have_account_link: 
-      headline: 
-      prompt_html: 
-      terms_html: 
-      third_party: 
-      third_party_return: 
-      third_party_return_create: 
-      third_party_return_link: 
+        create_account_button: Creaţi-mi contul
+        have_account_link: Am deja cont
+      headline: Suntem încântaţi că doriţi să vă autentificaţi pe %{site}!
+      prompt_html: Creaţi un nou <strong>ID Socrata</strong>
+      terms_html: Dând click pe caseta "Creaţi-mi contul" de mai jos, sunteţi de acord cu <a href="http://www.socrata.com/terms-of-service" rel="external">Termenii serviciului</a> şi <a href="http://www.socrata.com/privacy" rel="external">Politica de confidenţialitate.</a>
+      third_party: După autentificare, acreditările dvs. de parte terţă vor fi asociate cu acest cont.
+      third_party_return: Înainte de a utiliza aceste acreditări, trebuie
+      third_party_return_create: să creaţi un cont Socrata
+      third_party_return_link: să îl conectaţi cu un ID Socrata existent
     stats:
-      api: 
-      apply: 
-      bytes_out: 
-      chart_created: 
-      charts: 
-      charts_created: 
-      comment_created: 
-      comments: 
-      comments_created: 
-      daily: 
-      deleted_application: 
-      dependent_metrics: 
-      download: 
-      downloads: 
-      during_time_period: 
-      embed: 
-      embeds: 
-      error_loading: 
-      filter_created: 
-      filters: 
-      filters_created: 
-      govstat_hits: 
-      hit_served: 
-      hits_served: 
-      hourly: 
-      map_created: 
-      maps: 
-      maps_created: 
-      metric_backed: 
-      metrics_backed: 
-      monthly: 
-      name: 
-      no_data_time_period: 
-      page_viewed: 
-      pages_viewed: 
-      referrals: 
-      rows_loaded: 
-      sdp: 
-      select_chart_type: 
-      show_more: 
-      time_period_unavailable: 
-      title: 
-      top_embeds: 
-      top_referrers: 
-      total: 
-      total_govstat_hits: 
-      views: 
-      views_loaded: 
-      website: 
-      weekly: 
+      api: API
+      apply: Aplicare
+      bytes_out: ! 'Octeţi '
+      chart_created: diagramă creată
+      charts: Diagrame
+      charts_created: diagrame create
+      comment_created: comentariu creat
+      comments: Comentarii
+      comments_created: comentarii create
+      daily: Zilnic
+      deleted_application: aplicaţie ştearsă
+      dependent_metrics: Metrice dependente
+      download: descărcare
+      downloads: descărcări
+      during_time_period: în cursul acestei perioade de timp
+      embed: încorporare
+      embeds: încoporări
+      error_loading: A survenit o eroare la încărcarea datelor metrice. Vă rugăm să încercaţi mai târziu
+      filter_created: filtru creat
+      filters: Filtre
+      filters_created: filtre create
+      govstat_hits: Accesări GovStat
+      hit_served: accesare servită
+      hits_served: accesări servite
+      hourly: Pe oră
+      map_created: hartă creată
+      maps: Hărţi
+      maps_created: hărţi create
+      metric_backed: metrică acoperită
+      metrics_backed: metrice acoperite
+      monthly: Lunar
+      name: Nume
+      no_data_time_period: Niciun fel de date pentru această perioadă
+      page_viewed: pagină vizitată
+      pages_viewed: pagini vizitate
+      referrals: Recomandări
+      rows_loaded: Rânduri încărcate
+      sdp: SDP
+      select_chart_type: Selectaţi un tip de diagramă de afişat din meniu
+      show_more: Afişaţi mai mult
+      time_period_unavailable: Datele metrice nu sunt disponibile pentru această perioadă
+      title: Analitice set de date
+      top_embeds: Încorporări de top
+      top_referrers: Recomandări de top
+      total: total
+      total_govstat_hits: Total accesări GovStat
+      views: Vizualizări
+      views_loaded: Vizualizări încărcate
+      website: Site web
+      weekly: Săptămânal
     wizard:
-      cancel: 
-      finish: 
-      next: 
-      previous: 
+      cancel: Anulare
+      finish: Finalizare
+      next: Următor
+      previous: Anterior
   support:
     array:
-      last_word_connector: 
-      two_words_connector: 
+      last_word_connector: şi
+      two_words_connector: şi
     array_or:
-      last_word_connector: 
-      two_words_connector: 
+      last_word_connector: sau
+      two_words_connector: sau

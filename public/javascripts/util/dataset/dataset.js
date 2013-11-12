@@ -2368,8 +2368,10 @@ var Dataset = ServerModel.extend({
                 _.each(ds.query.namedFilters, function(nf, id)
                     {
                         var tnf = Dataset.translateFilterCondition(nf, ds);
-                        ds.metadata.jsonQuery.namedFilters[id] = { where: tnf.where, having: tnf.having,
-                            temporary: nf.temporary, displayTypes: nf.displayTypes };
+                        // One Simple Trick To Remove Undefineds!
+                        ds.metadata.jsonQuery.namedFilters[id] = $.extend({},
+                            { where: tnf.where, having: tnf.having,
+                                temporary: nf.temporary, displayTypes: nf.displayTypes });
                     });
                 ds.metadata.jsonQuery.order = _.compact(_.map(ds.query.orderBys, function(ob)
                     {

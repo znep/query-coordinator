@@ -47,12 +47,14 @@
             {:action => 'sdp_templates'} %>
       </li>
     <%- end -%>
-    <%- if CurrentDomain.user_can?(current_user, :edit_pages) && module_available?(:canvas_designer) -%>
-      <li class="contentmgmt">
-        <%= link_to_unless_current \
-            raw('<span class="icon"></span>DataSlate Pages'),
-            {:action => 'canvas_pages'} %>
-      </li>
+    <%- unless CurrentDomain.module_enabled?(:govStat) -%>
+      <%- if CurrentDomain.user_can?(current_user, :edit_pages) && module_available?(:canvas_designer) -%>
+        <li class="contentmgmt">
+          <%= link_to_unless_current \
+              raw('<span class="icon"></span>DataSlate Pages'),
+              {:action => 'canvas_pages'} %>
+        </li>
+      <%- end -%>
     <%- end -%>
     <%- if CurrentDomain.user_can?(current_user, :edit_others_datasets) ||
            CurrentDomain.user_can?(current_user, :edit_site_theme) -%>
@@ -62,13 +64,15 @@
             {:action => 'datasets'} %>
       </li>
     <%- end -%>
-    <%- if CurrentDomain.user_can?(current_user, :manage_stories) ||
-            CurrentDomain.user_can?(current_user, :feature_items) ||
-            CurrentDomain.user_can?(current_user, :edit_site_theme) -%>
-      <li class="homemgmt">
-        <%= link_to_unless_current raw('<span class="icon"></span>Home Page'),
-            {:action => 'home'} %>
-      </li>
+    <%- unless CurrentDomain.module_enabled?(:govStat) -%>
+      <%- if CurrentDomain.user_can?(current_user, :manage_stories) ||
+              CurrentDomain.user_can?(current_user, :feature_items) ||
+              CurrentDomain.user_can?(current_user, :edit_site_theme) -%>
+        <li class="homemgmt">
+          <%= link_to_unless_current raw('<span class="icon"></span>Home Page'),
+              {:action => 'home'} %>
+        </li>
+      <%- end -%>
     <%- end -%>
     <%- if CurrentDomain.user_can?(current_user, :edit_site_theme) -%>
       <li class="metadata">

@@ -3,6 +3,7 @@ class AdministrationController < ApplicationController
 
   before_filter :check_member, :only => :index
   def index
+    redirect_to '/manage/site_config' if CurrentDomain.module_enabled?(:govStat)
   end
 
   before_filter :only => [:datasets] {|c| c.check_auth_levels_any(['edit_others_datasets', 'edit_site_theme']) }

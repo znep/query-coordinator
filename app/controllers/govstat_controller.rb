@@ -417,7 +417,7 @@ protected
         {
           type: 'Text', customClass: 'canvas_nav', htmlClass: 'subnavigation',
           html: '<ul class="breadcrumb">' +
-            '<li class="root"><a class="ss-icon" href="/' + (CurrentDomain.feature?(:govstat_15) ? 'stat' : 'manage') + '">Home</a></li>' +
+            '<li class="root"><a class="ss-icon" href="/stat">Home</a></li>' +
             '<li><span class="ss-icon">navigateright</span></li>' +
             '<li class="main"><a href="/manage/data">Data</a></li>' +
             '</ul>'

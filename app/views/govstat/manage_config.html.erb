@@ -6,7 +6,7 @@
 <div id="manageConfigPage">
   <div class="subnavigation">
     <ul class="breadcrumb">
-      <li class="root"><a class="ss-icon" href="/<%= CurrentDomain.feature?(:govstat_15) ? 'stat' : 'manage' %>">Home</a></li>
+      <li class="root"><a class="ss-icon" href="/stat">Home</a></li>
       <li><span class="ss-icon">navigateright</span></li>
       <li class="main"><a href="/manage/site_config">Configuration</a></li>
     </ul>
@@ -53,9 +53,6 @@
           right: :approve_nominations, feature: :view_moderation }
       ]
     }]
-
-    admin_links[0][:links] << { icon: 'checkclipboard', text: 'Goals and Categories', href: '/goals-new' } unless CurrentDomain.feature?(:govstat_15)
-    admin_links[0][:links] << { icon: 'layout', text: 'Select Layout', href: manage_template_path } unless CurrentDomain.feature?(:govstat_15)
   %>
 
   <div class="categoryList gridFlowLayout nonDS clearfix">

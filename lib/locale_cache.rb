@@ -9,7 +9,7 @@ module LocaleCache
     # merge in en as the backup fallthrough for all locales
     en_translations = locales['en']
     locales.each do |locale, translations|
-      locales[locale] = en_translations.deep_merge(translations)
+      locales[locale] = en_translations.deep_merge(translations) { |en, other| other || en }
     end
 
     # set en as the fallback for all other locales

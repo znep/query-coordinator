@@ -10,7 +10,7 @@
 <div class="contentBox fixedWidth" id="datasetThumbnail">
   <div class="thumbnailEditContainer clearfix">
     <%- unless params[:strip_chrome].present? -%>
-      <h1><%= t("#{prefix}.edit_thumbnail, :name => @view.name) %></h1>
+      <h1><%= t("#{prefix}.edit_thumbnail", :name => @view.name) %></h1>
       <a href="<%= view_path(@view) %>" class="returnLink"><%= t("#{prefix}.return_to_dataset") %></a>
     <%- end -%>
 

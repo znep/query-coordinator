@@ -29,7 +29,7 @@ $.component.Component.extend('Picture', 'content', {
     {
         if (this._super.apply(this, arguments) === false) { return false; }
 
-        var retVal = {schema: [{ fields: [$.extend($.cf.contextPicker(), {required: false})] },
+        var retVal = {schema: [
             { title: t('image_source'), fields: [{ type: 'radioGroup', name: 'imageSource', required: true,
               lineClass: 'noLabel', options: [
                     { type: 'group', options: [

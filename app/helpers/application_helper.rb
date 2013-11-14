@@ -136,8 +136,12 @@ module ApplicationHelper
   DEFAULT_TRANSLATIONS = [ LocalePart.core, LocalePart.account.common, LocalePart.controls.common, LocalePart.plugins.jquery_ui ]
   def render_translations(part = nil)
     @rendered_translations ||= Set.new()
-    to_render = [part].concat(DEFAULT_TRANSLATIONS).compact.reject {|t| @rendered_translations.include?(t)}
-    to_render << LocalePart.govstat.chrome.header if module_enabled?(:govStat)
+    to_render = [part].concat(DEFAULT_TRANSLATIONS)
+    if module_enabled?(:govStat)
+      to_render << LocalePart.govstat.chrome.header
+      to_render << LocalePart.plugins
+    end
+    to_render = to_render.compact.reject {|t| @rendered_translations.include?(t)}
     return '' if to_render.empty?
     @rendered_translations = @rendered_translations.merge(to_render)
     content_tag :script, :type => 'text/javascript' do

@@ -15,7 +15,8 @@
 
   <%= form_for :signup, :url => signup_submit_path,
      :html => {:id => 'signupForm', :class => 'commonForm', :multipart => true} do |f| %>
-    <%= render :partial => 'accounts/signup_form_data', :locals => {:f => f} %>
+       <%= render :partial => 'accounts/signup_form_data', :locals => { :f => f,
+         :render_captcha => local_assigns[:render_captcha] } %>
   <% end %>
 </div>
 

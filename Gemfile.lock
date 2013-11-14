@@ -105,6 +105,7 @@ GEM
     rake (10.0.3)
     rdoc (3.12.1)
       json (~> 1.4)
+    recaptcha (0.3.5)
     redcarpet (2.2.2)
     rinku (1.7.2)
     ruby-debug-base19 (0.11.25)
@@ -159,6 +160,7 @@ DEPENDENCIES
   multipart-post (>= 1.0.1)
   rack (~> 1.4.5)
   rails (~> 3.2.12)
+  recaptcha
   redcarpet
   rinku
   ruby-debug19

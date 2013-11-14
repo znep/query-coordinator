@@ -18,7 +18,7 @@
   </div>
   <div class="contentBoxInner clearfix">
     <div class="loginSignupForm firstColumn column">
-      <%= render :partial => 'signup_form' %>
+      <%= render :partial => 'signup_form', :locals => { :render_captcha => true } %>
       <%- unless params[:no_js].present? -%>
       <%= render :partial => 'user_sessions/login_form' %>
       <%- end -%>

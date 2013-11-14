@@ -27,6 +27,7 @@
       <%= f.password_field :passwordConfirm %>
     </div>
   <% end %>
+  <%= render :partial => 'accounts/captcha', :locals => local_assigns %>
 </fieldset>
 
 <div class="required"><%= t('core.forms.required_field') %></div>

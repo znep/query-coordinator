@@ -6,6 +6,7 @@ $(function() {
         event.preventDefault();
         $('.loginForm').hide();
         $('.signupForm').show();
+        blist.util.loadCaptcha('captchaPlaceholder');
         $('.rpxPrompt').text($.t('account.common.rpx.prompt.sign_up'));
         $('.thirdPartyLinks .authProvider .description').each(function()
         {

@@ -62,14 +62,6 @@
   .loginSignupForm
     float: left
 
-    .ie7 &
-      .button
-        padding: 0.5em 0
-      .signupForm .button
-        width: 11em
-      .loginForm .button
-        width: 6em
-
     .loginTips
       margin-top: 0.5em
 
@@ -103,16 +95,21 @@
         position: relative
         top: 5px
 
+    .placeholder
+      height: 10em
+      .loading
+        @include throbber-icon
+        margin: 5em auto
+
+    #recaptcha_widget_div, #captchaPlaceholder
+      margin-top: 2em
+
     .loginSignupHint
       display: inline-block
       font-size: 1.1em
 
     .accountSignupHint
       padding-left: 0.5em
-      .ie7 &
-        font-size: 1em
-        position: relative
-        top: -0.9em
 
     label.error
       display: block
@@ -120,10 +117,6 @@
 
     div.uniform.checker
       margin-right: 0.5em
-      .ie7 &
-        display: inline
-        position: relative
-        top: -0.3em
 
     .formActionButtons
       padding-top: 1em

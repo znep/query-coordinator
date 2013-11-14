@@ -21,11 +21,17 @@ class AccountsController < ApplicationController
       current_user_session.destroy
       @current_user = nil
     end
-    
+
     @signup = SignupPresenter.new(params[:signup])
     respond_to do |format|
       # need both .data and .json formats because firefox detects as .data and chrome detects as .json
-      if @signup.create
+      if !verify_recaptcha
+        flash.now[:error] = t('recaptcha.errors.verification_failed')
+        @user_session = UserSession.new
+        format.html { render :action => :new }
+        format.data { render :json => {:error => flash[:error], :promptLogin => false}, :callback => params[:callback] }
+        format.json { render :json => {:error => flash[:error], :promptLogin => false}, :callback => params[:callback] }
+      elsif @signup.create
         format.html { redirect_to(login_redirect_url) }
         format.data { render :json => {:user_id => current_user.id}, :callback => params[:callback]}
         format.json { render :json => {:user_id => current_user.id}, :callback => params[:callback]}

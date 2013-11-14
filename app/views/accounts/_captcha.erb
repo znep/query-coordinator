@@ -1,0 +1,14 @@
+<%- if local_assigns[:render_captcha] -%>
+<%= recaptcha_tags :display => { :theme => 'white' } %>
+<%- else -%>
+  <div id="captchaPlaceholder" class="placeholder">
+    <div class="loading"></div>
+  <% content_for :js_footer do %>
+    <script type="text/javascript">
+      $(function() {
+          blist.configuration.reCAPTCHA_PUK = '<%= Recaptcha.configuration.public_key %>';
+      });
+    </script>
+  <% end %>
+  </div>
+<%- end -%>

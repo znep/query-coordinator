@@ -42,6 +42,8 @@
 </div>
 <%- end -%>
 
+<%= render :partial => 'accounts/captcha', :locals => local_assigns %>
+
 <p class="signUpHint">
   <%= t('screens.sign_up.terms_html') %>
 </p>

@@ -976,5 +976,17 @@ blist.util.isMobile
     = function() { return blist.util.patterns.mobileBrowser.test(navigator.userAgent); };
 blist.isMobile = blist.util.isMobile();
 
+blist.util.loadCaptcha = function(id)
+{
+    if ($('#' + id).hasClass('placeholder'))
+    {
+        blist.util.assetLoading.loadAssets({ javascripts:
+            ['https://www.google.com/recaptcha/api/js/recaptcha_ajax.js'] }, function()
+            {
+                $('#' + id).removeClass('placeholder');
+                Recaptcha.create(blist.configuration.reCAPTCHA_PUK, id, { theme: 'white' });
+            });
+    }
+};
 
 })(jQuery);

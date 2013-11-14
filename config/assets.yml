@@ -510,6 +510,8 @@ javascripts:
   internal-metrics:
     - public/javascripts/screens/internal-metrics.js
   screen-login-signup:
+    - public/javascripts/plugins/lab.js
+    - public/javascripts/util/asset-loading.js
     - public/javascripts/screens/login-shared.js
     - public/javascripts/screens/signup-screen.js
   screen-forgot-password:

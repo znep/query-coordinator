@@ -55,6 +55,7 @@ blist.util.inlineLogin.verifyUser = function(callback, msg)
                                 .val('').end()
                             .find(':checked').attr('checked', false).end()
                             .find('form').validate().resetForm();
+                        blist.util.loadCaptcha('captchaPlaceholder');
                     }, 0);
                 }).end()
             .find('a.loginButton').unbind('click.inlineLogin')

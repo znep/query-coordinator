@@ -11,7 +11,10 @@ $.component.Picture.extend('Header', 'content', {
 
     _getEditAssets: function()
     {
-        return { translations: [ 'dataslate.component.header' ] };
+        var assets = this._super() || {};
+        assets.translations = assets.translations || [];
+        assets.translations.push('dataslate.component.header');
+        return assets;
     },
 
     destroy: function()

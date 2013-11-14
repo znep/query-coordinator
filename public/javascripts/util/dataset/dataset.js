@@ -2659,15 +2659,9 @@ var Dataset = ServerModel.extend({
             }
             else
             {
-                _.each(rr, function(v, k)
-                {
-                    if (k.startsWith(':'))
-                    {
-                        req.row.data[k] = v;
-                        req.row.metadata[k.slice(1)] = v;
-                    }
-                });
-                req.row.id = req.row.metadata.id;
+                rr = rr[0];
+                // All we have is id
+                req.row.id = req.row.metadata.id = req.row.data[':id'] = rr.id;
             }
 
             if (req.row.underlying)
@@ -2756,7 +2750,7 @@ var Dataset = ServerModel.extend({
             }
         };
 
-        var url = ds._useSODA2 ? '/api/id/' + ds.id : '/views/' + ds.id + '/rows';
+        var url = ds._useSODA2 ? '/api/id/' + ds.id + '/dontcare' : '/views/' + ds.id + '/rows';
         if (!$.isBlank(req.parentRow))
         {
             url += '/' + req.parentRow.id + '/columns/' + req.parentColumn.id +
@@ -2766,6 +2760,7 @@ var Dataset = ServerModel.extend({
         var rd = req.rowData;
         if (ds._useSODA2)
         {
+            url += '?$$version=unstable';
             rd = $.extend(true, {}, rd);
             delete rd[':id'];
         }
@@ -2821,7 +2816,8 @@ var Dataset = ServerModel.extend({
         if (!$.isBlank(r.parentRow))
         { url += '/' + r.parentRow.id + '/columns/' + r.parentColumn.id + '/subrows'; }
         url += (ds._useSODA2 ? '' : '/' + r.row.metadata.uuid) + '.json';
-        ds.makeRequest({url: url, type: ds._useSODA2 ? 'POST' : 'PUT', data: JSON.stringify(r.rowData),
+        var data = ds._useSODA2 ? [r.rowData] : r.rowData;
+        ds.makeRequest({url: url, type: ds._useSODA2 ? 'POST' : 'PUT', data: JSON.stringify(data),
             isSODA: ds._useSODA2, batch: isBatch,
             success: rowSaved, error: rowErrored, complete: rowCompleted});
 

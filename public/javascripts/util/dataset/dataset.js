@@ -157,7 +157,8 @@ var Dataset = ServerModel.extend({
 
     canUpdate: function()
     {
-        return (this.isUnpublished() || !this.isDefault()) && this.hasRight('update_view');
+        return (this.isUnpublished() || !this.isDefault() || this.newBackend) &&
+            this.hasRight('update_view');
     },
 
     isGrid: function()
@@ -224,8 +225,7 @@ var Dataset = ServerModel.extend({
 
     isUnpublished: function()
     {
-        // Pretend nbe dataset is unpublished so it can be edited
-        return this.publicationStage == 'unpublished' || this.newBackend;
+        return this.publicationStage == 'unpublished';
     },
 
     isSnapshot: function()

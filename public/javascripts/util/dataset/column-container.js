@@ -204,7 +204,8 @@ var ColumnContainer = function(colName, selfUrl, urlBase)
         }
         else
         {
-            (cont.view || cont)._markTemporary((cont.view || cont).isUnpublished());
+            (cont.view || cont)._markTemporary((cont.view || cont).isUnpublished() ||
+                    (cont.view || cont).newBackend);
             if (_.isFunction(callback)) { callback(); }
         }
     };

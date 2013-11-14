@@ -184,6 +184,10 @@
       <%- if @view.is_tabular? %>
       <dt><%= t('screens.about.row_count') %></dt>
       <dd><span class="wrap row_count"><%= @row_count %></span></dd>
+      <%- if @view.newBackend -%>
+      <dt><%= t('screens.about.soda2_support') %></dt>
+      <dd><%= t('screens.about.soda2_yes') %></dd>
+      <%- end -%>
       <%- end %>
     </dl>
   </div>

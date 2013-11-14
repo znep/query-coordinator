@@ -905,6 +905,8 @@ en:
       semantics: Semantics and RDF
       short_url: Short URL
       snapshotted: snapshotted
+      soda2_support: SODA2 Only
+      soda2_yes: "Yes"
       source_link: Source Link
       spatial_extent: Spatial Extent
       subject_column: Subject Column

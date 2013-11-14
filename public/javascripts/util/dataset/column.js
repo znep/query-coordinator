@@ -67,7 +67,8 @@ var Column = ServerModel.extend({
 
     canUpdate: function()
     {
-        return (this.view.isUnpublished() || !this.view.isDefault()) && this.view.hasRight('update_column');
+        return (this.view.isUnpublished() || !this.view.isDefault() || this.newBackend) &&
+            this.view.hasRight('update_column');
     },
 
     save: function(successCallback, errorCallback)

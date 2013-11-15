@@ -370,7 +370,9 @@ $(function()
     {
         e.preventDefault();
         var searchText = $(e.currentTarget).find(':input').val();
-        blist.dataset.update({searchString: searchText});
+        var md = $.extend(true, {}, blist.dataset.metadata);
+        md.jsonQuery.search = searchText;
+        blist.dataset.update({ metadata: md });
         if (!searchText || searchText === '')
         { $clearSearch.hide(); }
         else
@@ -379,21 +381,23 @@ $(function()
 
     var resetSearchForm = function()
     {
-        $searchForm.find(':input').focus().val(blist.dataset.searchString).blur();
-        $clearSearch.toggle(!$.isBlank(blist.dataset.searchString));
+        $searchForm.find(':input').focus().val(blist.dataset.metadata.jsonQuery.search).blur();
+        $clearSearch.toggle(!$.isBlank(blist.dataset.metadata.jsonQuery.search));
     };
 
     $clearSearch.click(function (e)
     {
         e.preventDefault();
-        blist.dataset.update({searchString: null});
+        var md = $.extend(true, {}, blist.dataset.metadata);
+        delete md.jsonQuery.search;
+        blist.dataset.update({ metadata: md });
         resetSearchForm();
     }).hide();
     blist.dataset.bind('clear_temporary', function() { resetSearchForm(); });
 
-    if (!$.isBlank(blist.dataset.searchString))
+    if (!$.isBlank(blist.dataset.metadata.jsonQuery.search))
     {
-        $searchForm.find(':input').focus().val(blist.dataset.searchString).blur();
+        $searchForm.find(':input').focus().val(blist.dataset.metadata.jsonQuery.search).blur();
         $clearSearch.show();
     }
 

@@ -1854,7 +1854,7 @@ importNS.importingPaneConfig = {
             {
                 if ($.subKeyDefined(response, 'details.progress'))
                 {
-                    var message = t('row_imported', { num: response.details.progress });
+                    var message = t('rows_imported', { num: response.details.progress });
                     if ($.subKeyDefined(response, 'details.layer'))
                         message = t('layer') + '  ' + response.details.layer + ": " + message;
                     $pane.find('.importStatus').text(message);

@@ -3,20 +3,20 @@ it:
     common:
       form:
         confirm_password: Conferma password
-        display_name: Nome visualizzato
-        email: E-mail
-        forgot_password: Password dimenticata?
+        display_name: Mostra Nome
+        email: Indirizzo Email
+        forgot_password: Password Dimenticata?
         lockout_warning: Per questioni di sicurezza, tre tentativi di accesso falliti in 15 minuti causeranno il blocco di questo account per 30 minuti.
         no_account: Non hai un account?
         password: Password
-        password_requirements: ! 'Requisito. La password deve essere compresa tra 8 e 40 caratteri e soddisfare tre dei seguenti criteri: contenere un numero; contenere una lettera minuscola; contenere una lettera maiuscola; contenere un simbolo non-alfanumerico.'
+        password_requirements: ! 'Necessario. La password deve essere compresa tra 8 e 40 caratteri e deve soddisfare tre dei seguenti criteri: contenere un numero; contenere una lettera minuscola; contenere una lettera maiuscola; contenere un simbolo non-alfanumerico.'
         password_requirements_html: <p>La password deve essere <b>compresa tra 8 e 40 caratteri</b> e soddisfare <b>tre dei seguenti quattro criteri</b>:</p><p></p><ul><li>&bull; contenere un numero</li><li>&bull; contenere una lettera minuscola</li><li>&bull; contenere una lettera maiuscola</li><li>&bull; contenere un simbolo non-alfanumerico</li></ul>
         password_restrictions: Soggetto a restrizioni
         remember_me: Ricordami
         sign_up_prompt: Iscriviti adesso
       inline_auth:
-        sign_in_headline: Accedi usando il tuo Socrata ID
-        sign_up_headline: Siamo contenti che desideri iscriverti a %{site}!
+        sign_in_headline: Accedi usando il tuo ID Socrata
+        sign_up_headline: Siamo contenti che vuoi iscriverti a %{site}!
       rpx:
         description: Approfitta di funzionalità aggiuntive che questi account forniscono e accedi con un click.
         prompt:
@@ -51,11 +51,11 @@ it:
         create_dataset: Crea o carica il tuo dataset
         create_dataset_short: Crea un nuovo Dataset
         create_dataset_verb: Crea
-        dataset_subscribe: Sottoscrivi le modifiche a questa vista
+        dataset_subscribe: Sottoscrivi le modifiche a questa visualizzazione
         delete:
           button: Cancella
           confirm: Sei sicuro di voler cancellare %{dataset}?
-          title: Cancella questo item
+          title: Cancella questo elemento
         expand_section: Clicca per espandere
         less_options: Vedi meno
         manage_api:
@@ -68,7 +68,7 @@ it:
           change_button:
             private_html: Rendi pubblico
             public_html: Rendi privato
-          title: Cambia la visibilità
+          title: Cambia la visibilità pubblica
         rich_list: Visualizza come lista espansa
         share_button: Condividi
         subscribe: Sottoscrivi
@@ -116,10 +116,10 @@ it:
         timeout: Siamo spiacenti. I risultati non possono essere recuperati in questo momento. Si prega di riprovare più tardi.
       row_results:
         less_link: Meno
-        matching_rows: Cercante righe corrispondenti
+        matching_rows: In cerca di righe corrispondenti
         more_link: Ancora
-        no_matching_rows: No righe corrispondenti.
-        title_html: ! 'Mostrate <span class="rowResultCountText"></span> di <span class="totalResultCountText"></span> righe corrispondenti <a href="#" class="rowSearchLink">(vedi risultati)</a>:'
+        no_matching_rows: Nessuna riga corrispondente trovata.
+        title_html: ! 'Mostrate <span class="rowResultCountText"></span> su <span class="totalResultCountText"></span> righe corrispondenti <a href="#" class="rowSearchLink">(vedi risultati)</a>:'
       search: Cerca
       sort_period_title: Periodo dell'ordinamento
       sort_periods:
@@ -131,22 +131,22 @@ it:
         alpha: Alfabetico
         comments: Più commentati
         last_modified: Aggiornato di recente
-        most_accessed: Più acceduto
+        most_accessed: Con maggiori accessi
         newest: Più nuovo
         oldest: Più vecchio
         rating: Con voto più alto
         relevance: Più rilevante
       title:
-        default: Cerca e sfoglia dataset e viste
+        default: Cerca e sfoglia dataset e visualizzazioni
         result:
           facet: ! '%{facet_type} di %{facet_value}'
           facet_main: corrispondenze %{body}
           main: Risultati %{body}
           term: per "%{term}"
     charts:
-      negatives_in_data: 
-      no_data: 
-      other_slice_label: 
+      negatives_in_data: ! 'Grafico non valido: presenti valori negativi'
+      no_data: Nessun dato
+      other_slice_label: Altro
       series_grouping:
         calculating_time: Calcolo del tempo rimanente in corso...
         calculation_running: Preparazione dati
@@ -162,7 +162,7 @@ it:
         rendering_progress_minutes: ! '%{rows_remaining} righe rimanenti, circa %{time_remaining} minuti.'
         rendering_progress_seconds: ! '%{rows_remaining} righe rimanenti, circa %{time_remaining} secondi.'
         resume_rendering: Riprendi
-      zero_only_data: 
+      zero_only_data: Nessun valore maggiore di zero
     common:
       auth_required: Devi effettuare l'accesso per %{action_phrase}
       dataset_picker:
@@ -227,8 +227,8 @@ it:
         inappropriate: Inappropriato
         marked_inappropriate: Contrassegnato!
         rate_down: Abbassa il voto
-        rate_up: Alza il voto
-        reply: Replica
+        rate_up: Vota questo commento
+        reply: Rispondi
       comment_form:
         cancel_button: Cancella
         empty_body_error: Il commento non può essere vuoto.
@@ -236,12 +236,12 @@ it:
         post_button: Aggiungi
       header:
         add_comment: Aggiungi commento
-        cell_comment_header_html: Commento per record <span class="rowName"></span>, colonna <span class="columnName"></span>
+        cell_comment_header_html: Commenti per la riga <span class="rowName"></span>, colonna <span class="columnName"></span>
         feed_filter_label: Mostra
         pending_moderation: Il tuo commento è stato inviato ed è in attesa di moderazione
       listing:
-        all_replies: Visualizza tutte le repliche
-        all_replies_with_count: Visualizza tutte le %{count} repliche
+        all_replies: Visualizza tutte le risposte
+        all_replies_with_count: Visualizza tutte le %{count} risposte
         last_item: Visualizza l'ultimo elemento
         next_item_page: Visualizza i prossimi %{count} elementi
         no_results: Non ci sono elementi da visualizzare
@@ -276,8 +276,8 @@ it:
         simplified_header: Gli utenti inizieranno in modalità semplificata.
         simplified_toggle: Cambia il predefinito sull'avanzato.
       main:
-        base_explanation: 
-        base_info: 
+        base_explanation: Con i seguenti filtri di base
+        base_info: Questi filtri vengono applicati sempre, assieme ai filtri extra inseriti sopra. Questi filtri non possono essere modificati, perchè non hai i permessi di modificare l'attuale visualizzazione, oppure perchè vengono da una visualizzazione o da un insieme di dati padre.
         filter: Filtra
         filter_based_on_contents: Filtra questo set di dati in base al contenuto
         no_conditions: Nessuna condizione ancora definita.
@@ -296,7 +296,7 @@ it:
         show_suggested: Mostra i valori suggeriti.
         title: Opzioni
     grid:
-      add_column: 
+      add_column: Aggiungi una nuova colonna
       clear_column_filter: Elimina filtro
       clear_sort: Elimina ordinamento
       click_for_menu: Clicca per il Menu
@@ -314,17 +314,17 @@ it:
       new_row: Nuovo
       no_rows: Nessun record da visualizzare
       previous: Precedente
-      sort_ascending: Ordinamento crescente
+      sort_ascending: Ordinamento Ascendente
       sort_descending: Ordinamento Discendente
-      totals: 
-      view_cell_comments: 
+      totals: Totali
+      view_cell_comments: Vedi commenti per questa cella
       view_first_row: Visualizza primo record
       view_last_row: Visualizza ultimo record
       view_next_row: Visualizza record successivo
       view_previous_row: Visualizza record precedente
-      view_row: 
+      view_row: Vedi riga
       view_single_row: Visualizza Singolo Record
-      viewing_row_html: Mostrato <span class="curPage"></span> di <span class="totalPages"></span>
+      viewing_row_html: Visualizzazione della riga <span class="curPage"></span> su <span class="totalPages"></span>
     nominate:
       all: Tutti
       approve: (Approva)
@@ -409,17 +409,17 @@ it:
       timeline: Time Line
       treemap: Tree Map
     chart_types_short:
-      area: 
-      bar: 
-      bubble: 
-      column: 
-      donut: 
-      line: 
-      pie: 
-      stackedbar: 
-      stackedcolumn: 
-      timeline: 
-      treemap: 
+      area: Area
+      bar: Barra
+      bubble: Bolla
+      column: Colonna
+      donut: Ciambella
+      line: Linea
+      pie: Torta
+      stackedbar: Barra Sovrapposta
+      stackedcolumn: Colonna Sovrapposta
+      timeline: Linea Temporale
+      treemap: Mappa dell'Albero
     data_types:
       calendar_date: Data e ora
       checkbox: Checkbox
@@ -570,18 +570,18 @@ it:
       roadmap: Roadmap
       satellite: Satellite
       terrain: Terrain
-    no_js: 
+    no_js: Disabilita il Javascript su questa pagina
     numbers:
-      eight: 
-      five: 
-      four: 
-      nine: 
-      seven: 
-      six: 
-      three: 
+      eight: otto
+      five: cinque
+      four: quattro
+      nine: nove
+      seven: sette
+      six: sei
+      three: tre
     or: o
     pagination:
-      current_page: 
+      current_page: Pagina Attuale
       first_page: Prima Pagina
       last_page: Ultima Pagina
       next_page: Pagina Successiva
@@ -590,7 +590,7 @@ it:
     precision_style:
       scientific: Scientifica (1.0204e+3)
       standard: Standard (1020.4)
-    required: 
+    required: Richiesto
     share_types:
       contributor: Collaboratore
       owner: Proprietario
@@ -641,84 +641,84 @@ it:
   dataslate:
     component:
       header:
-        height: 
-      invalid_config: 
-      loading: 
+        height: Altezza
+      invalid_config: Questo componente non ha una configurazione valida
+      loading: Sto caricando, cortesemente attendi...
       picture:
-        alt_attr: 
-        alt_attr_prompt: 
-        full_url: 
-        image_source: 
-        large: 
-        medium: 
-        original: 
-        thumb: 
-        tiny: 
-        title_attr: 
-        title_attr_prompt: 
+        alt_attr: Alt
+        alt_attr_prompt: Attributo alt
+        full_url: URL completo dell'immagine
+        image_source: Sorgente immagine
+        large: Grande (220x220)
+        medium: Medio (150x150)
+        original: Originale
+        thumb: Miniatura (80x80)
+        tiny: Piccolo (24x24)
+        title_attr: Titolo
+        title_attr_prompt: attributo del titolo
       print:
-        print: 
-        print_this_page: 
-      remove: 
+        print: Stampa
+        print_this_page: Stampa questa pagina
+      remove: Rimuovi questo componente
       share:
-        email: 
-        email_contents: 
-        facebook: 
-        share: 
-        subscribe: 
-        subscribe_text: 
-        this_page: 
-        tweet_contents: 
-        twitter: 
+        email: Condividi via Email
+        email_contents: ! '%{dataset} su %{company}'
+        facebook: Condividi su Facebook
+        share: Condividi
+        subscribe: Iscriviti via Email o RSS
+        subscribe_text: Iscriviti alle Modifiche
+        this_page: Questa pagina
+        tweet_contents: ! 'Controlla %{dataset} su %{company}: %{url}'
+        twitter: Condividi su Twitter
     configurator:
-      advanced_components: 
-      report_components: 
+      advanced_components: Componenti Avanzati
+      report_components: Rapporto sui Componenti
     context_picker:
-      select_dataset: 
-      view_data: 
+      select_dataset: Seleziona il set di Dati
+      view_data: Guarda i Dati
     create:
-      cancel: 
-      create: 
-      create_page: 
-      page_settings: 
-      page_title: 
-      page_url: 
-      title: 
+      cancel: Cancella
+      create: Crea
+      create_page: Crea una Pagina DataSlate
+      page_settings: Settaggi della Pagina
+      page_title: Titolo della Pagina
+      page_url: URL della Pagina
+      title: Crea una Pagina DataSlate
     edit:
-      editing: 
-      permissions: 
-      preview_page: 
-      redo: 
-      revert: 
-      save: 
-      save_as: 
-      settings: 
-      undo: 
-      view_editor: 
+      editing: Sto modificando
+      permissions: Permessi
+      preview_page: Anteprima di pagina
+      redo: Rifai
+      revert: Ritorna
+      save: Salva
+      save_as: Salva come
+      settings: Settaggi
+      undo: Annulla
+      view_editor: Guarda l'editor interattivo
     edit_component:
-      no_config: 
-      subtitle: 
-      title: 
+      no_config: Nessuna configurazione disponibile per %{component}
+      subtitle: Configura questo componente
+      title: Modifica Componente
     edit_properties:
-      no_data: 
-      subtitle: 
-      title: 
+      no_data: Nessun dato selezionato per questo componente
+      subtitle: Aggiungi le proprietà in base al contesto dati di questo elemento
+      title: Proprietà disponibili
     permissions:
-      cancel: 
-      private: 
-      private_desc: 
-      public: 
-      public_desc: 
-      save: 
-      shared: 
-      shared_desc: 
-      title: 
+      cancel: Cancella
+      private: Privato
+      private_desc: Visualizzabile solo da te
+      public: Pubblico
+      public_desc: Visualizzabile da chiunque
+      save: Salva
+      shared: Condiviso nel Sito
+      shared_desc: Visualizzabile da tutti i tuoi colleghi, ma non dal pubblico
+      title: Permessi per la Pagina
     settings:
-      cancel: 
-      page_title: 
-      page_url: 
-      save: 
-      title: 
+      cancel: Cancella
+      page_title: Titolo della Pagina
+      page_url: Percorso
+      save: Salva
+      title: Settaggi della Pagina
   error:
     back: Indietro
     error_500:
@@ -742,132 +742,135 @@ it:
     chrome:
       header:
         links:
-          account: 
-          account_options: 
-          account_tooltip: 
-          configuration: 
-          data: 
-          goals: 
-          home: 
-          my_goals: 
-          my_goals_tooltip: 
-          reports: 
+          account: Account
+          account_options: Opzioni dell'Account
+          account_tooltip: Guarda e fai dei cambi al tuo account utente
+          configuration: Configurazione
+          data: Dati
+          goals: Obiettivi
+          home: Home
+          my_goals: I Miei Obiettivi
+          my_goals_tooltip: Vedi gli obiettivi che ho creato.
+          reports: Rapporti
     reports:
       component:
-        base_map: 
-        chart: 
-        formatted_text: 
-        header: 
-        horizontal_layout: 
-        map: 
-        map_layer: 
-        picture: 
-        print: 
-        share: 
-        table: 
-        title: 
-        vertical_layout: 
-        visualize: 
+        base_map: Mappa Base
+        chart: Grafico
+        formatted_text: Testo Formattato
+        header: Titolazione
+        horizontal_layout: Formato Orizzontale
+        map: Mappa
+        map_layer: Mappa Strato
+        picture: Immagine
+        print: Stampa
+        share: Condividi
+        table: Tabella
+        title: Titolo
+        vertical_layout: Layout Verticale
+        visualize: Visualizza
       create:
-        create_report: 
-        title: 
+        create_report: Crea Rapporto
+        title: Crea Rapporto
       manage:
-        copy: 
-        create_new_report: 
-        delete: 
-        edit: 
-        home: 
-        other_reports: 
-        owner: 
-        reports: 
-        title: 
-        updated: 
-        your_reports: 
+        copy: Copia
+        create_new_report: Crea  Nuovo Rapporto
+        delete: Cancella
+        edit: Modifica
+        home: Home
+        other_reports: Altri Rapporti
+        owner: proprietario
+        reports: Rapporti
+        title: Gestisci Rapporti
+        updated: aggiornato
+        your_reports: I Tuoi Rapporti
       permissions:
-        title: 
+        title: Permessi RIportati
       settings:
-        page_title: 
-        title: 
+        page_title: Rapporto del Titolo
+        title: Settaggi del Rapporto
   plugins:
     daterangepicker:
-      date_range: 
-      done: 
-      end_date: 
-      last_month: 
-      month_to_date: 
-      next: 
-      prev: 
-      specific_date: 
-      start_date: 
-      the_month_of: 
-      the_week_of: 
-      the_year_of: 
-      today: 
-      week_to_date: 
-      year_to_date: 
+      date_range: Gamma della Data
+      done: Fatto
+      end_date: Data finale
+      last_month: Ultimo Mese
+      month_to_date: Mesi alla Data
+      next: Prossimo
+      prev: Precedente
+      specific_date: Data Specifica
+      start_date: Data di Inizio
+      the_month_of: Il Mese Di...
+      the_week_of: La Settimana Di...
+      the_year_of: L'Anno Di...
+      today: Oggi
+      week_to_date: Settimana alla Data
+      year_to_date: Anno alla Data
     fileuploader:
-      drop_files: 
-      failed: 
-      upload_a_file: 
+      drop_files: Trascina i file qui per caricare
+      failed: Non riuscito
+      upload_a_file: Carica un file
     hallo:
-      body: 
-      bold: 
-      heading: 
-      italic: 
-      redo: 
-      subheading: 
-      undo: 
+      body: Corpo
+      bold: grassetto
+      heading: Intestazione
+      italic: corsivo
+      redo: Rifai
+      subheading: Sottotitolo
+      undo: Annulla
     jquery_ui:
-      april: 
-      april_short: 
-      august: 
-      august_short: 
-      december: 
-      december_short: 
-      done: 
-      february: 
-      february_short: 
-      friday: 
-      friday_min: 
-      friday_short: 
-      january: 
-      january_short: 
-      july: 
-      july_short: 
-      june: 
-      june_short: 
-      march: 
-      march_short: 
-      may: 
-      may_short: 
-      monday: 
-      monday_min: 
-      monday_short: 
-      next: 
-      november: 
-      november_short: 
-      october: 
-      october_short: 
-      prev: 
-      saturday: 
-      saturday_min: 
-      saturday_short: 
-      september: 
-      september_short: 
-      sunday: 
-      sunday_min: 
-      sunday_short: 
-      thursday: 
-      thursday_min: 
-      thursday_short: 
-      today: 
-      tuesday: 
-      tuesday_min: 
-      tuesday_short: 
-      wednesday: 
-      wednesday_min: 
-      wednesday_short: 
-      week_min: 
+      april: Aprile
+      april_short: Apr
+      august: Agosto
+      august_short: Ago
+      december: Dicembre
+      december_short: Dic
+      done: Fatto
+      february: Febbraio
+      february_short: Feb
+      friday: Venerdì
+      friday_min: Ven
+      friday_short: Ven
+      january: Gennaio
+      january_short: Gen
+      july: Luglio
+      july_short: Lug
+      june: Giugno
+      june_short: Giu
+      march: Marzo
+      march_short: Mar
+      may: Maggio
+      may_short: Maggio
+      monday: Lunedì
+      monday_min: Lu
+      monday_short: Lun
+      next: Successivo
+      november: Novembre
+      november_short: Nov
+      october: Ottobre
+      october_short: Ott
+      prev: Prec
+      saturday: Sabato
+      saturday_min: Sa
+      saturday_short: Sab
+      september: Settembre
+      september_short: Set
+      sunday: Domenica
+      sunday_min: Do
+      sunday_short: Dom
+      thursday: Giovedì
+      thursday_min: Gi
+      thursday_short: Gio
+      today: Oggi
+      tuesday: Martedì
+      tuesday_min: Ma
+      tuesday_short: Mar
+      wednesday: Mercoledì
+      wednesday_min: Me
+      wednesday_short: Mer
+      week_min: Wk
+  recaptcha:
+    errors:
+      verification_failed: I caratteri inseriti non combaciano con l'immagine.
   screens:
     about:
       actions: Azione
@@ -902,6 +905,8 @@ it:
       semantics: Semantica e RDF
       short_url: URL breve
       snapshotted: eseguito il backup
+      soda2_support: Solo SODA2
+      soda2_yes: Si
       source_link: Origine dato
       spatial_extent: Regione
       subject_column: Soggetto Colonna
@@ -913,116 +918,116 @@ it:
       visits: Visite
       your: La tua valutazione
     dataset_edit:
-      append: 
-      append_and_replace: 
-      append_explain: 
+      append: Allega
+      append_and_replace: Aggiungi e sostituisci i dati
+      append_explain: Vuoi i dati caricati aggiunti alla fine del set di dati. Potrai scegliere le nuove mappe di dati per le colonne esistenti.
       finish:
-        headline: 
-        subheadline: 
-      headline: 
+        headline: Il Tuo set di Dati è stato aggiornato
+        subheadline: Clicca su Termina per vederlo!
+      headline: Cosa ti piacerebbe fare con i tuoi dati caricati?
       import_columns:
-        destination_column: 
-        destination_data_type: 
-        headline: 
+        destination_column: Colonna di Destinazione
+        destination_data_type: Destinazione del Tipo di Dati
+        headline: I dati &ldquo;<span class="fileName"></span>&rdquo; sono relativi al tuo set di dati?
       import_warnings:
-        see_docs: 
-      replace: 
-      replace_data: 
-      replace_explain: 
-      replace_layer: 
-      title: 
-      upload_accessible: 
+        see_docs: <strong>Confuso?</strong>Cortesemente controlla la nostra <a href="%{publisher_link}" rel="external">documentazione per la pubblicazione</a> su come importare i dati per una spiegazione dettagliata di come importare dei dati manipolati.
+      replace: Sostituisci
+      replace_data: Sostituisci i dati
+      replace_explain: Hai deciso di rimuovere tutti i dati esistenti e sostituirli con i dati caricati. Potrai scegliere le nuove mappe di dati per le colonne esistenti. Questa operazione non può essere annullata.
+      replace_layer: Sostituisci il Layer
+      title: Sostituisci il Set di Dati
+      upload_accessible: Carica nuovi dati accessibili
     dataset_new:
       column_template:
-        name_this_col: 
-        options: 
-        remove: 
+        name_this_col: Denomina questo colonna
+        options: opzioni
+        remove: rimuovi
       crossload:
-        downloading: 
-        headline: 
-        import: 
-        supported: 
-        url_prompt: 
+        downloading: Sto scaricando il tuo file
+        headline: Cortesemente indica quali dei tuoi dati è attivo.
+        import: Importa
+        supported: I tipi di file supportati sono CSV, TSV e Excel. I protocolli supportati sono HTTP e HTTPS.
+        url_prompt: Qual è l'URL web che vorresti importare?
       finish:
-        headline: 
-        subheadline: 
+        headline: Il Tuo set di dati è stato creato.
+        subheadline: Clicca su Termina per vederlo!
       first_page:
-        blobby: 
-        blobby_explain: 
-        create: 
-        create_explain: 
-        external: 
-        external_explain: 
-        header: 
-        import: 
-        import_explain: 
-        mapLayer: 
-        mapLayer_explain: 
-        prompt: 
-        shapefile: 
-        shapefile_explain: 
+        blobby: Carica un File Senza Dati
+        blobby_explain: Scegli questa opzione se si dispone di un file che contiene i dati in esso ma che non possono essere importati, come ad esempio un PDF o un file di immagine. Esso sarà importato nel catalogo dei dati, ma non sarà interattivo come i dati reali.
+        create: Progettato da Scratch
+        create_explain: Scegli questo se non hai già scelto dei dati da importare. Potrai definire uno schema per i tuoi dati ed inserirli online.
+        external: Link a Dati Esterni
+        external_explain: Scegli questa opzione se disponi già di dati che vengono ospitati su un altro server. Non verranno importati i dati.
+        header: Crea un nuovo Set di Dati
+        import: Inporta dei File Dati
+        import_explain: Scegli questa opzione se disponi già di un file di dati sul computer che desideri importare. I formati supportati sono .Csv, .Tsv, .Xls e .Xlsx.
+        mapLayer: Connetti con un ESRI Map Layer
+        mapLayer_explain: Scegli questa opzione se disponi di una mappa del livello ESRI che si desidera importare nel catalogo. Sarà necessario fornire un URL al punto in cui lo strato di API ESRI è stato memorizzato.
+        prompt: Come vorresti creare il tuo nuovo Set di Dati?
+        shapefile: Importa Dati Geospaziali
+        shapefile_explain: Scegli questa opzione se disponi di dati geospaziali che desideri importare nel catalogo.
       import:
-        headline: 
-        local: 
-        local_explain: 
-        web: 
-        web_explain: 
+        headline: Dove è localizzato il file?
+        local: Sul mio computer
+        local_explain: Scegli questo se hai un file che è sul computer che stai usando.
+        web: Su Internet
+        web_explain: Scegli questa opzione se hai un file che è già su Internet e hai l'URL per questo.
       import_columns:
-        add_new_column: 
-        clear_all: 
-        data_type: 
-        errors_warnings: 
-        fewer_rows: 
-        headers: 
-        headers_instructions: 
-        headline: 
-        help_message: 
-        more_rows: 
-        name: 
-        pending_columns: 
-        reset_to_preset: 
-        set: 
-        source_column: 
-        subheadline: 
-        suggested_alltext: 
-        suggested_columns: 
-        suggested_flat: 
-        suggested_plus_discrete: 
-        why_choose_now: 
-      import_help: 
+        add_new_column: Aggiungi una Nuova Colonna
+        clear_all: Cancella Tutto
+        data_type: Tipo di Dati
+        errors_warnings: Errori ed Avvisi
+        fewer_rows: Numero inferiore di Righe
+        headers: Intestazioni
+        headers_instructions: Le Intestazioni dovrebbero essere ignorate e non importate come dati. Cortesemente indica quante colonne della sorgente dei tuoi file sono intestazioni
+        headline: Specifica quante &ldquo;<span class="fileName"></span>&rdquo; dovebbero essere importate.
+        help_message: Per aiuto, controlla una <a href="%{common_errors}" rel="external">lista di avvisi comuni ed errori</a>.
+        more_rows: Più Colonne
+        name: Nome
+        pending_columns: Cortesemente attendi mentre carichiamo le tue colonne...
+        reset_to_preset: Torna alla selezione predefinita
+        set: Seleziona
+        source_column: Fonte della Colonna
+        subheadline: Colonne da Importare
+        suggested_alltext: Tutte le colonne come testo
+        suggested_columns: Colonne Suggerite
+        suggested_flat: Colonne suggerite (nessuna composizione)
+        suggested_plus_discrete: Colonne suggerite (composizioni e discreti)
+        why_choose_now: Perchè è importante scegliere i tipi di colonne adesso?
+      import_help: <strong>Hai bisogno di aiuto?</strong> Noi manteniamo una <a href="%{common_errors}" rel="external">lista di avvertimenti ed errori comuni</a> che possono aiutarti.
       import_shapefile:
-        crs: 
-        headline: 
-        layers_list: 
-        name: 
-        pending: 
-        subheadline: 
+        crs: Sistema di Riferimento delle Coordinate
+        headline: Specifica come &ldquo;<span class="fileName"></span>&rdquo; deve essere importato.
+        layers_list: Strati da importare
+        name: Nome
+        pending: Attendi mentre carichiamo i tuoi strati...
+        subheadline: Questo file contiene <span class="featureCount"></span> funzioni in <span class="layerCount"></span> strati.
       import_warnings:
-        headline: 
-        see_docs: 
-        subheadline: 
-      importing_your_data: 
+        headline: Avvertimenti durante l'importazione
+        see_docs: <strong>Confuso?</strong> Controlla la nostra <a href="%{publisher_link}" rel="external">documentazione dell'editore</a> sull'importazione dati per una spiegazione su come l'impoter gestisce i dati. Potresti anche volerti riferire alla nostra <a href="%{common_errors}" rel="external">lista di avvertimenti ed errori comuni</a>.
+        subheadline: Nota che alcuni dei tuoi dati potrebbero non essere stati importati correttamente.
+      importing_your_data: Sto importando i tuoi dati...
       metadata:
-        creative_commons_type: 
-        esri_map_layer_url: 
-        esri_source_url: 
-        privacy_security: 
-        private_explain: 
-        prompt: 
-        public_explain: 
-      processing: 
-      title: 
-      upload_accessible: 
+        creative_commons_type: Tipo Creative Commons
+        esri_map_layer_url: ESRI Map Layer URL
+        esri_source_url: Inserisci l'URL della fonte
+        privacy_security: Privacy e Sicurezza
+        private_explain: I miei dati sono <strong>privati</strong>
+        prompt: Cortesemente descrivi i tuoi dati
+        public_explain: ! 'I miei dati sono <strong>pubblici</strong>: possono essere modificati solo da me, ma chiunque può vederli'
+      processing: Sto elaborando
+      title: Nuovo Set di Dati
+      upload_accessible: Carica un set di dati accessibile
       upload_file:
-        choose_a_file: 
-        no_file_selected: 
-        supported_blist: 
-        supported_shapefile: 
-        uploading: 
+        choose_a_file: Scegli un File
+        no_file_selected: Non c'è ancora un file selezionato
+        supported_blist: I Formati supportati sono .csv, .tsv, .xls, e .xlsx.
+        supported_shapefile: I Formati supportati sono .kml, .kmz, e .zip (ESRI Shapefile).
+        uploading: Sto caricando i tuoi file...
       why_choose_now:
-        close: 
-        line_1: 
-        line_2: 
+        close: Chiudi
+        line_1: I tuoi dati sono pesantemente elaborati quando vengono importati, e ottimizzati per il consumo per ogni particolare tipo di dati. Inoltre, la maggior parte dei tipi di dati hanno caratteristiche speciali che saranno attivati ​​solo se La colonna sarà impostata su quel tipo - le colonne di posizione, per esempio, sono necessarie per creare mappe.
+        line_2: ! 'Puoi cambiare più tardi il tipo di colonne, ma è un processo che richiede tempo, così è meglio selezionarle tutte correttamente sulla parte anteriore. '
     ds:
       bar:
         api_unsavable: Le viste API non possono essere modificate
@@ -1057,7 +1062,7 @@ it:
         share_facebook: Condividi su Facebook
         share_twitter: Condividi su Twitter
         snapshot_notice: Questa è una versione del dataset precedentemente pubblicata. E'archiviata e non può essere modificata.
-        snapshot_title: 
+        snapshot_title: (empty)
         snapshot_title_html: Eseguito backup %{date}
         snapshot_unsavable: Backup di dataset e viste non possono essere creati o modificati
         subscribe: Sottoscrivi i cambiamenti
@@ -1201,12 +1206,12 @@ it:
           color_select:
             prompt: Scegli un colore
           column_select:
-            auto: 
+            auto: Automatico
             from_grid: Seleziona una colonna dalla griglia
-            none_selected: 
-            nonselectable: 
+            none_selected: Nessuna Colonna selezionata
+            nonselectable: Colonne non valide
             prompt: Seleziona una colonna
-            selectable: 
+            selectable: Colonne valide
             unselect: Deseleziona una colonna
           datatypes:
             checkbox: casella di spunta
@@ -1264,21 +1269,21 @@ it:
         chart:
           advanced: Configurazione Avanzata
           annotation: Annotazione
-          auto_update_sort: 
-          auto_update_sort_button: 
-          auto_update_sort_info_donut: 
-          auto_update_sort_info_pie: 
+          auto_update_sort: Aggiorna automaticamente il tipo di ordinamento
+          auto_update_sort_button: Applica questo ora
+          auto_update_sort_info_donut: I grafici a ciambella funzionano meglio quando ordinati in ordine orario discendente, da dentro a fuori
+          auto_update_sort_info_pie: I grafici a torta funzionano meglio quando ordinati in ordine orario discendente
           axes:
-            title: 
+            title: Opzioni per gli Assi
             x_axis_title: Titolo Asse X
             x_axis_title_prompt: Inserisci un titolo per l'asse x
             y_axis_title: Titolo Asse Y
             y_axis_title_prompt: Inserisci un titolo per l'asse y
           base_color: Colore base
           categories: Categorie
-          cdlfmtg_color_override_html: 
+          cdlfmtg_color_override_html: I colori sono sovrascritti da una <a href="#Conditional Formatting" class="showConditionalFormatting">Formattazione Condizionale</a>. Clicca <a href="#Clear Conditional Formatting" class="clearConditionalFormatting">qui</a> per cancellare ogni regola di formattazione condizionale.
           color_options:
-            column_colors: 
+            column_colors: Colori Colonna
           color_override_html: I colori possono essere sostituiti utilizzando <a href="#Conditional Formatting" class="showConditionalFormatting">Formattazione Condizionale</a>. Clicca <a href="#Clear Conditional Formatting" class="clearConditionalFormatting">qui</a> per cancellare ogni attuale regola di formattazione condizionale.
           colors: Colori
           configuration: Configurazioni
@@ -1288,37 +1293,37 @@ it:
           data_labels: Etichette dati
           data_selection:
             advanced_data_selection:
-              title: 
+              title: Selezione Avanzata Dati
             chart_definition:
-              label_title: 
-              title: 
-              value_title: 
+              label_title: Scegli etichetta dati
+              title: Definizione Grafico
+              value_title: Scegli i valori dei dati
           date: Data
           details: Dettagli
           draw_line: Disegna una linea
           dsg_color_override_html: Si prega di notare che il Raggruppamento delle serie di dati avrà la precedenza sui colori scelti per le colonne dei dati. Non ignorerà la <a href="#Conditional Formatting" class="showConditionalFormatting">Formattazione condizionale</a>
           error_bars:
             color: Colore
-            data_high: 
-            data_low: 
+            data_high: Scegli una colonna con limiti più alti
+            data_low: Scegli una colonna con limiti più bassi
             high: Alto
             low: Basso
             title: Barre di errore
           flyout:
             new_details_button: Aggiungi Dettagli Flyout
-            new_values_button: 
+            new_values_button: Aggiungi Valori
             title: Dettagli Flyout
-            title_column: 
-            value: 
+            title_column: Titolo opuscolo
+            value: Valori Opuscolo
           group_extra: Raggruppa valori extra
           groups: Raggruppamenti
           label: Etichetta
           labelInBar: Etichette nella Barra
-          labels_and_values: 
+          labels_and_values: Etichette e Valori
           legend:
-            add_text: 
-            add_text_button: 
-            annotations: 
+            add_text: Testo Aggiuntivo
+            add_text_button: Aggiungi del Testo Aggiuntivo
+            annotations: Descrivi delle Annotazioni
             conditional_formats: Descrivi Formati Condizionali
             custom_entry: Etichetta personalizzata
             display: Visualizza
@@ -1333,18 +1338,18 @@ it:
               top: In alto
             series: Descrivi le serie
             title: Configurazione didascalia
-            title_short: 
+            title_short: Legenda
             value_markers: Descrivi i valori dei marker
             values: Descrivi valori
           marker:
-            add_button: 
+            add_button: Aggiungi delle Annotazioni
             caption: Titolo
-            marker_title: 
+            marker_title: Annota il Valore
             new_marker_button: Aggiungi Marker
             title: ! '%{axis} Marker'
             value: Al valore
           min_angle: Angolo minimo
-          min_angle_html: 
+          min_angle_html: Il più piccolo angolo visualizzato (º)
           names: Nomi
           pie_other: ! 'Attenzione: %{chart_type} aggregherà valori distinti (record) oltre il %{row_limit}° nella categoria Altro. Provare a creare un Roll Up o un filtro che limiti il numero di valori e poi creare un %{chart_type} di questo dataset.'
           pie_truncate: ! 'Attenzione: %{chart_type} troncherà dataset con più di %{row_limit} differenti valori (record). Provare a creare un Roll Up o un filtro che limiti il numero di valori e poi creare un %{chart_type} di questo dataset.'
@@ -1371,8 +1376,8 @@ it:
           title: Grafico
           treemap_color_html: Questi colori sono applicati in modo casuale sulla mappa solo per creare distinzioni nella visualizzazione. Non hanno uno specifio significato.
           validation:
-            chart_requires: 
-            chart_requires2: 
+            chart_requires: ! '%{chart_type} servono almeno'
+            chart_requires2: ! '%{and} %{count} dei seguenti tipi di colonne:'
             count: ! '%{count} colonna'
             required_columns: ! '%{chart_type} richiede %{column_types}'
             viz_limit: Una vista può avere solo una visualizzazione su di essa
@@ -1385,7 +1390,7 @@ it:
             axis_max: Massimo
             axis_min: Minimo
             axis_prompt: Inserisci un numero
-            decimals: 
+            decimals: Inserisci Decimali
             no_decimals: No Decimali
             precision: Precisione
             title: Formattazione Asse Y
@@ -1753,7 +1758,7 @@ it:
             delete: Elimina questa vista
             expand: Clicca per espandere
           no_results: Nessun risultato
-          no_results_html: 
+          no_results_html: (empty)
           pagination:
             last: Vedi l'ultima vista
             next: Vedi le prossime %{count} viste
@@ -1771,7 +1776,7 @@ it:
             subtitle: Vedi filtri, mappe, grafici e altre viste esistenti su questo dataset
             title: Viste
         visualize:
-          choose_type: 
+          choose_type: Tipo di Visualizzazione
       save_dialog:
         descriptions:
           leaving: Non hai salvato i dati, che andranno persi se abbandoni questa pagina. Ti preghiamo sia che lo desideri o no di salvare questa vista prima di abbandonare la pagina; oppure scegli Cancella per ritornare alla pagina.
@@ -1814,8 +1819,8 @@ it:
       dataset_title: Titolo del dataset
       dataset_title_error: Il dataset deve avere un titolo.
       dataset_title_prompt: Inserisci un titolo
-      dataset_url: 
-      dataset_url_prompt: 
+      dataset_url: URL del Set di Dati
+      dataset_url_prompt: Inserisci il posto del tuo det di dati esterno
       delete: Elimina
       email_address: Indirizzo e-mail
       email_help: L'indirizzo non verrà visualizzato al pubblico. Se il campo viene lasciato vuoto, sarà inserito il tuo indirizzo
@@ -1878,26 +1883,26 @@ it:
         account_tooltip: La tua Pagina iniziale
         administration: Amministrazione
     import_pane:
-      analyzing: 
-      assure_accessible: 
-      combine_multiple_cols: 
-      downloading: 
-      filetype_error_blist: 
-      filetype_error_shapefile: 
-      headline_import: 
-      headline_upload: 
-      layer: 
-      many_headers: 
-      no_file_selected: 
-      no_headers: 
-      no_source_column: 
-      one_header: 
-      problem_importing: 
-      problem_uploading: 
-      rows_imported: 
-      try_again: 
-      unknown_error: 
-      uploading: 
+      analyzing: Sto analizzando il tuo file
+      assure_accessible: Cortesemente assicurati che il tuo file sia accessibile e riprova.
+      combine_multiple_cols: (Combina Colonne Multiple...)
+      downloading: Sto scaricando il tuo file...
+      filetype_error_blist: Cortesemente scegli un file CSV, TSV, XLS, o XLSX.
+      filetype_error_shapefile: Cortesemente scegli un file KML, KMZ, o ZIP.
+      headline_import: Cortesemente scegli un file da importare
+      headline_upload: Cortesemente scegli un file da caricare
+      layer: Layer
+      many_headers: ! '%{num} delle tue colonne sono titolate.'
+      no_file_selected: Nessun file è ancora selezionato.
+      no_headers: Nessuna delle tue colonne sono titolate.
+      no_source_column: (Non ci sono Fonti per le Colonne)
+      one_header: Una delle tue colonne è una titolata.
+      problem_importing: C'è stato un problema di importazione di tale file. Cortesemente assicurati che sia valido.
+      problem_uploading: C'è stato un problema di caricamento di tale file. Cortesemente assicurati che sia valido.
+      rows_imported: ! '%{num} righe importati finora.'
+      try_again: Cortesemente riprova fra un pò.
+      unknown_error: E' avvenuto un errore sconosciuto
+      uploading: Sto caricando il tuo file
     link_account:
       success: Il tuo account esterno è stato collegato.
     profile:
@@ -1950,8 +1955,8 @@ it:
               user_affected: Azioni che ti riguardano direttamente, come repliche a commenti e aggiornamenti di stato
               view_made_public: Ogni vista resa pubblica
             policy: ! '%{site} rispetta la tua privacy, e mai invierà email pubblicitarie, o darà la tua email a terze parti. Le email inviate da questo sito contengono notifiche e aggiornamenti a dataset che hai creato o sottoscritto.'
-            send_error: 
-            send_success: 
+            send_error: Si è verificato un problema nell'invio della tua email. Cortesemente riprova più tardi.
+            send_success: Il tuo messaggio è stato inviato
             subtitle: Iscriviti a singoli eventi selezionando la relativa casella.
             title: Notifiche e-mail
           learn_openid: Informati su OpenID
@@ -2039,7 +2044,7 @@ it:
         edit_image_link: Modifica Immagine
         followers: Followers
         following: Following
-        hide_contacts_link: 
+        hide_contacts_link: Nascosto
     reset_password:
       failed: Si è verificato un problema durante la reimpostazione della password. Riprova più tardi.
       form:
@@ -2067,61 +2072,61 @@ it:
       third_party_return_create: creare un account Socrata
       third_party_return_link: associarlo ad un Socrata ID esistente
     stats:
-      api: 
-      apply: 
-      bytes_out: 
-      chart_created: 
-      charts: 
-      charts_created: 
-      comment_created: 
-      comments: 
-      comments_created: 
-      daily: 
-      deleted_application: 
-      dependent_metrics: 
-      download: 
-      downloads: 
-      during_time_period: 
-      embed: 
-      embeds: 
-      error_loading: 
-      filter_created: 
-      filters: 
-      filters_created: 
-      govstat_hits: 
-      hit_served: 
-      hits_served: 
-      hourly: 
-      map_created: 
-      maps: 
-      maps_created: 
-      metric_backed: 
-      metrics_backed: 
-      monthly: 
-      name: 
-      no_data_time_period: 
-      page_viewed: 
-      pages_viewed: 
-      referrals: 
-      rows_loaded: 
-      sdp: 
-      select_chart_type: 
-      show_more: 
-      time_period_unavailable: 
-      title: 
-      top_embeds: 
-      top_referrers: 
-      total: 
-      total_govstat_hits: 
-      views: 
-      views_loaded: 
-      website: 
-      weekly: 
+      api: API
+      apply: Applica
+      bytes_out: Bytes Finiti
+      chart_created: grafico creato
+      charts: Grafici
+      charts_created: grafici selezionati
+      comment_created: commento creato
+      comments: Commenti
+      comments_created: commenti creati
+      daily: Giornaliero
+      deleted_application: applicazione cancellata
+      dependent_metrics: Metriche Dipendenti
+      download: download
+      downloads: scaricati
+      during_time_period: durante questo periodo di tempo
+      embed: incorporato
+      embeds: incorporati
+      error_loading: E' avvenuto un errore durante il caricamento dei dati metrici. Cortesemente riprova.
+      filter_created: filtro creato
+      filters: Filtri
+      filters_created: filtri creati
+      govstat_hits: Visite GovStat
+      hit_served: visita servita
+      hits_served: visite servite
+      hourly: Orario
+      map_created: mappa creata
+      maps: Mappe
+      maps_created: mappe create
+      metric_backed: metrica backend
+      metrics_backed: metriche backend
+      monthly: Mensile
+      name: Nome
+      no_data_time_period: Nessun dato per questo intervallo di tempo
+      page_viewed: pagina vista
+      pages_viewed: pagine viste
+      referrals: Referenti
+      rows_loaded: Righe Caricate
+      sdp: SDP
+      select_chart_type: Seleziona un tipo di grafico da mostrare dal menù
+      show_more: Mostrane Altri
+      time_period_unavailable: I dati metrici non sono disponibili per questo periodo di tempo
+      title: Set di Dati Analitico
+      top_embeds: I migliori incorporati
+      top_referrers: Le migliori provenienze
+      total: totale
+      total_govstat_hits: Contatti totali GovStat
+      views: Visti
+      views_loaded: Visualizzazioni Caricate
+      website: Sito web
+      weekly: Settimanale
     wizard:
-      cancel: 
-      finish: 
-      next: 
-      previous: 
+      cancel: Cancella
+      finish: Termina
+      next: Successivo
+      previous: Precedente
   support:
     array:
       last_word_connector: ! ', e '

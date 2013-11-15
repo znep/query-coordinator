@@ -296,7 +296,7 @@ pt:
         show_suggested: Mostrar valores sugeridos
         title: Opções
     grid:
-      add_column: 
+      add_column: Adicionar uma nova coluna...
       clear_column_filter: Limpar filtro de coluna
       clear_sort: Limpar ordem
       click_for_menu: Clique para ver o menu
@@ -316,13 +316,13 @@ pt:
       previous: Anterior
       sort_ascending: Ordenar por ascendente
       sort_descending: Ordenar por descendente
-      totals: 
-      view_cell_comments: 
+      totals: Totais
+      view_cell_comments: Ver comentários para esta célula
       view_first_row: Ver a primeira linha
       view_last_row: Ver a última linha
       view_next_row: Ver a próxima linha
       view_previous_row: Ver a linha anterior
-      view_row: 
+      view_row: Ver linha
       view_single_row: Ver os dados de linha única
       viewing_row_html: A ver a linha <span class="curPage"></span> de <span class="totalPages"></span>
     nominate:
@@ -572,15 +572,15 @@ pt:
       roadmap: Mapa de estradas
       satellite: Satélite
       terrain: Terreno
-    no_js: 
+    no_js: Desativar o Javascript nesta página
     numbers:
-      eight: 
-      five: 
-      four: 
-      nine: 
-      seven: 
-      six: 
-      three: 
+      eight: oito
+      five: cinco
+      four: quatro
+      nine: nove
+      seven: sete
+      six: seis
+      three: três
     or: ou
     pagination:
       current_page: Página atual
@@ -592,7 +592,7 @@ pt:
     precision_style:
       scientific: Científica (1,0204e+3)
       standard: Padrão (1020,4)
-    required: 
+    required: Obrigatório
     share_types:
       contributor: Contribuinte
       owner: Proprietário
@@ -643,84 +643,84 @@ pt:
   dataslate:
     component:
       header:
-        height: 
-      invalid_config: 
-      loading: 
+        height: Altura
+      invalid_config: Este componente não tem uma configuração válida
+      loading: A carregar, por favor, aguarde...
       picture:
-        alt_attr: 
-        alt_attr_prompt: 
-        full_url: 
-        image_source: 
-        large: 
-        medium: 
-        original: 
-        thumb: 
-        tiny: 
-        title_attr: 
-        title_attr_prompt: 
+        alt_attr: Alt
+        alt_attr_prompt: atributo alt
+        full_url: URL totalmente qualificado para uma imagem
+        image_source: Fonte da Imagem
+        large: Grande (220x220)
+        medium: Médio (150x150)
+        original: Original
+        thumb: Miniatura (80x80)
+        tiny: Minúsculo (24x24)
+        title_attr: Título
+        title_attr_prompt: atributo do título
       print:
-        print: 
-        print_this_page: 
-      remove: 
+        print: Imprimir
+        print_this_page: Imprimir esta página
+      remove: Remover este componente
       share:
-        email: 
-        email_contents: 
-        facebook: 
-        share: 
-        subscribe: 
-        subscribe_text: 
-        this_page: 
-        tweet_contents: 
-        twitter: 
+        email: Partilhar através de E-mail
+        email_contents: ! '%{dataset} na %{company}'
+        facebook: Partilhar no Facebook
+        share: Partilhar
+        subscribe: Subscrever através de E-mail ou RSS
+        subscribe_text: Assinar Alterações
+        this_page: Esta página
+        tweet_contents: ! 'Ver %{dataset} na %{company}: %{url}'
+        twitter: Partilhar no Twitter
     configurator:
-      advanced_components: 
-      report_components: 
+      advanced_components: Componentes Avançados
+      report_components: Componentes de Relatório
     context_picker:
-      select_dataset: 
-      view_data: 
+      select_dataset: Selecionar Conjunto de Dados
+      view_data: Ver Dados
     create:
-      cancel: 
-      create: 
-      create_page: 
-      page_settings: 
-      page_title: 
-      page_url: 
-      title: 
+      cancel: Cancelar
+      create: Criar
+      create_page: Criar Página DataSlate
+      page_settings: Definições de Página
+      page_title: Título da Página
+      page_url: URL da Página
+      title: ! 'Criar Página DataSlate '
     edit:
-      editing: 
-      permissions: 
-      preview_page: 
-      redo: 
-      revert: 
-      save: 
-      save_as: 
-      settings: 
-      undo: 
-      view_editor: 
+      editing: A editar
+      permissions: Permissões
+      preview_page: Pré-visualizar página
+      redo: Repetir a Introdução
+      revert: Reverter
+      save: Guardar
+      save_as: Guardar Como
+      settings: Definições
+      undo: Anular a Introdução
+      view_editor: Ver o editor interativo
     edit_component:
-      no_config: 
-      subtitle: 
-      title: 
+      no_config: Nenhuma configuração disponível para %{component}
+      subtitle: Configurar este componente
+      title: Editar Componente
     edit_properties:
-      no_data: 
-      subtitle: 
-      title: 
+      no_data: Nenhum conjunto de dados para este componente
+      subtitle: ! 'Adicionar a este componente propriedades baseadas no contexto de dados '
+      title: Propriedades Disponíveis
     permissions:
-      cancel: 
-      private: 
-      private_desc: 
-      public: 
-      public_desc: 
-      save: 
-      shared: 
-      shared_desc: 
-      title: 
+      cancel: Cancelar
+      private: Privado
+      private_desc: Apenas visível para si
+      public: Público
+      public_desc: Visível para todos
+      save: Guardar
+      shared: Partilhado no Site
+      shared_desc: Visível para todos os seus colegas, mas não para o público
+      title: Permissões da Página
     settings:
-      cancel: 
-      page_title: 
-      page_url: 
-      save: 
-      title: 
+      cancel: Cancelar
+      page_title: Título da Página
+      page_url: Caminho
+      save: Guardar
+      title: Definições de Página
   error:
     back: Voltar
     error_500:
@@ -745,131 +745,134 @@ pt:
       header:
         links:
           account: Conta
-          account_options: 
+          account_options: Opções de Conta
           account_tooltip: Ver e fazer alterações à sua conta de utilizador.
-          configuration: 
-          data: 
-          goals: 
-          home: 
+          configuration: Configuração
+          data: Dados
+          goals: Objetivos
+          home: Início
           my_goals: Os meus objetivos
           my_goals_tooltip: Ver os objetivos que criei.
-          reports: 
+          reports: Relatórios
     reports:
       component:
-        base_map: 
-        chart: 
-        formatted_text: 
-        header: 
-        horizontal_layout: 
-        map: 
-        map_layer: 
-        picture: 
-        print: 
-        share: 
-        table: 
-        title: 
-        vertical_layout: 
-        visualize: 
+        base_map: Mapa de Base
+        chart: Gráfico
+        formatted_text: Texto Formatado
+        header: Cabeçalho
+        horizontal_layout: Disposição Horizontal
+        map: Mapa
+        map_layer: Camada de Mapa
+        picture: Imagem
+        print: Imprimir
+        share: Partilhar
+        table: Tabela
+        title: Título
+        vertical_layout: Disposição Vertical
+        visualize: Visualizar
       create:
-        create_report: 
-        title: 
+        create_report: Criar Relatório
+        title: Criar Relatório
       manage:
-        copy: 
-        create_new_report: 
-        delete: 
-        edit: 
-        home: 
-        other_reports: 
-        owner: 
-        reports: 
-        title: 
-        updated: 
-        your_reports: 
+        copy: Copiar
+        create_new_report: Criar Novo Relatório
+        delete: Eliminar
+        edit: Editar
+        home: Início
+        other_reports: Outros Relatórios
+        owner: proprietário
+        reports: Relatórios
+        title: Gerir Relatórios
+        updated: atualizado
+        your_reports: Os Seus Relatórios
       permissions:
-        title: 
+        title: Permissões do Relatório
       settings:
-        page_title: 
-        title: 
+        page_title: Título do Relatório
+        title: Definições do Relatório
   plugins:
     daterangepicker:
-      date_range: 
-      done: 
-      end_date: 
-      last_month: 
-      month_to_date: 
-      next: 
-      prev: 
-      specific_date: 
-      start_date: 
-      the_month_of: 
-      the_week_of: 
-      the_year_of: 
-      today: 
-      week_to_date: 
-      year_to_date: 
+      date_range: Intervalo de Datas
+      done: Concluído
+      end_date: Data final
+      last_month: Mês Passado
+      month_to_date: Mês da Data
+      next: Seguinte
+      prev: Anterior
+      specific_date: Data Específica
+      start_date: Data inicial
+      the_month_of: O Mês De...
+      the_week_of: A Semana De...
+      the_year_of: O Ano De...
+      today: Hoje
+      week_to_date: Semana da Data
+      year_to_date: Ano da Data
     fileuploader:
-      drop_files: 
-      failed: 
-      upload_a_file: 
+      drop_files: Solte os ficheiros aqui para carregar
+      failed: Falhou
+      upload_a_file: Carregar um ficheiro
     hallo:
-      body: 
-      bold: 
-      heading: 
-      italic: 
-      redo: 
-      subheading: 
-      undo: 
+      body: Corpo
+      bold: negrito
+      heading: Título
+      italic: itálico
+      redo: Repetir a Introdução
+      subheading: Subtítulo
+      undo: Anular a Introdução
     jquery_ui:
-      april: 
-      april_short: 
-      august: 
-      august_short: 
-      december: 
-      december_short: 
-      done: 
-      february: 
-      february_short: 
-      friday: 
-      friday_min: 
-      friday_short: 
-      january: 
-      january_short: 
-      july: 
-      july_short: 
-      june: 
-      june_short: 
-      march: 
-      march_short: 
-      may: 
-      may_short: 
-      monday: 
-      monday_min: 
-      monday_short: 
-      next: 
-      november: 
-      november_short: 
-      october: 
-      october_short: 
-      prev: 
-      saturday: 
-      saturday_min: 
-      saturday_short: 
-      september: 
-      september_short: 
-      sunday: 
-      sunday_min: 
-      sunday_short: 
-      thursday: 
-      thursday_min: 
-      thursday_short: 
-      today: 
-      tuesday: 
-      tuesday_min: 
-      tuesday_short: 
-      wednesday: 
-      wednesday_min: 
-      wednesday_short: 
-      week_min: 
+      april: abril
+      april_short: abr
+      august: agosto
+      august_short: ago
+      december: dezembro
+      december_short: dez
+      done: Concluído
+      february: fevereiro
+      february_short: fev
+      friday: sexta-feira
+      friday_min: sex
+      friday_short: sex
+      january: janeiro
+      january_short: jan
+      july: julho
+      july_short: jul
+      june: junho
+      june_short: jun
+      march: março
+      march_short: mar
+      may: maio
+      may_short: mai
+      monday: segunda-feira
+      monday_min: seg
+      monday_short: seg
+      next: Seguinte
+      november: novembro
+      november_short: nov
+      october: outubro
+      october_short: out
+      prev: Anterior
+      saturday: sábado
+      saturday_min: sá
+      saturday_short: sáb
+      september: setembro
+      september_short: set
+      sunday: domingo
+      sunday_min: do
+      sunday_short: dom
+      thursday: quinta-feira
+      thursday_min: qui
+      thursday_short: qui
+      today: Hoje
+      tuesday: terça-feira
+      tuesday_min: te
+      tuesday_short: ter
+      wednesday: quarta-feira
+      wednesday_min: qua
+      wednesday_short: qua
+      week_min: Fim de semana
+  recaptcha:
+    errors:
+      verification_failed: 
   screens:
     about:
       actions: Ações
@@ -904,6 +907,8 @@ pt:
       semantics: Semântica e RDF
       short_url: URL curta
       snapshotted: instantâneo tirado
+      soda2_support: 
+      soda2_yes: 
       source_link: Hiperligação original
       spatial_extent: Extensão espacial
       subject_column: Coluna do assunto
@@ -915,116 +920,116 @@ pt:
       visits: Visitas
       your: A sua classificação
     dataset_edit:
-      append: 
-      append_and_replace: 
-      append_explain: 
+      append: Anexar
+      append_and_replace: Anexar e Substituir dados
+      append_explain: Você gostaria que os dados carregados fossem adicionados ao final do seu conjunto de dados. Poderá escolher a forma como os seus novos mapas de dados serão adicionados às suas colunas existentes.
       finish:
-        headline: 
-        subheadline: 
-      headline: 
+        headline: O seu Conjunto de Dados foi atualizado.
+        subheadline: Clique em Terminar para vê-lo!
+      headline: O que gostaria de fazer com os seus dados carregados?
       import_columns:
-        destination_column: 
-        destination_data_type: 
-        headline: 
+        destination_column: Coluna de Destino
+        destination_data_type: Tipo de Dados de Destino
+        headline: De que forma os dados em &ldquo;<span class="fileName"></span>&rdquo; estão relacionados com o seu conjunto de dados?
       import_warnings:
-        see_docs: 
-      replace: 
-      replace_data: 
-      replace_explain: 
-      replace_layer: 
-      title: 
-      upload_accessible: 
+        see_docs: <strong>Confuso?</strong> Por favor, consulte a <a href="%{publisher_link}" rel="external">documentação da nossa editora</a> relativa à importação de dados para uma explicação detalhada sobre a forma como o importador manipula os dados.
+      replace: Substituir
+      replace_data: Substituir dados
+      replace_explain: Você gostaria que todos os dados existentes fossem removidos e substituídos pelos seus dados carregados. Poderá escolher a forma como os seus novos mapas de dados serão adicionados às suas colunas existentes. Não é possível anular esta operação.
+      replace_layer: Substituir Camada
+      title: Editar Conjunto de Dados
+      upload_accessible: Carregar novos dados de forma acessível
     dataset_new:
       column_template:
-        name_this_col: 
-        options: 
-        remove: 
+        name_this_col: Dar um nome a esta coluna
+        options: opções
+        remove: remover
       crossload:
-        downloading: 
-        headline: 
-        import: 
-        supported: 
-        url_prompt: 
+        downloading: A descarregar o seu ficheiro...
+        headline: Por favor, indique a localização do seu ficheiro de dados.
+        import: Importar
+        supported: Os tipos de ficheiro suportados são CSV, TSV e Excel. Os protocolos suportados são HTTP e HTTPS.
+        url_prompt: Qual é o web URL do ficheiro que gostaria de importar?
       finish:
-        headline: 
-        subheadline: 
+        headline: O seu Conjunto de Dados foi criado.
+        subheadline: Clique em Terminar para vê-lo!
       first_page:
-        blobby: 
-        blobby_explain: 
-        create: 
-        create_explain: 
-        external: 
-        external_explain: 
-        header: 
-        import: 
-        import_explain: 
-        mapLayer: 
-        mapLayer_explain: 
-        prompt: 
-        shapefile: 
-        shapefile_explain: 
+        blobby: Carregar um Ficheiro Sem Dados
+        blobby_explain: Escolha esta opção se tiver um ficheiro com dados mas que não possa ser importado, como um PDF ou um ficheiro de imagem. Este será importado para o catálogo de dados, mas não será tão interativo como dados reais.
+        create: Desenhar a Partir do Zero
+        create_explain: Escolha esta opção se não tiver dados que queira importar. Poderá definir um esquema para os seus dados e colocá-lo online.
+        external: Ligação para os Dados Externos
+        external_explain: Escolha esta opção se já tiver dados que estejam a ser hospedados noutro servidor. Estes dados não serão importados.
+        header: Criar um novo Conjunto de Dados
+        import: Importar um Ficheiro de Dados
+        import_explain: Escolha esta opção se já tiver um ficheiro de dados no seu computador que queira importar. Os formatos suportados são .csv, .tsv, .xls, and .xlsx.
+        mapLayer: Ligar a uma Camada de Mapa ESRI
+        mapLayer_explain: Escolha esta opção se tiver uma camada de mapa ESRI que gostaria de importar para o catálogo. Será necessário fornecer um URL para o ponto API onde a camada ESRI está armazenada.
+        prompt: Como gostaria de criar o seu novo Conjunto de Dados?
+        shapefile: Importar Dados Geoespaciais
+        shapefile_explain: Escolha esta opção se tiver dados geoespaciais que gostaria de importar para o catálogo.
       import:
-        headline: 
-        local: 
-        local_explain: 
-        web: 
-        web_explain: 
+        headline: Onde está localizado este ficheiro?
+        local: No meu computador
+        local_explain: Escolha esta opção se tiver um ficheiro no computador que esteja em utilização.
+        web: Na Internet
+        web_explain: Escolha esta opção se tiver um ficheiro que já esteja na Internet e tiver o URL dele.
       import_columns:
-        add_new_column: 
-        clear_all: 
-        data_type: 
-        errors_warnings: 
-        fewer_rows: 
-        headers: 
-        headers_instructions: 
-        headline: 
-        help_message: 
-        more_rows: 
-        name: 
-        pending_columns: 
-        reset_to_preset: 
-        set: 
-        source_column: 
-        subheadline: 
-        suggested_alltext: 
-        suggested_columns: 
-        suggested_flat: 
-        suggested_plus_discrete: 
-        why_choose_now: 
-      import_help: 
+        add_new_column: Adicionar Nova Coluna
+        clear_all: Limpar Tudo
+        data_type: Tipo de Dados
+        errors_warnings: Erros e Avisos
+        fewer_rows: Menos Linhas
+        headers: Cabeçalhos
+        headers_instructions: Os cabeçalhos devem ser ignorados e não importados como dados. Por favor, indique as linhas do seu ficheiro de origem que são cabeçalhos
+        headline: Especifique a forma como &ldquo;<span class="fileName"></span>&rdquo; deve ser importado.
+        help_message: Para ajuda, consulte uma <a href="%{common_errors}" rel="external">lista dos avisos e erros comuns</a>.
+        more_rows: Mais Linhas
+        name: Nome
+        pending_columns: Por favor, aguarde enquanto carregamos as suas colunas...
+        reset_to_preset: Repor as predefinições
+        set: Definir
+        source_column: Coluna de Origem
+        subheadline: Colunas a importar
+        suggested_alltext: Todas as colunas como texto
+        suggested_columns: Colunas sugeridas
+        suggested_flat: Colunas sugeridas (sem compostos)
+        suggested_plus_discrete: Colunas sugeridas (compostos e discretas)
+        why_choose_now: Porque é importante escolher agora os tipos de coluna?
+      import_help: <strong>Precisa de ajuda?</strong> Mantemos uma <a href="%{common_errors}" rel="external">lista dos avisos e erros comuns</a> que podem ajudá-lo.
       import_shapefile:
-        crs: 
-        headline: 
-        layers_list: 
-        name: 
-        pending: 
-        subheadline: 
+        crs: Coordenar o Sistema de Referência
+        headline: Especifique a forma como “<span class="fileName"></span>” deve ser importado.
+        layers_list: Camadas a importar
+        name: Nome
+        pending: Por favor, aguarde enquanto carregamos as suas camadas...
+        subheadline: Este ficheiro de formas contém <span class="featureCount"></span> recursos em <span class="layerCount"></span> camadas.
       import_warnings:
-        headline: 
-        see_docs: 
-        subheadline: 
-      importing_your_data: 
+        headline: Avisos durante a importação
+        see_docs: <strong>Confuso?</strong> Por favor, consulte <a href="%{publisher_link}" rel="external">a documentação da nossa editora</a> relativa à importação de dados para uma explicação detalhada sobre a forma como o importador manipula os dados. Também pode querer consultar a nossa <a href="%{common_errors}" rel="external">lista de avisos e erros comuns</a>.
+        subheadline: Por favor, observe que alguns dos seus dados podem não ter sido importados corretamente.
+      importing_your_data: A importar os seus dados...
       metadata:
-        creative_commons_type: 
-        esri_map_layer_url: 
-        esri_source_url: 
-        privacy_security: 
-        private_explain: 
-        prompt: 
-        public_explain: 
-      processing: 
-      title: 
-      upload_accessible: 
+        creative_commons_type: Tipo de Creative Commons
+        esri_map_layer_url: URL da Camada de Mapa ESRI
+        esri_source_url: Digite o URL de origem
+        privacy_security: Privacidade e Segurança
+        private_explain: Os meus dados são <strong>privados</strong>
+        prompt: Por favor, descreva os seus dados.
+        public_explain: ! 'Os meus dados são <strong>públicos</strong>: só podem ser modificados por mim, mas podem ser vistos por todos'
+      processing: A processar...
+      title: Novo Conjunto de Dados
+      upload_accessible: Carregar um novo conjunto de dados de forma acessível
       upload_file:
-        choose_a_file: 
-        no_file_selected: 
-        supported_blist: 
-        supported_shapefile: 
-        uploading: 
+        choose_a_file: Escolher um Ficheiro
+        no_file_selected: Nenhum ficheiro selecionado ainda.
+        supported_blist: Os formatos suportados são .csv, .tsv, .xls, e .xlsx.
+        supported_shapefile: Os formatos suportados são .kml, .kmz, e .zip (Ficheiros de Formas ESRI).
+        uploading: A carregar o seu ficheiro...
       why_choose_now:
-        close: 
-        line_1: 
-        line_2: 
+        close: Fechar
+        line_1: Os seus dados são altamente processados ​​quando são importados e otimizados para o consumo de cada tipo de dados particular. Além disso, a maioria dos tipos de dados possui características especiais que só serão ativadas se a coluna for definida para esse tipo &mdash; por exemplo, as colunas de localização são necessárias para criar mapas.
+        line_2: É possível alterar os tipos de coluna mais tarde, mas é um processo que demora algum tempo, por isso o melhor é definir tudo corretamente com antecedência.
     ds:
       bar:
         api_unsavable: As vistas API não podem ser modificadas
@@ -1816,8 +1821,8 @@ pt:
       dataset_title: Título do conjunto de dados
       dataset_title_error: O conjunto de dados deve ter um título.
       dataset_title_prompt: Introduzir um título
-      dataset_url: 
-      dataset_url_prompt: 
+      dataset_url: URL do Conjunto de Dados
+      dataset_url_prompt: Digite a localizaçao do seu conjunto de dados externo
       delete: Eliminar
       email_address: Endereço de e-mail
       email_help: Este endereço não será apresentado publicamente. Se deixado em branco o padrão será assumir o seu endereço
@@ -1880,26 +1885,26 @@ pt:
         account_tooltip: A sua página inicial
         administration: Administração
     import_pane:
-      analyzing: 
-      assure_accessible: 
-      combine_multiple_cols: 
-      downloading: 
-      filetype_error_blist: 
-      filetype_error_shapefile: 
-      headline_import: 
-      headline_upload: 
-      layer: 
-      many_headers: 
-      no_file_selected: 
-      no_headers: 
-      no_source_column: 
-      one_header: 
-      problem_importing: 
-      problem_uploading: 
-      rows_imported: 
-      try_again: 
-      unknown_error: 
-      uploading: 
+      analyzing: A analisar o seu ficheiro...
+      assure_accessible: Por favor, assegure-se de que o seu ficheiro está acessível e é válido e tente novamente.
+      combine_multiple_cols: (Combinar Várias Colunas...)
+      downloading: A descarregar o seu ficheiro...
+      filetype_error_blist: Por favor, escolha um ficheiro CSV, TSV, XLS ou XLSX.
+      filetype_error_shapefile: Por favor, escolha um ficheiro KML, KMZ ou ZIP.
+      headline_import: Por favor, escolha um ficheiro a importar
+      headline_upload: Por favor, escolha um ficheiro a carregar
+      layer: Camada
+      many_headers: ! '%{num} das suas linhas são cabeçalhos.'
+      no_file_selected: Nenhum ficheiro selecionado ainda.
+      no_headers: Nenhuma das suas linhas é um cabeçalho.
+      no_source_column: (Nenhuma Coluna de Origem)
+      one_header: Uma das suas linhas é um cabeçalho.
+      problem_importing: Ocorreu um problema ao importar esse ficheiro. Por favor, verifique se é válido.
+      problem_uploading: Ocorreu um problema ao carregar esse ficheiro. Por favor, verifique se é válido.
+      rows_imported: ! '%{num} linhas importadas até agora.'
+      try_again: Por favor, tente novamente daqui a pouco.
+      unknown_error: Ocorreu um erro desconhecido
+      uploading: A carregar o seu ficheiro
     link_account:
       success: A sua conta externa foi associada.
     profile:
@@ -2069,61 +2074,61 @@ pt:
       third_party_return_create: criar uma conta Socrata
       third_party_return_link: associá-la a uma Socrata ID existente
     stats:
-      api: 
-      apply: 
-      bytes_out: 
-      chart_created: 
-      charts: 
-      charts_created: 
-      comment_created: 
-      comments: 
-      comments_created: 
-      daily: 
-      deleted_application: 
-      dependent_metrics: 
-      download: 
-      downloads: 
-      during_time_period: 
-      embed: 
-      embeds: 
-      error_loading: 
-      filter_created: 
-      filters: 
-      filters_created: 
-      govstat_hits: 
-      hit_served: 
-      hits_served: 
-      hourly: 
-      map_created: 
-      maps: 
-      maps_created: 
-      metric_backed: 
-      metrics_backed: 
-      monthly: 
-      name: 
-      no_data_time_period: 
-      page_viewed: 
-      pages_viewed: 
-      referrals: 
-      rows_loaded: 
-      sdp: 
-      select_chart_type: 
-      show_more: 
-      time_period_unavailable: 
-      title: 
-      top_embeds: 
-      top_referrers: 
-      total: 
-      total_govstat_hits: 
-      views: 
-      views_loaded: 
-      website: 
-      weekly: 
+      api: API
+      apply: Aplicar
+      bytes_out: Saída de Bytes
+      chart_created: gráfico criado
+      charts: Gráficos
+      charts_created: gráficos criados
+      comment_created: comentário criado
+      comments: Comentários
+      comments_created: comentários criados
+      daily: Diariamente
+      deleted_application: aplicação eliminada
+      dependent_metrics: Métrica Dependente
+      download: download
+      downloads: downloads
+      during_time_period: durante este período de tempo
+      embed: incorporação (noun) / incorporar (verb)
+      embeds: incorporações
+      error_loading: Ocorreu um erro ao carregar os dados da métrica. Por favor, tente novamente mais tarde
+      filter_created: filtro criado
+      filters: Filtros
+      filters_created: filtros criados
+      govstat_hits: Visitas GovStat
+      hit_served: visita feita
+      hits_served: visitas feitas
+      hourly: Por Hora
+      map_created: mapa criado
+      maps: Mapas
+      maps_created: mapas criados
+      metric_backed: métrica apoiada
+      metrics_backed: métricas apoiadas
+      monthly: Mensalmente
+      name: Nome
+      no_data_time_period: Nenhum dado para este período de tempo
+      page_viewed: página visualizada
+      pages_viewed: páginas visualizadas
+      referrals: Referências
+      rows_loaded: Linhas Carregadas
+      sdp: SDP
+      select_chart_type: Selecione um tipo de gráfico a mostrar a partir do menu
+      show_more: Mostrar Mais
+      time_period_unavailable: Os dados de métrica não estão disponíveis para este período de tempo
+      title: Analítica do Conjunto de Dados
+      top_embeds: Melhores Incorporações
+      top_referrers: Melhores Referentes
+      total: total
+      total_govstat_hits: Total de Visitas GovStat
+      views: ! 'Visualizações '
+      views_loaded: Visualizações Carregadas
+      website: Webspite
+      weekly: Semanalmente
     wizard:
-      cancel: 
-      finish: 
-      next: 
-      previous: 
+      cancel: Cancelar
+      finish: Terminar
+      next: Seguinte
+      previous: Anterior
   support:
     array:
       last_word_connector: ! ', e'

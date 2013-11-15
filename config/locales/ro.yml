@@ -9,8 +9,8 @@ ro:
         lockout_warning: Din motive de siguranţă, trei tentative de autentificare în decurs de 15 minute vor duce la blocarea contului timp de 30 de minute.
         no_account: Nu aveţi cont?
         password: Parolă
-        password_requirements: ! 'Obligatorie. Parola dvs. trebuie să aibă între 8 şi 40 de caractere şi să îndeplinească trei dintre următoarele patru criterii: să conţină o cifră, să conţină o literă mică, să conţină o literă mare, să conţină un simbol ne-alfanumeric (nici literă, nici cifră).'
-        password_requirements_html: <p>Parola dvs. trebuie să aibă <b>între 8 şi 40 de caractere</b> şi să îndeplinească <b>trei dintre următoarele patru criterii</b>:</p><p></p><ul><li>• să conţină o cifră</li><li>• să conţină o literă mică</li><li>• să conţină o literă mare</li><li>• să conţină un simbol ne-alfanumeric (nici literă, nici cifră).</li></ul>
+        password_requirements: ! 'Obligatorie. Parola dvs. trebuie să aibă între 8 şi 40 de caractere şi să îndeplinească trei dintre următoarele patru criterii: să conţină o cifră, o literă mică, o literă mare, un simbol ne-alfanumeric (nici literă, nici cifră).'
+        password_requirements_html: <p>Parola dvs. trebuie să aibă între 8 şi 40 de caractere </b> şi să îndeplinească <b>trei dintre următoarele patru criterii</b>:</p><p></p><ul><li>&bull; să conţină o cifră,</li><li>&bull; să conţină o literă mică,</li><li>&bull; să conţină o literă mare</li><li>&bull; să conţină un simbol ne-alfanumeric (nici literă, nici cifră).</li></ul>
         password_restrictions: Se aplică restricţii
         remember_me: Ţine-mă minte
         sign_up_prompt: Înregistraţi-vă acum
@@ -93,7 +93,7 @@ ro:
           apis: API-uri
           blob: Fişiere şi documente
           calendars: Calendare
-          charts: Hărţi
+          charts: Diagrame
           datasets: Seturi de date
           filters: Vizualizări filtrate
           forms: Formulare
@@ -121,7 +121,7 @@ ro:
         no_matching_rows: Nu au fost găsite rânduri care se potrivesc
         title_html: ! 'Se afişează <span class="rowResultCountText"></span> din <span class="totalResultCountText"></span> rânduri care se potrivesc <a href="#" class="rowSearchLink">(vizualizare rezultate)</a>:'
       search: Căutare
-      sort_period_title: Perioadă sortare
+      sort_period_title: Sortaţi perioada
       sort_periods:
         month: Luna aceasta
         week: Săptămâna aceasta
@@ -140,24 +140,24 @@ ro:
         default: Căutare şi răsfoire seturi de date şi vizualizări
         result:
           facet: ! '%{facet_type} din %{facet_value}'
-          facet_main: ! '%{body} asemănătoare'
+          facet_main: ! '%{body} care se potrivesc'
           main: Rezultate %{body}
           term: pentru "%{term}"
     charts:
-      negatives_in_data: ! 'Tabel nevalabil: sunt prezente valori negative'
+      negatives_in_data: ! 'Diagramă nevalabilă: conţine valori negative'
       no_data: Fără date
       other_slice_label: Altele
       series_grouping:
         calculating_time: Se calculează timpul rămas...
         calculation_running: Se pregătesc datele
         drawing_progress: Aceasta poate dura un pic...
-        drawing_running: Se desenează tabelul
+        drawing_running: Se desenează diagrama
         pause_button_explanation1: Sfat! Durează prea mult? Încercaţi să daţi pauză şi să creaţi un filtru
         pause_button_explanation2: pentru a limita numărul de calcule necesare.
         pause_rendering: Pauză
         rendering_paused: Pregătirea datelor a fost pusă în pauză
         rendering_progress: ! '%{rows_remaining} rânduri rămase.'
-        rendering_progress_almost_done: ! '%{rows_remaining} rows rămase. Doar câteva secunde.'
+        rendering_progress_almost_done: ! '%{rows_remaining} rânduri rămase. Doar câteva secunde.'
         rendering_progress_minute: ! '%{rows_remaining} rânduri rămase. Aproximativ %{time_remaining} minute.'
         rendering_progress_minutes: ! '%{rows_remaining} rânduri rămase. Aproximativ %{time_remaining} minute.'
         rendering_progress_seconds: ! '%{rows_remaining} rânduri rămase. Aproximativ %{time_remaining} secunde.'
@@ -217,14 +217,14 @@ ro:
     feed:
       authed_actions:
         delete_comment: ştergeţi un comentariu
-        flag_comment: Semnalaţi un comentariu
+        flag_comment: semnalaţi un comentariu
         post_comment: publicaţi un comentariu
         rate_comment: votaţi un comentariu
       comment_actions:
         already_marked_inappropriate: Semnalat
         delete: Ştergere
         delete_confirm: Sunteţi sigur? Comentariul dvs. se va pierde.
-        inappropriate: nepotrivit
+        inappropriate: Nepotrivit
         marked_inappropriate: Semnalat!
         rate_down: Votaţi acest comentariu "Nu-mi place"
         rate_up: Votaţi acest comentariu "Îmi place"
@@ -240,7 +240,7 @@ ro:
         feed_filter_label: Afişare
         pending_moderation: Comentariul este trimis şi aşteaptă moderarea
       listing:
-        all_replies: Vizualizaţi toate replicile
+        all_replies: Vizualizaţi toate răspunsurile
         all_replies_with_count: Vizualizaţi toate %{count} răspunsurile
         last_item: Vizualizaţi ultimul element
         next_item_page: Vizualizaţi următorul %{count} element
@@ -254,9 +254,9 @@ ro:
       actions:
         confirm_modify: Această acţiune va elimina toate valorile din filtrul dvs.! Sunteţi sigur că doriţi să faceţi aceasta?
         disable_filter: Nu filtraţi
-        first_condition: Apăaţi aici pentru a adăuga la filtru prima dvs. condiţie
+        first_condition: Apăsaţi aici pentru a adăuga la filtru prima dvs. condiţie
         new_condition_button: Adăugare condiţie nouă la filtru
-        remove_filter: Îndepărtaţi filtrul
+        remove_filter: Eliminare filtru
         select_column: ! 'Selectaţi o coloană pentru a filtra după:'
         select_operation: ! 'Selectaţi o operaţie pentru a filtra după:'
         select_subcolumn: ! 'Selectaţi partea de %{name} pentru a filtra după:'
@@ -291,16 +291,16 @@ ro:
       menu:
         match_all: Se potriveşte cu toate condiţiile
         match_any: Se potriveşte oricărei condiţii
-        select_many: Selectare multe
-        select_one: Selectare una
+        select_many: Selectare mai multe
+        select_one: Selectare doar una
         show_suggested: Afişare valori sugerate
         title: Opţiuni
     grid:
       add_column: Adăugare coloană nouă
       clear_column_filter: Ştergere filtru coloană
-      clear_sort: Ştergere sortare
+      clear_sort: Eliminare sortare
       click_for_menu: Click pentru meniu
-      click_to_sort: ! 'Click pentru sortare
+      click_to_sort: ! 'Click pentru a sorta
 
 '
       column_info: Informaţii coloană
@@ -350,7 +350,7 @@ ro:
       edit: (Editare)
       edit_suggestion: Editaţi această sugestie
       files: Fişiere
-      filter_by_status: Filtare după stare
+      filter_by_status: Filtrare după stare
       form_error: Vă rugăm să corectaţi erorile de mai sus
       great_sadness: Eroare la contactarea autorului sugestiei. Vă rugăm să încercaţi mai târziu.
       greater_success: Mesajul dvs. a fost trimis către autorul sugestiei
@@ -375,7 +375,7 @@ ro:
       required: Obligatoriu
       status: Stare
       submit: Trimitere
-      submitted_by: Trimis(ă) de
+      submitted_by: Trimisă de
       suggest_a_dataset: Sugeraţi un set de date
       suggestion_received: Sugestia dvs. a fost primită şi se află în coada de aşteptare pentru moderare. Va apărea pe această pagină odată ce administratorul o va aproba.
       suggestion_updated: Sugestia dvs. a fost actualizată
@@ -399,12 +399,12 @@ ro:
       visits: vizualizări
     and: şi
     chart_types:
-      area: Diagramă zonă
-      bar: Diagramă cu bare
+      area: Diagramă zonală
+      bar: Diagramă bară
       bubble: Diagramă balon
-      column: Diagramă coloane
+      column: Diagramă coloană
       donut: Diagramă inelară
-      line: Grafic liniar
+      line: Diagramă liniară
       pie: Diagramă radială
       stackedbar: Diagramă cu bare stivuite
       stackedcolumn: Diagramă cu coloane stivuite
@@ -415,7 +415,7 @@ ro:
       bar: Bară
       bubble: Balon
       column: Coloană
-      donut: Diagramă inelară
+      donut: Inelară
       line: Linie
       pie: Radială
       stackedbar: Bară stivuită
@@ -430,10 +430,10 @@ ro:
       document: Document
       drop_down_list: Alegere multiplă
       email: E-mail
-      flag: Marcaj
+      flag: Semnalare
       geospatial: Geospaţial
       html: Text formatat
-      link: Link coloană
+      link: Coloană link
       list: Listă
       location: Localizare
       money: Bani
@@ -505,7 +505,7 @@ ro:
         notice: Aţi fost deconectat pentru siguranţa dvs. Vă rugăm să vă autentificaţi pentru a continua.
         warning:
           belay_button: Nu mă deconecta!
-          body_html: Nu am detectat nicio activitate de câteva minute. Pentru confidenţialitate, vă vom deconecta  în <span id="secondsRemaining"></span> secunde.
+          body_html: Nu am detectat nicio activitate de câteva minute. Din motive de respectare a confidenţialităţii, vă vom deconecta  în <span id="secondsRemaining"></span> secunde.
           title: Sesiunea dvs. este pe cale să expire.
       update: Actualizare
     expando:
@@ -535,7 +535,7 @@ ro:
         greater_than: este mai mare decât
         greater_than_or_equals: este cel puţin
         is_blank: este goală
-        is_not_blank: nu este gol
+        is_not_blank: nu este goală
         less_than: este mai puţin decât
         less_than_or_equals: este cel mult
         not_contains: nu conţine
@@ -596,8 +596,8 @@ ro:
     share_types:
       contributor: Colaborator
       owner: Proprietar
-      view: Vizualizator
-      viewer: Vizualizator
+      view: Vizitator
+      viewer: Vizitator
     validation:
       accept: Vă rugăm să introduceţi o valoare cu o extensie valabilă.
       date: Vă rugăm să introduceţi o dată valabilă
@@ -612,7 +612,7 @@ ro:
       number: Vă rugăm să introduceţi un număr valabil.
       range: Vă rugăm să introduceţi o valoare între {0} şi {1}.
       rangelength: Vă rugăm să introduceţi o valoare cu o lungime între {0} şi {1}.
-      remote: Vă rugăm să reparaţi acest câmp.
+      remote: Vă rugăm să revedeţi acest câmp.
       required: Acest câmp este obligatoriu.
       url: Vă rugăm să introduceţi un URL valabil.
     view_types:
@@ -681,11 +681,11 @@ ro:
     create:
       cancel: Anulare
       create: Creare
-      create_page: Creare pagină dataslate
+      create_page: Creare pagină DataSlate
       page_settings: Setări pagină
       page_title: Titlu pagină
       page_url: URL pagină
-      title: Creare pagină dataslate
+      title: Creare pagină DataSlate
     edit:
       editing: Editare
       permissions: Permisiuni
@@ -719,7 +719,7 @@ ro:
       cancel: Anulare
       page_title: Titlu pagină
       page_url: Cale
-      save: salvare
+      save: Salvare
       title: Setări pagină
   error:
     back: Înapoi
@@ -732,11 +732,11 @@ ro:
       were_sorry: Ne pare foarte rău, dar pagina solicitată de dvs. nu este disponibilă în formatul solicitat.
     not_found_404:
       back_to: Înapoi la
-      description_html: Pgina ori nu există, ori a fost mutată. Credem că cel mai bun lucru este să începeţi din nou de la <a href="/">pagina de pornire</a>. Nu ezitaţi să ne contactaţi dacă problema persistă, sau dacă nu găsiţi deloc ceea ce căutaţi. Vă mulţumim.
+      description_html: Pagina ori nu există, ori a fost mutată. Credem că cel mai bun lucru este să începeţi din nou de la <a href="/">pagina de pornire</a>. Nu ezitaţi să ne contactaţi dacă problema persistă, sau dacă nu găsiţi deloc ceea ce căutaţi. Vă mulţumim.
       page_not_found: Pagina nu a fost găsită.
       were_sorry: Ne pare foarte rău, dar pagina solicitată de dvs. nu poate fi găsită.
     permission_denied_403:
-      description_html: Dacă dvs. consideraţi că aceasta este o eroare, vă rugăm să încercaţi să iaşiţi şi să vă autentificaţi din nou ca un utilizator diferit <a href="/login">aici</a>.
+      description_html: Dacă dvs. consideraţi că aceasta este o eroare, vă rugăm să încercaţi să ieşiţi şi să vă autentificaţi din nou ca un utilizator diferit <a href="/login">aici</a>.
       no_permission: Nicio permisiune de a accesa resursa.
       were_sorry: Ne pare rău, dar se pare că nu aveţi permisiunea de a accesa această pagină.
     to_whence_you_came: de unde aţi venit.
@@ -758,7 +758,7 @@ ro:
       component:
         base_map: Hartă de bază
         chart: Diagramă
-        formatted_text: text formatat
+        formatted_text: Text Formatat
         header: Antet
         horizontal_layout: Aranjare orizontală
         map: Hartă
@@ -798,7 +798,7 @@ ro:
       last_month: Luna trecută
       month_to_date: Lună până în prezent
       next: Următor
-      prev: Previzualizare
+      prev: Anterior
       specific_date: Dată specifică
       start_date: Dată început
       the_month_of: Luna...
@@ -816,14 +816,14 @@ ro:
       bold: aldin
       heading: Titlu
       italic: cursiv
-      redo: refacere
+      redo: Refacere
       subheading: Subtitlu
       undo: Anulare
     jquery_ui:
       april: Aprilie
       april_short: Apr
-      august: aUGUST
-      august_short: aUG
+      august: August
+      august_short: Aug
       december: Decembrie
       december_short: Dec
       done: Gata
@@ -844,7 +844,7 @@ ro:
       may_short: Mai
       monday: Luni
       monday_min: Lu
-      monday_short: Lu
+      monday_short: Lun
       next: Următor
       november: Noiembrie
       november_short: Nov
@@ -870,6 +870,9 @@ ro:
       wednesday_min: Mi
       wednesday_short: Mie
       week_min: Săp
+  recaptcha:
+    errors:
+      verification_failed: 
   screens:
     about:
       actions: Acţiuni
@@ -887,7 +890,7 @@ ro:
       edit_metadata: Editare metadate
       flag_dataset: Semnalaţi setul de date
       license: Licenţă
-      licensing: Acordare licenţă şi atribuţii
+      licensing: Acordare licenţă şi atribuire
       links: Link-uri
       meta: Meta
       none: (niciunul)
@@ -904,6 +907,8 @@ ro:
       semantics: Semantice şi RDF
       short_url: URL scurt
       snapshotted: captat
+      soda2_support: 
+      soda2_yes: 
       source_link: Link sursă
       spatial_extent: Mărime spaţială
       subject_column: Coloană subiect
@@ -950,18 +955,18 @@ ro:
         subheadline: Click pe "Încheiere" pentru a-l vizualiza!
       first_page:
         blobby: Încărcaţi un fişiere fără date
-        blobby_explain: Alegeţi această opţiune dacă aveţi un fişier care conţine date, dar care nu poate fi importat, precum un PDF sau o imagine. va fi importat în catalogul de date, dar nu va fi la fel de interactiv precum datele reale.
+        blobby_explain: Alegeţi această opţiune dacă aveţi un fişier care conţine date, dar care nu poate fi importat, precum un PDF sau o imagine. Acesta va fi importat în catalogul de date, dar nu va fi la fel de interactiv precum datele reale.
         create: Design de la zero
         create_explain: Alegeţi această opţiune în cazul în care nu aveţi încă date pe care doriţi să le importaţi. Veţi putea defini o schemă pentru datele dvs. şi o veţi putea introduce online.
         external: Link către date externe
         external_explain: Alegeţi aceasta dacă deja aveţi date care sunt găzduite pe un alt server. Aceste date nu vor fi importate.
         header: Creaţi un set de date nou
         import: Importaţi un fiişer de date
-        import_explain: Alegeţi aceasta dacă aveţi deja un fişier de date în computerul dvs., pe care doriţi să le importaţi. Formatele suportate sunt .csv, .tsv, .xls şi .xlsx.
+        import_explain: Alegeţi aceasta dacă aveţi deja un fişier de date în computerul dvs., pe care doriţi să îl importaţi. Formatele suportate sunt .csv, .tsv, .xls şi .xlsx.
         mapLayer: Conectaţi-vă cu un strat de hartă ESRI
         mapLayer_explain: Alegeţi aceasta dacă aveţi un strat de hartă ESRI pe care doriţi să îl importaţi în catalog. Va trebui să furnizaţi un URL la punctul API în care stratul ESRI este stocat.
         prompt: Cum doriţi să vă creaţi noul set de date?
-        shapefile: Importare date geosapţiale
+        shapefile: Importare date geospaţiale
         shapefile_explain: Alegeţi aceasta dacă aveţi date geospaţiale pe care doriţi să le importaţi în catalog.
       import:
         headline: Unde este localizat fişierul?
@@ -1001,7 +1006,7 @@ ro:
         subheadline: Acest shapefile conţine <span class="featureCount"></span> caracteristici în <span class="layerCount"></span> straturi.
       import_warnings:
         headline: Avertisment în cursul importării
-        see_docs: <strong>Confuz?</strong> Vă rugăm să consultaţi <a href="%{publisher_link}" rel="external">docuemntaţia editorului nostru</a> în privinţa importării datelor, pentru o explicaţie detaliată privind modul în care importatorul utilizează datele. Este posibil să fie necesear să consultaţi şi <a href="%{common_errors}" rel="external">lista noastră de avertismente şi erori întâlnite în mod obişnuit</a>.
+        see_docs: <strong>Confuz?</strong> Vă rugăm să consultaţi <a href="%{publisher_link}" rel="external">documentaţia editorului nostru</a> în privinţa importării datelor, pentru o explicaţie detaliată privind modul în care importatorul utilizează datele. Este posibil să fie necesar să consultaţi şi <a href="%{common_errors}" rel="external">lista noastră de avertismente şi erori întâlnite în mod obişnuit</a>.
         subheadline: Vă rugăm să reţineţi că unele dintre datele dvs. este posibil să nu fi fost importate corect.
       importing_your_data: Se importă datele dvs...
       metadata:
@@ -1009,7 +1014,7 @@ ro:
         esri_map_layer_url: URL strat hartă ESRI
         esri_source_url: Introduceţi URL-ul sursei
         privacy_security: Confidenţialitate şi siguranţă
-        private_explain: datele mele sunt <strong>confidenţiale</strong>
+        private_explain: Datele mele sunt <strong>confidenţiale</strong>
         prompt: Vă rugăm să vă descrieţi datele.
         public_explain: ! 'Datele mele sunt <strong>publice</strong>: pot fi modificate doar de mine, dar pot fi vizualizate de către oricine'
       processing: Se procesează...
@@ -1041,10 +1046,10 @@ ro:
           link: Link
           number: Listă numerotată
           redo: Refacere
-          strike: Tăiat
+          strike: Tăiere
           underline: Subliniere
           undo: Anulare
-        full_screen: Comuare ecran complet
+        full_screen: Comtuare la ecran complet
         publish_button: Publicare set de date
         publish_prompt: Acest set de date este o copie funcţională şi nu este disponibilă public. Odată ce aţi realizat modificările dorite, acest set de date trebuie să fie publicat pentru a fi disponibil public.
         publish_rights: Doar un proprietar sau un edior poate oublica acest set de date
@@ -1071,7 +1076,7 @@ ro:
         view_types:
           calendar: calendar
           chart: diagramă
-          fatrow: listă îmbogăţită
+          fatrow: listă complexă
           map: hartă
           page: rând unic
           table: tabel
@@ -1120,11 +1125,11 @@ ro:
           no_purpose: Trebuie să selectaţi un scop pentru acest mesaj.
           no_subject: Trebuie să alegeţi un subiect pentru acest mesaj.
       dataset_status:
-        copy_available: Copia funcţională este disponibilă acum. Butonul "Editare set de date" vă va oferi accesul atunci când veţi fi gata să editaţi.
+        copy_available: Copia funcţională este, acum, disponibilă. Butonul "Editare set de date" vă va oferi accesul atunci când veţi fi gata să editaţi.
         copy_in_progress: Vă rugăm să aşteptaţi până când este realizată o copie funcţională. %{additional}
         copy_in_progress_additional:
           processing: În acest moment este în curs de procesare (started %{time})
-          queued: Se află în coadă, aşteptând să fie procesat  (queued %{time}; %{totalQueued} total la coadă)
+          queued: Se află în coadă, aşteptând să fie procesat  (queued %{time}; %{totalQueued} total în coadă)
         edit_dataset_button: Editare set de date
         error_publishing_html: A survenit o eroare la realizarea unei copii funcţionale a setului dvs. de date. Vă rugăm <a href="http://support.socrata.com" rel="external">contactaţi echipa de suport tehnic Socrata</a>.
         needs_copy: Acest set de date este publicat şi nu poate fi editat în mod direct. O copie funcţională %{status} care vă permite să realizaţi toate modificările dorite înainte de a le face disponibile public.
@@ -1134,9 +1139,9 @@ ro:
       email:
         add_email: Adăugare mai multe
         email_button: E-mail
-        message_prompt: Introduceţi un emsaj opţional
+        message_prompt: Introduceţi un mesaj opţional
         private_notice: ! 'Notă: Acest %{displayName} este în acest moment confidenţial. Trimiterea prin e-mail va oferi acces tuturor destinatarilor.'
-        prompt_html: ! 'Partajaţi <span class="datasetName">%{name}</span> cu următoarele adreese de e-mail:'
+        prompt_html: ! 'Partajaţi <span class="datasetName">%{name}</span> cu următoarele adrese de e-mail:'
         remove_email: Eliminare
         success: E-mail-ul dvs. a fost trimis cu succes.
         title_html: Partajaţi &quot;<span class="datasetName">%{name}</span>&quot;
@@ -1158,7 +1163,7 @@ ro:
           multiple_choice:
             add_option_button: Adăugare opţiune
             option: Opţiune
-            title: Opţiuni cu mai multe alegeri
+            title: Opţiuni multiple
           nested_table:
             default_column_name: Fără titlu
           subtitle: Adăugare coloană nouă la setul dvs. de date
@@ -1169,8 +1174,8 @@ ro:
         api:
           column_ids_title: ! 'ID-uri coloane:'
           endpoint_title: ! 'Punct terminal acces API:'
-          intro_html: <strong>Socrata Open Data API</strong> (SODA) permite dezvoltatorilor de software să acceseze datele găzduite în Socrata în mod programatic. Dezvoltatorii pot crea aplicaţii ce utilizează API-urile SODA pentru a vizualiza şi &ldquo;mash-up&rdquo; Socrata lucrează cu date în moduri noi şi captivante. Creaţi o aplicaţie pentru iPhone care vizualizează cheltuielile guvernamentale din zona dvs., o aplicaţie web care permite cetăţenilor să caute potenţiale beneficii guvernamentale pe care le-au scăpat din vedere, sau un serviciu care trimite automat e-mail-uri atunci când la facturile pe care doriţi să le urmăriţi au fost adăugate ştampile noi.
-          reference_html: Pentru a începe să accesaţi acest set de date în mod programatic, utilizaţi puncutl terminal APi furnizat mai jos. pentru mai multe informaţii şi exemple privind modul în care puteţi utiliza Socrata Open Data API, consultaţi <a href="http://dev.socrata.com" rel="external">Documentaţia Dezvoltatorului</a>.
+          intro_html: <strong>Socrata Open Data API</strong> (SODA) permite dezvoltatorilor de software să acceseze datele găzduite pe Socrata în mod programatic. Dezvoltatorii pot crea aplicaţii ce utilizează API-urile SODA pentru vizualizare şi combinare. Socrata lucrează cu seturi de date în moduri noi şi captivante. Creaţi o aplicaţie pentru iPhone care vizualizează cheltuielile guvernamentale din zona dvs., o aplicaţie web care permite cetăţenilor să caute potenţiale beneficii guvernamentale pe care le-au scăpat din vedere, sau un serviciu care trimite automat e-mail-uri atunci când la facturile pe care doriţi să le urmăriţi au fost adăugate ştampile noi.
+          reference_html: Pentru a începe să accesaţi acest set de date în mod programatic, utilizaţi punctul terminal APi furnizat mai jos. Pentru mai multe informaţii şi exemple privind modul în care puteţi utiliza Socrata Open Data API, consultaţi <a href="http://dev.socrata.com" rel="external">Documentaţia Dezvoltatorului</a>.
           subtitle: Accesaţi această %{view_type} prin intermediul SODA
           title: API
         apis:
@@ -1179,7 +1184,7 @@ ro:
           manage_button: Administrare
           manage_button_prompt: Administraţi API-ul selectat
           prompt_existing_html: <strong>API-urile existente</strong> pot fi personalizate. Puteţi controla permisiunile, seta limitele de solicitare, vizualiza metrica de utilizare şi edita documentaţia.
-          prompt_new_html: <strong>API Foundry</strong> vă permite să creaţi şi să configuraţi una su mai multe interfeţe destinate programării aplicaţiilor (API) deschisă, bazată pe standarde pentru acest set de date.
+          prompt_new_html: <strong>API Foundry</strong> vă permite să creaţi şi să configuraţi una sau mai multe interfeţe destinate programării aplicaţiilor (API) pentru acest set de date, deschise, bazate pe standarde.
           subtitle: Creaţi şi personalizaţi un API
           title: API-uri
         append_replace:
@@ -1191,7 +1196,7 @@ ro:
             mutable: Adăugare şi înlocuire
           wizard_button:
             immutable: Lansaţi aplicaţia expert "Înlocuire"
-            mutable: Lansaţi aplicaţia expert "Adăugare şi înlocuire!
+            mutable: Lansaţi aplicaţia expert "Adăugare şi înlocuire"
         base:
           buttons:
             apply: Aplicare
@@ -1242,7 +1247,7 @@ ro:
             identifier_format: Caracterele identificatorului API valabil sunt litere mici, cifre şi liniuţe de subliniere. Trebuie să înceapă cu o literă şi nu pot conţine liniuţe de subliniere consecutive.
             invalid_url: Acest URL nu este valabil
             invalid_value: Această valoare nu este valabilă
-            invalid_values: Au existat probleme cu valorile specificate. Vă rugăm să verificaţi erorile de mai sus.
+            invalid_values: Au fost probleme cu valorile specificate. Vă rugăm să verificaţi erorile de mai sus.
             invalid_view: Această vizualizare trebuie să fie valabilă
             no_greater: Valoarea nu poate fi mai mare decât  %{value}
             numeric: Valoarea trebuie să fie un număr
@@ -1348,8 +1353,8 @@ ro:
           min_angle: Unghi min.
           min_angle_html: Cel mai mic unghi afişat  (&ordm;)
           names: Nume
-          pie_other: ! 'Avertisment: %{chart_type} va uni valori distincte (rânduri) dincolo de %{row_limit} într-o categorie "Altele". Încercaţi să creaţi un "roll up" sau un filtru care limitează numărul valorilor şi atunci creaţi o %{chart_type} a acestuia.'
-          pie_truncate: ! 'Avertisment: %{chart_type} va trunchia seturi de date cu mai mult de %{row_limit} valori distincte (rânduri). Încercaţi să creaţi un "roll up" sau un filtru care limitează numărul valorilor şi atunci creaţi o %{chart_type} a acestuia'
+          pie_other: ! 'Avertisment: %{chart_type} va uni valori distincte (rânduri) dincolo de %{row_limit} într-o categorie "Altele". Încercaţi să creaţi o grupare sau un filtru care limitează numărul valorilor şi atunci creaţi o %{chart_type} a acestuia.'
+          pie_truncate: ! 'Avertisment: %{chart_type} va trunchia seturi de date cu mai mult de %{row_limit} valori distincte (rânduri). Încercaţi să creaţi o grupare sau un filtru care limitează numărul valorilor şi atunci creaţi o %{chart_type} a acestuia'
           point_color: Culoare punct
           point_size: Dimensiune punct
           point_title: Titlu
@@ -1371,13 +1376,13 @@ ro:
           smooth_line: Linie netedă
           subtitle: Vizualizarea datelor poate fi afişată cu o varietate de diagrame
           title: Diagramă
-          treemap_color_html: Aceste culori sunt aplicate hărţii arborescente în mod aleatoriu doar pentru crearea distincţiilor vizuale. Ele singure nu au un înţeles specific.
+          treemap_color_html: Aceste culori sunt aplicate hărţii arborescente în mod aleatoriu doar pentru crearea diferenţelor vizuale. Ele singure nu au un înţeles specific.
           validation:
             chart_requires: ! '%{chart_type} necesită cel puţin'
             chart_requires2: ! '%{and} %{count} ale următoarelor tipuri de coloane:'
             count: ! '%{count}'
             required_columns: ! '%{chart_type} necesită %{column_types} coloane'
-            viz_limit: O vedere poate avea o singură vizualizare în ea
+            viz_limit: O vizualizare poate avea o singură vedere în ea
           value: Valoare
           valueInBar: Valoare în bară
           values: Valori
@@ -1414,7 +1419,7 @@ ro:
           columns:
             title: Coloane
           prompt_html: Trageţi coloanele în ordinea pe care o doriţi şi apăsaţi <strong>aplicare</strong> pentru a aplica noua ordine.
-          subtitle: Modificaţi rodinea coloanelor
+          subtitle: Modificaţi ordinea coloanelor
           title: Ordine coloane
           validation:
             valid_columns: Această vizualizare trebuie să fie valabilă şi trebuie să aibă coloane vizibile.
@@ -1432,7 +1437,7 @@ ro:
           display_order:
             new_item_button: Adăugare element
             option: Opţiune
-            title: Ordine afişare (pentru dataslate)
+            title: Ordine afişare (pentru DataSlate)
           formatting:
             alignment: Aliniere
             title: Formatare
@@ -1506,26 +1511,26 @@ ro:
               any: Orice condiţie
             when_title: Atunci
           format_html: Utilizaţi<br />această culoare<br />sau această pictogramă
-          subtitle: Formatarea condiţională vă permite să modificaţi culoarea de fundal a rândurilor pe baza criteriilor personalizate, Fiecăruii rând i se va atribui culoarea primei condiţii potrivite.
+          subtitle: Formatarea condiţională vă permite să modificaţi culoarea de fundal a rândurilor pe baza criteriilor personalizate. Fiecărui rând i se va atribui culoarea primei condiţii potrivite.
           title: Formatare condiţională
           validation:
             no_columns: Această vizualizare nu are coloane de filtrat
             no_icons: Pictogramele sunt relevante doar în vizualizarea ca hartă
         delete:
-          confirm: Aceasta va şterge %{view_type} pentru totdeauna. Nu se poate anula! Sunteţi sigur că doriţi să faceţi aceasta?
+          confirm: Aceasta va şterge %{view_type} pentru totdeauna. Această acţiune nu se poate anula! Sunteţi sigur că doriţi să faceţi aceasta?
           delete_button: Ştergeţi această %{view_type}
           subtitle: Ştergeţi această %{view_type}
           title: Ştergere
           warning:
             api: Ştergerea acestei API va distruge toate aplicaţiile care utilizează această API.
             published: Ştergerea acestui set de date va şterge şi orice vizualizări asociate lui.
-            view: Ştergerea acestei vizualizări le va afecta doar pe acele vizualizări care se bauzează pe ea.
+            view: Ştergerea acestei vizualizări le va afecta doar pe acele vizualizări care se bazează pe ea.
             working_copy: Puteţi şterge această copie funcţională şi puteţi realiza una nouă pentru a inversa toate modificările făcute.
         digital_signing:
           consumer: Pentru a obţine o versiune semnată a acestui set de date este suficient să daţi click pe link-ul de mai jos pentru a genera o cheie şi a începe descărcarea.Cheia şi datele descărcate sunt specifice versiunii actuale a acestui set de date. În cazul în care, în viitor, proprietarul actualizează setul de date, va trebui să reluaţi procesul pentru a obţine noile date. Publicaţi datele descărcate împreună cu cheia pe care o primiţi şi, utilizând instrucţiunile găsite în pachetul descărcat, părţile terţe pot confirma că datele dvs. sunt legale.
           generate_button: Generaţi şi descărcaţi acum
-          intro_html: Utilizând un <strong>set de date semnat digital</strong>, este posibil să dovediţi prin utilizarea metodelor criptografic securizate că o copie anume a unui set de date Socrata nu a fost alterat. Aceasta este utilă, de exemplu, în cazul în care urmăriţi să publicaţi constatări bazate pe aceste date şi doriţi să le puteţi dovedi integritatea.
-          publisher: pentru a genera o versiune semnată a acestui set de date, este suficient să daţi click pe link-ul de mai jos pentru a genera o cheie. Vă rugăm să reţineţi că în cazul în care, în viitor, veţi actualiza acest set de date, va trebui să reveniţi şi să regereaţi cheia pentru ca utilizatorii să poată avea acces la el. Vă rugăm să reţineţi şi că acest proces implică operaţii asupra datelor în ansamblul lor, aşadar poate dura ceva timp dacă setul dvs. de date este foarte mare sau conţine ataşamente mari.
+          intro_html: Utilizând un <strong>set de date semnat digital</strong>, este posibil să dovediţi prin utilizarea metodelor criptografic securizate că o copie anume a unui set de date Socrata nu a fost alterat. Acest lucru este util, de exemplu, în cazul în care urmăriţi să publicaţi constatări bazate pe aceste date şi doriţi să le puteţi dovedi integritatea.
+          publisher: Pentru a genera o versiune semnată a acestui set de date, este suficient să daţi click pe link-ul de mai jos pentru a genera o cheie. Vă rugăm să reţineţi că în cazul în care, în viitor, veţi actualiza acest set de date, va trebui să reveniţi şi să regeneraţi cheia pentru ca utilizatorii să poată avea acces la setul de date. Vă rugăm să reţineţi şi că acest proces implică operaţii asupra datelor în ansamblul lor, aşadar poate dura ceva timp dacă setul dvs. de date este foarte mare sau conţine ataşamente mari.
           publisher_generation: Doar proprietarii de seturi de date pot genera chei semnate.
           signature_header: Semnătură
           subtitle: Exportaţi o versiune a acestor date a căror integritate poate fi verificată mai târziu.
@@ -1557,7 +1562,7 @@ ro:
           advanced:
             exclusive: Exclusiv
             hide_geolocator: Fără geolocator
-            subtitle: Selectaţi "Exclusiv" dacă trebuie afişată doar o hartă de bază o dată.
+            subtitle: Selectaţi "Exclusiv" dacă trebuie afişată doar câte o hartă de bază o dată.
             title: Configurare avansată
             use_legend: Utilizare legendă
           base_layers:
@@ -1573,7 +1578,7 @@ ro:
             alias: Alias
             alias_prompt: Descrieţi setul de date
             base_color: Culoare de bază
-            color_high: Culoare (Intensă)
+            color_high: Culoare (intensă)
             color_low: Culoare (palidă)
             flyout:
               details: Detalii mobile
@@ -1629,13 +1634,13 @@ ro:
           validation:
             hidden_location_html: Puteţi <a href="#showLoc" title="Show a location column">arăta o coloană de localizare ascunsă</a>.
             location_column: O coloană de localizare este necesară pentru a crea o hartă.
-            viz_limit: O vizualizare poate avea o singură vedere pe ea.
+            viz_limit: O vizualizare poate avea o singură vedere în ea.
         ownership:
-          error: A survent o rpoblemă la modificarea dreptului de proprietate. Vă rugăm să încercaţi mai târziu.
+          error: A survent o problemă la modificarea dreptului de proprietate. Vă rugăm să încercaţi mai târziu.
           me: Eu
           subtitle: Pentru a realiza transferul către un alt utilizator, introduceţi adresa de e-mail sau numele contului ID-ului Socrata, apoi selectaţi contul dorit din lista verticală. Puteţi introduce, de asemenea, URL-ul profilului utilizatorului, dacă îl cunoaşteţi. Doar utilizatorii care au conturi active pot prelua dreptul de proprietate asupra unor seturi de date.
           success:
-            me: Acum dvs. sunteţi proprietarul
+            me: Acum, dvs. sunteţi proprietarul
             user: Dreptul de proprietate a fost transferat cu succes către %{owner}
           title: Drept de proprietate
           transfer_to: Transferaţi dreptul de proprietate către
@@ -1647,7 +1652,7 @@ ro:
           error: A survenit o eroare la modificarea permisiunilor setului dvs. de date. Vă rugăm să încercaţi mai târziu
           features_html: Caracteristici suplimentare ale <span class="datasetTypeName">setului de date</span>
           status_html: Acest <span class="datasetTypeName">set de date</span> este la ora actuală <span class="datasetPublicText">%{visibility}</span>
-          subtitle: Administraţi permisiunile acestei %{view_type}
+          subtitle: Administraţi permisiunile acestei(ui) %{view_type}
           success: Permisiunile dvs. au fost salvate
           title: Permisiuni
           validation:
@@ -1711,14 +1716,14 @@ ro:
         sort_rollup:
           rollup:
             add_group_button: Adăugare coloane grupare
-            add_rollup_button: Adăugare coloană roll-up
+            add_rollup_button: Adăugare coloană grupare
             function: Funcţie
             group_by: Grupare după
             group_function_label: Bazat pe
             group_function_prompt: Selectează o funcţie de grupare
-            roll_up: Roll-up
+            roll_up: Grupare
             roll_up_function: Selectaţi o funcţie
-            title: Roll-up-uri &amp; şi detalieri
+            title: Grupări şi uniri
           sort:
             add_column_button: Adăugare coloană
             column: Coloană
@@ -1727,8 +1732,8 @@ ro:
               ascending: Ascendent
               descending: Descendent
             title: Sortare
-          subtitle: ! 'Puteţi grupa rândurile la un loc şi puteţi rezuma datele cu un roll-up. '
-          title: Sortare &amp; grupare
+          subtitle: Puteţi grupa rândurile şi puteţi rezuma datele cu o grupare. Puteţi sorta una sau mai multe coloane
+          title: Sortare şi grupare
           validation:
             no_eligible_columns: Această vizualizare nu are coloane de grupat sau sortat
             no_function: Fiecare coloană grupată trebuie să aibă o funcţie
@@ -1736,12 +1741,12 @@ ro:
         tabs:
           about: Despre
           discuss: Discuţie
-          edit: Redacta
+          edit: Editare
           embed: Încorporare
           export: Exportare
           filter: Filtrare
           manage: Administrare
-          more: mai mult
+          more: Mai mult
           more_views: Mai multe vizualizări
           visualize: Vizualizare
         view_list:
@@ -1778,7 +1783,7 @@ ro:
         descriptions:
           leaving: Aveţi date nesalvate care se vor pierde dacă părăsiţi această pagină. Vă rugăm să alegeţi dacă doriţi sau nu să salvaţi această vizualizare înainte de a ieşi, sau alegeţi "Anulare" pentru reveni la pagină.
           reload_save: Această modificare necesită o reîncărcare. Puteţi apăsa "Salvare" pentru salva şi vizualiza modificările sau puteţi apăsa "Anulare" pentru a rămâne pe această pagină.
-          reload_update: Această modificare necesită o reâncărcare. Puteţi actualiza această vizualizare sau salva o nouă vizualizare ca să vedeţi modificările sau puteţi apăsa "Anulare" pentru a rămâne pe această pagină.
+          reload_update: Această modificare necesită o reâncărcare. Puteţi actualiza această vizualizare sau salva o nouă vizualizare, ca să vedeţi modificările, sau puteţi apăsa "Anulare" pentru a rămâne pe această pagină.
         form:
           new_name: ! 'Introduceţi un nume pentru noua dvs. vizualizare:'
         titles:
@@ -1786,7 +1791,7 @@ ro:
           prompt: Doriţi să salvaţi vizualizarea?
         validation:
           auth_required: Trebuie să fiţi autentificat pentru a salva o vizualizare
-          view_name_required: Este necesar un denumire de vizualizare
+          view_name_required: Este necesară o denumire de vizualizare
       subscribe:
         google_reader: Adăugare la Google Reader
         intro_html: ! '<strong>Pentru a vă abona la <span class="datasetName">%{name}</span> setul de date printr-un cititor RSS</strong>, utilizaţi unul dintre următoarele link-uri:'
@@ -1829,7 +1834,7 @@ ro:
       external_identifier: Identificator extern
       file_type: Tip fişier
       general_information: Informaţii generale
-      keywords_help: Introduceţi unnul sau mai multe cuvinte cheie separate de virgule
+      keywords_help: Introduceţi unul sau mai multe cuvinte cheie separate de virgule
       license_help: Alegeţi termenii de acordare a licenţei pentru persoanele care doresc să utilizeze acest set de date.
       license_type: Tip de licenţă
       licensing: Acordare licenţă
@@ -1872,7 +1877,7 @@ ro:
       form:
         reset_password_button: Resetare parolă
       prompt: Dacă v-aţi uitat parola, vă putem trimite un e-mail cu un link de resetare a parolei.
-      success: Vă mulţumim. Un e-mail a fost trimis la contul înregistrat cu informaţii ulterioare.
+      success: Vă mulţumim. Un e-mail a fost trimis la contul înregistrat cu informaţii suplimentare.
       title: Recuperaţi-vă parola
     header:
       links:
@@ -1901,7 +1906,7 @@ ro:
       unknown_error: A survenit o eroare necunoscută
       uploading: Se încarcă fişierul dvs.
     link_account:
-      success: Contul dvs. extern a fost conectat.
+      success: S-a creat un link la contul dvs. extern.
     profile:
       app_tokens:
         item:
@@ -1939,11 +1944,11 @@ ro:
           add_openid_button: Adăugare OpenID sau cont extern
           confirm_email: Confirmare e-mail
           confirm_password: Confirmare parolă
-          connect_openid: Autentificaţi-vă utilizându-vă acreditările Facebook, Twitter, Google sau alte acreditări părţi terţe.
+          connect_openid: Autentificaţi-vă utilizând acreditările Facebook, Twitter, Google sau alte acreditări părţi terţe.
           current_email: E-mail actual
           email:
             interests:
-              account_provisioned: Un cont privilegiat este aprovizionat pentru utilizare ulterioară
+              account_provisioned: Un cont privilegiat este furnizat pentru utilizare ulterioară
               any_view_created: Orice vizualizare este creată
               comment_to_moderate: Un comentariu este trimis şi necesită moderare
               nomination_created: Este creată o nouă nominalizare
@@ -1969,7 +1974,7 @@ ro:
           application_name: Nume aplicaţie
           application_name_prompt: Introduceţi un nume pentru aplicaţia dvs.
           callback_prefix: Prefix apel returnat
-          callback_prefix_help_html: De exemplu dacă aplicaţia dvs. va returna apelul la <span class="code">https://my-domain.com/socrata-app/oauth/validated</span> şi <span class="code">https://my-domain.com/socrata-app/profile</span>, veţi dori să furnizaţi <span class="code">https://my-domain.com/socrata-app</span> ca prefixul dvs. Vă rugăm să reţineţi că trebuie să includeţi cel puţin întregul nume al domeniului.
+          callback_prefix_help_html: De exemplu, în cazul în care aplicaţia dvs. va returna apelul la <span class="code">https://my-domain.com/socrata-app/oauth/validated</span> şi <span class="code">https://my-domain.com/socrata-app/profile</span>, veţi dori să furnizaţi <span class="code">https://my-domain.com/socrata-app</span> ca fiind prefixul dvs. Vă rugăm să reţineţi că trebuie să includeţi cel puţin întregul nume al domeniului.
           callback_prefix_prompt: Furnizaţi prefixul url-ului securizat (https) pentru retunarea apelului atunci când utilizaţi OAuth
           create_error: ! 'A survenit o eroare la crearea token-ului aplicaţiei dvs.: %{message}'
           create_success: Aplicaţia dvs. a fost creată
@@ -1999,7 +2004,7 @@ ro:
           city: Oraş
           country: Ţară
           description:
-            prompt: Introduceţi orice informaţie pe care aţi dori să o împărtăşiţi
+            prompt: Introduceţi orice informaţie pe care doriţi să o împărtăşiţi
             title: Descriere
           display_name: Nume afişat
           first_name: Prenume
@@ -2059,7 +2064,7 @@ ro:
       tips_html: Utilizaţi-vă e-mail-ul şi parola pentru a vă autentifica în toate site-urile <strong>dezvoltate de <a href="http://www.socrata.com" rel="external">Socrata</a></strong>.
     sign_up:
       form:
-        create_account_button: Creaţi-mi contul
+        create_account_button: Crează-mi contul
         have_account_link: Am deja cont
       headline: Suntem încântaţi că doriţi să vă autentificaţi pe %{site}!
       prompt_html: Creaţi un nou <strong>ID Socrata</strong>
@@ -2121,7 +2126,7 @@ ro:
       weekly: Săptămânal
     wizard:
       cancel: Anulare
-      finish: Finalizare
+      finish: Încheiere
       next: Următor
       previous: Anterior
   support:

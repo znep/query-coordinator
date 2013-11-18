@@ -523,10 +523,17 @@
                 dc.row = dc.dataset.rowToSODA2(r);
                 callback();
             };
-            if (!$.isBlank(dc.config.rowId))
-            { dc.dataset.getRowsByIds($.makeArray(dc.config.rowId), rowResult); }
-            else
-            { dc.dataset.getRows(0, 1, rowResult); }
+            var doLoad = function()
+            {
+                if (!$.isBlank(dc.config.rowId))
+                {
+                    dc.dataset.getRowsByIds($.makeArray(dc.config.rowId), rowResult,
+                            function(e) { if (e.cancelled) { doLoad(); } });
+                }
+                else
+                { dc.dataset.getRows(0, 1, rowResult, function(e) { if (e.cancelled) { doLoad(); } }); }
+            };
+            doLoad();
         },
 
         _hookColumnAggs: function()

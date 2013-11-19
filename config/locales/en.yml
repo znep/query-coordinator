@@ -313,12 +313,16 @@ en:
       delete_warning_single_column: Do you want to delete the selected column? All data in this column will be removed!
       edit_column_properties: Edit Column Properties
       filter_this_column: Filter This Column
+      geocodes_pending: Rows in the location column are still geocoding. Please wait until they are finished to publish this dataset
       hide_column: Hide Column
       menu: Menu
       must_enter_name: You must enter a name for this column
       new_row: New
+      no_columns: Dataset %{uid} does not have any columns.
       no_rows: No rows to display
+      permission_denied: You do not have access to this view.
       previous: Previous
+      required_cols_missing: Columns required for this view are missing
       sort_ascending: Sort Ascending
       sort_descending: Sort Descending
       totals: Totals
@@ -2129,6 +2133,23 @@ en:
       views_loaded: Views Loaded
       website: Webspite
       weekly: Weekly
+    thumbnail:
+      title: Thumbnail Dataset
+      edit_thumbnail: Edit Thumbnail for %{name}
+      return_to_dataset: Return to Dataset
+      save_thumbnail: Save Thumbnail
+      discard_changes: Discard Changes
+      refresh_thumbnail: Refresh Thumbnail
+      error_processing: There was an error processing your thumbnail request. Please try again later
+      preview: Preview
+      unsaved: Unsaved
+      full_image: Full Image
+      please_wait: There are no thumbnails available for this dataset yet. Please wait while we create one for you.
+      error_private: For your privacy, only public datasets may be thumbnailed. If you wish to have a preview image, please make this dataset public from the Permissions pane of the Manage sidebar.
+      error_blob: This embedded file cannot be thumbnailed as it cannot be displayed in the browser
+      error_invalid: This view is invalid and cannot be thumbnailed in its current state
+      success: Thumbnail saved
+      error_generic: There was a problem saving your thumbnail. Please try again later.
     wizard:
       cancel: Cancel
       finish: Finish

@@ -1893,6 +1893,43 @@ en:
         account_html: Hello, <span class="currentUser">Unknown User</span>
         account_tooltip: Your Home
         administration: Administration
+    import_common:
+      name_this_column: Name this column
+      new_layer: (New Layer)
+      remove: remove
+      then: then
+      make_title_case: Make Title Case
+      make_upper_case: Make UPPERCASE
+      make_lower_case: Make lowercase
+      to_state_code: Convert states to 2-letter codes
+      find_and_replace: Find and Replace value...
+      custom_javascript: Custom Javascript Expression...
+      find: find
+      replace: and replace it with
+      case_sensitive: case sensitive
+      regular_expression: regular expression
+      create_js_expression: How do I create a custom Javascript expression?
+      combine_multiple_columns: Combine Multiple Columns
+      create_composite: 'Create one column out of many source columns:'
+      new_source_col: Add new source column
+      location_source_col: Location Source Columns
+      addresses_to_geocode: Addresses will be geocoded after import is complete.
+      import_from_multiple: Import from <strong>multiple columns</strong>
+      existing_cols: Existing Address Columns
+      street: Street
+      city: City
+      enter_custom: Enter a custom value
+      state: State
+      zip: Zip
+      existing_latlng_cols: Existing Latitude and Longitude Columns
+      latitude: Latitude
+      longitude: Longitude
+      import_from_single: Import from <strong>single column</strong>
+      column: Column
+      properly_formatted: 'Column must be <a href="%{formatting_link}" rel="external">properly formatted</a> prior to import.'
+      options: Options
+      transforms: 'Perform the following transformation upon import:'
+      new_transform: Add new transform
     import_pane:
       analyzing: Analyzing your file...
       assure_accessible: Please ensure that your file is accessible and valid and try again.

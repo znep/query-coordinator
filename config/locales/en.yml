@@ -189,6 +189,8 @@ en:
       sidebar:
         tabs:
           about: About This Dataset
+          components: Components
+          configuration: Configuration
           discuss: Discuss
           edit: Edit
           embed: Embed
@@ -755,6 +757,11 @@ en:
           my_goals: My Goals
           my_goals_tooltip: See the goals I've created.
           reports: Reports
+          home_title: Home
+          data_title: Browse and Manage Data
+          reports_title: View and Create Reports
+          goals_title: Create and Track Goals
+          configuration_title: Manage GovStat configuration
     reports:
       component:
         base_map: Base Map

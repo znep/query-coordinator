@@ -31,7 +31,7 @@ $(function() {
             var translations = ['dataslate.configurator', 'dataslate.context_picker',
                                 'dataslate.component', 'dataslate.edit', 'dataslate.edit_component',
                                 'dataslate.edit_properties', 'dataslate.permissions',
-                                'dataslate.settings'];
+                                'dataslate.settings', 'controls.common.sidebar.tabs'];
             if (!blist.configuration.govStat)
             { stylesheets.unshift( {sheet: '/webfonts/ss-standard.css', hasFonts: true} ); }
             else

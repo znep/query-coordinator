@@ -123,15 +123,16 @@ http://www.socrata.com
             </ul>
           </div>
           <ul class="manageActions">
-            <li class="home"><a href="<%= govstat_root_path %>" class="ss-home" title="Home"><%= t('govstat.chrome.header.links.home') %></a></li>
+            <%- prefix = 'govstat.chrome.header.links' %>
+            <li class="home"><a href="<%= govstat_root_path %>" class="ss-home" title="<%= t("#{prefix}.home_title") %>"><%= t("#{prefix}.home") %></a></li>
             <li class="data"><a href="<%= govstat_data_path %>" class="ss-hdd"
-              title="Browse and Manage Data"><%= t('govstat.chrome.header.links.data') %></a></li>
+              title="<%= t("#{prefix}.data_title") %>"><%= t("#{prefix}.data") %></a></li>
             <li class="reports"><a href="<%= manage_reports_path %>" class="ss-notepad"
-              title="View and Create Reports"><%= t('govstat.chrome.header.links.reports') %></a></li>
+              title="<%= t("#{prefix}.reports_title") %>"><%= t("#{prefix}.reports") %></a></li>
             <li class="goals"><a href="<%= govstat_goals_path %>" class="ss-checkclipboard"
-              title="Create and Track Goals"><%= t('govstat.chrome.header.links.goals') %></a></li>
+              title="<%= t("#{prefix}.goals_title") %>"><%= t("#{prefix}.goals") %></a></li>
             <li class="config"><a href="<%= manage_site_config_path %>" class="ss-wrench"
-              title="Manage GovStat configuration"><%= t('govstat.chrome.header.links.configuration') %></a></li>
+              title="<%= t("#{prefix}.configuration_title") %>"><%= t("#{prefix}.configuration") %></a></li>
           </ul>
         <%- else -%>
           <%= render_domain_template(@page_custom_header || 'header_full') %>

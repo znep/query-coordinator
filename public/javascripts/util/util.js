@@ -731,7 +731,7 @@ $.arrayToSentence = function(arr, joinWord, separator, alwaysUseSep)
 $.wordify = function(num)
 {
     var t = function(str) { return $.t('core.numbers.' + str); };
-    var numWords = {'0' : t('zero'), '1': t('one'), '2': t('two'), '3': t('three'),
+    var numWords = {'0' : t('num_zero'), '1': t('num_one'), '2': t('num_two'), '3': t('three'),
         '4': t('four'), '5': t('five'), '6': t('six'), '7': t('seven'), '8': t('eight'),
         '9': t('nine')};
     return numWords[num.toString()] || num;

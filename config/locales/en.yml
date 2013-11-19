@@ -588,6 +588,9 @@ en:
       seven: seven
       six: six
       three: three
+      num_zero: zero
+      num_one: one
+      num_two: two
     or: or
     pagination:
       current_page: Current Page

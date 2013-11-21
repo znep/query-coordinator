@@ -298,6 +298,159 @@ $config_header_color: #711e8c
     margin-left: 0.2em
     position: relative
 
+.prevailingMeasureGauge
+  margin-bottom: 30px
+
+  .gauge
+    margin-left: auto
+    margin-right: auto
+    width: 90%
+    visibility: collapse
+
+  .gaugeBody
+    position: relative
+    white-space: nowrap
+
+  .gauge div.gaugeTickMarks
+    position: relative
+    margin-top: 2px
+    opacity: 0.6
+    & > div
+      position: absolute
+    .tickArrow
+      width: 0
+      height: 0
+      border-left: 3px solid transparent
+      border-right: 3px solid transparent
+      border-bottom: 3px solid black
+      position: relative
+      margin-left: auto
+      margin-right: auto
+      & + span
+        display: inline-block
+        margin-top: 1px
+
+  .gaugeBody > div
+    display: inline-block
+    height: 0.8em
+    @include transition(0.2s, width)
+    &.gaugeGood
+      background: $govstat_color_good
+    &.gaugeWithinTolerance
+      background: $govstat_color_within_tolerance
+    &.gaugeBad
+      background: $govstat_color_poor
+    &.pendingRemove .hoverOverlay
+      display: block
+
+  .hoverOverlay
+    display: none
+    width: 100%
+    height: 100%
+    background: $govstat_color_poor url(/images/hatchpattern.png)
+
+  div.connectors
+    position: relative
+    top: 6em
+    div
+      @include transition(0.2s, left)
+      position: absolute
+      height: 1.8em
+      span
+        position: absolute
+        display: block
+        background: black
+        &.fullConnector
+          top: 0
+          bottom: 0
+          width: 1px
+        &.topConnector
+          top: 0
+          height: 34%
+          width: 1px
+        &.bottomConnector
+          left: 0
+          bottom: 0
+          width: 1px
+          height: 34%
+        &.middleConnector
+          @include prefixer(transform-origin, top left)
+          top: 0
+          left: 0
+          height: 1px
+
+  label
+    @include transition(0.2s, color)
+    font-size: 2em
+    display: block
+    line-height: normal
+    text-align: center
+
+  .units
+    margin-left: 0.5em
+    font-size: 1.3em
+    opacity: 0.6
+
+  .madlib
+    height: 6em
+    position: relative
+
+  .targetMadLib, .baselineMadLib, .toleranceMadLib
+    position: absolute
+    line-height: normal
+    display: inline-block
+    white-space: nowrap
+    @include transition(0.2s, left)
+    &.hide
+      opacity: 0
+
+  .targetMadLib, .baselineMadLib label
+    color: $govstat_color_good
+  .toleranceMadLib label
+    color: $govstat_color_within_tolerance
+
+  .inputWrapper
+    margin: 0
+    vertical-align: middle
+    input
+      opacity: 0.6
+      font-size: 1.3em
+      width: 4em
+      padding: 0
+    .inputValidation
+      .validation
+        top: initial
+        .validationBubble
+          width: initial
+          &:before
+            left: 20%
+
+  .gaugeEditButtons
+    margin-top: 15px
+    width: 100%
+    position: relative
+    .buttonContainer
+      @include transition(0.2s, left)
+      position: absolute
+      & > div
+        display: inline-block
+
+      .optionalButtonText
+        text-align: right
+        opacity: 0.6
+        margin-right: 0.7em
+
+      .buttonPointer
+        width: 0
+        height: 0
+        border-left: 4px solid transparent
+        border-right: 4px solid transparent
+        border-bottom: 4px solid $govstat_color_action
+        margin-left: auto
+        margin-right: auto
+      a
+        margin-top: 0
+
 .prevailingMeasureMetricSummary
   float: left
   padding: 1em 0 2.5em

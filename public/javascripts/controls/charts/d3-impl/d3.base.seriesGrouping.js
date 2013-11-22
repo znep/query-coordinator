@@ -155,17 +155,27 @@ d3base.seriesGrouping = {
             categoryGroupedView.update({ metadata: md });
         }
 
-        categoryGroupedView.getAllRows(function(rows)
+        var getCategoryGrouped = function()
         {
-            sg.categoryGroupedRows = rows;
-            maybeDone();
-        });
+            categoryGroupedView.getAllRows(function(rows)
+            {
+                sg.categoryGroupedRows = rows;
+                maybeDone();
+            },
+            function(e)
+            { if (e.cancelled) { getCategoryGrouped(); } });
+        };
+        getCategoryGrouped();
 
         // make yet another copy of the view grouped by the series columns, so we can
         // just evaluate all the possible combinations of creating series columns up
         // front, rather than trying to piece things together as we go.
         var seriesGroupedView = sg.seriesGroupedView = sortedView.clone();
-        var seriesGroupedColumns = _.without(sortColumns, vizObj._fixedColumns[0]);
+        var seriesGroupedColumns = _.reject(_.without(sortColumns, vizObj._fixedColumns[0]), function(col)
+                {
+                    return _.any(sortedView.metadata.jsonQuery.group, function(g)
+                        { return col.fieldName == g.columnFieldName; });
+                });
 
         var seriesGroupBys = (seriesGroupedView.metadata.jsonQuery.group || []).concat(
             _.map(seriesGroupedColumns, function(col)
@@ -176,11 +186,17 @@ d3base.seriesGrouping = {
         var md = $.extend(true, {}, sortedView.metadata);
         md.jsonQuery.group = seriesGroupBys;
         seriesGroupedView.update({ metadata: md });
-        seriesGroupedView.getAllRows(function(rows)
+        var getSeriesGrouped = function()
         {
-            sg.seriesGroupedRows = rows;
-            maybeDone();
-        });
+            seriesGroupedView.getAllRows(function(rows)
+            {
+                sg.seriesGroupedRows = rows;
+                maybeDone();
+            },
+            function(e)
+            { if (e.cancelled) { getSeriesGrouped(); } });
+        };
+        getSeriesGrouped();
 
         // clear the global color cache if the user changes the color settings
         var colorBasis = _.map(vizObj._valueColumns, function(col) { return col.color; });

@@ -72,7 +72,7 @@ end
 module ClientAnalyticsHelper
   FUNCTIONAL_BUCKETS =  %w(homepage
                            dataset dataset-sort dataset-filter dataset-grouped dataset-complex
-                           dataslate admin profile
+                           dataslate admin profile govstat
                            browse browse-search
                            other).freeze
 

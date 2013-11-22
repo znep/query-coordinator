@@ -368,11 +368,15 @@ $config_header_color: #711e8c
           top: 0
           height: 34%
           width: 1px
+          .ie8 &
+            height: 50%
         &.bottomConnector
           left: 0
           bottom: 0
           width: 1px
           height: 34%
+          .ie8 &
+            height: 50%
         &.middleConnector
           @include prefixer(transform-origin, top left)
           top: 0

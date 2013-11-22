@@ -580,10 +580,7 @@ $(function()
     {
         $('#infoBox #datasetName').socrataTip({trigger: 'now', showSpike: false, closeOnClick: false,
             content: $.tag({tagName: 'div', 'class': 'unpublishedAlert', contents: [
-                {tagName: 'p', contents: 'This dataset is not yet published ' +
-                    'to allow you to make any necessary changes ' +
-                    'before making it available to everyone. It will not be visible until ' +
-                    'you publish this dataset.'},
+                {tagName: 'p', contents: $.t('screens.ds.show.unpublished_alert')},
                 {tagName: 'a', 'class': ['button', 'close'], contents: 'OK'}
             ]})
         });
@@ -633,7 +630,7 @@ $(function()
     $('.invalidActions .removeView').click(function(e)
     {
         e.preventDefault();
-        if (!confirm('Are you sure you want to remove this view?'))
+        if (!confirm($.t('screens.ds.show.remove_confirm')))
         { return; }
 
         blist.dataset.remove(function()

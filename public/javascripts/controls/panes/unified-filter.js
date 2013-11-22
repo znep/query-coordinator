@@ -70,6 +70,22 @@
                 { return cleanDefaultFilter(c); }));
         return localRootCondition;
     };
+    var trimEmptyFilters = function(localRootCondition)
+    {
+        if (_.isEmpty(localRootCondition))
+        { return null; }
+        if (localRootCondition.type == 'operator' &&
+                (localRootCondition.value == 'OR' || localRootCondition.value == 'AND'))
+        {
+            localRootCondition.children = _.compact(_.map(localRootCondition.children, trimEmptyFilters));
+            if (_.isEmpty(localRootCondition.children))
+            { return null; }
+            return localRootCondition;
+        }
+        else if (!_.any(localRootCondition.children, function(c) { return c.type == 'column'; }))
+        { return null; }
+        return localRootCondition;
+    };
 
     // helper to be sure we're fetching the right subcondition given a subcondition.
     // valid components: 'columnFieldName', 'subcolumn', 'value'
@@ -635,7 +651,8 @@
             // Consciously not handling namedFilters here, since we like to hide things there
             if ($.subKeyDefined(dataset, '_queryBase.query.filterCondition'))
             {
-                baseRootCondition = $.extend(true, {}, dataset._queryBase.query.filterCondition);
+                baseRootCondition = trimEmptyFilters($.extend(true, {},
+                            dataset._queryBase.query.filterCondition));
                 baseRootCondition = setUpRoot(baseRootCondition, dataset._queryBase);
                 rootCondition = blist.filter.generateSODA1(blist.filter.subtractQueries(
                             Dataset.translateFilterColumnsToBase(
@@ -672,6 +689,17 @@
                     $(this).before($.tag2({ _: 'span', className: 'conditionJoin',
                         contents: $.t('core.' + baseRootCondition.value.toLowerCase()) }));
                 });
+            }
+
+            // If we have a bare condition, turn it into one that UF can handle
+            if (rootCondition.type == 'operator' && rootCondition.value != 'AND' &&
+                    rootCondition.value != 'OR')
+            {
+                rootCondition = { type: 'operator', value: 'AND',
+                    metadata: { advanced: rootCondition.metadata.advanced,
+                        unifiedVersion: rootCondition.metadata.unifiedVersion },
+                    children: [ { type: 'operator', value: 'OR', metadata: rootCondition.metadata,
+                        children: [ rootCondition ] } ] };
             }
 
             _.each(rootCondition.children, renderCondition);

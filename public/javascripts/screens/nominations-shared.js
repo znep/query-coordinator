@@ -134,33 +134,6 @@ $(function()
     $dialog.loadingSpinner({metric: 'nomination', overlay: true});
 
     $dialog.find('form').validate({errorElement: 'span'});
-    var $uploadButton = $dialog.find('.fileBrowseButton');
-    if ($uploadButton.length > 0)
-    {
-        var $uploader = new AjaxUpload($uploadButton,
-        {
-            action: '/api/nominations/INLINE/attachments.txt',
-            autoSubmit: false,
-            name: 'nominateFileInput',
-            responseType: 'json',
-            onChange: function (file, ext)
-            {
-                $dialog.find('input[name="file_upload"]').val(file);
-                $dialog.find('.mainError').text('');
-            },
-            onComplete: function (file, response)
-            {
-                if (response.error == true)
-                {
-                    $dialog.loadingSpinner().showHide(false);
-                    $dialog.find('.mainError').text(response.message);
-                    return false;
-                }
-
-                saveNomination(response.id);
-            }
-        });
-    }
 
     // Form Submit
     $dialog.find('.submitAction').click(function(event)

@@ -69,19 +69,6 @@
       </div>
     <%- end -%>
 
-    <%- if @nom.attachments.present? -%>
-    <div class="nomAttachments">
-      <h4><%= t('controls.nominate.attachments') %></h4>
-      <ul class="attachmentList">
-        <%- @nom.attachments.each do |att| -%>
-          <li>
-          <%= link_to(att.filename, "/api/nominations/#{@nom.id}/attachments/#{att.id}", :rel => 'external') %>
-          </li>
-        <%- end -%>
-      </ul>
-    </div>
-    <%- end -%>
-
     <div class="nomComments">
       <h4><%= t('controls.nominate.comments') %></h4>
     </div>

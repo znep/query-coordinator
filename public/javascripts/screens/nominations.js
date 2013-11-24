@@ -27,7 +27,6 @@ $(function()
     {
         e.preventDefault();
         var $t = $(this);
-        var isFile = $t.closest('.attachments').length > 0;
         var $item = $t.closest('tr.item');
         var id = $item.attr('data-nominationId');
         if (isFile)
@@ -93,16 +92,6 @@ $(function()
             '.details .description': 'description!',
             '.details .description@class+': function(n)
                 { return $.isBlank(n.context.description) ? 'hide' : ''; },
-            '.attachments li':
-            {
-                'a<-attachments':
-                {
-                    '@data-attachmentId': 'a.id',
-                    '.fileLink': 'a.filename!',
-                    '.fileLink@title': 'a.filename!',
-                    '.fileLink@href': '/api/nominations/#{id}/attachments/#{a.id}'
-                }
-            },
             '.rating .value': 'netVotes',
             '.rating@class+': function(n)
                 {

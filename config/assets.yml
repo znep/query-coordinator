@@ -353,7 +353,6 @@ javascripts:
   screen-nomination:
     - public/javascripts/util/inline-login.js
     - public/javascripts/util/serialize.js
-    - public/javascripts/plugins/ajaxupload.js
     - public/javascripts/util/base-model.js
     - public/javascripts/util/socrata-server.js
     - public/javascripts/util/nomination.js

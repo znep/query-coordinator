@@ -46,7 +46,6 @@
         <colgroup>
           <col class="user" />
           <col class="details" />
-          <col class="attachments" />
           <col class="rating" />
           <col class="status" />
         </colgroup>
@@ -54,7 +53,6 @@
           <tr>
             <th class="user" scope="col"><%= t('controls.nominate.submitted_by') %></th>
             <th class="details" scope="col"><%= t('controls.nominate.details') %></th>
-            <th class="attachments" scope="col"><%= t('controls.nominate.files') %></th>
             <th class="rating" scope="col"><%= t('controls.nominate.rating') %></th>
             <th class="status" scope="col"><%= t('controls.nominate.status') %></th>
           </tr>
@@ -98,15 +96,6 @@
         </div>
         <div class="description"></div>
         <div class="comments"><div class="commentsLoading"></div></div>
-      </td>
-      <td class="attachments">
-        <ul><li>
-          <%- if !current_user.nil? &&
-                  current_user.has_right?('edit_nominations') -%>
-          <a href="#Remove" title="<%= t('controls.nominate.delete_suggestion') %>" class="delete"></a>
-          <%- end -%>
-          <a class="fileLink" rel="external"></a>
-        </li></ul>
       </td>
       <td class="rating nomRating">
         <span class="value"></span>

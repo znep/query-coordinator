@@ -580,6 +580,8 @@
                             context: sp.nodeType == 9 ? window : sp, // if got document, use window
                             handler: function()
                             {
+                                if (!cObj.$dom.parent().exists()) return;
+
                                 delete cObj._delayUntilVisible;
                                 cObj.$dom.waypoint('destroy');
                                 if (!cObj._destroyed && cObj._needsRender)

@@ -60,10 +60,11 @@
                 {
                     this.flyoutHandler().add(layerObj, feature.geometry.toLonLat(),
                         '<div class="foreverNode">' +
-                        '<div>Too much data</div>' +
-                        'This cluster\'s data is too densely packed to display useful data ' +
-                        'geographically. We recommend that you <a href="#openTable">open the ' +
-                        'tabular view</a> in order to get more details.</div>');
+                        '<div>' + $.t('controls.map.forever_node_title') + '</div>' +
+                        $.t('controls.map.forever_node_explanation') + ' ' +
+                        $.t('controls.map.forever_node_recommend') +
+                        '</div>'
+                        );
 
                     $(".olFramedCloudPopupContent .foreverNode a").click(function(e)
                     {
@@ -80,9 +81,10 @@
                 else
                 { this.flyoutHandler().add(layerObj, feature.geometry.toLonLat(),
                     '<div class="foreverNode">' +
-                    '<div>Too much data</div>' +
-                    'This cluster\'s data is too densely packed to display useful data ' +
-                    'geographically.</div>'); }
+                    '<div>' + $.t('controls.map.forever_node_title') + '</div>' +
+                    $.t('controls.map.forever_node_explanation') +
+                    '</div>'
+                    ); }
             }
         },
 

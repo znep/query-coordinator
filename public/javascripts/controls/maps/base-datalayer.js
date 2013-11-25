@@ -409,10 +409,10 @@
             $flyout.append($.tag({tagName: 'div', 'class': 'infoPaging',
                 contents: [
                     {tagName: 'a', 'class': ['previous', 'disabled'],
-                        href: '#Previous', title: 'Previous row',
-                        contents: '&lt; Previous'},
+                        href: '#Previous', title: $.t('controls.map.previous_row'),
+                        contents: '&lt; ' + $.t('controls.map.previous')},
                     {tagName: 'a', 'class': 'next', href: '#Next',
-                        title: 'Next row', contents: 'Next &gt;'}
+                        title: $.t('controls.map.next_row'), contents: $.t('controls.map.next') + ' &gt;'}
                 ]
             }));
         },

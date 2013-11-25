@@ -43,7 +43,8 @@
             stylesheets: [{ assets: 'render-images-bundle', hasImages: true },
                 { assets: 'display-map' },
                 { assets: 'rich-render-bundle' }],
-            scrollsInline: true
+            scrollsInline: true,
+            translations: [ 'controls.map' ]
         },
 
         fatrow: {
@@ -118,7 +119,7 @@
                   this.$dom.children('.renderContent').empty().removeData().removeClass('blist-table');
             },
             scrollsInline: true,
-            translations: ['controls.grid']
+            translations: ['controls.grid', 'screens.ds']
         },
 
         href: {

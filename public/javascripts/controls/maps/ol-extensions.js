@@ -54,13 +54,14 @@
                     $geolocator_prompt = $.tag({ tagName: 'div', 'class': 'geolocator',
                         contents: [{ tagName: 'input', 'class': 'textPrompt', type: 'text' },
                                    { tagName: 'select', contents:
-                                       _.map(['auto', '1mi', '2mi', '5mi', '10mi', '20mi', '50mi'],
+                                       _.map([$.t('controls.map.auto'),
+                                                '1mi', '2mi', '5mi', '10mi', '20mi', '50mi'],
                                            function(text)
                                            { return { tagName: 'option', contents: text }; })
                                    },
                                    { tagName: 'a', 'class': 'button', contents: 'Go'},
                                    { tagName: 'a', 'class': 'my_location',
-                                        title: 'Use current location' },
+                                        title: $.t('controls.map.current_location') },
                                    { tagName: 'div', 'class': 'error' }]
                     });
                     $geolocator_prompt.find('select').uniform();
@@ -78,7 +79,7 @@
                     };
 
                     $geolocator_prompt.find('input.textPrompt')
-                        .example('Enter address here')
+                        .example($.t('controls.map.address_prompt'))
                         .keypress(function(evt)
                         { if (evt.which == 13) { doZoom($(this).val()); } });
                     $geolocator_prompt.find('a.my_location').click(function()
@@ -145,12 +146,10 @@
                             control.zoomToLocation(lonlat, viewport);
                             break;
                         case google.maps.GeocoderStatus.ERROR:
-                            control.errorMessage(
-                                'The geocoding service is inaccessible. Try again later.');
+                            control.errorMessage($.t('controls.map.geocoding_inaccessible'));
                             break;
                         case google.maps.GeocoderStatus.ZERO_RESULTS:
-                            control.errorMessage(
-                                'Unable to geocode. Make sure the address is correct.');
+                            control.errorMessage($.t('controls.map.geocoding_noresults'));
                             break;
                     }
                 });
@@ -582,15 +581,15 @@
             {
                 $dom.before(this.$dom = $.tag2({ _: 'div', contents: [
                     { _: 'div', className: 'contentBlock', contents: [
-                        { _: 'h3', className: 'data', contents: 'Data Layers' },
+                        { _: 'h3', className: 'data', contents: $.t('controls.map.data_layers') },
                         { _: 'ul', className: 'data' },
                         { _: 'ul', className: 'feature' },
-                        { _: 'h3', className: 'base', contents: 'Base Layers' },
+                        { _: 'h3', className: 'base', contents: $.t('controls.map.base_layers') },
                         { _: 'ul', className: 'base' },
                         { _: 'div', className: 'customEntries' }
                     ]},
                     { _: 'h3', className: ['minimized', 'hide'], contents: [
-                        'Map Legend',
+                        $.t('controls.map.map_legend'),
                         { _: 'span', contents: ' (show)' }]},
                     { _: 'div', className: 'close_button' }
                 ], className: ['mapOverview', 'topRight'] }));
@@ -758,9 +757,9 @@
                 .flatten().compact().value();
 
             var typeMap = {
-                'point': 'Point Map',
-                'heatmap': 'Boundary Map',
-                'rastermap': 'Heat Map'
+                'point':     $.t('controls.map.point_map'),
+                'heatmap':   $.t('controls.map.boundary_map'),
+                'rastermap': $.t('controls.map.heat_map')
             };
 
             _.each(dataLayers, function(layer)
@@ -1809,7 +1808,7 @@
             if (_.size(this._layers) > 1)
             {
                 $flyout.append($.tag({ tagName: 'div', 'class': 'flyoutToggle',
-                    contents: 'There is data for more than one layer here. Select one:' }));
+                    contents: $.t('controls.map.multiple_layer_instructions') }));
                 $flyout.append($.tag({ tagName: 'ul', 'class': 'layerPaging', contents:
                     _.map(this._layers, function(dataLayer, index)
                     { return { tagName: 'li', contents: [{

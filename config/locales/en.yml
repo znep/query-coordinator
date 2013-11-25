@@ -390,6 +390,27 @@ en:
       title_prompt: Enter a title
       user_removed: a user who was already removed
       user_removed_short: User was removed
+    map:
+      previous: Previous
+      next: Next
+      previous_row: Previous row
+      next_row: Next row
+      point_map: Point Map
+      boundary_map: Boundary Map
+      heat_map: Heat Map
+      base_layers: Base Layers
+      data_layers: Data Layers
+      map_legend: Map Legend
+      current_location: Use current location
+      auto: auto
+      address_prompt: Enter address here
+      geocoding_inaccessible: The geocoding service is inaccessible. Try again later.
+      geocoding_noresults: Unable to geocode. Make sure the address is correct.
+      multiple_layer_instructions: 'There is data for more than one layer here. Select one:'
+      forever_node_title: Too much data
+      forever_node_explanation: This cluster's data is too densely packed to display useful data geographically.
+      forever_node_recommend: We recommend that you <a href="#openTable">open the tabular view</a> in order to get more details.
+      heatmap_ie8_warning: Raster Heat Maps do not work in your current browser. Please upgrade to IE9, use Google Chrome or Mozilla Firefox. Thank you.
   core:
     aggregates:
       average: Average

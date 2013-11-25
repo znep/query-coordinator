@@ -83,6 +83,8 @@ Frontend::Application.routes do
         :conditions => { :method => :post }
       post '/orgs/:org_id/domains/:domain_id/account_modules',
         :action => 'add_module_to_domain', :constraints => {:domain_id => /(\w|-|\.)+/}
+      match '/domains/:domain_id/flush_cache',
+        :action => 'flush_cache', :constraints => {:domain_id => /(\w|-|\.)+/}
       match '/orgs/:org_id/domains/:domain_id/site_config/:id',
         :action => 'show_config', :constraints => {:domain_id => /(\w|-|\.)+/}
       post '/orgs/:org_id/domains/:domain_id/site_config/:id/property',

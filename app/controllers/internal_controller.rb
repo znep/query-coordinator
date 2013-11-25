@@ -211,6 +211,14 @@ class InternalController < ApplicationController
     end
   end
 
+  def flush_cache
+    CurrentDomain.flag_out_of_date!(params[:domain_id])
+
+    respond_to do |format|
+      format.data { render :json => { :success => true } }
+    end
+  end
+
 private
   def check_auth
     if current_user.nil?

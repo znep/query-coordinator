@@ -34,13 +34,6 @@
       <%- end -%>
       <%= @user.displayLocation %>
     </p>
-    <p class="secondary">
-      <%- [{:text => t('screens.profile.bar.join_date'), :date => @user.createdAt},
-           {:text => t('screens.profile.bar.last_seen_date'), :date => @user.lastLogin}].each do |login| -%>
-         <em><%= login[:text] %></em>
-         <span class="accountDate"><%= blist_long_date(login[:date]) %></span>
-      <%- end -%>
-    </p>
   </div>
   <% prerendered_cache cache_key('profile-view-summary', @current_state),
     @view_summary_cached, :expires_in => 5.minutes do %>

@@ -2058,6 +2058,13 @@ var Dataset = ServerModel.extend({
             ds.metadata = $.extend(true, {renderTypeConfig: {visible: {}}}, ds.metadata);
             ds.metadata.renderTypeConfig.visible[ds.displayType] = true;
         }
+        if ($.subKeyDefined(ds, 'metadata.renderTypeConfig.active') &&
+                !_.any(ds.metadata.renderTypeConfig.active, function(t) { return t.id == 'self'; }))
+        {
+            // Something needs to be set to self to properly hook up sidebar, etc.; so pick one at random
+            ds.metadata.renderTypeConfig.active[
+                _.first(_.keys(ds.metadata.renderTypeConfig.visible))].id = 'self';
+        }
 
         ds.url = ds._generateUrl();
         ds.fullUrl = ds._generateUrl(true);

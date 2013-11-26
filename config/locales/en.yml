@@ -347,7 +347,6 @@ en:
       comments: Comments
       contact_author: Contact Suggestion Author
       dataset_suggestions: Dataset Suggestions
-      delete_attachment: attachment
       delete_confirm: Are you sure you want to delete this %{type}?
       delete_error: Error deleting %{type}
       delete_suggestion: suggestion

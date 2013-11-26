@@ -340,7 +340,6 @@ ro:
       comments: Comentarii
       contact_author: Contactaţi-l pe autorul sugestiei
       dataset_suggestions: Sugestii set de date
-      delete_attachment: ataşament
       delete_confirm: Sunteţi sigur că doriţ să ştergeţi acest %{type}?
       delete_error: Eroare la ştergerea %{type}
       delete_suggestion: sugestie

@@ -29,20 +29,9 @@ $(function()
         var $t = $(this);
         var $item = $t.closest('tr.item');
         var id = $item.attr('data-nominationId');
-        if (isFile)
-        {
-            blist.nominations.remove(id, $t.closest('li').attr('data-attachmentId'),
-                function() {
-                    $t.closest('li').remove();
-                }
-            );
-        }
-        else
-        {
-            blist.nominations.remove(id, null, function() {
+        blist.nominations.remove(id, function() {
                 $item.remove();
-            });
-        }
+        });
     });
 
     $.live('.nominationsList .gridList .status .moderateLink', 'click', function(e)

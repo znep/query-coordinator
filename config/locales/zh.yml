@@ -338,7 +338,6 @@ zh:
       comments: 注释
       contact_author: 联系建议作者
       dataset_suggestions: 数据集建议
-      delete_attachment: ! '附件 '
       delete_confirm: 您确定要删除该%{type}吗？
       delete_error: 删除%{type}时出错
       delete_suggestion: 建议

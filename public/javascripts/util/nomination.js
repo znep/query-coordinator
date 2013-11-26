@@ -13,13 +13,9 @@ this.Nomination = ServerModel.extend({
             success: callback, error: errorCallback});
     },
 
-    remove: function(attachmentId, successCallback, errorCallback)
+    remove: function(successCallback, errorCallback)
     {
         var url = this.selfUrl;
-        if (attachmentId) {
-            url += '/attachments/' + attachmentId;
-        }
-
         this.makeRequest({url: url + '.json', type: 'DELETE',
           success: successCallback, error: errorCallback});
     },

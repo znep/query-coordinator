@@ -338,7 +338,6 @@ it:
       comments: Commenti
       contact_author: Contatta l'autore dei suggerimenti
       dataset_suggestions: Suggerimenti dataset
-      delete_attachment: allegato
       delete_confirm: Sei sicuro di voler cancellare questo %{type}?
       delete_error: Errore nel cancellare %{type}
       delete_suggestion: suggerimento

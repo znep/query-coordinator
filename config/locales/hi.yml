@@ -338,7 +338,6 @@ hi:
       comments: टिप्पणियाँ
       contact_author: सुझाव लेखक से संपर्क करें
       dataset_suggestions: डेटासेट सुझाव
-      delete_attachment: अनुलग्नक
       delete_confirm: क्या आपको पूरा यकीन है कि आप इस %{type} को हटाना चाहते हैं?
       delete_error: ! '%{type} को हटाते समय त्रुटि हो गई'
       delete_suggestion: सुझाव

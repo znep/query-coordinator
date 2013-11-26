@@ -338,7 +338,6 @@ ru:
       comments: Комментарии
       contact_author: Связаться с автором варианта
       dataset_suggestions: Предложения для массивов данных
-      delete_attachment: вложение
       delete_confirm: Действительно удалить это %{type}?
       delete_error: Ошибка при удалении %{type}
       delete_suggestion: предложение

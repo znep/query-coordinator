@@ -338,7 +338,6 @@ fr:
       comments: Commentaires
       contact_author: Contactez l’auteur de la suggestion
       dataset_suggestions: Suggestions de données
-      delete_attachment: pièce jointe
       delete_confirm: Souhaitez-vous vraiment supprimer ce %{type} ?
       delete_error: Erreur lors de la suppression de %{type}
       delete_suggestion: suggestion

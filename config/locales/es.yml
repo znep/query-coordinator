@@ -340,7 +340,6 @@ es:
       comments: Comentarios
       contact_author: Contactar con el Autor de la Sugerencia
       dataset_suggestions: Sugerencias para el Conjunto de Datos
-      delete_attachment: archivo adjunto
       delete_confirm: ¿Está seguro de que quiere borrar este%{type}?
       delete_error: ! 'Error al borrar %{type}
 

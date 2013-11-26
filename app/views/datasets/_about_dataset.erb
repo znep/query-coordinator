@@ -178,7 +178,7 @@
       <dt><%= t('screens.about.category') %></dt>
       <dd><%= @view.category_display || t('screens.about.none') %></dd>
       <dt><%= t('screens.about.permissions') %></dt>
-      <dd><%= @view.is_public? ? t('screens.about.public') : t('controls.browse.about.private') %></dd>
+      <dd><%= @view.is_public? ? t('screens.about.public') : t('controls.about.private') %></dd>
       <dt><%= t('screens.about.tags') %></dt>
       <dd><span class="wrap"><%= @view.tag_display_string %></span></dd>
       <%- if @view.is_tabular? %>

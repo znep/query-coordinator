@@ -984,7 +984,7 @@ blist.util.loadCaptcha = function(id)
             ['https://www.google.com/recaptcha/api/js/recaptcha_ajax.js'] }, function()
             {
                 $('#' + id).removeClass('placeholder');
-                Recaptcha.create(blist.configuration.reCAPTCHA_PUK, id, { theme: 'white' });
+                Recaptcha.create(blist.configuration.reCAPTCHA_PUK, id, { theme: 'white', lang: blist.locale });
             });
     }
 };

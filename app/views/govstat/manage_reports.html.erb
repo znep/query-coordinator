@@ -7,9 +7,9 @@
 <div id="manageReportsPage">
   <div class="subnavigation">
     <ul class="breadcrumb">
-      <li class="root"><a class="ss-icon" href="/stat"><%= t("#{prefix}.home") %></a></li>
+      <li class="root"><%= localized_link_to 'Home', '/stat', :class => "ss-icon" %></li>
       <li><span class="ss-icon">navigateright</span></li>
-      <li class="main"><a href="/manage/reports"><%= t("#{prefix}.reports") %></a></li>
+      <li class="main"><%= localized_link_to t("#{prefix}.reports"), '/manage/reports' %></a></li>
     </ul>
   </div>
 

@@ -488,4 +488,12 @@ module ApplicationHelper
   def safe_json(obj)
     ('JSON.parse($.unescapeQuotes("' + h(obj.to_json.gsub(/\\/, '\\\\\\')) + '"))').html_safe
   end
+
+  def localized_link_to(name, options, *args, &block)
+    if options.is_a?(String) && options[0] == '/' && I18n.locale.to_s != CurrentDomain.default_locale
+      link_to(name, "/#{I18n.locale}#{options}", *args, &block)
+    else
+      link_to(name, options, *args, &block)
+    end
+  end
 end

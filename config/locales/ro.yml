@@ -730,12 +730,12 @@ ro:
       editing: Editare
       permissions: Permisiuni
       preview_page: Previzualizaţi această pagină
-      redo: Refacere
+      redo: Refă
       revert: Revenire
       save: Salvare
       save_as: Salvare ca
       settings: Setări
-      undo: Anulare
+      undo: Desfă
       view_editor: Vizualizare editor interactiv
     edit_component:
       no_config: Nicio configuraţie disponibilă pentru %{component}
@@ -897,9 +897,9 @@ ro:
       bold: aldin
       heading: Titlu
       italic: cursiv
-      redo: Refacere
+      redo: Refă
       subheading: Subtitlu
-      undo: Anulare
+      undo: Desfă
     jquery_ui:
       april: Aprilie
       april_short: Apr
@@ -1126,10 +1126,10 @@ ro:
           italic: Cursiv
           link: Link
           number: Listă numerotată
-          redo: Refacere
+          redo: Refă
           strike: Tăiere
           underline: Subliniere
-          undo: Anulare
+          undo: Desfă
         full_screen: Comtuare la ecran complet
         publish_button: Publicare set de date
         publish_prompt: Acest set de date este o copie funcţională şi nu este disponibilă public. Odată ce aţi realizat modificările dorite, acest set de date trebuie să fie publicat pentru a fi disponibil public.

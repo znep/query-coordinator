@@ -733,7 +733,7 @@ it:
       save: Salva
       save_as: Salva come
       settings: Settaggi
-      undo: Annulla
+      undo: Disfai
       view_editor: Guarda l'editor interattivo
     edit_component:
       no_config: Nessuna configurazione disponibile per %{component}
@@ -897,7 +897,7 @@ it:
       italic: corsivo
       redo: Rifai
       subheading: Sottotitolo
-      undo: Annulla
+      undo: Disfai
     jquery_ui:
       april: Aprile
       april_short: Apr
@@ -1124,10 +1124,10 @@ it:
           italic: Italic
           link: Link
           number: Elenco numerato
-          redo: Ripristina
+          redo: Rifai
           strike: Barrato
           underline: Sottolineato
-          undo: Annulla
+          undo: Disfai
         full_screen: Visualizza a schermo intero
         publish_button: Pubblica Dataset
         publish_prompt: Questo dataset è una copia di lavoro e non è pubblico. Una volta terminate le modifiche, è necessario pubblicare il dataset per renderlo pubblico.

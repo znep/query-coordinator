@@ -730,12 +730,12 @@ pt:
       editing: A editar
       permissions: Permissões
       preview_page: Pré-visualizar página
-      redo: Repetir a Introdução
+      redo: Refaze
       revert: Reverter
       save: Guardar
       save_as: Guardar Como
       settings: Definições
-      undo: Anular a Introdução
+      undo: Desfaze
       view_editor: Ver o editor interativo
     edit_component:
       no_config: Nenhuma configuração disponível para %{component}
@@ -897,9 +897,9 @@ pt:
       bold: negrito
       heading: Título
       italic: itálico
-      redo: Repetir a Introdução
+      redo: Refaze
       subheading: Subtítulo
-      undo: Anular a Introdução
+      undo: Desfaze
     jquery_ui:
       april: abril
       april_short: abr
@@ -1126,10 +1126,10 @@ pt:
           italic: Itálico
           link: Hiperligação
           number: Lista numerada
-          redo: Refazer
+          redo: Refaze
           strike: Riscado
           underline: Sublinhado
-          undo: Desfazer
+          undo: Desfaze
         full_screen: Ativar ecrã inteiro
         publish_button: Publicar conjunto de dados
         publish_prompt: Este conjunto de dados é uma cópia de trabalho e não está disponível publicamente. Assim que tenha feito as alterações desejadas, este conjunto de dados deve ser publicado para o voltar a tornar publicamente disponível.

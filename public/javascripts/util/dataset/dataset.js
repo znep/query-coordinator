@@ -1008,7 +1008,9 @@ var Dataset = ServerModel.extend({
     {
         var ds = this;
         name = ds._useSODA2 ? name : ({sid: 'id', 'id': 'uuid'}[name] || name);
-        var c = $.isBlank(parCol) ? ds.columnForIdentifier(name) : parCol.childColumnForIdentifier(name);
+        var c = ds._useSODA2 ?
+            $.isBlank(parCol) ? ds.columnForFieldName(name) : parCol.childColumnForFieldName(name) :
+            $.isBlank(parCol) ? ds.columnForID(name) : parCol.childColumnForID(name);
 
         if ($.isBlank(c))
         {

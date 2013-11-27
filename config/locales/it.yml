@@ -1,19 +1,4 @@
 it:
-  date:
-    abbr_month_names:
-    - 
-    - Gen
-    - Feb
-    - Mar
-    - Apr
-    - Mag
-    - Giu
-    - Lug
-    - Ago
-    - Set
-    - Ott
-    - Nov
-    - Dic
   account:
     common:
       form:
@@ -201,6 +186,8 @@ it:
       sidebar:
         tabs:
           about: Informazioni
+          components: Componenti
+          configuration: Configurazione
           discuss: Discuti
           edit: Modifica
           embed: Incorpora
@@ -214,7 +201,7 @@ it:
       visualization:
         in_bing: Visualizza su Bing Maps
         in_google: Visualizza su Google Maps
-        row_details: Visualizza il dettaglio per questo record
+        row_details: Visualizza i dettagli per questa riga
     embed:
       create_template_button: Crea un Nuovo Template
       custom_size: Personalizza dimensioni
@@ -238,7 +225,7 @@ it:
       comment_actions:
         already_marked_inappropriate: Contrassegnato
         delete: Elimina
-        delete_confirm: Sei sicuro? Il tuo commento verrà perso.
+        delete_confirm: Davvero? Il tuo commento verrà perso.
         inappropriate: Inappropriato
         marked_inappropriate: Contrassegnato!
         rate_down: Abbassa il voto
@@ -310,6 +297,11 @@ it:
         select_one: Seleziona uno.
         show_suggested: Mostra i valori suggeriti.
         title: Opzioni
+    global_indicator:
+      error: Errore
+      saved: Salvato
+      saving: Salvataggio...
+      working: Lavorando...
     grid:
       add_column: Aggiungi una nuova colonna
       clear_column_filter: Elimina filtro
@@ -323,12 +315,16 @@ it:
       delete_warning_single_column: Vuoi eliminare la colonna selezionata? Tutti i dati in questa colonna saranno rimossi!
       edit_column_properties: Modifica delle proprietà della colonna
       filter_this_column: Filtra questa colonna
+      geocodes_pending: Le linee nella colonna località non sono ancora state geocodificate. Attendere fino a quando la pubblicazione di questo dataset non sarà completata.
       hide_column: Nascondi colonna
       menu: Menu
       must_enter_name: Devi inserire un nome per questa colonna
       new_row: Nuovo
+      no_columns: Dataset %{uid} non ha colonne
       no_rows: Nessun record da visualizzare
+      permission_denied: Non hai accesso a questa vista.
       previous: Precedente
+      required_cols_missing: Le colonne richieste per questa vista non sono presenti
       sort_ascending: Ordinamento Ascendente
       sort_descending: Ordinamento Discendente
       totals: Totali
@@ -340,6 +336,31 @@ it:
       view_row: Vedi riga
       view_single_row: Visualizza Singolo Record
       viewing_row_html: Visualizzazione della riga <span class="curPage"></span> su <span class="totalPages"></span>
+    map:
+      address_prompt: Inserire qui l'indirizzo
+      auto: auto
+      base_layers: Layer di base
+      boundary_map: Mappa confini
+      current_location: Utilizza posizione corrente
+      data_layers: Layer dati
+      data_request_timeout: Una richiesta di dati ha impiegato troppo tempo ad essere completata e la richiesta è scaduta.
+      forever_node_explanation: Il cluster di dati è troppo compatto per mostrare geograficamente dati utili
+      forever_node_recommend: Raccomandiamo di <a href="#openTable">aprire la visione tabellare</a> per avere maggiori dettagli.
+      forever_node_title: Troppi dati
+      geocoding_inaccessible: Il servizio di geocodifica non è accessibile. Prova più tardi
+      geocoding_noresults: Impossibile geocodificare. Assicurarsi che l'indirizzo sia corretto
+      heat_map: Mappa del calore
+      heatmap_ie8_warning: Le Mappe del Calore Raster non funzionano con il tuo browser corrente. Ti preghiamo di passare a IE9, usare Google Chrome o Mozilla Firefox. Grazie.
+      loading: Caricamento...
+      map_legend: Legenda della mappa
+      multiple_layer_instructions: ! 'Sono presenti dati per più di un layer qui. Selezionarne uno:'
+      next: Successivo
+      next_row: Riga successiva
+      no_columns_defined: Nessuna colonna definita
+      point_map: Punta su mappa
+      previous: Precedente
+      previous_row: Riga precedente
+      request_timed_out: La richiesta per questi dati è scaduta.
     nominate:
       all: Tutti
       approve: (Approva)
@@ -353,6 +374,7 @@ it:
       comments: Commenti
       contact_author: Contatta l'autore dei suggerimenti
       dataset_suggestions: Suggerimenti dataset
+      delete_attachment: allegato
       delete_confirm: Sei sicuro di voler cancellare questo %{type}?
       delete_error: Errore nel cancellare %{type}
       delete_suggestion: suggerimento
@@ -519,6 +541,7 @@ it:
           belay_button: Non disconnettermi!
           body_html: Non abbiamo rilevato alcuna attività negli ultimi minuti. Per ragioni di privacy, verrai disconnesso fra <span id="secondsRemaining"></span> secondi.
           title: La sessione sta per scadere.
+      submit: Invia.
       update: Aggiorna
     expando:
       expand: Espandi
@@ -590,6 +613,9 @@ it:
       five: cinque
       four: quattro
       nine: nove
+      num_one: uno
+      num_two: due
+      num_zero: zero
       seven: sette
       six: sei
       three: tre
@@ -733,6 +759,21 @@ it:
       page_url: Percorso
       save: Salva
       title: Settaggi della Pagina
+  date:
+    abbr_month_names:
+    - 
+    - Gen
+    - Feb
+    - Mar
+    - Apr
+    - Mag
+    - Giu
+    - Lug
+    - Ago
+    - Set
+    - Ott
+    - Nov
+    - Dic
   error:
     back: Indietro
     error_500:
@@ -760,12 +801,33 @@ it:
           account_options: Opzioni dell'Account
           account_tooltip: Guarda e fai dei cambi al tuo account utente
           configuration: Configurazione
+          configuration_title: Gestisci la configurazione di GovStat
           data: Dati
-          goals: Obiettivi
+          data_title: Naviga e Gestisci i Dati
+          goals: Mete
+          goals_title: Crea e Segui le Mete
           home: Home
-          my_goals: I Miei Obiettivi
-          my_goals_tooltip: Vedi gli obiettivi che ho creato.
+          home_title: Home
+          my_goals: Le mie Mete
+          my_goals_tooltip: Vedi le mete che ho creato.
           reports: Rapporti
+          reports_title: Vedi e Crea Rapporti
+    configuration:
+      analytics: Analytics
+      appearance: Aspetto
+      config: Configurazione
+      content_moderation: Moderazione dei Contenuti
+      data_management: Gestione Dati
+      datasets: Dataset
+      federations: Federazioni
+      homepage: Homepage
+      metadata: Metadata
+      moderation: Moderazione Commento
+      nomination: Nomina Moderazione
+      routing: Routing ed Approvazione
+      sdp_templates: Template per Player dati
+      title: Gestisci la Configurazione del Sito
+      users: Utenti
     reports:
       component:
         base_map: Mappa Base
@@ -802,6 +864,11 @@ it:
       settings:
         page_title: Rapporto del Titolo
         title: Settaggi del Rapporto
+    template:
+      grid_flow_layout: Layout Flusso della Griglia
+      layouts: Layout
+      list_layout: Elenca Layout
+      title: Seleziona Layout
   plugins:
     daterangepicker:
       date_range: Gamma della Data
@@ -853,7 +920,7 @@ it:
       march: Marzo
       march_short: Mar
       may: Maggio
-      may_short: Maggio
+      may_short: Mag
       monday: Lunedì
       monday_min: Lu
       monday_short: Lun
@@ -1805,6 +1872,9 @@ it:
         validation:
           auth_required: Devi effettuare l'accesso per salvare una vista
           view_name_required: E' richiesto un nome per la vista
+      show:
+        remove_confirm: Sei sicuro di voler eliminare questa vista?
+        unpublished_alert: Questo dataset non è stato ancora pubblicato per consentirti di fare dei cambiamenti necessari prima di renderlo disponibile ad altri. Non sarà visibile finché non pubblicherai questo dataset.
       subscribe:
         google_reader: Aggiungi a Google Reader
         intro_html: ! '<strong>Per abbonarti a <span class="datasetName">%{name}</span> dataset tramite un reader RSS</strong>, utilizza uno dei seguenti link:'
@@ -1897,6 +1967,43 @@ it:
         account_html: Salve, <span class="currentUser"></span>
         account_tooltip: La tua Pagina iniziale
         administration: Amministrazione
+    import_common:
+      addresses_to_geocode: Gli indirizzi saranno geocodificati dopo che l'importazione sarà completa.
+      case_sensitive: case sensitive
+      city: Città
+      column: Colonna
+      combine_multiple_columns: Combina Colonne Multiple
+      create_composite: ! 'Crea una colonna a partire da diverse colonne sorgenti:'
+      create_js_expression: Come creo una espressione Javascript personalizzata?
+      custom_javascript: Espressione Javascript Personalizzata
+      enter_custom: Inserisci un valore personalizzato
+      existing_cols: Colonne Indirizzi Esistenti
+      existing_latlng_cols: Colonne di Latitudine e Longitudine Esistenti
+      find: trova
+      find_and_replace: Trova e Sostituisci valore...
+      import_from_multiple: Importa da <strong>colonne multiple</strong>
+      import_from_single: Importa da <strong>colonna singola</strong>
+      latitude: Latitudine
+      location_source_col: Posizione Colonne Sorgente
+      longitude: Longitudine
+      make_lower_case: Trasforma in minuscolo
+      make_title_case: Trasforma in Titolo
+      make_upper_case: Trasforma in MAIUSCOLO
+      name_this_column: Nomina questa colonna
+      new_layer: (Nuovo Layer)
+      new_source_col: Aggiungi nuova colonna sorgente
+      new_transform: Aggiungi nuovo transform
+      options: Opzioni
+      properly_formatted: La colonna deve essere <a href="%{formatting_link}" rel="external">correttamente formattata</a> prima di poter essere importata.
+      regular_expression: espressione regolare
+      remove: rimuovi
+      replace: e sostituisci con
+      state: Stato
+      street: Via
+      then: poi
+      to_state_code: Converti stati in codici da 2 lettere
+      transforms: Esegui la trasformazione seguente quando importa.
+      zip: CAP
     import_pane:
       analyzing: Sto analizzando il tuo file
       assure_accessible: Cortesemente assicurati che il tuo file sia accessibile e riprova.
@@ -2137,6 +2244,27 @@ it:
       views_loaded: Visualizzazioni Caricate
       website: Sito web
       weekly: Settimanale
+    thumbnail:
+      discard_changes: Ignora Modifiche
+      edit_thumbnail: Edita Miniatura per %{name}
+      error_blob: Il file inserito non può essere visualizzato in miniatura perché non può essere mostrato nel browser
+      error_generic: C'è stato un problema nel salvataggio della miniatura. Prova più tardi per favore.
+      error_invalid: Questa visualizzazione non è valida e non può essere vista in miniatura nel suo stato attuale
+      error_private: Per la tua privacy possono essere messi in visualizzazione miniatura solo i dataset pubblici. Se desideri avere un'immagine di anteprima, ti preghiamo di rendere questo dataset pubblico dal pannello Permessi della barra di Gestione
+      error_processing: C'è stato un errore nell'elaborazione della richiesta di visualizzazione miniatura. Ti preghiamo di provare più tardi
+      full_image: Immagine intera
+      please_wait: Non esistono ancora miniature disponibili per questo dataset. TI preghiamo di attendere mentre ne creiamo una per te.
+      preview: Anteprima
+      refresh_thumbnail: Aggiorna Miniatura
+      return_to_dataset: Torna a Dataset
+      save_thumbnail: Salva Miniatura
+      success: Miniatura Salvata
+      title: Dataset Miniatura
+      unsaved: Non salvato
+    widget:
+      create_new:
+        name: Nuovo Nome Template
+        title: Crea un nuovo Template
     wizard:
       cancel: Cancella
       finish: Termina

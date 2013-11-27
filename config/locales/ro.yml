@@ -1,19 +1,4 @@
 ro:
-  date:
-    abbr_month_names:
-    -
-    - Ian
-    - Feb
-    - Mar
-    - Apr
-    - Mai
-    - Iun
-    - Iul
-    - Aug
-    - Sep
-    - Oct
-    - Nov
-    - Dec
   account:
     common:
       form:
@@ -201,6 +186,8 @@ ro:
       sidebar:
         tabs:
           about: Despre acest set de date
+          components: Componente
+          configuration: Configurare
           discuss: Discuţie
           edit: Editare
           embed: Încorporare
@@ -310,6 +297,11 @@ ro:
         select_one: Selectare doar una
         show_suggested: Afişare valori sugerate
         title: Opţiuni
+    global_indicator:
+      error: Eroare
+      saved: Salvat
+      saving: Se salvează...
+      working: În lucru...
     grid:
       add_column: Adăugare coloană nouă
       clear_column_filter: Ştergere filtru coloană
@@ -325,12 +317,16 @@ ro:
       delete_warning_single_column: Doriţi să ştergeţi coloana selectată? Toate datele din această coloană vor fi eliminate!
       edit_column_properties: Editare proprietăţi coloană
       filter_this_column: Filtraţi această coloană
+      geocodes_pending: Rândurile din coloana de localizare sunt încă în geocodare. Vă rugăm să aşteptaţi până când ele sunt finalizate, pentru a publica acest set de date.
       hide_column: Ascundere coloană
       menu: Meniu
       must_enter_name: Trebuie să introduceţi un nume pentru această coloană
       new_row: Nou
+      no_columns: Setul de date %{uid} nu are nicio coloană.
       no_rows: Niciun rând de afişat
+      permission_denied: Nu aveţi acces la această vizualizare.
       previous: Anterior
+      required_cols_missing: Coloanele necesare pentru această vizualizare lipsesc
       sort_ascending: Sortare ascendentă
       sort_descending: Sortare descendentă
       totals: Totaluri
@@ -342,6 +338,31 @@ ro:
       view_row: Vizualizare rând
       view_single_row: Vizualizare date rând unic
       viewing_row_html: Vizualizare rând <span class="curPage"></span> din <span class="totalPages"></span>
+    map:
+      address_prompt: Introduceţi adresa aici
+      auto: automat
+      base_layers: Straturi de bază
+      boundary_map: Hartă cu frontiere
+      current_location: Utilizaţi localizarea actuală
+      data_layers: Straturi de date
+      data_request_timeout: Solicitarea de date a durat prea mult şi a expirat.
+      forever_node_explanation: Datele din acest cluster sunt prea dens adunate pentru a putea afişa date utile în mod geografic.
+      forever_node_recommend: Vă recomandăm să <a href="#openTable">deschideţi vizualizarea tabulară</a> pentru a obţine mai multe detalii.
+      forever_node_title: Prea multe date
+      geocoding_inaccessible: Serviciul de geocodare este inaccesibil. Încercaţi din nou, mai târziu.
+      geocoding_noresults: Imposibil de geocodat. Vă rugăm să vă asiguraţi că adresa este corectă.
+      heat_map: Hartă termică
+      heatmap_ie8_warning: Hărţile termice raster nu funcţionează în browserul dvs. curent. Vă rugăm să upgradaţi la IE9, sau să utilizaţi Google Chrome sau Mozila Firefox. Vă mulţumim.
+      loading: Se încarcă...
+      map_legend: Legendă hartă
+      multiple_layer_instructions: ! 'Aici sunt date pentru mai mult de un strat. Selectaţi unul:'
+      next: Următorul
+      next_row: Rândul următor
+      no_columns_defined: Nicio coloană definită
+      point_map: Hartă cu puncte
+      previous: Anteriorul
+      previous_row: Rândul anterior
+      request_timed_out: Solicitarea acestor date a expirat.
     nominate:
       all: Toate
       approve: (Aprobare)
@@ -355,6 +376,7 @@ ro:
       comments: Comentarii
       contact_author: Contactaţi-l pe autorul sugestiei
       dataset_suggestions: Sugestii set de date
+      delete_attachment: ataşament
       delete_confirm: Sunteţi sigur că doriţ să ştergeţi acest %{type}?
       delete_error: Eroare la ştergerea %{type}
       delete_suggestion: sugestie
@@ -521,6 +543,7 @@ ro:
           belay_button: Nu mă deconecta!
           body_html: Nu am detectat nicio activitate de câteva minute. Din motive de respectare a confidenţialităţii, vă vom deconecta  în <span id="secondsRemaining"></span> secunde.
           title: Sesiunea dvs. este pe cale să expire.
+      submit: Trimitere
       update: Actualizare
     expando:
       expand: Extindere
@@ -592,6 +615,9 @@ ro:
       five: cinci
       four: patru
       nine: nouă
+      num_one: unu
+      num_two: doi
+      num_zero: zero
       seven: şapte
       six: şase
       three: trei
@@ -735,6 +761,21 @@ ro:
       page_url: Cale
       save: Salvare
       title: Setări pagină
+  date:
+    abbr_month_names:
+    - 
+    - Ian
+    - Feb
+    - Mar
+    - Apr
+    - Mai
+    - Iun
+    - Iul
+    - Aug
+    - Sep
+    - Oct
+    - Nov
+    - Dec
   error:
     back: Înapoi
     error_500:
@@ -762,12 +803,33 @@ ro:
           account_options: Opţiuni cont
           account_tooltip: Vizualizaţi şi realizaţi modificări la contul dvs. de utilizator
           configuration: Configurare
+          configuration_title: Administraţi configurarea GovStat
           data: Date
+          data_title: Răsfoiţi şi administraţi date
           goals: Obiective
+          goals_title: Creaţi şi urmăriţi obiective
           home: Acasă
+          home_title: Acasă
           my_goals: Obiectivele mele
           my_goals_tooltip: Vizualizare obiective create de mine
           reports: Rapoarte
+          reports_title: Vizualizaţi şi creaţi rapoarte
+    configuration:
+      analytics: Analitice
+      appearance: Aspect
+      config: Configurare
+      content_moderation: Moderare conţinut
+      data_management: Administrare date
+      datasets: Seturi de date
+      federations: Externalizări
+      homepage: Pagina de pornire
+      metadata: Metadate
+      moderation: Moderare comentarii
+      nomination: Moderare nominalizare
+      routing: Rutare şi aprobare
+      sdp_templates: Şabloane player date
+      title: Administrare configurare site
+      users: Utilizatori
     reports:
       component:
         base_map: Hartă de bază
@@ -804,6 +866,11 @@ ro:
       settings:
         page_title: Titlu raport
         title: Setări raport
+    template:
+      grid_flow_layout: Aranjare grilă
+      layouts: Aranjamente
+      list_layout: Aranjament listă
+      title: Selectare aranjament
   plugins:
     daterangepicker:
       date_range: Interval de timp
@@ -886,7 +953,7 @@ ro:
       week_min: Săp
   recaptcha:
     errors:
-      verification_failed: 
+      verification_failed: Caracterele introduse nu se potrivesc cu imaginea.
   screens:
     about:
       actions: Acţiuni
@@ -921,8 +988,8 @@ ro:
       semantics: Semantice şi RDF
       short_url: URL scurt
       snapshotted: captat
-      soda2_support: 
-      soda2_yes: 
+      soda2_support: Doar SODA2
+      soda2_yes: Da
       source_link: Link sursă
       spatial_extent: Mărime spaţială
       subject_column: Coloană subiect
@@ -1807,6 +1874,9 @@ ro:
         validation:
           auth_required: Trebuie să fiţi autentificat pentru a salva o vizualizare
           view_name_required: Este necesară o denumire de vizualizare
+      show:
+        remove_confirm: Sunteţi sigur că doriţi să eliminaţi această vizualizare?
+        unpublished_alert: Acest set de date nu este încă publicat pentru a vă permite toate modificările necesare înainte de a-l face disponibil tuturor. Nu va fi vizibil până când nu publicaţi acest set de date.
       subscribe:
         google_reader: Adăugare la Google Reader
         intro_html: ! '<strong>Pentru a vă abona la <span class="datasetName">%{name}</span> setul de date printr-un cititor RSS</strong>, utilizaţi unul dintre următoarele link-uri:'
@@ -1899,6 +1969,43 @@ ro:
         account_html: Bună, <span class="currentUser">utilizator necunoscut</span>
         account_tooltip: Pagina dvs. de pornire
         administration: Administrare
+    import_common:
+      addresses_to_geocode: Adresele vor fi geocodate după ce importarea este finalizată.
+      case_sensitive: diferenţiere litere mari şi mici
+      city: Oraş
+      column: Coloană
+      combine_multiple_columns: Combinare mai multe coloane
+      create_composite: ! 'Creaţi o coloană din mai multe coloane sursă:'
+      create_js_expression: Cum creez o expresie Javascript personalizată?
+      custom_javascript: Expăresie Javascript personalizată...
+      enter_custom: Introduceţi o valoare personalizată
+      existing_cols: Coloane de adresă existente
+      existing_latlng_cols: Coloane de latitudine şi longitudine existente
+      find: găsire
+      find_and_replace: Găsire şi înlocuire valoare...
+      import_from_multiple: Importaţi din <strong>coloane multiple</strong>
+      import_from_single: Importaţi dintr-o <strong>singură coloană</strong>
+      latitude: Latitudine
+      location_source_col: Coloane sursă localizare
+      longitude: Longitudine
+      make_lower_case: Scrieţi cu litere mici
+      make_title_case: Scrieţi în stil titlu
+      make_upper_case: Scrieţi cu LITERE MARI
+      name_this_column: Denumiţi această coloană
+      new_layer: (Strat nou)
+      new_source_col: Adăugare coloană sursă nouă
+      new_transform: Adăugare reprezentare nouă
+      options: Opţiuni
+      properly_formatted: Coloana trebuie să fie <a href="%{formatting_link}" rel="external">formatată corespunzător</a> înainte de importare.
+      regular_expression: expresie obişnuită
+      remove: eliminaţi
+      replace: şi înlocuiţi cu
+      state: Stat
+      street: Stradă
+      then: atunci
+      to_state_code: Convertiţi stări în coduri cu 2 cifre
+      transforms: ! 'Realizaţi următoarea transformare la importare:'
+      zip: Cod poştal
     import_pane:
       analyzing: Se analizează fişierul dvs...
       assure_accessible: Vă rugăm să vă asiguraţi că fişierul dvs. este accesibil şi valabil şi încercaţi din nou.
@@ -2139,6 +2246,27 @@ ro:
       views_loaded: Vizualizări încărcate
       website: Site web
       weekly: Săptămânal
+    thumbnail:
+      discard_changes: Eliminaţi modificările
+      edit_thumbnail: Editaţi miniatura pentru %{name}
+      error_blob: Acest fişier integrat nu poate fi miniaturizat şi afişat în brower.
+      error_generic: A apărut o problemă la salvarea miniaturii dvs. Vă rugăm să încercaţi din nou, mai târziu.
+      error_invalid: Această vizualizare este nevalidă şi nu poate fi miniaturizată în starea sa curentă
+      error_private: Din motive de siguranţă a intimităţii dvs., doar seturile de date publice pot fi miniaturizate. Dacă doriţi să aveţi o imagine de previzualizare, vă rugăm să faceţi public acest set de date de la panoul "Permisiuni" al barei laterale din "Administrare".
+      error_processing: A survenit o eroare la procesarea solicitării dvs. de miniaturizare. Vă rugăm să încercaţi, din nou, mai târziu.
+      full_image: Imagine completă
+      please_wait: Încă nu există miniaturi disponibile pentru acest set de date. Vă rugăm să aşteptaţi până ce creăm unul pentru dvs.
+      preview: Previzualizare
+      refresh_thumbnail: Reîmprospătare miniatură
+      return_to_dataset: Revenire la setul de date
+      save_thumbnail: Salvare miniatură
+      success: Miniatură salvată
+      title: Miniaturizaţi setul de date
+      unsaved: Nesalvat
+    widget:
+      create_new:
+        name: Nume nou de şablon
+        title: Creaţi un şablon nou
     wizard:
       cancel: Anulare
       finish: Încheiere

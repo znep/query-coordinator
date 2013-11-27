@@ -1,19 +1,4 @@
 pt:
-  date:
-    abbr_month_names:
-    - 
-    - Jan
-    - Fev
-    - Mar
-    - Abr
-    - Jun
-    - Jul
-    - Mai
-    - Ago
-    - Set
-    - Out
-    - Nov
-    - Dez
   account:
     common:
       form:
@@ -201,6 +186,8 @@ pt:
       sidebar:
         tabs:
           about: Sobre este conjunto de dados
+          components: Componentes
+          configuration: Configuração
           discuss: Discutir
           edit: Editar
           embed: Embutir
@@ -310,6 +297,11 @@ pt:
         select_one: Escolher uma
         show_suggested: Mostrar valores sugeridos
         title: Opções
+    global_indicator:
+      error: Erro
+      saved: Guardado
+      saving: A Guardar...
+      working: A Processar...
     grid:
       add_column: Adicionar uma nova coluna...
       clear_column_filter: Limpar filtro de coluna
@@ -323,12 +315,16 @@ pt:
       delete_warning_single_column: Quer eliminar a coluna selecionada? Todos os dados desta coluna serão removidos!
       edit_column_properties: Editar as propriedades da coluna
       filter_this_column: Filtrar esta coluna
+      geocodes_pending: As linhas na coluna de localização ainda estão a geocodificar. Por favor, espera até que estejam terminadas para publicar este conjunto de dados
       hide_column: Omitir coluna
       menu: Menu
       must_enter_name: Deve introduzir um nome para esta coluna
       new_row: Novo
+      no_columns: O conjunto de dados %{uid} não contém quaisquer colunas.
       no_rows: Sem linhas para apresentar
+      permission_denied: Não possuí acesso a esta vista.
       previous: Anterior
+      required_cols_missing: As colunas necessárias para esta vista estão em falta
       sort_ascending: Ordenar por ascendente
       sort_descending: Ordenar por descendente
       totals: Totais
@@ -340,6 +336,31 @@ pt:
       view_row: Ver linha
       view_single_row: Ver os dados de linha única
       viewing_row_html: A ver a linha <span class="curPage"></span> de <span class="totalPages"></span>
+    map:
+      address_prompt: Introduza o endereço aqui
+      auto: automático
+      base_layers: Camadas Base
+      boundary_map: Mapa de Fronteira
+      current_location: Utilizar localização atual
+      data_layers: Camadas de Dados
+      data_request_timeout: Um pedido de dados demorou muito tempo e, por isso, expirou.
+      forever_node_explanation: Os dados deste cluster estão demasiado densos para se conseguir visualizar dados geográficos de forma útil.
+      forever_node_recommend: Recomendámos que <a href="#openTable">abra a vista de tabela</a> para obter mais detalhes.
+      forever_node_title: Demasiados dados
+      geocoding_inaccessible: O serviço de geocodificação não está acessível. Tente outra vez mais tarde.
+      geocoding_noresults: Não foi possível obter o código de geolocalização. Verifique se o endereço está correto.
+      heat_map: Mapa de Calor
+      heatmap_ie8_warning: Mapas Raster de Calor não funcionam no seu navegador atual. Por favor, atualize para o IE9, utilize o Google Chrome ou o Mozilla Firefox. Obrigado.
+      loading: A Carregar...
+      map_legend: Legenda do Mapa
+      multiple_layer_instructions: ! 'Existem aqui dados para mais do que uma camada. Selecione uma:'
+      next: Seguinte
+      next_row: Linha seguinte
+      no_columns_defined: Nenhuma coluna definida
+      point_map: Mapa de Pontos
+      previous: Anterior
+      previous_row: Linha anterior
+      request_timed_out: O pedido para estes dados expirou.
     nominate:
       all: Tudo
       approve: (Aprovar)
@@ -353,6 +374,7 @@ pt:
       comments: Comentários
       contact_author: Contactar o autor da sugestão
       dataset_suggestions: Sugestões do conjunto de dados
+      delete_attachment: anexo
       delete_confirm: Tem a certeza de que quer eliminar este %{type}?
       delete_error: Erro na eliminação de %{type}
       delete_suggestion: sugestão
@@ -521,6 +543,7 @@ pt:
           belay_button: Não me terminem a sessão!
           body_html: Não detetámos qualquer atividade nos últimos minutos. Por questões de privacidade iremos terminar-lhe a sessão daqui a <span id="secondsRemaining"></span> segundos.
           title: A sua sessão está prestes a expirar.
+      submit: Submeter
       update: Atualizar
     expando:
       expand: Expandir
@@ -592,6 +615,9 @@ pt:
       five: cinco
       four: quatro
       nine: nove
+      num_one: um
+      num_two: dois
+      num_zero: zero
       seven: sete
       six: seis
       three: três
@@ -735,6 +761,21 @@ pt:
       page_url: Caminho
       save: Guardar
       title: Definições de Página
+  date:
+    abbr_month_names:
+    - 
+    - Jan
+    - Fev
+    - Mar
+    - Abr
+    - Jun
+    - Jul
+    - Mai
+    - Ago
+    - Set
+    - Out
+    - Nov
+    - Dez
   error:
     back: Voltar
     error_500:
@@ -762,12 +803,33 @@ pt:
           account_options: Opções de Conta
           account_tooltip: Ver e fazer alterações à sua conta de utilizador.
           configuration: Configuração
+          configuration_title: Gerir a configuração do GovStat
           data: Dados
+          data_title: Explorar e Gerir Dados
           goals: Objetivos
+          goals_title: Criar e Seguir Objetivos
           home: Início
+          home_title: Página Inicial
           my_goals: Os meus objetivos
           my_goals_tooltip: Ver os objetivos que criei.
           reports: Relatórios
+          reports_title: Ver e Criar Relatórios
+    configuration:
+      analytics: Análises
+      appearance: Aparência
+      config: Configuração
+      content_moderation: Moderação de Conteúdo
+      data_management: Gestão de Dados
+      datasets: Conjuntos de dados
+      federations: Federações
+      homepage: Página Principal
+      metadata: Metadados
+      moderation: Moderação de Comentários
+      nomination: Moderação de Nomeações
+      routing: Itinerário e Aprovação
+      sdp_templates: Modelos de Dados de Jogador
+      title: Gerir Configuração da Página Web
+      users: Utilizadores
     reports:
       component:
         base_map: Mapa de Base
@@ -804,6 +866,11 @@ pt:
       settings:
         page_title: Título do Relatório
         title: Definições do Relatório
+    template:
+      grid_flow_layout: Fluxo de Disposição em Grelha
+      layouts: Disposições
+      list_layout: Disposição em Lista
+      title: Selecionar Disposição
   plugins:
     daterangepicker:
       date_range: Intervalo de Datas
@@ -886,7 +953,7 @@ pt:
       week_min: Fim de semana
   recaptcha:
     errors:
-      verification_failed: 
+      verification_failed: Os caracteres introduzidos não emparelham com a imagem.
   screens:
     about:
       actions: Ações
@@ -921,8 +988,8 @@ pt:
       semantics: Semântica e RDF
       short_url: URL curta
       snapshotted: instantâneo tirado
-      soda2_support: 
-      soda2_yes: 
+      soda2_support: Apenas SODA2
+      soda2_yes: Sim
       source_link: Hiperligação original
       spatial_extent: Extensão espacial
       subject_column: Coluna do assunto
@@ -1807,6 +1874,9 @@ pt:
         validation:
           auth_required: Deve ter a sessão iniciada para guardar uma vista
           view_name_required: Um nome da vista é necessário
+      show:
+        remove_confirm: Tem a certeza que quer remover esta vista?
+        unpublished_alert: Este conjunto de dados ainda não foi publicado, para assim lhe permitir fazer quaisquer alterações necessárias antes de o tornar disponível para todos. Não será visível até que publique este conjunto de dados.
       subscribe:
         google_reader: Adicionar ao Google Reader
         intro_html: ! '<strong>Para subscrever ao <span class="datasetName">%{name}</span> conjunto de dados por um leitor RSS</strong>, utilize uma das seguintes hiperligações:'
@@ -1899,6 +1969,43 @@ pt:
         account_html: Olá <span class="currentUser">Utilizador desconhecido</span>
         account_tooltip: A sua página inicial
         administration: Administração
+    import_common:
+      addresses_to_geocode: Os endereços serão geocodificados assim que a importação esteja completa.
+      case_sensitive: sensível a maiúsculas e minúsculas
+      city: Cidade
+      column: Coluna
+      combine_multiple_columns: Combinar Múltiplas Colunas
+      create_composite: ! 'Criar uma coluna a partir de muitas colunas fonte:'
+      create_js_expression: Como posso criar uma expressão Javascript personalizada?
+      custom_javascript: Expressão Javascript Personalizada...
+      enter_custom: Introduza um valor personalizado
+      existing_cols: Colunas Existentes de Endereço
+      existing_latlng_cols: Colunas existentes de Latitude e Longitude
+      find: procurar
+      find_and_replace: Procurar e Substituir valor...
+      import_from_multiple: Importar de <strong>múltiplas colunas</strong>
+      import_from_single: Importar de <strong>coluna única</strong>
+      latitude: Latitude
+      location_source_col: Colunas de Localização Fonte
+      longitude: Longitude
+      make_lower_case: Tornar em minúsculas
+      make_title_case: Tornar em Formato de Título
+      make_upper_case: Tornar em MAIÚSCULAS
+      name_this_column: Dar nome a esta coluna
+      new_layer: (Nova Camada)
+      new_source_col: Adicionar nova coluna fonte
+      new_transform: Adicionar nova transformação
+      options: Opções
+      properly_formatted: A coluna tem de ser <a href="%{formatting_link}" rel="external">formatada de forma correta</a> antes da importação.
+      regular_expression: expressão regular
+      remove: remover
+      replace: e substituir por
+      state: Estado
+      street: Rua
+      then: a seguir
+      to_state_code: Converter estados para códigos de 2 letras
+      transforms: ! 'Realizar a seguinte transformação depois da importação:'
+      zip: Zip
     import_pane:
       analyzing: A analisar o seu ficheiro...
       assure_accessible: Por favor, assegure-se de que o seu ficheiro está acessível e é válido e tente novamente.
@@ -2139,6 +2246,27 @@ pt:
       views_loaded: Visualizações Carregadas
       website: Webspite
       weekly: Semanalmente
+    thumbnail:
+      discard_changes: Descartar Alterações
+      edit_thumbnail: Editar Imagem Miniatura de %{name}
+      error_blob: Este ficheiro embebido não pode ter uma imagem miniatura porque o seu navegador não a pode visualizar
+      error_generic: Ocorreu um problema ao guarda a sua imagem em miniatura. Por favor, volte a tentar mais tarde.
+      error_invalid: Esta vista é inválida e não pode ser criada uma imagem em miniatura no estado atual
+      error_private: Para a sua privacidade, apenas conjuntos de dados públicos podem ter imagens em miniatura. Se desejar ter uma imagem de pré-visualização, por favor, torne este conjunto de dados público a partir do painel de Permissões do menu lateral Gestão
+      error_processing: Ocorreu um erro no processamento do seu pedido de imagem em miniatura. Por favor, volte a tentar mais tarde
+      full_image: Imagem Completa
+      please_wait: Ainda não existem imagens miniatura disponíveis para este conjunto de dados. Por favor, espere enquanto críamos uma por si.
+      preview: Pré-visualizar
+      refresh_thumbnail: Atualizar Imagem em Miniatura
+      return_to_dataset: Voltar para o Conjunto de Dados
+      save_thumbnail: Guardar Imagem em Miniatura
+      success: Imagem em Miniatura guardada
+      title: Imagem em Miniatura do Conjunto de dados
+      unsaved: Não guardado
+    widget:
+      create_new:
+        name: Novo Nome de Modelo
+        title: Criar um novo Modelo
     wizard:
       cancel: Cancelar
       finish: Terminar

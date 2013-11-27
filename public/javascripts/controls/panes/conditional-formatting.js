@@ -137,11 +137,13 @@
                     }
                     $field.append('(<a>' + $.t('screens.ds.grid_sidebar.conditional_formatting.change_icon') + '</a>)<input type="hidden" name="' +
                         $field.attr('name') + '" value="' + curValue + '" />');
+                    var viewId = this._view.id;
                     $field.find('a').data('ajaxupload', new AjaxUpload($field, {
-                        action: '/api/assets', autoSubmit: true, responseType: 'json',
+                        action: '/api/views/' + viewId + '/files.txt',
+                        autoSubmit: true, responseType: 'json',
                         onComplete: function(file, response)
                         {
-                            var imgUrl = '/api/assets/' + response.id;
+                            var imgUrl = '/api/views/' + viewId + '/files/' + response.file;
                             var $preview = $field.find('img');
                             if ($preview.length == 0)
                             { $field.prepend('<img src="' + imgUrl + '" /> '); }

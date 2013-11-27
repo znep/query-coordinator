@@ -1,4 +1,13 @@
-<%- prefix = 'govstat.reports.manage' %>
+<%-
+  prefix = 'govstat.reports.manage'
+  locale_link = lambda { |url|
+    if I18n.locale.to_s != CurrentDomain.default_locale
+      "/#{I18n.locale}#{url}"
+    else
+      url
+    end
+  }
+%>
 <% content_for :head do %>
   <%= rendered_stylesheet_tag 'screen-govstat-manage' %>
   <title><%= t("#{prefix}.title") %> | <%= CurrentDomain.strings.site_title %></title>
@@ -26,7 +35,7 @@
             <div class="singleInner" title="<%= report.name %>">
               <div class="title"><h2><%= report.name %></h2></div>
               <div class="secondaryAction">
-                <a href="<%= report.path %>?_edit_mode=true" class="button edit">
+                <a href="<%= locale_link[report.path] %>?_edit_mode=true" class="button edit">
                   <span class="actionDetails ss-write"><%= t("#{prefix}.edit") %></span></a>
                 <a href="#delete" class="button delete" data-id="<%= report.uid %>"
                   data-oldid="<%= report.path %>">
@@ -36,7 +45,7 @@
                   <span class="actionDetails ss-fork"><%= t("#{prefix}.copy") %></span></a>
               </div>
               <div class="primaryAction">
-                <a href="<%= report.path %>"><span class="actionDetails ss-right"></span></a>
+                <a href="<%= locale_link[report.path] %>"><span class="actionDetails ss-right"></span></a>
               </div>
               <div class="secondaryMetadata"><%= t("#{prefix}.updated") %>: <%= l(Time.at(report.updated_at).to_date, :format => '%b %d, %Y') %></div>
             </div>
@@ -53,11 +62,11 @@
             <div class="singleInner" title="<%= report.name %>">
               <div class="title"><h2><%= report.name %></h2></div>
               <div class="primaryAction">
-                <a href="<%= report.path %>"><span class="actionDetails ss-right"></span></a>
+                <a href="<%= locale_link[report.path] %>"><span class="actionDetails ss-right"></span></a>
               </div>
               <div class="secondaryAction">
                 <%- if CurrentDomain.user_can?(current_user, 'edit_pages' ) -%>
-                <a href="<%= report.path %>?_edit_mode=true" class="button edit">
+                <a href="<%= locale_link[report.path] %>?_edit_mode=true" class="button edit">
                   <span class="actionDetails ss-write"><%= t("#{prefix}.edit") %></span></a>
                 <a href="#delete" class="button delete" data-id="<%= report.uid %>"
                   data-oldid="<%= report.path %>">

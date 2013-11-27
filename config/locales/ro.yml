@@ -1,4 +1,19 @@
 ro:
+  date:
+    abbr_month_names:
+    -
+    - Ian
+    - Feb
+    - Mar
+    - Apr
+    - Mai
+    - Iun
+    - Iul
+    - Aug
+    - Sep
+    - Oct
+    - Nov
+    - Dec
   account:
     common:
       form:

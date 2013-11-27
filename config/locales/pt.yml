@@ -1209,6 +1209,7 @@ pt:
           column_select:
             auto: Auto
             from_grid: Selecione um coluna da grelha
+            none: (nenhum)
             none_selected: Nenhuma coluna selecionada
             nonselectable: Colunas inválidas
             prompt: Selecionar uma coluna

@@ -126,7 +126,7 @@
 
             if (_.isUndefined(locCol))
             {
-                layerObj._parent.errorMessage = 'No columns defined';
+                layerObj._parent.errorMessage = $.t('controls.map.no_columns_defined');
                 return;
             }
 

@@ -1207,6 +1207,7 @@ it:
           column_select:
             auto: Automatico
             from_grid: Seleziona una colonna dalla griglia
+            none: (nessuno)
             none_selected: Nessuna Colonna selezionata
             nonselectable: Colonne non valide
             prompt: Seleziona una colonna

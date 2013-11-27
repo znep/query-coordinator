@@ -1632,7 +1632,7 @@
 
             var control = this;
             control._popup = new OpenLayers.Popup.FramedCloud(null, lonlat, null,
-                'Loading...', null, true,
+                $.t('controls.map.loading'), null, true,
                 function(evt) { new jQuery.Event(evt).stopPropagation(); control.close(); });
             control.map.addPopup(control._popup);
             // TODO: Decide if this is a good thing.

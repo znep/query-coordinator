@@ -176,7 +176,16 @@ module ApplicationHelper
         dayNamesShort: _.map(days, function(m) { return t(m + '_short'); }),
         dayNamesMin: _.map(days, function(m) { return t(m + '_min'); }),
         weekHeader: t('week_min')
-      }); })();
+      });
+      $.DatePickerLocaleOptions = {
+        days: _.map(days, function(m) { return t(m); }),
+        daysShort: _.map(days, function(m) { return t(m + '_short'); }),
+        daysMin: _.map(days, function(m) { return t(m + '_min'); }),
+        months: _.map(months, function(m) { return t(m); }),
+        monthsShort: _.map(months, function(m) { return t(m + '_short'); }),
+        weekMin: t('week_min')
+      };
+      })();
       EOS
         .html_safe
     end

@@ -1290,12 +1290,12 @@
         //wrap selectables in a group so you can see both allowed and not allowed columns
         if (_.isEmpty(invalidOptions))
         {
-            invalidOptions.push({tagName: 'option', contents: $.t('screens.about.none'),
+            invalidOptions.push({tagName: 'option', contents: $.t('screens.ds.grid_sidebar.base.column_select.none'),
                 disabled: 'disabled'});
         }
         if (_.isEmpty(options))
         {
-          options.push({tagName: 'option', contents: $.t('screens.about.none'), disabled: 'disabled'});
+          options.push({tagName: 'option', contents: $.t('screens.ds.grid_sidebar.base.column_select.none'), disabled: 'disabled'});
         }
 
         //Flyout Title should have option "Auto"

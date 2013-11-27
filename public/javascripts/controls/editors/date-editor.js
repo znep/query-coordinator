@@ -10,6 +10,7 @@
             var curDate = editObj._origDate || new Date();
             editObj.$dom().find(':input').DatePicker(
                 {current: curDate, date: curDate.format('y-m-d'),
+                    locale: $.DatePickerLocaleOptions,
                     onShow: function(calDom)
                     {
                         $(calDom).mousedown(function(e)

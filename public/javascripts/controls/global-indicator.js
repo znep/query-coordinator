@@ -52,12 +52,12 @@
     $.extend($.globalIndicator, {
         // Convenience functions for common cases
         statusWorking: function()
-        { $.globalIndicator.showStatus('waiting', 'Working...'); },
+        { $.globalIndicator.showStatus('waiting', $.t('controls.global_indicator.working'))},
         statusSaving: function()
-        { $.globalIndicator.showStatus('waiting', 'Saving...'); },
+        { $.globalIndicator.showStatus('waiting', $.t('controls.global_indicator.saving')) },
         statusFinished: function()
-        { $.globalIndicator.showStatus('good', 'Saved', 4000); },
+        { $.globalIndicator.showStatus('good', $.t('controls.global_indicator.saved'), 4000); },
         statusError: function()
-        { $.globalIndicator.showStatus('bad', 'Error'); }
+        { $.globalIndicator.showStatus('bad', $.t('controls.global_indicator.error')); }
     });
 })();

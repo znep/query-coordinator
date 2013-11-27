@@ -1,6 +1,7 @@
+<%- prefix = 'govstat.configuration' %>
 <% content_for :head do %>
   <%= rendered_stylesheet_tag 'screen-govstat-manage' %>
-  <title>Manage Site Configuration | <%= CurrentDomain.strings.site_title %></title>
+  <title><%= t("#{prefix}.title") %> | <%= CurrentDomain.strings.site_title %></title>
 <% end %>
 
 <div id="manageConfigPage">
@@ -8,7 +9,7 @@
     <ul class="breadcrumb">
       <li class="root"><%= localized_link_to 'Home', '/stat', :class => 'ss-icon' %></li>
       <li><span class="ss-icon">navigateright</span></li>
-      <li class="main"><%= localized_link_to 'Configuration', '/manage/site_config' %></li>
+      <li class="main"><%= localized_link_to t("#{prefix}.config"), '/manage/site_config' %></li>
     </ul>
   </div>
 
@@ -17,39 +18,39 @@
       title: 'GovStat',
       color: '#002635',
       links: [
-        { icon: 'users', text: 'Users', href: users_path, right: :manage_users },
-        { icon: 'linecharts', text: 'Analytics', href: '/admin/analytics',
+        { icon: 'users', translateKey: 'users', href: '/admin/users', right: :manage_users },
+        { icon: 'linecharts', translateKey: 'analytics', href: '/admin/analytics',
           module_available: :advanced_metrics }
       ]
     }, {
-      title: 'Data Management',
+      title: t("#{prefix}.data_management"),
       color: '#d97925',
       links: [
-        { icon: 'notebook', text: 'Datasets', href: '/admin/datasets',
+        { icon: 'notebook', translateKey: 'datasets', href: '/admin/datasets',
           right: :edit_others_datasets },
-        { icon: 'searchbarcode', text: 'Metadata', href: '/admin/metadata',
+        { icon: 'searchbarcode', translateKey: 'metadata', href: '/admin/metadata',
           right: :edit_site_theme },
-        { icon: 'contract', text: 'Federations', href: '/admin/federations',
+        { icon: 'contract', translateKey: 'federations', href: '/admin/federations',
           right: :federations, module_available: :federations },
-        { icon: 'check', text: 'Routing and Approval', href: '/admin/routing_approval',
+        { icon: 'check', translateKey: 'routing', href: '/admin/routing_approval',
           module_available: :routing_approval } # current_user.can_approve?
       ]
     }, {
-      title: 'Appearance',
+      title: t("#{prefix}.appearance"),
       color: '#a1ba25',
       links: [
-        { icon: 'bankcheck', text: 'Data Player Templates', href: '/admin/sdp_templates',
+        { icon: 'bankcheck', translateKey: 'sdp_templates', href: '/admin/sdp_templates',
           right: :edit_sdp, module_available: :sdp_customizer },
-        { icon: 'browseonline', text: 'Homepage', href: '/admin/home',
+        { icon: 'browseonline', translateKey: 'homepage', href: '/admin/home',
           right: :edit_site_theme }
       ]
     }, {
-      title: 'Content Moderation',
+      title: t("#prefix}.content_moderation"),
       color: '#a92c2a',
       links: [
-        { icon: 'chat', text: 'Comment Moderation', href: '/admin/comment_moderation',
+        { icon: 'chat', translateKey: 'moderation', href: '/admin/comment_moderation',
           right: :moderate_comments, module_available: :publisher_comment_moderation },
-        { icon: 'userprofile', text: 'Nomination Moderation', href: '/admin/nominations',
+        { icon: 'userprofile', translateKey: 'nomination', href: '/admin/nominations',
           right: :approve_nominations, feature: :view_moderation }
       ]
     }]
@@ -76,7 +77,7 @@
               <div class="singleInner">
                 <div class="title"><span class="fullIcon ss-icon"><%= link[:icon] %></span></div>
                 <div class="primaryAction">
-                  <a href="<%= link[:href] %>"><span class="actionDetails ss-right"><%= link[:text] %></span></a>
+                  <a href="<%= I18n.locale.to_s != CurrentDomain.default_locale ? "/#{I18n.locale}#{link[:href]}" : link[:href] %>"><span class="actionDetails ss-right"><%= t("#{prefix}.#{link[:translateKey]}") %></span></a>
                 </div>
               </div>
             </div>
@@ -91,3 +92,4 @@
   </div>
 </div>
 
+<%= render_translations LocalePart.controls.global_indicator %>

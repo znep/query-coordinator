@@ -42,6 +42,11 @@ en:
     errors:
       verification_failed: The characters entered do not match the image.
   controls:
+    global_indicator:
+      working: Working...
+      saving: Saving...
+      saved: Saved
+      error: Error
     browse:
       actions:
         about:
@@ -410,6 +415,10 @@ en:
       forever_node_explanation: This cluster's data is too densely packed to display useful data geographically.
       forever_node_recommend: We recommend that you <a href="#openTable">open the tabular view</a> in order to get more details.
       heatmap_ie8_warning: Raster Heat Maps do not work in your current browser. Please upgrade to IE9, use Google Chrome or Mozilla Firefox. Thank you.
+      data_request_timeout: A data request has taken too long and timed out.
+      no_columns_defined: No columns defined
+      request_timed_out: Request for this data timed out.
+      loading: Loading...
   core:
     aggregates:
       average: Average
@@ -534,6 +543,7 @@ en:
           belay_button: Don't log me out!
           body_html: We haven't noticed any activity in a few minutes.  For privacy, we'll log you out in <span id="secondsRemaining"></span> seconds.
           title: Your session is about to expire.
+      submit: Submit
       update: Update
     expando:
       expand: Expand
@@ -825,6 +835,27 @@ en:
       settings:
         page_title: Report Title
         title: Report Settings
+    configuration:
+      title: Manage Site Configuration
+      config: Configuration
+      users: Users
+      analytics: Analytics
+      datasets: Datasets
+      metadata: Metadata
+      federations: Federations
+      routing: Routing and Approval
+      sdp_templates: Data Player Templates
+      homepage: Homepage
+      moderation: Comment Moderation
+      nomination: Nomination Moderation
+      appearance: Appearance
+      content_moderation: Content Moderation
+      data_management: Data Management
+    template:
+      title: Select Layout
+      layouts: Layouts
+      grid_flow_layout: Grid Flow Layout
+      list_layout: List Layout
   plugins:
     daterangepicker:
       date_range: Date Range
@@ -1242,6 +1273,7 @@ en:
           column_select:
             auto: Auto
             from_grid: Select a column from the grid
+            none: (none)
             none_selected: No column selected
             nonselectable: Invalid Columns
             prompt: Select a column
@@ -2213,6 +2245,10 @@ en:
       error_invalid: This view is invalid and cannot be thumbnailed in its current state
       success: Thumbnail saved
       error_generic: There was a problem saving your thumbnail. Please try again later.
+    widget:
+      create_new:
+        title: Create a new Template
+        name: New Template Name
     wizard:
       cancel: Cancel
       finish: Finish

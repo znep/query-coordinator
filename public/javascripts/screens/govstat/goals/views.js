@@ -254,6 +254,7 @@ var GoalEditor = Backbone.View.extend({
             var $this = $(this);
             $this.DatePicker({
                 date: new Date($this.val()) || new Date(),
+                locale: $.DatePickerLocaleOptions,
                 onChange: function(_, newDate)
                 {
                     $this

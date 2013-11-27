@@ -1,16 +1,16 @@
 <% content_for :head do %>
   <%= rendered_stylesheet_tag 'screen-govstat-manage' %>
-  <title>Select Layout | <%= CurrentDomain.strings.site_title %></title>
+  <title><%= t('govstat.template.title') %> | <%= CurrentDomain.strings.site_title %></title>
 <% end %>
 
 <div id="manageTemplatePage">
   <div class="subnavigation">
     <ul class="breadcrumb">
-      <li class="root"><a class="ss-icon" href="/manage">Home</a></li>
+      <li class="root"><%= localized_link_to 'Home', '/stat', :class => 'ss-icon' %></li>
       <li><span class="ss-icon">navigateright</span></li>
-      <li><a href="/manage/site_config">Configuration</a></li>
+      <li><%= localized_link_to t('govstat.configuration.config'), '/manage/site_config' %></li>
       <li><span class="ss-icon">navigateright</span></li>
-      <li class="main"><a href="/manage/template">Select Layout</a></li>
+      <li class="main"><%= localized_link_to t('govstat.template.title'), '/manage/template' %></li>
     </ul>
   </div>
 
@@ -20,13 +20,13 @@
 
   <div class="categoryList gridFlowLayout nonDS clearfix">
     <div class="categoryItem">
-      <div class="categoryTitle"><h2>Layouts</h2></div>
+      <div class="categoryTitle"><h2><%= t('govstat.template.layouts') %></h2></div>
       <%= form_tag(manage_template_path, :method => 'post', :class => 'commonForm') do %>
-        <%- [{ value: 'grid_flow', text: 'Grid Flow' }, { value: 'list', text: 'List' }].each do |opt| -%>
+        <%- [{ value: 'grid_flow', text: t('govstat.template.grid_flow_layout') }, { value: 'list', text: t('govstat.template.list_layout') }].each do |opt| -%>
             <input type="radio" name="template" id="template_<%= opt[:value] %>"
             <%= opt[:value] == @template ? 'checked="checked"' : '' %> value="<%= opt[:value] %>" />
             <label for="template_<%= opt[:value] %>">
-              <img src="/images/govstat/paradigm_<%= opt[:value] %>.png" alt="<%= opt[:text] %> Layout" />
+              <img src="/images/govstat/paradigm_<%= opt[:value] %>.png" alt="<%= opt[:text] %>" />
             </label>
         <%- end -%>
         <input type="submit" class="button" value="Save" />
@@ -38,3 +38,4 @@
 <%- content_for :js_footer do -%>
   <%= include_javascripts 'screen-govstat-manage' %>
 <%- end -%>
+<%= render_translations LocalePart.controls.global_indicator %>

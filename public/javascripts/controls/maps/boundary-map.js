@@ -106,7 +106,7 @@
                 if (layerObj._loadingFeatures)
                 {
                     layerObj._view.trigger('request_finish');
-                    alert('A data request has taken too long and timed out.');
+                    alert($.t('controls.map.data_request_timeout'));
                 }
             }, 60000);
         },

@@ -1,14 +1,14 @@
 <%= modal :class => 'newTemplateModal' do %>
-  <h2>Create a new Template</h2>
+  <h2><%= t('screens.widget.create_new.title') %></h2>
 
   <%= form_tag '/admin/sdp_templates', :method => 'post', :class => 'newTemplateForm commonForm' do %>
     <div class="line clearfix">
-      <label for="newTemplateName">New Template Name</label>
+      <label for="newTemplateName"><%= t('screens.widget.create_new.name') %></label>
       <input type="text" id="newTemplateName" name="new_template_name" class="required"/>
     </div>
     <ul class="submitActions clearfix">
-      <li><a href="#cancel" class="jqmClose button">Cancel</a></li>
-      <li><a href="#submit" class="submitButton default button">Submit</a></li>
+      <li><a href="#cancel" class="jqmClose button"><%= t('core.dialogs.cancel') %></a></li>
+      <li><a href="#submit" class="submitButton default button"><%= t('core.dialogs.submit') %></a></li>
     </ul>
 
     <%- if (defined? view_id) && !view_id.nil? -%>

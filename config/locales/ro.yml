@@ -1209,6 +1209,7 @@ ro:
           column_select:
             auto: Automat
             from_grid: Selectaţi o coloană din grilă
+            none: (niciunul)
             none_selected: Nicio coloană selectată
             nonselectable: Coloane nevalide
             prompt: Selectaţi o coloană

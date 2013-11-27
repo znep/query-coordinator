@@ -284,7 +284,7 @@
                 function(error)
                 {
                     if (error.dojoType == 'timeout')
-                    { layerObj.flyoutHandler().add(layerObj, lonlat, 'Request for this data timed out.'); }
+                    { layerObj.flyoutHandler().add(layerObj, lonlat, $.t('controls.map.request_timed_out')); }
                 });
         },
 

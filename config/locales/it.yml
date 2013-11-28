@@ -1428,7 +1428,7 @@ it:
             caption: Titolo
             marker_title: Annota il Valore
             new_marker_button: Aggiungi Marker
-            title: ! '%{axis} Marker'
+            title: Annotazioni
             value: Al valore
           min_angle: Angolo minimo
           min_angle_html: Il più piccolo angolo visualizzato (º)

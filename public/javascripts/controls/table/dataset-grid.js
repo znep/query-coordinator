@@ -457,9 +457,7 @@
                 }
                 else
                 {
-                    var selRows = _.keys((datasetObj._view.highlightTypes || {}).select);
-                    selRows.push(rowId);
-                    model.removeRows(selRows);
+                    model.removeRows(rowId);
                 }
                 break;
 

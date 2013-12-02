@@ -2065,7 +2065,7 @@ var Dataset = ServerModel.extend({
         {
             // Something needs to be set to self to properly hook up sidebar, etc.; so pick one at random
             ds.metadata.renderTypeConfig.active[
-                _.first(_.keys(ds.metadata.renderTypeConfig.visible))].id = 'self';
+                _.first(_.keys(ds.metadata.renderTypeConfig.visible))] = { id: 'self' };
         }
 
         ds.url = ds._generateUrl();

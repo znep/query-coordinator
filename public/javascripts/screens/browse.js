@@ -149,7 +149,7 @@ $(function()
             var isPublic = ds.isPublic();
             if (isPublic) { ds.makePrivate(); }
             else { ds.makePublic(); }
-            $t.text($.t('controls.browse.actions.permissions.change_button.' + (v.context.isPublic() ? 'public' : 'private') + '_html'));
+            $t.text($.t('controls.browse.actions.permissions.change_button.' + (!isPublic ? 'public' : 'private') + '_html'));
         });
 
         $content.find('.button.delete:not(.hide)').click(function(e)

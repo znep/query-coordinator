@@ -1,6 +1,6 @@
 <% content_for :head do %>
   <%= rendered_stylesheet_tag 'dataset-edit-metadata' %>
-  <title>Edit Dataset Metadata | <%= CurrentDomain.strings.site_title %></title>
+  <title><%= t('screens.edit_metadata.title') %> | <%= CurrentDomain.strings.site_title %></title>
 <% end %>
 
 <% content_for :skip_links do %>
@@ -9,7 +9,7 @@
 
 <div class="contentBox fixedWidth">
   <%= form_tag({}, {:id => "editMetadataForm", :class => 'commonForm', :method => :post, :multipart => true}) do %>
-    <h1>Edit Metadata for <%= @view.name %></h1>
+    <h1><%= t('screens.edit_metadata.headline', :name => @view.name) %></h1>
     <a href="<%= view_path(@view) %>" class="returnLink"><%= t('screens.edit_metadata.return') %></a>
 
     <%= display_standard_flashes %>

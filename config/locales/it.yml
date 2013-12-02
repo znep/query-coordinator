@@ -458,8 +458,8 @@ it:
       treemap: Mappa dell'Albero
     data_types:
       calendar_date: Data e ora
-      checkbox: Checkbox
-      dataset_link: Dataset Link
+      checkbox: Casella di spunta
+      dataset_link: Link al dataset
       date: Data e ora (con fuso orario)
       document: Documento
       drop_down_list: Scelta multipla
@@ -469,7 +469,7 @@ it:
       html: Testo formattato
       link: Link Column
       list: Lista
-      location: Location
+      location: Posizione
       money: Denaro
       nested_table: Tabella nidificata
       number: Numero
@@ -477,7 +477,7 @@ it:
       percent: Percentuale
       phone: Telefono
       photo: Foto (Immagine)
-      stars: Star
+      stars: Stella
       text: Testo normale
       url: Web URL
     date_time:
@@ -806,8 +806,8 @@ it:
           data_title: Naviga e Gestisci i Dati
           goals: Mete
           goals_title: Crea e Segui le Mete
-          home: Home
-          home_title: Home
+          home: Casa
+          home_title: Casa
           my_goals: Le mie Mete
           my_goals_tooltip: Vedi le mete che ho creato.
           reports: Rapporti
@@ -1813,7 +1813,7 @@ it:
               descending: Decrescente
             title: Ordina
           subtitle: Puoi raggruppare le righe e sommare i dati con un roll-up; e ordinare su una o più colonne
-          title: Sort & Roll-Up
+          title: Ordina & Roll-Up
           validation:
             no_eligible_columns: Questa vista non ha colonne per roll-up o sort
             no_function: Ogni colonna di roll-up deve avere una funzione

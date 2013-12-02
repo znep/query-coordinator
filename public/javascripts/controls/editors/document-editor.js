@@ -1,5 +1,8 @@
 (function($)
 {
+    var tt = function(str) { return $.t('controls.editors.document.' + str + '_title'); };
+    var ta = function(str) { return $.t('controls.editors.actions.' + str); };
+
     var buttonClicked = function(editObj, event)
     {
         event.preventDefault();
@@ -109,11 +112,11 @@
                 var html = '<div class="blist-table-editor ' +
                     'type-' + this.type.name + '">' +
                     '<a class="tableButton add" href="#add" ' +
-                    'title="Add a new document">Add</a>' +
+                    'title="' + tt('add') + '">' + ta('add') + '</a>' +
                     '<a class="tableButton replace" href="#replace" ' +
-                    'title="Replace the document">Replace</a>' +
+                    'title="' + tt('replace') + '">' + ta('replace') + '</a>' +
                     '<a class="tableButton remove" href="#remove" ' +
-                    'title="Remove the document">Remove</a>' +
+                    'title="' + tt('remove') + '">' + ta('remove') + '</a>' +
                     '<a class="docLink" target="blist-viewer" ' +
                     'rel="external"></a>' +
                     '<input class="hiddenTextField" />' +

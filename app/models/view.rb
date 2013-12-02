@@ -727,7 +727,7 @@ class View < Model
   end
 
   def tweet
-    return "Check out the #{name} dataset on #{CurrentDomain.strings.company}: #{short_view_url(self)}"
+    return I18n.t('controls.common.share.share_text', :name => name, :site => CurrentDomain.strings.company) + short_view_url(self)
   end
 
   def blobs
@@ -1347,11 +1347,11 @@ class View < Model
   end
 
   @@default_categories = {
-    "" => { text: "-- No category --", value: "" }
+    "" => { text: "-- #{I18n.t 'core.no_category'} --", value: "" }
   }
 
   @@licenses = {
-    "" => "-- No License --",
+    "" => "-- #{I18n.t 'core.no_license'} --",
     "PUBLIC_DOMAIN" => "Public Domain",
     "OPEN_DATABASE_LICENSE" => "Open Database License",
     "IODL" => "Italian Open Data License 2.0",
@@ -1370,7 +1370,7 @@ class View < Model
   }
 
   @@merged_licenses = {
-    "" => "-- No License --",
+    "" => "-- #{I18n.t 'core.no_license'} --",
     "PUBLIC_DOMAIN" => "Public Domain",
     "OPEN_DATABASE_LICENSE" => "Open Database License",
     "IODL" => "Italian Open Data License 2.0",

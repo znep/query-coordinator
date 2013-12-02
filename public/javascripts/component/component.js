@@ -423,7 +423,7 @@
             if ($.isBlank(cObj._$editIcon))
             {
                 cObj._$editIcon = $.tag2({ _: 'a', className: ['actionIcon', 'editIcon', 'ss-write'],
-                    href: '#', title: 'Edit this component' });
+                    href: '#', title: $.t('dataslate.component.edit') });
                 cObj.$dom.append(cObj._$editIcon);
                 cObj._$editIcon.click(function(e)
                 {

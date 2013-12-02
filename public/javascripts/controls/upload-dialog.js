@@ -46,26 +46,28 @@
                 if ($domObj.contents().length < 1)
                 {
                     var content = '<h2>' +
-                        'Upload a <span class="fileType">File</span>' +
+                        '<span class="fileType title">' +
+                        $.t('controls.upload_dialog.title_file') + '</span>' +
                         '</h2>' +
                         '<a href="#close_dialog" ' +
                         'class="modalDialogClose jqmClose" ' +
                         'title="Close">Close</a>' +
                         '<form class="commonForm">' +
                         '<label for="file_upload">' +
-                        '<span class="fileType">File</span> to Upload:</label>' +
+                        '<span class="fileType to_upload">' +
+                        $.t('controls.upload_dialog.to_upload_file') + '</span></label>' +
                         '<input type="text" readonly="readonly" ' +
                         'disabled="disabled" name="file_upload" />' +
-                        $.button({text: 'Browse',
+                        $.button({text: $.t('controls.upload_dialog.browse'),
                             className: 'fileBrowseButton'}, true) +
                         '</form>' +
                         '<div class="mainError"></div>' +
                         '<ul class="actions">' +
                         '<li>' +
-                        $.button({text: 'Upload',
+                        $.button({text: $.t('controls.upload_dialog.upload'),
                             className: 'submitAction'}, true) +
                         '</li>' +
-                        '<li>' + $.button({text: 'Cancel',
+                        '<li>' + $.button({text: $.t('core.dialogs.cancel'),
                         className: 'jqmClose'}, true) + '</li>' +
                         '</ul>';
 
@@ -176,7 +178,10 @@
                 var $domObj = currentObj.$dom();
 
                 if (!fileTypeName) { fileTypeName = 'File'; }
-                $domObj.find('.fileType').text(fileTypeName);
+                $domObj.find('.fileType.title')
+                    .text($.t('controls.upload_dialog.title_' + fileTypeName.toLowerCase()));
+                $domObj.find('.fileType.to_upload')
+                    .text($.t('controls.upload_dialog.to_upload_' + fileTypeName.toLowerCase()));
 
                 $domObj.jqmShow();
 

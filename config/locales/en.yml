@@ -210,6 +210,21 @@ en:
         in_bing: View in Bing Maps
         in_google: View in Google Maps
         row_details: View details for this row
+    editors:
+      actions:
+        add: Add
+        replace: Replace
+        remove: Remove
+        view: View
+      document:
+        add_title: Add a new document
+        replace_title: Replace the document
+        remove_title: Remove the document
+      photo:
+        add_title: Add a new image
+        view_title: View the image in a separate window
+        replace_title: Replace the image
+        remove_title: Remove the image
     embed:
       create_template_button: Create a New Template
       custom_size: Custom Size
@@ -419,6 +434,15 @@ en:
       no_columns_defined: No columns defined
       request_timed_out: Request for this data timed out.
       loading: Loading...
+    upload_dialog:
+      title_file: Upload a File
+      to_upload_file: 'File to Upload:'
+      title_photo: Upload a Photo
+      to_upload_photo: 'Photo to Upload:'
+      title_image: Upload a Image
+      to_upload_image: 'Image to Upload:'
+      browse: Browse
+      upload: Upload
   core:
     aggregates:
       average: Average
@@ -609,7 +633,9 @@ en:
       roadmap: Roadmap
       satellite: Satellite
       terrain: Terrain
+    no_category: No category
     no_js: Disable Javascript on this page
+    no_license: No License
     numbers:
       eight: eight
       five: five
@@ -682,6 +708,7 @@ en:
       public: public
   dataslate:
     component:
+      edit: Edit this component
       header:
         height: Height
       invalid_config: This component does not have a valid configuration
@@ -1169,6 +1196,7 @@ en:
           purposes:
             copyright_violation: Copyright Violation
             offensive_content: Offensive Content
+            other_purpose: Other
             personal_information: Personal Information
             prompt: -- Select Purpose --
             spam: Spam or Junk
@@ -1901,6 +1929,7 @@ en:
       external_identifier: External Identifier
       file_type: File Type
       general_information: General Information
+      headline: Edit Metadata for %{name}
       keywords_help: Enter one or more keywords separated by commas
       license_help: Choose licensing terms for people who wish to use this dataset.
       license_type: License Type
@@ -1934,6 +1963,7 @@ en:
       tags_keywords: Tags / Keywords
       tags_prompt: Enter keywords
       thumbnail_image: Thumbnail Image
+      title: Edit Dataset Metadata
       upload_error: Please select a valid image file
       upload_help: This image will be cropped into a square
       upload_image: Upload Image

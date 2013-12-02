@@ -694,7 +694,7 @@ ro:
         large: Mare (220x220)
         medium: Medie (150x150)
         original: Originală
-        thumb: Miniatură
+        thumb: Miniatură (80x80)
         tiny: Mică (24x24)
         title_attr: Titlu
         title_attr_prompt: atribut titlu

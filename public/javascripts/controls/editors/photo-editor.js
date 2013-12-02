@@ -1,5 +1,8 @@
 (function($)
 {
+    var tt = function(str) { return $.t('controls.editors.photo.' + str + '_title'); };
+    var ta = function(str) { return $.t('controls.editors.actions.' + str); };
+
     var buttonClicked = function(editObj, event)
     {
         var href = $(event.currentTarget).attr('href');
@@ -118,14 +121,14 @@
                     'type-' + this.type.name +
                     '"><div class="buttons">' +
                     '<a class="tableButton add" href="#add" ' +
-                    'title="Add a new image">Add</a>' +
+                    'title="' + tt('add') + '">' + ta('add') + '</a>' +
                     '<a class="tableButton view" target="blist-viewer" ' +
                     'rel="external" ' +
-                    'title="View the image in a separate window">View</a>' +
+                    'title="' + tt('view') + '">' + ta('view') + '</a>' +
                     '<a class="tableButton replace" href="#replace" ' +
-                    'title="Replace the image">Replace</a>' +
+                    'title="' + tt('replace') + '">' + ta('replace') + '</a>' +
                     '<a class="tableButton remove" href="#remove" ' +
-                    'title="Remove the image">Remove</a></div>' +
+                    'title="' + tt('remove') + '">' + ta('remove') + '</a></div>' +
                     '<img />' +
                     '<input class="hiddenTextField" />' +
                     '</div>';

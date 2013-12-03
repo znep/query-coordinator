@@ -29,8 +29,9 @@ class UserSessionsController < ApplicationController
   end
 
   def extend
-    # Tell Rack not to generate an ETag based off this content
-    response.headers['ETag'] = nil
+    # Tell Rack not to generate an ETag based off this content. Newer versions of Rack accept nil for this
+    # purpose; but phusion passenger requires "".
+    response.headers['ETag'] = ""
     session_response = current_user.nil? ? {:expired => "expired"} : current_user_session.extend
     render :json => session_response, :callback => params[:callback], :content_type => "application/json"
   end
@@ -47,8 +48,9 @@ class UserSessionsController < ApplicationController
       current_user_session.destroy
       @current_user = nil
     end
-    # Tell Rack not to generate an ETag based off this content
-    response.headers['ETag'] = nil
+    # Tell Rack not to generate an ETag based off this content. Newer versions of Rack accept nil for this
+    # purpose; but phusion passenger requires "".
+    response.headers['ETag'] = ""
     @user_session = UserSession.new(params[:user_session])
     session_response = @user_session.save(true)
     if session_response.is_a?(Net::HTTPSuccess)

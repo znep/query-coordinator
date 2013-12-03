@@ -74,7 +74,7 @@
                     '.name@title': 'view.name',
                     '.pubDate': function(a)
                     {
-                        return new Date((a.context.view.publicationDate || 0) * 1000).format('F d, Y g:ia');
+                        return moment((a.context.view.publicationDate || 0) * 1000).format('LLL');
                     },
                     '.authorLine .date': function(a)
                     {

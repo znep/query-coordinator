@@ -417,6 +417,7 @@ javascripts:
     - public/javascripts/plugins/iscroll.js
     - public/javascripts/plugins/ajaxupload.js
     - public/javascripts/plugins/lab.js
+    - public/javascripts/plugins/moment.min.js
     - public/javascripts/util/asset-loading.js
     - public/javascripts/controls/combination-list.js
     - public/javascripts/util/inline-login.js

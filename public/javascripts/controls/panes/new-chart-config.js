@@ -565,7 +565,7 @@
 
     var dataSelectionBubble = function(chart, options)
     {
-        return subheading(chart, options, 'Data Columns',
+        return subheading(chart, options, $.t('screens.ds.grid_sidebar.chart.data_columns.title'),
                 [
                     {text: $.t('screens.ds.grid_sidebar.chart.data_selection.chart_definition.label_title'),
                         name: 'displayFormat.fixedColumns.0', lineClass: 'hasIcon bubbleLabelSelection',
@@ -775,9 +775,9 @@
         options = $.extend({isEdit: false, useOnlyIf: false}, options);
         var chart = Dataset.chart.types[type];
 
-        var headerDataSelect = header(chart, options, 'Data Selection'),
-            headerPresentation = header(chart, options, 'Data Presentation'),
-            headerDetails = header(chart, options, 'Chart Details');
+        var headerDataSelect = header(chart, options, $.t('screens.ds.grid_sidebar.chart.headings.data_selection')),
+            headerPresentation = header(chart, options, $.t('screens.ds.grid_sidebar.chart.headings.data_presentation')),
+            headerDetails = header(chart, options, $.t('screens.ds.grid_sidebar.chart.headings.chart_details'));
 
         var result = [];
         switch(type)

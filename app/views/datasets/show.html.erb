@@ -396,4 +396,7 @@
   <%- end -%>
 
   <%= include_javascripts 'dataset-show' %>
+  <script type="text/javascript">
+    moment && moment.lang(blist.locale);
+  </script>
 <% end %>

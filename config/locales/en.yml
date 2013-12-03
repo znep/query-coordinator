@@ -1419,6 +1419,10 @@ en:
             value: Flyout Values
           group_extra: Group Extra Values
           groups: Groups
+          headings:
+            data_selection: Data Selection whee
+            data_presentation: Data Presentation
+            chart_details: Chart Details
           label: Label
           labelInBar: Label in Bar
           labels_and_values: Labels and Values

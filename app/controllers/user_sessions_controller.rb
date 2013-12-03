@@ -29,13 +29,15 @@ class UserSessionsController < ApplicationController
   end
 
   def extend
-    response = current_user.nil? ? {:expired => "expired"} : current_user_session.extend
-    render :json => response, :callback => params[:callback], :content_type => "application/json"
+    # Tell Rack not to generate an ETag based off this content
+    response.headers['ETag'] = nil
+    session_response = current_user.nil? ? {:expired => "expired"} : current_user_session.extend
+    render :json => session_response, :callback => params[:callback], :content_type => "application/json"
   end
 
   def expire_if_idle
-    response = current_user.nil? ? {:expired => "expired"} : UserSession.find_seconds_until_timeout
-    render :json => response, :callback => params[:callback], :content_type => "application/json"
+    session_response = current_user.nil? ? {:expired => "expired"} : UserSession.find_seconds_until_timeout
+    render :json => session_response, :callback => params[:callback], :content_type => "application/json"
   end
 
   def create
@@ -45,10 +47,11 @@ class UserSessionsController < ApplicationController
       current_user_session.destroy
       @current_user = nil
     end
-
+    # Tell Rack not to generate an ETag based off this content
+    response.headers['ETag'] = nil
     @user_session = UserSession.new(params[:user_session])
-    response = @user_session.save(true)
-    if response.is_a?(Net::HTTPSuccess)
+    session_response = @user_session.save(true)
+    if session_response.is_a?(Net::HTTPSuccess)
       meter 'login.success'
       # need both .data and .json formats because firefox detects as .data and chrome detects as .json
       respond_to do |format|
@@ -61,8 +64,8 @@ class UserSessionsController < ApplicationController
     else
       default_response = t('screens.sign_in.failed')
       meter 'login.failure'
-      if response.is_a?(Net::HTTPForbidden)
-        response_error = JSON.parse(response.body)
+      if session_response.is_a?(Net::HTTPForbidden)
+        response_error = JSON.parse(session_response.body)
         notice = response_error['message'] || default_response
         notice += (notice.end_with?('.') ? '' : '.') + ' ' + t('account.common.form.lockout_warning')
       else

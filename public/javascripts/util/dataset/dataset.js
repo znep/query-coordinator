@@ -3588,7 +3588,13 @@ function cleanViewForSave(ds, allowedKeys)
     if (!$.isBlank(dsCopy.query))
     { dsCopy.query.filterCondition = ds.cleanFilters(true); }
     if ($.subKeyDefined(dsCopy, 'metadata.jsonQuery'))
-    { $.extend(dsCopy.metadata.jsonQuery, ds.cleanJsonFilters(true)); }
+    {
+        // Clear anything marked temporary.
+        var jsonQuery = ds.cleanJsonFilters(true);
+        $.extend(dsCopy.metadata.jsonQuery, jsonQuery);
+        dsCopy.metadata.jsonQuery.where = jsonQuery.where;
+        dsCopy.metadata.jsonQuery.having = jsonQuery.having;
+    }
 
     return dsCopy;
 };

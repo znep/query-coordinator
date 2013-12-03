@@ -38,15 +38,7 @@ en:
       validation:
         mismatch: Passwords do not match.
         terms: You must accept the terms of service and privacy policy.
-  recaptcha:
-    errors:
-      verification_failed: The characters entered do not match the image.
   controls:
-    global_indicator:
-      working: Working...
-      saving: Saving...
-      saved: Saved
-      error: Error
     browse:
       actions:
         about:
@@ -213,18 +205,18 @@ en:
     editors:
       actions:
         add: Add
-        replace: Replace
         remove: Remove
+        replace: Replace
         view: View
       document:
         add_title: Add a new document
-        replace_title: Replace the document
         remove_title: Remove the document
+        replace_title: Replace the document
       photo:
         add_title: Add a new image
-        view_title: View the image in a separate window
-        replace_title: Replace the image
         remove_title: Remove the image
+        replace_title: Replace the image
+        view_title: View the image in a separate window
     embed:
       create_template_button: Create a New Template
       custom_size: Custom Size
@@ -320,6 +312,11 @@ en:
         select_one: Select one
         show_suggested: Show suggested values
         title: Options
+    global_indicator:
+      error: Error
+      saved: Saved
+      saving: Saving...
+      working: Working...
     grid:
       add_column: Add a new column...
       clear_column_filter: Clear Column Filter
@@ -354,6 +351,31 @@ en:
       view_row: View row
       view_single_row: View Single Row Data
       viewing_row_html: Viewing row <span class="curPage"></span> of <span class="totalPages"></span>
+    map:
+      address_prompt: Enter address here
+      auto: auto
+      base_layers: Base Layers
+      boundary_map: Boundary Map
+      current_location: Use current location
+      data_layers: Data Layers
+      data_request_timeout: A data request has taken too long and timed out.
+      forever_node_explanation: This cluster's data is too densely packed to display useful data geographically.
+      forever_node_recommend: We recommend that you <a href="#openTable">open the tabular view</a> in order to get more details.
+      forever_node_title: Too much data
+      geocoding_inaccessible: The geocoding service is inaccessible. Try again later.
+      geocoding_noresults: Unable to geocode. Make sure the address is correct.
+      heat_map: Heat Map
+      heatmap_ie8_warning: Raster Heat Maps do not work in your current browser. Please upgrade to IE9, use Google Chrome or Mozilla Firefox. Thank you.
+      loading: Loading...
+      map_legend: Map Legend
+      multiple_layer_instructions: ! 'There is data for more than one layer here. Select one:'
+      next: Next
+      next_row: Next row
+      no_columns_defined: No columns defined
+      point_map: Point Map
+      previous: Previous
+      previous_row: Previous row
+      request_timed_out: Request for this data timed out.
     nominate:
       all: All
       approve: (Approve)
@@ -367,6 +389,7 @@ en:
       comments: Comments
       contact_author: Contact Suggestion Author
       dataset_suggestions: Dataset Suggestions
+      delete_attachment: attachment
       delete_confirm: Are you sure you want to delete this %{type}?
       delete_error: Error deleting %{type}
       delete_suggestion: suggestion
@@ -409,39 +432,14 @@ en:
       title_prompt: Enter a title
       user_removed: a user who was already removed
       user_removed_short: User was removed
-    map:
-      previous: Previous
-      next: Next
-      previous_row: Previous row
-      next_row: Next row
-      point_map: Point Map
-      boundary_map: Boundary Map
-      heat_map: Heat Map
-      base_layers: Base Layers
-      data_layers: Data Layers
-      map_legend: Map Legend
-      current_location: Use current location
-      auto: auto
-      address_prompt: Enter address here
-      geocoding_inaccessible: The geocoding service is inaccessible. Try again later.
-      geocoding_noresults: Unable to geocode. Make sure the address is correct.
-      multiple_layer_instructions: 'There is data for more than one layer here. Select one:'
-      forever_node_title: Too much data
-      forever_node_explanation: This cluster's data is too densely packed to display useful data geographically.
-      forever_node_recommend: We recommend that you <a href="#openTable">open the tabular view</a> in order to get more details.
-      heatmap_ie8_warning: Raster Heat Maps do not work in your current browser. Please upgrade to IE9, use Google Chrome or Mozilla Firefox. Thank you.
-      data_request_timeout: A data request has taken too long and timed out.
-      no_columns_defined: No columns defined
-      request_timed_out: Request for this data timed out.
-      loading: Loading...
     upload_dialog:
-      title_file: Upload a File
-      to_upload_file: 'File to Upload:'
-      title_photo: Upload a Photo
-      to_upload_photo: 'Photo to Upload:'
-      title_image: Upload a Image
-      to_upload_image: 'Image to Upload:'
       browse: Browse
+      title_file: Upload a File
+      title_image: Upload a Image
+      title_photo: Upload a Photo
+      to_upload_file: ! 'File to Upload:'
+      to_upload_image: ! 'Image to Upload:'
+      to_upload_photo: ! 'Photo to Upload:'
       upload: Upload
   core:
     aggregates:
@@ -641,12 +639,12 @@ en:
       five: five
       four: four
       nine: nine
+      num_one: one
+      num_two: two
+      num_zero: zero
       seven: seven
       six: six
       three: three
-      num_zero: zero
-      num_one: one
-      num_two: two
     or: or
     pagination:
       current_page: Current Page
@@ -788,6 +786,8 @@ en:
       page_url: Path
       save: Save
       title: Page Settings
+  date:
+    abbr_month_names: 
   error:
     back: Back
     error_500:
@@ -815,17 +815,33 @@ en:
           account_options: Account Options
           account_tooltip: View and make changes to your user account.
           configuration: Configuration
+          configuration_title: Manage GovStat configuration
           data: Data
+          data_title: Browse and Manage Data
           goals: Goals
+          goals_title: Create and Track Goals
           home: Home
+          home_title: Home
           my_goals: My Goals
           my_goals_tooltip: See the goals I've created.
           reports: Reports
-          home_title: Home
-          data_title: Browse and Manage Data
           reports_title: View and Create Reports
-          goals_title: Create and Track Goals
-          configuration_title: Manage GovStat configuration
+    configuration:
+      analytics: Analytics
+      appearance: Appearance
+      config: Configuration
+      content_moderation: Content Moderation
+      data_management: Data Management
+      datasets: Datasets
+      federations: Federations
+      homepage: Homepage
+      metadata: Metadata
+      moderation: Comment Moderation
+      nomination: Nomination Moderation
+      routing: Routing and Approval
+      sdp_templates: Data Player Templates
+      title: Manage Site Configuration
+      users: Users
     reports:
       component:
         base_map: Base Map
@@ -862,27 +878,11 @@ en:
       settings:
         page_title: Report Title
         title: Report Settings
-    configuration:
-      title: Manage Site Configuration
-      config: Configuration
-      users: Users
-      analytics: Analytics
-      datasets: Datasets
-      metadata: Metadata
-      federations: Federations
-      routing: Routing and Approval
-      sdp_templates: Data Player Templates
-      homepage: Homepage
-      moderation: Comment Moderation
-      nomination: Nomination Moderation
-      appearance: Appearance
-      content_moderation: Content Moderation
-      data_management: Data Management
     template:
-      title: Select Layout
-      layouts: Layouts
       grid_flow_layout: Grid Flow Layout
+      layouts: Layouts
       list_layout: List Layout
+      title: Select Layout
   plugins:
     daterangepicker:
       date_range: Date Range
@@ -963,6 +963,9 @@ en:
       wednesday_min: We
       wednesday_short: Wed
       week_min: Wk
+  recaptcha:
+    errors:
+      verification_failed: The characters entered do not match the image.
   screens:
     about:
       actions: Actions
@@ -998,7 +1001,7 @@ en:
       short_url: Short URL
       snapshotted: snapshotted
       soda2_support: SODA2 Only
-      soda2_yes: "Yes"
+      soda2_yes: 'Yes'
       source_link: Source Link
       spatial_extent: Spatial Extent
       subject_column: Subject Column
@@ -1982,42 +1985,42 @@ en:
         account_tooltip: Your Home
         administration: Administration
     import_common:
-      name_this_column: Name this column
-      new_layer: (New Layer)
-      remove: remove
-      then: then
+      addresses_to_geocode: Addresses will be geocoded after import is complete.
+      case_sensitive: case sensitive
+      city: City
+      column: Column
+      combine_multiple_columns: Combine Multiple Columns
+      create_composite: ! 'Create one column out of many source columns:'
+      create_js_expression: How do I create a custom Javascript expression?
+      custom_javascript: Custom Javascript Expression...
+      enter_custom: Enter a custom value
+      existing_cols: Existing Address Columns
+      existing_latlng_cols: Existing Latitude and Longitude Columns
+      find: find
+      find_and_replace: Find and Replace value...
+      import_from_multiple: Import from <strong>multiple columns</strong>
+      import_from_single: Import from <strong>single column</strong>
+      latitude: Latitude
+      location_source_col: Location Source Columns
+      longitude: Longitude
+      make_lower_case: Make lowercase
       make_title_case: Make Title Case
       make_upper_case: Make UPPERCASE
-      make_lower_case: Make lowercase
-      to_state_code: Convert states to 2-letter codes
-      find_and_replace: Find and Replace value...
-      custom_javascript: Custom Javascript Expression...
-      find: find
-      replace: and replace it with
-      case_sensitive: case sensitive
-      regular_expression: regular expression
-      create_js_expression: How do I create a custom Javascript expression?
-      combine_multiple_columns: Combine Multiple Columns
-      create_composite: 'Create one column out of many source columns:'
+      name_this_column: Name this column
+      new_layer: (New Layer)
       new_source_col: Add new source column
-      location_source_col: Location Source Columns
-      addresses_to_geocode: Addresses will be geocoded after import is complete.
-      import_from_multiple: Import from <strong>multiple columns</strong>
-      existing_cols: Existing Address Columns
-      street: Street
-      city: City
-      enter_custom: Enter a custom value
-      state: State
-      zip: Zip
-      existing_latlng_cols: Existing Latitude and Longitude Columns
-      latitude: Latitude
-      longitude: Longitude
-      import_from_single: Import from <strong>single column</strong>
-      column: Column
-      properly_formatted: 'Column must be <a href="%{formatting_link}" rel="external">properly formatted</a> prior to import.'
-      options: Options
-      transforms: 'Perform the following transformation upon import:'
       new_transform: Add new transform
+      options: Options
+      properly_formatted: Column must be <a href="%{formatting_link}" rel="external">properly formatted</a> prior to import.
+      regular_expression: regular expression
+      remove: remove
+      replace: and replace it with
+      state: State
+      street: Street
+      then: then
+      to_state_code: Convert states to 2-letter codes
+      transforms: ! 'Perform the following transformation upon import:'
+      zip: Zip
     import_pane:
       analyzing: Analyzing your file...
       assure_accessible: Please ensure that your file is accessible and valid and try again.
@@ -2259,26 +2262,26 @@ en:
       website: Website
       weekly: Weekly
     thumbnail:
-      title: Thumbnail Dataset
-      edit_thumbnail: Edit Thumbnail for %{name}
-      return_to_dataset: Return to Dataset
-      save_thumbnail: Save Thumbnail
       discard_changes: Discard Changes
-      refresh_thumbnail: Refresh Thumbnail
+      edit_thumbnail: Edit Thumbnail for %{name}
+      error_blob: This embedded file cannot be thumbnailed as it cannot be displayed in the browser
+      error_generic: There was a problem saving your thumbnail. Please try again later.
+      error_invalid: This view is invalid and cannot be thumbnailed in its current state
+      error_private: For your privacy, only public datasets may be thumbnailed. If you wish to have a preview image, please make this dataset public from the Permissions pane of the Manage sidebar.
       error_processing: There was an error processing your thumbnail request. Please try again later
-      preview: Preview
-      unsaved: Unsaved
       full_image: Full Image
       please_wait: There are no thumbnails available for this dataset yet. Please wait while we create one for you.
-      error_private: For your privacy, only public datasets may be thumbnailed. If you wish to have a preview image, please make this dataset public from the Permissions pane of the Manage sidebar.
-      error_blob: This embedded file cannot be thumbnailed as it cannot be displayed in the browser
-      error_invalid: This view is invalid and cannot be thumbnailed in its current state
+      preview: Preview
+      refresh_thumbnail: Refresh Thumbnail
+      return_to_dataset: Return to Dataset
+      save_thumbnail: Save Thumbnail
       success: Thumbnail saved
-      error_generic: There was a problem saving your thumbnail. Please try again later.
+      title: Thumbnail Dataset
+      unsaved: Unsaved
     widget:
       create_new:
-        title: Create a new Template
         name: New Template Name
+        title: Create a new Template
     wizard:
       cancel: Cancel
       finish: Finish

@@ -202,6 +202,21 @@ ro:
         in_bing: Vizualizaţi în Bing Maps
         in_google: Vizualizaţi în Google Maps
         row_details: Vizualizaţi detaliile pentru acest rând
+    editors:
+      actions:
+        add: 
+        remove: 
+        replace: 
+        view: 
+      document:
+        add_title: 
+        remove_title: 
+        replace_title: 
+      photo:
+        add_title: 
+        remove_title: 
+        replace_title: 
+        view_title: 
     embed:
       create_template_button: Creaţi un nou şablon
       custom_size: Dimensiune personalizată
@@ -419,6 +434,15 @@ ro:
       title_prompt: Introduceţi un tiltlu
       user_removed: un utilizator care a fost deja eliminat
       user_removed_short: Utilizatorul a fost eliminat
+    upload_dialog:
+      browse: 
+      title_file: 
+      title_image: 
+      title_photo: 
+      to_upload_file: 
+      to_upload_image: 
+      to_upload_photo: 
+      upload: 
   core:
     aggregates:
       average: Medie
@@ -609,7 +633,9 @@ ro:
       roadmap: Hartă rutieră
       satellite: Satelit
       terrain: Teren
+    no_category: 
     no_js: Dezactivaţi javascript pe această pagină
+    no_license: 
     numbers:
       eight: opt
       five: cinci
@@ -682,6 +708,7 @@ ro:
       public: public
   dataslate:
     component:
+      edit: 
       header:
         height: Înălţime
       invalid_config: Această componentă nu are o configuraţie valabilă
@@ -1187,6 +1214,7 @@ ro:
           purposes:
             copyright_violation: Încălcare drepturi de autor
             offensive_content: Conţinut ofensator
+            other_purpose: 
             personal_information: Informaţii personale
             prompt: -- Selectaţi scopul --
             spam: Spam sau junk
@@ -1919,6 +1947,7 @@ ro:
       external_identifier: Identificator extern
       file_type: Tip fişier
       general_information: Informaţii generale
+      headline: 
       keywords_help: Introduceţi unul sau mai multe cuvinte cheie separate de virgule
       license_help: Alegeţi termenii de acordare a licenţei pentru persoanele care doresc să utilizeze acest set de date.
       license_type: Tip de licenţă
@@ -1952,6 +1981,7 @@ ro:
       tags_keywords: Etichete/Cuvinte cheie
       tags_prompt: Introduceţi cuvintele cheie
       thumbnail_image: Imagine miniaturală
+      title: 
       upload_error: Vă rugăm să selectaţi un fişier de imagine valabil
       upload_help: Această imagine va fi decupată într-un pătrat
       upload_image: Încărcare imagine

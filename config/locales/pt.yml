@@ -202,6 +202,21 @@ pt:
         in_bing: Ver nos mapas Bing
         in_google: Ver nos mapas Google
         row_details: Ver detalhes para esta linha
+    editors:
+      actions:
+        add: 
+        remove: 
+        replace: 
+        view: 
+      document:
+        add_title: 
+        remove_title: 
+        replace_title: 
+      photo:
+        add_title: 
+        remove_title: 
+        replace_title: 
+        view_title: 
     embed:
       create_template_button: Criar um novo modelo
       custom_size: Tamanho personalizado
@@ -417,6 +432,15 @@ pt:
       title_prompt: Introduza um título
       user_removed: um utilizador que já foi removido
       user_removed_short: Utilizador foi removido
+    upload_dialog:
+      browse: 
+      title_file: 
+      title_image: 
+      title_photo: 
+      to_upload_file: 
+      to_upload_image: 
+      to_upload_photo: 
+      upload: 
   core:
     aggregates:
       average: Média
@@ -609,7 +633,9 @@ pt:
       roadmap: Mapa de estradas
       satellite: Satélite
       terrain: Terreno
+    no_category: 
     no_js: Desativar o Javascript nesta página
+    no_license: 
     numbers:
       eight: oito
       five: cinco
@@ -682,6 +708,7 @@ pt:
       public: público
   dataslate:
     component:
+      edit: 
       header:
         height: Altura
       invalid_config: Este componente não tem uma configuração válida
@@ -1187,6 +1214,7 @@ pt:
           purposes:
             copyright_violation: Infração dos direitos autorais
             offensive_content: Conteúdo ofensivo
+            other_purpose: 
             personal_information: Informação pessoal
             prompt: -- Escolha um objetivo --
             spam: Correio eletrónico não solicitado ou lixo
@@ -1919,6 +1947,7 @@ pt:
       external_identifier: Identificador externo
       file_type: Tipo de ficheiro
       general_information: Informação geral
+      headline: 
       keywords_help: Introduza uma ou mais palavras-chave separadas por vírgulas
       license_help: Escolha os termos de licenciamento para as pessoas que queiram utilizar este conjunto de dados.
       license_type: Tipo de licença
@@ -1952,6 +1981,7 @@ pt:
       tags_keywords: Identificadores / Palavras-chave
       tags_prompt: Introduza as palavras-chave
       thumbnail_image: Imagem de miniatura
+      title: 
       upload_error: Por favor escolha um ficheiro de imagem válido
       upload_help: Esta imagem será cortada num quadrado
       upload_image: Enviar imagem

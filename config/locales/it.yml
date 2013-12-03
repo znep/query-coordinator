@@ -202,6 +202,21 @@ it:
         in_bing: Visualizza su Bing Maps
         in_google: Visualizza su Google Maps
         row_details: Visualizza i dettagli per questa riga
+    editors:
+      actions:
+        add: 
+        remove: 
+        replace: 
+        view: 
+      document:
+        add_title: 
+        remove_title: 
+        replace_title: 
+      photo:
+        add_title: 
+        remove_title: 
+        replace_title: 
+        view_title: 
     embed:
       create_template_button: Crea un Nuovo Template
       custom_size: Personalizza dimensioni
@@ -417,6 +432,15 @@ it:
       title_prompt: Inserisci un titolo
       user_removed: un utente che era già stato rimosso
       user_removed_short: L'utente è stato rimosso
+    upload_dialog:
+      browse: 
+      title_file: 
+      title_image: 
+      title_photo: 
+      to_upload_file: 
+      to_upload_image: 
+      to_upload_photo: 
+      upload: 
   core:
     aggregates:
       average: Media
@@ -607,7 +631,9 @@ it:
       roadmap: Roadmap
       satellite: Satellite
       terrain: Terrain
+    no_category: 
     no_js: Disabilita il Javascript su questa pagina
+    no_license: 
     numbers:
       eight: otto
       five: cinque
@@ -680,6 +706,7 @@ it:
       public: pubblico
   dataslate:
     component:
+      edit: 
       header:
         height: Altezza
       invalid_config: Questo componente non ha una configurazione valida
@@ -805,7 +832,7 @@ it:
           data: Dati
           data_title: Naviga e Gestisci i Dati
           goals: Mete
-          goals_title: Crea e Segui le Mete
+          goals_title: Crea e Tieni Traccia delle Mete
           home: Casa
           home_title: Casa
           my_goals: Le mie Mete
@@ -865,7 +892,7 @@ it:
         page_title: Rapporto del Titolo
         title: Settaggi del Rapporto
     template:
-      grid_flow_layout: Layout Flusso della Griglia
+      grid_flow_layout: Grid Layout
       layouts: Layout
       list_layout: Elenca Layout
       title: Seleziona Layout
@@ -1185,6 +1212,7 @@ it:
           purposes:
             copyright_violation: Violazione Copyright
             offensive_content: Contenuti Offensivi
+            other_purpose: 
             personal_information: Informazioni Personali
             prompt: -- Seleziona Scopo --
             spam: Spam o Indesiderato
@@ -1917,6 +1945,7 @@ it:
       external_identifier: Identificatore esterno
       file_type: Tipo di file
       general_information: Informazioni generali
+      headline: 
       keywords_help: Inserisci una o più parole chiave separate da una virgola
       license_help: Scegli i termini della licenza per le persone che desiderano utilizzare questo dataset.
       license_type: Tipo di licenza
@@ -1950,6 +1979,7 @@ it:
       tags_keywords: Tag/Parole chiave
       tags_prompt: Inserisci parole chiave
       thumbnail_image: Immagine di anteprima
+      title: 
       upload_error: Seleziona un file di immagine valido
       upload_help: L'immagine verrà ritagliata in forma quadrata
       upload_image: Carica immagine
@@ -1992,7 +2022,7 @@ it:
       name_this_column: Nomina questa colonna
       new_layer: (Nuovo Layer)
       new_source_col: Aggiungi nuova colonna sorgente
-      new_transform: Aggiungi nuovo transform
+      new_transform: Nuova operazione di trasformazione
       options: Opzioni
       properly_formatted: La colonna deve essere <a href="%{formatting_link}" rel="external">correttamente formattata</a> prima di poter essere importata.
       regular_expression: espressione regolare

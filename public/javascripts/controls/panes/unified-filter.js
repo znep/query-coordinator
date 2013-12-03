@@ -602,9 +602,7 @@
                 return;
             }
 
-            $pane
-                .find('.noFilterConditionsText').show()
-                .siblings().remove();
+            $pane.find('.noFilterConditionsText').show()
             rootCondition = $.extend(true, {}, options.rootCondition);
             baseRootCondition = null;
             filterableColumns = options.filterableColumns;

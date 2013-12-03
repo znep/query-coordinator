@@ -706,7 +706,7 @@ it:
       public: pubblico
   dataslate:
     component:
-      edit: 
+      edit: Modificare questo componente
       header:
         height: Altezza
       invalid_config: Questo componente non ha una configurazione valida
@@ -1212,7 +1212,7 @@ it:
           purposes:
             copyright_violation: Violazione Copyright
             offensive_content: Contenuti Offensivi
-            other_purpose: 
+            other_purpose: Altro
             personal_information: Informazioni Personali
             prompt: -- Seleziona Scopo --
             spam: Spam o Indesiderato
@@ -1945,7 +1945,7 @@ it:
       external_identifier: Identificatore esterno
       file_type: Tipo di file
       general_information: Informazioni generali
-      headline: 
+      headline: Modificare i metadati per %{name}
       keywords_help: Inserisci una o più parole chiave separate da una virgola
       license_help: Scegli i termini della licenza per le persone che desiderano utilizzare questo dataset.
       license_type: Tipo di licenza
@@ -1979,7 +1979,7 @@ it:
       tags_keywords: Tag/Parole chiave
       tags_prompt: Inserisci parole chiave
       thumbnail_image: Immagine di anteprima
-      title: 
+      title: Modificare i metadati
       upload_error: Seleziona un file di immagine valido
       upload_help: L'immagine verrà ritagliata in forma quadrata
       upload_image: Carica immagine

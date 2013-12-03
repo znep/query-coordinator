@@ -708,7 +708,7 @@ pt:
       public: público
   dataslate:
     component:
-      edit: 
+      edit: Editar este componente
       header:
         height: Altura
       invalid_config: Este componente não tem uma configuração válida
@@ -1214,7 +1214,7 @@ pt:
           purposes:
             copyright_violation: Infração dos direitos autorais
             offensive_content: Conteúdo ofensivo
-            other_purpose: 
+            other_purpose: Outro
             personal_information: Informação pessoal
             prompt: -- Escolha um objetivo --
             spam: Correio eletrónico não solicitado ou lixo
@@ -1947,7 +1947,7 @@ pt:
       external_identifier: Identificador externo
       file_type: Tipo de ficheiro
       general_information: Informação geral
-      headline: 
+      headline: Editar metadados para %{name}
       keywords_help: Introduza uma ou mais palavras-chave separadas por vírgulas
       license_help: Escolha os termos de licenciamento para as pessoas que queiram utilizar este conjunto de dados.
       license_type: Tipo de licença
@@ -1981,7 +1981,7 @@ pt:
       tags_keywords: Identificadores / Palavras-chave
       tags_prompt: Introduza as palavras-chave
       thumbnail_image: Imagem de miniatura
-      title: 
+      title: Editar metadados
       upload_error: Por favor escolha um ficheiro de imagem válido
       upload_help: Esta imagem será cortada num quadrado
       upload_image: Enviar imagem

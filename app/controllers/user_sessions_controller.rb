@@ -63,7 +63,14 @@ class UserSessionsController < ApplicationController
       meter 'login.failure'
       if response.is_a?(Net::HTTPForbidden)
         response_error = JSON.parse(response.body)
-        notice = response_error['message'] || default_response
+        notice = case response_error['message']
+          when 'Invalid username or password'
+            t('core.auth.invalid_userpass')
+          when 'Too many login attempts for that login. Account temporarily disabled.'
+            t('core.auth.too_many_tries')
+          else
+            default_response
+          end
         notice += (notice.end_with?('.') ? '' : '.') + ' ' + t('account.common.form.lockout_warning')
       else
         notice = default_response

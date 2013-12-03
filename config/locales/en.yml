@@ -456,6 +456,11 @@ en:
       visit: view
       visits: views
     and: and
+    auth:
+      need_login: You must be logged in to access this page
+      need_permission: You do not have permission to view this page
+      invalid_userpass: Invalid username or password
+      too_many_tries: Too many login attempts for that login. Account temporarily disabled.
     chart_types:
       area: Area Chart
       bar: Bar Chart

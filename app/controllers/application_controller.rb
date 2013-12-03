@@ -124,7 +124,7 @@ protected
   end
 
   # v4 chrome style error messages
-  def render_forbidden(message = 'You do not have permission to view this page')
+  def render_forbidden(message = I18n.t('core.auth.need_permission'))
     flash.now[:error] = message
     return render('shared/error', :status => :forbidden)
   end
@@ -195,10 +195,10 @@ private
   def require_user(force_login = false)
     unless current_user_session && !force_login
       if @suppress_chrome
-        render_forbidden("You do not have permission to view this page")
+        render_forbidden(I18n.t('core.auth.need_permission'))
       else
         store_location
-        flash[:notice] = "You must be logged in to access this page"
+        flash[:notice] = I18n.t('core.auth.need_login')
         redirect_to login_url
       end
       return false

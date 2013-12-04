@@ -448,6 +448,7 @@
                     {
                         // Don't save changes, let the user do that
                         cmObj.settings.view.columnForID(colId).hide();
+                        cmObj.settings.view.trigger('columns_changed');
                     });
                 }
                 break;

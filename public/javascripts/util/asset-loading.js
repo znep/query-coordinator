@@ -297,7 +297,11 @@ assetNS.loadTranslations = function(translations, callback)
 {
     var trackedTranslations = _.filter($.arrayify(translations), function(translation)
     {
-        if ($.subKeyDefined(blist.translations, translation))
+        var force = false;
+
+        if ($.isPlainObject(translation))
+        { force = translation.force; translation = translation.key; }
+        if ($.subKeyDefined(blist.translations, translation) && !force)
             return false; // we already have this
         if (lazyLoadingAssets.translations[translation] === true)
             return true; // we're already working on this
@@ -330,7 +334,7 @@ var checkTranslationJobs = function()
     lazyLoadingTranslationJobs = _.filter(lazyLoadingTranslationJobs, function(job)
     {
         if (_.all(job.queue, function(translation)
-            { return $.subKeyDefined(blist.translations, translation); }))
+            { return $.subKeyDefined(blist.translations, translation.key || translation); }))
         {
             job.callback();
             return false;

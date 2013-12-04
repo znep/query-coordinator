@@ -1,7 +1,7 @@
 class DatasetsController < ApplicationController
   include DatasetsHelper
   prepend_before_filter :check_chrome, :only => [:show, :alt]
-  skip_before_filter :require_user, :only => [:show, :blob, :alt, :widget_preview, :contact, :math_validate, :form_success, :form_error, :external, :external_download, :download, :about]
+  skip_before_filter :require_user, :only => [:show, :blob, :alt, :widget_preview, :contact, :validate_contact_owner, :form_success, :form_error, :external, :external_download, :download, :about]
 
 # collection actions
   def new
@@ -311,38 +311,13 @@ class DatasetsController < ApplicationController
 
 # end alt actions
 
-  def math_validate
-    return (render :nothing => true) if params['equation_token'].blank?
+  def validate_contact_owner
 
     @view = get_view(params[:id])
     return (render :nothing => true) if @view.nil?
 
-    equation_parts = ::Base64.decode64(params['equation_token']).strip.split(/\s+/)
-    str_to_num = {
-      'zero'  => 0,
-      'one'   => 1,
-      'two'   => 2,
-      'three' => 3,
-      'four'  => 4,
-      'five'  => 5,
-      'six'   => 6,
-      'seven' => 7,
-      'eight' => 8,
-      'nine'  => 9,
-      'ten'   => 10
-    }
-    num1 = str_to_num[equation_parts[0]]
-    num2 = str_to_num[equation_parts[2]]
-    operator = equation_parts[1]
-
-    if(operator == 'plus')
-      answer = num1 + num2
-    elsif(operator == 'minus')
-      answer = num1 - num2
-    end
-
     success = false
-    if answer==str_to_num[params['user_answer'].strip.downcase]
+    if verify_recaptcha
       flag_params = {}
       keys = [:id, :type, :subject, :message, :from_address]
       keys.each do |key|

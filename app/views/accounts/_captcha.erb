@@ -1,5 +1,5 @@
 <%- if local_assigns[:render_captcha] -%>
-<%= recaptcha_tags :display => { :theme => 'white', :lang => I18n.locale } %>
+<%= recaptcha_tags :display => { :theme => 'white', :lang => I18n.locale.to_s } %>
 <%- else -%>
   <div id="captchaPlaceholder" class="placeholder">
     <div class="loading"></div>

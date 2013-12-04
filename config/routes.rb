@@ -230,7 +230,7 @@ Frontend::Application.routes do
       end
       member do
         get :about
-        post :math_validate
+        post :validate_contact_owner
         post :save_filter
         post :modify_permission
         post :post_comment

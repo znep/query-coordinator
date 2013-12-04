@@ -1,6 +1,6 @@
 <div class="aboutDataset_contact">
   <div class="contactOwnerFormWrapper">
-    <%= form_tag(url_for({:controller => 'datasets', :action => "math_validate"}),
+    <%= form_tag(url_for({:controller => 'datasets', :action => "validate_contact_owner"}),
       :class => 'contactOwnerForm') do %>
       <%= hidden_field_tag 'method', 'flag' %>
       <div class="lined">
@@ -31,29 +31,7 @@
         <p><%= t('screens.ds.dataset_contact.form.email_prompt') %></p>
         <input id="fromAddress" name="from_address" type="text" value="<%= current_user.email unless (current_user.nil? || current_user.email.nil?) %>"/>
       </div>
-
-      <div class="lined">
-        <% 
-        numbers = ['zero','one','two','three','four','five']
-        operations = ['plus', 'minus']
-
-        num1 = numbers[rand(numbers.length)]
-        num2 = numbers[rand(numbers.length)]
-        operation = operations[rand(operations.size)]
-
-        if numbers.index(num1) < numbers.index(num2)
-          num1,num2 = num2,num1
-        end
-        
-        output = sprintf('%s %s %s', num1, operation, num2)
-        encoded = ::Base64.encode64(output.center(20))
-          %> 
-        <div><label for="noSpam" class="required">What is <%= output %> as a word?</label></div>
-        <input class="noSpamAnswer" type="text" name="user_answer" />
-      </div>
-
-      <input type="text" class="encrypted" name="equation_token" style="display:none;" value="<%= encoded %>"/>
-      <div class="math_message flash"></div>
+      <%= render :partial => 'accounts/captcha', :locals => { :render_captcha => true } %>
 
       <%- if local_assigns[:static_links] -%>
       <%= submit_tag('Send', :class => 'button default') %>

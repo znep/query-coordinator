@@ -10,6 +10,7 @@ class AnalyticsController < ApplicationController
 
   def add_all
     data = ActiveSupport::JSON.decode(request.body)
+    return render_metric_error("No metrics provided") if data.nil?
     metrics = data["metrics"]
     metrics.each { |m|
       valid, error = add_metric(m['entity'], m['metric'], m['increment'])

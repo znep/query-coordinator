@@ -167,7 +167,7 @@ var ColumnContainer = function(colName, selfUrl, urlBase)
             var col = forID(cont, colId);
             if (!$.isBlank(col))
             {
-                didHideShow = didHideShow || col.show(null, null, true);
+                didHideShow = col.show(null, null, true) || didHideShow;
                 if (needsReorder) { col.update({position: i + 1}); }
                 var cc = col.cleanCopy();
                 if (!$.isBlank(cc.childColumns))
@@ -184,7 +184,7 @@ var ColumnContainer = function(colName, selfUrl, urlBase)
             if ($.isBlank(_.detect(vizCols, function(vc)
                 { return vc.id == c.id; })))
             {
-                didHideShow = didHideShow || c.hide(null, null, true);
+                didHideShow = c.hide(null, null, true) || didHideShow;
             }
         });
 

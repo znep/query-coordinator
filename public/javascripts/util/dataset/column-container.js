@@ -160,13 +160,14 @@ var ColumnContainer = function(colName, selfUrl, urlBase)
             return false;
         });
 
+        var didHideShow = false;
         var vizCols = [];
         _.each(visColIds, function(colId, i)
         {
             var col = forID(cont, colId);
             if (!$.isBlank(col))
             {
-                col.show(null, null, true);
+                didHideShow = didHideShow || col.show(null, null, true);
                 if (needsReorder) { col.update({position: i + 1}); }
                 var cc = col.cleanCopy();
                 if (!$.isBlank(cc.childColumns))
@@ -182,10 +183,14 @@ var ColumnContainer = function(colName, selfUrl, urlBase)
         {
             if ($.isBlank(_.detect(vizCols, function(vc)
                 { return vc.id == c.id; })))
-            { c.hide(null, null, true); }
+            {
+                didHideShow = didHideShow || c.hide(null, null, true);
+            }
         });
 
-        update(cont, vizCols);
+        update(cont, vizCols, false, needsReorder);
+        if (!needsReorder && didHideShow)
+        { _.defer(function() { (cont.view || cont).trigger('columns_changed', ['visibility']); }); }
 
         if ((cont.view || cont).canUpdate() && !skipRequest)
         {

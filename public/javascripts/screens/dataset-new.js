@@ -264,7 +264,7 @@ $wizard.wizard({
                             .prev('label').addClass('required').end()
                             .rules('add', {
                                 required: true,
-                                messages: { required: 'You must specify the data provider (attribution) in a Creative Commons license.' }
+                                messages: { required: $.t('screens.dataset_new.errors.missing_data_provider') }
                             });
                     }
                     else
@@ -289,8 +289,8 @@ $wizard.wizard({
                 // update display for upload/import if necessary
                 if (!_.isUndefined(state.submittedView))
                 {
-                    $pane.find('.headline').html('Please describe &ldquo;' +
-                        $.htmlEscape(state.submittedView.name) + '.&rdquo;');
+                    $pane.find('.headline').html($.t('screens.dataset_new.errors.need_description',
+                        { name: $.htmlEscape(state.submittedView.name) }));
                     $pane.find('#view_name').val(state.submittedView.name).removeClass('prompt');
                 }
 
@@ -431,10 +431,10 @@ $wizard.wizard({
             'crossload_url': 'customHttpMaybeSUrl'
         },
         messages: {
-            "view[name]": "Dataset name is required.",
-            "view[attributionLink]": "That does not appear to be a valid URL.",
-            'view[esri_src]': 'A valid ESRI map layer URL is required.',
-            'crossload_url': 'Please enter a valid URL beginning with either HTTP or HTTPS.'
+            "view[name]": $.t('screens.dataset_new.errors.missing_name'),
+            "view[attributionLink]": $.t('screens.dataset_new.errors.invalid_url'),
+            'view[esri_src]': $.t('screens.dataset_new.errors.missing_eri_url'),
+            'crossload_url': $.t('screens.dataset_new.errors.invalid_crossload_url')
         },
         errorPlacement: function (label, $el) {
             $el.closest('.line').append(label);

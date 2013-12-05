@@ -71,6 +71,7 @@
             {
                 var sTipObj = this;
                 var $domObj = sTipObj.$dom();
+                if (!$domObj.exists()) { return; }
                 $domObj.data("socrataTip", sTipObj);
 
                 if ($.isBlank(sTipObj.settings.message) &&

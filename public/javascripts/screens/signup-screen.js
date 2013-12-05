@@ -20,6 +20,8 @@ $(function ()
 
     $('.passwordHint').socrataTip({ content: $content });
 
+    blist.util.loadCaptcha('captchaPlaceholder');
+
     // Signup form validation.
     var $validator = $("#signup #signupForm, .loginScreen #signupForm").validate({
         rules: {

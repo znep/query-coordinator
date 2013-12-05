@@ -4,6 +4,11 @@ require 'socket'
 require 'timeout'
 
 TEMP_CACHE_DIR='/tmp/apache-dev-server-cache'
+HTTPD=["httpd", "apache2"].select {|p| Kernel.system("which #{p} >/dev/null") }.first
+if HTTPD.nil?
+  STDERR.puts "Error: Couldn't find Apache binary"
+  exit 1
+end
 
 def check_args
   if ARGV.size != 1
@@ -36,8 +41,12 @@ if check_args
     if !File.exists?("#{DEV_DIR}/var/apache2.pid")
       clean_mod_cache_directory!(:force => true)
       puts "All running; starting Apache."
-      Kernel.system("httpd -d \"#{DEV_DIR}\" -f httpd.conf")
-      puts "Apache is running; try accessing http://localhost:9292"
+      if Kernel.system("#{HTTPD} -d \"#{DEV_DIR}\" -DOS_`uname -s` -f httpd.conf")
+	puts "Apache is running; try accessing http://localhost:9292"
+      else
+	STDERR.puts "Error: unable to start Apache"
+	exit 1
+      end
     else
       STDERR.puts "Error: #{DEV_DIR}/var/apache2.pid file already exists. Perhaps Apache is already running?"
       exit 1

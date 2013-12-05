@@ -70,87 +70,9 @@
     width: 100%
 
   .progressWrapper
-    @include progress-colors(color)
-    @include progress-colors(border-color, '.progressIcon')
-    .progressIcon
-      @include rounded-ends
-      position: relative
-      border: 0.3em solid
-      display: inline-block
-      width: 3.8em
-      height: 3.8em
-      padding: 0
-      color: inherit
-      &:before
-        content: ''
-        display: inline-block
-        height: 100%
-        vertical-align: middle
-      div
-        font-size: 2.5em
-        width: 100%
-        text-align: center
-        display: inline-block
-        vertical-align: middle
-    .progressRightSide
-      float: right
-      color: inherit
+    @include progress-colors(background-color, '.progress')
+    > div
       display: block
-
-      .progressText
-        display: block
-        color: inherit
-        font-size: 1.3em
-      .progressViewChart
-        cursor: pointer
-        display: block
-        margin-top: 0.5em
-        color: #999
-        font-size: 0.7em
-        text-align: right
-        .pulldownArrow
-          @include rounded-ends
-          border: 1px solid #eee
-          width: 1.2em
-          height: 1.2em
-          display: inline-block
-          line-height: 1.6
-          margin-right: 0.6em
-          position: relative
-
-          &:after
-            content: ''
-            display: inline-block
-            position: absolute
-            width: 100%
-            height: 100%
-            left: 0
-            right: 0
-            top: 0.4em
-            bottom: 0
-            margin: auto
-
-        span.viewChart, span.hideChart
-          display: none
-          position: relative
-          top: -0.25em
-
-        &.down
-          .pulldownArrow:after
-            @include triangle(0.4em, #777, top)
-          span.viewChart
-            display: inline
-        &.up
-          .pulldownArrow:after
-            @include triangle(0.4em, #777, bottom)
-            top: -0.4em
-          span.hideChart
-            display: inline
-
-        &:hover
-          .pulldownArrow
-            border-color: #666
-          color: #666
 
     &.progress-none
       display: none
@@ -257,7 +179,6 @@
           letter-spacing: -1px
 
       .metric.currentValue
-        @include progress-colors(color, '.progress')
         margin-right: 2em
 
       .metric.targetValue
@@ -287,7 +208,7 @@
       .goalProgress
         float: right
         font-size: 1.5em
-        margin-top: 1em
+        margin-top: 3em
 
 $chartHeight: 210px
 .chartArea
@@ -338,21 +259,6 @@ $chartHeight: 210px
         fill-opacity: 0.3
         @include transition(2s, fill-opacity)
 
-      .redArea
-        fill: #faa
-        fill-opacity: 0.3
-        @include transition(2s, fill-opacity)
-
-      .yellowArea
-        fill: #ffa
-        fill-opacity: 0.3
-        @include transition(2s, fill-opacity)
-
-      .greenArea
-        fill: #bfb
-        fill-opacity: 0.3
-        @include transition(2s, fill-opacity)
-
       .dataSeriesLine
         fill: none
         stroke-opacity: 1
@@ -399,14 +305,6 @@ $chartHeight: 210px
         stroke-width: 2px
         @include transition(2s, stroke-opacity)
 
-      .currentValueLine
-        fill: none
-        stroke-opacity: 1
-        stroke: #666
-        stroke-width: 2px
-        stroke-dasharray: 20, 5
-        @include transition(2s, stroke-opacity)
-
     .dataSeriesLeftBuffer, .dataSeriesRightBuffer
       background-color: #aaa
       bottom: 0
@@ -436,9 +334,7 @@ $chartHeight: 210px
     .constrain
       bottom: 0
       left: 0
-      //todo re-enable this, once the little sliver of the now gauge is dealt with.
-      // Some other styles changed for this, search NOW_TIP_HACK
-      //overflow: hidden
+      overflow: hidden
       position: absolute
       right: 0
       top: 0
@@ -457,9 +353,6 @@ $chartHeight: 210px
         margin-left: -17px
         position: absolute
         z-index: 3
-
-        // NOW_TIP_HACK
-        @include transition(1s, opacity)
 
         .nowTipFill
           @include triangle(16px, #fff, top)
@@ -499,7 +392,8 @@ $chartHeight: 210px
           right: 0
           top: 0.5em
 
-    .xTick.bubble, .nowMarker
+    .xTick.bubble
+      background-color: #ababab
       bottom: 0
       margin-bottom: -2.3em
       margin-left: -2.5em
@@ -519,14 +413,6 @@ $chartHeight: 210px
       &:hover
         z-index: 2
 
-    .nowMarker
-      background-color: #ababab
-      z-index: 1
-
-    .xTick.bubble
-      background-color: transparent
-      color: #ababab
-
     .marker
       @include progress-colors(background-color)
       @include progress-colors(border-right-color, '.tip')
@@ -535,7 +421,6 @@ $chartHeight: 210px
       margin-left: 0.8em
       margin-bottom: -0.7em
       position: absolute
-      @include transition(2s, opacity)
 
       .tip
         @include triangle(3px, #797979, right)
@@ -555,49 +440,71 @@ $chartHeight: 210px
 
     .meter
       bottom: 0
-      position: absolute
       height: $chartHeight
-      width: 4px
+      position: absolute
+      right: 0
+      width: 6px
       z-index: 2
-      @include transition(2s, opacity)
-      box-sizing: border-box
-      border-bottom: 10px solid $govstat_color_good
-      background: $govstat_color_good
-      &.topRed
-        background: $govstat_color_poor
-      &.bottomRed
-        border-bottom-color: $govstat_color_poor
 
-      &.targetMeter
-        right: 0
-
-      .gaugeBody
-        margin-top: 10px
-        height: $chartHeight - 20px
       div
         @include progress-colors(background-color)
         position: absolute
         width: 100%
 
+        &.rangeTop
+          top: 0
+        &.rangeBottom
+          bottom: 0
+
+    // todo: make more prominent somehow
+    .pull
+      background-color: #fff
+      border: 1px solid #bbb
+      border-top: none
+      @include border-radius(0, 0, 0.3em, 0.3em)
+      bottom: 0
+      cursor: pointer
+      height: 1em
+      left: 50%
+      margin-bottom: -1.1em
+      margin-left: -2.5em
+      position: absolute
+      @include transition(0.2s, height margin)
+      width: 5em
+      z-index: 1
+
+      &:hover, &.up
+        height: 1.5em
+        margin-bottom: -1.6em
+
+      &.up:hover
+        height: 1.7em
+        margin-bottom: -1.8em
+
+      .icon
+        left: 50%
+        margin-left: -4px
+        position: absolute
+
+      &.down .icon
+        @include triangle(4px, #777, top)
+        bottom: -1px
+
+      &.up .icon
+        @include triangle(4px, #777, bottom)
+        bottom: 3px
+
   &.collapsed
     height: 0
 
     .content-wrapper
-
-      // NOW_TIP_HACK
-      .nowTip
-        opacity: 0
-
       .dataSeriesArea
         fill-opacity: 0.035
-
-      .redArea, .yellowArea, .greenArea
-        fill-opacity: 0
 
       .dataSeriesLine
         stroke-opacity: 0.1
 
-      .burndownLineLowShadow, .burndownLineHighShadow, .burndownLine, .projectionLineShadow, .projectionLine, .currentValueLine
+      .burndownLineLowShadow, .burndownLineHighShadow, .burndownLine, .projectionLineShadow, .projectionLine
         stroke-opacity: 0
 
       .dataSeriesLeftBuffer, .dataSeriesRightBuffer
@@ -607,21 +514,12 @@ $chartHeight: 210px
         .border
           @include opacity(0.2)
 
-      .nowMarker
-        @include opacity(0)
-
       .yTick, .xTick.bubble
         @include opacity(0.3)
 
       // we could also have them always show softly
         .xTick.bubble
           @include opacity(0.35)
-
-      .marker
-        @include opacity(0)
-
-      .meter
-        @include opacity(0)
 
       .r2d3Chart
         top: -$chartHeight !important
@@ -770,7 +668,6 @@ $chartHeight: 210px
 
       .wrapper
         padding-bottom: 1.5em
-
 
       .marker, .yTick, .xTick
         @include opacity(0)

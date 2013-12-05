@@ -298,19 +298,6 @@ $config_header_color: #711e8c
     margin-left: 0.2em
     position: relative
 
-.gaugeBody > div
-  display: inline-block
-  height: 0.8em
-  @include transition(0.2s, width)
-  &.gaugeGood
-    background: $govstat_color_good
-  &.gaugeWithinTolerance
-    background: $govstat_color_within_tolerance
-  &.gaugeBad
-    background: $govstat_color_poor
-  &.pendingRemove .hoverOverlay
-    display: block
-
 .prevailingMeasureGauge
   display: none
   margin-bottom: 30px
@@ -344,6 +331,19 @@ $config_header_color: #711e8c
       & + span
         display: inline-block
         margin-top: 1px
+
+  .gaugeBody > div
+    display: inline-block
+    height: 0.8em
+    @include transition(0.2s, width)
+    &.gaugeGood
+      background: $govstat_color_good
+    &.gaugeWithinTolerance
+      background: $govstat_color_within_tolerance
+    &.gaugeBad
+      background: $govstat_color_poor
+    &.pendingRemove .hoverOverlay
+      display: block
 
   .hoverOverlay
     display: none

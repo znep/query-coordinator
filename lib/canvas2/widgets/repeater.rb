@@ -73,8 +73,8 @@ module Canvas2
             end
 
           else
-            row_count = string_substitute(@properties['rowCount'] || 100)
-            row_page = string_substitute(@properties['rowPage'] || 1)
+            row_count = [1, string_substitute(@properties['rowCount'] || 100).to_i].max
+            row_page = [1, string_substitute(@properties['rowPage'] || 1).to_i].max
             if Canvas2::Util.no_cache
               rows = context[:dataset].get_rows(row_count, row_page, {}, false, !Canvas2::Util.is_private)
             else

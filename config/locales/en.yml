@@ -792,7 +792,20 @@ en:
       save: Save
       title: Page Settings
   date:
-    abbr_month_names: 
+    abbr_month_names:
+    - 
+    - Jan
+    - Feb
+    - Mar
+    - Apr
+    - May
+    - Jun
+    - Jul
+    - Aug
+    - Sep
+    - Oct
+    - Nov
+    - Dec
   error:
     back: Back
     error_500:

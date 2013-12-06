@@ -457,9 +457,9 @@ en:
       visits: views
     and: and
     auth:
+      invalid_userpass: Invalid username or password
       need_login: You must be logged in to access this page
       need_permission: You do not have permission to view this page
-      invalid_userpass: Invalid username or password
       too_many_tries: Too many login attempts for that login. Account temporarily disabled.
     chart_types:
       area: Area Chart
@@ -1064,9 +1064,9 @@ en:
       errors:
         invalid_crossload_url: Please enter a valid URL beginning with either HTTP or HTTPS.
         invalid_url: That does not appear to be a valid URL.
+        missing_data_provider: You must specify the data provider (attribution) in a Creative Commons license.
         missing_esri_url: A valid ESRI map layer URL is required.
         missing_name: Dataset name is required.
-        missing_data_provider: You must specify the data provider (attribution) in a Creative Commons license.
         need_description: Please describe &ldquo;%{name}&rdquo;
       finish:
         headline: Your Dataset has been created.
@@ -1441,9 +1441,9 @@ en:
           group_extra: Group Extra Values
           groups: Groups
           headings:
-            data_selection: Data Selection
-            data_presentation: Data Presentation
             chart_details: Chart Details
+            data_presentation: Data Presentation
+            data_selection: Data Selection
           label: Label
           labelInBar: Label in Bar
           labels_and_values: Labels and Values

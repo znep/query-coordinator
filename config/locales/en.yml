@@ -1870,10 +1870,13 @@ en:
         title_html: Subscribe to the &quot;<span class="datasetName">%{name}</span>&quot; <span class="datasetTypeNameUpcase">Dataset</span>
         unsubscribe: If you no longer wish to receive notifications, uncheck the Subscribe box below.
     edit_metadata:
+      about: About
       additional_source: Additional Source
       alternative_access_prompt: Enter an alternate access point for this dataset
       api_endpoint: API Endpoint
       attachments: Attachments
+      attachmentsDisabledMessagePart1: To upload attachments, first finish publishing this dataset. Then, click
+      attachmentsDisabledMessagePart2: in the toolbar, and click Edit Metadata. You will then be able to upload attachments.
       brief_description: Brief Description
       brief_description_prompt: Enter a description
       cancel: Cancel

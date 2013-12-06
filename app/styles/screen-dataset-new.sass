@@ -713,21 +713,24 @@
     .creativeCommonsLine
       display: none
 
-    .existingAttachmentsContainer
-      display: none
-      padding-bottom: 3em
-
-      .deleteAttachmentNow
+    .attachmentsMetadata
+      .attachmentsHowtoMessage
+        padding-left: 1em
+        margin-top: 0.5em
         font-size: 1.2em
-        margin-left: 0.5em
 
-    .newAttachmentsContainer
-      margin-top: -3em
-
-    .uploadAttachmentThrobber
-      @include throbber-icon
-      display: none
-      margin: 1em 0 0 1em
+        .about
+          @include border-radius(0.35em)
+          color: white
+          height: 13px
+          padding: 0.2em 0.35em 0.25em
+          margin: 0.2em 0 0.2em 0
+          background-color: $sidebar_about_tab_color_top
+          @include dataset-sidebar-icons
+          .icon
+            display: inline-block
+            margin-right: 0.4em
+            vertical-align: bottom
 
     .radioblock
       .uniform.radio

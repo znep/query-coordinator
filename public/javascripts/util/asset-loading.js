@@ -270,15 +270,13 @@ assetNS.loadPartials = function(partialQueue, type, callback)
 
     _.each(partials, function(partial)
     {
-        var url = partial;
+        var url = $.path(partial);
         // In dev, make the URL unique so we always reload to pick up changes
         if (blist.configuration.development)
         {
             url += (url.indexOf('?') >= 0 ? '&' : '?') +
                 $.param({'_': (new Date()).valueOf().toString().slice(0, 9)});
         }
-        if (blist.locale && blist.defaultLocale != blist.locale)
-        { url = '/' + blist.locale + url; }
 
         // Load it via Ajax and insert them all once they're ready
         $.socrataServer.makeRequest({url: url, pageCache: true, dataType: 'text', contentType: 'text/html',

@@ -227,7 +227,7 @@
       <%- @view.metadata.attachments.each do |attachment| -%>
         <%- attachmentObj = Attachment.set_up_model(attachment) -%>
         <li>
-          <%= link_to( attachmentObj.displayName, attachmentObj.href, :target => "_blank" ) %>
+          <%= link_to( attachmentObj.displayName, attachmentObj.href(@view.id), :target => "_blank" ) %>
         </li>
       <%- end -%>
     </ul>

@@ -1,6 +1,6 @@
 class Attachment < Model
-  def href
-    return "/api/assets/#{blobId}?download=true"
+  def href(view_id)
+    data['assetId'].present? ? "/api/views/#{view_id}/files/#{assetId}?download=true" : "/api/assets/#{blobId}?download=true"
   end
   
   def displayName

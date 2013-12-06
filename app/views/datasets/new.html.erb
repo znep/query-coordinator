@@ -274,21 +274,11 @@
 
             <div class="attachmentsMetadata">
               <h2><%= t("#{prefix}.attachments") %></h2>
-
-              <div class="attachments">
-                <div class="line existingAttachmentsContainer clearfix">
-                  <label><%= t("#{prefix}.attachments") %></label>
-                  <div class="existingAttachments">
-                    <ul></ul>
-                  </div>
-                </div>
-
-                <div class="line newAttachmentsContainer clearfix">
-                  <label for="attachment_new" class="newAttachmentLabel">&nbsp;</label>
-                  <a class="button uploadLink" href="#upload_attachment"><%= t("#{prefix}.upload_new_attachment") %></a>
-                  <span class="uploadAttachmentThrobber"></span>
-                </div>
+              <div class="attachmentsHowtoMessage"><%= t("#{prefix}.attachmentsDisabledMessagePart1") %>
+                <span class="about"><span class="icon"></span><%= t("#{prefix}.about") %></span>
+                <%= t("#{prefix}.attachmentsDisabledMessagePart2") %>
               </div>
+
             </div>
 
             <%= render :partial => 'metadata', :locals =>

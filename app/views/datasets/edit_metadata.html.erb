@@ -201,6 +201,7 @@
                 <%- attachmentObj = Attachment.set_up_model(attachment) -%>
                 <li>
                   <%= hidden_field_tag("view[metadata[attachments]][][blobId]",   attachment['blobId']) %>
+                  <%= hidden_field_tag("view[metadata[attachments]][][assetId]",   attachment['assetId']) %>
                   <%= hidden_field_tag("view[metadata[attachments]][][filename]", attachment['filename']) %>
                   <%= text_field_tag(  "view[metadata[attachments]][][name]",     attachmentObj.displayName) %>
                   <span class="deleteLinks">
@@ -241,6 +242,9 @@
 <%= render_translations LocalePart.screens.edit_metadata %>
 
 <% content_for :js_footer do %>
+  <script type='text/javascript'>
+    blist.viewId = '<%= @view.id %>'
+  </script>
   <%- unless params[:no_js] == 'true' -%>
     <%= include_javascripts 'dataset-edit-metadata' %>
   <%- end -%>

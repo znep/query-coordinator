@@ -33,7 +33,7 @@
             }
 
             var $uploader = new AjaxUpload($editor.find('.uploadLink'), {
-                action: '/api/assets',
+                action: '/api/views/' + blist.viewId + '/files.txt',
                 autoSubmit: true,
                 responseType: 'json',
                 onSubmit: function (file, extension)
@@ -55,7 +55,7 @@
                         .find('.existingAttachments').show()
                         .find('ul').append(
                             $.tag({ tagName: 'li', contents: [
-                                {tagName: 'input', type: 'hidden', name: 'view[metadata][attachments][][blobId]',   value: response.id},
+                                {tagName: 'input', type: 'hidden', name: 'view[metadata][attachments][][assetId]',   value: response.file},
                                 {tagName: 'input', type: 'hidden', name: 'view[metadata][attachments][][filename]', value: response.nameForOutput},
                                 {tagName: 'input', type: 'text',   name: 'view[metadata][attachments][][name]',     value: response.nameForOutput},
                                  deleteLinkOptions ]}));

@@ -433,7 +433,7 @@ $wizard.wizard({
         messages: {
             "view[name]": $.t('screens.dataset_new.errors.missing_name'),
             "view[attributionLink]": $.t('screens.dataset_new.errors.invalid_url'),
-            'view[esri_src]': $.t('screens.dataset_new.errors.missing_eri_url'),
+            'view[esri_src]': $.t('screens.dataset_new.errors.missing_esri_url'),
             'crossload_url': $.t('screens.dataset_new.errors.invalid_crossload_url')
         },
         errorPlacement: function (label, $el) {

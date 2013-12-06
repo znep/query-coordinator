@@ -86,7 +86,7 @@
 
     <%- if (!@view.data['northWest'].nil?) -%>
 
-    <h2>Spatial Extent</h2>
+    <h2><%= t('screens.edit_metadata.spatial_extent') %></h2>
      <div class="line clearfix">
        <label for="view_northWest_lat"><%= t('screens.edit_metadata.northwest_latitude') %></label>
        <%= text_field_tag 'view[northWest[lat]]', (@view.data['northWest'] || {})['lat'],

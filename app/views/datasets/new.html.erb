@@ -253,7 +253,7 @@
               <div class="line clearfix">
                 <label for="view_licenseId"><%= t("#{prefix}.licensing") %></label>
                 <%= select_tag("view[licenseId]", license_select_options('')) %>
-                <div class="additionalHelp"><%= t("#{prefix}.licensing_help") %></div>
+                <div class="additionalHelp"><%= t("#{prefix}.license_help") %></div>
               </div>
 
               <div class="line creativeCommonsLine clearfix">
@@ -388,4 +388,5 @@
 <%= render_translations LocalePart.screens.import_pane %>
 <%= render_translations LocalePart.screens.wizard %>
 <%= render_translations LocalePart.screens.dataset_new.upload_file %>
+<%= render_translations LocalePart.screens.dataset_new.errors %>
 <%= render_translations LocalePart.plugins.fileuploader %>

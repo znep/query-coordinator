@@ -277,6 +277,8 @@ assetNS.loadPartials = function(partialQueue, type, callback)
             url += (url.indexOf('?') >= 0 ? '&' : '?') +
                 $.param({'_': (new Date()).valueOf().toString().slice(0, 9)});
         }
+        if (blist.locale && blist.defaultLocale != blist.locale)
+        { url = '/' + blist.locale + url; }
 
         // Load it via Ajax and insert them all once they're ready
         $.socrataServer.makeRequest({url: url, pageCache: true, dataType: 'text', contentType: 'text/html',

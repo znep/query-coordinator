@@ -891,7 +891,7 @@ pt:
       permissions:
         title: Permissões do Relatório
       settings:
-        page_title: Título do Relatório
+        page_title: Título
         title: Definições do Relatório
     template:
       grid_flow_layout: Fluxo de Disposição em Grelha

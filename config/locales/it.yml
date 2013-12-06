@@ -889,7 +889,7 @@ it:
       permissions:
         title: Permessi RIportati
       settings:
-        page_title: Rapporto del Titolo
+        page_title: Titolo
         title: Settaggi del Rapporto
     template:
       grid_flow_layout: Grid Layout

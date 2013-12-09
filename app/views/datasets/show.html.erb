@@ -397,6 +397,6 @@
 
   <%= include_javascripts 'dataset-show' %>
   <script type="text/javascript">
-    moment && moment.lang(blist.locale);
+    if ((typeof moment) !== "undefined") { moment.lang(blist.locale); }
   </script>
 <% end %>

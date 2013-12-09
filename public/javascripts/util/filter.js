@@ -269,8 +269,11 @@ blist.namespace.fetch('blist.filter');
         }
         else
         {
-            result.children = [ { type: 'column', columnFieldName: fc.columnFieldName },
-                { type: 'literal', value: fc.value } ];
+            result.children = [ { type: 'column', columnFieldName: fc.columnFieldName } ];
+            // Can't have just a literal node with no value.
+            // In particular, this is the case for the _BLANK operators
+            if (!_.isUndefined(fc.value))
+            { result.children.push({ type: 'literal', value: fc.value }); }
             if (!$.isBlank(fc.subColumn))
             { result.children[0].value = fc.subColumn; }
         }

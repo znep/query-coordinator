@@ -767,14 +767,14 @@
                 if (_.any(condition.children || [], function(child)
                             { return child.value == 'IS_BLANK'; }))
                 {
-                    addFilterLine({ item: renderType.filterConditions.details.IS_BLANK
+                    addFilterLine({ item: column.renderType.filterConditions.details.IS_BLANK
                         .text.replace(/^is\s/, ''), data: 'IS_BLANK' }, column, condition, $filter,
                         filterUniqueId, { textOnly: true, selected: true });
                 }
                 else if (_.any(condition.children || [], function(child)
                             { return child.value == 'IS_NOT_BLANK'; }))
                 {
-                    addFilterLine({ item: renderType.filterConditions.details.IS_NOT_BLANK
+                    addFilterLine({ item: column.renderType.filterConditions.details.IS_NOT_BLANK
                         .text.replace(/^is\s/, ''), data: 'IS_NOT_BLANK' }, column, condition, $filter,
                         filterUniqueId, { textOnly: true, selected: true });
                 }

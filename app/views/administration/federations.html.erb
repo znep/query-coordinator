@@ -1,7 +1,8 @@
+<%- prefix = 'screens.admin.federation' %>
 <% content_for :head do %>
   <%= rendered_stylesheet_tag 'administration-screen' %>
   <%= rendered_stylesheet_tag 'administration-federation' %>
-  <title>Open Data Federation | <%= CurrentDomain.strings.site_title %></title>
+  <title><%= t("#{prefix}.title") %> | <%= CurrentDomain.strings.site_title %></title>
 <% end %>
 
 <%= render :partial => 'left_nav' %>
@@ -9,43 +10,43 @@
 <div id="federationContent" class="contentBox withLeftNavigation">
   <div class="adminHeader federation">
     <span class="icon"></span>
-    <h1>Open Data Federation</h1>
+    <h1><%= t("#{prefix}.title") %></h1>
   </div>
 
   <%= display_standard_flashes %>
 
   <div class="searchFields">
     <form class="search domainsSearch" method="get">
-      <label for="domain">Search for Domains to Publish to</label>
+      <label for="domain"><%= t("#{prefix}.search_prompt") %></label>
       <input type="text" class="textPrompt searchField" name="domain" id="domain"
-        title="Search for Domains to Publish to"<%= raw(" value=\"#{h @search_domain}\"") unless @search_domain.nil? %> />
-      <input type="submit" class="submit" alt="search" value="Search" />
+        title="<%= t("#{prefix}.search_prompt") %>"<%= raw(" value=\"#{h @search_domain}\"") unless @search_domain.nil? %> />
+      <input type="submit" class="submit" alt="<%= t("#{prefix}.search") %>" value="<%= t("#{prefix}.search") %>" />
     </form>
 
     <%# We don't have a UI for federating individual datasets yet, so this is less than helpful %>
     <%- if false -%>
       <form class="search datasetsSearch" method="get">
-        <label for="dataset">Search for Published Datasets</label>
+        <label for="dataset"><%= t("#{prefix}.search_pub_datasets") %></label>
         <input type="text" class="textPrompt searchField" name="dataset" id="dataset"
-         title="Search for Published Datasets"<%= raw(" value=\"#{h @search_dataset}\"") unless @search_dataset.nil? %> />
-        <input type="submit" class="submit" alt="search" value="Search" />
+         title="<%= t("#{prefix}.search_pub_datasets") %>"<%= raw(" value=\"#{h @search_dataset}\"") unless @search_dataset.nil? %> />
+        <input type="submit" class="submit" alt="<%= t("#{prefix}.search") %>" value="<%= t("#{prefix}.search") %>" />
       </form>
     <%- end -%>
   </div>
 
   <%- if (!@search_domain.blank?) && @domains.blank? -%>
-    <p class="noAvailableTargets">No available domains match <%= @search_domain %>.</p>
+    <p class="noAvailableTargets"><%= t("#{prefix}.no_domains", :name => @search_domain) %></p>
   <%- end -%>
 
   <%- unless @domains.blank? -%>
    <div class="availableTargetDomains">
-     <p class="explanation">The following is a list of domains you may begin data federation with. Once you click publish, an administrator from the target domain must accept your request.</p>
+     <p class="explanation"><%= t("#{prefix}.list_domains") %></p>
      <%- @domains.each do |d| -%>
       <%= form_tag({:action => 'create_federation'}, {:method => 'post', :class => 'newFederationForm'}) do %>
         <label class="domain"><%= d.cname %></label>
         <%= hidden_field_tag('new_federation[target_domain]', d.cname) %>
-        <label for="search_boost" class="boost" >Search Boost:</label><%= text_field_tag('new_federation[search_boost]', '0.8', :title => 'Range from 1 to 0.  Higher value makes datasets more likely to show up first.') %>
-        <%= submit_tag 'Publish', :class => 'button' %>
+        <label for="search_boost" class="boost" ><%= t("#{prefix}.search_boost") %>:</label><%= text_field_tag('new_federation[search_boost]', '0.8', :title => t("#{prefix}.search_boost_explain")) %>
+        <%= submit_tag t("#{prefix}.publish"), :class => 'button' %>
       <% end %>
      <%- end -%>
    </div>
@@ -65,13 +66,13 @@
         </colgroup>
         <thead>
           <tr>
-            <th class="source" scope="col"><div>Source Domain</div><span class="icon"></span></th>
-            <th class="target" scope="col"><div>Target Domain</div><span class="icon"></span></th>
-            <th class="dataset" scope="col"><div>Dataset</div><span class="icon"></span></th>
-            <th class="boost" scope="col"><div>Search Boost</div><span class="icon"></span></th>
-            <th class="acceptedBy" scope="col"><div>Accepted By</div><span class="icon"></span></th>
-            <th class="status" scope="col"><div>Status</div><span class="icon"></span></th>
-            <th class="delete" scope="col"><div>Terminate</div><span class="icon"></span></th>
+            <th class="source" scope="col"><div><%= t("#{prefix}.source_domain") %></div><span class="icon"></span></th>
+            <th class="target" scope="col"><div><%= t("#{prefix}.target_domain") %></div><span class="icon"></span></th>
+            <th class="dataset" scope="col"><div><%= t("#{prefix}.dataset") %></div><span class="icon"></span></th>
+            <th class="boost" scope="col"><div><%= t("#{prefix}.search_boost") %></div><span class="icon"></span></th>
+            <th class="acceptedBy" scope="col"><div><%= t("#{prefix}.accepted_by") %></div><span class="icon"></span></th>
+            <th class="status" scope="col"><div><%= t("#{prefix}.status") %></div><span class="icon"></span></th>
+            <th class="delete" scope="col"><div><%= t("#{prefix}.terminate") %></div><span class="icon"></span></th>
           </tr>
         </thead>
         <tbody>
@@ -85,7 +86,7 @@
               </td>
               <td class="dataset">
                 <%- if f.lensId.nil? %>
-                  <em>(all)</em>
+                  <em><%= t("#{prefix}.all") %></em>
                 <%- else -%>
                   <span class="cellInner"><%= f.lensName %></span>
                 <%- end -%>
@@ -101,18 +102,18 @@
               <td class="status">
                 <span class="loading"></span>
                 <%- accepted = f.acceptedUserId.present? -%>
-                <span class="cellInner"><%= accepted ? 'Accepted' : 'Pending' %></span>
+                <span class="cellInner"><%= t("#{prefix}.#{accepted ? 'accepted' : 'pending'}") %></span>
                 <%- if f.targetDomainCName == CurrentDomain.cname %>
                   <div class="acceptRejectButtons">
-                    <%= form_button({:action => :accept_federation, :id => f.id}, 'Accept',
+                    <%= form_button({:action => :accept_federation, :id => f.id}, t("#{prefix}.accept"),
                          {}, {:class => 'button' + (accepted ? ' disabled' : '')}) %>
-                    <%= form_button({:action => :reject_federation, :id => f.id}, 'Reject',
+                    <%= form_button({:action => :reject_federation, :id => f.id}, t("#{prefix}.reject"),
                          {}, {:class => 'button' + (accepted ? '' : ' disabled')}) %>
                   </div>
                 <%- end -%>
               </td>
               <td class="delete">
-                <%= form_button({:action => :delete_federation, :id => f.id}, 'Terminate',
+                <%= form_button({:action => :delete_federation, :id => f.id}, t("#{prefix}.terminate"),
                      {:method => :delete}) %>
               </td>
             </tr>
@@ -124,9 +125,9 @@
   <%- else -%>
     <p class="noFederations">
       <%- if @search_dataset.present? -%>
-        No published datasets match your search criteria.
+        <%= t("#{prefix}.no_pub_datasets") %>
       <%- else -%>
-        No federations exist for this domain yet.
+        <%= t("#{prefix}.no_federations") %>
       <%- end -%>
     </p>
   <%- end -%>

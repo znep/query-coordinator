@@ -1030,6 +1030,30 @@ en:
       view_statistics: View Statistics
       visits: Visits
       your: Your Rating
+    admin:
+      federation:
+        title: Open Data Federation
+        search_prompt: Search for Domains to Publish to
+        search_pub_datasets: Search for Published Datasets
+        no_domains: No available domains match %{name}.
+        search: Search
+        list_domains: The following is a list of domains you may begin data federation with. Once you click publish, an administrator from the target domain must accept your request.
+        search_boost: Search Boost
+        search_boost_explain: Range from 1 to 0.  Higher value makes datasets more likely to show up first.
+        publish: Publish
+        source_domain: Source Domain
+        target_domain: Target Domain
+        dataset: Dataset
+        accepted_by: Accepted By
+        status: Status
+        terminate: Terminate
+        all: (all)
+        accepted: Accepted
+        pending: Pending
+        accept: Accept
+        reject: Reject
+        no_pub_datasets: No published datasets match your search criteria.
+        no_federations: No federations exist for this domain yet.
     dataset_edit:
       append: Append
       append_and_replace: Append and Replace data

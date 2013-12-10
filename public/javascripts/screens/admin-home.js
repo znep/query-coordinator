@@ -42,15 +42,24 @@ $(function()
             return timeStampify('/api/views/' + viewId + '/snapshots/page?size=thumb', timestamp);
         };
 
-        var generateFileDataUrl = function(fileSha, timestamp)
+        var generateFileDataUrl = function(fileSha, viewId, timestamp)
         {
-            return timeStampify('/api/assets/' + fileSha + '?s=featured', timestamp);
+            url = null;
+            if (fileSha && fileSha.startsWith('fileId:'))
+            {
+                url = '/api/views/'+viewId+'/files/'+(fileSha.split(':')[1])+'?s=featured';
+            }
+            else
+            {
+                url = '/api/assets/' + fileSha + '?s=featured';
+            }
+            return timeStampify(url, timestamp);
         };
 
         var pureFileDataUrl = function(context)
         {
             var imageSha = context.item.assetId;
-            if (!$.isBlank(imageSha)) { return generateFileDataUrl(imageSha); }
+            if (!$.isBlank(imageSha)) { return generateFileDataUrl(imageSha, context.item.viewId); }
             return '';
         };
 

@@ -305,12 +305,14 @@ protected
     # Don't get rows in search, just in JS
     browse_options[:row_count] = browse_options[:search_options].delete(:row_count)
 
-    if browse_options[:view_results].nil?
+    if browse_options[:view_results].nil? || browse_options[:view_results].empty?
+      Rails.logger.info("IT WAS AN EMPTY ARRAY") unless browse_options[:view_results].nil?
       begin
         view_results = Clytemnestra.search_views(browse_options[:search_options])
         browse_options[:view_count] = view_results.count
         browse_options[:view_results] = view_results.results
       rescue CoreServer::TimeoutError
+        Rails.logger.warn("Timeout on Clytemnestra request for #{browse_options.to_json}")
         browse_options[:view_request_timed_out] = true
         browse_options[:view_results] = []
       end

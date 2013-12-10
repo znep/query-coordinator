@@ -506,7 +506,7 @@ class View < Model
   end
 
   def self.notify_all_of_changes(id)
-    path = "/#{self.name.pluralize.downcase}/#{id}.json?" + 
+    path = "/#{self.name.pluralize.downcase}/#{id}.json?" +
         {"method" => "notifyUsers"}.to_param
     parse(CoreServer::Base.connection.create_request(path))
   end
@@ -558,7 +558,12 @@ class View < Model
       when 'thumbnail' then
         "/api/views/#{featured_view['viewId']}/snapshots/page?size=thumb"
       when 'custom' then
-        "/api/assets/#{featured_view['assetId']}?s=featured"
+        assetId = featured_view['assetId']
+        if assetId.start_with?('fileId:')
+          return "/api/views/#{featured_view['viewId']}/files/#{assetId.split(':')[1]}?s=feaured"
+        else
+          return "/api/assets/#{assetId}?s=featured"
+        end
     end
   end
 
@@ -1153,7 +1158,15 @@ class View < Model
   end
 
   def custom_image(size = 'medium')
-    return "/assets/#{self.iconUrl}?s=#{size}" if self.iconUrl
+    if self.iconUrl
+      if self.iconUrl.start_with?('fileId:')
+        return "/api/views/#{self.id}/files/#{self.iconUrl.split(':')[1]}?size=#{size}"
+      else
+        return "/assets/#{self.iconUrl}?s=#{size}"
+      end
+    else
+      return nil
+    end
   end
 
   def preferred_image(port = 80)

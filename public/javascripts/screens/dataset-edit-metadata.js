@@ -248,10 +248,17 @@
         $image: $('.customImageContainer'),
         success: function($container, $image, response) {
             $image.closest('.line').removeClass('hide');
-            $('.iconUrlField').val(response.id);
+            $('.iconUrlField').val('fileId:' + response.file);
         },
         urlProcessor: function(response) {
-            return '/api/assets/' + response.id + '?s=medium';
+            if (!_.isEmpty(response.file))
+            {
+                return '/api/views/'+ blist.viewId + '/files/' + response.file+'?size=medium';
+            }
+            else
+            {
+                return '/api/assets/' + response.id + '?s=medium';
+            }
         }
     });
     $('.customImage #delete_custom_image').uniform();

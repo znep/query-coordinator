@@ -168,7 +168,7 @@
       <div class="line clearfix">
         <label><%= t('screens.edit_metadata.upload_image') %></label>
         <%= file_field_tag('custom_image', :accept => '(jpe?g|gif|png)',
-                           'data-endpoint' => '/assets',
+                           'data-endpoint' => "/api/views/#{@view.id}/files.txt",
                            :class => 'customDatasetImageSelect') %>
         <span class="uploadIndicator throbber"></span>
         <div class="additionalHelp"><%= t('screens.edit_metadata.upload_help') %></div>

@@ -18,6 +18,24 @@ Dataset.chart.numericTypes = ['number', 'percent', 'money'];
 Dataset.chart.dateTypes = ['calendar_date', 'date'];
 Dataset.chart.textAndDateTypes = Dataset.chart.textualTypes.concat(Dataset.chart.dateTypes);
 
+var lineTranslate = function(view, displayFormat)
+{
+    var newDF = $.extend(true, {}, displayFormat);
+    newDF.fixedColumns = _.reject(displayFormat.fixedColumns, function(fc)
+        {
+            var c = view.columnForIdentifier(fc);
+            if ($.isBlank(c)) { return true; }
+            return !_.include(Dataset.chart.textualTypes, c.renderTypeName);
+        });
+    newDF.valueColumns = _.reject(displayFormat.valueColumns, function(dc)
+        {
+            var c = view.columnForIdentifier(dc.fieldName || dc.tableColumnId);
+            if ($.isBlank(c)) { return true; }
+            return !_.include(Dataset.chart.numericTypes, c.renderTypeName);
+        });
+    return newDF;
+};
+
 Dataset.chart.types = {
     area: {value: 'area', text: $.t('core.chart_types.area'),
         requiredColumns: [Dataset.chart.textualTypes, Dataset.chart.numericTypes],
@@ -27,7 +45,7 @@ Dataset.chart.types = {
         displayLimit: { points: 40 }},
     bubble: {value: 'bubble', text: $.t('core.chart_types.bubble'),
         requiredColumns: [Dataset.chart.numericTypes],
-        displayLimit: { labels: 50, points: 300 }},
+        displayLimit: { labels: 50, points: 300 }, translateFormat: lineTranslate },
     column: {value: 'column', text: $.t('core.chart_types.column'),
         requiredColumns: [Dataset.chart.textAndDateTypes, Dataset.chart.numericTypes],
         displayLimit: { labels: 50, points: 100 }},
@@ -36,7 +54,7 @@ Dataset.chart.types = {
         displayLimit: { points: 30 }, renderOther: true},
     line: {value: 'line', text: $.t('core.chart_types.line'),
         requiredColumns: [Dataset.chart.numericTypes],
-        displayLimit: { labels: 50, points: 300 }},
+        displayLimit: { labels: 50, points: 300 }, translateFormat: lineTranslate },
     pie: {value: 'pie', text: $.t('core.chart_types.pie'),
         requiredColumns: [Dataset.chart.textualTypes, Dataset.chart.numericTypes],
         displayLimit: { points: 30 }, renderOther: true},

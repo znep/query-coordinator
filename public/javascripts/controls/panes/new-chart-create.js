@@ -189,8 +189,19 @@
                 if ($input.data("origname") == "displayFormat.chartType")
                 {
                     var newValues = cpObj._getFormValues();
-                    var isSameChart = !isBrandNewChart && originalChartType == newValues.displayFormat.chartType;
-                    if (cpObj.validateForm() || !isSameChart) {
+                    var newChartType = newValues.displayFormat.chartType;
+                    var isSameChart = !isBrandNewChart && originalChartType == newChartType;
+                    if (cpObj.validateForm() || !isSameChart)
+                    {
+                        // Need to run the config through chart translation in case
+                        // things need to change/update
+                        if (_.isFunction(Dataset.chart.types[newChartType].translateFormat))
+                        {
+                            newValues.displayFormat =
+                                Dataset.chart.types[newChartType].translateFormat(cpObj._view,
+                                    newValues.displayFormat);
+                        }
+
                         // For a new chart type selection, push the change through even if we don't validate.
                         // The reset will take care of sanitization itself.
                         cpObj._view.update(

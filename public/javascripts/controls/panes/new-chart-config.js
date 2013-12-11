@@ -212,56 +212,55 @@
     /*** Helpers ***/
 
    var getDisabledMessage = function(chartConfig)
-    {
-            var chartName = chartConfig.text.toLowerCase();
+   {
+       var chartName = chartConfig.text.toLowerCase();
 
-            var newTypes = [];
-            var copy = chartConfig.requiredColumns.slice();
-            while (copy.length > 0)
-            {
-                var t = copy.shift();
-                var oldL = copy.length;
-                copy = _.without(copy, t);
-                newTypes.push({count: (oldL - copy.length) + 1, types: t});
-            }
+       var newTypes = [];
+       var copy = chartConfig.requiredColumns.slice();
+       while (copy.length > 0)
+       {
+           var t = copy.shift();
+           var oldL = copy.length;
+           copy = _.without(copy, t);
+           newTypes.push({count: (oldL - copy.length) + 1, types: t});
+       }
 
-            var transform = function(title)
-            {
-                if (title === 'Date & Time (with timezone)')
-                { return 'date_time_timezone'; }
-                return title.replace(/\(.*\)/, '').replace(' & ', '_')
-                            .replace(' ', '_').toLowerCase();
-            };
+       var transform = function(title)
+       {
+           if (title === 'Date & Time (with timezone)')
+           { return 'date_time_timezone'; }
+           return title.replace(/\(.*\)/, '').replace(' & ', '_')
+                       .replace(' ', '_').toLowerCase();
+       };
 
-            var result = [];
-            _.each(newTypes, function(rc) {
-                var count = rc.count
-                var and;
-                if(rc==newTypes[0]){
-                    and='';
-                    result.push({tagName: 'span', 'class': 'title', contents:
-                        $.t('screens.ds.grid_sidebar.chart.validation.chart_requires', {chart_type : chartName.capitalize()})+
-                        $.t('screens.ds.grid_sidebar.chart.validation.chart_requires2', {and: and, count: count})
-                    });
-                }
-                else{
-                    and = 'and';
-                    result.push({tagName: 'span', 'class': 'title', contents:
-                        $.t('screens.ds.grid_sidebar.chart.validation.chart_requires2', {and: and, count: count})
-                    });
-                }
-                _.each(rc.types, function(t){
-                    result.push({tagName: 'div', 'class': blist.datatypes[t].name+' flyoutIcon',
-                       contents: [{tagName: 'span', 'class': 'blist-th-icon'},
-                                  {tagName: 'span', contents: $.t('screens.ds.grid_sidebar.base.datatypes.'
-                                    + transform(blist.datatypes[t].title).toLowerCase()).capitalize()} ]
-                    });
-                })
-            })
+       var result = [];
+       _.each(newTypes, function(rc) {
+           var count = rc.count
+           var and;
+           if(rc==newTypes[0]){
+               and='';
+               result.push({tagName: 'span', 'class': 'title', contents:
+                   $.t('screens.ds.grid_sidebar.chart.validation.chart_requires', {chart_type : chartName.capitalize()})+
+                   $.t('screens.ds.grid_sidebar.chart.validation.chart_requires2', {and: and, count: count})
+               });
+           }
+           else{
+               and = 'and';
+               result.push({tagName: 'span', 'class': 'title', contents:
+                   $.t('screens.ds.grid_sidebar.chart.validation.chart_requires2', {and: and, count: count})
+               });
+           }
+           _.each(rc.types, function(t){
+               result.push({tagName: 'div', 'class': blist.datatypes[t].name+' flyoutIcon',
+                  contents: [{tagName: 'span', 'class': 'blist-th-icon'},
+                             {tagName: 'span', contents: $.t('screens.ds.grid_sidebar.base.datatypes.'
+                               + transform(blist.datatypes[t].title).toLowerCase()).capitalize()} ]
+               });
+           })
+       })
 
-            return $.tag(result);
-
-    };
+       return $.tag(result, true);
+   };
 
     var chartTypeAvailable = function(chartConfig, options)
     {
@@ -286,7 +285,7 @@
 
         return [{field: 'displayFormat.chartType', value: chart.value},
                {disable: disable, func: function() { return chartTypeAvailable(chart, options); },
-                disabledMessage: function(){getDisabledMessage(chart)}},
+                disabledMessage: function(){ return getDisabledMessage(chart) }},
                {warn: disable, func: function() { return datasetTooLarge(chart, options); }}];
     };
 
@@ -722,29 +721,31 @@
 
 
     /*** Main config ***/
-    chartConfigNS.configChartSelector = function(options) {
+    chartConfigNS.configChartSelector = function(options)
+    {
         //getting rid of "Chart" at the end of the charttype string
         var chartTypesCopy = $.extend(true, {}, Dataset.chart.types);
         for (var type in chartTypesCopy)
         {
-            chartTypesCopy[type].text = $.t('core.chart_types_short.'+chartTypesCopy[type].value);
+            chartTypesCopy[type].text = $.t('core.chart_types_short.' + chartTypesCopy[type].value);
         }
 
         //Order the chart types in a custom order
         var chartTypesSorted = {};
-        for (var i=0; i<typeOrder.length; i++)
+        for (var i = 0; i < typeOrder.length; i++)
         {
 
             chartTypesSorted[typeOrder[i]] = chartTypesCopy[typeOrder[i]];
             var currentType = chartTypesSorted[typeOrder[i]];
 
             //Disable chart types not available with current dataset
-            if(!chartTypeAvailable(currentType, options)){
+            if (!chartTypeAvailable(currentType, options))
+            {
                 currentType.lineClass = 'unavailable';
                 currentType.disabled = 'disabled';
             }
             //add custom message to the different chart types
-            currentType.prompt = getDisabledMessage(currentType);
+            currentType.prompt = $.htmlEscape(getDisabledMessage(currentType));
         }
 
         var result = [{
@@ -753,7 +754,8 @@
                 initShow: true,
                 validateCollapsed: true,
                 customClasses: 'sectionSubheading chartTypeSelection',
-                fields: [{
+                fields: [
+                    {
                         text: $.t('screens.ds.grid_sidebar.chart.setup.type'),
                         name: 'displayFormat.chartType',
                         type: 'radioGroup',
@@ -767,7 +769,7 @@
                 ]
             }];
         return result;
-    }
+    };
 
 
     chartConfigNS.newConfigForType = function(type, options)

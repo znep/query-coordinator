@@ -67,14 +67,15 @@
 
 
 
-                    //setup eventing    
+                    //setup eventing
 
                     //Add flyout to unavailable chart types telling which columns are required
-                    var unavailable = cpObj.$dom().find('.unavailable');
-                    for(var i=0; i<unavailable.length; i++){
-                        var type = unavailable[i].className.split(' ')[2];
-                        cpObj.$dom().find('.unavailable.'+type).socrataTip({content: Dataset.chart.types[type].prompt});
-                    };
+                    cpObj.$dom().find('.unavailable').each(function()
+                    {
+                        var $t = $(this);
+                        var tip = $.htmlUnescape($t.find('label input').attr('title'));
+                        $t.socrataTip({content: tip});
+                    });
 
                     //takes in classname <'radioLine' ('unavailable')? type>
                     var setHeader = function(type){

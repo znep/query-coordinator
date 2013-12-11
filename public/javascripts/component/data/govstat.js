@@ -28,6 +28,7 @@ $.component.Component.extend('GovStat', 'none', {
     {
         var cObj = this;
         var app = blist.require('app');
+        app.set('locale', blist.locale);
         objReq.map(function(result)
         {
             if (result instanceof blist.require('janus').store.Request.state.type.Success)

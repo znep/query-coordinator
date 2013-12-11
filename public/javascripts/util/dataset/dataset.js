@@ -3419,7 +3419,7 @@ Dataset.translateFilterCondition = function(fc, ds, simplify)
 
 function translateSubFilter(fc, ds, simplify, isHaving)
 {
-    if (simplify && ($.isBlank(fc) || fc.type != 'operator' || !_.isArray(fc.children) ||
+    if ($.isBlank(fc) || simplify && (fc.type != 'operator' || !_.isArray(fc.children) ||
             fc.children.length == 0))
     { return null; }
 

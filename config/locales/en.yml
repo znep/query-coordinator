@@ -1054,6 +1054,56 @@ en:
         reject: Reject
         no_pub_datasets: No published datasets match your search criteria.
         no_federations: No federations exist for this domain yet.
+        flashes:
+          deleted: Federation successfully deleted
+          accepted: Federation successfully accepted
+          rejected: Federation successfully rejected
+          created: Federation successfully created
+          invalid_domain: 'Could not create data federation: target domain is invalid'
+      metadata:
+        title: Manage Metadata
+        page_title: Manage Dataset Metadata
+        define_custom_fields: Define Custom Fields
+        no_data: No custom dataset fields have been defined for your domain yet. Enter a name below and click 'Create' to begin.
+        metadata_explain1: Custom metadata is broken down into <span class="code">fieldsets</span> and <span class="code">fields</span>. A <span class="code">fieldset</span> is a way to logically and visually group one or more custom <span class="code">fields</span> together.
+        metadata_explain2: Fields can be configured in multiple ways. They can be <span class="code">required</span>, which will be enforced when publishers create new datasets and update existing metadata. They can also be <span class="code">private</span>, meaning that the values entered will not be visible to the public.
+        metadata_explain3: Finally, you can choose to pre-define the options for your <span class="code">fields</span> if you wish to have values chosen from a list rather than entered as free-form text.
+        make_optional: Make Optional
+        make_required: Make Required
+        make_public: Make Public
+        make_private: Make Private
+        up: Up
+        down: Down
+        remove: Remove
+        no_fields_defined: This field set does not have any fields defined yet
+        add_new_field: Add New Field
+        create_new_fieldset: Create a New Field Set
+        enter_a_name: Enter a name
+        create: Create
+        define_categories: Define Dataset Categories
+        category_name: Category Name
+        locales: Locales
+        parent: Parent
+        shown: Shown?
+        yes: Yes
+        no: No
+        add_new_category: Add New Category
+        are_you_sure: Are you sure you want to delete this fieldset and all associated fields?
+        field_name: Field Name
+        allowed_values: Allowed Values
+        flashes:
+          successful_create: Field Set Successfully Created
+          fieldset_name_required: Cannot create field set without a name
+          fieldset_duplicated: Cannot create duplicate field set named '%{name}'
+          successful_remove: Field Set Successfully Removed
+          field_name_required: Cannot create field without a name
+          field_duplicated: You cannot create a duplicate field named '%{name}'
+          field_successful_create: Field Successfully Created
+          no_such_fieldset: No such fieldset exists
+          no_such_field: No such field exists
+          field_successful_save: Successfully saved field
+          field_successful_remove: Field Successfully Removed
+          cannot_move_field: "Cannot move field named'%{name}': not found"
     dataset_edit:
       append: Append
       append_and_replace: Append and Replace data

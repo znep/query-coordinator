@@ -387,7 +387,7 @@ class AdministrationController < ApplicationController
   def delete_federation
     Federation.delete(params[:id])
     respond_to do |format|
-      format.html { redirect_federation("Federation successfully deleted") }
+      format.html { redirect_federation(t('screens.admin.federation.flashes.deleted')) }
       format.data { render :json => { :success => true } }
     end
   end
@@ -395,16 +395,16 @@ class AdministrationController < ApplicationController
   def accept_federation
     Federation.accept(params[:id])
     respond_to do |format|
-      format.html { redirect_federation("Federation successfully accepted") }
-      format.data { render :json => { :success => true, :message => 'Accepted' } }
+      format.html { redirect_federation(t('screens.admin.federation.flashes.accepted')) }
+      format.data { render :json => { :success => true, :message => t('screens.admin.federation.accepted') } }
     end
   end
 
   def reject_federation
     Federation.reject(params[:id])
     respond_to do |format|
-      format.html { redirect_federation("Federation successfully rejected") }
-      format.data { render :json => { :success => true, :message => 'Pending' } }
+      format.html { redirect_federation(t('screens.admin.federation.flashes.rejected')) }
+      format.data { render :json => { :success => true, :message => t('screens.admin.federation.pending')} }
     end
   end
 
@@ -416,7 +416,7 @@ class AdministrationController < ApplicationController
       data.searchBoost = params[:new_federation][:search_boost]
       Federation.create(data)
     rescue CoreServer::ResourceNotFound => e
-      flash[:error] = "Could not create data federation: target domain is invalid"
+      flash[:error] = t('screens.admin.federation.flashes.invalid_domain')
       return(redirect_to :action => :federations)
     rescue CoreServer::CoreServerError => e
       flash[:error] = e.error_message
@@ -424,7 +424,7 @@ class AdministrationController < ApplicationController
     end
 
     respond_to do |format|
-      flash[:notice] = "Federation successfully created"
+      flash[:notice] = t('screens.admin.federation.flashes.created')
       return(redirect_to :action => :federations)
     end
   end
@@ -446,18 +446,18 @@ class AdministrationController < ApplicationController
     field = params[:newFieldsetName]
 
     if field.nil? || field.strip().blank?
-      flash[:error] = "Cannot create field set without a name"
+      flash[:error] = t('screens.admin.metadata.flashes.fieldset_name_required')
       return redirect_to :action => 'metadata'
     end
 
     if metadata.any? { |f| f['name'].downcase == field.downcase }
-      flash[:error] = "Cannot create duplicate field set named '#{field}'"
+      flash[:error] = t('screens.admin.metadata.flashes.fieldset_duplicated', :name => field)
       return redirect_to :action => 'metadata'
     end
 
     metadata << Hashie::Mash.new({ 'name' => field, 'fields' => [] })
 
-    save_metadata(config, metadata, "Field Set Successfully Created")
+    save_metadata(config, metadata, t('screens.admin.metadata.flashes.successful_create'))
   end
 
   def delete_metadata_fieldset
@@ -465,7 +465,7 @@ class AdministrationController < ApplicationController
     metadata = config.properties.fieldsets
     metadata.delete_at(params[:fieldset].to_i)
 
-    save_metadata(config, metadata, "Field Set Successfully Removed")
+    save_metadata(config, metadata, t('screens.admin.metadata.flashes.successful_remove'))
   end
 
   def create_metadata_field
@@ -473,7 +473,7 @@ class AdministrationController < ApplicationController
 
     field_name = params[:newFieldName]
     if (field_name.nil? || field_name.strip().empty?)
-      flash[:error] = "Cannot create a field with no name"
+      flash[:error] = t('screens.admin.metadata.flashes.field_name_required')
       return redirect_to :action => 'metadata'
     end
 
@@ -484,14 +484,14 @@ class AdministrationController < ApplicationController
 
     # No dups
     if fieldset['fields'].any? { |f| f['name'].downcase == field_name.downcase }
-      flash[:error] = "You cannot create a duplicate field named '#{field_name}'"
+      flash[:error] = t('screens.admin.metadata.flashes.field_duplicated', :name => field_name)
       return redirect_to :action => 'metadata'
     end
 
     fieldset['fields'] << Hashie::Mash.new({ 'name' => field_name,
       'required' => false })
 
-    save_metadata(config, metadata, "Field Successfully Created")
+    save_metadata(config, metadata, t('screens.admin.metadata.flashes.field_successful_create'))
   end
 
   def save_metadata_field
@@ -500,12 +500,12 @@ class AdministrationController < ApplicationController
     fieldset = metadata[params[:fieldset].to_i]
 
     if fieldset.blank?
-      return (render json: {error: true, message: 'No such fieldset exists'})
+      return (render json: {error: true, message: t('screens.admin.metadata.flashes.no_such_fieldset')})
     end
 
     field = fieldset.fields.detect{ |f| f['name'].downcase == params[:field].to_s.downcase }
     if field.nil?
-      return (render json: {error: true, message: 'No such field exists'})
+      return (render json: {error: true, message: t('screens.admin.metadata.flashes.no_such_field') })
     end
 
     options = params[:options]
@@ -515,7 +515,7 @@ class AdministrationController < ApplicationController
       field['type'], field['options'] = 'fixed', options
     end
 
-    save_metadata(config, metadata, 'Successfully saved field', true)
+    save_metadata(config, metadata, t('screens.admin.metadata.flashes.field_successful_save'), true)
   end
 
   def delete_metadata_field
@@ -523,7 +523,7 @@ class AdministrationController < ApplicationController
     metadata = config.properties.fieldsets
     metadata[params[:fieldset].to_i].fields.delete_at(params[:index].to_i)
 
-    save_metadata(config, metadata, "Field Successfully Removed")
+    save_metadata(config, metadata, t('screens.admin.metadata.flashes.field_successful_remove'))
   end
 
   def toggle_metadata_option
@@ -553,7 +553,7 @@ class AdministrationController < ApplicationController
     field = fieldset.detect { |f| f['name'] == params[:field] }
 
     if field.nil?
-      flash[:error] = "Cannot move field named '#{params[:field]}': not found"
+      flash[:error] = t('screens.admin.metadata.flashes.cannot_move_field', :name => params[:field])
       respond_to do |format|
         format.html { return redirect_to :action => 'metadata' }
         format.data { return render :json => {:error => true, :error_message => flash[:error]} }

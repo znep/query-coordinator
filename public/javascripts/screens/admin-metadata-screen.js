@@ -1,8 +1,10 @@
 ;$(function()
 {
+    var t = function(str, props) { return $.t('screens.admin.metadata.' + str, props); };
+
     $('.removeFieldsetButton').click(function(event)
     {
-        if (!confirm('Are you sure you want to delete this fieldset and all associated fields?'))
+        if (!confirm(t('are_you_sure')))
         {
             event.preventDefault();
         }
@@ -10,20 +12,20 @@
 
     var buttonMap = {
         'required': {
-            'on': 'Required',
-            'off': 'Optional'
+            'on': 'required',
+            'off': 'optional'
         },
         'private': {
-            'on': 'Private',
-            'off': 'Public'
+            'on': 'private',
+            'off': 'public'
         }
     };
 
     $('.toggleButton').adminButton({
-        callback: function(response, $line, $link)
+        callback: function(response,$line, $link)
         {
             $link
-            .val('Make ' + buttonMap[response.option][response.value ? 'off' : 'on'])
+            .val(t('make_' + buttonMap[response.option][response.value ? 'off' : 'on']))
             .closest('.item')
                 .toggleClass(response.option);
         }

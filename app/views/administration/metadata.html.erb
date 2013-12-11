@@ -1,7 +1,8 @@
+<%- prefix = 'screens.admin.metadata' %>
 <% content_for :head do %>
   <%= rendered_stylesheet_tag 'administration-screen' %>
   <%= rendered_stylesheet_tag 'administration-metadata' %>
-  <title>Manage Metadata | <%= CurrentDomain.strings.site_title %></title>
+  <title><%= t("#{prefix}.title") %> | <%= CurrentDomain.strings.site_title %></title>
 <% end %>
 
 <% content_for :skip_links do %>
@@ -13,7 +14,7 @@
 <div class="contentBox withLeftNavigation metadataScreen">
    <div class="adminHeader floating metadata">
     <span class="icon"></span>
-    <h1>Manage Dataset Metadata</h1>
+    <h1><%= t("#{prefix}.page_title") %></h1>
   </div>
 </div>
 
@@ -21,37 +22,21 @@
   <%= display_standard_flashes %>
 
   <div class="customFields">
-    <h2>Define Custom Fields</h2>
+    <h2><%= t("#{prefix}.define_custom_fields") %></h2>
     <%- if @metadata.blank? -%>
       <div class="noData">
-        No custom dataset fields have been defined for your domain yet.
-        Enter a name below and click 'Create' to begin.
+        <%= t("#{prefix}.no_data") %>
       </div>
     <%- else -%>
       <div class="metadataExplanation">
-        <p>
-          Custom metadata is broken down into <span class="code">fieldsets</span> and
-          <span class="code">fields</span>. A <span class="code">fieldset</span> is a
-          way to logically and visually group one or more custom
-          <span class="code">fields</span> together.
-        </p>
-        <p>
-          Fields can be configured in multiple ways. They can be
-          <span class="code">required</span>, which will be enforced when publishers
-          create new datasets and update existing metadata. They can also be
-          <span class="code">private</span>, meaning that the values entered will
-          not be visible to the public.
-        </p>
-        <p>
-          Finally, you can choose to pre-define the options for your
-          <span class="code">fields</span> if you wish to have values chosen from a
-          list rather than entered as free-form text.
-        </p>
+        <p> <%= t("#{prefix}.metadata_explain1") %> </p>
+        <p> <%= t("#{prefix}.metadata_explain2") %> </p>
+        <p> <%= t("#{prefix}.metadata_explain3") %> </p>
       </div>
       <%- @metadata.each_with_index do |fieldset, fs_index| -%>
         <%# TODO: Don't skip these %>
         <%- next if fieldset.hidden -%>
-        <%= form_button({ :action => 'delete_metadata_fieldset', :fieldset => fs_index }, 'Remove', 
+        <%= form_button({ :action => 'delete_metadata_fieldset', :fieldset => fs_index }, t("#{prefix}.remove"), 
              {:method => :delete}, {:class => 'button removeFieldsetButton remove'}) %>
         <h3 class="fieldsetTitle"><%= fieldset['name'] %></h3>
         <div class="gridListWrapper">
@@ -65,8 +50,8 @@
               <thead>
                 <tr>
                   <th class="required" scope="col"><div>&nbsp;</div></th>
-                  <th class="name" scope="col"><div>Field Name</div><span class="icon"></span></th>
-                  <th class="options" scope="col"><div>Allowed Values</div><span class="icon"></span></th>
+                  <th class="name" scope="col"><div><%= t("#{prefix}.field_name") %></div><span class="icon"></span></th>
+                  <th class="options" scope="col"><div><%= t("#{prefix}.allowed_values") %></div><span class="icon"></span></th>
                   <th class="actions" scope="col"><div>&nbsp;</div><span class="icon"></span></th>
                 </tr>
               </thead>
@@ -113,31 +98,31 @@
                         </ul>
                         <div class="errorText"></div>
                         <div class="actions">
-                          <a href="#Save" class="button saveButton">Save</a>
+                          <a href="#Save" class="button saveButton"><%= t('core.dialogs.save') %></a>
                         </div>
                       </td>
                       <td class="actions">
                         <span class="loading"></span>
                         <%= form_button({ :action => 'toggle_metadata_option', :fieldset => fs_index,
                                          :index => index, :option => 'required'},
-                                        'Make ' + (required ? 'Optional' : 'Required'),
+                                        t("#{prefix}.make_#{required ? 'optional' : 'required'}"),
                                        {:method => :put}, {:class => 'button toggleRequired toggleButton'}) %>
                         <%= form_button({ :action => 'toggle_metadata_option', :fieldset => fs_index,
                                          :index => index, :option => 'private'},
-                                        'Make ' + (privstatus ? 'Public' : 'Private'),
+                                        t("#{prefix}.make_#{privstatus ? 'public' : 'private'}"),
                                        {:method => :put}, {:class => 'button togglePrivate toggleButton'}) %>
                         <%= form_button({ :action => 'move_metadata_field', :fieldset => fs_index,
                                          :index => index, :field => field.name, :direction => 'up'},
-                                         'Up', {:method => :put},
+                                         t("#{prefix}.up"), {:method => :put},
                                          {:class => 'button moveButton upButton' +
                                           ((index == 0) ? ' disabled' : '') }) %>
                         <%= form_button({ :action => 'move_metadata_field', :fieldset => fs_index,
                                          :index => index, :field => field.name, :direction => 'down'},
-                                         'Down', {:method => :put},
+                                         t("#{prefix}.down"), {:method => :put},
                                          {:class => 'button moveButton downButton' +
                                           ((index == fieldset['fields'].length-1) ? ' disabled' : '')}) %>
                         <%= form_button({ :action => 'delete_metadata_field', :fieldset => fs_index,
-                                         :index => index}, 'Remove', {:method => :delete},
+                                         :index => index}, t("#{prefix}.remove"), {:method => :delete},
                                        {:class => 'button removeField remove'}) %>
                       </td>
                     </tr>
@@ -146,7 +131,7 @@
                   <tr>
                     <td colspan="4">
                       <div class="flash notice">
-                        This field set does not have any fields defined yet
+                        <%= t("#{prefix}.no_fields_defined") %>
                       </div>
                     </td>
                   </tr>
@@ -161,7 +146,7 @@
                     </td>
                     <td class="options"></td>
                     <td class="actions">
-                      <input class="button newFieldButton" type="submit" value="Add New Field" />
+                      <input class="button newFieldButton" type="submit" value="<%= t("#{prefix}.add_new_field") %>" />
                     </td>
                   </form>
                 </tr>
@@ -171,10 +156,10 @@
       <%- end -%>
     <%- end -%>
     <div class="newFieldsetArea">
-      <h2>Create a New Field Set</h2>
+      <h2><%= t("#{prefix}.create_new_fieldset") %></h2>
       <%= form_tag({ :action => 'create_metadata_fieldset' }, { :class => 'newFieldsetForm' }) %>
-        <input type="text" name="newFieldsetName" class="newFieldsetName" title="Enter a name"/>
-        <input class="button newFieldsetButton" type="submit" value="Create" />
+        <input type="text" name="newFieldsetName" class="newFieldsetName" title="<%= t("#{prefix}.enter_a_name") %>"/>
+        <input class="button newFieldsetButton" type="submit" value="<%= t("#{prefix}.create") %>" />
       </form>
     </div>
   </div>
@@ -182,7 +167,7 @@
 
 <div class="contentBox withLeftNavigation metadataScreen">
   <div class="categories">
-    <h2>Define Dataset Categories</h2>
+    <h2><%= t("#{prefix}.define_categories") %></h2>
 
     <div class="gridListWrapper">
       <table class="gridList categoriesTable" cellspacing="0">
@@ -198,12 +183,12 @@
         </colgroup>
         <thead>
           <tr>
-            <th class="name"><div>Category Name</div><span class="icon"></span></th>
+            <th class="name"><div><%= t("#{prefix}.category_name") %></div><span class="icon"></span></th>
             <%- if @locales.length > 1 -%>
-              <th class="locales"><div>Locales</div><span class="icon"></span></th>
+              <th class="locales"><div><%= t("#{prefix}.locales") %></div><span class="icon"></span></th>
             <%- end -%>
-            <th class="parent"><div>Parent</div><span class="icon"></span></th>
-            <th class="shown"><div>Shown?</div><span class="icon"></span></th>
+            <th class="parent"><div><%= t("#{prefix}.parent") %></div><span class="icon"></span></th>
+            <th class="shown"><div><%= t("#{prefix}.shown") %></div><span class="icon"></span></th>
             <th class="actions"><div>&nbsp;</div><span class="icon"></span></th>
             <th class="deleteAction"><div>&nbsp;</div><span class="icon"></span></th>
           </tr>
@@ -246,16 +231,16 @@
               <td class="shown">
                 <span class="cellInner">
                   <%- if value.kind_of? Hashie::Mash -%>
-                    <%= value['enabled'] ? "Yes" : "No" %>
+                    <%= value['enabled'] ? t("#{prefix}.yes") : t("#{prefix}.no") %>
                   <%- end -%>
                 </span>
               </td>
               <td class="actions">
-                <input class="button saveCategoryButton" type="submit" value="Save" />
+                <input class="button saveCategoryButton" type="submit" value="<%= t('core.dialogs.save') %>" />
               </td>
               </form>
               <td class="deleteAction">
-                <%= form_button({ :action => 'delete_category', :category => category }, 'Remove',
+                <%= form_button({ :action => 'delete_category', :category => category }, t("#{prefix}.remove"),
                      {:method => :delete}, {:class => 'button removeField remove'}) %>
               </td>
             </tr>
@@ -286,7 +271,7 @@
                 <%= check_box_tag("new_category_displayed", 1, true) %>
               </td>
               <td class="actions">
-                <input class="button newCategoryButton" type="submit" value="Add New Category" />
+                <input class="button newCategoryButton" type="submit" value="<%= t("#{prefix}.add_new_category") %>" />
               </td>
             </form>
           </tr>
@@ -301,3 +286,4 @@
     <%= include_javascripts 'admin-metadata' %>
   <%- end -%>
 <% end %>
+<%= render_translations LocalePart.screens.admin.metadata %>

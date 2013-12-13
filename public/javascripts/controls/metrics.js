@@ -444,9 +444,9 @@
         // means that if the date difference is greater than 4 days,
         // hourly is out of the question and we must slice 'Daily'
         rolloverDays: [
-            {slice: $.t('screens.stats.hourly'), days: 4},
-            {slice: $.t('screens.stats.daily'), days: 64},
-            {slice: $.t('screens.stats.weekly'), days: 128}
+            {slice: 'Hourly', days: 4},
+            {slice: 'Daily', days: 64},
+            {slice: 'Weekly', days: 128}
         ],
         largestSlice: $.t('screens.stats.monthly'),
         xOffset: 10,

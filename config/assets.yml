@@ -504,6 +504,10 @@ javascripts:
     - public/javascripts/plugins/daterangepicker.jquery.js
     - public/javascripts/plugins/jquery.tablesorter.js
     - public/javascripts/plugins/highcharts.src.js
+    - public/javascripts/plugins/vis/raphael.js
+    - public/javascripts/plugins/vis/d34raphael.js
+    - public/javascripts/plugins/vis/ie8compat.js
+    - public/javascripts/plugins/moment.min.js
     - public/javascripts/controls/charts/metric-charts.js
     - public/javascripts/controls/metrics-shared.js
     - public/javascripts/controls/metrics.js

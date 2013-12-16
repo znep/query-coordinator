@@ -601,7 +601,7 @@ $chartHeight: 210px
 
     .nowMarker
       background-color: #ababab
-      z-index: 1
+      z-index: 2
       font-size: 1.4em
       bottom: 4px
 
@@ -823,6 +823,9 @@ $chartHeight: 210px
       .chartArea, .content-wrapper, svg, .meter
         height: 160px
 
+      .gaugeBody
+        height: 140px
+
       .meter
         width: 2px
 
@@ -836,8 +839,27 @@ $chartHeight: 210px
       .measurePull, .measureChart
         display: block
 
+      .labelPart
+        display: none
+
     &.collapsed
       margin-bottom: 0
+
+      // NOW_TIP_HACK
+      .nowTip
+        @include opacity(0)
+
+      .redArea, .yellowArea, .greenArea
+        fill-opacity: 0
+
+      .nowMarker
+        @include opacity(0)
+
+      .meter
+        @include opacity(0)
+
+      .r2d3Chart
+        top: -$chartHeight !important
 
       .wrapper
         padding-bottom: 1.5em
@@ -849,7 +871,7 @@ $chartHeight: 210px
       .yTick
         visibility: hidden
 
-      .projectionLineShadow, .projectionLine, .burndownLine
+      .projectionLineShadow, .projectionLine, .burndownLine, .currentValueLine
         stroke-opacity: 0
 
       .dataSeriesArea

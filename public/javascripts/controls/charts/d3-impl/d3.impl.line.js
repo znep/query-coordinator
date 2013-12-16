@@ -167,7 +167,7 @@ $.Control.registerMixin('d3_impl_line', {
 
             if (lineType == 'area')
             {
-                cc.seriesPath[col.lookup].attr('fill', colDef.color)
+                cc.seriesPath[col.lookup].attr('fill', vizObj._d3_getColor(colDef))
                                          .attr('fill-opacity', 0.8);
             }
 

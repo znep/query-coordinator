@@ -983,6 +983,8 @@ blist.util.loadCaptcha = function(id)
         blist.util.assetLoading.loadAssets({ javascripts:
             ['https://www.google.com/recaptcha/api/js/recaptcha_ajax.js'] }, function()
             {
+                // Clean out any other ReCaptcha, because it conflicts
+                $('#recaptcha_area').parent().addClass('placeholder').empty();
                 $('#' + id).removeClass('placeholder');
                 Recaptcha.create(blist.configuration.reCAPTCHA_PUK, id, { theme: 'white', lang: blist.locale });
             });

@@ -380,6 +380,7 @@ javascripts:
     - public/javascripts/controls/render-type-manager.js
     - public/javascripts/screens/widget.js
   dataset-about-full:
+    - public/javascripts/plugins/lab.js
     - public/javascripts/util/asset-loading.js
     - public/javascripts/util/inline-login.js
     - public/javascripts/controls/stars.js

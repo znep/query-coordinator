@@ -1,7 +1,7 @@
 <%- if local_assigns[:render_captcha] -%>
 <%= recaptcha_tags :display => { :theme => 'white', :lang => I18n.locale.to_s } %>
 <%- else -%>
-  <div id="captchaPlaceholder" class="placeholder">
+  <div id="<%= local_assigns[:div_id] || 'captchaPlaceholder' %>" class="placeholder">
     <div class="loading"></div>
   <% content_for :js_footer do %>
     <script type="text/javascript">

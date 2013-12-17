@@ -31,7 +31,7 @@
         <p><%= t('screens.ds.dataset_contact.form.email_prompt') %></p>
         <input id="fromAddress" name="from_address" type="text" value="<%= current_user.email unless (current_user.nil? || current_user.email.nil?) %>"/>
       </div>
-      <%= render :partial => 'accounts/captcha', :locals => { :render_captcha => true } %>
+      <%= render :partial => 'accounts/captcha', :locals => { :div_id => 'contactCaptcha' } %>
 
       <%- if local_assigns[:static_links] -%>
       <%= submit_tag('Send', :class => 'button default') %>

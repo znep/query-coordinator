@@ -292,6 +292,8 @@ blist.datasetControls.datasetContact = function($sect)
             .removeClass('notice')
             .text('').fadeOut();
 
+        blist.util.loadCaptcha('contactCaptcha');
+
         // Grab the form from its template
         if ($sect.find('.contactOwnerForm').length === 0)
         {

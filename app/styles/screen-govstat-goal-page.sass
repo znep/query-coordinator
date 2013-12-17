@@ -421,6 +421,13 @@ $chartHeight: 210px
         fill-opacity: 0.15
         @include transition(2s, fill-opacity)
 
+      // Hover catchers
+      .projectionLineHoverArea, .burndownLineHoverArea, .currentValueLineHoverArea
+        stroke-width: 15px
+        stroke: black     // Hack to make hovering work - transparent color won't work.
+        stroke-opacity: 0
+
+      // Normal lines
       .dataSeriesLine, .projectionLine, .burndownLine, .currentValueLine
         &.hover
           stroke: #3c5897

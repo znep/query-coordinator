@@ -448,7 +448,7 @@
             {slice: 'Daily', days: 64},
             {slice: 'Weekly', days: 128}
         ],
-        largestSlice: $.t('screens.stats.monthly'),
+        largestSlice: 'Monthly',
         xOffset: 10,
         yOffset: 5
     };

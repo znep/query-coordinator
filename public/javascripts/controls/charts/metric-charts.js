@@ -16,13 +16,13 @@ metricsNS.renderMetricsChartNew = function(data, $chart, startDate, endDate,
     var chartD3 = $chart.data('metrics-chart');
     if (!chartD3)
     {
-        chartD3 = d3.raphael(new Raphael($chart.get(0), $chart.width(), $chart.height()));
+        raphael = new Raphael($chart.get(0), $chart.width(), $chart.height());
+        chartD3 = d3.raphael(raphael);
+        chartD3.setSize = function(width, height) { raphael.setSize(width, height); };
         $chart.data('metrics-chart', chartD3);
 
-        $chart.append($.tag2([
-            { _: 'div', 'class': 'tickContainer' },
-            { _: 'div', 'class': 'legendContainer' }
-        ]));
+        $chart.prepend($.tag2({ _: 'div', 'class': 'tickContainer' }));
+        $chart.append($.tag2({ _: 'div', 'class': 'legendContainer' }));
     }
 
     // Basic configs
@@ -41,15 +41,14 @@ metricsNS.renderMetricsChartNew = function(data, $chart, startDate, endDate,
         ]);
 
     // Translate data into usable structure.
-    var dataRange = _.range(_.first(data)['__end__'],
-                            _.last(data)['__end__'] + 1,
-                            data[0]['__end__'] - data[0]['__start__'] + 1); // pointInterval
+    var pointInterval = data[0]['__end__'] - data[0]['__start__'] + 1,
+        dataRange = _.range(startDate, endDate - 1, pointInterval);
     var processedData = _.map(dataRange, function(timestamp)
     {
         return {
-            timestamp: moment(timestamp),
+            timestamp: moment(timestamp).utc(),
             metrics: (_.detect(data,
-                function(d) { return d['__end__'] == timestamp; }) || {}).metrics
+                function(d) { return d['__start__'] == timestamp; }) || {}).metrics
         };
     });
     var byMetric = function(metric) {
@@ -66,10 +65,7 @@ metricsNS.renderMetricsChartNew = function(data, $chart, startDate, endDate,
     var combinedData = _.pluck(_.reduce(series,
         function(memo, serie) { return memo.concat(byMetric(serie.method)); }, []), 'value');
 
-    var xScale = d3.scale.linear()
-        .domain([_.first(processedData).timestamp,
-                 _.last(processedData).timestamp])
-        .range([ 50, $chart.parent().width() - 30 ]);
+    // yScale stuff, like ticks, are static.
 
     // Putting in some extra scoping in order to make the code flow a little more logically.
     var yScale, ticks;
@@ -92,71 +88,6 @@ metricsNS.renderMetricsChartNew = function(data, $chart, startDate, endDate,
         ticks.push(   yScale.domain()[1]);
     })();
 
-    // Render lines.
-    var pathData = {
-        area: d3.svg.area().x(function(d) { return xScale(d.timestamp); })
-                           .y(function(d) { return yScale(d.value); })
-                           .y0(chartDims.height - chartDims.marginBottom),
-        line: d3.svg.line().x(function(d) { return xScale(d.timestamp); })
-                           .y(function(d) { return yScale(d.value); })
-    };
-
-    // Because this function still assumes highcharts. -_-
-    var lineType = _.first(_.uniq($.deepPluck(series, 'options.type'))) || 'area';
-
-    chartD3.selectAll('.dataLine')
-        .remove();
-    chartD3.selectAll('.dataLine')
-        .data(_.map(_.pluck(series, 'method'), byMetric))
-        .enter().append('path')
-            .classed('dataLine', true)
-            .attr('stroke-width', 4)
-            .attr('stroke', function(d) { return d[0].color; })
-            .attr('d', pathData.line);
-
-    // Use a second svg#path to avoid the thick bottom border.
-    if (lineType == 'area')
-    {
-        chartD3.selectAll('.dataLine')
-            .append('path')
-                .classed('dataLine', true)
-                .attr('stroke-width', 0)
-                .attr('fill',   function(d) { return d[0].color; })
-                .attr('fill-opacity', 0.75)
-                .attr('d', pathData.area);
-    }
-
-    // Flyouts: ridiculously easy when you don't have to support a dozen features with them.
-    var tip;
-
-    // Render points.
-    chartD3.selectAll('.dataPoint')
-        .remove();
-    chartD3.selectAll('.dataPoint')
-        .data(_.flatten(_.map(_.pluck(series, 'method'), byMetric)))
-        .enter().append('circle')
-            .classed('dataPoint', true)
-            .attr('stroke', '#fff')
-            .attr('fill', function(d) { return d.color; })
-            .attr('cx',   function(d) { return xScale(d.timestamp); })
-            .attr('cy',   function(d) { return yScale(d.value); })
-            .attr('r', 5)
-
-            .on('mouseover', function(d)
-            {
-                if (tip) { tip.destroy(); }
-                tip = $(this.node).socrataTip({ trigger: 'now',
-                    positions: ['top', 'bottom'],
-                    content: [d.timestamp.format(metricsNS.tooltipFormats[sliceType]),
-                        $.commaify(Math.floor(d.value))].join(': ')
-                });
-            })
-            .on('mouseout', function(d)
-            {
-                // Timeout probably isn't necesary, but why not!
-                setTimeout(function() { if (tip) { tip.destroy(); }}, 10);
-            });
-
     // Render ticks.
     d3.select($chart.find('.tickContainer')[0]).selectAll('.tick')
         .remove();
@@ -170,41 +101,126 @@ metricsNS.renderMetricsChartNew = function(data, $chart, startDate, endDate,
         tickRootEnter.append('div')
             .classed('tickLine', true);
         tickRootEnter.append('div')
-            .classed('tickLabel', true);
+            .classed('tickLabel', true)
+            .each(function(d) { $(this).text($.commaify(d)); });
 
-    // This can probably be attached to the line above,
-    // but I don't want to rebuild my mock data to test it.
-    tickLines.selectAll('.tickLabel').each(function(d) { $(this).text($.commaify(d)); });
+    // xScale stuff is resizable!
 
-    d3.select($chart.find('.tickContainer')[0]).selectAll('.xLabel')
-        .remove();
-    d3.select($chart.find('.tickContainer')[0]).selectAll('.xLabel')
-        .data(_.pluck(processedData, 'timestamp'))
-        .enter().append('div')
-            .classed('xLabel', true)
-            .each(function(d)
-            {
-                // TODO: Need to figure out which are appropriate when.
-                //second: 'HH:mm:ss',
-                //minute: 'HH:mm',
-                //hour: 'MMM D HH:mm',
-                //week: 'MMM D',
-                //month: 'MMM \'YY',
-                //day: 'MMM D'
-                $(this).text(moment(d).format('MMM D'));
-            })
-            .style('left', function(d) { return xScale(d) - ($(this).width() / 2) + 'px'; })
-            .style('top', function() { return yScale(yScale.domain()[0]) + 10 + 'px'; });
+    var renderXDependentStuff = function()
+    {
+        var xScale = d3.scale.linear()
+            .domain([_.first(processedData).timestamp,
+                     _.last(processedData).timestamp])
+            .range([ 50, $chart.parent().width() - 30 ]);
+
+        // Render lines.
+        var pathData = {
+            area: d3.svg.area().x(function(d) { return xScale(d.timestamp); })
+                               .y(function(d) { return yScale(d.value); })
+                               .y0(chartDims.height - chartDims.marginBottom),
+            line: d3.svg.line().x(function(d) { return xScale(d.timestamp); })
+                               .y(function(d) { return yScale(d.value); })
+        };
+
+        // Because this function still assumes highcharts. -_-
+        var lineType = _.first(_.uniq($.deepPluck(series, 'options.type'))) || 'area';
+        var average = function(ary)
+            { return _.inject(ary, function(m, a) { return m + a; }, 0) / ary.length; };
+
+        chartD3.selectAll('.dataLine')
+            .remove();
+        chartD3.selectAll('.dataLine')
+            // Sort by averages as an easy way to rank backgrounds.
+            // Using _.sortBy because d3#sort isn't implemented in d34raphael.
+            .data(_.sortBy(_.map(_.pluck(series, 'method'), byMetric)),
+                function(a, b) { return average(a) < average(b); })
+            .enter().append('path')
+                .classed('dataLine', true)
+                .attr('stroke-width', 4)
+                .attr('stroke', function(d) { return d[0].color; })
+                .attr('d', pathData.line);
+
+        // Use a second svg#path to avoid the thick bottom border.
+        if (lineType == 'area')
+        {
+            chartD3.selectAll('.dataLine')
+                .append('path')
+                    // Use the same class in order to remove properly.
+                    .classed('dataLine', true)
+                    .attr('stroke-width', 0)
+                    .attr('fill',   function(d) { return d[0].color; })
+                    .attr('fill-opacity', 0.75)
+                    .attr('d', pathData.area);
+        }
+
+        // Flyouts: ridiculously easy when you don't have to support a dozen features with them.
+        var tip;
+
+        // Render points.
+        chartD3.selectAll('.dataPoint')
+            .remove();
+        chartD3.selectAll('.dataPoint')
+            .data(_.flatten(_.map(_.pluck(series, 'method'), byMetric)))
+            .enter().append('circle')
+                .classed('dataPoint', true)
+                .attr('stroke', '#fff')
+                .attr('fill', function(d) { return d.color; })
+                .attr('cx',   function(d) { return xScale(d.timestamp); })
+                .attr('cy',   function(d) { return yScale(d.value); })
+                .attr('r', 4)
+
+                .on('mouseover', function(d)
+                {
+                    if (tip) { tip.destroy(); }
+                    tip = $(this.node).socrataTip({ trigger: 'now',
+                        positions: ['top', 'bottom'],
+                        content: [d.timestamp.format(metricsNS.tooltipFormats[sliceType]),
+                            $.commaify(Math.floor(d.value))].join(': ')
+                    });
+                })
+                .on('mouseout', function(d)
+                {
+                    if (tip) { tip.destroy(); }
+                });
+
+        var timespan = moment.duration(endDate - startDate + 1);
+        d3.select($chart.find('.tickContainer')[0]).selectAll('.xLabel')
+            .remove();
+        d3.select($chart.find('.tickContainer')[0]).selectAll('.xLabel')
+            .data(_.pluck(processedData, 'timestamp'))
+            .enter().append('div')
+                .classed('xLabel', true)
+                .each(function(d)
+                {
+                    if (sliceType == 'HOURLY' && d.hour() > 0)
+                    { return; } // Short-circuit the special case.
+
+                    var format;
+                    if (timespan.asDays() < 30)
+                    { format = 'MMM D'; }
+                    else
+                    { format = 'MMM \'YY'; }
+
+                    $(this).text(d.format(format));
+                })
+                .style('left', function(d) { return xScale(d) - ($(this).width() / 2) + 'px'; })
+                .style('top',  function()  { return yScale(yScale.domain()[0]) + 10 + 'px'; });
+    };
+    $(window).resize(function() {
+        chartD3.setSize($chart.width(), $chart.height());
+        renderXDependentStuff();
+    });
+    renderXDependentStuff();
 
     // I AM LEGEND
-    d3.select($chart.find('.legendContainer')[0]).selectAll('.awesomesauce')
+    d3.select($chart.find('.legendContainer')[0]).selectAll('.legendLine')
         .remove();
     if (_.any(series, function(serie) { return serie.label; }))
     {
-        d3.select($chart.find('.legendContainer')[0]).selectAll('.awesomesauce')
+        d3.select($chart.find('.legendContainer')[0]).selectAll('.legendLine')
             .data(series)
             .enter().append('div')
-                .classed('awesomesauce', true)
+                .classed('legendLine', true)
                 .each(function(d)
                 {
                     $(this).append($.tag2([

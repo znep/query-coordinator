@@ -29,6 +29,10 @@
                             $sect.find('.datasetAverageRating').each(function()
                             {
                                 blist.datasetControls.datasetRating($(this), $sect, true);
+                                // HACK: basePane validates the parent form; but the validator
+                                // crashes because it can't find a validate object on the star form
+                                // Bad nested forms!
+                                $(this).validate();
                             });
 
                             $sect.find('.expander').click(function(event)

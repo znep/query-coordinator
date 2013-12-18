@@ -84,6 +84,115 @@
 .siteContentWrapper .subnavigation
   margin-bottom: 2em
 
+.retirementSection
+  margin-bottom: 2em
+  padding: 3em 5em 0
+  position: relative
+  z-index: 3
+
+  h2
+    font-size: 3em
+    font-weight: normal
+
+  p.pastEndDescription
+    color: #666
+    font-size: 1.5em
+    margin: 0.3em 0
+
+  .lockSection
+    background-color: #e4e4e4
+    margin: 1em -10em 0
+    overflow: hidden
+    padding: 2em 10em
+
+    .lockIcon
+      color: #969696
+      float: left
+      font-size: 5em
+      margin-right: 0.5em
+
+    .lockDescription
+      color: #666
+      font-size: 1.5em
+      padding: 0.45em 0
+
+  .unlockButton
+    bottom: -5em
+    @include prefixer(box-shadow, 0 0 0.3em rgba(0, 0, 0, 0.3))
+    left: 50%
+    margin-left: -6.8em
+    position: absolute
+
+    &:after
+      @include triangle(0.7em, $govstat_color_action, top)
+      bottom: -1.1em
+      content: ' '
+      position: absolute
+      left: 50%
+      margin-left: -0.5em
+
+    &:hover:after
+      border-top-color: lighten($govstat_color_action, 6%)
+
+.unretirementSection
+  background-color: #e4e4e4
+  @include prefixer(box-shadow, 0 0 3em #ccc inset)
+  margin: -2em -4em 2em
+  padding: 4em 9em
+
+  .unretirementHeader
+    overflow: hidden
+
+    .icons
+      float: left
+      height: 3.5em
+      margin-right: 0.4em
+
+      div
+        color: #777
+        float: left
+        font-size: 1.3em
+        margin-right: 0.4em
+
+    .deleteRetirementNarrative
+      float: right
+      margin-left: 1.5em
+
+    p
+      color: #777
+      font-size: 1.4em
+      padding-top: 0.1em
+
+.mainSection
+  position: relative
+
+  .shadow
+    @include vertical-gradient(rgba(0, 0, 0, 0.2), rgba(0, 0, 0, 0))
+    height: 10em
+    left: -4em
+    position: absolute
+    right: -4em
+    top: 0
+    z-index: 1
+
+    &:after
+      @include vertical-gradient(rgba(0, 0, 0, 0.08), rgba(0, 0, 0, 0))
+      content: ' '
+      height: 1.8em
+      left: 0
+      position: absolute
+      top: 0
+      width: 100%
+
+  .lockedGoalOverlay
+    background-color: rgba(200, 200, 200, 0.5)
+    height: 100%
+    left: -4em
+    position: absolute
+    right: -4em
+    top: 0
+    z-index: 2
+
 .heroImageContainer
   position: relative
 
@@ -758,6 +867,8 @@ $wizard_border_color: #ccc
       margin-right: 1em
 
 .goal.edit
+  position: relative
+
   .measuresTitle, .narrativeTitle
     font-size: 3em
     font-weight: normal

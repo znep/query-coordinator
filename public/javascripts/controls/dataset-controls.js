@@ -337,25 +337,25 @@ blist.datasetControls.datasetContact = function($sect)
                         data: $form.serialize(),
                         type: 'POST', dataType: 'json',
                         error: function(request, textStatus, errorThrown) {
-                            $sect.find('.flash:not(.math_message)')
+                            $sect.find('.flash:not(.recaptcha_flash)')
                               .removeClass('notice').addClass('error')
                               .text($.t('screens.ds.dataset_contact.error_message')).show();
                         },
                         success: function(response) {
                             if(response['success'] == true) {
                                 _.defer(function() {
-                                    $sect.find('.flash:not(.math_message)')
+                                    $sect.find('.flash:not(.recaptcha_flash)')
                                         .removeClass('error').addClass('notice')
                                         .text($.t('screens.ds.dataset_contact.success_message')).show();
                                     toggleContactActions();
                                 });
 
-                                $sect.find('.math_message')
+                                $sect.find('.recaptcha_flash')
                                     .removeClass('error').fadeOut();
                             } else if (response['success'] == false) {
-                                $sect.find('.math_message')
+                                $sect.find('.recaptcha_flash')
                                     .removeClass('notice').addClass('error')
-                                    .text($.t('screens.ds.dataset_contact.captcha_failed')).fadeIn();
+                                    .text($.t('recaptcha.errors.verification_failed')).fadeIn();
                             }
                         }
                     });

@@ -283,6 +283,7 @@ input.button, a.button
     font-size: 1em
     margin-right: 1em
     margin-bottom: 1em
+    overflow: hidden
     padding: 0
     > .component-Text
       font-size: 1em
@@ -503,6 +504,48 @@ input.button, a.button
 
         &:hover .ss-flag
           background-color: lighten($govstat_color_poor, 10%)
+
+    .goalEnded
+      @include progress-colors(background-color)
+      bottom: 1.3em
+      left: -3em
+      padding: 1em
+      position: absolute
+      @include prefixer(transform, rotate(-15deg))
+      width: 23em
+      z-index: 1
+
+      .ie8 &
+        bottom: 0
+
+      div
+        text-shadow: 0 0 2px rgba(0, 0, 0, 0.3)
+
+      .endedIcon
+        @include rounded-ends
+        border: 3px solid #fff
+        @include prefixer(box-shadow, 0 0 2px rgba(0, 0, 0, 0.3))
+        color: #fff
+        float: left
+        font-size: 2em
+        height: 1.2em
+        margin-left: 1.9em
+        margin-right: 0.3em
+        padding: 0.1em
+        text-align: center
+        width: 1.2em
+
+      .endedTitle
+        color: #fff
+        font-size: 1.8em
+        font-weight: lighter
+        letter-spacing: -1px
+
+      .endedDate
+        color: #fff
+        font-size: 1.4em
+        letter-spacing: -1px
+        @include opacity(0.6)
 
   .viewItem
     background-color: #bbb

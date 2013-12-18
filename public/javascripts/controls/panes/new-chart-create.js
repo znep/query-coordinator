@@ -168,28 +168,35 @@
                 $.t('screens.ds.grid_sidebar.base.validation.invalid_view') : $.t('screens.ds.grid_sidebar.chart.validation.viz_limit');
         },
 
-        validateForm: function() {
-          var valid = this._super();
-          //If creating from a dataset don't spit warning messages immediately.
-          var hideInlineErrors = _.isEmpty(this._view.displayFormat.valueColumns) ||
-                                 _.some(this._view.displayFormat.valueColumns, _.isEmpty);
-          this.$dom().toggleClass('inlineErrorsHidden', hideInlineErrors || false);
-          return valid;
+        validateForm: function()
+        {
+            var valid = this._super();
+            this._updateErrorVisibility();
+            return valid;
+        },
+
+        _updateErrorVisibility: function(valCols)
+        {
+            //If creating from a dataset don't spit warning messages immediately.
+            valCols = valCols || this._view.displayFormat.valueColumns;
+            var hideInlineErrors = _.isEmpty(valCols) || _.some(valCols, _.isEmpty);
+            this.$dom().toggleClass('inlineErrorsHidden', hideInlineErrors || false);
         },
 
         _changeHandler: function($input)
         {
             var cpObj = this;
-            _.defer( function() {
+            _.defer( function()
+            {
                 var initSidebarScroll = cpObj.$dom().closest('.panes').scrollTop();
                 var originalChartType = $.subKeyDefined(cpObj._view, 'displayFormat.chartType') ? cpObj._view.displayFormat.chartType : undefined;
                 var isBrandNewChart = _.isEmpty(originalChartType);
+                var newValues = cpObj._getFormValues();
 
                 ///VALIDATE///
 
                 if ($input.data("origname") == "displayFormat.chartType")
                 {
-                    var newValues = cpObj._getFormValues();
                     var newChartType = newValues.displayFormat.chartType;
                     var isSameChart = !isBrandNewChart && originalChartType == newChartType;
                     if (cpObj.validateForm() || !isSameChart)
@@ -208,13 +215,16 @@
                         cpObj._view.update(
                             $.extend(true, {}, newValues, {metadata: cpObj._view.metadata})
                         );
+                        cpObj._updateErrorVisibility();
                     }
                     cpObj.reset();
                 }
 
-                if (!cpObj.validateForm()) { 
+                if (!cpObj.validateForm())
+                {
+                    cpObj._updateErrorVisibility(newValues.displayFormat.valueColumns);
                     cpObj.$dom().closest('.panes').scrollTop(initSidebarScroll);
-                    return; 
+                    return;
                 }
 
                 //Clean-up sparse inputs in value column repeater so colors sync and merge correctly.
@@ -235,7 +245,7 @@
                 { $colColors.hide(); }
 
                 var view = $.extend(true, {metadata: {renderTypeConfig: {visible: {chart: true}}}},
-                    cpObj._getFormValues(), {metadata: cpObj._view.metadata});
+                    newValues, {metadata: cpObj._view.metadata});
 
                 var addColumn = function(colId)
                 {
@@ -264,6 +274,7 @@
                     view.displayFormat.chartType = 'stacked' + view.displayFormat.chartType;
                 }
                 cpObj._view.update(view);
+                cpObj._updateErrorVisibility();
 
 
 

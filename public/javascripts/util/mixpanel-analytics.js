@@ -34,7 +34,7 @@ if (mixpanel)
                 {
                     event.preventDefault();
                 }
-                //update the meta properties
+                //update the meta properties (also includes people tracking)
                 $.mixpanelMeta();
 
                 //Track!

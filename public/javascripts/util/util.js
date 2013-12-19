@@ -196,7 +196,7 @@ $.mixpanelMeta = function()
     var pathName = window.location.pathname;
     var time = Math.round(new Date().getTime() / 1000) - blist.pageOpened;
     
-     mixpanel.register({
+    mixpanel.register({
         'User Id': userId,
         'Socrata Employee': isSocrata,
         'User Role Name': userRoleName,
@@ -208,6 +208,14 @@ $.mixpanelMeta = function()
         'On Page': pathName,
         'Time Since Page Opened (sec)': time
     });
+
+    //set user ID to mixpanels user ID if not logged in
+    userId = _.isUndefined(blist.currentUser) ? mixpanel.get_distinct_id() : userId;
+    mixpanel.identify(userId);
+    mixpanel.people.set_once(
+        {   $name: userId, 
+            "Socrata Employee": isSocrata 
+        });
 }
 
 $.hashHref = function(href)

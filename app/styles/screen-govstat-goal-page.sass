@@ -395,7 +395,13 @@ $chartHeight: 210px
       font-size: 1.2em
       z-index: 3
 
-    div.targetValueCallout.calloutTitleText, div.currentValueCallout.calloutTitleText, div.targetValueCallout.calloutSubtitleText, div.currentValueCallout.calloutSubtitleText
+    div.targetValueCallout.calloutTitleText, div.currentValueCallout.calloutTitleText
+      white-space: nowrap
+
+    div.targetValueCallout.calloutSubtitleText
+      max-width: 5em
+      overflow: hidden
+      text-overflow: ellipsis
       white-space: nowrap
 
     div.currentValueCallout.calloutTitleText

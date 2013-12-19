@@ -652,12 +652,10 @@ $chartHeight: 210px
     .xTick.bubble, .nowMarker
       bottom: 0
       margin-bottom: -2.3em
-      margin-left: -2.5em
       @include opacity(1)
       position: absolute
       text-align: center
       @include transition(2s, opacity)
-      width: 4.6em
       font-size: 1.2em
 
       .tip
@@ -675,8 +673,11 @@ $chartHeight: 210px
       z-index: 2
       font-size: 1.4em
       bottom: 4px
+      padding: 0.1em 0.3em 0.1em 0.3em
 
     .xTick.bubble
+      margin-left: -2.5em
+      width: 4.6em
       background-color: transparent
       color: #797979
 

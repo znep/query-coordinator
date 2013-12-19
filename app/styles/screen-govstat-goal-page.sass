@@ -653,11 +653,29 @@ $chartHeight: 210px
       z-index: 2
       @include transition(2s, opacity)
 
+      &.topRed
+        .gaugeBody .gaugeTopNib
+          background: $govstat_color_poor
+
+      &.bottomRed
+        .gaugeBody .gaugeBottomNib
+          background: $govstat_color_poor
+
       .gaugeBody
         margin-top: 10px
         height: $chartHeight - 20px
-        .gaugeGood, .gaugeWithinTolerance, .gaugeBad
+        .gaugeGood, .gaugeWithinTolerance, .gaugeBad, .gaugeTopNib, .gaugeBottomNib
           @include opacity(0.4)
+        .gaugeTopNib
+          position: absolute
+          top: -10px
+          height: 10px
+          background: $govstat_color_good
+        .gaugeBottomNib
+          position: absolute
+          bottom: -10px
+          height: 10px
+          background: $govstat_color_good
         .gaugeTargetValue
           position: absolute
       div

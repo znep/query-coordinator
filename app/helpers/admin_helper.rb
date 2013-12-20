@@ -3,12 +3,13 @@ module AdminHelper
     roles = User.roles_list
 
     out = "<select class='#{cssClass}' name='#{name}' id='#{id}'>"
-    out << "<option value='0'>none</option>" if includeNone
+    out << "<option value='0'>#{t(screens.admin.users.roles.none)}</option>" if includeNone
 
     roles.each do |role|
       out << "<option value=\"#{role}\""
       out << ' selected="selected"' if currentRole && role == currentRole
-      out << ">" + role.titleize + "</option>"
+      # Use default to allow user-translated role names.
+      out << ">" + I18n.t(key: role, scope: 'screens.admin.users.roles', default: role).titleize + "</option>"
     end
     out << "</select>"
   end

@@ -139,9 +139,9 @@ class AdministrationController < ApplicationController
       @users_list = @admins
       @existing_user_actions = true
     elsif @user_search_results.empty?
-      @table_title = 'No existing users found'
+      @table_title = t('screens.admin.users.no_users_found')
     else
-      @table_title = "Search Results for '#{@search}'"
+      @table_title = t('screens.admin.users.search_results', :term => @search)
       @users_list = @user_search_results
       @existing_user_actions = false
     end
@@ -154,31 +154,31 @@ class AdministrationController < ApplicationController
     rescue CoreServer::CoreServerError => ex
       error_message = ex.error_message
     end
-    handle_button_response(updated_user, error_message, "User successfully updated", :users)
+    handle_button_response(updated_user, error_message, t('screens.admin.users.flashes.successful_update'), :users)
   end
 
   def reset_user_password
     if User.reset_password(params[:user_id])
       success = true
     else
-      error_message = "There was an error sending the password reset email."
+      error_message = t('screens.admin.users.flashes.reset_email_failed')
     end
-    handle_button_response(success, error_message, "Password reset email sent", :users)
+    handle_button_response(success, error_message, t('screens.admin.users.flashes.reset_email_sent'), :users)
   end
 
   def re_enable_user
     if User.re_enable_permissions(params[:user_id])
       success = true
     else
-      error_message = "There was an error enabling that user account."
+      error_message = t('screens.admin.users.flashes.reenable_failed')
     end
-    handle_button_response(success, error_message, "Account successfully re-enabled", :users)
+    handle_button_response(success, error_message, t('screens.admin.users.flashes.reenable_success'), :users)
   end
 
   def bulk_create_users
     role = params[:role]
     if !User.roles_list.include?(role.downcase)
-      flash[:error] = "Invalid role specified for user creation: #{role}"
+      flash[:error] = t('screens.admin.users.flashes.invalid_role', :role => role)
       return (redirect_to :action => :users)
     end
 
@@ -193,10 +193,10 @@ class AdministrationController < ApplicationController
     if !errors.blank?
       flash[:error] = errors.join(', ')
     elsif(created.blank?)
-      flash[:error] = "No email addresses detected"
+      flash[:error] = t('screens.admin.users.flashes.no_email_addresses')
       return (redirect_to :action => :users)
     else
-      flash[:notice] = app_helper.pluralize(created.size, "account") + " successfully created"
+      flash[:notice] = t('screens.admin.users.flashes.accounts_created', :count => created.size)
     end
 
     redirect_to :action => :users
@@ -208,7 +208,7 @@ class AdministrationController < ApplicationController
     rescue CoreServer::CoreServerError => ex
       error_message = ex.error_message
     end
-    handle_button_response(success, error_message, "Pending permissions removed", :users)
+    handle_button_response(success, error_message, t('screens.admin.users.flashes.pending_permissions_removed'), :users)
   end
 
   before_filter :only => [:comment_moderation] {|c| c.check_auth_level('moderate_comments')}

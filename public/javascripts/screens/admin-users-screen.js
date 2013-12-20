@@ -1,5 +1,6 @@
 $(function()
 {
+    var t = function(str, props) { return $.t('screens.admin.users.' + str, props); };
     var fadeMessage = function(textValue)
     {
         $('.userNotice')
@@ -22,7 +23,7 @@ $(function()
             success: function(responseData)
             {
                 $select.closest('tr').attr('data-userrole', $select.val().toLowerCase());
-                fadeMessage('User saved');
+                fadeMessage(t('user_saved'));
             },
             error: function(request)
             {
@@ -32,7 +33,7 @@ $(function()
                 $('.userNotice')
                     .removeClass('notice')
                     .addClass('error')
-                    .text(errorJson.message || 'There was an error processing your permission request')
+                    .text(errorJson.message || t('error_permission_request'))
                     .fadeIn(300);
             }
         });

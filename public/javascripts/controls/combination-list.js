@@ -239,7 +239,8 @@
                 var colSpan = $(comboListObj.settings.headerContainerSelector)
                     .find("table tr th").length;
                 var $newRow = $("<tr class='sortGroup'><td colspan='" +
-                    colSpan + "'>" + "<div>No Results</div></td></tr>");
+                    colSpan + "'>" + "<div>" + $.t('controls.common.no_results') +
+                    "</div></td></tr>");
                 $(comboListObj.currentList).find('tbody').append($newRow);
             }
         }

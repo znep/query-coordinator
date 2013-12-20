@@ -173,6 +173,7 @@ it:
         expand: Clicca per espandere
       image_upload:
         button: Carica immagine
+      no_results: Nessun risultato
       rate:
         auth_action_phrase: vota questo dataset
       share:

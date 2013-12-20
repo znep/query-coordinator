@@ -45,7 +45,10 @@ class User < Model
   end
 
   def self.roles_list
-    Configuration.find_by_type('user_rights', false, CurrentDomain.cname, true).first.properties.keys
+    Configuration.find_by_type('user_rights', false, CurrentDomain.cname, true).
+      inject([]) do |memo, config|
+        memo.concat(config.properties.keys)
+      end.uniq
   end
 
   def create(inviteToken = nil, authToken = nil)

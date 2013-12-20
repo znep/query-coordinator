@@ -173,6 +173,7 @@ en:
         expand: Click to expand
       image_upload:
         button: Upload Image
+      no_results: No Results
       rate:
         auth_action_phrase: rate this dataset
       share:
@@ -731,7 +732,7 @@ en:
       print:
         print: Print
         print_this_page: Print this page
-      remove: Remove this component
+        remove: Remove this component
       share:
         email: Share via Email
         email_contents: ! '%{dataset} on %{company}'
@@ -1104,6 +1105,51 @@ en:
           field_successful_save: Successfully saved field
           field_successful_remove: Field Successfully Removed
           cannot_move_field: "Cannot move field named'%{name}': not found"
+      users:
+        title: Manage Users
+        bulk_create: Bulk Create
+        emails: Emails
+        email_prompt: Enter email addresses for the accounts you wish to create
+        role: Role
+        create_accounts: Create Accounts
+        filter_by: Filter by
+        all: All
+        return_to_overview: Return to users overview
+        search_for_users: Search for Users to Add
+        search: Search
+        name: Name
+        email: Email
+        actions: Actions
+        remove: Remove
+        reset_password: Reset Password
+        reenable_privileges: Re-Enable Privileges
+        no_users_match: No users match your current filter.
+        pending_users: The following users have accounts pending, but have not activated them yet
+        invited: Invited
+        no_pending_users: No pending users match your current filter
+        user_saved: User saved
+        error_permission_request: There was an error processing your permission request
+        no_users_found: No existing users found
+        search_results: Search Results for '%{term}'
+        roles:
+          administrator: administrator
+          editor: editor
+          viewer: viewer
+          designer: designer
+          publisher: publisher
+          none: none
+        flashes:
+          successful_update: User successfully updated
+          reset_email_sent: Password reset email sent
+          reset_email_failed: There was an error sending the password reset email.
+          reenable_success: Account successfully re-enabled
+          reenable_failed: There was an error enabling that user account.
+          invalid_role: 'Invalid role specified for user creation: %{role}'
+          no_email_addresses: No email addresses detected
+          accounts_created:
+            one: '%{count} account successfully created'
+            other: '%{count} accounts successfully created'
+          pending_permissions_removed: Pending permissions removed
     dataset_edit:
       append: Append
       append_and_replace: Append and Replace data

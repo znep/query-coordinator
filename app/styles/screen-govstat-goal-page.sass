@@ -380,20 +380,24 @@ $chartHeight: 210px
 
     div.labelPart
       @include transition(2s, opacity)
+
+    .calloutContainer
+      padding-left: 2px
       position: absolute
+      z-index: 3
 
     .calloutTitleText
-      padding-left: 4px
-      color: #666
       font-size: 1.3em
-      z-index: 2
+      color: #3c5897
+      font-size: 1.5em
+      font-weight: bold
 
     .calloutSubtitleText
-      padding-left: 4px
-      padding-bottom: 2px
       color: #666
+      font-size: 1.4em
+      max-width: 15em
+      padding-bottom: 2px
       font-size: 1.2em
-      z-index: 3
 
     div.targetValueCallout.calloutTitleText, div.currentValueCallout.calloutTitleText
       white-space: nowrap
@@ -407,28 +411,20 @@ $chartHeight: 210px
     div.currentValueCallout.calloutTitleText
       @include progress-colors(color)
 
-    .calloutSubtitleText
-      color: #666
-      font-size: 1.4em
-      max-width: 15em
-    .calloutTitleText
-      color: #3c5897
-      font-size: 1.5em
-      font-weight: bold
-
     .dataSeriesCallout, .burndownCallout, .projectionCallout, .currentValueLineCallout, .currentDataPointCallout
+      &.calloutContainer
+        background: rgba(255, 255, 255, 0.8)
+        visibility: hidden
+        &.hover
+          visibility: visible
       &.calloutSubtitleText
         color: #666
-        background: rgba(255, 255, 255, 0.8)
         font-size: 1.4em
         max-width: 15em
       &.calloutTitleText
         color: #3c5897
         font-size: 1.5em
         font-weight: bold
-      visibility: hidden
-      &.hover
-        visibility: visible
 
     svg.secondSvg
       position: absolute

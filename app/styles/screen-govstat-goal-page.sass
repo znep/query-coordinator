@@ -388,15 +388,17 @@ $chartHeight: 210px
     .calloutContainer
       padding-left: 2px
       position: absolute
-      z-index: 3
+      z-index: 10
 
     .calloutTitleText
+      @include text-outline
       font-size: 1.3em
       color: #3c5897
-      font-size: 1.5em
-      font-weight: bold
+      font-size: 2em
+      letter-spacing: -1px
 
     .calloutSubtitleText
+      @include text-outline(#f7f7f7)
       color: #666
       font-size: 1.4em
       max-width: 15em
@@ -417,18 +419,20 @@ $chartHeight: 210px
 
     .dataSeriesCallout, .burndownCallout, .projectionCallout, .currentValueLineCallout, .currentDataPointCallout
       &.calloutContainer
-        background: rgba(255, 255, 255, 0.8)
+        background: #fff
+        background: rgba(255, 255, 255, 0.95)
+        @include prefixer(box-shadow, 0 0 0.4em rgba(0, 0, 0, 0.13))
+        padding: 0.9em 1.2em
         visibility: hidden
         &.hover
           visibility: visible
       &.calloutSubtitleText
         color: #666
-        font-size: 1.4em
+        font-size: 1.3em
         max-width: 15em
       &.calloutTitleText
         color: #3c5897
         font-size: 1.5em
-        font-weight: bold
 
     svg.secondSvg
       position: absolute

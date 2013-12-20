@@ -234,6 +234,7 @@ module Canvas2
 
       req['X-Socrata-Host'] = req['Host'] = CurrentDomain.cname
       req['X-Socrata-Locale'] = @@env[:current_locale].to_s
+      req['X-Socrata-Default-Locale'] = CurrentDomain.default_locale
       req['Cookie'] = Canvas2::Util.request.headers['Cookie'] if !is_anon
 
       res = Net::HTTP.start(uri.host, uri.port){ |http| http.request(req) }

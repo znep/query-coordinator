@@ -586,9 +586,7 @@ $chartHeight: 210px
     .constrain
       bottom: 0
       left: 0
-      //todo re-enable this, once the little sliver of the now gauge is dealt with.
-      // Some other styles changed for this, search NOW_TIP_HACK
-      //overflow: hidden
+      overflow: hidden
       position: absolute
       right: 0
       top: 0
@@ -607,9 +605,6 @@ $chartHeight: 210px
         margin-left: -17px
         position: absolute
         z-index: 3
-
-        // NOW_TIP_HACK
-        @include transition(1s, opacity)
 
         .nowTipFill
           @include triangle(16px, #fff, top)
@@ -742,10 +737,6 @@ $chartHeight: 210px
 
     .content-wrapper
 
-      // NOW_TIP_HACK
-      .nowTip
-        @include opacity(0)
-
       .labelPart
         @include opacity(0)
 
@@ -772,7 +763,7 @@ $chartHeight: 210px
         @include opacity(0)
 
       .yTick
-        @include opacity(0.3)
+        @include opacity(0)
 
       // we could also have them always show softly
       .xTick.bubble
@@ -934,10 +925,6 @@ $chartHeight: 210px
 
     &.collapsed
       margin-bottom: 0
-
-      // NOW_TIP_HACK
-      .nowTip
-        @include opacity(0)
 
       .redArea, .yellowArea, .greenArea
         fill-opacity: 0

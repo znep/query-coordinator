@@ -3,7 +3,7 @@ module AdminHelper
     roles = User.roles_list
 
     out = "<select class='#{cssClass}' name='#{name}' id='#{id}'>"
-    out << "<option value='0'>#{t(screens.admin.users.roles.none)}</option>" if includeNone
+    out << "<option value='0'>#{t('screens.admin.users.roles.none')}</option>" if includeNone
 
     roles.each do |role|
       out << "<option value=\"#{role}\""

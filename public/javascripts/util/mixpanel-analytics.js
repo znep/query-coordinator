@@ -24,7 +24,7 @@ if (mixpanel)
                 var isDefaultPrevented = event.isDefaultPrevented();
                 var callback = function()
                 {
-                    if (!willOpenInNewTab && !isDefaultPrevented)
+                    if (!willOpenInNewTab && !isDefaultPrevented && (properties.url != null))
                     {
                         window.location = properties.url;
                     }
@@ -42,7 +42,7 @@ if (mixpanel)
             }
             catch(e)
             {
-                if (!isDefaultPrevented)
+                if (!isDefaultPrevented && (event.currentTarget.href != null))
                 { window.location = event.currentTarget.href; }
                 throw e;
             }
@@ -116,6 +116,18 @@ if (mixpanel)
         {
             return {'Render Type': element.title};
         }
+    );
+
+
+    // GOVSTAT
+    // opening old chart
+    mixpanel.delegate_links('#janus', '.goalBox .pull.down', 'Opened Goal Chart',
+        function() { return {} }
+    );
+
+    // opening new chart
+    mixpanel.delegate_links('#janus', '.goalBox .progressViewChart .viewChart', 'Opened Goal Chart',
+        function() { return {} }
     );
 
 }

@@ -1,7 +1,7 @@
 default: &default
   coreservice_uri: http://localhost:8080
   activemq_hosts: stomp://localhost:61613
-  odysseus_uri: http://localhost:4747
+  zk_hosts: 'localhost:2181'
   rpx_signin_url: https://socrata-test.rpxnow.com/openid/v2/signin
   rpx_facebook_url: https://socrata-test.rpxnow.com/facebook/start
   rpx_windowslive_url: https://socrata-test.rpxnow.com/liveid/start

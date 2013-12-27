@@ -2,7 +2,8 @@ class OdysseusController < ApplicationController
   skip_before_filter :require_user
 
   def index
-    uri = URI::HTTP.build({ host: ODYSSEUS_URI.host, port: ODYSSEUS_URI.port, path: request.path })
+    odysseus_uri = URI.parse('http://' + ::ZookeeperDiscovery.get(:odysseus))
+    uri = URI::HTTP.build({ host: odysseus_uri.host, port: odysseus_uri.port, path: request.path })
     req = Net::HTTP::Get.new(uri.request_uri)
 
     req['X-Socrata-Host'] = req['Host'] = CurrentDomain.cname

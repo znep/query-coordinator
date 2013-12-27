@@ -28,3 +28,5 @@ gem 'sanitize'
 gem 'snappy'
 gem 'xray', :require => 'xray/thread_dump_signal_handler'
 gem 'recaptcha', :require => 'recaptcha/rails'
+gem 'zk', '~>1.9.2'
+

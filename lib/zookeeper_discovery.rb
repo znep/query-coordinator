@@ -18,6 +18,7 @@ protected
     if @@_services[service].nil?
       path = "/#{service}"
 
+      client.wait_until_connected
       client.register(path) do |event|
         # this is the dumbest API ever. normally one would filter on what
         # kind of event it is, and only synchronously block with a new child

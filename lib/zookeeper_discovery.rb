@@ -44,6 +44,7 @@ protected
 
   def self.connect
     Rails.logger.info 'Connecting to Zookeeper..'
+    ZK.install_fork_hook
     ZK::Client.new(APP_CONFIG['zk_hosts'])
   end
 end

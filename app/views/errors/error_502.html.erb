@@ -1,0 +1,23 @@
+<% content_for :head do %>
+  <title><%= CurrentDomain.strings.site_title %></title>
+  <%= rendered_stylesheet_tag 'error-pages' %>
+<% end %>
+
+<div class="modalContentBox siteContent">
+  <div class="contentHeader">
+    <h1><%= t 'error.error_500.somethings_wrong' %></h2>
+  </div>
+  <div class="contentBoxInner clearfix internalError">
+    <div class="icon errorIcon"></div>
+
+    <p class="subheadline"><%= t 'error.error_500.were_sorry' %></p>
+    <p class="body"><%= t 'error.error_500.description_html' %></p>
+
+    <div class="goSomewhere">
+      <a href="javascript:history.back(1)" class="button default"><%= t 'error.back' %></a>
+      <span class="labelText"><%= t 'error.to_whence_you_came' %></span>
+    </div>
+  </div>
+</div>
+
+<%= render_translations LocalePart.error.error_500 %>

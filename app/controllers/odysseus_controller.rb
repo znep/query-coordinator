@@ -2,7 +2,10 @@ class OdysseusController < ApplicationController
   skip_before_filter :require_user
 
   def index
-    odysseus_uri = URI.parse('http://' + ::ZookeeperDiscovery.get(:odysseus))
+    odysseus_addr = ::ZookeeperDiscovery.get(:odysseus)
+    return render_error(502) if odysseus_addr.nil?
+
+    odysseus_uri = URI.parse('http://' + odysseus_addr)
     uri = URI::HTTP.build({ host: odysseus_uri.host, port: odysseus_uri.port, path: request.path })
     req = Net::HTTP::Get.new(uri.request_uri)
 
@@ -11,7 +14,11 @@ class OdysseusController < ApplicationController
     req['X-Socrata-Default-Locale'] = CurrentDomain.default_locale
     req['Cookie'] = request.headers['Cookie']
 
-    res = Net::HTTP.start(uri.host, uri.port){ |http| http.request(req) }
+    begin
+      res = Net::HTTP.start(uri.host, uri.port){ |http| http.request(req) }
+    rescue
+      return render_error(502)
+    end
 
     @suppress_govstat = true unless CurrentDomain.member?(current_user)
 

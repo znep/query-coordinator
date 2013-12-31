@@ -150,7 +150,7 @@
                   <%- unless user.id == current_user.id -%>
                     <span class="loading"></span>
                     <%= form_button({ :action => 'set_user_role', :user_id => user.id, :role => 0 },
-                                    t("{prefix}.remove"), {:method => :put}, {:class => 'button removeButton'}) %>
+                                    t("#{prefix}.remove"), {:method => :put}, {:class => 'button removeButton'}) %>
                     <%= form_button({ :action => 'reset_user_password', :user_id => user.id },
                                     t("#{prefix}.reset_password"), {}, {:class => 'button resetPasswordButton'}) %>
                     <span class="enableAccount">

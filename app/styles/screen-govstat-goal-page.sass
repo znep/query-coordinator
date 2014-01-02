@@ -363,10 +363,6 @@ $chartHeight: 210px
   &.socrata-component
     margin: 2em -4.5em -4.5em
 
-  &.isMaintain
-    .burndownLine
-      display: none
-
   &.isMeasure
     svg .calloutConnectorLine.targetValueCallout
       display: none
@@ -705,6 +701,9 @@ $chartHeight: 210px
       width: 4px
       z-index: 2
       @include transition(2s, opacity)
+
+      &.noData
+        display: none
 
       &.topRed
         .gaugeBody .gaugeTopNib

@@ -488,7 +488,7 @@ $chartHeight: 210px
       // Hover catchers
       .projectionLineHoverArea, .burndownLineHoverArea, .currentValueLineHoverArea
         stroke-width: 15px
-        stroke: black     // Hack to make hovering work - transparent color won't work.
+        stroke: black     // Hack to make hovering work - transparent color will not work.
         stroke-opacity: 0
 
       // Normal lines
@@ -652,6 +652,9 @@ $chartHeight: 210px
       text-align: center
       @include transition(2s, opacity)
       font-size: 1.2em
+
+      &.showOnlyWhenCollapsed
+        @include opacity(0)
 
       .tip
         @include triangle(3px, #ababab, bottom)

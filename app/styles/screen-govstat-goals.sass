@@ -599,6 +599,16 @@ $wizard_border_color: #ccc
       top: -2.6em
       right: 1.9em
 
+  // This overrides the progress-specific colors the chart provides.
+  // This is done because we don't currently do a round-trip to Procrustes
+  // whenever the user changes some measure details. See STAT-576
+  .preview .chartArea .content-wrapper
+    div.currentValueCallout
+      &.calloutTitleText
+        color: #3c5897
+    svg path.currentValueCallout
+      stroke: #888
+
 .goalHeadline .madlib, .prevailingMeasureSummary, .prevailingMeasureBaselineValue
   padding: 0
 

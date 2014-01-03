@@ -126,9 +126,14 @@
       display: block
       margin: 0.5em 0
       overflow: auto
-      width: 100%
+      width: 95%
       .ie7 &
         width: 93%
+
+      // Reset to defaults for this input
+      &#recaptcha_response_field
+        overflow: visible
+        display: inline-block
 
     #uniform-contactPurpose
       margin-bottom: 1em

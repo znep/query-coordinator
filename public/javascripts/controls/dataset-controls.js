@@ -292,6 +292,12 @@ blist.datasetControls.datasetContact = function($sect)
             .removeClass('notice')
             .text('').fadeOut();
 
+        // Captcha width: 321.
+        // 350 = ceiling(321 / 50) * 50
+        if ($.subKeyDefined(blist, 'datasetPage.sidebar')
+            && blist.datasetPage.sidebar.$dom().width() < 350)
+        { blist.datasetPage.sidebar.$dom().width(350); }
+
         blist.util.loadCaptcha('contactCaptcha');
 
         // Grab the form from its template

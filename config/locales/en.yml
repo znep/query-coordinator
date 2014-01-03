@@ -732,7 +732,7 @@ en:
       print:
         print: Print
         print_this_page: Print this page
-        remove: Remove this component
+      remove: Remove this component
       share:
         email: Share via Email
         email_contents: ! '%{dataset} on %{company}'
@@ -1033,123 +1033,123 @@ en:
       your: Your Rating
     admin:
       federation:
-        title: Open Data Federation
-        search_prompt: Search for Domains to Publish to
-        search_pub_datasets: Search for Published Datasets
-        no_domains: No available domains match %{name}.
-        search: Search
+        accept: Accept
+        accepted: Accepted
+        accepted_by: Accepted By
+        all: (all)
+        dataset: Dataset
+        flashes:
+          accepted: Federation successfully accepted
+          created: Federation successfully created
+          deleted: Federation successfully deleted
+          invalid_domain: ! 'Could not create data federation: target domain is invalid'
+          rejected: Federation successfully rejected
         list_domains: The following is a list of domains you may begin data federation with. Once you click publish, an administrator from the target domain must accept your request.
+        no_domains: No available domains match %{name}.
+        no_federations: No federations exist for this domain yet.
+        no_pub_datasets: No published datasets match your search criteria.
+        pending: Pending
+        publish: Publish
+        reject: Reject
+        search: Search
         search_boost: Search Boost
         search_boost_explain: Range from 1 to 0.  Higher value makes datasets more likely to show up first.
-        publish: Publish
+        search_prompt: Search for Domains to Publish to
+        search_pub_datasets: Search for Published Datasets
         source_domain: Source Domain
-        target_domain: Target Domain
-        dataset: Dataset
-        accepted_by: Accepted By
         status: Status
+        target_domain: Target Domain
         terminate: Terminate
-        all: (all)
-        accepted: Accepted
-        pending: Pending
-        accept: Accept
-        reject: Reject
-        no_pub_datasets: No published datasets match your search criteria.
-        no_federations: No federations exist for this domain yet.
-        flashes:
-          deleted: Federation successfully deleted
-          accepted: Federation successfully accepted
-          rejected: Federation successfully rejected
-          created: Federation successfully created
-          invalid_domain: 'Could not create data federation: target domain is invalid'
+        title: Open Data Federation
       metadata:
-        title: Manage Metadata
-        page_title: Manage Dataset Metadata
+        add_new_category: Add New Category
+        add_new_field: Add New Field
+        allowed_values: Allowed Values
+        are_you_sure: Are you sure you want to delete this fieldset and all associated fields?
+        category_name: Category Name
+        create: Create
+        create_new_fieldset: Create a New Field Set
+        define_categories: Define Dataset Categories
         define_custom_fields: Define Custom Fields
-        no_data: No custom dataset fields have been defined for your domain yet. Enter a name below and click 'Create' to begin.
+        down: Down
+        enter_a_name: Enter a name
+        'false': false
+        field_name: Field Name
+        flashes:
+          cannot_move_field: ! 'Cannot move field named''%{name}'': not found'
+          field_duplicated: You cannot create a duplicate field named '%{name}'
+          field_name_required: Cannot create field without a name
+          field_successful_create: Field Successfully Created
+          field_successful_remove: Field Successfully Removed
+          field_successful_save: Successfully saved field
+          fieldset_duplicated: Cannot create duplicate field set named '%{name}'
+          fieldset_name_required: Cannot create field set without a name
+          no_such_field: No such field exists
+          no_such_fieldset: No such fieldset exists
+          successful_create: Field Set Successfully Created
+          successful_remove: Field Set Successfully Removed
+        locales: Locales
+        make_optional: Make Optional
+        make_private: Make Private
+        make_public: Make Public
+        make_required: Make Required
         metadata_explain1: Custom metadata is broken down into <span class="code">fieldsets</span> and <span class="code">fields</span>. A <span class="code">fieldset</span> is a way to logically and visually group one or more custom <span class="code">fields</span> together.
         metadata_explain2: Fields can be configured in multiple ways. They can be <span class="code">required</span>, which will be enforced when publishers create new datasets and update existing metadata. They can also be <span class="code">private</span>, meaning that the values entered will not be visible to the public.
         metadata_explain3: Finally, you can choose to pre-define the options for your <span class="code">fields</span> if you wish to have values chosen from a list rather than entered as free-form text.
-        make_optional: Make Optional
-        make_required: Make Required
-        make_public: Make Public
-        make_private: Make Private
-        up: Up
-        down: Down
-        remove: Remove
+        no_data: No custom dataset fields have been defined for your domain yet. Enter a name below and click 'Create' to begin.
         no_fields_defined: This field set does not have any fields defined yet
-        add_new_field: Add New Field
-        create_new_fieldset: Create a New Field Set
-        enter_a_name: Enter a name
-        create: Create
-        define_categories: Define Dataset Categories
-        category_name: Category Name
-        locales: Locales
+        page_title: Manage Dataset Metadata
         parent: Parent
-        shown: Shown?
-        yes: Yes
-        no: No
-        add_new_category: Add New Category
-        are_you_sure: Are you sure you want to delete this fieldset and all associated fields?
-        field_name: Field Name
-        allowed_values: Allowed Values
-        flashes:
-          successful_create: Field Set Successfully Created
-          fieldset_name_required: Cannot create field set without a name
-          fieldset_duplicated: Cannot create duplicate field set named '%{name}'
-          successful_remove: Field Set Successfully Removed
-          field_name_required: Cannot create field without a name
-          field_duplicated: You cannot create a duplicate field named '%{name}'
-          field_successful_create: Field Successfully Created
-          no_such_fieldset: No such fieldset exists
-          no_such_field: No such field exists
-          field_successful_save: Successfully saved field
-          field_successful_remove: Field Successfully Removed
-          cannot_move_field: "Cannot move field named'%{name}': not found"
-      users:
-        title: Manage Users
-        bulk_create: Bulk Create
-        emails: Emails
-        email_prompt: Enter email addresses for the accounts you wish to create
-        role: Role
-        create_accounts: Create Accounts
-        filter_by: Filter by
-        all: All
-        return_to_overview: Return to users overview
-        search_for_users: Search for Users to Add
-        search: Search
-        name: Name
-        email: Email
-        actions: Actions
         remove: Remove
-        reset_password: Reset Password
-        reenable_privileges: Re-Enable Privileges
+        shown: Shown?
+        title: Manage Metadata
+        'true': true
+        up: Up
+      users:
+        actions: Actions
+        all: All
+        bulk_create: Bulk Create
+        create_accounts: Create Accounts
+        email: Email
+        email_prompt: Enter email addresses for the accounts you wish to create
+        emails: Emails
+        error_permission_request: There was an error processing your permission request
+        filter_by: Filter by
+        flashes:
+          accounts_created:
+            one: ! '%{count} account successfully created'
+            other: ! '%{count} accounts successfully created'
+          invalid_role: ! 'Invalid role specified for user creation: %{role}'
+          no_email_addresses: No email addresses detected
+          pending_permissions_removed: Pending permissions removed
+          reenable_failed: There was an error enabling that user account.
+          reenable_success: Account successfully re-enabled
+          reset_email_failed: There was an error sending the password reset email.
+          reset_email_sent: Password reset email sent
+          successful_update: User successfully updated
+        invited: Invited
+        name: Name
+        no_pending_users: No pending users match your current filter
+        no_users_found: No existing users found
         no_users_match: No users match your current filter.
         pending_users: The following users have accounts pending, but have not activated them yet
-        invited: Invited
-        no_pending_users: No pending users match your current filter
-        user_saved: User saved
-        error_permission_request: There was an error processing your permission request
-        no_users_found: No existing users found
-        search_results: Search Results for '%{term}'
+        reenable_privileges: Re-Enable Privileges
+        remove: Remove
+        reset_password: Reset Password
+        return_to_overview: Return to users overview
+        role: Role
         roles:
           administrator: administrator
-          editor: editor
-          viewer: viewer
           designer: designer
-          publisher: publisher
+          editor: editor
           none: none
-        flashes:
-          successful_update: User successfully updated
-          reset_email_sent: Password reset email sent
-          reset_email_failed: There was an error sending the password reset email.
-          reenable_success: Account successfully re-enabled
-          reenable_failed: There was an error enabling that user account.
-          invalid_role: 'Invalid role specified for user creation: %{role}'
-          no_email_addresses: No email addresses detected
-          accounts_created:
-            one: '%{count} account successfully created'
-            other: '%{count} accounts successfully created'
-          pending_permissions_removed: Pending permissions removed
+          publisher: publisher
+          viewer: viewer
+        search: Search
+        search_for_users: Search for Users to Add
+        search_results: Search Results for '%{term}'
+        title: Manage Users
+        user_saved: User saved
     dataset_edit:
       append: Append
       append_and_replace: Append and Replace data

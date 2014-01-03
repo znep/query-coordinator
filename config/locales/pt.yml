@@ -173,6 +173,7 @@ pt:
         expand: Clique para expandir
       image_upload:
         button: Enviar imagem
+      no_results: Sem resultados
       rate:
         auth_action_phrase: classificar este conjunto de dados
       share:
@@ -456,6 +457,11 @@ pt:
       visit: vista
       visits: vistas
     and: e
+    auth:
+      invalid_userpass: 
+      need_login: 
+      need_permission: 
+      too_many_tries: 
     chart_types:
       area: Gráfico de áreas
       bar: Gráfico de barras
@@ -728,6 +734,7 @@ pt:
       print:
         print: Imprimir
         print_this_page: Imprimir esta página
+        remove: 
       remove: Remover este componente
       share:
         email: Partilhar através de E-mail
@@ -1027,6 +1034,123 @@ pt:
       view_statistics: Ver estatísticas
       visits: Visitas
       your: A sua classificação
+    admin:
+      federation:
+        accept: 
+        accepted: 
+        accepted_by: 
+        all: 
+        dataset: 
+        flashes:
+          accepted: 
+          created: 
+          deleted: 
+          invalid_domain: 
+          rejected: 
+        list_domains: 
+        no_domains: 
+        no_federations: 
+        no_pub_datasets: 
+        pending: 
+        publish: 
+        reject: 
+        search: 
+        search_boost: 
+        search_boost_explain: 
+        search_prompt: 
+        search_pub_datasets: 
+        source_domain: 
+        status: 
+        target_domain: 
+        terminate: 
+        title: 
+      metadata:
+        add_new_category: 
+        add_new_field: 
+        allowed_values: 
+        are_you_sure: 
+        category_name: 
+        create: 
+        create_new_fieldset: 
+        define_categories: 
+        define_custom_fields: 
+        down: 
+        enter_a_name: 
+        'false': 
+        field_name: 
+        flashes:
+          cannot_move_field: 
+          field_duplicated: 
+          field_name_required: 
+          field_successful_create: 
+          field_successful_remove: 
+          field_successful_save: 
+          fieldset_duplicated: 
+          fieldset_name_required: 
+          no_such_field: 
+          no_such_fieldset: 
+          successful_create: 
+          successful_remove: 
+        locales: 
+        make_optional: 
+        make_private: 
+        make_public: 
+        make_required: 
+        metadata_explain1: 
+        metadata_explain2: 
+        metadata_explain3: 
+        no_data: 
+        no_fields_defined: 
+        page_title: 
+        parent: 
+        remove: 
+        shown: 
+        title: 
+        'true': 
+        up: 
+      users:
+        actions: 
+        all: 
+        bulk_create: 
+        create_accounts: 
+        email: 
+        email_prompt: 
+        emails: 
+        error_permission_request: 
+        filter_by: 
+        flashes:
+          accounts_created: 
+          invalid_role: 
+          no_email_addresses: 
+          pending_permissions_removed: 
+          reenable_failed: 
+          reenable_success: 
+          reset_email_failed: 
+          reset_email_sent: 
+          successful_update: 
+        invited: 
+        name: 
+        no_pending_users: 
+        no_users_found: 
+        no_users_match: 
+        pending_users: 
+        reenable_privileges: 
+        remove: 
+        reset_password: 
+        return_to_overview: 
+        role: 
+        roles:
+          administrator: 
+          designer: 
+          editor: 
+          none: 
+          publisher: 
+          viewer: 
+        search: 
+        search_for_users: 
+        search_results: 
+        title: 
+        user_saved: 
     dataset_edit:
       append: Anexar
       append_and_replace: Anexar e Substituir dados
@@ -1058,6 +1182,13 @@ pt:
         import: Importar
         supported: Os tipos de ficheiro suportados são CSV, TSV e Excel. Os protocolos suportados são HTTP e HTTPS.
         url_prompt: Qual é o web URL do ficheiro que gostaria de importar?
+      errors:
+        invalid_crossload_url: 
+        invalid_url: 
+        missing_data_provider: 
+        missing_esri_url: 
+        missing_name: 
+        need_description: 
       finish:
         headline: O seu Conjunto de Dados foi criado.
         subheadline: Clique em Terminar para vê-lo!
@@ -1122,6 +1253,7 @@ pt:
         esri_map_layer_url: URL da Camada de Mapa ESRI
         esri_source_url: Digite o URL de origem
         privacy_security: Privacidade e Segurança
+        privacy_settings: 
         private_explain: Os meus dados são <strong>privados</strong>
         prompt: Por favor, descreva os seus dados.
         public_explain: ! 'Os meus dados são <strong>públicos</strong>: só podem ser modificados por mim, mas podem ser vistos por todos'
@@ -1429,6 +1561,10 @@ pt:
             value: Valores flutuantes
           group_extra: Agrupar valores extra
           groups: Grupos
+          headings:
+            chart_details: 
+            data_presentation: 
+            data_selection: 
           label: Etiqueta
           labelInBar: Etiqueta na barra
           labels_and_values: Etiquetas e valores
@@ -1916,10 +2052,13 @@ pt:
         title_html: Subscreva o &quot;<span class="datasetName">%{name}</span>&quot; <span class="datasetTypeNameUpcase">Conjunto de dados</span>
         unsubscribe: Se deixar de querer receber notificações desmarque a caixa de subscrição abaixo.
     edit_metadata:
+      about: 
       additional_source: Fonte adicional
       alternative_access_prompt: Introduza um ponto de acesso alternativo para este conjunto de dados
       api_endpoint: Terminal da API
       attachments: Anexos
+      attachmentsDisabledMessagePart1: 
+      attachmentsDisabledMessagePart2: 
       brief_description: Breve descrição
       brief_description_prompt: Introduzir uma descrição
       cancel: Cancelar

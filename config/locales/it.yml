@@ -457,6 +457,11 @@ it:
       visit: visualizzazione
       visits: visualizzazioni
     and: e
+    auth:
+      invalid_userpass: 
+      need_login: 
+      need_permission: 
+      too_many_tries: 
     chart_types:
       area: Grafico ad area
       bar: Grafico a barre
@@ -727,6 +732,7 @@ it:
       print:
         print: Stampa
         print_this_page: Stampa questa pagina
+        remove: 
       remove: Rimuovi questo componente
       share:
         email: Condividi via Email
@@ -1026,6 +1032,123 @@ it:
       view_statistics: Visualizza le statistiche
       visits: Visite
       your: La tua valutazione
+    admin:
+      federation:
+        accept: 
+        accepted: 
+        accepted_by: 
+        all: 
+        dataset: 
+        flashes:
+          accepted: 
+          created: 
+          deleted: 
+          invalid_domain: 
+          rejected: 
+        list_domains: 
+        no_domains: 
+        no_federations: 
+        no_pub_datasets: 
+        pending: 
+        publish: 
+        reject: 
+        search: 
+        search_boost: 
+        search_boost_explain: 
+        search_prompt: 
+        search_pub_datasets: 
+        source_domain: 
+        status: 
+        target_domain: 
+        terminate: 
+        title: 
+      metadata:
+        add_new_category: 
+        add_new_field: 
+        allowed_values: 
+        are_you_sure: 
+        category_name: 
+        create: 
+        create_new_fieldset: 
+        define_categories: 
+        define_custom_fields: 
+        down: 
+        enter_a_name: 
+        'false': 
+        field_name: 
+        flashes:
+          cannot_move_field: 
+          field_duplicated: 
+          field_name_required: 
+          field_successful_create: 
+          field_successful_remove: 
+          field_successful_save: 
+          fieldset_duplicated: 
+          fieldset_name_required: 
+          no_such_field: 
+          no_such_fieldset: 
+          successful_create: 
+          successful_remove: 
+        locales: 
+        make_optional: 
+        make_private: 
+        make_public: 
+        make_required: 
+        metadata_explain1: 
+        metadata_explain2: 
+        metadata_explain3: 
+        no_data: 
+        no_fields_defined: 
+        page_title: 
+        parent: 
+        remove: 
+        shown: 
+        title: 
+        'true': 
+        up: 
+      users:
+        actions: 
+        all: 
+        bulk_create: 
+        create_accounts: 
+        email: 
+        email_prompt: 
+        emails: 
+        error_permission_request: 
+        filter_by: 
+        flashes:
+          accounts_created: 
+          invalid_role: 
+          no_email_addresses: 
+          pending_permissions_removed: 
+          reenable_failed: 
+          reenable_success: 
+          reset_email_failed: 
+          reset_email_sent: 
+          successful_update: 
+        invited: 
+        name: 
+        no_pending_users: 
+        no_users_found: 
+        no_users_match: 
+        pending_users: 
+        reenable_privileges: 
+        remove: 
+        reset_password: 
+        return_to_overview: 
+        role: 
+        roles:
+          administrator: 
+          designer: 
+          editor: 
+          none: 
+          publisher: 
+          viewer: 
+        search: 
+        search_for_users: 
+        search_results: 
+        title: 
+        user_saved: 
     dataset_edit:
       append: Allega
       append_and_replace: Aggiungi e sostituisci i dati
@@ -1057,6 +1180,13 @@ it:
         import: Importa
         supported: I tipi di file supportati sono CSV, TSV e Excel. I protocolli supportati sono HTTP e HTTPS.
         url_prompt: Qual è l'URL web che vorresti importare?
+      errors:
+        invalid_crossload_url: 
+        invalid_url: 
+        missing_data_provider: 
+        missing_esri_url: 
+        missing_name: 
+        need_description: 
       finish:
         headline: Il Tuo set di dati è stato creato.
         subheadline: Clicca su Termina per vederlo!
@@ -1121,6 +1251,7 @@ it:
         esri_map_layer_url: ESRI Map Layer URL
         esri_source_url: Inserisci l'URL della fonte
         privacy_security: Privacy e Sicurezza
+        privacy_settings: 
         private_explain: I miei dati sono <strong>privati</strong>
         prompt: Cortesemente descrivi i tuoi dati
         public_explain: ! 'I miei dati sono <strong>pubblici</strong>: possono essere modificati solo da me, ma chiunque può vederli'
@@ -1428,6 +1559,10 @@ it:
             value: Valori Opuscolo
           group_extra: Raggruppa valori extra
           groups: Raggruppamenti
+          headings:
+            chart_details: 
+            data_presentation: 
+            data_selection: 
           label: Etichetta
           labelInBar: Etichette nella Barra
           labels_and_values: Etichette e Valori
@@ -1915,10 +2050,13 @@ it:
         title_html: Abbonati a "<span class="datasetName">%{name}</span>" <span class="datasetTypeNameUpcase">Dataset</span>
         unsubscribe: Se non desideri più notifiche, deseleziona la casella Iscriviti qui sotto.
     edit_metadata:
+      about: 
       additional_source: Sorgente aggiuntiva
       alternative_access_prompt: Inserisci un punto di accesso alternativo per questo dataset
       api_endpoint: Endpoint API
       attachments: Allegati
+      attachmentsDisabledMessagePart1: 
+      attachmentsDisabledMessagePart2: 
       brief_description: Breve descrizione
       brief_description_prompt: Inserisci una descrizione
       cancel: Annulla

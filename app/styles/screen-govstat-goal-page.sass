@@ -440,6 +440,7 @@ $chartHeight: 210px
 
     svg.mainSvg
       bottom: 0
+      overflow: hidden //IE actually supports overflow on SVGs, unlike other browsers.
       position: absolute
       z-index: 1
       // gferrari (4/25/13): Firefox is picky when it comes to calculating

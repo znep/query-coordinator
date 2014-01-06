@@ -1265,7 +1265,7 @@
             var fName = c.fieldName;
             var selected;
             //in new Visualize do not autopopulate coloumns with only one valid column 
-            if (isNewVisualize)
+            if (blist.feature_flags.visualize === 'nextgen')
             { selected = curVal == fName || curVal == tcId || curVal == cId; }
             else
             {

@@ -742,9 +742,7 @@ $(function()
         });
     }
 
-    var forceOldVisualize = $.urlParam(window.location.href, 'visualize') == 'old' || blist.configuration.oldChartConfigForced;
-    var isNewVisualize = $.urlParam(window.location.href, 'visualize') == 'nextgen' || (blist.configuration.newChartConfig && !forceOldVisualize);
-    if(isNewVisualize){
+    if(blist.feature_flags.visualize === 'nextgen'){
        $('a.new_visualize').closest('li').show();
     }
 

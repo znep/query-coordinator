@@ -22,6 +22,14 @@
         {
             var mapObj = this;
 
+            // Bug CORE-1145: _edit_mode=true causes an attempt to
+            // render on a hidden, dimensionless DIV. This breaks everything.
+            if (mapObj.$dom().parents(':not(:visible)').exists())
+            {
+                mapObj._reinitializeOnResize = true;
+                return;
+            }
+
             if (!mapObj._displayFormat.viewDefinitions)
             { Dataset.map.convertToVersion2(mapObj._primaryView, mapObj._displayFormat); }
 
@@ -772,6 +780,12 @@
         resizeHandle: function(event)
         {
             var mapObj = this;
+            if (mapObj._reinitializeOnResize)
+            {
+                delete mapObj._reinitializeOnResize;
+                mapObj.initializeVisualization();
+                return;
+            }
 
             if (mapObj.map) { mapObj.viewportHandler().expect('resizeHandle'); }
             if (mapObj._controls && mapObj._controls.ZoomBar) { mapObj._controls.ZoomBar.redraw(); }

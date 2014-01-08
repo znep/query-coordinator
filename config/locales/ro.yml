@@ -734,7 +734,6 @@ ro:
       print:
         print: Printare
         print_this_page: Printaţi această pagină
-        remove: Eliminați această componentă
       remove: Eliminaţi această componentă
       share:
         email: Partajare prin email

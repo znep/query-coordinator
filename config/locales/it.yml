@@ -732,7 +732,6 @@ it:
       print:
         print: Stampa
         print_this_page: Stampa questa pagina
-        remove: Rimuovi questo componente
       remove: Rimuovi questo componente
       share:
         email: Condividi via Email

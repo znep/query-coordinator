@@ -734,7 +734,6 @@ pt:
       print:
         print: Imprimir
         print_this_page: Imprimir esta página
-        remove: Eliminar este componente
       remove: Remover este componente
       share:
         email: Partilhar através de E-mail

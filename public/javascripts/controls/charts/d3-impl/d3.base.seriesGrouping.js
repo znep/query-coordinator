@@ -64,10 +64,7 @@ d3base.seriesGrouping = {
             virtualRowReadyCount: 0
         };
 
-        // make a copy of the view that we'll use for querying so that we're
-        // fetching everything in the appropriate sort
-        var sortedView = sg.sortedView = vizObj._primaryView.clone(),
-            sortColumns = [];
+        var sortColumns = [];
 
         // first sort by the category
         sortColumns.push(vizObj._fixedColumns[0]);
@@ -78,6 +75,23 @@ d3base.seriesGrouping = {
 
         // If there isn't a fixedColumn, use the id to sort
         sg.fixedColumn = vizObj._fixedColumns[0] || vizObj._primaryView.metaColumnForName('id');
+
+        // Set up cache
+        vizObj._seriesCache = vizObj._seriesCache || {};
+        var cacheKey = vizObj._getCacheKey(sg, vizObj._valueColumns);
+        var cacheItem = vizObj._seriesCache[cacheKey] = vizObj._seriesCache[cacheKey] || {};
+
+        // make a copy of the view that we'll use for querying so that we're
+        // fetching everything in the appropriate sort
+        cacheItem.sortedView = sg.sortedView = cacheItem.sortedView || vizObj._primaryView.clone();
+        var sortedView = sg.sortedView;
+
+        // Do we have cached values to load?
+        if (!$.isBlank(cacheItem.virtualRows))
+        {
+            sg.virtualRows = cacheItem.virtualRows;
+            sg.virtualRowReadyCount = cacheItem.virtualRowReadyCount;
+        }
 
         // set up the sort, if we have something to sort by.
         if (vizObj._fixedColumns[0])
@@ -106,13 +120,18 @@ d3base.seriesGrouping = {
             sortedView.update({ metadata: md });
         }
 
+        // we're explicitly not calling _super here. we'll save it off, and
+        // initialize the rest of the chain once we're ready here. saves a
+        // lot of bad hackery.
+        sg.superInit = vizObj._super;
+
         var finishedPreprocessing = false;
         var maybeDone = _.after(2, function()
         {
             // If there isn't a fixedColumn, use the id to sort, which will be
             // available now that rows have been loaded
             if ($.isBlank(sg.fixedColumn))
-            { sg.fixedColumn = vizObj._primaryView.metaColumnForName('id'); }
+            { sg.fixedColumn = categoryGroupedView.metaColumnForName('id'); }
 
             // If we get re-initialized before the two views below finish their
             // getAllRows, we'll be paving over fields in vizObj with some stale
@@ -133,10 +152,18 @@ d3base.seriesGrouping = {
                 vizObj._primaryView.trigger('row_count_change');
                 sg.superInit.call(vizObj);
 
-                vizObj._setChartVisible(false);
-                vizObj._setLoadingOverlay();
-                vizObj._updateLoadingOverlay('start');
-                vizObj._updateLoadingOverlay('preprocess');
+                if (_.isEmpty(sg.virtualRows))
+                {
+                    vizObj._setChartVisible(false);
+                    vizObj._setLoadingOverlay();
+                    vizObj._updateLoadingOverlay('start');
+                    vizObj._updateLoadingOverlay('preprocess');
+                }
+                else
+                {
+                    vizObj._setLoadingOverlay();
+                    vizObj._updateLoadingOverlay('loading');
+                }
             });
         });
 
@@ -157,13 +184,21 @@ d3base.seriesGrouping = {
 
         var getCategoryGrouped = function()
         {
-            categoryGroupedView.getAllRows(function(rows)
+            if (!$.isBlank(cacheItem.categoryGroupedRows))
             {
-                sg.categoryGroupedRows = rows;
-                maybeDone();
-            },
-            function(e)
-            { if (e.cancelled) { getCategoryGrouped(); } });
+                sg.categoryGroupedRows = cacheItem.categoryGroupedRows;
+                _.defer(maybeDone);
+            }
+            else
+            {
+                categoryGroupedView.getAllRows(function(rows)
+                {
+                    cacheItem.categoryGroupedRows = sg.categoryGroupedRows = rows;
+                    maybeDone();
+                },
+                function(e)
+                { if (e.cancelled) { getCategoryGrouped(); } });
+            }
         };
         getCategoryGrouped();
 
@@ -188,13 +223,21 @@ d3base.seriesGrouping = {
         seriesGroupedView.update({ metadata: md });
         var getSeriesGrouped = function()
         {
-            seriesGroupedView.getAllRows(function(rows)
+            if (!$.isBlank(cacheItem.seriesGroupedRows))
             {
-                sg.seriesGroupedRows = rows;
-                maybeDone();
-            },
-            function(e)
-            { if (e.cancelled) { getSeriesGrouped(); } });
+                sg.seriesGroupedRows = cacheItem.seriesGroupedRows;
+                _.defer(maybeDone);
+            }
+            else
+            {
+                seriesGroupedView.getAllRows(function(rows)
+                {
+                    cacheItem.seriesGroupedRows = sg.seriesGroupedRows = rows;
+                    maybeDone();
+                },
+                function(e)
+                { if (e.cancelled) { getSeriesGrouped(); } });
+            }
         };
         getSeriesGrouped();
 
@@ -206,13 +249,10 @@ d3base.seriesGrouping = {
             globalColorBasis = colorBasis;
         }
 
-        // we're explicitly not calling _super here. we'll save it off, and
-        // initialize the rest of the chain once we're ready here. saves a
-        // lot of bad hackery.
-        sg.superInit = vizObj._super;
-
         // We're interested in some events coming from the primary view.
         vizObj._primaryView.bind('conditionalformatting_change', _.bind(vizObj._handleConditionalFormattingChanged, vizObj), vizObj);
+
+        vizObj._primaryView.bind('query_change', _.bind(vizObj._invalidateCache, vizObj), vizObj);
 
         _.defer(function()
         {
@@ -224,6 +264,11 @@ d3base.seriesGrouping = {
 
         vizObj._setLoadingOverlay();
         vizObj._updateLoadingOverlay('preprocess');
+    },
+
+    _invalidateCache: function()
+    {
+        this._seriesCache = {};
     },
 
     cleanVisualization: function()
@@ -372,7 +417,7 @@ d3base.seriesGrouping = {
             if (sg.wantsData === true)
             {
                 vizObj.getDataForView(vizObj._primaryView);
-                // vizObj.handleRowCountChange(); <-- probably not needed
+                // vizObj.handleDataChange(); <-- probably not needed
             }
 
             continuation();
@@ -442,9 +487,11 @@ d3base.seriesGrouping = {
             return vizObj._super.apply(vizObj, arguments);
         }
 
-        if (this._seriesGrouping && this._seriesGrouping.virtualRows === data)
+        if (vizObj._seriesGrouping && vizObj._seriesGrouping.virtualRows === data)
         {
             // We just want to rerender the current data - no need to recalculate.
+            // Force resize calculation in case we already have everything cached
+            vizObj.handleDataChange();
             return vizObj._super(_.values(vizObj._seriesGrouping.virtualRows));
         }
 
@@ -656,6 +703,9 @@ d3base.seriesGrouping = {
             // 'call super with the virtual rows'.
             this._setChartVisible(true);
             this._updateLoadingOverlay('done');
+            var cacheKey = vizObj._getCacheKey(sg, vizObj._valueColumns);
+            vizObj._seriesCache[cacheKey].virtualRows = sg.virtualRows;
+            vizObj._seriesCache[cacheKey].virtualRowReadyCount = sg.virtualRowReadyCount;
             _.defer(function()
             {
                 vizObj.renderData(sg.virtualRows);
@@ -1035,6 +1085,13 @@ d3base.seriesGrouping = {
     handleDataMouseOut: function(visual)
     {
         return this._super.apply(this, arguments);
+    },
+
+    _getCacheKey: function(sg, valCols)
+    {
+        return '/' + (sg.fixedColumn || { fieldName: ':id' }).fieldName +
+            '/' + _.map(valCols, function(c) { return c.fieldName; }).join(':') +
+            '/' + _.map(sg.sortColumns, function(c) { return c.fieldName; }).join(':');
     }
 };
 

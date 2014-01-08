@@ -448,7 +448,7 @@ $.Control.registerMixin('d3_virt_scrolling', {
         vizObj._chartConfig.minValue = d3.min(allValues) || 0; // etc
     },
 
-    handleRowCountChange: function()
+    handleDataChange: function()
     {
         if (this._resizeEverything())
         {
@@ -807,8 +807,9 @@ $.Control.registerMixin('d3_virt_scrolling', {
     {
         var vizObj = this,
             defaults = vizObj.defaults,
-            cc = vizObj._chartConfig,
-            chartD3 = cc.chartD3,
+            cc = vizObj._chartConfig;
+        if ($.isBlank(cc)) { return; }
+        var chartD3 = cc.chartD3,
             totalRows = vizObj.getTotalRows(),
             chartArea = cc.$chartOuterContainer[cc.dataDim.width](),
             domArea = cc.$chartOuterContainer[cc.dataDim.height](),

@@ -454,7 +454,7 @@ $.Control.registerMixin('d3_impl_pie', {
         vizObj._renderData(data, addedNewData);
     },
 
-    handleRowCountChange: function()
+    handleDataChange: function()
     {
         var vizObj = this,
             cc = vizObj._chartConfig,

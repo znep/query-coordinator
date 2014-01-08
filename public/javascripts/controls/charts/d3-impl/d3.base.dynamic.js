@@ -45,6 +45,8 @@ $.Control.registerMixin('d3_base_dynamic', {
         delete vizObj._lastRowCount;
         delete vizObj._currentRenderRange;
         delete vizObj._currentRangeData;
+        if ($.subKeyDefined(vizObj, '_primaryView'))
+        { vizObj._primaryView.unbind(null, null, vizObj); }
         vizObj._super();
     },
 
@@ -64,7 +66,7 @@ $.Control.registerMixin('d3_base_dynamic', {
             // we haven't calculated our sizing stuff, but on the other hand
             // someone's already went and gotten the total row count for us.
             // recalculate and use.
-            vizObj.handleRowCountChange();
+            vizObj.handleDataChange();
             vizObj._dynamicSizingCalculated = true;
 
             renderRange = vizObj.getRenderRange(view);
@@ -96,7 +98,7 @@ $.Control.registerMixin('d3_base_dynamic', {
 
             if (vizObj._lastRowCount !== view.totalRows())
             {
-                vizObj.handleRowCountChange();
+                vizObj.handleDataChange();
                 vizObj._dynamicSizingCalculated = true;
             }
             if ($.isBlank(vizObj._lastRowCount))
@@ -117,8 +119,7 @@ $.Control.registerMixin('d3_base_dynamic', {
             // If we were cancelled, and didn't respond to the event that caused a cancel,
             // then re-try this request. Otherwise just clear initialLoad, and it will
             // respond normally.
-            if ($.subKeyDefined(errObj, 'cancelled') && errObj.cancelled &&
-                (vizObj._initialLoad || !vizObj._boundViewEvents))
+            if ($.subKeyDefined(errObj, 'cancelled') && errObj.cancelled && !vizObj._initialLoad)
             {
                 // Exponential back-off in case we're waiting on something that needs to finish
                 if ($.isBlank(vizObj._loadDelay) || vizObj._loadDelay == 0)
@@ -212,7 +213,7 @@ $.Control.registerMixin('d3_base_dynamic', {
         this._currentRangeData.splice(row.index, 1);
     },
 
-    handleRowCountChange: function()
+    handleDataChange: function()
     {
         // implement me to set dom width or height in accordance with the
         // row count changing

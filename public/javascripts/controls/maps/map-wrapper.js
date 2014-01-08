@@ -6,6 +6,10 @@
 
     blist.namespace.fetch('blist.openLayers');
 
+    var settingsWhitelist = [ 'showRowLink', 'hideRowLink', 'basePointSize',
+                              'numSegments', 'clusterThreshold', 'staleClusters',
+                              'defaultPixelSize' ];
+
     $.Control.extend('socrataMap', {
         isValid: function()
         {
@@ -140,6 +144,9 @@
             if ($.isEmptyObject(mapObj._displayFormat))
             { return; }
 
+            if (_.isUndefined(mapObj.layerSettings))
+            { mapObj.layerSettings = _.pick(mapObj.settings, settingsWhitelist); }
+
             if (!mapObj._displayFormat.viewDefinitions)
             { Dataset.map.convertToVersion2(mapObj._primaryView, mapObj._displayFormat); }
 
@@ -242,8 +249,9 @@
                 var query = $.deepGet(mapObj, '_primaryView', 'metadata', 'query', ds.id);
                 try {
                     mapObj._children[index] = $(mapObj._children[index].$dom)
-                            .socrataDataLayer({ view: ds, index: index, query: query,
-                                                parentViz: mapObj, displayFormat: df });
+                            .socrataDataLayer($.extend({}, mapObj.layerSettings,
+                                              { view: ds, index: index, query: query,
+                                                parentViz: mapObj, displayFormat: df }));
                     mapObj._children[index].setFullQuery(mapObj._children[index]._query);
                     mapObj._controls.Overview.registerDataLayer(mapObj._children[index], index);
                 } catch(e) {

@@ -31,7 +31,6 @@
     blist.configuration.newMapsEnabled = <%= module_enabled?(:new_maps) == true %>;
     blist.configuration.oldChartsForced = <%= module_enabled?(:old_charts) == true %>;
     blist.configuration.govStatTargetToleranceEnabled = <%= module_enabled?(:govstat_target_tolerance) == true %>;
-    blist.feature_flags = <%= raw CurrentDomain::FeatureFlags.to_json %>;
   </script>
 
   <%# TEMPORARY for using RTM %>

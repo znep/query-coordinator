@@ -205,19 +205,19 @@ ro:
         row_details: Vizualizaţi detaliile pentru acest rând
     editors:
       actions:
-        add: 
-        remove: 
-        replace: 
-        view: 
+        add: Adăugare
+        remove: Eliminare
+        replace: Înlocuire
+        view: Vizualizare
       document:
-        add_title: 
-        remove_title: 
-        replace_title: 
+        add_title: Adăugare document nou
+        remove_title: Eliminare document
+        replace_title: Înlocuire document
       photo:
-        add_title: 
-        remove_title: 
-        replace_title: 
-        view_title: 
+        add_title: Adăugare imagine nouă
+        remove_title: Eliminare imagine
+        replace_title: Înlocuire imagine
+        view_title: Vizualizare imagine într-o fereastră separată
     embed:
       create_template_button: Creaţi un nou şablon
       custom_size: Dimensiune personalizată
@@ -436,14 +436,14 @@ ro:
       user_removed: un utilizator care a fost deja eliminat
       user_removed_short: Utilizatorul a fost eliminat
     upload_dialog:
-      browse: 
-      title_file: 
-      title_image: 
-      title_photo: 
-      to_upload_file: 
-      to_upload_image: 
-      to_upload_photo: 
-      upload: 
+      browse: Răsfoire
+      title_file: Încărcați un fișier
+      title_image: Încărcați o imagine
+      title_photo: Încărcați o fotografie
+      to_upload_file: ! 'Fișier de încărcat:'
+      to_upload_image: ! 'Imagine de încărcat:'
+      to_upload_photo: ! 'Fotografie de încărcat:'
+      upload: Încărcare
   core:
     aggregates:
       average: Medie
@@ -460,10 +460,10 @@ ro:
       visits: vizualizări
     and: şi
     auth:
-      invalid_userpass: 
-      need_login: 
-      need_permission: 
-      too_many_tries: 
+      invalid_userpass: Nume de utilizator sau parolă nevalidă
+      need_login: Trebuie să fiți autentificat ca să accesați această pagină
+      need_permission: Nu aveți permisiunea de a accesa această pagină
+      too_many_tries: Prea multe tentative de autentificare. Cont dezactivat temporar.
     chart_types:
       area: Diagramă zonală
       bar: Diagramă bară
@@ -639,9 +639,9 @@ ro:
       roadmap: Hartă rutieră
       satellite: Satelit
       terrain: Teren
-    no_category: 
+    no_category: Nicio categorie
     no_js: Dezactivaţi javascript pe această pagină
-    no_license: 
+    no_license: Nicio licență
     numbers:
       eight: opt
       five: cinci
@@ -734,7 +734,6 @@ ro:
       print:
         print: Printare
         print_this_page: Printaţi această pagină
-        remove: 
       remove: Eliminaţi această componentă
       share:
         email: Partajare prin email
@@ -1036,121 +1035,123 @@ ro:
       your: Votul dvs.
     admin:
       federation:
-        accept: 
-        accepted: 
-        accepted_by: 
-        all: 
-        dataset: 
+        accept: Acceptare
+        accepted: Acceptat
+        accepted_by: Acceptat de
+        all: (toate)
+        dataset: Set de date
         flashes:
-          accepted: 
-          created: 
-          deleted: 
-          invalid_domain: 
-          rejected: 
-        list_domains: 
-        no_domains: 
-        no_federations: 
-        no_pub_datasets: 
-        pending: 
-        publish: 
-        reject: 
-        search: 
-        search_boost: 
-        search_boost_explain: 
-        search_prompt: 
-        search_pub_datasets: 
-        source_domain: 
-        status: 
-        target_domain: 
-        terminate: 
-        title: 
+          accepted: Federare acceptată cu succes
+          created: Federare creată cu succes
+          deleted: Federare ștearsă cu succes
+          invalid_domain: Nu s-a putut crea o federare de date. Domeniul țintă este nevalid
+          rejected: Federare respinsă cu succes
+        list_domains: Următoarea listă conține domenii cu care puteți începe federarea de date. Odată ce apăsați publicare, un administrator al domeniului țintă trebuie să vă accepte solicitarea.
+        no_domains: Nicio potrivire de domenii %{name} disponibilă.
+        no_federations: Pentru acest domeniu nu există încă nicio federare.
+        no_pub_datasets: Niciun set de date publicat nu se potrivește cu criteriile dvs. de căutare.
+        pending: În așteptare
+        publish: Publicare
+        reject: Respingere
+        search: Căutare
+        search_boost: Amplificare căutare
+        search_boost_explain: Gamă de la 1 la 0. Valorile mai mari fac ca seturile de date să aibă o probabilitate și mai mare de a fi afișate primele.
+        search_prompt: Căutare domenii de publicat pe
+        search_pub_datasets: Căutare seturi de date publicate
+        source_domain: Domeniu sursă
+        status: Stare
+        target_domain: Domeniu țintă
+        terminate: Încheiere
+        title: Deschidere federare date
       metadata:
-        add_new_category: 
-        add_new_field: 
-        allowed_values: 
-        are_you_sure: 
-        category_name: 
-        create: 
-        create_new_fieldset: 
-        define_categories: 
-        define_custom_fields: 
-        down: 
-        enter_a_name: 
-        'false': 
-        field_name: 
+        add_new_category: Adăugare categorie nouă
+        add_new_field: Adăugare prieten nou
+        allowed_values: Valori permise
+        are_you_sure: Sunteți sigur că doriți să  ștergeți acest câmp și toate câmpurile asociate?
+        category_name: Nume categorie
+        create: Creare
+        create_new_fieldset: Creare set de câmpuri nou
+        define_categories: Definire categorii seturi de date
+        define_custom_fields: Definire câmpuri personalizate
+        down: Jos
+        enter_a_name: Introduceți un nume
+        'false': fals
+        field_name: Câmp nume
         flashes:
-          cannot_move_field: 
-          field_duplicated: 
-          field_name_required: 
-          field_successful_create: 
-          field_successful_remove: 
-          field_successful_save: 
-          fieldset_duplicated: 
-          fieldset_name_required: 
-          no_such_field: 
-          no_such_fieldset: 
-          successful_create: 
-          successful_remove: 
-        locales: 
-        make_optional: 
-        make_private: 
-        make_public: 
-        make_required: 
-        metadata_explain1: 
-        metadata_explain2: 
-        metadata_explain3: 
-        no_data: 
-        no_fields_defined: 
-        page_title: 
-        parent: 
-        remove: 
-        shown: 
-        title: 
-        'true': 
-        up: 
+          cannot_move_field: ! 'Nu se poate muta câmpul numit ''%{name}'': negăsit'
+          field_duplicated: Nu puteți crea un câmp duplicat numit '%{name}'
+          field_name_required: Nu se poate crea un câmp fără nume
+          field_successful_create: Câmp creat cu succes
+          field_successful_remove: Câmp eliminat cu succes
+          field_successful_save: Câmp salvat cu succes
+          fieldset_duplicated: Nu se poate crea un set de câmpuri duplicat numit '%{name}'
+          fieldset_name_required: Nu s epoate crea un set de câmpuri fără nume
+          no_such_field: Nu există un astfel de câmp
+          no_such_fieldset: Nu există un astfel de set de câmpuri
+          successful_create: Set de câmpuri creat cu succes
+          successful_remove: Set de câmpuri eliminat cu succes
+        locales: Locales
+        make_optional: Faceți opțional
+        make_private: Faceți privat
+        make_public: Faceți public
+        make_required: Faceți obligatoriu
+        metadata_explain1: Metadatele personalizate sunt împărțite în <span class="code">seturi de câmpuri</span> și <span class="code">câmpuri</span>. Un <span class="code">set de câmpuri</span> este un mod de a grupa logic și vizual unul sau mai multe <span class="code">câmpuri</span> personalizate la un loc.
+        metadata_explain2: Câmpurile pot fi configurate în mai multe feluri. Ele pot fi <span class="code">obligatorii</span>, ceea ce va fi aplicat atunci când editorii creează noi seturi de date și actualizează metadatele existente. Ele pot fi și <span class="code">private</span>, aceasta însemnând că valorile introduse nu vor fi vizibile publicului.
+        metadata_explain3: ! 'În final, puteți alege să vă predefinți opțiunile pentru <span class="code">câmpuri</span> dacă doriți ca valorile să fie alese dintr-o listă mai degrabă decât introduse ca text în formă liberă.                                                                                                                                               '
+        no_data: Încă nu au fost definite niciun fel de câmpuri de seturi de date pentru domeniul dvs. Introduceți mai jos un nume și dați click pe „Creare” pentru a începe.
+        no_fields_defined: Acest câmp nu are încă niciun câmp definit
+        page_title: Administrare metadate set de date
+        parent: Părinte
+        remove: Eliminare
+        shown: Afișat?
+        title: Administrare metadate
+        'true': adevărat
+        up: Sus
       users:
-        actions: 
-        all: 
-        bulk_create: 
-        create_accounts: 
-        email: 
-        email_prompt: 
-        emails: 
-        error_permission_request: 
-        filter_by: 
+        actions: Acțiuni
+        all: Toate
+        bulk_create: Creare grămadă
+        create_accounts: Creare conturi
+        email: E-mail
+        email_prompt: Introduceți adresele de e-mail pentru conturile pe acre doriți să le creați
+        emails: E-mail-uri
+        error_permission_request: A survenit o eroare la procesarea solicitării dvs. de permisiune
+        filter_by: Filtrare după
         flashes:
-          accounts_created: 
-          invalid_role: 
-          no_email_addresses: 
-          pending_permissions_removed: 
-          reenable_failed: 
-          reenable_success: 
-          reset_email_failed: 
-          reset_email_sent: 
-          successful_update: 
-        invited: 
-        name: 
-        no_pending_users: 
-        no_users_found: 
-        no_users_match: 
-        pending_users: 
-        reenable_privileges: 
-        remove: 
-        reset_password: 
-        return_to_overview: 
-        role: 
+          accounts_created:
+            one: Contul %{count} a fost creat cu succes
+            other: Conturile %{count} au fost create cu succes
+          invalid_role: ! 'Rol nevalid specificat pentru creația utilizatorului: %{role}'
+          no_email_addresses: Nicio adresă de e-mail detectată
+          pending_permissions_removed: Permisiuni în așteptare eliminate
+          reenable_failed: A survenit o eroare care a activat acel cont de utilizator.
+          reenable_success: Cont reactivat cu succes
+          reset_email_failed: ! 'A survenit o eroare la trimiterea e-mail-ului de resetare a parolei. '
+          reset_email_sent: E-mail de resetare a parolei trimis
+          successful_update: Utilizator actuaizat cu succes
+        invited: Invitat
+        name: Nume
+        no_pending_users: Niciun utilizator în așteptare nu se potrivește cu filtrul dvs. actual
+        no_users_found: Nu s-a găsit niciun utilizator existent
+        no_users_match: Niciun utilizator nu se potrivește cu filtrul dvs. actual
+        pending_users: Următorii utilizatori au conturile în așteptare, dar încă nu le-au activat
+        reenable_privileges: Reactivare privilegii
+        remove: Eliminare
+        reset_password: Resetare parolă
+        return_to_overview: Revenire la sumarul utilizatorilor
+        role: Rol
         roles:
-          administrator: 
-          designer: 
-          editor: 
-          none: 
-          publisher: 
-          viewer: 
-        search: 
-        search_for_users: 
-        search_results: 
-        title: 
-        user_saved: 
+          administrator: administrator
+          designer: designer
+          editor: redactor
+          none: niciunul
+          publisher: editor
+          viewer: spectator
+        search: Căutare
+        search_for_users: Căutare utilizatori de adăugat
+        search_results: Căutare rezultate pentru '%{term}'
+        title: Administrare utilizatori
+        user_saved: Utilizator salvat
     dataset_edit:
       append: Adăugare
       append_and_replace: Adăugare şi înlocuire date
@@ -1183,12 +1184,12 @@ ro:
         supported: Tipurile de fişiere suportate sunt CSV, TSV şi Excel. Protocoalele suportate sunt HTTP şi HTTPS.
         url_prompt: Care este URL-ul web al fişierului pe care doriţi să îl importaţi?
       errors:
-        invalid_crossload_url: 
-        invalid_url: 
-        missing_data_provider: 
-        missing_esri_url: 
-        missing_name: 
-        need_description: 
+        invalid_crossload_url: Vă rugăm să introduceți un URL valabil, care începe fie cu HTTP sau HTTPS.
+        invalid_url: Acesta nu pare a fi un URL valabil.
+        missing_data_provider: Trebuie să specificați furnizorul de date (atribuire) în cadrul unei licențe Creative Commons.
+        missing_esri_url: Este necesar un strat de hartă ESRI valabil.
+        missing_name: Este necesar numele setului de date.
+        need_description: Vă rugăm să descrieți &ldquo;%{name}&rdquo;
       finish:
         headline: Setul dvs. de date a fost creat.
         subheadline: Click pe "Încheiere" pentru a-l vizualiza!
@@ -1253,7 +1254,7 @@ ro:
         esri_map_layer_url: URL strat hartă ESRI
         esri_source_url: Introduceţi URL-ul sursei
         privacy_security: Confidenţialitate şi siguranţă
-        privacy_settings: 
+        privacy_settings: Setări confidențialitate
         private_explain: Datele mele sunt <strong>confidenţiale</strong>
         prompt: Vă rugăm să vă descrieţi datele.
         public_explain: ! 'Datele mele sunt <strong>publice</strong>: pot fi modificate doar de mine, dar pot fi vizualizate de către oricine'
@@ -1562,9 +1563,9 @@ ro:
           group_extra: Grupare valori suplimentare
           groups: Grupuri
           headings:
-            chart_details: 
-            data_presentation: 
-            data_selection: 
+            chart_details: Detalii diagrame
+            data_presentation: Prezentare date
+            data_selection: Selectare date
           label: Etichetă
           labelInBar: Etichetă în bară
           labels_and_values: Etichete şi valori
@@ -2052,13 +2053,13 @@ ro:
         title_html: Abonaţi-vă la &quot;<span class="datasetName">%{name}</span>&quot; <span class="datasetTypeNameUpcase">setul de date</span>
         unsubscribe: Dacă nu doriţi să mai primiţi notificări, debifaţi caseta "Abonare" de mai jos.
     edit_metadata:
-      about: 
+      about: Despre
       additional_source: Sursă suplimentară
       alternative_access_prompt: Introduceţi un punct alternativ de acces pentru acest set de date
       api_endpoint: Punct terminal API
       attachments: Ataşamente
-      attachmentsDisabledMessagePart1: 
-      attachmentsDisabledMessagePart2: 
+      attachmentsDisabledMessagePart1: Pentru a încărca atașamente, este necesar să încheiați, mai întâi, publicarea acestui set de date. Apoi, click
+      attachmentsDisabledMessagePart2: în bara de instrumente și dați click pe „Editare metadata”. Atunci veți putea încărca atașamente.
       brief_description: Scurtă descriere
       brief_description_prompt: Introduceţi o descriere
       cancel: Anulare

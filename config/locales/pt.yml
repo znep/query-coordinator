@@ -205,19 +205,19 @@ pt:
         row_details: Ver detalhes para esta linha
     editors:
       actions:
-        add: 
-        remove: 
-        replace: 
-        view: 
+        add: Adicionar
+        remove: Eliminar
+        replace: Substituir
+        view: Ver
       document:
-        add_title: 
-        remove_title: 
-        replace_title: 
+        add_title: Adicionar um novo documento
+        remove_title: Eliminar o documento
+        replace_title: Substituir o documento
       photo:
-        add_title: 
-        remove_title: 
-        replace_title: 
-        view_title: 
+        add_title: Adicionar uma nova imagem
+        remove_title: Eliminar a imagem
+        replace_title: Substituir a imagem
+        view_title: Ver a imagem numa janela separada
     embed:
       create_template_button: Criar um novo modelo
       custom_size: Tamanho personalizado
@@ -434,14 +434,14 @@ pt:
       user_removed: um utilizador que já foi removido
       user_removed_short: Utilizador foi removido
     upload_dialog:
-      browse: 
-      title_file: 
-      title_image: 
-      title_photo: 
-      to_upload_file: 
-      to_upload_image: 
-      to_upload_photo: 
-      upload: 
+      browse: Navegar
+      title_file: Carregar um Ficheiro
+      title_image: Carregar uma Imagem
+      title_photo: Carregar uma Foto
+      to_upload_file: ! 'Ficheiro para Carregar:'
+      to_upload_image: ! 'Imagem para Carregar:'
+      to_upload_photo: ! 'Foto para Carregar:'
+      upload: Carregar
   core:
     aggregates:
       average: Média
@@ -458,10 +458,10 @@ pt:
       visits: vistas
     and: e
     auth:
-      invalid_userpass: 
-      need_login: 
-      need_permission: 
-      too_many_tries: 
+      invalid_userpass: Nome de utilizador ou palavra-passe inválidos
+      need_login: Deve ter sessão iniciada para aceder a esta página
+      need_permission: Não tem permissão para ver esta página
+      too_many_tries: ! 'Demasiadas tentativas de iniciar sessão para esse login. Conta temporariamente desativada. '
     chart_types:
       area: Gráfico de áreas
       bar: Gráfico de barras
@@ -639,9 +639,9 @@ pt:
       roadmap: Mapa de estradas
       satellite: Satélite
       terrain: Terreno
-    no_category: 
+    no_category: Sem categoria
     no_js: Desativar o Javascript nesta página
-    no_license: 
+    no_license: Sem Licença
     numbers:
       eight: oito
       five: cinco
@@ -734,7 +734,6 @@ pt:
       print:
         print: Imprimir
         print_this_page: Imprimir esta página
-        remove: 
       remove: Remover este componente
       share:
         email: Partilhar através de E-mail
@@ -1036,121 +1035,123 @@ pt:
       your: A sua classificação
     admin:
       federation:
-        accept: 
-        accepted: 
-        accepted_by: 
-        all: 
-        dataset: 
+        accept: Aceitar
+        accepted: Aceite
+        accepted_by: Aceite por
+        all: (todos)
+        dataset: Conjunto de Dados
         flashes:
-          accepted: 
-          created: 
-          deleted: 
-          invalid_domain: 
-          rejected: 
-        list_domains: 
-        no_domains: 
-        no_federations: 
-        no_pub_datasets: 
-        pending: 
-        publish: 
-        reject: 
-        search: 
-        search_boost: 
-        search_boost_explain: 
-        search_prompt: 
-        search_pub_datasets: 
-        source_domain: 
-        status: 
-        target_domain: 
-        terminate: 
-        title: 
+          accepted: Federação aceite com sucesso
+          created: Federação criada com sucesso
+          deleted: Federação apagada com sucesso
+          invalid_domain: ! 'Não foi possível criar a federação de dados: o domínio alvo é inválido'
+          rejected: Federação rejeitada com sucesso
+        list_domains: ! 'A seguinte é uma lista de domínios com a qual pode iniciar a federação de dados. Após clicar em publicar, o seu pedido deve ser aceite por um administrador do domínio alvo. '
+        no_domains: Nenhuns domínios disponíveis correspondem a %{name}.
+        no_federations: ! 'Ainda não existem federações para este domínio. '
+        no_pub_datasets: Nenhuns conjuntos de dados publicados correspondem ao seu critério de pesquisa.
+        pending: Pendente
+        publish: Publicar
+        reject: Rejeitar
+        search: Procurar
+        search_boost: Reforço de Pesquisa
+        search_boost_explain: Intervalo de 1 a 0. Os valores mais altos aumentam a probabilidade dos conjuntos de dados aparecerem em primeiro lugar.
+        search_prompt: ! 'Procurar por Domínios para Publicar para '
+        search_pub_datasets: Procurar por Conjuntos de Dados Publicados
+        source_domain: Domínio de Origem
+        status: Estado
+        target_domain: Domínio Alvo
+        terminate: Terminar
+        title: Federação de Dados Abertos
       metadata:
-        add_new_category: 
-        add_new_field: 
-        allowed_values: 
-        are_you_sure: 
-        category_name: 
-        create: 
-        create_new_fieldset: 
-        define_categories: 
-        define_custom_fields: 
-        down: 
-        enter_a_name: 
-        'false': 
-        field_name: 
+        add_new_category: Adicionar Nova Categoria
+        add_new_field: Adicionar Novo Campo
+        allowed_values: Valores Permitidos
+        are_you_sure: Tem a certeza de que deseja eliminar este conjunto de campos e todos os campos associados?
+        category_name: Nome da Categoria
+        create: Criar
+        create_new_fieldset: Criar um Novo Conjunto de Campos
+        define_categories: ! 'Definir Categorias de Dados '
+        define_custom_fields: Definir Campos Personalizados
+        down: Para baixo
+        enter_a_name: Introduzir um nome
+        'false': falso
+        field_name: Nome do Campo
         flashes:
-          cannot_move_field: 
-          field_duplicated: 
-          field_name_required: 
-          field_successful_create: 
-          field_successful_remove: 
-          field_successful_save: 
-          fieldset_duplicated: 
-          fieldset_name_required: 
-          no_such_field: 
-          no_such_fieldset: 
-          successful_create: 
-          successful_remove: 
-        locales: 
-        make_optional: 
-        make_private: 
-        make_public: 
-        make_required: 
-        metadata_explain1: 
-        metadata_explain2: 
-        metadata_explain3: 
-        no_data: 
-        no_fields_defined: 
-        page_title: 
-        parent: 
-        remove: 
-        shown: 
-        title: 
-        'true': 
-        up: 
+          cannot_move_field: ! 'Não é possível mover o campo denominado ''%{name}'': não encontrado'
+          field_duplicated: Não lhe é possível criar um campo duplicado denominado '%{name}'
+          field_name_required: Não é possível criar um campo sem um nome
+          field_successful_create: Campo Criado com Sucesso
+          field_successful_remove: Campo Eliminado com Sucesso
+          field_successful_save: Campo guardado com sucesso
+          fieldset_duplicated: Não é possível criar um conjunto de campos duplicado denominado '%{name}'
+          fieldset_name_required: Não é possível criar um conjunto de campos sem um nome
+          no_such_field: Esse campo não existe
+          no_such_fieldset: Esse conjunto de dados não existe
+          successful_create: Conjunto de Dados Criado com Sucesso
+          successful_remove: Conjunto de Dados Eliminado com Sucesso
+        locales: Locais
+        make_optional: Tornar Opcional
+        make_private: Tornar Privado
+        make_public: Tornar Público
+        make_required: Tornar Obrigatório
+        metadata_explain1: Os metadados personalizados são divididos em <span class="code">conjuntos de campos</span> e <span class="code">campos</span>. Um <span class="code">conjunto de campos</span> é uma forma de agrupar lógica e visualmente um ou mais <span class="code">campos</span> personalizados.
+        metadata_explain2: Os campos podem ser configurados de várias formas. Eles podem ser <span class="code">obrigatórios</span>, que serão aplicados quando os editores criarem novos conjuntos de dados e atualizarem os metadados atuais. Estes também podem ser <span class="code">privados</span>, o que significa que os valores introduzidos não serão visíveis para o público.
+        metadata_explain3: ! 'Finalmente, pode escolher predefinir as opções para os seus <span class="code">campos</span> se desejar ter valores selecionados a partir de uma lista em vez de introduzidos num texto de formato livre. '
+        no_data: ! 'Ainda não foram definidos campos de conjuntos de dados personalizados para o seu domínio. Introduza um nome abaixo e clique em ''Criar'' para iniciar. '
+        no_fields_defined: Este conjunto de campos ainda não tem quaisquer campos definidos
+        page_title: Gerir Metadados de Conjunto de Dados
+        parent: Principal
+        remove: Eliminar
+        shown: Exibido?
+        title: Gerir Metadados
+        'true': verdadeiro
+        up: Para cima
       users:
-        actions: 
-        all: 
-        bulk_create: 
-        create_accounts: 
-        email: 
-        email_prompt: 
-        emails: 
-        error_permission_request: 
-        filter_by: 
+        actions: Ações
+        all: Todos
+        bulk_create: Criação em Massa
+        create_accounts: Criar Contas
+        email: E-mail
+        email_prompt: Introduza os endereços de e-mail para as contas que deseja criar
+        emails: E-mails
+        error_permission_request: Ocorreu um erro ao processar o seu pedido de autorização
+        filter_by: Filtrado por
         flashes:
-          accounts_created: 
-          invalid_role: 
-          no_email_addresses: 
-          pending_permissions_removed: 
-          reenable_failed: 
-          reenable_success: 
-          reset_email_failed: 
-          reset_email_sent: 
-          successful_update: 
-        invited: 
-        name: 
-        no_pending_users: 
-        no_users_found: 
-        no_users_match: 
-        pending_users: 
-        reenable_privileges: 
-        remove: 
-        reset_password: 
-        return_to_overview: 
-        role: 
+          accounts_created:
+            one: ! '%{count} conta criada com sucesso'
+            other: ! '%{count} contas criadas com sucesso'
+          invalid_role: ! 'Especificada função inválida para a criação de utilizador: %{role}'
+          no_email_addresses: Nenhuns endereços de e-mail detetados
+          pending_permissions_removed: Autorizações pendentes foram eliminadas
+          reenable_failed: Ocorreu um erro ao ativar essa conta de utilizador
+          reenable_success: Conta reativada com sucesso
+          reset_email_failed: Ocorreu um erro ao enviar e-mail de reposição da palavra-passe.
+          reset_email_sent: O e-mail de reposição da palavra-passe foi enviado
+          successful_update: Utilizador atualizado com sucesso
+        invited: Convidado
+        name: Nome
+        no_pending_users: Nenhuns utilizadores pendentes correspondem ao seu filtro atual
+        no_users_found: Nenhuns utilizadores atuais encontrados
+        no_users_match: Nenhuns utilizadores correspondem ao seu filtro atual.
+        pending_users: ! 'Os seguintes utilizadores têm contas pendentes, mas ainda não as ativaram '
+        reenable_privileges: Reativar Privilégios
+        remove: Eliminar
+        reset_password: Repor Palavra-passe
+        return_to_overview: Regressar à visão geral de utilizadores
+        role: Função
         roles:
-          administrator: 
-          designer: 
-          editor: 
-          none: 
-          publisher: 
-          viewer: 
-        search: 
-        search_for_users: 
-        search_results: 
-        title: 
-        user_saved: 
+          administrator: administrador
+          designer: designer
+          editor: editor
+          none: nenhum
+          publisher: editor
+          viewer: espetador
+        search: Procurar
+        search_for_users: Procurar Utilizadores para Adicionar
+        search_results: Procurar Resultados para '%{term}'
+        title: Gerir Utilizadores
+        user_saved: Utilizador guardado
     dataset_edit:
       append: Anexar
       append_and_replace: Anexar e Substituir dados
@@ -1183,12 +1184,12 @@ pt:
         supported: Os tipos de ficheiro suportados são CSV, TSV e Excel. Os protocolos suportados são HTTP e HTTPS.
         url_prompt: Qual é o web URL do ficheiro que gostaria de importar?
       errors:
-        invalid_crossload_url: 
-        invalid_url: 
-        missing_data_provider: 
-        missing_esri_url: 
-        missing_name: 
-        need_description: 
+        invalid_crossload_url: Por favor, introduza um URL válido com HTTP ou HTTPS.
+        invalid_url: Esse não parece ser um URL válido.
+        missing_data_provider: Deve especificar o fornecedor de dados (atribuição) numa licença Creative Commons.
+        missing_esri_url: É obrigatório um URL de camada de mapa ESRI válido.
+        missing_name: O nome do conjunto de dados é obrigatório.
+        need_description: Por favor, descreva &ldquo;%{name}&rdquo;
       finish:
         headline: O seu Conjunto de Dados foi criado.
         subheadline: Clique em Terminar para vê-lo!
@@ -1253,7 +1254,7 @@ pt:
         esri_map_layer_url: URL da Camada de Mapa ESRI
         esri_source_url: Digite o URL de origem
         privacy_security: Privacidade e Segurança
-        privacy_settings: 
+        privacy_settings: Configurações Privadas
         private_explain: Os meus dados são <strong>privados</strong>
         prompt: Por favor, descreva os seus dados.
         public_explain: ! 'Os meus dados são <strong>públicos</strong>: só podem ser modificados por mim, mas podem ser vistos por todos'
@@ -1562,9 +1563,9 @@ pt:
           group_extra: Agrupar valores extra
           groups: Grupos
           headings:
-            chart_details: 
-            data_presentation: 
-            data_selection: 
+            chart_details: Detalhes do Gráfico
+            data_presentation: Apresentação de Dados
+            data_selection: Seleção de Dados
           label: Etiqueta
           labelInBar: Etiqueta na barra
           labels_and_values: Etiquetas e valores
@@ -2052,13 +2053,13 @@ pt:
         title_html: Subscreva o &quot;<span class="datasetName">%{name}</span>&quot; <span class="datasetTypeNameUpcase">Conjunto de dados</span>
         unsubscribe: Se deixar de querer receber notificações desmarque a caixa de subscrição abaixo.
     edit_metadata:
-      about: 
+      about: Sobre
       additional_source: Fonte adicional
       alternative_access_prompt: Introduza um ponto de acesso alternativo para este conjunto de dados
       api_endpoint: Terminal da API
       attachments: Anexos
-      attachmentsDisabledMessagePart1: 
-      attachmentsDisabledMessagePart2: 
+      attachmentsDisabledMessagePart1: Para carregar anexos, primeiro termine a publicação deste conjunto de dados. De seguida, clique
+      attachmentsDisabledMessagePart2: ! 'na barra de ferramentas, e clique em Editar Metadados. Estará então em condições de carregar anexos. '
       brief_description: Breve descrição
       brief_description_prompt: Introduzir uma descrição
       cancel: Cancelar

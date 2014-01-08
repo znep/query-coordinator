@@ -205,19 +205,19 @@ it:
         row_details: Visualizza i dettagli per questa riga
     editors:
       actions:
-        add: 
-        remove: 
-        replace: 
-        view: 
+        add: Aggiungi
+        remove: Rimuovi
+        replace: Sostituisci
+        view: Visualizza
       document:
-        add_title: 
-        remove_title: 
-        replace_title: 
+        add_title: Aggiungi un nuovo documento
+        remove_title: Rimuovi il documento
+        replace_title: Sostituisci il documento
       photo:
-        add_title: 
-        remove_title: 
-        replace_title: 
-        view_title: 
+        add_title: Aggiungi una nuova immagine
+        remove_title: Rimuovi l'immagine
+        replace_title: Sostituisci l'immagine
+        view_title: Visualizza l'immagine in una finestra separata
     embed:
       create_template_button: Crea un Nuovo Template
       custom_size: Personalizza dimensioni
@@ -434,14 +434,14 @@ it:
       user_removed: un utente che era già stato rimosso
       user_removed_short: L'utente è stato rimosso
     upload_dialog:
-      browse: 
-      title_file: 
-      title_image: 
-      title_photo: 
-      to_upload_file: 
-      to_upload_image: 
-      to_upload_photo: 
-      upload: 
+      browse: Sfoglia
+      title_file: Carica un file
+      title_image: Carica un'immagine
+      title_photo: Carica una foto
+      to_upload_file: ! 'File da caricare:'
+      to_upload_image: ! 'Immagine da caricare:'
+      to_upload_photo: ! 'Foto da caricare:'
+      upload: Carica
   core:
     aggregates:
       average: Media
@@ -458,10 +458,10 @@ it:
       visits: visualizzazioni
     and: e
     auth:
-      invalid_userpass: 
-      need_login: 
-      need_permission: 
-      too_many_tries: 
+      invalid_userpass: Password o username non valido
+      need_login: Per accedere a questa pagina devi aver effettuato il login
+      need_permission: Non hai l'autorizzazione per visualizzare questa pagina
+      too_many_tries: Sono stati effettuati troppi tentativi di accesso a quel login. Il conto è temporaneamente disabilitato.
     chart_types:
       area: Grafico ad area
       bar: Grafico a barre
@@ -637,9 +637,9 @@ it:
       roadmap: Roadmap
       satellite: Satellite
       terrain: Terrain
-    no_category: 
+    no_category: Nessuna categoria
     no_js: Disabilita il Javascript su questa pagina
-    no_license: 
+    no_license: Nessuna licenza
     numbers:
       eight: otto
       five: cinque
@@ -732,7 +732,6 @@ it:
       print:
         print: Stampa
         print_this_page: Stampa questa pagina
-        remove: 
       remove: Rimuovi questo componente
       share:
         email: Condividi via Email
@@ -1034,121 +1033,123 @@ it:
       your: La tua valutazione
     admin:
       federation:
-        accept: 
-        accepted: 
-        accepted_by: 
-        all: 
-        dataset: 
+        accept: Accetto
+        accepted: Accettato
+        accepted_by: Accettato da
+        all: (tutto)
+        dataset: Dataset
         flashes:
-          accepted: 
-          created: 
-          deleted: 
-          invalid_domain: 
-          rejected: 
-        list_domains: 
-        no_domains: 
-        no_federations: 
-        no_pub_datasets: 
-        pending: 
-        publish: 
-        reject: 
-        search: 
-        search_boost: 
-        search_boost_explain: 
-        search_prompt: 
-        search_pub_datasets: 
-        source_domain: 
-        status: 
-        target_domain: 
-        terminate: 
-        title: 
+          accepted: Accettazione della Federazione riuscita
+          created: Creazione della Federazione riuscita
+          deleted: Eliminazione della Federazione riuscita
+          invalid_domain: ! 'Impossibile creare federazione dati: domain targe non valido'
+          rejected: Rifiuto Federazione riuscito
+        list_domains: ! 'Il seguente è un elenco di domini con i quali puoi iniziare una federazione dati. Una volta cliccato "pubblica", un amministratore dal dominio target deve accettare la tua richiesta. '
+        no_domains: Nessun dominio disponibile coincide a %{name}.
+        no_federations: Per questo dominio non esiste ancora alcuna federazione.
+        no_pub_datasets: ! 'Nessun dataset coincide con i tuoi criteri di ricerca. '
+        pending: In sospeso
+        publish: Pubblica
+        reject: Rifiuta
+        search: Cerca
+        search_boost: Accelera ricerca
+        search_boost_explain: Da 1 a 0. Valori superiori verranno mostrati prima.
+        search_prompt: Cerca i Domini da pubblicare su
+        search_pub_datasets: Cerca i Dati pubblicati
+        source_domain: Dominio sorgente
+        status: Stato
+        target_domain: Dominio target
+        terminate: Cessa
+        title: Apri i dati della Federazione
       metadata:
-        add_new_category: 
-        add_new_field: 
-        allowed_values: 
-        are_you_sure: 
-        category_name: 
-        create: 
-        create_new_fieldset: 
-        define_categories: 
-        define_custom_fields: 
-        down: 
-        enter_a_name: 
-        'false': 
-        field_name: 
+        add_new_category: Aggiungi nuova Categoria
+        add_new_field: Aggiungi nuovo Campo
+        allowed_values: Permetti i Valori
+        are_you_sure: Sei sicuro di voler eliminare questa impostazione del Campo e tutti i campi associati?
+        category_name: Nome Categoria
+        create: Crea
+        create_new_fieldset: Crea una nuova impostazione del Campo
+        define_categories: Definisci categorie di dataset
+        define_custom_fields: Definisci campi personalizzati
+        down: Giù
+        enter_a_name: Inserisci un nome
+        'false': falso
+        field_name: Nome campo
         flashes:
-          cannot_move_field: 
-          field_duplicated: 
-          field_name_required: 
-          field_successful_create: 
-          field_successful_remove: 
-          field_successful_save: 
-          fieldset_duplicated: 
-          fieldset_name_required: 
-          no_such_field: 
-          no_such_fieldset: 
-          successful_create: 
-          successful_remove: 
-        locales: 
-        make_optional: 
-        make_private: 
-        make_public: 
-        make_required: 
-        metadata_explain1: 
-        metadata_explain2: 
-        metadata_explain3: 
-        no_data: 
-        no_fields_defined: 
-        page_title: 
-        parent: 
-        remove: 
-        shown: 
-        title: 
-        'true': 
-        up: 
+          cannot_move_field: ! 'Impossibile spostare il campo nominato ''%{name}'': non trovato'
+          field_duplicated: Non puoi creare un doppio campo nominato '%{name}'
+          field_name_required: Non è possibile creare un campo senza nome
+          field_successful_create: Creazione campo riuscita
+          field_successful_remove: Rimozione campo riuscita
+          field_successful_save: Salvataggio campo riuscita
+          fieldset_duplicated: Non è possibile creare un doppio campo nominato '%{name}'
+          fieldset_name_required: Non è possibile creare una impostazione campo senza nome
+          no_such_field: Non esiste nessun campo come questo
+          no_such_fieldset: Non esiste nessuna impostazione campo come questa
+          successful_create: Creazione impostazione campo riuscita
+          successful_remove: Rimozione impostazione campo riuscita
+        locales: Locali
+        make_optional: Rendi facoltativo
+        make_private: Rendi Privato
+        make_public: Rendi Pubblico
+        make_required: Rendi Obbligatorio
+        metadata_explain1: I metadata personalizzati sono frammentati in <span class="code">impostazioni di campo</span> and <span class="code">dei campi</span>. Una <span class="code">impostazione di campo</span> è un modo per visualizzare logicamente un gruppo o più <span class="code">campi</span> personalizzati assieme.
+        metadata_explain2: ! 'I campi possono essere configurati in vari modi. Possono essere <span class="code">obbligatori</span>, il che li renderà obbligatori quando chi pubblica creerà nuovi database e aggiornerà metadata esistenti. Oppure possono essere <span class="code">privati</span>, rendendoli non visibili ad altre persone. '
+        metadata_explain3: Infine, potrai predefinire le ozioni per i tuoi <span class="code">campi</span>, nel caso in cui tu desiderassi ottenere dei valori scelti da un’elenco, piuttosto che inseriti come testo gratuito.
+        no_data: Nessun campo con dati impostati è stato definito per il tuo dominio. Inserisci un nome qui sotto e clicca 'Crea' per cominciare.
+        no_fields_defined: Questa impostazione di campo non ha ancora alcun campo definito
+        page_title: Gestisci i Metadata del Dataset
+        parent: Parent
+        remove: Rimuovi
+        shown: Mostrato?
+        title: Gestisci i Metadata
+        'true': vero
+        up: Su
       users:
-        actions: 
-        all: 
-        bulk_create: 
-        create_accounts: 
-        email: 
-        email_prompt: 
-        emails: 
-        error_permission_request: 
-        filter_by: 
+        actions: Azioni
+        all: Tutto
+        bulk_create: Crea in massa
+        create_accounts: Crea Account
+        email: Email
+        email_prompt: Inserisci gli indirizzi email per i conti che vuoi creare
+        emails: Email
+        error_permission_request: Si è verificato un errore durante l'elaborazione della tua richiesta di autorizzazione
+        filter_by: Filtra per
         flashes:
-          accounts_created: 
-          invalid_role: 
-          no_email_addresses: 
-          pending_permissions_removed: 
-          reenable_failed: 
-          reenable_success: 
-          reset_email_failed: 
-          reset_email_sent: 
-          successful_update: 
-        invited: 
-        name: 
-        no_pending_users: 
-        no_users_found: 
-        no_users_match: 
-        pending_users: 
-        reenable_privileges: 
-        remove: 
-        reset_password: 
-        return_to_overview: 
-        role: 
+          accounts_created:
+            one: Creazione del conto %{count} riuscita
+            other: Creazione dei conti %{count} riuscita
+          invalid_role: ! 'Ruolo specificato per la creazione dell''utente non valido: %{role}'
+          no_email_addresses: Nessun indirizzo email identificato
+          pending_permissions_removed: Autorizzazioni in sospeso rimosse
+          reenable_failed: Si è verificato un errore durante l'abilitazione del conto di quell'utente.
+          reenable_success: Riabilitazione del conto riuscita
+          reset_email_failed: Si era verificato un errore durante l'invio della email per resettare la password.
+          reset_email_sent: Email per resettare la password inviata
+          successful_update: Aggiornamento utente riuscito
+        invited: Invitato
+        name: Nome
+        no_pending_users: Nessun utente in sospeso coincide con il tuo filtro attuale
+        no_users_found: Non è stato trovato nessun utente esistente
+        no_users_match: Nessun utente coincide con il tuo filtro attuale
+        pending_users: I seguenti utenti hanno dei conti in sospeso, ma non sono ancora stati attivati
+        reenable_privileges: Riabilita privilegi
+        remove: Rimuovi
+        reset_password: Resetta la Password
+        return_to_overview: Torna alla panoramica degli utenti
+        role: Ruolo
         roles:
-          administrator: 
-          designer: 
-          editor: 
-          none: 
-          publisher: 
-          viewer: 
-        search: 
-        search_for_users: 
-        search_results: 
-        title: 
-        user_saved: 
+          administrator: amministratore
+          designer: designer
+          editor: editore
+          none: nessuno
+          publisher: autore
+          viewer: visualizzatore
+        search: Cerca
+        search_for_users: Cerca utenti da aggiungere
+        search_results: Cerca risultati per '%{term}'
+        title: Gestisci gli utenti
+        user_saved: Utente salvato
     dataset_edit:
       append: Allega
       append_and_replace: Aggiungi e sostituisci i dati
@@ -1181,12 +1182,12 @@ it:
         supported: I tipi di file supportati sono CSV, TSV e Excel. I protocolli supportati sono HTTP e HTTPS.
         url_prompt: Qual è l'URL web che vorresti importare?
       errors:
-        invalid_crossload_url: 
-        invalid_url: 
-        missing_data_provider: 
-        missing_esri_url: 
-        missing_name: 
-        need_description: 
+        invalid_crossload_url: Inserisci un valido URL digitando HTTP o HTTPS
+        invalid_url: Sembra non essere un URL valido.
+        missing_data_provider: Devi specificare il data provider (attribuzione) in una licenza Creative Commons.
+        missing_esri_url: È necessario inserire un URL di un valido ESRI map layer.
+        missing_name: È obbligatorio inserire il nome del Dataset.
+        need_description: Descrivi &ldquo;%{name}&rdquo;
       finish:
         headline: Il Tuo set di dati è stato creato.
         subheadline: Clicca su Termina per vederlo!
@@ -1251,7 +1252,7 @@ it:
         esri_map_layer_url: ESRI Map Layer URL
         esri_source_url: Inserisci l'URL della fonte
         privacy_security: Privacy e Sicurezza
-        privacy_settings: 
+        privacy_settings: Impostazioni privacy
         private_explain: I miei dati sono <strong>privati</strong>
         prompt: Cortesemente descrivi i tuoi dati
         public_explain: ! 'I miei dati sono <strong>pubblici</strong>: possono essere modificati solo da me, ma chiunque può vederli'
@@ -1560,9 +1561,9 @@ it:
           group_extra: Raggruppa valori extra
           groups: Raggruppamenti
           headings:
-            chart_details: 
-            data_presentation: 
-            data_selection: 
+            chart_details: Dettagli grafico
+            data_presentation: Presentazione dati
+            data_selection: Selezione dati
           label: Etichetta
           labelInBar: Etichette nella Barra
           labels_and_values: Etichette e Valori
@@ -2050,13 +2051,13 @@ it:
         title_html: Abbonati a "<span class="datasetName">%{name}</span>" <span class="datasetTypeNameUpcase">Dataset</span>
         unsubscribe: Se non desideri più notifiche, deseleziona la casella Iscriviti qui sotto.
     edit_metadata:
-      about: 
+      about: Informazioni
       additional_source: Sorgente aggiuntiva
       alternative_access_prompt: Inserisci un punto di accesso alternativo per questo dataset
       api_endpoint: Endpoint API
       attachments: Allegati
-      attachmentsDisabledMessagePart1: 
-      attachmentsDisabledMessagePart2: 
+      attachmentsDisabledMessagePart1: Per caricare gli allegati, prima devi finire la pubblicazione di questo dataset. Poi, clicca
+      attachmentsDisabledMessagePart2: nella barra degli strumenti e quindi clicca Modifica Metadata. A questo punto potrai caricare gli allegati.
       brief_description: Breve descrizione
       brief_description_prompt: Inserisci una descrizione
       cancel: Annulla

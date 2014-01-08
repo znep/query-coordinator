@@ -746,6 +746,10 @@ en:
     configurator:
       advanced_components: Advanced Components
       report_components: Report Components
+      actions_components: Actions
+      data_components: Data
+      content_components: Content
+      input_components: Input
     context_picker:
       select_dataset: Select Dataset
       view_data: View Data

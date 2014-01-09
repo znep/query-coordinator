@@ -84,7 +84,6 @@ http://www.socrata.com
     blist.namespace.fetch('blist.configuration');
     blist.configuration.strings = <%= safe_json(CurrentDomain.strings) %>;
     blist.locale = "<%= I18n.locale %>";
-    blist.feature_flags = <%= raw CurrentDomain::FeatureFlags.to_json %>;
   </script>
 
   <%= yield :js_footer %>

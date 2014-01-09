@@ -171,6 +171,9 @@
       blist.currentUserId = "<%= current_user.id %>";
     <%- end -%>
 
+    blist.configuration.newChartsEnabled = <%= module_enabled?(:new_charts) || true %>;
+    blist.configuration.newMapsEnabled = <%= module_enabled?(:new_maps) == true %>;
+    blist.configuration.oldChartsForced = <%= module_enabled?(:old_charts) == true %>;
     blist.widget.theme = <%= raw @theme.to_json %>;
     blist.widget.customizationId = '<%= params[:customization_id] || '' %>';
     blist.widget.enabledModules = <%= raw @view.enabled_modules.to_json %>;

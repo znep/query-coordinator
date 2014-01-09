@@ -3460,7 +3460,8 @@ function translateSubFilter(fc, ds, simplify, isHaving)
                 { filterQ.columnFieldName = c.columnFieldName; }
                 else if (!$.isBlank(col))
                 { filterQ.columnFieldName = col.fieldName; }
-                if (isHaving && $.subKeyDefined(col, 'format.grouping_aggregate'))
+                if (isHaving && $.subKeyDefined(col, 'format.grouping_aggregate')
+                    && ds._useSODA2)
                 {
                     filterQ.columnFieldName = blist.datatypes.soda2Aggregate(
                         col.format.grouping_aggregate) + '_' + filterQ.columnFieldName;

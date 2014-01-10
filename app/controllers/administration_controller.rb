@@ -1043,6 +1043,22 @@ class AdministrationController < ApplicationController
     end
   end
 
+  skip_before_filter :require_user, :only => [:flag_out_of_date]
+  def flag_out_of_date
+    if authenticate_with_http_basic do |u, p|
+        user_session = UserSession.new('login' => u, 'password' => p)
+        user_session.save && check_auth_levels_any(['edit_site_theme', 'edit_pages', 'create_pages'])
+    end
+      CurrentDomain.flag_out_of_date!(CurrentDomain.cname)
+      respond_to do |format|
+        format.html { render :text => 'Done' }
+        format.data { render :json => '"Done"' }
+      end
+    else
+      request_http_basic_authentication
+    end
+  end
+
   #
   # Access checks
   #

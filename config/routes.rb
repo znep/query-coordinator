@@ -157,6 +157,7 @@ Frontend::Application.routes do
       post '/routing_approval/manage', :action => 'routing_approval_manage_save'
 
       get '/configuration', :action => 'configuration'
+      get '/flag_out_of_date', :action => 'flag_out_of_date'
     end
 
     get '/templates/:id', :controller => 'remote_partials', :action => :templates

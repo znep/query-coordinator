@@ -23,13 +23,13 @@ class OdysseusController < ApplicationController
     @suppress_govstat = true unless CurrentDomain.member?(current_user)
 
     if res.code == '400'
-      render_error(400)
+      return render_error(400)
     elsif res.code == '401'
-      require_user
+      return require_user
     elsif res.code == '403'
-      render_403
+      return render_403
     elsif res.code == '404'
-      render_404
+      return render_404
     else
       contents = JSON.parse(res.body)
 

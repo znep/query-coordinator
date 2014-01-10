@@ -25,7 +25,7 @@ class OdysseusController < ApplicationController
     if res.code == '400'
       return render_error(400)
     elsif res.code == '401'
-      return require_user
+      return current_user.nil? ? require_user : render_403
     elsif res.code == '403'
       return render_403
     elsif res.code == '404'

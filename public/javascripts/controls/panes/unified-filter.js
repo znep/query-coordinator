@@ -178,6 +178,16 @@
                 })).concat({ value: 'blank?', text: $.t('core.filters.informal.is_blank') });
     };
 
+    var makeValidCondition = function(condition)
+    {
+        if (condition.type == 'operator' && condition.value != 'OR' &&
+                condition.value != 'AND')
+        {
+            condition.children = [ $.extend(true, {}, condition) ];
+            condition.value = 'OR';
+        }
+    };
+
     var getFilterValue = function(value, column, metadata)
     {
         if (!$.isBlank(metadata.subcolumn) && (metadata.operator != 'blank?') &&
@@ -696,8 +706,7 @@
                 rootCondition = { type: 'operator', value: 'AND',
                     metadata: { advanced: rootCondition.metadata.advanced,
                         unifiedVersion: rootCondition.metadata.unifiedVersion },
-                    children: [ { type: 'operator', value: 'OR', metadata: rootCondition.metadata,
-                        children: [ rootCondition ] } ] };
+                        children: [ rootCondition ] };
             }
 
             _.each(rootCondition.children, renderCondition);
@@ -738,6 +747,8 @@
                 // someone must have changed the type on this or something. abort mission.
                 return;
             }
+
+            makeValidCondition(condition);
 
             // render the main bits
             var $filter = $.renderTemplate('filterConditionStatic', { metadata: metadata, column: column },
@@ -821,6 +832,8 @@
                 // someone must have changed the type on this or something. abort mission.
                 return;
             }
+
+            makeValidCondition(condition);
 
             // If this a composite column without a subcolumn defined, force
             // it; we can't filter effectively without it

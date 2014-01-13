@@ -3474,8 +3474,6 @@ function translateSubFilter(fc, ds, simplify, isHaving)
             else if (c.type == 'literal')
             {
                 var v = c.value;
-                if (!$.isBlank(col) && _.isFunction(col.renderType.matchValue))
-                { v = col.renderType.matchValue(v, col); }
                 if ($.isBlank(filterQ.value))
                 { filterQ.value = v; }
                 else

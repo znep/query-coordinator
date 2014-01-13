@@ -1,7 +1,8 @@
+<%- prefix = 'screens.admin.home' %>
 <% content_for :head do %>
   <%= rendered_stylesheet_tag 'administration-screen' %>
   <%= rendered_stylesheet_tag 'administration-home' %>
-  <title>Manage Home Page | <%= CurrentDomain.strings.site_title %></title>
+  <title><%= t("#{prefix}.title") %> | <%= CurrentDomain.strings.site_title %></title>
 <% end %>
 
 <% content_for :skip_links do %>
@@ -13,14 +14,14 @@
 <div class="contentBox withLeftNavigation homeManagement">
   <div class="adminHeader homemgmt">
     <span class="icon"></span>
-    <h1>Manage Home Page</h1>
+    <h1><%= t("#{prefix}.title") %></h1>
   </div>
 </div>
 
 <%- if CurrentDomain.user_can?(current_user, 'manage_stories') -%>
 <div class="contentBox withLeftNavigation">
-  <a href="<%= url_for :action => :new_story %>" class="button newButton newStoryButton rightArrow">Create a New Story<span class="icon"></span></a>
-  <h2>Manage Story Content</h2>
+  <a href="<%= url_for :action => :new_story %>" class="button newButton newStoryButton rightArrow"><%= t("#{prefix}.create_new_story") %><span class="icon"></span></a>
+  <h2><%= t("#{prefix}.manage_story_content") %></h2>
 
   <%= display_standard_flashes %>
 
@@ -34,9 +35,9 @@
       </colgroup>
       <thead>
         <tr>
-          <th class="image" scope="col"><div>Image</div></th>
-          <th class="contents" scope="col"><div>Contents</div><span class="icon"></span></th>
-          <th class="date" scope="col"><div>Date Published</div><span class="icon"></span></th>
+          <th class="image" scope="col"><div><%= t("#{prefix}.image") %></div></th>
+          <th class="contents" scope="col"><div><%= t("#{prefix}.contents") %></div><span class="icon"></span></th>
+          <th class="date" scope="col"><div><%= t("#{prefix}.date_published") %></div><span class="icon"></span></th>
           <th class="actions" scope="col"><div></div></th>
         </tr>
       </thead>
@@ -59,17 +60,17 @@
             <td class="actions">
               <span class="loading"></span>
               <a href="<%= url_for :action => :edit_story, :id => story.id %>" class="editStoryButton button">
-                <span class="icon"></span>Edit
+                <span class="icon"></span><%= t("#{prefix}.edit") %>
               </a>
               <%- if index > 0 -%>
                 <%= form_button({:action => 'move_story', :id => story.id, :other => @stories[index-1].id},
-                               'Up', {:method => :put}) %>
+                               t("#{prefix}.up"), {:method => :put}) %>
               <%- end -%>
               <%- if index < @stories.length-1 %>
                 <%= form_button({:action => 'move_story', :id => @stories[index+1].id, :other => story.id},
-                               'Down', {:method => :put}) %>
+                               t("#{prefix}.down"), {:method => :put}) %>
               <%- end -%>
-              <%= form_button({:action => 'delete_story', :id => story.id}, 'Delete',
+              <%= form_button({:action => 'delete_story', :id => story.id}, t("#{prefix}.delete"),
                              {:method => :delete}, {:class => 'deleteStoryButton button'}) %>
             </td>
           </tr>
@@ -80,17 +81,17 @@
 </div>
 
 <div class="contentBox withLeftNavigation">
-  <a href="<%= url_for :action => :update_stories_appearance %>" class="button newButton storyAppearanceButton rightArrow">Customize Now<span class="icon"></span></a>
-  <h2>Customize Story Appearance</h2>
+  <a href="<%= url_for :action => :update_stories_appearance %>" class="button newButton storyAppearanceButton rightArrow"><%= t("#{prefix}.customize_now") %><span class="icon"></span></a>
+  <h2><%= t("#{prefix}.customize_story_appearance") %></h2>
 </div>
 <%- end -%>
 
 <%- if CurrentDomain.user_can?(current_user, 'feature_items') -%>
   <div class="contentBox withLeftNavigation">
-    <a href="#saveFeatures" class="button newButton saveFeaturesButton rightArrow">Save Now<span class="icon"></span></a>
-    <a href="#newFeature" class="button newButton newFeatureButton add">Add a New Featured Dataset<span class="icon"></span></a>
-    <span class="newFeatureMessage">Only four datasets may be featured at a time.</span>
-    <h2>Manage Featured Datasets</h2>
+    <a href="#saveFeatures" class="button newButton saveFeaturesButton rightArrow"><%= t("#{prefix}.save_now") %><span class="icon"></span></a>
+    <a href="#newFeature" class="button newButton newFeatureButton add"><%= t("#{prefix}.add_featured_dataset") %><span class="icon"></span></a>
+    <span class="newFeatureMessage"><%= t("#{prefix}.dataset_display_limit") %></span>
+    <h2><%= t("#{prefix}.manage_featured_datasets") %></h2>
     <div class="featuresWorkspace clearfix"></div>
   </div>
 
@@ -107,27 +108,27 @@
 <%- view_type = (!@catalog_config.nil? ?
   @catalog_config.properties.view_type : nil) || 'table' -%>
 <div class="contentBox withLeftNavigation layoutConfig">
-  <h2>Catalog Layout Configuration</h2>
+  <h2><%= t("#{prefix}.catalog_layout_configuration") %></h2>
   <%= form_tag({:action => 'modify_catalog_config'}, {:method => 'post',
     :class => 'commonForm'}) %>
     <div class="line">
-      <span class="mainLabel">Default Catalog Layout</span>
+      <span class="mainLabel"><%= t("#{prefix}.default_catalog_layout") %></span>
       <div class="valueBox">
         <input type="radio" id="catalogViewType_table"
           name="catalog[view_type]" value="table"
           <%= view_type == 'table' ? 'checked="checked"' : '' %> />
-        <label for="catalogViewType_table">Compact List</label>
+        <label for="catalogViewType_table"><%= t("#{prefix}.compact_list") %></label>
       </div>
       <div class="valueBox">
         <input type="radio" id="catalogViewType_rich"
           name="catalog[view_type]" value="rich"
           <%= view_type == 'rich' ? 'checked="checked"' : '' %> />
-        <label for="catalogViewType_rich">Rich List</label>
+        <label for="catalogViewType_rich"><%= t("#{prefix}.rich_list") %></label>
       </div>
-      <span class="saving statusText">Saving</span>
-      <span class="saved statusText">Saved</span>
+      <span class="saving statusText"><%= t("#{prefix}.saving") %></span>
+      <span class="saved statusText"><%= t("#{prefix}.saved") %></span>
     </div>
-    <input type="submit" value="Save" />
+    <input type="submit" value="<%= t('core.dialogs.save') %>" />
   </form>
 </div>
 <%- end -%>
@@ -135,10 +136,10 @@
 <%- content_for :templates do -%>
   <div class="feature">
     <div class="featureWrapper">
-      <a href="#left" class="featureSwapButton leftArrow" title="Move Left"><span class="icon">Left</span></a>
-      <a href="#right" class="featureSwapButton rightArrow" title="Move Right"><span class="icon">Right</span></a>
+      <a href="#left" class="featureSwapButton leftArrow" title="<%= t("#{prefix}.move_left") %>"><span class="icon"><%= t("#{prefix}.left") %></span></a>
+      <a href="#right" class="featureSwapButton rightArrow" title="<%= t("#{prefix}.move_right") %>"><span class="icon"><%= t("#{prefix}.right") %></span></a>
       <div class="featureBox">
-        <a href="#remove" class="featureRemoveButton close" title="Remove"><span class="icon">Remove</span></a>
+        <a href="#remove" class="featureRemoveButton close" title="<%= t("#{prefix}.remove") %>"><span class="icon"><%= t("#{prefix}.remove") %></span></a>
         <div class="featureInnerWrapper">
           <input type="text" class="featureHeadline"/>
 
@@ -146,36 +147,36 @@
             <div class="line">
               <input type="radio" name="featureContent"
                      class="featureContentRadio" value="thumbnail" />
-              <label for="featureContentThumbnail">Thumbnail</label>
+              <label for="featureContentThumbnail"><%= t("#{prefix}.thumbnail") %></label>
             </div>
             <div class="featureContentThumbnailSection featureContentType">
-              <img src="" alt="feature image"/>
+              <img src="" alt="<%= t("#{prefix}.feature_image") %>"/>
               <div>
-                <a class="editThumbnailButton editImageButton button" href="#editThumbnail">Edit</a>
+                <a class="editThumbnailButton editImageButton button" href="#editThumbnail"><%= t("#{prefix}.edit") %></a>
               </div>
             </div>
 
             <div class="line">
               <input type="radio" name="featureContent"
                      class="featureContentRadio" value="custom" />
-              <label for="featureContentCustom">Custom Image</label>
+              <label for="featureContentCustom"><%= t("#{prefix}.custom_image") %></label>
             </div>
             <div class="featureContentCustomSection featureContentType">
               <input type="hidden" class="featureContentImageSha" />
               <div class="customImageContainer">
                 <div class="ajaxImage">
-                  <img src="" alt="custom image" />
+                  <img src="" alt="<%= t("#{prefix}.custom_image") %>" />
                 </div>
                 <a class="editCustomImageButton editImageButton" href="#editCustomImage" data-endpoint="/api/assets">Edit</a>
               <span class="throbber"></span>
               </div>
-              <div class="customImageError flash error">Invalid file type. Please choose an image file</div>
+              <div class="customImageError flash error"><%= t("#{prefix}.filetype_error") %></div>
             </div>
 
             <div class="line">
               <input type="radio" name="featureContent"
                      class="featureContentRadio" value="text" />
-              <label for="featureContentText">Text</label>
+              <label for="featureContentText"><%= t("#{prefix}.text") %></label>
             </div>
             <div class="featureContentTextSection featureContentType">
               <input type="text" class="featureContentTextHeadline"/>
@@ -191,7 +192,7 @@
 <%- end -%>
 
 <%- content_for :modals do -%>
-  <%= render :partial => 'modals/select_dataset', :locals => { :title => 'Choose a Dataset to feature' } %>
+  <%= render :partial => 'modals/select_dataset', :locals => { :title => t("#{prefix}.choose_a_dataset") } %>
 
   <%= modal :id => 'setThumbnail' do %>
     <h2>Set a Thumbnail</h2>
@@ -204,3 +205,4 @@
     <%= include_javascripts 'admin-home' %>
   <%- end -%>
 <%- end -%>
+<%= render_translations LocalePart.screens.admin.home %>

@@ -1065,6 +1065,43 @@ en:
         target_domain: Target Domain
         terminate: Terminate
         title: Open Data Federation
+      home:
+        title: Manage Home Page
+        create_new_story: Create a New Story
+        manage_story_content: Manage Story Content
+        image: Image
+        contents: Contents
+        date_published: Date Published
+        edit: Edit
+        up: Up
+        down: Down
+        delete: Delete
+        customize_now: Customize Now
+        customize_story_appearance: Customize Story Appearance
+        save_now: Save Now
+        add_featured_dataset: Add a New Featured Dataset
+        dataset_display_limit: Only four datasets may be featured at a time.
+        manage_featured_dataset: Manage Featured Dataset
+        catalog_layout_configuration: Catalog Layout Configuration
+        default_catalog_layout: Default Catalog Layout
+        compact_list: Compact List
+        rich_list: Rich List
+        saving: Saving
+        saved: Saved
+        move_left: Move Left
+        left: Left
+        move_right: Move Right
+        right: Right
+        remove: Remove
+        thumbnail: Thumbnail
+        feature_image: feature image
+        custom_image: Custom Image
+        filetype_error: Invalid file type. Please choose an image file
+        text: Text
+        choose_a_dataset: Choose a Dataset to feature
+        are_you_sure: Are you sure? This action cannot be undone.
+        saving1: Saving...
+        saved: Saved.
       metadata:
         add_new_category: Add New Category
         add_new_field: Add New Field

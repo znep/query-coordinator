@@ -3,11 +3,12 @@
 
 var homeNS = blist.namespace.fetch('blist.home');
 var commonNS = blist.namespace.fetch('blist.common');
+var t = function(str, props) { return $.t('screens.admin.home.' + str, props); };
 
 $(function()
 {
     $('.deleteStoryButton').adminButton({
-        confirmationText: 'Are you sure? This action cannot be undone.',
+        confirmationText: t('are_you_sure'),
         callback: function(response, $row)
         {
             $row.slideUp().remove();
@@ -75,7 +76,7 @@ $(function()
         var customUploadGen = function($features)
         {
             $features.find('.editCustomImageButton').imageUploader({
-                buttonText: 'Edit',
+                buttonText: t('edit'),
                 containerSelector: '.featureContentCustomSection',
                 name: 'featuredDatasetUploader',
                 errorSelector: '.customImageError',
@@ -283,7 +284,7 @@ $(function()
                 features.push(feature);
             });
 
-            $button.addClass('disabled').text('Saving...');
+            $button.addClass('disabled').text(t('saving1'));
 
             $.ajax({
                 type: 'put',
@@ -293,14 +294,14 @@ $(function()
                 data: JSON.stringify({ features: features || [] }),
                 success: function()
                 {
-                    $button.text('Saved.');
+                    $button.text(t('saved1'));
                     setTimeout(function()
                     {
                         $button
                             .removeClass('disabled')
                             .empty()
                             .html($.tag([
-                                'Save Now',
+                                t('save_now'),
                                 { tagName: 'span', 'class': 'icon' }], true));
                     }, 2000);
                 }

@@ -1036,6 +1036,15 @@ en:
       visits: Visits
       your: Your Rating
     admin:
+      datasets:
+        title: Datasets
+        layout_config: Layout Configuration
+        sidebar_position: Sidebar Position
+        right: Right
+        left: Left
+        saving: Saving
+        saved: Saved
+        unpublished_datasets: Unpublished Datasets
       federation:
         accept: Accept
         accepted: Accepted
@@ -1103,6 +1112,13 @@ en:
         saving1: Saving...
         saved: Saved.
         set_a_thumbnail: Set a Thumbnail
+        flashes:
+          delete_error: The story you attempted to delete does not exist.
+          create_error: 'An error occurred during your request: %{error_message}'
+          move_error: The story you attempted to move does not exist.
+          move_success: Your story has been saved
+          edit_error: The story you attempted to edit does not exist.
+          edit_success: Your story has been saved
       metadata:
         add_new_category: Add New Category
         add_new_field: Add New Field

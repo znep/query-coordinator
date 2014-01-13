@@ -1,6 +1,7 @@
+<%- prefix = 'screens.admin.datasets' -%>
 <% content_for :head do %>
   <%= rendered_stylesheet_tag 'administration-screen' %>
-  <title>Datasets | <%= CurrentDomain.strings.site_title %></title>
+  <title><%= t("#{prefix}.title") %> | <%= CurrentDomain.strings.site_title %></title>
 <% end %>
 
 <% content_for :skip_links do %>
@@ -12,14 +13,14 @@
 <div id="datasetContent" class="contentBox withLeftNavigation">
   <div class="adminHeader datasets">
     <span class="icon"></span>
-    <h1>Datasets</h1>
+    <h1><%= t("#{prefix}.title") %></h1>
   </div>
 
   <%= display_standard_flashes %>
 
   <%- if CurrentDomain.user_can?(current_user, 'edit_others_datasets') -%>
   <div class="datasetsList content">
-    <h2>Datasets</h2>
+    <h2><%= t("#{prefix}.title") %></h2>
     <%= render_browse(@processed_browse) %>
   </div>
   <%- end -%>
@@ -27,27 +28,27 @@
   <%- if CurrentDomain.user_can?(current_user, 'edit_site_theme') -%>
   <%- sidebar_position = CurrentDomain.property(:position, :sidebar) || 'right' -%>
   <div class="layoutConfig">
-    <h2>Layout Configuration</h2>
+    <h2><%= t("#{prefix}.layout_config") %></h2>
     <%= form_tag({:action => 'modify_sidebar_config'}, {:method => 'post',
       :class => 'commonForm'}) %>
       <div class="line">
-        <span class="mainLabel">Sidebar Position</span>
+        <span class="mainLabel"><%= t("#{prefix}.sidebar_position") %></span>
         <div class="valueBox">
           <input type="radio" id="sidebarPosition_right"
             name="sidebar[position]" value="right"
             <%= sidebar_position == 'right' ? 'checked="checked"' : '' %> />
-          <label for="sidebarPosition_right">Right</label>
+          <label for="sidebarPosition_right"><%= t("#{prefix}.right") %></label>
         </div>
         <div class="valueBox">
           <input type="radio" id="sidebarPosition_left"
             name="sidebar[position]" value="left"
             <%= sidebar_position == 'left' ? 'checked="checked"' : '' %> />
-          <label for="sidebarPosition_left">Left</label>
+          <label for="sidebarPosition_left"><%= t("#{prefix}.left") %></label>
         </div>
-        <span class="saving statusText">Saving</span>
-        <span class="saved statusText">Saved</span>
+        <span class="saving statusText"><%= t("#{prefix}.saving") %></span>
+        <span class="saved statusText"><%= t("#{prefix}.saved") %></span>
       </div>
-      <input type="submit" value="Save" />
+      <input type="submit" value="<%= t('core.dialogs.save') %>" />
     </form>
   </div>
   <%- end -%>

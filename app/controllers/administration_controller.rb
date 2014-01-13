@@ -10,7 +10,7 @@ class AdministrationController < ApplicationController
   def datasets
     vtf = view_types_facet
     vtf[:options].insert(1, {
-      :text => 'Unpublished Datasets', :value => 'unpublished',
+      :text => t('screens.admin.datasets.unpublished_datasets'), :value => 'unpublished',
       :class => 'typeUnpublished'})
     facets = [
       vtf,
@@ -704,7 +704,7 @@ class AdministrationController < ApplicationController
       Story.delete(params[:id])
       clear_homepage_cache
     rescue CoreServer::ResourceNotFound
-      flash.now[:error] = 'The story you attempted to delete does not exist.'
+      flash.now[:error] = t('screens.admin.home.flashes.delete_error')
       return render 'shared/error', :status => :not_found
     end
 
@@ -727,7 +727,7 @@ class AdministrationController < ApplicationController
       Story.create(story)
       clear_homepage_cache
     rescue CoreServer::CoreServerError => e
-      flash.now[:error] = "An error occurred during your request: #{e.error_message}"
+      flash.now[:error] = t('screens.admin.home.flashes.create_error', :error_message => e.error_message)
       return render 'shared/error', :status => :bad_request
     end
 
@@ -739,14 +739,14 @@ class AdministrationController < ApplicationController
       story_lo = Story.find(params[:id])
       story_hi = Story.find(params[:other])
     rescue CoreServer::ResourceNotFound
-      flash.now[:error] = 'The story you attempted to move does not exist.'
+      flash.now[:error] = t('screens.admin.home.flashes.move_error')
       return render 'shared/error', :status => :not_found
     end
 
     story_lo.order, story_hi.order = story_hi.order, story_lo.order
     story_lo.save!
     story_hi.save!
-    flash.now[:notice] = "Your story has been saved"
+    flash.now[:notice] = t('screens.admin.home.flashes.move_success')
     clear_homepage_cache
     redirect_to :home_administration
   end
@@ -755,7 +755,7 @@ class AdministrationController < ApplicationController
     begin
       @story = Story.find(params[:id])
     rescue CoreServer::ResourceNotFound
-      flash.now[:error] = 'The story you attempted to edit does not exist.'
+      flash.now[:error] = t('screens.admin.home.flashes.edit_error')
       return render 'shared/error', :status => :not_found
     end
 
@@ -763,7 +763,7 @@ class AdministrationController < ApplicationController
       parse_story_params(@story, params[:story])
       @story.update_attributes(params[:story].stringify_keys)
       @story.save!
-      flash.now[:notice] = "Your story has been saved"
+      flash.now[:notice] = t('screens.admin.home.flashes.edit_success')
       clear_homepage_cache
     end
   end

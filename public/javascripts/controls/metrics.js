@@ -306,9 +306,9 @@
         var updateDateParams = function(value, $slicer)
         {
             var parts       = value.split(opts.separator),
-                startDate   = Date.parse(parts[0]).setTimezoneOffset(0),
+                startDate   = moment(parts[0], opts.parseDateFormat, blist.locale).toDate().setTimezoneOffset(0),
                 endDate     = (parts.length > 1) ?
-                    Date.parse(parts[1]).setTimezoneOffset(0) : startDate.clone();
+                    moment(parts[1], opts.parseDateFormat, blist.locale).toDate().setTimezoneOffset(0) : startDate.clone();
 
             var sliceDepth;
             _.each(opts.rolloverDays, function(roll)
@@ -354,10 +354,10 @@
             }
         });
 
-        var initialSpan = paramValues.start.toString(opts.parseDateFormat);
+        var initialSpan = moment(paramValues.start).lang(blist.locale).format(opts.parseDateFormat);
         if (paramValues.start != paramValues.end)
         {
-            initialSpan += ' ' + opts.separator + ' ' + paramValues.end.toString(opts.parseDateFormat);
+            initialSpan += ' ' + opts.separator + ' ' + moment(paramValues.end).lang(blist.locale).format(opts.parseDateFormat);
         }
         $timeslice.val(initialSpan)
         .daterangepicker({
@@ -437,7 +437,7 @@
         displayDateFormat: 'M d, yy',
         metricsScreen: null,
         minimumDate: Date.parse('2008-01-01'),
-        parseDateFormat: 'MMM d, yyyy',
+        parseDateFormat: 'MMM d, YYYY',
         separator: '-',
         // This array (whose order *matters*) determines after how many days
         // to switch to the next slice interval. e.g. {'Hourly': 4, 'Daily': 64}

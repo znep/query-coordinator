@@ -1102,6 +1102,7 @@ en:
         are_you_sure: Are you sure? This action cannot be undone.
         saving1: Saving...
         saved: Saved.
+        set_a_thumbnail: Set a Thumbnail
       metadata:
         add_new_category: Add New Category
         add_new_field: Add New Field

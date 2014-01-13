@@ -195,7 +195,7 @@
   <%= render :partial => 'modals/select_dataset', :locals => { :title => t("#{prefix}.choose_a_dataset") } %>
 
   <%= modal :id => 'setThumbnail' do %>
-    <h2>Set a Thumbnail</h2>
+    <h2><%= t("#{prefix}.set_a_thumbnail") %></h2>
     <iframe frameBorder="0"></iframe>
   <%- end -%>
 <%- end -%>

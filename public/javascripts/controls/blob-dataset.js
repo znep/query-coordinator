@@ -69,7 +69,7 @@
                     else
                     {
                         embedHtml = '<iframe id="blobIFrame" ' +
-                            'src="http://docs.google.com/gview?url=' + ds._generateBaseUrl() + blob.href +
+                            'src="//docs.google.com/gview?url=' + ds._generateBaseUrl() + blob.href +
                             '&embedded=true" width="100%" height="99%" ' +
                             'frameborder="0" scrolling="no"></iframe>';
                     }

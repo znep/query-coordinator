@@ -1110,7 +1110,7 @@ en:
         choose_a_dataset: Choose a Dataset to feature
         are_you_sure: Are you sure? This action cannot be undone.
         saving1: Saving...
-        saved: Saved.
+        saved1: Saved.
         set_a_thumbnail: Set a Thumbnail
         flashes:
           delete_error: The story you attempted to delete does not exist.

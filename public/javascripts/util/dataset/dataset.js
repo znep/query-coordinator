@@ -2435,6 +2435,7 @@ var Dataset = ServerModel.extend({
         var isNewOrder = $.isBlank(oldGroupings);
         if (isNewOrder) { ds._origColOrder = _.pluck(ds.visibleColumns, 'id'); }
 
+        var colsChanged = false;
         var curGrouped = {};
         _.each(ds.realColumns, function(c)
         {
@@ -2450,13 +2451,20 @@ var Dataset = ServerModel.extend({
 
             if ($.isBlank(col.format.grouping_aggregate))
             {
-                if (!curGrouped[col.id]) { col.width += 30; }
+                if (!curGrouped[col.id])
+                {
+                    col.width += 30;
+                    colsChanged = true;
+                }
                 col.format.drill_down = 'true';
             }
 
             if (col.hidden && !_.any(oldGroupings || [], function(og)
                 { return og.columnId == col.id; }))
-            { col.update({flags: _.without(col.flags, 'hidden')}); }
+            {
+                col.update({flags: _.without(col.flags, 'hidden')});
+                colsChanged = true;
+            }
 
             newColOrder.push(col.id);
         });
@@ -2491,6 +2499,7 @@ var Dataset = ServerModel.extend({
                     var f = c.flags || [];
                     f.push('hidden');
                     c.update({flags: f});
+                    colsChanged = true;
                 }
                 if (isNewOrder)
                 {
@@ -2501,6 +2510,8 @@ var Dataset = ServerModel.extend({
 
             ds.updateColumns();
         }
+
+        if (colsChanged) { ds.trigger('columns_changed'); }
 
         if (!_.isEqual(oldGroupAggs, newGroupAggs))
         { ds._invalidateAll(false, true); }

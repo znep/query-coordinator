@@ -273,7 +273,10 @@ blist.namespace.fetch('blist.filter');
             // Can't have just a literal node with no value.
             // In particular, this is the case for the _BLANK operators
             if (!_.isUndefined(fc.value))
-            { result.children.push({ type: 'literal', value: fc.value }); }
+            {
+                _.each($.makeArray(fc.value), function(v)
+                        { result.children.push({ type: 'literal', value: v }); });
+            }
             if (!$.isBlank(fc.subColumn))
             { result.children[0].value = fc.subColumn; }
         }

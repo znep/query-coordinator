@@ -91,7 +91,7 @@
             <div class="uploadFileNameWrapper"><input type="text" class="uploadFileName" readonly="readonly" value="<%= t("#{prefix}.no_file_selected") %>"/></div>
             <div class="buttonWrapper uploadFileButtonWrapper"><%= t("#{prefix}.choose_a_file") %></div>
             <div class="uploadFileErrorHelp">
-              <p><%= t('screens.dataset_new.import_help', { :common_errors => common_errors_support_link }) %></p>
+              <p><%= raw t('screens.dataset_new.import_help', { :common_errors => common_errors_support_link }) %></p>
             </div>
             <div class="uploadThrobber"><span class="icon"></span><span class="text"><%= t("#{prefix}.uploading") %></span></div>
             <p class="uploadFileFormats">
@@ -110,7 +110,7 @@
             <p class="uploadFileFormats"><%= t("#{prefix}.supported") %></p>
             <div class="flash"></div>
             <div class="importErrorHelpText">
-              <p><%= t('screens.dataset_new.import_help', { :common_errors => common_errors_support_link }) %></p>
+              <p><%= raw t('screens.dataset_new.import_help', { :common_errors => common_errors_support_link }) %></p>
             </div>
           </div>
         </li>
@@ -118,7 +118,7 @@
         <li class="importColumnsPane columnsPane" data-wizardpanename="importColumns">
           <div class="flash"></div>
           <div class="importErrorHelpText">
-              <p><%= t('screens.dataset_new.import_help', { :common_errors => common_errors_support_link }) %></p>
+              <p><%= raw t('screens.dataset_new.import_help', { :common_errors => common_errors_support_link }) %></p>
           </div>
           <p class="headline"><%= raw t("#{prefix}.headline") %></p>
           <h2><%= t("#{prefix}.subheadline") %></h2>
@@ -169,7 +169,7 @@
 
           <div class="warningsSection">
             <h2><%= t("#{prefix}.errors_warnings") %></h2>
-            <p class="warningsHelpMessage"><%= t("#{prefix}.help_message", { :common_errors => common_errors_support_link }) %></p>
+            <p class="warningsHelpMessage"><%= raw t("#{prefix}.help_message", { :common_errors => common_errors_support_link }) %></p>
             <ul class="columnWarningsList"></ul>
           </div>
           <hr/>
@@ -203,7 +203,7 @@
 
           <ul class="importWarningsList"></ul>
 
-          <p class="seeDocs"><%= t('screens.dataset_new.import_warnings.see_docs', { :publisher_link => 'http://dev.socrata.com/publisher/import-data-types', :common_errors => common_errors_support_link }) %></p>
+          <p class="seeDocs"><%= raw t('screens.dataset_new.import_warnings.see_docs', { :publisher_link => 'http://dev.socrata.com/publisher/import-data-types', :common_errors => common_errors_support_link }) %></p>
         </li>
         <%- prefix = 'screens.edit_metadata' %>
         <li class="metadataPane" data-wizardpanename="metadata">

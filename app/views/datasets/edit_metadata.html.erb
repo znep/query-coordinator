@@ -155,7 +155,7 @@
     <%- end -%>
 
     <%# HACK: The only customer to really use this is Data.gov, so only show it for them %>
-    <%- if !Rails.env.production? || CurrentDomain.cname == "explore.data.gov" -%>
+    <%- if Rails.env.development? || CurrentDomain.cname == "explore.data.gov" -%>
       <h2><%= t('screens.edit_metadata.external_id') %></h2>
       <div class="line clearfix">
         <label for="view_externalId"><%= t('screens.edit_metadata.external_identifier') %></label>

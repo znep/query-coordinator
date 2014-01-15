@@ -1,3 +1,3 @@
-<%- if Rails.env.production? && @domain.shortName == 'socrata' -%>
+<%- if Rails.env.end_with?('production') && @domain.shortName == 'socrata' -%>
   <div class="flash notice">Danger, Will Robinson! You are currently editing the default production domain.</div>
 <%- end -%>

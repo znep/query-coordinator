@@ -1,2 +1,2 @@
-<% if !Rails.env.production? || CurrentDomain.truthy?('suppress_robots') -%>Disallow: /<% end -%>
+<% if !Rails.env.end_with?('production') || CurrentDomain.truthy?('suppress_robots') -%>Disallow: /<% end -%>
 Sitemap: http://<%= CurrentDomain.cname %>/sitemap-<%= CurrentDomain.cname %>.xml

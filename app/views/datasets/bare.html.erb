@@ -29,7 +29,7 @@
 
     <%= include_javascripts 'base' %>
 
-    <%- if Rails.env != 'production' -%>
+    <%- if !Rails.env.end_with?('production') -%>
         <%= include_javascripts "debug" %>
     <%- else -%>
       <script type="text/javascript">

@@ -15,6 +15,7 @@ javascripts:
     - public/javascripts/plugins/pure.js
     - public/javascripts/plugins/jquery-ui-1.8.23.custom.js
     - public/javascripts/plugins/underscore.js
+    - public/javascripts/plugins/moment.min.js
     - public/javascripts/util/namespace.js
     - public/javascripts/util/compat.js
     - public/javascripts/plugins/inheritance.js
@@ -418,7 +419,6 @@ javascripts:
     - public/javascripts/plugins/iscroll.js
     - public/javascripts/plugins/ajaxupload.js
     - public/javascripts/plugins/lab.js
-    - public/javascripts/plugins/moment.min.js
     - public/javascripts/util/asset-loading.js
     - public/javascripts/controls/combination-list.js
     - public/javascripts/util/inline-login.js
@@ -508,7 +508,6 @@ javascripts:
     - public/javascripts/plugins/vis/raphael.js
     - public/javascripts/plugins/vis/d34raphael.js
     - public/javascripts/plugins/vis/ie8compat.js
-    - public/javascripts/plugins/moment.min.js
     - public/javascripts/controls/charts/metric-charts.js
     - public/javascripts/controls/metrics-shared.js
     - public/javascripts/controls/metrics.js

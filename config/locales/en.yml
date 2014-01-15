@@ -616,6 +616,7 @@ en:
     interstitial:
       leaving_explanation_html: This <span class="datasetType">dataset</span> is hosted by <a href="\#" rel="external" class="externalDomain">another domain</a>.
       leaving_notice_html: You are leaving <span class="serverName">%{site_name}</span>
+    maintenance_notice: This Socrata-powered site may be unavailable for routine maintenance from %{start} to %{finish}.
     map_layers:
       aerial: Aerial
       bing_aerial: Bing Aerial

@@ -85,15 +85,15 @@
         {
             $('#maintenanceNotice').fadeOut();
         };
-  
+
         $('#siteHeader').after(blist.configuration.maintenance_message);
         setTimeout(dismissMaintenance, 15000);
-  
+
         $('#maintenanceNotice a.close').click(function(event)
         {
             event.preventDefault();
             dismissMaintenance();
-            $.cookies.set('maintenance_ack', blist.configuration.maintenance_hash); 
+            $.cookies.set('maintenance_ack', blist.configuration.maintenance_hash);
         });
     }
 
@@ -115,7 +115,7 @@
 
     //Timestamp for mixpanel loggning
     blist.pageOpened = Math.round(new Date().getTime() / 1000)
-    
+
     // Fix dates for local timezone
     $('.dateReplace').each(function()
     {
@@ -136,6 +136,21 @@
         }
         $d.text(new Date($d.data('rawdatetime') * 1000).format(fmt));
     });
+    // Newer, better version
+    moment.lang(blist.locale);
+    $('.dateLocalize').each(function()
+    {
+        var $d = $(this);
+        $d.text(moment($d.data('rawdatetime') * 1000).format('LLLL'));
+    });
+    // Special clean-up for maintenance message
+    var $mDates = $('#maintenanceNotice .dateLocalize');
+    if (moment($mDates.eq(0).data('rawdatetime') * 1000).
+            isSame($mDates.eq(1).data('rawdatetime') * 1000, 'day'))
+    {
+        var $d = $mDates.eq(1);
+        $d.text(moment($d.data('rawdatetime') * 1000).format('LT'));
+    }
 
     var on_current_user = [];
     var on_current_user_complete = [];

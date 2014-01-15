@@ -19,7 +19,7 @@ rescue
 end
 
 begin
-  downtime = YAML.load_file(File.join(Rails.root, "config/downtime.yml"))
+  downtime = YAML.load_file(File.join(Rails.root, "config/downtime.yml"))[Rails.env]
   DOWNTIME = Downtime.new(downtime['start'], downtime['end'], downtime['message'])
 rescue
   DOWNTIME = Downtime.new(nil, nil, nil)

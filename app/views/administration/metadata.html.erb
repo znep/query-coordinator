@@ -29,9 +29,9 @@
       </div>
     <%- else -%>
       <div class="metadataExplanation">
-        <p> <%= t("#{prefix}.metadata_explain1") %> </p>
-        <p> <%= t("#{prefix}.metadata_explain2") %> </p>
-        <p> <%= t("#{prefix}.metadata_explain3") %> </p>
+        <p> <%= raw t("#{prefix}.metadata_explain1") %> </p>
+        <p> <%= raw t("#{prefix}.metadata_explain2") %> </p>
+        <p> <%= raw t("#{prefix}.metadata_explain3") %> </p>
       </div>
       <%- @metadata.each_with_index do |fieldset, fs_index| -%>
         <%# TODO: Don't skip these %>

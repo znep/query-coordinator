@@ -6,7 +6,7 @@ class CustomContentControllerTest < ActionController::TestCase
 
   PAGE_PATH = "hello".freeze
   PAGE_KEY = ("/" + PAGE_PATH).freeze
-  BASIC_PARAMS = [[:path,  PAGE_PATH.dup], [:action, "page"], [:controller, "custom_content"] ].sort.freeze
+  BASIC_PARAMS = [[:path,  PAGE_PATH], [:action, "page"], [:controller, "custom_content"] ].sort.freeze
 
   def setup
     init_core_session
@@ -32,7 +32,7 @@ class CustomContentControllerTest < ActionController::TestCase
 
   def simple_render_with_user
     user = prepare_page()
-    get :page, {:path => PAGE_PATH.dup}
+    get :page, {:path => PAGE_PATH}
     assert_response :success
     assert VersionAuthority.validate_manifest?(@basic_cache_key, user.id)
   end
@@ -62,34 +62,34 @@ class CustomContentControllerTest < ActionController::TestCase
 
   test "304 for etag" do
     simple_render_with_user
-    assert_etag_request(@response.headers['ETag'], PAGE_PATH.dup)
+    assert_etag_request(@response.headers['ETag'], PAGE_PATH)
   end
 
   test "304 for Global Manifest Cache" do
     prepare_page(fixture="test/fixtures/dataslate-global-hello.json", anonymous=true)
     init_current_user(@controller, ANONYMOUS_USER)
-    get :page, {:path => PAGE_PATH.dup}
+    get :page, {:path => PAGE_PATH}
     assert_response :success
     assert VersionAuthority.validate_manifest?(@basic_cache_key, ANONYMOUS_USER)
     # Subsequent requests should NOT return 304s
     @request.env['HTTP_IF_NONE_MATCH'] = @response.headers['ETag']
-    get :page, {:path => PAGE_PATH.dup}
+    get :page, {:path => PAGE_PATH}
     assert_response 304
   end
 
   test "304 for User Manifest Cache" do
     user = prepare_page(fixture="test/fixtures/dataslate-private-hello.json", anonymous=false)
-    get :page, {:path => PAGE_PATH.dup}
+    get :page, {:path => PAGE_PATH}
     assert_response :success
     assert VersionAuthority.validate_manifest?(@basic_cache_key, user.id)
     assert VersionAuthority.validate_manifest?(@basic_cache_key, ANONYMOUS_USER).nil?
-    assert_etag_request(@response.headers['ETag'], PAGE_PATH.dup)
+    assert_etag_request(@response.headers['ETag'], PAGE_PATH)
 
     user = prepare_page(fixture="test/fixtures/dataslate-private-hello.json", anonymous=false)
-    get :page, {:path => PAGE_PATH.dup}
+    get :page, {:path => PAGE_PATH}
     assert_response :success
     assert VersionAuthority.validate_manifest?(@basic_cache_key, user.id)
-    assert_etag_request(@response.headers['ETag'], PAGE_PATH.dup)
+    assert_etag_request(@response.headers['ETag'], PAGE_PATH)
   end
 
   test "Render Page With DataSet" do

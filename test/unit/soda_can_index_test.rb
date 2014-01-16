@@ -1,3 +1,4 @@
+require 'test_helper'
 
 class SodaCanIndexTest < Test::Unit::TestCase
 

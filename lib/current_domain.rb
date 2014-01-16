@@ -239,6 +239,7 @@ class CurrentDomain
     @@current_domain[:data].feature?(name_or_set)
   end
 
+  # CAUTION! This method implementation differs from the method of the same name in the View class
   def self.module_enabled?(name_or_set)
     self.module_available?(name_or_set) && self.feature?(name_or_set)
   end

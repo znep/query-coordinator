@@ -116,6 +116,7 @@ class Page < Model
       (@update_data['content'] = { 'type' => 'Container', 'id' => 'defaultRoot' })
   end
 
+  # DANGER! This method overrides the attr_accessor defined in the base class.
   def data
     @update_data['data'] || @data['data']
   end

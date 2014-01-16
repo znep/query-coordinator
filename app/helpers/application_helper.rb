@@ -34,6 +34,7 @@ module ApplicationHelper
     concat(capture(&block)) if CurrentDomain.module_enabled?(name_or_set)
   end
 
+  # CAUTION! This method implementation differs from the method of the same name in the View class
   def module_enabled?(name_or_set)
     CurrentDomain.module_enabled?(name_or_set)
   end
@@ -448,7 +449,7 @@ module ApplicationHelper
     return tmpl.html_safe
   end
 
-# MISC 
+# MISC
 
   def get_publish_embed_code_for_view(view, options = {}, variation = "", from_tracking_id = nil)
     # merge publish options with theme options if extant

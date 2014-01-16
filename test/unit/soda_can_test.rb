@@ -1,16 +1,20 @@
+require 'test_helper'
+
 class ProcessorTestHelper < SodaCan::Processor
+
   def initialize(*args)
     super(*args)
   end
+
   def public_soda_can?(part, positive_cb = -> a,n,r {true}, row = {})
       soda_can?(part, positive_cb = -> a,n,r {true}, row = {})
   end
+
   def public_perform_op(operator, children, row)
      perform_op(operator, children, row)
-
   end
 
-  end
+end
 
 class SodaCanTest < Test::Unit::TestCase
   ROW_META_LAST_INDX = 7.freeze
@@ -26,7 +30,6 @@ class SodaCanTest < Test::Unit::TestCase
     queries.each { |q|
       assert !sodacan.public_soda_can?(q), "Should have failed: #{q.to_s}"
     }
-
   end
 
   def test_resolve_value
@@ -62,7 +65,6 @@ class SodaCanTest < Test::Unit::TestCase
     atom = JSON::parse('[{ "type" : "column", "columnFieldName" : "pay_basis"}, { "type" : "column", "columnFieldName" : "employee_name"}]')
     assert !sodacan.public_perform_op("EQUALS", atom, row)
   end
-
 
   def test_by_ids
     metadata = JSON::parse(File.open("test/fixtures/soda_can/vedg-c5sb.json").read)
@@ -271,4 +273,5 @@ eos
     assert sodacan.get_rows(query).size > 0, "because #{sodacan.hints}"
 
   end
+
 end

@@ -1,7 +1,7 @@
+require 'test_helper'
 require 'rack/etag'
 require 'time'
 require 'timecop'
-
 
 class ConditionalRequestHandlerTest < ActionController::TestCase
   include Rack::Test::Methods
@@ -16,6 +16,10 @@ class ConditionalRequestHandlerTest < ActionController::TestCase
     @manifest = Manifest.new
     @manifest.set_manifest(@complicated_manifest)
     Timecop.freeze(@start)
+  end
+
+  def teardown
+    Timecop.return
   end
 
   def test_header_set
@@ -53,7 +57,6 @@ class ConditionalRequestHandlerTest < ActionController::TestCase
     assert(ConditionalRequestHandler.check_conditional_request?(@request, @manifest))
   end
 
-
   def test_conditional_request_last_modified_zero
     @request.env['HTTP_IF_MODIFIED_SINCE'] = Time.at(0).httpdate
     manifest = Manifest.new
@@ -79,6 +82,5 @@ class ConditionalRequestHandlerTest < ActionController::TestCase
     @request.env['HTTP_IF_MODIFIED_SINCE'] = Time.now().httpdate
     assert(!ConditionalRequestHandler.check_conditional_request?(@request, @manifest))
   end
-
 
 end

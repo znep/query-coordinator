@@ -1,6 +1,7 @@
-ENV["RAILS_ENV"] = "test"
+ENV['RAILS_ENV'] = 'test'
 require File.expand_path('../../config/environment', __FILE__)
 require 'rails/test_help'
+require 'minitest/autorun'
 
 module CoreServer
   class Connection
@@ -23,8 +24,9 @@ module CoreServer
   end
 end
 
-class Test::Unit::TestCase
-  # Add more helper methods to be used by all tests here...
+# Add more helper methods to be used by all tests here...
+module TestHelperMethods
+
   def init_current_domain
     @domain = YAML::load(File.open("test/fixtures/domain.yml"))
     CurrentDomain.set_domain(@domain)
@@ -54,9 +56,9 @@ class Test::Unit::TestCase
 
   def return_filters(controller)
     return if @deleted_filters.nil?
-    @deleted_filters.each {|f|
+    @deleted_filters.each do |f|
       controller.class._process_action_callbacks << f
-    }
+    end
   end
 
   def init_core_session()
@@ -66,10 +68,10 @@ class Test::Unit::TestCase
   end
 
   def load_sample_data(file)
-    sample_data= JSON::parse(File.open(file).read)
-    sample_data.each {|k,v|
+    sample_data = JSON::parse(File.open(file).read)
+    sample_data.each do |k, v|
       CoreServer::Connection.set_data(k, v.to_json)
-    }
+    end
     CoreServer::Connection.class_eval do
       alias_method :get_request, :_get_request
       alias_method :create_request, :_create_request
@@ -77,3 +79,9 @@ class Test::Unit::TestCase
   end
 
 end
+
+[Test::Unit::TestCase, MiniTest::Unit::TestCase].each do |klass|
+  klass.send(:include, TestHelperMethods)
+end
+
+require 'mocha/setup'

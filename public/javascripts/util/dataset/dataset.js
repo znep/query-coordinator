@@ -1987,6 +1987,8 @@ var Dataset = ServerModel.extend({
 
         if (ds.newBackend)
         { ds._useSODA2 = true; }
+        else if (blist.configuration.useSoda2 == true)
+        { ds._useSODA2 = true; }
         else if ($.isBlank(ds._useSODA2))
         { ds._useSODA2 = $.urlParam(window.location.href, 'soda') == '2'; }
 

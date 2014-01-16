@@ -1,4 +1,4 @@
-source :gemcutter
+source 'https://rubygems.org/'
 
 if RUBY_VERSION =~ /1.9/
   Encoding.default_external = Encoding::UTF_8
@@ -30,3 +30,12 @@ gem 'xray', :require => 'xray/thread_dump_signal_handler'
 gem 'recaptcha', :require => 'recaptcha/rails'
 gem 'zk', '~>1.9.2'
 
+group :test do
+  gem 'mocha', :require => false
+  gem 'pry'
+  gem 'minitest'
+end
+
+group :development do
+  gem 'pry'
+end

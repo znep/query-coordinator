@@ -3,6 +3,7 @@ require 'json'
 class Model
   attr_accessor :data
   attr_accessor :update_data
+
   cattr_accessor :model_cache_key
   cattr_accessor :check_time
 
@@ -92,6 +93,11 @@ class Model
 
   def method_missing(method_symbol, *args)
     method_name = method_symbol.to_s
+    predicate_method = false
+    if method_name =~ /\?$/
+      method_name.chop!
+      predicate_method = true
+    end
 
     assign_key = method_name.sub!(/=$/,"")
     if assign_key
@@ -114,7 +120,10 @@ class Model
       value = data_hash[method_name]
       return nil if value.nil?
 
-      if value.is_a?(Hash)
+      if predicate_method
+        define_predicate_method(method_symbol)
+        return send(method_name)
+      elsif value.is_a?(Hash)
         klass = Object.const_get(method_name.capitalize_first.to_sym)
         define_hash_accessor(method_name, klass)
         return send(method_name)
@@ -130,6 +139,13 @@ class Model
         define_value_accessor(method_name)
         return send(method_name)
       end
+    end
+  end
+
+  def define_predicate_method(method)
+    self.class.send(:define_method, method) do
+      attribute_name = method.to_s.chop
+      update_data.fetch(attribute_name, data.fetch(attribute_name, false))
     end
   end
 
@@ -189,7 +205,7 @@ class Model
   def define_value_accessor(attribute)
     self.class.class_eval <<-EOS, __FILE__, __LINE__
       def #{attribute}
-        update_data['#{attribute}'] || @data['#{attribute}']
+        update_data.fetch('#{attribute}', @data.fetch('#{attribute}', nil))
       end
     EOS
   end

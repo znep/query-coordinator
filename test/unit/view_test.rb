@@ -1,3 +1,5 @@
+require 'test_helper'
+
 class ViewTest < Test::Unit::TestCase
 
   def test_prefetch
@@ -39,7 +41,6 @@ class ViewTest < Test::Unit::TestCase
     can = view.sodacan
     assert can.metrics["num_results"] == 4
     assert can.metrics["num_calls"] == 3
-
   end
 
 end

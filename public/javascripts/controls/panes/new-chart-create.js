@@ -218,6 +218,7 @@
                         cpObj._updateErrorVisibility();
                     }
                     cpObj.reset();
+                    newValues = cpObj._getFormValues();
                 }
 
                 if (!cpObj.validateForm())

@@ -53,8 +53,8 @@
                     }
                     var xCol = chartObj._fixedColumns[0];
 
-                    var colors = chartObj._displayFormat.colors;
-                    var defaultColor = colors[row.id % 5];
+                    var colors = chartObj._displayFormat.colors || blist.defaultColors;
+                    var defaultColor = colors[row.id % Math.min(5, colors.length)];
 
                     var rowColor = (row.metadata.meta && row.metadata.meta.color) ||
                         row.color || defaultColor;

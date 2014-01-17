@@ -247,11 +247,11 @@
                 $top.toggleClass('can-undo', undoable);
                 $top.find('.undo').toggleClass('disabled', !undoable)
                                   .attr('title', undoable ? ''
-                                                          : $.t('dataslate.component.undo_title'));
+                                                          :$.t('dataslate.configurator.undo_title'));
                 $top.toggleClass('can-redo', redoable);
                 $top.find('.redo').toggleClass('disabled', !redoable)
                                   .attr('title', redoable ? ''
-                                                          : $.t('dataslate.component.redo_title'));
+                                                          :$.t('dataslate.configurator.redo_title'));
             });
 
             $viewsCont = $.tag2({ _: 'div', className: 'cfViewsContainer' });

@@ -374,7 +374,7 @@
         if (_.isNumber(v))
         { return new Date(v * 1000); }
         else if (_.isString(v))
-        { return new Date(v); }
+        { return Date.parse(v); }
     };
 
 })(jQuery);

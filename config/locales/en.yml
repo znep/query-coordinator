@@ -751,6 +751,8 @@ en:
       data_components: Data
       content_components: Content
       input_components: Input
+      redo_title: There is nothing to redo
+      undo_title: There is nothing to undo
     context_picker:
       select_dataset: Select Dataset
       view_data: View Data

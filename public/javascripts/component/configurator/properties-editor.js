@@ -1,4 +1,11 @@
 ;(function($) {
+
+    // STAT-555: When selecting a dataset, we receive two properties actions.
+    // In order to make undoing and redoing this action singular, we use a transaction.
+    // #_changeHandler triggers first, sets { contextId: 4x4 }, and begins the transactions.
+    // #render triggers second, sets defaults, and ends the transaction.
+    var selectingDataset = false;
+
     $.Control.extend('pane_propertiesEditor', {
         getTitle: function()
         { return $.t('dataslate.edit_component.title'); },
@@ -22,10 +29,14 @@
             var peObj = this;
             _.defer(function()
             {
-                if (!$.isBlank(peObj.component))
+                var properties = peObj._getFormValues(true);
+                if (!$.isBlank(peObj.component) && !_.isEmpty(properties))
                 {
                     $.cf.edit.execute('properties',
-                        { component: peObj.component, properties: peObj._getFormValues(true) });
+                        { component: peObj.component, properties: properties });
+
+                    if (selectingDataset)
+                    { $.cf.edit.commit(); selectingDataset = false; }
                 }
             });
         },
@@ -64,6 +75,9 @@
                 var props = this._getInputValue($field);
                 if (!_.isEmpty(props))
                 {
+                    if (_.isEqual(_.keys(props), ['contextId']))
+                    { selectingDataset = true; $.cf.edit.beginTransaction(); }
+
                     $.cf.edit.execute('properties',
                             {component: this.component, properties: props});
                 }

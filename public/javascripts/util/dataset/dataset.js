@@ -2317,7 +2317,8 @@ var Dataset = ServerModel.extend({
         ds.metadata.jsonQuery = ds.metadata.jsonQuery || {};
 
         // jsonQuery gets priority; if it changes, force update of query
-        if (!_.isUndefined(oldJsonQuery) && !_.isEqual(oldJsonQuery, ds.metadata.jsonQuery) ||
+        if (!_.isUndefined(oldJsonQuery) && !_.isEqual($.deepCompact(oldJsonQuery),
+                    $.deepCompact(ds.metadata.jsonQuery)) ||
                 !_.isEmpty(ds.metadata.jsonQuery) && _.isEmpty(ds.query))
         {
             ds.query.filterCondition = blist.filter.generateSODA1(ds.metadata.jsonQuery.where,
@@ -2365,7 +2366,7 @@ var Dataset = ServerModel.extend({
         else
         {
             // update jsonQuery (new version) if query has changed
-            if (!_.isUndefined(oldQuery) && !_.isEqual(oldQuery, ds.query) ||
+            if (!_.isUndefined(oldQuery) && !_.isEqual($.deepCompact(oldQuery), $.deepCompact(ds.query)) ||
                     _.isEmpty(ds.metadata.jsonQuery) && !_.isEmpty(ds.query))
             {
                 ds.metadata.jsonQuery.group = Dataset.translateGroupBys(

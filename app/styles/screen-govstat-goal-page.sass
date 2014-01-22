@@ -754,6 +754,12 @@ $chartHeight: 210px
 
       .dataSeriesLine
         stroke-opacity: 0.1
+        &.hover
+          stroke: #666
+          stroke-width: 2px
+
+      .calloutContainer.hover
+        visibility: hidden
 
       .burndownLine, .projectionLineShadow, .projectionLine, .currentValueLine
         stroke-opacity: 0

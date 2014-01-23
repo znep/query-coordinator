@@ -537,6 +537,7 @@
             $settingsDialog.find('[name=pageTitle]').value('Copy of ' + blist.configuration.page.name);
             $settingsDialog.find('[name=pageUrl]').closest('.line').addClass('hide');
             $settingsDialog.find('.errorMessage').addClass('hide');
+            $settingsDialog.find('h2').text($.t('dataslate.edit.save_as'));
             $settingsDialog.data('isCopy', true);
         },
 

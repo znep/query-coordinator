@@ -241,7 +241,7 @@ class CurrentDomain
 
   # CAUTION! This method implementation differs from the method of the same name in the View class
   def self.module_enabled?(name_or_set)
-    self.module_available?(name_or_set) && self.feature?(name_or_set)
+    !!(self.module_available?(name_or_set) && self.feature?(name_or_set)) # Force boolean return value
   end
 
   def self.available_locales

@@ -414,6 +414,8 @@
                             }
                             else if (dropType == 'copy')
                             {
+                                $.cf.edit.beginTransaction();
+
                                 $.cf.edit.execute('add', {
                                     container: cObj,
                                     position: cObj._dropPosition,

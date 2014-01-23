@@ -55,6 +55,7 @@
          */
         execute: function(typeName, config) {
             var action = createAction(typeName, config);
+            if (action.noop === true) { return; }
             action.commit();
 
             if (transaction) {

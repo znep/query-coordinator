@@ -1,10 +1,21 @@
 ;(function($) {
 
-    // STAT-555: When selecting a dataset, we receive two properties actions.
-    // In order to make undoing and redoing this action singular, we use a transaction.
-    // #_changeHandler triggers first, sets { contextId: 4x4 }, and begins the transactions.
-    // #render triggers second, sets defaults, and ends the transaction.
-    var selectingDataset = false;
+    /* STAT-555: When selecting a dataset, we receive two properties actions.
+       In order to make undoing and redoing this action singular, we use a transaction.
+       #_changeHandler triggers first, sets { contextId: 4x4 }, and begins the transactions.
+       #render triggers second, sets defaults, and ends the transaction.
+
+       If _getFormValues returns with an empty object, it's a no-op.
+       If the properties action changes nothing, it's a no-op.
+       Start a transaction whenever you add a component.
+         This makes it possible to roll-up any further actions into a single undo.
+       If the properties are set, end the transaction.
+         (This is the case when components set initial values.)
+       If there is no configuration, end the transaction.
+         (Print and Share components are like this.)
+       If _noTransactionForUndo is set, end the transaction.
+         (This is the case where there is only a context picker.)
+    */
 
     $.Control.extend('pane_propertiesEditor', {
         getTitle: function()
@@ -30,13 +41,22 @@
             _.defer(function()
             {
                 var properties = peObj._getFormValues(true);
-                if (!$.isBlank(peObj.component) && !_.isEmpty(properties))
+                if (!$.isBlank(peObj.component))
                 {
-                    $.cf.edit.execute('properties',
-                        { component: peObj.component, properties: properties });
+                    if (!_.isEmpty(properties))
+                    {
+                        $.cf.edit.execute('properties',
+                            { component: peObj.component, properties: properties });
+                        // We commit everything in order to sweep up the transaction from edit-add.
+                        $.cf.edit.commit();
+                    }
 
-                    if (selectingDataset)
-                    { $.cf.edit.commit(); selectingDataset = false; }
+                    // properties will be empty if there's nothing to configure
+                    if (peObj.component.configurationSchema() === null)
+                    { $.cf.edit.commit(); }
+
+                    if (peObj.component._noTransactionForUndo)
+                    { $.cf.edit.commit(); }
                 }
             });
         },
@@ -76,7 +96,7 @@
                 if (!_.isEmpty(props))
                 {
                     if (_.isEqual(_.keys(props), ['contextId']))
-                    { selectingDataset = true; $.cf.edit.beginTransaction(); }
+                    { $.cf.edit.beginTransaction(); }
 
                     $.cf.edit.execute('properties',
                             {component: this.component, properties: props});

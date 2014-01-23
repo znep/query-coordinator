@@ -5,6 +5,7 @@ $.component.Component.extend('Visualization', 'data', {
     {
         this._needsOwnContext = true;
         this._delayUntilVisible = true;
+        this._noTransactionForUndo = true;
         this._super.apply(this, arguments);
     },
 

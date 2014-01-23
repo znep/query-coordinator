@@ -407,6 +407,7 @@
                 component: this,
                 properties: properties
             });
+            $.cf.edit.commit(); // Commit transaction from adding a Text component.
         },
 
         /**

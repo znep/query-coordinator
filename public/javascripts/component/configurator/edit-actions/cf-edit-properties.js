@@ -43,6 +43,8 @@ $.cf.edit.registerAction('properties', {
             else
             { this.oldProperties = objInvert(this.properties, comp.properties()); }
         }
+
+        this.noop = _.isEqual(this.properties, this.oldProperties);
     },
 
     commit: function()

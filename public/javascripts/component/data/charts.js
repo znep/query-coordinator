@@ -23,6 +23,7 @@ _.each($.extend({chart: {value: 'Chart'}}, Dataset.chart.types), function(value,
         {
             this._needsOwnContext = true;
             this._delayUntilVisible = true;
+            this._noTransactionForUndo = true;
             this._super.apply(this, arguments);
             this.registerEvent({display_row: ['dataContext', 'row']});
             this._chartType = this._stringSubstitute(this._properties.chartType) ||

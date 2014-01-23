@@ -1985,12 +1985,18 @@ var Dataset = ServerModel.extend({
         var ds = this;
         ds.originalViewId = ds.id;
 
-        if (ds.newBackend)
+        if (ds.newBackend || blist.configuration.useSoda2)
         { ds._useSODA2 = true; }
-        else if (blist.configuration.useSoda2 == true)
-        { ds._useSODA2 = true; }
-        else if ($.isBlank(ds._useSODA2))
-        { ds._useSODA2 = $.urlParam(window.location.href, 'soda') == '2'; }
+        else
+        { ds._useSODA2 = false; }
+
+        // Allow explicit override of SODA version via URL parameter
+        var sodaVersion = $.urlParam(window.location.href, 'soda');
+        if (sodaVersion === '1' || sodaVersion === '2')
+        {
+            if (sodaVersion === '1') { ds._useSODA2 = false; }
+            if (sodaVersion === '2') { ds._useSODA2 = true; }
+        }
 
         ds.type = getType(ds);
 

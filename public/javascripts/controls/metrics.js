@@ -437,7 +437,7 @@
         displayDateFormat: 'M d, yy',
         metricsScreen: null,
         minimumDate: Date.parse('2008-01-01'),
-        parseDateFormat: 'MMM d, YYYY',
+        parseDateFormat: 'MMM D, YYYY',
         separator: '-',
         // This array (whose order *matters*) determines after how many days
         // to switch to the next slice interval. e.g. {'Hourly': 4, 'Daily': 64}

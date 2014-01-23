@@ -1126,9 +1126,9 @@ b
     @include popup-lower
     border-top: 1px solid $color_chrome_box_border
     padding: 1em
+    overflow: visible
 
     .details
-      overflow: hidden
       padding: 1em 0
 
       .detail
@@ -1150,9 +1150,12 @@ b
           color: #999
           font-size: 3.5em
           letter-spacing: -1px
+          white-space: nowrap
+          float: right
 
         .label
           color: #444
+          clear: both
           font-size: 1.6em
 
     .actions

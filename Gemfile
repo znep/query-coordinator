@@ -11,7 +11,7 @@ gem "rails", "~>3.2.12", :require => nil
 gem "rack", "~>1.4.5"
 gem "erubis", ">= 2.6.4"
 gem "multipart-post", ">= 1.0.1", :require => 'net/http/post/multipart'
-gem "hashie", "0.3.1"
+gem 'hashie', '2.0.5'
 gem "sass", "~>3.2"
 gem "stomp", "1.1.6"
 gem "airbrake", "~>3.1.6"
@@ -32,10 +32,9 @@ gem 'zk', '~>1.9.2'
 
 group :test do
   gem 'mocha', :require => false
-  gem 'pry'
   gem 'minitest'
 end
 
-group :development do
+group :development, :test do
   gem 'pry'
 end

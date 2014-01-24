@@ -602,11 +602,15 @@ blist.datasetControls.hookUpPublishing = function($container)
         e.preventDefault();
         if ($(e.target).hasClass('disabled')) { return; }
         blist.dataset.publish(function(pubDS) { pubDS.redirectTo(); },
-            function()
+            function(http)
             {
+                var error_message = $.t('screens.ds.dataset_status.error_publishing_html');
+                if ((JSON.parse((http || {}).responseText) || {}).message == "Only unpublished datasets can be published.")
+                { error_message = $.t('screens.ds.dataset_status.error_publishing_unpublished'); }
+
                 $container.find('#datasetName').socrataTip({content: $.tag({tagName: 'p',
                     'class': 'errorMessage',
-                    contents: $.t('screens.ds.dataset_status.error_publishing_html')}),
+                    contents: error_message}),
                     showSpike: false, trigger: 'now'});
             });
     });

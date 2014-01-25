@@ -8,7 +8,7 @@
 
     var settingsWhitelist = [ 'showRowLink', 'hideRowLink', 'basePointSize',
                               'numSegments', 'clusterThreshold', 'staleClusters',
-                              'defaultPixelSize' ];
+                              'defaultPixelSize', 'externalizeRowLink' ];
 
     $.Control.extend('socrataMap', {
         isValid: function()

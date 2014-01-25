@@ -61,7 +61,11 @@ var updateProperties = function(lcObj)
     var renderViz = function()
     {
         if (lcObj.$contents.data('renderTypeManager'))
-        { lcObj.$contents.removeData('renderTypeManager'); }
+        {
+            var rtm = lcObj.$contents.data('renderTypeManager');
+            rtm.hide(_.keys(rtm.settings.defaultTypes)[0]);
+            lcObj.$contents.removeData('renderTypeManager');
+        }
 
         var ds = (lcObj._dataContext || {}).dataset;
 

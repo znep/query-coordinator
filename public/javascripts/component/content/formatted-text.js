@@ -69,7 +69,7 @@ $.component.Component.extend('Formatted Text', 'content', {
                 safeHtmlResult = cObj._safeRenderMarkdown(markdown);
                 finalHtmlResult = blist.util.autolinker.autolinkHtml(safeHtmlResult);
             }
-            cObj.$contents.html(finalHtmlResult);
+            cObj.$contents.html(finalHtmlResult || '');
         }
 
         if (!cObj._updateDataSource(cObj._properties, doRender))

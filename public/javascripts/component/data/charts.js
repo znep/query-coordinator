@@ -136,7 +136,7 @@ var updateProperties = function(lcObj, properties)
 {
     var setUpChart = function()
     {
-        if ($.isBlank(lcObj._dataContext)) { return; }
+        if ($.isBlank(lcObj._dataContext)) { lcObj.$contents.empty(); return; }
 
         if (!$.isBlank(lcObj._chart))
         {

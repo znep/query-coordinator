@@ -2913,6 +2913,10 @@ var Dataset = ServerModel.extend({
         {
           urlParts = ['developers/docs', ds.resourceName];
         }
+        else if (_.isUndefined(ds.name))
+        {
+          urlParts = ['d', ds.id]
+        }
         else
         {
           urlParts = [$.urlSafe(ds.category || "dataset"), $.urlSafe(ds.name), ds.id];

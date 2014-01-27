@@ -745,14 +745,12 @@ en:
         tweet_contents: ! 'Check out %{dataset} on %{company}: %{url}'
         twitter: Share on Twitter
     configurator:
-      advanced_components: Advanced Components
-      report_components: Report Components
       actions_components: Actions
-      data_components: Data
+      advanced_components: Advanced Components
       content_components: Content
+      data_components: Data
       input_components: Input
-      redo_title: There is nothing to redo
-      undo_title: There is nothing to undo
+      report_components: Report Components
     context_picker:
       select_dataset: Select Dataset
       view_data: View Data
@@ -1040,13 +1038,13 @@ en:
       your: Your Rating
     admin:
       datasets:
-        title: Datasets
         layout_config: Layout Configuration
-        sidebar_position: Sidebar Position
-        right: Right
         left: Left
-        saving: Saving
+        right: Right
         saved: Saved
+        saving: Saving
+        sidebar_position: Sidebar Position
+        title: Datasets
         unpublished_datasets: Unpublished Datasets
       federation:
         accept: Accept
@@ -1078,50 +1076,50 @@ en:
         terminate: Terminate
         title: Open Data Federation
       home:
-        title: Manage Home Page
-        create_new_story: Create a New Story
-        manage_story_content: Manage Story Content
-        image: Image
+        add_featured_dataset: Add a New Featured Dataset
+        are_you_sure: Are you sure? This action cannot be undone.
+        catalog_layout_configuration: Catalog Layout Configuration
+        choose_a_dataset: Choose a Dataset to feature
+        compact_list: Compact List
         contents: Contents
-        date_published: Date Published
-        edit: Edit
-        up: Up
-        down: Down
-        delete: Delete
+        create_new_story: Create a New Story
+        custom_image: Custom Image
         customize_now: Customize Now
         customize_story_appearance: Customize Story Appearance
-        save_now: Save Now
-        add_featured_dataset: Add a New Featured Dataset
         dataset_display_limit: Only four datasets may be featured at a time.
-        manage_featured_dataset: Manage Featured Dataset
-        catalog_layout_configuration: Catalog Layout Configuration
+        date_published: Date Published
         default_catalog_layout: Default Catalog Layout
-        compact_list: Compact List
-        rich_list: Rich List
-        saving: Saving
-        saved: Saved
-        move_left: Move Left
-        left: Left
-        move_right: Move Right
-        right: Right
-        remove: Remove
-        thumbnail: Thumbnail
+        delete: Delete
+        down: Down
+        edit: Edit
         feature_image: feature image
-        custom_image: Custom Image
         filetype_error: Invalid file type. Please choose an image file
-        text: Text
-        choose_a_dataset: Choose a Dataset to feature
-        are_you_sure: Are you sure? This action cannot be undone.
-        saving1: Saving...
-        saved1: Saved.
-        set_a_thumbnail: Set a Thumbnail
         flashes:
+          create_error: ! 'An error occurred during your request: %{error_message}'
           delete_error: The story you attempted to delete does not exist.
-          create_error: 'An error occurred during your request: %{error_message}'
-          move_error: The story you attempted to move does not exist.
-          move_success: Your story has been saved
           edit_error: The story you attempted to edit does not exist.
           edit_success: Your story has been saved
+          move_error: The story you attempted to move does not exist.
+          move_success: Your story has been saved
+        image: Image
+        left: Left
+        manage_featured_dataset: Manage Featured Dataset
+        manage_story_content: Manage Story Content
+        move_left: Move Left
+        move_right: Move Right
+        remove: Remove
+        rich_list: Rich List
+        right: Right
+        save_now: Save Now
+        saved: Saved
+        saved1: Saved.
+        saving: Saving
+        saving1: Saving...
+        set_a_thumbnail: Set a Thumbnail
+        text: Text
+        thumbnail: Thumbnail
+        title: Manage Home Page
+        up: Up
       metadata:
         add_new_category: Add New Category
         add_new_field: Add New Field
@@ -1433,7 +1431,6 @@ en:
           queued: It is in line waiting to be processed (queued %{time}; %{totalQueued} total in line)
         edit_dataset_button: Edit Dataset
         error_publishing_html: There was an error making a working copy of your dataset. Please <a href="http://support.socrata.com" rel="external">contact Socrata support</a>.
-        error_publishing_unpublished: Only unpublished datasets can be published.
         needs_copy: This dataset is published and cannot be edited directly. A working copy %{status} that allows you to make all your desired changes before making them publicly available.
         needs_copy_status:
           available: is available

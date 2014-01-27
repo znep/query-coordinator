@@ -181,6 +181,7 @@ nl:
         expand: Klik om te vergroten
       image_upload:
         button: Afbeeldingen uploaden
+      no_results: Geen resultaten
       rate:
         auth_action_phrase: Deze dataset beoordelen
       share:
@@ -194,6 +195,8 @@ nl:
       sidebar:
         tabs:
           about: Over de dataset
+          components: Componenten
+          configuration: Configuratie
           discuss: Bespreken
           edit: Aanpassen
           embed: Inpassen
@@ -208,6 +211,21 @@ nl:
         in_bing: Bekijken in Bing Maps
         in_google: Bekijk in Google Maps
         row_details: Bekijk details van deze rij
+    editors:
+      actions:
+        add: Voeg toe
+        remove: Verwijderen
+        replace: Vervangen
+        view: Bekijken
+      document:
+        add_title: Voeg een nieuw document toe
+        remove_title: Verwijder het document
+        replace_title: Vervang het document
+      photo:
+        add_title: Voeg een nieuwe afbeelding toe
+        remove_title: Verwijder de afbeelding
+        replace_title: Vervang de afbeelding
+        view_title: Bekijk de afbeelding in een apart scherm
     embed:
       create_template_button: Maak een nieuw sjabloon
       custom_size: Aangepast formaat
@@ -309,6 +327,11 @@ nl:
         select_one: Selecteer een
         show_suggested: Toon voorgestelde waarden
         title: Opties
+    global_indicator:
+      error: Fout
+      saved: Opgeslagen
+      saving: Wordt opgeslagen...
+      working: Aan het werk...
     grid:
       add_column: Voeg een nieuwe kolom toe...
       clear_column_filter: Kolomfilter verwijderen
@@ -322,12 +345,16 @@ nl:
       delete_warning_single_column: Wilt u de geselecteerde kolom verwijderen? Alle gegevens in deze kolom zullen worden verwijderd!
       edit_column_properties: Bewerk kolomeigenschappen
       filter_this_column: Deze kolom filteren
+      geocodes_pending: Rijen in de locatiekolom worden nog gegeocodeerd. Wacht tot ze klaar zijn om deze dataset te publiceren.
       hide_column: Kolom verbergen
       menu: Menu
       must_enter_name: U moet een naam opgeven voor deze kolom
       new_row: Nieuw
+      no_columns: Dataset %{uid} heeft geen kolommen.
       no_rows: Geen rijen om te tonen
+      permission_denied: U heeft geen toegang tot deze weergave
       previous: Vorige
+      required_cols_missing: Er ontbreken kolommen die voor deze weergave noodzakelijk zijn
       sort_ascending: Sorteer oplopend
       sort_descending: Sorteer aflopend
       totals: Totalen
@@ -339,6 +366,96 @@ nl:
       view_row: Rij bekijken
       view_single_row: Bekijk enkele rijgegevens
       viewing_row_html: Het bekijken van rij <span class="curPage"></span> van <span class="totalPages"></span>
+    map:
+      address_prompt: Voer hier adres in
+      auto: auto
+      base_layers: Basislagen
+      boundary_map: Kaartbegrenzing
+      current_location: Gebruik huidige locatie
+      data_layers: Datalagen
+      data_request_timeout: Een verzoek om data duurde te lang en kreeg een time out.
+      forever_node_explanation: De data van deze cluster is te dicht op elkaar gepakt om nuttige data geografisch te kunnen weergeven.
+      forever_node_recommend: We raden u aan om de <a href="#openTable">tabelweergave te openen</a> voor meer gegevens.
+      forever_node_title: Te veel data
+      geocoding_inaccessible: De geocodeerdienst is niet beschikbaar. Probeer het later nog eens.
+      geocoding_noresults: Kan niet geocoderen. Zorg ervoor dat het adres juist is.
+      heat_map: Hittekaart
+      heatmap_ie8_warning: Rooster hittekaarten werken niet in uw huidige browser. Upgrade naar IE9, gebruik Google Chrome of Mozilla Firefox. Hartelijk dank.
+      loading: Wordt geladen...
+      map_legend: Kaartlegenda
+      multiple_layer_instructions: ! 'Er is hier data voor meer dan één laag. Kies er één:'
+      next: Volgende
+      next_row: Volgende rij
+      no_columns_defined: Geen kolommen gedefinieerd
+      point_map: Punt kaart
+      previous: Eerdere
+      previous_row: Eerdere rij
+      request_timed_out: Time out voor de aanvraag van deze gegevens.
+    nominate:
+      all: Alles
+      approve: (Goedkeuren)
+      approve_tip: Keur deze suggestie goed
+      approved: Goedgekeurd
+      attachment: Bijlage
+      attachments: Bijlagen
+      back_to_suggestions: Terug naar suggesties voor dataset
+      browse: Bladeren
+      cancel: Annuleren
+      comments: Reacties
+      contact_author: Neem contact op met de indiener van de suggestie
+      dataset_suggestions: Suggesties voor dataset
+      delete_attachment: bijlage
+      delete_confirm: Weet u zeker dat u deze %{type} wilt verwijderen?
+      delete_error: Fout bij het verwijderen van %{type}
+      delete_suggestion: Suggestie
+      description: Omschrijving
+      description_prompt: Voer details in van uw suggestie
+      details: Details
+      edit: (Aanpassen)
+      edit_suggestion: Pas deze suggestie aan
+      files: Bestanden
+      filter_by_status: Filter op status
+      form_error: Verbeter de bovenstaande fouten
+      great_sadness: Fout bij het opnemen van contact met de schrijver van de suggestie. Probeer het later nog eens.
+      greater_success: Uw bericht is verstuurd naar de schrijver van de suggestie
+      message: Bericht
+      message_prompt: Voer uw bericht in
+      moderate: (Beheren)
+      moderate_error: Status van de foutwijziging
+      moderate_tip: Accepteer deze suggestie en open het voor stemming
+      needs_moderation: Moet door beheerder bekeken worden
+      new: Nieuw
+      no_result: Geen resultaten
+      open: Openen
+      rate_down: Ik vind het niet leuk
+      rate_up: Ik vind het leuk
+      rating: Beoordeling
+      rating_error: Fout bij het beoordelen van suggestie
+      reject: (Afwijzen)
+      reject_tip: Wijs deze sufggestie af
+      rejected: Afgewezen
+      remove: (Verwijderen)
+      remove_tip: Verwijder deze suggestie
+      required: Vereist
+      status: Status
+      submit: Versturen
+      submitted_by: Verstuurd door
+      suggest_a_dataset: Stel een dataset voor
+      suggestion_received: Uw suggestie is ontvangen en staat in de wachtrij van het forumbeheer. Zodra de beheerder het heeft goedgekeurd zal het op deze pagina verschijnen.
+      suggestion_updated: Uw suggestie is bijgewerkt
+      title: Titel
+      title_prompt: Voer een titel in
+      user_removed: een gebruiker die al verwijderd was
+      user_removed_short: Gebruiker was verwijderd
+    upload_dialog:
+      browse: Bladeren
+      title_file: Upload een bestand
+      title_image: Upload een afbeelding
+      title_photo: Upload een foto
+      to_upload_file: ! 'Bestand om te uploaden:'
+      to_upload_image: ! 'Afbeelding om te uploaden:'
+      to_upload_photo: ! 'Foto om te uploaden:'
+      upload: Uploaden
   core:
     aggregates:
       average: Gemiddelde
@@ -354,6 +471,11 @@ nl:
       visit: view
       visits: views
     and: en
+    auth:
+      invalid_userpass: Ongeldige gebruikersnaam of wachtwoord
+      need_login: U moet ingelogd zijn om toegang tot deze pagina te krijgen
+      need_permission: U heeft geen toestemming om deze pagina te bekijken
+      too_many_tries: Te veel inlogpogingen voor deze login. Account tijdelijk uitgeschakeld.
     chart_types:
       area: Vlakdiagram
       bar: Staafdiagram
@@ -465,6 +587,7 @@ nl:
           belay_button: Log me niet uit!
           body_html: We hebben al een paar minuten geen enkele activiteit opgemerkt. Vanwege de privacy, zullen we u uitloggen over <span id="secondsRemaining"></span> seconden.
           title: Uw sessie is bijna verlopen.
+      submit: Versturen
       update: Bijwerken
     expando:
       expand: Uitbreiden
@@ -509,6 +632,7 @@ nl:
     interstitial:
       leaving_explanation_html: Deze <span class="datasetType">dataset</span> wordt gehost door <a href="\#" rel="external" class="externalDomain">een ander domein</a>.
       leaving_notice_html: U verlaat <span class="serverName">%{site_name}</span>
+    maintenance_notice: Deze site, die met Socrata werkt, is vanwege routineonderhoud mogelijk niet beschikbaar van %{start} tot %{finish}.
     map_layers:
       aerial: Lucht
       bing_aerial: Bing Aerial
@@ -532,12 +656,17 @@ nl:
       roadmap: Wegenkaart
       satellite: Satelliet
       terrain: Terrein
+    no_category: Geen categorie
     no_js: Javascript uitschakelen op deze pagina
+    no_license: Geen licentie
     numbers:
       eight: acht
       five: vijf
       four: vier
       nine: negen
+      num_one: één
+      num_two: twee
+      num_zero: nul
       seven: zeven
       six: zes
       three: drie
@@ -604,6 +733,94 @@ nl:
     visibility:
       private: privé
       public: openbaar
+  dataslate:
+    component:
+      edit: Pas deze component aan
+      header:
+        height: Hoogte
+      invalid_config: Deze component heeft geen geldige configuratie
+      loading: Wordt geladen, een moment geduld a.u.b.
+      picture:
+        alt_attr: Alt
+        alt_attr_prompt: alt eigenschap
+        full_url: Volledig gekwalificeerde URL naar een afbeelding
+        image_source: Bron van de afbeelding
+        large: Groot (220 x 220)
+        medium: Middelgroot (150 x 150)
+        original: Origineel
+        thumb: Miniatuur (80 x 80)
+        tiny: Zeer klein (24 x 24)
+        title_attr: Titel
+        title_attr_prompt: Titel eigenschap
+      print:
+        print: Afdrukken
+        print_this_page: Druk deze pagina af
+      remove: Verwijder deze component
+      share:
+        email: Delen via e-mail
+        email_contents: ! '%{dataset} op %{company}'
+        facebook: Delen op Facebook
+        share: Delen
+        subscribe: Abonneren via e-mail of RSS
+        subscribe_text: Abonneren op wijzigingen
+        this_page: Deze pagina
+        tweet_contents: ! 'Bekijk %{dataset} op %{company}: %{url}'
+        twitter: Delen op Twitter
+    configurator:
+      actions_components: Acties
+      advanced_components: Geavanceerde componenten
+      content_components: Inhoud
+      data_components: Data
+      input_components: Invoer
+      report_components: Verslagcomponenten
+    context_picker:
+      select_dataset: Kies dataset
+      view_data: Bekijk data
+    create:
+      cancel: Annuleren
+      create: Aanmaken
+      create_page: Maak DataSlate pagina aan
+      page_settings: Paginainstellingen
+      page_title: Titel van de pagina
+      page_url: Pagina URL
+      title: Maak DataSlate pagina aan
+    edit:
+      editing: Wordt aangepast
+      permissions: Toestemmingen
+      preview_page: Previewpagina
+      redo: Herhalen
+      revert: Omkeren
+      save: Opslaan
+      save_as: Opslaan als
+      settings: Instellingen
+      undo: Ongedaan maken
+      view_editor: Bekijk interactieve editor
+    edit_component:
+      no_config: Geen configuratie beschikbaar voor %{component}
+      subtitle: Configureer deze component
+      title: Pas component aan
+    edit_properties:
+      no_data: Geen gegevens ingesteld voor deze component
+      subtitle: Voeg eigenschappen uit de context van de gegevens toe aan deze component
+      title: Beschikbare eigenschappen
+    permissions:
+      cancel: Annuleren
+      private: Privé
+      private_desc: Alleen voor u zichtbaar
+      public: Openbaar
+      public_desc: Voor iedereen zichtbaar
+      save: Opslaan
+      shared: Gedeeld met de site
+      shared_desc: Zichtbaar voor al uw collega's, maar niet openbaar
+      title: Paginatoestemmingen
+    settings:
+      cancel: Annuleren
+      page_title: Titel van de pagina
+      page_url: Pad
+      save: Opslaan
+      title: Paginainstellingen
+  date:
+    abbr_month_names: ! "--- \n...\n---\n- \n- Jan\n- Feb\n- Maa\n- Apr\n- Mei\n- Jun\n- Jul\n- Aug\n- Sep\n- Okt\n- Nov\n- Dec"
   error:
     back: Terug
     error_500:
@@ -625,13 +842,167 @@ nl:
       no_permission: Geen toestemming voor toegang tot hulpbronnen.
       were_sorry: Sorry, maar het lijkt erop dat u geen toestemming heeft om deze pagina te bekijken.
     to_whence_you_came: naar waar u vandaan kwam.
+  govstat:
+    chrome:
+      header:
+        links:
+          account: Account
+          account_options: Accountopties
+          account_tooltip: Bekijk en breng wijzigingen aan in uw gebruikersaccount.
+          configuration: Configuratie
+          configuration_title: Beheer GovStat configuratie
+          data: Data
+          data_title: Blader en beheer data
+          goals: Doelen
+          goals_title: Maak doelen aan en volg deze
+          home: Home
+          home_title: Home
+          my_goals: Mijn doelen
+          my_goals_tooltip: Bekijk de doelen die ik heb aangemaakt
+          reports: Verslagen
+          reports_title: Maak verslagen aan en bekijk deze
+    configuration:
+      analytics: Analyses
+      appearance: Uiterlijk
+      config: Configuratie
+      content_moderation: Inhoudbeheer
+      data_management: Databeheer
+      datasets: Datasets
+      federations: Federaties
+      homepage: Homepage
+      metadata: Metadata
+      moderation: Beheer van reacties
+      nomination: Beheer van nominaties
+      routing: Routering en goedkeuring
+      sdp_templates: Data afspeelsjablonen
+      title: Beheer siteconfiguratie
+      users: Gebruikers
+    reports:
+      component:
+        base_map: Basiskaart
+        chart: Grafiek
+        formatted_text: Opgemaakte tekst
+        header: Koptekst
+        horizontal_layout: Horizontale opmaak
+        map: Kaart
+        map_layer: Kaartlaag
+        picture: Afbeelding
+        print: Afdrukken
+        share: Delen
+        table: Tabel
+        title: Titel
+        vertical_layout: Verticale opmaak
+        visualize: Visualiseren
+      create:
+        create_report: Maak verslag aan
+        title: Maak verslag aan
+      manage:
+        copy: Kopiëren
+        create_new_report: Maak nieuw verslag aan
+        delete: Verwijderen
+        edit: Aanpassen
+        home: Home
+        other_reports: Andere verslagen
+        owner: Eigenaar
+        reports: Verslagen
+        title: Verslagen beheren
+        updated: bijgewerkt
+        your_reports: Uw verslagen
+      permissions:
+        title: Bevoegdheden van verslagen
+      settings:
+        page_title: Titel van verslag
+        title: Instellingen van verslag
+    template:
+      grid_flow_layout: Roosterstroomopmaak
+      layouts: Opmaak
+      list_layout: Overzicht van de opmaak
+      title: Kies een opmaak
   plugins:
+    daterangepicker:
+      date_range: Datumbereik
+      done: Klaar
+      end_date: Einddatum
+      last_month: Vorige maand
+      month_to_date: Maand naar datum
+      next: Volgende
+      prev: Vorige
+      specific_date: Specifieke datum
+      start_date: Begindatum
+      the_month_of: De maand van...
+      the_week_of: De week van...
+      the_year_of: Het jaar van...
+      today: Vandaag
+      week_to_date: Week naar datum
+      year_to_date: Jaar naar datum
     fileuploader:
       drop_files: ! '
 
         Bestanden hier neerzetten om te uploaden'
       failed: Mislukt
       upload_a_file: Een bestand uploaden
+    hallo:
+      body: Hoofdgedeelte
+      bold: Dikgedrukt
+      heading: Koptekst
+      italic: Schuingedrukt
+      redo: Opnieuw uitvoeren
+      subheading: Onderverdeling
+      undo: Ongedaan maken
+    jquery_ui:
+      april: April
+      april_short: Apr
+      august: Augustus
+      august_short: Aug
+      december: December
+      december_short: Dec
+      done: Klaar
+      february: Februari
+      february_short: Feb
+      friday: Vrijdag
+      friday_min: Vr
+      friday_short: Vrij
+      january: Januari
+      january_short: Jan
+      july: Juli
+      july_short: Jul
+      june: Juni
+      june_short: Jun
+      march: Maart
+      march_short: Ma
+      may: Mei
+      may_short: Mei
+      monday: Maandag
+      monday_min: Ma
+      monday_short: Maa
+      next: Volgende
+      november: November
+      november_short: Nov
+      october: Oktober
+      october_short: Okt
+      prev: Vorige
+      saturday: Zaterdag
+      saturday_min: Za
+      saturday_short: Zat
+      september: September
+      september_short: Sep
+      sunday: Zondag
+      sunday_min: Zo
+      sunday_short: Zon
+      thursday: Donderdag
+      thursday_min: Do
+      thursday_short: Don
+      today: Vandaag
+      tuesday: Dinsdag
+      tuesday_min: Di
+      tuesday_short: Din
+      wednesday: Woensdag
+      wednesday_min: Wo
+      wednesday_short: Woe
+      week_min: Wk
+  recaptcha:
+    errors:
+      verification_failed: De ingevoerde tekens komen niet met de afbeelding overeen.
   screens:
     about:
       actions: Acties
@@ -666,6 +1037,8 @@ nl:
       semantics: Semantiek en RDF
       short_url: Korte URL
       snapshotted: Momentopname genomen
+      soda2_support: Slechts SODA2
+      soda2_yes: Ja
       source_link: Bronlink
       spatial_extent: Ruimtelijke uitbreiding
       subject_column: Onderwerp kolom
@@ -676,6 +1049,298 @@ nl:
       view_statistics: Statistieken bekijken
       visits: Bezoeken
       your: Uw beoordeling
+    admin:
+      datasets:
+        layout_config: Configuratie van de opmaak
+        left: Links
+        right: Rechts
+        saved: Opgeslagen
+        saving: Wordt opgeslagen
+        sidebar_position: Positie van de zijbalk
+        title: Dataset
+        unpublished_datasets: Ongepubliceerde datasets
+      federation:
+        accept: Accepteren
+        accepted: Geaccepteerd
+        accepted_by: Geaccepteerd door
+        all: (alles)
+        dataset: Dataset
+        flashes:
+          accepted: Federatie met succes geaccepteerd
+          created: Federatie met succes aangemaakt
+          deleted: Federatie met succes verwijderd
+          invalid_domain: ! 'Kon geen datafederatie aanmaken: doeldomein is ongeldig'
+          rejected: Federatie met succes afgewezen
+        list_domains: Hier volgt een lijst met domeinen waarmee u een datafederatie kunt beginnen. Als u op publiceren klikt moet een beheerder van het doeldomein uw aanvraag accepteren.
+        no_domains: Geen geldige domeinen voldoen aan %{name}.
+        no_federations: Er bestaan nog geen federaties voor dit domein.
+        no_pub_datasets: Er voldeden geen gepubliceerde datasets aan uw zoekcriteria.
+        pending: In afwachting
+        publish: Publiceren
+        reject: Afwijzen
+        search: Zoeken
+        search_boost: Versneld zoeken
+        search_boost_explain: Variëren van 1 tot 0.  Hogere waarde maakt het waarschijnlijker dat datasets als eerste worden getoond.
+        search_prompt: Zoek naar domeinen om naar te publiceren
+        search_pub_datasets: Zoek naar gepubliceerde datasets
+        source_domain: Brondomein
+        status: Status
+        target_domain: Doeldomein
+        terminate: Beëindigen
+        title: Open datafederatie
+      home:
+        add_featured_dataset: Voeg een nieuwe getoonde dataset toe
+        are_you_sure: Weet u het zeker? Deze actie kan niet ongedaan worden gemaakt.
+        catalog_layout_configuration: Opmaakconfiguratie van catalogus
+        choose_a_dataset: Kies een dataset om te tonen
+        compact_list: Compacte lijst
+        contents: Inhoud
+        create_new_story: Maak een nieuw verhaal aan
+        custom_image: Aangepaste afbeelding
+        customize_now: Nu aanpassen
+        customize_story_appearance: Pas uiterlijk van verhaal aan
+        dataset_display_limit: Er mogen maar vier datasets tegelijkertijd worden getoond.
+        date_published: Datum gepubliceerd
+        default_catalog_layout: Standaardopmaak van catalogus
+        delete: Verwijderen
+        down: Naar beneden
+        edit: Aanpassen
+        feature_image: Getoonde afbeelding
+        filetype_error: ! 'Ongeldig veldtype. Kies een afbeeldingsbestand '
+        flashes:
+          create_error: Er deed zich een fout voor tijdens uw aanvraag. %{error_message}
+          delete_error: Het verhaal dat u probeerde te verwijderen bestaat niet.
+          edit_error: Het verhaal dat u probeerde aan te passen bestaat niet.
+          edit_success: Uw verhaal is opgeslagen.
+          move_error: Het verhaal dat u probeerde te verplaatsen bestaat niet.
+          move_success: Uw verhaal is opgeslagen.
+        image: Afbeelding
+        left: Links
+        manage_featured_dataset: Beheer getoonde dataset
+        manage_story_content: Beheer inhoud van het verhaal
+        move_left: Beweeg naar links
+        move_right: Beweeg naar rechts
+        remove: Verwijderen
+        rich_list: Rijke lijst
+        right: Rechts
+        save_now: Nu opslaan
+        saved: Opgeslagen
+        saved1: Opgeslagen
+        saving: Wordt opgeslagen
+        saving1: Wordt opgeslagen...
+        set_a_thumbnail: Stel een miniatuurafbeelding in
+        text: Tekst
+        thumbnail: Miniatuurafbeelding
+        title: Beheer homepage
+        up: Omhoog
+      metadata:
+        add_new_category: Voeg een nieuwe categorie toe
+        add_new_field: Voeg een nieuw veld toe
+        allowed_values: Toegestane waarden
+        are_you_sure: Weet u zeker dat u deze set velden en alle daarmee verbonden velden wilt verwijderen?
+        category_name: Naam van de categorie
+        create: Aanmaken
+        create_new_fieldset: Maak een nieuwe set velden aan
+        define_categories: Definieer datasetcategorieën
+        define_custom_fields: Definieer aangepaste velden
+        down: Naar beneden
+        enter_a_name: Voer een naam in
+        'false': false
+        field_name: Naam van het veld
+        flashes:
+          cannot_move_field: ! 'Kan veld genaamd ''%{name}'' niet verplaatsen: niet gevonden'
+          field_duplicated: U kunt geen dubbel veld genaamd '%{name}' aanmaken
+          field_name_required: Kan geen veld zonder naam aanmaken
+          field_successful_create: Veld met succes aangemaakt
+          field_successful_remove: Veld met succes verwijderd
+          field_successful_save: Veld met succes opgeslagen
+          fieldset_duplicated: U kunt geen dubbel set velden genaamd '%{name}' aanmaken
+          fieldset_name_required: Kan geen set velden zonder naam aanmaken
+          no_such_field: Dit veld bestaat niet
+          no_such_fieldset: Deze set velden bestaat niet
+          successful_create: Set velden met succes aangemaakt
+          successful_remove: Set velden met succes verwijderd
+        locales: Locaties
+        make_optional: Maak optioneel
+        make_private: Maak privé
+        make_public: Maak openbaar
+        make_required: Maak verplicht
+        metadata_explain1: Aangepaste metadata is onderverdeeld in <span class="code">sets van velden</span> en <span class="code">velden</span>. Een <span class="code">set van velden</span> is een manier om één of meer aangepaste <span class="code">velden</span> logisch en visueel samen te voegen.
+        metadata_explain2: Velden kunnen op meerdere manieren worden geconfigureerd. Ze kunnen <span class="code">verplicht</span> zijn, wat afgedwongen zal worden als uitgevers nieuwe datasets aanmaken en bestaande metadata bijwerken. Ze kunnen ook <span class="code">privé</span> zijn, wat betekent dat de ingevoerde waarden niet openbaar zichtbaar zijn.
+        metadata_explain3: U kunt er tenslotte ook voor kiezen om de opties voor uw <span class="code">velden</span> van te voren vast te stellen, als u de waarden uit een lijst wilt kiezen in plaats van in een veld in te voeren.
+        no_data: Voor dit domein zijn nog geen aangepaste datasetvelden gedefinieerd. Voer hieronder een naam in en klik op "Aanmaken" om te beginnen.
+        no_fields_defined: Voor dit set van velden zijn nog geen velden gedefinieerd.
+        page_title: Beheer dataset metadata
+        parent: Ouder
+        remove: Verwijderen
+        shown: Getoond?
+        title: Beheer metadata
+        'true': true
+        up: Omhoog
+      users:
+        actions: Acties
+        all: Alles
+        bulk_create: Massa aanmaken
+        create_accounts: Maak accounts aan
+        email: E-mail
+        email_prompt: Voer e-mailadressen in voor de accounts die u aan wilt maken
+        emails: E-mails
+        error_permission_request: Er deed zich een fout voor bij het verwerken van uw verzoek om toestemming
+        filter_by: Filteren op
+        flashes:
+          accounts_created:
+            one: ! '%{count} account met succes aangemaakt'
+            other: ! '%{count} accounts met succes aangemaakt'
+          invalid_role: ! 'Ongeldige rol opgegeven voor gebruikerscreatie: %{role}'
+          no_email_addresses: Geen e-mailadressen gevonden
+          pending_permissions_removed: Hangende toestemmingen verwijderd
+          reenable_failed: Er deed zich een fout voor bij het inschakelen van dat gebruikersaccount.
+          reenable_success: Account met succes opnieuw ingeschakeld
+          reset_email_failed: Er deed zich een fout voor bij de e-mail om het wachtwoord opnieuw in te stellen.
+          reset_email_sent: E-mail om het wachtwoord opnieuw in te stellen is verstuurd.
+          successful_update: Gebruiker met succes geüpdate.
+        invited: Uitgenodigd
+        name: Naam
+        no_pending_users: Geen hangende gebruikers voldoen aan uw huidige filter
+        no_users_found: Geen bestaande gebruikers gevonden
+        no_users_match: Geen gebruikers voldoen aan uw huidige filter.
+        pending_users: De volgende gebruikers hebben hangende accounts, maar hebben deze nog niet geactiveerd
+        reenable_privileges: Privileges opnieuw inschakelen
+        remove: Verwijderen
+        reset_password: Wachtwoord resetten
+        return_to_overview: Terugkeren naar het overzicht van gebruikers
+        role: Rol
+        roles:
+          administrator: beheerder
+          designer: ontwerper
+          editor: redacteur
+          none: geen
+          publisher: uitgever
+          viewer: kijker
+        search: Zoeken
+        search_for_users: Zoek naar gebruikers om toe te voegen
+        search_results: Zoekresultaten voor '%{term}'
+        title: Beheer gebruikers
+        user_saved: Gebruiker opgeslagen
+    dataset_edit:
+      append: Toevoegen
+      append_and_replace: Voeg data toe of vervang deze
+      append_explain: U wilt dat de geüploade data aan het eind van uw dataset wordt toegevoegd. U kunt kiezen hoe uw nieuwe data in uw bestaande kolommen getoond wordt.
+      finish:
+        headline: Uw dataset is bijgewerkt.
+        subheadline: Klik op Afsluiten om het te zien!
+      headline: Wat wilt u met uw geüploade data doen?
+      import_columns:
+        destination_column: Bestemmingskolom
+        destination_data_type: Datatype van de bestemming
+        headline: Hoe verhoudt zich de data in &ldquo;<span class="fileName"></span>&rdquo; tot  uw dataset?
+      import_warnings:
+        see_docs: <strong>Volgt u het niet meer?</strong> Bekijk dan onze <a href="%{publisher_link}" rel="external">uitgeversdocumentatie</a> over het importeren van data voor een gedetailleerde uitleg over hoe de importeur omgaat met data.
+      replace: Vervangen
+      replace_data: Vervang data
+      replace_explain: U wilt alle bestaande data verwijderen en vervangen door uw geüploade data. U kunt kiezen hoe uw nieuwe data in uw bestaande kolommen wordt opgenomen. Deze handeling kan niet ongedaan worden gemaakt.
+      replace_layer: Vervang laag
+      title: Pas dataset aan
+      upload_accessible: Upload nieuwe data op een toegankelijke manier
+    dataset_new:
+      column_template:
+        name_this_col: Geef deze kolom een naam
+        options: Opties
+        remove: verwijderen
+      crossload:
+        downloading: Uw bestand wordt gedownload
+        headline: Geef alstublieft aan waar uw databestand zich bevindt.
+        import: Importeren
+        supported: Ondersteunde bestandstypes zijn CSV, TSV en Excel. Ondersteunde protocollen zijn HTTP en HTTPS.
+        url_prompt: Wat is de internet URL van het bestand dat u wilt importeren?
+      errors:
+        invalid_crossload_url: Voer een geldige URL in dat begint met HTTP of HTTPS
+        invalid_url: Dit lijkt geen geldige URL te zijn.
+        missing_data_provider: U moet de leverancier van de data (met naamsvermelding) opgeven voor een creatieve normale licentie.
+        missing_esri_url: Een URL van een ESRI kaartlaag is verplicht.
+        missing_name: Naam van dataset is verplicht.
+        need_description: Omschrijf &ldquo;%{name}&rdquo;
+      finish:
+        headline: Uw dataset is aangemaakt.
+        subheadline: Klik op Afsluiten om het te zien!
+      first_page:
+        blobby: Upload een non-databestand
+        blobby_explain: Kies hiervoor als u een bestand met data heeft die niet geïmporteerd kan worden, zoals een PDF of een afbeelding. Het zal in de datacatalogus worden geïmporteerd, maar zal niet zo interactief zijn als echte data.
+        create: Vanaf nul ontwerpen
+        create_explain: Kies hiervoor als u nog geen data heeft die u wilt importeren. U kunt een schema voor uw data definiëren, en het online vullen.
+        external: Link naar externe data
+        external_explain: Kies hiervoor als u al data heeft die op een andere server wordt gehost. Deze data zal niet worden geïmporteerd.
+        header: Maak een nieuwe dataset aan
+        import: Importeer een databestand
+        import_explain: ! 'Kies hiervoor als u al een databestand heeft op uw computer dat u wilt importeren. De volgende formats worden ondersteund: .csv, .tsv, .xls en .xlsx.'
+        mapLayer: Maak verbinding met een ESRI kaartlaag
+        mapLayer_explain: ! 'Kies hiervoor als u een ESRI kaartlaag heeft die u in de catalogus wilt importeren. U moet een URL opgeven naar het API-punt waar de ESRI laag is opgeslagen.  '
+        prompt: Hoe wilt u uw nieuwe dataset aanmaken?
+        shapefile: Geospatiale data importeren
+        shapefile_explain: Kies hiervoor als u geospatiale data heeft die u in uw catalogus wilt importeren.
+      import:
+        headline: Waar vind ik dit bestand?
+        local: Op mijn computer
+        local_explain: Kies hiervoor als u een bestand heeft op de computer die u gebruikt.
+        web: Op het internet
+        web_explain: Kies hiervoor als u een bestand heeft dat al op het internet staat en u de URL heeft.
+      import_columns:
+        add_new_column: Voeg nieuwe kolom toe
+        clear_all: Alles wissen
+        data_type: Datatype
+        errors_warnings: Fouten en waarschuwingen
+        fewer_rows: Minder rijen
+        headers: Kopteksten
+        headers_instructions: Kopteksten moeten worden genegeerd en niet als data worden geïmporteerd. Geef alstublieft aan hoeveel rijen van uw bronbestand kopteksten zijn.
+        headline: Geef aan hoe &ldquo;<span class="fileName"></span>&rdquo; moet worden geïmporteerd.
+        help_message: Voor hulp kunt u een <a href="%{common_errors}" rel="external">lijst van veelvoorkomende waarschuwingen en fouten bekijken</a>.
+        more_rows: Meer rijen
+        name: Naam
+        pending_columns: We laden uw kolommen, een moment geduld a.u.b.
+        reset_to_preset: Terugzetten naar standaardinstellingen
+        set: Instellen
+        source_column: Bronkolom
+        subheadline: Kolommen om te importeren
+        suggested_alltext: Alle kolommen als tekst
+        suggested_columns: Voorgestelde kolommen
+        suggested_flat: Voorgestelde kolommen (geen samengestelden)
+        suggested_plus_discrete: Voorgestelde kolommen (samengestelden en discreet)
+        why_choose_now: Waarom is het belangrijk dat ik nu kolomtypes kies?
+      import_help: <strong>Hulp nodig?</strong> We houden een <a href="%{common_errors}" rel="external">lijst bij van veelvoorkomende waarschuwingen en fouten</a> die van nut kunnen zijn voor u.
+      import_shapefile:
+        crs: Coördinaat referentiesysteem
+        headline: Geef aan hoe &ldquo;<span class="fileName"></span>&rdquo; moet worden geïmporteerd.
+        layers_list: Lagen die geïmporteerd moeten worden
+        name: Naam
+        pending: We laden uw lagen, een moment geduld a.u.b.
+        subheadline: Deze shapefile bevat <span class="featureCount"></span> functies in <span class="layerCount"></span> lagen.
+      import_warnings:
+        headline: Waarschuwingen tijdens importeren
+        see_docs: <strong>Is het niet helemaal duidelijk?</strong> Bekijk onze <a href="%{publisher_link}" rel="external">uitgeversdocumentatie</a> over het importeren van data, voor een uitgebreide uitleg over hoe de importeur met data omgaat. We verwijzen u ook naar onze <a href="%{common_errors}" rel="external">lijst van veelvoorkomende waarschuwingen en fouten</a>.
+        subheadline: Houd er rekening mee dat mogelijk niet alle data goed geïmporteerd is.
+      importing_your_data: Uw data wordt geïmporteerd...
+      metadata:
+        creative_commons_type: Creatief veelvoorkomend type
+        esri_map_layer_url: ESRI kaartlaag URL
+        esri_source_url: Voer de URL-bron in
+        privacy_security: Privacy & veiligheid
+        privacy_settings: Privacy-instellingen
+        private_explain: Mijn data is <strong>privé</strong>
+        prompt: Omschrijf uw data
+        public_explain: ! 'Mijn data is <strong>openbaar</strong>: het kan alleen door mij worden gewijzigd, maar iedereen kan het zien'
+      processing: Wordt verwerkt...
+      title: Nieuwe dataset
+      upload_accessible: Upload een nieuwe toegankelijke dataset
+      upload_file:
+        choose_a_file: Kies een bestand
+        no_file_selected: Er is nog geen bestand gekozen
+        supported_blist: Ondersteunde formats zijn .csv, .tsv, .xls en .xlsx.
+        supported_shapefile: Ondersteunde formats zijn .kml, .kmz en .zip (ESRI Shapebestand).
+        uploading: Uw bestand wordt geüpload...
+      why_choose_now:
+        close: Sluiten
+        line_1: Uw data is zwaar verwerkt als het wordt geïmporteerd, en geoptimaliseerd om door ieder datatype te worden gebruikt. Daarnaast hebben de meeste datatypes speciale functies die alleen worden geactiveerd als de kolom op dat type wordt ingesteld &mdash; locatiekolommen zijn bijvoorbeeld noodzakelijk om kaarten te kunnen maken.
+        line_2: Kolomtypes kunnen later worden gewijzigd, maar het is een proces dat tijd kost, en het is dus beter om dit direct goed in te stellen.
     ds:
       bar:
         api_unsavable: API-views kunnen niet worden gewijzigd
@@ -754,6 +1419,7 @@ nl:
           purposes:
             copyright_violation: Schending van het auteursrecht
             offensive_content: Offensieve inhoud
+            other_purpose: Anders
             personal_information: Persoonlijke informatie
             prompt: ! '- Doel kiezen -'
             spam: Spam of junk
@@ -858,6 +1524,7 @@ nl:
           column_select:
             auto: Auto
             from_grid: Selecteer een kolom uit het raster
+            none: (geen)
             none_selected: Geen kolom geselecteerd
             nonselectable: Ongeldige kolommen
             prompt: Selecteer een kolom
@@ -969,6 +1636,10 @@ nl:
             value: Flyout waarden
           group_extra: Extra waarden groeperen
           groups: Groepen
+          headings:
+            chart_details: Grafiekgegevens
+            data_presentation: Dataweergave
+            data_selection: Datakeuze
           label: Label
           labelInBar: Label in balk
           labels_and_values: Labels en waarden
@@ -1448,6 +2119,9 @@ nl:
         validation:
           auth_required: U moet ingelogd zijn om een view op te slaan
           view_name_required: Een viewnaam is vereist
+      show:
+        remove_confirm: Weet u zeker dat u deze weergave wilt verwijderen?
+        unpublished_alert: Deze dataset is nog niet gepubliceerd zodat u nog noodzakelijke wijzigingen kunt aanbrengen voordat het voor iedereen toegankelijk is. Het zal niet zichtbaar zijn totdat u deze dataset publiceert.
       subscribe:
         google_reader: Voeg toe aan Google Reader
         intro_html: ! '<strong> Om u te abonneren op de <span class="datasetName">%{name}</span> dataset via een RSS reader</strong>, gebruikt u een van de volgende links:'
@@ -1458,6 +2132,80 @@ nl:
         subscribed_html: <strong> U bent momenteel geabonneerd op deze <span class="datasetTypeName">dataset</span> via e-mail</strong>, en zult u meldingen ontvangen wanneer er nieuwe gegevens worden gepubliceerd.
         title_html: Abonneert u zich op de &quot;<span class="datasetName">%{name}</span>&quot; <span class="datasetTypeNameUpcase">Dataset</span>
         unsubscribe: Indien u niet langer wenst meldingen te ontvangen, verwijdert u het vinkje in het vakje Subscribe hieronder.
+    edit_metadata:
+      about: Over
+      additional_source: Extra bron
+      alternative_access_prompt: Voer een afwisselend toegangspunt voor deze dataset in.
+      api_endpoint: API eindpunt
+      attachments: Bijlagen
+      attachmentsDisabledMessagePart1: Om bijlagen te uploaden moet u de publicatie van deze dataset eerst voltooien. Daarna klikt u
+      attachmentsDisabledMessagePart2: in de taakbalk en klik op Metadata aanpassen. U kunt nu bijlagen uploaden.
+      brief_description: Korte omschrijving
+      brief_description_prompt: Voer een omschrijving in
+      cancel: Annuleren
+      category: Categorie
+      contact_email: Contact e-mail
+      contact_information: Contact informatie
+      custom: Aangepast
+      custom_error: Aangepaste semantische klasse moet url zijn.
+      data_provided_by: Data geleverd door
+      data_provided_prompt: Individu of organisatie
+      data_provider_required: U moet de leverancier van de data opgeven (naamsvermelding)
+      dataset_title: Datasettitel
+      dataset_title_error: De dataset moet een titel hebben.
+      dataset_title_prompt: Voer een titel in
+      dataset_url: URL van de dataset
+      dataset_url_prompt: Voer de locatie van uw externe dataset in
+      delete: Verwijderen
+      email_address: E-mailadres
+      email_help: Dit adres zal niet voor iedereen zichtbaar zijn. Als het leeg wordt gelaten wordt standaard uw adres gebruikt.
+      existing_attachments: Bestaande bijlagen
+      external_confirm: Weet u zeker dat u deze externe dataset wilt verwijderen?
+      external_dataset: Externe datasets
+      external_id: Externe ID
+      external_id_prompt: Voer uw externe ID in
+      external_identifier: Externe identificator
+      file_type: Bestandstype
+      general_information: Algemene informatie
+      headline: Pas metadata voor %{name} aan
+      keywords_help: Voer één of meer trefwoorden in, gescheiden door komma's
+      license_help: Kies licentievoorwaarden voor mensen die deze dataset willen gebruiken.
+      license_type: Licentietype
+      licensing: Vergunning verlenen
+      licensing_attr: Licentie & naamsvermelding
+      list: Lijst
+      metadata_help: Dit veld is door uw organisatie als privé gemarkeerd en is niet openbaar zichtbaar
+      new_attachment: Nieuwe bijlage
+      none: (geen)
+      northwest_latitude: Noordwestelijke breedtegraad
+      northwest_longitude: Noordwestelijke lengtegraad
+      optional: Optioneel
+      private_help: Dit veld is door uw organisatie als privé gemarkeerd en is niet openbaar zichtbaar
+      remove_image: Afbeelding verwijderen
+      required_field: Verplicht veld
+      resource_name: Naam van de bron
+      resource_name_prompt: Voer een naam van de bron in
+      return: Keer terug naar dataset
+      row_class: Rijklasse
+      row_identifier: Rijaanduiding
+      save: Opslaan
+      save_changes: Wijzigingen opslaan
+      semantics_rdf: Semantiek & RDF
+      source_link: Link naar de bron
+      source_link_error: dit lijkt geen geldige url te zijn.
+      source_link_prompt: Voer internetadres in
+      southeast_latitude: Zuid-Oostelijke breedtegraad
+      southeast_longitude: Zuid-Oostelijke lengtegraad
+      spatial_extent: Ruimtelijke omvang
+      subject_column: Onderwerp kolom
+      tags_keywords: Labels/trefwoorden
+      tags_prompt: Voer trefwoorden in
+      thumbnail_image: Miniatuurafbeelding
+      title: Pas dataset metadata aan
+      upload_error: Kies een geldig bestand met een afbeelding
+      upload_help: Deze afbeelding zal worden bijgesneden in een vierkant
+      upload_image: Afbeelding uploaden
+      upload_new_attachment: Nieuwe bijlage uploaden
     forgot_password:
       already_authenticated: ! 'Niet in staat om wachtwoord te resetten: u bent al ingelogd'
       failed: Er is een probleem opgetreden bij het indienen van uw wachtwoord resetaanvraag. Probeer het opnieuw.
@@ -1471,6 +2219,64 @@ nl:
         account_html: Hallo, <span class="currentUser">Onbekende gebruiker</span>
         account_tooltip: Uw huis
         administration: Administratie
+    import_common:
+      addresses_to_geocode: Adressen zullen zodra het importeren voltooid is worden gegeocodeerd.
+      case_sensitive: Hoofdlettergevoelig
+      city: Stad
+      column: Kolom
+      combine_multiple_columns: Meerdere kolommen samenvoegen
+      create_composite: ! 'Maak één kolom vanuit meerdere bronlolommen:'
+      create_js_expression: Hoe maak ik een aangepaste omschrijving in Javascript aan?
+      custom_javascript: Aangepaste omschrijving in Javascript...
+      enter_custom: Voer een aangepaste waarde in
+      existing_cols: Bestaande adreskolommen
+      existing_latlng_cols: Bestaande kolommen voor breedte- en lengtegraden
+      find: zoeken
+      find_and_replace: Zoek en vervang waarde...
+      import_from_multiple: Uit <strong>meerdere kolommen</strong> importeren
+      import_from_single: Uit <strong>één kolom</strong> importeren
+      latitude: Breedtegraad
+      location_source_col: Locatie bron kolommen
+      longitude: Lengtegraad
+      make_lower_case: Zet in kleine letters
+      make_title_case: Gebruik kleine letters
+      make_upper_case: Gebruik HOOFDLETTERS
+      name_this_column: Geef deze kolom een naam
+      new_layer: (Nieuwe laag)
+      new_source_col: Voeg nieuwe bron kolom toe
+      new_transform: Voeg nieuwe transformatie toe
+      options: Opties
+      properly_formatted: Kolom moet in het<a href="%{formatting_link}" rel="external">juiste formaat zijn</a> voordat het geïmporteerd wordt.
+      regular_expression: reguliere expressie
+      remove: verwijderen
+      replace: en vervang het door
+      state: Staat
+      street: Straat
+      then: dan
+      to_state_code: Zet staten om naar 2-lettercodes
+      transforms: ! 'Voer de volgende transformatie uit bij het importeren:'
+      zip: Postcode
+    import_pane:
+      analyzing: Uw bestand wordt geanalyseerd...
+      assure_accessible: Zorg ervoor dat uw bestand toegankelijk en geldig is en probeer het opnieuw.
+      combine_multiple_cols: (Combineer meerdere kolommen...)
+      downloading: Uw bestand wordt gedownload...
+      filetype_error_blist: Kies een CSV-, TSV-, XLS- of XLSX-bestand.
+      filetype_error_shapefile: Kies een KML-, KMZ of ZIP-bestand.
+      headline_import: Kies een bestand om te importeren
+      headline_upload: Kies een bestand om te uploaden
+      layer: Laag
+      many_headers: ! '%{num} van uw rijen zijn kopteksten.'
+      no_file_selected: Nog geen bestand gekozen.
+      no_headers: Geen een van uw rijen zijn kopteksten.
+      no_source_column: (Geen bron kolom)
+      one_header: Eén van uw rijen is een koptekst
+      problem_importing: Er deed zich een probleem voor bij het importeren van dat bestand. Zorg ervoor dat het een geldig bestand is.
+      problem_uploading: Er deed zich een probleem voor bij het uploaden van dit bestand. Zorg ervoor dat het om een geldig bestand gaat.
+      rows_imported: Tot nu toe %{num} rijen geïmporteerd.
+      try_again: Probeer het zometeen nog eens.
+      unknown_error: Er trad een onbekende fout op
+      uploading: Uw bestand wordt geüpload
     link_account:
       success: Uw externe account is gekoppeld.
     profile:
@@ -1639,6 +2445,78 @@ nl:
       third_party_return: Voor het gebruik van deze gegevens, moet u
       third_party_return_create: een Socrata-account aanmaken
       third_party_return_link: koppelen aan een bestaande Socrata-ID
+    stats:
+      api: API
+      apply: Toepassen
+      bytes_out: Verstuurde bytes
+      chart_created: grafiek aangemaakt
+      charts: Grafieken
+      charts_created: grafieken aangemaakt
+      comment_created: reactie aangemaakt
+      comments: Reacties
+      comments_created: reacties aangemaakt
+      daily: Dagelijks
+      deleted_application: applicatie verwijderd
+      dependent_metrics: Afhankelijke metrische gegevens
+      download: downloaden
+      downloads: downloads
+      during_time_period: gedurende deze tijdsperiode
+      embed: neem op
+      embeds: neemt op
+      error_loading: Er deed zich een fout voor bij het laden van uw metrische data. Probeer het later nog eens.
+      filter_created: filter aangemaakt
+      filters: Filters
+      filters_created: filters aangemaakt
+      govstat_hits: GovStat treffers
+      hit_served: treffer geserveerd
+      hits_served: treffers geserveerd
+      hourly: Per uur
+      map_created: kaart aangemaakt
+      maps: Kaarten
+      maps_created: kaarten aangemaakt
+      metric_backed: Metrisch gesteund
+      metrics_backed: metrisch gesteund
+      monthly: Per maand
+      name: Naam
+      no_data_time_period: Geen data voor deze tijdperiode
+      page_viewed: pagina bekeken
+      pages_viewed: pagina's bekeken
+      referrals: Verwijzingen
+      rows_loaded: Geladen rijen
+      sdp: SDP
+      select_chart_type: Kies een grafiektype om van het menu weer te geven
+      show_more: Toon meer
+      time_period_unavailable: Metrische data is voor deze tijdsperiode niet beschikbaar
+      title: Dataset analyses
+      top_embeds: Beste opgenomen delen
+      top_referrers: Beste verwijzers
+      total: Totaal
+      total_govstat_hits: Totale GovStat treffers
+      views: Keer bekeken
+      views_loaded: Keer bekeken en geladen
+      website: Website
+      weekly: Wekelijks
+    thumbnail:
+      discard_changes: Wijzigingen niet opslaan
+      edit_thumbnail: Pas miniatuurafbeelding aan voor %{name}
+      error_blob: Van dit opgenomen bestand kan geen miniatuurafbeelding worden gemaakt omdat het niet in de browser kan worden weergegeven.
+      error_generic: Er deed zich een probleem voor bij het opslaan van uw miniatuurafbeelding. Probeer het later nog eens.
+      error_invalid: Deze weergave is ongeldig en kan in de huidige staat niet tot miniatuurafbeelding worden gemaakt
+      error_private: In verband met uw privacy kunnen alleen van openbare datasets miniatuurafbeeldingen worden gemaakt. Als u een preview van een afbeelding wilt hebben moet u de dataset openbaar maken met het Toestemmingsvenster van de Beheernavigatiekolom.
+      error_processing: Er deed zich een fout voor bij de verwerking van uw verzoek voor een miniatuurafbeelding. Probeer het later nog eens.
+      full_image: Afbeelding op volledige grootte
+      please_wait: Er zijn nog geen miniatuurafbeeldingen beschikbaar voor deze dataset. Een moment geduld, we maken er een voor u.
+      preview: Preview
+      refresh_thumbnail: Miniatuurafbeelding verversen
+      return_to_dataset: Keer terug naar de dataset
+      save_thumbnail: Miniatuurafbeelding opslaan
+      success: Miniatuurafbeelding opgeslagen
+      title: Dataset van miniatuurafbeeldingen
+      unsaved: Niet opgeslagen
+    widget:
+      create_new:
+        name: Naam voor nieuwe sjabloon
+        title: Maak een nieuw sjabloon aan
     wizard:
       cancel: Annuleren
       finish: Voltooien

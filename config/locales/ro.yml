@@ -618,6 +618,7 @@ ro:
     interstitial:
       leaving_explanation_html: Acest <span class="datasetType">set de date</span> este găzduit de <a href="\#" rel="external" class="externalDomain">un alt domeniu</a>.
       leaving_notice_html: Părăsiţi <span class="serverName">%{site_name}</span>
+    maintenance_notice: Acest dezvoltat de Socrata poate fi indisponibil pentru mentenanță de rutină de la %{start} la %{finish}.
     map_layers:
       aerial: Aerian
       bing_aerial: Bing aerian
@@ -746,7 +747,11 @@ ro:
         tweet_contents: ! 'Uitaţi-vă la %{dataset} de pe %{company}: %{url}'
         twitter: Partajare pe Twitter
     configurator:
+      actions_components: Acțiuni
       advanced_components: Componente avansate
+      content_components: Conținut
+      data_components: Date
+      input_components: Intrare
       report_components: Componente raport
     context_picker:
       select_dataset: Selectare set de date
@@ -1034,6 +1039,15 @@ ro:
       visits: Vizite
       your: Votul dvs.
     admin:
+      datasets:
+        layout_config: Configurare amplasare
+        left: Stânga
+        right: Dreapta
+        saved: Salvat
+        saving: Se salvează
+        sidebar_position: Poziție bară laterală
+        title: Seturi de date
+        unpublished_datasets: Seturi de date nepublicate
       federation:
         accept: Acceptare
         accepted: Acceptat
@@ -1063,6 +1077,51 @@ ro:
         target_domain: Domeniu țintă
         terminate: Încheiere
         title: Deschidere federare date
+      home:
+        add_featured_dataset: Adăugare set de date expus nou
+        are_you_sure: Sunteți sigur? Această acțiune nu poate fi refăcută.
+        catalog_layout_configuration: Configurare aranjare catalog
+        choose_a_dataset: Alegere set de date de expus
+        compact_list: Listă compactă
+        contents: Conținuturi
+        create_new_story: Creare povestire nouă
+        custom_image: Imagine personalizată
+        customize_now: Personalizare acum
+        customize_story_appearance: Personalizare aspect povestire
+        dataset_display_limit: Doar patru seturi de date pot fi expuse în același timp.
+        date_published: Data publicării
+        default_catalog_layout: Aranjare implicită catalog
+        delete: Ștergere
+        down: Jos
+        edit: Editare
+        feature_image: expunere imagine
+        filetype_error: Tip de fișier nevalabil. Vă rugăm să alegeți un fișier de imagine.
+        flashes:
+          create_error: ! 'A survenit o eroare în cursul solicitării dvs: %{error_message}'
+          delete_error: Povestirea pe care ați încercat să o ștergeți nu există.
+          edit_error: Povestirea pe care ați încercat să o editați nu există.
+          edit_success: Povestirea dvs. a fost salvată
+          move_error: Povestirea pe care ați încercat să o mutați nu există.
+          move_success: Povestirea dvs. a fost salvată
+        image: Imagine
+        left: Stânga
+        manage_featured_dataset: Administrare set de date expus
+        manage_story_content: Administrare conținut povestire
+        move_left: Mutare la stânga
+        move_right: Mutare la dreapta
+        remove: Eliminare
+        rich_list: Listă complexă
+        right: Dreapta
+        save_now: Salvare acum
+        saved: Salvat
+        saved1: Salvat.
+        saving: Se salvează
+        saving1: Se salvează...
+        set_a_thumbnail: Setare miniatură
+        text: Text
+        thumbnail: Miniatură
+        title: Administrare pagină de pornire
+        up: Sus
       metadata:
         add_new_category: Adăugare categorie nouă
         add_new_field: Adăugare prieten nou

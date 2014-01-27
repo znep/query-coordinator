@@ -618,6 +618,7 @@ pt:
     interstitial:
       leaving_explanation_html: Este <span class="datasetType">conjunto de dados</span> é hospedado por <a href="\#" rel="external" class="externalDomain">outro domínio</a>.
       leaving_notice_html: Está a sair de <span class="serverName">%{site_name}</span>
+    maintenance_notice: Este site fornecido pela Socrata pode estar indisponível para manutenção de rotina desde %{start} a %{finish}.
     map_layers:
       aerial: Aéreo
       bing_aerial: Bing Aerial
@@ -746,7 +747,11 @@ pt:
         tweet_contents: ! 'Ver %{dataset} na %{company}: %{url}'
         twitter: Partilhar no Twitter
     configurator:
+      actions_components: Ações
       advanced_components: Componentes Avançados
+      content_components: Conteúdo
+      data_components: Dados
+      input_components: Entrada
       report_components: Componentes de Relatório
     context_picker:
       select_dataset: Selecionar Conjunto de Dados
@@ -1034,6 +1039,15 @@ pt:
       visits: Visitas
       your: A sua classificação
     admin:
+      datasets:
+        layout_config: Configuração da Disposição
+        left: Esquerda
+        right: Direita
+        saved: Guardado
+        saving: A guardar
+        sidebar_position: Posição da barra lateral
+        title: Conjuntos de dados
+        unpublished_datasets: Conjuntos de dados não publicados
       federation:
         accept: Aceitar
         accepted: Aceite
@@ -1063,6 +1077,51 @@ pt:
         target_domain: Domínio Alvo
         terminate: Terminar
         title: Federação de Dados Abertos
+      home:
+        add_featured_dataset: Adicionar um Novo Conjunto de Dados em Destaque
+        are_you_sure: Tem a certeza? Esta ação não pode ser revertida.
+        catalog_layout_configuration: Catálogo de Configurações de Disposição
+        choose_a_dataset: Escolher um Conjunto de dados para destacar
+        compact_list: Lista Compacta
+        contents: Conteúdos
+        create_new_story: Criar uma Nova História
+        custom_image: Imagem Personalizada
+        customize_now: Personalizar Agora
+        customize_story_appearance: Personalizar a Aparência da História
+        dataset_display_limit: Só podem ser destacados quatro conjuntos de dados de cada vez.
+        date_published: Data de Publicação
+        default_catalog_layout: Catálogo de Disposições Padrão
+        delete: Apagar
+        down: Para baixo
+        edit: Editar
+        feature_image: imagem em destaque
+        filetype_error: Tipo de ficheiro inválido. Por favor, escolha um ficheiro de imagem
+        flashes:
+          create_error: ! 'Ocorreu um erro durante o seu pedido: %{error_message}'
+          delete_error: A história que tentou apagar não existe.
+          edit_error: A história que tentou modificar não existe.
+          edit_success: A sua história foi guardada
+          move_error: A história que tentou mover não existe.
+          move_success: A sua história foi guardada
+        image: Imagem
+        left: Esquerda
+        manage_featured_dataset: Gerir Conjunto de Dados em Destaque
+        manage_story_content: Gerir o Conteúdo da História
+        move_left: Mover para a Esquerda
+        move_right: Mover para a Direita
+        remove: Remover
+        rich_list: Lista Detalhada
+        right: Direita
+        save_now: Guardar Agora
+        saved: Guardado
+        saved1: Guardado.
+        saving: A guardar
+        saving1: A guardar...
+        set_a_thumbnail: Definir uma Imagem Miniatura
+        text: Texto
+        thumbnail: Imagem Miniatura
+        title: Gerir Página Principal
+        up: Para cima
       metadata:
         add_new_category: Adicionar Nova Categoria
         add_new_field: Adicionar Novo Campo

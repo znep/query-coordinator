@@ -144,8 +144,8 @@ ru:
           main: Результаты %{body}
           term: для "%{term}"
     charts:
-      negatives_in_data: 
-      no_data: 
+      negatives_in_data: ! 'Неверный график: есть отрицательные значения'
+      no_data: Нет данных
       other_slice_label: Другое
       series_grouping:
         calculating_time: Расчет оставшегося времени...
@@ -162,7 +162,7 @@ ru:
         rendering_progress_minutes: ! '%{rows_remaining} строк осталось, еще приблизительно %{time_remaining} мин.'
         rendering_progress_seconds: ! '%{rows_remaining} строк осталось, еще приблизительно %{time_remaining} сек.'
         resume_rendering: Возобновить
-      zero_only_data: 
+      zero_only_data: Нет значений больше нуля
     common:
       auth_required: Вы должны зарегистрироваться %{action_phrase},
       dataset_picker:
@@ -173,6 +173,7 @@ ru:
         expand: Щелкните, чтобы развернуть
       image_upload:
         button: Загрузить изображение
+      no_results: Нет результатов
       rate:
         auth_action_phrase: чтобы дать оценку этому массиву данных
       share:
@@ -186,6 +187,8 @@ ru:
       sidebar:
         tabs:
           about: Об этом массиве данных
+          components: Компоненты
+          configuration: Конфигурация
           discuss: Обсудить
           edit: Редактировать
           embed: Вставить
@@ -200,6 +203,21 @@ ru:
         in_bing: Просмотреть в Bing Maps
         in_google: Просмотреть в Google Maps
         row_details: Подробные сведения об этой строке
+    editors:
+      actions:
+        add: Добавить
+        remove: Удалить
+        replace: Заменить
+        view: Просмотр
+      document:
+        add_title: Добавить новый документ
+        remove_title: Удалить document
+        replace_title: Заменить документ
+      photo:
+        add_title: Добавить новое изображение
+        remove_title: Удалить изображение
+        replace_title: Заменить изображение
+        view_title: Просмотреть изображение в отдельном окне
     embed:
       create_template_button: Создать новый шаблон
       custom_size: Настройка размера
@@ -276,8 +294,8 @@ ru:
         simplified_header: Абоненты будут начинать работу с упрощенного режима.
         simplified_toggle: Изменить стандартную установку снова на расширенный режим.
       main:
-        base_explanation: 
-        base_info: 
+        base_explanation: Со следующиму базовыми фильтрами
+        base_info: ! 'Эти фильтры всегда применяются вместе с любыми дополнительным фильтрами, введенными выше. Эти фильтры нельзя редактировать, так как у вас нет разрешений редактировать текущее представление, либо они находятся в родительском представлении или наборе данных. '
         filter: Фильтр
         filter_based_on_contents: Фильтровать этот массив данных по содержанию.
         no_conditions: Критерии еще не определены.
@@ -295,8 +313,13 @@ ru:
         select_one: Выбрать одно
         show_suggested: Показать предлагаемые значения
         title: опции
+    global_indicator:
+      error: Ошибка
+      saved: Сохранено
+      saving: Сохранение...
+      working: Выполняется...
     grid:
-      add_column: 
+      add_column: Добавить новый столбец...
       clear_column_filter: Отключить фильтр столбцов
       clear_sort: Очистить сортировку
       click_for_menu: Нажать «мышкой» для вызова Меню
@@ -308,23 +331,52 @@ ru:
       delete_warning_single_column: Вы хотите удалить выделенный столбец? Все данные этого столбца будут удалены!
       edit_column_properties: Редактировать свойства столбца
       filter_this_column: Применить фильтр к этому столбцу
+      geocodes_pending: Строки в столбце расположения все еще геокодируются. Подождите до завершения для публикации этого набора данных.
       hide_column: Скрыть столбец
       menu: Меню
       must_enter_name: Вы должны ввести наименование для этого столбца
       new_row: Новый
+      no_columns: Набор данных %{uid} не имеет столбцов.
       no_rows: Нет строк для отображения
+      permission_denied: У вас нет доступа к этому представлению.
       previous: Предыдущий
+      required_cols_missing: Отсутствуют столбцы, которые требуются для этого представления
       sort_ascending: Сортировать в порядке возрастания
       sort_descending: Сортировать в порядке убывания
-      totals: 
-      view_cell_comments: 
+      totals: Итоги
+      view_cell_comments: Просмотреть комментарии к этой ячейки.
       view_first_row: Просмотреть первую строку
       view_last_row: Просмотреть последнюю строку
       view_next_row: просмотреть следующую строку
       view_previous_row: Просмотреть предыдущую строку
-      view_row: 
+      view_row: Просмотреть строку
       view_single_row: Смотреть данные одной строки
       viewing_row_html: Обзор строки <span class=”curPage”></span> из <span class=”totalPages”></span>
+    map:
+      address_prompt: Введите адрес здесь
+      auto: авто
+      base_layers: Базовые слои
+      boundary_map: ! 'Карта границ '
+      current_location: Использовать текущее расположении
+      data_layers: Слои данных
+      data_request_timeout: Запрос данных занял слишком много времени и прекращен по таймауту
+      forever_node_explanation: Данные кластера слишком плотно упакваны для показа полезных данных географически.
+      forever_node_recommend: Мы рекомендуем вам <a href="#openTable">открыть табличный вид</a> для получение подробной информации.
+      forever_node_title: Слишком много данных
+      geocoding_inaccessible: ! 'Сервис геокодирования недоступен. Повторите попытку позже. '
+      geocoding_noresults: Невозможно выполнить геокодирование. Убедитесь, что адрес правильный.
+      heat_map: ! ' Тепловая карта'
+      heatmap_ie8_warning: Растровые тепловые карты не работают в вашем текущем браузере. Обновитесь до IE9, используйте Google Chrome илиr Mozilla Firefox. Спасибо.
+      loading: Загрузка...
+      map_legend: Легенда карты
+      multiple_layer_instructions: ! 'Здесь данные для болле чем одного слоя. Выберите один:'
+      next: Следующий
+      next_row: Следующая строка
+      no_columns_defined: Нет определенных столбцов
+      point_map: ! "Точечное отображение\n\t\t"
+      previous: Предыдущий
+      previous_row: Предыдущая строка
+      request_timed_out: Превышено время ожидания запроса этих данных.
     nominate:
       all: Все
       approve: (Одобрить)
@@ -338,6 +390,7 @@ ru:
       comments: Комментарии
       contact_author: Связаться с автором варианта
       dataset_suggestions: Предложения для массивов данных
+      delete_attachment: вложение
       delete_confirm: Действительно удалить это %{type}?
       delete_error: Ошибка при удалении %{type}
       delete_suggestion: предложение
@@ -380,6 +433,15 @@ ru:
       title_prompt: Введите заголовок
       user_removed: пользователь, который был уже удален
       user_removed_short: Пользователь был удален
+    upload_dialog:
+      browse: Обзор
+      title_file: Загрузить файл
+      title_image: Загрузить изображение
+      title_photo: Загрузить фото
+      to_upload_file: ! 'Файл для загрузки:'
+      to_upload_image: ! 'Изображение для загрузки:'
+      to_upload_photo: ! 'Фото для загрузки:'
+      upload: Загрузить
   core:
     aggregates:
       average: Средний
@@ -395,6 +457,11 @@ ru:
       visit: просмотр
       visits: просмотров
     and: и
+    auth:
+      invalid_userpass: Недействительное имя пользователя или пароль
+      need_login: Необходимо войти для доступа к этой странице
+      need_permission: У вас нет разрешения на просмотр этой страницы
+      too_many_tries: Слишком много попыток входа в систему. Аккаунт временно отключен.
     chart_types:
       area: Комбинированная гистограмма
       bar: Столбцовая диаграмма
@@ -408,17 +475,17 @@ ru:
       timeline: Временная ось
       treemap: Древовидная карта
     chart_types_short:
-      area: 
-      bar: 
-      bubble: 
-      column: 
-      donut: 
-      line: 
-      pie: 
-      stackedbar: 
-      stackedcolumn: 
-      timeline: 
-      treemap: 
+      area: Область
+      bar: Отрезок
+      bubble: Пузырек
+      column: Столбец
+      donut: Кольцо
+      line: Линия
+      pie: Круговая диаграмма
+      stackedbar: Блочный столбец
+      stackedcolumn: Составной столбец
+      timeline: Временная шкала
+      treemap: Плоское дерево
     data_types:
       calendar_date: Дата и время
       checkbox: Окно флажка
@@ -504,6 +571,7 @@ ru:
           belay_button: Не завершайте мой сеанс!
           body_html: Мы не обнаружили какую-либо активность в течение нескольких минут. Для обеспечения конфиденциальности мы завершим ваш сеанс через <span id="secondsRemaining"></span> сек.
           title: Ваш сеанс заканчивается.
+      submit: Отправить
       update: Обновить
     expando:
       expand: Увеличить
@@ -548,6 +616,7 @@ ru:
     interstitial:
       leaving_explanation_html: Этот <span class="datasetType">массив данных</span> размещен <a href="\#" rel="external" class="externalDomain">на другом домене</a>.
       leaving_notice_html: Вы покидаете <span class="serverName">%{site_name}</span>
+    maintenance_notice: Сайт на платформе Socrata может быть недоступен для регулярного обслуживания из %{start} в %{finish}.
     map_layers:
       aerial: АФС (аэрофотоснимок)
       bing_aerial: АФС Bing
@@ -569,27 +638,32 @@ ru:
       roadmap: Карта автомобильных дорог
       satellite: Спутниковая карта
       terrain: Карта рельефа
-    no_js: 
+    no_category: Нет катигории
+    no_js: ! 'Отключить Javascript на этой странице '
+    no_license: Нет лицензии
     numbers:
-      eight: 
-      five: 
-      four: 
-      nine: 
-      seven: 
-      six: 
-      three: 
+      eight: восемь
+      five: пять
+      four: четыре
+      nine: девять
+      num_one: один
+      num_two: два
+      num_zero: ноль
+      seven: семь
+      six: шесть
+      three: дерево
     or: или
     pagination:
-      current_page: 
+      current_page: Текущая страница
       first_page: Первая страница
       last_page: Последняя страница
       next_page: Следующая страница
-      page: 
+      page: страница
       previous_page: Предыдущая страница
     precision_style:
       scientific: Научный (1.0204e+3)
       standard: Стандартный (1020.4)
-    required: 
+    required: Требуется
     share_types:
       contributor: Автор
       owner: Владелец
@@ -639,85 +713,105 @@ ru:
       public: общедоступный
   dataslate:
     component:
+      edit: Редактировать этот компонент
       header:
-        height: 
-      invalid_config: 
-      loading: 
+        height: Высота
+      invalid_config: Этот компонент не имеет допустимой конфигурации
+      loading: Выполняется загрузка, подождите...
       picture:
-        alt_attr: 
-        alt_attr_prompt: 
-        full_url: 
-        image_source: 
-        large: 
-        medium: 
-        original: 
-        thumb: 
-        tiny: 
-        title_attr: 
-        title_attr_prompt: 
+        alt_attr: Alt
+        alt_attr_prompt: атрибут alt
+        full_url: ! 'Полный URL-адрес к изображению '
+        image_source: Источник изображения
+        large: Большой (220x220)
+        medium: Средний (150x150)
+        original: Оригинальный
+        thumb: Мини (80x80)
+        tiny: Крошечный (24x24)
+        title_attr: Заголовок
+        title_attr_prompt: Атрибут заголовка
       print:
-        print: 
-        print_this_page: 
-      remove: 
+        print: Печать
+        print_this_page: Напечатать эту страницу
+      remove: Удалить этот компонент
       share:
-        email: 
-        email_contents: 
-        facebook: 
-        share: 
-        subscribe: 
-        subscribe_text: 
-        this_page: 
-        tweet_contents: 
-        twitter: 
+        email: Поделиться по электронной почте
+        email_contents: ! '%{dataset} в %{company}'
+        facebook: Поделиться в Facebook
+        share: Share
+        subscribe: Подписаться по электронной почте или RSS
+        subscribe_text: Подписаться на изменения
+        this_page: Эта страница
+        tweet_contents: ! 'Посмотрите %{dataset} в %{company}: %{url}'
+        twitter: ! 'Поделиться в '
     configurator:
-      advanced_components: 
-      report_components: 
+      actions_components: Действия
+      advanced_components: Расширенные компоненты
+      content_components: Контент
+      data_components: Данные
+      input_components: Ввод
+      report_components: Компоненты отчета
     context_picker:
-      select_dataset: 
-      view_data: 
+      select_dataset: Выбрать набор данных
+      view_data: Просмотреть данные
     create:
-      cancel: 
-      create: 
-      create_page: 
-      page_settings: 
-      page_title: 
-      page_url: 
-      title: 
+      cancel: Отмена
+      create: Создать
+      create_page: ! 'Создать страницу DataSlate '
+      page_settings: Настройки страницы
+      page_title: Заголовок страницы
+      page_url: ! 'URL '
+      title: ! 'Создать страницу DataSlate '
     edit:
-      editing: 
-      permissions: 
-      preview_page: 
-      redo: 
-      revert: 
-      save: 
-      save_as: 
-      settings: 
-      undo: 
-      view_editor: 
+      editing: Редакторования
+      permissions: Разрешения
+      preview_page: Предварительный просмотр страницы
+      redo: Вернуть
+      revert: Возврат
+      save: Сохранить
+      save_as: Сохранить кака
+      settings: Настройки
+      undo: Отменить
+      view_editor: Просмотеть интерактивный редактор
     edit_component:
-      no_config: 
-      subtitle: 
-      title: 
+      no_config: Нет доступной конфигурации для %{component}
+      subtitle: Конфигурировать этот компонент
+      title: Редакторовать компонент
     edit_properties:
-      no_data: 
-      subtitle: 
-      title: 
+      no_data: Нет набора данных для этого компонента
+      subtitle: Добавить свойства на основе контекста данных этого компонента
+      title: Доступные свойства
     permissions:
-      cancel: 
-      private: 
-      private_desc: 
-      public: 
-      public_desc: 
-      save: 
-      shared: 
-      shared_desc: 
-      title: 
+      cancel: Отменить
+      private: Частный
+      private_desc: Доступно только для вашего просмотра
+      public: Публичный
+      public_desc: Доступно для просмотра любым человеком
+      save: Сохранить
+      shared: Общий доступ на сайте
+      shared_desc: Доступно для просмотра всеми коллегами, но не публики.
+      title: Разрешения доступа к странице
     settings:
-      cancel: 
-      page_title: 
-      page_url: 
-      save: 
-      title: 
+      cancel: Отменить
+      page_title: Заголовок страницы
+      page_url: Путь
+      save: Сохранить
+      title: Настройки страницы
+  date:
+    abbr_month_names:
+    - 
+    - Янв
+    - Феб
+    - Мар
+    - Апр
+    - Май
+    - Июн
+    - Июл
+    - Авг
+    - Сен
+    - Окт
+    - Ноя
+    - Дек
   error:
     back: Вернуться
     error_500:
@@ -741,132 +835,165 @@ ru:
     chrome:
       header:
         links:
-          account: 
-          account_options: 
-          account_tooltip: 
-          configuration: 
-          data: 
-          goals: 
-          home: 
-          my_goals: 
-          my_goals_tooltip: 
-          reports: 
+          account: Аккаунт
+          account_options: Парамеытры аакаунта
+          account_tooltip: Просмотр и изменение вашего аккаунта пользователя.
+          configuration: Конфигурация
+          configuration_title: ! 'Управление конфигурацией '
+          data: Данные
+          data_title: Обзор и управление данными
+          goals: Цели
+          goals_title: Создать и отслеживать цели
+          home: Домой
+          home_title: Домашняя страница
+          my_goals: Мои цели
+          my_goals_tooltip: См. цели, которые я создал
+          reports: Отчеты
+          reports_title: Просмотр и создание отчетов
+    configuration:
+      analytics: ! 'Аналитика '
+      appearance: Внешний вид
+      config: Конфигурация
+      content_moderation: Модерирование контента
+      data_management: Управление данными
+      datasets: Наборы данных
+      federations: Федерации
+      homepage: Домашняя страница
+      metadata: Метаданные
+      moderation: Модерирование комментария
+      nomination: Назначение модерирования
+      routing: Маршрутизация и одобрение
+      sdp_templates: Шаблоны проигрывателя данных
+      title: Управление настройками сайта
+      users: Пользователи
     reports:
       component:
-        base_map: 
-        chart: 
-        formatted_text: 
-        header: 
-        horizontal_layout: 
-        map: 
-        map_layer: 
-        picture: 
-        print: 
-        share: 
-        table: 
-        title: 
-        vertical_layout: 
-        visualize: 
+        base_map: Схематическая карта
+        chart: График
+        formatted_text: Форматированный текст
+        header: Заголовок
+        horizontal_layout: Горизонтальная компоновка
+        map: Карта
+        map_layer: Слой карты
+        picture: Рисунок
+        print: Печать
+        share: Поделиться
+        table: Таблица
+        title: Заголовок
+        vertical_layout: Вертикальная компоновка
+        visualize: Визуализировать
       create:
-        create_report: 
-        title: 
+        create_report: Создать отчет
+        title: Создать отчет
       manage:
-        copy: 
-        create_new_report: 
-        delete: 
-        edit: 
-        home: 
-        other_reports: 
-        owner: 
-        reports: 
-        title: 
-        updated: 
-        your_reports: 
+        copy: Копировать
+        create_new_report: Создать новый отчет
+        delete: Удалить
+        edit: Редактировать
+        home: Домой
+        other_reports: Другие отчеты
+        owner: владелец
+        reports: Отчеты
+        title: Управление отчетами
+        updated: обновлено
+        your_reports: Ваши отчеты
       permissions:
-        title: 
+        title: Разрешения отчета
       settings:
-        page_title: 
-        title: 
+        page_title: Заголовок отчета
+        title: Настройки отчета
+    template:
+      grid_flow_layout: Сетка макета потока
+      layouts: Макеты
+      list_layout: Макет списка
+      title: Выбрать макет
   plugins:
     daterangepicker:
-      date_range: 
-      done: 
-      end_date: 
-      last_month: 
-      month_to_date: 
-      next: 
-      prev: 
-      specific_date: 
-      start_date: 
-      the_month_of: 
-      the_week_of: 
-      the_year_of: 
-      today: 
-      week_to_date: 
-      year_to_date: 
+      date_range: Диапазон дат
+      done: Готово
+      end_date: Дата окончания
+      last_month: Прошлый месяц
+      month_to_date: С начала месяца
+      next: Следующий
+      prev: Предыдущий
+      specific_date: Конкретная дата
+      start_date: Дата начала
+      the_month_of: Месяц ...
+      the_week_of: Неделя ...
+      the_year_of: Год ...
+      today: Сегодня
+      week_to_date: С начала недели
+      year_to_date: С начала года
     fileuploader:
-      drop_files: 
-      failed: 
-      upload_a_file: 
+      drop_files: Перетащите файлы сюда для загрузки
+      failed: Не удалось
+      upload_a_file: Загрузить файл
     hallo:
-      body: 
-      bold: 
-      heading: 
-      italic: 
-      redo: 
-      subheading: 
-      undo: 
+      body: Основной текст
+      bold: полужирный
+      heading: ! 'Заголовок
+
+'
+      italic: Курсив
+      redo: Вернуть
+      subheading: Подзаголовок
+      undo: Отменить
     jquery_ui:
-      april: 
-      april_short: 
-      august: 
-      august_short: 
-      december: 
-      december_short: 
-      done: 
-      february: 
-      february_short: 
-      friday: 
-      friday_min: 
-      friday_short: 
-      january: 
-      january_short: 
-      july: 
-      july_short: 
-      june: 
-      june_short: 
-      march: 
-      march_short: 
-      may: 
-      may_short: 
-      monday: 
-      monday_min: 
-      monday_short: 
-      next: 
-      november: 
-      november_short: 
-      october: 
-      october_short: 
-      prev: 
-      saturday: 
-      saturday_min: 
-      saturday_short: 
-      september: 
-      september_short: 
-      sunday: 
-      sunday_min: 
-      sunday_short: 
-      thursday: 
-      thursday_min: 
-      thursday_short: 
-      today: 
-      tuesday: 
-      tuesday_min: 
-      tuesday_short: 
-      wednesday: 
-      wednesday_min: 
-      wednesday_short: 
-      week_min: 
+      april: Апрель
+      april_short: Апр
+      august: Август
+      august_short: Авг
+      december: Декабрь
+      december_short: Дек
+      done: Готово
+      february: Февраль
+      february_short: Фев
+      friday: ! 'Пятница
+
+'
+      friday_min: Пт
+      friday_short: Птн
+      january: Январь
+      january_short: Яан
+      july: Июль
+      july_short: Июл
+      june: Июнь
+      june_short: Июн
+      march: Март
+      march_short: Мар
+      may: Май
+      may_short: Май
+      monday: Понедельник
+      monday_min: Пн
+      monday_short: Пн
+      next: Следующий
+      november: Ноябрь
+      november_short: Ноя
+      october: Октябрь
+      october_short: Окт
+      prev: Пред
+      saturday: Суббота
+      saturday_min: Сб
+      saturday_short: Суб
+      september: Сентябрь
+      september_short: Сен
+      sunday: Воскресенье
+      sunday_min: Вс
+      sunday_short: Вск
+      thursday: Четверг
+      thursday_min: Чт
+      thursday_short: Чт
+      today: Сегодня
+      tuesday: Вторник
+      tuesday_min: Вт
+      tuesday_short: Вт
+      wednesday: Среда
+      wednesday_min: Ср
+      wednesday_short: Ср
+      week_min: Нед
+  recaptcha:
+    errors:
+      verification_failed: Введенные символы не соответствуют изображению.
   screens:
     about:
       actions: Действия
@@ -901,6 +1028,8 @@ ru:
       semantics: Семантика языка программирования и схема описания ресурсов (RDF)
       short_url: Краткий URL
       snapshotted: снимок сделан
+      soda2_support: Только SODA2
+      soda2_yes: Да
       source_link: Ссылка на источник
       spatial_extent: Пространственная протяженность
       subject_column: Тематический столбец
@@ -911,117 +1040,300 @@ ru:
       view_statistics: Показать статистику
       visits: Количество посещений
       your: Ваша оценка
+    admin:
+      datasets:
+        layout_config: Конфигурация макета
+        left: Слева
+        right: Справа
+        saved: Сохранено
+        saving: Сохранение
+        sidebar_position: Положение боковой панели
+        title: Наборы данных
+        unpublished_datasets: Неопубликованные наборы данных
+      federation:
+        accept: Принять
+        accepted: Принято
+        accepted_by: Принято
+        all: (все)
+        dataset: Набор данных
+        flashes:
+          accepted: Федерация обновлено успешно
+          created: Федерация успешно создана
+          deleted: Федерация успешно удалена
+          invalid_domain: ! 'Невозможно создать данные федерации: неверный конечный домен'
+          rejected: Федерация успешно отклонена
+        list_domains: Можно начать данные федерации со следующего списка доменов. После нажатия на Опубликовать, администратор конечного домена должен принять ваш запрос.
+        no_domains: Нет доменов, соответствующих %{name}.
+        no_federations: Еще не существует федераций для этого домена.
+        no_pub_datasets: Нет опубликованных наборов данных, соответствующих условию поиска.
+        pending: В ожидании
+        publish: Опубликовать
+        reject: Отклонить
+        search: Поиск
+        search_boost: Ускорить поиск
+        search_boost_explain: Диапазон от 1 до 0. Чем выше значение набора данных, тем раньше он будет показан.
+        search_prompt: Поиск доменов для публикации в
+        search_pub_datasets: Поиск опубликованных наборов данных
+        source_domain: Исходный домен
+        status: Статус
+        target_domain: Целевой домен
+        terminate: Завершить
+        title: Федерация открытых данных
+      home:
+        add_featured_dataset: Добавить новый популярный набор данных
+        are_you_sure: Вы уверены? Это действие необратимо.
+        catalog_layout_configuration: Конфигурация макета каталога
+        choose_a_dataset: Выбрать набор данных для показа
+        compact_list: Сокращенный список
+        contents: Содержание
+        create_new_story: ! 'Создать '
+        custom_image: Настраиваемое изображение
+        customize_now: Настроить сейчас
+        customize_story_appearance: Настроить внешний вид статьи
+        dataset_display_limit: За один раз можно показывать только четыре набора данных.
+        date_published: Дата опубликована
+        default_catalog_layout: Макет каталога по умолчанию
+        delete: Удалить
+        down: Вниз
+        edit: Редактировать
+        feature_image: Изображение функции
+        filetype_error: Неправильный тип файл. Выберите файл изображения.
+        flashes:
+          create_error: ! 'Произошла ошибка во время вашего запроса: %{error_message}'
+          delete_error: Статья, которую вы хотите удалить, не существует.
+          edit_error: Статья, которую вы хотите редактировать, не существует.
+          edit_success: Ваша статья была сохранена
+          move_error: Статья, которую вы хотите переместить, не существует.
+          move_success: Ваша статья была сохранена
+        image: Изображение
+        left: Левый
+        manage_featured_dataset: Управление популярным набором данных
+        manage_story_content: ! 'Управление контентом статьи '
+        move_left: Переместить влево
+        move_right: Переместить вправо
+        remove: Удалить
+        rich_list: Список богатых людей
+        right: Правый
+        save_now: Сохранить сейчас
+        saved: Сохранено
+        saved1: Сохранено.
+        saving: Сохранение
+        saving1: Сохранение...
+        set_a_thumbnail: ! 'Установить эскиз '
+        text: Текст
+        thumbnail: Эскиз
+        title: Управление домашней страницей
+        up: Вверх
+      metadata:
+        add_new_category: Добавить новую категорию
+        add_new_field: Добавить новое поле
+        allowed_values: Разрешенные значения
+        are_you_sure: Вы действительно хотите удалить этот набор полей и все связанные поля?
+        category_name: Имя категории
+        create: Создать
+        create_new_fieldset: Создать новый набор полей
+        define_categories: Определить категории набора данных
+        define_custom_fields: Определить пользовательские поля
+        down: Вниз
+        enter_a_name: Введите имя
+        'false': false
+        field_name: Имя поля
+        flashes:
+          cannot_move_field: ! 'Невозможно переместить поле с именем ''%{name}'': не найдено'
+          field_duplicated: Невозможно создать дублированное поле с именем '%{name}'
+          field_name_required: Невозможно создать поле без имени
+          field_successful_create: Поле успешно создано
+          field_successful_remove: Поле успешно удалено
+          field_successful_save: Поле успешно сохранено
+          fieldset_duplicated: Невозможно создать дублированное поле с именем '%{name}'
+          fieldset_name_required: Невозможно создать поле без имени
+          no_such_field: ! 'Нет такого поля '
+          no_such_fieldset: Нет такого набора полей
+          successful_create: Набор полей успешно создан
+          successful_remove: Набор полей успешно удален
+        locales: Языки
+        make_optional: Сделать необязательным
+        make_private: Сделать частным
+        make_public: Сделать публичным
+        make_required: Сделать требуемым
+        metadata_explain1: Пользовательские метаданные делятся на <span class="code">наборы полей</span> и <span class="code">поля</span>. <span class="code">Набор полей</span> - это способ для логического и визуального объединения одного или нескольких пользовательских <span class="code">полей</span>.
+        metadata_explain2: Есть несколько способов конфигурации полей. Они могут быть <span class="code">обязательными</span> для заполнения, когда издатели создают новые наборы данных и обновляют существующие метаданные. Они могут быть <span class="code">частными</span>. Т.е. введенные значения не будут видны всем пользователям.
+        metadata_explain3: Можно предварительно определить параметры ваших <span class="code">полей</span>, если вы хотите выбрать значения из списка, а не ввести в виде текста произвольной формы.
+        no_data: ! 'Нет определенных пользовательских полей набора данных для вашего домена. Чтобы начать, введите имя внизу и нажмите "Создать".  '
+        no_fields_defined: Этот набор полей еще не имеет определенных полей
+        page_title: Управление метаданными набора данных
+        parent: Родитель
+        remove: Удалить
+        shown: Показано?
+        title: Управление метаданными
+        'true': true
+        up: Вверх
+      users:
+        actions: Действия
+        all: Все
+        bulk_create: Массовое создание
+        create_accounts: Создать аккаунты
+        email: Электронная почта
+        email_prompt: Введите адреса электронной почты для аккаунтов, которые вы хотите создать
+        emails: Сообщения электронной почты
+        error_permission_request: Произошла ошибка при обработке вашего запроса разрешения
+        filter_by: Фильтр по
+        flashes:
+          accounts_created:
+            few: ! '%{count} аккаунта успешно создано'
+            many: ! '%{count} аккаунтов успешно создано'
+            one: ! '%{count} аккаунт успешно создан'
+            other: ! '%{count} аккаунтов успешно создано'
+          invalid_role: ! 'Указана неправильная роль для создания пользователя: %{role}'
+          no_email_addresses: Не найдено адресов электронной почты
+          pending_permissions_removed: ! 'Ожидающие разрешения удалены '
+          reenable_failed: Произошла ошибка при включении этого аккаунта пользователя.
+          reenable_success: Аккаунт успешно включен повторно
+          reset_email_failed: Произошла ошибка при отправке письма для смены пароля.
+          reset_email_sent: Письмо для смены пароля отправлено
+          successful_update: Пользователь успешно обновлен
+        invited: Приглашен
+        name: Имя
+        no_pending_users: Нет ожидающих пользователей, соответствующих текущему фильтру
+        no_users_found: Не найдено существующих пользователей
+        no_users_match: Нет пользователей, соответствующих текущему фильтру
+        pending_users: Следующие пользователи имеют аккаунты на рассмотрении, но еще их не активировали
+        reenable_privileges: Вновь включить права
+        remove: Удалить
+        reset_password: Сбросить пароль
+        return_to_overview: Вернуться к обзору пользователей
+        role: Роль
+        roles:
+          administrator: администратор
+          designer: дизайнер
+          editor: редактор
+          none: ничего
+          publisher: издатель
+          viewer: Средство просмотра
+        search: Поиск
+        search_for_users: Искать пользователй для добавления
+        search_results: Искать результаты для '%{term}'
+        title: Управления пользователями
+        user_saved: Пользователь сохранен
     dataset_edit:
-      append: 
-      append_and_replace: 
-      append_explain: 
+      append: Дополнить
+      append_and_replace: Дополнить и заменить данные
+      append_explain: Можно добавить загруженные данные в конец вашего набора данных. Можно выбрать, как новые данные будут внесены в существующие столбцы.
       finish:
-        headline: 
-        subheadline: 
-      headline: 
+        headline: Ваш набор данных обновлен.
+        subheadline: Нажмите на Завершить, чтобы его увидеть!
+      headline: ! 'Что вы хотите сделать с вашими загруженными данными? '
       import_columns:
-        destination_column: 
-        destination_data_type: 
-        headline: 
+        destination_column: Целевой столбец
+        destination_data_type: Тип данных назначения
+        headline: Как данные в &ldquo;<span class="fileName"></span>&rdquo; связаны с вашим набором данных?
       import_warnings:
-        see_docs: 
-      replace: 
-      replace_data: 
-      replace_explain: 
-      replace_layer: 
-      title: 
-      upload_accessible: 
+        see_docs: <strong>Запутались?</strong> Посмотрите нашу<a href="%{publisher_link}" rel="external">документацию издателя</a> об импорте данных для получения подробной информации о том, как импортер обрабатывает данные.
+      replace: Заменить
+      replace_data: Заменить данные
+      replace_explain: ! ' Все существующие данные будут удалены и заменены загруженными данными. Можно выбрать, как новые данные будут записаны в существующие столбцы. Эта операция необратима.'
+      replace_layer: Заменить слой
+      title: ! 'Редактировать набор данных '
+      upload_accessible: Загрузка новых доступных данных
     dataset_new:
       column_template:
-        name_this_col: 
-        options: 
-        remove: 
+        name_this_col: Дать имя столбцу
+        options: параметры
+        remove: удалить
       crossload:
-        downloading: 
-        headline: 
-        import: 
-        supported: 
-        url_prompt: 
+        downloading: ! "Идет загрузка вашего файла... \t"
+        headline: Укажите, где находятся ваши фйлы данных.
+        import: Импорт
+        supported: Поддерживаемые типы файлов - CSV, TSV, и Excel. Поддерживаемые протоколы -  HTTP и HTTPS.
+        url_prompt: Какой URL-адрес у файла, который вы хотите импортировать?
+      errors:
+        invalid_crossload_url: Введите правильный URL-адрес, который начинается с HTTP или HTTPS.
+        invalid_url: Это неверный That does not appear to be a valid URL.
+        missing_data_provider: Необходимо указать поставщика данных (определение) в лицензии Creative Commons.
+        missing_esri_url: Требуется действительный URL слоя карты ESRI.
+        missing_name: Требуется имя набора данных.
+        need_description: Опишите &ldquo;%{name}&rdquo;
       finish:
-        headline: 
-        subheadline: 
+        headline: Ваш набор данных был создан.
+        subheadline: Чтобы его увидеть, нажмите на Завершить!
       first_page:
-        blobby: 
-        blobby_explain: 
-        create: 
-        create_explain: 
-        external: 
-        external_explain: 
-        header: 
-        import: 
-        import_explain: 
-        mapLayer: 
-        mapLayer_explain: 
-        prompt: 
-        shapefile: 
-        shapefile_explain: 
+        blobby: Загрузить  файл без данных
+        blobby_explain: ! 'Выбрать, если есть файл с данными, которые невозможно импортировать, например, PDF или файл изображения. Он будет импортирован прямо в каталог данных, но не будет интерактивным, как настоящие данные. '
+        create: Дизайн c нуля
+        create_explain: Выбрать, если у вас еще нет данных для импорта. Вы сможете определить схему ваших данных, и ввести их онлайн.
+        external: Ссылка на внешние данные
+        external_explain: Выбрать, если у вас уже есть данные на другом сервере. Эти данные не будут импортированы.
+        header: Создать новый набор данных
+        import: Импортировать файл данных
+        import_explain: ! 'Выбрать, если у вас уже есть файл данных на компьютере. Поддерживаемые форматы: .csv, .tsv, .xls, and .xlsx.'
+        mapLayer: Подключиться к слою карты ESRI
+        mapLayer_explain: Выбрать, если у вас есть слой карты ESRI, который вы хотите импортировать в каталог. Вы должны указать URL к точке API, где сохранен слой ESRI.
+        prompt: Как вы хотите создать новый набор данных?
+        shapefile: ! 'Импортировать геопространственные данные '
+        shapefile_explain: ! 'Выбрать, если у вас есть геопространственные данные, которые вы хотите импортировать в каталог. '
       import:
-        headline: 
-        local: 
-        local_explain: 
-        web: 
-        web_explain: 
+        headline: Где находится этот файл?
+        local: На мой компьютер
+        local_explain: Выбрать, если у вас есть файл на компьютере, который вы используете.
+        web: в Интернете
+        web_explain: Выбрать, если у вас уже есть файл в сети и есть его URL-адрес.
       import_columns:
-        add_new_column: 
-        clear_all: 
-        data_type: 
-        errors_warnings: 
-        fewer_rows: 
-        headers: 
-        headers_instructions: 
-        headline: 
-        help_message: 
-        more_rows: 
-        name: 
-        pending_columns: 
-        reset_to_preset: 
-        set: 
-        source_column: 
-        subheadline: 
-        suggested_alltext: 
-        suggested_columns: 
-        suggested_flat: 
-        suggested_plus_discrete: 
-        why_choose_now: 
-      import_help: 
+        add_new_column: Добавить новый столбец
+        clear_all: Очистить все
+        data_type: Тип данных
+        errors_warnings: Ошибки и предупреждения
+        fewer_rows: Меньше строк
+        headers: Заголовки
+        headers_instructions: Заголовки необходимо игнорировать, а не импортировать как данные. Укажите, сколько строк вашего исходного файла являются заголовками.
+        headline: Укажите, как &ldquo;<span class="fileName"></span>&rdquo; должен быть импортирован.
+        help_message: Для помощи посмотрите <a href="%{common_errors}" rel="external">список общих ошибой и предупреждений</a>.
+        more_rows: Больше строк
+        name: Имя
+        pending_columns: Подождите, пока мы загрузим ваши столбцы..
+        reset_to_preset: Восстановить предустановки
+        set: Установить
+        source_column: Столбец источника
+        subheadline: Столбцы для импорта
+        suggested_alltext: Все столбцы в виде текста
+        suggested_columns: Предлагаемые столбцы
+        suggested_flat: Предлагаемые столбцы (не составные)
+        suggested_plus_discrete: Предлагаемые столбцы (составные и дискретные)
+        why_choose_now: Почему сейчас важно выбрать типы столбцов?
+      import_help: <strong>Нужна помощью?</strong> Мы поддерживаем <a href="%{common_errors}" rel="external">список общих ошибок и предупреждений,</a> который может вам помочь.
       import_shapefile:
-        crs: 
-        headline: 
-        layers_list: 
-        name: 
-        pending: 
-        subheadline: 
+        crs: Эталонная система координат
+        headline: Укажите, как &ldquo;<span class="fileName"></span>&rdquo; должен быть импортирован.
+        layers_list: Слои для импорта
+        name: Имя
+        pending: Подождите, пока мы загрузим ваши слои...
+        subheadline: Этот файл фигуры содержит <span class="featureCount"></span> функции в <span class="layerCount"></span> слоях.
       import_warnings:
-        headline: 
-        see_docs: 
-        subheadline: 
-      importing_your_data: 
+        headline: Предупреждение во время импорта
+        see_docs: <strong>Растеряны?</strong> Посмотрте нашу <a href="%{publisher_link}" rel="external">документацию издателя</a> об импорте данных для получения подробных объяснений, как импортер обрабатывает данные. Также посмотрте наш <a href="%{common_errors}" rel="external">список общих ошибок и предупреждений</a>.
+        subheadline: Обратите внимание, часть ваших данных может быть импортирована неправильно.
+      importing_your_data: Импортирование ваших данных...
       metadata:
-        creative_commons_type: 
-        esri_map_layer_url: 
-        esri_source_url: 
-        privacy_security: 
-        private_explain: 
-        prompt: 
-        public_explain: 
-      processing: 
-      title: 
-      upload_accessible: 
+        creative_commons_type: ! 'Тип '
+        esri_map_layer_url: URL слоя карты ESRI
+        esri_source_url: Введите URL источника
+        privacy_security: Конфиденциальность и безопасность
+        privacy_settings: ! ' Настройки конфиденциальности'
+        private_explain: Мои данные являются <strong>частными</strong>
+        prompt: Опишите ваши данные.
+        public_explain: ! 'Мои данные являются <strong>публичными</strong>: все их могут видеть, изменять могу только я.'
+      processing: Обработка..ю
+      title: Новый набор данных
+      upload_accessible: Загрузить новый доступный набор данных
       upload_file:
-        choose_a_file: 
-        no_file_selected: 
-        supported_blist: 
-        supported_shapefile: 
-        uploading: 
+        choose_a_file: Выбрать файл
+        no_file_selected: ! 'Не выбрано ни одного файла. '
+        supported_blist: ! 'Поддерживаемые форматы: .csv, .tsv, .xls, and .xlsx.'
+        supported_shapefile: ! 'Поддерживаемые форматы: .kml, .kmz, and .zip (файл фигуры ESRI).'
+        uploading: Идет загрузка вашего файла...
       why_choose_now:
-        close: 
-        line_1: 
-        line_2: 
+        close: Закрыть
+        line_1: Ваши данные обрабатываются при импорте и оптимизируются для каждого конкретного типа данных. Кроме этого, большинство типов данных имеет специальные функции, которые активируются, когда столбец задан на этот тип &mdash; раположение столбцов, например, необходимо для создания карт.
+        line_2: Можно позже изменить тип столбца, но этот процесс занимает время. Поэтому лучше всего задать все правильно вначале.
     ds:
       bar:
         api_unsavable: Виды из ППИ нельзя изменять
@@ -1098,6 +1410,7 @@ ru:
           purposes:
             copyright_violation: Нарушение авторских прав
             offensive_content: Оскорбительный контент
+            other_purpose: Другое
             personal_information: Персональные данные
             prompt: -- Выбрать цель --
             spam: Спам или ненужное сообщение
@@ -1200,12 +1513,13 @@ ru:
           color_select:
             prompt: Выбрать цвет
           column_select:
-            auto: 
+            auto: Авто
             from_grid: Выбрать столбец из сетки
-            none_selected: 
-            nonselectable: 
+            none: (ничего)
+            none_selected: Нет выбранных столбцов
+            nonselectable: Неправильные столбцы
             prompt: Выбрать столбец
-            selectable: 
+            selectable: Правильные столбцы
             unselect: Отменить выбор столбца
           datatypes:
             checkbox: флажок
@@ -1263,21 +1577,21 @@ ru:
         chart:
           advanced: Дополнительная конфигурация
           annotation: Пояснение
-          auto_update_sort: 
-          auto_update_sort_button: 
-          auto_update_sort_info_donut: 
-          auto_update_sort_info_pie: 
+          auto_update_sort: Автоматически обновить порядок сортировки
+          auto_update_sort_button: Применить это сейчас
+          auto_update_sort_info_donut: Кольцевые диаграммы лучше работают при сортировке в убывающем порядке по часовой стрелке, изнутри снаружу.
+          auto_update_sort_info_pie: Круговые диаграммы лучше работают при сортировке в убывающем порядке по часовой стрелке.
           axes:
-            title: 
+            title: Параметры оси
             x_axis_title: Наименование оси X
             x_axis_title_prompt: Введите наименование оси Х
             y_axis_title: Наименование оси Y
             y_axis_title_prompt: ! 'Введите наименование оси Y '
           base_color: Фоновый цвет
           categories: Категориям
-          cdlfmtg_color_override_html: 
+          cdlfmtg_color_override_html: Цвета переопределены <a href="#Conditional Formatting" class="showConditionalFormatting">условным форматированием</a>. Нажать на <a href="#Очистить условное форматирование" class="clearConditionalFormatting">here</a> для очистки всех правил текущего условного форматирования.
           color_options:
-            column_colors: 
+            column_colors: Цвета столбцов
           color_override_html: Цвета можно отменить через <a href="#Conditional Formatting" class="showConditionalFormatting">условное форматирование</a>. Нажать <a href="#Clear Conditional Formatting" class="clearConditionalFormatting">здесь</a> , чтобы отменить любые действующие правила условного форматирования.
           colors: Цвета
           configuration: Конфигурация
@@ -1287,37 +1601,43 @@ ru:
           data_labels: Метки данных
           data_selection:
             advanced_data_selection:
-              title: 
+              title: Расширенный выбор данных
             chart_definition:
-              label_title: 
-              title: 
-              value_title: 
+              label_title: Выбрать данные метки
+              title: ! 'Определение диаграммы
+
+'
+              value_title: Выбрать данные значения
           date: Дата
           details: Подробности
           draw_line: Провести линию
           dsg_color_override_html: ! 'Внимание: группирование ряда данных отменит цвета, выбранные для ваших столбцов данных. Это отменит ваш <a href=”#Conditional Formatting” class=”showConditionalFormatting”>Conditional Formatting</a>'
           error_bars:
             color: Цвет
-            data_high: 
-            data_low: 
+            data_high: Выбрать верхнюю границу столбца
+            data_low: Выбрать нижнюю границу столбца
             high: Высокий
             low: Низкий
             title: Строки ошибки
           flyout:
             new_details_button: Добавить параметры «всплывающего» меню
-            new_values_button: 
+            new_values_button: Дабавить значения
             title: Параметры «всплывающего» меню
-            title_column: 
-            value: 
+            title_column: Заголовок всплывающего меню
+            value: Значения всплывающего меню
           group_extra: Группировать дополнительные значения
           groups: Группы
+          headings:
+            chart_details: Детали графика
+            data_presentation: Представление данных
+            data_selection: Выбор данных
           label: Метка
           labelInBar: Метка на панели
-          labels_and_values: 
+          labels_and_values: Метки и значения
           legend:
-            add_text: 
-            add_text_button: 
-            annotations: 
+            add_text: Дополнительный текст
+            add_text_button: Добавить дополнительный текст
+            annotations: Описать  аннотации
             conditional_formats: Описание условных форматов
             custom_entry: Индивидуальная метка
             display: Отображение
@@ -1332,18 +1652,18 @@ ru:
               top: Сверху
             series: Описание рядов данных
             title: Настройка условных обозначений
-            title_short: 
+            title_short: Легенда
             value_markers: Описание маркеров данных
             values: Опишите значения
           marker:
-            add_button: 
+            add_button: Добавить аннотацию
             caption: Надпись
-            marker_title: 
+            marker_title: Маркер значения
             new_marker_button: Добавить маркер
             title: ! '%{axis} Маркер'
             value: При значении
           min_angle: Минимальный угол
-          min_angle_html: 
+          min_angle_html: Показан наименьший угол (&ordm;)
           names: Наименованиям
           pie_other: ! 'Внимание: %{chart_type} будет агрегировать отдельные значения (строки) свыше установленного предельного количества значений  %{row_limit}в категорию «Прочие». Попробуйте создать функцию «Агрегирование» или фильтр, которые будут ограничивать количество значений и затем создать график %{chart_type} этих значений.'
           pie_truncate: ! 'Внимание: %{chart_type} будет отсекать массивы данных, в которых более %{row_limit} отдельных значений (строк). Попробуйте создать функцию «Агрегирование» или фильтр, которые будут ограничивать количество значений и затем создать график %{chart_type} этих значений.'
@@ -1370,9 +1690,17 @@ ru:
           title: График
           treemap_color_html: Эти цвета используются в схеме карт произвольно и служат только для визуальных различий. Они не имеют определенных значений.
           validation:
-            chart_requires: 
-            chart_requires2: 
-            count: 
+            chart_requires: нужен хотя бы %{chart_type}
+            chart_requires2:
+              few: ! '%{and} %{count} следующих типов столбцов:'
+              many: ! '%{and} %{count} следующих типов столбцов:'
+              one: ! '%{and} %{count} следующих типов столбцов:'
+              other: ! '%{and} %{count} следующих типов столбцов:'
+            count:
+              few: ! '%{count}'
+              many: ! '%{count}'
+              one: ! '%{count}'
+              other: ! '%{count}'
             required_columns: ! '%{chart_type} должно быть %{column_types} столбцов'
             viz_limit: На изображении может быть только один элемент визуального представления
           value: Значение
@@ -1384,7 +1712,7 @@ ru:
             axis_max: Максимальное значение на оси
             axis_min: Минимальное значение на оси
             axis_prompt: Введите число
-            decimals: 
+            decimals: число десятичных знаков
             no_decimals: Без десятичных знаков
             precision: Точность
             title: Форматирование оси Y
@@ -1445,7 +1773,7 @@ ru:
           money:
             abbreviated: Сокращенное наименование
             currency: Валюта
-            format_mask_warning: 
+            format_mask_warning: ! '-'
             no_precision: Нет
             precision: Точность
             title: Формат отображения денежных сумм
@@ -1770,7 +2098,7 @@ ru:
             subtitle: См. имеющиеся фильтры, карты, графики и другие режимы просмотра по этому массиву данных
             title: Режимы просмотра
         visualize:
-          choose_type: 
+          choose_type: Тип визуализации
       save_dialog:
         descriptions:
           leaving: У вас остались несохраненные данные, они будут потеряны, если вы уйдете с этой страницы. Нажатием кнопки укажите, сохранить или не сохранять данный вид, прежде чем вы уйдете с этой страницы, или нажмите «Отмена», чтобы вернуться на эту страницу.
@@ -1784,6 +2112,9 @@ ru:
         validation:
           auth_required: Чтобы сохранить изображение (страницы), вы должны быть зарегистрированы в системе
           view_name_required: Необходимо ввести наименование вида (страницы)
+      show:
+        remove_confirm: Вы действительно хотите удалить этот вид?
+        unpublished_alert: ! 'Это набор данных не опубликован, чтобы вы могли выполнить необходимые изменения перед тем, как сделать его доступным для всех. Это не будет видно до публикации набора данных. '
       subscribe:
         google_reader: Добавить в Google Reader
         intro_html: ! '<strong>Чтобы подписаться на <span class="datasetName">%{name}</span> массив данных в режиме считывания RSS,</strong>, используйте одну из следующих ссылок:'
@@ -1795,10 +2126,13 @@ ru:
         title_html: Подписаться на  "<span class="datasetName">%{name}</span>" <span class="datasetTypeNameUpcase">Массив данных</span>
         unsubscribe: Если вы не хотите получать уведомления, удалите «галочку» из графы «Подписаться».
     edit_metadata:
+      about: О
       additional_source: Дополнительный источник
       alternative_access_prompt: Введите альтернативную точку доступа для этого набора данных
       api_endpoint: Конечная точка API
       attachments: Приложения
+      attachmentsDisabledMessagePart1: Чтобы загрузить вложения, сначала необходимо опубликовать этот набор данных. Затем нажать
+      attachmentsDisabledMessagePart2: на панель инструментов и нажать Редактировать метаданные. Затем вы сможете загрузить вложения.
       brief_description: Краткое описание
       brief_description_prompt: Введите описание
       cancel: Отменить
@@ -1813,8 +2147,8 @@ ru:
       dataset_title: Имя массива данных
       dataset_title_error: У набора данных должно быть название.
       dataset_title_prompt: Ввести название
-      dataset_url: 
-      dataset_url_prompt: 
+      dataset_url: URL набор данных
+      dataset_url_prompt: Введите расположение вашего внешнего набора данных
       delete: Удалить
       email_address: Адрес эл. почты
       email_help: Данный адрес не будет отображаться публично. Если это поле не заполняется, по умолчанию будет введен ваш адрес.
@@ -1826,6 +2160,7 @@ ru:
       external_identifier: Внешний идентификатор
       file_type: Тип файла
       general_information: Общая информация
+      headline: Редактировать метаданные для %{name}
       keywords_help: Ввести одно ключевое слово или несколько разделенных запятыми
       license_help: Выберите условия лицензирования для тех, кто захочет использовать этот набор данных.
       license_type: Тип лицензии
@@ -1859,6 +2194,7 @@ ru:
       tags_keywords: Тэги / ключевые слова
       tags_prompt: Введите ключевые слова
       thumbnail_image: Миниатюра
+      title: Редактировать метаданные набора данных
       upload_error: Выберите допустимый файл изображения
       upload_help: Это изображение будет обрезано до квадрата.
       upload_image: Загрузить изображение
@@ -1876,27 +2212,64 @@ ru:
         account_html: Здравствуйте, <span class="currentUser"></span>
         account_tooltip: Домашняя Страница
         administration: Администрирование
+    import_common:
+      addresses_to_geocode: ! 'Адреса будут геокодированы после завершения импорта. '
+      case_sensitive: ! 'С учетом регистра '
+      city: Город
+      column: Столбец
+      combine_multiple_columns: Объединить несколько столбцов
+      create_composite: ! 'Создать один столбец из нескольких исходных столбцов:'
+      create_js_expression: ! ' Как создать пользовательское выражение Javascript?'
+      custom_javascript: Пользовательское выражение Javascript
+      enter_custom: Введите пользовательское значение
+      existing_cols: Столбцы существующих адресов
+      existing_latlng_cols: Существующие столбцы широты и долготы
+      find: найти
+      find_and_replace: Найти и заменить значение...
+      import_from_multiple: Импортировать из <strong>нескольких столбцов</strong>
+      import_from_single: Импортировать из <strong>одного столбца</strong>
+      latitude: Широта
+      location_source_col: Расположение исходных столбцов
+      longitude: Долгота
+      make_lower_case: Сделать строчными буквами
+      make_title_case: Сделать заглавными буквами
+      make_upper_case: Сделать ПРОПИСНЫМИ
+      name_this_column: Назвать этот столбец
+      new_layer: (Новый слой)
+      new_source_col: Добавить новый исходный столбец
+      new_transform: Добавить новое преобразование
+      options: Параметры
+      properly_formatted: Столбец должен быть <a href="%{formatting_link}" rel="external">правильно отформатирован</a> перед импортом.
+      regular_expression: регулярное выражение
+      remove: удалить
+      replace: и заменить это на
+      state: Штат
+      street: Улица
+      then: затем
+      to_state_code: Конвертировть штаты в 2-буквенные коды
+      transforms: ! 'Выполнить следующее преобразование при импорте:'
+      zip: Индекс
     import_pane:
-      analyzing: 
-      assure_accessible: 
-      combine_multiple_cols: 
-      downloading: 
-      filetype_error_blist: 
-      filetype_error_shapefile: 
-      headline_import: 
-      headline_upload: 
-      layer: 
-      many_headers: 
-      no_file_selected: 
-      no_headers: 
-      no_source_column: 
-      one_header: 
-      problem_importing: 
-      problem_uploading: 
-      rows_imported: 
-      try_again: 
-      unknown_error: 
-      uploading: 
+      analyzing: Выполняется анализ вашего файла...
+      assure_accessible: Убедитесь, что ваш файл доступен и действителен, затем повторите попытку.
+      combine_multiple_cols: (Объединить несколько столбцов...)
+      downloading: Загрузка вашего файла...
+      filetype_error_blist: Выберите файл CSV, TSV, XLS или XLSX.
+      filetype_error_shapefile: Выберите файл KML, KMZ или ZIP.
+      headline_import: Выберите файл для импорта
+      headline_upload: Выберите файл для загрузки
+      layer: Слой
+      many_headers: ! '%{num} ваших строк являются заголовками.'
+      no_file_selected: Файл не выбран.
+      no_headers: Ваши строки не являются заголовками.
+      no_source_column: (Нет исходного столбца)
+      one_header: Одна ваша строка является заголовком.
+      problem_importing: Произошла ошибка при импорте этого файла. Убедитесь, что файл допустимый.
+      problem_uploading: Произошла ошибка при загрузке этого файла. Убедитесь, что файл допустимый.
+      rows_imported: на настоящий момент импортировано %{num} строк
+      try_again: Повторите попытку позже.
+      unknown_error: Произошла неизвестная ошибка
+      uploading: Загрузка вашего файла
     link_account:
       success: Ваша внешняя учетная запись подключена.
     profile:
@@ -1949,8 +2322,8 @@ ru:
               user_affected: Действия, которые непосредственно касаются вас, например, ответы на замечания, изменения статуса
               view_made_public: Любое мнение становится общедоступным
             policy: ! '%{site} соблюдает ваши права личности и никогда не будет направлять вам рекламные сообщения через этот перечень или предоставлять ваш адрес эл. почты третьим лицам. С этого сайта направляются уведомления о состоянии регистрационных данных и обновлениях массивов данных, которые созданы вами или на которые вы подписались.'
-            send_error: 
-            send_success: 
+            send_error: Произошла ошибка при отправле вашего письма. Повторите попытку позже.
+            send_success: Ваше сообщение отправлено
             subtitle: Записаться на участие в отдельных мероприятиях (поставить галочки в соответствующих графах).
             title: Оправлять уведомления по эл. почте
           learn_openid: Узнать об OpenID
@@ -2038,7 +2411,7 @@ ru:
         edit_image_link: Редактировать изображения
         followers: Читатели
         following: Лента для чтения
-        hide_contacts_link: 
+        hide_contacts_link: Скрыть
     reset_password:
       failed: Не удалось сменить ваш пароль. Повторите попытку.
       form:
@@ -2066,61 +2439,82 @@ ru:
       third_party_return_create: создать регистрационную запись в системе Socrata
       third_party_return_link: связать ее с действующим регистрационным именем в системе Socrata
     stats:
-      api: 
-      apply: 
-      bytes_out: 
-      chart_created: 
-      charts: 
-      charts_created: 
-      comment_created: 
-      comments: 
-      comments_created: 
-      daily: 
-      deleted_application: 
-      dependent_metrics: 
-      download: 
-      downloads: 
-      during_time_period: 
-      embed: 
-      embeds: 
-      error_loading: 
-      filter_created: 
-      filters: 
-      filters_created: 
-      govstat_hits: 
-      hit_served: 
-      hits_served: 
-      hourly: 
-      map_created: 
-      maps: 
-      maps_created: 
-      metric_backed: 
-      metrics_backed: 
-      monthly: 
-      name: 
-      no_data_time_period: 
-      page_viewed: 
-      pages_viewed: 
-      referrals: 
-      rows_loaded: 
-      sdp: 
-      select_chart_type: 
-      show_more: 
-      time_period_unavailable: 
-      title: 
-      top_embeds: 
-      top_referrers: 
-      total: 
-      total_govstat_hits: 
-      views: 
-      views_loaded: 
-      website: 
-      weekly: 
+      api: API
+      apply: Применить
+      bytes_out: Посылаемые байты
+      chart_created: график создан
+      charts: Графики
+      charts_created: графики созданы
+      comment_created: комментарий создан
+      comments: Комментарии
+      comments_created: комментарии созданы
+      daily: Ежедневно
+      deleted_application: удаленное приложение
+      dependent_metrics: Зависимые метрики
+      download: загрузка
+      downloads: загрузки
+      during_time_period: в течение этого периода времени
+      embed: Внедрение
+      embeds: Внедрить
+      error_loading: Произошла ошибка при загрузке данных метрик. Повторите попытку позже
+      filter_created: создан фильтр
+      filters: Фильтры
+      filters_created: созданы фильтры
+      govstat_hits: Обращений GovStat
+      hit_served: ! 'обращение обслужено '
+      hits_served: ! 'обращений обслужено '
+      hourly: Ежечасно
+      map_created: создана карта
+      maps: Карты
+      maps_created: созданы карты
+      metric_backed: метрика архивирована
+      metrics_backed: метрики архивированы
+      monthly: Ежемесячно
+      name: Имя
+      no_data_time_period: Нет данных за этот период времени
+      page_viewed: просмотренная страница
+      pages_viewed: просмотренные страницы
+      referrals: Ссылки
+      rows_loaded: Строк загружено
+      sdp: SDP
+      select_chart_type: Выбрать тип графика для показа из меню
+      show_more: Показать больше
+      time_period_unavailable: Метрические данные недоступны за этот период времени
+      title: Аналитика наборов данных
+      top_embeds: Самые популярные встраивания
+      top_referrers: Самые популярные источники
+      total: всего
+      total_govstat_hits: ! 'Всего обращений GovStat '
+      views: ! 'Представления '
+      views_loaded: ! 'Загруженные представления '
+      website: Сайт
+      weekly: Еженедельно
+    thumbnail:
+      discard_changes: Отменить изменения
+      edit_thumbnail: Редактировать эскиз дал %{name}
+      error_blob: ! 'Невозможно создать эскиз для этого внедренного файла, поскольку его нельзя показать в браузере '
+      error_generic: Произошла ошибка при сохранении вашего эскиза. Повторите попытку позже.
+      error_invalid: Этот вид недействителен. Невозможно создать эскиз для этого вида.
+      error_private: Для защиты вашей конфиденциальности можно создать эскиз только для публичных наборов данных. Если вы хотите иметь предварительный просмотр изображения, сделайте этот набор данных публичным в панеле Разрешения на боковой панеле Управление.
+      error_processing: Произошла ошибка при обработке запроса эскиза. Повторите попытку позже.
+      full_image: Полное изображение
+      please_wait: ! 'Еще нет доступных эскизов для этого набора данных. Подождите, пока мы создадим один для вас. '
+      preview: Предварительный просмотр
+      refresh_thumbnail: Обновить эскиз
+      return_to_dataset: Вернуться к набору данных
+      save_thumbnail: Сохранить эскиз
+      success: Эскиз сохранен
+      title: Набор данных эскиза
+      unsaved: Несохраненный
+    widget:
+      create_new:
+        name: Имя нового шаблона
+        title: Создать новый шаблон
     wizard:
-      cancel: 
-      finish: 
-      next: 
-      previous: 
+      cancel: Отменить
+      finish: Завершить
+      next: Следующий
+      previous: Предыдущий
   support:
     array:
       last_word_connector: ! ', и '

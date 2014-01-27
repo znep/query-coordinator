@@ -144,8 +144,8 @@ hi:
           main: परिणाम %{body}
           term: ! '"%{term}" के लिए'
     charts:
-      negatives_in_data: 
-      no_data: 
+      negatives_in_data: ! 'अवैध चार्ट: ऋणात्मक मान मौजूद'
+      no_data: कोई डेटा नहीं
       other_slice_label: अन्य
       series_grouping:
         calculating_time: बाकी बचे समय का परिकलन कर रहे हैं...
@@ -162,7 +162,7 @@ hi:
         rendering_progress_minutes: ! '%{rows_remaining} पंक्तियाँ बाकी हैं, लगभग %{time_remaining} मिनट।'
         rendering_progress_seconds: ! '%{rows_remaining} पंक्तियाँ बाकी हैं, लगभग %{time_remaining} सेकंड।'
         resume_rendering: रेस्यूमे (संक्षिप्त विवरण)
-      zero_only_data: 
+      zero_only_data: कोई मान शून्य से बड़ा नहीं है
     common:
       auth_required: ! 'आपको %{action_phrase} में लॉगिन होना चाहिए '
       dataset_picker:
@@ -173,6 +173,7 @@ hi:
         expand: फैलाने के लिए क्लिक करें
       image_upload:
         button: चित्र अपलोड करें
+      no_results: कोई परिणाम नहीं
       rate:
         auth_action_phrase: इस डेटासेट को रेटिंग दें
       share:
@@ -186,6 +187,8 @@ hi:
       sidebar:
         tabs:
           about: इस डेटासेट के बारे में
+          components: घटक
+          configuration: कॉन्फिगरेशन (विन्यास)
           discuss: विचार-विमर्श करें
           edit: संपादित करें
           embed: जोड़ें
@@ -200,6 +203,21 @@ hi:
         in_bing: Bing नक्शे में देखें
         in_google: Google नक्शे में देखें
         row_details: इस पंक्ति के लिए विवरण देखें
+    editors:
+      actions:
+        add: जोड़ें
+        remove: हटाएं
+        replace: बदलें
+        view: देखें
+      document:
+        add_title: एक नया दस्तावेज जोड़ें
+        remove_title: दस्तावेज़ हटा दें
+        replace_title: दस्तावेज़ को बदल दें
+      photo:
+        add_title: एक नई छवि जोड़ें
+        remove_title: छवि हटा दें
+        replace_title: छवि को बदल दें
+        view_title: एक अलग विंडो में छवि को देखें
     embed:
       create_template_button: नया टेम्‍प्‍लेट बनाएँ
       custom_size: अनुकूलित आकार
@@ -276,8 +294,8 @@ hi:
         simplified_header: प्रयोक्‍ता सरलीकृत मोड से आरंभ करेंगे।
         simplified_toggle: डिफ़ाल्‍ट बैक को उन्‍नत में बदलें।
       main:
-        base_explanation: 
-        base_info: 
+        base_explanation: निम्नलिखित बेस फिल्टर्स के साथ
+        base_info: ऊपर दर्ज अन्य किसी अतिरिक्त फ़िल्टर के साथ, इन फिल्टर्स का प्रयोग हमेशा किया जाता है। इन फिल्टर्स का संपादन नहीं किया जा सकता है, क्योंकि या तो आपके पास वर्तमान दृश्य को संपादित करने की अनुमति नहीं है, या क्योंकि वे मूल दृश्य या डेटासेट से आते हैं।
         filter: फिल्‍टर करें
         filter_based_on_contents: सामग्री के आधार पर इस डेटासेट को फिल्‍टर करें।
         no_conditions: अभी शर्तें निर्धारित नहीं की गईं।
@@ -295,8 +313,13 @@ hi:
         select_one: एक चुनें
         show_suggested: सुझाये गये मूल्‍य दिखाएँ
         title: विकल्‍प
+    global_indicator:
+      error: त्रुटि
+      saved: सहेजा गया
+      saving: सहेजा जा रहा है...
+      working: कार्य किया जा रहा है...
     grid:
-      add_column: 
+      add_column: एक नया कॉलम जोड़ें
       clear_column_filter: कॉलम फिल्‍टर को हटाएँ
       clear_sort: छंटाई को हटाएँ
       click_for_menu: मेनू के लिए क्लिक करें
@@ -308,23 +331,52 @@ hi:
       delete_warning_single_column: क्‍या आप चुने हुए कॉलम को मिटाना चाहते हैं? इस कॉलम में समस्‍त डेटा हटा दिया जाएगा!
       edit_column_properties: कॉलम प्रॉपर्टी संपादित करें
       filter_this_column: इस कॉलम को फिल्‍टर करें
+      geocodes_pending: स्थान कॉलम में पंक्तियों की जियोकोडिंग अभी भी हो रही है। कृपया प्रतीक्षा कीजिये जब तक वे इस डेटासेट का प्रकाशन समाप्त नहीं कर देते
       hide_column: कॉलम छिपाएँ
       menu: मेनू
       must_enter_name: आपको इस कॉलम के लिए नाम देना चाहिए
       new_row: नई
+      no_columns: डेटासेट %{uid} के पास कोई कॉलम नहीं है।
       no_rows: प्रदर्शन के लिए पंक्तियाँ नहीं
+      permission_denied: आपके पास इस व्यू की पहुंच नहीं है।
       previous: पिछला
+      required_cols_missing: इस दृश्य के लिए आवश्यक कॉलम गायब हैं
       sort_ascending: आरोही क्रम में छांटें
       sort_descending: अवरोही क्रम में छांटें
-      totals: 
-      view_cell_comments: 
+      totals: कुल
+      view_cell_comments: इस सेल के लिए टिप्पणियाँ देखें
       view_first_row: पहली पंक्ति देखें
       view_last_row: अंतिम पंक्ति देखें
       view_next_row: अगली पंक्ति देखें
       view_previous_row: पिछली पंक्ति देखें
-      view_row: 
+      view_row: पंक्ति देखें
       view_single_row: एकल पंक्ति डेटा देखें
       viewing_row_html: पंक्ति <span class="curPage"></span> को देख रहे हैं, कुल <span class="totalPages"></span> पंक्तियाँ हैं
+    map:
+      address_prompt: यहां पता दर्ज करें
+      auto: ऑटो
+      base_layers: मूल परतें
+      boundary_map: सीमा मानचित्र
+      current_location: वर्तमान स्थान का उपयोग करें
+      data_layers: डेटा लेयर्स
+      data_request_timeout: एक डेटा अनुरोध ने बहुत समय लिया और उसका समय समाप्त हो गया है।
+      forever_node_explanation: इस क्लस्टर का डेटा भौगोलिक रूप से उपयोगी डेटा को प्रदर्शित करने के लिए बहुत सघनता से पैक है।
+      forever_node_recommend: हम सुझाव देते हैं कि आप और अधिक जानकारी प्राप्त करने के लिए <a href="#openTable"> सारिणीबद्ध दृश्य को खोलें</a>।
+      forever_node_title: बहुत अधिक डेटा
+      geocoding_inaccessible: जियोकोडिंग सेवा पहुँच से बाहर है। बाद में फिर से प्रयास करें।
+      geocoding_noresults: जियोकोड करने में असमर्थ। सुनिश्चित करें पता सही है।
+      heat_map: ऊष्मा मानचित्र
+      heatmap_ie8_warning: रेखापुंज ऊष्मा मानचित्र आपके वर्तमान ब्राउज़र में कार्य नहीं करते हैं। कृपया IE9 में अपग्रेड करें, गूगल क्रोम या मोज़िला फ़ायरफ़ॉक्स का प्रयोग करें। धन्यवाद।
+      loading: लोड हो रहा है...
+      map_legend: मानचित्र उपाख्यान
+      multiple_layer_instructions: ! 'यहाँ एक से अधिक परत के लिए डेटा मौजूद है। एक का चयन करें:'
+      next: अगला
+      next_row: अगली पंक्ति
+      no_columns_defined: कोई कॉलम परिभाषित नहीं है
+      point_map: बिन्दु मानचित्र
+      previous: पिछला
+      previous_row: पिछली पंक्ति
+      request_timed_out: इस डेटा के लिए अनुरोध का समय समाप्त हो गया है।
     nominate:
       all: सब
       approve: (अनुमोदित करें)
@@ -338,6 +390,7 @@ hi:
       comments: टिप्पणियाँ
       contact_author: सुझाव लेखक से संपर्क करें
       dataset_suggestions: डेटासेट सुझाव
+      delete_attachment: अनुलग्नक
       delete_confirm: क्या आपको पूरा यकीन है कि आप इस %{type} को हटाना चाहते हैं?
       delete_error: ! '%{type} को हटाते समय त्रुटि हो गई'
       delete_suggestion: सुझाव
@@ -380,6 +433,15 @@ hi:
       title_prompt: शीर्षक दर्ज करें
       user_removed: एक उपयोगकर्ता जिसे पहले ही हटाया जा चुका है
       user_removed_short: उपयोगकर्ता को हटाया गया
+    upload_dialog:
+      browse: ब्राउज़ करें
+      title_file: एक फ़ाइल अपलोड करें
+      title_image: एक छवि अपलोड करें
+      title_photo: एक फोटो अपलोड करें
+      to_upload_file: ! 'अपलोड करने के लिए फ़ाइल:'
+      to_upload_image: ! 'अपलोड करने के लिए छवि:'
+      to_upload_photo: ! 'अपलोड करने के लिए फोटो:'
+      upload: अपलोड करें
   core:
     aggregates:
       average: औसत
@@ -395,6 +457,11 @@ hi:
       visit: व्‍यू
       visits: व्‍यू
     and: और
+    auth:
+      invalid_userpass: अमान्य ईमेल या पासवर्ड
+      need_login: आप इस पृष्ठ का उपयोग करने के लिए आपको लॉगिन करना होगा
+      need_permission: आपके पास यह पृष्ठ देखने की अनुमति नहीं है
+      too_many_tries: उस लॉगिन के लिए लॉगिन के बहुत सारे प्रयास किये गये हैं। खाता अस्थायी रूप से अक्षम है।
     chart_types:
       area: एरिया चार्ट
       bar: बार चार्ट
@@ -408,17 +475,17 @@ hi:
       timeline: घटनाक्रम
       treemap: वृक्षाकार नक्‍शा
     chart_types_short:
-      area: 
-      bar: 
-      bubble: 
-      column: 
-      donut: 
-      line: 
-      pie: 
-      stackedbar: 
-      stackedcolumn: 
-      timeline: 
-      treemap: 
+      area: क्षेत्रफल
+      bar: बार
+      bubble: बबल
+      column: कॉलम
+      donut: डोनट
+      line: रेखा
+      pie: पाई
+      stackedbar: क्रमबद्ध बार
+      stackedcolumn: क्रमबद्ध कॉलम
+      timeline: समय रेखा
+      treemap: वृक्ष मानचित्र
     data_types:
       calendar_date: तिथि व समय
       checkbox: चेकबॉक्‍स
@@ -504,6 +571,7 @@ hi:
           belay_button: मुझे लॉग आउट नहीं करें!
           body_html: पिछले कुछ मिनटों में हमें किसी भी सक्रियता का पता नहीं चल पाया है। गोपनीयता के लिहाज से  हम आपको <span id="secondsRemaining"></span> सेकंडों में लॉग आउट कर देंगे।
           title: आपका सत्र बस समाप्त होनेवाला है।
+      submit: सबमिट करें
       update: अद्यतन
     expando:
       expand: विस्‍तारित करें
@@ -548,6 +616,7 @@ hi:
     interstitial:
       leaving_explanation_html: इसे अन्‍य डोमेन <span class="datasetType">डेटासेट</span> <a href="\#" rel="external" class="externalDomain">द्वारा होस्‍ट</a>किया गया है।
       leaving_notice_html: आप <span class="serverName">%{site_name}</span> को छोड़ रहे हैं
+    maintenance_notice: यह सोक्राटा चालित साइट नियमित अनुरक्षण के लिए %{start} से %{finish} तक अनुपलब्ध हो सकती है।
     map_layers:
       aerial: आकाशीय
       bing_aerial: बिंग आकाशीय
@@ -569,27 +638,32 @@ hi:
       roadmap: रोडमैप
       satellite: सैटेलाइट
       terrain: भू-भाग
-    no_js: 
+    no_category: कोई श्रेणी नहीं
+    no_js: इस पृष्ठ पर जावास्क्रिप्ट अक्षम कीजिये
+    no_license: कोई लाइसेंस नहीं
     numbers:
-      eight: 
-      five: 
-      four: 
-      nine: 
-      seven: 
-      six: 
-      three: 
+      eight: आठ
+      five: पांच
+      four: चार
+      nine: नौ
+      num_one: एक
+      num_two: दो
+      num_zero: शून्य
+      seven: सात
+      six: छह
+      three: तीन
     or: या
     pagination:
-      current_page: 
+      current_page: वर्तमान पृष्ठ
       first_page: पहला पृष्‍ठ
       last_page: अंतिम पृष्‍ठ
       next_page: अगला पृष्‍ठ
-      page: 
+      page: पृष्ठ
       previous_page: पिछला पृष्‍ठ
     precision_style:
       scientific: वैज्ञानिक (1.0204e+3)
       standard: स्‍टैंडर्ड (1020.4)
-    required: 
+    required: आवश्यक
     share_types:
       contributor: योगदानकर्ता
       owner: स्‍वामी
@@ -639,85 +713,92 @@ hi:
       public: सार्वजनिक
   dataslate:
     component:
+      edit: इस घटक को संपादित कीजिये
       header:
-        height: 
-      invalid_config: 
-      loading: 
+        height: ऊंचाई
+      invalid_config: इस घटक के पास एक वैध कॉन्फ़िगरेशन नहीं है
+      loading: लोड हो रहा है, कृपया प्रतीक्षा करें...
       picture:
-        alt_attr: 
-        alt_attr_prompt: 
-        full_url: 
-        image_source: 
-        large: 
-        medium: 
-        original: 
-        thumb: 
-        tiny: 
-        title_attr: 
-        title_attr_prompt: 
+        alt_attr: विकल्प
+        alt_attr_prompt: वैकल्पिक विशेषता
+        full_url: एक छवि के लिए पूरी तरह से योग्य यूआरएल
+        image_source: छवि का स्रोत
+        large: बड़ा (220x220)
+        medium: मध्यम (150x150)
+        original: मूल
+        thumb: थंब (80x80)
+        tiny: छोटा (24x24)
+        title_attr: शीर्षक
+        title_attr_prompt: शीर्षक विशेषता
       print:
-        print: 
-        print_this_page: 
-      remove: 
+        print: प्रिंट करें
+        print_this_page: इस पृष्ठ का मुद्रण कीजिये
+      remove: इस घटक को हटाइये
       share:
-        email: 
-        email_contents: 
-        facebook: 
-        share: 
-        subscribe: 
-        subscribe_text: 
-        this_page: 
-        tweet_contents: 
-        twitter: 
+        email: ईमेल के माध्यम से साझा कीजिये
+        email_contents: ! '%{company} के ऊपर %{dataset}'
+        facebook: फेसबुक पर साझा करें
+        share: साझा करें
+        subscribe: ईमेल या आरएसएस के माध्यम से सब्सक्राइब करें
+        subscribe_text: परिवर्तनों को स्वीकार करें
+        this_page: यह पृष्ठ
+        tweet_contents: ! '%{company} के ऊपर %{dataset} की जाँच कीजिये: %{url}'
+        twitter: ट्विटर पर साझा करें
     configurator:
-      advanced_components: 
-      report_components: 
+      actions_components: एक्शन (क्रिया)
+      advanced_components: उन्नत घटक
+      content_components: सामग्री
+      data_components: डेटा
+      input_components: इनपुट
+      report_components: रिपोर्ट के घटक
     context_picker:
-      select_dataset: 
-      view_data: 
+      select_dataset: डेटासेट का चयन करें
+      view_data: डेटा देखिये
     create:
-      cancel: 
-      create: 
-      create_page: 
-      page_settings: 
-      page_title: 
-      page_url: 
-      title: 
+      cancel: रद्द करें
+      create: बनाएं
+      create_page: DataSlate पृष्ठ बनाएं
+      page_settings: पृष्ठ सेटिंग्स
+      page_title: पृष्ठ का शीर्षक
+      page_url: पृष्ठ यूआरएल
+      title: DataSlate पृष्ठ बनाएं
     edit:
-      editing: 
-      permissions: 
-      preview_page: 
-      redo: 
-      revert: 
-      save: 
-      save_as: 
-      settings: 
-      undo: 
-      view_editor: 
+      editing: एडिटिंग
+      permissions: अनुमतियां
+      preview_page: पूर्वावलोकन पृष्ठ
+      redo: दोबारा करें
+      revert: उलट दें
+      save: सहेजें
+      save_as: इस रूप में सहेजें
+      settings: सेटिंग्स
+      undo: पूर्ववत करें
+      view_editor: इंटरैक्टिव संपादक देखें
     edit_component:
-      no_config: 
-      subtitle: 
-      title: 
+      no_config: ! '%{component} के लिए कोई कॉन्फ़िगरेशन उपलब्ध नहीं है'
+      subtitle: इस घटक को कॉन्फ़िगर करें
+      title: घटक का संपादन करें
     edit_properties:
-      no_data: 
-      subtitle: 
-      title: 
+      no_data: इस घटक के लिए कोई डेटासेट नहीं है
+      subtitle: इस घटक के लिए डेटा संदर्भ के ऊपर आधारित गुण जोड़िये
+      title: उपलब्ध गुण
     permissions:
-      cancel: 
-      private: 
-      private_desc: 
-      public: 
-      public_desc: 
-      save: 
-      shared: 
-      shared_desc: 
-      title: 
+      cancel: रद्द करें
+      private: निजी
+      private_desc: केवल आपके द्वारा देखा जा सकता है
+      public: सार्वजनिक
+      public_desc: हर किसी के द्वारा देखा जा सकता
+      save: सहेजें
+      shared: साइट से साझा किया गया है
+      shared_desc: आपके सभी सहयोगियों द्वारा देखा जा सकता है, लेकिन सार्वजनिक रूप से नहीं
+      title: पृष्ठ अनुमतियां
     settings:
-      cancel: 
-      page_title: 
-      page_url: 
-      save: 
-      title: 
+      cancel: रद्द करें
+      page_title: पृष्ठ का शीर्षक
+      page_url: पथ
+      save: सहेजें
+      title: पृष्ठ सेटिंग्स
+  date:
+    abbr_month_names: ! '[शून्य, "जनवरी", "फ़रवरी", "मार्च", "अप्रैल", "मई", "जून", "जुलाई", "अगस्त", "सितम्बर", "अक्तूबर", "नवम्बर", "दिसम्बर"]'
   error:
     back: पीछे जाएँ
     error_500:
@@ -741,132 +822,161 @@ hi:
     chrome:
       header:
         links:
-          account: 
-          account_options: 
-          account_tooltip: 
-          configuration: 
-          data: 
-          goals: 
-          home: 
-          my_goals: 
-          my_goals_tooltip: 
-          reports: 
+          account: खाता
+          account_options: खाता विकल्प
+          account_tooltip: अपने उपयोगकर्ता खाते को देखिये और परिवर्तन कीजिये।
+          configuration: कॉन्फिगरेशन (विन्यास)
+          configuration_title: गोवस्टैट कॉन्फ़िगरेशन का प्रबंध कीजिये
+          data: डेटा
+          data_title: डेटा को ब्राउज़ और उसका प्रबंधन करें
+          goals: लक्ष्य
+          goals_title: लक्ष्य बनाइये और उनका पता लगाइये
+          home: होम
+          home_title: होम
+          my_goals: मेरे लक्ष्य
+          my_goals_tooltip: मेरे द्वारा बनाये लक्ष्य देखिये।
+          reports: रिपोर्टें
+          reports_title: रिपोर्ट देखें और बनाएँ
+    configuration:
+      analytics: विश्लेषण
+      appearance: स्वरूप
+      config: कॉन्फिगरेशन (विन्यास)
+      content_moderation: सामग्री संतुलन
+      data_management: डेटा प्रबंधन
+      datasets: डेटासेट
+      federations: संघ
+      homepage: मुख्य पृष्ठ
+      metadata: मेटाडेटा
+      moderation: टिप्पणी संतुलन
+      nomination: नामांकन संतुलन
+      routing: अनुमार्गण और स्वीकृति
+      sdp_templates: डेटा प्लेयर टेम्पलेट्स
+      title: साइट कॉन्फ़िगरेशन का प्रबंधन कीजिये
+      users: उपयोगकर्ता
     reports:
       component:
-        base_map: 
-        chart: 
-        formatted_text: 
-        header: 
-        horizontal_layout: 
-        map: 
-        map_layer: 
-        picture: 
-        print: 
-        share: 
-        table: 
-        title: 
-        vertical_layout: 
-        visualize: 
+        base_map: आधार मानचित्र
+        chart: चार्ट
+        formatted_text: प्रारूपित पाठ
+        header: हैडर
+        horizontal_layout: क्षैतिज खाका
+        map: मैप (नक्शा)
+        map_layer: मानचित्र परत
+        picture: तस्वीर
+        print: प्रिंट करें
+        share: साझा करें
+        table: टेबल
+        title: शीर्षक
+        vertical_layout: लंबवत खाका
+        visualize: कल्पना करें
       create:
-        create_report: 
-        title: 
+        create_report: रिपोर्टें बनाएं
+        title: रिपोर्टें बनाएं
       manage:
-        copy: 
-        create_new_report: 
-        delete: 
-        edit: 
-        home: 
-        other_reports: 
-        owner: 
-        reports: 
-        title: 
-        updated: 
-        your_reports: 
+        copy: कॉपी करें
+        create_new_report: नई रिपोर्ट बनाएं
+        delete: हटाएं
+        edit: संपादित करें
+        home: होम
+        other_reports: अन्य रिपोर्ट
+        owner: स्वामी
+        reports: रिपोर्टें
+        title: रिपोर्ट का प्रबंधन कीजिये
+        updated: अपडेट किया गया
+        your_reports: अपनी रिपोर्ट
       permissions:
-        title: 
+        title: रिपोर्ट अनुमतियां
       settings:
-        page_title: 
-        title: 
+        page_title: रिपोर्ट शीर्षक
+        title: रिपोर्ट सेटिंग्स
+    template:
+      grid_flow_layout: ग्रिड फ्लो खाका
+      layouts: लेआउट
+      list_layout: सूची खाका
+      title: चयन खाका
   plugins:
     daterangepicker:
-      date_range: 
-      done: 
-      end_date: 
-      last_month: 
-      month_to_date: 
-      next: 
-      prev: 
-      specific_date: 
-      start_date: 
-      the_month_of: 
-      the_week_of: 
-      the_year_of: 
-      today: 
-      week_to_date: 
-      year_to_date: 
+      date_range: तिथि सीमा
+      done: हो गया
+      end_date: समापन तिथि
+      last_month: पिछले महीने
+      month_to_date: चालू माह से आज तक
+      next: अगला
+      prev: पिछला
+      specific_date: विशिष्ट तिथि
+      start_date: प्रारंभ तिथि
+      the_month_of: ! '...का माह'
+      the_week_of: ! '...का सप्ताह'
+      the_year_of: ! '...का वर्ष'
+      today: आज
+      week_to_date: चालू सप्ताह से आज तक
+      year_to_date: चालू वर्ष से आज तक
     fileuploader:
-      drop_files: 
-      failed: 
-      upload_a_file: 
+      drop_files: अपलोड करने के लिए फाइलों को यहाँ गिरायें
+      failed: विफल
+      upload_a_file: एक फाइल अपलोड करें
     hallo:
-      body: 
-      bold: 
-      heading: 
-      italic: 
-      redo: 
-      subheading: 
-      undo: 
+      body: मुख्य भाग (बॉडी)
+      bold: बोल्ड
+      heading: शीर्षक
+      italic: इटैलिक
+      redo: दोबारा करें
+      subheading: उपशीर्षक
+      undo: पूर्ववत करें
     jquery_ui:
-      april: 
-      april_short: 
-      august: 
-      august_short: 
-      december: 
-      december_short: 
-      done: 
-      february: 
-      february_short: 
-      friday: 
-      friday_min: 
-      friday_short: 
-      january: 
-      january_short: 
-      july: 
-      july_short: 
-      june: 
-      june_short: 
-      march: 
-      march_short: 
-      may: 
-      may_short: 
-      monday: 
-      monday_min: 
-      monday_short: 
-      next: 
-      november: 
-      november_short: 
-      october: 
-      october_short: 
-      prev: 
-      saturday: 
-      saturday_min: 
-      saturday_short: 
-      september: 
-      september_short: 
-      sunday: 
-      sunday_min: 
-      sunday_short: 
-      thursday: 
-      thursday_min: 
-      thursday_short: 
-      today: 
-      tuesday: 
-      tuesday_min: 
-      tuesday_short: 
-      wednesday: 
-      wednesday_min: 
-      wednesday_short: 
-      week_min: 
+      april: अप्रैल
+      april_short: अप्रैल
+      august: अगस्त
+      august_short: अगस्त
+      december: दिसंबर
+      december_short: दिसंबर
+      done: हो गया
+      february: फरवरी
+      february_short: फरवरी
+      friday: शुक्रवार
+      friday_min: शुक्रवार
+      friday_short: शुक्र
+      january: जनवरी
+      january_short: जनवरी
+      july: जुलाई
+      july_short: जुलाई
+      june: जून
+      june_short: जून
+      march: मार्च
+      march_short: मार्च
+      may: मई
+      may_short: मई
+      monday: सोमवार
+      monday_min: सोमवार
+      monday_short: सोम
+      next: अगला
+      november: नवंबर
+      november_short: नवंबर
+      october: अक्टूबर
+      october_short: अक्टूबर
+      prev: पिछला
+      saturday: शनिवार
+      saturday_min: शनिवार
+      saturday_short: शनि
+      september: सितंबर
+      september_short: सितंबर
+      sunday: रविवार
+      sunday_min: रविवार
+      sunday_short: रवि
+      thursday: बृहस्पतिवार
+      thursday_min: गुरु
+      thursday_short: गुरू
+      today: आज
+      tuesday: मंगलवार
+      tuesday_min: मंगलवार
+      tuesday_short: मंगल
+      wednesday: बुधवार
+      wednesday_min: बुधवार
+      wednesday_short: बुध
+      week_min: सप्ताह
+  recaptcha:
+    errors:
+      verification_failed: दर्ज किए गए वर्ण छवि से मेल नहीं खाते।
   screens:
     about:
       actions: कार्रवाई
@@ -901,6 +1011,8 @@ hi:
       semantics: सेमेंटिक्‍स व आरडीएफ़
       short_url: छोटा यूआरएल
       snapshotted: स्‍नैपशॉट लिया गया
+      soda2_support: केवल एसओडीए2
+      soda2_yes: हां
       source_link: स्रोत लिंक
       spatial_extent: आकाशीय विस्‍तार
       subject_column: विषय कॉलम
@@ -911,117 +1023,298 @@ hi:
       view_statistics: आंकड़ें देखें
       visits: विज़ि‍ट
       your: आपकी रेटिंग
+    admin:
+      datasets:
+        layout_config: लेआउट कॉन्फ़िगरेशन
+        left: बायां
+        right: दायां
+        saved: सहेजा गया
+        saving: सहेजा जा रहा है
+        sidebar_position: साइडबार स्थिति
+        title: डेटासेट
+        unpublished_datasets: अप्रकाशित डेटासेट्स
+      federation:
+        accept: स्वीकारें
+        accepted: स्वीकृत
+        accepted_by: द्वारा स्वीकृत
+        all: (सभी)
+        dataset: डेटासेट
+        flashes:
+          accepted: संघ सफलतापूर्वक स्वीकार किया गया
+          created: संघ सफलतापूर्वक बनाया गया
+          deleted: संघ सफलतापूर्वक नष्ट किया गया
+          invalid_domain: ! 'डेटा संघ नहीं बन सका: लक्ष्य डोमेन अमान्य है'
+          rejected: संघ सफलतापूर्वक अस्वीकार कर दिया गया
+        list_domains: डोमेन्स की निम्नलिखित सूची का उपयोग आप डेटा संघ आरंभ करने के लिए कर सकते हैं। प्रकाशित पर आपके द्वारा क्लिक करने पर, लक्ष्य डोमेन में से एक प्रबंधक को आपका अनुरोध स्वीकार करना चाहिए।
+        no_domains: कोई उपलब्ध डोमेन %{name} से मेल नहीं खाते हैं।
+        no_federations: अभी तक इस डोमेन के लिए कोई संघ मौजूद नहीं है।
+        no_pub_datasets: कोई प्रकाशित डेटासेट आपके खोज मापदंड से मेल नहीं खाते हैं।
+        pending: लंबित
+        publish: प्रकाशित करें
+        reject: अस्वीकृत करें
+        search: खोजें
+        search_boost: खोज को बढ़ावा
+        search_boost_explain: सीमा 1 से 0 तक। उच्च मान होने से डेटासेट्स के पहले दिखने की सम्भावना अधिक होती है।
+        search_prompt: प्रकाशित किये जाने वाले डोमेन्स के लिए खोज
+        search_pub_datasets: प्रकाशित डेटासेट्स के लिए खोज
+        source_domain: स्रोत डोमेन
+        status: स्थिति
+        target_domain: लक्ष्य डोमेन
+        terminate: समाप्त करें
+        title: डेटा संघ खोलें
+      home:
+        add_featured_dataset: एक नया विशेष रूप से प्रदर्शित डेटासेट जोड़ें
+        are_you_sure: क्या आपको यकीन है? इस एक्शन को अनडन या पूर्ववत नहीं किया जा सकता है।
+        catalog_layout_configuration: नामसूची खाका कॉन्फिगरेशन
+        choose_a_dataset: दिखाने के लिए डेटासेट का चयन करें
+        compact_list: संक्षिप्त सूची
+        contents: विषय सूची
+        create_new_story: एक नई कहानी बनाएं
+        custom_image: कस्टम छवि
+        customize_now: रूचि अनुसार अब बनाइए
+        customize_story_appearance: कहानी की उपस्थिति को रूचि अनुसार बनाइए
+        dataset_display_limit: एक समय में केवल चार डेटासेट ही दिखाए जा सकते हैं।
+        date_published: प्रकाशन तिथि
+        default_catalog_layout: डिफ़ॉल्ट नामसूचि खाका
+        delete: हटाएं
+        down: नीचे
+        edit: संपादित करें
+        feature_image: दर्शाई गई छवि
+        filetype_error: अमान्य फ़ाइल प्रकार। कृपया एक छवि फ़ाइल का चयन करें
+        flashes:
+          create_error: ! 'आपके अनुरोध के दौरान एक त्रुटि हुई: %{error_message}'
+          delete_error: आपने जिस कहानी को हटाने का प्रयास किया वह मौजूद नहीं है।
+          edit_error: आपने जिस कहानी को सम्पादित करने का प्रयास किया वह मौजूद नहीं है।
+          edit_success: आपकी कहानी सहेज दी गई है
+          move_error: आपने जिस कहानी को स्थानांतरित करने का प्रयास किया वह मौजूद नहीं है।
+          move_success: आपकी कहानी सहेज दी गई है
+        image: छवि
+        left: बायां
+        manage_featured_dataset: विशेष रुप से प्रदर्शित डेटासेट का प्रबंधन कीजिये
+        manage_story_content: कहानी की सामग्री का प्रबंधन कीजिये
+        move_left: बाएं स्थानांतरित कीजिये
+        move_right: दाएं स्थानांतरित कीजिये
+        remove: हटाएं
+        rich_list: संपन्न सूची
+        right: दायां
+        save_now: अभी सहेजें
+        saved: सहेजा गया
+        saved1: सहेजा गया।
+        saving: सहेजा जा रहा है
+        saving1: सहेजा जा रहा है...
+        set_a_thumbnail: थंबनेल सेट करें
+        text: पाठ
+        thumbnail: थंबनेल
+        title: मुख्य पृष्ठ का प्रबंधन करें
+        up: ऊपर
+      metadata:
+        add_new_category: नई श्रेणी जोड़ें
+        add_new_field: नई फील्ड जोड़ें
+        allowed_values: स्वीकृत मान
+        are_you_sure: क्या आप वाकई इस फील्डसेट और इससे जुड़े सभी फील्ड्स को हटाना चाहते हैं?
+        category_name: श्रेणी का नाम
+        create: बनाएं
+        create_new_fieldset: एक नए फील्ड सेट को बनाएं
+        define_categories: डेटासेट श्रेणियों को परिभाषित करें
+        define_custom_fields: कस्टम फील्ड्स को परिभाषित करें
+        down: नीचे
+        enter_a_name: एक नाम दर्ज करें
+        'false': false
+        field_name: फील्ड का नाम
+        flashes:
+          cannot_move_field: ! '''%{name}'' नाम वाले फील्ड को स्थानांतरित नहीं कर सकते: नहीं पाया गया'
+          field_duplicated: ! '''%{name}'' नाम वाले फील्ड की नक़ल नहीं बना सकते'
+          field_name_required: बिना नाम का फील्ड नहीं बना सकते
+          field_successful_create: फील्ड सफलतापूर्वक बनाया गया
+          field_successful_remove: फील्ड सफलतापूर्वक हटाया गया
+          field_successful_save: फील्ड सफलतापूर्वक सहेजा गया
+          fieldset_duplicated: ! '''%{name}'' नाम वाले फील्ड सेट की नक़ल नहीं बना सकते'
+          fieldset_name_required: बिना नाम का फील्ड सेट नहीं बना सकते
+          no_such_field: ऐसा कोई फील्ड मौजूद नहीं है
+          no_such_fieldset: ऐसा कोई फील्डसेट मौजूद नहीं है
+          successful_create: फील्ड सेट सफलतापूर्वक बनाया गया
+          successful_remove: फील्ड सेट सफलतापूर्वक हटाया गया
+        locales: स्थानिक
+        make_optional: वैकल्पिक बनाइए
+        make_private: निजी बनाइए
+        make_public: सार्वजनिक बनाइए
+        make_required: आवश्यक बनाइए
+        metadata_explain1: कस्टम मेटाडेटा को <span class="code">फील्डसेट्स</span> और <span class="code">फील्ड्स</span> में विभाजित किया जाता है। <span class="code">फील्डसेट</span> वह तरीका होता है जिसके द्वारा एक या उससे अधिक कस्टम <span class="code">फील्ड्स</span> को तर्कसंगत और दृष्टिगत रूप से इकठ्ठा किया जाता है।
+        metadata_explain2: फील्ड्स को कई तरीके से कॉन्फ़िगर किया जा सकता है। उनकी <span class="code">आवश्यकता हो सकती है</span>, जिसे तब लागू किया जाता है जब प्रकाशक नये डेटासेट बनाते हैं और मौजूदा मेटाडेटा का नवीनीकरण करते हैं। वे <span class="code">निजी</span> भी हो सकते हैं, अर्थात दर्ज किये गये मान सार्वजनिक रूप से दिखाई नहीं देंगे।
+        metadata_explain3: अंत में, यदि आप मुक्त रूप से दर्ज पाठ के बजाय सूची में से मान का चयन करना चाहते हैं तो आप अपने <span class="code">फील्ड्स</span> के लिए विकल्पों का पूर्व-परिभाषित चयन कर सकते हैं।
+        no_data: कोई कस्टम डेटासेट फील्ड आपके डोमेन के लिए अभी तक परिभाषित नहीं की गई हैं। नीचे एक नाम दर्ज करें और शुरू करने के लिए 'बनाएँ' पर क्लिक करें।
+        no_fields_defined: इस फील्ड सेट के पास अभी तक कोई परिभाषित फील्ड नहीं है।
+        page_title: डेटासेट मेटाडाटा का प्रबंधन करें
+        parent: मूल
+        remove: हटाएं
+        shown: दिखाया?
+        title: मेटाडाटा का प्रबंधन करें
+        'true': true
+        up: ऊपर
+      users:
+        actions: एक्शन (क्रिया)
+        all: सभी
+        bulk_create: थोक निर्माण
+        create_accounts: खाते बनाएँ
+        email: ईमेल
+        email_prompt: आप जो खाते बनाना चाहते हैं उनके लिए ईमेल पते दर्ज करें
+        emails: ईमेल
+        error_permission_request: आपका अनुमति अनुरोध संसाधित करने में एक त्रुटि हुई थी।
+        filter_by: द्वारा फ़िल्टर
+        flashes:
+          accounts_created:
+            one: ! '%{count} खाता सफलतापूर्वक बनाया गया'
+            other: ! '%{count} खाते सफलतापूर्वक बनाए गये'
+          invalid_role: ! 'उपयोगकर्ता निर्माण के लिए अमान्य भूमिका निर्दिष्ट की गई: %{role}'
+          no_email_addresses: कोई ईमेल पता पाया नहीं गया
+          pending_permissions_removed: लंबित अनुमतियां हटा ली गईं
+          reenable_failed: उस उपयोगकर्ता खाता को सक्रिय करने में त्रुटि हुई थी।
+          reenable_success: खाते को सफलतापूर्वक दोबारा सक्षम किया गया
+          reset_email_failed: पासवर्ड रीसेट ईमेल भेजने में त्रुटि हुई थी।
+          reset_email_sent: पासवर्ड रीसेट ईमेल भेजी गई
+          successful_update: उपयोगकर्ता का सफलतापूर्वक नवीनीकरण किया गया
+        invited: आमंत्रित
+        name: नाम
+        no_pending_users: कोई लंबित उपयोगकर्ता आपके मौजूदा फिल्टर से मेल नहीं खाते
+        no_users_found: कोई मौजूदा उपयोगकर्ता नहीं मिला
+        no_users_match: कोई उपयोगकर्ता आपके मौजूदा फिल्टर से मेल नहीं खाते।
+        pending_users: निम्नलिखित उपयोगकर्ताओं के लंबित खाते हैं, लेकिन उन्हें अभी तक सक्रिय नहीं किया गया है
+        reenable_privileges: विशेषाधिकार दोबारा सक्षम कीजिये
+        remove: हटाएं
+        reset_password: पासवर्ड रीसेट करें
+        return_to_overview: उपयोगकर्ता अवलोकन पर लौटें
+        role: भूमिका
+        roles:
+          administrator: व्यवस्थापक
+          designer: डिज़ाइनर
+          editor: संपादक
+          none: कोई नहीं
+          publisher: प्रकाशक
+          viewer: दर्शक
+        search: खोजें
+        search_for_users: जोड़ने के लिए उपयोगकर्ताओं की खोज कीजिये
+        search_results: ! '''%{term}'' के लिए खोज के परिणाम'
+        title: उपयोगकर्ताओं को प्रबंधित करें
+        user_saved: उपयोगकर्ता को सहेजा गया
     dataset_edit:
-      append: 
-      append_and_replace: 
-      append_explain: 
+      append: संलग्न करें
+      append_and_replace: डेटा संलग्न करें और बदलें
+      append_explain: आप डेटासेट के अंत में जुड़े अपलोड किये गये डेटा को पसंद करेंगे। आप यह चुन सकते हैं कि आपका नया डेटा आपके मौजूदा कॉलमों के साथ किस प्रकार मैप करता है।
       finish:
-        headline: 
-        subheadline: 
-      headline: 
+        headline: आपका डेटासेट अपडेट कर दिया गया है।
+        subheadline: उसे देखने के लिए समाप्त पर क्लिक करें!
+      headline: आप अपने अपलोड किये गये डेटा के साथ क्या करना चाहते हैं?
       import_columns:
-        destination_column: 
-        destination_data_type: 
-        headline: 
+        destination_column: गंतव्य कॉलम
+        destination_data_type: गंतव्य डेटा प्रकार
+        headline: ! '&ldquo;<span class="fileName"></span>&rdquo; में डेटा आपके डेटासेट से किस प्रकार संबंधित है?'
       import_warnings:
-        see_docs: 
-      replace: 
-      replace_data: 
-      replace_explain: 
-      replace_layer: 
-      title: 
-      upload_accessible: 
+        see_docs: ! ' <strong>भ्रमित हैं?</strong> यह विस्तार से जानने के लिए कि इम्पोर्टर (आयातक) डेटा किस प्रकार हैंडल करता है, कृपया डेटा इम्पोर्ट करने के बारे में हमारा <a href="%{publisher_link}" rel="external">प्रकाशक दस्तावेज</a> अवश्य देखें।'
+      replace: बदलें
+      replace_data: डेटा बदलें
+      replace_explain: आप मौजूद सभी डेटा को हटा कर उसके स्थान पर अपने अपलोड किये गये डेटा को पसंद करेंगे। आप यह चुन सकते हैं कि आपका नया डेटा आपके मौजूदा कॉलमों के साथ किस प्रकार मैप करता है। इस कार्रवाई को पूर्ववत नहीं किया जा सकता।
+      replace_layer: परत बदलें
+      title: डेटासेट का संपादन करें
+      upload_accessible: नये डेटा तक पहुँच प्रदान करना अपलोड करें
     dataset_new:
       column_template:
-        name_this_col: 
-        options: 
-        remove: 
+        name_this_col: इस कॉलम को नाम दें
+        options: विकल्प
+        remove: हटाएं
       crossload:
-        downloading: 
-        headline: 
-        import: 
-        supported: 
-        url_prompt: 
+        downloading: आपकी फ़ाइल डाउनलोड की जा रही है...
+        headline: कृपया संकेत दें आपकी डेटा फ़ाइल कहाँ रहती है।
+        import: आयात
+        supported: समर्थित फ़ाइल प्रकार हैं सीएसवी (CSV), टीसीवी (TSV), और एक्सेल। समर्थित प्रोटोकॉल हैं एचटीटीपी (HTTP) और एचटीटीपीएस (HTTPS)।
+        url_prompt: आपके द्वारा आयात की जाने वाली फ़ाइल का वेब यूआरएल क्या है?
+      errors:
+        invalid_crossload_url: कृपया एचटीटीपी (HTTP) या एचटीटीपीएस (HTTPS) से आरंभ होने वाले एक वैध यूआरएल को दर्ज करें।
+        invalid_url: वह एक वैध यूआरएल दिखाई नहीं देता है।
+        missing_data_provider: आपको क्रिएटिव कॉमंस लाइसेंस में डेटा प्रदाता (संबंध) निर्दिष्ट करना चाहिए।
+        missing_esri_url: एक वैध ईएसआरआई मानचित्र लेयर यूआरएल की आवश्यकता है।
+        missing_name: डेटासेट नाम आवश्यक है।
+        need_description: कृपया &ldquo;%{name}&rdquo; का वर्णन करें
       finish:
-        headline: 
-        subheadline: 
+        headline: आपका डेटासेट बना दिया गया है।
+        subheadline: उसे देखने के लिए समाप्त पर क्लिक करें!
       first_page:
-        blobby: 
-        blobby_explain: 
-        create: 
-        create_explain: 
-        external: 
-        external_explain: 
-        header: 
-        import: 
-        import_explain: 
-        mapLayer: 
-        mapLayer_explain: 
-        prompt: 
-        shapefile: 
-        shapefile_explain: 
+        blobby: एक गैर-डेटा फ़ाइल अपलोड करें
+        blobby_explain: यदि आपके पास एक ऐसी फ़ाइल है जिसमें डेटा है लेकिन जिसका आयात नहीं किया जा सकता है, जैसे पीडीएफ, या एक छवि फ़ाइल, तो इसका चयन करें। इसे डेटा नामसूची में आयात कर लिया जायेगा, किन्तु वास्तविक डेटा की भांति उतनी इंटरैक्टिव नहीं होगी।
+        create: आरंभ से डिजाइन करें
+        create_explain: यदि आप के पास आयात करने योग्य डेटा पहले से नहीं है तो इसका चयन करें। आप अपने डेटा के लिए एक स्कीमा को परिभाषित, और उसे ऑनलाइन इनपुट कर सकेंगे।
+        external: बाहरी डेटा से लिंक
+        external_explain: यदि आपके पास डेटा है जिसे अन्य सर्वर के ऊपर होस्ट किया जा रहा है तो इसका चयन करें। यह डेटा इम्पोर्ट नहीं किया जाएगा।
+        header: एक नया डेटासेट बनाएं
+        import: एक डेटा फ़ाइल को आयात करें
+        import_explain: यदि आप के पास आयात करने योग्य डेटा फ़ाइल पहले से है तो इसका चयन करें।  समर्थित फॉर्मेट हैं .csv, .tsv, .xls, and .xlsx।
+        mapLayer: एक ईएसआरआई मानचित्र लेयर से जुड़ें
+        mapLayer_explain: यदि आपके पास एक ईएसआरआई मानचित्र लेयर है जिसे आप नामसूची में आयात करना चाहते हैं तो इसका चयन करें। आपको एपीआई पॉइंट का यूआरएल प्रदान करने की आवश्यकता है जहाँ ईएसआरआई लेयर संग्रहित है।
+        prompt: आप कैसे अपने नये डेटासेट को बनाना चाहेंगे?
+        shapefile: भू-आकाशीय डेटा का आयात करें
+        shapefile_explain: यदि आपके पास भू-आकाशीय डेटा है जिसे आप नामसूची में आयात करना चाहते हैं तो इसका चयन करें।
       import:
-        headline: 
-        local: 
-        local_explain: 
-        web: 
-        web_explain: 
+        headline: यह फ़ाइल कहाँ स्थित है?
+        local: मेरे कंप्यूटर पर
+        local_explain: यदि आपके पास ऐसी फ़ाइल है जिसका उपयोग आप कंप्यूटर पर कर रहे हैं तो इसका चयन करें।
+        web: इंटरनेट पर
+        web_explain: यदि आपके पास एक फ़ाइल है जो पहले से इंटरनेट पर मौजूद है और आपके पास उसका यूआरएल है तो इसका चयन करें।
       import_columns:
-        add_new_column: 
-        clear_all: 
-        data_type: 
-        errors_warnings: 
-        fewer_rows: 
-        headers: 
-        headers_instructions: 
-        headline: 
-        help_message: 
-        more_rows: 
-        name: 
-        pending_columns: 
-        reset_to_preset: 
-        set: 
-        source_column: 
-        subheadline: 
-        suggested_alltext: 
-        suggested_columns: 
-        suggested_flat: 
-        suggested_plus_discrete: 
-        why_choose_now: 
-      import_help: 
+        add_new_column: नया कॉलम जोड़ें
+        clear_all: सभी साफ़ करें
+        data_type: डेटा प्रकार
+        errors_warnings: त्रुटियां और चेतावनियां
+        fewer_rows: कम पंक्तियाँ
+        headers: हेडर
+        headers_instructions: हेडर को नजरअंदाज कर दिया जाना चाहिए और डेटा के रूप में आयात नहीं किया जाना चाहिए। कृपया संकेत दें आपकी स्रोत फ़ाइल की कितनी पंक्तियां हेडर हैं
+        headline: बताएं कि &ldquo;<span class="fileName"></span>&rdquo; किस प्रकार इम्पोर्ट किया जाना चाहिए।
+        help_message: सहायता के लिए, <a href="%{common_errors}" rel="external">सामान्य चेतावनियों और त्रुटियों की सूची</a> की जाँच कीजिये।
+        more_rows: अधिक पंक्तियाँ
+        name: नाम
+        pending_columns: कृपया प्रतीक्षा कीजिये जब तक हम आपके कॉलम लोड करते हैं...
+        reset_to_preset: प्रीसेट के लिए रीसेट करें
+        set: सेट करें
+        source_column: स्रोत कॉलम
+        subheadline: इम्पोर्ट करने वाली कॉलम
+        suggested_alltext: पाठ के रूप में सभी कॉलम
+        suggested_columns: सुझाये गये कॉलम
+        suggested_flat: सुझाये गये कॉलम (कोई संयोजन नहीं)
+        suggested_plus_discrete: सुझाये गये कॉलम (संयुक्त और भिन्न)
+        why_choose_now: अभी कॉलम के प्रकार का चयन करना महत्वपूर्ण क्यों है?
+      import_help: <strong>सहायता की आवश्यकता है?</strong> हम <a href="%{common_errors}" rel="external">सामान्य चेतावनियों और त्रुटियों की सूची</a> कायम रखते हैं जो आपके लिए सहायक हो सकती है।
       import_shapefile:
-        crs: 
-        headline: 
-        layers_list: 
-        name: 
-        pending: 
-        subheadline: 
+        crs: निर्देशांक संदर्भ प्रणाली
+        headline: बताएं कि &ldquo;<span class="fileName"></span>&rdquo; किस प्रकार इम्पोर्ट किया जाना चाहिए।
+        layers_list: इम्पोर्ट करने वाले स्तर
+        name: नाम
+        pending: कृपया प्रतीक्षा कीजिये जब तक हम आपकी परतें लोड करते हैं...
+        subheadline: यह शेपफ़ाइल <span class="layerCount"></span> परतों में <span class="featureCount"></span> विशेषताओं से युक्त है।
       import_warnings:
-        headline: 
-        see_docs: 
-        subheadline: 
-      importing_your_data: 
+        headline: आयात के दौरान चेतावनियां
+        see_docs: <strong>भ्रमित हैं?</strong> यह विस्तार से जानने के लिए कि इम्पोर्टर (आयातक) डेटा किस प्रकार हैंडल करता है, कृपया डेटा इम्पोर्ट करने के बारे में हमारा <a href="%{publisher_link}" rel="external">प्रकाशक दस्तावेज</a> अवश्य देखें। आप हमारी <a href="%{common_errors}" rel="external">सामान्य चेतावनियों और त्रुटियों की सूची</a> का संदर्भ भी लेना चाहेंगे।
+        subheadline: कृपया ध्यान दें कि आपका कुछ डेटा सही से आयात नहीं हुआ है।
+      importing_your_data: आपका डेटा आयात किया जा रहा है...
       metadata:
-        creative_commons_type: 
-        esri_map_layer_url: 
-        esri_source_url: 
-        privacy_security: 
-        private_explain: 
-        prompt: 
-        public_explain: 
-      processing: 
-      title: 
-      upload_accessible: 
+        creative_commons_type: क्रिएटिव कॉमन्स के प्रकार
+        esri_map_layer_url: ईएसआरआई मानचित्र परत यूआरएल
+        esri_source_url: स्रोत यूआरएल दर्ज करें
+        privacy_security: गोपनीयता और सुरक्षा
+        privacy_settings: गोपनीयता सेटिंग
+        private_explain: मेरा डेटा <strong>निजी</strong> है
+        prompt: कृपया अपने डेटा का वर्णन करें।
+        public_explain: ! 'मेरा डेटा <strong>सार्वजनिक</strong> है: इसका संशोधन केवल मैं कर सकता हूँ, लेकिन इसे सभी देख सकते हैं'
+      processing: संसाधित किया जा रहा है...
+      title: नया डेटासेट
+      upload_accessible: नये डेटासेट तक पहुँच प्रदान को अपलोड करें
       upload_file:
-        choose_a_file: 
-        no_file_selected: 
-        supported_blist: 
-        supported_shapefile: 
-        uploading: 
+        choose_a_file: एक फाइल चुनें
+        no_file_selected: अभी तक कोई फाइल नहीं चुनी गई।
+        supported_blist: समर्थित फॉर्मेट हैं .csv, .tsv, .xls, and .xlsx।
+        supported_shapefile: समर्थित प्रारूप हैं .केएमएल (.kml), .केएमज़ेड (.kmz), और .ज़िप (.zip) (ईएसआरआई शेपफ़ाइल)।
+        uploading: आपकी फ़ाइल अपलोड की जा रही है...
       why_choose_now:
-        close: 
-        line_1: 
-        line_2: 
+        close: बंद करें
+        line_1: आपकी फ़ाइल आयात करते समय बहुत अधिक संसाधित है, और प्रत्येक विशेष डेटा प्रकार के उपयोग के लिए अनुकूलित है। इसके अतिरिक्त, अधिकतर डेटा प्रकार के पास विशेष गुण होते हैं जो तभी सक्रिय होते हैं जब कॉलम को उस प्रकार के लिए सेट किया जाये &mdash; स्थान कॉलम, उदाहरण के लिए, मानचित्रों के निर्माण के लिए आवश्यक होते हैं।
+        line_2: बाद में कॉलम के प्रकार बदलना संभव होता है, लेकिन प्रक्रिया में अधिक समय लगता है, तो बेहतर होता है सभी चीज़ों को पहले से व्यवस्थित कर लिया जाये।
     ds:
       bar:
         api_unsavable: एपीआई व्‍यू को संशोधित नहीं किया जा सकता है
@@ -1098,6 +1391,7 @@ hi:
           purposes:
             copyright_violation: कॉपीराइट उल्‍लंघन
             offensive_content: अपमानजनक सामग्री
+            other_purpose: अन्य
             personal_information: व्‍यक्तिगत सूचना
             prompt: — उद्देश्‍य चुनें —
             spam: स्‍पैम या जंक
@@ -1200,12 +1494,13 @@ hi:
           color_select:
             prompt: रंग चुनें
           column_select:
-            auto: 
+            auto: ऑटो
             from_grid: कॉलम को ग्रिड से चुनें
-            none_selected: 
-            nonselectable: 
+            none: (कोई नहीं)
+            none_selected: किसी कॉलम का चयन नहीं किया गया है
+            nonselectable: अवैध कॉलम
             prompt: कॉलम चुनें
-            selectable: 
+            selectable: वैध कॉलम
             unselect: कॉलम अचयनित करें
           datatypes:
             checkbox: चेकबॉक्स
@@ -1263,21 +1558,21 @@ hi:
         chart:
           advanced: उन्‍नत कान्फ़ि‍गरेशन
           annotation: व्‍याख्‍या
-          auto_update_sort: 
-          auto_update_sort_button: 
-          auto_update_sort_info_donut: 
-          auto_update_sort_info_pie: 
+          auto_update_sort: स्वतः श्रेणीबद्ध क्रम का नवीनीकरण कर दें
+          auto_update_sort_button: इसे अभी लागू करें
+          auto_update_sort_info_donut: डोनट चार्ट तब अच्छी तरह काम करते हैं जब दक्षिणावर्त अवरोही क्रम में श्रेणीबद्ध किया जाता है, अंदर से बाहर।
+          auto_update_sort_info_pie: पाई चार्ट तब अच्छी तरह काम करते हैं जब दक्षिणावर्त अवरोही क्रम में श्रेणीबद्ध किया जाता है।
           axes:
-            title: 
+            title: अक्ष विकल्प
             x_axis_title: X-Axis शीर्षक
             x_axis_title_prompt: x-axis के लिए शीर्षक दें
             y_axis_title: Y-Axis शीर्षक
             y_axis_title_prompt: y -axis के लिए शीर्षक दें
           base_color: बेस कलर
           categories: श्रेणियाँ
-          cdlfmtg_color_override_html: 
+          cdlfmtg_color_override_html: रंगों का अधिरोहण <a href="#Conditional Formatting" class="showConditionalFormatting">सशर्त स्वरूपण</a> द्वारा किया जा रहा है। किसी भी मौजूदा सशर्त स्वरूपण नियम को साफ़ करने के लिए <a href="#Clear Conditional Formatting" class="clearConditionalFormatting">यहाँ</a> क्लिक करें।
           color_options:
-            column_colors: 
+            column_colors: कॉलम के रंग
           color_override_html: <a href="#Conditional Formatting" class="showConditionalFormatting"> कंडिशनल फ़ॉरमेटिंग </a>का उपयोग करके रंगों को ओवरराइड किया जा सकता है। किसी वर्तमान कंडिशनल फ़ॉरमेटिंग के नियमों को हटाने के लिए <a href="#Clear Conditional Formatting" class="clearConditionalFormatting">यहाँ</a> क्लिक करें।
           colors: रंग
           configuration: कान्फ़ि‍गरेशन
@@ -1287,37 +1582,41 @@ hi:
           data_labels: डेटा लेबल
           data_selection:
             advanced_data_selection:
-              title: 
+              title: उन्नत डेटा चयन
             chart_definition:
-              label_title: 
-              title: 
-              value_title: 
+              label_title: लेबल डेटा का चयन करें
+              title: चार्ट परिभाषा
+              value_title: मान डेटा का चयन करें
           date: तिथि
           details: विवरण
           draw_line: रेखा खींचें
           dsg_color_override_html: ध्यान दें कि डेटा श्रेणी समूहन आपके डेटा स्तंभों के लिए चुने गए रंगों को रद्द कर देगा। वह आपकी <a href="#Conditional Formating" class="showConditionalFormating">सशर्त फ़ॉर्मेटिंग</a> को रद्द नहीं करेगा।
           error_bars:
             color: रंग
-            data_high: 
-            data_low: 
+            data_high: उच्च परिबंध कॉलम का चयन करें
+            data_low: निम्न परिबंध कॉलम का चयन करें
             high: उच्‍च
             low: निम्‍न
             title: एरर बार
           flyout:
             new_details_button: फ्लाईआउट विवरण जोड़ें
-            new_values_button: 
+            new_values_button: मान जोड़ें
             title: फ्लाईआउट विवरण
-            title_column: 
-            value: 
+            title_column: फ्लाईआउट शीर्षक
+            value: फ्लाईआउट मान
           group_extra: अतिरिक्‍त मान को समूहबद्ध करें
           groups: समूह
+          headings:
+            chart_details: चार्ट विवरण
+            data_presentation: डेटा प्रस्तुति
+            data_selection: डेटा चयन
           label: लेबल
           labelInBar: पट्टी में लेबल
-          labels_and_values: 
+          labels_and_values: लेबल और मान
           legend:
-            add_text: 
-            add_text_button: 
-            annotations: 
+            add_text: अतिरिक्त पाठ
+            add_text_button: अतिरिक्त पाठ जोड़ें
+            annotations: एनोटेशन का वर्णन करें
             conditional_formats: कंडिशनल फ़ॉरमेटिंग का वर्णन करें
             custom_entry: कस्‍टम लेबल
             display: डिस्‍प्‍ले करें
@@ -1332,18 +1631,18 @@ hi:
               top: ऊपर
             series: सीरीज का वर्णन करें
             title: लीजेंड कॉन्फ़ि‍गरेशन
-            title_short: 
+            title_short: उपाख्यान
             value_markers: वैल्‍यू मार्कर का वर्णन करें
             values: मानों का वर्णन करें
           marker:
-            add_button: 
+            add_button: एनोटेशन जोड़ें
             caption: कैप्‍शन
-            marker_title: 
+            marker_title: मान चिन्हक
             new_marker_button: मार्कर जोड़ें
             title: ! '%{axis} मार्कर'
             value: मूल्‍य पर
           min_angle: न्‍यून. कोण
-          min_angle_html: 
+          min_angle_html: सबसे छोटा कोण प्रदर्शित (&ordm;)
           names: नाम
           pie_other: ! 'चेतावनी: %{row_limit} के बाद %{chart_type} पृथक मानों (पंक्तियों) को अन्‍य श्रेणी में जोड़ देगा। मान की संख्‍या सीमित करने वाला रोल अप या फिल्‍टर बनाने की कोशिश करें और फिर उसका %{chart_type} बनाएँ।'
           pie_truncate: ! 'चेतावनी: %{row_limit} से अधिक पृथक मान (पंक्तियों) वाले डेटासेट को %{chart_type} ट्रंकेट (छोटा) कर देगा। मान की संख्‍या सीमित करने वाला रोल अप या फिल्‍टर बनाने की कोशिश करें और फिर उसका %{chart_type} बनाएँ।'
@@ -1370,8 +1669,10 @@ hi:
           title: चार्ट
           treemap_color_html: ये रंग केवल अलग तरह से दिखाई देने के लिए ट्रीमैप पर सांयोगिक तरह से लागू किये गये हैं। उनका स्‍वयं में कोई खास अर्थ नहीं है।
           validation:
-            chart_requires: 
-            chart_requires2: 
+            chart_requires: ! '%{chart_type} को कम से कम आवश्यकता है'
+            chart_requires2:
+              one: पाठ / अनुवाद दर्ज करने के लिए क्लिक करें
+              other: ! 'निम्नलिखित कॉलम प्रकार के %{and} %{count}:'
             count:
               one: एक
               other: ! '%{count}'
@@ -1386,7 +1687,7 @@ hi:
             axis_max: Axis अधि.
             axis_min: Axis न्‍यून.
             axis_prompt: संख्‍या डालें
-            decimals: 
+            decimals: दशमलव स्थान
             no_decimals: कोई दशमलव नहीं
             precision: शुद्धता
             title: Y-Axis फ़ॉरमेटिंग
@@ -1447,7 +1748,7 @@ hi:
           money:
             abbreviated: संक्षिप्‍त किया गया
             currency: मुद्रा
-            format_mask_warning: 
+            format_mask_warning: पाठ / अनुवाद दर्ज करने के लिए क्लिक करें
             no_precision: कोई नहीं
             precision: शुद्धता
             title: मनी फ़ॉरमेटिंग
@@ -1772,7 +2073,7 @@ hi:
             subtitle: इस डेटासेट के वर्तमान फिल्‍टर, मैप, चार्ट व अन्‍य व्‍यू देखें
             title: व्‍यू
         visualize:
-          choose_type: 
+          choose_type: दृश्यावलोकन प्रकार
       save_dialog:
         descriptions:
           leaving: ! 'आपका असुरक्षित डेटा है जो खो जाएगा यदि आप यह पृष्‍ठ छोड़ते हैं। कृपया इसे छोड़ने से पहले चुनें कि क्‍या आप इस व्‍यू को सहेजना चाहते हैं या नहीं; या पृष्‍ठ पर वापिस आने के लिए रद्द करें चुनें। '
@@ -1786,6 +2087,9 @@ hi:
         validation:
           auth_required: व्‍यू सहेजने के लिए आपको लॉगिन करना चाहिए
           view_name_required: व्‍यू नाम आवश्यक है
+      show:
+        remove_confirm: क्या आप वाकई इस व्यू को हटाना चाहते हैं?
+        unpublished_alert: यह डेटासेट अभी तक सार्वजनिक रूप से उपलब्ध कराने से पहले आपको अनिवार्य परिवर्तन करने देने की अनुमति देने के लिए अभी तक प्रकाशित नहीं हुआ है। वह तब तक दिखाई नहीं देगा जब तक आप इस डेटासेट को प्रकाशित नहीं कर देते।
       subscribe:
         google_reader: गूगल रीडर में जोड़ें
         intro_html: ! '<strong>आरएसएस रीडर के जरिए <span class="datasetName">%{name}</span> डेटासेट की सदस्‍यता लेने के लिए</strong>, निम्‍नलिखित एक लिंक का उपयोग करें:'
@@ -1797,10 +2101,13 @@ hi:
         title_html: ! '"<span class="datasetName">%{name}</span>" <span class="datasetTypeNameUpcase">डेटासेट</span>की सदस्‍यता लें'
         unsubscribe: यदि आप अब सूचना नहीं पाना चाहते हैं तो नीचे सब्‍सक्राइब बॉक्‍स से निशान हटा दें।
     edit_metadata:
+      about: परिचय
       additional_source: अतिरिक्त स्रोत
       alternative_access_prompt: इस डेटासेट के लिए एक वैकल्पिक पहुंच बिंदु दर्ज करें
       api_endpoint: एपीआई अंतिम बिंदु
       attachments: अनुलग्नक
+      attachmentsDisabledMessagePart1: अनुलग्नकों को अपलोड करने के लिए, पहले इस डेटासेट का प्रकाशन समाप्त करें। उसके बाद,
+      attachmentsDisabledMessagePart2: उपकरण पट्टी में क्लिक करें, और मेटाडाटा संपादित करें क्लिक करें। आप फिर अनुलग्नकों को अपलोड कर पायेंगे।
       brief_description: संक्षिप्त विवरण
       brief_description_prompt: वर्णन दर्ज करें
       cancel: रद्द करें
@@ -1815,8 +2122,8 @@ hi:
       dataset_title: डेटासेट शीर्षक
       dataset_title_error: डेटासेट का शीर्षक होना चाहिए।
       dataset_title_prompt: शीर्षक दर्ज करें
-      dataset_url: 
-      dataset_url_prompt: 
+      dataset_url: डेटासेट यूआरएल
+      dataset_url_prompt: अपने बाहरी डेटासेट का स्थान दर्ज करें
       delete: हटाएँ
       email_address: ईमेल पता
       email_help: इस पते को सार्वजनिक रूप से प्रदर्शित नहीं किया जाएगा। यदि इसे खाली छोड़ा जाए, तो यहाँ आपका डिफ़ोल्ट पता रख दिया जाएगा
@@ -1828,6 +2135,7 @@ hi:
       external_identifier: बाह्य पहचानक
       file_type: फ़ाइल प्रकार
       general_information: सामान्य जानकारी
+      headline: ! '%{name} के लिए मेटाडेटा का संपादन करें'
       keywords_help: अल्प विराम से अलगाते हुए एक या अधिक कुंजी शब्द दर्ज करें
       license_help: इस डेटासेट का उपयोग करने के इच्छुक व्यक्तियों के लिए लाइसेंस की शर्तें चुनें।
       license_type: लाइसेंस प्रकार
@@ -1861,6 +2169,7 @@ hi:
       tags_keywords: टैग / कुंजी शब्द
       tags_prompt: कुंजीशब्द दर्ज करें
       thumbnail_image: लघु छवि
+      title: डेटासेट मेटाडेटा का संपादन करें
       upload_error: कृपया कोई मान्य छवि फ़ाइल चुनें
       upload_help: इस छवि को काट-छाँटकर वर्गाकार बनाया जाएगा
       upload_image: छवि अपलोड करें
@@ -1878,27 +2187,64 @@ hi:
         account_html: नमस्ते, <span class="currentUser"></span>
         account_tooltip: आपका होम
         administration: प्रशासन
+    import_common:
+      addresses_to_geocode: आयात पूर्ण होने के बाद पतों को जियोकोड किया जाएगा।
+      case_sensitive: अक्षर संवेदनशील
+      city: शहर
+      column: कॉलम
+      combine_multiple_columns: एकाधिक कॉलमों का संयोजन कीजिये
+      create_composite: ! 'कई स्रोत कॉलमों में से एक कॉलम बनाएँ:'
+      create_js_expression: कैसे मैं एक कस्टम जावास्क्रिप्ट अभिव्यक्ति का निर्माण करूं?
+      custom_javascript: कस्टम जावास्क्रिप्ट अभिव्यक्ति...
+      enter_custom: एक कस्टम मान दर्ज करें
+      existing_cols: मौजूदा पता कॉलम
+      existing_latlng_cols: मौजूदा अक्षांश और देशांतर कॉलम
+      find: खोजें
+      find_and_replace: मान को ढूँढें और बदलें...
+      import_from_multiple: <strong>एक से अधिक कॉलमों</strong> में से आयात करें
+      import_from_single: <strong>एकल कॉलम</strong> में से आयात करें
+      latitude: अक्षांश
+      location_source_col: स्थान स्रोत कॉलम
+      longitude: देशांतर
+      make_lower_case: छोटा अक्षर बनाएं
+      make_title_case: शीर्षक अक्षर बनाइए
+      make_upper_case: बड़ा अक्षर बनाइए
+      name_this_column: इस कॉलम को नाम दें
+      new_layer: (नई परत)
+      new_source_col: नया स्रोत कॉलम जोड़ें
+      new_transform: नया ट्रांसफोर्म जोड़ें
+      options: विकल्प
+      properly_formatted: आयात से पहले कॉलम <a href="%{formatting_link}" rel="external">उचित रूप से स्वरूपित</a> होना चाहिए।
+      regular_expression: नियमित अभिव्यक्ति
+      remove: हटाएं
+      replace: और उसे प्रतिस्थापित करें
+      state: राज्य
+      street: स्ट्रीट (गली)
+      then: इसके बाद
+      to_state_code: अवस्थाओं को 2-अक्षर कोड में रूपांतरित करें
+      transforms: ! 'आयात पर निम्न परिवर्तन को पूर्ण करें:'
+      zip: ज़िप
     import_pane:
-      analyzing: 
-      assure_accessible: 
-      combine_multiple_cols: 
-      downloading: 
-      filetype_error_blist: 
-      filetype_error_shapefile: 
-      headline_import: 
-      headline_upload: 
-      layer: 
-      many_headers: 
-      no_file_selected: 
-      no_headers: 
-      no_source_column: 
-      one_header: 
-      problem_importing: 
-      problem_uploading: 
-      rows_imported: 
-      try_again: 
-      unknown_error: 
-      uploading: 
+      analyzing: आपकी फ़ाइल का विश्लेषण करें...
+      assure_accessible: कृपया सुनिश्चित कीजिये कि आपकी फ़ाइल पहुँचने योग्य और वैध हो और दोबारा प्रयास करें।
+      combine_multiple_cols: (एकाधिक कॉलमों का संयोजन कीजिये...)
+      downloading: आपकी फ़ाइल डाउनलोड की जा रही है...
+      filetype_error_blist: कृपया सीएसवी (CSV), टीएसवी (TSV), एक्सएलएस (XLS), या एक्सएलएसएक्स (XLSX) फ़ाइल का चयन करें।
+      filetype_error_shapefile: कृपया केएमएल (KML), केएमज़ेड (KMZ), या ज़िप (ZIP) फ़ाइल का चयन करें।
+      headline_import: कृपया आयात करने के लिए एक फ़ाइल का चयन करें
+      headline_upload: कृपया अपलोड करने के लिए एक फ़ाइल का चयन करें
+      layer: परत
+      many_headers: आपकी %{num} पंक्तियां हेडर हैं।
+      no_file_selected: अभी तक कोई फाइल नहीं चुनी गई।
+      no_headers: आपकी कोई भी पंक्ति हेडर नहीं है।
+      no_source_column: (कोई स्रोत कॉलम नहीं)
+      one_header: आपकी एक पंक्ति हेडर है।
+      problem_importing: उस फ़ाइल को आयात करने में समस्या आई। कृपया सुनिश्चित करें कि यह मान्य है।
+      problem_uploading: उस फ़ाइल को अपलोड करने में समस्या आई। कृपया सुनिश्चित करें कि यह मान्य है।
+      rows_imported: अभी तक %{num} पंक्तियां आयात कर ली गई हैं।
+      try_again: ! 'कृपया कुछ देर में पुन: प्रयास करें।'
+      unknown_error: एक अज्ञात त्रुटि उत्पन्न हुई है
+      uploading: आपकी फ़ाइल अपलोड की जा रही है
     link_account:
       success: आपका बाह्य खाता संबंधित कर दिया गया है।
     profile:
@@ -1951,8 +2297,8 @@ hi:
               user_affected: कार्रवाई सीधे आपको प्रभावित कर रही है जैसे टिप्‍पणी पर उत्‍तर व स्थिति अद्यतन
               view_made_public: किसी भी व्‍यू को सार्वजनिक बनाया गया
             policy: ! '%{site} आपकी निजता का सम्‍मान करती है और इस सूची के जरिए आपको कभी मार्केटिंग ईमेल नहीं भेजेगी, या आपका ईमेल तीसरे पक्ष को नहीं देगी। इस साइट से भेजे गये ईमेल में खाता सूचना व उस डेटासेट के अद्यतन शामिल होते हैं जिसे आपने बनाया है या जिसकी सदस्‍यता ली है।'
-            send_error: 
-            send_success: 
+            send_error: आपकी मेल भेजने में एक समस्या थी। कृपया बाद में फिर से प्रयास करें।
+            send_success: आपका संदेश भेज दिया गया है।
             subtitle: सहयोगी बॉक्‍स को देखकर पृथक आयोजनों की सदस्‍यता लें।
             title: ईमेल सूचना
           learn_openid: OpenID के बारे में जानें
@@ -2040,7 +2386,7 @@ hi:
         edit_image_link: छवित संपादित करें
         followers: फॉलोअर्स
         following: फॉलो कर रहे हैं
-        hide_contacts_link: 
+        hide_contacts_link: छिपाएं
     reset_password:
       failed: आपके पासवर्ड को रीसेट करते समय समस्या आई। कृपया फिर से कोशिश करें।
       form:
@@ -2068,61 +2414,82 @@ hi:
       third_party_return_create: सोक्राटा खाता बनाना चाहिए
       third_party_return_link: वर्तमान सोक्राटा आईडी से इसे जोड़ें
     stats:
-      api: 
-      apply: 
-      bytes_out: 
-      chart_created: 
-      charts: 
-      charts_created: 
-      comment_created: 
-      comments: 
-      comments_created: 
-      daily: 
-      deleted_application: 
-      dependent_metrics: 
-      download: 
-      downloads: 
-      during_time_period: 
-      embed: 
-      embeds: 
-      error_loading: 
-      filter_created: 
-      filters: 
-      filters_created: 
-      govstat_hits: 
-      hit_served: 
-      hits_served: 
-      hourly: 
-      map_created: 
-      maps: 
-      maps_created: 
-      metric_backed: 
-      metrics_backed: 
-      monthly: 
-      name: 
-      no_data_time_period: 
-      page_viewed: 
-      pages_viewed: 
-      referrals: 
-      rows_loaded: 
-      sdp: 
-      select_chart_type: 
-      show_more: 
-      time_period_unavailable: 
-      title: 
-      top_embeds: 
-      top_referrers: 
-      total: 
-      total_govstat_hits: 
-      views: 
-      views_loaded: 
-      website: 
-      weekly: 
+      api: एपीआई (API)
+      apply: लागू करें
+      bytes_out: बाइट्स बाहर
+      chart_created: चार्ट बनाया गया
+      charts: चार्ट्स
+      charts_created: चार्ट बनाये गये
+      comment_created: टिप्पणी बनाई गई
+      comments: टिप्पणियां
+      comments_created: टिप्पणियां बनाई गईं
+      daily: प्रतिदिन
+      deleted_application: हटाई गई एप्लिकेशन
+      dependent_metrics: निर्भर मीट्रिक्स
+      download: डाउनलोड
+      downloads: डाउनलोड
+      during_time_period: इस समय अवधि के दौरान
+      embed: अंतःस्थापित
+      embeds: अंतःस्थापित
+      error_loading: मीट्रिक डेटा लोड करते समय त्रुटि आई। कृपया बाद में फिर से प्रयास करें
+      filter_created: फिल्टर बनाया गया
+      filters: फ़िल्टर
+      filters_created: फिल्टर बनाये गये
+      govstat_hits: गोवस्टैट हिट्स
+      hit_served: हिट पूरा हुआ
+      hits_served: हिट पूरे हुए
+      hourly: प्रति घंटा
+      map_created: मानचित्र बनाया गया
+      maps: मानचित्र
+      maps_created: मानचित्र बनाये गये
+      metric_backed: मीट्रिक समर्थित
+      metrics_backed: मीट्रिक्स समर्थित
+      monthly: मासिक
+      name: नाम
+      no_data_time_period: इस समय अवधि के लिए कोई डेटा नहीं
+      page_viewed: पृष्ठ देखा गया
+      pages_viewed: पृष्ठ देखे गये
+      referrals: रेफ़रल
+      rows_loaded: पंक्तियाँ लोड की गईं
+      sdp: एसडीपी
+      select_chart_type: मेनू से प्रदर्शित करने के लिए एक चार्ट प्रकार का चयन करें
+      show_more: और दिखाएं
+      time_period_unavailable: इस समय अवधि के लिए मीट्रिक डेटा उपलब्ध नहीं है
+      title: डेटासेट विश्लेषिकी
+      top_embeds: शीर्ष अंतःस्थापित
+      top_referrers: शीर्ष सन्दर्भदाता
+      total: कुल योग
+      total_govstat_hits: कुल गोवस्टैट हिट्स
+      views: दर्शन
+      views_loaded: दर्शन लोड किये गये
+      website: वेबसाइट
+      weekly: साप्ताहिक
+    thumbnail:
+      discard_changes: परिवर्तनों को छोड़ें
+      edit_thumbnail: ! '%{name} के लिए थंबनेल का संपादन करें'
+      error_blob: इस अंतःस्थापित फ़ाइल का थंबनेल नहीं बनाया जा सकता है क्योंकि इसे ब्राउज़र में नहीं दिखाया जा सकता है
+      error_generic: आपका थंबनेल सहेजने में एक समस्या थी। कृपया बाद में फिर से प्रयास करें।
+      error_invalid: यह दृश्य अवैध है और अपनी वर्तमान स्थिति में इसे थंबनेल नहीं बनाया जा सकता है
+      error_private: आपकी गोपनीयता के लिए, केवल सार्वजनिक डेटासेट को थंबनेल किया जा सकता है। यदि आप पूर्वावलोकन छवि चाहते हैं, तो कृपया प्रबंधन साइडबार की अनुमतियां फलक से इस डेटासेट को सार्वजनिक करें।
+      error_processing: आपके थंबनेल अनुरोध को संसाधित करने में एक त्रुटि हुई थी। कृपया बाद में फिर से प्रयास करें
+      full_image: पूर्ण छवि
+      please_wait: अभी तक इस डेटासेट के लिए कोई थंबनेल उपलब्ध नहीं है। कृपया प्रतीक्षा कीजिये जब तक हम आपके लिए बना नहीं देते।
+      preview: पूर्वावलोकन
+      refresh_thumbnail: थंबनेल ताज़ा करें
+      return_to_dataset: डेटासेट पर वापस लौटें
+      save_thumbnail: थंबनेल सहेजें
+      success: थंबनेल सहेजा गया
+      title: थंबनेल डेटासेट
+      unsaved: सहेजा नहीं गया
+    widget:
+      create_new:
+        name: नया टेम्पलेट नाम
+        title: एक नया टेम्पलेट बनाएं
     wizard:
-      cancel: 
-      finish: 
-      next: 
-      previous: 
+      cancel: रद्द करें
+      finish: समाप्त करें
+      next: अगला
+      previous: पिछला
   support:
     array:
       last_word_connector: ! ', और'

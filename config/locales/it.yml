@@ -616,6 +616,7 @@ it:
     interstitial:
       leaving_explanation_html: Questo <span class="datasetType">dataset</span> è ospitato da <a href="#" rel="external" class="externalDomain">un altro sito</a>.
       leaving_notice_html: Stai lasciando <span class="serverName">%{site_name}</span>
+    maintenance_notice: Questo sito con tecnologia Socrata può risultare non disponibile per manutenzione ordinaria dal %{start} al %{finish}.
     map_layers:
       aerial: Aerial
       bing_aerial: Bing Aerial
@@ -744,7 +745,11 @@ it:
         tweet_contents: ! 'Controlla %{dataset} su %{company}: %{url}'
         twitter: Condividi su Twitter
     configurator:
+      actions_components: Azioni
       advanced_components: Componenti Avanzati
+      content_components: Contenuto
+      data_components: Dati
+      input_components: Input
       report_components: Rapporto sui Componenti
     context_picker:
       select_dataset: Seleziona il set di Dati
@@ -1032,6 +1037,15 @@ it:
       visits: Visite
       your: La tua valutazione
     admin:
+      datasets:
+        layout_config: Configurazione del layout
+        left: Sinistra
+        right: Destra
+        saved: Salvato
+        saving: Salvataggio
+        sidebar_position: Posizione barra laterale
+        title: Dataset
+        unpublished_datasets: Dataset non pubblicato
       federation:
         accept: Accetto
         accepted: Accettato
@@ -1061,6 +1075,51 @@ it:
         target_domain: Dominio target
         terminate: Cessa
         title: Apri i dati della Federazione
+      home:
+        add_featured_dataset: Aggiungi un nuovo dataset importante
+        are_you_sure: Sei sicuro? Questa azione non può essere annullata.
+        catalog_layout_configuration: Configurazione layout in catalogo
+        choose_a_dataset: Scegli un dataset da mettere in risalto
+        compact_list: Elenco compatto
+        contents: Indice
+        create_new_story: Crea un nuovo racconto
+        custom_image: Immagine cliente
+        customize_now: Personalizza ora
+        customize_story_appearance: Personalizza l'aspetto del racconto
+        dataset_display_limit: Solo quattro dataset alla volta possono essere messi in risalto
+        date_published: Data pubblicata
+        default_catalog_layout: Layout in catalogo di default
+        delete: Cancella
+        down: Giù
+        edit: Modifica
+        feature_image: fai risaltare l'immagine
+        filetype_error: Tipo file non valido. Scegli un file immagine
+        flashes:
+          create_error: ! 'Un errore si è verificato durante la tua richiesta: %{error_message}'
+          delete_error: Il racconto che hai provato a cancellare non esiste.
+          edit_error: Il racconto che hai provato a modificare non esiste.
+          edit_success: Il tuo racconto è stato salvato
+          move_error: Il racconto che hai provato a spostare non esiste.
+          move_success: Il tuo racconto è stato salvato
+        image: Immagine
+        left: Sinistra
+        manage_featured_dataset: Gestisci il dataset in risalto
+        manage_story_content: Gestisci il contenuto del racconto
+        move_left: Sposta a sinistra
+        move_right: Sposta a destra
+        remove: Rimuovi
+        rich_list: Elenco completo
+        right: Destra
+        save_now: Salva adesso
+        saved: Salvato
+        saved1: Salvato.
+        saving: Salvataggio
+        saving1: Salvataggio in corso...
+        set_a_thumbnail: Inserisci una miniatura
+        text: Testo
+        thumbnail: Miniatura
+        title: Gestisci la Home page
+        up: Su
       metadata:
         add_new_category: Aggiungi nuova Categoria
         add_new_field: Aggiungi nuovo Campo
@@ -1737,7 +1796,7 @@ it:
             title: Opzioni URL
           validation:
             published: Si prega di creare una copia di lavoro o una vista del dataset per modificare le proprietà delle colonne
-            unsaved: Nono puoi modificare le proprietà di una colonna per una vista non salvata
+            unsaved: Non puoi modificare le proprietà di una colonna per una vista non salvata
         conditional_formatting:
           change_icon: modifica
           conditions:

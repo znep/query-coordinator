@@ -887,8 +887,15 @@ b
     position: relative
     @include transition(0.4s, min-height)
 
+    &.accessDenied
+      .vizContainer
+        background: url(/images/hatchpattern.png)
+      .privateDatasetWarning
+        display: block
+
     .vizContainer
       height: 35em
+
 
       .fullHeight
         height: 100%
@@ -901,6 +908,15 @@ b
 
           > .divider
             display: none
+
+    .privateDatasetWarning
+      display: none
+      color: #ee3333
+      float: left
+      font-size: 1.2em
+      padding: 0.4em 0
+      &:before
+        margin-right: 0.2em
 
     .exploreLink
       padding: 0.4em 0
@@ -941,6 +957,9 @@ b
 
     .vizContainer
       @include transition(0.3s, filter)
+
+    .privateDatasetWarning
+      display: block
 
     &.uninitialized
       .vizContainer

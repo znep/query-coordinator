@@ -174,6 +174,9 @@ class CustomContentController < ApplicationController
       # suppress govstat chrome on homepage
       @suppress_govstat = true if full_path == '/'
 
+      # suppress govstat chrome for anonymous users
+      @suppress_govstat = true if @current_user.nil?
+
       # suppress govstat chrome for selected urls
       config = CurrentDomain.configuration('gov_stat')
       suppress_govstat = config.nil? ? nil : config.properties.suppress_govstat

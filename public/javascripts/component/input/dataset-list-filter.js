@@ -439,7 +439,7 @@ var interactiveSetup = function()
 
 var setUpCutoff = function(cObj)
 {
-    var cutoff = catConfig.properties.facet_cutoffs[cObj._facet.catalogKey] || 5;
+    var cutoff = $.deepGet(catConfig, 'properties', 'facet_cutoffs', cObj._facet.catalogKey) || 5;
     cObj.$listSection.children('li').slice(cutoff + 1).addClass('cutoff');
     if (cObj._facet.useModal)
     {

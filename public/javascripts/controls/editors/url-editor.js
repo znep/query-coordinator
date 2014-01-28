@@ -63,7 +63,7 @@
             if (!$.isBlank(curVal) && $.subKeyDefined(this.format, 'baseUrl'))
             { curVal = this.format.baseUrl + curVal; }
             return curVal === null ||
-                curVal.match(/^(mailto\:|(news|(ht|f)tp(s?))\:\/\/)?[a-zA-Z0-9\-\.]+\.([a-zA-Z]{2,}|[0-9]+)(\:\d+)?(\/\S*)?$/i);
+                curVal.match(/^(mailto\:|(news|(ht|f)tp(s?))\:\/\/)?[a-zA-Z0-9\-\.]+\.([a-zA-Z]{2,}|[0-9]+)(\:\d+)?(\/?\S*)?$/i);
         },
 
         urlValue: function()

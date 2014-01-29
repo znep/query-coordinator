@@ -139,7 +139,7 @@ protected
           facet.options = facet.extra_options.slice!(0..(custom_chop - 1))
         end
       end
-      facet.to_hash.deep_symbolize_keys
+      facet.with_indifferent_access
     end
   end
 
@@ -334,7 +334,7 @@ protected
 
     browse_options[:title] ||= get_title(browse_options, browse_options[:facets])
 
-    return browse_options
+    return browse_options.with_indifferent_access
   end
 
 private

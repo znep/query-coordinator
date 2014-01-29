@@ -62,6 +62,7 @@
             var curVal = this.urlValue();
             if (!$.isBlank(curVal) && $.subKeyDefined(this.format, 'baseUrl'))
             { curVal = this.format.baseUrl + curVal; }
+            // This regex needs to be the same as the value in the core server.
             return curVal === null ||
                 curVal.match(/^(mailto\:|(news|(ht|f)tp(s?))\:\/\/)?[a-zA-Z0-9\-\.]+\.([a-zA-Z]{2,}|[0-9]+)(\:\d+)?(\/?\S*)?$/i);
         },

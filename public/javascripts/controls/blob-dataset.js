@@ -54,8 +54,8 @@
                 if (!$.isBlank(blob) && _.include(GOOGLE_VIEWER_TYPES, blob.type))
                 {
                     var embedHtml;
-                    if (blob.type.indexOf('application/pdf')
-                        !== -1 && $.browser.msie)
+                    if ($.urlParam(window.location.href, 'force_gviewer') != 'true'
+                        && blob.type.indexOf('application/pdf') !== -1 && $.browser.msie)
                     {
                         embedHtml = '<embed src="' + blob.href +
                             '" type="application/pdf" ' +

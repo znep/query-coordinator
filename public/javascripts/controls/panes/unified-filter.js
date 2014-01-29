@@ -2509,8 +2509,10 @@
                                cleanFilter($.extend(true, {}, rootCondition))))
                 {
                     // add in the base root condition too.
-                    datasetConditions[ufDS.ufID].children
-                        = datasetConditions[ufDS.ufID].children.concat(baseRootCondition.children);
+                    if (_.isArray(datasetConditions[ufDS.ufID].children)
+                        && baseRootCondition && _.isArray(baseRootCondition.children))
+                    { datasetConditions[ufDS.ufID].children
+                        = datasetConditions[ufDS.ufID].children.concat(baseRootCondition.children); }
 
                     // fire it off
                     ds.update({ query: datasetQueries[ufDS.ufID] });

@@ -53,11 +53,13 @@
 
                 if (!$.isBlank(blob) && _.include(GOOGLE_VIEWER_TYPES, blob.type))
                 {
-                    var embedHtml;
-                    if ($.urlParam(window.location.href, 'force_gviewer') != 'true'
-                        && blob.type.indexOf('application/pdf') !== -1 && $.browser.msie)
+                    var embedHtml,
+                        gviewer_url = '//docs.google.com/gview?url='
+                            + ds._generateBaseUrl() + blob.href;
+                    if (blob.type.indexOf('application/pdf') !== -1 && $.browser.msie)
                     {
-                        embedHtml = '<embed src="' + blob.href +
+                        embedHtml = '<div class="externalLink flash notice">Trouble viewing the document? Try using the <a href="' + gviewer_url + '" target="_blank">Google Document Viewer</a>.</div>';
+                        embedHtml += '<embed src="' + blob.href +
                             '" type="application/pdf" ' +
                             'width="100%" height="99%"></embed>';
                         // Overlays & embeds don't mix
@@ -69,7 +71,7 @@
                     else
                     {
                         embedHtml = '<iframe id="blobIFrame" ' +
-                            'src="//docs.google.com/gview?url=' + ds._generateBaseUrl() + blob.href +
+                            'src="' + gviewer_url +
                             '&embedded=true" width="100%" height="99%" ' +
                             'frameborder="0" scrolling="no"></iframe>';
                     }

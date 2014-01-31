@@ -334,7 +334,7 @@ protected
 
     browse_options[:title] ||= get_title(browse_options, browse_options[:facets])
 
-    return browse_options.with_indifferent_access
+    return browse_options
   end
 
 private

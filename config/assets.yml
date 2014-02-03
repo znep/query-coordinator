@@ -227,7 +227,6 @@ javascripts:
     - public/javascripts/controls/panes/map-config.js
   shared-chart:
     - public/javascripts/controls/panes/new-chart-config.js
-    - public/javascripts/controls/panes/chart-config.js
     - public/javascripts/controls/base-visualization.js
     - public/javascripts/controls/rich-render-library.js
     - public/javascripts/controls/charts/base-chart.js
@@ -440,8 +439,6 @@ javascripts:
     - public/javascripts/controls/panes/calendar-create.js
     - public/javascripts/controls/panes/cell-feed.js
     - public/javascripts/controls/panes/new-chart-config.js
-    - public/javascripts/controls/panes/chart-config.js
-    - public/javascripts/controls/panes/chart-create.js
     - public/javascripts/controls/panes/column-order.js
     - public/javascripts/controls/panes/column-properties.js
     - public/javascripts/controls/panes/conditional-formatting.js

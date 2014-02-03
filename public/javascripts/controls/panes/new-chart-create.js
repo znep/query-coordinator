@@ -322,9 +322,7 @@
         return _.include(cpObj._view.metadata.availableDisplayTypes, 'chart');
     };
 
-    var forceOldVisualize = $.urlParam(window.location.href, 'visualize') == 'old' || blist.configuration.oldChartConfigForced;
-    var isNewVisualize = $.urlParam(window.location.href, 'visualize') == 'nextgen' || (blist.configuration.newChartConfig && !forceOldVisualize);
-    if (!blist.sidebarHidden.visualize.new_chart_create && isNewVisualize) {
+    if (!blist.sidebarHidden.visualize.new_chart_create) {
         $.gridSidebar.registerConfig('visualize.new_chart_create', 'pane_new_chart_create', 0);
     }
 

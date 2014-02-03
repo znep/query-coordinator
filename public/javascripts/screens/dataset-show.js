@@ -742,6 +742,12 @@ $(function()
         });
     }
 
+    var forceOldVisualize = $.urlParam(window.location.href, 'visualize') == 'old' || blist.configuration.oldChartConfigForced;
+    var isNewVisualize = $.urlParam(window.location.href, 'visualize') == 'nextgen' || (blist.configuration.newChartConfig && !forceOldVisualize);
+    if(isNewVisualize){
+       $('a.new_visualize').closest('li').show();
+    }
+
     // Data calls
     _.defer(function()
     {

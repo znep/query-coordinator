@@ -2,6 +2,10 @@
 {
     var uniformEnabled = function() { return !$.browser.msie || $.browser.majorVersion > 7; };
     
+    //Flag for new visualize tab
+    var forceOldVisualize = $.urlParam(window.location.href, 'visualize') == 'old' || blist.configuration.oldChartConfigForced;
+    var isNewVisualize = $.urlParam(window.location.href, 'visualize') == 'nextgen' || (blist.configuration.newChartConfig && !forceOldVisualize);
+    
     $.validator.addMethod('data-notEqualTo', function(value, element, param)
     {
         if (this.optional(element)) { return true; }
@@ -1262,9 +1266,14 @@
             var tcId = c.tableColumnId;
             var fName = c.fieldName;
             var selected;
-
             //in new Visualize do not autopopulate coloumns with only one valid column 
-            selected = curVal == fName || curVal == tcId || curVal == cId;
+            if (isNewVisualize)
+            { selected = curVal == fName || curVal == tcId || curVal == cId; }
+            else
+            {
+                selected = curVal == fName || curVal == tcId || curVal == cId ||
+                    (cols.length == 1 && !columnsObj.noDefault && $.isBlank(curVal));
+            };
 
             options.push({tagName: 'option', value: c[columnIdField],
                 selected: selected,

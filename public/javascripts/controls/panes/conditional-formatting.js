@@ -337,8 +337,19 @@
 
     }, {name: 'conditionalFormatting'}, 'controlPane');
 
-    if (!blist.sidebarHidden.filter.conditionalFormatting)
+
+    var forceOldVisualize = $.urlParam(window.location.href, 'visualize') == 'old' || blist.configuration.oldChartConfigForced;
+    var isNewVisualize = $.urlParam(window.location.href, 'visualize') == 'nextgen' || (blist.configuration.newChartConfig && !forceOldVisualize);
+    if (!isNewVisualize)
+    { 
+        if ($.isBlank(blist.sidebarHidden.visualize) ||
+            !blist.sidebarHidden.visualize.conditionalFormatting)
+        { $.gridSidebar.registerConfig('visualize.conditionalFormatting', 'pane_conditionalFormatting', 10); }
+    } 
+    else 
     {
-        $.gridSidebar.registerConfig('filter.conditionalFormatting', 'pane_conditionalFormatting', 10); }
+        if (($.isBlank(blist.sidebarHidden.new_visualize) || !blist.sidebarHidden.filter.conditionalFormatting) && isNewVisualize)
+        { $.gridSidebar.registerConfig('filter.conditionalFormatting', 'pane_conditionalFormatting', 10); }
+    }
 
 })(jQuery);

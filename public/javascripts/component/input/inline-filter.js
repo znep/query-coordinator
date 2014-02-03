@@ -69,6 +69,7 @@ var renderUpdate = function()
 
     var opts = {};
     var cf = this._stringSubstitute(this._properties.columnFilter);
+    var hideBase = _.isUndefined(this._properties.hideBase) ? true : this._properties.hideBase;
     var addCondition = function(tcIds)
     {
         if ($.isBlank(opts.rootCondition))
@@ -79,6 +80,7 @@ var renderUpdate = function()
                 children: [],
                 metadata: {
                     advanced: false,
+                    hideBase: hideBase,
                     unifiedVersion: 2
                 }
             };

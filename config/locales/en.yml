@@ -1477,7 +1477,7 @@ en:
           intro_html: The <strong>Socrata Open Data API</strong> (SODA) allows software developers to access data hosted in Socrata data sites programmatically. Developers can create applications that use the SODA APIs to visualize and &ldquo;mash-up&rdquo; Socrata datasets in new and exciting ways. Create an iPhone application that visualizes government spending in your area, a web application that allows citizens to look up potential government benefits they'd overlooked, or a service that automatically emails you when new earmarks are added to bills that you wish to track.
           reference_html: To start accessing this dataset programmatically, use the API endpoint provided below. For more information and examples on how to use the Socrata Open Data API, reference our <a href="http://dev.socrata.com" rel="external">Developer Documentation</a>.
           subtitle: Access this %{view_type} via SODA
-          title: API
+          title: SODA API
         apis:
           create_button: Create an API
           create_button_prompt: Create an Application Programming Interface (API) to grant programmatic access to this data.

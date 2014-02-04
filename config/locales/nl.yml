@@ -1491,7 +1491,7 @@ nl:
           intro_html: Met de <strong>Socrata Open Data API</strong> (SODA) kunnen software-ontwikkelaars toegang krijgen tot de gegevens gehost in Socrata datasites op programmabasis. Ontwikkelaars kunnen applicaties aanmaken die de SODA API's gebruiken om "mash-up" Socrata datasets op nieuwe en spannende manieren te visualiseren en te creëren. Maak een iPhone-applicatie die de overheidsuitgaven in uw omgeving weergeven, een webapplicatie waarmee burgers potentiële overheidssubsidies die ze over het hoofd gezien kunnen opzoeken, of een service die automatisch e-mails stuurt wanneer nieuwe oormerken worden toegevoegd aan facturen die u wilt volgen.
           reference_html: Om programmatisch te beginnen met het bezoeken van deze dataset, gebruikt u het API-eindpunt hieronder. Voor meer informatie en voorbeelden over hoe de Socrata Open Data API kunt gebruiken, verwijzen we u naar onze <a href="http://dev.socrata.com" rel="external">ontwikkelaarsdocumentatie</a>.
           subtitle: Krijg toegang tot %{view_type} via SODA
-          title: API
+          title: SODA API
         apis:
           create_button: Een API creëren
           create_button_prompt: Maak een Application Programming Interface (API) aan om programmatische toegang tot deze gegevens te verlenen.

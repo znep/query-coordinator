@@ -1474,7 +1474,7 @@ zh:
           intro_html: 借助<strong>Socrata 开放数据 API</strong> (SODA)，软件开发人员可以访问Socrata 数据网站上托管的数据，并对其进行编程操作。开发人员可创建使用SODA API的应用程序，用新鲜有趣的方式可视化、“混搭” Socrata数据集。您可以编制一个iPhone应用，可视化您所在地区的政府支出；开发一个网络应用程序，协助公民查看他们可能忽视了的政府福利；或者创建一项服务，一旦您想跟踪的支出项目又有新花销，就会收到自动的电子邮件通知。
           reference_html: 使用下面提供的API端点，开始访问数据库，进行编程。更多有关如何使用Socrata 开放数据 API的信息及示例，请参考<a href="http://dev.socrata.com" rel="external">开发人员文档</a>。
           subtitle: 通过SODA访问%{view_type}
-          title: API
+          title: SODA API
         apis:
           create_button: 创建API
           create_button_prompt: 创建API，以便对数据进行编程操作。

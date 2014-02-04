@@ -1484,7 +1484,7 @@ es:
           intro_html: La <strong> API de datos de libre acceso de Socrata</strong> (SODA) permite a los programadores acceder a los datos guardados sistemáticamente en los sitios de Socrata. Los programadores pueden crear aplicaciones que usen las API SODA para visualizar  y mezclar los conjuntos de datos de Socrata en nuevas e interesantes formas. Por ejemplo, crear una aplicación para iPhone que muestre el gasto del Gobierno en su área, una aplicación web que permita a los ciudadanos saber sobre potenciales beneficios del Gobierno que ellos desconozcan, o un servicio que automáticamente le envíe correos electrónicos cuando se agregan nuevos detalles a las cuentas que usted desea observar.
           reference_html: Para acceder sistemáticamente a este conjunto de datos, usar el parámetro de la API provista abajo. Para más información y ejemplos de cómo emplear la API de datos de libre acceso de Socrata, revisar nuestra <a href="http://dev.socrata.com" rel="external"> documentación para programadores</a>.
           subtitle: Acceder a %{view_type} vía SODA
-          title: API
+          title: SODA API
         apis:
           create_button: Crear una API
           create_button_prompt: Crear una Interfaz de programación de aplicaciones (API) para dar acceso sistemático a estos datos.

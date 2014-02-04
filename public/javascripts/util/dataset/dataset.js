@@ -1800,7 +1800,7 @@ var Dataset = ServerModel.extend({
             var newFilters = [];
             _.each(ds.query.namedFilters, function(nf)
             {
-                if (excludeTemporary && nf.temporary) { return; }
+                if (_.isEmpty(nf) || excludeTemporary && nf.temporary) { return; }
                 // Named filter keys off of main type; so just check displayType and
                 // not renderTypeConfig.visible
                 if (!$.isBlank(nf.displayTypes) &&

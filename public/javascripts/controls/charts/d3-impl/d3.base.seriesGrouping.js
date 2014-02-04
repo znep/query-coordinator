@@ -966,7 +966,7 @@ d3base.seriesGrouping = {
                 var repGroup = Math.floor(colIndex / displayFormatColors.length);
                 var baseIndex = colIndex - (repGroup * displayFormatColors.length);
 
-                seedColor = vizObj._rotateHueDegrees(displayFormatColors[baseIndex], repGroup*colorRotateAmount);
+                seedColor = $.rotateHex(displayFormatColors[baseIndex], repGroup*colorRotateAmount);
             }
 
             sg.valueColumnColors[lookup] = { seed: seedColor, current: seedColor };

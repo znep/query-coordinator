@@ -441,13 +441,20 @@
                         return true;
                     });
 
+                    var rotatedHue = function(i)
+                    {
+                        var degrees = 24 * Math.floor(i / defaultColors.length);
+                        return $.rotateHex(defaultColors[i % defaultColors.length], degrees);
+                    };
                     //MAKE HIDDEN INPUT TO HANDLE CHANGE
 
                     var cols = {tagName: 'div', contents: []};
                     _.each(val, function(col, i) {
 
-                        var valueCols = options.view.displayFormat.valueColumns;
-                        var assignedColor = (valueCols && valueCols[i] ? valueCols[i].color : null) || defaultColors[i] || '#FF0000';
+                        var assignedColor = $.deepGetStringField(options,
+                            'view.displayFormat.valueColumns.' + i + '.color')
+                            || defaultColors[i] || rotatedHue(i);
+
                         var thisCol = options.view.columnForIdentifier(col);
 
                         var readableName = thisCol ? $.htmlEscape(thisCol.name) : '';

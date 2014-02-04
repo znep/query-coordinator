@@ -151,15 +151,6 @@ $.Control.registerMixin('d3_base', {
         return color;
     },
 
-    _rotateHueDegrees: function(color, rotateDegrees)
-    {
-        var newBaseHsv = $.rgbToHsv($.hexToRgb(color));
-        var h = newBaseHsv.h + rotateDegrees;
-        h += Math.ceil(-h/360) * 360;
-        newBaseHsv.h = h%360;
-        return '#'+$.rgbToHex($.hsvToRgb(newBaseHsv));
-    },
-
     _d3_colorizeRow: function(colDef, colIdentFinder)
     {
         var vizObj = this;

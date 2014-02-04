@@ -147,6 +147,18 @@ $.rgbTosRGB = function(rgb){
     return rgb;
 };
 
+$.rotateHue = function(hsv, degrees)
+{
+    var h = hsv.h + degrees;
+    h += Math.ceil(-h/360) * 360;
+    hsv.h = h%360;
+    return hsv;
+};
+$.rotateRgb = function(rgb, degrees)
+{ return $.hsvToRgb($.rotateHue($.rgbToHsv(rgb), degrees)); };
+$.rotateHex = function(hex, degrees)
+{ return '#' + $.rgbToHex($.rotateRgb($.hexToRgb(hex), degrees)); };
+
 // As defined in WCAG 2.0, §1.4.3, 1.4.6.
 // Level AA >= 4.5; Level AAA >= 7.
 $.colorContrast = function(hex_colors)

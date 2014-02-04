@@ -2095,7 +2095,7 @@ $.Control.registerMixin('d3_impl_pie', {
                     var repGroup = Math.floor(d.index / colors.length);
                     var baseIndex = d.index - (repGroup * colors.length);
 
-                    color = vizObj._rotateHueDegrees(colors[baseIndex], -repGroup*24);
+                    color = $.rotateHex(colors[baseIndex], -repGroup*24);
                 }
                 else
                 {
@@ -2115,7 +2115,7 @@ $.Control.registerMixin('d3_impl_pie', {
             if (d)
             {
                 var baseColorIndex = d.index % fallbackColors.length;
-                color = vizObj._rotateHueDegrees(fallbackColors[baseColorIndex], 8*(d.index - baseColorIndex));
+                color = $.rotateHex(fallbackColors[baseColorIndex], 8*(d.index - baseColorIndex));
             }
             else
             {

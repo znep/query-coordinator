@@ -84,8 +84,18 @@
             if (newHref === null && newDesc === null) { return null; }
 
             var ret = {};
-            ret[this.type.subColumns.url.name] = newHref;
-            ret[this.type.subColumns.description.name] = newDesc;
+            if (_.isUndefined(this.type.subColumns))
+            {
+                if (this.type.name == 'url')
+                { ret[this.type.name] = newHref; }
+                else if (this.type.name == 'description')
+                { ret[this.type.name] = newDesc; }
+            }
+            else
+            {
+                ret[this.type.subColumns.url.name] = newHref;
+                ret[this.type.subColumns.description.name] = newDesc;
+            }
             return ret;
         },
 

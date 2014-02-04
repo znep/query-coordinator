@@ -760,7 +760,7 @@
                 '.subcolumnName@class+': function()
                     {
                         return (!$.isBlank(column.renderType.subColumns) &&
-                            column.renderType.subColumns.length > 0) ? '' : 'hide';
+                            _.size(column.renderType.subColumns) > 0) ? '' : 'hide';
                     },
                 '.operator': function()
                     { return getOperatorName(column, metadata.subcolumn, metadata.operator); }
@@ -847,7 +847,7 @@
                 '.columnInfo@title': 'column.description!',
                 '.subcolumnName': function() { return (((column.renderType.subColumns || {})
                         [metadata.subcolumn] || {}).title || '').toLowerCase(); },
-                '.subcolumnName@class+': function() { return (!$.isBlank(column.renderType.subColumns) && column.renderType.subColumns.length > 0) ? '' : 'hide' },
+                '.subcolumnName@class+': function() { return (!$.isBlank(column.renderType.subColumns) && _.size(column.renderType.subColumns) > 0) ? '' : 'hide' },
                 '.operator': function()
                     { return getOperatorName(column, metadata.subcolumn, metadata.operator); }
             });

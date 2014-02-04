@@ -1439,6 +1439,7 @@ es:
           queued: Está en espera para ser procesado (queued %{time}; %{totalQueued} total in line)
         edit_dataset_button: Editar conjunto de datos
         error_publishing_html: Hubo un error al crear una copia de trabajo de su conjunto de datos. Por favor, <a href="http://support.socrata.com" rel="external">contacte al área de apoyo de Socrata </a>.
+        error_publishing_unpublished: 
         needs_copy: Este conjunto de datos está publicado y no se puede editar directamente. Una copia de trabajo %{status}  le permite realizar todos los cambios que desea antes de hacerlo público.
         needs_copy_status:
           available: está disponible
@@ -1947,6 +1948,12 @@ es:
             hidden_location_html: Usted puede <a href="#showLoc" title="Show a location column">mostrar una columna sin una localización visible</a>.
             location_column: Se requiere una columna de localización para crear un mapa.
             viz_limit: Una vista solo puede tener una visualización en ella
+        odata:
+          endpoint_action: 
+          intro_html1: 
+          intro_html2: 
+          subtitle: 
+          title: 
         ownership:
           error: Hubo un problema al intentar cambiar la propiedad. Por favor, trate de nuevo más tarde.
           me: ! 'Mí '

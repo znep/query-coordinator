@@ -454,6 +454,7 @@ javascripts:
     - public/javascripts/controls/panes/map-config.js
     - public/javascripts/controls/panes/map-create.js
     - public/javascripts/controls/panes/new-chart-create.js
+    - public/javascripts/controls/panes/odata.js
     - public/javascripts/controls/panes/permissions.js
     - public/javascripts/controls/panes/plagiarize-dataset.js
     - public/javascripts/controls/panes/print-dataset.js

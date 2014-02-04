@@ -1418,6 +1418,7 @@ fr:
           queued: En instance de traitement (queued %{time}; %{totalQueued} total in line)
         edit_dataset_button: Éditer la série
         error_publishing_html: Une erreur est intervenue dans la production d’une copie de travail de votre série de données. Veuillez <a href="http://support.socrata.com" rel="external">contacter le support technique Socrata</a>.
+        error_publishing_unpublished: 
         needs_copy: Cette série de données est publiée et ne peut être éditée directement. Une copie de travail %{status} est disponible pour vous permettre d’effectuer tous les changements souhaités avant de les rendre publics.
         needs_copy_status:
           available: est disponible
@@ -1926,6 +1927,12 @@ fr:
             hidden_location_html: Vous pouvez <a href="#showLoc" title="Show a location column">afficher une colonne emplacement masquée</a>.
             location_column: Une colonne emplacement est requise pour créer une carte.
             viz_limit: Une vue ne peut avoir qu’une visualisation correspondante
+        odata:
+          endpoint_action: 
+          intro_html1: 
+          intro_html2: 
+          subtitle: 
+          title: 
         ownership:
           error: Le changement de propriétaire a rencontré un problème. Veuillez réessayer ultérieurement.
           me: Moi

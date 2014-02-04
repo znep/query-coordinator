@@ -1431,6 +1431,7 @@ it:
           queued: In attesa di essere elaborata (in coda %{time}; %{totalQueued} totali in coda)
         edit_dataset_button: Modifica Dataset
         error_publishing_html: Si è verificato un errore durante la creazione della copia di lavoro del tuo dataset. Si prega di <a href="http://support.socrata.com" rel="external">contattare il supporto Socrata</a>.
+        error_publishing_unpublished: 
         needs_copy: Questo dataset è pubblicato e non può essere modificato direttamente. Una copia di lavoro %{status} che ti permette di effettuare le modifiche desiderate prima di renderle pubbliche.
         needs_copy_status:
           available: è disponibile
@@ -1939,6 +1940,12 @@ it:
             hidden_location_html: E' possibile <a href=
             location_column: E' richiesta una colonna di tipo location per creare una mappa.
             viz_limit: Una vista può avere solo una visualizzazione su di essa
+        odata:
+          endpoint_action: 
+          intro_html1: 
+          intro_html2: 
+          subtitle: 
+          title: 
         ownership:
           error: Si è verificato un problema durante il cambio di proprietà. Si prega di riprovare più tardi.
           me: Me

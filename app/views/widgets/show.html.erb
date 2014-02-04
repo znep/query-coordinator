@@ -75,6 +75,9 @@
     <div class="widgetContentSection widgetContent_api">
       <%= render(:partial => 'datasets/api_access') %>
     </div>
+    <div class="widgetContentSection widgetContent_odata">
+      <%= render(:partial => 'datasets/odata_access') %>
+    </div>
     <%- if @view.can_print? -%>
     <div class="widgetContentSection widgetContent_print">
       <%= form_tag("/views/INLINE/rows.pdf", :method => :post,

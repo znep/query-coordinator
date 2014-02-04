@@ -1437,6 +1437,7 @@ ru:
           queued: Находится в очереди на обработку (queued %{time}; %{totalQueued} total in line)
         edit_dataset_button: Редактировать массив данных
         error_publishing_html: При изготовлении рабочей копии вашего массива данных произошла ошибка. Обратитесь <a href="http://support.socrata.com" rel="external">в службу технической поддержки фирмы «Socrata»</a>.
+        error_publishing_unpublished: 
         needs_copy: Этот массив данных опубликован, в него нельзя вносить изменения.   %{status} , рабочая копия, в которую вы сможете вносить изменения, а затем сделать их доступными для других абонентов.
         needs_copy_status:
           available: Имеется
@@ -1955,6 +1956,12 @@ ru:
             hidden_location_html: Вы можете <a href="#showLoc" title="Show a location column">показать скрытый столбец с координатами</a>.
             location_column: Для создания карты требуется столбец с координатами.
             viz_limit: На изображении может быть только один элемент визуального представления
+        odata:
+          endpoint_action: 
+          intro_html1: 
+          intro_html2: 
+          subtitle: 
+          title: 
         ownership:
           error: При передаче прав владения возникла проблема. Попробуйте позже.
           me: Мне

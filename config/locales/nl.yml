@@ -1446,6 +1446,7 @@ nl:
           queued: Het staat in de rij te wachten om te worden verwerkt (wachtrij %{time}; %{totalQueued} totaal in de rij)
         edit_dataset_button: Dataset bewerken
         error_publishing_html: Er is een fout opgetreden bij het maken van een werkende kopie van uw dataset. Neem contact op met <a href="http://support.socrata.com" rel="external"> Socrata ondersteuning </a>.
+        error_publishing_unpublished: 
         needs_copy: Deze dataset is gepubliceerd en kan niet direct worden bewerkt. Een werkende kopie %{status} waarmee u alle gewenste wijzigingen aan kunt brengen voordat u ze openbaar maakt.
         needs_copy_status:
           available: is beschikbaar
@@ -1960,6 +1961,12 @@ nl:
             hidden_location_html: U kunt <a href="#showLoc" title="Show a location column">een verborgen locatiekolom tonen</a>.
             location_column: Een locatiekolom is nodig om een ​​kaart te maken.
             viz_limit: Een view mag er slechts een visualisatie op hebben
+        odata:
+          endpoint_action: 
+          intro_html1: 
+          intro_html2: 
+          subtitle: 
+          title: 
         ownership:
           error: Er was een probleem bij het veranderen van eigenaarschap. Probeer het later opnieuw.
           me: Me

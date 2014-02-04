@@ -1429,6 +1429,7 @@ zh:
           queued: 正在等待处理 (queued %{time}; %{totalQueued} total in line)
         edit_dataset_button: 编辑数据库
         error_publishing_html: 复制数据集工作副本时出错。请<a href="http://support.socrata.com" rel="external">联系 Socrata 支持人员</a>。
+        error_publishing_unpublished: 
         needs_copy: 此数据集已经发布，不能直接编辑。可以在工作副本上进行所需的改动，然后再对外公开，现在工作副本的状态是：%{status}
         needs_copy_status:
           available: 已存在
@@ -1937,6 +1938,12 @@ zh:
             hidden_location_html: 您可 <a href="#showLoc" title="Show a location column">显示隐藏的地点列</a>。
             location_column: 必须有地点列才能创建地图。
             viz_limit: 一个视图只能加载一种可视化操作
+        odata:
+          endpoint_action: 
+          intro_html1: 
+          intro_html2: 
+          subtitle: 
+          title: 
         ownership:
           error: 变更所有权时出错。请稍后再试。
           me: 我

@@ -1433,6 +1433,7 @@ ro:
           queued: Se află în coadă, aşteptând să fie procesat  (queued %{time}; %{totalQueued} total în coadă)
         edit_dataset_button: Editare set de date
         error_publishing_html: A survenit o eroare la realizarea unei copii funcţionale a setului dvs. de date. Vă rugăm <a href="http://support.socrata.com" rel="external">contactaţi echipa de suport tehnic Socrata</a>.
+        error_publishing_unpublished: 
         needs_copy: Acest set de date este publicat şi nu poate fi editat în mod direct. O copie funcţională %{status} care vă permite să realizaţi toate modificările dorite înainte de a le face disponibile public.
         needs_copy_status:
           available: este disponibilă
@@ -1941,6 +1942,12 @@ ro:
             hidden_location_html: Puteţi <a href="#showLoc" title="Show a location column">arăta o coloană de localizare ascunsă</a>.
             location_column: O coloană de localizare este necesară pentru a crea o hartă.
             viz_limit: O vizualizare poate avea o singură vedere în ea.
+        odata:
+          endpoint_action: 
+          intro_html1: 
+          intro_html2: 
+          subtitle: 
+          title: 
         ownership:
           error: A survent o problemă la modificarea dreptului de proprietate. Vă rugăm să încercaţi mai târziu.
           me: Eu

@@ -1940,6 +1940,12 @@ en:
             hidden_location_html: You can <a href="#showLoc" title="Show a location column">show a hidden location column</a>.
             location_column: A location column is required to create a map.
             viz_limit: A view may only have one visualization on it
+        odata:
+          endpoint_action: ! 'Copy this link:'
+          intro_html1: Create a spreadsheet in Microsoft Excel to analyze or visualize this dataset. By using an OData link, the data will be refreshable.
+          intro_html2: Use Microsoft Excel 2010, Microsoft Excel 2013 or Microsoft Power Query. Follow the instructions here, using <a href="%{doc_link}">Socrata's OData documentation</a>.
+          subtitle: Access this dataset via OData
+          title: OData
         ownership:
           error: There was a problem changing the ownership. Please try again later.
           me: Me

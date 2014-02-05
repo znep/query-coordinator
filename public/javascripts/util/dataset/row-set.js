@@ -1323,14 +1323,14 @@ function getSortKey(ob)
 function getGroupKey(gb)
 {
     if (_.isEmpty(gb)) { return ''; }
-    return '(' + _.map(gb, function(g)
+    return '(' + _.map(_.sortBy(gb, 'columnFieldName'), function(g)
                 { return g.columnFieldName + ':' + g.groupFunction; }).join('|') + ')';
 };
 
 function getSelectKey(selects)
 {
     if (_.isEmpty(selects)) { return ''; }
-    return '(' + _.map(selects, function(s)
+    return '(' + _.map(_.sortBy(selects, 'columnFieldName'), function(s)
                 { return s.columnFieldName + ':' + s.aggregate; }).join('|') + ')';
 };
 

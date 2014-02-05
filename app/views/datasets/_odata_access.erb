@@ -5,6 +5,6 @@
   </div>
   <h3><%= t('screens.ds.grid_sidebar.odata.endpoint_action') %></h3>
   <div class="odataEndpointWrapper">
-    <pre><%= "#{CurrentDomain.domain.protocol}://#{CurrentDomain.cname}#{CurrentDomain.domain.port}/OData.svc/#{@view.id}" %></pre>
+    <pre><%= "http://#{CurrentDomain.cname}#{CurrentDomain.domain.port}/OData.svc/#{@view.id}" %></pre>
   </div>
 </div>

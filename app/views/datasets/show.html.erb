@@ -367,6 +367,7 @@
     blist.sidebarHidden.exportSection.print = <%= !@view.can_print? || @view.newBackend == true %>;
     blist.sidebarHidden.exportSection.download = <%= (!@view.is_tabular? && !@view.is_geo?) || @view.is_form? %>;
     blist.sidebarHidden.exportSection.api = <%= !@view.is_tabular? %>;
+    blist.sidebarHidden.exportSection.odata = <%= !@view.is_tabular? %>;
     blist.sidebarHidden.exportSection.subscribe = <%= !@view.is_published? || !@view.is_tabular? ||
       @view.is_api? || @view.is_form? %>;
 

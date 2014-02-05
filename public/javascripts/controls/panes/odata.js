@@ -24,7 +24,7 @@
     }, {name: 'odata'}, 'controlPane');
 
     if ($.isBlank(blist.sidebarHidden.exportSection) || !blist.sidebarHidden.exportSection.odata)
-    { $.gridSidebar.registerConfig('export.odata', 'pane_odata', 10); }
+    { $.gridSidebar.registerConfig('export.odata', 'pane_odata', 9); }
 
 })(jQuery);
 

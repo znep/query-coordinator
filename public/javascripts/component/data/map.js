@@ -60,7 +60,8 @@ $.component.Component.extend('Map', 'data', {
                 '/1.5/js/dojo/dijit/themes/tundra/tundra.css',
                 {assets: 'render-images-bundle', hasImages: true},
                 {assets: 'display-map'},
-                {assets: 'rich-render-bundle'}]
+                {assets: 'rich-render-bundle'}],
+            translations: ['controls.map']
         };
     },
 

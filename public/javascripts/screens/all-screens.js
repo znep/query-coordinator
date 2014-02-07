@@ -76,6 +76,37 @@
         $('#siteHeader').addClass('loggedIn').find('.siteUserNav').addClass('loggedInNav');
     }
 
+    function oldBrowser()
+    {
+        return $.browser.ie && $.browser.majorVersion < 9 ||
+            $.browser.safari && $.browser.majorVersion < 4 ||
+            // Chrome & Firefox update regularly, so this is not technically current - 1
+            $.browser.chrome && $.browser.majorVersion < 28 ||
+            $.browser.mozilla && $.browser.majorVersion < 24;
+    };
+
+    if (window == window.top && !$.cookies.get('browser_ack') && oldBrowser())
+    {
+        $('#noticeContainer').append($.tag2({ _: 'div', id: 'browserSupportMessage',
+            className: 'flash error', contents: [
+                { _: 'a', href: '#', className: 'close', contents:
+                    { _: 'span', className: 'icon', contents: 'close' } },
+                { _: 'div', contents: $.t('core.browser_support.message_html',
+                    { chrome: $.tag2({ _: 'a', href: 'http://www.google.com/chrome', target: '_blank',
+                                         contents: $.t('core.browser_support.chrome') }, false),
+                    internet_explorer: $.tag2({ _: 'a',
+                        href: 'http://windows.microsoft.com/en-us/internet-explorer/download-ie',
+                        target: '_blank', contents: $.t('core.browser_support.internet_explorer') }, false)
+                    }) }
+            ] }));
+        $('#browserSupportMessage a.close').click(function(event)
+        {
+            event.preventDefault();
+            $('#browserSupportMessage').fadeOut();
+            $.cookies.set('browser_ack', true);
+        });
+    }
+
     blist.namespace.fetch('blist.configuration');
     if (blist.configuration.maintenance_message &&
         window == window.top &&
@@ -86,7 +117,7 @@
             $('#maintenanceNotice').fadeOut();
         };
 
-        $('#siteHeader').after(blist.configuration.maintenance_message);
+        $('#noticeContainer').append(blist.configuration.maintenance_message);
         setTimeout(dismissMaintenance, 15000);
 
         $('#maintenanceNotice a.close').click(function(event)

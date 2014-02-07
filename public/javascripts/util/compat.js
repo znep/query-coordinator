@@ -146,6 +146,18 @@
 
 $(function()
 {
+    var m;
+    if (m = /Chrome\/([0-9.]+)/.exec(navigator.userAgent))
+    {
+        $.browser.chrome = true;
+        $.browser.safari = false;
+        $.browser.version = m[1];
+    }
+    else if (/Safari\//.exec(navigator.userAgent))
+    {
+        m = /Version\/([0-9.]+)/.exec(navigator.userAgent);
+        $.browser.version = m[1];
+    }
     $.browser.majorVersion = parseInt($.browser.version);
 
     // Infinite Exasperation?

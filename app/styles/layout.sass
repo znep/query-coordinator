@@ -161,8 +161,8 @@ html, body
     padding-top: 1em
     text-align: right
 
-// Scheduled downtime notification
-#maintenanceNotice
+// Scheduled downtime notification, old browser notice
+#noticeContainer
   left: 25%
   margin: 0 auto
   padding: 1em 20px
@@ -172,11 +172,17 @@ html, body
   width: 50%
   z-index: 10100
 
-  .close
-    @include sprite-menu-icons
-    position: absolute
-    right: 5px
-    top: 5px
+  > div
+    margin: 0 0 1em 0
+    position: relative
+
+    span
+      margin: 0 0.2em
+    .close
+      @include sprite-menu-icons
+      position: absolute
+      right: 5px
+      top: 5px
 
 #errorBox
   margin: 0 auto

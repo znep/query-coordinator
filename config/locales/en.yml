@@ -462,6 +462,10 @@ en:
       need_login: You must be logged in to access this page
       need_permission: You do not have permission to view this page
       too_many_tries: Too many login attempts for that login. Account temporarily disabled.
+    browser_support:
+      message_html: ! 'Socrata-powered sites are best viewed by a modern browser: %{chrome} or %{internet_explorer}'
+      chrome: Chrome
+      internet_explorer: Internet Explorer
     chart_types:
       area: Area Chart
       bar: Bar Chart

@@ -106,6 +106,11 @@ jQuery.metrics = {
     collect_page_timings: function() {
 
         $.metrics.mark("domain", "js-page-view");
+        $.metrics.mark("domain", "browser-" + $.metrics.browser_name());
+        $.metrics.mark("domain-intern", "browser-" + $.metrics.browser_name());
+        $.metrics.mark("domain", "browser-" + $.metrics.browser_name() + "-" + $.browser.majorVersion);
+        $.metrics.mark("domain-intern", "browser-" + $.metrics.browser_name() +
+                "-" + $.browser.majorVersion);
 
         // NavigationTiming not supported by safari
         // https://dvcs.w3.org/hg/webperf/raw-file/tip/specs/NavigationTiming
@@ -193,6 +198,10 @@ jQuery.metrics = {
         }
 
         return "other";
+    },
+    browser_name: function() {
+        return $.browser.msie ? 'ie' : $.browser.mozilla ? 'firefox' : $.browser.chrome ? 'chrome' :
+            $.browser.safari ? 'safari' : 'other';
     }
 };
 

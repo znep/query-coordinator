@@ -146,7 +146,11 @@ $.Control.registerMixin('d3_impl_line', {
             if (vizObj._seriesGrouping)
             { lineData = _.sortBy(notNullData, 'index'); }
             else
-            { lineData = _.sortBy(visibleData, 'index'); }
+            {
+                var sortIndex = vizObj._chartType == 'timeline'
+                    ? function(d) { return d.data[cc.fixedColumn.lookup]; } : 'index';
+                lineData = _.sortBy(visibleData, sortIndex);
+            }
 
             var hideLine = function(type)
             {
@@ -348,6 +352,9 @@ $.Control.registerMixin('d3_impl_line', {
     {
         return 5;
     },
+
+    _lineType: function()
+    { return this._chartType; },
 
     _constructSeriesPath: function(colDef, seriesIndex, yScale)
     {

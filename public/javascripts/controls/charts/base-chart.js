@@ -54,6 +54,11 @@
         || $.urlParam(window.location.href, 'bubble') == 'nextgen')
     { $.extend(chartMapping, { 'bubble': 'd3_impl_bubble' }); }
 
+    // Special case so that timeline doesn't upgrade to nextgen unless URL parameter.
+    if (   $.urlParam(window.location.href, 'charts')   == 'nextgen'
+        || $.urlParam(window.location.href, 'timeline') == 'nextgen')
+    { $.extend(chartMapping, { 'timeline': 'd3_impl_timeline' }); }
+
     if (!forceOldCharts)
     {
         _.each(blist.configuration.newCharts, function(enabled, chartType)

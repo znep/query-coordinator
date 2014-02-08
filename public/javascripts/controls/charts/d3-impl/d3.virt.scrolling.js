@@ -1424,7 +1424,7 @@ $.Control.registerMixin('d3_virt_scrolling', {
         }
     },
 
-    _labelTransform: function()
+    _labelTransform: function(offset)
     {
         var vizObj = this,
             cc = vizObj._chartConfig;
@@ -1434,8 +1434,9 @@ $.Control.registerMixin('d3_virt_scrolling', {
                                    cc.drawElementPosition - cc.dataOffset;
         var yPositionStaticParts = vizObj._yAxisPos();
 
-        var offset = cc.dataDim.pluckY(function(d) { return [ yPositionStaticParts - 10, xPositionStaticParts + (d.index * cc.rowWidth)]; },
-                              function(d) { return [xPositionStaticParts + (d.index * cc.rowWidth) - 3.5, yPositionStaticParts + 10 ]; });
+        offset = offset || cc.dataDim.pluckY(
+            function(d) { return [ yPositionStaticParts - 10, xPositionStaticParts + (d.index * cc.rowWidth)]; },
+            function(d) { return [xPositionStaticParts + (d.index * cc.rowWidth) - 3.5, yPositionStaticParts + 10 ]; });
         // So... if the text's anchor is left of the screen, it may still be visible.
         // Measuring all the text to see if it will peek out is untenably slow. So
         // we just calculate the worst-case for an infinitely long label (remember

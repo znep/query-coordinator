@@ -50,6 +50,10 @@
         });
     }
 
+    if ($.urlParam(window.location.href, 'charts') == 'nextgen'
+        || $.urlParam(window.location.href, 'bubble') == 'nextgen')
+    { $.extend(chartMapping, { 'bubble': 'd3_impl_bubble' }); }
+
     if (!forceOldCharts)
     {
         _.each(blist.configuration.newCharts, function(enabled, chartType)

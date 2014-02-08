@@ -242,6 +242,7 @@ javascripts:
     - public/javascripts/controls/charts/d3-impl/d3.impl.line.js
     - public/javascripts/controls/charts/d3-impl/d3.layout-utils.js
     - public/javascripts/controls/charts/d3-impl/d3.impl.pie.js
+    - public/javascripts/controls/charts/d3-impl/d3.impl.bubble.js
   shared-visualization:
     - public/javascripts/controls/render-type-manager.js
   shared-richRenderers:

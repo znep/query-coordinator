@@ -68,7 +68,7 @@ $.Control.registerMixin('d3_impl_line', {
             valueColumns = vizObj.getValueColumns(),
             $chartArea = cc.$chartArea,
             view = vizObj._primaryView,
-            lineType = vizObj._chartType;
+            lineType = vizObj._lineType();
 
         var allowTransitions = !vizObj._transitionExitWorkaroundActive();
         var doAnimation = (didInsertData === true) && allowTransitions;
@@ -150,6 +150,7 @@ $.Control.registerMixin('d3_impl_line', {
 
             var hideLine = function(type)
             {
+                if (lineType == 'none') { return true; }
                 var doHide = vizObj._displayFormat.lineSize === '0';
                 if (type == 'class')
                 { return lineType == 'line' && doHide; }
@@ -196,7 +197,6 @@ $.Control.registerMixin('d3_impl_line', {
 
                     .attr('cx', xDatumPositionForSeries)
                     .attr('cy', vizObj._yDatumPosition(col.lookup, doAnimation ? oldYScale : newYScale))
-                    .attr('r', 5)
 
                     .each(function() { this.__dataColumn = col; })
 
@@ -223,6 +223,7 @@ $.Control.registerMixin('d3_impl_line', {
 
             points
                     .attr('fill', vizObj._d3_colorizeRow(colDef))
+                    .attr('r', vizObj._sizifyRow(colDef))
                     .classed('hide', function(d)
                     {
                         var pos = newYPosition(d);
@@ -343,13 +344,20 @@ $.Control.registerMixin('d3_impl_line', {
         }
     },
 
+    _sizifyRow: function(colDef)
+    {
+        return 5;
+    },
+
     _constructSeriesPath: function(colDef, seriesIndex, yScale)
     {
         var vizObj = this,
-            lineType = vizObj._chartType,
+            lineType = vizObj._lineType(),
             col = colDef.column,
             notNull = function(row)
                 { return !($.isBlank(row.data[col.lookup]) || row.invalid[col.lookup]); };
+
+        if (lineType == 'none') { return; }
 
         var yPosition = vizObj._yDatumPosition(col.lookup, yScale);
 

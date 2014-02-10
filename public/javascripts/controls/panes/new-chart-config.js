@@ -409,11 +409,14 @@
     {
         var result = subheading(chart, options, $.t('screens.ds.grid_sidebar.chart.colors'), []);
 
-        result.fields.push({type: 'repeater', text: $.t('screens.ds.grid_sidebar.chart.colors'),
+        if (chart.value == 'bubble')
+        { result.fields.push(baseColor); }
+        else
+        { result.fields.push({type: 'repeater', text: $.t('screens.ds.grid_sidebar.chart.colors'),
             field: $.extend({}, colorOption, {name: ''}),
             name: 'displayFormat.colors', minimum: 1,
             initialRepeatCount: 5, lineClass: 'colorArray'
-        });
+        }); }
 
         if (!_.contains(['bubble', 'donut', 'treemap', 'pie'], chart.value))
         {

@@ -98,7 +98,7 @@ class HumaneDateHelperTest < Test::Unit::TestCase
   end
 
   def test_humane_date_one_month_from_now
-    earlier = Time.now + 1.month
+    earlier = Time.now + 31.days
     assert_equal('next month',HumaneDateHelper.humane_date(earlier.to_i))
   end
 

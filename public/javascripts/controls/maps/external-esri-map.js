@@ -349,7 +349,7 @@
 
             var rows = _.map(features, function(feature)
             {
-                var row = {};
+                var row = { data: {}};
                 _.each(feature.attributes, function(val, attr)
                 { row.data[layerObj._attrMap[attr]] = val; });
                 return row;

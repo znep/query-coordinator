@@ -78,7 +78,7 @@
 
     function oldBrowser()
     {
-        return $.browser.ie && $.browser.majorVersion < 9 ||
+        return $.browser.msie && $.browser.majorVersion < 9 ||
             $.browser.safari && $.browser.majorVersion < 6 ||
             // Chrome & Firefox update regularly, so this is not technically current - 1
             $.browser.chrome && $.browser.majorVersion < 28 ||

@@ -24,8 +24,8 @@ azure_staging:
     downtime_end: 2014-01-25t21:00:00-08:00
 
 production:
-    message_start: 2014-01-23t17:00-08:00
-    message_end: 2014-01-25t19:00:00-08:00
-    downtime_start: 2014-01-25t17:00:00-08:00
-    downtime_end: 2014-01-25t19:00:00-08:00
+    message_start: 2014-02-20t17:00-08:00
+    message_end: 2014-02-22t19:00:00-08:00
+    downtime_start: 2014-02-22t17:00:00-08:00
+    downtime_end: 2014-02-22t19:00:00-08:00
 

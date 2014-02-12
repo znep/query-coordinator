@@ -19,6 +19,7 @@ base-sdp:
 - table-core
 - dataset-grid
 - control-feed
+- render-type-images
 components:
 - components
 configurator:

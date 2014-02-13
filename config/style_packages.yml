@@ -135,6 +135,7 @@ dataset-show:
 - control-share
 - about-dataset
 - screen-dataset
+- render-type-images
 dataset-alt:
 - screen-dataset-alt
 dataset-analytics:

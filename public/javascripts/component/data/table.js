@@ -37,7 +37,7 @@ $.component.Component.extend('Table', 'data', {
     {
         return {
             javascripts: [{ assets: 'shared-table-render' }],
-            stylesheets: [{assets: 'grid'}],
+            stylesheets: [{assets: 'grid'}, { assets: 'render-images-bundle', hasImages: true }],
             translations: ['controls.grid']
         };
     },

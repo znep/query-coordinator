@@ -60,7 +60,6 @@ var jQuery = function( selector, context ) {
 	rwebkit = /(webkit)[ \/]([\w.]+)/,
 	ropera = /(opera)(?:.*version)?[ \/]([\w.]+)/,
 	rmsie = /(msie) ([\w.]+)/,
-	rmsie11 = /(trident).*rv:([\w.]+)/, // IE11 is special and likes to pretend to be Mozilla
 	rmozilla = /(mozilla)(?:.*? rv:([\w.]+))?/,
 
 	// Matches dashed string for camelizing
@@ -862,7 +861,6 @@ jQuery.extend({
 		var match = rwebkit.exec( ua ) ||
 			ropera.exec( ua ) ||
 			rmsie.exec( ua ) ||
-			rmsie11.exec( ua ) ||
 			ua.indexOf("compatible") < 0 && rmozilla.exec( ua ) ||
 			[];
 
@@ -907,10 +905,6 @@ if ( browserMatch.browser ) {
 // Deprecated, use jQuery.browser.webkit instead
 if ( jQuery.browser.webkit ) {
 	jQuery.browser.safari = true;
-}
-
-if ( jQuery.browser.trident ) {
-    jQuery.browser.msie = true;
 }
 
 // IE doesn't match non-breaking spaces with \s

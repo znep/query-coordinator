@@ -158,6 +158,13 @@ $(function()
         m = /Version\/([0-9.]+)/.exec(navigator.userAgent);
         $.browser.version = m[1];
     }
+    else if (m = /Trident.*rv:([\w.]+)/.exec(navigator.userAgent))
+    {
+        // IE11 is special and likes to pretend to be Mozilla
+        $.browser.msie = true;
+        delete $.browser.mozilla;
+        $.browser.version = m[1];
+    }
     $.browser.majorVersion = parseInt($.browser.version);
 
     // Infinite Exasperation?

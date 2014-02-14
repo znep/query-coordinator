@@ -1076,12 +1076,16 @@ $.Control.registerMixin('d3_virt_scrolling', {
 
         var usedMin = !_.isNaN(explicitMin) ? explicitMin : defaultMin;
         var usedMax = !_.isNaN(explicitMax) ? explicitMax : defaultMax;
+        var nullRangePaddingAmount = vizObj.defaults.fallbackForNullRange;
         if (usedMin === usedMax)
         {
-            var nullRangePaddingAmount = vizObj.defaults.fallbackForNullRange;
             if (_.isNaN(explicitMin)) { usedMin -= nullRangePaddingAmount; }
             if (_.isNaN(explicitMax)) { usedMax += nullRangePaddingAmount; }
         }
+
+        // Freaking out entirely, recognizing that the world is ending.
+        if (!_.isNumber(usedMin)) { usedMin = -nullRangePaddingAmount; }
+        if (!_.isNumber(usedMax)) { usedMax =  nullRangePaddingAmount; }
 
         var yScale = d3.scale.linear()
             .domain([ Math.min(usedMin, usedMax),

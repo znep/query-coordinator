@@ -136,6 +136,7 @@ javascripts:
     - public/javascripts/component/actions/hide-show.js
     - public/javascripts/component/actions/print.js
     - public/javascripts/component/actions/rate-vote.js
+    - public/javascripts/component/actions/select.js
     - public/javascripts/component/actions/share.js
     - public/javascripts/component/input/dataset-list-filter.js
     - public/javascripts/component/input/geolocator.js

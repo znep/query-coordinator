@@ -325,6 +325,7 @@ module Canvas2
 
       t += '<a href="' + alt_view_path(ds) + '" class="altViewLink">Accessibly explore the data</a>'
       t += '</div></noscript>'
+      [t, false]
     end
   end
 
@@ -539,6 +540,74 @@ module Canvas2
       ['<a href="' + context[:dataset].download_url('csv') + '" class="button" rel="external">' +
          t + '</a>', false]
     end
+  end
+
+  class Select < CanvasWidget
+
+    require 'action_view/helpers/tag_helper'
+
+    include ActionView::Helpers::TagHelper
+
+    def render_contents
+      if properties['options'].present?
+        option_tags = build_option_tags(string_substitute(properties['options']))
+      elsif context.present? && context[:type] == 'dataset'
+        option_tags = build_option_tags(map_dataset_values)
+      else
+        return ['', true]
+      end
+
+      add_placeholder(option_tags)
+
+      [content_tag(:select, option_tags.join.html_safe), true]
+    end
+
+    def find_row_field(key)
+      rowField = string_substitute(properties['rowFields'][key])
+      context[:dataset].columns.detect { |column| column.fieldName == rowField }.try(:id)
+    end
+
+    def fetch_rows
+      rowStart = properties['rowStart'] || 0
+      rowLength = properties['rowLength'] || 10
+      context[:dataset].get_rows(rowStart + rowLength)[:rows].slice(rowStart, rowLength)
+    end
+
+    def map_dataset_values
+      rowFieldValueId = find_row_field('value').to_s
+      unless rowFieldValueId.present?
+        raise "Unable to find column for #{properties['rowFields']['value']}"
+      end
+      rowFieldLabelId = (find_row_field('label') || rowFieldValueId).to_s
+      fetch_rows.map do |row|
+        { 'label' => row[rowFieldLabelId], 'value' => row[rowFieldValueId] }
+      end
+    end
+
+    def build_option_tags(items)
+      currentValue = string_substitute(properties['currentValue'])
+      currentIndex = string_substitute(properties['currentIndex'])
+      items.each_with_index.map do |item, index|
+        options = { value: item['value'] }
+        if item['value'] == currentValue || index == currentIndex
+          options.merge!(selected: 'selected')
+        end
+        content_tag(:option, item['label'], options)
+      end
+    end
+
+    def add_placeholder(option_tags)
+      placeholderValue = string_substitute(properties['placeholderValue'])
+      if placeholderValue.present?
+        option_tags.unshift(
+          content_tag(:option,
+            placeholderValue['label'],
+            value: placeholderValue['value']
+          )
+        )
+      end
+    end
+
   end
 
   class Button < CanvasWidget

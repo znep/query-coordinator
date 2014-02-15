@@ -36,5 +36,5 @@ group :test do
 end
 
 group :development, :test do
-  gem 'pry'
+  gem 'jazz_hands'
 end

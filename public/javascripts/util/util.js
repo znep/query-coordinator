@@ -168,10 +168,10 @@ $.mixpanelMeta = function()
         isSocrata = 'Not Logged In',
         userRoleName = 'n/a',
         datasetOwner = 'n/a',
-        viewType = 'n/a', 
+        viewType = 'n/a',
         viewId = 'n/a',
         userOwnsDataset = 'n/a';
-    
+
     //things that can be undefined if user is not logged in
     if(!_.isUndefined(blist.currentUser)){
         userId = blist.currentUserId;
@@ -191,11 +191,11 @@ $.mixpanelMeta = function()
             userOwnsDataset = blist.dataset.owner.id == blist.currentUserId;
         }
     }
-    
+
     var domain = window.location.hostname;
     var pathName = window.location.pathname;
     var time = Math.round(new Date().getTime() / 1000) - blist.pageOpened;
-    
+
     mixpanel.register({
         'User Id': userId,
         'Socrata Employee': isSocrata,
@@ -213,8 +213,8 @@ $.mixpanelMeta = function()
     userId = _.isUndefined(blist.currentUser) ? mixpanel.get_distinct_id() : userId;
     mixpanel.identify(userId);
     mixpanel.people.set_once(
-        {   $name: userId, 
-            "Socrata Employee": isSocrata 
+        {   $name: userId,
+            "Socrata Employee": isSocrata
         });
 }
 
@@ -501,6 +501,8 @@ $.compileTemplate = function(template, directive)
 
 $.isBlank = function(obj)
 { return _.isUndefined(obj) || _.isNull(obj) || obj === ''; };
+
+$.isPresent = function(obj) { return !$.isBlank(obj) };
 
 $.arrayify = function(obj)
 { return !_.isArray(obj) ? [obj] : obj; };

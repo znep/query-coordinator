@@ -1,23 +1,70 @@
 /**
- * This file implements the Blist table control.  This control offers an interactive presentation of tabular data to
- * the user.
+ * History of table:
+ * | This was originally written by Greg, so it did not conform to our normal coding standards.
+ * | It was meant primarily for Socrata datasets, but in theory would be usable for other
+ * | displays of tabular data. It was written to be generic for this reason; which was part
+ * | of the reason for the model-table split. However, it was never used for anything else
+ * | in practice.
+ * | The actual rendering code was written via code generation originally. This became harder
+ * | and harder to support, and (surprise) provided no performance benefits over standard
+ * | procedural code. So the code generation was later ripped out.
+ * | Enhancements were added over time to support the full features we needed.
+ * | One of the big ones was sub-rows: specifically for nested table data types,
+ * | which is essentially a mini-table inside a column, with multiple sub-rows per row.
+ * | This is surprisingly difficult to deal with properly.
+ * | There is also a lot of logic around how to render the visible rows; we only want
+ * | to render around the visible window to handle really large datasets (multi-million rows).
+ * | But to optimize rendering, rows are re-used as much as possible when the scroll change
+ * | is small. Combined with the fact that some browsers have a limit on how tall a div
+ * | can be, this led us to a solution with a div for a rendering window, which is what
+ * | the rows actually go into; inside a div that creates the scrollbar, scaled to be less
+ * | than the maximum height the browser allows.
+ * | As much as possible was put into the datasetGrid class, which conformed to our
+ * | normal coding standards and was much cleaner. However, most of the direct rendering had to
+ * | happen here. As the file grew, we split out the navigation into a separate module,
+ * | mainly because it was the easiest/most obvious. The remaining code is still too big.
+ * | It also has some really nasty dynamic CSS-styling, which is probably necessary
+ * | for the proper sizing of columns; but we have had significant problems (including
+ * | performance) in the past.
+ * Notable changes/enhancements (in no particular order):
+ * | * Attempted copy/paste support. This worked at one point, but has long since decayed
+ * | * Supported rendering more rows by switching to a rendering div inside a larger scrolling
+ * |   div that may be scaled to fit the browser maximums.
+ * | * Ripped out code generation
+ * | * Split select mode out from edit mode
+ * | * Created datasetGrid to wrap this and provide extra support for menus and headers
+ * | * Added ghost column to pad out the lines/selection to the edge of the grid
+ * | * Added left-hand locked column for row numbers and menu
+ * | * Added row & column select (mostly un-used now)
+ * | * Added Column resizing & drag
+ * | * Added cell hover expansion
+ * | * Added totals footer
+ * | * Added 'No Results' message (this was missing for a surprisingly long time)
+ * | * Added/improved child-row rendering/handling
  *
- * The table renders data contained within a Blist "model" class.  The table uses the model associated with its root
- * DOM node.
- *
- * Most events triggered by the table are managed by the model class.  Events supported directly by the table are:
- *
- * <ul>
- *   <li>cellclick - fired whenever the user clicks a cell and the table does not perform a default action</li>
- *   <li>table_click - fired when the mouse is clicked within the table and the table does not fire a default
- *      action</li>
- * </ul>
- *
- * Implementation note: We process mouse up and mouse down events manually.  We treat some mouse events differently
- * regardless of the element on which they occur.  For example, a mouse down within a few pixels of a column heading
- * border is a resize, but the mouse may in fact be over a control.  Because of this and the fact that you can't
- * cancel click events in mouseup handlers we generally can't use the browser's built in "click" event.  Instead the
- * table fires a "table_click"ke event.  You should be able to use this anywhere you would instead handle "click".
+ * Original comments:
+ * | This file implements the Blist table control.  This control offers an
+ * | interactive presentation of tabular data to the user.
+ * |
+ * | The table renders data contained within a Blist "model" class.  The table
+ * | uses the model associated with its root DOM node.
+ * |
+ * | Most events triggered by the table are managed by the model class.  Events
+ * | supported directly by the table are:
+ * |
+ * | * cellclick - fired whenever the user clicks a cell and the table does not
+ * |   perform a default action
+ * | * table_click - fired when the mouse is clicked within the table and the
+ * |   table does not fire a default action
+ * |
+ * | Implementation note: We process mouse up and mouse down events manually.  We
+ * | treat some mouse events differently regardless of the element on which they
+ * | occur.  For example, a mouse down within a few pixels of a column heading
+ * | border is a resize, but the mouse may in fact be over a control.  Because of
+ * | this and the fact that you can't cancel click events in mouseup handlers we
+ * | generally can't use the browser's built in "click" event.  Instead the table
+ * | fires a "table_click"ke event.  You should be able to use this anywhere you
+ * | would instead handle "click".
  */
 
 (function($)

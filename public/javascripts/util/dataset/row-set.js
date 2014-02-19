@@ -31,6 +31,10 @@ var RowSet = ServerModel.extend({
         }
 
         this.formattingChanged();
+
+        var rs = this;
+        this._dataset.bind('columns_changed', function(changeType, lookupMap) {
+            if (changeType == 'lookupChange') { rs.lookupsChanged(lookupMap); }});
     },
 
     getKey: function()
@@ -628,6 +632,20 @@ var RowSet = ServerModel.extend({
             });
         }
         _.each(rs._rows, function(r) { rs._setRowFormatting(r); });
+    },
+
+    lookupsChanged: function(lookupMap)
+    {
+        var rs = this;
+
+        _.each(rs._rows, function(row)
+        {
+            _.each(lookupMap, function(newLookup, oldLookup)
+            {
+                _.each(['data', 'changed', 'error', 'invalid'], function(subdatum)
+                { row[subdatum][newLookup] = row[subdatum][oldLookup]; });
+            });
+        });
     },
 
     canDerive: function(otherQ)

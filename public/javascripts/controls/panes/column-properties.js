@@ -586,7 +586,13 @@
                     if (needsConvert)
                     {
                         var oldId = c.id;
-                        c.convert(newType, function(convertedCol) { columnUpdated(); },
+                        var oldLookup = c.lookup;
+                        c.convert(newType, function(convertedCol) {
+                            columnUpdated();
+                            var lookupMap = {};
+                            lookupMap[oldLookup] = convertedCol.lookup;
+                            c.view.trigger('columns_changed', ['lookupChange', lookupMap]);
+                            },
                             function(xhr)
                             {
                                 // Really shouldn't happen; but just in case...

@@ -1084,8 +1084,8 @@ $.Control.registerMixin('d3_virt_scrolling', {
         }
 
         // Freaking out entirely, recognizing that the world is ending.
-        if (!_.isNumber(usedMin)) { usedMin = -nullRangePaddingAmount; }
-        if (!_.isNumber(usedMax)) { usedMax =  nullRangePaddingAmount; }
+        if (!_.isNumber(usedMin) || _.isNaN(usedMin)) { usedMin = -nullRangePaddingAmount; }
+        if (!_.isNumber(usedMax) || _.isNaN(usedMax)) { usedMax =  nullRangePaddingAmount; }
 
         var yScale = d3.scale.linear()
             .domain([ Math.min(usedMin, usedMax),

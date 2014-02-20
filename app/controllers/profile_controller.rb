@@ -1,6 +1,6 @@
 class ProfileController < ApplicationController
   include BrowseActions
-  skip_before_filter :require_user, :only => [:show, :show_app_token]
+  skip_before_filter :require_user, :only => [:show_app_token]
 
   helper :user
 

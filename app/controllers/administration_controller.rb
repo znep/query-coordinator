@@ -74,15 +74,6 @@ class AdministrationController < ApplicationController
   before_filter :check_member, :only => :analytics
   before_filter :only => [:analytics] {|c| c.check_module('advanced_metrics')}
   def analytics
-    begin
-      view_results = Clytemnestra.search_views({
-        limitTo: 'tables', limit: 1, admin: true,
-        datasetView: 'dataset', view_type: 'table', nofederate: true})
-      @view_count = view_results.count if view_results
-    rescue CoreServer::TimeoutError
-      Rails.logger.warn("Timeout on Clytemnestra request for /admin/analytics")
-      @view_count = nil
-    end
   end
 
   before_filter :only => [:canvas_pages] {|c| c.check_auth_level('edit_pages')}

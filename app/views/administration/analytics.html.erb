@@ -53,8 +53,6 @@
   <%- unless params[:no_js] == 'true' -%>
     <script type="text/javascript">
         blist.configuration.govStatMetricsEnabled = <%= module_enabled?(:govStat) == true %>;
-        blist.namespace.fetch('blist.metrics');
-        blist.metrics.view_count = <%= @view_count || 'null' %>;
     </script>
     <%= include_javascripts 'shared-metrics' %>
     <%= include_javascripts 'admin-metrics' %>

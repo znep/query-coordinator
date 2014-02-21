@@ -298,33 +298,24 @@ metricsNS.summarySectionCallback = function($context)
         }
     };
 
-    if ($context.attr('id') == 'summaryDatasets' && metricsNS.view_count)
+    summaryCalculator('total', '-total');
+    summaryCalculator('delta');
+
+    summaryToolTip('total', $.t('screens.stats.total'));
+    summaryToolTip('delta', $.t('screens.stats.during_time_period'));
+
+    if (mappedData.delta < 0)
     {
-        mappedData.total = metricsNS.view_count;
-        summaryToolTip('total', $.t('screens.stats.total'));
+        mappedData.delta *= -1;
+        mappedData.deltaClass = 'minus';
     }
     else
     {
-        summaryCalculator('total', '-total');
-        summaryCalculator('delta');
-
-        summaryToolTip('total', $.t('screens.stats.total'));
-        summaryToolTip('delta', $.t('screens.stats.during_time_period'));
-
-        if (mappedData.delta < 0)
-        {
-            mappedData.delta *= -1;
-            mappedData.deltaClass = 'minus';
-        }
-        else
-        {
-            mappedData.deltaClass = 'plus';
-        }
+        mappedData.deltaClass = 'plus';
     }
 
     mappedData.total = Highcharts.numberFormat(mappedData.total, 0);
-    if (_.isNumber(mappedData.delta))
-    { mappedData.delta = Highcharts.numberFormat(mappedData.delta, 0); }
+    mappedData.delta = Highcharts.numberFormat(mappedData.delta, 0);
 
     metricsNS.renderSummarySection($context, mappedData,
         metricsNS.summaryDataDirective, 'metricsSummaryData');

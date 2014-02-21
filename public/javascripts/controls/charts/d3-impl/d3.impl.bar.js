@@ -1141,7 +1141,12 @@ $.Control.registerMixin('d3_impl_bar', {
                     if (localEndJustified)
                     {
                         // Gotta calculate this manually; IE gives us bogus sizes.
-                        position -= d.columnHeight - actualSize - 10;
+
+                        // Turns out this is only valid for stacked column.
+                        if (cc.stackYSeries)
+                        { position -= d.columnHeight - actualSize - 10; }
+                        else if (d.length > d.columnHeight - 10)
+                        { position -= d.length - d.columnHeight + 10; }
                     }
                     // If we aren't truncating, shift up by the overflow amount.
                     else if ($(this).attr('style').indexOf('width') < 0)
@@ -1160,11 +1165,11 @@ $.Control.registerMixin('d3_impl_bar', {
                 }
                 else
                 {
-                    position = vizObj._yDatumPosition(valueColumns[d.seriesIndex].column.lookup, yScale, false)(d) + ($(this).width() / 2) - 5;
-                    if (!localEndJustified)
-                    {
-                        position += d.columnHeight - $(this).width() - 10;
-                    }
+                    position = vizObj._yDatumPosition(valueColumns[d.seriesIndex].column.lookup, yScale, false)(d) + ($(this).width() / 2) - 2.5;
+                    if (localEndJustified)
+                    { position = Math.min(position, yAxisPos - $(this).width() - 5); }
+                    else
+                    { position += d.columnHeight - $(this).width() - 10; }
                 }
             }
 

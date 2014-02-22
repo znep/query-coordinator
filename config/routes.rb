@@ -246,6 +246,12 @@ Frontend::Application.routes do
       end
     end
 
+    resources :resource, :controller => 'ResourcesController' do
+      member do
+        get :show
+      end
+    end
+
     # Dataset SEO URLs (only add here if the action has a view with it;
     # otherwise just add to the :member key in the datasets resource above.)
     scope :controller => 'datasets', :constraints => {:id => UID_REGEXP,
@@ -294,7 +300,7 @@ Frontend::Application.routes do
 
     scope :controller => 'datasets', :constraints => {:id => UID_REGEXP} do
       get 'r/:id/:name', :action => 'bare'
-      get ':category/:view_name/:id/stats', :action => 'stats', 
+      get ':category/:view_name/:id/stats', :action => 'stats',
         :constraints => {:view_name => /(\w|-)+/, :category => /(\w|-)+/}
     end
     # For screenshotting only

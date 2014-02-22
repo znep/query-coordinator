@@ -43,6 +43,30 @@ module TestHelperMethods
     user
   end
 
+  def login(user = nil)
+    unless user
+      user = User.new(
+        'login' => 'user',
+        'email' => 'user@socrata.com',
+        'first_name' => 'first',
+        'last_name' => 'last',
+        'password' => 'password',
+        'uid' => 'four-four',
+        'screen_name' => 'first-last',
+        'id' => '123'
+      )
+    end
+    UserSession.controller = @controller
+    @controller.current_user_session = UserSession.new(
+      :login => user.login, :password => user.password
+    )
+    user
+  end
+
+  def logout
+    @controller.current_user_session = nil
+  end
+
   def remove_filters(controller, filters)
     @deleted_filters ||= []
     regex = Regexp.new(filters.join("|"))
@@ -61,7 +85,7 @@ module TestHelperMethods
     end
   end
 
-  def init_core_session()
+  def init_core_session
     fake_core_session = CoreSession.new(self, @env)
     fake_core_session.pretend_loaded
     @controller.request.core_session = fake_core_session
@@ -82,6 +106,14 @@ end
 
 [Test::Unit::TestCase, MiniTest::Unit::TestCase].each do |klass|
   klass.send(:include, TestHelperMethods)
+end
+
+class ActionController::TestCase
+  include ActionView::Helpers::UrlHelper
+  include ActionView::Helpers::TagHelper
+  include ActionView::Helpers
+  include ActionDispatch::Routing
+  include Rails.application.routes.url_helpers
 end
 
 require 'mocha/setup'

@@ -47,19 +47,16 @@ class DatasetsController < ApplicationController
     end
 
     # If a user sticks .json or similar at the end of a URL, redirect them to the API endpoint
-    if !params[:format].nil?
-      return redirect_to('/resource/' + (@view.resourceName || @view.id) + '.' + params[:format])
+    if params[:format].present?
+      return redirect_to(resource_url(
+        { :id => @view.id, :format => params[:format] }.merge(params.except('controller')))
+      )
     end
 
-    if params[:q]
-      @view.searchString = params[:q]
-    end
+    @view.searchString = params[:q] if params[:q]
 
-    if !current_user
-      @user_session = UserSession.new
-    end
+    @user_session = UserSession.new unless current_user
 
-    href = nil
     if @row.nil?
       href = Proc.new{ |params| view_path(@view.route_params.merge(params || {})) }
     else

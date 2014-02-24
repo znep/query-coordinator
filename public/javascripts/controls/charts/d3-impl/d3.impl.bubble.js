@@ -60,7 +60,12 @@ $.Control.registerMixin('d3_impl_bubble', {
 
         if (!vizObj._pointSize) { return this._super.apply(this, arguments); }
 
-        return function(d) { return cc.sizeScale(d.data[vizObj._pointSize.lookup]); };
+        return function(d) {
+            if (d && vizObj._pointSize && cc.sizeScale)
+            { return cc.sizeScale(d.data[vizObj._pointSize.lookup]); }
+            else
+            { return 5; }
+        };
     }
 
 }, null, 'socrataChart', [ 'd3_impl_line', 'd3_virt_scrolling', 'd3_base', 'd3_base_dynamic', 'd3_base_legend' ]);

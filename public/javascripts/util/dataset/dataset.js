@@ -2675,9 +2675,8 @@ var Dataset = ServerModel.extend({
             }
             else
             {
-                rr = rr[0];
-                // All we have is id
-                req.row.id = req.row.metadata.id = req.row.data[':id'] = rr.id;
+              // Response keys = [:updated_meta, :id, :updated_at, :created_meta, :position, :created_at]
+              req.row.id = req.row.metadata.id = req.row.data[':id'] = rr[':id'];
             }
 
             if (req.row.underlying)
@@ -2766,7 +2765,7 @@ var Dataset = ServerModel.extend({
             }
         };
 
-        var url = ds._useSODA2 ? '/api/id/' + ds.id + '/dontcare' : '/views/' + ds.id + '/rows';
+        var url = ds._useSODA2 ? '/api/id/' + ds.id : '/views/' + ds.id + '/rows';
         if (!$.isBlank(req.parentRow))
         {
             url += '/' + req.parentRow.id + '/columns/' + req.parentColumn.id +
@@ -2776,7 +2775,7 @@ var Dataset = ServerModel.extend({
         var rd = req.rowData;
         if (ds._useSODA2)
         {
-            url += '?$$version=unstable';
+            url += '?$$version=2.0';
             rd = $.extend(true, {}, rd);
             delete rd[':id'];
         }

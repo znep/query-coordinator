@@ -37,5 +37,8 @@ end
 group :development, :test do
   gem 'jazz_hands'
   gem 'thin'
+end
+
+group :development do
   gem 'ruby-debug19'
 end

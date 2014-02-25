@@ -88,7 +88,7 @@ class HumaneDateHelperTest < Test::Unit::TestCase
   end
 
   def test_humane_date_two_weeks_from_now
-    earlier = Time.now + 2.weeks
+    earlier = Time.now.to_i + 2.weeks
     assert_equal('2 weeks from now',HumaneDateHelper.humane_date(earlier.to_i))
   end
 

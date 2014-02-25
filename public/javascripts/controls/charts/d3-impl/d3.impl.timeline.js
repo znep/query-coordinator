@@ -22,7 +22,8 @@ $.Control.registerMixin('d3_impl_timeline', {
 
         var vizObj = this,
             cc = vizObj._chartConfig,
-            allDates = _.map($.deepPluck(data, 'data.' + cc.fixedColumn.lookup), Date.parse),
+            allDates = _.map($.deepPluck(data, 'data.' + cc.fixedColumn.lookup), function(date)
+                { return _.isNumber(date) ? new Date(date * 1000) : Date.parse(date); }),
             extent = d3.extent(allDates);
 
         var sortFunc = function(a, b) { return a.isBefore(b); };

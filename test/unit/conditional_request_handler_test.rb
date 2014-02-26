@@ -83,4 +83,15 @@ class ConditionalRequestHandlerTest < ActionController::TestCase
     assert(!ConditionalRequestHandler.check_conditional_request?(@request, @manifest))
   end
 
+  def test_ssl_enforcer_returns_status_400
+    Rack::SslEnforcer.any_instance.expects(:modify_location_and_redirect).raises(URI::InvalidURIError)
+    Rack::SslEnforcer.any_instance.stubs(
+      :redirect_required? => true,
+      :ignore? => false,
+      :enforce_ssl? => true,
+      :body => Rack::SslEnforcer::INVALID_URI_ERROR_MESSAGE
+    )
+    assert_equal([400, { 'Content-Type' => 'text/html' }, [Rack::SslEnforcer::INVALID_URI_ERROR_MESSAGE]], Rack::SslEnforcer.new('app').call({}))
+  end
+
 end

@@ -12,6 +12,8 @@ module Rack
       :environments => [:only_environments, :except_environments]
     }
 
+    INVALID_URI_ERROR_MESSAGE = '<html><body>The URI you have sent us is invalid.</body></html>'
+
     # Warning: If you set the option force_secure_cookies to false, make sure that your cookies
     # are encoded and that you understand the consequences (see documentation)
     def initialize(app, options={})
@@ -44,7 +46,11 @@ module Rack
       end
 
       if redirect_required?
-        modify_location_and_redirect
+        begin
+          modify_location_and_redirect
+        rescue URI::InvalidURIError => e
+          [400, { 'Content-Type' => 'text/html' }, [INVALID_URI_ERROR_MESSAGE]]
+        end
       elsif ssl_request?
         status, headers, body = @app.call(env)
         flag_cookies_as_secure!(headers) if @options[:force_secure_cookies]
@@ -81,7 +87,8 @@ module Rack
     end
 
     def modify_location_and_redirect
-      location = "#{current_scheme}://#{@request.host}#{@request.fullpath}"
+      location = URI.extract("#{current_scheme}://#{@request.host}#{@request.fullpath}").first
+      raise URI::InvalidURIError if location.nil? # Only possible if something goes very wrong.
       location = replace_scheme(location, @scheme)
       location = replace_host(location, @options[:redirect_to])
       redirect_to(location)

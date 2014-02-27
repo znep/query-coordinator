@@ -25,7 +25,12 @@ class DatasetsController < ApplicationController
       return(redirect_to :controller => 'widgets', :action => 'show', :id => params[:id])
     end
 
-    @view = get_view(params[:id])
+    if params['$$store']
+      @view = View.find_in_store(params[:id], params['$$store'])
+    else
+      @view = get_view(params[:id])
+    end
+
     return if @view.nil?
 
     # We definitely don't want to have to look up the row index

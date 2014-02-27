@@ -1031,12 +1031,15 @@ var RowSet = ServerModel.extend({
 
         var req = { success: rowsLoaded, params: params, inline: !rs._dataset._useSODA2 && !fullLoad,
             type: rs._dataset._useSODA2 || fullLoad ? 'GET' : 'POST' };
-        if (!rs._dataset._useSODA2 && fullLoad)
-        { req.url = '/views/' + rs._dataset.id + '/rows.json'; }
-        if (params.meta)
-        {
+        if (!rs._dataset._useSODA2 && fullLoad) {
+            req.url = '/views/' + rs._dataset.id + '/rows.json';
+        }
+        if (params.meta) {
             rs._curMetaReq = reqId;
             rs._curMetaReqMeta = reqData;
+        }
+        if (rs._dataset._useSODA2 && $.parseParams().$$store) {
+            req.params['$$store'] = $.parseParams().$$store;
         }
 
         rs.makeRequest(req);

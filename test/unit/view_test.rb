@@ -43,4 +43,20 @@ class ViewTest < Test::Unit::TestCase
     assert can.metrics["num_calls"] == 3
   end
 
+  def test_find_in_store_does_not_raise_on_valid_store_ids
+    CoreServer::Base.stubs(:connection => stub(:get_request))
+    assert_nothing_raised { View.find_in_store(1, 'pg.primus')}
+    assert_nothing_raised { View.find_in_store(1, 'es.omega')}
+    assert_nothing_raised { View.find_in_store(1, 'pg2.primus')}
+    assert_nothing_raised { View.find_in_store(1, 'es0.omega1')}
+  end
+
+  def test_find_in_store_raises_on_invalid_store_ids
+    CoreServer::Base.stubs(:connection => stub(:get_request))
+    assert_raises RuntimeError do; View.find_in_store(1, 'pg_primus'); end
+    assert_raises RuntimeError do; View.find_in_store(1, 'es+omega'); end
+    assert_raises RuntimeError do; View.find_in_store(1, 'pg2-primus'); end
+    assert_raises RuntimeError do; View.find_in_store(1, 'es0[omega1]'); end
+  end
+
 end

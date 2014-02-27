@@ -1119,9 +1119,14 @@ var Dataset = ServerModel.extend({
     registerOpening: function(referrer)
     {
         // make network request.
-        var params = {method: 'opening'};
-        if (!$.isBlank(referrer)) { params.referrer = referrer; }
-        this.makeRequest({url: '/views/' + this.id + '.json', params: params, type: 'POST'});
+        var params = { method: 'opening' };
+        if ($.isPresent(referrer)) {
+            params.referrer = referrer;
+        }
+        if (this._useSODA2 && $.parseParams().$$store) {
+            params['$$store'] = $.parseParams().$$store;
+        }
+        this.makeRequest({ url: '/views/' + this.id + '.json', params: params, type: 'POST' });
 
         // store in local storage.
         Dataset.saveRecentDataset(this);

@@ -52,6 +52,18 @@ class View < Model
     r
   end
 
+  def self.find_in_store(id, store)
+    unless store =~ /^[a-z0-9]+\.[a-z0-9]+$/
+      raise "Invalid store identifier: #{store}"
+    end
+    path = "/#{self.service_name}/#{id}.json?$$store=#{store}"
+    parse(CoreServer::Base.connection.get_request(path, federation_headers))
+  end
+
+  def self.federation_headers
+    {'X-Socrata-Federation' => 'Honey Badger'}
+  end
+
   def self.get_predeploy_api_view(baseUid)
     path = "/views/#{baseUid}/publication.json?" + {'method' => 'getPredeployApiView'}.to_param
     parse(CoreServer::Base.connection.get_request(path))

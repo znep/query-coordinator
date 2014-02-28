@@ -614,8 +614,8 @@ var Dataset = ServerModel.extend({
         var useInline = ds.isDefault()
                         || $.subKeyDefined(ds, 'query.filterCondition')
                         || ds.cleanFilters()
-                        || $.isPresent(ds.metadata.jsonQuery.search)
-                        || (!$.isBlank(displayFormat) && !_.isEqual(displayFormat, ds.displayFormat));
+                        || $.isPresent($.deepGetStringField(ds, 'metadata.jsonQuery.search'))
+                        || ($.isPresent(displayFormat) && !_.isEqual(displayFormat, ds.displayFormat));
 
         var reqData;
         if (useInline)
@@ -2183,7 +2183,6 @@ var Dataset = ServerModel.extend({
         }
 
         var oldQuery = ds.query || {};
-        var oldSearch = ds.metadata.jsonQuery.search;
         var oldJsonQuery = $.extend(true, {}, ds.metadata.jsonQuery);
         var oldDispFmt = $.extend(true, {}, ds.displayFormat);
         var oldDispType = ds.displayType;

@@ -842,7 +842,6 @@
 
                     headerPresentation,
                     colors(chart, options),
-                    labelsAndValues(chart, options, [showLine]),
                     valueMarker(chart, options),
 
                     headerDetails,

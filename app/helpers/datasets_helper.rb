@@ -200,10 +200,10 @@ module DatasetsHelper
     options.push(['--None--', 0])
     use_field_name = (selected_rdf_subject.to_i == 0)
     cols.each do |m|
-      if (m.renderTypeName == 'text' || 
-          m.renderTypeName == 'url'  || 
-          m.renderTypeName == 'calendar_date' || 
-          m.renderTypeName == 'date' || 
+      if (m.renderTypeName == 'text' ||
+          m.renderTypeName == 'url'  ||
+          m.renderTypeName == 'calendar_date' ||
+          m.renderTypeName == 'date' ||
           m.renderTypeName == 'number')
         options.push([m.name, use_field_name ?  m.fieldName : m.id])
         if (use_field_name)
@@ -283,4 +283,24 @@ module DatasetsHelper
     ret += '</li>'
     ret.html_safe
   end
+
+  def force_editable?
+    params.fetch('$$force_editable', 'false') == 'true'
+  end
+
+  def hide_redirect?
+    return false if force_editable?
+
+    !@view.is_published? || !@view.is_blist? || !@view.can_edit? || current_user.blank? || @view.is_immutable?
+  end
+
+  def hide_add_column?
+    !@view.is_unpublished? || !@view.is_blist? || !@view.has_rights?('add_column') || @view.is_immutable?
+  end
+
+  def hide_append_replace?
+    (!@view.is_unpublished? && !@view.is_geo? && !@view.is_blobby?) || @view.is_immutable? ||
+      @view.is_href? || !@view.flag?('default') || !@view.has_rights?('add')
+  end
+
 end

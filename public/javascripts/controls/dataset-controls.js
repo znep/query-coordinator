@@ -503,7 +503,7 @@ blist.datasetControls.editPublishedMessage = function()
                 '.editPublished@class+': function()
                     { return copyPending ? 'hide' : ''; },
                 '.editMessage': function()
-                    { return $.t('screens.ds.dataset_status.needs_copy', { status: $.t('screens.ds.dataset_status.needs_copy_status.' + data.status) }); },
+                    { return datasetEditableMessage(data); },
                 '.editMessage@class+': function()
                     { return copyPending ? 'hide' : ''; },
                 '.copyingMessage': function()
@@ -541,6 +541,16 @@ blist.datasetControls.editPublishedMessage = function()
         }
 
         firstRun = false;
+    };
+
+    var datasetEditableMessage = function(data) {
+        if (blist.dataset.isImmutable()) {
+            return $.t('screens.ds.dataset_status.immutable');
+        } else {
+            return $.t('screens.ds.dataset_status.needs_copy', {
+                status: $.t('screens.ds.dataset_status.needs_copy_status.' + data.status)
+            });
+        }
     };
 
     var wasEverInProgress = false;

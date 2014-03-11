@@ -233,9 +233,16 @@ var Dataset = ServerModel.extend({
         return this.publicationStage == 'snapshotted';
     },
 
+    forceEditable: function() {
+        return $.parseParams('$$force_editable') == 'true';
+    },
+
     isImmutable: function()
     {
-        return (this.isBlobby() || this.isGeoDataset());
+        if (this.forceEditable()) {
+            return false;
+        }
+        return (this.isBlobby() || this.isGeoDataset() || this.newBackend);
     },
 
     renderWithArcGISServer: function()
@@ -1297,12 +1304,16 @@ var Dataset = ServerModel.extend({
     getRelatedViewCount: function(callback)
     {
         var ds = this;
-        if ($.isBlank(ds._relatedViews) && $.isBlank(ds._relViewCount))
-        { ds._loadRelatedViews(function(c) { callback(c); }, true); }
-        else if (!$.isBlank(ds._relViewCount))
-        { callback(ds._relViewCount); }
-        else
-        { callback(ds._relatedViews.length); }
+        var viewCount;
+
+        if ($.isBlank(ds._relatedViews) && $.isBlank(ds._relViewCount)) {
+            ds._loadRelatedViews(function(c) { viewCount = c; }, true);
+        } else if (!$.isBlank(ds._relViewCount)) {
+            viewCount = ds._relViewCount;
+        } else {
+            viewCount = ds._relatedViews.length;
+        }
+        callback(viewCount);
     },
 
     getParentDataset: function(callback)
@@ -2797,6 +2808,9 @@ var Dataset = ServerModel.extend({
             url += '?$$version=2.0';
             rd = $.extend(true, {}, rd);
             delete rd[':id'];
+        }
+        if (ds._useSDOA2) {
+            rd = [rd];
         }
         ds.makeRequest({url: url, isSODA: ds._useSODA2,
             type: 'POST', data: JSON.stringify(rd), batch: isBatch,

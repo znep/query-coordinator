@@ -1128,6 +1128,10 @@ var Dataset = ServerModel.extend({
         }
         this.makeRequest({ url: '/views/' + this.id + '.json', params: params, type: 'POST' });
 
+        console.log('_dataOutOfDate = ' + blist.dataset._dataOutOfDate);
+        console.log('_truthLastModified = ' + blist.dataset._truthLastModified);
+        console.log('_lastModified = ' + blist.dataset._lastModified);
+
         // store in local storage.
         Dataset.saveRecentDataset(this);
     },

@@ -20,6 +20,14 @@ var ServerModel = Model.extend({
         this.accessType = accessType;
     },
 
+    // Capture custom SODA 2 header values in the dataset model.
+    _recordCustomHeaderValues: function (xhr) {
+        console.log("recording headers");
+        this._dataOutOfDate = xhr.getResponseHeader('X-SODA2-Data-Out-Of-Date') || false;
+        this._truthLastModified = xhr.getResponseHeader('X-SODA2-Truth-Last-Modified') || Date.now();
+        this._lastModified = xhr.getResponseHeader('Last-Modified') || Date.now();
+    },
+
     makeRequest: function(req)
     {
         var model = this;
@@ -59,6 +67,8 @@ var ServerModel = Model.extend({
                 else if (s >= 500 && s < 600)
                 { throw new Error('There was a problem with our servers'); }
 
+                // TODO Not sure this is best place to capture this information. Maybe row-set instead?
+                model._recordCustomHeaderValues(xhr);
                 model._finishRequest();
                 if (_.isFunction(allCompleteCallback)) { allCompleteCallback.apply(this, arguments); }
                 if (_.isFunction(callback)) { callback.apply(this, arguments); }

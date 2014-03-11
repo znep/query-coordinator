@@ -197,6 +197,10 @@ class CurrentDomain
     return @@current_domain[:data].features || Hashie::Mash.new
   end
 
+  def self.feature_flags
+    return @@current_domain[:data].feature_flags || Hashie::Mash.new
+  end
+
   def self.modules
     if @@current_domain[:modules].nil?
       @@current_domain[:modules] = ((@@current_domain[:data].data['accountModules'] || []) +

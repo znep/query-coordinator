@@ -12,4 +12,8 @@ class Metadata < Model
   def accessPoints
     data['accessPoints']
   end
+
+  def feature_flags
+    data['feature_flags']
+  end
 end

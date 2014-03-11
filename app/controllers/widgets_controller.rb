@@ -61,4 +61,13 @@ class WidgetsController < ApplicationController
       render
     end
   end
+
+  def flag_check
+    @view = View.find(params[:id])
+    return if @view.nil?
+
+    respond_to do |format|
+      format.data { render :json => FeatureFlags.derive(@view, request, true) }
+    end
+  end
 end

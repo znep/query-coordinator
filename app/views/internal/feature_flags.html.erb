@@ -1,0 +1,60 @@
+<% content_for :head do %>
+<%= rendered_stylesheet_tag 'internal' %>
+<title>Feature Flags for Domain <%= @domain.try(:name) %>
+    | Internal Panel | <%= CurrentDomain.strings.site_title %></title>
+<% end %>
+
+<%= render :partial => 'left_nav' %>
+
+<div class="contentBox withLeftNavigation featureFlags">
+  <%= form_tag('/internal/orgs/' + @domain.organizationId.to_s +
+    '/domains/' + @domain.cname + '/set_feature_flags') do %>
+  <%- @flags.each do |flag, flag_config| %>
+    <div class="clearfix" style="clear: both">
+        <div class="flagBox">
+            <div><%= flag %></div>
+            <p><%= flag_config.description %></p>
+        </div>
+        <div class="valueBox">
+            <p>Default Value: <%= flag_config.defaultValue %></p>
+            <%= radio_button_tag "feature_flags[#{flag}]", true, flag_config.value === true %>
+                <label for="feature_flags_<%= flag %>_true">true</label>
+            <%= radio_button_tag "feature_flags[#{flag}]", false, flag_config.value === false %>
+                <label for="feature_flags_<%= flag %>_false">false</label>
+            <%= radio_button_tag "feature_flags[#{flag}]", nil, String === flag_config.value, class: 'other' %>
+                <label for="feature_flags_<%= flag %>_">Other:</label>
+                <%- if flag_config.expectedValues? %>
+                <select name="feature_flags[<%= flag %>]">
+                    <%= options_for_select flag_config.expectedValues.split(' ').
+                        reject { |value| ['true', 'false'].include? value }, flag_config.value %>
+                </select>
+                <%- else %>
+                    <input type="text" name="feature_flags[<%= flag %>]" value="<%= flag_config.value if String === flag_config.value %>" />
+                <%- end %>
+        </div>
+    </div>
+  <%- end %>
+    <input type="submit" value="Update" />
+  <%- end %>
+</div>
+
+<% content_for :js_footer do %>
+  <script type="text/javascript">
+    $(function() {
+        var $form = $('.featureFlags form');
+        $('input:text, select', $form).bind('focus change', function()
+        {
+            $(this).siblings('input.other').click();
+        });
+        $form.submit(function(e)
+        {
+            $('.valueBox').each(function()
+            {
+                var $this = $(this);
+                if (!$this.find('.other').is(':checked'))
+                { $this.find('input:text, select').prop('disabled', true); }
+            });
+        });
+    });
+  </script>
+<% end %>

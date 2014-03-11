@@ -85,6 +85,10 @@ Frontend::Application.routes do
         :action => 'add_module_to_domain', :constraints => {:domain_id => /(\w|-|\.)+/}
       match '/domains/:domain_id/flush_cache',
         :action => 'flush_cache', :constraints => {:domain_id => /(\w|-|\.)+/}
+      match '/orgs/:org_id/domains/:domain_id/feature_flags',
+        :action => 'feature_flags', :constraints => {:domain_id => /(\w|-|\.)+/}
+      post '/orgs/:org_id/domains/:domain_id/set_feature_flags',
+        :action => 'set_feature_flags', :constraints => {:domain_id => /(\w|-|\.)+/}
       match '/orgs/:org_id/domains/:domain_id/site_config/:id',
         :action => 'show_config', :constraints => {:domain_id => /(\w|-|\.)+/}
       post '/orgs/:org_id/domains/:domain_id/site_config/:id/property',
@@ -271,6 +275,8 @@ Frontend::Application.routes do
       get ':category/:view_name/:id/about', :action => 'about', :as => :about_view
       match ':category/:view_name/:id/alt', :action => 'alt',
         :via => [:get, :post], :as => :alt_view
+      match ':category/:view_name/:id/flags', :action => 'flag_check',
+        :via => [:get, :post], :as => :flag_check
       match ':category/:view_name/:id/edit_metadata', :action => 'edit_metadata',
         :via => [:get, :post], :as => :edit_view_metadata
     end

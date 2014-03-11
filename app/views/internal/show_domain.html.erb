@@ -63,8 +63,9 @@
 
       <h2>Other Configurations</h2>
       <ul>
+        <li><a href="/internal/orgs/<%= @domain.organizationId %>/domains/<%= @domain.cname %>/feature_flags">Feature Flags</a></li>
         <%- @configs.each do |conf| -%>
-        <%- next if conf.type == 'site_theme' -%>
+        <%- next if conf.type == 'site_theme' || conf.type == 'feature_flags' -%>
         <li<%= " class='isDefault'" if conf.default %>>
         <a href='/internal/orgs/<%= @domain.organizationId
           %>/domains/<%= @domain.cname %>/site_config/<%= conf.id %>'>

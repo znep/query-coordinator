@@ -108,4 +108,9 @@ class Domain < Model
     end
   end
 
+  def feature_flags
+    conf = default_configuration('feature_flags')
+    FeatureFlags.merge({}, conf.try(:properties) || {})
+  end
+
 end

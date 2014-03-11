@@ -39,6 +39,3 @@ group :development, :test do
   gem 'thin'
 end
 
-group :development do
-  gem 'ruby-debug19'
-end

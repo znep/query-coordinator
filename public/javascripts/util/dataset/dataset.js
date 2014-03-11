@@ -2017,6 +2017,9 @@ var Dataset = ServerModel.extend({
         }
         ds.displayName = getDisplayName(ds);
 
+        // Legacy support for SODA1 search strings.
+        ds.searchString = ds.searchString || null;
+
         // If we are an invalid filter, we're not really that invalid, because
         // the core server has already removed the offending clause. So just
         // ignore the message, and the view will load fine without the clause
@@ -2345,6 +2348,7 @@ var Dataset = ServerModel.extend({
                     c.format.group_function = blist.datatypes.groupFunctionFromSoda2(g.groupFunction);
                     return { columnId: c.id, type: 'column' };
                 }));
+            ds.searchString = ds.metadata.jsonQuery.search;
 
             // It's possible select was only set for aggregated columns; so fix it up to have grouped, too
             if (!_.isEmpty(ds.metadata.jsonQuery.group))
@@ -2392,6 +2396,7 @@ var Dataset = ServerModel.extend({
                         return { columnFieldName: c.fieldName, ascending: ob.ascending };
                     }));
             }
+            ds.metadata.jsonQuery.search = ds.searchString;
             if (!_.isEmpty(ds.metadata.jsonQuery.group))
             {
                 ds.metadata.jsonQuery.select = _.compact(_.map(ds.metadata.jsonQuery.group, function(g)

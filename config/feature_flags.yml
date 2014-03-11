@@ -1,0 +1,16 @@
+###
+#
+# Flag key name is the key.
+#
+# Description should also explain the expected values. This is messaging for client services.
+# Possible values should not have spaces.
+# expectedValues are delimited by space.
+#   Because I don't like YAML arrays, and it enforces simple values.
+#
+# This is truth. Anything not in this list gets ignored.
+# 
+
+new_charts: 
+  description: New Charts
+  defaultValue: nextgen
+  expectedValues: nextgen old

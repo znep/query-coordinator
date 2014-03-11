@@ -166,6 +166,15 @@ class DatasetsController < ApplicationController
     @view.register_opening(request.referrer)
   end
 
+  def flag_check
+    @view = get_view(params[:id])
+    return if @view.nil?
+
+    respond_to do |format|
+      format.data { render :json => FeatureFlags.derive(@view, request) }
+    end
+  end
+
 # other actions
   def external
     view = View.find_external(params[:id])

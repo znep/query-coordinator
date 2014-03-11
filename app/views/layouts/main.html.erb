@@ -200,6 +200,7 @@ http://www.socrata.com
   <%- end -%>
 
   <script type="text/javascript">
+    blist.feature_flags = <%= raw FeatureFlags.derive(@view, request).to_json %>;
     blist.namespace.fetch('blist.configuration');
     blist.configuration.strings = <%= safe_json(CurrentDomain.strings) %>;
 

@@ -211,6 +211,55 @@ class InternalController < ApplicationController
     end
   end
 
+  def feature_flags
+    @domain = Domain.find(params[:domain_id])
+    @flags = Hashie::Mash.new
+    domain_flags = @domain.feature_flags
+    FEATURE_FLAGS.each do |flag, fc|
+      @flags[flag] = fc
+      @flags[flag].value = domain_flags[flag]
+    end
+  end
+
+  def set_feature_flags
+    @domain = Domain.find(params[:domain_id])
+    config = @domain.default_configuration('feature_flags')
+
+    if config.nil?
+      begin
+        config = ::Configuration.create(
+          'name' => 'Feature Flags',
+          'default' => true,
+          'type' => 'feature_flags',
+          'parentId' => nil,
+          'domainCName' => params[:domain_id]
+        )
+      rescue CoreServer::CoreServerError => e
+        flash.now[:error] = e.error_message
+        return (render 'shared/error', :status => :internal_server_error)
+      end
+    end
+
+    properties = config.properties
+    CoreServer::Base.connection.batch_request do |batch_id|
+      params['feature_flags'].each do |flag, value|
+        next unless FeatureFlags.list.include? flag
+        processed_value = FeatureFlags.process_value(value).to_s
+        next if properties[flag] == processed_value
+        if properties.has_key?(flag)
+          config.update_property(flag, processed_value, batch_id)
+        else
+          config.create_property(flag, processed_value, batch_id)
+        end
+      end
+    end
+
+    respond_to do |format|
+      format.html { redirect_to "/internal/orgs/#{params[:org_id]}/domains/#{params[:domain_id]}/feature_flags" }
+      format.data { render :json => { :success => true } }
+    end
+  end
+
   def flush_cache
     CurrentDomain.flag_out_of_date!(params[:domain_id])
 

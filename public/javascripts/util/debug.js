@@ -155,3 +155,15 @@ window.addDataset = function(uid)
     $(".repeater .addValue:eq(1)").click();
     $("input[name=dataset_name]").val(uid).blur();
 };
+
+window.logDebug = function() {
+    if (!(console && console.log)) {
+        return;
+    }
+    if (window.blistEnv === 'development' && $.deepGetStringField(window.blist, 'configuration.logging')) {
+        var n = Date.now();
+        var now = Date.strftime('%m-%d-%y %T', n / 1000.0) + (n % 1000.0 / 1000.0).toFixed(3) + ':';
+        [].unshift.call(arguments, now);
+        console.log.apply(console, arguments);
+    }
+};

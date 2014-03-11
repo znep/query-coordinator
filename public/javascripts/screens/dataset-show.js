@@ -271,8 +271,7 @@ $(function()
             var $opts = $('#sidebarOptions');
             $opts.find('li').removeClass('active');
 
-            var $activeLink = $('#sidebarOptions a[data-paneName=' +
-                primaryPane + ']');
+            var $activeLink = $('#sidebarOptions').find('a[data-paneName=' + primaryPane + ']');
             if ($activeLink.length > 0)
             {
                 $opts.css('background-color', $activeLink.css('background-color'))
@@ -294,25 +293,27 @@ $(function()
         setSidebarTop: false,
         view: blist.dataset
     });
-    $('#sidebarOptions a[data-paneName]').each(function()
-    {
-        var $a = $(this);
-        var dataPaneName = $a.attr('data-paneName');
-        if (datasetPageNS.sidebar.hasPane(dataPaneName))
-        {
-            $a.click(function(e)
-            {
+
+    // Conditionally hide sidebar option links based on whether a sidebar pane is available.
+    $('#sidebarOptions').find('a[data-paneName]').each(function() {
+        var $anchor = $(this);
+        var dataPaneName = $anchor.attr('data-paneName');
+        if (datasetPageNS.sidebar.hasPane(dataPaneName)) {
+            $anchor.click(function(e) {
                 e.preventDefault();
                 datasetPageNS.sidebar.show(dataPaneName);
-                $.analytics.trackEvent('dataset page (v4-chrome)',
-                    dataPaneName + ' pane opened', blist.dataset.id);
+                $.analytics.trackEvent(
+                    'dataset page (v4-chrome)',
+                    dataPaneName + ' pane opened',
+                    blist.dataset.id
+                );
             });
+        } else {
+            $anchor.closest('li').hide();
         }
-        else
-        { $a.closest('li').hide(); }
     });
 
-    datasetPageNS.$moreViewsTab = $('#sidebarOptions a.moreViews');
+    datasetPageNS.$moreViewsTab = $('#sidebarOptions').find('a.moreViews');
     if (datasetPageNS.sidebar.hasPane('moreViews.viewList'))
     {
         // Wait until other requests have been fired first
@@ -325,7 +326,7 @@ $(function()
             });
         });
     }
-    datasetPageNS.$feedTab = $('#sidebarOptions a.feed');
+    datasetPageNS.$feedTab = $('#sidebarOptions').find('a.feed');
     if (datasetPageNS.$feedTab.is(':visible'))
     {
         datasetPageNS.$feedTab

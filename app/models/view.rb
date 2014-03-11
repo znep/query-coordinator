@@ -744,7 +744,7 @@ class View < Model
   end
 
   def tweet
-    return I18n.t('controls.common.share.share_text', :name => name, :site => CurrentDomain.strings.company) + short_view_url(self)
+    I18n.t('controls.common.share.share_text', :name => name, :site => CurrentDomain.strings.company) + short_view_url(self)
   end
 
   def blobs
@@ -773,12 +773,14 @@ class View < Model
       end
       @blobs = b
     end
-    return @blobs
+
+    @blobs
   end
 
   def has_importable_type?
-    return false if !is_href?
-    return blobs.any? {|b| ['csv', 'tsv', 'xls', 'xlsx', 'esri', 'kml', 'kmz'].include?(b['type'].downcase)}
+    return false unless is_href?
+
+    blobs.any? {|b| ['csv', 'tsv', 'xls', 'xlsx', 'esri', 'kml', 'kmz'].include?(b['type'].downcase)}
   end
 
   def domain_icon_href
@@ -787,58 +789,53 @@ class View < Model
   end
 
   def user_role(user_id)
-    if (user_id == tableAuthor.id)
-      "Dataset Author"
-    elsif (user_id == owner.id)
-      "View Author"
+    if user_id == tableAuthor.id
+      'Dataset Author'
+    elsif user_id == owner.id
+      'View Author'
     elsif owner_users.any? {|cu| cu == user_id}
-      "Dataset Owner"
+      'Dataset Owner'
     elsif contributor_users.any? {|cu| cu == user_id}
-      "Dataset Contributor"
+      'Dataset Contributor'
     elsif viewer_users.any? {|vu| vu == user_id}
-      "Dataset Viewer"
+      'Dataset Viewer'
     else
-      ""
+      ''
     end
   end
 
   # Whether or not the user has priviliges above an anonymous user
   def user_granted?(user)
-    if user
-      return user_role(user.id).present?
-    end
-    false
+    user && user_role(user.id).present?
   end
 
   def can_edit?
-    data['rights'] && (data['rights'].include?('write') ||
-      data['rights'].include?('add') ||
-      data['rights'].include?('delete')) && !is_grouped? && !is_api? && !newBackend
+    mutation_rights? && !is_grouped? && !is_api? && !newBackend?
+  end
+
+  def rights_include?(right)
+    (data || {}).fetch('rights', []).include?(right)
+  end
+
+  def mutation_rights?
+    %w(add delete write).any? { |right| rights_include?(right) }
   end
 
   def can_read?
-    data['rights'] && data['rights'].include?('read')
+    rights_include?('read')
   end
 
   def can_add?
-    data['rights'] && data['rights'].include?('add') && !newBackend
+    rights_include?('add') && !newBackend?
   end
 
-  def has_rights?(right)
-    data['rights'] && data['rights'].include?(right)
+  def has_rights?(*rights)
+    Array[rights].flatten.all? { |right| rights_include?(right) }
   end
-
 
   def users_with_grant(grant_type)
-    (grants || []).select {|g| !g.flag?('public') &&
-      (g.type || '').downcase == grant_type}.
-      collect do |g|
-        if !g.userId.nil?
-          g.userId
-        else
-          g.userEmail
-        end
-      end.flatten.sort.uniq
+    (grants || []).select { |grant| !grant.flag?('public') && grant.type.to_s.downcase == grant_type }.
+      map { |matched_grant| matched_grant.userId || matched_grant.userEmail }.flatten.sort.uniq
   end
 
   def owner_users
@@ -857,7 +854,7 @@ class View < Model
     filtered_grants = (grants || []).reject {|g| g.flag?('public')}
     user_ids = Hash.new
     filtered_grants.each do |g|
-      if !g.userId.nil?
+      if g.userId.present?
         user_ids[g.userId] = true
       end
     end
@@ -977,7 +974,7 @@ class View < Model
   end
 
   def is_immutable?
-    is_blobby? || is_geo?
+    is_blobby? || is_geo? || newBackend?
   end
 
   def can_email?
@@ -989,18 +986,18 @@ class View < Model
   end
 
   def modern_display_type
-    return {
-          'annotatedtimeline' => 'chart',
-          'imagesparkline' => 'chart',
-          'areachart' => 'chart',
-          'barchart' => 'chart',
-          'columnchart' => 'chart',
-          'linechart' => 'chart',
-          'piechart' => 'chart',
+    {
+      'annotatedtimeline' => 'chart',
+      'imagesparkline' => 'chart',
+      'areachart' => 'chart',
+      'barchart' => 'chart',
+      'columnchart' => 'chart',
+      'linechart' => 'chart',
+      'piechart' => 'chart',
 
-          'intensitymap' => 'map',
-          'geomap' => 'map'
-    }[displayType] || displayType
+      'intensitymap' => 'map',
+      'geomap' => 'map'
+    }.fetch(displayType, displayType)
   end
 
   # Retrieve the display.  The display model represents the view's display and controls how the view is rendered.

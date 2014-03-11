@@ -161,7 +161,6 @@
 
         hasPane: function(configName)
         {
-            var sidebarObj = this;
             var nameParts = getConfigNames(configName);
             var outerConfig = paneConfigs[nameParts.primary];
             if ($.isBlank(outerConfig)) { return false; }

@@ -203,6 +203,7 @@ http://www.socrata.com
     blist.feature_flags = <%= raw FeatureFlags.derive(@view, request).to_json %>;
     blist.namespace.fetch('blist.configuration');
     blist.configuration.strings = <%= safe_json(CurrentDomain.strings) %>;
+    blist.configuration.logging = <%= ENV.fetch('JS_LOGGING', false) %>;
 
     <%- if DOWNTIME.should_display(DateTime.now) -%>
       blist.configuration.maintenance_hash = '<%= raw DOWNTIME.hash %>';

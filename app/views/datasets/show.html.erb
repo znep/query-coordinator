@@ -1,6 +1,6 @@
 <% content_for :head do %>
   <%- if @view.is_tabular? -%>
-  <%= auto_discovery_link_tag(:rss, "/views/#{@view.id}/rows.rss") %>
+    <%= auto_discovery_link_tag(:rss, "/views/#{@view.id}/rows.rss") %>
   <%- end -%>
   <%= rendered_stylesheet_tag 'base-control-third-party' %>
   <%= rendered_stylesheet_tag 'dataset-show' %>
@@ -26,6 +26,7 @@
 
 <%- sidebar_position = CurrentDomain.property(:position, :sidebar) || 'right' -%>
 <%- default_pane = CurrentDomain.property(:default_pane, :sidebar) -%>
+
 <% content_for :dataset_actions do %>
   <div id="actionBox" class="clearfix">
     <ul id="toolbarOptions" class="clearfix">
@@ -197,9 +198,8 @@
     </div>
 
     <%- if ( @view.is_tabular? || @view.is_geo? ) && !@view.is_form? -%>
-    <%= render :partial => 'templates/fatrow' %>
-
-    <%= render :partial => 'templates/page_render_type' %>
+      <%= render :partial => 'templates/fatrow' %>
+      <%= render :partial => 'templates/page_render_type' %>
     <%- end -%>
   </div>
 
@@ -231,7 +231,11 @@
 <%= render :partial => 'templates/fatrow_header' %>
 <div class="editAlertTemplate">
   <div class="editAlert">
-    <p class="editMessage"><%= t('screens.ds.dataset_status.needs_copy') %></p>
+    <p class="editMessage">
+      <%= @view.is_immutable? ?
+            t('screens.ds.dataset_status.immutable') :
+            t('screens.ds.dataset_status.needs_copy') %>
+    </p>
     <p class="copyingMessage"><%= t('screens.ds.dataset_status.copy_in_progress') %></p>
     <p class="doneCopyingMessage hide"><%= t('screens.ds.dataset_status.copy_available') %></p>
     <a href="#Unpublished" class="button editPublished"><%= t('screens.ds.dataset_status.edit_dataset_button') %></a>
@@ -272,7 +276,7 @@
     <%= raw @view.display.render_inline_setup_js('renderTypeContainer', self, params['debug_assets']) %>
 
     <%- if !@row.nil? -%>
-    blist.initialRowId = "<%= @row['sid'] %>";
+      blist.initialRowId = "<%= @row['sid'] %>";
     <%- end -%>
 
     blist.sidebarPosition = "<%= sidebar_position %>";
@@ -285,7 +289,7 @@
     blist.configuration.oldChartConfigForced = <%= module_enabled?(:old_chart_config) == true %>;
     blist.configuration.newCharts = {};
     <%- [:newBarChart, :newLineChart].each do |aModule| -%>
-    blist.configuration.newCharts.<%= aModule %> = <%= module_enabled?(aModule) %>
+      blist.configuration.newCharts.<%= aModule %> = <%= module_enabled?(aModule) %>
     <%- end -%>
 
     <%# Namespace to keep track of disabled sidebar sections %>
@@ -300,12 +304,9 @@
 
     <%# Edit pane %>
     blist.sidebarHidden.edit = blist.sidebarHidden.edit || {};
-    blist.sidebarHidden.edit.appendReplace = <%= (!@view.is_unpublished? && !@view.is_geo? &&
-      !@view.is_blobby?) || @view.is_href? || !@view.flag?('default') || !@view.has_rights?('add') %>;
-    blist.sidebarHidden.edit.addColumn = <%= !@view.is_unpublished? || !@view.is_blist? ||
-      !@view.has_rights?('add_column') %>;
-    blist.sidebarHidden.edit.redirect = <%= !@view.is_published? || !@view.is_blist? ||
-      !@view.can_edit? || current_user.blank? %>;
+    blist.sidebarHidden.edit.appendReplace = <%= hide_append_replace? %>;
+    blist.sidebarHidden.edit.addColumn = <%= hide_add_column? %>;
+    blist.sidebarHidden.edit.redirect = <%= hide_redirect? %>;
 
     <%# Manage %>
     blist.sidebarHidden.manage = blist.sidebarHidden.manage || {};
@@ -331,8 +332,7 @@
 
     <%# Filter pane %>
     blist.sidebarHidden.filter = blist.sidebarHidden.filter || {};
-    blist.sidebarHidden.filter.filterDataset = <%= !@view.is_tabular? ||
-      @view.is_form? %>;
+    blist.sidebarHidden.filter.filterDataset = <%= !@view.is_tabular? || @view.is_form? %>;
 
     <%# Visualize pane %>
     blist.sidebarHidden.visualize = blist.sidebarHidden.visualize || {};

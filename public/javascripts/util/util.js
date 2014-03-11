@@ -911,11 +911,9 @@ $.assert = function(condition, message)
     if (!condition)
     {
         console.error("Assertion failed: " + message);
-        //debugger;
         if ($.assertThrowOnFail) { throw message; };
     }
 };
-
 
 $.parseParams = function(query) {
     var re = /([^&=]+)=?([^&]*)/g;
@@ -944,6 +942,7 @@ $.parseParams = function(query) {
     }
     return params;
 };
+
 
 // gives you a faster jquery this on each iter
 jQuery.fn.quickEach = (function() {

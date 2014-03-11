@@ -295,5 +295,18 @@ default_configs:
         value: true
     update_data: {}
 
+  feature_flags: !ruby/object:Configuration
+    data:
+      id: 9
+      name: Feature Flags
+      default: true
+      domainCName: localhost
+      type: feature_flags
+      updatedAt: 1352709746
+      properties:
+      - name: new_charts
+        value: true
+    update_data: {}
+
 update_data: {}
 

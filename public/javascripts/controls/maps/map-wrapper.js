@@ -314,6 +314,7 @@
             if (mapObj._primaryView)
             {
                 mapObj._primaryView.bind('reloaded', function() {
+                    mapObj.flyoutHandler().close();
                     var reInitCondFmt = function(subview)
                     {
                         var condFmt = $.deepGet(mapObj._primaryView.metadata,
@@ -762,6 +763,7 @@
 
             mapObj._super();
             mapObj.closePopup();
+            mapObj.flyoutHandler().close();
 
             if (blist.mainSpinner)
             { blist.mainSpinner.setMetric('main'); }

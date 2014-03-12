@@ -442,7 +442,7 @@
             var reload = {
                 preProcess: function()
                 {
-                    layerObj._parent.closePopup();
+                    layerObj.flyoutHandler().close();
                     layerObj._$flyoutTemplate.remove();
                     delete layerObj._$flyoutTemplate;
                     delete layerObj.richRenderer;

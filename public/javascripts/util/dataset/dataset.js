@@ -1751,6 +1751,7 @@ var Dataset = ServerModel.extend({
             }});
     },
 
+    // TODO IDE says this is an unused method...
     waitForPublishingAvailable: function(successCallback, timeout)
     {
         var ds = this;
@@ -1948,6 +1949,7 @@ var Dataset = ServerModel.extend({
         return null;
     },
 
+    // TODO IDE says this is an unused method
     preferredImageType: function()
     {
         var ds = this;
@@ -2544,6 +2546,7 @@ var Dataset = ServerModel.extend({
         return gf;
     },
 
+    // TODO IDE says this is an unused method
     _adjustVisibleColumns: function(visColIds)
     {
         var ds = this;
@@ -2657,6 +2660,13 @@ var Dataset = ServerModel.extend({
                     { orderBys: (ds.query || {}).orderBys,
                         filterCondition: ds.cleanFilters(), groupBys: (ds.query || {}).groupBys,
                         groupFuncs: ds._getGroupedFunctions() }));
+    },
+
+    // Capture custom SODA 2 header values in the dataset model.
+    _captureSodaServerHeaders: function (xhr) {
+        this._dataOutOfDate = xhr.getResponseHeader('X-SODA2-Data-Out-Of-Date') || false;
+        this._truthLastModified = xhr.getResponseHeader('X-SODA2-Truth-Last-Modified') || Date.now();
+        this._lastModified = xhr.getResponseHeader('Last-Modified') || Date.now();
     },
 
     _serverCreateRow: function(req, isBatch)
@@ -3300,10 +3310,8 @@ var _cleanedMostRecent = function(mostRecents)
     // we sort THEN dedupe so that we keep the most recent time always.
     var sorted = _.sortBy(mostRecents, function(x) { return x.at * -1; });
     var unique = _.uniq(sorted, true, function(x) { return x.id; });
-    var pruned = unique.slice(0, 10);
-    return pruned;
+    return unique.slice(0, 10); // pruned
 }
-
 
 Dataset._create = function(clone, id, successCallback, errorCallback, isBatch, isAnonymous, isResourceName)
 {
@@ -3324,14 +3332,15 @@ Dataset._create = function(clone, id, successCallback, errorCallback, isBatch, i
         else if ((cachedView !== false) && _.isFunction(successCallback))
         {
             var ds;
-            if (cachedView instanceof Dataset)
-            {
-                if (clone || cachedView.isAnonymous() != isAnonymous)
-                { ds = cachedView.clone(); }
-                else { ds = cachedView; }
+            if (cachedView instanceof Dataset) {
+                if (clone || cachedView.isAnonymous() != isAnonymous) {
+                    ds = cachedView.clone();
+                } else {
+                    ds = cachedView;
+                }
+            } else {
+                ds = new Dataset(cachedView);
             }
-            else
-            { ds = new Dataset(cachedView); }
             if (isAnonymous) { ds.isAnonymous(isAnonymous); }
             successCallback(ds);
         }
@@ -3342,26 +3351,35 @@ Dataset._create = function(clone, id, successCallback, errorCallback, isBatch, i
             url: isResourceName ? '/api/views.json' : '/api/views/' + id + '.json',
             headers: {'X-Socrata-Federation': 'Honey Badger'},
             params: isResourceName ? { method: 'getByResourceName', name: id } : {},
-            success: function(view)
-                {
-                    if (_.isUndefined(blist.viewCache[view.id]))
-                    { blist.viewCache[view.id] = view; }
-                    if (_.isUndefined(blist.sharedDatasetCache[view.id]))
-                    { blist.sharedDatasetCache[view.id] = new Dataset(view); }
-                    if (!$.isBlank(view.resourceName) && _.isUndefined(blist.viewCache[view.resourceName]))
-                    { blist.viewCache[view.resourceName] = blist.viewCache[view.id]; }
-                    if (!$.isBlank(view.resourceName) &&
-                        _.isUndefined(blist.sharedDatasetCache[view.resourceName]))
-                    { blist.sharedDatasetCache[view.resourceName] = blist.sharedDatasetCache[view.id]; }
+            success: function(view, statusMsg, xhr) {
+                if (_.isUndefined(blist.viewCache[view.id])) {
+                    blist.viewCache[view.id] = view;
+                }
 
-                    if (_.isFunction(successCallback))
-                    {
-                        var ds = clone || blist.sharedDatasetCache[view.id].isAnonymous() != isAnonymous ?
-                            new Dataset(view) : blist.sharedDatasetCache[view.id];
-                        if (isAnonymous) { ds.isAnonymous(isAnonymous); }
-                        successCallback(ds);
+                if (_.isUndefined(blist.sharedDatasetCache[view.id])) {
+                    blist.sharedDatasetCache[view.id] = new Dataset(view);
+                }
+
+                if (!$.isBlank(view.resourceName) && _.isUndefined(blist.viewCache[view.resourceName])) {
+                    blist.viewCache[view.resourceName] = blist.viewCache[view.id];
+                }
+
+                if (!$.isBlank(view.resourceName) && _.isUndefined(blist.sharedDatasetCache[view.resourceName])) {
+                    blist.sharedDatasetCache[view.resourceName] = blist.sharedDatasetCache[view.id];
+                }
+
+                if (_.isFunction(successCallback)) {
+                    var ds = null;
+                    if (clone || blist.sharedDatasetCache[view.id].isAnonymous() != isAnonymous) {
+                        ds = new Dataset(view)
+                    } else {
+                        ds = blist.sharedDatasetCache[view.id];
                     }
-                },
+                    if (isAnonymous) { ds.isAnonymous(isAnonymous); }
+
+                    successCallback(ds);
+                }
+            },
             batch: isBatch,
             anonymous: isAnonymous,
             pageCache: !isBatch,

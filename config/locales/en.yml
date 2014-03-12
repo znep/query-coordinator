@@ -802,7 +802,7 @@ en:
       title: Page Settings
   date:
     abbr_month_names:
-    - 
+    -
     - Jan
     - Feb
     - Mar
@@ -1365,7 +1365,7 @@ en:
         share_facebook: Share on Facebook
         share_twitter: Share on Twitter
         snapshot_notice: This is a previously published version of the dataset. It is archived and cannot be modified.
-        snapshot_title: 
+        snapshot_title:
         snapshot_title_html: Snapshotted %{date}
         snapshot_unsavable: Snapshotted datasets and views cannot be created or modified
         subscribe: Subscribe to Changes
@@ -1383,6 +1383,7 @@ en:
           table: table
         working_copy_notice: This is a copy of the dataset that allows you to make changes to it. It is not visible to others until you publish it.
         working_copy_title: ! '[Working Copy]'
+        out_of_date: This dataset is out of date by %{seconds} seconds
       blob:
         data_extraction: This data extraction tool or application is available via the link to the right
         download: Download
@@ -1761,7 +1762,7 @@ en:
           money:
             abbreviated: Abbreviated
             currency: Currency
-            format_mask_warning: 
+            format_mask_warning:
             no_precision: None
             precision: Precision
             title: Money Formatting
@@ -2074,7 +2075,7 @@ en:
             delete: Delete this view
             expand: Click to expand
           no_results: There are no results
-          no_results_html: 
+          no_results_html:
           pagination:
             last: See last view
             next: See next %{count} views

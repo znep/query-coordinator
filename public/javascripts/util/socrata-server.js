@@ -20,34 +20,27 @@ var ServerModel = Model.extend({
         this.accessType = accessType;
     },
 
-    // Capture custom SODA 2 header values in the dataset model.
-    _recordCustomHeaderValues: function (xhr) {
-        console.log("recording headers");
-        this._dataOutOfDate = xhr.getResponseHeader('X-SODA2-Data-Out-Of-Date') || false;
-        this._truthLastModified = xhr.getResponseHeader('X-SODA2-Truth-Last-Modified') || Date.now();
-        this._lastModified = xhr.getResponseHeader('Last-Modified') || Date.now();
-    },
-
     makeRequest: function(req)
     {
         var model = this;
         var isCache = req.pageCache;
+
         var finishCallback = function(callback, allCompleteCallback)
         {
-            return function(d, ts, xhr)
+            return function(dataset, statusMsg, xhr)
             {
-                var s = (xhr || {}).status;
+                var statusCode = (xhr || {}).status;
                 // Support retry responses from core server
-                if (s == 202)
+                if (statusCode == 202)
                 {
                     var retryTime = req.retryTime || 5000;
-                    model.trigger('request_status', [((d || {}).details || {}).message ||
+                    model.trigger('request_status', [((dataset || {}).details || {}).message ||
                         'Our servers are still processing this request. Please be patient while it finishes.',
                         retryTime / 1000]);
 
                     if (_.isFunction(req.pending)) { req.pending.apply(this, arguments); }
 
-                    if (!$.isBlank(d) && !_.isUndefined(d.ticket))
+                    if (!$.isBlank(dataset) && !_.isUndefined(dataset.ticket))
                     {
                         // we have a ticket id, which means subsequent requests should
                         // be a little different
@@ -55,7 +48,7 @@ var ServerModel = Model.extend({
                         req.type = 'get';
 
                         var origData = req.data;
-                        req.data = { ticket: d.ticket };
+                        req.data = { ticket: dataset.ticket };
 
                         if (!$.isBlank(origData) && !_.isUndefined(origData.method))
                             req.data = origData.method;
@@ -64,11 +57,14 @@ var ServerModel = Model.extend({
                     setTimeout(function() { isCache ? $.Tache.Get(req) : $.ajax(req); }, retryTime);
                     return;
                 }
-                else if (s >= 500 && s < 600)
+                else if (statusCode >= 500 && statusCode < 600)
                 { throw new Error('There was a problem with our servers'); }
 
-                // TODO Not sure this is best place to capture this information. Maybe row-set instead?
-                model._recordCustomHeaderValues(xhr);
+                // TODO This is a terrible hack to serve until code in the Rails backend is settled
+                // TODO This doesn't handle filtered views, which could depend on OoD datasets
+                if (model.displayName == 'dataset') {
+                    model._captureSodaServerHeaders(xhr);
+                }
                 model._finishRequest();
                 if (_.isFunction(allCompleteCallback)) { allCompleteCallback.apply(this, arguments); }
                 if (_.isFunction(callback)) { callback.apply(this, arguments); }

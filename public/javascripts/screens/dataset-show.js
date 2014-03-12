@@ -779,6 +779,19 @@ $(function()
             });
         }
 
+        _.defer(function() {
+            // Update datasetName to reflect out-of-date status
+            if (blist.dataset._dataOutOfDate) {
+                $('#datasetName').after(
+                    '<span class="outOfDate">' +
+                        $.t('screens.ds.bar.out_of_date', {
+                            seconds: blist.dataset._truthLastModified - blist.dataset._lastModified
+                        }) +
+                    '.</span>'
+                );
+            }
+        });
+
         // report to events analytics for easier aggregation
         $.analytics.trackEvent('dataset page (v4-chrome)',
             'page loaded', blist.dataset.id);

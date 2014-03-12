@@ -38,7 +38,9 @@
     <%- if @view.is_unpublished? -%>
     <h3 class="unpublished" title="<%= t('screens.ds.bar.working_copy_notice') %>"><%= t('screens.ds.bar.working_copy_title') %></h3>
     <%- end -%>
-    <h2 id="datasetName" class="clipText currentViewName" title="<%= @view.name %>"><%= @view.name %></h2>
+    <h2 id="datasetName" class="clipText currentViewName" title="<%= @view.name %>">
+      <%= @view.name %>
+    </h2>
     <%- if @view.is_snapshotted? -%>
     <h3 class="snapshotted" title="<%= t('screens.ds.bar.snapshot_notice') %>"><%= t('screens.ds.bar.snapshot_title_html', date: blist_date_time(@view.publicationDate)) %></h3>
     <%- end -%>

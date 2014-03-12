@@ -592,7 +592,6 @@ $(function()
     }
 
     // Invalid views
-
     blist.dataset.bind('valid', function() { datasetPageNS.updateValidView(); });
 
     $('.viewError').text(blist.dataset.invalidMessage());
@@ -612,7 +611,7 @@ $(function()
         });
     }
 
-    // massage search params
+    // Massage search params
     $('#searchForm').submit(function() { if ($(this).find(
         '.searchField').val() == 'snuffleupadata') {
         _.times(20, function() {

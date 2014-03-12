@@ -2671,9 +2671,11 @@ var Dataset = ServerModel.extend({
 
     // Capture custom SODA 2 header values in the dataset model.
     _captureSodaServerHeaders: function (xhr) {
-        this._dataOutOfDate = xhr.getResponseHeader('X-SODA2-Data-Out-Of-Date') || false;
-        this._truthLastModified = xhr.getResponseHeader('X-SODA2-Truth-Last-Modified') || Date.now();
-        this._lastModified = xhr.getResponseHeader('Last-Modified') || Date.now();
+        if (xhr) {
+            this._dataOutOfDate = xhr.getResponseHeader('X-SODA2-Data-Out-Of-Date') || false;
+            this._truthLastModified = xhr.getResponseHeader('X-SODA2-Truth-Last-Modified') || Date.now();
+            this._lastModified = xhr.getResponseHeader('Last-Modified') || Date.now();
+        }
     },
 
     _serverCreateRow: function(req, isBatch)

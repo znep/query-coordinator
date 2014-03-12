@@ -826,9 +826,16 @@ d3base.seriesGrouping = {
                     index: sg.categoryIndexLookup[category],
                     data: {},
                     invalid: {},
+                    interpolated_null: {},
                     realRows: {}
                 };
                 virtualRow.data[sg.fixedColumn.lookup] = category;
+
+                if (blist.feature_flags.hide_interpolated_nulls)
+                {
+                    _.each(sg.virtualColumns, function(virtualCol)
+                    { virtualRow.interpolated_null[virtualCol.column.lookup] = true; });
+                }
 
                 sg.virtualRows[category] = virtualRow;
                 sg.virtualRowReadyCount ++;
@@ -855,6 +862,8 @@ d3base.seriesGrouping = {
                 }
 
                 virtualRow.data[virtualColumn.column.id] = row.data[valueCol.column.id];
+                if (blist.feature_flags.hide_interpolated_nulls)
+                { delete virtualRow.interpolated_null[virtualColumn.column.id]; }
                 virtualRow.realRows[virtualColumn.column.id] = row;
 
                 if (view.highlights && view.highlights[virtualRow.id] &&

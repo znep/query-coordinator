@@ -426,7 +426,12 @@ $.Control.registerMixin('d3_impl_bar', {
             var dataInView = _.filter(data, barInView);
             var splitData = _.groupBy(dataInView, function(row)
             {
-                if ($.isBlank(row.data[col.lookup]) ||
+                if (blist.feature_flags.hide_interpolated_nulls
+                    && row.interpolated_null[col.lookup])
+                {
+                    return 'undefined';
+                }
+                else if ($.isBlank(row.data[col.lookup]) ||
                     row.invalid[col.lookup])
                 {
                     return 'null';

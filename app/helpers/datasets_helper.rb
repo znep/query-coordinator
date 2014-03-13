@@ -299,8 +299,10 @@ module DatasetsHelper
   end
 
   def hide_append_replace?
-    (!@view.is_unpublished? && !@view.is_geo? && !@view.is_blobby?) || @view.newBackend? ||
-      @view.is_href? || !@view.flag?('default') || !@view.has_rights?('add')
+    # If the dataset is new_backend, it will never be blobby.
+    #  It will not (yet) be geo. It will not (yet) be unpublished.
+    (!@view.is_unpublished? && !@view.is_geo? && !@view.is_blobby?) ||
+      @view.newBackend? ||  @view.is_href? || !@view.flag?('default') || !@view.has_rights?('add')
   end
 
 end

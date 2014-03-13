@@ -427,7 +427,7 @@ $.Control.registerMixin('d3_impl_bar', {
             var splitData = _.groupBy(dataInView, function(row)
             {
                 if (blist.feature_flags.hide_interpolated_nulls
-                    && row.interpolated_null[col.lookup])
+                    && row.interpolated_null && row.interpolated_null[col.lookup])
                 {
                     return 'undefined';
                 }

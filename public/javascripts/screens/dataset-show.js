@@ -322,7 +322,7 @@ $(function()
             blist.dataset.getRelatedViewCount(function(viewCount)
             {
                 datasetPageNS.$moreViewsTab
-                    .contentIndicator({text: viewCount || ''});
+                    .contentIndicator().setText(viewCount || '');
             });
         });
     }
@@ -330,7 +330,7 @@ $(function()
     if (datasetPageNS.$feedTab.is(':visible'))
     {
         datasetPageNS.$feedTab
-            .contentIndicator({text: blist.dataset.numberOfComments || ''});
+            .contentIndicator().setText(blist.dataset.numberOfComments || '');
     }
 
     // Show guided filter by default if there is a default filter

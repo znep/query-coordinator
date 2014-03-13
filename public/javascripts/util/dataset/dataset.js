@@ -1307,7 +1307,7 @@ var Dataset = ServerModel.extend({
         var viewCount;
 
         if ($.isBlank(ds._relatedViews) && $.isBlank(ds._relViewCount)) {
-            ds._loadRelatedViews(function(c) { viewCount = c; }, true);
+            ds._loadRelatedViews(function(c) { callback(c); }, true);
         } else if (!$.isBlank(ds._relViewCount)) {
             viewCount = ds._relViewCount;
         } else {

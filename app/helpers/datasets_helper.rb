@@ -299,7 +299,7 @@ module DatasetsHelper
   end
 
   def hide_append_replace?
-    (!@view.is_unpublished? && !@view.is_geo? && !@view.is_blobby?) || @view.is_immutable? ||
+    (!@view.is_unpublished? && !@view.is_geo? && !@view.is_blobby?) || @view.newBackend? ||
       @view.is_href? || !@view.flag?('default') || !@view.has_rights?('add')
   end
 

@@ -61,7 +61,8 @@
         indObj.$dom().addClass('contentIndicatorContainer');
         indObj.$dom().append($.tag({tagName: 'span',
             'class': 'contentIndicator',
-            style: {left: indObj.settings.left, top: indObj.settings.top},
+            style: {left: indObj.settings.left, top: indObj.settings.top,
+                    display: $.isBlank(indObj.settings.text) ? 'none' : 'block' },
             contents: indObj.settings.text}));
     };
 

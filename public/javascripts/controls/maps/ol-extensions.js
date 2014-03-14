@@ -7,7 +7,8 @@
 
     blist.openLayers.geographicProjection = new OpenLayers.Projection('EPSG:4326');
     blist.openLayers.backgroundLayerTypes = [
-        OpenLayers.Layer.Bing, OpenLayers.Layer.ArcGISCache, OpenLayers.Layer.Google
+        OpenLayers.Layer.Bing, OpenLayers.Layer.ArcGISCache, OpenLayers.Layer.Google,
+        OpenLayers.Layer.OSM
     ];
 
     blist.openLayers.isBackgroundLayer = function(layer)
@@ -1842,9 +1843,10 @@
             { return "http://" + subdomain + "tile.stamen.com/"
                 + ((options || {}).stamenType || 'watercolor') + "/${z}/${x}/${y}.jpg"; });
             options = OpenLayers.Util.extend({
-                "numZoomLevels":    16,
-                "buffer":           0,
-                "transitionEffect": "resize"
+                "availableZoomLevels": 16,
+                "numZoomLevels":       16,
+                "buffer":              0,
+                "transitionEffect":    "resize"
             }, options);
             return OpenLayers.Layer.OSM.prototype.initialize.call(this, name, hosts, options);
         }

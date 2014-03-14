@@ -17,3 +17,7 @@ new_charts:
 hide_interpolated_nulls:
   description: "Ref: SI-5927, if set to true, will hide interpolated nulls in DSG bar charts."
   defaultValue: false
+stamen:
+  description: Easter egg of map backgrounds. Set false to turn it off. Choose one of the available values to select this base layer for ALL maps on the domain.
+  defaultValue: false
+  expectedValues: watercolor toner terrain

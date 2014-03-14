@@ -425,6 +425,15 @@
         initializeBackgroundLayers: function()
         {
             var mapObj = this;
+
+            if (blist.feature_flags.stamen !== false)
+            {
+                mapObj._backgroundLayers = [new blist.openLayers.Stamen(null, { stamenType: blist.feature_flags.stamen })];
+                mapObj.map.addLayer(mapObj._backgroundLayers[0]);
+                mapObj.map.setBaseLayer(mapObj.map.backgroundLayers()[0]);
+                return;
+            }
+
             if ((blist.debug || {}).viewport && (console || {}).trace)
             {
                 console.groupCollapsed('initializeBackgroundLayers');

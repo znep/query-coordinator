@@ -2673,8 +2673,8 @@ var Dataset = ServerModel.extend({
     _captureSodaServerHeaders: function (xhr) {
         if (xhr) {
             this._dataOutOfDate = xhr.getResponseHeader('X-SODA2-Data-Out-Of-Date') || false;
-            this._truthLastModified = xhr.getResponseHeader('X-SODA2-Truth-Last-Modified') || Date.now();
-            this._lastModified = xhr.getResponseHeader('Last-Modified') || Date.now();
+            this._truthLastModified = xhr.getResponseHeader('X-SODA2-Truth-Last-Modified');
+            this._lastModified = xhr.getResponseHeader('Last-Modified');
         }
     },
 

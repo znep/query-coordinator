@@ -781,7 +781,9 @@ $(function()
 
         _.defer(function() {
             // Update datasetName to reflect out-of-date status
-            if (blist.dataset._dataOutOfDate) {
+            if (blist.dataset._dataOutOfDate
+                && blist.dataset._truthLastModified
+                && blist.dataset._lastModified) {
                 $('#datasetName').after(
                     '<span class="outOfDate">' +
                         $.t('screens.ds.bar.out_of_date', {

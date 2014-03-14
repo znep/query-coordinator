@@ -270,6 +270,20 @@ class ViewTest < Test::Unit::TestCase
     refute view.has_rights?(['explode', 'implode']), 'Should not have dangerous rights'
   end
 
+  def test_overridable_features_includes_cell_comments_when_new_backend_is_false
+    stub_core_server_connection
+    view = View.new
+    view.stubs(:newBackend? => false, :is_tabular? => true, :is_form? => false)
+    assert view.overridable_features.map(&:values).flatten.include?('cell_comments')
+  end
+
+  def test_overridable_features_excludes_cell_comments_when_new_backend_is_true
+    stub_core_server_connection
+    view = View.new
+    view.stubs(:newBackend? => true, :is_tabular? => true, :is_form? => false)
+    refute view.overridable_features.map(&:values).flatten.include?('cell_comments')
+  end
+
   private
 
   def stub_core_server_connection

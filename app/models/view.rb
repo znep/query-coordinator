@@ -178,11 +178,9 @@ class View < Model
   end
 
   def overridable_features
-    of = [
-      { :key => 'allow_comments' },
-    ]
-    of << { :key => 'cell_comments' } if is_tabular? && !is_form?
-    return of
+    of = [{ :key => 'allow_comments' }]
+    of << { :key => 'cell_comments' } if is_tabular? && !is_form? && !newBackend?
+    of
   end
 
   def column_by_id(column_id)

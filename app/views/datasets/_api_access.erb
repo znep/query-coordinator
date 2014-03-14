@@ -6,7 +6,7 @@
     <pre><%= "#{CurrentDomain.domain.protocol}://#{CurrentDomain.cname}#{CurrentDomain.domain.port}/resource/#{@view.id}.json" %></pre>
   </div>
 
-  <%- if @view.is_tabular? && !@view.visible_columns.empty? -%>
+  <%- if @view.is_tabular? && @view.visible_columns.present? -%>
     <h3><%= t('screens.ds.grid_sidebar.api.column_ids_title') %></h3>
     <dl class="sectionContent">
       <%- @view.visible_columns.each do |column| -%>

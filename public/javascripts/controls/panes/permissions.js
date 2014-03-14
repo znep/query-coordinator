@@ -86,7 +86,7 @@
 
         _finish: function(data, value, finalCallback)
         {
-            var cpObj = this
+            var cpObj = this;
             if (!cpObj._super.apply(this, arguments)) { return; }
 
             var formValues = cpObj._getFormValues();

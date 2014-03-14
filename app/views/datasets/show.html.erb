@@ -299,7 +299,7 @@
     blist.sidebarHidden.moreViews = blist.sidebarHidden.moreViews || {};
     blist.sidebarHidden.moreViews.views = <%= !@view.is_published? ||
       (!@view.is_tabular? && !@view.is_geo?) %>;
-    blist.sidebarHidden.moreViews.snapshots = <%= @view.newBackend == true || @view.is_unpublished? ||
+    blist.sidebarHidden.moreViews.snapshots = <%= @view.newBackend? || @view.is_unpublished? ||
       !@view.flag?('default') || @view.is_arcgis? || @view.is_geo? %>;
 
     <%# Edit pane %>
@@ -319,13 +319,13 @@
       !@view.has_rights?('update_view') %>;
     blist.sidebarHidden.manage.plagiarize = <%= !CurrentDomain.user_can?(current_user, :chown_datasets) %>;
     blist.sidebarHidden.manage.deleteDataset = <%= !@view.has_rights?('delete_view') ||
-      @view.newBackend == true %>;
+      @view.newBackend? %>;
     blist.sidebarHidden.manage.api_foundry = <%= !module_available?(:api_foundry) ||
       (!@view.is_blist? && !@view.is_api?) ||
       !@view.is_published? ||
       !@view.has_rights?('update_view') ||
       !@view.can_publish? ||
-      @view.newBackend == true -%>;
+      @view.newBackend? -%>;
 
     <%# Columm properties %>
     blist.sidebarHidden.columnProperties = <%= !@view.is_tabular? %>;
@@ -342,7 +342,7 @@
       @view.is_alt_view? && !@view.available_display_types.include?('chart') %>;
     blist.sidebarHidden.visualize.mapCreate = <%= @view.is_unpublished? ||
       @view.is_alt_view? && !@view.available_display_types.include?('map') ||
-      @view.is_grouped? || !module_available?(:map_publish) %>;
+      @view.is_grouped? || !module_available?(:map_publish) || @view.newBackend? %>;
     blist.sidebarHidden.visualize.conditionalFormatting = <%= @view.is_unpublished? ||
       !@view.is_tabular? || @view.is_form? || @view.is_api? %>;
 
@@ -364,7 +364,7 @@
     blist.sidebarHidden.exportSection.signedDataset = <%=
       !@view.owned_by?(current_user) || !module_available?(:digital_signatures) ||
       !@view.is_tabular? || @view.is_form? %>;
-    blist.sidebarHidden.exportSection.print = <%= !@view.can_print? || @view.newBackend == true %>;
+    blist.sidebarHidden.exportSection.print = <%= !@view.can_print? || @view.newBackend? %>;
     blist.sidebarHidden.exportSection.download = <%= (!@view.is_tabular? && !@view.is_geo?) || @view.is_form? %>;
     blist.sidebarHidden.exportSection.api = <%= !@view.is_tabular? || @view.newBackend? %>;
     blist.sidebarHidden.exportSection.odata = <%= !@view.is_tabular? || @view.is_alt_view? %>;

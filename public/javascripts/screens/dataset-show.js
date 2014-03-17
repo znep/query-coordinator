@@ -294,10 +294,12 @@ $(function()
         view: blist.dataset
     });
 
-    // Conditionally hide sidebar option links based on whether a sidebar pane is available.
+    // Conditionally hide sidebar option links based on whether a sidebar pane is present.
+    // Note: This logic fails for the embed pane. The reason why is left as an exercise for the developer.
     $('#sidebarOptions').find('a[data-paneName]').each(function() {
         var $anchor = $(this);
         var dataPaneName = $anchor.attr('data-paneName');
+
         if (datasetPageNS.sidebar.hasPane(dataPaneName)) {
             $anchor.click(function(e) {
                 e.preventDefault();
@@ -600,8 +602,7 @@ $(function()
     var viewEditPane = $.gridSidebar
         .paneForDisplayType[blist.dataset.metadata.availableDisplayTypes[0]] ||
         $.gridSidebar.paneForDisplayType[blist.dataset.type];
-    if ($.isBlank(viewEditPane) ||
-        !datasetPageNS.sidebar.isPaneEnabled(viewEditPane))
+    if ($.isBlank(viewEditPane) || !datasetPageNS.sidebar.isPaneEnabled(viewEditPane))
     { $('.invalidActions .editView').hide(); }
     else
     {

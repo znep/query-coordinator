@@ -320,4 +320,8 @@ module DatasetsHelper
     end
   end
 
+  def hide_embed_sdp?
+    !view.is_published? || view.is_api? || view.new_backend?
+  end
+
 end

@@ -357,7 +357,7 @@
         @view.parent_dataset.nil? ||
         !@view.parent_dataset.owned_by?(current_user)) &&
        !CurrentDomain.user_can?(current_user, :edit_others_datasets)) %>;
-    blist.sidebarHidden.embed.sdp = <%= !@view.is_published? || @view.is_api? %>;
+    blist.sidebarHidden.embed.sdp = <%= hide_embed_sdp? %>;
 
     <%# Export pane %>
     blist.sidebarHidden.exportSection = blist.sidebarHidden.exportSection || {};

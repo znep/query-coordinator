@@ -6,7 +6,10 @@ class DatasetsHelperTest < Test::Unit::TestCase
 
   def test_hide_append_replace_should_be_false_when_blobby_is_true_and_new_backend_is_false
     object = Object.new.tap { |object| object.extend(DatasetsHelper) }
-    view = View.new.tap { |view| view.stubs(default_view_state.merge(:new_backend? => false)) }
+    view = View.new.tap { |view| view.stubs(default_view_state.merge(
+      :is_blobby? => true,
+      :new_backend? => false
+    )) }
     object.stubs(:view => view)
     refute object.hide_append_replace?, 'Should be true when new_backend? is true'
   end
@@ -53,6 +56,20 @@ class DatasetsHelperTest < Test::Unit::TestCase
     assert object.hide_export_section?(:api), ':api section should be hidden'
   end
 
+  def test_hide_embed_sdp
+    object = Object.new.tap { |object| object.extend(DatasetsHelper) }
+    view = View.new.tap { |view| view.stubs(default_view_state) }
+    object.stubs(:view => view)
+    view.stubs(:is_published? => true, :is_api? => false, :new_backend? => false)
+    refute object.hide_embed_sdp?, 'Embed pane should not be hidden'
+    view.stubs(:is_published? => false, :is_api? => false, :new_backend? => false)
+    assert object.hide_embed_sdp?, 'Embed pane should be hidden'
+    view.stubs(:is_published? => true, :is_api? => true, :new_backend? => false)
+    assert object.hide_embed_sdp?, 'Embed pane should be hidden'
+    view.stubs(:is_published? => true, :is_api? => false, :new_backend? => true)
+    assert object.hide_embed_sdp?, 'Embed pane should be hidden'
+  end
+
   private
 
   def default_view_state
@@ -61,7 +78,7 @@ class DatasetsHelperTest < Test::Unit::TestCase
       :is_tabular? => true,
       :is_unpublished? => false,
       :is_geo? => false,
-      :is_blobby? => true,
+      :is_blobby? => false,
       :is_href? => false,
       :flag? => true,
       :has_rights? => true

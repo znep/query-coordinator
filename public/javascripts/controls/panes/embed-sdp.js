@@ -79,7 +79,10 @@
         }
     }, {name: 'embedSdp', noReset: true}, 'controlPane');
 
-    if ($.isBlank(blist.sidebarHidden.embed) || !blist.sidebarHidden.embed.sdp)
-    { $.gridSidebar.registerConfig('embed.embedSdp', 'pane_embedSdp', 1); }
+    if ($.isBlank(blist.sidebarHidden.embed) || !blist.sidebarHidden.embed.sdp) {
+        $.gridSidebar.registerConfig('embed.embedSdp', 'pane_embedSdp', 1);
+    } else {
+        $('#sidebarOptions').find('li a.export').closest('li').hide();
+    }
 
 })(jQuery);

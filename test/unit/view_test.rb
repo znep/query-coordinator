@@ -103,39 +103,39 @@ class ViewTest < Test::Unit::TestCase
 
   def test_can_edit_is_false_if_new_backend_is_true
     stub_core_server_connection
-    View.any_instance.stubs(:newBackend? => true)
+    View.any_instance.stubs(:new_backend? => true)
     refute View.new.can_edit?, 'Should not be able to edit if newBackend is true'
   end
 
   def test_can_edit_is_true_if_new_backend_is_false
     stub_core_server_connection
-    View.any_instance.stubs(:newBackend? => false, :is_grouped => false, :is_api => false, :mutation_rights? => true)
+    View.any_instance.stubs(:new_backend? => false, :is_grouped => false, :is_api => false, :mutation_rights? => true)
     assert View.new.can_edit?, 'Should be able to edit if newBackend is false'
   end
 
   def test_can_add_returns_true_if_new_backend_is_false
     stub_core_server_connection
     mock_data = mock.tap { |mock| mock.stubs(:[]).with('rights').returns('add') }
-    View.any_instance.stubs(:data => mock_data, :newBackend? => false, :rights_include? => true)
+    View.any_instance.stubs(:data => mock_data, :new_backend? => false, :rights_include? => true)
     assert View.new.can_add?, 'Should be able to add if newBackend is false'
   end
 
   def test_can_add_returns_false_if_new_backend_is_true
     stub_core_server_connection
     mock_data = mock.tap { |mock| mock.stubs(:[]).with('rights').returns('add') }
-    View.any_instance.stubs(:data => mock_data, :newBackend? => true, :rights_include? => true)
+    View.any_instance.stubs(:data => mock_data, :new_backend? => true, :rights_include? => true)
     refute View.new.can_add?, 'Should not be able to add if newBackend is true'
   end
 
   def test_immutable_is_true_if_new_backend_is_true
     stub_core_server_connection
-    View.any_instance.stubs(:newBackend? => true)
+    View.any_instance.stubs(:new_backend? => true)
     assert View.new.is_immutable?, 'Expected View instance to be immutable'
   end
 
   def test_immutable_is_false_if_new_backend_is_false
     stub_core_server_connection
-    View.any_instance.stubs(:newBackend? => false)
+    View.any_instance.stubs(:new_backend? => false)
     refute View.new.is_immutable?, 'Expected View instance to be immutable'
   end
 
@@ -273,14 +273,14 @@ class ViewTest < Test::Unit::TestCase
   def test_overridable_features_includes_cell_comments_when_new_backend_is_false
     stub_core_server_connection
     view = View.new
-    view.stubs(:newBackend? => false, :is_tabular? => true, :is_form? => false)
+    view.stubs(:new_backend? => false, :is_tabular? => true, :is_form? => false)
     assert view.overridable_features.map(&:values).flatten.include?('cell_comments')
   end
 
   def test_overridable_features_excludes_cell_comments_when_new_backend_is_true
     stub_core_server_connection
     view = View.new
-    view.stubs(:newBackend? => true, :is_tabular? => true, :is_form? => false)
+    view.stubs(:new_backend? => true, :is_tabular? => true, :is_form? => false)
     refute view.overridable_features.map(&:values).flatten.include?('cell_comments')
   end
 

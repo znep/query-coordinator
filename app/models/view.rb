@@ -179,7 +179,7 @@ class View < Model
 
   def overridable_features
     of = [{ :key => 'allow_comments' }]
-    of << { :key => 'cell_comments' } if is_tabular? && !is_form? && !newBackend?
+    of << { :key => 'cell_comments' } if is_tabular? && !is_form? && !new_backend?
     of
   end
 
@@ -808,7 +808,7 @@ class View < Model
   end
 
   def can_edit?
-    mutation_rights? && !is_grouped? && !is_api? && !newBackend?
+    mutation_rights? && !is_grouped? && !is_api? && !new_backend?
   end
 
   def rights_include?(right)
@@ -824,7 +824,7 @@ class View < Model
   end
 
   def can_add?
-    rights_include?('add') && !newBackend?
+    rights_include?('add') && !new_backend?
   end
 
   def has_rights?(*rights)
@@ -929,6 +929,10 @@ class View < Model
     display.is_a?(Displays::Form)
   end
 
+  def new_backend?
+    newBackend? # Cannot use alias because :newBackend? derives from method_missing
+  end
+
   def can_add_form?
     columns.any? {|c| !c.flag?('hidden')}
   end
@@ -972,7 +976,7 @@ class View < Model
   end
 
   def is_immutable?
-    is_blobby? || is_geo? || newBackend?
+    is_blobby? || is_geo? || new_backend?
   end
 
   def can_email?

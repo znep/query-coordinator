@@ -224,7 +224,7 @@
 <%= render :partial => 'flag_message' %>
 <%= render :partial => 'sharing' %>
 <%= render :partial => 'permissions' %>
-<%= render :partial => 'api_access' unless @view.newBackend? %>
+<%= render :partial => 'api_access' unless @view.new_backend? %>
 <%= render :partial => 'odata_access' %>
 <%= render :partial => 'api_foundry' %>
 <%= render :partial => 'signed_dataset' %>
@@ -299,7 +299,7 @@
     blist.sidebarHidden.moreViews = blist.sidebarHidden.moreViews || {};
     blist.sidebarHidden.moreViews.views = <%= !@view.is_published? ||
       (!@view.is_tabular? && !@view.is_geo?) %>;
-    blist.sidebarHidden.moreViews.snapshots = <%= @view.newBackend? || @view.is_unpublished? ||
+    blist.sidebarHidden.moreViews.snapshots = <%= @view.new_backend? || @view.is_unpublished? ||
       !@view.flag?('default') || @view.is_arcgis? || @view.is_geo? %>;
 
     <%# Edit pane %>
@@ -319,13 +319,13 @@
       !@view.has_rights?('update_view') %>;
     blist.sidebarHidden.manage.plagiarize = <%= !CurrentDomain.user_can?(current_user, :chown_datasets) %>;
     blist.sidebarHidden.manage.deleteDataset = <%= !@view.has_rights?('delete_view') ||
-      @view.newBackend? %>;
+      @view.new_backend? %>;
     blist.sidebarHidden.manage.api_foundry = <%= !module_available?(:api_foundry) ||
       (!@view.is_blist? && !@view.is_api?) ||
       !@view.is_published? ||
       !@view.has_rights?('update_view') ||
       !@view.can_publish? ||
-      @view.newBackend? -%>;
+      @view.new_backend? -%>;
 
     <%# Columm properties %>
     blist.sidebarHidden.columnProperties = <%= !@view.is_tabular? %>;
@@ -342,7 +342,7 @@
       @view.is_alt_view? && !@view.available_display_types.include?('chart') %>;
     blist.sidebarHidden.visualize.mapCreate = <%= @view.is_unpublished? ||
       @view.is_alt_view? && !@view.available_display_types.include?('map') ||
-      @view.is_grouped? || !module_available?(:map_publish) || @view.newBackend? %>;
+      @view.is_grouped? || !module_available?(:map_publish) || @view.new_backend? %>;
     blist.sidebarHidden.visualize.conditionalFormatting = <%= @view.is_unpublished? ||
       !@view.is_tabular? || @view.is_form? || @view.is_api? %>;
 
@@ -361,15 +361,12 @@
 
     <%# Export pane %>
     blist.sidebarHidden.exportSection = blist.sidebarHidden.exportSection || {};
-    blist.sidebarHidden.exportSection.signedDataset = <%=
-      !@view.owned_by?(current_user) || !module_available?(:digital_signatures) ||
-      !@view.is_tabular? || @view.is_form? %>;
-    blist.sidebarHidden.exportSection.print = <%= !@view.can_print? || @view.newBackend? %>;
-    blist.sidebarHidden.exportSection.download = <%= (!@view.is_tabular? && !@view.is_geo?) || @view.is_form? %>;
-    blist.sidebarHidden.exportSection.api = <%= !@view.is_tabular? || @view.newBackend? %>;
-    blist.sidebarHidden.exportSection.odata = <%= !@view.is_tabular? || @view.is_alt_view? %>;
-    blist.sidebarHidden.exportSection.subscribe = <%= !@view.is_published? || !@view.is_tabular? ||
-      @view.is_api? || @view.is_form? %>;
+    blist.sidebarHidden.exportSection.signedDataset = <%= hide_export_section?(:signedDataset) %>;
+    blist.sidebarHidden.exportSection.print = <%= hide_export_section?(:print) %>;
+    blist.sidebarHidden.exportSection.download = <%= hide_export_section?(:download) %>;
+    blist.sidebarHidden.exportSection.api = <%= hide_export_section?(:api) %>;
+    blist.sidebarHidden.exportSection.odata = <%= hide_export_section?(:odata) %>;
+    blist.sidebarHidden.exportSection.subscribe = <%= hide_export_section?(:subscribe) %>;
 
     <%# Discuss pane %>
     blist.sidebarHidden.feed = blist.sidebarHidden.feed || {};
@@ -394,11 +391,12 @@
   </script>
 
   <%- if @view.is_tabular? -%>
-  <%= include_javascripts 'shared-editors' %>
+    <%= include_javascripts 'shared-editors' %>
   <%- end -%>
 
   <%= include_javascripts 'dataset-show' %>
   <script type="text/javascript">
     if ((typeof moment) !== "undefined") { moment.lang(blist.locale); }
   </script>
+
 <% end %>

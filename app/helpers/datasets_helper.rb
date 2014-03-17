@@ -1,5 +1,7 @@
 module DatasetsHelper
 
+  attr_reader :view
+
   def options_for_limit_to(column, current = nil)
     options = [['No Filter', '']]
     options += column.possible_filter_conditions.
@@ -110,12 +112,12 @@ module DatasetsHelper
       is_new = column.sub_type_index('id').nil?
       id_i = column.sub_type_index(is_new ? 'file_id' : 'id')
 
-      if !cell[id_i].nil?
+      if cell[id_i].present?
         params = []
-        params << 'filename=' + URI::escape(cell[name_i]) if !cell[name_i].blank?
-        params << 'content_type=' +
-          URI::escape(cell[type_i]) if !cell[type_i].blank?
-        ret = "<a href='/views/" + @view.id + "/" +
+        params << "filename=#{URI::escape(cell[name_i])}" if cell[name_i].present?
+        params << "content_type=#{URI::escape(cell[type_i])}" if cell[type_i].present?
+        ret = "<a href='/views/#{view.id}/" <<
+          # TODO Clean up this barf
           (is_new ?  '' : 'obsolete_') + "files/" + cell[id_i] +
           (is_new && params.length > 0 ? '?' + params.join('&') : '') + "'>" +
           h(cell[name_i]) + "</a>" +
@@ -124,9 +126,8 @@ module DatasetsHelper
       end
 
     when 'photo', 'photo_obsolete'
-      url = '/views/' + @view.id + '/' + (column.dataTypeName == 'photo_obsolete' ?
-                'obsolete_' : '') + 'files/' + cell
-      ret = "<a href='" + url + "'>Image</a>"
+      url = "/views/#{view.id}/#{(column.dataTypeName == 'photo_obsolete' ? 'obsolete_' : '')}files/#{cell}"
+      ret = %Q{<a href="#{url}">Image</a>}
 
     when 'location'
       human_address = cell[column.sub_type_index('human_address')]
@@ -291,18 +292,32 @@ module DatasetsHelper
   def hide_redirect?
     return false if force_editable?
 
-    !@view.is_published? || !@view.is_blist? || !@view.can_edit? || current_user.blank? || @view.is_immutable?
+    !view.is_published? || !view.is_blist? || !view.can_edit? || current_user.blank? || view.is_immutable?
   end
 
   def hide_add_column?
-    !@view.is_unpublished? || !@view.is_blist? || !@view.has_rights?('add_column') || @view.is_immutable?
+    !view.is_unpublished? || !view.is_blist? || !view.has_rights?('add_column') || view.is_immutable?
   end
 
   def hide_append_replace?
     # If the dataset is new_backend, it will never be blobby.
     #  It will not (yet) be geo. It will not (yet) be unpublished.
-    (!@view.is_unpublished? && !@view.is_geo? && !@view.is_blobby?) ||
-      @view.newBackend? ||  @view.is_href? || !@view.flag?('default') || !@view.has_rights?('add')
+    (!view.is_unpublished? && !view.is_geo? && !view.is_blobby?) ||
+      view.new_backend? ||  view.is_href? || !view.flag?('default') || !view.has_rights?('add')
+  end
+
+  def hide_export_section?(section)
+    case section
+      when :signedDataset
+        !view.owned_by?(current_user) || !module_available?(:digital_signatures) ||
+          !view.is_tabular? || view.is_form?
+      when :print then !view.can_print? || view.new_backend?
+      when :download then (!view.is_tabular? && !view.is_geo?) || view.is_form?
+      when :api then !view.is_tabular? || view.new_backend?
+      when :odata then !view.is_tabular? || view.is_alt_view? || view.new_backend?
+      when :subscribe then !view.is_published? || !view.is_tabular? || view.is_api? || view.is_form?
+      else false
+    end
   end
 
 end

@@ -313,19 +313,6 @@ $(function()
         }
     });
 
-    datasetPageNS.$moreViewsTab = $('#sidebarOptions').find('a.moreViews');
-    if (datasetPageNS.sidebar.hasPane('moreViews.viewList'))
-    {
-        // Wait until other requests have been fired first
-        _.defer(function ()
-        {
-            blist.dataset.getRelatedViewCount(function(viewCount)
-            {
-                datasetPageNS.$moreViewsTab
-                    .contentIndicator({text: viewCount || ''});
-            });
-        });
-    }
     datasetPageNS.$feedTab = $('#sidebarOptions').find('a.feed');
     if (datasetPageNS.$feedTab.is(':visible'))
     {

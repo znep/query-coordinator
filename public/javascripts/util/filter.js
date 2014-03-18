@@ -153,6 +153,9 @@ blist.namespace.fetch('blist.filter');
             return f;
         };
 
+        // Handle custom values with no children
+        if (expr._key == 'customValues' && _.isEmpty(expr.children))
+        { return cacheAndReturn(function() { return true; }); }
 
         // Handle array of sub-conditions
         if (!$.isBlank(expr.children))
@@ -202,7 +205,9 @@ blist.namespace.fetch('blist.filter');
         var op = fc.operator.toUpperCase();
         if (op == 'AND' || op == 'OR')
         {
-            var childKeys = _.map(fc.children, function(c) { return blist.filter.getFilterKey(c); });
+            if (blist.filter.isEmptyPlaceholderFilter(fc))
+            { return 'customValues'; }
+            var childKeys = _.compact(_.map(fc.children, function(c) { return blist.filter.getFilterKey(c); }));
             return childKeys.length < 2 ? (childKeys[0] || '') : '(' + childKeys.join('|' + op + '|') + ')';
         }
         return '(' + (fc.columnFieldName || fc.tableColumnId) +
@@ -350,6 +355,11 @@ blist.namespace.fetch('blist.filter');
         // Nothing to subtract
         else
         { return fc; }
+    };
+
+    blist.filter.isEmptyPlaceholderFilter = function(fc)
+    {
+        return _.isEmpty(fc.children) && (fc.metadata.includeAuto || fc.metadata.customValues);
     };
 
 })(jQuery);

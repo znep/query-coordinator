@@ -3479,8 +3479,7 @@ Dataset.translateFilterCondition = function(fc, ds, simplify)
 
 function translateSubFilter(fc, ds, simplify, isHaving)
 {
-    if ($.isBlank(fc) || simplify && (fc.type != 'operator' || !_.isArray(fc.children) ||
-            fc.children.length == 0))
+    if ($.isBlank(fc) || simplify && ((fc.type != 'operator' || !_.isArray(fc.children) || fc.children.length == 0) && !blist.filter.isEmptyPlaceholderFilter(fc)))
     { return null; }
 
     var filterQ = { operator: fc.value };
@@ -3494,7 +3493,7 @@ function translateSubFilter(fc, ds, simplify, isHaving)
             var fcc = translateSubFilter(c, ds, simplify, isHaving);
             return fcc;
         }));
-        if (simplify)
+        if (simplify && !blist.filter.isEmptyPlaceholderFilter(filterQ))
         {
             if (filterQ.children.length == 0)
             { return null; }

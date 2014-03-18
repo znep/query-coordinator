@@ -359,7 +359,7 @@ blist.namespace.fetch('blist.filter');
 
     blist.filter.isEmptyPlaceholderFilter = function(fc)
     {
-        return _.isEmpty(fc.children) && (fc.metadata.includeAuto || fc.metadata.customValues);
+        return _.isEmpty(fc.children) && fc.metadata && (fc.metadata.includeAuto || fc.metadata.customValues);
     };
 
 })(jQuery);

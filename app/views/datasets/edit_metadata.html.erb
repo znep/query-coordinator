@@ -145,11 +145,7 @@
 
      <div class="line clearfix">
        <label for="view_metadata_rowIdentifier"><%= t('screens.edit_metadata.row_identifier') %></label>
-       <%= select_tag("view[metadata[rowIdentifier]]",
-           rdf_subject_select_options(
-           @view.columns,
-           h(@view.metadata.nil? || @view.metadata.rowIdentifier.nil? ? '' : @view.metadata.rowIdentifier)))
-       %>
+       <%= row_identifier_select_tag %>
      </div>
 
     <%- end -%>

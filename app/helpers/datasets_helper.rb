@@ -355,11 +355,11 @@ module DatasetsHelper
   end
 
   def hide_update_column?
-    view.is_snapshotted? || view.non_tabular? || view.is_form? || view.is_api? || view.new_backend?
+    view.is_snapshotted? || view.non_tabular? || view.is_form? || view.is_api? || view.prevent_soql_merging?
   end
 
   def hide_show_hide_columns?
-    view.is_snapshotted? || view.non_tabular? || view.is_form? || view.is_geo? || view.new_backend?
+    view.is_snapshotted? || view.non_tabular? || view.is_form? || view.is_geo? || view.prevent_soql_merging?
   end
 
   def hide_filter_dataset?

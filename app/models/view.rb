@@ -692,7 +692,7 @@ class View < Model
 
   # TODO This is a temporary method to be removed after SoQL merging is supported post 2014Q1
   def prevent_soql_merging?
-    new_backend? && is_blist?
+    new_backend? && !is_blist?
   end
 
   def is_public?

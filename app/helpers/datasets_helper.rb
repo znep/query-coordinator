@@ -310,12 +310,12 @@ module DatasetsHelper
     case section
       when :signedDataset
         !view.owned_by?(current_user) || !module_available?(:digital_signatures) ||
-          !view.is_tabular? || view.is_form?
+          view.non_tabular? || view.is_form?
       when :print then !view.can_print? || view.new_backend?
-      when :download then (!view.is_tabular? && !view.is_geo?) || view.is_form?
-      when :api then !view.is_tabular? || view.new_backend?
-      when :odata then !view.is_tabular? || view.is_alt_view? || view.new_backend?
-      when :subscribe then !view.is_published? || !view.is_tabular? || view.is_api? || view.is_form?
+      when :download then (view.non_tabular? && !view.is_geo?) || view.is_form?
+      when :api then view.non_tabular? || view.new_backend?
+      when :odata then view.non_tabular? || view.is_alt_view? || view.new_backend?
+      when :subscribe then !view.is_published? || view.non_tabular? || view.is_api? || view.is_form?
       else false
     end
   end
@@ -330,6 +330,93 @@ module DatasetsHelper
       rdf_subject_select_options(view.columns, h(view.metadata.try(:rowIdentifier).to_s)),
       view.new_backend? ? { :disabled => :disabled } : {}
     )
+  end
+
+  def hide_conditional_formatting?
+    view.is_unpublished? || view.non_tabular? || view.is_form? || view.is_api? || view.prevent_soql_merging?
+  end
+
+  # LOLWUT
+  def hide_form_create?
+    !view.is_published? || (view.non_tabular? && !view.is_form?) || view.is_api? ||
+    view.is_grouped? || !module_available?(:form_publish) ||
+    (
+      (
+        !view.owned_by?(current_user) || view.parent_dataset.nil? || !view.parent_dataset.owned_by?(current_user)
+      ) &&
+      !CurrentDomain.user_can?(current_user, :edit_others_datasets)
+    )
+  end
+
+  def hide_api_foundry?
+    !module_available?(:api_foundry) || (!view.is_blist? && !view.is_api?) ||
+      !view.is_published? || !view.has_rights?('update_view') || !view.can_publish? ||
+      view.new_backend?
+  end
+
+  def hide_update_column?
+    view.is_snapshotted? || view.non_tabular? || view.is_form? || view.is_api? || view.new_backend?
+  end
+
+  def hide_show_hide_columns?
+    view.is_snapshotted? || view.non_tabular? || view.is_form? || view.is_geo? || view.new_backend?
+  end
+
+  def hide_filter_dataset?
+    view.non_tabular? || view.is_form? || view.prevent_soql_merging?
+  end
+
+  def hide_calendar_create?
+    view.is_unpublished? || view.is_alt_view? && !view.available_display_types.include?('calendar')
+  end
+
+  def hide_chart_create?
+    view.is_unpublished? || view.is_alt_view? && !view.available_display_types.include?('chart')
+  end
+
+  def hide_map_create?
+    view.is_unpublished? || view.is_alt_view? && !view.available_display_types.include?('map') ||
+      view.is_grouped? || !module_available?(:map_publish) || view.new_backend?
+  end
+
+  def hide_cell_feed?
+    !view.module_enabled?('cell_comments') || !view.is_published? || view.is_api?
+  end
+
+  def hide_about?
+    view.is_href? || view.is_blobby? && view.display.display_type == 'link'
+  end
+
+  def hide_more_views_views?
+    !view.is_published? || (view.non_tabular? && !view.is_geo?)
+  end
+
+  def hide_more_views_snapshots?
+    view.new_backend? || view.is_unpublished? || !view.flag?('default') || view.is_arcgis? || view.is_geo?
+  end
+
+  def format_link_tag(format)
+    translated_title = t("screens.ds.bar.format.#{format}")
+    span = content_tag(:span, translated_title, :class => 'icon')
+    span = 'Link' if format == 'link' # Goddamnit Jeff!
+    # Heavy sigh...
+    css_class = { 'bullet' => 'bulletedList', 'number' => 'numberedList' }.fetch(format, format)
+    link = { 'bullet' => 'unorderedList', 'strike' => 'strikethrough', 'number' => 'orderedList' }.fetch(format, format)
+    content_tag(
+      :a, span, :href => "#format_#{link}", :title => translated_title, :class => "button #{css_class} toggleButton"
+    )
+  end
+
+  def sidebar_link(pane, include_alert_icon = false)
+    translated_title = t("screens.ds.grid_sidebar.tabs.#{pane.underscore}")
+    link = "##{pane[0].capitalize}#{pane[1..-1]}"
+    span = content_tag(:span, '', :class => 'icon') << translated_title
+    span << content_tag(:span, '', :class => 'alertIcon') if include_alert_icon
+    if pane == 'more' # Goddamnit Jeff!
+      content_tag(:a, span, :href => link, :title => translated_title, :class => 'other')
+    else
+      content_tag(:a, span, :href => link, :title => translated_title, :class => pane, 'data-paneName' => pane)
+    end
   end
 
 end

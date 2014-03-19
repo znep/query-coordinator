@@ -13,7 +13,7 @@
 <% end %>
 
 <% content_for :skip_links do %>
-  <%- if !@view.newBackend -%>
+  <%- unless @view.new_backend? -%>
     <%= link_to 'Go to an accessible version of this page', alt_view_path(@view) %>
   <%- end -%>
 
@@ -104,30 +104,22 @@
 
       <div id="formatOptions" class="disabled">
         <ul>
-          <li><a href="#format_bold" class="button bold toggleButton"
-            title="<%= t('screens.ds.bar.format.bold') %>"><span class="icon"><%= t('screens.ds.bar.format.bold') %></span></a></li>
-          <li><a href="#format_underline" class="button underline toggleButton"
-            title="<%= t('screens.ds.bar.format.underline') %>"><span class="icon"><%= t('screens.ds.bar.format.underline') %></span></a></li>
-          <li><a href="#format_italic" class="button italic toggleButton"
-            title="<%= t('screens.ds.bar.format.italic') %>"><span class="icon"><%= t('screens.ds.bar.format.italic') %></span></a></li>
-          <li><a href="#format_strikethrough" class="button strike toggleButton"
-            title="<%= t('screens.ds.bar.format.strike') %>"><span class="icon"><%= t('screens.ds.bar.format.strike') %></span></a></li>
-          <li><a href="#format_unorderedList"
-            class="button bulletedList toggleButton"
-            title="<%= t('screens.ds.bar.format.bullet') %>"><span class="icon"><%= t('screens.ds.bar.format.bullet') %></span></a></li>
-          <li><a href="#format_orderedList" class="button numberedList toggleButton"
-            title="<%= t('screens.ds.bar.format.number') %>"><span class="icon"><%= t('screens.ds.bar.format.number') %></span></a></li>
-          <li><a href="#format_link" class="button link toggleButton"
-            title="<%= t('screens.ds.bar.format.link') %>"><%= t('screens.ds.bar.format.link') %></a></li>
-          <li><%= select_tag("format_fontFamily", font_select_options('Helvetica'),
-            {:class => 'fontFamily'}) %></li>
-          <li><%= select_tag("format_fontSize", font_size_select_options(12),
-            {:class => 'fontSize'}) %></li>
-          <li><div class="menu color">
-            <a class="menuButton color" title="<%= t('screens.ds.bar.format.color') %>" href="#color">
-              <span class="colorIcon colorIndicator"></span><span class="icon"></span>
-            </a>
-          </div></li>
+          <li><%= format_link_tag('bold') %></li>
+          <li><%= format_link_tag('underline') %></li>
+          <li><%= format_link_tag('italic') %></li>
+          <li><%= format_link_tag('strike') %></li>
+          <li><%= format_link_tag('bullet') %></li>
+          <li><%= format_link_tag('number') %></li>
+          <li><%= format_link_tag('link') %></li>
+          <li><%= select_tag('format_fontFamily', font_select_options('Helvetica'), :class => 'fontFamily') %></li>
+          <li><%= select_tag('format_fontSize', font_size_select_options(12), :class => 'fontSize') %></li>
+          <li>
+            <div class="menu color">
+              <a class="menuButton color" title="<%= t('screens.ds.bar.format.color') %>" href="#color">
+                <span class="colorIcon colorIndicator"></span><span class="icon"></span>
+              </a>
+            </div>
+          </li>
           <li><div class="align menu alignLeft"></div></li>
         </ul>
       </div>
@@ -136,27 +128,16 @@
 
     <div class="sidebarOptionsContainer clearfix">
       <ul id="sidebarOptions" class="clearfix">
-        <li><a href="#Edit" title="<%= t('screens.ds.grid_sidebar.tabs.edit') %>" class="edit"
-          data-paneName="edit"><span class="icon"></span><%= t('screens.ds.grid_sidebar.tabs.edit') %></a></li>
-        <li><a href="#Manage" title="<%= t('screens.ds.grid_sidebar.tabs.manage') %>" class="manage"
-          data-paneName="manage"><span class="icon"></span><%= t('screens.ds.grid_sidebar.tabs.manage') %></a></li>
-        <li><a href="#More_Views" title="<%= t('screens.ds.grid_sidebar.tabs.more_views') %>" class="moreViews"
-          data-paneName="moreViews"><span class="icon"></span><%= t('screens.ds.grid_sidebar.tabs.more_views') %></a></li>
-        <li><a href="#Filter" title="<%= t('screens.ds.grid_sidebar.tabs.filter') %>" class="filter"
-          data-paneName="filter"><span class="icon"></span><%= t('screens.ds.grid_sidebar.tabs.filter') %>
-          <span class="alertIcon"></span></a></li>
-        <li><a href="#Visualize" title="<%= t('screens.ds.grid_sidebar.tabs.visualize') %>" class="visualize"
-          data-paneName="visualize"><span class="icon"></span><%= t('screens.ds.grid_sidebar.tabs.visualize') %></a></li>
-        <li><a href="#Export" title="<%= t('screens.ds.grid_sidebar.tabs.export') %>" class="export"
-          data-paneName="export"><span class="icon"></span><%= t('screens.ds.grid_sidebar.tabs.export') %></a></li>
-        <li><a href="#Discuss" title="<%= t('screens.ds.grid_sidebar.tabs.discuss') %>" class="feed"
-          data-paneName="feed"><span class="icon"></span><%= t('screens.ds.grid_sidebar.tabs.discuss') %></a></li>
-        <li><a href="#Embed" title="<%= t('screens.ds.grid_sidebar.tabs.embed') %>" class="embed"
-          data-paneName="embed"><span class="icon"></span><%= t('screens.ds.grid_sidebar.tabs.embed') %></a></li>
-        <li><a href="#About" title="<%= t('screens.ds.grid_sidebar.tabs.about') %>" class="about"
-          data-paneName="about"><span class="icon"></span><%= t('screens.ds.grid_sidebar.tabs.about') %></a></li>
-        <li class="hide"><a href="#More" title="<%= t('screens.ds.grid_sidebar.tabs.more') %>" class="other"
-          ><span class="icon"></span><%= t('screens.ds.grid_sidebar.tabs.more') %></a></li>
+        <li><%= sidebar_link('edit') %></li>
+        <li><%= sidebar_link('manage') %></li>
+        <li><%= sidebar_link('moreViews') %></li>
+        <li><%= sidebar_link('filter', include_alert_icon = true) %></li>
+        <li><%= sidebar_link('visualize') %></li>
+        <li><%= sidebar_link('export') %></li>
+        <li><%= sidebar_link('discuss') %></li>
+        <li><%= sidebar_link('embed') %></li>
+        <li><%= sidebar_link('about') %></li>
+        <li class="hide"><%= sidebar_link('more') %></li>
       </ul>
     </div>
   </div>
@@ -211,7 +192,7 @@
 <% content_for :templates do %>
 <%= render(:partial => 'templates/grid_sidebar') %>
 <%= render(:partial => 'show_hide_template') %>
-<%= render :partial => 'column_order_template' %>
+<%= render :partial => 'column_order_template' unless @view.new_backend? %>
 <div class="embedForm">
   <%= render :partial => 'embed_form', :locals => { :view => @view, :cur => 'root',
              :customization_id => (CurrentDomain.user_can?(current_user, :edit_sdp) ? nil : CurrentDomain.default_widget_customization_id) } %>
@@ -275,14 +256,14 @@
 
     <%= raw @view.display.render_inline_setup_js('renderTypeContainer', self, params['debug_assets']) %>
 
-    <%- if !@row.nil? -%>
-      blist.initialRowId = "<%= @row['sid'] %>";
+    <%- if @row.present? -%>
+      blist.initialRowId = '<%= @row['sid'] %>';
     <%- end -%>
 
-    blist.sidebarPosition = "<%= sidebar_position %>";
-    blist.defaultPane = "<%= default_pane %>";
+    blist.sidebarPosition = '<%= sidebar_position %>';
+    blist.defaultPane = '<%= default_pane %>';
 
-    blist.configuration.newChartsEnabled = <%= module_enabled?(:new_charts) || true %>;
+    blist.configuration.newChartsEnabled = true;
     blist.configuration.newMapsEnabled = <%= module_enabled?(:new_maps) == true %>;
     blist.configuration.oldChartsForced = <%= module_enabled?(:old_charts) == true %>;
     blist.configuration.newChartConfig = true;
@@ -297,10 +278,8 @@
 
     <%# More views %>
     blist.sidebarHidden.moreViews = blist.sidebarHidden.moreViews || {};
-    blist.sidebarHidden.moreViews.views = <%= !@view.is_published? ||
-      (!@view.is_tabular? && !@view.is_geo?) %>;
-    blist.sidebarHidden.moreViews.snapshots = <%= @view.new_backend? || @view.is_unpublished? ||
-      !@view.flag?('default') || @view.is_arcgis? || @view.is_geo? %>;
+    blist.sidebarHidden.moreViews.views = <%= hide_more_views_views? %>;
+    blist.sidebarHidden.moreViews.snapshots = <%= hide_more_views_snapshots? %>;
 
     <%# Edit pane %>
     blist.sidebarHidden.edit = blist.sidebarHidden.edit || {};
@@ -310,53 +289,31 @@
 
     <%# Manage %>
     blist.sidebarHidden.manage = blist.sidebarHidden.manage || {};
-    blist.sidebarHidden.manage.updateColumn = <%= @view.is_snapshotted? || !@view.is_tabular? ||
-      @view.is_form? || @view.is_api? %>;
-    blist.sidebarHidden.manage.showHide = <%= @view.is_snapshotted? || !@view.is_tabular? ||
-      @view.is_form? || @view.is_geo? %>;
+    blist.sidebarHidden.manage.updateColumn = <%= hide_update_column? %>;
+    blist.sidebarHidden.manage.showHide = <%= hide_show_hide_columns? %>;
     blist.sidebarHidden.manage.sharing = <%= @view.is_snapshotted? || !@view.has_rights?('grant') %>;
-    blist.sidebarHidden.manage.permissions = <%= @view.is_snapshotted? ||
-      !@view.has_rights?('update_view') %>;
+    blist.sidebarHidden.manage.permissions = <%= @view.is_snapshotted? || !@view.has_rights?('update_view') %>;
     blist.sidebarHidden.manage.plagiarize = <%= !CurrentDomain.user_can?(current_user, :chown_datasets) %>;
-    blist.sidebarHidden.manage.deleteDataset = <%= !@view.has_rights?('delete_view') ||
-      @view.new_backend? %>;
-    blist.sidebarHidden.manage.api_foundry = <%= !module_available?(:api_foundry) ||
-      (!@view.is_blist? && !@view.is_api?) ||
-      !@view.is_published? ||
-      !@view.has_rights?('update_view') ||
-      !@view.can_publish? ||
-      @view.new_backend? -%>;
+    blist.sidebarHidden.manage.deleteDataset = <%= !@view.has_rights?('delete_view') || @view.new_backend? %>;
+    blist.sidebarHidden.manage.api_foundry = <%= hide_api_foundry? %>;
 
     <%# Columm properties %>
-    blist.sidebarHidden.columnProperties = <%= !@view.is_tabular? %>;
+    blist.sidebarHidden.columnProperties = <%= @view.non_tabular? %>;
 
     <%# Filter pane %>
     blist.sidebarHidden.filter = blist.sidebarHidden.filter || {};
-    blist.sidebarHidden.filter.filterDataset = <%= !@view.is_tabular? || @view.is_form? %>;
+    blist.sidebarHidden.filter.filterDataset = <%= hide_filter_dataset? %>;
+    blist.sidebarHidden.filter.conditionalFormatting = <%= hide_conditional_formatting? %>;
 
     <%# Visualize pane %>
     blist.sidebarHidden.visualize = blist.sidebarHidden.visualize || {};
-    blist.sidebarHidden.visualize.calendarCreate = <%= @view.is_unpublished? ||
-      @view.is_alt_view? && !@view.available_display_types.include?('calendar') %>;
-    blist.sidebarHidden.visualize.chartCreate = <%= @view.is_unpublished? ||
-      @view.is_alt_view? && !@view.available_display_types.include?('chart') %>;
-    blist.sidebarHidden.visualize.mapCreate = <%= @view.is_unpublished? ||
-      @view.is_alt_view? && !@view.available_display_types.include?('map') ||
-      @view.is_grouped? || !module_available?(:map_publish) || @view.new_backend? %>;
-    blist.sidebarHidden.visualize.conditionalFormatting = <%= @view.is_unpublished? ||
-      !@view.is_tabular? || @view.is_form? || @view.is_api? %>;
+    blist.sidebarHidden.visualize.calendarCreate = <%= hide_calendar_create? %>;
+    blist.sidebarHidden.visualize.chartCreate = <%= hide_chart_create? %>;
+    blist.sidebarHidden.visualize.mapCreate = <%= hide_map_create? %>;
 
     <%# Embed pane %>
     blist.sidebarHidden.embed = blist.sidebarHidden.embed || {};
-    blist.sidebarHidden.embed.formCreate = <%= !@view.is_published? ||
-      (!@view.is_tabular? && !@view.is_form?) ||
-      @view.is_api? ||
-      @view.is_grouped? ||
-      !module_available?(:form_publish) ||
-      ((!@view.owned_by?(current_user) ||
-        @view.parent_dataset.nil? ||
-        !@view.parent_dataset.owned_by?(current_user)) &&
-       !CurrentDomain.user_can?(current_user, :edit_others_datasets)) %>;
+    blist.sidebarHidden.embed.formCreate = <%= hide_form_create? %>;
     blist.sidebarHidden.embed.sdp = <%= hide_embed_sdp? %>;
 
     <%# Export pane %>
@@ -371,12 +328,10 @@
     <%# Discuss pane %>
     blist.sidebarHidden.feed = blist.sidebarHidden.feed || {};
     blist.sidebarHidden.feed.discuss = <%= !@view.is_published? || @view.is_api? %>;
-    blist.sidebarHidden.feed.cellFeed = <%= !@view.module_enabled?('cell_comments') ||
-      !@view.is_published? || @view.is_api? %>;
+    blist.sidebarHidden.feed.cellFeed = <%= hide_cell_feed? %>;
 
     <%# About pane %>
-    blist.sidebarHidden.about = <%= @view.is_href? || @view.is_blobby? &&
-      @view.display.display_type == 'link' %>;
+    blist.sidebarHidden.about = <%= hide_about? %>;
 
     <%# Please see admin_controller#add_custom_layer for explanation %>
     <%# custom_layer_config = Configuration.find_by_type('custom_layers', true).first
@@ -396,7 +351,7 @@
 
   <%= include_javascripts 'dataset-show' %>
   <script type="text/javascript">
-    if ((typeof moment) !== "undefined") { moment.lang(blist.locale); }
+    if ((typeof moment) !== 'undefined') { moment.lang(blist.locale); }
   </script>
 
 <% end %>

@@ -420,6 +420,10 @@ var Column = ServerModel.extend({
         return true;
     },
 
+    fieldNameForRollup: function(rollup) {
+        return rollup ? rollup + '(' + this.fieldName + ')' : this.fieldName;
+    },
+
     _validKeys: {
         childColumns: true,
         dataTypeName: true,
@@ -434,8 +438,7 @@ var Column = ServerModel.extend({
         name: true,
         position: true,
         tableColumnId: true,
-        width: true,
-        fieldName: true
+        width: true
     }
 });
 

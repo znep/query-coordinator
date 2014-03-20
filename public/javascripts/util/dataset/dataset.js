@@ -3563,6 +3563,12 @@ Dataset.translateGroupBys = function(gb, ds, groupFuncs)
     })), 'columnFieldName');
 };
 
+Dataset.aggregateForColumn = function(column, jsonQuery) {
+    return (_.detect(jsonQuery.select, function(select) {
+        return select.aggregate && select.columnFieldName == column;
+    }) || {}).aggregate;
+};
+
 Dataset.translateColumnToQueryBase = function(c, dataset)
 {
     var isStr = _.isString(c);

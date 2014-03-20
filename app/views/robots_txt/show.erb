@@ -1,2 +1,3 @@
 <% if !Rails.env.end_with?('production') || CurrentDomain.truthy?('suppress_robots') -%>Disallow: /<% end -%>
+Disallow: /OData.svc/
 Sitemap: http://<%= CurrentDomain.cname %>/sitemap-<%= CurrentDomain.cname %>.xml

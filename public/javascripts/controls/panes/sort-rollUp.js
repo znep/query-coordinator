@@ -41,9 +41,17 @@
         _getCurrentData: function()
         { return this._super() || this._view.cleanCopy(); },
 
+        // SODA 2 does not currently allow grouping by DateTime w/ TimeZone
+        _filteredGroupableTypesForSoda2: function(view) {
+            return _.select(groupableTypes, function(type) {
+               return view.newBackend ? type != 'date' : true;
+            });
+        },
+
         _getSections: function()
         {
             var sects = [];
+
             if (!this._view.isUnpublished())
             {
                 // Group section
@@ -57,7 +65,7 @@
                                 { type: 'columnSelect', name: 'columnFieldName', notequalto: 'groupColumn',
                                     useFieldName: true,
                                     text: $.t('screens.ds.grid_sidebar.sort_rollup.rollup.group_by'),
-                                columns: { type: groupableTypes, noDefault: true,
+                                columns: { type: this._filteredGroupableTypesForSoda2(this._view), noDefault: true,
                                     hidden: isEdit(this) || this._view.isGrouped() } },
                                 { type: 'select', name: 'groupFunction',
                                     text: $.t('screens.ds.grid_sidebar.sort_rollup.rollup.group_function_label'),
@@ -71,7 +79,7 @@
                                 { type: 'columnSelect', name: 'columnFieldName', required: true,
                                     useFieldName: true,
                                     text: $.t('screens.ds.grid_sidebar.sort_rollup.rollup.roll_up'),
-                                    notequalto: 'rollUpColumn', columns: { type: groupableTypes,
+                                    notequalto: 'rollUpColumn', columns: { type: this._filteredGroupableTypesForSoda2(this._view),
                                         noDefault: true,
                                         hidden: isEdit(this) || this._view.isGrouped() }},
                                 { type: 'select', required: true, name: 'aggregate',

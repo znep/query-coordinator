@@ -168,12 +168,13 @@
         return (type.filterConditions.details[operator] || {}).text || '';
     };
 
-    var scrubFilterOperators = function(fc)
+    var scrubFilterOperators = function(fc, newBackend)
     {
         // we handle blank/notblank separately
         return _.compact(_.map(fc.orderedList, function(op)
                 {
-                    return (op == 'IS_BLANK' || op == 'IS_NOT_BLANK') ? null :
+                    return (op == 'IS_BLANK' || op == 'IS_NOT_BLANK') ||
+                        (newBackend && (op == 'CONTAINS' || op == 'NOT_CONTAINS')) ? null :
                         {value: op, text: fc.details[op].text};
                 })).concat({ value: 'blank?', text: $.t('core.filters.informal.is_blank') });
     };
@@ -965,7 +966,7 @@
             });
 
             var renderType = getRenderType(column, metadata.subcolumn);
-            var validOperators = scrubFilterOperators(renderType.filterConditions || {});
+            var validOperators = scrubFilterOperators(renderType.filterConditions || {}, dataset.newBackend);
             $filter.find('.operator').popupSelect({
                 choices: validOperators,
                 listContainerClass: 'popupOperatorSelect',
@@ -2055,7 +2056,7 @@
 
                             if (interval > 20)
                             {
-                                // we don't want to end up with ranges that look nonsensically 
+                                // we don't want to end up with ranges that look nonsensically
                                 // specific like 1,236,946.23, so just bump the interval up to
                                 // the nearest nice value
                                 var intervalLog = fastLog(interval);

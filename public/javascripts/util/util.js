@@ -212,10 +212,6 @@ $.mixpanelMeta = function()
     //set user ID to mixpanels user ID if not logged in
     userId = _.isUndefined(blist.currentUser) ? mixpanel.get_distinct_id() : userId;
     mixpanel.identify(userId);
-    mixpanel.people.set_once(
-        {   $name: userId,
-            "Socrata Employee": isSocrata
-        });
 }
 
 $.hashHref = function(href)

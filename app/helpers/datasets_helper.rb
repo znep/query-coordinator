@@ -333,7 +333,7 @@ module DatasetsHelper
   end
 
   def hide_conditional_formatting?
-    view.is_unpublished? || view.non_tabular? || view.is_form? || view.is_api? || view.prevent_soql_merging?
+    view.is_unpublished? || view.non_tabular? || view.is_form? || view.is_api?
   end
 
   # LOLWUT
@@ -383,6 +383,10 @@ module DatasetsHelper
     !view.module_enabled?('cell_comments') || !view.is_published? || view.is_api?
   end
 
+  def hide_discuss?
+    !@view.is_published? || @view.is_api?
+  end
+
   def hide_about?
     view.is_href? || view.is_blobby? && view.display.display_type == 'link'
   end
@@ -412,6 +416,7 @@ module DatasetsHelper
     link = "##{pane[0].capitalize}#{pane[1..-1]}"
     span = content_tag(:span, '', :class => 'icon') << translated_title
     span << content_tag(:span, '', :class => 'alertIcon') if include_alert_icon
+    pane = 'feed' if pane == 'discuss' # Goddamnit Jeff!
     if pane == 'more' # Goddamnit Jeff!
       content_tag(:a, span, :href => link, :title => translated_title, :class => 'other')
     else

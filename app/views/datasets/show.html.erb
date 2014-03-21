@@ -327,7 +327,7 @@
 
     <%# Discuss pane %>
     blist.sidebarHidden.feed = blist.sidebarHidden.feed || {};
-    blist.sidebarHidden.feed.discuss = <%= !@view.is_published? || @view.is_api? %>;
+    blist.sidebarHidden.feed.discuss = <%= hide_discuss? %>;
     blist.sidebarHidden.feed.cellFeed = <%= hide_cell_feed? %>;
 
     <%# About pane %>

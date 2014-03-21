@@ -1,0 +1,2522 @@
+ca:
+  account:
+    common:
+      form:
+        confirm_password: Confirmar Contrasenya
+        display_name: Mostrar Nom
+        email: Adreça de Correu Electrònic
+        forgot_password: Ha oblidat la Contrasenya?
+        lockout_warning: Per seguretat, tres intents fallits d'inici de sessió en 15 minuts comportaran el tancament del compte durant 30 minuts.
+        no_account: No té un compte?
+        password: Contrasenya
+        password_requirements: ! 'Obligatori. La seva contrasenya ha de tenir entre 8 i 40 caràcters i ha de satisfer tres dels següents criteris: ha de contenir un nombre; ha de contenir una lletra minúscula; ha de contenir una lletra majúscula; ha de contenir un símbol no alfanumèric.'
+        password_requirements_html: <p>La seva contrasenya ha de tenir <b>entre 8 i 40 caràcters</b> i satisfer <b>tres dels següents criteris</b>:</p><p></p><ul><li>&bull; contenir un nombre</li><li>&bull; contenir una lletra en minúscula</li><li>&bull; contenir una lletra majúscula</li><li>&bull; contenir un símbol no alfanumèric</li></ul>
+        password_restrictions: S'hi apliquen restriccions.
+        remember_me: Recorda'm
+        sign_up_prompt: Iniciar sessió
+      inline_auth:
+        sign_in_headline: Iniciar sessió amb el compte de Socrata
+        sign_up_headline: Estem contents de que vulguis unir-te a %{site}!
+      rpx:
+        description: Aprofita els avantatges addicionals que aquests comptes comporten i inicia sessió amb un sol clic.
+        prompt:
+          sign_in: O... Empra alguns d'aquests comptes per iniciar sessió.
+          sign_up: O... Empra alguns d'aquests comptes per unir-t'hi.
+        providers:
+          facebook:
+            sign_in_html: <strong>Connecta</strong> amb Facebook
+            sign_up_html: <strong>Connecta</strong> amb Facebook
+          google:
+            sign_in_html: <strong>Iniciar sessió</strong> amb Google
+            sign_up_html: <strong>Uneix-t'hi</strong> amb Google
+          openid:
+            sign_in_html: <strong>Iniciar sessió</strong> amb OpenID
+            sign_up_html: <strong>Uneix-t'hi</strong> amb OpenID
+          twitter:
+            sign_in_html: <strong>Connecta</strong> amb Twitter
+            sign_up_html: <strong>Connecta</strong> amb Twitter
+      validation:
+        mismatch: Les contrasenyes no coincideixen
+        terms: Ha d'acceptar els termes del servei i la política de privacitat.
+  controls:
+    browse:
+      actions:
+        about:
+          button: Sobre
+          title: Sobre aquest Conjunt de Dades
+        all_options: Veure-ho tot
+        clear_all: Esborrar totes les Opcions
+        clear_facet: (Tot)
+        compact_list: Veure-ho com a llista compacta
+        create_dataset: Crea o carrega el teu conjunt de dades
+        create_dataset_short: Crear un nou Conjunt de Dades
+        create_dataset_verb: Crear
+        dataset_subscribe: Subscriu-t'hi als canvis en aquesta vista
+        delete:
+          button: Esborra
+          confirm: Estàs segur de voler esborrar %{dataset}?
+          title: Esborra aquest ítem
+        expand_section: Clica per expandir
+        less_options: Veure'n Menys
+        manage_api:
+          button: Administrar
+          title: Administra aquesta API
+        moderation:
+          accept: Accepta
+          reject: Rebutja
+        permissions:
+          change_button:
+            private_html: Fer Públic
+            public_html: Fer Privat
+          title: Canvia la visibilitat pública
+        rich_list: Veure-ho com a llista enriquida
+        share_button: Compartir
+        subscribe: Subscrigui's
+        suggest_dataset: No troba el que buscava? Suggerir un conjunt de dades.
+        suggest_dataset_short: Suggerir un Conjunt de Dades
+        suggest_dataset_verb: Suggerir
+      back_to_dataset: Torna al Conjunt de Dades
+      facets:
+        categories_singular_title: categoria
+        categories_title: Categories
+        federated_domains_singular_title: domini
+        federated_domains_title: Dominis Federats
+        moderation_status:
+          accepted: Acceptat
+          pending: Pendent
+          rejected: Rebutjat
+        moderation_status_singular_title: moderar
+        moderation_status_title: Estat de Moderació
+        topics_singular_title: tema
+        topics_title: Temes
+        view_types:
+          apis: APIs
+          blob: Arxius i Documents
+          calendars: Calendaris
+          charts: Gràfics
+          datasets: Conjunts de Dades
+          filters: Vistes amb Filtres
+          forms: Formulari
+          href: Conjunts de Dades Externs
+          maps: Mapes
+          unpublished: Conjunts de Dades No Publicats
+        view_types_singular_title: tipus
+        view_types_title: Veure Tipus
+      listing:
+        comment_count: Nombre de comentaris
+        federation_source: Federat per %{source}
+        federation_source_html: Proveït per %{source_link}
+        no_results: Sense Resultats
+        result_count: Mostrant %{this} de %{total}
+        table_header:
+          name: Nom
+          popularity: Popularitat
+          rss: RSS
+          type: Tipus
+        timeout: Ho lamentem. No podem mostrar resultats ara mateix. Provi més tard.
+      row_results:
+        less_link: Menys
+        matching_rows: Buscant conjunt de dades amb files coincidents
+        more_link: Més
+        no_matching_rows: No s'han trobat files coincidents
+        title_html: ! 'Mostrant <span class="rowResultCountText"></span> de <span class="totalResultCountText"></span> files coincidents <a href="#"
+
+          class="rowSearchLink">(veure resultats)</a>:'
+      search: Cercar
+      sort_period_title: Ordena Període
+      sort_periods:
+        month: Aquest mes
+        week: Aquesta setmana
+        year: Aquest any
+      sort_title: Ordena per
+      sorts:
+        alpha: Alfabèticament
+        comments: Més Comentat
+        last_modified: Actualitzat Recentment
+        most_accessed: Més Visitat
+        newest: Més Nou
+        oldest: Més Vell
+        rating: Millor Puntuat
+        relevance: Més Relevant
+      title:
+        default: Cerca & Navega Conjunts de Dades i Vistes
+        result:
+          facet: ! '%{facet_type} de %{facet_value}'
+          facet_main: Coincident %{body}
+          main: Resultats %{body}
+          term: per "%{term}"
+    charts:
+      negatives_in_data: ! 'Gràfica Invàlida: apareixen valors negatius'
+      no_data: Sense dades
+      other_slice_label: Altre
+      series_grouping:
+        calculating_time: Calculant el temps que falta...
+        calculation_running: Preparant dades
+        drawing_progress: Açò pot trigar una mica...
+        drawing_running: Dibuixant gràfica
+        pause_button_explanation1: Consell! Porta molt de temps? Provi a fer pausa i crear un Filtre
+        pause_button_explanation2: per a limitar el nombre de càlculs necessaris.
+        pause_rendering: Pausa
+        rendering_paused: La preparació de dades s'ha pausat
+        rendering_progress: ! '%{rows_remaining} files pendents.'
+        rendering_progress_almost_done: ! '%{rows_remaining} files pendents, només uns pocs segons.'
+        rendering_progress_minute: ! '%{rows_remaining} files pendents, sobre uns %{time_remaining} minuts.'
+        rendering_progress_minutes: ! '%{rows_remaining} files pendents, sobre uns %{time_remaining} minuts.'
+        rendering_progress_seconds: ! '%{rows_remaining} files pendents, sobre uns %{time_remaining} segons.'
+        resume_rendering: Continuar
+      zero_only_data: No hi ha valors majors a zero
+    common:
+      auth_required: Ha d'iniciar sessió per %{action_phrase}
+      dataset_picker:
+        button: Elegir
+        title: Elegeix un Conjunt de Dades
+      expander:
+        collapse: Clica per plegar
+        expand: Clica per expandir
+      image_upload:
+        button: Carregar Imatge
+      no_results: Sense Resultats
+      rate:
+        auth_action_phrase: puntua aquest conjunt de dades
+      share:
+        button_prompt: ! 'Socialitza '
+        button_tooltip: Compartir aquest Conjunt de Dades
+        networks:
+          email: Correu Electrònic
+          facebook: Facebook
+          twitter: Twitter
+        share_text: ! 'Comprova el conjunt de dades %{name} a %{site}:'
+      sidebar:
+        tabs:
+          about: Sobre Aquest Conjunt de Dades
+          components: Components
+          configuration: Configuració
+          discuss: Discussió
+          edit: Editar
+          embed: Encastar
+          export: Esportar
+          filter: Filtre
+          manage: Gestionar
+          moreViews: Més Vistes
+          visualize: Visulaitzar
+      stars:
+        tooltip: ! '%{number} estrelles'
+      visualization:
+        in_bing: Veure a Bing Maps
+        in_google: Veure a Google Maps
+        row_details: Veure detalls d'aquesta fila
+    editors:
+      actions:
+        add: Afegir
+        remove: Eliminar
+        replace: Reemplaçar
+        view: Veure
+      document:
+        add_title: Afegir un nou document
+        remove_title: Eliminar el document
+        replace_title: Reemplaçar el document
+      photo:
+        add_title: Afegir una nova imatge
+        remove_title: Eliminar la imatge
+        replace_title: Reemplaçar la imatge
+        view_title: Veure la imatge en una finestra nova
+    embed:
+      create_template_button: Crear una Nova Plantilla
+      custom_size: Mesura Personalitzada
+      embed: Encastar aquest Conjunt de Dades
+      form_frame: Encastar aquest Formulari en un Marc
+      form_or: o
+      form_plain: Encastar aquest Formulari com a HTML Pla
+      height: Altura
+      minimum_size: 425x425 és la mesura mínima
+      private_warning: Actualment aquesta vista és privada. Vostè pot veure-la, però necessitarà fer-la pública per a que la gent la pugui veure.
+      sdp_template: Plantilla de Dades Socials del Jugador
+      size: Mesura
+      template: Plantilla
+      width: Ample
+    feed:
+      authed_actions:
+        delete_comment: eliminar un comentari
+        flag_comment: Senyalar un comentari
+        post_comment: publicar un comentari
+        rate_comment: puntuar un comentari
+      comment_actions:
+        already_marked_inappropriate: Assenyalat
+        delete: Eliminar
+        delete_confirm: Està segur? El comentari es perdrà.
+        inappropriate: Inapropiat
+        marked_inappropriate: Assenyalat!
+        rate_down: Puntua a la baixa aquest comentari
+        rate_up: Puntua a l'alça aquest comentari
+        reply: Replicar
+      comment_form:
+        cancel_button: Cancel·lar
+        empty_body_error: El cos del comentari no pot ser buit.
+        header: Nou comentari
+        post_button: Publicar
+      header:
+        add_comment: Afegir Comentari
+        cell_comment_header_html: Comentaris per a la fila <span class="rowName"></span>, columna <span class="columnName"></span>
+        feed_filter_label: Mostrar
+        pending_moderation: El seu comentari s'ha enviat i està pendent de moderació
+      listing:
+        all_replies: Veure totes les rèpliques
+        all_replies_with_count: ! 'Veure totes les %{count} rèpliques '
+        last_item: Veure l'últim ítem
+        next_item_page: Veure els següents %{count} ítems
+        no_results: No hi ha ítems per a mostrar
+        user_create_action: ! 'ha creat una %{thing}:'
+      types:
+        all items: tots els ítems
+        comments: ! 'comentaris '
+        views: vistes
+    filter:
+      actions:
+        confirm_modify: Fent açò eliminarà tots els valors del seu filtre! Està segur de voler-ho fer?
+        disable_filter: No filtres
+        first_condition: Cliqui ací per afegir la seva primera condició de filtre
+        new_condition_button: Afegir una Nova Condició de Filtre
+        remove_filter: Eliminar filtre
+        select_column: ! 'Seleccioni una columna per a filtrar per:'
+        select_operation: ! 'Seleccioni una operació per a filtrar per:'
+        select_subcolumn: ! 'Seleccioni la part de %{name} per a filtrar per:'
+      edit_default:
+        advanced_body: Això significa que ells tindran accés total a les opcions disponibles per al filtre. Per una experiència més assistida, pot triar el mode simplificat.
+        advanced_header: Els usuaris començaran al mode avançat.
+        advanced_toggle: Canviar per defecte a simplificat.
+        auto_suggested: Els valors suggerits estan determinats automàticament per aquest operador tipus.
+        cancel_button: Cancel·lar
+        done_button: Fet
+        instructions: ! 'Empra les eines de dalt per a crear filtres, ajustar els valors presentats, seleccionar el nombre de valors que el filtre presentarà automàticament suggerits i més. Quan estigui satisfet amb les opcions presentades, cliqui Fet, a sota, per a desar-ho:'
+        manual_suggested_html: Mostra fins a <select class="autogeneratedCount"></select> valors suggerits
+        mode_button: Editar el Filtre per Defecte
+        mode_message: ! 'Com editor d''aquesta vista, pot definir el conjunt de filtres per defecte que seran presentats als visitants:'
+        save_confirm: Si desitja continuar, podrà perdre els canvis no desats. Si us plau, desi qualsevol canvi que desitgi mantenir abans de continuar.
+        simplified_body: Això significa que seran incapaços d'afegir noves condicions, canviar les columnes, els operadors de filtres o l'accés als menús avançats dels filtres.
+        simplified_header: Els usuaris començaran al mode simplificat.
+        simplified_toggle: Canvia el fons per defecte a avançat.
+      main:
+        base_explanation: Amb els següents filtres base
+        base_info: Aquests filtres sempre són aplicats, juntament amb qualsevol filtre extra inserit a dalt. Aquests filtres no poden ser editats, bé perquè no té el permís per editar la vista actual o bé perquè són part de la vista mare o del conjunt de dades.
+        filter: Filtre
+        filter_based_on_contents: Filtra aquest conjunt de dades basat en el contingut.
+        no_conditions: Encara no hi han condicions definides.
+        no_suggestions: No hi han valors suggerits per aquesta columna i operador.
+        or: o
+        simplified_message: Vostè es troba al mode simplificat.
+        simplified_toggle: Anar a l'avançat ara?
+        tutorial_html: Mai ha creat un filtre? Miri un petit vídeo tutorial <a href="/videos/popup#basic-filtering" rel="video" class="noRedirPrompt">ací</a>
+        view_has_no_columns: Aquesta vista no té columnes per filtrar
+        view_must_be_valid: La vista ha de ser vàlida
+      menu:
+        match_all: Fer que totes les condicions coincideixin
+        match_any: Fer que coincideixi alguna condició
+        select_many: Seleccionar uns quants
+        select_one: Seleccionar un
+        show_suggested: Mostra valors suggerits
+        title: Opcions
+    global_indicator:
+      error: Error
+      saved: Desat
+      saving: Desant...
+      working: Treballant...
+    grid:
+      add_column: Afegir una nova columna...
+      clear_column_filter: Crear un Filtre de Columna
+      clear_sort: Neteja l'Ordenació
+      click_for_menu: Clicar per al Menú
+      click_to_sort: Clicar per a Ordenar
+      column_info: Informació de Columna
+      delete_column: Eliminar Columna
+      delete_row: Eliminar Fila
+      delete_warning_multi_column: Desitja eliminar les columnes seleccionades? Totes les dades d'aquestes columnes seran eliminades!
+      delete_warning_single_column: Desitja eliminar la columna seleccionada? Totes les dades d'aquesta columna seran eliminades!
+      edit_column_properties: Editar Propietats de la Columna
+      filter_this_column: Filtrar Aquesta Columna
+      geocodes_pending: Les files situades a la columna s'estan encara geocodificant. Si us plau, esperi fins que hagin acabat de publicar aquest conjunt de dades
+      hide_column: Amaga la Columna
+      menu: Menú
+      must_enter_name: ! 'Ha d''introduir un nom per a aquesta columna '
+      new_row: Nou
+      no_columns: El conjunt de dades %{uid} no té cap columna.
+      no_rows: No hi ha files per a mostrar
+      permission_denied: No té accés a aquesta vista.
+      previous: Anterior
+      required_cols_missing: Les columnes requerides per a aquesta vista no són enlloc
+      sort_ascending: Ordre Ascendent
+      sort_descending: Ordre Descendent
+      totals: Totals
+      view_cell_comments: Veure comentaris per a aquesta cel·la
+      view_first_row: Veure la primera fila
+      view_last_row: Veure l'última fila
+      view_next_row: Veure la següent fila
+      view_previous_row: Veure l'anterior fila
+      view_row: Veure fila
+      view_single_row: Veure les Dades d'una Única Fila
+      viewing_row_html: Veient fila <span class"curPage"></span> de <span class="totalPages"></span>
+    map:
+      address_prompt: Introduir l'adreça ací
+      auto: auto
+      base_layers: Capes Base
+      boundary_map: Mapa de Límits
+      current_location: Utilitzar la localització actual
+      data_layers: Capes de Dades
+      data_request_timeout: Una dada requerida ha necessitat massa temps i ha expirat.
+      forever_node_explanation: Les dades d'aquest clúster s'han empaquetat molt densament com per a poder mostrar-ne dades geogràfiques.
+      forever_node_recommend: Li recomanem que <a href="#openTable">obri la vista de taula</a> per obtenir-ne més detalls.
+      forever_node_title: Massa dades
+      geocoding_inaccessible: ! 'El servei de geoxifrat és inaccessible. Provi més tard. '
+      geocoding_noresults: Impossible de geoxifrar. Comprovi que l'adreça és correcta.
+      heat_map: Mapa de Calor
+      heatmap_ie8_warning: ! 'El processament de Mapes de Calors no funciona al cercador actual. Si us plau, actualitzi a IE9 o empri Google Chrome o Mozilla Firefox. Gràcies. '
+      loading: Carregant...
+      map_legend: Llegenda de Mapa
+      multiple_layer_instructions: ! 'No hi ha dades per a més d''una capa. Seleccioni''n una:'
+      next: Següent
+      next_row: Següent fila
+      no_columns_defined: No hi ha columnes definides
+      point_map: Mapa de Punts
+      previous: Anterior
+      previous_row: Anterior fila
+      request_timed_out: La sol·licitud per a aquesta dada ha expirat.
+    nominate:
+      all: Tots
+      approve: (Aprovar)
+      approve_tip: Aprovar aquest suggeriment
+      approved: (Aprovat)
+      attachment: Adjunt
+      attachments: Adjunts
+      back_to_suggestions: Tornar als Conjunts de Dades Suggerits
+      browse: Cercar
+      cancel: Cancel·lar
+      comments: Comentaris
+      contact_author: Contactar l'autor recomanat
+      dataset_suggestions: Conjunts de Dades recomanats
+      delete_attachment: adjunt
+      delete_confirm: Segur que desitja eliminar aquest %{type}?
+      delete_error: Error en eliminar %{type}
+      delete_suggestion: recomanació
+      description: Descripció
+      description_prompt: Introdueixi detalls sobre la seva recomanació
+      details: Detalls
+      edit: (Editar)
+      edit_suggestion: Editar aquesta recomanació
+      files: Arxius
+      filter_by_status: Filtrar per Estat
+      form_error: Si us plau, corregeixi els errors a sobre
+      great_sadness: Error en contactar l'autor recomanat. Si us plau, provi més tard.
+      greater_success: El seu missatge ha estat enviat a l'autor recomanat.
+      message: Missatge
+      message_prompt: Introdueixi el seu missatge
+      moderate: (Moderar)
+      moderate_error: Error en canviar l'estat
+      moderate_tip: Accepta aquesta recomanació i obre-la per votar-la
+      needs_moderation: Necessita Moderació
+      new: Nou
+      no_result: Sense resultats
+      open: Obrir
+      rate_down: No m'agrada
+      rate_up: M'agrada
+      rating: Puntuació
+      rating_error: Error en la puntuació recomanada
+      reject: (Rebutjar)
+      reject_tip: Rebutjar aquesta recomanació
+      rejected: Rebutjat
+      remove: (Eliminar)
+      remove_tip: Eliminar aquesta recomanació
+      required: Requerit
+      status: Estat
+      submit: Enviar
+      submitted_by: Enviat per
+      suggest_a_dataset: Recomanar un Conjunt de Dades
+      suggestion_received: La seva recomanació ha estat rebuda i és a la cua de moderació. Apareixerà a la pàgina una vegada l'administrador l'aprovi.
+      suggestion_updated: La seva recomanació ha estat actualitzada
+      title: Títol
+      title_prompt: Introdueixi un títol
+      user_removed: un usuari ja ho ha eliminat
+      user_removed_short: L'usuari fou eliminat
+    upload_dialog:
+      browse: Cercar
+      title_file: Carregar un Arxiu
+      title_image: Carregar una Imatge
+      title_photo: Carregar una Foto
+      to_upload_file: ! 'Arxiu a Carregar:'
+      to_upload_image: ! 'Imatge a Carregar:'
+      to_upload_photo: ! 'Foto a Carregar:'
+      upload: Carregar
+  core:
+    aggregates:
+      average: Mitjana
+      count: Compte
+      maximum: Màxim
+      minimum: Mínim
+      sum: Suma
+    alignment:
+      center: Centrar
+      left: Esquerra
+      right: Dreta
+    analytics:
+      visit: vista
+      visits: vistes
+    and: i
+    auth:
+      invalid_userpass: Nom d'usuari o contrasenya invàlids
+      need_login: Ha d'iniciar sessió per accedir a aquesta pàgina
+      need_permission: No té permís per veure aquesta pàgina
+      too_many_tries: Massa intents per a iniciar sessió. El compte ha estat deshabilitat temporalment.
+    browser_support:
+      chrome: Chrome
+      internet_explorer: Internet Explorar
+      link_text: Aprèn més.
+      message_html: Aquest lloc es visualitza millor emprant un cercador més nou. %{link_text}
+    chart_types:
+      area: Àrea de Gràfiques
+      bar: Gràfic de Barres
+      bubble: Gràfic de Bombolles
+      column: Gràfic de Columnes
+      donut: Gràfic de Dònut
+      line: Gràfic de Línies
+      pie: Gràfic de Pastís
+      stackedbar: Gràfica de Barres Apilades
+      stackedcolumn: Gràfica de Columnes Apilades
+      timeline: Línia temporal
+      treemap: Mapa d'Arbre
+    chart_types_short:
+      area: Àrea
+      bar: Barra
+      bubble: Bombolla
+      column: Columna
+      donut: Dònut
+      line: Línia
+      pie: Pastís
+      stackedbar: Barra Apilada
+      stackedcolumn: Columna Apilada
+      timeline: Línia temporal
+      treemap: Mapa d'Arbre
+    data_types:
+      calendar_date: Data & Temps
+      checkbox: Casella
+      dataset_link: Enllaç al Conjunt de Dades
+      date: Data & Temps (amb fus horari)
+      document: Document
+      drop_down_list: Elecció Múltiple
+      email: Correu Electrònic
+      flag: Bandera
+      geospatial: Geoespacial
+      html: Text Formatat
+      link: Enllaça a la Columna
+      list: Llista
+      location: Localització
+      money: Moneda
+      nested_table: Taula Ennierada
+      number: Nombre
+      object: Objecte
+      percent: Percentatge
+      phone: Telèfon
+      photo: Foto (Imatge)
+      stars: ! 'Estrella '
+      text: Text Pla
+      url: URL del Lloc Web
+    date_time:
+      centuries_future: ! '%{time} segles fins ara'
+      centuries_past: Fa %{time} segles
+      current_century_future: aquest segle
+      current_century_past: aquest segle
+      current_day_future: avui
+      current_day_past: avui
+      current_hour_future: aquesta hora
+      current_hour_past: aquesta hora
+      current_minute_future: ara mareix
+      current_minute_past: ara mateix
+      current_month_future: aquest mes
+      current_month_past: aquest mes
+      current_week_future: aquesta setmana
+      current_week_past: aquesta setmana
+      current_year_future: aquest any
+      current_year_past: aquest any
+      days_future: fa %{time} dies
+      days_past: fa %{time} dies
+      hours_future: fa %{time} hores
+      hours_past: fa %{time} hores
+      minutes_future: fa %{time} minuts
+      minutes_past: fa %{time} minuts
+      months_future: fa %{time} mesos
+      months_past: fa %{time} mesos
+      single_century_future: fa un segle
+      single_century_past: fa un segle
+      single_day_future: demà
+      single_day_past: ahir
+      single_hour_future: fa una hora
+      single_hour_past: fa una hora
+      single_minute_future: fa un minut
+      single_minute_past: fa un minut
+      single_month_future: el proper mes
+      single_month_past: el mes passat
+      single_week_future: la propera setmana
+      single_week_past: ! 'la setmana passada '
+      single_year_future: el proper any
+      single_year_past: l'any passat
+      unknown: algunes vegades
+      weeks_future: fa %{time} setmanes
+      weeks_past: fa %{time} setmanes
+      years_future: fa %{time} anys
+      years_past: fa %{time} anys
+    dialogs:
+      apply: Sol·licitar
+      cancel: Cancel·lar
+      close: Tancar
+      continue: Continuar
+      create: Crear
+      delete: Eliminar
+      done: Fet
+      dont_save: No Desis
+      logout: Has tancat sessió
+      save: Desar
+      session_timeout:
+        notice: Li hem tancat la sessió per seguretat. Si us plau, torni a iniciar sessió per a continuar.
+        warning:
+          belay_button: No em tanquis la sessió!
+          body_html: No he percebut cap activitat des de fa uns minuts. Per seguretat, li serà tancada la sessió en <span id="secondsRemaining"></span> segons.
+          title: La seva sessió és a punt d'expirar.
+      submit: Enviar
+      update: Actualitzar
+    expando:
+      expand: Expandir
+      prompt: Clicar per expandir
+    features:
+      allow_comments: Comentant
+      cell_comments: Cel·la per Comentar
+    filters:
+      formal:
+        between: entre
+        contains: conté
+        equals: és igual
+        greater_than: major que
+        greater_than_or_equals: major o igual que
+        is_blank: està en blanc
+        is_not_blank: no està en blanc
+        less_than: menor que
+        less_than_or_equals: menor o igual que
+        not_contains: no conté
+        not_equals: no és igual a
+        starts_with: comença amb
+      informal:
+        between: està entre
+        contains: conté
+        equals: és
+        greater_than: ! 'és major que '
+        greater_than_or_equals: és com a mínim
+        is_blank: és blanc
+        is_not_blank: no és blanc
+        less_than: és menor que
+        less_than_or_equals: és com a molt
+        not_contains: no conté
+        not_equals: ! 'no és '
+        starts_with: comença amb
+    forms:
+      none: Cap
+      required_field: Camp Requerit
+    group_function:
+      date_day: Dia
+      date_month: Mes
+      date_year: Any
+    interstitial:
+      leaving_explanation_html: Aquest <span class="datasetType">conjunt de dades</span> està allotjat per <a href="\#" rel="external" class="externalDomain">un altre domini</a>
+      leaving_notice_html: Està sortint de <span class="serverName">%{site_name}</span>
+    maintenance_notice: Aquest lloc gestionat per Socrata no estarà disponible per manteniment des de %{start} fins a %{finish}.
+    map_layers:
+      aerial: Aeri
+      bing_aerial: Aeri Bing
+      bing_roadmap: Mapa de Carreteres Bing
+      bing_roadmap_alias: Bing
+      esri_natural_earth: Mapa de la Terra Natural (ESRI)
+      esri_natural_earth_alias: Mapa de la Terra Natural
+      esri_satellite: Imatges per Satèl·lit (ESRI)
+      esri_us_topo: Mapa topogràfic detallat USA (ESRI)
+      esri_us_topo_alias: Mapa Topogràfic USA
+      esri_world_street_map: Mapa de Carrers Mundial (ESRI)
+      esri_world_street_map_alias: Mapa de Carrers Mundial
+      esri_world_topo: Mapa Mundial Topogràfic Anotat (ESRI)
+      esri_world_topo_alias: Mapa Topogràfic Mundial
+      google_roadmap: Mapa de Carreteres de Google
+      google_roadmap_alias: Google
+      google_satellite: Satèl·lit de Google
+      google_terrain: Terreny de Google
+      roadmap: Mapa de Carreteres
+      satellite: Satèl·lit
+      terrain: Terreny
+    no_category: Sense categoria
+    no_js: Deshabilitar Javascript en aquest pàgina
+    no_license: Sense llicència
+    numbers:
+      eight: huit
+      five: cinc
+      four: quatre
+      nine: nou
+      num_one: un
+      num_two: dos
+      num_zero: zero
+      seven: set
+      six: sis
+      three: tres
+    or: o
+    pagination:
+      current_page: Pàgina Actual
+      first_page: Primera Pàgina
+      last_page: Última Pàgina
+      next_page: Pàgina Següent
+      page: pàgina
+      previous_page: Pàgina anterior
+    precision_style:
+      scientific: Científic (1.0204e+3)
+      standard: Estàndard (1020.4)
+    required: Requerit
+    share_types:
+      contributor: Col·laborador
+      owner: Propietari
+      view: Espectador
+      viewer: Espectador
+    validation:
+      accept: Si us plau, introdueixi una extensió vàlida.
+      date: Si us plau, introdueixi una data vàlida
+      dateISO: Si us plau, introdueixi una data vàlida (ISO).
+      digits: Si us plau, introdueixi únicament xifres.
+      email: Si us plau, introdueixi una adreça de correu electrònic vàlida.
+      equalTo: Si us plau, introdueixi el mateix valor una altra vegada.
+      max: Si us plau, introdueixi un valor menor o igual que {0}.
+      maxlength: Si us plau, introdueixi no més de {0} caràcters.
+      min: Si us plau, introdueixi un valor major o igual a {0}.
+      minlength: Si us plau, introdueixi com a mínim {0} caràcters.
+      number: Si us plau, introdueixi un nombre vàlid.
+      range: Si us plau, introdueixi un valor entre {0} i {1}.
+      rangelength: ! 'Si us plau, introdueixi un valor amb llargària de caràcters d''entre {0} i {1}. '
+      remote: Si us plau, arregli aquest camp.
+      required: Aquest camp és requerit.
+      url: Si us plau, introdueixi una URL vàlida.
+    view_types:
+      api: Vista d'API
+      blob: Arxiu no tabulat o documentat
+      calendar: calendari
+      chart: Gràfica
+      dataset: Conjunt de Dades
+      filter: vista filtrada
+      form: formulari
+      group: vista agrupada
+      grouped: vista agrupada
+      href: conjunt de dades extern
+      map: mapa
+      table: taules
+      working_copy: còpia de treball
+    view_types_plural:
+      api: APIs
+      calendar: Calendaris
+      chart: Gràfiques
+      filter: Vistes Filtrades
+      form: Formularis
+      grouped: Vistes Agrupades
+      map: Mapes
+    visibility:
+      private: privat
+      public: públic
+  dataslate:
+    component:
+      edit: Editar aquesta component
+      header:
+        height: Altura
+      invalid_config: Aquesta component no té una configuració vàlida
+      loading: Carregant, esperi si us plau...
+      picture:
+        alt_attr: Alt
+        alt_attr_prompt: atribut d'alt
+        full_url: URL completament qualificada a una imatge
+        image_source: Font de la Imatge
+        large: Gran (220x220)
+        medium: Mitjana (150x150)
+        original: Original
+        thumb: Petita (80x80)
+        tiny: Minúscula (24x24)
+        title_attr: Títol
+        title_attr_prompt: atribut de títol
+      print:
+        print: Imprimir
+        print_this_page: Imprimir aquesta pàgina
+      remove: Eliminar aquest component
+      share:
+        email: Compartir per Correu Electrònic
+        email_contents: ! '%{dataset} en %{company}'
+        facebook: Compartir a Facebook
+        share: Compartir
+        subscribe: Subscriure-s'hi per Correu Electrònic o RSS
+        subscribe_text: Subscriure-s'hi als Canvis
+        this_page: Aquesta pàgina
+        tweet_contents: ! 'Comprova el %{dataset} en %{company}: %{url}'
+        twitter: Compartir a Twitter
+    configurator:
+      actions_components: Accions
+      advanced_components: Components Avançats
+      content_components: Contingut
+      data_components: Dades
+      input_components: Entrada
+      report_components: Informar dels Components
+    context_picker:
+      select_dataset: Seleccionar Conjunt de Dades
+      view_data: Veure Dades
+    create:
+      cancel: Cancel·lar
+      create: Crear
+      create_page: Crear Pàgina de Pissarra de Dades
+      page_settings: Ajustaments de Pàgina
+      page_title: Títol de Pàgina
+      page_url: URL de Pàgina
+      title: Crear Pàgina de Pissarra de Dades
+    edit:
+      editing: Editant
+      permissions: Permissos
+      preview_page: Previsualitzar pàgina
+      redo: Repetir
+      revert: Revertir
+      save: Desar
+      save_as: Desar com a
+      settings: Propietats
+      undo: Desfer
+      view_editor: Veure l'editor interactiu
+    edit_component:
+      no_config: No hi ha cap configuració disponible per a %{component}
+      subtitle: Configurar aquest component
+      title: Editar Component
+    edit_properties:
+      no_data: No hi ha conjunt de dades per a aquesta component
+      subtitle: Afegir propietats basades en el context de dades d'aquest component
+      title: Propietats Disponibles
+    permissions:
+      cancel: Cancel·lar
+      private: Privat
+      private_desc: Visible només per vostè
+      public: Públic
+      public_desc: Visible per tot el món
+      save: Desar
+      shared: Compartir al Lloc
+      shared_desc: Visible per tots els seus amics, però no per al públic
+      title: Permisos de Pàgina
+    settings:
+      cancel: Cancel·lar
+      page_title: Títol de Pàgina
+      page_url: Camí
+      save: Desar
+      title: Configuració de Pàgina
+  date:
+    abbr_month_names:
+    - 
+    - Gen
+    - Feb
+    - Mar
+    - Abr
+    - Mai
+    - Jun
+    - Jul
+    - Ago
+    - Set
+    - Oct
+    - Nov
+    - Des
+  error:
+    back: Tornar
+    error_500:
+      description_html: Si us plau, provi una altra vegada en uns moments, o <a href="htttp://support.socrata.com">reporti aquest error</a> amb els detalls del que intentava fer.
+      somethings_wrong: Alguna cosa està mal!
+      were_sorry: ! 'Ho lamentem, però ha ocorregut un problema mentre processàvem la seva petició. '
+    not_acceptable_406:
+      page_not_found: Pàgina no trobada.
+      were_sorry: Ho lamentem, però la pàgina sol·licitada no està disponible en el format sol·licitat.
+    not_found_404:
+      back_to: Tornar a
+      description_html: La pàgina o bé no existeix o s'ha mogut. Pensem que el millor que pot fer és començar altra vegada des de la <a href="/">pàgina principal</a>. Si el problema persisteix o no pot trobar el que cercava, posi's en contacte amb nosaltres. Gràcies.
+      page_not_found: Pàgina no trobada.
+      were_sorry: Ho lamentem, però la pàgina sol·licitada no es troba.
+    permission_denied_403:
+      description_html: Si pensa que açò és un error, provi a iniciar sessió amb un altre usuari <a href="/login">ací</a>.
+      no_permission: No té permís per accedir al recurs.
+      were_sorry: Ho lamentem, però sembla que no té permís per accedir a aquesta pàgina.
+    to_whence_you_came: per a d'on ve vostè.
+  govstat:
+    chrome:
+      header:
+        links:
+          account: Compte
+          account_options: Opcions de Compte
+          account_tooltip: Veure i fer canvis al compte d'usuari.
+          configuration: Configuració
+          configuration_title: Administrar la configuració de GovStat
+          data: Dades
+          data_title: Cercar i Administrar Dades
+          goals: Objectius
+          goals_title: Crear i Seguir Objectius
+          home: Inici
+          home_title: Inici
+          my_goals: Els meus Objectius
+          my_goals_tooltip: Mirar els objectius creats.
+          reports: Informe
+          reports_title: Mirar i Crear Informes
+    configuration:
+      analytics: Analítiques
+      appearance: Aspecte
+      config: Configuració
+      content_moderation: Moderació de Continguts
+      data_management: Administració de Dades
+      datasets: Conjunts de Dades
+      federations: Federacions
+      homepage: Pagina d'Inici
+      metadata: Metadades
+      moderation: Comentar Moderació
+      nomination: Nomenar Moderació
+      routing: Trajecte i Aprovació
+      sdp_templates: Plantilla de Dades per als Jugadors
+      title: Administrar la Configuració del Lloc
+      users: Usuaris
+    reports:
+      component:
+        base_map: Mapa Base
+        chart: Gràfiques
+        formatted_text: Text Formatat
+        header: Capçalera
+        horizontal_layout: Capa Horitzontal
+        map: Mapa
+        map_layer: Mapa de Capes
+        picture: Imatge
+        print: Imprimir
+        share: Compartir
+        table: Taula
+        title: Títol
+        vertical_layout: Capa Vertical
+        visualize: Visualitzar
+      create:
+        create_report: Crear Informe
+        title: Crear Informe
+      manage:
+        copy: Copiar
+        create_new_report: Crear Nou Informe
+        delete: Eliminiar
+        edit: Editar
+        home: Inici
+        other_reports: Altres Informes
+        owner: propietari
+        reports: Informes
+        title: Administrar Informes
+        updated: actualitzat
+        your_reports: Els seus Informes
+      permissions:
+        title: Permisos de l'Informe
+      settings:
+        page_title: Títol de l'Informe
+        title: Propietats de l'Informe
+    template:
+      grid_flow_layout: Capa de Quadrícules Flotant
+      layouts: Capes
+      list_layout: Llista de Capes
+      title: Seleccionar Capa
+  plugins:
+    daterangepicker:
+      date_range: Interval de Dades
+      done: Fet
+      end_date: Data de finalització
+      last_month: Mes passat
+      month_to_date: De Mes a Dates
+      next: Següent
+      prev: Previ
+      specific_date: Data Específica
+      start_date: Data d'inici
+      the_month_of: El mes de...
+      the_week_of: La setmana de...
+      the_year_of: L'any de...
+      today: Avui
+      week_to_date: De Setmanes a Dates
+      year_to_date: D'anys a Dates
+    fileuploader:
+      drop_files: Deixi caure els fitxers ací per a carregar-los
+      failed: Fallida
+      upload_a_file: Carregar un arxiu
+    hallo:
+      body: Cos
+      bold: negreta
+      heading: Capçalera
+      italic: cursiva
+      redo: Refer
+      subheading: Subcapçalera
+      undo: Desfer
+    jquery_ui:
+      april: Abril
+      april_short: Abr
+      august: Agost
+      august_short: Ago
+      december: Desembre
+      december_short: Des
+      done: Fet
+      february: Febrer
+      february_short: Feb
+      friday: Divendres
+      friday_min: Dv
+      friday_short: Dv
+      january: Gener
+      january_short: Gen
+      july: Juliol
+      july_short: Jul
+      june: Juny
+      june_short: Jun
+      march: Març
+      march_short: Mar
+      may: Maig
+      may_short: Mai
+      monday: Dilluns
+      monday_min: Dl
+      monday_short: Dl
+      next: Següent
+      november: Novembre
+      november_short: Nov
+      october: Octubre
+      october_short: Oct
+      prev: Previ
+      saturday: Dissabte
+      saturday_min: Ds
+      saturday_short: Ds
+      september: Setembre
+      september_short: Set
+      sunday: Diumenge
+      sunday_min: Dg
+      sunday_short: Dg
+      thursday: Dijous
+      thursday_min: Dj
+      thursday_short: Dj
+      today: Avui
+      tuesday: Dimarts
+      tuesday_min: Dm
+      tuesday_short: Dm
+      wednesday: Dimecres
+      wednesday_min: Dc
+      wednesday_short: Dc
+      week_min: Set
+  recaptcha:
+    errors:
+      verification_failed: Els caràcters introduïts no coincideixen amb la imatge
+  screens:
+    about:
+      actions: Accions
+      activity: Activitat
+      attachments: Adjunts
+      category: Categoria
+      comments: Comentaris
+      community: Puntuació de la Comunitat
+      contact_dataset_owner: Contactar amb el Propietari del Conjunt de Dades
+      contributors: Col·laboradors
+      created: creat
+      data_provided_by: Dades Proveïdes Per
+      description: Descripció
+      downloads: Descàrregues
+      edit_metadata: Editar Metadades
+      flag_dataset: Marcar Conjunt de Dades
+      license: Llicència
+      licensing: Llicència i Autoria
+      links: Enllaços
+      meta: Meta
+      none: (cap)
+      permalink: Permalink
+      permanent_links: Enllaços Permanents
+      permissions: Permisos
+      private: Privat
+      public: Públic
+      raters: Posicions
+      resource_name: Nom del Recurs
+      row_class: Classe de Fila
+      row_count: Total de Files
+      row_identifier: Identificador de Files
+      semantics: Semàntica i RDF
+      short_url: URL curta
+      snapshotted: instantània
+      soda2_support: SODA2 únicament
+      soda2_yes: Sí
+      source_link: Enllaç al recurs
+      spatial_extent: Extensió Espacial
+      subject_column: Columna del Tema
+      tags: Marques
+      terms_of_use: Condicions d'Ús
+      updated: actualitzat
+      view_full_page: Veure en Pàgina Sencera
+      view_statistics: Veure Estadístiques
+      visits: Visites
+      your: La seva Puntuació
+    admin:
+      datasets:
+        layout_config: Configuració de Capes
+        left: Esquerra
+        right: Dreta
+        saved: Desat
+        saving: Desant
+        sidebar_position: Posició de la Barra Lateral
+        title: Conjunts de Dades
+        unpublished_datasets: Conjunts de Dades no publicats
+      federation:
+        accept: Acceptar
+        accepted: Acceptat
+        accepted_by: ! 'Acceptat Per '
+        all: (tots)
+        dataset: Conjunt de Dades
+        flashes:
+          accepted: Federació acceptada satisfactòriament
+          created: Federació creada satisfactòriament
+          deleted: Federació eliminada satisfactòriament
+          invalid_domain: ! 'No es pot crear la federació de dades: el domini de l''objectiu no és vàlid'
+          rejected: Federació rebutjada satisfactòriament
+        list_domains: La següent és una llista de dominis que deuen començar únicament amb federacions. Una vegada que cliqui publicar, un administrador del domini objectiu deurà acceptar la seva sol·licitud.
+        no_domains: No hi ha dominis disponibles que coincideixin amb %{name}.
+        no_federations: Encara no existeixen dominis per a aquestes federacions.
+        no_pub_datasets: ! 'Cap conjunt de dades publicat coincideix amb els seus criteris de cerca. '
+        pending: Pendent
+        publish: Publicar
+        reject: Rebutjar
+        search: Cercar
+        search_boost: Cercar Increment
+        search_boost_explain: L'interval va de l'1 al 0. Valors majors fan que els conjunts de dades tendeixin a mostrar-se abans.
+        search_prompt: Cerca Dominis on Publicar
+        search_pub_datasets: Cerca Conjunts de Dades Publicats
+        source_domain: Domini de la Font
+        status: Estat
+        target_domain: Domini Objectiu
+        terminate: Finalitzar
+        title: Federació de Dades Obertes
+      home:
+        add_featured_dataset: Afegir un Nou Conjunt de Dades Destacat
+        are_you_sure: Està segur? Aquesta acció no es pot desfer.
+        catalog_layout_configuration: Configuració de Catàleg de Capes
+        choose_a_dataset: Elegir un Conjunt de Dades a destacar
+        compact_list: Llista Compacta
+        contents: Continguts
+        create_new_story: Crear una Nova Història
+        custom_image: Personalitzar Imatge
+        customize_now: Personalitzar Ara
+        customize_story_appearance: Personalitzar l'Aparença de la Història
+        dataset_display_limit: Només quatre conjunts de dades poden ser destacats al mateix temps.
+        date_published: Data de Publicació
+        default_catalog_layout: Catàleg per Defecte de Capes
+        delete: Eliminar
+        down: Baix
+        edit: Editar
+        feature_image: Imatge destacada
+        filetype_error: Tipus de fitxer invàlid. Si us plau, seleccioni un fitxer d'imatge
+        flashes:
+          create_error: ! 'Ha ocorregut un error durant la seva petició: %{error_message}'
+          delete_error: La història que pretenia eliminar no existeix.
+          edit_error: La història que preteniaeditar no existeix.
+          edit_success: La seva història s'ha desat
+          move_error: La història que pretenia moure no existeix.
+          move_success: La seva història s'ha desat
+        image: Imatge
+        left: Esquerra
+        manage_featured_dataset: Administrar els Conjunts de Dades Destacats
+        manage_story_content: Administrar el contingut de la Història
+        move_left: Moure a l'Esquerra
+        move_right: Moure a la Dreta
+        remove: ! 'Eliminar '
+        rich_list: Llista Enriquida
+        right: Dreta
+        save_now: Desar Ara
+        saved: Desat
+        saved1: Desat.
+        saving: ! 'Desant '
+        saving1: Desant...
+        set_a_thumbnail: Crear un Miniatura
+        text: Text
+        thumbnail: Miniatura
+        title: Administrar Pàgina d'Inici
+        up: Dalt
+      metadata:
+        add_new_category: Afegir una Categoria Nova
+        add_new_field: Afegir un Camp nou
+        allowed_values: ! 'Valors Permesos '
+        are_you_sure: Està segur de voler eliminar aquest conjunt de camps i tots els camps associats?
+        category_name: ! 'Nom de la Categoria '
+        create: Crear
+        create_new_fieldset: Crear un Conjunt de Camps Nou
+        define_categories: Definir les Categories dels Conjunts de Dades
+        define_custom_fields: Definir els Camps Personalitzats
+        down: Baix
+        enter_a_name: Introdueixi un nom
+        'false': false
+        field_name: Nom del Camp
+        flashes:
+          cannot_move_field: ! 'No es pot moure el camp anomenat ''%{name}'': no s''ha trobat'
+          field_duplicated: No pot crear un camp duplicat anomenat '%{name}'
+          field_name_required: No pot crear un camp sense nom
+          field_successful_create: Camp Creat Satisfactòriament
+          field_successful_remove: Camp Eliminat Satisfactòriament
+          field_successful_save: Camp Desat Satisfactòriament
+          fieldset_duplicated: No pot crear un camp duplicat anomenat '%{name}'
+          fieldset_name_required: No pot crear un camp sense nom
+          no_such_field: No existeix aquest camp
+          no_such_fieldset: No existeix aquest conjunt de camps
+          successful_create: Conjunt de Camps Creat Satisfactòriament
+          successful_remove: Conjunt de Camps Eliminat Satisfactòriament
+        locales: Locals
+        make_optional: Fer Opcional
+        make_private: Fer Privat
+        make_public: Fer Públic
+        make_required: Fer Requerit
+        metadata_explain1: Les metadades personalitzades s'han desfet en <span class="code">conjunts de camps</span> i <span class="code">camps</span>. Un <span class="code">conjunt de dades</span> és la forma d'agrupar lògica i visualment un o més <span class="code">camps</span> junts.
+        metadata_explain2: Els camps poden ser configurats de múltiples formes. Poden ser <span class="code">requerits</span>, el que farà que s'executin quan el editors creïn nous conjunts de dades i actualitzin metadades existents. També poden ser <span class="code">privats</span> i per tant, els valors introduïts no seran visibles pel públic.
+        metadata_explain3: Finalment, pot elegir predefinir les opcions del seu <span class="code">camp</span> si desitja que els valors se seleccionin d'una llista en compte de ser introduïts en forma de text lliure de forma.
+        no_data: Encara no s'han definit camps de conjunts de dades personalitzats al seu domini. Introdueixi un nom a sota i cliqui 'Crear' per començar.
+        no_fields_defined: Aquest conjunt de camps encara no té cap camp definit
+        page_title: Administrar Metadades de Conjunts de Dades
+        parent: Pares
+        remove: Eliminar
+        shown: Mostrat?
+        title: Administrar Metadades
+        'true': true
+        up: Dalt
+      users:
+        actions: Accions
+        all: Tot
+        bulk_create: ! 'Crear a l''engròs '
+        create_accounts: Crear Comptes
+        email: Correu electrònic
+        email_prompt: Introdueixi les adreces de correu electrònic per als comptes que desitgi crear
+        emails: Correus electrònics
+        error_permission_request: Ha ocorregut un error mentre processàvem la seva sol·licitud del permís
+        filter_by: Filtrar per
+        flashes:
+          accounts_created:
+            one: Compte %{count} satisfactòriament creat
+            other: Comptes %{count} satisfactòriament creats
+          invalid_role: ! 'Rol específic invàlid per a la creació d''usuari: %{role}'
+          no_email_addresses: No s'han detectat les adreces de correu electrònic
+          pending_permissions_removed: Permisos pendents eliminats
+          reenable_failed: Ha ocorregut un error mentre activàvem aquest compte d'usuari
+          reenable_success: Compte reactivat satisfactòriament
+          reset_email_failed: ! 'Ha ocorregut un error mentre enviàvem el correu electrònic per a reiniciar la contrasenya. '
+          reset_email_sent: Correu electrònic per a reiniciar la contrasenya enviat
+          successful_update: L'usuari s'ha actualitzat satisfactòriament
+        invited: Convidat
+        name: Nom
+        no_pending_users: Cap usuari pendent coincideix amb el filtre actual
+        no_users_found: No s'han trobat usuaris existents
+        no_users_match: Cap usuari coincideix amb el filtre actual
+        pending_users: Els següents usuaris tenen comptes pendents, però no els han activat encara
+        reenable_privileges: Restablir Privilegis
+        remove: Eliminar
+        reset_password: Reiniciar Contrasenya
+        return_to_overview: Tornar a la vista d'usuaris
+        role: Rol
+        roles:
+          administrator: administrador
+          designer: dissenyador
+          editor: administrador
+          none: cap
+          publisher: editor
+          viewer: espectador
+        search: Cercar
+        search_for_users: Cercar Usuaris per a Afegir a
+        search_results: Cercar Resultats per a '%{term}'
+        title: Administrar Usuaris
+        user_saved: Usuari desat
+    dataset_edit:
+      append: Agregar
+      append_and_replace: Agregar i Reemplaçar dades
+      append_explain: Vostè pot voler que les dades carregades s'afegeixin al final del seu conjunt de dades. Serà capaç d'elegir com les noves dades s'afegeixen a les columnes existents.
+      finish:
+        headline: El seu conjunt de dades s'ha actualitzat.
+        subheadline: Cliqui en Finalitzar per veure-ho!
+      headline: Què desitja fer amb les dades carregades?
+      import_columns:
+        destination_column: Columna de Destinació
+        destination_data_type: Tipus de Dades de Destinació
+        headline: Com es relacionen les dades en &ldquo;<span class="fileName"></span>&rdquo; amb el teu conjunt de dades?
+      import_warnings:
+        see_docs: <strong>Confós?</strong> Si us plau, comprovi la nostra <a href="%{publisher_link}" rel="external">documentació de l'editor</a> sobre com importar dades per a tenir una explicació detallada de com l'importador s'encarrega de les dades.
+      replace: ! 'Reemplaçar '
+      replace_data: ! 'Reemplaçar dades '
+      replace_explain: Vostè pot desitjar eliminar totes les dades existents i reemplaçar-les per les dades carregades. Serà capaç d'elegir com les seus noves dades s'afegeixen a les columnes existents. Aquesta operació no pot desfer-se.
+      replace_layer: Reemplaçar Capa
+      title: Editar Conjunt de Dades
+      upload_accessible: Carregar les noves dades de forma accessible.
+    dataset_new:
+      column_template:
+        name_this_col: Anomena aquesta columna
+        options: opcions
+        remove: eliminar
+      crossload:
+        downloading: Descarregant el seu fitxer...
+        headline: Si us plau, indiqui on es troba el seu fitxer.
+        import: Importar
+        supported: Les extensions amb suport són CSV, TSV i Excel. Els protocols amb suport són HTTP i HTTPS.
+        url_prompt: Quina és l'URL de la pàgina web on es troba el fitxer que desitja importar?
+      errors:
+        invalid_crossload_url: Si us plau, introdueixi una URL vàlida que comenci amb HTTP o HTTPS.
+        invalid_url: Aquesta no sembla una URL vàlida.
+        missing_data_provider: Deurà especificar el proveïdor de les dades (atribució) a les llicències Creative Commons.
+        missing_esri_url: Es requereix una capa de mapes ESRI vàlida.
+        missing_name: Es requereix un nom per al conjunt de dades.
+        need_description: Si us plau, descrigui &ldquo;%{name}&rdquo;
+      finish:
+        headline: El seu Conjunt de Dades ha estat creat.
+        subheadline: Cliqui en Finalitzar per veure-ho!
+      first_page:
+        blobby: Carregui un Fitxer sense dades
+        blobby_explain: Seleccioni aquesta opció si té un fitxer que contingui dades però que no pot ser importat, com per exemple un PDF o un fitxer d'imatge. Serà importat al catàleg de dades, però no serà igual d'interactiu com les dades reals.
+        create: Dissenyar des de l'Inici
+        create_explain: Seleccioni aquesta opció si no té dades que desitgi importar. Podrà definir un esquema per a les seves dades i introduir-les en línia.
+        external: Enllaç a Dades Externes
+        external_explain: Seleccioni aquesta opció si ja disposa de dades allotjades en un altre servidor. Aquestes dades seran importades.
+        header: Crear un nou Conjunt de Dades
+        import: Importar un Fitxer de Dades
+        import_explain: Seleccioni aquesta opció si ja disposa de les dades que desitja importar al seu ordinador. Els formats amb suport son .csv, .tsv, .xls, i .xlsx.
+        mapLayer: Connectar amb una Capa de Mapes ESRI
+        mapLayer_explain: Seleccioni aquesta opció si disposa d'una capa de mapes ESRI que desitgi importar al catàleg. Necessitarà proveir una URL al punt de l'API on la capa ESRI s'emmagatzema.
+        prompt: Com desitja crear el seu nou Conjunt de Dades?
+        shapefile: Importar Dades Geoespacials
+        shapefile_explain: Seleccioni aquesta opció si disposa de dades geoespacials que desitja importar al catàleg.
+      import:
+        headline: On es troba aquest fitxer?
+        local: Al meu ordinador
+        local_explain: Seleccioni aquesta opció si disposa del fitxer a l'ordinador què està emprant.
+        web: A internet
+        web_explain: ! 'Seleccioni aquesta opció si té el fitxer a Internet i disposa de la seva URL. '
+      import_columns:
+        add_new_column: Afegir una Nova Columna
+        clear_all: Neteja-ho Tot
+        data_type: Tipus de Dades
+        errors_warnings: Errors i Advertències
+        fewer_rows: Menys Files
+        headers: Capçaleres
+        headers_instructions: Les capçaleres s'ignoraran i no seran importades com a dades. Si us plau, indiqui quantes files de la seva font són capçaleres
+        headline: Especificar com s'importarà &ldquo;<span class="fileName"></span>&rdquo;.
+        help_message: Si necessita ajuda, comprovi la <a href="%{common_errors}" rel="external">llista d'errors i advertències comunes</a>.
+        more_rows: Més Files
+        name: Nom
+        pending_columns: Si us plau, esperi mentre carreguem les seves columnes...
+        reset_to_preset: Reinicia a predeterminat
+        set: Conjunt
+        source_column: Columna Font
+        subheadline: Columnes a importar
+        suggested_alltext: Totes les columnes com a text
+        suggested_columns: Columnes recomanades
+        suggested_flat: Columnes recomanades (no compostes)
+        suggested_plus_discrete: Columnes recomanades (compostes i discretes)
+        why_choose_now: Perquè és important elegir el tipus de les columnes ara?
+      import_help: <strong>Necessita ajuda?</strong> Mantenim una <a href="%{common_errors}" rel="external">llista d'advertències i errors comuns</a> que li pot ajudar.
+      import_shapefile:
+        crs: Sistema de Referència de Coordinades
+        headline: Especifiqui com s'importarà &ldquo;<span class="fileName"></span>&rdquo;
+        layers_list: Capes a importar
+        name: Nom
+        pending: Si us plau, esperi mentre carreguem les seves capes...
+        subheadline: Aquest fitxer forma conté <span class="featureCount"></span> destacats en <span class="layerCount"></span> capes.
+      import_warnings:
+        headline: Advertències durant l'importació
+        see_docs: <strong>Confós?</strong> Si us plau, comprovi la <a href="%{publisher_link}" rel="external">documentació de l'editor</a> sobre com importar dades per a una explicació de com l'importador s'encarrega de les dades. També pot adreçar-se a la <a href="%{common_errors}" rel="external">llista d'advertències i errors comuns</a>.
+        subheadline: Si us plau, comprovi les dades ja que poden no haver-se importat correctament.
+      importing_your_data: Important les seves dades...
+      metadata:
+        creative_commons_type: Tipus Creative Commons
+        esri_map_layer_url: URL de la Capa de Mapes ESRI
+        esri_source_url: Introdueixi l'URL de la font
+        privacy_security: Privacitat & Seguretat
+        privacy_settings: Ajustaments de Privacitat
+        private_explain: Les meves dades són <strong>privades</strong>
+        prompt: Si us plau, descrigui les seves dades.
+        public_explain: ! 'Les meves dades són <strong>públiques</strong>: només poden ser accedides per mi, però tothom pot veure-les'
+      processing: Processant...
+      title: Nou Conjunt de Dades
+      upload_accessible: Carregui un nou conjunt de dades de forma accessible
+      upload_file:
+        choose_a_file: Seleccioni un Fitxer
+        no_file_selected: Cap fitxer seleccionat.
+        supported_blist: El formats amb suport són .csv, .tsv, .xls, i .xlsx.
+        supported_shapefile: El formats amb suport són .kml, .kmz, i .zip (ESRI Fitxer de forma).
+        uploading: Carregant el seu fitxer...
+      why_choose_now:
+        close: Tancar
+        line_1: ! 'Les seves dades són processades quan les importem i s''optimitzen per al consum específic de cada tipus de dades. A més, molts dels tipus de dades tenen característiques especials que només s''activaran quan s''estableixi aquest tipus específic de columna &mdash; les columnes de localització, per exemple, són necessàries per a crear mapes. '
+        line_2: És possible canviar el tipus de les columnes més endavant, però és un procés que requereix temps, per tant, és millor configurar-ho adequadament al principi.
+    ds:
+      bar:
+        api_unsavable: Les vistes de l'API no poden ser modificades
+        based_on_html: Basat en <a class="revertLink currentViewName" href="#revert">%{name}</a>
+        based_on_parent_html: Basat en <a class="parentName"></a>
+        based_on_private_view: una vista privada.
+        based_on_working_copy_html: Basat en la còpia de treball de <a class="revertLink currentViewName" href="#revert">%{name}</a>
+        find_prompt: Trobar a aquest Conjunt de Dades
+        format:
+          bold: Negreta
+          bullet: Llista de Punts
+          color: Color de la Font
+          italic: Cursiva
+          link: Enllaç
+          number: Llista Numerada
+          redo: Tornar a fer
+          strike: Ratllar
+          underline: Subratllar
+          undo: Desfer
+        full_screen: Canvia a pantalla completa
+        publish_button: Publicar el Conjunt de Dades
+        publish_prompt: Aquest conjunt de dades és una còpia de treball i no està disponible públicament. Una vegada hagi realitzat els canvis desitjats, aquest conjunt de dades podrà ser publicat per fer-lo disponible públicmanet.
+        publish_rights: Únicament un propietari o un editor poder publicar aquest conjunt de dades
+        revert_button: Revertir
+        revert_prompt: Revertir a una vista desada
+        save_as_button: Desar com a...
+        save_as_prompt: Desar vista com a...
+        save_button: Desar
+        save_progress: Desant...
+        save_prompt: Desar la vista actual
+        share_email: Compartir per Correu Electrònic
+        share_facebook: Compartir en Facebook
+        share_twitter: Compartir en Twitter
+        snapshot_notice: Aquesta és una versió prèviament publicada del conjunt de dades. Està arxivada i no pot ser modificada.
+        snapshot_title: ! '-'
+        snapshot_title_html: Instantània %{date}
+        snapshot_unsavable: Els conjunts de dades amb instantànies o vistes no poden ser creats o modificats
+        subscribe: Subscriure's als Canvis
+        subscribe_prompt: Subscriure's per Correu Electrònic o per RSS
+        unpublished_unsavable: Els canvis a les dades a sota són desats automàticament. Els filtres i les cerques no poden ser desats a una còpia de treball del conjunt de dades. Si us plau, creï una vista en un conjunt de dades publicat.
+        unsaved_title: Vista No Desada
+        view_published_html: Veure el <span class="publishedName">conjunt de dades</span> publicat
+        view_type: Veure com a %{type}
+        view_types:
+          calendar: calendari
+          chart: gràfiques
+          fatrow: llista enriquida
+          map: mapa
+          page: fila única
+          table: taula
+        working_copy_notice: Aquesta és una còpia del conjunt de dades que li permet fer canvis. No és visible a la resta fins que no la publiqui.
+        working_copy_title: ! '[Còpia de Treball]'
+      blob:
+        data_extraction: L'aplicació o l'eina per a l'extracció de dades està disponible a través de l'enllaç de la dreta
+        download: Descarregar
+        external_link: Enllaç Extern
+        js_required: Es requereix Javascript per a fer funcionar el visor del document al seu cercador.
+        js_required_download:
+          click_here: cliqui aquí
+          prompt_html: En canvi, per a descarregar aquest fitxer, %{click_here}.
+        limited_download: Aquest conjunt de dades no té informació en forma de taula i pot tenir interactivitat limitada, però està disponible per a descarregar
+      column_tip:
+        aggregate: (%{aggregate} en %{data_type})
+        field_name: Nom del camp de l'API
+        original_name: Nom Original
+      dataset_contact:
+        captcha_failed: Resposta incorrecta. Si us plau, provi una altra vegada.
+        error_message: Ha ocorregut un error mentre enviàvem les observacions d'aquest conjunt de dades. Si us plau, provi més tard.
+        form:
+          email: El seu Correu Electrònic
+          email_prompt: La seva adreça de correu electrònic serà compartida amb el propietari del conjunt de dades per tal que el puguin contactar.
+          message: Missatge Curt
+          purpose: Propòsit
+          purposes:
+            copyright_violation: Violació de Copyright
+            offensive_content: Contingunt Ofensiu
+            other_purpose: Altre
+            personal_information: Informació Personal
+            prompt: -- Seleccioni Propòsit --
+            spam: Spam o Correu Brossa
+          send_button: Enviar
+          subject: Tema
+        other_subject: Una visitant li ha enviat un missatge sobre el seu '%{dataset_name}' '%{site}' conjunt de dades
+        reasons:
+          copyright_violation: per violació de copyright
+          offensive_content: per comentari ofensiu
+          personal_information: per contenir informació personal
+          spam: per ser correu brossa potencial
+        subject: El seu conjunt de dades "%{dataset_name}" ha sigut marcat %{reason}
+        success_message: El propietari del conjunt de dades ha estat notificat
+        validation:
+          no_body: El missatge deu tenir cos.
+          no_email: Es requereix la seva adreça de correu electrònic.
+          no_purpose: Ha de seleccionar un propòsit per a aquest missatge.
+          no_subject: Ha de seleccionar un tema per a aquest missatge.
+      dataset_status:
+        copy_available: La còpia de treball es troba disponible. El botó per Editar el Conjunt de Dades li donarà accés quan estigui preparat per a editar.
+        copy_in_progress: Si us plau, esperi mentre la còpia de treball es crea. %{additional}
+        copy_in_progress_additional:
+          processing: Actualment està essent processada (començà %{time})
+          queued: Està en línia esperant a ser processada (en cua %{time}; %{totalQueued} total en línia)
+        edit_dataset_button: Editar Conjunt de Dades
+        error_publishing_html: Ha ocorregut un error mentre creàvem una còpia de treball del seu conjunt de dades. Si us plau, <a href="http://support.socrata.com" rel="external">contacti el suport de Socrata</a>.
+        error_publishing_unpublished: Únicament conjunts de dades no publicats poden ésser publicats.
+        needs_copy: Aquest conjunt de dades està publicat i no pot ser editat directament. Una còpia de treball %{status} li permetrà realitzar els canvis desitjats abans de fer-los disponibles públicament.
+        needs_copy_status:
+          available: actualment disponible
+          can_be_made: podem crear ara mateix
+      email:
+        add_email: Afegir Més
+        email_button: Correu Electrònic
+        message_prompt: Introduir un missatge opcional
+        private_notice: ! 'Atenció: Aquest %{displayName} és actualment privat. L''enviament d''un correu electrònic permetrà accedir a tots els destinataris.'
+        prompt_html: ! 'Compartir <span class="datasetName">%{name}</span> amb les següents adreces de correu electrònic:'
+        remove_email: Eliminar
+        success: El seu correu electrònic ha estat enviat satisfactòriament.
+        title_html: Compartir &quot;<span class="datasetName">%{name}</span>&quot;
+      grid_sidebar:
+        add_column:
+          convert_address:
+            city: Ciutat
+            city_prompt: Introdueixi una Ciutat
+            state: Estat
+            state_prompt: Introdueixi un Estat
+            street: Carrer
+            title: Emprar les Columnes d'Adreces Existents
+            zip_code: Codi Postal
+            zip_code_prompt: Introdueixi un Codi Postal
+          convert_latlong:
+            latitude: Latitud
+            longitude: Longitud
+            title: Emprar Latitud i Longitud Existents
+          multiple_choice:
+            add_option_button: Afegir Opció
+            option: Opció
+            title: Opcions d'Elecció Múltiple
+          nested_table:
+            default_column_name: Sense títol
+          subtitle: Afegir una nova columna al seu conjunt de dades
+          success: La seva columna ha estat afegida
+          title: Afegir Columna
+          validation:
+            view_column: No pot afegir una columna a la vista
+        api:
+          column_ids_title: IDs de les Columnes
+          endpoint_title: ! 'Punt Final de l''Acces de l''API:'
+          intro_html: L'<strong>API de Dades Obertes de Socrata</strong> (SODA) permet al enginyers de programari accedir a les dades allotjades en els llocs de dades de Socrata programàticament. Els desenvolupadors poden crear aplicacions que emprin les APIs SODA per a visualitzar i &ldquo;mesclar&rdquo; els conjunts de dades de Socrata de formes noves i excitants. Podreu crear una aplicació d'iPhone que visualitzi la despesa del govern a la vostra àrea, una aplicació web que permeti als ciutadans obtenir beneficis potencials del govern en temes ignorats fins al moment o un servei que automàticament enviï correus electrònics quan s'afegeixin noves característiques als rebuts que us interessi seguir.
+          reference_html: Per a accedir a aquest conjunt de dades programàticament, utilitzi el punt final de l'API proveïda a sota. Per a més informació i exemples sobre com usar l'API de Dades Obertes de Socrata, miri la nostra <a href="http://dev.socrata.com" rel="external">Documentació del Desenvolupador</a>.
+          subtitle: Accedir-hi %{view_type} mitjançant SODA
+          title: SODA API
+        apis:
+          create_button: Crear una API
+          create_button_prompt: Crear una Application Programming Interface (API) per a garantir l'accés programàtic a aquestes dades.
+          manage_button: Administrar
+          manage_button_prompt: Administrar l'API seleccionada
+          prompt_existing_html: Les <strong>APIs existents</strong> poden personalitzar-se. Pot controlar els permisos, els límits de sol·licituds, veure les mètriques d'ús i editar-ne la documentació.
+          prompt_new_html: La <strong>Fosa d'APIs</strong> li permet crear i configurar una o més Application Programming Interfaces (API) obertes i basades en estàndards per a aquest conjunt de dades.
+          subtitle: Crear i Personalitzar una API
+          title: APIs
+        append_replace:
+          subtitle:
+            immutable: Carregui un nou fitxer de dades de forma que el nou contingut reemplaci les seves dades actuals.
+            mutable: Carregui un nou fitxer de dades de forma que el nou contingut s'afegeixi o reemplaci les seves dades actuals.
+          title:
+            immutable: Reemplaçar
+            mutable: Adjuntar i Reemplaçar
+          wizard_button:
+            immutable: Iniciar l'assistent de Reemplaçament
+            mutable: Iniciar l'assistent d'Adjuntament i Reemplaçament
+        base:
+          buttons:
+            apply: Aplicar
+            cancel: Cancel·lar
+            create: Crear
+            done: Fet
+            remove: Eliminar
+            update: Actualitzar
+          color_select:
+            prompt: Elegir color
+          column_select:
+            auto: Auto
+            from_grid: Seleccioni una columna de la graella
+            none: (cap)
+            none_selected: Cap columna seleccionada
+            nonselectable: Columnes Invàlides
+            prompt: Seleccioni una columna
+            selectable: Columnes Vàlides
+            unselect: Desfer la selecció de columna
+          datatypes:
+            checkbox: casella
+            dataset_link: enllaç al conjunt de dades
+            date_time: data i hora
+            date_time_timezone: data i hora (amb fus horari)
+            document: document
+            email: correu electrònic
+            flag: marca
+            formatted_text: text formatat
+            geospatial: geoespacial
+            list: llista
+            location: localització
+            money: moneda
+            multiple_choice: elecció múltiple
+            nested_table: taula ennierada
+            number: nombre
+            object: objecte
+            percent: percentatge
+            phone: telèfon
+            photo: foto (imatge)
+            plain_text: text pla
+            star: estrella
+            website_url: URL del lloc web
+          generic_select:
+            prompt: Seleccioni un valor
+          validation:
+            at_least: El valor ha de ser com a mínim %{value}
+            different_value: No pot emprar aquesta columna una altra vegada
+            file_format: Es requereix l'arxiu %{format}
+            identifier_format: Els caràcters vàlids per a l'identificador de l'API són les lletres minúscules, els nombres i el subratllat. Caldrà que comenci amb una lletra i que no contingui subratllats consecutius.
+            invalid_url: L'URL no és vàlida
+            invalid_value: El valor no és vàlid
+            invalid_values: Han ocorregut problemes amb els valors especificats. Si us plau, comprovi els errors a sobre.
+            invalid_view: La vista ha de ser vàlida
+            no_greater: Els valors no han de ser majors que %{value}
+            numeric: El valor ha de ser un nombre
+            uid_required: Requereix una vista UID 4x4
+            verifying_url: Verificant URL
+        calendar:
+          dates:
+            end: Data de Finalització
+            start: Data d'Inici
+            title: Dates
+          information:
+            details: Detalls
+            event_title: Títol de l'Esdeveniment
+            new_details_button: Afegir Detalls
+            title: Informació de l'Esdeveniment
+          subtitle: Les vistes amb dates poden ser mostrades en format de calendari mensual
+          title: Calendari
+          validation:
+            invalid_columns: Aquesta vista ha de tenir una columna de dades i una columna de text
+            viz_limit: Una vista només pot tenir associada una visualització
+        chart:
+          advanced: Configuració Avançada
+          annotation: Notes
+          auto_update_sort: Ordenar les actualitzacions per tipus automàticament
+          auto_update_sort_button: Aplicar ara
+          auto_update_sort_info_donut: Les gràfiques de dònuts funcionen millor quan estan ordenades seguint les agulles del rellotge en forma descendent, de dins cap a fora.
+          auto_update_sort_info_pie: Les gràfiques de pastís funcionen millor quan estan ordenades seguint les agulles del rellotge en forma descendent.
+          axes:
+            title: Opcions dels Eixos
+            x_axis_title: Títol de l'Eix X
+            x_axis_title_prompt: Introdueixi un títol per a l'eix X
+            y_axis_title: Títol de l'Eix Y
+            y_axis_title_prompt: Introdueixi un títol per a l'eix Y
+          base_color: Color Base
+          categories: ! 'Categories '
+          cdlfmtg_color_override_html: Els colors estan essent ignorats pels <a href="#Conditional Formatting" class="showConditionalFormatting">Formats Condicionals</a>. Cliqui <a href="#Clear Conditional Formatting" class="clearConditionalFormatting">aquí</a> per a netejar tota regla actual de format condicional.
+          color_options:
+            column_colors: Colors de les Columnes
+          color_override_html: Els colors estan essent ignorats emprant els  <a href="#Conditional Formatting" class="showConditionalFormatting">Formats Condicionals</a>. Cliqui <a href="#Clear Conditional Formatting" class="clearConditionalFormatting">aquí</a> per a netejar tota regla actual de format condicional.
+          colors: Colors
+          configuration: Configuració
+          data_columns:
+            new_data_column_button: Afegir Columna de Dades
+            title: Columnes de Dades
+          data_labels: Etiquetes de Dades
+          data_selection:
+            advanced_data_selection:
+              title: Selecció Avançada de Dades
+            chart_definition:
+              label_title: Seleccionar etiquetes de dades
+              title: Definició de la Gràfica
+              value_title: Seleccionar valors de dades
+          date: Data
+          details: Detalls
+          draw_line: Dibuixar una Línia
+          dsg_color_override_html: Adoni's que els Grups de Sèries de Dades seleccionaran automàticament els colors de les seves columnes de dades. No ho farà, però, amb els seus <a href="#Conditional Formatting" class="showConditionalFormatting">Formats Condicionals</a>
+          error_bars:
+            color: Color
+            data_high: Seleccionar una columna amb major límit
+            data_low: Seleccionar una columna amb menor límit
+            high: Altura
+            low: Baix
+            title: Barres d'Errors
+          flyout:
+            new_details_button: Afegir Detalls al Vol
+            new_values_button: Afegir Valors
+            title: Detalls al Vol
+            title_column: Títol al Vol
+            value: Valors al Vol
+          group_extra: Valors Extra del Grup
+          groups: Grups
+          headings:
+            chart_details: Detalls de la Gràfica
+            data_presentation: Presentació de Dades
+            data_selection: Selecció de Dades
+          label: Etiqueta
+          labelInBar: Etiqueta en Barra
+          labels_and_values: Etiquetes i Valors
+          legend:
+            add_text: ! 'Text Adicional '
+            add_text_button: ! 'Afegir Text Adicional '
+            annotations: Descriure Anotacions
+            conditional_formats: Descriure Formats Condicionals
+            custom_entry: Etiqueta Personalitzada
+            display: Mostrar
+            new_custom_entry_button: Afegir Entrada de Llegenda Personalitzada
+            position: Llegenda
+            position_prompt: Elegir Posició
+            positions:
+              bottom: Baix
+              left: Esquerra
+              none: Cap
+              right: Dreta
+              top: Dalt
+            series: Descriure Sèries
+            title: Configuració de la Llegenda
+            title_short: Llegenda
+            value_markers: Descriure els Marcadors de Valors
+            values: Descriure els Valors
+          marker:
+            add_button: Afegir Anotació
+            caption: Peu
+            marker_title: Marcador de Valors
+            new_marker_button: Afegir Marcador
+            title: Anotacions
+            value: Al Valor
+          min_angle: Mín. Angle
+          min_angle_html: Mínim Angle Mostrat (&ordm;)
+          names: Noms
+          pie_other: Atenció %{chart_type} agregarà diferents valors (files) a partir del %{row_limit}é en Altra Categoria. Provi a crear un Enrotllament o un filtre que limiti el nombre de valors i llavors creï una %{chart_type} a partir d'aquests.
+          pie_truncate: Atenció %{chart_type} truncarà conjunts de dades amb més de %{row_limit} valors diferents (files). Provi a crear un Enrotllament o un filtre que limiti el nombre de valors i llavors creiï una %{chart_type} a partir d'aquests.
+          point_color: Color dels Punts
+          point_size: Tamany dels Punts
+          point_title: Títol
+          series_group:
+            alphabetize: Grups Alfabèticament
+            group_by: Grups per
+            hideLoadingMsg: ! 'Amaga el Missatge de Càrrega '
+            new_column_button: Afegir Columna de Sèries
+            row_limit_warning: L'agrupament de les Sèries de Dades trigarà molta estona amb aquest nombre de files.
+            title: Agrupant Sèries de Dades
+          setup:
+            title: Organització de la Gràfica
+            type: Tipus de Gràfica
+            type_prompt: Seleccioni un tipus de gràfica
+          show_lines: Mostrar les Línies
+          show_percent: Mostrar els percentatges (%)
+          show_points: Mostrar els Punts
+          show_values: Mostrar els valors
+          smooth_line: Línia suau
+          subtitle: La vista de dades pot esser mostrada amb diferents tipus de gràfiques
+          title: Gràfica
+          treemap_color_html: Aquests colors són aplicats al mapa d'arbres de forma automàtica només per crear distincions visuals. No tenen cap significat per ells mateixa.
+          validation:
+            chart_requires: ! '%{chart_type} necessita almenys'
+            chart_requires2: ! '%{and} %{count} un dels següents tipus de columnes:'
+            count: ! '%{count}'
+            required_columns: ! '%{chart_type} requereix %{column_types} columnes'
+            viz_limit: Una vista només pot tindre una visualització
+          value: Valor
+          valueInBar: Valor en Barra
+          values: Valors
+          y_axis_formatting:
+            abbreviate: Abreviar
+            auto: Auto
+            axis_max: Màx d'Eixos
+            axis_min: Mín d'Eixos
+            axis_prompt: Introdueixi un nombre
+            decimals: Amb Decimals
+            no_decimals: Sense Decimals
+            precision: Precisió
+            title: Format de l'Eix Y
+        column_common:
+          basic:
+            description: Descripció
+            description_prompt: ! 'Introdueixi una Descripció '
+            name: Nom
+            name_prompt: Introdueixi un Nom
+            title: Informació Bàsica
+          linked_dataset:
+            dataset: Conjunt de Dades
+            dataset_prompt: URL del Conjunt de Dades o UID 4x4
+            key: Columna Clau
+            label: Columna d'Etiquetes
+            title: Conjunt de Dades Enllaçat
+          type:
+            key: Clau
+            source: Font
+            title: Tipus de Columna
+            type: Tipus de Dades
+            type_prompt: Seleccioni un tipus de dades
+        column_order:
+          columns:
+            title: Columnes
+          prompt_html: Arrossegui les columnes en l'ordre que desitgi i llavors cliqui a <strong>aplicar</strong> per veure el nou ordre.
+          subtitle: Canviï l'ordre de les seves columnes
+          title: Ordre de les Columnes
+          validation:
+            valid_columns: Aquesta vista ha de ser vàlida i ha de tindre columnes visibles.
+        column_properties:
+          advanced:
+            api_identifier: Identificador d'API
+            new_rdf_button: Afegir Propietats RDF
+            semantics: Semàntica
+            title: Avançat
+            url: ! 'Introduir URL personalitzada '
+          column_totals:
+            title: Total de Columnes
+            total: Total
+            total_prompt: Seleccioni un total de columnes
+          display_order:
+            new_item_button: Afegir Ítem
+            option: Opció
+            title: Mostrar Ordre (per a la Pissarra de Dades)
+          formatting:
+            alignment: ! 'Aliniament '
+            title: Format
+            view_style: Estil de Vista
+          link:
+            key: Clau
+            source: Font
+            title: Enllaç
+          localization:
+            decimal: Decimal
+            thousands: Milers
+            title: Localització
+          money:
+            abbreviated: Abreviatura
+            currency: Moneda
+            format_mask_warning: ! '-'
+            no_precision: Cap
+            precision: Precisió
+            title: Format de Moneda
+          multiple_choice:
+            new_option_button: Afegir Opció
+            option: Opció
+            title: Opcions d'Elecció Múltiple
+          number:
+            display: Mostrar
+            no_commas: Sense Comes
+            no_precision: Cap
+            precision: Precisió
+            title: Format dels Nombres
+          number_advanced:
+            format_mask: Màscara de Format
+            format_mask_prompt: ! 'Utilitzi #s per indicar on han d''anar el dígits numèrics i altres caràcters; per exemple un nombre de la seguretat social tindrà la forma ###-##-####'
+            format_mask_warning: Açò pot afectar alguna configuració a sobre.
+            title: Format avançat
+          photo:
+            size: Tamany
+            size_prompt: Seleccioni un tamany
+            sizes:
+              featured: Destacat (150x80)
+              large: Gran (220x220)
+              medium: Mitjà (150x150)
+              original: Original
+              thumb: Miniatura (80x80)
+              tiny: Petit (24x24)
+            title: Opcions de Foto
+          subtitle: Actualitzar varies propietats en aquesta columna
+          success: La seva columna s'ha actualitzat
+          title: Propietats de Columna
+          url:
+            base_url: URL Base
+            base_url_prompt: Introdueixi el prefix comú de l'URL
+            title: Opcions d'URL
+          validation:
+            published: Si us plau, faci una còpia de treball o vista d'aquesta conjunt de dades per a canviar les propietats de la columna
+            unsaved: No pot editar les propietats de la columna per a vistes no desades
+        conditional_formatting:
+          change_icon: canvi
+          conditions:
+            description: Descripció
+            description_prompt: Descriure aquesta coincidència
+            item:
+              operator: Seleccionar una comparativa
+              subcolumn: Seleccionar una subcolumna
+              title: ! 'Condició:'
+            new_condition_button: ! 'Afegir Condició: '
+            new_rule_button: Afegir Nova Regla
+            title: Condicions
+            when:
+              all: Totes les Condicions
+              always: Sempre
+              any: Qualsevol Condició
+            when_title: Quan
+          format_html: Utilitzi < br />aquest color<br />or aquesta icona
+          subtitle: Els Formats Condicionals li permeten canviar el color de fons de les files basant-se en criteris personalitzats. A cada fila se li assignarà el color de la primera condició coincident.
+          title: Format Condicional
+          validation:
+            no_columns: Aquesta vista no té columnes que filtrar
+            no_icons: Les icones són relevants únicament per a la vista de mapa
+        delete:
+          confirm: Açò eliminarà el %{view_type} permanentment. No hi ha volta de fulla! Segur que desitja continuar?
+          delete_button: Eliminar aquest %{view_type}
+          subtitle: Eliminar aquest %{view_type}
+          title: Eliminar
+          warning:
+            api: Eliminar aquesta API farà que fallin totes les aplicacions que l'empren.
+            published: Eliminar aquest conjunt de dades també eliminarà totes les vistes associades.
+            view: Eliminar aquesta vista només afectarà a aquelles vistes que estiguin basades en aquesta.
+            working_copy: Pot eliminar aquesta còpia de treball i fer-ne una de nova per a revertir qualsevol canvi que hagi fet.
+        digital_signing:
+          consumer: Per a obtenir una versió signada d'aquest conjunt de dades, simplement cliqui a l'enllaç a sota per a generar una clau i començar la descàrrega. La clau i les dades descarregades són específiques per a la versió actual del conjunt de dades; si el propietari actualitzés el conjunt de dades en el futur, haurà de tornar a començar el procés per obtenir noves dades. Publiqui les dades descarregades juntament amb la clau que rebi i segueixi les instruccions que trobarà al paquet descarregat, terceres persones hauran de ser capaces de confirmar que les seves dades són legítimes.
+          generate_button: Generar i Descarregar Ara
+          intro_html: Utilitzant un <strong>conjunt de dades signat digitalment</strong>, és possible provar, emprant mètodes criptogràficament segurs, que una còpia particular d'un conjunt de dades Socrata no s'ha falsificat. Açò pot ser útil si, per exemple, està buscant publicar troballes basades en aquestes dades i vol ser capaç de provar la seva integritat.
+          publisher: Per a generar una versió signada d'aquest conjunt de dades, simplement cliqui a l'enllaç de sota per a generar una clau. Noti que si actualitza aquest conjunt de dades en el futur, haurà de tornar a regenerar la clau per tal que els consumidors puguin tornar a accedir-hi. Noti també que aquest procés suposa realitzar operacions en la totalitat de les dades, i per tant, pot trigar una mica si les dades són molt grans o conté grans adjunts.
+          publisher_generation: Únicament els propietaris dels conjunts de dades poden generar claus signades.
+          signature_header: Signatura
+          subtitle: Exportar una versió d'aquestes dades de tal forma que la seva intregritat pugui ser verificada més endavant.
+          title: Signatura Digital
+          validation:
+            non_tabular: Només les dades tabulars podran imprimir-se
+        download:
+          download_as: Descarregar Com a
+          geo_header: Descarregar Dades Geoespacials
+          layers_header: Descarregar Capes Tabulars
+          subtitle: Descarregar una còpia d'aquest conjunt de dades en format estàtic
+          title: Descarregar
+        feed:
+          subtitle: El canal web de discussió li mostra la conversa i l'activitat al voltant del conjunt de dades
+          title: Discussió
+        form:
+          information:
+            name: Nom
+            name_prompt: Introdueixi un nom
+            public: Públic?
+            success: URL d'èxit
+            success_prompt: Introdueixi l'URL d'una pàgina web
+            title: Informació del Formulari
+          subtitle: Els formularis li permeten recollir dades directament des de la seva pàgina web fins al conjunt de dades
+          title: Formulari
+          validation:
+            no_columns: Aquesta vista ha de contenir columnes visibles per a crear un formulari
+        map:
+          advanced:
+            exclusive: Exclusiu
+            hide_geolocator: Sense Geolocalitzador
+            subtitle: Seleccioni 'Exclusiu' si només un mapa base ha de mostrar-se a cada moment.
+            title: Configuració Avançada
+            use_legend: Emprar Llegenda
+          base_layers:
+            alias: Àlies
+            layer: Capa
+            layer_prompt: Seleccionar Capa
+            layer_url: URL de Capa
+            new_base_map_button: Afegir Mapa Base
+            opacity: Opacitat
+            subtitle: Seleccionar des d'una llista de serveis de mapa i configurar-ne l'aparença.
+            title: Mapes Base
+          data_layer:
+            alias: Àlies
+            alias_prompt: Descriure el conjunt de dades
+            base_color: Color Base
+            color_high: Color (Alt)
+            color_low: Color (Baix)
+            flyout:
+              details: Detalls al Vol
+              labels: sense Etiquetes?
+              new_details_button: Afegir Detalls al Vol
+              opacity: Opacitat
+              title: Configuració al Vol
+              title_column: Títol
+            highlight_color: Color en Clicar
+            icon: Icona
+            location: Localització
+            mondara_note: Les capes Mondara no poden actualment ser més personalitzades.
+            opacity: Opacitat
+            plot_style: Estil de Traçada
+            plot_style_prompt: Seleccionar un estil de traçada
+            point: Personalitzar els Punts
+            point_color: Color de Punts
+            point_size: Mida dels Punts
+            quantity: Quantitat
+            region: Regió
+            region_level_prompt: Seleccionar un nivell de regió
+            region_prompt: Seleccionar una regió
+          layers:
+            advanced: Configuració Avançada per a %{name}
+            config: Configuració per a %{name}
+            custom: Capes Personalitzades
+            dataset: Conjunt de Dades
+            edit: editar
+            new_data_button: Afegir Dades
+            title: Resum del Conjunt de Dades
+          legend:
+            conditional_formats: Descriure els Formats Condicionals
+            custom_entry: Afegir Entrades de Llegendes Personalitzades
+            entry_label: Etiqueta
+            position: Llegenda
+            position_prompt: Seleccionar una posició
+            positions:
+              bottom_left: Baix Esquerra
+              none: Cap
+              top_right: Dalt Dreta
+            title: Configuració de la Llegenda
+          plots:
+            heatmap: Mapa de Límits
+            point: Mapa de Punts
+            rastermap: Mapa de Calor
+          regions:
+            canada_provinces: Províncies del Canadà
+            counties: Comtats del Estats Units en
+            countries: Països
+            state: Estats dels Estats Units
+          subtitle: Les vistes amb localitzacions poden aparèixer com a punts en un mapa
+          title: Mapa
+          validation:
+            hidden_location_html: Vostè pot <a href="#showLoc" title="Show a location column">mostrar una columna de localització</a>.
+            location_column: Es requereix una columna de localització per a crear el mapa.
+            viz_limit: Una vista deu tenir només una visualització a sobre
+        odata:
+          endpoint_action: ! 'Copia aquest enllaç:'
+          intro_html1: Crear una fulla de càlcul en Microsoft Excel per a analitzar o visualitzar aquest conjunt de dades. Si empra un enllaç OData, les dades es podran actualitzar.
+          intro_html2: Empri Microsoft Excel 2010, Microsoft Excel 2013 o Microsoft Power Query. Segueixi les instruccions ací, emprant la <a href="%{doc_link}">Documentació OData de Socrata</a>.
+          subtitle: Accedir al conjunt de dades mitjançant OData
+          title: OData
+        ownership:
+          error: Ha ocorregut un problema mentre canviàvem la propietat. Si us plau, provi més tard.
+          me: Jo
+          subtitle: Per a transferir a un altre usuari, introdueixi les adreces de correu electrònic o el nom de compte de la seva ID de Socrata, aleshores seleccioni el compte desitjat de la llista de sota. També podrà introduir l'URL del perfil de l'usuari si el coneix. Únicament els usuaris amb comptes existents podran prendre possessió dels conjunts de dades.
+          success:
+            me: Ara eres el propietari
+            user: La propietat s'ha transferit a %{owner} satisfactòriament
+          title: Propietat
+          transfer_to: Transferir propietat a
+          validation:
+            invalid_user: Usuari no reconegut. Si us plau, provi a cercar l'usuari per nom, correu electrònic o perfil d'URL.
+            no_user: Si us plau, seleccioni un usuari.
+            valid_saved: Aquesta vista ha de ser vàlida i ha d'estar desada
+        permissions:
+          error: Ha ocorregut un error mentre modificàvem els permisos del seu conjunt de dades. Si us plau, provi més tard
+          features_html: ! 'Característiques del <span class="datasetTypeName">conjunt de dades</span> addcionals '
+          status_html: Aquest <span class="datasetTypeName">conjunt de dades</span> es troba actualment <span class="datasetPublicText">%{visibility}</span>
+          subtitle: Administrar els permisos d'aquest %{view_type}
+          success: S'han desat els permisos
+          title: Permisos
+          validation:
+            valid_saved: Aquesta vista ha de ser vàlida i ha d'estar desada
+        print:
+          margins:
+            bottom: ! 'Baix:'
+            left: ! 'Esquerra:'
+            right: ! 'Dreta:'
+            top: ! 'Dalt:'
+          margins_title: ! 'Marges (polzades):'
+          options:
+            fit: Disminuir per a que el conjunt de dades càpiga en una pàgina
+            header_icons: Mostrar icones en la capçalera de la columna
+            headers_every_page: Imprimir el títols de les columnes en cada pàgina
+          options_title: ! 'Opcions:'
+          orientation: ! 'Orientació:'
+          orientations:
+            landscape: Panorama
+            portrait: Retrat
+          paper_size: ! 'Tamany del Paper:'
+          paper_sizes:
+            a0: A0 (841 x 1189mm)
+            a1: A1 (594 x 841mm)
+            a2: A2 (420 x 594mm)
+            a3: A3 (297 x 420mm)
+            a4: A4 (210 x 297mm)
+            legal: Legal (8.5 x 14 polzades)
+            letter: Carta (8.5 x 11 polzades)
+            tabloid: Tabloid (11 x 17 polzades)
+          print_button: Imprimir
+          subtitle: Exportar aquest conjunt de dades en format PDF imprimible
+          title: Imprimir
+          validation:
+            non_tabular: Només les dades tabulars seran imprimides
+        sdp:
+          preview: Previsualitzar
+          subtitle: El Jugador de Dades Social li permet publicar en gran el conjunt de dades a Internet
+          title: Jugador de Dades Social
+          validation:
+            public: Aquesta vista ha de ser pública abans de ser publicada
+            valid_saved: La vista ha de ser vàlida i estar desada
+        share:
+          error: Ha ocorregut un problema mentre modificàvem les seves comparticions. Si us plau, provi més tard
+          loading_shares: Descarregant comparticions...
+          no_shares_html: Actualment no comparteix aquest <span class="datasetTypeName">conjunt de dades</span> amb ningú
+          notify_button: Notificar Tots els Canvis
+          notify_success: Notificació enviada
+          prompt_html: Aquest <span class="datasetTypeName">conjunt de dades</span> és <span class="publicOrPrivate">%{visibility} </span> <span class="andSharedHint %{hide}"> i està compartit amb:</span>
+          share_button_html: Compartir aquest <span class="datasetTypeNameUpcase">Conjunt de Dades</span>
+          subtitle: Compartir aquest %{view_type}
+          success: Els seus permisos s'han actualitzat
+          title: Compartint
+          validation:
+            valid_saved: Aquesta vista deu ser vàlida i ha d'estar desada
+        showhide_columns:
+          columns:
+            title: Columnes
+          subtitle: Ajustar les columnes que seran visibles en aquesta vista
+          title: Mostrar i Amagar Columnes
+        sort_rollup:
+          rollup:
+            add_group_button: Afegir Columna d'Agrupament
+            add_rollup_button: Afegir Columna d'Enrotllament
+            function: Funció
+            group_by: Agrupar per
+            group_function_label: Basat en
+            group_function_prompt: Seleccionar una funció d'agrupament
+            roll_up: Enrotllament
+            roll_up_function: Seleccionar una funció
+            title: Enrotllaments i Perforacions
+          sort:
+            add_column_button: Afegir Columna
+            column: Columna
+            direction: Direcció
+            directions:
+              ascending: Ascendent
+              descending: Descendent
+            title: Ordenar
+          subtitle: Pot agrupar files i resumir les dades amb un enrotllament, així com ordenar una o més columnes
+          title: Ordenar i Enrotllament
+          validation:
+            no_eligible_columns: Aquesta vista no té columnes què enrotllar o ordenar
+            no_function: Cada columna enrotllada ha de tindre una funció
+            no_group_bys: Ha d'agrupar almenys una columna per a enrotllar-ne una nova
+        tabs:
+          about: Sobre
+          discuss: Analitzar
+          edit: Editar
+          embed: Encastar
+          export: Exportar
+          filter: Filtre
+          manage: Administrar
+          more: Més
+          more_views: Més vistes
+          visualize: Visualitzar
+        view_list:
+          delete_confirm: Segur que desitja eliminar %{name}?
+          delete_snapshot_confirm: Segur que desitja eliminar %{name} (instantània %{date})?
+          filter:
+            all: Totes les Vistes
+          filter_title: Mostra només
+          item:
+            author_html: <span class="date"></span> per <span class="author"></span>
+            delete: Elimina aquesta vista
+            expand: Clicar per expandir
+          no_results: ! 'No hi ha cap resultat '
+          no_results_html: ! '-'
+          pagination:
+            last: Veure l'última vista
+            next: Veure les següents %{count} vistes
+          search: Cercar vistes
+          snapshots:
+            subtitle: Veure versions anteriorment publicades d'aquestes dades
+            title: Instantànies de Conjunts de Dades
+          sort:
+            alphaAscending: A-Z
+            dateAscending: De més Antic a més Nou
+            dateDescending: Més Recent
+            popularity: Popularitat
+          sort_title: Ordenar per
+          views:
+            subtitle: Veure el filtres, mapes, gràfiques i altres vistes existents d'aquest conjunt de dades
+            title: Vistes
+        visualize:
+          choose_type: Tipus de Visualització
+      save_dialog:
+        descriptions:
+          leaving: Té dades no desades que es perdran si surt d'aquesta pàgina. Si us plau, indiqui si desitja desar aquesta vista abans de sortir; o seleccioni Cancel·lar per retornar a la pàgina.
+          reload_save: Aquest canvi requereix una recarrega. Deurà Desar els canvis per veure'ls, o Cancel·lar per romandre a aquesta pàgina.
+          reload_update: Aquest canvi requereix una recarrega. Deurà Actualitzar aquesta vista o Desar-ne una nova per veure els canvis, o Cancel·lar per romandre a aquesta pàgina.
+        form:
+          new_name: ! 'Introdueixi un nom per a la seva nova vista:'
+        titles:
+          normal: Desar vista
+          prompt: Vol desar la seva vista?
+        validation:
+          auth_required: Haurà d'iniciar sessió per a desar una vista
+          view_name_required: Es requereix un nom per a la vista
+      show:
+        remove_confirm: Està segur de voler eliminar aquesta vista?
+        unpublished_alert: Aquest conjunt de dades encara no es troba publicat per permetre-li fer qualsevol canvi necessari abans de fer-lo disponible a tothom. No serà visible fins que vostè no publiqui aquest conjunt de dades.
+      subscribe:
+        google_reader: Afegir a Google Reader
+        intro_html: ! '<strong>Per subscriure''s al <span class="datasetName">%{name}</span> conjunt de dades via un lector RSS</strong>, empri un dels següents enllaços:'
+        rss: Descarregar com a RSS
+        rss_program: Obrir en un Programa Extern
+        subscribe_button: Subscriure's per Correu Electrònic
+        subscribe_html: <strong>Per rebre notificacions per correu electrònic</strong> quan es publiquin noves dades, marqui la caixa de Subscripció a sota.
+        subscribed_html: <strong>Actualment es troba subscrit a aquest <span class="datasetTypeName">conjunt de dades</span> mitjançant correu electrònic</strong>, i rebrà notificacions quan noves dades siguin publicades.
+        title_html: Subscriure's al &quot;<span class="datasetName">%{name}</span>&quot; <span class="datasetTypeNameUpcase">Conjunt de Dades</span>
+        unsubscribe: Si no desitja rebre més notificacions, desmarqui la caixa de Subscripció a sota.
+    edit_metadata:
+      about: Sobre
+      additional_source: ! 'Font Addicional '
+      alternative_access_prompt: Introdueixi un punt d'accés alternatiu per a aquest conjunt de dades
+      api_endpoint: Punt Final d'API
+      attachments: Adjunts
+      attachmentsDisabledMessagePart1: Per carregar adjunts, primer finalitzi la publicació d'aquest conjunt de dades. Llavors, cliqui
+      attachmentsDisabledMessagePart2: a la barra d'eines i cliqui Editar Metadades. Llavors serà capaç de carregar adjunts.
+      brief_description: Descripció Breu
+      brief_description_prompt: Introdueixi una descripció
+      cancel: Cancel·lar
+      category: Categoria
+      contact_email: Correu Electrònic de Contacte
+      contact_information: Informació de Contacte
+      custom: Personalitzat
+      custom_error: Les classes de semàntica personalitzades hauran de ser url.
+      data_provided_by: ! 'Dades Proveïdes Per '
+      data_provided_prompt: Individual o Organització
+      data_provider_required: Haurà d'especificar el proveïdor de les dades (atribució).
+      dataset_title: Títol del Conjunt de Dades
+      dataset_title_error: El conjunt de dades haurà de tindre títol
+      dataset_title_prompt: Introdueixi un títol
+      dataset_url: URL del Conjunt de Dades
+      dataset_url_prompt: Introdueixi la localització del seu conjunt de dades extern
+      delete: Eliminar
+      email_address: Adreça de Correu Electrònic
+      email_help: Aquestes adreces no es faran públiques. Si ho deixa en blanc, l'adreça passarà per defecte a ser la seva
+      existing_attachments: Adjunts Existents
+      external_confirm: Està segur que desitja eliminar el conjunt de dades extern?
+      external_dataset: Conjunts de Dades Externs
+      external_id: ID Extern
+      external_id_prompt: Introdueixi la seva ID externa
+      external_identifier: Identificador Extern
+      file_type: Tipus d'Arxiu
+      general_information: Informació General
+      headline: Editar Metadades per a %{name}
+      keywords_help: Introdueixi una o més paraules clau separades per comes
+      license_help: Seleccioni el termes de la llicència per a la gent que desitgi usar aquest conjunt de dades.
+      license_type: Tipus de Llicència
+      licensing: Llicències
+      licensing_attr: Llicències i Atribució
+      list: Llista
+      metadata_help: Aquest camp ha estat marcat com a privat per la seva organització i no és visible públicament
+      new_attachment: Nou Adjunt
+      none: (cap)
+      northwest_latitude: Latitud Nord-Oest
+      northwest_longitude: Longitud Nord-Est
+      optional: Opcional
+      private_help: Aquest camp ha estat marcat com a privat per la seva organització i no és visible públicament
+      remove_image: Eliminar Imatge
+      required_field: Camp Requerit
+      resource_name: Nom del Recurs
+      resource_name_prompt: Introdueixi un nom per al recurs
+      return: Tornar al Conjunt de Dades
+      row_class: Classes de Fila
+      row_identifier: Identificador de Fila
+      save: ! 'Desar '
+      save_changes: Desar canvis
+      semantics_rdf: Semàntica i RDF
+      source_link: Enllaç a la Font
+      source_link_error: Aquesta no sembla una url vàlida.
+      source_link_prompt: Introdueixi una Adreça Web
+      southeast_latitude: Latitud Sud-Est
+      southeast_longitude: Longitud Sud-Est
+      spatial_extent: Extensió Espacial
+      subject_column: Columna de Tema
+      tags_keywords: Etiquetes / Paraules Clau
+      tags_prompt: Introdueixi les paraules clau
+      thumbnail_image: Imatge en Miniatura
+      title: Editar les Metadades del Conjunt de Dades
+      upload_error: Si us plau, seleccioni un fitxer d'imatge vàlid
+      upload_help: Aquesta imatge es retallarà per a ajustar-la al quadrat
+      upload_image: Carregar la Imatge
+      upload_new_attachment: Carregar Nou Adjunt
+    forgot_password:
+      already_authenticated: ! 'Impossible reiniciar la contrasenya: ja ha iniciat la sessió.'
+      failed: Ha ocorregut un problema mentre enviàvem la seva petició de reinici de contrasenya. Si us plau, provi una altra vegada.
+      form:
+        reset_password_button: Reiniciar Contrasenya
+      prompt: Si ha oblidat la seva contrasenya, podem enviar-li un correu electrònic amb un enllaç per a reiniciar-la.
+      success: Gràcies. Hem enviat un correu electrònic al compte de l'arxiu amb més informació.
+      title: Recuperar la Seva Contrasenya
+    header:
+      links:
+        account_html: Hola, <span class="currentUser">Usuari Desconegut</span>
+        account_tooltip: Inici
+        administration: Administració
+    import_common:
+      addresses_to_geocode: Les adreces seran geocodificades una vegada l'import de dades es completi.
+      case_sensitive: Sensible a majúscules
+      city: Ciutat
+      column: Columna
+      combine_multiple_columns: Combinar Columnes Múltiples
+      create_composite: ! 'Crear una columna des de diferents columnes font:'
+      create_js_expression: Com puc crear una expressió Javascript personalitzada?
+      custom_javascript: ! ' Expressió Javascript Personalitzada...'
+      enter_custom: Introdueixi un valor personalitzat
+      existing_cols: Columnes d'Adreces Existents
+      existing_latlng_cols: Columnes de Latitud i Longitud Existents
+      find: cercar
+      find_and_replace: Cercar i Reemplaçar valors...
+      import_from_multiple: Importar des de <strong>múltiples columnes</strong>
+      import_from_single: Importar des d'una <strong>columna única</strong>
+      latitude: Latitud
+      location_source_col: Columnes de Font de Localització
+      longitude: Longitud
+      make_lower_case: Convertir a minúscules
+      make_title_case: Convertir a Títol
+      make_upper_case: Convertir a Majúscules
+      name_this_column: Anomenar aquesta columna
+      new_layer: (Nova Capa)
+      new_source_col: Afegir nova columna font
+      new_transform: Afegir nova transformació
+      options: Opcions
+      properly_formatted: La columna ha d'estar a href="%{formatting_link}" rel="external">adequadament formatada</a> abans d'importar
+      regular_expression: expressió regular
+      remove: eliminar
+      replace: i reemplaçar amb
+      state: Estat
+      street: Carrer
+      then: llavors
+      to_state_code: Convertir estats a codis de dues lletres
+      transforms: ! 'Realitzar les següents transformacions abans d''importar:'
+      zip: Codi Postal
+    import_pane:
+      analyzing: Analitzant el seu fitxer...
+      assure_accessible: Si us plau, asseguri's que el seu fitxer és accessible i vàlid i torni a provar.
+      combine_multiple_cols: (Combinar Columnes Múltiples...)
+      downloading: Descarregant el seu fitxer...
+      filetype_error_blist: Si us plau, seleccioni un fitxer CSV, TSV, XLS, o XLSX.
+      filetype_error_shapefile: Si us plau, seleccioni un fitxer KML, KMZ, o ZIP.
+      headline_import: Si us plau, seleccioni un fitxer a importar
+      headline_upload: Si us plau, seleccioni un fitxer per a carregar
+      layer: Capa
+      many_headers: ! '%{num} de les seves files són capçaleres.'
+      no_file_selected: Cap fitxer seleccionat.
+      no_headers: Cap de les seves files és capçalera.
+      no_source_column: (Cap Columna Font)
+      one_header: Una de les seves files és una capçalera.
+      problem_importing: Ha ocorregut un problema mentre importàvem aquest fitxer. Si us plau, asseguri's de que siga vàlid.
+      problem_uploading: Ha ocorregut un problema mentre carregàvem aquest fitxer. Si us plau, asseguri's de que siga vàlid.
+      rows_imported: ! '%{num} files importades fins al moment.'
+      try_again: Si us plau, provi una altra vegada en uns moments.
+      unknown_error: Ha ocorregut un error desconegut
+      uploading: Carregant la seva fila
+    link_account:
+      success: El seu compte extern ha estat enllaçat.
+    profile:
+      app_tokens:
+        item:
+          app_token: Símbol d'App
+          description: Descripció
+          edit_token_link: Editar
+          name: Nom
+          no_thumbnail: Sense Miniatura
+          organization: Oranització
+          secret_token: Símbol Secret
+          show_secret_link: Mostrar el Símbol Secret
+          website: Lloc web
+        manage_link: Administrar
+        no_applications: No ha creat encara cap aplicació. Cliqui 'Administrar' a la dreta per començar-hi
+        title: Les Aplicacions de %{user}
+      bar:
+        edit_settings_link: Editar els Ajustaments de Compte
+        follow_link: Seguir
+        join_date: S'ha unit en
+        last_seen_date: Últim inici de sessió
+        message_link: Enviar Missatge
+        unfollow_link: Deixar de seguir
+      browse:
+        owned_datasets: De la Meva Propietat
+        shared_datasets: Compartit Amb Mi
+        title: Conjunts de Dades de %{user}
+      contact:
+        message: Missatge
+        message_prompt: Introdueixi el seu missatge
+        subject: Tema
+        subject_prompt: Introdueixi un tema
+        title: Contactar Usuari
+      edit:
+        account:
+          add_openid_button: Afegir un OpenID o un Compte Extern
+          confirm_email: Confirmar Correu Electrònic
+          confirm_password: Confirmar Contrasenya
+          connect_openid: Iniciar sessió amb Facebook, Twitter, Google o altres credencial externes.
+          current_email: Correu Electrònic Actual
+          email:
+            interests:
+              account_provisioned: Se li ha proveït d'un compte privilegiat per a ús futur
+              any_view_created: S'ha creat una vista
+              comment_to_moderate: S'ha enviat un comentari que requereix moderació
+              nomination_created: S'ha creat una nova nominació
+              nomination_moderated: S'ha moderat una nominació
+              privileged_account_created: Un usuari crea el seu compte privilegiat
+              user_affected: Accions que l'afecten directament, com rèpliques a comentaris i actualitzacions d'estatus
+              view_made_public: Tota vista s'ha fet pública
+            policy: ! '%{site} respecta la seva privacitat i mai li enviarà correus electrònics de màrqueting a través d''aquesta llista o li enviarà cap correu electrònic extern. Els correus electrònics d''aquest lloc inclouen notificacions de compte i actualitzacions dels conjunts de dades què ha creat o als que s''ha subscrit'
+            send_error: Ha ocorregut un problema mentre enviàvem el seu correu electrònic. Si us plau, provi més tard.
+            send_success: El seu missatge ha estat enviat
+            subtitle: Per subscriure's a esdeveniments individuals, cliqui la caixa associada.
+            title: Notificacions de Correu Electrònic
+          learn_openid: Aprendre sobre OpenID
+          new_email: Nou Correu Electrònic
+          new_password: Nova Contrasenya
+          no_openid: Ja disposa d'identificadors OpenID associats a aquest compte.
+          old_password: Contrasenya Antiga
+          password: Contrasenya
+          password_prompt: (Per a la seva seguretat)
+          password_restrictions_html: (S'apliquen restriccions <span class="icon">&nbsp;</span>)
+          title: Configuració del Compte
+        app_tokens:
+          application_name: Nom de l'Aplicació
+          application_name_prompt: Introdueixi un nom per a la seva aplicació
+          callback_prefix: Prefix de Retorn de Trucades
+          callback_prefix_help_html: Per exemple, si la seva aplicació vol retornar la trucada <span class="code">https://my-domain.com/socrata-app/oauth/validated</span> i <span class="code">https://my-domain.com/socrata-app/profile</span>, haurà de voler suministrar <span class="code">https://my-domain.com/socrata-app</span> com al seu prefix. Noti que ha d'incloure com a mínim el nom sencer del domini.
+          callback_prefix_prompt: Proveeixi el prefix per al retorn de trucades segur (https) quan utilitzi OAuth
+          create_error: ! 'Ha ocorregut un error mentre creàvem el símbol de la seva aplicació: %{message}'
+          create_success: La seva aplicació ha estat creada
+          delete_confirm: Segur que desitja eliminar aquesta aplicació? El corresponent app_token deixarà de ser vàlid
+          delete_error: ! 'Ha ocorregut un error mentre eliminàvem el símbol de la seva aplicació: %{message} '
+          delete_success: La seva aplicació ha estat eliminada
+          description: Descripció
+          description_prompt: Introdueixi una descripció per a la seva aplicació
+          new_app_button: Crear una Nova Aplicació
+          organization: Organització
+          organization_prompt: Introdueixi els responsables de l'organització per a aquesta aplicació
+          public: Públic?
+          save_success: La seva aplicació ha estat desada satisfactòriament
+          thumbnail: Miniatura
+          title: Símbols de l'App
+          title_full: Les seves Aplicacions
+          title_single: Editar Símbol de l'Aplicació
+          website: Lloc Web
+          website_prompt: Proveir un enllaç a l'aplicació o al lloc web de l'organització
+        back_link: Tornar al Meu Perfil
+        image:
+          error: ! 'Error carregant la nova imatge: %{message}'
+          success: La seva imatge ha estat actualitzada
+          title: Imatge de Perfil
+          upload_image_button: Carregar Nova Imatge
+        info:
+          city: Ciutat
+          country: País
+          description:
+            prompt: Introdueixi tota informació que desitgi compartir
+            title: Descripció
+          display_name: Mostrar Nom
+          first_name: Nom
+          interests:
+            prompt: ! 'Introdueixi els seus interessos '
+            title: Interessos
+          last_name: Cognom
+          link_prompt: Introdueixi URL
+          organization: Organització
+          state: Estat
+          title: Informació Bàsica
+          title_full: Informació Bàsica
+          user_title: Títol
+        success: El seu perfil ha estat actualitzat satisfactòriament.
+        validation:
+          email_mismatch: Els nous correus electrònics no coincideixen
+          image_format: Si us plau, seleccioni un fitxer d'imatge vàlid (PNG, JPG, o GIF)
+          invalid_links: Ha ocorregut un problema mentre actualitzàvem els seus enllaços. %{message}
+          no_display_name: ! 'Error: es requereix ''Mostrar Nom'''
+          no_password_no_openid: No pot eliminar el seus identificadors OpenID abans de configurar una contrasenya
+          password_mismatch: Les noves contrasenyes no coincideixen
+          user_missing: No es troba aquest usuari, o bé s'ha eliminat.
+      info:
+        edit_link: Editar
+        external_links: Enllaços Externs
+        interests: Interessos
+        links:
+          facebook: Facebook
+          flickr: Flickr
+          my_blog: El Meu Blog
+          my_company: La Meva Companyia
+          my_site: El Meu Lloc
+          twitter: Twitter
+        no_description: No s'ha proveït cap descripció
+        other_ext_link: Altres
+        title: Informació Bàsica
+      sidebar:
+        all_contacts_link: ! 'Veure Tots '
+        edit_image_link: Editar Imatge
+        followers: Seguidors
+        following: Seguint
+        hide_contacts_link: Amagar
+    reset_password:
+      failed: Ha ocorregut un problema mentre reiniciàvem la seva contrasenya. Si us pla, provi una altra vegada.
+      form:
+        reset_password_button: Reiniciar Contrasenya
+      prompt: Benvingut! Si us plau, seleccioni una nova contrasenya.
+      success: Contrasenya reiniciada satisfactòriament
+      title: Reiniciar Contrasenya
+    sign_in:
+      failed: Impossible iniciar sessió amb aquest correu electrònic i contrasenya; si us plau, provi una altra vegada
+      form:
+        sign_in_button: Iniciar Sessió
+      headline: Iniciar Sessió en %{site}
+      mismatch: Les contrasenyes no coincideixen; si  us plau, provi una altra vegada
+      prompt_html: Iniciar Sessió amb la seva <strong>Socrata ID</strong>
+      tips_html: Empri el seu Correu Electrònic i Contrasenya per a iniciar sessió en tots els llocs <strong><a href="http://www.socrata.com" rel="external">Socrata</a> relacionants</strong>.
+    sign_up:
+      form:
+        create_account_button: Crear el Meu Compte
+        have_account_link: Ja disposo d'un compte
+      headline: Ens alegra que desitgi unir-se a %{site}!
+      prompt_html: Crear una nova <strong>Socrata ID</strong>
+      terms_html: En clicar a "Crear el Meu Compte", a sota, accepta els nostres <a href="http://www.socrata.com/terms-of-service" rel="external">Termes del Servei</a> i la <a href="http://www.socrata.com/privacy" rel="external">Política de Privacitat</a>.
+      third_party: En iniciar sessió, les seves credencials externes s'associaran a aquest compte.
+      third_party_return: Abans d'emprar aquestes credencials, deurà
+      third_party_return_create: crear un compte Socrata
+      third_party_return_link: enllaçar a una Socrata ID existent
+    stats:
+      api: API
+      apply: Aplicar
+      bytes_out: Bits Fora
+      chart_created: gràfica creada
+      charts: Gràfiques
+      charts_created: gràfiques creades
+      comment_created: comentaris creats
+      comments: Comentaris
+      comments_created: comentaris creats
+      daily: Diàriament
+      deleted_application: aplicació eliminada
+      dependent_metrics: Mètriques Depenents
+      download: descarregar
+      downloads: descàrregues
+      during_time_period: durant aquest període de temps
+      embed: encastar
+      embeds: encastats
+      error_loading: Ha ocorregut un error mentre carregàvem les mètriques de dades. Si us plau, provi més tard
+      filter_created: filtre creat
+      filters: Filtres
+      filters_created: filtres creats
+      govstat_hits: Resultats GovStat
+      hit_served: Resultat servit
+      hits_served: Resultats servits
+      hourly: A cada Hora
+      map_created: mapa creat
+      maps: Mapes
+      maps_created: mapes creats
+      metric_backed: mètrica finalitzada
+      metrics_backed: mètriques finalitzades
+      monthly: Mensualment
+      name: Nom
+      no_data_time_period: Cap dada en aquest període
+      page_viewed: pàgina vista
+      pages_viewed: pàgines vistes
+      referrals: Referents
+      rows_loaded: Files Carregades
+      sdp: SDP
+      select_chart_type: Seleccioni un tipus de gràfica per a mostrar des del menú
+      show_more: Mostrar Més
+      time_period_unavailable: Les dades mètriques no estan disponibles per a aquest període
+      title: Analítiques per al Conjunt de Dades
+      top_embeds: ! 'Millors Encastaments '
+      top_referrers: Millors Referents
+      total: total
+      total_govstat_hits: Total de Resultats GovStat
+      views: Vistes
+      views_loaded: Vistes Carregades
+      website: Lloc Web
+      weekly: Setmanalment
+    thumbnail:
+      discard_changes: ! 'Descartar els Canvis '
+      edit_thumbnail: Editar Miniatura per a %{name}
+      error_blob: L'arxiu encastat no pot ser miniaturitzat ja que no pot ser mostrat al cercador
+      error_generic: Ha ocorregut un problema mentre desàvem la seva miniatura. Si us plau, provi més tard
+      error_invalid: Aquesta vista és invàlida i no pot ser miniaturitzada en l'estat actual
+      error_private: Per a la seva privacitat, únicament els conjunts de dades públics poden ser miniaturitzats. Si desitja tindre una imatge de previsualització, si us plau, faci públic aquest conjunt de dades des del panell de Permisos de la barra lateral de Configuració.
+      error_processing: Ha ocorregut un error mentre processàvem la seva sol·licitud de miniatura. Si us plau, provi més tard
+      full_image: Imatge Completa
+      please_wait: Encara no hi han miniatures disponibles per a aquest conjunt de dades. Si us plau, esperi mentre creem una miniatura per a vostè.
+      preview: Previsualització
+      refresh_thumbnail: Refrescar Miniatura
+      return_to_dataset: Tornar al Conjunt de Dades
+      save_thumbnail: Desar Miniatura
+      success: Miniatura desada
+      title: Conjunt de Dades en Miniatura
+      unsaved: No desat
+    widget:
+      create_new:
+        name: Nou Nom per a la Plantilla
+        title: Crear una nova Plantilla
+    wizard:
+      cancel: Cancel·lar
+      finish: Finalitzar
+      next: Següent
+      previous: Previ
+  support:
+    array:
+      last_word_connector: ! ', i '
+      two_words_connector: ! 'i '
+    array_or:
+      last_word_connector: ! ', o '
+      two_words_connector: ! 'o '

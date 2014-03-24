@@ -11,15 +11,16 @@ blist.namespace.fetch('blist.filter');
     // -- michael.chui@socrata.com
     var filterOperators = {
         'EQUALS': { text: $.t('core.filters.informal.equals'), editorCount: 1,
-            soql: function(c, v) { return soqlInfix(c, '=', v); },
+            soql: function(c, v) { return soqlInfix('UPPER(' + c + ')', '=', 'UPPER(' + v + ')'); },
             opMatches: function(v, cv) { return _.isEqual(v, cv); } },
         'NOT_EQUALS': { text: $.t('core.filters.informal.not_equals'), editorCount: 1,
-            soql: function(c, v) { return soqlInfix(c, '!=', v); },
+            soql: function(c, v) { return soqlInfix('UPPER(' + c + ')', '!=', 'UPPER(' + v + ')'); },
             opMatches: function(v, cv) { return !_.isEqual(v, cv); } },
 
         'STARTS_WITH': { text: $.t('core.filters.informal.starts_with'), editorCount: 1,
-            soql: function(c, v) { return soqlFunc(c, 'starts_with', v); },
+            soql: function(c, v) { return soqlFunc('UPPER(' + c + ')', 'starts_with', 'UPPER(' + v + ')'); },
             opMatches: function(v, cv) { return (v || '').startsWith(cv); } },
+
         'CONTAINS': { text: $.t('core.filters.informal.contains'), editorCount: 1,
             soql: function(c, v) { return soqlFunc(c, 'contains', v); },
             opMatches: function(v, cv) { return (v || '').indexOf(cv) > -1; } },

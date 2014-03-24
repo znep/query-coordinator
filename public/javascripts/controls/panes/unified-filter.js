@@ -171,12 +171,14 @@
     var scrubFilterOperators = function(fc, newBackend)
     {
         // we handle blank/notblank separately
-        return _.compact(_.map(fc.orderedList, function(op)
-                {
-                    return (op == 'IS_BLANK' || op == 'IS_NOT_BLANK') ||
-                        (newBackend && (op == 'CONTAINS' || op == 'NOT_CONTAINS')) ? null :
-                        {value: op, text: fc.details[op].text};
-                })).concat({ value: 'blank?', text: $.t('core.filters.informal.is_blank') });
+        return _.compact(
+            _.map(fc.orderedList, function(op) {
+                return (op == 'IS_BLANK' || op == 'IS_NOT_BLANK') ||
+                    (newBackend && (op == 'CONTAINS' || op == 'NOT_CONTAINS')) ? null :
+                    {value: op, text: fc.details[op].text};
+                })
+            ).concat({ value: 'blank?', text: $.t('core.filters.informal.is_blank') }
+        );
     };
 
     var makeValidCondition = function(condition)

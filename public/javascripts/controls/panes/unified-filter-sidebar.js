@@ -64,7 +64,7 @@
                     data: {},
                     callback: function($elem)
                     {
-                        var cpObj = this
+                        var cpObj = this;
                         $elem.unifiedFilter({
                             datasets: cpObj.settings.datasets || [ cpObj._view ],
                             rootCondition: cpObj.settings.rootCondition,

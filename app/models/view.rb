@@ -775,6 +775,8 @@ class View < Model
         end
       end
       @blobs = b
+    else
+      @blobs = []
     end
 
     @blobs

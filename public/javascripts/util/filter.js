@@ -259,6 +259,7 @@ blist.namespace.fetch('blist.filter');
         if ($.subKeyDefined(c, 'renderType.soqlFieldWrapper'))
         { fieldName = c.renderType.soqlFieldWrapper(fieldName, op); }
 
+        // TODO rename this variable so it does not conflict with the variable declared on line 12!
         var soqlFunc = filterOperators[op].soql;
         if ($.subKeyDefined(c, 'renderType.filterConditions.details.' + op + '.soql'))
         { soqlFunc = c.renderType.filterConditions.details[op].soql; }

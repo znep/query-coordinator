@@ -2,8 +2,17 @@ blist.namespace.fetch('blist.filter');
 
 (function($) {
 
-    var soqlInfix = function(c, op, v) { return c + op + v; };
-    var soqlFunc = function(c, op, v) { return op + '(' + c + (v === undefined ? '' : (',' + v)) + ')'; };
+    var toUpperFn = function(arg) { return 'UPPER(' + arg + ')'; };
+    var identityFn = function(arg) { return arg; };
+
+    var soqlInfix = function(c, op, v, fn) {
+        if (!fn) { fn = identityFn; }
+        return fn.call(this, c) + op + fn.call(this, v);
+    };
+    var soqlFunc = function(c, op, v, fn) {
+        if (!fn) { fn = identityFn; }
+        return op + '(' + fn.call(this, c) + (v === undefined ? '' : (',' + fn.call(this, v))) + ')';
+    };
 
     // Filtering
     // NOTE: New filter types also need an analogue template in
@@ -11,14 +20,20 @@ blist.namespace.fetch('blist.filter');
     // -- michael.chui@socrata.com
     var filterOperators = {
         'EQUALS': { text: $.t('core.filters.informal.equals'), editorCount: 1,
-            soql: function(c, v) { return soqlInfix('UPPER(' + c + ')', '=', 'UPPER(' + v + ')'); },
+            soql: function(c, v, newBackend) {
+                return soqlInfix(c, '=', v, newBackend ? toUpperFn : identityFn);
+            },
             opMatches: function(v, cv) { return _.isEqual(v, cv); } },
         'NOT_EQUALS': { text: $.t('core.filters.informal.not_equals'), editorCount: 1,
-            soql: function(c, v) { return soqlInfix('UPPER(' + c + ')', '!=', 'UPPER(' + v + ')'); },
+            soql: function(c, v, newBackend) {
+                return soqlInfix(c, '!=', v, newBackend ? toUpperFn : identityFn);
+            },
             opMatches: function(v, cv) { return !_.isEqual(v, cv); } },
 
         'STARTS_WITH': { text: $.t('core.filters.informal.starts_with'), editorCount: 1,
-            soql: function(c, v) { return soqlFunc('UPPER(' + c + ')', 'starts_with', 'UPPER(' + v + ')'); },
+            soql: function(c, v, newBackend) {
+                return soqlFunc(c, 'starts_with', v, newBackend ? toUpperFn : identityFn);
+            },
             opMatches: function(v, cv) { return (v || '').startsWith(cv); } },
 
         'CONTAINS': { text: $.t('core.filters.informal.contains'), editorCount: 1,
@@ -248,7 +263,7 @@ blist.namespace.fetch('blist.filter');
         if ($.subKeyDefined(c, 'renderType.filterConditions.details.' + op + '.soql'))
         { soqlFunc = c.renderType.filterConditions.details[op].soql; }
 
-        return '(' + soqlFunc(fieldName, v) + ')';
+        return '(' + soqlFunc(fieldName, v, dataset.newBackend) + ')';
     };
 
     blist.filter.generateSODA1 = function(fc, fc2)

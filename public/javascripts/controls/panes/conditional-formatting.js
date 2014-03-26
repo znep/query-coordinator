@@ -341,13 +341,14 @@
     var isNewVisualize = $.urlParam(window.location.href, 'visualize') == 'nextgen' || (blist.configuration.newChartConfig && !forceOldVisualize);
     if (!isNewVisualize)
     {
-        if ($.isBlank(blist.sidebarHidden.visualize) ||
+        if ($.isBlank(blist.sidebarHidden.visualize.conditionalFormatting) ||
             !blist.sidebarHidden.visualize.conditionalFormatting)
         { $.gridSidebar.registerConfig('visualize.conditionalFormatting', 'pane_conditionalFormatting', 10); }
     }
     else
     {
-        if (($.isBlank(blist.sidebarHidden.new_visualize) || !blist.sidebarHidden.filter.conditionalFormatting) && isNewVisualize)
+        if ($.isBlank(blist.sidebarHidden.filter.conditionalFormatting) ||
+            !blist.sidebarHidden.filter.conditionalFormatting)
         { $.gridSidebar.registerConfig('filter.conditionalFormatting', 'pane_conditionalFormatting', 10); }
     }
 

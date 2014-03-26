@@ -51,12 +51,14 @@
     }
 
     if ($.urlParam(window.location.href, 'charts') == 'nextgen'
-        || $.urlParam(window.location.href, 'bubble') == 'nextgen')
+        || $.urlParam(window.location.href, 'bubble') == 'nextgen'
+        || blist.feature_flags.bubble == 'nextgen')
     { $.extend(chartMapping, { 'bubble': 'd3_impl_bubble' }); }
 
     // Special case so that timeline doesn't upgrade to nextgen unless URL parameter.
     if (   $.urlParam(window.location.href, 'charts')   == 'nextgen'
-        || $.urlParam(window.location.href, 'timeline') == 'nextgen')
+        || $.urlParam(window.location.href, 'timeline') == 'nextgen'
+        || blist.feature_flags.timeline == 'nextgen')
     { $.extend(chartMapping, { 'timeline': 'd3_impl_timeline' }); }
 
     if (!forceOldCharts)

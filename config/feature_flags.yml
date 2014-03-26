@@ -14,6 +14,14 @@ new_charts:
   description: New Charts
   defaultValue: nextgen
   expectedValues: nextgen old
+bubble:
+  description: D3 Bubble Charts
+  defaultValue: old
+  expectedValues: nextgen old
+timeline:
+  description: D3 Timeline Charts
+  defaultValue: old
+  expectedValues: nextgen old
 hide_interpolated_nulls:
   description: "Ref: SI-5927, if set to true, will hide interpolated nulls in DSG bar charts."
   defaultValue: false

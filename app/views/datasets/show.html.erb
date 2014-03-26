@@ -263,75 +263,9 @@
     blist.sidebarPosition = '<%= sidebar_position %>';
     blist.defaultPane = '<%= default_pane %>';
 
-    blist.configuration.newChartsEnabled = true;
-    blist.configuration.newMapsEnabled = <%= module_enabled?(:new_maps) == true %>;
-    blist.configuration.oldChartsForced = <%= module_enabled?(:old_charts) == true %>;
-    blist.configuration.newChartConfig = true;
-    blist.configuration.oldChartConfigForced = <%= module_enabled?(:old_chart_config) == true %>;
-    blist.configuration.newCharts = {};
-    <%- [:newBarChart, :newLineChart].each do |aModule| -%>
-      blist.configuration.newCharts.<%= aModule %> = <%= module_enabled?(aModule) %>
-    <%- end -%>
+    $.extend(blist.configuration, <%= raw configuration.to_json %>);
 
-    <%# Namespace to keep track of disabled sidebar sections %>
-    blist.namespace.fetch('blist.sidebarHidden');
-
-    <%# More views %>
-    blist.sidebarHidden.moreViews = blist.sidebarHidden.moreViews || {};
-    blist.sidebarHidden.moreViews.views = <%= hide_more_views_views? %>;
-    blist.sidebarHidden.moreViews.snapshots = <%= hide_more_views_snapshots? %>;
-
-    <%# Edit pane %>
-    blist.sidebarHidden.edit = blist.sidebarHidden.edit || {};
-    blist.sidebarHidden.edit.appendReplace = <%= hide_append_replace? %>;
-    blist.sidebarHidden.edit.addColumn = <%= hide_add_column? %>;
-    blist.sidebarHidden.edit.redirect = <%= hide_redirect? %>;
-
-    <%# Manage %>
-    blist.sidebarHidden.manage = blist.sidebarHidden.manage || {};
-    blist.sidebarHidden.manage.updateColumn = <%= hide_update_column? %>;
-    blist.sidebarHidden.manage.showHide = <%= hide_show_hide_columns? %>;
-    blist.sidebarHidden.manage.sharing = <%= @view.is_snapshotted? || !@view.has_rights?('grant') %>;
-    blist.sidebarHidden.manage.permissions = <%= @view.is_snapshotted? || !@view.has_rights?('update_view') %>;
-    blist.sidebarHidden.manage.plagiarize = <%= !CurrentDomain.user_can?(current_user, :chown_datasets) %>;
-    blist.sidebarHidden.manage.deleteDataset = <%= !@view.has_rights?('delete_view') || @view.new_backend? %>;
-    blist.sidebarHidden.manage.api_foundry = <%= hide_api_foundry? %>;
-
-    <%# Columm properties %>
-    blist.sidebarHidden.columnProperties = <%= @view.non_tabular? %>;
-
-    <%# Filter pane %>
-    blist.sidebarHidden.filter = blist.sidebarHidden.filter || {};
-    blist.sidebarHidden.filter.filterDataset = <%= hide_filter_dataset? %>;
-    blist.sidebarHidden.filter.conditionalFormatting = <%= hide_conditional_formatting? %>;
-
-    <%# Visualize pane %>
-    blist.sidebarHidden.visualize = blist.sidebarHidden.visualize || {};
-    blist.sidebarHidden.visualize.calendarCreate = <%= hide_calendar_create? %>;
-    blist.sidebarHidden.visualize.chartCreate = <%= hide_chart_create? %>;
-    blist.sidebarHidden.visualize.mapCreate = <%= hide_map_create? %>;
-
-    <%# Embed pane %>
-    blist.sidebarHidden.embed = blist.sidebarHidden.embed || {};
-    blist.sidebarHidden.embed.formCreate = <%= hide_form_create? %>;
-    blist.sidebarHidden.embed.sdp = <%= hide_embed_sdp? %>;
-
-    <%# Export pane %>
-    blist.sidebarHidden.exportSection = blist.sidebarHidden.exportSection || {};
-    blist.sidebarHidden.exportSection.signedDataset = <%= hide_export_section?(:signedDataset) %>;
-    blist.sidebarHidden.exportSection.print = <%= hide_export_section?(:print) %>;
-    blist.sidebarHidden.exportSection.download = <%= hide_export_section?(:download) %>;
-    blist.sidebarHidden.exportSection.api = <%= hide_export_section?(:api) %>;
-    blist.sidebarHidden.exportSection.odata = <%= hide_export_section?(:odata) %>;
-    blist.sidebarHidden.exportSection.subscribe = <%= hide_export_section?(:subscribe) %>;
-
-    <%# Discuss pane %>
-    blist.sidebarHidden.feed = blist.sidebarHidden.feed || {};
-    blist.sidebarHidden.feed.discuss = <%= hide_discuss? %>;
-    blist.sidebarHidden.feed.cellFeed = <%= hide_cell_feed? %>;
-
-    <%# About pane %>
-    blist.sidebarHidden.about = <%= hide_about? %>;
+    blist.sidebarHidden = <%= raw sidebar_hidden.to_json %>;
 
     <%# Please see admin_controller#add_custom_layer for explanation %>
     <%# custom_layer_config = Configuration.find_by_type('custom_layers', true).first

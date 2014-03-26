@@ -424,4 +424,63 @@ module DatasetsHelper
     end
   end
 
+  def configuration
+    hash = Hashie::Mash.new
+
+    hash.newChartsEnabled = true;
+    hash.newMapsEnabled = module_enabled?(:new_maps) == true
+    hash.oldChartsForced = module_enabled?(:old_charts) == true
+    hash.newChartConfig = true;
+    hash.oldChartConfigForced = module_enabled?(:old_chart_config)
+    hash.newCharts!.newBarChart = module_enabled?(:newBarChart)
+    hash.newCharts!.newLineChart = module_enabled?(:newLineChart)
+
+    hash
+  end
+
+  def sidebar_hidden
+    hash = Hashie::Mash.new
+
+    hash.moreViews!.views = hide_more_views_views?
+    hash.moreViews!.snapshots = hide_more_views_snapshots?
+
+    hash.edit!.appendReplace = hide_append_replace?
+    hash.edit!.addColumn = hide_add_column?
+    hash.edit!.redirect = hide_redirect?
+
+    hash.manage!.updateColumn = hide_update_column?
+    hash.manage!.showHide = hide_show_hide_columns?
+    hash.manage!.sharing = view.is_snapshotted? || !view.has_rights?('grant')
+    hash.manage!.permissions = view.is_snapshotted? || !view.has_rights?('update_view')
+    hash.manage!.plagiarize = !CurrentDomain.user_can?(current_user, :chown_datasets)
+    hash.manage!.deleteDataset = !view.has_rights?('delete_view') || view.new_backend?
+    hash.manage!.api_foundry = hide_api_foundry?
+
+    hash.columnProperties = view.non_tabular?
+
+    hash.filter!.filterDataset = hide_filter_dataset?
+    hash.filter!.conditionalFormatting = hide_conditional_formatting?
+
+    hash.visualize!.calendarCreate = hide_calendar_create?
+    hash.visualize!.chartCreate = hide_chart_create?
+    hash.visualize!.mapCreate = hide_map_create?
+
+    hash.embed!.formCreate = hide_form_create?
+    hash.embed!.sdp = hide_embed_sdp?
+
+    hash.exportSection!.signedDataset = hide_export_section?(:signedDataset)
+    hash.exportSection!.print = hide_export_section?(:print)
+    hash.exportSection!.download = hide_export_section?(:download)
+    hash.exportSection!.api = hide_export_section?(:api)
+    hash.exportSection!.odata = hide_export_section?(:odata)
+    hash.exportSection!.subscribe = hide_export_section?(:subscribe)
+
+    hash.feed!.discuss = hide_discuss?
+    hash.feed!.cellFeed = hide_cell_feed?
+
+    hash.about = hide_about?
+
+    hash
+  end
+
 end

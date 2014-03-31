@@ -95,7 +95,7 @@
             name: 'table',
             domId: 'gridRenderType',
             javascripts: [{ assets: 'shared-table-render' }],
-            stylesheets: [{ assets: 'grid' }, { assets: 'render-images-bundle', hasImages: true }],
+            stylesheets: [{ assets: 'grid', hasImages: true }, { assets: 'render-images-bundle', hasImages: true }],
             initFunction: function($dom, settings)
             {
                 $dom.datasetGrid($.extend({view: settings.view,

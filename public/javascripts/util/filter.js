@@ -267,9 +267,9 @@ blist.namespace.fetch('blist.filter');
         return '(' + soqlFunc(fieldName, v, dataset.newBackend) + ')';
     };
 
-    blist.filter.generateSODA1 = function(fc, fc2)
+    blist.filter.generateSODA1 = function()
     {
-        fc = _.compact([fc, fc2]);
+        var fc = _.compact(Array.prototype.slice.call(arguments));
         if (fc.length > 0)
         {
             if (fc.length == 1)
@@ -282,6 +282,8 @@ blist.namespace.fetch('blist.filter');
         if (_.isEmpty(fc)) { return result; }
         if (!$.isBlank(fc.metadata))
         { result.metadata = fc.metadata; }
+        else
+        { result.metadata = { unifiedVersion: 2 }; }
         var op = fc.operator.toUpperCase();
         result.type = 'operator';
         result.value = op;
@@ -316,6 +318,10 @@ blist.namespace.fetch('blist.filter');
             {
                 if (cond.type == 'operator' && cond.value == 'AND' ||
                     !$.isBlank(cond.operator) && cond.operator.toUpperCase() == 'AND')
+                { newChildren = newChildren.concat(cond.children); }
+                else if ((cond.type == 'operator' && cond.value == 'OR' ||
+                    !$.isBlank(cond.operator) && cond.operator.toUpperCase() == 'OR')
+                    && _.isArray(cond.children) && cond.children.length == 1)
                 { newChildren = newChildren.concat(cond.children); }
                 else
                 { newChildren.push(cond); }

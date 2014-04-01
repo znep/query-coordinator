@@ -2346,7 +2346,7 @@ var Dataset = ServerModel.extend({
                 !_.isEmpty(ds.metadata.jsonQuery) && _.isEmpty(ds.query))
         {
             ds.query.filterCondition = blist.filter.generateSODA1(ds.metadata.jsonQuery.where,
-                    ds.metadata.jsonQuery.having);
+                    ds.metadata.jsonQuery.having, ds.metadata.defaultFilters);
             ds.query.namedFilters = ds.query.namedFilters || {};
             _.each(ds.metadata.jsonQuery.namedFilters, function(nf, id)
                 {
@@ -2398,6 +2398,7 @@ var Dataset = ServerModel.extend({
                 var tfc = Dataset.translateFilterCondition(ds.query.filterCondition, ds);
                 ds.metadata.jsonQuery.where = tfc.where;
                 ds.metadata.jsonQuery.having = tfc.having;
+                ds.metadata.defaultFilters = tfc.defaults;
                 ds.metadata.jsonQuery.namedFilters = ds.metadata.jsonQuery.namedFilters || {};
                 _.each(ds.query.namedFilters, function(nf, id)
                     {
@@ -3447,6 +3448,7 @@ Dataset.translateFilterCondition = function(fc, ds, simplify)
         // We can only separate at an AND: an OR must stay together
         // We're only going to separate at the top level, b/c it gets complicated below that
         var splitWhere = fc,
+            splitDefault,
             splitHaving;
         if (!$.isBlank(fc) && fc.type == 'operator' && _.isArray(fc.children) && fc.children.length > 0)
         {
@@ -3470,15 +3472,22 @@ Dataset.translateFilterCondition = function(fc, ds, simplify)
             fc = blist.filter.collapseChildren(fc);
             if (fc.value == 'AND')
             {
-                var havingChildren = _.select(fc.children, function(cond)
+                var children = _.groupBy(fc.children, function(cond)
                 {
                     // Find trees that only reference post-group columns
-                    return isHaving(cond);
+                    if (_.isEmpty(cond.children)) { return 'defaults'; }
+                    else if (isHaving(cond)) { return 'having'; }
+                    else { return 'where'; }
                 });
-                if (!_.isEmpty(havingChildren))
+                if (!_.isEmpty(children.having))
                 {
-                    splitHaving = { type: 'operator', value: 'AND', children: havingChildren };
-                    fc.children = _.difference(fc.children, havingChildren);
+                    splitHaving = { type: 'operator', value: 'AND', children: children.having };
+                    fc.children = _.difference(fc.children, children.having);
+                }
+                if (!_.isEmpty(children.defaults))
+                {
+                    splitDefault = { type: 'operator', value: 'AND', children: children.defaults };
+                    fc.children = _.difference(fc.children, children.defaults);
                 }
             }
             else if (isHaving(fc))
@@ -3488,15 +3497,21 @@ Dataset.translateFilterCondition = function(fc, ds, simplify)
             }
         }
         return { where: translateSubFilter(splitWhere, ds, simplify, false),
-            having: translateSubFilter(splitHaving, ds, simplify, true) };
+            having: translateSubFilter(splitHaving, ds, simplify, true),
+            defaults: translateSubFilter(splitDefault, ds, false, false) };
     }
     else
-    { return { where: translateSubFilter(fc, ds, simplify, false) }; }
+    {
+        var defaults = _.select(fc, function(cond) { return _.isEmpty(cond.children); });
+        return { where: translateSubFilter(fc, ds, simplify, false),
+            defaults: translateSubFilter(defaults, ds, false, false) };
+    }
 };
 
 function translateSubFilter(fc, ds, simplify, isHaving)
 {
-    if ($.isBlank(fc) || simplify && ((fc.type != 'operator' || !_.isArray(fc.children) || fc.children.length == 0) && !blist.filter.isEmptyPlaceholderFilter(fc)))
+    if ($.isBlank(fc) ||
+        simplify && (fc.type != 'operator' || !_.isArray(fc.children) || fc.children.length == 0))
     { return null; }
 
     var filterQ = { operator: fc.value };
@@ -3510,7 +3525,7 @@ function translateSubFilter(fc, ds, simplify, isHaving)
             var fcc = translateSubFilter(c, ds, simplify, isHaving);
             return fcc;
         }));
-        if (simplify && !blist.filter.isEmptyPlaceholderFilter(filterQ))
+        if (simplify)
         {
             if (filterQ.children.length == 0)
             { return null; }

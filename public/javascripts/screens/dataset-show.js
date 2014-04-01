@@ -732,9 +732,23 @@ $(function()
 
     var forceOldVisualize = $.urlParam(window.location.href, 'visualize') == 'old' || blist.configuration.oldChartConfigForced;
     var isNewVisualize = $.urlParam(window.location.href, 'visualize') == 'nextgen' || (blist.configuration.newChartConfig && !forceOldVisualize);
-    if(isNewVisualize){
+    if (isNewVisualize) {
        $('a.new_visualize').closest('li').show();
     }
+
+    blist.dataset.bind('dataset_last_modified', function(event) {
+        var $notice = $('#datasetName + .outOfDate');
+        var message = $.t('screens.ds.bar.up_to_date', {current: event.lastModified});
+        if (!$notice[0]) {
+            $('#datasetName').after($('<span>').addClass('outOfDate').text(message));
+            $notice = $('#datasetName + .outOfDate');
+        }
+        // Update datasetName to reflect out-of-date status
+        if (blist.dataset._dataOutOfDate === 'true') {
+            message = $.t('screens.ds.bar.out_of_date', { age: event.age });
+        }
+        $notice.text(message);
+    });
 
     // Data calls
     _.defer(function()
@@ -766,21 +780,6 @@ $(function()
                 }
             });
         }
-
-        _.defer(function() {
-            // Update datasetName to reflect out-of-date status
-            if (blist.dataset._dataOutOfDate
-                && blist.dataset._truthLastModified
-                && blist.dataset._lastModified) {
-                $('#datasetName').after(
-                    '<span class="outOfDate">' +
-                        $.t('screens.ds.bar.out_of_date', {
-                            seconds: blist.dataset._truthLastModified - blist.dataset._lastModified
-                        }) +
-                    '.</span>'
-                );
-            }
-        });
 
         // report to events analytics for easier aggregation
         $.analytics.trackEvent('dataset page (v4-chrome)',

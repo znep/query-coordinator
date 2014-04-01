@@ -180,6 +180,8 @@
         var $d = $mDates.eq(1);
         $d.text(moment($d.data('rawdatetime') * 1000).format('LT'));
     }
+    blist.configuration.shortDateFormat = 'llll';// "Tue, Apr 1 2014 11:37 AM"
+    blist.configuration.longDateFormat = 'LLLL'; // "Tuesday, April 1 2014 11:37 AM"
 
     var on_current_user = [];
     var on_current_user_complete = [];

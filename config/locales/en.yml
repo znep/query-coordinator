@@ -1383,7 +1383,8 @@ en:
           table: table
         working_copy_notice: This is a copy of the dataset that allows you to make changes to it. It is not visible to others until you publish it.
         working_copy_title: ! '[Working Copy]'
-        out_of_date: This dataset is out of date by %{seconds} seconds
+        out_of_date: This dataset is out of date by %{age}
+        up_to_date: This dataset is up-to-date as of %{current}
       blob:
         data_extraction: This data extraction tool or application is available via the link to the right
         download: Download

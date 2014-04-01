@@ -33,7 +33,7 @@ var Dataset = ServerModel.extend({
             'row_count_change', 'column_resized', 'displayformat_change',
             'displaytype_change', 'column_totals_changed', 'removed',
             'permissions_changed', 'new_comment', 'reloaded',
-            'conditionalformatting_change', 'saved']);
+            'conditionalformatting_change', 'saved', 'dataset_last_modified']);
 
         var ds = this;
         // Avoid overwriting functions with static values from Rails (e.g., totalRows)
@@ -2671,10 +2671,27 @@ var Dataset = ServerModel.extend({
 
     // Capture custom SODA 2 header values in the dataset model.
     _captureSodaServerHeaders: function (xhr) {
-        if (xhr) {
-            this._dataOutOfDate = xhr.getResponseHeader('X-SODA2-Data-Out-Of-Date') || false;
-            this._truthLastModified = xhr.getResponseHeader('X-SODA2-Truth-Last-Modified');
-            this._lastModified = xhr.getResponseHeader('Last-Modified');
+        if (xhr && _.isFunction(xhr.getResponseHeader)) {
+            var dataOutOfDate = xhr.getResponseHeader('X-SODA2-Data-Out-Of-Date');
+            var truthLastModified = xhr.getResponseHeader('X-SODA2-Truth-Last-Modified');
+            var lastModified = xhr.getResponseHeader('Last-Modified');
+            if (this.newBackend) {
+                if (dataOutOfDate === 'true' && truthLastModified && lastModified) {
+                    this._dataOutOfDate = dataOutOfDate;
+                    this._truthLastModified = truthLastModified;
+                    this._lastModified = lastModified;
+                    this.trigger('dataset_last_modified', [{
+                        age: moment(blist.dataset._lastModified).
+                        from(blist.dataset._truthLastModified, true) // True elides suffix
+                    }]);
+                } else if (dataOutOfDate === 'false' && truthLastModified && lastModified) {
+                    this._lastModified = lastModified;
+                    this.trigger('dataset_last_modified', [{
+                        lastModified: moment(blist.dataset._lastModified).
+                        format(blist.configuration.shortDateFormat)
+                    }]);
+                }
+            }
         }
     },
 

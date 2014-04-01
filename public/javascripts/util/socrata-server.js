@@ -62,7 +62,7 @@ var ServerModel = Model.extend({
 
                 // TODO This is a terrible hack to serve until code in the Rails backend is settled
                 // TODO This doesn't handle filtered views, which could depend on OoD datasets
-                if (model.displayName == 'dataset') {
+                if (model.displayName === 'dataset' || model.displayName === 'working copy') {
                     model._captureSodaServerHeaders(xhr);
                 }
                 model._finishRequest();

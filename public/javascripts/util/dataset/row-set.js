@@ -619,13 +619,13 @@ var RowSet = ServerModel.extend({
     formattingChanged: function(condFmt)
     {
         var rs = this;
-        var condFmt = condFmt || ($.subKeyDefined(rs, '_dataset.metadata.conditionalFormatting')
+        var format = condFmt || ($.subKeyDefined(rs, '_dataset.metadata.conditionalFormatting')
             && rs._dataset.metadata.conditionalFormatting);
-        if (!_.isArray(condFmt))
+        if (!_.isArray(format))
         { rs._condFmt = null; }
         else
         {
-            rs._condFmt = _.map(condFmt, function(c)
+            rs._condFmt = _.map(format, function(c)
             {
                 return $.extend({}, c,
                     { matches: blist.filter.matchesExpression(c.condition, rs._dataset) });

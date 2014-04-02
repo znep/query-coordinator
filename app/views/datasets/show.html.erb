@@ -192,7 +192,7 @@
 <% content_for :templates do %>
 <%= render(:partial => 'templates/grid_sidebar') %>
 <%= render(:partial => 'show_hide_template') %>
-<%= render :partial => 'column_order_template' unless @view.new_backend? %>
+<%= render :partial => 'column_order_template' %>
 <div class="embedForm">
   <%= render :partial => 'embed_form', :locals => { :view => @view, :cur => 'root',
              :customization_id => (CurrentDomain.user_can?(current_user, :edit_sdp) ? nil : CurrentDomain.default_widget_customization_id) } %>

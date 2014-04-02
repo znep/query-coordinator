@@ -1853,6 +1853,7 @@ en:
           geo_header: Download Geospatial Data
           layers_header: Download Tabular Layers
           subtitle: Download a copy of this dataset in a static format
+          download_dataset: Please download the dataset from which this view is derived.
           title: Download
         feed:
           subtitle: The discussion feed shows you the conversation and activity around a dataset

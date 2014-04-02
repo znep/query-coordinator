@@ -7,11 +7,17 @@
         getSubtitle: function()
         { return $.t('screens.ds.grid_sidebar.download.subtitle'); },
 
-        isAvailable: function()
-        { return this._view.valid; },
+        isAvailable: function() {
+            return this._view.valid && blist.dataset.isExportable();
+        },
 
-        getDisabledSubtitle: function()
-        { return $.t('screens.ds.grid_sidebar.base.validation.invalid_view'); },
+        getDisabledSubtitle: function() {
+            if (this._view.valid) {
+                return $.t('screens.ds.grid_sidebar.download.download_dataset');
+            } else {
+                return $.t('screens.ds.grid_sidebar.base.validation.invalid_view');
+            }
+        },
 
         _getSections: function()
         {

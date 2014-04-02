@@ -213,6 +213,16 @@ var Dataset = ServerModel.extend({
         return (this.viewType == 'tabular');
     },
 
+
+    isExportable: function()
+    {
+        if (this.newBackend) {
+            return this.displayName === 'dataset' || this.displayName === 'working copy';
+        } else {
+            return true;
+        }
+    },
+
     isAPI: function()
     {
         return (this.type == 'api');

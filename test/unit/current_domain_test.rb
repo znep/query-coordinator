@@ -37,4 +37,28 @@ class CurrentDomainTest < MiniTest::Unit::TestCase
     assert_equal false, CurrentDomain.module_enabled?(:foo_module), 'Expected module_enabled?(:foo) to return false'
   end
 
+  def test_default_widget_customization_id_caches_and_returns_four_by_four
+    four_by_four = '1234-1234'
+    setup_default_widget_customization_preconditions(four_by_four)
+    assert_equal four_by_four, CurrentDomain.default_widget_customization_id
+    Configuration.stubs(:find_by_type).raises(RuntimeError)
+    assert_equal four_by_four, CurrentDomain.default_widget_customization_id
+  end
+
+  def test_default_widget_customization_id_caches_and_returns_false
+    setup_default_widget_customization_preconditions(nil)
+    assert_equal false, CurrentDomain.default_widget_customization_id
+    Configuration.stubs(:find_by_type).raises(RuntimeError)
+    assert_equal false, CurrentDomain.default_widget_customization_id
+  end
+
+  private
+
+  def setup_default_widget_customization_preconditions(val)
+    CurrentDomain.class_variable_set('@@current_domain', :widget_customization => nil)
+    CurrentDomain.stubs(:cname => 'cname')
+    configuration = OpenStruct.new(:properties => OpenStruct.new(:sdp_template => val))
+    Configuration.stubs(:find_by_type => [configuration])
+  end
+
 end

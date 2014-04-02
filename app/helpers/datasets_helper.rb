@@ -313,7 +313,7 @@ module DatasetsHelper
           view.non_tabular? || view.is_form?
       when :print then !view.can_print? || view.new_backend?
       when :download then (view.non_tabular? && !view.is_geo?) || view.is_form?
-      when :api then view.non_tabular? || view.new_backend?
+      when :api then view.non_tabular?
       when :odata then view.non_tabular? || view.is_alt_view? || view.new_backend?
       when :subscribe then !view.is_published? || view.non_tabular? || view.is_api? || view.is_form?
       else false

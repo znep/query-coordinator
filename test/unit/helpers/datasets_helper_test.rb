@@ -46,7 +46,7 @@ class DatasetsHelperTest < Test::Unit::TestCase
     @view.stubs(:is_tabular? => false, :new_backend? => false)
     assert @object.hide_export_section?(:api), ':api section should be hidden'
     @view.stubs(:is_tabular? => true, :new_backend? => true)
-    assert @object.hide_export_section?(:api), ':api section should be hidden'
+    refute @object.hide_export_section?(:api), ':api section should not be hidden'
     @view.stubs(:is_tabular? => false, :new_backend? => true)
     assert @object.hide_export_section?(:api), ':api section should be hidden'
   end

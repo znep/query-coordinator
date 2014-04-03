@@ -559,7 +559,7 @@
                                      name: 'displayFormat.yAxis.formatter.decimalPlaces' } ] } :
                     { text: $.t('screens.ds.grid_sidebar.chart.y_axis_formatting.precision'), type: 'text', spinner: true, minimum: 0, maximum: 10, defaultValue: 2,
                          name: 'displayFormat.yAxis.formatter.decimalPlaces' },
-                {text: $.t('screens.ds.grid_sidebar.chart.y_axis_formatting.abbreviate'), type: 'checkbox', defaultValue: false,
+                {text: $.t('screens.ds.grid_sidebar.chart.y_axis_formatting.abbreviate'), type: 'checkbox', defaultValue: true,
                     name: 'displayFormat.yAxis.formatter.abbreviate'}
             ]
         );

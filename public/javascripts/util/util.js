@@ -343,8 +343,18 @@ $.tNull = function(key, data)
     {
         return null;
     }
-    var result = $.deepGetStringField(blist.translations, key)
-                      .replace(/%{[^}]+}/g, function(dataKey) { return (data || {})[dataKey.slice(2, -1)] || ''; });
+    var result = $.deepGetStringField(blist.translations, key);
+    if ($.isPlainObject(result) && _.has(data, 'count'))
+    {
+        // Someday, we will have real pluralization rules.
+        // Our Rails instance doesn't have these yet, though.
+        if (data.count == 1)
+        { result = result.one; }
+        else
+        { result = result.other; }
+        if (!result) { return null; }
+    }
+    result = result.replace(/%{[^}]+}/g, function(dataKey) { return (data || {})[dataKey.slice(2, -1)] || ''; });
     return key.endsWith('_html') ? result : $.htmlStrip(result);
 };
 

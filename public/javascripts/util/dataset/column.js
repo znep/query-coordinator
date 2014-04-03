@@ -424,6 +424,14 @@ var Column = ServerModel.extend({
         return rollup ? rollup + '(' + this.fieldName + ')' : this.fieldName;
     },
 
+    isText: function() {
+        switch (this.dataTypeName) {
+            case "text":
+            case "html": return true;
+            default: return false;
+        };
+    },
+
     _validKeys: {
         childColumns: true,
         dataTypeName: true,

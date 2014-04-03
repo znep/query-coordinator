@@ -14,6 +14,10 @@ blist.namespace.fetch('blist.filter');
         return op + '(' + fn.call(this, c) + (v === undefined ? '' : (',' + fn.call(this, v))) + ')';
     };
 
+    var isText = function(c) {
+      return blist.dataset.columnForFieldName(c).isText();
+    };
+
     // Filtering
     // NOTE: New filter types also need an analogue template in
     // controls/maps/external-esri-map.js#transformFilterToLayerDefinition
@@ -21,12 +25,12 @@ blist.namespace.fetch('blist.filter');
     var filterOperators = {
         'EQUALS': { text: $.t('core.filters.informal.equals'), editorCount: 1,
             soql: function(c, v, newBackend) {
-                return soqlInfix(c, '=', v, newBackend ? toUpperFn : identityFn);
+                return soqlInfix(c, '=', v, newBackend && isText(c) ? toUpperFn : identityFn);
             },
             opMatches: function(v, cv) { return _.isEqual(v, cv); } },
         'NOT_EQUALS': { text: $.t('core.filters.informal.not_equals'), editorCount: 1,
             soql: function(c, v, newBackend) {
-                return soqlInfix(c, '!=', v, newBackend ? toUpperFn : identityFn);
+                return soqlInfix(c, '!=', v, newBackend && isText(c) ? toUpperFn : identityFn);
             },
             opMatches: function(v, cv) { return !_.isEqual(v, cv); } },
 
@@ -56,7 +60,7 @@ blist.namespace.fetch('blist.filter');
             soql: function(c, v) { return soqlInfix(c, '>=', v); },
             editorCount: 1, opMatches: function(v, cv) { return v >= cv; } },
         'BETWEEN': { text: $.t('core.filters.informal.between'), editorCount: 2,
-            soql: function(c, v) { return soqlInfix(c, '>', v[0]) + ' AND ' + soqlInfix(c, '<', v[1]); },
+            soql: function(c, v) { return soqlInfix(c, '>=', v[0], newBackend && isText(c) ? toUpperFn : identityFn) + ' AND ' + soqlInfix(c, '<=', v[1], newBackend && isText(c) ? toUpperFn : identityFn); },
             opMatches: function(v, cv, cv2)
             {
                 var cva = _.flatten(_.compact([cv, cv2]));

@@ -1167,6 +1167,11 @@ $.Control.registerMixin('d3_virt_scrolling', {
         var idealTickCount = cc[cc.dataDim.pluckY('chartWidth', 'chartHeight')] / 80;
         var ticks = newYScale.ticks(idealTickCount);
 
+        if (blist.feature_flags.hide_decimal_tick_lines === true
+            && $.isPresent(formatter) && formatter.abbreviate !== true
+            && (formatter.noDecimals || formatter.decimalPlaces === 0))
+        { ticks = _.uniq(_.map(ticks, function(tick) { return Math.floor(tick); })); }
+
         var minValue = d3.min(newYScale.domain());
         if ((minValue < 0) &&
             !_.any(ticks, function(tick) { return tick < 0; }) &&

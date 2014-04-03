@@ -22,6 +22,9 @@ timeline:
   description: D3 Timeline Charts
   defaultValue: old
   expectedValues: nextgen old
+hide_decimal_tick_lines:
+  description: "Ref: CORE-1951. If set to true, when Decimal Places is 0, hide any tick lines between natural numbers."
+  defaultValue: true
 hide_interpolated_nulls:
   description: "Ref: SI-5927, if set to true, will hide interpolated nulls in DSG bar charts."
   defaultValue: false

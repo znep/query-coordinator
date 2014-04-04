@@ -69,9 +69,9 @@ d3base.seriesGrouping = {
         // first sort by the category
         sortColumns.push(vizObj._fixedColumns[0]);
 
-        // then sort by the series groups in order
-        sortColumns = sg.sortColumns
-            = _.compact(sortColumns.concat(_.pluck(vizObj._seriesColumns, 'column')));
+        // then sort by the series groups in order. Note! Do not update the sortColumns which get
+        // fed to the backend otherwise the lobotomizer will cry at you.
+        sg.sortColumns = _.compact(sortColumns.concat(_.pluck(vizObj._seriesColumns, 'column')));
 
         // If there isn't a fixedColumn, use the id to sort
         sg.fixedColumn = vizObj._fixedColumns[0] || vizObj._primaryView.metaColumnForName('id');
@@ -861,7 +861,7 @@ d3base.seriesGrouping = {
                     return;
                 }
 
-                virtualRow.data[virtualColumn.column.id] = row.data[valueCol.column.id];
+                virtualRow.data[virtualColumn.column.id] = row.data[valueCol.column.lookup];
                 if (blist.feature_flags.hide_interpolated_nulls)
                 { delete virtualRow.interpolated_null[virtualColumn.column.id]; }
                 virtualRow.realRows[virtualColumn.column.id] = row;

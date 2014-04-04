@@ -731,9 +731,9 @@ var RowSet = ServerModel.extend({
             // Just apply all orderBys, because they can safely be applied on top without harm
             args.params['$order'] = _.compact(_.map(rs._jsonQuery.order, function(ob)
             {
-                var c = rs._dataset.columnForIdentifier(ob.columnFieldName);
-                if ($.isBlank(c)) { return null; }
-                var qbC = Dataset.translateColumnToQueryBase(c, rs._dataset);
+                var orderByColumn = rs._dataset.columnForIdentifier(ob.columnFieldName);
+                if ($.isBlank(orderByColumn)) { return null; }
+                var qbC = Dataset.translateColumnToQueryBase(orderByColumn, rs._dataset);
                 if ($.isBlank(qbC)) { return null; }
                 return qbC.fieldNameForRollup(
                     Dataset.aggregateForColumn(qbC.fieldName, rs._jsonQuery)
@@ -787,10 +787,10 @@ var RowSet = ServerModel.extend({
                     groupSelect.push(gb.groupFunction + '(' + qbCF + ') as ' + k);
                 }
             });
-            soqlGroup = soqlGroup.join(',');
+            soqlGroup = _.uniq(soqlGroup).join(',');
             args.params['$group'] = !$.isBlank(args.params['$group']) ?
                 (args.params['$group'] + ',' + soqlGroup) : soqlGroup;
-            groupSelect = groupSelect.concat(
+            groupSelect = _.uniq(groupSelect.concat(
                     _.compact(_.map(rs._jsonQuery.select, function(s)
                         {
                             if (!$.isBlank(s.aggregate))
@@ -800,11 +800,12 @@ var RowSet = ServerModel.extend({
                                 return s.aggregate + '(' + qbCF + ')';
                             }
                             return null;
-                        }))).join(',');
+                        })))).join(',');
             var sel = (args.params['$select'] || '').replace(/:\*,\*/, '');
             args.params['$select'] = !$.isBlank(sel) ?
                 (sel + ',' + groupSelect) : groupSelect;
         }
+
         rs._dataset.makeRequest(args);
     },
 
@@ -1022,7 +1023,7 @@ var RowSet = ServerModel.extend({
             rs._pendingRowReqs = [];
             _.each(pending, function(p)
             { rs.getRows(p.start, p.length, p.successCallback, p.errorCallback); });
-        };
+        }; // end of rowsLoaded callback function
 
         if (len && !$.isBlank(start))
         {

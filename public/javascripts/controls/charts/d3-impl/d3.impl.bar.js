@@ -391,9 +391,9 @@ $.Control.registerMixin('d3_impl_bar', {
     {
         var vizObj = this,
             cc = vizObj._chartConfig,
-            defaults = vizObj.defaults,
+            defaults = vizObj.defaults, // TODO apparently unused variable
             valueColumns = vizObj.getValueColumns(),
-            $chartArea = cc.$chartArea,
+            $chartArea = cc.$chartArea, // TODO apparently unused variable
             view = vizObj._primaryView;
 
         var allowTransitions = !vizObj._transitionExitWorkaroundActive();

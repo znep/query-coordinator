@@ -2839,8 +2839,8 @@ var Dataset = ServerModel.extend({
             rd = $.extend(true, {}, rd);
             delete rd[':id'];
         }
-        if (ds._useSDOA2) {
-            rd = [rd];
+        if (ds._useSODA2) {
+            rd = $.makeArray(rd);
         }
         ds.makeRequest({url: url, isSODA: ds._useSODA2,
             type: 'POST', data: JSON.stringify(rd), batch: isBatch,

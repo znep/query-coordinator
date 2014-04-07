@@ -72,6 +72,36 @@ class DatasetsHelperTest < Test::Unit::TestCase
     assert @object.row_identifier_select_tag =~ /disabled/, 'select_tag should be disabled'
   end
 
+  def test_show_save_as_button
+    @view.stubs(:is_published? => true, :is_api? => false, :dataset? => true, :new_backend? => false)
+    assert @object.show_save_as_button?, 'show_save_as_button should be true for published non-api old backend datasets'
+    @view.stubs(:is_published? => true, :is_api? => false, :dataset? => true, :new_backend? => true)
+    assert @object.show_save_as_button?, 'show_save_as_button should be true for published non-api new backend datasets'
+    @view.stubs(:is_published? => true, :is_api? => false, :dataset? => false)
+    refute @object.show_save_as_button?, 'show_save_as_button should be false for published non-api non-datasets'
+    @view.stubs(:is_published? => true, :is_api? => true, :dataset? => true)
+    refute @object.show_save_as_button?, 'show_save_as_button should be false for published api datasets'
+    @view.stubs(:is_published? => true, :is_api? => true, :dataset? => false)
+    refute @object.show_save_as_button?, 'show_save_as_button should be false for published api non-datasets'
+    @view.stubs(:is_published? => false, :is_api? => false, :dataset? => false)
+    refute @object.show_save_as_button?, 'show_save_as_button should be false for non-published non-api non-datasets'
+    @view.stubs(:is_published? => false, :is_api? => false, :dataset? => true)
+    refute @object.show_save_as_button?, 'show_save_as_button should be false for non-published non-api datasets'
+    @view.stubs(:is_published? => false, :is_api? => true, :dataset? => true)
+    refute @object.show_save_as_button?, 'show_save_as_button should be false for non-published api datasets'
+    @view.stubs(:is_published? => false, :is_api? => true, :dataset? => false)
+    refute @object.show_save_as_button?, 'show_save_as_button should be false for non-published api non-datasets'
+  end
+
+  def test_hide_filter_dataset
+    @view.stubs(:non_tabular? => false, :is_form? => false, :new_backend? => true, :is_blist? => true)
+    refute @object.hide_filter_dataset?, 'Should not hide the filter dataset pane even if new backend'
+    @view.stubs(:non_tabular? => true, :is_form? => false, :new_backend? => true, :is_blist? => true)
+    assert @object.hide_filter_dataset?, 'Should hide the filter dataset pane for non-tabular datasets'
+    @view.stubs(:non_tabular? => false, :is_form? => true, :new_backend? => true, :is_blist? => true)
+    assert @object.hide_filter_dataset?, 'Should hide the filter dataset pane for forms'
+  end
+
   private
 
   def default_view_state

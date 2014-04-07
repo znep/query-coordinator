@@ -363,7 +363,7 @@ module DatasetsHelper
   end
 
   def hide_filter_dataset?
-    view.non_tabular? || view.is_form? || view.prevent_soql_merging?
+    view.non_tabular? || view.is_form?
   end
 
   def hide_calendar_create?
@@ -399,6 +399,10 @@ module DatasetsHelper
     view.new_backend? || view.is_unpublished? || !view.flag?('default') || view.is_arcgis? || view.is_geo?
   end
 
+  def show_save_as_button?
+    view.is_published? && !view.is_api? && (view.new_backend? ? view.dataset? : true)
+  end
+
   def format_link_tag(format)
     translated_title = t("screens.ds.bar.format.#{format}")
     span = content_tag(:span, translated_title, :class => 'icon')
@@ -427,10 +431,10 @@ module DatasetsHelper
   def configuration
     hash = Hashie::Mash.new
 
-    hash.newChartsEnabled = true;
-    hash.newMapsEnabled = module_enabled?(:new_maps) == true
-    hash.oldChartsForced = module_enabled?(:old_charts) == true
-    hash.newChartConfig = true;
+    hash.newChartsEnabled = true
+    hash.newMapsEnabled = module_enabled?(:new_maps)
+    hash.oldChartsForced = module_enabled?(:old_charts)
+    hash.newChartConfig = true
     hash.oldChartConfigForced = module_enabled?(:old_chart_config)
     hash.newCharts!.newBarChart = module_enabled?(:newBarChart)
     hash.newCharts!.newLineChart = module_enabled?(:newLineChart)

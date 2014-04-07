@@ -1083,6 +1083,11 @@ class View < Model
     return @@display_names[d.name] || d.name
   end
 
+  def dataset?
+    # 'filtered view' is anything that uses sorting / roll-up / filter / conditional formatting
+    display_name == 'table'
+  end
+
   def owned_by?(user)
     if user.nil?
       false

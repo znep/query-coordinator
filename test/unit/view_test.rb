@@ -284,6 +284,15 @@ class ViewTest < Test::Unit::TestCase
     refute view.overridable_features.map(&:values).flatten.include?('cell_comments')
   end
 
+  def test_dataset_predicate_method
+    stub_core_server_connection
+    view = View.new
+    view.stubs(:display_name => 'table')
+    assert view.dataset?, 'dataset? should return true when dataset is a "table"'
+    view.stubs(:display_name => 'viltered view')
+    refute view.dataset?, 'dataset? should return false when dataset is a "filtered view" or any other non-table'
+  end
+
   private
 
   def stub_core_server_connection

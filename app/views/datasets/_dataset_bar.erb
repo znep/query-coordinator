@@ -18,7 +18,7 @@
         <a href="#Save" title="<%= t('screens.ds.bar.save_prompt') %>" data-savingText="<%= t('screens.ds.bar.save_progress') %>"
         class="save toolbarButton"><%= t('screens.ds.bar.save_button') %></a>
       <%- end -%>
-      <%- if @view.is_published? && !@view.is_api? -%>
+      <%- if show_save_as_button? -%>
       <a href="#SaveAs" title="<%= t('screens.ds.bar.save_as_prompt') %>"
         class="saveAs toolbarButton"><%= t('screens.ds.bar.save_as_button') %></a>
       <%- end -%>

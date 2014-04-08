@@ -69,7 +69,7 @@ class DatasetsHelperTest < Test::Unit::TestCase
     @view.stubs(:new_backend? => false, :columns => [])
     refute @object.row_identifier_select_tag =~ /disabled/, 'select_tag should not be disabled'
     @view.stubs(:new_backend? => true, :columns => [])
-    assert @object.row_identifier_select_tag =~ /disabled/, 'select_tag should be disabled'
+    refute @object.row_identifier_select_tag =~ /disabled/, 'select_tag should not be disabled'
   end
 
   def test_show_save_as_button

@@ -328,7 +328,7 @@ module DatasetsHelper
     select_tag(
       'view[metadata[rowIdentifier]]',
       rdf_subject_select_options(view.columns, h(view.metadata.try(:rowIdentifier).to_s)),
-      view.new_backend? ? { :disabled => :disabled } : {}
+      {}
     )
   end
 

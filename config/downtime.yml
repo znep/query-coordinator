@@ -18,31 +18,31 @@ development:
     downtime_end: 2014-01-25t21:00:00-08:00
 
 azure_staging:
-    message_start:  2014-03-03t13:30:00-08:00
-    message_end:    2014-03-05t16:30:00-08:00
-    downtime_start: 2014-03-05t13:30:00-08:00
-    downtime_end:   2014-03-05t16:30:00-08:00
+    message_start:  2014-04-08t13:00:00-07:00
+    message_end:    2014-04-12t23:00:00-07:00
+    downtime_start: 2014-04-12t13:00:00-07:00
+    downtime_end:   2014-04-12t23:00:00-07:00
 
 azure_rc:
-    message_start:  2014-03-03t13:30:00-08:00
-    message_end:    2014-03-05t16:30:00-08:00
-    downtime_start: 2014-03-05t13:30:00-08:00
-    downtime_end:   2014-03-05t16:30:00-08:00
+    message_start:  2014-04-08t13:00:00-07:00
+    message_end:    2014-04-12t23:00:00-07:00
+    downtime_start: 2014-04-12t13:00:00-07:00
+    downtime_end:   2014-04-12t23:00:00-07:00
 
 azure_eastus_production:
-    message_start:  2014-03-07t17:00:00-07:00
-    message_end:    2014-03-09t19:00:00-07:00
-    downtime_start: 2014-03-09t17:00:00-07:00
-    downtime_end:   2014-03-09t19:00:00-07:00
+    message_start:  2014-04-09t15:00:00-07:00
+    message_end:    2014-04-11t23:00:00-07:00
+    downtime_start: 2014-04-11t15:00:00-07:00
+    downtime_end:   2014-04-11t23:00:00-07:00
 
 azure_westeurope_production:
-    message_start:  2014-03-07t14:00:00-07:00
-    message_end:    2014-03-09t16:00:00-07:00
-    downtime_start: 2014-03-09t14:00:00-07:00
-    downtime_end:   2014-03-09t16:00:00-07:00
+    message_start:  2014-04-10t10:00:00-07:00
+    message_end:    2014-04-12t18:00:00-07:00
+    downtime_start: 2014-04-12t10:00:00-07:00
+    downtime_end:   2014-04-12t18:00:00-07:00
 
 production:
-    message_start:  2014-03-13t17:00:00-07:00
-    message_end:    2014-03-15t19:00:00-07:00
-    downtime_start: 2014-03-15t17:00:00-07:00
-    downtime_end:   2014-03-15t19:00:00-07:00
+    message_start:  2014-04-17t17:00:00-07:00
+    message_end:    2014-04-19t18:00:00-07:00
+    downtime_start: 2014-04-19t17:00:00-07:00
+    downtime_end:   2014-04-19t18:00:00-07:00

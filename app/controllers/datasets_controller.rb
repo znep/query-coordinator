@@ -600,11 +600,26 @@ protected
           return false
         end
       end
-      if params[:view][:metadata].present? && params[:view][:metadata][:rdfClass] =~ /^_.*/
-        params[:view][:metadata][:rdfClass] = nil
+      new_feature_flags = {}
+      if params[:view][:metadata].present?
+        if params[:view][:metadata][:rdfClass] =~ /^_.*/
+          params[:view][:metadata][:rdfClass] = nil
+        end
+        if params[:view][:metadata][:feature_flags].present?
+          params[:view][:metadata][:feature_flags].keys.each do |flag|
+            new_feature_flags[flag] = FeatureFlags.process_value(params[:view][:metadata][:feature_flags][flag]).to_s
+          end
+        else
+          new_feature_flags = nil
+        end
       end
       params[:view][:metadata] = (view.data['metadata'] || {}).
         deep_merge(params[:view][:metadata] || {})
+      if new_feature_flags.nil?
+        params[:view][:metadata].delete(:feature_flags)
+      else
+        params[:view][:metadata][:feature_flags] = new_feature_flags
+      end
       params[:view][:privateMetadata] = (view.data['privateMetadata'] || {}).
         deep_merge(params[:view][:privateMetadata] || {})
     end

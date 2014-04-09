@@ -506,4 +506,30 @@ module ApplicationHelper
       link_to(name, options, *args, &block)
     end
   end
+
+  def feature_flag_input(flag, flag_config, flag_value, options = {})
+    name = "feature_flags[#{flag}]"
+    name = "view[metadata[#{name}]]" if options[:edit_metadata]
+
+    label_for = name.chop.gsub(/[\[\]]+/, '_')
+
+    html = []
+    html << radio_button_tag(name, true, flag_value === true, :disabled => options[:disabled])
+    html << label_tag("#{label_for}true", 'true')
+    html << radio_button_tag(name, false, flag_value === false, :disabled => options[:disabled])
+    html << label_tag("#{label_for}false", 'false')
+    html << radio_button_tag(name, nil, String === flag_value, class: 'other', :disabled => options[:disabled])
+    html << label_tag(label_for, 'Other:')
+    if flag_config.expectedValues?
+      html << select_tag(
+                name,
+                options_for_select(flag_config.expectedValues.split(' ').
+                  reject { |value| ['true', 'false'].include? value }, flag_value),
+                :disabled => options[:disabled])
+    else
+      html << text_field_tag(name, String === flag_value ? flag_value : nil, :disabled => options[:disabled])
+    end
+
+    html.join(' ').html_safe
+  end
 end

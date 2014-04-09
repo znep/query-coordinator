@@ -17,20 +17,7 @@
         </div>
         <div class="valueBox">
             <p>Default Value: <%= flag_config.defaultValue %></p>
-            <%= radio_button_tag "feature_flags[#{flag}]", true, flag_config.value === true %>
-                <label for="feature_flags_<%= flag %>_true">true</label>
-            <%= radio_button_tag "feature_flags[#{flag}]", false, flag_config.value === false %>
-                <label for="feature_flags_<%= flag %>_false">false</label>
-            <%= radio_button_tag "feature_flags[#{flag}]", nil, String === flag_config.value, class: 'other' %>
-                <label for="feature_flags_<%= flag %>_">Other:</label>
-                <%- if flag_config.expectedValues? %>
-                <select name="feature_flags[<%= flag %>]">
-                    <%= options_for_select flag_config.expectedValues.split(' ').
-                        reject { |value| ['true', 'false'].include? value }, flag_config.value %>
-                </select>
-                <%- else %>
-                    <input type="text" name="feature_flags[<%= flag %>]" value="<%= flag_config.value if String === flag_config.value %>" />
-                <%- end %>
+            <%= feature_flag_input flag, flag_config, flag_config.value %>
         </div>
     </div>
   <%- end %>

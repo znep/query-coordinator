@@ -228,6 +228,23 @@
       <div class="additionalHelp"><%= t('screens.edit_metadata.email_help') %></div>
     </div>
 
+    <%- if current_user.flag?('admin') -%>
+    <h2 class="featureFlags">Feature Flags (admin only)</h2>
+    <div class="featureFlags">
+    <%- domain_flags = CurrentDomain.feature_flags
+        dataset_flags = @view.metadata.feature_flags || {}
+        FeatureFlags.derive(@view).each do |key, value|
+          flag_config = Hashie::Mash.new(FEATURE_FLAGS[key])
+          disabled = !dataset_flags.has_key?(key) -%>
+      <div class="line clearfix<%= disabled ? ' disabled' : '' %>" title="<%= flag_config.description %>">
+        <label><%= key %><br /><span>(From Domain: <%= domain_flags[key] %>)</span></label>
+        <div class="enableButton"><%= disabled ? 'Enable' : 'Disable' %></div>
+        <div class="valueBox"><%= feature_flag_input key, flag_config, value, :edit_metadata => true, :disabled => disabled %></div>
+      </div>
+    <%- end -%>
+    </div>
+    <%- end -%>
+
     <div class="required"><%= t('screens.edit_metadata.required_field') %></div>
     <div class="clearfix submitActions">
       <input class="button submitButton" type="submit" title="<%= t('screens.edit_metadata.save_changes') %>" value="Save" />
@@ -240,6 +257,33 @@
 <% content_for :js_footer do %>
   <script type='text/javascript'>
     blist.viewId = '<%= @view.id %>'
+  </script>
+  <script type="text/javascript">
+    $(function() {
+        var $form = $('div.featureFlags');
+        $('h2.featureFlags').click(function() { $form.slideToggle(); });
+        $('input:text, select', $form).bind('focus change', function()
+        {
+            $(this).siblings('input.other').click();
+        });
+        $('form').submit(function(e)
+        {
+            $('.line', $form).each(function()
+            {
+                var $this = $(this);
+                if (!$this.find('.other').is(':checked'))
+                { $this.find('input:text, select').prop('disabled', true); }
+            });
+        });
+        $('.enableButton').click(function()
+        {
+            var $this = $(this);
+            var disabled = $this.text() == 'Disable';
+            $this.parents('.line').toggleClass('disabled', disabled)
+                   .find('input, select').prop('disabled', disabled);
+            $this.text( disabled ? 'Enable' : 'Disable' );
+        });
+    });
   </script>
   <%- unless params[:no_js] == 'true' -%>
     <%= include_javascripts 'dataset-edit-metadata' %>

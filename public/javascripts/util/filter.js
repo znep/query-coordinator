@@ -273,7 +273,9 @@ blist.namespace.fetch('blist.filter');
 
     blist.filter.generateSODA1 = function()
     {
-        var fc = _.compact(Array.prototype.slice.call(arguments));
+        // This is not _.compact because we need to throw away empty objects, too.
+        var fc = _.filter(Array.prototype.slice.call(arguments),
+            function(value) { return !!value && !_.isEmpty(value); });
         if (fc.length > 0)
         {
             if (fc.length == 1)

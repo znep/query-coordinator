@@ -291,7 +291,7 @@ class Model
       attributes['tags'] = parse_tags(attributes['tags'])
     end
     path = "/#{self.service_name}/#{id}.json"
-    return parse(CoreServer::Base.connection.update_request(path, attributes.to_json))
+    return parse(CoreServer::Base.connection.update_request(path, attributes.fix_key_encoding.to_json))
   end
 
   def save!

@@ -10,10 +10,6 @@
 # This is truth. Anything not in this list gets ignored.
 # 
 
-new_charts: 
-  description: New Charts
-  defaultValue: nextgen
-  expectedValues: nextgen old
 bubble:
   description: D3 Bubble Charts
   defaultValue: old

@@ -323,10 +323,10 @@
 
             if (granularity > 0)
             {
-                chartObj._segments[column.id] = [];
+                chartObj._segments[column.lookup] = [];
                 for (i = 0; i < chartObj._numSegments; i++)
                 {
-                    chartObj._segments[column.id][i] =
+                    chartObj._segments[column.lookup][i] =
                         ((i+1)*granularity) + column.aggregates.minimum;
                 }
             }

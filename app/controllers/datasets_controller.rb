@@ -620,6 +620,12 @@ protected
       else
         params[:view][:metadata][:feature_flags] = new_feature_flags
       end
+      if params[:view][:metadata][:custom_fields].present?
+        params[:view][:metadata][:custom_fields].delete_if do |_, fieldset|
+          fieldset.delete_if { |_, value| value.empty? }
+          fieldset.empty?
+        end
+      end
       params[:view][:privateMetadata] = (view.data['privateMetadata'] || {}).
         deep_merge(params[:view][:privateMetadata] || {})
     end

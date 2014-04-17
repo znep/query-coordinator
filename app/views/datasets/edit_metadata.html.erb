@@ -232,7 +232,7 @@
     <h2 class="featureFlags">Feature Flags (admin only)</h2>
     <div class="featureFlags">
     <%- domain_flags = CurrentDomain.feature_flags
-        dataset_flags = @view.metadata.feature_flags || {}
+        dataset_flags = @view.metadata.try(:feature_flags) || {}
         FeatureFlags.derive(@view).each do |key, value|
           flag_config = Hashie::Mash.new(FEATURE_FLAGS[key])
           disabled = !dataset_flags.has_key?(key) -%>

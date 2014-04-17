@@ -1599,7 +1599,7 @@ blist.namespace.fetch('blist.datatypes');
         nested_table: {
             title: 'Nested Table',
 
-            createable: true,
+            createable: false,
             deleteable: true,
             excludeInNestedTable: true,
             priority: 18,

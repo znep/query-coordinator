@@ -1032,6 +1032,11 @@ var RowSet = ServerModel.extend({
             { rs._rowsLoading[i + start] = true; }
         }
 
+        // TODO: CORE-1794: The correct fix is changing the ETag in the backend, but
+        // that won't happen anytime soon and a customer wants this and the only impact
+        // should be client-side repeated fetches for the same set of rows.
+        if ($.browser.safari)
+        { params.safariCacheBust = Math.random().toString().slice(2); }
         var req = { success: rowsLoaded, params: params, inline: !rs._dataset._useSODA2 && !fullLoad,
             type: rs._dataset._useSODA2 || fullLoad ? 'GET' : 'POST' };
         if (!rs._dataset._useSODA2 && fullLoad) {

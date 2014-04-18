@@ -339,7 +339,7 @@ module DatasetsHelper
   # LOLWUT
   def hide_form_create?
     !view.is_published? || (view.non_tabular? && !view.is_form?) || view.is_api? ||
-    view.is_grouped? || !module_available?(:form_publish) ||
+    view.is_grouped? ||
     (
       (
         !view.owned_by?(current_user) || view.parent_dataset.nil? || !view.parent_dataset.owned_by?(current_user)

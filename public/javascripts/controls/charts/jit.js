@@ -28,7 +28,7 @@
             if (!chartObj.isValid()) { return; }
 
             var valCol = chartObj._valueColumns[0].column;
-            var addRows = function(row)
+            var addRows = function(row, index)
                 {
                     var exItem = _.detect(chartObj._jitData.children, function(c)
                         { return c.id == row.id; });
@@ -54,7 +54,7 @@
                     var xCol = chartObj._fixedColumns[0];
 
                     var colors = chartObj._displayFormat.colors || blist.defaultColors;
-                    var defaultColor = colors[row.id % Math.min(5, colors.length)];
+                    var defaultColor = colors[index % Math.min(5, colors.length)];
 
                     var rowColor = (row.metadata.meta && row.metadata.meta.color) ||
                         row.color || defaultColor;

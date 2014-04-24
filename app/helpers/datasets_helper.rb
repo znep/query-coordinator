@@ -354,12 +354,13 @@ module DatasetsHelper
       view.new_backend?
   end
 
+  # Note: This controls visibility of columnOrder, not to be confused with the aptly named "manage.columnOrder" config. :-/
   def hide_update_column?
-    view.is_snapshotted? || view.non_tabular? || view.is_form? || view.is_api? || view.prevent_soql_merging?
+    view.is_snapshotted? || view.non_tabular? || view.is_form? || view.is_api?
   end
 
   def hide_show_hide_columns?
-    view.is_snapshotted? || view.non_tabular? || view.is_form? || view.is_geo? || view.prevent_soql_merging?
+    view.is_snapshotted? || view.non_tabular? || view.is_form? || view.is_geo?
   end
 
   def hide_filter_dataset?

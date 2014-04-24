@@ -102,6 +102,36 @@ class DatasetsHelperTest < Test::Unit::TestCase
     assert @object.hide_filter_dataset?, 'Should hide the filter dataset pane for forms'
   end
 
+  def test_hide_show_hide_columns
+    @view.stubs(:is_snapshotted? => false, :non_tabular? => false, :is_form? => false, :new_backend? => true, :is_geo? => false)
+    refute @object.hide_show_hide_columns?, 'hide_show_hide_columns expected to be false'
+    @view.stubs(:is_snapshotted? => false, :non_tabular? => false, :is_form? => false, :new_backend? => false, :is_geo? => false)
+    refute @object.hide_show_hide_columns?, 'hide_show_hide_columns expected to be false'
+    @view.stubs(:is_snapshotted? => false, :non_tabular? => false, :is_form? => false, :new_backend? => true, :is_geo? => true)
+    assert @object.hide_show_hide_columns?, 'hide_show_hide_columns expected to be true'
+    @view.stubs(:is_snapshotted? => false, :non_tabular? => false, :is_form? => true, :new_backend? => true, :is_geo? => false)
+    assert @object.hide_show_hide_columns?, 'hide_show_hide_columns expected to be true'
+    @view.stubs(:is_snapshotted? => false, :non_tabular? => true, :is_form? => false, :new_backend? => true, :is_geo? => false)
+    assert @object.hide_show_hide_columns?, 'hide_show_hide_columns expected to be true'
+    @view.stubs(:is_snapshotted? => true, :non_tabular? => false, :is_form? => false, :new_backend? => true, :is_geo? => false)
+    assert @object.hide_show_hide_columns?, 'hide_show_hide_columns expected to be true'
+  end
+
+  def test_hide_update_column # aka columnOrder
+    @view.stubs(:is_snapshotted? => false, :non_tabular? => false, :is_form? => false, :new_backend? => true, :is_api? => false)
+    refute @object.hide_update_column?, 'hide_update_column expected to be false'
+    @view.stubs(:is_snapshotted? => false, :non_tabular? => false, :is_form? => false, :new_backend? => false, :is_api? => false)
+    refute @object.hide_update_column?, 'hide_update_column expected to be false'
+    @view.stubs(:is_snapshotted? => false, :non_tabular? => false, :is_form? => false, :new_backend? => true, :is_api? => true)
+    assert @object.hide_update_column?, 'hide_update_column expected to be true'
+    @view.stubs(:is_snapshotted? => false, :non_tabular? => false, :is_form? => true, :new_backend? => true, :is_api? => false)
+    assert @object.hide_update_column?, 'hide_update_column expected to be true'
+    @view.stubs(:is_snapshotted? => false, :non_tabular? => true, :is_form? => false, :new_backend? => true, :is_api? => false)
+    assert @object.hide_update_column?, 'hide_update_column expected to be true'
+    @view.stubs(:is_snapshotted? => true, :non_tabular? => false, :is_form? => false, :new_backend? => true, :is_api? => false)
+    assert @object.hide_update_column?, 'hide_update_column expected to be true'
+  end
+
   private
 
   def default_view_state
@@ -118,3 +148,4 @@ class DatasetsHelperTest < Test::Unit::TestCase
   end
 
 end
+

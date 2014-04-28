@@ -79,8 +79,12 @@ class Hash
   def fix_key_encoding
     encoded_attributes = {}
     self.each_pair do |k, v|
-      key = k.dup
-      key.force_encoding("UTF-8").encode!
+      unless k.is_a? Symbol
+        key = k.dup
+        key.force_encoding("UTF-8").encode!
+      else
+        key = k
+      end
       encoded_attributes[key] = v.is_a?(Hash) ? v.fix_key_encoding : v
     end
     encoded_attributes

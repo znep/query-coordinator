@@ -1,5 +1,5 @@
 <% content_for :head do %>
-  <title><%= CurrentDomain.strings.site_title %></title>
+  <title><%= CurrentDomain.set? ? CurrentDomain.strings.site_title : 'Socrata' %></title>
   <%= rendered_stylesheet_tag 'error-pages' %>
 <% end %>
 

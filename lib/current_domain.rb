@@ -27,6 +27,10 @@ class CurrentDomain
     return @@current_domain = @@property_store[cname]
   end
 
+  def self.set?
+    defined?(@@current_domain)
+  end
+
   def self.reload(cname = nil)
     # Blow away the cached version of the domain,
     # forcing a refresh from the Core Server on configs and properties

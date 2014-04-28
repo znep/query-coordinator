@@ -297,11 +297,9 @@ private
   def render_error(code)
     respond_to do |format|
       format.html do
-        begin
-          render :template => "errors/error_#{code}", :layout => 'main', :status => code
-        rescue
-          render :template => "errors/error_#{code}_nodomain", :layout => 'main_nodomain', :status => code
-        end
+        layout_to_use = 'main'
+        layout_to_use = 'main_nodomain' unless CurrentDomain.set?
+        render :template => "errors/error_#{code}", :layout => layout_to_use, :status => code
       end
 
       format.all { render :nothing => true, :status => code }

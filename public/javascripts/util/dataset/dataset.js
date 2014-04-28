@@ -3512,7 +3512,8 @@ Dataset.translateFilterCondition = function(fc, ds, simplify)
     }
     else
     {
-        var defaults = _.select(fc, function(cond) { return _.isEmpty(cond.children); });
+        var defaults = _.isEmpty(fc) ? null
+            : _.select(fc, function(cond) { return _.isEmpty(cond.children); });
         return { where: translateSubFilter(fc, ds, simplify, false),
             defaults: translateSubFilter(defaults, ds, false, false) };
     }

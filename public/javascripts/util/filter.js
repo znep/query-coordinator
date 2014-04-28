@@ -286,6 +286,7 @@ blist.namespace.fetch('blist.filter');
 
         var result = {};
         if (_.isEmpty(fc)) { return result; }
+        if (!fc.operator) { return {}; }
         if (!$.isBlank(fc.metadata))
         { result.metadata = fc.metadata; }
         else

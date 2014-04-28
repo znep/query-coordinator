@@ -44,11 +44,10 @@ module DatasetsHelper
   def socialize_menu_options(view)
     seo_path = view_url(view)
 
-    [{'text' => 'Facebook',
-      'href' => "http://www.facebook.com/share.php?u=#{h(seo_path)}"},
-
-    {'text' => 'Twitter',
-      'href' => "http://twitter.com/?status=#{view.tweet}"}]
+    {
+     :facebook => { 'href' => "http://www.facebook.com/share.php?u=#{h(seo_path)}"},
+     :twitter  => { 'href' => "http://twitter.com/?status=#{view.tweet}"}
+    }
   end
 
   # Create a drop down menu of formatting fonts

@@ -58,8 +58,8 @@
     <%- if @view.is_tabular? -%>
     <li><a href="/views/<%= @view.id %>/rows.rss">Subscribe via RSS</a></li>
     <%- end -%>
-  <%- socialize_menu_options(@view).each do |item| -%>
-    <li><a href="<%= item['href'] %>">Share via <%= item['text'] %></a></li>
+  <%- socialize_menu_options(@view).each_pair do |network, item| -%>
+    <li><a href="<%= item['href'] %>">Share via <%= network.to_s.capitalize %></a></li>
   <%- end -%>
     <%- if is_grid -%>
       <li><a href="/views/<%= @view.id %>/rows.csv?accessType=DOWNLOAD">Export To CSV</a></li>

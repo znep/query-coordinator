@@ -39,12 +39,10 @@
               <span class="icon"><%= t('screens.ds.bar.subscribe') %></span></a>
             </li>
           <%- end -%>
-          <li><a class="facebook" rel="external" title="<%= t('screens.ds.bar.share_facebook') %>"
-            href="https://www.facebook.com/dialog/feed?app_id=303443389788866&link=<%= CGI::escape(view_url(@view)) %>&name=<%= CGI::escape(@view.name) %>">
-            <span class="icon"><%= t('screens.ds.bar.share_facebook') %></span></a></li>
-          <li><a class="twitter" rel="external" title="<%= t('screens.ds.bar.share_twitter') %>"
-                href="http://twitter.com/?status=<%= @view.tweet %>">
-            <span class="icon"><%= t('screens.ds.bar.share_twitter') %></span></a></li>
+          <%- socialize_menu_options(@view).each_pair do |network, data| %>
+          <li><a class="<%= network %>" rel="external" title="<%= t("screens.ds.bar.share_#{network}") %>" href="<%= data['href'] %>">
+            <span class="icon"><%= t("screens.ds.bar.share_#{network}") %></span></a></li>
+          <%- end %>
           <%- if @view.has_right?('grant') || @view.is_public? -%>
             <li><a class="email" href="#email" title="<%= t('screens.ds.bar.share_email') %>">
               <span class="icon"><%= t('screens.ds.bar.share_email') %></span></a></li>

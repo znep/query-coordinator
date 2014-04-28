@@ -18,6 +18,9 @@ timeline:
   description: D3 Timeline Charts
   defaultValue: old
   expectedValues: nextgen old
+d3_metrics:
+  description: Use D3 for Metrics Charts
+  defaultValue: true
 hide_decimal_tick_lines:
   description: "Ref: CORE-1951. If set to true, when Decimal Places is 0, hide any tick lines between natural numbers."
   defaultValue: true

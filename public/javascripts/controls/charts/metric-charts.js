@@ -235,7 +235,7 @@ metricsNS.renderMetricsChartNew = function(data, $chart, startDate, endDate,
 metricsNS.renderMetricsChart = function(data, $chart, startDate, endDate,
     sliceType, series, options)
 {
-    if ($.urlParam(window.location.href, 'charts') === 'nextgen')
+    if (blist.feature_flags.d3_metrics === true || $.urlParam(window.location.href, 'charts') === 'nextgen')
     { return metricsNS.renderMetricsChartNew.apply(this, arguments); }
 
     if (data.length < 1)
@@ -358,7 +358,7 @@ metricsNS.renderMetricsChart = function(data, $chart, startDate, endDate,
 };
 
 // How to format the tooltips, based on how deep they slice
-if ($.urlParam(window.location.href, 'charts') === 'nextgen')
+if (blist.feature_flags.d3_metrics === true || $.urlParam(window.location.href, 'charts') === 'nextgen')
 { metricsNS.tooltipFormats = {
     'HOURLY': 'dddd MMMM D YYYY HH:mm', //'%A %B %e %Y %H:%M',
     'DAILY': 'dddd MMMM D YYYY', //%A %B %e %Y',

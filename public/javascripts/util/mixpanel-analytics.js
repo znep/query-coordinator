@@ -105,8 +105,16 @@ if (mixpanel)
     //Panes in sidebar (Needs a delegated .on since they are not present in the DOM from the beginning)
     mixpanel.delegate_links('#gridSidebar', 'a.headerLink', "Clicked Pane in Sidebar",
         function(element)
-        {
+        {   
             return {'Pane Name': element.text};
+        }
+    );
+
+    //In the visualize pane - the different visualization types
+    mixpanel.delegate_links('#gridSidebar', '.radioBlock .radioLine', "Chose Visualization Type",
+        function(element)
+        {
+            return {'Visualization Type': element.outerText};
         }
     );
 

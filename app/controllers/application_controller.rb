@@ -180,7 +180,7 @@ private
   end
 
   def disable_frame_embedding
-    #headers['X-Frame-Options'] = 'SAMEORIGIN' if !@suppress_chrome
+    headers['X-Frame-Options'] = 'SAMEORIGIN' if !@suppress_chrome
   end
 
   def sync_logged_in_cookie

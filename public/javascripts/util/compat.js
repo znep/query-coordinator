@@ -153,7 +153,8 @@ $(function()
         $.browser.safari = false;
         $.browser.version = m[1];
     }
-    else if (/Safari\//.exec(navigator.userAgent))
+    // This version sniffing for mobile devices (1) doesn't work and (2) breaks clicks inexplicably.
+    else if (/Safari\//.exec(navigator.userAgent) && !($.device.ipad || $.device.mobile))
     {
         m = /Version\/([0-9.]+)/.exec(navigator.userAgent);
         $.browser.version = m[1];

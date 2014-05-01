@@ -9,7 +9,7 @@ if (mixpanel)
         //mixpanel.track('Entered Page', {'Page type': jQuery.metrics.determine_page_type()});
     });
 
-    mixpanel.delegate_links = function (parent, selector, event_name, getProperties)
+    mixpanel.delegate_links = function (parent, selector, event_name, allowDefault, getProperties)
     {
         $(parent || document.body).on('click', selector, function (event)
         {
@@ -30,7 +30,7 @@ if (mixpanel)
                     }
                 }
 
-                if (!willOpenInNewTab)
+                if (!willOpenInNewTab && !allowDefault)
                 {
                     event.preventDefault();
                 }
@@ -50,7 +50,7 @@ if (mixpanel)
     };
 
     //HEADER
-    mixpanel.delegate_links("#siteHeader", "a", "Clicked Header Item",
+    mixpanel.delegate_links("#siteHeader", "a", "Clicked Header Item", false,
         function(element)
         {
             var linkType = (element.title != '') ? element.title : element.text;
@@ -59,7 +59,7 @@ if (mixpanel)
     );
 
     //FOOTER
-    mixpanel.delegate_links("#siteFooter", "a", "Clicked Footer Item",
+    mixpanel.delegate_links("#siteFooter", "a", "Clicked Footer Item", false,
         function(element)
         {
             var linkType = (element.title != '') ? linkType = element.title : element.text;
@@ -69,10 +69,10 @@ if (mixpanel)
 
     //CATALOG
     //Featured Views
-    mixpanel.delegate_links(".featuredViews .featuredView", "a", "Clicked Featured View");
+    mixpanel.delegate_links(".featuredViews .featuredView", "a", "Clicked Featured View", false);
 
     //Catalog results
-    mixpanel.delegate_links(".gridList .titleLine", "a", "Clicked Catalog Result",
+    mixpanel.delegate_links(".gridList .titleLine", "a", "Clicked Catalog Result", false,
         function(element)
         {
             var linkNo = parseFloat($(element).closest('.item').find('.index .value').text());
@@ -85,7 +85,7 @@ if (mixpanel)
 
     //SEARCH FACETS
     //View Types/Categories/Topics
-    mixpanel.delegate_links(".facetSection", "a", "Used Search Facets",
+    mixpanel.delegate_links(".facetSection", "a", "Used Search Facets", false,
         function(element)
         {
             facetType = $(element).closest('.facetSection').find('> .title').text();
@@ -95,7 +95,7 @@ if (mixpanel)
     );
 
     //SIDEBAR TRACKING
-    mixpanel.delegate_links("#sidebarOptions", "a", "Clicked Sidebar Option",
+    mixpanel.delegate_links("#sidebarOptions", "a", "Clicked Sidebar Option", false,
         function(element)
         {
             return {'Sidebar Name': element.title};
@@ -103,7 +103,7 @@ if (mixpanel)
     );
 
     //Panes in sidebar (Needs a delegated .on since they are not present in the DOM from the beginning)
-    mixpanel.delegate_links('#gridSidebar', 'a.headerLink', "Clicked Pane in Sidebar",
+    mixpanel.delegate_links('#gridSidebar', 'a.headerLink', "Clicked Pane in Sidebar", false,
         function(element)
         {   
             return {'Pane Name': element.text};
@@ -111,7 +111,7 @@ if (mixpanel)
     );
 
     //In the visualize pane - the different visualization types
-    mixpanel.delegate_links('#gridSidebar', '.radioBlock .radioLine', "Chose Visualization Type",
+    mixpanel.delegate_links('#gridSidebar', '.radioBlock .radioLine', "Chose Visualization Type", true,
         function(element)
         {
             return {'Visualization Type': element.outerText};
@@ -119,7 +119,7 @@ if (mixpanel)
     );
 
     //Render Type Options
-    mixpanel.delegate_links("#renderTypeOptions", "a", "Changed Render Type Options",
+    mixpanel.delegate_links("#renderTypeOptions", "a", "Changed Render Type Options", false,
         function(element)
         {
             return {'Render Type': element.title};
@@ -129,12 +129,12 @@ if (mixpanel)
 
     // GOVSTAT
     // opening old chart
-    mixpanel.delegate_links('#janus', '.goalBox .pull.down', 'Opened Goal Chart',
+    mixpanel.delegate_links('#janus', '.goalBox .pull.down', 'Opened Goal Chart', false,
         function() { return {} }
     );
 
     // opening new chart
-    mixpanel.delegate_links('#janus', '.goalBox .progressViewChart .viewChart', 'Opened Goal Chart',
+    mixpanel.delegate_links('#janus', '.goalBox .progressViewChart .viewChart', 'Opened Goal Chart', false,
         function() { return {} }
     );
 

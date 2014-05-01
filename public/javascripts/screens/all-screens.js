@@ -10,6 +10,22 @@
         this.target = '_blank';
     });
 
+    // blist.iframeHack is for CORE-1660, in order to allow opening catalog links in the same window.
+    // This makes it possible to make the default behavior same-window and have modifier keys
+    // properly open a new window/tab.
+    blist.iframeHack = {
+        modifierKeys: [ 16, 17, 18, 91, 93 ],
+        pressed: {}
+    };
+
+    $('body').on('keydown', function(evt)
+    { if (_.include(blist.iframeHack.modifierKeys, evt.which))
+        { blist.iframeHack.pressed[evt.which] = true; } });
+    $('body').on('keyup', function(evt)
+    { if (_.include(blist.iframeHack.modifierKeys, evt.which))
+        { blist.iframeHack.pressed[evt.which] = false; } });
+    blist.iframeHack.isModified = function() { return _.any(_.values(blist.iframeHack.pressed)); };
+
     $.live('a[rel$=video]', 'click', function(event)
     {
         event.preventDefault();

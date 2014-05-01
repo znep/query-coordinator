@@ -443,4 +443,18 @@ $(function()
         $modal.jqmShow();
     });
 
+    // blist.iframeHack belongs in the parent window and listens for a modifier key.
+    if (window != window.parent && window.parent.blist.iframeHack)
+    {
+        $('.browseSection').on('click', 'a[rel=external]', function(evt)
+        {
+            if (!window.parent.blist.iframeHack.isModified())
+            {
+                event.preventDefault();
+                event.stopPropagation();
+                window.parent.location = $(this).attr('href');
+            }
+        });
+    }
+
 });

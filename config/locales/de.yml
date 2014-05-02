@@ -1,0 +1,2520 @@
+de:
+  account:
+    common:
+      form:
+        confirm_password: Passwort bestätigen
+        display_name: Name anzeigen
+        email: E-Mail-Adresse
+        forgot_password: 'Passwort vergessen? '
+        lockout_warning: Aus Sicherheitsgründen resultieren drei fehlgeschlagene Anmeldeversuche innerhalb von 15 Minuten dazu, dass das Konto für 30 Minuten gesperrt wird.
+        no_account: Noch kein Konto?
+        password: Passwort
+        password_requirements: 'Erforderlich. Ihr Passwort muss zwischen 8 und 40 Zeichen lang sein und drei der vier folgenden Kriterien erfüllen: Zahl, Kleinbuchstabe, Großbuchstabe, nicht-alphanumerisches Symbol.'
+        password_requirements_html: "<p>Ihr Passwort muss <b>zwischen 8 und 40 Zeichen</b> lang sein und <b>drei der vier folgenden Kriterien</b> erfüllen:</p><p></p><ul><li>&bull;Zahl,</li><li>&bull;Kleinbuchstabe,</li><li>&bull;Großbuchstabe,</li><li>&bull;nicht-alphanumerisches Symbol.</li></ul>"
+        password_restrictions: Einschränkungen gelten
+        remember_me: An mich erinnern
+        sign_up_prompt: Jetzt registrieren
+      inline_auth:
+        sign_in_headline: Mit Ihrer Socrata-ID anmelden
+        sign_up_headline: Wir freuen uns, dass Sie sich bei %{site} anmelden wollen!
+      rpx:
+        description: 'Nutzen Sie die Vorteile der zusätzlichen Funktionen, die diese Konten zur Verfügung stellen und melden Sie sich mit einem Klick an. '
+        prompt:
+          sign_in: 'Oder nutzen Sie eines dieser Konten, um sich anzumelden. '
+          sign_up: Oder nutzen Sie eines dieser Konten, um sich zu registrieren
+        providers:
+          facebook:
+            sign_in_html: Mit Facebook <strong>verbinden</strong>
+            sign_up_html: Mit Facebook <strong>verbinden</strong>
+          google:
+            sign_in_html: Mit Google <strong>anmelden</strong>
+            sign_up_html: Mit Google <strong>registrieren<strong/>
+          openid:
+            sign_in_html: Mit OpenID <strong>anmelden<strong/>
+            sign_up_html: Mit OpenID <strong>anmelden<strong/>
+          twitter:
+            sign_in_html: Mit Twitter <strong>verbinden<strong/>
+            sign_up_html: Mit Twitter <strong>verbinden<strong/>
+      validation:
+        mismatch: Passwörter stimmen nicht überein.
+        terms: Sie müssen die Servicebedingungen und die Datenschutzrichtlinie akzeptieren.
+  controls:
+    browse:
+      actions:
+        about:
+          button: "Über"
+          title: "Über diesen Datensatz"
+        all_options: Alle ansehen
+        clear_all: All Optionen löschen
+        clear_facet: "(Alle)"
+        compact_list: Als kompakte Liste ansehen
+        create_dataset: Ihren eigenen Datensatz erstellen oder hochladen
+        create_dataset_short: Einen neuen Datensatz erstellen
+        create_dataset_verb: Erstellen
+        dataset_subscribe: "Änderungen in dieser Ansicht abonnieren"
+        delete:
+          button: Löschen
+          confirm: Sind Sie sicher, dass Sie %{dataset} löschen möchte?
+          title: Dieses Element löschen
+        expand_section: Klicken, um mehr zu sehen
+        less_options: Weniger anzeigen
+        manage_api:
+          button: Verwalten
+          title: Dieses API verwalten
+        moderation:
+          accept: Akzeptieren
+          reject: Ablehnen
+        permissions:
+          change_button:
+            private_html: Veröffentlichen
+            public_html: Privat markieren
+          title: Die öffentliche Sichtbarkeit ändern
+        rich_list: Als Rich-Liste ansehen
+        share_button: Teilen
+        subscribe: Abonnieren
+        suggest_dataset: Nicht gefunden, wonach Sie gesucht haben? Schlagen Sie einen Datensatz vor.
+        suggest_dataset_short: Einen Datensatz vorschlagen
+        suggest_dataset_verb: Vorschlagen
+      back_to_dataset: Zurück zum Datensatz
+      facets:
+        categories_singular_title: Kategorie
+        categories_title: Kategorien
+        federated_domains_singular_title: Domain
+        federated_domains_title: Verbündete Domains
+        moderation_status:
+          accepted: Akzeptiert
+          pending: Ausstehend
+          rejected: Abgelehnt
+        moderation_status_singular_title: Moderation
+        moderation_status_title: Moderationsstatus
+        topics_singular_title: Thema
+        topics_title: Themen
+        view_types:
+          apis: APIs
+          blob: Dateien und Dokumente
+          calendars: Kalender
+          charts: Diagramme
+          datasets: Datensätze
+          filters: Gefilterte Ansichten
+          forms: Formulare
+          href: Externe Datensätze
+          maps: Karten
+          unpublished: Nicht veröffentlichte Datensätze
+        view_types_singular_title: Typ
+        view_types_title: Typen ansehen
+      listing:
+        comment_count: Anzahl der Kommentare
+        federation_source: Verbunden von %{source}
+        federation_source_html: Zur Verfügung gestellt von %{source_link}
+        no_results: Keine Ergebnisse
+        result_count: "%{this} von %{total} werden angezeigt"
+        table_header:
+          name: Name
+          popularity: Beliebtheit
+          rss: RSS
+          type: Typ
+        timeout: 'Leider konnten die Ergebnisse nicht abgerufen werden. Bitte versuchen Sie es später erneut. '
+      row_results:
+        less_link: Weniger
+        matching_rows: Datensatz für passende Zeilen werden gesucht
+        more_link: Mehr
+        no_matching_rows: Keine passenden Zeilen gefunden
+        title_html: '<span class="rowResultCountText"></span> von <span class="totalResultCountText"></span> passenden Zeilen <a href="#" class="rowSearchLink"> werden angezeigt (Ergebnisse ansehen)</a>:'
+      search: Suche
+      sort_period_title: Nach Zeitraum sortieren
+      sort_periods:
+        month: Diesen Monat
+        week: Diese Woche
+        year: Dieses Jahr
+      sort_title: Sortieren nach
+      sorts:
+        alpha: Alphabetisch
+        comments: Die meisten Kommentare
+        last_modified: Vor Kurzem aktualisiert
+        most_accessed: Am meisten darauf zugegriffen
+        newest: Neueste
+        oldest: "Älteste"
+        rating: Am höchsten bewertet
+        relevance: Am relevantesten
+      title:
+        default: Datensätze und Ansichten suchen & durchsuchen
+        result:
+          facet: "%{facet_type} von %{facet_value}"
+          facet_main: "%{body} stimmen überein"
+          main: "%{body} Ergebnisse"
+          term: für "%{term}"
+    charts:
+      negatives_in_data: 'Ungültiger Chart: negative Werte vorhanden'
+      no_data: Keine Daten
+      other_slice_label: Andere
+      series_grouping:
+        calculating_time: Verbleibende Zeit wird berechnet ..
+        calculation_running: Daten werden vorbereitet
+        drawing_progress: Dies kann etwas Zeit in Anspruch nehmen ...
+        drawing_running: Chart wird gezeichnet
+        pause_button_explanation1: Tipp! Es dauert zu lange? Pausieren Sie und erstellen Sie einen Filter
+        pause_button_explanation2: um die Menge der benötigten Berechnungen zu limitieren.
+        pause_rendering: Pause
+        rendering_paused: Daten-Vorbereitung wurde pausiert
+        rendering_progress: "%{rows_remaining} Zeilen verbleiben. "
+        rendering_progress_almost_done: "%{rows_remaining} Zeilen verbleiben, nur ein paar Sekunden."
+        rendering_progress_minute: "%{rows_remaining} Zeilen verbleiben, über %{time_remaining} Minute. "
+        rendering_progress_minutes: "%{rows_remaining} Zeilen verbleiben, über %{time_remaining} Minuten. "
+        rendering_progress_seconds: "%{rows_remaining} Zeilen verbleiben, über %{time_remaining} Sekunden. "
+        resume_rendering: Fortsetzen
+      zero_only_data: Keine Werte, die größer als Null sind
+    common:
+      auth_required: Sie müssen für %{action_phrase} angemeldet sein
+      dataset_picker:
+        button: Auswählen
+        title: Einen Datensatz zum Verwenden auswählen
+      expander:
+        collapse: Klicken, um zu verbergeb
+        expand: Klicken, um anzuzeigen
+      image_upload:
+        button: Bild hochladen
+      no_results: Keine Ergebnisse
+      rate:
+        auth_action_phrase: Diesen Datensatz bewerten
+      share:
+        button_prompt: Socialize
+        button_tooltip: Diesen Datensatz teilen
+        networks:
+          email: E-Mail
+          facebook: Facebook
+          twitter: Twitter
+        share_text: 'Sehen Sie sich %{name} an, Datensatz auf %{site}: '
+      sidebar:
+        tabs:
+          about: "Über diesen Datensatz"
+          components: Komponenten
+          configuration: Konfiguration
+          discuss: Diskutieren
+          edit: Bearbeiten
+          embed: Einbetten
+          export: Exportieren
+          filter: Filtern
+          manage: Verwalten
+          moreViews: Weitere Ansichten
+          visualize: Visualisieren
+      stars:
+        tooltip: "%{number} Sterne"
+      visualization:
+        in_bing: In Bing Karten anzeigen
+        in_google: In Bing Karten anzeigen
+        row_details: Details für diese Zeile ansehen
+    editors:
+      actions:
+        add: Hinzufügen
+        remove: Entfernen
+        replace: Ersetzen
+        view: Ansehen
+      document:
+        add_title: Ein neues Dokument hinzufügen
+        remove_title: Das Dokument entfernen
+        replace_title: Das Dokument ersetzen
+      photo:
+        add_title: Ein neues Bild hinzufügen
+        remove_title: Das Bild entfernen
+        replace_title: Das Bild ersetzen
+        view_title: Das Bild in einem neuen Fenster ansehen
+    embed:
+      create_template_button: Eine neue Vorlage erstellen
+      custom_size: Individuelle Größe
+      embed: Diesen Datensatz einbetten
+      form_frame: 'Dieses Formular in einem Rahmen einbetten '
+      form_or: oder
+      form_plain: Dieses Formular als HTML einbetteb
+      height: Höhe
+      minimum_size: 425x425 ist die Mindestgröße
+      private_warning: Diese Ansicht ist im Moment privat. Sie können auf Vorschau klicken, aber Sie müssen es veröffentlichen, damit andere Personen es ansehen können.
+      sdp_template: Vorlage für Social-Media-Player
+      size: Größe
+      template: Vorlage
+      width: Breite
+    feed:
+      authed_actions:
+        delete_comment: einen Kommentar löschen
+        flag_comment: Einen Kommentar markieren
+        post_comment: Einen Kommentar posten
+        rate_comment: Einen Kommentar bewerten
+      comment_actions:
+        already_marked_inappropriate: Markiert
+        delete: Löschen
+        delete_confirm: 'Sind Sie sicher? Dieser Kommentar wird verloren gehen. '
+        inappropriate: Unangemessen
+        marked_inappropriate: Markiert!
+        rate_down: Diesen Kommentar niedriger bewerten
+        rate_up: Diesen Kommentar höher bewerten
+        reply: Antworten
+      comment_form:
+        cancel_button: Abbrechen
+        empty_body_error: Das Kommentarfeld kann nicht leer sein.
+        header: Neuer Kommentar
+        post_button: Posten
+      header:
+        add_comment: 'Kommentar hinzufügen '
+        cell_comment_header_html: Kommentare für Zeile <span class="rowName"></span>, Spalte <span class="columnName"></span>
+        feed_filter_label: Anzeigen
+        pending_moderation: Ihr Kommentar wurde gesendet und muss noch von einem Moderator geprüft werden
+      listing:
+        all_replies: Alle Antworten ansehen
+        all_replies_with_count: Alle %{count} Antworten anzusehen
+        last_item: Das letzte Element ansehen
+        next_item_page: Die nächsten %{count} Elemente ansehen
+        no_results: Es gibt keine Elemente zum Anzeigen
+        user_create_action: 'Ein %{thing} erstellen: '
+      types:
+        all items: Alle Elemente
+        comments: Kommentare
+        views: Ansichten
+    filter:
+      actions:
+        confirm_modify: 'Diese wird alle Werte aus Ihrem Filter entfernen! Sind Sie sicher, dass Sie das tun möchten? '
+        disable_filter: Nicht filtern
+        first_condition: Klicken Sie hier, um Ihre erste Filter-Bedingung einzugeben
+        new_condition_button: Eine neue Filter-Bedingung hinzufügen
+        remove_filter: Filter entfernen
+        select_column: 'Eine Spalte auswählen, nach der gefiltert werden soll: '
+        select_operation: 'Eine Operation auswählen, nach der gefiltert werden soll: '
+        select_subcolumn: 'Wählen Sie den Teil von %{name} aus, nachdem gefiltert werden soll: '
+      edit_default:
+        advanced_body: 'Das bedeutet, dass sie kompletten Zugriff auf alle verfügbaren Optionen des Filters haben. Für eine kuratiertere Erfahrung, können Sie den vereinfachten Modus ausprobieren: '
+        advanced_header: Benutzer werden mit dem erweiterten Modus beginnen.
+        advanced_toggle: Standard zu vereinfacht ändern
+        auto_suggested: Vorgeschlagene Werte werden automatisch für diesen Operator-Typ bestimmt.
+        cancel_button: Abbrechen
+        done_button: Fertig
+        instructions: 'Nutzen Sie die Tools oben, um Filter zu erstellen, präsentierte Werte anzupassen, die Anzahl der automatisch vorgeschlagenen Werte anzupassen, die der Filter versucht anzuzeigen usw. Wenn Sie mit den präsentierten Optionen zufrieden sind, klicken Sie bitte unten auf Fertig, um zu speichern:'
+        manual_suggested_html: Bis zu <select class="autogeneratedCount"></select> vorgeschlagene Werte anzeigen
+        mode_button: Standard-Filter bearbeiten
+        mode_message: 'Als Herausgeber dieser Ansicht, können Sie den Standard-Satz an Filtern bestimmen, den Besucher sehen können: '
+        save_confirm: 'Sie werden nicht gespeicherte Änderungen verlieren, wenn Sie fortfahren. Bitte speichern Sie alle Änderungen, die Sie behalten möchten, bevor Sie fortfahren. '
+        simplified_body: 'Das bedeutet, dass Sie keine neuen Bedingungen hinzufügen, Spalten oder Operatoren von Filtern ändern oder auf erweiterte Menü-Filter zugreifen können. '
+        simplified_header: Benutzer werden im vereinfachten Modus beginnen.
+        simplified_toggle: Den Standard auf erweitert zurücksetzen.
+      main:
+        base_explanation: Mit den folgenden Grundfiltern
+        base_info: 'Diese Filter werden immer angewendet, zusammen mit oben zusätzlich eingegebenen Filtern. Diese Filter können nicht bearbeitet werden, weil Sie entweder keine Berechtigung dazu haben, die aktuelle Ansicht zu bearbeiten oder weil diese aus einer Überansicht oder einem Datensatz stammen. '
+        filter: Filter
+        filter_based_on_contents: Diese Datensatz auf den Inhalten basierend filtern.
+        no_conditions: Noch keine Bedingungen festgelegt.
+        no_suggestions: 'Für diese Spalte und Operator gibt es keine vorgeschlagenen Werte. '
+        or: oder
+        simplified_message: Sie verwenden den vereinfachten Modus.
+        simplified_toggle: 'Jetzt zum Erweiterten gehen? '
+        tutorial_html: Noch nie einen Filter erstellt? Sehen Sie sich ein kurzes Tutorial-Video <a href="/videos/popup#basic-filtering" rel="video" class="noRedirPrompt">hier</a> an.
+        view_has_no_columns: Diese Ansicht hat keine Spalten zum Filtern
+        view_must_be_valid: Diese Ansicht muss gültig sein
+      menu:
+        match_all: Alle Bedingungen anpassen
+        match_any: Jegliche Bedingung anpassen
+        select_many: Viele auswählen
+        select_one: Eine auswählen
+        show_suggested: Vorgeschlagenen Werte anzeigen
+        title: Optionen
+    global_indicator:
+      error: Fehler
+      saved: Gespeichert
+      saving: Speichert ...
+      working: Arbeitet ...
+    grid:
+      add_column: Eine neuen Spalte hinzufügen ...
+      clear_column_filter: Spaltenfilter löschen
+      clear_sort: Sortierung löschen
+      click_for_menu: Klicken, um Menü zu sehen
+      click_to_sort: Klicken, um zu sortieren
+      column_info: Spalten-Info
+      delete_column: Spalte löschen
+      delete_row: Zeile löschen
+      delete_warning_multi_column: Möchten Sie die ausgewählten Spalten löschen? Alle Daten in diesen Spalten werden entfernt!
+      delete_warning_single_column: Sind Sie sicher, dass Sie die ausgewählte Spalte löschen möchten? Alle Daten in dieser Spalte werden entfernt!
+      edit_column_properties: Spalten-Eigenschaften beearbeiten
+      filter_this_column: Diese Spalte filtern
+      geocodes_pending: Zeilen in der Standort-Spalte werden immer noch geokodiert. Bitte warten Sie, bis dies beendet ist, um diesen Datensatz zu veröffentlichen
+      hide_column: Spalte ausblenden
+      menu: Menü
+      must_enter_name: Sie müssen für diese Spalte einen Namen eingeben
+      new_row: Neu
+      no_columns: Datensatz %{uid} hat noch keine Spalten.
+      no_rows: Keine Zeilen zum Anzeigen
+      permission_denied: Sie haben für diese Ansicht keinen Zugriff.
+      previous: Zurück
+      required_cols_missing: Benötigte Spalten für diese Ansicht fehlen
+      sort_ascending: Aufsteigend sortieren
+      sort_descending: Absteigend sortieren
+      totals: Insgesamt
+      view_cell_comments: Kommentare für diese Zelle anzeigen
+      view_first_row: Erste Zeile anzeigen
+      view_last_row: Letzte Zeile anzeigen
+      view_next_row: Nächste Zeile anzeigen
+      view_previous_row: Vorherige Zeile anzeigen
+      view_row: Zeile anzeigen
+      view_single_row: Einzelne Zeilendaten anzeigen
+      viewing_row_html: Zeile <span class="curPage"></span> von <span class="totalPages"></span> anzeigen
+    map:
+      address_prompt: Adresse hier eingeben
+      auto: Automatisch
+      base_layers: Basis-Schicht
+      boundary_map: Grenzkarte
+      current_location: Aktuellen Standort verwenden
+      data_layers: Datenebene
+      data_request_timeout: Eine Datenanfrage hat zu lange gedauert und ist abgelaufen.
+      forever_node_explanation: Die Cluster-Daten sind zu dicht, um nützliche Daten geografisch anzuzeigen.
+      forever_node_recommend: Wir empfehlen, dass Sie die <a href="#openTable">Tab-Ansicht öffnen</a>, um mehr Details zu erhalten.
+      forever_node_title: Zu viele Daten
+      geocoding_inaccessible: Auf dem Geocoding-Service kann nicht zugegriffen werden. Bitte später erneut versuchen.
+      geocoding_noresults: Es kann nicht geokodiert werden. Bitte vergewissern Sie ich, dass die Adresse richtig ist.
+      heat_map: Heatmap
+      heatmap_ie8_warning: 'Raster-Heatmaps funktionieren in Ihrem aktuellen Browser nicht. Bitte aktualisieren Sie auf IE9 oder verwenden Google Chrome oder Mozilla Firefox. Danke. '
+      loading: Lädt ...
+      map_legend: Karten-Legende
+      multiple_layer_instructions: 'Es gibt hier Daten für mehr als eine Ebene. Bitte wählen Sie eine aus:'
+      next: Weiter
+      next_row: Nächste Zeile
+      no_columns_defined: Keine Spalten definiert
+      point_map: Punkt-Karte
+      previous: Zurück
+      previous_row: Vorherige Zeile
+      request_timed_out: Anfrage für diese Daten ist abgelaufen.
+    nominate:
+      all: Alle
+      approve: "(Genehmigen)"
+      approve_tip: Diesen Vorschlag genehmigen
+      approved: Genehmigt
+      attachment: Anhang
+      attachments: Anhänge
+      back_to_suggestions: Zurück zum Datensatz-Vorschlag
+      browse: Durchsuchen
+      cancel: Abbrechen
+      comments: Kommentare
+      contact_author: Autor des Vorschlags kontaktieren
+      dataset_suggestions: Datensatz-Vorschläge
+      delete_attachment: Anhang
+      delete_confirm: Sind Sie sicher, dass Sie %{type} löschen möchten?
+      delete_error: Fehler beim Lösche von %{type}?
+      delete_suggestion: Vorschlag
+      description: Beschreibung
+      description_prompt: Geben Sie Details Ihres Vorschlags ein
+      details: Details
+      edit: "(Bearbeiten)"
+      edit_suggestion: Diesen Vorschlag bearbeiten
+      files: Dateien
+      filter_by_status: Nach Status filtern
+      form_error: Bitte korrigieren Sie die Fehler oben
+      great_sadness: Fehler beim Kontaktieren des Autors des Vorschlags. Bitte später erneut versuchen.
+      greater_success: Ihre Nachricht wurde an den Autor des Vorschlags gesendet
+      message: Nachricht
+      message_prompt: Bitte geben Sie Ihre Nachricht ein
+      moderate: "(Moderat)"
+      moderate_error: Fehler beim Ändern des Status
+      moderate_tip: Diesen Vorschlag akzeptieren und ihn zum Abstimmen öffnen
+      needs_moderation: Muss moderiert werden
+      new: Neu
+      no_result: Keine Ergebnisse
+      open: "Öffnen"
+      rate_down: Gefällt mir nicht
+      rate_up: Gefällt mir
+      rating: Bewertung
+      rating_error: Fehler beim Bewerten des Vorschlags
+      reject: "(Ablehnen)"
+      reject_tip: Diesen Vorschlag ablehnen
+      rejected: Abgelehnt
+      remove: "(Entfernen)"
+      remove_tip: Diesen Vorschlag entfernen
+      required: Erforderlich
+      status: Status
+      submit: Senden
+      submitted_by: Gesendet vo
+      suggest_a_dataset: Einen Datensatz vorschlagen
+      suggestion_received: 'Wir haben Ihren Vorschlag erhalten und dieser muss noch moderiert werden. Er wird auf dieser Seite erscheinen, wenn ein Administrator diesen genehmigt hat. '
+      suggestion_updated: Ihr Vorschlag wurde aktualisiert
+      title: Titel
+      title_prompt: Titel eingeben
+      user_removed: ein Benutzer, der bereits entfernt wurde
+      user_removed_short: Benutzer wurde entfernt
+    upload_dialog:
+      browse: Durchsuchen
+      title_file: Eine Datei hochladen
+      title_image: Ein Bild hochladen
+      title_photo: Ein Foto hochladen
+      to_upload_file: Datei zum Hochladen
+      to_upload_image: Bild zum Hochladen
+      to_upload_photo: Foto zum Hochladen
+      upload: Upload
+  core:
+    aggregates:
+      average: Durchschnitt
+      count: Anzahl
+      maximum: Maximum
+      minimum: Minimum
+      sum: Summe
+    alignment:
+      center: Zentrum
+      left: Links
+      right: Rechts
+    analytics:
+      visit: Ansicht
+      visits: Ansichten
+    and: und
+    auth:
+      invalid_userpass: Ungültiger Benutzername oder Passwort
+      need_login: Sie müssen angemeldet sein, um auf diese Seite zugreifen zu können
+      need_permission: Sie haben keine Berechtigung, um diese Seite anzuzeigen
+      too_many_tries: Zu viele Anmeldeversuche für diesen Login. Konto wurde vorübergehend deaktiviert.
+    browser_support:
+      chrome: Chrome
+      internet_explorer: Internet Explorer
+      link_text: Mehr erfahren
+      message_html: Diese Seite sollte mit einem neueren Browser angesehen werden. %{link_text}
+    chart_types:
+      area: Flächendiagramm
+      bar: Balkendiagramm
+      bubble: Ballondiagramm
+      column: Spalten-Diagramm
+      donut: Kuchendiagramm
+      line: Liniendiagramm
+      pie: Kreisdiagramm
+      stackedbar: Gestapeltes Balkendiagramm
+      stackedcolumn: Gestapeltes Spaltendiagram
+      timeline: Zeitleiste
+      treemap: Treemap
+    chart_types_short:
+      area: Gebiet
+      bar: Leiste
+      bubble: Blasen
+      column: Spalte
+      donut: Donut
+      line: Linie
+      pie: Kreis
+      stackedbar: Gestapelte Balken
+      stackedcolumn: Gestapelte Spalten
+      timeline: Zeitleiste
+      treemap: Treemap
+    data_types:
+      calendar_date: Datum & Zeit
+      checkbox: Kontrollkästchen
+      dataset_link: Datensatz-Link
+      date: Datum & Zeit (mit Zeitzone)
+      document: Dokument
+      drop_down_list: Multiple Choice
+      email: E-Mail
+      flag: Markieren
+      geospatial: Raumbezogen
+      html: Formatierter Text
+      link: Spalte verbinden
+      list: Liste
+      location: Standort
+      money: Geld
+      nested_table: Verschachtelte Tabelle
+      number: Zahl
+      object: Objekt
+      percent: Prozent
+      phone: Telefon
+      photo: Foto (Bild)
+      stars: Stern
+      text: Einfacher Text
+      url: Webseiten-URL
+    date_time:
+      centuries_future: "%{time} Jahrhunderte ab jetzt"
+      centuries_past: vor %{time} Jahrhunderten
+      current_century_future: dieses Jahrhundert
+      current_century_past: dieses Jahrhundert
+      current_day_future: heute
+      current_day_past: heute
+      current_hour_future: diese Stunde
+      current_hour_past: diese Stunde
+      current_minute_future: gerade
+      current_minute_past: gerade
+      current_month_future: diesen Monat
+      current_month_past: diesen Monat
+      current_week_future: diese Woche
+      current_week_past: diese Woche
+      current_year_future: dieses Jahr
+      current_year_past: dieses Jahr
+      days_future: "%{time} Tage ab jetzt"
+      days_past: vor %{time} Tagen
+      hours_future: "%{time} Stunden ab jetzt"
+      hours_past: vor %{time} Stunden
+      minutes_future: "%{time} Minuten ab jetzt"
+      minutes_past: vor %{time} Minuten
+      months_future: "%{time} Monate ab jetzt"
+      months_past: vor %{time} Monaten
+      single_century_future: ein Jahrhundert ab jetzt
+      single_century_past: vor einem Jahrhundert
+      single_day_future: morgen
+      single_day_past: gestern
+      single_hour_future: 1 Stunde ab jetzt
+      single_hour_past: vor 1 Stunde
+      single_minute_future: 1 Minute ab jetzt
+      single_minute_past: vor 1 Minute
+      single_month_future: nächsten Monat
+      single_month_past: letzten Monat
+      single_week_future: nächste Woche
+      single_week_past: letzte Woche
+      single_year_future: nächstes Jahr
+      single_year_past: letztes Jahr
+      unknown: irgendwann
+      weeks_future: "%{time} Wochen ab jetzt"
+      weeks_past: vor %{time} Wochen
+      years_future: "%{time} Jahre ab jetzt"
+      years_past: vor %{time} Jahren
+    dialogs:
+      apply: Anwenden
+      cancel: Abbrechen
+      close: 'Schließen '
+      continue: Fortfahren
+      create: Erstellen
+      delete: Löschen
+      done: Fertig
+      dont_save: Nicht speichern
+      logout: Sie wurden abgemeldet.
+      save: Speichern
+      session_timeout:
+        notice: Sie wurden aus Sicherheitsgründen abgemeldet. Bitte melden Sie sich wieder an, um fortzufahren.
+        warning:
+          belay_button: Mich nicht abmelden!
+          body_html: Wir haben in den letzten Minuten keine Aktivität bemerkt. Um Ihre Privatsphäre zu schützen, werden Sie in <span id="secondsRemaining"></span> Sekunden abgemeldet.
+          title: Ihr Sitzung läuft bald ab.
+      submit: Senden
+      update: Aktualisieren
+    expando:
+      expand: Erweitern
+      prompt: Klicken, um zu erweitern
+    features:
+      allow_comments: Kommentieren
+      cell_comments: Zellen-Kommentar
+    filters:
+      formal:
+        between: zwischen
+        contains: beinhaltet
+        equals: gleich
+        greater_than: größer als
+        greater_than_or_equals: größer als oder gleich
+        is_blank: ist leer
+        is_not_blank: ist nicht leer
+        less_than: kleiner als
+        less_than_or_equals: kleiner als oder gleich
+        not_contains: beinhaltet nicht
+        not_equals: ist nicht gleich
+        starts_with: beginnt mit
+      informal:
+        between: liegt zwischen
+        contains: beinhaltet
+        equals: ist
+        greater_than: ist größer als
+        greater_than_or_equals: ist mindestens
+        is_blank: ist leer
+        is_not_blank: ist nicht leer
+        less_than: ist weniger als
+        less_than_or_equals: ist höchstens
+        not_contains: enthält nicht
+        not_equals: ist nicht
+        starts_with: beginnt mit
+    forms:
+      none: Nichts
+      required_field: Pflichtfeld
+    group_function:
+      date_day: Tag
+      date_month: Monat
+      date_year: Jahr
+    interstitial:
+      leaving_explanation_html: Dieser <span class="datasetType">Datensatz</span> wird auf einer <a href="\#" rel="external" class="externalDomain">anderen Domain</a> gehostet.
+      leaving_notice_html: Sie verlassen <span class="serverName">%{site_name}</span>
+    maintenance_notice: Diese von Socrata unterstützte Seite wird zwischen %{start} und %{finish} wegen Routine-Wartungsarbeiten wahrscheinlich nicht zur Verfügung stehen.
+    map_layers:
+      aerial: Antenne
+      bing_aerial: Bing-Antenne
+      bing_roadmap: Bing-Roadmap
+      bing_roadmap_alias: Bing
+      esri_natural_earth: Natürliche Erdkarte (ESRI)
+      esri_natural_earth_alias: Natürliche Erdkarte
+      esri_satellite: Satellitenbilder (ESRI)
+      esri_us_topo: Detaillierte topographische Karte USA (ESRI)
+      esri_us_topo_alias: Topografische Karte USA
+      esri_world_street_map: Welt-Straßenkarte (ESRI)
+      esri_world_street_map_alias: Welt-Straßenkarte
+      esri_world_topo: Kommentierte topographische Weltkarte (ESRI)
+      esri_world_topo_alias: Topographische Weltkarte
+      google_roadmap: Google Straßenkarte
+      google_roadmap_alias: Google
+      google_satellite: Google Satellit
+      google_terrain: Google Gelände
+      roadmap: Roadmap
+      satellite: Satellit
+      terrain: Gelände
+    no_category: Keine Kategorie
+    no_js: Javascript auf dieser Seite deaktivieren
+    no_license: Keine Lizenz
+    numbers:
+      eight: acht
+      five: fünf
+      four: vier
+      nine: neun
+      num_one: eins
+      num_two: zwei
+      num_zero: 'null'
+      seven: sieben
+      six: sechs
+      three: drei
+    or: oder
+    pagination:
+      current_page: Aktuelle Seite
+      first_page: Erste Seite
+      last_page: Letzte Seite
+      next_page: Nächste Seite
+      page: Seite
+      previous_page: Vorherige Seite
+    precision_style:
+      scientific: Wissenschaftlich (1,0204e+3)
+      standard: Standard (1024,4)
+    required: Erforderlich
+    share_types:
+      contributor: Beitragender
+      owner: Besitzer
+      view: Zuschauer
+      viewer: Zuschauer
+    validation:
+      accept: Bitte geben Sie einen Wert mit einer gültigen Erweiterung ein.
+      date: Bitte geben Sie ein gültiges Datum ein.
+      dateISO: 'Bitte geben Sie ein gültiges Datum ein (ISO). '
+      digits: Bitte geben Sie nur Zahlen ein.
+      email: Bitte geben Sie eine gültige E-Mail-Adresse ein.
+      equalTo: Bitte geben Sie den gleichen Wert ein
+      max: Bitte geben Sie einen Wert ein, der kleiner oder gleich {0} ist.
+      maxlength: Bitte geben Sie nicht mehr als {0} Zeichen ein.
+      min: Bitte geben Sie einen Wert ein, der größer oder gleich {0} ist.
+      minlength: Bitte geben Sie mindestens {0} Zeichen ein.
+      number: Bitte geben Sie eine gültige Nummer ein.
+      range: Bitte geben Sie einen Wert zwischen {0} und {1} ein.
+      rangelength: Bitte geben Sie einen Wert ein, der zwischen {0} und {1} Zeichen lang ist.
+      remote: Bitte berichtigen Sie das Feld.
+      required: Diese Feld ist ein Pflichtfeld.
+      url: Bitte geben Sie eine gültige URL ein.
+    view_types:
+      api: API-Ansicht
+      blob: nicht tabellarische Dateien oder Dokumente
+      calendar: 'Kalender '
+      chart: Diagramm
+      dataset: Datensatz
+      filter: Gefilterte Ansicht
+      form: Formular
+      group: Gruppierte Ansicht
+      grouped: Gruppierte Ansicht
+      href: Externer Datensatz
+      map: Karte
+      table: Tabelle
+      working_copy: Arbeitskopie
+    view_types_plural:
+      api: APIs
+      calendar: Kalender
+      chart: Diagramme
+      filter: Gefilterte Ansichten
+      form: Formulare
+      grouped: Gruppierte Ansichten
+      map: Karten
+    visibility:
+      private: privat
+      public: "öffentlich"
+  dataslate:
+    component:
+      edit: Diese Komponente bearbeiten
+      header:
+        height: Höhe
+      invalid_config: Diese Komponente hat keine gültige Konfiguration
+      loading: Lädt. Bitte warten ...
+      picture:
+        alt_attr: Alt
+        alt_attr_prompt: Alt-Attribut
+        full_url: Vollqualifizierte URL für ein Bild
+        image_source: Bildquelle
+        large: Groß (220x220)
+        medium: Mittel (150x150)
+        original: Original
+        thumb: Vorschaubild (80x80)
+        tiny: Winzig (24x24)
+        title_attr: Titel
+        title_attr_prompt: Titel-Attribut
+      print:
+        print: Drucken
+        print_this_page: Diese Seite drucken
+      remove: Diese Komponente entfernen
+      share:
+        email: Per E-Mail teilen
+        email_contents: "%{dataset} für %{company}"
+        facebook: Auf Facebook teilen
+        share: Teilen
+        subscribe: Per E-Mail oder RSS abonnieren
+        subscribe_text: "Änderungen abonnieren"
+        this_page: Diese Seite
+        tweet_contents: 'Sehen Sie sich %{dataset} von %{company} an: %{url}'
+        twitter: Auf Twitter geteilt
+    configurator:
+      actions_components: Aktionen
+      advanced_components: Erweiterte Komponenten
+      content_components: Inhalt
+      data_components: Daten
+      input_components: Eingabe
+      report_components: Komponenten melden
+    context_picker:
+      select_dataset: Datensatz auswählen
+      view_data: Daten ansehen
+    create:
+      cancel: Abbrechen
+      create: Erstellen
+      create_page: DataSlate-Seite erstellen
+      page_settings: Seiten-Einstellungen
+      page_title: Seiten-Titel
+      page_url: Seiten-URL
+      title: DataSlate-Seite erstellen
+    edit:
+      editing: Bearbeiten
+      permissions: Berechtigungen
+      preview_page: Seitenvorschau
+      redo: Wiederholen
+      revert: Rückgängig machen
+      save: Speichern
+      save_as: Speichern als
+      settings: Einstellungen
+      undo: Rückgängig machen
+      view_editor: Interaktiven Editor ansehen
+    edit_component:
+      no_config: Keine verfügbare Konfiguration für %{component}
+      subtitle: Diese Komponente konfigurieren
+      title: Komponente bearbeiten
+    edit_properties:
+      no_data: Keine Daten für diese Komponente eingerichtet
+      subtitle: Eigenschaften hinzufügen, die auf dem Daten-Kontext für diese Komponente basieren
+      title: Verfügbar Eigenschaften
+    permissions:
+      cancel: Abbrechen
+      private: Privat
+      private_desc: Nur für Sie sichtbar
+      public: "Öffentlich"
+      public_desc: 'Für alle sichtbar '
+      save: Speichern
+      shared: Auf der Seite geteilt
+      shared_desc: Sichtbar für alle Ihre Kollegen, aber nicht die Öffentlichkeit
+      title: Seitenberechtigungen
+    settings:
+      cancel: Abbrechen
+      page_title: Seitentitel
+      page_url: Pfad
+      save: Speichern
+      title: Seiteneinstellungen
+  date:
+    abbr_month_names:
+    - 
+    - Jan
+    - Feb
+    - Mrz
+    - Apr
+    - Mai
+    - Jun
+    - Jul
+    - Aug
+    - Sep
+    - Okt
+    - Nov
+    - Dez
+  error:
+    back: Zurück
+    error_500:
+      description_html: Bitte versuchen Sie es in einigen Augenblicken erneut oder <a href="http://support.socrata.com">melden Sie diesen Fehler</a> mit den Einzelheiten, was Sie versucht haben zu machen.
+      somethings_wrong: Etwas ist schief gelaufen!
+      were_sorry: Leider ist ein Problem beim Verarbeiten Ihrer Anfrage aufgetreten
+    not_acceptable_406:
+      page_not_found: Seite nicht gefunden.
+      were_sorry: Leider ist die angefragte Seite nicht im angefragten Format verfügbar.
+    not_found_404:
+      back_to: Zurück zu
+      description_html: 'Die Seite existiert nicht oder wurde verschoben. Fangen Sie doch von vorne auf der <a href="/">Homepage</a> an. Zögern Sie nicht uns zu kontaktieren, falls das Problem weiterhin besteht oder falls Sie definitiv nicht finden, wonach Sie suchen. Danke. '
+      page_not_found: Seite nicht gefunden.
+      were_sorry: Leider kann die angefragte Seite nicht gefunden werden.
+    permission_denied_403:
+      description_html: Wenn Sie glauben, dass es sich um einen Fehler handelt, melden Sie sich ab und mit einer anderen Benutzer-ID wieder <a href="/login">hier</a> an.
+      no_permission: Keine Berechtigung, um auf diese Ressource zuzugreifen.
+      were_sorry: 'Leider sieht es so aus, als ob Sie keine Berechtigung haben, auf diese Seite zuzugreifen. '
+    to_whence_you_came: von wo Sie herkamen.
+  govstat:
+    chrome:
+      header:
+        links:
+          account: Konto
+          account_options: Konto-Optionen
+          account_tooltip: 'Ihr Benutzer-Konto ansehen und Änderungen vornehmen. '
+          configuration: 'Konfiguration '
+          configuration_title: GovSat-Konfiguration verwalten
+          data: Daten
+          data_title: Daten durchsuchen und verwalten
+          goals: Ziele
+          goals_title: Ziele erstellen und verfolgen
+          home: Home
+          home_title: Home
+          my_goals: Meine Ziele
+          my_goals_tooltip: Ziele sehen, die ich erstellt habe.
+          reports: Berichte
+          reports_title: Berichte ansehen und erstellen
+    configuration:
+      analytics: Analytics
+      appearance: Aussehen
+      config: Konfiguratio
+      content_moderation: Moderation des Inhalts
+      data_management: Daten-Management
+      datasets: Datensätze
+      federations: Verbünde
+      homepage: Homepage
+      metadata: Metadaten
+      moderation: Kommentar-Moderatio
+      nomination: Kommentar-Nominierung
+      routing: Routing und Genehmigung
+      sdp_templates: Daten-Player-Vorlage
+      title: Konfiguration zum Verwalten der Seite
+      users: Benutzer
+    reports:
+      component:
+        base_map: Basiskarte
+        chart: Diagramm
+        formatted_text: Formatierter Text
+        header: Kopfzeile
+        horizontal_layout: Horizontales Layout
+        map: Karte
+        map_layer: Karten-Ebene
+        picture: Bild
+        print: Drucken
+        share: Teilen
+        table: Tabelle
+        title: Titel
+        vertical_layout: Vertikales Layout
+        visualize: Visualisieren
+      create:
+        create_report: Bericht erstellen
+        title: Bericht erstellen
+      manage:
+        copy: Kopieren
+        create_new_report: Neuen Bericht erstellen
+        delete: Löschen
+        edit: Bearbeiten
+        home: Home
+        other_reports: Andere Berichte
+        owner: Besitzer
+        reports: Berichte
+        title: Berichte verwalten
+        updated: aktualisiert
+        your_reports: Ihre Berichte
+      permissions:
+        title: Bericht-Berechtigungen
+      settings:
+        page_title: Bericht-Titel
+        title: Bericht-Einstellungen
+    template:
+      grid_flow_layout: Gitter-Layout
+      layouts: Layouts
+      list_layout: Listen-Layout
+      title: Layout auswählen
+  plugins:
+    daterangepicker:
+      date_range: Datumsbereich
+      done: Fertig
+      end_date: Enddatum
+      last_month: Letzter Monat
+      month_to_date: Monat bislang
+      next: Weiter
+      prev: Vorh.
+      specific_date: Bestimmtes Datum
+      start_date: Anfangsdatum
+      the_month_of: Der Monat ...
+      the_week_of: Die Woche ...
+      the_year_of: Das Jahr ...
+      today: Heute
+      week_to_date: Woche bislang
+      year_to_date: Jahr bislang
+    fileuploader:
+      drop_files: Dateien hierhin ziehen, um hochzuladen
+      failed: Fehlgeschlagen
+      upload_a_file: Eine Datei hochladen
+    hallo:
+      body: Body
+      bold: fett
+      heading: "Überschrift"
+      italic: kursiv
+      redo: Rückgängig machen
+      subheading: Unter-Überschrift
+      undo: Rückgängig machen
+    jquery_ui:
+      april: April
+      april_short: Apr
+      august: August
+      august_short: Aug
+      december: Dezember
+      december_short: Dez
+      done: Fertig
+      february: Februar
+      february_short: Feb
+      friday: Freitag
+      friday_min: Fr
+      friday_short: Fr
+      january: Januar
+      january_short: Jan
+      july: Juli
+      july_short: Jul
+      june: Juni
+      june_short: Jun
+      march: März
+      march_short: Mrz
+      may: Mai
+      may_short: Mai
+      monday: Montag
+      monday_min: Mo
+      monday_short: Mo
+      next: Weiter
+      november: November
+      november_short: Nov
+      october: Oktober
+      october_short: Okt
+      prev: Vorh.
+      saturday: Samstag
+      saturday_min: Sa
+      saturday_short: Sa
+      september: September
+      september_short: Sep
+      sunday: Sonntag
+      sunday_min: So
+      sunday_short: So
+      thursday: Donnerstag
+      thursday_min: Do
+      thursday_short: Do
+      today: Heute
+      tuesday: Dienstag
+      tuesday_min: Di
+      tuesday_short: Di
+      wednesday: Mittwoch
+      wednesday_min: Mi
+      wednesday_short: Mi
+      week_min: Wo.
+  recaptcha:
+    errors:
+      verification_failed: Die eingegebenen Zeichen stimmen nicht mit dem Bild überein
+  screens:
+    about:
+      actions: Aktionen
+      activity: Aktivität
+      attachments: Anhänge
+      category: Kategorie
+      comments: Kommentare
+      community: Community-Bewertung
+      contact_dataset_owner: Datensatz-Besitzer kontaktieren
+      contributors: Beitragende
+      created: erstellt
+      data_provided_by: Daten zur Verfügung gestellt von
+      description: Beschreibung
+      downloads: Downloads
+      edit_metadata: Metadaten bearbeiten
+      flag_dataset: Datensatz markieren
+      license: Lizenz
+      licensing: Lizenzierung und Zuordnung
+      links: Links
+      meta: Meta
+      none: "(keine)"
+      permalink: Permalink
+      permanent_links: Permanente Links
+      permissions: Berechtigungen
+      private: Privat
+      public: "Öffentlich"
+      raters: Bewerter
+      resource_name: Quellenname
+      row_class: Zeilenklasse
+      row_count: Zeilenanzahl
+      row_identifier: Zeilenidentifizierung
+      semantics: Semantik und RDF
+      short_url: Kurz-URL
+      snapshotted: Momentaufnahme
+      soda2_support: Nur SODA2
+      soda2_yes: Ja
+      source_link: Quellen-Link
+      spatial_extent: Räumliche Ausdehnung
+      subject_column: Betreff-Spalte
+      tags: Tags
+      terms_of_use: Nutzungsbedingungen
+      updated: aktualisiert
+      view_full_page: Ganze Seite ansehen
+      view_statistics: Statistiken ansehen
+      visits: Besuche
+      your: Ihre Bewertung
+    admin:
+      datasets:
+        layout_config: Layout-Konfiguration
+        left: Links
+        right: Rechts
+        saved: Gespeichert
+        saving: Speichert ...
+        sidebar_position: Position der Seitenleiste
+        title: Datensätze
+        unpublished_datasets: Unveröffentlichte Datensätze
+      federation:
+        accept: Akzeptieren
+        accepted: Akzeptiert
+        accepted_by: Akzeptiert von
+        all: "(alle)"
+        dataset: Datensatz
+        flashes:
+          accepted: Verbund erfolgreich akzeptiert
+          created: Verbund erfolgreich erstellt
+          deleted: Verbund erfolgreich gelöscht
+          invalid_domain: 'Datenverbund konnte nicht erstellt werden: Ziel-Domain ist ungültig'
+          rejected: Verbund erfolgreich abgelehnt
+        list_domains: Das Folgende ist eine Liste mit Domains, mit denen Sie einen Datenverbund eingehen können. Wenn Sie auf Veröffentlichen klicken, muss ein Administrator der Ziel-Domain diese Anfrage akzeptieren.
+        no_domains: Keine übereinstimmenden Domains für %{name}.
+        no_federations: Für diese Domain existiert noch kein Verband.
+        no_pub_datasets: Keine veröffentlichten Datensätze stimmen mit Ihren Suchkriterien überein.
+        pending: Ausstehend
+        publish: Veröffentlichen
+        reject: Ablehnen
+        search: Suche
+        search_boost: Such-Verbesserung
+        search_boost_explain: Reichweite von 1 bis 0. Höhere Werte lassen Datensätze zuerst erscheinen.
+        search_prompt: Domains suchen, um zu veröffentlichen nach
+        search_pub_datasets: Suche nach veröffentlichten Datensätzen
+        source_domain: Quell-Domain
+        status: Status
+        target_domain: Ziel-Domain
+        terminate: Beenden
+        title: Daten-Verbund öffnen
+      home:
+        add_featured_dataset: Einen neuen gekennzeichneten Datensatz hinzufügen
+        are_you_sure: Sind Sie sicher? Diese Aktion kann nicht rückgängig gemacht werden
+        catalog_layout_configuration: Layout-Konfiguration des Katalogs
+        choose_a_dataset: Einen Datensatz zum Kennzeichnen auswählen
+        compact_list: Kompakte Liste
+        contents: Inhalte
+        create_new_story: Einen neue Artikel erstellen
+        custom_image: Angepasstes Bild
+        customize_now: Jetzt anpassen
+        customize_story_appearance: Angepasstes Aussehen des Artikels
+        dataset_display_limit: 'Nur vier Datensätze können gleichzeitig gekennzeichnet werden. '
+        date_published: Datum der Veröffentlichung
+        default_catalog_layout: Standard-Layout des Katalogs
+        delete: Löschen
+        down: Nach unten
+        edit: Bearbeiten
+        feature_image: Gekennzeichnetes Bild
+        filetype_error: Ungültiger Datei-Typ. Bitte wählen Sie eine Bild-Datei aus
+        flashes:
+          create_error: 'Ein Fehler ist während Ihrer Anfrage aufgetreten: %{error_message}'
+          delete_error: Der Artikel, den Sie löschen möchten, existiert nicht.
+          edit_error: Der Artikel, den Sie bearbeiten möchten, existiert nicht.
+          edit_success: Ihr Artikel wurde gespeichert
+          move_error: Der Artikel, den Sie verschieben möchten, existiert nicht.
+          move_success: Ihr Artikel wurde gespeichert
+        image: Bild
+        left: Links
+        manage_featured_dataset: Gekennzeichneten Datensatz verwalten
+        manage_story_content: Artikelinhalt verwalten
+        move_left: Nach links verschieben
+        move_right: Nach recht verschieben
+        remove: Entfernen
+        rich_list: Rich-Liste
+        right: Rechts
+        save_now: Jetzt speichern
+        saved: Gespeichert
+        saved1: Gespeichert.
+        saving: Speichert
+        saving1: Speichert ...
+        set_a_thumbnail: Vorschaubild festlegen
+        text: Text
+        thumbnail: Vorschaubild
+        title: Homepage verwalten
+        up: Nach oben
+      metadata:
+        add_new_category: Neue Kategorie hinzufügen
+        add_new_field: Neues Feld hinzufügen
+        allowed_values: Zugelassene Werte
+        are_you_sure: 'Sind Sie sich, dass Sie diesen Feldsatz und alle damit verbundenen Felder löschen möchten? '
+        category_name: Kategorie-Name
+        create: Erstellen
+        create_new_fieldset: Einen neuen Feldsatz erstellen
+        define_categories: Datensatz-Kategorien bestimmen
+        define_custom_fields: Individuelle Felder bestimmen
+        down: Nach unten
+        enter_a_name: Einen Namen eingeben
+        'false': false
+        field_name: Feld-Name
+        flashes:
+          cannot_move_field: 'Feld ''%{name}'' kann nicht verschoben werden: nicht gefunden'
+          field_duplicated: Sie können kein doppeltes Feld namens '%{name}' erstellen
+          field_name_required: Feld kann nicht ohne Name erstellt werden
+          field_successful_create: Feld erfolgreich erstellt
+          field_successful_remove: Feld erfolgreich entfernt
+          field_successful_save: Feld erfolgreich gespeichert
+          fieldset_duplicated: Doppelter Feldsatz namens '%{name}' kann nicht erstellt werden
+          fieldset_name_required: Feldsatz kann nicht ohne Name erstellt werden
+          no_such_field: Ein solches Feld existiert nicht
+          no_such_fieldset: 'Eine solcher Feldsatz existiert nicht '
+          successful_create: Feldsatz erfolgreich erstellt
+          successful_remove: Feldsatz erfolgreich entfernt
+        locales: Schauplätze
+        make_optional: Optional machen
+        make_private: Privat machen
+        make_public: "Öffentlich machen"
+        make_required: Zum Pflichtfeld machen
+        metadata_explain1: Benutzerdefinierte Meta-Daten werden in <span class="code">Feldsätze</span> und <span class="code">Felder</span> aufgeteilt. Ein <span class="code">Feldsatz</span> ist ein Weg, um ein oder mehrere  benutzerdefinierte <span class="code">Felder</span> logisch und visuell zu gruppieren
+        metadata_explain2: Felder können auf verschiedene Arten konfiguriert werden. Sie können <span class="code">Pflichetfelder</span> sein, die erforderlich sind, wenn ein Herausgeber neue Datensätze erstellt und existierende Metadaten aktualisiert. Sie können außerdem <span class="code">privat</span> sein, d. h. die eingegebenen Werte sind für die Öffentlichkeit nicht sichtbar.
+        metadata_explain3: Zum Schluss können Sie noch im Voraus festgelegte Optionen für Ihre <span class="code">Felder</span> auswählen, wenn Sie Werte lieber aus einer Liste auswählen möchten, anstatt als formlosen Text
+        no_data: Es wurde noch kein benutzerdefiniertes Datensatz-Feld für Ihre Domain festgelegt. Geben Sie unten einen Namen ein und klicken Sie auf 'Erstellen', um anzufangen.
+        no_fields_defined: Dieser Feldsatz hat noch keine definierten Felder
+        page_title: Metadaten-Datensatz verwalten
+        parent: Parent
+        remove: Entfernen
+        shown: Angezeigt?
+        title: Metadaten verwalten
+        'true': true
+        up: Nach oben
+      users:
+        actions: Aktionen
+        all: Alle
+        bulk_create: Massen-Erstellung
+        create_accounts: Konten erstellen
+        email: E-Mail
+        email_prompt: Geben Sie die E-Mail-Adressen für die Konten ein, die Sie erstellen möchten
+        emails: E-Mails
+        error_permission_request: Beim Verarbeiten Ihrer Berechtigungsanfrage ist ein Fehler aufgetreten
+        filter_by: Filtern nach
+        flashes:
+          accounts_created:
+            one: "%{count} Konto erfolgreich erstellt"
+            other: "%{count} Konten erfolgreich erstellt"
+          invalid_role: 'Ungültige Funktion für die Benutzererstellung bestimmt: %{role}'
+          no_email_addresses: Keine E-Mail-Adressen entdeckt
+          pending_permissions_removed: Ausstehende Berechtigungen entfernt
+          reenable_failed: Beim Aktivieren des Benutzerkontos ist ein Fehler aufgetreten
+          reenable_success: Konto erfolgreich reaktiviert
+          reset_email_failed: Beim Senden der E-Mail zum Zurücksetzen des Passworts ist ein Fehler aufgetreten.
+          reset_email_sent: E-Mail zum Zurücksetzen des Passworts versendet
+          successful_update: Benutzer erfolgreich aktualisiert
+        invited: Eingeladen
+        name: Name
+        no_pending_users: Keine ausstehenden Benutzer stimmen mit Ihrem aktuellen Filter überein
+        no_users_found: Keine existierenden Benutzer gefunden
+        no_users_match: Keine Benutzer stimmen mit Ihrem aktuellen Filter überein
+        pending_users: Die folgenden Benutzer haben ausstehende Konten, die noch nicht aktiviert wurden
+        reenable_privileges: Privilegien reaktivieren
+        remove: Entfernen
+        reset_password: Passwort zurücksetzen
+        return_to_overview: Zur Benutzerübersicht zurückkehren
+        role: Rolle
+        roles:
+          administrator: Administrator
+          designer: Designer
+          editor: Editor
+          none: keine
+          publisher: Herausgeber
+          viewer: Zuschauer
+        search: Suche
+        search_for_users: Nach Benutzern zum Hinzufügen suchen
+        search_results: Suchergebnisse für '%{term}'
+        title: Benutzer verwalten
+        user_saved: Benutzer gespeichert
+    dataset_edit:
+      append: Anhängen
+      append_and_replace: Daten anhängen und ersetzen
+      append_explain: Sie möchten die hochgeladenen Daten am Ende Ihres Datensatzes hinzufügen. Sie können auswählen, wie Ihre neuen Daten mit Ihren bestehenden Spalten abgebildet werden.
+      finish:
+        headline: Ihr Datensatz wurde aktualisiert.
+        subheadline: Klicken Sie auf Beenden, um es zu sehen!
+      headline: Was möchten Sie mit Ihren hochgeladenen Daten machen?
+      import_columns:
+        destination_column: Ziel-Spalte
+        destination_data_type: Ziel-Datentyp
+        headline: 'Wie stehen die Daten in “<span class="fileName"></span>” mir Ihrem Datensatz in Zusammenhang? '
+      import_warnings:
+        see_docs: '<strong>Perplex?</strong> Bitte sehen Sie sich unsere <a href="%{publisher_link}" rel="external">Herausgeber-Dokumentation</a> über das Importieren von Daten an, um eine ausführliche Erklärung zu erhalten, wie beim Importieren die Daten gehandhabt werden. '
+      replace: Ersetzen
+      replace_data: Daten ersetzen
+      replace_explain: 'Sie möchten, dass alle existierenden Daten entfernt und mit Ihren hochgeladenen Daten ersetzt werden. Sie können auswählen, wie Ihre neuen Daten mit Ihren bestehenden Spalten abgebildet werden. Dieser Vorgang kann nicht rückgängig gemacht werden. '
+      replace_layer: Ebene ersetzen
+      title: Datensatz bearbeiten
+      upload_accessible: Neue Daten zugänglich hochladen
+    dataset_new:
+      column_template:
+        name_this_col: Diese Spalte benennen
+        options: Optionen
+        remove: entfernen
+      crossload:
+        downloading: Ihre Datei wird heruntergeladen ...
+        headline: 'Bitte geben Sie an, wo sich Ihre Datei befindet. '
+        import: Importieren
+        supported: Unterstützte Datei-Typen sind CSV, TSV und Excel. Unterstützte Protokolle sind HTTP und HTTPS.
+        url_prompt: Wie lautet die Web-URL der Datei, die Sie importieren möchten?
+      errors:
+        invalid_crossload_url: Bitte geben Sie eine gültige URL ein, die entweder mit HTTP oder HTTPS beginnt.
+        invalid_url: Dies scheint keine gültige URL zu sein.
+        missing_data_provider: Sie müssen den Daten-Anbieter (Zuordnung) in einer Creative-Common-Lizenz spezifizieren
+        missing_esri_url: Eine gültige URL für die ESRI-Kartenebene wird benötigt.
+        missing_name: Name für den Datensatz wird benötigt.
+        need_description: Bitte beschreiben Sie &ldquo;%{name}&rdquo;
+      finish:
+        headline: Ihr Datensatz wurde erstellt.
+        subheadline: Klicken Sie auf Beenden, um ihn zu sehen!
+      first_page:
+        blobby: Eine Nicht-Daten-Datei hochladen
+        blobby_explain: Wählen Sie das aus, wenn Sie über eine Datei mit Daten verfügen, die aber nicht importiert werden kann, wie PDF- oder Bilddateien. Die Datei wird in den Datenkatalog importiert, aber wird nicht so interaktiv wie echte Daten sein.
+        create: Design von Grund auf
+        create_explain: Wählen Sie das aus, wenn Sie noch keine Daten haben, die Sie importieren möchten. Sie werden ein Schema für Ihre Daten bestimmen und online eingeben können.
+        external: Link zu externen Daten
+        external_explain: Wählen Sie das aus, wenn Sie über Daten verfügen, die auf einem anderen Server gehostet werden. Diese Daten werden nicht importiert.
+        header: Einen neuen Datensatz erstellen
+        import: Eine Daten-Datei importieren
+        import_explain: 'Wählen Sie das aus, wenn Sie eine Daten-Datei auf Ihrem Computer haben, die Sie importieren möchten. Folgende Formate werden unterstützt: .csv, .tsv, .xls, und .xlsx.'
+        mapLayer: Mit einer ESRI-Kartenebene verbinden
+        mapLayer_explain: Wählen Sie das aus, wenn Sie über eine ESRi-Kartenebene verfüge, die Sie in den Katalog importieren möchten. Sie müssen eine URL zum API-Punkt zur Verfügung stellen, wo die ESRI-Ebene gespeichert wird.
+        prompt: Wir möchten Sie Ihren neuen Datensatz erstellen?
+        shapefile: Raumbezogene Daten importieren
+        shapefile_explain: Wählen Sie das aus, wenn Sie über raumbezogene Daten verfügen, die Sie in den Katalog importieren möchten
+      import:
+        headline: Wo befindet sich die Datei?
+        local: Auf meinem Coputer
+        local_explain: Wählen Sie das aus, wenn Sie über eine Datei verfügen, die sich auf dem Computer befindet, den Sie verweden.
+        web: Im Internet
+        web_explain: Wählen Sie das aus, wenn Sie über eine Datei verfügen, die sich bereits im Internet befindet und Sie eine URL dafür haben.
+      import_columns:
+        add_new_column: Neue Spalte hinzufügen
+        clear_all: Alle löschen
+        data_type: Daten-Typ
+        errors_warnings: Fehler und Warnungen
+        fewer_rows: Weniger Zeilen
+        headers: Kopfzeilen
+        headers_instructions: Kopfzeilen sollte ignoriert und nicht als Daten importiert werden. Bitte geben Sie an, wie viele Zeilen Ihrer Quelldatei Kopfzeilen sind.
+        headline: Spezifizieren Sie, wie &ldquo;<span class="fileName"></span>&rdquo; importiert werden soll.
+        help_message: Um Hilfe zu erhalten, sehen Sie sich eine <a href="%{common_errors}" rel="external">Liste mit häufigen Warnungen und Fehlern an</a>.
+        more_rows: Mehr Zeilen
+        name: Name
+        pending_columns: Bitte warten Sie, während Ihre Spalten geladen werden ...
+        reset_to_preset: Auf Voreinstellungen zurücksetzen
+        set: Einstellen
+        source_column: Quell-Spalte
+        subheadline: Spalten zum Importieren
+        suggested_alltext: Alle Spalten sind Text
+        suggested_columns: Vorgeschlagene Spalten
+        suggested_flat: Vorgeschlagene Spalten (keine Komposite)
+        suggested_plus_discrete: 'Vorgeschlagene Spalten (Komposite und Diskrete) '
+        why_choose_now: Warum ist es wichtig, den Spaltentyp jetzt auszuwählen?
+      import_help: <strong>Brauchen Sie Hilfe?</strong> Wir führen eine <a href="%{common_errors}" rel="external">Liste mit häufigen Warnungen und Fehlern</a>, die Ihnen vielleicht helfen kann.
+      import_shapefile:
+        crs: Koordinaten-Referenzsystem
+        headline: Spezifizieren Sie, wie &ldquo;<span class="fileName"></span>&rdquo; importiert werden soll.
+        layers_list: Ebenen zum Importieren
+        name: Name
+        pending: Bitte warten, während wir Ihre Ebenen laden ...
+        subheadline: Die Shapefile beinhaltet<span class="featureCount"></span> Kennzeichnungen in <span class="layerCount"></span> Ebenen.
+      import_warnings:
+        headline: Warnungen während des Imports
+        see_docs: <strong>Perplex?</strong> Bitte sehen Sie sich unsere <a href="%{publisher_link}" rel="external">Herausgeber-Dokumentation</a> über das Importieren von Daten mit einer ausführlichen Erklärung darüber an, wie Daten beim Importieren gehandhabt werden. Sie können sich auch unsere <a href="%{common_errors}" rel="external">Liste mit üblichen Warnungen und Fehlern ansehen</a>.
+        subheadline: Bitte beachten Sie, dass einige Ihrer Daten vielleicht nicht richtig importiert wurden.
+      importing_your_data: Ihre Daten werden importiert ...
+      metadata:
+        creative_commons_type: Creative-Commons-Typ
+        esri_map_layer_url: ESRI-Kartenebene-URL
+        esri_source_url: Quell-URL eingeben
+        privacy_security: Privatsphäre & Sicherheit
+        privacy_settings: Privatsphäre-Einstellungen
+        private_explain: Meine Daten sind <strong>vertraulich</strong>
+        prompt: Bitte beschreiben Sie Ihre Daten.
+        public_explain: 'Meine Daten sind <strong>öffentlich</strong>: Diese können nur von mir modifiziert werden, aber jeder kann sie ansehen'
+      processing: Verarbeiten ...
+      title: Neuer Datensatz
+      upload_accessible: Ein neuen zugänglichen Datensatz hochladen
+      upload_file:
+        choose_a_file: Eine Datei auswählen
+        no_file_selected: Noch keine Datei ausgewählt.
+        supported_blist: Unterstütze Formate sind .csv, .tsv, .xls und .xlsx.
+        supported_shapefile: Unterstütze Formate sind .kml, .kmz znd .zip (ESRI-Shapefile).
+        uploading: Ihre Datei wird hochgeladen ...
+      why_choose_now:
+        close: Schließen
+        line_1: Ihre Daten werden beim Importieren verarbeitet und für den Gebrauch jedes bestimmten Datentyps optimiert. Zusätzlich verfügen die meisten Datentypen über besondere Funktionen, die nur aktiviert werden, sollte die Spalte für den entsprechenden Typ aktiviert werden, z. B. sind Standortspalten notwendig, um Karten zu erstellen.
+        line_2: 'Es ist möglich, den Spaltentyp später zu ändern, aber es handelt sich um einen Prozess, der etwas Zeit in Anspruch nimmt. Es ist also besser, es von Anfang an richtig einzustellen. '
+    ds:
+      bar:
+        api_unsavable: API-Ansicht kann nicht modifiziert werden
+        based_on_html: Basierend auf <a class="revertLink currentViewName" href="#revert">%{name}</a>
+        based_on_parent_html: Basierend auf <a class="parentName"></a>
+        based_on_private_view: einer privaten Ansicht.
+        based_on_working_copy_html: Basierend auf der Arbeitskopie von <a class="revertLink currentViewName" href="#revert">%{name}</a>
+        find_prompt: In diesem Datensatz finden
+        format:
+          bold: Fett
+          bullet: 'Aufzählung '
+          color: Farbe der Schriftart
+          italic: Kursiv
+          link: Link
+          number: Nummerierte Liste
+          redo: Rückgängig machen
+          strike: Durchgestrichen
+          underline: Unterstrichen
+          undo: Rückgängig machen
+        full_screen: Vollbild verwenden
+        publish_button: Datensatz veröffentlichen
+        publish_prompt: Dieser Datensatz ist eine Arbeitskopie und nicht öffentlich verfügbar. Wenn Sie die gewünschten Änderungen durchgeführt haben, sollte dieser Datensatz veröffentlicht werden, damit er öffentlich verfügbar ist.
+        publish_rights: Nur ein Besitzer oder Herausgeber kann diesen Datensatz veröffentlichen
+        revert_button: Zurückkehren
+        revert_prompt: Zur gespeicherten Ansicht zurückkehren
+        save_as_button: Speichern als ...
+        save_as_prompt: Ansicht speichern als ...
+        save_button: Speichern
+        save_progress: Speichern ...
+        save_prompt: Aktuelle Ansicht speichern
+        share_email: Per E-Mail teilen
+        share_facebook: Auf Facebook teilen
+        share_twitter: Auf Twitter teilen
+        snapshot_notice: Dies ist eine zuvor veröffentlichte Version des Datensatzes. Diese wurde archiviert und kann nicht modifiziert werden.
+        snapshot_title: " "
+        snapshot_title_html: Momentaufnahme %{date}
+        snapshot_unsavable: Momentaufnahme-Datensätze und Ansichten können nicht erstellt oder modifiziert werden
+        subscribe: "Änderungen abonnieren"
+        subscribe_prompt: Per E-Mail oder RSS abonnieren
+        unpublished_unsavable: "Änderungen an den Daten unten werden automatisch gespeichert. Filter und Suchen können nicht in einer Arbeitskopie eines Datensatzes gespeichert werden Bitte erstellen Sie eine Ansicht für einen veröffentlichten Datensatz"
+        unsaved_title: Ungespeicherte Ansicht
+        view_published_html: Sehen Sie sich den veröffentlichten <span class="publishedName">Datensatz</span> an
+        view_type: Als %{type} ansehen
+        view_types:
+          calendar: Kalender
+          chart: Diagramm
+          fatrow: Rich-Liste
+          map: Karte
+          page: einzelne Zeile
+          table: Tabelle
+        working_copy_notice: Dies ist die Kopie eines Datensatzes, an der Sie Änderungen durchführen können. Die Kopie ist für andere erst sichtbar, wenn sie veröffentlicht wird.
+        working_copy_title: "[Arbeitskopie]"
+      blob:
+        data_extraction: Dieses Tool oder die Anwendung zum Extrahieren von Daten steht über den Link rechts zur Verfügung
+        download: Download
+        external_link: Externer Link
+        js_required: Javascript wird benötigt, um den Dokumenten-Viewer in Ihrem Browser auszuführen.
+        js_required_download:
+          click_here: hier klicken
+          prompt_html: Um stattdessen diese Datei herunterzuladen, %{click_here}.
+        limited_download: Dieser Datensatz verfügt nicht über tabellarische Daten und kann eine begrenzte Interaktivität haben, ist aber als Download verfügbar
+      column_tip:
+        aggregate: "(%{aggregate} von %{data_type})"
+        field_name: API-Feldname
+        original_name: Originalname
+      dataset_contact:
+        captcha_failed: Falsche Antwort. Bitte erneut versuchen.
+        error_message: Beim Senden des Feedbacks für diesen Datensatz ist ein Fehler aufgetreten. Bitte später erneut versuchen.
+        form:
+          email: Ihre E-Mail
+          email_prompt: Ihre E-Mail-Adresse wird mit dem Besitzer des Datensatzes geteilt, damit er antworten kann.
+          message: Kurznachricht
+          purpose: Zweck
+          purposes:
+            copyright_violation: Urheberrechtsverletzung
+            offensive_content: Anstößiger Inhalt
+            other_purpose: Anderer
+            personal_information: Persönliche Informationen
+            prompt: "-- Zweck auswählen --"
+            spam: Spam oder Junk
+          send_button: Senden
+          subject: Betreff
+        other_subject: Ein Besucher hat Ihnen eine Nachricht über den Datensatz '%{dataset_name}' '%{site}' gesendet
+        reasons:
+          copyright_violation: wegen Urheberrechtsverletzung
+          offensive_content: wegen anstößigem Inhalt
+          personal_information: wegen beinhalteten persönlichen Informationen
+          spam: wegen potentiellem Spam
+        subject: Ihr Datensatz "%{dataset_name}" wurde als %{reason} markiert
+        success_message: Der Besitzer des Datensatzes wurde benachrichtigt.
+        validation:
+          no_body: Die Nachricht muss einen Inhalt haben.
+          no_email: Ihr E-Mail-Adresse wird benötigt.
+          no_purpose: Sie müssen einen Zweck für diese Nachricht auswählen.
+          no_subject: Sie müssen einen Betreff für diese Nachricht auswählen.
+      dataset_status:
+        copy_available: Die Arbeitskopie steht jetzt zur Verfügung. Der Button Datensatz bearbeiten ermöglicht Ihnen den Zugriff, wenn Sie zum Bearbeiten bereit sind.
+        copy_in_progress: Bitte warten, während Ihre Arbeitskopie erstellt wird. %{additional}
+        copy_in_progress_additional:
+          processing: Sie wird gerade verarbeitet (begonnen %{time})
+          queued: 'Sie ist in der Verarbeitungsschlange (Wartezeit %{time}; %{totalQueued} insgesamt) '
+        edit_dataset_button: Datensatz bearbeiten
+        error_publishing_html: 'Beim Erstellen einer Arbeitskopie Ihres Datensatzes ist ein Fehler aufgetreten. Bitte <a href="http://support.socrata.com" rel="external">kontaktieren Sie den Socrata-Support</a>. '
+        error_publishing_unpublished: Nur unveröffentlichte Datensätze können veröffentlicht werden.
+        needs_copy: 'Dieser Datensatz wurde veröffentlicht und kann nicht direkt bearbeitet werden. Eine Arbeitskopie %{status}, die Ihnen erlaubt die gewünschten Änderungen vorzunehmen, bevor diese öffentlich zugänglich sind. '
+        needs_copy_status:
+          available: ist verfügbar
+          can_be_made: kann ausgeführt werden
+      email:
+        add_email: Mehr hinzufügen
+        email_button: E-Mail
+        message_prompt: Eine optionale Nachricht eingeben
+        private_notice: 'Hinweis: %{displayName} ist im Moment privat. Das Versenden per E-Mail wird allen Empfängern Zugriff gewähren.'
+        prompt_html: '<span class="datasetName">%{name}</span> mit den folgenden E-Mail-Adressen teilen:'
+        remove_email: Entfernen
+        success: Ihre E-Mail wurde erfolgreich gesendet
+        title_html: '&quot;<span class="datasetName">%{name}</span>&quot; teilen'
+      grid_sidebar:
+        add_column:
+          convert_address:
+            city: Stadt
+            city_prompt: Eine Stadt eingeben
+            state: Staat
+            state_prompt: Einen Staat eingeben
+            street: 'Straße '
+            title: Existierende Adress-Spalte verwenden
+            zip_code: Postleitzahl
+            zip_code_prompt: Postleitzahl eingeben
+          convert_latlong:
+            latitude: 'Breitengrad '
+            longitude: Längengrad
+            title: Existierenden Längen- und Breitengrad eingeben
+          multiple_choice:
+            add_option_button: Option hinzufügen
+            option: Option
+            title: Multiple-Choice-Optionen
+          nested_table:
+            default_column_name: Unbenannt
+          subtitle: Ihrem Datensatz eine neue Spalte hinzufügen
+          success: Ihre Spalte wurde hinzugefügt
+          title: Spalte hinzufügen
+          validation:
+            view_column: Sie können keine Spalte zu einer Ansicht hinzufügen
+        api:
+          column_ids_title: 'Spalten-IDs:'
+          endpoint_title: 'API-Zugangsendpunkt:'
+          intro_html: "<strong>Socrata Open Data API</strong> (SODA) erlaubt Software-Entwicklern auf Daten zuzugreifen, die auf Socrate-Datenseiten programmatisch gehostet werden. Entwickler können Anwendungen erstellen, die SODA-APIs verwenden, um Socrata-Datensätze auf neue und aufregende Weise zu visualisieren. Das Erstellen einer iPhone-App, die die Ausgaben der Regierung in Ihrer Region anzeigt, eine Web-Anwendung, die den Bürgern erlaubt, Leistungen der Regierung nachzuschlagen, die übersehen wurden oder ein Service, der automatisch E-Mails versendet, wenn neue Bemerkungen zu Gesetzen hinzugefügt werden, die Sie im Auge behalten möchten."
+          reference_html: Um auf diesen Datensatz programmatisch zuzugreifen, verwenden Sie den unten zur Verfügung gestellten API-Endpunkt. Für weitere Informationen und Beispiele, wie Sie Socrata Open Data API verwenden können, sehen Sie sich bitte unsere <a href="http://dev.socrata.com" rel="external">Entwickler-Dokumentation</a> an.
+          subtitle: Auf %{view_type} über SODA zugreifen
+          title: SODA-API
+        apis:
+          create_button: API erstellen
+          create_button_prompt: Application Programming Interface (API) erstellen, um programmatischen Zugriff auf diese Daten zu erlauben
+          manage_button: Verwalten
+          manage_button_prompt: Ausgewählten API verwalten
+          prompt_existing_html: "<strong>Existierende APIs</strong> können angepasst werden. Sie können Berechtigungen kontrollieren, Anfragelimits einrichten, Nutzungsmetriken ansehen und die Dokumentation bearbeiten."
+          prompt_new_html: "<strong>API Foundry</strong> ermöglicht Ihnen, eine oder mehrere offene Standard-APIs für diesen Datensatz zu erstellen und zu konfigurieren."
+          subtitle: API erstellen und anpassen
+          title: APIs
+        append_replace:
+          subtitle:
+            immutable: Neue Daten-Datei hochladen, deren Inhalte Ihre aktuellen Daten ersetzen wird.
+            mutable: Neue Daten-Datei hochladen, deren Inhalte Ihren aktuellen Daten hinzugefügt wird oder diese ersetzt.
+          title:
+            immutable: Ersetzen
+            mutable: Anhängen und ersetzen
+          wizard_button:
+            immutable: Den Assistenten zum Ersetzen startenq
+            mutable: Den Assistenten zum Anhängen und Ersetzen starten
+        base:
+          buttons:
+            apply: Anwenden
+            cancel: Abbrechen
+            create: Erstellen
+            done: Fertig
+            remove: Entfernen
+            update: Aktualisieren
+          color_select:
+            prompt: Farbe auswählen
+          column_select:
+            auto: Automatisch
+            from_grid: Eine Spalte aus dem Gitter auswählen
+            none: "(keine)"
+            none_selected: Keine Spalte ausgewählt
+            nonselectable: Ungültige Spalten
+            prompt: Eine Spalte auswählen
+            selectable: Gültige Spalten
+            unselect: Spaltenauswahl aufheben
+          datatypes:
+            checkbox: Kontrollkästchen
+            dataset_link: Datensatz-Link
+            date_time: Datum & Zeit
+            date_time_timezone: Datum & Zeit (mit Zeitzone)
+            document: Dokument
+            email: E-Mail
+            flag: markiert
+            formatted_text: formatierter Text
+            geospatial: raumbezogen
+            list: Liste
+            location: Standort
+            money: Geld
+            multiple_choice: Multiple Choice
+            nested_table: Verschachtelte Tabelle
+            number: Nummer
+            object: Objekt
+            percent: Prozent
+            phone: Telefon
+            photo: Foto (Bild)
+            plain_text: Einfacher Text
+            star: Stern
+            website_url: Webseiten-URL
+          generic_select:
+            prompt: Einen Wert auwählen
+          validation:
+            at_least: Wert muss mindestens %{value} sein
+            different_value: Sie dürfen diese Spalte nicht zwei Mal verwenden
+            file_format: "%{format}-Datei wird benötigt"
+            identifier_format: Gültige API-Identifizierer-Zeichen sind Kleinbuchstaben, Zahlen und Unterstrich. Er muss mit einem Buchstaben beginnen und kann nicht aufeinanderfolgende Unterstriche haben.
+            invalid_url: Diese URL ist nicht gültig
+            invalid_value: Dieser Wert ist nicht gültig
+            invalid_values: Bei den spezifizierten Werten sind Probleme aufgetreten. Bitte überprüfen Sie oben die Fehler.
+            invalid_view: Diese Ansicht muss gültig sein
+            no_greater: Wert darf nicht größer als %{value} sein
+            numeric: Wert muss eine Nummer sein
+            uid_required: Dies erfordert eine 4x4-Ansicht UID
+            verifying_url: URL wird verifiziert
+        calendar:
+          dates:
+            end: Enddatum
+            start: Anfangsdatum
+            title: Daten
+          information:
+            details: Details
+            event_title: Veranstaltungstitel
+            new_details_button: Details hinzufügen
+            title: Veranstaltungsinformationen
+          subtitle: Ansichten mit Datum können in einem monatlichen Kalenderformat angezeigt werden
+          title: Kalender
+          validation:
+            invalid_columns: Diese Ansicht muss über eine Datumsspalte und eine Textspalte verfügen
+            viz_limit: Eine Ansicht darf nur über eine Visualisierung verfügen
+        chart:
+          advanced: Erweiterte Konfiguration
+          annotation: Anmerkung
+          auto_update_sort: Automatisch Sortier-Reihenfolge aktualisieren
+          auto_update_sort_button: Jetzt anwenden
+          auto_update_sort_info_donut: Donut-Diagramme funktionieren am Besten, wenn Sie in absteigender Reihenfolge im Uhrzeigersinn sortiert werden, von innen nach außen.
+          auto_update_sort_info_pie: Kreisdiagramme funktionieren am Besten, wenn Sie in absteigender Reihenfolge im Uhrzeigersinn sortiert werden.
+          axes:
+            title: Achsen-Optionen
+            x_axis_title: Name für die X-Achse
+            x_axis_title_prompt: Geben Sie einen Namen für die X-Achse ein
+            y_axis_title: Name für die Y-Achse
+            y_axis_title_prompt: Geben Sie einen Namen für die Y-Achse ein
+          base_color: Grundfarbe
+          categories: Kategorien
+          cdlfmtg_color_override_html: Farben werden überschrieben von <a href="#Conditional Formatting" class="showConditionalFormatting">Bedingter Formatierung</a> überschrieben. Klicken Sie <a href="#Clear Conditional Formatting" class="clearConditionalFormatting">hier</a>
+          color_options:
+            column_colors: Spaltenfarben
+          color_override_html: 'Farben werden überschrieben von <a href="#Conditional Formatting" class="showConditionalFormatting">Bedingter Formatierung</a> überschrieben. Klicken Sie <a href="#Clear Conditional Formatting" class="clearConditionalFormatting">hier</a>, um aktuelle Regeln der bedingten Formatierung zu löschen. '
+          colors: Farben
+          configuration: Konfiguration
+          data_columns:
+            new_data_column_button: Daten-Spalte hinzufügen
+            title: Daten-Spalten
+          data_labels: Daten-Label
+          data_selection:
+            advanced_data_selection:
+              title: Erweiterte Daten-Auswahl
+            chart_definition:
+              label_title: Daten-Labe auswählen
+              title: Digrmm-Definition
+              value_title: Datenwerte auswählen
+          date: Datum
+          details: Details
+          draw_line: Eine Linie zeichnen
+          dsg_color_override_html: Bitte beachten Sie, dass das Gruppieren von Daten-Serien die Farben für Ihre ausgewählten Daten-Spalten überschreiben wird. Die <a href="#Conditional Formatting" class="showConditionalFormatting">Bedingte Formatierung</a> wird nicht überschrieben.
+          error_bars:
+            color: Farbe
+            data_high: Höhere Grenzspalte auswählen
+            data_low: Niedrigere Grenzspalte auswählen
+            high: Hoch
+            low: Niedrig
+            title: Fehlerbalken
+          flyout:
+            new_details_button: Flyout-Details hinzufügen
+            new_values_button: Werte hinzufügen
+            title: Flyout-Details
+            title_column: Flyout-Titel
+            value: Flyout-Werte
+          group_extra: Extra-Werte gruppieren
+          groups: Gruppen
+          headings:
+            chart_details: 'Diagramm-Details '
+            data_presentation: Daten-Präsentation
+            data_selection: Daten-Auswahl
+          label: Label
+          labelInBar: Label in Leiste
+          labels_and_values: Labels und Werte
+          legend:
+            add_text: Zusätzlicher Text
+            add_text_button: Zusätzlichen Text hinzufügen
+            annotations: Anmerkungen beschreiben
+            conditional_formats: Bedingte Formate beschreiben
+            custom_entry: Individuelles Label
+            display: Anzeige
+            new_custom_entry_button: Individuellen Eintrag für die Legende hinzufügen
+            position: Legende
+            position_prompt: Eine Position auswählen
+            positions:
+              bottom: Unten
+              left: Links
+              none: Keine
+              right: Rechts
+              top: Oben
+            series: Serie beschreiben
+            title: Legenden-Konfiguration
+            title_short: Legende
+            value_markers: Wert-Markierungen beschreiben
+            values: Werte beschreiben
+          marker:
+            add_button: Anmerkungen hinzufügen
+            caption: Bildunterschrift
+            marker_title: Wert-Markierung
+            new_marker_button: Markierung hinzufügen
+            title: Bemerkungen
+            value: Zu Wert
+          min_angle: Mind. Winkel
+          min_angle_html: Kleinster angezeigter Winkel (&ordm;)
+          names: Namen
+          pie_other: 'Achtung: %{chart_type} wird deutliche Werte (Zeilen) nach %{row_limit} in der Kategorie Andere ansammeln. Versuchen Sie, ein Roll Up oder einen Filter zu erstellen, der die Anzahl der Werte begrenzt und dann ein %{chart_type} daraus erstellt.'
+          pie_truncate: 'Achtung: %{chart_type} wird Datensätze mit mehr als %{row_limit} deutlichen Werten (Zeilen) kürzen. Versuchen Sie, ein Roll Up oder einen Filter zu erstellen, der die Anzahl der Werte begrenzt und dann ein %{chart_type} daraus erstellt.'
+          point_color: Punktfarbe
+          point_size: Punktgröße
+          point_title: Titel
+          series_group:
+            alphabetize: Gruppen alphabetisieren
+            group_by: Gruppieren nach
+            hideLoadingMsg: Lade-Nachricht ausblenden
+            new_column_button: Serien-Spalten hinzufügen
+            row_limit_warning: Gruppierung von Daten-Serien wird mit so vielen Zeilen äußerst langsam sein.
+            title: Gruppierung von Daten-Serien
+          setup:
+            title: Diagramm-Einrichtung
+            type: Diagramm-Typ
+            type_prompt: Einen Diagramm-Typ auswählen
+          show_lines: Linien anzeigen
+          show_percent: Prozentsätze anzeigen (%)
+          show_points: Punkte anzeigen
+          show_values: Werte anzeigen
+          smooth_line: Glatte Linie
+          subtitle: Daten ansehen kann mit einer Vielzahl an Diagrammen dargestellt werden
+          title: Diagramm
+          treemap_color_html: 'Diese Farben werden für die Treemap zufällig angewendet und nur um visuelle Unterschiede zu erschaffen. Sie haben keine spezifische Bedeutung. '
+          validation:
+            chart_requires: "%{chart_type} braucht mindestens"
+            chart_requires2: "%{and} %{count} der folgenden Spalten-Typen"
+            count: "%{count}"
+            required_columns: "%{chart_type} erfordert %{column_types} Spalten"
+            viz_limit: Eine Ansicht darf nur eine Visualisierung haben
+          value: Wert
+          valueInBar: Wert im Diagram
+          values: Werte
+          y_axis_formatting:
+            abbreviate: Abkürzen
+            auto: Automatisch
+            axis_max: Max. Achse
+            axis_min: Min. Achse
+            axis_prompt: Eine Zahl eingeben
+            decimals: Dezimalstellen
+            no_decimals: Keine Dezimalstellen
+            precision: Präzision
+            title: Y-Achse-Format
+        column_common:
+          basic:
+            description: Beschreibung
+            description_prompt: Eine Beschreibung eingeben
+            name: Name
+            name_prompt: Einen Namen eingeben
+            title: Grundinformationen
+          linked_dataset:
+            dataset: Datensatz
+            dataset_prompt: Datensatz-URL oder 4x4-UID
+            key: Schlüssel-Spalte
+            label: Label-Spalte
+            title: Verlinkter Datensatz
+          type:
+            key: Schlüssel
+            source: Quelle
+            title: Spalten-Typ
+            type: Daten-Typ
+            type_prompt: Einen Daten-Typ auswählen
+        column_order:
+          columns:
+            title: Spalten
+          prompt_html: Ziehen Sie die Spalten in die gewünschte Reihenfolge und drücken Sie dann auf <strong>apply</strong>, um die neue Reihenfolge anzuwenden.
+          subtitle: "Ändern Sie die Reihenfolge Ihrer Spalten"
+          title: Spalten-Reihenfolge
+          validation:
+            valid_columns: Diese Ansicht muss gültig sein und über sichtbare Spalten verfügen.
+        column_properties:
+          advanced:
+            api_identifier: API-Identifizierer
+            new_rdf_button: RDF-Eigenschaften hinzufügen
+            semantics: Semantik
+            title: Erweitert
+            url: Individuelle URL eingeben
+          column_totals:
+            title: Spaltensummen
+            total: Summe
+            total_prompt: Eine Spaltensumme auswählen
+          display_order:
+            new_item_button: Element hinzufügen
+            option: Option
+            title: Anzeigereihenfolge (für DataSlate)
+          formatting:
+            alignment: Ausrichtung
+            title: Formatierung
+            view_style: Ansichtsstil
+          link:
+            key: Schlüssel
+            source: Quelle
+            title: Link
+          localization:
+            decimal: Dezimal
+            thousands: Tausende
+            title: Lokalisierung
+          money:
+            abbreviated: Abgekürzt
+            currency: Währung
+            format_mask_warning: " "
+            no_precision: Keine
+            precision: 'Präzision '
+            title: Geld-Formatierung
+          multiple_choice:
+            new_option_button: Option hinzufügen
+            option: Option
+            title: Multiple-Choice-Optionen
+          number:
+            display: Anzeige
+            no_commas: Keine Kommas
+            no_precision: Keine
+            precision: Präzision
+            title: Nummer-Formatierung
+          number_advanced:
+            format_mask: Maske formatieren
+            format_mask_prompt: 'Nutzen Sie #, um nummerische Zahlen und andere Zeichen anzuzeigen, wo sie platziert werden sollen. Beispiel: Eine Sozialversicherungsnummer würde ###-##-#### aussehen'
+            format_mask_warning: Dies wird einige Ihrer obigen Einstellungen überschreiben.
+            title: Erweiterte Formatierung
+          photo:
+            size: Größe
+            size_prompt: Eine Größe auswählen
+            sizes:
+              featured: Gekennzeichnet (150x80)
+              large: Groß (220x220)
+              medium: Mittel (150x150)
+              original: Original
+              thumb: Vorschaubild (80x80)
+              tiny: Klein (24x24)
+            title: Foto-Optionen
+          subtitle: Verschiedene Eigenschaften dieser Spalte aktualisieren
+          success: Ihre Spalte wurde aktualisiert
+          title: Spalten-Eigenschaften
+          url:
+            base_url: Grund-URL
+            base_url_prompt: Geben das übiche URL-Präfix ein
+            title: URL-Optionen
+          validation:
+            published: Bitte erstellen Sie eine Arbeitskopie oder Ansicht dieses Datensatzes, um die Spalten-Eigenschaften zu ändern
+            unsaved: Sie können Spalten-Eigenschaften für eine ungespeicherte Ansicht nicht bearbeiten
+        conditional_formatting:
+          change_icon: "ändern"
+          conditions:
+            description: Beschreibung
+            description_prompt: Diese Übereinstimmung beschreiben
+            item:
+              operator: Einen Vergleich auswählen
+              subcolumn: Eine Unter-Spalte auswählen
+              title: 'Bedingung:'
+            new_condition_button: Bedingung hinzufügen
+            new_rule_button: Eine neue Regel hinzufügen
+            title: Bedingungen
+            when:
+              all: Alle Bedingungen
+              always: Immer
+              any: Jede Bedingung
+            when_title: Wenn
+          format_html: "<br />Diese Farbe<br /> oder dieses Symbol verwenden"
+          subtitle: Bedingte Formatierung erlaubt Ihnen, die Hintergrundfarbe der Zeilen, basierend auf individuellen Kriterien zu ändern. Jede Zeile erhält die Farbe der ersten passenden Bedingung.
+          title: Bedingte Formatierung
+          validation:
+            no_columns: Diese Ansicht hat keine Spalten zum Filtern
+            no_icons: Symbole sind nur für die Kartenansicht relevant
+        delete:
+          confirm: Dies wird %{view_type} dauerhaft löschen. Es kann nicht rückgängig gemacht werden! Sind Sie sicher, dass Sie fortfahren möchten?
+          delete_button: "%{view_type} löschen"
+          subtitle: "%{view_type} löschen"
+          title: Löschen
+          warning:
+            api: Das Löschen des APIs wird Anwendungen kaputt machen, die diesen API verwenden.
+            published: Das Löschen dieses Datensatzes wird alle damit verbundenen Ansichten löschen.
+            view: Das Löschen dieser Ansicht wird andere Ansichten nur beeinflussen, die darauf basieren.
+            working_copy: Sie können diese Arbeitskopie löschen und eine neue erstellen, um Änderungen umzukehren, die Sie durchgeführt haben.
+        digital_signing:
+          consumer: 'Um eine signierte Version dieses Datensatzes zu erhalten, klicken Sie einfach unten auf den Link, um einen Schlüssel zu generieren und mit dem Download zu beginnen. Der Schlüssel und die heruntergeladenen Daten sind spezifisch für die aktuelle Version des Datensatzes; wenn der Besitzer den Datensatz in Zukunft aktualisiert, müssen Sie den Vorgang erneut durchführen, um die neuen Daten zu erhalten. Veröffentlichen Sie die heruntergeladenen Daten mit dem Schlüssel, den Sie erhalten und verwenden Sie die Anleitungen, die Sie im Download-Paket finden. Drittparteien können bestätigen, dass Ihre Daten legitim sind. '
+          generate_button: Generieren und jetzt herunterladen
+          intro_html: 'Das Verwenden eines <strong>digital signierten Datensatzes</strong> macht es möglich, mit kryptographischen sicheren Methoden zu beweisen, dass in einer bestimmten Kopie eines Socrata-Datensatzes nicht herumgepfuscht wurde. Das ist z. B. nützlich, wenn Sie Ergebnisse veröffentlichen möchten, die auf diesen Daten basieren und Sie die Integrität sicherstellen möchten. '
+          publisher: 'Um eine signierte Version dieses Datensatzes zu erhalten, klicken Sie einfach unten auf den Link, um einen Schlüssel zu generieren. Bitte beachten Sie: Wenn Sie diesen Datensatz in Zukunft aktualisieren, werden Sie zurückkommen und den Schlüssel neu generieren müssen, damit die Kunden wieder darauf zugreifen können. Zu diesem Prozess gehören Operationen an der Gesamtheit der Daten, deswegen kann es etwas dauern, wenn Ihr Datensatz sehr groß ist oder große Anhänge enthält. '
+          publisher_generation: Nur Datensatz-Besitzer können signierte Schlüssel erstellen
+          signature_header: Signatur
+          subtitle: Eine Version dieser Daten exportieren, deren Integrität später verifiziert werden kann.
+          title: Digital signieren
+          validation:
+            non_tabular: Nur tabellarische Daten dürfen gedruckt werden
+        download:
+          download_as: Herunterladen als
+          geo_header: Raumbezogene Daten herunterladen
+          layers_header: Tabellarische Ebenen herunterladen
+          subtitle: Eine Kopie dieses Datensatzes im statischen Format herunterladen
+          title: Download
+        feed:
+          subtitle: Der Diskussionsfeed zeigt Ihnen die Unterhaltung und Aktivität rund um einen Datensatz an
+          title: Diskutieren
+        form:
+          information:
+            name: Name
+            name_prompt: Einen Namen eingeben
+            public: "Öffentlich?"
+            success: Erfolgs-URL
+            success_prompt: Eine Webseiten-URL eingeben
+            title: Formular-Informationen
+          subtitle: Formulare erlauben Ihnen, Daten direkt von Ihrer Webseite in einem Datensatz zu sammeln
+          title: Formular
+          validation:
+            no_columns: Diese Ansicht muss über sichtbare Spalten verfügen, um ein Formular zu erstellen
+        map:
+          advanced:
+            exclusive: 'Exklusiv '
+            hide_geolocator: Kein Geolocator
+            subtitle: Wählen Sie 'Exklusiv' aus, wenn nur eine Basis-Karte angezeigt werden soll.
+            title: Erweiterte Konfiguration
+            use_legend: Legende verwenden
+          base_layers:
+            alias: Alias
+            layer: Ebene
+            layer_prompt: Eine Ebene auswählen
+            layer_url: Ebene-URL
+            new_base_map_button: Basiskarte hinzufügen
+            opacity: Deckkraft
+            subtitle: Wählen Sie von einer Liste mit Karten-Services aus und konfigurieren, wie diese erscheinen werden.
+            title: Basis-Karten
+          data_layer:
+            alias: Alias
+            alias_prompt: Den Datensatz beschreiben
+            base_color: Basisfarbe
+            color_high: Farbe (Hoch)
+            color_low: Farbe (Niedrig)
+            flyout:
+              details: Flyout-Details
+              labels: Ohne Label?
+              new_details_button: Flyout-Details hinzufügen
+              opacity: Deckkraft
+              title: Flyout-Konfiguration
+              title_column: Titel
+            highlight_color: Hover-Farbe
+            icon: Symbol
+            location: Standort
+            mondara_note: Mondara-Ebenen können im Moment nicht weiter angepasst werden
+            opacity: Deckkraft
+            plot_style: Plot-Stil
+            plot_style_prompt: Einen Plot-Stil auswählen
+            point: Punkt-Anpassung
+            point_color: Punktfarbe
+            point_size: Punktgröße
+            quantity: Quantität
+            region: Region
+            region_level_prompt: Eine Regionsebene auswählen
+            region_prompt: Eine Region auswählen
+          layers:
+            advanced: Erweiterte Konfig. für %{name}
+            config: Konfig. für %{name}
+            custom: Benutzerdefinierte Ebene
+            dataset: Datensatz
+            edit: bearbeiten
+            new_data_button: Daten hinzufügen
+            title: Datensatz-Zusammenfassung
+          legend:
+            conditional_formats: Bedingte Formate beschreiben
+            custom_entry: Benutzerdefinierten Legenden-Eintrag erstellen
+            entry_label: Label
+            position: Legende
+            position_prompt: Eine Position auswählen
+            positions:
+              bottom_left: Unten links
+              none: Keine
+              top_right: Oben rechts
+            title: Legenden-Konfiguration
+          plots:
+            heatmap: Begrenzungskarte
+            point: Punktkarte
+            rastermap: Heatmap
+          regions:
+            canada_provinces: 'Provinzen Kandas '
+            counties: US-Bezirke in
+            countries: Länder
+            state: US-Staaten
+          subtitle: Ansichten mit Standorten können als Punkte auf einer Karte angezeigt werden
+          title: Karte
+          validation:
+            hidden_location_html: Sie können <a href="#showLoc" title="Show a location column">eine ausgeblendete Standort-Spalte anzeigen</a>.
+            location_column: Eine Standort-Spalte ist notwendig, um eine Karte zu erstellen.
+            viz_limit: Eine Ansicht darf nur eine Visualisierung enthalten
+        odata:
+          endpoint_action: 'Diesen Link kopieren:'
+          intro_html1: Eine Tabelle mit Microsoft Excel erstellen, um diesen Datensatz zu analysieren oder zu visualisieren. Indem Sie einen OData-Link verwenden, können die Daten aktualisiert werden
+          intro_html2: Verwenden Sie Microsoft Excel 2010, Microsoft Excel 2013 oder Microsoft Power Query. Folgen Sie den Anweisungen hier, indem Sie die <a href="%{doc_link}">OData-Dokumentation von Socrata</a> verwenden.
+          subtitle: Auf diesen Datensatz über OData zugreifen
+          title: OData
+        ownership:
+          error: Beim Ändern des Besitzers ist ein Problem aufgetreten. Bitte versuchen Sie es später wieder.
+          me: Ich
+          subtitle: Um zu einem anderen Benutzer zu transferieren, geben Sie die E-Mail-Adresse oder den Kontonamen der Socrata-ID ein. Wählen Sie dann das gewünschte Konto aus dem Dropdown-Menü aus. Sie können auch die Profil-URL des Benutzers eingeben, wenn Sie diese kennen. Nur Benutzer mit existierenden Konten können Besitzer eines Datensatzes werden.
+          success:
+            me: Sie sind jetzt der Besitzer
+            user: Besitz erfolgreich an %{owner} übertragen
+          title: Besitz
+          transfer_to: Besitz übertragen an
+          validation:
+            invalid_user: Benutzer nicht erkannt. Bitte suchen Sie nach dem Benutzer-Namen, der E-Mail oder der Profil-URL.
+            no_user: Bitte wählen Sie einen Benutzer aus.
+            valid_saved: Diese Ansicht muss gültig sein und gespeichert werden
+        permissions:
+          error: Beim Modifizieren Ihrer Datensatz-Berechtigungen ist ein Fehler aufgetreten. Bitte versuchen Sie es später erneut.
+          features_html: Zusätzliche <span class="datasetTypeName">Datensatz</span>-Funktionen
+          status_html: Dieser <span class="datasetTypeName">Datensatz</span> ist im Moment span class="datasetPublicText">%{visibility}</span>
+          subtitle: Verwalten Sie die Berechtigungen von %{view_type}
+          success: Ihre Berechtigungen wurden gespeichert
+          title: Berechtigungen
+          validation:
+            valid_saved: Diese Ansicht muss gültig sein und gespeichert werden
+        print:
+          margins:
+            bottom: 'Unten:'
+            left: 'Links:'
+            right: 'Rechts:'
+            top: 'Oben:'
+          margins_title: 'Ränder (inch):'
+          options:
+            fit: Verkleinern, damit der Datensatz auf eine Seite passt
+            header_icons: Symbole in Kopfzeile der Spalte anzeigen
+            headers_every_page: Spalten-Titel auf jeder Seite drucken
+          options_title: 'Optionen:'
+          orientation: 'Ausrichtung:'
+          orientations:
+            landscape: Querformat
+            portrait: Hochformat
+          paper_size: 'Papiergröße:'
+          paper_sizes:
+            a0: A0 (841 x 1189 mm)
+            a1: A1 (594 x 841 mm)
+            a2: A2 (420 x 594 mm)
+            a3: A3 (297 x 420 mm)
+            a4: A4 (210 x 297 mm)
+            legal: Legal (8,5 x 14 inch)
+            letter: Letter (8,5 x 11 inch)
+            tabloid: Tabloid (11 x 17 inch)
+          print_button: Drucken
+          subtitle: Diesen Datensatz in ein druckbares PDF-Format exportieren
+          title: Drucken
+          validation:
+            non_tabular: Nur tabellarische Daten dürfen gedruckt werden
+        sdp:
+          preview: Vorschau
+          subtitle: Der Social-Data-Player ermöglicht es Ihnen, diesen Datensatz im Internet groß zu veröffentlichen
+          title: Social-Data-Player
+          validation:
+            public: Diese Ansicht muss öffentlich sein, bevor Sie veröffentlicht wird
+            valid_saved: Diese Ansicht muss gültig sein und gespeichert werden
+        share:
+          error: Beim Modifizieren des Teilens ist ein Fehler aufgetreten. Bitte später erneut versuchen
+          loading_shares: Lädt teilen ...
+          no_shares_html: Sie teilen diesen <span class="datasetTypeName">Datensatz</span> im Moment mit niemanden
+          notify_button: Alle über Änderungen benachrichtigen
+          notify_success: Benachrichtigungen gesendet
+          prompt_html: Dieser <span class="datasetTypeName">Datensatz</span> ist <span class="publicOrPrivate">%{visibility} </span> <span class="andSharedHint %{hide}">und wird geteilt mit:</span>
+          share_button_html: Teilen Sie diesen <span class="datasetTypeNameUpcase">Datensatz</span>
+          subtitle: Teilen Sie %{view_type}
+          success: Ihre Berechtigungen wurden aktualisiert
+          title: Teilen
+          validation:
+            valid_saved: Diese Ansicht muss gültig sein und gespeichert werden
+        showhide_columns:
+          columns:
+            title: Spalten
+          subtitle: Passen Sie an, welche Spalten in dieser Ansicht sichtbar sind
+          title: Spalten anzeigen/ausblenden
+        sort_rollup:
+          rollup:
+            add_group_button: Gruppierte Spalten hinzufügen
+            add_rollup_button: Roll-Up-Spalte hinzufügen
+            function: Funktion
+            group_by: Gruppieren nach
+            group_function_label: Basierend auf
+            group_function_prompt: Eine Gruppierungsfunktion auswählen
+            roll_up: Roll-Up
+            roll_up_function: Eine Funktion auswählen
+            title: Roll-Ups/Drill-Downs
+          sort:
+            add_column_button: Spalte hinzufügen
+            column: Spalte
+            direction: Richtung
+            directions:
+              ascending: Aufsteigend
+              descending: Absteigend
+            title: Sortieren
+          subtitle: Sie können Zeilen zusammen gruppieren und Daten mit einem Roll-Up zusammenfassen, sowie eine oder mehrere Spalten sortieren.
+          title: Sortieren & Roll-Up
+          validation:
+            no_eligible_columns: Diese Ansicht hat keine Spalten zum Sortieren oder Roll-Up
+            no_function: Jede Roll-Up-Spalte muss über eine Funktion verfügen
+            no_group_bys: Sie müssen nach mindestens einer Spalte gruppieren, um für eine Spalte Roll-Up zu verwenden
+        tabs:
+          about: "Über"
+          discuss: Diskutieren
+          edit: Bearbeiten
+          embed: Einbette
+          export: Exportieren
+          filter: Filter
+          manage: Verwalten
+          more: Mehr
+          more_views: Weitere Ansichten
+          visualize: Visualisieren
+        view_list:
+          delete_confirm: Sind Sie sicher, dass Sie %{name} löschen möchten?
+          delete_snapshot_confirm: Sind Sie sicher, dass Sie %{name} (Momentaufnahmen %{date}) löschen möchten?
+          filter:
+            all: Alle Ansichten
+          filter_title: Nur anzeigen
+          item:
+            author_html: <span class="date"></span> von <span class="author"></span>
+            delete: Diese Ansicht löschen
+            expand: Zum Erweitern klicken
+          no_results: Es gibt keine Ergebnisse
+          no_results_html: 
+          pagination:
+            last: Letzte Ansicht anzeigen
+            next: 'Die nächsten %{count} anzeigen '
+          search: Ansichten suchen
+          snapshots:
+            subtitle: Zuvor veröffentlichte Versionen dieser Daten anzeigen
+            title: Datensatz-Momentaufnahmen
+          sort:
+            alphaAscending: A-Z
+            dateAscending: Von alt nach neu
+            dateDescending: Aktuellsten
+            popularity: Beliebtheit
+          sort_title: Sortieren nach
+          views:
+            subtitle: Existierende Filter, Karten, Diagramme und andere Ansichten für diesen Datensatz ansehen
+            title: Ansichten
+        visualize:
+          choose_type: Visualisierungstyp
+      save_dialog:
+        descriptions:
+          leaving: Sie haben ungespeicherte Daten, die verloren gehen, wenn Sie diese Seite verlassen. Bitte wählen Sie aus, ob Sie diese Ansicht speichern möchten, bevor Sie diese verlassen oder wählen Sie Abbrechen, um zur Seite zurückzukehren.
+          reload_save: Diese Änderungen erfordern eine Aktualisierung. Sie können Ihre Änderungen speichern, um sie anzusehen oder Abbrechen, um auf dieser Seite zu bleiben.
+          reload_update: Diese Änderung benötigt ein Neuladen. Sie können diese Ansicht aktualisieren oder eine neue Ansicht neu speichern, um Ihre Änderungen zu sehen oder abbrechen, um auf dieser Seite zu bleiben.
+        form:
+          new_name: 'Geben Sie einen Namen für diese neue Ansicht ein:'
+        titles:
+          normal: Ansicht speichern
+          prompt: Möchten Sie Ihre Ansicht speichern?
+        validation:
+          auth_required: Sie müssen angemeldet sein, um eine Ansicht zu speichern
+          view_name_required: Ein Name für die Ansicht ist erforderlich
+      show:
+        remove_confirm: Sie Sie sicher, dass Sie diese Ansicht entfernen möchten?
+        unpublished_alert: Dieser Datensatz wurde noch nicht veröffentlicht, damit Sie die notwendigen Änderungen durchführen können, bevor Sie den Datensatz jedem zur Verfügung stellen. Er wird nicht sichtbar sein, bis Sie diesen Datensatz veröffentlicht haben.
+      subscribe:
+        google_reader: Zum Google Reader hinzufügen
+        intro_html: '<strong>Um diesen <span class="datasetName">%{name}</span> Datensatz per RSS-Rreader</strong> zu abonnieren, nutzen Sie bitte einen der folgenden Links:'
+        rss: Als RSS herunterladen
+        rss_program: Ein externes Programm öffnen
+        subscribe_button: Per E-Mail abonnieren
+        subscribe_html: "<strong>Um E-Mail-Benachrichtigungen zu erhalten</strong>, wenn neue Daten veröffentlicht werden, klicken Sie unten auf Abonnieren."
+        subscribed_html: <strong>Sie abonnieren diesen <span class="datasetTypeName">Datensatz</span> per E-Mail</strong> und Sie werden Benachrichtigungen erhalten, wenn neue Daten veröffentlicht werden.
+        title_html: <span class="datasetName">%{name}</span> <span class="datasetTypeNameUpcase">Datensatz</span> abonnieren
+        unsubscribe: Wenn Sie keine Benachrichtigungen mehr erhalten möchten, entfernen Sie den Haken aus dem Abonnieren-Kästchen.
+    edit_metadata:
+      about: "Über"
+      additional_source: Zusätzliche Quelle
+      alternative_access_prompt: Geben Sie einen alternativen Zugangspunkt für diesen Datensatz ein
+      api_endpoint: API-Endpunkt
+      attachments: Anhänge
+      attachmentsDisabledMessagePart1: Um Anhänge hochzuladen, sollten Sie erst das Veröffentlichen dieses Datensatzes beenden. Klicken Sie dann
+      attachmentsDisabledMessagePart2: in der Toolbar auf Metadaten bearbeiten. Sie können dann Anhänge hochladen.
+      brief_description: Kurze Beschreibung
+      brief_description_prompt: Eine Beschreibung eingeben
+      cancel: Abbrechen
+      category: Kategorie
+      contact_email: Kontakt-E-Mail
+      contact_information: Kontaktinformationen
+      custom: Benutzerdefiniert
+      custom_error: Benutzerdefinierte semantische Klasse muss eine URL sein
+      data_provided_by: Daten zur Verfügung gestellt von
+      data_provided_prompt: Einzelperson oder Organisation
+      data_provider_required: Sie müssen einen Daten-Anbieter (Zuordnung) angeben.
+      dataset_title: Datensatz-Titel
+      dataset_title_error: Diese Datensatz benötigt einen Titel
+      dataset_title_prompt: Einen Title eingeben
+      dataset_url: Datensatz-URL
+      dataset_url_prompt: Geben Sie den Standort Ihres externen Datensatzes ein
+      delete: Löschen
+      email_address: E-Mail-Adressen
+      email_help: Diese Adresse wird nicht öffentlich angezeigt. Wenn es leer bleibt, wird Ihre Adresse zum Standard
+      existing_attachments: Existierende Anhänge
+      external_confirm: Sind Sie sicher, dass Sie diesen externen Datensatz entfernen möchten?
+      external_dataset: Externe Datensätze
+      external_id: Externe ID
+      external_id_prompt: Geben Sie Ihre externe ID ein
+      external_identifier: Externer Identifizierer
+      file_type: Dateityp
+      general_information: Allgemeine Informationen
+      headline: Metadaten für %{name} bearbeiten
+      keywords_help: Geben Sie ein oder mehrere Keyword, getrennt durch Kommas, ein
+      license_help: Wählen Sie eine Lizenzbedingung für Personen aus, die diesen Datensatz verwenden möchten.
+      license_type: Lizenztyp
+      licensing: Lizenzierung
+      licensing_attr: Lizenzierung & Zurodnung
+      list: Liste
+      metadata_help: Dieses Feld wurde von Ihrer Organisation privat markiert und ist nicht öffentlich sichtbar
+      new_attachment: Neuer Anhang
+      none: "(keine)"
+      northwest_latitude: Nordwest-Breitengrad
+      northwest_longitude: Nordwest-Längengrad
+      optional: Optional
+      private_help: Diese Feld wurde von Ihrer Organisation privat markiert und ist öffentlich nicht sichtbar
+      remove_image: Bild entfernen
+      required_field: Pflichtfeld
+      resource_name: Quellenname
+      resource_name_prompt: Einen Quellennamen eingeben
+      return: Zum Datensatz zurückkehren
+      row_class: Zeilenklasse
+      row_identifier: Zeilen-Identifizierer
+      save: Speichern
+      save_changes: "Änderungen speichern"
+      semantics_rdf: Semantik & RDF
+      source_link: Quellen-Link
+      source_link_error: Dies scheint keine gültige URL zu sein
+      source_link_prompt: Web-Adresse eingeben
+      southeast_latitude: Südost-Breitengrad
+      southeast_longitude: Südost-Längengrad
+      spatial_extent: Räumliche Ausdehnung
+      subject_column: Betreff-Spalte
+      tags_keywords: Tags/Keywords
+      tags_prompt: Keywords eingeben
+      thumbnail_image: Vorschaubild
+      title: Datensatz-Metadaten bearbeiten
+      upload_error: Bitte wählen Sie eine gültige Bild-Datei aus
+      upload_help: Diese Bild wird in ein Quadrat verwandelt
+      upload_image: Bild hochladen
+      upload_new_attachment: Neuen Anhang hochladen
+    forgot_password:
+      already_authenticated: 'Passwort kann nicht zurückgesetzt werden: Sie sind bereits angemeldet.'
+      failed: 'Beim Senden Ihrer Anfrage zum Zurücksetzen des Passwort ist ein Problem aufgetreten. Bitte erneut versuchen. '
+      form:
+        reset_password_button: Passwort zurücksetzen
+      prompt: Wenn Sie Ihr Passwort vergessen haben, können wir Ihnen eine E-Mail mit einem Link zum Zurücksetzen Ihres Passworts zusenden.
+      success: Danke. Eine E-Mail mit weiteren Informationen wurde an das Konto gesendet.
+      title: Ihr Passwort wiederherstellen
+    header:
+      links:
+        account_html: Hallo, <span class="currentUser">Unbekannter Benutzer</span>
+        account_tooltip: Home
+        administration: Administration
+    import_common:
+      addresses_to_geocode: 'Adressen werden geokodiert, nachdem der Import abgeschlossen wurde. '
+      case_sensitive: Groß-/Kleinschreibung beachten
+      city: Stadt
+      column: Spalte
+      combine_multiple_columns: Mehrere Spalten kombinieren
+      create_composite: Eine Spalte aus vielen Quell-Spalten erstellen
+      create_js_expression: Wie erstelle ich eine benutzerdefinierte Javascript-Expression?
+      custom_javascript: Benutzerdefiniertte Javascript-Expression ...
+      enter_custom: Einen benutzerdefinierten Wert eingeben
+      existing_cols: Existierende Adress-Spalte
+      existing_latlng_cols: Existierende Breiten- und Längengrad-Spalte
+      find: suchen
+      find_and_replace: Wert suchen und ersetzen ...
+      import_from_multiple: Von <strong>mehreren Spalten</strong> importieren
+      import_from_single: Von <strong>einzelner Spalte</strong> importieren
+      latitude: Breitengrad
+      location_source_col: Standort-Quellen-Spalten
+      longitude: Längengrad
+      make_lower_case: Kleinschreibung verwenden
+      make_title_case: Beim Titel Groß-/Kleinschreibung beachten
+      make_upper_case: GROSSCHREIBUNG verwenden
+      name_this_column: Diese Spalte benennen
+      new_layer: "(Neue Ebene)"
+      new_source_col: Neue Quell-Spalte hinzufügen
+      new_transform: Neue Transformation hinzufügen
+      options: Optionen
+      properly_formatted: Spalte muss vor dem Importieren <a href="%{formatting_link}" rel="external">richtig formatiert</a> werden.
+      regular_expression: normaler Ausdruck
+      remove: entfernen
+      replace: und ersetzen mit
+      state: Staat
+      street: Straße
+      then: dann
+      to_state_code: Staaten in Codes mit 2 Buchstaben konvertieren
+      transforms: Die folgende Transformation beim Import durchführen
+      zip: Postleitzahl
+    import_pane:
+      analyzing: Analysieren Ihrer Datei ...
+      assure_accessible: Bitte stellen Sie sicher, dass auf Ihre Datei zugegriffen werden kann und versuchen es erneut.
+      combine_multiple_cols: "(Kombinieren mehrerer Spalten ...)"
+      downloading: Herunterladen Ihrer Datei ...
+      filetype_error_blist: Bitte wählen Sie eine CSV-, TSV-, XLS- oder XLSX-Datei aus.
+      filetype_error_shapefile: Bitte wählen Sie eine KML-, KMZ- oder ZIP-Datei aus.
+      headline_import: Bitte wählen Sie eine Datei zum Importieren aus
+      headline_upload: Bitte wählen Sie eine Datei zum Hochladen aus
+      layer: Ebene
+      many_headers: "%{num} Ihrer Zeilen sind Kopfzeilen"
+      no_file_selected: Noch keine Datei ausgewählt.
+      no_headers: Keine Ihrer Zeilen sind Kopfzeilen.
+      no_source_column: "(Keine Quell-Spalte)"
+      one_header: Eine Ihrer Zeilen ist eine Kopfzeile.
+      problem_importing: Beim Importieren der Datei ist ein Problem aufgetreten. Bitte stellen Sie sicher, dass diese gültig ist.
+      problem_uploading: Beim Hochladen der Datei ist ein Problem aufgetreten. Bitte stellen Sie sicher, dass diese gültig ist.
+      rows_imported: Bis jetzt wurden %{num} Zeilen importiert.
+      try_again: Bitte versuchen Sie es in Kürze erneut.
+      unknown_error: Ein unbekannter Fehler ist aufgetreten
+      uploading: Ihre Datei wird hochgeladen
+    link_account:
+      success: Ihr externes Konto wurde verbunden
+    profile:
+      app_tokens:
+        item:
+          app_token: App-Token
+          description: Beschreibung
+          edit_token_link: Bearbeiten
+          name: Name
+          no_thumbnail: Kein Vorschaubild
+          organization: Organisation
+          secret_token: Geheimer Token
+          show_secret_link: Geheimen Token anzeigen
+          website: Webseite
+        manage_link: Verwalten
+        no_applications: Sie haben noch keine Anwendungen erstellt. Klicken Sie rechts auf 'Verwalten', um anzufangen
+        title: Anwendungen von %{user}
+      bar:
+        edit_settings_link: Konto-Einstellungen bearbeiten
+        follow_link: Folgen
+        join_date: Registriert am
+        last_seen_date: Zuletzt angemeldet am
+        message_link: Nachricht senden
+        unfollow_link: Nicht mehr folgen
+      browse:
+        owned_datasets: Gehört mir
+        shared_datasets: Mit mir geteilt
+        title: Datensatz von %{user}
+      contact:
+        message: Nachricht
+        message_prompt: Ihre Nachricht eingeben
+        subject: Betreff
+        subject_prompt: Einen Betreff eingeben
+        title: Benutzer kontaktieren
+      edit:
+        account:
+          add_openid_button: Eine OpenID oder ein externes Konto hinzufügen
+          confirm_email: E-Mail bestätigen
+          confirm_password: Passwort bestätigen
+          connect_openid: Mit Facebook, Twitter, Google oder anderen Drittpartei-Berechtigungsnachweisen anmelden
+          current_email: Aktuelle E-Mail
+          email:
+            interests:
+              account_provisioned: Ein bevorzugtes Konto für zukünftige Nutzung zurückgestellt
+              any_view_created: Alle Ansichten werden erstellt
+              comment_to_moderate: Ein Kommentar wird gesendet, der moderiert werden muss
+              nomination_created: Eine neue Nominierung wurde erstellt
+              nomination_moderated: Alle Nominierungen werden erstellt
+              privileged_account_created: Benutzer erstellen ihre bevorzugten Konten
+              user_affected: Aktionen, die Sie direkt betreffen, wie Antworten auf Kommentare und Status-Updates
+              view_made_public: Alle Ansichten werden öffentlich gemacht
+            policy: "%{site} respektiert Ihre Privatsphäre und wird niemals Marketing-E-Mails über diese Liste versenden oder Ihre E-Mail an eine Drittpartei weitergeben. Die E-Mails, die von dieser Seite verwendet werden, beinhalten Konto-Benachrichtigungen und Updates über Datensätze, die Sie erstellt oder abonniert haben. "
+            send_error: Beim Senden Ihrer E-Mail ist ein Problem aufgetreten. Bitte versuchen Sie es später erneut.
+            send_success: Ihre Nachricht wurde versendet
+            subtitle: Abonnieren Sie individuelle Ereignisse, indem Sie das entsprechende Kästchen anklicken.
+            title: E-Mail-Benachrichtigungen
+          learn_openid: "Über OpenID erfahren"
+          new_email: Neue E-Mail
+          new_password: Neues Passwort
+          no_openid: Sie haben keine OpenOD-Identifizierer, die mit diesem Konto verbunden sind.
+          old_password: Altes Passwort
+          password: Passwort
+          password_prompt: "(Für Ihre Sicherheit)"
+          password_restrictions_html: (Einschränkungen gelten <span class="icon">&nbsp;</span>)
+          title: Konto-Einstellungen
+        app_tokens:
+          application_name: Anwendungsname
+          application_name_prompt: Geben Sie einen Namen für Ihre Anwendung ein
+          callback_prefix: Präfix für Callback
+          callback_prefix_help_html: 'Beispiel: Wenn Ihre Anwendung <span class="code">https://my-domain.com/socrata-app/oauth/validated</span> und <span class="code">https://my-domain.com/socrata-app/profile</span> zurückruft, werden Sie <span class="code">https://my-domain.com/socrata-app</span> als Präfix zur Verfügung stellen wollen. Bitte beachten sie, dass Sie den kompletten Domain-Namen eingeben müssen.'
+          callback_prefix_prompt: Stellen Sie das Präfix für einen sicheren (https) Callback zur Verfügung, wenn Sie OAuth verwenden
+          create_error: 'Ein Fehler ist beim Erstellen Ihren Anwendungstokens aufgetreten: %{message}'
+          create_success: Ihre Anwendung wurde erstellt
+          delete_confirm: Sind Sie sicher, dass Sie diese Anwendung löschen möchten? Der entsprechende App-Token wird nicht mehr länger gültig sein
+          delete_error: 'Beim Löschen Ihres Anwendungstoken ist ein Fehler aufgetreten: %{message}'
+          delete_success: Ihre Anwendung wurde gelöscht
+          description: Beschreibung
+          description_prompt: Geben Sie eine Beschreibung für Ihre Anwendung ein
+          new_app_button: Neue Anwendung erstellen
+          organization: Organisatio
+          organization_prompt: Geben Sie die Organisation ein, die für diese Anwendung verantwortlich ist
+          public: "Öffentlich?"
+          save_success: Ihre Anwendung wurde erfolgreich gespeichert
+          thumbnail: Vorschaubild
+          title: App-Token
+          title_full: Ihre Anwendungen
+          title_single: Anwendungstoken bearbeiten
+          website: Webseite
+          website_prompt: Stellen Sie einen Link zu dieser Anwendung oder zur Webseite der Organisation zur Verfügung
+        back_link: Zurück zu meinem Profil
+        image:
+          error: 'Fehler beim Hochladen des neuen Bildes: %{message}'
+          success: Ihr Bild wurde hochgeladen
+          title: Profilbild
+          upload_image_button: Neues Bild hochladen
+        info:
+          city: Stadt
+          country: Land
+          description:
+            prompt: Geben Sie Informationen ein, die Sie teilen möchten
+            title: Beschreibung
+          display_name: Display-Name
+          first_name: Vorname
+          interests:
+            prompt: Geben Sie Ihre Interessen ein
+            title: Interessen
+          last_name: Nachname
+          link_prompt: URL eingeben
+          organization: Organisation
+          state: Staat
+          title: Grundinfos
+          title_full: Gundinformationen
+          user_title: Titel
+        success: Ihr Profil wurde erfolgreich aktualisiert
+        validation:
+          email_mismatch: Neue E-Mail-Adressen stimmen nicht überein
+          image_format: Bitte wählen Sie einen gültigen Bild-Typ aus (PNG, JPG, oder GIF)
+          invalid_links: Beim Aktualisieren Ihrer Links ist ein Problem aufgetreten. %{message}
+          no_display_name: 'Fehler: ''Display-Name'' wird benötigt'
+          no_password_no_openid: Sie können Ihre OpenID-Identifizierer erst entfernen, wenn Sie ein Passwort erstellt haben
+          password_mismatch: Neue Passwörter stimmen nicht überein
+          user_missing: Der Benutzer kann nicht gefunden werden oder er wurde gelöscht.
+      info:
+        edit_link: Bearbeiten
+        external_links: Externe Links
+        interests: Interessen
+        links:
+          facebook: Facebook
+          flickr: Flickr
+          my_blog: Mein Blog
+          my_company: Mein Unternehmen
+          my_site: Meine Seite
+          twitter: Twitter
+        no_description: Keine Beschreibung zur Verfügung gestellt
+        other_ext_link: Andere
+        title: Grundinfo
+      sidebar:
+        all_contacts_link: Alle ansehen
+        edit_image_link: Bild bearbeiten
+        followers: Follower
+        following: Folge ich
+        hide_contacts_link: Ausblenden
+    reset_password:
+      failed: Beim Zurücksetzen Ihres Passwortes ist ein Problem aufgetreten. Bitte erneut versuchen.
+      form:
+        reset_password_button: Passwort zurücksetzen
+      prompt: 'Willkommen zurück! Bitte wählen Sie ein neues Passwort aus. '
+      success: Passwort erfolgreich zurückgesetzt
+      title: Passwort zurücksetzen
+    sign_in:
+      failed: Mit dieser E-Mail und dem Passwort ist eine Anmeldung nicht möglich. Bitte erneut versuchen
+      form:
+        sign_in_button: Anmelden
+      headline: Anmelden bei %{site}
+      mismatch: Passwörter stimmen nicht überein. Bitte erneut versuchen
+      prompt_html: Mit Ihrer <strong>Socrata-ID</strong> anmelden
+      tips_html: Verwenden Sie Ihre E-Mail und Ihr Passwort, um sich für alle <strong><a href="http://www.socrata.com" rel="external">Socrata</a>-unterstützten</strong> Seiten anzumelden.
+    sign_up:
+      form:
+        create_account_button: Mein Konto erstelleb
+        have_account_link: Ich habe bereits ein Konto
+      headline: Wir freuen uns, dass Sie sich bei %{site} anmelden möchten!
+      prompt_html: Erstellen Sie eine neue <strong>Socrata- ID</strong>
+      terms_html: Wenn Sie unten auf "Mein Konto erstellen" klicken, stimmen Sie unseren <a href="http://www.socrata.com/terms-of-service" rel="external">Servicebedingungen</a> und <a href="http://www.socrata.com/privacy" rel="external">Datenschutzrichtlinien</a> zu.
+      third_party: Nach dem Sie sich angemeldet haben, werden Ihre Drittpartei-Berechtigungsnachweise mit diesem Konto verbunden.
+      third_party_return: Bevor Sie diese Berechtigungsnachweise verwenden, müssen Sie
+      third_party_return_create: Ein Socrata-Konto erstellen
+      third_party_return_link: Mit einer existierenden Socrata-ID verbinden
+    stats:
+      api: API
+      apply: Anwenden
+      bytes_out: Bytes aus
+      chart_created: Diagramm erstellt
+      charts: Diagramme
+      charts_created: Diegramme erstellt
+      comment_created: Kommentar erstellt
+      comments: Kommentare
+      comments_created: Kommentare erstellt
+      daily: Täglich
+      deleted_application: gelöschte Anwendung
+      dependent_metrics: Abhängige Metrik
+      download: Download
+      downloads: Downloads
+      during_time_period: während dieses Zeitraums
+      embed: eingebettet
+      embeds: Einbettungen
+      error_loading: Beim Laden der metrischen Daten ist ein Fehler aufgetreten. Bitte versuchen Sie es später erneut
+      filter_created: Filter erstellt
+      filters: Filter
+      filters_created: Filter erstellt
+      govstat_hits: GovStat-Hits
+      hit_served: Servierter Hit
+      hits_served: Servierte Hits
+      hourly: Stündlich
+      map_created: Karte erstellt
+      maps: Karten
+      maps_created: Karten erstellt
+      metric_backed: unterstützte Metrik
+      metrics_backed: unterstützte Metriken
+      monthly: Monatlich
+      name: Name
+      no_data_time_period: Keine Daten für diesen Zeitraum
+      page_viewed: Seite angesehen
+      pages_viewed: Seiten angesehen
+      referrals: Empfehlungen
+      rows_loaded: Geladene Zeilen
+      sdp: SDP
+      select_chart_type: Wählen Sie einen Diagramm-Typ aus dem Menü aus, der angezeigt werden soll
+      show_more: Mehr anzeigen
+      time_period_unavailable: Metrische Daten stehen für diesen Zeitraum nicht zur Verfügung
+      title: Datensatz-Analytics
+      top_embeds: Top-Eingebettet
+      top_referrers: Top-Empfehlungen
+      total: insgesamt
+      total_govstat_hits: GovStat-Hits insgesamt
+      views: Ansichten
+      views_loaded: Geladene Ansichte
+      website: Webeseite
+      weekly: Wöchentlich
+    thumbnail:
+      discard_changes: "Änderungen verwerfen"
+      edit_thumbnail: Vorschaubild für %{name} bearbeiten
+      error_blob: Für diese eingebettete Datei kann kein Vorschaubild erstellt werden, das es im Browser nicht angezeigt werden kann
+      error_generic: Beim Speichern Ihres Vorschaubildes ist ein Fehler aufgetreten. Bitte später erneut versuchen.
+      error_invalid: Diese Ansicht ist nicht gültig und es kann im aktuellen Zustand kein Vorschaubild erstellt werden
+      error_private: Um Ihre Privatsphäre zu schützen, werden nur für öffentliche Datensätze Vorschaubilder erstellt. Wenn Sie ein Vorschau-Bild wünschen, machen Sie diesen Datensatz bitte unter Berechtigungen in der Verwalten-Seitenleiste öffentlich.
+      error_processing: Beim Verarbeiten Ihrer Vorschaubild-Anfrage ist ein Fehler aufgetreten. Bitte später erneut versuchen
+      full_image: Ganzes Bild
+      please_wait: 'Für diesen Datensatz stehen noch keine Vorschaubilder zur Verfügung. Bitte warten, während wir eins für Sie erstellen. '
+      preview: Vorschau
+      refresh_thumbnail: Vorschaubild aktualisieren
+      return_to_dataset: Zum Datensatz zurückkehren
+      save_thumbnail: Vorschaubild speichern
+      success: Vorschaubild gesppeichert
+      title: Vorschaubild für Datensatz
+      unsaved: Ungespeichert
+    widget:
+      create_new:
+        name: Neuer Vorlagenname
+        title: Eine neue Vorlage erstellen
+    wizard:
+      cancel: Abbrechen
+      finish: Beenden
+      next: Weiter
+      previous: Zurück
+  support:
+    array:
+      last_word_connector: ", und"
+      two_words_connector: und
+    array_or:
+      last_word_connector: ", oder"
+      two_words_connector: oder

@@ -9,8 +9,8 @@ nl:
         lockout_warning: Om veiligheidsredenen zal deze account na drie mislukte inlogpogingen binnen 15 minuten gedurende 30 minuten geblokkeerd zijn.
         no_account: Heeft u een account?
         password: Wachtwoord
-        password_requirements: ! 'Vereist. Uw wachtwoord moet tussen de 8 en 40 tekens bevatten en aan drie van de vier criteria voldoen: een cijfer bevatten, een kleine letter bevatten, een hoofdletter bevatten en een niet-alfanumeriek teken bevatten.'
-        password_requirements_html: <p>Uw wachtwoord moet <b>tussen de 8 en 40 tekens bevatten</b> en aan <b>drie van de vier criteria voldoen</b>:</p><p></p><ul><li>• een kleine letter bevatten</li><li>• een kleine letter bevatten</li><li>• een hoofdletter bevatten</li><li>• en een niet-alfanumeriek teken bevatten</li></ul>
+        password_requirements: 'Vereist. Uw wachtwoord moet tussen de 8 en 40 tekens bevatten en aan drie van de vier criteria voldoen: een cijfer bevatten, een kleine letter bevatten, een hoofdletter bevatten en een niet-alfanumeriek teken bevatten.'
+        password_requirements_html: "<p>Uw wachtwoord moet <b>tussen de 8 en 40 tekens bevatten</b> en aan <b>drie van de vier criteria voldoen</b>:</p><p></p><ul><li>• een kleine letter bevatten</li><li>• een kleine letter bevatten</li><li>• een hoofdletter bevatten</li><li>• en een niet-alfanumeriek teken bevatten</li></ul>"
         password_restrictions: Er gelden beperkingen
         remember_me: Onthoud me
         sign_up_prompt: Meld u nu aan
@@ -24,17 +24,17 @@ nl:
           sign_up: Of... Gebruik een van deze accounts om mee te doen.
         providers:
           facebook:
-            sign_in_html: <strong>Verbind</strong> met Facebook
-            sign_up_html: <strong>Verbind</strong> met Facebook
+            sign_in_html: "<strong>Verbind</strong> met Facebook"
+            sign_up_html: "<strong>Verbind</strong> met Facebook"
           google:
-            sign_in_html: <strong>Log in</strong> met Google
-            sign_up_html: <strong>Verbind</strong> met Google
+            sign_in_html: "<strong>Log in</strong> met Google"
+            sign_up_html: "<strong>Verbind</strong> met Google"
           openid:
-            sign_in_html: <strong>Log in</strong> met OpenID
-            sign_up_html: <strong>Verbind</strong> met OpenID
+            sign_in_html: "<strong>Log in</strong> met OpenID"
+            sign_up_html: "<strong>Verbind</strong> met OpenID"
           twitter:
-            sign_in_html: <strong>Verbind</strong> met Twitter
-            sign_up_html: <strong>Verbind</strong> met Twitter
+            sign_in_html: "<strong>Verbind</strong> met Twitter"
+            sign_up_html: "<strong>Verbind</strong> met Twitter"
       validation:
         mismatch: Wachtwoorden komen niet overeen.
         terms: U moet de voorwaarden van de dienstverlening en het privacybeleid accepteren.
@@ -46,7 +46,7 @@ nl:
           title: Over deze Dataset
         all_options: Alles bekijken
         clear_all: Alle opties wissen
-        clear_facet: (Alle)
+        clear_facet: "(Alle)"
         compact_list: Als een compact overzicht bekijken
         create_dataset: Creëer of upload uw eigen dataset
         create_dataset_short: Maak een nieuwe gegevensset aan
@@ -69,9 +69,9 @@ nl:
             private_html: Openbaar maken
             public_html: Privé maken
           title: Wijzig de publieke zichtbaarheid
-        rich_list: ! '
+        rich_list: |2-
 
-          Zien als een rijke lijst'
+          Zien als een rijke lijst
         share_button: Delen
         subscribe: Abonneren
         suggest_dataset: Heeft u niet gevonden wat u zoekt? Stel een dataset voor.
@@ -121,7 +121,7 @@ nl:
         matching_rows: Zoek in dataset voor overeenkomende rijen
         more_link: Meer
         no_matching_rows: Geen overeenkomende rijen gevonden
-        title_html: ! 'Het tonen van <span class="rowResultCountText"></span> van <span class="totalResultCountText"></span> overeenkomende rijen <a href="#" class="rowSearchLink">(view results)</a>:'
+        title_html: 'Het tonen van <span class="rowResultCountText"></span> van <span class="totalResultCountText"></span> overeenkomende rijen <a href="#" class="rowSearchLink">(view results)</a>:'
       search: Zoeken
       sort_period_title: Sorteer periode
       sort_periods:
@@ -141,12 +141,12 @@ nl:
       title:
         default: Zoeken & bladeren in datasets en views
         result:
-          facet: ! '%{facet_type} van %{facet_value}'
+          facet: "%{facet_type} van %{facet_value}"
           facet_main: bijpassende %{body}
           main: Resultaten %{body}
           term: voor "%{term}"
     charts:
-      negatives_in_data: ! 'Ongeldige grafiek: negatieve waarden aanwezig'
+      negatives_in_data: 'Ongeldige grafiek: negatieve waarden aanwezig'
       no_data: Geen gegevens
       other_slice_label: Anders
       series_grouping:
@@ -154,28 +154,28 @@ nl:
         calculation_running: Data aan het voorbereiden
         drawing_progress: Dit kan wat tijd in beslag nemen...
         drawing_running: Grafiek tekenen
-        pause_button_explanation1: ! '
+        pause_button_explanation1: |2-
 
-          Tip! Duurt het te lang? Probeer te pauzeren en maak een filter aan'
-        pause_button_explanation2: ! '
+          Tip! Duurt het te lang? Probeer te pauzeren en maak een filter aan
+        pause_button_explanation2: |2-
 
-          om de hoeveelheid noodzakelijke berekeningen te beperken.'
+          om de hoeveelheid noodzakelijke berekeningen te beperken.
         pause_rendering: Pause
         rendering_paused: Gegevensvoorbereiding is onderbroken
-        rendering_progress: ! '%{rows_remaining} rijen blijven over.'
-        rendering_progress_almost_done: ! '%{rows_remaining} rijen blijven over, slechts een paar seconden.'
-        rendering_progress_minute: ! '%{rows_remaining} rijen blijven over, over %{time_remaining} minuten.'
-        rendering_progress_minutes: ! '%{rows_remaining} rijen blijven over, over %{time_remaining} minuten.'
-        rendering_progress_seconds: ! '%{rows_remaining} rijen blijven over, over %{time_remaining} seconden.'
+        rendering_progress: "%{rows_remaining} rijen blijven over."
+        rendering_progress_almost_done: "%{rows_remaining} rijen blijven over, slechts een paar seconden."
+        rendering_progress_minute: "%{rows_remaining} rijen blijven over, over %{time_remaining} minuten."
+        rendering_progress_minutes: "%{rows_remaining} rijen blijven over, over %{time_remaining} minuten."
+        rendering_progress_seconds: "%{rows_remaining} rijen blijven over, over %{time_remaining} seconden."
         resume_rendering: Samenvatten
       zero_only_data: Geen waarden groter dan nul
     common:
       auth_required: U moet ingelogd zijn bij %{action_phrase}
       dataset_picker:
         button: Kiezen
-        title: ! '
+        title: |2-
 
-          Kies een dataset om te gebruiken'
+          Kies een dataset om te gebruiken
       expander:
         collapse: Klik voor instorten
         expand: Klik om te vergroten
@@ -191,7 +191,7 @@ nl:
           email: E-mail
           facebook: Facebook
           twitter: Twitter
-        share_text: ! 'Bekijk de %{name}, dataset op %{site}:'
+        share_text: 'Bekijk de %{name}, dataset op %{site}:'
       sidebar:
         tabs:
           about: Over de dataset
@@ -206,7 +206,7 @@ nl:
           moreViews: Meer views
           visualize: Visualiseren
       stars:
-        tooltip: ! '%{number} sterren'
+        tooltip: "%{number} sterren"
       visualization:
         in_bing: Bekijken in Bing Maps
         in_google: Bekijk in Google Maps
@@ -249,9 +249,9 @@ nl:
       comment_actions:
         already_marked_inappropriate: Aangemerkt
         delete: Verwijderen
-        delete_confirm: ! '
+        delete_confirm: |2-
 
-          Weet u het zeker? Uw bericht zal verloren gaan.'
+          Weet u het zeker? Uw bericht zal verloren gaan.
         inappropriate: Ongepast
         marked_inappropriate: Aangemerkt!
         rate_down: Beoordeel deze reactie omlaag
@@ -272,26 +272,26 @@ nl:
         all_replies_with_count: Bekijk alle %{count} antwoorden
         last_item: Bekijk laatste item
         next_item_page: Bekijk volgende %{count} items
-        no_results: ! '
+        no_results: |2-
 
-          Er zijn geen items om weer te geven'
-        user_create_action: ! 'Een %{thing} aangemaakt:'
+          Er zijn geen items om weer te geven
+        user_create_action: 'Een %{thing} aangemaakt:'
       types:
         all items: Alle items
         comments: reacties
         views: views
     filter:
       actions:
-        confirm_modify: ! '
+        confirm_modify: |2-
 
-          Hiermee worden alle waarden van uw filter verwijderen! Weet u zeker dat u dit wilt doen?'
+          Hiermee worden alle waarden van uw filter verwijderen! Weet u zeker dat u dit wilt doen?
         disable_filter: Niet filteren
         first_condition: Klik hier om uw eerste filtervoorwaarde toe te voegen
         new_condition_button: Voeg een nieuwe ffiltervoorwaarde toe
         remove_filter: Filter verwijderen
-        select_column: ! 'Selecteer een kolom om te filteren op:'
-        select_operation: ! 'Selecteer een bewerking om te filteren op:'
-        select_subcolumn: ! 'Selecteer het gedeelte van %{name} om te filteren op:'
+        select_column: 'Selecteer een kolom om te filteren op:'
+        select_operation: 'Selecteer een bewerking om te filteren op:'
+        select_subcolumn: 'Selecteer het gedeelte van %{name} om te filteren op:'
       edit_default:
         advanced_body: Dit betekent dat ze volledige toegang tot de beschikbare informatie over het filter hebben. Voor een meer gecureerde ervaring, kunt u de vereenvoudigde modus proberen.
         advanced_header: Gebruikers zullen starten in geavanceerde modus.
@@ -299,10 +299,10 @@ nl:
         auto_suggested: Voorgestelde waarden worden automatisch bepaald voor dit bewerkerstype.
         cancel_button: Annuleren
         done_button: Klaar
-        instructions: ! 'Gebruik hiervoor de tools om filters te maken, pas gepresenteerde waarden aan, selecteer het aantal automatisch voorgestelde waarden dat het filter zal proberen te presenteren, enzovoorts. Als u tevreden bent met de opties die worden gepresenteerd, klik dan hieronder op Done om ze op te slaan:'
+        instructions: 'Gebruik hiervoor de tools om filters te maken, pas gepresenteerde waarden aan, selecteer het aantal automatisch voorgestelde waarden dat het filter zal proberen te presenteren, enzovoorts. Als u tevreden bent met de opties die worden gepresenteerd, klik dan hieronder op Done om ze op te slaan:'
         manual_suggested_html: Toon tot <select class="autogeneratedCount"></select> voorgestelde waarden.
         mode_button: Standaard filter aanpassen
-        mode_message: ! 'Als uitgever van deze weergave, kunt u de standaard set filters bepalen die bezoekers zal worden gepresenteerd met:'
+        mode_message: 'Als uitgever van deze weergave, kunt u de standaard set filters bepalen die bezoekers zal worden gepresenteerd met:'
         save_confirm: U zult alle opgeslagen wijzigingen verliezen als u ervoor kiest om verder te gaan. Sla eventuele wijzigingen die u wilt bewaren op voordat u verder gaat.
         simplified_body: Dit betekent dat ze niet in staat zullen zijn om nieuwe voorwaarden toe te voegen, de kolommen of bewerkers van filters te veranderen, of toegang te krijgen tot de geavanceerde menu's op filters.
         simplified_header: Gebruikers zullen starten in vereenvoudigde modus.
@@ -383,7 +383,7 @@ nl:
       heatmap_ie8_warning: Rooster hittekaarten werken niet in uw huidige browser. Upgrade naar IE9, gebruik Google Chrome of Mozilla Firefox. Hartelijk dank.
       loading: Wordt geladen...
       map_legend: Kaartlegenda
-      multiple_layer_instructions: ! 'Er is hier data voor meer dan één laag. Kies er één:'
+      multiple_layer_instructions: 'Er is hier data voor meer dan één laag. Kies er één:'
       next: Volgende
       next_row: Volgende rij
       no_columns_defined: Geen kolommen gedefinieerd
@@ -393,7 +393,7 @@ nl:
       request_timed_out: Time out voor de aanvraag van deze gegevens.
     nominate:
       all: Alles
-      approve: (Goedkeuren)
+      approve: "(Goedkeuren)"
       approve_tip: Keur deze suggestie goed
       approved: Goedgekeurd
       attachment: Bijlage
@@ -411,7 +411,7 @@ nl:
       description: Omschrijving
       description_prompt: Voer details in van uw suggestie
       details: Details
-      edit: (Aanpassen)
+      edit: "(Aanpassen)"
       edit_suggestion: Pas deze suggestie aan
       files: Bestanden
       filter_by_status: Filter op status
@@ -420,7 +420,7 @@ nl:
       greater_success: Uw bericht is verstuurd naar de schrijver van de suggestie
       message: Bericht
       message_prompt: Voer uw bericht in
-      moderate: (Beheren)
+      moderate: "(Beheren)"
       moderate_error: Status van de foutwijziging
       moderate_tip: Accepteer deze suggestie en open het voor stemming
       needs_moderation: Moet door beheerder bekeken worden
@@ -431,10 +431,10 @@ nl:
       rate_up: Ik vind het leuk
       rating: Beoordeling
       rating_error: Fout bij het beoordelen van suggestie
-      reject: (Afwijzen)
+      reject: "(Afwijzen)"
       reject_tip: Wijs deze sufggestie af
       rejected: Afgewezen
-      remove: (Verwijderen)
+      remove: "(Verwijderen)"
       remove_tip: Verwijder deze suggestie
       required: Vereist
       status: Status
@@ -452,9 +452,9 @@ nl:
       title_file: Upload een bestand
       title_image: Upload een afbeelding
       title_photo: Upload een foto
-      to_upload_file: ! 'Bestand om te uploaden:'
-      to_upload_image: ! 'Afbeelding om te uploaden:'
-      to_upload_photo: ! 'Foto om te uploaden:'
+      to_upload_file: 'Bestand om te uploaden:'
+      to_upload_image: 'Afbeelding om te uploaden:'
+      to_upload_photo: 'Foto om te uploaden:'
       upload: Uploaden
   core:
     aggregates:
@@ -476,6 +476,11 @@ nl:
       need_login: U moet ingelogd zijn om toegang tot deze pagina te krijgen
       need_permission: U heeft geen toestemming om deze pagina te bekijken
       too_many_tries: Te veel inlogpogingen voor deze login. Account tijdelijk uitgeschakeld.
+    browser_support:
+      chrome: Chrome
+      internet_explorer: Internet Explorer
+      link_text: Meer informatie
+      message_html: Deze site kan het best met behulp van een nieuwere internetbrowser bekeken worden . %{link_text}
     chart_types:
       area: Vlakdiagram
       bar: Staafdiagram
@@ -526,7 +531,7 @@ nl:
       url: Website-URL
     date_time:
       centuries_future: over %{time} eeuwen
-      centuries_past: ! '%{time} eeuwen geleden'
+      centuries_past: "%{time} eeuwen geleden"
       current_century_future: deze eeuw
       current_century_past: deze eeuw
       current_day_future: vandaag
@@ -542,13 +547,13 @@ nl:
       current_year_future: dit jaar
       current_year_past: dit jaar
       days_future: over %{time} dagen
-      days_past: ! '%{time} dagen geleden'
+      days_past: "%{time} dagen geleden"
       hours_future: over %{time} uren
-      hours_past: ! '%{time} uren geleden'
+      hours_past: "%{time} uren geleden"
       minutes_future: over %{time} minuten
-      minutes_past: ! '%{time} minuten geleden'
+      minutes_past: "%{time} minuten geleden"
       months_future: over %{time} maanden
-      months_past: ! '%{time} maanden geleden'
+      months_past: "%{time} maanden geleden"
       single_century_future: over een eeuw
       single_century_past: een eeuw geleden
       single_day_future: morgen
@@ -565,9 +570,9 @@ nl:
       single_year_past: afgelopen jaar
       unknown: enige tijd
       weeks_future: over %{time} weken
-      weeks_past: ! '%{time} weken geleden'
+      weeks_past: "%{time} weken geleden"
       years_future: Over %{time} jaar
-      years_past: ! '%{time} jaar geleden'
+      years_past: "%{time} jaar geleden"
     dialogs:
       apply: Toepassen
       cancel: Annuleren
@@ -577,9 +582,9 @@ nl:
       delete: Verwijderen
       done: Klaar
       dont_save: Niet opslaan
-      logout: ! '
+      logout: |2-
 
-        U bent uitgelogd.'
+        U bent uitgelogd.
       save: Opslaan
       session_timeout:
         notice: U bent voor uw veiligheid afgemeld. Meld u opnieuw aan om verder te gaan.
@@ -645,9 +650,9 @@ nl:
       esri_us_topo_alias: Topografische kaart van de VS
       esri_world_street_map: Wereld Wegenkaart (ESRI)
       esri_world_street_map_alias: Wereld Wegenkaart
-      esri_world_topo: ! '
+      esri_world_topo: |2-
 
-        Geannoteerde Topografische Kaart van de  Wereld (ESRI)'
+        Geannoteerde Topografische Kaart van de  Wereld (ESRI)
       esri_world_topo_alias: Topografische Kaart van de  Wereld
       google_roadmap: Google Roadmap
       google_roadmap_alias: Google
@@ -664,7 +669,7 @@ nl:
       five: vijf
       four: vier
       nine: negen
-      num_one: één
+      num_one: "één"
       num_two: twee
       num_zero: nul
       seven: zeven
@@ -696,15 +701,15 @@ nl:
       equalTo: Vul dezelfde waarde opnieuw in.
       max: Voer een waarde kleiner dan of gelijk aan {0} in.
       maxlength: Vul niet meer dan {0} tekens in.
-      min: ! '
+      min: |2-
 
-        Vul een waarde in groter dan of gelijk aan {0}.'
+        Vul een waarde in groter dan of gelijk aan {0}.
       minlength: Vul tenminste {0} karakters in.
       number: Voer een geldig getal in.
       range: Vul een waarde tussen {0} en {1} in.
-      rangelength: ! '
+      rangelength: |2-
 
-        Voer een waarde met een lengte tussen {0} en {1} tekens in.'
+        Voer een waarde met een lengte tussen {0} en {1} tekens in.
       remote: Fix dit veld.
       required: Dit veld is verplicht.
       url: Vul een geldige URL in.
@@ -758,13 +763,13 @@ nl:
       remove: Verwijder deze component
       share:
         email: Delen via e-mail
-        email_contents: ! '%{dataset} op %{company}'
+        email_contents: "%{dataset} op %{company}"
         facebook: Delen op Facebook
         share: Delen
         subscribe: Abonneren via e-mail of RSS
         subscribe_text: Abonneren op wijzigingen
         this_page: Deze pagina
-        tweet_contents: ! 'Bekijk %{dataset} op %{company}: %{url}'
+        tweet_contents: 'Bekijk %{dataset} op %{company}: %{url}'
         twitter: Delen op Twitter
     configurator:
       actions_components: Acties
@@ -820,7 +825,7 @@ nl:
       save: Opslaan
       title: Paginainstellingen
   date:
-    abbr_month_names: ! "--- \n...\n---\n- \n- Jan\n- Feb\n- Maa\n- Apr\n- Mei\n- Jun\n- Jul\n- Aug\n- Sep\n- Okt\n- Nov\n- Dec"
+    abbr_month_names: "--- \n...\n---\n- \n- Jan\n- Feb\n- Maa\n- Apr\n- Mei\n- Jun\n- Jul\n- Aug\n- Sep\n- Okt\n- Nov\n- Dec"
   error:
     back: Terug
     error_500:
@@ -836,9 +841,9 @@ nl:
       page_not_found: Pagina niet gevonden.
       were_sorry: Het spijt ons heel erg, maar de pagina die u heeft opgevraagd kan niet worden gevonden.
     permission_denied_403:
-      description_html: ! '
+      description_html: |2-
 
-        Als u denkt dat dit een fout is, probeer dan uit te loggen en hier weer als een andere gebruiker <a href="/login"> in te loggen </ a>.'
+        Als u denkt dat dit een fout is, probeer dan uit te loggen en hier weer als een andere gebruiker <a href="/login"> in te loggen </ a>.
       no_permission: Geen toestemming voor toegang tot hulpbronnen.
       were_sorry: Sorry, maar het lijkt erop dat u geen toestemming heeft om deze pagina te bekijken.
     to_whence_you_came: naar waar u vandaan kwam.
@@ -936,9 +941,9 @@ nl:
       week_to_date: Week naar datum
       year_to_date: Jaar naar datum
     fileuploader:
-      drop_files: ! '
+      drop_files: |2-
 
-        Bestanden hier neerzetten om te uploaden'
+        Bestanden hier neerzetten om te uploaden
       failed: Mislukt
       upload_a_file: Een bestand uploaden
     hallo:
@@ -1023,7 +1028,7 @@ nl:
       licensing: Licenties en attributie
       links: Links
       meta: Meta
-      none: (geen)
+      none: "(geen)"
       permalink: Permalink
       permanent_links: Permanente links
       permissions: Rechten
@@ -1063,13 +1068,13 @@ nl:
         accept: Accepteren
         accepted: Geaccepteerd
         accepted_by: Geaccepteerd door
-        all: (alles)
+        all: "(alles)"
         dataset: Dataset
         flashes:
           accepted: Federatie met succes geaccepteerd
           created: Federatie met succes aangemaakt
           deleted: Federatie met succes verwijderd
-          invalid_domain: ! 'Kon geen datafederatie aanmaken: doeldomein is ongeldig'
+          invalid_domain: 'Kon geen datafederatie aanmaken: doeldomein is ongeldig'
           rejected: Federatie met succes afgewezen
         list_domains: Hier volgt een lijst met domeinen waarmee u een datafederatie kunt beginnen. Als u op publiceren klikt moet een beheerder van het doeldomein uw aanvraag accepteren.
         no_domains: Geen geldige domeinen voldoen aan %{name}.
@@ -1106,7 +1111,7 @@ nl:
         down: Naar beneden
         edit: Aanpassen
         feature_image: Getoonde afbeelding
-        filetype_error: ! 'Ongeldig veldtype. Kies een afbeeldingsbestand '
+        filetype_error: 'Ongeldig veldtype. Kies een afbeeldingsbestand '
         flashes:
           create_error: Er deed zich een fout voor tijdens uw aanvraag. %{error_message}
           delete_error: Het verhaal dat u probeerde te verwijderen bestaat niet.
@@ -1148,7 +1153,7 @@ nl:
         'false': false
         field_name: Naam van het veld
         flashes:
-          cannot_move_field: ! 'Kan veld genaamd ''%{name}'' niet verplaatsen: niet gevonden'
+          cannot_move_field: 'Kan veld genaamd ''%{name}'' niet verplaatsen: niet gevonden'
           field_duplicated: U kunt geen dubbel veld genaamd '%{name}' aanmaken
           field_name_required: Kan geen veld zonder naam aanmaken
           field_successful_create: Veld met succes aangemaakt
@@ -1189,9 +1194,9 @@ nl:
         filter_by: Filteren op
         flashes:
           accounts_created:
-            one: ! '%{count} account met succes aangemaakt'
-            other: ! '%{count} accounts met succes aangemaakt'
-          invalid_role: ! 'Ongeldige rol opgegeven voor gebruikerscreatie: %{role}'
+            one: "%{count} account met succes aangemaakt"
+            other: "%{count} accounts met succes aangemaakt"
+          invalid_role: 'Ongeldige rol opgegeven voor gebruikerscreatie: %{role}'
           no_email_addresses: Geen e-mailadressen gevonden
           pending_permissions_removed: Hangende toestemmingen verwijderd
           reenable_failed: Er deed zich een fout voor bij het inschakelen van dat gebruikersaccount.
@@ -1272,9 +1277,9 @@ nl:
         external_explain: Kies hiervoor als u al data heeft die op een andere server wordt gehost. Deze data zal niet worden geïmporteerd.
         header: Maak een nieuwe dataset aan
         import: Importeer een databestand
-        import_explain: ! 'Kies hiervoor als u al een databestand heeft op uw computer dat u wilt importeren. De volgende formats worden ondersteund: .csv, .tsv, .xls en .xlsx.'
+        import_explain: 'Kies hiervoor als u al een databestand heeft op uw computer dat u wilt importeren. De volgende formats worden ondersteund: .csv, .tsv, .xls en .xlsx.'
         mapLayer: Maak verbinding met een ESRI kaartlaag
-        mapLayer_explain: ! 'Kies hiervoor als u een ESRI kaartlaag heeft die u in de catalogus wilt importeren. U moet een URL opgeven naar het API-punt waar de ESRI laag is opgeslagen.  '
+        mapLayer_explain: 'Kies hiervoor als u een ESRI kaartlaag heeft die u in de catalogus wilt importeren. U moet een URL opgeven naar het API-punt waar de ESRI laag is opgeslagen.  '
         prompt: Hoe wilt u uw nieuwe dataset aanmaken?
         shapefile: Geospatiale data importeren
         shapefile_explain: Kies hiervoor als u geospatiale data heeft die u in uw catalogus wilt importeren.
@@ -1327,7 +1332,7 @@ nl:
         privacy_settings: Privacy-instellingen
         private_explain: Mijn data is <strong>privé</strong>
         prompt: Omschrijf uw data
-        public_explain: ! 'Mijn data is <strong>openbaar</strong>: het kan alleen door mij worden gewijzigd, maar iedereen kan het zien'
+        public_explain: 'Mijn data is <strong>openbaar</strong>: het kan alleen door mij worden gewijzigd, maar iedereen kan het zien'
       processing: Wordt verwerkt...
       title: Nieuwe dataset
       upload_accessible: Upload een nieuwe toegankelijke dataset
@@ -1375,7 +1380,7 @@ nl:
         share_facebook: Delen op Facebook
         share_twitter: Delen op Twitter
         snapshot_notice: Dit is een eerder gepubliceerde versie van de dataset. Hij is gearchiveerd en kan niet gewijzigd worden.
-        snapshot_title: ! '?'
+        snapshot_title: "?"
         snapshot_title_html: Momentopname van %{date}
         snapshot_unsavable: Datasets en views waarvan een momentopname is gemaakt, kunnen niet worden aangemaakt of gewijzigd
         subscribe: Abonneren op veranderingen
@@ -1383,9 +1388,9 @@ nl:
         unpublished_unsavable: Wijzigingen in de onderstaande gegevens worden automatisch opgeslagen. Filters en zoekopdrachten kunnen niet worden opgeslagen op een ​​werkende kopie van een dataset. Maak een view van een gepubliceerde dataset.
         unsaved_title: Niet-opgeslagen view
         view_published_html: Bekijk de gepubliceerde <span class="publishedName"> dataset </span>
-        view_type: ! '
+        view_type: |2-
 
-          Bekijk als %{type}'
+          Bekijk als %{type}
         view_types:
           calendar: kalender
           chart: grafiek
@@ -1394,7 +1399,7 @@ nl:
           page: enkele rij
           table: tabel
         working_copy_notice: Dit is een kopie van de dataset waarmee u wijzigingen kunt maken. Deze is niet zichtbaar voor anderen totdat u hem publiceert.
-        working_copy_title: ! '[Werkende kopie]'
+        working_copy_title: "[Werkende kopie]"
       blob:
         data_extraction: Deze data-extractietool of -applicatie is beschikbaar via de link rechts
         download: Downloaden
@@ -1405,7 +1410,7 @@ nl:
           prompt_html: Om in de plaats daarvan dit bestand te downloaden, %{click_here}.
         limited_download: Deze dataset bestaat niet uit tabelgegevens, en kan beperkte interactiviteit hebben, maar is beschikbaar om te downloaden
       column_tip:
-        aggregate: (%{aggregate} op %{data_type})
+        aggregate: "(%{aggregate} op %{data_type})"
         field_name: API veldnaam
         original_name: Originele naam
       dataset_contact:
@@ -1421,7 +1426,7 @@ nl:
             offensive_content: Offensieve inhoud
             other_purpose: Anders
             personal_information: Persoonlijke informatie
-            prompt: ! '- Doel kiezen -'
+            prompt: "- Doel kiezen -"
             spam: Spam of junk
           send_button: Verzenden
           subject: Onderwerp
@@ -1446,7 +1451,7 @@ nl:
           queued: Het staat in de rij te wachten om te worden verwerkt (wachtrij %{time}; %{totalQueued} totaal in de rij)
         edit_dataset_button: Dataset bewerken
         error_publishing_html: Er is een fout opgetreden bij het maken van een werkende kopie van uw dataset. Neem contact op met <a href="http://support.socrata.com" rel="external"> Socrata ondersteuning </a>.
-        error_publishing_unpublished: 
+        error_publishing_unpublished: Alleen ongepubliceerde datasets kunnen worden gepubliceerd.
         needs_copy: Deze dataset is gepubliceerd en kan niet direct worden bewerkt. Een werkende kopie %{status} waarmee u alle gewenste wijzigingen aan kunt brengen voordat u ze openbaar maakt.
         needs_copy_status:
           available: is beschikbaar
@@ -1455,8 +1460,8 @@ nl:
         add_email: Meer toevoegen
         email_button: E-mail
         message_prompt: Voer een optioneel bericht in
-        private_notice: ! 'Let op: Deze %{displayName} is momenteel privé. Via de e-mail zullen we alle ontvangers toegang verlenen.'
-        prompt_html: ! 'Deel <span class="datasetName">%{name}</span> met de volgende e-mailadressen:'
+        private_notice: 'Let op: Deze %{displayName} is momenteel privé. Via de e-mail zullen we alle ontvangers toegang verlenen.'
+        prompt_html: 'Deel <span class="datasetName">%{name}</span> met de volgende e-mailadressen:'
         remove_email: Verwijderen
         success: Uw e-mail is met succes verstuurd.
         title_html: Deel &quot;<span class="datasetName">%{name}</span>&quot;
@@ -1488,7 +1493,7 @@ nl:
             view_column: U kunt geen kolom aan een view toevoegen
         api:
           column_ids_title: Kolom-ID's
-          endpoint_title: ! 'API-toegangseindpunt:'
+          endpoint_title: 'API-toegangseindpunt:'
           intro_html: Met de <strong>Socrata Open Data API</strong> (SODA) kunnen software-ontwikkelaars toegang krijgen tot de gegevens gehost in Socrata datasites op programmabasis. Ontwikkelaars kunnen applicaties aanmaken die de SODA API's gebruiken om "mash-up" Socrata datasets op nieuwe en spannende manieren te visualiseren en te creëren. Maak een iPhone-applicatie die de overheidsuitgaven in uw omgeving weergeven, een webapplicatie waarmee burgers potentiële overheidssubsidies die ze over het hoofd gezien kunnen opzoeken, of een service die automatisch e-mails stuurt wanneer nieuwe oormerken worden toegevoegd aan facturen die u wilt volgen.
           reference_html: Om programmatisch te beginnen met het bezoeken van deze dataset, gebruikt u het API-eindpunt hieronder. Voor meer informatie en voorbeelden over hoe de Socrata Open Data API kunt gebruiken, verwijzen we u naar onze <a href="http://dev.socrata.com" rel="external">ontwikkelaarsdocumentatie</a>.
           subtitle: Krijg toegang tot %{view_type} via SODA
@@ -1498,8 +1503,8 @@ nl:
           create_button_prompt: Maak een Application Programming Interface (API) aan om programmatische toegang tot deze gegevens te verlenen.
           manage_button: Beheren
           manage_button_prompt: De geselecteerde API beheren
-          prompt_existing_html: <strong> Bestaande API's </strong> kunnen worden aangepast. U kunt toestemmingen controleren, verzoeklimieten instellen, gebruiksmetrics bekijken en de documentatie aanpassen.
-          prompt_new_html: <strong> Met API Foundry </strong> kunt u een of meer open, op standaarden gebaseerde Application Programming Interfaces (API) voor deze dataset maken en configureren.
+          prompt_existing_html: "<strong> Bestaande API's </strong> kunnen worden aangepast. U kunt toestemmingen controleren, verzoeklimieten instellen, gebruiksmetrics bekijken en de documentatie aanpassen."
+          prompt_new_html: "<strong> Met API Foundry </strong> kunt u een of meer open, op standaarden gebaseerde Application Programming Interfaces (API) voor deze dataset maken en configureren."
           subtitle: Een API aanmaken en aanpassen
           title: API's
         append_replace:
@@ -1525,7 +1530,7 @@ nl:
           column_select:
             auto: Auto
             from_grid: Selecteer een kolom uit het raster
-            none: (geen)
+            none: "(geen)"
             none_selected: Geen kolom geselecteerd
             nonselectable: Ongeldige kolommen
             prompt: Selecteer een kolom
@@ -1559,7 +1564,7 @@ nl:
           validation:
             at_least: Waarde moet minstens %{value} zijn
             different_value: U mag deze kolom niet twee keer gebruiken
-            file_format: ! '%{format}-bestand is vereist'
+            file_format: "%{format}-bestand is vereist"
             identifier_format: Geldige API identificeertekens zijn kleine letters, cijfers en de underscore. Hij moet beginnen met een letter en kan geen opeenvolgende underscores bevatten.
             invalid_url: Deze URL is ongeldig
             invalid_value: Deze waarde is ongeldig
@@ -1582,9 +1587,9 @@ nl:
           subtitle: Views met data kunnen worden weergegeven in een maandkalenderformaat
           title: Kalender
           validation:
-            invalid_columns: ! '
+            invalid_columns: |2-
 
-              Deze view moet een datumkolom en een tekstkolom bevatten'
+              Deze view moet een datumkolom en een tekstkolom bevatten
             viz_limit: Een view mag er slechts een visualisatie op hebben
         chart:
           advanced: Geavanceerde configuratie
@@ -1676,7 +1681,7 @@ nl:
           min_angle_html: Kleinste hoek getoond (º)
           names: Namen
           pie_other: Waarschuwing:%{chart_type} zal verschillende waarden (rijen) samenvoegen langs de %{row_limit}e in een andere categorie. Probeer een Roll Up of een filter dat het aantal waarden beperkt en maak daar vervolgens een %{chart_type} van.
-          pie_truncate: ! 'Waarschuwing: %{chart_type} zal datasets afkappen met meer dan %{row_limit} verschillende waarden (rijen). Probeer een Roll Up te creëren of een filter dat het aantal waarden beperkt en maak daar vervolgens een %{chart_type} van.'
+          pie_truncate: 'Waarschuwing: %{chart_type} zal datasets afkappen met meer dan %{row_limit} verschillende waarden (rijen). Probeer een Roll Up te creëren of een filter dat het aantal waarden beperkt en maak daar vervolgens een %{chart_type} van.'
           point_color: Kleur van de punt
           point_size: Formaat van de punt
           point_title: Titel
@@ -1685,9 +1690,9 @@ nl:
             group_by: Groeperen op
             hideLoadingMsg: Laadbericht verbergen
             new_column_button: Seriekolom toevoegen
-            row_limit_warning: ! '
+            row_limit_warning: |2-
 
-              Dataseriegroeperen zal uiterst traag gaan met zoveel rijen.'
+              Dataseriegroeperen zal uiterst traag gaan met zoveel rijen.
             title: Dataseriegroepering
           setup:
             title: Opstellen grafiek
@@ -1702,12 +1707,12 @@ nl:
           title: Grafiek
           treemap_color_html: Deze kleuren worden willekeurig toegepast op de treemap, alleen voor het creëren van visuele onderscheidingen. Ze hebben op zichzelf geen specifieke betekenis.
           validation:
-            chart_requires: ! '
+            chart_requires: |2-
 
-              %{chart_type} heeft minstens ... nodig'
-            chart_requires2: ! '%{and} %{count} van de volgende kolomtypes:'
-            count: ! '%{count}'
-            required_columns: ! '%{chart_type} vereist %{column_types} kolommen'
+              %{chart_type} heeft minstens ... nodig
+            chart_requires2: "%{and} %{count} van de volgende kolomtypes:"
+            count: "%{count}"
+            required_columns: "%{chart_type} vereist %{column_types} kolommen"
             viz_limit: Een view mag er slechts een visualisatie op hebben
           value: Waarde
           valueInBar: Waarde in balk
@@ -1779,7 +1784,7 @@ nl:
           money:
             abbreviated: Afgekort
             currency: Valuta
-            format_mask_warning: ! ' '
+            format_mask_warning: " "
             no_precision: Geen
             precision: Precisie
             title: Geldformaat
@@ -1795,7 +1800,7 @@ nl:
             title: Nummerformattering
           number_advanced:
             format_mask: Formaat maskeren
-            format_mask_prompt: ! 'Gebruik #s om van numerieke en andere karakters aan te geven waar u wilt dat ze heen gaan, bijvoorbeeld een burgerservicenummer zou ###-##-#### zijn'
+            format_mask_prompt: 'Gebruik #s om van numerieke en andere karakters aan te geven waar u wilt dat ze heen gaan, bijvoorbeeld een burgerservicenummer zou ###-##-#### zijn'
             format_mask_warning: Dit kan sommige van uw instellingen hierboven overschrijven.
             title: Geavanceerde opmaak
           photo:
@@ -1827,7 +1832,7 @@ nl:
             item:
               operator: Selecteer een vergelijking
               subcolumn: Selecteer een subkolom
-              title: ! 'Voorwaarde:'
+              title: 'Voorwaarde:'
             new_condition_button: Voorwaarde toevoegen
             new_rule_button: Nieuwe regel toevoegen
             title: Voorwaarden
@@ -1962,11 +1967,11 @@ nl:
             location_column: Een locatiekolom is nodig om een ​​kaart te maken.
             viz_limit: Een view mag er slechts een visualisatie op hebben
         odata:
-          endpoint_action: 
-          intro_html1: 
-          intro_html2: 
-          subtitle: 
-          title: 
+          endpoint_action: 'Kopieer deze link:'
+          intro_html1: Maak een spreadsheet in Microsoft Excel om deze dataset te analyseren of te visualiseren. Door een OData link te gebruiken worden deze gegevens verversbaar.
+          intro_html2: Gebruik Microsoft Excel 2010, Microsoft Excel 2013 of Microsoft Power Query. Volg de instructies hier, met behulp van <a href="%{doc_link}">Socrata's OData documentatie</a>.
+          subtitle: Krijg toegang tot deze dataset via OData
+          title: OData
         ownership:
           error: Er was een probleem bij het veranderen van eigenaarschap. Probeer het later opnieuw.
           me: Me
@@ -1991,21 +1996,21 @@ nl:
             valid_saved: Deze view moet geldig zijn en opgeslagen worden
         print:
           margins:
-            bottom: ! 'Onderkant:'
-            left: ! 'Links:'
-            right: ! 'Rechts:'
-            top: ! 'Bovenkant:'
-          margins_title: ! 'Marges (inches):'
+            bottom: 'Onderkant:'
+            left: 'Links:'
+            right: 'Rechts:'
+            top: 'Bovenkant:'
+          margins_title: 'Marges (inches):'
           options:
             fit: Verklein zodat dataset op een pagina past
             header_icons: Geef pictogrammen weer in koptekst kolom
             headers_every_page: Print kolomtitels op elke pagina
-          options_title: ! 'Opties:'
-          orientation: ! 'Oriëntatie:'
+          options_title: 'Opties:'
+          orientation: 'Oriëntatie:'
           orientations:
             landscape: Landschap
             portrait: Portret
-          paper_size: ! 'Papierformaat:'
+          paper_size: 'Papierformaat:'
           paper_sizes:
             a0: A0 (841 x 1189 mm)
             a1: A1 (594 x 841 mm)
@@ -2025,9 +2030,9 @@ nl:
           subtitle: Met de Sociale Dataplayer kunt u deze dataset vrij op het internet publiceren
           title: Sociale Dataplayer
           validation:
-            public: ! '
+            public: |2-
 
-              Deze view moet openbaar worden gemaakt voordat deze kan worden gepubliceerd'
+              Deze view moet openbaar worden gemaakt voordat deze kan worden gepubliceerd
             valid_saved: Deze view moet geldig zijn en opgeslagen worden
         share:
           error: Er is een fout opgetreden bij het wijzigen van uw delen. Probeer het later opnieuw
@@ -2094,7 +2099,7 @@ nl:
             delete: Deze view verwijderen
             expand: Klik om uit te breiden
           no_results: Er zijn geen resultaten
-          no_results_html: ! ' '
+          no_results_html: " "
           pagination:
             last: Laatste view bekijken
             next: Zie volgende %{count} views
@@ -2119,7 +2124,7 @@ nl:
           reload_save: Deze verandering vereist een reload. U kunt uw wijzigingen opslaan om ze te bekijken, of annuleren om op deze pagina te blijven.
           reload_update: Deze verandering vereist een reload. U kunt deze view bijwerken of een nieuwe view opslaan om de veranderingen te zien, of annuleren om op deze pagina te blijven.
         form:
-          new_name: ! 'Voer een naam in voor uw nieuwe view:'
+          new_name: 'Voer een naam in voor uw nieuwe view:'
         titles:
           normal: View opslaan
           prompt: Wilt u uw visie opslaan?
@@ -2131,11 +2136,11 @@ nl:
         unpublished_alert: Deze dataset is nog niet gepubliceerd zodat u nog noodzakelijke wijzigingen kunt aanbrengen voordat het voor iedereen toegankelijk is. Het zal niet zichtbaar zijn totdat u deze dataset publiceert.
       subscribe:
         google_reader: Voeg toe aan Google Reader
-        intro_html: ! '<strong> Om u te abonneren op de <span class="datasetName">%{name}</span> dataset via een RSS reader</strong>, gebruikt u een van de volgende links:'
+        intro_html: '<strong> Om u te abonneren op de <span class="datasetName">%{name}</span> dataset via een RSS reader</strong>, gebruikt u een van de volgende links:'
         rss: Downloaden als RSS
         rss_program: Open in extern programma
         subscribe_button: Abonneren via e-mail
-        subscribe_html: <strong> Om e-mailberichten te ontvangen</strong> wanneer er nieuwe gegevens worden gepubliceerd, vinkt u hieronder het vakje Subscribe aan.
+        subscribe_html: "<strong> Om e-mailberichten te ontvangen</strong> wanneer er nieuwe gegevens worden gepubliceerd, vinkt u hieronder het vakje Subscribe aan."
         subscribed_html: <strong> U bent momenteel geabonneerd op deze <span class="datasetTypeName">dataset</span> via e-mail</strong>, en zult u meldingen ontvangen wanneer er nieuwe gegevens worden gepubliceerd.
         title_html: Abonneert u zich op de &quot;<span class="datasetName">%{name}</span>&quot; <span class="datasetTypeNameUpcase">Dataset</span>
         unsubscribe: Indien u niet langer wenst meldingen te ontvangen, verwijdert u het vinkje in het vakje Subscribe hieronder.
@@ -2183,7 +2188,7 @@ nl:
       list: Lijst
       metadata_help: Dit veld is door uw organisatie als privé gemarkeerd en is niet openbaar zichtbaar
       new_attachment: Nieuwe bijlage
-      none: (geen)
+      none: "(geen)"
       northwest_latitude: Noordwestelijke breedtegraad
       northwest_longitude: Noordwestelijke lengtegraad
       optional: Optioneel
@@ -2214,7 +2219,7 @@ nl:
       upload_image: Afbeelding uploaden
       upload_new_attachment: Nieuwe bijlage uploaden
     forgot_password:
-      already_authenticated: ! 'Niet in staat om wachtwoord te resetten: u bent al ingelogd'
+      already_authenticated: 'Niet in staat om wachtwoord te resetten: u bent al ingelogd'
       failed: Er is een probleem opgetreden bij het indienen van uw wachtwoord resetaanvraag. Probeer het opnieuw.
       form:
         reset_password_button: Wachtwoord resetten
@@ -2232,7 +2237,7 @@ nl:
       city: Stad
       column: Kolom
       combine_multiple_columns: Meerdere kolommen samenvoegen
-      create_composite: ! 'Maak één kolom vanuit meerdere bronlolommen:'
+      create_composite: 'Maak één kolom vanuit meerdere bronlolommen:'
       create_js_expression: Hoe maak ik een aangepaste omschrijving in Javascript aan?
       custom_javascript: Aangepaste omschrijving in Javascript...
       enter_custom: Voer een aangepaste waarde in
@@ -2249,7 +2254,7 @@ nl:
       make_title_case: Gebruik kleine letters
       make_upper_case: Gebruik HOOFDLETTERS
       name_this_column: Geef deze kolom een naam
-      new_layer: (Nieuwe laag)
+      new_layer: "(Nieuwe laag)"
       new_source_col: Voeg nieuwe bron kolom toe
       new_transform: Voeg nieuwe transformatie toe
       options: Opties
@@ -2261,22 +2266,22 @@ nl:
       street: Straat
       then: dan
       to_state_code: Zet staten om naar 2-lettercodes
-      transforms: ! 'Voer de volgende transformatie uit bij het importeren:'
+      transforms: 'Voer de volgende transformatie uit bij het importeren:'
       zip: Postcode
     import_pane:
       analyzing: Uw bestand wordt geanalyseerd...
       assure_accessible: Zorg ervoor dat uw bestand toegankelijk en geldig is en probeer het opnieuw.
-      combine_multiple_cols: (Combineer meerdere kolommen...)
+      combine_multiple_cols: "(Combineer meerdere kolommen...)"
       downloading: Uw bestand wordt gedownload...
       filetype_error_blist: Kies een CSV-, TSV-, XLS- of XLSX-bestand.
       filetype_error_shapefile: Kies een KML-, KMZ of ZIP-bestand.
       headline_import: Kies een bestand om te importeren
       headline_upload: Kies een bestand om te uploaden
       layer: Laag
-      many_headers: ! '%{num} van uw rijen zijn kopteksten.'
+      many_headers: "%{num} van uw rijen zijn kopteksten."
       no_file_selected: Nog geen bestand gekozen.
       no_headers: Geen een van uw rijen zijn kopteksten.
-      no_source_column: (Geen bron kolom)
+      no_source_column: "(Geen bron kolom)"
       one_header: Eén van uw rijen is een koptekst
       problem_importing: Er deed zich een probleem voor bij het importeren van dat bestand. Zorg ervoor dat het een geldig bestand is.
       problem_uploading: Er deed zich een probleem voor bij het uploaden van dit bestand. Zorg ervoor dat het om een geldig bestand gaat.
@@ -2335,7 +2340,7 @@ nl:
               privileged_account_created: Een gebruiker maakt zijn bevoorrechte account aan
               user_affected: Acties die u direct van invloed zijn, zoals reacties en statusupdates
               view_made_public: Elke view wordt openbaar gemaakt
-            policy: ! '%{site} respecteert uw privacy en zal u nooit marketinge-mails via deze lijst sturen, of uw e-mailadres aan een derde partij doorgeven. De e-mails die zijn verstuurd vanaf deze site zijn inclusief kennisgevingen over de account en updates voor datasets die u hebt gemaakt of waarop u bent geabboneerd.'
+            policy: "%{site} respecteert uw privacy en zal u nooit marketinge-mails via deze lijst sturen, of uw e-mailadres aan een derde partij doorgeven. De e-mails die zijn verstuurd vanaf deze site zijn inclusief kennisgevingen over de account en updates voor datasets die u hebt gemaakt of waarop u bent geabboneerd."
             send_error: Er is een probleem opgetreden bij het verzenden van uw e-mail. Probeer het later opnieuw.
             send_success: Uw bericht is verzonden
             subtitle: Abonneert u op individuele gebeurtenissen door het bijbehorende vakje aan te vinken.
@@ -2346,16 +2351,16 @@ nl:
           no_openid: U hebt geen OpenID-identificeerders gekoppeld aan dit account.
           old_password: Oud wachtwacht
           password: Wachtwoord
-          password_prompt: (Voor uw veiligheid)
+          password_prompt: "(Voor uw veiligheid)"
           password_restrictions_html: (Er gelden beperkingen <span class="icon">&nbsp;</span>)
           title: Accountinstellingen
         app_tokens:
           application_name: Naam van de applicatie
           application_name_prompt: Voer een naam in voor uw toepassing
           callback_prefix: Terugbelprefix
-          callback_prefix_help_html: ! 'Bijvoorbeeld, als uw aanvraag terug zal bellen naar <span class="code"> https://my-domain.com/socrata-app/oauth/validated </ span> en <span class="code"> https: / / my-domain.com/socrata-app/profile </ span>, u wilt <span class="code"> https://my-domain.com/socrata-app </ span> leveren als uw voorvoegsel. Merk op dat u in ieder geval de gehele domeinnaam moet bijvoegen.'
+          callback_prefix_help_html: 'Bijvoorbeeld, als uw aanvraag terug zal bellen naar <span class="code"> https://my-domain.com/socrata-app/oauth/validated </ span> en <span class="code"> https: / / my-domain.com/socrata-app/profile </ span>, u wilt <span class="code"> https://my-domain.com/socrata-app </ span> leveren als uw voorvoegsel. Merk op dat u in ieder geval de gehele domeinnaam moet bijvoegen.'
           callback_prefix_prompt: Voeg het voorvoegsel bij aan de beveiligde (https) callback uri bij gebruik van OAuth
-          create_error: ! 'Er is een fout opgetreden bij het creëren van uw aanvraagtoken: %{message}'
+          create_error: 'Er is een fout opgetreden bij het creëren van uw aanvraagtoken: %{message}'
           create_success: Uw aanvraag is gecreëerd
           delete_confirm: Weet u zeker dat u deze toepassing wilt verwijderen? De bijbehorende app_token zal niet langer meer geldig zijn
           delete_error: Er is een fout opgetreden bij het verwijderen van uw aanvraagtoken:%{message}
@@ -2375,7 +2380,7 @@ nl:
           website_prompt: Zorg voor een link naar deze applicatie of website van de organisatie
         back_link: Terug naar mijn profiel
         image:
-          error: ! 'Fout bij het uploaden van nieuwe afbeelding: %{message}'
+          error: 'Fout bij het uploaden van nieuwe afbeelding: %{message}'
           success: Uw afbeelding is bijgewerkt
           title: Profielfoto
           upload_image_button: Nieuwe foto uploaden
@@ -2402,7 +2407,7 @@ nl:
           email_mismatch: Nieuwe e-mails komen niet overeen
           image_format: Selecteer een geldig afbeeldingstype (PNG, JPG of GIF)
           invalid_links: Er is een probleem opgetreden bij het bijwerken van uw links. %{message}
-          no_display_name: ! 'Fout: ''Displaynaam'' is vereist'
+          no_display_name: 'Fout: ''Displaynaam'' is vereist'
           no_password_no_openid: U kunt niet al uw OpenID-identificeerders verwijderen voordat u een wachtwoord instelt
           password_mismatch: Nieuwe wachtwoorden komen niet overeen
           user_missing: Deze gebruiker kan niet worden gevonden of is verwijderd.
@@ -2531,8 +2536,8 @@ nl:
       previous: Vorige
   support:
     array:
-      last_word_connector: ! ', en'
+      last_word_connector: ", en"
       two_words_connector: and
     array_or:
-      last_word_connector: ! ', of'
+      last_word_connector: ", of"
       two_words_connector: of

@@ -2,645 +2,650 @@ zh:
   account:
     common:
       form:
-        confirm_password: 确认密码
-        display_name: 显示名称
-        email: 电子邮件地址
-        forgot_password: 忘了密码？
-        lockout_warning: 出于安全考虑，在15分钟内尝试登录三次均失败后，该账户将被锁定30分钟。
-        no_account: 还没有账户？
-        password: 密码
-        password_requirements: 必填。密码必须包含8-40个字符，并满足以下4条要求中的3条：包括1个数字；包括1个小写字母；包括1个大写字母；包括一个非字母数字的符号。
-        password_requirements_html: <p>密码必须包含<b>8-40个字符</b> ，并满足<b>以下4条要求中的3条</b>:</p><p></p><ul><li>•包括1个数字</li><li>•包括1个小写字母</li><li>•包括1个大写字母</li><li>•包括一个非字母数字的符号</li></ul>
-        password_restrictions: 密码设定要求
-        remember_me: 记住我
-        sign_up_prompt: 现在就去注册
+        confirm_password: "确认密码"
+        display_name: "显示名称"
+        email: "电子邮件地址"
+        forgot_password: "忘了密码？"
+        lockout_warning: "出于安全考虑，在15分钟内尝试登录三次均失败后，该账户将被锁定30分钟。"
+        no_account: "还没有账户？"
+        password: "密码"
+        password_requirements: "必填。密码必须包含8-40个字符，并满足以下4条要求中的3条：包括1个数字；包括1个小写字母；包括1个大写字母；包括一个非字母数字的符号。"
+        password_requirements_html: "<p>密码必须包含<b>8-40个字符</b> ，并满足<b>以下4条要求中的3条</b>:</p><p></p><ul><li>•包括1个数字</li><li>•包括1个小写字母</li><li>•包括1个大写字母</li><li>•包括一个非字母数字的符号</li></ul>"
+        password_restrictions: "密码设定要求"
+        remember_me: "记住我"
+        sign_up_prompt: "现在就去注册"
       inline_auth:
-        sign_in_headline: 使用您的Socrata用户名登录
-        sign_up_headline: 我们很高兴您注册%{site}!
+        sign_in_headline: "使用您的Socrata用户名登录"
+        sign_up_headline: "我们很高兴您注册%{site}!"
       rpx:
-        description: 单击即可登录，并使用这些账户提供的更多功能。
+        description: "单击即可登录，并使用这些账户提供的更多功能。"
         prompt:
-          sign_in: 或者…使用以下的账户登录。
-          sign_up: 或者…使用以下的账户注册。
+          sign_in: "或者…使用以下的账户登录。"
+          sign_up: "或者…使用以下的账户注册。"
         providers:
           facebook:
-            sign_in_html: 使用Facebook账户<strong>登录</strong>
-            sign_up_html: 使用Facebook账户<strong>注册</strong>
+            sign_in_html: "使用Facebook账户<strong>登录</strong>"
+            sign_up_html: "使用Facebook账户<strong>注册</strong>"
           google:
-            sign_in_html: 使用Google账户<strong>登录</strong>
-            sign_up_html: 使用Google账户<strong>注册</strong>
+            sign_in_html: "使用Google账户<strong>登录</strong>"
+            sign_up_html: "使用Google账户<strong>注册</strong>"
           openid:
-            sign_in_html: 使用OpenID账户<strong>登录</strong>
-            sign_up_html: 使用OpenID账户<strong>注册</strong>
+            sign_in_html: "使用OpenID账户<strong>登录</strong>"
+            sign_up_html: "使用OpenID账户<strong>注册</strong>"
           twitter:
-            sign_in_html: 使用Twitter账户<strong>登录</strong>
-            sign_up_html: 使用Twitter账户<strong>注册</strong>
+            sign_in_html: "使用Twitter账户<strong>登录</strong>"
+            sign_up_html: "使用Twitter账户<strong>注册</strong>"
       validation:
-        mismatch: 密码不匹配
-        terms: 您必须接受服务条款及隐私政策。
+        mismatch: "密码不匹配"
+        terms: "您必须接受服务条款及隐私政策。"
   controls:
     browse:
       actions:
         about:
-          button: 关于
-          title: 关于此数据集
-        all_options: 查看所有
-        clear_all: 清除所有选项
-        clear_facet: （所有）
-        compact_list: 简洁列表
-        create_dataset: 创建或上传数据集
-        create_dataset_short: 创建新数据集
-        create_dataset_verb: 创建
-        dataset_subscribe: 订阅本视图的改动
+          button: "关于"
+          title: "关于此数据集"
+        all_options: "查看所有"
+        clear_all: "清除所有选项"
+        clear_facet: "（所有）"
+        compact_list: "简洁列表"
+        create_dataset: "创建或上传数据集"
+        create_dataset_short: "创建新数据集"
+        create_dataset_verb: "创建"
+        dataset_subscribe: "订阅本视图的改动"
         delete:
-          button: 删除
-          confirm: 您确定要删除%{dataset}吗？
-          title: 删除此项
-        expand_section: 点击展开
-        less_options: 查看少量
+          button: "删除"
+          confirm: "您确定要删除%{dataset}吗？"
+          title: "删除此项"
+        expand_section: "点击展开"
+        less_options: "查看少量"
         manage_api:
-          button: 管理
-          title: 管理此API
+          button: "管理"
+          title: "管理此API"
         moderation:
-          accept: 接受
-          reject: 拒绝
+          accept: "接受"
+          reject: "拒绝"
         permissions:
           change_button:
-            private_html: 设为私有
-            public_html: 设为公共
-          title: 改变公共可见性
-        rich_list: 详情列表
-        share_button: 分享
-        subscribe: 订阅
-        suggest_dataset: 没有找到您需要的数据集？提出您的数据集建议吧。
-        suggest_dataset_short: 数据集建议
-        suggest_dataset_verb: 建议
-      back_to_dataset: 返回数据集
+            private_html: "设为私有"
+            public_html: "设为公共"
+          title: "改变公共可见性"
+        rich_list: "详情列表"
+        share_button: "分享"
+        subscribe: "订阅"
+        suggest_dataset: "没有找到您需要的数据集？提出您的数据集建议吧。"
+        suggest_dataset_short: "数据集建议"
+        suggest_dataset_verb: "建议"
+      back_to_dataset: "返回数据集"
       facets:
-        categories_singular_title: 类别
-        categories_title: 类别
-        federated_domains_singular_title: 域
-        federated_domains_title: 合作域
+        categories_singular_title: "类别"
+        categories_title: "类别"
+        federated_domains_singular_title: "域"
+        federated_domains_title: "合作域"
         moderation_status:
-          accepted: 已接受
-          pending: 处理中
-          rejected: 已拒绝
-        moderation_status_singular_title: 审核
-        moderation_status_title: 审核状态
-        topics_singular_title: 主题
-        topics_title: 主题
+          accepted: "已接受"
+          pending: "处理中"
+          rejected: "已拒绝"
+        moderation_status_singular_title: "审核"
+        moderation_status_title: "审核状态"
+        topics_singular_title: "主题"
+        topics_title: "主题"
         view_types:
           apis: API
-          blob: 文件及文档
-          calendars: 日历
-          charts: 图表
-          datasets: 数据集
-          filters: 筛选视图
-          forms: 表格
-          href: 外部数据集
-          maps: 地图
-          unpublished: 未发布的数据集
-        view_types_singular_title: 类型
-        view_types_title: 视图类型
+          blob: "文件及文档"
+          calendars: "日历"
+          charts: "图表"
+          datasets: "数据集"
+          filters: "筛选视图"
+          forms: "表格"
+          href: "外部数据集"
+          maps: "地图"
+          unpublished: "未发布的数据集"
+        view_types_singular_title: "类型"
+        view_types_title: "视图类型"
       listing:
-        comment_count: 评论数量
-        federation_source: 来自联合域：%{source}
-        federation_source_html: 来源：%{source_link}
-        no_results: 没有结果
-        result_count: ! '共%{total}个结果，显示 %{this} '
+        comment_count: "评论数量"
+        federation_source: "来自联合域：%{source}"
+        federation_source_html: "来源：%{source_link}"
+        no_results: "没有结果"
+        result_count: "共%{total}个结果，显示 %{this} "
         table_header:
-          name: 名称
-          popularity: 关注度
+          name: "名称"
+          popularity: "关注度"
           rss: RSS
-          type: 类型
-        timeout: 抱歉，本次未能搜索到结果，请稍后再试。
+          type: "类型"
+        timeout: "抱歉，本次未能搜索到结果，请稍后再试。"
       row_results:
-        less_link: 更少
-        matching_rows: 匹配的行
-        more_link: 更多
-        no_matching_rows: 没有匹配行
+        less_link: "更少"
+        matching_rows: "匹配的行"
+        more_link: "更多"
+        no_matching_rows: "没有匹配行"
         title_html: 共<span class="totalResultCountText"></span> 匹配数据行 <a href="#" class="rowSearchLink">（查看结果），</a>显示 <span class="rowResultCountText"></span> ：
-      search: 搜索
-      sort_period_title: 排序时间
+      search: "搜索"
+      sort_period_title: "排序时间"
       sort_periods:
-        month: 本月
-        week: 本周
-        year: 本年
-      sort_title: 排序方式
+        month: "本月"
+        week: "本周"
+        year: "本年"
+      sort_title: "排序方式"
       sorts:
-        alpha: 按字母排序
-        comments: 评论最多
-        last_modified: 最近更新
-        most_accessed: 浏览量最多
-        newest: 最新
-        oldest: 最早
-        rating: 评分最高
-        relevance: 相关度最高
+        alpha: "按字母排序"
+        comments: "评论最多"
+        last_modified: "最近更新"
+        most_accessed: "浏览量最多"
+        newest: "最新"
+        oldest: "最早"
+        rating: "评分最高"
+        relevance: "相关度最高"
       title:
-        default: 搜索、浏览数据集和视图
+        default: "搜索、浏览数据集和视图"
         result:
-          facet: ! '%{facet_value}的%{facet_type} '
-          facet_main: 匹配 %{body}
-          main: 结果 %{body}
-          term: ! '"%{term}" 的'
+          facet: "%{facet_value}的%{facet_type} "
+          facet_main: "匹配 %{body}"
+          main: "结果 %{body}"
+          term: '"%{term}" 的'
     charts:
-      negatives_in_data: 无效图表：现负值
-      no_data: 无数据
-      other_slice_label: 其他
+      negatives_in_data: "无效图表：现负值"
+      no_data: "无数据"
+      other_slice_label: "其他"
       series_grouping:
-        calculating_time: 计算剩余时间...
-        calculation_running: 准备数据
-        drawing_progress: 这可能需要一些时间…
-        drawing_running: 绘制图表
-        pause_button_explanation1: 提示！ 花费太长时间？ 尝试暂停并创建 筛选器
-        pause_button_explanation2: 以限制所需计算量。
-        pause_rendering: 暂停
-        rendering_paused: 数据准备已暂停
-        rendering_progress: 剩下 %{rows_remaining} 列。
-        rendering_progress_almost_done: 还剩%{rows_remaining} 行，只需几秒即可完成。
-        rendering_progress_minute: 还剩%{rows_remaining} 行，大约需要%{time_remaining} 分钟。
-        rendering_progress_minutes: 还剩%{rows_remaining} 行，大约需要%{time_remaining} 分钟。
-        rendering_progress_seconds: 还剩%{rows_remaining} 行，大约需要%{time_remaining} 秒。
-        resume_rendering: 恢复
-      zero_only_data: 无大于零的值
+        calculating_time: "计算剩余时间..."
+        calculation_running: "准备数据"
+        drawing_progress: "这可能需要一些时间…"
+        drawing_running: "绘制图表"
+        pause_button_explanation1: "提示！ 花费太长时间？ 尝试暂停并创建 筛选器"
+        pause_button_explanation2: "以限制所需计算量。"
+        pause_rendering: "暂停"
+        rendering_paused: "数据准备已暂停"
+        rendering_progress: "剩下 %{rows_remaining} 列。"
+        rendering_progress_almost_done: "还剩%{rows_remaining} 行，只需几秒即可完成。"
+        rendering_progress_minute: "还剩%{rows_remaining} 行，大约需要%{time_remaining} 分钟。"
+        rendering_progress_minutes: "还剩%{rows_remaining} 行，大约需要%{time_remaining} 分钟。"
+        rendering_progress_seconds: "还剩%{rows_remaining} 行，大约需要%{time_remaining} 秒。"
+        resume_rendering: "恢复"
+      zero_only_data: "无大于零的值"
     common:
-      auth_required: 您必须登录，才能%{action_phrase}
+      auth_required: "您必须登录，才能%{action_phrase}"
       dataset_picker:
-        button: 选择
-        title: 选择数据集以使用
+        button: "选择"
+        title: "选择数据集以使用"
       expander:
-        collapse: 点击以折叠
-        expand: 点击以展开
+        collapse: "点击以折叠"
+        expand: "点击以展开"
       image_upload:
-        button: 上传图片
-      no_results: 无结果
+        button: "上传图片"
+      no_results: "无结果"
       rate:
-        auth_action_phrase: 给数据集评分
+        auth_action_phrase: "给数据集评分"
       share:
-        button_prompt: 社交
-        button_tooltip: 分享数据集
+        button_prompt: "社交"
+        button_tooltip: "分享数据集"
         networks:
-          email: 电子邮件
+          email: "电子邮件"
           facebook: Facebook
           twitter: Twitter
-        share_text: 到%{site}查看%{name}数据集：
+        share_text: "到%{site}查看%{name}数据集："
       sidebar:
         tabs:
-          about: 关于此数据集
-          components: 组件
-          configuration: 配置
-          discuss: 讨论
-          edit: 编辑
-          embed: 嵌入
-          export: 导出
-          filter: 筛选
-          manage: 管理
-          moreViews: 更多视图
-          visualize: 可视化
+          about: "关于此数据集"
+          components: "组件"
+          configuration: "配置"
+          discuss: "讨论"
+          edit: "编辑"
+          embed: "嵌入"
+          export: "导出"
+          filter: "筛选"
+          manage: "管理"
+          moreViews: "更多视图"
+          visualize: "可视化"
       stars:
-        tooltip: ! '%{number} 颗星'
+        tooltip: "%{number} 颗星"
       visualization:
-        in_bing: 在必应地图中查看
-        in_google: 使用谷歌地图查看
-        row_details: 查看该列详情
+        in_bing: "在必应地图中查看"
+        in_google: "使用谷歌地图查看"
+        row_details: "查看该列详情"
     editors:
       actions:
-        add: 添加
-        remove: 删除
-        replace: 替换
-        view: 查看
+        add: "添加"
+        remove: "删除"
+        replace: "替换"
+        view: "查看"
       document:
-        add_title: 添加新文件
-        remove_title: 删除文件
-        replace_title: 替换文件
+        add_title: "添加新文件"
+        remove_title: "删除文件"
+        replace_title: "替换文件"
       photo:
-        add_title: 添加新图像
-        remove_title: 删除图像
-        replace_title: 替换图像
-        view_title: 在单独窗口查看图像
+        add_title: "添加新图像"
+        remove_title: "删除图像"
+        replace_title: "替换图像"
+        view_title: "在单独窗口查看图像"
     embed:
-      create_template_button: 创建新模板
-      custom_size: 自定义尺寸
-      embed: 嵌入此数据集
-      form_frame: 将此表格嵌入框架中
-      form_or: 或者
-      form_plain: 以普通HTML的形式嵌入该表格
-      height: 高度
+      create_template_button: "创建新模板"
+      custom_size: "自定义尺寸"
+      embed: "嵌入此数据集"
+      form_frame: "将此表格嵌入框架中"
+      form_or: "或者"
+      form_plain: "以普通HTML的形式嵌入该表格"
+      height: "高度"
       minimum_size: 425x425是最小尺寸
-      private_warning: 本视图目前为私有属性。您可以预览视图，但需要先修改为公共属性，才能让其他人看到视图。
-      sdp_template: 社交数据播放器模板
-      size: 尺寸
-      template: 模板
-      width: 宽度
+      private_warning: "本视图目前为私有属性。您可以预览视图，但需要先修改为公共属性，才能让其他人看到视图。"
+      sdp_template: "社交数据播放器模板"
+      size: "尺寸"
+      template: "模板"
+      width: "宽度"
     feed:
       authed_actions:
-        delete_comment: 删除评论
-        flag_comment: 标记评论
-        post_comment: 发布评论
-        rate_comment: 给评论打分
+        delete_comment: "删除评论"
+        flag_comment: "标记评论"
+        post_comment: "发布评论"
+        rate_comment: "给评论打分"
       comment_actions:
-        already_marked_inappropriate: 已做标记
-        delete: 删除
-        delete_confirm: 确信要这么做吗？您的评论将丢失。
-        inappropriate: 不恰当
-        marked_inappropriate: 已做标记！
-        rate_down: 下调这个评论得分
-        rate_up: 上调这个评论得分
-        reply: 回复
+        already_marked_inappropriate: "已做标记"
+        delete: "删除"
+        delete_confirm: "确信要这么做吗？您的评论将丢失。"
+        inappropriate: "不恰当"
+        marked_inappropriate: "已做标记！"
+        rate_down: "下调这个评论得分"
+        rate_up: "上调这个评论得分"
+        reply: "回复"
       comment_form:
-        cancel_button: 取消
-        empty_body_error: 评论正文必须有内容。
-        header: 新评论
-        post_button: 发布
+        cancel_button: "取消"
+        empty_body_error: "评论正文必须有内容。"
+        header: "新评论"
+        post_button: "发布"
       header:
-        add_comment: 添加评论
+        add_comment: "添加评论"
         cell_comment_header_html: 针对<span class="rowName"></span>行及<span class="columnName"></span>列的评论
-        feed_filter_label: 显示
-        pending_moderation: 您的评论已提交，正等待审核
+        feed_filter_label: "显示"
+        pending_moderation: "您的评论已提交，正等待审核"
       listing:
-        all_replies: 查看所有回复
-        all_replies_with_count: 查看所有%{count} 回复
-        last_item: 查看最后一项
-        next_item_page: 查看下一%{count} 项目
-        no_results: 没有可显示的项目
-        user_create_action: ! '创建 %{thing}:'
+        all_replies: "查看所有回复"
+        all_replies_with_count: "查看所有%{count} 回复"
+        last_item: "查看最后一项"
+        next_item_page: "查看下一%{count} 项目"
+        no_results: "没有可显示的项目"
+        user_create_action: "创建 %{thing}:"
       types:
-        all items: 所有项目
-        comments: 评论
-        views: 视图
+        all items: "所有项目"
+        comments: "评论"
+        views: "视图"
     filter:
       actions:
-        confirm_modify: 这项操作将移除所有筛选值！您确定这么做吗？
-        disable_filter: 不筛选
-        first_condition: 单击此处添加第一个筛选条件
-        new_condition_button: 添加新的筛选条件
-        remove_filter: 移除筛选
-        select_column: 选择筛选列：
-        select_operation: 选择筛选的运算条件：
-        select_subcolumn: 选择筛选的%{name}部分：
+        confirm_modify: "这项操作将移除所有筛选值！您确定这么做吗？"
+        disable_filter: "不筛选"
+        first_condition: "单击此处添加第一个筛选条件"
+        new_condition_button: "添加新的筛选条件"
+        remove_filter: "移除筛选"
+        select_column: "选择筛选列："
+        select_operation: "选择筛选的运算条件："
+        select_subcolumn: "选择筛选的%{name}部分："
       edit_default:
-        advanced_body: 这意味着用户可以访问筛选的所有选项。如果想查看更精简的视图，可以尝试简化模式。
-        advanced_header: 用户以高级模式启动。
-        advanced_toggle: 默认设置改为简化。
-        auto_suggested: 这种操作符类型的建议值为自动设置。
-        cancel_button: 取消
-        done_button: 完成
-        instructions: 使用上面的工具创建筛选、调整显示值、选择筛选能自动建议的值的个数，以及进行其它操作。确定所有选项后，单击下面的“完成”保存：
+        advanced_body: "这意味着用户可以访问筛选的所有选项。如果想查看更精简的视图，可以尝试简化模式。"
+        advanced_header: "用户以高级模式启动。"
+        advanced_toggle: "默认设置改为简化。"
+        auto_suggested: "这种操作符类型的建议值为自动设置。"
+        cancel_button: "取消"
+        done_button: "完成"
+        instructions: "使用上面的工具创建筛选、调整显示值、选择筛选能自动建议的值的个数，以及进行其它操作。确定所有选项后，单击下面的“完成”保存："
         manual_suggested_html: 最多显示 <select class="autogeneratedCount"></select> 个建议值
-        mode_button: 编辑默认筛选
-        mode_message: 作为此视图的发布者，您可用以下功能决定访客看到的默认筛选视图：
-        save_confirm: 如果选择继续，未保存的变更将丢失。在继续之前，请保存需要保留的改动。
-        simplified_body: 这意味着用户不能添加新条件、改变筛选列或操作符、或访问筛选的高级菜单。
-        simplified_header: 用户以简化模式启动。
-        simplified_toggle: 默认设置改为高级。
+        mode_button: "编辑默认筛选"
+        mode_message: "作为此视图的发布者，您可用以下功能决定访客看到的默认筛选视图："
+        save_confirm: "如果选择继续，未保存的变更将丢失。在继续之前，请保存需要保留的改动。"
+        simplified_body: "这意味着用户不能添加新条件、改变筛选列或操作符、或访问筛选的高级菜单。"
+        simplified_header: "用户以简化模式启动。"
+        simplified_toggle: "默认设置改为高级。"
       main:
-        base_explanation: 利用以下基础滤镜
-        base_info: 总是应用这些滤镜，以及上面输入任何其他滤镜。这些滤镜无法编辑，是因为你无权限编辑当前视图，或因为它们自父视图或数据集。
-        filter: 筛选
-        filter_based_on_contents: 基于内容筛选数据集。
-        no_conditions: 还未定义条件。
-        no_suggestions: 此列及操作符没有建议值。
-        or: 或者
-        simplified_message: 目前是简化模式。
-        simplified_toggle: 现在进入高级模式吗？
+        base_explanation: "利用以下基础滤镜"
+        base_info: "总是应用这些滤镜，以及上面输入任何其他滤镜。这些滤镜无法编辑，是因为你无权限编辑当前视图，或因为它们自父视图或数据集。"
+        filter: "筛选"
+        filter_based_on_contents: "基于内容筛选数据集。"
+        no_conditions: "还未定义条件。"
+        no_suggestions: "此列及操作符没有建议值。"
+        or: "或者"
+        simplified_message: "目前是简化模式。"
+        simplified_toggle: "现在进入高级模式吗？"
         tutorial_html: 从来没有进行过筛选操作吗？在<a href="/videos/popup#basic-filtering" rel="video" class="noRedirPrompt">此处</a>观看简短的教程视频。
-        view_has_no_columns: 该视图无列可筛选
-        view_must_be_valid: 必须是有效视图
+        view_has_no_columns: "该视图无列可筛选"
+        view_must_be_valid: "必须是有效视图"
       menu:
-        match_all: 匹配所有条件
-        match_any: 匹配任何条件
-        select_many: 选择多个
-        select_one: 选择一个
-        show_suggested: 显示建议值
-        title: 选项
+        match_all: "匹配所有条件"
+        match_any: "匹配任何条件"
+        select_many: "选择多个"
+        select_one: "选择一个"
+        show_suggested: "显示建议值"
+        title: "选项"
     global_indicator:
-      error: 错误
-      saved: 已保存
-      saving: 保存中...
-      working: 工作中...
+      error: "错误"
+      saved: "已保存"
+      saving: "保存中..."
+      working: "工作中..."
     grid:
-      add_column: 添加一个新列...
-      clear_column_filter: 清除列筛选
-      clear_sort: 清除排序
-      click_for_menu: 单击显示菜单
-      click_to_sort: 点击以排序
-      column_info: 列信息
-      delete_column: 删除列
-      delete_row: 删除行
-      delete_warning_multi_column: 您想删除选中的列吗？列中的数据将全部删除！
-      delete_warning_single_column: 您想删除选中的列吗？列中的数据将全部删除！
-      edit_column_properties: 编辑列属性
-      filter_this_column: 对本列进行筛选
-      geocodes_pending: 在位置栏中的行仍在地理编码。请等待，直到完成以发布这一数据集
-      hide_column: 隐藏列
-      menu: 菜单
-      must_enter_name: 您必须输入此列的名称
-      new_row: 新增
-      no_columns: 数据集%{uid}没有任何列。
-      no_rows: 无行显示
-      permission_denied: 您没有访问该视图的权限。
-      previous: 上一步
-      required_cols_missing: 缺少该视图所需的列
-      sort_ascending: 按升序排列
-      sort_descending: 按降序排列
-      totals: 目标
-      view_cell_comments: 查看该单元格注释
-      view_first_row: 查看第一列
-      view_last_row: 查看最后一列
-      view_next_row: 查看下一行
-      view_previous_row: 查看前一列
-      view_row: 查看行
-      view_single_row: 查看单行的数据
+      add_column: "添加一个新列..."
+      clear_column_filter: "清除列筛选"
+      clear_sort: "清除排序"
+      click_for_menu: "单击显示菜单"
+      click_to_sort: "点击以排序"
+      column_info: "列信息"
+      delete_column: "删除列"
+      delete_row: "删除行"
+      delete_warning_multi_column: "您想删除选中的列吗？列中的数据将全部删除！"
+      delete_warning_single_column: "您想删除选中的列吗？列中的数据将全部删除！"
+      edit_column_properties: "编辑列属性"
+      filter_this_column: "对本列进行筛选"
+      geocodes_pending: "在位置栏中的行仍在地理编码。请等待，直到完成以发布这一数据集"
+      hide_column: "隐藏列"
+      menu: "菜单"
+      must_enter_name: "您必须输入此列的名称"
+      new_row: "新增"
+      no_columns: "数据集%{uid}没有任何列。"
+      no_rows: "无行显示"
+      permission_denied: "您没有访问该视图的权限。"
+      previous: "上一步"
+      required_cols_missing: "缺少该视图所需的列"
+      sort_ascending: "按升序排列"
+      sort_descending: "按降序排列"
+      totals: "目标"
+      view_cell_comments: "查看该单元格注释"
+      view_first_row: "查看第一列"
+      view_last_row: "查看最后一列"
+      view_next_row: "查看下一行"
+      view_previous_row: "查看前一列"
+      view_row: "查看行"
+      view_single_row: "查看单行的数据"
       viewing_row_html: 查看第 <span class="curPage"></span> 行，共 <span class="totalPages"></span> 行
     map:
-      address_prompt: 在此输入地址
-      auto: 自动
-      base_layers: 基础层
-      boundary_map: 边界地图
-      current_location: 使用当前位置
-      data_layers: 数据层
-      data_request_timeout: 数据请求时间过长和超时。
-      forever_node_explanation: 该集群的数据过于密集，无法按地域来显示有用的数据。
+      address_prompt: "在此输入地址"
+      auto: "自动"
+      base_layers: "基础层"
+      boundary_map: "边界地图"
+      current_location: "使用当前位置"
+      data_layers: "数据层"
+      data_request_timeout: "数据请求时间过长和超时。"
+      forever_node_explanation: "该集群的数据过于密集，无法按地域来显示有用的数据。"
       forever_node_recommend: 我们建议你<a href="#openTable">打开表格视图</ a>，以获得更多的细节。
-      forever_node_title: 数据过多
-      geocoding_inaccessible: 地理编码服务不可访问。请稍后再试。
-      geocoding_noresults: 无法进行地理编码。请确保该地址是正确的。
-      heat_map: 热图
-      heatmap_ie8_warning: 光栅热图在当前的浏览器无法工作。请升级到IE9，使用谷歌Chrome或Mozilla Firefox。谢谢。
-      loading: 载入中...
-      map_legend: 地图图例
-      multiple_layer_instructions: 这里有多层数据。选择一层：
-      next: 下一层
-      next_row: 下一行
-      no_columns_defined: 无定义的列
-      point_map: 点图
-      previous: 下一
-      previous_row: 上一行
-      request_timed_out: 该数据请求超时。
+      forever_node_title: "数据过多"
+      geocoding_inaccessible: "地理编码服务不可访问。请稍后再试。"
+      geocoding_noresults: "无法进行地理编码。请确保该地址是正确的。"
+      heat_map: "热图"
+      heatmap_ie8_warning: "光栅热图在当前的浏览器无法工作。请升级到IE9，使用谷歌Chrome或Mozilla Firefox。谢谢。"
+      loading: "载入中..."
+      map_legend: "地图图例"
+      multiple_layer_instructions: "这里有多层数据。选择一层："
+      next: "下一层"
+      next_row: "下一行"
+      no_columns_defined: "无定义的列"
+      point_map: "点图"
+      previous: "下一"
+      previous_row: "上一行"
+      request_timed_out: "该数据请求超时。"
     nominate:
-      all: 所有
-      approve: （批准）
-      approve_tip: 批准该建议
-      approved: 已通过
-      attachment: 附件
-      attachments: 附件
-      back_to_suggestions: 返回数据集建议
-      browse: 浏览
-      cancel: 取消
-      comments: 注释
-      contact_author: 联系建议作者
-      dataset_suggestions: 数据集建议
-      delete_attachment: ! '附件 '
-      delete_confirm: 您确定要删除该%{type}吗？
-      delete_error: 删除%{type}时出错
-      delete_suggestion: 建议
-      description: 描述
-      description_prompt: 输入建议详情
-      details: 详细信息
-      edit: （编辑）
-      edit_suggestion: 编辑此建议
-      files: 文件
-      filter_by_status: 按状态筛选
-      form_error: 请改正以上错误
-      great_sadness: 联系建议作者时出错。请稍后再试。
-      greater_success: 您的信息已发送给建议作者。
-      message: 消息
-      message_prompt: 输入消息
-      moderate: （适中）
-      moderate_error: 更改状态时出错
-      moderate_tip: 接受该建议并打开进行投票
-      needs_moderation: 需要审阅
-      new: 新
-      no_result: 无结果
-      open: 打开
-      rate_down: 我不喜欢它
-      rate_up: 我喜欢它
-      rating: 评定
-      rating_error: 为建议评分时出错
-      reject: 拒绝
-      reject_tip: 拒绝该建议
-      rejected: 已拒绝
-      remove: （删除）
-      remove_tip: 删除该建议
-      required: 必填
-      status: 状态
-      submit: 提交
-      submitted_by: 提交者
-      suggest_a_dataset: 建议数据集
-      suggestion_received: 您的建议已收到，正在审核队列中等待审核。管理员批准后，该建议会立即显示在该页面上。
-      suggestion_updated: 您的建议已更新
-      title: 标题
-      title_prompt: 输入标题
-      user_removed: 已被删除的用户
-      user_removed_short: 用户已删除
+      all: "所有"
+      approve: "（批准）"
+      approve_tip: "批准该建议"
+      approved: "已通过"
+      attachment: "附件"
+      attachments: "附件"
+      back_to_suggestions: "返回数据集建议"
+      browse: "浏览"
+      cancel: "取消"
+      comments: "注释"
+      contact_author: "联系建议作者"
+      dataset_suggestions: "数据集建议"
+      delete_attachment: "附件 "
+      delete_confirm: "您确定要删除该%{type}吗？"
+      delete_error: "删除%{type}时出错"
+      delete_suggestion: "建议"
+      description: "描述"
+      description_prompt: "输入建议详情"
+      details: "详细信息"
+      edit: "（编辑）"
+      edit_suggestion: "编辑此建议"
+      files: "文件"
+      filter_by_status: "按状态筛选"
+      form_error: "请改正以上错误"
+      great_sadness: "联系建议作者时出错。请稍后再试。"
+      greater_success: "您的信息已发送给建议作者。"
+      message: "消息"
+      message_prompt: "输入消息"
+      moderate: "（适中）"
+      moderate_error: "更改状态时出错"
+      moderate_tip: "接受该建议并打开进行投票"
+      needs_moderation: "需要审阅"
+      new: "新"
+      no_result: "无结果"
+      open: "打开"
+      rate_down: "我不喜欢它"
+      rate_up: "我喜欢它"
+      rating: "评定"
+      rating_error: "为建议评分时出错"
+      reject: "拒绝"
+      reject_tip: "拒绝该建议"
+      rejected: "已拒绝"
+      remove: "（删除）"
+      remove_tip: "删除该建议"
+      required: "必填"
+      status: "状态"
+      submit: "提交"
+      submitted_by: "提交者"
+      suggest_a_dataset: "建议数据集"
+      suggestion_received: "您的建议已收到，正在审核队列中等待审核。管理员批准后，该建议会立即显示在该页面上。"
+      suggestion_updated: "您的建议已更新"
+      title: "标题"
+      title_prompt: "输入标题"
+      user_removed: "已被删除的用户"
+      user_removed_short: "用户已删除"
     upload_dialog:
-      browse: 浏览
-      title_file: 上传文件
-      title_image: 上传图像
-      title_photo: 上传照片
-      to_upload_file: 要上传的文件：
-      to_upload_image: 要上传的图像：
-      to_upload_photo: 要上传的照片：
-      upload: 上传
+      browse: "浏览"
+      title_file: "上传文件"
+      title_image: "上传图像"
+      title_photo: "上传照片"
+      to_upload_file: "要上传的文件："
+      to_upload_image: "要上传的图像："
+      to_upload_photo: "要上传的照片："
+      upload: "上传"
   core:
     aggregates:
-      average: 平均
-      count: 计数
-      maximum: 最大
-      minimum: 最小
-      sum: 总计
+      average: "平均"
+      count: "计数"
+      maximum: "最大"
+      minimum: "最小"
+      sum: "总计"
     alignment:
-      center: 居中
-      left: 左对齐
-      right: 右对齐
+      center: "居中"
+      left: "左对齐"
+      right: "右对齐"
     analytics:
-      visit: 视图
-      visits: 视图
-    and: 和
+      visit: "视图"
+      visits: "视图"
+    and: "和"
     auth:
-      invalid_userpass: 无效的用户名或密码
-      need_login: 你必须先登录才能访问此页
-      need_permission: 你没有权限查看此页
-      too_many_tries: 该登录尝试的登录次数过多。账户暂时停用。
+      invalid_userpass: "无效的用户名或密码"
+      need_login: "你必须先登录才能访问此页"
+      need_permission: "你没有权限查看此页"
+      too_many_tries: "该登录尝试的登录次数过多。账户暂时停用。"
+    browser_support:
+      chrome: 
+      internet_explorer: 
+      link_text: 
+      message_html: 
     chart_types:
-      area: 面积图
-      bar: 条形图
-      bubble: 气泡图
-      column: 柱状图
-      donut: 环状图
-      line: 折线图
-      pie: 饼图
-      stackedbar: 堆叠条形图
-      stackedcolumn: 堆叠柱状图
-      timeline: 时间线
-      treemap: 树型图
+      area: "面积图"
+      bar: "条形图"
+      bubble: "气泡图"
+      column: "柱状图"
+      donut: "环状图"
+      line: "折线图"
+      pie: "饼图"
+      stackedbar: "堆叠条形图"
+      stackedcolumn: "堆叠柱状图"
+      timeline: "时间线"
+      treemap: "树型图"
     chart_types_short:
-      area: 区域
-      bar: 栏
-      bubble: 气泡图
-      column: 列
-      donut: 环形图
-      line: 线
-      pie: 饼图
-      stackedbar: 堆积条形图
-      stackedcolumn: 堆积列
-      timeline: 时间轴
-      treemap: 树形图
+      area: "区域"
+      bar: "栏"
+      bubble: "气泡图"
+      column: "列"
+      donut: "环形图"
+      line: "线"
+      pie: "饼图"
+      stackedbar: "堆积条形图"
+      stackedcolumn: "堆积列"
+      timeline: "时间轴"
+      treemap: "树形图"
     data_types:
-      calendar_date: 日期和时间
-      checkbox: 复选框
-      dataset_link: 数据集链接
-      date: 日期和时间（说明时区）
-      document: 文档
-      drop_down_list: 多项选择
-      email: 电子邮件
-      flag: 旗标
-      geospatial: 地理空间
-      html: 格式化文本
-      link: 链接列
-      list: 列表
-      location: 地点
-      money: 金额
-      nested_table: 嵌套表
-      number: 数字
-      object: 对象
-      percent: 百分比
-      phone: 电话
-      photo: 照片（图像）
-      stars: 星号
-      text: 纯文本
-      url: 网址
+      calendar_date: "日期和时间"
+      checkbox: "复选框"
+      dataset_link: "数据集链接"
+      date: "日期和时间（说明时区）"
+      document: "文档"
+      drop_down_list: "多项选择"
+      email: "电子邮件"
+      flag: "旗标"
+      geospatial: "地理空间"
+      html: "格式化文本"
+      link: "链接列"
+      list: "列表"
+      location: "地点"
+      money: "金额"
+      nested_table: "嵌套表"
+      number: "数字"
+      object: "对象"
+      percent: "百分比"
+      phone: "电话"
+      photo: "照片（图像）"
+      stars: "星号"
+      text: "纯文本"
+      url: "网址"
     date_time:
-      centuries_future: ! '%{time} 个世纪后'
-      centuries_past: ! '%{time} 个世纪前'
-      current_century_future: 本世纪
-      current_century_past: 本世纪
-      current_day_future: 今天
-      current_day_past: 今天
+      centuries_future: "%{time} 个世纪后"
+      centuries_past: "%{time} 个世纪前"
+      current_century_future: "本世纪"
+      current_century_past: "本世纪"
+      current_day_future: "今天"
+      current_day_past: "今天"
       current_hour_future: 1 小时内
       current_hour_past: 1 小时内
-      current_minute_future: 刚刚
-      current_minute_past: 刚刚
-      current_month_future: 本月
-      current_month_past: 本月
-      current_week_future: 本周
-      current_week_past: 本周
-      current_year_future: 今年
-      current_year_past: 今年
-      days_future: ! '%{time} 天后'
-      days_past: ! '%{time} 天前'
-      hours_future: ! '%{time} 小时后'
-      hours_past: ! '%{time} 小时前'
-      minutes_future: ! '%{time} 分钟后'
-      minutes_past: ! '%{time} 分钟前'
-      months_future: ! '%{time} 个月后'
-      months_past: ! '%{time} 个月前'
+      current_minute_future: "刚刚"
+      current_minute_past: "刚刚"
+      current_month_future: "本月"
+      current_month_past: "本月"
+      current_week_future: "本周"
+      current_week_past: "本周"
+      current_year_future: "今年"
+      current_year_past: "今年"
+      days_future: "%{time} 天后"
+      days_past: "%{time} 天前"
+      hours_future: "%{time} 小时后"
+      hours_past: "%{time} 小时前"
+      minutes_future: "%{time} 分钟后"
+      minutes_past: "%{time} 分钟前"
+      months_future: "%{time} 个月后"
+      months_past: "%{time} 个月前"
       single_century_future: 1 个世纪后
       single_century_past: 1 个世纪前
-      single_day_future: 明天
-      single_day_past: 昨天
+      single_day_future: "明天"
+      single_day_past: "昨天"
       single_hour_future: 1 小时后
       single_hour_past: 1 小时前
       single_minute_future: 1 分钟后
       single_minute_past: 1 分钟前
-      single_month_future: 下个月
-      single_month_past: 上月
-      single_week_future: 下周
-      single_week_past: 上周
-      single_year_future: 明年
-      single_year_past: 去年
-      unknown: 有时
-      weeks_future: ! '%{time} 周后'
-      weeks_past: ! '%{time} 周前'
-      years_future: ! '%{time} 年后'
-      years_past: ! '%{time} 年前'
+      single_month_future: "下个月"
+      single_month_past: "上月"
+      single_week_future: "下周"
+      single_week_past: "上周"
+      single_year_future: "明年"
+      single_year_past: "去年"
+      unknown: "有时"
+      weeks_future: "%{time} 周后"
+      weeks_past: "%{time} 周前"
+      years_future: "%{time} 年后"
+      years_past: "%{time} 年前"
     dialogs:
-      apply: 应用
-      cancel: 取消
-      close: 关闭
-      continue: 继续
-      create: 创建
-      delete: 删除
-      done: 完成
-      dont_save: 不保存
-      logout: 您已被注销。
-      save: 保存
+      apply: "应用"
+      cancel: "取消"
+      close: "关闭"
+      continue: "继续"
+      create: "创建"
+      delete: "删除"
+      done: "完成"
+      dont_save: "不保存"
+      logout: "您已被注销。"
+      save: "保存"
       session_timeout:
-        notice: 出于安全原因，您已被注销。请重新登录以继续。
+        notice: "出于安全原因，您已被注销。请重新登录以继续。"
         warning:
-          belay_button: 不要将我注销！
+          belay_button: "不要将我注销！"
           body_html: 我们在数分钟内未注意到有任何操作。 为保护您的隐私，我们将在 <span id="secondsRemaining"></span> 秒后将您注销。
-          title: 您的会话即将过期。
-      submit: 提交
-      update: 更新
+          title: "您的会话即将过期。"
+      submit: "提交"
+      update: "更新"
     expando:
-      expand: 展开
-      prompt: 点击展开
+      expand: "展开"
+      prompt: "点击展开"
     features:
-      allow_comments: 评论
-      cell_comments: 添加评论的单元格
+      allow_comments: "评论"
+      cell_comments: "添加评论的单元格"
     filters:
       formal:
-        between: 介于
-        contains: 包含
-        equals: 等于
-        greater_than: 大于
-        greater_than_or_equals: 大于或等于
-        is_blank: 为空
-        is_not_blank: 不为空
-        less_than: 小于
-        less_than_or_equals: 小于或等于
-        not_contains: 不含
-        not_equals: 不等于
-        starts_with: 始于
+        between: "介于"
+        contains: "包含"
+        equals: "等于"
+        greater_than: "大于"
+        greater_than_or_equals: "大于或等于"
+        is_blank: "为空"
+        is_not_blank: "不为空"
+        less_than: "小于"
+        less_than_or_equals: "小于或等于"
+        not_contains: "不含"
+        not_equals: "不等于"
+        starts_with: "始于"
       informal:
-        between: 介于
-        contains: 包含
-        equals: 是
-        greater_than: 大于
-        greater_than_or_equals: 最少为
-        is_blank: 为空
-        is_not_blank: 不为空
-        less_than: 小于
-        less_than_or_equals: 最多为
-        not_contains: 不含
-        not_equals: 不是
-        starts_with: 始于
+        between: "介于"
+        contains: "包含"
+        equals: "是"
+        greater_than: "大于"
+        greater_than_or_equals: "最少为"
+        is_blank: "为空"
+        is_not_blank: "不为空"
+        less_than: "小于"
+        less_than_or_equals: "最多为"
+        not_contains: "不含"
+        not_equals: "不是"
+        starts_with: "始于"
     forms:
-      none: 无
-      required_field: 要求的字段
+      none: "无"
+      required_field: "要求的字段"
     group_function:
-      date_day: 日
-      date_month: 月
-      date_year: 年
+      date_day: "日"
+      date_month: "月"
+      date_year: "年"
     interstitial:
       leaving_explanation_html: 该 <span class="datasetType">数据集</span> 存放在 <a href="\#" rel="external" class="externalDomain">另一个域</a>.
       leaving_notice_html: 您正在退出 <span class="serverName">%{site_name}</span>
-    maintenance_notice: 自%{start} 至%{finish}这个由Socrata提供技术支持的网站可能无法使用。
+    maintenance_notice: "自%{start} 至%{finish}这个由Socrata提供技术支持的网站可能无法使用。"
     map_layers:
-      aerial: 航空
+      aerial: "航空"
       bing_aerial: Bing 航空图
       bing_roadmap: Bing 路线图
       bing_roadmap_alias: Bing
-      esri_natural_earth: 自然地球图(ESRI)
-      esri_natural_earth_alias: 自然地球图
-      esri_satellite: 卫星图像(ESRI)
-      esri_us_topo: 美国地形详图(ESRI)
-      esri_us_topo_alias: 美国地形图
-      esri_world_street_map: 世界街道图(ESRI)
-      esri_world_street_map_alias: 世界街道图
-      esri_world_topo: 加注世界地形图(ESRI)
-      esri_world_topo_alias: 世界地形图
+      esri_natural_earth: "自然地球图(ESRI)"
+      esri_natural_earth_alias: "自然地球图"
+      esri_satellite: "卫星图像(ESRI)"
+      esri_us_topo: "美国地形详图(ESRI)"
+      esri_us_topo_alias: "美国地形图"
+      esri_world_street_map: "世界街道图(ESRI)"
+      esri_world_street_map_alias: "世界街道图"
+      esri_world_topo: "加注世界地形图(ESRI)"
+      esri_world_topo_alias: "世界地形图"
       google_roadmap: Google 路线图
       google_roadmap_alias: Google
       google_satellite: Google卫星图
       google_terrain: Google地形图
-      roadmap: 路线图
-      satellite: 卫星
-      terrain: 地形
-    no_category: 无类别
-    no_js: 这个页面上禁用javascript
-    no_license: 无许可证
+      roadmap: "路线图"
+      satellite: "卫星"
+      terrain: "地形"
+    no_category: "无类别"
+    no_js: "这个页面上禁用javascript"
+    no_license: "无许可证"
     numbers:
       eight: 8
       five: 5
@@ -652,1292 +657,1292 @@ zh:
       seven: 7
       six: 6
       three: 3
-    or: 或
+    or: "或"
     pagination:
-      current_page: 当前页
-      first_page: 第一页
-      last_page: 最后一页
-      next_page: 下一页
-      page: 页
-      previous_page: 上一页
+      current_page: "当前页"
+      first_page: "第一页"
+      last_page: "最后一页"
+      next_page: "下一页"
+      page: "页"
+      previous_page: "上一页"
     precision_style:
-      scientific: 科学 (1.0204e+3)
-      standard: 标准 (1020.4)
-    required: 必填
+      scientific: "科学 (1.0204e+3)"
+      standard: "标准 (1020.4)"
+    required: "必填"
     share_types:
-      contributor: 参与者
-      owner: 所有者
-      view: 浏览者
-      viewer: 浏览者
+      contributor: "参与者"
+      owner: "所有者"
+      view: "浏览者"
+      viewer: "浏览者"
     validation:
-      accept: 输入值需要有效的扩展名。
-      date: 请填入有效的日期。
-      dateISO: 请填入有效的日期(ISO)。
-      digits: 请只填数字。
-      email: 请填入有效的电子邮件地址。
-      equalTo: 请再次输入相同的值。
-      max: 请输入小于或等于{0}的值。
-      maxlength: 请不要超过{0} 个字符。
-      min: 请输入大于或等于{0}的值。
-      minlength: 请至少输入{0} 个字符。
-      number: 请填入有效的数字。
-      range: 输入值应在{0} 和 {1} 之间。
-      rangelength: 输入值的字符数应介于{0} 和 {1} 之间。
-      remote: 请校正此字段。
-      required: 需要此字段。
-      url: 请填入有效的URL。
+      accept: "输入值需要有效的扩展名。"
+      date: "请填入有效的日期。"
+      dateISO: "请填入有效的日期(ISO)。"
+      digits: "请只填数字。"
+      email: "请填入有效的电子邮件地址。"
+      equalTo: "请再次输入相同的值。"
+      max: "请输入小于或等于{0}的值。"
+      maxlength: "请不要超过{0} 个字符。"
+      min: "请输入大于或等于{0}的值。"
+      minlength: "请至少输入{0} 个字符。"
+      number: "请填入有效的数字。"
+      range: "输入值应在{0} 和 {1} 之间。"
+      rangelength: "输入值的字符数应介于{0} 和 {1} 之间。"
+      remote: "请校正此字段。"
+      required: "需要此字段。"
+      url: "请填入有效的URL。"
     view_types:
       api: API视图
-      blob: 非表格文件或文档
-      calendar: 日历
-      chart: 图表
-      dataset: 数据集
-      filter: 筛选视图
-      form: 表格
-      group: 分组视图
-      grouped: 分组视图
-      href: 外部数据集
-      map: 地图
-      table: 表
-      working_copy: 工作副本
+      blob: "非表格文件或文档"
+      calendar: "日历"
+      chart: "图表"
+      dataset: "数据集"
+      filter: "筛选视图"
+      form: "表格"
+      group: "分组视图"
+      grouped: "分组视图"
+      href: "外部数据集"
+      map: "地图"
+      table: "表"
+      working_copy: "工作副本"
     view_types_plural:
       api: API
-      calendar: 日历
-      chart: 图表
-      filter: 筛选视图
-      form: 表格
-      grouped: 分组视图
-      map: 地图
+      calendar: "日历"
+      chart: "图表"
+      filter: "筛选视图"
+      form: "表格"
+      grouped: "分组视图"
+      map: "地图"
     visibility:
-      private: 私有
-      public: 公共
+      private: "私有"
+      public: "公共"
   dataslate:
     component:
-      edit: 编辑该组件
+      edit: "编辑该组件"
       header:
-        height: 高度
-      invalid_config: 该组件无有效的配置
-      loading: 载入中，请稍候...
+        height: "高度"
+      invalid_config: "该组件无有效的配置"
+      loading: "载入中，请稍候..."
       picture:
-        alt_attr: 更改
-        alt_attr_prompt: 更改属性
-        full_url: 图像完整的URL
-        image_source: 图像来源
-        large: 大 (220x220)
-        medium: 中 (150x150)
-        original: 原始
-        thumb: 缩略图 (80x80)
-        tiny: 小 (24x24)
-        title_attr: 标题
-        title_attr_prompt: 标题属性
+        alt_attr: "更改"
+        alt_attr_prompt: "更改属性"
+        full_url: "图像完整的URL"
+        image_source: "图像来源"
+        large: "大 (220x220)"
+        medium: "中 (150x150)"
+        original: "原始"
+        thumb: "缩略图 (80x80)"
+        tiny: "小 (24x24)"
+        title_attr: "标题"
+        title_attr_prompt: "标题属性"
       print:
-        print: 打印
-        print_this_page: 打印该页
-      remove: 删除该组件
+        print: "打印"
+        print_this_page: "打印该页"
+      remove: "删除该组件"
       share:
-        email: 通过电子邮件分享
-        email_contents: ! '%{company}的%{dataset} '
-        facebook: 在Facebook上分享
-        share: 分享
-        subscribe: 通过电子邮件或RSS订阅
-        subscribe_text: 订阅变更
-        this_page: 该页
-        tweet_contents: 查看%{company}的%{dataset}： %{url}
-        twitter: 在Twitter分享
+        email: "通过电子邮件分享"
+        email_contents: "%{company}的%{dataset} "
+        facebook: "在Facebook上分享"
+        share: "分享"
+        subscribe: "通过电子邮件或RSS订阅"
+        subscribe_text: "订阅变更"
+        this_page: "该页"
+        tweet_contents: "查看%{company}的%{dataset}： %{url}"
+        twitter: "在Twitter分享"
     configurator:
-      actions_components: 操作
-      advanced_components: 高级组件
-      content_components: 内容
-      data_components: 数据
-      input_components: 输入
-      report_components: 报告组件
+      actions_components: "操作"
+      advanced_components: "高级组件"
+      content_components: "内容"
+      data_components: "数据"
+      input_components: "输入"
+      report_components: "报告组件"
     context_picker:
-      select_dataset: 选择数据集
-      view_data: 查看数据
+      select_dataset: "选择数据集"
+      view_data: "查看数据"
     create:
-      cancel: 取消
-      create: 创建
-      create_page: 创建DataSlate页
-      page_settings: 页面设置
-      page_title: 页面标题
-      page_url: 页面URL
-      title: 创建DataSlate页面
+      cancel: "取消"
+      create: "创建"
+      create_page: "创建DataSlate页"
+      page_settings: "页面设置"
+      page_title: "页面标题"
+      page_url: "页面URL"
+      title: "创建DataSlate页面"
     edit:
-      editing: 编辑中
-      permissions: 权限
-      preview_page: 上一页
-      redo: 重做
-      revert: 复原
-      save: 保存
-      save_as: 另存为
-      settings: 设置
-      undo: 重做
-      view_editor: 查看交互式编辑器
+      editing: "编辑中"
+      permissions: "权限"
+      preview_page: "上一页"
+      redo: "重做"
+      revert: "复原"
+      save: "保存"
+      save_as: "另存为"
+      settings: "设置"
+      undo: "重做"
+      view_editor: "查看交互式编辑器"
     edit_component:
-      no_config: 无%{component}可用配置
-      subtitle: 配置该组件
-      title: 编辑组件
+      no_config: "无%{component}可用配置"
+      subtitle: "配置该组件"
+      title: "编辑组件"
     edit_properties:
-      no_data: 该组件无数据设置
-      subtitle: 基于该组件数据上下文添加属性
-      title: 可用属性
+      no_data: "该组件无数据设置"
+      subtitle: "基于该组件数据上下文添加属性"
+      title: "可用属性"
     permissions:
-      cancel: 取消
-      private: 私人
-      private_desc: 仅限你本人查看
-      public: 公众
-      public_desc: 所有人可查看
-      save: 保存
-      shared: 共享到网站
-      shared_desc: 你的所有同事可见，公众不可见
-      title: 页面权限
+      cancel: "取消"
+      private: "私人"
+      private_desc: "仅限你本人查看"
+      public: "公众"
+      public_desc: "所有人可查看"
+      save: "保存"
+      shared: "共享到网站"
+      shared_desc: "你的所有同事可见，公众不可见"
+      title: "页面权限"
     settings:
-      cancel: 取消
-      page_title: 页面标题
-      page_url: 路径
-      save: 保存
-      title: 页面设置
+      cancel: "取消"
+      page_title: "页面标题"
+      page_url: "路径"
+      save: "保存"
+      title: "页面设置"
   date:
     abbr_month_names:
     - 
-    - 一月
-    - 二月
-    - 三月
-    - 四月
-    - 五月
-    - 六月
-    - 七月
-    - 八月
-    - 九月
-    - 十月
-    - 十一月
-    - 十二月
+    - "一月"
+    - "二月"
+    - "三月"
+    - "四月"
+    - "五月"
+    - "六月"
+    - "七月"
+    - "八月"
+    - "九月"
+    - "十月"
+    - "十一月"
+    - "十二月"
   error:
-    back: 返回
+    back: "返回"
     error_500:
-      description_html: ! '请稍后再试，或者 <a href="http://support.socrata.com">报告这一错误</a> ，同时详细说明您进行的操作。 '
-      somethings_wrong: 出错啦！
-      were_sorry: 很抱歉，处理您的请求时出错了。
+      description_html: '请稍后再试，或者 <a href="http://support.socrata.com">报告这一错误</a> ，同时详细说明您进行的操作。 '
+      somethings_wrong: "出错啦！"
+      were_sorry: "很抱歉，处理您的请求时出错了。"
     not_acceptable_406:
-      page_not_found: 未找到页面。
-      were_sorry: 很抱歉，但是此页面没有您要求的格式。
+      page_not_found: "未找到页面。"
+      were_sorry: "很抱歉，但是此页面没有您要求的格式。"
     not_found_404:
-      back_to: 返回
+      back_to: "返回"
       description_html: 页面不存在或已被移动。建议您最好回到<a href="/">主页</a>重新操作。如果问题依然存在，或者确定找不到所需的信息，请与我们联系。谢谢。
-      page_not_found: 未找到页面。
-      were_sorry: 很抱歉，未找到您需要的页面。
+      page_not_found: "未找到页面。"
+      were_sorry: "很抱歉，未找到您需要的页面。"
     permission_denied_403:
       description_html: 如果您认为这是个错误，请先登出，然后<a href="/login">在此</a>作为另一用户登录。
-      no_permission: 没有访问资源的权限。
-      were_sorry: 很抱歉，您似乎没有访问此页面的权限。
-    to_whence_you_came: 上一页面。
+      no_permission: "没有访问资源的权限。"
+      were_sorry: "很抱歉，您似乎没有访问此页面的权限。"
+    to_whence_you_came: "上一页面。"
   govstat:
     chrome:
       header:
         links:
-          account: 账户
-          account_options: 账户选项
-          account_tooltip: 查看并更改你的用户帐户。
-          configuration: 配置
-          configuration_title: 管理GovStat配置
-          data: 数据
-          data_title: 浏览并管理数据
-          goals: 目标
-          goals_title: 创建并跟踪目标
-          home: 主页
-          home_title: 主页
-          my_goals: 我的目标
-          my_goals_tooltip: 查看我已创建的目标。
-          reports: 报告
-          reports_title: 查看并创建报表
+          account: "账户"
+          account_options: "账户选项"
+          account_tooltip: "查看并更改你的用户帐户。"
+          configuration: "配置"
+          configuration_title: "管理GovStat配置"
+          data: "数据"
+          data_title: "浏览并管理数据"
+          goals: "目标"
+          goals_title: "创建并跟踪目标"
+          home: "主页"
+          home_title: "主页"
+          my_goals: "我的目标"
+          my_goals_tooltip: "查看我已创建的目标。"
+          reports: "报告"
+          reports_title: "查看并创建报表"
     configuration:
-      analytics: 分析
-      appearance: 外观
-      config: 配置
-      content_moderation: 内容调整
-      data_management: 数据管理
-      datasets: 数据集
-      federations: 联盟
-      homepage: 首页
-      metadata: 元数据
-      moderation: 注解调整
-      nomination: 提名调整
-      routing: 路线与审批
-      sdp_templates: 数据播放器模板
-      title: 管理站点配置
-      users: 用户
+      analytics: "分析"
+      appearance: "外观"
+      config: "配置"
+      content_moderation: "内容调整"
+      data_management: "数据管理"
+      datasets: "数据集"
+      federations: "联盟"
+      homepage: "首页"
+      metadata: "元数据"
+      moderation: "注解调整"
+      nomination: "提名调整"
+      routing: "路线与审批"
+      sdp_templates: "数据播放器模板"
+      title: "管理站点配置"
+      users: "用户"
     reports:
       component:
-        base_map: 基础地图
-        chart: 图表
-        formatted_text: 格式文本
-        header: 页眉
-        horizontal_layout: 水平布局
-        map: 地图
-        map_layer: 地图图层
-        picture: 图片
-        print: 打印
-        share: 分享
-        table: 表
-        title: 标题
-        vertical_layout: 垂直布局
-        visualize: 可视化
+        base_map: "基础地图"
+        chart: "图表"
+        formatted_text: "格式文本"
+        header: "页眉"
+        horizontal_layout: "水平布局"
+        map: "地图"
+        map_layer: "地图图层"
+        picture: "图片"
+        print: "打印"
+        share: "分享"
+        table: "表"
+        title: "标题"
+        vertical_layout: "垂直布局"
+        visualize: "可视化"
       create:
-        create_report: 创建报告
-        title: 创建报告
+        create_report: "创建报告"
+        title: "创建报告"
       manage:
-        copy: 复制
-        create_new_report: 创建新报告
-        delete: 删除
-        edit: 编辑
-        home: 首页
-        other_reports: 其他报告
-        owner: 所有人
-        reports: 报告
-        title: 管理报告
-        updated: 已更新
-        your_reports: 你的报告
+        copy: "复制"
+        create_new_report: "创建新报告"
+        delete: "删除"
+        edit: "编辑"
+        home: "首页"
+        other_reports: "其他报告"
+        owner: "所有人"
+        reports: "报告"
+        title: "管理报告"
+        updated: "已更新"
+        your_reports: "你的报告"
       permissions:
-        title: 报告权限
+        title: "报告权限"
       settings:
-        page_title: 报告标题
-        title: 报告设置
+        page_title: "报告标题"
+        title: "报告设置"
     template:
-      grid_flow_layout: 格流布局
-      layouts: 布局
-      list_layout: 列表布局
-      title: 选择布局
+      grid_flow_layout: "格流布局"
+      layouts: "布局"
+      list_layout: "列表布局"
+      title: "选择布局"
   plugins:
     daterangepicker:
-      date_range: 数据范围
-      done: 完成
-      end_date: 结束日期
-      last_month: 上月
-      month_to_date: 月至今
-      next: 下一
-      prev: 上一
-      specific_date: 具体日期
-      start_date: 开始日期
-      the_month_of: 第...月
-      the_week_of: 第...周
-      the_year_of: ! '...年'
-      today: 今天
-      week_to_date: 周至今
-      year_to_date: 年至今
+      date_range: "数据范围"
+      done: "完成"
+      end_date: "结束日期"
+      last_month: "上月"
+      month_to_date: "月至今"
+      next: "下一"
+      prev: "上一"
+      specific_date: "具体日期"
+      start_date: "开始日期"
+      the_month_of: "第...月"
+      the_week_of: "第...周"
+      the_year_of: "...年"
+      today: "今天"
+      week_to_date: "周至今"
+      year_to_date: "年至今"
     fileuploader:
-      drop_files: 文件拖放此处上传
-      failed: 失败
-      upload_a_file: 上传文件
+      drop_files: "文件拖放此处上传"
+      failed: "失败"
+      upload_a_file: "上传文件"
     hallo:
-      body: 主体
-      bold: 粗体
-      heading: 标题
-      italic: 斜体
-      redo: 恢复
-      subheading: 副标题
-      undo: 撤销
+      body: "主体"
+      bold: "粗体"
+      heading: "标题"
+      italic: "斜体"
+      redo: "恢复"
+      subheading: "副标题"
+      undo: "撤销"
     jquery_ui:
-      april: 四月
-      april_short: 四月
-      august: 八月
-      august_short: 八月
-      december: 十二月
-      december_short: 十二月
-      done: 已完成
-      february: 二月
-      february_short: 二月
-      friday: 周五
-      friday_min: 周五
-      friday_short: 周五
-      january: 一月
-      january_short: 一月
-      july: 七月
-      july_short: 七月
-      june: 六月
-      june_short: 六月
-      march: 三月
-      march_short: 三月
-      may: 五月
-      may_short: 五月
-      monday: 周一
-      monday_min: 周一
-      monday_short: 周一
-      next: 下一
-      november: 十一月
-      november_short: 十一月
-      october: 十月
-      october_short: 十月
-      prev: 上一
-      saturday: 周六
-      saturday_min: 周六
-      saturday_short: 周六
-      september: 九月
-      september_short: 九月
-      sunday: 周日
-      sunday_min: 周日
-      sunday_short: 周日
-      thursday: 周四
-      thursday_min: 周四
-      thursday_short: 周四
-      today: 今天
-      tuesday: 周二
-      tuesday_min: 周二
-      tuesday_short: 周二
-      wednesday: 周三
-      wednesday_min: 周三
-      wednesday_short: 周三
-      week_min: 周
+      april: "四月"
+      april_short: "四月"
+      august: "八月"
+      august_short: "八月"
+      december: "十二月"
+      december_short: "十二月"
+      done: "已完成"
+      february: "二月"
+      february_short: "二月"
+      friday: "周五"
+      friday_min: "周五"
+      friday_short: "周五"
+      january: "一月"
+      january_short: "一月"
+      july: "七月"
+      july_short: "七月"
+      june: "六月"
+      june_short: "六月"
+      march: "三月"
+      march_short: "三月"
+      may: "五月"
+      may_short: "五月"
+      monday: "周一"
+      monday_min: "周一"
+      monday_short: "周一"
+      next: "下一"
+      november: "十一月"
+      november_short: "十一月"
+      october: "十月"
+      october_short: "十月"
+      prev: "上一"
+      saturday: "周六"
+      saturday_min: "周六"
+      saturday_short: "周六"
+      september: "九月"
+      september_short: "九月"
+      sunday: "周日"
+      sunday_min: "周日"
+      sunday_short: "周日"
+      thursday: "周四"
+      thursday_min: "周四"
+      thursday_short: "周四"
+      today: "今天"
+      tuesday: "周二"
+      tuesday_min: "周二"
+      tuesday_short: "周二"
+      wednesday: "周三"
+      wednesday_min: "周三"
+      wednesday_short: "周三"
+      week_min: "周"
   recaptcha:
     errors:
-      verification_failed: 输入的字符不匹配图像。
+      verification_failed: "输入的字符不匹配图像。"
   screens:
     about:
-      actions: 操作
-      activity: 活动
-      attachments: 附件
-      category: 类别
-      comments: 评论
-      community: 社区评分
-      contact_dataset_owner: 联系数据集所有者
-      contributors: 参与者
-      created: 创建日期：
-      data_provided_by: 数据提供方：
-      description: 说明
-      downloads: 下载次数
-      edit_metadata: 编辑元数据
-      flag_dataset: 标记数据集
-      license: 许可
-      licensing: 许可权和归属权
-      links: 链接
+      actions: "操作"
+      activity: "活动"
+      attachments: "附件"
+      category: "类别"
+      comments: "评论"
+      community: "社区评分"
+      contact_dataset_owner: "联系数据集所有者"
+      contributors: "参与者"
+      created: "创建日期："
+      data_provided_by: "数据提供方："
+      description: "说明"
+      downloads: "下载次数"
+      edit_metadata: "编辑元数据"
+      flag_dataset: "标记数据集"
+      license: "许可"
+      licensing: "许可权和归属权"
+      links: "链接"
       meta: Meta
-      none: （无）
-      permalink: 永久链接
-      permanent_links: 永久链接
-      permissions: 权限
-      private: 私有
-      public: 公共
-      raters: 评分人
-      resource_name: 资源名称
-      row_class: 行类
-      row_count: 行数
-      row_identifier: 行标识符
-      semantics: 语义和RDF
-      short_url: 短网址
-      snapshotted: 快照日期：
-      soda2_support: ! '仅SODA2 '
-      soda2_yes: 是
-      source_link: 源链接
-      spatial_extent: 空间范围
-      subject_column: 主题列
-      tags: 标签
-      terms_of_use: 使用条款
-      updated: 更新日期：
-      view_full_page: 浏览整个页面
-      view_statistics: 查看统计数据
-      visits: 访问次数
-      your: 你的评分
+      none: "（无）"
+      permalink: "永久链接"
+      permanent_links: "永久链接"
+      permissions: "权限"
+      private: "私有"
+      public: "公共"
+      raters: "评分人"
+      resource_name: "资源名称"
+      row_class: "行类"
+      row_count: "行数"
+      row_identifier: "行标识符"
+      semantics: "语义和RDF"
+      short_url: "短网址"
+      snapshotted: "快照日期："
+      soda2_support: "仅SODA2 "
+      soda2_yes: "是"
+      source_link: "源链接"
+      spatial_extent: "空间范围"
+      subject_column: "主题列"
+      tags: "标签"
+      terms_of_use: "使用条款"
+      updated: "更新日期："
+      view_full_page: "浏览整个页面"
+      view_statistics: "查看统计数据"
+      visits: "访问次数"
+      your: "你的评分"
     admin:
       datasets:
-        layout_config: 布局配置
-        left: 左
-        right: 右
-        saved: 已保存
-        saving: 保存中
-        sidebar_position: 边栏位置
-        title: 数据集
-        unpublished_datasets: 未发布的数据集
+        layout_config: "布局配置"
+        left: "左"
+        right: "右"
+        saved: "已保存"
+        saving: "保存中"
+        sidebar_position: "边栏位置"
+        title: "数据集"
+        unpublished_datasets: "未发布的数据集"
       federation:
-        accept: 接受
-        accepted: 已接受
-        accepted_by: 接受人
-        all: （全部）
-        dataset: 数据集
+        accept: "接受"
+        accepted: "已接受"
+        accepted_by: "接受人"
+        all: "（全部）"
+        dataset: "数据集"
         flashes:
-          accepted: 联盟成功接受
-          created: 联盟创建成功
-          deleted: 联盟删除成功
-          invalid_domain: 无法创建数据联盟：目标域无效
-          rejected: 联盟成功拒绝
-        list_domains: 以下是你可以开始的数据联盟的域清单。一旦你点击发布，来自该目标域的管理员必须接受你的要求。
-        no_domains: 无可用的域匹配%{name}。
-        no_federations: 该域尚无联盟存在。
-        no_pub_datasets: 无已发布的数据集符合你的搜索条件。
-        pending: 待定
-        publish: 发布
-        reject: 拒绝
-        search: 搜索
+          accepted: "联盟成功接受"
+          created: "联盟创建成功"
+          deleted: "联盟删除成功"
+          invalid_domain: "无法创建数据联盟：目标域无效"
+          rejected: "联盟成功拒绝"
+        list_domains: "以下是你可以开始的数据联盟的域清单。一旦你点击发布，来自该目标域的管理员必须接受你的要求。"
+        no_domains: "无可用的域匹配%{name}。"
+        no_federations: "该域尚无联盟存在。"
+        no_pub_datasets: "无已发布的数据集符合你的搜索条件。"
+        pending: "待定"
+        publish: "发布"
+        reject: "拒绝"
+        search: "搜索"
         search_boost: Search Boost
-        search_boost_explain: 范围从1到0。较高的值使数据集更可能首先显示。
-        search_prompt: 搜索域名发布到
-        search_pub_datasets: 搜索发布的数据集
-        source_domain: 源域
-        status: 状态
-        target_domain: 目标域
-        terminate: 终止
-        title: 打开数据联盟
+        search_boost_explain: "范围从1到0。较高的值使数据集更可能首先显示。"
+        search_prompt: "搜索域名发布到"
+        search_pub_datasets: "搜索发布的数据集"
+        source_domain: "源域"
+        status: "状态"
+        target_domain: "目标域"
+        terminate: "终止"
+        title: "打开数据联盟"
       home:
-        add_featured_dataset: 添加新精选数据集
-        are_you_sure: 你确定吗？此操作不可撤消。
-        catalog_layout_configuration: 目录布局配置
-        choose_a_dataset: 选择一个数据集为主要
-        compact_list: 紧凑列表
-        contents: 内容
-        create_new_story: 创建新故事
-        custom_image: 自定义图像
-        customize_now: 马上自定义
-        customize_story_appearance: 自定义故事外观
-        dataset_display_limit: 一次只可显示四个数据集。
-        date_published: 数据已发布
-        default_catalog_layout: 默认目录布局
-        delete: 删除
-        down: 向下
-        edit: 编辑
-        feature_image: 特征图像
-        filetype_error: 无效的文件类型。请选择一个图像文件
+        add_featured_dataset: "添加新精选数据集"
+        are_you_sure: "你确定吗？此操作不可撤消。"
+        catalog_layout_configuration: "目录布局配置"
+        choose_a_dataset: "选择一个数据集为主要"
+        compact_list: "紧凑列表"
+        contents: "内容"
+        create_new_story: "创建新故事"
+        custom_image: "自定义图像"
+        customize_now: "马上自定义"
+        customize_story_appearance: "自定义故事外观"
+        dataset_display_limit: "一次只可显示四个数据集。"
+        date_published: "数据已发布"
+        default_catalog_layout: "默认目录布局"
+        delete: "删除"
+        down: "向下"
+        edit: "编辑"
+        feature_image: "特征图像"
+        filetype_error: "无效的文件类型。请选择一个图像文件"
         flashes:
-          create_error: 请求%{error_message}时发生错误：
-          delete_error: 你试图删除的故事不存在。
-          edit_error: 你试图编辑的故事不存在。
-          edit_success: 你的故事已保存。
-          move_error: 你试图移动的故事不存在。
-          move_success: 你的故事已保存
-        image: 图像
-        left: 左
-        manage_featured_dataset: 管理精选数据集
-        manage_story_content: 管理故事内容
-        move_left: 向左移动
-        move_right: 向右移动
-        remove: 删除
-        rich_list: 富豪榜
-        right: 向右
-        save_now: 马上保存
-        saved: 已保存
-        saved1: 已保存。
-        saving: 保存中
-        saving1: 保存中...
-        set_a_thumbnail: 设置一个缩略图
-        text: 文本
-        thumbnail: 缩略图
-        title: 管理首页
-        up: 向上
+          create_error: "请求%{error_message}时发生错误："
+          delete_error: "你试图删除的故事不存在。"
+          edit_error: "你试图编辑的故事不存在。"
+          edit_success: "你的故事已保存。"
+          move_error: "你试图移动的故事不存在。"
+          move_success: "你的故事已保存"
+        image: "图像"
+        left: "左"
+        manage_featured_dataset: "管理精选数据集"
+        manage_story_content: "管理故事内容"
+        move_left: "向左移动"
+        move_right: "向右移动"
+        remove: "删除"
+        rich_list: "富豪榜"
+        right: "向右"
+        save_now: "马上保存"
+        saved: "已保存"
+        saved1: "已保存。"
+        saving: "保存中"
+        saving1: "保存中..."
+        set_a_thumbnail: "设置一个缩略图"
+        text: "文本"
+        thumbnail: "缩略图"
+        title: "管理首页"
+        up: "向上"
       metadata:
-        add_new_category: 添加新类别
-        add_new_field: 添加新字段
-        allowed_values: 允许的值
-        are_you_sure: 您是否确定要删除该字段集以及所有相关的字段？
-        category_name: 类别名称
-        create: 创建
-        create_new_fieldset: 创建一个新的字段集
-        define_categories: 定义数据集分类
-        define_custom_fields: 定义自定义字段
-        down: 向下
-        enter_a_name: 输入名称
+        add_new_category: "添加新类别"
+        add_new_field: "添加新字段"
+        allowed_values: "允许的值"
+        are_you_sure: "您是否确定要删除该字段集以及所有相关的字段？"
+        category_name: "类别名称"
+        create: "创建"
+        create_new_fieldset: "创建一个新的字段集"
+        define_categories: "定义数据集分类"
+        define_custom_fields: "定义自定义字段"
+        down: "向下"
+        enter_a_name: "输入名称"
         'false': false
-        field_name: 字段名
+        field_name: "字段名"
         flashes:
-          cannot_move_field: ! '无法移动名为''%{name}''的字段: 未找到'
-          field_duplicated: 你无法创建一个名为'%{name}'重复的字段
-          field_name_required: 无名称无法创建字段
-          field_successful_create: 字段成功创建
-          field_successful_remove: 字段成功删除
-          field_successful_save: 成功保存字段
-          fieldset_duplicated: 无法创建一个名为'%{name}'重复的字段集
-          fieldset_name_required: 无名称无法创建字段集
-          no_such_field: 不存在该字段
-          no_such_fieldset: 不存在该字段集
-          successful_create: 字段集成功创建
-          successful_remove: 字段集成功删除
-        locales: 区域设置
-        make_optional: 使可选
-        make_private: 使私人
-        make_public: 使公开
-        make_required: 使必须
+          cannot_move_field: "无法移动名为'%{name}'的字段: 未找到"
+          field_duplicated: "你无法创建一个名为'%{name}'重复的字段"
+          field_name_required: "无名称无法创建字段"
+          field_successful_create: "字段成功创建"
+          field_successful_remove: "字段成功删除"
+          field_successful_save: "成功保存字段"
+          fieldset_duplicated: "无法创建一个名为'%{name}'重复的字段集"
+          fieldset_name_required: "无名称无法创建字段集"
+          no_such_field: "不存在该字段"
+          no_such_fieldset: "不存在该字段集"
+          successful_create: "字段集成功创建"
+          successful_remove: "字段集成功删除"
+        locales: "区域设置"
+        make_optional: "使可选"
+        make_private: "使私人"
+        make_public: "使公开"
+        make_required: "使必须"
         metadata_explain1: 自定义元数据被分成<span class="code">字段集</ span>和<span class="code">字段</ SPAN>。一个<span class="code">字段集</ SPAN>是一种在逻辑和视觉上将一个或多个自定义<span class="code">字段</span>分成一组的方式。
         metadata_explain2: 字段可以以多种方式进行配置。可以为<span class="code">必须</span>，当发行者创建新的数据集并更新现有的元数据时将被强制执行<。它们也可以是<span class="code">私人</span>，这意味着输入的值将对公众不可见。
         metadata_explain3: 最后，如果你希望从列表中选择，而不是输入为自由格式的文本，你可以选择预先定义您的<span class="code">字段</span>。
-        no_data: 你的域名尚未定义自定义数据集字段。请在下面输入一个名称，然后单击“创建”开始。
-        no_fields_defined: 该字段设置尚未定义任何字段
-        page_title: 管理数据集元数据
-        parent: 母
-        remove: 删除
-        shown: 已显示？
-        title: 管理元数据
+        no_data: "你的域名尚未定义自定义数据集字段。请在下面输入一个名称，然后单击“创建”开始。"
+        no_fields_defined: "该字段设置尚未定义任何字段"
+        page_title: "管理数据集元数据"
+        parent: "母"
+        remove: "删除"
+        shown: "已显示？"
+        title: "管理元数据"
         'true': true
-        up: 向上
+        up: "向上"
       users:
-        actions: 操作
-        all: 全部
-        bulk_create: 批量创建
-        create_accounts: 创建账户
-        email: 电子邮件
-        email_prompt: 输入你希望创建帐户的电子邮件地址
-        emails: 电子邮件
-        error_permission_request: 处理你的权限请求时出现错误
-        filter_by: 过滤标准
+        actions: "操作"
+        all: "全部"
+        bulk_create: "批量创建"
+        create_accounts: "创建账户"
+        email: "电子邮件"
+        email_prompt: "输入你希望创建帐户的电子邮件地址"
+        emails: "电子邮件"
+        error_permission_request: "处理你的权限请求时出现错误"
+        filter_by: "过滤标准"
         flashes:
-          accounts_created: 已成功创建%{count} 个账户
-          invalid_role: 创建用户所指定的角色无效：%{role}
-          no_email_addresses: 未检测到电子邮件地址
-          pending_permissions_removed: 已删除未决权限
-          reenable_failed: 启用该用户帐户时出现错误。
-          reenable_success: 账户成功重新启用
-          reset_email_failed: 发送密码重置邮件时出现错误。
-          reset_email_sent: 密码重置邮件已发送
-          successful_update: 用户已成功更新
-        invited: 已邀请
-        name: 姓名
-        no_pending_users: 无待定用户匹配你当前的过滤器
-        no_users_found: 未找到已有用户
-        no_users_match: 无用户匹配你当前的过滤器。
-        pending_users: 以下用户都有待定账户，但尚未激活
-        reenable_privileges: 重新启用特权
-        remove: 删除
-        reset_password: 重设密码
-        return_to_overview: 返回到用户概述
-        role: 角色
+          accounts_created: "已成功创建%{count} 个账户"
+          invalid_role: "创建用户所指定的角色无效：%{role}"
+          no_email_addresses: "未检测到电子邮件地址"
+          pending_permissions_removed: "已删除未决权限"
+          reenable_failed: "启用该用户帐户时出现错误。"
+          reenable_success: "账户成功重新启用"
+          reset_email_failed: "发送密码重置邮件时出现错误。"
+          reset_email_sent: "密码重置邮件已发送"
+          successful_update: "用户已成功更新"
+        invited: "已邀请"
+        name: "姓名"
+        no_pending_users: "无待定用户匹配你当前的过滤器"
+        no_users_found: "未找到已有用户"
+        no_users_match: "无用户匹配你当前的过滤器。"
+        pending_users: "以下用户都有待定账户，但尚未激活"
+        reenable_privileges: "重新启用特权"
+        remove: "删除"
+        reset_password: "重设密码"
+        return_to_overview: "返回到用户概述"
+        role: "角色"
         roles:
-          administrator: 管理员
-          designer: 设计师
-          editor: 编辑
-          none: 无
-          publisher: 发布者
-          viewer: 审查
-        search: 搜索
-        search_for_users: 搜索要添加的用户
-        search_results: 搜索'%{term}'的结果
-        title: 管理用户
-        user_saved: 用户已保存
+          administrator: "管理员"
+          designer: "设计师"
+          editor: "编辑"
+          none: "无"
+          publisher: "发布者"
+          viewer: "审查"
+        search: "搜索"
+        search_for_users: "搜索要添加的用户"
+        search_results: "搜索'%{term}'的结果"
+        title: "管理用户"
+        user_saved: "用户已保存"
     dataset_edit:
-      append: 追加
-      append_and_replace: 追加和替换数据
-      append_explain: 你想将未上传的数据添加到数据集的末尾。你将能够选择新的数据如何映射到现有列。
+      append: "追加"
+      append_and_replace: "追加和替换数据"
+      append_explain: "你想将未上传的数据添加到数据集的末尾。你将能够选择新的数据如何映射到现有列。"
       finish:
-        headline: 你的数据集已经更新。
-        subheadline: 单击Finish（完成）查看！
-      headline: 你希望如何处理你上传的数据？
+        headline: "你的数据集已经更新。"
+        subheadline: "单击Finish（完成）查看！"
+      headline: "你希望如何处理你上传的数据？"
       import_columns:
-        destination_column: 目标列
-        destination_data_type: 目标数据类型
+        destination_column: "目标列"
+        destination_data_type: "目标数据类型"
         headline: 位于&ldquo;<span class="fileName"></span>&rdquo; 的数据与你的数据集有何关系？
       import_warnings:
         see_docs: <strong>Confused?</strong> 请查看我们的 <a href="%{publisher_link}" rel="external">关于导入数据发行文件</a> 了解导入程序如何处理数据的详细说明。
-      replace: 替换
-      replace_data: 替换数据
-      replace_explain: 你希望删除现有的所有数据并用上传的数据替换。你将能够选择如何将新的数据映射到现有列。此操作无法撤消。
-      replace_layer: 替换层
-      title: 编辑数据集
-      upload_accessible: 上传可访问的新数据
+      replace: "替换"
+      replace_data: "替换数据"
+      replace_explain: "你希望删除现有的所有数据并用上传的数据替换。你将能够选择如何将新的数据映射到现有列。此操作无法撤消。"
+      replace_layer: "替换层"
+      title: "编辑数据集"
+      upload_accessible: "上传可访问的新数据"
     dataset_new:
       column_template:
-        name_this_col: 命名此列
-        options: 选项
-        remove: 删除
+        name_this_col: "命名此列"
+        options: "选项"
+        remove: "删除"
       crossload:
-        downloading: 正在下载你的文件...
-        headline: 请注明你的数据文件的位置。
-        import: 导入
-        supported: 支持的文件类型是CSV、TSV和Excel。支持的协议包括HTTP和HTTPS。
-        url_prompt: 你想导入的文件的站点URL是？
+        downloading: "正在下载你的文件..."
+        headline: "请注明你的数据文件的位置。"
+        import: "导入"
+        supported: "支持的文件类型是CSV、TSV和Excel。支持的协议包括HTTP和HTTPS。"
+        url_prompt: "你想导入的文件的站点URL是？"
       errors:
-        invalid_crossload_url: 请输入一个HTTP或HTTPS开头的有效的URL。
-        invalid_url: 这似乎不是一个有效的URL。
-        missing_data_provider: 您必须指定Creative Commons许可中的数据提供者（归属）。
-        missing_esri_url: 必需有一个有效的ESRI地图图层的URL。
-        missing_name: 数据集名称为必需。
-        need_description: 请说明&ldquo;%{name}&rdquo;
+        invalid_crossload_url: "请输入一个HTTP或HTTPS开头的有效的URL。"
+        invalid_url: "这似乎不是一个有效的URL。"
+        missing_data_provider: "您必须指定Creative Commons许可中的数据提供者（归属）。"
+        missing_esri_url: "必需有一个有效的ESRI地图图层的URL。"
+        missing_name: "数据集名称为必需。"
+        need_description: "请说明&ldquo;%{name}&rdquo;"
       finish:
-        headline: 你的数据集已创建。
-        subheadline: 单击Finish（完成）查看！
+        headline: "你的数据集已创建。"
+        subheadline: "单击Finish（完成）查看！"
       first_page:
-        blobby: 上传一个非数据文件
-        blobby_explain: 如果你有一个其中有数据的文件，但无法导入，如PDF或图像文件，请选择这个。它会被导入到数据目录，但不会没有真实数据交互性强。
-        create: 从头开始设计
-        create_explain: 如果你尚无要导入的数据，请选择这个。你可以为你的数据定义一个模式，并将其在线输入。
-        external: 链接到外部数据
-        external_explain: 如果你在其他服务器上已经有正在被托管的数据，请选择这个。该数据将不会被导入。
-        header: 创建一个新的数据集
-        import: 导入数据文件
-        import_explain: 如果你计算机上已经有你想要导入的数据文件，请选择这个。支持的格式包括.csv、 .tsv、 .xls和 .xlsx。
-        mapLayer: 与ESRI地图图层连接
-        mapLayer_explain: 如果你有一个你希望导入到目录中的ESRI地图图层，请选择这个。你需要向保存ESRI层的API点提供一个URL。
-        prompt: 你希望如何创建新的数据集？
-        shapefile: 导入地理空间数据
-        shapefile_explain: 如果你有你希望导入到目录中的地理空间数据，请选择这个。
+        blobby: "上传一个非数据文件"
+        blobby_explain: "如果你有一个其中有数据的文件，但无法导入，如PDF或图像文件，请选择这个。它会被导入到数据目录，但不会没有真实数据交互性强。"
+        create: "从头开始设计"
+        create_explain: "如果你尚无要导入的数据，请选择这个。你可以为你的数据定义一个模式，并将其在线输入。"
+        external: "链接到外部数据"
+        external_explain: "如果你在其他服务器上已经有正在被托管的数据，请选择这个。该数据将不会被导入。"
+        header: "创建一个新的数据集"
+        import: "导入数据文件"
+        import_explain: "如果你计算机上已经有你想要导入的数据文件，请选择这个。支持的格式包括.csv、 .tsv、 .xls和 .xlsx。"
+        mapLayer: "与ESRI地图图层连接"
+        mapLayer_explain: "如果你有一个你希望导入到目录中的ESRI地图图层，请选择这个。你需要向保存ESRI层的API点提供一个URL。"
+        prompt: "你希望如何创建新的数据集？"
+        shapefile: "导入地理空间数据"
+        shapefile_explain: "如果你有你希望导入到目录中的地理空间数据，请选择这个。"
       import:
-        headline: 该文件在什么位置？
-        local: 在我的电脑上
-        local_explain: 如果你所使用的电脑上有一个文件，请选择这个。
-        web: 通过互联网
-        web_explain: 如果你有一个文件已经在互联网上并有URL，请选择这个。
+        headline: "该文件在什么位置？"
+        local: "在我的电脑上"
+        local_explain: "如果你所使用的电脑上有一个文件，请选择这个。"
+        web: "通过互联网"
+        web_explain: "如果你有一个文件已经在互联网上并有URL，请选择这个。"
       import_columns:
-        add_new_column: 添加新列
-        clear_all: 清除所有
-        data_type: 数据类型
-        errors_warnings: 错误和警告
-        fewer_rows: 更少的行
-        headers: 页眉
-        headers_instructions: 页眉应该被忽略并不会作为数据导入。请注明你的源文件有多少行属于页眉
+        add_new_column: "添加新列"
+        clear_all: "清除所有"
+        data_type: "数据类型"
+        errors_warnings: "错误和警告"
+        fewer_rows: "更少的行"
+        headers: "页眉"
+        headers_instructions: "页眉应该被忽略并不会作为数据导入。请注明你的源文件有多少行属于页眉"
         headline: 请指定如何导入&ldquo;<span class="fileName"></span>&rdquo; 。
         help_message: 如需帮助，请查看<a href="%{common_errors}" rel="external">的常见警告与错误列表</a>。
-        more_rows: 更多行
-        name: 名称
-        pending_columns: 我们上传列时请稍候...
-        reset_to_preset: 重置为预设
-        set: 设置
-        source_column: 源列
-        subheadline: 要导入的列
-        suggested_alltext: 所有作为文本的列
-        suggested_columns: 建议列
-        suggested_flat: 建议列（无复合）
-        suggested_plus_discrete: 建议列（复合与分立）
-        why_choose_now: 为什么选择列类型很重要？
+        more_rows: "更多行"
+        name: "名称"
+        pending_columns: "我们上传列时请稍候..."
+        reset_to_preset: "重置为预设"
+        set: "设置"
+        source_column: "源列"
+        subheadline: "要导入的列"
+        suggested_alltext: "所有作为文本的列"
+        suggested_columns: "建议列"
+        suggested_flat: "建议列（无复合）"
+        suggested_plus_discrete: "建议列（复合与分立）"
+        why_choose_now: "为什么选择列类型很重要？"
       import_help: <strong>需要帮助吗？</ strong>我们维持一个对你可能有帮助的<a href="%{common_errors}" rel="external">常见的警告和错误</a>。
       import_shapefile:
-        crs: 坐标参考系统
+        crs: "坐标参考系统"
         headline: 指定&ldquo;<span class="fileName"></span>&rdquo; 应如何导入。
-        layers_list: 要导入的层
-        name: 名称
-        pending: 请稍候，我们正在上传你的图层...
+        layers_list: "要导入的层"
+        name: "名称"
+        pending: "请稍候，我们正在上传你的图层..."
         subheadline: 该shapefile在<span class="layerCount"></span>层包含<span class="layerCount"></span>功能。
       import_warnings:
-        headline: 导入过程中的警告
+        headline: "导入过程中的警告"
         see_docs: <strong>困惑？<strong>请查看我们的<a href="%{publisher_link}" rel="external">发布者文件</a>了解导入工具如何处理数据的详细说明。你也可以参考我们的<a href="%{common_errors}" rel="external">常见的警告和错误列表</ a>。
-        subheadline: 请注意，你的一些数据可能没有正确导入。
-      importing_your_data: 正在导入你的数据...
+        subheadline: "请注意，你的一些数据可能没有正确导入。"
+      importing_your_data: "正在导入你的数据..."
       metadata:
-        creative_commons_type: 创建的共用类型
+        creative_commons_type: "创建的共用类型"
         esri_map_layer_url: ESRI 图层URL
-        esri_source_url: 输入源URL
-        privacy_security: 隐私与安全
-        privacy_settings: 隐私设置
-        private_explain: 我的数据<strong>private</strong>
-        prompt: 请描述你的数据。
-        public_explain: 我的数据<strong>public</strong>：它只能由我来修改，但每个人都可以查看。
-      processing: 处理中...
-      title: 新数据集
-      upload_accessible: 上传可访问的新的数据集
+        esri_source_url: "输入源URL"
+        privacy_security: "隐私与安全"
+        privacy_settings: "隐私设置"
+        private_explain: "我的数据<strong>private</strong>"
+        prompt: "请描述你的数据。"
+        public_explain: "我的数据<strong>public</strong>：它只能由我来修改，但每个人都可以查看。"
+      processing: "处理中..."
+      title: "新数据集"
+      upload_accessible: "上传可访问的新的数据集"
       upload_file:
-        choose_a_file: 选择文件
-        no_file_selected: 无已选数据集。
-        supported_blist: 支持的格式为.csv、.tsv、 .xls和 .xlsx。
-        supported_shapefile: 支持的格式有 .kml、 .kmz和 .zip（ESRI shape文件）。
-        uploading: 上传文件...
+        choose_a_file: "选择文件"
+        no_file_selected: "无已选数据集。"
+        supported_blist: "支持的格式为.csv、.tsv、 .xls和 .xlsx。"
+        supported_shapefile: "支持的格式有 .kml、 .kmz和 .zip（ESRI shape文件）。"
+        uploading: "上传文件..."
       why_choose_now:
-        close: 关闭
-        line_1: 你的数据导入时被大量处理，并为每个特定的数据类型消费进行了优化。此外，大多数数据类型具有特殊的功能，只有列被设置为该类型 &mdash;时才会激活，例如，创建地图时必须需要位置列。
-        line_2: 可以后更改列类型，但该过程需要一定的时间，所以最好提前正确设置好一切。
+        close: "关闭"
+        line_1: "你的数据导入时被大量处理，并为每个特定的数据类型消费进行了优化。此外，大多数数据类型具有特殊的功能，只有列被设置为该类型 &mdash;时才会激活，例如，创建地图时必须需要位置列。"
+        line_2: "可以后更改列类型，但该过程需要一定的时间，所以最好提前正确设置好一切。"
     ds:
       bar:
-        api_unsavable: 不能修改API视图
+        api_unsavable: "不能修改API视图"
         based_on_html: 基于<a class="revertLink currentViewName" href="#revert">%{name}</a>
         based_on_parent_html: 基于 <a class="parentName"></a>
-        based_on_private_view: 私有视图
+        based_on_private_view: "私有视图"
         based_on_working_copy_html: 基于<a class="revertLink currentViewName" href="#revert">%{name}</a> 的工作副本
-        find_prompt: 在此数据集中查找
+        find_prompt: "在此数据集中查找"
         format:
-          bold: 粗体
-          bullet: 符号列表
-          color: 字体颜色
-          italic: 斜体
-          link: 链接
-          number: 编号列表
-          redo: 重做
-          strike: 删除线
-          underline: 下划线
-          undo: 撤销
-        full_screen: 全屏显示开关
-        publish_button: 发布数据集
-        publish_prompt: 本数据集是工作副本，因此不对外公开。您完成所需的改动后，需要先发布数据集，其他人才能访问。
-        publish_rights: 只有所有者或发布者才能发布此数据集
-        revert_button: 恢复
-        revert_prompt: 恢复到已保存的视图
-        save_as_button: 另存为...
-        save_as_prompt: 将视图存为...
-        save_button: 保存
-        save_progress: 正在保存...
-        save_prompt: 保存当前视图
-        share_email: 通过电子邮件分享
-        share_facebook: 通过Facebook分享
-        share_twitter: 通过Twitter分享
-        snapshot_notice: 这是早先发布的数据集，已经存档，因此不能修改。
-        snapshot_title: 快照日期%{date}
-        snapshot_title_html: 快照日期%{date}
-        snapshot_unsavable: 不能创建或修改经过快照处理的数据集和视图
-        subscribe: 订阅改动
-        subscribe_prompt: 通过电子邮件或RSS订阅
-        unpublished_unsavable: 自动保存对下面数据的改动。数据集的工作副本不能保存筛选和搜索条件。请创建已发布数据集的视图。
-        unsaved_title: 未保存的视图
+          bold: "粗体"
+          bullet: "符号列表"
+          color: "字体颜色"
+          italic: "斜体"
+          link: "链接"
+          number: "编号列表"
+          redo: "重做"
+          strike: "删除线"
+          underline: "下划线"
+          undo: "撤销"
+        full_screen: "全屏显示开关"
+        publish_button: "发布数据集"
+        publish_prompt: "本数据集是工作副本，因此不对外公开。您完成所需的改动后，需要先发布数据集，其他人才能访问。"
+        publish_rights: "只有所有者或发布者才能发布此数据集"
+        revert_button: "恢复"
+        revert_prompt: "恢复到已保存的视图"
+        save_as_button: "另存为..."
+        save_as_prompt: "将视图存为..."
+        save_button: "保存"
+        save_progress: "正在保存..."
+        save_prompt: "保存当前视图"
+        share_email: "通过电子邮件分享"
+        share_facebook: "通过Facebook分享"
+        share_twitter: "通过Twitter分享"
+        snapshot_notice: "这是早先发布的数据集，已经存档，因此不能修改。"
+        snapshot_title: "快照日期%{date}"
+        snapshot_title_html: "快照日期%{date}"
+        snapshot_unsavable: "不能创建或修改经过快照处理的数据集和视图"
+        subscribe: "订阅改动"
+        subscribe_prompt: "通过电子邮件或RSS订阅"
+        unpublished_unsavable: "自动保存对下面数据的改动。数据集的工作副本不能保存筛选和搜索条件。请创建已发布数据集的视图。"
+        unsaved_title: "未保存的视图"
         view_published_html: 查看发布的<span class="publishedName">数据集</span>
-        view_type: 查看格式：%{type}
+        view_type: "查看格式：%{type}"
         view_types:
-          calendar: 日历
-          chart: 图表
-          fatrow: 详情列表
-          map: 地图
-          page: 单行
-          table: 表格
-        working_copy_notice: 您可以对此数据集副本进行改动。您发布后其他人才能看到数据集。
-        working_copy_title: ! '["Working Copy"]'
+          calendar: "日历"
+          chart: "图表"
+          fatrow: "详情列表"
+          map: "地图"
+          page: "单行"
+          table: "表格"
+        working_copy_notice: "您可以对此数据集副本进行改动。您发布后其他人才能看到数据集。"
+        working_copy_title: '["Working Copy"]'
       blob:
-        data_extraction: 通过右边的链接可下载此数据提取工具或应用程序
-        download: 下载
-        external_link: 外部链接
-        js_required: 需要Javascript才能在浏览器中打开文档查看视窗。
+        data_extraction: "通过右边的链接可下载此数据提取工具或应用程序"
+        download: "下载"
+        external_link: "外部链接"
+        js_required: "需要Javascript才能在浏览器中打开文档查看视窗。"
         js_required_download:
-          click_here: 单击此处
-          prompt_html: 如要下载此文件，%{click_here}.
-        limited_download: 此数据集不是列表数据，其互动性可能有限，但是可以下载
+          click_here: "单击此处"
+          prompt_html: "如要下载此文件，%{click_here}."
+        limited_download: "此数据集不是列表数据，其互动性可能有限，但是可以下载"
       column_tip:
-        aggregate: (%{aggregate} %{data_type})
+        aggregate: "(%{aggregate} %{data_type})"
         field_name: API 域名
-        original_name: 原名
+        original_name: "原名"
       dataset_contact:
-        captcha_failed: 答案不正确，请再试。
-        error_message: 发送对此数据集的反馈时出错。请稍后再试。
+        captcha_failed: "答案不正确，请再试。"
+        error_message: "发送对此数据集的反馈时出错。请稍后再试。"
         form:
-          email: 您的电子邮件
-          email_prompt: 您的电子邮件地址将提供给本数据集的所有者，以便他们给您回复。
-          message: 短信
-          purpose: 目的
+          email: "您的电子邮件"
+          email_prompt: "您的电子邮件地址将提供给本数据集的所有者，以便他们给您回复。"
+          message: "短信"
+          purpose: "目的"
           purposes:
-            copyright_violation: 违反版权
-            offensive_content: 冒犯性内容
-            other_purpose: 其他
-            personal_information: 个人信息
-            prompt: -- 选择目的 --
-            spam: 垃圾邮件
-          send_button: 发送
-          subject: 主题
-        other_subject: 您收到了关于'%{dataset_name}' '%{site}' 数据集的留言
+            copyright_violation: "违反版权"
+            offensive_content: "冒犯性内容"
+            other_purpose: "其他"
+            personal_information: "个人信息"
+            prompt: "-- 选择目的 --"
+            spam: "垃圾邮件"
+          send_button: "发送"
+          subject: "主题"
+        other_subject: "您收到了关于'%{dataset_name}' '%{site}' 数据集的留言"
         reasons:
-          copyright_violation: 违反版权
-          offensive_content: 冒犯性内容
-          personal_information: 包含个人信息
-          spam: 可能成为垃圾邮件
+          copyright_violation: "违反版权"
+          offensive_content: "冒犯性内容"
+          personal_information: "包含个人信息"
+          spam: "可能成为垃圾邮件"
         subject: 您的数据集 "%{dataset_name}" 由于以下原因被标记%{reason}
-        success_message: 已经通知了此数据集的所有者。
+        success_message: "已经通知了此数据集的所有者。"
         validation:
-          no_body: 留言必须有正文。
-          no_email: 需要留下您的电子邮件地址。
-          no_purpose: 必须选择留言的目的。
-          no_subject: 必须选择留言主题。
+          no_body: "留言必须有正文。"
+          no_email: "需要留下您的电子邮件地址。"
+          no_purpose: "必须选择留言的目的。"
+          no_subject: "必须选择留言主题。"
       dataset_status:
-        copy_available: 工作副本已备好。准备编辑时，点击“编辑数据库”按钮即可打开工作副本。
-        copy_in_progress: 正在复制工作副本，请等待。%{additional}
+        copy_available: "工作副本已备好。准备编辑时，点击“编辑数据库”按钮即可打开工作副本。"
+        copy_in_progress: "正在复制工作副本，请等待。%{additional}"
         copy_in_progress_additional:
-          processing: 正在处理过程中 (started %{time})
-          queued: 正在等待处理 (queued %{time}; %{totalQueued} total in line)
-        edit_dataset_button: 编辑数据库
+          processing: "正在处理过程中 (started %{time})"
+          queued: "正在等待处理 (queued %{time}; %{totalQueued} total in line)"
+        edit_dataset_button: "编辑数据库"
         error_publishing_html: 复制数据集工作副本时出错。请<a href="http://support.socrata.com" rel="external">联系 Socrata 支持人员</a>。
         error_publishing_unpublished: 
-        needs_copy: 此数据集已经发布，不能直接编辑。可以在工作副本上进行所需的改动，然后再对外公开，现在工作副本的状态是：%{status}
+        needs_copy: "此数据集已经发布，不能直接编辑。可以在工作副本上进行所需的改动，然后再对外公开，现在工作副本的状态是：%{status}"
         needs_copy_status:
-          available: 已存在
-          can_be_made: 可以复制
+          available: "已存在"
+          can_be_made: "可以复制"
       email:
-        add_email: 添加更多
-        email_button: 电子邮件
-        message_prompt: 输入留言（可选）
-        private_notice: 注：该%{displayName}目前是私有的。发送邮件将授权访问所有收件人。
+        add_email: "添加更多"
+        email_button: "电子邮件"
+        message_prompt: "输入留言（可选）"
+        private_notice: "注：该%{displayName}目前是私有的。发送邮件将授权访问所有收件人。"
         prompt_html: 分享<span class="datasetName">%{name}</span> 到以下电子邮件地址：
-        remove_email: 移除
-        success: 您的邮件发送成功。
+        remove_email: "移除"
+        success: "您的邮件发送成功。"
         title_html: 分享 “<span class="datasetName">%{name}</span>”
       grid_sidebar:
         add_column:
           convert_address:
-            city: 城市
-            city_prompt: 输入城市
-            state: 州/省
-            state_prompt: 输入州/省名称
-            street: 街道
-            title: 使用现有的地址列
-            zip_code: 邮编
-            zip_code_prompt: 输入邮政编码
+            city: "城市"
+            city_prompt: "输入城市"
+            state: "州/省"
+            state_prompt: "输入州/省名称"
+            street: "街道"
+            title: "使用现有的地址列"
+            zip_code: "邮编"
+            zip_code_prompt: "输入邮政编码"
           convert_latlong:
-            latitude: 纬度
-            longitude: 经度
-            title: 使用现有的经纬度
+            latitude: "纬度"
+            longitude: "经度"
+            title: "使用现有的经纬度"
           multiple_choice:
-            add_option_button: 添加选项
-            option: 选项
-            title: 多选选项
+            add_option_button: "添加选项"
+            option: "选项"
+            title: "多选选项"
           nested_table:
-            default_column_name: 未命名
-          subtitle: 在数据集中添加列
-          success: 列已经添加
-          title: 添加列
+            default_column_name: "未命名"
+          subtitle: "在数据集中添加列"
+          success: "列已经添加"
+          title: "添加列"
           validation:
-            view_column: 不能在视图中添加列
+            view_column: "不能在视图中添加列"
         api:
-          column_ids_title: 列编号：
+          column_ids_title: "列编号："
           endpoint_title: API访问端点：
-          intro_html: 借助<strong>Socrata 开放数据 API</strong> (SODA)，软件开发人员可以访问Socrata 数据网站上托管的数据，并对其进行编程操作。开发人员可创建使用SODA API的应用程序，用新鲜有趣的方式可视化、“混搭” Socrata数据集。您可以编制一个iPhone应用，可视化您所在地区的政府支出；开发一个网络应用程序，协助公民查看他们可能忽视了的政府福利；或者创建一项服务，一旦您想跟踪的支出项目又有新花销，就会收到自动的电子邮件通知。
+          intro_html: "借助<strong>Socrata 开放数据 API</strong> (SODA)，软件开发人员可以访问Socrata 数据网站上托管的数据，并对其进行编程操作。开发人员可创建使用SODA API的应用程序，用新鲜有趣的方式可视化、“混搭” Socrata数据集。您可以编制一个iPhone应用，可视化您所在地区的政府支出；开发一个网络应用程序，协助公民查看他们可能忽视了的政府福利；或者创建一项服务，一旦您想跟踪的支出项目又有新花销，就会收到自动的电子邮件通知。"
           reference_html: 使用下面提供的API端点，开始访问数据库，进行编程。更多有关如何使用Socrata 开放数据 API的信息及示例，请参考<a href="http://dev.socrata.com" rel="external">开发人员文档</a>。
-          subtitle: 通过SODA访问%{view_type}
+          subtitle: "通过SODA访问%{view_type}"
           title: SODA API
         apis:
-          create_button: 创建API
-          create_button_prompt: 创建API，以便对数据进行编程操作。
-          manage_button: 管理
-          manage_button_prompt: 管理选定的API
-          prompt_existing_html: 可在 <strong>现有的API</strong> 基础上进行定制。您可以控制权限、设置请求限制、查看使用数据以及编辑文档。
-          prompt_new_html: ! '利用 <strong>API Foundry</strong> ，您可以为此数据集创建并配置一个或多个开放的、基于标准的应用程序接口（API）。 '
-          subtitle: 创建并自定义API
+          create_button: "创建API"
+          create_button_prompt: "创建API，以便对数据进行编程操作。"
+          manage_button: "管理"
+          manage_button_prompt: "管理选定的API"
+          prompt_existing_html: "可在 <strong>现有的API</strong> 基础上进行定制。您可以控制权限、设置请求限制、查看使用数据以及编辑文档。"
+          prompt_new_html: "利用 <strong>API Foundry</strong> ，您可以为此数据集创建并配置一个或多个开放的、基于标准的应用程序接口（API）。 "
+          subtitle: "创建并自定义API"
           title: API
         append_replace:
           subtitle:
-            immutable: 上传新的数据文件，替换当前数据。
-            mutable: 上传新的数据文件，添加数据或替换当前数据。
+            immutable: "上传新的数据文件，替换当前数据。"
+            mutable: "上传新的数据文件，添加数据或替换当前数据。"
           title:
-            immutable: 替换
-            mutable: 添加和替换
+            immutable: "替换"
+            mutable: "添加和替换"
           wizard_button:
-            immutable: 启动“替换”向导
-            mutable: 启动“添加和替换”向导
+            immutable: "启动“替换”向导"
+            mutable: "启动“添加和替换”向导"
         base:
           buttons:
-            apply: 应用
-            cancel: 取消
-            create: 创建
-            done: 完成
-            remove: 删除
-            update: 更新
+            apply: "应用"
+            cancel: "取消"
+            create: "创建"
+            done: "完成"
+            remove: "删除"
+            update: "更新"
           color_select:
-            prompt: 选择颜色
+            prompt: "选择颜色"
           column_select:
-            auto: 自动
-            from_grid: 从表格中选择列
-            none: （无）
-            none_selected: 无已选列
-            nonselectable: 无效的列
-            prompt: 选择列
-            selectable: 有效的列
-            unselect: 取消选择列
+            auto: "自动"
+            from_grid: "从表格中选择列"
+            none: "（无）"
+            none_selected: "无已选列"
+            nonselectable: "无效的列"
+            prompt: "选择列"
+            selectable: "有效的列"
+            unselect: "取消选择列"
           datatypes:
-            checkbox: 复选框
-            dataset_link: 数据集链接
-            date_time: 日期和时间
-            date_time_timezone: 日期和时间（包含时区）
-            document: 文档
-            email: 电子邮件
-            flag: 标志
-            formatted_text: 带格式的文本
-            geospatial: 地理空间
-            list: 列表
-            location: 位置
-            money: 资金
-            multiple_choice: 多项选择
-            nested_table: 嵌套表
-            number: 编号
-            object: 对象
-            percent: 百分比
-            phone: 电话
-            photo: 照片（图像）
-            plain_text: 纯文本
-            star: 星型
-            website_url: 网站 URL
+            checkbox: "复选框"
+            dataset_link: "数据集链接"
+            date_time: "日期和时间"
+            date_time_timezone: "日期和时间（包含时区）"
+            document: "文档"
+            email: "电子邮件"
+            flag: "标志"
+            formatted_text: "带格式的文本"
+            geospatial: "地理空间"
+            list: "列表"
+            location: "位置"
+            money: "资金"
+            multiple_choice: "多项选择"
+            nested_table: "嵌套表"
+            number: "编号"
+            object: "对象"
+            percent: "百分比"
+            phone: "电话"
+            photo: "照片（图像）"
+            plain_text: "纯文本"
+            star: "星型"
+            website_url: "网站 URL"
           generic_select:
-            prompt: 选择值
+            prompt: "选择值"
           validation:
-            at_least: 值必须不小于%{value}
-            different_value: 输入其它值。
-            file_format: 需要%{format} 文件
-            identifier_format: 有效的API识别字符包括小写字母、数字和下划线。必须以字母开始，不能有连续下划线。
-            invalid_url: 此URL无效
-            invalid_value: 该值无效
-            invalid_values: 指定的值有问题。请检查上面的错误。
-            invalid_view: 必须是有效视图
-            no_greater: 值必须不大于%{value}
-            numeric: 值必须是数字
-            uid_required: 需要4x4 UID
-            verifying_url: 验证URL
+            at_least: "值必须不小于%{value}"
+            different_value: "输入其它值。"
+            file_format: "需要%{format} 文件"
+            identifier_format: "有效的API识别字符包括小写字母、数字和下划线。必须以字母开始，不能有连续下划线。"
+            invalid_url: "此URL无效"
+            invalid_value: "该值无效"
+            invalid_values: "指定的值有问题。请检查上面的错误。"
+            invalid_view: "必须是有效视图"
+            no_greater: "值必须不大于%{value}"
+            numeric: "值必须是数字"
+            uid_required: "需要4x4 UID"
+            verifying_url: "验证URL"
         calendar:
           dates:
-            end: 结束日期
-            start: 开始日期
-            title: 日期
+            end: "结束日期"
+            start: "开始日期"
+            title: "日期"
           information:
-            details: 详情
-            event_title: 活动名称
-            new_details_button: 添加详情
-            title: 活动信息
-          subtitle: 带日期的视图可用月历格式显示
-          title: 日历
+            details: "详情"
+            event_title: "活动名称"
+            new_details_button: "添加详情"
+            title: "活动信息"
+          subtitle: "带日期的视图可用月历格式显示"
+          title: "日历"
           validation:
-            invalid_columns: 此视图必须有日期列和文本列
-            viz_limit: 一个视图只能加载一种可视化操作
+            invalid_columns: "此视图必须有日期列和文本列"
+            viz_limit: "一个视图只能加载一种可视化操作"
         chart:
-          advanced: 高级配置
-          annotation: 注释
-          auto_update_sort: 自动更新排序顺序
-          auto_update_sort_button: 马上应用
-          auto_update_sort_info_donut: 从内到外降序顺时针排序时，圆环图效果最好。
-          auto_update_sort_info_pie: 顺时针递减顺序排序饼图效果最好。
+          advanced: "高级配置"
+          annotation: "注释"
+          auto_update_sort: "自动更新排序顺序"
+          auto_update_sort_button: "马上应用"
+          auto_update_sort_info_donut: "从内到外降序顺时针排序时，圆环图效果最好。"
+          auto_update_sort_info_pie: "顺时针递减顺序排序饼图效果最好。"
           axes:
-            title: 轴选项
+            title: "轴选项"
             x_axis_title: X轴名称
-            x_axis_title_prompt: 输入X轴的名称
+            x_axis_title_prompt: "输入X轴的名称"
             y_axis_title: y轴名称
-            y_axis_title_prompt: 输入y轴的名称
-          base_color: 底色
-          categories: 类别
+            y_axis_title_prompt: "输入y轴的名称"
+          base_color: "底色"
+          categories: "类别"
           cdlfmtg_color_override_html: 颜色正被<a href="#Conditional Formatting" class="showConditionalFormatting">条件格式</ a>覆盖。点击 <a href="#Clear Conditional Formatting" class="clearConditionalFormatting">这里</ a>，以清除任何现有的条件格式规则。
           color_options:
-            column_colors: 列的颜色
-          color_override_html: ! '使用 <a href="#Conditional Formatting" class="showConditionalFormatting">条件格式化</a>可以覆盖颜色设置。单击 <a href="#Clear Conditional Formatting" class="clearConditionalFormatting">此处</a> ，清除当前的条件格式化规定。 '
-          colors: 颜色
-          configuration: 配置
+            column_colors: "列的颜色"
+          color_override_html: '使用 <a href="#Conditional Formatting" class="showConditionalFormatting">条件格式化</a>可以覆盖颜色设置。单击 <a href="#Clear Conditional Formatting" class="clearConditionalFormatting">此处</a> ，清除当前的条件格式化规定。 '
+          colors: "颜色"
+          configuration: "配置"
           data_columns:
-            new_data_column_button: 添加数据列
-            title: 数据列
-          data_labels: 数据标签
+            new_data_column_button: "添加数据列"
+            title: "数据列"
+          data_labels: "数据标签"
           data_selection:
             advanced_data_selection:
-              title: 高级数据选择
+              title: "高级数据选择"
             chart_definition:
-              label_title: 选择标签数据
-              title: 图表定义
-              value_title: 选择值数据
-          date: 日期
-          details: 详情
-          draw_line: 画线
+              label_title: "选择标签数据"
+              title: "图表定义"
+              value_title: "选择值数据"
+          date: "日期"
+          details: "详情"
+          draw_line: "画线"
           dsg_color_override_html: 请注意，数据系列分组将覆盖为您的数据列选择的颜色。它将不会覆盖您的<a href="#Conditional Formatting" class="showConditionalFormatting">条件格式</a>
           error_bars:
-            color: 颜色
-            data_high: 选择较高的绑定列
-            data_low: 选择较低的绑定列
-            high: 高
-            low: 低
-            title: 误差线
+            color: "颜色"
+            data_high: "选择较高的绑定列"
+            data_low: "选择较低的绑定列"
+            high: "高"
+            low: "低"
+            title: "误差线"
           flyout:
-            new_details_button: 添加弹出视窗详情
-            new_values_button: 添加值
-            title: 弹出视窗详情
-            title_column: 弹出标题
-            value: 弹出值
-          group_extra: 组合额外的值
-          groups: 组
+            new_details_button: "添加弹出视窗详情"
+            new_values_button: "添加值"
+            title: "弹出视窗详情"
+            title_column: "弹出标题"
+            value: "弹出值"
+          group_extra: "组合额外的值"
+          groups: "组"
           headings:
-            chart_details: 图表详细资料
-            data_presentation: 数据呈现
-            data_selection: 数据选择
-          label: 标签
-          labelInBar: 在酒吧的标签
-          labels_and_values: 标签和值
+            chart_details: "图表详细资料"
+            data_presentation: "数据呈现"
+            data_selection: "数据选择"
+          label: "标签"
+          labelInBar: "在酒吧的标签"
+          labels_and_values: "标签和值"
           legend:
-            add_text: 附加文本
-            add_text_button: 添加附加文本
-            annotations: 详细说明注解
-            conditional_formats: 条件格式的说明
-            custom_entry: 自定义标签
-            display: 显示
-            new_custom_entry_button: 添加自定义图例
-            position: 图例
-            position_prompt: 选择图例位置
+            add_text: "附加文本"
+            add_text_button: "添加附加文本"
+            annotations: "详细说明注解"
+            conditional_formats: "条件格式的说明"
+            custom_entry: "自定义标签"
+            display: "显示"
+            new_custom_entry_button: "添加自定义图例"
+            position: "图例"
+            position_prompt: "选择图例位置"
             positions:
-              bottom: 底部
-              left: 左边
-              none: 无
-              right: 右边
-              top: 顶部
-            series: 描述数据系列
-            title: 配置图例
-            title_short: 图例
-            value_markers: 值标记的说明
-            values: 描述值
+              bottom: "底部"
+              left: "左边"
+              none: "无"
+              right: "右边"
+              top: "顶部"
+            series: "描述数据系列"
+            title: "配置图例"
+            title_short: "图例"
+            value_markers: "值标记的说明"
+            values: "描述值"
           marker:
-            add_button: 添加注解
-            caption: 标题
-            marker_title: 值标记
-            new_marker_button: 添加标记
-            title: ! '%{axis} 标记'
-            value: 当值等于
-          min_angle: 最小角度
-          min_angle_html: 显示最小角度 (&ordm;)
-          names: 名称
-          pie_other: 警告： %{chart_type} 将把超过%{row_limit}的值（行）加总为“其他”类别。您可以进行加总或筛选操作，限制值的个数，然后为其创建%{chart_type} 。
-          pie_truncate: 警告： %{chart_type} 将分解包含超过%{row_limit}值（行）的数据集。您可以进行加总或筛选操作，限制值的个数，然后为其创建%{chart_type} 。
-          point_color: 点的颜色
-          point_size: 点的尺寸
-          point_title: 题目
+            add_button: "添加注解"
+            caption: "标题"
+            marker_title: "值标记"
+            new_marker_button: "添加标记"
+            title: "%{axis} 标记"
+            value: "当值等于"
+          min_angle: "最小角度"
+          min_angle_html: "显示最小角度 (&ordm;)"
+          names: "名称"
+          pie_other: "警告： %{chart_type} 将把超过%{row_limit}的值（行）加总为“其他”类别。您可以进行加总或筛选操作，限制值的个数，然后为其创建%{chart_type} 。"
+          pie_truncate: "警告： %{chart_type} 将分解包含超过%{row_limit}值（行）的数据集。您可以进行加总或筛选操作，限制值的个数，然后为其创建%{chart_type} 。"
+          point_color: "点的颜色"
+          point_size: "点的尺寸"
+          point_title: "题目"
           series_group:
-            alphabetize: 按字母顺序排列组
-            group_by: 分组方式
-            hideLoadingMsg: 隐藏正在加载的留言
-            new_column_button: 添加列（数据系列）
-            row_limit_warning: 分组数据系列将运行极为缓慢，很多行。
-            title: 数据系列分组
+            alphabetize: "按字母顺序排列组"
+            group_by: "分组方式"
+            hideLoadingMsg: "隐藏正在加载的留言"
+            new_column_button: "添加列（数据系列）"
+            row_limit_warning: "分组数据系列将运行极为缓慢，很多行。"
+            title: "数据系列分组"
           setup:
-            title: 图表设置
-            type: 图表类型
-            type_prompt: 选择图表类型
-          show_lines: 显示线条
-          show_percent: 显示百分比
-          show_points: 显示点
-          show_values: 显示值
-          smooth_line: 平滑线
-          subtitle: 视图数据可用各种图表显示
-          title: 图表
-          treemap_color_html: 随机应用的树型图颜色仅为加强视觉效果，没有任何特殊含义。
+            title: "图表设置"
+            type: "图表类型"
+            type_prompt: "选择图表类型"
+          show_lines: "显示线条"
+          show_percent: "显示百分比"
+          show_points: "显示点"
+          show_values: "显示值"
+          smooth_line: "平滑线"
+          subtitle: "视图数据可用各种图表显示"
+          title: "图表"
+          treemap_color_html: "随机应用的树型图颜色仅为加强视觉效果，没有任何特殊含义。"
           validation:
-            chart_requires: ! '至少需要%{chart_type} '
-            chart_requires2: 以下列类型中的%{and} %{count}：
-            count: ! '%{count}'
-            required_columns: ! '%{chart_type} 需要 %{column_types} 列'
-            viz_limit: 一个视图只能加载一种可视化操作
-          value: 值
-          valueInBar: 在酒吧的值
-          values: 值
+            chart_requires: "至少需要%{chart_type} "
+            chart_requires2: "以下列类型中的%{and} %{count}："
+            count: "%{count}"
+            required_columns: "%{chart_type} 需要 %{column_types} 列"
+            viz_limit: "一个视图只能加载一种可视化操作"
+          value: "值"
+          valueInBar: "在酒吧的值"
+          values: "值"
           y_axis_formatting:
-            abbreviate: 缩写
-            auto: 自动
-            axis_max: 轴最大值
-            axis_min: 轴最小值
-            axis_prompt: 输入数字
-            decimals: 小数位数
-            no_decimals: 不用小数
-            precision: 精确度
+            abbreviate: "缩写"
+            auto: "自动"
+            axis_max: "轴最大值"
+            axis_min: "轴最小值"
+            axis_prompt: "输入数字"
+            decimals: "小数位数"
+            no_decimals: "不用小数"
+            precision: "精确度"
             title: Y轴格式
         column_common:
           basic:
-            description: 说明
-            description_prompt: 输入说明
-            name: 名称
-            name_prompt: 输入名称
-            title: 基本信息
+            description: "说明"
+            description_prompt: "输入说明"
+            name: "名称"
+            name_prompt: "输入名称"
+            title: "基本信息"
           linked_dataset:
-            dataset: 数据集
-            dataset_prompt: 数据集URL或4x4 UID
-            key: 键列
-            label: 标签列
-            title: 链接的数据集
+            dataset: "数据集"
+            dataset_prompt: "数据集URL或4x4 UID"
+            key: "键列"
+            label: "标签列"
+            title: "链接的数据集"
           type:
-            key: 键
-            source: 来源
-            title: 列的类型
-            type: 数据类型
-            type_prompt: 选择数据类型
+            key: "键"
+            source: "来源"
+            title: "列的类型"
+            type: "数据类型"
+            type_prompt: "选择数据类型"
         column_order:
           columns:
-            title: 列
-          prompt_html: ! '把列拖到您希望的位置，然后单击<strong>应用</strong> ，新顺序即生效。 '
-          subtitle: 改变列的顺序
-          title: 列顺序
+            title: "列"
+          prompt_html: "把列拖到您希望的位置，然后单击<strong>应用</strong> ，新顺序即生效。 "
+          subtitle: "改变列的顺序"
+          title: "列顺序"
           validation:
-            valid_columns: 视图必须有效并有可见列。
+            valid_columns: "视图必须有效并有可见列。"
         column_properties:
           advanced:
             api_identifier: API标识符
-            new_rdf_button: 添加RDF属性
-            semantics: 语义学
-            title: 高级
-            url: 输入自定义URL
+            new_rdf_button: "添加RDF属性"
+            semantics: "语义学"
+            title: "高级"
+            url: "输入自定义URL"
           column_totals:
-            title: 列总计
-            total: 总计
-            total_prompt: 选择列总计
+            title: "列总计"
+            total: "总计"
+            total_prompt: "选择列总计"
           display_order:
-            new_item_button: 添加项目
-            option: 选项
-            title: 显示顺序（DataSlate）
+            new_item_button: "添加项目"
+            option: "选项"
+            title: "显示顺序（DataSlate）"
           formatting:
-            alignment: 对齐
-            title: 格式
-            view_style: 查看样式
+            alignment: "对齐"
+            title: "格式"
+            view_style: "查看样式"
           link:
-            key: 键
-            source: 来源
-            title: 链接
+            key: "键"
+            source: "来源"
+            title: "链接"
           localization:
-            decimal: 小数
-            thousands: 千
-            title: 本地化
+            decimal: "小数"
+            thousands: "千"
+            title: "本地化"
           money:
-            abbreviated: 缩写
-            currency: 币种
+            abbreviated: "缩写"
+            currency: "币种"
             format_mask_warning: 
-            no_precision: 无
-            precision: 精确度
-            title: 货币格式
+            no_precision: "无"
+            precision: "精确度"
+            title: "货币格式"
           multiple_choice:
-            new_option_button: 添加选项
-            option: 选项
-            title: 多选选项
+            new_option_button: "添加选项"
+            option: "选项"
+            title: "多选选项"
           number:
-            display: 显示
-            no_commas: 不用逗号
-            no_precision: 无
-            precision: 精确度
-            title: 数字格式
+            display: "显示"
+            no_commas: "不用逗号"
+            no_precision: "无"
+            precision: "精确度"
+            title: "数字格式"
           number_advanced:
-            format_mask: 格式掩码
-            format_mask_prompt: 按您确定的位置，使用#号代表数字及其他字符；例如，一个社会保障号码将显示为###-##-####
-            format_mask_warning: 此项可能覆盖上面的一些设置。
-            title: 高级格式
+            format_mask: "格式掩码"
+            format_mask_prompt: "按您确定的位置，使用#号代表数字及其他字符；例如，一个社会保障号码将显示为###-##-####"
+            format_mask_warning: "此项可能覆盖上面的一些设置。"
+            title: "高级格式"
           photo:
-            size: 尺寸
-            size_prompt: 选择尺寸
+            size: "尺寸"
+            size_prompt: "选择尺寸"
             sizes:
-              featured: 特写 (150x80)
-              large: 大型 (220x220)
-              medium: 中等 (150x150)
-              original: 原样
-              thumb: 缩略图 (80x80)
-              tiny: 微型 (24x24)
-            title: 照片选项
-          subtitle: 更新列的各项属性
-          success: 列已经更新
-          title: 列属性
+              featured: "特写 (150x80)"
+              large: "大型 (220x220)"
+              medium: "中等 (150x150)"
+              original: "原样"
+              thumb: "缩略图 (80x80)"
+              tiny: "微型 (24x24)"
+            title: "照片选项"
+          subtitle: "更新列的各项属性"
+          success: "列已经更新"
+          title: "列属性"
           url:
-            base_url: 基准URL
-            base_url_prompt: 输入通用的URL前缀
+            base_url: "基准URL"
+            base_url_prompt: "输入通用的URL前缀"
             title: URL选项
           validation:
-            published: 要改变列属性，请复制此数据库的工作副本或视图。
-            unsaved: 您不能编辑未保存视图中的列属性
+            published: "要改变列属性，请复制此数据库的工作副本或视图。"
+            unsaved: "您不能编辑未保存视图中的列属性"
         conditional_formatting:
-          change_icon: 变更
+          change_icon: "变更"
           conditions:
-            description: 说明
-            description_prompt: 对匹配进行说明
+            description: "说明"
+            description_prompt: "对匹配进行说明"
             item:
-              operator: 选择一个比较条件
-              subcolumn: 选择子列
-              title: 条件：
-            new_condition_button: 添加条件
-            new_rule_button: 添加新规定
-            title: 条件
+              operator: "选择一个比较条件"
+              subcolumn: "选择子列"
+              title: "条件："
+            new_condition_button: "添加条件"
+            new_rule_button: "添加新规定"
+            title: "条件"
             when:
-              all: 所有条件
-              always: 总是
-              any: 任意条件
-            when_title: 当满足
-          format_html: 使用<br />这种颜色<br />或这个图标
-          subtitle: 利用条件格式化，您可根据自定义条件改变行的背景色。每行的颜色将根据第一个匹配条件确定。
-          title: 条件格式化
+              all: "所有条件"
+              always: "总是"
+              any: "任意条件"
+            when_title: "当满足"
+          format_html: "使用<br />这种颜色<br />或这个图标"
+          subtitle: "利用条件格式化，您可根据自定义条件改变行的背景色。每行的颜色将根据第一个匹配条件确定。"
+          title: "条件格式化"
           validation:
-            no_columns: 此视图无列可筛选
-            no_icons: 图标只与地图视图相关
+            no_columns: "此视图无列可筛选"
+            no_icons: "图标只与地图视图相关"
         delete:
-          confirm: ! '此操作将永久删除 %{view_type} 。再没有办法恢复！您确信要继续吗？ '
-          delete_button: 删除 %{view_type}
-          subtitle: 删除 %{view_type}
-          title: 删除
+          confirm: "此操作将永久删除 %{view_type} 。再没有办法恢复！您确信要继续吗？ "
+          delete_button: "删除 %{view_type}"
+          subtitle: "删除 %{view_type}"
+          title: "删除"
           warning:
-            api: 删除此API会破坏所有使用此API的应用程序。
-            published: 删除此数据集即意味着删除与其关联的所有视图。
-            view: 删除此视图，将只影响由其衍生的视图。
-            working_copy: 要取消所做的改动，您可以删除此工作副本，复制新的副本。
+            api: "删除此API会破坏所有使用此API的应用程序。"
+            published: "删除此数据集即意味着删除与其关联的所有视图。"
+            view: "删除此视图，将只影响由其衍生的视图。"
+            working_copy: "要取消所做的改动，您可以删除此工作副本，复制新的副本。"
         digital_signing:
-          consumer: 如需要此数据集的签名版本，单击下面的链接，生成密钥，开始下载即可。密钥和下载的数据只适用于数据集的当前版本；如果所有者日后更新了数据集，您就需重复此操作来下载新数据。发布下载的数据时一并发布您收到的密钥，遵循下载文件包中的说明，第三方就能确认您的数据是合法的。
-          generate_button: 生成密钥并下载
-          intro_html: 使用 <strong>电子签名的数据集</strong>，可用加密安全方法来证明某个版本的Socrata数据集未遭篡改。例如，如果您要发布基于此数据的成果，并想证明其可靠性，那么这种方法就很有用。
-          publisher: 如需要生成此数据集的签名版本，单击下面的链接，生成密钥即可。请注意，如果日后更新数据集，您需要返回重复此操作，重新生成密钥，以便用户能够再次访问。另外要注意的是，操作过程涉及整个数据集，所以如果数据集庞大或包含大的附件，那处理时间会较长。
-          publisher_generation: 只有数据所有者才能生成签名密钥。
-          signature_header: 签名
-          subtitle: 可在日后验证输出数据的可靠性。
-          title: 电子签名
+          consumer: "如需要此数据集的签名版本，单击下面的链接，生成密钥，开始下载即可。密钥和下载的数据只适用于数据集的当前版本；如果所有者日后更新了数据集，您就需重复此操作来下载新数据。发布下载的数据时一并发布您收到的密钥，遵循下载文件包中的说明，第三方就能确认您的数据是合法的。"
+          generate_button: "生成密钥并下载"
+          intro_html: "使用 <strong>电子签名的数据集</strong>，可用加密安全方法来证明某个版本的Socrata数据集未遭篡改。例如，如果您要发布基于此数据的成果，并想证明其可靠性，那么这种方法就很有用。"
+          publisher: "如需要生成此数据集的签名版本，单击下面的链接，生成密钥即可。请注意，如果日后更新数据集，您需要返回重复此操作，重新生成密钥，以便用户能够再次访问。另外要注意的是，操作过程涉及整个数据集，所以如果数据集庞大或包含大的附件，那处理时间会较长。"
+          publisher_generation: "只有数据所有者才能生成签名密钥。"
+          signature_header: "签名"
+          subtitle: "可在日后验证输出数据的可靠性。"
+          title: "电子签名"
           validation:
-            non_tabular: 只能打印列表数据
+            non_tabular: "只能打印列表数据"
         download:
-          download_as: 下载格式
-          geo_header: 下载地理空间数据
-          layers_header: 下载表格层
-          subtitle: 以静态格式下载此数据集
-          title: 下载
+          download_as: "下载格式"
+          geo_header: "下载地理空间数据"
+          layers_header: "下载表格层"
+          subtitle: "以静态格式下载此数据集"
+          title: "下载"
         feed:
-          subtitle: 讨论内容展示了围绕数据集进行的对话及活动
-          title: 讨论
+          subtitle: "讨论内容展示了围绕数据集进行的对话及活动"
+          title: "讨论"
         form:
           information:
-            name: 名称
-            name_prompt: 输入名称
-            public: 公开？
-            success: 成功URL
-            success_prompt: 输入网页URL
-            title: 表格信息
-          subtitle: 使用表格，可以把网站数据输入到数据集
-          title: 表格
+            name: "名称"
+            name_prompt: "输入名称"
+            public: "公开？"
+            success: "成功URL"
+            success_prompt: "输入网页URL"
+            title: "表格信息"
+          subtitle: "使用表格，可以把网站数据输入到数据集"
+          title: "表格"
           validation:
-            no_columns: 视图必须有可见的列，才能创建表格
+            no_columns: "视图必须有可见的列，才能创建表格"
         map:
           advanced:
-            exclusive: 唯一
-            hide_geolocator: 无地理定位器
-            subtitle: 如果只想显示一幅底图，选择“唯一”。
-            title: 高级配置
-            use_legend: 使用图例
+            exclusive: "唯一"
+            hide_geolocator: "无地理定位器"
+            subtitle: "如果只想显示一幅底图，选择“唯一”。"
+            title: "高级配置"
+            use_legend: "使用图例"
           base_layers:
-            alias: 别名
-            layer: 图层
-            layer_prompt: 选择图层
-            layer_url: 图层URL
-            new_base_map_button: 添加底图
-            opacity: 不透明度
-            subtitle: 从地图服务列表中选择，配置其显示外观。
-            title: 底图
+            alias: "别名"
+            layer: "图层"
+            layer_prompt: "选择图层"
+            layer_url: "图层URL"
+            new_base_map_button: "添加底图"
+            opacity: "不透明度"
+            subtitle: "从地图服务列表中选择，配置其显示外观。"
+            title: "底图"
           data_layer:
-            alias: 别名
-            alias_prompt: 数据集的介绍
-            base_color: 底色
-            color_high: 颜色（高）
-            color_low: 颜色（低）
+            alias: "别名"
+            alias_prompt: "数据集的介绍"
+            base_color: "底色"
+            color_high: "颜色（高）"
+            color_low: "颜色（低）"
             flyout:
-              details: 弹出视窗详情
-              labels: 不加标签？
-              new_details_button: 添加弹出视窗详情
-              opacity: 不透明度
-              title: 弹出视窗的配置
-              title_column: 名称
-            highlight_color: 悬停色
-            icon: 图标
-            location: 地点
-            mondara_note: 目前Mondara图层不能进一步自定义。
-            opacity: 不透明度
-            plot_style: 图样
-            plot_style_prompt: 选择图样
-            point: 自定义点
-            point_color: 点的颜色
-            point_size: 点的尺寸
-            quantity: 数量
-            region: 地区
-            region_level_prompt: 选择地区层面
-            region_prompt: 选择地区
+              details: "弹出视窗详情"
+              labels: "不加标签？"
+              new_details_button: "添加弹出视窗详情"
+              opacity: "不透明度"
+              title: "弹出视窗的配置"
+              title_column: "名称"
+            highlight_color: "悬停色"
+            icon: "图标"
+            location: "地点"
+            mondara_note: "目前Mondara图层不能进一步自定义。"
+            opacity: "不透明度"
+            plot_style: "图样"
+            plot_style_prompt: "选择图样"
+            point: "自定义点"
+            point_color: "点的颜色"
+            point_size: "点的尺寸"
+            quantity: "数量"
+            region: "地区"
+            region_level_prompt: "选择地区层面"
+            region_prompt: "选择地区"
           layers:
-            advanced: ! '%{name} 的高级配置'
-            config: ! '%{name} 的配置'
-            custom: 自定义图层
-            dataset: 数据集
-            edit: 编辑
-            new_data_button: 添加数据
-            title: 数据集摘要
+            advanced: "%{name} 的高级配置"
+            config: "%{name} 的配置"
+            custom: "自定义图层"
+            dataset: "数据集"
+            edit: "编辑"
+            new_data_button: "添加数据"
+            title: "数据集摘要"
           legend:
-            conditional_formats: 介绍条件格式
-            custom_entry: 添加自定义图例
-            entry_label: 标签
-            position: 图例
-            position_prompt: 选择图例位置
+            conditional_formats: "介绍条件格式"
+            custom_entry: "添加自定义图例"
+            entry_label: "标签"
+            position: "图例"
+            position_prompt: "选择图例位置"
             positions:
-              bottom_left: 左下
-              none: 无
-              top_right: 右上
-            title: 配置图例
+              bottom_left: "左下"
+              none: "无"
+              top_right: "右上"
+            title: "配置图例"
           plots:
-            heatmap: 边界图
-            point: 点地图
-            rastermap: 点击热图
+            heatmap: "边界图"
+            point: "点地图"
+            rastermap: "点击热图"
           regions:
-            canada_provinces: 加拿大省
-            counties: 美国县
-            countries: 国家
-            state: 美国州
-          subtitle: 有地址的视图可作为地图上的点来显示
-          title: 地图
+            canada_provinces: "加拿大省"
+            counties: "美国县"
+            countries: "国家"
+            state: "美国州"
+          subtitle: "有地址的视图可作为地图上的点来显示"
+          title: "地图"
           validation:
             hidden_location_html: 您可 <a href="#showLoc" title="Show a location column">显示隐藏的地点列</a>。
-            location_column: 必须有地点列才能创建地图。
-            viz_limit: 一个视图只能加载一种可视化操作
+            location_column: "必须有地点列才能创建地图。"
+            viz_limit: "一个视图只能加载一种可视化操作"
         odata:
           endpoint_action: 
           intro_html1: 
@@ -1945,44 +1950,44 @@ zh:
           subtitle: 
           title: 
         ownership:
-          error: 变更所有权时出错。请稍后再试。
-          me: 我
-          subtitle: 如要把所有权转交给另一个用户，需输入Socrata 用户的电子邮件地址或账户名，然后从下拉列表中选择需要的账户。您也可输入用户个人资料URL（如果知道的话）。只有已注册用户才能接管数据集的所有权。
+          error: "变更所有权时出错。请稍后再试。"
+          me: "我"
+          subtitle: "如要把所有权转交给另一个用户，需输入Socrata 用户的电子邮件地址或账户名，然后从下拉列表中选择需要的账户。您也可输入用户个人资料URL（如果知道的话）。只有已注册用户才能接管数据集的所有权。"
           success:
-            me: 现在您成为了所有者
-            user: 所有权成功转交给了 %{owner}
-          title: 所有权
-          transfer_to: 所有权转交给
+            me: "现在您成为了所有者"
+            user: "所有权成功转交给了 %{owner}"
+          title: "所有权"
+          transfer_to: "所有权转交给"
           validation:
-            invalid_user: 未能识别用户。请尝试用名称、电子邮件或个人资料URL搜索用户。
-            no_user: 请选择用户。
-            valid_saved: 必须是有效并保存的视图
+            invalid_user: "未能识别用户。请尝试用名称、电子邮件或个人资料URL搜索用户。"
+            no_user: "请选择用户。"
+            valid_saved: "必须是有效并保存的视图"
         permissions:
-          error: 修改数据集权限时出错。请稍后再试
+          error: "修改数据集权限时出错。请稍后再试"
           features_html: <span class="datasetTypeName">数据集</span>更多特性
           status_html: <span class="datasetTypeName">数据集</span> 当前是 <span class="datasetPublicText">%{visibility}</span>
-          subtitle: 管理 %{view_type}的权限
-          success: 您已保存了权限设置
-          title: 权限
+          subtitle: "管理 %{view_type}的权限"
+          success: "您已保存了权限设置"
+          title: "权限"
           validation:
-            valid_saved: 必须是有效并保存的视图
+            valid_saved: "必须是有效并保存的视图"
         print:
           margins:
-            bottom: 底部：
-            left: 左边：
-            right: 右边：
-            top: 顶部：
-          margins_title: 边距（英寸）：
+            bottom: "底部："
+            left: "左边："
+            right: "右边："
+            top: "顶部："
+          margins_title: "边距（英寸）："
           options:
-            fit: 缩小到一个页面
-            header_icons: 列标题显示图标
-            headers_every_page: 每页都打印列标题
-          options_title: 选项：
-          orientation: 纸张方向：
+            fit: "缩小到一个页面"
+            header_icons: "列标题显示图标"
+            headers_every_page: "每页都打印列标题"
+          options_title: "选项："
+          orientation: "纸张方向："
           orientations:
-            landscape: 横排
-            portrait: 竖排
-          paper_size: 纸张尺寸：
+            landscape: "横排"
+            portrait: "竖排"
+          paper_size: "纸张尺寸："
           paper_sizes:
             a0: A0 (841 x 1189毫米)
             a1: A1 (594 x 841毫米)
@@ -1992,522 +1997,522 @@ zh:
             legal: Legal (8.5 x 14英寸)
             letter: Letter (8.5 x 11英寸)
             tabloid: Tabloid (11 x 17英寸)
-          print_button: 打印
-          subtitle: 将此数据集输出为可打印的PDF格式
-          title: 打印
+          print_button: "打印"
+          subtitle: "将此数据集输出为可打印的PDF格式"
+          title: "打印"
           validation:
-            non_tabular: 只能打印列表数据
+            non_tabular: "只能打印列表数据"
         sdp:
-          preview: 预览
-          subtitle: 社交数据播放器可以帮助您轻松地在互联网上发布数据集
-          title: 社交数据播放器
+          preview: "预览"
+          subtitle: "社交数据播放器可以帮助您轻松地在互联网上发布数据集"
+          title: "社交数据播放器"
           validation:
-            public: 必须是公开视图才能发布
-            valid_saved: 必须是有效并保存的视图
+            public: "必须是公开视图才能发布"
+            valid_saved: "必须是有效并保存的视图"
         share:
-          error: 请稍后再试。
-          loading_shares: 上传分享…
-          no_shares_html: ! '当前您没有与任何人分享 <span class="datasetTypeName">数据集</span> '
-          notify_button: 通知所有人变更情况
-          notify_success: 通知已发出
+          error: "请稍后再试。"
+          loading_shares: "上传分享…"
+          no_shares_html: '当前您没有与任何人分享 <span class="datasetTypeName">数据集</span> '
+          notify_button: "通知所有人变更情况"
+          notify_success: "通知已发出"
           prompt_html: <span class="datasetTypeName">数据集</span> 为 <span class="publicOrPrivate">%{visibility} </span> <span class="andSharedHint %{hide}">，分享者有：</span>
           share_button_html: 分享 <span class="datasetTypeNameUpcase">数据集</span>
-          subtitle: 分享 %{view_type}
-          success: 您的权限已经更新
-          title: 分享
+          subtitle: "分享 %{view_type}"
+          success: "您的权限已经更新"
+          title: "分享"
           validation:
-            valid_saved: 必须是有效并保存的视图
+            valid_saved: "必须是有效并保存的视图"
         showhide_columns:
           columns:
-            title: 列
-          subtitle: 调整在此视图中显示的列
-          title: 显示/隐藏列
+            title: "列"
+          subtitle: "调整在此视图中显示的列"
+          title: "显示/隐藏列"
         sort_rollup:
           rollup:
-            add_group_button: 添加分组列
-            add_rollup_button: 添加汇总列
-            function: 函数
-            group_by: 分组方式
-            group_function_label: 基于
-            group_function_prompt: 选择分组功能
-            roll_up: 汇总
-            roll_up_function: 选择函数
-            title: 汇总与细分
+            add_group_button: "添加分组列"
+            add_rollup_button: "添加汇总列"
+            function: "函数"
+            group_by: "分组方式"
+            group_function_label: "基于"
+            group_function_prompt: "选择分组功能"
+            roll_up: "汇总"
+            roll_up_function: "选择函数"
+            title: "汇总与细分"
           sort:
-            add_column_button: 添加列
-            column: 列
-            direction: 方向
+            add_column_button: "添加列"
+            column: "列"
+            direction: "方向"
             directions:
-              ascending: 升序
-              descending: 降序
-            title: 排序
-          subtitle: 您可以把行分组，利用汇总操作加总数据；对一列或多列排序
-          title: 排序与汇总
+              ascending: "升序"
+              descending: "降序"
+            title: "排序"
+          subtitle: "您可以把行分组，利用汇总操作加总数据；对一列或多列排序"
+          title: "排序与汇总"
           validation:
-            no_eligible_columns: 此视图无列可汇总或排序
-            no_function: 每个汇总列必须有函数
-            no_group_bys: 分组中至少有一列才能汇总
+            no_eligible_columns: "此视图无列可汇总或排序"
+            no_function: "每个汇总列必须有函数"
+            no_group_bys: "分组中至少有一列才能汇总"
         tabs:
-          about: 关于
-          discuss: 讨论
-          edit: 编辑
-          embed: 嵌入
-          export: 导出
-          filter: 筛选
-          manage: 管理
-          more: 更多
-          more_views: 更多视图
-          visualize: 可视化
+          about: "关于"
+          discuss: "讨论"
+          edit: "编辑"
+          embed: "嵌入"
+          export: "导出"
+          filter: "筛选"
+          manage: "管理"
+          more: "更多"
+          more_views: "更多视图"
+          visualize: "可视化"
         view_list:
-          delete_confirm: 您确信要删除 %{name}吗？
-          delete_snapshot_confirm: 您确信要删除 %{name} (snapshotted %{date})吗？
+          delete_confirm: "您确信要删除 %{name}吗？"
+          delete_snapshot_confirm: "您确信要删除 %{name} (snapshotted %{date})吗？"
           filter:
-            all: 所有视图
-          filter_title: 仅显示
+            all: "所有视图"
+          filter_title: "仅显示"
           item:
             author_html: <span class="date"></span> 作者： <span class="author"></span>
-            delete: 删除视图
-            expand: 点击展开
-          no_results: 没有结果
+            delete: "删除视图"
+            expand: "点击展开"
+          no_results: "没有结果"
           no_results_html: 没有<span class="type">结果</span>
           pagination:
-            last: 查看上一视图
-            next: 查看下一 %{count} 视图
-          search: 搜索视图
+            last: "查看上一视图"
+            next: "查看下一 %{count} 视图"
+          search: "搜索视图"
           snapshots:
-            subtitle: 查看早先发布的数据版本
-            title: 数据集快照
+            subtitle: "查看早先发布的数据版本"
+            title: "数据集快照"
           sort:
             alphaAscending: A-Z
-            dateAscending: 最早到最新
-            dateDescending: 最新
-            popularity: 关注度
-          sort_title: 排序方式
+            dateAscending: "最早到最新"
+            dateDescending: "最新"
+            popularity: "关注度"
+          sort_title: "排序方式"
           views:
-            subtitle: 查看此数据集现有的筛选视图、地图、图表和其他视图
-            title: 视图
+            subtitle: "查看此数据集现有的筛选视图、地图、图表和其他视图"
+            title: "视图"
         visualize:
-          choose_type: 可视化类型
+          choose_type: "可视化类型"
       save_dialog:
         descriptions:
-          leaving: 如果离开此页面，您未保存的数据将丢失。在离开前选择是否保存视图；或者选择“取消”返回页面。
-          reload_save: 这些改动需要重新载入。您可保存改动后查看，也可选择“取消”继续停留在此页面。
-          reload_update: 这些改动需要重新载入。您可“更新”视图或“保存”为新视图来查看改动，也可选择“取消”继续停留在此页面。
+          leaving: "如果离开此页面，您未保存的数据将丢失。在离开前选择是否保存视图；或者选择“取消”返回页面。"
+          reload_save: "这些改动需要重新载入。您可保存改动后查看，也可选择“取消”继续停留在此页面。"
+          reload_update: "这些改动需要重新载入。您可“更新”视图或“保存”为新视图来查看改动，也可选择“取消”继续停留在此页面。"
         form:
-          new_name: 填入新视图的名称：
+          new_name: "填入新视图的名称："
         titles:
-          normal: 保存视图
-          prompt: 您想保存视图吗？
+          normal: "保存视图"
+          prompt: "您想保存视图吗？"
         validation:
-          auth_required: 您必须登录才能保存视图
-          view_name_required: 需要输入视图名称
+          auth_required: "您必须登录才能保存视图"
+          view_name_required: "需要输入视图名称"
       show:
-        remove_confirm: 你确定要删除该视图？
-        unpublished_alert: 该数据集尚未发布，供每个人可用前尚无法进行必要的更改。你发布该数据集后该数据集才可见。
+        remove_confirm: "你确定要删除该视图？"
+        unpublished_alert: "该数据集尚未发布，供每个人可用前尚无法进行必要的更改。你发布该数据集后该数据集才可见。"
       subscribe:
-        google_reader: 添加到Google Reader
+        google_reader: "添加到Google Reader"
         intro_html: <strong>通过RSS阅读器订阅 <span class="datasetName">%{name}</span> 数据集</strong>, 可使用以下任意一个链接：
-        rss: 下载为RSS
-        rss_program: 在外部程序中打开
-        subscribe_button: 通过电子邮件订阅
-        subscribe_html: 要接收新数据发布的<strong>电子邮件通知</strong> ，选中下面的订阅框。
+        rss: "下载为RSS"
+        rss_program: "在外部程序中打开"
+        subscribe_button: "通过电子邮件订阅"
+        subscribe_html: "要接收新数据发布的<strong>电子邮件通知</strong> ，选中下面的订阅框。"
         subscribed_html: <strong>您现在通过电子邮件订阅了<span class="datasetTypeName">数据集</span></strong>，有新数据发布时您将收到通知。
         title_html: 订阅 "<span class="datasetName">%{name}</span>" <span class="datasetTypeNameUpcase">数据集</span>
-        unsubscribe: 如果您不想收到通知，取消选中下面的订阅框。
+        unsubscribe: "如果您不想收到通知，取消选中下面的订阅框。"
     edit_metadata:
-      about: 关于
-      additional_source: 其他资源
-      alternative_access_prompt: 输入该数据集的其他访问点
+      about: "关于"
+      additional_source: "其他资源"
+      alternative_access_prompt: "输入该数据集的其他访问点"
       api_endpoint: API 端点
-      attachments: 附件
-      attachmentsDisabledMessagePart1: 要上传的附件，先完成发布此数据集。然后，单击
-      attachmentsDisabledMessagePart2: 在工具栏上，然后单击编辑元数据。然后，便可上传附件。
-      brief_description: 简单描述
-      brief_description_prompt: 输入描述
-      cancel: 取消
-      category: 类别
-      contact_email: 联系人电子邮件
-      contact_information: 联系人信息
-      custom: 自定义
-      custom_error: 自定义语义类必须是url。
-      data_provided_by: 数据提供方
-      data_provided_prompt: 个人或组织
-      data_provider_required: 必须指定数据提供方（归属）。
-      dataset_title: 数据集标题
-      dataset_title_error: 数据集必须具有标题。
-      dataset_title_prompt: 输入标题
-      dataset_url: 数据集的URL
-      dataset_url_prompt: 输入外部数据集的位置
-      delete: 删除
-      email_address: 电子邮件地址
-      email_help: 此地址不会公开显示。 如果留空，将默认为您的地址。
-      existing_attachments: 现有附件
-      external_confirm: 您确定要删除该外部数据集吗？
-      external_dataset: 外部数据集
-      external_id: 外部ID
-      external_id_prompt: 输入外部ID
-      external_identifier: 外部标识符
-      file_type: 文件类型
-      general_information: 一般信息
-      headline: 编辑 %{name}的元数据
-      keywords_help: 输入一个或多个关键字，以逗号隔开
-      license_help: 为希望使用该数据集的人选择许可条款。
-      license_type: 许可证类型
-      licensing: 许可
-      licensing_attr: 许可和归属
-      list: 列表
-      metadata_help: 该字段已被您的组织标为私有，不可公开查看。
-      new_attachment: 新附件
-      none: （无）
-      northwest_latitude: 西北纬度
-      northwest_longitude: 西北经度
-      optional: 可选
-      private_help: 该字段已被您的组织标记为私有，不可公开查看
-      remove_image: 移除图像
-      required_field: 必填字段
-      resource_name: 资源名称
-      resource_name_prompt: 输入资源名称
-      return: 返回数据集
-      row_class: 行类别
-      row_identifier: 行标识符
-      save: 保存
-      save_changes: 保存更改
-      semantics_rdf: 语义和资源描述框架
-      source_link: 资源链接
-      source_link_error: 好像不是有效url。
-      source_link_prompt: 输入网址
-      southeast_latitude: 东南纬度
-      southeast_longitude: 东南经度
-      spatial_extent: 空间范围
-      subject_column: 主题栏
-      tags_keywords: 标记/关键字
-      tags_prompt: 输入关键字
-      thumbnail_image: 缩略图图像
-      title: 编辑数据集元数据
-      upload_error: 请选择有效的图像文件
-      upload_help: 该图像将剪裁为正方形
-      upload_image: 上传图像
-      upload_new_attachment: 上传新附件
+      attachments: "附件"
+      attachmentsDisabledMessagePart1: "要上传的附件，先完成发布此数据集。然后，单击"
+      attachmentsDisabledMessagePart2: "在工具栏上，然后单击编辑元数据。然后，便可上传附件。"
+      brief_description: "简单描述"
+      brief_description_prompt: "输入描述"
+      cancel: "取消"
+      category: "类别"
+      contact_email: "联系人电子邮件"
+      contact_information: "联系人信息"
+      custom: "自定义"
+      custom_error: "自定义语义类必须是url。"
+      data_provided_by: "数据提供方"
+      data_provided_prompt: "个人或组织"
+      data_provider_required: "必须指定数据提供方（归属）。"
+      dataset_title: "数据集标题"
+      dataset_title_error: "数据集必须具有标题。"
+      dataset_title_prompt: "输入标题"
+      dataset_url: "数据集的URL"
+      dataset_url_prompt: "输入外部数据集的位置"
+      delete: "删除"
+      email_address: "电子邮件地址"
+      email_help: "此地址不会公开显示。 如果留空，将默认为您的地址。"
+      existing_attachments: "现有附件"
+      external_confirm: "您确定要删除该外部数据集吗？"
+      external_dataset: "外部数据集"
+      external_id: "外部ID"
+      external_id_prompt: "输入外部ID"
+      external_identifier: "外部标识符"
+      file_type: "文件类型"
+      general_information: "一般信息"
+      headline: "编辑 %{name}的元数据"
+      keywords_help: "输入一个或多个关键字，以逗号隔开"
+      license_help: "为希望使用该数据集的人选择许可条款。"
+      license_type: "许可证类型"
+      licensing: "许可"
+      licensing_attr: "许可和归属"
+      list: "列表"
+      metadata_help: "该字段已被您的组织标为私有，不可公开查看。"
+      new_attachment: "新附件"
+      none: "（无）"
+      northwest_latitude: "西北纬度"
+      northwest_longitude: "西北经度"
+      optional: "可选"
+      private_help: "该字段已被您的组织标记为私有，不可公开查看"
+      remove_image: "移除图像"
+      required_field: "必填字段"
+      resource_name: "资源名称"
+      resource_name_prompt: "输入资源名称"
+      return: "返回数据集"
+      row_class: "行类别"
+      row_identifier: "行标识符"
+      save: "保存"
+      save_changes: "保存更改"
+      semantics_rdf: "语义和资源描述框架"
+      source_link: "资源链接"
+      source_link_error: "好像不是有效url。"
+      source_link_prompt: "输入网址"
+      southeast_latitude: "东南纬度"
+      southeast_longitude: "东南经度"
+      spatial_extent: "空间范围"
+      subject_column: "主题栏"
+      tags_keywords: "标记/关键字"
+      tags_prompt: "输入关键字"
+      thumbnail_image: "缩略图图像"
+      title: "编辑数据集元数据"
+      upload_error: "请选择有效的图像文件"
+      upload_help: "该图像将剪裁为正方形"
+      upload_image: "上传图像"
+      upload_new_attachment: "上传新附件"
     forgot_password:
-      already_authenticated: 无法重置密码：您已经登录。
-      failed: 提交密码重置请求时出现问题。 请重试。
+      already_authenticated: "无法重置密码：您已经登录。"
+      failed: "提交密码重置请求时出现问题。 请重试。"
       form:
-        reset_password_button: 重置密码
-      prompt: 如果您忘记了密码，我们可以给您发送包含重置密码链接的邮件。
-      success: 感谢您。电子邮件已发送至文件中的账户，其中包含更多详细信息。
-      title: 找回密码
+        reset_password_button: "重置密码"
+      prompt: "如果您忘记了密码，我们可以给您发送包含重置密码链接的邮件。"
+      success: "感谢您。电子邮件已发送至文件中的账户，其中包含更多详细信息。"
+      title: "找回密码"
     header:
       links:
         account_html: 您好，<span class="currentUser"></span>
-        account_tooltip: 你的主页
-        administration: 管理
+        account_tooltip: "你的主页"
+        administration: "管理"
     import_common:
-      addresses_to_geocode: 导入完成后将地址进行地理编码。
-      case_sensitive: 区分大小写
-      city: 城市
-      column: 列
-      combine_multiple_columns: 结合多列
-      create_composite: 从多个源列创建一列：
-      create_js_expression: 如何创建一个自定义的JavaScript表达式？
-      custom_javascript: 自定义的JavaScript表达式...
-      enter_custom: 输入自定义值
-      existing_cols: 现有的地址栏
-      existing_latlng_cols: 现有的纬度和经度列
-      find: 查找
-      find_and_replace: 查找和替换值...
-      import_from_multiple: 从<strong>多列</strong>导入
-      import_from_single: 从<strong>单列</strong>导入
-      latitude: 纬度
-      location_source_col: 位置源列
-      longitude: 经度
-      make_lower_case: 小写
-      make_title_case: 大写
-      make_upper_case: 大写
-      name_this_column: 为该列命名
-      new_layer: （新层）
-      new_source_col: 添加新源列
-      new_transform: 添加新的转换
-      options: 选项
+      addresses_to_geocode: "导入完成后将地址进行地理编码。"
+      case_sensitive: "区分大小写"
+      city: "城市"
+      column: "列"
+      combine_multiple_columns: "结合多列"
+      create_composite: "从多个源列创建一列："
+      create_js_expression: "如何创建一个自定义的JavaScript表达式？"
+      custom_javascript: "自定义的JavaScript表达式..."
+      enter_custom: "输入自定义值"
+      existing_cols: "现有的地址栏"
+      existing_latlng_cols: "现有的纬度和经度列"
+      find: "查找"
+      find_and_replace: "查找和替换值..."
+      import_from_multiple: "从<strong>多列</strong>导入"
+      import_from_single: "从<strong>单列</strong>导入"
+      latitude: "纬度"
+      location_source_col: "位置源列"
+      longitude: "经度"
+      make_lower_case: "小写"
+      make_title_case: "大写"
+      make_upper_case: "大写"
+      name_this_column: "为该列命名"
+      new_layer: "（新层）"
+      new_source_col: "添加新源列"
+      new_transform: "添加新的转换"
+      options: "选项"
       properly_formatted: 导入前，列必须<a href="%{formatting_link}" rel="external">正确格式化</ a>。
-      regular_expression: 正则表达式
-      remove: 删除
-      replace: 并用...替换
-      state: 州
-      street: 街道
-      then: 然后
-      to_state_code: 将州转换为2字母代码
-      transforms: 导入时执行以下转换：
-      zip: 压缩
+      regular_expression: "正则表达式"
+      remove: "删除"
+      replace: "并用...替换"
+      state: "州"
+      street: "街道"
+      then: "然后"
+      to_state_code: "将州转换为2字母代码"
+      transforms: "导入时执行以下转换："
+      zip: "压缩"
     import_pane:
-      analyzing: 正在分析你的文件...
-      assure_accessible: 请确保你的文件可访问并有效，然后再试一次。
-      combine_multiple_cols: （合并多个列...）
-      downloading: 正在下载你的文件...
-      filetype_error_blist: 请选择一个CSV、 TSV、XLS或 XLSX文件。
-      filetype_error_shapefile: 请选择一个KML、KMZ或 ZIP文件。
-      headline_import: 请选择要导入的文件
-      headline_upload: 请选择要上传的文件
-      layer: 层
-      many_headers: 你其中的%{num} 行为页眉。
-      no_file_selected: 暂时还没有选中文件。
-      no_headers: 你的行中无页眉。
-      no_source_column: （无源列）
-      one_header: 其中一行为页眉。
-      problem_importing: 导入该文件时出现问题。请确保它是有效的。
-      problem_uploading: 上传该文件时出现问题。请确保它是有效的。
-      rows_imported: 目前已导入%{num} 行。
-      try_again: 请稍后再试。
-      unknown_error: 出现未知错误
-      uploading: 正在上传文件
+      analyzing: "正在分析你的文件..."
+      assure_accessible: "请确保你的文件可访问并有效，然后再试一次。"
+      combine_multiple_cols: "（合并多个列...）"
+      downloading: "正在下载你的文件..."
+      filetype_error_blist: "请选择一个CSV、 TSV、XLS或 XLSX文件。"
+      filetype_error_shapefile: "请选择一个KML、KMZ或 ZIP文件。"
+      headline_import: "请选择要导入的文件"
+      headline_upload: "请选择要上传的文件"
+      layer: "层"
+      many_headers: "你其中的%{num} 行为页眉。"
+      no_file_selected: "暂时还没有选中文件。"
+      no_headers: "你的行中无页眉。"
+      no_source_column: "（无源列）"
+      one_header: "其中一行为页眉。"
+      problem_importing: "导入该文件时出现问题。请确保它是有效的。"
+      problem_uploading: "上传该文件时出现问题。请确保它是有效的。"
+      rows_imported: "目前已导入%{num} 行。"
+      try_again: "请稍后再试。"
+      unknown_error: "出现未知错误"
+      uploading: "正在上传文件"
     link_account:
-      success: 您的外部账户已关联。
+      success: "您的外部账户已关联。"
     profile:
       app_tokens:
         item:
-          app_token: 应用程序令牌
-          description: 说明
-          edit_token_link: 编辑
-          name: 名称
-          no_thumbnail: 无缩略图
-          organization: 机构
-          secret_token: 秘密令牌
-          show_secret_link: 显示秘密令牌
-          website: 网站
-        manage_link: 管理
-        no_applications: 您还未创建应用程序。点击右边的“管理”开始创建。
-        title: ! '%{user}的应用程序'
+          app_token: "应用程序令牌"
+          description: "说明"
+          edit_token_link: "编辑"
+          name: "名称"
+          no_thumbnail: "无缩略图"
+          organization: "机构"
+          secret_token: "秘密令牌"
+          show_secret_link: "显示秘密令牌"
+          website: "网站"
+        manage_link: "管理"
+        no_applications: "您还未创建应用程序。点击右边的“管理”开始创建。"
+        title: "%{user}的应用程序"
       bar:
-        edit_settings_link: 编辑账户设置
-        follow_link: 关注
-        join_date: 注册于
-        last_seen_date: 上次登录于
-        message_link: 发送消息
-        unfollow_link: 取消关注
+        edit_settings_link: "编辑账户设置"
+        follow_link: "关注"
+        join_date: "注册于"
+        last_seen_date: "上次登录于"
+        message_link: "发送消息"
+        unfollow_link: "取消关注"
       browse:
-        owned_datasets: 我是所有者
-        shared_datasets: 我是分享者
-        title: ! '%{user}的数据集'
+        owned_datasets: "我是所有者"
+        shared_datasets: "我是分享者"
+        title: "%{user}的数据集"
       contact:
-        message: 留言
-        message_prompt: 输入留言
-        subject: 主题
-        subject_prompt: 输入主题
-        title: 联系用户
+        message: "留言"
+        message_prompt: "输入留言"
+        subject: "主题"
+        subject_prompt: "输入主题"
+        title: "联系用户"
       edit:
         account:
-          add_openid_button: 添加OpenID或外部账户
-          confirm_email: 确认电子邮件
-          confirm_password: 确认密码
-          connect_openid: 用Facebook、Twitter、Google或其他第三方认证信息登录。
-          current_email: 当前的电子邮件
+          add_openid_button: "添加OpenID或外部账户"
+          confirm_email: "确认电子邮件"
+          confirm_password: "确认密码"
+          connect_openid: "用Facebook、Twitter、Google或其他第三方认证信息登录。"
+          current_email: "当前的电子邮件"
           email:
             interests:
-              account_provisioned: 提供了特权账户，供以后使用
-              any_view_created: 有人创建了视图
-              comment_to_moderate: 有人提交了评论，需要审核
-              nomination_created: 有人创建了新提名
-              nomination_moderated: 审核所有提名
-              privileged_account_created: 用户创建了特权账户
-              user_affected: 直接对您产生影响的操作，如评论回复和状态更新
-              view_made_public: 有视图被公开
-            policy: ! '%{site} 尊重您的隐私权利，不会通过此处列表发送营销邮件，也不会把您的邮件地址提供给第三方。本网站所发邮件的内容涉及账户通知，以及您创建或订阅的数据集的更新。'
-            send_error: 发送电子邮件时出现错误。请稍后再试。
-            send_success: 你的邮件已发送
-            subtitle: 勾选以下选项，即可收到相关的通知。
-            title: 电子邮件通知
-          learn_openid: 了解OpenID
-          new_email: 新电子邮件
-          new_password: 新密码
-          no_openid: 此账户没有关联的OpenID标识符。
-          old_password: 旧密码
-          password: 密码
-          password_prompt: （安全起见）
+              account_provisioned: "提供了特权账户，供以后使用"
+              any_view_created: "有人创建了视图"
+              comment_to_moderate: "有人提交了评论，需要审核"
+              nomination_created: "有人创建了新提名"
+              nomination_moderated: "审核所有提名"
+              privileged_account_created: "用户创建了特权账户"
+              user_affected: "直接对您产生影响的操作，如评论回复和状态更新"
+              view_made_public: "有视图被公开"
+            policy: "%{site} 尊重您的隐私权利，不会通过此处列表发送营销邮件，也不会把您的邮件地址提供给第三方。本网站所发邮件的内容涉及账户通知，以及您创建或订阅的数据集的更新。"
+            send_error: "发送电子邮件时出现错误。请稍后再试。"
+            send_success: "你的邮件已发送"
+            subtitle: "勾选以下选项，即可收到相关的通知。"
+            title: "电子邮件通知"
+          learn_openid: "了解OpenID"
+          new_email: "新电子邮件"
+          new_password: "新密码"
+          no_openid: "此账户没有关联的OpenID标识符。"
+          old_password: "旧密码"
+          password: "密码"
+          password_prompt: "（安全起见）"
           password_restrictions_html: （密码设定要求<span class="icon"> </span>）
-          title: 账户设置
+          title: "账户设置"
         app_tokens:
-          application_name: 应用程序名称
-          application_name_prompt: 输入应用程序的名称
-          callback_prefix: 回调前缀
+          application_name: "应用程序名称"
+          application_name_prompt: "输入应用程序的名称"
+          callback_prefix: "回调前缀"
           callback_prefix_help_html: 例如，如果您的应用程序将回调到 <span class="code">https://my-domain.com/socrata-app/oauth/validated</span> 和 <span class="code">https://my-domain.com/socrata-app/profile</span>，您需提供 <span class="code">https://my-domain.com/socrata-app</span> 作为前缀。注意，至少必须包括整个域名。
-          callback_prefix_prompt: 提供在使用OAuth时前往安全(https) 回调 uri的前缀
-          create_error: 创建应用程序令牌时出错：%{message}
-          create_success: 应用程序已创建
-          delete_confirm: 您确定要删除该应用程序吗？对应的app_token将不再有效
-          delete_error: 删除应用程序令牌时出错：%{message}
-          delete_success: 应用程序已删除
-          description: 说明
-          description_prompt: 应用程序介绍
-          new_app_button: 创建新应用程序
-          organization: 机构
-          organization_prompt: 输入负责此应用程序的机构
-          public: 公开？
-          save_success: 应用程序已成功保存
-          thumbnail: 缩略图
-          title: 应用程序令牌
-          title_full: 您的应用程序
-          title_single: 编辑应用程序令牌
-          website: 网站
-          website_prompt: 提供此应用程序或机构网站的链接
-        back_link: 返回我的个人资料
+          callback_prefix_prompt: "提供在使用OAuth时前往安全(https) 回调 uri的前缀"
+          create_error: "创建应用程序令牌时出错：%{message}"
+          create_success: "应用程序已创建"
+          delete_confirm: "您确定要删除该应用程序吗？对应的app_token将不再有效"
+          delete_error: "删除应用程序令牌时出错：%{message}"
+          delete_success: "应用程序已删除"
+          description: "说明"
+          description_prompt: "应用程序介绍"
+          new_app_button: "创建新应用程序"
+          organization: "机构"
+          organization_prompt: "输入负责此应用程序的机构"
+          public: "公开？"
+          save_success: "应用程序已成功保存"
+          thumbnail: "缩略图"
+          title: "应用程序令牌"
+          title_full: "您的应用程序"
+          title_single: "编辑应用程序令牌"
+          website: "网站"
+          website_prompt: "提供此应用程序或机构网站的链接"
+        back_link: "返回我的个人资料"
         image:
-          error: 上传新头像出错：%{message}
-          success: 您的头像已更新
-          title: 个人资料头像
-          upload_image_button: 上传新头像
+          error: "上传新头像出错：%{message}"
+          success: "您的头像已更新"
+          title: "个人资料头像"
+          upload_image_button: "上传新头像"
         info:
-          city: 城市
-          country: 国家
+          city: "城市"
+          country: "国家"
           description:
-            prompt: 写下您想分享的任何内容
-            title: 描述
-          display_name: 显示姓名
-          first_name: 名
+            prompt: "写下您想分享的任何内容"
+            title: "描述"
+          display_name: "显示姓名"
+          first_name: "名"
           interests:
-            prompt: 输入您的兴趣
-            title: 兴趣
-          last_name: 姓
-          link_prompt: 输入URL
-          organization: 机构
-          state: 州/省
-          title: 基本信息
-          title_full: 基本信息
-          user_title: 职务
-        success: 您的个人资料已更新。
+            prompt: "输入您的兴趣"
+            title: "兴趣"
+          last_name: "姓"
+          link_prompt: "输入URL"
+          organization: "机构"
+          state: "州/省"
+          title: "基本信息"
+          title_full: "基本信息"
+          user_title: "职务"
+        success: "您的个人资料已更新。"
         validation:
-          email_mismatch: 新电子邮件不匹配
-          image_format: 请选择有效的图片类型(PNG, JPG或 GIF)
-          invalid_links: 更新链接时出现问题。 %{message}
-          no_display_name: 错误：“显示名称”不能空白
-          no_password_no_openid: 必须先设置密码，才能删除所有OpenID标识符
-          password_mismatch: 新密码不匹配
-          user_missing: 用户找不到，或已被删除。
+          email_mismatch: "新电子邮件不匹配"
+          image_format: "请选择有效的图片类型(PNG, JPG或 GIF)"
+          invalid_links: "更新链接时出现问题。 %{message}"
+          no_display_name: "错误：“显示名称”不能空白"
+          no_password_no_openid: "必须先设置密码，才能删除所有OpenID标识符"
+          password_mismatch: "新密码不匹配"
+          user_missing: "用户找不到，或已被删除。"
       info:
-        edit_link: 编辑
-        external_links: 外部链接
-        interests: 兴趣
+        edit_link: "编辑"
+        external_links: "外部链接"
+        interests: "兴趣"
         links:
           facebook: Facebook
           flickr: Flickr
-          my_blog: 我的博客
-          my_company: 我的单位
-          my_site: 我的网址
+          my_blog: "我的博客"
+          my_company: "我的单位"
+          my_site: "我的网址"
           twitter: Twitter
-        no_description: 没有提供内容
-        other_ext_link: 其他
-        title: 基本信息
+        no_description: "没有提供内容"
+        other_ext_link: "其他"
+        title: "基本信息"
       sidebar:
-        all_contacts_link: 查看所有
-        edit_image_link: 编辑头像
-        followers: 关注我的人
-        following: 我关注的人
-        hide_contacts_link: 隐藏
+        all_contacts_link: "查看所有"
+        edit_image_link: "编辑头像"
+        followers: "关注我的人"
+        following: "我关注的人"
+        hide_contacts_link: "隐藏"
     reset_password:
-      failed: 重置密码时出现问题。请重试。
+      failed: "重置密码时出现问题。请重试。"
       form:
-        reset_password_button: 重置密码
-      prompt: 欢迎回来！请选择新密码。
-      success: 密码已成功重置
-      title: 重置密码
+        reset_password_button: "重置密码"
+      prompt: "欢迎回来！请选择新密码。"
+      success: "密码已成功重置"
+      title: "重置密码"
     sign_in:
-      failed: 无法通过该电子邮件和密码登录；请重试
+      failed: "无法通过该电子邮件和密码登录；请重试"
       form:
-        sign_in_button: 登录
-      headline: 登录%{site}
-      mismatch: 密码不匹配；请重试
-      prompt_html: 使用 <strong>Socrata 用户名</strong>登录
+        sign_in_button: "登录"
+      headline: "登录%{site}"
+      mismatch: "密码不匹配；请重试"
+      prompt_html: "使用 <strong>Socrata 用户名</strong>登录"
       tips_html: 使用您的电子邮件和密码登录所有使用<strong><a href="http://www.socrata.com" rel="external">Socrata</a> 技术</strong> 的网站。
     sign_up:
       form:
-        create_account_button: 创建我的账户
-        have_account_link: 我已经有账户了
-      headline: 我们很高兴您注册%{site}!
-      prompt_html: 创建新<strong>Socrata 用户名</strong>
+        create_account_button: "创建我的账户"
+        have_account_link: "我已经有账户了"
+      headline: "我们很高兴您注册%{site}!"
+      prompt_html: "创建新<strong>Socrata 用户名</strong>"
       terms_html: 单击下方的“创建我的账户”，即表明您接受我们的<a href="http://www.socrata.com/terms-of-service" rel="external">服务条款</a> 和 <a href="http://www.socrata.com/privacy" rel="external">隐私政策。</a>
-      third_party: 登录后，您的第三方认证信息将关联到此账户。
-      third_party_return: 在使用这些认证信息前，您必须
-      third_party_return_create: 创建Socrata账户
-      third_party_return_link: 关联到现有的Socrata用户名
+      third_party: "登录后，您的第三方认证信息将关联到此账户。"
+      third_party_return: "在使用这些认证信息前，您必须"
+      third_party_return_create: "创建Socrata账户"
+      third_party_return_link: "关联到现有的Socrata用户名"
     stats:
       api: API
-      apply: 应用
-      bytes_out: 输出字节
-      chart_created: 已创建图表
-      charts: 图表
-      charts_created: 已创建图表
-      comment_created: 已创建注释
-      comments: 注释
-      comments_created: 已创建注释
-      daily: 每日
-      deleted_application: 已删除的应用
-      dependent_metrics: 相关指标
-      download: 下载
-      downloads: 下载
-      during_time_period: 在这段时间内
-      embed: 嵌入
-      embeds: 嵌入
-      error_loading: 载入度量数据时出现错误。请稍后再试。
-      filter_created: 滤镜已创建
-      filters: 滤镜
-      filters_created: 滤镜已创建
+      apply: "应用"
+      bytes_out: "输出字节"
+      chart_created: "已创建图表"
+      charts: "图表"
+      charts_created: "已创建图表"
+      comment_created: "已创建注释"
+      comments: "注释"
+      comments_created: "已创建注释"
+      daily: "每日"
+      deleted_application: "已删除的应用"
+      dependent_metrics: "相关指标"
+      download: "下载"
+      downloads: "下载"
+      during_time_period: "在这段时间内"
+      embed: "嵌入"
+      embeds: "嵌入"
+      error_loading: "载入度量数据时出现错误。请稍后再试。"
+      filter_created: "滤镜已创建"
+      filters: "滤镜"
+      filters_created: "滤镜已创建"
       govstat_hits: GovStat 点击数
-      hit_served: 有用的点击数
-      hits_served: 有用的点击数
-      hourly: 每小时
-      map_created: 已创建的地图
-      maps: 地图
-      maps_created: 已创建的地图
-      metric_backed: 支持的指标
-      metrics_backed: 支持的度量
-      monthly: 每月
-      name: 名称
-      no_data_time_period: 该时间段无数据
-      page_viewed: 查看的页面
-      pages_viewed: 查看的数据
-      referrals: 推荐
-      rows_loaded: 加载的行
+      hit_served: "有用的点击数"
+      hits_served: "有用的点击数"
+      hourly: "每小时"
+      map_created: "已创建的地图"
+      maps: "地图"
+      maps_created: "已创建的地图"
+      metric_backed: "支持的指标"
+      metrics_backed: "支持的度量"
+      monthly: "每月"
+      name: "名称"
+      no_data_time_period: "该时间段无数据"
+      page_viewed: "查看的页面"
+      pages_viewed: "查看的数据"
+      referrals: "推荐"
+      rows_loaded: "加载的行"
       sdp: SDP
-      select_chart_type: 选择从菜单显示的图表类型
-      show_more: 显示更多
-      time_period_unavailable: 度量数据在此时间内不可用
-      title: 数据集分析
-      top_embeds: 顶级嵌入
-      top_referrers: 顶级推荐
-      total: 总计
+      select_chart_type: "选择从菜单显示的图表类型"
+      show_more: "显示更多"
+      time_period_unavailable: "度量数据在此时间内不可用"
+      title: "数据集分析"
+      top_embeds: "顶级嵌入"
+      top_referrers: "顶级推荐"
+      total: "总计"
       total_govstat_hits: GovStat 点击总计
-      views: 查看
-      views_loaded: 已加载的意见
-      website: 网站
-      weekly: 每周
+      views: "查看"
+      views_loaded: "已加载的意见"
+      website: "网站"
+      weekly: "每周"
     thumbnail:
-      discard_changes: 放弃变更
-      edit_thumbnail: 编辑%{name}的缩略图
-      error_blob: 因为嵌入的文件无法在该浏览器显示，所以不能被缩略
-      error_generic: 保存缩略图时出现问题。请稍后再试。
-      error_invalid: 该视图无效，无法以其当前状态缩略
-      error_private: 为你你的隐私，只有公共数据集可能会缩略。如果你希望有一个预览图像，请从管理侧边栏的权限窗格使该数据集公开。
-      error_processing: 处理你的缩略图请求时出现错误。请稍后再试。
-      full_image: 完整图像
-      please_wait: 该数据集尚无可用的缩略图。我们正为你创建，请稍候。
-      preview: 预览
-      refresh_thumbnail: 刷新缩略图
-      return_to_dataset: 返回到数据集
-      save_thumbnail: 保存缩略图
-      success: 缩略图已保存
-      title: 缩略图数据集
-      unsaved: 未保存
+      discard_changes: "放弃变更"
+      edit_thumbnail: "编辑%{name}的缩略图"
+      error_blob: "因为嵌入的文件无法在该浏览器显示，所以不能被缩略"
+      error_generic: "保存缩略图时出现问题。请稍后再试。"
+      error_invalid: "该视图无效，无法以其当前状态缩略"
+      error_private: "为你你的隐私，只有公共数据集可能会缩略。如果你希望有一个预览图像，请从管理侧边栏的权限窗格使该数据集公开。"
+      error_processing: "处理你的缩略图请求时出现错误。请稍后再试。"
+      full_image: "完整图像"
+      please_wait: "该数据集尚无可用的缩略图。我们正为你创建，请稍候。"
+      preview: "预览"
+      refresh_thumbnail: "刷新缩略图"
+      return_to_dataset: "返回到数据集"
+      save_thumbnail: "保存缩略图"
+      success: "缩略图已保存"
+      title: "缩略图数据集"
+      unsaved: "未保存"
     widget:
       create_new:
-        name: 新的模板名称
-        title: 创建一个新的模板
+        name: "新的模板名称"
+        title: "创建一个新的模板"
     wizard:
-      cancel: 取消
-      finish: 完成
-      next: 下一
-      previous: 上一
+      cancel: "取消"
+      finish: "完成"
+      next: "下一"
+      previous: "上一"
   support:
     array:
-      last_word_connector: 与
-      two_words_connector: 和
+      last_word_connector: "与"
+      two_words_connector: "和"
     array_or:
-      last_word_connector: 或
-      two_words_connector: 或
+      last_word_connector: "或"
+      two_words_connector: "或"

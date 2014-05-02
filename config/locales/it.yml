@@ -9,8 +9,8 @@ it:
         lockout_warning: Per questioni di sicurezza, tre tentativi di accesso falliti in 15 minuti causeranno il blocco di questo account per 30 minuti.
         no_account: Non hai un account?
         password: Password
-        password_requirements: ! 'Necessario. La password deve essere compresa tra 8 e 40 caratteri e deve soddisfare tre dei seguenti criteri: contenere un numero; contenere una lettera minuscola; contenere una lettera maiuscola; contenere un simbolo non-alfanumerico.'
-        password_requirements_html: <p>La password deve essere <b>compresa tra 8 e 40 caratteri</b> e soddisfare <b>tre dei seguenti quattro criteri</b>:</p><p></p><ul><li>&bull; contenere un numero</li><li>&bull; contenere una lettera minuscola</li><li>&bull; contenere una lettera maiuscola</li><li>&bull; contenere un simbolo non-alfanumerico</li></ul>
+        password_requirements: 'Necessario. La password deve essere compresa tra 8 e 40 caratteri e deve soddisfare tre dei seguenti criteri: contenere un numero; contenere una lettera minuscola; contenere una lettera maiuscola; contenere un simbolo non-alfanumerico.'
+        password_requirements_html: "<p>La password deve essere <b>compresa tra 8 e 40 caratteri</b> e soddisfare <b>tre dei seguenti quattro criteri</b>:</p><p></p><ul><li>&bull; contenere un numero</li><li>&bull; contenere una lettera minuscola</li><li>&bull; contenere una lettera maiuscola</li><li>&bull; contenere un simbolo non-alfanumerico</li></ul>"
         password_restrictions: Soggetto a restrizioni
         remember_me: Ricordami
         sign_up_prompt: Iscriviti adesso
@@ -24,20 +24,20 @@ it:
           sign_up: Oppure... Utilizza uno di questi account per iscriverti.
         providers:
           facebook:
-            sign_in_html: <strong>Connettiti</strong> con Facebook
-            sign_up_html: <strong>Connettiti</strong> con Facebook
+            sign_in_html: "<strong>Connettiti</strong> con Facebook"
+            sign_up_html: "<strong>Connettiti</strong> con Facebook"
           google:
-            sign_in_html: <strong>Accedi</strong> con Google
-            sign_up_html: <strong>Iscriviti</strong> con Google
+            sign_in_html: "<strong>Accedi</strong> con Google"
+            sign_up_html: "<strong>Iscriviti</strong> con Google"
           openid:
-            sign_in_html: <strong>Accedi</strong> con OpenID
-            sign_up_html: <strong>Iscriviti</strong> con OpenID
+            sign_in_html: "<strong>Accedi</strong> con OpenID"
+            sign_up_html: "<strong>Iscriviti</strong> con OpenID"
           twitter:
-            sign_in_html: <strong>Connettiti</strong> con Twitter
-            sign_up_html: <strong>Connettiti</strong> con Twitter
+            sign_in_html: "<strong>Connettiti</strong> con Twitter"
+            sign_up_html: "<strong>Connettiti</strong> con Twitter"
       validation:
         mismatch: Le password inserite non corrispondono
-        terms: È necessario accettare i termini del servizio e l'informativa sulla privacy.
+        terms: "È necessario accettare i termini del servizio e l'informativa sulla privacy."
   controls:
     browse:
       actions:
@@ -46,7 +46,7 @@ it:
           title: Informazioni sul Dataset
         all_options: Vedi Tutti
         clear_all: Elimina tutte le opzioni
-        clear_facet: (Tutti)
+        clear_facet: "(Tutti)"
         compact_list: Visualizza come lista compatta
         create_dataset: Crea o carica il tuo dataset
         create_dataset_short: Crea un nuovo Dataset
@@ -119,7 +119,7 @@ it:
         matching_rows: In cerca di righe corrispondenti
         more_link: Ancora
         no_matching_rows: Nessuna riga corrispondente trovata.
-        title_html: ! 'Mostrate <span class="rowResultCountText"></span> su <span class="totalResultCountText"></span> righe corrispondenti <a href="#" class="rowSearchLink">(vedi risultati)</a>:'
+        title_html: 'Mostrate <span class="rowResultCountText"></span> su <span class="totalResultCountText"></span> righe corrispondenti <a href="#" class="rowSearchLink">(vedi risultati)</a>:'
       search: Cerca
       sort_period_title: Periodo dell'ordinamento
       sort_periods:
@@ -139,12 +139,12 @@ it:
       title:
         default: Cerca e sfoglia dataset e visualizzazioni
         result:
-          facet: ! '%{facet_type} di %{facet_value}'
+          facet: "%{facet_type} di %{facet_value}"
           facet_main: corrispondenze %{body}
           main: Risultati %{body}
           term: per "%{term}"
     charts:
-      negatives_in_data: ! 'Grafico non valido: presenti valori negativi'
+      negatives_in_data: 'Grafico non valido: presenti valori negativi'
       no_data: Nessun dato
       other_slice_label: Altro
       series_grouping:
@@ -156,11 +156,11 @@ it:
         pause_button_explanation2: per limitare la quantità di calcoli necessari.
         pause_rendering: Pausa
         rendering_paused: La preparazione dei dati è in sospeso.
-        rendering_progress: ! '%{rows_remaining} righe rimanenti.'
-        rendering_progress_almost_done: ! '%{rows_remaining} righe rimanenti, attendi ancora qualche momento.'
-        rendering_progress_minute: ! '%{rows_remaining} righe rimanenti, circa %{time_remaining} minuto.'
-        rendering_progress_minutes: ! '%{rows_remaining} righe rimanenti, circa %{time_remaining} minuti.'
-        rendering_progress_seconds: ! '%{rows_remaining} righe rimanenti, circa %{time_remaining} secondi.'
+        rendering_progress: "%{rows_remaining} righe rimanenti."
+        rendering_progress_almost_done: "%{rows_remaining} righe rimanenti, attendi ancora qualche momento."
+        rendering_progress_minute: "%{rows_remaining} righe rimanenti, circa %{time_remaining} minuto."
+        rendering_progress_minutes: "%{rows_remaining} righe rimanenti, circa %{time_remaining} minuti."
+        rendering_progress_seconds: "%{rows_remaining} righe rimanenti, circa %{time_remaining} secondi."
         resume_rendering: Riprendi
       zero_only_data: Nessun valore maggiore di zero
     common:
@@ -183,7 +183,7 @@ it:
           email: E-mail
           facebook: Facebook
           twitter: Twitter
-        share_text: ! 'Condividi %{name}, dataset con %{site}: '
+        share_text: 'Condividi %{name}, dataset con %{site}: '
       sidebar:
         tabs:
           about: Informazioni
@@ -198,7 +198,7 @@ it:
           moreViews: Più viste
           visualize: Visualizza
       stars:
-        tooltip: ! '%{number} stelle'
+        tooltip: "%{number} stelle"
       visualization:
         in_bing: Visualizza su Bing Maps
         in_google: Visualizza su Google Maps
@@ -263,7 +263,7 @@ it:
         last_item: Visualizza l'ultimo elemento
         next_item_page: Visualizza i prossimi %{count} elementi
         no_results: Non ci sono elementi da visualizzare
-        user_create_action: ! 'creato un %{thing}:'
+        user_create_action: 'creato un %{thing}:'
       types:
         all items: tutti gli elementi
         comments: commenti
@@ -275,9 +275,9 @@ it:
         first_condition: Clicca qui per aggiungere la tua prima condizione di filtro.
         new_condition_button: Aggiungi un nuovo filtro.
         remove_filter: Rimuovi il filtro
-        select_column: ! 'Seleziona la colonna per cui filtrare:'
-        select_operation: ! 'Seleziona un criterio per il filtro:'
-        select_subcolumn: ! 'Seleziona la parte di %{name} per cui filtrare:'
+        select_column: 'Seleziona la colonna per cui filtrare:'
+        select_operation: 'Seleziona un criterio per il filtro:'
+        select_subcolumn: 'Seleziona la parte di %{name} per cui filtrare:'
       edit_default:
         advanced_body: Questo significa che gli utenti avranno accesso completo alle funzioni dei filtri. Per una più approfondita esperienza, prova la modalità semplificata.
         advanced_header: Gli utenti inizieranno in modalità avanzata.
@@ -285,10 +285,10 @@ it:
         auto_suggested: I valori suggeriti sono determinati automaticamente per questo criterio.
         cancel_button: Cancella
         done_button: Fatto
-        instructions: ! 'Usa gli strumenti sotto per creare filtri, modificare i valori proposti, selezionare il numero dei valori che il filtro proverà a proporre automaticamente, e così via. Quando sarai soddisfatto delle opzioni presentate, click su Fatto qui sotto per salvare:'
+        instructions: 'Usa gli strumenti sotto per creare filtri, modificare i valori proposti, selezionare il numero dei valori che il filtro proverà a proporre automaticamente, e così via. Quando sarai soddisfatto delle opzioni presentate, click su Fatto qui sotto per salvare:'
         manual_suggested_html: Mostra fino a <select class="autogeneratedCount"></select> valori suggeriti.
         mode_button: Modifica il filtro predefinito.
-        mode_message: ! 'Come redattore di questa vista, puoi definire i filtri base che verranno proposti agli utenti:'
+        mode_message: 'Come redattore di questa vista, puoi definire i filtri base che verranno proposti agli utenti:'
         save_confirm: Se continui, verranno perse tutte le modifiche non salvate. Salvare ogni modifica da mantenere prima di continuare.
         simplified_body: Questo significa che gli utenti non avranno la possibilità di aggiungere nuove condizioni, cambiare le colonne o i criteri per i filtri, o accedere ai menù avanzati dei filtri.
         simplified_header: Gli utenti inizieranno in modalità semplificata.
@@ -369,7 +369,7 @@ it:
       heatmap_ie8_warning: Le Mappe del Calore Raster non funzionano con il tuo browser corrente. Ti preghiamo di passare a IE9, usare Google Chrome o Mozilla Firefox. Grazie.
       loading: Caricamento...
       map_legend: Legenda della mappa
-      multiple_layer_instructions: ! 'Sono presenti dati per più di un layer qui. Selezionarne uno:'
+      multiple_layer_instructions: 'Sono presenti dati per più di un layer qui. Selezionarne uno:'
       next: Successivo
       next_row: Riga successiva
       no_columns_defined: Nessuna colonna definita
@@ -379,7 +379,7 @@ it:
       request_timed_out: La richiesta per questi dati è scaduta.
     nominate:
       all: Tutti
-      approve: (Approva)
+      approve: "(Approva)"
       approve_tip: Approva questo suggerimento
       approved: Approvati
       attachment: Allegato
@@ -397,7 +397,7 @@ it:
       description: Descrizione
       description_prompt: Inserisci i dettagli sul tuo suggerimento
       details: Dettagli
-      edit: (Modifica)
+      edit: "(Modifica)"
       edit_suggestion: Modifica questo suggerimento
       files: File
       filter_by_status: Filtra per stato
@@ -406,7 +406,7 @@ it:
       greater_success: Il tuo messaggio è stato inviato all'autore del suggerimento.
       message: Messaggio
       message_prompt: Inserisci il tuo messaggio
-      moderate: (Modera)
+      moderate: "(Modera)"
       moderate_error: Errore nel modificare lo stato
       moderate_tip: Accetta il suggerimento e aprilo alle valutazioni
       needs_moderation: Necessita di essere moderato
@@ -417,10 +417,10 @@ it:
       rate_up: Mi piace
       rating: Valutazione
       rating_error: Errore nella valutazione del suggerimento
-      reject: (Respingi)
+      reject: "(Respingi)"
       reject_tip: Respingi questo suggerimento
       rejected: Respinto
-      remove: (Elimina)
+      remove: "(Elimina)"
       remove_tip: Elimina questo suggerimento
       required: Obbligatorio
       status: Stato
@@ -438,9 +438,9 @@ it:
       title_file: Carica un file
       title_image: Carica un'immagine
       title_photo: Carica una foto
-      to_upload_file: ! 'File da caricare:'
-      to_upload_image: ! 'Immagine da caricare:'
-      to_upload_photo: ! 'Foto da caricare:'
+      to_upload_file: 'File da caricare:'
+      to_upload_image: 'Immagine da caricare:'
+      to_upload_photo: 'Foto da caricare:'
       upload: Carica
   core:
     aggregates:
@@ -462,6 +462,11 @@ it:
       need_login: Per accedere a questa pagina devi aver effettuato il login
       need_permission: Non hai l'autorizzazione per visualizzare questa pagina
       too_many_tries: Sono stati effettuati troppi tentativi di accesso a quel login. Il conto è temporaneamente disabilitato.
+    browser_support:
+      chrome: Chrome
+      internet_explorer: Internet Explorer
+      link_text: Ulteriori informazioni.
+      message_html: Il sito viene meglio visualizzato usando un browser web più recente. %{link_text}
     chart_types:
       area: Grafico ad area
       bar: Grafico a barre
@@ -511,8 +516,8 @@ it:
       text: Testo normale
       url: Web URL
     date_time:
-      centuries_future: ! '%{time} secoli da oggi'
-      centuries_past: ! '%{time} secoli fa'
+      centuries_future: "%{time} secoli da oggi"
+      centuries_past: "%{time} secoli fa"
       current_century_future: questo secolo
       current_century_past: questo secolo
       current_day_future: oggi
@@ -527,14 +532,14 @@ it:
       current_week_past: questa settimana
       current_year_future: questo anno
       current_year_past: questo anno
-      days_future: ! '%{time} giorni da ora'
-      days_past: ! '%{time} giorni fa'
-      hours_future: ! '%{time} ore da oggi'
-      hours_past: ! '%{time} ore fa'
-      minutes_future: ! '%{time} minuti da oggi'
-      minutes_past: ! '%{time} minuti fa'
-      months_future: ! '%{time} mesi da oggi'
-      months_past: ! '%{time} mesi fa'
+      days_future: "%{time} giorni da ora"
+      days_past: "%{time} giorni fa"
+      hours_future: "%{time} ore da oggi"
+      hours_past: "%{time} ore fa"
+      minutes_future: "%{time} minuti da oggi"
+      minutes_past: "%{time} minuti fa"
+      months_future: "%{time} mesi da oggi"
+      months_past: "%{time} mesi fa"
       single_century_future: un secolo da oggi
       single_century_past: un secolo fa
       single_day_future: domani
@@ -550,10 +555,10 @@ it:
       single_year_future: anno prossimo
       single_year_past: anno scorso
       unknown: un giorno
-      weeks_future: ! '%{time} settimane da oggi'
-      weeks_past: ! '%{time} settimane fa'
-      years_future: ! '%{time} anni da oggi'
-      years_past: ! '%{time} anni fa'
+      weeks_future: "%{time} settimane da oggi"
+      weeks_past: "%{time} settimane fa"
+      years_future: "%{time} anni da oggi"
+      years_past: "%{time} anni fa"
     dialogs:
       apply: Applica
       cancel: Cancella
@@ -736,13 +741,13 @@ it:
       remove: Rimuovi questo componente
       share:
         email: Condividi via Email
-        email_contents: ! '%{dataset} su %{company}'
+        email_contents: "%{dataset} su %{company}"
         facebook: Condividi su Facebook
         share: Condividi
         subscribe: Iscriviti via Email o RSS
         subscribe_text: Iscriviti alle Modifiche
         this_page: Questa pagina
-        tweet_contents: ! 'Controlla %{dataset} su %{company}: %{url}'
+        tweet_contents: 'Controlla %{dataset} su %{company}: %{url}'
         twitter: Condividi su Twitter
     configurator:
       actions_components: Azioni
@@ -1010,7 +1015,7 @@ it:
       licensing: Proprietà e licenza
       links: Link
       meta: Meta
-      none: (nessuno)
+      none: "(nessuno)"
       permalink: Permalink
       permanent_links: Link permanenti
       permissions: Visibilità
@@ -1050,18 +1055,18 @@ it:
         accept: Accetto
         accepted: Accettato
         accepted_by: Accettato da
-        all: (tutto)
+        all: "(tutto)"
         dataset: Dataset
         flashes:
           accepted: Accettazione della Federazione riuscita
           created: Creazione della Federazione riuscita
           deleted: Eliminazione della Federazione riuscita
-          invalid_domain: ! 'Impossibile creare federazione dati: domain targe non valido'
+          invalid_domain: 'Impossibile creare federazione dati: domain targe non valido'
           rejected: Rifiuto Federazione riuscito
-        list_domains: ! 'Il seguente è un elenco di domini con i quali puoi iniziare una federazione dati. Una volta cliccato "pubblica", un amministratore dal dominio target deve accettare la tua richiesta. '
+        list_domains: 'Il seguente è un elenco di domini con i quali puoi iniziare una federazione dati. Una volta cliccato "pubblica", un amministratore dal dominio target deve accettare la tua richiesta. '
         no_domains: Nessun dominio disponibile coincide a %{name}.
         no_federations: Per questo dominio non esiste ancora alcuna federazione.
-        no_pub_datasets: ! 'Nessun dataset coincide con i tuoi criteri di ricerca. '
+        no_pub_datasets: 'Nessun dataset coincide con i tuoi criteri di ricerca. '
         pending: In sospeso
         publish: Pubblica
         reject: Rifiuta
@@ -1095,7 +1100,7 @@ it:
         feature_image: fai risaltare l'immagine
         filetype_error: Tipo file non valido. Scegli un file immagine
         flashes:
-          create_error: ! 'Un errore si è verificato durante la tua richiesta: %{error_message}'
+          create_error: 'Un errore si è verificato durante la tua richiesta: %{error_message}'
           delete_error: Il racconto che hai provato a cancellare non esiste.
           edit_error: Il racconto che hai provato a modificare non esiste.
           edit_success: Il tuo racconto è stato salvato
@@ -1135,7 +1140,7 @@ it:
         'false': falso
         field_name: Nome campo
         flashes:
-          cannot_move_field: ! 'Impossibile spostare il campo nominato ''%{name}'': non trovato'
+          cannot_move_field: 'Impossibile spostare il campo nominato ''%{name}'': non trovato'
           field_duplicated: Non puoi creare un doppio campo nominato '%{name}'
           field_name_required: Non è possibile creare un campo senza nome
           field_successful_create: Creazione campo riuscita
@@ -1153,7 +1158,7 @@ it:
         make_public: Rendi Pubblico
         make_required: Rendi Obbligatorio
         metadata_explain1: I metadata personalizzati sono frammentati in <span class="code">impostazioni di campo</span> and <span class="code">dei campi</span>. Una <span class="code">impostazione di campo</span> è un modo per visualizzare logicamente un gruppo o più <span class="code">campi</span> personalizzati assieme.
-        metadata_explain2: ! 'I campi possono essere configurati in vari modi. Possono essere <span class="code">obbligatori</span>, il che li renderà obbligatori quando chi pubblica creerà nuovi database e aggiornerà metadata esistenti. Oppure possono essere <span class="code">privati</span>, rendendoli non visibili ad altre persone. '
+        metadata_explain2: 'I campi possono essere configurati in vari modi. Possono essere <span class="code">obbligatori</span>, il che li renderà obbligatori quando chi pubblica creerà nuovi database e aggiornerà metadata esistenti. Oppure possono essere <span class="code">privati</span>, rendendoli non visibili ad altre persone. '
         metadata_explain3: Infine, potrai predefinire le ozioni per i tuoi <span class="code">campi</span>, nel caso in cui tu desiderassi ottenere dei valori scelti da un’elenco, piuttosto che inseriti come testo gratuito.
         no_data: Nessun campo con dati impostati è stato definito per il tuo dominio. Inserisci un nome qui sotto e clicca 'Crea' per cominciare.
         no_fields_defined: Questa impostazione di campo non ha ancora alcun campo definito
@@ -1178,7 +1183,7 @@ it:
           accounts_created:
             one: Creazione del conto %{count} riuscita
             other: Creazione dei conti %{count} riuscita
-          invalid_role: ! 'Ruolo specificato per la creazione dell''utente non valido: %{role}'
+          invalid_role: 'Ruolo specificato per la creazione dell''utente non valido: %{role}'
           no_email_addresses: Nessun indirizzo email identificato
           pending_permissions_removed: Autorizzazioni in sospeso rimosse
           reenable_failed: Si è verificato un errore durante l'abilitazione del conto di quell'utente.
@@ -1244,8 +1249,8 @@ it:
         invalid_crossload_url: Inserisci un valido URL digitando HTTP o HTTPS
         invalid_url: Sembra non essere un URL valido.
         missing_data_provider: Devi specificare il data provider (attribuzione) in una licenza Creative Commons.
-        missing_esri_url: È necessario inserire un URL di un valido ESRI map layer.
-        missing_name: È obbligatorio inserire il nome del Dataset.
+        missing_esri_url: "È necessario inserire un URL di un valido ESRI map layer."
+        missing_name: "È obbligatorio inserire il nome del Dataset."
         need_description: Descrivi &ldquo;%{name}&rdquo;
       finish:
         headline: Il Tuo set di dati è stato creato.
@@ -1314,7 +1319,7 @@ it:
         privacy_settings: Impostazioni privacy
         private_explain: I miei dati sono <strong>privati</strong>
         prompt: Cortesemente descrivi i tuoi dati
-        public_explain: ! 'I miei dati sono <strong>pubblici</strong>: possono essere modificati solo da me, ma chiunque può vederli'
+        public_explain: 'I miei dati sono <strong>pubblici</strong>: possono essere modificati solo da me, ma chiunque può vederli'
       processing: Sto elaborando
       title: Nuovo Set di Dati
       upload_accessible: Carica un set di dati accessibile
@@ -1327,7 +1332,7 @@ it:
       why_choose_now:
         close: Chiudi
         line_1: I tuoi dati sono pesantemente elaborati quando vengono importati, e ottimizzati per il consumo per ogni particolare tipo di dati. Inoltre, la maggior parte dei tipi di dati hanno caratteristiche speciali che saranno attivati ​​solo se La colonna sarà impostata su quel tipo - le colonne di posizione, per esempio, sono necessarie per creare mappe.
-        line_2: ! 'Puoi cambiare più tardi il tipo di colonne, ma è un processo che richiede tempo, così è meglio selezionarle tutte correttamente sulla parte anteriore. '
+        line_2: 'Puoi cambiare più tardi il tipo di colonne, ma è un processo che richiede tempo, così è meglio selezionarle tutte correttamente sulla parte anteriore. '
     ds:
       bar:
         api_unsavable: Le viste API non possono essere modificate
@@ -1362,7 +1367,7 @@ it:
         share_facebook: Condividi su Facebook
         share_twitter: Condividi su Twitter
         snapshot_notice: Questa è una versione del dataset precedentemente pubblicata. E'archiviata e non può essere modificata.
-        snapshot_title: (empty)
+        snapshot_title: "(empty)"
         snapshot_title_html: Eseguito backup %{date}
         snapshot_unsavable: Backup di dataset e viste non possono essere creati o modificati
         subscribe: Sottoscrivi i cambiamenti
@@ -1379,7 +1384,7 @@ it:
           page: singolo record
           table: tabella
         working_copy_notice: Questa è una copia del dataset che permette di fare delle modifiche. Non è visibile ad altri finchè non verrà pubblicata.
-        working_copy_title: ! '[Copia di lavoro]'
+        working_copy_title: "[Copia di lavoro]"
       blob:
         data_extraction: Questo strumento di estrazione dei dati o l'applicazione è disponibile tramite il link a destra
         download: Scarica
@@ -1390,7 +1395,7 @@ it:
           prompt_html: Se invece vuoi scaricare questo file, %{click_here}.
         limited_download: Questo dataset non è in formato tabulare, e può avere interattività limitata, ma è disponibile per il download
       column_tip:
-        aggregate: (%{aggregate} su %{data_type})
+        aggregate: "(%{aggregate} su %{data_type})"
         field_name: Nome campo API
         original_name: Nome originale
       dataset_contact:
@@ -1406,7 +1411,7 @@ it:
             offensive_content: Contenuti Offensivi
             other_purpose: Altro
             personal_information: Informazioni Personali
-            prompt: -- Seleziona Scopo --
+            prompt: "-- Seleziona Scopo --"
             spam: Spam o Indesiderato
           send_button: Invia
           subject: Oggetto
@@ -1431,17 +1436,17 @@ it:
           queued: In attesa di essere elaborata (in coda %{time}; %{totalQueued} totali in coda)
         edit_dataset_button: Modifica Dataset
         error_publishing_html: Si è verificato un errore durante la creazione della copia di lavoro del tuo dataset. Si prega di <a href="http://support.socrata.com" rel="external">contattare il supporto Socrata</a>.
-        error_publishing_unpublished: 
+        error_publishing_unpublished: Solo i dataset non pubblicati possono essere pubblicati.
         needs_copy: Questo dataset è pubblicato e non può essere modificato direttamente. Una copia di lavoro %{status} che ti permette di effettuare le modifiche desiderate prima di renderle pubbliche.
         needs_copy_status:
-          available: è disponibile
+          available: "è disponibile"
           can_be_made: può essere creata
       email:
         add_email: Aggiungi
         email_button: E-mail
         message_prompt: Inserisci un messaggio opzionale
-        private_notice: ! 'Nota: questo %{displayName} è attualmente privato. L''invio di e-mail consentirà l''accesso a tutti i destinatari.'
-        prompt_html: ! 'Condividi <span class="datasetName">%{name}</span> con i seguenti indirizzi e-mail:'
+        private_notice: 'Nota: questo %{displayName} è attualmente privato. L''invio di e-mail consentirà l''accesso a tutti i destinatari.'
+        prompt_html: 'Condividi <span class="datasetName">%{name}</span> con i seguenti indirizzi e-mail:'
         remove_email: Rimuovi
         success: La tua e-mail è stata inviata con successo.
         title_html: Condividi "<span class="datasetName">%{name}</span>"
@@ -1472,8 +1477,8 @@ it:
           validation:
             view_column: Non puoi aggiungere una colonna ad una vista
         api:
-          column_ids_title: ! 'ID Colonna:'
-          endpoint_title: ! 'Accesso Endpoint API:'
+          column_ids_title: 'ID Colonna:'
+          endpoint_title: 'Accesso Endpoint API:'
           intro_html: Le <strong>API Open Data Socrata</strong> (SODA) permettono agli sviluppatori software di accedere in programmazione ai dati ospitati nei siti Socrata. Gli sviluppatori software possono creare applicazioni che utilizzano le API SODA per visualizzare e rimaneggiare dataset Socrata in un modo nuovo e creativo. Creare un'applicazione iPhone che visualizza la spesa del governo nel tuo paese, un'applicazione web che permette ai cittadini di conoscere potenziali benefici di governo che avevano trascurato, o un servizio che ti invia automaticamente una email quando viene pubblicato un nuovo dato che vuoi tracciare.
           reference_html: Per accedere a questo dataset in programmazione, utilizzare l'endpoint API fornito sotto. Per maggiori informazioni ed esempi su come utilizzare API OpenData di Socrata, fare riferimento alla nostra <a href="http://dev.socrata.com" rel="external">Documentazione per Sviluppatori</a>.
           subtitle: Accedi questo %{view_type} tramite SODA
@@ -1483,8 +1488,8 @@ it:
           create_button_prompt: Crea una Application Programming Interface (API) per concedere accesso programmatico a questi dati.
           manage_button: Gestisci
           manage_button_prompt: Gestisci API selezionata
-          prompt_existing_html: <strong>API esistenti</strong> possono essere personalizzate. Puoi controllare permessi, impostare limiti di richieste, visualizzare utilizzi, e modificare documentazione.
-          prompt_new_html: <strong>API Foundry</strong> ti permette di creare e configurare una o più standards-based Application Programming Interfaces (API) open per questo dataset.
+          prompt_existing_html: "<strong>API esistenti</strong> possono essere personalizzate. Puoi controllare permessi, impostare limiti di richieste, visualizzare utilizzi, e modificare documentazione."
+          prompt_new_html: "<strong>API Foundry</strong> ti permette di creare e configurare una o più standards-based Application Programming Interfaces (API) open per questo dataset."
           subtitle: Crea e personalizza una API
           title: API
         append_replace:
@@ -1510,7 +1515,7 @@ it:
           column_select:
             auto: Automatico
             from_grid: Seleziona una colonna dalla griglia
-            none: (nessuno)
+            none: "(nessuno)"
             none_selected: Nessuna Colonna selezionata
             nonselectable: Colonne non valide
             prompt: Seleziona una colonna
@@ -1658,8 +1663,8 @@ it:
           min_angle: Angolo minimo
           min_angle_html: Il più piccolo angolo visualizzato (º)
           names: Nomi
-          pie_other: ! 'Attenzione: %{chart_type} aggregherà valori distinti (record) oltre il %{row_limit}° nella categoria Altro. Provare a creare un Roll Up o un filtro che limiti il numero di valori e poi creare un %{chart_type} di questo dataset.'
-          pie_truncate: ! 'Attenzione: %{chart_type} troncherà dataset con più di %{row_limit} differenti valori (record). Provare a creare un Roll Up o un filtro che limiti il numero di valori e poi creare un %{chart_type} di questo dataset.'
+          pie_other: 'Attenzione: %{chart_type} aggregherà valori distinti (record) oltre il %{row_limit}° nella categoria Altro. Provare a creare un Roll Up o un filtro che limiti il numero di valori e poi creare un %{chart_type} di questo dataset.'
+          pie_truncate: 'Attenzione: %{chart_type} troncherà dataset con più di %{row_limit} differenti valori (record). Provare a creare un Roll Up o un filtro che limiti il numero di valori e poi creare un %{chart_type} di questo dataset.'
           point_color: Colore Punto
           point_size: Dimensione Punto
           point_title: Titolo
@@ -1683,10 +1688,10 @@ it:
           title: Grafico
           treemap_color_html: Questi colori sono applicati in modo casuale sulla mappa solo per creare distinzioni nella visualizzazione. Non hanno uno specifio significato.
           validation:
-            chart_requires: ! '%{chart_type} servono almeno'
-            chart_requires2: ! '%{and} %{count} dei seguenti tipi di colonne:'
-            count: ! '%{count} colonna'
-            required_columns: ! '%{chart_type} richiede %{column_types}'
+            chart_requires: "%{chart_type} servono almeno"
+            chart_requires2: "%{and} %{count} dei seguenti tipi di colonne:"
+            count: "%{count} colonna"
+            required_columns: "%{chart_type} richiede %{column_types}"
             viz_limit: Una vista può avere solo una visualizzazione su di essa
           value: Valore
           valueInBar: Valore nella barra
@@ -1774,7 +1779,7 @@ it:
             title: Formattazione numero
           number_advanced:
             format_mask: Maschera di Formattazione
-            format_mask_prompt: ! 'Utilizzare #s per indicare cifre numeriche, e altri caratteri per indicare dove queste devono essere poste; per esempio un social security number dovrebbe essere ###-##-####'
+            format_mask_prompt: 'Utilizzare #s per indicare cifre numeriche, e altri caratteri per indicare dove queste devono essere poste; per esempio un social security number dovrebbe essere ###-##-####'
             format_mask_warning: Ciò potrebbe annullare alcune delle impostazioni di cui sopra.
             title: Formattazione Avanzata
           photo:
@@ -1806,7 +1811,7 @@ it:
             item:
               operator: Seleziona un confronto
               subcolumn: Seleziona una sotto colonna
-              title: ! 'Condizione:'
+              title: 'Condizione:'
             new_condition_button: Aggiungi Condizione
             new_rule_button: Aggiungi una Nuova Regola
             title: Condizioni
@@ -1941,11 +1946,11 @@ it:
             location_column: E' richiesta una colonna di tipo location per creare una mappa.
             viz_limit: Una vista può avere solo una visualizzazione su di essa
         odata:
-          endpoint_action: 
-          intro_html1: 
-          intro_html2: 
-          subtitle: 
-          title: 
+          endpoint_action: 'Copia questo link:'
+          intro_html1: Crea un foglio di calcolo su Microsoft Excel per analizzare o visualizzare questo set di dati. Usando un collegamento OData, i dati saranno aggiornabili.
+          intro_html2: Usa Microsoft Excel 2010, Microsoft Excel 2013 o Microsoft Power Query. Segui le istruizioni qui, usando <a href="%{doc_link}">la documentazione oData di Socrata</a>.
+          subtitle: Accedi a questo set di dati via OData
+          title: OData
         ownership:
           error: Si è verificato un problema durante il cambio di proprietà. Si prega di riprovare più tardi.
           me: Me
@@ -1970,21 +1975,21 @@ it:
             valid_saved: Questa vista deve essere valida e salvata
         print:
           margins:
-            bottom: ! 'In basso:'
-            left: ! 'A sinistra:'
-            right: ! 'A destra:'
-            top: ! 'In alto:'
-          margins_title: ! 'Margini (pollici):'
+            bottom: 'In basso:'
+            left: 'A sinistra:'
+            right: 'A destra:'
+            top: 'In alto:'
+          margins_title: 'Margini (pollici):'
           options:
             fit: Riduci e adatta il dataset su una pagina
             header_icons: Visualizza le icone nell'intestazione di colonna
             headers_every_page: Stampa i titoli delle colonne su ogni pagina
-          options_title: ! 'Opzioni:'
-          orientation: ! 'Orientamento:'
+          options_title: 'Opzioni:'
+          orientation: 'Orientamento:'
           orientations:
             landscape: Orizzontale
             portrait: Verticale
-          paper_size: ! 'Dimensione carta:'
+          paper_size: 'Dimensione carta:'
           paper_sizes:
             a0: A0 (841 x 1189mm)
             a1: A1 (594 x 841mm)
@@ -2071,7 +2076,7 @@ it:
             delete: Elimina questa vista
             expand: Clicca per espandere
           no_results: Nessun risultato
-          no_results_html: (empty)
+          no_results_html: "(empty)"
           pagination:
             last: Vedi l'ultima vista
             next: Vedi le prossime %{count} viste
@@ -2096,7 +2101,7 @@ it:
           reload_save: Questa modifica richiede un reload. Puoi Salvare le tue modifiche per visualizzarle, oppure Cancellare per rimanere in questa pagina.
           reload_update: Questa modifica richiede un reload. Puoi Aggiornare questa vista oppure Salvare una nuova vista per visualizzare le tue modifiche, oppure Cancellare per rimanere in questa pagina.
         form:
-          new_name: ! 'Inserisci un nome per la nuova vista:'
+          new_name: 'Inserisci un nome per la nuova vista:'
         titles:
           normal: Salva vista
           prompt: Vuoi salvare la tua vista?
@@ -2108,11 +2113,11 @@ it:
         unpublished_alert: Questo dataset non è stato ancora pubblicato per consentirti di fare dei cambiamenti necessari prima di renderlo disponibile ad altri. Non sarà visibile finché non pubblicherai questo dataset.
       subscribe:
         google_reader: Aggiungi a Google Reader
-        intro_html: ! '<strong>Per abbonarti a <span class="datasetName">%{name}</span> dataset tramite un reader RSS</strong>, utilizza uno dei seguenti link:'
+        intro_html: '<strong>Per abbonarti a <span class="datasetName">%{name}</span> dataset tramite un reader RSS</strong>, utilizza uno dei seguenti link:'
         rss: Scarica come RSS
         rss_program: Apri in un Programma Esterno
         subscribe_button: Iscriviti tramite e-mail
-        subscribe_html: <strong>Per ricevere una email di notifica</strong> quando nuovi dati saranno pubblicati, seleziona la casella Iscriviti qui sotto.
+        subscribe_html: "<strong>Per ricevere una email di notifica</strong> quando nuovi dati saranno pubblicati, seleziona la casella Iscriviti qui sotto."
         subscribed_html: <strong>Sei attualmente iscritto a questo <span class="datasetTypeName">dataset</span> tramite email</strong>, e riceverai una notifica quando nuovo dati saranno pubblicati.
         title_html: Abbonati a "<span class="datasetName">%{name}</span>" <span class="datasetTypeNameUpcase">Dataset</span>
         unsubscribe: Se non desideri più notifiche, deseleziona la casella Iscriviti qui sotto.
@@ -2160,7 +2165,7 @@ it:
       list: Elenco
       metadata_help: Questo campo è stato contrassegnato come privato dalla tua organizzazione e non è visibile al pubblico
       new_attachment: Nuovo allegato
-      none: (nessuno)
+      none: "(nessuno)"
       northwest_latitude: Latitudine nord-ovest
       northwest_longitude: Longitudine nord-ovest
       optional: Facoltativo
@@ -2191,7 +2196,7 @@ it:
       upload_image: Carica immagine
       upload_new_attachment: Carica nuovo allegato
     forgot_password:
-      already_authenticated: ! 'Impossibile effettuare il reset della password: sei già autenticato.'
+      already_authenticated: 'Impossibile effettuare il reset della password: sei già autenticato.'
       failed: Si è verificato un problema durante l’elaborazione della richiesta di reset della password. Si prega di riprovare.
       form:
         reset_password_button: Reimposta la password
@@ -2209,7 +2214,7 @@ it:
       city: Città
       column: Colonna
       combine_multiple_columns: Combina Colonne Multiple
-      create_composite: ! 'Crea una colonna a partire da diverse colonne sorgenti:'
+      create_composite: 'Crea una colonna a partire da diverse colonne sorgenti:'
       create_js_expression: Come creo una espressione Javascript personalizzata?
       custom_javascript: Espressione Javascript Personalizzata
       enter_custom: Inserisci un valore personalizzato
@@ -2226,7 +2231,7 @@ it:
       make_title_case: Trasforma in Titolo
       make_upper_case: Trasforma in MAIUSCOLO
       name_this_column: Nomina questa colonna
-      new_layer: (Nuovo Layer)
+      new_layer: "(Nuovo Layer)"
       new_source_col: Aggiungi nuova colonna sorgente
       new_transform: Nuova operazione di trasformazione
       options: Opzioni
@@ -2243,21 +2248,21 @@ it:
     import_pane:
       analyzing: Sto analizzando il tuo file
       assure_accessible: Cortesemente assicurati che il tuo file sia accessibile e riprova.
-      combine_multiple_cols: (Combina Colonne Multiple...)
+      combine_multiple_cols: "(Combina Colonne Multiple...)"
       downloading: Sto scaricando il tuo file...
       filetype_error_blist: Cortesemente scegli un file CSV, TSV, XLS, o XLSX.
       filetype_error_shapefile: Cortesemente scegli un file KML, KMZ, o ZIP.
       headline_import: Cortesemente scegli un file da importare
       headline_upload: Cortesemente scegli un file da caricare
       layer: Layer
-      many_headers: ! '%{num} delle tue colonne sono titolate.'
+      many_headers: "%{num} delle tue colonne sono titolate."
       no_file_selected: Nessun file è ancora selezionato.
       no_headers: Nessuna delle tue colonne sono titolate.
-      no_source_column: (Non ci sono Fonti per le Colonne)
+      no_source_column: "(Non ci sono Fonti per le Colonne)"
       one_header: Una delle tue colonne è una titolata.
       problem_importing: C'è stato un problema di importazione di tale file. Cortesemente assicurati che sia valido.
       problem_uploading: C'è stato un problema di caricamento di tale file. Cortesemente assicurati che sia valido.
-      rows_imported: ! '%{num} righe importati finora.'
+      rows_imported: "%{num} righe importati finora."
       try_again: Cortesemente riprova fra un pò.
       unknown_error: E' avvenuto un errore sconosciuto
       uploading: Sto caricando il tuo file
@@ -2312,7 +2317,7 @@ it:
               privileged_account_created: Un utente crea il proprio account privilegiato
               user_affected: Azioni che ti riguardano direttamente, come repliche a commenti e aggiornamenti di stato
               view_made_public: Ogni vista resa pubblica
-            policy: ! '%{site} rispetta la tua privacy, e mai invierà email pubblicitarie, o darà la tua email a terze parti. Le email inviate da questo sito contengono notifiche e aggiornamenti a dataset che hai creato o sottoscritto.'
+            policy: "%{site} rispetta la tua privacy, e mai invierà email pubblicitarie, o darà la tua email a terze parti. Le email inviate da questo sito contengono notifiche e aggiornamenti a dataset che hai creato o sottoscritto."
             send_error: Si è verificato un problema nell'invio della tua email. Cortesemente riprova più tardi.
             send_success: Il tuo messaggio è stato inviato
             subtitle: Iscriviti a singoli eventi selezionando la relativa casella.
@@ -2323,7 +2328,7 @@ it:
           no_openid: Non hai ancora OpenID associati a questo account.
           old_password: Vecchia password
           password: Password
-          password_prompt: (Per la tua sicurezza)
+          password_prompt: "(Per la tua sicurezza)"
           password_restrictions_html: (Restrizioni <span class="icon">&nbsp;</span>)
           title: Impostazioni Account
         app_tokens:
@@ -2332,10 +2337,10 @@ it:
           callback_prefix: Callback Prefix
           callback_prefix_help_html: For instance, if your application will call back to <span class="code">https://my-domain.com/socrata-app/oauth/validated</span> and <span class="code">https://my-domain.com/socrata-app/profile</span>, you'll want to supply <span class="code">https://my-domain.com/socrata-app</span> as your prefix. Note that you must include at least the entire domain name.
           callback_prefix_prompt: Provide the prefix to the secure (https) callback uri when using OAuth
-          create_error: ! 'È avvenuto un errore durante la creazione del tuo application token: %{message}'
+          create_error: "È avvenuto un errore durante la creazione del tuo application token: %{message}"
           create_success: La tua applicazione è stata creata
           delete_confirm: Sei sicuro di voler eliminare questa applicazione? Il corrispondente app_token non sarà più valido
-          delete_error: ! 'È avvenuto un errore durante la cancellazione del tuo application token: %{message}'
+          delete_error: "È avvenuto un errore durante la cancellazione del tuo application token: %{message}"
           delete_success: La tua applicazione è stata eliminata
           description: Descrizione
           description_prompt: Inserisci una descrizione per la tua applicazione
@@ -2352,7 +2357,7 @@ it:
           website_prompt: Inserisci un link a questa applicazione o il sito web dell'azienda
         back_link: Torna al mio profilo
         image:
-          error: ! 'Errore durante il caricamento della nuova immagine: %{message}'
+          error: 'Errore durante il caricamento della nuova immagine: %{message}'
           success: La tua immagine è stata aggiornata
           title: Profilo Immagine
           upload_image_button: Carica Immagine
@@ -2379,7 +2384,7 @@ it:
           email_mismatch: L'e-mail confermata non corrisponde
           image_format: Selezionare un formato di immagine valido (PNG, JPG, or GIF)
           invalid_links: Si è verificato un problema durante l'aggiornamento del tuo link. %{message}
-          no_display_name: ! 'Errore: ''Nome Visualizzato'' è obbligatorio'
+          no_display_name: 'Errore: ''Nome Visualizzato'' è obbligatorio'
           no_password_no_openid: Non è possibile rimuovere tutti i tuoi OpenID prima di impostare la password
           password_mismatch: La password confermata non corrisponde
           user_missing: Questo utente non può essere trovato, o è stato eliminato.
@@ -2508,8 +2513,8 @@ it:
       previous: Precedente
   support:
     array:
-      last_word_connector: ! ', e '
-      two_words_connector: ! ' e '
+      last_word_connector: ", e "
+      two_words_connector: " e "
     array_or:
-      last_word_connector: ! ', o '
-      two_words_connector: ! ' o '
+      last_word_connector: ", o "
+      two_words_connector: " o "

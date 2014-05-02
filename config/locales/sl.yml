@@ -1,0 +1,2542 @@
+sl:
+  account:
+    common:
+      form:
+        confirm_password: Potrdi geslo
+        display_name: Prikaži ime
+        email: E-poštni naslov
+        forgot_password: Pozabljeno geslo?
+        lockout_warning: Iz varnostnih razlogov bo v primeru treh neuspešnih prijav v 15 minutah ta račun 30 minut blokiran.
+        no_account: "Še nimate računa?"
+        password: Geslo
+        password_requirements: 'Zahtevano. Vaše geslo mora biti dolgo od 8 do 40 znakov in mora ustrezati trem izmed naslednjih štirih kriterijev: vsebovati mora številko; vsebovati mora malo tiskano črko; vsebovati mora veliko tiskano črko; vsebovati mora simbol, ki ni alfanumeričen.'
+        password_requirements_html: "<p>Vaše geslo mora biti <b>dolgo od 8 do 40 znakov</b> in mora ustrezati <b>trem izmed naslednjih štirih kriterijev</b>:</p><p></p><ul><li>• vsebovati mora številko</li><li>• vsebovati mora malo tiskano črko</li><li>• vsebovati mora veliko tiskano črko</li><li>• vsebovati mora simbol, ki ni alfanumeričen</li></ul>"
+        password_restrictions: Veljajo omejitve
+        remember_me: Zapomni si me
+        sign_up_prompt: Prijavi se zdaj
+      inline_auth:
+        sign_in_headline: Prijavite se z uporabo Socrata ID
+        sign_up_headline: Veseli nas, da se želite pridružiti %{site}!
+      rpx:
+        description: Izkoristite dodatne funkcije, ki jih omogočajo ti računi in se prijavite z enim klikom.
+        prompt:
+          sign_in: Ali ... uporabite enega izmed teh računov za prijavo.
+          sign_up: Ali ... uporabite enega izmed teh računov za pridružitev.
+        providers:
+          facebook:
+            sign_in_html: "<strong>Poveži</strong> se s Facebookom"
+            sign_up_html: "<strong>Poveži</strong> se s Facebookom"
+          google:
+            sign_in_html: "<strong>Prijavi se</strong> z Google"
+            sign_up_html: "<strong>Pridruži se</strong> z Google"
+          openid:
+            sign_in_html: "<strong>Prijavi se</strong> z OpenID"
+            sign_up_html: "<strong>Pridruži se</strong> z OpenID"
+          twitter:
+            sign_in_html: "<strong>Poveži se</strong> s Twitterjem"
+            sign_up_html: "<strong>Poveži se</strong> s Twitterjem"
+      validation:
+        mismatch: Gesli se ne ujemata.
+        terms: Strinjati se morate s pogoji storitev in politiko zasebnosti.
+  controls:
+    browse:
+      actions:
+        about:
+          button: O
+          title: O tem podatkovnem nizu
+        all_options: Poglej vse
+        clear_all: Počisti vse možnosti
+        clear_facet: "(Vse)"
+        compact_list: Poglej kot strnjen seznam
+        create_dataset: Ustvari ali naloži lasten podatkovni niz
+        create_dataset_short: Ustvari nov podatkovni niz
+        create_dataset_verb: Ustvari
+        dataset_subscribe: Naroči se na spremembe tega pogleda
+        delete:
+          button: Izbriši
+          confirm: Ali ste prepričani, da želite izbrisati %{dataset}?
+          title: Izbriši ta element
+        expand_section: Klikni za razširitev
+        less_options: Poglej manj
+        manage_api:
+          button: Upravljaj
+          title: Upravljaj ta API
+        moderation:
+          accept: Sprejmi
+          reject: Zavrni
+        permissions:
+          change_button:
+            private_html: Objavi kot javno
+            public_html: Objavi kot zasebno
+          title: Spremeni javno vidnost
+        rich_list: Poglej kot obogaten seznam
+        share_button: Deli
+        subscribe: Naroči se
+        suggest_dataset: Niste našli, kar iščete? Predlagaj podatkovni niz.
+        suggest_dataset_short: Predlagaj podatkovni niz.
+        suggest_dataset_verb: Predlagaj
+      back_to_dataset: Nazaj na podatkovni niz
+      facets:
+        categories_singular_title: kategorija
+        categories_title: Kategorije
+        federated_domains_singular_title: domena
+        federated_domains_title: Združene domene
+        moderation_status:
+          accepted: Sprejeto
+          pending: "Čakajoče"
+          rejected: Zavrnjeno
+        moderation_status_singular_title: moderiranje
+        moderation_status_title: Stanje moderiranja
+        topics_singular_title: tema
+        topics_title: Teme
+        view_types:
+          apis: API-ji
+          blob: Datoteke in dokumenti
+          calendars: Koledarji
+          charts: Diagrami
+          datasets: Podatkovni nizi
+          filters: Filtrirani pogledi
+          forms: Oblike
+          href: Zunanji podatkovni nizi
+          maps: Zemljevidi
+          unpublished: Neobjavljeni podatkovni nizi
+        view_types_singular_title: vrsta
+        view_types_title: Poglej vrste
+      listing:
+        comment_count: "Število komentarjev"
+        federation_source: Združeni iz %{source}
+        federation_source_html: Omogoča %{source_link}
+        no_results: Ni rezultatov
+        result_count: Prikazujem %{this} od %{total}
+        table_header:
+          name: Ime
+          popularity: Priljubljenost
+          rss: RSS
+          type: Vrsta
+        timeout: Oprostite. Rezultatov trenutni ni bilo mogoče pridobiti. Prosimo, poskusite znova kasneje.
+      row_results:
+        less_link: Manj
+        matching_rows: Iskanje ujemajočih vrstic po podatkovnih nizih
+        more_link: Več
+        no_matching_rows: Nobena ujemajoča vrstica ni bila najdena
+        title_html: 'Prikazujem <span class="rowResultCountText"></span> od <span class="totalResultCountText"></span> ujemajočih vrstic <a href="#" class="rowSearchLink">(poglej rezultate)</a>:'
+      search: Išči
+      sort_period_title: Razvrsti obdobje
+      sort_periods:
+        month: Ta mesec
+        week: Ta teden
+        year: To leto
+      sort_title: Razvrsti po
+      sorts:
+        alpha: Po abecedi
+        comments: Največ komentarjev
+        last_modified: Nedavno posodobljeno
+        most_accessed: Največkrat obiskano
+        newest: Najnovejše
+        oldest: Najstarejše
+        rating: Najbolje ocenjeno
+        relevance: Najustreznejše
+      title:
+        default: Išči in brskaj po podatkovnih nizih in pogledih
+        result:
+          facet: "%{facet_type} od %{facet_value}"
+          facet_main: ujemanje %{body}
+          main: Rezultati %{body}
+          term: za "%{term}"
+    charts:
+      negatives_in_data: 'Neveljaven diagram: prisotne negativne vrednosti'
+      no_data: Ni podatkov
+      other_slice_label: Drugo
+      series_grouping:
+        calculating_time: Računam preostali čas ...
+        calculation_running: Pripravljam podatke
+        drawing_progress: To lahko traja nekaj časa ...
+        drawing_running: Rišem diagram
+        pause_button_explanation1: Nasvet! Traja predolgo? Poskusite začasno ustaviti in ustvarite filter
+        pause_button_explanation2: za omejitev količine potrebnih izračunov.
+        pause_rendering: Začasna ustavitev
+        rendering_paused: Priprava podatkov je bila začasn ustavljena
+        rendering_progress: ostaja %{rows_remaining} vrstic.
+        rendering_progress_almost_done: ostaja %{rows_remaining} vrstic, še nekaj sekund.
+        rendering_progress_minute: ostaja %{rows_remaining} vrstic, približno %{time_remaining} minuto.
+        rendering_progress_minutes: ostaja %{rows_remaining} vrstic, približno %{time_remaining} minut.
+        rendering_progress_seconds: ostaja %{rows_remaining} vrstic, približno %{time_remaining} sekund.
+        resume_rendering: Obnovi
+      zero_only_data: Ni vrednosti, večjih od nič
+    common:
+      auth_required: Za %{action_phrase} morate biti prijavljeni
+      dataset_picker:
+        button: Izberi
+        title: Izberite podatkovni niz, ki ga boste uporabili
+      expander:
+        collapse: Klikni za strnitev
+        expand: Klikni za razširitev
+      image_upload:
+        button: Naloži sliko
+      no_results: Ni rezultatov
+      rate:
+        auth_action_phrase: oceni ta podatkovni niz
+      share:
+        button_prompt: Druži se
+        button_tooltip: Deli ta podatkovni niz
+        networks:
+          email: E-pošta
+          facebook: Facebook
+          twitter: Twitter
+        share_text: 'Poglej %{name}, podatkovni niz na strani %{site}: '
+      sidebar:
+        tabs:
+          about: O tem podatkovnem nizu
+          components: Komponente
+          configuration: Konfiguracija
+          discuss: Razpravljaj
+          edit: Uredi
+          embed: Vdelaj
+          export: Izvozi
+          filter: Filter
+          manage: Upravljaj
+          moreViews: Več pogledov
+          visualize: Vizualiziraj
+      stars:
+        tooltip: "%{number} zvezdic"
+      visualization:
+        in_bing: Poglej v Bing Maps
+        in_google: Poglej v Google Maps
+        row_details: Poglej podrobnosti za to vrstico
+    editors:
+      actions:
+        add: Dodaj
+        remove: Odstrani
+        replace: Zamenjaj
+        view: Poglej
+      document:
+        add_title: Dodaj nov dokument
+        remove_title: Odstrani dokument
+        replace_title: Zamenjaj dokument
+      photo:
+        add_title: Dodaj novo sliko
+        remove_title: Odstrani sliko
+        replace_title: Zamenjaj sliko
+        view_title: Poglej sliko v ločenem oknu
+    embed:
+      create_template_button: Ustvari novo predlogo
+      custom_size: Velikost po meri
+      embed: Vdelaj ta podatkovni niz
+      form_frame: Vdelaj ta obrazec v okvir
+      form_or: ali
+      form_plain: Vdelaj ta obrazec kot običajni HTML
+      height: Višina
+      minimum_size: 425x425 je najmanjša velikost
+      private_warning: Ta pogled je trenutno zaseben. Lahko vidite predogled, vendar ga boste morali objaviti kot javnega, da ga bodo drugi lahko videli.
+      sdp_template: Predloga za predvajalnik družbenih podatkov
+      size: Velikost
+      template: Predloga
+      width: "Širina"
+    feed:
+      authed_actions:
+        delete_comment: izbriši komentar
+        flag_comment: označi komentar
+        post_comment: objavi komentar
+        rate_comment: oceni komentar
+      comment_actions:
+        already_marked_inappropriate: Označeno
+        delete: Izbriši
+        delete_confirm: Ali ste prepričani? Vaš komentar bo izgubljen.
+        inappropriate: Neprimerno
+        marked_inappropriate: Označeno!
+        rate_down: Negativno oceni ta komentar
+        rate_up: Pozitivno oceni ta komentar
+        reply: Odgovori
+      comment_form:
+        cancel_button: Prekliči
+        empty_body_error: Telo komentarja ne sme biti prazno
+        header: Nov komentar
+        post_button: Objavi
+      header:
+        add_comment: Dodaj komentar
+        cell_comment_header_html: Komentarji za vrstico <span class="rowName"></span>, stolpec <span class="columnName"></span>
+        feed_filter_label: Pokaži
+        pending_moderation: Vaš komentar je poslan in čaka na moderiranje
+      listing:
+        all_replies: Poglej vse odgovore
+        all_replies_with_count:
+          few: Poglej %{count} odgovorov
+          one: Poglej %{count} odgovor
+          other: Poglej %{count} odgovore
+          two: Poglej %{count} odgovora
+        last_item: Poglej zadnji element
+        next_item_page:
+          few: Poglej naslednjih %{count} elementov
+          one: Poglej naslednji %{count} element
+          other: Poglej naslednje %{count} elemente
+          two: Poglej naslednja %{count} elementa
+        no_results: Ni elementov za prikaz
+        user_create_action: 'ustvaril %{thing}:'
+      types:
+        all items: vsi elementi
+        comments: komentarji
+        views: pogledi
+    filter:
+      actions:
+        confirm_modify: S tem boste odstranili vse vrednosti iz svojega filtra! Ali ste prepričani, da želite to storiti?
+        disable_filter: Ne filtriraj
+        first_condition: Kliknite tukaj, da dodate prvi pogoj filtra
+        new_condition_button: Dodaj nov pogoj filtra
+        remove_filter: Odstrani filter
+        select_column: 'Izberi stolpec za filtriranje:'
+        select_operation: 'Izberite dejanje za filtriranje:'
+        select_subcolumn: 'Izberite del %{name} za filtriranje:'
+      edit_default:
+        advanced_body: To pomeni, da bodo imeli poln dostop do možnosti, ki so na voljo na filtru. Za bolj vodeno izkušnjo lahko preizkusite poenostavljen način.
+        advanced_header: Uporabniki bodo začeli v naprednem načinu.
+        advanced_toggle: Spremeni privzeto v poenostavljeno.
+        auto_suggested: Predlagane vrednosti se za to vrsto operatorja samodejno določijo.
+        cancel_button: Prekliči
+        done_button: Končano
+        instructions: 'Uporabite zgornja orodja za ustvarjanje filtrov, prilagajanje prikazanih vrednosti, izbiro števila samodejno predlaganih vrednosti, ki jih bo filter poskušal prikazati itd. Ko ste zadovoljni s prikazanimi možnostmi, kliknite na Končano spodaj, da shranite:'
+        manual_suggested_html: Pokaži do <select class="autogeneratedCount"></select> predlaganih vrednosti
+        mode_button: Uredi privzeti filter
+        mode_message: 'Kot objavitelj tega pogleda lahko določite privzeti komplet filtrov, ki bodo prikazani obiskovalcem:'
+        save_confirm: "Če boste nadaljevali, boste izgubili vse neshranjene spremembe. Prosimo, da pred nadaljevanjem shranite vse spremembe, ki jih želite obdržati."
+        simplified_body: To pomeni, da ne bodo mogli dodajati novih pogojev, spremeniti stolpcev ali operatorjev filtrov ali dostopati do naprednih menijev na filtrih.
+        simplified_header: Uporabniki bodo začeli v poenostavljenem načinu.
+        simplified_toggle: Spremeni privzeto nazaj v napredno.
+      main:
+        base_explanation: Z naslednjimi osnovnimi filtri
+        base_info: Ti filtri so polg katerih koli zgoraj vnesenih dodatnih filtrov vedno uporabljeni. Teh filtrov ni mogoče urejati, ker nimate dovoljenja za urejanje trenutnega pogleda ali ker so del nadrejenega pogleda ali podatkovnega niza.
+        filter: Filtriraj
+        filter_based_on_contents: Filtriraj ta podatkovni niz na osnovi vsebine.
+        no_conditions: Noben pogoj še ni določen.
+        no_suggestions: Za ta stolpec in operator ni predlaganih vrednosti.
+        or: ali
+        simplified_message: Nahajte se v poenostavljenem načinu.
+        simplified_toggle: Preklopi v napredni način?
+        tutorial_html: Še nikoli niste ustvarili filtra? Oglejte si kratek vadbeni video <a href="/videos/popup#basic-filtering" rel="video" class="noRedirPrompt">tukaj</a>.
+        view_has_no_columns: Ta pogled ne vsebuje stolpcev za filtriranje.
+        view_must_be_valid: Ta pogled mora biti veljaven
+      menu:
+        match_all: Ujemati se morajo vsi pogoji
+        match_any: Ujemati se mora kateri koli pogoj
+        select_many: Izberi več
+        select_one: Izberi enega
+        show_suggested: Pokaži predlagane vrednosti
+        title: Možnosti
+    global_indicator:
+      error: Napaka
+      saved: Shranjeno
+      saving: Shranjujem ...
+      working: Delam ...
+    grid:
+      add_column: Dodaj nov stolpec ...
+      clear_column_filter: Počisti filtriranje stolpcev
+      clear_sort: Počisti razvrščanje
+      click_for_menu: Klikni za meni
+      click_to_sort: Klikni za razvrščanje
+      column_info: Informacije o stolpcu
+      delete_column: Izbriši stolpec
+      delete_row: Izbriši vrstico
+      delete_warning_multi_column: Ali želite izbrisati izbrane stolpce? Vsi podatki iz teh stolpcev bodo odstranjeni!
+      delete_warning_single_column: Ali želite izbrisati izbran stolpec? Vsi podatki v tem stolpcu bodo odstranjeni!
+      edit_column_properties: Uredi lastnosti stolpca
+      filter_this_column: Filtriraj ta stolpec
+      geocodes_pending: Vrstice v ciljnem stolpcu se še vedno geokodirajo. Počakajte z objavo tega podatkovnega niza, dokler se ne zaključi
+      hide_column: Skrij stolpec
+      menu: Meni
+      must_enter_name: Za ta stolpec morate vnesti ime
+      new_row: Novo
+      no_columns: Podatkovni niz %{uid} nima nobenih stolpcev.
+      no_rows: Ni vrstic za prikaz
+      permission_denied: Nimate dostopa do tega pogleda.
+      previous: Prejšnji
+      required_cols_missing: Stolpci, potrebni za ta pogled, manjkajo
+      sort_ascending: Razvrsti naraščajoče
+      sort_descending: Razvrsti padajoče
+      totals: Skupno
+      view_cell_comments: Poglej komentarje za to celico
+      view_first_row: Poglej prvo vrstico
+      view_last_row: Poglej zadnjo vrstico
+      view_next_row: Poglej naslednjo vrstico
+      view_previous_row: Poglej prejšnjo vrstico
+      view_row: Poglej vrstico
+      view_single_row: Poglej podatke o eni vrstici
+      viewing_row_html: Gledanje vrstice <span class="curPage"></span> od <span class="totalPages"></span>
+    map:
+      address_prompt: Tukaj vnesite naslov
+      auto: samodejno
+      base_layers: Osnovne plasti
+      boundary_map: Mejni zemljevid
+      current_location: Uporabi trenutno lokacijo
+      data_layers: Podatkovne plasti
+      data_request_timeout: Zahteva za podatke je trajala predolgo in je potekla.
+      forever_node_explanation: Podatki za podatke te gruče so pregosto pakirani, da bi se lahko uporabno prikazali geografski podatki.
+      forever_node_recommend: Priporočamo, da za več podrobnosti <a href="#openTable">odprete tabelarni pogled</a>.
+      forever_node_title: Preveč podatkov
+      geocoding_inaccessible: Storitev geokodiranja ni dostopna. Poskusite znova kasneje.
+      geocoding_noresults: Ni mogoče geokodirati. Prepričajte se, ali je naslov pravilen.
+      heat_map: Temperaturni zemljevid
+      heatmap_ie8_warning: Raster temperaturnega zemljevida ne deluje v vašem trenutnem brskalniku. Nadgradite na IE9, uporabite Google Chrome ali Mozilla Firefox. Hvala.
+      loading: Nalagam ...
+      map_legend: Legenda zemljevida
+      multiple_layer_instructions: 'Tukaj so podatki za več kot eno plast. Izberite eno:'
+      next: Naslednja
+      next_row: Naslednja vrstica
+      no_columns_defined: Noben stolpec ni določen
+      point_map: Točkovni zemljevid
+      previous: Prejšnja
+      previous_row: Prejšnja vrstica
+      request_timed_out: "Čas zahteve za te podatke je potekel."
+    nominate:
+      all: Vse
+      approve: "(Odobri)"
+      approve_tip: Odobri ta predlog
+      approved: Odobreno
+      attachment: Priloga
+      attachments: Priloge
+      back_to_suggestions: Nazaj na predloge podatkovnih nizov
+      browse: Brskaj
+      cancel: Prekliči
+      comments: Komentarji
+      contact_author: Stopi v stik z avtorjem predloga
+      dataset_suggestions: Predlogi podatkovnega niza
+      delete_attachment: priloga
+      delete_confirm: Ali ste prepričani, da želite izbrisati %{type}?
+      delete_error: Napaka pri brisanju %{type}
+      delete_suggestion: predlog
+      description: Opis
+      description_prompt: Vnesite podrobnosti o svojem predlogu
+      details: Podrobnosti
+      edit: "(Uredi)"
+      edit_suggestion: Uredi ta predlog
+      files: Datoteke
+      filter_by_status: Filtriraj po stanju
+      form_error: Prosimo, popravite zgornje napake
+      great_sadness: Napaka pri kontaktu z avtorjem predloga. Prosimo, poskusite znova kasneje.
+      greater_success: Vaše sporočilo je bilo poslano avtorju predloga.
+      message: Sporočilo
+      message_prompt: Vnesi svoje sporočilo
+      moderate: "(Moderiraj)"
+      moderate_error: Napaka pri spreminjanju stanja
+      moderate_tip: Sprejmi ta predlog in ga odpri za glasovanje
+      needs_moderation: Potrbuje moderiranje
+      new: Novo
+      no_result: Ni rezultatov
+      open: Odpri
+      rate_down: Ni mi všeč
+      rate_up: Všeč mi je
+      rating: Ocena
+      rating_error: Napaka pri predlogu ocene
+      reject: "(Zavrni)"
+      reject_tip: Zavrni ta predlog
+      rejected: Zavrnjeno
+      remove: "(Odstrani)"
+      remove_tip: Odstrani ta predlog
+      required: Zahtevano
+      status: Stanje
+      submit: Pošlji
+      submitted_by: Poslal
+      suggest_a_dataset: Predlagaj podatkovni niz
+      suggestion_received: Vaš predlog je bil prejet in se nahaja v čakalni vrsti za moderiranje. Ko ga skrbnik odobri, se bo pojavil na tej strani.
+      suggestion_updated: Vaš predlog je bil posodobljen
+      title: Naslov
+      title_prompt: Vnesi naslov
+      user_removed: uporabnik, ki je bil že odstranjen
+      user_removed_short: Uporabnik je bil odstranjen
+    upload_dialog:
+      browse: Brskaj
+      title_file: Naloži datoteko
+      title_image: Naloži sliko
+      title_photo: Naloži fotografijo
+      to_upload_file: 'Datoteka za nalaganje:'
+      to_upload_image: 'Slika za nalaganje:'
+      to_upload_photo: 'Fotografija za nalaganje:'
+      upload: Naloži
+  core:
+    aggregates:
+      average: Povprečje
+      count: "Štetje"
+      maximum: Največ
+      minimum: Najmanj
+      sum: Vsota
+    alignment:
+      center: Sredina
+      left: Levo
+      right: Desno
+    analytics:
+      visit: ogled
+      visits: ogledi
+    and: in
+    auth:
+      invalid_userpass: neveljavno uporabniško ime ali geslo
+      need_login: Za dostop do te strani morate biti prijavljeni
+      need_permission: Nimate dovoljenja za ogled te strani
+      too_many_tries: Preveč poskusov prijave tega uporabnika. Račun začasno onemogočen.
+    browser_support:
+      chrome: Chrome
+      internet_explorer: Internet Explorer
+      link_text: "Želiš izvedeti več"
+      message_html: Ta stran je najbolje prikazana z uporabo novejšega spletnega brskalnika. %{link_text}
+    chart_types:
+      area: Ploščinski grafikon
+      bar: Palični grafikon
+      bubble: Mehurčni grafikon
+      column: Stolpčni grafikon
+      donut: Kolobarni grafikon
+      line: "Črtni grafikon"
+      pie: Tortni grafikon
+      stackedbar: Navpični palični grafikon
+      stackedcolumn: Navpični stolpični grafikon
+      timeline: "Časovnica"
+      treemap: Drevesni zemljevid
+    chart_types_short:
+      area: Ploščina
+      bar: Palica
+      bubble: Mehurček
+      column: Stolpec
+      donut: Kolobar
+      line: "Črta"
+      pie: Torta
+      stackedbar: Navpična palica
+      stackedcolumn: Navpični stolpec
+      timeline: "Časovnica"
+      treemap: Drevesni zemljevid
+    data_types:
+      calendar_date: Datum in čas
+      checkbox: Potrditveno polje
+      dataset_link: Povezava podatkovnega niza
+      date: Datum in čas (s časovnim pasom)
+      document: Dokument
+      drop_down_list: Več možnosti
+      email: E-pošta
+      flag: Označi
+      geospatial: Geoprostorsko
+      html: Formatirano besedilo
+      link: Povezava stolpca
+      list: Seznam
+      location: Lokacija
+      money: Denar
+      nested_table: Ugnezdena tabela
+      number: "Številka"
+      object: Predmet
+      percent: Odstotek
+      phone: Telefon
+      photo: Fotografija (slika)
+      stars: Zvezdica
+      text: Golo besedilo
+      url: URL spletne strani
+    date_time:
+      centuries_future: "čez %{time} stoletij"
+      centuries_past: Pred %{time} stoletji
+      current_century_future: to stoletje
+      current_century_past: to stoletje
+      current_day_future: danes
+      current_day_past: danes
+      current_hour_future: to uro
+      current_hour_past: to uro
+      current_minute_future: ravnokar
+      current_minute_past: ravnokar
+      current_month_future: ta mesec
+      current_month_past: ta mesec
+      current_week_future: ta teden
+      current_week_past: ta teden
+      current_year_future: letos
+      current_year_past: letos
+      days_future: "čez %{time} dni"
+      days_past: pred %{time} dnevi
+      hours_future: "čez %{time} ur"
+      hours_past: pred %{time} urami
+      minutes_future: "čez %{time} minut"
+      minutes_past: pred %{time} minutami
+      months_future: "čez %{time} mesecev"
+      months_past: pred %{time} meseci
+      single_century_future: "čez stoletje"
+      single_century_past: pred enim stoletjem
+      single_day_future: jutri
+      single_day_past: včeraj
+      single_hour_future: "čez 1 uro"
+      single_hour_past: pred 1 uro
+      single_minute_future: "čez 1 minuto"
+      single_minute_past: pred 1 minuto
+      single_month_future: naslednji mesec
+      single_month_past: prejšnji mesec
+      single_week_future: naslednji teden
+      single_week_past: prejšnji teden
+      single_year_future: naslednje leto
+      single_year_past: prejšnje leto
+      unknown: nekaj časa
+      weeks_future: "čez %{time} tednov"
+      weeks_past: pred %{time} tedni
+      years_future: "čez %{time} let"
+      years_past: pred %{time} leti
+    dialogs:
+      apply: Uveljavi
+      cancel: Prekliči
+      close: Zapri
+      continue: Nadaljuj
+      create: Ustvari
+      delete: Izbriši
+      done: Opravljeno
+      dont_save: Ne shrani
+      logout: Bili ste odjavljeni.
+      save: Shrani
+      session_timeout:
+        notice: Iz varnostnih razlogov ste bili odjavljeni. Za nadaljevanje se morate znova prijaviti.
+        warning:
+          belay_button: Ne odjavi me!
+          body_html: Nekaj minut nismo opazili nobene dejavnosti. Zaradi zasebnosti vas bomo odjavili čez <span id="secondsRemaining"></span> sekund.
+          title: Vaša seja bo kmalu potekla.
+      submit: Pošlji
+      update: Posodobi
+    expando:
+      expand: Razširi
+      prompt: Klikni za razširitev
+    features:
+      allow_comments: Komentiranje
+      cell_comments: Komentiranje celic
+    filters:
+      formal:
+        between: med
+        contains: vsebuje
+        equals: je enako
+        greater_than: več kot
+        greater_than_or_equals: več ali enako
+        is_blank: je prazno
+        is_not_blank: ni prazno
+        less_than: manj kot
+        less_than_or_equals: manj ali enako
+        not_contains: ne vsebuje
+        not_equals: ni enako
+        starts_with: se začne z
+      informal:
+        between: je med
+        contains: vsebuje
+        equals: je
+        greater_than: je več kot
+        greater_than_or_equals: je najmanj
+        is_blank: je prazno
+        is_not_blank: ni prazno
+        less_than: je manj kot
+        less_than_or_equals: je največ
+        not_contains: ne vsebuje
+        not_equals: ni
+        starts_with: se začne z
+    forms:
+      none: Nič
+      required_field: Zahtevano polje
+    group_function:
+      date_day: Dan
+      date_month: Mesec
+      date_year: Leto
+    interstitial:
+      leaving_explanation_html: Ta <span class="datasetType">podatkovni niz</span> gosti <a href="\#" rel="external" class="externalDomain">druga domena</a>.
+      leaving_notice_html: Zapuščate <span class="serverName">%{site_name}</span>
+    maintenance_notice: Ta stran, ki jo poganja Socrata, mogoče ni na voljo zaradi rutinskega vzdrževanja od %{start} do %{finish}.
+    map_layers:
+      aerial: Iz zraka
+      bing_aerial: Bing iz zraka
+      bing_roadmap: Zemljevid Bing
+      bing_roadmap_alias: Bing
+      esri_natural_earth: Naravni zemljevid zemlje (ESRI)
+      esri_natural_earth_alias: Naravni zemljevid zemlje
+      esri_satellite: Satelitski posnetki (ESRI)
+      esri_us_topo: Podroben topografski zemljevid ZDA (ESRI)
+      esri_us_topo_alias: Topografski zemljevid ZDA
+      esri_world_street_map: Svetovni zemljevid ulic (ESRI)
+      esri_world_street_map_alias: Svetovni zemljevid ulic
+      esri_world_topo: Komentiran svetovni topografski zemljevid (ESRI)
+      esri_world_topo_alias: Svetovni topografski zemljevid
+      google_roadmap: Cestni zemljevid Google
+      google_roadmap_alias: Google
+      google_satellite: Satelitski posnetki Google
+      google_terrain: Terenski zemljevid Google
+      roadmap: Cestni zemljevid
+      satellite: Satelitski posnetki
+      terrain: Teren
+    no_category: Ni kategorije
+    no_js: Onemogoči Javascript na tej strani
+    no_license: Ni licence
+    numbers:
+      eight: osem
+      five: pet
+      four: "štiri"
+      nine: devet
+      num_one: ena
+      num_two: dve
+      num_zero: nič
+      seven: sedem
+      six: "šest"
+      three: tri
+    or: ali
+    pagination:
+      current_page: Trenutna stran
+      first_page: Prva stran
+      last_page: Zadnja stran
+      next_page: Naslednja stran
+      page: stran
+      previous_page: Prejšnja stran
+    precision_style:
+      scientific: Znanstveni (1,0204e+3)
+      standard: Standardni (1020,4)
+    required: Zahtevano
+    share_types:
+      contributor: Sodelavec
+      owner: Lastnik
+      view: Pregledovalnik
+      viewer: Pregledovalnik
+    validation:
+      accept: Prosimo, vnesite vrednost z veljavno razširitvijo
+      date: Prosimo, vnesite veljaven datum.
+      dateISO: Prosimo, vnesite veljaven datum (ISO).
+      digits: Prosimo, vnesite le števke.
+      email: Prosimo, vnesite veljaven e-poštni naslov.
+      equalTo: Prosimo, vnesite znova enako vrednost.
+      max: Prosimo, vnesite vrednost, manjšo ali enako {0}.
+      maxlength: Prosimo, vnesite največ {0} znakov.
+      min: Prosimo, vnesite vrednost, večjo ali enako {0}.
+      minlength: Prosimo, vnesite najmanj {0} znakov.
+      number: Prosimo, vnesite vejavno številko.
+      range: Prosimo, vnesite vrednost med {0} in {1}.
+      rangelength: Prosimo, vnesite vrednost, dolgo med {0} in {1} znakov.
+      remote: Prosimo, popravite to polje.
+      required: To polje je obvezno.
+      url: Prosimo, vnesite veljaven spletni naslov.
+    view_types:
+      api: Pogled API
+      blob: netabelarna datoteka ali dokument
+      calendar: koledar
+      chart: grafikon
+      dataset: podatkovni niz
+      filter: filtriran pogled
+      form: oblika
+      group: združen pogled
+      grouped: združen pogled
+      href: zunanji podatkovni niz
+      map: zemljevid
+      table: tabela
+      working_copy: delovna kopija
+    view_types_plural:
+      api: API-ji
+      calendar: Koledarji
+      chart: Grafikoni
+      filter: Filtrirani pogledi
+      form: Oblike
+      grouped: Združeni pogledi
+      map: Zemljevidi
+    visibility:
+      private: zasebno
+      public: javno
+  dataslate:
+    component:
+      edit: Uredi to komponento
+      header:
+        height: Višina
+      invalid_config: Ta komponenta nima veljavne konfiguracije
+      loading: Nalagam, počakajte ...
+      picture:
+        alt_attr: Alt
+        alt_attr_prompt: alt atribut
+        full_url: Popolnoma kvalificiran spletni naslov za sliko
+        image_source: Izvor slike
+        large: Velika (220x220)
+        medium: Srednja (150x150)
+        original: Original
+        thumb: Sličica (80x80)
+        tiny: Drobna (24x24)
+        title_attr: Naslov
+        title_attr_prompt: atribut naslova
+      print:
+        print: Natisni
+        print_this_page: Natisni to stran
+      remove: Odstrani to komponento
+      share:
+        email: Deli prek e-pošte
+        email_contents: "%{dataset} za %{company}"
+        facebook: Deli na Facebooku
+        share: Deli
+        subscribe: Naroči se prek e-pošte ali RSS
+        subscribe_text: Naroči se na spremembe
+        this_page: Ta stran
+        tweet_contents: 'Preveri %{dataset} za %{company}: %{url}'
+        twitter: Deli na Twitterju
+    configurator:
+      actions_components: Dejanja
+      advanced_components: Napredne komponente
+      content_components: Vsebina
+      data_components: Podatki
+      input_components: Vnos
+      report_components: Komponente poročila
+    context_picker:
+      select_dataset: Izberi podatkovni niz
+      view_data: Poglej podatke
+    create:
+      cancel: Prekliči
+      create: Ustvari
+      create_page: Ustvari stran DataSlate
+      page_settings: Nastavitve strani
+      page_title: Naslov strani
+      page_url: Spletni naslov strani
+      title: Ustvari stran DataSlate
+    edit:
+      editing: Urejanje
+      permissions: Dovoljenja
+      preview_page: Predogled strani
+      redo: Uveljavi
+      revert: Povrni
+      save: Shrani
+      save_as: Shrani kot
+      settings: Nastavitve
+      undo: Razveljavi
+      view_editor: Poglej interaktivni urejevalnik
+    edit_component:
+      no_config: Za %{component} ni na voljo konfiguracije
+      subtitle: Konfiguriraj to komponento
+      title: Uredi komponento
+    edit_properties:
+      no_data: Ni podatkovnega niza za to komponento
+      subtitle: Tej komponenti dodaj lastnosti na osnovi konteksta podatkov
+      title: Razpoložljive lastnosti
+    permissions:
+      cancel: Prekliči
+      private: Zasebno
+      private_desc: Na ogled samo vam
+      public: Javno
+      public_desc: Na ogled vsem
+      save: Shrani
+      shared: Deljeno na strani
+      shared_desc: Na ogled vsem prijateljem, vendar ni javno.
+      title: Dovoljenja strani
+    settings:
+      cancel: Prekliči
+      page_title: Naslov strani
+      page_url: Pot shranjevanja
+      save: Shrani
+      title: Nastavitve strani
+  date:
+    abbr_month_names:
+    - 
+    - Jan
+    - Feb
+    - Mar
+    - Apr
+    - Maj
+    - Jun
+    - Jul
+    - Avg
+    - Sep
+    - Okt
+    - Nov
+    - Dec
+  error:
+    back: Nazaj
+    error_500:
+      description_html: Prosimo, poskusite znova čez nekaj trenutkov ali <a href="http://support.socrata.com">prijavite to napako</a> s podrobnostmi o tem, kaj ste poskušali storiti.
+      somethings_wrong: Prišlo je do napake!
+      were_sorry: Oprostite, vendar je prišlo do težav pri obdelavi vaše zahteve.
+    not_acceptable_406:
+      page_not_found: Stran ni bila najdena.
+      were_sorry: Resnično nam je žal, vendar zahtevana stran ni na voljo v zahtevani obliki.
+    not_found_404:
+      back_to: Nazaj na
+      description_html: Stran ne obstaja ali je bila premaknjena. Menimo, da je najbolje, da začnete znova iz <a href="/">domače strani</a>. Stopite v stik z nami, če težava ostaja ali če ne morete najti, kar iščete. Hvala.
+      page_not_found: Stran ni bila najdena.
+      were_sorry: Resnično nam je žal, vendar zahtevane strani ni bilo mogoče najti.
+    permission_denied_403:
+      description_html: Če menite, da je to napaka, se poskušajte znova prijaviti kot drug uporabnik <a href="/login">tukaj</a>.
+      no_permission: Nimate dovoljenja za dostop do vira.
+      were_sorry: Oprostite, vendar je videti, da nimate dovoljenja za dostop do te strani.
+    to_whence_you_came: od koder ste prišli.
+  govstat:
+    chrome:
+      header:
+        links:
+          account: Račun
+          account_options: Možnosti računa
+          account_tooltip: Poglejte in izvedite spremembe svojega uporabniškega računa.
+          configuration: Konfiguracija
+          configuration_title: Upravljaj konfiguracijo GovStat
+          data: Podatki
+          data_title: Brskaj po in upravljaj s podatki
+          goals: Cilji
+          goals_title: Ustvari in sledi ciljem
+          home: Domov
+          home_title: Domov
+          my_goals: Moji cilji
+          my_goals_tooltip: Poglej cilje, ki sem jih ustvaril/-a.
+          reports: Poročila
+          reports_title: Poglej in ustvari poročila
+    configuration:
+      analytics: Analitika
+      appearance: Videz
+      config: Konfiguracija
+      content_moderation: Moderiranje vsebine
+      data_management: Upravljanje podatkov
+      datasets: Podatkovni nizi
+      federations: Združevanja
+      homepage: Domača stran
+      metadata: Meta podatki
+      moderation: Moderiranje komentarjev
+      nomination: Moderiranje nominacij
+      routing: Usmerjanje in odobritev
+      sdp_templates: Predloge predvajalnika podatkov
+      title: Upravljaj konfiguracijo strani
+      users: Uporabniki
+    reports:
+      component:
+        base_map: Osnovni zemljevid
+        chart: Grafikon
+        formatted_text: Formatirano besedilo
+        header: Glava
+        horizontal_layout: Vodoravna postavitev
+        map: Zemljevid
+        map_layer: Plast zemljevida
+        picture: Slika
+        print: Natisni
+        share: Deli
+        table: Tabela
+        title: Naslov
+        vertical_layout: Navpična postavitev
+        visualize: Vizualiziraj
+      create:
+        create_report: Ustvari poročilo
+        title: Ustvari poročilo
+      manage:
+        copy: Kopiraj
+        create_new_report: Ustvari novo poročilo
+        delete: Izbriši
+        edit: Uredi
+        home: Domov
+        other_reports: Druga poročila
+        owner: lastnik
+        reports: Poročila
+        title: Upravljaj s poročili
+        updated: posodobljeno
+        your_reports: Vaša poročila
+      permissions:
+        title: Dovoljenja za poročila
+      settings:
+        page_title: Naslov poročila
+        title: Nastavitve poročila
+    template:
+      grid_flow_layout: Postavitev poteka mreže
+      layouts: Postavitve
+      list_layout: Seznam postavitev
+      title: Izberi postavitev
+  plugins:
+    daterangepicker:
+      date_range: Razpon podatkov
+      done: Končano
+      end_date: Datum konca
+      last_month: Prejšnji mesec
+      month_to_date: Mesec do datuma
+      next: Naslednji
+      prev: Prejšnji
+      specific_date: Določen datum
+      start_date: Datum začetka
+      the_month_of: Mesec ...
+      the_week_of: Teden ...
+      the_year_of: Leto ...
+      today: Danes
+      week_to_date: Teden do datuma
+      year_to_date: Leto do datuma
+    fileuploader:
+      drop_files: Spusti datoteke za nalaganje tukaj
+      failed: Neuspešno
+      upload_a_file: Naloži datoteko
+    hallo:
+      body: Telo
+      bold: krepko
+      heading: Naslov
+      italic: poševno
+      redo: Uveljavi
+      subheading: Podnaslov
+      undo: Razveljavi
+    jquery_ui:
+      april: April
+      april_short: Apr
+      august: Avgust
+      august_short: Avg
+      december: December
+      december_short: Dec
+      done: Končano
+      february: Februar
+      february_short: Feb
+      friday: Petek
+      friday_min: Pe
+      friday_short: Pet
+      january: Januar
+      january_short: Jan
+      july: Julij
+      july_short: Jul
+      june: Junij
+      june_short: Jun
+      march: Marec
+      march_short: Mar
+      may: Maj
+      may_short: Maj
+      monday: Ponedeljek
+      monday_min: Po
+      monday_short: Pon
+      next: Naslednji
+      november: November
+      november_short: Nov
+      october: Oktober
+      october_short: Okt
+      prev: Prejšnji
+      saturday: Sobota
+      saturday_min: So
+      saturday_short: Sob
+      september: September
+      september_short: Sep
+      sunday: Nedelja
+      sunday_min: Ne
+      sunday_short: Ned
+      thursday: "Četrtek"
+      thursday_min: "Če"
+      thursday_short: "Čet"
+      today: Danes
+      tuesday: Torek
+      tuesday_min: To
+      tuesday_short: Tor
+      wednesday: Sreda
+      wednesday_min: Sr
+      wednesday_short: Sre
+      week_min: Ted
+  recaptcha:
+    errors:
+      verification_failed: Vneseni znaki se ne ujemajo s sliko.
+  screens:
+    about:
+      actions: Dejanja
+      activity: Dejavnost
+      attachments: Priloge
+      category: Kategorija
+      comments: Komentarji
+      community: Ocena skupnosti
+      contact_dataset_owner: Stopi v stik z lastnikom podatkovnega niza
+      contributors: Sodelavci
+      created: ustvarjeno
+      data_provided_by: Podatke omogočil
+      description: Opis
+      downloads: Prenosi
+      edit_metadata: Uredi meta podatke
+      flag_dataset: Označi podatkovni niz
+      license: Licenca
+      licensing: Licenciranje in funkcija
+      links: Povezave
+      meta: Meta
+      none: "(ni)"
+      permalink: Trajna povezava
+      permanent_links: Trajne povezave
+      permissions: Dovoljenja
+      private: Zasebno
+      public: Javno
+      raters: Ocenjevalci
+      resource_name: Ime vira
+      row_class: Razred vrstice
+      row_count: "Število vrstic"
+      row_identifier: Identifikator vrstic
+      semantics: Semantika in RDF
+      short_url: Kratek spletni naslov
+      snapshotted: trenutno posneto
+      soda2_support: Samo SODA2
+      soda2_yes: Da
+      source_link: Izvorna povezava
+      spatial_extent: Prostorska razširitev
+      subject_column: Stolpec zadeve
+      tags: Značke
+      terms_of_use: Pogoji uporabe
+      updated: posodobljeno
+      view_full_page: Poglej celo stran
+      view_statistics: Poglej statistiko
+      visits: Obiski
+      your: Vaša ocena
+    admin:
+      datasets:
+        layout_config: Konfiguracija postavitve
+        left: Levo
+        right: Desno
+        saved: Shranjeno
+        saving: Shranjevanje
+        sidebar_position: Položaj stranske vrstice
+        title: Podatkovni nizi
+        unpublished_datasets: Neobjavljeni podatkovni nizi
+      federation:
+        accept: Sprejmi
+        accepted: Sprejeto
+        accepted_by: Sprejel
+        all: "(vsi)"
+        dataset: Podatkovni niz
+        flashes:
+          accepted: Združevanje uspešno sprejeto
+          created: Združevanje uspešno ustvarjeno
+          deleted: Združevanje uspešno izbrisano
+          invalid_domain: 'Ni mogoče ustvariti združevanja podatkov: ciljna domena ni veljavna'
+          rejected: Združevanje uspešno zavrnjeno
+        list_domains: V nadaljevanju je seznam domen, s katerimi lahko začnete združevanje. Ko kliknete Objavi, mora skrbnik ciljne domene sprejeti vašo zahtevo.
+        no_domains: Nobena razpoložljiva domena se ne ujema z/s %{name}.
+        no_federations: Za to domeno še ne obstaja nobeno združevanje.
+        no_pub_datasets: Noben objavljen podatkovni niz se ne ujema z vašimi iskalnimi kriteriji.
+        pending: "Čakajoče"
+        publish: Objavi
+        reject: Zavrni
+        search: Išči
+        search_boost: Pospešitev iskanja
+        search_boost_explain: Razpon od 1 do 0. Višja vrednost pomeni, da se bo podatkovni niz verjetneje pokazal prvi.
+        search_prompt: Išči domene za objavo na
+        search_pub_datasets: Išči objavljene podatkovne nize
+        source_domain: Iššči domeno
+        status: Stanje
+        target_domain: Ciljna domena
+        terminate: Prekini
+        title: Odpri združevanje podatkov
+      home:
+        add_featured_dataset: Dodaj nov priljubljen podatkovni niz
+        are_you_sure: Ali ste prepričani? Tega dejanja ni mogoče razveljaviti.
+        catalog_layout_configuration: Katalog konfiguracij postavitev
+        choose_a_dataset: Izberi podatkovni niz za predstavitev
+        compact_list: Strnjen seznam
+        contents: Vsebine
+        create_new_story: Ustvari novo zgodbo
+        custom_image: Slika po meri
+        customize_now: Prilagodi zdaj
+        customize_story_appearance: Prilagodi videz zgodbe
+        dataset_display_limit: Naenkrat lahko predstavljate le štiri podatkovne nize.
+        date_published: Datum objave
+        default_catalog_layout: Privzeta katalog postavitev
+        delete: Izbriši
+        down: Dol
+        edit: Uredi
+        feature_image: predstavi sliko
+        filetype_error: Neveljavna vrsta datoteke. Prosimo, izberite slikovno datoteko
+        flashes:
+          create_error: 'Med vašo zahtevo je prišlo do napake: %{error_message}'
+          delete_error: Zgodba, ki ste jo poskušali izbrisati, ne obstaja.
+          edit_error: Zgodba, ki ste jo poskušali urediti, ne obstaja.
+          edit_success: Vaša zgodba je bila shranjena
+          move_error: Zgodba, ki ste jo poskušali premakniti, ne obstaja.
+          move_success: Vaša zgodba je bila shranjena
+        image: Slika
+        left: Levo
+        manage_featured_dataset: Upravljaj s predstavljenim podatkovnim nizom
+        manage_story_content: Upravljaj z vsebino zgodbe
+        move_left: Premakni v levo
+        move_right: Premakni v desno
+        remove: Odstrani
+        rich_list: Obogaten seznam
+        right: Desno
+        save_now: Shrani zdaj
+        saved: Shranjeno
+        saved1: Shranjeno.
+        saving: Shranjevanje
+        saving1: Shranjujem ...
+        set_a_thumbnail: Nastavi sličico
+        text: Besedilo
+        thumbnail: Sličica
+        title: Upravljaj domačo stran
+        up: Gor
+      metadata:
+        add_new_category: Dodaj novo kategorijo
+        add_new_field: Dodaj novo polje
+        allowed_values: Dovoljene vrednosti
+        are_you_sure: Ali ste prepričani, da želite izbrisati ta komplet polj in vsa povezana polja?
+        category_name: Ime kategorije
+        create: Ustvari
+        create_new_fieldset: Ustvari nov komplet polj
+        define_categories: Določi kategorije podatkovnih nizov
+        define_custom_fields: Določi polja po meri
+        down: Dol
+        enter_a_name: Vnesi ime
+        'false': false
+        field_name: Ime polja
+        flashes:
+          cannot_move_field: 'Ni mogoče premakniti polja z imenom ''%{name}'': ni mogoče najti'
+          field_duplicated: Ne morete ustvariti dvojnega polja z imenom '%{name}'
+          field_name_required: Ni mogoče ustvariti polja brez imena
+          field_successful_create: Polje uspešno ustvarjeno
+          field_successful_remove: Polje uspešno odstranjeno
+          field_successful_save: Polje uspešno shranjeno
+          fieldset_duplicated: Ni mogoče ustvariti dvojnega kompleta polj z imenom '%{name}'
+          fieldset_name_required: Ni mogoče ustvariti kompleta polj brez imena
+          no_such_field: Takšno polje ne obstaja
+          no_such_fieldset: Takšen komplet polj ne obstaja
+          successful_create: Komplet polj uspešno ustvarjen
+          successful_remove: Komplet polj uspešno odstranjen
+        locales: Področne nastavitve
+        make_optional: Označi kot izbirno
+        make_private: Označi kot zasebno
+        make_public: Označi kot javno
+        make_required: Označi kot zahtevano
+        metadata_explain1: Meta podatki po meri so razdeljeni na <span class="code">komplete polj</span> in <span class="code">polja</span>. <span class="code">Komplet polj</span> je način za logično in vizualno razvrščanje v skupino enega ali več <span class="code">polj</span> po meri.
+        metadata_explain2: Polja lahko konfigurirate na več načinov. Lahko so <span class="code">zahtevana</span>, kar bo uveljavljeno, ko sodelavci ustvarijo nove podatkovne nize in posodobijo obstoječe meta podatke. Lahko so tudi <span class="code">zasebna</span>, kar pomeni, da vnesene vrednosti ne bodo vidne javnosti.
+        metadata_explain3: Nazadnje lahko izberete določitev možnosti za svoja <span class="code">polja</span>, če raje želite imeti izbiro vrednosti s seznama kot pa vnos prostega besedila.
+        no_data: Za vašo domeno še niso bila določena polja s podatkovnimi nizi po meri. Spodaj vnesite ime in za začetek kliknite 'Ustvari'.
+        no_fields_defined: Za ta komplet polj še ni določeno nobeno polje
+        page_title: Upravljaj z meta podatki podatkovnega niza
+        parent: Nadrejeni
+        remove: Odstrani
+        shown: Prikazano?
+        title: Upravljaj z meta podatki
+        'true': true
+        up: Gor
+      users:
+        actions: Dejanja
+        all: Vsi
+        bulk_create: Množično ustvari
+        create_accounts: Ustvari račune
+        email: E-pošta
+        email_prompt: Vnesi e-poštne naslove za račune, ki jih želite ustvariti
+        emails: E-sporočila
+        error_permission_request: Pri obdelavi vaše zahteve za dovoljenje je prišlo do napake
+        filter_by: Filtriraj po
+        flashes:
+          accounts_created:
+            few: "%{count} računov uspešno ustvarjenih"
+            one: "%{count} račun uspešno ustvarjen"
+            other: "%{count} računi uspešno ustvarjeni"
+            two: "%{count} računa uspešno ustvarjena"
+          invalid_role: 'Neveljavna vloga, določena za ustvarjanje uporabnika: %{role}'
+          no_email_addresses: Noben e-poštni naslov ni bil zaznan
+          pending_permissions_removed: "Čakajoča dovoljenja odstranjena"
+          reenable_failed: Pri omogočanju računa tega uporabnika je prišlo do napake.
+          reenable_success: Račun uspešno znova omogočen
+          reset_email_failed: Pri pošiljanju e-sporočila za ponastavitev gesla je prišlo do napake.
+          reset_email_sent: E-sporočilo za ponastavitev gesla poslano
+          successful_update: Uporabnik uspešno psodobljen
+        invited: Povabljen
+        name: Ime
+        no_pending_users: Ni uporabnikov, ki bi se ujemali z vašim trenutnim filtrom
+        no_users_found: Noben obstoječ uporabnik ni bil najden
+        no_users_match: Noben uporabnik se ne ujema z vašim trenutnim filtrom.
+        pending_users: Naslednji uporabniki imajo čakajoče račune, vendar jih še niso aktivirali
+        reenable_privileges: Znova omogoči pravice
+        remove: Odstrani
+        reset_password: Ponastavi geslo
+        return_to_overview: Vrni se na pregled uporabnikov
+        role: Vloga
+        roles:
+          administrator: skrbnik
+          designer: snovalec
+          editor: urednik
+          none: noben
+          publisher: izdajatelj
+          viewer: pregledovalec
+        search: Išči
+        search_for_users: Išči uporabnike, ki bodo dodani
+        search_results: Išči rezultate za '%{term}'
+        title: Upravljaj z uporabniki
+        user_saved: Uporabnik shranjen
+    dataset_edit:
+      append: Dodaj
+      append_and_replace: Dodaj in zamenjaj podatke
+      append_explain: "Želite dodati naložene podatke na konec svojega podatkovnega niza. Izbrali boste lahko, kako se bodo novi podatki preslikali v vaše obstoječe stolpce."
+      finish:
+        headline: Vaš podatkovni niz je bil posodobljen.
+        subheadline: Kliknite na Končaj, da ga boste lahko videli!
+      headline: Kaj želite storiti z naloženimi podatki?
+      import_columns:
+        destination_column: Ciljni stolpec
+        destination_data_type: Ciljna vrsta podatkov
+        headline: Kako se podatki v &ldquo;<span class="fileName"></span>&rdquo; nanašajo na vaš podatkovni niz?
+      import_warnings:
+        see_docs: <strong>Zmedeni?</strong> Za podrobno pojasnilo o tem, kako uvoznik ravna s podatki, preverite našo <a href="%{publisher_link}" rel="external">dokumentacijo izdajatelja</a> glede uvažanja podatkov.
+      replace: Zamenjaj
+      replace_data: Zamenjaj podatke
+      replace_explain: "Želite odstraniti vse obstoječe podatke in jih zamenjati z naloženimi. Lahko boste izbrali, kako bodo vaši novi podatki preslikani v obstoječe stolpce. Tega dejanja ni mogoče razveljaviti."
+      replace_layer: Zamenjaj plast
+      title: Uredi podatkovni niz
+      upload_accessible: Naloži nove podatke, da bodo dostopni
+    dataset_new:
+      column_template:
+        name_this_col: Poimenuj ta stolpec
+        options: možnosti
+        remove: odstrani
+      crossload:
+        downloading: Prenašanje datoteke ...
+        headline: Označite, kje se nahaja vaša podatkovna datoteka.
+        import: Uvozi
+        supported: Podprte vrste datotek so CSV, TSV in Excel. Podprta protokola sta HTTP in HTTPS.
+        url_prompt: Kakšen je spletni naslov datoteke, ki jo želite uvoziti?
+      errors:
+        invalid_crossload_url: Prosimo, vnesite veljaven spletni naslov z uporabo HTTP ali HTTPS.
+        invalid_url: Videti je, da to ni veljaven spletni naslov.
+        missing_data_provider: Določiti morate ponudnika podatkov (dodelitev) v licenci organizacije Creative Commons.
+        missing_esri_url: Za spletni naslov je zahtevana veljavna plast preslikave ESRI.
+        missing_name: Ime podatkovnega niza je obvezno.
+        need_description: Prosimo, opišite &ldquo;%{name}&rdquo;
+      finish:
+        headline: Vaš podatkovni niz je bil ustvarjen.
+        subheadline: Za ogled kliknite Končaj!
+      first_page:
+        blobby: Naloži nepodatkovno datoteko
+        blobby_explain: Izberite to, če imate datoteko, ki vsebuje podatke, vendar je ni mogoče uvoziti, npr. PDF ali slikovno datoteko. Uvožena bo v podatkovni katalog, vendar ne bo tako interaktivna kot resnični podatki.
+        create: Zasnova od začetka
+        create_explain: To izberite, če še nimate podatkov, ki jih želite uvoziti. Lahko boste določili shemo za svoje podatke in jih vnesli na spletu.
+        external: Povezava do zunanjih podatkov
+        external_explain: To izberite, če že imate podatke, ki gostujejo na drugem strežniku. Ti podatki ne bodo uvoženi.
+        header: Ustvari nov podatkovni niz
+        import: Uvozi podatkovno datoteko
+        import_explain: To izberite, če že imate podatkovno datoteko na svojem računalniku, ki jo želite uvoziti. Podprti formati so .csv, .tsv, .xls, in .xlsx.
+        mapLayer: Poveži se s plastjo preslikave ESRI
+        mapLayer_explain: To izberite, če imate plast preslikave ESRI, ki jo želite uvoziti v katalog. Navesti boste morali spletni naslov za točko API, kjer je shranjena plast ESRI.
+        prompt: Kako želite ustvariti nov podatkovni niz?
+        shapefile: Uvozi geoprostorske podatke
+        shapefile_explain: To izberite, če imate geoprostorske podatke, ki jih želite uvoziti v katalog.
+      import:
+        headline: Kje se nahaja ta datoteka?
+        local: Na mojem računalniku
+        local_explain: To izberite, če imate datoteko, ki se nahaja na računalniku, ki ga uporabljate.
+        web: Na spletu
+        web_explain: Izberite to, če imate datoteko že na spletu in imate spletni naslov za njo.
+      import_columns:
+        add_new_column: Dodaj nov stolpec
+        clear_all: Počisti vse
+        data_type: Vrsta podatkov
+        errors_warnings: Napake in opozorila
+        fewer_rows: Manj vrstic
+        headers: Naslovi
+        headers_instructions: Naslove morate prezreti in jih ne smete uvoziti kot podatke. Označite, koliko vrstic izvorne datoteke je naslovov
+        headline: Določite, kako boste uvozili &ldquo;<span class="fileName"></span>&rdquo;.
+        help_message: Za pomoč preverite <a href="%{common_errors}" rel="external">seznam običajnih opozoril in napak</a>.
+        more_rows: Več vrstic
+        name: Ime
+        pending_columns: Počakajte, da naložimo vaše stolpce ...
+        reset_to_preset: Ponastavite za prednastavitev
+        set: Nastavi
+        source_column: Izvorni stolpec
+        subheadline: Stolpci za izvoz
+        suggested_alltext: Vsi stolpci kot besedilo
+        suggested_columns: Predlagani stolpci
+        suggested_flat: Predlagani stolpci (brez sestavljenih)
+        suggested_plus_discrete: Predlagani stolpci (sestavljeni in nepovezani)
+        why_choose_now: Zakaj je pomembno, da zdaj izberem vrsto stolpcev?
+      import_help: <strong>Potrebujete pomoč?</strong> Vzdržujemo <a href="%{common_errors}" rel="external">seznam običajnih opozoril in napak</a>, ki vam lahko pomagajo.
+      import_shapefile:
+        crs: Referenčni koordinatni sistem
+        headline: Določite, kako bo uvoženo &ldquo;<span class="fileName"></span>&rdquo;.
+        layers_list: Plasti za uvoz
+        name: Ime
+        pending: Počakajte, da naložimo vaše plasti ...
+        subheadline: Ta datoteka oblike vsebuje <span class="featureCount"></span> funkcije v plasteh <span class="layerCount"></span>.
+      import_warnings:
+        headline: Opozorila med uvozom
+        see_docs: <strong>Zmedeni?</strong> Za podrobno pojasnilo o tem, kako uvoznik ravna s podatki preverite našo <a href="%{publisher_link}" rel="external">dokumentacijo izdajatelja</a> glede uvoza podatkov. Morda boste želeli pogledati še naš <a href="%{common_errors}" rel="external">seznam običajnih opozoril in napak</a>.
+        subheadline: Upoštevajte, da nekateri vaši podatki mogoče niso bili pravilno uvoženi.
+      importing_your_data: Uvažamo vaše podatke ...
+      metadata:
+        creative_commons_type: Vrsta Creative Commons
+        esri_map_layer_url: Spletni naslov preslikave plasti ESRI
+        esri_source_url: Vnesite izvorni spletni naslov
+        privacy_security: Zasebnost in varnost
+        privacy_settings: Nastavitve zasebnosti
+        private_explain: Moji podatki so <strong>zasebni</strong>
+        prompt: Prosimo, opišite svoje podatke.
+        public_explain: 'Moji podatki so <strong>zasebni</strong>: spremenim jih lahko le jaz, vendar jih lahko vsi vidijo'
+      processing: Obdelujem ...
+      title: Nov podatkovni niz
+      upload_accessible: Naloži nov podatkovni niz, da bo dostopen
+      upload_file:
+        choose_a_file: Izberi datoteko
+        no_file_selected: Nobena datoteka še ni izbrana.
+        supported_blist: Podprti formati so .csv, .tsv, .xls, in .xlsx.
+        supported_shapefile: Podprti formati so .kml, .kmz, in .zip (datoteka oblike ESRI).
+        uploading: Nalagam vašo datoteko ...
+      why_choose_now:
+        close: Zapri
+        line_1: Vašo datoteko po uvozu močno obdelamo in optimiziramo za uporabo za vsako določeno vrsto podatkov. Dodatno ima večina vrst podatkov posebne funkcije, ki bodo aktivirane, če je stolpec nastavljen na to vrsto in so lokacijski stolpci potrebni za ustvarjanje zemljevidov.
+        line_2: Vrste stolpcev je mogoče spremeniti kasneje, vendar ta postopek traja nekaj časa, zato je najbolje, če se predhodno pravilno nastavijo.
+    ds:
+      bar:
+        api_unsavable: Pogledov API ni mogoče spreminjati
+        based_on_html: Na osnovi <a class="revertLink currentViewName" href="#revert">%{name}</a>
+        based_on_parent_html: Na osnovi <a class="parentName"></a>
+        based_on_private_view: zasebni pogled.
+        based_on_working_copy_html: Na osnovi delovne kopije <a class="revertLink currentViewName" href="#revert">%{name}</a>
+        find_prompt: Najdi v tem podatkovnem nizu
+        format:
+          bold: Krepko
+          bullet: Označen seznam
+          color: Barva pisave
+          italic: Poševno
+          link: Povezava
+          number: Oštevilčen seznam
+          redo: Uveljavi
+          strike: Prečrtano
+          underline: Podčrtano
+          undo: Razveljavi
+        full_screen: Preklopi celozaslonski način
+        publish_button: Objavi podatkovni niz
+        publish_prompt: Ta podatkovni niz je delovna kopija in ni javno dostopen. Ko izvedete želene spremembe, bo ta podatkovni niz objavljen, da bo na voljo javno.
+        publish_rights: Ta podatkovni niz lahko objavi le lastnik ali izdajatelj
+        revert_button: Povrni
+        revert_prompt: Povrni v shranjen pogled
+        save_as_button: Shrani kot ...
+        save_as_prompt: Shrani pogled kot ...
+        save_button: Shrani
+        save_progress: Shranjujem ...
+        save_prompt: Shrani trenutni pogled
+        share_email: Deli prek e-pošte
+        share_facebook: Deli na Facebooku
+        share_twitter: Deli na Twitterju
+        snapshot_notice: To je predhodno objavljena različica podatkovnega niza. Je arhivirana in je ni mogoče spreminjati.
+        snapshot_title: Ime trenutnega posnetka
+        snapshot_title_html: Posneto dne %{date}
+        snapshot_unsavable: Posnetih podatkovnih nizov in pogledov ni mogoče ustvarjati ali spreminjati
+        subscribe: Naroči se na spremembe
+        subscribe_prompt: Naroči se prek e-pošte ali RSS
+        unpublished_unsavable: Spremembe spodnjih podatkov se samodejno shranijo. Filtrov in iskanj ni mogoče shraniti v delovno kopijo podatkovnega niza. Prosimo, ustvarite pogled za objavljen podatkovni niz.
+        unsaved_title: Neshranjen pogled
+        view_published_html: Poglej objavljen <span class="publishedName">podatkovni niz</span>
+        view_type: Poglej kot %{type}
+        view_types:
+          calendar: koledar
+          chart: grafikon
+          fatrow: obogaten seznam
+          map: zemljevid
+          page: ena vrstica
+          table: tabela
+        working_copy_notice: To je kopija podatkovnega niza, ki omogoča izvajanje sprememb. Dokler je ne objavite, ni vidna drugim.
+        working_copy_title: "[Delovna kopija]"
+      blob:
+        data_extraction: To orodje za izvlečenje podatkov ali aplikacija je na voljo prek povezave na desni
+        download: Prenos
+        external_link: Zunanja povezava
+        js_required: Za delovanje pregledovalnika dokumentov znotraj brskalnika je potreben Javascript.
+        js_required_download:
+          click_here: klikni tukaj
+          prompt_html: Za prenos te datoteke %{click_here}.
+        limited_download: Ta podatkovni niz niso tabelarni podatki in imajo mogoče omejeno interaktivnost, vendar je na voljo za prenos
+      column_tip:
+        aggregate: "(%{aggregate} na %{data_type})"
+        field_name: Ime polja API
+        original_name: Izvirno ime
+      dataset_contact:
+        captcha_failed: Nepravilen odgovor, poskusite znova.
+        error_message: Pri pošiljanju povratnih informacij za ta podatkovni niz je prišlo do napake. Prosimo, poskusite znova kasneje.
+        form:
+          email: Vaš e-poštni naslov
+          email_prompt: Vaš e-poštni naslov bo posredovan lastniku tega podatkovnega niza, da bo lahko odgovoril.
+          message: Kratko sporočilo
+          purpose: Namen
+          purposes:
+            copyright_violation: Kršitev avtorskih pravic
+            offensive_content: "Žaljiva vsebina"
+            other_purpose: Drugo
+            personal_information: Osebni podatki
+            prompt: "-- Izberi namen --"
+            spam: Neželeno ali smeti
+          send_button: Pošlji
+          subject: Zadeva
+        other_subject: Obiskovalec vam je poslal sporočilo o vašem podatkovnem nizu '%{dataset_name}' '%{site}'
+        reasons:
+          copyright_violation: za kršitev avtorskih pravic
+          offensive_content: za žaljivo vsebino
+          personal_information: za prisotnost osebnih podatkov
+          spam: kot morebitna neželena pošta
+        subject: Vaš podatkovni niz "%{dataset_name}" je bil označen %{reason}
+        success_message: Lastnik podatkovnega niza je bil obveščen.
+        validation:
+          no_body: To sporočilo mora imeti telo.
+          no_email: Zahtevan je vaš e-poštni naslov.
+          no_purpose: Za to sporočilo morate izbrati namen.
+          no_subject: Za to sporočilo morate izbrati zadevo.
+      dataset_status:
+        copy_available: Delovna kopija je zdaj na voljo. Gumb Uredi podatkovni niz vam bo omogočil, ko boste pripravljeni za urejanje.
+        copy_in_progress: Počakajte, da pripravimo delovno kopijo. %{additional}
+        copy_in_progress_additional:
+          processing: Trenutno je v pripravi (started %{time})
+          queued: Zdaj je v čakalni vrsti za pripravo (queued %{time}; %{totalQueued} v vrsti)
+        edit_dataset_button: Uredi podatkovni niz
+        error_publishing_html: Med pripravo delovne kopije vašega podatkovnega niza je prišlo do napake. Prosimo <a href="http://support.socrata.com" rel="external">obvestite podporo Socrata</a>.
+        error_publishing_unpublished: Objavite lahko le neobjavljene podatkovne nize.
+        needs_copy: Ta podatkovni niz je objavljen in ga ni mogoče neposredno urejati. Delovna kopija %{status}, ki omogoča izvedbo želenih sprememb, preden jih javno objavite.
+        needs_copy_status:
+          available: je na voljo
+          can_be_made: se lahko
+      email:
+        add_email: Dodaj več
+        email_button: E-pošta
+        message_prompt: Vnesi izbirno sporočilo
+        private_notice: 'Opomba: Ta %{displayName} je trenutno zaseben. Pošiljanje po e-pošti bo omogočilo dostop vsem prejemnikom.'
+        prompt_html: 'Deli <span class="datasetName">%{name}</span> z naslednjimi e-poštnimi naslovi:'
+        remove_email: Odstrani
+        success: Vaše e-poštno sporočilo je bilo uspešno poslano
+        title_html: Deli &quot;<span class="datasetName">%{name}</span>&quot;
+      grid_sidebar:
+        add_column:
+          convert_address:
+            city: Kraj
+            city_prompt: Vnesi kraj
+            state: Država
+            state_prompt: Vnesi državo
+            street: Ulica
+            title: Uporabi stolpce z obstoječimi naslovi
+            zip_code: Poštna številka
+            zip_code_prompt: Vnesi poštno številko
+          convert_latlong:
+            latitude: Zemljepisna širina
+            longitude: Zemljepisna dolžina
+            title: Uporabi obstoječo zemljepisno širino in dolžino
+          multiple_choice:
+            add_option_button: Dodaj možnost
+            option: Možnost
+            title: Možnosti več izbir
+          nested_table:
+            default_column_name: Brez naslova
+          subtitle: Dodaj nov stolpec svojemu podatkovnemu nizu
+          success: Vaš stolpec je bil dodan
+          title: Dodaj stolpec
+          validation:
+            view_column: Pogledu ni mogoče dodati stolpca
+        api:
+          column_ids_title: 'ID-ji stolpcev:'
+          endpoint_title: 'Končna točka dostopa do API-jev:'
+          intro_html: "<strong>Socrata Open Data API</strong> (SODA) omogoča razvijalcem programske opreme dostop do podatkov, ki programsko gostujejo na podatkovnih straneh Socrata. Razvijalci lahko ustvarjajo aplikacije, ki uporabljajo API-je SODA za vizualizacijo in &ldquo;sestavljanje&rdquo; podatkovnih nizov Socrata na nove in razburljive načine. Ustvarite aplikacijo za iPhone, ki vizualizira vladno potrošnjo v vašem območju, spletno aplikacijo, ki omogoča državljanom, da pogledajo morebitne vladne prednosti, ki so jih spregledali, ali storitev, ki vam samodejno pošlje e-sporočilo, kadar se dodajo nove rezervacije dodanim osnutkom zakonov, ki jim želite slediti."
+          reference_html: Za začetek programskega dostopa do teh podatkovnih nizov uporabite spodnjo končno točko API. Za več informacij in primerov glede uporabe Socrata Open Data API si oglejte našo <a href="http://dev.socrata.com" rel="external">dokumentacijo za razvijalce</a>.
+          subtitle: Dostopajte do tega %{view_type} prek SODA
+          title: SODA API
+        apis:
+          create_button: Ustvari API
+          create_button_prompt: Ustvari Vmesnik za programiranje aplikacij (API) za omogočanje programskega dostopa do teh podatkov.
+          manage_button: Upravljaj
+          manage_button_prompt: Upravljaj z izbranimi API-ji
+          prompt_existing_html: "<strong>Obstoječe API-je</strong> lahko prilagodite. Lahko nadzorujete dovoljenja, nastavite omejitve zahtevkov, gledate metriko uporabe in urejate dokumentacijo."
+          prompt_new_html: "<strong>Livarna API</strong> omogoča ustvarjanje in konfiguracijo enega ali več odprtih vmesnikov za programiranje aplikacij (API) za ta podatkovni niz na osnovi standardov."
+          subtitle: Ustvari in prilagodi API
+          title: API-ji
+        append_replace:
+          subtitle:
+            immutable: Naloži novo podatkovno datoteko, katere vsebine bodo nadomestile vaše trenutne podatke.
+            mutable: Naloži novo podatkovno datoteko, katere vsebina bo dodana k ali zamenjala vaše trenutne podatke.
+          title:
+            immutable: Zamenjaj
+            mutable: Dodaj in zamenjaj
+          wizard_button:
+            immutable: Zaženi čarovnika za zamenjavo
+            mutable: Zaženi čarovnika za dodajanje in zamenjavo
+        base:
+          buttons:
+            apply: Potrdi
+            cancel: Prekliči
+            create: Ustvari
+            done: Končano
+            remove: Odstrani
+            update: Posodobi
+          color_select:
+            prompt: Izberi barvo
+          column_select:
+            auto: Samodejno
+            from_grid: Izberi stolpec iz mreže
+            none: "(noben)"
+            none_selected: Noben stolpec ni izbran
+            nonselectable: Neveljavni stolpci
+            prompt: Izberi stolpec
+            selectable: Veljavni stolpci
+            unselect: Prekliči izbiro stolpca
+          datatypes:
+            checkbox: potrditveno polje
+            dataset_link: povezava podatkovnega niza
+            date_time: datum in čas
+            date_time_timezone: datum in čas (s časovnim pasom)
+            document: dokument
+            email: e-pošta
+            flag: oznaka
+            formatted_text: formatirano besedilo
+            geospatial: geoprostorsko
+            list: seznam
+            location: lokacija
+            money: denar
+            multiple_choice: več možnosti
+            nested_table: ugnezdena tabela
+            number: "številka"
+            object: predmet
+            percent: odstotek
+            phone: telefon
+            photo: fotografija (slika)
+            plain_text: golo besedilo
+            star: zvezda
+            website_url: spletni naslov
+          generic_select:
+            prompt: Izberi vrednost
+          validation:
+            at_least: Vrednost mora biti najmanj %{value}
+            different_value: Tega stolpca ne smete uporabiti dvakrat
+            file_format: Zahtevana je datoteka v formatu %{format}
+            identifier_format: Veljavni znaki identifikatorjev API so male črke, številke in podčrtaj. Začeti se morajo s črko in ne smejo vsebovati zaporednih podčrtajev.
+            invalid_url: Ta spletni naslov ni veljaven
+            invalid_value: Ta vrednost ni veljavna
+            invalid_values: Prišlo je do težav s specifičnimi vrednostmi. Prosimo, preverite zgornje napake.
+            invalid_view: Ta pogled mora biti veljaven
+            no_greater: Vrednost ne sme biti večja od %{value}
+            numeric: Vrednost mora biti številka
+            uid_required: To zahteva pogled UID-ja 4x4
+            verifying_url: Preverjanje pristnosti spletnega naslova
+        calendar:
+          dates:
+            end: Datum končanja
+            start: Datum začetka
+            title: Datumi
+          information:
+            details: Podrobnosti
+            event_title: Naslov dogodka
+            new_details_button: Dodaj podrobnosti
+            title: Podatki o dogodku
+          subtitle: Poglede z datumi lahko prikažete v formatu mesečnega koledarja
+          title: Koledar
+          validation:
+            invalid_columns: Ta pogled mora vsebovati stolpec z datumi in stolpec z besedilom
+            viz_limit: Pogled sme imeti le eno vizualizacijo
+        chart:
+          advanced: Napredna konfiguracija
+          annotation: Opomba
+          auto_update_sort: Samodejno posodobi vrstni red
+          auto_update_sort_button: Uporabi zdaj
+          auto_update_sort_info_donut: Kolobarni grafikoni so najboljši, če jih razvrstite padajoče v smeri urinega kazalca od znotraj navzven.
+          auto_update_sort_info_pie: Tortni grafikoni so najboljši, če so razvrščeni padajoče v smeri urinega kazalca.
+          axes:
+            title: Možnosti osi
+            x_axis_title: Naslov osi X
+            x_axis_title_prompt: Vnesite naslov za os X
+            y_axis_title: Naslov osi Y
+            y_axis_title_prompt: Vnesite naslov osi Y
+          base_color: Osnovna barva
+          categories: Kategorije
+          cdlfmtg_color_override_html: Barve nadomesti <a href="#Conditional Formatting" class="showConditionalFormatting">pogojno fomratiranje</a>. Kliknite <a href="#Clear Conditional Formatting" class="clearConditionalFormatting">tukaj</a>, da počistite vsa trenutna pravila za pogojno formatiranje.
+          color_options:
+            column_colors: Barve stolpcev
+          color_override_html: Barve lahko nadomesti <a href="#Conditional Formatting" class="showConditionalFormatting">pogojno fomratiranje</a>. Kliknite <a href="#Clear Conditional Formatting" class="clearConditionalFormatting">tukaj</a>, da počistite vsa trenutna pravila za pogojno formatiranje.
+          colors: Barve
+          configuration: Konfiguracija
+          data_columns:
+            new_data_column_button: Dodaj podatkovni stolpec
+            title: Podatkovni stolpci
+          data_labels: Oznake podatkov
+          data_selection:
+            advanced_data_selection:
+              title: Napredna izbira podatkov
+            chart_definition:
+              label_title: Izberi oznako podatka
+              title: Definicija grafikona
+              value_title: Izberi podatkovne vrednosti
+          date: Datum
+          details: Podrobnosti
+          draw_line: Nariši črto
+          dsg_color_override_html: Upoštevajte, da bo povezovanje serij podatkov v skupine nadomestilo izbrane barve za vaše podatkovne stolpce. Ne bo pa nadomestilo vašega <a href="#Conditional Formatting" class="showConditionalFormatting">pogojnega formatiranja</a>
+          error_bars:
+            color: Barva
+            data_high: Izberi višje priključen stolpec
+            data_low: Izberi nižje priključen stolpec
+            high: Visoko
+            low: Nizko
+            title: Intervali napak
+          flyout:
+            new_details_button: Dodaj podrobnosti o pojavnem meniju
+            new_values_button: Dodaj vrednosti
+            title: Podrobnosti o pojavnem meniju
+            title_column: Naslov pojavnega menija
+            value: Vrednosti pojavnega menija
+          group_extra: Poveži dodatne vrednosti v skupine
+          groups: Skupine
+          headings:
+            chart_details: Podrobnosti grafikona
+            data_presentation: Predstavitev podatkov
+            data_selection: Izbira podatkov
+          label: Oznaka
+          labelInBar: Oznaka v vrstici
+          labels_and_values: Oznake in vrednosti
+          legend:
+            add_text: Dodatno besedilo
+            add_text_button: Dodaj dodatno besedilo
+            annotations: Opiši opombe
+            conditional_formats: Opiši pogojne formate
+            custom_entry: Oznaka po meri
+            display: Prikaz
+            new_custom_entry_button: Dodaj vnos legende po meri
+            position: Legenda
+            position_prompt: Izberi položaj
+            positions:
+              bottom: Spodaj
+              left: Levo
+              none: Brez
+              right: Desno
+              top: Na vrhu
+            series: Opiši serije
+            title: Konfiguracija legende
+            title_short: Legenda
+            value_markers: Opiši označevalce vrednosti
+            values: Opiši vrednosti
+          marker:
+            add_button: Dodaj opombo
+            caption: Napis
+            marker_title: Označevalci vrednosti
+            new_marker_button: Dodaj označevalec
+            title: Opombe
+            value: Pri vrednosti
+          min_angle: Najmanjši kot
+          min_angle_html: Najmanjši prikazani kot (&ordm;)
+          names: Imena
+          pie_other: 'Opozorilo: %{chart_type} bo združil različne vrednosti (vrstice) prek meje %{row_limit} v drugo kategorijo. Poskusite ustvariti zavihek ali filter, ki omejuje število vrednosti, in nato ustvarite %{chart_type} tega.'
+          pie_truncate: 'Opozorilo: %{chart_type} bo skrajšal podatkovni niz z več kot %{row_limit} različnimi vrednostmi (rows). Poskusite ustvariti zavihek ali filter, ki omejuje število vrednosti, in nato ustvarite %{chart_type} tega.'
+          point_color: Barva točke
+          point_size: Velikost točke
+          point_title: Naslov
+          series_group:
+            alphabetize: Razvrsti skupine po abecedi
+            group_by: Razvrsti v skupine po
+            hideLoadingMsg: Skrij sporočilo o nalaganju
+            new_column_button: Dodaj stolpec s serijami
+            row_limit_warning: Razvrščanje serij podatkov v skupine bo potekalo izjemno počasi pri toliko vrsticah.
+            title: Razvrščanje serij podatkov v skupine
+          setup:
+            title: Nastavitev grafikona
+            type: Vrsta grafikona
+            type_prompt: Izberite vrsto grafikona
+          show_lines: Pokaži vrstice
+          show_percent: Pokaži odstotke (%)
+          show_points: Pokaži točke
+          show_values: Pokaži vrednosti
+          smooth_line: Gladka linija
+          subtitle: Podatki o pogledu se lahko prikažejo na različnih grafikonih
+          title: Grafikon
+          treemap_color_html: Te barve se uporabijo v drevesnem prikazu naključno le za ustvarjanje vizualnega razlikovanja. Same po sebi nimajo specifičnega pomena.
+          validation:
+            chart_requires: "%{chart_type} potrebuje najmanj"
+            chart_requires2:
+              few: "%{and} %{count} od naslednjih vrst stolpcev:"
+              one: "%{and} %{count} od naslednjih vrst stolpcev:"
+              other: "%{and} %{count} od naslednjih vrst stolpcev:"
+              two: "%{and} %{count} od naslednjih vrst stolpcev:"
+            count:
+              few: "%{count}"
+              one: "%{count}"
+              other: "%{count}"
+              two: "%{count}"
+            required_columns: "%{chart_type} zahteva %{column_types} stolpcev"
+            viz_limit: Pogled lahko ima le eno vizualizacijo
+          value: Vrednost
+          valueInBar: Vrednost na palici
+          values: Vrednosti
+          y_axis_formatting:
+            abbreviate: Okrajšaj
+            auto: Samodejno
+            axis_max: Os maks.
+            axis_min: Os min.
+            axis_prompt: Vnesi številko
+            decimals: Decimalna mesta
+            no_decimals: Brez decimalke
+            precision: Natančnost
+            title: Formatiranje osi Y
+        column_common:
+          basic:
+            description: Opis
+            description_prompt: Vnesi opis
+            name: Ime
+            name_prompt: Vnesi ime
+            title: Osnovni podatki
+          linked_dataset:
+            dataset: Podatkovni niz
+            dataset_prompt: Podatkovni niz URL ali UID 4x4
+            key: Ključni stolpec
+            label: Stolpec z oznakami
+            title: Povezan podatkovni niz
+          type:
+            key: Ključ
+            source: Vir
+            title: Vrsta stolpca
+            type: Vrsta podatkov
+            type_prompt: Izberi vrsto podatkov
+        column_order:
+          columns:
+            title: Stolpci
+          prompt_html: Povlecite stolpce v želenem vrstnem redu, nato pa pritisnite <strong>Uporabi</strong>, da uporabite nov vrstni red.
+          subtitle: Spremeni vrstni red svojih stolpcev
+          title: Vrstni red stolpcev
+          validation:
+            valid_columns: Pogled mora biti veljaven in mora imeti vidne stolpce.
+        column_properties:
+          advanced:
+            api_identifier: Identifikator API
+            new_rdf_button: Dodaj lastnosti RDF
+            semantics: Semantika
+            title: Napredno
+            url: Vnesi spletni naslov po meri
+          column_totals:
+            title: Skupno število stolpcev
+            total: Skupaj
+            total_prompt: Izberi skupno število stolpcev
+          display_order:
+            new_item_button: Dodaj element
+            option: Možnost
+            title: Prikaži vrstni red (za DataSlate)
+          formatting:
+            alignment: Poravnava
+            title: Formatiranje
+            view_style: Poglej stil
+          link:
+            key: Ključ
+            source: Vir
+            title: Povezava
+          localization:
+            decimal: Decimalka
+            thousands: Tisočice
+            title: Lokalizacija
+          money:
+            abbreviated: Okrajšano
+            currency: Valuta
+            format_mask_warning: 
+            no_precision: Brez
+            precision: Natančnost
+            title: Fomratiranje denarja
+          multiple_choice:
+            new_option_button: Dodaj možnost
+            option: Možnost
+            title: Možnosti več izbire
+          number:
+            display: Prikaz
+            no_commas: Brez vejic
+            no_precision: Nič
+            precision: Natančnost
+            title: Formatiranje številk
+          number_advanced:
+            format_mask: Formatiraj masko
+            format_mask_prompt: 'Uporabite znake # za prikaz števk in drugih znakov, kjer jih želite postaviti; na primer, številka zdravstvenega zavarovanja bi bila ###-##-####'
+            format_mask_warning: To lahko nadomesti nekaj izmed zgornjih nastavitev.
+            title: Napredno formatiranje
+          photo:
+            size: Velikost
+            size_prompt: Izberi velikost
+            sizes:
+              featured: Priljubljeno (150x80)
+              large: Veliko (220x220)
+              medium: Srednje (150x150)
+              original: Izvirno
+              thumb: Sličica (80x80)
+              tiny: Drobno (24x24)
+            title: Možnosti fotografij
+          subtitle: Posodobi različne lastnosti v tem stolpcu
+          success: Vaš stolpec je bil posodobljen
+          title: Lastnosti stolpca
+          url:
+            base_url: Osnovi spletni naslov
+            base_url_prompt: Vnesi običajno predpono spletnega naslova
+            title: Možnosti spletnega naslova
+          validation:
+            published: Prosimo, naredite delovno kopijo ali poglejte ta podatkovni niz za spremembo lastnosti stolpca
+            unsaved: Ne morete urejati lastnosti stolpca, če pogled ni shranjen
+        conditional_formatting:
+          change_icon: spremeni
+          conditions:
+            description: Opis
+            description_prompt: Opišite to ujemanje
+            item:
+              operator: Izberi primerjavo
+              subcolumn: Izberi pomožni stolpec
+              title: 'Pogoj:'
+            new_condition_button: Dodaj pogoj
+            new_rule_button: Dodaj novo pravilo
+            title: Pogoji
+            when:
+              all: Vsi pogoji
+              always: Vedno
+              any: Kateri koli pogoj
+            when_title: Ko
+          format_html: Uporabite<br />to barvo<br />ali to ikono
+          subtitle: Pogojno formatiranje omogoča spremembo barve ozadja vrstic na osnovi kriterijev po meri. Vsaki vrstici bo dodeljena barva prvega ujemajočega pogoja.
+          title: Pogojno formatiranje
+          validation:
+            no_columns: V tem pogledu ni stolpcev za filtriranje
+            no_icons: Ikone se nanašajo le na pogled z zemljevidi
+        delete:
+          confirm: S tem boste trajno izbrisali %{view_type}. Ni mogoče razveljaviti! Ali ste prepričani, da želite nadaljevati?
+          delete_button: Izbriši ta %{view_type}
+          subtitle: Izbriši ta %{view_type}
+          title: Izbriši
+          warning:
+            api: Brisanje tega API-ja bo zaustavilo vse aplikacije, ki uporabljajo ta API.
+            published: Z brisanjem tega podatkovnega niza boste izbrisali tudi vse z njim povezane poglede.
+            view: Brisanje tega pogleda bo vplivalo na druge poglede, ki temeljijo na njem.
+            working_copy: Ne morete izbrisati delovne kopije in narediti nove, da bi povrnili izvedene spremembe.
+        digital_signing:
+          consumer: "Če želite pridobiti podpisano različico tega podatkovnega niza, preprosto kliknite na spodnjo povezavo, da ustvarite ključ in začnete s prenosom. Ključ in preneseni podatki so specifični za trenutno različico tega podatkovnega niza; če lastnik v prihodnje posodobi podatkovni niz, boste morali znova zagnati proces, da pridobite nove podatke. Objavite prenesene podatke skupaj s ključem, ki ste ga prejeli, in z uporabo navodil, ki jih najdete v prenesenem paketu, bodo lahko tretje osebe potrdile, da so vaši podatki zakoniti."
+          generate_button: Ustvari in prenesi zdaj
+          intro_html: Z uporabo <strong>digitalno podpisanega podatkovnega niza</strong> je mogoče z uporabo kriptografsko varnih metod dokazati, da določena kopija podatkovnega niza Socrata ni bila spremenjena. To je uporabno, npr. če želite objaviti najdbe na osnovi teh podatkov in želite dokazati njihovo integriteto.
+          publisher: Za ustvarjanje podpisane različice tega podatkovnega niza preprosto kliknite na spodnjo povezavo, da ustvarite ključ. Upoštevajte, če v prihodnje posodobite ta podatkovni niz, se boste morali vrniti in znova ustvariti ključ, da bodo imeli uporabniki znova dostop do njega. Upoštevajte tudi, da ta proces vključuje opearcije glede celovitosti podatkov, zato lahko traja nekaj časa, če je vaš podatkovni niz zelo velik ali vsebuje velike priloge.
+          publisher_generation: Podpisane ključe smejo ustvarjati le lastniki podatkovnih nizov.
+          signature_header: Podpis
+          subtitle: Izvozi različiso teh podatkov, katerih integriteta se lahko kasneje preveri.
+          title: Digitalno podpisovanje
+          validation:
+            non_tabular: Natisnete lahko le tabelarne podatke
+        download:
+          download_as: Prenesi kot
+          geo_header: Prenesi geoprostorske podatke
+          layers_header: Prenesi tabelarne plasti
+          subtitle: Prenesi kopijo tega podatkovnega niza v statični obliki
+          title: Prenos
+        feed:
+          subtitle: Razprava prikazuje pogovore in dejavnosti glede podatkovnega niza
+          title: Razpravljaj
+        form:
+          information:
+            name: Ime
+            name_prompt: Vnesi ime
+            public: Javno?
+            success: Uspešena spletni naslov
+            success_prompt: Vnesi spletni naslov strani
+            title: Podatki obrazca
+          subtitle: Obrazci vam omogočajo zbiranje podatkov neposredno iz spletne strani v podatkovni niz
+          title: Obrazec
+          validation:
+            no_columns: Ta pogled mora imeti vidne stolpce za ustvarjanje obrazcev
+        map:
+          advanced:
+            exclusive: Ekskluzivno
+            hide_geolocator: Ni geolokatorja
+            subtitle: Izberite 'Ekskluzivno', če bo naenkrat prikazan le en osnovni zemljevid.
+            title: Napredna konfiguracija
+            use_legend: Uporabi legendo
+          base_layers:
+            alias: Vzdevek
+            layer: Plast
+            layer_prompt: Izberi plast
+            layer_url: Spletni naslov plasti
+            new_base_map_button: Dodaj osnovni zemljevid
+            opacity: Neprosojnost
+            subtitle: Izberi s seznama storitev zemljevida in konfiguriraj, kako bo prikazan
+            title: Osnovni zemljevidi
+          data_layer:
+            alias: Vzdevek
+            alias_prompt: Opiši podatkovni niz
+            base_color: Osnovna barva
+            color_high: Barva (visoko)
+            color_low: Barva (nizko)
+            flyout:
+              details: Podrobnosti pojavnega menija
+              labels: brez oznak?
+              new_details_button: Dodaj podrobnosti pojavnega menija
+              opacity: Neprosojnost
+              title: Konfiguracija pojavnega menija
+              title_column: Naslov
+            highlight_color: Barva lebdenja
+            icon: Ikona
+            location: Lokacija
+            mondara_note: Plasti Mondara trenutno ni mogoče dodatno prilagajati.
+            opacity: Neprosojnost
+            plot_style: Stil risanja
+            plot_style_prompt: Izberi stil risanja
+            point: Prilagajanje točk
+            point_color: Barva točk
+            point_size: Velikost točk
+            quantity: Količina
+            region: Regija
+            region_level_prompt: Izberi nivo regije
+            region_prompt: Izberi regijo
+          layers:
+            advanced: Napredna konfiguracija za %{name}
+            config: Konfiguracija za %{name}
+            custom: Plast po meri
+            dataset: Podatkovni niz
+            edit: uredi
+            new_data_button: Dodaj podatke
+            title: Povzetek podatkovnega niza
+          legend:
+            conditional_formats: Opiši pogojne formate
+            custom_entry: Dodaj vnos legende po meri
+            entry_label: Oznaka
+            position: Legenda
+            position_prompt: Izberi položaj
+            positions:
+              bottom_left: Spodaj levo
+              none: Brez
+              top_right: Zgoraj desno
+            title: Konfiguracija legende
+          plots:
+            heatmap: Mejni zemljevid
+            point: Točkovni zemljevid
+            rastermap: Temperaturni zemljevid
+          regions:
+            canada_provinces: Kanadske province
+            counties: Ameriška okrožja v
+            countries: Države
+            state: Ameriške države
+          subtitle: Na zemljevidu lahko poglede z lokacijami prikažete kot točke
+          title: Zemljevid
+          validation:
+            hidden_location_html: Prikažete lahko <a href="#showLoc" title="Show a location column">skriti stolpec z lokacijami</a>.
+            location_column: Stolpec z lokacijami je obvezen za ustvarjanje zemljevida.
+            viz_limit: Pogled lahko ima le eno vizualizacijo
+        odata:
+          endpoint_action: 'Kopiraj to povezavo:'
+          intro_html1: Ustvarite preglednico v programu Microsoft Excel za analizo in vizualizacijo tega podatkovnega niza. Z uporabo povezave OData boste lahko podatke osvežili.
+          intro_html2: Uporabite Microsoft Excel 2010, Microsoft Excel 2013 ali Microsoft Power Query. Sledite navodilom z uporabo <a href="%{doc_link}">dokumentacije OData Socrata</a>.
+          subtitle: Dostopaj do tega podatkovnega niza prek OData
+          title: OData
+        ownership:
+          error: Pri spremembi lastništva je prišlo do težave. Prosimo, poskusite znova kasneje.
+          me: Jaz
+          subtitle: Za prenos na drugega uporabnika vnesite e-poštni naslov ali ime računa ID-ja Socrata, nato pa s spustnega seznama izberite želen račun. Vnesete lahko tudi spletni naslov uporabnikovega profila, če ga poznate. Samo uporabniki z obstoječimi računi lahko prevzamejo lastništvo podatkovnih nizov.
+          success:
+            me: Zdaj ste lastnik
+            user: Lastništvo uspešno preneseno na %{owner}
+          title: Lastništvo
+          transfer_to: Prenesi lastništvo na
+          validation:
+            invalid_user: Uporabnik ni prepoznan. Prosimo, poskusite iskati prek uporabniškega imena, e-pošte ali spletnega naslova profila.
+            no_user: Prosimo, izberite uporabnika.
+            valid_saved: Ta pogled mora biti veljaven in shranjen
+        permissions:
+          error: Prišlo je do napake pri spreminjanju dovoljenj za vaš podatkovni niz. Prosimo, poskusite znova kasneje
+          features_html: Dodatne funkcije <span class="datasetTypeName">podatkovnega niza</span>
+          status_html: Ta <span class="datasetTypeName">podatkovni niz</span> je trenutno <span class="datasetPublicText">%{visibility}</span>
+          subtitle: Upravljaj z dovoljenju za ta  %{view_type}
+          success: Vaša dovoljenja so bila shranjena
+          title: Dovoljenja
+          validation:
+            valid_saved: Ta pogled mora biti veljaven in shranjen
+        print:
+          margins:
+            bottom: 'Spodaj:'
+            left: 'Levo:'
+            right: 'Desno:'
+            top: 'Na vrhu:'
+          margins_title: 'Robovi (palci):'
+          options:
+            fit: Skrči, da ustreza podatkovnemu nizu na eni strani
+            header_icons: Prikaži ikone v glavi stolpca
+            headers_every_page: Natisni naslove stolpcev na vsaki strani
+          options_title: Možnosti
+          orientation: Usmerjenost
+          orientations:
+            landscape: Ležeče
+            portrait: Pokončno
+          paper_size: 'Velikost lista:'
+          paper_sizes:
+            a0: A0 (841 x 1189 mm)
+            a1: A1 (594 x 841 mm)
+            a2: A2 (420 x 594 mm)
+            a3: A3 (297 x 420 mm)
+            a4: A4 (210 x 297 mm)
+            legal: Pravno (8,5 x 14 palcev)
+            letter: Pismo (8,5 x 11 palcev)
+            tabloid: Tabloid (11 x 17 palcev)
+          print_button: Natisni
+          subtitle: Izvzi ta podatkovni niz v formatu PDF, ki ga lahko natisnete
+          title: Natisni
+          validation:
+            non_tabular: Natisnete lahko le tabelarne podatke
+        sdp:
+          preview: Predogled
+          subtitle: Predvajalnik družbenih podatkov omogoča objavo tega podatkovnega niza na spletu
+          title: Predvajalnik družbenih podatkov
+          validation:
+            public: Ta pogled mora biti pred objavo javen
+            valid_saved: Ta pogled mora biti veljaven in shranjen
+        share:
+          error: Prišlo je do napake pri spreminjanju dejenih elementov. Prosimo, poskusite znova kasneje
+          loading_shares: Nalagam deljene elemente ...
+          no_shares_html: Trenutno ne delite tega <span class="datasetTypeName">podatkovnega niza</span> z nikomer
+          notify_button: Obvesti o vseh spremembah
+          notify_success: Obvestilo poslano
+          prompt_html: Ta <span class="datasetTypeName">podatkovni niz</span> je <span class="publicOrPrivate">%{visibility} </span> <span class="andSharedHint %{hide}">in deljen z/s:</span>
+          share_button_html: Deli ta <span class="datasetTypeNameUpcase">podatkovni niz</span>
+          subtitle: Deli ta %{view_type}
+          success: Vaše dovoljenje ni bilo posodobljeno
+          title: Deljenje
+          validation:
+            valid_saved: Ta pogled mora biti veljaven in shranjen
+        showhide_columns:
+          columns:
+            title: Stolpci
+          subtitle: Prilagodi, kateri stolpci bodo vidni v tem pogledu
+          title: Pokaži in skrij stolpce
+        sort_rollup:
+          rollup:
+            add_group_button: Dodaj stolpec za razvščanje v skupine
+            add_rollup_button: Dodaj nakopičeni stolpec
+            function: Funkcija
+            group_by: Razvrsti v skupine po
+            group_function_label: Na osnovi
+            group_function_prompt: Izberi funkcijo razvrščanje v skupine
+            roll_up: Nakopičenje
+            roll_up_function: Izberi funkcijo
+            title: Nakopičenje in vrtanje navzdol
+          sort:
+            add_column_button: Dodaj stolpec
+            column: Stolpec
+            direction: Smer
+            directions:
+              ascending: Naraščajoče
+              descending: Padajoče
+            title: Razvrsti
+          subtitle: Vrstice lahko razvrstite v skupine in povzamete podatke z zbiranjem; in razvrstite enega ali več stolpcev
+          title: Razvrsti in zberi
+          validation:
+            no_eligible_columns: Ta pogled nima stolpcev za zbiranje ali razvrščanje
+            no_function: Vsak zbirni stolpec mora imeti funkcijo
+            no_group_bys: V skupine morate razvrstiti najmanj en stolpec za zbiranje stolpca
+        tabs:
+          about: O
+          discuss: Razpravljaj
+          edit: Uredi
+          embed: Ugnezdi
+          export: Izvozi
+          filter: Filtriraj
+          manage: Upravljaj
+          more: Več
+          more_views: Več pogledov
+          visualize: Vizualiziraj
+        view_list:
+          delete_confirm: Ali ste prepričani, da želite izbrisati %{name}?
+          delete_snapshot_confirm: Ali ste prepričani, da želite izbrisati %{name} (posneto dne %{date})?
+          filter:
+            all: Vsi pogledi
+          filter_title: Pokaži le
+          item:
+            author_html: <span class="date"></span> od <span class="author"></span>
+            delete: Izbriši ta pogled
+            expand: Klikni za razširitev
+          no_results: Ni rezultatov
+          no_results_html: 
+          pagination:
+            last: Glej zadnji pogled
+            next:
+              few: Glej naslednjih %{count} pogledov
+              one: Glej naslednji %{count} pogled
+              other: Glej naslednje %{count} poglede
+              two: Glej naslednja %{count} pogleda
+          search: Iščit poglede
+          snapshots:
+            subtitle: Poglej prejšnje objavljene različice teh podatkov
+            title: Trenutni posnetki podatkovnih nizov
+          sort:
+            alphaAscending: A-Ž
+            dateAscending: Od najstarejšega do najnovejšega
+            dateDescending: Najbolj nedavni
+            popularity: Priljubljenost
+          sort_title: Razvrsti po
+          views:
+            subtitle: Glej obstoječe filtre, zemljevide, grafikone in druge poglede na tem podatkovnem nizu
+            title: Pogledi
+        visualize:
+          choose_type: Vrsta vizualizacije
+      save_dialog:
+        descriptions:
+          leaving: Obstajajo neshranjeni podatki, ki bodo izgubljeni, če zapustite to stran. Izberite, ali želite shraniti ta pogled preden odidete; ali pa izberite Prekliči, da se vrnete na stran.
+          reload_save: Ta sprememba zahteva ponovno nalaganje. Za ogled lahko shranite svoje spremembe ali pa pritisnete Prekliči, da ostanete na tej strani.
+          reload_update: Ta sprememba zahteva ponovno nalaganje. Ta pogled lahko posodobite ali shranite nov pogled, da vidite svoje spremembe, ali pa pritisnete Prekliči, da ostanete na tej strani.
+        form:
+          new_name: 'Vnesi ime za svoj nov pogled:'
+        titles:
+          normal: Shrani pogled
+          prompt: Ali želite shraniti svoj pogled?
+        validation:
+          auth_required: Za shranjevanje pogleda morate biti prijavljeni
+          view_name_required: Ime pogleda je obvezno
+      show:
+        remove_confirm: Ali ste prepričani, da želite odstraniti ta pogled?
+        unpublished_alert: Ta podatkovni niz še ni objavljen, da bi lahko izvajali potrebne spremembe, preden ga omogočite vsem. Ne bo viden, dokler ne objavite ta podatkovni niz.
+      subscribe:
+        google_reader: Dodaj v Google Reader
+        intro_html: '<strong>Če se želite naročiti na podatkovni niz <span class="datasetName">%{name}</span> prek čitalnika RSS</strong>, uporabite eno izmed naslednjih povezav:'
+        rss: Prenesi kot RSS
+        rss_program: Odpri v zunanjem programu
+        subscribe_button: Naroči se prek e-pošte
+        subscribe_html: "<strong>Če želite prejemati obvestila po e-pošti</strong>, kadar se objavijo novi podatki, označite spodnje polje Naroči se."
+        subscribed_html: <strong>Trenutno ste naročeni na ta <span class="datasetTypeName">podatkovni niz</span> prek e-pošte</strong> in boste prejemali obvestila, ko bodo objavljeni novi podatki.
+        title_html: Naroči se na &quot;<span class="datasetName">%{name}</span>&quot; <span class="datasetTypeNameUpcase">Dataset</span>
+        unsubscribe: "Če ne želite več prejemati obvestil, odznačite spodnje polje Naroči se."
+    edit_metadata:
+      about: O
+      additional_source: Dodatni vir
+      alternative_access_prompt: Vnesite alternativno dostopno točko za ta podatkovni niz
+      api_endpoint: Končna točka API
+      attachments: Priloge
+      attachmentsDisabledMessagePart1: Za nalaganje priloge najprej dokončajte z objavo tega podatkovnega niza. Nato kliknite
+      attachmentsDisabledMessagePart2: v orodno vrstico in nato Uredi meta podatke. Nato boste lahko naložili priloge.
+      brief_description: Kratek opis
+      brief_description_prompt: Vnesi opis
+      cancel: Prekliči
+      category: Kategorija
+      contact_email: Kontaktna e-pošta
+      contact_information: Kontaktni podatki
+      custom: Po meri
+      custom_error: Razred semantike po meri mora biti spletni naslov.
+      data_provided_by: Podatke zagotavlja
+      data_provided_prompt: Posameznik ali organizacija
+      data_provider_required: Določiti morate ponudnika podatkov (funkcija).
+      dataset_title: Naslov podatkovnega niza
+      dataset_title_error: Podatkovni niz mora imeti naslov.
+      dataset_title_prompt: Vnesi naslov
+      dataset_url: Spletni naslov podatkovnega niza
+      dataset_url_prompt: Vnesi lokacijo svojega zunanjega podatkovnega niza
+      delete: Izbriši
+      email_address: E-poštni naslov
+      email_help: Ta naslov ne bo prikazan javno. Če pustite prazno, bo privzeto uporabljen vaš e-poštni naslov
+      existing_attachments: Obstoječe priloge
+      external_confirm: Ali ste prepričani, da želite odstraniti ta zunanji podatkovni niz?
+      external_dataset: Zunanji podatkovni nizi
+      external_id: Zunanji ID
+      external_id_prompt: Vnesi svoj zunanji ID
+      external_identifier: Zunanji identifikator
+      file_type: Vrsta datoteka
+      general_information: Splošne informacije
+      headline: Uredi meta podatke za %{name}
+      keywords_help: Vnesi eno ali več ključnih besed, ločene z vejicami
+      license_help: Izberi pogoje licenciranja za ljudi, ki želijo uporabljati ta podatkovni niz.
+      license_type: Vrsta licence
+      licensing: Licenciranje
+      licensing_attr: Licenciranje in funkcija
+      list: Seznam
+      metadata_help: To polje je vaša organizacija označila kot zasebno in ni javno vidno
+      new_attachment: Nova priloga
+      none: "(brez)"
+      northwest_latitude: Severozahodna zemljepisna širina
+      northwest_longitude: Severozahodna zemljepisna dolžina
+      optional: Izbirno
+      private_help: To polje je vaša organizacija označila kot zasebno in ni javno vidno
+      remove_image: Odstrani sliko
+      required_field: Obvezno polje
+      resource_name: Ime vira
+      resource_name_prompt: Vnesi ime vira
+      return: Vrni se na podatkovni niz
+      row_class: Razred vrstice
+      row_identifier: Identifikator vrstice
+      save: Shrani
+      save_changes: Shrani spremembe
+      semantics_rdf: Semantika in RDF
+      source_link: Izvorna povezava
+      source_link_error: Videti je, da to ni veljaven spletni naslov.
+      source_link_prompt: Vnesite spletni naslov
+      southeast_latitude: Jugovzhodna zemljepisna širina
+      southeast_longitude: Jugovzhodna zemljepisna dolžina
+      spatial_extent: Prostorski obseg
+      subject_column: Stolpec Zadeva
+      tags_keywords: Značke/ključne besede
+      tags_prompt: Vnesi ključne besede
+      thumbnail_image: Sličica
+      title: Uredi meta podatke podatkovnega niza
+      upload_error: Prosimo, izberite veljavno slikovno datoteko
+      upload_help: Ta slika bo obrezana v kvadrat
+      upload_image: Naloži sliko
+      upload_new_attachment: Naloži novo prilogo
+    forgot_password:
+      already_authenticated: 'Ni mogoče ponastaviti gesla: ste že prijavljeni.'
+      failed: Prišlo je do težave pri pošiljanju vaše zahteve za ponastavitev gesla. Prosimo, poskusite znova.
+      form:
+        reset_password_button: Ponastavi geslo
+      prompt: "Če ste pozabili svoje geslo, vam lahko pošljemo e-sporočilo s povezavo za ponastavitev gesla."
+      success: Hvala. Poslali smo pošto na račun glede datotekez nadaljnjimi informacijami.
+      title: Obnovi svoje geslo
+    header:
+      links:
+        account_html: Pozrdavljen <span class="currentUser">neznan uporabnik</span>
+        account_tooltip: Vaš dom
+        administration: Administracija
+    import_common:
+      addresses_to_geocode: Naslov bo po končanem uvozu geokodiran.
+      case_sensitive: razlikuje male in velike črke
+      city: Kraj
+      column: Stolpec
+      combine_multiple_columns: Kombiniraj več stolpcev
+      create_composite: 'Ustvari en stolopec iz več izvornih:'
+      create_js_expression: Kako ustvarim izraz Javascript po meri?
+      custom_javascript: Izraz Javascript po meri ...
+      enter_custom: Vnesi vrednost po meri
+      existing_cols: Stolpci z obstoječimi naslovi
+      existing_latlng_cols: Stolpci z obstoječimi zemljepisnimi širinami in dolžinami
+      find: najdi
+      find_and_replace: Najdi in zamenjaj vrednost ...
+      import_from_multiple: uvozi iz <strong>več stolpcev</strong>
+      import_from_single: Uvozi iz <strong>enega stolpca</strong>
+      latitude: Zemljepisna širina
+      location_source_col: Lokacija izvornih stolpcev
+      longitude: Zemljepisna dolžina
+      make_lower_case: Spremeni v male črke
+      make_title_case: Spremeni v naslovne črke
+      make_upper_case: Spremeni v VELIKE ČRKE
+      name_this_column: Poimenuj ta stolpec
+      new_layer: "(nova plast)"
+      new_source_col: Dodaj nov izvorni stolpec
+      new_transform: Dodaj novo pretvorbo
+      options: Možnosti
+      properly_formatted: Stolpec mora biti <a href="%{formatting_link}" rel="external">ustrezno formatiran</a> pred uvozom.
+      regular_expression: običajni izraz
+      remove: odstrani
+      replace: in zamenjaj z/s
+      state: Država
+      street: Ulica
+      then: nato
+      to_state_code: Pretvori države v 2-črkovne kode
+      transforms: Ob uvozu izvedi naslednjo pretvorbo
+      zip: Poštna številka
+    import_pane:
+      analyzing: Analizizam vašo datoteko ...
+      assure_accessible: Zagotovite, da je vaša datoteka dostopna in veljavna ter poskusite znova.
+      combine_multiple_cols: "(Nadaljuj z več stolpci ...)"
+      downloading: Prenašam vašo datoteko ...
+      filetype_error_blist: Prosimo, izberite datoteko vrste CSV, TSV, XLS ali XLSX.
+      filetype_error_shapefile: Prosimo, izberite datoteko vrste KML, KMZ ali ZIP.
+      headline_import: Prosimo, izberite datoteko za uvoz
+      headline_upload: Prosimo, izberite datoteko za nalaganje
+      layer: Plast
+      many_headers: "%{num} vaših vrstic je naslovov."
+      no_file_selected: Nobena datoteka še ni bila izbrana.
+      no_headers: Nobena izmed vaših vrstic ni naslov.
+      no_source_column: "(Ni izvornega stolpca)"
+      one_header: Ena izmed vaših vrstic je naslov.
+      problem_importing: Pri uvozu te datoteke je prišlo do težave. Prepričajte se, ali je veljavna.
+      problem_uploading: Prišlo je do težave pri nalaganju te datoteke. Prepričajte se, ali je veljavna.
+      rows_imported: Do sedaj je bilo uvoženih %{num} vrstic.
+      try_again: Prosimo, poskusite znova čez nekaj trenutkov.
+      unknown_error: Prišlo je do neznane napake
+      uploading: Nalagam vašo datoteko
+    link_account:
+      success: Vaš zunanji račun je bil povezan.
+    profile:
+      app_tokens:
+        item:
+          app_token: "Žeton za aplikacijo"
+          description: Opis
+          edit_token_link: Uredi
+          name: Ime
+          no_thumbnail: Ni sličice
+          organization: Organizacija
+          secret_token: Skrivni žeton
+          show_secret_link: Pokaži skrivni žeton
+          website: Spletna stran
+        manage_link: Upravljaj
+        no_applications: Niste še ustvarili nobene aplikacije. Za začetek kliknite 'Upravljaj' ne desni
+        title: Aplikacije %{user}
+      bar:
+        edit_settings_link: Uredi nastavitve računa
+        follow_link: Sledi
+        join_date: Pridružil/-a dne
+        last_seen_date: Zadnja prijava
+        message_link: Pošlji sporočilo
+        unfollow_link: Prekliči sledenje
+      browse:
+        owned_datasets: V moji lasti
+        shared_datasets: Deljeno meni
+        title: Podatkovni nizi %{user}
+      contact:
+        message: Sporočilo
+        message_prompt: Vnesi svoje sporočilo
+        subject: Zadeva
+        subject_prompt: Vnesi zadevo
+        title: Kontaktiraj uporabnika
+      edit:
+        account:
+          add_openid_button: Dodaj OpenID ali zunanji račun
+          confirm_email: Potrdi e-pošto
+          confirm_password: Potrdi geslo
+          connect_openid: Prijavi se poverilnicami za Facebook, Twitter, Google ali drugimi zunanjimi poverilnicami.
+          current_email: Trenutna e-pošta
+          email:
+            interests:
+              account_provisioned: Za prihodnjo uporabo je zagotovljen prednostni račun
+              any_view_created: Ustvarjen je kateri koli pogled
+              comment_to_moderate: Poslan je komentar, ki zahteva moderiranje
+              nomination_created: Ustvarjena je nova nominacija
+              nomination_moderated: Ustvarjena je katera koli nominacija
+              privileged_account_created: Uporabnik ustvarja svoj prednostni račun
+              user_affected: Dejanja, ki neposredno vplivajo na vas, npr. odgovori na komentarje in posodobitve stanja
+              view_made_public: Kateri koli pogled je spremenjen v javnega
+            policy: "%{site} spoštuje vašo zasebnost in ne bo nikoli pošiljal marketinških e-sporočil prek tega seznama ali dajal vašo e-pošto tretjim osebam. Poslana e-sporočila iz te strani vključujejo obvestila o računu in posodobitvah podatkovnih nizov, ki ste jih ustvarili ali se na njih naročili."
+            send_error: Prišlo je do težave pri pošiljanju e-pošte. Prosimo, poskusite znova kasneje.
+            send_success: Vaše sporočilo je bilo poslano
+            subtitle: Naroči se na posamezne dogodke, tako da obkljukate povezano polje.
+            title: Obvestila po e-pošti
+          learn_openid: Izvedite več o OpenID
+          new_email: Nova e-pošta
+          new_password: Novo geslo
+          no_openid: S tem računom še nimate povezanih identifikatorjev OpenID.
+          old_password: Staro geslo
+          password: Geslo
+          password_prompt: "(za vašo varnost)"
+          password_restrictions_html: (veljajo omejitve <span class="icon">&nbsp;</span>)
+          title: Nastavitve računa
+        app_tokens:
+          application_name: Ime aplikacije
+          application_name_prompt: Vnesite ime za vašo aplikacijo
+          callback_prefix: Predpona za povratni klic
+          callback_prefix_help_html: Na primer, če bo vaša aplikacija izvedla povratni klic na <span class="code">https://my-domain.com/socrata-app/oauth/validated</span> in <span class="code">https://my-domain.com/socrata-app/profile</span>, boste nastavili <span class="code">https://my-domain.com/socrata-app</span> kot predpono. Upoštevajte, da morate vključiti vsaj celotno ime domene.
+          callback_prefix_prompt: Dodajte predpono k varnemu (https) povratnemu klicu spletnega naslova pri uporabi OAuth
+          create_error: 'Med ustvarjanjem žetona za vašo aplikacijo je prišlo do napake: %{message}'
+          create_success: Vaša aplikacija je bila ustvarjena
+          delete_confirm: Ali ste prepričani, da želite izbrisati to aplikacijo? Ustrezen app_token ne bo več veljaven
+          delete_error: 'Med brisanjem žetona za vašo aplikacijo je prišlo do napake: %{message}'
+          delete_success: Vaša aplikacija je bila izbrisana
+          description: Opis
+          description_prompt: Vnesite opis za svojo aplikacijo
+          new_app_button: Ustvari novo aplikacijo
+          organization: Organizacija
+          organization_prompt: Vnesite organizacijo, odgovorno za to aplikacijo
+          public: Javno?
+          save_success: Vaša aplikacija je bila uspešno shranjena
+          thumbnail: Sličica
+          title: "Žetoni aplikacije"
+          title_full: Vaše aplikacije
+          title_single: Uredi žeton aplikacije
+          website: Spletna stran
+          website_prompt: Navedite povezavo do te aplikacije ali spletne strani organizacije
+        back_link: Nazaj na Moj profil
+        image:
+          error: 'Napaka pri nalaganju nove slike: %{message}'
+          success: Vaša slika je bila posodobljena
+          title: Slika profila
+          upload_image_button: Naloži novo sliko
+        info:
+          city: Kraj
+          country: Država
+          description:
+            prompt: Vnesite vse informacije, ki jih želite deliti
+            title: Opis
+          display_name: Prikaži ime
+          first_name: Ime
+          interests:
+            prompt: Vnesi svoja zanimanja
+            title: Zanimanja
+          last_name: Priimek
+          link_prompt: Vnesi spletni naslov
+          organization: Organizacija
+          state: Država
+          title: Osnovni podatki
+          title_full: Osnovni podatki
+          user_title: Naslov
+        success: Vaš profil je bil uspešno posodobljen.
+        validation:
+          email_mismatch: Novi e-pošti se ne ujemata
+          image_format: Prosimo, izberite veljavno vrsto slike (PNG, JPG ali GIF)
+          invalid_links: Prišlo je do težave pri posodabljanju vaših povezav. %{message}
+          no_display_name: 'Napaka: ''Iime za prikaz'' je obvezno'
+          no_password_no_openid: Ne morete odstraniti vseh svojih identifikatorjev OpenID, preden ne nastavite gesla
+          password_mismatch: Novi gesli se ne ujemata
+          user_missing: Tega uporabnika ni mogoče najti ali pa je bil izbrisan.
+      info:
+        edit_link: Uredi
+        external_links: Zunanje povezave
+        interests: Zanimanja
+        links:
+          facebook: Facebook
+          flickr: Flickr
+          my_blog: Moj blog
+          my_company: Moje podjetje
+          my_site: Moja stran
+          twitter: Twitter
+        no_description: Noben opis ni podan
+        other_ext_link: Drugo
+        title: Osnovne informacije
+      sidebar:
+        all_contacts_link: Poglej vse
+        edit_image_link: Uredi sliko
+        followers: Sledilci
+        following: Sledenje
+        hide_contacts_link: Skrij
+    reset_password:
+      failed: Pri ponastavitvi vašega gesla je prišlo do napake. Prosimo, poskusite znova.
+      form:
+        reset_password_button: Ponastavi geslo
+      prompt: Dobrodošli nazaj. Prosimo, izberite novo geslo.
+      success: Ponastavitev gesla uspešna
+      title: Ponastavi geslo
+    sign_in:
+      failed: Ni se mogoče prijaviti s to e-pošto in geslom, poskusite znova
+      form:
+        sign_in_button: Prijavi se
+      headline: Prijavi se v %{site}
+      mismatch: Gesli se ne eujemata, poskusite znova
+      prompt_html: Prijavite se s svojim <strong>Socrata ID-jem</strong>
+      tips_html: Uporabite svojo e-pošto in geslo, da se prijavite v vse <strong><a href="http://www.socrata.com" rel="external">Socrata</a> poganjane</strong> strani.
+    sign_up:
+      form:
+        create_account_button: Ustvari moj račun
+        have_account_link: "Že imam račun"
+      headline: Veseli nas, da se želite pridružiti %{site}!
+      prompt_html: Ustvari nov <strong>Socrata ID</strong>
+      terms_html: S klikom na "Ustvari moj račun" spodaj se strinjate z našimi <a href="http://www.socrata.com/terms-of-service" rel="external">Pogoji storitev</a> in <a href="http://www.socrata.com/privacy" rel="external">politiko zasebnosti.</a>
+      third_party: Ko se prijavite, bodo vaše zunanje poverilnice povezane s tem računom.
+      third_party_return: Preden uporabite te poverilnice, morate
+      third_party_return_create: ustvariti račun Socrata
+      third_party_return_link: ga povezati z obstoječim Socrata ID-jem
+    stats:
+      api: API
+      apply: Uporabi
+      bytes_out: Bajtov ven
+      chart_created: grafikon ustvarjen
+      charts: Grafikoni
+      charts_created: grafikoni ustvarjeni
+      comment_created: komentar ustvarjen
+      comments: Komentarji
+      comments_created: komentarji ustvarjeni
+      daily: Dnevno
+      deleted_application: izbrisana aplikacija
+      dependent_metrics: Podrejena metrika
+      download: prenos
+      downloads: prenosi
+      during_time_period: v tem času
+      embed: ugnezditev
+      embeds: ugnezditve
+      error_loading: Med nalaganjem metričnih podatkov je prišlo do napake. Prosimo, poskusite znova kasneje
+      filter_created: filter ustvarjen
+      filters: Filtri
+      filters_created: filtri ustvarjeni
+      govstat_hits: Zadetki GovStat
+      hit_served: zadetek izveden
+      hits_served: zadetki izvedeni
+      hourly: Na uro
+      map_created: zemljevid ustvarjen
+      maps: Zemljevidi
+      maps_created: zemljevidi ustvarjeni
+      metric_backed: metrika varnostno kopirana
+      metrics_backed: metrike varnostno kopirane
+      monthly: Mesečno
+      name: Ime
+      no_data_time_period: Za to časovno obdobje ni imena
+      page_viewed: ogledana stran
+      pages_viewed: ogledane strani
+      referrals: Napotila
+      rows_loaded: Naložene vrstice
+      sdp: SDP
+      select_chart_type: Izberite vrsto grafikona za prikaz iz menija
+      show_more: Pokaži več
+      time_period_unavailable: Metrični podatki niso na voljo za to časovno obdobje
+      title: Analitika podatkovnih nizov
+      top_embeds: Najboljše ugnezditve
+      top_referrers: Najboljša napotila
+      total: skupaj
+      total_govstat_hits: Skupaj zadetkov GovStat
+      views: Pogledi
+      views_loaded: Naloženi pogledi
+      website: Spletna stran
+      weekly: Tedensko
+    thumbnail:
+      discard_changes: Zavrzi spremembe
+      edit_thumbnail: Uredi sličico za %{name}
+      error_blob: Iz ugnezdene datoteke ni mogoče ustvariti sličice, saj je ni mogoče prikazati v brskalniku
+      error_generic: Prišlo je do napake pri shranjevanju vaše sličice. Prosimo, poskusite znova kasneje.
+      error_invalid: Ta pogled ni veljaven in iz njega ni mogoče ustvariti sličice v trenutnem stanju
+      error_private: Zaradi vaše zasebnosti se lahko v sličice prtvorijo le javni podatkovni nizi. Če želite predogled slike, spremenite ta podatkovni niz v ajvnega prek plošče za dovoljenja v upravljalni stranski vrstici.
+      error_processing: Prišlo je do napake pri obdelavi vaše zahteve za sličico. Prosimo, poskusite znova kasneje
+      full_image: Cela slika
+      please_wait: Za ta podatkovni niz še ni na voljo sličic. Počakajte, da jo ustvarimo.
+      preview: Predogled
+      refresh_thumbnail: Osveži sličico
+      return_to_dataset: Vrni se v podatkovni niz
+      save_thumbnail: Shrani sličico
+      success: Sličica shranjena
+      title: Sličica podatkovnega niza
+      unsaved: neshranjeno
+    widget:
+      create_new:
+        name: Novo ime predloge
+        title: Ustvari novo predlogo
+    wizard:
+      cancel: Prekliči
+      finish: Končaj
+      next: Naslednji
+      previous: Prejšnji
+  support:
+    array:
+      last_word_connector: in
+      two_words_connector: in
+    array_or:
+      last_word_connector: ali
+      two_words_connector: ali

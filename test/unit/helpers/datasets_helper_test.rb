@@ -11,11 +11,10 @@ class DatasetsHelperTest < Test::Unit::TestCase
   end
 
   def test_hide_append_replace_should_be_false_when_blobby_is_true_and_new_backend_is_false
-    @view.stubs(
-      :is_blobby? => true,
-      :new_backend? => false
-    )
+    @view.stubs( :is_blobby? => true, :new_backend? => false)
     refute @object.hide_append_replace?, 'Should be true when new_backend? is true'
+    @view.stubs( :is_geo? => true, :new_backend? => false)
+    refute @object.hide_append_replace?, 'Should be false when geo is true'
   end
 
   def test_hide_export_section_for_print

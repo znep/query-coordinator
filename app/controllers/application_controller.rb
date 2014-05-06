@@ -224,10 +224,10 @@ private
 
     logo_square = CurrentDomain.theme[:images][:logo_square]
     if logo_square.present?
-      if logo_square[:type].to_s == "static"
-        @meta['og:image'] = @link_image_src = logo_square[:href]
+      @meta['og:image'] = @link_image_src = if logo_square[:type].to_s == "static"
+        "#{CurrentDomain.domain.protocol}://#{CurrentDomain.cname}#{logo_square[:href]}"
       elsif logo_square[:type].to_s == "hosted"
-        @meta['og:image'] = @link_image_src = "/assets/#{logo_square[:href]}"
+        "#{CurrentDomain.domain.protocol}://#{CurrentDomain.cname}/assets/#{logo_square[:href]}"
       end
     end
   end

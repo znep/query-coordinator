@@ -747,6 +747,9 @@ en:
         this_page: This page
         tweet_contents: ! 'Check out %{dataset} on %{company}: %{url}'
         twitter: Share on Twitter
+      visualization:
+        exploreLink: Explore the data
+        exploreLink_prompt: Show Link
     configurator:
       actions_components: Actions
       advanced_components: Advanced Components

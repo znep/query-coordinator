@@ -154,6 +154,7 @@ javascripts:
     - public/javascripts/controls/full-screen.js
     - public/javascripts/controls/panes/base-pane.js
     - public/javascripts/plugins/rangy-core.js
+    - public/javascripts/plugins/rangy-selectionsaverestore.js
     - public/javascripts/controls/native-draggable.js
     - public/javascripts/controls/native-drop-target.js
     - public/javascripts/controls/grid-sidebar.js

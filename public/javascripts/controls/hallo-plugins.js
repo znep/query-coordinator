@@ -123,12 +123,15 @@ var handlePaste = function(div, event)
         var lastNode = pastedFrag.lastChild;
 
         // Insert pasted content
-        var range = sel.getRangeAt(0);
-        range.insertNode(cleanedFragment);
+        if (sel.rangeCount)
+        {
+            var range = sel.getRangeAt(0);
+            range.insertNode(cleanedFragment);
 
-        // Move selection to after the pasted content
-        range.collapseAfter(lastNode);
-        rangy.getSelection().setSingleRange(range);
+            // Move selection to after the pasted content
+            range.collapseAfter(lastNode);
+            rangy.getSelection().setSingleRange(range);
+        }
 
         // unfix the height
         $div.css('height', 'auto');

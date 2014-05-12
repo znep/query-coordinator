@@ -365,6 +365,11 @@ Frontend::Application.routes do
       post '/manage/template', :action => 'manage_template_update'
     end
 
+    scope :controller => 'angular',
+          :constraints => {:id => UID_REGEXP} do
+      match '/dataset/:id/view', :action => 'serve_app'
+    end
+
     # Custom pages, catalogs, facets
     scope :controller => 'custom_content' do
       # Canvas 1

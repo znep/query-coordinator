@@ -41,12 +41,17 @@ metricsNS.renderMetricsChartNew = function(data, $chart, startDate, endDate,
         ]);
 
     // Translate data into usable structure.
-    var pointInterval = data[0]['__end__'] - data[0]['__start__'] + 1,
-        dataRange = _.range(startDate, endDate - 1, pointInterval);
+    var dataRange = [moment(startDate).utc()],
+        intervalType = sliceType.slice(0, -1).toLowerCase(),
+        expectedDataAmt = moment(endDate).utc().diff(dataRange[0], intervalType);
+    // expectedDataAmt should be data.length - 1
+    _(expectedDataAmt).times(function()
+    { dataRange.push(_.last(dataRange).clone().add(1, intervalType)); });
+
     var processedData = _.map(dataRange, function(timestamp)
     {
         return {
-            timestamp: moment(timestamp).utc(),
+            timestamp: timestamp,
             metrics: (_.detect(data,
                 function(d) { return d['__start__'] == timestamp; }) || {}).metrics
         };

@@ -8,6 +8,8 @@
  * Build date: 26 February 2012
  */
 window['rangy'] = (function() {
+    // michael.chui@socrata.com: Support being called more than once.
+    if (window.rangy) { return window.rangy; }
 
 
     var OBJECT = "object", FUNCTION = "function", UNDEFINED = "undefined";
@@ -228,6 +230,8 @@ window['rangy'] = (function() {
     };
 
     api.createModule = function(name, initFunc) {
+        // michael.chui@socrata.com: Support being called more than once.
+        if (api.modules[name]) { return; }
         var module = new Module(name);
         api.modules[name] = module;
 

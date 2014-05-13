@@ -660,8 +660,18 @@ javascripts:
   tagcloud:
     - public/javascripts/plugins/jquery.tagcloud.js
 
+  angular-socrata-common:
+    - public/javascripts/angular/common/**/*.js
+
+  # Angular apps served from the Angular controller.
+  # These packages are referenced via the :app parameter to serve_app.
+  angular-app-socrataDatasetApp:
+    - public/javascripts/angular/SocrataDatasetApp/app.js
+    - public/javascripts/angular/SocrataDatasetApp/controllers.js
+    - public/javascripts/angular/SocrataDatasetApp/**/*.js
+
   # BEGIN BOWER-MANAGED ASSETS
-  # NOTE this mega-package of all bower assets is not idea.
+  # NOTE this mega-package of all bower assets is not ideal.
   # Each section of the app should depend only on the components
   # it needs. However, Jammit doesn't allow (afaict) packages
   # to refer to other packages, so this would get tangled fast.

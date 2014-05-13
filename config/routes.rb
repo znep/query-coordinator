@@ -369,7 +369,7 @@ Frontend::Application.routes do
 
     scope :controller => 'angular',
           :constraints => {:id => UID_REGEXP} do
-      match '/dataset/:id/view', :action => 'serve_app'
+      match '/view/*angularRoute', :action => 'serve_app', :app => 'socrataDatasetApp' # See angular-app-{:app} in assets.yml.
     end
 
     # Custom pages, catalogs, facets

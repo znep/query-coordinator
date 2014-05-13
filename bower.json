@@ -1,0 +1,22 @@
+{
+  "name": "socrata-frontend",
+  "version": "0.0.0",
+  "authors": [
+    "Socrata Engineering <engineering@socrata.com>"
+  ],
+  "description": "Socrata's default UX.",
+  "license": "all rights reserved",
+  "homepage": "http://socrata.com",
+  "private": true,
+  "dependencies": {
+    "angular": "~1.2.16",
+    "angular-ui-router": "~0.2.10"
+  },
+  "install": {
+    "path": {
+      "sass": "app/styles/bower",
+      "css": "app/styles/bower",
+      "js": "public/javascripts/bower"
+    }
+  }
+}

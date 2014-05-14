@@ -1,5 +1,24 @@
 == Socrata Frontend
 
+=== Karma tests for angular components
+
+TODO, this needs to be integrated as a Rake task and generalized. For now:
+
+==== Setup
+Make sure you've installed karma-cli and phantomjs globally: `npm install -g karma-cli phantomjs`
+
+==== To run unit tests once in all browsers:
+`frontend/karma-test/socrataDatasetApp $ karma start karma-unit.js
+
+==== To watch file changes and run tests in phantom:
+`frontend/karma-test/socrataDatasetApp $ karma start karma-unit.js --browsers PhantomJS --singleRun false
+
+==== To watch file changes and run tests in Chrome (so you can open up the inspector for app or test code):
+`frontend/karma-test/socrataDatasetApp $ karma start karma-unit.js --browsers Chrome --singleRun false
+
+Coverage results will live in frontend/karma-test/socrataDatasetApp/coverage/
+
+
 === Javascript/other asset package management
 
 The frontend has classically used [Jammit](http://documentcloud.github.io/jammit/) for asset management instead of the standard Rails asset pipeline. All assets must be added manually to assets.yml, and the appropriate include_javascripts calls must be included in .erb. If the assets must be loaded on-demand from JS, make sure the new jammit package is added to the "dump" section of assets.yml (the JS asset loader reads this section). Please note that though Jammit allows globs in its package definitions, the JS loader doesn't support globs. This is only an issue for on-demand loading.

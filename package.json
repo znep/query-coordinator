@@ -1,0 +1,30 @@
+{
+  "name": "socrata-frontend",
+  "version": "0.0.0",
+  "description": "Socrata's default UX.",
+  "main": "",
+  "directories": {
+    "test": "test"
+  },
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git@git.socrata.com:frontend.git"
+  },
+  "author": "Socrata Engineering <engineering@socrata.com>",
+  "license": "all rights reserved",
+  "devDependencies": {
+    "karma-chrome-launcher": "~0.1.3",
+    "karma-firefox-launcher": "~0.1.3",
+    "karma-mocha": "~0.1.3",
+    "karma-chai": "~0.1.0",
+    "chai": "~1.9.1",
+    "mocha": "~1.18.2",
+    "karma-phantomjs-launcher": "~0.1.4",
+    "karma-coverage": "~0.2.1",
+    "karma": "~0.12.16",
+    "karma-cli": "0.0.4"
+  }
+}

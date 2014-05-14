@@ -11,7 +11,9 @@
   "dependencies": {
     "angular": "~1.2.16",
     "angular-ui-router": "~0.2.10",
-    "flexgrid": "http://www.volumethemes.com/download/flexgrid/flexgrid.zip"
+    "flexgrid": "http://www.volumethemes.com/download/flexgrid/flexgrid.zip",
+    "jquery": "~2.1.1",
+    "angular-mocks": "~1.2.16"
   },
   "install": {
     "path": {
@@ -20,7 +22,8 @@
       "js": "public/javascripts/bower"
     },
     "sources": {
-      "flexgrid": "bower_components/flexgrid/*.css"
+      "flexgrid": "bower_components/flexgrid/*.css",
+      "lodash": "bower_components/lodash/dist/lodash.js"
     }
   }
 }

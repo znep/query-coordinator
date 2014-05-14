@@ -10,13 +10,17 @@
   "private": true,
   "dependencies": {
     "angular": "~1.2.16",
-    "angular-ui-router": "~0.2.10"
+    "angular-ui-router": "~0.2.10",
+    "flexgrid": "http://www.volumethemes.com/download/flexgrid/flexgrid.zip"
   },
   "install": {
     "path": {
       "sass": "app/styles/bower",
       "css": "app/styles/bower",
       "js": "public/javascripts/bower"
+    },
+    "sources": {
+      "flexgrid": "bower_components/flexgrid/*.css"
     }
   }
 }

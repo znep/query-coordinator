@@ -1,4 +1,21 @@
 <p>Hello, your view ID is: {{view.id}}. That view's dataset ID is: {{view.getDataset().id}}</p>
-<p>
-  Check out the <a ui-sref="view.facets({focusedFacet: 'kittehs'})">kittehs facet</a>.
-</p>
+<div class="wrapper">
+  <div class="row">
+    <div ng-repeat="facet in primaryFacets" class="col_{{12/primaryFacets.length}}" ng-class="{last: $last}">
+      Facet ID: {{facet.id}}
+      <a ui-sref="view.facets({focusedFacet: {{facet.id}} })">Explore</a>
+    </div>
+  </div>
+  <div class="row">
+    <div ng-repeat="facet in secondaryFacets" class="col_{{12/secondaryFacets.length}}" ng-class="{last: $last}">
+      Facet ID: {{facet.id}}
+      <a ui-sref="view.facets({focusedFacet: {{facet.id}} })">Explore</a>
+    </div>
+  </div>
+  <div class="row">
+    <div ng-repeat="facet in tertiaryFacets" class="col_{{12/tertiaryFacets.length}}" ng-class="{last: $last}">
+      Facet ID: {{facet.id}}
+      <a ui-sref="view.facets({focusedFacet: {{facet.id}} })">Explore</a>
+    </div>
+  </div>
+</div>

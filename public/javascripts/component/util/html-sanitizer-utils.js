@@ -4,6 +4,10 @@
     var permissiveHtmlSanitizer;
     var restrictiveHtmlSanitizer;
 
+    // Move trailing spaces inside elements to just outside them. Ref: STAT-647
+    var fixEmbeddedSpacesInTags = function(html)
+    { return html.replace(/( |&nbsp;)(<\/\w+>)/, '$2 '); };
+
     //Sanitizes the given HTML using a moderate whitelist, allowing tags and
     // attributes expected from Markdown rendering.
     sanitizerUtilsNS.sanitizeHtmlPermissive = function(inputHtml)
@@ -29,7 +33,7 @@
         }
 
         var outputArray = [];
-        permissiveHtmlSanitizer(inputHtml, outputArray);
+        permissiveHtmlSanitizer(fixEmbeddedSpacesInTags(inputHtml), outputArray);
         return outputArray.join('');
     },
 
@@ -50,7 +54,7 @@
         }
 
         var outputArray = [];
-        restrictiveHtmlSanitizer(inputHtml, outputArray);
+        restrictiveHtmlSanitizer(fixEmbeddedSpacesInTags(inputHtml), outputArray);
         return outputArray.join('');
     }
 })();

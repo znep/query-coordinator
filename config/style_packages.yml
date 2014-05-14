@@ -6,8 +6,12 @@
 # visualization offshoot of the app, so this is the simplest way forward.
 # NOTE Our homegrown style manager doesn't support globs, so you'll need to add all bower-installer installed styles manually :(
 bower-styles-all:
-  - bower/flexgrid
+- bower/flexgrid
 # END BOWER-MANAGED ASSETS
+
+angular-app-socrataDatasetApp:
+- socrataDatasetApp/main
+
 includes:
 - sass-common
 - icons

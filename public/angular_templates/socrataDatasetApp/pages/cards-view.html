@@ -1,21 +1,32 @@
-<p>Hello, your view ID is: {{view.id}}. That view's dataset ID is: {{view.getDataset().id}}</p>
-<div class="wrapper">
-  <div class="row">
-    <div ng-repeat="facet in primaryFacets" class="col_{{12/primaryFacets.length}}" ng-class="{last: $last}">
-      Facet ID: {{facet.id}}
-      <a ui-sref="view.facets({focusedFacet: {{facet.id}} })">Explore</a>
+<div class="cards-view">
+  <p>Hello, your view ID is: {{view.id}}. That view's dataset ID is: {{view.getDataset().id}}</p>
+  <div class="wrapper">
+    <div class="row primary">
+      <div ng-repeat="facet in primaryFacets" class="col_{{12/primaryFacets.length}} facet" ng-class="{last: $last}">
+        Facet ID: {{facet.id}}
+        <a ui-sref="view.facets({focusedFacet: {{facet.id}} })">Explore
+          <br />
+          <soc-kitten w="490" h="250"></soc-kitten>
+        </a>
+      </div>
     </div>
-  </div>
-  <div class="row">
-    <div ng-repeat="facet in secondaryFacets" class="col_{{12/secondaryFacets.length}}" ng-class="{last: $last}">
-      Facet ID: {{facet.id}}
-      <a ui-sref="view.facets({focusedFacet: {{facet.id}} })">Explore</a>
+    <div class="row secondary">
+      <div ng-repeat="facet in secondaryFacets" class="col_{{12/secondaryFacets.length}} facet" ng-class="{last: $last}">
+        Facet ID: {{facet.id}}
+        <a ui-sref="view.facets({focusedFacet: {{facet.id}} })">Explore
+          <br />
+          <soc-kitten w="370" h="250"></soc-kitten>
+        </a>
+      </div>
     </div>
-  </div>
-  <div class="row">
-    <div ng-repeat="facet in tertiaryFacets" class="col_{{12/tertiaryFacets.length}}" ng-class="{last: $last}">
-      Facet ID: {{facet.id}}
-      <a ui-sref="view.facets({focusedFacet: {{facet.id}} })">Explore</a>
+    <div class="row tertiary">
+      <div ng-repeat="facet in tertiaryFacets" class="col_{{12/tertiaryFacets.length}} facet" ng-class="{last: $last}">
+        Facet ID: {{facet.id}}
+        <a ui-sref="view.facets({focusedFacet: {{facet.id}} })">Explore
+          <br />
+          <soc-kitten w="120" h="45"></soc-kitten>
+        </a>
+      </div>
     </div>
   </div>
 </div>

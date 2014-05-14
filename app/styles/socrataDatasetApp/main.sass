@@ -1,0 +1,42 @@
+body
+  background: #444
+  color: white
+
+a
+  color: white
+  &:visited
+    color: #ccc
+
+.cards-view
+  .wrapper
+    background: #333
+  .row
+    height: 300px
+    &.tertiary
+      height: 100px
+
+    .facet
+      background: #555
+      border: 1px solid black
+    &:nth-of-type(odd) .facet
+      background: #666
+
+$top-nav-height: 40px
+$facets-list-width: 20%
+.facets-view
+  ul
+    position: absolute
+    top: $top-nav-height
+    bottom: 10px
+    left: 0
+    width: $facets-list-width
+    li
+      height: 20%
+
+  .main-viz
+    position: absolute
+    top: $top-nav-height
+    right: 10px
+    bottom: 10px
+    left: $facets-list-width
+    background: #555

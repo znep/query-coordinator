@@ -1,0 +1,12 @@
+<p>Hello, your view ID is: {{view.id}}. That view's dataset ID is: {{view.getDataset().id}}</p>
+<p>
+  Here's a cat particularly interested in {{focusedFacet}}:
+  <br>
+  <soc-kitten></soc-kitten>
+</p>
+<p>
+  If you're bored of this, try the <a ui-sref="view.facets({focusedFacet: 'kittehs'})">kittehs facet</a> or the <a ui-sref="view.facets({focusedFacet: 'catnip'})">catnip facet</a> instead.
+</p>
+<p>
+  <a ui-sref="view.cards">Return to cards</a>.
+</p>

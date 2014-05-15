@@ -20,8 +20,8 @@ socrataDatasetApp.config(function($provide, $stateProvider, $urlRouterProvider, 
       url: appPrefix + '/{id:\\w{4}-\\w{4}}',
       template: '<!--Overall chrome--><div ui-view="mainContent"><div>',
       resolve: {
-        viewId: function($stateParams) {
-          return $stateParams['id'];
+        view: function($stateParams, View) {
+          return new View($stateParams['id']);
         }
       }
     })
@@ -38,8 +38,9 @@ socrataDatasetApp.config(function($provide, $stateProvider, $urlRouterProvider, 
     .state('view.facets', {
       url: '/facets/:focusedFacet',
       resolve: {
-        focusedFacet: function($stateParams) {
-          return $stateParams['focusedFacet'];
+        focusedFacet: function($stateParams, view) {
+          // note: the 'view' argument comes from the parent state's resolver.
+          return view.getFacetFromIdAsync($stateParams['focusedFacet']);
         }
       },
       views: {

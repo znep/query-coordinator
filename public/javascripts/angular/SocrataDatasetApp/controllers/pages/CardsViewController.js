@@ -1,7 +1,7 @@
 angular.module('socrataDatasetApp.controllers')
   .controller('CardsViewController',
-    function($scope, $location, View, viewId) {
-      $scope.view = new View(viewId);
+    function($scope, $location, view) {
+      $scope.view = view;
       $scope.view.getFacetsAsync().then(function(facets) {
         $scope.facets = facets;
       });

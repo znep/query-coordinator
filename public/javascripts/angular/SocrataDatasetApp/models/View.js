@@ -15,5 +15,9 @@ angular.module('socrataDatasetApp.models').factory('View', function($q, Dataset,
     }));
   };
 
+  View.prototype.getFacetFromIdAsync = function(id) {
+    return $q.when(new ViewFacet(id));
+  };
+
   return View;
 });

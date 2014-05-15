@@ -2,24 +2,26 @@ describe("FacetsViewController", function() {
   var createController;
   beforeEach(module('socrataDatasetApp'));
 
-  it('should provide a correct facet set', inject(function($controller, $rootScope, $q, ViewFacet) {
+  it('should provide a correct facet set and focused facet on the scope.', inject(function($controller, $rootScope, $q, ViewFacet) {
     function withFacets(facetsArray) {
-      var scope = $rootScope.$new();
-      var fakeViewId = 'fooo-baar';
       function MockView(viewId) {
-        expect(viewId).to.equal(fakeViewId);
         this.getFacetsAsync = _.constant($q.when(facetsArray));
       };
 
+      var scope = $rootScope.$new();
+      var fakeViewId = 'fooo-baar';
+      var fakeView = new MockView(fakeViewId);
+      var fakeFocusedFacet = new ViewFacet('pants');
+
       var controller = $controller('FacetsViewController', {
         $scope: scope,
-          viewId: fakeViewId,
-          focusedFacet: '',
-          View: MockView
+          view: fakeView,
+          focusedFacet: fakeFocusedFacet
       });
       scope.$apply();
-      expect(scope.view).to.be.instanceof(MockView);
-      expect(scope.facets).to.equal(facetsArray); // note ref equality.
+      expect(scope.view).to.equal(fakeView);
+      expect(scope.facets).to.equal(facetsArray);
+      expect(scope.focusedFacet).to.equal(fakeFocusedFacet);
 
       return {
         scope: scope,

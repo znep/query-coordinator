@@ -17,8 +17,8 @@ socrataDatasetApp.config(function($provide, $stateProvider, $urlRouterProvider, 
     })
     .state('view', {
       abstract: true,
-      url: appPrefix+'/{id:\\w{4}-\\w{4}}',
-      template: '<!--Overall chrome--><div ui-view="main"><div>',
+      url: appPrefix + '/{id:\\w{4}-\\w{4}}',
+      template: '<!--Overall chrome--><div ui-view="mainContent"><div>',
       resolve: {
         viewId: function($stateParams) {
           return $stateParams['id'];
@@ -28,7 +28,7 @@ socrataDatasetApp.config(function($provide, $stateProvider, $urlRouterProvider, 
     .state('view.cards', {
       url: '/',
       views: {
-        'main': {
+        'mainContent': {
           //TODO figure out a way of getting the template dir out of rails.
           templateUrl: '/angular_templates/socrataDatasetApp/pages/cards-view.html',
           controller: 'CardsViewController'
@@ -43,7 +43,7 @@ socrataDatasetApp.config(function($provide, $stateProvider, $urlRouterProvider, 
         }
       },
       views: {
-        'main': {
+        'mainContent': {
           templateUrl: '/angular_templates/socrataDatasetApp/pages/facets-view.html',
           controller: 'FacetsViewController'
         }

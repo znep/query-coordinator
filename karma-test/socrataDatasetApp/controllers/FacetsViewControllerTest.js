@@ -3,7 +3,6 @@ describe("FacetsViewController", function() {
   beforeEach(module('socrataDatasetApp'));
 
   it('should provide a correct facet set', inject(function($controller, $rootScope, $q, ViewFacet) {
-    //TODO parametrize controller on breaks, if needed.
     function withFacets(facetsArray) {
       var scope = $rootScope.$new();
       var fakeViewId = 'fooo-baar';

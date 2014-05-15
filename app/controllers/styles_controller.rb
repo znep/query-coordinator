@@ -9,7 +9,7 @@ class StylesController < ApplicationController
     if params[:stylesheet].present? && params[:stylesheet].match(/^(\w|-|\.)+$/)
       style_path_parts = [
         Rails.root,
-        "app/styles"
+        'app/styles'
       ]
 
       if params[:folder].present? && params[:folder].match(/^(\w|-|\.)+$/)
@@ -221,7 +221,7 @@ protected
     result += ")\n"
 
     # webkit
-    result += "  background: -webkit-gradient(linear, left top, left bottom," +
+    result += '  background: -webkit-gradient(linear, left top, left bottom,' +
               " from(#{first_color}), to(#{last_color})" +
               stops.map{ |stop| ", color-stop(#{stop['position']},#{normalize_color(stop['color'])})" }.join +
               ")\n"
@@ -245,9 +245,9 @@ protected
         elsif definition[key.to_sym] == 'dimensions'
           result += "$#{path}#{key}: #{value[:value]}#{value[:unit]}\n"
         elsif definition[key.to_sym] == 'image'
-          if value[:type].to_s == "static"
+          if value[:type].to_s == 'static'
             href = "#{value[:href]}"
-          elsif value[:type].to_s == "hosted"
+          elsif value[:type].to_s == 'hosted'
             href = "/assets/#{value[:href]}"
           end
           result += "$#{path}#{key}: url(#{href})\n"

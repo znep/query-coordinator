@@ -17,8 +17,8 @@ describe("CardsViewController", function() {
 
       var controller = $controller('CardsViewController', {
         $scope: scope,
-          viewId: fakeViewId,
-          View: MockView
+        viewId: fakeViewId,
+        View: MockView
       });
       scope.$apply();
       expect(scope.view).to.be.instanceof(MockView);

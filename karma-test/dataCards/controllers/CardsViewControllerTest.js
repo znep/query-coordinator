@@ -1,6 +1,6 @@
 describe("CardsViewController", function() {
   var createController;
-  beforeEach(module('socrataDatasetApp'));
+  beforeEach(module('dataCards'));
 
   it('should provide correct primary, secondary, and tertiary card sets', inject(function($controller, $rootScope, $q, ViewFacet) {
     //TODO parametrize controller on breaks, if needed.

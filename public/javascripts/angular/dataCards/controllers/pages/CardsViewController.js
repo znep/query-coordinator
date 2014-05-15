@@ -1,4 +1,4 @@
-angular.module('socrataDatasetApp.controllers')
+angular.module('dataCards.controllers')
   .controller('CardsViewController',
     function($scope, $location, view) {
       $scope.view = view;

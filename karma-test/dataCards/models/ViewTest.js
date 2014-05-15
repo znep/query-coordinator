@@ -1,5 +1,5 @@
 describe("View model", function() {
-  beforeEach(module('socrataDatasetApp'));
+  beforeEach(module('dataCards'));
 
   it('should correctly report the id passed into the constructor.', inject(function(View) {
     var id = 'dead-beef';

@@ -1,4 +1,4 @@
-angular.module('socrataDatasetApp.controllers')
+angular.module('dataCards.controllers')
   .controller('FacetsViewController',
     function($scope, $location, view, focusedFacet) {
       $scope.view = view;

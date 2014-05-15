@@ -1,5 +1,5 @@
 // This model is intended to be an immutable reference to a Dataset.
-angular.module('socrataDatasetApp.models').factory('Dataset', function() {
+angular.module('dataCards.models').factory('Dataset', function() {
   var uid_regexp = /^\w{4}-\w{4}$/;
   //TODO cache instances or share cache.
   function Dataset(id) {

@@ -15,16 +15,16 @@ module.exports = function ( karma ) {
       'bower_components/angular-mocks/angular-mocks.js',
       'bower_components/d3/d3.min.js',
       'bower_components/lodash/dist/lodash.js',
-      'karma-test/socrataDatasetApp/*.js',
-      'karma-test/socrataDatasetApp/**/*.js',
+      'karma-test/dataCards/*.js',
+      'karma-test/dataCards/**/*.js',
       'public/javascripts/angular/common/*.js',
       'public/javascripts/angular/common/**/*.js',
-      'public/javascripts/angular/SocrataDatasetApp/controllers.js',
-      'public/javascripts/angular/SocrataDatasetApp/models.js',
-      'public/javascripts/angular/SocrataDatasetApp/**/*.js'
+      'public/javascripts/angular/dataCards/controllers.js',
+      'public/javascripts/angular/dataCards/models.js',
+      'public/javascripts/angular/dataCards/**/*.js'
     ],
     exclude: [
-      'public/javascripts/angular/SocrataDatasetApp/app.js',
+      'public/javascripts/angular/dataCards/app.js',
     ],
 
     frameworks: [ 'mocha', 'chai', 'chai-as-promised' ],
@@ -38,7 +38,7 @@ module.exports = function ( karma ) {
 
     coverageReporter: {
       type : 'html',
-      dir : 'karma-test/socrataDatasetApp/coverage/'
+      dir : 'karma-test/dataCards/coverage/'
     },
     /**
      * On which port should the browser connect, on which port is the test runner

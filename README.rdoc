@@ -8,15 +8,15 @@ TODO, this needs to be integrated as a Rake task and generalized. For now:
 Make sure you've installed karma-cli and phantomjs globally: `npm install -g karma-cli phantomjs`
 
 ==== To run unit tests once in all browsers:
-`frontend/karma-test/socrataDatasetApp $ karma start karma-unit.js
+`frontend/karma-test/dataCards $ karma start karma-unit.js
 
 ==== To watch file changes and run tests in phantom:
-`frontend/karma-test/socrataDatasetApp $ karma start karma-unit.js --browsers PhantomJS --singleRun false
+`frontend/karma-test/dataCards $ karma start karma-unit.js --browsers PhantomJS --singleRun false
 
 ==== To watch file changes and run tests in Chrome (so you can open up the inspector for app or test code):
-`frontend/karma-test/socrataDatasetApp $ karma start karma-unit.js --browsers Chrome --singleRun false
+`frontend/karma-test/dataCards $ karma start karma-unit.js --browsers Chrome --singleRun false
 
-Coverage results will live in frontend/karma-test/socrataDatasetApp/coverage/
+Coverage results will live in frontend/karma-test/dataCards/coverage/
 
 
 === Javascript/other asset package management

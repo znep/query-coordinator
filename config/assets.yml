@@ -665,10 +665,10 @@ javascripts:
 
   # Angular apps served from the Angular controller.
   # These packages are referenced via the :app parameter to serve_app.
-  angular-app-socrataDatasetApp:
-    - public/javascripts/angular/SocrataDatasetApp/app.js
-    - public/javascripts/angular/SocrataDatasetApp/controllers.js
-    - public/javascripts/angular/SocrataDatasetApp/**/*.js
+  angular-app-dataCards:
+    - public/javascripts/angular/dataCards/app.js
+    - public/javascripts/angular/dataCards/controllers.js
+    - public/javascripts/angular/dataCards/**/*.js
 
   # BEGIN BOWER-MANAGED ASSETS
   # NOTE this mega-package of all bower assets is not ideal.

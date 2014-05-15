@@ -1,11 +1,11 @@
-var socrataDatasetApp = angular.module('socrataDatasetApp', [
+var dataCards = angular.module('dataCards', [
   'ui.router',
   'socrataCommon.directives',
-  'socrataDatasetApp.controllers',
-  'socrataDatasetApp.models'
+  'dataCards.controllers',
+  'dataCards.models'
 ]);
 
-socrataDatasetApp.config(function($provide, $stateProvider, $urlRouterProvider, $locationProvider) {
+dataCards.config(function($provide, $stateProvider, $urlRouterProvider, $locationProvider) {
   var appPrefix = '/view';
   var isUnderAppPrefix = function(pathString) {
     return pathString.indexOf(appPrefix) === 0;
@@ -30,7 +30,7 @@ socrataDatasetApp.config(function($provide, $stateProvider, $urlRouterProvider, 
       views: {
         'mainContent': {
           //TODO figure out a way of getting the template dir out of rails.
-          templateUrl: '/angular_templates/socrataDatasetApp/pages/cards-view.html',
+          templateUrl: '/angular_templates/dataCards/pages/cards-view.html',
           controller: 'CardsViewController'
         }
       }
@@ -45,7 +45,7 @@ socrataDatasetApp.config(function($provide, $stateProvider, $urlRouterProvider, 
       },
       views: {
         'mainContent': {
-          templateUrl: '/angular_templates/socrataDatasetApp/pages/facets-view.html',
+          templateUrl: '/angular_templates/dataCards/pages/facets-view.html',
           controller: 'FacetsViewController'
         }
       }
@@ -63,5 +63,5 @@ socrataDatasetApp.config(function($provide, $stateProvider, $urlRouterProvider, 
   $locationProvider.html5Mode(true);
 });
 
-socrataDatasetApp.run(function() {
+dataCards.run(function() {
 });

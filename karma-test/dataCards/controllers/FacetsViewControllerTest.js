@@ -1,6 +1,6 @@
 describe("FacetsViewController", function() {
   var createController;
-  beforeEach(module('socrataDatasetApp'));
+  beforeEach(module('dataCards'));
 
   it('should provide a correct facet set and focused facet on the scope.', inject(function($controller, $rootScope, $q, ViewFacet) {
     function withFacets(facetsArray) {

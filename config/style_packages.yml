@@ -9,8 +9,8 @@ bower-styles-all:
 - bower/flexgrid
 # END BOWER-MANAGED ASSETS
 
-angular-app-socrataDatasetApp:
-- socrataDatasetApp/main
+angular-app-dataCards:
+- dataCards/main
 
 includes:
 - sass-common

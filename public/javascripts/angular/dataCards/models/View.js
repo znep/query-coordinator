@@ -1,5 +1,5 @@
 // This model is intended to be an immutable reference to a View.
-angular.module('socrataDatasetApp.models').factory('View', function($q, Dataset, ViewFacet) {
+angular.module('dataCards.models').factory('View', function($q, Dataset, ViewFacet) {
   function View(id) {
     this.id = id;
   };

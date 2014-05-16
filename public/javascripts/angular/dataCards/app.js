@@ -16,17 +16,15 @@ dataCards.config(function($provide, $stateProvider, $urlRouterProvider, $locatio
       template: '<h1>404</h1>You probably wanted something, but have this kitten instead: <br><soc-kitten w="800" h="600"></soc-kitten>'
     })
     .state('view', {
-      abstract: true,
       url: appPrefix + '/{id:\\w{4}-\\w{4}}',
       template: '<!--Overall chrome--><div ui-view="mainContent"><div>',
       resolve: {
         view: function($stateParams, View) {
           return new View($stateParams['id']);
         }
-      }
+      },
     })
     .state('view.cards', {
-      url: '/',
       views: {
         'mainContent': {
           //TODO figure out a way of getting the template dir out of rails.
@@ -36,11 +34,11 @@ dataCards.config(function($provide, $stateProvider, $urlRouterProvider, $locatio
       }
     })
     .state('view.facets', {
-      url: '/facets/:focusedFacet',
+      params: ['id', 'focusedFacetId'],
       resolve: {
         focusedFacet: function($stateParams, view) {
           // note: the 'view' argument comes from the parent state's resolver.
-          return view.getFacetFromIdAsync($stateParams['focusedFacet']);
+          return view.getFacetFromIdAsync($stateParams['focusedFacetId']);
         }
       },
       views: {
@@ -63,5 +61,11 @@ dataCards.config(function($provide, $stateProvider, $urlRouterProvider, $locatio
   $locationProvider.html5Mode(true);
 });
 
-dataCards.run(function() {
+dataCards.run(function($rootScope, $state) {
+  // Default state.
+  $rootScope.$on('$stateChangeSuccess', function (e, toState) {
+    if (toState.name === 'view') {
+      $state.go('view.cards');
+    }
+  });
 });

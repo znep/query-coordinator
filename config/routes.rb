@@ -367,8 +367,8 @@ Frontend::Application.routes do
       post '/manage/template', :action => 'manage_template_update'
     end
 
-    scope :controller => 'angular',
-          :constraints => {:id => UID_REGEXP} do
+    scope :controller => 'angular', :constraints => { :id => UID_REGEXP } do
+      match '/view/:id', :action => 'serve_app', :app => 'dataCards'
       match '/view/*angularRoute', :action => 'serve_app', :app => 'dataCards' # See angular-app-{:app} in assets.yml.
     end
 

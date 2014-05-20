@@ -31,3 +31,6 @@ stamen:
   description: Easter egg of map backgrounds. Set false to turn it off. Choose one of the available values to select this base layer for ALL maps on the domain.
   defaultValue: false
   expectedValues: watercolor toner terrain
+console:
+  description: Console for Socrata API accessible from https://{domain}/console.  Set to true to enable console, false to disable console.
+  defaultValue: true

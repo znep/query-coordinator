@@ -1,12 +1,12 @@
 describe("Page model", function() {
   var _Page, _$q;
 
-  var MockPageProvider = {};
+  var MockPageDataService = {};
 
   beforeEach(function() {
     module('dataCards', function($provide) {
-      MockPageProvider = {};
-      $provide.value('PageProvider', MockPageProvider);
+      MockPageDataService = {};
+      $provide.value('PageDataService', MockPageDataService);
     })
   });
 
@@ -29,8 +29,8 @@ describe("Page model", function() {
     var desc3 = 'Yet another fine description';
     var expectedSequence = [desc1, desc2, desc3];
 
-    MockPageProvider.getDescription = function(id) {
-      throw new Error("Should never try to get description");
+    MockPageDataService.getStaticInfo = function(id) {
+      throw new Error("Should never try to get static info.");
     };
 
     var instance = new _Page(id);
@@ -52,13 +52,13 @@ describe("Page model", function() {
 
     var shouldBeResolved = false;
 
-    var description =_$q.defer();
-    var getDescCalled = false;
-    MockPageProvider.getDescription = function(id) {
-      expect(getDescCalled).to.be.false;
-      getDescCalled = true;
+    var staticInfoDefer =_$q.defer();
+    var getStaticInfoCalled = false;
+    MockPageDataService.getStaticInfo = function(id) {
+      expect(getStaticInfoCalled).to.be.false;
+      getStaticInfoCalled = true;
       expect(id).to.equal(id);
-      return description.promise;
+      return staticInfoDefer.promise;
     };
 
     var instance = new _Page(id);
@@ -69,9 +69,9 @@ describe("Page model", function() {
     });
 
     shouldBeResolved = true;
-    description.resolve(descFromApi);
+    staticInfoDefer.resolve({ "description": descFromApi});
     _$rootScope.$digest();
-    expect(getDescCalled).to.be.true;
+    expect(getStaticInfoCalled).to.be.true;
 
     instance.description = descFromSetter1;
     instance.description = descFromSetter2;

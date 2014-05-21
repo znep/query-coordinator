@@ -1,9 +1,11 @@
 // Service to build rich models.
 // REVISIT possibly start exposing a Model superclass?
 angular.module('dataCards.services').factory('ModelHelper', function() {
-  // Adds an (RxJS) observable property of the given name to the object provided. The default
-  // is given as a function which returns a promise.
-  // The default lazy value promise is only generated if the property getter is called before
+  // Adds an (RxJS) observable of the given name to the object provided. The default value
+  // is specified as a function which returns a promise. This allows us to skip requesting
+  // the default value unless necessary.
+  //
+  // The default lazy value promise is generated if the property getter is called before
   // the setter.
   function addPropertyWithLazyDefault(propertyName, model, defaultValuePromiseGenerator) {
     // These two sequences represent values from the lazy default promise and this property's

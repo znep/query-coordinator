@@ -5,7 +5,7 @@
 TODO, this needs to be integrated as a Rake task and generalized. For now:
 
 ==== Setup
-Make sure you've installed karma-cli and phantomjs globally: `npm install -g karma-cli phantomjs`
+Make sure you've installed karma-cli and phantomjs globally: `npm install -g karma-cli phantomjs karma-phantomjs-launcher`
 
 ==== To run unit tests once in all browsers:
 `frontend/karma-test/dataCards $ karma start karma-unit.js

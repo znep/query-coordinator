@@ -42,7 +42,7 @@ metricsNS.renderMetricsChartNew = function(data, $chart, startDate, endDate,
 
     // Translate data into usable structure.
     var dataRange = [moment(startDate).utc()],
-        intervalType = sliceType.slice(0, -1).toLowerCase(),
+        intervalType = metricsNS.intervalTypes[sliceType],
         expectedDataAmt = moment(endDate).utc().diff(dataRange[0], intervalType);
     // expectedDataAmt should be data.length - 1
     _(expectedDataAmt).times(function()
@@ -379,6 +379,13 @@ else
     'MONTHLY': '%B %Y',
     'YEARLY': '%Y'
 }; }
+metricsNS.intervalTypes = {
+    'HOURLY': 'hour',
+    'DAILY': 'day',
+    'WEEKLY': 'week',
+    'MONTHLY': 'month',
+    'YEARLY': 'year'
+};
 
 
 metricsNS.chartDefaults = {

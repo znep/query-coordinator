@@ -16,10 +16,10 @@ angular.module('dataCards.models').factory('Dataset', function(ModelHelper, Data
     // actually need it.
     var staticDataPromise = function() { return DatasetDataService.getStaticInfo(_this.id); };
 
-    //TODO Columns. Pages.
-    var fields = ["whatIsARow", "primaryRowQuantity", "domain", "owner", "updatedAt", "rowCount"];
+    //TODO Columns may need to also be observable properties. Maybe.
+    var fields = ["whatIsARow", "primaryRowQuantity", "domain", "owner", "updatedAt", "rowCount", "columns"];
     _.each(fields, function(field) {
-      ModelHelper.addPropertyWithLazyDefault(field, _this, function() {
+      ModelHelper.addReadOnlyPropertyWithLazyDefault(field, _this, function() {
         return staticDataPromise().then(_.property(field));
       });
     });

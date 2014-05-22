@@ -11,18 +11,12 @@ angular.module('dataCards.models').factory('Page', function($q, Dataset, ModelHe
     var filtersPromise = function() { return PageDataService.getFilters(_this.id); };
     var cardsPromise = function() { return PageDataService.getCards(_this.id); };
 
-    // Add a property of the given name with a lazy-evaluated default.
-    // The default is taken from the object returned by the promise returned
-    // from promiseGenerator, under the key of propName.
-    // We need to take a promiseGenerator over a regular promise, because pre-creating
-    // the promise instance will trigger an API hit.
-    function lazyPropertyFromPromise(promiseGenerator, propName) {
-      ModelHelper.addPropertyWithLazyDefault(propName, _this, function() {
-        return promiseGenerator().then(function(data) { return data[propName]; });
+    var fields = ['description'];
+    _.each(fields, function(field) {
+      ModelHelper.addPropertyWithLazyDefault(field, _this, function() {
+        return staticDataPromise().then(_.property(field));
       });
-    };
-
-    lazyPropertyFromPromise(staticDataPromise, 'description');
+    });
 
     ModelHelper.addReadOnlyPropertyWithLazyDefault('dataset', this, function() {
       return staticDataPromise().then(function(data) {

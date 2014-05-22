@@ -41,6 +41,16 @@ angular.module('dataCards.services').factory('DatasetDataService', function($q) 
       return staticInfoBlobPromise.then(function(blob) {
         return $.extend({}, blob, {'id': id });
       })
+    },
+    getPageIds: function(id) {
+      return $q.when({
+        'user': _.times(10, function(idx) {
+          return _.uniqueId('fakeUserPageId');
+        }),
+        'publisher': _.times(20, function(idx) {
+          return _.uniqueId('fakePublisherPageId');
+        })
+      });
     }
   };
 });

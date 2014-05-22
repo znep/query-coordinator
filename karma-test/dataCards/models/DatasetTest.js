@@ -51,4 +51,38 @@ describe("Dataset model", function() {
     staticInfoDefer.resolve({ "rowCount": fakeRowCount});
     _$rootScope.$digest();
   });
+
+  it('should eventually return a bunch of Pages from the pages property', function(done) {
+    var id = 'dead-beef';
+    var fakePageIds = {
+        'user': _.times(4, function(idx) {
+          return _.uniqueId('fakeUserPageId');
+        }),
+        'publisher': _.times(3, function(idx) {
+          return _.uniqueId('fakePublisherPageId');
+        })
+      };
+    var def =_$q.defer();
+    MockDataService.getPageIds = function(id) {
+      expect(id).to.equal(id);
+      return def.promise;
+    };
+
+    var instance = new _Dataset(id);
+    instance.pages.subscribe(function(pagesBySource) {
+      if (pagesBySource) {
+        expect(_.keys(pagesBySource)).to.deep.equal(_.keys(fakePageIds));
+        _.each(pagesBySource, function(pages, source) {
+          _.each(pages, function(page, idx) {
+            expect(page).to.be.instanceof(_Page);
+            expect(page.id).to.equal(fakePageIds[source][idx]);
+          });
+        });
+        done();
+      }
+    });
+
+    def.resolve(fakePageIds);
+    _$rootScope.$digest();
+  });
 });

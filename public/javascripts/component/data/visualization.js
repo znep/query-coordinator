@@ -108,6 +108,8 @@ var updateProperties = function(lcObj)
         }
         else if (lcObj._$exploreLink)
         { lcObj._$exploreLink.hide(); }
+        else
+        { lcObj._$container.height(lcObj._properties.height); }
 
         lcObj._rtm = lcObj._$container.renderTypeManager({
             defaultTypes: defaultTypes,

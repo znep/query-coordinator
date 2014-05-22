@@ -5,12 +5,11 @@ angular.module('dataCards.services').factory('DatasetDataService', function($q) 
   //latency boundaries.
   // TODO safely cache promises for IDs so we don't do requests unnecessarily.
   var staticInfoBlobPromise = $q.when({
-    "whatIsARow": "crime",                              // the fundamental item that a row represents
-    "primaryRowQuantity": "number_of_crimes",           // ask Clint why we need this...
-    "domain": "data.marciship.com",                     // could be important during federation 
-    "owner": "4x4",                                     // this will be resolved on the FE (s/b cached)
+    "rowDisplayUnit": "crime",                          // the fundamental item that a row represents
+    "defaultAggregateColumn": "fine_amount",
+    "domain": "data.marciship.com",
+    "owner": "4x4",
     "updatedAt": new Date("2014-05-20T17:42:55+00:00"), // This is ISO8601
-    "rowCount": 31415,
     "columns": {
       "ward": {
         "logicalDatatype": "location",
@@ -19,19 +18,19 @@ angular.module('dataCards.services').factory('DatasetDataService', function($q) 
       },
       "crime_type": {
         "logicalDatatype": "category",
-      "physicalDatatype": "text",
-      "importance": 1
+        "physicalDatatype": "text",
+        "importance": 1
       },
       "crime_time": {
         "logicalDatatype": "time",
-      "physicalDatatype": "timestamp",
-      "importance": 0
+        "physicalDatatype": "timestamp",
+        "importance": 0
       },
       "number_of_arrests": {
         "logicalDatatype": "amount",
         "physicalDatatype": "number",
         "importance": 2,
-        "unit": "arrest"
+        "columnDisplayUnit": "arrest"
       }
     }
   });

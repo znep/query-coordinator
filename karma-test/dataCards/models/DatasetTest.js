@@ -30,9 +30,9 @@ describe("Dataset model", function() {
     expect(function(){new Dataset('foo.-beef');}).to.throw();
   }));
 
-  it('should eventually return a value from the rowCount property', function(done) {
+  it('should eventually return a value from the rowDisplayUnit property', function(done) {
     var id = 'dead-beef';
-    var fakeRowCount = 5;
+    var fakeDisplayUnit = 'test';
 
     var staticInfoDefer =_$q.defer();
     MockDataService.getStaticInfo = function(id) {
@@ -41,14 +41,14 @@ describe("Dataset model", function() {
     };
 
     var instance = new _Dataset(id);
-    instance.rowCount.subscribe(function(val) {
+    instance.rowDisplayUnit.subscribe(function(val) {
       if (val) {
-        expect(val).to.equal(fakeRowCount);
+        expect(val).to.equal(fakeDisplayUnit);
         done();
       }
     });
 
-    staticInfoDefer.resolve({ "rowCount": fakeRowCount});
+    staticInfoDefer.resolve({ "rowDisplayUnit": fakeDisplayUnit});
     _$rootScope.$digest();
   });
 

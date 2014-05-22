@@ -9,8 +9,10 @@ angular.module('dataCards.services').factory('PageDataService', function($q) {
     "name": "I am the primat",
     "description": "Frist psot!",
     "layoutMode": "single card focused view state",
-    "primaryAmountField": "ward",
-    "primaryAggregation": "count"
+    "primaryAmountField": "fine_amount",
+    "primaryAggregation": "sum",
+    "isDefaultPage": false,
+    "pageSource": "publisher"
   });
 
   var filterBlobPromise = $q.when({

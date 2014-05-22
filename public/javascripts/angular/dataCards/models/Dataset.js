@@ -19,7 +19,7 @@ angular.module('dataCards.models').factory('Dataset', function(ModelHelper, Data
     var pageIdsPromise = function() { return DatasetDataService.getPageIds(_this.id); };
 
     //TODO Columns may need to also be observable properties. Maybe.
-    var fields = ["whatIsARow", "primaryRowQuantity", "domain", "owner", "updatedAt", "rowCount", "columns"];
+    var fields = ["rowDisplayUnit", "defaultAggregateColumn", "domain", "owner", "updatedAt", "columns"];
     _.each(fields, function(field) {
       ModelHelper.addReadOnlyPropertyWithLazyDefault(field, _this, function() {
         return staticDataPromise().then(_.property(field));

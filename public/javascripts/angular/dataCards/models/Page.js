@@ -11,7 +11,7 @@ angular.module('dataCards.models').factory('Page', function($q, Dataset, ModelHe
     var filtersPromise = function() { return PageDataService.getFilters(_this.id); };
     var cardsPromise = function() { return PageDataService.getCards(_this.id); };
 
-    var fields = ['description'];
+    var fields = ['description', 'name', 'layoutMode', 'primaryAmountField', 'primaryAggregation', 'isDefaultPage', 'pageSource'];
     _.each(fields, function(field) {
       ModelHelper.addPropertyWithLazyDefault(field, _this, function() {
         return staticDataPromise().then(_.property(field));

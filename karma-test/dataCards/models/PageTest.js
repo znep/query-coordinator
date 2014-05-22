@@ -1,5 +1,5 @@
 describe("Page model", function() {
-  var _Page, _$q;
+  var _Page, _Dataset, _$q;
 
   var MockPageDataService = {};
 
@@ -10,8 +10,9 @@ describe("Page model", function() {
     })
   });
 
-  beforeEach(inject(function(Page, $q, $rootScope) {
+  beforeEach(inject(function(Page, Dataset, $q, $rootScope) {
     _Page = Page;
+    _Dataset = Dataset;
     _$q = $q;
     _$rootScope = $rootScope;
   }));
@@ -76,5 +77,27 @@ describe("Page model", function() {
     instance.description = descFromSetter1;
     instance.description = descFromSetter2;
     expect(expectedSequence).to.be.empty;
+  });
+
+  it('should eventually return a Dataset model from the dataset property', function(done) {
+    var id = 'dead-beef';
+    var datasetId = 'fooo-baar';
+
+    var staticInfoDefer =_$q.defer();
+    MockPageDataService.getStaticInfo = function(id) {
+      expect(id).to.equal(id);
+      return staticInfoDefer.promise;
+    };
+
+    var instance = new _Page(id);
+    instance.dataset.subscribe(function(val) {
+      if (val instanceof _Dataset) {
+        expect(val.id).to.equal(datasetId);
+        done();
+      }
+    });
+
+    staticInfoDefer.resolve({ "datasetId": datasetId});
+    _$rootScope.$digest();
   });
 });

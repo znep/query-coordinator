@@ -5,7 +5,7 @@ angular.module('dataCards.services').factory('PageDataService', function($q) {
   //latency boundaries.
   // TODO safely cache promises for IDs so we don't do requests unnecessarily.
   var staticInfoBlobPromise = $q.when({
-    "datasetId": "bead-beds",
+    "dataset_id": "bead-beds",
     "name": "I am the primat",
     "description": "Frist psot!",
     "layoutMode": "single card focused view state",

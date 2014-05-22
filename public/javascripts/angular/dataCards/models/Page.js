@@ -1,4 +1,4 @@
-angular.module('dataCards.models').factory('Page', function(ModelHelper, PageDataService) {
+angular.module('dataCards.models').factory('Page', function($q, Dataset, ModelHelper, PageDataService) {
   function Page(id) {
     var _this = this;
     this.id = id;
@@ -23,6 +23,12 @@ angular.module('dataCards.models').factory('Page', function(ModelHelper, PageDat
     };
 
     lazyPropertyFromPromise(staticDataPromise, 'description');
+
+    ModelHelper.addPropertyWithLazyDefault('dataset', this, function() {
+      return staticDataPromise().then(function(data) {
+        return new Dataset(data.datasetId);
+      });
+    });
     // TODO Cards, Filters objects.
   };
 

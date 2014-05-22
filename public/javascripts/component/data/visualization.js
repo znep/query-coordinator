@@ -16,21 +16,12 @@ $.component.Component.extend('Visualization', 'data', {
 
     configurationSchema: function()
     {
-        return {
-            schema: [
-                { fields: [$.cf.contextPicker()] },
-                { fields: [
-                    { name: 'exploreLink', text: $.t('dataslate.component.visualization.exploreLink_prompt'), type: 'checkbox' }
-                ] }],
-            view: this._dataset};
+        return {schema: [{ fields: [$.cf.contextPicker()] }], view: this._dataset};
     },
 
     _getAssets: function()
     {
-        return {
-            javascripts: [ { assets: 'shared-visualization' } ],
-            translations: [ 'dataslate.component.visualization' ]
-        };
+        return { javascripts: [ { assets: 'shared-visualization' } ] };
     },
 
     _render: function()
@@ -88,35 +79,13 @@ var updateProperties = function(lcObj)
         type = type || 'table'; // Last ditch, even though 'table' doesn't work anyways.
         defaultTypes[type] = true;
 
-        if (!lcObj._$container)
-        { lcObj.$contents.prepend(lcObj._$container = $('<div />')); }
-
-        if (lcObj._properties.exploreLink)
-        {
-            if (!lcObj._$exploreLink)
-            { lcObj.$contents.append( lcObj._$exploreLink = $.tag2({
-                _: 'div', className: 'exploreLink', contents: [
-                    { _: 'a', className: 'ss-navigateright', href: ds.url,
-                        contents: _.isString(lcObj._properties.exploreLink)
-                            ? lcObj._properties.exploreLink
-                            : $.t('dataslate.component.visualization.exploreLink') }
-            ]})); }
-            else
-            { lcObj._$exploreLink.show().find('a').attr('href', ds.url); }
-
-            lcObj._$container.height(lcObj._properties.height - lcObj._$exploreLink.outerHeight());
-        }
-        else if (lcObj._$exploreLink)
-        { lcObj._$exploreLink.hide(); }
-
-        lcObj._rtm = lcObj._$container.renderTypeManager({
+        lcObj._rtm = lcObj.$contents.renderTypeManager({
             defaultTypes: defaultTypes,
             view: ds,
             width: lcObj._properties.width,
             height: lcObj._properties.height,
             map: { interactToScroll: true }
         });
-
     };
 
     if (!lcObj._updateDataSource(null, renderViz)) { renderViz(); };

@@ -8,7 +8,7 @@ describe("Page model", function() {
     _$rootScope = $rootScope;
   }));
 
-  it('should not attempt to get lazy default if value is set first.', function() {
+  it('(RW) should not attempt to get lazy default if value is set first.', function() {
     var desc1 = 'A fine description';
     var desc2 = 'Another fine description';
     var desc3 = 'Yet another fine description';
@@ -43,7 +43,7 @@ describe("Page model", function() {
     expect(expectedSequenceTitle).to.be.empty;
   });
 
-  it('should attempt to get lazy default if strictly needed.', function(done) {
+  it('(RW) should attempt to get lazy default if strictly needed.', function(done) {
     var descFromDefault = 'fromDefault';
     var descFromSetter1 = 'fromSetter1';
     var descFromSetter2 = 'fromSetter2';
@@ -63,6 +63,7 @@ describe("Page model", function() {
     _mh.addPropertyWithLazyDefault('description', instance, promiser);
 
     instance.description.subscribe(function(val) {
+      expect(expectedSequence).to.not.be.empty;
       var exp = expectedSequence.shift();
       expect(shouldBeResolved).to.equal(exp !== undefined); // If it's undefined, it shouldn't be resolved
       expect(val).to.equal(exp);
@@ -81,7 +82,7 @@ describe("Page model", function() {
     expect(expectedSequence).to.be.empty;
   });
 
-  it('should always prefer the setter value over an in-flight request', function() {
+  it('(RW) should always prefer the setter value over an in-flight request', function() {
     var descFromDefault = 'fromDefault';
     var descFromSetter1 = 'fromSetter1';
     var descFromSetter2 = 'fromSetter2';
@@ -121,5 +122,54 @@ describe("Page model", function() {
     expect(expectedSequence).to.be.empty;
   });
 
+  it('(RO) should attempt to get lazy default if strictly needed.', function(done) {
+    var descFromDefault = 'fromDefault';
+    var expectedSequence = [descFromDefault];
+
+    var maybeDone = _.after(2, done);
+
+    var description =_$q.defer();
+    var getDescCalled = false;
+    function promiser() {
+      expect(getDescCalled).to.be.false;
+      getDescCalled = true;
+      return description.promise;
+    };
+
+    var instance = {};
+    _mh.addReadOnlyPropertyWithLazyDefault('description', instance, promiser);
+
+    instance.description.subscribe(function(val) {
+      expect(expectedSequence).to.not.be.empty;
+      var exp = expectedSequence.shift();
+      expect(val).to.equal(exp);
+      if (_.isEmpty(expectedSequence)) {
+        maybeDone();
+      }
+    });
+
+    description.resolve(descFromDefault);
+    _$rootScope.$digest();
+    expect(getDescCalled).to.be.true;
+
+    // Also test that future subscribers get the stored value.
+    instance.description.subscribe(function(val) {
+      expect(val).to.equal(descFromDefault);
+      maybeDone();
+    });
+  });
+
+  it('(RO) should not allow writes', function() {
+    function promiser() {
+      throw new Error("Should never request lazy default");
+    };
+
+    var instance = {};
+    _mh.addReadOnlyPropertyWithLazyDefault('description', instance, promiser);
+
+    expect(function() {
+      instance.description = 'foo';
+    }).to.throw(TypeError);
+  });
   //TODO handle error cases.
 });

@@ -24,7 +24,7 @@ angular.module('dataCards.models').factory('Page', function($q, Dataset, ModelHe
 
     lazyPropertyFromPromise(staticDataPromise, 'description');
 
-    ModelHelper.addPropertyWithLazyDefault('dataset', this, function() {
+    ModelHelper.addReadOnlyPropertyWithLazyDefault('dataset', this, function() {
       return staticDataPromise().then(function(data) {
         return new Dataset(data.datasetId);
       });

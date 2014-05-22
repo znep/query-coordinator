@@ -1,6 +1,19 @@
 // Service to build rich models.
 // REVISIT possibly start exposing a Model superclass?
 angular.module('dataCards.services').factory('ModelHelper', function() {
+  // Adds a read-only (RxJS) observable of the given name to the object provided. The default value
+  // is specified as a function which returns a promise. This allows us to skip requesting
+  // the default value unless necessary.
+  function addReadOnlyPropertyWithLazyDefault(propertyName, model, defaultValuePromiseGenerator) {
+    Object.defineProperty(model, propertyName, {
+      get: _.once(function() {
+        var subj = new Rx.AsyncSubject();
+        Rx.Observable.fromPromise(defaultValuePromiseGenerator(model)).subscribe(subj);
+        return subj;
+      })
+    });
+  };
+
   // Adds an (RxJS) observable of the given name to the object provided. The default value
   // is specified as a function which returns a promise. This allows us to skip requesting
   // the default value unless necessary.
@@ -44,6 +57,7 @@ angular.module('dataCards.services').factory('ModelHelper', function() {
   };
 
   return {
+    addReadOnlyPropertyWithLazyDefault: addReadOnlyPropertyWithLazyDefault,
     addPropertyWithLazyDefault: addPropertyWithLazyDefault
   };
 });

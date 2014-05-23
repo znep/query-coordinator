@@ -5,16 +5,16 @@
 TODO, this needs to be integrated as a Rake task and generalized. For now:
 
 ==== Setup
-Make sure you've installed karma-cli and phantomjs globally: `npm install -g karma-cli phantomjs karma-phantomjs-launcher`
+Make sure you've installed karma-cli and phantomjs globally: `npm install -g karma-cli phantomjs karma-phantomjs-launcher grunt`
 
-==== To run unit tests once in all browsers:
-`frontend/karma-test/dataCards $ karma start karma-unit.js
+==== To run unit tests once in all supported browsers:
+`(cd karma-test/dataCards && karma start karma-unit.js)
 
 ==== To watch file changes and run tests in phantom:
-`frontend/karma-test/dataCards $ karma start karma-unit.js --browsers PhantomJS --singleRun false
+`(cd karma-test/dataCards && karma start karma-unit.js --browsers PhantomJS --singleRun false)
 
 ==== To watch file changes and run tests in Chrome (so you can open up the inspector for app or test code):
-`frontend/karma-test/dataCards $ karma start karma-unit.js --browsers Chrome --singleRun false
+`(cd karma-test/dataCards && karma start karma-unit.js --browsers Chrome --singleRun false)
 
 Coverage results will live in frontend/karma-test/dataCards/coverage/
 

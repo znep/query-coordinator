@@ -480,12 +480,14 @@
                     {
                         spinner.showHide(false);
                         blist.configuration.page = resp;
-                        finishCallback.apply(this, arguments);
+                        if (_.isFunction(finishCallback))
+                        { finishCallback.apply(this, arguments); }
                     },
                     function()
                     {
                         spinner.showHide(false);
-                        errorCallback.apply(this, arguments);
+                        if (_.isFunction(errorCallback))
+                        { errorCallback.apply(this, arguments); }
                         // TODO -- what to do with error?
                     }
                 );

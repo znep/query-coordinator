@@ -20,8 +20,6 @@ class OdysseusController < ApplicationController
       return render_error(502)
     end
 
-    @suppress_govstat = true unless CurrentDomain.member?(current_user)
-
     if res.code == '400'
       return render_error(400)
     elsif res.code == '401'

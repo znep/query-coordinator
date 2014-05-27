@@ -43,7 +43,7 @@ http://www.socrata.com
   <%= rendered_stylesheet_tag 'base' %>
   <%- if module_enabled?(:govStat) -%>
     <link type="text/css" media="all" rel="stylesheet" href="/webfonts/ss-pika.css"/>
-    <%- if @suppress_govstat -%>
+    <%- if suppress_govstat? -%>
       <%= rendered_stylesheet_tag 'govstat-base' %>
     <%- else -%>
       <%= rendered_stylesheet_tag 'govstat-layout' %>
@@ -56,7 +56,7 @@ http://www.socrata.com
 
   <%= yield :head %>
 
-  <%- unless CurrentDomain.properties.custom_css.blank? || (module_enabled?(:govStat) && !@suppress_govstat) -%>
+  <%- unless CurrentDomain.properties.custom_css.blank? || (module_enabled?(:govStat) && !suppress_govstat?) -%>
     <link type="text/css" media="all" rel="stylesheet" href="/styles/current_site.css?<%="#{REVISION_NUMBER}.#{CurrentDomain.default_config_id}.#{CurrentDomain.default_config_updated_at}"%>"/>
   <%- end -%>
 
@@ -105,7 +105,7 @@ http://www.socrata.com
 
       <%- if !@suppress_chrome -%>
       <div id="siteHeader" class="clearfix" role="banner">
-        <%- if module_enabled?(:govStat) && !@suppress_govstat -%>
+        <%- if module_enabled?(:govStat) && !suppress_govstat? -%>
           <div class="clearfix">
             <%= render_text_template('{{main_logo}}') %>
             <ul class="siteUserNav">
@@ -142,7 +142,7 @@ http://www.socrata.com
       <%- end -%>
 
       <a name="content"  tabindex="-1"></a>
-      <%= render_domain_template(@page_custom_chrome || 'content_chrome') if !module_enabled?(:govStat) || @suppress_govstat %>
+      <%= render_domain_template(@page_custom_chrome || 'content_chrome') if !module_enabled?(:govStat) || suppress_govstat? %>
       <%- if @suppress_content_wrapper -%>
         <%= yield :layout %>
       <%- else -%>
@@ -226,7 +226,7 @@ http://www.socrata.com
       // using a callback which is checked in all-screens.js.
       blist.configuration.govstat_links_cb = function(user)
       {
-      <%- if !@suppress_govstat -%>
+      <%- unless suppress_govstat? -%>
         var $siteLinks = $('#siteHeader .siteUserNav');
         var contents = [];
         $siteLinks.find('li a:visible').each(function()

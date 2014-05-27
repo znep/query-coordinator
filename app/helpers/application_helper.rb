@@ -532,4 +532,8 @@ module ApplicationHelper
 
     html.join(' ').html_safe
   end
+
+  def suppress_govstat?
+    @suppress_govstat || CurrentDomain.member?(current_user) == false
+  end
 end

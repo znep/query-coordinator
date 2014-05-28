@@ -19,10 +19,10 @@ dataCards.config(function($provide, $stateProvider, $urlRouterProvider, $locatio
       url: appPrefix + '/{id:\\w{4}-\\w{4}}',
       template: '<!--Overall chrome--><div ui-view="mainContent"><div>',
       resolve: {
-        view: function($stateParams, View) {
-          return new View($stateParams['id']);
+        page: function($stateParams, Page) {
+          return new Page($stateParams['id']);
         }
-      },
+      }
     })
     .state('view.cards', {
       views: {
@@ -61,7 +61,13 @@ dataCards.config(function($provide, $stateProvider, $urlRouterProvider, $locatio
   $locationProvider.html5Mode(true);
 });
 
-dataCards.run(function($rootScope, $state) {
+dataCards.run(function($rootScope, $state, AngularRxExtensions) {
+  AngularRxExtensions.install($rootScope);
+
+  $rootScope.$on('$stateChangeError', function (event, toState, toParams, fromState, fromParams, error) {
+    console.error("Error encountered during state transition:", error);
+  });
+
   // Default state.
   $rootScope.$on('$stateChangeSuccess', function (e, toState) {
     if (toState.name === 'view') {

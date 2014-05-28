@@ -53,6 +53,9 @@ angular.module('dataCards.services').factory('PageDataService', function($q) {
 
   return {
     getStaticInfo: function(id) {
+      // Since we're reusing the same fake blob for every Page instance,
+      // we need to patch in the correct ID before we return the fake blob
+      // to the consumer.
       return staticInfoBlobPromise.then(function(blob) {
         return $.extend({}, blob, {'page_id': id });
       })

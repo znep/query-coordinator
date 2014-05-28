@@ -37,6 +37,9 @@ angular.module('dataCards.services').factory('DatasetDataService', function($q) 
 
   return {
     getStaticInfo: function(id) {
+      // Since we're reusing the same fake blob for every Dataset instance,
+      // we need to patch in the correct ID before we return the fake blob
+      // to the consumer.
       return staticInfoBlobPromise.then(function(blob) {
         return $.extend({}, blob, {'id': id });
       })

@@ -1,19 +1,20 @@
-angular.module('dataCards.models').factory('Page', function($q, Dataset, ModelHelper, PageDataService) {
+angular.module('dataCards.models').factory('Page', function(Dataset, ModelHelper, PageDataService) {
   function Page(id) {
-    var _this = this;
+    var self = this;
     this.id = id;
 
     // Reuse promises across lazy properties.
-    // NOTE! It's important that the various getters on PageDataService are _not_ called
-    // until the lazy evaluator gets called. Otherwise we'll fetch all the data before we
-    // actually need it.
-    var staticDataPromise = function() { return PageDataService.getStaticInfo(_this.id); };
-    var filtersPromise = function() { return PageDataService.getFilters(_this.id); };
-    var cardsPromise = function() { return PageDataService.getCards(_this.id); };
+    // These are wrapped in functions so that control over when data requests are made
+    // is given to the ModelHelper. If we were to obtain the below promises right away,
+    // the HTTP calls required to fulfill them would be made without any regard to whether
+    // or not the calls are needed.
+    var staticDataPromise = function() { return PageDataService.getStaticInfo(self.id); };
+    var filtersPromise = function() { return PageDataService.getFilters(self.id); };
+    var cardsPromise = function() { return PageDataService.getCards(self.id); };
 
     var fields = ['description', 'name', 'layoutMode', 'primaryAmountField', 'primaryAggregation', 'isDefaultPage', 'pageSource'];
     _.each(fields, function(field) {
-      ModelHelper.addPropertyWithLazyDefault(field, _this, function() {
+      ModelHelper.addPropertyWithLazyDefault(field, self, function() {
         return staticDataPromise().then(_.property(field));
       });
     });

@@ -24,16 +24,16 @@ angular.module('dataCards.services').factory('ModelHelper', function() {
     // These two sequences represent values from the lazy default promise and this property's
     // setter, respectively.
     var fromDefault = new Rx.AsyncSubject();
-    var fromSet = new Rx.Subject();
+    var fromSetter = new Rx.Subject();
 
     // This sequence is the first value from either the lazy default or the setter.
-    var firstValue = Rx.Observable.merge(fromDefault, fromSet).take(1);
+    var firstValue = Rx.Observable.merge(fromDefault, fromSetter).take(1);
 
     // This is the actual subject exposed to the property consumer.
     // The first value comes from either the lazy default if required, or the property setter.
     // Future values always come from the property setter.
     var outer = new Rx.BehaviorSubject();
-    Rx.Observable.concat(firstValue, fromSet).subscribe(outer);
+    Rx.Observable.concat(firstValue, fromSetter).subscribe(outer);
 
     // Track whether or not we need to fetch the default value.
     var needsDefaultValueHit = true;
@@ -51,7 +51,7 @@ angular.module('dataCards.services').factory('ModelHelper', function() {
         return outer;
       },
       set: function(n) {
-        fromSet.onNext(n);
+        fromSetter.onNext(n);
       }
     });
   };

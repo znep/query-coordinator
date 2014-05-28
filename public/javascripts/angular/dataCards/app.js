@@ -16,37 +16,20 @@ dataCards.config(function($provide, $stateProvider, $urlRouterProvider, $locatio
       template: '<h1>404</h1>You probably wanted something, but have this kitten instead: <br><soc-kitten w="800" h="600"></soc-kitten>'
     })
     .state('view', {
-      abstract: true,
       url: appPrefix + '/{id:\\w{4}-\\w{4}}',
       template: '<!--Overall chrome--><div ui-view="mainContent"><div>',
       resolve: {
-        view: function($stateParams, View) {
-          return new View($stateParams['id']);
+        page: function($stateParams, Page) {
+          return new Page($stateParams['id']);
         }
       }
     })
     .state('view.cards', {
-      url: '/',
       views: {
         'mainContent': {
           //TODO figure out a way of getting the template dir out of rails.
           templateUrl: '/angular_templates/dataCards/pages/cards-view.html',
           controller: 'CardsViewController'
-        }
-      }
-    })
-    .state('view.facets', {
-      url: '/facets/:focusedFacet',
-      resolve: {
-        focusedFacet: function($stateParams, view) {
-          // note: the 'view' argument comes from the parent state's resolver.
-          return view.getFacetFromIdAsync($stateParams['focusedFacet']);
-        }
-      },
-      views: {
-        'mainContent': {
-          templateUrl: '/angular_templates/dataCards/pages/facets-view.html',
-          controller: 'FacetsViewController'
         }
       }
     });
@@ -63,5 +46,17 @@ dataCards.config(function($provide, $stateProvider, $urlRouterProvider, $locatio
   $locationProvider.html5Mode(true);
 });
 
-dataCards.run(function() {
+dataCards.run(function($rootScope, $state, AngularRxExtensions) {
+  AngularRxExtensions.install($rootScope);
+
+  $rootScope.$on('$stateChangeError', function (event, toState, toParams, fromState, fromParams, error) {
+    console.error("Error encountered during state transition:", error);
+  });
+
+  // Default state.
+  $rootScope.$on('$stateChangeSuccess', function (e, toState) {
+    if (toState.name === 'view') {
+      $state.go('view.cards');
+    }
+  });
 });

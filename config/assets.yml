@@ -679,7 +679,10 @@ javascripts:
   # visualization offshoot of the app, so this is the simplest way forward.
   bower-all:
     # Hint to Jammit that certain files should be loaded first.
+    - public/javascripts/bower/jquery.js
     - public/javascripts/bower/angular.js
+    - public/javascripts/bower/rx.js
+
     - public/javascripts/bower/**/*.js
   # END BOWER-MANAGED ASSETS
 

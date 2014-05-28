@@ -1,1 +1,1 @@
-angular.module('dataCards.models', []);
+angular.module('dataCards.models', ['dataCards.services']);

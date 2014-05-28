@@ -1,15 +1,17 @@
-angular.module('dataCards.controllers')
-  .controller('CardsViewController',
-    function($scope, $location, view) {
-      $scope.view = view;
-      $scope.view.getFacetsAsync().then(function(facets) {
-        $scope.facets = facets;
-      });
+angular.module('dataCards.controllers') .controller('CardsViewController',
+  function($scope, $location, page) {
+    $scope.page = page;
 
-      //TODO do a real breakdown once UX is finalized.
-      $scope.$watchCollection('facets', function(newVals) {
-        $scope.primaryFacets = _.compact(_.at(newVals, _.range(0, 3)));
-        $scope.secondaryFacets = _.compact(_.at(newVals, _.range(3, 7)));
-        $scope.tertiaryFacets = _.rest(newVals, 7);
-      });
-    });
+    $scope.bindObservable('pageTitle', page.name);
+    $scope.bindObservable('pageDescription', page.description);
+    $scope.bindObservable('pageCards', page.cards);
+
+    $scope.bindObservable('dataset', page.dataset);
+    $scope.bindObservable('datasetPages', page.dataset.pluck('pages').switch());
+    $scope.bindObservable('datasetDaysUnmodified', page.dataset.pluck('updatedAt').switch().map(function(date) {
+      // TODO just a placeholder implementation
+      var dayInMillisec = 86400000;
+      return Math.floor((Date.now() - date.getTime()) / dayInMillisec);
+    }));
+    $scope.bindObservable('datasetOwner', page.dataset.pluck('owner').switch());
+  });

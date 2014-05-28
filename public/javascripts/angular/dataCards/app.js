@@ -32,21 +32,6 @@ dataCards.config(function($provide, $stateProvider, $urlRouterProvider, $locatio
           controller: 'CardsViewController'
         }
       }
-    })
-    .state('view.facets', {
-      params: ['id', 'focusedFacetId'],
-      resolve: {
-        focusedFacet: function($stateParams, view) {
-          // note: the 'view' argument comes from the parent state's resolver.
-          return view.getFacetFromIdAsync($stateParams['focusedFacetId']);
-        }
-      },
-      views: {
-        'mainContent': {
-          templateUrl: '/angular_templates/dataCards/pages/facets-view.html',
-          controller: 'FacetsViewController'
-        }
-      }
     });
 
     $urlRouterProvider.otherwise(function($injector, $location){

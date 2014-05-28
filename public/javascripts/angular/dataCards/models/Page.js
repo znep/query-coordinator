@@ -23,7 +23,12 @@ angular.module('dataCards.models').factory('Page', function($q, Dataset, ModelHe
         return new Dataset(data.datasetId);
       });
     });
-    // TODO Cards, Filters objects.
+
+    ModelHelper.addPropertyWithLazyDefault('cards', this, function() {
+      return cardsPromise().then(function(data) {
+        return data.cards;
+      });
+    });
   };
 
   return Page;

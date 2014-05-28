@@ -43,10 +43,10 @@ angular.module('dataCards.services').factory('DatasetDataService', function($q) 
     },
     getPageIds: function(id) {
       return $q.when({
-        'user': _.times(10, function(idx) {
+        'user': _.times(5, function(idx) {
           return _.uniqueId('fakeUserPageId');
         }),
-        'publisher': _.times(20, function(idx) {
+        'publisher': _.times(3, function(idx) {
           return _.uniqueId('fakePublisherPageId');
         })
       });

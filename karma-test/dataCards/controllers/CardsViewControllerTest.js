@@ -2,7 +2,7 @@ describe("CardsViewController", function() {
   var createController;
   beforeEach(module('dataCards'));
 
-  it('should provide correct primary, secondary, and tertiary card sets', inject(function($controller, $rootScope, $q, ViewFacet) {
+  xit('should provide correct primary, secondary, and tertiary card sets', inject(function($controller, $rootScope, $q, ViewFacet) {
     //TODO parametrize controller on breaks, if needed.
     var secondaryBreak = 3;
     var tertiaryBreak = 7;

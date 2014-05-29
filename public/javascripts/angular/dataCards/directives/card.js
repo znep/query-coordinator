@@ -19,7 +19,7 @@ angular.module('dataCards.directives').directive('card', function(AngularRxExten
     } else if (logicalType === 'text' || logicalType === 'name' || logicalType === 'identifier') {
       if (physicalType === 'text' || physicalType === 'number') { return 'search'; }
     } 
-    return 'unknown';
+    throw new Error('Unknown visualization for logicalDatatype: ' + logicalType + ' and physicalDatatype: ' + physicalType);
   };
 
   return {

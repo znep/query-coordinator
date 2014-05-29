@@ -1,4 +1,4 @@
-angular.module('dataCards.models').factory('Page', function(Dataset, ModelHelper, PageDataService) {
+angular.module('dataCards.models').factory('Page', function(Dataset, Card, ModelHelper, PageDataService) {
   function Page(id) {
     var self = this;
     this.id = id;
@@ -27,7 +27,9 @@ angular.module('dataCards.models').factory('Page', function(Dataset, ModelHelper
 
     ModelHelper.addPropertyWithLazyDefault('cards', this, function() {
       return cardsPromise().then(function(data) {
-        return data.cards;
+        return _.map(data.cards, function(serializedCard) {
+          return Card.deserialize(serializedCard);
+        });
       });
     });
   };

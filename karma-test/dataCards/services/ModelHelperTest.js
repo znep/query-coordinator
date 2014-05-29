@@ -8,6 +8,23 @@ describe("Page model", function() {
     _$rootScope = $rootScope;
   }));
 
+  it('should support simple RW properties', function(done) {
+    var expectedValues = ['default', 'notDefault'];
+    var instance = {};
+
+    _mh.addProperty('prop', instance, 'default');
+    expect(instance).to.have.property('prop');
+
+    instance.prop.subscribe(function(val) {
+      expect(val).to.equal(expectedValues.shift());
+      if (expectedValues.length == 0) {
+        done();
+      }
+    });
+
+    instance.prop = 'notDefault';
+  });
+
   it('(RW) should not attempt to get lazy default if value is set first.', function() {
     var desc1 = 'A fine description';
     var desc2 = 'Another fine description';

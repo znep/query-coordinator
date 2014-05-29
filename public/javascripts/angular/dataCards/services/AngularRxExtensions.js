@@ -28,12 +28,23 @@ angular.module('dataCards.services').factory('AngularRxExtensions', function($ro
       });
     });
   };
+
+  function observe(expression) {
+    var observable = new Rx.BehaviorSubject(this.$eval(expression));
+    this.$watch(expression, function(value) {
+      observable.onNext(value);
+    });
+
+    return observable;
+  };
+
   return {
     // Installs the extensions on the given scope.
     // Typical usage is to install on the root scope, so
     // all scopes get the extensions.
     install: function(scope) {
       scope.bindObservable = bindObservable;
+      scope.observe = observe;
     }
   };
 });

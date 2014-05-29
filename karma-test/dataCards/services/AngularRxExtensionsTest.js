@@ -7,6 +7,25 @@ describe("Page model", function() {
     _$rootScope = $rootScope;
   }));
 
+  it('should observe scope expressions', function(done) {
+    var expectedValues = ['fooValueOne', 'fooValueTwo'];
+
+    var $scope = _$rootScope.$new(true);
+    _extensions.install($scope);
+
+    $scope.foo = 'fooValueOne';
+    $scope.$apply();
+    $scope.observe('foo').subscribe(function(val) {
+      expect(val).to.equal(expectedValues.shift());
+      if (expectedValues.length == 0) {
+        done();
+      }
+    });
+
+    $scope.foo = 'fooValueTwo';
+    $scope.$apply();
+  });
+
   it('should reflect changes inside and outside digest-apply cycles', function() {
     //The Enrichment Center regrets to inform you that this next test is impossible. Make no attempt to solve it.
 

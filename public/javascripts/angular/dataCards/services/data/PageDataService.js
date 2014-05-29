@@ -27,7 +27,7 @@ angular.module('dataCards.services').factory('PageDataService', function($q) {
       {
         "description": "I am a fancy card",
         "fieldName": "crime_type",
-        "importance": 1,
+        "cardSize": 1,
         "cardCustomStyle": { "barColor": "#659CEF" },
         "expandedCustomStyle": { "zebraStripeRows" : true } ,
         "displayMode": "figures",
@@ -36,7 +36,7 @@ angular.module('dataCards.services').factory('PageDataService', function($q) {
       {
         "description": "I am a superfancy card",
         "fieldName": "ward",
-        "importance": 2,
+        "cardSize": 2,
         "cardCustomStyle": {
           "choroplethBreaks": { 
             "1-100": "#659CEF", 

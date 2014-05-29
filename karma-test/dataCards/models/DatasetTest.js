@@ -2,6 +2,15 @@ describe("Dataset model", function() {
   var MockDataService = {};
   var _Dataset, _Page;
 
+  // Minimal Dataset blob which will validate.
+  var minimalBlob = {
+    id: 'asdf-fdsa',
+    defaultAggregateColumn: 'foo',
+    owner: 'fdsa-asdf',
+    updatedAt: '2004-05-20T17:42:55+00:00',
+    columns: {}
+  };
+
   beforeEach(function() {
     module('dataCards', function($provide) {
       MockDataService = {};
@@ -48,7 +57,7 @@ describe("Dataset model", function() {
       }
     });
 
-    staticInfoDefer.resolve({ "rowDisplayUnit": fakeDisplayUnit});
+    staticInfoDefer.resolve($.extend({}, minimalBlob, { "rowDisplayUnit": fakeDisplayUnit}));
     _$rootScope.$digest();
   });
 

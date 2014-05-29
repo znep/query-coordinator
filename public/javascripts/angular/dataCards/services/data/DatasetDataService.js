@@ -9,7 +9,7 @@ angular.module('dataCards.services').factory('DatasetDataService', function($q) 
     "defaultAggregateColumn": "fine_amount",
     "domain": "data.marciship.com",
     "owner": "4x4",
-    "updatedAt": new Date("2014-05-20T17:42:55+00:00"), // This is ISO8601
+    "updatedAt": "2014-05-20T17:42:55+00:00", // This is ISO8601
     "columns": {
       "ward": {
         "logicalDatatype": "location",
@@ -24,7 +24,7 @@ angular.module('dataCards.services').factory('DatasetDataService', function($q) 
       "crime_time": {
         "logicalDatatype": "time",
         "physicalDatatype": "timestamp",
-        "importance": 0
+        "importance": 3
       },
       "number_of_arrests": {
         "logicalDatatype": "amount",

@@ -18,6 +18,7 @@ module.exports = function ( karma ) {
       'bower_components/rxjs/rx.js',
       'bower_components/rxjs/rx.binding.js',
       'bower_components/rxjs/rx.aggregates.js',
+      'bower_components/jjv/lib/jjv.js',
       'karma-test/dataCards/*.js',
       'karma-test/dataCards/**/*.js',
       'public/javascripts/angular/common/*.js',

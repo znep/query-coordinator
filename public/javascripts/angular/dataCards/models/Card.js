@@ -1,6 +1,17 @@
-angular.module('dataCards.models').factory('Card', function($injector, ModelHelper, CardDataService) {
-  // List of field names which are serializable.
-  var serializedFields = ['description', 'fieldName', 'importance', 'cardCustomStyle', 'expandedCustomStyle', 'displayMode', 'expanded'];
+angular.module('dataCards.models').factory('Card', function($injector, ModelHelper, CardDataService, JJV) {
+  JJV.addSchema('serializedCard', {
+    type: 'object',
+    properties: {
+      description: { type: 'string' },
+      fieldName: { type: 'string', minLength: 1},
+      cardSize: { type: 'integer' , minimum: 1, maximum: 3},
+      displayMode: { type: 'string', enum: ['figures', 'visualization'] },
+      expanded: { type: 'boolean' },
+      cardCustomStyle: { type: 'object' },
+      expandedCustomStyle: { type: 'object' }
+    },
+    required: ['description', 'fieldName', 'cardSize', 'cardCustomStyle', 'expandedCustomStyle', 'displayMode', 'expanded']
+  });
 
   function Card(page, fieldName) {
     var Page = $injector.get('Page'); // Inject Page here to avoid circular dep.
@@ -11,7 +22,7 @@ angular.module('dataCards.models').factory('Card', function($injector, ModelHelp
     this.page = page;
     this.fieldName = fieldName;
 
-    _.each(serializedFields, function(field) {
+    _.each(_.keys(JJV.schema.serializedCard.properties), function(field) {
       if (field === 'fieldName') return; // fieldName isn't observable.
       ModelHelper.addProperty(field, self);
     });
@@ -22,15 +33,16 @@ angular.module('dataCards.models').factory('Card', function($injector, ModelHelp
   };
 
   Card.deserialize = function(page, blob) {
-    //TODO verify cleanliness.
+    var errors = JJV.validate('serializedCard', blob, {removeAdditional: true});
+    if (errors) {
+      throw new Error('Card deserialization failed: ' + JSON.stringify(errors));
+    }
+
     var instance = new Card(page, blob.fieldName);
-    _.each(serializedFields, function(field) {
-      instance[field] = blob[field];
-    });
+    $.extend(instance, blob);
+
     return instance;
   };
-
-  Card._serializedFields = serializedFields; // Enable testing.
 
   return Card;
 });

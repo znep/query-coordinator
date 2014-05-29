@@ -1,26 +1,31 @@
 describe("Card model", function() {
   beforeEach(module('dataCards'));
 
-  it('deserialization should return an instance of Card with correct properties set', inject(function(Card, Page) {
+  it('should define a serializedCard JSON schema', inject(function(Card, JJV) {
+    expect(JJV.schema).to.have.property('serializedCard');
+  }));
+
+  it('deserialization should return an instance of Card with correct properties set', inject(function(Card, Page, JJV) {
     var blob = {
       "description": "test_I am a fancy card",
       "fieldName": "test_crime_type",
-      "importance": 2,
+      "cardSize": 2,
       "cardCustomStyle": { "test_barColor": "#659CEF" },
       "expandedCustomStyle": { "test_zebraStripeRows" : true } ,
-      "displayMode": "test_figures",
+      "displayMode": "figures",
       "expanded": false
     };
 
     // Ensure the test has an up-to-date blob. If this fails, update the above blob.
-    expect(blob).to.have.keys(Card._serializedFields);
+    var requiredKeys = JJV.schema.serializedCard.required;
+    expect(blob).to.have.keys(requiredKeys);
 
     var instance = Card.deserialize(new Page(), blob);
     expect(instance).to.be.instanceof(Card);
     expect(instance.page).to.be.instanceof(Page);
 
     var out = {fieldName: blob.fieldName};
-    _.each(Card._serializedFields, function(field) {
+    _.each(requiredKeys, function(field) {
       expect(instance).to.have.property(field);
       if (field === 'fieldName') return; // fieldName isn't observable.
       instance[field].subscribe(function(v) { 

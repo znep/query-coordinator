@@ -11,15 +11,13 @@ angular.module('dataCards.models').factory('Card', function($injector, ModelHelp
     this.page = page;
     this.fieldName = fieldName;
 
-    var cardsPromise = function() { return CardDataService.getData(self.fieldName); };
-
     _.each(serializedFields, function(field) {
       if (field === 'fieldName') return; // fieldName isn't observable.
       ModelHelper.addProperty(field, self);
     });
 
     ModelHelper.addReadOnlyPropertyWithLazyDefault('data', this, function() {
-      return cardsPromise();
+      return CardDataService.getData(self.fieldName);
     });
   };
 

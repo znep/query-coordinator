@@ -31,10 +31,10 @@ angular.module('dataCards.directives').directive('card', function(AngularRxExten
     link: function($scope, element, attrs) {
       AngularRxExtensions.install($scope);
       var src = $scope.observe('src');
-      var dataset = src.pluck('page').selectSwitch(_.property('dataset'));
-      var data = src.selectSwitch(_.property('data'));
+      var dataset = src.pluck('page').pluckSwitch('dataset');
+      var data = src.pluckSwitch('data');
 
-      var cardType = src.pluck('fieldName').combineLatest(dataset.selectSwitch(_.property('columns')), function(cardField, datasetFields) {
+      var cardType = src.pluck('fieldName').combineLatest(dataset.pluckSwitch('columns'), function(cardField, datasetFields) {
         var column = datasetFields[cardField];
         return cardTypeMapping(column);
       });

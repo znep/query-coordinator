@@ -9,11 +9,11 @@ angular.module('dataCards.controllers') .controller('CardsViewController',
     $scope.bindObservable('pageCards', page.cards);
 
     $scope.bindObservable('dataset', page.dataset);
-    $scope.bindObservable('datasetPages', page.dataset.pluck('pages').switch());
-    $scope.bindObservable('datasetDaysUnmodified', page.dataset.pluck('updatedAt').switch().map(function(date) {
+    $scope.bindObservable('datasetPages', page.dataset.pluckSwitch('pages'));
+    $scope.bindObservable('datasetDaysUnmodified', page.dataset.pluckSwitch('updatedAt').map(function(date) {
       // TODO just a placeholder implementation
       var dayInMillisec = 86400000;
       return Math.floor((Date.now() - date.getTime()) / dayInMillisec);
     }));
-    $scope.bindObservable('datasetOwner', page.dataset.pluck('owner').switch());
+    $scope.bindObservable('datasetOwner', page.dataset.pluckSwitch('owner'));
   });

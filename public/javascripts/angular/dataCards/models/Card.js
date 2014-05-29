@@ -33,7 +33,7 @@ angular.module('dataCards.models').factory('Card', function($injector, ModelHelp
   };
 
   Card.deserialize = function(page, blob) {
-    var errors = JJV.validate('serializedCard', blob, {removeAdditional: true});
+    var errors = JJV.validate('serializedCard', blob);
     if (errors) {
       throw new Error('Card deserialization failed: ' + JSON.stringify(errors));
     }

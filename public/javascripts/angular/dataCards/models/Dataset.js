@@ -59,7 +59,7 @@ angular.module('dataCards.models').factory('Dataset', function(ModelHelper, Data
     // actually need it.
     var staticDataPromise = function() {
       return DatasetDataService.getStaticInfo(self.id).then(function(blob) {
-        var errors = JJV.validate('datasetMetadata', blob, {removeAdditional: true});
+        var errors = JJV.validate('datasetMetadata', blob);
         if (errors) {
           throw new Error('Dataset metadata deserialization failed: ' + JSON.stringify(errors));
         }
@@ -72,7 +72,7 @@ angular.module('dataCards.models').factory('Dataset', function(ModelHelper, Data
 
     var pageIdsPromise = function() {
       return DatasetDataService.getPageIds(self.id).then(function(blob) {
-        var errors = JJV.validate('datasetPageList', blob, {removeAdditional: true});
+        var errors = JJV.validate('datasetPageList', blob);
         if (errors) {
           throw new Error('Page List deserialization failed: ' + JSON.stringify(errors));
         }

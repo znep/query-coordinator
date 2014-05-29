@@ -43,6 +43,14 @@ angular.module('dataCards.services').factory('AngularRxExtensions', function($ro
     // Typical usage is to install on the root scope, so
     // all scopes get the extensions.
     install: function(scope) {
+      // Hard error on naming collisions.
+      if (!_.isUndefined(scope.bindObservable) && scope.bindObservable !== bindObservable) {
+        throw new Error('Naming collision: scope.bindObservable.');
+      }
+      if (!_.isUndefined(scope.observe) && scope.observe !== observe) {
+        throw new Error('Naming collision: scope.observe.');
+      }
+
       scope.bindObservable = bindObservable;
       scope.observe = observe;
     }

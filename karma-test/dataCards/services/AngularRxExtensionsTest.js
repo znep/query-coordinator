@@ -7,6 +7,26 @@ describe("Page model", function() {
     _$rootScope = $rootScope;
   }));
 
+  it('should throw if installation would overwrite existing scope keys.', function() {
+    var $scope = _$rootScope.$new(true);
+    _extensions.install($scope);
+    // Re-install should be OK.
+    _extensions.install($scope);
+
+    // Try to overwrite existing keys.
+    var $scopeWithObserve = _$rootScope.$new(true);
+    $scopeWithObserve.observe = function(){};
+    expect(function() {
+      _extensions.install($scopeWithObserve);
+    }).to.throw();
+
+    var $scopeWithBindObservable = _$rootScope.$new(true);
+    $scopeWithBindObservable.bindObservable = function(){};
+    expect(function() {
+      _extensions.install($scopeWithBindObservable);
+    }).to.throw();
+  });
+
   it('should observe scope expressions', function(done) {
     var expectedValues = ['fooValueOne', 'fooValueTwo'];
 

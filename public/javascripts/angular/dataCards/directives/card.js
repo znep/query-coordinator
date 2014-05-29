@@ -6,7 +6,7 @@ angular.module('dataCards.directives').directive('card', function(AngularRxExten
     var logicalType = column.logicalDatatype;
     var physicalType = column.physicalDatatype;
     if (logicalType === 'category') {
-      return 'bar';
+      return 'column';
     } else if (logicalType === 'amount') {
       if (physicalType === 'number') { return 'statBar'; }
     } else if (logicalType === 'location') {

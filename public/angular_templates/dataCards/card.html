@@ -1,1 +1,6 @@
-<p>Card type: {{cardType}}</p>
+<div ng-switch="cardType">
+  <div ng-switch-when="bar">Bar Chart!</div>
+  <div ng-switch-when="choropleth"><img src="http://upload.wikimedia.org/wikipedia/commons/7/73/Churros_el_hatillo.JPG" width="200" /></div>
+  <div ng-switch-default>I dunno how to display {{cardType}} :(</div>
+</div>
+{{data}}

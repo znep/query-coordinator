@@ -28,7 +28,7 @@ angular.module('dataCards.models').factory('Page', function(Dataset, Card, Model
     ModelHelper.addPropertyWithLazyDefault('cards', this, function() {
       return cardsPromise().then(function(data) {
         return _.map(data.cards, function(serializedCard) {
-          return Card.deserialize(serializedCard);
+          return Card.deserialize(self, serializedCard);
         });
       });
     });

@@ -30,6 +30,7 @@ describe("Dataset model", function() {
     var instance = new Dataset(id);
     expect(instance.id).to.equal(id);
   }));
+
   it('should reject bad/no 4x4s passed into the constructor.', inject(function(Dataset) {
     expect(function(){new Dataset();}).to.throw();
     expect(function(){new Dataset(5);}).to.throw();

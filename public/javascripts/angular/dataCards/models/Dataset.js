@@ -14,8 +14,8 @@ angular.module('dataCards.models').factory('Dataset', function(ModelHelper, Data
     type: 'object',
     properties: {
       id: { type: 'string', pattern: UID_REGEXP },
-      rowDisplayUnit: { type: 'string', minLength: 1},
-      defaultAggregateColumn: { type: 'string', minLength: 1},
+      rowDisplayUnit: { type: 'string', minLength: 1 },
+      defaultAggregateColumn: { type: 'string', minLength: 1 },
       owner: { type: 'string', pattern: UID_REGEXP },
       updatedAt: { type: 'string' }, //TODO ISO8601
       columns: {
@@ -23,19 +23,19 @@ angular.module('dataCards.models').factory('Dataset', function(ModelHelper, Data
         patternProperties: {
           '\\w+': {
             type: 'object',
-          properties: {
-            logicalDatatype: {
-              type: 'string',
-              enum: [ 'category', 'amount', 'location', 'time', 'text', 'name', 'identifier' ]
+            properties: {
+              logicalDatatype: {
+                type: 'string',
+                enum: [ 'category', 'amount', 'location', 'time', 'text', 'name', 'identifier' ]
+              },
+              physicalDatatype: {
+                type: 'string',
+                enum: [ 'number', 'point', 'geo entity', 'text', 'timestamp' ]
+              },
+              importance: { type: 'integer' , minimum: 1, maximum: 4 },
+              columnDisplayUnit: { type: 'string' }
             },
-            physicalDatatype: {
-              type: 'string',
-              enum: [ 'number', 'point', 'geo entity', 'text', 'timestamp' ]
-            },
-            importance: { type: 'integer' , minimum: 1, maximum: 4},
-            columnDisplayUnit: { type: 'string' }
-          },
-          required: [ 'logicalDatatype', 'physicalDatatype', 'importance' ]
+            required: [ 'logicalDatatype', 'physicalDatatype', 'importance' ]
           }
         }
       }

@@ -1,5 +1,7 @@
 angular.module('dataCards.controllers') .controller('CardsViewController',
-  function($scope, $location, page) {
+  function($scope, AngularRxExtensions, page) {
+    AngularRxExtensions.install($scope);
+
     $scope.page = page;
 
     $scope.bindObservable('pageTitle', page.name);

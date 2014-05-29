@@ -46,9 +46,7 @@ dataCards.config(function($provide, $stateProvider, $urlRouterProvider, $locatio
   $locationProvider.html5Mode(true);
 });
 
-dataCards.run(function($rootScope, $state, AngularRxExtensions) {
-  AngularRxExtensions.install($rootScope);
-
+dataCards.run(function($rootScope, $state) {
   $rootScope.$on('$stateChangeError', function (event, toState, toParams, fromState, fromParams, error) {
     console.error("Error encountered during state transition:", error);
   });

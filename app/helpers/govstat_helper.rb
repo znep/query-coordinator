@@ -160,7 +160,7 @@ module GovstatHelper
         }
       }
     }
-    configs[dashboard_layout.to_sym] || configs[:list]
+    configs[dashboard_layout.try(:to_sym)] || configs[:list]
   end
 
   def list_repeater(context_id, label = nil)

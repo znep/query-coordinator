@@ -1,4 +1,5 @@
 angular.module('dataCards.directives').directive('card', function(AngularRxExtensions) {
+
   //TODO should probably be a service. And not suck.
   var cardTypeMapping = function(column) {
     column = column || {};
@@ -17,30 +18,35 @@ angular.module('dataCards.directives').directive('card', function(AngularRxExten
       if (physicalType === 'timestamp') { return 'timeline'; }
       else if (physicalType === 'number') { return 'timeline'; }
     } else if (logicalType === 'text' || logicalType === 'name' || logicalType === 'identifier') {
-      if (physicalType === 'text' || physicalType === 'number') { return 'search'; }
-    } 
-    throw new Error('Unknown visualization for logicalDatatype: ' + logicalType + ' and physicalDatatype: ' + physicalType);
+      if (physicalType === 'text' || physicalType === 'number') {
+        return 'search';
+      }
+    }
+    throw new Error('Unknown visualization for logicalDatatype: ' + logicalType +
+      ' and physicalDatatype: ' + physicalType);
   };
 
   return {
     restrict: 'E',
     scope: {
-      'src': '='
+      'sourceData': '=sourceData'
     },
     templateUrl: '/angular_templates/dataCards/card.html',
     link: function($scope, element, attrs) {
       AngularRxExtensions.install($scope);
-      var src = $scope.observe('src');
-      var dataset = src.pluck('page').pluckSwitch('dataset');
-      var data = src.pluckSwitch('data');
+      var sourceData = $scope.observe('sourceData');
+      var dataset = sourceData.pluck('page').pluckSwitch('dataset');
+      var data = sourceData.pluckSwitch('data');
 
-      var cardType = src.pluck('fieldName').combineLatest(dataset.pluckSwitch('columns'), function(cardField, datasetFields) {
+      var cardType = sourceData.pluck('fieldName').combineLatest(dataset.pluckSwitch('columns'), function(cardField, datasetFields) {
         var column = datasetFields[cardField];
         return cardTypeMapping(column);
       });
 
       $scope.bindObservable('cardType', cardType);
       $scope.bindObservable('data', data);
+      $scope.bindObservable('fieldName', sourceData.pluck('fieldName'));
     }
-  }
+  };
+
 });

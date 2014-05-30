@@ -4,22 +4,26 @@ angular.module('dataCards.services').factory('AngularRxExtensions', function($ro
   // the function within that cycle.
   function safeApply(scope, fn) {
     var phase = scope.$root.$$phase;
-    if(phase == '$apply' || phase == '$digest') {
-      if(fn && (typeof(fn) === 'function')) {
+    if (phase == '$apply' || phase == '$digest') {
+      if (fn && (typeof(fn) === 'function')) {
         fn();
       }
     } else {
       scope.$apply(fn);
     }
-  };
+  }
 
   // Bind an observable sequence to a scope's property.
   // For example, this will cause the 'ticks' property
   // on scope $scope to increment every second:
   // $scope.bindObservable('ticks', Rx.Observable.interval(1000));
   function bindObservable(propName, observable) {
-    if (_.isEmpty(propName) || !_.isString(propName)) { throw new Error('Expected non-empty string property name'); }
-    if (!(observable instanceof Rx.Observable)) { throw new Error('Expected Rx.Observable instance'); }
+    if (_.isEmpty(propName) || !_.isString(propName)) {
+      throw new Error('Expected non-empty string property name');
+    }
+    if (!(observable instanceof Rx.Observable)) {
+      throw new Error('Expected Rx.Observable instance');
+    }
     var self = this;
     observable.subscribe(function(newValue) {
       safeApply(self, function() {
@@ -27,7 +31,7 @@ angular.module('dataCards.services').factory('AngularRxExtensions', function($ro
         self[propName] = newValue;
       });
     });
-  };
+  }
 
   function observe(expression) {
     var observable = new Rx.BehaviorSubject(this.$eval(expression));
@@ -36,7 +40,7 @@ angular.module('dataCards.services').factory('AngularRxExtensions', function($ro
     });
 
     return observable;
-  };
+  }
 
   return {
     // Installs the extensions on the given scope.
@@ -55,4 +59,5 @@ angular.module('dataCards.services').factory('AngularRxExtensions', function($ro
       scope.observe = observe;
     }
   };
+
 });

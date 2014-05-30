@@ -15,15 +15,16 @@ function inherit(parent, extra) {
   return extend(new (extend(function() {}, { prototype: parent }))(), extra);
 }
 
-function merge(dst) {
+function merge(dest) {
   forEach(arguments, function(obj) {
-    if (obj !== dst) {
+    if (obj !== dest) {
       forEach(obj, function(value, key) {
-        if (!dst.hasOwnProperty(key)) dst[key] = value;
+        if (!dest.hasOwnProperty(key)) dest[key] = value;
       });
     }
   });
-  return dst;
+
+  return dest;
 }
 
 /**
@@ -40,6 +41,7 @@ function ancestors(first, second) {
     if (first.path[n] !== second.path[n]) break;
     path.push(first.path[n]);
   }
+
   return path;
 }
 
@@ -58,6 +60,7 @@ function keys(object) {
   angular.forEach(object, function(val, key) {
     result.push(key);
   });
+
   return result;
 }
 
@@ -80,6 +83,7 @@ function arraySearch(array, value) {
   for (; from < len; from++) {
     if (from in array && array[from] === value) return from;
   }
+
   return -1;
 }
 
@@ -105,6 +109,7 @@ function inheritParams(currentParams, newParams, $current, $to) {
       inherited[parentParams[j]] = currentParams[parentParams[j]];
     }
   }
+
   return extend({}, inherited, newParams);
 }
 
@@ -122,6 +127,7 @@ function normalize(keys, values) {
     var value = values[name];
     normalized[name] = (value != null) ? String(value) : null;
   });
+
   return normalized;
 }
 
@@ -137,13 +143,18 @@ function normalize(keys, values) {
 function equalForKeys(a, b, keys) {
   if (!keys) {
     keys = [];
-    for (var n in a) keys.push(n); // Used instead of Object.keys() for IE8 compatibility
+    for (var n in a) {
+      keys.push(n); // Used instead of Object.keys() for IE8 compatibility
+    }
   }
 
   for (var i=0; i<keys.length; i++) {
     var k = keys[i];
-    if (a[k] != b[k]) return false; // Not '===', values aren't necessarily normalized
+    if (a[k] != b[k]) {
+      return false; // Not '===', values aren't necessarily normalized
+    }
   }
+
   return true;
 }
 
@@ -152,7 +163,7 @@ function equalForKeys(a, b, keys) {
  *
  * @param {Array} keys
  * @param {Object} values
- * @return {Boolean} Returns a subset of `values`.
+ * @return {Object} Returns a subset of `values`.
  */
 function filterByKeys(keys, values) {
   var filtered = {};
@@ -160,6 +171,7 @@ function filterByKeys(keys, values) {
   forEach(keys, function (name) {
     filtered[name] = values[name];
   });
+
   return filtered;
 }
 /**

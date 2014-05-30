@@ -2,11 +2,11 @@
 <html>
   <head>
     <meta http-equiv="content-type" content="text/html;charset=utf-8" />
-    <%= rendered_stylesheet_tag 'angular-app-'+params['app'] %>
+    <%= angular_stylesheet_tag %>
     <%= yield :head %>
   </head>
-  <body ng-app="<%= params['app']%>">
-    <%= render params['app'] %>
+  <body ng-app="<%= angular_app %>">
+    <%= render angular_app %>
     <%= yield :layout %>
   </body>
 </html>

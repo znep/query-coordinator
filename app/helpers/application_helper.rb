@@ -532,4 +532,5 @@ module ApplicationHelper
 
     html.join(' ').html_safe
   end
+
 end

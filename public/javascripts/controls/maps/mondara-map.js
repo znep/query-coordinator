@@ -16,6 +16,10 @@
             { layerObj._maxExtent = OpenLayers.Bounds.fromString(layerObj._config.bbox).transform(
                 new OpenLayers.Projection(layerObj._config.bboxCrs), layerObj._mapProjection); }
 
+            // Support federation.
+            if (layerObj._view.domainUrl)
+            { layerObj._config.owsUrl = layerObj._view.domainUrl + layerObj._config.owsUrl; }
+
             _.each(layerObj._config.layers.split(','), function(layerName)
             {
                 var params = {

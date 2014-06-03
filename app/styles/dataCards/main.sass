@@ -41,3 +41,15 @@ $facets-list-width: 20%
     bottom: 10px
     left: $facets-list-width
     background: #555
+
+div.column-chart
+  width: 50%
+  .bar
+    &.unfiltered
+      fill: grey
+    &.filtered
+      fill: blue
+    &.tertiary
+      fill: rgba(0, 0, 0, 0)
+      &:hover
+        fill: #333

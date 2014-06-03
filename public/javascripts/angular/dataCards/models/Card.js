@@ -30,7 +30,11 @@ angular.module('dataCards.models').factory('Card', function($injector, ModelHelp
     ModelHelper.addReadOnlyPropertyWithLazyDefault('data', this, function() {
       return CardDataService.getData(self.fieldName);
     });
-  };
+
+    ModelHelper.addReadOnlyPropertyWithLazyDefault('filteredData', this, function() {
+      return CardDataService.getFilteredData(self.fieldName);
+    });
+  }
 
   Card.deserialize = function(page, blob) {
     var errors = JJV.validate('serializedCard', blob);

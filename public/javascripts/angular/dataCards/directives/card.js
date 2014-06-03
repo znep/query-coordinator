@@ -36,15 +36,17 @@ angular.module('dataCards.directives').directive('card', function(AngularRxExten
       AngularRxExtensions.install($scope);
       var sourceData = $scope.observe('sourceData');
       var dataset = sourceData.pluck('page').pluckSwitch('dataset');
-      var data = sourceData.pluckSwitch('data');
 
-      var cardType = sourceData.pluck('fieldName').combineLatest(dataset.pluckSwitch('columns'), function(cardField, datasetFields) {
-        var column = datasetFields[cardField];
-        return cardTypeMapping(column);
-      });
+      var cardType = sourceData.pluck('fieldName').combineLatest(dataset.pluckSwitch('columns'),
+        function(cardField, datasetFields) {
+          var column = datasetFields[cardField];
+          return cardTypeMapping(column);
+        }
+      );
 
       $scope.bindObservable('cardType', cardType);
-      $scope.bindObservable('data', data);
+      $scope.bindObservable('data', sourceData.pluckSwitch('data'));
+      $scope.bindObservable('filteredData', sourceData.pluckSwitch('filteredData'));
       $scope.bindObservable('fieldName', sourceData.pluck('fieldName'));
     }
   };

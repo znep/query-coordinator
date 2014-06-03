@@ -5,32 +5,32 @@ angular.module('dataCards.services').factory('DatasetDataService', function($q) 
   //latency boundaries.
   // TODO safely cache promises for IDs so we don't do requests unnecessarily.
   var staticInfoBlobPromise = $q.when({
-    "rowDisplayUnit": "crime",                          // the fundamental item that a row represents
-    "defaultAggregateColumn": "fine_amount",
-    "domain": "data.marciship.com",
-    "owner": "4x4",
-    "updatedAt": "2014-05-20T17:42:55+00:00", // This is ISO8601
-    "columns": {
-      "ward": {
-        "logicalDatatype": "location",
-        "physicalDatatype": "text",
-        "importance": 1
+    'rowDisplayUnit': 'crime',                          // the fundamental item that a row represents
+    'defaultAggregateColumn': 'fine_amount',
+    'domain': 'data.marciship.com',
+    'owner': '4x4',
+    'updatedAt': '2014-05-20T17:42:55+00:00', // This is ISO8601
+    'columns': {
+      'ward': {
+        'logicalDatatype': 'location',
+        'physicalDatatype': 'text',
+        'importance': 1
       },
-      "crime_type": {
-        "logicalDatatype": "category",
-        "physicalDatatype": "text",
-        "importance": 1
+      'crime_type': {
+        'logicalDatatype': 'category',
+        'physicalDatatype': 'text',
+        'importance': 1
       },
-      "crime_time": {
-        "logicalDatatype": "time",
-        "physicalDatatype": "timestamp",
-        "importance": 3
+      'crime_time': {
+        'logicalDatatype': 'time',
+        'physicalDatatype': 'timestamp',
+        'importance': 3
       },
-      "number_of_arrests": {
-        "logicalDatatype": "amount",
-        "physicalDatatype": "number",
-        "importance": 2,
-        "columnDisplayUnit": "arrest"
+      'number_of_arrests': {
+        'logicalDatatype': 'amount',
+        'physicalDatatype': 'number',
+        'importance': 2,
+        'columnDisplayUnit': 'arrest'
       }
     }
   });

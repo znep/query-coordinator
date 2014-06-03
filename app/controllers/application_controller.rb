@@ -224,11 +224,13 @@ private
 
     logo_square = CurrentDomain.theme[:images][:logo_square]
     if logo_square.present?
-      @meta['og:image'] = @link_image_src = if logo_square[:type].to_s == "static"
-        "#{CurrentDomain.domain.protocol}://#{CurrentDomain.cname}#{logo_square[:href]}"
+      @link_image_src = if logo_square[:type].to_s == "static"
+        logo_square[:href]
       elsif logo_square[:type].to_s == "hosted"
-        "#{CurrentDomain.domain.protocol}://#{CurrentDomain.cname}/assets/#{logo_square[:href]}"
+        "/assets/#{logo_square[:href]}"
       end
+      # This is mostly because I don't trust FB to handle it correctly otherwise.
+      @meta['og:image'] = "#{CurrentDomain.domain.protocol}://#{CurrentDomain.cname}#{@link_image_src}"
     end
   end
 

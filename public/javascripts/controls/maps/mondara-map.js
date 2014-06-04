@@ -17,8 +17,7 @@
                 new OpenLayers.Projection(layerObj._config.bboxCrs), layerObj._mapProjection); }
 
             // Support federation.
-            if (layerObj._view.domainUrl && !/^http/.test(layerObj._config.owsUrl))
-            { layerObj._config.owsUrl = layerObj._view.domainUrl + layerObj._config.owsUrl; }
+            layerObj._owsUrl = (layerObj._view.domainUrl || '') + layerObj._config.owsUrl;
 
             _.each(layerObj._config.layers.split(','), function(layerName)
             {
@@ -31,8 +30,8 @@
                 };
                 var opacity = _.isNumber(layerObj._displayFormat.opacity)
                     && layerObj._displayFormat.opacity;
-                var layer = new OpenLayers.Layer.WMS(layerName, layerObj._config.owsUrl, params, {
-                    url: layerObj._config.owsUrl,
+                var layer = new OpenLayers.Layer.WMS(layerName, layerObj._owsUrl, params, {
+                    url: layerObj._owsUrl,
                     isBaseLayer: false,
                     transitionEffect: 'resize',
                     tileSize: new OpenLayers.Size(256, 256),
@@ -86,7 +85,7 @@
                     outputFormat: 'json',
                     readFormat: new OpenLayers.Format.GeoJSON(),
                     srsName: layerObj._map.projection,
-                    url: layerObj._config.owsUrl,
+                    url: layerObj._owsUrl,
                     version: '1.1.0'
                 });
             }

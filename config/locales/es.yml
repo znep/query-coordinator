@@ -2209,7 +2209,7 @@ es:
       title: Recuperar su contraseña
     header:
       links:
-        account_html: Hola, <span class="currentUser"></span>
+        account_html: Bienvenido, <span class="currentUser"></span>
         account_tooltip: Su Página de inicio
         administration: Administración
     import_common:

@@ -17,7 +17,7 @@
                 new OpenLayers.Projection(layerObj._config.bboxCrs), layerObj._mapProjection); }
 
             // Support federation.
-            if (layerObj._view.domainUrl)
+            if (layerObj._view.domainUrl && !/^http/.test(layerObj._config.owsUrl))
             { layerObj._config.owsUrl = layerObj._view.domainUrl + layerObj._config.owsUrl; }
 
             _.each(layerObj._config.layers.split(','), function(layerName)

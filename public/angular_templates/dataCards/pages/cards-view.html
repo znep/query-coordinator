@@ -15,9 +15,13 @@
   </ol>
   <p>Provided By: {{datasetOwner}}</p>
   <p>Last updated: {{datasetDaysUnmodified}} days ago</p>
-  <ol>
-    <li ng-repeat="card in pageCards">
-      <card src="card"></card>
-    </li>
-  </ol>
+  <div>
+    <div class="cardSizeGroup" ng-repeat="cardSize in cardSizeNamesInDisplayOrder">
+      <div ng-repeat="cardLines in cardLinesBySizeGroup[cardSize]">
+        <div ng-repeat="card in cardLines">
+          <card src="card.model"></card>
+        </div>
+      </div>
+    </div>
+  </div>
 </div>

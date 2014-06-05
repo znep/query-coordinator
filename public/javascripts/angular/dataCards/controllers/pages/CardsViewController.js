@@ -1,10 +1,27 @@
 angular.module('dataCards.controllers').controller('CardsViewController',
   function($scope, AngularRxExtensions, SortedTileLayout, page) {
     AngularRxExtensions.install($scope);
-    var cardsInLayout = page.cards.
+
+    // A hash of:
+    //  "card size" -> array of rows (which themselves are arrays).
+    //
+    // For instance:
+    // {
+    //  "1": [
+    //         [ { cardSize: "1", model: <card model> } ]  // There's only one card of size 1, so it sits in its own row.
+    //       ],
+    //  "2": [
+    //         [ { cardSize: "2", model: <card model> },   // There are 5 cards of size 2. Here, they are split up into a
+    //           { cardSize: "2", model: <card model> } ], // pair of rows containing resp. 2 and 3 cards.
+    //
+    //         [ { cardSize: "2", model: <card model> },
+    //           { cardSize: "2", model: <card model> },
+    //           { cardSize: "2", model: <card model> } ]
+    //       ]
+    //  }
+    var cardLinesBySizeGroup = page.cards.
       flatMap(
         function(cards) {
-          // Have array of cards. Want to map to array of [ {card size, card model}, ... ]
           var sizeObservables = _.pluck(cards, 'cardSize');
           var zipped = Rx.Observable.zipArray(sizeObservables);
 
@@ -29,17 +46,12 @@ angular.module('dataCards.controllers').controller('CardsViewController',
     $scope.bindObservable('pageTitle', page.name);
     $scope.bindObservable('pageDescription', page.description);
 
-    $scope.bindObservable('cardLinesBySizeGroup', cardsInLayout);
-    $scope.bindObservable('cardSizeNamesInDisplayOrder', cardsInLayout.map(function(sizedCards) {
+    $scope.bindObservable('cardLinesBySizeGroup', cardLinesBySizeGroup);
+    $scope.bindObservable('cardSizeNamesInDisplayOrder', cardLinesBySizeGroup.map(function(sizedCards) {
       // Note that this only works because our card sizes ('1', '2', '3', and '4') sort well
       // lexicographically.
-      var sizeNamesInDisplayOrder = _.keys(sizedCards).sort();
-
-      return sizeNamesInDisplayOrder;
+      return _.keys(sizedCards).sort();
     }));
-    $scope.cardsForGroup = function(group) { 
-      return $scope.pageCardsBySizeGroup[group];
-    };
 
     $scope.bindObservable('dataset', page.dataset);
     $scope.bindObservable('datasetPages', page.dataset.pluckSwitch('pages'));
@@ -48,5 +60,4 @@ angular.module('dataCards.controllers').controller('CardsViewController',
       var dayInMillisec = 86400000;
       return Math.floor((Date.now() - date.getTime()) / dayInMillisec);
     }));
-    $scope.bindObservable('datasetOwner', page.dataset.pluckSwitch('owner'));
   });

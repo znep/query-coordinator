@@ -57,6 +57,9 @@
             { mapOptions.disableNavigation = true; }
             if (mapObj.settings.interactToScroll)
             { mapOptions.interactToScroll = true; }
+            if (_.isArray(mapObj._displayFormat.geocoderRadiusOptions))
+            { mapOptions.geocodeOptions
+                = { radiusOptions: mapObj._displayFormat.geocoderRadiusOptions }; }
 
             OpenLayers.ImgPath = '/images/openlayers/';
 

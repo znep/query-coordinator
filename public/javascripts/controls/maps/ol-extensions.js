@@ -22,6 +22,8 @@
         initialize: function(options) {
             this.position = new OpenLayers.Pixel(blist.openLayers.GeocodeDialog.X,
                                                  blist.openLayers.GeocodeDialog.Y);
+            this.radiusOptions = (options || {}).radiusOptions ||
+                [$.t('controls.map.auto'), '1mi', '2mi', '5mi', '10mi', '20mi', '50mi'];
             this.EVENT_TYPES = blist.openLayers.GeocodeDialog.prototype.EVENT_TYPES.concat(
                                OpenLayers.Control.prototype.EVENT_TYPES);
             OpenLayers.Control.prototype.initialize.apply(this, arguments);
@@ -55,8 +57,7 @@
                     $geolocator_prompt = $.tag({ tagName: 'div', 'class': 'geolocator',
                         contents: [{ tagName: 'input', 'class': 'textPrompt', type: 'text' },
                                    { tagName: 'select', contents:
-                                       _.map([$.t('controls.map.auto'),
-                                                '1mi', '2mi', '5mi', '10mi', '20mi', '50mi'],
+                                       _.map(control.radiusOptions,
                                            function(text)
                                            { return { tagName: 'option', contents: text }; })
                                    },
@@ -197,6 +198,14 @@
             {
                 if (radius[2] == 'mi')
                 { radius = parseFloat(radius[1]) * 1609.344; } // Miles to meters.
+                else if (radius[2] == 'km')
+                { radius = parseFloat(radius[1]) * 1000; } // Kilometers to meters.
+                else if (radius[2] == 'Mm')
+                { radius = parseFloat(radius[1]) * 1000000; } // Megameters to meters.
+                else if (_.include(['nmi', 'M', 'NM', 'nm'], radius[2]))
+                { radius = parseFloat(radius[1]) * 1852; } // Intl nautical miles to meters.
+                else if (radius[2] == 'm')
+                { radius = parseFloat(radius[1]); } // Meters to meters.
 
                 var latlng = new google.maps.LatLng(lonlat.lat, lonlat.lon);
 
@@ -466,7 +475,7 @@
                 new blist.openLayers.Attribution(),
                 new blist.openLayers.MapTypeSwitcher(),
                 new blist.openLayers.Overview(),
-                new blist.openLayers.GeocodeDialog(),
+                new blist.openLayers.GeocodeDialog(options.geocodeOptions),
                 new blist.openLayers.IconCache()
             ];
 

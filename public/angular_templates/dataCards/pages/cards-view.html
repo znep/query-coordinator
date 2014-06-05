@@ -16,9 +16,9 @@
   <p>Provided By: {{datasetOwner}}</p>
   <p>Last updated: {{datasetDaysUnmodified}} days ago</p>
   <div>
-    <div class="cardSizeGroup" ng-repeat="cardSize in cardSizeNamesInDisplayOrder">
-      <div ng-repeat="cardLines in cardLinesBySizeGroup[cardSize]">
-        <div ng-repeat="card in cardLines">
+    <div class="cardSizeGroup cardSize{{cardSize}}" ng-repeat="cardSize in cardSizeNamesInDisplayOrder">
+      <div class="row" ng-repeat="cardLine in cardLinesBySizeGroup[cardSize]">
+        <div class="cardTile span{{12/cardLine.length}}" ng-repeat="card in cardLine">
           <card src="card.model"></card>
         </div>
       </div>

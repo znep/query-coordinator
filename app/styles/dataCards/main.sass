@@ -11,16 +11,16 @@ a
 .cards-view
   .wrapper
     background: #333
-  .row
-    height: 300px
-    &.tertiary
-      height: 100px
+  .cardSizeGroup
+    &.cardSize1 .card
+      height: 300px
+    &.cardSize2 .card
+      height: 250px
+    &.cardSize3 .card
+      height: 200px
 
-    .facet
-      background: #555
-      border: 1px solid black
-    &:nth-of-type(odd) .facet
-      background: #666
+    .card
+      border: 2px solid #bbb
 
 $top-nav-height: 40px
 $facets-list-width: 20%

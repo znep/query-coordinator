@@ -22,33 +22,22 @@ angular.module('dataCards.services').factory('PageDataService', function($q) {
     }
   });
 
-  var cardsBlobPromise = $q.when({
-    "cards": [
-      {
+  function genMockCard(field, size) {
+    return {
         "description": "I am a fancy card",
-        "fieldName": "crime_type",
-        "cardSize": 1,
-        "cardCustomStyle": { "barColor": "#659CEF" },
-        "expandedCustomStyle": { "zebraStripeRows" : true } ,
+        "fieldName": field,
+        "cardSize": size,
+        "cardCustomStyle": {},
+        "expandedCustomStyle": {} ,
         "displayMode": "figures",
-        "expanded": true
-      }, 
-      {
-        "description": "I am a superfancy card",
-        "fieldName": "ward",
-        "cardSize": 2,
-        "cardCustomStyle": {
-          "choroplethBreaks": { 
-            "1-100": "#659CEF", 
-            "101-200": "#65EF9C", 
-            "201-300": "#9C65EF" 
-          } 
-        },
-        "expandedCustomStyle": { "zebraStripeRows" : false },
-        "displayMode": "visualization",
         "expanded": false
-      }
-    ]
+      };
+  };
+  var cardsBlobPromise = $q.when({
+    "cards":
+      _.times(3, function() { return genMockCard("ward", 1); }).
+      concat(_.times(8, function() { return genMockCard("crime_type", 2); })).
+      concat(_.times(18, function() { return genMockCard("crime_time", 3); }))
   });
 
   return {

@@ -1,6 +1,5 @@
-<div ng-switch="cardType">
+<div class="card" ng-switch="cardType">
   <div ng-switch-when="column">Column Chart!</div>
   <div ng-switch-when="choropleth"><img src="http://upload.wikimedia.org/wikipedia/commons/7/73/Churros_el_hatillo.JPG" width="200" /></div>
   <div ng-switch-default>I dunno how to display {{cardType}} :(</div>
 </div>
-{{data}}

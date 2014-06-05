@@ -9,8 +9,6 @@ a
     color: #ccc
 
 .cards-view
-  .wrapper
-    background: #333
   .cardSizeGroup
     &.cardSize1 .card
       height: 300px
@@ -21,6 +19,27 @@ a
 
     .card
       border: 2px solid #bbb
+
+.card
+  color: black
+  background: white
+  padding: 15px
+  position: relative
+  .expandButton
+    position: absolute
+    top: 0
+    right: -10px
+    a
+      cursor: pointer
+      display: block
+      height: 1.8em
+      position: relative
+      width: 1.8em
+      color: #888
+      &:hover
+        color: #ccc
+      &:before
+        content: '⤢'
 
 $top-nav-height: 40px
 $facets-list-width: 20%

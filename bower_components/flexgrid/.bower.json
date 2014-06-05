@@ -1,0 +1,14 @@
+{
+  "name": "flexgrid",
+  "homepage": "https://github.com/ptb/flexgrid",
+  "_release": "d99393c239",
+  "_resolution": {
+    "type": "branch",
+    "branch": "master",
+    "commit": "d99393c23942f7db505128f3d35b9ac9852d1959"
+  },
+  "_source": "git://github.com/ptb/flexgrid.git",
+  "_target": "*",
+  "_originalSource": "ptb/flexgrid",
+  "_direct": true
+}

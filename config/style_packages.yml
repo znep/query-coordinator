@@ -11,6 +11,7 @@ bower-styles-all:
 
 angular-app-dataCards:
 - dataCards/main
+- dataCards/flexgrid-custom
 
 includes:
 - sass-common

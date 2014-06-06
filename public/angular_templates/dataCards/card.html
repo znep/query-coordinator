@@ -1,7 +1,9 @@
 <div ng-switch="cardType">
   <div ng-switch-when="column">
-    <div column-chart class="column-chart"></div>
-    <div column-chart class="column-chart" mode="508"></div>
+    <div class="column-chart-container">
+      <div column-chart class="column-chart"></div>
+    </div>
+    <div column-chart class="column-chart s508" mode="508"></div>
   </div>
   <div ng-switch-when="choropleth">
     <img src="http://upload.wikimedia.org/wikipedia/commons/7/73/Churros_el_hatillo.JPG" width="200" />

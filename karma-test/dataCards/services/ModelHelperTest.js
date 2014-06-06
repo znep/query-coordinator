@@ -185,6 +185,7 @@ describe("Page model", function() {
     _mh.addReadOnlyPropertyWithLazyDefault('description', instance, promiser);
 
     expect(function() {
+      'use strict';
       instance.description = 'foo';
     }).to.throw(TypeError);
   });

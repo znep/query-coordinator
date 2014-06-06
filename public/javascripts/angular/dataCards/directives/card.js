@@ -20,7 +20,7 @@ angular.module('dataCards.directives').directive('card', function(AngularRxExten
     } else if (logicalType === 'text' || logicalType === 'name' || logicalType === 'identifier') {
       if (physicalType === 'text' || physicalType === 'number') {
         return 'search';
-      }
+    }
     }
     throw new Error('Unknown visualization for logicalDatatype: ' + logicalType +
       ' and physicalDatatype: ' + physicalType);
@@ -39,8 +39,8 @@ angular.module('dataCards.directives').directive('card', function(AngularRxExten
 
       var cardType = sourceData.pluck('fieldName').combineLatest(dataset.pluckSwitch('columns'),
         function(cardField, datasetFields) {
-          var column = datasetFields[cardField];
-          return cardTypeMapping(column);
+        var column = datasetFields[cardField];
+        return cardTypeMapping(column);
         }
       );
 
@@ -48,6 +48,11 @@ angular.module('dataCards.directives').directive('card', function(AngularRxExten
       $scope.bindObservable('data', sourceData.pluckSwitch('data'));
       $scope.bindObservable('filteredData', sourceData.pluckSwitch('filteredData'));
       $scope.bindObservable('fieldName', sourceData.pluck('fieldName'));
+      $scope.bindObservable('expanded', sourceData.pluckSwitch('expanded'));
+
+      $scope.toggleExpanded = function() {
+        $scope.sourceData.expanded = !$scope.expanded;
+      };
     }
   };
 

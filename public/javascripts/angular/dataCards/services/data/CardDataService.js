@@ -1,6 +1,6 @@
 angular.module('dataCards.services').factory('CardDataService', function($q) {
 
-  var count = 80;
+  var count = Math.floor(Math.random() * 40 + Math.random() * 25);
   var names = [];
   for (var i = 0 ; i < count; i++) {
     names.push(_.shuffle('baeiouqrt').join(''));

@@ -25,18 +25,18 @@
     <div class="cardSizeGroup cardSize{{cardSize}}" ng-repeat="cardSize in cardSizeNamesInDisplayOrder">
       <div class="row" ng-repeat="cardLine in cardLinesBySizeGroup[cardSize]">
         <div class="cardTile span{{12/cardLine.length}}" ng-repeat="card in cardLine">
-          <card src="card.model"></card>
+          <card source-data="card.model"></card>
         </div>
       </div>
     </div>
   </div>
   <div ng-if="useExpandedLayout" class="expandedLayout">
     <div class="expandedCards" style="top: {{availableContentHeight}}px">
-      <card src="expandedCards[0]"></card>
+      <card source-data="expandedCards[0]"></card>
     </div>
     <div class="collapsedCards">
       <div ng-repeat="cardModel in collapsedCards">
-        <card src="cardModel"></card>
+        <card source-data="cardModel"></card>
       </div>
     </div>
   </div>

@@ -39,8 +39,8 @@ angular.module('dataCards.directives').directive('card', function(AngularRxExten
 
       var cardType = sourceData.pluck('fieldName').combineLatest(dataset.pluckSwitch('columns'),
         function(cardField, datasetFields) {
-        var column = datasetFields[cardField];
-        return cardTypeMapping(column);
+          var column = datasetFields[cardField];
+          return cardTypeMapping(column);
         }
       );
 

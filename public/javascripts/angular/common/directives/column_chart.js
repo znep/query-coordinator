@@ -141,7 +141,8 @@ angular.module('socrataCommon.directives').directive('columnChart', function() {
       var filterApplied = function() { return true; };
 
       if (attrs.mode == 508) {
-        render508Table(element, data, filteredData, filterApplied(), scope.fieldName);
+        // This WIP temporarily disabled for demo
+//        render508Table(element, data, filteredData, filterApplied(), scope.fieldName);
       } else {
         renderColumnChart(element, data, filteredData, filterApplied());
       }

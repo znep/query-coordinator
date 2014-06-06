@@ -1,5 +1,27 @@
 angular.module('dataCards.controllers').controller('CardsViewController',
   function($scope, AngularRxExtensions, SortedTileLayout, page) {
+
+    // Given a model property name P and an observable sequence of arrays of models having property P,
+    // returns an observable sequence of arrays of objects pulling the last value yielded from P next
+    // to the model. The elements in the yielded arrays look like:
+    // {
+    //  <P>: <the last value of P from the model>
+    //  model: <the model that yielded the value>
+    // }
+    function zipLatestArray(obs, property) {
+      return obs.flatMapLatest(
+        function(values) {
+          return Rx.Observable.combineLatest(_.pluck(values, property), function() {
+            return _.map(_.zip(values, arguments), function(arr) {
+              var r={ model: arr[0] };
+              r[property] = arr[1];
+              return r;
+            });
+          });
+        }
+      );
+    };
+
     AngularRxExtensions.install($scope);
 
     // A hash of:
@@ -19,26 +41,10 @@ angular.module('dataCards.controllers').controller('CardsViewController',
     //           { cardSize: "2", model: <card model> } ]
     //       ]
     //  }
-    var cardLinesBySizeGroup = page.cards.
-      flatMap(
-        function(cards) {
-          var sizeObservables = _.pluck(cards, 'cardSize');
-          var zipped = Rx.Observable.zipArray(sizeObservables);
-
-          var withModel = zipped.map(function(sizes) {
-            return _.map(sizes, function(size, i) {
-              return {
-                cardSize: size,
-                model: cards[i]
-              };
-            });
-          });
-
-          return withModel;
-        }
-      ).
+    var layout = new SortedTileLayout();
+    var cardLinesBySizeGroup = zipLatestArray(page.cards, 'cardSize').
       map(function(sizedCards) {
-        return new SortedTileLayout().doLayout(sizedCards);
+        return layout.doLayout(sizedCards);
       });
 
     $scope.page = page;
@@ -52,38 +58,18 @@ angular.module('dataCards.controllers').controller('CardsViewController',
       // lexicographically.
       return _.keys(sizedCards).sort();
     }));
-    var expandedCards = page.cards.
-      flatMapLatest(
-        function(cards) {
-          return Rx.Observable.combineLatest(_.pluck(cards, 'expanded'), function() {
-            return _.reduce(arguments, function(acc, v, i) {
-              if (v) {
-                acc.push(cards[i]);
-              }
-              return acc;
-            }, []);
-          });
-        }
-      );
-    var collapsedCards = page.cards.
-      flatMapLatest(
-        function(cards) {
-          return Rx.Observable.combineLatest(_.pluck(cards, 'expanded'), function() {
-            return _.reduce(arguments, function(acc, v, i) {
-              if (!v) {
-                acc.push(cards[i]);
-              }
-              return acc;
-            }, []);
-          });
-        }
-      );
+
+    var expandedZipped = zipLatestArray(page.cards, 'expanded');
+    var expandedCards = expandedZipped.map(function(cards) {
+      return _.pluck(_.filter(cards, 'expanded'), 'model');
+    });
+    var collapsedCards = expandedZipped.map(function(cards) {
+      return _.pluck(_.reject(cards, 'expanded'), 'model');
+    });
     $scope.bindObservable('collapsedCards', collapsedCards);
     $scope.bindObservable('expandedCards', expandedCards);
-    $scope.bindObservable('useExpandedLayout', page.cards.flatMapLatest(function(cards) {
-      return Rx.Observable.combineLatest(_.pluck(cards, 'expanded'), function() {
-        return _.any(arguments);
-      });
+    $scope.bindObservable('useExpandedLayout', expandedCards.map(function(cards) {
+      return _.any(cards, 'expanded');
     }));
 
     $scope.bindObservable('dataset', page.dataset);

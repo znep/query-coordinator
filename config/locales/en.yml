@@ -1854,7 +1854,7 @@ en:
         download:
           download_as: Download As
           geo_header: Download Geospatial Data
-          layers_header: Download Tabular Layers
+          layers_header: Download without Geospatial Data
           subtitle: Download a copy of this dataset in a static format
           download_dataset: Please download the dataset from which this view is derived.
           title: Download

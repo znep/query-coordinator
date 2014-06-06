@@ -31,7 +31,7 @@
                         template: 'downloadsSectionContent',
                         directive: $.templates.downloadsTable.directive[type],
                         data: { downloadTypes: $.templates.downloadsTable.downloadTypes[type],
-                                layerDownloadTypes: $.templates.downloadsTable.downloadTypes['normal'],
+                                layerDownloadTypes: $.templates.downloadsTable.downloadTypes['geo_attributes'],
                                 view: this._view },
                         callback: function($sect)
                         {
@@ -77,10 +77,7 @@
                     }
                 }
             ];
-        },
-
-        _getFinishButtons: function()
-        { return [$.controlPane.buttons.done]; }
+        }
     }, {name: 'downloadDataset'}, 'controlPane');
 
     if ($.isBlank(blist.sidebarHidden.exportSection) || !blist.sidebarHidden.exportSection.download)

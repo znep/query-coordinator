@@ -14,13 +14,19 @@
     </li>
   </ol>
   <p>Last updated: {{datasetDaysUnmodified}} days ago</p>
-  <div>
+  <div ng-if="!useExpandedLayout">
     <div class="cardSizeGroup cardSize{{cardSize}}" ng-repeat="cardSize in cardSizeNamesInDisplayOrder">
       <div class="row" ng-repeat="cardLine in cardLinesBySizeGroup[cardSize]">
         <div class="cardTile span{{12/cardLine.length}}" ng-repeat="card in cardLine">
           <card src="card.model"></card>
         </div>
       </div>
+    </div>
+  </div>
+  <div ng-if="useExpandedLayout">
+    <card src="expandedCards[0]"></card>
+    <div ng-repeat="cardModel in collapsedCards">
+      <card src="cardModel"></card>
     </div>
   </div>
 </div>

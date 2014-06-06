@@ -52,6 +52,39 @@ angular.module('dataCards.controllers').controller('CardsViewController',
       // lexicographically.
       return _.keys(sizedCards).sort();
     }));
+    var expandedCards = page.cards.
+      flatMapLatest(
+        function(cards) {
+          return Rx.Observable.combineLatest(_.pluck(cards, 'expanded'), function() {
+            return _.reduce(arguments, function(acc, v, i) {
+              if (v) {
+                acc.push(cards[i]);
+              }
+              return acc;
+            }, []);
+          });
+        }
+      );
+    var collapsedCards = page.cards.
+      flatMapLatest(
+        function(cards) {
+          return Rx.Observable.combineLatest(_.pluck(cards, 'expanded'), function() {
+            return _.reduce(arguments, function(acc, v, i) {
+              if (!v) {
+                acc.push(cards[i]);
+              }
+              return acc;
+            }, []);
+          });
+        }
+      );
+    $scope.bindObservable('collapsedCards', collapsedCards);
+    $scope.bindObservable('expandedCards', expandedCards);
+    $scope.bindObservable('useExpandedLayout', page.cards.flatMapLatest(function(cards) {
+      return Rx.Observable.combineLatest(_.pluck(cards, 'expanded'), function() {
+        return _.any(arguments);
+      });
+    }));
 
     $scope.bindObservable('dataset', page.dataset);
     $scope.bindObservable('datasetPages', page.dataset.pluckSwitch('pages'));

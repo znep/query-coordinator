@@ -41,6 +41,11 @@ angular.module('dataCards.directives').directive('card', function(AngularRxExten
 
       $scope.bindObservable('cardType', cardType);
       $scope.bindObservable('data', data);
+      $scope.bindObservable('expanded', src.pluckSwitch('expanded'));
+
+      $scope.toggleExpanded = function() {
+        $scope.src.expanded = !$scope.expanded;
+      };
     }
   }
 });

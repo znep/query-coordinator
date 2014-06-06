@@ -176,7 +176,7 @@ class CustomContentController < ApplicationController
 
       # suppress govstat chrome for selected urls
       config = CurrentDomain.configuration('gov_stat')
-      if config.present? && config.properties.suppress_govstat.respond_to?(:any)
+      if config.present? && config.properties.suppress_govstat.respond_to?(:any?)
         @suppress_govstat = true if config.properties.suppress_govstat.any? { |route| request.path =~ Regexp.new(route) }
       end
     end

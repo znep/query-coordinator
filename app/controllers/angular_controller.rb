@@ -7,7 +7,7 @@ class AngularController < ActionController::Base
     raise 'Need an app parameter' unless request[:app]
 
     app_feature_flag = "app-#{request[:app]}"
-    render_error(404) unless FeatureFlags.derive(nil, request)[app_feature_flag]
+    render_404 unless FeatureFlags.derive(nil, request)[app_feature_flag]
   end
 
 end

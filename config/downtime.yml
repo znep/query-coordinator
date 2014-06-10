@@ -42,7 +42,7 @@ azure_westeurope_production:
     downtime_end:   2014-04-12t18:00:00-07:00
 
 production:
-    message_start:  2014-05-15t17:00:00-07:00
-    message_end:    2014-05-17t18:00:00-07:00
-    downtime_start: 2014-05-17t17:00:00-07:00
-    downtime_end:   2014-05-17t18:00:00-07:00
+    message_start:  2014-06-19t17:00:00-07:00
+    message_end:    2014-06-21t21:00:00-07:00
+    downtime_start: 2014-06-21t17:00:00-07:00
+    downtime_end:   2014-06-21t21:00:00-07:00

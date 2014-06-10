@@ -29,7 +29,7 @@ dataCards.config(function($provide, $stateProvider, $urlRouterProvider, $locatio
       views: {
         'mainContent': {
           //TODO figure out a way of getting the template dir out of rails.
-          templateUrl: '/angular_templates/dataCards/pages/cards-view.html',
+          templateUrl: '/angular_templates/data-cards/pages/cards-view.html',
           controller: 'CardsViewController'
         }
       }

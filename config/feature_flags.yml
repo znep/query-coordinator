@@ -31,6 +31,6 @@ stamen:
   description: Easter egg of map backgrounds. Set false to turn it off. Choose one of the available values to select this base layer for ALL maps on the domain.
   defaultValue: false
   expectedValues: watercolor toner terrain
-app-dataCards:
+app-data-cards:
   description: Enable OpenData V5 pages (card view).
   defaultValue: false

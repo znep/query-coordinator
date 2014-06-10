@@ -19,16 +19,16 @@ module.exports = function ( karma ) {
       'bower_components/rxjs/rx.binding.js',
       'bower_components/rxjs/rx.aggregates.js',
       'bower_components/jjv/lib/jjv.js',
-      'karma-test/dataCards/*.js',
-      'karma-test/dataCards/**/*.js',
+      'karma-test/data-cards/*.js',
+      'karma-test/data-cards/**/*.js',
       'public/javascripts/angular/common/*.js',
       'public/javascripts/angular/common/**/*.js',
-      'public/javascripts/angular/dataCards/controllers.js',
-      'public/javascripts/angular/dataCards/models.js',
-      'public/javascripts/angular/dataCards/**/*.js'
+      'public/javascripts/angular/data-cards/controllers.js',
+      'public/javascripts/angular/data-cards/models.js',
+      'public/javascripts/angular/data-cards/**/*.js'
     ],
     exclude: [
-      'public/javascripts/angular/dataCards/app.js',
+      'public/javascripts/angular/data-cards/app.js',
     ],
 
     frameworks: [ 'mocha', 'chai', 'chai-as-promised' ],
@@ -42,7 +42,7 @@ module.exports = function ( karma ) {
 
     coverageReporter: {
       type : 'html',
-      dir : 'karma-test/dataCards/coverage/'
+      dir : 'karma-test/data-cards/coverage/'
     },
     /**
      * On which port should the browser connect, on which port is the test runner

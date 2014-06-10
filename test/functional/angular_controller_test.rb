@@ -8,14 +8,14 @@ class AngularControllerTest < ActionController::TestCase
   end
 
   test 'should successfully get serve_app for an app with its feature flag set to true' do
-    # i.e. url_for(:action => :serve_app, :controller => :angular, :id => '1234-1234', :app => 'dataCards')
+    # i.e. url_for(:action => :serve_app, :controller => :angular, :id => '1234-1234', :app => 'data-cards')
     FeatureFlags.stubs(
       :derive => {
         'app-dummy' => false,
-        'app-dataCards' => true
+        'app-data-cards' => true
       }
     )
-    get :serve_app, :id => '1234-1234', :app => 'dataCards'
+    get :serve_app, :id => '1234-1234', :app => 'data-cards'
     assert_response :success
   end
 
@@ -23,10 +23,10 @@ class AngularControllerTest < ActionController::TestCase
     FeatureFlags.stubs(
       :derive => {
         'app-dummy' => true,
-        'app-dataCards' => false
+        'app-data-cards' => false
       }
     )
-    get :serve_app, :id => '1234-1234', :app => 'dataCards'
+    get :serve_app, :id => '1234-1234', :app => 'data-cards'
     assert_response 404
   end
 
@@ -34,7 +34,7 @@ class AngularControllerTest < ActionController::TestCase
     FeatureFlags.stubs(
       :derive => {}
     )
-    get :serve_app, :id => '1234-1234', :app => 'dataCards'
+    get :serve_app, :id => '1234-1234', :app => 'data-cards'
     assert_response 404
 
     FeatureFlags.stubs(
@@ -42,7 +42,7 @@ class AngularControllerTest < ActionController::TestCase
         'app-dummy' => true
       }
     )
-    get :serve_app, :id => '1234-1234', :app => 'dataCards'
+    get :serve_app, :id => '1234-1234', :app => 'data-cards'
     assert_response 404
   end
 

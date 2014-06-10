@@ -9,9 +9,9 @@ bower-styles-all:
   # nothing for now
 # END BOWER-MANAGED ASSETS
 
-angular-app-dataCards:
-- dataCards/main
-- dataCards/flexgrid-custom
+angular-app-data-cards:
+- data-cards/main
+- data-cards/flexgrid-custom
 
 includes:
 - sass-common

@@ -28,8 +28,23 @@ angular.module('dataCards.controllers')
   };
 
   // TODO: temp attribute. Comes from geojson. Replace with real one once API gets up and running.
-  var attr = 'VALUE', lowColor = '#B09D41', hiColor = '#323345', nullColor = '#ddd';
-
+  var attr = 'VALUE',
+      sequentialColors = ['#B09D41', '#323345'],
+      divergingColors = ['brown','lightyellow','teal'],
+      qualitativeColors = {
+        3: ["#8dd3c7","#ffffb3","#bebada"],
+        4: ["#8dd3c7","#ffffb3","#bebada","#fb8072"],
+        5: ["#8dd3c7","#ffffb3","#bebada","#fb8072","#80b1d3"],
+        6: ["#8dd3c7","#ffffb3","#bebada","#fb8072","#80b1d3","#fdb462"],
+        7: ["#8dd3c7","#ffffb3","#bebada","#fb8072","#80b1d3","#fdb462","#b3de69"],
+        8: ["#8dd3c7","#ffffb3","#bebada","#fb8072","#80b1d3","#fdb462","#b3de69","#fccde5"],
+        9: ["#8dd3c7","#ffffb3","#bebada","#fb8072","#80b1d3","#fdb462","#b3de69","#fccde5","#d9d9d9"],
+        10: ["#8dd3c7","#ffffb3","#bebada","#fb8072","#80b1d3","#fdb462","#b3de69","#fccde5","#d9d9d9","#bc80bd"],
+        11: ["#8dd3c7","#ffffb3","#bebada","#fb8072","#80b1d3","#fdb462","#b3de69","#fccde5","#d9d9d9","#bc80bd","#ccebc5"],
+        12: ["#8dd3c7","#ffffb3","#bebada","#fb8072","#80b1d3","#fdb462","#b3de69","#fccde5","#d9d9d9","#bc80bd","#ccebc5","#ffed6f"]
+      },
+      nullColor = '#ddd';
+      // TODO: assumes min colors = 3, max colors = 12. Enforce this with error catching.
   // Choropleth Styles
 
   var classBreaks = {};
@@ -85,14 +100,38 @@ angular.module('dataCards.controllers')
     };
   };
 
-  var updateColorScale = function() {
+  var updateColorScale = function(colorClass) {
     // use LAB color space to approximate perceptual brightness,
     // bezier interpolation, and auto-correct for color brightness.
     // See more: https://vis4.net/blog/posts/mastering-multi-hued-color-scales/
-    var bezierColor = chroma.interpolate.bezier([lowColor, hiColor]);
-    scale = new chroma.scale(bezierColor)
+    var colorRange;
+    switch (colorClass.toLowerCase()) {
+      case 'diverging':
+        colorRange = divergingColors;
+        coL = false;
+        bezier = false;
+        break;
+      case 'qualitative':
+        colorRange = qualitativeColors[classBreaks.breaks.length];
+        coL = false;
+        bezier = false;
+        break;
+      case 'sequential':
+        colorRange = sequentialColors;
+        coL = true;
+        bezier = true;
+        break;
+      default:
+        throw new Error("[MapController] Invalid color class specified for updateColorScale");
+    }
+    if (bezier) {
+      colors = chroma.interpolate.bezier(colorRange);
+    } else {
+      colors = colorRange;
+    }
+    scale = new chroma.scale(colors)
       .domain(classBreaks.breaks)
-      .correctLightness(true)
+      .correctLightness(coL)
       .mode('lab');
   }
   var updateClassBreaks = function(data) {
@@ -121,7 +160,7 @@ angular.module('dataCards.controllers')
     // TODO: temp attribute used
     var data = getGeojsonData(featureCollections);
     updateClassBreaks(data);
-    updateColorScale();
+    updateColorScale('qualitative');
     // initiate/update legend, with class breaks and colors
     $scope.legend = {
       position: 'bottomleft',

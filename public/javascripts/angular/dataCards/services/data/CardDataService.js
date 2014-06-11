@@ -35,6 +35,17 @@ angular.module('dataCards.services').factory('CardDataService', function($q) {
         return a.value + 0 < b.value + 0 ? 1 : -1;
       });
       return $q.when(obj);
+    },
+
+    getFakeGeojsonData: function(fieldName) {
+      var data;
+      $http.get('/datasets/geojson/Neighborhoods_2012b.json').then(function(result) {
+        // GeoJson was reprojected and converted to Geojson with http://converter.mygeodata.eu/vector
+        // reprojected to WGS 84 (SRID: 4326)
+        data = result.data;
+        console.log('data!', data);
+        return $q.when(data);
+      });
     }
   };
 

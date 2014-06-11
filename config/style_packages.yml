@@ -15,6 +15,7 @@ angular-app-dataCards:
 - dataCards/ellipsis
 - dataCards/maps
 - dataCards/_leaflet
+- dataCards/choropleth
 
 includes:
 - sass-common

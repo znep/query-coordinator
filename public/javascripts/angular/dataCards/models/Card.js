@@ -34,6 +34,10 @@ angular.module('dataCards.models').factory('Card', function($injector, ModelHelp
     ModelHelper.addPropertyWithLazyDefault('filteredData', this, function() {
       return CardDataService.getFilteredData(self.fieldName);
     });
+
+    ModelHelper.addPropertyWithLazyDefault('fakeGeojsonData', this, function() {
+      return CardDataService.getFakeGeojsonData(self.fieldName);
+    });
   }
 
   Card.deserialize = function(page, blob) {

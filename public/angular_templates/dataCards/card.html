@@ -10,7 +10,7 @@
     <div column-chart class="column-chart" unfiltered-data="unfilteredData" filtered-data="filteredData" field-name="fieldName"></div>
   </div>
   <div ng-switch-when="choropleth">
-    <img src="http://upload.wikimedia.org/wikipedia/commons/7/73/Churros_el_hatillo.JPG" width="200" />
+    <choropleth data="fakeGeojsonData">
   </div>
     <div ng-switch-default>I dunno how to display {{cardType}} :(</div>
   </div>

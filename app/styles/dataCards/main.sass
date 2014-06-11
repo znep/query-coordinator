@@ -104,7 +104,10 @@ $pageNameMaxLineCount: 2
 .card
   color: black
   background: white
-  padding: 15px
+  padding: 0
+  margin: 0
+  // Card should not assume padding or margin.
+  // Containers within card should have control over padding and margin of card content.
   position: relative
   .expandButton
     font-family: "SSAir"

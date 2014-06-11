@@ -5,7 +5,10 @@
 TODO, this needs to be integrated as a Rake task and generalized. For now:
 
 ==== Setup
-Make sure you've installed karma-cli and phantomjs globally: `sudo npm install -g karma-cli phantomjs karma-phantomjs-launcher grunt`
+
+Ensure that you are using Ruby version 1.9.3 or greater.
+
+Make sure you've installed karma-cli and phantomjs globally: `npm install -g karma-cli phantomjs karma-phantomjs-launcher grunt`
 
 ==== To run unit tests once in all supported browsers:
 `(cd karma-test/dataCards && karma start karma-unit.js)
@@ -29,6 +32,8 @@ In order to allow clearer management of dependencies, Bower was (eventually) int
  - bower-rails does not introduce a deploy dependency, but since we've butchered the Rails asset pipeline from the beginning this package turned out to be difficult to integrate.
 
 Instead, we're using a standard bower setup plus a script to install required package files into our pre-existing Jammit asset structure. This script is [bower-installer](https://github.com/blittle/bower-installer). The configuration for this can be found in the frontend's bower.json.
+
+WARNING: running `bower-installer` will replace the contents of all your bower files in public/javascript/bowers with their original content, replacing any changes you may have made. If you made any modifications to the files in public/javascript/bower, move them to another folder!
 
 This gives us a few things:
  - Deploy/build don't have to care at all. All the bower package files are just dropped into /public/javascripts, just like was done manually.

@@ -1,0 +1,70 @@
+<div class="demo-content">
+  <h1>Demo Choropleth</h1>
+  <p class="hint">
+    Made in <a href="https://github.com/tombatossals/angular-leaflet-directive" target="_blank">Angular Leaflet Directives</a> with mock Geojson data.
+  </p>
+
+  <div class="side">
+    <p>
+      <h3>Choose a Geojson Rendering Method</h3>
+      Choose one:
+      <a class="toggle-link" ng-click="updateLoadingMethod('Many')">Load each object into individual layers</a>
+      <a class="toggle-link" ng-click="updateLoadingMethod('One')">Merge all objects into one layer</a>
+    </p>
+    <div ng-if="loadingMethod">
+      <h3>Toggle Geojson Objects on the Map</h3>
+      <a ng-repeat="layer in possibleLayers" class="sticky-link" ng-click="updateDesiredLayers(layer)">{{layer}}</a>
+    </div>
+    <div>
+      <a ng-repeat="layer in possibleLayers" target="_blank" class="plain-link" href="/datasets/geojson/{{layer}}.json">{{layer}}.json</a>
+    </div>
+    <h4>Geojson Layers</h4>
+    <table>
+      <tr>
+        <th>Description</th>
+        <th>File Size</th>
+        <th>No. Features</th>
+        <th>Total Wait</th>
+        <th>Wait (ms) per KB</th>
+        <th>Wait (ms) per Feature</th>
+      </tr>
+      <tr ng-repeat="datum in geojson.data">
+        <td>{{datum.id}}</td>
+        <td>{{datum.filesize}} KB</td>
+        <td>{{datum.features.length}} (primarily {{datum.features[0].geometry.type}})</td>
+        <td>{{datum.duration || sumTimers}} ms</td>
+        <td>{{((datum.duration || sumTimers)/ datum.filesize).toFixed(2)}}</td>
+        <td>{{((datum.duration || sumTimers) / datum.features.length).toFixed(2) }}</td>
+      </tr>
+      <tr ng-if="!geojson.data">
+        <td>N/A</td>
+        <td>N/A</td>
+        <td>N/A</td>
+        <td>N/A</td>
+        <td>N/A</td>
+        <td>N/A</td>
+      </tr>
+    </table>
+
+    <h4>Rendering Times of Current Action</h4>
+
+    <table class="timers-table">
+      <tr>
+        <th>Description</th>
+        <th>File Size</th>
+        <th>Step Duration</th>
+      </tr>
+      <tr ng-repeat="timer in timers">
+        <td>{{timer.name}}</td>
+        <td>{{timer.filesize}}</td>
+        <td>{{timer.duration || 0 }}</td>
+      </tr>
+      <tr>
+        <td></td>
+        <td>Total Wait Time</td>
+        <td><strong>{{sumTimers}} ms</strong></td>
+      </tr>
+    </table>
+  </div>
+  <leaflet class="demo-map" bounds="bounds" defaults="defaults" center="center" geojson="geojson" legend="legend"></leaflet>
+</div>

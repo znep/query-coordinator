@@ -5,7 +5,8 @@ $bgColor: #4a525a
 body
   background: $bgColor
   color: white
-  font-family: Arial, Helvetica, sans-serif
+  font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif
+  weight: 200
   margin: 0
 
 p
@@ -15,9 +16,17 @@ h1
   font-size: 1.5em
 
 a
-  color: white
-  &:visited
-    color: #ccc
+  color: #696969
+  text-decoration: none
+
+.hint
+  color: #aaa
+
+.sticky-link
+
+  &:hover, &.active
+    background-color: #ddd !important
+    color: black !important
 
 $quickFilterBarHeight: 40px
 $cardBorder: 2px

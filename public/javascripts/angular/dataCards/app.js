@@ -3,7 +3,9 @@ var dataCards = angular.module('dataCards', [
   'socrataCommon.directives',
   'dataCards.controllers',
   'dataCards.directives',
-  'dataCards.models'
+  'dataCards.models',
+  'leaflet-directive'
+  // 'pasvaz.bindonce' NOTE: use in the future to optimize Angular performance.
 ]);
 
 dataCards.config(function($provide, $stateProvider, $urlRouterProvider, $locationProvider) {
@@ -27,6 +29,30 @@ dataCards.config(function($provide, $stateProvider, $urlRouterProvider, $locatio
           controller: 'CardsViewController'
         }
       }
+    })
+    .state('view.facets', {
+      url: '/facets/:focusedFacet',
+      resolve: {
+        focusedFacet: function($stateParams, view) {
+          // note: the 'view' argument comes from the parent state's resolver.
+          return view.getFacetFromIdAsync($stateParams['focusedFacet']);
+        }
+      },
+      views: {
+        'mainContent': {
+          templateUrl: '/angular_templates/dataCards/pages/facets-view.html',
+          controller: 'FacetsViewController'
+        }
+      }
+    })
+    .state('view.demoMap', {
+      url: '/demo_map',
+      views: {
+        'mainContent': {
+          templateUrl: '/angular_templates/dataCards/pages/demo-map-view.html',
+          controller: 'MapController'
+        }
+      }
     });
 });
 
@@ -43,4 +69,22 @@ dataCards.run(function($rootScope, $state, $location) {
       id: id[0]
     });
   }
+
+  $rootScope.timers = [];
+
+  $rootScope.addTimer = function(name, filesize){
+
+    var duration = $rootScope.timers.length > 0 ? new Date().getTime() - $rootScope.timers.slice(-1)[0].timestamp : 0;
+
+    $rootScope.timers.push({
+      name: name,
+      filesize: (filesize || ''),
+      timestamp: new Date().getTime(),
+      duration: duration
+    });
+
+    $rootScope.sumTimers = ($rootScope.sumTimers || 0) + duration;
+  };
+
+  $rootScope.addTimer('Run Angular app and set up first timer');
 });

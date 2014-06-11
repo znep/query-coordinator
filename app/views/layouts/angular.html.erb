@@ -5,7 +5,7 @@
     <%= angular_stylesheet_tag %>
     <%= yield :head %>
   </head>
-  <body ng-app="<%= angular_app.gsub('-', '_').camelize(:lower) %>">
+  <body ng-app="<%= angular_app %>">
     <%= render angular_app %>
     <%= yield :layout %>
   </body>

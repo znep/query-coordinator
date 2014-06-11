@@ -368,8 +368,8 @@ Frontend::Application.routes do
     end
 
     scope :controller => 'angular', :constraints => { :id => UID_REGEXP } do
-      match '/view/:id', :action => 'serve_app', :app => 'data-cards'
-      match '/view/*angularRoute', :action => 'serve_app', :app => 'data-cards' # See angular-app-{:app} in assets.yml.
+      match '/view/:id', :action => 'serve_app', :app => 'dataCards'
+      match '/view/*angularRoute', :action => 'serve_app', :app => 'dataCards' # See angular-app-{:app} in assets.yml.
     end
 
     # Custom pages, catalogs, facets

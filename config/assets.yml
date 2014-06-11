@@ -665,10 +665,10 @@ javascripts:
 
   # Angular apps served from the Angular controller.
   # These packages are referenced via the :app parameter to serve_app.
-  angular-app-data-cards:
-    - public/javascripts/angular/data-cards/app.js
-    - public/javascripts/angular/data-cards/controllers.js
-    - public/javascripts/angular/data-cards/**/*.js
+  angular-app-dataCards:
+    - public/javascripts/angular/dataCards/app.js
+    - public/javascripts/angular/dataCards/controllers.js
+    - public/javascripts/angular/dataCards/**/*.js
 
   # BEGIN BOWER-MANAGED ASSETS
   # NOTE this mega-package of all bower assets is not ideal.

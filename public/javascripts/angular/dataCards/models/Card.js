@@ -27,11 +27,11 @@ angular.module('dataCards.models').factory('Card', function($injector, ModelHelp
       ModelHelper.addProperty(field, self);
     });
 
-    ModelHelper.addReadOnlyPropertyWithLazyDefault('data', this, function() {
-      return CardDataService.getData(self.fieldName);
+    ModelHelper.addPropertyWithLazyDefault('unfilteredData', this, function() {
+      return CardDataService.getUnfilteredData(self.fieldName);
     });
 
-    ModelHelper.addReadOnlyPropertyWithLazyDefault('filteredData', this, function() {
+    ModelHelper.addPropertyWithLazyDefault('filteredData', this, function() {
       return CardDataService.getFilteredData(self.fieldName);
     });
   }

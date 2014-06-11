@@ -29,59 +29,78 @@ angular.module('socrataCommon.directives').directive('columnChart', function() {
   };
 
   var renderColumnChart = function(element, unFilteredData, filteredData, filtered) {
-    var chart = d3.select(element.get(0));
-    var unfilteredBars = chart.selectAll('.bar unfiltered').data(unFilteredData);
-    var filteredBars = chart.selectAll('.bar filtered').data(filteredData);
-    var chartHeight = 150;//element.height();
-    var chartWidth = element.width();
+    var $chart = element.find('.column-chart-wrapper');
+    var d3Selection = d3.select($chart.get(0));
+    var unfilteredSelection = d3Selection.selectAll('.bar.unfiltered').data(unFilteredData);
+    var filteredSelection = d3Selection.selectAll('.bar.filtered').data(filteredData);
+    var hoverTriggerSelection = d3Selection.selectAll('.bar.hover-trigger').data(unFilteredData);
+    var chartHeight = 150;//$chart.height();
+    var chartWidth = $chart.width();
     var barSpacing = 2;
-    var vScale = (filtered ? filteredData[0].value : unFilteredData[0].value) / chartHeight;
-    var scaleHeight = function(v) { return v.value / vScale; };
-    var wScale = Math.floor(chartWidth / (unFilteredData.length + 1 + barSpacing));
-    var minWidth = 5;
-    var maxWidth = 50;
+    var verticalScaleFactor = (filtered ? filteredData[0].value : unFilteredData[0].value) / chartHeight;
+    var barWidth = Math.floor(chartWidth / (unFilteredData.length + 1 + barSpacing));
+    var minBarWidth = 5;
+    var maxBarWidth = 50;
     var topMargin = 30; // Defined also in the CSS
 
-    wScale = wScale < minWidth ? minWidth : wScale > maxWidth ? maxWidth : wScale;
+    if (barWidth < minBarWidth) {
+      barWidth = minBarWidth;
+    }
+    if (barWidth > maxBarWidth) {
+      barWidth = maxBarWidth;
+    }
 
-    var calculateXOffset = function(i) { return Number(i * (wScale + barSpacing)); };
+    var calculateHeight = function(value) {
+      var height = value.value / verticalScaleFactor;
+      return height > chartHeight ? chartHeight : height
+    };
+    var calculateXOffset = function(i) {
+      return Number(i * (barWidth + barSpacing));
+    };
 
     var flyout = function(_, i) {
       var unfilteredDatum = unFilteredData[i];
       var filteredDatum = filteredData[i];
-      var element = $('<div class="flyout">');
-      var tipOffset = 0;
+      var $chart = $('<div class="flyout">');
       var value = $('<div class="data_value">').
         text(unfilteredDatum.name + ': ' + unfilteredDatum.value);
 
       if (filtered) {
         value.text(value.text() + ' (unfiltered)');
-        element.append(value);
+        $chart.append(value);
         value.after($('<div class="data_value">').
           text(filteredDatum.name + ': ' + filteredDatum.value + ' (filtered)'));
       } else {
-        element.append(value);
+        $chart.append(value);
       }
 
-      var width = 130; // This is the result of element.get(0).getBoundingClientRect().width
+      var width = 130; // This is the result of $chart.get(0).getBoundingClientRect().width (CSS width of 110 plus 10 padding on each size)
       var maxOffset = chartWidth - width;
+      var centering = barWidth / 2 - 1;
+      var tipWidth = 10;
+      var tipOffset = centering - tipWidth / 2 - tipWidth;
 
+      // TODO Fix this horrible tip centering silliness. Also make the flyout's overflow hidden
       if (calculateXOffset(i) > maxOffset) {
-        var adjustment = maxOffset - (calculateXOffset(i));
-        element.css('left', adjustment + 'px');
-        tipOffset = adjustment;
+        var adjustment = maxOffset - calculateXOffset(i);
+        $chart.css('left', adjustment + 'px');
+        tipOffset = calculateXOffset(i) - maxOffset - tipWidth / 2 - 1;
+      } else {
+        $chart.css('left', 0);
       }
-      element.css('bottom', scaleHeight(filteredDatum) + 10 + 'px');
-      element.append($('<span>').addClass('tip').css('left', (-10) - tipOffset + 'px'));
-
-      return element.get(0);
+      $chart.css('bottom', calculateHeight(filteredDatum) + 10 + 'px');
+      $chart.append($('<span>').addClass('tip').css('left', tipOffset + 'px').
+          attr('bar-width', barWidth).attr('x-offset', calculateXOffset(i)).attr('centering', centering)
+      );
+      return $chart.get(0);
     };
 
+    // TODO D3-ify the labels
     var labels = function() {
       var labels = $('<div>').addClass('labels');
-      var centering = wScale / 2 - 1;
+      var centering = barWidth / 2 - 1;
       var numberOfLabels = 3;
-      for (var i = 0; i < 3; i++) {
+      for (var i = 0; i < numberOfLabels; i++) {
         var label = $('<span>').
           css('top', numberOfLabels - 0.5 - i + 'rem').
           text(unFilteredData[i].name);
@@ -95,57 +114,71 @@ angular.module('socrataCommon.directives').directive('columnChart', function() {
       return labels;
     };
 
-    var enterBars = function(bars, cssClass) {
-      bars.enter().append('div').
-        style('width', wScale + 'px').
+    var enterBars = function(barSelection, cssClass) {
+      barSelection.enter().append('div').classed('bar ' + cssClass, true);
+    };
+
+    var updateBars = function() {
+      this.
+        style('width', barWidth + 'px').
+        style('left', function(_, i) {
+          return calculateXOffset(i) + 'px';
+        }).
+        style('bottom', function() {
+          return topMargin + 'px';
+        }).
         style('height', function(d) {
-          return (scaleHeight(d) > chartHeight ? chartHeight : scaleHeight(d)) + 'px';
+          return (calculateHeight(d)) + 'px';
+        });
+    };
+
+    var updateHoverTriggerBars = function() {
+      this.
+        style('width', barWidth + 'px').
+        style('height', function() {
+          return chartHeight + 'px';
         }).
         style('left', function(_, i) {
           return calculateXOffset(i) + 'px';
         }).
-        style('bottom', function(d) {
+        style('bottom', function() {
           return topMargin + 'px';
-        }).
-        classed('bar ' + cssClass, true);
+        })
     };
 
+    unfilteredSelection.exit().remove();
+    filteredSelection.exit().remove();
+    hoverTriggerSelection.exit().remove();
+
     if (filtered) {
-      enterBars(unfilteredBars, 'unfiltered');
+      unfilteredSelection.call(enterBars, 'unfiltered');
     }
-    enterBars(filteredBars, 'filtered');
+    filteredSelection.call(enterBars, 'filtered');
 
-    unfilteredBars.enter().append('div').
-      style('width', wScale + 'px').
-      style('height', function() {
-        return chartHeight + 'px';
-      }).
-      style('left', function(_, i) {
-        return calculateXOffset(i) + 'px';
-      }).
-      style('bottom', function() {
-        return topMargin + 'px';
-      }).
-      classed('bar tertiary', true).
-      append(flyout);
+    filteredSelection.call(updateBars);
+    unfilteredSelection.call(updateBars);
 
-    element.parent().append(labels);
+    hoverTriggerSelection.enter().append('div').classed('bar hover-trigger', true).append(flyout);
+    hoverTriggerSelection.call(updateHoverTriggerBars);
+
+    element.children('.labels').remove();
+    element.append(labels);
   };
 
   return {
+    template: '<div class="column-chart-wrapper"></div>',
     restrict: 'A',
-
+    scope: { unfilteredData: '=', filteredData: '=', fieldName: '=' },
     link: function(scope, element, attrs) {
-      var data = scope.data[scope.fieldName];
+      var unfilteredData = scope.unfilteredData[scope.fieldName];
       var filteredData = scope.filteredData[scope.fieldName];
       var filterApplied = function() { return true; };
 
-      if (attrs.mode == 508) {
-        // This WIP temporarily disabled for demo
-//        render508Table(element, data, filteredData, filterApplied(), scope.fieldName);
-      } else {
-        renderColumnChart(element, data, filteredData, filterApplied());
-      }
+      scope.$watch('unfilteredData', function(value) {
+        renderColumnChart(element, value[scope.fieldName], scope.filteredData[scope.fieldName], filterApplied());
+      });
+//      This WIP temporarily disabled for demo
+//      render508Table(element, data, filteredData, filterApplied(), scope.fieldName);
     }
   }
 });

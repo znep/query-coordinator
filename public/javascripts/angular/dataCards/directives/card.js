@@ -28,16 +28,14 @@ angular.module('dataCards.directives').directive('card', function(AngularRxExten
 
   return {
     restrict: 'E',
-    scope: {
-      'sourceData': '=sourceData'
-    },
+    scope: { 'model': '=' },
     templateUrl: '/angular_templates/dataCards/card.html',
     link: function($scope, element, attrs) {
       AngularRxExtensions.install($scope);
-      var sourceData = $scope.observe('sourceData');
-      var dataset = sourceData.pluck('page').pluckSwitch('dataset');
+      var model = $scope.observe('model');
+      var dataset = model.pluck('page').pluckSwitch('dataset');
 
-      var cardType = sourceData.pluck('fieldName').combineLatest(dataset.pluckSwitch('columns'),
+      var cardType = model.pluck('fieldName').combineLatest(dataset.pluckSwitch('columns'),
         function(cardField, datasetFields) {
           var column = datasetFields[cardField];
           return cardTypeMapping(column);
@@ -45,13 +43,13 @@ angular.module('dataCards.directives').directive('card', function(AngularRxExten
       );
 
       $scope.bindObservable('cardType', cardType);
-      $scope.bindObservable('data', sourceData.pluckSwitch('data'));
-      $scope.bindObservable('filteredData', sourceData.pluckSwitch('filteredData'));
-      $scope.bindObservable('fieldName', sourceData.pluck('fieldName'));
-      $scope.bindObservable('expanded', sourceData.pluckSwitch('expanded'));
+      $scope.bindObservable('unfilteredData', model.pluckSwitch('unfilteredData'));
+      $scope.bindObservable('filteredData', model.pluckSwitch('filteredData'));
+      $scope.bindObservable('fieldName', model.pluck('fieldName'));
+      $scope.bindObservable('expanded', model.pluckSwitch('expanded'));
 
       $scope.toggleExpanded = function() {
-        $scope.sourceData.expanded = !$scope.expanded;
+        $scope.model.expanded = !$scope.expanded;// TODO Determine if IDE warning "Value assigned to primitive will be lost" is a red herring
       };
     }
   };

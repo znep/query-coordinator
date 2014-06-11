@@ -7,7 +7,7 @@ angular.module('dataCards.services').factory('CardDataService', function($q) {
   }
 
   return {
-    getData: function(fieldName) {
+    getUnfilteredData: function(fieldName) {
       var obj = {};
       var a = [];
       for (var i = 0; i < count; i++) {

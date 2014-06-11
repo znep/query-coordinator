@@ -978,6 +978,7 @@
     'socrataDataLayer');
 
     $.Control.registerMixin('tiledata', {
+        handleDataLoaded: function() {}
     }, {}, 'socrataDataLayer');
 
 })(jQuery);

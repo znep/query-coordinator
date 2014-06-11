@@ -3,44 +3,44 @@ angular.module('dataCards.models').factory('Dataset', function(ModelHelper, Data
   var UID_REGEXP = /^\w{4}-\w{4}$/;
 
   JJV.addSchema('datasetPageList', {
-    type: 'object',
-    properties: {
-      publisher: { type: 'array', items: { type: 'string', pattern: UID_REGEXP } },
-      user: { type: 'array', items: { type: 'string', pattern: UID_REGEXP } }
+    'type': 'object',
+    'properties': {
+      'publisher': { 'type': 'array', 'items': { 'type': 'string', 'pattern': UID_REGEXP } },
+      'user': { 'type': 'array', 'items': { 'type': 'string', 'pattern': UID_REGEXP } }
     }
   });
 
   JJV.addSchema('datasetMetadata', {
-    type: 'object',
-    properties: {
-      id: { type: 'string', pattern: UID_REGEXP },
-      rowDisplayUnit: { type: 'string', minLength: 1 },
-      defaultAggregateColumn: { type: 'string', minLength: 1 },
-      owner: { type: 'string', pattern: UID_REGEXP },
-      updatedAt: { type: 'string' }, //TODO ISO8601
-      columns: {
-        type: 'object',
-        patternProperties: {
+    'type': 'object',
+    'properties': {
+      'id': { 'type': 'string', 'pattern': UID_REGEXP },
+      'rowDisplayUnit': { 'type': 'string', 'minLength': 1 },
+      'defaultAggregateColumn': { 'type': 'string', 'minLength': 1 },
+      'owner': { 'type': 'string', 'pattern': UID_REGEXP },
+      'updatedAt': { 'type': 'string' }, //TODO ISO8601
+      'columns': {
+        'type': 'object',
+        'patternProperties': {
           '\\w+': {
-            type: 'object',
-            properties: {
-              logicalDatatype: {
-                type: 'string',
-                enum: [ 'category', 'amount', 'location', 'time', 'text', 'name', 'identifier' ]
+            'type': 'object',
+            'properties': {
+              'logicalDatatype': {
+                'type': 'string',
+                'enum': [ 'category', 'amount', 'location', 'time', 'text', 'name', 'identifier' ]
               },
-              physicalDatatype: {
-                type: 'string',
-                enum: [ 'number', 'point', 'geo entity', 'text', 'timestamp' ]
+              'physicalDatatype': {
+                'type': 'string',
+                'enum': [ 'number', 'point', 'geo entity', 'text', 'timestamp' ]
               },
-              importance: { type: 'integer' , minimum: 1, maximum: 4 },
-              columnDisplayUnit: { type: 'string' }
+              'importance': { 'type': 'integer' , 'minimum': 1, 'maximum': 4 },
+              'columnDisplayUnit': { 'type': 'string' }
             },
-            required: [ 'logicalDatatype', 'physicalDatatype', 'importance' ]
+            'required': [ 'logicalDatatype', 'physicalDatatype', 'importance' ]
           }
         }
       }
     },
-    required: [ 'id', 'rowDisplayUnit', 'defaultAggregateColumn', 'owner', 'updatedAt', 'columns' ]
+    'required': [ 'id', 'rowDisplayUnit', 'defaultAggregateColumn', 'owner', 'updatedAt', 'columns' ]
   });
 
   //TODO cache instances or share cache.

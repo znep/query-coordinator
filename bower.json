@@ -22,7 +22,9 @@
       "css": "app/styles/bower",
       "js": "public/javascripts/bower"
     },
+    "ignore": [ "angular-mocks" ],
     "sources": {
+      "angular": "bower_components/angular/angular.min.js",
       "lodash": "bower_components/lodash/dist/lodash.js",
       "rxjs": [
         "bower_components/rxjs/rx.js",

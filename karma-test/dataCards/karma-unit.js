@@ -11,6 +11,7 @@ module.exports = function ( karma ) {
      */
     files: [
       'bower_components/jquery/dist/jquery.js',
+      'bower_components/javascript-detect-element-resize/jquery.resize.js',
       'bower_components/angular/angular.js',
       'bower_components/angular-mocks/angular-mocks.js',
       'bower_components/d3/d3.min.js',
@@ -19,6 +20,7 @@ module.exports = function ( karma ) {
       'bower_components/rxjs/rx.binding.js',
       'bower_components/rxjs/rx.aggregates.js',
       'bower_components/jjv/lib/jjv.js',
+      'bower_components/sinon-browser-only/sinon.js',
       'karma-test/dataCards/*.js',
       'karma-test/dataCards/**/*.js',
       'public/javascripts/angular/common/*.js',

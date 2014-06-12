@@ -37,6 +37,15 @@ angular.module('dataCards.directives').directive('stickyHeader', function(Angula
         $scope.availableContentHeight = headerHeight + Math.max(0, headerPositionTop - windowScrollTop);
       };
 
+      var resizeListenKey = attrs.updateOnResize;
+      if (!_.isEmpty(resizeListenKey)) {
+        $scope.$on('elementResized', function(event, argument) {
+          if (argument === resizeListenKey) {
+            pollLayout();
+          }
+        });
+      }
+
       addWindowBindings();
       pollLayout();
     }

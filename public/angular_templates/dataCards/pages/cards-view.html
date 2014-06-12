@@ -1,5 +1,5 @@
 <div class="cards-view">
-  <div class="hideableMetadata">
+  <div class="hideableMetadata" notify-resize="headerContent">
     <h1>{{pageTitle}}</h1>
     <p>{{pageDescription}}</p>
     <b>Official Views</b>
@@ -16,7 +16,7 @@
     </ol>
     <p>Last updated: {{datasetDaysUnmodified}} days ago</p>
   </div>
-  <div sticky-header class="quickFilterBar" ng-class="{stuck: headerIsStuck}">
+  <div sticky-header update-on-resize="headerContent" class="quickFilterBar" ng-class="{stuck: headerIsStuck}">
     <div class="content">
       This bar serves quick fajitas!
     </div>

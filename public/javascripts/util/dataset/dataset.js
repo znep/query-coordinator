@@ -2046,7 +2046,7 @@ var Dataset = ServerModel.extend({
         ds.displayName = getDisplayName(ds);
 
         // Legacy support for SODA1 search strings.
-        ds.searchString = ds.searchString || null;
+        ds.searchString = ds.searchString || undefined;
 
         // If we are an invalid filter, we're not really that invalid, because
         // the core server has already removed the offending clause. So just

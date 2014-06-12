@@ -515,9 +515,9 @@ module ApplicationHelper
 
     html = []
     html << radio_button_tag(name, true, flag_value === true, :disabled => options[:disabled])
-    html << label_tag("#{label_for}true", 'true')
+    html << label_tag("#{label_for}_true", 'true')
     html << radio_button_tag(name, false, flag_value === false, :disabled => options[:disabled])
-    html << label_tag("#{label_for}false", 'false')
+    html << label_tag("#{label_for}_false", 'false')
     html << radio_button_tag(name, nil, String === flag_value, class: 'other', :disabled => options[:disabled])
     html << label_tag(label_for, 'Other:')
     if flag_config.expectedValues?

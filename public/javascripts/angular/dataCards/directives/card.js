@@ -20,7 +20,7 @@ angular.module('dataCards.directives').directive('card', function(AngularRxExten
     } else if (logicalType === 'text' || logicalType === 'name' || logicalType === 'identifier') {
       if (physicalType === 'text' || physicalType === 'number') {
         return 'search';
-    }
+      }
     }
     throw new Error('Unknown visualization for logicalDatatype: ' + logicalType +
       ' and physicalDatatype: ' + physicalType);
@@ -49,6 +49,14 @@ angular.module('dataCards.directives').directive('card', function(AngularRxExten
       $scope.bindObservable('expanded', model.pluckSwitch('expanded'));
 
       $scope.toggleExpanded = function() {
+        // NOTE: For the MVP, we only ever allow one expanded card.
+        // Enforce that here.
+        _.each($scope.model.page.cards.value, function(card) {
+          if (card !== $scope.model) {
+            card.expanded = false;
+          }
+        });
+
         $scope.model.expanded = !$scope.expanded;// TODO Determine if IDE warning "Value assigned to primitive will be lost" is a red herring
       };
     }

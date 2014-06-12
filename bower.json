@@ -24,7 +24,8 @@
       "js": "public/javascripts/bower"
     },
     "ignore": [
-      "angular-mocks"
+      "angular-mocks",
+      "sinon-browser-only"
     ],
     "sources": {
       "angular": "bower_components/angular/angular.min.js",
@@ -39,5 +40,8 @@
         "bower_components/flexgrid/modernizr.js"
       ]
     }
+  },
+  "devDependencies": {
+    "sinon-browser-only": "~1.9.0"
   }
 }

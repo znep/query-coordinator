@@ -9,7 +9,7 @@ module AngularHelper
   end
 
   def angular_javascript_tag
-    include_javascripts("angular-app-#{angular_app}")
+    include_javascripts_unminified("angular-app-#{angular_app}")
   end
 
 end

@@ -1,5 +1,6 @@
 class AngularController < ActionController::Base
   include ActionControllerExtensions
+  include UnminifiedAssetsHelper
 
   layout 'angular'
 

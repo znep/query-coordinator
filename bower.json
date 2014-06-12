@@ -14,7 +14,8 @@
     "jquery": "~2.1.1",
     "angular-mocks": "~1.2.16",
     "rxjs": "~2.2.20",
-    "flexgrid": "ptb/flexgrid"
+    "flexgrid": "ptb/flexgrid",
+    "javascript-detect-element-resize": "sdecima/javascript-detect-element-resize#~0.5.1"
   },
   "install": {
     "path": {
@@ -22,10 +23,13 @@
       "css": "app/styles/bower",
       "js": "public/javascripts/bower"
     },
-    "ignore": [ "angular-mocks" ],
+    "ignore": [
+      "angular-mocks"
+    ],
     "sources": {
       "angular": "bower_components/angular/angular.min.js",
       "lodash": "bower_components/lodash/dist/lodash.js",
+      "javascript-detect-element-resize": "bower_components/javascript-detect-element-resize/jquery.resize.js",
       "rxjs": [
         "bower_components/rxjs/rx.js",
         "bower_components/rxjs/rx.aggregates.js",

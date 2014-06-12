@@ -271,7 +271,8 @@
     blist.configuration.onCurrentUser(
       function (user)
       {
-         $('.accountLink .text .currentUser').html(user.displayName);
+console.log(user);
+         $('.accountLink .text .currentUser').text(user.displayName);
          $('.accountLink').removeClass('hide');
          $('.accountLikeLink').removeClass('hide');
          $('.signOutLink').removeClass('hide');

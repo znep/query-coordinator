@@ -36,12 +36,32 @@ angular.module('socrataCommon.directives').directive('columnChart', function() {
     var hoverTriggerSelection = d3Selection.selectAll('.bar.hover-trigger').data(unFilteredData);
     var chartHeight = 150;//$chart.height();
     var chartWidth = $chart.width();
-    var barSpacing = 2;
+    var barSpacing = 8;
     var verticalScaleFactor = (filtered ? filteredData[0].value : unFilteredData[0].value) / chartHeight;
     var barWidth = Math.floor(chartWidth / (unFilteredData.length + 1 + barSpacing));
-    var minBarWidth = 5;
+    var minBarWidth = 8;
     var maxBarWidth = 50;
-    var topMargin = 30; // Defined also in the CSS
+    var topMargin = 30; // Defined also in the CSS for div.labels
+    var numberOfTicks = 3;
+
+    // TODO D3-ify the ticks to scale along with the data
+    var ticks = function() {
+      var domain;
+      var element;
+      if (filtered) {
+        domain = [filteredData[0].value, _.last(filteredData).value]
+      } else {
+        domain = [unFilteredData[0].value, _.last(unFilteredData).value]
+      }
+
+      element = $('<div>').addClass('ticks');
+      _.each(d3.scale.linear().domain(domain).ticks(numberOfTicks), function(tick) {
+        element.append($('<div>').css('bottom', topMargin + 'px').
+          css('top', chartHeight - calculateHeight({value: tick}) - topMargin + 10 + 'px').
+          text(tick));
+      });
+      return element;
+    };
 
     if (barWidth < minBarWidth) {
       barWidth = minBarWidth;
@@ -59,11 +79,11 @@ angular.module('socrataCommon.directives').directive('columnChart', function() {
     };
 
     var flyout = function(_, i) {
-      var unfilteredDatum = unFilteredData[i];
+      var unFilteredDatum = unFilteredData[i];
       var filteredDatum = filteredData[i];
       var $chart = $('<div class="flyout">');
       var value = $('<div class="data_value">').
-        text(unfilteredDatum.name + ': ' + unfilteredDatum.value);
+        text(unFilteredDatum.name + ': ' + unFilteredDatum.value);
 
       if (filtered) {
         value.text(value.text() + ' (unfiltered)');
@@ -88,10 +108,14 @@ angular.module('socrataCommon.directives').directive('columnChart', function() {
       } else {
         $chart.css('left', 0);
       }
-      $chart.css('bottom', calculateHeight(filteredDatum) + 10 + 'px');
+      tipOffset = tipOffset < -10 ? -10 : tipOffset;
+      if (filtered) {
+        $chart.css('bottom', calculateHeight(filteredDatum) + 10 + 'px');
+      } else {
+        $chart.css('bottom', calculateHeight(unFilteredDatum) + 10 + 'px');
+      }
       $chart.append($('<span>').addClass('tip').css('left', tipOffset + 'px').
-          attr('bar-width', barWidth).attr('x-offset', calculateXOffset(i)).attr('centering', centering)
-      );
+        css('top', filtered ? '10px' : '20px'));
       return $chart.get(0);
     };
 
@@ -146,17 +170,22 @@ angular.module('socrataCommon.directives').directive('columnChart', function() {
         })
     };
 
+    element.children('.ticks').remove();
+    element.prepend(ticks);
+
     unfilteredSelection.exit().remove();
     filteredSelection.exit().remove();
     hoverTriggerSelection.exit().remove();
 
     if (filtered) {
       unfilteredSelection.call(enterBars, 'unfiltered');
+      filteredSelection.call(enterBars, 'filtered');
+      filteredSelection.call(updateBars);
+      unfilteredSelection.call(updateBars);
+    } else {
+      unfilteredSelection.call(enterBars, 'filtered');
+      unfilteredSelection.call(updateBars);
     }
-    filteredSelection.call(enterBars, 'filtered');
-
-    filteredSelection.call(updateBars);
-    unfilteredSelection.call(updateBars);
 
     hoverTriggerSelection.enter().append('div').classed('bar hover-trigger', true).append(flyout);
     hoverTriggerSelection.call(updateHoverTriggerBars);
@@ -166,12 +195,15 @@ angular.module('socrataCommon.directives').directive('columnChart', function() {
   };
 
   return {
-    template: '<div class="column-chart-wrapper"></div>',
+    template:
+      '<div class="column-chart-wrapper">' +
+        '<div class="field-name">CRIME TYPE</div>' +
+        '<div class="field-description">Crime types across Chicago</div>' +
+      '</div>',
     restrict: 'A',
     scope: { unfilteredData: '=', filteredData: '=', fieldName: '=' },
     link: function(scope, element, attrs) {
       var unfilteredData = scope.unfilteredData[scope.fieldName];
-      var filteredData = scope.filteredData[scope.fieldName];
       var filterApplied = function() { return true; };
 
       scope.$watch('unfilteredData', function(value) {

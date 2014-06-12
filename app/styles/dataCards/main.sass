@@ -95,6 +95,11 @@ $facets-list-width: 20%
 $base-font-size: 1em
 $small-font-size: $base-font-size * 0.5
 $medium-font-size: $base-font-size * 0.75
+$chart-tick-color: #ccc
+$chart-description-color: darken($chart-tick-color, 30)
+$unfiltered-bar-color: #C2C2C2
+$filtered-bar-color: #676464
+$tick-height: 1rem
 
 .facets-view
   ul
@@ -121,6 +126,12 @@ div.column-chart
     overflow: hidden
     height: 230px
 
+    div.field-name
+      color: $chart-description-color
+
+    div.field-description
+      color: $chart-description-color
+
     &.s508
       position: static
       opacity: 0
@@ -128,9 +139,9 @@ div.column-chart
     .bar
       position: absolute
       &.unfiltered
-        background-color: grey
+        background-color: $unfiltered-bar-color
       &.filtered
-        background-color: blue
+        background-color: $filtered-bar-color
       &.tertiary
         background-color: rgba(0, 0, 0, 0)
         &:hover
@@ -163,13 +174,27 @@ div.column-chart
     position: relative
     height: 50px
     div
-      border-left: 1px solid #777
-      border-bottom: 1px solid #777
+      margin-top: 2px
+      border-left: 1px solid $chart-tick-color
+      border-bottom: 1px solid $chart-tick-color
       position: absolute
       width: 0.5rem
       text-indent: 0.5rem
       span
+        color: $chart-tick-color
         position: absolute
         left: 0.25rem
         font-size: $medium-font-size
         line-height: $base-font-size
+
+  div.ticks
+    position: relative
+    top: 70px
+    div
+      height: $tick-height
+      border-bottom: 1px solid $chart-tick-color
+      position: absolute
+      width: 100%
+      color: $chart-tick-color
+      text-align: right
+      margin-top: -$tick-height

@@ -22,10 +22,13 @@ $.component.Component.extend('Geolocator', 'none', {//'input', {
 
         if ($.isBlank(cObj.$geolocator))
         {
+            // TODO: localize 'auto'
+            var radiusOptions = cObj._properties.radiusOptions
+                || ['auto', '1mi', '2mi', '5mi', '10mi', '20mi', '50mi'];
             cObj.$geolocator = $.tag({ tagName: 'div', 'class': 'geolocator clearfix',
                 contents: [{ tagName: 'input', 'class': 'textPrompt', type: 'text' },
                            { tagName: 'select', contents:
-                               _.map(['auto', '1mi', '2mi', '5mi', '10mi', '20mi', '50mi'],
+                               _.map(radiusOptions,
                                    function(text)
                                    { return { tagName: 'option', contents: text }; })
                            },

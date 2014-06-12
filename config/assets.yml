@@ -660,6 +660,31 @@ javascripts:
   tagcloud:
     - public/javascripts/plugins/jquery.tagcloud.js
 
+  angular-socrata-common:
+    - public/javascripts/angular/common/**/*.js
+
+  # Angular apps served from the Angular controller.
+  # These packages are referenced via the :app parameter to serve_app.
+  angular-app-dataCards:
+    - public/javascripts/angular/dataCards/app.js
+    - public/javascripts/angular/dataCards/controllers.js
+    - public/javascripts/angular/dataCards/**/*.js
+
+  # BEGIN BOWER-MANAGED ASSETS
+  # NOTE this mega-package of all bower assets is not ideal.
+  # Each section of the app should depend only on the components
+  # it needs. However, Jammit doesn't allow (afaict) packages
+  # to refer to other packages, so this would get tangled fast.
+  # Right now, the only consumer of bower packages is the angular
+  # visualization offshoot of the app, so this is the simplest way forward.
+  bower-all:
+    - public/javascripts/bower/jquery.js
+    - public/javascripts/bower/angular.min.js
+    - public/javascripts/bower/rx.js
+
+    - public/javascripts/bower/**/*.js
+  # END BOWER-MANAGED ASSETS
+
 dump:
   javascripts:
     - shared-calendar

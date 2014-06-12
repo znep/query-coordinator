@@ -1,0 +1,39 @@
+{
+  "name": "socrata-frontend",
+  "version": "0.0.0",
+  "authors": [
+    "Socrata Engineering <engineering@socrata.com>"
+  ],
+  "description": "Socrata's default UX.",
+  "license": "all rights reserved",
+  "homepage": "http://socrata.com",
+  "private": true,
+  "dependencies": {
+    "angular": "~1.2.16",
+    "angular-ui-router": "~0.2.10",
+    "jquery": "~2.1.1",
+    "angular-mocks": "~1.2.16",
+    "rxjs": "~2.2.20",
+    "flexgrid": "ptb/flexgrid"
+  },
+  "install": {
+    "path": {
+      "sass": "app/styles/bower",
+      "css": "app/styles/bower",
+      "js": "public/javascripts/bower"
+    },
+    "ignore": [ "angular-mocks" ],
+    "sources": {
+      "angular": "bower_components/angular/angular.min.js",
+      "lodash": "bower_components/lodash/dist/lodash.js",
+      "rxjs": [
+        "bower_components/rxjs/rx.js",
+        "bower_components/rxjs/rx.aggregates.js",
+        "bower_components/rxjs/rx.binding.js"
+      ],
+      "flexgrid": [
+        "bower_components/flexgrid/modernizr.js"
+      ]
+    }
+  }
+}

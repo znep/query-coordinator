@@ -1,3 +1,18 @@
+# BEGIN BOWER-MANAGED ASSETS
+# NOTE this mega-package of all bower assets is not ideal.
+# Each section of the app should depend only on the components
+# it needs. However, our homegrown style manager doesn't allow packages to refer to other packages.
+# Right now, the only consumer of bower packages is the angular
+# visualization offshoot of the app, so this is the simplest way forward.
+# NOTE Our homegrown style manager doesn't support globs, so you'll need to add all bower-installer installed styles manually :(
+bower-styles-all:
+  # nothing for now
+# END BOWER-MANAGED ASSETS
+
+angular-app-dataCards:
+- dataCards/main
+- dataCards/flexgrid-custom
+
 includes:
 - sass-common
 - icons

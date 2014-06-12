@@ -7,27 +7,34 @@ class StylesController < ApplicationController
   # Only used in development
   def individual
     if params[:stylesheet].present? && params[:stylesheet].match(/^(\w|-|\.)+$/)
-      stylesheet_filename = File.join(Rails.root, "app/styles", "#{params[:stylesheet]}.sass")
-      if File.exist?(stylesheet_filename)
+      style_path_parts = [
+        Rails.root,
+        'app/styles'
+      ]
+
+      if params[:folder].present? && params[:folder].match(/^(\w|-|\.)+$/)
+        style_path_parts.push(params[:folder])
+      end
+
+      sass_stylesheet_filename = File.join(style_path_parts + ["#{params[:stylesheet]}.sass"])
+      css_stylesheet_filename = File.join(style_path_parts + ["#{params[:stylesheet]}.css"])
+
+      if File.exist?(sass_stylesheet_filename)
         headers['Content-Type'] = 'text/css'
 
-        with_development_cache(stylesheet_filename) do
-          stylesheet = File.read(stylesheet_filename)
+        with_development_cache(sass_stylesheet_filename) do
+          stylesheet = File.read(sass_stylesheet_filename)
           includes = get_includes
           Sass::Engine.new(includes + stylesheet,
                            :style => :nested,
                            :cache => false,
                            :load_paths => ["#{Rails.root}/app/styles"]).render
         end
+      elsif File.exist?(css_stylesheet_filename)
+          render :content_type => 'text/css', :text => File.read(css_stylesheet_filename)
       else
-        # Maybe it is a plain CSS file
-        stylesheet_filename = File.join(Rails.root, "app/styles", "#{params[:stylesheet]}.css")
-        if File.exist?(stylesheet_filename)
-          render :content_type => 'text/css', :text => File.read(stylesheet_filename)
-        else
-          # Someone asked for a stylesheet that didn't exist.
-          render :nothing => true, :status => :not_found, :content_type => 'text/css'
-        end
+        # Someone asked for a stylesheet that didn't exist.
+        render :nothing => true, :status => :not_found, :content_type => 'text/css'
       end
     else
       # someone's up to no good.
@@ -214,7 +221,7 @@ protected
     result += ")\n"
 
     # webkit
-    result += "  background: -webkit-gradient(linear, left top, left bottom," +
+    result += '  background: -webkit-gradient(linear, left top, left bottom,' +
               " from(#{first_color}), to(#{last_color})" +
               stops.map{ |stop| ", color-stop(#{stop['position']},#{normalize_color(stop['color'])})" }.join +
               ")\n"
@@ -238,9 +245,9 @@ protected
         elsif definition[key.to_sym] == 'dimensions'
           result += "$#{path}#{key}: #{value[:value]}#{value[:unit]}\n"
         elsif definition[key.to_sym] == 'image'
-          if value[:type].to_s == "static"
+          if value[:type].to_s == 'static'
             href = "#{value[:href]}"
-          elsif value[:type].to_s == "hosted"
+          elsif value[:type].to_s == 'hosted'
             href = "/assets/#{value[:href]}"
           end
           result += "$#{path}#{key}: url(#{href})\n"

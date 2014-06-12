@@ -34,12 +34,13 @@ class CustomContentControllerTest < ActionController::TestCase
 
   def simple_render_with_user
     user = prepare_page
-    get :page, {:path => PAGE_PATH}
+    get :page, :path => PAGE_PATH
     assert_response :success
     assert VersionAuthority.validate_manifest?(@basic_cache_key, user.id)
   end
 
-  def prepare_page(fixture='test/fixtures/dataslate-private-hello.json', anonymous=false)
+  def prepare_page(fixture='test/fixtures/dataslate-private-hello.json', anonymous = false)
+    user = nil
     user = init_current_user(@controller) unless anonymous
     page = Page.parse(File.open(fixture).read)
     @controller.page_override = page
@@ -49,12 +50,12 @@ class CustomContentControllerTest < ActionController::TestCase
   def assert_etag_request(valid_etag, path)
     # return 304 if the etag is valid
     @request.env['HTTP_IF_NONE_MATCH'] = valid_etag
-    get :page, {:path => path}
+    get :page, :path => path
     assert_response 304
 
     # rerender with invalid etag
     @request.env['HTTP_IF_NONE_MATCH'] = 'PEANUT BUTTER'
-    get :page, {:path => path}
+    get :page, :path => path
     assert_response :success
   end
 
@@ -70,25 +71,25 @@ class CustomContentControllerTest < ActionController::TestCase
   test '304 for Global Manifest Cache' do
     prepare_page(fixture='test/fixtures/dataslate-global-hello.json', anonymous=true)
     init_current_user(@controller, ANONYMOUS_USER)
-    get :page, {:path => PAGE_PATH}
+    get :page, :path => PAGE_PATH
     assert_response :success
     assert VersionAuthority.validate_manifest?(@basic_cache_key, ANONYMOUS_USER)
     # Subsequent requests should NOT return 304s
     @request.env['HTTP_IF_NONE_MATCH'] = @response.headers['ETag']
-    get :page, {:path => PAGE_PATH}
+    get :page, :path => PAGE_PATH
     assert_response 304
   end
 
   test '304 for User Manifest Cache' do
     user = prepare_page(fixture='test/fixtures/dataslate-private-hello.json', anonymous=false)
-    get :page, {:path => PAGE_PATH}
+    get :page, :path => PAGE_PATH
     assert_response :success
     assert VersionAuthority.validate_manifest?(@basic_cache_key, user.id)
     assert VersionAuthority.validate_manifest?(@basic_cache_key, ANONYMOUS_USER).nil?
     assert_etag_request(@response.headers['ETag'], PAGE_PATH)
 
     user = prepare_page(fixture='test/fixtures/dataslate-private-hello.json', anonymous=false)
-    get :page, {:path => PAGE_PATH}
+    get :page, :path => PAGE_PATH
     assert_response :success
     assert VersionAuthority.validate_manifest?(@basic_cache_key, user.id)
     assert_etag_request(@response.headers['ETag'], PAGE_PATH)

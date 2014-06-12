@@ -2,6 +2,7 @@
 # Likewise, all the methods added will be available for all controllers.
 
 class ApplicationController < ActionController::Base
+  include ActionControllerExtensions
   before_filter :hook_auth_controller,  :create_core_server_connection,
     :disable_frame_embedding, :adjust_format, :patch_microsoft_office, :sync_logged_in_cookie,
     :require_user, :set_user, :set_meta, :force_utf8_params
@@ -107,22 +108,6 @@ class ApplicationController < ActionController::Base
   end
 
 protected
-  def render_403
-    render_error(403)
-  end
-
-  def render_404
-    render_error(404)
-  end
-
-  def render_406
-    render_error(406)
-  end
-
-  def render_500
-    render_error(500)
-  end
-
   # v4 chrome style error messages
   def render_forbidden(message = I18n.t('core.auth.need_permission'))
     flash.now[:error] = message
@@ -294,19 +279,6 @@ private
     else
       super
     end
-  end
-
-  def render_error(code)
-    respond_to do |format|
-      format.html do
-        layout_to_use = 'main'
-        layout_to_use = 'main_nodomain' unless CurrentDomain.set?
-        render :template => "errors/error_#{code}", :layout => layout_to_use, :status => code
-      end
-
-      format.all { render :nothing => true, :status => code }
-    end
-    true # so we can do "render_404 and return"
   end
 
   # If you're working on error templates locally, you probably want to

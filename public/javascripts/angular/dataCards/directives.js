@@ -1,0 +1,1 @@
+angular.module('dataCards.directives', []);

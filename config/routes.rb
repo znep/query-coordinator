@@ -8,6 +8,8 @@ Frontend::Application.routes do
   scope :path => '/styles', :controller => 'styles' do
     get '/individual/:stylesheet.css', :action => 'individual',
       :constraints => { :stylesheet => /(\w|-|\.)+/ }
+    get '/individual/:folder/:stylesheet.css', :action => 'individual',
+      :constraints => { :stylesheet => /(\w|-|\.)+/, :folder => /(\w|-|\.)+/ }
     get '/merged/:stylesheet.css', :action => 'merged'
     get '/widget/:customization_id.css', :action => 'widget'
     get '/current_site.css', :action => 'current_site'
@@ -366,6 +368,11 @@ Frontend::Application.routes do
       match '/manage/site_config', :action => 'manage_config'
       get '/manage/template', :action => 'manage_template'
       post '/manage/template', :action => 'manage_template_update'
+    end
+
+    scope :controller => 'angular', :constraints => { :id => UID_REGEXP } do
+      match '/view/:id', :action => 'serve_app', :app => 'dataCards'
+      match '/view/*angularRoute', :action => 'serve_app', :app => 'dataCards' # See angular-app-{:app} in assets.yml.
     end
 
     # Custom pages, catalogs, facets

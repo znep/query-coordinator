@@ -7,17 +7,11 @@ var dataCards = angular.module('dataCards', [
 ]);
 
 dataCards.config(function($provide, $stateProvider, $urlRouterProvider, $locationProvider) {
-  var appPrefix = '/view';
-  var isUnderAppPrefix = function(pathString) {
-    return pathString.indexOf(appPrefix) === 0;
-  };
-
   $stateProvider.
     state('404', {
       template: '<h1>404</h1>You probably wanted something, but have this kitten instead: <br /><soc-kitten w="800" h="600"></soc-kitten>'
     }).
     state('view', {
-      url: appPrefix + '/{id:\\w{4}-\\w{4}}',
       template: '<!--Overall chrome--><div ui-view="mainContent"><div>',
       resolve: {
         page: function($stateParams, Page) {
@@ -34,27 +28,19 @@ dataCards.config(function($provide, $stateProvider, $urlRouterProvider, $locatio
         }
       }
     });
-
-  $urlRouterProvider.otherwise(function($injector, $location) {
-    if (isUnderAppPrefix($location.path())) {
-      $injector.get('$state').go('404');
-    } else {
-      // Let rails have it the route.
-    }
-  });
-
-  $locationProvider.html5Mode(true);
 });
 
-dataCards.run(function($rootScope, $state) {
+dataCards.run(function($rootScope, $state, $location) {
   $rootScope.$on('$stateChangeError', function(event, toState, toParams, fromState, fromParams, error) {
     console.error("Error encountered during state transition:", error);
   });
 
-  // Default state.
-  $rootScope.$on('$stateChangeSuccess', function(e, toState) {
-    if (toState.name === 'view') {
-      $state.go('view.cards');
-    }
-  });
+  var id = $location.absUrl().match(/\w{4}-\w{4}$/);
+  if (_.isEmpty(id)) {
+    $state.go('404');
+  } else {
+    $state.go('view.cards', {
+      id: id[0]
+    });
+  }
 });

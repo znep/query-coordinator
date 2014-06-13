@@ -34,19 +34,13 @@ angular.module('dataCards.services').factory('PageDataService', function($q) {
       };
   };
   var cardsBlobPromise = $q.when({
-    "cards":
-      _.times(3, function() { return genMockCard("ward", 1); }).
-      concat(_.times(8, function() { return genMockCard("crime_type", 2); })).
-      concat(_.times(18, function() { return genMockCard("crime_time", 3); }))
-  }).then(// Replace first few cards for demo porpoises
-    function(mockCardCollection) {
-      mockCardCollection.cards[0].fieldName = 'crime_type';
-      mockCardCollection.cards[1].fieldName = 'crime_type';
-      mockCardCollection.cards[2].fieldName = 'crime_type';
-      mockCardCollection.cards[3].fieldName = 'crime_type';
-      return mockCardCollection;
-    }
-  );
+    "cards": [
+      genMockCard('crime_type', 1),
+      genMockCard('number_of_arrests', 2),
+      genMockCard('crime_time', 2),
+      genMockCard('ward', 3)
+    ]
+  });
 
   return {
     getStaticInfo: function(id) {

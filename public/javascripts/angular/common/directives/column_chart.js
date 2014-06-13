@@ -195,11 +195,7 @@ angular.module('socrataCommon.directives').directive('columnChart', function() {
   };
 
   return {
-    template:
-      '<div class="column-chart-wrapper">' +
-        '<div class="field-name">CRIME TYPE</div>' +
-        '<div class="field-description">Crime types across Chicago</div>' +
-      '</div>',
+    template: '<div class="column-chart-wrapper"></div>',
     restrict: 'A',
     scope: { unfilteredData: '=', filteredData: '=', fieldName: '=' },
     link: function(scope, element, attrs) {

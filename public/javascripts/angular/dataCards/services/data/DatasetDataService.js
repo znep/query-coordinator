@@ -19,6 +19,7 @@ angular.module('dataCards.services').factory('DatasetDataService', function($q) 
       },
       'crime_type': {
         'title': 'Type of crime',
+        'description': 'How much batman cares',
         'logicalDatatype': 'category',
         'physicalDatatype': 'text',
         'importance': 1

@@ -41,6 +41,10 @@ angular.module('dataCards.directives').directive('card', function(AngularRxExten
           return cardTypeMapping(column);
         }
       );
+      var columns = dataset.pluckSwitch('columns');
+      var column = model.pluck('fieldName').combineLatest(columns, function(fieldName, columns) {
+        return columns[fieldName];
+      });
 
       $scope.bindObservable('cardType', cardType);
       $scope.bindObservable('unfilteredData', model.pluckSwitch('unfilteredData'));
@@ -48,6 +52,9 @@ angular.module('dataCards.directives').directive('card', function(AngularRxExten
       $scope.bindObservable('fieldName', model.pluck('fieldName'));
       $scope.bindObservable('expanded', model.pluckSwitch('expanded'));
       $scope.bindObservable('cardSize', model.pluckSwitch('cardSize'));
+
+      $scope.bindObservable('title', column.pluck('title'));
+      $scope.bindObservable('description', column.pluck('description'));
 
       $scope.toggleExpanded = function() {
         // NOTE: For the MVP, we only ever allow one expanded card.

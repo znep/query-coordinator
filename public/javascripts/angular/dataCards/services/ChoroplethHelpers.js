@@ -1,4 +1,4 @@
-angular.module('dataCards.models').factory('choroplethHelpers', function($http, $log, $rootScope){
+angular.module('dataCards.models').factory('ChoroplethHelpers', function($http, $log, $rootScope){
   return {
     returnDataFromGeojson: function(geojson, columnID) {
       console.log('TODO: temporary hack to implement choropleth breaks. Assumes for NOW that data for Geojson is embeddded in Geojson Properties. Will do Join in next sprint.');

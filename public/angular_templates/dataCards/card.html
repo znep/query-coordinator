@@ -10,7 +10,8 @@
     <div column-chart class="column-chart" unfiltered-data="unfilteredData" filtered-data="filteredData" field-name="fieldName"></div>
   </div>
   <div ng-switch-when="choropleth">
-    <choropleth data="fakeGeojsonData">
+    <choropleth data="data"></choropleth>
+    <!-- TODO: card-dependent geojson data! -->
   </div>
     <div ng-switch-default>I dunno how to display {{cardType}} :(</div>
   </div>

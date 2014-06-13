@@ -1,4 +1,4 @@
-angular.module('dataCards.directives').directive('choropleth', function($http, choroplethHelpers, leafletBoundsHelpers, $log) {
+angular.module('dataCards.directives').directive('choropleth', function($http, ChoroplethHelpers, leafletBoundsHelpers, $log) {
   return {
     restrict: 'E',
     replace: 'true',
@@ -6,7 +6,7 @@ angular.module('dataCards.directives').directive('choropleth', function($http, c
       data: '='
     },
     template: '<div class="choropleth-map-container"><leaflet class="choropleth-map" center="center" bounds="bounds" defaults="defaults" geojson="geojson" legend="legend"></leaflet></div>',
-    controller: function($scope) {
+    controller: function($scope, $http) {
       // Map settings
       $scope.center = {};
 
@@ -30,6 +30,12 @@ angular.module('dataCards.directives').directive('choropleth', function($http, c
         },
         scrollWheelZoom: false
       };
+
+      $http.get('/datasets/geojson/Neighborhoods_2012b.json').then(function(result) {
+        // GeoJson was reprojected and converted to Geojson with http://converter.mygeodata.eu/vector
+        // reprojected to WGS 84 (SRID: 4326)
+        $scope.data = result.data;
+      });
     },
     link: function($scope) {
 
@@ -106,7 +112,18 @@ angular.module('dataCards.directives').directive('choropleth', function($http, c
         };
       };
 
+      var updateClassBreaks = function(data) {
+        classBreaks.breaks = ChoroplethHelpers.createClassBreaks({
+          method: 'jenks',
+          data: data,
+          numberOfClasses: 4
+        });
+      };
+
       var updateColorScale = function(colorClass) {
+        if (!classBreaks || !classBreaks.breaks) {
+          throw new Error("Invalid class breaks");
+        }
         // use LAB color space to approximate perceptual brightness,
         // bezier interpolation, and auto-correct for color brightness.
         // See more: https://vis4.net/blog/posts/mastering-multi-hued-color-scales/
@@ -139,19 +156,15 @@ angular.module('dataCards.directives').directive('choropleth', function($http, c
           .domain(classBreaks.breaks)
           .correctLightness(coL)
           .mode('lab');
-      }
-      var updateClassBreaks = function(data) {
-        classBreaks.breaks = choroplethHelpers.createClassBreaks({
-          method: 'jenks',
-          data: data,
-          numberOfClasses: 4
-        });
-      }
+      };
 
-      var getGeojsonData = function(featureCollections) {
-        var features = _.pluck(featureCollections, 'features');
+      var updateBounds = function(geojson) {
+        $scope.bounds = leafletBoundsHelpers.createBoundsFromArray(ChoroplethHelpers.createBoundsArray(geojson));
+      };
+
+      var getGeojsonData = function(geojson) {
         var data = [];
-        _.each(features[0], function(feature){
+        _.each(geojson.features, function(feature){
           var val = feature.properties[attr];
           if (val === undefined || val === null) {
             return;
@@ -162,11 +175,12 @@ angular.module('dataCards.directives').directive('choropleth', function($http, c
         return data;
       }
 
-      function updateGeojson(featureCollections) {
+      function updateGeojson(geojson) {
         // TODO: temp attribute used
-        var data = getGeojsonData(featureCollections);
+        var data = getGeojsonData(geojson);
         updateClassBreaks(data);
-        updateColorScale('qualitative');
+        updateColorScale('sequential');
+        updateBounds(geojson);
         // initiate/update legend, with class breaks and colors
         $scope.legend = {
           position: 'bottomleft',
@@ -175,7 +189,7 @@ angular.module('dataCards.directives').directive('choropleth', function($http, c
         }
         // update geojson layer(s)
         $scope.geojson = {
-          data: featureCollections,
+          data: geojson,
           style: style,
           resetStyleOnMouseout: true
         };
@@ -198,7 +212,6 @@ angular.module('dataCards.directives').directive('choropleth', function($http, c
 
       $scope.$watch('data', function(data){
         if (!data) return;
-        debugger
         updateGeojson(data);
       });
     }

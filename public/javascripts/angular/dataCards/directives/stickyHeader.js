@@ -33,8 +33,11 @@ angular.module('dataCards.directives').directive('stickyHeader', function(Angula
         var headerPositionTop = element.offset().top;
         var headerHeight = element.height();
 
+        var availableContentHeight = headerHeight + Math.max(0, headerPositionTop - windowScrollTop);
+
         $scope.headerIsStuck = windowScrollTop >= headerPositionTop;
-        $scope.availableContentHeight = headerHeight + Math.max(0, headerPositionTop - windowScrollTop);
+
+        $scope.$emit('stickyHeaderAvailableContentHeightChanged', availableContentHeight);
       };
 
       var resizeListenKey = attrs.updateOnResize;

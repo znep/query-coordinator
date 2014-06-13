@@ -81,4 +81,11 @@ angular.module('dataCards.controllers').controller('CardsViewController',
       var dayInMillisec = 86400000;
       return Math.floor((Date.now() - date.getTime()) / dayInMillisec);
     }));
+
+    $scope.$on('stickyHeaderAvailableContentHeightChanged', function(event, availableContentHeight) {
+      event.stopPropagation();
+      $scope.availableContentHeightStyle = {
+        'top': availableContentHeight + 'px'
+      };
+    });
   });

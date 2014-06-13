@@ -34,7 +34,7 @@
     </div>
   </div>
   <div ng-if="useExpandedLayout" class="expandedLayout">
-    <div class="expandedCards" style="top: {{availableContentHeight}}px">
+    <div class="expandedCards" ng-style="availableContentHeightStyle">
       <card model="expandedCards[0]"></card>
     </div>
     <div class="collapsedCards">

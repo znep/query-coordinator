@@ -38,7 +38,7 @@ describe("notifyResize directive", function() {
       });
 
       scope.$on('elementResized', function(e, a) {
-        spy(a);
+        spy(a[0]);
       });
 
       el.find('span').html('two<br>lines');
@@ -51,7 +51,7 @@ describe("notifyResize directive", function() {
       var el = create(html);
 
       scope.$on('elementResized', function(e, a) {
-        expect(a).to.be.undefined;
+        expect(a[0]).to.be.undefined;
         done();
       });
 

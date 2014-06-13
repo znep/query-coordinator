@@ -59,6 +59,10 @@
           }
           // Create the Leaflet Map Object with the options
           var map = new L.Map(element[0], leafletMapDefaults.getMapCreationDefaults(attrs.id));
+          // Handle map resizing on elementResized event
+          scope.$on('mapContainerResized', function() {
+            map.invalidateSize(true);
+          });
           _leafletMap.resolve(map);
           if (!isDefined(attrs.center)) {
             map.setView([
@@ -404,7 +408,6 @@
               } else if (isDefined(legend.url)) {
                 $log.info('[AngularJS - Leaflet] loading arcgis legend service.');
               } else {
-                // TODO: Watch array legend.
                 leafletLegend = L.control({ position: position });
                 leafletLegend.onAdd = leafletLegendHelpers.getOnAddArrayLegend(legend, legendClass);
                 leafletLegend.addTo(map);
@@ -425,7 +428,6 @@
                     legend.loadedData();
                   }
                 }).error(function () {
-                  $log.warn('[AngularJS - Leaflet] legend.url not loaded.');
                 });
               });
             });

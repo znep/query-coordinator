@@ -20,10 +20,11 @@ angular.module('dataCards.directives').directive('notifyResize', function() {
 
       element.resize(function() {
         $scope.$apply(function() {
+          var height = element.height(), width = element.width();
           if (_.isEmpty(resizeKey)) {
-            $scope.$broadcast('elementResized');
+            $scope.$broadcast('elementResized', [width, height]);
           } else {
-            $scope.$broadcast('elementResized', resizeKey);
+            $scope.$broadcast('elementResized', [resizeKey, width, height]);
           }
         });
       });

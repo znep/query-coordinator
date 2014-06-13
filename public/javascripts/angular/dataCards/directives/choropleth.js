@@ -1,4 +1,27 @@
-angular.module('dataCards.directives').directive('choropleth', function($http, ChoroplethHelpers, leafletBoundsHelpers, $log) {
+angular.module('dataCards.directives').directive('choropleth', function($http, ChoroplethHelpers, leafletBoundsHelpers, $log, $timeout) {
+  // TODO: temp attribute.
+  // Replace with real one once API gets up and running.
+  var attr = 'VALUE',
+      numberOfClasses = 5,
+      defaultColorClass = 'diverging',
+      defaultLegendPos = 'bottomleft',
+      defaultStrokeColor = '#666',
+      sequentialColors = ['#B09D41', '#323345'],
+      divergingColors = ['brown','lightyellow','teal'],
+      qualitativeColors = {
+        3: ["#8dd3c7","#ffffb3","#bebada"],
+        4: ["#8dd3c7","#ffffb3","#bebada","#fb8072"],
+        5: ["#8dd3c7","#ffffb3","#bebada","#fb8072","#80b1d3"],
+        6: ["#8dd3c7","#ffffb3","#bebada","#fb8072","#80b1d3","#fdb462"],
+        7: ["#8dd3c7","#ffffb3","#bebada","#fb8072","#80b1d3","#fdb462","#b3de69"],
+        8: ["#8dd3c7","#ffffb3","#bebada","#fb8072","#80b1d3","#fdb462","#b3de69","#fccde5"],
+        9: ["#8dd3c7","#ffffb3","#bebada","#fb8072","#80b1d3","#fdb462","#b3de69","#fccde5","#d9d9d9"],
+        10: ["#8dd3c7","#ffffb3","#bebada","#fb8072","#80b1d3","#fdb462","#b3de69","#fccde5","#d9d9d9","#bc80bd"],
+        11: ["#8dd3c7","#ffffb3","#bebada","#fb8072","#80b1d3","#fdb462","#b3de69","#fccde5","#d9d9d9","#bc80bd","#ccebc5"],
+        12: ["#8dd3c7","#ffffb3","#bebada","#fb8072","#80b1d3","#fdb462","#b3de69","#fccde5","#d9d9d9","#bc80bd","#ccebc5","#ffed6f"]
+      },
+      nullColor = '#ddd';
+      // TODO: assumes min colors = 3, max colors = 12. Enforce this with error catching.
   return {
     restrict: 'E',
     replace: 'true',
@@ -34,94 +57,80 @@ angular.module('dataCards.directives').directive('choropleth', function($http, C
       $http.get('/datasets/geojson/Neighborhoods_2012b.json').then(function(result) {
         // GeoJson was reprojected and converted to Geojson with http://converter.mygeodata.eu/vector
         // reprojected to WGS 84 (SRID: 4326)
-        $scope.data = result.data;
+        $scope.geojsonData = result.data;
+        // TODO: invalid geojsonData --> ???
       });
     },
-    link: function($scope) {
+    link: function($scope, element) {
 
-      // TODO: temp attribute. Comes from geojson. Replace with real one once API gets up and running.
-      var attr = 'VALUE',
-          sequentialColors = ['#B09D41', '#323345'],
-          divergingColors = ['brown','lightyellow','teal'],
-          qualitativeColors = {
-            3: ["#8dd3c7","#ffffb3","#bebada"],
-            4: ["#8dd3c7","#ffffb3","#bebada","#fb8072"],
-            5: ["#8dd3c7","#ffffb3","#bebada","#fb8072","#80b1d3"],
-            6: ["#8dd3c7","#ffffb3","#bebada","#fb8072","#80b1d3","#fdb462"],
-            7: ["#8dd3c7","#ffffb3","#bebada","#fb8072","#80b1d3","#fdb462","#b3de69"],
-            8: ["#8dd3c7","#ffffb3","#bebada","#fb8072","#80b1d3","#fdb462","#b3de69","#fccde5"],
-            9: ["#8dd3c7","#ffffb3","#bebada","#fb8072","#80b1d3","#fdb462","#b3de69","#fccde5","#d9d9d9"],
-            10: ["#8dd3c7","#ffffb3","#bebada","#fb8072","#80b1d3","#fdb462","#b3de69","#fccde5","#d9d9d9","#bc80bd"],
-            11: ["#8dd3c7","#ffffb3","#bebada","#fb8072","#80b1d3","#fdb462","#b3de69","#fccde5","#d9d9d9","#bc80bd","#ccebc5"],
-            12: ["#8dd3c7","#ffffb3","#bebada","#fb8072","#80b1d3","#fdb462","#b3de69","#fccde5","#d9d9d9","#bc80bd","#ccebc5","#ffed6f"]
-          },
-          nullColor = '#ddd';
-          // TODO: assumes min colors = 3, max colors = 12. Enforce this with error catching.
-      // Choropleth Styles
+      /* Size map responsively */
 
-      var classBreaks = {};
+      var containerPaddingX = element.outerWidth(true) - element.width(),
+          containerPaddingY = element.outerHeight(true) - element.height();
+          // includes CSS margins + CSS padding when outerWidth, outerHeight set to true
+
+      $scope.$on('elementResized', function(event, arguments){
+        var width = arguments[0], height = arguments[1];
+        width = width - containerPaddingX;
+        height = height - containerPaddingY;
+        element.find('.choropleth-map').css({ width: width, height: height });
+        $timeout(function(){
+          $scope.$broadcast('mapContainerResized')
+        });
+      });
+
+      /* Choropleth Styles */
+
       var scale;
 
-      classBreaks.findIndex = function(val) {
-        //  Ranges are defined as follows:
-        //
-        //  for class breaks   *---*---*---*
-        //  range 0:           *---*
-        //  range 1:               0---*
-        //  range 2:                   0---*
-        var breaks = this.breaks;
-        var lastIndex = breaks.length - 1;
-        if (breaks.length < 2) {
-          $log.error('Invalid number of class breaks specified.');
-        }
-        for (var i = 0; i < (breaks.length - 1); i++) {
-          if (val >= breaks[i] && val <= breaks[i+1]) {
-            return i;
-          }
-        }
-      }
       var fillColor = function(feature) {
         if (feature.properties[attr] == null || feature.properties[attr] === undefined ) {
           return nullColor;
-        } else {
-          var value = Number(feature.properties[attr]);
-          return scale(value).hex();
         }
+        var value = Number(feature.properties[attr]);
+        return scale(value).hex();
       };
 
-      var color = function(feature) {
-        return 'white';
-      }
+      var strokeColor = function(feature) {
+        if (feature.geometry.type != 'LineString' || feature.geometry.type != 'MultiLineString') {
+          return defaultStrokeColor;
+        }
+        // for LineString or MultiLineString, strokeColor is the same as a feature's 'fill color'
+        return fillColor(feature);
+      };
 
-      var weight = function(feature) {
-        if (feature.geometry.type != 'MultiLineString') {
-          return 1;
-        } else {
+      var strokeWidth = function(feature) {
+        if (feature.geometry.type == 'MultiLineString' || feature.geometry.type == 'LineString') {
           return 3;
         }
-      }
+        return 1;
+      };
 
       var style = function(feature) {
         return {
           fillColor: fillColor(feature),
-          weight: weight(feature),
+          weight: strokeWidth(feature),
           opacity: 0.8,
-          color: color(feature),
+          color: strokeColor(feature),
           dashArray: 0,
           fillOpacity: 0.8
         };
       };
 
-      var updateClassBreaks = function(data) {
-        classBreaks.breaks = ChoroplethHelpers.createClassBreaks({
+      /* Operations for updating Geojson */
+
+      var classBreaksFromValues = function(values) {
+        // TODO: Jenks for now, with configurable number of classes.
+        // Support more types later, depending on spec.
+        return ChoroplethHelpers.createClassBreaks({
           method: 'jenks',
-          data: data,
-          numberOfClasses: 4
+          data: values,
+          numberOfClasses: numberOfClasses
         });
       };
 
-      var updateColorScale = function(colorClass) {
-        if (!classBreaks || !classBreaks.breaks) {
+      var updateColorScale = function(colorClass, classBreaks) {
+        if (!classBreaks) {
           throw new Error("Invalid class breaks");
         }
         // use LAB color space to approximate perceptual brightness,
@@ -131,30 +140,30 @@ angular.module('dataCards.directives').directive('choropleth', function($http, C
         switch (colorClass.toLowerCase()) {
           case 'diverging':
             colorRange = divergingColors;
-            coL = false;
-            bezier = false;
+            lightnessCorrection = false;
+            bezierColorInterpolation = false;
             break;
           case 'qualitative':
-            colorRange = qualitativeColors[classBreaks.breaks.length];
-            coL = false;
-            bezier = false;
+            colorRange = qualitativeColors[classBreaks.length];
+            lightnessCorrection = false;
+            bezierColorInterpolation = false;
             break;
           case 'sequential':
             colorRange = sequentialColors;
-            coL = true;
-            bezier = true;
+            lightnessCorrection = true;
+            bezierColorInterpolation = true;
             break;
           default:
             throw new Error("[MapController] Invalid color class specified for updateColorScale");
         }
-        if (bezier) {
+        if (bezierColorInterpolation) {
           colors = chroma.interpolate.bezier(colorRange);
         } else {
           colors = colorRange;
         }
         scale = new chroma.scale(colors)
-          .domain(classBreaks.breaks)
-          .correctLightness(coL)
+          .domain(classBreaks)
+          .correctLightness(lightnessCorrection)
           .mode('lab');
       };
 
@@ -162,43 +171,31 @@ angular.module('dataCards.directives').directive('choropleth', function($http, C
         $scope.bounds = leafletBoundsHelpers.createBoundsFromArray(ChoroplethHelpers.createBoundsArray(geojson));
       };
 
-      var getGeojsonData = function(geojson) {
-        var data = [];
-        _.each(geojson.features, function(feature){
-          var val = feature.properties[attr];
-          if (val === undefined || val === null) {
-            return;
-          } else {
-            data.push(feature.properties[attr]);
-          }
-        });
-        return data;
+      var updateLegend = function(classBreaks, colors) {
+        $scope.legend = {
+          position: defaultLegendPos,
+          colors: classBreaks ? colors : [],
+          classBreaks: classBreaks
+        };
       }
 
-      function updateGeojson(geojson) {
-        // TODO: temp attribute used
-        var data = getGeojsonData(geojson);
-        updateClassBreaks(data);
-        updateColorScale('sequential');
-        updateBounds(geojson);
-        // initiate/update legend, with class breaks and colors
-        $scope.legend = {
-          position: 'bottomleft',
-          colors: classBreaks.breaks ? scale.colors() : [],
-          classBreaks: classBreaks.breaks
-        }
+      /* Update Geojson upon new data */
+
+      function updateGeojson(geojsonData) {
+        var values = ChoroplethHelpers.getGeojsonValues(geojsonData, attr);
+        var classBreaks = classBreaksFromValues(values);
+        updateColorScale(defaultColorClass, classBreaks);
+        updateBounds(geojsonData);
+        updateLegend(classBreaks, scale.colors());
         // update geojson layer(s)
         $scope.geojson = {
-          data: geojson,
+          data: geojsonData,
           style: style,
           resetStyleOnMouseout: true
         };
       }
 
-      // Choropleth Style Effects
-      $scope.$on('leafletDirectiveMap.geojsonMouseover', function(event, leafletEvent) {
-        highlightFeature(leafletEvent);
-      });
+      // Choropleth Highlight Feature Effect
 
       function highlightFeature(leafletEvent) {
         var layer = leafletEvent.target;
@@ -210,9 +207,13 @@ angular.module('dataCards.directives').directive('choropleth', function($http, C
         layer.bringToFront();
       }
 
-      $scope.$watch('data', function(data){
-        if (!data) return;
-        updateGeojson(data);
+      $scope.$on('leafletDirectiveMap.geojsonMouseover', function(event, leafletEvent) {
+        highlightFeature(leafletEvent);
+      });
+
+      $scope.$watch('geojsonData', function(geojsonData){
+        if (!geojsonData) return;
+        updateGeojson(geojsonData);
       });
     }
   }

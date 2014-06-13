@@ -1,8 +1,15 @@
 angular.module('dataCards.models').factory('ChoroplethHelpers', function($http, $log, $rootScope){
   return {
-    returnDataFromGeojson: function(geojson, columnID) {
-      console.log('TODO: temporary hack to implement choropleth breaks. Assumes for NOW that data for Geojson is embeddded in Geojson Properties. Will do Join in next sprint.');
-      var data = _.map(geojson.features, function(feature) { return Number(feature.properties[columnID]); });
+    getGeojsonValues: function(geojson, attr) {
+      var data = [];
+      _.each(geojson.features, function(feature){
+        var val = feature.properties[attr];
+        if (val === undefined || val === null) {
+          return;
+        } else {
+          data.push(feature.properties[attr]);
+        }
+      });
       return data;
     },
     createBoundsArray: function(geojson) {
@@ -61,19 +68,15 @@ angular.module('dataCards.models').factory('ChoroplethHelpers', function($http, 
       }
     },
     createClassBreaks: function(options) {
-      options = {
-        method: options.method.toLowerCase() || 'jenks',
-        data: options.data || this.returnDataFromGeojson(options.geojson)
-      }
+      options.method = options.method.toLowerCase() || 'jenks';
       if (options.method == 'jenks') {
         options.methodParam = options.numberOfClasses || 4;
       } else if (options.method == 'quantile') {
         options.methodParam = options.p;
       } else {
-        $log.error('Invalid/non-supported class brekas method '+options.method);
+        $log.error('Invalid/non-supported class breaks method '+options.method);
       }
       var classBreaks = ss[options.method](options.data, options.methodParam);
-      $rootScope.addTimer('Created class breaks');
       return classBreaks;
     },
     classBreakColors: function(classBreaks) {

@@ -1,4 +1,4 @@
-<div class="card cardSize{{cardSize}}" ng-class="{ expanded: expanded }">
+<div class="card cardSize{{cardSize}}" notify-resize ng-class="{ expanded: expanded }">
   <div class="title">
     {{title}}
   </div>
@@ -10,7 +10,7 @@
     <div column-chart class="column-chart" unfiltered-data="unfilteredData" filtered-data="filteredData" field-name="fieldName"></div>
   </div>
   <div ng-switch-when="choropleth">
-    <choropleth data="data"></choropleth>
+    <choropleth geojson-data="geojsonData"></choropleth>
     <!-- TODO: card-dependent geojson data! -->
   </div>
     <div ng-switch-default>I dunno how to display {{cardType}} :(</div>

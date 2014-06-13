@@ -42,8 +42,8 @@ angular.module('dataCards.directives').directive('stickyHeader', function(Angula
 
       var resizeListenKey = attrs.updateOnResize;
       if (!_.isEmpty(resizeListenKey)) {
-        $scope.$on('elementResized', function(event, argument) {
-          if (argument === resizeListenKey) {
+        $scope.$on('elementResized', function(event, arguments) {
+          if (arguments[0] === resizeListenKey) {
             pollLayout();
           }
         });

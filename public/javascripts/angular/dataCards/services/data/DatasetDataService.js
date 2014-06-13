@@ -12,21 +12,27 @@ angular.module('dataCards.services').factory('DatasetDataService', function($q) 
     'updatedAt': '2014-05-20T17:42:55+00:00', // This is ISO8601
     'columns': {
       'ward': {
+        'title': 'Ward where crime was committed',
         'logicalDatatype': 'location',
         'physicalDatatype': 'text',
         'importance': 1
       },
       'crime_type': {
+        'title': 'Type of crime',
         'logicalDatatype': 'category',
         'physicalDatatype': 'text',
         'importance': 1
       },
       'crime_time': {
+        'title': 'Time of incident',
+        'description': 'The time at which Batman decided his job was complete',
         'logicalDatatype': 'time',
         'physicalDatatype': 'timestamp',
         'importance': 3
       },
       'number_of_arrests': {
+        'title': 'Number of arrests made',
+        'description': 'The number of people who failed to evade Batman',
         'logicalDatatype': 'amount',
         'physicalDatatype': 'number',
         'importance': 2,

@@ -24,6 +24,12 @@ angular.module('dataCards.models').factory('Dataset', function(ModelHelper, Data
           '\\w+': {
             'type': 'object',
             'properties': {
+              'title': {
+                'type': 'string'
+              },
+              'description': {
+                'type': 'string'
+              },
               'logicalDatatype': {
                 'type': 'string',
                 'enum': [ 'category', 'amount', 'location', 'time', 'text', 'name', 'identifier' ]
@@ -35,7 +41,7 @@ angular.module('dataCards.models').factory('Dataset', function(ModelHelper, Data
               'importance': { 'type': 'integer' , 'minimum': 1, 'maximum': 4 },
               'columnDisplayUnit': { 'type': 'string' }
             },
-            'required': [ 'logicalDatatype', 'physicalDatatype', 'importance' ]
+            'required': [ 'title', 'logicalDatatype', 'physicalDatatype', 'importance' ]
           }
         }
       }
@@ -80,8 +86,7 @@ angular.module('dataCards.models').factory('Dataset', function(ModelHelper, Data
       });
     };
 
-    //TODO Columns may need to also be observable properties. Maybe.
-    var fields = ["rowDisplayUnit", "defaultAggregateColumn", "domain", "owner", "updatedAt", "columns"];
+    var fields = ['title', 'rowDisplayUnit', 'defaultAggregateColumn', 'domain', 'owner', 'updatedAt', 'columns'];
     _.each(fields, function(field) {
       ModelHelper.addReadOnlyPropertyWithLazyDefault(field, self, function() {
         return staticDataPromise().then(_.property(field));

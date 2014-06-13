@@ -27,7 +27,6 @@ angular.module('dataCards.services').factory('AngularRxExtensions', function($ro
     var self = this;
     observable.subscribe(function(newValue) {
       safeApply(self, function() {
-        $log.info('TRACE: setting ' + propName + ' to', newValue);
         self[propName] = newValue;
       });
     });

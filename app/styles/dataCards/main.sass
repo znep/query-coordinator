@@ -15,6 +15,7 @@ a
     color: #ccc
 
 $quickFilterBarHeight: 40px
+$cardBorder: 2px
 .cards-view
   .hideableMetadata
     margin: 15px
@@ -36,15 +37,16 @@ $quickFilterBarHeight: 40px
       left: 0
 
   .card
-    border: 2px solid #bbb
+    @include prefixer(box-sizing, border-box)
+    border: $cardBorder solid #bbb
 
   .collapsedLayout
-    .cardSize1 .card
-      height: 300px
-    .cardSize2 .card
-      height: 250px
-    .cardSize3 .card
-      height: 200px
+    .cardSize1
+      height: 300px + $cardBorder * 2
+    .cardSize2
+      height: 250px + $cardBorder * 2
+    .cardSize3
+      height: 200px + $cardBorder * 2
 
   .expandedLayout
     .expandedCards
@@ -63,6 +65,12 @@ $quickFilterBarHeight: 40px
         left: 0
     .collapsedCards
       width: 35%
+      .cardSize1
+        height: 250px + $cardBorder * 2
+      .cardSize2
+        height: 200px + $cardBorder * 2
+      .cardSize3
+        height: 150px + $cardBorder * 2
 
 .card
   color: black

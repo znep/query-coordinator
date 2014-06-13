@@ -47,6 +47,7 @@ angular.module('dataCards.directives').directive('card', function(AngularRxExten
       $scope.bindObservable('filteredData', model.pluckSwitch('filteredData'));
       $scope.bindObservable('fieldName', model.pluck('fieldName'));
       $scope.bindObservable('expanded', model.pluckSwitch('expanded'));
+      $scope.bindObservable('cardSize', model.pluckSwitch('cardSize'));
 
       $scope.toggleExpanded = function() {
         // NOTE: For the MVP, we only ever allow one expanded card.

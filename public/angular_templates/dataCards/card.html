@@ -1,4 +1,4 @@
-<div class="card" ng-class="{ expanded: expanded }">
+<div class="card cardSize{{cardSize}}" ng-class="{ expanded: expanded }">
   <div ng-switch="cardType">
   <div ng-switch-when="column">
     <div column-chart class="column-chart" unfiltered-data="unfilteredData" filtered-data="filteredData" field-name="fieldName"></div>

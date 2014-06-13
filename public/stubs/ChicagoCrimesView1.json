@@ -1,0 +1,58 @@
+{
+  "dataset": {
+    "id": "ph9n-8bk3",            
+    "rowDisplayUnit": "crime",
+    "defaultAggregateColumn": ":count",  
+    "domain": "soda2nbe.test-socrata.com",
+    "ownerId": "jc63-heng", 
+    "updatedAt": "2014-05-20T10:42:55.000-07:00"
+  },
+  "columns": [ 
+    {
+      "name": "primary_type",
+      "logicalDatatype": "category",
+      "physicalDatatype": "text",
+      "importance": 1
+    },
+    {
+      "name": "location_description",
+      "logicalDatatype": "category",
+      "physicalDatatype": "text",
+      "importance": 1
+    }
+  ]
+}
+
+
+
+{
+  "pageId": "from-rndy",  
+  "datasetId": "ph9n-8bk3",  
+  "name": "2 Card Crimes Page",
+  "description": "A simple page with two cards to test out our new frontend",
+  "primaryAmountField": null, 
+  "primaryAggregation": "count", 
+  "filterSoql": null,
+  "isDefaultPage": true,
+  "pageSource": "admin",
+  "columns": [
+    {
+      "description": "Crime Type",
+      "fieldName": "primary_type",
+      "cardSize": 1,
+      "cardCustomStyle": {},
+      "expandedCustomStyle": {},
+      "displayMode": "visualization",
+      "expanded": false
+    },
+    {
+      "description": "Location Type",
+      "fieldName": "location_description",
+      "cardSize": 1,
+      "cardCustomStyle": {},
+      "expandedCustomStyle": {},
+      "displayMode": "visualization",
+      "expanded": false
+    }
+  ]
+}

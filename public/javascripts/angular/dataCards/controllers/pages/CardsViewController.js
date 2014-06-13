@@ -49,7 +49,9 @@ angular.module('dataCards.controllers').controller('CardsViewController',
 
     $scope.page = page;
 
-    $scope.bindObservable('pageName', page.name);
+    $scope.bindObservable('pageName', page.name.map(function(name) {
+      return _.isUndefined(name) ? 'Untitled' : name;
+    }));
     $scope.bindObservable('pageDescription', page.description);
 
     $scope.bindObservable('cardLinesBySizeGroup', cardLinesBySizeGroup);

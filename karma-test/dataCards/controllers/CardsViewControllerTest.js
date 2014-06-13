@@ -55,30 +55,68 @@ describe("CardsViewController", function() {
     };
   };
 
-  it('should update the pageName and pageDescription values on the scope when these properties change on the model', function() {
-    var controllerHarness = makeController();
+  describe('page name', function() {
+    it('should update on the scope when the property changes on the model', function() {
+      var controllerHarness = makeController();
 
-    var controller = controllerHarness.controller;
-    var scope = controllerHarness.scope;
+      var controller = controllerHarness.controller;
+      var scope = controllerHarness.scope;
 
-    var nameOne = _.uniqueId('name');
-    var nameTwo = _.uniqueId('name');
-    var descriptionOne = _.uniqueId('description');
-    var descriptionTwo = _.uniqueId('description');
-    controllerHarness.staticInfoPromise.resolve({
-      datasetId: 'fake-fbfr',
-      name: nameOne,
-      description: descriptionOne
+      var nameOne = _.uniqueId('name');
+      var nameTwo = _.uniqueId('name');
+      controllerHarness.staticInfoPromise.resolve({
+        datasetId: 'fake-fbfr',
+        name: nameOne
+      });
+      $rootScope.$digest();
+
+      expect(scope.pageName).to.equal(nameOne);
+
+      scope.page.name = nameTwo;
+      expect(scope.pageName).to.equal(nameTwo);
     });
-    $rootScope.$digest();
 
-    expect(scope.pageName).to.equal(nameOne);
-    expect(scope.pageDescription).to.equal(descriptionOne);
+    it('should default to "Untitled"', function() {
+      var controllerHarness = makeController();
 
-    scope.page.name = nameTwo;
-    scope.page.description = descriptionTwo;
-    expect(scope.pageName).to.equal(nameTwo);
-    expect(scope.pageDescription).to.equal(descriptionTwo);
+      var controller = controllerHarness.controller;
+      var scope = controllerHarness.scope;
+
+      var nameOne = undefined;
+      var nameTwo = _.uniqueId('name');
+      controllerHarness.staticInfoPromise.resolve({
+        datasetId: 'fake-fbfr',
+        name: undefined
+      });
+      $rootScope.$digest();
+
+      expect(scope.pageName).to.equal("Untitled");
+
+      scope.page.name = nameTwo;
+      expect(scope.pageName).to.equal(nameTwo);
+    });
+  });
+
+  describe('page description', function() {
+    it('should update on the scope when the property changes on the model', function() {
+      var controllerHarness = makeController();
+
+      var controller = controllerHarness.controller;
+      var scope = controllerHarness.scope;
+
+      var descriptionOne = _.uniqueId('description');
+      var descriptionTwo = _.uniqueId('description');
+      controllerHarness.staticInfoPromise.resolve({
+        datasetId: 'fake-fbfr',
+        description: descriptionOne
+      });
+      $rootScope.$digest();
+
+      expect(scope.pageDescription).to.equal(descriptionOne);
+
+      scope.page.description = descriptionTwo;
+      expect(scope.pageDescription).to.equal(descriptionTwo);
+    });
   });
 
   it('should calculate expandedCards, collapsedCards, and useExpandedView correctly', function() {

@@ -1,5 +1,9 @@
+@import dataCards/ellipsis
+
+$bgColor: #4a525a
+
 body
-  background: #4a525a
+  background: $bgColor
   color: white
   font-family: Arial, Helvetica, sans-serif
   margin: 0
@@ -7,7 +11,8 @@ body
 p
   margin: 0.5em 0 0.5em 0
 h1
-  margin: 0.5em 0 0.5em 0
+  margin: 0
+  font-size: 1.5em
 
 a
   color: white
@@ -16,7 +21,22 @@ a
 
 $quickFilterBarHeight: 40px
 $cardBorder: 2px
+$pageNameLineHeight: 22px
+$pageNameMaxLineCount: 2
 .cards-view
+  .pageName
+    position: absolute
+    top: 0
+    @include ellipsified-line-limit($pageNameMaxLineCount, $pageNameLineHeight, $bgColor)
+  // The ellipsified-line-limit mixin requires a fixed height on the content regardless
+  // of whether or not the content is wrapping. So, we take the ellipsified content out
+  // of layout and instead use this pageNameMeasuringStick to reserve the right amount
+  // of space.
+  .pageNameMeasuringStick
+    visibility: hidden
+    line-height: $pageNameLineHeight
+    max-height: $pageNameLineHeight * $pageNameMaxLineCount
+
   .hideableMetadata
     margin: 15px
   .quickFilterBar

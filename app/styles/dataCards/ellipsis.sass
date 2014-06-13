@@ -1,0 +1,33 @@
+// Adapted from http://www.mobify.com/blog/multiline-ellipsis-in-pure-css/
+@mixin ellipsified-line-limit($lines, $lineHeight, $ellipsisBgColor)
+  overflow: hidden
+  height: $lines * $lineHeight
+  line-height: $lineHeight
+
+  &:before
+    content: ""
+    float: left
+    width: 5px
+    height: $lines * $lineHeight
+
+  & > *:first-child
+    float: right
+    width: 100%
+    margin-left: -5px
+
+  &:after
+    content: "\02026"  
+    font-weight: bold
+
+    @include prefixer(box-sizing, content-box)
+
+    float: right
+    position: relative
+    top: -$lineHeight
+    left: 100%
+    width: 3em
+    margin-left: -3em
+    padding-right: 5px
+
+    background: linear-gradient(to right, rgba($ellipsisBgColor, 0), $ellipsisBgColor, $ellipsisBgColor)
+    text-align: right

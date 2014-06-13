@@ -6,7 +6,7 @@ angular.module('dataCards.services').factory('PageDataService', function($q) {
   // TODO safely cache promises for IDs so we don't do requests unnecessarily.
   var staticInfoBlobPromise = $q.when({
     'datasetId': 'bead-beds',
-    'name': 'I am the primat',
+    'name': 'I am the primat I am the primat I am the primat I am the primat I am the primat I am the primat I am the primat fin',
     'description': 'Frist psot!',
     'layoutMode': 'single card focused view state',
     'primaryAmountField': 'fine_amount',

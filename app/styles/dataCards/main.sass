@@ -21,14 +21,14 @@ a
 
 $quickFilterBarHeight: 40px
 $cardBorder: 2px
-$pageNameLineHeight: 22px
+$pageNameLineHeight: 1.5rem
 $pageNameMaxLineCount: 2
 .cards-view
   .pageName
     position: absolute
     top: 0
-    @include ellipsified-line-limit($pageNameMaxLineCount, $pageNameLineHeight, $bgColor)
-  // The ellipsified-line-limit mixin requires a fixed height on the content regardless
+    @include multiline-with-ellipsis($pageNameMaxLineCount, $pageNameLineHeight, $bgColor)
+  // The multiline-with-ellipsis mixin requires a fixed height on the content regardless
   // of whether or not the content is wrapping. So, we take the ellipsified content out
   // of layout and instead use this pageNameMeasuringStick to reserve the right amount
   // of space.

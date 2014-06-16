@@ -98,6 +98,7 @@ $card-title-expanded-bg-color: #aaa
 $card-title-padding: 5px
 $card-title-margin-right: 18px
 $card-title-border-thickness: 1px
+$card-title-line-height: 1.2em
 $card-description-max-line-count: 2
 $card-description-line-height: 1.3em
 .card
@@ -135,6 +136,7 @@ $card-description-line-height: 1.3em
     text-overflow: ellipsis
     white-space: nowrap
     padding-right: $card-title-margin-right
+    line-height: $card-title-line-height
   .title-expanded
     display: none
     position: absolute
@@ -143,6 +145,7 @@ $card-description-line-height: 1.3em
     right: $card-padding - $card-title-padding - $card-title-border-thickness + $card-title-margin-right
     border: $card-title-border-thickness solid black
     padding: $card-title-padding
+    line-height: $card-title-line-height
     text-overflow: ellipsis
     white-space: nowrap
     opacity: 0
@@ -153,7 +156,7 @@ $card-description-line-height: 1.3em
       position: absolute
       overflow: hidden
       background: $card-title-expanded-bg-color
-      max-height: 1.3em
+      height: $card-title-line-height
 
 .onRight .card
   .title-expanded

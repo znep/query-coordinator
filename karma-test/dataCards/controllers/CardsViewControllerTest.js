@@ -223,25 +223,25 @@ describe("CardsViewController", function() {
   describe('card layout', function() {
     it('should provide an classForScreenPosition implementation that is left-weighted', function() {
       var controllerHarness = makeController();
-      var cfsp = controllerHarness.scope.classForScreenPosition;
-      expect(cfsp).to.exist;
+      var classForScreenPosition = controllerHarness.scope.classForScreenPosition;
+      expect(classForScreenPosition).to.exist;
 
       /* args are cardIndex, cardsInLine */
       var left = 'onLeft';
       var right = 'onRight';
-      expect(cfsp(0, 1)).to.equal(left);
+      expect(classForScreenPosition(0, 1)).to.equal(left);
 
-      expect(cfsp(0, 2)).to.equal(left);
-      expect(cfsp(1, 2)).to.equal(right);
+      expect(classForScreenPosition(0, 2)).to.equal(left);
+      expect(classForScreenPosition(1, 2)).to.equal(right);
 
-      expect(cfsp(0, 3)).to.equal(left);
-      expect(cfsp(1, 3)).to.equal(left);
-      expect(cfsp(2, 3)).to.equal(right);
+      expect(classForScreenPosition(0, 3)).to.equal(left);
+      expect(classForScreenPosition(1, 3)).to.equal(left);
+      expect(classForScreenPosition(2, 3)).to.equal(right);
 
-      expect(cfsp(0, 4)).to.equal(left);
-      expect(cfsp(1, 4)).to.equal(left);
-      expect(cfsp(2, 4)).to.equal(right);
-      expect(cfsp(3, 4)).to.equal(right);
+      expect(classForScreenPosition(0, 4)).to.equal(left);
+      expect(classForScreenPosition(1, 4)).to.equal(left);
+      expect(classForScreenPosition(2, 4)).to.equal(right);
+      expect(classForScreenPosition(3, 4)).to.equal(right);
     });
   });
 });

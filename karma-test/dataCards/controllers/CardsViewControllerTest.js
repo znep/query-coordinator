@@ -21,11 +21,9 @@ describe("CardsViewController", function() {
     var scope = $rootScope.$new();
     var fakePageId = 'fooo-baar';
 
-    var cardsPromise = $q.defer();
-    var staticInfoPromise = $q.defer();
+    var baseInfoPromise = $q.defer();
 
-    mockPageDataService.getCards = function() { return cardsPromise.promise; };
-    mockPageDataService.getStaticInfo = function() { return staticInfoPromise.promise; };
+    mockPageDataService.getBaseInfo = function() { return baseInfoPromise.promise; };
 
     var controller = $controller('CardsViewController', {
       $scope: scope,
@@ -36,8 +34,7 @@ describe("CardsViewController", function() {
     expect(scope.page).to.be.instanceof(Page);
 
     return {
-      cardsPromise: cardsPromise,
-      staticInfoPromise: staticInfoPromise,
+      baseInfoPromise: baseInfoPromise,
       scope: scope,
       controller: controller
     };
@@ -64,7 +61,7 @@ describe("CardsViewController", function() {
 
       var nameOne = _.uniqueId('name');
       var nameTwo = _.uniqueId('name');
-      controllerHarness.staticInfoPromise.resolve({
+      controllerHarness.baseInfoPromise.resolve({
         datasetId: 'fake-fbfr',
         name: nameOne
       });
@@ -84,7 +81,7 @@ describe("CardsViewController", function() {
 
       var nameOne = undefined;
       var nameTwo = _.uniqueId('name');
-      controllerHarness.staticInfoPromise.resolve({
+      controllerHarness.baseInfoPromise.resolve({
         datasetId: 'fake-fbfr',
         name: undefined
       });
@@ -106,7 +103,7 @@ describe("CardsViewController", function() {
 
       var descriptionOne = _.uniqueId('description');
       var descriptionTwo = _.uniqueId('description');
-      controllerHarness.staticInfoPromise.resolve({
+      controllerHarness.baseInfoPromise.resolve({
         datasetId: 'fake-fbfr',
         description: descriptionOne
       });
@@ -125,7 +122,11 @@ describe("CardsViewController", function() {
     var controller = controllerHarness.controller;
     var scope = controllerHarness.scope;
     var cardBlobs = _.times(3, testCard);
-    controllerHarness.cardsPromise.resolve({cards: cardBlobs});
+    controllerHarness.baseInfoPromise.resolve({
+      datasetId: 'fake-fbfr',
+      name: 'fakeName',
+      cards: cardBlobs,
+    });
     $rootScope.$digest();
 
     // NB these tests intentionally care about the order of things in collapsedCards and expandedCards.
@@ -179,7 +180,11 @@ describe("CardsViewController", function() {
     var controller = controllerHarness.controller;
     var scope = controllerHarness.scope;
     var cardBlobs = _.times(3, testCard);
-    controllerHarness.cardsPromise.resolve({cards: cardBlobs});
+    controllerHarness.baseInfoPromise.resolve({
+      datasetId: 'fake-fbfr',
+      name: 'fakeName',
+      cards: cardBlobs,
+    });
     $rootScope.$digest();
     var cardModels = scope.page.cards.value;
 

@@ -20,7 +20,7 @@ describe("Card model", function() {
     var requiredKeys = JJV.schema.serializedCard.required;
     expect(blob).to.have.keys(requiredKeys);
 
-    var instance = Card.deserialize(new Page(), blob);
+    var instance = Card.deserialize(new Page('fake-asdf'), blob);
     expect(instance).to.be.instanceof(Card);
     expect(instance.page).to.be.instanceof(Page);
 

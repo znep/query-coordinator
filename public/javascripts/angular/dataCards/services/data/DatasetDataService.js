@@ -11,13 +11,13 @@ angular.module('dataCards.services').factory('DatasetDataService', function($q) 
     'owner': '4x4',
     'updatedAt': '2014-05-20T17:42:55+00:00', // This is ISO8601
     'columns': {
-      'ward': {
+      'location_description': {
         'title': 'Ward where crime was committed',
-        'logicalDatatype': 'location',
+        'logicalDatatype': 'category',
         'physicalDatatype': 'text',
         'importance': 1
       },
-      'crime_type': {
+      'primary_type': {
         'title': 'Type of crime',
         'description': 'How much batman cares',
         'logicalDatatype': 'category',

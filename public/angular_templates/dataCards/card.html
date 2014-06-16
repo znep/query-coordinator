@@ -1,9 +1,14 @@
 <div class="card cardSize{{cardSize}}" ng-class="{ expanded: expanded }">
-  <div class="title">
+  <div class="title-one-line">{{title}}</div>
+  <div class="title-expanded">
     {{title}}
+    <div class="title-expanded-first-line">{{title}}</div>
   </div>
   <div class="description">
-    {{description}}
+    <div class="description-measuring-stick">{{description}}</div>
+    <div title="{{description}}" class="description-text">
+      <div>{{description}}</div>
+    </div>
   </div>
   <div ng-switch="cardType">
   <div ng-switch-when="column">

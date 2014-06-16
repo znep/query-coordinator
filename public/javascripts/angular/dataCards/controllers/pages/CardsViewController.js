@@ -88,4 +88,8 @@ angular.module('dataCards.controllers').controller('CardsViewController',
         'top': availableContentHeight + 'px'
       };
     });
+
+    $scope.isCardOnRightSideOfScreen = function(cardIndex, numCardsInLine) {
+      return cardIndex >= Math.floor(numCardsInLine/2);
+    };
   });

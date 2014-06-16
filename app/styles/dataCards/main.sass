@@ -1,5 +1,6 @@
 @import dataCards/ellipsis
 
+$fgColor: black
 $bgColor: #4a525a
 
 body
@@ -102,7 +103,7 @@ $card-title-line-height: 1.2em
 $card-description-max-line-count: 2
 $card-description-line-height: 1.3em
 .card
-  color: black
+  color: $fgColor
   background: $card-bg-color
   padding: $card-padding
   position: relative
@@ -184,7 +185,7 @@ $card-description-line-height: 1.3em
       left: -$card-title-border-thickness
       padding: $card-title-padding
       border: $card-title-border-thickness solid black
-      color: black
+      color: $fgColor
 
 .card.expanded
   .expandButton a

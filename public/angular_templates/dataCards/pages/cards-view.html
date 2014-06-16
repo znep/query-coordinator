@@ -29,7 +29,7 @@
       <div class="row" ng-repeat="cardLine in cardLinesBySizeGroup[cardSize]">
         <div
           class="cardTile span{{12/cardLine.length}}"
-          ng-class="{onRight: isCardOnRightSideOfScreen($index, cardLine.length), onLeft: !isCardOnRightSideOfScreen($index, cardLine.length)}"
+          ng-class="classForScreenPosition($index, cardLine.length)"
           ng-repeat="card in cardLine">
           <card model="card.model"></card>
         </div>

@@ -2,7 +2,6 @@ angular.module('dataCards.models').factory('Card', function($injector, ModelHelp
   JJV.addSchema('serializedCard', {
     'type': 'object',
     'properties': {
-      'description': { 'type': 'string' },
       'fieldName': { 'type': 'string', 'minLength': 1},
       'cardSize': { 'type': 'integer' , 'minimum': 1, 'maximum': 3},
       'displayMode': { 'type': 'string', 'enum': ['figures', 'visualization'] },
@@ -10,7 +9,7 @@ angular.module('dataCards.models').factory('Card', function($injector, ModelHelp
       'cardCustomStyle': { 'type': 'object' },
       'expandedCustomStyle': { 'type': 'object' }
     },
-    'required': ['description', 'fieldName', 'cardSize', 'cardCustomStyle', 'expandedCustomStyle', 'displayMode', 'expanded']
+    'required': ['fieldName', 'cardSize', 'cardCustomStyle', 'expandedCustomStyle', 'displayMode', 'expanded']
   });
 
   function Card(page, fieldName) {

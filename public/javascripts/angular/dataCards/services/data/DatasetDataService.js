@@ -1,55 +1,13 @@
-angular.module('dataCards.services').factory('DatasetDataService', function($q) {
-  //TODO this is an artificial separation to exercise our thinking
-  //around deferred data. This may or may not be how the API exposes
-  //this info. We should think about splitting the data along expected
-  //latency boundaries.
-  // TODO safely cache promises for IDs so we don't do requests unnecessarily.
-  var staticInfoBlobPromise = $q.when({
-    'rowDisplayUnit': 'crime',                          // the fundamental item that a row represents
-    'defaultAggregateColumn': 'fine_amount',
-    'domain': 'data.marciship.com',
-    'owner': '4x4',
-    'updatedAt': '2014-05-20T17:42:55+00:00', // This is ISO8601
-    'columns': {
-      'location_description': {
-        'title': 'Ward where crime was committed',
-        'logicalDatatype': 'category',
-        'physicalDatatype': 'text',
-        'importance': 1
-      },
-      'primary_type': {
-        'title': 'Type of crime',
-        'description': 'How much batman cares',
-        'logicalDatatype': 'category',
-        'physicalDatatype': 'text',
-        'importance': 1
-      },
-      'crime_time': {
-        'title': 'Time of incident',
-        'description': 'The time at which Batman decided his job was complete',
-        'logicalDatatype': 'time',
-        'physicalDatatype': 'timestamp',
-        'importance': 3
-      },
-      'number_of_arrests': {
-        'title': 'Number of arrests made',
-        'description': 'The number of people who failed to evade Batman',
-        'logicalDatatype': 'amount',
-        'physicalDatatype': 'number',
-        'importance': 2,
-        'columnDisplayUnit': 'arrest'
-      }
-    }
-  });
+angular.module('dataCards.services').factory('DatasetDataService', function($http, $q) {
+  function fetchStub(id) {
+    return $http.get('/stubs/datasets/' + id + '.json', { cache: true }).then(function(response) {
+      return response.data;
+    });
+  };
 
   return {
-    getStaticInfo: function(id) {
-      // Since we're reusing the same fake blob for every Dataset instance,
-      // we need to patch in the correct ID before we return the fake blob
-      // to the consumer.
-      return staticInfoBlobPromise.then(function(blob) {
-        return $.extend({}, blob, {'id': id });
-      })
+    getBaseInfo: function(id) {
+      return fetchStub(id);
     },
     getPageIds: function(id) {
       return $q.when({

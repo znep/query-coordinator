@@ -1,4 +1,4 @@
-angular.module('dataCards.services').factory('PageDataService', function($q, $http) {
+angular.module('dataCards.services').factory('PageDataService', function($http) {
 
   function fetchStub(id) {
     return $http.get('/stubs/pages/' + id + '.json', { cache: true }).then(function(response) {

@@ -2,11 +2,30 @@ describe("CardsViewController", function() {
   var Card, Page, $q, $rootScope, $controller;
   var mockPageDataService = {
   };
+  var mockDatasetDataService = {
+    getBaseInfo: function() {
+      return $q.when({
+        id: 'asdf-fdsa',
+        defaultAggregateColumn: 'foo',
+        rowDisplayUnit: 'bar',
+        ownerId: 'fdsa-asdf',
+        updatedAt: '2004-05-20T17:42:55+00:00',
+        columns: []
+      });
+    },
+    getPageIds: function() {
+      return $q.when({
+        publisher: [],
+        user: []
+      });
+    }
+  };
 
   beforeEach(module('dataCards'));
   beforeEach(function() {
     module(function($provide) {
       $provide.value('PageDataService', mockPageDataService);
+      $provide.value('DatasetDataService', mockDatasetDataService);
     });
   });
   beforeEach(inject(['$q', 'Card', 'Page', '$rootScope', '$controller', function(_$q, _Card, _Page, _$rootScope, _$controller) {

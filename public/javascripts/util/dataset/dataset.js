@@ -2072,12 +2072,12 @@ var Dataset = ServerModel.extend({
         }
 
         ds.displayFormat = ds.displayFormat || {};
+        ds.metadata = ds.metadata || {};
 
         if (_.isFunction(ds._convertLegacy)) { ds._convertLegacy(); }
 
         if (!$.subKeyDefined(ds, 'metadata.availableDisplayTypes'))
         {
-            ds.metadata = ds.metadata || {};
             var adt;
             if (_.include(['blob', 'href', 'form', 'api'], ds.type))
             { adt = [ds.type]; }

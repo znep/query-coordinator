@@ -6,6 +6,7 @@ describe("Dataset model", function() {
   var minimalBlob = {
     id: 'asdf-fdsa',
     defaultAggregateColumn: 'foo',
+    rowDisplayUnit: 'bar',
     ownerId: 'fdsa-asdf',
     updatedAt: '2004-05-20T17:42:55+00:00',
     columns: []
@@ -72,8 +73,9 @@ describe("Dataset model", function() {
           return _.uniqueId('fakePublisherPageId');
         })
       };
+    var serializedBlob = $.extend({}, minimalBlob, { "pages": fakePageIds });
     var def =_$q.defer();
-    MockDataService.getPageIds = function(id) {
+    MockDataService.getBaseInfo = function(id) {
       expect(id).to.equal(id);
       return def.promise;
     };
@@ -92,7 +94,7 @@ describe("Dataset model", function() {
       }
     });
 
-    def.resolve(fakePageIds);
+    def.resolve(serializedBlob);
     _$rootScope.$digest();
   });
 });

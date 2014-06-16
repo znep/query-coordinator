@@ -2,14 +2,6 @@
 angular.module('dataCards.models').factory('Dataset', function(ModelHelper, DatasetDataService, JJV, $injector) {
   var UID_REGEXP = /^\w{4}-\w{4}$/;
 
-  JJV.addSchema('datasetPageList', {
-    'type': 'object',
-    'properties': {
-      'publisher': { 'type': 'array', 'items': { 'type': 'string', 'pattern': UID_REGEXP } },
-      'user': { 'type': 'array', 'items': { 'type': 'string', 'pattern': UID_REGEXP } }
-    }
-  });
-
   JJV.addSchema('datasetMetadata', {
     'type': 'object',
     'properties': {
@@ -46,6 +38,13 @@ angular.module('dataCards.models').factory('Dataset', function(ModelHelper, Data
           },
           'required': [ 'title', 'logicalDatatype', 'physicalDatatype', 'importance' ]
         }
+      },
+      'pages': {
+        'type': 'object',
+        'properties': {
+          'publisher': { 'type': 'array', 'items': { 'type': 'string', 'pattern': UID_REGEXP } },
+          'user': { 'type': 'array', 'items': { 'type': 'string', 'pattern': UID_REGEXP } }
+        }
       }
     },
     'required': [ 'id', 'rowDisplayUnit', 'defaultAggregateColumn', 'ownerId', 'updatedAt', 'columns' ]
@@ -78,16 +77,6 @@ angular.module('dataCards.models').factory('Dataset', function(ModelHelper, Data
       });
     };
 
-    var pageIdsPromise = function() {
-      return DatasetDataService.getPageIds(self.id).then(function(blob) {
-        var errors = JJV.validate('datasetPageList', blob);
-        if (errors) {
-          throw new Error('Page List deserialization failed: ' + JSON.stringify(errors));
-        }
-        return blob;
-      });
-    };
-
     var fields = ['title', 'rowDisplayUnit', 'defaultAggregateColumn', 'domain', 'ownerId', 'updatedAt'];
     _.each(fields, function(field) {
       ModelHelper.addReadOnlyPropertyWithLazyDefault(field, self, function() {
@@ -108,8 +97,8 @@ angular.module('dataCards.models').factory('Dataset', function(ModelHelper, Data
     });
 
     ModelHelper.addReadOnlyPropertyWithLazyDefault('pages', self, function() {
-      return pageIdsPromise().then(function(pagesBySource) {
-        return _.transform(pagesBySource, function(res, ids, source) {
+      return baseInfoPromise().then(function(data) {
+        return _.transform(data.pages, function(res, ids, source) {
           res[source] = _.map(ids, function(id) {
             return new Page(id);
           });

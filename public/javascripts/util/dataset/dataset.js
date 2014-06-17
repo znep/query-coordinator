@@ -59,7 +59,9 @@ var Dataset = ServerModel.extend({
         delete this.initialMetaColumns;
 
         this._adjustProperties();
-        this._syncQueries();
+
+        var originalQuery = this._getQueryGrouping();
+        this._syncQueries(originalQuery.oldJsonQuery, originalQuery.oldQuery, originalQuery.oldGroupings, originalQuery.oldGroupAggs);
 
         this.temporary = false;
         this.minorChange = true;
@@ -2202,19 +2204,7 @@ var Dataset = ServerModel.extend({
             newDS.flags.push('default');
         }
 
-        var oldGroupings = (ds.query || {}).groupBys;
-        var oldGroupAggs = {};
-        if ((oldGroupings || []).length > 0)
-        {
-            _.each(ds.realColumns, function(c)
-            {
-                if (!$.isBlank(c.format.grouping_aggregate))
-                { oldGroupAggs[c.id] = c.format.grouping_aggregate; }
-            });
-        }
-
-        var oldQuery = ds.query || {};
-        var oldJsonQuery = $.extend(true, {}, ds.metadata.jsonQuery);
+        var oldQuery = ds._getQueryGrouping();
         var oldDispFmt = $.extend(true, {}, ds.displayFormat);
         var oldDispType = ds.displayType;
         var oldRTConfig = $.extend(true, {}, ds.metadata.renderTypeConfig);
@@ -2236,7 +2226,7 @@ var Dataset = ServerModel.extend({
         if (!$.isBlank(newDS.columns))
         { ds.updateColumns(newDS.columns, forceFull, updateColOrder, masterUpdate); }
 
-        ds._syncQueries(oldJsonQuery, oldQuery, oldGroupings, oldGroupAggs);
+        ds._syncQueries(oldQuery.oldJsonQuery, oldQuery.oldQuery, oldQuery.oldGroupings, oldQuery.oldGroupAggs);
 
         var needsDTChange;
         if (!_.isEqual(oldRTConfig.visible, ds.metadata.renderTypeConfig.visible)
@@ -2457,6 +2447,22 @@ var Dataset = ServerModel.extend({
             var c = ds.columnForIdentifier(ob.columnFieldName);
             if (!$.isBlank(c)) { c.sortAscending = ob.ascending; }
         });
+    },
+
+    _getQueryGrouping: function() {
+        var ds = this;
+        var q = {};
+        q.oldGroupings = (ds.query || {}).groupBys;
+        q.oldGroupAggs = {};
+        if ((q.oldGroupings || []).length > 0) {
+             _.each(ds.realColumns, function(c) {
+                 if ($.isPresent(c.format.grouping_aggregate)) {
+                     q.oldGroupAggs[c.id] = c.format.grouping_aggregate;
+                 }});
+        }
+        q.oldQuery = ds.query || {};
+        q.oldJsonQuery = $.extend(true, {}, ds.metadata.jsonQuery);
+        return q;
     },
 
     _updateGroupings: function(oldGroupings, oldGroupAggs)

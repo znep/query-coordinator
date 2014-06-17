@@ -29,7 +29,6 @@ angular.module('dataCards.directives').directive('stickyHeader', function(Angula
 
       function pollLayout() {
         var windowScrollTop = $(document).scrollTop();
-        var windowHeight = $(window).height();
         var headerPositionTop = element.offset().top;
         var headerHeight = element.height();
 
@@ -42,10 +41,9 @@ angular.module('dataCards.directives').directive('stickyHeader', function(Angula
 
       var resizeListenKey = attrs.updateOnResize;
       if (!_.isEmpty(resizeListenKey)) {
-        $scope.$on('elementResized', function(event, argument) {
-          if (argument === resizeListenKey) {
-            pollLayout();
-          }
+
+        $scope.$on(resizeListenKey, function() {
+          pollLayout();
         });
       }
 

@@ -201,6 +201,7 @@ $chart-tick-color: #ccc
 $chart-description-color: darken($chart-tick-color, 30)
 $unfiltered-bar-color: #C2C2C2
 $filtered-bar-color: #676464
+$neutral-bar-color: #676464
 $tick-height: 1rem
 
 .facets-view
@@ -222,11 +223,22 @@ $tick-height: 1rem
     background: #555
 
 div.column-chart
+  overflow-x: hidden
 
   div.column-chart-wrapper
     position: relative
-    overflow: hidden
-    height: 230px
+
+    div.truncation-marker
+      position: absolute
+      right: 0
+      height: 100%
+      width: 1em
+      border: 1px solid #aaa
+      text-align: center
+      display: none
+      background-color: #aaa
+      color: #eee
+      z-index: 1
 
     div.field-name
       color: $chart-description-color
@@ -242,14 +254,14 @@ div.column-chart
       position: absolute
       &.unfiltered
         background-color: $unfiltered-bar-color
-      &.filtered
+      &.filtered, &.neutral
         background-color: $filtered-bar-color
       &.tertiary
         background-color: rgba(0, 0, 0, 0)
         &:hover
           background-color: rgba(50, 50, 50, 0.5)
 
-      div.flyout
+      div.tooltip
         display: none
         position: absolute
         width: 110px
@@ -259,20 +271,23 @@ div.column-chart
         color: #eeeeff
         opacity: 0.8
         font-size: $small-font-size
-        .tip
-          width: 0
-          display: block
-          border-left: 4px solid transparent
-          border-right: 4px solid transparent
-          border-top: 8px solid #0d3349
-          top: 10px
-          position: relative
+
+      span.tip
+        width: 0
+        display: none
+        border-left: 4px solid transparent
+        border-right: 4px solid transparent
+        border-top: 8px solid #0d3349
+        top: 10px
+        position: relative
+
       &:hover
-        div.flyout
+        div.tooltip
+          display: block
+        span.tip
           display: block
 
   div.labels
-    margin-top: -30px // topMargin
     position: relative
     height: 50px
     div

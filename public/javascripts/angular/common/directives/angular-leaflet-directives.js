@@ -389,14 +389,24 @@
                 $log.error('[AngularJS - Leaflet] legend.classBreaks and legend.labels are both undefined.');
               } else if (isDefined(legend.classBreaks) && !isDefined(legend.labels)) {
                 // calculate labels from class breaks, if any.
-
-                // assume there are at least 2 values in classBreaks
-                if (legend.classBreaks.length < 2) {
-                  $log.error('[AngularJS - Leaflet] legend.classBreaks needs at least 2 values to create legend labels.');
+                if (legend.classBreaks.length == 0) {
+                  // no values to return. Do not create a legend.
+                  $log.info('[AngularJS - Leaflet] no legend created, because features do not contain values.');
+                  return;
                 }
-                legend.labels = [];
-                for (var i = 0; i < legend.classBreaks.length - 1; i++) {
-                  legend.labels.push(legend.classBreaks[i] + ' - ' + legend.classBreaks[i+1]);
+                if (legend.classBreaks.length <= legend.threshold) {
+                  // if the number of unique values in the dataset is <= the threshold, displays
+                  // 1 color for each unique value, and labels them as such in the legend.
+                  legend.labels = legend.classBreaks;
+                } else {
+                  legend.labels = [];
+                  for (var i = 0; i < legend.classBreaks.length - 1; i++) {
+                    if (legend.classBreaks[i] == legend.classBreaks[i+1]){
+                      legend.labels.push(legend.classBreaks[i]);
+                    } else {
+                      legend.labels.push(legend.classBreaks[i] + ' - ' + legend.classBreaks[i+1]);
+                    }
+                  }
                 }
               } else {
                 $log.warn('[AngularJS - Leaflet] legend.classBreaks not used, because legend.labels were defined.');

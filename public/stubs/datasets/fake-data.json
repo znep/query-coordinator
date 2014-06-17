@@ -8,7 +8,7 @@
   "columns": [ 
     {
       "name": "location_description",
-      "title": "Ward where crime was committed",
+      "title": "Ward where crime was committed. This is a long card title.",
       "description": "Where most of the beat-up baddies were left by Batman.",
       "logicalDatatype": "category",
       "physicalDatatype": "text",
@@ -32,7 +32,7 @@
     },
     {
       "name": "number_of_arrests",
-      "title": "Number of arrests made",
+      "title": "Number of arrests made words words! I love words.",
       "description": "The number of people who failed to evade Batman",
       "logicalDatatype": "amount",
       "physicalDatatype": "number",

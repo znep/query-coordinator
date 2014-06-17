@@ -13,7 +13,8 @@
       "logicalDatatype": "category",
       "physicalDatatype": "text",
       "importance": 1
-    }, {
+    },
+    {
       "title": "Location",
       "description": "Description of location",
       "name": "location_description",

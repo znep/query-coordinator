@@ -13,6 +13,7 @@ dataCards.config(function($provide, $stateProvider, $urlRouterProvider, $locatio
     }).
     state('view', {
       template: '<!--Overall chrome--><div ui-view="mainContent"><div>',
+      params: ['id'],
       resolve: {
         page: function($stateParams, Page) {
           return new Page($stateParams['id']);

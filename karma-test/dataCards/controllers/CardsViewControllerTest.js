@@ -2,11 +2,30 @@ describe("CardsViewController", function() {
   var Card, Page, $q, $rootScope, $controller;
   var mockPageDataService = {
   };
+  var mockDatasetDataService = {
+    getBaseInfo: function() {
+      return $q.when({
+        id: 'asdf-fdsa',
+        defaultAggregateColumn: 'foo',
+        rowDisplayUnit: 'bar',
+        ownerId: 'fdsa-asdf',
+        updatedAt: '2004-05-20T17:42:55+00:00',
+        columns: []
+      });
+    },
+    getPageIds: function() {
+      return $q.when({
+        publisher: [],
+        user: []
+      });
+    }
+  };
 
   beforeEach(module('dataCards'));
   beforeEach(function() {
     module(function($provide) {
       $provide.value('PageDataService', mockPageDataService);
+      $provide.value('DatasetDataService', mockDatasetDataService);
     });
   });
   beforeEach(inject(['$q', 'Card', 'Page', '$rootScope', '$controller', function(_$q, _Card, _Page, _$rootScope, _$controller) {
@@ -21,11 +40,9 @@ describe("CardsViewController", function() {
     var scope = $rootScope.$new();
     var fakePageId = 'fooo-baar';
 
-    var cardsPromise = $q.defer();
-    var staticInfoPromise = $q.defer();
+    var baseInfoPromise = $q.defer();
 
-    mockPageDataService.getCards = function() { return cardsPromise.promise; };
-    mockPageDataService.getStaticInfo = function() { return staticInfoPromise.promise; };
+    mockPageDataService.getBaseInfo = function() { return baseInfoPromise.promise; };
 
     var controller = $controller('CardsViewController', {
       $scope: scope,
@@ -36,8 +53,7 @@ describe("CardsViewController", function() {
     expect(scope.page).to.be.instanceof(Page);
 
     return {
-      cardsPromise: cardsPromise,
-      staticInfoPromise: staticInfoPromise,
+      baseInfoPromise: baseInfoPromise,
       scope: scope,
       controller: controller
     };
@@ -64,7 +80,7 @@ describe("CardsViewController", function() {
 
       var nameOne = _.uniqueId('name');
       var nameTwo = _.uniqueId('name');
-      controllerHarness.staticInfoPromise.resolve({
+      controllerHarness.baseInfoPromise.resolve({
         datasetId: 'fake-fbfr',
         name: nameOne
       });
@@ -84,7 +100,7 @@ describe("CardsViewController", function() {
 
       var nameOne = undefined;
       var nameTwo = _.uniqueId('name');
-      controllerHarness.staticInfoPromise.resolve({
+      controllerHarness.baseInfoPromise.resolve({
         datasetId: 'fake-fbfr',
         name: undefined
       });
@@ -106,7 +122,7 @@ describe("CardsViewController", function() {
 
       var descriptionOne = _.uniqueId('description');
       var descriptionTwo = _.uniqueId('description');
-      controllerHarness.staticInfoPromise.resolve({
+      controllerHarness.baseInfoPromise.resolve({
         datasetId: 'fake-fbfr',
         description: descriptionOne
       });
@@ -125,7 +141,11 @@ describe("CardsViewController", function() {
     var controller = controllerHarness.controller;
     var scope = controllerHarness.scope;
     var cardBlobs = _.times(3, testCard);
-    controllerHarness.cardsPromise.resolve({cards: cardBlobs});
+    controllerHarness.baseInfoPromise.resolve({
+      datasetId: 'fake-fbfr',
+      name: 'fakeName',
+      cards: cardBlobs,
+    });
     $rootScope.$digest();
 
     // NB these tests intentionally care about the order of things in collapsedCards and expandedCards.
@@ -179,7 +199,11 @@ describe("CardsViewController", function() {
     var controller = controllerHarness.controller;
     var scope = controllerHarness.scope;
     var cardBlobs = _.times(3, testCard);
-    controllerHarness.cardsPromise.resolve({cards: cardBlobs});
+    controllerHarness.baseInfoPromise.resolve({
+      datasetId: 'fake-fbfr',
+      name: 'fakeName',
+      cards: cardBlobs,
+    });
     $rootScope.$digest();
     var cardModels = scope.page.cards.value;
 
@@ -194,5 +218,30 @@ describe("CardsViewController", function() {
     expect(scope.cardLinesBySizeGroup[1]).to.have.length(1); // One row in this group.
     expect(scope.cardLinesBySizeGroup[2]).to.have.length(1); // One row in this group.
     expect(scope.cardSizeNamesInDisplayOrder).to.deep.equal(['1', '2']);
+  });
+
+  describe('card layout', function() {
+    it('should provide an classForScreenPosition implementation that is left-weighted', function() {
+      var controllerHarness = makeController();
+      var classForScreenPosition = controllerHarness.scope.classForScreenPosition;
+      expect(classForScreenPosition).to.exist;
+
+      /* args are cardIndex, cardsInLine */
+      var left = 'onLeft';
+      var right = 'onRight';
+      expect(classForScreenPosition(0, 1)).to.equal(left);
+
+      expect(classForScreenPosition(0, 2)).to.equal(left);
+      expect(classForScreenPosition(1, 2)).to.equal(right);
+
+      expect(classForScreenPosition(0, 3)).to.equal(left);
+      expect(classForScreenPosition(1, 3)).to.equal(left);
+      expect(classForScreenPosition(2, 3)).to.equal(right);
+
+      expect(classForScreenPosition(0, 4)).to.equal(left);
+      expect(classForScreenPosition(1, 4)).to.equal(left);
+      expect(classForScreenPosition(2, 4)).to.equal(right);
+      expect(classForScreenPosition(3, 4)).to.equal(right);
+    });
   });
 });

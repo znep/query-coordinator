@@ -1,0 +1,30 @@
+{
+  "id": "ph9n-8bk3",
+  "rowDisplayUnit": "crime",
+  "defaultAggregateColumn": ":count",
+  "domain": "soda2nbe.test-socrata.com",
+  "ownerId": "jc63-heng",
+  "updatedAt": "2014-05-20T10:42:55.000-07:00",
+  "columns": [ 
+    {
+      "title": "Type of crime",
+      "description": "Primary crime committed",
+      "name": "primary_type",
+      "logicalDatatype": "category",
+      "physicalDatatype": "text",
+      "importance": 1
+    },
+    {
+      "title": "Location",
+      "description": "Description of location",
+      "name": "location_description",
+      "logicalDatatype": "category",
+      "physicalDatatype": "text",
+      "importance": 1
+    }
+  ],
+  "pages": {
+    "publisher": [ "from-rndy" ],
+    "user": []
+  }
+}

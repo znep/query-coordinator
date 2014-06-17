@@ -88,4 +88,12 @@ angular.module('dataCards.controllers').controller('CardsViewController',
         'top': availableContentHeight + 'px'
       };
     });
+
+    // Given a card's position in its line and the number of cards in its line,
+    // returns either the string 'onRight' or 'onLeft'. If the card is in the middle,
+    // 'onLeft' is returned.
+    $scope.classForScreenPosition = function(cardIndex, numCardsInLine) {
+      var onRight = cardIndex >= Math.ceil(numCardsInLine / 2);
+      return onRight ? 'onRight' : 'onLeft';
+    };
   });

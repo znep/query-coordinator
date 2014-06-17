@@ -1,5 +1,6 @@
 @import dataCards/ellipsis
 
+$fgColor: #333
 $bgColor: #4a525a
 
 body
@@ -92,27 +93,99 @@ $pageNameMaxLineCount: 2
       .cardSize3
         height: 150px + $cardBorder * 2
 
+$card-bg-color: #eee
+$card-padding: 15px
+$card-title-expanded-bg-color: #aaa
+$card-title-padding: 5px
+$card-title-margin-right: 18px
+$card-title-border-thickness: 1px
+$card-title-line-height: 1.2em
+$card-description-max-line-count: 2
+$card-description-line-height: 1.3em
 .card
-  color: black
-  background: white
-  padding: 15px
+  color: $fgColor
+  background: $card-bg-color
+  padding: $card-padding
   position: relative
   .expandButton
     font-family: "SSAir"
     position: absolute
     top: 5px
-    right: -5px
+    right: 23px
     a
       cursor: pointer
       display: block
-      height: 1.8em
+      width: 0
       position: relative
-      width: 1.8em
       color: #888
       &:hover
         color: #ccc
       &:before
         content: '⤢'
+  .description
+    position: relative
+    .description-text
+      position: absolute
+      top: 0
+      @include multiline-with-ellipsis($card-description-max-line-count, $card-description-line-height, $card-bg-color)
+    .description-measuring-stick
+      visibility: hidden
+      line-height: $card-description-line-height
+      max-height: $card-description-line-height * $card-description-max-line-count
+  .title-one-line
+    overflow: hidden
+    text-overflow: ellipsis
+    white-space: nowrap
+    padding-right: $card-title-margin-right
+    line-height: $card-title-line-height
+  .title-expanded
+    display: none
+    position: absolute
+    top: $card-padding - $card-title-padding - $card-title-border-thickness
+    left: $card-padding - $card-title-padding - $card-title-border-thickness
+    right: $card-padding - $card-title-padding - $card-title-border-thickness + $card-title-margin-right
+    border: $card-title-border-thickness solid black
+    padding: $card-title-padding
+    line-height: $card-title-line-height
+    text-overflow: ellipsis
+    white-space: nowrap
+    opacity: 0
+    &:hover
+      z-index: 1
+      opacity: 1
+    .title-expanded-first-line
+      position: absolute
+      overflow: hidden
+      background: $card-title-expanded-bg-color
+      height: $card-title-line-height
+
+.onRight .card
+  .title-expanded
+    display: block
+    overflow: hidden
+    background: $card-title-expanded-bg-color
+    &:hover
+      overflow: visible
+      white-space: normal
+      text-align: right
+    .title-expanded-first-line
+      text-align: left
+      top: $card-title-padding
+      left: $card-title-padding
+      right: $card-title-padding
+
+.onLeft .card
+  .title-expanded
+    display: block
+    overflow: visible
+    color: $card-title-expanded-bg-color
+    border-color: transparent
+    .title-expanded-first-line
+      top: -$card-title-border-thickness
+      left: -$card-title-border-thickness
+      padding: $card-title-padding
+      border: $card-title-border-thickness solid black
+      color: $fgColor
 
 .card.expanded
   .expandButton a

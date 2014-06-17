@@ -7,7 +7,6 @@ describe("Card model", function() {
 
   it('deserialization should return an instance of Card with correct properties set', inject(function(Card, Page, JJV) {
     var blob = {
-      "description": "test_I am a fancy card",
       "fieldName": "test_crime_type",
       "cardSize": 2,
       "cardCustomStyle": { "test_barColor": "#659CEF" },
@@ -20,7 +19,7 @@ describe("Card model", function() {
     var requiredKeys = JJV.schema.serializedCard.required;
     expect(blob).to.have.keys(requiredKeys);
 
-    var instance = Card.deserialize(new Page(), blob);
+    var instance = Card.deserialize(new Page('fake-asdf'), blob);
     expect(instance).to.be.instanceof(Card);
     expect(instance.page).to.be.instanceof(Page);
 
@@ -35,6 +34,6 @@ describe("Card model", function() {
     expect(out).to.deep.equal(blob);
 
     instance.description = 'test';
-    expect(out).to.have.property('description').that.equals('test');
+    expect(out).to.have.property('displayMode').that.equals('figures');
   }));
 });

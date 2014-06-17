@@ -1,5 +1,9 @@
 angular.module('dataCards.models').factory('Page', function(Dataset, Card, ModelHelper, PageDataService) {
   function Page(id) {
+    if (_.isEmpty(id)) {
+      throw new Error('All pages must have an ID');
+    }
+
     var self = this;
     this.id = id;
 
@@ -8,25 +12,23 @@ angular.module('dataCards.models').factory('Page', function(Dataset, Card, Model
     // is given to the ModelHelper. If we were to obtain the below promises right away,
     // the HTTP calls required to fulfill them would be made without any regard to whether
     // or not the calls are needed.
-    var staticDataPromise = function() { return PageDataService.getStaticInfo(self.id); };
-    var filtersPromise = function() { return PageDataService.getFilters(self.id); };
-    var cardsPromise = function() { return PageDataService.getCards(self.id); };
+    var baseInfoPromise = function() { return PageDataService.getBaseInfo(self.id); };
 
     var fields = ['description', 'name', 'layoutMode', 'primaryAmountField', 'primaryAggregation', 'isDefaultPage', 'pageSource'];
     _.each(fields, function(field) {
       ModelHelper.addPropertyWithLazyDefault(field, self, function() {
-        return staticDataPromise().then(_.property(field));
+        return baseInfoPromise().then(_.property(field));
       });
     });
 
     ModelHelper.addReadOnlyPropertyWithLazyDefault('dataset', this, function() {
-      return staticDataPromise().then(function(data) {
+      return baseInfoPromise().then(function(data) {
         return new Dataset(data.datasetId);
       });
     });
 
     ModelHelper.addPropertyWithLazyDefault('cards', this, function() {
-      return cardsPromise().then(function(data) {
+      return baseInfoPromise().then(function(data) {
         return _.map(data.cards, function(serializedCard) {
           return Card.deserialize(self, serializedCard);
         });

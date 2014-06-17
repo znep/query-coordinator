@@ -1,0 +1,47 @@
+{
+  "id": "fake-data",
+  "rowDisplayUnit": "crime",
+  "defaultAggregateColumn": ":count",
+  "domain": "soda2nbe.test-socrata.com",
+  "ownerId": "jc63-heng",
+  "updatedAt": "2014-05-20T10:42:55.000-07:00",
+  "columns": [ 
+    {
+      "name": "location_description",
+      "title": "Ward where crime was committed. This is a long card title.",
+      "description": "Where most of the beat-up baddies were left by Batman.",
+      "logicalDatatype": "category",
+      "physicalDatatype": "text",
+      "importance": 1
+    },
+    {
+      "name": "primary_type",
+      "title": "Type of crime",
+      "description": "How much batman cares",
+      "logicalDatatype": "category",
+      "physicalDatatype": "text",
+      "importance": 1
+    },
+    {
+      "name": "crime_time",
+      "title": "Time of incident",
+      "description": "Time Batman mysteriously disappeared.",
+      "logicalDatatype": "time",
+      "physicalDatatype": "timestamp",
+      "importance": 3
+    },
+    {
+      "name": "number_of_arrests",
+      "title": "Number of arrests made words words! I love words.",
+      "description": "The number of people who failed to evade Batman",
+      "logicalDatatype": "amount",
+      "physicalDatatype": "number",
+      "importance": 2,
+      "columnDisplayUnit": "arrest"
+    }
+  ],
+  "pages": {
+    "publisher": [ "from-rndy" ],
+    "user": []
+  }
+}

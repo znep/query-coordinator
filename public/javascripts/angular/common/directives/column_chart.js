@@ -210,36 +210,24 @@ angular.module('socrataCommon.directives').directive('columnChart', function(Ang
     restrict: 'A',
     scope: { unFilteredData: '=', filteredData: '=', fieldName: '=' },
     link: function(scope, element, attrs) {
-
       AngularRxExtensions.install(scope);
 
-      // TODO determine how to do this less WTF'y
-      Rx.Observable.combineLatest(scope.observe('unFilteredData'), scope.observe('filteredData'), function(u, f) {
-        return [u, f];
-      }).subscribe(function(theData) {
-        if (theData[0] && theData[1]) {
-          renderColumnChart(
-            element,
-            theData[0], // This s/b unfiltered
-            theData[1], // This s/b filtered
-            !!theData[1],
-            element.closest('.card').dimensions()
-          );
+      Rx.Observable.subscribeLatest(
+        element.closest('.card').observeDimensions(),
+        scope.observe('unFilteredData'),
+        scope.observe('filteredData'),
+        function(cardDimensions, unFilteredData, filteredData) {
+          if (unFilteredData && filteredData) {
+            renderColumnChart(
+              element,
+              unFilteredData,
+              filteredData,
+              !!filteredData,
+              cardDimensions
+            );
+          }
         }
-      });
-
-      scope.$on('cardResized', function(event, dimensions) {
-        if (!scope.unFilteredData || !scope.filteredData) {
-          return;
-        }
-        renderColumnChart(
-          element,
-          scope.unFilteredData,
-          scope.filteredData,
-          !!scope.filteredData[0],
-          dimensions
-        );
-      });
+      );
     }
   }
 

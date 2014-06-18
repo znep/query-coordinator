@@ -47,7 +47,7 @@ angular.module('dataCards.directives').directive('card', function(AngularRxExten
       });
 
       $scope.bindObservable('cardType', cardType);
-      $scope.bindObservable('unfilteredData', model.pluckSwitch('unfilteredData'));
+      $scope.bindObservable('unFilteredData', model.pluckSwitch('unFilteredData'));
       $scope.bindObservable('filteredData', model.pluckSwitch('filteredData'));
       $scope.bindObservable('fieldName', model.pluck('fieldName'));
       $scope.bindObservable('expanded', model.pluckSwitch('expanded'));

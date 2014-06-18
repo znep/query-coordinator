@@ -1,0 +1,58 @@
+{
+  "primary_type": {
+    "filtered": [
+      {
+        "bike theft": 40
+      },
+      {
+        "assault": 20
+      },
+      {
+        "narcotics": 10
+      }
+    ],
+    "unFiltered": [
+      {
+        "bike theft": 60
+      },
+      {
+        "assault": 30
+      },
+      {
+        "narcotics": 15
+      }
+    ]
+  },
+  "location_description": {
+    "filtered": [
+      {
+        "bike theft": 40
+      },
+      {
+        "assault": 20
+      },
+      {
+        "narcotics": 10
+      }
+    ],
+    "unFiltered": [
+      {
+        "bike theft": 60
+      },
+      {
+        "assault": 30
+      },
+      {
+        "narcotics": 15
+      }
+    ]
+  },
+  "crime_time": {
+    "filtered": [],
+    "unFiltered": []
+  },
+  "number_of_arrests": {
+    "filtered": [],
+    "unFiltered": []
+  }
+}

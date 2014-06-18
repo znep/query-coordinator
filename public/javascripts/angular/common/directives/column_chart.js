@@ -1,9 +1,9 @@
-angular.module('socrataCommon.directives').directive('columnChart', function() {
+angular.module('socrataCommon.directives').directive('columnChart', function(AngularRxExtensions) {
 
   var renderColumnChart = function(element, unFilteredData, filteredData, filtered, dimensions) {
     var barPadding = 0.25;
-    var topMargin = 50;
-    var bottomMargin = 70;
+    var topMargin = 20; // TODO calculate this dynamically
+    var bottomMargin = 90;
     var tipHeight = 10;
     var tipWidth = 10;
 
@@ -11,7 +11,7 @@ angular.module('socrataCommon.directives').directive('columnChart', function() {
     var d3Selection = d3.select($chart.get(0));
     var unFilteredSelection = d3Selection.selectAll('.bar.unfiltered').data(unFilteredData);
     var filteredSelection = d3Selection.selectAll('.bar.filtered').data(filteredData);
-    var neutralSelection = d3Selection.selectAll('.bar.neutral').data(unFilteredData);
+    var neutralSelection = d3Selection.selectAll('.bar.neutral').data(filtered ? []: unFilteredData);
     var hoverTriggerSelection = d3Selection.selectAll('.bar.hover-trigger').data(unFilteredData);
     var tooltipSelection = d3Selection.selectAll('.bar.hover-trigger > .tooltip').data(filteredData);
     var chartWidth = dimensions.width;
@@ -60,6 +60,8 @@ angular.module('socrataCommon.directives').directive('columnChart', function() {
       return element;
     };
 
+    // TODO deal with tooltip getting cut off on the top of the chart
+    // TODO deal with tooltip not centering over the bar along with the tip
     var enterTooltip = function(d, i) {
       var unFilteredDatum = unFilteredData[i];
       var filteredDatum = filteredData[i];
@@ -86,6 +88,7 @@ angular.module('socrataCommon.directives').directive('columnChart', function() {
       tipOffset = tipOffset - tipWidth + 1;
       tipOffset = tipOffset < -10 ? -10 : tipOffset;
       $tip.addClass('tip').css('left', tipOffset + 'px');
+      // TODO WTF is this required?
       if (!filtered) {
         $tip.css('top', '20px');
       }
@@ -109,7 +112,7 @@ angular.module('socrataCommon.directives').directive('columnChart', function() {
 
     var labels = function() {
       var labels = $('<div>').addClass('labels');
-      var numberOfLabels = 4;
+      var numberOfLabels = Math.min(unFilteredData.length, 3);
       var centering = leftOffset - rangeBand / 2;
       for (var i = 0; i < numberOfLabels; i++) {
         var label = $('<span>').
@@ -193,7 +196,7 @@ angular.module('socrataCommon.directives').directive('columnChart', function() {
 
     var marker = element.find('.truncation-marker');
     if (chartTruncated) {
-      marker.css('height', chartHeight + 'px').css('top', topMargin + 'px').show();
+      marker.css('height', chartHeight + 'px').css('top', topMargin + 'px').css('line-height', chartHeight  / 4 + 'px').show();
     } else {
       marker.hide();
     }
@@ -202,35 +205,42 @@ angular.module('socrataCommon.directives').directive('columnChart', function() {
   return {
     template:
       '<div class="column-chart-wrapper">' +
-        '<div class="field-name">CRIME TYPE</div>' +
-        '<div class="field-description">Crime types across Chicago</div>' +
-        '<div class="truncation-marker">&nbsp;<br/>M<br/>O<br/>R<br/>E</div>' +
+        '<div class="truncation-marker">M O A R' +
       '</div>',
     restrict: 'A',
-    scope: { unfilteredData: '=', filteredData: '=', fieldName: '=' },
+    scope: { unFilteredData: '=', filteredData: '=', fieldName: '=' },
     link: function(scope, element, attrs) {
-      var unfilteredData = scope.unfilteredData[scope.fieldName];
-      var filterApplied = function() { return Math.random() > 0.5; };
 
-      scope.$on('cardResized', function(event, dimensions) {
-        renderColumnChart(
-          element,
-          scope.unfilteredData[scope.fieldName],
-          scope.filteredData[scope.fieldName],
-          filterApplied(),
-          dimensions
-        );
+      AngularRxExtensions.install(scope);
+
+      // TODO determine how to do this less WTF'y
+      Rx.Observable.combineLatest(scope.observe('unFilteredData'), scope.observe('filteredData'), function(u, f) {
+        return [u, f];
+      }).subscribe(function(theData) {
+        if (theData[0] && theData[1]) {
+          renderColumnChart(
+            element,
+            theData[0], // This s/b unfiltered
+            theData[1], // This s/b filtered
+            !!theData[1],
+            element.closest('.card').dimensions()
+          );
+        }
       });
 
-      scope.$watch('unfilteredData', function(value) {
+      scope.$on('cardResized', function(event, dimensions) {
+        if (!scope.unFilteredData || !scope.filteredData) {
+          return;
+        }
         renderColumnChart(
           element,
-          value[scope.fieldName],
-          scope.filteredData[scope.fieldName],
-          filterApplied(),
-          element.parent('div[notify-resize=cardResized]').dimensions()
+          scope.unFilteredData,
+          scope.filteredData,
+          !!scope.filteredData[0],
+          dimensions
         );
       });
     }
   }
+
 });

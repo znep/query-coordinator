@@ -26,12 +26,12 @@ angular.module('dataCards.models').factory('Card', function($injector, ModelHelp
       ModelHelper.addProperty(field, self);
     });
 
-    ModelHelper.addPropertyWithLazyDefault('unfilteredData', this, function() {
-      return CardDataService.getUnfilteredData(self.fieldName);
+    ModelHelper.addPropertyWithLazyDefault('unFilteredData', this, function() {
+      return CardDataService.getUnfilteredData(self.fieldName, page.dataset.value.id);
     });
 
     ModelHelper.addPropertyWithLazyDefault('filteredData', this, function() {
-      return CardDataService.getFilteredData(self.fieldName);
+      return CardDataService.getFilteredData(self.fieldName, page.dataset.value.id);
     });
   }
 

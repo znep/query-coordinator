@@ -1,5 +1,5 @@
-angular.module('testHelpers', [])
-  .factory('TestHelpers', function() {
+angular.module('test', [])
+  .factory('testHelpers', function() {
 
     // D3 doesn't have a jQuery-like trigger. So if you want to simulate mouse events,
     // we need to use real browser events.

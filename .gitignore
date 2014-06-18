@@ -14,4 +14,5 @@ ui-tests/selenium-server-*.jar
 ui-tests/failures
 ui-tests/node_modules
 karma-test/*/coverage
-/.idea/
+.idea/
+node_modules/karma-phantomjs-launcher/

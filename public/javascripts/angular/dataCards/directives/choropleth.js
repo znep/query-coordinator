@@ -1,4 +1,4 @@
-angular.module('dataCards.directives').directive('choropleth', function($http, ChoroplethHelpers, leafletBoundsHelpers, $log, $timeout) {
+angular.module('dataCards.directives').directive('exampleChoropleth', function($http, ChoroplethHelpers, leafletBoundsHelpers, $log, $timeout) {
   var threshold = 6;
   // if the number of unique values in the dataset is <= the threshold, displays
   // 1 color for each unique value, and labels them as such in the legend.
@@ -6,7 +6,7 @@ angular.module('dataCards.directives').directive('choropleth', function($http, C
   /*   TEMPORARY SETTINGS   */
   // TODO: replace with real one once API gets up and running.
   var attr = 'VALUE',
-      sampleDataset = 'test_lineString1',
+      geojsonFileName = 'testing_sample',
       numberOfClasses = function(values) {
         // handles numberOfClasses in Jenks (implemented for _.uniq(values).length > 6)
         var numPossibleBreaks = _.uniq(values).length - 1;
@@ -65,9 +65,6 @@ angular.module('dataCards.directives').directive('choropleth', function($http, C
   return {
     restrict: 'E',
     replace: 'true',
-    scope: {
-      data: '='
-    },
     template: '<div class="choropleth-map-container"><leaflet class="choropleth-map" center="center" bounds="bounds" defaults="defaults" geojson="geojson" legend="legend"></leaflet></div>',
     controller: function($scope, $http) {
       // Map settings
@@ -94,10 +91,10 @@ angular.module('dataCards.directives').directive('choropleth', function($http, C
         scrollWheelZoom: false
       };
 
-      $http.get('/datasets/geojson/'+sampleDataset+'.json').then(function(result) {
+      $http.get('/datasets/geojson/'+geojsonFileName+'.json').then(function(result) {
         // GeoJson was reprojected and converted to Geojson with http://converter.mygeodata.eu/vector
         // reprojected to WGS 84 (SRID: 4326)
-        $scope.geojsonData = result.data;
+        $scope.data = result.data;
         // TODO: invalid geojsonData --> ???
       });
     },
@@ -260,7 +257,6 @@ angular.module('dataCards.directives').directive('choropleth', function($http, C
           // adjust chroma scale accordingly to grab the right color with scale(value),
           // and return a set of scale.colors() whose length is the same as classBreaks.length
           var adjustedClassBreaks = midpointMap(classBreaks);
-          debugger
         }
         scale = new chroma.scale(colors)
           .domain(adjustedClassBreaks || classBreaks)
@@ -287,19 +283,19 @@ angular.module('dataCards.directives').directive('choropleth', function($http, C
         var colors;
         var values = ChoroplethHelpers.getGeojsonValues(geojsonData, attr);
         var classBreaks = classBreaksFromValues(values);
-        if (classBreaks.length > 2) {
+        if (classBreaks.length == 1) {
+          colors = [defaultSingleColor];
+          $scope.geojson = {
+            data: geojsonData,
+            style: singleColorStyle,
+            resetStyleOnMouseout: true
+          };
+        } else {
           updateColorScale(defaultColorClass, classBreaks);
           colors = scale.colors();
           $scope.geojson = {
             data: geojsonData,
             style: multiColorStyle,
-            resetStyleOnMouseout: true
-          };
-        } else {
-          colors = [defaultSingleColor];
-          $scope.geojson = {
-            data: geojsonData,
-            style: singleColorStyle,
             resetStyleOnMouseout: true
           };
         }
@@ -323,7 +319,7 @@ angular.module('dataCards.directives').directive('choropleth', function($http, C
         highlightFeature(leafletEvent);
       });
 
-      $scope.$watch('geojsonData', function(geojsonData){
+      $scope.$watch('data', function(geojsonData){
         if (!geojsonData) return;
         updateGeojson(geojsonData);
       });

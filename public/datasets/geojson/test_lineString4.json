@@ -3,6 +3,7 @@
   "features": [
     { "type": "Feature", "properties": { "VALUE": 1 }, "geometry": { "type": "LineString", "coordinates": [ [ 0, 0 ], [ 2, 2 ] ] } },
     { "type": "Feature", "properties": { "VALUE": 2 }, "geometry": { "type": "LineString", "coordinates": [ [ 0, 0 ], [ -2, 2 ] ] } },
-    { "type": "Feature", "properties": { "VALUE": 3 }, "geometry": { "type": "LineString", "coordinates": [ [ 0, 0 ], [ -2, -2 ] ] } }
+    { "type": "Feature", "properties": { "VALUE": 3 }, "geometry": { "type": "LineString", "coordinates": [ [ 0, 0 ], [ -2, -2 ] ] } },
+    { "type": "Feature", "properties": { "VALUE": 4 }, "geometry": { "type": "LineString", "coordinates": [ [ 0, 0 ], [ 2, -2 ] ] } }
   ]
 }

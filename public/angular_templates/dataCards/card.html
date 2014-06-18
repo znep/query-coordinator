@@ -1,4 +1,4 @@
-<div class="card cardSize{{cardSize}}" ng-class="{ expanded: expanded }">
+<div class="card cardSize{{cardSize}}" notify-resize="cardResized" ng-class="{ expanded: expanded }">
   <div class="title-one-line">{{title}}</div>
   <div class="title-expanded">
     {{title}}
@@ -12,7 +12,7 @@
   </div>
   <div ng-switch="cardType">
   <div ng-switch-when="column">
-    <div column-chart class="column-chart" unfiltered-data="unfilteredData" filtered-data="filteredData" field-name="fieldName"></div>
+    <div column-chart class="column-chart" un-filtered-data="unFilteredData" filtered-data="filteredData" field-name="fieldName"></div>
   </div>
   <div ng-switch-when="choropleth">
     <img src="http://upload.wikimedia.org/wikipedia/commons/7/73/Churros_el_hatillo.JPG" width="200" />

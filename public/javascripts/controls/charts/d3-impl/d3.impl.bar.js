@@ -1100,7 +1100,7 @@ $.Control.registerMixin('d3_impl_bar', {
 
             if (cc.orientation == 'down')
             { return xPosition - ($(this).height() / 2) + 'px'; }
-            else (cc.orientation == 'right')
+            else (cc.orientation == 'right') // TODO Fix this bug (should be "else if")
             { return xPosition - ($(this).width() / 2) + 'px'; }
         };
     },
@@ -1303,6 +1303,7 @@ $.Control.registerMixin('d3_impl_bar', {
         _.each(valueColumns, function(colDef, seriesIndex)
         {
             var xDatumPositionForSeries = vizObj._xDatumPosition(seriesIndex);
+          // TODO Fix unneccesary variable assignment for "dataBars", "nullBarHeight", "nullBarPosition"
             var dataBars = cc.chartD3.selectAll('.dataBar_series' + colDef.column.lookup)
                     .attr(cc.dataDim.width, cc.barWidth)
                     .attr(cc.dataDim.xAxis, xDatumPositionForSeries);

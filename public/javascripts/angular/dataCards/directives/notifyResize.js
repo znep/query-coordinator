@@ -1,30 +1,21 @@
 // A simple directive which broadcasts a scope event when its element is resized.
-// The event is 'elementResized'. If a string is assigned to the notifyResize
-// attribute, that string is provided as the event args.
 //
-// Example 1:
-// <div notify-resize>variable content</div>
-//
-// If the div is resized, elementResized will be broadcast with no args.
-//
-// Example 2:
+// Example:
 // <div notify-resize="myDivResized">variable content</div>
 //
-// If the div is resized, elementResized will be broadcast with 'myDivResized'
-// as args.
+// If the div is resized, myDivResized will be broadcast with the new size as the arguments to the event
+// contained within an object of the form: { height: N, width: N } -- not including outer margins.
 angular.module('dataCards.directives').directive('notifyResize', function() {
   return {
     restrict: 'A',
     link: function($scope, element, attrs) {
-      var resizeKey = attrs.notifyResize;
-
+      var eventName = attrs.notifyResize;
+      if (_.isEmpty(eventName)) {
+        throw new Error('Expected a non-blank event name');
+      }
       element.resize(function() {
         $scope.$apply(function() {
-          if (_.isEmpty(resizeKey)) {
-            $scope.$broadcast('elementResized');
-          } else {
-            $scope.$broadcast('elementResized', resizeKey);
-          }
+          $scope.$broadcast(eventName, element.dimensions());
         });
       });
     }

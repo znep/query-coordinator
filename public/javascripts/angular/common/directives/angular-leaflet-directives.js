@@ -61,7 +61,7 @@
           var map = new L.Map(element[0], leafletMapDefaults.getMapCreationDefaults(attrs.id));
           // Handle map resizing on elementResized event
           scope.$on('mapContainerResized', function() {
-            map.invalidateSize(true);
+            map.invalidateSize(false);
           });
           _leafletMap.resolve(map);
           if (!isDefined(attrs.center)) {
@@ -379,7 +379,7 @@
             // SOCRATA: watch legend
             leafletScope.$watch('legend', function(legend) {
               if (!legend) { return; }
-              if (isDefined(leafletLegend) && map.hasLayer(leafletLegend)) {
+              if (isDefined(leafletLegend)) {
                 leafletLegend.removeFrom(map);
               }
               var legendClass = legend.legendClass ? legend.legendClass : 'legend';
@@ -394,9 +394,10 @@
                   $log.info('[AngularJS - Leaflet] no legend created, because features do not contain values.');
                   return;
                 }
-                if (legend.classBreaks.length <= legend.threshold) {
+                if (isDefined(legend.threshold) && legend.classBreaks.length <= legend.threshold) {
                   // if the number of unique values in the dataset is <= the threshold, displays
                   // 1 color for each unique value, and labels them as such in the legend.
+                  // legend.classBreaks = explicit list of legend labels
                   legend.labels = legend.classBreaks;
                 } else {
                   legend.labels = [];

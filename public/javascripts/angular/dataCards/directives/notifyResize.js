@@ -22,7 +22,7 @@ angular.module('dataCards.directives').directive('notifyResize', function() {
         $scope.$apply(function() {
           var height = element.height(), width = element.width();
           if (_.isEmpty(resizeKey)) {
-            $scope.$broadcast('elementResized', [width, height]);
+            $scope.$broadcast('elementResized', [undefined, width, height]);
           } else {
             $scope.$broadcast('elementResized', [resizeKey, width, height]);
           }

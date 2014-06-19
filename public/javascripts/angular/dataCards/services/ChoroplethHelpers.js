@@ -3,8 +3,9 @@ angular.module('dataCards.models').factory('ChoroplethHelpers', function($http, 
     getGeojsonValues: function(geojson, attr) {
       var data = [];
       _.each(geojson.features, function(feature){
+        if (!feature || !feature.properties) return [];
         var val = feature.properties[attr];
-        if (val === undefined || val === null) {
+        if (!val) {
           return;
         } else {
           data.push(feature.properties[attr]);
@@ -61,7 +62,6 @@ angular.module('dataCards.models').factory('ChoroplethHelpers', function($http, 
           var coordinates = feature.geometry.coordinates;
           updateBounds[feature.geometry.type](coordinates);
         });
-        $rootScope.addTimer('Calculate ' + geojson.id + ' Bounds', geojson.filesize);
         return [ [maxLat,maxLng],[minLat,minLng] ];
       } else {
         $log.error("Geojson is not a FeatureCollection")

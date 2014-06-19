@@ -13,6 +13,13 @@ module.exports = function ( karma ) {
       'bower_components/jquery/dist/jquery.js',
       'bower_components/javascript-detect-element-resize/jquery.resize.js',
       'bower_components/angular/angular.js',
+      /*    Map-specific libraries    */
+      'bower_components/leaflet/dist/leaflet.js',
+      'bower_components/chroma-js/chroma.js',
+      'bower_components/simple-statistics/src/simple_statistics.js',
+      'app/styles/bower/leaflet.css',
+      'app/styles/dataCards/testing.css',
+      /* ------- */
       'bower_components/angular-mocks/angular-mocks.js',
       'bower_components/d3/d3.min.js',
       'bower_components/lodash/dist/lodash.js',
@@ -21,10 +28,10 @@ module.exports = function ( karma ) {
       'bower_components/rxjs/rx.aggregates.js',
       'bower_components/jjv/lib/jjv.js',
       'bower_components/sinon-browser-only/sinon.js',
-      'bower_components/leaflet/dist/leaflet.js',
       'karma-test/testHelpers.js',
       'karma-test/dataCards/*.js',
       'karma-test/dataCards/**/*.js',
+      /*    Angular    */
       'public/javascripts/angular/common/*.js',
       'public/javascripts/angular/common/**/*.js',
       'public/javascripts/angular/dataCards/controllers.js',

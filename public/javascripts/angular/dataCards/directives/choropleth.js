@@ -7,6 +7,7 @@ angular.module('dataCards.directives').directive('exampleChoropleth', function($
   // TODO: replace with real one once API gets up and running.
   var attr = 'VALUE',
       geojsonFileName = 'testing_sample',
+      // WARNING: tests depend upon file name.
       numberOfClasses = function(values) {
         // handles numberOfClasses in Jenks (implemented for _.uniq(values).length > 6)
         var numPossibleBreaks = _.uniq(values).length - 1;
@@ -16,27 +17,28 @@ angular.module('dataCards.directives').directive('exampleChoropleth', function($
           var evenPossibleBreaks = numPossibleBreaks - (numPossibleBreaks % 2);
           var maxNumClasses = evenPossibleBreaks / 2;
         }
-        return _.min([oddNumbered(maxNumClasses), 11]);
+        return _.min([oddNumbered(maxNumClasses), 7]);
       }, // TODO: vet this. Assumes odd numbered, always, minus 1 of even.
-      defaultColorClass = 'diverging',
-      defaultLegendPos = 'bottomleft',
+      defaultColorClass = 'sequential',
+      defaultLegendPos = 'bottomright',
       defaultStrokeColor = '#666',
       defaultHighlightColor = 'white',
       defaultSingleColor = 'teal',
       sequentialColors = ['#B09D41', '#323345'],
       divergingColors = ['brown','lightyellow','teal'], // TODO: assumptions! # features = 1 --> ?
-      qualitativeColors = {
-        3: ["#8dd3c7","#ffffb3","#bebada"],
-        4: ["#8dd3c7","#ffffb3","#bebada","#fb8072"],
-        5: ["#8dd3c7","#ffffb3","#bebada","#fb8072","#80b1d3"],
-        6: ["#8dd3c7","#ffffb3","#bebada","#fb8072","#80b1d3","#fdb462"],
-        7: ["#8dd3c7","#ffffb3","#bebada","#fb8072","#80b1d3","#fdb462","#b3de69"],
-        8: ["#8dd3c7","#ffffb3","#bebada","#fb8072","#80b1d3","#fdb462","#b3de69","#fccde5"],
-        9: ["#8dd3c7","#ffffb3","#bebada","#fb8072","#80b1d3","#fdb462","#b3de69","#fccde5","#d9d9d9"],
-        10: ["#8dd3c7","#ffffb3","#bebada","#fb8072","#80b1d3","#fdb462","#b3de69","#fccde5","#d9d9d9","#bc80bd"],
-        11: ["#8dd3c7","#ffffb3","#bebada","#fb8072","#80b1d3","#fdb462","#b3de69","#fccde5","#d9d9d9","#bc80bd","#ccebc5"],
-        12: ["#8dd3c7","#ffffb3","#bebada","#fb8072","#80b1d3","#fdb462","#b3de69","#fccde5","#d9d9d9","#bc80bd","#ccebc5","#ffed6f"]
-      },
+      // qualitativeColors = {
+      //   3: ["#8dd3c7","#ffffb3","#bebada"],
+      //   4: ["#8dd3c7","#ffffb3","#bebada","#fb8072"],
+      //   5: ["#8dd3c7","#ffffb3","#bebada","#fb8072","#80b1d3"],
+      //   6: ["#8dd3c7","#ffffb3","#bebada","#fb8072","#80b1d3","#fdb462"],
+      //   7: ["#8dd3c7","#ffffb3","#bebada","#fb8072","#80b1d3","#fdb462","#b3de69"],
+      //   8: ["#8dd3c7","#ffffb3","#bebada","#fb8072","#80b1d3","#fdb462","#b3de69","#fccde5"],
+      //   9: ["#8dd3c7","#ffffb3","#bebada","#fb8072","#80b1d3","#fdb462","#b3de69","#fccde5","#d9d9d9"],
+      //   10: ["#8dd3c7","#ffffb3","#bebada","#fb8072","#80b1d3","#fdb462","#b3de69","#fccde5","#d9d9d9","#bc80bd"],
+      //   11: ["#8dd3c7","#ffffb3","#bebada","#fb8072","#80b1d3","#fdb462","#b3de69","#fccde5","#d9d9d9","#bc80bd","#ccebc5"],
+      //   12: ["#8dd3c7","#ffffb3","#bebada","#fb8072","#80b1d3","#fdb462","#b3de69","#fccde5","#d9d9d9","#bc80bd","#ccebc5","#ffed6f"]
+      // },
+      // SAVE this for later use when qualitative colors are implemented.
       nullColor = '#ddd';
       // TODO: assumes min colors = 3, max colors = 12. Enforce this with error catching.
 
@@ -107,10 +109,6 @@ angular.module('dataCards.directives').directive('exampleChoropleth', function($
           // includes CSS margins + CSS padding when outerWidth, outerHeight set to true
 
       $scope.$on('elementResized', function(event, arguments){
-        var width = arguments[0], height = arguments[1];
-        width = width - containerPaddingX;
-        height = height - containerPaddingY;
-        element.find('.choropleth-map').css({ width: width, height: height });
         $timeout(function(){
           $scope.$broadcast('mapContainerResized')
         });
@@ -120,28 +118,42 @@ angular.module('dataCards.directives').directive('exampleChoropleth', function($
 
       var scale;
 
-      var multiColorFill = function(feature) {
-        if (feature.properties[attr] == null || feature.properties[attr] === undefined ) {
+      var fillColor = function(feature, fillClass) {
+        if (!feature.properties || !feature.properties[attr]) {
           return nullColor;
+        } else {
+          if (fillColor == 'none') {
+            return 'transparent';
+          } else if (fillClass == 'single') {
+            return defaultSingleColor;
+          } else if (fillClass == 'multi') {
+            var value = Number(feature.properties[attr]);
+            return scale(value).hex();
+          } else {
+            throw new Error("Invalid fillClass on #fill: " + fillClass);
+          }
         }
-        var value = Number(feature.properties[attr]);
-        return scale(value).hex();
       };
 
-      var multiColorStrokeColor = function(feature) {
+      var strokeColor = function(feature, fillClass) {
         if (feature.geometry.type != "LineString" && feature.geometry.type != "MultiLineString") {
           return defaultStrokeColor;
+        } else {
+          if (!feature.properties || !feature.properties[attr]) {
+            return nullColor;
+          } else {
+            if (fillClass == 'none') {
+              return 'black';
+            } else if (fillClass == 'single') {
+              return defaultSingleColor;
+            } else if (fillClass == 'multi') {
+              // for LineString or MultiLineString, strokeColor is the same as a feature's 'fill color'
+              return fillColor(feature, fillClass);
+            } else {
+              throw new Error("Invalid fillClass on #fill: " + fillClass);
+            }
+          }
         }
-        // for LineString or MultiLineString, strokeColor is the same as a feature's 'fill color'
-        return multiColorFill(feature);
-      };
-
-      var singleColorStrokeColor = function(feature) {
-        if (feature.geometry.type != "LineString" && feature.geometry.type != "MultiLineString") {
-          return defaultStrokeColor;
-        }
-        // for LineString or MultiLineString, strokeColor is the same as a feature's 'fill color'
-        return defaultSingleColor;
       };
 
       var strokeWidth = function(feature) {
@@ -151,26 +163,53 @@ angular.module('dataCards.directives').directive('exampleChoropleth', function($
         return 1;
       };
 
-      var multiColorStyle = function(feature) {
+      function noStyleFn(feature) {
+        // NOTE: leaflet requires separate style functions for each fill class
+        var fillClass = 'none';
         return {
-          fillColor: multiColorFill(feature),
-          color: multiColorStrokeColor(feature),
-          weight: strokeWidth(feature),
-          opacity: 0.8,
+          fillColor: fillColor(feature, fillClass),
+          color: strokeColor(feature, fillClass),
+          weight: strokeWidth(feature, fillClass),
+          opacity: fillClass == 'none' ? 1 : 0.8,
           dashArray: 0,
-          fillOpacity: 0.8
+          fillOpacity: fillClass == 'none' ? 1 : 0.8,
         };
       };
 
-      var singleColorStyle = function(feature) {
+      function singleStyleFn(feature) {
+        // NOTE: leaflet requires separate style functions for each fill class
+        var fillClass = 'single';
         return {
-          fillColor: defaultSingleColor,
-          color: singleColorStrokeColor(feature),
-          weight: strokeWidth(feature),
-          opacity: 0.8,
+          fillColor: fillColor(feature, fillClass),
+          color: strokeColor(feature, fillClass),
+          weight: strokeWidth(feature, fillClass),
+          opacity: fillClass == 'none' ? 1 : 0.8,
           dashArray: 0,
-          fillOpacity: 0.8
+          fillOpacity: fillClass == 'none' ? 1 : 0.8,
         };
+      };
+
+      function multiStyleFn(feature) {
+        // NOTE: leaflet requires separate style functions for each fill class
+        var fillClass = 'multi';
+        return {
+          fillColor: fillColor(feature, fillClass),
+          color: strokeColor(feature, fillClass),
+          weight: strokeWidth(feature, fillClass),
+          opacity: fillClass == 'none' ? 1 : 0.8,
+          dashArray: 0,
+          fillOpacity: fillClass == 'none' ? 1 : 0.8,
+        };
+      };
+
+      var styleClass = function(fillClass) {
+        if (fillClass == 'none') {
+          return noStyleFn;
+        } else if (fillClass == 'single') {
+          return singleStyleFn;
+        } else if (fillClass == 'multi') {
+          return multiStyleFn;
+        }
       };
 
       /* Operations for updating Geojson */
@@ -178,12 +217,16 @@ angular.module('dataCards.directives').directive('exampleChoropleth', function($
       var classBreaksFromValues = function(values) {
         // TODO: Jenks for now, with configurable number of classes.
         // Support more types later, depending on spec.
-        if (values.length == 0) return [];
+        if (values.length == 0) {
+          throw new Error("No values. Cannot haz clAss BreAks, says Randy.");
+        }
         var uniqValues = _.uniq(values);
+        var numPossibleBreaks = uniqValues.length - 1;
 
-        if (uniqValues.length <= threshold) {
+        if (numPossibleBreaks <= threshold) {
           // for such small values, jenks does not make sense.
           // explicitly include all values in legend.
+          // return array of explicit legend labels for each value
           return uniqValues.sort();
         } else {
           return ChoroplethHelpers.createClassBreaks({
@@ -207,9 +250,9 @@ angular.module('dataCards.directives').directive('exampleChoropleth', function($
           var initialAccum = [values[0] - midpoint(values[0], values[1])];
           var midpoints = _.reduce(values, function(result, val, i) {
             if (i == values.length - 1) {
-              result.push(val + midpoint(val, values[i-1]));
+              result.push(val + midpoint(val, values[i - 1]));
             } else {
-              result.push(midpoint(val, values[i+1]));
+              result.push(midpoint(val, values[i + 1]));
             }
             return result;
           }, initialAccum);
@@ -217,7 +260,7 @@ angular.module('dataCards.directives').directive('exampleChoropleth', function($
         }
       }
 
-      var updateColorScale = function(colorClass, classBreaks) {
+      var updateMulticolorScale = function(colorClass, classBreaks) {
         if (!classBreaks) {
           throw new Error("Invalid class breaks");
         }
@@ -282,22 +325,25 @@ angular.module('dataCards.directives').directive('exampleChoropleth', function($
       function updateGeojson(geojsonData) {
         var colors;
         var values = ChoroplethHelpers.getGeojsonValues(geojsonData, attr);
-        var classBreaks = classBreaksFromValues(values);
-        if (classBreaks.length == 1) {
-          colors = [defaultSingleColor];
+        var updateGeojsonScope = function(fillClass) {
           $scope.geojson = {
             data: geojsonData,
-            style: singleColorStyle,
+            style: styleClass(fillClass),
             resetStyleOnMouseout: true
           };
+        }
+        if (values.length === 0) {
+          // no values, just render polygons with no colors
+          updateGeojsonScope('none');
         } else {
-          updateColorScale(defaultColorClass, classBreaks);
-          colors = scale.colors();
-          $scope.geojson = {
-            data: geojsonData,
-            style: multiColorStyle,
-            resetStyleOnMouseout: true
-          };
+          var classBreaks = classBreaksFromValues(values);
+          if (classBreaks.length === 1) {
+            updateGeojsonScope('single');
+          } else {
+            updateMulticolorScale(defaultColorClass, classBreaks);
+            colors = scale.colors();
+            updateGeojsonScope('multi');
+          }
         }
         updateLegend(classBreaks, colors);
         updateBounds(geojsonData);
@@ -308,7 +354,7 @@ angular.module('dataCards.directives').directive('exampleChoropleth', function($
       function highlightFeature(leafletEvent) {
         var layer = leafletEvent.target;
         layer.setStyle({
-          weight: 5,
+          weight: 4,
           color: defaultHighlightColor,
           opacity: 1
         });

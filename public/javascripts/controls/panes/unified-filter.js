@@ -2478,6 +2478,10 @@
                     }
                 });
 
+                if (_.isEmpty(condition.metadata.customValues)) {
+                    delete condition.metadata['customValues'];
+                }
+
                 // populate the canonical condition
                 condition.children = $.extend(true, [], children);
 

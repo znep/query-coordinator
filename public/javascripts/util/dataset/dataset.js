@@ -339,8 +339,10 @@ var Dataset = ServerModel.extend({
         var copyFunc = minorUpdate ? cleanViewForSave : cleanViewForCreate;
         var origCopy = copyFunc(this);
         this._update(newDS, fullUpdate, fullUpdate);
-        if (!_.isEqual(origCopy, copyFunc(this)))
-        { this._markTemporary(minorUpdate); }
+        var updCopy = copyFunc(this);
+        if (!_.isEqual(origCopy, updCopy)) {
+            this._markTemporary(minorUpdate);
+        }
     },
 
     reload: function(reloadFromServer, successCallback, errorCallback)
@@ -2399,7 +2401,10 @@ var Dataset = ServerModel.extend({
                 var tfc = Dataset.translateFilterCondition(ds.query.filterCondition, ds);
                 ds.metadata.jsonQuery.where = tfc.where;
                 ds.metadata.jsonQuery.having = tfc.having;
-                ds.metadata.defaultFilters = tfc.defaults;
+                var tfcDefaults = $.deepCompact(tfc.defaults);
+                if ($.isPresent(tfcDefaults) && !$.isEmptyObject(tfcDefaults)) {
+                    ds.metadata.defaultFilters = tfc.defaults;
+                }
                 ds.metadata.jsonQuery.namedFilters = ds.metadata.jsonQuery.namedFilters || {};
                 _.each(ds.query.namedFilters, function(nf, id)
                     {

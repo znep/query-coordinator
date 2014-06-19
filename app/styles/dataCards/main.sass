@@ -97,8 +97,7 @@ $card-bg-color: #eee
 $card-padding: 15px
 $card-title-expanded-bg-color: #aaa
 $card-title-padding: 5px
-$card-title-margin-right: 18px
-$card-title-border-thickness: 1px
+$card-title-margin-right: 35px
 $card-title-line-height: 1.2em
 $card-description-max-line-count: 2
 $card-description-line-height: 1.3em
@@ -133,61 +132,50 @@ $card-description-line-height: 1.3em
       line-height: $card-description-line-height
       max-height: $card-description-line-height * $card-description-max-line-count
   .title-one-line
-    overflow: hidden
-    text-overflow: ellipsis
-    white-space: nowrap
-    padding-right: $card-title-margin-right
     line-height: $card-title-line-height
+    display: inline-block
+    font-weight: bold
+    max-width: 100%
+    .wrap
+      overflow: hidden
+      text-overflow: ellipsis
+      white-space: nowrap
+      margin-right: $card-title-margin-right + $card-title-padding
   .title-expanded
     display: none
     position: absolute
-    top: $card-padding - $card-title-padding - $card-title-border-thickness
-    left: $card-padding - $card-title-padding - $card-title-border-thickness
-    right: $card-padding - $card-title-padding - $card-title-border-thickness + $card-title-margin-right
-    border: $card-title-border-thickness solid black
-    padding: $card-title-padding
+    top: $card-padding
+    left: $card-padding
+    right: $card-padding + $card-title-padding + $card-title-margin-right
     line-height: $card-title-line-height
-    text-overflow: ellipsis
-    white-space: nowrap
-    opacity: 0
+    font-weight: bold
+    overflow: visible
     &:hover
       z-index: 1
-      opacity: 1
-    .title-expanded-first-line
-      position: absolute
+    .wrap
+      max-width: 100%
+      white-space: nowrap
       overflow: hidden
-      background: $card-title-expanded-bg-color
-      height: $card-title-line-height
-    .title-expanded-remainder
-      overflow: hidden
+      display: inline-block
+      opacity: 0
+      &:hover
+        background: $card-title-expanded-bg-color
+        opacity: 1
+        overflow: visible
 
 .onRight .card
   .title-expanded
-    display: block
-    overflow: hidden
-    background: $card-title-expanded-bg-color
-    &:hover
-      overflow: visible
+    display: inline-block
+    .wrap
       white-space: normal
-      text-align: right
-    .title-expanded-first-line
-      text-align: left
-      top: $card-title-padding
-      left: $card-title-padding
-      right: $card-title-padding
+    .wrap:hover
+      overflow: visible
 
 .onLeft .card
   .title-expanded
-    display: block
-    overflow: visible
-    color: $card-title-expanded-bg-color
-    border-color: transparent
-    .title-expanded-first-line
-      top: -$card-title-border-thickness
-      left: -$card-title-border-thickness
-      padding: $card-title-padding
-      border: $card-title-border-thickness solid black
-      color: $fgColor
+    display: inline-block
+    .wrap:hover
+      max-width: none
 
 .card.expanded
   .expandButton a

@@ -2372,7 +2372,8 @@ var Dataset = ServerModel.extend({
             if (!_.isEmpty(ds.metadata.jsonQuery.group))
             {
                 ds.metadata.jsonQuery.select = ds.metadata.jsonQuery.select || [];
-                _.each(ds.metadata.jsonQuery.group.reverse(), function(g)
+                // reverse() is mutable.  Clone/slice for a reversed copy.
+                _.each(ds.metadata.jsonQuery.group.slice(0).reverse(), function(g)
                 {
                     if (!_.any(ds.metadata.jsonQuery.select, function(s)
                         { return s.columnFieldName == g.columnFieldName; }))

@@ -8,8 +8,8 @@
   "columns": [
     {
       "name": "location_description",
-      "title": "Ward where crime was committed. This is a long card title.",
-      "description": "Where most of the beat-up baddies were left by Batman. Long description is long descriptionWhere most of the beat-up baddies were left by Batman. Long description is long descriptionWhere most of the beat-up baddies were left by Batman. Long description is long descriptionWhere most of the beat-up baddies were left by Batman. Long description is long descriptionWhere most of the beat-up baddies were left by Batman. Long description is long descriptionWhere most of the beat-up baddies were left by Batman. Long description is long descriptionWhere most of the beat-up baddies were left by Batman. Long description is long descriptionWhere most of the beat-up baddies were left by Batman. Long description is long descriptionWhere most of the beat-up baddies were left by Batman. Long description is long descriptionWhere most of the beat-up baddies were left by Batman. Long description is long descriptionWhere most of the beat-up baddies were left by Batman. Long description is long description...........Where most of the beat-up baddies were left by Batman. Long description is long description. fin",
+      "title": "Ward where crime was committed.",
+      "description": "Where most of the beat-up baddies were left by Batman. Long description is long Long description is long Long description is long Long description is long Long description is long Long description is long Long description is long Long description is long Long description is long Long description is long Long description is long Long description is long Long description is long Long description is long Long description is long Long description is long Long description is long Long description is long Long description is long Long description is long Long description is long Long description is long Long description is long Long description is long Long description is long Long description is long Long description is long Long description is long ",
       "logicalDatatype": "category",
       "physicalDatatype": "text",
       "importance": 1
@@ -17,7 +17,7 @@
     {
       "name": "primary_type",
       "title": "Type of crime",
-      "description": "How much batman cares",
+      "description": "How much batman cares about your silly problem.",
       "logicalDatatype": "category",
       "physicalDatatype": "text",
       "importance": 1
@@ -25,15 +25,15 @@
     {
       "name": "updated_on",
       "title": "Time of incident",
-      "description": "Time Batman mysteriously disappeared.",
+      "description": "Time Batman confused Gordon by mysteriously disappearing mid-conversation.",
       "logicalDatatype": "time",
       "physicalDatatype": "timestamp",
       "importance": 3
     },
     {
       "name": "location",
-      "title": "Number of arrests made words words! I love words.",
-      "description": "The number of people who failed to evade Batman",
+      "title": "Number of arrests made",
+      "description": "The number of people who failed to evade Batman.",
       "logicalDatatype": "location",
       "physicalDatatype": "text",
       "importance": 2

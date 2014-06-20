@@ -269,7 +269,7 @@ describe("A Choropleth Directive", function() {
   afterEach(function(){
     httpBackend.verifyNoOutstandingExpectation();
     httpBackend.verifyNoOutstandingRequest();
-    $('#choroplethTest').remove();
+    // $('#choroplethTest').remove();
   });
 
   var createChoropleth = function() {
@@ -286,7 +286,7 @@ describe("A Choropleth Directive", function() {
 
   describe('with a valid geojsonData input', function() {
     // TODO: INVALID INPUT?
-    
+
     it('should render a leaflet map, with zoom controls', function() {
       scope.data = lineStringData2;
       var el = createChoropleth();
@@ -483,7 +483,7 @@ describe("A Choropleth Directive", function() {
       httpBackend.flush();
     });
 
-    it.only('should render proper map features, legend, and legend labels for many features', function(){
+    it('should render proper map features, legend, and legend labels for many features', function(){
       scope.data = lineStringData52;
       var el = createChoropleth();
 

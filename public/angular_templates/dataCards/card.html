@@ -6,10 +6,10 @@
     </div>
   </div>
   <div class="description" ng-class="{ clamped: descriptionClamped, collapsed: descriptionCollapsed, 'with-animation': animationsOn }">
-    <div class="description-content">
-      {{description}}
+    <div class="description-truncated-content">
+      <!-- set in JS -->
     </div>
-    <div class="description-content-expanded">
+    <div class="description-expanded-wrapper">
       <div class="description-expanded-content">
         {{description}}
       </div>

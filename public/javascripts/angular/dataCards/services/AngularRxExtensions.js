@@ -2,14 +2,16 @@ angular.module('dataCards.services').factory('AngularRxExtensions', function($ro
   // Execute the given function immediately if an angular digest-apply is
   // already in progress, otherwise starts a digest-apply cycle then executes
   // the function within that cycle.
-  function safeApply(scope, fn) {
-    var phase = scope.$root.$$phase;
+  // This is often useful when combining Observables of arbitrary origin to
+  // angular-related Observables.
+  function safeApply(fn) {
+    var phase = this.$root.$$phase;
     if (phase == '$apply' || phase == '$digest') {
       if (fn && (typeof(fn) === 'function')) {
         fn();
       }
     } else {
-      scope.$apply(fn);
+      this.$apply(fn);
     }
   }
 
@@ -26,7 +28,7 @@ angular.module('dataCards.services').factory('AngularRxExtensions', function($ro
     }
     var self = this;
     observable.subscribe(function(newValue) {
-      safeApply(self, function() {
+      self.safeApply(function() {
         self[propName] = newValue;
       });
     });
@@ -56,6 +58,7 @@ angular.module('dataCards.services').factory('AngularRxExtensions', function($ro
 
       scope.bindObservable = bindObservable;
       scope.observe = observe;
+      scope.safeApply = safeApply;
     }
   };
 

@@ -72,31 +72,35 @@ angular.module('dataCards.directives').directive('card', function(AngularRxExten
         $scope.model.expanded = !$scope.expanded;// TODO Determine if IDE warning "Value assigned to primitive will be lost" is a red herring
       };
 
-      var isClamped = false;
-      var updateIsClamped = _.throttle(function() {
-        $scope.$apply(function() {
-          $scope.descriptionClamped = isClamped;
-          $scope.animationsOn = true;
-        });
-      }, 250, { leading: false, trailing: true });
+      var descriptionTruncatedContent = content.find('.description-truncated-content');
+      var descriptionElementsWithMaxSize = content.find('.description-expanded-wrapper, .description-expanded-content');
+      var updateClamp = _.throttle(function(height) {
+          descriptionTruncatedContent.dotdotdot({
+            height: height,
+            tolerance: 2
+          });
+
+          var isClamped = descriptionTruncatedContent.triggerHandler('isTruncated');
+
+          $scope.safeApply(function() {
+            $scope.descriptionClamped = isClamped;
+            $scope.animationsOn = true;
+          });
+      }, 250, { leading: true, trailing: true });
 
       Rx.Observable.subscribeLatest(
         content.observeDimensions(),
         column.pluck('description'),
-        $scope.observe('descriptionCollapsed'),
-        function(dims, descr, collapsed) {
-          var description = content.find('.description');
-          var descriptionContent = content.find('.description-content');
-          descriptionContent.text($scope.description);
-          var pos = descriptionContent.offsetParent().position();
+        function(dimensions, descriptionText) {
+          // Manually update the binding now, because Angular doesn't know that dotdotdot messes with
+          // the text.
+          descriptionTruncatedContent.text(descriptionText);
+          var availableSpace = dimensions.height - descriptionTruncatedContent.offsetParent().position().top;
 
-          description.find('.description-content-expanded').css('max-height', dims.height - pos.top);
-          description.find('.description-expanded-content').css('max-height', dims.height - pos.top);
+          descriptionElementsWithMaxSize.
+            css('max-height', availableSpace);
 
-          var ret = $clamp(descriptionContent[0], { clamp: 2, useNativeClamp: false } );
-
-          isClamped = _.isString(ret.clamped);
-          updateIsClamped();
+          updateClamp(parseInt(descriptionTruncatedContent.css('line-height')) * 2);
         });
     }
   };

@@ -338,6 +338,7 @@ angular.module('dataCards.directives').directive('exampleChoropleth', function($
         } else {
           var classBreaks = classBreaksFromValues(values);
           if (classBreaks.length === 1) {
+            colors = [defaultSingleColor];
             updateGeojsonScope('single');
           } else {
             updateMulticolorScale(defaultColorClass, classBreaks);

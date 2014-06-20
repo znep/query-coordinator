@@ -286,7 +286,7 @@ describe("A Choropleth Directive", function() {
 
   describe('with a valid geojsonData input', function() {
     // TODO: INVALID INPUT?
-    
+
     it('should render a leaflet map, with zoom controls', function() {
       scope.data = lineStringData2;
       var el = createChoropleth();

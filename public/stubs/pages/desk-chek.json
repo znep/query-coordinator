@@ -26,15 +26,7 @@
       "expanded": false
     },
     {
-      "fieldName": "updated_on",
-      "cardSize": 2,
-      "cardCustomStyle": {},
-      "expandedCustomStyle": {},
-      "displayMode": "visualization",
-      "expanded": false
-    },
-    {
-      "fieldName": "ward",
+      "fieldName": "location",
       "cardSize": 2,
       "cardCustomStyle": {},
       "expandedCustomStyle": {},

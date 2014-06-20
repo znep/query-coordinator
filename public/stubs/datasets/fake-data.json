@@ -31,13 +31,12 @@
       "importance": 3
     },
     {
-      "name": "ward",
+      "name": "location",
       "title": "Number of arrests made words words! I love words.",
       "description": "The number of people who failed to evade Batman",
-      "logicalDatatype": "amount",
-      "physicalDatatype": "number",
-      "importance": 2,
-      "columnDisplayUnit": "arrest"
+      "logicalDatatype": "location",
+      "physicalDatatype": "text",
+      "importance": 2
     }
   ],
   "pages": {

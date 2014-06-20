@@ -3,7 +3,7 @@ angular.module('socrataCommon.directives').directive('columnChart', function(Ang
   var renderColumnChart = function(element, unFilteredData, filteredData, filtered, dimensions) {
     var barPadding = 0.25;
     var topMargin = 20; // TODO calculate this dynamically
-    var bottomMargin = 100;
+    var bottomMargin = 120;
     var tipHeight = 10;
     var tipWidth = 10;
 
@@ -21,7 +21,7 @@ angular.module('socrataCommon.directives').directive('columnChart', function(Ang
     var truncationMarker = element.find('.truncation-marker');
     var truncationMarkerWidth = truncationMarker.width();
 
-    if (chartWidth <= 0) {
+    if (chartWidth <= 0 || (unFilteredData.length != filteredData.length)) {
       return;
     }
 
@@ -275,22 +275,16 @@ angular.module('socrataCommon.directives').directive('columnChart', function(Ang
         scope.observe('filteredData'),
         function(cardDimensions, unFilteredData, filteredData) {
           if (unFilteredData && filteredData) {
-          renderColumnChart(
-            element,
-            theData[0], // This s/b unfiltered
-            theData[1], // This s/b filtered
-            false,//!!theData[1],
-            element.closest('.card').dimensions()
-          );
+            renderColumnChart(
+              element,
+              unFilteredData,
+              filteredData,
+              false,
+              cardDimensions
+            );
+          }
         }
-        }
-        renderColumnChart(
-          element,
-          scope.unFilteredData,
-          scope.filteredData,
-          false,//!!scope.filteredData[0],
-          dimensions
-        );
+      );
     }
   }
 

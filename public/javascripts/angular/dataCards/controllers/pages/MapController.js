@@ -135,7 +135,7 @@ angular.module('dataCards.controllers')
       .mode('lab');
   }
   var updateClassBreaks = function(data) {
-    classBreaks.breaks = choroplethHelpers.createClassBreaks({
+    classBreaks.breaks = ChoroplethHelpers.createClassBreaks({
       method: 'jenks',
       data: data,
       numberOfClasses: 4
@@ -274,7 +274,7 @@ angular.module('dataCards.controllers')
       $rootScope.addTimer('GET '+geojsonName);
       var regions = result.data;
       regions.id = geojsonName;
-      $scope.bounds = leafletBoundsHelpers.createBoundsFromArray(choroplethHelpers.createBoundsArray(regions));
+      $scope.bounds = leafletBoundsHelpers.createBoundsFromArray(ChoroplethHelpers.createBoundsArray(regions));
       $scope.data.push(regions);
       updateGeojson($scope.data,geojsonName);
       $rootScope.addTimer('Request (additional) Geojson layer' + geojsonName, regions.filesize);
@@ -295,7 +295,7 @@ angular.module('dataCards.controllers')
       }).then(function(){
         if (i == 0) {
           // TODO: why is i == 0 the last one?
-          $scope.bounds = leafletBoundsHelpers.createBoundsFromArray(choroplethHelpers.createBoundsArray(masterGeojson));
+          $scope.bounds = leafletBoundsHelpers.createBoundsFromArray(ChoroplethHelpers.createBoundsArray(masterGeojson));
           $scope.data = [masterGeojson]
           updateGeojson($scope.data,'Merged Layers');
         }

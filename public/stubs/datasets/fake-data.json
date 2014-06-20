@@ -1,11 +1,11 @@
 {
-  "id": "fake-data",
+  "id": "q77b-s2zi",
   "rowDisplayUnit": "crime",
   "defaultAggregateColumn": ":count",
   "domain": "soda2nbe.test-socrata.com",
   "ownerId": "jc63-heng",
   "updatedAt": "2014-05-20T10:42:55.000-07:00",
-  "columns": [ 
+  "columns": [
     {
       "name": "location_description",
       "title": "Ward where crime was committed. This is a long card title.",
@@ -23,7 +23,7 @@
       "importance": 1
     },
     {
-      "name": "crime_time",
+      "name": "updated_on",
       "title": "Time of incident",
       "description": "Time Batman mysteriously disappeared.",
       "logicalDatatype": "time",
@@ -31,7 +31,7 @@
       "importance": 3
     },
     {
-      "name": "number_of_arrests",
+      "name": "ward",
       "title": "Number of arrests made words words! I love words.",
       "description": "The number of people who failed to evade Batman",
       "logicalDatatype": "amount",

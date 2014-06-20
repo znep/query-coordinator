@@ -47,11 +47,11 @@
       }
     ]
   },
-  "crime_time": {
+  "updated_on": {
     "filtered": [],
     "unFiltered": []
   },
-  "number_of_arrests": {
+  "ward": {
     "filtered": [],
     "unFiltered": []
   }

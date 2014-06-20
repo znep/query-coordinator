@@ -5,10 +5,15 @@
       {{title}}
     </div>
   </div>
-  <div class="description">
-    <div class="description-measuring-stick">{{description}}</div>
-    <div title="{{description}}" class="description-text">
-      <div>{{description}}</div>
+  <div class="description" ng-class="{ clamped: descriptionClamped, collapsed: descriptionCollapsed, 'with-animation': animationsOn }">
+    <div class="description-content">
+      {{description}}
+    </div>
+    <div class="description-content-expanded">
+      <div class="description-expanded-content">
+        {{description}}
+      </div>
+      <div class="description-expand-button"><span ng-click="descriptionCollapsed = !descriptionCollapsed"></span></div>
     </div>
   </div>
   <div ng-switch="cardType">

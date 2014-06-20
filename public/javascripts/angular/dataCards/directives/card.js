@@ -32,6 +32,8 @@ angular.module('dataCards.directives').directive('card', function(AngularRxExten
     templateUrl: '/angular_templates/dataCards/card.html',
     link: function($scope, element, attrs) {
       AngularRxExtensions.install($scope);
+
+      var content = element.find('div.card');
       var model = $scope.observe('model');
       var dataset = model.pluck('page').pluckSwitch('dataset');
 
@@ -45,6 +47,8 @@ angular.module('dataCards.directives').directive('card', function(AngularRxExten
       var column = model.pluck('fieldName').combineLatest(columns, function(fieldName, columns) {
         return columns[fieldName];
       });
+
+      $scope.descriptionCollapsed = true;
 
       $scope.bindObservable('cardType', cardType);
       $scope.bindObservable('unFilteredData', model.pluckSwitch('unFilteredData'));
@@ -67,6 +71,33 @@ angular.module('dataCards.directives').directive('card', function(AngularRxExten
 
         $scope.model.expanded = !$scope.expanded;// TODO Determine if IDE warning "Value assigned to primitive will be lost" is a red herring
       };
+
+      var isClamped = false;
+      var updateIsClamped = _.throttle(function() {
+        $scope.$apply(function() {
+          $scope.descriptionClamped = isClamped;
+          $scope.animationsOn = true;
+        });
+      }, 250, { leading: false, trailing: true });
+
+      Rx.Observable.subscribeLatest(
+        content.observeDimensions(),
+        column.pluck('description'),
+        $scope.observe('descriptionCollapsed'),
+        function(dims, descr, collapsed) {
+          var description = content.find('.description');
+          var descriptionContent = content.find('.description-content');
+          descriptionContent.text($scope.description);
+          var pos = descriptionContent.offsetParent().position();
+
+          description.find('.description-content-expanded').css('max-height', dims.height - pos.top);
+          description.find('.description-expanded-content').css('max-height', dims.height - pos.top);
+
+          var ret = $clamp(descriptionContent[0], { clamp: 2, useNativeClamp: false } );
+
+          isClamped = _.isString(ret.clamped);
+          updateIsClamped();
+        });
     }
   };
 

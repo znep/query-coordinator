@@ -112,6 +112,7 @@ $card-title-margin-right: 35px
 $card-title-line-height: 1.2em
 $card-description-max-line-count: 2
 $card-description-line-height: 1.3em
+$card-description-transition-duration: 0.5s
 .card
   color: $fgColor
   background: $card-bg-color
@@ -134,14 +135,81 @@ $card-description-line-height: 1.3em
         content: '⤢'
   .description
     position: relative
-    .description-text
+    line-height: $card-description-line-height
+    padding-right: 30px
+    .description-expand-button
+      display: none
       position: absolute
+      visibility: collapse
+      font-family: "SSAir"
+      right: 0
+      bottom: 0
+      width: 15px
+      height: 25px
+      span
+        /* Can't set separate cursor prop on pseudo, so must be a separate element. */
+        cursor: pointer
+        &:before
+          content: "\F500"
+    .description-content-expanded
+      position: absolute
+      overflow: hidden
+      .description-expanded-content
+        background: rgba($card-bg-color, 0.9)
+        overflow-y: auto
+        overflow-x: hidden
       top: 0
-      @include multiline-with-ellipsis($card-description-max-line-count, $card-description-line-height, $card-bg-color)
-    .description-measuring-stick
+      display: block
+      padding-right: 20px
+      z-index: 5
+      .description-expand-button
+        display: block
+    .description-content
       visibility: hidden
-      line-height: $card-description-line-height
-      max-height: $card-description-line-height * $card-description-max-line-count
+
+    &.clamped
+      .description-expand-button
+        visibility: visible
+      
+    &.collapsed
+      max-height: $card-description-line-height * 2
+      .description-content-expanded
+        .description-expanded-content
+          visibility: collapse
+        /* N.B this !important is here so that animations work - the initial max-height
+           is set via jQuery, but this max-height here must override it if we're collapsed. */
+        max-height: $card-description-line-height * 2 !important
+      .description-content
+        visibility: visible
+      .description-expand-button span:before
+        content: "\F501"
+
+    &.with-animation
+      .description-content-expanded
+        .description-expanded-content
+          @include prefixer(transition-property, "visibility")
+          @include prefixer(transition-duration, "0s")
+          @include prefixer(transition-timing-function, "step-end")
+          @include prefixer(transition-delay, "0")
+        @include prefixer(transition-property, "max-height, z-index")
+        @include prefixer(transition-duration, "#{$card-description-transition-duration}, 0s")
+        @include prefixer(transition-timing-function, "ease, step-end")
+        @include prefixer(transition-delay, "0, 0")
+      .description-content
+        @include prefixer(transition-property, "visibility")
+        @include prefixer(transition-duration, "0")
+        @include prefixer(transition-delay, "0")
+
+      &.collapsed
+        .description-content-expanded
+          .description-expanded-content
+            @include prefixer(transition-duration, "0")
+            @include prefixer(transition-delay, "#{$card-description-transition-duration}")
+          @include prefixer(transition-duration, "#{$card-description-transition-duration}, #{$card-description-transition-duration}")
+          @include prefixer(transition-delay, "0, #{$card-description-transition-duration}")
+        .description-content
+          @include prefixer(transition-delay, "#{$card-description-transition-duration}")
+
   .title-one-line
     line-height: $card-title-line-height
     display: inline-block

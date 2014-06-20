@@ -21,7 +21,8 @@ angular.module('socrataCommon.directives').directive('columnChart', function(Ang
     var truncationMarker = element.find('.truncation-marker');
     var truncationMarkerWidth = truncationMarker.width();
 
-    if (chartWidth <= 0 || (unFilteredData.length != filteredData.length)) {
+    if (chartWidth <= 0 || unFilteredData.length != filteredData.length ||
+      unFilteredData.length <= 0 || filteredData.length <= 0) {
       return;
     }
 
@@ -284,7 +285,7 @@ angular.module('socrataCommon.directives').directive('columnChart', function(Ang
             );
           }
         }
-      );
+      )
     }
   }
 

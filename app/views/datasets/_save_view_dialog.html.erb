@@ -4,9 +4,9 @@
   <p class="leavingSave info"><%= t('screens.ds.save_dialog.descriptions.leaving') %></p>
   <p class="reloadSave info"><%= t('screens.ds.save_dialog.descriptions.reload_save') %></p>
   <p class="reloadUpdate info"><%= t('screens.ds.save_dialog.descriptions.reload_update') %></p>
-  <p class="newName"><%= t('screens.ds.save_dialog.form.new_name') %></p>
+  <label for="newName" class="newName"><%= t('screens.ds.save_dialog.form.new_name') %></label>
   <form class="commonForm" action="#save">
-    <input type="text" class="viewName" />
+    <input id="newName" type="text" class="viewName" />
   </form>
   <div class="mainError"></div>
   <ul class="actions clearfix">

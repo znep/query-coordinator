@@ -27,7 +27,7 @@
       </div>
 
       <div class="lined">
-        <div><label for="from_address" class="required"><%= t('screens.ds.dataset_contact.form.email') %></label></div>
+        <div><label for="fromAddress" class="required"><%= t('screens.ds.dataset_contact.form.email') %></label></div>
         <p><%= t('screens.ds.dataset_contact.form.email_prompt') %></p>
         <input id="fromAddress" name="from_address" type="text" value="<%= current_user.email unless (current_user.nil? || current_user.email.nil?) %>"/>
       </div>

@@ -12,7 +12,7 @@
   </div>
   <div class="emailDatasetContent">
     <div class="flash" id="emailDatasetMessage"></div>
-    <p><%= t('screens.ds.email.prompt_html', name: h(@view.nil? ? '' : @view.name)) %></p>
+    <label for="emailRecipient" class="emailRecipientPrompt"><%= t('screens.ds.email.prompt_html', name: h(@view.nil? ? '' : @view.name)) %></label>
     <div class="emailFormContent">
       <form class="commonForm" id="emailDatasetForm"
         action="<%= @view.nil? ? '' : "/views/#{@view.id}.json?method=sendAsEmail" %>" method="post">
@@ -22,8 +22,7 @@
           </a>
           <input type="hidden" class="recipientUid" />
           <div class="textWrapper">
-            <input type="text" class="emailRecipient email"
-              name="emailRecipient0" />
+            <input id="emailRecipient" type="text" class="emailRecipient email" name="emailRecipient0" />
           </div>
           <%- if !@view.nil? && @view.has_rights?('grant') -%>
             <%= select_tag 'role', options_for_select(@view.share_types.map{ |type| [ t('core.share_types.' + type.downcase), type ] }),
@@ -35,7 +34,7 @@
             <span class="icon"></span><%= t('screens.ds.email.add_email') %>
           </a>
         </div>
-        <p class="emailMessageHint"><%= t('screens.ds.email.message_prompt') %></p>
+        <label for="emailMessage" class="emailMessageHint"><%= t('screens.ds.email.message_prompt') %></label>
         <textarea id="emailMessage"></textarea>
       </form>
     </div>

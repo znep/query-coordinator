@@ -20,5 +20,6 @@ class EmailInterest < Model
     'MAIL.NEW_NOMINATION' =>   {description: 'nomination_created'},
     'MAIL.NOMINATION_STATUS_CHANGED' => {description: 'nomination_moderated'},
     'MAIL.VIEW_MADE_PUBLIC' => {description: 'view_made_public'},
+    'MAIL.VIEW_DELETED' =>  {right: 'view_others_datasets', description: 'view_deleted'},
   }
 end

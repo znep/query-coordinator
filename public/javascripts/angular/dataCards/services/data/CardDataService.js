@@ -1,50 +1,19 @@
-angular.module('dataCards.services').factory('CardDataService', function($q) {
-
-  var count = Math.floor(Math.random() * 40 + Math.random() * 25);
-  var names = [];
-  for (var i = 0 ; i < count; i++) {
-    names.push(_.shuffle('baeiouqrt').join(''));
-  }
+angular.module('dataCards.services').factory('CardDataService', function($q, $http) {
 
   return {
-    getUnfilteredData: function(fieldName) {
-      var obj = {};
-      var a = [];
-      for (var i = 0; i < count; i++) {
-        var datum = {};
-        datum["name"] = names[i];
-        datum["value"] = Math.floor(Math.random() * 100);
-        a.push(datum);
-      }
-      obj[fieldName] = a.sort(function(a, b) {
-        return a.value + 0 < b.value + 0 ? 1 : -1;
+    getUnfilteredData: function(fieldName, datasetId) {
+      return $http.get('/stubs/datasets/data/' + datasetId + '.json', { cache: true }).then(function(response) {
+        return _.map(response.data[fieldName].unFiltered, function(item) {
+          return { name: _.first(_.keys(item)), value: _.first(_.values(item)) };
+        });
       });
-      return $q.when(obj);
     },
 
-    getFilteredData: function(fieldName) {
-      var obj = {};
-      var a = [];
-      for (var i = 0; i < count; i++) {
-        var datum = {};
-        datum["name"] = names[i];
-        datum["value"] = Math.floor(Math.random() * 50);
-        a.push(datum);
-      }
-      obj[fieldName] = a.sort(function(a, b) {
-        return a.value + 0 < b.value + 0 ? 1 : -1;
-      });
-      return $q.when(obj);
-    },
-
-    getFakeGeojsonData: function(fieldName) {
-      var data;
-      $http.get('/datasets/geojson/Neighborhoods_2012b.json').then(function(result) {
-        // GeoJson was reprojected and converted to Geojson with http://converter.mygeodata.eu/vector
-        // reprojected to WGS 84 (SRID: 4326)
-        data = result.data;
-        console.log('data!', data);
-        return $q.when(data);
+    getFilteredData: function(fieldName, datasetId) {
+      return $http.get('/stubs/datasets/data/' + datasetId + '.json', { cache: true }).then(function(response) {
+        return _.map(response.data[fieldName].filtered, function(item) {
+          return { name: _.first(_.keys(item)), value: _.first(_.values(item)) };
+        });
       });
     }
   };

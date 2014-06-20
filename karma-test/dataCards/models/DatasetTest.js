@@ -6,9 +6,10 @@ describe("Dataset model", function() {
   var minimalBlob = {
     id: 'asdf-fdsa',
     defaultAggregateColumn: 'foo',
-    owner: 'fdsa-asdf',
+    rowDisplayUnit: 'bar',
+    ownerId: 'fdsa-asdf',
     updatedAt: '2004-05-20T17:42:55+00:00',
-    columns: {}
+    columns: []
   };
 
   beforeEach(function() {
@@ -44,10 +45,10 @@ describe("Dataset model", function() {
     var id = 'dead-beef';
     var fakeDisplayUnit = 'test';
 
-    var staticInfoDefer =_$q.defer();
-    MockDataService.getStaticInfo = function(id) {
+    var baseInfoDefer =_$q.defer();
+    MockDataService.getBaseInfo = function(id) {
       expect(id).to.equal(id);
-      return staticInfoDefer.promise;
+      return baseInfoDefer.promise;
     };
 
     var instance = new _Dataset(id);
@@ -58,7 +59,7 @@ describe("Dataset model", function() {
       }
     });
 
-    staticInfoDefer.resolve($.extend({}, minimalBlob, { "rowDisplayUnit": fakeDisplayUnit}));
+    baseInfoDefer.resolve($.extend({}, minimalBlob, { "rowDisplayUnit": fakeDisplayUnit}));
     _$rootScope.$digest();
   });
 
@@ -72,8 +73,9 @@ describe("Dataset model", function() {
           return _.uniqueId('fakePublisherPageId');
         })
       };
+    var serializedBlob = $.extend({}, minimalBlob, { "pages": fakePageIds });
     var def =_$q.defer();
-    MockDataService.getPageIds = function(id) {
+    MockDataService.getBaseInfo = function(id) {
       expect(id).to.equal(id);
       return def.promise;
     };
@@ -92,7 +94,7 @@ describe("Dataset model", function() {
       }
     });
 
-    def.resolve(fakePageIds);
+    def.resolve(serializedBlob);
     _$rootScope.$digest();
   });
 });

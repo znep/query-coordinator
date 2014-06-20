@@ -30,8 +30,8 @@ describe("Page model", function() {
     var desc3 = 'Yet another fine description';
     var expectedSequence = [desc1, desc2, desc3];
 
-    MockPageDataService.getStaticInfo = function(id) {
-      throw new Error("Should never try to get static info.");
+    MockPageDataService.getBaseInfo = function(id) {
+      throw new Error("Should never try to get base info.");
     };
 
     var instance = new _Page(id);
@@ -54,10 +54,10 @@ describe("Page model", function() {
     var shouldBeResolved = false;
 
     var staticInfoDefer =_$q.defer();
-    var getStaticInfoCalled = false;
-    MockPageDataService.getStaticInfo = function(id) {
-      expect(getStaticInfoCalled).to.be.false;
-      getStaticInfoCalled = true;
+    var getBaseInfoCalled = false;
+    MockPageDataService.getBaseInfo = function(id) {
+      expect(getBaseInfoCalled).to.be.false;
+      getBaseInfoCalled = true;
       expect(id).to.equal(id);
       return staticInfoDefer.promise;
     };
@@ -72,7 +72,7 @@ describe("Page model", function() {
     shouldBeResolved = true;
     staticInfoDefer.resolve({ "description": descFromApi});
     _$rootScope.$digest();
-    expect(getStaticInfoCalled).to.be.true;
+    expect(getBaseInfoCalled).to.be.true;
 
     instance.description = descFromSetter1;
     instance.description = descFromSetter2;
@@ -84,7 +84,7 @@ describe("Page model", function() {
     var datasetId = 'fooo-baar';
 
     var staticInfoDefer =_$q.defer();
-    MockPageDataService.getStaticInfo = function(id) {
+    MockPageDataService.getBaseInfo = function(id) {
       expect(id).to.equal(id);
       return staticInfoDefer.promise;
     };

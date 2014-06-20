@@ -685,6 +685,9 @@ javascripts:
     - public/javascripts/bower/**/*.js
   # END BOWER-MANAGED ASSETS
 
+  angular-jquery-extensions:
+    - public/javascripts/util/jquery_extensions.js
+
 dump:
   javascripts:
     - shared-calendar

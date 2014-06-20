@@ -59,7 +59,9 @@ var Dataset = ServerModel.extend({
         delete this.initialMetaColumns;
 
         this._adjustProperties();
-        this._syncQueries();
+
+        var originalQuery = this._getQueryGrouping();
+        this._syncQueries(originalQuery.oldJsonQuery, originalQuery.oldQuery, originalQuery.oldGroupings, originalQuery.oldGroupAggs);
 
         this.temporary = false;
         this.minorChange = true;
@@ -337,8 +339,10 @@ var Dataset = ServerModel.extend({
         var copyFunc = minorUpdate ? cleanViewForSave : cleanViewForCreate;
         var origCopy = copyFunc(this);
         this._update(newDS, fullUpdate, fullUpdate);
-        if (!_.isEqual(origCopy, copyFunc(this)))
-        { this._markTemporary(minorUpdate); }
+        var updCopy = copyFunc(this);
+        if (!_.isEqual(origCopy, updCopy)) {
+            this._markTemporary(minorUpdate);
+        }
     },
 
     reload: function(reloadFromServer, successCallback, errorCallback)
@@ -2072,12 +2076,12 @@ var Dataset = ServerModel.extend({
         }
 
         ds.displayFormat = ds.displayFormat || {};
+        ds.metadata = ds.metadata || {};
 
         if (_.isFunction(ds._convertLegacy)) { ds._convertLegacy(); }
 
         if (!$.subKeyDefined(ds, 'metadata.availableDisplayTypes'))
         {
-            ds.metadata = ds.metadata || {};
             var adt;
             if (_.include(['blob', 'href', 'form', 'api'], ds.type))
             { adt = [ds.type]; }
@@ -2202,19 +2206,7 @@ var Dataset = ServerModel.extend({
             newDS.flags.push('default');
         }
 
-        var oldGroupings = (ds.query || {}).groupBys;
-        var oldGroupAggs = {};
-        if ((oldGroupings || []).length > 0)
-        {
-            _.each(ds.realColumns, function(c)
-            {
-                if (!$.isBlank(c.format.grouping_aggregate))
-                { oldGroupAggs[c.id] = c.format.grouping_aggregate; }
-            });
-        }
-
-        var oldQuery = ds.query || {};
-        var oldJsonQuery = $.extend(true, {}, ds.metadata.jsonQuery);
+        var oldQuery = ds._getQueryGrouping();
         var oldDispFmt = $.extend(true, {}, ds.displayFormat);
         var oldDispType = ds.displayType;
         var oldRTConfig = $.extend(true, {}, ds.metadata.renderTypeConfig);
@@ -2236,7 +2228,7 @@ var Dataset = ServerModel.extend({
         if (!$.isBlank(newDS.columns))
         { ds.updateColumns(newDS.columns, forceFull, updateColOrder, masterUpdate); }
 
-        ds._syncQueries(oldJsonQuery, oldQuery, oldGroupings, oldGroupAggs);
+        ds._syncQueries(oldQuery.oldJsonQuery, oldQuery.oldQuery, oldQuery.oldGroupings, oldQuery.oldGroupAggs);
 
         var needsDTChange;
         if (!_.isEqual(oldRTConfig.visible, ds.metadata.renderTypeConfig.visible)
@@ -2382,7 +2374,8 @@ var Dataset = ServerModel.extend({
             if (!_.isEmpty(ds.metadata.jsonQuery.group))
             {
                 ds.metadata.jsonQuery.select = ds.metadata.jsonQuery.select || [];
-                _.each(ds.metadata.jsonQuery.group.reverse(), function(g)
+                // reverse() is mutable.  Clone/slice for a reversed copy.
+                _.each(ds.metadata.jsonQuery.group.slice(0).reverse(), function(g)
                 {
                     if (!_.any(ds.metadata.jsonQuery.select, function(s)
                         { return s.columnFieldName == g.columnFieldName; }))
@@ -2408,7 +2401,10 @@ var Dataset = ServerModel.extend({
                 var tfc = Dataset.translateFilterCondition(ds.query.filterCondition, ds);
                 ds.metadata.jsonQuery.where = tfc.where;
                 ds.metadata.jsonQuery.having = tfc.having;
-                ds.metadata.defaultFilters = tfc.defaults;
+                var tfcDefaults = $.deepCompact(tfc.defaults);
+                if ($.isPresent(tfcDefaults) && !$.isEmptyObject(tfcDefaults)) {
+                    ds.metadata.defaultFilters = tfc.defaults;
+                }
                 ds.metadata.jsonQuery.namedFilters = ds.metadata.jsonQuery.namedFilters || {};
                 _.each(ds.query.namedFilters, function(nf, id)
                     {
@@ -2457,6 +2453,22 @@ var Dataset = ServerModel.extend({
             var c = ds.columnForIdentifier(ob.columnFieldName);
             if (!$.isBlank(c)) { c.sortAscending = ob.ascending; }
         });
+    },
+
+    _getQueryGrouping: function() {
+        var ds = this;
+        var q = {};
+        q.oldGroupings = (ds.query || {}).groupBys;
+        q.oldGroupAggs = {};
+        if ((q.oldGroupings || []).length > 0) {
+             _.each(ds.realColumns, function(c) {
+                 if ($.isPresent(c.format.grouping_aggregate)) {
+                     q.oldGroupAggs[c.id] = c.format.grouping_aggregate;
+                 }});
+        }
+        q.oldQuery = ds.query || {};
+        q.oldJsonQuery = $.extend(true, {}, ds.metadata.jsonQuery);
+        return q;
     },
 
     _updateGroupings: function(oldGroupings, oldGroupAggs)

@@ -6,3 +6,20 @@
 Rx.Observable.prototype.pluckSwitch = function(prop) {
   return this.pluck(prop).switchLatest();
 };
+
+// The combination of combineLatest and subscribe. Allows terse
+// expression of side-effects that require notification if any
+// observables change.
+// This is akin to combineLatest with guaranteed side effects.
+// The subscription function (always the last argument) gets
+// called with 'this' set to the array of observables.
+Rx.Observable.subscribeLatest = function() {
+    var args = _.toArray(arguments);
+    var resultSubscription = args.pop();
+
+    return Rx.Observable.combineLatest(args, function() {
+      return arguments;
+    }).subscribe(function(vals) {
+      resultSubscription.apply(args, vals);
+    });
+};

@@ -18,11 +18,15 @@ describe("notifyResize directive", function() {
   };
 
   describe('with an attribute value', function() {
-    it('should raise elementResized when the element changes size', function(done) {
-      var html = '<div notify-resize="testEventArgs"><span></span></div>';
+    it('should broadcast the named event when the element changes size', function(done) {
+      var html = '<div notify-resize="testEventName"><span></span></div>';
       var el = create(html);
 
-      var spy = sinon.spy(function() {
+      var spy = sinon.spy(function(event, newSize) {
+
+        expect(newSize).property('width');
+        expect(newSize).property('height');
+
         if (spy.calledOnce) {
           el.find('span').html('one line');
         }
@@ -32,30 +36,22 @@ describe("notifyResize directive", function() {
         }
 
         if (spy.calledThrice) {
-          expect(spy.alwaysCalledWithExactly('testEventArgs')).to.be.true;
           done();
         }
       });
 
-      scope.$on('elementResized', function(e, a) {
-        spy(a[0]);
-      });
+      scope.$on('testEventName', spy);
 
       el.find('span').html('two<br>lines');
     });
   });
 
   describe('with no attribute value', function() {
-    it('should raise elementResized when the element changes size', function(done) {
+    it('should raise an error', function() {
       var html = '<div notify-resize><span></span></div>';
-      var el = create(html);
-
-      scope.$on('elementResized', function(e, a) {
-        expect(a[0]).to.be.undefined;
-        done();
-      });
-
-      el.find('span').html('two<br>lines');
+      expect(function () {
+        create(html);
+      }).to.throw();
     });
   });
 });

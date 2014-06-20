@@ -1,5 +1,6 @@
 @import dataCards/ellipsis
 
+$fgColor: #333
 $bgColor: #4a525a
 
 body
@@ -101,30 +102,91 @@ $pageNameMaxLineCount: 2
       .cardSize3
         height: 150px + $cardBorder * 2
 
+$card-bg-color: #eee
+$card-padding: 0
+// Card should not assume padding or margin.
+// Containers within card should have control over padding and margin of card content.
+$card-title-expanded-bg-color: #aaa
+$card-title-padding: 5px
+$card-title-margin-right: 35px
+$card-title-line-height: 1.2em
+$card-description-max-line-count: 2
+$card-description-line-height: 1.3em
 .card
-  color: black
-  background: white
-  padding: 0
-  margin: 0
-  // Card should not assume padding or margin.
-  // Containers within card should have control over padding and margin of card content.
+  color: $fgColor
+  background: $card-bg-color
+  padding: $card-padding
   position: relative
   .expandButton
     font-family: "SSAir"
     position: absolute
     top: 5px
-    right: -5px
+    right: 23px
     a
       cursor: pointer
       display: block
-      height: 1.8em
+      width: 0
       position: relative
-      width: 1.8em
       color: #888
       &:hover
         color: #ccc
       &:before
         content: '⤢'
+  .description
+    position: relative
+    .description-text
+      position: absolute
+      top: 0
+      @include multiline-with-ellipsis($card-description-max-line-count, $card-description-line-height, $card-bg-color)
+    .description-measuring-stick
+      visibility: hidden
+      line-height: $card-description-line-height
+      max-height: $card-description-line-height * $card-description-max-line-count
+  .title-one-line
+    line-height: $card-title-line-height
+    display: inline-block
+    font-weight: bold
+    max-width: 100%
+    .wrap
+      overflow: hidden
+      text-overflow: ellipsis
+      white-space: nowrap
+      margin-right: $card-title-margin-right + $card-title-padding
+  .title-expanded
+    display: none
+    position: absolute
+    top: $card-padding
+    left: $card-padding
+    right: $card-padding + $card-title-padding + $card-title-margin-right
+    line-height: $card-title-line-height
+    font-weight: bold
+    overflow: visible
+    &:hover
+      z-index: 1
+    .wrap
+      max-width: 100%
+      white-space: nowrap
+      overflow: hidden
+      display: inline-block
+      opacity: 0
+      &:hover
+        background: $card-title-expanded-bg-color
+        opacity: 1
+        overflow: visible
+
+.onRight .card
+  .title-expanded
+    display: inline-block
+    .wrap
+      white-space: normal
+    .wrap:hover
+      overflow: visible
+
+.onLeft .card
+  .title-expanded
+    display: inline-block
+    .wrap:hover
+      max-width: none
 
 .card.expanded
   .expandButton a
@@ -140,6 +202,7 @@ $chart-tick-color: #ccc
 $chart-description-color: darken($chart-tick-color, 30)
 $unfiltered-bar-color: #C2C2C2
 $filtered-bar-color: #676464
+$neutral-bar-color: #676464
 $tick-height: 1rem
 
 .facets-view
@@ -161,11 +224,23 @@ $tick-height: 1rem
     background: #555
 
 div.column-chart
+  overflow-x: hidden
 
   div.column-chart-wrapper
     position: relative
-    overflow: hidden
-    height: 230px
+
+    div.truncation-marker
+      position: absolute
+      right: 0
+      top: 50%
+      height: 100%
+      width: 1em
+      border: 1px solid #aaa
+      text-align: center
+      display: none
+      background-color: #aaa
+      color: #eee
+      z-index: 1
 
     div.field-name
       color: $chart-description-color
@@ -181,14 +256,14 @@ div.column-chart
       position: absolute
       &.unfiltered
         background-color: $unfiltered-bar-color
-      &.filtered
+      &.filtered, &.neutral
         background-color: $filtered-bar-color
       &.tertiary
         background-color: rgba(0, 0, 0, 0)
         &:hover
           background-color: rgba(50, 50, 50, 0.5)
 
-      div.flyout
+      div.tooltip
         display: none
         position: absolute
         width: 110px
@@ -198,22 +273,25 @@ div.column-chart
         color: #eeeeff
         opacity: 0.8
         font-size: $small-font-size
-        .tip
-          width: 0
-          display: block
-          border-left: 4px solid transparent
-          border-right: 4px solid transparent
-          border-top: 8px solid #0d3349
-          top: 10px
-          position: relative
+
+      span.tip
+        width: 0
+        display: none
+        border-left: 4px solid transparent
+        border-right: 4px solid transparent
+        border-top: 8px solid #0d3349
+        top: 10px
+        position: relative
+
       &:hover
-        div.flyout
+        div.tooltip
+          display: block
+        span.tip
           display: block
 
   div.labels
-    margin-top: -30px // topMargin
     position: relative
-    height: 50px
+    height: 55px
     div
       margin-top: 2px
       border-left: 1px solid $chart-tick-color
@@ -227,6 +305,7 @@ div.column-chart
         left: 0.25rem
         font-size: $medium-font-size
         line-height: $base-font-size
+        white-space: nowrap
 
   div.ticks
     position: relative

@@ -2322,6 +2322,7 @@ en:
               privileged_account_created: A user creates their privileged account
               user_affected: Actions directly affecting you, such as comment replies and status updates
               view_made_public: Any view is made public
+              view_deleted: Any view is deleted
             policy: ! '%{site} respects your privacy, and will never send you marketing emails through this list, or give your email to a third party. The emails sent from this site include account notifications and updates to datasets that you have created or subscribed to.'
             send_error: There was a problem sending your email. Please try again later.
             send_success: Your message has been sent

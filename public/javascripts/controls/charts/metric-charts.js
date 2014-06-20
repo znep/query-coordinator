@@ -61,7 +61,7 @@ metricsNS.renderMetricsChartNew = function(data, $chart, startDate, endDate,
             return {
                 color: color(metric),
                 timestamp: datum.timestamp,
-                value: _.isUndefined(datum.metrics) ? 0 : datum.metrics[metric] || 0
+                value: $.deepGet(datum, 'metrics', metric)
             };
         });
     };
@@ -75,8 +75,9 @@ metricsNS.renderMetricsChartNew = function(data, $chart, startDate, endDate,
     // Putting in some extra scoping in order to make the code flow a little more logically.
     var yScale, ticks;
     (function() {
-        var min = d3.min(combinedData),
-            max = d3.max(combinedData);
+        var extent = d3.extent(combinedData),
+            min = extent[0],
+            max = extent[1];
         yScale = d3.scale.linear()
             .domain([ min, max ])
             .range([ chartDims.height - chartDims.marginBottom, chartDims.marginTop ]);
@@ -122,9 +123,11 @@ metricsNS.renderMetricsChartNew = function(data, $chart, startDate, endDate,
         var pathData = {
             area: d3.svg.area().x(function(d) { return xScale(d.timestamp); })
                                .y(function(d) { return yScale(d.value); })
-                               .y0(chartDims.height - chartDims.marginBottom),
+                               .y0(chartDims.height - chartDims.marginBottom)
+                               .defined(function(d) { return !_.isUndefined(d.value); }),
             line: d3.svg.line().x(function(d) { return xScale(d.timestamp); })
                                .y(function(d) { return yScale(d.value); })
+                               .defined(function(d) { return !_.isUndefined(d.value); })
         };
 
         // Because this function still assumes highcharts. -_-
@@ -162,10 +165,11 @@ metricsNS.renderMetricsChartNew = function(data, $chart, startDate, endDate,
         var tip;
 
         // Render points.
+        var notDefined = function(d) { return _.isUndefined(d.value); };
         chartD3.selectAll('.dataPoint')
             .remove();
         chartD3.selectAll('.dataPoint')
-            .data(_.flatten(_.map(_.pluck(series, 'method'), byMetric)))
+            .data(_.reject(_.flatten(_.map(_.pluck(series, 'method'), byMetric)), notDefined))
             .enter().append('circle')
                 .classed('dataPoint', true)
                 .attr('stroke', '#fff')
@@ -179,7 +183,7 @@ metricsNS.renderMetricsChartNew = function(data, $chart, startDate, endDate,
                     if (tip) { tip.destroy(); }
                     tip = $(this.node).socrataTip({ trigger: 'now',
                         positions: ['top', 'bottom'],
-                        content: [d.timestamp.format(metricsNS.tooltipFormats[sliceType]),
+                        content: [d.timestamp.format(metricsNS.tooltipFormats[sliceType]) + ' UTC',
                             $.commaify(Math.floor(d.value))].join(': ')
                     });
                 })
@@ -188,20 +192,21 @@ metricsNS.renderMetricsChartNew = function(data, $chart, startDate, endDate,
                     if (tip) { tip.destroy(); }
                 });
 
-        var timespan = moment.duration(endDate - startDate + 1);
+        var timespan = moment.duration(endDate - startDate + 1),
+            hideOverlaps = $chart.width() / 35 < processedData.length;
         d3.select($chart.find('.tickContainer')[0]).selectAll('.xLabel')
             .remove();
         d3.select($chart.find('.tickContainer')[0]).selectAll('.xLabel')
             .data(_.pluck(processedData, 'timestamp'))
             .enter().append('div')
                 .classed('xLabel', true)
+                .classed('hide', function(d, i) { return hideOverlaps && i % 2 == 1; })
                 .each(function(d)
                 {
-                    if (sliceType == 'HOURLY' && d.hour() > 0)
-                    { return; } // Short-circuit the special case.
-
                     var format;
-                    if (timespan.asDays() < 30)
+                    if (sliceType == 'HOURLY' && d.hour() > 0)
+                    { format = 'HH:MM'; }
+                    else if (timespan.asDays() < 30)
                     { format = 'MMM D'; }
                     else
                     { format = 'MMM \'YY'; }

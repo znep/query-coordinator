@@ -1,10 +1,10 @@
 {
-  "pageId": "desk-chek",  
-  "datasetId": "fake-data",  
+  "pageId": "desk-chek",
+  "datasetId": "fake-data",
   "name": "A page to test things for desk checks. For instance, long titles! For instance, long titles! For instance, long titles!",
   "description": "A simple page with two cards to test out our new frontend",
-  "primaryAmountField": null, 
-  "primaryAggregation": "count", 
+  "primaryAmountField": null,
+  "primaryAggregation": "count",
   "filterSoql": null,
   "isDefaultPage": true,
   "pageSource": "admin",
@@ -26,7 +26,7 @@
       "expanded": false
     },
     {
-      "fieldName": "crime_time",
+      "fieldName": "updated_on",
       "cardSize": 2,
       "cardCustomStyle": {},
       "expandedCustomStyle": {},
@@ -34,7 +34,7 @@
       "expanded": false
     },
     {
-      "fieldName": "number_of_arrests",
+      "fieldName": "ward",
       "cardSize": 2,
       "cardCustomStyle": {},
       "expandedCustomStyle": {},

@@ -195,7 +195,7 @@ $card-description-line-height: 1.3em
 
 $top-nav-height: 40px
 $facets-list-width: 20%
-$base-font-size: 1em
+$base-font-size: 1rem
 $small-font-size: $base-font-size * 0.5
 $medium-font-size: $base-font-size * 0.75
 $chart-tick-color: #ccc
@@ -204,6 +204,10 @@ $unfiltered-bar-color: #C2C2C2
 $filtered-bar-color: #676464
 $neutral-bar-color: #676464
 $tick-height: 1rem
+$tooltip-border-color: #333
+$tooltip-name-color: #333
+$tooltip-value-color: #888
+$tooltip-background-color: #ccc
 
 .facets-view
   ul
@@ -224,10 +228,9 @@ $tick-height: 1rem
     background: #555
 
 div.column-chart
-  overflow-x: hidden
 
   div.column-chart-wrapper
-    position: relative
+    position: absolute
 
     div.truncation-marker
       position: absolute
@@ -253,45 +256,66 @@ div.column-chart
       opacity: 0
 
     .bar
+      display: none
       position: absolute
+
+    .bar.active
+      display: block
+
       &.unfiltered
         background-color: $unfiltered-bar-color
+
       &.filtered, &.neutral
         background-color: $filtered-bar-color
+
       &.tertiary
         background-color: rgba(0, 0, 0, 0)
+
         &:hover
           background-color: rgba(50, 50, 50, 0.5)
 
       div.tooltip
         display: none
         position: absolute
-        width: 110px
-        height: 20px // 30 including pointer
-        padding: 10px
-        background-color: #0d3349
-        color: #eeeeff
-        opacity: 0.8
+        width: 130px
+        border: 1px solid $tooltip-border-color
+        padding: 5px
+        background-color: $tooltip-background-color
         font-size: $small-font-size
+        font-weight: bold
+
+        div.datum
+          padding: 5px
+
+          div.name
+            white-space: wrap
+            color: $tooltip-name-color
+
+          div.value
+            color: $tooltip-value-color
+            font-size: $small-font-size * 1.5
 
       span.tip
         width: 0
         display: none
         border-left: 4px solid transparent
         border-right: 4px solid transparent
-        border-top: 8px solid #0d3349
-        top: 10px
-        position: relative
+        border-top: 8px solid $tooltip-border-color
+        bottom: -8px
+        position: absolute
 
-      &:hover
+      &.active:hover
+
         div.tooltip
           display: block
+
         span.tip
           display: block
 
   div.labels
-    position: relative
+    position: absolute
     height: 55px
+
     div
       margin-top: 2px
       border-left: 1px solid $chart-tick-color
@@ -299,6 +323,7 @@ div.column-chart
       position: absolute
       width: 0.5rem
       text-indent: 0.5rem
+
       span
         color: $chart-tick-color
         position: absolute
@@ -308,8 +333,8 @@ div.column-chart
         white-space: nowrap
 
   div.ticks
-    position: relative
-    top: 70px
+    position: absolute
+
     div
       height: $tick-height
       border-bottom: 1px solid $chart-tick-color

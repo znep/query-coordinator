@@ -3,7 +3,7 @@ angular.module('socrataCommon.directives').directive('columnChart', function(Ang
   var renderColumnChart = function(element, unFilteredData, filteredData, filtered, dimensions) {
     var barPadding = 0.25;
     var topMargin = 20; // TODO calculate this dynamically
-    var bottomMargin = 90;
+    var bottomMargin = 100;
     var tipHeight = 10;
     var tipWidth = 10;
 
@@ -16,31 +16,52 @@ angular.module('socrataCommon.directives').directive('columnChart', function(Ang
     var tooltipSelection = d3Selection.selectAll('.bar.hover-trigger > .tooltip').data(filteredData);
     var chartWidth = dimensions.width;
     var chartTruncated = false;
+    var tooltipWidth = 132;
+    var numberOfBars = unFilteredData.length;
+    var truncationMarker = element.find('.truncation-marker');
+    var truncationMarkerWidth = truncationMarker.width();
 
     if (chartWidth <= 0) {
       return;
     }
 
-    if (chartWidth < 475) {
-      chartWidth = 475;
+    var chartHeight = dimensions.height - topMargin - bottomMargin;
+    var verticalScale = d3.scale.linear().range([chartHeight, 0]);
+    var verticalOffset = topMargin + chartHeight;
+    var unFilteredHorizontalScale;
+    var filteredHorizontalScale;
+    var neutralHorizontalScale;
+    var leftOffset;
+    var rightOffset = 0;
+    var rangeBand = 0;
+
+    var computeChartDimensions = function() {
+      unFilteredHorizontalScale = d3.scale.ordinal().rangeRoundBands(
+        [0, chartWidth], barPadding).domain(_.pluck(unFilteredData, 'name')
+      );
+      filteredHorizontalScale = d3.scale.ordinal().rangeRoundBands(
+        [0, chartWidth], barPadding).domain(_.pluck(filteredData, 'name')
+      );
+      neutralHorizontalScale = d3.scale.ordinal().rangeRoundBands(
+        [0, chartWidth], barPadding).domain(_.pluck(unFilteredData, 'name')
+      );
+      leftOffset = neutralHorizontalScale.range()[0];
+      rightOffset = neutralHorizontalScale.range()[numberOfBars - 1];
+      rangeBand = unFilteredHorizontalScale.rangeBand();
+    };
+
+    computeChartDimensions();
+
+    if (rangeBand < 8) {
+      chartWidth = Math.floor(8 * numberOfBars * 1.5);
+      computeChartDimensions();
       chartTruncated = true;
+      chartWidth = Math.floor(dimensions.width);
     }
 
-    var chartHeight = dimensions.height - topMargin - bottomMargin;
-    var unFilteredHorizontalScale = d3.scale.ordinal().rangeRoundBands(
-      [0, chartWidth], barPadding).domain(_.pluck(unFilteredData, 'name')
-    );
-    var filteredHorizontalScale = d3.scale.ordinal().rangeRoundBands(
-      [0, chartWidth], barPadding).domain(_.pluck(filteredData, 'name')
-    );
-    var neutralHorizontalScale = d3.scale.ordinal().rangeRoundBands(
-      [0, chartWidth], barPadding).domain(_.pluck(unFilteredData, 'name')
-    );
-    var verticalScale = d3.scale.linear().range([chartHeight, 0]);
-    var leftOffset = neutralHorizontalScale.range()[0];
-    var rangeBand = unFilteredHorizontalScale.rangeBand();
-
-    $chart.css('height', chartHeight + topMargin + 'px');
+    $chart.css('height', chartHeight + topMargin + 1).
+      css('top', $chart.position().top).
+      css('width', chartWidth);
 
     if (filtered) {
       verticalScale.domain([filteredData[0].value, 0]);
@@ -52,66 +73,87 @@ angular.module('socrataCommon.directives').directive('columnChart', function(Ang
       var numberOfTicks = 3;
       var element;
 
-      element = $('<div>').addClass('ticks').css('top', topMargin + 'px');
+      element = $('<div>').addClass('ticks').css('top', $chart.position().top + topMargin).css('width', chartWidth);
       _.each(_.uniq([0].concat(verticalScale.ticks(numberOfTicks))), function(tick) {
-        element.append($('<div>').css('top', chartHeight - verticalScale(tick) + 'px').text(tick));
+        element.append($('<div>').css('top', chartHeight - verticalScale(tick)).text($.commaify(tick)));
       });
-
+      element.css('height', chartHeight + topMargin);
       return element;
     };
 
-    // TODO deal with tooltip getting cut off on the top of the chart
-    // TODO deal with tooltip not centering over the bar along with the tip
     var enterTooltip = function(d, i) {
       var unFilteredDatum = unFilteredData[i];
       var filteredDatum = filteredData[i];
-      var value = $('<div class="data_value">').text(unFilteredDatum.name + ': ' + unFilteredDatum.value);
+      var content = $('<div class="datum">');
+      content.append($('<div class="name">').text(unFilteredDatum.name));
+      content.append($('<div class="value">').text($.commaify(unFilteredDatum.value)));
       var $tooltip = $('<div class="tooltip">');
       var $tip = $('<span>');
       var tipOffset = rangeBand / 2 - tipWidth / 2;
+      var rightEdge = 0;
+
+      $tooltip.append(content);
 
       if (filtered) {
-        value.text(value.text() + ' (unfiltered)');
-        $tooltip.append(value);
-        value.after($('<div class="data_value">').
-          text(filteredDatum.name + ': ' + filteredDatum.value + ' (filtered)'));
+        $tooltip.css('bottom', verticalScale(filteredDatum.value) + tipHeight);
+        rightEdge = filteredHorizontalScale(filteredDatum.name) + tooltipWidth - chartWidth;
       } else {
-        $tooltip.append(value);
+        $tooltip.css('bottom', verticalScale(unFilteredDatum.value) + tipHeight);
+        rightEdge = unFilteredHorizontalScale(unFilteredDatum.name) + tooltipWidth - chartWidth;
       }
 
-      if (filtered) {
-        $tooltip.css('bottom', verticalScale(filteredDatum.value) + tipHeight + 'px');
-      } else {
-        $tooltip.css('bottom', verticalScale(unFilteredDatum.value) + tipHeight + 'px');
-      }
-
-      tipOffset = tipOffset - tipWidth + 1;
-      tipOffset = tipOffset < -10 ? -10 : tipOffset;
-      $tip.addClass('tip').css('left', tipOffset + 'px');
-      // TODO WTF is this required?
-      if (!filtered) {
-        $tip.css('top', '20px');
-      }
-
+      $tip.addClass('tip').css('left', Math.max(0, tipOffset));
       $tooltip.append($tip);
+
+      if (rightEdge > 0) {
+        $tooltip.css('left', -1 * rightEdge);
+        $tip.css('left', tipOffset + rightEdge);
+      }
 
       return $tooltip.get(0);
     };
 
     var updateTooltip = function() {
-      this.style('bottom', function(d, i) {
-        var datum;
+      var tipOffset = rangeBand / 2 - tipWidth / 2;
+      var datum = function(i) {
         if (filtered) {
-          datum = filteredData[i];
+          return filteredData[i];
         } else {
-          datum = unFilteredData[i];
+          return unFilteredData[i];
         }
-        return verticalScale(datum.value) + tipHeight + 'px';
-      });
+      };
+
+      var rightEdge = function(i) {
+        if (filtered) {
+          return filteredHorizontalScale(datum(i).name) + tooltipWidth - chartWidth;
+        } else {
+          return unFilteredHorizontalScale(datum(i).name) + tooltipWidth - chartWidth;
+        }
+      };
+
+      var left = function(i) {
+        if (filtered) {
+          return filteredHorizontalScale(datum(i).name);
+        } else {
+          return unFilteredHorizontalScale(datum(i).name);
+        }
+      };
+
+      this.
+        style('bottom', function(d, i) {
+          return verticalScale(datum(i).value) + tipHeight + 'px';
+        }).
+        style('left', function(d, i) {
+          if (rightEdge(i) > 0) {
+            $(this).find('.tip').css('left', tipOffset + rightEdge(i));
+            return -1 * rightEdge(i) + 'px';
+          }
+        });
     };
 
     var labels = function() {
-      var labels = $('<div>').addClass('labels');
+      var labels = $('<div>').addClass('labels').
+        css('top', chartHeight + $chart.position().top + topMargin);
       var numberOfLabels = Math.min(unFilteredData.length, 3);
       var centering = leftOffset - rangeBand / 2;
       for (var i = 0; i < numberOfLabels; i++) {
@@ -120,7 +162,7 @@ angular.module('socrataCommon.directives').directive('columnChart', function(Ang
           text(unFilteredData[i].name);
         labels.prepend(
           $('<div>').
-            css('left', unFilteredHorizontalScale(unFilteredData[i].name) - centering + 'px').
+            css('left', unFilteredHorizontalScale(unFilteredData[i].name) - centering - 1).
             css('height', (numberOfLabels - i) + 'rem').
             append(label)
         );
@@ -137,36 +179,50 @@ angular.module('socrataCommon.directives').directive('columnChart', function(Ang
     };
 
     var updateBars = function(selection, cssClass) {
-      var verticalOffset = topMargin + chartHeight;
+      var left = function(d) {
+        if (cssClass === 'unfiltered') {
+          return unFilteredHorizontalScale(d.name) - leftOffset;
+        } else if (cssClass === 'filtered') {
+          return filteredHorizontalScale(d.name) - leftOffset;
+        } else if (cssClass === 'neutral') {
+          return neutralHorizontalScale(d.name) - leftOffset;
+        } else {
+          throw new Error('Unknown cssClass: ' + cssClass);
+        }
+      };
+
       this.
         style('width', rangeBand + 'px').
         style('left', function(d) {
-          var left;
-          if (cssClass === 'unfiltered') {
-            left = unFilteredHorizontalScale(d.name);
-          } else if (cssClass === 'filtered') {
-            left = filteredHorizontalScale(d.name);
-          } else if (cssClass === 'neutral') {
-            left = neutralHorizontalScale(d.name);
-          } else {
-            throw new Error('Unknown cssClass: ' + cssClass);
-          }
-          return left - leftOffset + 'px';
+          return left(d) + 'px';
         }).
-        style('top', function(d) { return verticalOffset - clampHeight(verticalScale(d.value)) + 'px'; }).
-        style('height', function(d) { return clampHeight(verticalScale(d.value)) + 'px'; });
+        style('top', function(d) { return verticalOffset - clampHeight(verticalScale(d.value)) + 1 + 'px'; }).
+        style('height', function(d) { return clampHeight(verticalScale(d.value)) + 'px'; }).
+        classed('active', function(d) { return left(d) < chartWidth - truncationMarkerWidth; });
     };
 
     var enterHoverTriggerBars = function(selection) {
       selection.enter().append('div').classed('bar hover-trigger', true).append(enterTooltip);
     };
 
-    var updateHoverTriggerBars = function() {
+    var updateHoverTriggerBars = function(selection, cssClass) {
+      var left = function(d) {
+        if (cssClass === 'unfiltered') {
+          return unFilteredHorizontalScale(d.name) - leftOffset;
+        } else if (cssClass === 'filtered') {
+          return filteredHorizontalScale(d.name) - leftOffset;
+        } else if (cssClass === 'neutral') {
+          return neutralHorizontalScale(d.name) - leftOffset;
+        } else {
+          throw new Error('Unknown cssClass: ' + cssClass);
+        }
+      };
       this.
         style('width', rangeBand + 'px').
         style('left', function(d) { return unFilteredHorizontalScale(d.name) - leftOffset + 'px'; }).
         style('top', function() { return topMargin + 'px'; }).
-        style('height', function() { return chartHeight + 'px'; });
+        style('height', function() { return chartHeight + 'px'; }).
+        classed('active', function(d) { return left(d) < chartWidth - truncationMarkerWidth; });
     };
 
     element.children('.ticks').remove();
@@ -182,30 +238,31 @@ angular.module('socrataCommon.directives').directive('columnChart', function(Ang
       unFilteredSelection.call(updateBars, 'unfiltered');
       filteredSelection.call(enterBars, 'filtered');
       filteredSelection.call(updateBars, 'filtered');
+      hoverTriggerSelection.call(enterHoverTriggerBars, 'unfiltered');
+      hoverTriggerSelection.call(updateHoverTriggerBars, 'unfiltered');
     } else {
       neutralSelection.call(enterBars, 'neutral');
       neutralSelection.call(updateBars, 'neutral');
+      hoverTriggerSelection.call(enterHoverTriggerBars, 'neutral');
+      hoverTriggerSelection.call(updateHoverTriggerBars, 'neutral');
     }
 
-    hoverTriggerSelection.call(enterHoverTriggerBars);
-    hoverTriggerSelection.call(updateHoverTriggerBars);
     tooltipSelection.call(updateTooltip);
 
     element.children('.labels').remove();
     element.append(labels);
 
-    var marker = element.find('.truncation-marker');
     if (chartTruncated) {
-      marker.css('height', chartHeight + 'px').css('top', topMargin + 'px').css('line-height', chartHeight  / 4 + 'px').show();
+      truncationMarker.css('height', chartHeight).css('top', topMargin - 1).css('line-height', chartHeight  / 4 + 'px').show();
     } else {
-      marker.hide();
+      truncationMarker.hide();
     }
   };
 
   return {
     template:
       '<div class="column-chart-wrapper">' +
-        '<div class="truncation-marker">M O A R' +
+        '<div class="truncation-marker">M O A R</div>' +
       '</div>',
     restrict: 'A',
     scope: { unFilteredData: '=', filteredData: '=', fieldName: '=' },
@@ -218,16 +275,22 @@ angular.module('socrataCommon.directives').directive('columnChart', function(Ang
         scope.observe('filteredData'),
         function(cardDimensions, unFilteredData, filteredData) {
           if (unFilteredData && filteredData) {
-            renderColumnChart(
-              element,
-              unFilteredData,
-              filteredData,
-              !!filteredData,
-              cardDimensions
-            );
-          }
+          renderColumnChart(
+            element,
+            theData[0], // This s/b unfiltered
+            theData[1], // This s/b filtered
+            false,//!!theData[1],
+            element.closest('.card').dimensions()
+          );
         }
-      );
+        }
+        renderColumnChart(
+          element,
+          scope.unFilteredData,
+          scope.filteredData,
+          false,//!!scope.filteredData[0],
+          dimensions
+        );
     }
   }
 

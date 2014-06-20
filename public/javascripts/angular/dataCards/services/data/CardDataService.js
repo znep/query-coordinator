@@ -2,17 +2,21 @@ angular.module('dataCards.services').factory('CardDataService', function($q, $ht
 
   return {
     getUnfilteredData: function(fieldName, datasetId) {
-      return $http.get('/stubs/datasets/data/' + datasetId + '.json', { cache: true }).then(function(response) {
-        return _.map(response.data[fieldName].unFiltered, function(item) {
-          return { name: _.first(_.keys(item)), value: _.first(_.values(item)) };
+      datasetId = 'q77b-s2zi';
+      var url = 'https://localhost:9443/api/id/{1}.json?$query=select {0} as name, count(*) as value group by {0} order by count(*) desc limit 50'.format(fieldName, datasetId);
+      return $http.get(url, { cache: true }).then(function(response) {
+        return _.map(response.data, function(item) {
+          return { name: item.name, value: Number(item.value) };
         });
       });
     },
 
     getFilteredData: function(fieldName, datasetId) {
-      return $http.get('/stubs/datasets/data/' + datasetId + '.json', { cache: true }).then(function(response) {
-        return _.map(response.data[fieldName].filtered, function(item) {
-          return { name: _.first(_.keys(item)), value: _.first(_.values(item)) };
+      datasetId = 'q77b-s2zi';
+      var url = 'https://localhost:9443/api/id/{1}.json?$query=select {0} as name, count(*) as value group by {0} order by count(*) desc limit 50'.format(fieldName, datasetId);
+      return $http.get(url, { cache: true }).then(function(response) {
+        return _.map(response.data, function(item) {
+          return { name: item.name, value: Number(item.value) };
         });
       });
     }

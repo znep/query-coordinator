@@ -31,23 +31,7 @@ dataCards.config(function($provide, $stateProvider, $urlRouterProvider, $locatio
         }
       }
     })
-    .state('view.facets', {
-      url: '/facets/:focusedFacet',
-      resolve: {
-        focusedFacet: function($stateParams, view) {
-          // note: the 'view' argument comes from the parent state's resolver.
-          return view.getFacetFromIdAsync($stateParams['focusedFacet']);
-        }
-      },
-      views: {
-        'mainContent': {
-          templateUrl: '/angular_templates/dataCards/pages/facets-view.html',
-          controller: 'FacetsViewController'
-        }
-      }
-    })
     .state('view.demoMap', {
-      url: '/demo_map',
       views: {
         'mainContent': {
           templateUrl: '/angular_templates/dataCards/pages/demo-map-view.html',
@@ -62,13 +46,24 @@ dataCards.run(function($rootScope, $state, $location) {
     console.error("Error encountered during state transition:", error);
   });
 
-  var id = $location.absUrl().match(/\w{4}-\w{4}$/);
-  if (_.isEmpty(id)) {
-    $state.go('404');
-  } else {
-    $state.go('view.cards', {
-      id: id[0]
+  // TODO: This test is just to support short-term dev and demo tasks.
+  // Remove it ASAP and keep just the else clause.
+  // This is intentionally non-DRY to make that easy.
+  if (/\/demo_map$/.test($location.absUrl())) {
+    var id = $location.absUrl().match(/(\w{4}-\w{4})\/demo_map/);
+    $state.go('view.demoMap', {
+      id: id[1]
     });
+  } else {
+    // NOTE: This is the real url routing code (not for the demo).
+    var id = $location.absUrl().match(/\w{4}-\w{4}$/);
+    if (_.isEmpty(id)) {
+      $state.go('404');
+    } else {
+      $state.go('view.cards', {
+        id: id[0]
+      });
+    }
   }
 
   $rootScope.timers = [];

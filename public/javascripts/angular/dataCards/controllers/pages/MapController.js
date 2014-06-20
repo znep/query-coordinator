@@ -1,5 +1,5 @@
 angular.module('dataCards.controllers')
-.controller('MapController', function($scope, $location, $http, choroplethHelpers, leafletBoundsHelpers, $timeout, $rootScope, $log) {
+.controller('MapController', function($scope, $location, $http, ChoroplethHelpers, leafletBoundsHelpers, $timeout, $rootScope, $log) {
 
   $rootScope.addTimer('Initialize Timers and Map Controller');
 

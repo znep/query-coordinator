@@ -483,7 +483,7 @@ describe("A Choropleth Directive", function() {
       httpBackend.flush();
     });
 
-    it.only('should render proper map features, legend, and legend labels for many features', function(){
+    it('should render proper map features, legend, and legend labels for many features', function(){
       scope.data = lineStringData52;
       var el = createChoropleth();
 

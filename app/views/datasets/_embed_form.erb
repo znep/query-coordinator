@@ -25,7 +25,7 @@
 
   <div class="clearfix">
     <div class="left">
-      <label class="formHeader"><%= t('controls.embed.size') %></label>
+      <div class="formHeader"><%= t('controls.embed.size') %></div>
       <ul class="sectionContent sizes clearfix">
         <li data-width="500" data-height="425" class="selected">
           <p>500x425</p>
@@ -42,7 +42,7 @@
       </ul>
     </div>
     <div class="right">
-      <label class="formHeader"><%= t('controls.embed.custom_size') %></label>
+      <div class="formHeader"><%= t('controls.embed.custom_size') %></div>
       <p class="information sizeInformation"><%= t('controls.embed.minimum_size') %></p>
       <div class="sectionContent dimensions">
         <div class="line clearfix">
@@ -63,7 +63,7 @@
 
   <%- if CurrentDomain.user_can?(current_user, :edit_sdp) -%>
     <div class="templateSection">
-      <label class="formHeader"><%= t('controls.embed.sdp_template') %></label>
+      <div class="formHeader"><%= t('controls.embed.sdp_template') %></div>
       <div class="sectionContent template">
         <div class="line clearfix">
           <label for="embed_template"><%= t('controls.embed.template') %></label>
@@ -77,7 +77,6 @@
           </div>
         </div>
         <div class="line clearfix">
-          <label></label>
           <a class="button createTemplateButton"><%= t('controls.embed.create_template_button') %></a>
         </div>
       </div>

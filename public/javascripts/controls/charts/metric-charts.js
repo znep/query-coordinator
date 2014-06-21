@@ -41,7 +41,7 @@ metricsNS.renderMetricsChartNew = function(data, $chart, startDate, endDate,
         ]);
 
     // Translate data into usable structure.
-    var dataRange = [moment(startDate).utc()],
+    var dataRange = [moment(data[0].__start__).utc()],
         intervalType = metricsNS.intervalTypes[sliceType],
         expectedDataAmt = moment(endDate).utc().diff(dataRange[0], intervalType);
     // expectedDataAmt should be data.length - 1

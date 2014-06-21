@@ -90,7 +90,9 @@ $.Control.registerMixin('d3_base', {
 
     _getDisplayFormatColors: function()
     {
-        return _.filter(this._displayFormat.colors, _.isString);
+        var colors = _.filter(this._displayFormat.colors, _.isString);
+        return (_.isEmpty(colors) && $.isPresent(this._displayFormat.color)) ?
+            [ this._displayFormat.color ] : colors;
     },
 
     _getFallbackColors: function()

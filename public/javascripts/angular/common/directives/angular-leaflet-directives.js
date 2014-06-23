@@ -468,7 +468,7 @@
               if (!(isDefined(geojson) && isDefined(geojson.data))) {
                 return;
               }
-              var resetStyleOnMouseout = geojson.resetStyleOnMouseout, onEachFeature = geojson.onEachFeature;
+              var resetStyleOnMouseout = geojson.resetStyleOnMouseout, resetStyleOnGeojsonClick = geojson.resetStyleOnGeojsonClick, onEachFeature = geojson.onEachFeature, lastLayerClicked;
               if (!onEachFeature) {
                 onEachFeature = function (feature, layer) {
                   if (leafletHelpers.LabelPlugin.isLoaded() && isDefined(geojson.label)) {
@@ -491,9 +491,13 @@
                       });
                     },
                     click: function (e) {
+                      if (resetStyleOnGeojsonClick && lastLayerClicked) {
+                        leafletGeoJSON.resetStyle(lastLayerClicked);
+                      }
                       safeApply(leafletScope, function () {
                         geojson.selected = feature;
                         $rootScope.$broadcast('leafletDirectiveMap.geojsonClick', geojson.selected, e);
+                        lastLayerClicked = e.target;
                       });
                     }
                   });

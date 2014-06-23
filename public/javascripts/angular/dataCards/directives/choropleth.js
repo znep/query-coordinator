@@ -329,7 +329,7 @@ angular.module('dataCards.directives').directive('exampleChoropleth', function($
           $scope.geojson = {
             data: geojsonData,
             style: styleClass(fillClass),
-            resetStyleOnMouseout: true
+            resetStyleOnGeojsonClick: true
           };
         }
         if (values.length === 0) {
@@ -362,7 +362,7 @@ angular.module('dataCards.directives').directive('exampleChoropleth', function($
         layer.bringToFront();
       }
 
-      $scope.$on('leafletDirectiveMap.geojsonMouseover', function(event, leafletEvent) {
+      $scope.$on('leafletDirectiveMap.geojsonClick', function(event, featureSelected, leafletEvent) {
         highlightFeature(leafletEvent);
       });
 

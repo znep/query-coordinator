@@ -341,17 +341,43 @@ describe("A Choropleth Directive", function() {
       httpBackend.flush();
     });
 
-    it('should highlight features on mouseover', function(){
+    it('should highlight features on click', function(){
       scope.data = multiPolygonData2;
       var el = createChoropleth();
 
       var line = el.find('path')[0];
-      var defaultStrokeWidth = Number($(line).css('strokeWidth').replace('px',''));
+      var defaultStrokeWidth = parseInt($(line).css('strokeWidth'));
 
-      th.fireEvent(line, 'mouseover');
+      th.fireEvent(line, 'click');
 
-      var hoveredStrokeWidth = Number($(line).css('strokeWidth').replace('px',''));
+      var hoveredStrokeWidth = parseInt($(line).css('strokeWidth'));
       expect( hoveredStrokeWidth > defaultStrokeWidth ).to.equal(true);
+      httpBackend.flush();
+    });
+
+    it('should only highlight one feature at a time on click', function(){
+      scope.data = multiPolygonData2;
+      var el = createChoropleth();
+
+      var firstLine = el.find('path')[0];
+      var defaultStrokeWidth = parseInt($(firstLine).css('strokeWidth'));
+
+      th.fireEvent(firstLine, 'click');
+
+      var firstLineStrokeWidth = parseInt($(firstLine).css('strokeWidth'));
+      // 1st feature was highlighted
+      expect(firstLineStrokeWidth > defaultStrokeWidth).to.equal(true);
+
+      var secondLine = el.find('path')[1];
+      th.fireEvent(secondLine, 'click');
+
+      // 1st feature becomes unhighlighted
+      firstLineStrokeWidth = parseInt($(firstLine).css('strokeWidth'));
+      expect(firstLineStrokeWidth).to.equal(defaultStrokeWidth);
+
+      // 2nd feature becomes highlighted
+      var secondLineStrokeWidth = parseInt($(secondLine).css('strokeWidth'));
+      expect(secondLineStrokeWidth > defaultStrokeWidth).to.equal(true);
       httpBackend.flush();
     });
 

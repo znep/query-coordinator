@@ -18,7 +18,7 @@
   </div>
   <div ng-switch="cardType">
     <div ng-switch-when="column">
-      <div column-chart class="column-chart" un-filtered-data="unFilteredData" filtered-data="filteredData" field-name="fieldName"></div>
+      <card-visualization-column-chart model="model"></card-visualization-column-chart>
     </div>
     <div ng-switch-when="choropleth">
       <example-choropleth></example-choropleth>

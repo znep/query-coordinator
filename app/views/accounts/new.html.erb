@@ -10,7 +10,7 @@
   <%- end -%>
 <% end %>
 
-<%- openid_login = CurrentDomain.module_available?(:openid_login) -%>
+<%- openid_login = CurrentDomain.module_enabled?(:openid_login) -%>
 
 <div class="modalContentBox signupModal siteContent <%= openid_login ? 'wide' : 'narrow' %>">
   <div class="contentHeader">

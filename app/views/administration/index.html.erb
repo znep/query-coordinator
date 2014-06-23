@@ -37,7 +37,7 @@
         </span>
       </li>
     <%- end -%>
-    <%- if CurrentDomain.user_can?(current_user, :moderate_comments) && module_available?(:publisher_comment_moderation) -%>
+    <%- if CurrentDomain.user_can?(current_user, :moderate_comments) && module_enabled?(:publisher_comment_moderation) -%>
       <li class="comments">
         <%= link_to raw('<span class="icon"></span>Comment Moderation'),
             {:action => 'comment_moderation'} %>

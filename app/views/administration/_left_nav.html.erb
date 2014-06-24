@@ -5,13 +5,11 @@
     </a>
   </div>
   <ul class="navigationList adminNav">
-    <%- if module_available? :advanced_metrics -%>
       <li class="analytics">
         <%= link_to_unless_current \
             raw('<span class="icon"></span>Site Analytics'),
             {:action => 'analytics'} %>
       </li>
-    <%- end -%>
     <%- if CurrentDomain.user_can?(current_user, :manage_users) -%>
       <li class="users">
         <%= link_to_unless_current \

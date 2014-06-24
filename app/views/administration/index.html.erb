@@ -10,7 +10,6 @@
   <%= display_standard_flashes %>
 
   <ul class="adminList">
-    <%- if module_available? :advanced_metrics -%>
       <li class="analytics">
         <%= link_to raw('<span class="icon"></span>Site Analytics'),
             {:action => 'analytics'} %>
@@ -18,7 +17,6 @@
           View sitewide statistics for datasets, views, visitors and more
         </span>
       </li>
-    <%- end -%>
     <%- if CurrentDomain.user_can?(current_user, :manage_users) -%>
       <li class="users">
         <%= link_to raw('<span class="icon"></span>Users'), {:action => 'users'} %>

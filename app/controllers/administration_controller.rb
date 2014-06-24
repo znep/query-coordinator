@@ -72,7 +72,6 @@ class AdministrationController < ApplicationController
 
 
   before_filter :check_member, :only => :analytics
-  before_filter :only => [:analytics] {|c| c.check_module('advanced_metrics')}
   def analytics
   end
 
@@ -1085,7 +1084,7 @@ public
   def check_member
     return run_access_check{CurrentDomain.member?(current_user)}
   end
-  def check_module(mod = 'advanced_metrics')
+  def check_module(mod)
     return run_access_check{CurrentDomain.module_available?(mod)}
   end
   def check_feature(feature)

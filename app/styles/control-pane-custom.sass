@@ -877,40 +877,6 @@
         margin-top: 0px
         margin-bottom: 0px
 
-  &.signedDataset .formSection
-    p
-      font-size: 1.2em
-      margin-bottom: 1em
-      padding: 0.75em
-
-      &.publisherText
-        display: none
-
-    ul.sectionContent li
-      border-top: 1px solid $color_chrome_box_border
-      padding: 0.6em
-      text-align: center
-
-      &:first-child,
-      &.onlyChild
-        border-top: none
-
-      &.loading
-        @include throbber-image
-        background-position: 0.5em center
-
-      textarea.datasetSignature
-        @include white-space-pre-wrap
-        border: none
-        font-family: monaco, "courier new", monospace
-        height: 8em
-        width: 22em
-
-      a.signedDatasetLink
-        font-size: 1.2em
-        font-weight: bold
-        padding-top: 0.4em
-
   &.unifiedFilter
     min-height: 5em
     .initialFilterMode

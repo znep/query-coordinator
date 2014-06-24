@@ -309,9 +309,6 @@ module DatasetsHelper
 
   def hide_export_section?(section)
     case section
-      when :signedDataset
-        !view.owned_by?(current_user) || !module_available?(:digital_signatures) ||
-          view.non_tabular? || view.is_form?
       when :print then !view.can_print? || view.new_backend?
       when :download then (view.non_tabular? && !view.is_geo?) || view.is_form?
       when :api then view.non_tabular?
@@ -474,7 +471,6 @@ module DatasetsHelper
     hash.embed!.formCreate = hide_form_create?
     hash.embed!.sdp = hide_embed_sdp?
 
-    hash.exportSection!.signedDataset = hide_export_section?(:signedDataset)
     hash.exportSection!.print = hide_export_section?(:print)
     hash.exportSection!.download = hide_export_section?(:download)
     hash.exportSection!.api = hide_export_section?(:api)

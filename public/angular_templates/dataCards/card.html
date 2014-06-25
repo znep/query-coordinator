@@ -18,7 +18,7 @@
   </div>
   <div ng-switch="cardType">
     <card-visualization-column-chart ng-switch-when="column" model="model"></card-visualization-column-chart>
-    <choropleth ng-switch-when="choropleth"></choropleth>
+    <card-visualization-choropleth ng-switch-when="choropleth" model="model"></card-visualization-choropleth>
     <div ng-switch-default>I dunno how to display {{cardType}} :(</div>
   </div>
   <div class="expandButton"><a title="Expand Card" ng-click="toggleExpanded()"></a></div>

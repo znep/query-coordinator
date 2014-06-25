@@ -76,7 +76,7 @@ angular.module('socrataCommon.directives').directive('columnChart', function(Ang
 
       element = $('<div>').addClass('ticks').css('top', $chart.position().top + topMargin).css('width', chartWidth);
       _.each(_.uniq([0].concat(verticalScale.ticks(numberOfTicks))), function(tick) {
-        element.append($('<div>').css('top', chartHeight - verticalScale(tick)).text($.commaify(tick)));
+        element.append($('<div>').css('top', chartHeight - verticalScale(tick)).text($.toHumaneNumber(tick, 0)));
       });
       element.css('height', chartHeight + topMargin);
       return element;
@@ -145,9 +145,12 @@ angular.module('socrataCommon.directives').directive('columnChart', function(Ang
           return verticalScale(datum(i).value) + tipHeight + 'px';
         }).
         style('left', function(d, i) {
+          var $tip = $(this).find('.tip');
           if (rightEdge(i) > 0) {
-            $(this).find('.tip').css('left', tipOffset + rightEdge(i));
+            $tip.css('left', tipOffset + rightEdge(i));
             return -1 * rightEdge(i) + 'px';
+          } else {
+            $tip.css('left', Math.max(0, tipOffset));
           }
         });
     };

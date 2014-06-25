@@ -25,13 +25,16 @@ var ServerModel = Model.extend({
         var model = this;
         var isCache = req.pageCache;
 
-        var finishCallback = function(callback, allCompleteCallback)
+        var finishCallback = function(isSuccess, callback, allCompleteCallback)
         {
             return function(dataset, statusMsg, xhr)
             {
-                var statusCode = (xhr || {}).status;
+                // In jquery 1.7.1, error callback has different argument position than success callback
+                // The first argument is xhr in error case.
+                // For historical compatibility, we hack the status code only instead of swapping the arguments.
+                var statusCode = ((isSuccess ? xhr : arguments[0]) || {}).status;
                 // Support retry responses from core server
-                if (statusCode == 202)
+                if (statusCode == 202 || statusCode == 503)
                 {
                     var retryTime = req.retryTime || 5000;
                     model.trigger('request_status', [((dataset || {}).details || {}).message ||
@@ -73,8 +76,8 @@ var ServerModel = Model.extend({
 
         model._startRequest();
         req = $.extend({contentType: 'application/json', dataType: 'json'}, req,
-                {error: finishCallback(req.error, req.allComplete),
-                success: finishCallback(req.success, req.allComplete)});
+                {error: finishCallback(false, req.error, req.allComplete),
+                success: finishCallback(true, req.success, req.allComplete)});
 
         // Guess SODA can't handle accessType
         if (!req.isSODA)

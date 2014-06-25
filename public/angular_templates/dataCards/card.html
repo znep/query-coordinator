@@ -17,13 +17,8 @@
     </div>
   </div>
   <div ng-switch="cardType">
-    <div ng-switch-when="column">
-      <card-visualization-column-chart model="model"></card-visualization-column-chart>
-    </div>
-    <div ng-switch-when="choropleth">
-      <example-choropleth></example-choropleth>
-      <!-- TODO: card-dependent geojson data! -->
-    </div>
+    <card-visualization-column-chart ng-switch-when="column" model="model"></card-visualization-column-chart>
+    <choropleth ng-switch-when="choropleth"></choropleth>
     <div ng-switch-default>I dunno how to display {{cardType}} :(</div>
   </div>
   <div class="expandButton"><a title="Expand Card" ng-click="toggleExpanded()"></a></div>

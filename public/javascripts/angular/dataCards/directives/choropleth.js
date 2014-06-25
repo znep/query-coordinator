@@ -1,4 +1,4 @@
-angular.module('dataCards.directives').directive('exampleChoropleth', function($http, ChoroplethHelpers, leafletBoundsHelpers, $log, $timeout) {
+angular.module('dataCards.directives').directive('choropleth', function($http, ChoroplethHelpers, leafletBoundsHelpers, $log, $timeout) {
   var threshold = 6;
   // if the number of unique values in the dataset is <= the threshold, displays
   // 1 color for each unique value, and labels them as such in the legend.

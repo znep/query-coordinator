@@ -274,7 +274,7 @@ describe("A Choropleth Directive", function() {
 
   var createChoropleth = function() {
     httpBackend.whenGET('/datasets/geojson/testing_sample.json').respond(scope.data);
-    var html = '<example-choropleth></example-choropleth>';
+    var html = '<choropleth></choropleth>';
     var elem = angular.element(html);
     $('body').append('<div id="choroplethTest"></div>');
     $('#choroplethTest').append(elem);

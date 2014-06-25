@@ -1,5 +1,5 @@
 describe("A Choropleth Directive", function() {
-  var scope, compile, th, httpBackend, timeout;
+  var scope, compile, th, timeout;
   var multiPolygonData2 = {
     "type": "FeatureCollection",
     "features": [
@@ -260,21 +260,17 @@ describe("A Choropleth Directive", function() {
   beforeEach(inject(function($injector) {
     th = $injector.get('testHelpers');
     compile = $injector.get('$compile');
-    httpBackend = $injector.get('$httpBackend');
     rootScope = $injector.get('$rootScope');
     scope = rootScope.$new();
     timeout = $injector.get('$timeout');
   }));
 
   afterEach(function(){
-    httpBackend.verifyNoOutstandingExpectation();
-    httpBackend.verifyNoOutstandingRequest();
     $('#choroplethTest').remove();
   });
 
   var createChoropleth = function() {
-    httpBackend.whenGET('/datasets/geojson/testing_sample.json').respond(scope.data);
-    var html = '<choropleth></choropleth>';
+    var html = '<choropleth regions="regions"></choropleth>';
     var elem = angular.element(html);
     $('body').append('<div id="choroplethTest"></div>');
     $('#choroplethTest').append(elem);
@@ -288,46 +284,41 @@ describe("A Choropleth Directive", function() {
     // TODO: INVALID INPUT?
 
     it('should render a leaflet map, with zoom controls', function() {
-      scope.data = lineStringData2;
+      scope.regions = lineStringData2;
       var el = createChoropleth();
       expect(el.find('.choropleth-map').length).to.equal(1);
       expect(el.find('.leaflet-map-pane').length).to.equal(1);
-      httpBackend.flush();
     });
 
     it('should render Polygons on the map, if the geojson contains Polygons', function(){
-      scope.data = polygonData3;
+      scope.regions = polygonData3;
       var el = createChoropleth();
 
       expect(el.find('g').length).to.equal(3);
-      httpBackend.flush();
     });
 
     it('should render MultiPolygons on the map, if the geojson contains MultiPolygons', function(){
-      scope.data = multiPolygonData2;
+      scope.regions = multiPolygonData2;
       var el = createChoropleth();
       expect(el.find('g').length).to.equal(2+3);
-      httpBackend.flush();
     });
 
     it('should render MultiLineStrings on the map, if the geojson contains MultiLineStrings', function(){
-      scope.data = multiLineStringData4;
+      scope.regions = multiLineStringData4;
       var el = createChoropleth();
 
       expect(el.find('.leaflet-overlay-pane svg').find('g').length).to.equal(12+15+6+3);
-      httpBackend.flush();
     });
 
     it('should render LineStrings on the map, if the geojson contains LineStrings', function(){
-      scope.data = lineStringData7;
+      scope.regions = lineStringData7;
       var el = createChoropleth();
 
       expect(el.find('.leaflet-overlay-pane svg').find('g').length).to.equal(7);
-      httpBackend.flush();
     });
 
     it('should render a map with a bounding box that contains all the features', function(){
-      scope.data = easyBoundsData;
+      scope.regions = easyBoundsData;
       var el = createChoropleth();
       var expectedBounds = {
         northEast: { lat: 2, lng: 2 },
@@ -337,12 +328,10 @@ describe("A Choropleth Directive", function() {
       timeout(function(){
         expect(scope.bounds).to.equal(expectedBounds);
       });
-
-      httpBackend.flush();
     });
 
     it('should highlight features on click', function(){
-      scope.data = multiPolygonData2;
+      scope.regions = multiPolygonData2;
       var el = createChoropleth();
 
       var line = el.find('path')[0];
@@ -352,11 +341,10 @@ describe("A Choropleth Directive", function() {
 
       var hoveredStrokeWidth = parseInt($(line).css('strokeWidth'));
       expect( hoveredStrokeWidth > defaultStrokeWidth ).to.equal(true);
-      httpBackend.flush();
     });
 
     it('should only highlight one feature at a time on click', function(){
-      scope.data = multiPolygonData2;
+      scope.regions = multiPolygonData2;
       var el = createChoropleth();
 
       var firstLine = el.find('path')[0];
@@ -378,28 +366,25 @@ describe("A Choropleth Directive", function() {
       // 2nd feature becomes highlighted
       var secondLineStrokeWidth = parseInt($(secondLine).css('strokeWidth'));
       expect(secondLineStrokeWidth > defaultStrokeWidth).to.equal(true);
-      httpBackend.flush();
     });
 
     it('should be able to render a legend if the choropleth has values', function(){
-      scope.data = multiLineStringData4;
+      scope.regions = multiLineStringData4;
       var el = createChoropleth();
 
       expect(el.find('.leaflet-control.legend').length).to.equal(1);
-      httpBackend.flush();
     });
 
     it('should not render a legend if the choropleth has no values', function(){
-      scope.data = polygonData2NoValues;
+      scope.regions = polygonData2NoValues;
       var el = createChoropleth();
 
       expect(el.find('.leaflet-control.legend').length).to.equal(0);
-      httpBackend.flush();
     });
 
     it('should render proper map features, legend, and legend labels for 1 line feature', function(){
       // NOTE: important to test for each individual small case (1,2,3) to ensure proper edge case management.
-      scope.data = lineStringData1;
+      scope.regions = lineStringData1;
       var el = createChoropleth();
 
       // there should only be 1 feature
@@ -413,7 +398,7 @@ describe("A Choropleth Directive", function() {
       expect(el.find('.angular-leaflet-map .legend i').length).to.equal(1);
 
       // legend label should match feature value
-      var featureVals = _.map(scope.data.features, function(feature){ return Number(feature.properties["VALUE"]); });
+      var featureVals = _.map(scope.regions.features, function(feature){ return Number(feature.properties["VALUE"]); });
       var legendLabels = _.map(el.find('.angular-leaflet-map .legend .info-label'), function(el){ return Number($(el).text()) });
       expect(featureVals).to.deep.equal(legendLabels);
 
@@ -421,13 +406,11 @@ describe("A Choropleth Directive", function() {
       var fillColor = el.find('.angular-leaflet-map svg path').css('stroke');
       var legendLabelColor = el.find('.leaflet-control.legend i').attr('style').replace('background:','');
       expect(chroma.color(fillColor).hex()).to.equal(chroma.color(legendLabelColor).hex());
-
-      httpBackend.flush();
     });
 
     it('should render proper map features, legend, and legend labels for 1 polygon feature', function(){
       // NOTE: important to test for each individual small case (1,2,3) to ensure proper edge case management.
-      scope.data = polygonData1;
+      scope.regions = polygonData1;
       var el = createChoropleth();
 
       // there should only be 1 feature
@@ -441,7 +424,7 @@ describe("A Choropleth Directive", function() {
       expect(el.find('.angular-leaflet-map .legend i').length).to.equal(1);
 
       // legend label should match feature value
-      var featureVals = _.map(scope.data.features, function(feature){ return Number(feature.properties["VALUE"]); });
+      var featureVals = _.map(scope.regions.features, function(feature){ return Number(feature.properties["VALUE"]); });
       var legendLabels = _.map(el.find('.angular-leaflet-map .legend .info-label'), function(el){ return Number($(el).text()) });
       expect(featureVals).to.deep.equal(legendLabels);
 
@@ -449,13 +432,11 @@ describe("A Choropleth Directive", function() {
       var fillColor = el.find('.angular-leaflet-map svg path').css('fill');
       var legendLabelColor = el.find('.leaflet-control.legend i').attr('style').replace('background:','');
       expect(chroma.color(fillColor).hex()).to.equal(chroma.color(legendLabelColor).hex());
-
-      httpBackend.flush();
     });
 
     it('should render proper map features, legend, and legend labels for 2 features', function(){
       // NOTE: important to test for each individual small case (1,2,3) to ensure proper edge case management.
-      scope.data = polygonData2;
+      scope.regions = polygonData2;
       var el = createChoropleth();
 
       // there should only be 2 features
@@ -469,11 +450,9 @@ describe("A Choropleth Directive", function() {
       expect(el.find('.angular-leaflet-map .legend i').length).to.equal(2);
 
       // legend labels should match feature values
-      var featureVals = _.map(scope.data.features, function(feature){ return Number(feature.properties["VALUE"]); });
+      var featureVals = _.map(scope.regions.features, function(feature){ return Number(feature.properties["VALUE"]); });
       var legendLabels = _.map(el.find('.angular-leaflet-map .legend .info-label'), function(el){ return Number($(el).text()) });
       expect(featureVals).to.deep.equal(legendLabels);
-
-      httpBackend.flush();
 
       // stroke (if LineString or MultiLineString) or fill (if Polygon or MultiPolygon) color hexes should match legend color hexes
       var fillColor = el.find('.angular-leaflet-map svg path').css('fill');
@@ -483,7 +462,7 @@ describe("A Choropleth Directive", function() {
 
     it('should render proper map features, legend, and legend labels for 3 features', function(){
       // NOTE: important to test for each individual small case (1,2,3) to ensure proper edge case management.
-      scope.data = lineStringData3;
+      scope.regions = lineStringData3;
       var el = createChoropleth();
 
       // there should only be 3 features
@@ -497,7 +476,7 @@ describe("A Choropleth Directive", function() {
       expect(el.find('.angular-leaflet-map .legend i').length).to.equal(3);
 
       // legend labels should match feature values
-      var featureVals = _.map(scope.data.features, function(feature){ return Number(feature.properties["VALUE"]); });
+      var featureVals = _.map(scope.regions.features, function(feature){ return Number(feature.properties["VALUE"]); });
       var legendLabels = _.map(el.find('.angular-leaflet-map .legend .info-label'), function(el){ return Number($(el).text()) });
       expect(featureVals).to.deep.equal(legendLabels);
 
@@ -506,11 +485,10 @@ describe("A Choropleth Directive", function() {
       var legendLabelColor = el.find('.leaflet-control.legend i').attr('style').replace('background:','');
       expect(chroma.color(fillColor).hex()).to.equal(chroma.color(legendLabelColor).hex());
 
-      httpBackend.flush();
     });
 
     it('should render proper map features, legend, and legend labels for many features', function(){
-      scope.data = lineStringData52;
+      scope.regions = lineStringData52;
       var el = createChoropleth();
 
       // there should only be 51 features
@@ -527,12 +505,10 @@ describe("A Choropleth Directive", function() {
       var fillColor = el.find('.angular-leaflet-map svg path').css('stroke');
       var legendLabelColor = el.find('.leaflet-control.legend i').attr('style').replace('background:','');
       expect(chroma.color(fillColor).hex()).to.equal(chroma.color(legendLabelColor).hex());
-
-      httpBackend.flush();
     });
 
     it('should not color features that are missing properties', function(){
-      scope.data = polygonData2PropertyMissing;
+      scope.regions = polygonData2PropertyMissing;
       var el = createChoropleth();
 
       // there should only be 2 features
@@ -550,12 +526,10 @@ describe("A Choropleth Directive", function() {
       });
       var nullColors = _.filter(fillColors, function(fc){ return chroma.color(fc).hex() == '#dddddd' });
       expect(nullColors.length).to.equal(1);
-
-      httpBackend.flush();
     });
 
     it('should not color features that have null values', function(){
-      scope.data = polygonData2ValueNull;
+      scope.regions = polygonData2ValueNull;
       var el = createChoropleth();
 
       // there should only be 2 features
@@ -573,12 +547,10 @@ describe("A Choropleth Directive", function() {
       });
       var nullColors = _.filter(fillColors, function(fc){ return chroma.color(fc).hex() == '#dddddd' });
       expect(nullColors.length).to.equal(1);
-
-      httpBackend.flush();
     });
 
     it('should not color features that have undefined values', function(){
-      scope.data = polygonData2ValueUndefined;
+      scope.regions = polygonData2ValueUndefined;
       var el = createChoropleth();
 
       // there should only be 2 features
@@ -596,8 +568,6 @@ describe("A Choropleth Directive", function() {
       });
       var nullColors = _.filter(fillColors, function(fc){ return chroma.color(fc).hex() == '#dddddd' });
       expect(nullColors.length).to.equal(1);
-
-      httpBackend.flush();
     });
   });
 });

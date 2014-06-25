@@ -1,4 +1,4 @@
-angular.module('dataCards.directives').directive('cardVisualizationChoropleth', function(AngularRxExtensions) {
+angular.module('dataCards.directives').directive('cardVisualizationChoropleth', function(AngularRxExtensions, $http) {
 
   return {
     restrict: 'E',
@@ -10,12 +10,21 @@ angular.module('dataCards.directives').directive('cardVisualizationChoropleth', 
       var model = $scope.observe('model');
       var dataset = model.pluck('page').pluckSwitch('dataset');
 
-      var columns = dataset.pluckSwitch('columns');
-      var column = model.pluck('fieldName').combineLatest(columns, function(fieldName, columns) {
-        return columns[fieldName];
-      });
+      var geoJsonRegionData = Rx.Observable.combineLatest(
+          model.pluck('fieldName'),
+          dataset,
+          function(fieldName, dataset) {
+            var geojsonFileName = 'testing_sample';
+            var regionDataPromise = $http.get('/datasets/geojson/'+geojsonFileName+'.json').then(function(result) {
+              // GeoJson was reprojected and converted to Geojson with http://converter.mygeodata.eu/vector
+              // reprojected to WGS 84 (SRID: 4326)
+              return result.data;
+              // TODO: invalid geojsonData --> ???
+            });
+            return Rx.Observable.fromPromise(regionDataPromise);
+          }).switch();
 
-      $scope.bindObservable('fieldName', model.pluck('fieldName'));
+      $scope.bindObservable('regions', geoJsonRegionData);
     }
   };
 

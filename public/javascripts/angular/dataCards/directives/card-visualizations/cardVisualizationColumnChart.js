@@ -1,4 +1,4 @@
-angular.module('dataCards.directives').directive('cardVisualizationColumnChart', function(AngularRxExtensions) {
+angular.module('dataCards.directives').directive('cardVisualizationColumnChart', function(AngularRxExtensions, CardDataService) {
 
   return {
     restrict: 'E',
@@ -10,13 +10,22 @@ angular.module('dataCards.directives').directive('cardVisualizationColumnChart',
       var model = $scope.observe('model');
       var dataset = model.pluck('page').pluckSwitch('dataset');
 
-      var columns = dataset.pluckSwitch('columns');
-      var column = model.pluck('fieldName').combineLatest(columns, function(fieldName, columns) {
-        return columns[fieldName];
-      });
+      var unFilteredData = Rx.Observable.combineLatest(
+          model.pluck('fieldName'),
+          dataset,
+          function(fieldName, dataset) {
+            return Rx.Observable.fromPromise(CardDataService.getUnFilteredData(fieldName, dataset.id));
+          }).switch();
 
-      $scope.bindObservable('unFilteredData', model.pluckSwitch('unFilteredData'));
-      $scope.bindObservable('filteredData', model.pluckSwitch('filteredData'));
+      var filteredData = Rx.Observable.combineLatest(
+          model.pluck('fieldName'),
+          dataset,
+          function(fieldName, dataset) {
+            return Rx.Observable.fromPromise(CardDataService.getFilteredData(fieldName, dataset.id));
+          }).switch();
+
+      $scope.bindObservable('unFilteredData', unFilteredData);
+      $scope.bindObservable('filteredData', filteredData);
       $scope.bindObservable('fieldName', model.pluck('fieldName'));
     }
   };

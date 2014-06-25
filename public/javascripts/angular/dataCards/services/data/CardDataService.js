@@ -1,7 +1,7 @@
 angular.module('dataCards.services').factory('CardDataService', function($q, $http, DeveloperOverrides) {
 
   return {
-    getUnfilteredData: function(fieldName, datasetId) {
+    getUnFilteredData: function(fieldName, datasetId) {
       datasetId = DeveloperOverrides.dataOverrideForDataset(datasetId) || datasetId;
       if (fieldName == 'location') {
         return $q.when([]);

@@ -25,18 +25,6 @@ angular.module('dataCards.models').factory('Card', function($injector, ModelHelp
       if (field === 'fieldName') return; // fieldName isn't observable.
       ModelHelper.addProperty(field, self);
     });
-
-    ModelHelper.addPropertyWithLazyDefault('unFilteredData', this, function() {
-      return CardDataService.getUnfilteredData(self.fieldName, page.dataset.value.id);
-    });
-
-    ModelHelper.addPropertyWithLazyDefault('filteredData', this, function() {
-      return CardDataService.getFilteredData(self.fieldName, page.dataset.value.id);
-    });
-
-    ModelHelper.addPropertyWithLazyDefault('fakeGeojsonData', this, function() {
-      return CardDataService.getFakeGeojsonData(self.fieldName);
-    });
   }
 
   Card.deserialize = function(page, blob) {

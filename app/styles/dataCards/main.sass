@@ -171,7 +171,7 @@ $card-description-transition-duration: 0.5s
     &.clamped
       .description-expand-button
         visibility: visible
-      
+
     &.collapsed
       max-height: $card-description-line-height * 2
       .description-expanded-wrapper
@@ -264,19 +264,6 @@ $card-description-transition-duration: 0.5s
 
 $top-nav-height: 40px
 $facets-list-width: 20%
-$base-font-size: 1rem
-$small-font-size: $base-font-size * 0.5
-$medium-font-size: $base-font-size * 0.75
-$chart-tick-color: #ccc
-$chart-description-color: darken($chart-tick-color, 30)
-$unfiltered-bar-color: #C2C2C2
-$filtered-bar-color: #676464
-$neutral-bar-color: #676464
-$tick-height: 1rem
-$tooltip-border-color: #333
-$tooltip-name-color: #333
-$tooltip-value-color: #888
-$tooltip-background-color: #ccc
 
 .facets-view
   ul
@@ -295,120 +282,3 @@ $tooltip-background-color: #ccc
     bottom: 10px
     left: $facets-list-width
     background: #555
-
-div.column-chart
-
-  div.column-chart-wrapper
-    position: absolute
-
-    div.truncation-marker
-      position: absolute
-      right: 0
-      top: 50%
-      height: 100%
-      width: 1em
-      border: 1px solid #aaa
-      text-align: center
-      display: none
-      background-color: #aaa
-      color: #eee
-      z-index: 1
-
-    div.field-name
-      color: $chart-description-color
-
-    div.field-description
-      color: $chart-description-color
-
-    &.s508
-      position: static
-      opacity: 0
-
-    .bar
-      display: none
-      position: absolute
-
-    .bar.active
-      display: block
-
-      &.unfiltered
-        background-color: $unfiltered-bar-color
-
-      &.filtered, &.neutral
-        background-color: $filtered-bar-color
-
-      &.tertiary
-        background-color: rgba(0, 0, 0, 0)
-
-        &:hover
-          background-color: rgba(50, 50, 50, 0.5)
-
-      div.tooltip
-        display: none
-        position: absolute
-        width: 130px
-        border: 1px solid $tooltip-border-color
-        padding: 5px
-        background-color: $tooltip-background-color
-        font-size: $small-font-size
-        font-weight: bold
-
-        div.datum
-          padding: 5px
-
-          div.name
-            white-space: wrap
-            color: $tooltip-name-color
-
-          div.value
-            color: $tooltip-value-color
-            font-size: $small-font-size * 1.5
-
-      span.tip
-        width: 0
-        display: none
-        border-left: 4px solid transparent
-        border-right: 4px solid transparent
-        border-top: 8px solid $tooltip-border-color
-        bottom: -8px
-        position: absolute
-
-      &.active:hover
-
-        div.tooltip
-          display: block
-
-        span.tip
-          display: block
-
-  div.labels
-    position: absolute
-    height: 55px
-
-    div
-      margin-top: 2px
-      border-left: 1px solid $chart-tick-color
-      border-bottom: 1px solid $chart-tick-color
-      position: absolute
-      width: 0.5rem
-      text-indent: 0.5rem
-
-      span
-        color: $chart-tick-color
-        position: absolute
-        left: 0.25rem
-        font-size: $medium-font-size
-        line-height: $base-font-size
-        white-space: nowrap
-
-  div.ticks
-    position: absolute
-
-    div
-      height: $tick-height
-      border-bottom: 1px solid $chart-tick-color
-      position: absolute
-      width: 100%
-      color: $chart-tick-color
-      text-align: right
-      margin-top: -$tick-height

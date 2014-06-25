@@ -15,14 +15,14 @@ angular.module('dataCards.directives').directive('cardVisualizationColumnChart',
           dataset,
           function(fieldName, dataset) {
             return Rx.Observable.fromPromise(CardDataService.getUnFilteredData(fieldName, dataset.id));
-          }).switch();
+          }).switchLatest();
 
       var filteredData = Rx.Observable.combineLatest(
           model.pluck('fieldName'),
           dataset,
           function(fieldName, dataset) {
             return Rx.Observable.fromPromise(CardDataService.getFilteredData(fieldName, dataset.id));
-          }).switch();
+          }).switchLatest();
 
       $scope.bindObservable('unFilteredData', unFilteredData);
       $scope.bindObservable('filteredData', filteredData);

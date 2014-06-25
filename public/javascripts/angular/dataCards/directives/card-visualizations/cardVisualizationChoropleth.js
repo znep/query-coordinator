@@ -22,7 +22,7 @@ angular.module('dataCards.directives').directive('cardVisualizationChoropleth', 
               // TODO: invalid geojsonData --> ???
             });
             return Rx.Observable.fromPromise(regionDataPromise);
-          }).switch();
+          }).switchLatest();
 
       $scope.bindObservable('regions', geoJsonRegionData);
     }

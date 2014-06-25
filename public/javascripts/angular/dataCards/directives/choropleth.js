@@ -76,14 +76,14 @@ angular.module('dataCards.directives').directive('exampleChoropleth', function($
         baselayers: {
           mapbox: {
             name: 'MapBox',
-            url: 'http://a.tiles.mapbox.com/v3/socrata-apps.ibp0l899/{z}/{x}/{y}.png',
+            url: 'https://a.tiles.mapbox.com/v3/socrata-apps.ibp0l899/{z}/{x}/{y}.png',
             type: 'xyz'
           }
         }
       };
 
       $scope.defaults = {
-        tileLayer: 'http://a.tiles.mapbox.com/v3/socrata-apps.ibp0l899/{z}/{x}/{y}.png',
+        tileLayer: 'https://a.tiles.mapbox.com/v3/socrata-apps.ibp0l899/{z}/{x}/{y}.png',
         zoomControlPosition: 'topleft',
         tileLayerOptions: {
           opacity: 0.15,

@@ -1,6 +1,6 @@
 angular.module('socrataCommon.directives').directive('columnChart', function(AngularRxExtensions) {
 
-  var renderColumnChart = function(element, unFilteredData, filteredData, filtered, dimensions) {
+  var renderColumnChart = function(element, unFilteredData, filteredData, filtered, dimensions, expanded) {
     var barPadding = 0.25;
     var topMargin = 20; // TODO calculate this dynamically
     var bottomMargin = 120;
@@ -8,6 +8,7 @@ angular.module('socrataCommon.directives').directive('columnChart', function(Ang
     var tipWidth = 10;
 
     var $chart = element.find('.column-chart-wrapper');
+    var $chartScroll = element.find('.chart-scroll');
     var d3Selection = d3.select($chart.get(0));
     var unFilteredSelection = d3Selection.selectAll('.bar.unfiltered').data(unFilteredData);
     var filteredSelection = d3Selection.selectAll('.bar.filtered').data(filteredData);
@@ -25,8 +26,21 @@ angular.module('socrataCommon.directives').directive('columnChart', function(Ang
       unFilteredData.length <= 0 || filteredData.length <= 0) {
       return;
     }
+    var computeChartMargins = function() {
+      if (expanded) {
+        var maxLength = _.max(unFilteredData.map(function(item) {
+          return item.name.capitaliseEachWord().visualLength("0.75rem");
+        }));
+        bottomMargin = (maxLength + $.relativeToPx("1.0rem"))/Math.sqrt(2);
+      } else {
+        var numberOfLabels = Math.min(unFilteredData.length, 3);
+        bottomMargin = $.relativeToPx(numberOfLabels+1+"rem");
+      }
+    }
+    computeChartMargins();
 
-    var chartHeight = dimensions.height - topMargin - bottomMargin;
+    var chartTop = element.position().top;
+    var chartHeight = dimensions.height - topMargin - bottomMargin - chartTop;
     var verticalScale = d3.scale.linear().range([chartHeight, 0]);
     var verticalOffset = topMargin + chartHeight;
     var unFilteredHorizontalScale;
@@ -35,7 +49,6 @@ angular.module('socrataCommon.directives').directive('columnChart', function(Ang
     var leftOffset;
     var rightOffset = 0;
     var rangeBand = 0;
-
     var computeChartDimensions = function() {
       unFilteredHorizontalScale = d3.scale.ordinal().rangeRoundBands(
         [0, chartWidth], barPadding).domain(_.pluck(unFilteredData, 'name')
@@ -59,10 +72,10 @@ angular.module('socrataCommon.directives').directive('columnChart', function(Ang
       chartTruncated = true;
       chartWidth = Math.floor(dimensions.width);
     }
-
     $chart.css('height', chartHeight + topMargin + 1).
-      css('top', $chart.position().top).
       css('width', chartWidth);
+    $chartScroll.css('padding-bottom', bottomMargin).
+      css('padding-top', chartTop);
 
     if (filtered) {
       verticalScale.domain([filteredData[0].value, 0]);
@@ -74,7 +87,7 @@ angular.module('socrataCommon.directives').directive('columnChart', function(Ang
       var numberOfTicks = 3;
       var element;
 
-      element = $('<div>').addClass('ticks').css('top', $chart.position().top + topMargin).css('width', chartWidth);
+      element = $('<div>').addClass('ticks').css('top', $chartScroll.position().top + topMargin + chartTop).css('width', chartWidth);
       _.each(_.uniq([0].concat(verticalScale.ticks(numberOfTicks))), function(tick) {
         element.append($('<div>').css('top', chartHeight - verticalScale(tick)).text($.toHumaneNumber(tick, 0)));
       });
@@ -86,7 +99,7 @@ angular.module('socrataCommon.directives').directive('columnChart', function(Ang
       var unFilteredDatum = unFilteredData[i];
       var filteredDatum = filteredData[i];
       var content = $('<div class="datum">');
-      content.append($('<div class="name">').text(unFilteredDatum.name));
+      content.append($('<div class="name">').text(unFilteredDatum.name.capitaliseEachWord()));
       content.append($('<div class="value">').text($.commaify(unFilteredDatum.value)));
       var $tooltip = $('<div class="tooltip">');
       var $tip = $('<span>');
@@ -154,22 +167,22 @@ angular.module('socrataCommon.directives').directive('columnChart', function(Ang
           }
         });
     };
-
     var labels = function() {
       var labels = $('<div>').addClass('labels').
-        css('top', chartHeight + $chart.position().top + topMargin);
-      var numberOfLabels = Math.min(unFilteredData.length, 3);
+        css('top', chartHeight + chartTop + topMargin);
+      var numberOfLabels = expanded ? unFilteredData.length : Math.min(unFilteredData.length, 3);
       var centering = leftOffset - rangeBand / 2;
       for (var i = 0; i < numberOfLabels; i++) {
         var label = $('<span>').
           css('top', numberOfLabels - 0.5 - i + 'rem').
-          text(unFilteredData[i].name);
-        labels.prepend(
-          $('<div>').
-            css('left', unFilteredHorizontalScale(unFilteredData[i].name) - centering - 1).
-            css('height', (numberOfLabels - i) + 'rem').
-            append(label)
-        );
+          text(unFilteredData[i].name.capitaliseEachWord());
+        var labelContainer = $('<div>').
+          css('left', unFilteredHorizontalScale(unFilteredData[i].name) - centering - 1).
+          append(label);
+        if (!expanded) {
+          labelContainer.css('height', (numberOfLabels - i) + 'rem');
+        }
+        labels.prepend(labelContainer);
       }
       return labels;
     };
@@ -252,9 +265,8 @@ angular.module('socrataCommon.directives').directive('columnChart', function(Ang
     }
 
     tooltipSelection.call(updateTooltip);
-
-    element.children('.labels').remove();
-    element.append(labels);
+    $chartScroll.children('.labels').remove();
+    $chartScroll.append(labels);
 
     if (chartTruncated) {
       truncationMarker.css('height', chartHeight).css('top', topMargin - 1).css('line-height', chartHeight  / 4 + 'px').show();
@@ -265,11 +277,13 @@ angular.module('socrataCommon.directives').directive('columnChart', function(Ang
 
   return {
     template:
-      '<div class="column-chart-wrapper">' +
-        '<div class="truncation-marker">M O A R</div>' +
+      '<div class="chart-scroll">' +
+        '<div class="column-chart-wrapper">' +
+          '<div class="truncation-marker">M O A R</div>' +
+        '</div>' +
       '</div>',
     restrict: 'A',
-    scope: { unFilteredData: '=', filteredData: '=', fieldName: '=' },
+    scope: { unFilteredData: '=', filteredData: '=', fieldName: '=', expanded: '=' },
     link: function(scope, element, attrs) {
       AngularRxExtensions.install(scope);
 
@@ -277,14 +291,16 @@ angular.module('socrataCommon.directives').directive('columnChart', function(Ang
         element.closest('.card').observeDimensions(),
         scope.observe('unFilteredData'),
         scope.observe('filteredData'),
-        function(cardDimensions, unFilteredData, filteredData) {
+        scope.observe('expanded'),
+        function(cardDimensions, unFilteredData, filteredData, expanded) {
           if (unFilteredData && filteredData) {
             renderColumnChart(
               element,
               unFilteredData,
               filteredData,
               false,
-              cardDimensions
+              cardDimensions,
+              expanded
             );
           }
         }

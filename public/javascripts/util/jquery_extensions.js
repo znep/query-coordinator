@@ -65,3 +65,45 @@ String.prototype.format = function()
   }
   return txt;
 };
+
+
+String.prototype.capitaliseEachWord = function() {
+  return this.split(' ').map(function(word) {
+    return word.charAt(0).toUpperCase() + word.slice(1).toLowerCase();
+  }).join(' ');
+};
+
+/* Adapted from http://blog.mastykarz.nl/measuring-the-length-of-a-string-in-pixels-using-javascript/ */
+String.prototype.visualSize = function(fontSize)
+{
+    var $ruler = $('#ruler');
+    if ($ruler.length < 1)
+    {
+        $('body').append('<span class="ruler" id="ruler"></span>');
+        $ruler = $('#ruler');
+    }
+    if (!fontSize) { fontSize = ''; }
+    $ruler.css('font-size', fontSize);
+    $ruler.text(this + '');
+    var obj = {width: $ruler.width(), height: $ruler.height()};
+    $ruler.remove();
+    return obj;
+};
+
+String.prototype.visualHeight = function(fontSize)
+{
+    return this.visualSize(fontSize).height;
+};
+
+String.prototype.visualLength = function(fontSize)
+{
+    return this.visualSize(fontSize).width;
+};
+$.relativeToPx = function(rems) {
+  var $div = $(document.createElement('div')).
+    css('width', rems).
+    appendTo(document.body);
+  var width = $div.width();
+  $div.remove();
+  return width;
+}

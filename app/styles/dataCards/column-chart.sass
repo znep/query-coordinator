@@ -13,8 +13,14 @@ $tooltip-background-color: #ccc
 
 div.column-chart
 
-  div.column-chart-wrapper
+  div.chart-scroll
+    overflow-x: auto
+    overflow-y: hidden
     position: absolute
+    top: 0
+
+  div.column-chart-wrapper
+    position: relative
 
     div.truncation-marker
       position: absolute
@@ -128,3 +134,18 @@ div.column-chart
       color: $chart-tick-color
       text-align: right
       margin-top: -$tick-height
+
+.card.expanded
+
+  div.column-chart
+
+    .labels div
+      border-left: none
+      border-bottom: none
+      @include prefixer(transform, rotate(45deg))
+      @include prefixer(transform-origin, top left)
+      margin-top: -6px
+
+      span
+        position: initial
+

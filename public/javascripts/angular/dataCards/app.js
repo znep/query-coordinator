@@ -41,7 +41,8 @@ dataCards.config(function($provide, $stateProvider, $urlRouterProvider, $locatio
     });
 });
 
-dataCards.run(function($rootScope, $state, $location) {
+dataCards.run(function($rootScope, $state, $location, DeveloperOverrides) {
+  DeveloperOverrides.init();
   $rootScope.$on('$stateChangeError', function(event, toState, toParams, fromState, fromParams, error) {
     console.error("Error encountered during state transition:", error);
   });
@@ -56,7 +57,7 @@ dataCards.run(function($rootScope, $state, $location) {
     });
   } else {
     // NOTE: This is the real url routing code (not for the demo).
-    var id = $location.absUrl().match(/\w{4}-\w{4}$/);
+    var id = location.pathname.match(/\w{4}-\w{4}$/);
     if (_.isEmpty(id)) {
       $state.go('404');
     } else {

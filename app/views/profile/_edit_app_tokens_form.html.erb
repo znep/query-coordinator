@@ -9,7 +9,7 @@
     </div>
     <div class="line clearfix">
       <label for="app_token_description" class="required"><%= t('screens.profile.edit.app_tokens.description') %></label>
-      <%= text_area_tag("app_token[description]", @token.description, :class => 'textPrompt required', :maxlength => 100,
+      <%= text_area_tag("app_token[description]", @token.description, :class => 'textPrompt required',
             :title => t('screens.profile.edit.app_tokens.description_prompt')) %>
     </div>
     <div class="line clearfix">

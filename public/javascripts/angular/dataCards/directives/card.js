@@ -28,7 +28,7 @@ angular.module('dataCards.directives').directive('card', function(AngularRxExten
 
   return {
     restrict: 'E',
-    scope: { 'model': '=' },
+    scope: { 'model': '=', 'whereClause': '='},
     templateUrl: '/angular_templates/dataCards/card.html',
     link: function($scope, element, attrs) {
       AngularRxExtensions.install($scope);

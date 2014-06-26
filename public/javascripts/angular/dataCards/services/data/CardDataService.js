@@ -14,12 +14,12 @@ angular.module('dataCards.services').factory('CardDataService', function($q, $ht
       });
     },
 
-    getFilteredData: function(fieldName, datasetId) {
+    getFilteredData: function(fieldName, datasetId, whereClause) {
       datasetId = DeveloperOverrides.dataOverrideForDataset(datasetId) || datasetId;
       if (fieldName == 'location') {
         return $q.when([]);
       }
-      var url = '/api/id/{1}.json?$query=select {0} as name, count(*) as value group by {0} order by count(*) desc limit 50'.format(fieldName, datasetId);
+      var url = '/api/id/{1}.json?$query=select {0} as name, count(*) as value where {2} group by {0} order by count(*) desc limit 50'.format(fieldName, datasetId, whereClause);
       return $http.get(url, { cache: true }).then(function(response) {
         return _.map(response.data, function(item) {
           return { name: item.name, value: Number(item.value) };

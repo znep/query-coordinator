@@ -1,6 +1,6 @@
 describe('column_chart', function() {
 
-  var testData = [{"name":"THEFT","value":21571},{"name":"BATTERY","value":18355},{"name":"NARCOTICS","value":11552},{"name":"CRIMINAL DAMAGE","value":9905},{"name":"OTHER OFFENSE","value":6574},{"name":"ASSAULT","value":6098},{"name":"BURGLARY","value":5166},{"name":"DECEPTIVE PRACTICE","value":5120},{"name":"MOTOR VEHICLE THEFT","value":3828},{"name":"ROBBERY","value":3457},{"name":"CRIMINAL TRESPASS","value":2981},{"name":"WEAPONS VIOLATION","value":1091},{"name":"PUBLIC PEACE VIOLATION","value":1021},{"name":"OFFENSE INVOLVING CHILDREN","value":919},{"name":"PROSTITUTION","value":508},{"name":"INTERFERENCE WITH PUBLIC OFFICER","value":479},{"name":"CRIM SEXUAL ASSAULT","value":412},{"name":"SEX OFFENSE","value":289},{"name":"LIQUOR LAW VIOLATION","value":142},{"name":"HOMICIDE","value":127},{"name":"ARSON","value":126},{"name":"KIDNAPPING","value":89},{"name":"GAMBLING","value":70},{"name":"INTIMIDATION","value":42},{"name":"STALKING","value":41},{"name":"OBSCENITY","value":12},{"name":"PUBLIC INDECENCY","value":6},{"name":"NON-CRIMINAL","value":5},{"name":"CONCEALED CARRY LICENSE VIOLATION","value":5},{"name":"OTHER NARCOTIC VIOLATION","value":5},{"name":"NON - CRIMINAL","value":2},{"name":"NON-CRIMINAL (SUBJECT SPECIFIED)","value":2}];
+  var testData = [{"name":"THEFT","total":21571},{"name":"BATTERY","total":18355},{"name":"NARCOTICS","total":11552},{"name":"CRIMINAL DAMAGE","total":9905},{"name":"OTHER OFFENSE","total":6574},{"name":"ASSAULT","total":6098},{"name":"BURGLARY","total":5166},{"name":"DECEPTIVE PRACTICE","total":5120},{"name":"MOTOR VEHICLE THEFT","total":3828},{"name":"ROBBERY","total":3457},{"name":"CRIMINAL TRESPASS","total":2981},{"name":"WEAPONS VIOLATION","total":1091},{"name":"PUBLIC PEACE VIOLATION","total":1021},{"name":"OFFENSE INVOLVING CHILDREN","total":919},{"name":"PROSTITUTION","total":508},{"name":"INTERFERENCE WITH PUBLIC OFFICER","total":479},{"name":"CRIM SEXUAL ASSAULT","total":412},{"name":"SEX OFFENSE","total":289},{"name":"LIQUOR LAW VIOLATION","total":142},{"name":"HOMICIDE","total":127},{"name":"ARSON","total":126},{"name":"KIDNAPPING","total":89},{"name":"GAMBLING","total":70},{"name":"INTIMIDATION","total":42},{"name":"STALKING","total":41},{"name":"OBSCENITY","total":12},{"name":"PUBLIC INDECENCY","total":6},{"name":"NON-CRIMINAL","total":5},{"name":"CONCEALED CARRY LICENSE VIOLATION","total":5},{"name":"OTHER NARCOTIC VIOLATION","total":5},{"name":"NON - CRIMINAL","total":2},{"name":"NON-CRIMINAL (SUBJECT SPECIFIED)","total":2}];
 
   beforeEach(module('dataCards'));
   beforeEach(module('dataCards.directives'));
@@ -15,13 +15,14 @@ describe('column_chart', function() {
   afterEach(function(){
     $('#columnChartTest').remove();
   });
-  var createColumnChart = function(width, expanded){
+  var createColumnChart = function(width, expanded, data){
     if (!width) width = 640;
     if (!expanded) expanded = false;
+    if (!data) data = testData;
     var html =
       '<div class="card" style="width: '+width+'px; height: 480px;">' +
-        '<div column-chart class="column-chart" un-filtered-data="unFilteredData"' +
-          ' filtered-data="filteredData" field-name="fieldName" expanded="expanded">' +
+        '<div column-chart class="column-chart"' +
+          ' chart-data="testData" show-filtered="showFiltered" expanded="expanded">' +
         '</div>' +
       '</div>';
     var elem = angular.element(html);
@@ -29,17 +30,21 @@ describe('column_chart', function() {
     $('#columnChartTest').append(elem);
     var compiledElem = compile(elem)(scope);
     scope.expanded = expanded;
-    scope.unFilteredData = testData;
-    scope.filteredData = testData;
+    scope.testData = data;
+    scope.showFiltered = false;
     scope.$digest();
-    return compiledElem;
+    return {
+      element: compiledElem,
+      scope: scope
+    };
   }
-  var bars = testData.length * 2;
+  var bars = testData.length;
   var labels = testData.length;
   describe('when not expanded at 640px', function() {
     it('should create ' + bars + ' bars and 3 labels', function() {
       var el = createColumnChart();
-      expect($('.bar').length).to.equal(bars);
+      expect($('.bar-group').length).to.equal(bars);
+      expect($('.bar.unfiltered').length).to.equal(bars);
       expect($('.labels div').length).to.equal(3);
     });
     it('should not show the moar marker', function() {
@@ -59,12 +64,69 @@ describe('column_chart', function() {
     var expanded = true;
     it('should create ' + bars + ' bars and ' + labels + ' labels', function() {
       var el = createColumnChart(width, expanded);
-      expect($('.bar').length).to.equal(bars);
+      expect($('.bar-group').length).to.equal(bars);
+      expect($('.bar.unfiltered').length).to.equal(bars);
       expect($('.labels div').length).to.equal(testData.length);
     });
     it('should not show the moar marker', function() {
       var el = createColumnChart();
       expect($('.truncation-marker').css('display')).to.equal('none');
+    });
+  });
+  describe('when filtered data is provided', function() {
+    var testDataWithFiltered = _.map(testData, function(d) {
+      return {
+        name: d.name,
+        total: d.total,
+        filtered: d.total / 2
+      };
+    });
+    describe('with showFiltered on', function() {
+      it('should create ' + bars + ' filtered and unfiltered bars, with the correct heights', function() {
+        var chart = createColumnChart(640, false, testDataWithFiltered);
+        var scope = chart.scope;
+        scope.showFiltered = true;
+        scope.$digest();
+        expect($('.bar.filtered').length).to.equal(bars);
+        expect(_.any($('.bar.filtered'), function(bar) {
+          return $(bar).height() > 0;
+        }));
+        $('.bar-group').each(function() {
+          var unfilteredHeight = $(this).find('.unfiltered').height();
+          var filteredHeight = $(this).find('.filtered').height();
+          // The test data is computed to have filtered = ufiltered/2.
+          // jQuery then rounds down to integer pixels, so we have to take the floor.
+          expect(Math.floor(unfilteredHeight/2)).to.equal(filteredHeight);
+        });
+      });
+    });
+  });
+  describe('when data with the special field set is provided', function() {
+    var specialIndex = 6;
+    var testDataWithSpecial = _.map(testData, function(d, i) {
+      return {
+        name: d.name,
+        total: d.total,
+        filtered: d.total / 2,
+        special: i == specialIndex
+      };
+    });
+    it('should create 1 special bar-group', function() {
+      var chart = createColumnChart(640, false, testDataWithSpecial);
+      var scope = chart.scope;
+      expect($('.bar-group.special').length).to.equal(1);
+      expect($('.bar-group.special')[0].__data__.name).to.equal(testDataWithSpecial[specialIndex].name);
+    });
+  });
+  describe('when data changes dynamically', function() {
+    it('should hide all existing bars when the data is cleared', function() {
+      var chart = createColumnChart();
+      var scope = chart.scope;
+      var element = chart.element;
+
+      scope.testData = [];
+      scope.$digest();
+      expect($('.bar-group').length).to.equal(0);
     });
   });
 });

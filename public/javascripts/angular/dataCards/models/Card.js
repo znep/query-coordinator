@@ -25,6 +25,8 @@ angular.module('dataCards.models').factory('Card', function($injector, ModelHelp
       if (field === 'fieldName') return; // fieldName isn't observable.
       ModelHelper.addProperty(field, self);
     });
+
+    ModelHelper.addCollectionProperty('activeFilters', self, []);
   }
 
   Card.deserialize = function(page, blob) {

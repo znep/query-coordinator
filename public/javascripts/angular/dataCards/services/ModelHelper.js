@@ -12,6 +12,23 @@ angular.module('dataCards.services').factory('ModelHelper', function() {
       }
     });
   };
+
+  function addCollectionProperty(propertyName, model) {
+    var subject = new Rx.BehaviorSubject([]);
+    subject.push = function(val) {
+      subject.onNext(subject.value.concat([val]));
+    };
+    Object.defineProperty(model, propertyName, {
+      get: _.constant(subject),
+      set: function(val) {
+        if (!_.isArray(val)) {
+          throw new Error('Tried to set non-array to a collection property.');
+        }
+        subject.onNext(val);
+      }
+    });
+  };
+
   // Adds a read-only (RxJS) observable of the given name to the object provided. The default value
   // is specified as a function which returns a promise. This allows us to skip requesting
   // the default value unless necessary.
@@ -69,6 +86,7 @@ angular.module('dataCards.services').factory('ModelHelper', function() {
 
   return {
     addProperty: addProperty,
+    addCollectionProperty: addCollectionProperty,
     addReadOnlyPropertyWithLazyDefault: addReadOnlyPropertyWithLazyDefault,
     addPropertyWithLazyDefault: addPropertyWithLazyDefault
   };

@@ -26,23 +26,23 @@
   </div>
   <div ng-if="!useExpandedLayout" class="collapsedLayout">
     <div class="cardSizeGroup" ng-repeat="cardSize in cardSizeNamesInDisplayOrder">
-      <div class="row" ng-repeat="cardLine in cardLinesBySizeGroup[cardSize]">
+      <div class="row" ng-repeat="cardLine in rowsOfCardsBySize[cardSize]">
         <div
           class="cardTile span{{12/cardLine.length}}"
           ng-class="classForScreenPosition($index, cardLine.length)"
           ng-repeat="card in cardLine">
-          <card model="card.model"></card>
+          <card model="card.model" where-clause="globalWhereClauseFragment"></card>
         </div>
       </div>
     </div>
   </div>
   <div ng-if="useExpandedLayout" class="expandedLayout">
     <div class="expandedCards onRight" ng-style="availableContentHeightStyle">
-      <card model="expandedCards[0]"></card>
+      <card model="expandedCards[0]" where-clause="globalWhereClauseFragment"></card>
     </div>
     <div class="collapsedCards">
       <div class="onLeft" ng-repeat="cardModel in collapsedCards">
-        <card model="cardModel"></card>
+        <card model="cardModel" where-clause="globalWhereClauseFragment"></card>
       </div>
     </div>
   </div>

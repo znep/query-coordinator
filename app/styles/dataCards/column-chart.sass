@@ -22,6 +22,21 @@ div.column-chart
   div.column-chart-wrapper
     position: relative
 
+    .bar-group.active .bar
+      &.unfiltered
+        background-color: $neutral-bar-color
+
+      &.filtered
+        background-color: $filtered-bar-color
+
+    &.filtered .bar-group.active
+      .bar
+        &.unfiltered
+          background-color: $unfiltered-bar-color
+
+      &.special .bar.filtered
+        background-color: green
+
     div.truncation-marker
       position: absolute
       bottom: -1.2rem
@@ -41,6 +56,11 @@ div.column-chart
 
         span.tip
           display: block
+
+    div.hover-trigger
+      display: none
+      &.active
+        display: block
 
     div.truncation-marker + div.tooltip
       display: none
@@ -75,24 +95,15 @@ div.column-chart
       position: static
       opacity: 0
 
-    .bar
-      display: none
+    .bar-group
       position: absolute
+      display: none
 
-    .bar.active
-      display: block
+      &.active
+        display: block
 
-      &.unfiltered
-        background-color: $unfiltered-bar-color
-
-      &.filtered, &.neutral
-        background-color: $filtered-bar-color
-
-      &.tertiary
-        background-color: rgba(0, 0, 0, 0)
-
-        &:hover
-          background-color: rgba(50, 50, 50, 0.5)
+    .bar
+      position: absolute
 
       div.tooltip
         pointer-events: none
@@ -117,13 +128,23 @@ div.column-chart
           div.value
             font-size: $small-font-size * 1.5
 
-          &.filtered
+          .label
+            display: none
+
+          .value-filtered
+            display: none
+
+        &.filtered
+          div.datum
             margin-bottom: 10px
+
+            .label
+              display: block
 
             div.name
               margin-bottom: 0.2rem
 
-            .unfiltered
+            .value-unfiltered
               color: $unfiltered-bar-color
               clear: both
 
@@ -134,7 +155,8 @@ div.column-chart
                 text-align: right
                 font-size: $small-font-size
 
-            .filtered
+            .value-filtered
+              display: block
               color: $filtered-bar-color
               clear: both
 

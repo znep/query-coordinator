@@ -193,7 +193,7 @@ describe("CardsViewController", function() {
     );
   });
 
-  it('should calculate cardLinesBySizeGroup and cardSizeNamesInDisplayOrder correctly', function() {
+  it('should calculate rowsOfCardsBySize and cardSizeNamesInDisplayOrder correctly', function() {
     var controllerHarness = makeController();
 
     var controller = controllerHarness.controller;
@@ -209,14 +209,14 @@ describe("CardsViewController", function() {
 
     expect(scope.useExpandedLayout).to.be.false;
 
-    expect(scope.cardLinesBySizeGroup).to.have.key('1');
-    expect(scope.cardLinesBySizeGroup[1]).to.have.length(2); // Two rows in this group.
+    expect(scope.rowsOfCardsBySize).to.have.key('1');
+    expect(scope.rowsOfCardsBySize[1]).to.have.length(2); // Two rows in this group.
     expect(scope.cardSizeNamesInDisplayOrder).to.deep.equal(['1']);
 
     cardModels[0].cardSize = 2;
-    expect(scope.cardLinesBySizeGroup).to.have.keys('1', '2');
-    expect(scope.cardLinesBySizeGroup[1]).to.have.length(1); // One row in this group.
-    expect(scope.cardLinesBySizeGroup[2]).to.have.length(1); // One row in this group.
+    expect(scope.rowsOfCardsBySize).to.have.keys('1', '2');
+    expect(scope.rowsOfCardsBySize[1]).to.have.length(1); // One row in this group.
+    expect(scope.rowsOfCardsBySize[2]).to.have.length(1); // One row in this group.
     expect(scope.cardSizeNamesInDisplayOrder).to.deep.equal(['1', '2']);
   });
 

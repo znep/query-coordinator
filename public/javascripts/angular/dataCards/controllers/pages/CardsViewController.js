@@ -42,7 +42,7 @@ angular.module('dataCards.controllers').controller('CardsViewController',
     //       ]
     //  }
     var layout = new SortedTileLayout();
-    var cardLinesBySizeGroup = zipLatestArray(page.cards, 'cardSize').
+    var rowsOfCardsBySize = zipLatestArray(page.cards, 'cardSize').
       map(function(sizedCards) {
         return layout.doLayout(sizedCards);
       });
@@ -54,8 +54,8 @@ angular.module('dataCards.controllers').controller('CardsViewController',
     }));
     $scope.bindObservable('pageDescription', page.description);
 
-    $scope.bindObservable('cardLinesBySizeGroup', cardLinesBySizeGroup);
-    $scope.bindObservable('cardSizeNamesInDisplayOrder', cardLinesBySizeGroup.map(function(sizedCards) {
+    $scope.bindObservable('rowsOfCardsBySize', rowsOfCardsBySize);
+    $scope.bindObservable('cardSizeNamesInDisplayOrder', rowsOfCardsBySize.map(function(sizedCards) {
       // Note that this only works because our card sizes ('1', '2', '3', and '4') sort well
       // lexicographically.
       return _.keys(sizedCards).sort();
@@ -81,6 +81,24 @@ angular.module('dataCards.controllers').controller('CardsViewController',
       var dayInMillisec = 86400000;
       return Math.floor((Date.now() - date.getTime()) / dayInMillisec);
     }));
+
+    var allCardsFilters = page.cards.flatMap(function(cards) {
+      if (!cards) { return Rx.Observable.never(); }
+      return Rx.Observable.combineLatest(_.pluck(cards, 'activeFilters'), function() {
+        return _.zipObject(_.pluck(cards, 'fieldName'), arguments);
+      });
+    });
+    var allCardsWheres = allCardsFilters.map(function(filters) {
+      var wheres = _.map(filters, function(operators, field) {
+        if (_.isEmpty(operators)) {
+          return null;
+        } else {
+          return _.invoke(operators, 'generateSoqlWhereFragment', field).join(' ');
+        }
+      });
+      return _.compact(wheres).join(' AND ');
+    });
+    $scope.bindObservable('globalWhereClauseFragment', allCardsWheres);
 
     $scope.$on('stickyHeaderAvailableContentHeightChanged', function(event, availableContentHeight) {
       event.stopPropagation();

@@ -1,15 +1,15 @@
 @import dataCards/common/fonts
 
-$chart-tick-color: #ccc
+$chart-tick-color: #CCC
 $chart-description-color: darken($chart-tick-color, 30)
 $unfiltered-bar-color: #C2C2C2
 $filtered-bar-color: #676464
 $neutral-bar-color: #676464
-$tick-height: 1rem
 $tooltip-border-color: #333
 $tooltip-name-color: #333
 $tooltip-value-color: #888
-$tooltip-background-color: #ccc
+$tooltip-background-color: #F0F0F0
+$tick-height: 1rem
 
 div.column-chart
 
@@ -79,12 +79,41 @@ div.column-chart
           padding: 5px
 
           div.name
-            white-space: wrap
+            white-space: normal
             color: $tooltip-name-color
+            text-overflow: ellipsis
+            overflow-x: hidden
 
           div.value
-            color: $tooltip-value-color
             font-size: $small-font-size * 1.5
+
+          &.filtered
+            margin-bottom: 10px
+
+            div.name
+              margin-bottom: 0.2rem
+
+            .unfiltered
+              color: $unfiltered-bar-color
+              clear: both
+
+              .label
+                float: left
+              .value
+                float: right
+                text-align: right
+                font-size: $small-font-size
+
+            .filtered
+              color: $filtered-bar-color
+              clear: both
+
+              .label
+                float: left
+              .value
+                float: right
+                text-align: right
+                font-size: $small-font-size
 
       span.tip
         width: 0

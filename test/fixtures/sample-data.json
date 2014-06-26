@@ -345,7 +345,19 @@
                 "flags": [ "public" ]
             }
         ],
+        "privateMetadata": {
+            "custom_fields": {
+                "fieldset_foo": {
+                    "field_bar": "some private custom metadata"
+                }
+            }
+        },
         "metadata": {
+            "custom_fields": {
+                "fieldset_foo": {
+                    "field_bar": "some public custom metadata"
+                }
+            },
             "renderTypeConfig": {
                 "visible": {
                     "table": true

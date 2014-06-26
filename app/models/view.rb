@@ -814,6 +814,10 @@ class View < Model
     user && user_role(user.id).present?
   end
 
+  def can_see_private_meta?
+    rights_include?('update_view')
+  end
+
   def can_edit?
     mutation_rights? && !is_grouped? && !is_api? && !new_backend?
   end
@@ -1244,7 +1248,23 @@ class View < Model
   end
 
   def merged_metadata
-    (data['metadata']|| {}).deep_merge(data['privateMetadata'] || {})
+    merged = (data['metadata'] || {}).deep_merge(data['privateMetadata'] || {})
+    return merged unless merged['custom_fields'].present? && (custom_fields = CurrentDomain.property(:fieldsets, :metadata)).present?
+    # This is a massive hack for CORE-1535.
+    # If a field is set to private in /admin/metadata, do not display it to unsigned users.
+    # If a field is set to public  in /admin/metadata, force it to use the public version.
+    # This means that it is possible to have a public and private value for the same key.
+    # We can call it Schrödinger's Metadata.
+    custom_fields.each do |fieldset|
+      next unless merged['custom_fields'].has_key? fieldset['name']
+      fieldset['fields'].each do |field|
+        next unless merged['custom_fields'][fieldset['name']].has_key? field['name']
+        merged['custom_fields'][fieldset['name']][field['name']] = data['metadata'].fetch('custom_fields', {}).fetch(fieldset['name'], {}).fetch(field['name'], nil) unless field['private'] === true
+        merged['custom_fields'][fieldset['name']].delete(field['name']) unless can_see_private_meta? || field['private'] != true
+      end
+      merged['custom_fields'].delete(fieldset['name']) if merged['custom_fields'][fieldset['name']].empty?
+    end
+    merged
   end
 
   def approval_history_batch(batch_id)

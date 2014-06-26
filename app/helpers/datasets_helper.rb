@@ -225,7 +225,7 @@ module DatasetsHelper
   # This is done by merging the fields
   def merge_custom_metadata(view)
     domain_metadata = CurrentDomain.property(:fieldsets, :metadata) || []
-    if !view.merged_metadata['custom_fields'].nil?
+    if view.merged_metadata['custom_fields'].present?
       domain_metadata = domain_metadata.clone
       view_metadata = view.merged_metadata['custom_fields']
       view_metadata.each do |field_set, fields|

@@ -293,6 +293,39 @@ class ViewTest < Test::Unit::TestCase
     refute view.dataset?, 'dataset? should return false when dataset is a "filtered view" or any other non-table'
   end
 
+  def test_can_see_private_meta
+    view = View.new
+    view.stubs(:data => {'rights' => %w(read write update_view)})
+    assert view.can_see_private_meta?, 'can_see_private_meta? should return true if you have update_view right'
+    view.stubs(:data => {'rights' => %w(read write)})
+    refute view.can_see_private_meta?, 'can_see_private_meta? should return false if you don\'t have update_view right'
+  end
+
+  def test_merged_metadata
+    load_sample_data("test/fixtures/sample-data.json")
+    view = View.find("test-data")
+
+    # private metadata field
+    CurrentDomain.stubs(property: [
+      'name' => 'fieldset_foo',
+      'fields' => [ 'name' => 'field_bar', 'private' => true ]
+    ])
+    view.stubs(can_see_private_meta?: true) # Signed user.
+    assert_equal 'some private custom metadata', view.merged_metadata.fetch('custom_fields', {}).fetch('fieldset_foo', {}).fetch('field_bar', nil), 'Signed user should see private metadata'
+    view.stubs(can_see_private_meta?: false) # Unsigned user.
+    assert_equal nil, view.merged_metadata.fetch('custom_fields', {}).fetch('fieldset_foo', {}).fetch('field_bar', nil), 'Unsigned user should not see private metadata'
+
+    # public metadata field
+    CurrentDomain.stubs(property: [
+      'name' => 'fieldset_foo',
+      'fields' => [ 'name' => 'field_bar' ]
+    ])
+    view.stubs(can_see_private_meta?: true) # Signed user.
+    assert_equal 'some public custom metadata', view.merged_metadata.fetch('custom_fields', {}).fetch('fieldset_foo', {}).fetch('field_bar', nil), 'Signed user should see public metadata'
+    view.stubs(can_see_private_meta?: false) # Unsigned user.
+    assert_equal 'some public custom metadata', view.merged_metadata.fetch('custom_fields', {}).fetch('fieldset_foo', {}).fetch('field_bar', nil), 'Unsigned user should see public metadata'
+  end
+
   private
 
   def stub_core_server_connection

@@ -4,27 +4,27 @@
   <div class="editSection noBorder">
     <div class="line clearfix">
       <label for="app_token_name" class="required"><%= t('screens.profile.edit.app_tokens.application_name') %></label>
-      <%= text_field_tag("app_token[name]", @token.name, :class => 'textPrompt required',
+      <%= text_field_tag("app_token[name]", @token.name, :class => 'textPrompt required', :maxlength => 100,
             :title => t('screens.profile.edit.app_tokens.application_name_prompt')) %>
     </div>
     <div class="line clearfix">
       <label for="app_token_description" class="required"><%= t('screens.profile.edit.app_tokens.description') %></label>
-      <%= text_area_tag("app_token[description]", @token.description, :class => 'textPrompt required',
+      <%= text_area_tag("app_token[description]", @token.description, :class => 'textPrompt required', :maxlength => 100,
             :title => t('screens.profile.edit.app_tokens.description_prompt')) %>
     </div>
     <div class="line clearfix">
       <label for="app_token_organization"><%= t('screens.profile.edit.app_tokens.organization') %></label>
-      <%= text_field_tag("app_token[organization]", @token.organization, :class => 'textPrompt',
+      <%= text_field_tag("app_token[organization]", @token.organization, :class => 'textPrompt', :maxlength => 100,
             :title => t('screens.profile.edit.app_tokens.organization_prompt')) %>
     </div>
     <div class="line clearfix">
       <label for="app_token_website"><%= t('screens.profile.edit.app_tokens.website') %></label>
-      <%= text_field_tag("app_token[website]", @token.website, :class => 'textPrompt url',
+      <%= text_field_tag("app_token[website]", @token.website, :class => 'textPrompt url', :maxlength => 100,
             :title => t('screens.profile.edit.app_tokens.website_prompt')) %>
     </div>
     <div class="line clearfix">
       <label for="app_token_baseUri"><%= t('screens.profile.edit.app_tokens.callback_prefix') %></label>
-      <%= text_field_tag("app_token[baseUri]", @token.baseUri, :class => 'textPrompt url',
+      <%= text_field_tag("app_token[baseUri]", @token.baseUri, :class => 'textPrompt url', :maxlength => 100,
             :title => t('screens.profile.edit.app_tokens.callback_prefix_prompt')) %>
       <p><%= t('screens.profile.edit.app_tokens.callback_prefix_help_html') %></p>
     </div>

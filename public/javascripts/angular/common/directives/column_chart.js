@@ -104,7 +104,7 @@ angular.module('socrataCommon.directives').directive('columnChart', function(Ang
 
       element = $('<div>').addClass('ticks').css('top', $chartScroll.position().top + topMargin + chartTop).css('width', chartWidth);
       _.each(_.uniq([0].concat(verticalScale.ticks(numberOfTicks))), function(tick) {
-        element.append($('<div>').css('top', chartHeight - verticalScale(tick)).text($.toHumaneNumber(tick, 0)));
+        element.append($('<div>').css('top', chartHeight - verticalScale(tick)).text($.toHumaneNumber(tick, 1)));
       });
       element.css('height', chartHeight + topMargin);
       return element;
@@ -277,7 +277,7 @@ angular.module('socrataCommon.directives').directive('columnChart', function(Ang
     $chartScroll.append(labels);
 
     if (chartTruncated) {
-      truncationMarker.css('height', chartHeight).css('top', topMargin - 1).css('line-height', chartHeight  / 4 + 'px').show();
+      truncationMarker.show();
     } else {
       truncationMarker.hide();
     }
@@ -287,7 +287,8 @@ angular.module('socrataCommon.directives').directive('columnChart', function(Ang
     template:
       '<div class="chart-scroll">' +
       '<div class="column-chart-wrapper">' +
-        '<div class="truncation-marker">M O A R</div>' +
+        '<div class="truncation-marker"><span>&raquo;</span></div>' +
+        '<div class="tooltip"><div>Click to expand</div><span class="tip"></span></div>' +
         '</div>' +
       '</div>',
     restrict: 'A',

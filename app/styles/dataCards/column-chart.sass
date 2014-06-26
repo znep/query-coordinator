@@ -1,6 +1,6 @@
 @import dataCards/common/fonts
 
-$chart-tick-color: #CCC
+$chart-tick-color: #BBB
 $chart-description-color: darken($chart-tick-color, 30)
 $unfiltered-bar-color: #C2C2C2
 $filtered-bar-color: #676464
@@ -24,16 +24,44 @@ div.column-chart
 
     div.truncation-marker
       position: absolute
+      bottom: -1.2rem
       right: 0
-      top: 50%
-      height: 100%
-      width: 1em
-      border: 1px solid #aaa
-      text-align: center
       display: none
-      background-color: #aaa
-      color: #eee
-      z-index: 1
+      cursor: pointer
+      color: $chart-tick-color
+
+      span
+        font-size: 1.2rem
+        font-family: sans-serif
+
+      &:hover + div.tooltip
+        display: block
+        span.tip
+          display: block
+
+    div.truncation-marker + div.tooltip
+      pointer-events: none
+      display: none
+      position: absolute
+      border: 1px solid $chart-tick-color
+      color: $chart-tick-color
+      padding: 5px 5px 0 5px
+      background-color: $tooltip-background-color
+      font-size: $small-font-size
+      height: 1rem
+      bottom: 3px
+      right: 1px
+      z-index: 2
+
+      span.tip
+        width: 0
+        display: none
+        border-left: 4px solid transparent
+        border-right: 4px solid transparent
+        border-top: 8px solid $chart-tick-color
+        bottom: -8px
+        position: absolute
+        right: 0
 
     div.field-name
       color: $chart-description-color

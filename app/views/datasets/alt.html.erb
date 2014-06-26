@@ -45,12 +45,8 @@
       <li><a href="<%= publish_dataset_path(@view) %>">Publish Dataset</a></li>
     <%- end -%>
     <%- if @view.can_modify_data? -%>
-      <%- if module_available? :dataset_append -%>
         <li><a href="<%= append_dataset_path(@view) %>">Append Rows via Upload...</a></li>
-      <%- end -%>
-      <%- if module_available? :dataset_refresh -%>
         <li><a href="<%= append_dataset_path(@view) %>?type=replace">Replace Rows via Upload...</a></li>
-      <%- end -%>
     <%- end -%>
     <%- if @view.is_unpublished? && @view.has_rights?('delete') -%>
       <li><a href="<%= delete_working_copy_dataset_path(@view) %>">Delete This Working Copy</a></li>

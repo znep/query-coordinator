@@ -1,3 +1,5 @@
+// Contains extensions to both jQuery as well as Javascript built-in types.
+
 $.fn.dimensions = function() {
   return {width: this.width(), height: this.height() };
 };
@@ -6,6 +8,7 @@ $.fn.dimensions = function() {
 $.fn.observeDimensions = function() {
   var self = this;
   var dimensionsSubject = new Rx.BehaviorSubject(self.dimensions());
+
   self.resize(function() {
     dimensionsSubject.onNext(self.dimensions());
   });
@@ -13,22 +16,23 @@ $.fn.observeDimensions = function() {
   return dimensionsSubject;
 };
 
-$.commaify = function(value)
-{
+$.commaify = function(value) {
   value = value + '';
   var pos = value.indexOf('.');
-  if (pos == -1) { pos = value.length; }
+
+  if (pos == -1) {
+    pos = value.length;
+  }
   pos -= 3;
-  while (pos > 0 && value.charAt(pos - 1) >= "0" && value.charAt(pos - 1) <= "9")
-  {
-    value = value.substring(0, pos) + "," + value.substring(pos);
+  while (pos > 0 && value.charAt(pos - 1) >= '0' && value.charAt(pos - 1) <= '9') {
+    value = value.substring(0, pos) + ',' + value.substring(pos);
     pos -= 3;
   }
+
   return value;
 };
 
-$.toHumaneNumber = function(val, precision)
-{
+$.toHumaneNumber = function(val, precision) {
   var symbol = ['K', 'M', 'B', 'T'];
   var step = 1000;
   var divider = Math.pow(step, symbol.length);
@@ -37,13 +41,10 @@ $.toHumaneNumber = function(val, precision)
 
   val = parseFloat(val);
 
-  for (var i = symbol.length - 1; i >= 0; i--)
-  {
-    if (absVal >= divider)
-    {
+  for (var i = symbol.length - 1; i >= 0; i--) {
+    if (absVal >= divider) {
       result = (absVal / divider).toFixed(precision);
-      if (val < 0)
-      {
+      if (val < 0) {
         result = -result;
       }
       return result + symbol[i];
@@ -52,18 +53,19 @@ $.toHumaneNumber = function(val, precision)
     divider = divider / step;
   }
 
-  return val.toFixed(precision);
+  result = val.toFixed(precision);
+  return result == 0 ? 0 : result;
 };
 
-String.prototype.format = function()
-{
-  var txt = this,
+String.prototype.format = function() {
+  var self = this;
+  var i = arguments.length;
 
-    i = arguments.length;
   while (i--) {
-    txt = txt.replace(new RegExp('\\{' + i + '\\}', 'gm'), arguments[i]);
+    self = self.replace(new RegExp('\\{' + i + '\\}', 'gm'), arguments[i]);
   }
-  return txt;
+
+  return self;
 };
 
 
@@ -74,36 +76,38 @@ String.prototype.capitaliseEachWord = function() {
 };
 
 /* Adapted from http://blog.mastykarz.nl/measuring-the-length-of-a-string-in-pixels-using-javascript/ */
-String.prototype.visualSize = function(fontSize)
-{
-    var $ruler = $('#ruler');
-    if ($ruler.length < 1)
-    {
-        $('body').append('<span class="ruler" id="ruler"></span>');
-        $ruler = $('#ruler');
-    }
-    if (!fontSize) { fontSize = ''; }
-    $ruler.css('font-size', fontSize);
-    $ruler.text(this + '');
-    var obj = {width: $ruler.width(), height: $ruler.height()};
-    $ruler.remove();
-    return obj;
+String.prototype.visualSize = function(fontSize) {
+  var $ruler = $('#ruler');
+  var dimensions;
+
+  if ($ruler.length < 1) {
+    $('body').append('<span class="ruler" id="ruler"></span>');
+    $ruler = $('#ruler');
+  }
+  if (!fontSize) {
+    fontSize = '';
+  }
+  $ruler.css('font-size', fontSize);
+  $ruler.text(this + '');
+  dimensions = { width: $ruler.width(), height: $ruler.height() };
+  $ruler.remove();
+
+  return dimensions;
 };
 
-String.prototype.visualHeight = function(fontSize)
-{
-    return this.visualSize(fontSize).height;
+String.prototype.visualHeight = function(fontSize) {
+  return this.visualSize(fontSize).height;
 };
 
-String.prototype.visualLength = function(fontSize)
-{
-    return this.visualSize(fontSize).width;
+String.prototype.visualLength = function(fontSize) {
+  return this.visualSize(fontSize).width;
 };
+
 $.relativeToPx = function(rems) {
-  var $div = $(document.createElement('div')).
-    css('width', rems).
-    appendTo(document.body);
+  var $div = $(document.createElement('div')).css('width', rems).appendTo(document.body);
   var width = $div.width();
+
   $div.remove();
+
   return width;
-}
+};

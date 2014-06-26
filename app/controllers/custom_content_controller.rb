@@ -160,14 +160,12 @@ class CustomContentController < ApplicationController
       current_locale: I18n.locale,
       available_locales: request.env['socrata.available_locales']
     })
-    if CurrentDomain.module_available?('canvas2')
-      if @page_override.nil?
-        @page, @vars = Page[path, page_ext, @current_user]
-      else
-        @page = @page_override
-        @vars = {}
-      end
 
+    if @page_override.nil?
+      @page, @vars = Page[path, page_ext, @current_user]
+    else
+      @page = @page_override
+      @vars = {}
     end
 
     if CurrentDomain.module_enabled?(:govStat)
@@ -377,7 +375,7 @@ class CustomContentController < ApplicationController
 
   before_filter :only => [:template] { |c| c.require_right(:create_pages) }
   def template
-    @templet = Template[params[:id]] if CurrentDomain.module_available?('canvas2')
+    @templet = Template[params[:id]]
     return(render_404) unless @templet
   end
 

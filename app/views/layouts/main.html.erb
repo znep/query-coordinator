@@ -210,8 +210,6 @@ http://www.socrata.com
       blist.configuration.maintenance_message = '<%= escape_javascript DOWNTIME.html %>';
     <%- end -%>
 
-    blist.configuration.canvasAvailable = <%= module_available?(:canvas2) %>;
-
     <%- if !@suppress_chrome -%>
     try {
       if ((self !== top) && (self.location.hostname !== top.location.hostname))

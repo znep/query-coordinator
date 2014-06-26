@@ -433,7 +433,7 @@
                     name: 'displayOrder', showIfData: true,
                     onlyIf: {func: function(c)
                     {
-                        if (!blist.configuration.canvasAvailable || $.isBlank(c)) { return false; }
+                        if ($.isBlank(c)) { return false; }
                         return c.origColumn.renderTypeName == 'text';
                     }},
                     fields: [

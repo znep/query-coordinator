@@ -27,6 +27,7 @@ angular.module('dataCards.directives').directive('cardVisualizationColumnChart',
       $scope.bindObservable('unFilteredData', unFilteredData);
       $scope.bindObservable('filteredData', filteredData);
       $scope.bindObservable('fieldName', model.pluck('fieldName'));
+      $scope.bindObservable('expanded', model.pluckSwitch('expanded'));
     }
   };
 

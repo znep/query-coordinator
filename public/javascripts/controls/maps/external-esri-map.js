@@ -362,7 +362,7 @@
         {
             return this._displayLayer.getInitialExtent();
         }
-    }, {}, 'socrataDataLayer', 'tiledata');
+    }, { showRowLink: false }, 'socrataDataLayer', 'tiledata');
 
     var transformFilterToLayerDefinition = function(view, featureLayer)
     {

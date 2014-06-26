@@ -38,13 +38,11 @@
             {:action => 'views'} %>
       </li>
     <%- end -%>
-    <%- if CurrentDomain.user_can?(current_user, :edit_sdp) && module_available?(:sdp_customizer) -%>
       <li class="appearance">
         <%= link_to_unless_current \
             raw('<span class="icon"></span>SDP Templates'),
             {:action => 'sdp_templates'} %>
       </li>
-    <%- end -%>
     <%- unless CurrentDomain.module_enabled?(:govStat) -%>
       <%- if CurrentDomain.user_can?(current_user, :edit_pages) && module_available?(:canvas_designer) -%>
         <li class="contentmgmt">

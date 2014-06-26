@@ -54,7 +54,6 @@
           </span>
       </li>
     <%- end -%>
-    <%- if CurrentDomain.user_can?(current_user, :edit_sdp) && module_available?(:sdp_customizer) -%>
       <li class="appearance">
         <%= link_to raw('<span class="icon"></span>SDP Templates'),
             {:action => 'sdp_templates'} %>
@@ -62,7 +61,6 @@
           Manage and customize the templates used for publishing your data via Socrata Data Players
         </span>
       </li>
-    <%- end -%>
     <%- if CurrentDomain.user_can?(current_user, :edit_pages) && module_available?(:canvas_designer) -%>
       <li class="contentmgmt">
         <%= link_to raw('<span class="icon"></span>DataSlate Pages'),

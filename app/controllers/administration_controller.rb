@@ -262,7 +262,6 @@ class AdministrationController < ApplicationController
   #
 
   before_filter :only => [:sdp_templates, :sdp_template_create, :sdp_template, :sdp_set_default_template, :sdp_delete_template] {|c| c.check_auth_level('edit_sdp')}
-  before_filter :only => [:sdp_templates, :sdp_template_create, :sdp_template, :sdp_set_default_template, :sdp_delete_template] {|c| c.check_module('sdp_customizer')}
   def sdp_templates
     @templates = WidgetCustomization.find.reject{ |t| t.hidden }
     @default_template_id = CurrentDomain.default_widget_customization_id

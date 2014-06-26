@@ -1,7 +1,7 @@
 class IntercessioController < ApplicationController
 
   def request_async
-    CurrentDomain.module_available?('intercessio') or return render_404
+    CurrentDomain.module_enabled?('intercessio') or return render_404
     path = /\/intercessio\/request\/(.*)/.match(request.fullpath)[1]
     Rails.logger.info("Requesting " + path + " asynchronously")
     result = Intercessio::Connection.new().request(path, request.headers, @current_user)
@@ -16,7 +16,7 @@ class IntercessioController < ApplicationController
   end
 
   def request_status
-    CurrentDomain.module_available?('intercessio') or return render_404
+    CurrentDomain.module_enabled?('intercessio') or return render_404
     @token = params[:token]
     # bad request on invalid token
     if invalid_token(@token)
@@ -37,7 +37,7 @@ class IntercessioController < ApplicationController
   # Provides the bytes of the requested document, or a mildly disturbing error
   # page
   def request_receive
-    CurrentDomain.module_available?('intercessio') or return render_404
+    CurrentDomain.module_enabled?('intercessio') or return render_404
     @token = params[:token]
     # bad request on invalid token
     if invalid_token(@token)

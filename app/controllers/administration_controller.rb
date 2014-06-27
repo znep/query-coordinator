@@ -367,7 +367,7 @@ class AdministrationController < ApplicationController
   #
 
   before_filter :only => [:federations, :delete_federation, :accept_federation, :reject_federation, :create_federation] {|c| c.check_auth_level('federations')}
-  before_filter :only => [:federations, :delete_federation, :accept_federation, :reject_federation, :create_federation] {|c| c.check_module('federations')}
+  before_filter :only => [:federations, :delete_federation, :accept_federation, :reject_federation, :create_federation] {|c| c.check_module_available('federations')}
   def federations
     if (params[:dataset].nil?)
       @federations = Federation.find
@@ -1085,6 +1085,9 @@ public
   end
   def check_module(mod)
     return run_access_check{CurrentDomain.module_enabled?(mod)}
+  end
+  def check_module_available(mod)
+    return run_access_check{CurrentDomain.module_available?(mod)}
   end
   def check_feature(feature)
     return run_access_check{CurrentDomain.feature?(feature)}

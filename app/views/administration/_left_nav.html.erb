@@ -17,7 +17,7 @@
             {:action => 'users'} %>
       </li>
     <%- end -%>
-    <%- if CurrentDomain.user_can?(current_user, :federations) && module_enabled?(:federations) -%>
+    <%- if CurrentDomain.user_can?(current_user, :federations) && module_available?(:federations) -%>
       <li class="federation">
         <%= link_to_unless_current \
             raw('<span class="icon"></span>Federation'),

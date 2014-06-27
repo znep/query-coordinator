@@ -25,7 +25,7 @@
         </span>
       </li>
     <%- end -%>
-    <%- if CurrentDomain.user_can?(current_user, :federations) && module_enabled?(:federations) -%>
+    <%- if CurrentDomain.user_can?(current_user, :federations) && module_available?(:federations) -%>
       <li class="federation">
         <%= link_to raw('<span class="icon"></span>Federation'),
             {:action => 'federations'} %>

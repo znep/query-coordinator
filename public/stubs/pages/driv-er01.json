@@ -10,54 +10,54 @@
   "pageSource": "admin",
   "cards": [
     {
-      "description": "",
-      "fieldName": "license",
-      "cardSize": "3",
-      "cardCustomStyle": {},
-      "expandedCustomStyle": {},
-      "displayMode": "visualization",
-      "expanded": false
-    },
-    {
-      "description": "",
-      "fieldName": "name",
-      "cardSize": "3",
-      "cardCustomStyle": {},
-      "expandedCustomStyle": {},
-      "displayMode": "visualization",
-      "expanded": false
-    },
-    {
-      "description": "",
+      "description": "Driver Type",
       "fieldName": "driver_type",
-      "cardSize": "2",
+      "cardSize": 2,
       "cardCustomStyle": {},
       "expandedCustomStyle": {},
       "displayMode": "visualization",
       "expanded": false
     },
     {
-      "description": "",
+      "description": "Status",
       "fieldName": "status",
-      "cardSize": "2",
+      "cardSize": 2,
       "cardCustomStyle": {},
       "expandedCustomStyle": {},
       "displayMode": "visualization",
       "expanded": false
     },
     {
-      "description": "",
+      "description": "License Type",
       "fieldName": "license_type",
-      "cardSize": "2",
+      "cardSize": 2,
       "cardCustomStyle": {},
       "expandedCustomStyle": {},
       "displayMode": "visualization",
       "expanded": false
     },
     {
-      "description": "",
+      "description": "Sex",
       "fieldName": "sex",
-      "cardSize": "2",
+      "cardSize": 2,
+      "cardCustomStyle": {},
+      "expandedCustomStyle": {},
+      "displayMode": "visualization",
+      "expanded": false
+    },
+    {
+      "description": "License",
+      "fieldName": "license",
+      "cardSize": 1,
+      "cardCustomStyle": {},
+      "expandedCustomStyle": {},
+      "displayMode": "visualization",
+      "expanded": false
+    },
+    {
+      "description": "Name",
+      "fieldName": "name",
+      "cardSize": 1,
       "cardCustomStyle": {},
       "expandedCustomStyle": {},
       "displayMode": "visualization",

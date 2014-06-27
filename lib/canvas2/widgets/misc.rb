@@ -998,7 +998,7 @@ module Canvas2
           datasets: { limitTo: 'tables', datasetView: 'dataset' },
           filters: { limitTo: 'tables', datasetView: 'view' }
         }.with_indifferent_access
-        js_data[:hasApi] = module_available?(:api_foundry)
+        js_data[:hasApi] = module_enabled?(:api_foundry)
       when 'categories' then
         facet = categories_facet
         cur_val = (search['category'] || '').titleize_if_necessary

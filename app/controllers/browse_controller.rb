@@ -64,7 +64,7 @@ class BrowseController < ApplicationController
     # Proxy info for domain needed for catalog
     respond_to do |format|
       format.data { render :json => { id: CurrentDomain.domain.id, cname: CurrentDomain.cname,
-        hasApi: module_available?(:api_foundry) }.to_json }
+        hasApi: module_enabled?(:api_foundry) }.to_json }
     end
   end
 

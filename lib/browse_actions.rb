@@ -23,7 +23,7 @@ protected
         {:text => t('controls.browse.facets.view_types.blob'), :value => 'blob', :class => 'typeBlob'},
         {:text => t('controls.browse.facets.view_types.forms'), :value => 'forms', :class => 'typeForm'}]
     }
-    if (module_available?(:api_foundry))
+    if (module_enabled?(:api_foundry))
       vts[:options] << {:text => t('controls.browse.facets.view_types.apis'), :value => 'apis', :class => 'typeApi'}
     end
     view_types = CurrentDomain.property(:view_types_facet, :catalog)

@@ -136,7 +136,7 @@
      </div>
 
     <h2><%= t('screens.edit_metadata.api_endpoint') %></h2>
-    <%- if module_available?(:api_foundry)-%>
+    <%- if module_enabled?(:api_foundry)-%>
      <div class="line clearfix">
        <label for="view_resourceName"><%= t('screens.edit_metadata.resource_name') %></label>
        <%= text_field_tag("view[resourceName]", @view.resourceName, :title => t('screens.edit_metadata.resource_name_prompt'), :class => "textPrompt") %>

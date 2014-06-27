@@ -347,7 +347,7 @@ module DatasetsHelper
   end
 
   def hide_api_foundry?
-    !module_available?(:api_foundry) || (!view.is_blist? && !view.is_api?) ||
+    !module_enabled?(:api_foundry) || (!view.is_blist? && !view.is_api?) ||
       !view.is_published? || !view.has_rights?('update_view') || !view.can_publish? ||
       view.new_backend?
   end

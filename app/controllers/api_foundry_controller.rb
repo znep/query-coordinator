@@ -41,7 +41,7 @@ class ApiFoundryController < ApplicationController
   end
 
   def setThrottle
-    return render_404 if !module_available?(:api_foundry)
+    return render_404 if !module_enabled?(:api_foundry)
     method = 'setViewThrottle'
     if params['appToken'].nil?
       method = 'setViewAnonThrottle'
@@ -58,7 +58,7 @@ class ApiFoundryController < ApplicationController
   end
 
   def rmThrottle
-    return render_404 if !module_available?(:api_foundry)
+    return render_404 if !module_enabled?(:api_foundry)
     path = "/views/#{params[:id]}/apiThrottle.json?method=removeViewThrottle&" + params.to_param
     coreResponse = CoreServer::Base.connection.delete_request(path)
     respond_to do |format|
@@ -108,7 +108,7 @@ private
     if @view.nil?
       #if the view is nil, the get_view will already have rendered a 404
       return false
-    elsif !module_available?(:api_foundry)
+    elsif !module_enabled?(:api_foundry)
       render_404()
       return false
     elsif @view.publicationStage != 'published' && @view.publicationStage != 'unpublished'

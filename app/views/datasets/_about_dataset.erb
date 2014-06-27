@@ -39,7 +39,7 @@
     </div>
   </div>
 
-  <%- if module_available?(:routing_approval) && current_user.present? &&
+  <%- if module_enabled?(:routing_approval) && current_user.present? &&
     (current_user.can_approve? || @view.has_rights?('update_view')) -%>
   <%- approval = Approval.find()[0] -%>
   <%- if approval.present? -%>

@@ -63,7 +63,7 @@ $(function() {
     {
         if (!$.isBlank(user) && (user.hasRight('edit_pages') || user.id == blist.configuration.page.owner ||
                 user.id == (blist.configuration.page.owner || {}).id) &&
-            blist.configuration.designerAvailable)
+            blist.configuration.designerEnabled)
         {
             $(document.body).addClass('socrata-page');
             $.cf.top();

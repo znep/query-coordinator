@@ -3,7 +3,7 @@
   blist.assets = {libraries: <%= raw ASSET_MAP.javascripts %>, stylesheets: <%= raw stylesheet_assets.to_json %>};
   blist.namespace.fetch('blist.configuration');
   blist.configuration.development = <%= Rails.env.development? %>;
-  blist.configuration.designerAvailable = <%= module_available?(:canvas_designer) &&
+  blist.configuration.designerAvailable = <%= module_enabled?(:canvas_designer) &&
     !local_assigns[:non_editable] && !page.uneditable &&
     # HACK
     (page.path.start_with?('/reports/') || !module_enabled?(:govStat)) %>;

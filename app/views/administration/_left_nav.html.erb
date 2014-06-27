@@ -17,7 +17,7 @@
             {:action => 'users'} %>
       </li>
     <%- end -%>
-    <%- if CurrentDomain.user_can?(current_user, :federations) && module_available?(:federations) -%>
+    <%- if CurrentDomain.user_can?(current_user, :federations) && module_enabled?(:federations) -%>
       <li class="federation">
         <%= link_to_unless_current \
             raw('<span class="icon"></span>Federation'),
@@ -44,7 +44,7 @@
             {:action => 'sdp_templates'} %>
       </li>
     <%- unless CurrentDomain.module_enabled?(:govStat) -%>
-      <%- if CurrentDomain.user_can?(current_user, :edit_pages) && module_available?(:canvas_designer) -%>
+      <%- if CurrentDomain.user_can?(current_user, :edit_pages) && module_enabled?(:canvas_designer) -%>
         <li class="contentmgmt">
           <%= link_to_unless_current \
               raw('<span class="icon"></span>DataSlate Pages'),
@@ -76,7 +76,7 @@
             {:action => 'metadata'} %>
       </li>
     <%- end -%>
-    <%- if module_available?(:routing_approval) && current_user.can_approve? -%>
+    <%- if module_enabled?(:routing_approval) && current_user.can_approve? -%>
       <li class="routingApproval">
         <%= link_to_unless_current raw('<span class="icon"></span>Dataset Routing &amp; Approval'),
             {:action => 'routing_approval'} %>

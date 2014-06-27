@@ -30,9 +30,9 @@
         { icon: 'searchbarcode', translateKey: 'metadata', href: '/admin/metadata',
           right: :edit_site_theme },
         { icon: 'contract', translateKey: 'federations', href: '/admin/federations',
-          right: :federations, module_available: :federations },
+          right: :federations, module_enabled: :federations },
         { icon: 'check', translateKey: 'routing', href: '/admin/routing_approval',
-          module_available: :routing_approval } # current_user.can_approve?
+          module_enabled: :routing_approval } # current_user.can_approve?
       ]
     }, {
       title: t("#{prefix}.appearance"),
@@ -61,8 +61,7 @@
         <%
           relevant_links = cat[:links].reject do |link|
             (link[:right].present? and !CurrentDomain.user_can?(current_user, link[:right])) or
-            (link[:module_available].present? and !CurrentDomain.module_available?(link[:module_available])) or
-            (link[:module_enabled].present? and !CurrentDomain.module_available?(link[:module_enabled])) or
+            (link[:module_enabled].present? and !CurrentDomain.module_enabled?(link[:module_enabled])) or
             (link[:feature].present? and !CurrentDomain.feature?(link[:feature]))
           end
 

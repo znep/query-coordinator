@@ -25,7 +25,7 @@
         </span>
       </li>
     <%- end -%>
-    <%- if CurrentDomain.user_can?(current_user, :federations) && module_available?(:federations) -%>
+    <%- if CurrentDomain.user_can?(current_user, :federations) && module_enabled?(:federations) -%>
       <li class="federation">
         <%= link_to raw('<span class="icon"></span>Federation'),
             {:action => 'federations'} %>
@@ -61,7 +61,7 @@
           Manage and customize the templates used for publishing your data via Socrata Data Players
         </span>
       </li>
-    <%- if CurrentDomain.user_can?(current_user, :edit_pages) && module_available?(:canvas_designer) -%>
+    <%- if CurrentDomain.user_can?(current_user, :edit_pages) && module_enabled?(:canvas_designer) -%>
       <li class="contentmgmt">
         <%= link_to raw('<span class="icon"></span>DataSlate Pages'),
             {:action => 'canvas_pages'} %>
@@ -100,7 +100,7 @@
         </span>
       </li>
     <%- end -%>
-    <%- if module_available?(:routing_approval) && current_user.can_approve? -%>
+    <%- if module_enabled?(:routing_approval) && current_user.can_approve? -%>
       <li class="routingApproval">
         <%= link_to raw('<span class="icon"></span>Dataset Routing &amp; Approval'),
             {:action => 'routing_approval'} %>

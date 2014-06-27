@@ -26,21 +26,23 @@ div.column-chart
       position: absolute
       bottom: -1.2rem
       right: 0
-      display: none
       cursor: pointer
       color: $chart-tick-color
+      width: auto
+      height: auto
+      font-size: 1.2rem
+      font-family: sans-serif
 
-      span
-        font-size: 1.2rem
-        font-family: sans-serif
+    div.truncation-marker:hover
+      display: block
 
-      &:hover + div.tooltip
+      & + div.tooltip
         display: block
+
         span.tip
           display: block
 
     div.truncation-marker + div.tooltip
-      pointer-events: none
       display: none
       position: absolute
       border: 1px solid $chart-tick-color

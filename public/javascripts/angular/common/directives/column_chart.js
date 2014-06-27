@@ -277,18 +277,18 @@ angular.module('socrataCommon.directives').directive('columnChart', function(Ang
     $chartScroll.append(labels);
 
     if (chartTruncated) {
-      truncationMarker.show();
+      truncationMarker.css('display', 'block');
     } else {
-      truncationMarker.hide();
+      truncationMarker.css('display', 'none');
     }
   };
 
   return {
     template:
       '<div class="chart-scroll">' +
-      '<div class="column-chart-wrapper">' +
-        '<div class="truncation-marker"><span>&raquo;</span></div>' +
-        '<div class="tooltip"><div>Click to expand</div><span class="tip"></span></div>' +
+        '<div class="column-chart-wrapper">' +
+          '<div class="truncation-marker">&raquo;</div>' +
+          '<div class="tooltip"><div>Click to expand</div><span class="tip"></span></div>' +
         '</div>' +
       '</div>',
     restrict: 'A',

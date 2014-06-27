@@ -8,7 +8,7 @@
   "columns": [
     {
       "name": "location_description",
-      "title": "Ward where crime was committed.",
+      "title": "Where crime was committed.",
       "description": "Where most of the beat-up baddies were left by Batman. Long description is long Long description is long Long description is long Long description is long Long description is long Long description is long Long description is long Long description is long Long description is long Long description is long Long description is long Long description is long Long description is long Long description is long Long description is long Long description is long Long description is long Long description is long Long description is long Long description is long Long description is long Long description is long Long description is long Long description is long Long description is long Long description is long Long description is long Long description is long ",
       "logicalDatatype": "category",
       "physicalDatatype": "text",
@@ -31,9 +31,9 @@
       "importance": 3
     },
     {
-      "name": "location",
-      "title": "Number of arrests made",
-      "description": "The number of people who failed to evade Batman.",
+      "name": "ward",
+      "title": "Ward where crime was committed.",
+      "description": "Batman has bigger fish to fry sometimes, you know.",
       "logicalDatatype": "location",
       "physicalDatatype": "text",
       "importance": 2

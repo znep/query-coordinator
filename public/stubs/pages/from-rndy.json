@@ -26,6 +26,10 @@
       "expandedCustomStyle": {},
       "displayMode": "visualization",
       "expanded": false
+    },
+    {
+      "description": "All Data",
+      "fieldName": "*"
     }
   ]
 }

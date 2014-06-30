@@ -99,6 +99,11 @@ class DatasetsController < ApplicationController
       end
       needs_view_js @view.modifyingViewUid, parent_view
     end
+
+    unless @current_user
+      response.headers['Cache-Control'] = "public, max-age=86400"
+    end
+
   end
 
   def blob

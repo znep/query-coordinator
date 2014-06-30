@@ -570,7 +570,7 @@ class View < Model
       when 'custom' then
         assetId = featured_view['assetId']
         if assetId.start_with?('fileId:')
-          return "/api/views/#{featured_view['viewId']}/files/#{assetId.split(':')[1]}?s=feaured"
+          return "/api/views/#{featured_view['viewId']}/files/#{assetId.split(':')[1]}?s=featured"
         else
           return "/api/assets/#{assetId}?s=featured"
         end

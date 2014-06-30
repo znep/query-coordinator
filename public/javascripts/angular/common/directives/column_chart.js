@@ -171,7 +171,7 @@ angular.module('socrataCommon.directives').directive('columnChart', function($pa
       // Bars are composed of a bar group and two bars (total and filtered).
 
       // ENTER PROCESSING
-      
+
       // Create bar groups.
       selection.enter().
         append('div').
@@ -232,7 +232,7 @@ angular.module('socrataCommon.directives').directive('columnChart', function($pa
         classed('active', function(d) { return horizontalBarPosition(d) < chartWidth - truncationMarkerWidth; });
 
       tooltips.call(updateTooltip);
-  
+
       // EXIT PROCESSING
       selection.exit().remove();
     };
@@ -270,6 +270,12 @@ angular.module('socrataCommon.directives').directive('columnChart', function($pa
     },
     link: function(scope, element, attrs) {
       AngularRxExtensions.install(scope);
+
+      $(element.parent().delegate('.truncation-marker', 'click', function(event) {
+        scope.$apply(function() {
+          scope.$emit('column-chart:truncation-marker-clicked', event);
+        });
+      }));
 
       Rx.Observable.subscribeLatest(
         element.closest('.card').observeDimensions(),

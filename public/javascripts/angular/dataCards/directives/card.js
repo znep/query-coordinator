@@ -34,39 +34,31 @@ angular.module('dataCards.directives').directive('card', function(AngularRxExten
       AngularRxExtensions.install($scope);
 
       var content = element.find('div.card');
-      var model = $scope.observe('model');
-      var dataset = model.pluck('page').pluckSwitch('dataset');
+      var modelSubject = $scope.observe('model');
+      var dataset = modelSubject.pluck('page').pluckSwitch('dataset');
 
-      var cardType = model.pluck('fieldName').combineLatest(dataset.pluckSwitch('columns'),
+      var cardType = modelSubject.pluck('fieldName').combineLatest(dataset.pluckSwitch('columns'),
         function(cardField, datasetFields) {
           var column = datasetFields[cardField];
           return cardTypeMapping(column);
         }
       );
       var columns = dataset.pluckSwitch('columns');
-      var column = model.pluck('fieldName').combineLatest(columns, function(fieldName, columns) {
+      var column = modelSubject.pluck('fieldName').combineLatest(columns, function(fieldName, columns) {
         return columns[fieldName];
       });
 
       $scope.descriptionCollapsed = true;
 
       $scope.bindObservable('cardType', cardType);
-      $scope.bindObservable('expanded', model.pluckSwitch('expanded'));
-      $scope.bindObservable('cardSize', model.pluckSwitch('cardSize'));
+      $scope.bindObservable('expanded', modelSubject.pluckSwitch('expanded'));
+      $scope.bindObservable('cardSize', modelSubject.pluckSwitch('cardSize'));
 
       $scope.bindObservable('title', column.pluck('title'));
       $scope.bindObservable('description', column.pluck('description'));
 
       $scope.toggleExpanded = function() {
-        // NOTE: For the MVP, we only ever allow one expanded card.
-        // Enforce that here.
-        _.each($scope.model.page.cards.value, function(card) {
-          if (card !== $scope.model) {
-            card.expanded = false;
-          }
-        });
-
-        $scope.model.expanded = !$scope.expanded;// TODO Determine if IDE warning "Value assigned to primitive will be lost" is a red herring
+        $scope.model.page.toggleExpanded($scope.model);
       };
 
       var descriptionTruncatedContent = content.find('.description-truncated-content');

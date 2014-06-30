@@ -18,6 +18,7 @@ angular.module('socrataCommon.directives').directive('columnChart', function($pa
     var numberOfBars = chartData.length;
     var truncationMarker = element.find('.truncation-marker');
     var truncationMarkerWidth = truncationMarker.width();
+    var undefinedPlaceholder = '(Undefined)';
 
     if (chartWidth <= 0) {
       return;
@@ -26,7 +27,7 @@ angular.module('socrataCommon.directives').directive('columnChart', function($pa
     // Compute chart margins
     if (expanded) {
       var maxLength = _.max(chartData.map(function(item) {
-        return item.name.capitaliseEachWord().visualLength('0.75rem');
+        return $.capitalizeWithDefault(item.name, undefinedPlaceholder).visualLength('0.75rem');
       }));
       bottomMargin = (maxLength + $.relativeToPx('1.0rem')) / Math.sqrt(2);
     } else {
@@ -132,7 +133,7 @@ angular.module('socrataCommon.directives').directive('columnChart', function($pa
             $tip.css('left', Math.max(0, tipOffset));
           }
 
-          $tooltip.find('.name').text(d.name.capitaliseEachWord());
+          $tooltip.find('.name').text($.capitalizeWithDefault(d.name, undefinedPlaceholder));
           $tooltip.find('.value-unfiltered .value').text($.commaify(d.total));
           $tooltip.find('.value-filtered .value').text($.commaify(d.filtered));
         });
@@ -147,9 +148,9 @@ angular.module('socrataCommon.directives').directive('columnChart', function($pa
       for (var i = 0; i < numberOfLabels; i++) {
         var label = $('<span>').
           css('top', numberOfLabels - 0.5 - i + 'rem').
-          text(chartData[i].name.capitaliseEachWord());
+          text($.capitalizeWithDefault(chartData[i].name, undefinedPlaceholder));
         var labelContainer = $('<div>').
-            css('left', horizontalScale(chartData[i].name) - centering - 1).
+          css('left', horizontalScale(chartData[i].name) - centering - 1).
           append(label);
         if (!expanded) {
           labelContainer.css('height', (numberOfLabels - i) + 'rem');
@@ -171,7 +172,7 @@ angular.module('socrataCommon.directives').directive('columnChart', function($pa
       // Bars are composed of a bar group and two bars (total and filtered).
 
       // ENTER PROCESSING
-      
+
       // Create bar groups.
       selection.enter().
         append('div').
@@ -232,7 +233,7 @@ angular.module('socrataCommon.directives').directive('columnChart', function($pa
         classed('active', function(d) { return horizontalBarPosition(d) < chartWidth - truncationMarkerWidth; });
 
       tooltips.call(updateTooltip);
-  
+
       // EXIT PROCESSING
       selection.exit().remove();
     };

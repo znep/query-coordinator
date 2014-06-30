@@ -68,7 +68,6 @@ String.prototype.format = function() {
   return self;
 };
 
-
 String.prototype.capitaliseEachWord = function() {
   return this.split(' ').map(function(word) {
     return word.charAt(0).toUpperCase() + word.slice(1).toLowerCase();
@@ -110,4 +109,13 @@ $.relativeToPx = function(rems) {
   $div.remove();
 
   return width;
+};
+
+$.isBlank = function(value) {
+  return _.isUndefined(value) || _.isNull(value) || value === '';
+};
+
+$.capitalizeWithDefault = function(value, placeHolder) {
+  placeHolder = placeHolder || '(Blank)';
+  return $.isBlank(value) ? placeHolder : value.capitaliseEachWord();
 };

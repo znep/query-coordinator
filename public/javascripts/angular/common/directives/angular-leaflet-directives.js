@@ -474,6 +474,8 @@
                   if (leafletHelpers.LabelPlugin.isLoaded() && isDefined(geojson.label)) {
                     layer.bindLabel(feature.properties.description);
                   }
+                  // initialize highlighted flag. Applies to toggle highlighting.
+                  layer.highlighted = false;
                   layer.on({
                     mouseover: function (e) {
                       safeApply(leafletScope, function () {
@@ -491,17 +493,18 @@
                       });
                     },
                     click: function (e) {
-                      if (resetStyleOnGeojsonClick && lastLayerClicked) {
-                        leafletGeoJSON.resetStyle(lastLayerClicked);
-                      }
                       safeApply(leafletScope, function () {
                         geojson.selected = feature;
-                        $rootScope.$broadcast('leafletDirectiveMap.geojsonClick', geojson.selected, e);
-                        lastLayerClicked = e.target;
+                        if (resetStyleOnGeojsonClick) {
+                          $rootScope.$broadcast('leafletDirectiveMap.geojsonClick', geojson.selected, e, leafletGeoJSON);
+                        } else {
+                          $rootScope.$broadcast('leafletDirectiveMap.geojsonClick', geojson.selected, e);
+                        }
                       });
                     },
                     dblclick: function(e) {
                       // SOCRATA: extend to handle double click
+                      console.log('double click')
                       if (zoomOnDoubleClick) {
                         map.zoomIn();
                       }

@@ -56,4 +56,20 @@ describe('jquery_extensions', function() {
       });
     });
   });
+
+  describe('when trying to capitalize words', function() {
+
+    it('should capitalize the words when they are present', function() {
+      expect($.capitalizeWithDefault('these are some WORDS')).to.equal('These Are Some Words');
+    });
+
+    it('should use the placeholder when the words are blank', function() {
+      expect($.capitalizeWithDefault('', 'placeholder')).to.equal('placeholder');
+    });
+
+    it('should use a default placeholder when none is specified', function() {
+      expect($.capitalizeWithDefault('')).to.equal('(Blank)');
+    });
+
+  });
 });

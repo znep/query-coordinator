@@ -19,6 +19,7 @@
   <div ng-switch="cardType">
     <card-visualization-column-chart ng-switch-when="column" model="model" where-clause="whereClause"></card-visualization-column-chart>
     <card-visualization-choropleth ng-switch-when="choropleth" model="model" where-clause="whereClause"></card-visualization-choropleth>
+    <card-visualization-table ng-switch-when="table" model="model" where-clause="whereClause"></card-visualization-table>
     <div ng-switch-default>I dunno how to display {{cardType}} :(</div>
   </div>
   <div class="expandButton"><a title="Expand Card" ng-click="toggleExpanded()"></a></div>

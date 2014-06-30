@@ -32,6 +32,14 @@
       "expandedCustomStyle": {},
       "displayMode": "visualization",
       "expanded": false
+    },
+    {
+      "fieldName": "*",
+      "cardSize": 3,
+      "cardCustomStyle": {},
+      "expandedCustomStyle": {},
+      "displayMode": "visualization",
+      "expanded": false
     }
   ]
 }

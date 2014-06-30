@@ -3,7 +3,6 @@ angular.module('dataCards.directives').directive('card', function(AngularRxExten
   //TODO should probably be a service. And not suck.
   var cardTypeMapping = function(column) {
     column = column || {};
-
     var logicalType = column.logicalDatatype;
     var physicalType = column.physicalDatatype;
     if (logicalType === 'category') {
@@ -21,7 +20,7 @@ angular.module('dataCards.directives').directive('card', function(AngularRxExten
       if (physicalType === 'text' || physicalType === 'number') {
         return 'search';
       }
-    }
+    } else if (logicalType === '*') { return 'table'; }
     throw new Error('Unknown visualization for logicalDatatype: ' + logicalType +
       ' and physicalDatatype: ' + physicalType);
   };

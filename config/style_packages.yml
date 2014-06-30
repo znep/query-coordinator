@@ -17,6 +17,7 @@ angular-app-dataCards:
 - dataCards/_leaflet
 - dataCards/choropleth
 - dataCards/column-chart
+- dataCards/table
 
 includes:
 - sass-common

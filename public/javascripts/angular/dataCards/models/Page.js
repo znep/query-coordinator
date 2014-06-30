@@ -26,7 +26,6 @@ angular.module('dataCards.models').factory('Page', function(Dataset, Card, Model
         return new Dataset(data.datasetId);
       });
     });
-
     ModelHelper.addPropertyWithLazyDefault('cards', this, function() {
       return baseInfoPromise().then(function(data) {
         return _.map(data.cards, function(serializedCard) {

@@ -27,3 +27,7 @@
   white-space: nowrap;
   text-align: left;
 }
+
+.table-body {
+    overflow: auto;
+}

@@ -29,7 +29,12 @@
     },
     {
       "description": "All Data",
-      "fieldName": "*"
+      "fieldName": "*", 
+      "cardSize": 1,
+      "cardCustomStyle": {},
+      "expandedCustomStyle": {},
+      "displayMode": "visualization",
+      "expanded": false
     }
   ]
 }

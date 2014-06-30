@@ -129,4 +129,20 @@ describe('column_chart', function() {
       expect($('.bar-group').length).to.equal(0);
     });
   });
+  describe('when the truncation marker is clicked', function() {
+
+    it('should expand the chart', function() {
+      var scope = createColumnChart(300, false, testData).scope;
+      var moarMarker = $('.truncation-marker');
+      var receivedEvent = false;
+
+      expect(moarMarker.css('display')).to.equal('block', 'truncation marker should be visible');
+      expect(scope.expanded).to.equal(false, 'expanded should be false prior to click');
+      scope.$on('column-chart:truncation-marker-clicked', function() {
+        receivedEvent = true;
+      });
+      moarMarker.click();
+      expect(receivedEvent).to.equal(true, "Why didn't the chart expand event fire?");
+    });
+  });
 });

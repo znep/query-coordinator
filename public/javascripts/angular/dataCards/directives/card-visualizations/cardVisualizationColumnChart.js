@@ -29,6 +29,10 @@ angular.module('dataCards.directives').directive('cardVisualizationColumnChart',
             }
           }).switchLatest();
 
+      $scope.$on('column-chart:truncation-marker-clicked', function(args) {
+        model.value.page.toggleExpanded(model.value);
+      });
+
       $scope.bindObservable('chartData', Rx.Observable.combineLatest(filteredData, unFilteredData, model.pluckSwitch('activeFilters'), function(filtered, unFiltered, filters) {
         // Joins filtered data and unfiltered data into an array of objects:
         // [

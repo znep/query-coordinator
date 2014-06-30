@@ -34,6 +34,14 @@ angular.module('dataCards.models').factory('Page', function(Dataset, Card, Model
         });
       });
     });
+  }
+
+  Page.prototype.toggleExpanded = function(theCard) {
+    // NOTE: For the MVP, we only ever allow one expanded card.
+    // Enforce that here.
+    _.each(this.cards.value, function(card) {
+      card.expanded = (card === theCard ? !theCard.expanded.value : false);
+    });
   };
 
   return Page;

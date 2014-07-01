@@ -40,7 +40,7 @@ module.exports = function ( karma ) {
       'public/javascripts/util/jquery_extensions.js'
     ],
     exclude: [
-      'public/javascripts/angular/dataCards/app.js',
+      'public/javascripts/angular/dataCards/app.js'
     ],
 
     frameworks: [ 'mocha', 'chai', 'chai-as-promised' ],
@@ -54,7 +54,7 @@ module.exports = function ( karma ) {
 
     coverageReporter: {
       type : 'html',
-      dir : 'karma-test/dataCards/coverage/'
+      dir : 'karma-test/coverage-reports/dataCards/'
     },
     /**
      * On which port should the browser connect, on which port is the test runner

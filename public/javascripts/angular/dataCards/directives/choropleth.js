@@ -2,7 +2,6 @@ angular.module('dataCards.directives').directive('choropleth', function(Chorople
   var threshold = 6;
   // if the number of unique values in the dataset is <= the threshold, displays
   // 1 color for each unique value, and labels them as such in the legend.
-
   /*   TEMPORARY SETTINGS   */
   // TODO: replace with real one once API gets up and running.
   var attr = 'VALUE',
@@ -94,7 +93,6 @@ angular.module('dataCards.directives').directive('choropleth', function(Chorople
         },
         scrollWheelZoom: false
       };
-
     },
     link: function($scope, element) {
 
@@ -325,7 +323,8 @@ angular.module('dataCards.directives').directive('choropleth', function(Chorople
           $scope.geojson = {
             data: geojsonData,
             style: styleClass(fillClass),
-            resetStyleOnGeojsonClick: true
+            resetStyleOnGeojsonClick: true,
+            zoomOnDoubleClick: true
           };
         }
         if (values.length === 0) {
@@ -348,18 +347,123 @@ angular.module('dataCards.directives').directive('choropleth', function(Chorople
 
       // Choropleth Highlight Feature Effect
 
-      function highlightFeature(leafletEvent) {
-        var layer = leafletEvent.target;
+      function highlightLayer(layer) {
         layer.setStyle({
           weight: 4,
           color: defaultHighlightColor,
           opacity: 1
         });
         layer.bringToFront();
+        layer.highlighted = true;
       }
 
-      $scope.$on('leafletDirectiveMap.geojsonClick', function(event, featureSelected, leafletEvent) {
-        highlightFeature(leafletEvent);
+      function unhighlightLayer(layer, leafletGeoJSON) {
+        // NOTE: only leafletGeoJSON contains #resetStyle method
+        leafletGeoJSON.resetStyle(layer);
+        layer.highlighted = false;
+      }
+
+      function toggleSelectedFeature(layer, leafletGeoJSON) {
+        if (layer.highlighted) {
+          unfilterDataset(function(ok) {
+            if (ok) {
+              unhighlightLayer(layer, leafletGeoJSON);
+            }
+          });
+        } else {
+          filterDataset(function(ok) {
+            if (ok) {
+              highlightLayer(layer);
+            }
+          })
+        }
+      }
+
+      function filterDataset(selectedLayer, callback) {
+        // TODO: Chris, story for filtering dataset
+        console.log('filtering')
+        callback(true);
+      }
+
+      function clearDatasetFilter(callback) {
+        // TODO: Chris
+        console.log('unfiltering')
+        callback(true);
+      }
+
+      var singleClickSuppressionThreshold = 200, doubleClickThreshold = 400, lastClick = 0, lastTimer = null;
+
+      $scope.$on('leafletDirectiveMap.geojsonClick', function(event, featureSelected, leafletEvent, leafletGeoJSON) {
+        // must distinguish between single click and double click.
+
+        if (!$scope.geojson.resetStyleOnGeojsonClick) {
+          throw new Error("To unhighlight feature, set geojson resetStyleOnGeojsonClick: true");
+        }
+
+        var now = Date.now();
+        // NOTE: uses real timestamp, so testing this requires an actual timeout, not just a mocked timeout!
+        var delay = now - lastClick;
+        lastClick = now;
+        if (delay < doubleClickThreshold) {
+          if (lastTimer != null) {
+            $timeout.cancel(lastTimer);
+            // Cancels single click event handler.
+            // Map zooms in by default setting on $scope.geojson.zoomOnDoubleClick
+          }
+        } else {
+          lastTimer = $timeout(function() {
+            // single click --> filters dataset
+            var selectedLayer = leafletEvent.target;
+
+            if (!$scope.lastGeoJSONLayerClicked) {
+              // first click --> always highlight
+              filterDataset(selectedLayer, function(ok) {
+                if (ok) {
+                  highlightLayer(selectedLayer);
+                }
+              });
+            } else {
+              if (selectedLayer != $scope.lastGeoJSONLayerClicked) {
+                // clicked on different feature --> unhighlight previous layer, highlight current layer
+                filterDataset(selectedLayer, function(ok) {
+                  if (ok) {
+                    highlightLayer(selectedLayer);
+                    unhighlightLayer($scope.lastGeoJSONLayerClicked, leafletGeoJSON);
+                  }
+                });
+              } else {
+                // clicking on same feature
+                if (selectedLayer.highlighted) {
+                  clearDatasetFilter(function(ok) {
+                    if (ok) {
+                      unhighlightLayer(selectedLayer, leafletGeoJSON);
+                    }
+                  });
+                } else {
+                  filterDataset(selectedLayer, function(ok) {
+                    if (ok) {
+                      highlightLayer(selectedLayer);
+                    }
+                  })
+                }
+              }
+            }
+            // update last layer clicked
+            $scope.lastGeoJSONLayerClicked = selectedLayer;
+          }, singleClickSuppressionThreshold);
+        }
+      });
+
+      // Choropleth Mouseover Tooltip Effect
+
+      function mouseoverFeature(event, leafletEvent) {
+        var feature = leafletEvent.target.feature;
+        var value = feature.properties[attr];
+        // TODO: mouseover popups
+      }
+
+      $scope.$on('leafletDirectiveMap.geojsonMouseover', function(event, leafletEvent) {
+        mouseoverFeature(event, leafletEvent);
       });
 
       $scope.$watch('regions', function(geojsonData){

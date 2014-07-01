@@ -36,6 +36,17 @@ describe('column_chart', function() {
     {"name": "NON-CRIMINAL (SUBJECT SPECIFIED)", "total": 2}
   ];
 
+  function testDataWithSpecialAtIndex(specialIndex) {
+    return _.map(testData, function(d, i) {
+      return {
+        name: d.name,
+        total: d.total,
+        filtered: d.total / 2,
+        special: i == specialIndex
+      };
+    });
+  }
+
   beforeEach(module('dataCards'));
 
   beforeEach(module('dataCards.directives'));
@@ -95,7 +106,7 @@ describe('column_chart', function() {
       createNewColumnChart();
       expect($('.bar-group').length).to.equal(bars);
       expect($('.bar.unfiltered').length).to.equal(bars);
-      expect($('.labels div').length).to.equal(3);
+      expect($('.labels div.label').length).to.equal(3);
     });
 
     it('should not show the moar marker', function() {
@@ -123,7 +134,7 @@ describe('column_chart', function() {
       createNewColumnChart(width, expanded);
       expect($('.bar-group').length).to.equal(bars);
       expect($('.bar.unfiltered').length).to.equal(bars);
-      expect($('.labels div').length).to.equal(testData.length);
+      expect($('.labels div.label').length).to.equal(testData.length);
     });
 
     it('should not show the moar marker', function() {
@@ -169,16 +180,9 @@ describe('column_chart', function() {
 
   describe('when data with the special field set is provided', function() {
     var specialIndex = 6;
-    var testDataWithSpecial = _.map(testData, function(d, i) {
-      return {
-        name: d.name,
-        total: d.total,
-        filtered: d.total / 2,
-        special: i == specialIndex
-      };
-    });
 
     it('should create 1 special bar-group', function() {
+      var testDataWithSpecial = testDataWithSpecialAtIndex(specialIndex);
       createNewColumnChart(640, false, testDataWithSpecial);
       expect($('.bar-group.special').length).to.equal(1);
       expect($('.bar-group.special')[0].__data__.name).to.equal(testDataWithSpecial[specialIndex].name);
@@ -198,6 +202,60 @@ describe('column_chart', function() {
 
   });
 
+  describe('column labels', function() {
+    var chart, scope, element;
+    var ensureChart = _.once(function() {
+      chart = createNewColumnChart(100, false, testData);
+      scope = chart.scope;
+      element = chart.element;
+    });
+
+    it('should show the top 3 bar labels by default', function() {
+      ensureChart();
+      var labels = element.find('.labels .label .text');
+      expect(labels).to.be.length(3);
+      labels.each(function(i, label) {
+        var capitalizedName = $.capitalizeWithDefault(testData[i].name);
+        expect($(label).text()).to.equal(capitalizedName);
+      });
+    });
+
+    it('should show the top 3 bar labels plus the special bar', function() {
+      var specialIndex = 5;
+      ensureChart();
+      scope.testData = testDataWithSpecialAtIndex(specialIndex);
+      scope.$digest();
+      var labels = element.find('.labels .label .text');
+      expect(labels).to.be.length(4);
+
+      var expectedLabels = _.pluck(_.first(testData, 3), 'name');
+      expectedLabels.push(testData[specialIndex].name);
+
+      labels.each(function(i, label) {
+        var capitalizedName = $.capitalizeWithDefault(expectedLabels[i]);
+        expect($(label).text()).to.equal(capitalizedName);
+      });
+    });
+
+    it('should apply a class of orientation-right or orientation-left depending on fit', function() {
+      var specialIndex = testData.length - 1;
+      ensureChart();
+      scope.testData = testDataWithSpecialAtIndex(specialIndex);
+      scope.$digest();
+      var labels = element.find('.labels .label');
+      expect(labels).to.be.length(4);
+
+      var expectedClasses = [
+        'orientation-right',
+        'orientation-right',
+        'orientation-right',
+        'orientation-left'
+      ];
+      labels.each(function(i, label) {
+        expect(_.toArray(label.classList)).to.contain(expectedClasses[i]);
+      });
+    });
+  });
   describe('when the truncation marker is clicked', function() {
 
     it('should emit the column-chart:truncation-marker-clicked event', function() {
@@ -245,10 +303,10 @@ describe('column_chart', function() {
 
       ensureChart();
       correctEventRaised.subscribe(_.after(2, done));
-      element.find('.label span:contains("' + capitalizedName + '")').click();
+      element.find('.label div:contains("' + capitalizedName + '")').click();
       scope.expanded = true;
       scope.$digest();
-      element.find('.label span:contains("' + capitalizedName + '")').click();
+      element.find('.label div:contains("' + capitalizedName + '")').click();
     });
   });
 

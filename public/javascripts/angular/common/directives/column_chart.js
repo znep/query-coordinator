@@ -1,11 +1,16 @@
 angular.module('socrataCommon.directives').directive('columnChart', function($parse, AngularRxExtensions) {
 
   var renderColumnChart = function(element, chartData, showFiltered, dimensions, expanded) {
+    var numberOfBars = chartData.length;
+
     var barPadding = 0.25;
     var topMargin = 20; // TODO calculate this dynamically
     var bottomMargin = 132;
     var tipHeight = 10;
     var tipWidth = 10;
+    var tooltipWidth = 123;
+    var numberOfDefaultLabels = expanded ? chartData.length : 3;
+    var undefinedPlaceholder = '(Undefined)';
 
     var $chart = element.find('.column-chart-wrapper');
     var $chartScroll = element.find('.chart-scroll');
@@ -15,11 +20,8 @@ angular.module('socrataCommon.directives').directive('columnChart', function($pa
     var labelSelection = d3.select(element.find('.labels')[0]).selectAll('.label');
     var chartWidth = dimensions.width;
     var chartTruncated = false;
-    var tooltipWidth = 123;
-    var numberOfBars = chartData.length;
     var truncationMarker = element.find('.truncation-marker');
     var truncationMarkerWidth = truncationMarker.width();
-    var undefinedPlaceholder = '(Undefined)';
 
     if (chartWidth <= 0) {
       return;
@@ -32,8 +34,7 @@ angular.module('socrataCommon.directives').directive('columnChart', function($pa
       }));
       bottomMargin = (maxLength + $.relativeToPx('1.0rem')) / Math.sqrt(2);
     } else {
-      var numberOfLabels = Math.min(chartData.length, 3);
-      bottomMargin = $.relativeToPx(numberOfLabels + 1 + 'rem');
+      bottomMargin = $.relativeToPx(numberOfDefaultLabels + 1 + 'rem');
     }
 
     var chartTop = element.position().top;
@@ -62,6 +63,11 @@ angular.module('socrataCommon.directives').directive('columnChart', function($pa
       chartTruncated = true;
       chartWidth = Math.floor(dimensions.width);
     }
+
+    var rangeExtent = horizontalScale.rangeExtent();
+    var chartLeftEdge = rangeExtent[0];
+    var chartRightEdge = rangeExtent[1];
+    var rangeMagnitude = chartRightEdge - chartLeftEdge;
 
 
     leftOffset = horizontalScale.range()[0];
@@ -141,35 +147,114 @@ angular.module('socrataCommon.directives').directive('columnChart', function($pa
     };
 
     var updateLabels = function(labelSelection) {
-      var numberOfLabels = expanded ? chartData.length : Math.min(chartData.length, 3);
-      var centering = leftOffset - rangeBand / 2;
-      var labelData = _.first(chartData, numberOfLabels);
+      // Labels come in two sets of column names:
+      // * Default labels. When the chart is unexpanded, this consists of the
+      //   first three column names in the data.
+      //   When the chart is expanded, this contains all the column names in the data.
+      // * Special labels. Contains the names of columns which are special.
+      //
+      // The displayed set of labels is the union of these two sets.
 
-      var labelDivSelection = labelSelection.data(labelData);
-      labelDivSelection.enter().
+      var defaultLabelData = _.first(chartData, numberOfDefaultLabels);
+
+      var specialLabelData = _.filter(chartData, _.property('special'));
+      if (specialLabelData.length > 1) { throw new Error('Multiple special labels not supported yet in column chart'); }
+
+      var labelData = _.union(defaultLabelData, specialLabelData);
+
+      function isOnlyInSpecial(datum, index) {
+        return datum.special && index >= numberOfDefaultLabels;
+      }
+
+      var labelOrientationsByIndex = [];
+      function preComputeLabelOrientation(datum, index) {
+        var leftHanded = false;
+
+        if (!expanded) {
+          var widthOfText = $(this).find('.text').width();
+          var proposedLeftOfText = horizontalScale(datum.name);
+
+          var spaceAvailableOnRight = rangeMagnitude - (proposedLeftOfText - chartLeftEdge);
+          var spaceAvailableOnLeft = proposedLeftOfText - chartLeftEdge;
+
+          var spaceRemainingOnRight = spaceAvailableOnRight - widthOfText;
+
+          leftHanded = spaceRemainingOnRight <= 0 && spaceAvailableOnLeft > spaceAvailableOnRight;
+        }
+
+        labelOrientationsByIndex[index] = leftHanded;
+
+      }
+      function labelOrientationLeft(datum, index) {
+        return labelOrientationsByIndex[index];
+      }
+      function labelOrientationRight(datum, index) {
+        return !labelOrientationsByIndex[index];
+      }
+
+      var centering = leftOffset - rangeBand / 2;
+      var verticalPositionOfSpecialLabelRem = 2;
+
+      var labelDivSelection = labelSelection.data(labelData, _.property('name'));
+      var labelDivSelectionEnter = labelDivSelection.enter().
         append('div').
-          classed('label', true).
-          append('span');
+          classed('label', true);
+
+      labelDivSelectionEnter.append('div').classed('text', true);
+      labelDivSelectionEnter.append('div').classed('callout', true);
 
       labelDivSelection.
-        selectAll('span').
+        selectAll('.text').
           style('top', function(d, i, j) {
-            return numberOfLabels - 0.5 - j + 'rem';
+            if (isOnlyInSpecial(d, j)) {
+              return verticalPositionOfSpecialLabelRem - 0.5 + 'rem';
+            } else {
+              return defaultLabelData.length - 0.5 - Math.min(j, numberOfDefaultLabels - 1)+ 'rem';
+            }
           }).
           text(function(d, i, j) {
-            return $.capitalizeWithDefault(labelData[j].name, undefinedPlaceholder);
+            return $.capitalizeWithDefault(d.name, undefinedPlaceholder);
           });
 
       labelDivSelection.
-        style('left', function(d) {
-          return (horizontalScale(d.name) - centering - 1) + 'px';
-        }).
-        style('height', function(d, i) {
-          if (!expanded) {
-            return (numberOfLabels - i) + 'rem';
+        selectAll('.callout').
+          style('height', function(d, i, j) {
+            if (expanded) {
+              return ''; // Expanded charts have auto-height labels.
+            } else {
+              if (isOnlyInSpecial(d, j)) {
+                return verticalPositionOfSpecialLabelRem + 'rem';
+              } else {
+                return (defaultLabelData.length - j) + 'rem';
+              }
+            }
+          });
+
+      // To properly compute text sizes, temporarily remove label handedness, then call computeLabelOrientation.
+      labelDivSelection.
+        classed('orientation-left', false).
+        classed('orientation-right', false).
+        each(preComputeLabelOrientation);
+
+      labelDivSelection.
+        classed('orientation-left', labelOrientationLeft).
+        classed('orientation-right', labelOrientationRight).
+        style('left', function(d, i) {
+          if ($(this).hasClass('orientation-left')) {
+            return '0';
           } else {
-            return '';
+            return (horizontalScale(d.name) - centering - 1) + 'px';
           }
+        }).
+        style('right', function(d, i) {
+          if ($(this).hasClass('orientation-left')) {
+            return (chartRightEdge - (horizontalScale(d.name) - centering - 1)) + 'px';
+          } else {
+            return '0';
+          }
+        }).
+        classed('dim', function(d, i) {
+          return specialLabelData.length > 0 && !d.special;
         });
 
       labelDivSelection.exit().remove();
@@ -290,7 +375,7 @@ angular.module('socrataCommon.directives').directive('columnChart', function($pa
         });
       }));
 
-      $(element.parent().delegate('.bar.hover-trigger, .labels div', 'click', function(event) {
+      $(element.parent().delegate('.bar.hover-trigger, .labels .label', 'click', function(event) {
         var clickedDatum = d3.select(event.currentTarget).datum();
         scope.$apply(function() {
           scope.$emit('column-chart:datum-clicked', clickedDatum);

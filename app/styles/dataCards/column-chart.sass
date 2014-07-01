@@ -190,22 +190,50 @@ div.column-chart
   div.labels
     position: absolute
     height: 55px
+    bottom: 10px
+    right: 0
+    left: 0
 
-    div
-      margin-top: 2px
-      border-left: 1px solid $chart-tick-color
-      border-bottom: 1px solid $chart-tick-color
+    div.label
       position: absolute
-      width: 0.5rem
-      text-indent: 0.5rem
+      top: 2px
+      right: 0
+      &.dim
+        opacity: 0.2
 
-      span
+      div.callout
+        position: absolute
+        border-bottom: 1px solid $chart-tick-color
+        width: 0.5rem
+
+      div.text
         color: $chart-tick-color
         position: absolute
+        text-indent: 0.5rem
         left: 0.25rem
         font-size: $medium-font-size
         line-height: $base-font-size
         white-space: nowrap
+        text-overflow: ellipsis
+        overflow: hidden
+
+      &.orientation-right
+        div.callout
+          border-left: 1px solid $chart-tick-color
+
+        div.text
+          right: 0
+
+      &.orientation-left
+        div.callout
+          border-right: 1px solid $chart-tick-color
+          right: 0
+
+        div.text
+          left: 0
+          right: 0
+          padding-right: 0.6rem
+          text-align: right
 
   div.ticks
     position: absolute
@@ -223,13 +251,13 @@ div.column-chart
 
   div.column-chart
 
-    .labels div
-      border-left: none
-      border-bottom: none
-      @include prefixer(transform, rotate(45deg))
-      @include prefixer(transform-origin, top left)
-      margin-top: -6px
-
-      span
+    .labels
+      bottom: auto
+      div.callout
+        display: none
+      div.text
+        @include prefixer(transform, rotate(45deg))
+        @include prefixer(transform-origin, top left)
+        margin-top: -6px
+        overflow: visible
         position: initial
-

@@ -34,8 +34,11 @@ div.column-chart
         &.unfiltered
           background-color: $unfiltered-bar-color
 
-      &.special .bar.filtered
-        background-color: green
+      &.special
+        .bar.filtered
+          background-color: green
+        .bar.unfiltered
+          background-color: lighten($unfiltered-bar-color, 12%)
 
     div.truncation-marker
       position: absolute

@@ -68,12 +68,12 @@ angular.module('dataCards.directives').directive('cardVisualizationColumnChart',
 
       $scope.bindObservable('expanded', model.pluckSwitch('expanded'));
 
-      $scope.columnClicked = function(datum) {
+      $scope.$on('column-chart:datum-clicked', function(event, datum) {
         var hasFiltersOnCard = _.any(model.value.activeFilters.value, function(filter) {
           return filter.operand === datum.name;
         });
         model.value.activeFilters = hasFiltersOnCard ? [] : [Filter.withBinaryOperator('=', datum.name)];
-      };
+      });
     }
   };
 

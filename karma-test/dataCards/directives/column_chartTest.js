@@ -1,4 +1,5 @@
 describe('column_chart', function() {
+  var th, compile, httpBackend, rootScope, scope, timeout;
 
   var testData = [
     {"name": "THEFT", "total": 21571},
@@ -48,11 +49,12 @@ describe('column_chart', function() {
     timeout = $injector.get('$timeout');
   }));
 
-  afterEach(function() {
-    $('#columnChartTest').remove();
+  after(function() {
+    removeColumnChart()
   });
 
-  var createColumnChart = function(width, expanded, data) {
+  var createNewColumnChart = function(width, expanded, data) {
+    removeColumnChart();
     if (!width) width = 640;
     if (!expanded) expanded = false;
     if (!data) data = testData;
@@ -80,6 +82,9 @@ describe('column_chart', function() {
       scope: scope
     };
   };
+  var removeColumnChart = function() {
+    $('#columnChartTest').remove();
+  };
 
   var bars = testData.length;
   var labels = testData.length;
@@ -87,14 +92,14 @@ describe('column_chart', function() {
   describe('when not expanded at 640px', function() {
 
     it('should create ' + bars + ' bars and 3 labels', function() {
-      createColumnChart();
+      createNewColumnChart();
       expect($('.bar-group').length).to.equal(bars);
       expect($('.bar.unfiltered').length).to.equal(bars);
       expect($('.labels div').length).to.equal(3);
     });
 
     it('should not show the moar marker', function() {
-      createColumnChart();
+      createNewColumnChart();
       expect($('.truncation-marker').css('display')).to.equal('none');
     });
 
@@ -104,7 +109,7 @@ describe('column_chart', function() {
     var width = 100;
 
     it('should show the moar marker', function() {
-      createColumnChart(width);
+      createNewColumnChart(width);
       expect($('.truncation-marker').css('display')).to.equal('block');
     });
 
@@ -115,14 +120,14 @@ describe('column_chart', function() {
     var expanded = true;
 
     it('should create ' + bars + ' bars and ' + labels + ' labels', function() {
-      createColumnChart(width, expanded);
+      createNewColumnChart(width, expanded);
       expect($('.bar-group').length).to.equal(bars);
       expect($('.bar.unfiltered').length).to.equal(bars);
       expect($('.labels div').length).to.equal(testData.length);
     });
 
     it('should not show the moar marker', function() {
-      createColumnChart();
+      createNewColumnChart();
       expect($('.truncation-marker').css('display')).to.equal('none');
     });
 
@@ -140,7 +145,7 @@ describe('column_chart', function() {
     describe('with showFiltered on', function() {
 
       it('should create ' + bars + ' filtered and unfiltered bars, with the correct heights', function() {
-        var chart = createColumnChart(640, false, testDataWithFiltered);
+        var chart = createNewColumnChart(640, false, testDataWithFiltered);
         var scope = chart.scope;
 
         scope.showFiltered = true;
@@ -174,7 +179,7 @@ describe('column_chart', function() {
     });
 
     it('should create 1 special bar-group', function() {
-      createColumnChart(640, false, testDataWithSpecial);
+      createNewColumnChart(640, false, testDataWithSpecial);
       expect($('.bar-group.special').length).to.equal(1);
       expect($('.bar-group.special')[0].__data__.name).to.equal(testDataWithSpecial[specialIndex].name);
     });
@@ -184,7 +189,7 @@ describe('column_chart', function() {
   describe('when data changes dynamically', function() {
 
     it('should hide all existing bars when the data is cleared', function() {
-      var scope = createColumnChart().scope;
+      var scope = createNewColumnChart().scope;
 
       scope.testData = [];
       scope.$digest();
@@ -195,8 +200,8 @@ describe('column_chart', function() {
 
   describe('when the truncation marker is clicked', function() {
 
-    it('should expand the chart', function() {
-      var scope = createColumnChart(300, false, testData).scope;
+    it('should emit the column-chart:truncation-marker-clicked event', function() {
+      var scope = createNewColumnChart(300, false, testData).scope;
       var moarMarker = $('.truncation-marker');
       var receivedEvent = false;
 
@@ -211,6 +216,42 @@ describe('column_chart', function() {
 
   });
 
+  describe('column-chart:datum-clicked event', function() {
+    var indexOfItemToClick = 2;
+    var chart, scope, element;
+    var correctEventRaised = new Rx.Subject();
+    var ensureChart = _.once(function() {
+      chart = createNewColumnChart(300, false, testData);
+      scope = chart.scope;
+      element = chart.element;
+
+      scope.$on('column-chart:datum-clicked', function(event, args) {
+        expect(args).to.equal(testData[indexOfItemToClick]);
+        correctEventRaised.onNext();
+      });
+    });
+
+    it('should be raised when the hover-triggers are clicked', function(done) {
+      ensureChart();
+      correctEventRaised.subscribe(_.after(2, done));
+      element.find('.bar.hover-trigger').eq(indexOfItemToClick).click();
+      scope.expanded = true;
+      scope.$digest();
+      element.find('.bar.hover-trigger').eq(indexOfItemToClick).click();
+    });
+
+    it('should be raised when the labels are clicked', function(done) {
+      var capitalizedName = $.capitalizeWithDefault(testData[indexOfItemToClick].name);
+
+      ensureChart();
+      correctEventRaised.subscribe(_.after(2, done));
+      element.find('.label span:contains("' + capitalizedName + '")').click();
+      scope.expanded = true;
+      scope.$digest();
+      element.find('.label span:contains("' + capitalizedName + '")').click();
+    });
+  });
+
   describe('when the name of a datum is blank or undefined', function() {
     var testDataWithBlank = _.map(testData, function(d, i) {
       return {
@@ -220,7 +261,7 @@ describe('column_chart', function() {
     });
 
     it('should use the placeholder value', function() {
-      createColumnChart(640, false, testDataWithBlank);
+      createNewColumnChart(640, false, testDataWithBlank);
       expect(_.all($('.tooltip .datum .name'), function(el) {
         return $(el).innerText === '(Undefined)';
       }));

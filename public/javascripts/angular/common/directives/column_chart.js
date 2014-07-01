@@ -1,6 +1,6 @@
 angular.module('socrataCommon.directives').directive('columnChart', function($parse, AngularRxExtensions) {
 
-  var renderColumnChart = function(element, chartData, showFiltered, dimensions, expanded, datumClicked) {
+  var renderColumnChart = function(element, chartData, showFiltered, dimensions, expanded) {
     var barPadding = 0.25;
     var topMargin = 20; // TODO calculate this dynamically
     var bottomMargin = 132;
@@ -12,6 +12,7 @@ angular.module('socrataCommon.directives').directive('columnChart', function($pa
     var d3Selection = d3.select($chart.get(0));
     var barGroupSelection = d3Selection.selectAll('.bar-group').data(chartData);
     var hoverTriggerSelection = d3Selection.selectAll('.bar.hover-trigger').data(chartData);
+    var labelSelection = d3.select(element.find('.labels')[0]).selectAll('.label');
     var chartWidth = dimensions.width;
     var chartTruncated = false;
     var tooltipWidth = 123;
@@ -139,25 +140,39 @@ angular.module('socrataCommon.directives').directive('columnChart', function($pa
         });
     };
 
-    var labels = function() {
-      var labelContent = $('<div>').addClass('labels').
-        css('top', chartHeight + chartTop + topMargin);
+    var updateLabels = function(labelSelection) {
       var numberOfLabels = expanded ? chartData.length : Math.min(chartData.length, 3);
       var centering = leftOffset - rangeBand / 2;
+      var labelData = _.first(chartData, numberOfLabels);
 
-      for (var i = 0; i < numberOfLabels; i++) {
-        var label = $('<span>').
-          css('top', numberOfLabels - 0.5 - i + 'rem').
-          text($.capitalizeWithDefault(chartData[i].name, undefinedPlaceholder));
-        var labelContainer = $('<div>').
-          css('left', horizontalScale(chartData[i].name) - centering - 1).
-          append(label);
-        if (!expanded) {
-          labelContainer.css('height', (numberOfLabels - i) + 'rem');
-      }
-        labelContent.prepend(labelContainer);
-      }
-      return labelContent;
+      var labelDivSelection = labelSelection.data(labelData);
+      labelDivSelection.enter().
+        append('div').
+          classed('label', true).
+          append('span');
+
+      labelDivSelection.
+        selectAll('span').
+          style('top', function(d, i, j) {
+            return numberOfLabels - 0.5 - j + 'rem';
+          }).
+          text(function(d, i, j) {
+            return $.capitalizeWithDefault(labelData[j].name, undefinedPlaceholder);
+          });
+
+      labelDivSelection.
+        style('left', function(d) {
+          return (horizontalScale(d.name) - centering - 1) + 'px';
+        }).
+        style('height', function(d, i) {
+          if (!expanded) {
+            return (numberOfLabels - i) + 'rem';
+          } else {
+            return '';
+          }
+        });
+
+      labelDivSelection.exit().remove();
     };
 
     var clampHeight = function(height) {
@@ -215,8 +230,7 @@ angular.module('socrataCommon.directives').directive('columnChart', function($pa
       // Hover trigger bars are just a div.
       selection.enter().
         append('div').
-          attr('class', 'bar hover-trigger').
-          on('click', datumClicked);
+          attr('class', 'bar hover-trigger');
 
       // Create the tooltips.
       var tooltips = selection.selectAll('.tooltip').data(function(d) { return [d]; });
@@ -243,9 +257,7 @@ angular.module('socrataCommon.directives').directive('columnChart', function($pa
 
     barGroupSelection.call(updateBars);
     hoverTriggerSelection.call(updateHoverTriggerBars);
-
-    $chartScroll.children('.labels').remove();
-    $chartScroll.append(labels);
+    labelSelection.call(updateLabels);
 
     if (chartTruncated) {
       truncationMarker.css('display', 'block');
@@ -261,13 +273,13 @@ angular.module('socrataCommon.directives').directive('columnChart', function($pa
           '<div class="truncation-marker">&raquo;</div>' +
           '<div class="tooltip"><div>Click to expand</div><span class="tip"></span></div>' +
         '</div>' +
+        '<div class="labels"></div>' +
       '</div>',
     restrict: 'A',
     scope: {
       chartData: '=',
       showFiltered: '=',
-      expanded: '=',
-      click: '='
+      expanded: '='
     },
     link: function(scope, element, attrs) {
       AngularRxExtensions.install(scope);
@@ -275,6 +287,13 @@ angular.module('socrataCommon.directives').directive('columnChart', function($pa
       $(element.parent().delegate('.truncation-marker', 'click', function(event) {
         scope.$apply(function() {
           scope.$emit('column-chart:truncation-marker-clicked', event);
+        });
+      }));
+
+      $(element.parent().delegate('.bar.hover-trigger, .labels div', 'click', function(event) {
+        var clickedDatum = d3.select(event.currentTarget).datum();
+        scope.$apply(function() {
+          scope.$emit('column-chart:datum-clicked', clickedDatum);
         });
       }));
 
@@ -290,8 +309,7 @@ angular.module('socrataCommon.directives').directive('columnChart', function($pa
             chartData,
             showFiltered,
             cardDimensions,
-            expanded,
-            scope.click
+            expanded
           );
         }
       )

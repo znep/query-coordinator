@@ -119,3 +119,63 @@ $.capitalizeWithDefault = function(value, placeHolder) {
   placeHolder = placeHolder || '(Blank)';
   return $.isBlank(value) ? placeHolder : value.capitaliseEachWord();
 };
+
+$.fn.flyout = function(options) {
+  var self = this;
+  if(!options.direction) options.direction = 'bottom';
+
+  self.delegate(options.selector, 'mouseenter', function(e) {
+    var $target = $(e.currentTarget);
+    var parentElem = $(options.parent || $target);
+    var flyout = $('<div class="flyout"><div class="flyout-arrow"></div></div>');
+    var getVal = function(data) {
+      if (_.isFunction(data)) {
+        return data($target, self, options, flyout);
+      } else {
+        return data;
+      }
+    }
+    if (!getVal(options.interact)) flyout.addClass('nointeract');
+    if (options.title) {
+      flyout.append('<div class="flyout-title">{0}</div>'.
+        format(getVal(options.title)));
+    }
+    if (options.table) {
+      var html = '<table class="flyout-table"><tbody>';
+        _.each(getVal(options.table), function(parts) {
+          html += '<tr>';
+          _.each(parts, function(html) {
+            html += '<td>{0}</td>'.format(html);
+          });
+          html += '</tr>';
+        });
+      html += '</tbody></table>';
+      flyout.append(html);
+    }
+    if (options.html) {
+      flyout.append(getVal(options.html));
+    }
+
+    if (flyout.text().length > 0) {
+      parentElem.append(flyout);
+    }
+    var direction = getVal(options.direction);
+    flyout.addClass(direction);
+    var pos = $target.offset(), top, left;
+    if (direction == "bottom") {
+      top = pos.top - flyout.outerHeight() + 2;
+      left = pos.left + $target.outerWidth()/2 - flyout.outerWidth()/2;
+    } else if (direction == "left") {
+      top = pos.top + $target.outerHeight()/2 - flyout.outerHeight()/2;
+      left = pos.left + $target.outerWidth() - 4;
+    } else if (direction == "right") {
+      top = pos.top + $target.outerHeight()/2 - flyout.outerHeight()/2;
+      left = pos.left - flyout.outerWidth() + 4;
+    }
+    flyout.offset({ top: top, left: left });
+  }).delegate(options.selector, 'mouseleave', function(e) {
+    var parentElem = $(options.parent || e.currentTarget);
+    parentElem.find('.flyout').remove();
+  });
+  return this;
+}

@@ -19,9 +19,10 @@ angular.module('socrataCommon.directives').directive('table', function(AngularRx
           '<div class="table-expander"></div>' +
         '</div>' +
         '<div class="table-label">Loading...</div>' +
+        '<div class="table-no-rows-message">No rows to display</div>' +
       '</div>',
     restrict: 'A',
-    scope: { rowCount: '=', expanded: '=', getRows: '=' },
+    scope: { rowCount: '=', filteredRowCount: '=', whereClause: '=', getRows: '=', expanded: '=', infinite: '=' },
     link: function(scope, element, attrs) {
       AngularRxExtensions.install(scope);
 
@@ -34,7 +35,6 @@ angular.module('socrataCommon.directives').directive('table', function(AngularRx
           $label = element.find('.table-label');
 
       var renderTable = function(element, dimensions, rowCount, expanded) {
-        $expander.height(rowHeight * rowCount);
         var tableHeight = dimensions.height - element.position().top;
         element.height(tableHeight);
         $body.height(tableHeight - $head.height() - rowHeight);
@@ -97,10 +97,7 @@ angular.module('socrataCommon.directives').directive('table', function(AngularRx
             sort = columnId + ' ASC';
           }
           updateColumnHeaders();
-          $expander.html('');
-          currentBlocks = [];
-          oldBlock = -1;
-          checkBlocks();
+          reloadRows();
         });
       });
 
@@ -120,16 +117,17 @@ angular.module('socrataCommon.directives').directive('table', function(AngularRx
         });
       }
 
-      var calculateColumnWidths = function() {
-        if (_.keys(columnWidths).length > 0) return;
+      // TODO: Clean this up. It's horribly expensive. ~400ms in tests.
+      var calculateColumnWidths = _.once(function() {
         updateColumnHeaders();
         _.defer(function() {
           _.each(columnIds, function(columnName, columnIndex) {
-            var $cells = $table.find('.cell:nth-child({0}), .th:nth-child({0})'.format(columnIndex + 1));
-            var cellWidths = _.map($cells, function(cell) {
-              return $(cell).width();
+            var $cells = $table.find('.cell:nth-child({0}), .th:nth-child({0})'.
+              format(columnIndex + 1));
+            var maxCell = _.max($cells, function(cell) {
+              return cell.clientWidth;
             });
-            var width = _.max(cellWidths);
+            var width = $(maxCell).width();
             if (width > 300) width = 300;
             else if(width < 75) width = 75;
             columnWidths[columnName] = width;
@@ -138,8 +136,21 @@ angular.module('socrataCommon.directives').directive('table', function(AngularRx
           updateColumnHeaders();
           dragHandles();
         });
+      });
+      var updateExpanderHeight = function() {
+        if (scope.infinite) {
+          $expander.height(rowHeight * filteredRowCount);
+        } else {
+          var lastLoadedBlock = _.max(_.map(element.find(".row-block"), function(block) {
+            // Strip letters and special characters
+            return parseInt($(block).attr("class").replace(/[a-zA-Z\-_ ]/g, ''));
+          }));
+          if (0 > lastLoadedBlock) lastLoadedBlock = 0;
+          var lastHeight = element.find('.row-block.{0}'.format(lastLoadedBlock)).height() || 0;
+          var height = rowHeight * lastLoadedBlock * rowsPerBlock + lastHeight;
+          $expander.height(height);
+        }
       }
-
       var loadBlockOfRows = function(block) {
         // Check if is being loaded or block exists
         if (_.has(httpRequests, block) || element.find(".row-block."+block).length > 0) {
@@ -147,27 +158,28 @@ angular.module('socrataCommon.directives').directive('table', function(AngularRx
         }
         var canceler = $q.defer();
         httpRequests[block] = canceler;
-        scope.getRows(block * rowsPerBlock, rowsPerBlock, sort, canceler).
+        scope.getRows(block * rowsPerBlock, rowsPerBlock, sort, canceler, scope.whereClause).
             then(function(data) {
           delete httpRequests[block];
           setupHead(data[0]);
-          if (currentBlocks.indexOf(block) === -1) return;
-          var blockDiv = $('<div class="row-block"></div>').
-            css('top', block * rowsPerBlock * rowHeight).
-            addClass(block+'').
-            hide();
+          if (currentBlocks.indexOf(block) === -1 || data.length === 0) return;
+
+          var blockHtml = '<div class="row-block {0}" style="top: {1}px; display: none">'.
+            format(block, block * rowsPerBlock * rowHeight);
           _.each(data, function(data_row) {
-            var row = $('<div class="table-row"></row>');
+            blockHtml += '<div class="table-row">';
             _.each(columnIds, function(header) {
-              var cell = $('<div class="cell"></div>').text(data_row[header] || '').
-                width(columnWidths[header]);
-              row.append(cell);
+              blockHtml += '<div class="cell" style="width: {0}px">{1}</div>'.
+                format(columnWidths[header], _.escape(data_row[header]));
             });
-            blockDiv.append(row);
+            blockHtml += '</div>';
           });
-          $expander.append(blockDiv);
-          blockDiv.fadeIn();
+          blockHtml += '</div>';
+          $expander.append(blockHtml);
+
+          $('.row-block.{0}'.format(block)).fadeIn();
           calculateColumnWidths();
+          updateExpanderHeight();
         });
       }
       var moveHeader = function() {
@@ -201,12 +213,27 @@ angular.module('socrataCommon.directives').directive('table', function(AngularRx
             loadBlockOfRows(blockId);
           }
         });
+        updateExpanderHeight();
       }
 
       var updateLabel = function() {
         var topRow = Math.floor($body.scrollTop() / rowHeight) + 1;
-        var bottomRow = Math.floor(($body.scrollTop() + $body.height()) / rowHeight) + 1;
-        $label.text('Showing {0} to {1} of {2}'.format(topRow, bottomRow, rowCount));
+        var bottomRow = Math.floor(($body.scrollTop() + $body.height()) / rowHeight);
+        $label.text('Showing {0} to {1} of {2} (Total: {3})'.format(topRow, bottomRow, scope.filteredRowCount, scope.rowCount));
+      }
+
+      var reloadRows = function() {
+        $expander.find('.row-block').remove();
+        currentBlocks = [];
+        oldBlock = -1;
+        checkBlocks();
+      }
+      var showOrHideNoRowMessage = function() {
+        if (scope.filteredRowCount == 0) {
+          element.find('.table-no-rows-message').fadeIn();
+        } else {
+          element.find('.table-no-rows-message').fadeOut();
+        }
       }
       var scrollLeft = $body.scrollLeft(), scrollTop = $body.scrollTop();
       $body.scroll(function(e) {
@@ -218,13 +245,40 @@ angular.module('socrataCommon.directives').directive('table', function(AngularRx
           updateLabel();
         }
       });
-
+      $body.flyout({
+        selector: '.row-block .cell',
+        interact: true,
+        direction: function($target, $head, options, $flyout) {
+          var pos = $target.offset();
+          var rightEdge = pos.left + $target.outerWidth() + $flyout.outerWidth();
+          if(rightEdge > window.innerWidth) {
+            return 'right';
+          }
+          return 'left';
+        },
+        html: function($target, $head, options) {
+          if($target[0].clientWidth < $target[0].scrollWidth) {
+            return $target.text();
+          }
+        }
+      });
+      $head.flyout({
+        selector: '.th',
+        direction: 'bottom',
+        parent: element,
+        html: function($target, $head, options) {
+          return $target.text();
+        }
+      });
       Rx.Observable.subscribeLatest(
         element.closest('.card').observeDimensions(),
         scope.observe('rowCount'),
+        scope.observe('filteredRowCount'),
         scope.observe('expanded'),
-        function(cardDimensions, newRowCount, expanded) {
-          rowCount = newRowCount;
+        scope.observe('infinite'),
+        function(cardDimensions, rowCount, filteredRowCount, expanded, infinite) {
+          updateExpanderHeight();
+          showOrHideNoRowMessage();
           if (rowCount && expanded) {
             renderTable(
               element,
@@ -232,6 +286,14 @@ angular.module('socrataCommon.directives').directive('table', function(AngularRx
               rowCount,
               expanded
             );
+          }
+        }
+      );
+      Rx.Observable.subscribeLatest(
+        scope.observe('whereClause'),
+        function(whereClause) {
+          if(scope.getRows && scope.expanded) {
+            reloadRows();
           }
         }
       );

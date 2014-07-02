@@ -1,0 +1,90 @@
+$flyout-background: white
+$flyout-border: #ccc
+
+.flyout
+  border-radius: 4px
+  border: 1px solid $flyout-border
+  position: absolute
+  top: 0
+  left: 0
+  background-color: white
+  line-height: 1rem
+  z-index: 2
+  padding: 5px 10px
+  max-width: 300px
+  color: black
+
+  &.nointeract
+    pointer-events: none
+
+  .flyout-arrow
+    height: 0
+    width: 0
+    border: 0
+    position: absolute
+
+    &:after, &:before
+      border: solid transparent
+      content: " "
+      height: 0
+      width: 0
+      position: absolute
+
+    &:after
+      border-color: transparent
+      border-width: 5px
+
+    &:before
+      border-color: transparent
+      border-width: 6px
+
+  &.left
+    .flyout-arrow
+      left: -10px
+      top: 50%
+
+      &:after
+        border-right-color: $flyout-background
+        margin-top: -5px
+
+      &:before
+        border-right-color: $flyout-border
+        margin-top: -6px
+        margin-left: -2px
+
+  &.right
+    .flyout-arrow
+      top: 50%
+      left: 100%
+
+      &:after
+        border-left-color: $flyout-background
+        margin-top: -5px
+
+      &:before
+        border-left-color: $flyout-border
+        margin-top: -6px
+
+  &.bottom
+    .flyout-arrow
+      top: 100%
+      left: 50%
+
+      &:after
+        border-top-color: $flyout-background
+        margin-left: -5px
+
+      &:before
+        border-top-color: $flyout-border
+        margin-left: -6px
+
+  &.top
+    .flyout-arrow
+
+      &:after
+        border-bottom-color: $flyout-background
+        margin-left: -5px
+
+      &:before
+        border-bottom-color: $flyout-border
+        margin-left: -6px

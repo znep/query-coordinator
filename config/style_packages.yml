@@ -14,6 +14,7 @@ angular-app-dataCards:
 - dataCards/flexgrid-custom
 - dataCards/ellipsis
 - dataCards/maps
+- dataCards/flyout
 - dataCards/_leaflet
 - dataCards/choropleth
 - dataCards/column-chart

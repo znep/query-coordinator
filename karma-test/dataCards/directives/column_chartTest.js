@@ -170,7 +170,7 @@ describe('column_chart', function() {
           var filteredHeight = $(this).find('.filtered').height();
           // The test data is computed to have filtered = ufiltered/2.
           // jQuery then rounds down to integer pixels, so we have to take the floor.
-          expect(Math.floor(unfilteredHeight / 2)).to.equal(filteredHeight);
+          expect(Math.abs(unfilteredHeight / 2 - filteredHeight) <= 0.5).to.equal(true);
         });
       });
 

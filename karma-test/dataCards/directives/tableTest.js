@@ -64,11 +64,11 @@ describe('table', function() {
   afterEach(function() {
     $('#tableTest').remove();
   });
-  var createTableCard = function(expanded){
+  var createTableCard = function(expanded, getRows){
     if (!expanded) expanded = false;
     var html =
       '<div class="card ' + (expanded ? 'expanded': '') + '" style="width: 640px; height: 480px;">' +
-        '<div table class="table" row-count="rowCount" get-rows="getRows" expanded="expanded"></div>' +
+        '<div table class="table" row-count="rowCount" get-rows="getRows" where-clause="whereClause" filtered-row-count="filteredRowCount" expanded="expanded"></div>' +
       '</div>';
     var elem = angular.element(html);
     $('body').append('<div id="tableTest"></div>');
@@ -76,25 +76,30 @@ describe('table', function() {
     var compiledElem = compile(elem)(scope);
     scope.expanded = expanded;
     scope.rowCount = 200;
-    scope.getRows = function() {
-      return q.when(data);
+    scope.filteredRowCount = 170;
+    if(getRows) {
+      scope.getRows = getRows;
+    } else {
+      scope.getRows = function() {
+        return q.when(data);
+      }
     }
     scope.$digest();
     return compiledElem;
   }
   describe('when not expanded', function() {
     it('should create', function() {
-      var el = createTableCard();
+      var el = createTableCard(false);
     });
   });
   describe('when expanded', function() {
     it('should create and load data', function(done) {
       var el = createTableCard(true);
-      var columns = _.keys(data[0]).length;
+      var columnCount = _.keys(data[0]).length;
       _.defer(function(){
         scope.$digest();
-        expect($('.cell').length).to.equal(columns * 150 + columns);
-        expect($('.th').length).to.equal(columns);
+        expect($('.row-block .cell').length).to.equal(columnCount * 150);
+        expect($('.th').length).to.equal(columnCount);
         done();
       });
     });
@@ -104,9 +109,9 @@ describe('table', function() {
       scope.$digest();
       _.defer(function(){
         scope.$digest();
-        var columns = _.keys(data[0]).length;
-        expect($('.th').length).to.equal(columns);
-        expect($('.cell').length).to.equal(columns * 200 + columns);
+        var columnCount = _.keys(data[0]).length;
+        expect($('.th').length).to.equal(columnCount);
+        expect($('.row-block .cell').length).to.equal(columnCount * 200);
         done();
       });
     });
@@ -116,11 +121,30 @@ describe('table', function() {
       scope.$digest();
       _.defer(function(){
         scope.$digest();
-        var columns = _.keys(data[0]).length;
-        expect($('.th').length).to.equal(columns);
-        expect($('.cell').length).to.equal(columns * 150 + columns);
+        var columnCount = _.keys(data[0]).length;
+        expect($('.th').length).to.equal(columnCount);
+        expect($('.row-block .cell').length).to.equal(columnCount * 150);
         done();
       });
+    });
+    it('should be able to filter', function(done) {
+      var hasCorrectWhereClause = false;
+      var el = createTableCard(true, function(offset, limit, order, timeout, whereClause) {
+        if(!hasCorrectWhereClause) hasCorrectWhereClause = whereClause == 'district=004';
+        return q.when(data);
+      });
+      scope.$digest();
+      scope.whereClause = 'district=004';
+      scope.$digest();
+      _.defer(function(){
+        scope.$digest();
+        var columnCount = _.keys(data[0]).length;
+        expect($('.th').length).to.equal(columnCount);
+        expect($('.row-block .cell').length).to.equal(columnCount * 150);
+        expect(hasCorrectWhereClause).to.equal(true);
+        done();
+      });
+
     });
   });
 });

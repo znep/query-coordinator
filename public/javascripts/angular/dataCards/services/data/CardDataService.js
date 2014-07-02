@@ -27,19 +27,25 @@ angular.module('dataCards.services').factory('CardDataService', function($q, $ht
       });
     },
 
-    getRowCount: function(datasetId) {
+    getRowCount: function(datasetId, whereClause) {
       datasetId = DeveloperOverrides.dataOverrideForDataset(datasetId) || datasetId;
-      var url = '/api/id/{0}.json?$select=count(0)'.format(datasetId);
+      var url = '/api/id/{0}.json?$query=select count(0)'.format(datasetId);
+      if (whereClause) {
+        url += ' where {0}'.format(whereClause);
+      }
       return $http.get(url, { cache: true }).then(function(response) {
         return response.data[0].count_0;
       });
     },
 
-    getRows: function(datasetId, offset, limit, order, timeout) {
+    getRows: function(datasetId, offset, limit, order, timeout, whereClause) {
       if (!order) order = '';
       datasetId = DeveloperOverrides.dataOverrideForDataset(datasetId) || datasetId;
       var url = '/api/id/{0}.json?$offset={1}&$limit={2}&$order={3}'.
         format(datasetId, offset, limit, order);
+      if (whereClause) {
+        url += '&$where={0}'.format(whereClause);
+      }
       return $http.get(url, { cache: true, timeout: timeout }).then(function(response) {
         return response.data;
       });

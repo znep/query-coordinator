@@ -31,6 +31,7 @@ $row-height: 2rem
       height: 100%
       border-collapse: collapse
       overflow: hidden
+      position: relative
 
       .table-body
         display: block
@@ -74,9 +75,6 @@ $row-height: 2rem
 
               &:hover
                 background-color: $border-color
-
-            &:last-child .resize
-              display: none
 
       .table-head
         display: inline-block
@@ -126,6 +124,17 @@ $row-height: 2rem
         display: inline-block
         padding: 0 10px
         border-right: 1px
+
     .table-label
       height: $row-height
       line-height: $row-height
+    .table-no-rows-message
+      display: none
+      content: 'No rows to display'
+      position: absolute
+      top: 50%
+      text-align: center
+      line-height: 0
+      width: 100%
+      pointer-events: none
+

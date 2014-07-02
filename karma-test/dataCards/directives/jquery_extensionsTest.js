@@ -72,4 +72,103 @@ describe('jquery_extensions', function() {
     });
 
   });
+
+  describe('$.fn.flyout', function() {
+    beforeEach(function() {
+      $('body').append('<div id="container">' +
+          '<div class="cell"></div><div class="cell"></div>' +
+        '</div>');
+    });
+    it('should flyout on the mouseenter event and close on the mouseleave event', function() {
+      $('#container').flyout({
+        selector: '.cell',
+        direction: 'bottom',
+        html: 'Mooo!'
+      });
+      $('#container .cell').first().trigger('mouseenter');
+      expect($('.flyout').length).to.equal(1);
+      $('#container .cell').trigger('mouseleave');
+      expect($('.flyout').length).to.equal(0);
+    });
+    it('should handle functions for all values', function() {
+      var count = 0;
+      var expectedCount = 0;
+      function incr(val) {
+        expectedCount += 1;
+        return function() {
+          count += 1;
+          return val;
+        }
+      }
+      $('#container').flyout({
+        selector: '.cell',
+        direction: incr('left'),
+        title: incr('right'),
+        html: incr('Moo'),
+        table: incr([[1,2]]),
+        interact: incr('false')
+      });
+      $('#container .cell').first().trigger('mouseenter');
+      expect(count).to.equal(expectedCount);
+    });
+    it('should insert html', function() {
+      $('#container').flyout({
+        selector: '.cell',
+        direction: 'bottom',
+        html: 'Mooo!'
+      });
+      $('#container .cell').first().trigger('mouseenter');
+      expect($('.flyout').first().text()).to.equal('Mooo!');
+    });
+    it('should insert title', function() {
+      $('#container').flyout({
+        selector: '.cell',
+        direction: 'bottom',
+        title: 'Mooo!'
+      });
+      $('#container .cell').first().trigger('mouseenter');
+      expect($('.flyout .flyout-title').first().text()).to.equal('Mooo!');
+    });
+    it('should respect direction', function() {
+      $('#container').flyout({
+        selector: '.cell',
+        direction: 'right',
+        title: 'Mooo!'
+      });
+      $('#container .cell').first().trigger('mouseenter');
+      expect($('.flyout').first().hasClass('right')).to.equal(true);
+    });
+    it('should respect interact', function() {
+      $('#container').flyout({
+        selector: '.cell',
+        direction: 'right',
+        title: 'Mooo!',
+        interact: true
+      });
+      $('#container .cell').first().trigger('mouseenter');
+      expect($('.flyout').first().hasClass('nointeract')).to.equal(false);
+    });
+    it('should default parent to cell', function() {
+      $('#container').flyout({
+        selector: '.cell',
+        direction: 'right',
+        title: 'Woof'
+      });
+      $('#container .cell').first().trigger('mouseenter');
+      expect($('.flyout').parent().hasClass('cell')).to.equal(true);
+    });
+    it('should respect parent', function() {
+      $('#container').flyout({
+        selector: '.cell',
+        direction: 'right',
+        title: 'Woof',
+        parent: $('#container')
+      });
+      $('#container .cell').first().trigger('mouseenter');
+      expect($('.flyout').parent().attr('id')).to.equal('container');
+    });
+    afterEach(function() {
+      $('#container').remove();
+    });
+  });
 });

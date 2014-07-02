@@ -28,6 +28,7 @@ module.exports = function ( karma ) {
       'bower_components/rxjs/rx.aggregates.js',
       'bower_components/jjv/lib/jjv.js',
       'bower_components/sinon-browser-only/sinon.js',
+      'bower_components/moment/moment.js',
       'karma-test/TestHelpers.js',
       'karma-test/dataCards/*.js',
       'karma-test/dataCards/**/*.js',

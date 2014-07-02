@@ -11,7 +11,7 @@ angular.module('socrataCommon.directives').directive('table', function(AngularRx
         '<div class="table-head">' +
           '<div class="th" ng-repeat="header in headers"' +
               'data-column-id="{{header.columnId}}" style="width: {{header.width}}px;" ng-class="{active: header.active}">' +
-            '<span class="caret" ng-class="{sortUp: header.sortUp}"></span>' +
+            '<span class="caret" ng-class="{sortUp: header.sortUp}"></span><span class="resize"></span>' +
             '{{header.name}}' +
           '</div>' +
         '</div>' +
@@ -56,7 +56,7 @@ angular.module('socrataCommon.directives').directive('table', function(AngularRx
           $resizeContainer.append($cell);
         });
         var active = false, currentX = 0, columnIndex, columnId;
-        $expander.find('.resize').on('mousedown', function(e) {
+        element.delegate('.table-head .resize, .table-resize-container .resize', 'mousedown', function(e) {
           currentX = e.pageX;
           columnIndex = $(this).parent().index();
           columnId = $(this).data('columnId');
@@ -82,8 +82,9 @@ angular.module('socrataCommon.directives').directive('table', function(AngularRx
         TODO: This uses the first row of the first block loaded to generate column names.
         It should use the meta data service once it's working.
       */
-      var setupHead = _.once(function(row) {
-        columnIds = _.map(row, function(v, columnId) { return columnId; });
+      var setupHead = function(row) {
+        if (columnIds.length > 0) return;
+        columnIds = _.keys(row);
         updateColumnHeaders();
 
         $head.delegate('.caret', 'click', function(e) {
@@ -99,7 +100,7 @@ angular.module('socrataCommon.directives').directive('table', function(AngularRx
           updateColumnHeaders();
           reloadRows();
         });
-      });
+      };
 
       var updateColumnHeaders = function(){
         scope.headers = _.map(columnIds, function(columnId) {
@@ -142,10 +143,9 @@ angular.module('socrataCommon.directives').directive('table', function(AngularRx
           $expander.height(rowHeight * filteredRowCount);
         } else {
           var lastLoadedBlock = _.max(_.map(element.find(".row-block"), function(block) {
-            // Strip letters and special characters
-            return parseInt($(block).attr("class").replace(/[a-zA-Z\-_ ]/g, ''));
+            return $(block).data('block-id');
           }));
-          if (0 > lastLoadedBlock) lastLoadedBlock = 0;
+          if (lastLoadedBlock < 0) lastLoadedBlock = 0;
           var lastHeight = element.find('.row-block.{0}'.format(lastLoadedBlock)).height() || 0;
           var height = rowHeight * lastLoadedBlock * rowsPerBlock + lastHeight;
           $expander.height(height);
@@ -163,14 +163,45 @@ angular.module('socrataCommon.directives').directive('table', function(AngularRx
           delete httpRequests[block];
           setupHead(data[0]);
           if (currentBlocks.indexOf(block) === -1 || data.length === 0) return;
-
-          var blockHtml = '<div class="row-block {0}" style="top: {1}px; display: none">'.
+          var blockHtml = '<div class="row-block {0}" data-block-id="{0}" style="top: {1}px; display: none">'.
             format(block, block * rowsPerBlock * rowHeight);
           _.each(data, function(data_row) {
             blockHtml += '<div class="table-row">';
             _.each(columnIds, function(header) {
-              blockHtml += '<div class="cell" style="width: {0}px">{1}</div>'.
-                format(columnWidths[header], _.escape(data_row[header]));
+              var cellClasses = 'cell';
+              var cellContent = data_row[header];
+
+              // TODO: Replaces these checks with information from the metadata API.
+              if (_.isUndefined(cellContent)) {
+                cellContent = '';
+              // Is Number? (Really poor check since there are nominal numbers.)
+              } else if (!_.isNaN(Number(cellContent))) {
+                cellClasses += ' number';
+                // TODO: Remove this. This is just to satisfy Clint's pet peeve about years.
+                if (cellContent.length >= 5) {
+                  cellContent = $.commaify(cellContent);
+                }
+              // Is Boolean?
+              } else if (cellContent === true) {
+                cellContent = '✓';
+              // TODO: This check doesn't work because the server for false bools doesn't return anything.
+              } else if (cellContent === false) {
+                cellContent = '✗';
+              // Checks for presence of '<num>-<num>-<num>' at start.
+              } else if (_.isString(cellContent) && cellContent.match(/^\d+-\d+-\d+/)){
+                var time = moment(cellContent);
+                // Is Date/Tim?
+                if (time.isValid()) {
+                  // Check if Date or Date/Time
+                  if (time.format('HH:mm:ss') === '00:00:00') {
+                    cellContent = time.format('YYYY MMM D');
+                  } else {
+                    cellContent = time.format('YYYY MMM DD HH:mm:ss');
+                  }
+                }
+              }
+              blockHtml += '<div class="{0}" style="width: {1}px">{2}</div>'.
+                format(cellClasses, columnWidths[header], _.escape(cellContent));
             });
             blockHtml += '</div>';
           });
@@ -219,7 +250,9 @@ angular.module('socrataCommon.directives').directive('table', function(AngularRx
       var updateLabel = function() {
         var topRow = Math.floor($body.scrollTop() / rowHeight) + 1;
         var bottomRow = Math.floor(($body.scrollTop() + $body.height()) / rowHeight);
-        $label.text('Showing {0} to {1} of {2} (Total: {3})'.format(topRow, bottomRow, scope.filteredRowCount, scope.rowCount));
+        $label.text('Showing {0} to {1} of {2} (Total: {3})'.format(topRow,
+            _.min([bottomRow, scope.filteredRowCount]), scope.filteredRowCount,
+            scope.rowCount));
       }
 
       var reloadRows = function() {
@@ -258,7 +291,7 @@ angular.module('socrataCommon.directives').directive('table', function(AngularRx
         },
         html: function($target, $head, options) {
           if($target[0].clientWidth < $target[0].scrollWidth) {
-            return $target.text();
+            return _.escape($target.text());
           }
         }
       });
@@ -266,8 +299,19 @@ angular.module('socrataCommon.directives').directive('table', function(AngularRx
         selector: '.th',
         direction: 'bottom',
         parent: element,
+        title: function($target, $head, options) {
+          return _.escape($target.text());
+        },
         html: function($target, $head, options) {
-          return $target.text();
+          var columnId = $target.data('column-id');
+          var sortParts = sort.split(' ');
+          var active = columnId === sortParts[0];
+          var sortUp = sortParts[1] === 'ASC';
+          if(!active) {
+            return 'Not Sorting';
+          } else {
+            return 'Sorted ' + (sortUp ? 'Ascending' : 'Descending');
+          }
         }
       });
       Rx.Observable.subscribeLatest(

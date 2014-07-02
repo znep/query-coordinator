@@ -64,18 +64,6 @@ $row-height: 2rem
             border: none
             margin-right: 1px
 
-            .resize
-              display: inline-block
-              width: 5px
-              position: absolute
-              right: -3px
-              cursor: col-resize
-              z-index: 1
-              height: 100%
-
-              &:hover
-                background-color: $border-color
-
       .table-head
         display: inline-block
         position: relative
@@ -88,11 +76,13 @@ $row-height: 2rem
         padding-right: 100px
 
         .th
-          margin-right: 1px
+          margin-right: -2px
           display: inline-block
           overflow: hidden
           white-space: nowrap
           text-overflow: ellipsis
+          position: relative
+          padding-right: 13px
 
           .caret
             float: right
@@ -105,6 +95,9 @@ $row-height: 2rem
 
             &.sortUp:before
               content: '▲'
+
+          .resize
+            right: 0
 
           &.active
 
@@ -124,6 +117,21 @@ $row-height: 2rem
         display: inline-block
         padding: 0 10px
         border-right: 1px
+
+        &.number
+          text-align: right
+
+        .resize
+          display: inline-block
+          width: 5px
+          position: absolute
+          right: -3px
+          cursor: col-resize
+          z-index: 1
+          height: 100%
+
+          &:hover, &:active
+            background-color: $border-color
 
     .table-label
       height: $row-height

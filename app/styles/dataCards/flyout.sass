@@ -1,5 +1,7 @@
 $flyout-background: white
 $flyout-border: #ccc
+$flyout-padding-vertical: 5px
+$flyout-padding-horizontal: 10px
 
 .flyout
   border-radius: 4px
@@ -10,12 +12,21 @@ $flyout-border: #ccc
   background-color: white
   line-height: 1rem
   z-index: 2
-  padding: 5px 10px
+  padding: $flyout-padding-vertical $flyout-padding-horizontal
   max-width: 300px
   color: black
 
+  word-wrap: break-word
+  white-space: normal
+
   &.nointeract
     pointer-events: none
+
+  .flyout-title
+    border-bottom: 1px solid $flyout-border
+    margin: (-$flyout-padding-vertical) (-$flyout-padding-horizontal)
+    margin-bottom: $flyout-padding-vertical
+    padding: $flyout-padding-vertical $flyout-padding-horizontal
 
   .flyout-arrow
     height: 0

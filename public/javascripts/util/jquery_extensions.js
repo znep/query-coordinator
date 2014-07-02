@@ -127,6 +127,7 @@ $.fn.flyout = function(options) {
   self.delegate(options.selector, 'mouseenter', function(e) {
     var $target = $(e.currentTarget);
     var parentElem = $(options.parent || $target);
+    parentElem.find('.flyout').remove();
     var flyout = $('<div class="flyout"><div class="flyout-arrow"></div></div>');
     var getVal = function(data) {
       if (_.isFunction(data)) {
@@ -174,8 +175,9 @@ $.fn.flyout = function(options) {
     }
     flyout.offset({ top: top, left: left });
   }).delegate(options.selector, 'mouseleave', function(e) {
-    var parentElem = $(options.parent || e.currentTarget);
-    parentElem.find('.flyout').remove();
+    if(!options.debugNeverClosePopups){
+      $(options.parent || e.currentTarget).find('.flyout').remove();
+    }
   });
   return this;
 }

@@ -144,6 +144,42 @@ describe('table', function() {
         expect(hasCorrectWhereClause).to.equal(true);
         done();
       });
+    });
+    it('should format numbers correctly', function(done) {
+      var el = createTableCard(true);
+      var columnCount = _.keys(data[0]).length;
+      _.defer(function(){
+        scope.$digest();
+        expect($('.row-block .cell').length).to.equal(columnCount * 150);
+        expect($('.th').length).to.equal(columnCount);
+        _.each($('.row-block .cell'), function(cell) {
+          var text = $(cell).text();
+          // TODO: Use metadata to determine if should be number.
+          var stripped = text.replace(/,/g, '');
+          if (!_.isNaN(Number(stripped))) {
+            expect($(cell).hasClass('number')).to.be.true;
+          }
+        });
+        done();
+      });
+    });
+    it('should be able to filter', function(done) {
+      var hasCorrectWhereClause = false;
+      var el = createTableCard(true, function(offset, limit, order, timeout, whereClause) {
+        if(!hasCorrectWhereClause) hasCorrectWhereClause = whereClause == 'district=004';
+        return q.when(data);
+      });
+      scope.$digest();
+      scope.whereClause = 'district=004';
+      scope.$digest();
+      _.defer(function(){
+        scope.$digest();
+        var columnCount = _.keys(data[0]).length;
+        expect($('.th').length).to.equal(columnCount);
+        expect($('.row-block .cell').length).to.equal(columnCount * 150);
+        expect(hasCorrectWhereClause).to.equal(true);
+        done();
+      });
 
     });
   });

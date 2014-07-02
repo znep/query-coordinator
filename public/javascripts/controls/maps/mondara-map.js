@@ -55,6 +55,7 @@
 
             layerObj._map.events.register('changelayer', null, function(evtObj)
             {
+                if (_.isUndefined(layerObj._getFeature)) { return; }
                 if (!_.include(['visibility', 'opacity'], evtObj.property)) { return; }
                 if (!_.include(layerObj._dataLayers, evtObj.layer)) { return; }
                 var featureType = _(layerObj._dataLayers).chain()

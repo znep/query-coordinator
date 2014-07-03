@@ -27,7 +27,7 @@ angular.module('socrataCommon.directives').directive('table', function(AngularRx
       AngularRxExtensions.install(scope);
 
       var currentBlocks = [], columnIds = [], sort = '', columnWidths = {},
-          httpRequests = {}, oldBlock = -1;
+          httpRequests = {}, oldBlock = -1, columnTypes = {};
       var $table = element.find('.table-inner'),
           $head = element.find('.table-inner > .table-head'),
           $body = element.find('.table-inner > .table-body'),
@@ -142,14 +142,77 @@ angular.module('socrataCommon.directives').directive('table', function(AngularRx
         if (scope.infinite) {
           $expander.height(rowHeight * filteredRowCount);
         } else {
-          var lastLoadedBlock = _.max(_.map(element.find(".row-block"), function(block) {
-            return $(block).data('block-id');
-          }));
-          if (lastLoadedBlock < 0) lastLoadedBlock = 0;
-          var lastHeight = element.find('.row-block.{0}'.format(lastLoadedBlock)).height() || 0;
-          var height = rowHeight * lastLoadedBlock * rowsPerBlock + lastHeight;
+          var lastLoadedBlock = _.max(element.find(".row-block"), function(block) {
+            return $(block).data().blockId;
+          });
+          var height = 0;
+          if (_.isElement(lastLoadedBlock)) {
+            var $lastLoadedBlock = $(lastLoadedBlock);
+            var lastHeight = $lastLoadedBlock.height() || 0;
+            height = rowHeight * $lastLoadedBlock.data().blockId * rowsPerBlock + lastHeight;
+          }
           $expander.height(height);
         }
+      }
+      var inferColumnTypes = function(data) {
+        // TODO: Replaces these checks with information from the metadata API.
+        if(_.keys(columnTypes).length > 0) return;
+        var inferMetaData = {};
+        _.each(data, function(row) {
+          _.each(row, function(cellContent, columnId) {
+            if(!inferMetaData[columnId]) inferMetaData[columnId] = {
+              not: [],
+              counts: {}
+            };
+            var meta = inferMetaData[columnId];
+            function check(name, callback) {
+              if (!meta.type && !_.include(meta.not, name)) {
+                var resp = callback(cellContent);
+                if (resp === 'not') {
+                  meta.not.push(name);
+                  delete meta.counts[name];
+                } else if (resp === 'possible') {
+                  if(!meta.counts[name]) meta.counts[name] = 0;
+                  meta.counts[name] += 1;
+                } else if(resp === 'is') {
+                  meta.type = name;
+                }
+              }
+            }
+            check("boolean", function(cellData) {
+              if (cellData === true) {
+                return 'is';
+              }
+            });
+            check("number", function(cellData) {
+              if (!_.isNaN(Number(cellData))) {
+                return 'possible';
+              } else if(!_.isUndefined(cellContent)) {
+                return 'not';
+              }
+            });
+            check("date", function(cellData) {
+              // Checks for presence of '<num>-<num>-<num>' at start.
+              if (_.isString(cellContent) && cellContent.match(/^\d+-\d+-\d+/)){
+                var time = moment(cellContent);
+                if (time.isValid()) {
+                  return 'possible';
+                }
+              } else if(!_.isUndefined(cellContent)) {
+                return 'not';
+              }
+            });
+          });
+        });
+        _.each(inferMetaData, function(meta, columnId) {
+          if(meta.type) {
+            columnTypes[columnId] = meta.type;
+          } else {
+            columnTypes[columnId] = _.max(_.keys(meta.counts), function(k) {
+              return meta.counts[k];
+            });
+          }
+        });
       }
       var loadBlockOfRows = function(block) {
         // Check if is being loaded or block exists
@@ -162,6 +225,7 @@ angular.module('socrataCommon.directives').directive('table', function(AngularRx
             then(function(data) {
           delete httpRequests[block];
           setupHead(data[0]);
+          inferColumnTypes(data);
           if (currentBlocks.indexOf(block) === -1 || data.length === 0) return;
           var blockHtml = '<div class="row-block {0}" data-block-id="{0}" style="top: {1}px; display: none">'.
             format(block, block * rowsPerBlock * rowHeight);
@@ -169,35 +233,24 @@ angular.module('socrataCommon.directives').directive('table', function(AngularRx
             blockHtml += '<div class="table-row">';
             _.each(columnIds, function(header) {
               var cellClasses = 'cell';
-              var cellContent = data_row[header];
-
-              // TODO: Replaces these checks with information from the metadata API.
-              if (_.isUndefined(cellContent)) {
-                cellContent = '';
-              // Is Number? (Really poor check since there are nominal numbers.)
-              } else if (!_.isNaN(Number(cellContent))) {
+              var cellContent = data_row[header] || '';
+              var cellType = columnTypes[header];
+              // Is Boolean?
+              if (cellType === 'boolean') {
+                cellContent = cellContent ? '✓' : '✗';
+              } else if (cellType === 'number') {
                 cellClasses += ' number';
                 // TODO: Remove this. This is just to satisfy Clint's pet peeve about years.
                 if (cellContent.length >= 5) {
                   cellContent = $.commaify(cellContent);
                 }
-              // Is Boolean?
-              } else if (cellContent === true) {
-                cellContent = '✓';
-              // TODO: This check doesn't work because the server for false bools doesn't return anything.
-              } else if (cellContent === false) {
-                cellContent = '✗';
-              // Checks for presence of '<num>-<num>-<num>' at start.
-              } else if (_.isString(cellContent) && cellContent.match(/^\d+-\d+-\d+/)){
+              } else if (cellType === 'date'){
                 var time = moment(cellContent);
-                // Is Date/Tim?
-                if (time.isValid()) {
-                  // Check if Date or Date/Time
-                  if (time.format('HH:mm:ss') === '00:00:00') {
-                    cellContent = time.format('YYYY MMM D');
-                  } else {
-                    cellContent = time.format('YYYY MMM DD HH:mm:ss');
-                  }
+                // Check if Date or Date/Time
+                if (time.format('HH:mm:ss') === '00:00:00') {
+                  cellContent = time.format('YYYY MMM D');
+                } else {
+                  cellContent = time.format('YYYY MMM DD HH:mm:ss');
                 }
               }
               blockHtml += '<div class="{0}" style="width: {1}px">{2}</div>'.
@@ -207,10 +260,9 @@ angular.module('socrataCommon.directives').directive('table', function(AngularRx
           });
           blockHtml += '</div>';
           $expander.append(blockHtml);
-
           $('.row-block.{0}'.format(block)).fadeIn();
           calculateColumnWidths();
-          updateExpanderHeight();
+          _.delay(updateExpanderHeight, 1)
         });
       }
       var moveHeader = function() {
@@ -281,14 +333,7 @@ angular.module('socrataCommon.directives').directive('table', function(AngularRx
       $body.flyout({
         selector: '.row-block .cell',
         interact: true,
-        direction: function($target, $head, options, $flyout) {
-          var pos = $target.offset();
-          var rightEdge = pos.left + $target.outerWidth() + $flyout.outerWidth();
-          if(rightEdge > window.innerWidth) {
-            return 'right';
-          }
-          return 'left';
-        },
+        direction: 'horizontal',
         html: function($target, $head, options) {
           if($target[0].clientWidth < $target[0].scrollWidth) {
             return _.escape($target.text());
@@ -297,8 +342,9 @@ angular.module('socrataCommon.directives').directive('table', function(AngularRx
       });
       $head.flyout({
         selector: '.th',
-        direction: 'bottom',
-        parent: element,
+        direction: 'top',
+        parent: document.body,
+        interact: true,
         title: function($target, $head, options) {
           return _.escape($target.text());
         },

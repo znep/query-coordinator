@@ -482,10 +482,11 @@ angular.module('dataCards.directives').directive('choropleth', function(AngularR
         $scope.observe('geojsonAggregateData'),
         $scope.observe('showFiltered'),
         function(fieldName, geojsonAggregateData, showFiltered) {
-          console.log('receiving crap');
+
           if (!geojsonAggregateData) {
             return;
           }
+
           var colors;
           var values = ChoroplethHelpers.getGeojsonValues(geojsonAggregateData, AGGREGATE_VALUE_PROPERTY_NAME);
           var updateGeojsonScope = function(fillClass) {
@@ -496,6 +497,7 @@ angular.module('dataCards.directives').directive('choropleth', function(AngularR
               zoomOnDoubleClick: true
             };
           };
+
           if (values.length === 0) {
             // no values, just render polygons with no colors
             updateGeojsonScope('none');

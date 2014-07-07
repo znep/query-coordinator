@@ -48,17 +48,14 @@ angular.module('dataCards.directives').directive('cardVisualizationChoropleth', 
             properties: geojsonFeature.properties,
             type: geojsonFeature.type
           };
-          console.log(whereClause);
           // The check for an empty where clause is to ascertain whether we should provide
           // filtered rather than unfiltered data to the choropleth directive.
           // We're using the property name '__MERGED_SOCRATA_VALUE__' in order to avoid
           // overwriting existing properties on the geojson object (properties are user-
           // defined according to the spec).
           if (_.isEmpty(whereClause)) {
-            console.log('using unfiltered');
             feature.properties['__MERGED_SOCRATA_VALUE__'] = unfilteredAsHash[featureId];
           } else {
-            console.log('using filtered');
             feature.properties['__MERGED_SOCRATA_VALUE__'] = filteredAsHash[featureId];
           }
           return feature;

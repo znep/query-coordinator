@@ -1,11 +1,11 @@
 angular.module('dataCards.directives').directive('cardVisualizationChoropleth', function(AngularRxExtensions, CardDataService, $http) {
-  // TODO: temporary
-  var geojsonFileName = 'testing_sample';
+
   return {
     restrict: 'E',
-    scope: { 'model': '=' },
+    scope: { 'model': '=', 'whereClause': '=' },
     templateUrl: '/angular_templates/dataCards/cardVisualizationChoropleth.html',
     link: function($scope, element, attrs) {
+
       AngularRxExtensions.install($scope);
 
       var model = $scope.observe('model');
@@ -22,7 +22,6 @@ angular.module('dataCards.directives').directive('cardVisualizationChoropleth', 
           model.pluck('fieldName'),
           dataset,
           function(fieldName, dataset) {
-            $scope.unfilteredRequestInProgress = true;
             return Rx.Observable.fromPromise(CardDataService.getUnfilteredChoroplethAggregates(fieldName, dataset.id));
           }).switchLatest();
 
@@ -34,7 +33,6 @@ angular.module('dataCards.directives').directive('cardVisualizationChoropleth', 
             if (_.isEmpty(whereClause)) {
               return Rx.Observable.returnValue(null);
             } else {
-              $scope.filteredRequestInProgress = true;
               return Rx.Observable.fromPromise(CardDataService.getFilteredChoroplethAggregates(fieldName, dataset.id, whereClause));
             }
           }).switchLatest();
@@ -50,19 +48,22 @@ angular.module('dataCards.directives').directive('cardVisualizationChoropleth', 
             properties: geojsonFeature.properties,
             type: geojsonFeature.type
           };
-          // Factor this out or explain what it's doing.
+          console.log(whereClause);
           // The check for an empty where clause is to ascertain whether we should provide
           // filtered rather than unfiltered data to the choropleth directive.
           // We're using the property name '__MERGED_SOCRATA_VALUE__' in order to avoid
           // overwriting existing properties on the geojson object (properties are user-
           // defined according to the spec).
           if (_.isEmpty(whereClause)) {
+            console.log('using unfiltered');
             feature.properties['__MERGED_SOCRATA_VALUE__'] = unfilteredAsHash[featureId];
           } else {
+            console.log('using filtered');
             feature.properties['__MERGED_SOCRATA_VALUE__'] = filteredAsHash[featureId];
           }
           return feature;
         });
+
         return {
           crs: geojsonRegions.crs,
           features: newFeatures,
@@ -98,16 +99,11 @@ angular.module('dataCards.directives').directive('cardVisualizationChoropleth', 
               return null;
             }
 
-            // Fail early if the data's filter state has not yet caught up with the UI's
-            // due to latency on the data requests.
-            if (!_.isEmpty(whereClause) && activeFilterNames[0] !== $scope.currentUIFilter) {
-              return null;
-            }
-
             var unfilteredAsHash = _.reduce(unfiltered, function(acc, datum) {
               acc[datum.name] = datum.value;
               return acc;
             }, {});
+
             var filteredAsHash = _.reduce(filtered, function(acc, datum) {
               acc[datum.name] = datum.value;
               return acc;
@@ -120,23 +116,6 @@ angular.module('dataCards.directives').directive('cardVisualizationChoropleth', 
         return filtered !== null;
       }));
 
-
-
-
-/*      var geoJsonRegionData = Rx.Observable.combineLatest(
-          model.pluck('fieldName'),
-          dataset,
-          function(fieldName, dataset) {
-            var regionDataPromise = $http.get('/datasets/geojson/'+geojsonFileName+'.json').then(function(result) {
-              // GeoJson was reprojected and converted to Geojson with http://converter.mygeodata.eu/vector
-              // reprojected to WGS 84 (SRID: 4326)
-              return result.data;
-              // TODO: invalid geojsonData --> ???
-            });
-            return Rx.Observable.fromPromise(regionDataPromise);
-          }).switchLatest();
-
-      $scope.bindObservable('regions', geoJsonRegionData);*/
     }
   };
 

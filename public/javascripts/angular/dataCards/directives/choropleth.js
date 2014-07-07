@@ -1,10 +1,17 @@
 angular.module('dataCards.directives').directive('choropleth', function(AngularRxExtensions, ChoroplethHelpers, leafletBoundsHelpers, $log, $timeout) {
-  var threshold = 6;
+
+  // AGGREGATE_VALUE_PROPERTY_NAME is an internal implementation name for the aggregate data
+  // value we will display on the choropleth. This name is global, constant and has been
+  // chosen so that it is unlikely to collide with any user-defined property on the
+  // GeoJSON object we receive.
+  var AGGREGATE_VALUE_PROPERTY_NAME = '__MERGED_SOCRATA_VALUE__';
+
   // if the number of unique values in the dataset is <= the threshold, displays
   // 1 color for each unique value, and labels them as such in the legend.
+  var threshold = 6;
+
   /*   TEMPORARY SETTINGS   */
-  // TODO: replace with real one once API gets up and running.
-  var attr = 'VALUE',
+  
       // WARNING: tests depend upon file name.
       numberOfClasses = function(values) {
         // handles numberOfClasses in Jenks (implemented for _.uniq(values).length > 6)
@@ -66,7 +73,9 @@ angular.module('dataCards.directives').directive('choropleth', function(AngularR
     restrict: 'E',
     replace: 'true',
     scope: {
-      'regions': '='
+      'fieldName': '=',
+      'geojsonAggregateData': '=',
+      'showFiltered': '='
     },
     template: '<div class="choropleth-map-container"><leaflet class="choropleth-map" center="center" bounds="bounds" defaults="defaults" geojson="geojson" legend="legend"></leaflet></div>',
     controller: function($scope, $http) {
@@ -115,7 +124,7 @@ angular.module('dataCards.directives').directive('choropleth', function(AngularR
       var scale;
 
       var fillColor = function(feature, fillClass) {
-        if (!feature.properties || !feature.properties[attr]) {
+        if (!feature.properties || !feature.properties[AGGREGATE_VALUE_PROPERTY_NAME]) {
           return nullColor;
         } else {
           if (fillColor == 'none') {
@@ -123,7 +132,7 @@ angular.module('dataCards.directives').directive('choropleth', function(AngularR
           } else if (fillClass == 'single') {
             return defaultSingleColor;
           } else if (fillClass == 'multi') {
-            var value = Number(feature.properties[attr]);
+            var value = Number(feature.properties[AGGREGATE_VALUE_PROPERTY_NAME]);
             return scale(value).hex();
           } else {
             throw new Error("Invalid fillClass on #fill: " + fillClass);
@@ -135,7 +144,7 @@ angular.module('dataCards.directives').directive('choropleth', function(AngularR
         if (feature.geometry.type != "LineString" && feature.geometry.type != "MultiLineString") {
           return defaultStrokeColor;
         } else {
-          if (!feature.properties || !feature.properties[attr]) {
+          if (!feature.properties || !feature.properties[AGGREGATE_VALUE_PROPERTY_NAME]) {
             return nullColor;
           } else {
             if (fillClass == 'none') {
@@ -320,7 +329,7 @@ angular.module('dataCards.directives').directive('choropleth', function(AngularR
 
       function updateGeojson(geojsonData) {
         var colors;
-        var values = ChoroplethHelpers.getGeojsonValues(geojsonData, attr);
+        var values = ChoroplethHelpers.getGeojsonValues(geojsonData, AGGREGATE_VALUE_PROPERTY_NAME);
         var updateGeojsonScope = function(fillClass) {
           $scope.geojson = {
             data: geojsonData,
@@ -460,7 +469,7 @@ angular.module('dataCards.directives').directive('choropleth', function(AngularR
 
       function mouseoverFeature(event, leafletEvent) {
         var feature = leafletEvent.target.feature;
-        var value = feature.properties[attr];
+        var value = feature.properties[AGGREGATE_VALUE_PROPERTY_NAME];
         // TODO: mouseover popups
       }
 
@@ -473,15 +482,15 @@ angular.module('dataCards.directives').directive('choropleth', function(AngularR
         $scope.observe('geojsonAggregateData'),
         $scope.observe('showFiltered'),
         function(fieldName, geojsonAggregateData, showFiltered) {
+          console.log('receiving crap');
           if (!geojsonAggregateData) {
             return;
           }
           var colors;
-          var values = ChoroplethHelpers.getGeojsonValues(geojsonAggregateData, aggregateValuePropertyName);
+          var values = ChoroplethHelpers.getGeojsonValues(geojsonAggregateData, AGGREGATE_VALUE_PROPERTY_NAME);
           var updateGeojsonScope = function(fillClass) {
             $scope.geojson = {
               data: geojsonAggregateData,
-              highlighted: filterHighlightedGeojsonFeatures(geojsonAggregateData),
               style: styleClass(fillClass),
               resetStyleOnGeojsonClick: true,
               zoomOnDoubleClick: true
@@ -515,10 +524,6 @@ angular.module('dataCards.directives').directive('choropleth', function(AngularR
         }
       );
 
-/*      $scope.$watch('geojsonAggregateData', function(geojsonData){
-        if (!geojsonData) return;
-        updateGeojson(geojsonData);
-      });*/
     }
   }
 });

@@ -1,12 +1,24 @@
 @import dataCards/ellipsis
 
+
 $fgColor: #333
 $bgColor: #4a525a
 
+
+.clearfix
+  *zoom: 1
+
+  &:before, &:after
+    display: table
+    content: ""
+    // Fixes Opera/contenteditable bug:
+    // http://nicolasgallagher.com/micro-clearfix-hack/#comment-36952
+    line-height: 0
+  &:after
+  clear: both
+
 body
-  background: $bgColor
-  color: white
-  font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif
+  font-family: 'Open Sans', 'Helvetica Neue', Helvetica, Arial, sans-serif
   weight: 200
   margin: 0
 
@@ -32,8 +44,6 @@ body
 ::-webkit-scrollbar-thumb:window-inactive
   background: rgba(0,0,0,0.05)
 
-p
-  margin: 0.5em 0 0.5em 0
 h1
   margin: 0
   font-size: 1.5em

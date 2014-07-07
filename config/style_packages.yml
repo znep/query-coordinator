@@ -12,6 +12,7 @@ bower-styles-all:
 angular-app-dataCards:
 - dataCards/main
 - dataCards/flexgrid-custom
+- dataCards/cards
 - dataCards/ellipsis
 - dataCards/maps
 - dataCards/flyout

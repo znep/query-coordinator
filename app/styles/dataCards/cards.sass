@@ -1,0 +1,281 @@
+$metadata-top-padding: 10px
+$metadata-side-padding: 30px
+$rounded-corners-border-radius: 5px
+$card-margins: 5px
+$card-padding: 20px 15px
+
+// color palette
+$metadata-bg-color: #3f4752
+$panel-bg-color: #394047
+$panel-border-color: #4f5f73
+$cards-bg-color: #4d5969
+
+$btn-border-color: #576373
+$btn-bg-color: #4d5969
+
+$white-font-color: #f0edee
+$lt-grey-font-color: #8a8686
+$aqua-font-color: #68b0cc
+$link-font-color: #68b0cc
+$link-visited-font-color: #68b0cc
+$active-filter-color: #debb1f // gold
+// --------------------------------
+
+body
+  background-color: $cards-bg-color
+  padding: 0
+
+.cards-view
+
+  *:focus
+    outline-width: 2px
+
+  .logo
+    background-color: white
+    color: black
+    padding: $metadata-top-padding $metadata-side-padding
+    font-size: 1.25em
+    font-weight: lighter
+
+  .cards-metadata
+
+    background-color: $metadata-bg-color
+    color: $white-font-color
+    padding: $metadata-top-padding ($metadata-side-padding / 2)
+    font-size: 12px
+
+    .padded-wrapper
+      padding: ($metadata-side-padding / 2)
+
+    header
+      padding-left: ($metadata-side-padding / 2)
+      font-size: 2em
+      font-weight: lighter
+
+    p.page-description
+      margin: 0
+      font-size: 1.15em
+
+    .metadatum-wrapper
+      $activities-divider-width: 36px
+
+      &:first-child
+        .metadatum
+          padding-top: 0
+
+      .metadatum
+        padding: 10px 0
+        border-bottom: solid 1px $aqua-font-color
+        white-space: nowrap
+        overflow: hidden
+
+        span
+          display: inline-block
+
+          &.label
+            float: left
+            text-transform: uppercase
+            color: $aqua-font-color
+
+          &.value
+            float: right
+            text-transform: capitalize
+            font-weight: bold
+
+    .action-btn
+      display: inline-block
+      padding: 7px 18px
+      border-radius: $rounded-corners-border-radius
+      border: solid 2px $btn-border-color
+      background-color: $btn-bg-color
+      margin: 0 10px 10px 0
+      color: $white-font-color
+      width: 56px
+      text-align: center
+
+      &:hover
+        color: $aqua-font-color
+
+    .view
+
+      header
+        text-transform: uppercase
+        font-size: 1em
+        display: inline-block
+        padding: 0 0 5px 0
+        margin: 0
+
+      a
+        font-size: 1em
+        color: $aqua-font-color
+        float: right
+
+      .panel
+        background-color: $panel-bg-color
+        border: solid 2px $panel-border-color
+        border-radius: $rounded-corners-border-radius
+        color: $lt-grey-font-color
+        min-height: 45px
+
+        // temporary lining
+        white-space: nowrap
+        overflow: hidden
+
+        .slide
+          $slide-height: 56px
+          // svg icon height (36p) + 20px top and bottom padding
+
+          height: $slide-height
+          padding: 20px 10px
+
+          // temporary lining
+          display: inline-block
+
+          > div
+            float: left
+            height: $slide-height
+
+            h1
+              padding-top: 10px
+              margin: 0
+              color: $white-font-color
+              font-size: 1.15em
+              font-weight: normal
+
+            h2
+              padding: 0
+              margin: 0
+              color: $lt-grey-font-color
+              font-size: 1em
+              font-weight: lighter
+
+            svg
+              padding: 10px
+
+
+  .cards-content
+    background-color: $cards-bg-color
+    color: $white-font-color
+    $filter-height: 72px
+
+    .quick-filter-bar
+      padding: 0
+      height: $filter-height
+      box-sizing: border-box
+
+      .content
+        padding: 0 $metadata-side-padding
+        background-color: $cards-bg-color
+        width: 100%
+        height: $filter-height
+        box-sizing: border-box
+
+      &.stuck .content
+        z-index: 999
+        position: fixed
+        top: 0
+
+      .filter
+        // TODO: responsive design for filters when narrow
+        $filter-radius: 1px
+        display: inline-block
+        padding: 10px 2.5px
+
+        > span
+          font-size: 12px
+          display: block
+          padding-left: $filter-radius
+          text-transform: uppercase
+
+        select
+          border-image: none
+          border-radius: $filter-radius
+          -webkit-appearance: none
+          -moz-appearance: none
+          appearance: none
+          padding: 10px
+          margin: 0
+          min-width: 150px
+          // TODO: magic number
+          background-color: $panel-bg-color
+          border: solid 1px $panel-border-color
+          color: $white-font-color
+
+        &.active
+          select
+            color: $active-filter-color
+            border-color: $active-filter-color
+
+    .cards
+      padding: $metadata-side-padding / 2 - $card-margins
+      padding-top: 0
+
+      .card
+        // COLOR PALETTE
+        $header-font-color: #68b0cc
+        $description-font-color: #666364
+        $card-bg-color: #fff
+        $expand-button-color: #d6d4d5
+
+        $unfiltered-region-bg-color-1: #d6d4d5
+        // grey
+        $filtered-region-bg-color-1: #68b0cc
+        // blue
+        $filtered-region-bg-color-2: #debb1f
+        // gold
+        $filtered-region-bg-color-3: #de851f
+        // orange or dark gold
+        $y-axis-color: #f0edee
+        // ===== ===== ===== ==== =====
+
+        border-radius: $rounded-corners-border-radius
+        margin: $card-margins
+        padding: $card-padding
+        color: $lt-grey-font-color
+
+        .title-one-line
+          line-height: 1em
+          font-weight: normal
+          text-transform: uppercase
+          color: $filtered-region-bg-color-1
+
+        &.expanded
+          height: 700px
+          // TODO: arbitrary. Fixing leaflet height
+
+          div[ng-switch="cardType"]
+            height: 400px
+            // TODO: arbitrary
+
+      div[ng-switch="cardType"]
+        position: relative
+
+  .cards-wrapper
+
+    .card
+      $header-font-color: #68b0cc
+      $description-font-color: #666364
+      $card-bg-color: #fff
+      $expand-button-color: #d6d4d5
+
+      $unfiltered-region-bg-color-1: #d6d4d5
+      // grey
+      $filtered-region-bg-color-1: #68b0cc
+      // blue
+      $filtered-region-bg-color-2: #debb1f
+      // gold
+      $filtered-region-bg-color-3: #de851f
+      // orange or dark gold
+      $y-axis-color: #f0edee
+
+/*   RESPONSIVE DESKTOP DESIGN   */
+@media screen
+  @media (min-width: 768px)
+    .cards-view
+      .cards-metadata
+        .metadatum-wrapper
+          .span6:first-child
+            .metadatum
+              // left-hand activities on full-width
+              margin-right: 35px
+

@@ -71,6 +71,62 @@ $pageNameMaxLineCount: 2
 
   .hideableMetadata
     margin: 15px
+
+  div.pages
+    display: inline-block
+    margin-top: 2rem
+
+    div.publisher
+      font-weight: bold
+      margin-bottom: 1rem
+
+    ul.pages
+      display: inline-block
+      padding-left: 0
+      margin: 0
+
+      li
+        list-style: none
+        display: inline-block
+        div.page
+          display: inline-block
+          width: 13rem
+          & > div
+            float: left
+            & + div
+              float: none
+              display: block
+          a.page-link
+            display: inline-block
+            width: 80px
+            height: 80px
+            background: #ccc
+            @include prefixer(border-radius, 4px)
+            margin-right: 10px
+
+    ul.pages.user
+      li
+        div.page
+          a.page-link
+            background: #999
+
+  .page-description
+    margin-top: 1rem
+    color: #ccc
+
+  .page-description .show-more
+    height: 1rem
+    display: none
+    border-top: 2px solid #ccc
+    text-align: center
+
+    &:after
+      content: 'Show more'
+    &.less:after
+      content: 'Show less'
+    &.clamped,&.less
+      display: block
+
   .quickFilterBar
     color: white
     // Reserves space even if we're stuck.

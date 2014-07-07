@@ -1,4 +1,4 @@
-angular.module('dataCards.services').factory('AngularRxExtensions', function($rootScope, $log) {
+angular.module('dataCards.services').factory('AngularRxExtensions', function() {
   // Execute the given function immediately if an angular digest-apply is
   // already in progress, otherwise starts a digest-apply cycle then executes
   // the function within that cycle.

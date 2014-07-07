@@ -1,4 +1,4 @@
-angular.module('dataCards.directives').directive('choropleth', function(ChoroplethHelpers, leafletBoundsHelpers, $log, $timeout) {
+angular.module('dataCards.directives').directive('choropleth', function(AngularRxExtensions, ChoroplethHelpers, leafletBoundsHelpers, $log, $timeout) {
   var threshold = 6;
   // if the number of unique values in the dataset is <= the threshold, displays
   // 1 color for each unique value, and labels them as such in the legend.
@@ -95,6 +95,8 @@ angular.module('dataCards.directives').directive('choropleth', function(Chorople
       };
     },
     link: function($scope, element) {
+
+      AngularRxExtensions.install($scope);
 
       /* Size map responsively */
 
@@ -466,10 +468,57 @@ angular.module('dataCards.directives').directive('choropleth', function(Chorople
         mouseoverFeature(event, leafletEvent);
       });
 
-      $scope.$watch('regions', function(geojsonData){
+      Rx.Observable.subscribeLatest(
+        $scope.observe('fieldName'),
+        $scope.observe('geojsonAggregateData'),
+        $scope.observe('showFiltered'),
+        function(fieldName, geojsonAggregateData, showFiltered) {
+          if (!geojsonAggregateData) {
+            return;
+          }
+          var colors;
+          var values = ChoroplethHelpers.getGeojsonValues(geojsonAggregateData, aggregateValuePropertyName);
+          var updateGeojsonScope = function(fillClass) {
+            $scope.geojson = {
+              data: geojsonAggregateData,
+              highlighted: filterHighlightedGeojsonFeatures(geojsonAggregateData),
+              style: styleClass(fillClass),
+              resetStyleOnGeojsonClick: true,
+              zoomOnDoubleClick: true
+            };
+          };
+          if (values.length === 0) {
+            // no values, just render polygons with no colors
+            updateGeojsonScope('none');
+          } else {
+
+            if (!$scope.classBreaks) {
+              $scope.classBreaks = classBreaksFromValues(values);
+            }
+
+            if ($scope.classBreaks.length === 1) {
+              colors = [defaultSingleColor];
+              setHighlightedFeatures();
+              updateGeojsonScope('single');
+            } else {
+              updateMulticolorScale(defaultColorClass, $scope.classBreaks);
+              colors = scale.colors();
+              updateGeojsonScope('multi');
+            }
+
+            if (!$scope.legend){
+              updateLegend($scope.classBreaks, colors);
+            }
+
+          }
+          updateBounds(geojsonAggregateData);
+        }
+      );
+
+/*      $scope.$watch('geojsonAggregateData', function(geojsonData){
         if (!geojsonData) return;
         updateGeojson(geojsonData);
-      });
+      });*/
     }
   }
 });

@@ -27,6 +27,52 @@ angular.module('dataCards.services').factory('CardDataService', function($q, $ht
       });
     },
 
+    // This now appears here rather than cardVizualizationChoropleth.js in order to
+    // prepare for live GeoJSON data.
+    getChoroplethRegions: function(fieldName, datasetId) {
+      var geojsonFilename = 'ward_geojson';
+      datasetId = DeveloperOverrides.dataOverrideForDataset(datasetId) || datsetId;
+      var url = '/datasets/geojson/{0}.json'.format(geojsonFilename);
+      return $http.get(url, { cache: true }).then(function(response) {
+        return response.data;
+      });
+    },
+
+    // This is distinct from getUnFilteredData in order to allow for (eventual)
+    // paginated queries to get total counts across all rows rather than the hard
+    // 1,000-row limit on SoQL queries.
+    getUnfilteredChoroplethAggregates: function(fieldName, datasetId) {
+      datasetId = DeveloperOverrides.dataOverrideForDataset(datasetId) || datasetId;
+      var url = ('/api/id/{1}.json?$query=' +
+                 'select {0} as name, ' +
+                 'count(*) as value ' +
+                 'group by {0} ' +
+                 'order by count(*) desc').format(fieldName, datasetId);
+      return $http.get(url, { cache: true }).then(function(response) {
+        return _.map(response.data, function(item) {
+          return { name: item.name, value: Number(item.value) };
+        });
+      });
+    },
+
+    // This is distinct from getFilteredData in order to allow for (eventual)
+    // paginated queries to get total counts across all rows rather than the hard
+    // 1,000-row limit on SoQL queries.
+    getFilteredChoroplethAggregates: function(fieldName, datasetId, whereClause) {
+      datasetId = DeveloperOverrides.dataOverrideForDataset(datasetId) || datasetId;
+      var url = ('/api/id/{1}.json?$query=' +
+                 'select {0} as name, ' +
+                 'count(*) as value ' +
+                 'where {2} ' +
+                 'group by {0} ' +
+                 'order by count(*) desc').format(fieldName, datasetId, whereClause);
+      return $http.get(url, { cache: true }).then(function(response) {
+        return _.map(response.data, function(item) {
+          return { name: item.name, value: Number(item.value) };
+        });
+      });
+    },
+
     getRowCount: function(datasetId, whereClause) {
       datasetId = DeveloperOverrides.dataOverrideForDataset(datasetId) || datasetId;
       var url = '/api/id/{0}.json?$query=select count(0)'.format(datasetId);

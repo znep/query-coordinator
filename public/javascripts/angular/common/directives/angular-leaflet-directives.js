@@ -1198,7 +1198,7 @@
           zoomControl: true,
           zoomsliderControl: false,
           zoomControlPosition: 'topleft',
-          attributionControl: false,
+          attributionControl: true,
           controls: {
             layers: {
               visible: true,

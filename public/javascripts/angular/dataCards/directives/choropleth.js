@@ -19,10 +19,10 @@ angular.module('dataCards.directives').directive('choropleth', function(Chorople
       }, // TODO: vet this. Assumes odd numbered, always, minus 1 of even.
       defaultColorClass = 'sequential',
       defaultLegendPos = 'bottomright',
-      defaultStrokeColor = 'white',
+      defaultStrokeColor = '#666',
       defaultHighlightColor = 'white',
       defaultSingleColor = 'teal',
-      sequentialColors = ['#e4eef0', '#408499'],
+      sequentialColors = ['#B09D41', '#323345'],
       divergingColors = ['brown','lightyellow','teal'], // TODO: assumptions! # features = 1 --> ?
       // qualitativeColors = {
       //   3: ["#8dd3c7","#ffffb3","#bebada"],

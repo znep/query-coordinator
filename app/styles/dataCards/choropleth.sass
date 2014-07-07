@@ -4,13 +4,10 @@
     padding: 0
 
     .choropleth-map
+      top: 3rem
+      bottom: 0
       width: 100%
-      height: 120px
-
-      position: absolute
-      border-radius: 5px
-      top: 10px
-      padding-bottom: 10px * 2
+      position: absolute !important
 
       path
         cursor: inherit
@@ -40,5 +37,8 @@
       padding: 0
 
     .choropleth-map
-      height: 500px
-      // TODO: arbitrary
+      min-height: 400px
+      max-height: 1500px
+      top: 3rem
+      bottom: 0
+      width: 100%

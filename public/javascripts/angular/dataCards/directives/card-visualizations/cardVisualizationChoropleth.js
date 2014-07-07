@@ -1,4 +1,4 @@
-angular.module('dataCards.directives').directive('cardVisualizationChoropleth', function(AngularRxExtensions, CardDataService, $http) {
+angular.module('dataCards.directives').directive('cardVisualizationChoropleth', function(AngularRxExtensions, CardDataService, Filter, $http) {
 
   return {
     restrict: 'E',
@@ -96,6 +96,12 @@ angular.module('dataCards.directives').directive('cardVisualizationChoropleth', 
               return null;
             }
 
+            // Fail early if the data's filter state has not yet caught up with the UI's
+            // due to latency on the data requests.
+            if (!_.isEmpty(whereClause) && activeFilterNames[0] !== $scope.currentUIFilter) {
+              return null;
+            }
+
             var unfilteredAsHash = _.reduce(unfiltered, function(acc, datum) {
               acc[datum.name] = datum.value;
               return acc;
@@ -112,6 +118,22 @@ angular.module('dataCards.directives').directive('cardVisualizationChoropleth', 
       $scope.bindObservable('filterApplied', filteredData.map(function(filtered) {
         return filtered !== null;
       }));
+
+      // Handle filter toggle events sent from the choropleth directive.
+      $scope.$on('toggle-dataset-filter:choropleth', function(event, fieldName, fieldValue) {
+        // TODO: Figure out a better way to accomplish this!!1
+        // Cache the value we're actually filtering on locally so that we can test
+        // the filter value of incoming data against it and ignore out of date filtered
+        // data responses.
+        // If we don't do this the white outline responds to mouse down events but
+        // the region coloring doesn't catch up until the full
+        // 'request' -> 'response' -> 'render leaflet' loop.
+        $scope.currentUIFilter = fieldValue;
+        var hasFiltersOnCard = _.any(model.value.activeFilters.value, function(filter) {
+          return filter.operand === fieldValue;
+        });
+        model.value.activeFilters = hasFiltersOnCard ? [] : [Filter.withBinaryOperator('=', fieldValue)];
+      });
 
     }
   };

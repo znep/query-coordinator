@@ -177,6 +177,10 @@
 	cursor:    -moz-grabbing;
 	}
 
+/* Pointer for clicking choropleth regions */
+.leaflet-overlay-pane > svg > g {
+  cursor:pointer !important;
+  }
 
 /* visual tweaks */
 

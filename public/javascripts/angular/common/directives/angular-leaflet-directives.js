@@ -459,11 +459,14 @@
         replace: false,
         require: 'leaflet',
         link: function (scope, element, attrs, controller) {
-          var safeApply = leafletHelpers.safeApply, isDefined = leafletHelpers.isDefined, leafletScope = controller.getLeafletScope(), leafletGeoJSON = {};
+          var safeApply = leafletHelpers.safeApply, isDefined = leafletHelpers.isDefined, leafletScope = controller.getLeafletScope(), leafletGeoJSON = {}, leafletGeoJSONHighlighted = {};
           controller.getMap().then(function (map) {
             leafletScope.$watch('geojson', function (geojson) {
               if (isDefined(leafletGeoJSON) && map.hasLayer(leafletGeoJSON)) {
                 map.removeLayer(leafletGeoJSON);
+              }
+              if (isDefined(leafletGeoJSONHighlighted) && map.hasLayer(leafletGeoJSONHighlighted)) {
+                map.removeLayer(leafletGeoJSONHighlighted);
               }
               if (!(isDefined(geojson) && isDefined(geojson.data))) {
                 return;
@@ -474,8 +477,6 @@
                   if (leafletHelpers.LabelPlugin.isLoaded() && isDefined(geojson.label)) {
                     layer.bindLabel(feature.properties.description);
                   }
-                  // initialize highlighted flag. Applies to toggle highlighting.
-                  layer.highlighted = false;
                   layer.on({
                     mouseover: function (e) {
                       safeApply(leafletScope, function () {
@@ -521,6 +522,20 @@
               leafletGeoJSON = L.geoJson(geojson.data, geojson.options);
               leafletData.setGeoJSON(leafletGeoJSON);
               leafletGeoJSON.addTo(map);
+              if (geojson.highlighted.features.length > 0) {
+
+                var highlightedOptions = {
+                  style: function(feature) { return geojson.style(feature, true);},
+                  filter: geojson.filter,
+                  onEachFeature: onEachFeature,
+                  pointToLayer: geojson.pointToLayer
+                };
+
+                leafletGeoJSONHighlighted = L.geoJson(geojson.highlighted, highlightedOptions);
+                leafletData.setGeoJSON(leafletGeoJSONHighlighted);
+                leafletGeoJSONHighlighted.addTo(map);
+              }
+
             });
           });
         }

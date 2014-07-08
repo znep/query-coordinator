@@ -40,7 +40,7 @@ angular.module('dataCards.directives').directive('cardVisualizationChoropleth', 
       // TODO: Update this function to return what we need, not all the other crap.
       // Probably just want to construct a new geojson object from scratch.
       // Need: aggregate value, related feature id, human name, primary aggregate display unit (i.e. 'crimes')
-      var mergeRegionAndAggregateData = function(fieldName, geojsonRegions, unfilteredAsHash, filteredAsHash, whereClause) {
+      var mergeRegionAndAggregateData = function(activeFilterNames, fieldName, geojsonRegions, unfilteredAsHash, filteredAsHash, whereClause) {
         var newFeatures = geojsonRegions.features.map(function(geojsonFeature) {
           var featureId = geojsonFeature.properties[fieldName];
           var feature = {
@@ -54,10 +54,11 @@ angular.module('dataCards.directives').directive('cardVisualizationChoropleth', 
           // overwriting existing properties on the geojson object (properties are user-
           // defined according to the spec).
           if (_.isEmpty(whereClause)) {
-            feature.properties['__MERGED_SOCRATA_VALUE__'] = unfilteredAsHash[featureId];
+            feature.properties['__SOCRATA_MERGED_VALUE__'] = unfilteredAsHash[featureId];
           } else {
-            feature.properties['__MERGED_SOCRATA_VALUE__'] = filteredAsHash[featureId];
+            feature.properties['__SOCRATA_MERGED_VALUE__'] = filteredAsHash[featureId];
           }
+          feature.properties['__SOCRATA_FEATURE_HIGHLIGHTED__'] = _.contains(activeFilterNames, featureId);
           return feature;
         });
 
@@ -112,7 +113,7 @@ angular.module('dataCards.directives').directive('cardVisualizationChoropleth', 
               return acc;
             }, {});
 
-            return mergeRegionAndAggregateData(fieldName, geojsonRegions, unfilteredAsHash, filteredAsHash, whereClause);
+            return mergeRegionAndAggregateData(activeFilterNames, fieldName, geojsonRegions, unfilteredAsHash, filteredAsHash, whereClause);
 
       }));
       $scope.bindObservable('filterApplied', filteredData.map(function(filtered) {

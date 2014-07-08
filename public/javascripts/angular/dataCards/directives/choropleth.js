@@ -4,7 +4,8 @@ angular.module('dataCards.directives').directive('choropleth', function(AngularR
   // value we will display on the choropleth. This name is global, constant and has been
   // chosen so that it is unlikely to collide with any user-defined property on the
   // GeoJSON object we receive.
-  var AGGREGATE_VALUE_PROPERTY_NAME = '__MERGED_SOCRATA_VALUE__';
+  var AGGREGATE_VALUE_PROPERTY_NAME = '__SOCRATA_MERGED_VALUE__';
+  var AGGREGATE_VALUE_HIGHLIGHTED_NAME = '__SOCRATA_FEATURE_HIGHLIGHTED__';
 
   // if the number of unique values in the dataset is <= the threshold, displays
   // 1 color for each unique value, and labels them as such in the legend.
@@ -404,6 +405,8 @@ angular.module('dataCards.directives').directive('choropleth', function(AngularR
       // Send the toggle filter event up the scope to the parent, where it can
       // be handled by the model.
       var filterDataset = function(selectedFeature, callback) {
+        var featureId = selectedFeature.properties[':feature_id'];
+        highlightFeature(featureId);
         $scope.$emit(
           'toggle-dataset-filter:choropleth',
           selectedFeature,
@@ -413,6 +416,8 @@ angular.module('dataCards.directives').directive('choropleth', function(AngularR
       // Send the toggle filter event up the scope to the parent, where it can
       // be handled by the model.
       var clearDatasetFilter = function(selectedFeature, callback) {
+        var featureId = selectedFeature.properties[':feature_id'];
+        unhighlightFeature(featureId);
         $scope.$emit(
           'toggle-dataset-filter:choropleth',
           selectedFeature,
@@ -444,17 +449,15 @@ angular.module('dataCards.directives').directive('choropleth', function(AngularR
           }
         } else {
           lastClickTimeout = $timeout(function() {
-            // single click --> filters dataset
             var featureId = selectedFeature.properties[':feature_id'];
+            // single click --> filters dataset
             if (featureIsHighlighted(featureId)) {
-              unhighlightFeature(featureId);
               clearDatasetFilter(selectedFeature, function(ok) {
                 if (ok) {
                   // TODO: Do something?
                 }
               });
             } else {
-              highlightFeature(featureId);
               filterDataset(selectedFeature, function(ok) {
                 if (ok) {
                   // TODO: Do something?

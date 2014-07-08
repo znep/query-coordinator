@@ -467,14 +467,16 @@
           var isDefined = leafletHelpers.isDefined;
           var leafletScope = controller.getLeafletScope();
           var leafletGeoJSON = {};
-          var leafletGeoJSONHighlighted = {};
+          var leafletGeoJSONHighlights = {};
+          var AGGREGATE_VALUE_HIGHLIGHTED_NAME = '__SOCRATA_FEATURE_HIGHLIGHTED__';
+          var highlightedGeoJSONData;
           controller.getMap().then(function (map) {
             leafletScope.$watch('geojson', function (geojson) {
               if (isDefined(leafletGeoJSON) && map.hasLayer(leafletGeoJSON)) {
                 map.removeLayer(leafletGeoJSON);
               }
-              if (isDefined(leafletGeoJSONHighlighted) && map.hasLayer(leafletGeoJSONHighlighted)) {
-                map.removeLayer(leafletGeoJSONHighlighted);
+              if (isDefined(leafletGeoJSON) && map.hasLayer(leafletGeoJSONHighlights)) {
+                map.removeLayer(leafletGeoJSONHighlights);
               }
               if (!(isDefined(geojson) && isDefined(geojson.data))) {
                 return;
@@ -529,19 +531,24 @@
               leafletData.setGeoJSON(leafletGeoJSON);
               leafletGeoJSON.addTo(map);
 
-              if (geojson.highlighted.features.length > 0) {
+              geojson.options = {
+                style: function(feature) { return geojson.style(feature, true); },
+                filter: geojson.filter,
+                onEachFeature: onEachFeature,
+                pointToLayer: geojson.pointToLayer
+              };
 
-                var highlightedOptions = {
-                  style: function(feature) { return geojson.style(feature, true); },
-                  filter: geojson.filter,
-                  onEachFeature: onEachFeature,
-                  pointToLayer: geojson.pointToLayer
-                };
+              highlightedGeoJSONData = {
+                crs: geojson.data.crs,
+                features: geojson.data.features.filter(function(feature) {
+                  return feature.properties[AGGREGATE_VALUE_HIGHLIGHTED_NAME];
+                }),
+                type: geojson.data.type
+              };
 
-                leafletGeoJSONHighlighted = L.geoJson(geojson.highlighted, highlightedOptions);
-                leafletData.setGeoJSON(leafletGeoJSONHighlighted);
-                leafletGeoJSONHighlighted.addTo(map);
-              }
+              leafletGeoJSONHighlights = L.geoJson(highlightedGeoJSONData, geojson.options);
+              leafletData.setGeoJSON(leafletGeoJSONHighlights);
+              leafletGeoJSONHighlights.addTo(map);
 
             });
           });

@@ -39,8 +39,8 @@ describe("A Choropleth Directive", function() {
   polygonData2 = {
     "type": "FeatureCollection",
     "features": [
-      { "type": "Feature", "properties": { "__MERGED_SOCRATA_VALUE__": 1  }, "geometry": { "type": "Polygon", "coordinates": [ [ [ -87.123, 41.123 ], [ -87.124, 41.124 ], [ -87.125, 41.121 ], [ -87.155, 41.155 ] ] ] } },
-      { "type": "Feature", "properties": { "__MERGED_SOCRATA_VALUE__": 2  }, "geometry": { "type": "Polygon", "coordinates": [ [ [ -87.111, 41.120 ], [ -87.100, 41.124 ], [ -87.120, 41.127 ] ] ] } }
+      { "type": "Feature", "properties": { "__MERGED_SOCRATA_VALUE__": 1, ":feature_id": 1  }, "geometry": { "type": "Polygon", "coordinates": [ [ [ -87.123, 41.123 ], [ -87.124, 41.124 ], [ -87.125, 41.121 ], [ -87.155, 41.155 ] ] ] } },
+      { "type": "Feature", "properties": { "__MERGED_SOCRATA_VALUE__": 2, ":feature_id": 2  }, "geometry": { "type": "Polygon", "coordinates": [ [ [ -87.111, 41.120 ], [ -87.100, 41.124 ], [ -87.120, 41.127 ] ] ] } }
     ],
     "crs": { "type": "name", "properties": { "name": "urn:ogc:def:crs:OGC:1.3:CRS84" } }
   },
@@ -307,21 +307,25 @@ describe("A Choropleth Directive", function() {
   });
 
   var createChoropleth = function() {
-    var html = '<choropleth field-name="fieldName" geojson-aggregate-data="geojsonAggregateData" show-filtered="filterApplied"></choropleth>';
+    var html = '<choropleth geojson-aggregate-data="geojsonAggregateData" show-filtered="filterApplied"></choropleth>';
     var elem = angular.element(html);
+    var compiledElem;
+
     $('body').append('<div id="choroplethTest"></div>');
     $('#choroplethTest').append(elem);
-    var compiledElem = compile(elem)(scope);
-    scope.$digest();
 
+    compiledElem = compile(elem)(scope);
+
+    scope.$digest();
+    
     return compiledElem;
+
   };
 
   describe('with a valid geojsonAggregateData input', function() {
     // TODO: INVALID INPUT?
 
     it('should render a leaflet map, with zoom controls', function() {
-      scope.fieldName = 'ward';
       scope.geojsonAggregateData = lineStringData2;
       var el = createChoropleth();
 
@@ -330,7 +334,6 @@ describe("A Choropleth Directive", function() {
     });
 
     it('should render Polygons on the map, if the geojson contains Polygons', function(){
-      scope.fieldName = 'ward';
       scope.geojsonAggregateData = polygonData3;
       var el = createChoropleth();
 
@@ -339,7 +342,6 @@ describe("A Choropleth Directive", function() {
 
     it('should render MultiPolygons on the map, if the geojson contains MultiPolygons', function(){
       scope.geojsonAggregateData = multiPolygonData2;
-      scope.fieldName = 'ward';
       var el = createChoropleth();
 
       expect(el.find('g').length).to.equal(2+3);
@@ -347,7 +349,6 @@ describe("A Choropleth Directive", function() {
 
     it('should render MultiLineStrings on the map, if the geojson contains MultiLineStrings', function(){
       scope.geojsonAggregateData = multiLineStringData4;
-      scope.fieldName = 'ward';
       var el = createChoropleth();
 
       expect(el.find('.leaflet-overlay-pane svg').find('g').length).to.equal(12+15+6+3);
@@ -355,7 +356,6 @@ describe("A Choropleth Directive", function() {
 
     it('should render LineStrings on the map, if the geojson contains LineStrings', function(){
       scope.geojsonAggregateData = lineStringData7;
-      scope.fieldName = 'ward';
       var el = createChoropleth();
 
       expect(el.find('.leaflet-overlay-pane svg').find('g').length).to.equal(7);
@@ -363,7 +363,6 @@ describe("A Choropleth Directive", function() {
 
     xit('should render a map with a bounding box that contains all the features', function(done){
       scope.geojsonAggregateData = easyBoundsData;
-      scope.fieldName = 'ward';
       var el = createChoropleth();
       var expectedBounds = {
         northEast: { lat: 2, lng: 2 },
@@ -378,7 +377,6 @@ describe("A Choropleth Directive", function() {
 
     it('should be able to render a legend if the choropleth has values', function(){
       scope.geojsonAggregateData = multiLineStringData4;
-      scope.fieldName = 'ward';
       var el = createChoropleth();
 
       expect(el.find('.leaflet-control.legend').length).to.equal(1);
@@ -386,7 +384,6 @@ describe("A Choropleth Directive", function() {
 
     it('should not render a legend if the choropleth has no values', function(){
       scope.geojsonAggregateData = polygonData2NoValues;
-      scope.fieldName = 'ward';
       var el = createChoropleth();
 
       expect(el.find('.leaflet-control.legend').length).to.equal(0);
@@ -395,7 +392,6 @@ describe("A Choropleth Directive", function() {
     it('should render proper map features, legend, and legend labels for 1 line feature', function(){
       // NOTE: important to test for each individual small case (1,2,3) to ensure proper edge case management.
       scope.geojsonAggregateData = lineStringData1;
-      scope.fieldName = 'ward';
       var el = createChoropleth();
 
       // there should only be 1 feature
@@ -422,7 +418,6 @@ describe("A Choropleth Directive", function() {
     it('should render proper map features, legend, and legend labels for 1 polygon feature', function(){
       // NOTE: important to test for each individual small case (1,2,3) to ensure proper edge case management.
       scope.geojsonAggregateData = polygonData1;
-      scope.fieldName = 'ward';
       var el = createChoropleth();
 
       // there should only be 1 feature
@@ -449,7 +444,6 @@ describe("A Choropleth Directive", function() {
     it('should render proper map features, legend, and legend labels for 2 features', function(){
       // NOTE: important to test for each individual small case (1,2,3) to ensure proper edge case management.
       scope.geojsonAggregateData = polygonData2;
-      scope.fieldName = 'ward';
       var el = createChoropleth();
 
       // there should only be 2 features
@@ -476,7 +470,6 @@ describe("A Choropleth Directive", function() {
     it('should render proper map features, legend, and legend labels for 3 features', function(){
       // NOTE: important to test for each individual small case (1,2,3) to ensure proper edge case management.
       scope.geojsonAggregateData = lineStringData3;
-      scope.fieldName = 'ward';
       var el = createChoropleth();
 
       // there should only be 3 features
@@ -497,14 +490,12 @@ describe("A Choropleth Directive", function() {
       // stroke (if LineString or MultiLineString) or fill (if Polygon or MultiPolygon) color hexes should match legend color hexes
       var fillColor = el.find('.angular-leaflet-map svg path').css('stroke');
       var legendLabelColor = el.find('.leaflet-control.legend i').attr('style').replace('background:','');
-      console.log(chroma.color(fillColor).hex(), chroma.color(legendLabelColor).hex());
       expect(chroma.color(fillColor).hex()).to.equal(chroma.color(legendLabelColor).hex());
 
     });
 
     it('should render proper map features, legend, and legend labels for many features', function(){
       scope.geojsonAggregateData = lineStringData52;
-      scope.fieldName = 'ward';
       var el = createChoropleth();
 
       // there should only be 51 features
@@ -525,7 +516,6 @@ describe("A Choropleth Directive", function() {
 
     it('should not color features that are missing properties', function(){
       scope.geojsonAggregateData = polygonData2PropertyMissing;
-      scope.fieldName = 'ward';
       var el = createChoropleth();
 
       // there should only be 2 features
@@ -547,7 +537,6 @@ describe("A Choropleth Directive", function() {
 
     it('should not color features that have null values', function(){
       scope.geojsonAggregateData = polygonData2ValueNull;
-      scope.fieldName = 'ward';
       var el = createChoropleth();
 
       // there should only be 2 features
@@ -569,7 +558,6 @@ describe("A Choropleth Directive", function() {
 
     it('should not color features that have undefined values', function(){
       scope.geojsonAggregateData = polygonData2ValueUndefined;
-      scope.fieldName = 'ward';
       var el = createChoropleth();
 
       // there should only be 2 features
@@ -593,7 +581,6 @@ describe("A Choropleth Directive", function() {
 
     xit('should zoom the map if the map was double clicked', function(done) {
       scope.geojsonAggregateData = polygonData2ValueUndefined;
-      scope.fieldName = 'ward';
       var el = createChoropleth();
 
       var line = el.find('path')[0];
@@ -632,12 +619,17 @@ describe("A Choropleth Directive", function() {
 
       it('should highlight features on click', function(){
         scope.geojsonAggregateData = polygonData2;
-        scope.fieldName = 'ward';
         var el = createChoropleth();
-
         var polygon = el.find('path')[0];
         var secondLine = el.find('path')[1];
         var defaultStrokeWidth = parseInt($(polygon).css('strokeWidth'));
+
+        scope.$on('leafletDirectiveMap.geojsonClick', function(event, selectedFeature, leafletEvent) {
+//          console.log(event);
+//          console.log(selectedFeature);
+//          console.log(leafletEvent.originalEvent.fromElement);
+
+        });
 
         timeout(function() {
           th.fireEvent(polygon, 'click');
@@ -647,16 +639,17 @@ describe("A Choropleth Directive", function() {
         timeout.flush(); // click promise (lastTimer on geojsonClick in Choropleth.js)
 
         var hoveredStrokeWidth = parseInt($(el.find('path')[0]).css('strokeWidth'));
+
         expect( hoveredStrokeWidth > defaultStrokeWidth ).to.equal(true);
 
       });
 
       it('should unhighlight a highlighted feature if a different feature was clicked', function(done){
         scope.geojsonAggregateData = polygonData2;
-        scope.fieldName = 'ward';
         var el = createChoropleth();
 
-        var firstPolygon = el.find('path')[0], secondPolygon = el.find('path')[1];
+        var firstPolygon = el.find('path')[0];
+        var secondPolygon = el.find('path')[1];
         var defaultStrokeWidth = parseInt($(firstPolygon).css('strokeWidth'));
 
         timeout(function() {
@@ -685,47 +678,24 @@ describe("A Choropleth Directive", function() {
         }, 450);
       });
 
-      it('should emit a filter by region event on click', function(){
+      it('should emit a toggle filter event on region click', function(){
         scope.geojsonAggregateData = polygonData2;
-        scope.fieldName = 'ward';
         var el = createChoropleth();
+        var eventsReceived = 0;
         var polygon = el.find('path')[0];
-        var secondLine = el.find('path')[1];
-        var defaultStrokeWidth = parseInt($(polygon).css('strokeWidth'));
-        var eventReceived = false;
 
         scope.$on('toggle-dataset-filter:choropleth', function() {
-          eventReceived = true;
+          eventsReceived += 1;
         });
 
         timeout(function() {
-          th.fireEvent(polygon, 'click');
+          th.fireEvent(el.find('path')[0], 'click');
         });
 
         timeout.flush(); // first polygon click
         timeout.flush(); // click promise (lastTimer on geojsonClick in Choropleth.js)
 
-        expect(eventRecieved).to.equal(true);
-
-      });
-
-      it('should emit a remove filter by region event on a second click', function(){
-        /*scope.geojsonAggregateData = polygonData2;
-        var el = createChoropleth();
-
-        var polygon = el.find('path')[0];
-        var secondLine = el.find('path')[1];
-        var defaultStrokeWidth = parseInt($(polygon).css('strokeWidth'));
-
-        timeout(function() {
-          th.fireEvent(polygon, 'click');
-        });
-
-        timeout.flush(); // first polygon click
-        timeout.flush(); // click promise (lastTimer on geojsonClick in Choropleth.js)
-
-        var hoveredStrokeWidth = parseInt($(polygon).css('strokeWidth'));
-        expect( hoveredStrokeWidth > defaultStrokeWidth ).to.equal(true);*/
+        expect(eventsReceived).to.equal(1);
       });
 
     });

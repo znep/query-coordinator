@@ -1772,28 +1772,6 @@ var Dataset = ServerModel.extend({
             }});
     },
 
-    // TODO IDE says this is an unused method...
-    waitForPublishingAvailable: function(successCallback, timeout)
-    {
-        var ds = this;
-
-        var waitForSuccess = function()
-        {
-            ds.getPublishingAvailable(function(available)
-            {
-                if (!available)
-                {
-                    setTimeout(waitForSuccess, timeout || 5000);
-                }
-                else
-                {
-                    successCallback();
-                }
-            });
-        };
-        waitForSuccess();
-    },
-
     getSnapshotDatasets: function(callback)
     {
         var ds = this;

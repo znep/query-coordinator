@@ -401,18 +401,18 @@ angular.module('dataCards.directives').directive('choropleth', function(AngularR
 
       /* Dataset filtering */
 
+      // Send the toggle filter event up the scope to the parent, where it can
+      // be handled by the model.
       var filterDataset = function(selectedFeature, callback) {
-        // Send the toggle filter event up the scope to the parent, where it can
-        // be handled by the model.
         $scope.$emit(
           'toggle-dataset-filter:choropleth',
           selectedFeature,
           callback);
       }
 
+      // Send the toggle filter event up the scope to the parent, where it can
+      // be handled by the model.
       var clearDatasetFilter = function(selectedFeature, callback) {
-        // Send the toggle filter event up the scope to the parent, where it can
-        // be handled by the model.
         $scope.$emit(
           'toggle-dataset-filter:choropleth',
           selectedFeature,
@@ -426,7 +426,7 @@ angular.module('dataCards.directives').directive('choropleth', function(AngularR
       var lastClick = 0;
       var lastClickTimeout = null;
 
-      $scope.$on('leafletDirectiveMap.geojsonClick', function(event, selectedFeature, leafletEvent, leafletGeoJSON) {
+      $scope.$on('leafletDirectiveMap.geojsonClick', function(event, selectedFeature, leafletEvent) {
 
         if (!$scope.geojson.resetStyleOnGeojsonClick) {
           throw new Error("To unhighlight feature, set geojson resetStyleOnGeojsonClick: true");

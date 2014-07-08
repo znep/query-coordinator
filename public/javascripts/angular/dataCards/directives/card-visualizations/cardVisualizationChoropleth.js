@@ -98,7 +98,7 @@ angular.module('dataCards.directives').directive('cardVisualizationChoropleth', 
 
             // Fail early if the data's filter state has not yet caught up with the UI's
             // due to latency on the data requests.
-            if (!_.isEmpty(whereClause) && activeFilterNames[0] !== $scope.currentUIFilter) {
+            if (!_.isEmpty(whereClause) && activeFilterNames[0] !== $scope.highlightedRegion) {
               return null;
             }
 
@@ -120,7 +120,7 @@ angular.module('dataCards.directives').directive('cardVisualizationChoropleth', 
       }));
 
       // Handle filter toggle events sent from the choropleth directive.
-      $scope.$on('toggle-dataset-filter:choropleth', function(event, fieldName, fieldValue) {
+      $scope.$on('toggle-dataset-filter:choropleth', function(event, feature, callback) {
         // TODO: Figure out a better way to accomplish this!!1
         // Cache the value we're actually filtering on locally so that we can test
         // the filter value of incoming data against it and ignore out of date filtered
@@ -128,11 +128,12 @@ angular.module('dataCards.directives').directive('cardVisualizationChoropleth', 
         // If we don't do this the white outline responds to mouse down events but
         // the region coloring doesn't catch up until the full
         // 'request' -> 'response' -> 'render leaflet' loop.
-        $scope.currentUIFilter = fieldValue;
+        var featureId = feature.properties[model.value.fieldName];
+        $scope.highlightedRegion = featureId;
         var hasFiltersOnCard = _.any(model.value.activeFilters.value, function(filter) {
-          return filter.operand === fieldValue;
+          return filter.operand === featureId;
         });
-        model.value.activeFilters = hasFiltersOnCard ? [] : [Filter.withBinaryOperator('=', fieldValue)];
+        model.value.activeFilters = hasFiltersOnCard ? [] : [Filter.withBinaryOperator('=', featureId)];
       });
 
     }

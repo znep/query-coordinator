@@ -48,8 +48,8 @@ angular.module('dataCards.directives').directive('choropleth', function(AngularR
       // TODO: assumes min colors = 3, max colors = 12. Enforce this with error catching.
 
 
-  // utility functions
-  function oddNumbered(num) {
+  // Utility functions.
+  var oddNumbered = function(num) {
     if (num % 2 == 0) {
       return num - 1;
     } else {
@@ -57,7 +57,7 @@ angular.module('dataCards.directives').directive('choropleth', function(AngularR
     }
   }
 
-  function midpoint(val1, val2) {
+  var midpoint = function(val1, val2) {
     if (val1 === undefined || val2 === undefined) {
       throw new Error("Undefined values are not allowed in #midpoint");
     }
@@ -73,7 +73,6 @@ angular.module('dataCards.directives').directive('choropleth', function(AngularR
     restrict: 'E',
     replace: 'true',
     scope: {
-      'model': '=',
       'geojsonAggregateData': '=',
       'showFiltered': '='
     },
@@ -107,13 +106,13 @@ angular.module('dataCards.directives').directive('choropleth', function(AngularR
 
       AngularRxExtensions.install($scope);
 
-      $scope.fieldName = $scope.observe('model').value.fieldName;
+      $scope.highlightedFeatures = {};
 
       /* Size map responsively */
 
-      var containerPaddingX = element.outerWidth(true) - element.width(),
-          containerPaddingY = element.outerHeight(true) - element.height();
-          // includes CSS margins + CSS padding when outerWidth, outerHeight set to true
+      // includes CSS margins + CSS padding when outerWidth, outerHeight set to true
+      var containerPaddingX = element.outerWidth(true) - element.width();
+      var containerPaddingY = element.outerHeight(true) - element.height();
 
       $scope.$on('elementResized', function(event, arguments){
         $timeout(function(){
@@ -121,7 +120,7 @@ angular.module('dataCards.directives').directive('choropleth', function(AngularR
         });
       });
 
-      /* Choropleth Styles */
+      /* Choropleth styles */
 
       var scale;
 
@@ -216,7 +215,7 @@ angular.module('dataCards.directives').directive('choropleth', function(AngularR
 
       // Extended with 'highlighted' argument so that leaflet can query using that
       // flag to get the right style for the region.
-      function noStyleFn(feature, highlighted) {
+      var noStyleFn = function(feature, highlighted) {
         // NOTE: leaflet requires separate style functions for each fill class
         var fillClass = 'none';
         return {
@@ -231,7 +230,7 @@ angular.module('dataCards.directives').directive('choropleth', function(AngularR
 
       // Extended with 'highlighted' argument so that leaflet can query using that
       // flag to get the right style for the region.
-      function singleStyleFn(feature, highlighted) {
+      var singleStyleFn = function(feature, highlighted) {
         // NOTE: leaflet requires separate style functions for each fill class
         var fillClass = 'single';
         return {
@@ -246,7 +245,7 @@ angular.module('dataCards.directives').directive('choropleth', function(AngularR
 
       // Extended with 'highlighted' argument so that leaflet can query using that
       // flag to get the right style for the region.
-      function multiStyleFn(feature, highlighted) {
+      var multiStyleFn = function(feature, highlighted) {
         // NOTE: leaflet requires separate style functions for each fill class
         fillClass = 'multi';
         return {
@@ -377,11 +376,9 @@ angular.module('dataCards.directives').directive('choropleth', function(AngularR
         };
       }
 
-      // Choropleth Highlight Feature Effect
+      /* Choropleth highlight feature effect */
 
-      $scope.highlightedFeatures = {};
-
-      function highlightFeature(featureId) {
+      var highlightFeature = function(featureId) {
         //if (!$scope.highlightedFeatures.hasOwnProperty(featureId)) {
         //  $scope.highlightedFeatures[featureId] = true;
         //}
@@ -392,42 +389,44 @@ angular.module('dataCards.directives').directive('choropleth', function(AngularR
         $scope.highlightedFeatures[featureId] = true;
       }
 
-      function unhighlightFeature(featureId) {
+      var unhighlightFeature = function(featureId) {
         if ($scope.highlightedFeatures.hasOwnProperty(featureId)) {
           delete $scope.highlightedFeatures[featureId];
         }
       }
 
-      function featureIsHighlighted(featureId) {
+      var featureIsHighlighted = function(featureId) {
         return $scope.highlightedFeatures.hasOwnProperty(featureId);
       };
 
-      // Dataset filtering.
+      /* Dataset filtering */
 
-      function filterDataset(selectedFeature, callback) {
+      var filterDataset = function(selectedFeature, callback) {
         // Send the toggle filter event up the scope to the parent, where it can
         // be handled by the model.
         $scope.$emit(
           'toggle-dataset-filter:choropleth',
-          $scope.fieldName,
           selectedFeature,
           callback);
       }
 
-      function clearDatasetFilter(selectedFeature, callback) {
+      var clearDatasetFilter = function(selectedFeature, callback) {
         // Send the toggle filter event up the scope to the parent, where it can
         // be handled by the model.
         $scope.$emit(
           'toggle-dataset-filter:choropleth',
-          $scope.fieldName,
           selectedFeature,
           callback);
       }
 
-      var singleClickSuppressionThreshold = 200, doubleClickThreshold = 400, lastClick = 0, lastTimer = null;
+      /* Region click handling */
 
-      $scope.$on('leafletDirectiveMap.geojsonClick', function(event, featureSelected, leafletEvent, leafletGeoJSON) {
-        // must distinguish between single click and double click.
+      var singleClickSuppressionThreshold = 200;
+      var doubleClickThreshold = 400;
+      var lastClick = 0;
+      var lastClickTimeout = null;
+
+      $scope.$on('leafletDirectiveMap.geojsonClick', function(event, selectedFeature, leafletEvent, leafletGeoJSON) {
 
         if (!$scope.geojson.resetStyleOnGeojsonClick) {
           throw new Error("To unhighlight feature, set geojson resetStyleOnGeojsonClick: true");
@@ -438,24 +437,24 @@ angular.module('dataCards.directives').directive('choropleth', function(AngularR
         var delay = now - lastClick;
         lastClick = now;
         if (delay < doubleClickThreshold) {
-          if (lastTimer != null) {
-            $timeout.cancel(lastTimer);
+          if (lastClickTimeout != null) {
+            $timeout.cancel(lastClickTimeout);
             // Cancels single click event handler.
             // Map zooms in by default setting on $scope.geojson.zoomOnDoubleClick
           }
         } else {
-          lastTimer = $timeout(function() {
+          lastClickTimeout = $timeout(function() {
             // single click --> filters dataset
-            var selectedFeature = featureSelected.properties[$scope.fieldName];
-            if (featureIsHighlighted(selectedFeature)) {
-              unhighlightFeature(selectedFeature);
+            var featureId = selectedFeature.properties[':feature_id'];
+            if (featureIsHighlighted(featureId)) {
+              unhighlightFeature(featureId);
               clearDatasetFilter(selectedFeature, function(ok) {
                 if (ok) {
                   // TODO: Do something?
                 }
               });
             } else {
-              highlightFeature(selectedFeature);
+              highlightFeature(featureId);
               filterDataset(selectedFeature, function(ok) {
                 if (ok) {
                   // TODO: Do something?
@@ -466,9 +465,9 @@ angular.module('dataCards.directives').directive('choropleth', function(AngularR
         }
       });
 
-      // Choropleth Mouseover Tooltip Effect
+      /* Region mouseover tooltip effect */
 
-      function mouseoverFeature(event, leafletEvent) {
+      var mouseoverFeature = function(event, leafletEvent) {
         var feature = leafletEvent.target.feature;
         var value = feature.properties[AGGREGATE_VALUE_PROPERTY_NAME];
         // TODO: mouseover popups
@@ -478,40 +477,32 @@ angular.module('dataCards.directives').directive('choropleth', function(AngularR
         mouseoverFeature(event, leafletEvent);
       });
 
-      // GeoJSON Data Plumbing.
-
-      function filterHighlightedGeojsonFeatures(geojsonData) {
-        
-        var newGeojsonData = {};
-        var newFeatures = [];
-
-        newGeojsonData.crs = (typeof geojsonData.crs !== 'undefined') ? geojsonData.crs : null;
-        newGeojsonData.type = (typeof geojsonData.type !== 'undefined') ? geojsonData.type : null;
-
-        newGeojsonData.features = geojsonData.features.filter(function(item) {
-          if (item.hasOwnProperty('properties') &&
-              item.properties.hasOwnProperty($scope.fieldName)) {
-            return featureIsHighlighted(item.properties[$scope.fieldName]);
-          } else {
-            return false;
-          }
-        });
-
-        return newGeojsonData;
-
-      };
+      /* React to data changes further up the stack */
 
       Rx.Observable.subscribeLatest(
         $scope.observe('geojsonAggregateData'),
         $scope.observe('showFiltered'),
         function(geojsonAggregateData, showFiltered) {
 
-          if (!geojsonAggregateData) {
-            return;
-          }
-
           var colors;
-          var values = ChoroplethHelpers.getGeojsonValues(geojsonAggregateData, AGGREGATE_VALUE_PROPERTY_NAME);
+          var values;
+
+          var filterHighlightedGeojsonFeatures = function(geojsonData) {
+            var newGeojsonData = {};
+            var newFeatures = [];
+            newGeojsonData.crs = (typeof geojsonData.crs !== 'undefined') ? geojsonData.crs : null;
+            newGeojsonData.type = (typeof geojsonData.type !== 'undefined') ? geojsonData.type : null;
+            newGeojsonData.features = geojsonData.features.filter(function(item) {
+              if (item.hasOwnProperty('properties') &&
+                  item.properties.hasOwnProperty(':feature_id')) {
+                return featureIsHighlighted(item.properties[':feature_id']);
+              } else {
+                return false;
+              }
+            });
+            return newGeojsonData;
+          };
+
           var updateGeojsonScope = function(fillClass) {
             $scope.geojson = {
               data: geojsonAggregateData,
@@ -523,6 +514,12 @@ angular.module('dataCards.directives').directive('choropleth', function(AngularR
               zoomOnDoubleClick: true
             };
           };
+
+          if (!geojsonAggregateData) {
+            return;
+          }
+
+          values = ChoroplethHelpers.getGeojsonValues(geojsonAggregateData, AGGREGATE_VALUE_PROPERTY_NAME);
 
           if (values.length === 0) {
             // no values, just render polygons with no colors
@@ -547,9 +544,10 @@ angular.module('dataCards.directives').directive('choropleth', function(AngularR
             }
 
           }
+
           updateBounds(geojsonAggregateData);
-        }
-      );
+
+        });
 
     }
   }

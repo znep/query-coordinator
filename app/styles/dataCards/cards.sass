@@ -1,9 +1,13 @@
 $metadata-top-padding: 10px
 $metadata-side-padding: 30px
 $rounded-corners-border-radius: 5px
+// card sizes
 $card-margins: 5px
 $card-padding: 20px 15px
-
+$card-border-width: 2px
+$card-size-1-height: 300px + $card-border-width * 2
+$card-size-2-height: 250px + $card-border-width * 2
+$card-size-3-height: 200px + $card-border-width * 2
 // color palette
 $metadata-bg-color: #3f4752
 $panel-bg-color: #394047
@@ -209,6 +213,37 @@ body
     .cards
       padding: $metadata-side-padding / 2 - $card-margins
       padding-top: 0
+
+      .collapsed-layout, .expanded-layout .collapsed-cards
+        .card-size-1
+          height: $card-size-1-height
+
+        .card-size-2
+          height: $card-size-2-height
+
+        .card-size-3
+          height: $card-size-3-height
+
+      .expanded-layout
+
+        .collapsed-cards
+          width: 35%
+
+        .expanded-cards
+          position: fixed
+          top: 0
+          // top is set in JS
+          left: 35%
+          right: 0
+          bottom: 2px
+
+          .card
+            // NOTE: currenlty supports only 1 expanded card (MVP)
+            position: absolute
+            top: 0
+            right: 0
+            bottom: 0
+            left: 0
 
       .card
         // COLOR PALETTE

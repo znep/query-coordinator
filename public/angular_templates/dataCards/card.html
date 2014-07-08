@@ -1,4 +1,4 @@
-<div class="card cardSize{{cardSize}}" ng-class="{ expanded: expanded }">
+<div class="card card-size-{{cardSize}}" ng-class="{ expanded: expanded }">
   <div class="title-one-line"><div class="wrap">{{title}}</div></div>
   <div class="title-expanded">
     <div class="wrap">
@@ -16,7 +16,7 @@
       <div class="description-expand-button"><span ng-click="descriptionCollapsed = !descriptionCollapsed"></span></div>
     </div>
   </div>
-  <div ng-switch="cardType">
+  <div class="card-visualization" ng-switch="cardType">
     <card-visualization-column-chart ng-switch-when="column" model="model" where-clause="whereClause"></card-visualization-column-chart>
     <card-visualization-choropleth ng-switch-when="choropleth" model="model" where-clause="whereClause"></card-visualization-choropleth>
     <card-visualization-table ng-switch-when="table" model="model" where-clause="whereClause"></card-visualization-table>

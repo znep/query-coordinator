@@ -34,6 +34,10 @@ module ConditionalRequestHandler
 
   end
 
+  def self.set_etag(response, etag)
+    response.headers[ETAG] = "\"#{etag}\""
+  end
+
   # Given a VersionAuthority::Manifest, check the request for conditional
   # headers which would allow us to return a 304
   def self.check_conditional_request?(request, manifest)

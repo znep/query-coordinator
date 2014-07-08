@@ -34,6 +34,13 @@ class DatasetsController < ApplicationController
 
     return if @view.nil?
 
+    dsmtime = VersionAuthority.get_core_dataset_mtime(@view.id)[@view.id]
+    ConditionalRequestHandler.set_etag(response, dsmtime)
+    if ConditionalRequestHandler.etag_matches_hash?(request, dsmtime)
+      render :nothing => true, :status => 304
+      return true
+    end
+
     # We definitely don't want to have to look up the row index
     # ever again, as that causes a full scan. Persist the
     # index across calls, and make it part of the URL we generate

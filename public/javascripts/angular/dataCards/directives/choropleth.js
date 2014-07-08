@@ -73,7 +73,7 @@ angular.module('dataCards.directives').directive('choropleth', function(AngularR
     restrict: 'E',
     replace: 'true',
     scope: {
-      'fieldName': '=',
+      'model': '=',
       'geojsonAggregateData': '=',
       'showFiltered': '='
     },
@@ -107,6 +107,8 @@ angular.module('dataCards.directives').directive('choropleth', function(AngularR
 
       AngularRxExtensions.install($scope);
 
+      $scope.fieldName = $scope.observe('model').value.fieldName;
+
       /* Size map responsively */
 
       var containerPaddingX = element.outerWidth(true) - element.width(),
@@ -125,7 +127,7 @@ angular.module('dataCards.directives').directive('choropleth', function(AngularR
 
       // Extended with 'highlighted' argument so that leaflet can query using that
       // flag to get the right style for the region.
-      var fillColor = function(feature, fillClass, highlighted) {
+      var fillColor = function(fillClass, feature, highlighted) {
         if (!feature.properties || !feature.properties[AGGREGATE_VALUE_PROPERTY_NAME]) {
           return nullColor;
         } else {
@@ -157,7 +159,7 @@ angular.module('dataCards.directives').directive('choropleth', function(AngularR
 
       // Extended with 'highlighted' argument so that leaflet can query using that
       // flag to get the right style for the region.
-      var strokeColor = function(feature, fillClass, highlighted) {
+      var strokeColor = function(fillClass, feature, highlighted) {
         if (feature.geometry.type != "LineString" && feature.geometry.type != "MultiLineString") {
           if (highlighted) {
             return defaultHighlightColor;
@@ -185,7 +187,7 @@ angular.module('dataCards.directives').directive('choropleth', function(AngularR
                 return defaultSingleColor;
               } else if (fillClass == 'multi') {
                 // for LineString or MultiLineString, strokeColor is the same as a feature's 'fill color'
-                return fillColor(feature, fillClass);
+                return fillColor(fillClass, feature, fillClass);
               } else {
                 throw new Error("Invalid fillClass on #fill: " + fillClass);
               }            
@@ -196,7 +198,7 @@ angular.module('dataCards.directives').directive('choropleth', function(AngularR
 
       // Extended with 'highlighted' argument so that leaflet can query using that
       // flag to get the right style for the region.
-      var strokeWidth = function(feature, fillClass, highlighted) {
+      var strokeWidth = function(fillClass, feature, highlighted) {
         if (feature.geometry.type == 'MultiLineString' || feature.geometry.type == 'LineString') {
           if (highlighted) {
             return 3;
@@ -214,13 +216,13 @@ angular.module('dataCards.directives').directive('choropleth', function(AngularR
 
       // Extended with 'highlighted' argument so that leaflet can query using that
       // flag to get the right style for the region.
-      function noStyleFn(feature) {
+      function noStyleFn(feature, highlighted) {
         // NOTE: leaflet requires separate style functions for each fill class
         var fillClass = 'none';
         return {
-          fillColor: fillColor(feature, fillClass, highlighted),
-          color: strokeColor(feature, fillClass, highlighted),
-          weight: strokeWidth(feature, fillClass, highlighted),
+          fillColor: fillColor(fillClass, feature, highlighted),
+          color: strokeColor(fillClass, feature, highlighted),
+          weight: strokeWidth(fillClass, feature, highlighted),
           opacity: fillClass == 'none' ? 1 : 0.8,
           dashArray: 0,
           fillOpacity: fillClass == 'none' ? 1 : 0.8,
@@ -229,13 +231,13 @@ angular.module('dataCards.directives').directive('choropleth', function(AngularR
 
       // Extended with 'highlighted' argument so that leaflet can query using that
       // flag to get the right style for the region.
-      function singleStyleFn(feature) {
+      function singleStyleFn(feature, highlighted) {
         // NOTE: leaflet requires separate style functions for each fill class
         var fillClass = 'single';
         return {
-          fillColor: fillColor(feature, fillClass, highlighted),
-          color: strokeColor(feature, fillClass, highlighted),
-          weight: strokeWidth(feature, fillClass, highlighted),
+          fillColor: fillColor(fillClass, feature, highlighted),
+          color: strokeColor(fillClass, feature, highlighted),
+          weight: strokeWidth(fillClass, feature, highlighted),
           opacity: fillClass == 'none' ? 1 : 0.8,
           dashArray: 0,
           fillOpacity: fillClass == 'none' ? 1 : 0.8,
@@ -246,11 +248,11 @@ angular.module('dataCards.directives').directive('choropleth', function(AngularR
       // flag to get the right style for the region.
       function multiStyleFn(feature, highlighted) {
         // NOTE: leaflet requires separate style functions for each fill class
-        var fillClass = 'multi';
+        fillClass = 'multi';
         return {
-          fillColor: fillColor(feature, fillClass, highlighted),
-          color: strokeColor(feature, fillClass, highlighted),
-          weight: strokeWidth(feature, fillClass, highlighted),
+          fillColor: fillColor(fillClass, feature, highlighted),
+          color: strokeColor(fillClass, feature, highlighted),
+          weight: strokeWidth(fillClass, feature, highlighted),
           opacity: fillClass == 'none' ? 1 : 0.8,
           dashArray: 0,
           fillOpacity: fillClass == 'none' ? 1 : 0.8,
@@ -479,21 +481,30 @@ angular.module('dataCards.directives').directive('choropleth', function(AngularR
       // GeoJSON Data Plumbing.
 
       function filterHighlightedGeojsonFeatures(geojsonData) {
-        var newFeatures = geojsonData.features.filter(function(item) {
-          return featureIsHighlighted(item.properties[$scope.fieldName]);
+        
+        var newGeojsonData = {};
+        var newFeatures = [];
+
+        newGeojsonData.crs = (typeof geojsonData.crs !== 'undefined') ? geojsonData.crs : null;
+        newGeojsonData.type = (typeof geojsonData.type !== 'undefined') ? geojsonData.type : null;
+
+        newGeojsonData.features = geojsonData.features.filter(function(item) {
+          if (item.hasOwnProperty('properties') &&
+              item.properties.hasOwnProperty($scope.fieldName)) {
+            return featureIsHighlighted(item.properties[$scope.fieldName]);
+          } else {
+            return false;
+          }
         });
-        return {
-          crs: geojsonData.crs,
-          features: newFeatures,          
-          type: geojsonData.type
-        }
+
+        return newGeojsonData;
+
       };
 
       Rx.Observable.subscribeLatest(
-        $scope.observe('fieldName'),
         $scope.observe('geojsonAggregateData'),
         $scope.observe('showFiltered'),
-        function(fieldName, geojsonAggregateData, showFiltered) {
+        function(geojsonAggregateData, showFiltered) {
 
           if (!geojsonAggregateData) {
             return;
@@ -524,7 +535,6 @@ angular.module('dataCards.directives').directive('choropleth', function(AngularR
 
             if ($scope.classBreaks.length === 1) {
               colors = [defaultSingleColor];
-              setHighlightedFeatures();
               updateGeojsonScope('single');
             } else {
               updateMulticolorScale(defaultColorClass, $scope.classBreaks);

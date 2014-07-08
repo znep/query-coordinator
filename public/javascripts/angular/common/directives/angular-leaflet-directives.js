@@ -514,7 +514,7 @@
                 };
               }
               geojson.options = {
-                style: geojson.style,
+                style: function(feature) { return geojson.style(feature, false); },
                 filter: geojson.filter,
                 onEachFeature: onEachFeature,
                 pointToLayer: geojson.pointToLayer
@@ -522,10 +522,11 @@
               leafletGeoJSON = L.geoJson(geojson.data, geojson.options);
               leafletData.setGeoJSON(leafletGeoJSON);
               leafletGeoJSON.addTo(map);
+
               if (geojson.highlighted.features.length > 0) {
 
                 var highlightedOptions = {
-                  style: function(feature) { return geojson.style(feature, true);},
+                  style: function(feature) { return geojson.style(feature, true); },
                   filter: geojson.filter,
                   onEachFeature: onEachFeature,
                   pointToLayer: geojson.pointToLayer

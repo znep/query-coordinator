@@ -4,10 +4,12 @@
     padding: 0
 
     .choropleth-map
-      top: 3rem
-      bottom: 0
+      position: absolute
+      top: 10px
       width: 100%
-      position: absolute !important
+      height: 100%
+
+      border-radius: 5px
 
       path
         cursor: inherit
@@ -31,14 +33,3 @@
         .info-label
           white-space: nowrap
           text-align: left
-
-  &.expanded
-    .choropleth-map-container
-      padding: 0
-
-    .choropleth-map
-      min-height: 400px
-      max-height: 1500px
-      top: 3rem
-      bottom: 0
-      width: 100%

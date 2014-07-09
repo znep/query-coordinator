@@ -1,62 +1,250 @@
-<div class="cards-view">
-  <div class="hideableMetadata" notify-resize="headerContent">
-    <h1 class="pageNameMeasuringStick">{{pageName}}</h1>
-    <div title="{{pageName}}" class="pageName">
-      <h1>{{pageName}}</h1>
-    </div>
-    <div class="page-description" expanded="expanded" multiline-ellipsis max-lines="2" tolerance="2" text="{{pageDescription}}"></div>
-
-    <div class="pages">
-      <div class="publisher">Publisher Created Views</div>
-      <ul class="pages">
-        <li ng-repeat="page in datasetPages.publisher">
-          <div class="page">
-            <div><a class="page-link" href="/view/{{page.id}}"></a></div>
-            <div>View Name</div>
-            <div>3,843 views</div>
-          </div>
-        </li>
-      </ul>
-    </div>
-    <div class="pages">
-      <div class="publisher">User Created Views</div>
-      <ul class="pages user">
-        <li ng-repeat="page in datasetPages.user">
-          <div class="page">
-            <div><a class="page-link" href="/view/{{page.id}}"></a></div>
-            <div>View Name</div>
-            <div>1,531 views</div>
-          </div>
-        </li>
-      </ul>
+<div class="cards-view" notify-resize="headerContent">
+  <!-- HEADER -->
+  <div class="row">
+    <div class="span12">
+      <div class="logo">
+        I'm a logo!
+      </div>
     </div>
   </div>
-
-  <div sticky-header update-on-resize="headerContent" class="quickFilterBar" ng-class="{stuck: headerIsStuck}">
-    <div class="content">
-      This bar serves quick fajitas!
+  <!-- METADATA BAR -->
+  <div class="cards-metadata">
+    <div class="row">
+      <div class="span12">
+        <header>{{pageName}}</header>
+      </div>
     </div>
-  </div>
-  <div ng-if="!useExpandedLayout" class="collapsedLayout">
-    <div class="cardSizeGroup" ng-repeat="cardSize in cardSizeNamesInDisplayOrder">
-      <div class="row" ng-repeat="cardLine in rowsOfCardsBySize[cardSize]">
-        <div
-          class="cardTile span{{12/cardLine.length}}"
-          ng-class="classForScreenPosition($index, cardLine.length)"
-          ng-repeat="card in cardLine">
-          <card model="card.model" where-clause="globalWhereClauseFragment"></card>
+    <div class="row">
+      <div class="span6">
+        <!-- description -->
+        <div class="padded-wrapper">
+          <div class="page-description" expanded="expanded" multiline-ellipsis max-lines="2" tolerance="2" text="{{pageDescription}}"></div>
+        </div>
+      </div>
+      <div class="span6">
+        <div class="padded-wrapper">
+          <!-- activities -->
+          <div class="metadatum-wrapper row">
+            <div class="span6">
+              <div class="metadatum">
+                <span class="label">updated</span>
+                <span class="value">4 hours ago</span>
+              </div>
+            </div>
+            <div class="span6">
+              <div class="metadatum">
+                <span class="label">permission</span>
+                <span class="value">public</span>
+              </div>
+            </div>
+          </div>
+          <div class="metadatum-wrapper row">
+            <div class="span6">
+              <div class="metadatum">
+                <span class="label">visits</span>
+                <span class="value">23,421,234</span>
+              </div>
+            </div>
+            <div class="span6">
+              <div class="metadatum">
+                <span class="label">categories (3)</span>
+                <span class="value">crime, community</span>
+              </div>
+            </div>
+          </div>
+          <div class="metadatum-wrapper row">
+            <div class="span6">
+              <div class="metadatum">
+                <span class="label">downloads</span>
+                <span class="value">7,233</span>
+              </div>
+            </div>
+            <div class="span6">
+              <div class="metadatum">
+                <span class="label">tags (6)</span>
+                <span class="value">crime, penalties, las blockas, burglaries, theft, police, public safety</span>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <!-- action buttons -->
+    <div class="row">
+      <div class="span12">
+        <div class="padded-wrapper">
+          <a href="#" class="action-btn">Save As</span></a>
+          <a href="#" class="action-btn">Download</span></a>
+          <a href="#" class="action-btn">API</span></a>
+          <a href="#" class="action-btn">Embed</span></a>
+          <a href="#" class="action-btn">Share</span></a>
+        </div>
+      </div>
+    </div>
+    <!-- views -->
+    <div class="row">
+      <!-- official views -->
+      <div class="span6 view">
+        <div class="padded-wrapper">
+          <header>official views</header>
+          <a href='#"'>See all...</a>
+          <div class="panel">
+            <section class="panel">
+              <!-- TODO: Mock views for now. Create carousel via angular bootstrap carousel
+              https://github.com/ui-bootstrap-bower-test/bower-bootstrap-carousel
+              Icons used: https://www.iconfinder.com/iconsets/small-n-flat -->
+              <article class="slide">
+                <div>
+                  <!-- search icon -->
+                  <svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" enable-background="new 0 0 256 256" height="36" version="1.1" viewBox="0 0 256 256" width="36" xml:space="preserve"><g id="Layer_1"><g id="Layer_2"><circle cx="128" cy="129" fill="#1281A0" r="128"/></g></g><g id="Layer_4"><circle cx="136.092" cy="110.828" fill="#14AFD2" opacity="0.9" r="75"/></g><g id="Layer_2_1_"><rect fill="none" height="106.467" width="225" x="64.521" y="82.16"/><text fill="#E8E3E3" font-family="'MyriadPro-BoldCond'" font-size="80" transform="matrix(1 0 0 1 64.5215 137.5186)"/></g><g id="Layer_3"><circle cx="139.521" cy="110.828" fill="none" r="75" stroke="#222222" stroke-miterlimit="10" stroke-width="22"/><g><defs><rect height="33.19" id="SVGID_1_" transform="matrix(0.8841 -0.4672 0.4672 0.8841 -78.4855 31.7745)" width="105.501" x="-27.929" y="157.536"/></defs><clipPath id="SVGID_2_"><use overflow="visible" xlink:href="#SVGID_1_"/></clipPath><g clip-path="url(#SVGID_2_)" id="Layer_2_2_"><circle cx="127.689" cy="128.452" fill="#222222" r="128"/></g></g></g></svg>
+                </div>
+                <div>
+                  <h1>Violent Crimes in Las Blockas</h1>
+                  <h2><strong>Official <span class="middle-dot">&#183;</span></strong> 1,542 Views</h2>
+                </div>
+              </article>
+              <article class="slide">
+                <div>
+                  <!-- pie chart icon -->
+                  <svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" enable-background="new 0 0 256 256" height="36" id="Layer_1" version="1.1" viewBox="0 0 256 256" width="36" xml:space="preserve"><g id="Layer_2"><circle cx="128" cy="128" fill="#1ABC9C" r="128"/></g><g id="Layer_2_1_"><path d="M138.5,118.55v-75c0,0,69.5-0.834,75,75H138.5z" fill="#F39C12" stroke="#000000" stroke-miterlimit="10" stroke-width="2"/><path d="M128,53c-41.421,0-75,33.579-75,75   c0,41.421,33.579,75,75,75c41.422,0,75-33.579,75-75h-75V53z" fill="#E74C3C" stroke="#000000" stroke-miterlimit="10" stroke-width="2"/></g></svg>
+                </div>
+                <div>
+                  <h1>Burglaries in Your Neighborhood</h1>
+                  <h2><strong>Official <span class="middle-dot">&#183;</span></strong> 1,542 Views</h2>
+                </div>
+              </article>
+
+              <article class="slide">
+                <div>
+                  <!-- filter icon -->
+                  <svg xmlns="http://www.w3.org/2000/svg" xmlns:cc="http://creativecommons.org/ns#" xmlns:dc="http://purl.org/dc/elements/1.1/" xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#" height="36" viewBox="0 0 24 24" version="1.1" width="36"><g transform="translate(0 -1028.4)"><path d="m10 11v10l4 3v-13h-4z" fill="#bdc3c7" transform="translate(0 1028.4)"/><path d="m10 11v10l2 1.5v-11.5h-2z" fill="#95a5a6" transform="translate(0 1028.4)"/><path d="m1 1028.4 9 11h4l9-11z" fill="#95a5a6"/><path d="m1 1028.4 9 11h2v-11z" fill="#7f8c8d"/></g></svg>
+                </div>
+                <div>
+                  <h1>Crime by Neighborhood</h1>
+                  <h2><strong>Official <span class="middle-dot">&#183;</span></strong> 1,542 Views</h2>
+                </div>
+              </article>
+            </section>
+          </div>
+        </div>
+      </div>
+
+      <!-- community views -->
+      <div class="span6 view">
+        <div class="padded-wrapper">
+          <header>community views</header>
+          <a href='#"'>See all...</a>
+          <div class="panel">
+            <section class="panel">
+              <!-- TODO: Mock views for now. Create carousel via angular bootstrap carousel
+              https://github.com/ui-bootstrap-bower-test/bower-bootstrap-carousel
+              Icons used: https://www.iconfinder.com/iconsets/small-n-flat
+              https://www.iconfinder.com/iconsets/keynote-and-powerpoint-icons -->
+              <article class="slide">
+                <div>
+                  <!-- line chart icon  (https://www.iconfinder.com/iconsets/keynote-and-powerpoint-icons) -->
+                  <svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" enable-background="new 0 0 256 256" height="42" version="1.1" viewBox="0 0 256 256" width="42" xml:space="preserve"><g id="Layer_1"><circle cx="128" cy="128" fill="#EC9422" r="128"/></g><g id="Layer_3"><line fill="none" stroke="#000000" stroke-miterlimit="10" stroke-width="4" x1="42.792" x2="81.399" y1="160.769" y2="85.022"/><line fill="none" stroke="#000000" stroke-miterlimit="10" stroke-width="4" x1="81.399" x2="118" y1="85.022" y2="135.613"/><line fill="none" stroke="#000000" stroke-miterlimit="10" stroke-width="4" x1="118" x2="165.285" y1="138" y2="150.769"/><line fill="none" stroke="#000000" stroke-miterlimit="10" stroke-width="4" x1="165.285" x2="207.188" y1="150.769" y2="88.71"/></g><g id="Layer_2"><circle cx="42.792" cy="160.769" fill="#EC9422" r="10" stroke="#EDEDED" stroke-miterlimit="10" stroke-width="7"/><circle cx="81.399" cy="85.022" r="10" stroke="#EDEDED" stroke-miterlimit="10" stroke-width="7"/><path d="M128,137.998c0,5.523-4.478,10.003-10,10.003   c-5.523,0-10-4.479-10-10.003c0-5.521,4.477-9.999,10-9.999C123.522,128,128,132.477,128,137.998z" stroke="#EDEDED" stroke-miterlimit="10" stroke-width="7"/><circle cx="165.286" cy="150.768" r="10" stroke="#EDEDED" stroke-miterlimit="10" stroke-width="7"/><circle cx="207.188" cy="88.709" fill="#EC9422" r="10" stroke="#EDEDED" stroke-miterlimit="10" stroke-width="7"/></g></svg>
+                </div>
+                <div>
+                  <h1>Crime in North Shore</h1>
+                  <h2>1,542 Views</h2>
+                </div>
+              </article>
+              <article class="slide">
+                <div>
+                  <!-- bar chart icon (https://www.iconfinder.com/iconsets/keynote-and-powerpoint-icons) -->
+                  <svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" enable-background="new 0 0 256 256" height="42" version="1.1" viewBox="0 0 256 256" width="42" xml:space="preserve"><g id="Layer_1"><g id="Layer_2"><circle cx="128" cy="129" fill="#14AFD2" r="128"/></g></g><g id="Layer_2_1_"><rect fill="#F4F2F2" height="113.194" width="29.31" x="131.463" y="80.283"/><rect fill="#F4F2F2" height="29.31" transform="matrix(-8.015236e-05 -1 1 -8.015236e-05 -47.2913 266.5577)" width="73.107" x="73.069" y="142.268"/><rect fill="#F4F2F2" height="47.274" width="29.31" x="58.271" y="146.232"/><rect fill="#F4F2F2" height="29.31" transform="matrix(-7.633766e-05 -1 1 -7.633766e-05 41.5062 326.0372)" width="102.417" x="132.551" y="127.612"/></g><g id="Layer_3"><rect height="6.468" width="140.157" x="58.261" y="193.478"/></g></svg>
+                </div>
+                <div>
+                  <h1>Crime by Neighborhood</h1>
+                  <h2>1,542 Views</h2>
+                </div>
+              </article>
+              <article class="slide">
+                <div>
+                  <!-- map icon (https://www.iconfinder.com/iconsets/small-n-flat) -->
+                  <svg xmlns="http://www.w3.org/2000/svg" xmlns:cc="http://creativecommons.org/ns#" xmlns:dc="http://purl.org/dc/elements/1.1/" xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#" height="42" version="1.1" width="42" viewBox="0 0 24 24"><g transform="translate(0 -1028.4)"><path d="m8 1030.4 8 1v19l-8-1z" fill="#ecf0f1"/><path d="m2 1031.4 6-1v19l-6 1z" fill="#bdc3c7"/><path d="m16 1031.4 6-1v19l-6 1z" fill="#bdc3c7"/><path d="m3 1032.4 5-1v17l-5 1z" fill="#27ae60"/><path d="m8 1031.4 8 1v17l-8-1z" fill="#2ecc71"/><path d="m21 1048.4-5 1v-17l5-1z" fill="#27ae60"/><path d="m5.6875 1031.8-2.3125 0.5 4.625 4.9v-2.9l-2.3125-2.5z" fill="#f39c12"/><path d="m21 1046.4-5 1v-6l5-3z" fill="#f39c12"/><path d="m21 1048.4-5 1v-6l5-3z" fill="#2980b9"/><path d="m8 1042.4 8-1v6l-8-1z" fill="#f1c40f"/><path d="m8 1044.4 8-1v6l-8-1z" fill="#3498db"/><path d="m3 1045.4 5-3v4l-5 1z" fill="#f39c12"/><path d="m3 1047.4 5-3v4l-5 1z" fill="#2980b9"/><path d="m8 8.8008v-2.8985l4 8.6597h-1.469z" fill="#f1c40f" transform="translate(0 1028.4)"/></g></svg>
+                </div>
+                <div>
+                  <h1>Burglaries in Your Neighborhood</h1>
+                  <h2>1,542 Views</h2>
+                </div>
+              </article>
+            </section>
+          </div>
         </div>
       </div>
     </div>
   </div>
-  <div ng-if="useExpandedLayout" class="expandedLayout">
-    <div class="expandedCards onRight" ng-style="availableContentHeightStyle">
-      <card model="expandedCards[0]" where-clause="globalWhereClauseFragment"></card>
-    </div>
-    <div class="collapsedCards">
-      <div class="onLeft" ng-repeat="cardModel in collapsedCards">
-        <card model="cardModel" where-clause="globalWhereClauseFragment"></card>
+  <div class="cards-content">
+    <!-- CARDS FILTER BAR -->
+    <div class="quick-filter-bar" sticky-header update-on-resize="headerContent" ng-class="{stuck: headerIsStuck}">
+      <div class="content">
+        <div class="filter">
+          <span>Crime Type</span>
+          <select>
+            <option val="1">Option 1</option>
+            <option val="2">Option 2</option>
+            <option val="3">Option 3</option>
+            <option val="4">Option 4</option>
+          </select>
+        </div>
+        <div class="filter">
+          <span>Crime Type</span>
+          <select>
+            <option val="1">Option 1</option>
+            <option val="2">Option 2</option>
+            <option val="3">Option 3</option>
+            <option val="4">Option 4</option>
+          </select>
+        </div>
+        <div class="filter">
+          <span>Crime Type</span>
+          <select>
+            <option val="1">Option 1</option>
+            <option val="2">Option 2</option>
+            <option val="3">Option 3</option>
+            <option val="4">Option 4</option>
+          </select>
+        </div>
+        <div class="filter active">
+          <span>Crime Type</span>
+          <select>
+            <option val="1">Option 1</option>
+            <option val="2">Option 2</option>
+            <option val="3">Option 3</option>
+            <option val="4">Option 4</option>
+          </select>
+        </div>
       </div>
     </div>
+    <!-- CARD TILES -->
+    <div class="cards">
+      <!-- collapsed layout -->
+      <div class="collapsed-layout" ng-if="!useExpandedLayout">
+        <div class="cardSizeGroup" ng-repeat="cardSize in cardSizeNamesInDisplayOrder">
+          <div class="row" ng-repeat="cardLine in rowsOfCardsBySize[cardSize]">
+            <div class="card-tile span{{12/cardLine.length}}"
+            ng-class="classForScreenPosition($index, cardLine.length)"
+            ng-repeat="card in cardLine">
+              <card model="card.model" where-clause="globalWhereClauseFragment"></card>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="expanded-layout" ng-if="useExpandedLayout">
+        <div class="expanded-cards onRight" ng-style="availableContentHeightStyle">
+          <card model="expandedCards[0]" where-clause="globalWhereClauseFragment"></card>
+        </div>
+        <div class="collapsed-cards">
+          <div class="onLeft" ng-repeat="cardModel in collapsedCards">
+            <card model="cardModel" where-clause="globalWhereClauseFragment"></card>
+          </div>
+        </div>
+      </div>
+    </div>
+
   </div>
+</div>
 </div>

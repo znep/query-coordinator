@@ -1,4 +1,4 @@
-angular.module('dataCards.directives').directive('card', function(AngularRxExtensions) {
+angular.module('dataCards.directives').directive('card', function(AngularRxExtensions, $timeout) {
 
   //TODO should probably be a service. And not suck.
   var cardTypeMapping = function(column) {
@@ -56,6 +56,11 @@ angular.module('dataCards.directives').directive('card', function(AngularRxExten
       $scope.bindObservable('title', column.pluck('title'));
       $scope.bindObservable('description', column.pluck('description'));
 
+      $scope.updateCardVisHeight = function() {
+        var cardVisHeight = element.find('.card').height() - element.find('.card').find('.card-text').height();
+        element.find('.card').find('.card-visualization').outerHeight(cardVisHeight);
+      };
+
       $scope.toggleExpanded = function() {
         $scope.model.page.toggleExpanded($scope.model);
       };
@@ -73,6 +78,7 @@ angular.module('dataCards.directives').directive('card', function(AngularRxExten
           $scope.safeApply(function() {
             $scope.descriptionClamped = isClamped;
             $scope.animationsOn = true;
+            $scope.updateCardVisHeight();
           });
       }, 250, { leading: true, trailing: true });
 

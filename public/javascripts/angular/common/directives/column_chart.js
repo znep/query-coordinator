@@ -9,6 +9,7 @@ angular.module('socrataCommon.directives').directive('columnChart', function($pa
     var tipHeight = 10;
     var tipWidth = 10;
     var tooltipWidth = 123;
+    var tooltipYOffset = 999; // invisible (max) height of tooltip above tallest bar; hack to make tooltip appear above chart/card-text
     var numberOfDefaultLabels = expanded ? chartData.length : 3;
     var undefinedPlaceholder = '(Undefined)';
 
@@ -74,8 +75,10 @@ angular.module('socrataCommon.directives').directive('columnChart', function($pa
 
     $chart.css('height', chartHeight + topMargin + 1).
       css('width', chartWidth);
-    $chartScroll.css('padding-bottom', bottomMargin).
-      css('padding-top', chartTop);
+    $chartScroll
+      .css('padding-bottom', bottomMargin)
+      .css('padding-top', chartTop + tooltipYOffset)
+      .css('top', -tooltipYOffset);
 
     var maxValue = _.isEmpty(chartData) ? 0 : chartData[0].total;
     verticalScale.domain([maxValue, 0]);
@@ -84,7 +87,9 @@ angular.module('socrataCommon.directives').directive('columnChart', function($pa
       var numberOfTicks = 3;
       var element;
 
-      element = $('<div>').addClass('ticks').css('top', $chartScroll.position().top + topMargin + chartTop).css('width', chartWidth);
+      element = $('<div>').addClass('ticks')
+        .css('top', $chartScroll.position().top + topMargin + chartTop + tooltipYOffset)
+        .css('width', chartWidth);
       _.each(_.uniq([0].concat(verticalScale.ticks(numberOfTicks))), function(tick) {
         element.append($('<div>').css('top', chartHeight - verticalScale(tick)).text($.toHumaneNumber(tick, 1)));
       });
@@ -327,7 +332,7 @@ angular.module('socrataCommon.directives').directive('columnChart', function($pa
       selection.
         style('width', rangeBand + 'px').
         style('left', function(d) { return horizontalScale(d.name) - leftOffset + 'px'; }).
-        style('top', function() { return topMargin + 'px'; }).
+        style('top', function() { return topMargin + tooltipYOffset + 'px'; }).
         style('height', function() { return chartHeight + 'px'; }).
         classed('active', function(d) { return horizontalBarPosition(d) < chartWidth - truncationMarkerWidth; });
 

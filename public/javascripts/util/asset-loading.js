@@ -128,6 +128,10 @@ assetNS.loadLibraries = function(scriptQueue, callback)
         else
         {
             $lazyLoadLab = $lazyLoadLab.script(url);
+
+            // STAT-686: Force socket.io to finish executing before client-bridge runs.
+            if (url.indexOf('socket.io') > -1)
+            { $lazyLoadLab = $lazyLoadLab.wait(); }
             if (!skipCheck)
             { loadingItems.push(item); }
         }

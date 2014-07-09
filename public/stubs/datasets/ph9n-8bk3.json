@@ -7,7 +7,7 @@
   "updatedAt": "2014-05-20T10:42:55.000-07:00",
   "columns": [ 
     {
-      "title": "Type of crime",
+      "title": "Type of crime test string test string test string test string test string test string END",
       "description": "Primary crime committed",
       "name": "primary_type",
       "logicalDatatype": "category",
@@ -15,7 +15,7 @@
       "importance": 1
     },
     {
-      "title": "Location",
+      "title": "Location really long really long really long really long really long really long really long really long really long really long really long really long really long really long really long really long really long really long really long really long really long really long really long really long really long really long END",
       "description": "Description of location",
       "name": "location_description",
       "logicalDatatype": "category",

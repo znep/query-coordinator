@@ -93,8 +93,6 @@ angular.module('dataCards.directives').directive('cardVisualizationChoropleth', 
           $scope.observe('whereClause'),
           function(fieldName, geojsonRegions, unfiltered, filtered, activeFilters, whereClause) {
 
-            console.log(geojsonRegions);
-
             var activeFilterNames = _.pluck(activeFilters, 'operand');
 
             // Fail early if all required data sets have not been loaded.

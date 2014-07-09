@@ -31,7 +31,8 @@ angular.module('dataCards.services').factory('CardDataService', function($q, $ht
     // prepare for live GeoJSON data.
     getChoroplethRegions: function(fieldName, datasetId, shapefileId) {
       shapefileId = DeveloperOverrides.dataOverrideForShapefile(shapefileId) || shapefileId;
-      var url = '/resource/{0}.json'.format(shapefileId);
+//      var url = '/api/views/{0}/rows.geojson'.format(shapefileId);
+      url = '/datasets/geojson/ward_geojson.json';
       return $http.get(url, { cache: true }).then(function(response) {
         return response.data;
       });

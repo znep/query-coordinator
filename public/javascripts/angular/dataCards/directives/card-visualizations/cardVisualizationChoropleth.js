@@ -11,11 +11,16 @@ angular.module('dataCards.directives').directive('cardVisualizationChoropleth', 
       var model = $scope.observe('model');
       var dataset = model.pluck('page').pluckSwitch('dataset');
 
+      // Chris: Temporary static id for the shapefile until I can figure out if/how it
+      // will come from the Page Metadata service or elsewhere.
+      var shapefile = Rx.Observable.returnValue({id:'shap-ezzz'});
+
       var geojsonRegions = Rx.Observable.combineLatest(
           model.pluck('fieldName'),
           dataset,
-          function(fieldName, dataset) {
-            return Rx.Observable.fromPromise(CardDataService.getChoroplethRegions(fieldName, dataset.id));
+          shapefile,
+          function(fieldName, dataset, shapefile) {
+            return Rx.Observable.fromPromise(CardDataService.getChoroplethRegions(fieldName, dataset.id, shapefile.id));
           }).switchLatest();
 
       var unfilteredData = Rx.Observable.combineLatest(
@@ -87,6 +92,8 @@ angular.module('dataCards.directives').directive('cardVisualizationChoropleth', 
           model.pluckSwitch('activeFilters'),
           $scope.observe('whereClause'),
           function(fieldName, geojsonRegions, unfiltered, filtered, activeFilters, whereClause) {
+
+            console.log(geojsonRegions);
 
             var activeFilterNames = _.pluck(activeFilters, 'operand');
 

@@ -1,19 +1,21 @@
 <div class="card card-size-{{cardSize}}" ng-class="{ expanded: expanded }">
-  <div class="title-one-line"><div class="wrap">{{title}}</div></div>
-  <div class="title-expanded">
-    <div class="wrap">
-      {{title}}
-    </div>
-  </div>
-  <div class="description" ng-class="{ clamped: descriptionClamped, collapsed: descriptionCollapsed, 'with-animation': animationsOn }">
-    <div class="description-truncated-content">
-      <!-- set in JS -->
-    </div>
-    <div class="description-expanded-wrapper">
-      <div class="description-expanded-content">
-        {{description}}
+  <div class="card-text">
+    <div class="title-one-line"><div class="wrap">{{title}}</div></div>
+    <div class="title-expanded">
+      <div class="wrap">
+        {{title}}
       </div>
-      <div class="description-expand-button"><span ng-click="descriptionCollapsed = !descriptionCollapsed"></span></div>
+    </div>
+    <div class="description" ng-class="{ clamped: descriptionClamped, collapsed: descriptionCollapsed, 'with-animation': animationsOn }">
+      <div class="description-truncated-content">
+        <!-- set in JS -->
+      </div>
+      <div class="description-expanded-wrapper">
+        <div class="description-expanded-content">
+          {{description}}
+        </div>
+        <div class="description-expand-button"><span ng-click="descriptionCollapsed = !descriptionCollapsed"></span></div>
+      </div>
     </div>
   </div>
   <div class="card-visualization" ng-switch="cardType">

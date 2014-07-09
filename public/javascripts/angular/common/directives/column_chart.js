@@ -4,7 +4,7 @@ angular.module('socrataCommon.directives').directive('columnChart', function($pa
     var numberOfBars = chartData.length;
 
     var barPadding = 0.25;
-    var topMargin = 20; // TODO calculate this dynamically
+    var topMargin = 10; // TODO calculate this dynamically
     var bottomMargin = 132;
     var tipHeight = 10;
     var tipWidth = 10;
@@ -383,17 +383,17 @@ angular.module('socrataCommon.directives').directive('columnChart', function($pa
       }));
 
       Rx.Observable.subscribeLatest(
-        element.closest('.card').observeDimensions(),
+        element.closest('.card-visualization').observeDimensions(),
         scope.observe('chartData'),
         scope.observe('showFiltered'),
         scope.observe('expanded'),
-        function(cardDimensions, chartData, showFiltered, expanded) {
+        function(cardVisualizationDimensions, chartData, showFiltered, expanded) {
           if (!chartData) return;
           renderColumnChart(
             element,
             chartData,
             showFiltered,
-            cardDimensions,
+            cardVisualizationDimensions,
             expanded
           );
         }

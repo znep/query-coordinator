@@ -13,6 +13,8 @@ $metadata-bg-color: #3f4752
 $panel-bg-color: #394047
 $panel-border-color: #4f5f73
 $cards-bg-color: #4d5969
+$card-bg-color: #eee
+$expand-button-color: #d6d4d5
 
 $btn-border-color: #576373
 $btn-bg-color: #4d5969
@@ -214,6 +216,8 @@ body
       padding: $metadata-side-padding / 2 - $card-margins
       padding-top: 0
 
+      /* LAYOUT */
+
       .collapsed-layout, .expanded-layout .collapsed-cards
         .card-size-1
           height: $card-size-1-height
@@ -249,8 +253,6 @@ body
         // COLOR PALETTE
         $header-font-color: #68b0cc
         $description-font-color: #666364
-        $card-bg-color: #fff
-        $expand-button-color: #d6d4d5
 
         $unfiltered-region-bg-color-1: #d6d4d5
         // grey
@@ -267,6 +269,7 @@ body
         margin: $card-margins
         padding: $card-padding
         color: $lt-grey-font-color
+        background: $card-bg-color
 
         .title-one-line
           line-height: 1em
@@ -274,13 +277,25 @@ body
           text-transform: uppercase
           color: $filtered-region-bg-color-1
 
-        &.expanded
-          height: 700px
-          // TODO: arbitrary. Fixing leaflet height
+        .description
 
-          div[ng-switch="cardType"]
-            height: 400px
-            // TODO: arbitrary
+          .description-expand-button
+            color: $expand-button-color
+            background-color: $card-bg-color
+
+          &.collapsed .description-expanded-wrapper
+            background: transparent
+
+          .description-expanded-wrapper
+            background: $card-bg-color
+
+        .card-visualization
+          height: 100%
+
+        &.expanded
+          min-height: 350px
+          // min-height around 350px required
+          // to prevent column chart from flipping over, etc.
 
       div[ng-switch="cardType"]
         position: relative
@@ -314,3 +329,21 @@ body
               // left-hand activities on full-width
               margin-right: 35px
 
+/*   ICONS AND COMPONENTS */
+
+.expandButton
+  // TODO: rename to expand-button
+  font-family: "SSAir"
+  position: absolute
+  top: 5px
+  right: 23px
+  a
+    cursor: pointer
+    display: block
+    width: 0
+    position: relative
+    color: #888
+    &:hover
+      color: #ccc
+    &:before
+      content: '⤢'

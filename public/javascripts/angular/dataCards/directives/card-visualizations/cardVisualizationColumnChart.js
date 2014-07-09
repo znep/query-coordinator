@@ -71,7 +71,14 @@ angular.module('dataCards.directives').directive('cardVisualizationColumnChart',
         var hasFiltersOnCard = _.any(model.value.activeFilters.value, function(filter) {
           return filter.operand === datum.name;
         });
-        model.value.activeFilters = hasFiltersOnCard ? [] : [Filter.withBinaryOperator('=', datum.name)];
+        if (hasFiltersOnCard) {
+          model.value.activeFilters = [];
+        } else {
+          var filter = _.isString(datum.name) ?
+            new Filter.BinaryOperatorFilter('=', datum.name) :
+            new Filter.IsNullFilter(true);
+          model.value.activeFilters = [filter];
+        }
       });
     }
   };

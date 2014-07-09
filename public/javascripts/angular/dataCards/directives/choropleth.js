@@ -6,6 +6,7 @@ angular.module('dataCards.directives').directive('choropleth', function(AngularR
   // GeoJSON object we receive.
   var AGGREGATE_VALUE_PROPERTY_NAME = '__SOCRATA_MERGED_VALUE__';
   var AGGREGATE_VALUE_HIGHLIGHTED_NAME = '__SOCRATA_FEATURE_HIGHLIGHTED__';
+  var INTERNAL_DATASET_FEATURE_ID = ':feature_id';
 
   // if the number of unique values in the dataset is <= the threshold, displays
   // 1 color for each unique value, and labels them as such in the legend.
@@ -405,7 +406,7 @@ angular.module('dataCards.directives').directive('choropleth', function(AngularR
       // Send the toggle filter event up the scope to the parent, where it can
       // be handled by the model.
       var filterDataset = function(selectedFeature, callback) {
-        var featureId = selectedFeature.properties[':feature_id'];
+        var featureId = selectedFeature.properties[INTERNAL_DATASET_FEATURE_ID];
         highlightFeature(featureId);
         $scope.$emit(
           'toggle-dataset-filter:choropleth',
@@ -416,7 +417,7 @@ angular.module('dataCards.directives').directive('choropleth', function(AngularR
       // Send the toggle filter event up the scope to the parent, where it can
       // be handled by the model.
       var clearDatasetFilter = function(selectedFeature, callback) {
-        var featureId = selectedFeature.properties[':feature_id'];
+        var featureId = selectedFeature.properties[INTERNAL_DATASET_FEATURE_ID];
         unhighlightFeature(featureId);
         $scope.$emit(
           'toggle-dataset-filter:choropleth',
@@ -449,7 +450,7 @@ angular.module('dataCards.directives').directive('choropleth', function(AngularR
           }
         } else {
           lastClickTimeout = $timeout(function() {
-            var featureId = selectedFeature.properties[':feature_id'];
+            var featureId = selectedFeature.properties[INTERNAL_DATASET_FEATURE_ID];
             // single click --> filters dataset
             if (featureIsHighlighted(featureId)) {
               clearDatasetFilter(selectedFeature, function(ok) {
@@ -497,8 +498,8 @@ angular.module('dataCards.directives').directive('choropleth', function(AngularR
             newGeojsonData.type = (typeof geojsonData.type !== 'undefined') ? geojsonData.type : null;
             newGeojsonData.features = geojsonData.features.filter(function(item) {
               if (item.hasOwnProperty('properties') &&
-                  item.properties.hasOwnProperty(':feature_id')) {
-                return featureIsHighlighted(item.properties[':feature_id']);
+                  item.properties.hasOwnProperty(INTERNAL_DATASET_FEATURE_ID)) {
+                return featureIsHighlighted(item.properties[INTERNAL_DATASET_FEATURE_ID]);
               } else {
                 return false;
               }

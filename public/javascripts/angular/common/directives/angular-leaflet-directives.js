@@ -537,11 +537,15 @@
                 onEachFeature: onEachFeature,
                 pointToLayer: geojson.pointToLayer
               };
-
               highlightedGeoJSONData = {
                 crs: geojson.data.crs,
                 features: geojson.data.features.filter(function(feature) {
-                  return feature.properties[AGGREGATE_VALUE_HIGHLIGHTED_NAME];
+                  if (feature.hasOwnProperty('properties') &&
+                      feature.properties.hasOwnProperty(AGGREGATE_VALUE_HIGHLIGHTED_NAME)) {
+                    return feature.properties[AGGREGATE_VALUE_HIGHLIGHTED_NAME];
+                  } else {
+                    return false;
+                  }
                 }),
                 type: geojson.data.type
               };

@@ -40,7 +40,13 @@ angular.module('dataCards.directives').directive('cardVisualizationChoropleth', 
       // TODO: Update this function to return what we need, not all the other crap.
       // Probably just want to construct a new geojson object from scratch.
       // Need: aggregate value, related feature id, human name, primary aggregate display unit (i.e. 'crimes')
-      var mergeRegionAndAggregateData = function(activeFilterNames, fieldName, geojsonRegions, unfilteredAsHash, filteredAsHash, whereClause) {
+      var mergeRegionAndAggregateData = function(
+        activeFilterNames,
+        fieldName,
+        geojsonRegions,
+        unfilteredAsHash,
+        filteredAsHash,
+        whereClause) {
         var newFeatures = geojsonRegions.features.map(function(geojsonFeature) {
           var featureId = geojsonFeature.properties[fieldName];
           var feature = {
@@ -113,7 +119,14 @@ angular.module('dataCards.directives').directive('cardVisualizationChoropleth', 
               return acc;
             }, {});
 
-            return mergeRegionAndAggregateData(activeFilterNames, fieldName, geojsonRegions, unfilteredAsHash, filteredAsHash, whereClause);
+            return mergeRegionAndAggregateData(
+              activeFilterNames,
+              fieldName,
+              geojsonRegions,
+              unfilteredAsHash,
+              filteredAsHash,
+              whereClause
+            );
 
       }));
       $scope.bindObservable('filterApplied', filteredData.map(function(filtered) {

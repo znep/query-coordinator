@@ -46,13 +46,13 @@ module.exports = function ( karma ) {
     ],
 
     frameworks: [ 'mocha', 'chai', 'chai-as-promised' ],
-    plugins: [ 'karma-chai', 'karma-chai-plugins', 'karma-mocha', 'karma-firefox-launcher', 'karma-chrome-launcher', 'karma-phantomjs-launcher', 'karma-coverage'],
+    plugins: [ 'karma-chai', 'karma-chai-plugins', 'karma-mocha', 'karma-firefox-launcher', 'karma-chrome-launcher', 'karma-phantomjs-launcher', 'karma-coverage', 'karma-mocha-reporter'],
 
     logLevel:  'WARN',
     /**
      * How to report, by default.
      */
-    reporters: ['dots', 'coverage'],
+    reporters: ['mocha', 'dots', 'coverage'],
 
     coverageReporter: {
       type : 'html',

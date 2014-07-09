@@ -311,7 +311,7 @@ describe('column_chart', function() {
   });
 
   describe('when the name of a datum is blank or undefined', function() {
-    var testDataWithBlank = _.map(testData, function(d, i) {
+    var testDataWithBlank = _.map(testData, function(d) {
       return {
         total: d.total,
         filtered: d.total

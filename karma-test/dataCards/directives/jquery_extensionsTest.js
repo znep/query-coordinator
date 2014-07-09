@@ -79,7 +79,7 @@ describe('jquery_extensions', function() {
           '<div class="cell"></div><div class="cell"></div>' +
         '</div>');
     });
-    it('should flyout on the mouseenter event and close on the mouseleave event', function() {
+    it('should flyout on the mouseenter event and close on the mouseleave event', function(done) {
       $('#container').flyout({
         selector: '.cell',
         direction: 'bottom',
@@ -88,7 +88,10 @@ describe('jquery_extensions', function() {
       $('#container .cell').first().trigger('mouseenter');
       expect($('.flyout').length).to.equal(1);
       $('#container .cell').trigger('mouseleave');
-      expect($('.flyout').length).to.equal(0);
+      _.defer(function() {
+        expect($('.flyout').length).to.equal(0);
+        done();
+      })
     });
     it('should handle functions for all values', function() {
       var count = 0;

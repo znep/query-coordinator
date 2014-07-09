@@ -1,3 +1,5 @@
+@import dataCards/common/fonts
+
 $flyout-background: white
 $flyout-border: #ccc
 $flyout-padding-vertical: 5px
@@ -11,10 +13,14 @@ $flyout-padding-horizontal: 10px
   left: 0
   background-color: white
   line-height: 1rem
-  z-index: 2
+  z-index: 100
   padding: $flyout-padding-vertical $flyout-padding-horizontal
   max-width: 300px
   color: black
+  font-size: $medium-font-size
+
+  word-wrap: break-word
+  white-space: normal
 
   word-wrap: break-word
   white-space: normal
@@ -49,7 +55,7 @@ $flyout-padding-horizontal: 10px
       border-color: transparent
       border-width: 6px
 
-  &.left
+  &.right
     .flyout-arrow
       left: -10px
       top: 50%
@@ -63,7 +69,7 @@ $flyout-padding-horizontal: 10px
         margin-top: -6px
         margin-left: -2px
 
-  &.right
+  &.left
     .flyout-arrow
       top: 50%
       left: 100%
@@ -76,7 +82,7 @@ $flyout-padding-horizontal: 10px
         border-left-color: $flyout-border
         margin-top: -6px
 
-  &.bottom
+  &.top
     .flyout-arrow
       top: 100%
       left: 50%
@@ -89,8 +95,10 @@ $flyout-padding-horizontal: 10px
         border-top-color: $flyout-border
         margin-left: -6px
 
-  &.top
+  &.bottom
     .flyout-arrow
+      top: -10px
+      left: 50%
 
       &:after
         border-bottom-color: $flyout-background
@@ -99,3 +107,4 @@ $flyout-padding-horizontal: 10px
       &:before
         border-bottom-color: $flyout-border
         margin-left: -6px
+        margin-top: -2px

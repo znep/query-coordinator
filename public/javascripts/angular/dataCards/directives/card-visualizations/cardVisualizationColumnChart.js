@@ -29,7 +29,7 @@ angular.module('dataCards.directives').directive('cardVisualizationColumnChart',
             }
           }).switchLatest();
 
-      $scope.$on('column-chart:truncation-marker-clicked', function(args) {
+      $scope.$on('column-chart:truncation-marker-clicked', function() {
         model.value.page.toggleExpanded(model.value);
       });
 
@@ -51,7 +51,7 @@ angular.module('dataCards.directives').directive('cardVisualizationColumnChart',
 
         var activeFilterNames = _.pluck(filters, 'operand');
 
-        var ret = _.map(_.pluck(unFiltered, 'name'), function(name) {
+        return _.map(_.pluck(unFiltered, 'name'), function(name) {
           return {
             name: name,
             total: unFilteredAsHash[name],
@@ -59,7 +59,6 @@ angular.module('dataCards.directives').directive('cardVisualizationColumnChart',
             special: _.contains(activeFilterNames, name)
           }
         });
-        return ret;
       }));
 
       $scope.bindObservable('filterApplied', filteredData.map(function(filtered) {

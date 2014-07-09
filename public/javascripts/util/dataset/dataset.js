@@ -1772,28 +1772,6 @@ var Dataset = ServerModel.extend({
             }});
     },
 
-    // TODO IDE says this is an unused method...
-    waitForPublishingAvailable: function(successCallback, timeout)
-    {
-        var ds = this;
-
-        var waitForSuccess = function()
-        {
-            ds.getPublishingAvailable(function(available)
-            {
-                if (!available)
-                {
-                    setTimeout(waitForSuccess, timeout || 5000);
-                }
-                else
-                {
-                    successCallback();
-                }
-            });
-        };
-        waitForSuccess();
-    },
-
     getSnapshotDatasets: function(callback)
     {
         var ds = this;
@@ -2017,18 +1995,26 @@ var Dataset = ServerModel.extend({
         var ds = this;
         ds.originalViewId = ds.id;
 
-        if (ds.newBackend || blist.configuration.useSoda2)
+        var useSoda2Flag = false;
+        if (!_.isUndefined(blist.feature_flags.useSoda2))
+        {
+            if (blist.feature_flags.useSoda2 === 'always')
+            { useSoda2Flag = true; }
+            else if (blist.feature_flags.useSoda2 === 'never')
+            { useSoda2Flag = false; }
+            else if (blist.feature_flags.useSoda2 === 'read-only')
+            { useSoda2Flag = !!blist.currentUser; }
+        }
+
+        if (ds.newBackend || blist.configuration.useSoda2 || useSoda2Flag)
         { ds._useSODA2 = true; }
         else
         { ds._useSODA2 = false; }
 
         // Allow explicit override of SODA version via URL parameter
         var sodaVersion = $.urlParam(window.location.href, 'soda');
-        if (sodaVersion === '1' || sodaVersion === '2')
-        {
-            if (sodaVersion === '1') { ds._useSODA2 = false; }
-            if (sodaVersion === '2') { ds._useSODA2 = true; }
-        }
+        if (sodaVersion === '1') { ds._useSODA2 = false; }
+        if (sodaVersion === '2') { ds._useSODA2 = true; }
 
         ds.type = getType(ds);
 

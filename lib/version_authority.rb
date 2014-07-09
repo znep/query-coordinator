@@ -145,4 +145,10 @@ module VersionAuthority
     JSON.parse(result, :max_nesting => 25)
   end
 
+  def self.get_core_dataset_mtime(dataset)
+    path = "/manifest_version.json?uid=#{dataset}"
+    result = CoreServer::Base.connection.get_request(path, {}, false)
+    JSON.parse(result, :max_nesting => 25)
+  end
+
 end

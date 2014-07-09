@@ -40,7 +40,7 @@
     }
   ],
   "pages": {
-    "publisher": [ "from-rndy" ],
-    "user": []
+    "publisher": [ "from-rndy", "from-othr" ],
+    "user": [ "from-user", "from-frnk" ]
   }
 }

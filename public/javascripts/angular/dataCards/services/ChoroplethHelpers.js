@@ -1,4 +1,4 @@
-angular.module('dataCards.models').factory('ChoroplethHelpers', function($http, $log, $rootScope){
+angular.module('dataCards.models').factory('ChoroplethHelpers', function($log){
   return {
     getGeojsonValues: function(geojson, attr) {
       var data = [];

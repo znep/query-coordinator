@@ -346,7 +346,7 @@ angular.module('dataCards.directives').directive('choropleth', function(AngularR
             bezierColorInterpolation = true;
             break;
           default:
-            throw new Error("[MapController] Invalid color class specified for updateColorScale");
+            throw new Error("[choropleth] Invalid color class specified for updateColorScale");
         }
         if (bezierColorInterpolation) {
           colors = chroma.interpolate.bezier(colorRange);

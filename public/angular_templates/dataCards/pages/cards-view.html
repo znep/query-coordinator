@@ -4,21 +4,34 @@
     <div title="{{pageName}}" class="pageName">
       <h1>{{pageName}}</h1>
     </div>
-    <p>{{pageDescription}}</p>
-    <b>Official Views</b>
-    <ol>
-      <li ng-repeat="page in datasetPages.publisher">
-        {{page.id}}
-      </li>
-    </ol>
-    <b>Community-created Views</b>
-    <ol>
-      <li ng-repeat="page in datasetPages.user">
-        {{page.id}}
-      </li>
-    </ol>
-    <p>Last updated: {{datasetDaysUnmodified}} days ago</p>
+    <div class="page-description" expanded="expanded" multiline-ellipsis max-lines="2" tolerance="2" text="{{pageDescription}}"></div>
+
+    <div class="pages">
+      <div class="publisher">Publisher Created Views</div>
+      <ul class="pages">
+        <li ng-repeat="page in datasetPages.publisher">
+          <div class="page">
+            <div><a class="page-link" href="/view/{{page.id}}"></a></div>
+            <div>View Name</div>
+            <div>3,843 views</div>
+          </div>
+        </li>
+      </ul>
+    </div>
+    <div class="pages">
+      <div class="publisher">User Created Views</div>
+      <ul class="pages user">
+        <li ng-repeat="page in datasetPages.user">
+          <div class="page">
+            <div><a class="page-link" href="/view/{{page.id}}"></a></div>
+            <div>View Name</div>
+            <div>1,531 views</div>
+          </div>
+        </li>
+      </ul>
+    </div>
   </div>
+
   <div sticky-header update-on-resize="headerContent" class="quickFilterBar" ng-class="{stuck: headerIsStuck}">
     <div class="content">
       This bar serves quick fajitas!

@@ -9,7 +9,7 @@ angular.module('dataCards.directives').directive('cardVisualizationChoropleth', 
       AngularRxExtensions.install($scope);
 
       var model = $scope.observe('model');
-      var dataset = model.pluck('page').pluckSwitch('dataset');
+      var dataset = model.pluck('page').observeOnLatest('dataset');
 
       // Chris: Temporary static id for the shapefile until I can figure out if/how it
       // will come from the Page Metadata service or elsewhere.
@@ -89,7 +89,7 @@ angular.module('dataCards.directives').directive('cardVisualizationChoropleth', 
           geojsonRegions,
           unfilteredData,
           filteredData,
-          model.pluckSwitch('activeFilters'),
+          model.observeOnLatest('activeFilters'),
           $scope.observe('whereClause'),
           function(fieldName, geojsonRegions, unfiltered, filtered, activeFilters, whereClause) {
 
@@ -147,12 +147,19 @@ angular.module('dataCards.directives').directive('cardVisualizationChoropleth', 
         // If we don't do this the white outline responds to mouse down events but
         // the region coloring doesn't catch up until the full
         // 'request' -> 'response' -> 'render leaflet' loop.
-        var featureId = feature.properties[model.value.fieldName];
+        var featureId = feature.properties[$scope.model.fieldName];
         $scope.highlightedRegion = featureId;
-        var hasFiltersOnCard = _.any(model.value.activeFilters.value, function(filter) {
+        var hasFiltersOnCard = _.any($scope.model.getCurrentValue('activeFilters'), function(filter) {
           return filter.operand === featureId;
         });
-        model.value.activeFilters = hasFiltersOnCard ? [] : [Filter.withBinaryOperator('=', featureId)];
+        if (hasFiltersOnCard) {
+          $scope.model.set('activeFilters', []);
+        } else {
+          var filter = _.isString(featureId) ?
+            new Filter.BinaryOperatorFilter('=', featureId) :
+            new Filter.IsNullFilter(true);
+          $scope.model.set('activeFilters', [filter]);
+        }
       });
 
     }

@@ -13,42 +13,15 @@ angular.module('dataCards.services').factory('ModelHelper', function() {
     });
   };
 
-  function addCollectionProperty(propertyName, model) {
-    var subject = new Rx.BehaviorSubject([]);
-    subject.push = function(val) {
-      subject.onNext(subject.value.concat([val]));
-    };
-    Object.defineProperty(model, propertyName, {
-      get: _.constant(subject),
-      set: function(val) {
-        if (!_.isArray(val)) {
-          throw new Error('Tried to set non-array to a collection property.');
-        }
-        subject.onNext(val);
-      }
-    });
-  };
-
-  // Adds a read-only (RxJS) observable of the given name to the object provided. The default value
-  // is specified as a function which returns a promise. This allows us to skip requesting
-  // the default value unless necessary.
-  function addReadOnlyPropertyWithLazyDefault(propertyName, model, defaultValuePromiseGenerator) {
-    Object.defineProperty(model, propertyName, {
-      get: _.once(function() {
-        var subj = new Rx.AsyncSubject();
-        Rx.Observable.fromPromise(defaultValuePromiseGenerator(model)).subscribe(subj);
-        return subj;
-      })
-    });
-  };
-
   // Adds an (RxJS) observable of the given name to the object provided. The default value
   // is specified as a function which returns a promise. This allows us to skip requesting
   // the default value unless necessary.
+  // While the default value is being fetched, the value of the property is undefined.
+  // An alternate placeholder value may be specified as the last argument.
   //
   // The default lazy value promise is generated if the property getter is called before
   // the setter.
-  function addPropertyWithLazyDefault(propertyName, model, defaultValuePromiseGenerator) {
+  function addPropertyWithLazyDefault(propertyName, model, defaultValuePromiseGenerator, initialValue) {
     // These two sequences represent values from the lazy default promise and this property's
     // setter, respectively.
     var fromDefault = new Rx.AsyncSubject();
@@ -60,7 +33,7 @@ angular.module('dataCards.services').factory('ModelHelper', function() {
     // This is the actual subject exposed to the property consumer.
     // The first value comes from either the lazy default if required, or the property setter.
     // Future values always come from the property setter.
-    var outer = new Rx.BehaviorSubject();
+    var outer = new Rx.BehaviorSubject(initialValue);
     Rx.Observable.concat(firstValue, fromSetter).subscribe(outer);
 
     // Track whether or not we need to fetch the default value.
@@ -86,8 +59,6 @@ angular.module('dataCards.services').factory('ModelHelper', function() {
 
   return {
     addProperty: addProperty,
-    addCollectionProperty: addCollectionProperty,
-    addReadOnlyPropertyWithLazyDefault: addReadOnlyPropertyWithLazyDefault,
     addPropertyWithLazyDefault: addPropertyWithLazyDefault
   };
 });

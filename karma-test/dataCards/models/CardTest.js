@@ -25,15 +25,16 @@ describe("Card model", function() {
 
     var out = {fieldName: blob.fieldName};
     _.each(requiredKeys, function(field) {
-      expect(instance).to.have.property(field);
-      if (field === 'fieldName') return; // fieldName isn't observable.
-      instance[field].subscribe(function(v) { 
-        out[field] = v;
-      });
+      if (field === 'fieldName') { // fieldName isn't observable.
+        expect(instance[field]).to.exist;
+      } else {
+        expect(instance.observe(field)).to.exist;
+        instance.observe(field).subscribe(function(v) { 
+          out[field] = v;
+        });
+      }
     });
     expect(out).to.deep.equal(blob);
-
-    instance.description = 'test';
     expect(out).to.have.property('displayMode').that.equals('figures');
   }));
 });

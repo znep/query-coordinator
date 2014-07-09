@@ -23,3 +23,18 @@ Rx.Observable.subscribeLatest = function() {
       resultSubscription.apply(args, vals);
     });
 };
+
+// Maps this observable sequence of objects to a new sequence of observable sequences by invoking
+// observe() on each object, then switches to that sequence.
+Rx.Observable.prototype.observeOnLatest = function(prop) {
+  return this.map(function(model) {
+    if (model) {
+      if (!model.observe) {
+        throw new Error('Tried to observeOnLatest on a non-model.');
+      }
+      return model.observe(prop);
+    } else {
+      return Rx.Observable.never();
+    }
+  }).switchLatest();
+};

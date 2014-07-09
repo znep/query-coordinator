@@ -8,7 +8,7 @@ angular.module('dataCards.directives').directive('cardVisualizationTable', funct
       AngularRxExtensions.install($scope);
 
       var model = $scope.observe('model');
-      var dataset = model.pluck('page').pluckSwitch('dataset');
+      var dataset = model.pluck('page').observeOnLatest('dataset');
       var whereClause = $scope.observe('whereClause');
       var rowCount = Rx.Observable.combineLatest(
           dataset,
@@ -24,9 +24,9 @@ angular.module('dataCards.directives').directive('cardVisualizationTable', funct
       $scope.bindObservable('whereClause', whereClause);
       $scope.bindObservable('rowCount', rowCount);
       $scope.bindObservable('filteredRowCount', filteredRowCount);
-      $scope.bindObservable('expanded', model.pluckSwitch('expanded'));
+      $scope.bindObservable('expanded', model.observeOnLatest('expanded'));
       $scope.getRows = function() {
-        var args = [$scope.model.page.dataset.value.id].concat(
+        var args = [$scope.model.page.getCurrentValue('dataset').id].concat(
           Array.prototype.slice.call(arguments));
         return CardDataService.getRows.apply(null, args);
       }

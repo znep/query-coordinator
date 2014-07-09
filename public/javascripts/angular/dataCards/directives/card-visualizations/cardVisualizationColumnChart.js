@@ -8,7 +8,7 @@ angular.module('dataCards.directives').directive('cardVisualizationColumnChart',
       AngularRxExtensions.install($scope);
 
       var model = $scope.observe('model');
-      var dataset = model.pluck('page').pluckSwitch('dataset');
+      var dataset = model.pluck('page').observeOnLatest('dataset');
 
       var unFilteredData = Rx.Observable.combineLatest(
           model.pluck('fieldName'),
@@ -29,11 +29,7 @@ angular.module('dataCards.directives').directive('cardVisualizationColumnChart',
             }
           }).switchLatest();
 
-      $scope.$on('column-chart:truncation-marker-clicked', function() {
-        model.value.page.toggleExpanded(model.value);
-      });
-
-      $scope.bindObservable('chartData', Rx.Observable.combineLatest(filteredData, unFilteredData, model.pluckSwitch('activeFilters'), function(filtered, unFiltered, filters) {
+      $scope.bindObservable('chartData', Rx.Observable.combineLatest(filteredData, unFilteredData, model.observeOnLatest('activeFilters'), function(filtered, unFiltered, filters) {
         // Joins filtered data and unfiltered data into an array of objects:
         // [
         //  { name: 'some_group_name', total: 1234, filtered: 192 },
@@ -65,19 +61,19 @@ angular.module('dataCards.directives').directive('cardVisualizationColumnChart',
         return filtered !== null;
       }));
 
-      $scope.bindObservable('expanded', model.pluckSwitch('expanded'));
+      $scope.bindObservable('expanded', model.observeOnLatest('expanded'));
 
       $scope.$on('column-chart:datum-clicked', function(event, datum) {
-        var hasFiltersOnCard = _.any(model.value.activeFilters.value, function(filter) {
+        var hasFiltersOnCard = _.any($scope.model.getCurrentValue('activeFilters'), function(filter) {
           return filter.operand === datum.name;
         });
         if (hasFiltersOnCard) {
-          model.value.activeFilters = [];
+          $scope.model.set('activeFilters', []);
         } else {
           var filter = _.isString(datum.name) ?
             new Filter.BinaryOperatorFilter('=', datum.name) :
             new Filter.IsNullFilter(true);
-          model.value.activeFilters = [filter];
+          $scope.model.set('activeFilters', [filter]);
         }
       });
     }

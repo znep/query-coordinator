@@ -139,55 +139,5 @@ describe("Page model", function() {
     expect(expectedSequence).to.be.empty;
   });
 
-  it('(RO) should attempt to get lazy default if strictly needed.', function(done) {
-    var descFromDefault = 'fromDefault';
-    var expectedSequence = [descFromDefault];
-
-    var maybeDone = _.after(2, done);
-
-    var description =_$q.defer();
-    var getDescCalled = false;
-    function promiser() {
-      expect(getDescCalled).to.be.false;
-      getDescCalled = true;
-      return description.promise;
-    };
-
-    var instance = {};
-    _mh.addReadOnlyPropertyWithLazyDefault('description', instance, promiser);
-
-    instance.description.subscribe(function(val) {
-      expect(expectedSequence).to.not.be.empty;
-      var exp = expectedSequence.shift();
-      expect(val).to.equal(exp);
-      if (_.isEmpty(expectedSequence)) {
-        maybeDone();
-      }
-    });
-
-    description.resolve(descFromDefault);
-    _$rootScope.$digest();
-    expect(getDescCalled).to.be.true;
-
-    // Also test that future subscribers get the stored value.
-    instance.description.subscribe(function(val) {
-      expect(val).to.equal(descFromDefault);
-      maybeDone();
-    });
-  });
-
-  it('(RO) should not allow writes', function() {
-    function promiser() {
-      throw new Error("Should never request lazy default");
-    };
-
-    var instance = {};
-    _mh.addReadOnlyPropertyWithLazyDefault('description', instance, promiser);
-
-    expect(function() {
-      'use strict';
-      instance.description = 'foo';
-    }).to.throw(TypeError);
-  });
   //TODO handle error cases.
 });

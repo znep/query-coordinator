@@ -1,4 +1,4 @@
-angular.module('dataCards.models').factory('Card', function($injector, ModelHelper, CardDataService, JJV) {
+angular.module('dataCards.models').factory('Card', function($injector, ModelHelper, Model, CardDataService, JJV) {
   JJV.addSchema('serializedCard', {
     'type': 'object',
     'properties': {
@@ -23,12 +23,13 @@ angular.module('dataCards.models').factory('Card', function($injector, ModelHelp
 
     _.each(_.keys(JJV.schema.serializedCard.properties), function(field) {
       if (field === 'fieldName') return; // fieldName isn't observable.
-      ModelHelper.addProperty(field, self);
+      self.defineObservableProperty(field);
     });
 
-    ModelHelper.addCollectionProperty('activeFilters', self, []);
+    self.defineObservableProperty('activeFilters', []);
   }
 
+  Card.prototype = new Model();
   Card.deserialize = function(page, blob) {
     var errors = JJV.validate('serializedCard', blob);
     if (errors) {
@@ -36,7 +37,10 @@ angular.module('dataCards.models').factory('Card', function($injector, ModelHelp
     }
 
     var instance = new Card(page, blob.fieldName);
-    $.extend(instance, blob);
+    _.each(_.keys(JJV.schema.serializedCard.properties), function(field) {
+      if (field === 'fieldName') return; // fieldName isn't observable.
+      instance.set(field, blob[field]);
+    });
 
     return instance;
   };

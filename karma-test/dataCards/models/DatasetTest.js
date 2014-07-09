@@ -52,7 +52,7 @@ describe("Dataset model", function() {
     };
 
     var instance = new _Dataset(id);
-    instance.rowDisplayUnit.subscribe(function(val) {
+    instance.observe('rowDisplayUnit').subscribe(function(val) {
       if (val) {
         expect(val).to.equal(fakeDisplayUnit);
         done();
@@ -81,8 +81,8 @@ describe("Dataset model", function() {
     };
 
     var instance = new _Dataset(id);
-    instance.pages.subscribe(function(pagesBySource) {
-      if (pagesBySource) {
+    instance.observe('pages').subscribe(function(pagesBySource) {
+      if (!_.isEmpty(pagesBySource)) {
         expect(_.keys(pagesBySource)).to.deep.equal(_.keys(fakePageIds));
         _.each(pagesBySource, function(pages, source) {
           _.each(pages, function(page, idx) {

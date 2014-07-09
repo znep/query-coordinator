@@ -11,7 +11,9 @@ angular.module('dataCards.controllers').controller('CardsViewController',
     function zipLatestArray(obs, property) {
       return obs.flatMapLatest(
         function(values) {
-          return Rx.Observable.combineLatest(_.pluck(values, property), function() {
+          return Rx.Observable.combineLatest(_.map(values, function(val) {
+            return val.observe(property);
+          }), function() {
             return _.map(_.zip(values, arguments), function(arr) {
               var r={ model: arr[0] };
               r[property] = arr[1];
@@ -42,17 +44,17 @@ angular.module('dataCards.controllers').controller('CardsViewController',
     //       ]
     //  }
     var layout = new SortedTileLayout();
-    var rowsOfCardsBySize = zipLatestArray(page.cards, 'cardSize').
+    var rowsOfCardsBySize = zipLatestArray(page.observe('cards'), 'cardSize').
       map(function(sizedCards) {
         return layout.doLayout(sizedCards);
       });
 
     $scope.page = page;
 
-    $scope.bindObservable('pageName', page.name.map(function(name) {
+    $scope.bindObservable('pageName', page.observe('name').map(function(name) {
       return _.isUndefined(name) ? 'Untitled' : name;
     }));
-    $scope.bindObservable('pageDescription', page.description);
+    $scope.bindObservable('pageDescription', page.observe('description'));
 
     $scope.bindObservable('rowsOfCardsBySize', rowsOfCardsBySize);
     $scope.bindObservable('cardSizeNamesInDisplayOrder', rowsOfCardsBySize.map(function(sizedCards) {
@@ -61,7 +63,7 @@ angular.module('dataCards.controllers').controller('CardsViewController',
       return _.keys(sizedCards).sort();
     }));
 
-    var expandedZipped = zipLatestArray(page.cards, 'expanded');
+    var expandedZipped = zipLatestArray(page.observe('cards'), 'expanded');
     var expandedCards = expandedZipped.map(function(cards) {
       return _.pluck(_.filter(cards, 'expanded'), 'model');
     });
@@ -71,20 +73,21 @@ angular.module('dataCards.controllers').controller('CardsViewController',
     $scope.bindObservable('collapsedCards', collapsedCards);
     $scope.bindObservable('expandedCards', expandedCards);
     $scope.bindObservable('useExpandedLayout', expandedCards.map(function(cards) {
-      return _.any(cards, 'expanded');
+      return !_.isEmpty(cards);
     }));
 
-    $scope.bindObservable('dataset', page.dataset);
-    $scope.bindObservable('datasetPages', page.dataset.pluckSwitch('pages'));
-    $scope.bindObservable('datasetDaysUnmodified', page.dataset.pluckSwitch('updatedAt').map(function(date) {
+    $scope.bindObservable('dataset', page.observe('dataset'));
+    $scope.bindObservable('datasetPages', page.observe('dataset').observeOnLatest('pages'));
+    $scope.bindObservable('datasetDaysUnmodified', page.observe('dataset').observeOnLatest('updatedAt').map(function(date) {
       // TODO just a placeholder implementation
+      if (!date) return NaN;
       var dayInMillisec = 86400000;
       return Math.floor((Date.now() - date.getTime()) / dayInMillisec);
     }));
 
-    var allCardsFilters = page.cards.flatMap(function(cards) {
+    var allCardsFilters = page.observe('cards').flatMap(function(cards) {
       if (!cards) { return Rx.Observable.never(); }
-      return Rx.Observable.combineLatest(_.pluck(cards, 'activeFilters'), function() {
+      return Rx.Observable.combineLatest(_.map(cards, function(d) { return d.observe('activeFilters');}), function() {
         return _.zipObject(_.pluck(cards, 'fieldName'), arguments);
       });
     });

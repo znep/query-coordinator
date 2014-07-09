@@ -35,12 +35,12 @@ describe("Page model", function() {
     };
 
     var instance = new _Page(id);
-    instance.description = desc1;
-    instance.description.subscribe(function(val) {
+    instance.set('description', desc1);
+    instance.observe('description').subscribe(function(val) {
       expect(val).to.equal(expectedSequence.shift());
     });
-    instance.description = desc2;
-    instance.description = desc3;
+    instance.set('description', desc2);
+    instance.set('description', desc3);
     expect(expectedSequence).to.be.empty;
   });
 
@@ -63,7 +63,7 @@ describe("Page model", function() {
     };
 
     var instance = new _Page(id);
-    instance.description.subscribe(function(val) {
+    instance.observe('description').subscribe(function(val) {
       var exp = expectedSequence.shift();
       expect(shouldBeResolved).to.equal(exp !== undefined); // If it's undefined, it shouldn't be resolved
       expect(val).to.equal(exp);
@@ -74,8 +74,8 @@ describe("Page model", function() {
     _$rootScope.$digest();
     expect(getBaseInfoCalled).to.be.true;
 
-    instance.description = descFromSetter1;
-    instance.description = descFromSetter2;
+    instance.set('description', descFromSetter1);
+    instance.set('description', descFromSetter2);
     expect(expectedSequence).to.be.empty;
   });
 
@@ -90,7 +90,7 @@ describe("Page model", function() {
     };
 
     var instance = new _Page(id);
-    instance.dataset.subscribe(function(val) {
+    instance.observe('dataset').subscribe(function(val) {
       if (val instanceof _Dataset) {
         expect(val.id).to.equal(datasetId);
         done();

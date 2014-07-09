@@ -1,5 +1,5 @@
 // This model is intended to be an immutable reference to a Dataset.
-angular.module('dataCards.models').factory('Dataset', function(ModelHelper, DatasetDataService, JJV, $injector) {
+angular.module('dataCards.models').factory('Dataset', function(ModelHelper, Model, DatasetDataService, JJV, $injector) {
   var UID_REGEXP = /^\w{4}-\w{4}$/;
 
   JJV.addSchema('datasetMetadata', {
@@ -89,12 +89,12 @@ angular.module('dataCards.models').factory('Dataset', function(ModelHelper, Data
 
     var fields = ['title', 'rowDisplayUnit', 'defaultAggregateColumn', 'domain', 'ownerId', 'updatedAt'];
     _.each(fields, function(field) {
-      ModelHelper.addReadOnlyPropertyWithLazyDefault(field, self, function() {
+      self.defineObservableProperty(field, undefined, function() {
         return baseInfoPromise().then(_.property(field));
       });
     });
 
-    ModelHelper.addReadOnlyPropertyWithLazyDefault('columns', self, function() {
+    self.defineObservableProperty('columns', {}, function() {
       // Columns are provided as an array of objects.
       // For ease of use, transform it into an object where
       // the keys are the column names.
@@ -106,7 +106,7 @@ angular.module('dataCards.models').factory('Dataset', function(ModelHelper, Data
       });
     });
 
-    ModelHelper.addReadOnlyPropertyWithLazyDefault('pages', self, function() {
+    self.defineObservableProperty('pages', {}, function() {
       return baseInfoPromise().then(function(data) {
         return _.transform(data.pages, function(res, ids, source) {
           res[source] = _.map(ids, function(id) {
@@ -116,6 +116,8 @@ angular.module('dataCards.models').factory('Dataset', function(ModelHelper, Data
       });
     });
   };
+
+  Dataset.prototype = new Model();
 
   return Dataset;
 });

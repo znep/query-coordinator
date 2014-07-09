@@ -88,7 +88,7 @@ describe("CardsViewController", function() {
 
       expect(scope.pageName).to.equal(nameOne);
 
-      scope.page.name = nameTwo;
+      scope.page.set('name', nameTwo);
       expect(scope.pageName).to.equal(nameTwo);
     });
 
@@ -108,7 +108,7 @@ describe("CardsViewController", function() {
 
       expect(scope.pageName).to.equal("Untitled");
 
-      scope.page.name = nameTwo;
+      scope.page.set('name', nameTwo);
       expect(scope.pageName).to.equal(nameTwo);
     });
   });
@@ -130,7 +130,7 @@ describe("CardsViewController", function() {
 
       expect(scope.pageDescription).to.equal(descriptionOne);
 
-      scope.page.description = descriptionTwo;
+      scope.page.set('description', descriptionTwo);
       expect(scope.pageDescription).to.equal(descriptionTwo);
     });
   });
@@ -157,7 +157,7 @@ describe("CardsViewController", function() {
       [cardBlobs[0].fieldName, cardBlobs[1].fieldName, cardBlobs[2].fieldName]
     );
 
-    scope.page.cards.value[1].expanded = true;
+    scope.page.getCurrentValue('cards')[1].set('expanded', true);
     expect(scope.useExpandedLayout).to.be.true;
     expect(_.pluck(scope.expandedCards, 'fieldName')).to.deep.equal(
       [cardBlobs[1].fieldName]
@@ -166,15 +166,15 @@ describe("CardsViewController", function() {
       [cardBlobs[0].fieldName, cardBlobs[2].fieldName]
     );
 
-    scope.page.cards.value[1].expanded = false;
+    scope.page.getCurrentValue('cards')[1].set('expanded', false);
     expect(scope.useExpandedLayout).to.be.false;
     expect(scope.expandedCards).to.be.empty;
     expect(_.pluck(scope.collapsedCards, 'fieldName')).to.deep.equal(
       [cardBlobs[0].fieldName, cardBlobs[1].fieldName, cardBlobs[2].fieldName]
     );
 
-    scope.page.cards.value[1].expanded = true;
-    scope.page.cards.value[0].expanded = true;
+    scope.page.getCurrentValue('cards')[1].set('expanded', true);
+    scope.page.getCurrentValue('cards')[0].set('expanded', true);
     expect(scope.useExpandedLayout).to.be.true;
     expect(_.pluck(scope.expandedCards, 'fieldName')).to.deep.equal(
       [cardBlobs[0].fieldName, cardBlobs[1].fieldName]
@@ -183,7 +183,7 @@ describe("CardsViewController", function() {
       [cardBlobs[2].fieldName]
     );
 
-    scope.page.cards.value[1].expanded = false;
+    scope.page.getCurrentValue('cards')[1].set('expanded', false);
     expect(scope.useExpandedLayout).to.be.true;
     expect(_.pluck(scope.expandedCards, 'fieldName')).to.deep.equal(
       [cardBlobs[0].fieldName]
@@ -205,7 +205,7 @@ describe("CardsViewController", function() {
       cards: cardBlobs,
     });
     $rootScope.$digest();
-    var cardModels = scope.page.cards.value;
+    var cardModels = scope.page.getCurrentValue('cards');
 
     expect(scope.useExpandedLayout).to.be.false;
 
@@ -213,7 +213,7 @@ describe("CardsViewController", function() {
     expect(scope.rowsOfCardsBySize[1]).to.have.length(2); // Two rows in this group.
     expect(scope.cardSizeNamesInDisplayOrder).to.deep.equal(['1']);
 
-    cardModels[0].cardSize = 2;
+    cardModels[0].set('cardSize', 2);
     expect(scope.rowsOfCardsBySize).to.have.keys('1', '2');
     expect(scope.rowsOfCardsBySize[1]).to.have.length(1); // One row in this group.
     expect(scope.rowsOfCardsBySize[2]).to.have.length(1); // One row in this group.

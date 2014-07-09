@@ -34,24 +34,24 @@ angular.module('dataCards.directives').directive('card', function(AngularRxExten
 
       var content = element.find('div.card');
       var modelSubject = $scope.observe('model');
-      var dataset = modelSubject.pluck('page').pluckSwitch('dataset');
+      var datasetObservable = modelSubject.pluck('page').observeOnLatest('dataset');
+      var columns = datasetObservable.observeOnLatest('columns');
 
-      var cardType = modelSubject.pluck('fieldName').combineLatest(dataset.pluckSwitch('columns'),
+      var cardType = modelSubject.pluck('fieldName').combineLatest(columns,
         function(cardField, datasetFields) {
           var column = datasetFields[cardField];
-          return cardTypeMapping(column);
+          return column ? cardTypeMapping(column) : null;
         }
       );
-      var columns = dataset.pluckSwitch('columns');
       var column = modelSubject.pluck('fieldName').combineLatest(columns, function(fieldName, columns) {
         return columns[fieldName];
-      });
+      }).filter(_.isObject);
 
       $scope.descriptionCollapsed = true;
 
       $scope.bindObservable('cardType', cardType);
-      $scope.bindObservable('expanded', modelSubject.pluckSwitch('expanded'));
-      $scope.bindObservable('cardSize', modelSubject.pluckSwitch('cardSize'));
+      $scope.bindObservable('expanded', modelSubject.observeOnLatest('expanded'));
+      $scope.bindObservable('cardSize', modelSubject.observeOnLatest('cardSize'));
 
       $scope.bindObservable('title', column.pluck('title'));
       $scope.bindObservable('description', column.pluck('description'));

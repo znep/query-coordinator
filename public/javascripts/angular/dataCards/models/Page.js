@@ -1,4 +1,4 @@
-angular.module('dataCards.models').factory('Page', function(Dataset, Card, ModelHelper, PageDataService) {
+angular.module('dataCards.models').factory('Page', function(Dataset, Card, Model, PageDataService) {
   function Page(id) {
     if (_.isEmpty(id)) {
       throw new Error('All pages must have an ID');
@@ -16,17 +16,18 @@ angular.module('dataCards.models').factory('Page', function(Dataset, Card, Model
 
     var fields = ['description', 'name', 'layoutMode', 'primaryAmountField', 'primaryAggregation', 'isDefaultPage', 'pageSource'];
     _.each(fields, function(field) {
-      ModelHelper.addPropertyWithLazyDefault(field, self, function() {
+      self.defineObservableProperty(field, undefined, function() {
         return baseInfoPromise().then(_.property(field));
       });
     });
 
-    ModelHelper.addReadOnlyPropertyWithLazyDefault('dataset', this, function() {
+    self.defineObservableProperty('dataset', null, function() {
       return baseInfoPromise().then(function(data) {
         return new Dataset(data.datasetId);
       });
     });
-    ModelHelper.addPropertyWithLazyDefault('cards', this, function() {
+
+    self.defineObservableProperty('cards', [], function() {
       return baseInfoPromise().then(function(data) {
         return _.map(data.cards, function(serializedCard) {
           return Card.deserialize(self, serializedCard);
@@ -35,11 +36,12 @@ angular.module('dataCards.models').factory('Page', function(Dataset, Card, Model
     });
   }
 
+  Page.prototype = new Model();
   Page.prototype.toggleExpanded = function(theCard) {
     // NOTE: For the MVP, we only ever allow one expanded card.
     // Enforce that here.
-    _.each(this.cards.value, function(card) {
-      card.expanded = (card === theCard ? !theCard.expanded.value : false);
+    _.each(this.getCurrentValue('cards'), function(card) {
+      card.set('expanded', card === theCard ? !theCard.getCurrentValue('expanded') : false);
     });
   };
 

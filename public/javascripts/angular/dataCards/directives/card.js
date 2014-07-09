@@ -57,8 +57,11 @@ angular.module('dataCards.directives').directive('card', function(AngularRxExten
       $scope.bindObservable('description', column.pluck('description'));
 
       $scope.updateCardVisHeight = function() {
-        var cardVisHeight = element.find('.card').height() - element.find('.card').find('.card-text').height();
-        element.find('.card').find('.card-visualization').outerHeight(cardVisHeight);
+        $timeout(function() {
+          // waits until description is filled in to determine heights
+          var cardVisHeight = element.find('.card').height() - element.find('.card').find('.card-text').outerHeight(true);
+          element.find('.card').find('.card-visualization').height(cardVisHeight);
+        });
       };
 
       $scope.toggleExpanded = function() {

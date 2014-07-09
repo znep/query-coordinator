@@ -30,7 +30,8 @@ angular.module('socrataCommon.directives').directive('columnChart', function($pa
     // Compute chart margins
     if (expanded) {
       var maxLength = _.max(chartData.map(function(item) {
-        return $.capitalizeWithDefault(item.name, undefinedPlaceholder).visualLength('0.75rem');
+        // The size passed to visualLength() below relates to the width of the div.text in the updateLabels().
+        return $.capitalizeWithDefault(item.name, undefinedPlaceholder).visualLength('0.5rem');
       }));
       bottomMargin = (maxLength + $.relativeToPx('1.0rem')) / Math.sqrt(2);
     } else {
@@ -215,6 +216,18 @@ angular.module('socrataCommon.directives').directive('columnChart', function($pa
           text(function(d, i, j) {
             return $.capitalizeWithDefault(d.name, undefinedPlaceholder);
           });
+
+      // These widths relate to the visualLength() method call in the maxLength calculation above.
+      if (expanded) {
+        labelDivSelection.
+          selectAll('.text').style('width', function(d, i, j) {
+            if ($('.description-expanded-wrapper').height() > 20) {
+              return '10.5rem';
+            } else {
+              return '8.5rem';
+            }
+          });
+      }
 
       labelDivSelection.
         selectAll('.callout').

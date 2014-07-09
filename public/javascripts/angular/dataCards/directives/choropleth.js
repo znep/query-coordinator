@@ -381,13 +381,11 @@ angular.module('dataCards.directives').directive('choropleth', function(Chorople
 
       function filterDataset(selectedLayer, callback) {
         // TODO: Chris, story for filtering dataset
-        console.log('filtering')
         callback(true);
       }
 
       function clearDatasetFilter(callback) {
         // TODO: Chris
-        console.log('unfiltering')
         callback(true);
       }
 

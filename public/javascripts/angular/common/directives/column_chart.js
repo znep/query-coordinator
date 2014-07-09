@@ -15,8 +15,8 @@ angular.module('socrataCommon.directives').directive('columnChart', function($pa
     var $chart = element.find('.column-chart-wrapper');
     var $chartScroll = element.find('.chart-scroll');
     var d3Selection = d3.select($chart.get(0));
-    var barGroupSelection = d3Selection.selectAll('.bar-group').data(chartData);
-    var hoverTriggerSelection = d3Selection.selectAll('.bar.hover-trigger').data(chartData);
+    var barGroupSelection = d3Selection.selectAll('.bar-group').data(chartData, _.property('name'));
+    var hoverTriggerSelection = d3Selection.selectAll('.bar.hover-trigger').data(chartData, _.property('name'));
     var labelSelection = d3.select(element.find('.labels')[0]).selectAll('.label');
     var chartWidth = dimensions.width;
     var chartTruncated = false;

@@ -39,8 +39,7 @@ angular.module('socrataCommon.directives').directive('columnChart', function($pa
       bottomMargin = $.relativeToPx(numberOfDefaultLabels + 1 + 'rem');
     }
 
-    var chartTop = element.position().top;
-    var chartHeight = dimensions.height - topMargin - bottomMargin - chartTop;
+    var chartHeight = dimensions.height - topMargin - bottomMargin;
     var verticalScale = d3.scale.linear().range([chartHeight, 0]);
     var verticalOffset = topMargin + chartHeight;
     var horizontalScale = null;
@@ -77,8 +76,8 @@ angular.module('socrataCommon.directives').directive('columnChart', function($pa
     $chart.css('height', chartHeight + topMargin + 1).
       css('width', chartWidth);
     $chartScroll.
+      css('padding-top', 0).
       css('padding-bottom', bottomMargin).
-      css('padding-top', chartTop).
       css('top', 'initial');
 
     var maxValue = _.isEmpty(chartData) ? 0 : chartData[0].total;
@@ -89,7 +88,7 @@ angular.module('socrataCommon.directives').directive('columnChart', function($pa
       var element;
 
       element = $('<div>').addClass('ticks')
-        .css('top', $chartScroll.position().top + topMargin + chartTop)
+        .css('top', $chartScroll.position().top + topMargin)
         .css('width', chartWidth);
       _.each(_.uniq([0].concat(verticalScale.ticks(numberOfTicks))), function(tick) {
         element.append($('<div>').css('top', chartHeight - verticalScale(tick)).text($.toHumaneNumber(tick, 1)));
@@ -326,6 +325,14 @@ angular.module('socrataCommon.directives').directive('columnChart', function($pa
       selection.exit().remove();
     };
 
+    var mouseoverHoverTriggerBars = function(selection) {
+      selection.style('top', topMargin + tooltipYOffset + 'px');
+      $chartScroll.
+        css('padding-top', tooltipYOffset).
+        css('top', -tooltipYOffset);
+      element.find('.ticks').css('top', $chartScroll.position().top + topMargin + tooltipYOffset);
+    };
+
     var updateHoverTriggerBars = function(selection) {
       // Hover trigger bars overlay the entire vertical space of the chart, and contain a tooltip.
 
@@ -350,19 +357,15 @@ angular.module('socrataCommon.directives').directive('columnChart', function($pa
         classed('active', function(d) { return horizontalBarPosition(d) < chartWidth - truncationMarkerWidth; }).
         on('mouseover', function() {
           // fix tooltip with magical padding
-          selection.style('top', topMargin + tooltipYOffset + 'px');
-          $chartScroll.
-            css('padding-top', chartTop + tooltipYOffset).
-            css('top', -tooltipYOffset);
-          element.find('.ticks').css('top', $chartScroll.position().top + topMargin + chartTop + tooltipYOffset);
+          mouseoverHoverTriggerBars(selection);
         }).
         on('mouseout', function() {
           // remove magical padding tooltip fix
           selection.style('top', topMargin + 'px');
           $chartScroll.
-            css('padding-top', chartTop).
+            css('padding-top', 0).
             css('top', 'initial');
-          element.find('.ticks').css('top', $chartScroll.position().top + topMargin + chartTop);
+          element.find('.ticks').css('top', $chartScroll.position().top + topMargin);
         });
 
       tooltips.call(updateTooltip);
@@ -382,6 +385,12 @@ angular.module('socrataCommon.directives').directive('columnChart', function($pa
       truncationMarker.css('display', 'block');
     } else {
       truncationMarker.css('display', 'none');
+    }
+    // if re-render was caused by clicking on bar,
+    // (i.e., when render is called while hovering over .column-chart-wrapper)
+    // then keep tooltip visible
+    if (element.find('.column-chart-wrapper:hover').length > 0) {
+      hoverTriggerSelection.call(mouseoverHoverTriggerBars);
     }
   };
 

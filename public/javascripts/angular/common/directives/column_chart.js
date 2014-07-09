@@ -9,8 +9,7 @@ angular.module('socrataCommon.directives').directive('columnChart', function($pa
     var tipHeight = 10;
     var tipWidth = 10;
     var tooltipWidth = 123;
-    var tooltipYOffset = 65; // invisible (max) height of tooltip above tallest bar; hack to make tooltip appear above chart/card-text
-                             // WARNING: when this value is too big, it can invisbly overlap other charts.
+    var tooltipYOffset = 9999; // invisible (max) height of tooltip above tallest bar; hack to make tooltip appear above chart/card-text
     var numberOfDefaultLabels = expanded ? chartData.length : 3;
     var undefinedPlaceholder = '(Undefined)';
 
@@ -76,10 +75,10 @@ angular.module('socrataCommon.directives').directive('columnChart', function($pa
 
     $chart.css('height', chartHeight + topMargin + 1).
       css('width', chartWidth);
-    $chartScroll
-      .css('padding-bottom', bottomMargin)
-      .css('padding-top', chartTop + tooltipYOffset)
-      .css('top', -tooltipYOffset);
+    $chartScroll.
+      css('padding-bottom', bottomMargin).
+      css('padding-top', chartTop).
+      css('top', 'initial');
 
     var maxValue = _.isEmpty(chartData) ? 0 : chartData[0].total;
     verticalScale.domain([maxValue, 0]);
@@ -89,7 +88,7 @@ angular.module('socrataCommon.directives').directive('columnChart', function($pa
       var element;
 
       element = $('<div>').addClass('ticks')
-        .css('top', $chartScroll.position().top + topMargin + chartTop + tooltipYOffset)
+        .css('top', $chartScroll.position().top + topMargin + chartTop)
         .css('width', chartWidth);
       _.each(_.uniq([0].concat(verticalScale.ticks(numberOfTicks))), function(tick) {
         element.append($('<div>').css('top', chartHeight - verticalScale(tick)).text($.toHumaneNumber(tick, 1)));
@@ -333,9 +332,25 @@ angular.module('socrataCommon.directives').directive('columnChart', function($pa
       selection.
         style('width', rangeBand + 'px').
         style('left', function(d) { return horizontalScale(d.name) - leftOffset + 'px'; }).
-        style('top', function() { return topMargin + tooltipYOffset + 'px'; }).
+        style('top', function() { return topMargin + 'px'; }).
         style('height', function() { return chartHeight + 'px'; }).
-        classed('active', function(d) { return horizontalBarPosition(d) < chartWidth - truncationMarkerWidth; });
+        classed('active', function(d) { return horizontalBarPosition(d) < chartWidth - truncationMarkerWidth; }).
+        on('mouseover', function() {
+          // fix tooltip with magical padding
+          selection.style('top', topMargin + tooltipYOffset + 'px');
+          $chartScroll.
+            css('padding-top', chartTop + tooltipYOffset).
+            css('top', -tooltipYOffset);
+          element.find('.ticks').css('top', $chartScroll.position().top + topMargin + chartTop + tooltipYOffset);
+        }).
+        on('mouseout', function() {
+          // remove magical padding tooltip fix
+          selection.style('top', topMargin + 'px');
+          $chartScroll.
+            css('padding-top', chartTop).
+            css('top', 'initial');
+          element.find('.ticks').css('top', $chartScroll.position().top + topMargin + chartTop);
+        });
 
       tooltips.call(updateTooltip);
 

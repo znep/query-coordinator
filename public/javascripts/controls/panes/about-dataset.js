@@ -47,7 +47,12 @@
                             });
 
                             $sect.find('.routingApproval .reasonBox').each(function()
-                            { blist.datasetControls.raReasonBox($(this)); });
+                            {
+                                if (cpObj._view.isDefault())
+                                    blist.datasetControls.raReasonBox($(this));
+                                else
+                                    ($(this)).closest('div[class="formSection"]').css('display', 'none');
+                            });
 
                             blist.datasetControls.datasetContact($sect);
                         }

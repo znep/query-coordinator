@@ -1,0 +1,40 @@
+{
+  "pageId": "simp-lbiz",  
+  "datasetId": "bxjt-crci",  
+  "name": "Simple Business Licenses",
+  "description": "A simple page to test georegions!",
+  "primaryAmountField": null, 
+  "primaryAggregation": "count", 
+  "filterSoql": null,
+  "isDefaultPage": true,
+  "pageSource": "admin",
+  "cards": [
+    {
+      "description": "License Status",
+      "fieldName": "license_status",
+      "cardSize": 1,
+      "cardCustomStyle": {},
+      "expandedCustomStyle": {},
+      "displayMode": "visualization",
+      "expanded": false
+    },
+    {
+      "description": "Ward",
+      "fieldName": ":Computed_pointfieldname",
+      "cardSize": 1,
+      "cardCustomStyle": {},
+      "expandedCustomStyle": {},
+      "displayMode": "visualization",
+      "expanded": false
+    },
+    {
+      "description": "All Data",
+      "fieldName": "*", 
+      "cardSize": 1,
+      "cardCustomStyle": {},
+      "expandedCustomStyle": {},
+      "displayMode": "visualization",
+      "expanded": false
+    }
+  ]
+}

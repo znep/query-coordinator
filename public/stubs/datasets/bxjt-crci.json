@@ -1,0 +1,31 @@
+{
+  "id": "bxjt-crci",
+  "rowDisplayUnit": "license",
+  "defaultAggregateColumn": ":count",
+  "domain": "dataspace-demo.test-socrata.com",
+  "ownerId": "jc63-heng",
+  "updatedAt": "2014-05-20T10:42:55.000-07:00",
+  "columns": [
+    {
+      "name": "license_status",
+      "title": "License Status",
+      "description":"Status of the Business License.",
+      "importance": 1,
+      "logicalDatatype": "category",
+      "physicalDatatype": "text"
+    },
+    {
+      "name": ":Computed_pointfieldname",
+      "title": "Ward",
+      "description":"The Ward containing the Business.",
+      "importance": 1,
+      "logicalDatatype": "location",
+      "physicalDatatype": "text"
+    }
+
+  ],
+  "pages": {
+    "publisher": [ "simp-lbiz" ],
+    "user": []
+  }
+}

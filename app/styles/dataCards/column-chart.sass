@@ -1,10 +1,12 @@
 @import dataCards/common/fonts
+@import dataCards/common/colors
 
 $chart-tick-color: #BBB
 $chart-description-color: darken($chart-tick-color, 30)
-$unfiltered-bar-color: #C2C2C2
-$filtered-bar-color: #676464
-$neutral-bar-color: #676464
+$unfiltered-bar-color: $unfiltered-region-bg-color-1
+$filtered-bar-color: $filtered-region-bg-color-1
+$neutral-bar-color: $unfiltered-region-bg-color-1
+$selected-bar-color: $filtered-region-bg-color-2
 $tooltip-border-color: #333
 $tooltip-name-color: #333
 $tooltip-value-color: #888
@@ -35,7 +37,7 @@ div.column-chart
 
       &.special
         .bar.filtered
-          background-color: green
+          background-color: $selected-bar-color
         .bar.unfiltered
           background-color: lighten($unfiltered-bar-color, 12%)
 

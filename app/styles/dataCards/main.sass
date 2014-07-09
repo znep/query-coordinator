@@ -240,27 +240,6 @@ $card-description-transition-duration: 0.5s
       text-overflow: ellipsis
       white-space: nowrap
       margin-right: $card-title-margin-right + $card-title-padding
-  .title-expanded
-    display: none
-    position: absolute
-    top: $card-padding
-    left: $card-padding
-    right: $card-padding + $card-title-padding + $card-title-margin-right
-    line-height: $card-title-line-height
-    font-weight: bold
-    overflow: visible
-    &:hover
-      z-index: 1
-    .wrap
-      max-width: 100%
-      white-space: nowrap
-      overflow: hidden
-      display: inline-block
-      opacity: 0
-      &:hover
-        background: $card-title-expanded-bg-color
-        opacity: 1
-        overflow: visible
 
 .onRight .card
   .title-expanded

@@ -3,8 +3,8 @@
 
 $head-color: $aqua-font-color
 $head-label-color: $white-font-color
-$row-1: white
-$row-2: #eee
+$row-1-bg-color: $white-font-color
+$row-2-bg-color: rgba(104, 176, 204, 0.1)
 $border-color: #ccc
 $font-size: $medium-font-size
 // If you change this you need to change it in the JS.
@@ -47,7 +47,7 @@ $row-height: 2rem
         display: block
         position: relative
         overflow: auto
-        background-color: $row-1
+        background-color: $row-1-bg-color
 
         .row-block
           position: absolute
@@ -62,7 +62,7 @@ $row-height: 2rem
         .table-row
           white-space: nowrap
           &:nth-child(even)
-            background-color: $row-2
+            background-color: $row-2-bg-color
 
         .table-resize-container
           width: 100%

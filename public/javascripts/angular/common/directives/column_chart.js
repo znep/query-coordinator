@@ -9,7 +9,8 @@ angular.module('socrataCommon.directives').directive('columnChart', function($pa
     var tipHeight = 10;
     var tipWidth = 10;
     var tooltipWidth = 123;
-    var tooltipYOffset = 999; // invisible (max) height of tooltip above tallest bar; hack to make tooltip appear above chart/card-text
+    var tooltipYOffset = 65; // invisible (max) height of tooltip above tallest bar; hack to make tooltip appear above chart/card-text
+                             // WARNING: when this value is too big, it can invisbly overlap other charts.
     var numberOfDefaultLabels = expanded ? chartData.length : 3;
     var undefinedPlaceholder = '(Undefined)';
 

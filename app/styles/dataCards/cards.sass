@@ -5,8 +5,12 @@ $metadata-side-padding: 30px
 $rounded-corners-border-radius: 5px
 // card sizes
 $card-margins: 5px
-$card-padding: 20px 15px
+$card-padding-top: 26px
+$card-padding-left: 15px
+$card-padding: $card-padding-top $card-padding-left
 $card-border-width: 2px
+$card-title-line-height: 1rem
+$card-description-padding-bottom: 1rem
 $card-size-1-height: 300px + $card-border-width * 2
 $card-size-2-height: 250px + $card-border-width * 2
 $card-size-3-height: 200px + $card-border-width * 2
@@ -143,7 +147,6 @@ body
             svg
               padding: 10px
 
-
   .cards-content
     background-color: $cards-bg-color
     color: $white-font-color
@@ -235,21 +238,6 @@ body
             left: 0
 
       .card
-        // COLOR PALETTE
-        $header-font-color: #68b0cc
-        $description-font-color: #666364
-
-        $unfiltered-region-bg-color-1: #d6d4d5
-        // grey
-        $filtered-region-bg-color-1: #68b0cc
-        // blue
-        $filtered-region-bg-color-2: #debb1f
-        // gold
-        $filtered-region-bg-color-3: #de851f
-        // orange or dark gold
-        $y-axis-color: #f0edee
-        // ===== ===== ===== ==== =====
-
         border-radius: $rounded-corners-border-radius
         margin: $card-margins
         padding: $card-padding
@@ -257,10 +245,33 @@ body
         background: $card-bg-color
 
         .title-one-line
-          line-height: 1em
+          line-height: $card-title-line-height
           font-weight: normal
           text-transform: uppercase
           color: $filtered-region-bg-color-1
+          display: block
+          padding-bottom: 5px
+
+        .title-expanded
+          @extend .title-one-line
+          position: absolute
+          top: $card-padding-top
+          left: $card-padding-left
+          overflow: visible
+          z-index: 1
+          &:hover
+            z-index: 1
+
+          .wrap
+            max-width: 100%
+            overflow: hidden
+            display: inline-block
+            opacity: 0
+            font-size: inherit
+            background-color: $card-bg-color
+            &:hover
+              opacity: 1
+              overflow: visible
 
         .description
 
@@ -276,11 +287,16 @@ body
 
         .card-visualization
           height: 100%
-
+        
+        /* EXPANDED CARD SPECIFIC STYLES */
         &.expanded
           min-height: 350px
           // min-height around 350px required
           // to prevent column chart from flipping over, etc.
+
+          .card-text
+            .description
+              padding-bottom: $card-description-padding-bottom
 
       div[ng-switch="cardType"]
         position: relative
@@ -322,6 +338,7 @@ body
   position: absolute
   top: 5px
   right: 23px
+  z-index: 3
   a
     cursor: pointer
     display: block

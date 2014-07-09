@@ -1,3 +1,5 @@
+@import dataCards/common/colors
+
 $metadata-top-padding: 10px
 $metadata-side-padding: 30px
 $rounded-corners-border-radius: 5px
@@ -8,23 +10,6 @@ $card-border-width: 2px
 $card-size-1-height: 300px + $card-border-width * 2
 $card-size-2-height: 250px + $card-border-width * 2
 $card-size-3-height: 200px + $card-border-width * 2
-// color palette
-$metadata-bg-color: #3f4752
-$panel-bg-color: #394047
-$panel-border-color: #4f5f73
-$cards-bg-color: #4d5969
-$card-bg-color: #eee
-$expand-button-color: #d6d4d5
-
-$btn-border-color: #576373
-$btn-bg-color: #4d5969
-
-$white-font-color: #f0edee
-$lt-grey-font-color: #8a8686
-$aqua-font-color: #68b0cc
-$link-font-color: #68b0cc
-$link-visited-font-color: #68b0cc
-$active-filter-color: #debb1f // gold
 // --------------------------------
 
 body
@@ -347,3 +332,9 @@ body
       color: #ccc
     &:before
       content: '⤢'
+
+.table-icon
+  .grid-lines
+    fill: $aqua-font-color
+  .grid-cells
+    fill: lighten($aqua-font-color, 10)

@@ -38,7 +38,8 @@ module.exports = function ( karma ) {
       'public/javascripts/angular/dataCards/controllers.js',
       'public/javascripts/angular/dataCards/models.js',
       'public/javascripts/angular/dataCards/**/*.js',
-      'public/javascripts/util/jquery_extensions.js'
+      'public/javascripts/util/jquery_extensions.js',
+      'public/javascripts/bower/jquery.dotdotdot.js'
     ],
     exclude: [
       'public/javascripts/angular/dataCards/app.js'

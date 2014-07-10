@@ -1,12 +1,12 @@
 describe("multilineEllipsis directive", function() {
-  var scope, lotsOfText, testHelpers;
-  lotsOfText = _.times(100, function() { return "This is a test of the emergency broadcast system. This is only a test. "; });
+  var $rootScope, testHelpers;
+  var lotsOfText = _.times(100, function() { return "This is a test of the emergency broadcast system. This is only a test. "; }).join('');
 
   beforeEach(module('test'));
-  beforeEach(module('dataCards.directives'));
+  beforeEach(module('dataCards'));
 
   beforeEach(inject(['$rootScope', 'testHelpers', function(_$rootScope, _testHelpers) {
-    scope = _$rootScope.$new();
+    $rootScope = _$rootScope;
     testHelpers = _testHelpers;
   }]));
 
@@ -15,26 +15,75 @@ describe("multilineEllipsis directive", function() {
   });
 
   describe('with a max-lines, tolerance and a lot of text', function() {
-    var html, el, content;
+    describe('with show-more-mode as default', function() {
 
-    beforeEach(function() {
-      html = '<div ></div>';
-      el = testHelpers.TestDom.compileAndAppend(html, scope);
-      content = $('<div class="page-description" expanded="false" multiline-ellipsis max-lines="2" tolerance="2" text="{0}">'.format(lotsOfText));
-      el.append(content);
-      content.text(lotsOfText);
+      describe('with not enough room', function() {
+        var el;
+        var html = '<div expanded="false" multiline-ellipsis max-lines="2" tolerance="2" text="{{lotsOfText}}">';
+        // Can't inject rootScope or testHelpers in describe. Workaround.
+        function ensure() {
+          if(el) return;
+          var scope = $rootScope.$new();
+          scope.lotsOfText = lotsOfText;
+          el = testHelpers.TestDom.compileAndAppend(html, scope);
+        }
+
+        it('should show an ellipsis when there are more than two lines of text and the height is 24 pixels', function() {
+          ensure();
+          expect(el.text()).to.contain('...');
+        });
+        it('should not have title text', function() {
+          ensure();
+          expect(el.find('.content').attr('title')).to.be.empty;
+        });
+      });
+
+      describe('with enough room', function() {
+        var el;
+        var html = '<div expanded="false" multiline-ellipsis max-lines="2000" tolerance="2" text="{{lotsOfText}}">';
+        // Can't inject rootScope or testHelpers in describe. Workaround.
+        function ensure() {
+          if(el) return;
+          var scope = $rootScope.$new();
+          scope.lotsOfText = lotsOfText;
+          el = testHelpers.TestDom.compileAndAppend(html, scope);
+        }
+
+        it('should show the full amount of text and no ellipsis', function() {
+          ensure();
+          expect(el.text()).to.equal(lotsOfText);
+        });
+
+        it('should not have title text', function() {
+          ensure();
+          expect(el.find('.content').attr('title')).to.be.empty;
+        });
+      });
     });
 
-    it('should show an ellipsis when there are more than two lines of text and the height is 24 pixels', function() {
-      content.dotdotdot({height: 24, tolerance: 2});
-      expect(content.text().indexOf('...') >= 0).to.equal(true);
-    });
+    describe('with show-more-mode as title-attr', function() {
+      describe('with not enough room', function() {
+        it('should have title text', function() {
+          var html = '<div expanded="false" multiline-ellipsis max-lines="2" tolerance="2" text="{{lotsOfText}}" show-more-mode="title-attr">';
+          var scope = $rootScope.$new();
+          scope.lotsOfText = lotsOfText;
+          var el = testHelpers.TestDom.compileAndAppend(html, scope);
+          expect(el.text()).to.contain('...');
+          expect(el.find('.content').attr('title')).to.equal(lotsOfText);
+        });
+      });
 
-    it('should show the full amount of text and no ellipsis when the height is infinite', function() {
-      content.dotdotdot({height: Infinity, tolerance: 2});
-      expect(content.text().indexOf('...') >= 0).to.equal(false);
+      describe('with enough room', function() {
+        it('should not have title text', function() {
+          var html = '<div expanded="false" multiline-ellipsis max-lines="2000" tolerance="2" text="{{lotsOfText}}" show-more-mode="title-attr">';
+          var scope = $rootScope.$new();
+          scope.lotsOfText = lotsOfText;
+          var el = testHelpers.TestDom.compileAndAppend(html, scope);
+          expect(el.text()).to.equal(lotsOfText);
+          expect(el.find('.content').attr('title')).to.be.empty;
+        });
+      });
     });
-
   });
 
 });

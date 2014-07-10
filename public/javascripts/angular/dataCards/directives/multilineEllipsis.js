@@ -1,7 +1,14 @@
 // A directive to encapsulate the dotdotdot multiline ellipsis functionality
+// Attributes:
+//   max-lines: int. Max number of lines.
+//   tolerance: Tolerance in height computation. Pixels. Used to account for rendering differences.
+//   show-more-mode: One of ["expand-link", "alt-text"]. Controls how expanding text is handled. Defaults to expand-link.
+//     expand-link: A show-more link (class: show-more). You need to style this yourself to have content. The default.
+//     title-attr: Just use browser title attribute.
+//   expanded: Whether or not the text is expanded. Two-way binding.
 //
 // Example:
-// <div multiline-ellipsis max-lines="2" tolerance="2">large multi-line content</div>
+// <div multiline-ellipsis max-lines="2" tolerance="2" show-more-mode="expand-link" text="{{large_multi_line_content}}"></div>
 angular.module('dataCards.directives').directive('multilineEllipsis', function(AngularRxExtensions) {
   return {
     scope: {
@@ -10,11 +17,13 @@ angular.module('dataCards.directives').directive('multilineEllipsis', function(A
       'text': '@',
       'expanded': '='
     },
-    template: '<div class="content"></div>' +
-      '<div class="show-more" ng-class="{less: expanded, clamped: textClamped}" ng-click="expanded = !expanded"></div>',
+    template: '<div class="content" title="{{contentTitleAttr}}"></div>' +
+      '<div ng-if="showMoreMode == \'expand-link\'" class="show-more" ng-class="{less: expanded, clamped: textClamped}" ng-click="$parent.expanded = !expanded"></div>',
     restrict : 'A',
     link: function($scope, element, attrs) {
       AngularRxExtensions.install($scope);
+
+      $scope.showMoreMode = attrs['showMoreMode'] || 'expand-link';
 
       var content = element.find('.content');
 
@@ -54,6 +63,7 @@ angular.module('dataCards.directives').directive('multilineEllipsis', function(A
           $scope.safeApply(function() {
             $scope.textClamped = isClamped;
             $scope.animationsOn = true;
+            $scope.contentTitleAttr = ($scope.showMoreMode === 'title-attr' && isClamped) ? text : null;
           });
         }
       );

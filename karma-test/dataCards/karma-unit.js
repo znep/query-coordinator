@@ -52,7 +52,7 @@ module.exports = function ( karma ) {
     /**
      * How to report, by default.
      */
-    reporters: ['mocha', 'dots', 'coverage'],
+    reporters: ['dots', 'coverage'],
 
     coverageReporter: {
       type : 'html',

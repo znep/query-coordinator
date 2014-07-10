@@ -1,10 +1,6 @@
 angular.module('socrataCommon.directives').directive('columnChart', function($parse, AngularRxExtensions) {
 
-  var renderColumnChart = function(element, chartData, showFiltered, dimensions, expanded) {  
-
-    if (!dimensions.width || !dimensions.height) {
-      throw new Error("[columnChart] column-chart is missing a .card-visualization (grand)parent.");
-    }
+  var renderColumnChart = function(element, chartData, showFiltered, dimensions, expanded) {
 
     var numberOfBars = chartData.length;
 
@@ -419,6 +415,10 @@ angular.module('socrataCommon.directives').directive('columnChart', function($pa
     },
     link: function(scope, element, attrs) {
       AngularRxExtensions.install(scope);
+
+      if (element.closest('.card-visualization').length == 0) {
+        throw new Error("[columnChart] column-chart is missing a .card-visualization (grand)parent.");
+      }
 
       $(element.parent().delegate('.truncation-marker', 'click', function(event) {
         scope.$apply(function() {

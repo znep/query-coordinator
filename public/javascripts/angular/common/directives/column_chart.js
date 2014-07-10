@@ -4,12 +4,13 @@ angular.module('socrataCommon.directives').directive('columnChart', function($pa
     var numberOfBars = chartData.length;
 
     var barPadding = 0.25;
-    var topMargin = 10; // TODO calculate this dynamically
+    var topMargin = 0; // Set to zero so .card-text could control padding b/t text & visualization
     var bottomMargin = 132;
     var tipHeight = 10;
     var tipWidth = 10;
     var tooltipWidth = 123;
     var tooltipYOffset = 9999; // invisible (max) height of tooltip above tallest bar; hack to make tooltip appear above chart/card-text
+    var horizontalScrollbarHeight = 15; // used to keep horizontal scrollbar within .card-visualization upon expand
     var numberOfDefaultLabels = expanded ? chartData.length : 3;
     var undefinedPlaceholder = '(Undefined)';
 
@@ -37,9 +38,11 @@ angular.module('socrataCommon.directives').directive('columnChart', function($pa
       bottomMargin = (maxLength + $.relativeToPx('1.0rem')) / Math.sqrt(2);
     } else {
       bottomMargin = $.relativeToPx(numberOfDefaultLabels + 1 + 'rem');
+      // do not compensate for chart scrollbar if not expanded (scrollbar would not exist)
+      horizontalScrollbarHeight = 0;
     }
 
-    var chartHeight = dimensions.height - topMargin - bottomMargin;
+    var chartHeight = dimensions.height - topMargin - bottomMargin - horizontalScrollbarHeight;
     var verticalScale = d3.scale.linear().range([chartHeight, 0]);
     var verticalOffset = topMargin + chartHeight;
     var horizontalScale = null;

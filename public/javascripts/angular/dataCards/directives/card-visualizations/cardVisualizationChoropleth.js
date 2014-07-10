@@ -110,7 +110,7 @@ angular.module('dataCards.directives').directive('cardVisualizationChoropleth', 
 
             // Fail early if the data's filter state has not yet caught up with the UI's
             // due to latency on the data requests.
-            if (!_.isEmpty(whereClause) && activeFilterNames[0] !== $scope.highlightedRegion) {
+            if (!_.isEmpty(whereClause) && activeFilterNames.length > 0 && (activeFilterNames[0] !== $scope.highlightedRegion)) {
               return null;
             }
 
@@ -148,7 +148,9 @@ angular.module('dataCards.directives').directive('cardVisualizationChoropleth', 
         // the region coloring doesn't catch up until the full
         // 'request' -> 'response' -> 'render leaflet' loop.
         var featureId = feature.properties[$scope.model.fieldName];
+
         $scope.highlightedRegion = featureId;
+
         var hasFiltersOnCard = _.any($scope.model.getCurrentValue('activeFilters'), function(filter) {
           return filter.operand === featureId;
         });

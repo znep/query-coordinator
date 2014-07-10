@@ -1,6 +1,11 @@
 angular.module('socrataCommon.directives').directive('columnChart', function($parse, AngularRxExtensions) {
 
-  var renderColumnChart = function(element, chartData, showFiltered, dimensions, expanded) {
+  var renderColumnChart = function(element, chartData, showFiltered, dimensions, expanded) {  
+
+    if (!dimensions.width || !dimensions.height) {
+      throw new Error("[columnChart] column-chart is missing a .card-visualization (grand)parent.");
+    }
+
     var numberOfBars = chartData.length;
 
     var barPadding = 0.25;

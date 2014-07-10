@@ -71,7 +71,7 @@ describe('column_chart', function() {
     if (!data) data = testData;
 
     var html =
-      '<div class="card" style="width: ' + width + 'px; height: 480px;">' +
+      '<div class="card-visualization" style="width: ' + width + 'px; height: 480px;">' +
         '<div column-chart class="column-chart"' +
           ' chart-data="testData" show-filtered="showFiltered" expanded="expanded">' +
         '</div>' +

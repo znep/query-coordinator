@@ -373,7 +373,11 @@
         replace: false,
         require: 'leaflet',
         link: function (scope, element, attrs, controller) {
-          var isArray = leafletHelpers.isArray, isDefined = leafletHelpers.isDefined, isFunction = leafletHelpers.isFunction, leafletScope = controller.getLeafletScope(), legend = leafletScope.legend;
+          var isArray = leafletHelpers.isArray;
+          var isDefined = leafletHelpers.isDefined;
+          var isFunction = leafletHelpers.isFunction;
+          var leafletScope = controller.getLeafletScope();
+          var legend = leafletScope.legend;
           var leafletLegend;
           controller.getMap().then(function (map) {
             // SOCRATA: watch legend
@@ -459,23 +463,32 @@
         replace: false,
         require: 'leaflet',
         link: function (scope, element, attrs, controller) {
-          var safeApply = leafletHelpers.safeApply, isDefined = leafletHelpers.isDefined, leafletScope = controller.getLeafletScope(), leafletGeoJSON = {};
+          var safeApply = leafletHelpers.safeApply;
+          var isDefined = leafletHelpers.isDefined;
+          var leafletScope = controller.getLeafletScope();
+          var leafletGeoJSON = {};
+          var leafletGeoJSONHighlights = {};
+          var AGGREGATE_VALUE_HIGHLIGHTED_NAME = '__SOCRATA_FEATURE_HIGHLIGHTED__';
+          var highlightedGeoJSONData;
           controller.getMap().then(function (map) {
             leafletScope.$watch('geojson', function (geojson) {
               if (isDefined(leafletGeoJSON) && map.hasLayer(leafletGeoJSON)) {
                 map.removeLayer(leafletGeoJSON);
               }
+              if (isDefined(leafletGeoJSON) && map.hasLayer(leafletGeoJSONHighlights)) {
+                map.removeLayer(leafletGeoJSONHighlights);
+              }
               if (!(isDefined(geojson) && isDefined(geojson.data))) {
                 return;
               }
-              var resetStyleOnMouseout = geojson.resetStyleOnMouseout, resetStyleOnGeojsonClick = geojson.resetStyleOnGeojsonClick, zoomOnDoubleClick = geojson.zoomOnDoubleClick, onEachFeature = geojson.onEachFeature, lastLayerClicked;
+              var resetStyleOnMouseout = geojson.resetStyleOnMouseout;
+              var zoomOnDoubleClick = geojson.zoomOnDoubleClick;
+              var onEachFeature = geojson.onEachFeature;
               if (!onEachFeature) {
                 onEachFeature = function (feature, layer) {
                   if (leafletHelpers.LabelPlugin.isLoaded() && isDefined(geojson.label)) {
                     layer.bindLabel(feature.properties.description);
                   }
-                  // initialize highlighted flag. Applies to toggle highlighting.
-                  layer.highlighted = false;
                   layer.on({
                     mouseover: function (e) {
                       safeApply(leafletScope, function () {
@@ -495,11 +508,7 @@
                     click: function (e) {
                       safeApply(leafletScope, function () {
                         geojson.selected = feature;
-                        if (resetStyleOnGeojsonClick) {
-                          $rootScope.$broadcast('leafletDirectiveMap.geojsonClick', geojson.selected, e, leafletGeoJSON);
-                        } else {
-                          $rootScope.$broadcast('leafletDirectiveMap.geojsonClick', geojson.selected, e);
-                        }
+                        $rootScope.$broadcast('leafletDirectiveMap.geojsonClick', geojson.selected, e);
                       });
                     },
                     dblclick: function(e) {
@@ -513,7 +522,7 @@
                 };
               }
               geojson.options = {
-                style: geojson.style,
+                style: function(feature) { return geojson.style(feature, false); },
                 filter: geojson.filter,
                 onEachFeature: onEachFeature,
                 pointToLayer: geojson.pointToLayer
@@ -521,6 +530,30 @@
               leafletGeoJSON = L.geoJson(geojson.data, geojson.options);
               leafletData.setGeoJSON(leafletGeoJSON);
               leafletGeoJSON.addTo(map);
+
+              geojson.options = {
+                style: function(feature) { return geojson.style(feature, true); },
+                filter: geojson.filter,
+                onEachFeature: onEachFeature,
+                pointToLayer: geojson.pointToLayer
+              };
+              highlightedGeoJSONData = {
+                crs: geojson.data.crs,
+                features: geojson.data.features.filter(function(feature) {
+                  if (feature.hasOwnProperty('properties') &&
+                      feature.properties.hasOwnProperty(AGGREGATE_VALUE_HIGHLIGHTED_NAME)) {
+                    return feature.properties[AGGREGATE_VALUE_HIGHLIGHTED_NAME];
+                  } else {
+                    return false;
+                  }
+                }),
+                type: geojson.data.type
+              };
+
+              leafletGeoJSONHighlights = L.geoJson(highlightedGeoJSONData, geojson.options);
+              leafletData.setGeoJSON(leafletGeoJSONHighlights);
+              leafletGeoJSONHighlights.addTo(map);
+
             });
           });
         }
@@ -548,7 +581,13 @@
           };
         },
         link: function (scope, element, attrs, controller) {
-          var isDefined = leafletHelpers.isDefined, leafletLayers = {}, leafletScope = controller.getLeafletScope(), layers = leafletScope.layers, createLayer = leafletLayerHelpers.createLayer, updateLayersControl = leafletControlHelpers.updateLayersControl, isLayersControlVisible = false;
+          var isDefined = leafletHelpers.isDefined;
+          var leafletLayers = {};
+          var leafletScope = controller.getLeafletScope();
+          var layers = leafletScope.layers;
+          var createLayer = leafletLayerHelpers.createLayer;
+          var updateLayersControl = leafletControlHelpers.updateLayersControl;
+          var isLayersControlVisible = false;
           controller.getMap().then(function (map) {
             // Do we have a baselayers property?
             if (!isDefined(layers) || !isDefined(layers.baselayers) || Object.keys(layers.baselayers).length === 0) {
@@ -694,7 +733,10 @@
           'center'
         ],
         link: function (scope, element, attrs, controller) {
-          var isDefined = leafletHelpers.isDefined, createLeafletBounds = leafletBoundsHelpers.createLeafletBounds, leafletScope = controller[0].getLeafletScope(), mapController = controller[0];
+          var isDefined = leafletHelpers.isDefined;
+          var createLeafletBounds = leafletBoundsHelpers.createLeafletBounds;
+          var leafletScope = controller[0].getLeafletScope();
+          var mapController = controller[0];
           var emptyBounds = function (bounds) {
             if (bounds._southWest.lat === 0 && bounds._southWest.lng === 0 && bounds._northEast.lat === 0 && bounds._northEast.lng === 0) {
               return true;
@@ -760,7 +802,18 @@
           '?layers'
         ],
         link: function (scope, element, attrs, controller) {
-          var mapController = controller[0], Helpers = leafletHelpers, isDefined = leafletHelpers.isDefined, isString = leafletHelpers.isString, leafletScope = mapController.getLeafletScope(), markers = leafletScope.markers, deleteMarker = leafletMarkersHelpers.deleteMarker, addMarkerWatcher = leafletMarkersHelpers.addMarkerWatcher, listenMarkerEvents = leafletMarkersHelpers.listenMarkerEvents, addMarkerToGroup = leafletMarkersHelpers.addMarkerToGroup, bindMarkerEvents = leafletEvents.bindMarkerEvents, createMarker = leafletMarkersHelpers.createMarker;
+          var mapController = controller[0];
+          var Helpers = leafletHelpers;
+          var isDefined = leafletHelpers.isDefined;
+          var isString = leafletHelpers.isString;
+          var leafletScope = mapController.getLeafletScope();
+          var markers = leafletScope.markers;
+          var deleteMarker = leafletMarkersHelpers.deleteMarker;
+          var addMarkerWatcher = leafletMarkersHelpers.addMarkerWatcher;
+          var listenMarkerEvents = leafletMarkersHelpers.listenMarkerEvents;
+          var addMarkerToGroup = leafletMarkersHelpers.addMarkerToGroup;
+          var bindMarkerEvents = leafletEvents.bindMarkerEvents;
+          var createMarker = leafletMarkersHelpers.createMarker;
           mapController.getMap().then(function (map) {
             var leafletMarkers = {}, getLayers;
             // If the layers attribute is used, we must wait until the layers are created
@@ -878,7 +931,12 @@
         replace: false,
         require: 'leaflet',
         link: function (scope, element, attrs, controller) {
-          var isDefined = leafletHelpers.isDefined, leafletScope = controller.getLeafletScope(), paths = leafletScope.paths, createPath = leafletPathsHelpers.createPath, bindPathEvents = leafletEvents.bindPathEvents, setPathOptions = leafletPathsHelpers.setPathOptions;
+          var isDefined = leafletHelpers.isDefined;
+          var leafletScope = controller.getLeafletScope();
+          var paths = leafletScope.paths;
+          var createPath = leafletPathsHelpers.createPath;
+          var bindPathEvents = leafletEvents.bindPathEvents;
+          var setPathOptions = leafletPathsHelpers.setPathOptions;
           controller.getMap().then(function (map) {
             var defaults = leafletMapDefaults.getDefaults(attrs.id);
             if (!isDefined(paths)) {
@@ -949,7 +1007,9 @@
           if (!controller) {
             return;
           }
-          var isDefined = leafletHelpers.isDefined, leafletScope = controller.getLeafletScope(), controls = leafletScope.controls;
+          var isDefined = leafletHelpers.isDefined;
+          var leafletScope = controller.getLeafletScope();
+          var controls = leafletScope.controls;
           controller.getMap().then(function (map) {
             if (isDefined(L.Control.Draw) && isDefined(controls.draw)) {
               var drawnItems = new L.FeatureGroup();
@@ -981,7 +1041,11 @@
         replace: false,
         require: 'leaflet',
         link: function (scope, element, attrs, controller) {
-          var isObject = leafletHelpers.isObject, leafletScope = controller.getLeafletScope(), eventBroadcast = leafletScope.eventBroadcast, availableMapEvents = leafletEvents.getAvailableMapEvents(), genDispatchMapEvent = leafletEvents.genDispatchMapEvent;
+          var isObject = leafletHelpers.isObject;
+          var leafletScope = controller.getLeafletScope();
+          var eventBroadcast = leafletScope.eventBroadcast;
+          var availableMapEvents = leafletEvents.getAvailableMapEvents();
+          var genDispatchMapEvent = leafletEvents.genDispatchMapEvent;
           controller.getMap().then(function (map) {
             var mapEvents = [];
             var i;
@@ -1086,7 +1150,8 @@
         replace: false,
         require: 'leaflet',
         link: function (scope, element, attrs, controller) {
-          var leafletScope = controller.getLeafletScope(), isValidBounds = leafletBoundsHelpers.isValidBounds;
+          var leafletScope = controller.getLeafletScope();
+          var isValidBounds = leafletBoundsHelpers.isValidBounds;
           controller.getMap().then(function (map) {
             leafletScope.$watch('maxbounds', function (maxbounds) {
               if (!isValidBounds(maxbounds)) {
@@ -1117,7 +1182,9 @@
     '$q',
     'leafletHelpers',
     function ($log, $q, leafletHelpers) {
-      var getDefer = leafletHelpers.getDefer, getUnresolvedDefer = leafletHelpers.getUnresolvedDefer, setResolvedDefer = leafletHelpers.setResolvedDefer;
+      var getDefer = leafletHelpers.getDefer;
+      var getUnresolvedDefer = leafletHelpers.getUnresolvedDefer;
+      var setResolvedDefer = leafletHelpers.setResolvedDefer;
       var maps = {};
       var tiles = {};
       var layers = {};
@@ -1221,7 +1288,9 @@
           }
         };
       }
-      var isDefined = leafletHelpers.isDefined, obtainEffectiveMapId = leafletHelpers.obtainEffectiveMapId, defaults = {};
+      var isDefined = leafletHelpers.isDefined;
+      var obtainEffectiveMapId = leafletHelpers.obtainEffectiveMapId;
+      var defaults = {};
       // Get the _defaults dictionary, and override the properties defined by the user
       return {
         getDefaults: function (scopeId) {
@@ -1317,7 +1386,10 @@
     '$log',
     'leafletHelpers',
     function ($rootScope, $q, $log, leafletHelpers) {
-      var safeApply = leafletHelpers.safeApply, isDefined = leafletHelpers.isDefined, isObject = leafletHelpers.isObject, Helpers = leafletHelpers;
+      var safeApply = leafletHelpers.safeApply;
+      var isDefined = leafletHelpers.isDefined;
+      var isObject = leafletHelpers.isObject;
+      var Helpers = leafletHelpers;
       var _getAvailableLabelEvents = function () {
         return [
           'click',
@@ -1717,7 +1789,10 @@
     '$log',
     'leafletHelpers',
     function ($rootScope, $log, leafletHelpers) {
-      var Helpers = leafletHelpers, isString = leafletHelpers.isString, isObject = leafletHelpers.isObject, isDefined = leafletHelpers.isDefined;
+      var Helpers = leafletHelpers;
+      var isString = leafletHelpers.isString;
+      var isObject = leafletHelpers.isObject;
+      var isDefined = leafletHelpers.isDefined;
       var layerTypes = {
           xyz: {
             mustHaveUrl: true,
@@ -1935,7 +2010,8 @@
     'leafletHelpers',
     'leafletMapDefaults',
     function ($rootScope, $log, leafletHelpers, leafletMapDefaults) {
-      var isObject = leafletHelpers.isObject, isDefined = leafletHelpers.isDefined;
+      var isObject = leafletHelpers.isObject;
+      var isDefined = leafletHelpers.isDefined;
       var _layersControl;
       var _controlLayersMustBeVisible = function (baselayers, overlays) {
         var numberOfLayers = 0;
@@ -2053,7 +2129,10 @@
     '$log',
     'leafletHelpers',
     function ($rootScope, $log, leafletHelpers) {
-      var isDefined = leafletHelpers.isDefined, isArray = leafletHelpers.isArray, isNumber = leafletHelpers.isNumber, isValidPoint = leafletHelpers.isValidPoint;
+      var isDefined = leafletHelpers.isDefined;
+      var isArray = leafletHelpers.isArray;
+      var isNumber = leafletHelpers.isNumber;
+      var isValidPoint = leafletHelpers.isValidPoint;
       function _convertToLeafletLatLngs(latlngs) {
         return latlngs.filter(function (latlng) {
           return isValidPoint(latlng);
@@ -2324,7 +2403,8 @@
     '$log',
     'leafletHelpers',
     function ($log, leafletHelpers) {
-      var isArray = leafletHelpers.isArray, isNumber = leafletHelpers.isNumber;
+      var isArray = leafletHelpers.isArray;
+      var isNumber = leafletHelpers.isNumber;
       function _isValidBounds(bounds) {
         return angular.isDefined(bounds) && angular.isDefined(bounds.southWest) && angular.isDefined(bounds.northEast) && angular.isNumber(bounds.southWest.lat) && angular.isNumber(bounds.southWest.lng) && angular.isNumber(bounds.northEast.lat) && angular.isNumber(bounds.northEast.lng);
       }
@@ -2365,7 +2445,15 @@
     'leafletHelpers',
     '$log',
     function ($rootScope, leafletHelpers, $log) {
-      var isDefined = leafletHelpers.isDefined, MarkerClusterPlugin = leafletHelpers.MarkerClusterPlugin, AwesomeMarkersPlugin = leafletHelpers.AwesomeMarkersPlugin, safeApply = leafletHelpers.safeApply, Helpers = leafletHelpers, isString = leafletHelpers.isString, isNumber = leafletHelpers.isNumber, isObject = leafletHelpers.isObject, groups = {};
+      var isDefined = leafletHelpers.isDefined;
+      var MarkerClusterPlugin = leafletHelpers.MarkerClusterPlugin;
+      var AwesomeMarkersPlugin = leafletHelpers.AwesomeMarkersPlugin;
+      var safeApply = leafletHelpers.safeApply;
+      var Helpers = leafletHelpers;
+      var isString = leafletHelpers.isString;
+      var isNumber = leafletHelpers.isNumber;
+      var isObject = leafletHelpers.isObject;
+      var groups = {};
       var createLeafletIcon = function (iconData) {
         if (isDefined(iconData) && isDefined(iconData.type) && iconData.type === 'awesomeMarker') {
           if (!AwesomeMarkersPlugin.isLoaded()) {

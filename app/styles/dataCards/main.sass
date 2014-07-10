@@ -18,12 +18,14 @@ body
 
 ::-webkit-scrollbar-track
   -webkit-border-radius: 5px
-  border-radius: 5px
+  border-radius: 0
+  width: 5px
   background: rgba(0,0,0,0.1)
 
 ::-webkit-scrollbar-thumb
   -webkit-border-radius: 5px
   border-radius: 5px
+  width: 5px
   background: rgba(0,0,0,0.2)
 
 ::-webkit-scrollbar-thumb:hover
@@ -32,8 +34,9 @@ body
 ::-webkit-scrollbar-thumb:window-inactive
   background: rgba(0,0,0,0.05)
 
-p
-  margin: 0.5em 0 0.5em 0
+::-webkit-scrollbar-corner
+  background: rgba(0,0,0,0.1)
+
 h1
   margin: 0
   font-size: 1.5em
@@ -72,114 +75,6 @@ $pageNameMaxLineCount: 2
   .hideableMetadata
     margin: 15px
 
-  div.pages
-    display: inline-block
-    margin-top: 2rem
-
-    div.publisher
-      font-weight: bold
-      margin-bottom: 1rem
-
-    ul.pages
-      display: inline-block
-      padding-left: 0
-      margin: 0
-
-      li
-        list-style: none
-        display: inline-block
-        div.page
-          display: inline-block
-          width: 13rem
-          & > div
-            float: left
-            & + div
-              float: none
-              display: block
-          a.page-link
-            display: inline-block
-            width: 80px
-            height: 80px
-            background: #ccc
-            @include prefixer(border-radius, 4px)
-            margin-right: 10px
-
-    ul.pages.user
-      li
-        div.page
-          a.page-link
-            background: #999
-
-  .page-description
-    margin-top: 1rem
-    color: #ccc
-
-  .page-description .show-more
-    height: 1rem
-    display: none
-    border-top: 2px solid #ccc
-    text-align: center
-
-    &:after
-      content: 'Show more'
-    &.less:after
-      content: 'Show less'
-    &.clamped,&.less
-      display: block
-
-  .quickFilterBar
-    color: white
-    // Reserves space even if we're stuck.
-    height: $quickFilterBarHeight
-    margin: 0
-    .content
-      @include prefixer(box-sizing, border-box)
-      height: $quickFilterBarHeight
-      padding: 13px 0 0 15px
-      background: #444
-    &.stuck .content
-      z-index: 1
-      position: fixed
-      top: 0
-      right: 0
-      left: 0
-
-  .card
-    @include prefixer(box-sizing, border-box)
-    border: $cardBorder solid #bbb
-
-  .collapsedLayout
-    .cardSize1
-      height: 300px + $cardBorder * 2
-    .cardSize2
-      height: 250px + $cardBorder * 2
-    .cardSize3
-      height: 200px + $cardBorder * 2
-
-  .expandedLayout
-    .expandedCards
-      // top is set in JS
-      position: fixed
-      top: 0
-      left: 35%
-      right: 0
-      bottom: 2px
-      .card
-        //NOTE: This currently only supports one expanded card. This is acceptable for the MVP.
-        position: absolute
-        top: 0
-        right: 0
-        bottom: 0
-        left: 0
-    .collapsedCards
-      width: 35%
-      .cardSize1
-        height: 250px + $cardBorder * 2
-      .cardSize2
-        height: 200px + $cardBorder * 2
-      .cardSize3
-        height: 150px + $cardBorder * 2
-
 $card-bg-color: #eee
 $card-padding: 0
 // Card should not assume padding or margin.
@@ -192,25 +87,7 @@ $card-description-max-line-count: 2
 $card-description-line-height: 1.3em
 $card-description-transition-duration: 0.5s
 .card
-  color: $fgColor
-  background: $card-bg-color
-  padding: $card-padding
-  position: relative
-  .expandButton
-    font-family: "SSAir"
-    position: absolute
-    top: 5px
-    right: 23px
-    a
-      cursor: pointer
-      display: block
-      width: 0
-      position: relative
-      color: #888
-      &:hover
-        color: #ccc
-      &:before
-        content: '⤢'
+
   .description
     position: relative
     line-height: $card-description-line-height
@@ -299,27 +176,6 @@ $card-description-transition-duration: 0.5s
       text-overflow: ellipsis
       white-space: nowrap
       margin-right: $card-title-margin-right + $card-title-padding
-  .title-expanded
-    display: none
-    position: absolute
-    top: $card-padding
-    left: $card-padding
-    right: $card-padding + $card-title-padding + $card-title-margin-right
-    line-height: $card-title-line-height
-    font-weight: bold
-    overflow: visible
-    &:hover
-      z-index: 1
-    .wrap
-      max-width: 100%
-      white-space: nowrap
-      overflow: hidden
-      display: inline-block
-      opacity: 0
-      &:hover
-        background: $card-title-expanded-bg-color
-        opacity: 1
-        overflow: visible
 
 .onRight .card
   .title-expanded

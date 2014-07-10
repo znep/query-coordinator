@@ -1,14 +1,12 @@
 describe('table', function() {
+  var testHelpers, q, scope, data;
 
   beforeEach(module('dataCards'));
   beforeEach(module('dataCards.directives'));
   beforeEach(inject(function($injector) {
-    th = $injector.get('testHelpers');
+    testHelpers = $injector.get('testHelpers');
     q = $injector.get('$q');
-    compile = $injector.get('$compile');
-    rootScope = $injector.get('$rootScope');
-    scope = rootScope.$new();
-    timeout = $injector.get('$timeout');
+    scope = $injector.get('$rootScope').$new();
     data = [{"beat":"1014","block":"016XX S CENTRAL PARK AVE","case_number":"HW584825","community_area":"29","date":"2013-12-26T20:01:00.000","description":"FIRST DEGREE MURDER","district":"010","fbi_code":"01A","id":"21205","iucr":"0110","latitude":"41.85757140779365","location_description":"APARTMENT","longitude":"-87.71531758124088","primary_type":"HOMICIDE","updated_on":"2013-12-27T06:12:29.000","ward":"24","x_coordinate":"1152609","y_coordinate":"1891295","year":"2013"}
 ,{"beat":"1131","block":"007XX S 764","case_number":"HW584861","community_area":"26","date":"2013-12-26T20:14:00.000","description":"FIRST DEGREE MURDER","district":"011","fbi_code":"01A","id":"21206","iucr":"0110","latitude":"41.87055597715509","location_description":"STREET","longitude":"-87.73793776878065","primary_type":"HOMICIDE","updated_on":"2014-02-19T10:02:46.000","ward":"24","x_coordinate":"1146414","y_coordinate":"1895983","year":"2013"}
 ,{"beat":"1512","block":"059XX W MIDWAY PARK","case_number":"HW585094","community_area":"25","date":"2013-12-27T03:40:00.000","description":"FIRST DEGREE MURDER","district":"015","fbi_code":"01A","id":"21207","iucr":"0110","latitude":"41.88885087975557","location_description":"PORCH","longitude":"-87.77431761552849","primary_type":"HOMICIDE","updated_on":"2014-02-19T10:04:47.000","ward":"29","x_coordinate":"1136462","y_coordinate":"1902583","year":"2013"}
@@ -62,7 +60,7 @@ describe('table', function() {
 ]
   }));
   afterEach(function() {
-    $('#tableTest').remove();
+    testHelpers.TestDom.clear();
   });
   var createTableCard = function(expanded, getRows){
     if (!expanded) expanded = false;
@@ -70,10 +68,7 @@ describe('table', function() {
       '<div class="card ' + (expanded ? 'expanded': '') + '" style="width: 640px; height: 480px;">' +
         '<div table class="table" row-count="rowCount" get-rows="getRows" where-clause="whereClause" filtered-row-count="filteredRowCount" expanded="expanded"></div>' +
       '</div>';
-    var elem = angular.element(html);
-    $('body').append('<div id="tableTest"></div>');
-    $('#tableTest').append(elem);
-    var compiledElem = compile(elem)(scope);
+    var compiledElem = testHelpers.TestDom.compileAndAppend(html, scope);
     scope.expanded = expanded;
     scope.rowCount = 200;
     scope.filteredRowCount = 170;

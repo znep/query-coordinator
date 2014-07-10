@@ -1,26 +1,22 @@
 describe("notifyResize directive", function() {
-  var scope, compile;
+  var scope, testHelpers;
 
+  beforeEach(module('test'));
   beforeEach(module('dataCards.directives'));
 
-  beforeEach(inject(function($rootScope, $compile) {
-    scope = $rootScope;
-    compile = $compile;
-  }));
+  beforeEach(inject(['$rootScope', 'testHelpers', function(_$rootScope, _testHelpers) {
+    testHelpers = _testHelpers;
+    scope = _$rootScope.$new();
+  }]));
 
-  var create = function(html) {
-    var elem = angular.element(html);
-    $('body').append(elem);
-    var compiledElem = compile(elem)(scope);
-    scope.$digest();
-
-    return compiledElem;
-  };
+  afterEach(function() {
+    testHelpers.TestDom.clear();
+  });
 
   describe('with an attribute value', function() {
     it('should broadcast the named event when the element changes size', function(done) {
       var html = '<div notify-resize="testEventName"><span></span></div>';
-      var el = create(html);
+      var el = testHelpers.TestDom.compileAndAppend(html, scope);
 
       var spy = sinon.spy(function(event, newSize) {
 
@@ -50,7 +46,7 @@ describe("notifyResize directive", function() {
     it('should raise an error', function() {
       var html = '<div notify-resize><span></span></div>';
       expect(function () {
-        create(html);
+        testHelpers.TestDom.compileAndAppendTo(html, scope);
       }).to.throw();
     });
   });

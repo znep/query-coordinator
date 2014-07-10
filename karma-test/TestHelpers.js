@@ -1,5 +1,5 @@
 angular.module('test', [])
-  .factory('testHelpers', function() {
+  .factory('testHelpers', function($compile) {
 
     // D3 doesn't have a jQuery-like trigger. So if you want to simulate mouse events,
     // we need to use real browser events.
@@ -32,7 +32,29 @@ angular.module('test', [])
       return d.promise;
     };
 
+    var TestDom = {
+      compileAndAppend: function(element, scope) {
+        var compiledElem = $compile(TestDom.append(element))(scope);
+        scope.$digest();
+
+        return compiledElem;
+      },
+
+      append: function(element) {
+        if ($('#test-root').length === 0) {
+          $('body').append("<div id='test-root'></div>");
+        }
+
+        return $('#test-root').append(element);
+      },
+
+      clear: function() {
+        return $('#test-root').empty();
+      }
+    };
+
     return {
+      TestDom: TestDom,
       waitForD3Transitions: waitForD3Transitions,
       fireEvent: fireEvent
     };

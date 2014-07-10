@@ -1,5 +1,5 @@
 describe("A Choropleth Directive", function() {
-  var scope, compile, th, timeout;
+  var scope, testHelpers, timeout;
   var multiPolygonData2 = {
     "type": "FeatureCollection",
     "features": [
@@ -287,31 +287,19 @@ describe("A Choropleth Directive", function() {
   beforeEach(module('dataCards.directives'));
 
   beforeEach(inject(function($injector) {
-    th = $injector.get('testHelpers');
-    compile = $injector.get('$compile');
+    testHelpers = $injector.get('testHelpers');
     rootScope = $injector.get('$rootScope');
     scope = rootScope.$new();
     timeout = $injector.get('$timeout');
   }));
 
   afterEach(function(){
-    $('#choroplethTest').remove();
+    testHelpers.TestDom.clear();
   });
 
   var createChoropleth = function() {
     var html = '<choropleth geojson-aggregate-data="geojsonAggregateData" show-filtered="filterApplied"></choropleth>';
-    var elem = angular.element(html);
-    var compiledElem;
-
-    $('body').append('<div id="choroplethTest"></div>');
-    $('#choroplethTest').append(elem);
-
-    compiledElem = compile(elem)(scope);
-
-    scope.$digest();
-    
-    return compiledElem;
-
+    return testHelpers.TestDom.compileAndAppend(html, scope);
   };
 
   describe('with a valid geojsonAggregateData input', function() {
@@ -578,7 +566,7 @@ describe("A Choropleth Directive", function() {
       var line = el.find('path')[0];
       var defaultStrokeWidth = parseInt($(line).css('strokeWidth'));
 
-      th.fireEvent(line, 'dblclick');
+      testHelpers.fireEvent(line, 'dblclick');
       // TODO: test zoom
     });
     xit('should zoom the map if the choropleth was double clicked', function(){
@@ -619,14 +607,13 @@ describe("A Choropleth Directive", function() {
         });
 
         timeout(function() {
-          th.fireEvent(polygon, 'click');
+          testHelpers.fireEvent(polygon, 'click');
         });
 
         timeout.flush(); // first polygon click
         timeout.flush(); // click promise (lastTimer on geojsonClick in Choropleth.js)
 
         expect(toggleFilterByRegionEventReceived).to.equal(true);
-
       });
 
     });

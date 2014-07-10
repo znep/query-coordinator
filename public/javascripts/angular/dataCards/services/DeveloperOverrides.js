@@ -19,7 +19,6 @@ angular.module('dataCards.services').factory('DeveloperOverrides', function() {
   var queryObject = parseQueryString(decodeURIComponent(window.location.search.substr(1)));
 
   var datasetDataOverrides = {};
-  var shapefileDataOverrides = {};
   return {
     init: function() {
       // Dataset data override. Use this if you want to override
@@ -41,30 +40,12 @@ angular.module('dataCards.services').factory('DeveloperOverrides', function() {
           datasetDataOverrides[parts[1]] = parts[2];
         });
       }
-      if (queryObject['override_shapefile_data']) {
-        var overrides = queryObject['override_shapefile_data'].split(',');
-        _.each(overrides, function(override) {
-          var parts = override.match(/^(\w{4}-\w{4})->(\w{4}-\w{4})$/);
-          if (!parts || parts.length != 3) {
-            console.error('Invalid override: ' + override + ', correct syntax is A->B, where A and B are 4x4s');
-            return
-          }
-          shapefileDataOverrides[parts[1]] = parts[2];
-        });
-      }
     },
 
     // Gets the data override for a particular dataset id, if any (see override_dataset_data).
     // If none exists, returns undefined.
     dataOverrideForDataset: function(datasetId) {
       return datasetDataOverrides[datasetId];
-    },
-
-    // Gets the data override for a particular shapefile id, if any (see override_shapefile_data).
-    // If none exists, returns undefined.
-    dataOverrideForShapefile: function(shapefileId) {
-      return shapefileDataOverrides[shapefileId];
     }
-
   };
 });

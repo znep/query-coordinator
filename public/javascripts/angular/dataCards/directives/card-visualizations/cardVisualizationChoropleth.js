@@ -34,13 +34,6 @@ angular.module('dataCards.directives').directive('cardVisualizationChoropleth', 
         geojsonRegions,
         aggregatedDataAsHash) {
 
-        // Check to make sure that we have features to merge and fail early if not.
-        if (!geojsonRegions.hasOwnProperty('features') ||
-            !geojsonRegions.features.hasOwnProperty('length') ||
-            geojsonRegions.features.length <= 0) {
-          return null;
-        }
-
         var newFeatures = geojsonRegions.features.map(function(geojsonFeature) {
           var featureId = geojsonFeature.properties[fieldName];
           var feature = {

@@ -1,10 +1,13 @@
 angular.module('dataCards.models').factory('Card', function($injector, ModelHelper, Model, CardDataService, JJV) {
+
+  var UID_REGEXP = /^\w{4}-\w{4}$/;
+
   JJV.addSchema('serializedCard', {
     'type': 'object',
     'properties': {
-      'fieldName': { 'type': 'string', 'minLength': 1},
-      'shapeFile': { 'type': 'string', 'minLength': 1},
-      'cardSize': { 'type': 'integer' , 'minimum': 1, 'maximum': 3},
+      'fieldName': { 'type': 'string', 'minLength': 1 },
+      'shapeFile': { 'type': 'string', 'pattern': UID_REGEXP },
+      'cardSize': { 'type': 'integer' , 'minimum': 1, 'maximum': 3 },
       'displayMode': { 'type': 'string', 'enum': ['figures', 'visualization'] },
       'expanded': { 'type': 'boolean' },
       'cardCustomStyle': { 'type': 'object' },

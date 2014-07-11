@@ -4,19 +4,22 @@ $panel-border-color: #4f5f73
 $cards-bg-color: #4d5969
 $card-bg-color: #eee
 $card-title-expanded-bg-color: #ddd
-$expand-button-color: #d6d4d5
 
 $btn-border-color: #576373
 $btn-bg-color: #4d5969
 
 $white-font-color: #f0edee
-$lt-grey-font-color: #8a8686
+$lt-grey-font-color-alpha: 0.5
+$lt-grey-font-color-rgba: rgba(0, 0, 0, $lt-grey-font-color-alpha)
+/* rgba version used for manipulating font color while card description is expanded */
+$lt-grey-font-color: #8F8F8F
 $aqua-font-color: #68b0cc
 $link-font-color: #68b0cc
 $link-visited-font-color: #68b0cc
 $active-filter-color: #debb1f // gold
 $header-font-color: #68b0cc
 $description-font-color: #666364
+$expand-button-color: $lt-grey-font-color-rgba
 $unfiltered-region-bg-color-1: #d6d4d5 // grey
 $filtered-region-bg-color-1: #68b0cc // blue
 $filtered-region-bg-color-2: #debb1f // gold

@@ -184,7 +184,9 @@ body
         box-sizing: border-box
 
       &.stuck .content
-        z-index: 999
+        z-index: 1002
+        // z-index is 1 greater than z-index on expanded-description
+        // (which is in turn 1 greater than leaflet's z-index of 1000)
         position: fixed
         top: 0
 
@@ -266,6 +268,10 @@ body
         color: $lt-grey-font-color
         background: $card-bg-color
 
+        .card-text
+          position: relative
+          // fixes .wrap and .title-expanded in right place
+
         .title-one-line
           line-height: $card-title-line-height
           font-weight: normal
@@ -274,15 +280,26 @@ body
           display: block
           padding-bottom: 5px
 
+          &:hover
+
+            + .title-expanded
+              z-index: 1002
+              // z-index is 1 higher than description z-index
+
+              .wrap
+                opacity: 1
+                overflow: visible
+
         .title-expanded
           @extend .title-one-line
           position: absolute
-          top: $card-padding-top
-          left: $card-padding-left
+          top: 0
+          left: 0
           overflow: visible
-          z-index: 1
+          z-index: -1
           &:hover
-            z-index: 1
+            z-index: 1002
+            // z-index is 1 higher than description z-index
 
           .wrap
             max-width: 100%
@@ -323,24 +340,7 @@ body
 
       div[ng-switch="cardType"]
         position: relative
-
-  .cards-wrapper
-
-    .card
-      $header-font-color: #68b0cc
-      $description-font-color: #666364
-      $card-bg-color: #fff
-      $expand-button-color: #d6d4d5
-
-      $unfiltered-region-bg-color-1: #d6d4d5
-      // grey
-      $filtered-region-bg-color-1: #68b0cc
-      // blue
-      $filtered-region-bg-color-2: #debb1f
-      // gold
-      $filtered-region-bg-color-3: #de851f
-      // orange or dark gold
-      $y-axis-color: #f0edee
+        // keeps choropleth in check
 
 /*   RESPONSIVE DESKTOP DESIGN   */
 @media screen

@@ -1,4 +1,5 @@
 @import dataCards/ellipsis
+@import dataCards/common/colors
 
 $fgColor: #333
 $bgColor: #4a525a
@@ -75,7 +76,6 @@ $pageNameMaxLineCount: 2
   .hideableMetadata
     margin: 15px
 
-$card-bg-color: #eee
 $card-padding: 0
 // Card should not assume padding or margin.
 // Containers within card should have control over padding and margin of card content.
@@ -92,6 +92,7 @@ $card-description-transition-duration: 0.5s
     position: relative
     line-height: $card-description-line-height
     padding-right: 30px
+    color: $lt-grey-font-color-rgba
     .description-expand-button
       display: none
       position: absolute
@@ -110,14 +111,18 @@ $card-description-transition-duration: 0.5s
     .description-expanded-wrapper
       position: absolute
       overflow: hidden
+      opacity: $lt-grey-font-color-alpha
       .description-expanded-content
+        color: #000
         background: rgba($card-bg-color, 0.9)
         overflow-y: auto
         overflow-x: hidden
+        padding-bottom: 5px
       top: 0
       display: block
       padding-right: 20px
-      z-index: 5
+      z-index: 1001
+      /* z-index must override leaflet's z-index (1001) on choropleths */
       .description-expand-button
         display: block
     .description-truncated-content

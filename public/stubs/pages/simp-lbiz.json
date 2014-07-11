@@ -12,7 +12,7 @@
     {
       "description": "License Type",
       "fieldName": "license_description",
-      "cardSize": 2,
+      "cardSize": 1,
       "cardCustomStyle": {},
       "expandedCustomStyle": {},
       "displayMode": "visualization",

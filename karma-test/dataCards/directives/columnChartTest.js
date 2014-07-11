@@ -1,4 +1,4 @@
-describe('column_chart', function() {
+describe('columnChart', function() {
   var th, compile, httpBackend, rootScope, scope, timeout;
 
   var testData = [

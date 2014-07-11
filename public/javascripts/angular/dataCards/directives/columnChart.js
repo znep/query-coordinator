@@ -9,7 +9,7 @@ angular.module('socrataCommon.directives').directive('columnChart', function($pa
     var bottomMargin = 132;
     var tipHeight = 10;
     var tipWidth = 10;
-    var tooltipWidth = 123;
+    var tooltipWidth = 130;
     var tooltipYOffset = 9999; // invisible (max) height of tooltip above tallest bar; hack to make tooltip appear above chart/card-text
     var horizontalScrollbarHeight = 15; // used to keep horizontal scrollbar within .card-visualization upon expand
     var numberOfDefaultLabels = expanded ? chartData.length : 3;
@@ -63,7 +63,7 @@ angular.module('socrataCommon.directives').directive('columnChart', function($pa
 
     // If the bar width is too narrow, compute the acceptable minimum width and rescale the chart
     if (rangeBand < 8) {
-      chartWidth = Math.floor(8 * numberOfBars * 1.5);
+      chartWidth = Math.floor(15 * numberOfBars * 1.5);
       computeChartDimensions();
       chartTruncated = true;
       chartWidth = Math.floor(dimensions.width);
@@ -132,13 +132,12 @@ angular.module('socrataCommon.directives').directive('columnChart', function($pa
         each(function(d) {
           var $tooltip = $(this);
           var $tip = $tooltip.find('.tip');
-          var rightEdge = 0;
+          var rightEdge = horizontalScale(d.name) + tooltipWidth - chartWidth + rangeBand;
+
           if (showFiltered) {
             $tooltip.css('bottom', verticalScale(d.filtered) + tipHeight);
-            rightEdge = horizontalScale(d.name) + tooltipWidth - chartWidth;
           } else {
             $tooltip.css('bottom', verticalScale(d.total) + tipHeight);
-            rightEdge = horizontalScale(d.name) + tooltipWidth - chartWidth;
           }
 
           if (rightEdge > 0) {
@@ -188,7 +187,7 @@ angular.module('socrataCommon.directives').directive('columnChart', function($pa
 
           var spaceRemainingOnRight = spaceAvailableOnRight - widthOfText;
 
-          leftHanded = spaceRemainingOnRight <= 0 && spaceAvailableOnLeft > spaceAvailableOnRight;
+          leftHanded = spaceRemainingOnRight <= 10 && spaceAvailableOnLeft > spaceAvailableOnRight;
         }
 
         labelOrientationsByIndex[index] = leftHanded;
@@ -251,7 +250,7 @@ angular.module('socrataCommon.directives').directive('columnChart', function($pa
             }
           });
 
-      // To properly compute text sizes, temporarily remove label handedness, then call computeLabelOrientation.
+      // To properly compute text sizes, temporarily remove label handedness, then call preComputeLabelOrientation.
       labelDivSelection.
         classed('orientation-left', false).
         classed('orientation-right', false).

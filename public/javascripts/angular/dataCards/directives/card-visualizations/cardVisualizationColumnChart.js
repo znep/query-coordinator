@@ -51,7 +51,7 @@ angular.module('dataCards.directives').directive('cardVisualizationColumnChart',
           return {
             name: name,
             total: unFilteredAsHash[name],
-            filtered: filteredAsHash[name],
+            filtered: filteredAsHash[name] || 0,
             special: _.contains(activeFilterNames, name)
           }
         });

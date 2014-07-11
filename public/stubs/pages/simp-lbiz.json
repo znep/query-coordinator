@@ -21,6 +21,7 @@
     {
       "description": "Ward",
       "fieldName": ":Computed_pointfieldname",
+      "shapeFile": "mash-apes",
       "cardSize": 1,
       "cardCustomStyle": {},
       "expandedCustomStyle": {},

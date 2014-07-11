@@ -23,23 +23,12 @@ angular.module('dataCards.directives').directive('cardVisualizationChoropleth', 
             return Rx.Observable.fromPromise(CardDataService.getChoroplethRegions(fieldName, dataset.id, shapefile.id));
           }).switchLatest();
 
-      var unfilteredData = Rx.Observable.combineLatest(
-          model.pluck('fieldName'),
-          dataset,
-          function(fieldName, dataset) {
-            return Rx.Observable.fromPromise(CardDataService.getUnfilteredChoroplethAggregates(fieldName, dataset.id));
-          }).switchLatest();
-
-      var filteredData = Rx.Observable.combineLatest(
+      var aggregatedDataObservable = Rx.Observable.combineLatest(
           model.pluck('fieldName'),
           $scope.observe('whereClause'),
           dataset,
           function(fieldName, whereClause, dataset) {
-            if (_.isEmpty(whereClause)) {
-              return Rx.Observable.returnValue(null);
-            } else {
-              return Rx.Observable.fromPromise(CardDataService.getFilteredChoroplethAggregates(fieldName, dataset.id, whereClause));
-            }
+            return Rx.Observable.fromPromise(CardDataService.getChoroplethAggregates(fieldName, dataset.id, whereClause));
           }).switchLatest();
 
       // TODO: Update this function to return what we need, not all the other crap.
@@ -49,9 +38,7 @@ angular.module('dataCards.directives').directive('cardVisualizationChoropleth', 
         activeFilterNames,
         fieldName,
         geojsonRegions,
-        unfilteredAsHash,
-        filteredAsHash,
-        whereClause) {
+        aggregatedDataAsHash) {
         var newFeatures = geojsonRegions.features.map(function(geojsonFeature) {
           var featureId = geojsonFeature.properties[fieldName];
           var feature = {
@@ -59,16 +46,10 @@ angular.module('dataCards.directives').directive('cardVisualizationChoropleth', 
             properties: geojsonFeature.properties,
             type: geojsonFeature.type
           };
-          // The check for an empty where clause is to ascertain whether we should provide
-          // filtered rather than unfiltered data to the choropleth directive.
           // We're using the property name '__MERGED_SOCRATA_VALUE__' in order to avoid
           // overwriting existing properties on the geojson object (properties are user-
           // defined according to the spec).
-          if (_.isEmpty(whereClause)) {
-            feature.properties['__SOCRATA_MERGED_VALUE__'] = unfilteredAsHash[featureId];
-          } else {
-            feature.properties['__SOCRATA_MERGED_VALUE__'] = filteredAsHash[featureId];
-          }
+          feature.properties['__SOCRATA_MERGED_VALUE__'] = aggregatedDataAsHash[featureId];
           feature.properties['__SOCRATA_FEATURE_HIGHLIGHTED__'] = _.contains(activeFilterNames, featureId);
           return feature;
         });
@@ -80,46 +61,19 @@ angular.module('dataCards.directives').directive('cardVisualizationChoropleth', 
         };
       };
 
-      $scope.bindObservable('primaryAggregation', model.pluck('page').pluck('primaryAggregation'));
       $scope.bindObservable('fieldName', model.pluck('fieldName'));
       $scope.bindObservable(
         'geojsonAggregateData',
         Rx.Observable.combineLatest(
           model.pluck('fieldName'),
           geojsonRegions,
-          unfilteredData,
-          filteredData,
+          aggregatedDataObservable,
           model.observeOnLatest('activeFilters'),
-          $scope.observe('whereClause'),
-          function(fieldName, geojsonRegions, unfiltered, filtered, activeFilters, whereClause) {
+          function(fieldName, geojsonRegions, aggregatedData, activeFilters) {
 
             var activeFilterNames = _.pluck(activeFilters, 'operand');
 
-            // Fail early if all required data sets have not been loaded.
-            if (!unfiltered || (!_.isEmpty(whereClause) && !filtered)) {
-              return null;
-            }
-
-            // Fail early if the active filter names do not match the names
-            // of the actual filtered items.
-            if (!_.isEmpty(whereClause) && filtered.filter(function(item){
-                  return activeFilterNames.indexOf(item.name) > -1;
-                }).length !== activeFilterNames.length) {
-              return null;
-            }
-
-            // Fail early if the data's filter state has not yet caught up with the UI's
-            // due to latency on the data requests.
-            if (!_.isEmpty(whereClause) && activeFilterNames.length > 0 && (activeFilterNames[0] !== $scope.highlightedRegion)) {
-              return null;
-            }
-
-            var unfilteredAsHash = _.reduce(unfiltered, function(acc, datum) {
-              acc[datum.name] = datum.value;
-              return acc;
-            }, {});
-
-            var filteredAsHash = _.reduce(filtered, function(acc, datum) {
+            var aggregatedDataAsHash = _.reduce(aggregatedData, function(acc, datum) {
               acc[datum.name] = datum.value;
               return acc;
             }, {});
@@ -128,14 +82,9 @@ angular.module('dataCards.directives').directive('cardVisualizationChoropleth', 
               activeFilterNames,
               fieldName,
               geojsonRegions,
-              unfilteredAsHash,
-              filteredAsHash,
-              whereClause
+              aggregatedDataAsHash
             );
 
-      }));
-      $scope.bindObservable('filterApplied', filteredData.map(function(filtered) {
-        return filtered !== null;
       }));
 
       // Handle filter toggle events sent from the choropleth directive.

@@ -95,12 +95,14 @@ angular.module('dataCards.controllers').controller('CardsViewController',
         if (_.isEmpty(operators)) {
           return null;
         } else {
-          return _.invoke(operators, 'generateSoqlWhereFragment', field).join(' ');
+          return _.invoke(operators, 'generateSoqlWhereFragment', field).join(' AND ');
         }
       });
       return _.compact(wheres).join(' AND ');
     });
-    $scope.bindObservable('globalWhereClauseFragment', allCardsWheres);
+    $scope.bindObservable('globalWhereClauseFragment', allCardsWheres.combineLatest(page.observe('baseSoqlFilter'), function(cardWheres, basePageWhere) {
+      return _.compact([basePageWhere, cardWheres]).join(' AND ');
+    }));
 
     $scope.$on('stickyHeaderAvailableContentHeightChanged', function(event, availableContentHeight) {
       event.stopPropagation();

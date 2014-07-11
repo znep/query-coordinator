@@ -14,7 +14,7 @@ angular.module('dataCards.models').factory('Page', function(Dataset, Card, Model
     // or not the calls are needed.
     var baseInfoPromise = function() { return PageDataService.getBaseInfo(self.id); };
 
-    var fields = ['description', 'name', 'layoutMode', 'primaryAmountField', 'primaryAggregation', 'isDefaultPage', 'pageSource'];
+    var fields = ['description', 'name', 'layoutMode', 'primaryAmountField', 'primaryAggregation', 'isDefaultPage', 'pageSource', 'baseSoqlFilter'];
     _.each(fields, function(field) {
       self.defineObservableProperty(field, undefined, function() {
         return baseInfoPromise().then(_.property(field));

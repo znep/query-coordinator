@@ -9,23 +9,33 @@ angular.module('dataCards.directives').directive('cardVisualizationColumnChart',
 
       var model = $scope.observe('model');
       var dataset = model.pluck('page').observeOnLatest('dataset');
+      var baseSoqlFilter = model.pluck('page').observeOnLatest('baseSoqlFilter');
+
+      var nonBaseFilterApplied = Rx.Observable.combineLatest(
+          $scope.observe('whereClause'),
+          baseSoqlFilter,
+          function (whereClause, baseFilter) {
+            return !_.isEmpty(whereClause) && whereClause != baseFilter;
+          });
 
       var unFilteredData = Rx.Observable.combineLatest(
           model.pluck('fieldName'),
+          baseSoqlFilter,
           dataset,
-          function(fieldName, dataset) {
-            return Rx.Observable.fromPromise(CardDataService.getUnFilteredData(fieldName, dataset.id));
+          function(fieldName, baseWhere, dataset) {
+            return Rx.Observable.fromPromise(CardDataService.getData(fieldName, dataset.id, baseWhere));
           }).switchLatest();
 
       var filteredData = Rx.Observable.combineLatest(
           model.pluck('fieldName'),
           $scope.observe('whereClause'),
+          nonBaseFilterApplied,
           dataset,
-          function(fieldName, whereClause, dataset) {
-            if (_.isEmpty(whereClause)) {
-              return Rx.Observable.returnValue(null);
+          function(fieldName, whereClause, nonBaseFilterApplied, dataset) {
+            if (nonBaseFilterApplied) {
+              return Rx.Observable.fromPromise(CardDataService.getData(fieldName, dataset.id, whereClause));
             } else {
-              return Rx.Observable.fromPromise(CardDataService.getFilteredData(fieldName, dataset.id, whereClause));
+              return Rx.Observable.returnValue(null);
             }
           }).switchLatest();
 

@@ -75,8 +75,7 @@ angular.module('dataCards.directives').directive('choropleth', function(AngularR
     restrict: 'E',
     replace: 'true',
     scope: {
-      'geojsonAggregateData': '=',
-      'showFiltered': '='
+      'geojsonAggregateData': '='
     },
     template: '<div class="choropleth-map-container"><leaflet class="choropleth-map" center="center" bounds="bounds" defaults="defaults" geojson="geojson" legend="legend"></leaflet></div>',
     controller: function($scope, $http) {
@@ -483,10 +482,8 @@ angular.module('dataCards.directives').directive('choropleth', function(AngularR
 
       /* React to data changes further up the stack */
 
-      Rx.Observable.subscribeLatest(
-        $scope.observe('geojsonAggregateData'),
-        $scope.observe('showFiltered'),
-        function(geojsonAggregateData, showFiltered) {
+      $scope.observe('geojsonAggregateData').subscribe(
+        function(geojsonAggregateData) {
 
           var colors;
           var values;

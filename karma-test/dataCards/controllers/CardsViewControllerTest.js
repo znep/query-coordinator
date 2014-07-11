@@ -44,9 +44,11 @@ describe("CardsViewController", function() {
 
     mockPageDataService.getBaseInfo = function() { return baseInfoPromise.promise; };
 
+    var page = new Page(fakePageId);
+
     var controller = $controller('CardsViewController', {
       $scope: scope,
-      page: new Page(fakePageId),
+      page: page,
     });
 
     scope.$apply();
@@ -55,7 +57,8 @@ describe("CardsViewController", function() {
     return {
       baseInfoPromise: baseInfoPromise,
       scope: scope,
-      controller: controller
+      controller: controller,
+      page: page
     };
   };
 
@@ -242,6 +245,113 @@ describe("CardsViewController", function() {
       expect(classForScreenPosition(1, 4)).to.equal(left);
       expect(classForScreenPosition(2, 4)).to.equal(right);
       expect(classForScreenPosition(3, 4)).to.equal(right);
+    });
+  });
+
+  describe('filtering', function() {
+    function makeMinimalController() {
+      var controllerHarness = makeController();
+      var cardBlobs = _.times(3, testCard);
+      controllerHarness.baseInfoPromise.resolve({
+        datasetId: 'fake-fbfr',
+        name: 'fakeName',
+        cards: cardBlobs,
+      });
+      $rootScope.$digest();
+      return controllerHarness;
+    }
+    describe('with no card filters applied', function() {
+      describe('with no base filter', function() {
+        it('should yield an empty WHERE', function() {
+          var harness = makeMinimalController();
+          expect(harness.scope.globalWhereClauseFragment).to.be.empty;
+        });
+      });
+
+      describe('with a base filter', function() {
+        it('should reflect the base filterSoql', function() {
+          var harness = makeMinimalController();
+          var fakeFilter = "fakeField='fakeValue'";
+          harness.page.set('baseSoqlFilter', fakeFilter);
+          expect(harness.scope.globalWhereClauseFragment).to.equal(fakeFilter);
+        });
+      });
+    });
+    describe('with card filters applied', function() {
+      describe('with no base filter', function() {
+        it("should yield just the filtered card's WHERE", inject(function(Filter) {
+          var harness = makeMinimalController();
+          var filterOne = new Filter.IsNullFilter(true);
+          var filterTwo = new Filter.BinaryOperatorFilter('=', 'test');
+
+          var firstCard = harness.page.getCurrentValue('cards')[0];
+          var thirdCard = harness.page.getCurrentValue('cards')[2];
+
+          // Just one card
+          firstCard.set('activeFilters', [filterOne]);
+          expect(harness.scope.globalWhereClauseFragment).to.equal(filterOne.generateSoqlWhereFragment(firstCard.fieldName));
+
+          // Two filtered cards
+          thirdCard.set('activeFilters', [filterTwo]);
+          expect(harness.scope.globalWhereClauseFragment).to.equal(
+            "{0} AND {1}".format(
+              filterOne.generateSoqlWhereFragment(firstCard.fieldName),
+              filterTwo.generateSoqlWhereFragment(thirdCard.fieldName)
+              ));
+
+          // One filtered card, with two filters.
+          firstCard.set('activeFilters', [filterOne, filterTwo]);
+          thirdCard.set('activeFilters', []);
+          expect(harness.scope.globalWhereClauseFragment).to.equal(
+            "{0} AND {1}".format(
+              filterOne.generateSoqlWhereFragment(firstCard.fieldName),
+              filterTwo.generateSoqlWhereFragment(firstCard.fieldName)
+              ));
+        }));
+      });
+
+      describe('with a base filter', function() {
+        it('should reflect the base filterSoql', inject(function(Filter) {
+          var harness = makeMinimalController();
+
+          var fakeBaseFilter = "fakeField='fakeValueForBase'";
+          harness.page.set('baseSoqlFilter', fakeBaseFilter);
+
+          var filterOne = new Filter.IsNullFilter(false);
+          var filterTwo = new Filter.BinaryOperatorFilter('=', 'test2');
+          var firstCard = harness.page.getCurrentValue('cards')[0];
+          var thirdCard = harness.page.getCurrentValue('cards')[2];
+
+          // Just one card
+          firstCard.set('activeFilters', [filterOne]);
+          harness.scope.$digest();
+
+          expect(harness.scope.globalWhereClauseFragment).to.equal(
+            "{0} AND {1}".format(
+              fakeBaseFilter,
+              filterOne.generateSoqlWhereFragment(firstCard.fieldName))
+            );
+
+          // Two filtered cards
+          thirdCard.set('activeFilters', [filterTwo]);
+          expect(harness.scope.globalWhereClauseFragment).to.equal(
+            "{0} AND {1} AND {2}".format(
+              fakeBaseFilter,
+              filterOne.generateSoqlWhereFragment(firstCard.fieldName),
+              filterTwo.generateSoqlWhereFragment(thirdCard.fieldName)
+              ));
+
+          // One filtered card, with two filters.
+          firstCard.set('activeFilters', [filterOne, filterTwo]);
+          thirdCard.set('activeFilters', []);
+          expect(harness.scope.globalWhereClauseFragment).to.equal(
+            "{0} AND {1} AND {2}".format(
+              fakeBaseFilter,
+              filterOne.generateSoqlWhereFragment(firstCard.fieldName),
+              filterTwo.generateSoqlWhereFragment(firstCard.fieldName)
+              ));
+        }));
+      });
     });
   });
 });

@@ -1,25 +1,13 @@
 angular.module('dataCards.services').factory('CardDataService', function($q, $http, DeveloperOverrides) {
 
   return {
-    getUnFilteredData: function(fieldName, datasetId) {
+    getData: function(fieldName, datasetId, whereClauseFragment) {
       datasetId = DeveloperOverrides.dataOverrideForDataset(datasetId) || datasetId;
       if (fieldName == 'location') {
         return $q.when([]);
       }
-      var url = '/api/id/{1}.json?$query=select {0} as name, count(*) as value group by {0} order by count(*) desc limit 50'.format(fieldName, datasetId);
-      return $http.get(url, { cache: true }).then(function(response) {
-        return _.map(response.data, function(item) {
-          return { name: item.name, value: Number(item.value) };
-        });
-      });
-    },
-
-    getFilteredData: function(fieldName, datasetId, whereClause) {
-      datasetId = DeveloperOverrides.dataOverrideForDataset(datasetId) || datasetId;
-      if (fieldName == 'location') {
-        return $q.when([]);
-      }
-      var url = '/api/id/{1}.json?$query=select {0} as name, count(*) as value where {2} group by {0} order by count(*) desc limit 50'.format(fieldName, datasetId, whereClause);
+      var whereClause = _.isEmpty(whereClauseFragment) ? '' : 'where ' + whereClauseFragment;
+      var url = '/api/id/{1}.json?$query=select {0} as name, count(*) as value {2} group by {0} order by count(*) desc limit 50'.format(fieldName, datasetId, whereClause);
       return $http.get(url, { cache: true }).then(function(response) {
         return _.map(response.data, function(item) {
           return { name: item.name, value: Number(item.value) };
@@ -36,32 +24,16 @@ angular.module('dataCards.services').factory('CardDataService', function($q, $ht
       });
     },
 
-    // This is distinct from getUnFilteredData in order to allow for (eventual)
+    // This is distinct from getData in order to allow for (eventual)
     // paginated queries to get total counts across all rows rather than the hard
     // 1,000-row limit on SoQL queries.
-    getUnfilteredChoroplethAggregates: function(fieldName, datasetId) {
+    getChoroplethAggregates: function(fieldName, datasetId, whereClauseFragment) {
       datasetId = DeveloperOverrides.dataOverrideForDataset(datasetId) || datasetId;
+      var whereClause = _.isEmpty(whereClauseFragment) ? '' : 'where ' + whereClauseFragment;
       var url = ('/api/id/{1}.json?$query=' +
                  'select {0} as name, ' +
                  'count(*) as value ' +
-                 'group by {0} ' +
-                 'order by count(*) desc').format(fieldName, datasetId);
-      return $http.get(url, { cache: true }).then(function(response) {
-        return _.map(response.data, function(item) {
-          return { name: item.name, value: Number(item.value) };
-        });
-      });
-    },
-
-    // This is distinct from getFilteredData in order to allow for (eventual)
-    // paginated queries to get total counts across all rows rather than the hard
-    // 1,000-row limit on SoQL queries.
-    getFilteredChoroplethAggregates: function(fieldName, datasetId, whereClause) {
-      datasetId = DeveloperOverrides.dataOverrideForDataset(datasetId) || datasetId;
-      var url = ('/api/id/{1}.json?$query=' +
-                 'select {0} as name, ' +
-                 'count(*) as value ' +
-                 'where {2} ' +
+                 '{2} ' + // where clause
                  'group by {0} ' +
                  'order by count(*) desc').format(fieldName, datasetId, whereClause);
       return $http.get(url, { cache: true }).then(function(response) {

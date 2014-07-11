@@ -91,16 +91,8 @@ angular.module('dataCards.directives').directive('cardVisualizationChoropleth', 
 
       // Handle filter toggle events sent from the choropleth directive.
       $scope.$on('toggle-dataset-filter:choropleth', function(event, feature, callback) {
-        // TODO: Figure out a better way to accomplish this!!1
-        // Cache the value we're actually filtering on locally so that we can test
-        // the filter value of incoming data against it and ignore out of date filtered
-        // data responses.
-        // If we don't do this the white outline responds to mouse down events but
-        // the region coloring doesn't catch up until the full
-        // 'request' -> 'response' -> 'render leaflet' loop.
-        var featureId = feature.properties[$scope.model.fieldName];
 
-        $scope.highlightedRegion = featureId;
+        var featureId = feature.properties[$scope.model.fieldName];
 
         var hasFiltersOnCard = _.any($scope.model.getCurrentValue('activeFilters'), function(filter) {
           return filter.operand === featureId;

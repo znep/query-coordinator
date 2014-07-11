@@ -10,9 +10,9 @@
   "pageSource": "admin",
   "cards": [
     {
-      "description": "License Status",
-      "fieldName": "license_status",
-      "cardSize": 1,
+      "description": "License Type",
+      "fieldName": "license_description",
+      "cardSize": 2,
       "cardCustomStyle": {},
       "expandedCustomStyle": {},
       "displayMode": "visualization",

@@ -7,9 +7,9 @@
   "updatedAt": "2014-05-20T10:42:55.000-07:00",
   "columns": [
     {
-      "name": "license_status",
-      "title": "License Status",
-      "description":"Status of the Business License.",
+      "name": "license_description",
+      "title": "License Type",
+      "description":"Type of the Business License.",
       "importance": 1,
       "logicalDatatype": "category",
       "physicalDatatype": "text"

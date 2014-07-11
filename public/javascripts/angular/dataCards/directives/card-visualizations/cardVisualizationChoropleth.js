@@ -1,5 +1,7 @@
 angular.module('dataCards.directives').directive('cardVisualizationChoropleth', function(AngularRxExtensions, CardDataService, Filter, $http) {
 
+  var INTERNAL_DATASET_FEATURE_ID = '_feature_id';
+
   return {
     restrict: 'E',
     scope: { 'model': '=', 'whereClause': '=' },
@@ -87,7 +89,7 @@ angular.module('dataCards.directives').directive('cardVisualizationChoropleth', 
       // Handle filter toggle events sent from the choropleth directive.
       $scope.$on('toggle-dataset-filter:choropleth', function(event, feature, callback) {
 
-        var featureId = feature.properties[$scope.model.fieldName];
+        var featureId = feature.properties[INTERNAL_DATASET_FEATURE_ID];
 
         var hasFiltersOnCard = _.any($scope.model.getCurrentValue('activeFilters'), function(filter) {
           return filter.operand === featureId;

@@ -167,7 +167,9 @@ angular.module('socrataCommon.directives').directive('columnChart', function($pa
         each(function(d) {
           var $tooltip = $(this);
           var $tip = $tooltip.find('.tip');
-          var rightEdge = horizontalScale(d.name) + tooltipWidth - chartWidth + rangeBand;
+          var rightEdge = horizontalScale(d.name) + tooltipWidth - chartWidth - rangeBand / 2 - tipWidth;
+
+          $tooltip.css('width', tooltipWidth);
 
           if (showFiltered) {
             $tooltip.css('bottom', verticalScale(d.filtered) + tipHeight);
@@ -176,6 +178,8 @@ angular.module('socrataCommon.directives').directive('columnChart', function($pa
           }
 
           if (rightEdge > 0) {
+            // offset the tooltip position by the width of the tip, to ensure tip
+            // seems attached to tooltip on right edge of column chart
             $tooltip.css('left', -1 * rightEdge);
             $tip.css('left', tipOffset + rightEdge);
           }

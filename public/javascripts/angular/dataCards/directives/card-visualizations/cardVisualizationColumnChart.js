@@ -73,6 +73,10 @@ angular.module('dataCards.directives').directive('cardVisualizationColumnChart',
 
       $scope.bindObservable('expanded', model.observeOnLatest('expanded'));
 
+      $scope.$on('column-chart:truncation-marker-clicked', function(event, datum) {
+        $scope.model.page.toggleExpanded($scope.model);
+      });
+
       $scope.$on('column-chart:datum-clicked', function(event, datum) {
         var hasFiltersOnCard = _.any($scope.model.getCurrentValue('activeFilters'), function(filter) {
           return filter.operand === datum.name;

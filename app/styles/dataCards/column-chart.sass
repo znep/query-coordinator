@@ -45,12 +45,17 @@ div.column-chart
 
     div.truncation-marker
       position: absolute
-      bottom: -1.2rem
+      bottom: 0
       right: 0
+      z-index: 2
+        // overlaps .labels
+      // height: dynamically set by directive to match label height
+
+      padding-bottom: 12px
+        // moves the ">>" slightly up, closer to x-axis
       cursor: pointer
       color: $chart-tick-color
       width: auto
-      height: auto
       font-size: 1.2rem
       font-family: sans-serif
 

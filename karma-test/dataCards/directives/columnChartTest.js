@@ -1,6 +1,11 @@
 describe('columnChart', function() {
   var th, compile, httpBackend, rootScope, scope, timeout;
 
+  var minSmallCardBarWidth = 8;
+  var maxSmallCardBarWidth = 30;
+  var minExpandedCardBarWidth = 15;
+  var maxExpandedCardBarWidth = 40;
+
   var testData = [
     {"name": "THEFT", "total": 21571},
     {"name": "BATTERY", "total": 18355},
@@ -109,6 +114,11 @@ describe('columnChart', function() {
       expect($('.labels div.label').length).to.equal(3);
     });
 
+    it('should create bars with a defined width', function() {
+      createNewColumnChart();
+      expect(typeof $('.bar.unfiltered').width() == 'number').to.equal(true);
+    });
+
     it('should not show the moar marker', function() {
       createNewColumnChart();
       expect($('.truncation-marker').css('display')).to.equal('none');
@@ -118,12 +128,12 @@ describe('columnChart', function() {
 
   describe('when not expanded at 100px', function() {
     var width = 100;
+    var expanded = false;
 
     it('should show the moar marker', function() {
-      createNewColumnChart(width);
+      createNewColumnChart(width, expanded);
       expect($('.truncation-marker').css('display')).to.equal('block');
     });
-
   });
 
   describe('when expanded at 640px', function() {
@@ -138,11 +148,104 @@ describe('columnChart', function() {
     });
 
     it('should not show the moar marker', function() {
-      createNewColumnChart();
+      createNewColumnChart(width, expanded);
       expect($('.truncation-marker').css('display')).to.equal('none');
     });
-
   });
+
+  /*   min and max bar widths spec */
+
+  describe('when not expanded at 50px', function() {
+    var width = 50;
+    var expanded = false;
+
+    it('should maintain a bar width >= minSmallCardBarWidth (' + minSmallCardBarWidth + 'px)', function() {
+      createNewColumnChart(width, expanded);
+      expect($('.bar.unfiltered').width() >= minSmallCardBarWidth).to.equal(true);
+    });
+
+    it('should maintain a bar width <= maxSmallCardBarWidth (' + maxSmallCardBarWidth + 'px)', function() {
+      createNewColumnChart(width, expanded);
+      expect($('.bar.unfiltered').width() <= maxSmallCardBarWidth).to.equal(true);
+    });
+
+    it('should maintain spacing between bars', function() {
+      createNewColumnChart(width, expanded);
+      var hoverTriggerBar1 = $('.bar.hover-trigger')[0];
+      var hoverTriggerBar2 = $('.bar.hover-trigger')[1];
+      var hoverTriggerBar1Left = parseInt($(hoverTriggerBar1).css('left'));
+      var hoverTriggerBar2Left = parseInt($(hoverTriggerBar2).css('left'));
+      var barWidth = parseInt($(hoverTriggerBar1).css('width'));
+      expect(hoverTriggerBar2Left - hoverTriggerBar1Left > barWidth).to.equal(true);
+    });
+  });
+
+  describe('when not expanded at 9000px', function() {
+    var width = 9000;
+    var expanded = false;
+
+    it('should maintain a bar width >=  minSmallCardBarWidth (' + minSmallCardBarWidth + 'px)', function() {
+      createNewColumnChart(width, expanded);
+      expect($('.bar.unfiltered').width() >= minSmallCardBarWidth).to.equal(true);
+    });
+
+    it('should maintain a bar width <= maxSmallCardBarWidth (' + maxSmallCardBarWidth + 'px)', function() {
+      createNewColumnChart(width, expanded);
+      expect($('.bar.unfiltered').width() <= maxSmallCardBarWidth).to.equal(true);
+    });
+
+    it('should maintain spacing between bars', function() {
+      createNewColumnChart(width, expanded);
+      var hoverTriggerBar1 = $('.bar.hover-trigger')[0];
+      var hoverTriggerBar2 = $('.bar.hover-trigger')[1];
+      var hoverTriggerBar1Left = parseInt($(hoverTriggerBar1).css('left'));
+      var hoverTriggerBar2Left = parseInt($(hoverTriggerBar2).css('left'));
+      var barWidth = parseInt($(hoverTriggerBar1).css('width'));
+      expect(hoverTriggerBar2Left - hoverTriggerBar1Left > barWidth).to.equal(true);
+    });
+  });
+
+  describe('when expanded at 50px', function() {
+    var width = 50;
+    var expanded = true;
+
+    it('should maintain a bar width >= minExpandedCardBarWidth (' + minExpandedCardBarWidth + 'px)', function() {
+      createNewColumnChart(width, expanded);
+      expect($('.bar.unfiltered').width() >= minExpandedCardBarWidth).to.equal(true);
+    });
+
+    it('should maintain spacing between bars', function() {
+      createNewColumnChart(width, expanded);
+      var hoverTriggerBar1 = $('.bar.hover-trigger')[0];
+      var hoverTriggerBar2 = $('.bar.hover-trigger')[1];
+      var hoverTriggerBar1Left = parseInt($(hoverTriggerBar1).css('left'));
+      var hoverTriggerBar2Left = parseInt($(hoverTriggerBar2).css('left'));
+      var barWidth = parseInt($(hoverTriggerBar1).css('width'));
+      expect(hoverTriggerBar2Left - hoverTriggerBar1Left > barWidth).to.equal(true);
+    });
+  });
+
+  describe('when expanded at 9000px', function() {
+    var width = 9000;
+    var expanded = true;
+
+    it('should maintain a bar width <= maxExpandedCardBarWidth (' + maxExpandedCardBarWidth + 'px)', function() {
+      createNewColumnChart(width, expanded);
+      expect($('.bar.unfiltered').width() <= maxExpandedCardBarWidth).to.equal(true);
+    });
+
+    it('should maintain spacing between bars', function() {
+      createNewColumnChart(width, expanded);
+      var hoverTriggerBar1 = $('.bar.hover-trigger')[0];
+      var hoverTriggerBar2 = $('.bar.hover-trigger')[1];
+      var hoverTriggerBar1Left = parseInt($(hoverTriggerBar1).css('left'));
+      var hoverTriggerBar2Left = parseInt($(hoverTriggerBar2).css('left'));
+      var barWidth = parseInt($(hoverTriggerBar1).css('width'));
+      expect(hoverTriggerBar2Left - hoverTriggerBar1Left > barWidth).to.equal(true);
+    });
+  });
+
+  /*  filtered data spec  */
 
   describe('when filtered data is provided', function() {
     var testDataWithFiltered = _.map(testData, function(d) {

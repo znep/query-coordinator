@@ -27,7 +27,7 @@
     },
     {
       "fieldName": "ward",
-      "shapeFile": "mysh-apes",
+      "shapeFile": "mash-apes",
       "cardSize": 2,
       "cardCustomStyle": {},
       "expandedCustomStyle": {},

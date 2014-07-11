@@ -16,7 +16,6 @@ angular.module('dataCards.directives').directive('cardVisualizationChoropleth', 
           return Rx.Observable.fromPromise(CardDataService.getChoroplethRegions(shapeFile));
         }).switchLatest();
 
-
       var aggregatedDataObservable = Rx.Observable.combineLatest(
           model.pluck('fieldName'),
           $scope.observe('whereClause'),
@@ -30,12 +29,17 @@ angular.module('dataCards.directives').directive('cardVisualizationChoropleth', 
       // Need: aggregate value, related feature id, human name, primary aggregate display unit (i.e. 'crimes')
       var mergeRegionAndAggregateData = function(
         activeFilterNames,
-        fieldName,
         geojsonRegions,
         aggregatedDataAsHash) {
 
-        var newFeatures = geojsonRegions.features.map(function(geojsonFeature) {
-          var featureId = geojsonFeature.properties[fieldName];
+        var newFeatures = geojsonRegions.features.filter(function(geojsonFeature) {
+          return geojsonFeature.properties.hasOwnProperty('_feature_id') &&
+                 geojsonFeature.properties['_feature_id'];
+        }).map(function(geojsonFeature) {
+
+          var name = geojsonFeature.properties['_feature_id'];
+          var mergedValue = aggregatedDataAsHash[name];
+
           var feature = {
             geometry: geojsonFeature.geometry,
             properties: geojsonFeature.properties,
@@ -44,8 +48,8 @@ angular.module('dataCards.directives').directive('cardVisualizationChoropleth', 
           // We're using the property name '__MERGED_SOCRATA_VALUE__' in order to avoid
           // overwriting existing properties on the geojson object (properties are user-
           // defined according to the spec).
-          feature.properties['__SOCRATA_MERGED_VALUE__'] = aggregatedDataAsHash[featureId];
-          feature.properties['__SOCRATA_FEATURE_HIGHLIGHTED__'] = _.contains(activeFilterNames, featureId);
+          feature.properties['__SOCRATA_MERGED_VALUE__'] = mergedValue ? mergedValue : null;
+          feature.properties['__SOCRATA_FEATURE_HIGHLIGHTED__'] = _.contains(activeFilterNames, name);
           return feature;
         });
 
@@ -60,11 +64,10 @@ angular.module('dataCards.directives').directive('cardVisualizationChoropleth', 
       $scope.bindObservable(
         'geojsonAggregateData',
         Rx.Observable.combineLatest(
-          model.pluck('fieldName'),
           geojsonRegions,
           aggregatedDataObservable,
           model.observeOnLatest('activeFilters'),
-          function(fieldName, geojsonRegions, aggregatedData, activeFilters) {
+          function(geojsonRegions, aggregatedData, activeFilters) {
 
             var activeFilterNames = _.pluck(activeFilters, 'operand');
 
@@ -75,7 +78,6 @@ angular.module('dataCards.directives').directive('cardVisualizationChoropleth', 
 
             return mergeRegionAndAggregateData(
               activeFilterNames,
-              fieldName,
               geojsonRegions,
               aggregatedDataAsHash
             );

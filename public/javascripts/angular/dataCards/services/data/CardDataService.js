@@ -17,9 +17,14 @@ angular.module('dataCards.services').factory('CardDataService', function($q, $ht
 
     // This now appears here rather than cardVizualizationChoropleth.js in order to
     // prepare for live GeoJSON data.
-    getChoroplethRegions: function(fieldName, datasetId, shapefileId) {
-      url = '/datasets/geojson/ward_geojson.json';
-      return $http.get(url, { cache: true }).then(function(response) {
+    getChoroplethRegions: function(shapeFileId) {
+      shapeFileId = DeveloperOverrides.dataOverrideForDataset(shapeFileId) || shapeFileId;
+      var url = '/views/{0}/rows.geojson'.format(shapeFileId);
+      return $http.get(
+        url,
+        {cache: true, headers: {'Accept': 'application/vnd.geo+json'}}
+      ).
+      then(function(response) {
         return response.data;
       });
     },

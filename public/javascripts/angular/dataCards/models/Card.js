@@ -3,6 +3,7 @@ angular.module('dataCards.models').factory('Card', function($injector, ModelHelp
     'type': 'object',
     'properties': {
       'fieldName': { 'type': 'string', 'minLength': 1},
+      'shapeFile': { 'type': 'string', 'minLength': 1},
       'cardSize': { 'type': 'integer' , 'minimum': 1, 'maximum': 3},
       'displayMode': { 'type': 'string', 'enum': ['figures', 'visualization'] },
       'expanded': { 'type': 'boolean' },

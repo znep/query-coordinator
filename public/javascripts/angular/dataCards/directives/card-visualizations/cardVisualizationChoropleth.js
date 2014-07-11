@@ -11,17 +11,11 @@ angular.module('dataCards.directives').directive('cardVisualizationChoropleth', 
       var model = $scope.observe('model');
       var dataset = model.pluck('page').observeOnLatest('dataset');
 
-      // Chris: Temporary static id for the shapefile until I can figure out if/how it
-      // will come from the Page Metadata service or elsewhere.
-      var shapefile = Rx.Observable.returnValue({id:'shap-ezzz'});
+      var geojsonRegions = model.observeOnLatest('shapeFile').map(
+        function(shapeFile) {
+          return Rx.Observable.fromPromise(CardDataService.getChoroplethRegions(shapeFile));
+        }).switchLatest();
 
-      var geojsonRegions = Rx.Observable.combineLatest(
-          model.pluck('fieldName'),
-          dataset,
-          shapefile,
-          function(fieldName, dataset, shapefile) {
-            return Rx.Observable.fromPromise(CardDataService.getChoroplethRegions(fieldName, dataset.id, shapefile.id));
-          }).switchLatest();
 
       var aggregatedDataObservable = Rx.Observable.combineLatest(
           model.pluck('fieldName'),
@@ -39,6 +33,14 @@ angular.module('dataCards.directives').directive('cardVisualizationChoropleth', 
         fieldName,
         geojsonRegions,
         aggregatedDataAsHash) {
+
+        // Check to make sure that we have features to merge and fail early if not.
+        if (!geojsonRegions.hasOwnProperty('features') ||
+            !geojsonRegions.features.hasOwnProperty('length') ||
+            geojsonRegions.features.length <= 0) {
+          return null;
+        }
+
         var newFeatures = geojsonRegions.features.map(function(geojsonFeature) {
           var featureId = geojsonFeature.properties[fieldName];
           var feature = {

@@ -173,9 +173,9 @@ describe('columnChart', function() {
       createNewColumnChart(width, expanded);
       var hoverTriggerBar1 = $('.bar.hover-trigger')[0];
       var hoverTriggerBar2 = $('.bar.hover-trigger')[1];
-      var hoverTriggerBar1Left = parseInt($(hoverTriggerBar1).css('left'));
-      var hoverTriggerBar2Left = parseInt($(hoverTriggerBar2).css('left'));
-      var barWidth = parseInt($(hoverTriggerBar1).css('width'));
+      var hoverTriggerBar1Left = parseInt(hoverTriggerBar1.style.left);
+      var hoverTriggerBar2Left = parseInt(hoverTriggerBar2.style.left);
+      var barWidth = parseInt(hoverTriggerBar1.style.width);
       expect(hoverTriggerBar2Left - hoverTriggerBar1Left > barWidth).to.equal(true);
     });
   });
@@ -186,22 +186,22 @@ describe('columnChart', function() {
 
     it('should maintain a bar width >=  minSmallCardBarWidth (' + minSmallCardBarWidth + 'px)', function() {
       createNewColumnChart(width, expanded);
-      expect($('.bar.unfiltered').width() >= minSmallCardBarWidth).to.equal(true);
+      expect($('.bar.unfiltered').width()).to.be.at.least(minSmallCardBarWidth);
     });
 
     it('should maintain a bar width <= maxSmallCardBarWidth (' + maxSmallCardBarWidth + 'px)', function() {
       createNewColumnChart(width, expanded);
-      expect($('.bar.unfiltered').width() <= maxSmallCardBarWidth).to.equal(true);
+      expect($('.bar.unfiltered').width()).to.be.at.most(maxSmallCardBarWidth);
     });
 
     it('should maintain spacing between bars', function() {
       createNewColumnChart(width, expanded);
       var hoverTriggerBar1 = $('.bar.hover-trigger')[0];
       var hoverTriggerBar2 = $('.bar.hover-trigger')[1];
-      var hoverTriggerBar1Left = parseInt($(hoverTriggerBar1).css('left'));
-      var hoverTriggerBar2Left = parseInt($(hoverTriggerBar2).css('left'));
-      var barWidth = parseInt($(hoverTriggerBar1).css('width'));
-      expect(hoverTriggerBar2Left - hoverTriggerBar1Left > barWidth).to.equal(true);
+      var hoverTriggerBar1Left = parseInt(hoverTriggerBar1.style.left);
+      var hoverTriggerBar2Left = parseInt(hoverTriggerBar2.style.left);
+      var barWidth = parseInt(hoverTriggerBar1.style.width);
+      expect(hoverTriggerBar2Left - hoverTriggerBar1Left).to.be.above(barWidth);
     });
   });
 
@@ -211,17 +211,17 @@ describe('columnChart', function() {
 
     it('should maintain a bar width >= minExpandedCardBarWidth (' + minExpandedCardBarWidth + 'px)', function() {
       createNewColumnChart(width, expanded);
-      expect($('.bar.unfiltered').width() >= minExpandedCardBarWidth).to.equal(true);
+      expect($('.bar.unfiltered').width()).to.be.at.least(minExpandedCardBarWidth);
     });
 
     it('should maintain spacing between bars', function() {
       createNewColumnChart(width, expanded);
       var hoverTriggerBar1 = $('.bar.hover-trigger')[0];
       var hoverTriggerBar2 = $('.bar.hover-trigger')[1];
-      var hoverTriggerBar1Left = parseInt($(hoverTriggerBar1).css('left'));
-      var hoverTriggerBar2Left = parseInt($(hoverTriggerBar2).css('left'));
-      var barWidth = parseInt($(hoverTriggerBar1).css('width'));
-      expect(hoverTriggerBar2Left - hoverTriggerBar1Left > barWidth).to.equal(true);
+      var hoverTriggerBar1Left = parseInt(hoverTriggerBar1.style.left);
+      var hoverTriggerBar2Left = parseInt(hoverTriggerBar2.style.left);
+      var barWidth = parseInt(hoverTriggerBar1.style.width);
+      expect(hoverTriggerBar2Left - hoverTriggerBar1Left).to.be.above(barWidth);
     });
   });
 
@@ -231,17 +231,17 @@ describe('columnChart', function() {
 
     it('should maintain a bar width <= maxExpandedCardBarWidth (' + maxExpandedCardBarWidth + 'px)', function() {
       createNewColumnChart(width, expanded);
-      expect($('.bar.unfiltered').width() <= maxExpandedCardBarWidth).to.equal(true);
+      expect($('.bar.unfiltered').width()).to.be.at.most(maxExpandedCardBarWidth);
     });
 
     it('should maintain spacing between bars', function() {
       createNewColumnChart(width, expanded);
       var hoverTriggerBar1 = $('.bar.hover-trigger')[0];
       var hoverTriggerBar2 = $('.bar.hover-trigger')[1];
-      var hoverTriggerBar1Left = parseInt($(hoverTriggerBar1).css('left'));
-      var hoverTriggerBar2Left = parseInt($(hoverTriggerBar2).css('left'));
-      var barWidth = parseInt($(hoverTriggerBar1).css('width'));
-      expect(hoverTriggerBar2Left - hoverTriggerBar1Left > barWidth).to.equal(true);
+      var hoverTriggerBar1Left = parseInt(hoverTriggerBar1.style.left);
+      var hoverTriggerBar2Left = parseInt(hoverTriggerBar2.style.left);
+      var barWidth = parseInt(hoverTriggerBar1.style.width);
+      expect(hoverTriggerBar2Left - hoverTriggerBar1Left).to.be.above(barWidth);
     });
   });
 

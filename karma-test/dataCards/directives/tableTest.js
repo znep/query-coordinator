@@ -3,6 +3,7 @@ describe('table', function() {
 
   beforeEach(module('dataCards'));
   beforeEach(module('dataCards.directives'));
+  beforeEach(module('/angular_templates/common/table.html'));
   beforeEach(inject(function($injector) {
     testHelpers = $injector.get('testHelpers');
     q = $injector.get('$q');

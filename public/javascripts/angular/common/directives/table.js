@@ -5,26 +5,7 @@ angular.module('socrataCommon.directives').directive('table', function(AngularRx
 
 
   return {
-    template:
-      '<div class="expand-message">' +
-      '<svg class="table-icon" xmlns="http://www.w3.org/2000/svg" xmlns:cc="http://creativecommons.org/ns#" xmlns:dc="http://purl.org/dc/elements/1.1/" xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#" height="64" version="1.1" width="64" viewBox="0 0 24 24">' + 
-      '<g transform="translate(0 -1028.4)"><path d="m5 1030.4c-1.1046 0-2 0.9-2 2v8 4 6c0 1.1 0.8954 2 2 2h14c1.105 0 2-0.9 2-2v-6-4-4l-6-6h-10z" fill="#95a5a6"/><path d="m5 1029.4c-1.1046 0-2 0.9-2 2v8 4 6c0 1.1 0.8954 2 2 2h14c1.105 0 2-0.9 2-2v-6-4-4l-6-6h-10z" fill="#bdc3c7"/><rect class="grid-cells" height="14" transform="translate(0 1028.4)" width="2" x="7" y="5"/><path d="m7 4c-0.5523 0-1 0.4477-1 1v2 1 2 1 2 1 2 1 2c0 0.552 0.4477 1 1 1h2 1 3 1 3c0.552 0 1-0.448 1-1v-2-1-2-3-3-1-2c0-0.5523-0.448-1-1-1h-3-1-4-2zm0 1h2v2h-2v-2zm3 0h3v2h-3v-2zm4 0h3v2h-3v-2zm-7 3h2v2h-2v-2zm3 0h3v2h-3v-2zm4 0h3v2h-3v-2zm-7 3h2v2h-2v-2zm3 0h3v2h-3v-2zm4 0h3v2h-3v-2zm-7 3h2v2h-2v-2zm3 0h3v2h-3v-2zm4 0h3v2h-3v-2zm-7 3h2v2h-2v-2zm3 0h3v2h-3v-2zm4 0h3v2h-3v-2z" class="grid-lines" transform="translate(0 1028.4)"/><path d="m21 1035.4-6-6v4c0 1.1 0.895 2 2 2h4z" fill="#95a5a6"/></g></svg>' +
-      '<small>Expand to view the data</small>' +
-      '</div>' +
-      '<div class="table-inner">' +
-        '<div class="table-head">' +
-          '<div class="th" ng-repeat="header in headers"' +
-              'data-column-id="{{header.columnId}}" style="width: {{header.width}}px;" ng-class="{active: header.active}">' +
-            '<span class="caret" ng-class="{sortUp: header.sortUp}"></span><span class="resize"></span>' +
-            '{{header.name}}' +
-          '</div>' +
-        '</div>' +
-        '<div class="table-body">' +
-          '<div class="table-expander"></div>' +
-        '</div>' +
-        '<div class="table-label">Loading...</div>' +
-        '<div class="table-no-rows-message">No rows to display</div>' +
-      '</div>',
+    templateUrl: '/angular_templates/common/table.html',
     restrict: 'A',
     scope: { rowCount: '=', filteredRowCount: '=', whereClause: '=', getRows: '=', expanded: '=', infinite: '=' },
     link: function(scope, element, attrs) {
@@ -195,9 +176,14 @@ angular.module('socrataCommon.directives').directive('table', function(AngularRx
                 return 'not';
               }
             });
+            check("location", function(cellData) {
+              if (_.isObject(cellData) && _.has(cellData, "needs_recoding")) {
+                return 'is';
+              }
+            });
             check("date", function(cellData) {
               // Checks for presence of '<num>-<num>-<num>' at start.
-              if (_.isString(cellContent) && cellContent.match(/^\d+-\d+-\d+/)){
+              if (_.isString(cellContent) && cellContent.match(/^\d+-\d+-\d+/)) {
                 var time = moment(cellContent);
                 if (time.isValid()) {
                   return 'possible';
@@ -238,27 +224,41 @@ angular.module('socrataCommon.directives').directive('table', function(AngularRx
             _.each(columnIds, function(header) {
               var cellClasses = 'cell';
               var cellContent = data_row[header] || '';
+              var cellText = '';
               var cellType = columnTypes[header];
               // Is Boolean?
               if (cellType === 'boolean') {
-                cellContent = cellContent ? '✓' : '✗';
+                cellText = cellContent ? '✓' : '✗';
               } else if (cellType === 'number') {
                 cellClasses += ' number';
                 // TODO: Remove this. This is just to satisfy Clint's pet peeve about years.
                 if (cellContent.length >= 5) {
-                  cellContent = $.commaify(cellContent);
+                  cellText = $.commaify(cellContent);
                 }
-              } else if (cellType === 'date'){
+              } else if (cellType == 'location') {
+                if (_.has(cellContent, 'human_address')) {
+                  var humanAddress = _.values(JSON.parse(cellContent.human_address));
+                  cellText = humanAddress.join(', ');
+                }
+                if (_.has(cellContent, 'latitude') && _.has(cellContent, 'longitude')) {
+                  cellText += ' ({0}°, {1}°)'.format(
+                    cellContent.latitude,
+                    cellContent.longitude
+                  );
+                }
+              } else if (cellType === 'date') {
                 var time = moment(cellContent);
                 // Check if Date or Date/Time
                 if (time.format('HH:mm:ss') === '00:00:00') {
-                  cellContent = time.format('YYYY MMM D');
+                  cellText = time.format('YYYY MMM D');
                 } else {
-                  cellContent = time.format('YYYY MMM DD HH:mm:ss');
+                  cellText = time.format('YYYY MMM DD HH:mm:ss');
                 }
+              } else {
+                cellText = cellContent;
               }
               blockHtml += '<div class="{0}" style="width: {1}px">{2}</div>'.
-                format(cellClasses, columnWidths[header], _.escape(cellContent));
+                format(cellClasses, columnWidths[header], _.escape(cellText));
             });
             blockHtml += '</div>';
           });

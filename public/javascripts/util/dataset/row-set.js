@@ -313,7 +313,7 @@ var RowSet = ServerModel.extend({
                 });
             };
 
-            if ($.isBlank(rs._totalCount))
+            if ($.isBlank(rs._totalCount) || rs._rerequestMeta)
             {
                 // Need to make init req to get all the meta
                 var initReq = reqs.shift();
@@ -326,6 +326,7 @@ var RowSet = ServerModel.extend({
                         if (_.isFunction(successCallback)) { successCallback(rows); }
                         loadAllRows();
                     }, errorCallback, true);
+                delete rs._rerequestMeta;
             }
             else
             {
@@ -614,6 +615,11 @@ var RowSet = ServerModel.extend({
         if (columnsChanged) { this._columnsInvalid = true; }
         _.each(this._dataset.columns || [], function(c) { c.invalidateData(); });
         this.trigger('row_change', [invRows, true]);
+    },
+
+    invalidateMeta: function()
+    {
+        this._rerequestMeta = true;
     },
 
     formattingChanged: function(condFmt)

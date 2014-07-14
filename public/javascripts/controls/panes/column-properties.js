@@ -581,6 +581,7 @@
 
             col.update(column);
             col.view.trigger('columns_changed');
+            col.view.invalidateMeta();
             if (!col.save(function(c)
                 {
                     if (needsConvert)

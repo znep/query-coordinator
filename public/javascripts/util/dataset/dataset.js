@@ -716,6 +716,12 @@ var Dataset = ServerModel.extend({
         return this._activeRowSet.loadedRows();
     },
 
+    invalidateMeta: function()
+    {
+        // Should be all row-sets?
+        this._activeRowSet.invalidateMeta();
+    },
+
     // Assume it goes at the end
     createRow: function(data, parRowId, parColId, successCallback, errorCallback)
     {

@@ -168,13 +168,13 @@
         blist.mainSpinner = $('.widgetWrapper .widgetContent').loadingSpinner({metric: 'main', model: blist.dataset});
     });
 
+    blist.feature_flags = <%= raw FeatureFlags.derive(@view, request, true).to_json %>;
     <%= raw @display.render_inline_setup_js('renderTypeContainer', self) %>
     blist.namespace.fetch('blist.widget');
     <%- if !current_user.nil? -%>
       blist.currentUserId = "<%= current_user.id %>";
     <%- end -%>
 
-    blist.feature_flags = <%= raw FeatureFlags.derive(@view, request, true).to_json %>;
     blist.configuration.newChartsEnabled = <%= module_enabled?(:new_charts) || true %>;
     blist.configuration.newMapsEnabled = <%= module_enabled?(:new_maps) == true %>;
     blist.configuration.oldChartsForced = <%= module_enabled?(:old_charts) == true %>;

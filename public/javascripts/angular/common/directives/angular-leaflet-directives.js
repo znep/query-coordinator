@@ -493,7 +493,7 @@
                     mouseover: function (e) {
                       safeApply(leafletScope, function () {
                         geojson.selected = feature;
-                        $rootScope.$broadcast('leafletDirectiveMap.geojsonMouseover', e);
+                        leafletScope.$parent.$broadcast('leafletDirectiveMap.geojsonMouseover', e);
                       });
                     },
                     mouseout: function (e) {
@@ -502,13 +502,13 @@
                       }
                       safeApply(leafletScope, function () {
                         geojson.selected = undefined;
-                        $rootScope.$broadcast('leafletDirectiveMap.geojsonMouseout', e);
+                        leafletScope.$parent.$broadcast('leafletDirectiveMap.geojsonMouseout', e);
                       });
                     },
                     click: function (e) {
                       safeApply(leafletScope, function () {
                         geojson.selected = feature;
-                        $rootScope.$broadcast('leafletDirectiveMap.geojsonClick', geojson.selected, e);
+                        leafletScope.$parent.$broadcast('leafletDirectiveMap.geojsonClick', geojson.selected, e);
                       });
                     },
                     dblclick: function(e) {
@@ -516,7 +516,7 @@
                       if (zoomOnDoubleClick) {
                         map.zoomIn();
                       }
-                      $rootScope.$broadcast('leafletDirectiveMap.geojsonDblClick', geojson.selected, e);
+                      leafletScope.$parent.$broadcast('leafletDirectiveMap.geojsonDblClick', geojson.selected, e);
                     }
                   });
                 };

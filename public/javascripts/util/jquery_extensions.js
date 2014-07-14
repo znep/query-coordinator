@@ -133,11 +133,12 @@ $.fn.flyout = function(options) {
   }, options);
   var self = this;
   var inflyout = false, intarget = false, flyout;
-  self.delegate(options.selector, 'mouseenter', function(e) {
-    var $target = $(e.currentTarget);
+  var renderFlyout = function(target) {
+    var $target = $(target);
     var parentElem = $(options.parent || $target);
     $('.flyout').remove();
     flyout = $('<div class="flyout"><div class="flyout-arrow"></div></div>');
+    flyout.data('target', $target);
     var getVal = function(data) {
       if (_.isFunction(data)) {
         return data($target, self, options, flyout);
@@ -230,6 +231,15 @@ $.fn.flyout = function(options) {
     }).bind('mouseleave', function(e) {
       if(!options.debugNeverClosePopups) flyout.remove();
     });
+  }
+  $(window).scroll(function(e) {
+    var $flyout = $('.flyout');
+    if (!_.isEmpty($flyout) && ( inflyout || intarget )) {
+      renderFlyout($flyout.data('target'));
+    }
+  });
+  self.delegate(options.selector, 'mouseenter', function(e) {
+    renderFlyout(e.currentTarget);
   }).delegate(options.selector, 'mouseleave', function(e) {
     if(!options.debugNeverClosePopups){
       intarget = false;

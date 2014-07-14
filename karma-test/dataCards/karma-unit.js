@@ -7,6 +7,13 @@ module.exports = function ( karma ) {
     basePath: '../../',
 
     /**
+     * Configure which files should be preproccessed.
+     */
+    preprocessors: {
+      '**/*.html': ['ng-html2js']
+    },
+
+    /**
      * This is the list of file patterns to load into the browser during testing.
      */
     files: [
@@ -39,14 +46,26 @@ module.exports = function ( karma ) {
       'public/javascripts/angular/dataCards/models.js',
       'public/javascripts/angular/dataCards/**/*.js',
       'public/javascripts/util/jquery_extensions.js',
-      'public/javascripts/bower/jquery.dotdotdot.js'
+      'public/javascripts/bower/jquery.dotdotdot.js',
+      /*    Angular Templates    */
+      'public/angular_templates/**/*.html'
     ],
     exclude: [
       'public/javascripts/angular/dataCards/app.js'
     ],
 
     frameworks: [ 'mocha', 'chai', 'chai-as-promised' ],
-    plugins: [ 'karma-chai', 'karma-chai-plugins', 'karma-mocha', 'karma-firefox-launcher', 'karma-chrome-launcher', 'karma-phantomjs-launcher', 'karma-coverage', 'karma-mocha-reporter'],
+    plugins: [
+      'karma-chai',
+      'karma-chai-plugins',
+      'karma-mocha',
+      'karma-firefox-launcher',
+      'karma-chrome-launcher',
+      'karma-phantomjs-launcher',
+      'karma-coverage',
+      'karma-mocha-reporter',
+      'karma-ng-html2js-preprocessor'
+    ],
 
     logLevel:  'WARN',
     /**
@@ -91,6 +110,14 @@ module.exports = function ( karma ) {
       'Chrome',
       'Firefox',
       'PhantomJS'
-    ]
+    ],
+
+    /**
+     * Configure html2js to compile the angular templates.
+     */
+    ngHtml2JsPreprocessor: {
+      // strip this from the file path
+      stripPrefix: 'public'
+    }
   });
 };

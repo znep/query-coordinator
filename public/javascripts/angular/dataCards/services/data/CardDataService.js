@@ -1,12 +1,32 @@
 angular.module('dataCards.services').factory('CardDataService', function($q, $http, DeveloperOverrides) {
 
+  // The implementation of the SoQL spec is incomplete at the moment, causing it to choke
+  // when it encounters a column name containing a hyphen. The spec states that quoting
+  // the column name with backticks should ensure the entire field name is used rather
+  // than the column name being truncated at the hyphen, but this is not currently working
+  // as intended.
+  // Instead, since hyphens are supposed to be rewritten to underscores internally anyway,
+  // we can avoid the quoting/truncation issue by rewriting hyphens to underscores before
+  // making the request from the front-end.
+  var replaceHyphensWithUnderscores = function(fragment) {
+    if (typeof fragment !== 'string') {
+      throw new Error('Cannot replace hyphens with underscores for non-string arguments.');
+    }
+    return fragment.replace(/\-/g, '_');
+  }
+
   return {
     getData: function(fieldName, datasetId, whereClauseFragment) {
       datasetId = DeveloperOverrides.dataOverrideForDataset(datasetId) || datasetId;
       if (fieldName == 'location') {
         return $q.when([]);
       }
-      var whereClause = _.isEmpty(whereClauseFragment) ? '' : 'where ' + whereClauseFragment;
+      if (_.isEmpty(whereClauseFragment)) {
+        var whereClause = '';
+      } else {
+        var whereClause = 'where ' + replaceHyphensWithUnderscores(whereClauseFragment);
+      }
+      fieldName = replaceHyphensWithUnderscores(fieldName);
       var url = '/api/id/{1}.json?$query=select {0} as name, count(*) as value {2} group by {0} order by count(*) desc limit 50'.format(fieldName, datasetId, whereClause);
       return $http.get(url, { cache: true }).then(function(response) {
         return _.map(response.data, function(item) {
@@ -34,7 +54,12 @@ angular.module('dataCards.services').factory('CardDataService', function($q, $ht
     // 1,000-row limit on SoQL queries.
     getChoroplethAggregates: function(fieldName, datasetId, whereClauseFragment) {
       datasetId = DeveloperOverrides.dataOverrideForDataset(datasetId) || datasetId;
-      var whereClause = _.isEmpty(whereClauseFragment) ? '' : 'where ' + whereClauseFragment;
+      if (_.isEmpty(whereClauseFragment)) {
+        var whereClause = '';
+      } else {
+        var whereClause = 'where ' + replaceHyphensWithUnderscores(whereClauseFragment);
+      }
+      fieldName = replaceHyphensWithUnderscores(fieldName);
       var url = ('/api/id/{1}.json?$query=' +
                  'select {0} as name, ' +
                  'count(*) as value ' +
@@ -52,6 +77,7 @@ angular.module('dataCards.services').factory('CardDataService', function($q, $ht
       datasetId = DeveloperOverrides.dataOverrideForDataset(datasetId) || datasetId;
       var url = '/api/id/{0}.json?$query=select count(0)'.format(datasetId);
       if (whereClause) {
+        whereClause = replaceHyphensWithUnderscores(whereClause);
         url += ' where {0}'.format(whereClause);
       }
       return $http.get(url, { cache: true }).then(function(response) {
@@ -65,6 +91,7 @@ angular.module('dataCards.services').factory('CardDataService', function($q, $ht
       var url = '/api/id/{0}.json?$offset={1}&$limit={2}&$order={3}'.
         format(datasetId, offset, limit, order);
       if (whereClause) {
+        whereClause = replaceHyphensWithUnderscores(whereClause);
         url += '&$where={0}'.format(whereClause);
       }
       return $http.get(url, { cache: true, timeout: timeout }).then(function(response) {

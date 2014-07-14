@@ -71,21 +71,24 @@ angular.module('socrataCommon.directives').directive('table', function(AngularRx
         if (columnIds.length > 0) return;
         columnIds = _.keys(row);
         updateColumnHeaders();
-
-        $head.delegate('.caret', 'click', function(e) {
-          var columnId = $(e.currentTarget).parent('.th').data('column-id');
-          var sortParts = sort.split(' ');
-          var active = sortParts[0] === columnId;
-          var sortUp = sortParts[1] === 'ASC';
-          if (!active || (active && sortUp)) {
-            sort = columnId + ' DESC';
-          } else {
-            sort = columnId + ' ASC';
-          }
-          updateColumnHeaders();
-          reloadRows();
-        });
+        $head.delegate('.caret', 'click', sortHandler);
+        $('body').delegate('.flyout .caret', 'click', sortHandler);
       };
+
+      var sortHandler = function(e) {
+        var columnId = $(e.currentTarget).parent().data('column-id');
+        var sortParts = sort.split(' ');
+        var active = sortParts[0] === columnId;
+        var sortUp = sortParts[1] === 'ASC';
+        if (!active || (active && sortUp)) {
+          sort = columnId + ' DESC';
+        } else {
+          sort = columnId + ' ASC';
+        }
+        updateColumnHeaders();
+        reloadRows();
+        e.preventDefault();
+      }
 
       var updateColumnHeaders = function(){
         scope.headers = _.map(columnIds, function(columnId) {
@@ -101,6 +104,11 @@ angular.module('socrataCommon.directives').directive('table', function(AngularRx
             width: columnWidths[columnId]
           }
         });
+        // Update flyout if present
+        var columnId = $(".flyout").data('column-id');
+        if (columnId) {
+          $head.find('.th').eq(_.indexOf(columnIds, columnId)).trigger('mouseenter');
+        }
       }
 
       // TODO: Clean this up. It's horribly expensive. ~400ms in tests.
@@ -352,16 +360,19 @@ angular.module('socrataCommon.directives').directive('table', function(AngularRx
         title: function($target, $head, options) {
           return _.escape($target.text());
         },
-        html: function($target, $head, options) {
+        html: function($target, $head, options, $element) {
           var columnId = $target.data('column-id');
           var sortParts = sort.split(' ');
           var active = columnId === sortParts[0];
           var sortUp = sortParts[1] === 'ASC';
-          if(!active) {
-            return 'Not Sorting';
-          } else {
-            return 'Sorted ' + (sortUp ? 'Ascending' : 'Descending');
+          var html = [];
+          $element.data('column-id', columnId);
+          if (active) {
+            html.push('Sorted {0}'.format(sortUp ? 'ascending' : 'descending'));
           }
+          html.push('<a class="caret" href="#">Click to sort {0}</a>'.
+            format(!sortUp ? 'ascending' : 'descending'));
+          return html.join('<br>');
         }
       });
       Rx.Observable.subscribeLatest(

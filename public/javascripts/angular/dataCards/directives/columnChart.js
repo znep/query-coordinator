@@ -178,7 +178,7 @@ angular.module('socrataCommon.directives').directive('columnChart', function($pa
           }
 
           $tooltip.css('left', '');
-          $tip.css('left', '');
+          $tip.css('left', tipOffset);
           if (rightEdge > 0) {
             // offset the tooltip position by the width of the tip, to ensure tip
             // seems attached to tooltip on right edge of column chart

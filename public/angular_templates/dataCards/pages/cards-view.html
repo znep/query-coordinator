@@ -36,41 +36,15 @@
     <!-- CARDS FILTER BAR -->
     <div class="quick-filter-bar" sticky-header update-on-resize="headerContent" ng-class="{stuck: headerIsStuck}">
       <div class="content">
-        <div class="filter">
-          <span>Crime Type</span>
-          <select>
-            <option val="1">Option 1</option>
-            <option val="2">Option 2</option>
-            <option val="3">Option 3</option>
-            <option val="4">Option 4</option>
-          </select>
-        </div>
-        <div class="filter">
-          <span>Crime Type</span>
-          <select>
-            <option val="1">Option 1</option>
-            <option val="2">Option 2</option>
-            <option val="3">Option 3</option>
-            <option val="4">Option 4</option>
-          </select>
-        </div>
-        <div class="filter">
-          <span>Crime Type</span>
-          <select>
-            <option val="1">Option 1</option>
-            <option val="2">Option 2</option>
-            <option val="3">Option 3</option>
-            <option val="4">Option 4</option>
-          </select>
-        </div>
-        <div class="filter active">
-          <span>Crime Type</span>
-          <select>
-            <option val="1">Option 1</option>
-            <option val="2">Option 2</option>
-            <option val="3">Option 3</option>
-            <option val="4">Option 4</option>
-          </select>
+        <span>
+          Showing <span class="light">all {{datasetRowDisplayUnit}}</span>
+        </span>
+        <div class="filter" ng-repeat="filter in appliedFiltersForDisplay">
+          <span ng-if="$first">where</span>
+          <span ng-if="!$first">and</span>
+          <span class="light lowercase">{{filter.column.title}}</span>
+          <span>{{filter.operator}}</span>
+          <span class="light">{{filter.operand}}</span>
         </div>
       </div>
     </div>

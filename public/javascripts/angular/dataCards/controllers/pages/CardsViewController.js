@@ -1,5 +1,5 @@
 angular.module('dataCards.controllers').controller('CardsViewController',
-  function($scope, AngularRxExtensions, SortedTileLayout, page) {
+  function($scope, $log, AngularRxExtensions, SortedTileLayout, Filter, page) {
 
     // Given a model property name P and an observable sequence of arrays of models having property P,
     // returns an observable sequence of arrays of objects pulling the last value yielded from P next
@@ -78,6 +78,7 @@ angular.module('dataCards.controllers').controller('CardsViewController',
 
     $scope.bindObservable('dataset', page.observe('dataset'));
     $scope.bindObservable('datasetPages', page.observe('dataset').observeOnLatest('pages'));
+    $scope.bindObservable('datasetRowDisplayUnit', page.observe('dataset').observeOnLatest('rowDisplayUnit'));
     $scope.bindObservable('datasetDaysUnmodified', page.observe('dataset').observeOnLatest('updatedAt').map(function(date) {
       // TODO just a placeholder implementation
       if (!date) return '';
@@ -102,6 +103,51 @@ angular.module('dataCards.controllers').controller('CardsViewController',
     });
     $scope.bindObservable('globalWhereClauseFragment', allCardsWheres.combineLatest(page.observe('baseSoqlFilter'), function(cardWheres, basePageWhere) {
       return _.compact([basePageWhere, cardWheres]).join(' AND ');
+    }));
+
+    $scope.bindObservable('appliedFiltersForDisplay', allCardsFilters.combineLatest(page.observe('dataset').observeOnLatest('columns'), function(filters, columns) {
+      function humanReadableOperator(filter) {
+        if (filter instanceof Filter.BinaryOperatorFilter) {
+          if (filter.operator === '=') {
+            return 'is';
+          } else {
+            throw new Error('Only = binary operator supported for MVP');
+          }
+        } else if (filter instanceof Filter.IsNullFilter) {
+          if (filter.isNull) {
+            return 'is';
+          } else {
+            return 'is not';
+          }
+        } else {
+          throw new Error('Unsupported filter type');
+        }
+      };
+
+      function humanReadableOperand(filter) {
+        if (filter instanceof Filter.BinaryOperatorFilter) {
+          return filter.operand;
+        } else if (filter instanceof Filter.IsNullFilter) {
+          return 'blank';
+        } else {
+          throw new Error('Unsupported filter type');
+        }
+      };
+
+      return _.reduce(filters, function(accumulator, appliedFilters, fieldName) {
+        if ($.isPresent(appliedFilters)) {
+          if (appliedFilters.length > 1) {
+            $log.warn('NOTE: quick filter bar does not yet support multiple filters for one card. Only first filter displayed.');
+          }
+          var filter = _.first(appliedFilters);
+          accumulator.push({
+            column: columns[fieldName],
+            operator: humanReadableOperator(filter),
+            operand: humanReadableOperand(filter)
+          });
+        }
+        return accumulator;
+      }, []);
     }));
 
     $scope.$on('stickyHeaderAvailableContentHeightChanged', function(event, availableContentHeight) {

@@ -16,6 +16,10 @@ $.fn.observeDimensions = function() {
   return dimensionsSubject;
 };
 
+$.isPresent = function(argument) {
+  return !_.isEmpty(argument);
+};
+
 $.commaify = function(value) {
   value = value + '';
   var pos = value.indexOf('.');

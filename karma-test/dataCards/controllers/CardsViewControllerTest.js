@@ -266,6 +266,10 @@ describe("CardsViewController", function() {
           var harness = makeMinimalController();
           expect(harness.scope.globalWhereClauseFragment).to.be.empty;
         });
+        it('should yield an empty set of filtered column names', function() {
+          var harness = makeMinimalController();
+          expect(harness.scope.appliedFiltersForDisplay).to.be.empty;
+        });
       });
 
       describe('with a base filter', function() {
@@ -274,6 +278,12 @@ describe("CardsViewController", function() {
           var fakeFilter = "fakeField='fakeValue'";
           harness.page.set('baseSoqlFilter', fakeFilter);
           expect(harness.scope.globalWhereClauseFragment).to.equal(fakeFilter);
+        });
+        it('should yield an empty set of filtered column names', function() {
+          var harness = makeMinimalController();
+          var fakeFilter = "fakeField='fakeValue'";
+          harness.page.set('baseSoqlFilter', fakeFilter);
+          expect(harness.scope.appliedFiltersForDisplay).to.be.empty;
         });
       });
     });
@@ -307,6 +317,31 @@ describe("CardsViewController", function() {
               filterOne.generateSoqlWhereFragment(firstCard.fieldName),
               filterTwo.generateSoqlWhereFragment(firstCard.fieldName)
               ));
+        }));
+        it("should yield the filtered column names on appliedFiltersForDisplay", inject(function(Filter) {
+          var harness = makeMinimalController();
+          var filterOne = new Filter.IsNullFilter(false);
+          var filterTwo = new Filter.BinaryOperatorFilter('=', 'test');
+
+          var firstCard = harness.page.getCurrentValue('cards')[0];
+          var thirdCard = harness.page.getCurrentValue('cards')[2];
+
+          // Just one card
+          firstCard.set('activeFilters', [filterOne]);
+          expect(_.pluck(harness.scope.appliedFiltersForDisplay, 'operator')).to.deep.equal([ 'is not' ]);
+          expect(_.pluck(harness.scope.appliedFiltersForDisplay, 'operand')).to.deep.equal([ 'blank' ]);
+
+          // Two filtered cards
+          thirdCard.set('activeFilters', [filterTwo]);
+          expect(_.pluck(harness.scope.appliedFiltersForDisplay, 'operator')).to.deep.equal([ 'is not' , 'is' ]);
+          expect(_.pluck(harness.scope.appliedFiltersForDisplay, 'operand')).to.deep.equal([ 'blank', filterTwo.operand ]);
+
+          // One filtered card, with two filters.
+          firstCard.set('activeFilters', [filterOne, filterTwo]);
+          thirdCard.set('activeFilters', []);
+          // NOTE: for MVP, only the first filter is honored for a particular card. See todo in production code.
+          expect(_.pluck(harness.scope.appliedFiltersForDisplay, 'operator')).to.deep.equal([ 'is not' ]);
+          expect(_.pluck(harness.scope.appliedFiltersForDisplay, 'operand')).to.deep.equal([ 'blank' ]);
         }));
       });
 

@@ -177,14 +177,13 @@ angular.module('socrataCommon.directives').directive('columnChart', function($pa
             $tooltip.css('bottom', verticalScale(d.total) + tipHeight);
           }
 
+          $tooltip.css('left', '');
+          $tip.css('left', '');
           if (rightEdge > 0) {
             // offset the tooltip position by the width of the tip, to ensure tip
             // seems attached to tooltip on right edge of column chart
             $tooltip.css('left', -1 * rightEdge);
             $tip.css('left', tipOffset + rightEdge);
-          }
-          else {
-            $tip.css('left', Math.max(0, tipOffset));
           }
 
           $tooltip.find('.name').text($.capitalizeWithDefault(d.name, undefinedPlaceholder));

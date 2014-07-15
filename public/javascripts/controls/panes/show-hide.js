@@ -127,6 +127,10 @@
 
             cols = _.sortBy(cols, function(cId) { return cpObj._view.columnForID(cId).position; });
 
+            var isUnhidingCols = _.any(
+                _.select(cpObj._view.realColumns, function(col) { return col.hidden; }),
+                function(col) { return _.include(cols, col.id + ''); });
+
             _.each(children, function(cols, id)
             {
                 var parCol = cpObj._view.columnForID(id);
@@ -139,6 +143,7 @@
             cpObj._view.setVisibleColumns(cols, function()
             {
                 cpObj._finishProcessing();
+                if (isUnhidingCols) { cpObj._view.invalidateRows(); }
                 cpObj._hide();
                 isLoading = false;
                 if (_.isFunction(finalCallback)) { finalCallback(); }

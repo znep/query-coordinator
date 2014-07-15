@@ -185,7 +185,7 @@ angular.module('socrataCommon.directives').directive('table', function(AngularRx
               }
             });
             check("location", function(cellData) {
-              if (_.isObject(cellData) && _.has(cellData, "needs_recoding")) {
+              if (_.isObject(cellData) && cellData.type == 'Point') {
                 return 'is';
               }
             });
@@ -241,19 +241,15 @@ angular.module('socrataCommon.directives').directive('table', function(AngularRx
                 cellClasses += ' number';
                 // TODO: Remove this. This is just to satisfy Clint's pet peeve about years.
                 if (cellContent.length >= 5) {
-                  cellText = $.commaify(cellContent);
+                  cellText = _.escape($.commaify(cellContent));
                 }
               } else if (cellType == 'location') {
-                if (_.has(cellContent, 'human_address')) {
-                  var humanAddress = _.values(JSON.parse(cellContent.human_address));
-                  cellText = humanAddress.join(', ');
-                }
-                if (_.has(cellContent, 'latitude') && _.has(cellContent, 'longitude')) {
-                  cellText += ' ({0}°, {1}°)'.format(
-                    cellContent.latitude,
-                    cellContent.longitude
-                  );
-                }
+                console.log(cellContent);
+                cellText += (' (<span title="Latitude">{0}°</span>, ' +
+                  '<span title="Longitude">{1}°</span>)').format(
+                  cellContent.coordinates[1],
+                  cellContent.coordinates[0]
+                );
               } else if (cellType === 'date') {
                 var time = moment(cellContent);
                 // Check if Date or Date/Time
@@ -263,10 +259,10 @@ angular.module('socrataCommon.directives').directive('table', function(AngularRx
                   cellText = time.format('YYYY MMM DD HH:mm:ss');
                 }
               } else {
-                cellText = cellContent;
+                cellText = _.escape(cellContent);
               }
               blockHtml += '<div class="{0}" style="width: {1}px">{2}</div>'.
-                format(cellClasses, columnWidths[header], _.escape(cellText));
+                format(cellClasses, columnWidths[header], cellText);
             });
             blockHtml += '</div>';
           });

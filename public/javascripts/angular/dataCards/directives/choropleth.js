@@ -29,7 +29,7 @@ angular.module('dataCards.directives').directive('choropleth', function(AngularR
       defaultColorClass = 'sequential',
       defaultLegendPos = 'bottomright',
       defaultStrokeColor = 'white',
-      defaultHighlightColor = 'white',
+      defaultHighlightColor = '#dfbd00',
       defaultSingleColor = 'teal',
       sequentialColors = ['#e4eef0', '#408499'],
       divergingColors = ['brown','lightyellow','teal'], // TODO: assumptions! # features = 1 --> ?

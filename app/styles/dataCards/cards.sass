@@ -75,6 +75,7 @@ body
 
     .metadatum-wrapper
       $activities-divider-width: 36px
+      text-align: right
 
       &:first-child
         .metadatum
@@ -82,20 +83,17 @@ body
 
       .metadatum
         padding: 10px 0
-        border-bottom: solid 1px $aqua-font-color
         white-space: nowrap
         overflow: hidden
+        margin: 10px 0
 
         span
-          display: inline-block
 
           &.label
-            float: left
             text-transform: uppercase
             color: $aqua-font-color
 
           &.value
-            float: right
             text-transform: capitalize
             font-weight: bold
 
@@ -105,69 +103,13 @@ body
       border-radius: $rounded-corners-border-radius
       border: solid 2px $btn-border-color
       background-color: $btn-bg-color
-      margin: 0 10px 10px 0
+      margin: 0 0 10px 10px
       color: $white-font-color
       width: 56px
       text-align: center
 
       &:hover
         color: $aqua-font-color
-
-    .view
-
-      header
-        text-transform: uppercase
-        font-size: 1em
-        display: inline-block
-        padding: 0 0 5px 0
-        margin: 0
-
-      a
-        font-size: 1em
-        color: $aqua-font-color
-        float: right
-
-      .panel
-        background-color: $panel-bg-color
-        border: solid 2px $panel-border-color
-        border-radius: $rounded-corners-border-radius
-        color: $lt-grey-font-color
-        min-height: 45px
-
-        // temporary lining
-        white-space: nowrap
-        overflow: hidden
-
-        .slide
-          $slide-height: 56px
-          // svg icon height (36p) + 20px top and bottom padding
-
-          height: $slide-height
-          padding: 20px 10px
-
-          // temporary lining
-          display: inline-block
-
-          > div
-            float: left
-            height: $slide-height
-
-            h1
-              padding-top: 10px
-              margin: 0
-              color: $white-font-color
-              font-size: 1.15em
-              font-weight: normal
-
-            h2
-              padding: 0
-              margin: 0
-              color: $lt-grey-font-color
-              font-size: 1em
-              font-weight: lighter
-
-            svg
-              padding: 10px
 
   .cards-content
     background-color: $cards-bg-color

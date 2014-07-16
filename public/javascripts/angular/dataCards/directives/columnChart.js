@@ -306,7 +306,14 @@ angular.module('socrataCommon.directives').directive('columnChart', function($pa
         }).
         style('right', function(d, i) {
           if ($(this).hasClass('orientation-left')) {
-            return (chartRightEdge - (horizontalScale(d.name) - centering - 1)) + 'px';
+            if (chartTruncated) {
+              // If the chart is truncated, chartRightEdge will report the full width
+              // of the chart as if it were not. We can get the actual width of the
+              // chart through the DOM instead.
+              return (parseInt($(element[0]).width(), 10) - (horizontalScale(d.name) - centering - 1)) + 'px';
+            } else {
+              return (chartRightEdge - (horizontalScale(d.name) - centering - 1)) + 'px';
+            }
           } else {
             return '0';
           }

@@ -2,7 +2,7 @@
 
 $metadata-top-padding: 10px
 $metadata-side-padding: 30px
-$rounded-corners-border-radius: 5px
+$rounded-corners-border-radius: 3px
 $filter-height: 72px
 // card sizes
 $card-margins: 5px
@@ -15,7 +15,7 @@ $card-description-padding-bottom: 1rem
 $card-size-1-height: 300px + $card-border-width * 2
 $card-size-2-height: 250px + $card-border-width * 2
 $card-size-3-height: 200px + $card-border-width * 2
-// --------------------------------
+// ---------------------------------
 
 body
   background-color: $cards-bg-color
@@ -38,13 +38,13 @@ body
   .cards-metadata
 
     background-color: $metadata-bg-color
-    color: $white-font-color
+    color: $dark-grey-font-color
     padding: $metadata-top-padding ($metadata-side-padding / 2)
     font-size: 12px
 
     .page-description
       margin-top: 1rem
-      color: #ccc
+      color: $dark-grey-font-color
 
     .page-description .show-more
       height: 1rem
@@ -104,12 +104,9 @@ body
       border: solid 2px $btn-border-color
       background-color: $btn-bg-color
       margin: 0 0 10px 10px
-      color: $white-font-color
+      color: $aqua-font-color
       width: 56px
       text-align: center
-
-      &:hover
-        color: $aqua-font-color
 
   .cards-content
     background-color: $cards-bg-color

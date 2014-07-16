@@ -2,6 +2,7 @@
 (function() {
 
   var t = function(str) { return $.t('plugins.hallo.' + str); };
+  var ie = navigator.appName === 'Microsoft Internet Explorer' || /Trident.*rv:([\w.]+)/.exec(navigator.userAgent);
 
   $.widget("ncri.hallohtml", {
     options: {
@@ -708,7 +709,7 @@
             if (el.hasClass('disabled')) {
               return;
             }
-            if (navigator.appName === 'Microsoft Internet Explorer') {
+            if (ie) {
               _this.options.editable.execute('FormatBlock', "<" + tagName + ">");
               return;
             }
@@ -766,11 +767,10 @@
         buttonCssClass: null
       },
       populateToolbar: function(toolbar) {
-        var buttonize, buttonset, command, format, ie, widget, _i, _len, _ref,
+        var buttonize, buttonset, command, format, widget, _i, _len, _ref,
           _this = this;
         widget = this;
         buttonset = jQuery("<span class=\"" + widget.widgetName + "\"></span>");
-        ie = navigator.appName === 'Microsoft Internet Explorer';
         command = (ie ? "FormatBlock" : "formatBlock");
         buttonize = function(format) {
           // clint.tseng@socrata.com 08 sept 2013
@@ -2702,7 +2702,7 @@
       },
       replaceSelection: function(cb) {
         var newTextNode, r, range, sel, t;
-        if (navigator.appName === 'Microsoft Internet Explorer') {
+        if (ie) {
           t = document.selection.createRange().text;
           r = document.selection.createRange();
           return r.pasteHTML(cb(t));
@@ -2717,7 +2717,7 @@
         }
       },
       removeAllSelections: function() {
-        if (navigator.appName === 'Microsoft Internet Explorer') {
+        if (ie) {
           return range.empty();
         } else {
           return window.getSelection().removeAllRanges();

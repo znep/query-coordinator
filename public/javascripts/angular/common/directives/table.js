@@ -367,7 +367,7 @@ angular.module('socrataCommon.directives').directive('table', function(AngularRx
             html.push('Sorted {0}'.format(sortUp ? 'ascending' : 'descending'));
           }
           html.push('<a class="caret" href="#">Click to sort {0}</a>'.
-            format(!sortUp ? 'ascending' : 'descending'));
+            format((active && !sortUp) ? 'ascending' : 'descending'));
           return html.join('<br>');
         }
       });

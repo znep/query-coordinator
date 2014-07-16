@@ -10,7 +10,8 @@ module.exports = function ( karma ) {
      * Configure which files should be preproccessed.
      */
     preprocessors: {
-      '**/*.html': ['ng-html2js']
+      '**/*.html': ['ng-html2js'],
+      '**/*.json': ['ng-html2js']
     },
 
     /**
@@ -48,7 +49,9 @@ module.exports = function ( karma ) {
       'public/javascripts/util/jquery_extensions.js',
       'public/javascripts/bower/jquery.dotdotdot.js',
       /*    Angular Templates    */
-      'public/angular_templates/**/*.html'
+      'public/angular_templates/**/*.html',
+      /*    Test datasets    */
+      'karma-test/dataCards/test-data/**/*.json',
     ],
     exclude: [
       'public/javascripts/angular/dataCards/app.js'

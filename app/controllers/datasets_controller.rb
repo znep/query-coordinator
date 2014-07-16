@@ -35,10 +35,12 @@ class DatasetsController < ApplicationController
     return if @view.nil?
 
     dsmtime = VersionAuthority.get_core_dataset_mtime(@view.id)[@view.id]
-    ConditionalRequestHandler.set_etag(response, dsmtime)
-
+    user = @current_user.nil? ? "ANONYMOUS" : @current_user.id
+    etag = "#{dsmtime}-#{user}"
+    ConditionalRequestHandler.set_etag(response, etag)
+    ConditionalRequestHandler.set_cache_control_headers(response, @current_user.nil?)
     if @current_user.nil?
-      if ConditionalRequestHandler.etag_matches_hash?(request, dsmtime)
+      if ConditionalRequestHandler.etag_matches_hash?(request, etag)
         render :nothing => true, :status => 304
         return true
       end

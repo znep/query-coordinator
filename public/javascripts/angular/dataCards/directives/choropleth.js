@@ -77,11 +77,9 @@ angular.module('dataCards.directives').directive('choropleth', function(AngularR
     scope: {
       'geojsonAggregateData': '='
     },
-    template: '<div class="choropleth-map-container"><leaflet class="choropleth-map" center="center" bounds="bounds" defaults="defaults" geojson="geojson" legend="legend"></leaflet></div>',
+    template: '<div class="choropleth-map-container"><leaflet class="choropleth-map" bounds="bounds" defaults="defaults" geojson="geojson" legend="legend"></leaflet></div>',
     controller: function($scope, $http) {
       // Map settings
-      $scope.center = {};
-
       $scope.layers = {
         baselayers: {
           mapbox: {

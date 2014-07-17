@@ -1,0 +1,58 @@
+{
+  "pageId": "sfbu-snes",
+  "datasetId": "cxsv-d7in",
+  "name": "Businesses registered in San Francisco",
+  "description": "",
+  "primaryAmountField": null,
+  "primaryAggregation": null,
+  "filterSoql": null,
+  "isDefaultPage": false,
+  "pageSource": "admin",
+  "cards": [
+    {
+      "description": "Class Code",
+      "fieldName": "class_code",
+      "cardSize": 2,
+      "cardCustomStyle": {},
+      "expandedCustomStyle": {},
+      "displayMode": "visualization",
+      "expanded": false
+    },
+    {
+      "description": "PBC Code",
+      "fieldName": "pbc_code",
+      "cardSize": 2,
+      "cardCustomStyle": {},
+      "expandedCustomStyle": {},
+      "displayMode": "visualization",
+      "expanded": false
+    },
+    {
+      "description": "Certificate Number",
+      "fieldName": "certificate_number",
+      "cardSize": 2,
+      "cardCustomStyle": {},
+      "expandedCustomStyle": {},
+      "displayMode": "visualization",
+      "expanded": false
+    },
+    {
+      "description": "DBA Name",
+      "fieldName": "dba_name",
+      "cardSize": 2,
+      "cardCustomStyle": {},
+      "expandedCustomStyle": {},
+      "displayMode": "visualization",
+      "expanded": false
+    },
+    {
+      "description": "DBA Start Date",
+      "fieldName": "dba_start_date",
+      "cardSize": 2,
+      "cardCustomStyle": {},
+      "expandedCustomStyle": {},
+      "displayMode": "visualization",
+      "expanded": false
+    }
+  ]
+}

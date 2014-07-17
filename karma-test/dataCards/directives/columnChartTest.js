@@ -203,6 +203,11 @@ describe('columnChart', function() {
       var barWidth = parseInt(hoverTriggerBar1.style.width);
       expect(hoverTriggerBar2Left - hoverTriggerBar1Left).to.be.above(barWidth);
     });
+
+    it('should not show the moar marker', function() {
+      createNewColumnChart(width, expanded);
+      expect($('.truncation-marker').css('display')).to.equal('none');
+    });
   });
 
   describe('when expanded at 50px', function() {
@@ -242,6 +247,11 @@ describe('columnChart', function() {
       var hoverTriggerBar2Left = parseInt(hoverTriggerBar2.style.left);
       var barWidth = parseInt(hoverTriggerBar1.style.width);
       expect(hoverTriggerBar2Left - hoverTriggerBar1Left).to.be.above(barWidth);
+    });
+
+    it('should not show the moar marker', function() {
+      createNewColumnChart(width, expanded);
+      expect($('.truncation-marker').css('display')).to.equal('none');
     });
   });
 

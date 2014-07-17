@@ -101,7 +101,6 @@ angular.module('socrataCommon.directives').directive('columnChart', function($pa
       // use computeChartDimensions to set rangeBand = maxBarWidth
       var rangeInterval = maxBarWidth * numberOfBars / (1 - barPadding);
       computeChartDimensions(rangeInterval);
-      if (!expanded) chartTruncated = true;
     }
 
     var rangeExtent = horizontalScale.rangeExtent();

@@ -56,7 +56,6 @@ angular.module('socrataCommon.directives').directive('columnChart', function($pa
     var horizontalScale = null;
     var rightOffset = 0;
     var rangeBand = 0;
-    var leftOffset = null;
 
     if (expanded) {
       var minBarWidth = minExpandedCardBarWidth;
@@ -103,13 +102,8 @@ angular.module('socrataCommon.directives').directive('columnChart', function($pa
       computeChartDimensions(rangeInterval);
     }
 
-    var rangeExtent = horizontalScale.rangeExtent();
-    var chartLeftEdge = rangeExtent[0];
-    var chartRightEdge = rangeExtent[1];
-    var rangeMagnitude = chartRightEdge - chartLeftEdge;
-
-
-    leftOffset = horizontalScale.range()[0];
+    var chartLeftOffset = horizontalScale.range()[0];
+    var chartRightEdge = dimensions.width - chartLeftOffset;
 
     $chart.css('height', chartHeight + topMargin + 1).
       css('width', chartWidth);
@@ -219,8 +213,9 @@ angular.module('socrataCommon.directives').directive('columnChart', function($pa
           var widthOfText = $(this).find('.text').width();
           var proposedLeftOfText = horizontalScale(datum.name);
 
-          var spaceAvailableOnRight = rangeMagnitude - (proposedLeftOfText - chartLeftEdge);
-          var spaceAvailableOnLeft = proposedLeftOfText - chartLeftEdge;
+          var rangeMagnitude = chartRightEdge - chartLeftOffset;
+          var spaceAvailableOnRight = rangeMagnitude - (proposedLeftOfText - chartLeftOffset);
+          var spaceAvailableOnLeft = proposedLeftOfText - chartLeftOffset;
 
           var spaceRemainingOnRight = spaceAvailableOnRight - widthOfText;
 
@@ -237,7 +232,7 @@ angular.module('socrataCommon.directives').directive('columnChart', function($pa
         return !labelOrientationsByIndex[index];
       }
 
-      var centering = leftOffset - rangeBand / 2;
+      var centering = chartLeftOffset - rangeBand / 2;
       var verticalPositionOfSpecialLabelRem = 2;
 
       var labelDivSelection = labelSelection.data(labelData, _.property('name'));
@@ -329,7 +324,7 @@ angular.module('socrataCommon.directives').directive('columnChart', function($pa
     };
 
     var horizontalBarPosition = function(d) {
-      return horizontalScale(d.name) - leftOffset;
+      return horizontalScale(d.name) - chartLeftOffset;
     };
 
     var updateBars = function(selection) {
@@ -398,7 +393,7 @@ angular.module('socrataCommon.directives').directive('columnChart', function($pa
       // UPDATE PROCESSING
       selection.
         style('width', rangeBand + 'px').
-        style('left', function(d) { return horizontalScale(d.name) - leftOffset + 'px'; }).
+        style('left', function(d) { return horizontalScale(d.name) - chartLeftOffset + 'px'; }).
         style('top', function() { return topMargin + 'px'; }).
         style('height', function() { return chartHeight + 'px'; }).
         classed('active', function(d) { return horizontalBarPosition(d) < chartWidth - truncationMarkerWidth; }).

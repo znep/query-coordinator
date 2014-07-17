@@ -100,6 +100,10 @@ angular.module('dataCards.directives').directive('choropleth', function(AngularR
         },
         scrollWheelZoom: false
       };
+      $scope.bounds = {}; // Initial bounds are empty. Consider caching a sensible bounds on the card data so we can
+                          // show a sensible default view while we get the geojson. However, a spinner might be a better
+                          // idea.
+
     },
     link: function($scope, element) {
 

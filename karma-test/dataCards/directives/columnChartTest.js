@@ -161,6 +161,11 @@ describe('columnChart', function() {
       createNewColumnChart(width, expanded);
       expect($('.truncation-marker').css('display')).to.equal('none');
     });
+
+    it('should not hide any bars', function() {
+      expect($('.bar-group:not(.active)').length).to.equal(0);
+      expect($('.hover-trigger:not(.active)').length).to.equal(0);
+    });
   });
 
   /*   min and max bar widths spec */
@@ -187,6 +192,10 @@ describe('columnChart', function() {
       var hoverTriggerBar2Left = parseInt(hoverTriggerBar2.style.left);
       var barWidth = parseInt(hoverTriggerBar1.style.width);
       expect(hoverTriggerBar2Left - hoverTriggerBar1Left > barWidth).to.equal(true);
+    });
+    it('should hide some bars', function() {
+      expect($('.bar-group:not(.active)').length).to.not.equal(0);
+      expect($('.hover-trigger:not(.active)').length).to.not.equal(0);
     });
   });
 

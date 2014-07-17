@@ -10,6 +10,7 @@ angular.module('socrataCommon.directives').directive('columnChart', function($pa
     var tipHeight = 10;
     var tipWidth = 10;
     var tooltipWidth = 130;
+    var tooltipPadding = 8;
     var tooltipYOffset = 9999; // invisible (max) height of tooltip above tallest bar; hack to make tooltip appear above chart/card-text
     var horizontalScrollbarHeight = 15; // used to keep horizontal scrollbar within .card-visualization upon expand
     var numberOfDefaultLabels = expanded ? chartData.length : 3;
@@ -105,12 +106,12 @@ angular.module('socrataCommon.directives').directive('columnChart', function($pa
     var chartLeftOffset = horizontalScale.range()[0];
     var chartRightEdge = dimensions.width - chartLeftOffset;
 
-    $chart.css('height', chartHeight + topMargin + 1).
-      css('width', chartWidth);
+    $chart.css('height', chartHeight + topMargin + 1);
     $chartScroll.
       css('padding-top', 0).
       css('padding-bottom', bottomMargin).
-      css('top', 'initial');
+      css('top', 'initial').
+      css('width', chartWidth);
 
     var maxValue = _.isEmpty(chartData) ? 0 : chartData[0].total;
     verticalScale.domain([maxValue, 0]);
@@ -160,7 +161,8 @@ angular.module('socrataCommon.directives').directive('columnChart', function($pa
         each(function(d) {
           var $tooltip = $(this);
           var $tip = $tooltip.find('.tip');
-          var rightEdge = horizontalScale(d.name) + tooltipWidth - chartWidth - rangeBand / 2 - tipWidth;
+          var widthOfChart = $chartScroll[0].scrollWidth;
+          var rightEdge = horizontalScale(d.name) + tooltipWidth + tooltipPadding * 2 - widthOfChart - rangeBand / 2 - tipWidth;
 
           $tooltip.css('width', tooltipWidth);
 
@@ -175,8 +177,8 @@ angular.module('socrataCommon.directives').directive('columnChart', function($pa
           if (rightEdge > 0) {
             // offset the tooltip position by the width of the tip, to ensure tip
             // seems attached to tooltip on right edge of column chart
-            $tooltip.css('left', -1 * rightEdge);
-            $tip.css('left', tipOffset + rightEdge);
+            $tooltip.css('left', -1 * rightEdge - tipWidth);
+            $tip.css('left', tipOffset + rightEdge + tipWidth);
           }
 
           var valueDescriptor = $.capitalizeWithDefault(d.name, undefinedPlaceholder);
@@ -358,7 +360,7 @@ angular.module('socrataCommon.directives').directive('columnChart', function($pa
       selection.
         style('left', function(d) { return horizontalBarPosition(d) + 'px'; }).
         classed('special', function(d) { return d.special; }).
-        classed('active', function(d) { return horizontalBarPosition(d) < chartWidth - truncationMarkerWidth; });
+        classed('active', function(d) { return expanded || horizontalBarPosition(d) < chartWidth - truncationMarkerWidth; });
 
       // Update the position of the individual bars.
       bars.
@@ -403,7 +405,7 @@ angular.module('socrataCommon.directives').directive('columnChart', function($pa
         style('left', function(d) { return horizontalScale(d.name) - chartLeftOffset + 'px'; }).
         style('top', function() { return topMargin + 'px'; }).
         style('height', function() { return chartHeight + 'px'; }).
-        classed('active', function(d) { return horizontalBarPosition(d) < chartWidth - truncationMarkerWidth; }).
+        classed('active', function(d) { return expanded || horizontalBarPosition(d) < chartWidth - truncationMarkerWidth; }).
         on('mouseover', function() {
           // fix tooltip with magical padding
           mouseoverHoverTriggerBars(selection);

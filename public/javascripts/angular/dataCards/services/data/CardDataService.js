@@ -27,7 +27,8 @@ angular.module('dataCards.services').factory('CardDataService', function($q, $ht
         var whereClause = 'where ' + replaceHyphensWithUnderscores(whereClauseFragment);
       }
       fieldName = replaceHyphensWithUnderscores(fieldName);
-      var url = '/api/id/{1}.json?$query=select {0} as name, count(*) as value {2} group by {0} order by count(*) desc limit 50'.format(fieldName, datasetId, whereClause);
+      // TODO: Implement some method for paging/showing data has been truncated.
+      var url = '/api/id/{1}.json?$query=select {0} as name, count(*) as value {2} group by {0} order by count(*) desc limit 200'.format(fieldName, datasetId, whereClause);
       return $http.get(url, { cache: true }).then(function(response) {
         return _.map(response.data, function(item) {
           return { name: item.name, value: Number(item.value) };

@@ -127,6 +127,9 @@ div.column-chart
             text-overflow: ellipsis
             overflow-x: hidden
 
+            &.undefined
+              font-style: italic
+
           div.value
             font-size: $small-font-size * 1.5
 
@@ -197,6 +200,7 @@ div.column-chart
       position: absolute
       top: 2px
       right: 0
+
       &.dim
         opacity: 0.2
 
@@ -215,6 +219,9 @@ div.column-chart
         white-space: nowrap
         text-overflow: ellipsis
         overflow: hidden
+
+        &.undefined
+          font-style: italic
 
       &.orientation-right
         div.callout

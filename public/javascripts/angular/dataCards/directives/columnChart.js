@@ -13,7 +13,7 @@ angular.module('socrataCommon.directives').directive('columnChart', function($pa
     var tooltipYOffset = 9999; // invisible (max) height of tooltip above tallest bar; hack to make tooltip appear above chart/card-text
     var horizontalScrollbarHeight = 15; // used to keep horizontal scrollbar within .card-visualization upon expand
     var numberOfDefaultLabels = expanded ? chartData.length : 3;
-    var undefinedPlaceholder = '(Undefined)';
+    var undefinedPlaceholder = '(No value)';
 
     var minSmallCardBarWidth = 8;
     var maxSmallCardBarWidth = 30;
@@ -179,7 +179,12 @@ angular.module('socrataCommon.directives').directive('columnChart', function($pa
             $tip.css('left', tipOffset + rightEdge);
           }
 
-          $tooltip.find('.name').text($.capitalizeWithDefault(d.name, undefinedPlaceholder));
+          var valueDescriptor = $.capitalizeWithDefault(d.name, undefinedPlaceholder);
+          var valueName = $tooltip.find('.name');
+          valueName.text(valueDescriptor);
+          if (valueDescriptor === undefinedPlaceholder) {
+            valueName.addClass('undefined');
+          }
           $tooltip.find('.value-unfiltered .value').text($.commaify(d.total));
           $tooltip.find('.value-filtered .value').text($.commaify(d.filtered));
         });
@@ -254,6 +259,8 @@ angular.module('socrataCommon.directives').directive('columnChart', function($pa
           }).
           text(function(d, i, j) {
             return $.capitalizeWithDefault(d.name, undefinedPlaceholder);
+          }).classed('undefined', function(d, i, j) {
+            return $.capitalizeWithDefault(d.name, undefinedPlaceholder) === undefinedPlaceholder;
           });
 
       // These widths relate to the visualLength() method call in the maxLength calculation above.

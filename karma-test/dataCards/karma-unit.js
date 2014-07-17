@@ -11,7 +11,8 @@ module.exports = function ( karma ) {
      */
     preprocessors: {
       '**/*.html': ['ng-html2js'],
-      '**/*.json': ['ng-html2js']
+      '**/*.json': ['ng-html2js'],
+      '**/*.sass': ['sass']
     },
 
     /**
@@ -52,6 +53,9 @@ module.exports = function ( karma ) {
       'public/angular_templates/**/*.html',
       /*    Test datasets    */
       'karma-test/dataCards/test-data/**/*.json',
+      /*    SASS    */
+      'app/styles/dataCards/column-chart.sass',
+      'app/styles/dataCards/main.sass',
     ],
     exclude: [
       'public/javascripts/angular/dataCards/app.js'
@@ -67,7 +71,8 @@ module.exports = function ( karma ) {
       'karma-phantomjs-launcher',
       'karma-coverage',
       'karma-mocha-reporter',
-      'karma-ng-html2js-preprocessor'
+      'karma-ng-html2js-preprocessor',
+      require('../karma-sass-preprocessor.js')
     ],
 
     logLevel:  'WARN',

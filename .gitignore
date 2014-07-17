@@ -18,3 +18,4 @@ karma-test/coverage-reports
 /node_modules/karma-phantomjs-launcher/
 /node_modules/.bin/phantomjs
 /node_modules/phantomjs/
+.sass-cache

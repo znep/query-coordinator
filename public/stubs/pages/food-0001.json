@@ -46,8 +46,8 @@
       "expanded": false
     },
     {
-      "description": "Computed_q52v-juyw_location",
-      "fieldName": ":Computed_q52v-juyw_location",
+      "description": "Community Area",
+      "fieldName": ":Computed_q52vjuyw_location",
       "cardSize": 2,
       "cardCustomStyle": {},
       "expandedCustomStyle": {},
@@ -56,8 +56,8 @@
       "shapeFile": "q52v-juyw"
     },
     {
-      "description": "Computed_2dy8-3vps_location",
-      "fieldName": ":Computed_2dy8-3vps_location",
+      "description": "Zip Code",
+      "fieldName": ":Computed_2dy83vps_location",
       "cardSize": 2,
       "cardCustomStyle": {},
       "expandedCustomStyle": {},
@@ -66,8 +66,8 @@
       "shapeFile": "2dy8-3vps"
     },
     {
-      "description": "Computed_stkm-eqc8_location",
-      "fieldName": ":Computed_stkm-eqc8_location",
+      "description": "Ward",
+      "fieldName": ":Computed_stkmeqc8_location",
       "cardSize": 2,
       "cardCustomStyle": {},
       "expandedCustomStyle": {},

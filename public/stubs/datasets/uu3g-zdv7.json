@@ -1,0 +1,155 @@
+{
+  "id": "uu3g-zdv7",
+  "rowDisplayUnit": "Inspection",
+  "defaultAggregateColumn": ":count",
+  "domain": "dataspace-demo.test-socrata.com",
+  "ownerId": "jc63-heng",
+  "updatedAt": "2014-06-20T10:42:55.000-07:00",
+  "columns": [
+    {
+      "title": "Inspection Id",
+      "name": "inspection_id",
+      "physicalDatatype": "number",
+      "logicalDatatype": "identifier",
+      "importance": 3
+    },
+    {
+      "title": "DBA Name",
+      "description": "Doing Business As",
+      "name": "dba_name",
+      "physicalDatatype": "text",
+      "logicalDatatype": "text",
+      "importance": 1
+    },
+    {
+      "title": "AKA Name",
+      "description": "Also Known As",
+      "name": "aka_name",
+      "physicalDatatype": "text",
+      "logicalDatatype": "text",
+      "importance": 2
+    },
+    {
+      "title": "License Number",
+      "name": "license_",
+      "physicalDatatype": "number",
+      "logicalDatatype": "identifier",
+      "importance": 3
+    },
+    {
+      "title": "Facility Type",
+      "name": "facility_type",
+      "physicalDatatype": "text",
+      "logicalDatatype": "category",
+      "importance": 1
+    },
+    {
+      "title": "Risk",
+      "name": "risk",
+      "physicalDatatype": "text",
+      "logicalDatatype": "category",
+      "importance": 3
+    },
+    {
+      "title": "Address",
+      "name": "address",
+      "physicalDatatype": "text",
+      "logicalDatatype": "text",
+      "importance": 3
+    },
+    {
+      "title": "City",
+      "name": "city",
+      "physicalDatatype": "text",
+      "logicalDatatype": "text",
+      "importance": 3
+    },
+    {
+      "title": "State",
+      "name": "state",
+      "physicalDatatype": "text",
+      "logicalDatatype": "text",
+      "importance": 3
+    },
+    {
+      "title": "Zip",
+      "name": "zip",
+      "physicalDatatype": "number",
+      "logicalDatatype": "text",
+      "importance": 3
+    },
+    {
+      "title": "Inspection Date",
+      "name": "inspection_date",
+      "physicalDatatype": "timestamp",
+      "logicalDatatype": "time",
+      "importance": 2
+    },
+    {
+      "title": "Inspection Type",
+      "name": "inspection_type",
+      "physicalDatatype": "text",
+      "logicalDatatype": "category",
+      "importance": 2
+    },
+    {
+      "title": "Results",
+      "name": "results",
+      "physicalDatatype": "text",
+      "logicalDatatype": "category",
+      "importance": 2
+    },
+    {
+      "title": "Violations",
+      "name": "violations",
+      "physicalDatatype": "text",
+      "logicalDatatype": "text",
+      "importance": 2
+    },
+    {
+      "title": "Latitude",
+      "name": "latitude",
+      "physicalDatatype": "number",
+      "logicalDatatype": "amount",
+      "importance": 4
+    },
+    {
+      "title": "Longitude",
+      "name": "longitude",
+      "physicalDatatype": "number",
+      "logicalDatatype": "amount",
+      "importance": 4
+    },
+    {
+      "title": "Location",
+      "name": "location",
+      "physicalDatatype": "geo entity",
+      "logicalDatatype": "location",
+      "importance": 1
+    },
+    {
+      "title": "Computed_q52v-juyw_location",
+      "description": "placeholder for Computed_q52v-juyw_location",
+      "name": ":Computed_q52v-juyw_location",
+      "physicalDatatype": "text",
+      "logicalDatatype": "location",
+      "importance": 2
+    },
+    {
+      "title": "Computed_2dy8-3vps_location",
+      "description": "placeholder for Computed_2dy8-3vps_location",
+      "name": ":Computed_2dy8-3vps_location",
+      "physicalDatatype": "text",
+      "logicalDatatype": "location",
+      "importance": 2
+    },
+    {
+      "title": "Computed_stkm-eqc8_location",
+      "description": "placeholder for Computed_stkm-eqc8_location",
+      "name": ":Computed_stkm-eqc8_location",
+      "physicalDatatype": "text",
+      "logicalDatatype": "location",
+      "importance": 2
+    }
+  ]
+}

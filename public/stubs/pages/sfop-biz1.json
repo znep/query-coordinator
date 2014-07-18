@@ -1,0 +1,98 @@
+{
+  "pageId": "sfbu-snes",
+  "datasetId": "4z2p-si7b",
+  "name": "Businesses registered in San Francisco",
+  "description": "",
+  "primaryAmountField": null,
+  "primaryAggregation": null,
+  "filterSoql": null,
+  "isDefaultPage": false,
+  "pageSource": "admin",
+  "cards": [
+    {
+      "description": "Class Code",
+      "fieldName": "class_code",
+      "cardSize": 2,
+      "cardCustomStyle": {},
+      "expandedCustomStyle": {},
+      "displayMode": "visualization",
+      "expanded": false
+    },
+    {
+      "description": "PBC Code",
+      "fieldName": "pbc_code",
+      "cardSize": 2,
+      "cardCustomStyle": {},
+      "expandedCustomStyle": {},
+      "displayMode": "visualization",
+      "expanded": false
+    },
+    {
+      "description": "Certificate Number",
+      "fieldName": "certificate_number",
+      "cardSize": 2,
+      "cardCustomStyle": {},
+      "expandedCustomStyle": {},
+      "displayMode": "visualization",
+      "expanded": false
+    },
+    {
+      "description": "DBA Name",
+      "fieldName": "dba_name",
+      "cardSize": 2,
+      "cardCustomStyle": {},
+      "expandedCustomStyle": {},
+      "displayMode": "visualization",
+      "expanded": false
+    },
+    {
+      "description": "DBA Start Date",
+      "fieldName": "dba_start_date",
+      "cardSize": 2,
+      "cardCustomStyle": {},
+      "expandedCustomStyle": {},
+      "displayMode": "visualization",
+      "expanded": false
+    },
+    {
+      "description": "Supervisor District",
+      "fieldName": ":Computed_7nztvhj8_location",
+      "cardSize": 2,
+      "cardCustomStyle": {},
+      "expandedCustomStyle": {},
+      "displayMode": "visualization",
+      "expanded": false,
+      "shapeFile": "7nzt-vhj8"
+    },
+    {
+      "description": "Police District",
+      "fieldName": ":Computed_bkq3jzqz_location",
+      "cardSize": 2,
+      "cardCustomStyle": {},
+      "expandedCustomStyle": {},
+      "displayMode": "visualization",
+      "expanded": false,
+      "shapeFile": "bkq3-jzqz"
+    },
+    {
+      "description": "Neighborhood",
+      "fieldName": ":Computed_uaiagpu3_location",
+      "cardSize": 2,
+      "cardCustomStyle": {},
+      "expandedCustomStyle": {},
+      "displayMode": "visualization",
+      "expanded": false,
+      "shapeFile": "uaia-gpu3"
+    },
+    {
+      "description": "Zip Code",
+      "fieldName": ":Computed_rcatieut_location",
+      "cardSize": 2,
+      "cardCustomStyle": {},
+      "expandedCustomStyle": {},
+      "displayMode": "visualization",
+      "expanded": false,
+      "shapeFile": "rcat-ieut"
+    }
+  ]
+}

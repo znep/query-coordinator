@@ -1,5 +1,5 @@
 {
-  "id": "wnqb-shmb",
+  "id": "5dbk-72xp",
   "rowDisplayUnit": "Case",
   "defaultAggregateColumn": ":count",
   "domain": "dataspace-demo.test-socrata.com",
@@ -112,28 +112,36 @@
       "importance": 3
     },
     {
-      "title": "Computed_q52vjuyw_point",
-      "description": "placeholder for Computed_q52vjuyw_point",
-      "name": ":Computed_q52vjuyw_point",
+      "title": "Supervisor District",
+      "description": "",
+      "name": ":Computed_7nztvhj8_point",
       "physicalDatatype": "text",
-      "logicalDatatype": "text",
+      "logicalDatatype": "location",
+      "importance": 1
+    },
+    {
+      "title": "Police District",
+      "description": "",
+      "name": ":Computed_bkq3jzqz_point",
+      "physicalDatatype": "text",
+      "logicalDatatype": "location",
       "importance": 3
     },
     {
-      "title": "Computed_stkmeqc8_point",
-      "description": "placeholder for Computed_stkmeqc8_point",
-      "name": ":Computed_stkmeqc8_point",
+      "title": "Neighborhood",
+      "description": "",
+      "name": ":Computed_uaiagpu3_point",
       "physicalDatatype": "text",
-      "logicalDatatype": "text",
-      "importance": 3
+      "logicalDatatype": "location",
+      "importance": 1
     },
     {
-      "title": "Computed_2dy83vps_point",
-      "description": "placeholder for Computed_2dy83vps_point",
-      "name": ":Computed_2dy83vps_point",
+      "title": "Zip Code",
+      "description": "",
+      "name": ":Computed_rcatieut_point",
       "physicalDatatype": "text",
-      "logicalDatatype": "text",
-      "importance": 3
+      "logicalDatatype": "location",
+      "importance": 2
     }
   ]
 }

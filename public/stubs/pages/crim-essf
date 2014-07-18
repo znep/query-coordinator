@@ -1,6 +1,6 @@
 {
   "pageId": "crim-essf",
-  "datasetId": "skb3-aznf",
+  "datasetId": "xb2a-ixcv",
   "name": "San Francisco Crimes",
   "description": "Incidents derived from SFPD Crime Incident Reporting system. Previous month. Updated daily.",
   "primaryAmountField": null,
@@ -62,6 +62,46 @@
       "expandedCustomStyle": {},
       "displayMode": "visualization",
       "expanded": false
+    },
+        {
+      "description": "Supervisor District",
+      "fieldName": ":Computed_7nztvhj8_point",
+      "cardSize": 2,
+      "cardCustomStyle": {},
+      "expandedCustomStyle": {},
+      "displayMode": "visualization",
+      "expanded": false,
+      "shapeFile": "7nzt-vhj8"
+    },
+    {
+      "description": "Police District",
+      "fieldName": ":Computed_bkq3jzqz_point",
+      "cardSize": 2,
+      "cardCustomStyle": {},
+      "expandedCustomStyle": {},
+      "displayMode": "visualization",
+      "expanded": false,
+      "shapeFile": "bkq3-jzqz"
+    },
+    {
+      "description": "Neighborhood",
+      "fieldName": ":Computed_uaiagpu3_point",
+      "cardSize": 2,
+      "cardCustomStyle": {},
+      "expandedCustomStyle": {},
+      "displayMode": "visualization",
+      "expanded": false,
+      "shapeFile": "uaia-gpu3"
+    },
+    {
+      "description": "Zip Code",
+      "fieldName": ":Computed_rcatieut_point",
+      "cardSize": 2,
+      "cardCustomStyle": {},
+      "expandedCustomStyle": {},
+      "displayMode": "visualization",
+      "expanded": false,
+      "shapeFile": "rcat-ieut"
     },
     {
       "description": "All Data",

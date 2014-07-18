@@ -1,6 +1,6 @@
 {
   "pageId": "sfbu-snes",
-  "datasetId": "cxsv-d7in",
+  "datasetId": "ub9r-xjqt",
   "name": "Businesses registered in San Francisco",
   "description": "",
   "primaryAmountField": null,
@@ -53,6 +53,46 @@
       "expandedCustomStyle": {},
       "displayMode": "visualization",
       "expanded": false
+    },
+    {
+      "description": "Supervisor District",
+      "fieldName": ":Computed_7nztvhj8_location",
+      "cardSize": 2,
+      "cardCustomStyle": {},
+      "expandedCustomStyle": {},
+      "displayMode": "visualization",
+      "expanded": false,
+      "shapeFile": "7nzt-vhj8"
+    },
+    {
+      "description": "Police District",
+      "fieldName": ":Computed_bkq3jzqz_location",
+      "cardSize": 2,
+      "cardCustomStyle": {},
+      "expandedCustomStyle": {},
+      "displayMode": "visualization",
+      "expanded": false,
+      "shapeFile": "bkq3-jzqz"
+    },
+    {
+      "description": "Neighborhood",
+      "fieldName": ":Computed_uaiagpu3_location",
+      "cardSize": 2,
+      "cardCustomStyle": {},
+      "expandedCustomStyle": {},
+      "displayMode": "visualization",
+      "expanded": false,
+      "shapeFile": "uaia-gpu3"
+    },
+    {
+      "description": "Zip Code",
+      "fieldName": ":Computed_rcatieut_location",
+      "cardSize": 2,
+      "cardCustomStyle": {},
+      "expandedCustomStyle": {},
+      "displayMode": "visualization",
+      "expanded": false,
+      "shapeFile": "rcat-ieut"
     }
   ]
 }

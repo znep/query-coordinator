@@ -3,31 +3,31 @@
   <div class="row">
     <div class="span12">
       <div class="logo">
-        I'm a logo!
+        <img src="/stubs/images/generic-logo.png" alt="Customer Logo"></img>
       </div>
     </div>
   </div>
   <!-- METADATA BAR -->
   <div class="cards-metadata">
     <div class="row">
-      <div class="span9">
+      <div class="span9 padded-wrapper">
         <header multiline-ellipsis max-lines="2" tolerance="8" text="{{pageName}}" show-more-mode="title-attr"></header>
         <!-- description -->
-        <div class="padded-wrapper">
-          <div class="page-description" expanded="expanded" multiline-ellipsis max-lines="2" tolerance="2" text="{{pageDescription}}"></div>
-        </div>
+        <div class="page-description" expanded="expanded" multiline-ellipsis max-lines="2" tolerance="2" text="{{pageDescription}}"></div>
       </div>
       <div class="span3">
         <!-- activities -->
-        <div class="metadatum-wrapper row">
-          <div class="span12">
-            <div class="metadatum">
-              <span class="label">last updated:</span>
-              <span class="value">{{datasetDaysUnmodified}}</span>
+        <div class="activities span12">
+          <div class="metadata">
+            <div class="metadatum-wrapper row">
+              <div class="metadatum" ng-class="{invisible: !datasetDaysUnmodified}">
+                <span class="label">last updated</span>
+                <span class="value">{{datasetDaysUnmodified}}</span>
+              </div>
             </div>
-            <a href="#" class="action-btn">Download</span></a>
-            <a href="#" class="action-btn">API</span></a>
           </div>
+          <a href="#" class="action-btn">Download</span></a>
+          <a href="#" class="action-btn">API</span></a>
         </div>
       </div>
     </div>

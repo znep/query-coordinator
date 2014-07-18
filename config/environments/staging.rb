@@ -16,7 +16,7 @@ Frontend::Application.configure do
   config.action_controller.perform_caching             = true
 
   # Use a different cache store in production
-  config.cache_store = :mem_cache_store, 'vm01.ord1.socrata.com', { :namespace => 'webapp' }
+  config.cache_store = :mem_cache_store, 'vm01.ord1.socrata.com', { :namespace => 'webapp', :value_max_bytes => 2000000 }
 
   # Enable serving of images, stylesheets, and javascripts from an asset server
   # config.action_controller.asset_host                  = "http://assets.example.com"

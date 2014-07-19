@@ -93,7 +93,7 @@
     {
       "title": "Supervisor District",
       "description": "",
-      "name": ":Computed_7nztvhj8_point",
+      "name": ":Computed_7nztvhj8_location",
       "physicalDatatype": "text",
       "logicalDatatype": "location",
       "importance": 1
@@ -101,7 +101,7 @@
     {
       "title": "Police District",
       "description": "",
-      "name": ":Computed_bkq3jzqz_point",
+      "name": ":Computed_bkq3jzqz_location",
       "physicalDatatype": "text",
       "logicalDatatype": "location",
       "importance": 1
@@ -109,7 +109,7 @@
     {
       "title": "Neighborhood",
       "description": "",
-      "name": ":Computed_uaiagpu3_point",
+      "name": ":Computed_uaiagpu3_location",
       "physicalDatatype": "text",
       "logicalDatatype": "location",
       "importance": 1
@@ -117,7 +117,7 @@
     {
       "title": "Zip Code",
       "description": "",
-      "name": ":Computed_rcatieut_point",
+      "name": ":Computed_rcatieut_location",
       "physicalDatatype": "text",
       "logicalDatatype": "location",
       "importance": 2

@@ -65,7 +65,7 @@
     },
         {
       "description": "Supervisor District",
-      "fieldName": ":Computed_7nztvhj8_point",
+      "fieldName": ":Computed_7nztvhj8_location",
       "cardSize": 2,
       "cardCustomStyle": {},
       "expandedCustomStyle": {},
@@ -75,7 +75,7 @@
     },
     {
       "description": "Police District",
-      "fieldName": ":Computed_bkq3jzqz_point",
+      "fieldName": ":Computed_bkq3jzqz_location",
       "cardSize": 2,
       "cardCustomStyle": {},
       "expandedCustomStyle": {},
@@ -85,7 +85,7 @@
     },
     {
       "description": "Neighborhood",
-      "fieldName": ":Computed_uaiagpu3_point",
+      "fieldName": ":Computed_uaiagpu3_location",
       "cardSize": 2,
       "cardCustomStyle": {},
       "expandedCustomStyle": {},
@@ -95,7 +95,7 @@
     },
     {
       "description": "Zip Code",
-      "fieldName": ":Computed_rcatieut_point",
+      "fieldName": ":Computed_rcatieut_location",
       "cardSize": 2,
       "cardCustomStyle": {},
       "expandedCustomStyle": {},

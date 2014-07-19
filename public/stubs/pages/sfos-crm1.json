@@ -1,5 +1,5 @@
 {
-  "pageId": "crim-essf",
+  "pageId": "sfos-crm1",
   "datasetId": "xb2a-ixcv",
   "name": "San Francisco Crimes",
   "description": "Incidents derived from SFPD Crime Incident Reporting system. Previous month. Updated daily.",

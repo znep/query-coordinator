@@ -242,14 +242,17 @@ angular.module('socrataCommon.directives').directive('table', function(AngularRx
                 // TODO: Remove this. This is just to satisfy Clint's pet peeve about years.
                 if (cellContent.length >= 5) {
                   cellText = _.escape($.commaify(cellContent));
+                } else {
+                  cellText = _.escape(cellContent);
                 }
               } else if (cellType == 'location') {
-                console.log(cellContent);
-                cellText += (' (<span title="Latitude">{0}°</span>, ' +
-                  '<span title="Longitude">{1}°</span>)').format(
-                  cellContent.coordinates[1],
-                  cellContent.coordinates[0]
-                );
+                if (_.isArray(cellContent.coordinates)) {
+                  cellText += (' (<span title="Latitude">{0}°</span>, ' +
+                    '<span title="Longitude">{1}°</span>)').format(
+                    cellContent.coordinates[1],
+                    cellContent.coordinates[0]
+                  );
+                }
               } else if (cellType === 'date') {
                 var time = moment(cellContent);
                 // Check if Date or Date/Time

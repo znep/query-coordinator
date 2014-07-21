@@ -21,7 +21,7 @@
     {
       "description": "Neighborhood",
       "fieldName": ":Computed_n8rpcfd9_point",
-      "cardSize": 2,
+      "cardSize": 1,
       "cardCustomStyle": {},
       "expandedCustomStyle": {},
       "displayMode": "visualization",
@@ -40,7 +40,7 @@
     {
       "description": "Status",
       "fieldName": "status",
-      "cardSize": 1,
+      "cardSize": 2,
       "cardCustomStyle": {},
       "expandedCustomStyle": {},
       "displayMode": "visualization",
@@ -58,7 +58,7 @@
     {
       "description": "Request Type",
       "fieldName": "request_type",
-      "cardSize": 3,
+      "cardSize": 2,
       "cardCustomStyle": {},
       "expandedCustomStyle": {},
       "displayMode": "visualization",
@@ -76,7 +76,7 @@
     {
       "description": "Case Id",
       "fieldName": "case_id",
-      "cardSize": 2,
+      "cardSize": 3,
       "cardCustomStyle": {},
       "expandedCustomStyle": {},
       "displayMode": "visualization",
@@ -85,7 +85,7 @@
     {
       "description": "Opened At",
       "fieldName": "opened",
-      "cardSize": 2,
+      "cardSize": 3,
       "cardCustomStyle": {},
       "expandedCustomStyle": {},
       "displayMode": "visualization",
@@ -94,7 +94,7 @@
     {
       "description": "Closed At",
       "fieldName": "closed",
-      "cardSize": 2,
+      "cardSize": 3,
       "cardCustomStyle": {},
       "expandedCustomStyle": {},
       "displayMode": "visualization",
@@ -103,7 +103,7 @@
     {
       "description": "Supervisor District",
       "fieldName": ":Computed_ernjgade_point",
-      "cardSize": 2,
+      "cardSize": 3,
       "cardCustomStyle": {},
       "expandedCustomStyle": {},
       "displayMode": "visualization",
@@ -113,7 +113,7 @@
     {
       "description": "Police District",
       "fieldName": ":Computed_qgg2gdwk_point",
-      "cardSize": 2,
+      "cardSize": 3,
       "cardCustomStyle": {},
       "expandedCustomStyle": {},
       "displayMode": "visualization",

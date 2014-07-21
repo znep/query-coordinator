@@ -10,6 +10,34 @@
   "pageSource": "admin",
   "cards": [
     {
+      "description": "Category",
+      "fieldName": "category",
+      "cardSize": 1,
+      "cardCustomStyle": {},
+      "expandedCustomStyle": {},
+      "displayMode": "visualization",
+      "expanded": false
+    },
+    {
+      "description": "Neighborhood",
+      "fieldName": ":Computed_n8rpcfd9_point",
+      "cardSize": 2,
+      "cardCustomStyle": {},
+      "expandedCustomStyle": {},
+      "displayMode": "visualization",
+      "expanded": false,
+      "shapeFile": "n8rp-cfd9"
+    },
+    {
+      "description": "All Data",
+      "fieldName": "*",
+      "cardSize": 1,
+      "cardCustomStyle": {},
+      "expandedCustomStyle": {},
+      "displayMode": "visualization",
+      "expanded": false
+    },
+    {
       "description": "Status",
       "fieldName": "status",
       "cardSize": 1,
@@ -22,15 +50,6 @@
       "description": "Responsible Agency",
       "fieldName": "responsible_agency",
       "cardSize": 2,
-      "cardCustomStyle": {},
-      "expandedCustomStyle": {},
-      "displayMode": "visualization",
-      "expanded": false
-    },
-    {
-      "description": "Category",
-      "fieldName": "category",
-      "cardSize": 1,
       "cardCustomStyle": {},
       "expandedCustomStyle": {},
       "displayMode": "visualization",
@@ -102,16 +121,6 @@
       "shapeFile": "9ax2-xhmg"
     },
     {
-      "description": "Neighborhood",
-      "fieldName": ":Computed_n8rpcfd9_point",
-      "cardSize": 2,
-      "cardCustomStyle": {},
-      "expandedCustomStyle": {},
-      "displayMode": "visualization",
-      "expanded": false,
-      "shapeFile": "n8rp-cfd9"
-    },
-    {
       "description": "Zip Code",
       "fieldName": ":Computed_a9zvgp2q_point",
       "cardSize": 2,
@@ -120,15 +129,6 @@
       "displayMode": "visualization",
       "expanded": false,
       "shapeFile": "a9zv-gp2q"
-    },
-    {
-      "description": "All Data",
-      "fieldName": "*",
-      "cardSize": 1,
-      "cardCustomStyle": {},
-      "expandedCustomStyle": {},
-      "displayMode": "visualization",
-      "expanded": false
     }
   ]
 }

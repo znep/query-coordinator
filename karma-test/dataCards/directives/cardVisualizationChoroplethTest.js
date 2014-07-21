@@ -48,12 +48,22 @@ describe("A Choropleth Card Visualization", function() {
 
   var createChoropleth = function(id) {
     var model = new Model();
-    model.fieldName = 'ward'+id;
+    model.fieldName = 'ward';
     model.defineObservableProperty('activeFilters', []);
     model.defineObservableProperty('shapeFile', 'mash-apes');
 
     var datasetModel = new Model();
     datasetModel.id = "bana-nas!";
+    datasetModel.defineObservableProperty('columns',
+    [{
+      "name": "ward",
+      "title": "Ward where crime was committed.",
+      "description": "Batman has bigger fish to fry sometimes, you know.",
+      "logicalDatatype": "location",
+      "physicalDatatype": "text",
+      "importance": 2,
+      "shapefileColumn": "ward"
+    }]);
 
     var pageModel = new Model();
     pageModel.defineObservableProperty('dataset', datasetModel);

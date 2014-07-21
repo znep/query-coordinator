@@ -161,28 +161,31 @@
       "importance": 3
     },
     {
-      "title": "Computed_q52v-juyw_location",
-      "description": "placeholder for Computed_q52v-juyw_location",
+      "title": "Community Area",
+      "description": "",
       "name": ":Computed_q52v-juyw_location",
       "physicalDatatype": "text",
       "logicalDatatype": "location",
-      "importance": 1
+      "importance": 1,
+      "shapefileFeatureHumanReadablePropertyName": "community"
     },
     {
-      "title": "Computed_2dy8-3vps_location",
-      "description": "placeholder for Computed_2dy8-3vps_location",
+      "title": "Zip Code",
+      "description": "",
       "name": ":Computed_2dy8-3vps_location",
       "physicalDatatype": "text",
       "logicalDatatype": "location",
-      "importance": 1
+      "importance": 1,
+      "shapefileFeatureHumanReadablePropertyName": "zip"
     },
     {
-      "title": "Computed_stkm-eqc8_location",
-      "description": "placeholder for Computed_stkm-eqc8_location",
+      "title": "Ward",
+      "description": "",
       "name": ":Computed_stkm-eqc8_location",
       "physicalDatatype": "text",
       "logicalDatatype": "location",
-      "importance": 1
+      "importance": 1,
+      "shapefileFeatureHumanReadablePropertyName": "ward"
     }
   ]
 }

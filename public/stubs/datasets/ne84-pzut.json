@@ -133,7 +133,8 @@
       "name": ":Computed_xkbhn7hx_location",
       "physicalDatatype": "text",
       "logicalDatatype": "location",
-      "importance": 1
+      "importance": 1,
+      "shapefileFeatureHumanReadablePropertyName": "community"
     },
     {
       "title": "Zip Code",
@@ -141,7 +142,8 @@
       "name": ":Computed_f523g8ig_location",
       "physicalDatatype": "text",
       "logicalDatatype": "location",
-      "importance": 1
+      "importance": 1,
+      "shapefileFeatureHumanReadablePropertyName": "zip"
     },
     {
       "title": "Ward",
@@ -149,7 +151,8 @@
       "name": ":Computed_ind9qept_location",
       "physicalDatatype": "text",
       "logicalDatatype": "location",
-      "importance": 1
+      "importance": 1,
+      "shapefileFeatureHumanReadablePropertyName": "ward"
     },
     {
       "title": "Neighborhood",
@@ -157,7 +160,8 @@
       "name": ":Computed_i2inbshz_location",
       "physicalDatatype": "text",
       "logicalDatatype": "location",
-      "importance": 1
+      "importance": 1,
+      "shapefileFeatureHumanReadablePropertyName": "name"
     }
   ]
 }

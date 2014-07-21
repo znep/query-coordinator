@@ -32,15 +32,17 @@ angular.module('dataCards.directives').directive('cardVisualizationChoropleth', 
       var mergeRegionAndAggregateData = function(
         activeFilterNames,
         geojsonRegions,
-        aggregatedDataAsHash) {
+        aggregatedDataAsHash,
+        shapefileHumanReadableColumnName) {
 
         var newFeatures = geojsonRegions.features.filter(function(geojsonFeature) {
-          return geojsonFeature.properties.hasOwnProperty('_feature_id') &&
-                 geojsonFeature.properties['_feature_id'];
+          return geojsonFeature.properties.hasOwnProperty(INTERNAL_DATASET_FEATURE_ID) &&
+                 geojsonFeature.properties[INTERNAL_DATASET_FEATURE_ID];
         }).map(function(geojsonFeature) {
 
-          var name = geojsonFeature.properties['_feature_id'];
+          var name = geojsonFeature.properties[INTERNAL_DATASET_FEATURE_ID];
           var mergedValue = aggregatedDataAsHash[name];
+          var humanReadableName = geojsonFeature.properties[shapefileHumanReadableColumnName];
 
           var feature = {
             geometry: geojsonFeature.geometry,
@@ -52,6 +54,7 @@ angular.module('dataCards.directives').directive('cardVisualizationChoropleth', 
           // defined according to the spec).
           feature.properties['__SOCRATA_MERGED_VALUE__'] = mergedValue ? mergedValue : null;
           feature.properties['__SOCRATA_FEATURE_HIGHLIGHTED__'] = _.contains(activeFilterNames, name);
+          feature.properties['__SOCRATA_HUMAN_READABLE_NAME__'] = humanReadableName;
           return feature;
         });
 
@@ -68,7 +71,9 @@ angular.module('dataCards.directives').directive('cardVisualizationChoropleth', 
           geojsonRegions,
           aggregatedDataObservable,
           model.observeOnLatest('activeFilters'),
-          function(geojsonRegions, aggregatedData, activeFilters) {
+          model.pluck('fieldName'),
+          dataset.observeOnLatest('columns'),
+          function(geojsonRegions, aggregatedData, activeFilters, fieldName, columns) {
 
             var activeFilterNames = _.pluck(activeFilters, 'operand');
 
@@ -77,10 +82,27 @@ angular.module('dataCards.directives').directive('cardVisualizationChoropleth', 
               return acc;
             }, {});
 
+            // Extract the active column from the columns array by matching against
+            // the card's "fieldName".
+            var column = _.find(
+              columns,
+              function(column) { return column.name === fieldName; });
+
+            if (!column) {
+              throw new Error('Could not match "_feature_id" to human-readable column name.');
+            }
+
+            // Geospatial columns are required to have a "shapefileColumn" property,
+            // which acts as a foreign key into the column's shapefile and allows us
+            // to access a human-readable name in a data-driven manner rather than
+            // relying on a hard-coded value.
+            var shapefileFeatureHumanReadablePropertyName = column.shapefileFeatureHumanReadablePropertyName;
+
             return mergeRegionAndAggregateData(
               activeFilterNames,
               geojsonRegions,
-              aggregatedDataAsHash
+              aggregatedDataAsHash,
+              shapefileFeatureHumanReadablePropertyName
             );
 
       }));
@@ -89,6 +111,7 @@ angular.module('dataCards.directives').directive('cardVisualizationChoropleth', 
       $scope.$on('toggle-dataset-filter:choropleth', function(event, feature, callback) {
 
         var featureId = feature.properties[INTERNAL_DATASET_FEATURE_ID];
+        var humanReadableName = feature.properties['__SOCRATA_HUMAN_READABLE_NAME__'];
 
         var hasFiltersOnCard = _.any($scope.model.getCurrentValue('activeFilters'), function(filter) {
           return filter.operand === featureId;
@@ -97,7 +120,7 @@ angular.module('dataCards.directives').directive('cardVisualizationChoropleth', 
           $scope.model.set('activeFilters', []);
         } else {
           var filter = _.isString(featureId) ?
-            new Filter.BinaryOperatorFilter('=', featureId) :
+            new Filter.BinaryOperatorFilter('=', featureId, humanReadableName) :
             new Filter.IsNullFilter(true);
           $scope.model.set('activeFilters', [filter]);
         }

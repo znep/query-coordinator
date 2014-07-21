@@ -36,7 +36,8 @@
       "description": "Batman has bigger fish to fry sometimes, you know.",
       "logicalDatatype": "location",
       "physicalDatatype": "text",
-      "importance": 2
+      "importance": 2,
+      "shapefileFeatureHumanReadablePropertyName": "ward"
     }
   ],
   "pages": {

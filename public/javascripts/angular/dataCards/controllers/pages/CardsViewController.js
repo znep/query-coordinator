@@ -126,7 +126,7 @@ angular.module('dataCards.controllers').controller('CardsViewController',
 
       function humanReadableOperand(filter) {
         if (filter instanceof Filter.BinaryOperatorFilter) {
-          return filter.operand;
+          return filter.humanReadableOperand || filter.operand;
         } else if (filter instanceof Filter.IsNullFilter) {
           return 'blank';
         } else {

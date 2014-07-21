@@ -96,7 +96,8 @@
       "name": ":Computed_3g7x28s9_location",
       "physicalDatatype": "text",
       "logicalDatatype": "location",
-      "importance": 1
+      "importance": 1,
+      "shapefileFeatureHumanReadablePropertyName": "supdist"
     },
     {
       "title": "Police District",
@@ -104,7 +105,8 @@
       "name": ":Computed_vp3p5wwz_location",
       "physicalDatatype": "text",
       "logicalDatatype": "location",
-      "importance": 3
+      "importance": 3,
+      "shapefileFeatureHumanReadablePropertyName": "district"
     },
     {
       "title": "Neighborhood",
@@ -112,7 +114,8 @@
       "name": ":Computed_kiegmksq_location",
       "physicalDatatype": "text",
       "logicalDatatype": "location",
-      "importance": 1
+      "importance": 1,
+      "shapefileFeatureHumanReadablePropertyName": "name"
     },
     {
       "title": "Zip Code",
@@ -120,7 +123,8 @@
       "name": ":Computed_7m4wmua9_location",
       "physicalDatatype": "text",
       "logicalDatatype": "location",
-      "importance": 2
+      "importance": 2,
+      "shapefileFeatureHumanReadablePropertyName": "zcta5ce10"
     }
   ]
 }

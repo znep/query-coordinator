@@ -1,6 +1,6 @@
 {
   "pageId": "sfos-3111",
-  "datasetId": "5dbk-72xp",
+  "datasetId": "vtvh-wqgq",
   "name": "San Francisco 311",
   "description": "Cases created since 7/1/2008 with location information",
   "primaryAmountField": null,
@@ -83,43 +83,43 @@
     },
     {
       "description": "Supervisor District",
-      "fieldName": ":Computed_7nztvhj8_point",
+      "fieldName": ":Computed_52s22466_point",
       "cardSize": 2,
       "cardCustomStyle": {},
       "expandedCustomStyle": {},
       "displayMode": "visualization",
       "expanded": false,
-      "shapeFile": "7nzt-vhj8"
+      "shapeFile": "52s2-2466"
     },
     {
       "description": "Police District",
-      "fieldName": ":Computed_bkq3jzqz_point",
+      "fieldName": ":Computed_qs4du476_point",
       "cardSize": 2,
       "cardCustomStyle": {},
       "expandedCustomStyle": {},
       "displayMode": "visualization",
       "expanded": false,
-      "shapeFile": "bkq3-jzqz"
+      "shapeFile": "qs4d-u476"
     },
     {
       "description": "Neighborhood",
-      "fieldName": ":Computed_uaiagpu3_point",
+      "fieldName": ":Computed_53dukq8t_point",
       "cardSize": 2,
       "cardCustomStyle": {},
       "expandedCustomStyle": {},
       "displayMode": "visualization",
       "expanded": false,
-      "shapeFile": "uaia-gpu3"
+      "shapeFile": "53du-kq8t"
     },
     {
       "description": "Zip Code",
-      "fieldName": ":Computed_rcatieut_point",
+      "fieldName": ":Computed_c8h8ygvf_point",
       "cardSize": 2,
       "cardCustomStyle": {},
       "expandedCustomStyle": {},
       "displayMode": "visualization",
       "expanded": false,
-      "shapeFile": "rcat-ieut"
+      "shapeFile": "c8h8-ygvf"
     },
     {
       "description": "All Data",

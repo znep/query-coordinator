@@ -1,14 +1,32 @@
 {
-  "pageId": "sfop-crm1",
-  "datasetId": "t3wb-dx3r",
-  "name": "San Francisco Crimes",
-  "description": "Incidents derived from SFPD Crime Incident Reporting system. Previous month. Updated daily.",
+  "pageId": "sfor-3111",
+  "datasetId": "g756-347w",
+  "name": "San Francisco 311",
+  "description": "Cases created since 7/1/2008 with location information",
   "primaryAmountField": null,
   "primaryAggregation": null,
   "filterSoql": null,
   "isDefaultPage": false,
   "pageSource": "admin",
   "cards": [
+    {
+      "description": "Status",
+      "fieldName": "status",
+      "cardSize": 1,
+      "cardCustomStyle": {},
+      "expandedCustomStyle": {},
+      "displayMode": "visualization",
+      "expanded": false
+    },
+    {
+      "description": "Responsible Agency",
+      "fieldName": "responsible_agency",
+      "cardSize": 2,
+      "cardCustomStyle": {},
+      "expandedCustomStyle": {},
+      "displayMode": "visualization",
+      "expanded": false
+    },
     {
       "description": "Category",
       "fieldName": "category",
@@ -19,8 +37,8 @@
       "expanded": false
     },
     {
-      "description": "Day of Week",
-      "fieldName": "dayofweek",
+      "description": "Request Type",
+      "fieldName": "request_type",
       "cardSize": 3,
       "cardCustomStyle": {},
       "expandedCustomStyle": {},
@@ -28,8 +46,17 @@
       "expanded": false
     },
     {
-      "description": "Resolution",
-      "fieldName": "resolution",
+      "description": "Source",
+      "fieldName": "source",
+      "cardSize": 3,
+      "cardCustomStyle": {},
+      "expandedCustomStyle": {},
+      "displayMode": "visualization",
+      "expanded": false
+    },
+    {
+      "description": "Case Id",
+      "fieldName": "case_id",
       "cardSize": 2,
       "cardCustomStyle": {},
       "expandedCustomStyle": {},
@@ -37,8 +64,8 @@
       "expanded": false
     },
     {
-      "description": "Incident Number",
-      "fieldName": "incidntnum",
+      "description": "Opened At",
+      "fieldName": "opened",
       "cardSize": 2,
       "cardCustomStyle": {},
       "expandedCustomStyle": {},
@@ -46,62 +73,53 @@
       "expanded": false
     },
     {
-      "description": "Date",
-      "fieldName": "date",
-      "cardSize": 3,
+      "description": "Closed At",
+      "fieldName": "closed",
+      "cardSize": 2,
       "cardCustomStyle": {},
       "expandedCustomStyle": {},
       "displayMode": "visualization",
       "expanded": false
     },
     {
-      "description": "Time",
-      "fieldName": "time",
-      "cardSize": 3,
-      "cardCustomStyle": {},
-      "expandedCustomStyle": {},
-      "displayMode": "visualization",
-      "expanded": false
-    },
-        {
       "description": "Supervisor District",
-      "fieldName": ":Computed_ernjgade_location",
+      "fieldName": ":Computed_3g7x28s9_point",
       "cardSize": 2,
       "cardCustomStyle": {},
       "expandedCustomStyle": {},
       "displayMode": "visualization",
       "expanded": false,
-      "shapeFile": "ernj-gade"
+      "shapeFile": "3g7x-28s9"
     },
     {
       "description": "Police District",
-      "fieldName": ":Computed_9ax2xhmg_location",
+      "fieldName": ":Computed_vp3p5wwz_point",
       "cardSize": 2,
       "cardCustomStyle": {},
       "expandedCustomStyle": {},
       "displayMode": "visualization",
       "expanded": false,
-      "shapeFile": "9ax2-xhmg"
+      "shapeFile": "vp3p-5wwz"
     },
     {
       "description": "Neighborhood",
-      "fieldName": ":Computed_n8rpcfd9_location",
+      "fieldName": ":Computed_kiegmksq_point",
       "cardSize": 2,
       "cardCustomStyle": {},
       "expandedCustomStyle": {},
       "displayMode": "visualization",
       "expanded": false,
-      "shapeFile": "n8rp-cfd9"
+      "shapeFile": "kieg-mksq"
     },
     {
       "description": "Zip Code",
-      "fieldName": ":Computed_a9zvgp2q_location",
+      "fieldName": ":Computed_7m4wmua9_point",
       "cardSize": 2,
       "cardCustomStyle": {},
       "expandedCustomStyle": {},
       "displayMode": "visualization",
       "expanded": false,
-      "shapeFile": "a9zv-gp2q"
+      "shapeFile": "7m4w-mua9"
     },
     {
       "description": "All Data",

@@ -1,6 +1,6 @@
 {
-  "pageId": "sfop-crm1",
-  "datasetId": "t3wb-dx3r",
+  "pageId": "sfor-crm1",
+  "datasetId": "nzy9-mwjp",
   "name": "San Francisco Crimes",
   "description": "Incidents derived from SFPD Crime Incident Reporting system. Previous month. Updated daily.",
   "primaryAmountField": null,
@@ -65,43 +65,43 @@
     },
         {
       "description": "Supervisor District",
-      "fieldName": ":Computed_ernjgade_location",
+      "fieldName": ":Computed_3g7x28s9_location",
       "cardSize": 2,
       "cardCustomStyle": {},
       "expandedCustomStyle": {},
       "displayMode": "visualization",
       "expanded": false,
-      "shapeFile": "ernj-gade"
+      "shapeFile": "3g7x-28s9"
     },
     {
       "description": "Police District",
-      "fieldName": ":Computed_9ax2xhmg_location",
+      "fieldName": ":Computed_vp3p5wwz_location",
       "cardSize": 2,
       "cardCustomStyle": {},
       "expandedCustomStyle": {},
       "displayMode": "visualization",
       "expanded": false,
-      "shapeFile": "9ax2-xhmg"
+      "shapeFile": "vp3p-5wwz"
     },
     {
       "description": "Neighborhood",
-      "fieldName": ":Computed_n8rpcfd9_location",
+      "fieldName": ":Computed_kiegmksq_location",
       "cardSize": 2,
       "cardCustomStyle": {},
       "expandedCustomStyle": {},
       "displayMode": "visualization",
       "expanded": false,
-      "shapeFile": "n8rp-cfd9"
+      "shapeFile": "kieg-mksq"
     },
     {
       "description": "Zip Code",
-      "fieldName": ":Computed_a9zvgp2q_location",
+      "fieldName": ":Computed_7m4wmua9_location",
       "cardSize": 2,
       "cardCustomStyle": {},
       "expandedCustomStyle": {},
       "displayMode": "visualization",
       "expanded": false,
-      "shapeFile": "a9zv-gp2q"
+      "shapeFile": "7m4w-mua9"
     },
     {
       "description": "All Data",

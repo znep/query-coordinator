@@ -1,8 +1,8 @@
 {
-  "pageId": "sfop-crm1",
-  "datasetId": "t3wb-dx3r",
-  "name": "San Francisco Crimes",
-  "description": "Incidents derived from SFPD Crime Incident Reporting system. Previous month. Updated daily.",
+  "pageId": "sfor-biz1",
+  "datasetId": "p8tk-zyhj",
+  "name": "Businesses registered in San Francisco",
+  "description": "",
   "primaryAmountField": null,
   "primaryAggregation": null,
   "filterSoql": null,
@@ -10,26 +10,8 @@
   "pageSource": "admin",
   "cards": [
     {
-      "description": "Category",
-      "fieldName": "category",
-      "cardSize": 1,
-      "cardCustomStyle": {},
-      "expandedCustomStyle": {},
-      "displayMode": "visualization",
-      "expanded": false
-    },
-    {
-      "description": "Day of Week",
-      "fieldName": "dayofweek",
-      "cardSize": 3,
-      "cardCustomStyle": {},
-      "expandedCustomStyle": {},
-      "displayMode": "visualization",
-      "expanded": false
-    },
-    {
-      "description": "Resolution",
-      "fieldName": "resolution",
+      "description": "Class Code",
+      "fieldName": "class_code",
       "cardSize": 2,
       "cardCustomStyle": {},
       "expandedCustomStyle": {},
@@ -37,8 +19,8 @@
       "expanded": false
     },
     {
-      "description": "Incident Number",
-      "fieldName": "incidntnum",
+      "description": "PBC Code",
+      "fieldName": "pbc_code",
       "cardSize": 2,
       "cardCustomStyle": {},
       "expandedCustomStyle": {},
@@ -46,71 +28,71 @@
       "expanded": false
     },
     {
-      "description": "Date",
-      "fieldName": "date",
-      "cardSize": 3,
+      "description": "Certificate Number",
+      "fieldName": "certificate_number",
+      "cardSize": 2,
       "cardCustomStyle": {},
       "expandedCustomStyle": {},
       "displayMode": "visualization",
       "expanded": false
     },
     {
-      "description": "Time",
-      "fieldName": "time",
-      "cardSize": 3,
+      "description": "DBA Name",
+      "fieldName": "dba_name",
+      "cardSize": 2,
       "cardCustomStyle": {},
       "expandedCustomStyle": {},
       "displayMode": "visualization",
       "expanded": false
     },
-        {
+    {
+      "description": "DBA Start Date",
+      "fieldName": "dba_start_date",
+      "cardSize": 2,
+      "cardCustomStyle": {},
+      "expandedCustomStyle": {},
+      "displayMode": "visualization",
+      "expanded": false
+    },
+    {
       "description": "Supervisor District",
-      "fieldName": ":Computed_ernjgade_location",
+      "fieldName": ":Computed_3g7x28s9_location",
       "cardSize": 2,
       "cardCustomStyle": {},
       "expandedCustomStyle": {},
       "displayMode": "visualization",
       "expanded": false,
-      "shapeFile": "ernj-gade"
+      "shapeFile": "3g7x-28s9"
     },
     {
       "description": "Police District",
-      "fieldName": ":Computed_9ax2xhmg_location",
+      "fieldName": ":Computed_vp3p5wwz_location",
       "cardSize": 2,
       "cardCustomStyle": {},
       "expandedCustomStyle": {},
       "displayMode": "visualization",
       "expanded": false,
-      "shapeFile": "9ax2-xhmg"
+      "shapeFile": "vp3p-5wwz"
     },
     {
       "description": "Neighborhood",
-      "fieldName": ":Computed_n8rpcfd9_location",
+      "fieldName": ":Computed_kiegmksq_location",
       "cardSize": 2,
       "cardCustomStyle": {},
       "expandedCustomStyle": {},
       "displayMode": "visualization",
       "expanded": false,
-      "shapeFile": "n8rp-cfd9"
+      "shapeFile": "kieg-mksq"
     },
     {
       "description": "Zip Code",
-      "fieldName": ":Computed_a9zvgp2q_location",
+      "fieldName": ":Computed_7m4wmua9_location",
       "cardSize": 2,
       "cardCustomStyle": {},
       "expandedCustomStyle": {},
       "displayMode": "visualization",
       "expanded": false,
-      "shapeFile": "a9zv-gp2q"
-    },
-    {
-      "description": "All Data",
-      "fieldName": "*",
-      "cardSize": 1,
-      "cardCustomStyle": {},
-      "expandedCustomStyle": {},
-      "displayMode": "visualization",
-      "expanded": false
+      "shapeFile": "7m4w-mua9"
     }
   ]
 }

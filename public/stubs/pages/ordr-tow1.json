@@ -1,17 +1,17 @@
 {
-  "pageId": "ordp-txi1",
-  "datasetId": "8pq5-9mmy",
-  "name": "Public Chauffeurs",
-  "description": "List of public chauffeurs licensed in the city of Chicago.",
+  "pageId": "ordr-tow1",
+  "datasetId": "nhvn-acbb",
+  "name": "Towed Vehicles in Chicago",
+  "description": "",
   "primaryAmountField": null,
-  "primaryAggregation": ":count",
+  "primaryAggregation": null,
   "filterSoql": null,
   "isDefaultPage": false,
   "pageSource": "admin",
   "cards": [
     {
-      "description": "Driver Type",
-      "fieldName": "driver_type",
+      "description": "Tow Date",
+      "fieldName": "tow_date",
       "cardSize": 2,
       "cardCustomStyle": {},
       "expandedCustomStyle": {},
@@ -19,8 +19,8 @@
       "expanded": false
     },
     {
-      "description": "Status",
-      "fieldName": "status",
+      "description": "Make",
+      "fieldName": "make",
       "cardSize": 2,
       "cardCustomStyle": {},
       "expandedCustomStyle": {},
@@ -28,8 +28,8 @@
       "expanded": false
     },
     {
-      "description": "License Type",
-      "fieldName": "license_type",
+      "description": "Color",
+      "fieldName": "color",
       "cardSize": 2,
       "cardCustomStyle": {},
       "expandedCustomStyle": {},
@@ -37,26 +37,8 @@
       "expanded": false
     },
     {
-      "description": "Sex",
-      "fieldName": "sex",
-      "cardSize": 2,
-      "cardCustomStyle": {},
-      "expandedCustomStyle": {},
-      "displayMode": "visualization",
-      "expanded": false
-    },
-    {
-      "description": "License",
-      "fieldName": "license",
-      "cardSize": 1,
-      "cardCustomStyle": {},
-      "expandedCustomStyle": {},
-      "displayMode": "visualization",
-      "expanded": false
-    },
-    {
-      "description": "Name",
-      "fieldName": "name",
+      "description": "Plate",
+      "fieldName": "plate",
       "cardSize": 1,
       "cardCustomStyle": {},
       "expandedCustomStyle": {},
@@ -70,7 +52,7 @@
       "cardCustomStyle": {},
       "expandedCustomStyle": {},
       "displayMode": "visualization",
-      "expanded": false      
+      "expanded": false
     }
   ]
 }

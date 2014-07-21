@@ -1,5 +1,5 @@
 {
-  "id": "4z2p-si7b",
+  "id": "p8tk-zyhj",
   "rowDisplayUnit": "Business",
   "defaultAggregateColumn": ":count",
   "domain": "dataspace-demo.test-socrata.com",
@@ -135,7 +135,7 @@
     {
       "title": "Supervisor District",
       "description": "",
-      "name": ":Computed_ernjgade_location",
+      "name": ":Computed_3g7x28s9_location",
       "physicalDatatype": "text",
       "logicalDatatype": "location",
       "importance": 1
@@ -143,7 +143,7 @@
     {
       "title": "Police District",
       "description": "",
-      "name": ":Computed_9ax2xhmg_location",
+      "name": ":Computed_vp3p5wwz_location",
       "physicalDatatype": "text",
       "logicalDatatype": "location",
       "importance": 3
@@ -151,7 +151,7 @@
     {
       "title": "Neighborhood",
       "description": "",
-      "name": ":Computed_n8rpcfd9_location",
+      "name": ":Computed_kiegmksq_location",
       "physicalDatatype": "text",
       "logicalDatatype": "location",
       "importance": 1
@@ -159,7 +159,7 @@
     {
       "title": "Zip Code",
       "description": "",
-      "name": ":Computed_a9zvgp2q_location",
+      "name": ":Computed_7m4wmua9_location",
       "physicalDatatype": "text",
       "logicalDatatype": "location",
       "importance": 2

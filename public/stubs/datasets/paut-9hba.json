@@ -1,5 +1,5 @@
 {
-  "id": "t3wb-dx3r",
+  "id": "paut-9hba",
   "rowDisplayUnit": "Crime",
   "defaultAggregateColumn": ":count",
   "domain": "dataspace-demo.test-socrata.com",
@@ -93,7 +93,7 @@
     {
       "title": "Supervisor District",
       "description": "",
-      "name": ":Computed_ernjgade_location",
+      "name": ":Computed_52s22466_location",
       "physicalDatatype": "text",
       "logicalDatatype": "location",
       "importance": 1
@@ -101,7 +101,7 @@
     {
       "title": "Police District",
       "description": "",
-      "name": ":Computed_9ax2xhmg_location",
+      "name": ":Computed_qs4du476_location",
       "physicalDatatype": "text",
       "logicalDatatype": "location",
       "importance": 3
@@ -109,7 +109,7 @@
     {
       "title": "Neighborhood",
       "description": "",
-      "name": ":Computed_n8rpcfd9_location",
+      "name": ":Computed_53dukq8t_location",
       "physicalDatatype": "text",
       "logicalDatatype": "location",
       "importance": 1
@@ -117,7 +117,7 @@
     {
       "title": "Zip Code",
       "description": "",
-      "name": ":Computed_a9zvgp2q_location",
+      "name": ":Computed_c8h8ygvf_location",
       "physicalDatatype": "text",
       "logicalDatatype": "location",
       "importance": 2

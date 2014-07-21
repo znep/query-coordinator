@@ -56,43 +56,43 @@
     },
     {
       "description": "Supervisor District",
-      "fieldName": ":Computed_7nztvhj8_location",
+      "fieldName": ":Computed_ernjgade_location",
       "cardSize": 2,
       "cardCustomStyle": {},
       "expandedCustomStyle": {},
       "displayMode": "visualization",
       "expanded": false,
-      "shapeFile": "7nzt-vhj8"
+      "shapeFile": "ernj-gade"
     },
     {
       "description": "Police District",
-      "fieldName": ":Computed_bkq3jzqz_location",
+      "fieldName": ":Computed_9ax2xhmg_location",
       "cardSize": 2,
       "cardCustomStyle": {},
       "expandedCustomStyle": {},
       "displayMode": "visualization",
       "expanded": false,
-      "shapeFile": "bkq3-jzqz"
+      "shapeFile": "9ax2-xhmg"
     },
     {
       "description": "Neighborhood",
-      "fieldName": ":Computed_uaiagpu3_location",
+      "fieldName": ":Computed_n8rpcfd9_location",
       "cardSize": 2,
       "cardCustomStyle": {},
       "expandedCustomStyle": {},
       "displayMode": "visualization",
       "expanded": false,
-      "shapeFile": "uaia-gpu3"
+      "shapeFile": "n8rp-cfd9"
     },
     {
       "description": "Zip Code",
-      "fieldName": ":Computed_rcatieut_location",
+      "fieldName": ":Computed_a9zvgp2q_location",
       "cardSize": 2,
       "cardCustomStyle": {},
       "expandedCustomStyle": {},
       "displayMode": "visualization",
       "expanded": false,
-      "shapeFile": "rcat-ieut"
+      "shapeFile": "a9zv-gp2q"
     }
   ]
 }

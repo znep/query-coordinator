@@ -1,5 +1,5 @@
 {
-  "id": "mjri-5t99",
+  "id": "9fjz-tstn",
   "rowDisplayUnit": "Inspection",
   "defaultAggregateColumn": ":count",
   "domain": "dataspace-demo.test-socrata.com",
@@ -130,7 +130,7 @@
     {
       "title": "Community Area",
       "description": "",
-      "name": ":Computed_bkkchhqq_location",
+      "name": ":Computed_ap56ui7p_location",
       "physicalDatatype": "text",
       "logicalDatatype": "location",
       "importance": 1
@@ -138,7 +138,7 @@
     {
       "title": "Zip Code",
       "description": "",
-      "name": ":Computed_trsh8z54_location",
+      "name": ":Computed_seys2khi_location",
       "physicalDatatype": "text",
       "logicalDatatype": "location",
       "importance": 1
@@ -146,7 +146,7 @@
     {
       "title": "Ward",
       "description": "",
-      "name": ":Computed_suufjw7z_location",
+      "name": ":Computed_4yx7dfmd_location",
       "physicalDatatype": "text",
       "logicalDatatype": "location",
       "importance": 1
@@ -154,7 +154,7 @@
     {
       "title": "Neighborhood",
       "description": "",
-      "name": ":Computed_6vnhbt8i_location",
+      "name": ":Computed_vxpmeta2_location",
       "physicalDatatype": "text",
       "logicalDatatype": "location",
       "importance": 1

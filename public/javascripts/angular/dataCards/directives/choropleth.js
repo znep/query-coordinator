@@ -472,10 +472,57 @@ angular.module('dataCards.directives').directive('choropleth', function(AngularR
 
       /* Region mouseover tooltip effect */
 
+      if ($('#choro-flyout').length == 0) {
+        $('body').append('<div class="flyout top" id="choro-flyout"><div class="flyout-arrow"></div><span class="content"></span></div>');
+      }
+
       var mouseoverFeature = function(event, leafletEvent) {
-        var feature = leafletEvent.target.feature;
+        var $tooltip = $('#choro-flyout');
+        var layer = leafletEvent.target;
+        var feature = layer.feature;
         var value = feature.properties[AGGREGATE_VALUE_PROPERTY_NAME];
-        // TODO: mouseover popups
+        var message = value || '(No Value)';
+
+        $tooltip.find('.content').html(message);
+        $tooltip.find('.content').removeClass('undefined');
+
+        if (message === '(No Value)') {
+          $tooltip.find('.content').addClass('undefined');
+        }
+
+        element.find('path')
+          .mousemove(function(e){
+            $tooltip.show();
+            positionTooltip(e);
+          })
+          .mouseout(function(){
+              if (element.find(".tooltip:hover").length == 0){
+                  $tooltip.hide();
+              } else {
+                  // hovering on tooltip
+                  element.find(".tooltip")
+                      .mousemove(function(e2){
+                          positionTooltip(e2);
+                      })
+                      .mouseout(function(){
+                        //remove bug where tooltip doesn't disappear when hovering on map
+                        if (element.find("path:hover").length == 0) {
+                          $tooltip.hide();
+                        }
+                      });
+              }
+          });
+      }
+
+      var positionTooltip = function(e){
+        var $tooltip = $('#choro-flyout');
+        var top = e.pageY,
+        left = e.pageX;
+        var height = $tooltip.outerHeight();
+        var width = $tooltip.outerWidth();
+
+        $tooltip.css("top", (top - height - 15));
+        $tooltip.css("left", (left - (width/2)));
       }
 
       $scope.$on('leafletDirectiveMap.geojsonMouseover', function(event, leafletEvent) {

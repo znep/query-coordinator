@@ -474,6 +474,7 @@ angular.module('dataCards.directives').directive('choropleth', function(AngularR
 
       if ($('#choro-flyout').length == 0) {
         $('body').append('<div class="flyout top" id="choro-flyout"><div class="flyout-arrow"></div><span class="content"></span></div>');
+        $('#choro-flyout').hide();
       }
 
       var mouseoverFeature = function(event, leafletEvent) {

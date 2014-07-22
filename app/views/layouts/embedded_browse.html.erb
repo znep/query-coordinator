@@ -109,6 +109,7 @@ http://www.socrata.com
     blist.namespace.fetch('blist.configuration');
     blist.configuration.strings = <%= safe_json(CurrentDomain.strings) %>;
     blist.locale = "<%= I18n.locale %>";
+    blist.feature_flags = <%= raw FeatureFlags.derive(nil, request, true).to_json %>;
   </script>
 
   <div id="modals">

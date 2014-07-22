@@ -20,6 +20,7 @@ angular-app-dataCards:
 - dataCards/column-chart
 - dataCards/table
 - dataCards/cards
+- dataCards/multiline-ellipsis
 
 includes:
 - sass-common

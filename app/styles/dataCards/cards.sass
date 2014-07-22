@@ -52,20 +52,22 @@ body
     .page-description
       margin-top: 1rem
 
-    .page-description .show-more
-      height: 1rem
-      display: none
-      border-top: 2px solid #ccc
-      text-align: center
-      cursor: pointer
+      .show-more
+        height: 1rem
+        display: none
+        padding-top: 1.5rem
+        color: $aqua-font-color
+        cursor: pointer
 
-      &:after
-        content: 'Show more'
-      &.less:after
-        content: 'Show less'
-      &.clamped,&.less
-        display: block
+        .show-more-arrow
+          margin-left: 5px
 
+        &:before
+          content: 'Show More'
+        &.less:before
+          content: 'Show Less'
+        &.clamped,&.less
+          display: inline-block
 
     .padded-wrapper
       padding: ($metadata-side-padding / 2)

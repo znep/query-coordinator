@@ -124,8 +124,9 @@ body
 
     .quick-filter-bar
       padding: 0
-      height: $filter-height * 2
+      height: $filter-height
       box-sizing: border-box
+      white-space: nowrap
 
       .content
         padding: 0 $metadata-side-padding / 2
@@ -144,6 +145,7 @@ body
 
       .filter
         // TODO: responsive design for filters when narrow
+        display: inline-block
         padding-right: 3px
         span
           color: $active-filter-color
@@ -283,18 +285,6 @@ body
             .metadatum
               // left-hand activities on full-width
               margin-right: 35px
-
-      .cards-content
-        .quick-filter-bar
-          height: $filter-height
-          .content
-            .filter
-              display: inline-block
-              float: initial
-              width: initial
-
-              select
-                width: initial
 
 /*   ICONS AND COMPONENTS */
 

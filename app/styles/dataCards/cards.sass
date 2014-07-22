@@ -3,7 +3,7 @@
 $metadata-top-padding: 7px
 $metadata-side-padding: 30px
 $rounded-corners-border-radius: 3px
-$filter-height: 72px
+$filter-height: 58px
 // card sizes
 $card-margins: 5px
 $card-padding-top: 26px
@@ -35,6 +35,11 @@ body
     padding: $metadata-top-padding $metadata-side-padding
     font-size: 1.25em
     font-weight: lighter
+    img
+      position: relative
+      // While the placeholder logo is correctly centered by pixel, it does not look centered.
+      // Apply some manual correction.
+      top: 2px
 
   .cards-metadata
 
@@ -71,6 +76,7 @@ body
 
     .activities
       $activities-divider-width: 36px
+      padding-right: $metadata-side-padding / 2
       text-align: right
       .metadatum-wrapper
 

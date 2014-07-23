@@ -247,7 +247,7 @@ angular.module('socrataCommon.directives').directive('columnChart', function($pa
         append('div').
           classed('label', true);
 
-      labelDivSelectionEnter.append('div').classed('text', true);
+      labelDivSelectionEnter.append('div').classed('text', true).append('span');
       labelDivSelectionEnter.append('div').classed('callout', true);
 
       labelDivSelection.
@@ -259,11 +259,13 @@ angular.module('socrataCommon.directives').directive('columnChart', function($pa
               return defaultLabelData.length - 0.5 - Math.min(j, numberOfDefaultLabels - 1)+ 'rem';
             }
           }).
-          text(function(d, i, j) {
-            return $.capitalizeWithDefault(d.name, undefinedPlaceholder);
-          }).classed('undefined', function(d, i, j) {
+          classed('undefined', function(d, i, j) {
             return $.capitalizeWithDefault(d.name, undefinedPlaceholder) === undefinedPlaceholder;
-          });
+          }).
+          select('span').
+            text(function(d, i, j) {
+              return $.capitalizeWithDefault(d.name, undefinedPlaceholder);
+            });
 
       // These widths relate to the visualLength() method call in the maxLength calculation above.
       if (expanded) {
@@ -478,7 +480,7 @@ angular.module('socrataCommon.directives').directive('columnChart', function($pa
         });
       }));
 
-      $(element.parent().delegate('.bar.hover-trigger, .labels .label', 'click', function(event) {
+      $(element.parent().delegate('.bar.hover-trigger, .labels .label span', 'click', function(event) {
         var clickedDatum = d3.select(event.currentTarget).datum();
         scope.$apply(function() {
           scope.$emit('column-chart:datum-clicked', clickedDatum);

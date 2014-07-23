@@ -1,0 +1,20 @@
+@import dataCards/common/colors
+
+.show-more
+  $arrow-size: 6px
+
+  .show-more-arrow
+    display: inline-block
+    position: relative
+    width: 0
+    height: 0
+
+    top: $arrow-size / 2
+    border: $arrow-size solid transparent
+    border-top-color: $aqua-font-color
+
+  &.less .show-more-arrow
+    top: -$arrow-size / 2
+    border-bottom-color: $aqua-font-color
+    border-top-color: transparent
+

@@ -15,12 +15,13 @@
       "physicalDatatype": "text"
     },
     {
-      "name": ":Computed_pointfieldname",
+      "name": "Ward",
       "title": "Ward",
       "description":"The Ward containing the Business.",
       "importance": 1,
       "logicalDatatype": "location",
-      "physicalDatatype": "text"
+      "physicalDatatype": "text",
+      "shapefileFeatureHumanReadablePropertyName": "ward"
     }
 
   ],

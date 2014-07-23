@@ -612,6 +612,11 @@ blist.namespace.fetch('blist.datatypes');
     { return $.htmlEscape(value ? JSON.stringify(value) : ''); };
 
 
+    // Types that we do not handle like multiline, multipolygon
+    var renderUnknown = function(value, column)
+    {
+        return '?';
+    };
 
     /** FILTER FUNCTIONS ***/
 
@@ -845,7 +850,13 @@ blist.namespace.fetch('blist.datatypes');
 
         text: { renderer: renderText },
 
-        url: { renderer: renderURL }
+        url: { renderer: renderURL },
+
+        point: { renderer: renderObject },
+
+        multiline: { renderer: renderUnknown },
+
+        multipolygon: { renderer: renderUnknown }
     };
 
     /**
@@ -1594,6 +1605,35 @@ blist.namespace.fetch('blist.datatypes');
             priority: 21
         },
 
+        point: {
+            title: 'Point',
+            interfaceType: blist.datatypes.interfaceTypes.point,
+
+            alignment: alignment,
+            createable: false,
+            deleteable: false,
+            priority: 22
+        },
+
+        multiline: {
+            title: 'Multi-Line',
+            interfaceType: blist.datatypes.interfaceTypes.multiline,
+
+            alignment: alignment,
+            createable: false,
+            deleteable: false,
+            priority: 23
+        },
+
+        multipolygon: {
+            title: 'Multi-Polygon',
+            interfaceType: blist.datatypes.interfaceTypes.multipolygon,
+
+            alignment: alignment,
+            createable: false,
+            deleteable: false,
+            priority: 24
+        },
 
         // Special system types
         nested_table: {

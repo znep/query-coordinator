@@ -1,13 +1,13 @@
 angular.module('dataCards.models').factory('Filter', function(SoqlHelpers) {
 
-
-  function BinaryOperatorFilter(operator, operand) {
+  function BinaryOperatorFilter(operator, operand, humanReadableOperand) {
     if (!_.isString(operator)) { throw new Error('BinaryOperatorFilter passed invalid operator'); }
     if (operator === '') { throw new Error('BinaryOperatorFilter passed empty operator'); }
     if (_.isUndefined(operand) || _.isNull(operand)) { throw new Error('BinaryOperatorFilter passed invalid operand'); }
 
     this.operator = operator;
     this.operand = operand;
+    this.humanReadableOperand = humanReadableOperand;
   };
 
   BinaryOperatorFilter.prototype.generateSoqlWhereFragment = function(field) {

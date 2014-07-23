@@ -18,7 +18,7 @@ angular.module('dataCards.directives').directive('multilineEllipsis', function(A
       'expanded': '='
     },
     template: '<div class="content" title="{{contentTitleAttr}}"></div>' +
-      '<div ng-if="showMoreMode == \'expand-link\'" class="show-more" ng-class="{less: expanded, clamped: textClamped}" ng-click="$parent.expanded = !expanded"></div>',
+      '<div ng-if="showMoreMode == \'expand-link\'" class="show-more" ng-class="{less: expanded, clamped: textClamped}" ng-click="$parent.expanded = !expanded"><span class="show-more-arrow"></span></div>',
     restrict : 'A',
     link: function($scope, element, attrs) {
       AngularRxExtensions.install($scope);

@@ -6,6 +6,7 @@ angular.module('dataCards.directives').directive('choropleth', function(AngularR
   // GeoJSON object we receive.
   var AGGREGATE_VALUE_PROPERTY_NAME = '__SOCRATA_MERGED_VALUE__';
   var AGGREGATE_VALUE_HIGHLIGHTED_NAME = '__SOCRATA_FEATURE_HIGHLIGHTED__';
+  var HUMAN_READABLE_PROPERTY_NAME = '__SOCRATA_HUMAN_READABLE_NAME__';
   var INTERNAL_DATASET_FEATURE_ID = '_feature_id';
 
   // if the number of unique values in the dataset is <= the threshold, displays
@@ -481,8 +482,9 @@ angular.module('dataCards.directives').directive('choropleth', function(AngularR
         var $tooltip = $('#choro-flyout');
         var layer = leafletEvent.target;
         var feature = layer.feature;
+        var featureHumanReadableName = feature.properties[HUMAN_READABLE_PROPERTY_NAME];
         var value = feature.properties[AGGREGATE_VALUE_PROPERTY_NAME];
-        var message = value || '(No Value)';
+        var message = String(featureHumanReadableName).capitaliseEachWord() + ': ' + $.commaify(value || '(No Value)');
 
         $tooltip.find('.content').html(message);
         $tooltip.find('.content').removeClass('undefined');

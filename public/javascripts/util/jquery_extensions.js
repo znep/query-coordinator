@@ -156,15 +156,14 @@ $.fn.flyout = function(options) {
         format(getVal(options.title)));
     }
     if (options.table) {
-      var html = '<table class="flyout-table"><tbody>';
+      var html = '';
         _.each(getVal(options.table), function(parts) {
-          html += '<tr>';
-          _.each(parts, function(html) {
-            html += '<td>{0}</td>'.format(html);
+          html += '<div class="flyout-row">';
+          _.each(parts, function(part) {
+            html += '<span class="flyout-cell">{0}</span>'.format(part);
           });
-          html += '</tr>';
+          html += '</div>';
         });
-      html += '</tbody></table>';
       flyout.append(html);
     }
     if (options.html) {
@@ -187,7 +186,8 @@ $.fn.flyout = function(options) {
     var direction = getVal(options.direction);
     var pos = $target.offset(), top, left;
     var targetLeftEdge = pos.left;
-    var targetRightEdge = pos.left + $target.outerWidth();
+    // TODO: Fix SVG handling & zero width elements
+    var targetRightEdge = pos.left + ($target.outerWidth() || $target[0].getBBox().width);
     var targetWidth = targetRightEdge - targetLeftEdge
     if (direction == 'horizontal') {
       if (targetRightEdge + flyout.outerWidth() + options.margin > containerRightEdge) {

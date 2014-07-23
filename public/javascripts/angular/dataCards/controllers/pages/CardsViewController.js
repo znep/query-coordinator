@@ -113,6 +113,8 @@ angular.module('dataCards.controllers').controller('CardsViewController',
           } else {
             throw new Error('Only = binary operator supported for MVP');
           }
+        } else if (filter instanceof Filter.TimeOperatorFilter) {
+          return 'is';
         } else if (filter instanceof Filter.IsNullFilter) {
           if (filter.isNull) {
             return 'is';
@@ -129,6 +131,13 @@ angular.module('dataCards.controllers').controller('CardsViewController',
           return filter.operand;
         } else if (filter instanceof Filter.IsNullFilter) {
           return 'blank';
+        } else if (filter instanceof Filter.TimeOperatorFilter) {
+          var format = {
+            YEAR: 'YYYY',
+            MONTH: 'YYYY MMMM',
+            DAY: 'YYYY MMMM D'
+          }[filter.precision]
+          return moment(filter.operand).format(format);
         } else {
           throw new Error('Unsupported filter type');
         }

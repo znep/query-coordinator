@@ -13,6 +13,7 @@ describe("card directive", function() {
     _$templateCache.put('/angular_templates/dataCards/cardVisualizationColumnChart.html', '');
     _$templateCache.put('/angular_templates/dataCards/cardVisualizationChoropleth.html', '');
     _$templateCache.put('/angular_templates/dataCards/cardVisualizationTable.html', '');
+    _$templateCache.put('/angular_templates/dataCards/cardVisualizationTimelineChart.html', '');
   }]));
 
   afterEach(function() {

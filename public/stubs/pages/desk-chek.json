@@ -26,6 +26,14 @@
       "expanded": false
     },
     {
+      "fieldName": "updated_on",
+      "cardSize": 2,
+      "cardCustomStyle": {},
+      "expandedCustomStyle": {},
+      "displayMode": "visualization",
+      "expanded": false
+    },
+    {
       "fieldName": "ward",
       "shapeFile": "mash-apes",
       "cardSize": 2,

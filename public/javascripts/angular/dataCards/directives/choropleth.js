@@ -5,6 +5,7 @@ angular.module('dataCards.directives').directive('choropleth', function(AngularR
   // chosen so that it is unlikely to collide with any user-defined property on the
   // GeoJSON object we receive.
   var AGGREGATE_VALUE_PROPERTY_NAME = '__SOCRATA_MERGED_VALUE__';
+  var FILTERED_VALUE_PROPERTY_NAME = '__SOCRATA_UNFILTERED_VALUE__';
   var AGGREGATE_VALUE_HIGHLIGHTED_NAME = '__SOCRATA_FEATURE_HIGHLIGHTED__';
   var HUMAN_READABLE_PROPERTY_NAME = '__SOCRATA_HUMAN_READABLE_NAME__';
   var INTERNAL_DATASET_FEATURE_ID = '_feature_id';
@@ -135,7 +136,7 @@ angular.module('dataCards.directives').directive('choropleth', function(AngularR
           return nullColor;
         } else {
           if (highlighted) {
-            if (fillColor == 'none') {
+            if (fillClass == 'none') {
               return 'transparent';
             } else if (fillClass == 'single') {
               return defaultSingleColor;
@@ -146,7 +147,7 @@ angular.module('dataCards.directives').directive('choropleth', function(AngularR
               throw new Error("Invalid fillClass on #fill: " + fillClass);
             }
           } else {
-            if (fillColor == 'none') {
+            if (fillClass == 'none') {
               return 'transparent';
             } else if (fillClass == 'single') {
               return defaultSingleColor;
@@ -572,7 +573,7 @@ angular.module('dataCards.directives').directive('choropleth', function(AngularR
             return;
           }
 
-          values = ChoroplethHelpers.getGeojsonValues(geojsonAggregateData, AGGREGATE_VALUE_PROPERTY_NAME);
+          values = ChoroplethHelpers.getGeojsonValues(geojsonAggregateData, FILTERED_VALUE_PROPERTY_NAME);
 
           if (values.length === 0) {
             // no values, just render polygons with no colors

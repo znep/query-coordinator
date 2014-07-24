@@ -1257,7 +1257,7 @@ class View < Model
     # We can call it Schrödinger's Metadata.
     custom_fields.each do |fieldset|
       next unless merged['custom_fields'].has_key? fieldset['name']
-      fieldset['fields'].each do |field|
+      (fieldset['fields'] || []).each do |field|
         next unless merged['custom_fields'][fieldset['name']].has_key? field['name']
         merged['custom_fields'][fieldset['name']][field['name']] = data['metadata'].fetch('custom_fields', {}).fetch(fieldset['name'], {}).fetch(field['name'], nil) unless field['private'] === true
         merged['custom_fields'][fieldset['name']].delete(field['name']) unless can_see_private_meta? || field['private'] != true

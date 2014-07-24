@@ -430,15 +430,30 @@ describe('columnChart', function() {
       element.find('.bar.hover-trigger').eq(indexOfItemToClick).click();
     });
 
-    it('should be raised when the labels are clicked', function(done) {
+    it('should be raised when the labels are clicked', function() {
       var capitalizedName = $.capitalizeWithDefault(testData[indexOfItemToClick].name);
 
       ensureChart();
-      correctEventRaised.subscribe(_.after(2, done));
+      var subscription = correctEventRaised.subscribe(function() {
+        throw new Error('Clicking on the label wrappers should not raise the event.');
+      });
       element.find('.label div:contains("' + capitalizedName + '")').click();
       scope.expanded = true;
       scope.$digest();
       element.find('.label div:contains("' + capitalizedName + '")').click();
+      subscription.dispose();
+    });
+
+    it('should be raised when the label text is clicked', function(done) {
+      var capitalizedName = $.capitalizeWithDefault(testData[indexOfItemToClick].name);
+
+      ensureChart();
+      var subscription = correctEventRaised.subscribe(_.after(2, done));
+      element.find('.label span:contains("' + capitalizedName + '")').click();
+      scope.expanded = true;
+      scope.$digest();
+      element.find('.label span:contains("' + capitalizedName + '")').click();
+      subscription.dispose();
     });
   });
 

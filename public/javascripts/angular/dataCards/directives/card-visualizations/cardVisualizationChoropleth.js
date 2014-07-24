@@ -12,18 +12,39 @@ angular.module('dataCards.directives').directive('cardVisualizationChoropleth', 
 
       var model = $scope.observe('model');
       var dataset = model.pluck('page').observeOnLatest('dataset');
+      var baseSoqlFilter = model.pluck('page').observeOnLatest('baseSoqlFilter');
 
       var geojsonRegions = model.observeOnLatest('shapeFile').map(
         function(shapeFile) {
           return Rx.Observable.fromPromise(CardDataService.getChoroplethRegions(shapeFile));
         }).switchLatest();
 
-      var aggregatedDataObservable = Rx.Observable.combineLatest(
+      var nonBaseFilterApplied = Rx.Observable.combineLatest(
+          $scope.observe('whereClause'),
+          baseSoqlFilter,
+          function (whereClause, baseFilter) {
+            return !_.isEmpty(whereClause) && whereClause != baseFilter;
+          });
+
+      var unfilteredDataObservable = Rx.Observable.combineLatest(
+          model.pluck('fieldName'),
+          baseSoqlFilter,
+          dataset,
+          function(fieldName, baseWhere, dataset) {
+            return Rx.Observable.fromPromise(CardDataService.getData(fieldName, dataset.id, baseWhere));
+          }).switchLatest();
+
+      var filteredDataObservable = Rx.Observable.combineLatest(
           model.pluck('fieldName'),
           $scope.observe('whereClause'),
+          nonBaseFilterApplied,
           dataset,
-          function(fieldName, whereClause, dataset) {
-            return Rx.Observable.fromPromise(CardDataService.getChoroplethAggregates(fieldName, dataset.id, whereClause));
+          function(fieldName, whereClause, nonBaseFilterApplied, dataset) {
+            if (nonBaseFilterApplied) {
+              return Rx.Observable.fromPromise(CardDataService.getData(fieldName, dataset.id, whereClause));
+            } else {
+              return Rx.Observable.returnValue(null);
+            }
           }).switchLatest();
 
       // TODO: Update this function to return what we need, not all the other crap.
@@ -32,7 +53,8 @@ angular.module('dataCards.directives').directive('cardVisualizationChoropleth', 
       var mergeRegionAndAggregateData = function(
         activeFilterNames,
         geojsonRegions,
-        aggregatedDataAsHash,
+        unfilteredDataAsHash,
+        filteredDataAsHash,
         shapefileHumanReadableColumnName) {
 
         var newFeatures = geojsonRegions.features.filter(function(geojsonFeature) {
@@ -41,8 +63,13 @@ angular.module('dataCards.directives').directive('cardVisualizationChoropleth', 
         }).map(function(geojsonFeature) {
 
           var name = geojsonFeature.properties[INTERNAL_DATASET_FEATURE_ID];
-          var mergedValue = aggregatedDataAsHash[name];
           var humanReadableName = geojsonFeature.properties[shapefileHumanReadableColumnName];
+
+          if ($.isPresent(filteredDataAsHash)) {
+            var mergedValue = filteredDataAsHash[name];
+          } else {
+            var mergedValue = unfilteredDataAsHash[name];
+          }
 
           var feature = {
             geometry: geojsonFeature.geometry,
@@ -52,7 +79,8 @@ angular.module('dataCards.directives').directive('cardVisualizationChoropleth', 
           // We're using the property name '__MERGED_SOCRATA_VALUE__' in order to avoid
           // overwriting existing properties on the geojson object (properties are user-
           // defined according to the spec).
-          feature.properties['__SOCRATA_MERGED_VALUE__'] = mergedValue ? mergedValue : null;
+          feature.properties['__SOCRATA_MERGED_VALUE__'] = mergedValue;
+          feature.properties['__SOCRATA_UNFILTERED_VALUE__'] = unfilteredDataAsHash[name];
           feature.properties['__SOCRATA_FEATURE_HIGHLIGHTED__'] = _.contains(activeFilterNames, name);
           feature.properties['__SOCRATA_HUMAN_READABLE_NAME__'] = humanReadableName;
           return feature;
@@ -69,15 +97,21 @@ angular.module('dataCards.directives').directive('cardVisualizationChoropleth', 
         'geojsonAggregateData',
         Rx.Observable.combineLatest(
           geojsonRegions,
-          aggregatedDataObservable,
+          unfilteredDataObservable,
+          filteredDataObservable,
           model.observeOnLatest('activeFilters'),
           model.pluck('fieldName'),
           dataset.observeOnLatest('columns'),
-          function(geojsonRegions, aggregatedData, activeFilters, fieldName, columns) {
+          function(geojsonRegions, unfilteredData, filteredData, activeFilters, fieldName, columns) {
 
             var activeFilterNames = _.pluck(activeFilters, 'operand');
 
-            var aggregatedDataAsHash = _.reduce(aggregatedData, function(acc, datum) {
+            var unfilteredDataAsHash = _.reduce(unfilteredData, function(acc, datum) {
+              acc[datum.name] = datum.value;
+              return acc;
+            }, {});
+
+            var filteredDataAsHash = _.reduce(filteredData, function(acc, datum) {
               acc[datum.name] = datum.value;
               return acc;
             }, {});
@@ -101,7 +135,8 @@ angular.module('dataCards.directives').directive('cardVisualizationChoropleth', 
             return mergeRegionAndAggregateData(
               activeFilterNames,
               geojsonRegions,
-              aggregatedDataAsHash,
+              unfilteredDataAsHash,
+              filteredDataAsHash,
               shapefileFeatureHumanReadablePropertyName
             );
 

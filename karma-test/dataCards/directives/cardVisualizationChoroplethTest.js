@@ -2,9 +2,11 @@ describe("A Choropleth Card Visualization", function() {
 
   var testWards = 'karma-test/dataCards/test-data/cardVisualizationChoroplethTest/ward_geojson.json';
   var testAggregates = 'karma-test/dataCards/test-data/cardVisualizationChoroplethTest/geo_values.json';
+  var testAggregatesWhere = 'karma-test/dataCards/test-data/cardVisualizationChoroplethTest/geo_values_where.json';
   beforeEach(module('/angular_templates/dataCards/cardVisualizationChoropleth.html'));
   beforeEach(module(testWards));
   beforeEach(module(testAggregates));
+  beforeEach(module(testAggregatesWhere));
 
   beforeEach(module('dataCards'));
   beforeEach(module('dataCards.directives'));
@@ -22,9 +24,13 @@ describe("A Choropleth Card Visualization", function() {
           deferred.resolve(json);
           return deferred.promise;
         },
-        getChoroplethAggregates: function(fieldName, datasetId, whereClause) {
+        getData: function(fieldName, datasetId, whereClause) {
           var deferred = q.defer();
-          deferred.resolve(testHelpers.getTestJson(testAggregates));
+          if (whereClause) {
+            deferred.resolve(testHelpers.getTestJson(testAggregatesWhere));
+          } else {
+            deferred.resolve(testHelpers.getTestJson(testAggregates));
+          }
           return deferred.promise;
         }
       }
@@ -46,7 +52,7 @@ describe("A Choropleth Card Visualization", function() {
     testHelpers.TestDom.clear();
   });
 
-  var createChoropleth = function(id) {
+  var createChoropleth = function(id, whereClause) {
     var model = new Model();
     model.fieldName = 'ward';
     model.defineObservableProperty('activeFilters', []);
@@ -67,19 +73,21 @@ describe("A Choropleth Card Visualization", function() {
 
     var pageModel = new Model();
     pageModel.defineObservableProperty('dataset', datasetModel);
+    pageModel.defineObservableProperty('baseSoqlFilter', null);
     model.page = pageModel;
 
     var childScope = scope.$new();
-    childScope.whereClause = '';
+    childScope.whereClause = whereClause;
     childScope.model = model;
 
-    var html = '<card-visualization-choropleth id="'+id+'" model="model" where-clause="whereClause"></card-visualization-choropleth>';
+    var html = '<card-visualization-choropleth id="{0}" model="model" where-clause="whereClause"></card-visualization-choropleth>'.format(id);
     return {
       element: testHelpers.TestDom.compileAndAppend(html, childScope),
       scope: childScope,
       eventFired: false
     };
   }
+
   describe('when created', function() {
     it('should not let click events leak', function() {
       obj1 = createChoropleth("choro1");
@@ -99,6 +107,16 @@ describe("A Choropleth Card Visualization", function() {
 
       expect(obj1.eventFired).to.equal(true);
       expect(obj2.eventFired).to.equal(false);
+    });
+    it('should not allow the choropleth legend to update when expanded', function() {
+
+      obj1 = createChoropleth('choropleth-1', '');
+      obj1LegendLength = $('#choropleth-1 div.legend.leaflet-control > div.info-label').length;
+      obj2 = createChoropleth('choropleth-2', "ward='10'");
+      obj2LegendLength = $('#choropleth-2 div.legend.leaflet-control > div.info-label').length;
+
+      expect(obj1LegendLength).to.equal(obj2LegendLength);
+
     });
   });
 });

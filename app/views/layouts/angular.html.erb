@@ -6,6 +6,10 @@
     <%= rendered_stylesheet_tag "bower-styles-all" %>
     <%= angular_stylesheet_tag %>
     <%= yield :head %>
+    <%- unless CurrentDomain.properties.typekit_id.blank? -%>
+      <script type="text/javascript" src="//use.typekit.net/<%= CurrentDomain.properties.typekit_id %>.js"></script>
+      <script type="text/javascript">try{Typekit.load();}catch(e){}</script>
+    <%- end -%>
   </head>
   <body ng-app="<%= angular_app %>">
     <%= render angular_app %>

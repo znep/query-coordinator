@@ -3,7 +3,7 @@
 $metadata-top-padding: 7px
 $metadata-side-padding: 30px
 $rounded-corners-border-radius: 3px
-$filter-height: 72px
+$filter-height: 58px
 // card sizes
 $card-margins: 5px
 $card-padding-top: 26px
@@ -20,7 +20,6 @@ $card-size-3-height: 200px + $card-border-width * 2
 body
   background-color: $cards-bg-color
   padding: 0
-  font-family: 'Myriad Pro', Arial, sans-serif
 
 
 /* MOBILE/RESPONSIVE DESIGN. SEE DESKTOP-SPECIFIC STYLES BELOW */
@@ -35,6 +34,11 @@ body
     padding: $metadata-top-padding $metadata-side-padding
     font-size: 1.25em
     font-weight: lighter
+    img
+      position: relative
+      // While the placeholder logo is correctly centered by pixel, it does not look centered.
+      // Apply some manual correction.
+      top: 2px
 
   .cards-metadata
 
@@ -47,20 +51,22 @@ body
     .page-description
       margin-top: 1rem
 
-    .page-description .show-more
-      height: 1rem
-      display: none
-      border-top: 2px solid #ccc
-      text-align: center
-      cursor: pointer
+      .show-more
+        height: 1rem
+        display: none
+        padding-top: 1.5rem
+        color: $aqua-font-color
+        cursor: pointer
 
-      &:after
-        content: 'Show more'
-      &.less:after
-        content: 'Show less'
-      &.clamped,&.less
-        display: block
+        .show-more-arrow
+          margin-left: 5px
 
+        &:before
+          content: 'Show More'
+        &.less:before
+          content: 'Show Less'
+        &.clamped,&.less
+          display: inline-block
 
     .padded-wrapper
       padding: ($metadata-side-padding / 2)
@@ -71,6 +77,7 @@ body
 
     .activities
       $activities-divider-width: 36px
+      padding-right: $metadata-side-padding / 2
       text-align: right
       .metadatum-wrapper
 
@@ -117,8 +124,9 @@ body
 
     .quick-filter-bar
       padding: 0
-      height: $filter-height * 2
+      height: $filter-height
       box-sizing: border-box
+      white-space: nowrap
 
       .content
         padding: 0 $metadata-side-padding / 2
@@ -137,6 +145,7 @@ body
 
       .filter
         // TODO: responsive design for filters when narrow
+        display: inline-block
         padding-right: 3px
         span
           color: $active-filter-color
@@ -262,6 +271,11 @@ body
             .description
               padding-bottom: $card-description-padding-bottom
 
+          .expandButton
+            span:before
+              content: ''
+
+
       div[ng-switch="cardType"]
         position: relative
         // keeps choropleth in check
@@ -277,18 +291,6 @@ body
               // left-hand activities on full-width
               margin-right: 35px
 
-      .cards-content
-        .quick-filter-bar
-          height: $filter-height
-          .content
-            .filter
-              display: inline-block
-              float: initial
-              width: initial
-
-              select
-                width: initial
-
 /*   ICONS AND COMPONENTS */
 
 .expandButton
@@ -298,7 +300,7 @@ body
   top: 5px
   right: 23px
   z-index: 3
-  a
+  span
     cursor: pointer
     display: block
     width: 0

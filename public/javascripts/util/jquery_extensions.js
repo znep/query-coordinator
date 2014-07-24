@@ -10,7 +10,13 @@ $.fn.observeDimensions = function() {
   var dimensionsSubject = new Rx.BehaviorSubject(self.dimensions());
 
   self.resize(function() {
-    dimensionsSubject.onNext(self.dimensions());
+    // We must check to see if the dimensions really did change,
+    // as jQuery.resize-plugin has a bug in versions of IE which require polling for size changes.
+    var oldDimensions = dimensionsSubject.value;
+    var newDimensions = self.dimensions();
+    if (oldDimensions.width !== newDimensions.width || oldDimensions.height !== newDimensions.height) { 
+      dimensionsSubject.onNext(newDimensions);
+    }
   });
 
   return dimensionsSubject;

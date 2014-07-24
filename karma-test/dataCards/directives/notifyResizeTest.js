@@ -2,7 +2,7 @@ describe("notifyResize directive", function() {
   var scope, testHelpers;
 
   beforeEach(module('test'));
-  beforeEach(module('dataCards.directives'));
+  beforeEach(module('dataCards'));
 
   beforeEach(inject(['$rootScope', 'testHelpers', function(_$rootScope, _testHelpers) {
     testHelpers = _testHelpers;

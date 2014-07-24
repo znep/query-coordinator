@@ -476,13 +476,51 @@ angular.module('dataCards.directives').directive('choropleth', function(AngularR
 
       /* Region mouseover tooltip effect */
 
-      if ($('#choro-flyout').length == 0) {
-        $('body').append('<div class="flyout top" id="choro-flyout"><div class="flyout-arrow"></div><span class="content"></span></div>');
-        $('#choro-flyout').hide();
-      }
+      var $tooltip;
 
-      var positionTooltip = function(e){
-        var $tooltip = $('#choro-flyout');
+      var initializeChoroFlyout = function() {
+        $tooltip = $('#choro-flyout');
+
+        if ($tooltip.length == 0) {
+          $('body').append('<div class="flyout top" id="choro-flyout"><div class="flyout-arrow"></div><span class="content"></span></div>');
+          $tooltip = $('#choro-flyout');
+          $tooltip.hide();
+
+          $tooltip
+            .mousemove(function(e) {
+                positionTooltip($tooltip, e);
+            })
+            .mouseout(function() {
+              //remove bug where tooltip doesn't disappear when hovering on map
+              if ($("#choro-flyout:hover").length == 0) {
+                $tooltip.hide();
+              }
+            });
+        };
+
+        return $tooltip;
+      };
+
+      var mousemoveFeature = function(e) {
+        $tooltip.show();
+        positionTooltip($tooltip, e);
+      };
+
+      var mouseoutFeature = function() {
+        if ($("#choro-flyout:hover").length == 0) {
+          $tooltip.hide();
+        }
+      };
+
+      var handleMouseEvents = function() {
+        element.find('path')
+          .mousemove(mousemoveFeature)
+          .mouseout(mouseoutFeature);
+      };
+
+      var initializeFeatureEventHandlers = _.once(handleMouseEvents);
+
+      var positionTooltip = function($tooltip, e){
         var top = e.pageY;
         var left = e.pageX;
         var height = $tooltip.outerHeight();
@@ -492,8 +530,12 @@ angular.module('dataCards.directives').directive('choropleth', function(AngularR
         $tooltip.css("left", (left - (width/2)));
       };
 
-      var mouseoverFeature = function(event, leafletEvent) {
-        var $tooltip = $('#choro-flyout');
+      $scope.$on('leafletDirectiveMap.geojsonMouseover', function(event, leafletEvent) {
+        // equivalent to a mouseenter
+
+        // initialize choro flyout element.
+        // can disappear on card collapse.
+        $tooltip = initializeChoroFlyout();
         var layer = leafletEvent.target;
         var feature = layer.feature;
         var featureHumanReadableName = feature.properties[HUMAN_READABLE_PROPERTY_NAME];
@@ -507,32 +549,13 @@ angular.module('dataCards.directives').directive('choropleth', function(AngularR
           $tooltip.find('.content').addClass('undefined');
         }
 
-        element.find('path')
-          .mousemove(function(e){
-            $tooltip.show();
-            positionTooltip(e);
-          })
-          .mouseout(function(){
-            if ($("#choro-flyout:hover").length == 0){
-                $tooltip.hide();
-            } else {
-              // hovering on tooltip
-              $("#choro-flyout")
-                .mousemove(function(e2){
-                    positionTooltip(e2);
-                })
-                .mouseout(function(){
-                  //remove bug where tooltip doesn't disappear when hovering on map
-                  if ($("#choro-flyout:hover").length == 0) {
-                    $tooltip.hide();
-                  }
-                });
-            }
-          });
-      };
+        initializeFeatureEventHandlers();
+      });
 
-      $scope.$on('leafletDirectiveMap.geojsonMouseover', function(event, leafletEvent) {
-        mouseoverFeature(event, leafletEvent);
+      $scope.$on('leafletDirectiveMap.geojsonMouseout', function(event, leafletEvent) {
+        if ($("#choro-flyout:hover").length == 0) {
+          $tooltip.hide();
+        }
       });
 
       /* React to data changes further up the stack */

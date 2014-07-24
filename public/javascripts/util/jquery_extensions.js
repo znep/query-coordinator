@@ -143,17 +143,7 @@ $.fn.flyout = function(options) {
   }, options);
   var self = this;
   var inflyout = false, intarget = false, flyout;
-  var positionFlyoutOnMouse = function(flyout, e){
-    var $el = $(flyout);
-    var top = e.pageY,
-    left = e.pageX;
-    var height = $el.outerHeight();
-    var width = $el.outerWidth();
-
-    $el.css("top", (top - height - 15));
-    $el.css("left", (left - (width/2)));
-  }
-  var renderFlyout = function(target, trackMouse) {
+  var renderFlyout = function(target) {
     var $target = $(target);
     var parentElem = $(options.parent || $target);
     $('.flyout').remove();
@@ -225,56 +215,39 @@ $.fn.flyout = function(options) {
       }
     }
     flyout.addClass(direction);
-    if (options.trackMouse) {
-      positionFlyoutOnMouse(flyout, event);
-      $target.mousemove(function(e) {
-        positionFlyoutOnMouse(flyout, e);
-      });
-      // hovering on flyout
-      flyout.mousemove(function(e){
-        positionFlyoutOnMouse(flyout, e);
-      })
-      .mouseout(function(){
-        //remove bug where tooltip doesn't disappear when hovering on map
-        if ($target.find("path:hover").length == 0) {
-          flyout.hide();
-        }
-      });
-    } else {
-      if (direction == "top") {
-        top = pos.top - flyout.outerHeight() + options.inset.vertical;
-        left = pos.left + targetWidth/2 - flyout.outerWidth()/2;
-      } else if (direction == "bottom") {
-        top = pos.top + targetHeight - options.inset.vertical;
-        left = pos.left + targetWidth/2 - flyout.outerWidth()/2;
-      } else if (direction == "right") {
-        top = pos.top + targetHeight/2 - flyout.outerHeight()/2;
-        left = pos.left + targetWidth- options.inset.horizontal;
-      } else if (direction == "left") {
-        top = pos.top + targetHeight/2 - flyout.outerHeight()/2;
-        left = pos.left - flyout.outerWidth() + options.inset.horizontal;
-      }
-      if (!options.overflowParent) {
-        var offright = left + flyout.outerWidth() > containerRightEdge - options.margin;
-        var offleft = left < containerLeftEdge + options.margin;
-        if (offright) {
-          left = containerRightEdge - flyout.outerWidth() - options.margin;
-        }
-        if (offleft) {
-          left = containerLeftEdge + options.margin;
-        }
-        if (targetLeftEdge < containerLeftEdge) targetLeftEdge = containerLeftEdge;
-        if (targetRightEdge > containerRightEdge) targetRightEdge = containerRightEdge;
-      }
-      if (direction == 'top' || direction == 'bottom') {
-        var center = (targetLeftEdge + targetRightEdge)/2;
-        var arrow_pos = center - left;
-        if (arrow_pos <= options.arrowMargin) arrow_pos = options.arrowMargin;
-        else if (arrow_pos >= flyout.outerWidth() - options.arrowMargin) arrow_pos = flyout.outerWidth() - options.arrowMargin;
-        flyout.find('.flyout-arrow').css('left', arrow_pos);
-      }
-      flyout.offset({ top: top, left: left });
+    if (direction == "top") {
+      top = pos.top - flyout.outerHeight() + options.inset.vertical;
+      left = pos.left + targetWidth/2 - flyout.outerWidth()/2;
+    } else if (direction == "bottom") {
+      top = pos.top + targetHeight - options.inset.vertical;
+      left = pos.left + targetWidth/2 - flyout.outerWidth()/2;
+    } else if (direction == "right") {
+      top = pos.top + targetHeight/2 - flyout.outerHeight()/2;
+      left = pos.left + targetWidth- options.inset.horizontal;
+    } else if (direction == "left") {
+      top = pos.top + targetHeight/2 - flyout.outerHeight()/2;
+      left = pos.left - flyout.outerWidth() + options.inset.horizontal;
     }
+    if (!options.overflowParent) {
+      var offright = left + flyout.outerWidth() > containerRightEdge - options.margin;
+      var offleft = left < containerLeftEdge + options.margin;
+      if (offright) {
+        left = containerRightEdge - flyout.outerWidth() - options.margin;
+      }
+      if (offleft) {
+        left = containerLeftEdge + options.margin;
+      }
+      if (targetLeftEdge < containerLeftEdge) targetLeftEdge = containerLeftEdge;
+      if (targetRightEdge > containerRightEdge) targetRightEdge = containerRightEdge;
+    }
+    if (direction == 'top' || direction == 'bottom') {
+      var center = (targetLeftEdge + targetRightEdge)/2;
+      var arrow_pos = center - left;
+      if (arrow_pos <= options.arrowMargin) arrow_pos = options.arrowMargin;
+      else if (arrow_pos >= flyout.outerWidth() - options.arrowMargin) arrow_pos = flyout.outerWidth() - options.arrowMargin;
+      flyout.find('.flyout-arrow').css('left', arrow_pos);
+    }
+    flyout.offset({ top: top, left: left });
     inflyout = false;
     intarget = true;
     flyout.on('mouseover, mouseenter', function(e) {
@@ -285,26 +258,8 @@ $.fn.flyout = function(options) {
   }
   $(window).scroll(function(e) {
     var $flyout = $('.flyout');
-    if (options.fixIfUnderParentWhenExpanded) {
-      if ($(options.fixIfUnderParentWhenExpanded).length === 0) {
-        if (!_.isEmpty($flyout) && ( inflyout || intarget )) {
-          if (options.trackMouse) {
-            // reposition flyout
-            positionFlyoutOnMouse($flyout, e);
-          } else {
-            renderFlyout($flyout.data('target'));
-          }
-        }
-      }
-    } else {
-      if (!_.isEmpty($flyout) && ( inflyout || intarget )) {
-        if (options.trackMouse) {
-          // reposition flyout
-          positionFlyoutOnMouse($flyout, e);
-        } else {
-          renderFlyout($flyout.data('target'));
-        }
-      }
+    if (!_.isEmpty($flyout) && ( inflyout || intarget )) {
+      renderFlyout($flyout.data('target'));
     }
   });
   self.delegate(options.selector, 'mouseenter', function(e) {

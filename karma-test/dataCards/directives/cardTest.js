@@ -39,8 +39,8 @@ describe("card directive", function() {
       it('should contain a link with a title of "Expand Card"', function() {
         ensure();
         model.set('expanded', false);
-        expect(el.find('.expandButton a[title="Collapse Card"]')).to.have.length(0);
-        expect(el.find('.expandButton a[title="Expand Card"]')).to.have.length(1);
+        expect(el.find('.expandButton span[title="Collapse Card"]')).to.have.length(0);
+        expect(el.find('.expandButton span[title="Expand Card"]')).to.have.length(1);
       });
     });
 
@@ -48,8 +48,8 @@ describe("card directive", function() {
       it('should contain a link with a title of "Collapse Card"', function() {
         ensure();
         model.set('expanded', true);
-        expect(el.find('.expandButton a[title="Collapse Card"]')).to.have.length(1);
-        expect(el.find('.expandButton a[title="Expand Card"]')).to.have.length(0);
+        expect(el.find('.expandButton span[title="Collapse Card"]')).to.have.length(1);
+        expect(el.find('.expandButton span[title="Expand Card"]')).to.have.length(0);
       });
     });
 
@@ -58,7 +58,7 @@ describe("card directive", function() {
         ensure();
         model.page = new Model();
         model.page.toggleExpanded = sinon.spy();
-        el.find('.expandButton a').click();
+        el.find('.expandButton span').click();
         expect(model.page.toggleExpanded.calledOnce).to.be.true;
         expect(model.page.toggleExpanded.calledWith(model)).to.be.true;
       });

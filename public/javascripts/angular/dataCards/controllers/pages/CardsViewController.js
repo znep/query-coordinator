@@ -54,7 +54,16 @@ angular.module('dataCards.controllers').controller('CardsViewController',
     $scope.bindObservable('pageName', page.observe('name').map(function(name) {
       return _.isUndefined(name) ? 'Untitled' : name;
     }));
+
     $scope.bindObservable('pageDescription', page.observe('description'));
+
+    $scope.bindObservable('datasetCSVDownloadURL', page.observe('dataset').map(function(dataset) {
+      if (dataset && dataset.hasOwnProperty('id')) {
+        return '/api/views/{0}/rows.csv?accessType=DOWNLOAD'.format(dataset.id);
+      } else {
+        return '#';
+      }
+    }));
 
     $scope.bindObservable('rowsOfCardsBySize', rowsOfCardsBySize);
     $scope.bindObservable('cardSizeNamesInDisplayOrder', rowsOfCardsBySize.map(function(sizedCards) {

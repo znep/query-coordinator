@@ -68,7 +68,7 @@ angular.module('socrataCommon.directives').directive('timelineChart', function($
       if (niceTicks.length < numberOfTicks) {
         var newTicks = verticalScale.ticks(numberOfTicks + 2);
         function avg(arr) {
-          return _.reduce(arr, function(memo, num){
+          return _.reduce(arr, function(memo, num) {
             return memo + num;
           }, 0) / arr.length;
         };
@@ -180,6 +180,8 @@ angular.module('socrataCommon.directives').directive('timelineChart', function($
     element.children('.ticks').remove();
     element.prepend(ticks);
 
+
+    // Used to convert an array of xy values into a path.
     // The Math.floor fixes white lines caused by subpixel rendering.
     var lineSegment = d3.svg.line().
       x(function(d, i) {
@@ -188,57 +190,53 @@ angular.module('socrataCommon.directives').directive('timelineChart', function($
         return Math.floor(d.y);
       });
 
-    var lineSegmentCoords = function(chartDataIndex, field) {
-      var coords = [];
-      function avg(a, b) {
-        return { x: (a.x + b.x)/2, y: (a.y + b.y)/2 };
-      };
-
-      if (chartDataIndex == 0) {
-        var data = [null].concat(chartData.slice(0, 2));
-      } else {
-        var data = chartData.slice(chartDataIndex - 1, chartDataIndex + 2);
-      }
-      _.each(data, function(c, i) {
-        if (c) {
-          if (!showFiltered) {
-            var val = c['total'];
-          } else {
-            var val = c[field];
-          }
-          var pos = {
-            x: horizontalSegmentPosition(c),
-            y: chartHeight - clampHeight(verticalScale(val))
-          }
-          if (i == 0 || i == 1) {
-            coords.push(pos);
-          }
-          if (i == 1 && coords.length == 2) {
-            coords[0] = avg(coords[0], pos)
-          }
-          if (i == 2) {
-            coords.push(avg(coords.slice(-1)[0], pos));
-          }
+    // Since the timeline is rendered in sections, we have to calculate the midpoints.
+    function pointsToRender(field) {
+      var pointCoords = [];
+      _.each(chartData, function(d, i) {
+        pointCoords.push({
+          x: horizontalSegmentPosition(d),
+          y: chartHeight - clampHeight(verticalScale(d[field]))
+        });
+      });
+      var midCoords = [];
+      _.each(pointCoords, function(coord, i) {
+        var next = pointCoords[i+1];
+        if (next) {
+          midCoords.push({
+            x: (coord.x + next.x)/2,
+            y: (coord.y + next.y)/2
+          });
         }
       });
-
-      return coords;
+      return _.compact(_.flatten(_.zip(pointCoords, midCoords)));
     };
-    var dLineSegment = function(field) {
+
+    // Extract point and midpoints on either side
+    var lineSegmentCoords = function(chartDataIndex, points) {
+      var superIndex = chartDataIndex * 2;
+      return points.slice(_.max([0, superIndex - 1]), superIndex + 2);
+    };
+
+    // Returns d3 path function for a line segment.
+    var dLineSegment = function(points) {
       return function(d, i) {
-        return lineSegment(lineSegmentCoords(i, field));
+        return lineSegment(lineSegmentCoords(i, points));
       };
     };
-    var dFillSegment = function(field) {
+
+    // Returns d3 path function for a fill segment.
+    var dFillSegment = function(points, secondPoints) {
       return function(d, i) {
-        var coords = lineSegmentCoords(i, field);
-        if (field == 'total') {
-          var filtered = lineSegmentCoords(i, 'filtered');
+        var coords = lineSegmentCoords(i, points);
+        if (secondPoints && points !== secondPoints) {
+          var filtered = lineSegmentCoords(i, secondPoints);
           return lineSegment(coords.concat(filtered.reverse()))
         } else {
           var xs = _.pluck(coords, 'x');
+          var height = chartHeight - clampHeight(verticalScale(0));
           var bottomCoords = _.map([_.max(xs), _.min(xs)], function(x) {
-            return { x: x, y: chartHeight - clampHeight(verticalScale(0)) };
+            return { x: x, y: height };
           });
           return lineSegment(coords.concat(bottomCoords));
         }
@@ -277,24 +275,31 @@ angular.module('socrataCommon.directives').directive('timelineChart', function($
         }
       };
 
+      var totalPoints = pointsToRender('total');
+      if (showFiltered) {
+        var filteredPoints = pointsToRender('filtered');
+      } else {
+        var filteredPoints = totalPoints;
+      }
+
       transition(selection.selectAll("g.segment path.line.filtered")).
-        attr("d", dLineSegment('filtered'));
+        attr("d", dLineSegment(filteredPoints));
 
       transition(selection.selectAll("g.segment path.line.unfiltered")).
-        attr("d", dLineSegment('total'));
+        attr("d", dLineSegment(totalPoints));
 
       transition(selection.selectAll("g.segment path.fill.filtered")).
-        attr("d", dFillSegment('filtered'));
+        attr("d", dFillSegment(filteredPoints));
 
       transition(selection.selectAll("g.segment path.fill.unfiltered")).
-        attr("d", dFillSegment('total'));
+        attr("d", dFillSegment(filteredPoints, totalPoints));
 
       transition(selection.selectAll("g.segment rect.spacer")).
         attr("x", function(d, i) {
-          return horizontalScale(d.date - segmentDuration / 2);
+          return Math.floor(horizontalScale(d.date - segmentDuration / 2));
         }).
         attr("width", function(d, i) {
-          return segmentWidth;
+          return Math.floor(segmentWidth);
         }).
         attr("height", function() {
           return chartHeight;
@@ -318,7 +323,7 @@ angular.module('socrataCommon.directives').directive('timelineChart', function($
       },
       title: function($target, $head, options) {
         $target[0] = $target.find("path.fill.unfiltered")[0];
-        return moment($target[0].__data__.date).format(flyoutDateFormat[precision]);
+        return moment(d3.select($target[0]).datum().date).format(flyoutDateFormat[precision]);
       },
       table: function($target, $head, options, $flyout) {
         var data = $target.context.__data__;

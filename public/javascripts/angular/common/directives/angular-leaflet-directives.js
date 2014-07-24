@@ -360,10 +360,9 @@
     '$log',
     '$http',
     'leafletHelpers',
-    'leafletLegendHelpers',
     '$timeout',
     'numberFormatter',
-    function ($log, $http, leafletHelpers, leafletLegendHelpers, $timeout, numberFormatter) {
+    function ($log, $http, leafletHelpers, $timeout, numberFormatter) {
       return {
         restrict: 'A',
         scope: false,
@@ -390,197 +389,134 @@
               var legendStyle = legend.legendStyle || 'modern';
               var legendClassBreaks = legend.classBreaks;
 
-              // configure legend labels
-              if (legendStyle === 'modern') {
-                if (legend.colors.length !== legend.classBreaks.length - 1) {
-                  $log.error('[AngularJS - Leaflet] The number of legend colors should be 1 less than the number of class breaks: ', legend);
-                }
-              } else {
-                // handle class breaks labels
-                // so labels appear as "0 - 10", "10 - 30", "30 - 60", etc.
 
-                if (!isDefined(legendClassBreaks) && !isDefined(legend.labels)) {
-                  $log.error('[AngularJS - Leaflet] legendClassBreaks and legend.labels are both undefined.');
-                } else if (isDefined(legendClassBreaks) && !isDefined(legend.labels)) {
-                  // calculate labels from class breaks, if any.
-                  if (legendClassBreaks.length == 0) {
-                    // no values to return. Do not create a legend.
-                    $log.info('[AngularJS - Leaflet] no legend created, because features do not contain values.');
-                    return;
-                  }
-                  if (isDefined(legend.threshold) && legendClassBreaks.length <= legend.threshold) {
-                    // if the number of unique values in the dataset is <= the threshold, displays
-                    // 1 color for each unique value, and labels them as such in the legend.
-                    // legendClassBreaks = explicit list of legend labels
-                    legend.labels = legendClassBreaks;
-                  } else {
-                    legend.labels = [];
-                    for (var i = 0; i < legendClassBreaks.length - 1; i++) {
-                      if (legendClassBreaks[i] == legendClassBreaks[i+1]){
-                        legend.labels.push(legendClassBreaks[i]);
-                      } else {
-                        legend.labels.push(legendClassBreaks[i] + ' - ' + legendClassBreaks[i+1]);
-                      }
-                    }
-                  }
-                } else {
-                  $log.warn('[AngularJS - Leaflet] legendClassBreaks not used, because legend.labels were defined.');
-                }
-                if (legend.colors.length !== legend.labels.length) {
-                  $log.warn('[AngularJS - Leaflet] legend.colors and legend.labels must have the same length: ', legend);
-                } else if (isDefined(legend.url)) {
-                  $log.info('[AngularJS - Leaflet] loading arcgis legend service.');
-                }
+              if (legend.colors.length !== legend.classBreaks.length - 1) {
+                $log.error('[AngularJS - Leaflet] The number of legend colors should be 1 less than the number of class breaks: ', legend);
               }
 
               // draw the legend on the map
-              if (legendStyle === 'modern') {
+              var colorWidth = 15;
+              var margin = {top: 10, right: 10, bottom: 10, left: 45};
+              var height = 250 - margin.top - margin.bottom;
+              var width = 70 - margin.left - margin.right;
 
-                var colorWidth = 15;
-                var margin = {top: 10, right: 10, bottom: 10, left: 45},
-                    height = 250 - margin.top - margin.bottom,
-                    width = 70 - margin.left - margin.right;
+              var legendDiv = d3.select(element[0]).append('div').
+                classed(legendClass, true).
+                classed(position, true);
 
-                var legendDiv = d3.select(element[0]).append('div')
-                  .classed(legendClass, true)
-                  .classed(position, true);
+              var svg = legendDiv.append('svg').
+                attr('height', height + margin.top + margin.bottom).
+                attr('width', width + margin.left + margin.right).
+                append('g').
+                  attr("transform", "translate(" + margin.left + "," + margin.top + ")");
 
-                var svg = legendDiv.append('svg')
-                  .attr('height', height + margin.top + margin.bottom)
-                  .attr('width', width + margin.left + margin.right)
-                  .append('g')
-                    .attr("transform", "translate(" + margin.left + "," + margin.top + ")");
-
-                var tickFormatter = function(val) {
-                  // val = a x 10^b (a: coefficient, b: exponent);
-                  if (val === 0) return 0;
-                  var exponent = Math.floor(Math.log(Math.abs(val))/Math.LN10);
-                  var coefficient = val / Math.pow(10, exponent);
-                  var isMultipleOf10 = coefficient % 1 == 0;
-                  if (isMultipleOf10) {
-                    var numNonzeroDigits = coefficient.toString().length;
-                    var formattedNum = numberFormatter.formatNumber(val, {
-                      fixedPrecision: 0,
-                      maxLength: _.min([numNonzeroDigits, 3])
-                    });
-                  } else {
-                    var numNonzeroDigits = coefficient.toString().length - 1;
-                    var formattedNum = numberFormatter.formatNumber(val, {
-                      maxLength: _.min([numNonzeroDigits, 3])
-                    });
-                  }
-                  return formattedNum;
-                };
-
-                if (legend.classBreaks.length == 1) {
-                  // if there is just 1 value, make it range from 0 to that value
-                  var singleClassBreak = legend.classBreaks[0];
-                  legend.classBreaks = [_.min([0, singleClassBreak]), _.max([0, singleClassBreak])];
-                  var numTicks = 1;
+              var tickFormatter = function(val) {
+                // val = a x 10^b (a: coefficient, b: exponent);
+                if (val === 0) return 0;
+                var exponent = Math.floor(Math.log(Math.abs(val))/Math.LN10);
+                var coefficient = val / Math.pow(10, exponent);
+                var isMultipleOf10 = coefficient % 1 == 0;
+                if (isMultipleOf10) {
+                  var numNonzeroDigits = coefficient.toString().length;
+                  var formattedNum = numberFormatter.formatNumber(val, {
+                    fixedPrecision: 0,
+                    maxLength: _.min([numNonzeroDigits, 3])
+                  });
                 } else {
-                  var numTicks = 4;
+                  var numNonzeroDigits = coefficient.toString().length - 1;
+                  var formattedNum = numberFormatter.formatNumber(val, {
+                    maxLength: _.min([numNonzeroDigits, 3])
+                  });
                 }
+                return formattedNum;
+              };
 
-                var y = d3.scale.linear().range([height, 0]);
-
-                var yAxis = d3.svg.axis()
-                              .scale(y)
-                              .ticks(numTicks)
-                              .orient('left')
-                              .tickFormat(tickFormatter);
-
-                var minBreak = legend.classBreaks[0],
-                    maxBreak = legend.classBreaks[legend.classBreaks.length - 1];
-
-                y.domain([minBreak, maxBreak])
-                    .nice();
-
-                // include min and max back into d3 scale, if #nice truncates them
-                if (_.min(legend.classBreaks) > minBreak) legend.classBreaks.unshift(minBreak);
-                if (_.max(legend.classBreaks) < maxBreak) legend.classBreaks.push(maxBreak);
-
-                // update first and last class breaks to nice y domain
-                legend.classBreaks[0] = y.domain()[0];
-                legend.classBreaks[legend.classBreaks.length - 1] = y.domain()[1];
-
-                svg.append('g')
-                  .attr('class', 'labels')
-                  .call(yAxis);
-
-                // remove axis line that comes with d3 axis
-                svg.select('.labels')
-                    .select('path')
-                    .remove();
-
-                // draw legend color column
-                var column = svg.append('g')
-                  .attr('class', 'column');
-
-                var legendLabelColorHeight = function(colorIndex) {
-                  var minVal = _.min(legend.classBreaks),
-                      maxVal = _.max(legend.classBreaks);
-                  var percentOfClassbreakRange = (legend.classBreaks[colorIndex + 1] - legend.classBreaks[colorIndex]) / (maxVal - minVal);
-                  return percentOfClassbreakRange * height;
-                };
-
-                // draw legend colors
-                var rects = column.selectAll('.color')
-                  .data(legend.colors)
-                  .enter()
-                    .append('rect')
-                      .attr('class', 'color')
-                      .attr('width', colorWidth)
-                      .attr('height', function(c, i){
-                        return legendLabelColorHeight(i);
-                      })
-                      .attr('y', function(c, i){
-                        return y(legend.classBreaks[i+1]);
-                      })
-                      .style('fill', function(color){ return color; });
-
-                if (legend.colors.length > 1) {
-                  rects
-                    .attr('data-flyout-text', function(color, i) {
-                      return tickFormatter(legend.classBreaks[i]) + ' - ' + tickFormatter(legend.classBreaks[i+1]);
-                    });
-                } else {
-                  rects
-                    .attr('data-flyout-text', tickFormatter(singleClassBreak));
-                }
-
-                // set up legend color flyouts
-                $(element).find('.modern-legend').flyout({
-                  selector: '.color',
-                  direction: 'horizontal',
-                  parent: document.body,
-                  interact: true,
-                  overflowParent: true,
-                  html: function($target, $head, options, $element) {
-                    return $target.data('flyout-text');
-                  }
-                });
+              if (legend.classBreaks.length == 1) {
+                // if there is just 1 value, make it range from 0 to that value
+                var singleClassBreak = legend.classBreaks[0];
+                legend.classBreaks = [_.min([0, singleClassBreak]), _.max([0, singleClassBreak])];
+                var numTicks = 1;
               } else {
-                leafletLegend = L.control({ position: position });
-                leafletLegend.onAdd = leafletLegendHelpers.getOnAddArrayLegend(legend, legendClass);
-                leafletLegend.addTo(map);
+                var numTicks = 4;
               }
-              leafletScope.$watch('legend.url', function (newURL) {
-                if (!isDefined(newURL)) {
-                  return;
+
+              var y = d3.scale.linear().range([height, 0]);
+
+              var yAxis = d3.svg.axis().
+                            scale(y).
+                            ticks(numTicks).
+                            orient('left').
+                            tickFormat(tickFormatter);
+
+              var minBreak = legend.classBreaks[0],
+                  maxBreak = legend.classBreaks[legend.classBreaks.length - 1];
+
+              y.domain([minBreak, maxBreak]).
+                  nice();
+
+              // include min and max back into d3 scale, if #nice truncates them
+              if (_.min(legend.classBreaks) > minBreak) legend.classBreaks.unshift(minBreak);
+              if (_.max(legend.classBreaks) < maxBreak) legend.classBreaks.push(maxBreak);
+
+              // update first and last class breaks to nice y domain
+              legend.classBreaks[0] = y.domain()[0];
+              legend.classBreaks[legend.classBreaks.length - 1] = y.domain()[1];
+
+              svg.append('g').
+                attr('class', 'labels').
+                call(yAxis);
+
+              // remove axis line that comes with d3 axis
+              svg.select('.labels').
+                  select('path').
+                  remove();
+
+              // draw legend color column
+              var column = svg.append('g').
+                attr('class', 'column');
+
+              var legendLabelColorHeight = function(colorIndex) {
+                var minVal = _.min(legend.classBreaks),
+                    maxVal = _.max(legend.classBreaks);
+                var percentOfClassbreakRange = (legend.classBreaks[colorIndex + 1] - legend.classBreaks[colorIndex]) / (maxVal - minVal);
+                return percentOfClassbreakRange * height;
+              };
+
+              // draw legend colors
+              var rects = column.selectAll('.color').
+                data(legend.colors).
+                enter().
+                  append('rect').
+                    attr('class', 'color').
+                    attr('width', colorWidth).
+                    attr('height', function(c, i){
+                      return legendLabelColorHeight(i);
+                    }).
+                    attr('y', function(c, i){
+                      return y(legend.classBreaks[i+1]);
+                    }).
+                    style('fill', function(color){ return color; });
+
+              if (legend.colors.length > 1) {
+                rects.
+                  attr('data-flyout-text', function(color, i) {
+                    return tickFormatter(legend.classBreaks[i]) + ' - ' + tickFormatter(legend.classBreaks[i+1]);
+                  });
+              } else {
+                rects.
+                  attr('data-flyout-text', tickFormatter(singleClassBreak));
+              }
+
+              // set up legend color flyouts
+              $(element).find('.modern-legend').flyout({
+                selector: '.color',
+                direction: 'horizontal',
+                parent: document.body,
+                interact: true,
+                overflowParent: true,
+                html: function($target, $head, options, $element) {
+                  return $target.data('flyout-text');
                 }
-                $http.get(newURL).success(function (legendData) {
-                  if (isDefined(leafletLegend)) {
-                    leafletLegendHelpers.updateArcGISLegend(leafletLegend.getContainer(), legendData);
-                  } else {
-                    leafletLegend = L.control({ position: position });
-                    leafletLegend.onAdd = leafletLegendHelpers.getOnAddArcGISLegend(legendData, legendClass);
-                    leafletLegend.addTo(map);
-                  }
-                  if (isDefined(legend.loadedData) && isFunction(legend.loadedData)) {
-                    legend.loadedData();
-                  }
-                }).error(function () {
-                });
               });
             });
           });
@@ -2205,56 +2141,6 @@
       };
     }
   ]);
-  angular.module('leaflet-directive').factory('leafletLegendHelpers', function () {
-    var _updateArcGISLegend = function (div, legendData) {
-      div.innerHTML = '';
-      if (legendData.error) {
-        div.innerHTML += '<div class="info-title alert alert-danger">' + legendData.error.message + '</div>';
-      } else {
-        for (var i = 0; i < legendData.layers.length; i++) {
-          var layer = legendData.layers[i];
-          div.innerHTML += '<div class="info-title">' + layer.layerName + '</div>';
-          for (var j = 0; j < layer.legend.length; j++) {
-            var leg = layer.legend[j];
-            div.innerHTML += '<div class="inline"><img src="data:' + leg.contentType + ';base64,' + leg.imageData + '" /></div>' + '<div class="info-label">' + leg.label + '</div>';
-          }
-        }
-      }
-    };
-    var _getOnAddArcGISLegend = function (legendData, legendClass) {
-      return function () {
-        var div = L.DomUtil.create('div', legendClass);
-        if (!L.Browser.touch) {
-          L.DomEvent.disableClickPropagation(div);
-          L.DomEvent.on(div, 'mousewheel', L.DomEvent.stopPropagation);
-        } else {
-          L.DomEvent.on(div, 'click', L.DomEvent.stopPropagation);
-        }
-        _updateArcGISLegend(div, legendData);
-        return div;
-      };
-    };
-    var _getOnAddArrayLegend = function (legend, legendClass) {
-      return function () {
-        var div = L.DomUtil.create('div', legendClass);
-        for (var i = 0; i < legend.colors.length; i++) {
-          div.innerHTML += '<div class="outline"><i style="background:' + legend.colors[i] + '"></i></div>' + '<div class="info-label">' + legend.labels[i] + '</div>';
-        }
-        if (!L.Browser.touch) {
-          L.DomEvent.disableClickPropagation(div);
-          L.DomEvent.on(div, 'mousewheel', L.DomEvent.stopPropagation);
-        } else {
-          L.DomEvent.on(div, 'click', L.DomEvent.stopPropagation);
-        }
-        return div;
-      };
-    };
-    return {
-      getOnAddArcGISLegend: _getOnAddArcGISLegend,
-      getOnAddArrayLegend: _getOnAddArrayLegend,
-      updateArcGISLegend: _updateArcGISLegend
-    };
-  });
   angular.module('leaflet-directive').factory('leafletPathsHelpers', [
     '$rootScope',
     '$log',

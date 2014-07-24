@@ -56,6 +56,7 @@ module.exports = function ( karma ) {
       /*    SASS    */
       'app/styles/dataCards/column-chart.sass',
       'app/styles/dataCards/main.sass',
+      'app/styles/dataCards/choropleth.sass',
     ],
     exclude: [
       'public/javascripts/angular/dataCards/app.js'

@@ -75,9 +75,10 @@ describe('jquery_extensions', function() {
 
   describe('$.fn.flyout', function() {
     beforeEach(function() {
-      $('body').append('<div id="container">' +
-          '<div class="cell"></div><div class="cell"></div>' +
-        '</div>');
+      $('body').append('<div id="test-root"><div id="container">' +
+          '<div class="cell"></div><div class="cell">' +
+          '<div class="null-cell"></div><div class="null-cell"></div>' +
+        '</div></div>');
     });
     it('should flyout on the mouseenter event and close on the mouseleave event', function(done) {
       $('#container').flyout({

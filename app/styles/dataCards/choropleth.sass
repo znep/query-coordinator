@@ -23,6 +23,7 @@
         line-height: 18px
         color: #555
         width: 100%
+        opacity: 0.7
         visibility: collapse
 
         i
@@ -36,12 +37,43 @@
           white-space: nowrap
           text-align: left
 
+      .modern-legend
+        opacity: 0.7
+        margin: 15px
+        padding: 5px
+        background-color: $card-bg-color
+        border-radius: 4px
+        position: absolute
+        cursor: default
+        visibility: collapse
+
+        &.topright
+          top: 0
+          right: 0
+        &.topleft
+          top: 0
+          left: 0
+        &.bottomright
+          bottom: 0
+          right: 0
+        &.bottomleft
+          bottom: 0
+          left: 0
+
+          rect.color
+            stroke-width: 1
+            stroke: rgb(168, 168, 168)
+
+            &:hover
+              stroke-width: 3
+              stroke: white
+
 /*  EXPANDED VS REGION CARD CHOROPLETH STYLES */
 
 .card.expanded
   .choropleth-map-container
     .choropleth-map
-      .legend
+      .legend, .modern-legend
         visibility: visible
 
 #choro-flyout

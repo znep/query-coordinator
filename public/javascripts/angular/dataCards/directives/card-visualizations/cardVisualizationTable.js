@@ -21,6 +21,11 @@ angular.module('dataCards.directives').directive('cardVisualizationTable', funct
           function(dataset, whereClause) {
             return Rx.Observable.fromPromise(CardDataService.getRowCount(dataset.id, whereClause));
           }).switchLatest();
+
+      $scope.$on('table:expand-clicked', function() {
+        $scope.model.page.toggleExpanded($scope.model);
+      });
+
       $scope.bindObservable('whereClause', whereClause);
       $scope.bindObservable('rowCount', rowCount);
       $scope.bindObservable('filteredRowCount', filteredRowCount);
@@ -29,7 +34,7 @@ angular.module('dataCards.directives').directive('cardVisualizationTable', funct
         var args = [$scope.model.page.getCurrentValue('dataset').id].concat(
           Array.prototype.slice.call(arguments));
         return CardDataService.getRows.apply(null, args);
-      }
+      };
     }
   };
 

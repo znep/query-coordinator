@@ -19,6 +19,12 @@ angular.module('socrataCommon.directives').directive('table', function(AngularRx
           $expander = element.find('.table-expander'),
           $label = element.find('.table-label');
 
+      element.delegate('.expand-message > *', 'click', function() {
+        scope.$apply(function() {
+          scope.$emit('table:expand-clicked');
+        });
+      });
+
       var renderTable = function(element, dimensions, rowCount, expanded) {
         var tableHeight = dimensions.height - element.position().top;
         element.height(tableHeight);

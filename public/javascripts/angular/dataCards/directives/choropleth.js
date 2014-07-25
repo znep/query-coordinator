@@ -77,7 +77,8 @@ angular.module('dataCards.directives').directive('choropleth', function(AngularR
     restrict: 'E',
     replace: 'true',
     scope: {
-      'geojsonAggregateData': '='
+      'geojsonAggregateData': '=',
+      'rowDisplayUnit': '=?'
     },
     template: '<div class="choropleth-map-container"><leaflet class="choropleth-map" bounds="bounds" defaults="defaults" geojson="geojson" legend="legend"></leaflet></div>',
     controller: function($scope, $http) {
@@ -540,7 +541,10 @@ angular.module('dataCards.directives').directive('choropleth', function(AngularR
         var feature = layer.feature;
         var featureHumanReadableName = feature.properties[HUMAN_READABLE_PROPERTY_NAME];
         var value = feature.properties[AGGREGATE_VALUE_PROPERTY_NAME];
-        var message = String(featureHumanReadableName).capitaliseEachWord() + ': ' + $.commaify(value || '(No Value)');
+        var message = String(featureHumanReadableName).capitaliseEachWord() +
+                      ': ' +
+                      $.commaify(value || '(No Value)') +
+                      ' ' + $scope.rowDisplayUnit.pluralize();
 
         $tooltip.find('.content').html(message);
         $tooltip.find('.content').removeClass('undefined');

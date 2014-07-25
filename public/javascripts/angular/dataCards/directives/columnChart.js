@@ -1,6 +1,6 @@
 angular.module('socrataCommon.directives').directive('columnChart', function($parse, AngularRxExtensions) {
 
-  var renderColumnChart = function(element, chartData, showFiltered, dimensions, expanded) {
+  var renderColumnChart = function(element, chartData, showFiltered, dimensions, expanded, rowDisplayUnit) {
 
     var numberOfBars = chartData.length;
 
@@ -410,10 +410,14 @@ angular.module('socrataCommon.directives').directive('columnChart', function($pa
       },
       table: function($target, $head, options, $flyout) {
         var data = d3.select($target.context).datum();
-        rows = [["Total", $.toHumaneNumber(data.total, 1)]];
+        var unit = '';
+        if (rowDisplayUnit) {
+          unit = ' ' + rowDisplayUnit.pluralize();
+        }
+        var rows = [["Total", $.toHumaneNumber(data.total, 1) + unit]];
         if (showFiltered) {
           $flyout.addClass("filtered");
-          rows.push(["Filtered Amount", $.toHumaneNumber(data.filtered, 1)]);
+          rows.push(["Filtered Amount", $.toHumaneNumber(data.filtered, 1) + unit]);
         }
         return rows;
       }
@@ -450,7 +454,8 @@ angular.module('socrataCommon.directives').directive('columnChart', function($pa
     scope: {
       chartData: '=',
       showFiltered: '=',
-      expanded: '='
+      expanded: '=',
+      rowDisplayUnit: '='
     },
     link: function(scope, element, attrs) {
       AngularRxExtensions.install(scope);
@@ -477,14 +482,16 @@ angular.module('socrataCommon.directives').directive('columnChart', function($pa
         scope.observe('chartData'),
         scope.observe('showFiltered'),
         scope.observe('expanded'),
-        function(cardVisualizationDimensions, chartData, showFiltered, expanded) {
+        scope.observe('rowDisplayUnit'),
+        function(cardVisualizationDimensions, chartData, showFiltered, expanded, rowDisplayUnit) {
           if (!chartData) return;
           renderColumnChart(
             element,
             chartData,
             showFiltered,
             cardVisualizationDimensions,
-            expanded
+            expanded,
+            rowDisplayUnit
           );
         }
       )

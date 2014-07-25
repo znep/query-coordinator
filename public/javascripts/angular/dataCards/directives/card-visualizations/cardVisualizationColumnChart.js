@@ -11,6 +11,8 @@ angular.module('dataCards.directives').directive('cardVisualizationColumnChart',
       var dataset = model.pluck('page').observeOnLatest('dataset');
       var baseSoqlFilter = model.pluck('page').observeOnLatest('baseSoqlFilter');
 
+      $scope.bindObservable('rowDisplayUnit', dataset.observeOnLatest('rowDisplayUnit'));
+
       var nonBaseFilterApplied = Rx.Observable.combineLatest(
           $scope.observe('whereClause'),
           baseSoqlFilter,
@@ -63,7 +65,7 @@ angular.module('dataCards.directives').directive('cardVisualizationColumnChart',
             total: unFilteredAsHash[name],
             filtered: filteredAsHash[name] || 0,
             special: _.contains(activeFilterNames, name)
-          }
+          };
         });
       }));
 

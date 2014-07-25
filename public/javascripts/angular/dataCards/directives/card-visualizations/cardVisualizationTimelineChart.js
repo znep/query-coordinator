@@ -11,6 +11,8 @@ angular.module('dataCards.directives').directive('cardVisualizationTimelineChart
       var dataset = model.pluck('page').observeOnLatest('dataset');
       var baseSoqlFilter = model.pluck('page').observeOnLatest('baseSoqlFilter');
 
+      $scope.bindObservable('rowDisplayUnit', dataset.observeOnLatest('rowDisplayUnit'));
+
       var precision = Rx.Observable.combineLatest(
         model.pluck('fieldName'),
         dataset,
@@ -85,7 +87,7 @@ angular.module('dataCards.directives').directive('cardVisualizationTimelineChart
             total: unFilteredAsHash[date],
             filtered: filteredAsHash[date] || 0,
             special: _.contains(activeFilterDates, date)
-          }
+          };
         });
       }));
 

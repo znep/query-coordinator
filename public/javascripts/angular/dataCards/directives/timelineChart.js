@@ -13,7 +13,7 @@ angular.module('socrataCommon.directives').directive('timelineChart', function($
     DECADE: 'YYYY[s]'
   };
 
-  var renderTimelineChart = function(element, chartData, showFiltered, dimensions, expanded, precision, filterChanged) {
+  var renderTimelineChart = function(element, chartData, showFiltered, dimensions, expanded, precision, rowDisplayUnit, filterChanged) {
 
     var bottomMargin = 16;
     var xTickSize = 3;
@@ -23,7 +23,6 @@ angular.module('socrataCommon.directives').directive('timelineChart', function($
     var $chartScroll = element.find('.chart-scroll');
     var d3Selection = d3.select($chart.get(0));
     var $labels = element.find('.labels');
-    var labelSelection = d3.select($labels[0]).selectAll('.label');
     var labelSelection = d3.select($labels[0]).selectAll('.label');
     var chartWidth = dimensions.width;
     var containerWidth = 0;
@@ -71,7 +70,7 @@ angular.module('socrataCommon.directives').directive('timelineChart', function($
           return _.reduce(arr, function(memo, num) {
             return memo + num;
           }, 0) / arr.length;
-        };
+        }
         niceTicks = [
           avg(newTicks.slice(0, 2)),
           newTicks[2],
@@ -210,7 +209,7 @@ angular.module('socrataCommon.directives').directive('timelineChart', function($
         }
       });
       return _.compact(_.flatten(_.zip(pointCoords, midCoords)));
-    };
+    }
 
     // Extract point and midpoints on either side
     var lineSegmentCoords = function(chartDataIndex, points) {
@@ -231,7 +230,7 @@ angular.module('socrataCommon.directives').directive('timelineChart', function($
         var coords = lineSegmentCoords(i, points);
         if (secondPoints && points !== secondPoints) {
           var filtered = lineSegmentCoords(i, secondPoints);
-          return lineSegment(coords.concat(filtered.reverse()))
+          return lineSegment(coords.concat(filtered.reverse()));
         } else {
           var xs = _.pluck(coords, 'x');
           var height = chartHeight - clampHeight(verticalScale(0));
@@ -240,7 +239,7 @@ angular.module('socrataCommon.directives').directive('timelineChart', function($
           });
           return lineSegment(coords.concat(bottomCoords));
         }
-      }
+      };
     };
 
     var updateLines = function(selection) {
@@ -303,7 +302,7 @@ angular.module('socrataCommon.directives').directive('timelineChart', function($
         }).
         attr("height", function() {
           return chartHeight;
-        })
+        });
 
       $chart.width(containerWidth);
     };
@@ -329,10 +328,14 @@ angular.module('socrataCommon.directives').directive('timelineChart', function($
       },
       table: function($target, $head, options, $flyout) {
         var data = d3.select($target.context).datum();
-        rows = [["Total", $.toHumaneNumber(data.total, 1)]];
+        var unit = '';
+        if (rowDisplayUnit) {
+          unit = ' ' + rowDisplayUnit.pluralize();
+        }
+        var rows = [["Total", $.toHumaneNumber(data.total, 1) + unit]];
         if (showFiltered) {
           $flyout.addClass("filtered");
-          rows.push(["Filtered Amount", $.toHumaneNumber(data.filtered, 1)]);
+          rows.push(["Filtered Amount", $.toHumaneNumber(data.filtered, 1) + unit]);
         }
         return rows;
       }
@@ -355,12 +358,13 @@ angular.module('socrataCommon.directives').directive('timelineChart', function($
       chartData: '=',
       showFiltered: '=',
       expanded: '=',
-      precision: '='
+      precision: '=',
+      rowDisplayUnit: '='
     },
     link: function(scope, element, attrs) {
       AngularRxExtensions.install(scope);
 
-      if (element.closest('.card-visualization').length == 0) {
+      if (element.closest('.card-visualization').length === 0) {
         throw new Error("[timelineChart] timeline-chart is missing a .card-visualization (grand)parent.");
       }
 
@@ -380,7 +384,8 @@ angular.module('socrataCommon.directives').directive('timelineChart', function($
         scope.observe('showFiltered'),
         scope.observe('expanded'),
         scope.observe('precision'),
-        function(cardVisualizationDimensions, chartData, showFiltered, expanded, precision) {
+        scope.observe('rowDisplayUnit'),
+        function(cardVisualizationDimensions, chartData, showFiltered, expanded, precision, rowDisplayUnit) {
           if (!chartData || !precision) return;
           renderTimelineChart(
             element,
@@ -389,13 +394,14 @@ angular.module('socrataCommon.directives').directive('timelineChart', function($
             cardVisualizationDimensions,
             expanded,
             precision,
+            rowDisplayUnit,
             lastData && ( lastFilter != showFiltered || lastData != chartData )
           );
           lastFilter = showFiltered;
           lastData = chartData;
         }
-      )
+      );
     }
-  }
+  };
 
 });

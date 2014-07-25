@@ -31,3 +31,8 @@
 .table-body {
     overflow: auto;
 }
+
+#test-root #container .cell {
+  height: 50px;
+  width: 50px;
+}

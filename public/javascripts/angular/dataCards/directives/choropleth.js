@@ -15,7 +15,7 @@ angular.module('dataCards.directives').directive('choropleth', function(AngularR
   var threshold = 6;
 
   /*   TEMPORARY SETTINGS   */
-  
+
       // WARNING: tests depend upon file name.
       numberOfClasses = function(values) {
         // handles numberOfClasses in Jenks (implemented for _.uniq(values).length > 6)
@@ -276,7 +276,7 @@ angular.module('dataCards.directives').directive('choropleth', function(AngularR
 
       /* Operations for updating Geojson */
 
-      var classBreaksFromValues = function(values) {
+      var computeClassBreaks = function(values) {
         // TODO: Jenks for now, with configurable number of classes.
         // Support more types later, depending on spec.
         if (values.length == 0) {
@@ -284,19 +284,24 @@ angular.module('dataCards.directives').directive('choropleth', function(AngularR
         }
         var uniqValues = _.uniq(values);
         var numPossibleBreaks = uniqValues.length - 1;
+        var classBreaks;
 
         if (numPossibleBreaks <= threshold) {
-          // for such small values, jenks does not make sense.
-          // explicitly include all values in legend.
-          // return array of explicit legend labels for each value
-          return uniqValues.sort();
+          // for such small values, jenks does not make sense (produces duplicate values).
+          // use equal interval in such cases.
+          var classBreaks = ChoroplethHelpers.createClassBreaks({
+            method: 'niceEqualInterval',
+            data: values,
+            numberOfClasses: values.length
+          });
         } else {
-          return ChoroplethHelpers.createClassBreaks({
+          var classBreaks = ChoroplethHelpers.createClassBreaks({
             method: 'jenks',
             data: values,
             numberOfClasses: numberOfClasses(values)
           });
         }
+        return classBreaks;
       };
 
       var midpointMap = function(values) {
@@ -339,11 +344,12 @@ angular.module('dataCards.directives').directive('choropleth', function(AngularR
             lightnessCorrection = false;
             bezierColorInterpolation = false;
             break;
-          case 'qualitative':
-            colorRange = qualitativeColors[classBreaks.length];
-            lightnessCorrection = false;
-            bezierColorInterpolation = false;
-            break;
+          // case 'qualitative':
+          //   colorRange = qualitativeColors[classBreaks.length];
+          //   lightnessCorrection = false;
+          //   bezierColorInterpolation = false;
+          //   break;
+          // ^ SAVE for when we implement qualitative colors.
           case 'sequential':
             colorRange = sequentialColors;
             lightnessCorrection = true;
@@ -357,14 +363,8 @@ angular.module('dataCards.directives').directive('choropleth', function(AngularR
         } else {
           colors = colorRange;
         }
-        if (classBreaks.length <= threshold) {
-          // class breaks are a list of values with a 1-1 correspondence to its colors.
-          // adjust chroma scale accordingly to grab the right color with scale(value),
-          // and return a set of scale.colors() whose length is the same as classBreaks.length
-          var adjustedClassBreaks = midpointMap(classBreaks);
-        }
         scale = new chroma.scale(colors)
-          .domain(adjustedClassBreaks || classBreaks)
+          .domain(classBreaks)
           .correctLightness(lightnessCorrection)
           .mode('lab');
       };
@@ -378,7 +378,9 @@ angular.module('dataCards.directives').directive('choropleth', function(AngularR
           position: defaultLegendPos,
           colors: classBreaks ? colors : [],
           classBreaks: classBreaks,
-          threshold: threshold
+          threshold: threshold,
+          legendStyle: 'modern',
+          legendClass: 'modern-legend'
         };
       }
 
@@ -475,66 +477,91 @@ angular.module('dataCards.directives').directive('choropleth', function(AngularR
 
       /* Region mouseover tooltip effect */
 
-      if ($('#choro-flyout').length == 0) {
-        $('body').append('<div class="flyout flyout-table top" id="choro-flyout"><div class="flyout-arrow"></div><span class="content"></span></div>');
-        $('#choro-flyout').hide();
-      }
+      var $tooltip;
 
-      var mouseoverFeature = function(event, leafletEvent) {
-        var $tooltip = $('#choro-flyout');
+      var initializeChoroFlyout = function() {
+        $tooltip = $('#choro-flyout');
+
+        if ($tooltip.length == 0) {
+          $('body').append('<div class="flyout top" id="choro-flyout"><div class="flyout-arrow"></div><span class="content"></span></div>');
+          $tooltip = $('#choro-flyout');
+          $tooltip.hide();
+
+          $tooltip
+            .mousemove(function(e) {
+                positionTooltip($tooltip, e);
+            })
+            .mouseout(function() {
+              //remove bug where tooltip doesn't disappear when hovering on map
+              if ($("#choro-flyout:hover").length == 0) {
+                $tooltip.hide();
+              }
+            });
+        };
+
+        return $tooltip;
+      };
+
+      var positionTooltip = function($tooltip, e){
+        var top = e.pageY;
+        var left = e.pageX;
+        var height = $tooltip.outerHeight();
+        var width = $tooltip.outerWidth();
+
+        $tooltip.css("top", (top - height - 15));
+        $tooltip.css("left", (left - (width/2)));
+      };
+
+      var mousemoveFeature = function(e) {
+        $tooltip.show();
+        positionTooltip($tooltip, e);
+      };
+
+      var mouseoutFeature = function() {
+        if ($("#choro-flyout:hover").length == 0) {
+          $tooltip.hide();
+        }
+      };
+
+      var handleMouseEvents = function() {
+        var $overlayPane = element.find('.leaflet-overlay-pane');
+        $overlayPane.delegate('path','mousemove', mousemoveFeature);
+        $overlayPane.delegate('path', 'mouseout', mouseoutFeature);
+      };
+
+      var initializeFeatureEventHandlers = _.once(handleMouseEvents);
+
+      $scope.$on('leafletDirectiveMap.geojsonMouseover', function(event, leafletEvent) {
+        // equivalent to a mouseenter
+
+        // initialize choro flyout element.
+        // can disappear on card collapse.
+        $tooltip = initializeChoroFlyout();
         var layer = leafletEvent.target;
         var feature = layer.feature;
         var featureHumanReadableName = feature.properties[HUMAN_READABLE_PROPERTY_NAME];
         var value = feature.properties[AGGREGATE_VALUE_PROPERTY_NAME];
         var message = String(featureHumanReadableName).capitaliseEachWord() +
                       ': ' +
-                      $.commaify(value || '(No Value)') +
-                      ' ' + $scope.rowDisplayUnit.pluralize();
+                      $.commaify(value || '(No Value)');
 
-        $tooltip.find('.content').html(message);
         $tooltip.find('.content').removeClass('undefined');
 
-        if (message === '(No Value)') {
+        if ( (new RegExp('(No Value)') ).test(message) ) {
           $tooltip.find('.content').addClass('undefined');
+        } else {
+          message += ' ' + $scope.rowDisplayUnit.pluralize();
         }
 
-        element.find('path')
-          .mousemove(function(e){
-            $tooltip.show();
-            positionTooltip(e);
-          })
-          .mouseout(function(){
-              if (element.find(".tooltip:hover").length == 0){
-                  $tooltip.hide();
-              } else {
-                  // hovering on tooltip
-                  element.find(".tooltip")
-                      .mousemove(function(e2){
-                          positionTooltip(e2);
-                      })
-                      .mouseout(function(){
-                        //remove bug where tooltip doesn't disappear when hovering on map
-                        if (element.find("path:hover").length == 0) {
-                          $tooltip.hide();
-                        }
-                      });
-              }
-          });
-      }
+        $tooltip.find('.content').html(message);
 
-      var positionTooltip = function(e){
-        var $tooltip = $('#choro-flyout');
-        var top = e.pageY,
-        left = e.pageX;
-        var height = $tooltip.outerHeight();
-        var width = $tooltip.outerWidth();
+        initializeFeatureEventHandlers();
+      });
 
-        $tooltip.css("top", (top - height - 15));
-        $tooltip.css("left", (left - (width/2)));
-      }
-
-      $scope.$on('leafletDirectiveMap.geojsonMouseover', function(event, leafletEvent) {
-        mouseoverFeature(event, leafletEvent);
+      $scope.$on('leafletDirectiveMap.geojsonMouseout', function(event, leafletEvent) {
+        if ($("#choro-flyout:hover").length == 0) {
+          $tooltip.hide();
+        }
       });
 
       /* React to data changes further up the stack */
@@ -585,7 +612,7 @@ angular.module('dataCards.directives').directive('choropleth', function(AngularR
           } else {
 
             if (!$scope.classBreaks) {
-              $scope.classBreaks = classBreaksFromValues(values);
+              $scope.classBreaks = computeClassBreaks(values);
             }
 
             if ($scope.classBreaks.length === 1) {
@@ -604,9 +631,7 @@ angular.module('dataCards.directives').directive('choropleth', function(AngularR
           }
 
           updateBounds(geojsonAggregateData);
-
         });
-
     }
   }
 });

@@ -204,16 +204,19 @@ $.fn.flyout = function(options) {
     var direction = getVal(options.direction);
     var pos = $positionOn.offset(), top, left;
     var targetLeftEdge = pos.left;
-    try {
-      var targetSize = {
-        width: $positionOn[0].getBBox().width,
-        height: $positionOn[0].getBBox().height
-      }
-    } catch (err) {
-      var targetSize = {
-        width: $positionOn.outerWidth(),
-        height: $positionOn.outerHeight()
-      }
+    var targetSize = {};
+    if (typeof $target[0].getBoundingClientRect === 'function') {
+      targetSize.height = $target[0].getBoundingClientRect().height;
+      targetSize.width = $target[0].getBoundingClientRect().width;
+    } else if (typeof $target[0].getBBox === 'function') {
+      targetSize.height = $target[0].getBBox().height;
+      targetSize.width = $target[0].getBBox().width;
+    } else {
+      targetSize.height = $target.outerHeight() || parseInt($target.attr('height'));
+      targetSize.width = $target.outerWidth() || parseInt($target.attr('width'));
+    }
+    if (!targetSize.width || !targetSize.height) {
+      console.error("[$.fn.flyout] target has height: "+targetSize.height+", width: "+targetSize.width+". No flyout possible.");
     }
     // TODO: Fix SVG handling & zero width elements
     var targetRightEdge = pos.left + targetSize.width;

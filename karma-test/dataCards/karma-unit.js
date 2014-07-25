@@ -56,6 +56,7 @@ module.exports = function ( karma ) {
       /*    SASS    */
       'app/styles/dataCards/column-chart.sass',
       'app/styles/dataCards/main.sass',
+      'app/styles/dataCards/choropleth.sass',
       /*    Images */
       { pattern: 'public/angular_templates/images/**/*.png', watched: false,
         included: false, served: true },

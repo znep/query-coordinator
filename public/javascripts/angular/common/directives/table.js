@@ -5,7 +5,7 @@ angular.module('socrataCommon.directives').directive('table', function(AngularRx
 
 
   return {
-    templateUrl: '/angular_templates/common/table.html',
+    templateUrl: '/angular_templates/dataCards/table.html',
     restrict: 'A',
     scope: { rowCount: '=', filteredRowCount: '=', whereClause: '=', getRows: '=', expanded: '=', infinite: '=' },
     link: function(scope, element, attrs) {

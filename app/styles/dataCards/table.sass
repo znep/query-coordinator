@@ -9,20 +9,32 @@ $border-color: #ccc
 $font-size: $medium-font-size
 // If you change this you need to change it in the JS.
 $row-height: 2rem
+$expand-message-height: 93px
 
 .card:not(.expanded) .table
+  height: 100%
 
   .table-inner
     display: none
 
   .expand-message
     margin: auto
-    max-width: 256px
     text-align: center
+    height: $expand-message-height
+    margin-top: -$expand-message-height/2
+    position: absolute
+    width: 100%
+    top: 50%
+
+    img, small
+      vertical-align: middle
 
     small
-      display: block
-      padding: 1rem
+      display: inline-block
+      font-weight: bold
+      padding-left: 1rem
+      text-align: left
+      max-width: 100px
 
 .card.expanded
 
@@ -34,7 +46,6 @@ $row-height: 2rem
     font-size: $font-size
     line-height: 0
     overflow: hidden
-    height: 100%
 
     .table-inner
       width: 100%

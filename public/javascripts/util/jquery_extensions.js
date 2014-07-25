@@ -199,7 +199,7 @@ $.fn.flyout = function(options) {
     var containerLeftEdge = 0;
     if (container[0] != document.body) {
       containerLeftEdge = container.offset().left;
-      containerRightEdge = container.offset().left + container.outerWidth();
+      containerRightEdge = container.offset().left + container.outerWidth() - options.margin;
     }
     var direction = getVal(options.direction);
     var pos = $positionOn.offset(), top, left;
@@ -219,7 +219,8 @@ $.fn.flyout = function(options) {
     var targetRightEdge = pos.left + targetSize.width;
     var targetWidth = targetRightEdge - targetLeftEdge
     if (direction == 'horizontal') {
-      if (targetRightEdge + flyout.outerWidth() + options.margin > containerRightEdge) {
+      if (targetRightEdge + flyout.outerWidth() > containerRightEdge &&
+          targetLeftEdge - flyout.outerWidth() > containerLeftEdge) {
         direction = 'left';
       } else {
         direction = 'right';

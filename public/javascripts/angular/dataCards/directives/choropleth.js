@@ -77,7 +77,8 @@ angular.module('dataCards.directives').directive('choropleth', function(AngularR
     restrict: 'E',
     replace: 'true',
     scope: {
-      'geojsonAggregateData': '='
+      'geojsonAggregateData': '=',
+      'rowDisplayUnit': '=?'
     },
     template: '<div class="choropleth-map-container"><leaflet class="choropleth-map" bounds="bounds" defaults="defaults" geojson="geojson" legend="legend"></leaflet></div>',
     controller: function($scope, $http) {
@@ -475,7 +476,7 @@ angular.module('dataCards.directives').directive('choropleth', function(AngularR
       /* Region mouseover tooltip effect */
 
       if ($('#choro-flyout').length == 0) {
-        $('body').append('<div class="flyout top" id="choro-flyout"><div class="flyout-arrow"></div><span class="content"></span></div>');
+        $('body').append('<div class="flyout flyout-table top" id="choro-flyout"><div class="flyout-arrow"></div><span class="content"></span></div>');
         $('#choro-flyout').hide();
       }
 
@@ -485,7 +486,10 @@ angular.module('dataCards.directives').directive('choropleth', function(AngularR
         var feature = layer.feature;
         var featureHumanReadableName = feature.properties[HUMAN_READABLE_PROPERTY_NAME];
         var value = feature.properties[AGGREGATE_VALUE_PROPERTY_NAME];
-        var message = String(featureHumanReadableName).capitaliseEachWord() + ': ' + $.commaify(value || '(No Value)');
+        var message = String(featureHumanReadableName).capitaliseEachWord() +
+                      ': ' +
+                      $.commaify(value || '(No Value)') +
+                      ' ' + $scope.rowDisplayUnit.pluralize();
 
         $tooltip.find('.content').html(message);
         $tooltip.find('.content').removeClass('undefined');

@@ -60,6 +60,7 @@ describe("A Choropleth Card Visualization", function() {
 
     var datasetModel = new Model();
     datasetModel.id = "bana-nas!";
+    datasetModel.defineObservableProperty('rowDisplayUnit', 'crime');
     datasetModel.defineObservableProperty('columns',
     [{
       "name": "ward",

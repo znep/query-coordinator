@@ -93,6 +93,8 @@ angular.module('dataCards.directives').directive('cardVisualizationChoropleth', 
         };
       };
 
+      $scope.bindObservable('rowDisplayUnit', dataset.observeOnLatest('rowDisplayUnit'));
+
       $scope.bindObservable(
         'geojsonAggregateData',
         Rx.Observable.combineLatest(

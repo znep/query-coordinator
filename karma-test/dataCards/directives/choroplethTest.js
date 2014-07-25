@@ -119,7 +119,6 @@ describe("A Choropleth Directive", function() {
       expect(scopeBounds.southWest.lat).to.deep.equal(expectedBounds.southWest.lat);
       expect(scopeBounds.southWest.lng).to.deep.equal(expectedBounds.southWest.lng);
       done();
-      // TODO: timing issues! Fix
     });
 
     it('should be able to render a legend if the choropleth has values', function(){

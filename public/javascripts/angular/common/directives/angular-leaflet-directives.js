@@ -511,6 +511,7 @@
               $(element).find('.modern-legend').flyout({
                 selector: '.color',
                 direction: 'horizontal',
+                style: 'table',
                 parent: document.body,
                 interact: true,
                 overflowParent: true,

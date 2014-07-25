@@ -483,7 +483,7 @@ angular.module('dataCards.directives').directive('choropleth', function(AngularR
         $tooltip = $('#choro-flyout');
 
         if ($tooltip.length == 0) {
-          $('body').append('<div class="flyout top" id="choro-flyout"><div class="flyout-arrow"></div><span class="content"></span></div>');
+          $('body').append('<div class="flyout flyout-table top" id="choro-flyout"><div class="flyout-arrow"></div><span class="content"></span></div>');
           $tooltip = $('#choro-flyout');
           $tooltip.hide();
 
@@ -525,8 +525,8 @@ angular.module('dataCards.directives').directive('choropleth', function(AngularR
 
       var handleMouseEvents = function() {
         var $overlayPane = element.find('.leaflet-overlay-pane');
-        $overlayPane.delegate('path','mousemove', mousemoveFeature);
-        $overlayPane.delegate('path', 'mouseout', mouseoutFeature);
+        $overlayPane.on('mousemove', 'path', mousemoveFeature);
+        $overlayPane.on('mouseout', 'path', mouseoutFeature);
       };
 
       var initializeFeatureEventHandlers = _.once(handleMouseEvents);

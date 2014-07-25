@@ -21,9 +21,10 @@ describe("A Choropleth Directive", function() {
   });
 
   /*  COMMON VARIABLES AND SELECTORS */
-  var legendSelector = '.modern-legend',
-      legendColorSelector = '.modern-legend .color',
-      featureGeometrySelector = '.leaflet-map-pane .leaflet-objects-pane .leaflet-overlay-pane svg path';
+  var legendSelector = '.modern-legend';
+  var legendColorSelector = '.modern-legend .color';
+  var featureGeometrySelector = '.leaflet-map-pane .leaflet-objects-pane .leaflet-overlay-pane svg path';
+  var flyoutSelector = '#choro-flyout';
 
   var featureMergedValueName = '__SOCRATA_MERGED_VALUE__';
 
@@ -103,7 +104,7 @@ describe("A Choropleth Directive", function() {
       expect(el.find(featureGeometrySelector).length).to.equal(7);
     });
 
-    xit('should render a map with a bounding box that contains all the features', function(done){
+    it('should render a map with a bounding box that contains all the features', function(done){
       scope.geojsonAggregateData = testData.easyBoundsData;
       el = createChoropleth();
       var expectedBounds = {
@@ -112,7 +113,11 @@ describe("A Choropleth Directive", function() {
       }
 
       timeout.flush();
-      expect(el.isolateScope().bounds).to.equal(expectedBounds);
+      var scopeBounds = el.find('.choropleth-map').isolateScope().bounds;
+      expect(scopeBounds.northEast.lat).to.deep.equal(scopeBounds.northEast.lat);
+      expect(scopeBounds.northEast.lng).to.deep.equal(scopeBounds.northEast.lng);
+      expect(scopeBounds.southWest.lat).to.deep.equal(expectedBounds.southWest.lat);
+      expect(scopeBounds.southWest.lng).to.deep.equal(expectedBounds.southWest.lng);
       done();
       // TODO: timing issues! Fix
     });
@@ -192,7 +197,7 @@ describe("A Choropleth Directive", function() {
       expect(el.find(legendSelector).length).to.equal(1);
 
       // there should only be 2 or more colors in the legend
-      expect(el.find(legendColorSelector).length >= 2).to.equal(true);
+      expect(el.find(legendColorSelector).length).to.be.above(1);
 
       // legend labels should contain feature values
       expect(arrayContainsSubarray(legendFlyoutValues(), scopedFeatureValues())).to.equal(true);
@@ -223,7 +228,7 @@ describe("A Choropleth Directive", function() {
       expect(el.find(legendSelector).length).to.equal(1);
 
       // there should only be 3 or more colors in the legend
-      expect(el.find(legendColorSelector).length >= 3).to.equal(true);
+      expect(el.find(legendColorSelector).length).to.be.above(2);
 
       // legend labels should contain feature values
       expect(arrayContainsSubarray(legendFlyoutValues(), scopedFeatureValues())).to.equal(true);
@@ -330,39 +335,60 @@ describe("A Choropleth Directive", function() {
 
     /* ---- DOUBLE CLICK EFFECTS ---- */
 
-    xit('should zoom the map if the map was double clicked', function(done) {
+    xit('should zoom the map if a map tile was double clicked', function(done) {
       scope.geojsonAggregateData = testData.polygonData2ValueUndefined;
       el = createChoropleth();
 
-      var line = el.find('path')[0];
-      var defaultStrokeWidth = parseInt($(line).css('strokeWidth'));
+      expect(el.find('.leaflet-map-pane').hasClass('leaflet-zoom-anim')).to.equal(false);
+      var tile = el.find('.leaflet-tile')[0];
+      testHelpers.fireMouseEvent(tile, 'dblclick');
+      timeout.flush();
 
-      testHelpers.fireMouseEvent(line, 'dblclick');
-      // TODO: test zoom
-    });
-    xit('should zoom the map if the choropleth was double clicked', function(){
-      // TODO
-    });
-    xit('should zoom the map if a highlighted feature was double clicked', function(){
-      // TODO
-    });
-    xit('should preserve the styles on a highlighted feature if the highlighted feature was double clicked', function(){
-      // TODO
-    });
-    xit('should preserve the styles on an unhighlighted feature if the unhighlighted feature was double clicked', function(){
-      // TODO
-    });
-    xit('should highlight the feature AND zoom in the map if an unhighlighted feature was "slowly" double clicked', function(){
-      // TODO
-    });
-    xit('should unhighlight the feature AND zoom in the map if a highlighted feature was "slowly" double clicked', function(){
-      // TODO
+      setTimeout(function() {
+        // map should be zooming
+        timeout.flush(100);
+        expect(el.find('.leaflet-map-pane').hasClass('leaflet-zoom-anim')).to.equal(true);        
+        done();
+      }, 100);
+
+      // TODO: This test passes in "real browsers", but fails in PhantomJS.
     });
 
-    /* ---- MOUSEOVER EVENTS ----------- */
+    xit('should zoom the map if a choropleth feature was double clicked', function(done){
+      scope.geojsonAggregateData = testData.polygonData2ValueUndefined;
+      el = createChoropleth();
 
-    xit("should provide a flyout on hover with the region's name, current value, and UOM", function(){
-      // TODO
+      expect(el.find('.leaflet-map-pane').hasClass('leaflet-zoom-anim')).to.equal(false);
+      
+      var polygon = el.find('path')[0];
+      testHelpers.fireMouseEvent(polygon, 'dblclick');
+      timeout.flush();
+
+      setTimeout(function() {
+        // map should be zooming
+        expect(el.find('.leaflet-map-pane').hasClass('leaflet-zoom-anim')).to.equal(true);        
+        done();
+      }, 100);
+      // TODO: This test passes in "real browsers", but fails in PhantomJS.
+    });
+
+    xit('should preserve the styles on a highlighted feature if the highlighted feature was double clicked', function(done){
+      scope.geojsonAggregateData = testData.polygonData2ValueUndefined;
+      el = createChoropleth();
+
+      var polygon = el.find('path')[0];
+      var defaultStrokeWidth = parseInt($(polygon).css('strokeWidth'));
+
+      testHelpers.fireMouseEvent(polygon, 'dblclick');
+      timeout.flush();
+
+      setTimeout(function() {
+        // polygon should not be highlighted
+        var strokeWidth = parseInt($(polygon).css('strokeWidth'));
+        expect(strokeWidth).to.equal(defaultStrokeWidth);
+        done();
+      }, 400);
+      // TODO: This test passes in "real browsers", but fails in PhantomJS.
     });
 
     /* ---- FILTERING EVENTS -------------------------------- */
@@ -436,23 +462,15 @@ describe("A Choropleth Directive", function() {
         });
 
         it('should show a flyout with text upon hover over a legend color', function() {
+          scope.geojsonAggregateData = testData.polygonData2;
           el = createChoropleth(expanded);
           var legendColor = el.find('.modern-legend .color')[0];
           var legendColorFlyoutText = $(legendColor).data('flyout-text');
           testHelpers.fireMouseEvent(legendColor, 'mouseover');
+          var $flyout = $('.flyout');
+          expect($flyout.is(':visible')).to.equal(true);
           expect($('.flyout').text()).to.equal(legendColorFlyoutText);
         });
-
-        xit('should highlight same-colored choropleth regions upon hover on a colored box', function() {
-          // story 10.14
-        });
-      });
-    });
-
-    /*    FLYOUTS     */
-    describe('flyout', function() {
-      xit('should appear upon hover over a choropleth feature', function() {
-        // TODO
       });
     });
   });

@@ -8,6 +8,8 @@ $chart-padding-top: 10px
 $chart-padding-bottom: 132px
 $chart-tooltip-offset: 999px
 
+$fill-opacity: 0.5
+
 .flyout.filtered
   .flyout-row:last-child
     color: $filtered-line-color-hover
@@ -41,12 +43,11 @@ div.timeline-chart
             stroke: $filtered-line-color
 
         path.fill
-          fill-opacity: 50%
 
           &.unfiltered
-            fill: $unfiltered-line-color
+            fill: rgba($unfiltered-line-color, $fill-opacity)
           &.filtered
-            fill: $filtered-line-color
+            fill: rgba($filtered-line-color, $fill-opacity)
 
         rect.spacer
           fill: transparent
@@ -59,9 +60,9 @@ div.timeline-chart
               stroke: $filtered-line-color-hover
           path.fill
             &.unfiltered
-              fill: $unfiltered-line-color-hover
+              fill: rgba($unfiltered-line-color-hover, $fill-opacity)
             &.filtered
-              fill: $filtered-line-color-hover
+              fill: rgba($filtered-line-color-hover, $fill-opacity)
 
   div.labels
     position: absolute

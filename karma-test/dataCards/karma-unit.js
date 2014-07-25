@@ -56,10 +56,17 @@ module.exports = function ( karma ) {
       /*    SASS    */
       'app/styles/dataCards/column-chart.sass',
       'app/styles/dataCards/main.sass',
+      /*    Images */
+      { pattern: 'public/angular_templates/images/**/*.png', watched: false,
+        included: false, served: true },
     ],
     exclude: [
       'public/javascripts/angular/dataCards/app.js'
     ],
+
+    proxies: {
+      '/angular_templates/images/': 'http://localhost:7019/base/public/angular_templates/images/'
+    },
 
     frameworks: [ 'mocha', 'chai', 'chai-as-promised' ],
     plugins: [

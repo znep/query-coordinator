@@ -1,7 +1,7 @@
 describe('table', function() {
 
   var testJson = 'karma-test/dataCards/test-data/tableTestRows.json';
-  beforeEach(module('/angular_templates/common/table.html'));
+  beforeEach(module('/angular_templates/dataCards/table.html'));
   beforeEach(module(testJson));
 
   var testHelpers, q, scope, data;

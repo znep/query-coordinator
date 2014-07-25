@@ -502,6 +502,16 @@ angular.module('dataCards.directives').directive('choropleth', function(AngularR
         return $tooltip;
       };
 
+      var positionTooltip = function($tooltip, e){
+        var top = e.pageY;
+        var left = e.pageX;
+        var height = $tooltip.outerHeight();
+        var width = $tooltip.outerWidth();
+
+        $tooltip.css("top", (top - height - 15));
+        $tooltip.css("left", (left - (width/2)));
+      };
+
       var mousemoveFeature = function(e) {
         $tooltip.show();
         positionTooltip($tooltip, e);
@@ -514,22 +524,12 @@ angular.module('dataCards.directives').directive('choropleth', function(AngularR
       };
 
       var handleMouseEvents = function() {
-        element.find('path')
-          .mousemove(mousemoveFeature)
-          .mouseout(mouseoutFeature);
+        var $overlayPane = element.find('.leaflet-overlay-pane');
+        $overlayPane.delegate('path','mousemove', mousemoveFeature);
+        $overlayPane.delegate('path', 'mouseout', mouseoutFeature);
       };
 
       var initializeFeatureEventHandlers = _.once(handleMouseEvents);
-
-      var positionTooltip = function($tooltip, e){
-        var top = e.pageY;
-        var left = e.pageX;
-        var height = $tooltip.outerHeight();
-        var width = $tooltip.outerWidth();
-
-        $tooltip.css("top", (top - height - 15));
-        $tooltip.css("left", (left - (width/2)));
-      };
 
       $scope.$on('leafletDirectiveMap.geojsonMouseover', function(event, leafletEvent) {
         // equivalent to a mouseenter
@@ -543,15 +543,17 @@ angular.module('dataCards.directives').directive('choropleth', function(AngularR
         var value = feature.properties[AGGREGATE_VALUE_PROPERTY_NAME];
         var message = String(featureHumanReadableName).capitaliseEachWord() +
                       ': ' +
-                      $.commaify(value || '(No Value)') +
-                      ' ' + $scope.rowDisplayUnit.pluralize();
+                      $.commaify(value || '(No Value)');
 
-        $tooltip.find('.content').html(message);
         $tooltip.find('.content').removeClass('undefined');
 
-        if (message === '(No Value)') {
+        if ( (new RegExp('(No Value)') ).test(message) ) {
           $tooltip.find('.content').addClass('undefined');
+        } else {
+          message += ' ' + $scope.rowDisplayUnit.pluralize();
         }
+
+        $tooltip.find('.content').html(message);
 
         initializeFeatureEventHandlers();
       });

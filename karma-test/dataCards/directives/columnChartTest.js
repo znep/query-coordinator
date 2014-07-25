@@ -164,7 +164,6 @@ describe('columnChart', function() {
 
     it('should not hide any bars', function() {
       expect($('.bar-group:not(.active)').length).to.equal(0);
-      expect($('.hover-trigger:not(.active)').length).to.equal(0);
     });
   });
 
@@ -186,16 +185,15 @@ describe('columnChart', function() {
 
     it('should maintain spacing between bars', function() {
       createNewColumnChart(width, expanded);
-      var hoverTriggerBar1 = $('.bar.hover-trigger')[0];
-      var hoverTriggerBar2 = $('.bar.hover-trigger')[1];
-      var hoverTriggerBar1Left = parseInt(hoverTriggerBar1.style.left);
-      var hoverTriggerBar2Left = parseInt(hoverTriggerBar2.style.left);
-      var barWidth = parseInt(hoverTriggerBar1.style.width);
-      expect(hoverTriggerBar2Left - hoverTriggerBar1Left > barWidth).to.equal(true);
+      var barGroup1 = $('.bar-group')[0];
+      var barGroup2 = $('.bar-group')[1];
+      var barGroup1Left = parseInt(barGroup1.style.left);
+      var barGroup2Left = parseInt(barGroup2.style.left);
+      var barWidth = parseInt(barGroup1.style.width);
+      expect(barGroup2Left - barGroup1Left > barWidth).to.equal(true);
     });
     it('should hide some bars', function() {
       expect($('.bar-group:not(.active)').length).to.not.equal(0);
-      expect($('.hover-trigger:not(.active)').length).to.not.equal(0);
     });
   });
 
@@ -215,12 +213,12 @@ describe('columnChart', function() {
 
     it('should maintain spacing between bars', function() {
       createNewColumnChart(width, expanded);
-      var hoverTriggerBar1 = $('.bar.hover-trigger')[0];
-      var hoverTriggerBar2 = $('.bar.hover-trigger')[1];
-      var hoverTriggerBar1Left = parseInt(hoverTriggerBar1.style.left);
-      var hoverTriggerBar2Left = parseInt(hoverTriggerBar2.style.left);
-      var barWidth = parseInt(hoverTriggerBar1.style.width);
-      expect(hoverTriggerBar2Left - hoverTriggerBar1Left).to.be.above(barWidth);
+      var barGroup1 = $('.bar-group')[0];
+      var barGroup2 = $('.bar-group')[1];
+      var barGroup1Left = parseInt(barGroup1.style.left);
+      var barGroup2Left = parseInt(barGroup2.style.left);
+      var barWidth = parseInt(barGroup1.style.width);
+      expect(barGroup2Left - barGroup1Left).to.be.above(barWidth);
     });
 
     it('should not show the moar marker', function() {
@@ -240,12 +238,12 @@ describe('columnChart', function() {
 
     it('should maintain spacing between bars', function() {
       createNewColumnChart(width, expanded);
-      var hoverTriggerBar1 = $('.bar.hover-trigger')[0];
-      var hoverTriggerBar2 = $('.bar.hover-trigger')[1];
-      var hoverTriggerBar1Left = parseInt(hoverTriggerBar1.style.left);
-      var hoverTriggerBar2Left = parseInt(hoverTriggerBar2.style.left);
-      var barWidth = parseInt(hoverTriggerBar1.style.width);
-      expect(hoverTriggerBar2Left - hoverTriggerBar1Left).to.be.above(barWidth);
+      var barGroup1 = $('.bar-group')[0];
+      var barGroup2 = $('.bar-group')[1];
+      var barGroup1Left = parseInt(barGroup1.style.left);
+      var barGroup2Left = parseInt(barGroup2.style.left);
+      var barWidth = parseInt(barGroup1.style.width);
+      expect(barGroup2Left - barGroup1Left).to.be.above(barWidth);
     });
   });
 
@@ -260,12 +258,12 @@ describe('columnChart', function() {
 
     it('should maintain spacing between bars', function() {
       createNewColumnChart(width, expanded);
-      var hoverTriggerBar1 = $('.bar.hover-trigger')[0];
-      var hoverTriggerBar2 = $('.bar.hover-trigger')[1];
-      var hoverTriggerBar1Left = parseInt(hoverTriggerBar1.style.left);
-      var hoverTriggerBar2Left = parseInt(hoverTriggerBar2.style.left);
-      var barWidth = parseInt(hoverTriggerBar1.style.width);
-      expect(hoverTriggerBar2Left - hoverTriggerBar1Left).to.be.above(barWidth);
+      var barGroup1 = $('.bar-group')[0];
+      var barGroup2 = $('.bar-group')[1];
+      var barGroup1Left = parseInt(barGroup1.style.left);
+      var barGroup2Left = parseInt(barGroup2.style.left);
+      var barWidth = parseInt(barGroup1.style.width);
+      expect(barGroup2Left - barGroup1Left).to.be.above(barWidth);
     });
 
     it('should not show the moar marker', function() {
@@ -421,13 +419,13 @@ describe('columnChart', function() {
       });
     });
 
-    it('should be raised when the hover-triggers are clicked', function(done) {
+    it('should be raised when the bar-groups are clicked', function(done) {
       ensureChart();
       correctEventRaised.subscribe(_.after(2, done));
-      element.find('.bar.hover-trigger').eq(indexOfItemToClick).click();
+      element.find('.bar-group').eq(indexOfItemToClick).click();
       scope.expanded = true;
       scope.$digest();
-      element.find('.bar.hover-trigger').eq(indexOfItemToClick).click();
+      element.find('.bar-group').eq(indexOfItemToClick).click();
     });
 
     it('should be raised when the labels are clicked', function() {

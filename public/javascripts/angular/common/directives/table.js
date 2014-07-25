@@ -344,6 +344,7 @@ angular.module('socrataCommon.directives').directive('table', function(AngularRx
       $body.flyout({
         selector: '.row-block .cell',
         interact: true,
+        style: 'table',
         direction: 'horizontal',
         html: function($target, $head, options) {
           if($target[0].clientWidth < $target[0].scrollWidth) {
@@ -354,6 +355,7 @@ angular.module('socrataCommon.directives').directive('table', function(AngularRx
       $head.flyout({
         selector: '.th',
         direction: 'top',
+        style: 'table',
         parent: document.body,
         interact: true,
         title: function($target, $head, options) {

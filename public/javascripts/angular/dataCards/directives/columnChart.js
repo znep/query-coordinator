@@ -361,6 +361,8 @@ angular.module('socrataCommon.directives').directive('columnChart', function($pa
       // Update the position of the groups.
       selection.
         style('left', function(d) { return horizontalBarPosition(d) + 'px'; }).
+        style('width', rangeBand + 'px').
+        style('height', function() { return chartHeight + 'px'; }).
         classed('special', function(d) { return d.special; }).
         classed('active', function(d) { return expanded || horizontalBarPosition(d) < chartWidth - truncationMarkerWidth; });
 
@@ -386,53 +388,36 @@ angular.module('socrataCommon.directives').directive('columnChart', function($pa
       element.find('.ticks').css('top', $chartScroll.position().top + topMargin + tooltipYOffset);
     };
 
-    var updateHoverTriggerBars = function(selection) {
-      // Hover trigger bars overlay the entire vertical space of the chart, and contain a tooltip.
-
-      // ENTER PROCESSING
-      // Hover trigger bars are just a div.
-      selection.enter().
-        append('div').
-          attr('class', 'bar hover-trigger');
-
-      // Create the tooltips.
-      var tooltips = selection.selectAll('.tooltip').data(function(d) { return [d]; });
-      tooltips.
-        enter().
-          append(enterTooltip);
-
-      // UPDATE PROCESSING
-      selection.
-        style('width', rangeBand + 'px').
-        style('left', function(d) { return horizontalScale(d.name) - chartLeftOffset + 'px'; }).
-        style('top', function() { return topMargin + 'px'; }).
-        style('height', function() { return chartHeight + 'px'; }).
-        classed('active', function(d) { return expanded || horizontalBarPosition(d) < chartWidth - truncationMarkerWidth; }).
-        on('mouseover', function() {
-          // fix tooltip with magical padding
-          mouseoverHoverTriggerBars(selection);
-        }).
-        on('mouseout', function() {
-          // remove magical padding tooltip fix
-          selection.style('top', topMargin + 'px');
-          $chartScroll.
-            css('padding-top', 0).
-            css('top', 'initial');
-          element.find('.ticks').css('top', $chartScroll.position().top + topMargin);
-        });
-
-      tooltips.call(updateTooltip);
-
-      // EXIT PROCESSING
-      selection.exit().remove();
-    };
-
     element.children('.ticks').remove();
     element.prepend(ticks);
 
     barGroupSelection.call(updateBars);
-    hoverTriggerSelection.call(updateHoverTriggerBars);
     labelSelection.call(updateLabels);
+
+    element.find('.column-chart-wrapper').flyout({
+      selector: '.bar-group.active',
+      parent: document.body,
+      direction: 'top',
+      inset: {
+        vertical: -4
+      },
+      positionOn: function($target, $head, options) {
+        return $target.find(".bar.unfiltered");
+      },
+      title: function($target, $head, options) {
+        var data = d3.select($target.context).datum();
+        return $.capitalizeWithDefault(data.name, undefinedPlaceholder);
+      },
+      table: function($target, $head, options, $flyout) {
+        var data = d3.select($target.context).datum();
+        rows = [["Total", $.toHumaneNumber(data.total, 1)]];
+        if (showFiltered) {
+          $flyout.addClass("filtered");
+          rows.push(["Filtered Amount", $.toHumaneNumber(data.filtered, 1)]);
+        }
+        return rows;
+      }
+    });
 
     // Set "Click to Expand" truncation marker + its tooltip
     $truncationMarker.css('height', $labels.height());
@@ -480,7 +465,7 @@ angular.module('socrataCommon.directives').directive('columnChart', function($pa
         });
       }));
 
-      $(element.parent().delegate('.bar.hover-trigger, .labels .label span', 'click', function(event) {
+      $(element.parent().delegate('.bar-group, .labels .label span', 'click', function(event) {
         var clickedDatum = d3.select(event.currentTarget).datum();
         scope.$apply(function() {
           scope.$emit('column-chart:datum-clicked', clickedDatum);

@@ -63,6 +63,7 @@ var server = https.createServer({
       return _.startsWith(req.url, path);
     })) {
     var target = 'https://'+options.local;
+    req.headers.host = options.local;
   } else {
     var target = 'https://'+options.target;
     req.headers.host = options.target;

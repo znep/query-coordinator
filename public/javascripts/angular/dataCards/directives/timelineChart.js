@@ -321,12 +321,14 @@ angular.module('socrataCommon.directives').directive('timelineChart', function($
       inset: {
         vertical: -4
       },
+      positionOn: function($target, $head, options) {
+        return $target.find('path.fill.unfiltered');
+      },
       title: function($target, $head, options) {
-        $target[0] = $target.find("path.fill.unfiltered")[0];
         return moment(d3.select($target[0]).datum().date).format(flyoutDateFormat[precision]);
       },
       table: function($target, $head, options, $flyout) {
-        var data = $target.context.__data__;
+        var data = d3.select($target.context).datum();
         rows = [["Total", $.toHumaneNumber(data.total, 1)]];
         if (showFiltered) {
           $flyout.addClass("filtered");

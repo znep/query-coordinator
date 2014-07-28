@@ -366,8 +366,8 @@
     {
       "title": "location",
       "name": "location",
-      "physicalDatatype": "",
-      "logicalDatatype": "",
+      "physicalDatatype": "point",
+      "logicalDatatype": "location",
       "importance": 3
     },
     {

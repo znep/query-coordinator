@@ -9,7 +9,7 @@
 //
 // Example:
 // <div multiline-ellipsis max-lines="2" tolerance="2" show-more-mode="expand-link" text="{{large_multi_line_content}}"></div>
-angular.module('dataCards.directives').directive('multilineEllipsis', function(AngularRxExtensions) {
+angular.module('dataCards.directives').directive('multilineEllipsis', function($q, AngularRxExtensions) {
   return {
     scope: {
       'maxLines': '@',
@@ -37,6 +37,46 @@ angular.module('dataCards.directives').directive('multilineEllipsis', function(A
       };
 
       var lastText = null;
+      var animationRunning = false;
+
+      // Animate the (max) height of the content
+      // between the provided values.
+      // Returns a promise that will be resolved
+      // when the animation completes or is canceled.
+      function animateHeight(from, to) {
+        animationRunning = true;
+        var defer = $q.defer();
+        content.css('max-height', from);
+        content.animate( {
+          'max-height': to
+        }, {
+          easing: 'swing', // TODO Use Clint's easing.
+          duration: 500, // TODO: Pull this out into an attribute (mostly for unit test speed).
+          always: function() { defer.resolve(); }
+        });
+
+        return defer.promise;
+      };
+
+      // Cancels any running height animation and allows the content
+      // to return to its natural height.
+      function resetHeightAnimation() {
+        animationRunning = false;
+        content.stop();
+        content.css('max-height', 'none');
+      };
+
+      // We _could_ support maintaining the height animation if these are changed
+      // while animating, but I value my sanity more.
+      // Note that this does _not_ care about element dimensions, as otherwise
+      // we'd cancel the animation by virtue of animating the height :)
+      Rx.Observable.merge(
+        $scope.observe('text'),
+        $scope.observe('maxLines'),
+        $scope.observe('tolerance'),
+        $scope.observe('expanded')
+        ).subscribe(resetHeightAnimation);
+
       Rx.Observable.subscribeLatest(
         element.observeDimensions(),
         $scope.observe('text'),
@@ -44,6 +84,14 @@ angular.module('dataCards.directives').directive('multilineEllipsis', function(A
         $scope.observe('tolerance'),
         $scope.observe('expanded'),
         function(dimensions, text, maxLines, tolerance, expanded) {
+          // If something important changed, the previous merge will cancel the animation.
+          if (animationRunning) return;
+
+          // While animating from expanded to collapsed, we lie to dotdotdot so it doesn't
+          // try to ellipsify during the animation. However, the UI should still act as if
+          // an ellipsis has been added.
+          var forceReportAsClamped = false;
+
           maxLines = parseInt(maxLines);
           tolerance = parseInt(tolerance);
 
@@ -67,22 +115,57 @@ angular.module('dataCards.directives').directive('multilineEllipsis', function(A
             content.text(text);
           }
 
+          // Since we react to changes in the "expanded" binding, this
+          // value represents the UI state we want to be in. This might mean
+          // we need to start an animation to this UI state if we're currently
+          // showing the old state.
           if (expanded) {
+            var needsAnimation = content.triggerHandler('isTruncated');
+            var currentUnexpandedHeight = content.height();
+
             content.dotdotdot({
               height: Infinity,
               tolerance: tolerance
             });
+
+            if (needsAnimation) {
+              // We just told dotdotdot to use infinite height, so this will be the expanded height.
+              var fullHeight = content.height();
+
+              animateHeight(currentUnexpandedHeight, fullHeight).then(resetHeightAnimation);
+            }
           } else {
-            content.dotdotdot({
-              height: lineHeight() * maxLines,
-              tolerance: tolerance
-            });
+            var currentExpandedHeight = content.height();
+            var targetCollapsedHeight = lineHeight() * maxLines;
+            var currentlyTruncated = content.triggerHandler('isTruncated');
+            var wouldBeTruncated = targetCollapsedHeight < currentExpandedHeight - tolerance; 
+            var needsAnimation = !currentlyTruncated && wouldBeTruncated;
+
+            function applyEllipsis() {
+              content.dotdotdot({
+                height: targetCollapsedHeight,
+                tolerance: tolerance
+              });
+            };
+
+            if(needsAnimation) {
+              // If needed, force the UI to still show the expand button while animating.
+              // See definition of this var for details.
+              forceReportAsClamped = wouldBeTruncated;
+
+              animateHeight(currentExpandedHeight, targetCollapsedHeight).then(function() {
+                resetHeightAnimation();
+                applyEllipsis();
+              });
+
+            } else {
+              applyEllipsis();
+            }
           }
 
-          var isClamped = content.triggerHandler('isTruncated');
+          var isClamped = forceReportAsClamped || content.triggerHandler('isTruncated');
           $scope.safeApply(function() {
             $scope.textClamped = isClamped;
-            $scope.animationsOn = true;
             $scope.contentTitleAttr = ($scope.showMoreMode === 'title-attr' && isClamped) ? text : null;
           });
         }

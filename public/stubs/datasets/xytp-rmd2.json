@@ -375,7 +375,7 @@
       "description": "placeholder for Community Districts",
       "name": ":Computed_7a5b8kcq_location",
       "physicalDatatype": "text",
-      "logicalDatatype": "text",
+      "logicalDatatype": "location",
       "importance": 1
     },
     {
@@ -383,7 +383,7 @@
       "description": "placeholder for School Districts",
       "name": ":Computed_9qyyj3br_location",
       "physicalDatatype": "text",
-      "logicalDatatype": "text",
+      "logicalDatatype": "location",
       "importance": 1
     },
     {
@@ -391,7 +391,7 @@
       "description": "placeholder for City Council Districts",
       "name": ":Computed_fvidvsfz_location",
       "physicalDatatype": "text",
-      "logicalDatatype": "text",
+      "logicalDatatype": "location",
       "importance": 1
     },
     {
@@ -399,7 +399,7 @@
       "description": "placeholder for Zip Codes",
       "name": ":Computed_szt7kj5n_location",
       "physicalDatatype": "text",
-      "logicalDatatype": "text",
+      "logicalDatatype": "location",
       "importance": 1
     }
   ]

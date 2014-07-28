@@ -531,6 +531,32 @@ angular.module('dataCards.directives').directive('choropleth', function(AngularR
 
       var initializeFeatureEventHandlers = _.once(handleMouseEvents);
 
+      var brightenFeatureStyleObject = {
+        weight: 4
+      };
+
+      var unbrightenFeatureStyleObject = {
+        weight: 1
+      };
+
+      var mouseoverBrighten = function(leafletEvent) {
+        var layer = leafletEvent.target;
+        var featureId = layer.feature.properties[INTERNAL_DATASET_FEATURE_ID];
+        if (!featureIsHighlighted(featureId)) {
+          layer.setStyle(brightenFeatureStyleObject);
+          layer.bringToFront();
+        }
+      }
+
+      var mouseoutUnbrighten = function(leafletEvent) {
+        var layer = leafletEvent.target;
+        var featureId = layer.feature.properties[INTERNAL_DATASET_FEATURE_ID];
+        if (!featureIsHighlighted(featureId)) {
+          layer.setStyle(unbrightenFeatureStyleObject);
+          layer.bringToBack();
+        }
+      }
+
       $scope.$on('leafletDirectiveMap.geojsonMouseover', function(event, leafletEvent) {
         // equivalent to a mouseenter
 
@@ -541,27 +567,32 @@ angular.module('dataCards.directives').directive('choropleth', function(AngularR
         var feature = layer.feature;
         var featureHumanReadableName = feature.properties[HUMAN_READABLE_PROPERTY_NAME];
         var value = feature.properties[AGGREGATE_VALUE_PROPERTY_NAME];
-        var message = String(featureHumanReadableName).capitaliseEachWord() +
-                      ': ' +
-                      $.commaify(value || '(No Value)');
+        if (value === undefined || value === null) {
+          value = '(No Value)';
+          var valueIsUndefined = true;
+        }
+        var message = '<h4>' + String(featureHumanReadableName).capitaliseEachWord() + '</h4>' +
+                      $.commaify(value);
 
         $tooltip.find('.content').removeClass('undefined');
 
-        if ( (new RegExp('(No Value)') ).test(message) ) {
+        if (valueIsUndefined) {
           $tooltip.find('.content').addClass('undefined');
-        } else {
+        } else if ($scope.rowDisplayUnit) {
           message += ' ' + $scope.rowDisplayUnit.pluralize();
         }
 
         $tooltip.find('.content').html(message);
 
         initializeFeatureEventHandlers();
+        mouseoverBrighten(leafletEvent);
       });
 
       $scope.$on('leafletDirectiveMap.geojsonMouseout', function(event, leafletEvent) {
-        if ($("#choro-flyout:hover").length == 0) {
+        if (_.isEmpty($("#choro-flyout:hover"))) {
           $tooltip.hide();
         }
+        mouseoutUnbrighten(leafletEvent);
       });
 
       /* React to data changes further up the stack */

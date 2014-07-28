@@ -390,6 +390,29 @@ describe("A Choropleth Directive", function() {
       // TODO: This test passes in "real browsers", but fails in PhantomJS.
     });
 
+    /* ---- MOUSEOVER EVENTS -------------------------------- */
+
+    it('should toggle highlight on an unfiltered region on mouseover and mouseout', function(done){
+      scope.geojsonAggregateData = testData.polygonData2ValueUndefined;
+      el = createChoropleth();
+
+      var feature = $(el).find(featureGeometrySelector)[0];
+      var defaultStrokeWidth = parseInt($(feature).css('strokeWidth'));
+
+      testHelpers.fireMouseEvent(feature, 'mouseover');
+      testHelpers.fireMouseEvent(feature, 'mousemove');
+      timeout.flush();
+
+      // mouseover should highlight feature by amplifying stroke width
+      var highlightedStrokeWidth = parseInt($(feature).css('strokeWidth'));
+      expect(highlightedStrokeWidth).to.be.above(defaultStrokeWidth);
+
+      testHelpers.fireMouseEvent(feature, 'mouseout');
+      var unhighlightedStrokeWidth = parseInt($(feature).css('strokeWidth'));
+      expect(unhighlightedStrokeWidth).to.equal(defaultStrokeWidth);
+      done();
+    });
+
     /* ---- FILTERING EVENTS -------------------------------- */
 
     describe('on clicking a region', function(){

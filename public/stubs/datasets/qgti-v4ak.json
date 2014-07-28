@@ -1,0 +1,257 @@
+{
+  "id": "qgti-v4ak",
+  "rowDisplayUnit": "Program",
+  "defaultAggregateColumn": ":count",
+  "domain": "dataspace.demo.socrata.com",
+  "ownerId": "jc63-heng",
+  "updatedAt": "2014-07-26T10:42:55.000-07:00",
+  "columns": [
+    {
+      "title": "Facility ID",
+      "name": "facility_id",
+      "physicalDatatype": "number",
+      "logicalDatatype": "identifier",
+      "importance": 3
+    },
+    {
+      "title": "Program Type",
+      "name": "program_type",
+      "physicalDatatype": "text",
+      "logicalDatatype": "category",
+      "importance": 3
+    },
+    {
+      "title": "Region Code",
+      "name": "region_code",
+      "physicalDatatype": "text",
+      "logicalDatatype": "category",
+      "importance": 3
+    },
+    {
+      "title": "County",
+      "name": "county",
+      "physicalDatatype": "text",
+      "logicalDatatype": "category",
+      "importance": 3
+    },
+    {
+      "title": "Facility Status",
+      "name": "facility_status",
+      "physicalDatatype": "text",
+      "logicalDatatype": "category",
+      "importance": 3
+    },
+    {
+      "title": "Facility Name",
+      "name": "facility_name",
+      "physicalDatatype": "text",
+      "logicalDatatype": "name",
+      "importance": 3
+    },
+    {
+      "title": "Facility Opened Date",
+      "name": "facility_opened_date",
+      "physicalDatatype": "timestamp",
+      "logicalDatatype": "time",
+      "importance": 3
+    },
+    {
+      "title": "License Issue Date",
+      "name": "license_issue_date",
+      "physicalDatatype": "timestamp",
+      "logicalDatatype": "time",
+      "importance": 3
+    },
+    {
+      "title": "License Expiration Date",
+      "name": "license_expiration_date",
+      "physicalDatatype": "timestamp",
+      "logicalDatatype": "time",
+      "importance": 3
+    },
+    {
+      "title": "address omitted",
+      "name": "address_omitted",
+      "physicalDatatype": "text",
+      "logicalDatatype": "text",
+      "importance": 3
+    },
+    {
+      "title": "street number",
+      "name": "street_number",
+      "physicalDatatype": "text",
+      "logicalDatatype": "text",
+      "importance": 3
+    },
+    {
+      "title": "street name",
+      "name": "street_name",
+      "physicalDatatype": "text",
+      "logicalDatatype": "text",
+      "importance": 3
+    },
+    {
+      "title": "additional address",
+      "name": "additional_address",
+      "physicalDatatype": "text",
+      "logicalDatatype": "text",
+      "importance": 3
+    },
+    {
+      "title": "floor",
+      "name": "floor",
+      "physicalDatatype": "text",
+      "logicalDatatype": "text",
+      "importance": 3
+    },
+    {
+      "title": "apartment",
+      "name": "apartment",
+      "physicalDatatype": "text",
+      "logicalDatatype": "text",
+      "importance": 3
+    },
+    {
+      "title": "City",
+      "name": "city",
+      "physicalDatatype": "text",
+      "logicalDatatype": "text",
+      "importance": 3
+    },
+    {
+      "title": "State",
+      "name": "state",
+      "physicalDatatype": "text",
+      "logicalDatatype": "text",
+      "importance": 3
+    },
+    {
+      "title": "zip code",
+      "name": "zip_code",
+      "physicalDatatype": "number",
+      "logicalDatatype": "amount",
+      "importance": 3
+    },
+    {
+      "title": "phone number omitted",
+      "name": "phone_number_omitted",
+      "physicalDatatype": "text",
+      "logicalDatatype": "text",
+      "importance": 3
+    },
+    {
+      "title": "phone number",
+      "name": "phone_number",
+      "physicalDatatype": "text",
+      "logicalDatatype": "text",
+      "importance": 3
+    },
+    {
+      "title": "phone extension",
+      "name": "phone_extension",
+      "physicalDatatype": "text",
+      "logicalDatatype": "text",
+      "importance": 3
+    },
+    {
+      "title": "Provider Name",
+      "name": "provider_name",
+      "physicalDatatype": "text",
+      "logicalDatatype": "name",
+      "importance": 3
+    },
+    {
+      "title": "school district name",
+      "name": "school_district_name",
+      "physicalDatatype": "text",
+      "logicalDatatype": "text",
+      "importance": 3
+    },
+    {
+      "title": "capacity description",
+      "name": "capacity_description",
+      "physicalDatatype": "text",
+      "logicalDatatype": "text",
+      "importance": 3
+    },
+    {
+      "title": "Infant Capacity",
+      "name": "infant_capacity",
+      "physicalDatatype": "number",
+      "logicalDatatype": "amount",
+      "importance": 3
+    },
+    {
+      "title": "Toddler Capacity",
+      "name": "toddler_capacity",
+      "physicalDatatype": "number",
+      "logicalDatatype": "amount",
+      "importance": 3
+    },
+    {
+      "title": "Preschool Capacity",
+      "name": "preschool_capacity",
+      "physicalDatatype": "number",
+      "logicalDatatype": "amount",
+      "importance": 3
+    },
+    {
+      "title": "School Age Capacity",
+      "name": "school_age_capacity",
+      "physicalDatatype": "number",
+      "logicalDatatype": "amount",
+      "importance": 3
+    },
+    {
+      "title": "Total Capacity",
+      "name": "total_capacity",
+      "physicalDatatype": "number",
+      "logicalDatatype": "amount",
+      "importance": 3
+    },
+    {
+      "title": "additional information",
+      "name": "additional_information",
+      "physicalDatatype": "text",
+      "logicalDatatype": "text",
+      "importance": 3
+    },
+    {
+      "title": "latitude",
+      "name": "latitude",
+      "physicalDatatype": "text",
+      "logicalDatatype": "text",
+      "importance": 3
+    },
+    {
+      "title": "longitude",
+      "name": "longitude",
+      "physicalDatatype": "text",
+      "logicalDatatype": "text",
+      "importance": 3
+    },
+    {
+      "title": "location",
+      "name": "location",
+      "physicalDatatype": "point",
+      "logicalDatatype": "location",
+      "importance": 3
+    },
+    {
+      "title": "Counties",
+      "description": "placeholder for Counties",
+      "name": ":Computed_afrk7ibz_location",
+      "physicalDatatype": "text",
+      "logicalDatatype": "location",
+      "importance": 3
+    },
+    {
+      "title": "Metropolitan planning areas",
+      "description": "placeholder for Metropolitan planning areas",
+      "name": ":Computed_9gf2g78j_location",
+      "physicalDatatype": "text",
+      "logicalDatatype": "location",
+      "importance": 3
+    }
+  ]
+}

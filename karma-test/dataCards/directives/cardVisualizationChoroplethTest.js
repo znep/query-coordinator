@@ -112,6 +112,7 @@ describe("A Choropleth Card Visualization", function() {
       expect(obj1.eventFired).to.equal(true);
       expect(obj2.eventFired).to.equal(false);
     });
+
     it('should not allow the choropleth legend to update when expanded', function() {
 
       obj1 = createChoropleth('choropleth-1', '');
@@ -123,8 +124,6 @@ describe("A Choropleth Card Visualization", function() {
     });
 
     it('should provide a flyout on hover with the current value, and row display unit', function(done){
-      // TODO
-      scope.geojsonAggre
       obj1 = createChoropleth('choro1');
       var feature = $('#choro1 path')[0];
       testHelpers.fireMouseEvent(feature, 'mouseover');

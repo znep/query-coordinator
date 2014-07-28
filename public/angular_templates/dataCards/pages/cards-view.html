@@ -37,7 +37,7 @@
     <div class="quick-filter-bar" sticky-header update-on-resize="headerContent" ng-class="{stuck: headerIsStuck}">
       <div class="content">
         <span>
-          Showing <span class="light">all {{datasetRowDisplayUnit}}</span>
+          Showing <span class="light">all {{datasetRowDisplayUnit.pluralize()}}</span>
         </span>
         <div class="filter" ng-repeat="filter in appliedFiltersForDisplay">
           <span ng-if="$first">where</span>

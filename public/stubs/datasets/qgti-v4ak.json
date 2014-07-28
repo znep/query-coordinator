@@ -242,7 +242,7 @@
       "description": "placeholder for Counties",
       "name": ":Computed_afrk7ibz_location",
       "physicalDatatype": "text",
-      "logicalDatatype": "text",
+      "logicalDatatype": "location",
       "importance": 3
     },
     {
@@ -250,7 +250,7 @@
       "description": "placeholder for Metropolitan planning areas",
       "name": ":Computed_9gf2g78j_location",
       "physicalDatatype": "text",
-      "logicalDatatype": "text",
+      "logicalDatatype": "location",
       "importance": 3
     }
   ]

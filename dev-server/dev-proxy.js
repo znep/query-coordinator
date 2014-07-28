@@ -85,7 +85,7 @@ proxy.on('error', function (err, req, res) {
     'Content-Type': 'text/plain'
   });
   console.log('ERR', req.url, err);
-  res.end('Something went wrong.', err);
+  res.end('Something went wrong. ERR: ' + err.code);
 });
 
 console.log('Listening on port:', options.port,

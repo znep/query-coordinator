@@ -394,11 +394,24 @@
                 $log.error('[AngularJS - Leaflet] The number of legend colors should be 1 less than the number of class breaks: ', legend);
               }
 
+
               // draw the legend on the map
+
+              var minBreak = legendClassBreaks[0];
+              var maxBreak = legendClassBreaks[legend.classBreaks.length - 1];
+
+              if (ss.standard_deviation(legendClassBreaks) > 10) {
+                var tickFormatter = bigNumTickFormatter;
+                var margin = {top: 10, right: 10, bottom: 10, left: 37.5};
+                var width = 55 - margin.left - margin.right;
+              } else {
+                var tickFormatter = smallNumTickFormatter;
+                var margin = {top: 10, right: 10, bottom: 10, left: 45};
+                var width = 70 - margin.left - margin.right;
+              }
+
               var colorWidth = 15;
-              var margin = {top: 10, right: 10, bottom: 10, left: 45};
               var height = 250 - margin.top - margin.bottom;
-              var width = 70 - margin.left - margin.right;
 
               var legendDiv = d3.select(element[0]).append('div').
                 classed(legendClass, true).
@@ -410,7 +423,26 @@
                 append('g').
                   attr("transform", "translate(" + margin.left + "," + margin.top + ")");
 
-              var tickFormatter = function(val) {
+              if (legend.classBreaks.length == 1) {
+                // if there is just 1 value, make it range from 0 to that value
+                var singleClassBreak = legend.classBreaks[0];
+                legend.classBreaks = [_.min([0, singleClassBreak]), _.max([0, singleClassBreak])];
+                var numTicks = 1;
+              } else {
+                var numTicks = 4;
+              }
+
+              var yTickScale = d3.scale.linear().range([height-1, 1]);
+              var yLabelScale = d3.scale.linear().range([height, 0]);
+
+              
+              function smallNumTickFormatter(val) {
+                // used if ss.standard_deviation(legendClassBreaks) <= 10
+                return val;
+              };
+
+              function bigNumTickFormatter(val) {
+                // used if ss.standard_deviation(legendClassBreaks) > 10
                 // val = a x 10^b (a: coefficient, b: exponent);
                 if (val === 0) return 0;
                 var exponent = Math.floor(Math.log(Math.abs(val))/Math.LN10);
@@ -431,26 +463,11 @@
                 return formattedNum;
               };
 
-              if (legend.classBreaks.length == 1) {
-                // if there is just 1 value, make it range from 0 to that value
-                var singleClassBreak = legend.classBreaks[0];
-                legend.classBreaks = [_.min([0, singleClassBreak]), _.max([0, singleClassBreak])];
-                var numTicks = 1;
-              } else {
-                var numTicks = 4;
-              }
-
-              var yTickScale = d3.scale.linear().range([height-1, 1]);
-              var yLabelScale = d3.scale.linear().range([height, 0]);
-
               var yAxis = d3.svg.axis().
                             scale(yTickScale).
                             ticks(numTicks).
                             orient('left').
                             tickFormat(tickFormatter);
-
-              var minBreak = legend.classBreaks[0],
-                  maxBreak = legend.classBreaks[legend.classBreaks.length - 1];
 
               yTickScale.domain([minBreak, maxBreak]).
                 nice();

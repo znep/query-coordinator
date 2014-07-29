@@ -394,22 +394,24 @@ angular.module('socrataCommon.directives').directive('columnChart', function($pa
     barGroupSelection.call(updateBars);
     labelSelection.call(updateLabels);
 
-    element.find('.column-chart-wrapper').flyout({
-      selector: '.bar-group.active',
+    element.find('.chart-scroll').flyout({
+      selector: '.bar-group.active, .labels .label .text',
       parent: document.body,
       direction: 'top',
       inset: {
         vertical: -4
       },
       positionOn: function($target, $head, options) {
-        return $target.find(".bar.unfiltered");
+        var index = _.indexOf(_.pluck(chartData, 'name'),
+          d3.select($target[0]).datum().name);
+        return element.find(".bar.unfiltered").eq(index);
       },
       title: function($target, $head, options) {
-        var data = d3.select($target.context).datum();
+        var data = d3.select($target[0]).datum();
         return $.capitalizeWithDefault(data.name, undefinedPlaceholder);
       },
       table: function($target, $head, options, $flyout) {
-        var data = d3.select($target.context).datum();
+        var data = d3.select($target[0]).datum();
         var unit = '';
         if (rowDisplayUnit) {
           unit = ' ' + rowDisplayUnit.pluralize();

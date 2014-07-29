@@ -205,22 +205,21 @@ $.fn.flyout = function(options) {
     var pos = $positionOn.offset(), top, left;
     var targetLeftEdge = pos.left;
     var targetSize = {};
-    if (typeof $target[0].getBoundingClientRect === 'function') {
-      targetSize.height = $target[0].getBoundingClientRect().height;
-      targetSize.width = $target[0].getBoundingClientRect().width;
-    } else if (typeof $target[0].getBBox === 'function') {
-      targetSize.height = $target[0].getBBox().height;
-      targetSize.width = $target[0].getBBox().width;
+    if (typeof $positionOn[0].getBoundingClientRect === 'function') {
+      targetSize.height = $positionOn[0].getBoundingClientRect().height;
+      targetSize.width = $positionOn[0].getBoundingClientRect().width;
+    } else if (typeof $positionOn[0].getBBox === 'function') {
+      targetSize.height = $positionOn[0].getBBox().height;
+      targetSize.width = $positionOn[0].getBBox().width;
     } else {
-      targetSize.height = $target.outerHeight() || parseInt($target.attr('height'));
-      targetSize.width = $target.outerWidth() || parseInt($target.attr('width'));
+      targetSize.height = $positionOn.outerHeight() || parseInt($positionOn.attr('height'));
+      targetSize.width = $positionOn.outerWidth() || parseInt($positionOn.attr('width'));
     }
     if (!targetSize.width || !targetSize.height) {
       console.error("[$.fn.flyout] target has height: "+targetSize.height+", width: "+targetSize.width+". No flyout possible.");
     }
-    // TODO: Fix SVG handling & zero width elements
     var targetRightEdge = pos.left + targetSize.width;
-    var targetWidth = targetRightEdge - targetLeftEdge
+    var targetWidth = targetRightEdge - targetLeftEdge;
     if (direction == 'horizontal') {
       if (targetRightEdge + flyout.outerWidth() > containerRightEdge &&
           targetLeftEdge - flyout.outerWidth() > containerLeftEdge) {
@@ -282,7 +281,7 @@ $.fn.flyout = function(options) {
     }).bind('mouseleave', function(e) {
       if(!options.debugNeverClosePopups) flyout.remove();
     });
-  }
+  };
   $(window).scroll(function(e) {
     var $flyout = $('.flyout');
     if (!_.isEmpty($flyout) && ( inflyout || intarget )) {
@@ -302,4 +301,16 @@ $.fn.flyout = function(options) {
     }
   });
   return this;
-}
+};
+
+$.easing.socraticEase = function(t) {
+  // Just a bunch of disparate functions manually determined and spliced together.
+  // Approximates a particular bezier curve.
+  if (t < 0.304659) {
+    return Math.pow(3 * t, 4);
+  } else if (t < 0.46) {
+    return 0.89 - Math.pow(t - 1.182,8);
+  } else {
+    return 1 - 0.4 * Math.pow(1.25 * t - 1.25, 2);
+  }
+};

@@ -372,27 +372,30 @@
     },
     {
       "title": "Community Districts",
-      "description": "placeholder for Community Districts",
+      "description": "Community district reporting 311 request",
       "name": ":Computed_7a5b8kcq_location",
       "physicalDatatype": "text",
       "logicalDatatype": "location",
-      "importance": 1
+      "importance": 1,
+      "shapefileFeatureHumanReadablePropertyName": "borocd"
     },
     {
       "title": "School Districts",
-      "description": "placeholder for School Districts",
+      "description": "School district reporting 311 request",
       "name": ":Computed_9qyyj3br_location",
       "physicalDatatype": "text",
       "logicalDatatype": "location",
-      "importance": 1
+      "importance": 1,
+      "shapefileFeatureHumanReadablePropertyName": "schooldist"
     },
     {
       "title": "City Council Districts",
-      "description": "placeholder for City Council Districts",
+      "description": "City Council district reporting 311 request",
       "name": ":Computed_fvidvsfz_location",
       "physicalDatatype": "text",
       "logicalDatatype": "location",
-      "importance": 1
+      "importance": 1,
+      "shapefileFeatureHumanReadablePropertyName": "coundist"
     },
     {
       "title": "Zip Codes",

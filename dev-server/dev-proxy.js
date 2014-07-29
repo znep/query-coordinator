@@ -63,6 +63,7 @@ var server = https.createServer({
       return _.startsWith(req.url, path);
     })) {
     var target = 'https://'+options.local;
+    req.headers.host = options.local;
   } else {
     var target = 'https://'+options.target;
     req.headers.host = options.target;
@@ -84,7 +85,7 @@ proxy.on('error', function (err, req, res) {
     'Content-Type': 'text/plain'
   });
   console.log('ERR', req.url, err);
-  res.end('Something went wrong.', err);
+  res.end('Something went wrong. ERR: ' + err.code);
 });
 
 console.log('Listening on port:', options.port,

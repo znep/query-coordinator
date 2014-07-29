@@ -2,7 +2,7 @@
   "pageId": "nycp-3111",
   "datasetId": "xytp-rmd2",
   "name": "311 Service Requests from 2010",
-  "description": "All 311 Service Requests from 2010 to present. This information is automatically updated daily.",
+  "description": "",
   "primaryAmountField": null,
   "primaryAggregation": null,
   "filterSoql": null,
@@ -10,9 +10,27 @@
   "pageSource": "admin",
   "cards": [
     {
+      "description": "Agency Name",
+      "fieldName": "agency_name",
+      "cardSize": 3,
+      "cardCustomStyle": {},
+      "expandedCustomStyle": {},
+      "displayMode": "visualization",
+      "expanded": false
+    },
+    {
       "description": "Complaint Type",
       "fieldName": "complaint_type",
-      "cardSize": 1,
+      "cardSize": 2,
+      "cardCustomStyle": {},
+      "expandedCustomStyle": {},
+      "displayMode": "visualization",
+      "expanded": false
+    },
+    {
+      "description": "Location Type",
+      "fieldName": "location_type",
+      "cardSize": 2,
       "cardCustomStyle": {},
       "expandedCustomStyle": {},
       "displayMode": "visualization",
@@ -27,33 +45,6 @@
       "displayMode": "visualization",
       "expanded": false,
       "shapeFile": "7a5b-8kcq"
-    },
-    {
-      "description": "Created Date",
-      "fieldName": "created_date",
-      "cardSize": 1,
-      "cardCustomStyle": {},
-      "expandedCustomStyle": {},
-      "displayMode": "visualization",
-      "expanded": false
-    },
-    {
-      "description": "Agency Name",
-      "fieldName": "agency_name",
-      "cardSize": 1,
-      "cardCustomStyle": {},
-      "expandedCustomStyle": {},
-      "displayMode": "visualization",
-      "expanded": false
-    },
-    {
-      "description": "Location Type",
-      "fieldName": "location_type",
-      "cardSize": 2,
-      "cardCustomStyle": {},
-      "expandedCustomStyle": {},
-      "displayMode": "visualization",
-      "expanded": false
     },
     {
       "description": "School Districts",
@@ -76,6 +67,16 @@
       "shapeFile": "fvid-vsfz"
     },
     {
+      "description": "Zip Codes",
+      "fieldName": ":Computed_szt7kj5n_location",
+      "cardSize": 1,
+      "cardCustomStyle": {},
+      "expandedCustomStyle": {},
+      "displayMode": "visualization",
+      "expanded": false,
+      "shapeFile": "szt7-kj5n"
+    },
+    {
       "description": "Descriptor",
       "fieldName": "descriptor",
       "cardSize": 3,
@@ -88,6 +89,15 @@
       "description": "Due Date",
       "fieldName": "due_date",
       "cardSize": 3,
+      "cardCustomStyle": {},
+      "expandedCustomStyle": {},
+      "displayMode": "visualization",
+      "expanded": false
+    },
+    {
+      "description": "Created Date",
+      "fieldName": "created_date",
+      "cardSize": 1,
       "cardCustomStyle": {},
       "expandedCustomStyle": {},
       "displayMode": "visualization",

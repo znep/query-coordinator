@@ -52,6 +52,8 @@ describe("A Choropleth Card Visualization", function() {
     testHelpers.TestDom.clear();
   });
 
+  var rowDisplayUnit = 'crime';
+
   var createChoropleth = function(id, whereClause) {
     var model = new Model();
     model.fieldName = 'ward';
@@ -60,6 +62,8 @@ describe("A Choropleth Card Visualization", function() {
 
     var datasetModel = new Model();
     datasetModel.id = "bana-nas!";
+    datasetModel.fieldName = 'ward';
+    datasetModel.defineObservableProperty('rowDisplayUnit', rowDisplayUnit);
     datasetModel.defineObservableProperty('columns',
     [{
       "name": "ward",
@@ -108,6 +112,7 @@ describe("A Choropleth Card Visualization", function() {
       expect(obj1.eventFired).to.equal(true);
       expect(obj2.eventFired).to.equal(false);
     });
+
     it('should not allow the choropleth legend to update when expanded', function() {
 
       obj1 = createChoropleth('choropleth-1', '');
@@ -116,7 +121,21 @@ describe("A Choropleth Card Visualization", function() {
       obj2LegendLength = $('#choropleth-2 div.legend.leaflet-control > div.info-label').length;
 
       expect(obj1LegendLength).to.equal(obj2LegendLength);
+    });
 
+    it('should provide a flyout on hover with the current value, and row display unit', function(done){
+      obj1 = createChoropleth('choro1');
+      var feature = $('#choro1 path')[0];
+      testHelpers.fireMouseEvent(feature, 'mouseover');
+      testHelpers.fireMouseEvent(feature, 'mousemove');
+      timeout.flush();
+      var $flyout = $('#choro-flyout');
+      setTimeout(function() {
+        var flyoutText = $flyout.find('.content').text();
+        expect($flyout.is(':visible')).to.equal(true);
+        expect(( new RegExp(rowDisplayUnit.pluralize()) ).test(flyoutText)).to.equal(true);
+        done();
+      }, 200);
     });
   });
 });

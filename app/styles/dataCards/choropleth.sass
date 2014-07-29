@@ -15,35 +15,55 @@
       path
         cursor: inherit
 
-      .legend
-        box-shadow: 0 1px 5px rgba(0,0,0,0.4)
-        background: #fff
-        border-radius: 5px
-        padding: 6px 8px
-        line-height: 18px
-        color: #555
-        width: 100%
+      .modern-legend
+        opacity: 0.9
+        margin: 15px
+        padding: 5px
+        background-color: $card-bg-color
+        border-radius: 4px
+        position: absolute
+        cursor: default
         visibility: collapse
 
-        i
-          width: 16px
-          height: 16px
-          float: left
-          margin-right: 8px
-          opacity: 0.7
+        &.topright
+          top: 0
+          right: 0
+        &.topleft
+          top: 0
+          left: 0
+        &.bottomright
+          bottom: 0
+          right: 0
+        &.bottomleft
+          bottom: 0
+          left: 0
 
-        .info-label
-          white-space: nowrap
-          text-align: left
+        svg
+          overflow: initial
+
+          .labels
+            .tick
+              line
+                stroke: black
 
 /*  EXPANDED VS REGION CARD CHOROPLETH STYLES */
 
 .card.expanded
   .choropleth-map-container
     .choropleth-map
-      .legend
+      .modern-legend
         visibility: visible
 
+/*   CHORO FLYOUT  */
+
 #choro-flyout
-  .content.undefined
-    font-style: italic
+  padding: 0.5rem 1rem
+  opacity: 0.85
+
+  .content
+    h4
+      margin-top: 0
+      margin-bottom: 0.5rem
+
+    &.undefined
+      font-style: italic

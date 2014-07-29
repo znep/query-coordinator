@@ -50,7 +50,7 @@ angular.module('dataCards.directives').directive('multilineEllipsis', function($
         content.animate( {
           'max-height': to
         }, {
-          easing: 'swing', // TODO Use Clint's easing.
+          easing: 'socraticEase',
           duration: 500, // TODO: Pull this out into an attribute (mostly for unit test speed).
           always: function() { defer.resolve(); }
         });

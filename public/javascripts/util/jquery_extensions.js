@@ -302,3 +302,15 @@ $.fn.flyout = function(options) {
   });
   return this;
 };
+
+$.easing.socraticEase = function(t) {
+  // Just a bunch of disparate functions manually determined and spliced together.
+  // Approximates a particular bezier curve.
+  if (t < 0.304659) {
+    return Math.pow(3 * t, 4);
+  } else if (t < 0.46) {
+    return 0.89 - Math.pow(t - 1.182,8);
+  } else {
+    return 1 - 0.4 * Math.pow(1.25 * t - 1.25, 2);
+  }
+};

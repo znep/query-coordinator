@@ -174,4 +174,14 @@ describe('jquery_extensions', function() {
       $('#container').remove();
     });
   });
+
+  describe('socratic easing function', function() {
+    var ease = $.easing.socraticEase;
+    it('should return 0 for 0 input', function() {
+      expect(ease(0)).to.be.zero;
+    });
+    it('should return 1 for 1 input', function() {
+      expect(ease(1)).to.equal(1);
+    });
+  });
 });

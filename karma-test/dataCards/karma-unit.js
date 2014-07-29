@@ -21,6 +21,8 @@ module.exports = function ( karma ) {
     files: [
       'bower_components/jquery/dist/jquery.js',
       'bower_components/javascript-detect-element-resize/jquery.resize.js',
+      'public/javascripts/util/jquery_extensions.js',
+      'public/javascripts/bower/jquery.dotdotdot.js',
       'bower_components/angular/angular.js',
       /*    Map-specific libraries    */
       'bower_components/leaflet/dist/leaflet.js',
@@ -47,8 +49,6 @@ module.exports = function ( karma ) {
       'public/javascripts/angular/dataCards/controllers.js',
       'public/javascripts/angular/dataCards/models.js',
       'public/javascripts/angular/dataCards/**/*.js',
-      'public/javascripts/util/jquery_extensions.js',
-      'public/javascripts/bower/jquery.dotdotdot.js',
       /*    Angular Templates    */
       'public/angular_templates/**/*.html',
       /*    Test datasets    */

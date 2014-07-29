@@ -295,7 +295,7 @@ $.fn.flyout = function(options) {
       intarget = false;
       _.defer(function() {
         if(!inflyout && !intarget) {
-          flyout.remove();
+          $('.flyout').remove();
         }
       });
     }

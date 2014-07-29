@@ -440,10 +440,11 @@
                 var numTicks = 4;
               }
 
-              var y = d3.scale.linear().range([height, 0]);
+              var yTickScale = d3.scale.linear().range([height-1, 1]);
+              var yLabelScale = d3.scale.linear().range([height, 0]);
 
               var yAxis = d3.svg.axis().
-                            scale(y).
+                            scale(yTickScale).
                             ticks(numTicks).
                             orient('left').
                             tickFormat(tickFormatter);
@@ -451,16 +452,19 @@
               var minBreak = legend.classBreaks[0],
                   maxBreak = legend.classBreaks[legend.classBreaks.length - 1];
 
-              y.domain([minBreak, maxBreak]).
-                  nice();
+              yTickScale.domain([minBreak, maxBreak]).
+                nice();
+
+              yLabelScale.domain([minBreak, maxBreak]).
+                nice();
 
               // include min and max back into d3 scale, if #nice truncates them
               if (_.min(legend.classBreaks) > minBreak) legend.classBreaks.unshift(minBreak);
               if (_.max(legend.classBreaks) < maxBreak) legend.classBreaks.push(maxBreak);
 
               // update first and last class breaks to nice y domain
-              legend.classBreaks[0] = y.domain()[0];
-              legend.classBreaks[legend.classBreaks.length - 1] = y.domain()[1];
+              legend.classBreaks[0] = yTickScale.domain()[0];
+              legend.classBreaks[legend.classBreaks.length - 1] = yTickScale.domain()[1];
 
               svg.append('g').
                 attr('class', 'labels').
@@ -493,7 +497,7 @@
                       return legendLabelColorHeight(i);
                     }).
                     attr('y', function(c, i){
-                      return y(legend.classBreaks[i+1]);
+                      return yLabelScale(legend.classBreaks[i+1]);
                     }).
                     style('fill', function(color){ return color; });
 
@@ -515,6 +519,10 @@
                 parent: document.body,
                 interact: true,
                 overflowParent: true,
+                inset: {
+                  horizontal: -5,
+                  vertical: 2
+                },
                 html: function($target, $head, options, $element) {
                   return $target.data('flyout-text');
                 }

@@ -389,8 +389,7 @@
               var legendStyle = legend.legendStyle || 'modern';
               var legendClassBreaks = legend.classBreaks;
 
-
-              if (legend.colors.length !== legend.classBreaks.length - 1) {
+              if (legend.colors.length !== legendClassBreaks.length - 1) {
                 $log.error('[AngularJS - Leaflet] The number of legend colors should be 1 less than the number of class breaks: ', legend);
               }
 
@@ -398,20 +397,14 @@
               // draw the legend on the map
 
               var minBreak = legendClassBreaks[0];
-              var maxBreak = legendClassBreaks[legend.classBreaks.length - 1];
-
-              if (ss.standard_deviation(legendClassBreaks) > 10) {
-                var tickFormatter = bigNumTickFormatter;
-                var margin = {top: 10, right: 10, bottom: 10, left: 37.5};
-                var width = 55 - margin.left - margin.right;
-              } else {
-                var tickFormatter = smallNumTickFormatter;
-                var margin = {top: 10, right: 10, bottom: 10, left: 45};
-                var width = 70 - margin.left - margin.right;
-              }
+              var maxBreak = legendClassBreaks[legendClassBreaks.length - 1];
 
               var colorWidth = 15;
+              var margin = {top: 0, right: 0, bottom: 0, left: 0};
+              // margins are not needed due to transparent legend background.
+              // keep in case this spec changes.
               var height = 250 - margin.top - margin.bottom;
+              var width = colorWidth - margin.left - margin.right;
 
               var legendDiv = d3.select(element[0]).append('div').
                 classed(legendClass, true).
@@ -423,10 +416,10 @@
                 append('g').
                   attr("transform", "translate(" + margin.left + "," + margin.top + ")");
 
-              if (legend.classBreaks.length == 1) {
+              if (legendClassBreaks.length == 1) {
                 // if there is just 1 value, make it range from 0 to that value
-                var singleClassBreak = legend.classBreaks[0];
-                legend.classBreaks = [_.min([0, singleClassBreak]), _.max([0, singleClassBreak])];
+                var singleClassBreak = legendClassBreaks[0];
+                legendClassBreaks = [_.min([0, singleClassBreak]), _.max([0, singleClassBreak])];
                 var numTicks = 1;
               } else {
                 var numTicks = 4;
@@ -434,12 +427,6 @@
 
               var yTickScale = d3.scale.linear().range([height-1, 1]);
               var yLabelScale = d3.scale.linear().range([height, 0]);
-
-              
-              function smallNumTickFormatter(val) {
-                // used if ss.standard_deviation(legendClassBreaks) <= 10
-                return val;
-              };
 
               function bigNumTickFormatter(val) {
                 // used if ss.standard_deviation(legendClassBreaks) > 10
@@ -466,23 +453,34 @@
               var yAxis = d3.svg.axis().
                             scale(yTickScale).
                             ticks(numTicks).
-                            orient('left').
-                            tickFormat(tickFormatter);
+                            orient('left');
 
-              yTickScale.domain([minBreak, maxBreak]).
-                nice();
+              var yTickScaleDomain = yTickScale.domain([minBreak, maxBreak]);
+              var yLabelScaleDomain = yLabelScale.domain([minBreak, maxBreak]);
 
-              yLabelScale.domain([minBreak, maxBreak]).
-                nice();
+              var isLargeRange = ss.standard_deviation(legendClassBreaks) > 10;
+
+              if (isLargeRange) {
+                // d3 quirk: using a #tickFormat formatter that just returns the value
+                // gives unexpected results due to floating point math.
+                // We want to just return the value for "small-ranged" data.
+                // --> do not call a tickFormatter on yAxis if range is small.
+                yAxis.tickFormat(bigNumTickFormatter);
+                
+                // Due to similar issues, d3's scale#nice method also has
+                // floating point math issues.
+                yTickScaleDomain.nice();
+                yLabelScaleDomain.nice();
+              }
 
               // include min and max back into d3 scale, if #nice truncates them
-              if (_.min(legend.classBreaks) > minBreak) legend.classBreaks.unshift(minBreak);
-              if (_.max(legend.classBreaks) < maxBreak) legend.classBreaks.push(maxBreak);
+              if (_.min(legendClassBreaks) > minBreak) legendClassBreaks.unshift(minBreak);
+              if (_.max(legendClassBreaks) < maxBreak) legendClassBreaks.push(maxBreak);
 
               // update first and last class breaks to nice y domain
-              legend.classBreaks[0] = yTickScale.domain()[0];
-              legend.classBreaks[legend.classBreaks.length - 1] = yTickScale.domain()[1];
-
+              legendClassBreaks[0] = yTickScale.domain()[0];
+              legendClassBreaks[legendClassBreaks.length - 1] = yTickScale.domain()[1];
+              
               svg.append('g').
                 attr('class', 'labels').
                 call(yAxis);
@@ -497,9 +495,9 @@
                 attr('class', 'column');
 
               var legendLabelColorHeight = function(colorIndex) {
-                var minVal = _.min(legend.classBreaks),
-                    maxVal = _.max(legend.classBreaks);
-                var percentOfClassbreakRange = (legend.classBreaks[colorIndex + 1] - legend.classBreaks[colorIndex]) / (maxVal - minVal);
+                var minVal = _.min(legendClassBreaks),
+                    maxVal = _.max(legendClassBreaks);
+                var percentOfClassbreakRange = (legendClassBreaks[colorIndex + 1] - legendClassBreaks[colorIndex]) / (maxVal - minVal);
                 return percentOfClassbreakRange * height;
               };
 
@@ -514,18 +512,30 @@
                       return legendLabelColorHeight(i);
                     }).
                     attr('y', function(c, i){
-                      return yLabelScale(legend.classBreaks[i+1]);
+                      return yLabelScale(legendClassBreaks[i+1]);
                     }).
                     style('fill', function(color){ return color; });
 
               if (legend.colors.length > 1) {
-                rects.
-                  attr('data-flyout-text', function(color, i) {
-                    return tickFormatter(legend.classBreaks[i]) + ' - ' + tickFormatter(legend.classBreaks[i+1]);
-                  });
+                if (isLargeRange) {
+                  rects.
+                    attr('data-flyout-text', function(color, i) {
+                      return bigNumTickFormatter(legendClassBreaks[i]) + ' - ' + bigNumTickFormatter(legendClassBreaks[i+1]);
+                    });  
+                } else {
+                  rects.
+                    attr('data-flyout-text', function(color, i) {
+                      return legendClassBreaks[i] + ' - ' + legendClassBreaks[i+1];
+                    });
+                }
               } else {
-                rects.
-                  attr('data-flyout-text', tickFormatter(singleClassBreak));
+                if (isLargeRange) {
+                  rects.
+                    attr('data-flyout-text', bigNumTickFormatter(singleClassBreak));
+                } else {
+                  rects.
+                    attr('data-flyout-text', singleClassBreak);
+                }
               }
 
               // set up legend color flyouts

@@ -484,7 +484,13 @@ angular.module('dataCards.directives').directive('choropleth', function(AngularR
         $tooltip = $('#choro-flyout');
 
         if ($tooltip.length == 0) {
-          $('body').append('<div class="flyout flyout-table top" id="choro-flyout"><div class="flyout-arrow"></div><span class="content"></span></div>');
+          var html = '<div class="flyout nointeract flyout-chart top" id="choro-flyout">' +
+              '<div class="flyout-arrow center"></div>' + 
+              '<div class="flyout-title"></div>' +
+              '<div class="flyout-row">' +
+              '</div>' +
+            '</div>'
+          $('body').append(html);
           $tooltip = $('#choro-flyout');
           $tooltip.hide();
 
@@ -572,18 +578,18 @@ angular.module('dataCards.directives').directive('choropleth', function(AngularR
           value = '(No Value)';
           var valueIsUndefined = true;
         }
-        var message = '<h4>' + String(featureHumanReadableName).capitaliseEachWord() + '</h4>' +
-                      $.commaify(value);
-
-        $tooltip.find('.content').removeClass('undefined');
+        $tooltip.find('.flyout-title').text(featureHumanReadableName.capitaliseEachWord());
+        var message = $.commaify(value);
+        
+        $tooltip.removeClass('undefined');
 
         if (valueIsUndefined) {
-          $tooltip.find('.content').addClass('undefined');
+          $tooltip.addClass('undefined');
         } else if ($scope.rowDisplayUnit) {
           message += ' ' + $scope.rowDisplayUnit.pluralize();
         }
 
-        $tooltip.find('.content').html(message);
+        $tooltip.find('.flyout-row').text(message);
 
         initializeFeatureEventHandlers();
         mouseoverBrighten(leafletEvent);

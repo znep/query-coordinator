@@ -135,9 +135,12 @@ body
         line-height: 1.5rem
 
       &.stuck .content
-        z-index: 1002
-        // z-index is 1 greater than z-index on expanded-description
-        // (which is in turn 1 greater than leaflet's z-index of 1000)
+        z-index: 1003
+        // = (flyout z-index) + 1
+        // = (expanded-description's z-index + 1) + 1
+        // = ((leaflet's z-index) + 1) + 1) + 1
+        // = 1000 + 1 + 1 + 1
+        // = 1003
         position: fixed
         top: 0
 

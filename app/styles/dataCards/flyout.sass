@@ -85,6 +85,22 @@ $flyout-padding-horizontal: 10px
             border-width: 0 ($flyout-chart-tip-size + 1) ($flyout-chart-tip-size + 1) 0
             top: 1px
 
+        &.center
+          left: 50%
+
+          &:after
+            border-color: $flyout-chart-background-color transparent transparent
+            border-width: $flyout-chart-tip-size
+            top: 0
+            left: -5px
+
+          &:before
+            border-color: $flyout-border transparent transparent
+            border-width: $flyout-chart-tip-size + 1
+            top: 0
+            left: -5px
+
+
 
 
   &.flyout-table

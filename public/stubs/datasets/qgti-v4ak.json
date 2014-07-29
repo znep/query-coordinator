@@ -9,6 +9,7 @@
     {
       "title": "Facility ID",
       "name": "facility_id",
+      "description": "System‐GeneratedUniqueNumeric ID for a Child Care Program",
       "physicalDatatype": "number",
       "logicalDatatype": "identifier",
       "importance": 3
@@ -16,6 +17,7 @@
     {
       "title": "Program Type",
       "name": "program_type",
+      "description": "FDC = Family Day Care; GFDC = Group Family Day Care; SACC = School Age Child Care; DCC = Day Care Center; SDCC = Small Day Care Center",
       "physicalDatatype": "text",
       "logicalDatatype": "category",
       "importance": 3
@@ -23,6 +25,7 @@
     {
       "title": "Region Code",
       "name": "region_code",
+      "description": "ARO =Albany Regional Office; BRO =Buffalo Regional Office; LIRO = Long Island Regional Office; NYCDOHMH =NYC Department of Health and Mental Hygiene; RRO = Rochester Regional Office; SRO = Syracuse Regional Office; YRO = Spring Valley Regional Office",
       "physicalDatatype": "text",
       "logicalDatatype": "category",
       "importance": 3
@@ -30,6 +33,7 @@
     {
       "title": "County",
       "name": "county",
+      "description": "NYS County",
       "physicalDatatype": "text",
       "logicalDatatype": "category",
       "importance": 3
@@ -37,6 +41,7 @@
     {
       "title": "Facility Status",
       "name": "facility_status",
+      "description": "License = GFDC or DCC; Registration = FDC, SACC, SDCC; Pending Revocation = recommended for revocation; Pending Revocation & Denial = recommended for revocation/denial; Pending Denial = recommended for denial; Suspended = may not care for children",
       "physicalDatatype": "text",
       "logicalDatatype": "category",
       "importance": 3
@@ -44,6 +49,7 @@
     {
       "title": "Facility Name",
       "name": "facility_name",
+      "description": "DBA (legal entity/doing business as) name or Legal Name (last name, first name)",
       "physicalDatatype": "text",
       "logicalDatatype": "name",
       "importance": 3
@@ -51,6 +57,7 @@
     {
       "title": "Facility Opened Date",
       "name": "facility_opened_date",
+      "description": "Facility Opened Date",
       "physicalDatatype": "timestamp",
       "logicalDatatype": "time",
       "importance": 3
@@ -58,6 +65,7 @@
     {
       "title": "License Issue Date",
       "name": "license_issue_date",
+      "description": "License Issue Date",
       "physicalDatatype": "timestamp",
       "logicalDatatype": "time",
       "importance": 3
@@ -65,6 +73,7 @@
     {
       "title": "License Expiration Date",
       "name": "license_expiration_date",
+      "description": "License Expiration Date",
       "physicalDatatype": "timestamp",
       "logicalDatatype": "time",
       "importance": 3
@@ -72,6 +81,7 @@
     {
       "title": "address omitted",
       "name": "address_omitted",
+      "description": "As a result of a bill signed into law (Chapter 354 of the Laws of 2009), the dataset omits addresses for those child care providers who have “opted out” from having their addresses and map included.",
       "physicalDatatype": "text",
       "logicalDatatype": "text",
       "importance": 3
@@ -79,6 +89,7 @@
     {
       "title": "street number",
       "name": "street_number",
+      "description": "Excluded if provider has opted out",
       "physicalDatatype": "text",
       "logicalDatatype": "text",
       "importance": 3
@@ -86,6 +97,7 @@
     {
       "title": "street name",
       "name": "street_name",
+      "description": "Excluded if provider has opted out",
       "physicalDatatype": "text",
       "logicalDatatype": "text",
       "importance": 3
@@ -93,6 +105,7 @@
     {
       "title": "additional address",
       "name": "additional_address",
+      "description": "Excluded if provider has opted out",
       "physicalDatatype": "text",
       "logicalDatatype": "text",
       "importance": 3
@@ -100,6 +113,7 @@
     {
       "title": "floor",
       "name": "floor",
+      "description": "Excluded if provider has opted out",
       "physicalDatatype": "text",
       "logicalDatatype": "text",
       "importance": 3
@@ -107,6 +121,7 @@
     {
       "title": "apartment",
       "name": "apartment",
+      "description": "Excluded if provider has opted out",
       "physicalDatatype": "text",
       "logicalDatatype": "text",
       "importance": 3
@@ -135,6 +150,7 @@
     {
       "title": "phone number omitted",
       "name": "phone_number_omitted",
+      "description": "Excluded for providers who have unlisted phone numbers",
       "physicalDatatype": "text",
       "logicalDatatype": "text",
       "importance": 3
@@ -142,6 +158,7 @@
     {
       "title": "phone number",
       "name": "phone_number",
+      "description": "Excluded for providers who have unlisted phone numbers",
       "physicalDatatype": "text",
       "logicalDatatype": "text",
       "importance": 3
@@ -149,6 +166,7 @@
     {
       "title": "phone extension",
       "name": "phone_extension",
+      "description": "Excluded if provider has opted out or has unlisted phone number",
       "physicalDatatype": "text",
       "logicalDatatype": "text",
       "importance": 3
@@ -156,6 +174,7 @@
     {
       "title": "Provider Name",
       "name": "provider_name",
+      "description": "Name of On-Site Provider/Director (Last name, First name). If not approved, “There is no approved Director/On-Site Provider at this site” appears",
       "physicalDatatype": "text",
       "logicalDatatype": "name",
       "importance": 3
@@ -163,6 +182,7 @@
     {
       "title": "school district name",
       "name": "school_district_name",
+      "description": "Name of School District in which Program is located",
       "physicalDatatype": "text",
       "logicalDatatype": "text",
       "importance": 3
@@ -170,6 +190,7 @@
     {
       "title": "capacity description",
       "name": "capacity_description",
+      "description": "This only applies if the Modality is FDC or GFDC",
       "physicalDatatype": "text",
       "logicalDatatype": "text",
       "importance": 3
@@ -177,6 +198,7 @@
     {
       "title": "Infant Capacity",
       "name": "infant_capacity",
+      "description": "For DCC, total number of children up to 18 months of age",
       "physicalDatatype": "number",
       "logicalDatatype": "amount",
       "importance": 3
@@ -184,6 +206,7 @@
     {
       "title": "Toddler Capacity",
       "name": "toddler_capacity",
+      "description": "For DCC, total number of children ages 18 months to 36 months",
       "physicalDatatype": "number",
       "logicalDatatype": "amount",
       "importance": 3
@@ -191,6 +214,7 @@
     {
       "title": "Preschool Capacity",
       "name": "preschool_capacity",
+      "description": "For DCC, total number of children at least 3 years of age who are not yet enrolled in kindergarten or a higher grade",
       "physicalDatatype": "number",
       "logicalDatatype": "amount",
       "importance": 3
@@ -198,6 +222,7 @@
     {
       "title": "School Age Capacity",
       "name": "school_age_capacity",
+      "description": "For DCC and SACC, total number of children who are under 13 years of age who are enrolled in kindergarten or a higher grade",
       "physicalDatatype": "number",
       "logicalDatatype": "amount",
       "importance": 3
@@ -205,6 +230,7 @@
     {
       "title": "Total Capacity",
       "name": "total_capacity",
+      "description": "Refer to the data dictionary found in the About tab for the definition of Total Capacity.",
       "physicalDatatype": "number",
       "logicalDatatype": "amount",
       "importance": 3
@@ -219,6 +245,7 @@
     {
       "title": "latitude",
       "name": "latitude",
+      "description": "As a result of a bill signed into law (Chapter 354 of the Laws of 2009), the dataset omits addresses for those child care providers who have “opted out” from having their addresses and map included.",
       "physicalDatatype": "text",
       "logicalDatatype": "text",
       "importance": 3
@@ -226,6 +253,7 @@
     {
       "title": "longitude",
       "name": "longitude",
+      "description": "As a result of a bill signed into law (Chapter 354 of the Laws of 2009), the dataset omits addresses for those child care providers who have “opted out” from having their addresses and map included.",
       "physicalDatatype": "text",
       "logicalDatatype": "text",
       "importance": 3
@@ -239,16 +267,16 @@
     },
     {
       "title": "Counties",
-      "description": "placeholder for Counties",
       "name": ":Computed_afrk7ibz_location",
+      "description": "Counties",
       "physicalDatatype": "text",
       "logicalDatatype": "location",
       "importance": 3
     },
     {
       "title": "Metropolitan planning areas",
-      "description": "placeholder for Metropolitan planning areas",
       "name": ":Computed_9gf2g78j_location",
+      "description": "Metropolitan planning areas",
       "physicalDatatype": "text",
       "logicalDatatype": "location",
       "importance": 3

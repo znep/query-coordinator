@@ -271,7 +271,8 @@
       "description": "Counties",
       "physicalDatatype": "text",
       "logicalDatatype": "location",
-      "importance": 3
+      "importance": 3,
+      "shapefileFeatureHumanReadablePropertyName": "namelsad"
     },
     {
       "title": "Metropolitan planning areas",
@@ -279,7 +280,8 @@
       "description": "Metropolitan planning areas",
       "physicalDatatype": "text",
       "logicalDatatype": "location",
-      "importance": 3
+      "importance": 3,
+      "shapefileFeatureHumanReadablePropertyName": "name"
     }
   ]
 }

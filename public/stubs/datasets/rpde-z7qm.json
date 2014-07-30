@@ -123,7 +123,7 @@
       "description": "Day Care Home Provider Sites that have completed the full Eat Well Play Hard in Day Care Homes (EWPHDCH) environmental program requirements. In particular, DCH providers are asked to focus on increasing the variety of fruits and vegetables offered at the",
       "name": "eat_well_play_hard_dch_participant",
       "physicalDatatype": "text",
-      "logicalDatatype": "text",
+      "logicalDatatype": "category",
       "importance": 2
     },
     {

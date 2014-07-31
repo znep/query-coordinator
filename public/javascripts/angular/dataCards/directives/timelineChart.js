@@ -1,9 +1,11 @@
 angular.module('socrataCommon.directives').directive('timelineChart', function($parse, AngularRxExtensions) {
+  "use strict";
 
   var flyoutDateFormat = {
-    DAY: 'D MMMM \'YY',
-    MONTH: 'MMMM \'YY',
-    YEAR: 'YYYY'
+    DAY: 'D MMMM YYYY',
+    MONTH: 'MMMM YYYY',
+    YEAR: 'YYYY',
+    DECADE: 'YYYYs'
   };
 
   var tickDateFormat = {
@@ -66,11 +68,11 @@ angular.module('socrataCommon.directives').directive('timelineChart', function($
       // This enforces 3 ticks if there are less. Might be brittle.
       if (niceTicks.length < numberOfTicks) {
         var newTicks = verticalScale.ticks(numberOfTicks + 2);
-        function avg(arr) {
+        var avg = function(arr) {
           return _.reduce(arr, function(memo, num) {
             return memo + num;
           }, 0) / arr.length;
-        }
+        };
         niceTicks = [
           avg(newTicks.slice(0, 2)),
           newTicks[2],
@@ -90,26 +92,32 @@ angular.module('socrataCommon.directives').directive('timelineChart', function($
     });
 
     if (moment(domain[0]).add('months', 2).isAfter(domain[1])) {
-      var defaultLabelData = horizontalScale.ticks(d3.time.day, 1);
-      var tickRange = moment.duration(1, 'day');
-      var dateFormat = tickDateFormat.DAY;
+      var labelUnit = 'day';
     } else if (moment(domain[0]).add('years', 2).isAfter(domain[1])) {
-      var defaultLabelData = horizontalScale.ticks(d3.time.month, 1);
-      var tickRange = moment.duration(1, 'month');
-      var dateFormat = tickDateFormat.MONTH;
+      var labelUnit = 'month';
     } else if (moment(domain[0]).add('years', 20).isAfter(domain[1])) {
-      var defaultLabelData = horizontalScale.ticks(d3.time.year, 1);
-      var tickRange = moment.duration(1, 'year');
-      var dateFormat = tickDateFormat.YEAR;
+      var labelUnit = 'year';
     } else {
-      var defaultLabelData = horizontalScale.ticks(d3.time.year, 10);
-      var tickRange = moment.duration(10, 'years');
-      var dateFormat = tickDateFormat.DECADE;
+      var labelUnit = 'decade';
     }
+
+    if (labelUnit === 'decade') {
+      var defaultLabelData = horizontalScale.ticks(d3.time.year, 10);
+      var tickRange = moment.duration(10, 'year');
+    } else {
+      var defaultLabelData = horizontalScale.ticks(d3.time[labelUnit], 1);
+      var tickRange = moment.duration(1, labelUnit);
+    }
+
+    var dateFormat = tickDateFormat[labelUnit.toUpperCase()];
 
     var specialLabelData = _.pluck(_.filter(chartData, _.property('special')), 'date');
 
-    var labelData = _.union(defaultLabelData, specialLabelData);
+    var labelData = _.map(_.union(defaultLabelData, specialLabelData), function(date) {
+      return _.find(chartData, function(point) {
+        return point.date.isSame(date, labelUnit);
+      });
+    });
 
 
     var updateLabels = function(labelSelection) {
@@ -129,17 +137,17 @@ angular.module('socrataCommon.directives').directive('timelineChart', function($
       labelDivSelection.
         selectAll('.text').
           text(function(d, i, j) {
-            return moment(d).format(dateFormat);
+            return moment(d.date).format(dateFormat);
           });
       labelDivSelection.
         style('left', function(d, i, j) {
-            return labelPos(d, this) + 'px';
+            return labelPos(d.date, this) + 'px';
         }).
         classed('dim', function(d, i) {
           return specialLabelData.length > 0 && !d.special;
         }).
         style('display', function(d, i) {
-          var right = labelPos(d, this) + $(this).width();
+          var right = labelPos(d.date, this) + $(this).width();
           if (right > containerWidth) {
             return 'none';
           }
@@ -159,7 +167,7 @@ angular.module('socrataCommon.directives').directive('timelineChart', function($
     var updateTicks = function(tickSelection) {
       tickSelection.classed('tick-dark', minValue < 0 && maxValue > 0);
       var ticks = tickSelection.selectAll('rect.tick').
-        data(labelData)
+        data(labelData);
 
       var tickEnter = ticks.enter().append('rect').
          attr('class', 'tick').
@@ -167,10 +175,8 @@ angular.module('socrataCommon.directives').directive('timelineChart', function($
          attr('width', xTickSize);
 
       ticks.attr('x', function(d) {
-          return horizontalScale(d) - xTickSize/2;
-        }).attr('y', function(d) {
-          return chartHeight - xTickSize;
-        });
+          return horizontalScale(d.date) - xTickSize/2;
+        }).attr('y', chartHeight - xTickSize);
 
       ticks.exit().remove();
     };
@@ -313,21 +319,24 @@ angular.module('socrataCommon.directives').directive('timelineChart', function($
 
     labelSelection.call(updateLabels);
 
-    element.find('g.container').flyout({
-      selector: 'g.segment',
+    $chartScroll.flyout({
+      selector: 'g.container g.segment, .labels .label',
       parent: document.body,
       direction: 'top',
       inset: {
         vertical: -4
       },
       positionOn: function($target, $head, options) {
-        return $target.find('path.fill.unfiltered');
+        var targetDate = d3.select($target[0]).datum().date;
+        var segmentIndex = _.indexOf(_.pluck(chartData, 'date'), targetDate);
+        return $chartScroll.find('path.fill.unfiltered').eq(segmentIndex);
       },
       title: function($target, $head, options) {
-        return moment(d3.select($target[0]).datum().date).format(flyoutDateFormat[precision]);
+        var targetDate = d3.select($target[0]).datum().date;
+        return moment(targetDate).format(flyoutDateFormat[precision]);
       },
       table: function($target, $head, options, $flyout) {
-        var data = d3.select($target.context).datum();
+        var data = d3.select($target[0]).datum();
         var unit = '';
         if (rowDisplayUnit) {
           unit = ' ' + rowDisplayUnit.pluralize();
@@ -338,6 +347,20 @@ angular.module('socrataCommon.directives').directive('timelineChart', function($
           rows.push(["Filtered Amount", $.toHumaneNumber(data.filtered, 1) + unit]);
         }
         return rows;
+      },
+      onOpen: function($target, $head, options, $flyout) {
+        var data = d3.select($target[0]).datum();
+        var flyoutDate = data.date;
+        _.each(element.find('.labels .label'), function(label) {
+          var labelDateStart = d3.select(label).datum().date;
+          var labelDateEnd = labelDateStart + tickRange;
+          if (labelDateStart <= flyoutDate && flyoutDate < labelDateEnd) {
+            $(label).addClass('active');
+          }
+        });
+      },
+      onClose: function() {
+        element.find('.labels .label.active').removeClass('active');
       }
     });
   };

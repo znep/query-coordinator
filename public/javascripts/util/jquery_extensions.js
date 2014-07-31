@@ -129,10 +129,51 @@ $.capitalizeWithDefault = function(value, placeHolder) {
   placeHolder = placeHolder || '(Blank)';
   return $.isBlank(value) ? placeHolder : value.capitaliseEachWord();
 };
-
+/*
+ * flyout is an internal Socrata utility for creating flyouts.
+ * It's a jQuery extension that uses a delegate for handling mouseover events.
+ * Usage is in the form of $head.flyout(options)
+ *
+ * All options can be passed directly or as a function that returns them.
+ * The callback should be in the form of:
+ *  function($target, $head, options, $flyout) { return <obj>; }
+ *
+ * Options:
+ *  selector: The jQuery delegate selector. Since this is a jQuery selector you
+ *    can pass in compound queries such as ".labels .label, .bar-group".
+ *
+ *  parent: Where the flyouts should attach to.
+ *    By default they attach to the selected target.
+ *
+ *  style: The style and positioning behavior.
+ *    "chart" is the new style used for column chart and timeline chart.
+ *    "table" is an older style used for the table card
+ *
+ *  direction: This is the direction from the target that the flyout appears.
+ *    "top" means the flyout is above the target.
+ *    The special "horizontal" when combined with the "table" style will
+ *      position it on either side space allowing.
+ *
+ *  positionOn: An element to position the flyout relative to.
+ *
+ *  onOpen: A callback on open.
+ *
+ *  onClose: A callback on close.
+ *
+ *  margin: This is the number of pixels the flyout will stay from the edge of
+ *    the "overflow: hidden" container.
+ *
+ *  interact: Whether you can mouse into the flyout and select text.
+ *
+ *  arrowMargin: The number of pixels the arrow will stay away from the edge of
+ *    the flyout.
+ *
+ *  inset: This is an object with "horizontal" & "vertical" properties.
+ *    They decide how Far the tooltip will inset into the target element.
+ */
 $.fn.flyout = function(options) {
   var defaults = {
-    direction: 'bottom',
+    direction: 'top',
     margin: 0,
     interact: false,
     style: 'chart',
@@ -152,7 +193,7 @@ $.fn.flyout = function(options) {
   var renderFlyout = function(target) {
     var $target = $(target);
     var parentElem = $(options.parent || $target);
-    $('.flyout').remove();
+    closeFlyout();
     flyout = $('<div class="flyout"><div class="flyout-arrow"></div></div>');
     flyout.addClass('flyout-' + options.style);
     flyout.data('target', target);
@@ -274,13 +315,18 @@ $.fn.flyout = function(options) {
       }
     }
     flyout.offset({ top: top, left: left });
+    getVal(options.onOpen);
     inflyout = false;
     intarget = true;
     flyout.on('mouseover, mouseenter', function(e) {
       inflyout = true;
     }).bind('mouseleave', function(e) {
-      if(!options.debugNeverClosePopups) flyout.remove();
+      if(!options.debugNeverClosePopups) closeFlyout();
     });
+  };
+  var closeFlyout = function() {
+    if (_.isFunction(options.onClose)) options.onClose();
+    $('.flyout').remove();
   };
   $(window).scroll(function(e) {
     var $flyout = $('.flyout');
@@ -295,7 +341,7 @@ $.fn.flyout = function(options) {
       intarget = false;
       _.defer(function() {
         if(!inflyout && !intarget) {
-          $('.flyout').remove();
+          closeFlyout();
         }
       });
     }

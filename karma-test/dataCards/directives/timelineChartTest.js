@@ -20,7 +20,7 @@ describe('timelineChart', function() {
         total: Number(datum.value),
         filtered: Number(datum.value)/2,
         special: false
-      }
+      };
     });
   }));
 
@@ -66,9 +66,9 @@ describe('timelineChart', function() {
   describe('when not expanded at 640px', function() {
 
     it('should create segments and 13 labels', function() {
-      createNewTimelineChart();
+      var chart = createNewTimelineChart();
       expect($('g.segment').length).to.equal(testData.length);
-      expect($('.labels div.label').length).to.equal(13);
+      expect(chart.element.find('.labels div.label').length).to.equal(13);
     });
     it('should create segments with correct children', function() {
       var chart = createNewTimelineChart();
@@ -105,6 +105,21 @@ describe('timelineChart', function() {
       var $rows = $(".flyout .flyout-row");
       expect($rows.length).to.equal(2);
       expect($rows.last().children().last().text()).to.equal('8.2K');
+    });
+    it('should highlight a label when hovering over the chart', function() {
+      var chart = createNewTimelineChart(640, false, true);
+      var segments = chart.element.find('g.segment rect.spacer');
+      segments.eq(Math.floor(segments.length/2)).mouseover();
+      expect($('.flyout').length).to.equal(1);
+      expect(chart.element.find('.labels .label.active').length).to.equal(1);
+      expect(chart.element.find('.labels .label.active')).to.be.visible;
+    });
+    it('when hovering over a label it should highlight and create a flyout', function() {
+      var chart = createNewTimelineChart(640, false, true);
+      chart.element.find('.labels .label .text').mouseover();
+      expect($('.flyout').length).to.equal(1);
+      expect(chart.element.find('.labels .label.active').length).to.equal(1);
+      expect(chart.element.find('.labels .label.active')).to.be.visible;
     });
     it('should create labels with different positions', function() {
       var chart = createNewTimelineChart(640, false, true);

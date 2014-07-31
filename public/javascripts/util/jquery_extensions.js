@@ -256,9 +256,10 @@ $.fn.flyout = function(options) {
       targetSize.height = $positionOn.outerHeight() || parseInt($positionOn.attr('height'));
       targetSize.width = $positionOn.outerWidth() || parseInt($positionOn.attr('width'));
     }
-    if (!targetSize.width || !targetSize.height) {
-      console.error("[$.fn.flyout] target has height: "+targetSize.height+", width: "+targetSize.width+". No flyout possible.");
-    }
+    // TODO decide what to do here. Either show the tooltip at the zero point or thrown an error, but don't log
+//    if (!targetSize.width || !targetSize.height) {
+//      console.error("[$.fn.flyout] target has height: "+targetSize.height+", width: "+targetSize.width+". No flyout possible.");
+//    }
     var targetRightEdge = pos.left + targetSize.width;
     var targetWidth = targetRightEdge - targetLeftEdge;
     if (direction == 'horizontal') {

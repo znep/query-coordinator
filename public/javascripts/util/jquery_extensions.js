@@ -42,7 +42,7 @@ $.commaify = function(value) {
   return value;
 };
 
-$.toHumaneNumber = function(val, precision) {
+$.toFixedHumaneNumber = function(val, precision) {
   var symbol = ['K', 'M', 'B', 'T'];
   var step = 1000;
   var divider = Math.pow(step, symbol.length);
@@ -65,6 +65,47 @@ $.toHumaneNumber = function(val, precision) {
 
   result = val.toFixed(precision);
   return result == 0 ? 0 : result;
+};
+
+$.toHumaneNumber = function(val) {
+  var maxLetters = 4;
+  var symbol = ['K', 'M', 'B', 'T', 'P', 'E', 'Z', 'Y'];
+  var step = 1000;
+  var divider = Math.pow(step, symbol.length);
+  val = parseFloat(val);
+  var absVal = Math.abs(val);
+  var result;
+  var beforeLength = val.toFixed(0).length;
+
+  if (beforeLength <= maxLetters) {
+    var parts = val.toString().split('.');
+    var afterLength = (parts[1] || '').length;
+    var maxAfterLength = maxLetters - beforeLength;
+    if (afterLength > maxAfterLength) {
+      afterLength = maxAfterLength;
+    }
+    return $.commaify(val.toFixed(afterLength));
+  }
+
+  for (var i = symbol.length - 1; i >= 0; i--) {
+    if (absVal >= divider) {
+      var count = (absVal / divider).toFixed(0).length;
+      var precision = maxLetters - count - 1;
+      if (precision < 0) {
+        precision = 0;
+      }
+      result = (absVal / divider).toFixed(precision);
+      if (val < 0) {
+        result = -result;
+      }
+      if (_.isFinite(result)) {
+        return $.commaify(result) + symbol[i];
+      } else {
+        return result.toString();
+      }
+    }
+    divider = divider / step;
+  }
 };
 
 String.prototype.format = function() {
@@ -170,6 +211,9 @@ $.capitalizeWithDefault = function(value, placeHolder) {
  *
  *  inset: This is an object with "horizontal" & "vertical" properties.
  *    They decide how Far the tooltip will inset into the target element.
+ *
+ *  debugNeverClosePopups: Debug bool to leave popups in existance after mouseout.
+ *    This makes it easier to debug CSS.
  */
 $.fn.flyout = function(options) {
   var defaults = {
@@ -296,7 +340,7 @@ $.fn.flyout = function(options) {
       if (targetLeftEdge < containerLeftEdge) targetLeftEdge = containerLeftEdge;
       if (targetRightEdge > containerRightEdge) targetRightEdge = containerRightEdge;
       if (direction == 'top' || direction == 'bottom') {
-        var center = (targetLeftEdge + targetRightEdge)/2;
+        var center = (targetLeftEdge + targetRightEdge) / 2;
         var arrow_pos = center - left;
         if (arrow_pos <= options.arrowMargin) arrow_pos = options.arrowMargin;
         else if (arrow_pos >= flyout.outerWidth() - options.arrowMargin) arrow_pos = flyout.outerWidth() - options.arrowMargin;
@@ -306,13 +350,19 @@ $.fn.flyout = function(options) {
       if (direction == 'top') {
         top = pos.top - flyout.outerHeight() + options.inset.vertical -
           parseInt(flyout.find('.flyout-arrow').css('margin-top'));
-        var orientationIsLeft = targetRightEdge + flyout.outerWidth() + options.margin < containerRightEdge;
-        if (orientationIsLeft) {
-          left = pos.left + targetSize.width/2;
-        } else {
-          left = pos.left + targetSize.width/2 - flyout.outerWidth();
+        var orientationIsLeft = targetRightEdge + flyout.outerWidth() / 2 + options.margin < containerRightEdge;
+        left = pos.left + targetSize.width / 2;
+        var arrowLeft = left;
+        var flyoutArrow = flyout.find('.flyout-arrow');
+        if (containerRightEdge - flyout.outerWidth() < left) {
+          left = containerRightEdge - flyout.outerWidth();
         }
-        flyout.find('.flyout-arrow').addClass(orientationIsLeft ? 'left' : 'right');
+        if (!orientationIsLeft) {
+          // MAGIC NUMBER: 2px for border
+          arrowLeft -= flyoutArrow.outerWidth(true) + 2;
+        }
+        flyoutArrow.addClass(orientationIsLeft ? 'left' : 'right').
+          css('left', arrowLeft - left);
       }
     }
     flyout.offset({ top: top, left: left });

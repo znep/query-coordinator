@@ -98,13 +98,13 @@ describe('timelineChart', function() {
       expect($rows.length).to.equal(1);
       expect($rows.children().last().text()).to.equal('16.4K');
     });
-    it('should create a popup on mouse over with filter of 8.2K', function() {
+    it('should create a popup on mouse over with filter of 8,204', function() {
       var chart = createNewTimelineChart(640, false, true);
       chart.element.find('g.segment rect.spacer').mouseover();
       expect($('.flyout').length).to.equal(1);
       var $rows = $(".flyout .flyout-row");
       expect($rows.length).to.equal(2);
-      expect($rows.last().children().last().text()).to.equal('8.2K');
+      expect($rows.last().children().last().text()).to.equal('8,204');
     });
     it('should highlight a label when hovering over the chart', function() {
       var chart = createNewTimelineChart(640, false, true);

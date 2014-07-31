@@ -93,10 +93,6 @@ var ServerModel = Model.extend({
                 $.param(req.params);
         }
 
-        // We never want the browser cache, because our data can change frequently
-        if ($.isBlank(req.type) || req.type.toLowerCase() == 'get')
-        { req.cache = false; }
-
         var cleanReq = function()
         {
             delete req.batch;

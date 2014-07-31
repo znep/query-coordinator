@@ -220,6 +220,7 @@
         $.socrataServer.makeRequest({
             type: "GET",
             url: '/api/users/current.json',
+            cache: false,
             headers: {'Cache-Control': 'nocache'},
             success: function(user)
             {

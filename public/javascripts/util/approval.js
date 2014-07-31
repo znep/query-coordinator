@@ -19,7 +19,7 @@ this.Approval = ServerModel.extend({
     {
         var appr = this;
         appr.makeRequest({url: '/api/approval.json', params: {method: 'ageInfo'},
-            type: 'GET', pageCache: true,
+            type: 'GET', cache: false, pageCache: true,
             success: function(ageInfo, ts, xhr)
             {
                 ageInfo = _.reject(ageInfo, function(a)
@@ -34,7 +34,7 @@ this.Approval = ServerModel.extend({
         var appr = this;
         appr.makeRequest({url: '/api/approval.json',
             params: {method: 'aging', max_group: groups, interval: 86400},
-            type: 'GET', pageCache: true,
+            type: 'GET', cache: false, pageCache: true,
             success: function(aiResults)
             {
                 var agingInfo = [];

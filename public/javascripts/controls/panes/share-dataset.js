@@ -23,7 +23,7 @@
             if (!$.isBlank(grant.userId))
             {
                 $.socrataServer.makeRequest({
-                    url: '/users/' + grant.userId + '.json', type: 'GET', data: {}, batch: true,
+                    url: '/users/' + grant.userId + '.json', cache: false, type: 'GET', data: {}, batch: true,
                     success: function(response)
                     {
                         shares.push($.extend({},response, {shareType: grant.type,

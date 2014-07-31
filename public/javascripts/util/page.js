@@ -184,7 +184,7 @@ Page.deleteById = function(newId, oldId, successCallback, errorCallback)
 Page.checkUnique = function(path, successCallback, errorCallback)
 {
     var doSave = _.after(2, successCallback);
-    $.socrataServer.makeRequest({ type: 'GET', url: '/api/pages.json?method=isPathAvailable',
+    $.socrataServer.makeRequest({ type: 'GET', cache: false, url: '/api/pages.json?method=isPathAvailable',
         params: { path: path },
         success: function(resp)
         {
@@ -194,7 +194,7 @@ Page.checkUnique = function(path, successCallback, errorCallback)
             { errorCallback(); }
         }
     });
-    $.socrataServer.makeRequest({ type: 'GET', url: '/api/id/pages', isSODA: true,
+    $.socrataServer.makeRequest({ type: 'GET', cache: false, url: '/api/id/pages', isSODA: true,
         params: { path: path },
         success: function(resp)
         {

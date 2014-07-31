@@ -66,7 +66,7 @@ this.User = ServerModel.extend({
         if ($.isBlank(user._datasets))
         {
             user.makeRequest({url: '/users/' + user.id + '/views.json',
-                type: 'GET', pageCache: true, success: function(dss)
+                type: 'GET', cache: false, pageCache: true, success: function(dss)
                 {
                     user._datasets = _.map(dss, function(d)
                         { return new Dataset(d); });
@@ -89,7 +89,7 @@ this.User = ServerModel.extend({
         var user = this;
         user.makeRequest({url: '/users/' + user.id + '/email_interests/' + tag.toUpperCase(),
             params: { extraInfo: info },
-            type: 'GET', pageCache: true, success: callback });
+            type: 'GET', cache: false, pageCache: true, success: callback });
     },
 
     removeEmailInterest: function(tag, info, callback)

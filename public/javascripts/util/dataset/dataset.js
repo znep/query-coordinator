@@ -1186,6 +1186,9 @@ var Dataset = ServerModel.extend({
         var cacheId = ds._getCommentCacheKey({rowId: rowId, tableColumnId: tcId});
         if ($.isBlank(ds._commentCache[cacheId]))
         {
+            // Keep getComments cachable by the browser; even though it has no full
+            // etag/cache-control handling internally. Comments just don't need to be
+            // hitting the backend
             ds.makeRequest({url: '/views/' + ds.id + '/comments.json',
                 params: !$.isBlank(rowId) ? {r: rowId} : null,
                 type: 'GET', pageCache: true, success: function(comms)
@@ -1209,6 +1212,7 @@ var Dataset = ServerModel.extend({
         var ds = this;
         if ($.isBlank(ds._commentLocations))
         {
+            // Keep this cachable
             ds.makeRequest({url: '/views/' + ds.id + '/comments.json',
                 params: {method: 'getCellsWithComments'}, type: 'GET', pageCache: true,
                 success: function(ci)
@@ -1539,6 +1543,7 @@ var Dataset = ServerModel.extend({
 
         if ($.isBlank(ds._cachedLinkedColumnOptions[viewUid]))
         {
+            // ETag handling is fully implemented for views
             ds.makeRequest({url: '/api/views/' + viewUid + '.json',
                 pageCache: true, type: 'GET',
                 error: function(req)
@@ -1761,7 +1766,7 @@ var Dataset = ServerModel.extend({
     getPredeployApiView: function(successCallback, errorCallback){
       var ds = this;
       ds.makeRequest({url: '/api/views/' + ds.id + '/publication.json',
-          params: {method: 'getOrMakePredeployApiView'}, type: 'GET',
+          params: {method: 'getOrMakePredeployApiView'}, cache: false, type: 'GET',
           success: function(view)
           {
               successCallback(new Dataset(view));
@@ -3052,7 +3057,7 @@ var Dataset = ServerModel.extend({
             ds._relViewCount = Math.max(0, count - 1);
             if (_.isFunction(callback)) { callback(ds._relViewCount); }
         };
-
+        // Fully cachable
         this.makeRequest({url: '/views.json', pageCache: true, type: 'GET',
                 data: { method: justCount ? 'getCountForTableId' : 'getByTableId',
                 tableId: this.tableId },

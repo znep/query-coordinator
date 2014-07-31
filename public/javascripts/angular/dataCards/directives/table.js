@@ -1,18 +1,18 @@
+
 angular.module('socrataCommon.directives').directive('table', function(AngularRxExtensions, $q) {
+  "use strict";
   var rowsPerBlock = 50,
       rowHeight = $.relativeToPx('2rem');
-
-
 
   return {
     templateUrl: '/angular_templates/dataCards/table.html',
     restrict: 'A',
-    scope: { rowCount: '=', filteredRowCount: '=', whereClause: '=', getRows: '=', expanded: '=', infinite: '=' },
+    scope: { rowCount: '=', filteredRowCount: '=', whereClause: '=', getRows: '=', expanded: '=', infinite: '=', columnDetails: '=' },
     link: function(scope, element, attrs) {
       AngularRxExtensions.install(scope);
 
-      var currentBlocks = [], columnIds = [], sort = '', columnWidths = {},
-          httpRequests = {}, oldBlock = -1, columnTypes = {};
+      var currentBlocks = [], sort = '', columnWidths = {},
+          httpRequests = {}, oldBlock = -1;
       var $table = element.find('.table-inner'),
           $head = element.find('.table-inner > .table-head'),
           $body = element.find('.table-inner > .table-body'),
@@ -32,7 +32,7 @@ angular.module('socrataCommon.directives').directive('table', function(AngularRx
         $head.find('.resize').height(tableHeight);
         checkBlocks();
         updateLabel();
-      }
+      };
 
       var dragHandles = function(columnIds) {
         var $resizeContainer = $expander.find('.table-resize-container');
@@ -42,7 +42,7 @@ angular.module('socrataCommon.directives').directive('table', function(AngularRx
         }
         if($resizeContainer.children().length > 0) return;
         _.each(columnWidths, function(width, columnId) {
-          $cell = $('<div class="cell"><span class="resize"></span></div>').width(width);
+          var $cell = $('<div class="cell"><span class="resize"></span></div>').width(width);
           $cell.find('.resize').data('columnId', columnId);
           $resizeContainer.append($cell);
         });
@@ -67,19 +67,13 @@ angular.module('socrataCommon.directives').directive('table', function(AngularRx
         }).on('mouseup', function(e) {
           if(active) active = false;
         });
-      }
+      };
 
-      /*
-        TODO: This uses the first row of the first block loaded to generate column names.
-        It should use the meta data service once it's working.
-      */
-      var setupHead = function(row) {
-        if (columnIds.length > 0) return;
-        columnIds = _.keys(row);
+      var setupHead = _.once(function(row) {
         updateColumnHeaders();
         $head.delegate('.caret', 'click', sortHandler);
         $('body').delegate('.flyout .caret', 'click', sortHandler);
-      };
+      });
 
       var sortHandler = function(e) {
         var columnId = $(e.currentTarget).parent().data('column-id');
@@ -94,34 +88,35 @@ angular.module('socrataCommon.directives').directive('table', function(AngularRx
         updateColumnHeaders();
         reloadRows();
         e.preventDefault();
-      }
+      };
 
       var updateColumnHeaders = function(){
-        scope.headers = _.map(columnIds, function(columnId) {
+        scope.headers = _.map(_.values(scope.columnDetails), function(column, i) {
           // Symbols: ▼ ▲
           var sortParts = sort.split(' ');
-          var active = columnId === sortParts[0];
+          var active = column.name === sortParts[0];
           var sortUp = sortParts[1] === 'ASC';
           return {
-            columnId: columnId,
-            name: columnId.replace(/_/g, ' ').capitaliseEachWord(),
+            columnId: column.name,
+            name: column.title,
             active: active,
             sortUp: active && sortUp,
-            width: columnWidths[columnId]
-          }
+            width: columnWidths[column.name],
+            sortable: column.sortable
+          };
         });
         // Update flyout if present
         var columnId = $(".flyout").data('column-id');
         if (columnId) {
-          $head.find('.th').eq(_.indexOf(columnIds, columnId)).trigger('mouseenter');
+          $head.find('.th:contains({0})'.format(scope.columnDetails[columnId].title)).mouseenter();
         }
-      }
+      };
 
       // TODO: Clean this up. It's horribly expensive. ~400ms in tests.
       var calculateColumnWidths = _.once(function() {
         updateColumnHeaders();
         _.defer(function() {
-          _.each(columnIds, function(columnName, columnIndex) {
+          _.each(_.values(scope.columnDetails), function(column, columnIndex) {
             var $cells = $table.find('.cell:nth-child({0}), .th:nth-child({0})'.
               format(columnIndex + 1));
             var maxCell = _.max($cells, function(cell) {
@@ -130,7 +125,7 @@ angular.module('socrataCommon.directives').directive('table', function(AngularRx
             var width = $(maxCell).width();
             if (width > 300) width = 300;
             else if(width < 75) width = 75;
-            columnWidths[columnName] = width;
+            columnWidths[column.name] = width;
             $cells.width(width);
           });
           updateColumnHeaders();
@@ -152,72 +147,7 @@ angular.module('socrataCommon.directives').directive('table', function(AngularRx
           }
           $expander.height(height);
         }
-      }
-      var inferColumnTypes = function(data) {
-        // TODO: Replaces these checks with information from the metadata API.
-        if(_.keys(columnTypes).length > 0) return;
-        var inferMetaData = {};
-        _.each(data, function(row) {
-          _.each(row, function(cellContent, columnId) {
-            if(!inferMetaData[columnId]) inferMetaData[columnId] = {
-              not: [],
-              counts: {}
-            };
-            var meta = inferMetaData[columnId];
-            function check(name, callback) {
-              if (!meta.type && !_.include(meta.not, name)) {
-                var resp = callback(cellContent);
-                if (resp === 'not') {
-                  meta.not.push(name);
-                  delete meta.counts[name];
-                } else if (resp === 'possible') {
-                  if(!meta.counts[name]) meta.counts[name] = 0;
-                  meta.counts[name] += 1;
-                } else if(resp === 'is') {
-                  meta.type = name;
-                }
-              }
-            }
-            check("boolean", function(cellData) {
-              if (cellData === true) {
-                return 'is';
-              }
-            });
-            check("number", function(cellData) {
-              if (!_.isNaN(Number(cellData))) {
-                return 'possible';
-              } else if(!_.isUndefined(cellContent)) {
-                return 'not';
-              }
-            });
-            check("location", function(cellData) {
-              if (_.isObject(cellData) && cellData.type == 'Point') {
-                return 'is';
-              }
-            });
-            check("date", function(cellData) {
-              // Checks for presence of '<num>-<num>-<num>' at start.
-              if (_.isString(cellContent) && cellContent.match(/^\d+-\d+-\d+/)) {
-                var time = moment(cellContent);
-                if (time.isValid()) {
-                  return 'possible';
-                }
-              } else if(!_.isUndefined(cellContent)) {
-                return 'not';
-              }
-            });
-          });
-        });
-        _.each(inferMetaData, function(meta, columnId) {
-          if(meta.type) {
-            columnTypes[columnId] = meta.type;
-          } else {
-            columnTypes[columnId] = _.max(_.keys(meta.counts), function(k) {
-              return meta.counts[k];
-            });
-          }
-        });
-      }
+      };
       var loadBlockOfRows = function(block) {
         // Check if is being loaded or block exists
         if (_.has(httpRequests, block) || element.find(".row-block."+block).length > 0) {
@@ -229,17 +159,16 @@ angular.module('socrataCommon.directives').directive('table', function(AngularRx
             then(function(data) {
           delete httpRequests[block];
           setupHead(data[0]);
-          inferColumnTypes(data);
           if (currentBlocks.indexOf(block) === -1 || data.length === 0) return;
           var blockHtml = '<div class="row-block {0}" data-block-id="{0}" style="top: {1}px; display: none">'.
             format(block, block * rowsPerBlock * rowHeight);
           _.each(data, function(data_row) {
             blockHtml += '<div class="table-row">';
-            _.each(columnIds, function(header) {
+            _.each(_.values(scope.columnDetails), function(column, columnIndex) {
               var cellClasses = 'cell';
-              var cellContent = data_row[header] || '';
+              var cellContent = data_row[column.name] || '';
               var cellText = '';
-              var cellType = columnTypes[header];
+              var cellType = scope.columnDetails[column.name].physicalDatatype;
               // Is Boolean?
               if (cellType === 'boolean') {
                 cellText = cellContent ? '✓' : '✗';
@@ -251,15 +180,14 @@ angular.module('socrataCommon.directives').directive('table', function(AngularRx
                 } else {
                   cellText = _.escape(cellContent);
                 }
-              } else if (cellType == 'location') {
+              } else if (cellType == 'geo entity') {
                 if (_.isArray(cellContent.coordinates)) {
                   cellText += (' (<span title="Latitude">{0}°</span>, ' +
                     '<span title="Longitude">{1}°</span>)').format(
-                    cellContent.coordinates[1],
-                    cellContent.coordinates[0]
-                  );
+                      cellContent.coordinates[1],
+                      cellContent.coordinates[0]);
                 }
-              } else if (cellType === 'date') {
+              } else if (cellType === 'timestamp') {
                 var time = moment(cellContent);
                 // Check if Date or Date/Time
                 if (time.format('HH:mm:ss') === '00:00:00') {
@@ -271,7 +199,7 @@ angular.module('socrataCommon.directives').directive('table', function(AngularRx
                 cellText = _.escape(cellContent);
               }
               blockHtml += '<div class="{0}" style="width: {1}px">{2}</div>'.
-                format(cellClasses, columnWidths[header], cellText);
+                format(cellClasses, columnWidths[column.name], cellText);
             });
             blockHtml += '</div>';
           });
@@ -279,12 +207,12 @@ angular.module('socrataCommon.directives').directive('table', function(AngularRx
           $expander.append(blockHtml);
           $('.row-block.{0}'.format(block)).fadeIn();
           calculateColumnWidths();
-          _.delay(updateExpanderHeight, 1)
+          _.delay(updateExpanderHeight, 1);
         });
-      }
+      };
       var moveHeader = function() {
         $head.css('left', - $body.scrollLeft());
-      }
+      };
       var checkBlocks = function() {
         var currentBlock = Math.floor($body.scrollTop() / (rowHeight * rowsPerBlock));
 
@@ -314,7 +242,7 @@ angular.module('socrataCommon.directives').directive('table', function(AngularRx
           }
         });
         updateExpanderHeight();
-      }
+      };
 
       var updateLabel = function() {
         var topRow = Math.floor($body.scrollTop() / rowHeight) + 1;
@@ -322,21 +250,21 @@ angular.module('socrataCommon.directives').directive('table', function(AngularRx
         $label.text('Showing {0} to {1} of {2} (Total: {3})'.format(topRow,
             _.min([bottomRow, scope.filteredRowCount]), scope.filteredRowCount,
             scope.rowCount));
-      }
+      };
 
       var reloadRows = function() {
         $expander.find('.row-block').remove();
         currentBlocks = [];
         oldBlock = -1;
         checkBlocks();
-      }
+      };
       var showOrHideNoRowMessage = function() {
-        if (scope.filteredRowCount == 0) {
+        if (scope.filteredRowCount === 0) {
           element.find('.table-no-rows-message').fadeIn();
         } else {
           element.find('.table-no-rows-message').fadeOut();
         }
-      }
+      };
       var scrollLeft = $body.scrollLeft(), scrollTop = $body.scrollTop();
       $body.scroll(function(e) {
         if (scrollLeft !== (scrollLeft = $body.scrollLeft())) {
@@ -374,12 +302,16 @@ angular.module('socrataCommon.directives').directive('table', function(AngularRx
           var sortUp = sortParts[1] === 'ASC';
           var html = [];
           $element.data('column-id', columnId);
-          if (active) {
-            html.push('Sorted {0}'.format(sortUp ? 'ascending' : 'descending'));
+          if (scope.columnDetails[columnId].sortable) {
+            if (active) {
+              html.push('Sorted {0}'.format(sortUp ? 'ascending' : 'descending'));
+            }
+            html.push('<a class="caret" href="#">Click to sort {0}</a>'.
+              format((active && !sortUp) ? 'ascending' : 'descending'));
+            return html.join('<br>');
+          } else {
+            return 'No sort available';
           }
-          html.push('<a class="caret" href="#">Click to sort {0}</a>'.
-            format((active && !sortUp) ? 'ascending' : 'descending'));
-          return html.join('<br>');
         }
       });
       Rx.Observable.subscribeLatest(
@@ -387,8 +319,9 @@ angular.module('socrataCommon.directives').directive('table', function(AngularRx
         scope.observe('rowCount'),
         scope.observe('filteredRowCount'),
         scope.observe('expanded'),
+        scope.observe('columnDetails'),
         scope.observe('infinite'),
-        function(cardDimensions, rowCount, filteredRowCount, expanded, infinite) {
+        function(cardDimensions, rowCount, filteredRowCount, expanded, columnDetails, infinite) {
           updateExpanderHeight();
           showOrHideNoRowMessage();
           if (rowCount && expanded) {
@@ -410,7 +343,7 @@ angular.module('socrataCommon.directives').directive('table', function(AngularRx
         }
       );
     }
-  }
+  };
 
 });
 

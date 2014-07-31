@@ -1,4 +1,7 @@
 angular.module('dataCards.directives').directive('cardVisualizationTable', function(AngularRxExtensions, CardDataService) {
+  "use strict";
+
+  var unsortable = ['geo entity'];
 
   return {
     restrict: 'E',
@@ -19,13 +22,28 @@ angular.module('dataCards.directives').directive('cardVisualizationTable', funct
           dataset,
           whereClause,
           function(dataset, whereClause) {
-            return Rx.Observable.fromPromise(CardDataService.getRowCount(dataset.id, whereClause));
+            return Rx.Observable.fromPromise(CardDataService.
+              getRowCount(dataset.id, whereClause));
           }).switchLatest();
 
       $scope.$on('table:expand-clicked', function() {
         $scope.model.page.toggleExpanded($scope.model);
       });
 
+      var columnDetails = dataset.observeOnLatest('columns').map(function(columns) {
+        var filteredColumns = {};
+        _.each(columns, function(column, name) {
+          // Filter out names like :Computed_banana and *
+          if (name[0].match(/[a-zA-Z0-9]/g)) {
+            // Check if sortable
+            column.sortable = !_.contains(unsortable, column.physicalDatatype);
+            filteredColumns[name] = column;
+          }
+        });
+        return filteredColumns;
+      });
+
+      $scope.bindObservable('columnDetails', columnDetails);
       $scope.bindObservable('whereClause', whereClause);
       $scope.bindObservable('rowCount', rowCount);
       $scope.bindObservable('filteredRowCount', filteredRowCount);

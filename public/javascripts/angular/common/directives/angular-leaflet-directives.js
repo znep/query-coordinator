@@ -381,18 +381,22 @@
               if (!legend) {
                 return;
               }
-              if (isDefined(leafletLegend)) {
-                leafletLegend.removeFrom(map);
+              
+              var legendClass = legend.legendClass ? legend.legendClass : 'modern-legend';
+
+              if (legend.colors.length === 0) {
+                // short-circuit d3's exit selections and simply remove the entire legend vs removing individual components.
+                d3.select(element[0]).select('.'+legendClass).remove();
+                return;
               }
-              var legendClass = legend.legendClass ? legend.legendClass : 'legend';
-              var position = legend.position || 'bottomright';
-              var legendStyle = legend.legendStyle || 'modern';
+
               var legendClassBreaks = legend.classBreaks;
 
-              if (legend.colors.length !== legendClassBreaks.length - 1) {
+              if (legend.colors.length !== legend.classBreaks.length - 1) {
                 $log.error('[AngularJS - Leaflet] The number of legend colors should be 1 less than the number of class breaks: ', legend);
               }
 
+              var position = legend.position || 'bottomright';
 
               // draw the legend on the map
 
@@ -406,11 +410,24 @@
               var height = 250 - margin.top - margin.bottom;
               var width = colorWidth - margin.left - margin.right;
 
-              var legendDiv = d3.select(element[0]).append('div').
-                classed(legendClass, true).
+              var legendSelection = d3.select(element[0]).selectAll('.'+legendClass).data([scope.legend]);
+
+              legendSelection.enter().
+                append('div').
+                classed(legendClass, function() {
+                  return true; 
+                }).
                 classed(position, true);
 
-              var svg = legendDiv.append('svg').
+              var svg = legendSelection.selectAll('svg').data([scope.legend]);
+              /*
+                append('div').
+                classed(legendClass, true).
+                classed(position, true);
+              */
+
+              svg.enter().
+                append('svg').
                 attr('height', height + margin.top + margin.bottom).
                 attr('width', width + margin.left + margin.right).
                 append('g').
@@ -480,41 +497,45 @@
               // update first and last class breaks to nice y domain
               legendClassBreaks[0] = yTickScale.domain()[0];
               legendClassBreaks[legendClassBreaks.length - 1] = yTickScale.domain()[1];
+
+              var labels = svg.selectAll('.labels').data([legendClassBreaks]);
               
-              svg.append('g').
-                attr('class', 'labels').
-                call(yAxis);
+              labels.enter().
+                append('g').
+                attr('class', 'labels');
 
-              // remove axis line that comes with d3 axis
-              svg.select('.labels').
-                  select('path').
-                  remove();
+              labels.
+                call(yAxis).
+                // remove axis line that comes with d3 axis
+                select('path').
+                remove();
 
-              // draw legend color column
-              var column = svg.append('g').
-                attr('class', 'column');
+              labels.exit().remove();
+
+              // draw legend colors
 
               var legendLabelColorHeight = function(colorIndex) {
-                var minVal = _.min(legendClassBreaks),
-                    maxVal = _.max(legendClassBreaks);
+                var minVal = _.min(legendClassBreaks);
+                var maxVal = _.max(legendClassBreaks);
                 var percentOfClassbreakRange = (legendClassBreaks[colorIndex + 1] - legendClassBreaks[colorIndex]) / (maxVal - minVal);
                 return percentOfClassbreakRange * height;
               };
 
-              // draw legend colors
-              var rects = column.selectAll('.color').
-                data(legend.colors).
-                enter().
-                  append('rect').
-                    attr('class', 'color').
-                    attr('width', colorWidth).
-                    attr('height', function(c, i){
-                      return legendLabelColorHeight(i);
-                    }).
-                    attr('y', function(c, i){
-                      return yLabelScale(legendClassBreaks[i+1]);
-                    }).
-                    style('fill', function(color){ return color; });
+              var rects = svg.selectAll('.color').data(legend.colors);
+
+              rects.enter().
+                append('rect');
+
+              rects.
+                attr('class', 'color').
+                attr('width', colorWidth).
+                attr('height', function(c, i){
+                  return legendLabelColorHeight(i);
+                }).
+                attr('y', function(c, i){
+                  return yLabelScale(legend.classBreaks[i+1]);
+                }).
+                style('fill', function(color){ return color; });
 
               if (legend.colors.length > 1) {
                 if (isLargeRange) {
@@ -537,6 +558,9 @@
                     attr('data-flyout-text', singleClassBreak);
                 }
               }
+
+              rects.exit().
+                remove();
 
               // set up legend color flyouts
               $(element).find('.modern-legend').flyout({

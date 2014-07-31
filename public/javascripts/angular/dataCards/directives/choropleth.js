@@ -19,7 +19,7 @@ angular.module('dataCards.directives').directive('choropleth', function(AngularR
       // WARNING: tests depend upon file name.
       numberOfClasses = function(values) {
         // handles numberOfClasses in Jenks (implemented for _.uniq(values).length > 6)
-        var numPossibleBreaks = _.uniq(values).length - 1;
+        var numPossibleBreaks = _.uniq(values).length;
         if (numPossibleBreaks <= threshold) {
           throw new Error("[Choropleth] Why are you calling numberOfClasses when # unique values <= " + threshold + "?");
         } else {
@@ -286,7 +286,6 @@ angular.module('dataCards.directives').directive('choropleth', function(AngularR
         var uniqValues = _.uniq(values);
         var numPossibleBreaks = uniqValues.length - 1;
         var classBreaks;
-
         if (numPossibleBreaks <= threshold) {
           // for such small values, jenks does not make sense (produces duplicate values).
           // use equal interval in such cases.
@@ -378,10 +377,7 @@ angular.module('dataCards.directives').directive('choropleth', function(AngularR
         $scope.legend = {
           position: defaultLegendPos,
           colors: classBreaks ? colors : [],
-          classBreaks: classBreaks,
-          threshold: threshold,
-          legendStyle: 'modern',
-          legendClass: 'modern-legend'
+          classBreaks: classBreaks
         };
       }
 
@@ -647,11 +643,10 @@ angular.module('dataCards.directives').directive('choropleth', function(AngularR
           if (values.length === 0) {
             // no values, just render polygons with no colors
             updateGeojsonScope('none');
+            updateLegend([], []);
           } else {
 
-            if (!$scope.classBreaks) {
-              $scope.classBreaks = computeClassBreaks(values);
-            }
+            $scope.classBreaks = computeClassBreaks(values);
 
             if ($scope.classBreaks.length === 1) {
               colors = [defaultSingleColor];
@@ -662,9 +657,7 @@ angular.module('dataCards.directives').directive('choropleth', function(AngularR
               updateGeojsonScope('multi');
             }
 
-            if (!$scope.legend){
-              updateLegend($scope.classBreaks, colors);
-            }
+            updateLegend($scope.classBreaks, colors);
 
           }
 

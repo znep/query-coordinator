@@ -89,7 +89,7 @@ angular.module('dataCards.models').factory('ChoroplethHelpers', function($log){
         default:
           $log.error('Invalid/non-supported class breaks method '+options.method);
       }
-      return classBreaks;
+      return _.uniq(classBreaks);
     },
     classBreakColors: function(classBreaks) {
       $log.error('TODO');

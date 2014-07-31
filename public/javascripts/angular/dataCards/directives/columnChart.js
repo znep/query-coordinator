@@ -6,16 +6,13 @@ angular.module('socrataCommon.directives').directive('columnChart', function($pa
 
     var barPadding = 0.25;
     var topMargin = 0; // Set to zero so .card-text could control padding b/t text & visualization
-    var bottomMargin = 132;
+    var bottomMargin; // Calculated based on label text length
     var tipHeight = 10;
-    var tipWidth = 10;
-    var tooltipWidth = 130;
-    var tooltipPadding = 8;
     var tooltipYOffset = 9999; // invisible (max) height of tooltip above tallest bar; hack to make tooltip appear above chart/card-text
     var horizontalScrollbarHeight = 15; // used to keep horizontal scrollbar within .card-visualization upon expand
     var numberOfDefaultLabels = expanded ? chartData.length : 3;
     var undefinedPlaceholder = '(No value)';
-
+    var maximumBottomMargin = 140;
     var minSmallCardBarWidth = 8;
     var maxSmallCardBarWidth = 30;
     var minExpandedCardBarWidth = 15;
@@ -42,14 +39,16 @@ angular.module('socrataCommon.directives').directive('columnChart', function($pa
     if (expanded) {
       var maxLength = _.max(chartData.map(function(item) {
         // The size passed to visualLength() below relates to the width of the div.text in the updateLabels().
-        return $.capitalizeWithDefault(item.name, undefinedPlaceholder).visualLength('0.5rem');
+        return $.capitalizeWithDefault(item.name, undefinedPlaceholder).visualLength('1rem');
       }));
-      bottomMargin = (maxLength + $.relativeToPx('1.0rem')) / Math.sqrt(2);
+      bottomMargin = Math.floor((maxLength + $.relativeToPx('1rem')) / Math.sqrt(2));
     } else {
       bottomMargin = $.relativeToPx(numberOfDefaultLabels + 1 + 'rem');
       // do not compensate for chart scrollbar if not expanded (scrollbar would not exist)
       horizontalScrollbarHeight = 0;
     }
+    // Clamp the bottom margin to a reasonable maximum since long labels are ellipsified.
+    bottomMargin = bottomMargin > maximumBottomMargin ? maximumBottomMargin : bottomMargin;
 
     var chartHeight = dimensions.height - topMargin - bottomMargin - horizontalScrollbarHeight;
     var verticalScale = d3.scale.linear().range([chartHeight, 0]);
@@ -57,21 +56,23 @@ angular.module('socrataCommon.directives').directive('columnChart', function($pa
     var horizontalScale = null;
     var rightOffset = 0;
     var rangeBand = 0;
+    var minBarWidth = 0;
+    var maxBarWidth = 0;
 
     if (expanded) {
-      var minBarWidth = minExpandedCardBarWidth;
-      var maxBarWidth = maxExpandedCardBarWidth;
+      minBarWidth = minExpandedCardBarWidth;
+      maxBarWidth = maxExpandedCardBarWidth;
     } else {
-      var minBarWidth = minSmallCardBarWidth;
-      var maxBarWidth = maxSmallCardBarWidth;
+      minBarWidth = minSmallCardBarWidth;
+      maxBarWidth = maxSmallCardBarWidth;
     }
 
     var computeChartDimensions = function(rangeInterval) {
       horizontalScale = d3.scale.ordinal().rangeBands(
-        [0, rangeInterval], barPadding).domain(_.pluck(chartData, 'name')
+        [0, Math.ceil(rangeInterval)], barPadding).domain(_.pluck(chartData, 'name')
       );
       rightOffset = horizontalScale.range()[numberOfBars - 1];
-      rangeBand = Math.round(horizontalScale.rangeBand());
+      rangeBand = Math.ceil(horizontalScale.rangeBand());
     };
 
     computeChartDimensions(chartWidth);
@@ -99,7 +100,7 @@ angular.module('socrataCommon.directives').directive('columnChart', function($pa
     } else if (rangeBand > maxBarWidth) {
       // --> desired rangeBand (bar width) is greater than accepted maxBarWidth
       // use computeChartDimensions to set rangeBand = maxBarWidth
-      var rangeInterval = maxBarWidth * numberOfBars / (1 - barPadding);
+      var rangeInterval = maxBarWidth * numberOfBars / (1 - barPadding) + maxBarWidth * barPadding;
       computeChartDimensions(rangeInterval);
     }
 
@@ -128,68 +129,6 @@ angular.module('socrataCommon.directives').directive('columnChart', function($pa
       });
       element.css('height', chartHeight + topMargin);
       return element;
-    };
-
-    var enterTooltip = function(datum, i) {
-      var content = $('<div class="datum">');
-
-      content.append($('<div class="name">'));
-      content.append($('<div class="value-unfiltered">').
-        append($('<div class="value">')).
-        append($('<div class="label">Total</div>'))
-      );
-      content.append($('<div class="value-filtered">').
-        append($('<div class="value">')).
-        append($('<div class="label">Current filter</div>'))
-      );
-      var $tooltip = $('<div class="tooltip">');
-      var $tip = $('<span>');
-
-      $tooltip.append(content);
-
-      $tip.addClass('tip');
-      $tooltip.append($tip);
-
-      return $tooltip.get(0);
-    };
-
-    var updateTooltip = function(selection) {
-      var tipOffset = rangeBand / 2 - tipWidth / 2;
-
-      selection.
-        classed('filtered', showFiltered).
-        each(function(d) {
-          var $tooltip = $(this);
-          var $tip = $tooltip.find('.tip');
-          var widthOfChart = $chartScroll[0].scrollWidth;
-          var rightEdge = horizontalScale(d.name) + tooltipWidth + tooltipPadding * 2 - widthOfChart - rangeBand / 2 - tipWidth;
-
-          $tooltip.css('width', tooltipWidth);
-
-          if (showFiltered) {
-            $tooltip.css('bottom', verticalScale(d.filtered) + tipHeight);
-          } else {
-            $tooltip.css('bottom', verticalScale(d.total) + tipHeight);
-          }
-
-          $tooltip.css('left', '');
-          $tip.css('left', tipOffset);
-          if (rightEdge > 0) {
-            // offset the tooltip position by the width of the tip, to ensure tip
-            // seems attached to tooltip on right edge of column chart
-            $tooltip.css('left', -1 * rightEdge - tipWidth);
-            $tip.css('left', tipOffset + rightEdge + tipWidth);
-          }
-
-          var valueDescriptor = $.capitalizeWithDefault(d.name, undefinedPlaceholder);
-          var valueName = $tooltip.find('.name');
-          valueName.text(valueDescriptor);
-          if (valueDescriptor === undefinedPlaceholder) {
-            valueName.addClass('undefined');
-          }
-          $tooltip.find('.value-unfiltered .value').text($.commaify(d.total));
-          $tooltip.find('.value-filtered .value').text($.commaify(d.filtered));
-        });
     };
 
     var updateLabels = function(labelSelection) {
@@ -259,18 +198,18 @@ angular.module('socrataCommon.directives').directive('columnChart', function($pa
               return defaultLabelData.length - 0.5 - Math.min(j, numberOfDefaultLabels - 1)+ 'rem';
             }
           }).
-          classed('undefined', function(d, i, j) {
+          classed('undefined', function(d) {
             return $.capitalizeWithDefault(d.name, undefinedPlaceholder) === undefinedPlaceholder;
           }).
           select('span').
-            text(function(d, i, j) {
+            text(function(d) {
               return $.capitalizeWithDefault(d.name, undefinedPlaceholder);
             });
 
       // These widths relate to the visualLength() method call in the maxLength calculation above.
       if (expanded) {
         labelDivSelection.
-          selectAll('.text').style('width', function(d, i, j) {
+          selectAll('.text').style('width', function() {
             if ($('.description-expanded-wrapper').height() > 20) {
               return '10.5rem';
             } else {
@@ -394,7 +333,7 @@ angular.module('socrataCommon.directives').directive('columnChart', function($pa
     barGroupSelection.call(updateBars);
     labelSelection.call(updateLabels);
 
-    element.find('.chart-scroll').flyout({
+    $chartScroll.flyout({
       selector: '.bar-group.active, .labels .label .text',
       parent: document.body,
       direction: 'top',

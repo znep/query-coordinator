@@ -1,0 +1,18 @@
+<div class="expand-message">
+<img src="/angular_templates/images/table-card-icon.png">
+<small>Expand this card to see the full table</small>
+</div>
+<div class="table-inner">
+  <div class="table-head">
+    <div class="th" ng-repeat="header in headers"
+        data-column-id="{{header.columnId}}" style="width: {{header.width}}px;" ng-class="{active: header.active}">
+      <span class="caret" ng-class="{sortUp: header.sortUp}" ng-if="header.sortable"></span><span class="resize"></span>
+      {{header.name}}
+    </div>
+  </div>
+  <div class="table-body">
+    <div class="table-expander"></div>
+  </div>
+  <div class="table-label">Loading...</div>
+  <div class="table-no-rows-message">No rows to display</div>
+</div>

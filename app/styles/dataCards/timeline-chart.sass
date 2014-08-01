@@ -1,0 +1,102 @@
+@import dataCards/common/fonts
+@import dataCards/common/colors
+
+$tick-height: 1rem
+$tick-font-size: 0.75rem
+
+$chart-padding-top: 10px
+$chart-padding-bottom: 132px
+$chart-tooltip-offset: 999px
+
+$fill-opacity: 0.5
+
+.flyout.filtered
+  .flyout-row:last-child
+    color: $filtered-line-color-hover
+
+div.timeline-chart
+
+  div.chart-scroll
+    position: absolute
+
+  div.timeline-chart-wrapper
+
+    svg.graph
+
+      g.xticks
+        rect.tick
+          fill: white
+
+        &.tick-dark rect.tick
+          fill: $chart-tick-color
+
+      g.segment
+        path.line
+          fill: none
+          stroke-linecap: round
+          stroke-linejoin: round
+          stroke-width: 2px
+
+          &.unfiltered
+            stroke: $unfiltered-line-color
+          &.filtered
+            stroke: $filtered-line-color
+
+        path.fill
+
+          &.unfiltered
+            fill: rgba($unfiltered-line-color, $fill-opacity)
+          &.filtered
+            fill: rgba($filtered-line-color, $fill-opacity)
+
+        rect.spacer
+          fill: transparent
+
+        &:hover
+          path.line
+            &.unfiltered
+              stroke: $unfiltered-line-color-hover
+            &.filtered
+              stroke: $filtered-line-color-hover
+          path.fill
+            &.unfiltered
+              fill: rgba($unfiltered-line-color-hover, $fill-opacity)
+            &.filtered
+              fill: rgba($filtered-line-color-hover, $fill-opacity)
+
+  div.labels
+    position: absolute
+    right: 0
+    left: 0
+    height: $base-font-size
+
+    div.label
+      position: absolute
+      bottom: 0
+      &.dim
+        opacity: 0.2
+      &.active
+        font-weight: bold
+
+      div.callout
+        position: absolute
+        border-bottom: 1px solid $chart-tick-color
+        width: 0.5rem
+
+      div.text
+        color: $chart-tick-color
+        font-size: $medium-font-size
+        line-height: $base-font-size
+
+  div.ticks
+    position: absolute
+
+    div
+      height: $tick-height
+      border-bottom: 1px solid $chart-tick-color
+      position: absolute
+      width: 100%
+      color: $chart-tick-color
+      text-align: right
+      margin-top: -$tick-height
+      font-size: $tick-font-size

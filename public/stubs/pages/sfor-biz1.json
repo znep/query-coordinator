@@ -1,0 +1,98 @@
+{
+  "pageId": "sfor-biz1",
+  "datasetId": "p8tk-zyhj",
+  "name": "Businesses registered in San Francisco",
+  "description": "",
+  "primaryAmountField": null,
+  "primaryAggregation": null,
+  "filterSoql": null,
+  "isDefaultPage": false,
+  "pageSource": "admin",
+  "cards": [
+    {
+      "description": "Class Code",
+      "fieldName": "class_code",
+      "cardSize": 2,
+      "cardCustomStyle": {},
+      "expandedCustomStyle": {},
+      "displayMode": "visualization",
+      "expanded": false
+    },
+    {
+      "description": "PBC Code",
+      "fieldName": "pbc_code",
+      "cardSize": 2,
+      "cardCustomStyle": {},
+      "expandedCustomStyle": {},
+      "displayMode": "visualization",
+      "expanded": false
+    },
+    {
+      "description": "Certificate Number",
+      "fieldName": "certificate_number",
+      "cardSize": 2,
+      "cardCustomStyle": {},
+      "expandedCustomStyle": {},
+      "displayMode": "visualization",
+      "expanded": false
+    },
+    {
+      "description": "DBA Name",
+      "fieldName": "dba_name",
+      "cardSize": 2,
+      "cardCustomStyle": {},
+      "expandedCustomStyle": {},
+      "displayMode": "visualization",
+      "expanded": false
+    },
+    {
+      "description": "DBA Start Date",
+      "fieldName": "dba_start_date",
+      "cardSize": 2,
+      "cardCustomStyle": {},
+      "expandedCustomStyle": {},
+      "displayMode": "visualization",
+      "expanded": false
+    },
+    {
+      "description": "Supervisor District",
+      "fieldName": ":Computed_3g7x28s9_location",
+      "cardSize": 2,
+      "cardCustomStyle": {},
+      "expandedCustomStyle": {},
+      "displayMode": "visualization",
+      "expanded": false,
+      "shapeFile": "3g7x-28s9"
+    },
+    {
+      "description": "Police District",
+      "fieldName": ":Computed_vp3p5wwz_location",
+      "cardSize": 2,
+      "cardCustomStyle": {},
+      "expandedCustomStyle": {},
+      "displayMode": "visualization",
+      "expanded": false,
+      "shapeFile": "vp3p-5wwz"
+    },
+    {
+      "description": "Neighborhood",
+      "fieldName": ":Computed_kiegmksq_location",
+      "cardSize": 2,
+      "cardCustomStyle": {},
+      "expandedCustomStyle": {},
+      "displayMode": "visualization",
+      "expanded": false,
+      "shapeFile": "kieg-mksq"
+    },
+    {
+      "description": "Zip Code",
+      "fieldName": ":Computed_7m4wmua9_location",
+      "cardSize": 2,
+      "cardCustomStyle": {},
+      "expandedCustomStyle": {},
+      "displayMode": "visualization",
+      "expanded": false,
+      "shapeFile": "7m4w-mua9"
+    }
+  ]
+}

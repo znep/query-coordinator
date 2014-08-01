@@ -1,0 +1,151 @@
+{
+  "pageId": "nysp-kid1",
+  "datasetId": "qgti-v4ak",
+  "name": "Child Care Regulated Programs",
+  "description": "Included in the data set are data elements that will help the public learn about the licensed and registered child care programs in New York State to assist families with choosing child care and to help the media and/or academic institutions with research.",
+  "primaryAmountField": null,
+  "primaryAggregation": null,
+  "filterSoql": null,
+  "isDefaultPage": false,
+  "pageSource": "admin",
+  "cards": [
+    {
+      "fieldName": "program_type",
+      "cardSize": 1,
+      "cardCustomStyle": {},
+      "expandedCustomStyle": {},
+      "displayMode": "visualization",
+      "expanded": false
+    },
+    {
+      "fieldName": "region_code",
+      "cardSize": 1,
+      "cardCustomStyle": {},
+      "expandedCustomStyle": {},
+      "displayMode": "visualization",
+      "expanded": false
+    },
+    {
+      "fieldName": "county",
+      "cardSize": 1,
+      "cardCustomStyle": {},
+      "expandedCustomStyle": {},
+      "displayMode": "visualization",
+      "expanded": false
+    },
+    {
+      "fieldName": "facility_status",
+      "cardSize": 1,
+      "cardCustomStyle": {},
+      "expandedCustomStyle": {},
+      "displayMode": "visualization",
+      "expanded": false
+    },
+    {
+      "fieldName": ":Computed_afrk7ibz_location",
+      "cardSize": 2,
+      "cardCustomStyle": {},
+      "expandedCustomStyle": {},
+      "displayMode": "visualization",
+      "expanded": false,
+      "shapeFile": "afrk-7ibz"
+    },
+    {
+      "fieldName": ":Computed_9gf2g78j_location",
+      "cardSize": 2,
+      "cardCustomStyle": {},
+      "expandedCustomStyle": {},
+      "displayMode": "visualization",
+      "expanded": false,
+      "shapeFile": "9gf2-g78j"
+    },
+    {
+      "fieldName": "facility_id",
+      "cardSize": 3,
+      "cardCustomStyle": {},
+      "expandedCustomStyle": {},
+      "displayMode": "visualization",
+      "expanded": false
+    },
+    {
+      "fieldName": "facility_name",
+      "cardSize": 3,
+      "cardCustomStyle": {},
+      "expandedCustomStyle": {},
+      "displayMode": "visualization",
+      "expanded": false
+    },
+    {
+      "fieldName": "infant_capacity",
+      "cardSize": 3,
+      "cardCustomStyle": {},
+      "expandedCustomStyle": {},
+      "displayMode": "visualization",
+      "expanded": false
+    },
+    {
+      "fieldName": "toddler_capacity",
+      "cardSize": 3,
+      "cardCustomStyle": {},
+      "expandedCustomStyle": {},
+      "displayMode": "visualization",
+      "expanded": false
+    },
+    {
+      "fieldName": "preschool_capacity",
+      "cardSize": 3,
+      "cardCustomStyle": {},
+      "expandedCustomStyle": {},
+      "displayMode": "visualization",
+      "expanded": false
+    },
+    {
+      "fieldName": "school_age_capacity",
+      "cardSize": 3,
+      "cardCustomStyle": {},
+      "expandedCustomStyle": {},
+      "displayMode": "visualization",
+      "expanded": false
+    },
+    {
+      "fieldName": "total_capacity",
+      "cardSize": 3,
+      "cardCustomStyle": {},
+      "expandedCustomStyle": {},
+      "displayMode": "visualization",
+      "expanded": false
+    },
+    {
+      "fieldName": "facility_opened_date",
+      "cardSize": 2,
+      "cardCustomStyle": {},
+      "expandedCustomStyle": {},
+      "displayMode": "visualization",
+      "expanded": false
+    },
+    {
+      "fieldName": "license_issue_date",
+      "cardSize": 2,
+      "cardCustomStyle": {},
+      "expandedCustomStyle": {},
+      "displayMode": "visualization",
+      "expanded": false
+    },
+    {
+      "fieldName": "license_expiration_date",
+      "cardSize": 2,
+      "cardCustomStyle": {},
+      "expandedCustomStyle": {},
+      "displayMode": "visualization",
+      "expanded": false
+    },
+    {
+      "fieldName": "*",
+      "cardSize": 2,
+      "cardCustomStyle": {},
+      "expandedCustomStyle": {},
+      "displayMode": "visualization",
+      "expanded": false
+    }
+  ]
+}

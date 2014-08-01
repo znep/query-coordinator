@@ -10,7 +10,13 @@ $.fn.observeDimensions = function() {
   var dimensionsSubject = new Rx.BehaviorSubject(self.dimensions());
 
   self.resize(function() {
-    dimensionsSubject.onNext(self.dimensions());
+    // We must check to see if the dimensions really did change,
+    // as jQuery.resize-plugin has a bug in versions of IE which require polling for size changes.
+    var oldDimensions = dimensionsSubject.value;
+    var newDimensions = self.dimensions();
+    if (oldDimensions.width !== newDimensions.width || oldDimensions.height !== newDimensions.height) {
+      dimensionsSubject.onNext(newDimensions);
+    }
   });
 
   return dimensionsSubject;
@@ -36,7 +42,7 @@ $.commaify = function(value) {
   return value;
 };
 
-$.toHumaneNumber = function(val, precision) {
+$.toFixedHumaneNumber = function(val, precision) {
   var symbol = ['K', 'M', 'B', 'T'];
   var step = 1000;
   var divider = Math.pow(step, symbol.length);
@@ -59,6 +65,47 @@ $.toHumaneNumber = function(val, precision) {
 
   result = val.toFixed(precision);
   return result == 0 ? 0 : result;
+};
+
+$.toHumaneNumber = function(val) {
+  var maxLetters = 4;
+  var symbol = ['K', 'M', 'B', 'T', 'P', 'E', 'Z', 'Y'];
+  var step = 1000;
+  var divider = Math.pow(step, symbol.length);
+  val = parseFloat(val);
+  var absVal = Math.abs(val);
+  var result;
+  var beforeLength = val.toFixed(0).length;
+
+  if (beforeLength <= maxLetters) {
+    var parts = val.toString().split('.');
+    var afterLength = (parts[1] || '').length;
+    var maxAfterLength = maxLetters - beforeLength;
+    if (afterLength > maxAfterLength) {
+      afterLength = maxAfterLength;
+    }
+    return $.commaify(val.toFixed(afterLength));
+  }
+
+  for (var i = symbol.length - 1; i >= 0; i--) {
+    if (absVal >= divider) {
+      var count = (absVal / divider).toFixed(0).length;
+      var precision = maxLetters - count - 1;
+      if (precision < 0) {
+        precision = 0;
+      }
+      result = (absVal / divider).toFixed(precision);
+      if (val < 0) {
+        result = -result;
+      }
+      if (_.isFinite(result)) {
+        return $.commaify(result) + symbol[i];
+      } else {
+        return result.toString();
+      }
+    }
+    divider = divider / step;
+  }
 };
 
 String.prototype.format = function() {
@@ -123,26 +170,77 @@ $.capitalizeWithDefault = function(value, placeHolder) {
   placeHolder = placeHolder || '(Blank)';
   return $.isBlank(value) ? placeHolder : value.capitaliseEachWord();
 };
-
+/*
+ * flyout is an internal Socrata utility for creating flyouts.
+ * It's a jQuery extension that uses a delegate for handling mouseover events.
+ * Usage is in the form of $head.flyout(options)
+ *
+ * All options can be passed directly or as a function that returns them.
+ * The callback should be in the form of:
+ *  function($target, $head, options, $flyout) { return <obj>; }
+ *
+ * Options:
+ *  selector: The jQuery delegate selector. Since this is a jQuery selector you
+ *    can pass in compound queries such as ".labels .label, .bar-group".
+ *
+ *  parent: Where the flyouts should attach to.
+ *    By default they attach to the selected target.
+ *
+ *  style: The style and positioning behavior.
+ *    "chart" is the new style used for column chart and timeline chart.
+ *    "table" is an older style used for the table card
+ *
+ *  direction: This is the direction from the target that the flyout appears.
+ *    "top" means the flyout is above the target.
+ *    The special "horizontal" when combined with the "table" style will
+ *      position it on either side space allowing.
+ *
+ *  positionOn: An element to position the flyout relative to.
+ *
+ *  onOpen: A callback on open.
+ *
+ *  onClose: A callback on close.
+ *
+ *  margin: This is the number of pixels the flyout will stay from the edge of
+ *    the "overflow: hidden" container.
+ *
+ *  interact: Whether you can mouse into the flyout and select text.
+ *
+ *  arrowMargin: The number of pixels the arrow will stay away from the edge of
+ *    the flyout.
+ *
+ *  inset: This is an object with "horizontal" & "vertical" properties.
+ *    They decide how Far the tooltip will inset into the target element.
+ *
+ *  debugNeverClosePopups: Debug bool to leave popups in existance after mouseout.
+ *    This makes it easier to debug CSS.
+ */
 $.fn.flyout = function(options) {
-  options = _.extend({
-    direction: 'bottom',
-    margin: 5,
+  var defaults = {
+    direction: 'top',
+    margin: 0,
     interact: false,
-    arrowMargin: 10,
+    style: 'chart',
+    arrowMargin: 0,
     inset: {
       horizontal: 4,
       vertical: 2
     }
-  }, options);
+  }
+  if (options.style == 'table') {
+    defaults.arrowMargin = 10;
+    defaults.margin = 5;
+  }
+  options = _.extend(defaults, options);
   var self = this;
   var inflyout = false, intarget = false, flyout;
   var renderFlyout = function(target) {
     var $target = $(target);
     var parentElem = $(options.parent || $target);
-    $('.flyout').remove();
+    closeFlyout();
     flyout = $('<div class="flyout"><div class="flyout-arrow"></div></div>');
-    flyout.data('target', $target);
+    flyout.addClass('flyout-' + options.style);
+    flyout.data('target', target);
     var getVal = function(data) {
       if (_.isFunction(data)) {
         return data($target, self, options, flyout);
@@ -150,21 +248,25 @@ $.fn.flyout = function(options) {
         return data;
       }
     }
+    if (_.isUndefined(options.positionOn)) {
+      var $positionOn = $target;
+    } else {
+      var $positionOn = $(getVal(options.positionOn));
+    }
     if (!getVal(options.interact)) flyout.addClass('nointeract');
     if (options.title) {
       flyout.append('<div class="flyout-title">{0}</div>'.
         format(getVal(options.title)));
     }
     if (options.table) {
-      var html = '<table class="flyout-table"><tbody>';
+      var html = '';
         _.each(getVal(options.table), function(parts) {
-          html += '<tr>';
-          _.each(parts, function(html) {
-            html += '<td>{0}</td>'.format(html);
+          html += '<div class="flyout-row">';
+          _.each(parts, function(part) {
+            html += '<span class="flyout-cell">{0}</span>'.format(part);
           });
-          html += '</tr>';
+          html += '</div>';
         });
-      html += '</tbody></table>';
       flyout.append(html);
     }
     if (options.html) {
@@ -174,7 +276,7 @@ $.fn.flyout = function(options) {
     if (flyout.text().length > 0) {
       parentElem.append(flyout);
     }
-    var container = $target.parent();
+    var container = $positionOn.parent();
     while(container.css('overflow') == 'visible' && container[0] != document.body) {
       container = container.parent();
     }
@@ -182,60 +284,101 @@ $.fn.flyout = function(options) {
     var containerLeftEdge = 0;
     if (container[0] != document.body) {
       containerLeftEdge = container.offset().left;
-      containerRightEdge = container.offset().left + container.outerWidth();
+      containerRightEdge = container.offset().left + container.outerWidth() - options.margin;
     }
     var direction = getVal(options.direction);
-    var pos = $target.offset(), top, left;
+    var pos = $positionOn.offset(), top, left;
     var targetLeftEdge = pos.left;
-    var targetRightEdge = pos.left + $target.outerWidth();
-    var targetWidth = targetRightEdge - targetLeftEdge
+    var targetSize = {};
+    if (typeof $positionOn[0].getBoundingClientRect === 'function') {
+      targetSize.height = $positionOn[0].getBoundingClientRect().height;
+      targetSize.width = $positionOn[0].getBoundingClientRect().width;
+    } else if (typeof $positionOn[0].getBBox === 'function') {
+      targetSize.height = $positionOn[0].getBBox().height;
+      targetSize.width = $positionOn[0].getBBox().width;
+    } else {
+      targetSize.height = $positionOn.outerHeight() || parseInt($positionOn.attr('height'));
+      targetSize.width = $positionOn.outerWidth() || parseInt($positionOn.attr('width'));
+    }
+    // TODO decide what to do here. Either show the tooltip at the zero point or thrown an error, but don't log
+//    if (!targetSize.width || !targetSize.height) {
+//      console.error("[$.fn.flyout] target has height: "+targetSize.height+", width: "+targetSize.width+". No flyout possible.");
+//    }
+    var targetRightEdge = pos.left + targetSize.width;
+    var targetWidth = targetRightEdge - targetLeftEdge;
     if (direction == 'horizontal') {
-      if (targetRightEdge + flyout.outerWidth() + options.margin > containerRightEdge) {
+      if (targetRightEdge + flyout.outerWidth() > containerRightEdge &&
+          targetLeftEdge - flyout.outerWidth() > containerLeftEdge) {
         direction = 'left';
       } else {
         direction = 'right';
       }
     }
     flyout.addClass(direction);
-    if (direction == "top") {
-      top = pos.top - flyout.outerHeight() + options.inset.vertical;
-      left = pos.left + targetWidth/2 - flyout.outerWidth()/2;
-    } else if (direction == "bottom") {
-      top = pos.top + $target.outerHeight() - options.inset.vertical;
-      left = pos.left + targetWidth/2 - flyout.outerWidth()/2;
-    } else if (direction == "right") {
-      top = pos.top + $target.outerHeight()/2 - flyout.outerHeight()/2;
-      left = pos.left + $target.outerWidth() - options.inset.horizontal;
-    } else if (direction == "left") {
-      top = pos.top + $target.outerHeight()/2 - flyout.outerHeight()/2;
-      left = pos.left - flyout.outerWidth() + options.inset.horizontal;
-    }
-    var offright = left + flyout.outerWidth() > containerRightEdge - options.margin;
-    var offleft = left < containerLeftEdge + options.margin;
-    if (offright) {
-      left = containerRightEdge - flyout.outerWidth() - options.margin;
-    }
-    if (offleft) {
-      left = containerLeftEdge + options.margin;
-    }
-    if (targetLeftEdge < containerLeftEdge) targetLeftEdge = containerLeftEdge;
-    if (targetRightEdge > containerRightEdge) targetRightEdge = containerRightEdge;
-    if (direction == 'top' || direction == 'bottom') {
-      var center = (targetLeftEdge + targetRightEdge)/2;
-      var arrow_pos = center - left;
-      if (arrow_pos <= options.arrowMargin) arrow_pos = options.arrowMargin;
-      else if (arrow_pos >= flyout.outerWidth() - options.arrowMargin) arrow_pos = flyout.outerWidth() - options.arrowMargin;
-      flyout.find('.flyout-arrow').css('left', arrow_pos);
+    if (options.style == 'table') {
+      if (direction == "top") {
+        top = pos.top - flyout.outerHeight() + options.inset.vertical;
+        left = pos.left + targetWidth/2 - flyout.outerWidth()/2;
+      } else if (direction == "bottom") {
+        top = pos.top + targetSize.height - options.inset.vertical;
+        left = pos.left + targetWidth/2 - flyout.outerWidth()/2;
+      } else if (direction == "right") {
+        top = pos.top + targetSize.height/2 - flyout.outerHeight()/2;
+        left = pos.left + targetSize.width - options.inset.horizontal;
+      } else if (direction == "left") {
+        top = pos.top + targetSize.height/2 - flyout.outerHeight()/2;
+        left = pos.left - flyout.outerWidth() + options.inset.horizontal;
+      }
+      var offright = left + flyout.outerWidth() > containerRightEdge - options.margin;
+      var offleft = left < containerLeftEdge + options.margin;
+      if (offright) {
+        left = containerRightEdge - flyout.outerWidth() - options.margin;
+      }
+      if (offleft) {
+        left = containerLeftEdge + options.margin;
+      }
+      if (targetLeftEdge < containerLeftEdge) targetLeftEdge = containerLeftEdge;
+      if (targetRightEdge > containerRightEdge) targetRightEdge = containerRightEdge;
+      if (direction == 'top' || direction == 'bottom') {
+        var center = (targetLeftEdge + targetRightEdge) / 2;
+        var arrow_pos = center - left;
+        if (arrow_pos <= options.arrowMargin) arrow_pos = options.arrowMargin;
+        else if (arrow_pos >= flyout.outerWidth() - options.arrowMargin) arrow_pos = flyout.outerWidth() - options.arrowMargin;
+        flyout.find('.flyout-arrow').css('left', arrow_pos);
+      }
+    } else if (options.style == 'chart') {
+      if (direction == 'top') {
+        top = pos.top - flyout.outerHeight() + options.inset.vertical -
+          parseInt(flyout.find('.flyout-arrow').css('margin-top'));
+        var orientationIsLeft = targetRightEdge + flyout.outerWidth() / 2 + options.margin < containerRightEdge;
+        left = pos.left + targetSize.width / 2;
+        var arrowLeft = left;
+        var flyoutArrow = flyout.find('.flyout-arrow');
+        if (containerRightEdge - flyout.outerWidth() < left) {
+          left = containerRightEdge - flyout.outerWidth();
+        }
+        if (!orientationIsLeft) {
+          // MAGIC NUMBER: 2px for border
+          arrowLeft -= flyoutArrow.outerWidth(true) + 2;
+        }
+        flyoutArrow.addClass(orientationIsLeft ? 'left' : 'right').
+          css('left', arrowLeft - left);
+      }
     }
     flyout.offset({ top: top, left: left });
+    getVal(options.onOpen);
     inflyout = false;
     intarget = true;
     flyout.on('mouseover, mouseenter', function(e) {
       inflyout = true;
     }).bind('mouseleave', function(e) {
-      if(!options.debugNeverClosePopups) flyout.remove();
+      if(!options.debugNeverClosePopups) closeFlyout();
     });
-  }
+  };
+  var closeFlyout = function() {
+    if (_.isFunction(options.onClose)) options.onClose();
+    $('.flyout').remove();
+  };
   $(window).scroll(function(e) {
     var $flyout = $('.flyout');
     if (!_.isEmpty($flyout) && ( inflyout || intarget )) {
@@ -243,16 +386,28 @@ $.fn.flyout = function(options) {
     }
   });
   self.delegate(options.selector, 'mouseenter', function(e) {
-    renderFlyout(e.currentTarget);
+    renderFlyout(this);
   }).delegate(options.selector, 'mouseleave', function(e) {
     if(!options.debugNeverClosePopups){
       intarget = false;
       _.defer(function() {
         if(!inflyout && !intarget) {
-          flyout.remove();
+          closeFlyout();
         }
       });
     }
   });
   return this;
-}
+};
+
+$.easing.socraticEase = function(t) {
+  // Just a bunch of disparate functions manually determined and spliced together.
+  // Approximates a particular bezier curve.
+  if (t < 0.304659) {
+    return Math.pow(3 * t, 4);
+  } else if (t < 0.46) {
+    return 0.89 - Math.pow(t - 1.182,8);
+  } else {
+    return 1 - 0.4 * Math.pow(1.25 * t - 1.25, 2);
+  }
+};

@@ -12,6 +12,8 @@ div.column-chart
 
   div.chart-scroll
     position: absolute
+    overflow-x: auto
+    overflow-y: hidden
 
   div.column-chart-wrapper
 
@@ -51,6 +53,7 @@ div.column-chart
 
     div.truncation-marker:hover
       display: block
+      opacity: 0.75
 
       & + div.tooltip
         display: block
@@ -60,6 +63,7 @@ div.column-chart
 
     div.hover-trigger
       display: none
+      cursor: pointer
       &.active
         display: block
 
@@ -197,7 +201,7 @@ div.column-chart
       right: 0
 
       &.dim
-        opacity: 0.2
+        opacity: 0.1
 
       div.callout
         position: absolute
@@ -217,6 +221,9 @@ div.column-chart
 
         &.undefined
           font-style: italic
+
+        span
+          cursor: pointer
 
       &.orientation-right
         div.callout
@@ -264,6 +271,3 @@ div.column-chart
         overflow: hidden
         position: initial
 
-    div.chart-scroll
-      overflow-x: auto
-      overflow-y: hidden

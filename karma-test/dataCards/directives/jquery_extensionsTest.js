@@ -75,9 +75,9 @@ describe('jquery_extensions', function() {
 
   describe('$.fn.flyout', function() {
     beforeEach(function() {
-      $('body').append('<div id="container">' +
-          '<div class="cell"></div><div class="cell"></div>' +
-        '</div>');
+      $('body').append('<div id="test-root"><div id="container">' +
+          '<div class="cell"></div><div class="cell">' +
+        '</div></div>');
     });
     it('should flyout on the mouseenter event and close on the mouseleave event', function(done) {
       $('#container').flyout({
@@ -172,6 +172,16 @@ describe('jquery_extensions', function() {
     });
     afterEach(function() {
       $('#container').remove();
+    });
+  });
+
+  describe('socratic easing function', function() {
+    var ease = $.easing.socraticEase;
+    it('should return 0 for 0 input', function() {
+      expect(ease(0)).to.be.zero;
+    });
+    it('should return 1 for 1 input', function() {
+      expect(ease(1)).to.equal(1);
     });
   });
 });

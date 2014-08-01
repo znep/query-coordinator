@@ -1,5 +1,5 @@
 angular.module('test', [])
-  .factory('testHelpers', function($compile, $templateCache) {
+  .factory('testHelpers', function($compile, $templateCache, $q) {
 
     // D3 doesn't have a jQuery-like trigger. So if you want to simulate mouse events,
     // we need to use real browser events.
@@ -13,7 +13,7 @@ angular.module('test', [])
     // d3 transitions complete.
     // See: https://groups.google.com/forum/#!topic/d3-js/WC_7Xi6VV50
     var waitForD3Transitions = function() {
-      var d = Q.defer();
+      var d = $q.defer();
       d3.select('body').transition().call(function(tr, callback) {
         var n = 0;
         tr
@@ -66,4 +66,3 @@ angular.module('test', [])
       fireMouseEvent: fireMouseEvent
     };
   });
-

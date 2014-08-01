@@ -57,3 +57,13 @@ A few complications are introduced:
  1. `frontend# bower update [awesome-package]`
  2. `frontend# bower-installer`
 
+
+=== Dev Proxy
+
+The dev proxy allows NewUX frontend developers to load data from staging or production while still using a local copy of the NewUX. To use just run:
+
+```
+dev-server/dev-proxy.js
+```
+
+You can add `-h` for more options. By default it routes requests to `dataspace-demo.test-socrata.com`. That may change in the future.

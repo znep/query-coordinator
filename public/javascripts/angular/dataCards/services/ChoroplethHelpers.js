@@ -68,15 +68,27 @@ angular.module('dataCards.models').factory('ChoroplethHelpers', function($log){
       }
     },
     createClassBreaks: function(options) {
+      var classBreaks;
       options.method = options.method.toLowerCase() || 'jenks';
-      if (options.method == 'jenks') {
-        options.methodParam = options.numberOfClasses || 4;
-      } else if (options.method == 'quantile') {
-        options.methodParam = options.p;
-      } else {
-        $log.error('Invalid/non-supported class breaks method '+options.method);
+      switch(options.method) {
+        case 'jenks':
+          options.methodParam = options.numberOfClasses || 4;
+          classBreaks = ss['jenks'](options.data, options.methodParam);
+          break;
+        case 'quantile':
+          options.methodParam = options.p;
+          classBreaks = ss['quantile'](options.data, options.methodParam);
+        case 'niceequalinterval':
+          var minVal = _.min(options.data),
+              maxVal = _.max(options.data);
+          classBreaks = d3.scale.linear().domain([minVal, maxVal]).nice().ticks(_.min([options.numberOfClasses, 4]));
+          // include min and max back into d3 scale, if #nice truncates them
+          if (_.min(classBreaks) > minVal) classBreaks.unshift(minVal);
+          if (_.max(classBreaks) < maxVal) classBreaks.push(maxVal);
+          break;
+        default:
+          $log.error('Invalid/non-supported class breaks method '+options.method);
       }
-      var classBreaks = ss[options.method](options.data, options.methodParam);
       return classBreaks;
     },
     classBreakColors: function(classBreaks) {

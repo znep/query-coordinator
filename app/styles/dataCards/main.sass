@@ -7,7 +7,7 @@ $bgColor: #4a525a
 body
   background: $bgColor
   color: white
-  font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif
+  font-family: 'myriad-pro', 'Helvetica Neue', Helvetica, Arial, sans-serif
   weight: 200
   margin: 0
 
@@ -117,13 +117,13 @@ $card-description-transition-duration: 0.5s
     .description-expanded-wrapper
       position: absolute
       overflow: hidden
-      opacity: $lt-grey-font-color-alpha
+      opacity: 0.9
       .description-expanded-content
         color: #000
         background: rgba($card-bg-color, 0.9)
         overflow-y: auto
         overflow-x: hidden
-        padding-bottom: 5px
+        padding-bottom: 0
       top: 0
       display: block
       padding-right: 20px
@@ -201,11 +201,6 @@ $card-description-transition-duration: 0.5s
     display: inline-block
     .wrap:hover
       max-width: none
-
-.card.expanded
-  .expandButton a
-    &:before
-      content: ''
 
 $top-nav-height: 40px
 $facets-list-width: 20%

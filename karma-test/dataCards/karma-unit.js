@@ -21,6 +21,8 @@ module.exports = function ( karma ) {
     files: [
       'bower_components/jquery/dist/jquery.js',
       'bower_components/javascript-detect-element-resize/jquery.resize.js',
+      'public/javascripts/util/jquery_extensions.js',
+      'public/javascripts/bower/jquery.dotdotdot.js',
       'bower_components/angular/angular.js',
       /*    Map-specific libraries    */
       'bower_components/leaflet/dist/leaflet.js',
@@ -47,8 +49,6 @@ module.exports = function ( karma ) {
       'public/javascripts/angular/dataCards/controllers.js',
       'public/javascripts/angular/dataCards/models.js',
       'public/javascripts/angular/dataCards/**/*.js',
-      'public/javascripts/util/jquery_extensions.js',
-      'public/javascripts/bower/jquery.dotdotdot.js',
       /*    Angular Templates    */
       'public/angular_templates/**/*.html',
       /*    Test datasets    */
@@ -56,10 +56,18 @@ module.exports = function ( karma ) {
       /*    SASS    */
       'app/styles/dataCards/column-chart.sass',
       'app/styles/dataCards/main.sass',
+      'app/styles/dataCards/choropleth.sass',
+      /*    Images */
+      { pattern: 'public/angular_templates/images/**/*.png', watched: false,
+        included: false, served: true },
     ],
     exclude: [
       'public/javascripts/angular/dataCards/app.js'
     ],
+
+    proxies: {
+      '/angular_templates/images/': 'http://localhost:7019/base/public/angular_templates/images/'
+    },
 
     frameworks: [ 'mocha', 'chai', 'chai-as-promised' ],
     plugins: [
@@ -119,6 +127,11 @@ module.exports = function ( karma ) {
       'Firefox',
       'PhantomJS'
     ],
+
+    /**
+     * Increase the browser timeout for running tests in the background.
+     */
+    browserNoActivityTimeout: 60000,
 
     /**
      * Configure html2js to compile the angular templates.

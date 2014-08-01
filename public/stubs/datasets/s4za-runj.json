@@ -1,0 +1,263 @@
+{
+  "id": "s4za-runj",
+  "rowDisplayUnit": "license",
+  "defaultAggregateColumn": ":count",
+  "domain": "dataspace-demo.test-socrata.com",
+  "ownerId": "jc63-heng",
+  "updatedAt": "2014-06-29T10:42:55.000-07:00",
+  "columns": [
+    {
+      "title": "Id",
+      "name": "id",
+      "physicalDatatype": "text",
+      "logicalDatatype": "identifier",
+      "importance": 3
+    },
+    {
+      "title": "License Id",
+      "name": "license_id",
+      "physicalDatatype": "number",
+      "logicalDatatype": "identifier",
+      "importance": 3
+    },
+    {
+      "title": "Account Number",
+      "name": "account_number",
+      "physicalDatatype": "number",
+      "logicalDatatype": "identifier",
+      "importance": 3
+    },
+    {
+      "title": "Site Number",
+      "name": "site_number",
+      "physicalDatatype": "number",
+      "logicalDatatype": "identifier",
+      "importance": 3
+    },
+    {
+      "title": "Legal Name",
+      "name": "legal_name",
+      "physicalDatatype": "text",
+      "logicalDatatype": "name",
+      "importance": 3
+    },
+    {
+      "title": "Doing Business As Name",
+      "name": "doing_business_as_name",
+      "physicalDatatype": "text",
+      "logicalDatatype": "name",
+      "importance": 1
+    },
+    {
+      "title": "Address",
+      "name": "address",
+      "physicalDatatype": "text",
+      "logicalDatatype": "text",
+      "importance": 3
+    },
+    {
+      "title": "City",
+      "name": "city",
+      "physicalDatatype": "text",
+      "logicalDatatype": "text",
+      "importance": 3
+    },
+    {
+      "title": "State",
+      "name": "state",
+      "physicalDatatype": "text",
+      "logicalDatatype": "text",
+      "importance": 3
+    },
+    {
+      "title": "Zip Code",
+      "name": "zip_code",
+      "physicalDatatype": "text",
+      "logicalDatatype": "text",
+      "importance": 3
+    },
+    {
+      "title": "Ward",
+      "name": "ward",
+      "physicalDatatype": "number",
+      "logicalDatatype": "text",
+      "importance": 3
+    },
+    {
+      "title": "Precinct",
+      "name": "precinct",
+      "physicalDatatype": "number",
+      "logicalDatatype": "text",
+      "importance": 3
+    },
+    {
+      "title": "Police District",
+      "name": "police_district",
+      "physicalDatatype": "number",
+      "logicalDatatype": "text",
+      "importance": 3
+    },
+    {
+      "title": "License Code",
+      "name": "license_code",
+      "physicalDatatype": "number",
+      "logicalDatatype": "category",
+      "importance": 3
+    },
+    {
+      "title": "License Description",
+      "name": "license_description",
+      "physicalDatatype": "text",
+      "logicalDatatype": "category",
+      "importance": 2
+    },
+    {
+      "title": "License Number",
+      "name": "license_number",
+      "physicalDatatype": "number",
+      "logicalDatatype": "identifier",
+      "importance": 2
+    },
+    {
+      "title": "Application Type",
+      "name": "application_type",
+      "physicalDatatype": "text",
+      "logicalDatatype": "category",
+      "importance": 3
+    },
+    {
+      "title": "Application Created Date",
+      "name": "application_created_date",
+      "physicalDatatype": "timestamp",
+      "logicalDatatype": "time",
+      "importance": 3
+    },
+    {
+      "title": "Application Requirements Complete",
+      "name": "application_requirements_complete",
+      "physicalDatatype": "timestamp",
+      "logicalDatatype": "time",
+      "importance": 3
+    },
+    {
+      "title": "Payment Date",
+      "name": "payment_date",
+      "physicalDatatype": "timestamp",
+      "logicalDatatype": "time",
+      "importance": 3
+    },
+    {
+      "title": "Conditional Approval",
+      "name": "conditional_approval",
+      "physicalDatatype": "text",
+      "logicalDatatype": "category",
+      "importance": 2
+    },
+    {
+      "title": "License Term Start Date",
+      "name": "license_start_date",
+      "physicalDatatype": "timestamp",
+      "logicalDatatype": "time",
+      "importance": 2
+    },
+    {
+      "title": "License Term Expiration date",
+      "name": "expiration_date",
+      "physicalDatatype": "timestamp",
+      "logicalDatatype": "time",
+      "importance": 2
+    },
+    {
+      "title": "License Approved for Issuance",
+      "name": "license_approved_for_issuance",
+      "physicalDatatype": "timestamp",
+      "logicalDatatype": "time",
+      "importance": 3
+    },
+    {
+      "title": "Date Issued",
+      "name": "date_issued",
+      "physicalDatatype": "timestamp",
+      "logicalDatatype": "time",
+      "importance": 2
+    },
+    {
+      "title": "License Status",
+      "name": "license_status",
+      "physicalDatatype": "text",
+      "logicalDatatype": "category",
+      "importance": 2
+    },
+    {
+      "title": "License Status Change Date",
+      "name": "license_status_change_date",
+      "physicalDatatype": "timestamp",
+      "logicalDatatype": "time",
+      "importance": 3
+    },
+    {
+      "title": "SSA",
+      "name": "ssa",
+      "physicalDatatype": "text",
+      "logicalDatatype": "text",
+      "importance": 3
+    },
+    {
+      "title": "Latitude",
+      "name": "latitude",
+      "physicalDatatype": "number",
+      "logicalDatatype": "amount",
+      "importance": 4
+    },
+    {
+      "title": "Longitude",
+      "name": "longitude",
+      "physicalDatatype": "number",
+      "logicalDatatype": "amount",
+      "importance": 4
+    },
+    {
+      "title": "Location",
+      "name": "location",
+      "physicalDatatype": "geo entity",
+      "logicalDatatype": "location",
+      "importance": 1
+    },
+    {
+      "title": "Community Area",
+      "description": "",
+      "name": ":Computed_xkbhn7hx_location",
+      "physicalDatatype": "text",
+      "logicalDatatype": "location",
+      "importance": 1,
+      "shapefileFeatureHumanReadablePropertyName": "community"
+    },
+    {
+      "title": "Zip Code",
+      "description": "",
+      "name": ":Computed_f523g8ig_location",
+      "physicalDatatype": "text",
+      "logicalDatatype": "location",
+      "importance": 1,
+      "shapefileFeatureHumanReadablePropertyName": "zip"
+    },
+    {
+      "title": "Ward",
+      "description": "",
+      "name": ":Computed_ind9qept_location",
+      "physicalDatatype": "text",
+      "logicalDatatype": "location",
+      "importance": 1,
+      "shapefileFeatureHumanReadablePropertyName": "ward"
+    },
+    {
+      "title": "Neighborhood",
+      "description": "",
+      "name": ":Computed_i2inbshz_location",
+      "physicalDatatype": "text",
+      "logicalDatatype": "location",
+      "importance": 1,
+      "shapefileFeatureHumanReadablePropertyName": "name"
+    }
+  ]
+}

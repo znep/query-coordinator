@@ -1,12 +1,17 @@
 @import dataCards/common/fonts
 
+$flyout-chart-background-color: #f1eeee
+$flyout-chart-title-color: #676464
+$flyout-chart-text-color: #8a8686
+$flyout-chart-text-size: 14px
+$flyout-chart-tip-size: 10px
+
 $flyout-background: white
 $flyout-border: #ccc
 $flyout-padding-vertical: 5px
 $flyout-padding-horizontal: 10px
 
 .flyout
-  border-radius: 4px
   border: 1px solid $flyout-border
   position: absolute
   top: 0
@@ -28,83 +33,146 @@ $flyout-padding-horizontal: 10px
   &.nointeract
     pointer-events: none
 
-  .flyout-title
-    border-bottom: 1px solid $flyout-border
-    margin: (-$flyout-padding-vertical) (-$flyout-padding-horizontal)
-    margin-bottom: $flyout-padding-vertical
-    padding: $flyout-padding-vertical $flyout-padding-horizontal
+  .flyout-row
+    .flyout-cell:last-child
+      margin-left: 15px
+      float: right
+  &.flyout-chart
+    font-size: $flyout-chart-text-size
+    color: $flyout-chart-text-color
+    background-color: $flyout-chart-background-color
+    min-width: 130px
 
-  .flyout-arrow
-    height: 0
-    width: 0
-    border: 0
-    position: absolute
+    .flyout-title
+      font-weight: bold
+      color: $flyout-chart-title-color
 
-    &:after, &:before
-      border: solid transparent
-      content: " "
+    .flyout-arrow
       height: 0
       width: 0
+      border: 0
       position: absolute
 
-    &:after
-      border-color: transparent
-      border-width: 5px
+      &:after, &:before
+        border: solid transparent
+        content: " "
+        height: 0
+        width: 0
+        position: absolute
 
-    &:before
-      border-color: transparent
-      border-width: 6px
+    &.top
+      .flyout-arrow
+        bottom: 0
+        margin-top: $flyout-chart-tip-size
+        margin-right: $flyout-chart-tip-size
+        &.left
+          left: 0
 
-  &.right
+          &:after
+            border-color: $flyout-chart-background-color transparent transparent transparent
+            border-width: $flyout-chart-tip-size $flyout-chart-tip-size 0 0
+
+          &:before
+            border-color: $flyout-border transparent transparent transparent
+            border-width: ($flyout-chart-tip-size + 1) ($flyout-chart-tip-size + 1) 0 0
+            top: 1px
+            left: -1px
+
+        &.right
+          right: 0
+          margin-right: $flyout-chart-tip-size
+
+          &:after
+            border-color: transparent $flyout-chart-background-color transparent transparent
+            border-width: 0 $flyout-chart-tip-size $flyout-chart-tip-size 0
+
+          &:before
+            border-color: transparent $flyout-border transparent transparent
+            border-width: 0 ($flyout-chart-tip-size + 1) ($flyout-chart-tip-size + 1) 0
+            top: 1px
+
+
+
+  &.flyout-table
+    border-radius: 4px
+
+    .flyout-title
+      border-bottom: 1px solid $flyout-border
+      margin: (-$flyout-padding-vertical) (-$flyout-padding-horizontal)
+      margin-bottom: $flyout-padding-vertical
+      padding: $flyout-padding-vertical $flyout-padding-horizontal
+
     .flyout-arrow
-      left: -10px
-      top: 50%
+      height: 0
+      width: 0
+      border: 0
+      position: absolute
+
+      &:after, &:before
+        border: solid transparent
+        content: " "
+        height: 0
+        width: 0
+        position: absolute
 
       &:after
-        border-right-color: $flyout-background
-        margin-top: -5px
+        border-color: transparent
+        border-width: 5px
 
       &:before
-        border-right-color: $flyout-border
-        margin-top: -6px
-        margin-left: -2px
+        border-color: transparent
+        border-width: 6px
 
-  &.left
-    .flyout-arrow
-      top: 50%
-      left: 100%
+    &.right
+      .flyout-arrow
+        left: -10px
+        top: 50%
 
-      &:after
-        border-left-color: $flyout-background
-        margin-top: -5px
+        &:after
+          border-right-color: $flyout-background
+          margin-top: -5px
 
-      &:before
-        border-left-color: $flyout-border
-        margin-top: -6px
+        &:before
+          border-right-color: $flyout-border
+          margin-top: -6px
+          margin-left: -2px
 
-  &.top
-    .flyout-arrow
-      top: 100%
-      left: 50%
+    &.left
+      .flyout-arrow
+        top: 50%
+        left: 100%
 
-      &:after
-        border-top-color: $flyout-background
-        margin-left: -5px
+        &:after
+          border-left-color: $flyout-background
+          margin-top: -5px
 
-      &:before
-        border-top-color: $flyout-border
-        margin-left: -6px
+        &:before
+          border-left-color: $flyout-border
+          margin-top: -6px
 
-  &.bottom
-    .flyout-arrow
-      top: -10px
-      left: 50%
+    &.top
+      .flyout-arrow
+        top: 100%
+        left: 50%
 
-      &:after
-        border-bottom-color: $flyout-background
-        margin-left: -5px
+        &:after
+          border-top-color: $flyout-background
+          margin-left: -5px
 
-      &:before
-        border-bottom-color: $flyout-border
-        margin-left: -6px
-        margin-top: -2px
+        &:before
+          border-top-color: $flyout-border
+          margin-left: -6px
+
+    &.bottom
+      .flyout-arrow
+        top: -10px
+        left: 50%
+
+        &:after
+          border-bottom-color: $flyout-background
+          margin-left: -5px
+
+        &:before
+          border-bottom-color: $flyout-border
+          margin-left: -6px
+          margin-top: -2px

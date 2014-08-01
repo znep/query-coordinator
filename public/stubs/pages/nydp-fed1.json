@@ -1,0 +1,105 @@
+{
+  "pageId": "nydp-fed1",
+  "datasetId": "rpde-z7qm",
+  "name": "Child And Adult Care Food Program Participation",
+  "description": "The Child and Adult Care Food Program (CACFP) is a nutrition education and meal reimbursement program helping providers serve nutritious and safely prepared meals and snacks to children and adults in day care settings. This dataset includes the names and locations of participating day care sites and whether or not the site is Breastfeeding Friendly Certified with CACFP, participating in the Eat Well Play Hard in Child Care Settings (EWPHCCS) project, or participating in the Eat Well Play Hard in Day Care Homes (EWPHDCH) project. This dataset excludes Child and Adult Care Food Program participation provided at homeless shelters and legally-exempt day care home providers. Not all counties in NYS are serviced by the grantees implementing the project EWPHCSS. The EWPHDCH project is currently limited to the areas served by the contracted agencies. The Child and Adult Care Food Program dataset is related to the Child Care Related Programs dataset on the www.Open.ny.gov website, however this dataset includes additional nutrition information. The Office of Children and Family Services (OCFS) is currently working to update the Child Care Related Programs dataset on a more frequent schedule with the OPEN NY team. OCFS and DOH will then be able to synchronize in the near future. Temporarily, DOH has omitted addresses for regulated child care providers that provide home care since this information is available on www.Open.ny.gov by using this link: https://data.ny.gov/Human-Services/Child-Care-Regulated-Programs/cb42-qumz. For more information, please visit http://www.health.ny.gov/prevention/nutrition/cacfp/ or go to the \"About\" tab.",
+  "primaryAmountField": null,
+  "primaryAggregation": null,
+  "filterSoql": null,
+  "isDefaultPage": false,
+  "pageSource": "admin",
+  "cards": [
+    {
+      "description": "Program Type",
+      "fieldName": "program_type",
+      "cardSize": 2,
+      "cardCustomStyle": {},
+      "expandedCustomStyle": {},
+      "displayMode": "visualization",
+      "expanded": false
+    },
+    {
+      "description": "Approval / License Type",
+      "fieldName": "approval_license_type",
+      "cardSize": 2,
+      "cardCustomStyle": {},
+      "expandedCustomStyle": {},
+      "displayMode": "visualization",
+      "expanded": false
+    },
+    {
+      "description": "Site Type",
+      "fieldName": "site_type",
+      "cardSize": 1,
+      "cardCustomStyle": {},
+      "expandedCustomStyle": {},
+      "displayMode": "visualization",
+      "expanded": false
+    },
+    {
+      "description": "Breastfeeding-friendly certified",
+      "fieldName": "breastfeeding_friendly_certified",
+      "cardSize": 2,
+      "cardCustomStyle": {},
+      "expandedCustomStyle": {},
+      "displayMode": "visualization",
+      "expanded": false
+    },
+    {
+      "description": "Eat Well / Play Hard - CCS Participant",
+      "fieldName": "eat_well_play_hard_ccs_participant",
+      "cardSize": 2,
+      "cardCustomStyle": {},
+      "expandedCustomStyle": {},
+      "displayMode": "visualization",
+      "expanded": false
+    },
+    {
+      "description": "eat well/play hard dch participant",
+      "fieldName": "eat_well_play_hard_dch_participant",
+      "cardSize": 2,
+      "cardCustomStyle": {},
+      "expandedCustomStyle": {},
+      "displayMode": "visualization",
+      "expanded": false
+    },
+    {
+      "description": "Counties",
+      "fieldName": ":Computed_afrk7ibz_location",
+      "cardSize": 1,
+      "cardCustomStyle": {},
+      "expandedCustomStyle": {},
+      "displayMode": "visualization",
+      "expanded": false,
+      "shapeFile": "afrk-7ibz"
+    },
+    {
+      "description": "Metropolitan planning areas",
+      "fieldName": ":Computed_9gf2g78j_location",
+      "cardSize": 1,
+      "cardCustomStyle": {},
+      "expandedCustomStyle": {},
+      "displayMode": "visualization",
+      "expanded": false,
+      "shapeFile": "9gf2-g78j"
+    },
+    {
+      "description": "Site Name",
+      "fieldName": "site_name",
+      "cardSize": 3,
+      "cardCustomStyle": {},
+      "expandedCustomStyle": {},
+      "displayMode": "visualization",
+      "expanded": false
+    },
+    {
+      "description": "All Data",
+      "fieldName": "*",
+      "cardSize": 1,
+      "cardCustomStyle": {},
+      "expandedCustomStyle": {},
+      "displayMode": "visualization",
+      "expanded": false
+    }
+  ]
+}

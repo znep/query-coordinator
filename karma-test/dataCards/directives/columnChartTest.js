@@ -41,6 +41,59 @@ describe('columnChart', function() {
     {"name": "NON-CRIMINAL (SUBJECT SPECIFIED)", "total": 2}
   ];
 
+  var testDataWithLongLabels = [
+    {"name": "STREET","value": "1453143"},
+    {"name": "RESIDENCE","value": "910452"},
+    {"name": "SIDEWALK","value": "540147"},
+    {"name": "APARTMENT","value": "528835"},
+    {"name": "OTHER","value": "199411"},
+    {"name": "PARKING LOT/GARAGE(NON.RESID.)","value": "153799"},
+    {"name": "ALLEY","value": "122895"},
+    {"name": "SCHOOL, PUBLIC, BUILDING","value": "122024"},
+    {"name": "RESIDENCE-GARAGE","value": "108148"},
+    {"name": "RESIDENCE PORCH/HALLWAY","value": "94679"},
+    {"name": "SMALL RETAIL STORE","value": "88836"},
+    {"name": "VEHICLE NON-COMMERCIAL","value": "83866"},
+    {"name": "RESTAURANT","value": "76701"},
+    {"name": "GROCERY FOOD STORE","value": "70823"},
+    {"name": "DEPARTMENT STORE","value": "62696"},
+    {"name": "GAS STATION","value": "55631"},
+    {"name": "CHA PARKING LOT/GROUNDS","value": "50841"},
+    {"name": "RESIDENTIAL YARD (FRONT/BACK)","value": "44177"},
+    {"name": "PARK PROPERTY","value": "41171"},
+    {"name": "COMMERCIAL / BUSINESS OFFICE","value": "40976"},
+    {"name": "CTA PLATFORM","value": "31842"},
+    {"name": "CHA APARTMENT","value": "31632"},
+    {"name": "BAR OR TAVERN","value": "26812"},
+    {"name": "DRUG STORE","value": "24975"},
+    {"name": "SCHOOL, PUBLIC, GROUNDS","value": "23549"},
+    {"name": "CHA HALLWAY/STAIRWELL/ELEVATOR","value": "23302"},
+    {"name": "BANK","value": "22132"},
+    {"name": "HOTEL/MOTEL","value": "21446"},
+    {"name": "VACANT LOT/LAND","value": "19097"},
+    {"name": "TAVERN/LIQUOR STORE","value": "18912"},
+    {"name": "CTA TRAIN","value": "16929"},
+    {"name": "CTA BUS","value": "16854"},
+    {"name": "DRIVEWAY - RESIDENTIAL","value": "15788"},
+    {"name": "AIRPORT/AIRCRAFT","value": "15038"},
+    {"name": "HOSPITAL BUILDING/GROUNDS","value": "14973"},
+    {"name": "POLICE FACILITY/VEH PARKING LOT","value": "12880"},
+    {"name": "CHURCH/SYNAGOGUE/PLACE OF WORSHIP","value": "11966"},
+    {"name": "GOVERNMENT BUILDING/PROPERTY","value": "11245"},
+    {"name": "CONSTRUCTION SITE","value": "10916"},
+    {"name": "SCHOOL, PRIVATE, BUILDING","value": "10561"},
+    {"name": "NURSING HOME/RETIREMENT HOME","value": "9830"},
+    {"name": "ABANDONED BUILDING","value": "8957"},
+    {"name": "CURRENCY EXCHANGE","value": "8601"},
+    {"name": "CTA GARAGE / OTHER PROPERTY","value": "8578"},
+    {"name": "CONVENIENCE STORE","value": "8495"},
+    {"name": "WAREHOUSE","value": "7668"},
+    {"name": "BARBERSHOP","value": "6439"},
+    {"name": "FACTORY/MANUFACTURING BUILDING","value": "5940"},
+    {"name": "MEDICAL/DENTAL OFFICE","value": "5675"},
+    {"name": "ATHLETIC CLUB","value": "5544"}
+  ];
+
   function testDataWithSpecialAtIndex(specialIndex) {
     return _.map(testData, function(d, i) {
       return {
@@ -164,7 +217,6 @@ describe('columnChart', function() {
 
     it('should not hide any bars', function() {
       expect($('.bar-group:not(.active)').length).to.equal(0);
-      expect($('.hover-trigger:not(.active)').length).to.equal(0);
     });
   });
 
@@ -186,16 +238,15 @@ describe('columnChart', function() {
 
     it('should maintain spacing between bars', function() {
       createNewColumnChart(width, expanded);
-      var hoverTriggerBar1 = $('.bar.hover-trigger')[0];
-      var hoverTriggerBar2 = $('.bar.hover-trigger')[1];
-      var hoverTriggerBar1Left = parseInt(hoverTriggerBar1.style.left);
-      var hoverTriggerBar2Left = parseInt(hoverTriggerBar2.style.left);
-      var barWidth = parseInt(hoverTriggerBar1.style.width);
-      expect(hoverTriggerBar2Left - hoverTriggerBar1Left > barWidth).to.equal(true);
+      var barGroup1 = $('.bar-group')[0];
+      var barGroup2 = $('.bar-group')[1];
+      var barGroup1Left = parseInt(barGroup1.style.left);
+      var barGroup2Left = parseInt(barGroup2.style.left);
+      var barWidth = parseInt(barGroup1.style.width);
+      expect(barGroup2Left - barGroup1Left > barWidth).to.equal(true);
     });
     it('should hide some bars', function() {
       expect($('.bar-group:not(.active)').length).to.not.equal(0);
-      expect($('.hover-trigger:not(.active)').length).to.not.equal(0);
     });
   });
 
@@ -215,12 +266,12 @@ describe('columnChart', function() {
 
     it('should maintain spacing between bars', function() {
       createNewColumnChart(width, expanded);
-      var hoverTriggerBar1 = $('.bar.hover-trigger')[0];
-      var hoverTriggerBar2 = $('.bar.hover-trigger')[1];
-      var hoverTriggerBar1Left = parseInt(hoverTriggerBar1.style.left);
-      var hoverTriggerBar2Left = parseInt(hoverTriggerBar2.style.left);
-      var barWidth = parseInt(hoverTriggerBar1.style.width);
-      expect(hoverTriggerBar2Left - hoverTriggerBar1Left).to.be.above(barWidth);
+      var barGroup1 = $('.bar-group')[0];
+      var barGroup2 = $('.bar-group')[1];
+      var barGroup1Left = parseInt(barGroup1.style.left);
+      var barGroup2Left = parseInt(barGroup2.style.left);
+      var barWidth = parseInt(barGroup1.style.width);
+      expect(barGroup2Left - barGroup1Left).to.be.above(barWidth);
     });
 
     it('should not show the moar marker', function() {
@@ -240,12 +291,12 @@ describe('columnChart', function() {
 
     it('should maintain spacing between bars', function() {
       createNewColumnChart(width, expanded);
-      var hoverTriggerBar1 = $('.bar.hover-trigger')[0];
-      var hoverTriggerBar2 = $('.bar.hover-trigger')[1];
-      var hoverTriggerBar1Left = parseInt(hoverTriggerBar1.style.left);
-      var hoverTriggerBar2Left = parseInt(hoverTriggerBar2.style.left);
-      var barWidth = parseInt(hoverTriggerBar1.style.width);
-      expect(hoverTriggerBar2Left - hoverTriggerBar1Left).to.be.above(barWidth);
+      var barGroup1 = $('.bar-group')[0];
+      var barGroup2 = $('.bar-group')[1];
+      var barGroup1Left = parseInt(barGroup1.style.left);
+      var barGroup2Left = parseInt(barGroup2.style.left);
+      var barWidth = parseInt(barGroup1.style.width);
+      expect(barGroup2Left - barGroup1Left).to.be.above(barWidth);
     });
   });
 
@@ -260,12 +311,12 @@ describe('columnChart', function() {
 
     it('should maintain spacing between bars', function() {
       createNewColumnChart(width, expanded);
-      var hoverTriggerBar1 = $('.bar.hover-trigger')[0];
-      var hoverTriggerBar2 = $('.bar.hover-trigger')[1];
-      var hoverTriggerBar1Left = parseInt(hoverTriggerBar1.style.left);
-      var hoverTriggerBar2Left = parseInt(hoverTriggerBar2.style.left);
-      var barWidth = parseInt(hoverTriggerBar1.style.width);
-      expect(hoverTriggerBar2Left - hoverTriggerBar1Left).to.be.above(barWidth);
+      var barGroup1 = $('.bar-group')[0];
+      var barGroup2 = $('.bar-group')[1];
+      var barGroup1Left = parseInt(barGroup1.style.left);
+      var barGroup2Left = parseInt(barGroup2.style.left);
+      var barWidth = parseInt(barGroup1.style.width);
+      expect(barGroup2Left - barGroup1Left).to.be.above(barWidth);
     });
 
     it('should not show the moar marker', function() {
@@ -334,6 +385,31 @@ describe('columnChart', function() {
 
   });
 
+  describe('when there are a small number of columns', function() {
+    var chart, scope, element;
+    var ensureChart = _.once(function() {
+      var testDataSubset = _.select(testData, function(object, index) {
+        return index < 4;
+      });
+      expect(testDataSubset.length).to.equal(4);
+      chart = createNewColumnChart(1000, false, testDataSubset);
+      scope = chart.scope;
+      element = chart.element;
+    });
+
+    it('should display the columns at their maximum width when not expanded', function() {
+      ensureChart();
+      expect(element.find('.bar-group .bar').first().width()).to.equal(30);
+    });
+
+    it('should display the columns at their maximum width when they are expanded', function(){
+      ensureChart();
+      scope.expanded = true;
+      scope.$digest();
+      expect(element.find('.bar-group .bar').first().width()).to.equal(40);
+    });
+
+  });
   describe('column labels', function() {
     var chart, scope, element;
     var ensureChart = _.once(function() {
@@ -421,24 +497,39 @@ describe('columnChart', function() {
       });
     });
 
-    it('should be raised when the hover-triggers are clicked', function(done) {
+    it('should be raised when the bar-groups are clicked', function(done) {
       ensureChart();
       correctEventRaised.subscribe(_.after(2, done));
-      element.find('.bar.hover-trigger').eq(indexOfItemToClick).click();
+      element.find('.bar-group').eq(indexOfItemToClick).click();
       scope.expanded = true;
       scope.$digest();
-      element.find('.bar.hover-trigger').eq(indexOfItemToClick).click();
+      element.find('.bar-group').eq(indexOfItemToClick).click();
     });
 
-    it('should be raised when the labels are clicked', function(done) {
+    it('should be raised when the labels are clicked', function() {
       var capitalizedName = $.capitalizeWithDefault(testData[indexOfItemToClick].name);
 
       ensureChart();
-      correctEventRaised.subscribe(_.after(2, done));
+      var subscription = correctEventRaised.subscribe(function() {
+        throw new Error('Clicking on the label wrappers should not raise the event.');
+      });
       element.find('.label div:contains("' + capitalizedName + '")').click();
       scope.expanded = true;
       scope.$digest();
       element.find('.label div:contains("' + capitalizedName + '")').click();
+      subscription.dispose();
+    });
+
+    it('should be raised when the label text is clicked', function(done) {
+      var capitalizedName = $.capitalizeWithDefault(testData[indexOfItemToClick].name);
+
+      ensureChart();
+      var subscription = correctEventRaised.subscribe(_.after(2, done));
+      element.find('.label span:contains("' + capitalizedName + '")').click();
+      scope.expanded = true;
+      scope.$digest();
+      element.find('.label span:contains("' + capitalizedName + '")').click();
+      subscription.dispose();
     });
   });
 
@@ -490,58 +581,7 @@ describe('columnChart', function() {
 
       ensureChart();
 
-      scope.testData = [
-        {"name":"STREET","value":"1453143"}
-        ,{"name":"RESIDENCE","value":"910452"}
-        ,{"name":"SIDEWALK","value":"540147"}
-        ,{"name":"APARTMENT","value":"528835"}
-        ,{"name":"OTHER","value":"199411"}
-        ,{"name":"PARKING LOT/GARAGE(NON.RESID.)","value":"153799"}
-        ,{"name":"ALLEY","value":"122895"}
-        ,{"name":"SCHOOL, PUBLIC, BUILDING","value":"122024"}
-        ,{"name":"RESIDENCE-GARAGE","value":"108148"}
-        ,{"name":"RESIDENCE PORCH/HALLWAY","value":"94679"}
-        ,{"name":"SMALL RETAIL STORE","value":"88836"}
-        ,{"name":"VEHICLE NON-COMMERCIAL","value":"83866"}
-        ,{"name":"RESTAURANT","value":"76701"}
-        ,{"name":"GROCERY FOOD STORE","value":"70823"}
-        ,{"name":"DEPARTMENT STORE","value":"62696"}
-        ,{"name":"GAS STATION","value":"55631"}
-        ,{"name":"CHA PARKING LOT/GROUNDS","value":"50841"}
-        ,{"name":"RESIDENTIAL YARD (FRONT/BACK)","value":"44177"}
-        ,{"name":"PARK PROPERTY","value":"41171"}
-        ,{"name":"COMMERCIAL / BUSINESS OFFICE","value":"40976"}
-        ,{"name":"CTA PLATFORM","value":"31842"}
-        ,{"name":"CHA APARTMENT","value":"31632"}
-        ,{"name":"BAR OR TAVERN","value":"26812"}
-        ,{"name":"DRUG STORE","value":"24975"}
-        ,{"name":"SCHOOL, PUBLIC, GROUNDS","value":"23549"}
-        ,{"name":"CHA HALLWAY/STAIRWELL/ELEVATOR","value":"23302"}
-        ,{"name":"BANK","value":"22132"}
-        ,{"name":"HOTEL/MOTEL","value":"21446"}
-        ,{"name":"VACANT LOT/LAND","value":"19097"}
-        ,{"name":"TAVERN/LIQUOR STORE","value":"18912"}
-        ,{"name":"CTA TRAIN","value":"16929"}
-        ,{"name":"CTA BUS","value":"16854"}
-        ,{"name":"DRIVEWAY - RESIDENTIAL","value":"15788"}
-        ,{"name":"AIRPORT/AIRCRAFT","value":"15038"}
-        ,{"name":"HOSPITAL BUILDING/GROUNDS","value":"14973"}
-        ,{"name":"POLICE FACILITY/VEH PARKING LOT","value":"12880"}
-        ,{"name":"CHURCH/SYNAGOGUE/PLACE OF WORSHIP","value":"11966"}
-        ,{"name":"GOVERNMENT BUILDING/PROPERTY","value":"11245"}
-        ,{"name":"CONSTRUCTION SITE","value":"10916"}
-        ,{"name":"SCHOOL, PRIVATE, BUILDING","value":"10561"}
-        ,{"name":"NURSING HOME/RETIREMENT HOME","value":"9830"}
-        ,{"name":"ABANDONED BUILDING","value":"8957"}
-        ,{"name":"CURRENCY EXCHANGE","value":"8601"}
-        ,{"name":"CTA GARAGE / OTHER PROPERTY","value":"8578"}
-        ,{"name":"CONVENIENCE STORE","value":"8495"}
-        ,{"name":"WAREHOUSE","value":"7668"}
-        ,{"name":"BARBERSHOP","value":"6439"}
-        ,{"name":"FACTORY/MANUFACTURING BUILDING","value":"5940"}
-        ,{"name":"MEDICAL/DENTAL OFFICE","value":"5675"}
-        ,{"name":"ATHLETIC CLUB","value":"5544"}
-      ].map(function(datum) {
+      scope.testData = testDataWithLongLabels.map(function(datum) {
         return {
           filtered: 0,
           name: datum['name'],
@@ -551,13 +591,13 @@ describe('columnChart', function() {
       });
 
       scope.testData[42].special = true;
-
       scope.$digest();
 
-      var labelRightOffset = parseInt($('.label.orientation-left')[0].style.right, 10);
+      var $label = $('.label.orientation-left');
+      var labelRightOffset = parseInt($label[0].style.right, 10);
 
-      expect($('.label.orientation-left').length > 0).to.equal(true);
-      expect(labelRightOffset).to.equal(50);
+      expect($label.length > 0).to.equal(true);
+      expect(labelRightOffset).to.equal(76);// TODO this magic number seems a bit brittle
 
     });
 

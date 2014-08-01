@@ -1,28 +1,40 @@
 @import dataCards/common/fonts
 @import dataCards/common/colors
 
-$head-color: $aqua-font-color
-$head-label-color: $white-font-color
-$row-1-bg-color: $white-font-color
-$row-2-bg-color: rgba(104, 176, 204, 0.1)
-$border-color: #ccc
 $font-size: $medium-font-size
 // If you change this you need to change it in the JS.
 $row-height: 2rem
+$expand-message-height: 93px
+$border-radius: 4px
 
 .card:not(.expanded) .table
+  height: 100%
 
   .table-inner
     display: none
 
   .expand-message
     margin: auto
-    max-width: 256px
     text-align: center
+    height: $expand-message-height
+    margin-top: -$expand-message-height/2
+    position: absolute
+    width: 100%
+    top: 50%
+
+
+    img, small
+      vertical-align: middle
+      cursor: pointer
+      &:hover
+        @include prefixer(opacity, 0.8)
 
     small
-      display: block
-      padding: 1rem
+      display: inline-block
+      font-weight: bold
+      padding-left: 1rem
+      text-align: left
+      max-width: 130px
 
 .card.expanded
 
@@ -30,11 +42,10 @@ $row-height: 2rem
     display: none
 
   .table
-    border-radius: 4px
+    border-radius: $border-radius
     font-size: $font-size
     line-height: 0
     overflow: hidden
-    height: 100%
 
     .table-inner
       width: 100%
@@ -47,14 +58,18 @@ $row-height: 2rem
         display: block
         position: relative
         overflow: auto
-        background-color: $row-1-bg-color
+        background-color: $table-row-odd-color
+        border: 1px solid $table-border-color
+        border-top: none
+        border-bottom-right-radius: $border-radius
+        border-bottom-left-radius: $border-radius
 
         .row-block
           position: absolute
           min-width: 100%
 
         .cell
-          border-right: 1px solid $border-color
+          border-right: 1px solid $table-seperator-color
 
           &:last-child
             border-right: none
@@ -62,7 +77,7 @@ $row-height: 2rem
         .table-row
           white-space: nowrap
           &:nth-child(even)
-            background-color: $row-2-bg-color
+            background-color: $table-row-even-color
 
         .table-resize-container
           width: 100%
@@ -78,13 +93,14 @@ $row-height: 2rem
       .table-head
         display: inline-block
         position: relative
-        background-color: $head-color
-        color: $head-label-color
+        background-color: $table-head-bg-color
+        color: $table-head-color
         white-space: nowrap
         height: $row-height
         min-width: 100%
         overflow: visible
         padding-right: 100px
+        padding-left: 1px
 
         .th
           margin-right: -2px
@@ -99,7 +115,8 @@ $row-height: 2rem
             float: right
             margin-left: 5px
             cursor: pointer
-            color: rgba($head-label-color, 0.5)
+            color: rgba($table-head-color, 0.5)
+            @include prefixer(transform, scaleY(0.5))
 
             &:before
               content: '▼'
@@ -113,7 +130,7 @@ $row-height: 2rem
           &.active
 
             .caret
-              color: $head-label-color
+              color: $table-head-color
 
       .th, .cell
         font-weight: normal
@@ -142,7 +159,7 @@ $row-height: 2rem
           height: 100%
 
           &:hover, &:active
-            background-color: $border-color
+            background-color: $table-seperator-color
 
     .table-label
       height: $row-height

@@ -1,0 +1,172 @@
+{
+  "id": "p8tk-zyhj",
+  "rowDisplayUnit": "Business",
+  "defaultAggregateColumn": ":count",
+  "domain": "dataspace-demo.test-socrata.com",
+  "ownerId": "jc63-heng",
+  "updatedAt": "2014-07-04T10:42:55.000-07:00",
+  "columns": [
+    {
+      "title": "Certificate Number",
+      "name": "certificate_number",
+      "physicalDatatype": "text",
+      "logicalDatatype": "identifier",
+      "importance": 2
+    },
+    {
+      "title": "Ownership Name",
+      "name": "ownership_name",
+      "physicalDatatype": "text",
+      "logicalDatatype": "text",
+      "importance": 3
+    },
+    {
+      "title": "DBA Name",
+      "name": "dba_name",
+      "physicalDatatype": "text",
+      "logicalDatatype": "text",
+      "importance": 2
+    },
+    {
+      "title": "Business Address Number",
+      "name": "business_address_number",
+      "physicalDatatype": "text",
+      "logicalDatatype": "text",
+      "importance": 3
+    },
+    {
+      "title": "Business Address Street Name",
+      "name": "business_address_street_name",
+      "physicalDatatype": "text",
+      "logicalDatatype": "text",
+      "importance": 3
+    },
+    {
+      "title": "Business Address",
+      "name": "business_address",
+      "physicalDatatype": "text",
+      "logicalDatatype": "text",
+      "importance": 3
+    },
+    {
+      "title": "Business Room or Suite",
+      "name": "business_room_suite",
+      "physicalDatatype": "text",
+      "logicalDatatype": "text",
+      "importance": 3
+    },
+    {
+      "title": "Business Zip",
+      "name": "business_zip",
+      "physicalDatatype": "text",
+      "logicalDatatype": "text",
+      "importance": 3
+    },
+    {
+      "title": "Business Number",
+      "name": "business_number",
+      "physicalDatatype": "text",
+      "logicalDatatype": "text",
+      "importance": 3
+    },
+    {
+      "title": "Location Number",
+      "name": "location_number",
+      "physicalDatatype": "text",
+      "logicalDatatype": "category",
+      "importance": 3
+    },
+    {
+      "title": "Class Code",
+      "name": "class_code",
+      "physicalDatatype": "text",
+      "logicalDatatype": "category",
+      "importance": 2
+    },
+    {
+      "title": "PBC Code",
+      "name": "pbc_code",
+      "physicalDatatype": "text",
+      "logicalDatatype": "category",
+      "importance": 2
+    },
+    {
+      "title": "DBA Start Date",
+      "name": "dba_start_date",
+      "physicalDatatype": "text",
+      "logicalDatatype": "text",
+      "importance": 2
+    },
+    {
+      "title": "Location Start Date",
+      "name": "location_start_date",
+      "physicalDatatype": "text",
+      "logicalDatatype": "text",
+      "importance": 3
+    },
+    {
+      "title": "Mailing Address 1",
+      "name": "mailing_address_1",
+      "physicalDatatype": "text",
+      "logicalDatatype": "text",
+      "importance": 3
+    },
+    {
+      "title": "Mailing Address 2",
+      "name": "mailing_address_2",
+      "physicalDatatype": "text",
+      "logicalDatatype": "text",
+      "importance": 3
+    },
+    {
+      "title": "Mailing City/State/Zip Code",
+      "name": "mailing_city_state_zip_code",
+      "physicalDatatype": "text",
+      "logicalDatatype": "text",
+      "importance": 3
+    },
+    {
+      "title": "Location",
+      "name": "location",
+      "physicalDatatype": "geo entity",
+      "logicalDatatype": "location",
+      "importance": 3
+    },
+    {
+      "title": "Supervisor District",
+      "description": "",
+      "name": ":Computed_3g7x28s9_location",
+      "physicalDatatype": "text",
+      "logicalDatatype": "location",
+      "importance": 1,
+      "shapefileFeatureHumanReadablePropertyName": "supdist"
+    },
+    {
+      "title": "Police District",
+      "description": "",
+      "name": ":Computed_vp3p5wwz_location",
+      "physicalDatatype": "text",
+      "logicalDatatype": "location",
+      "importance": 3,
+      "shapefileFeatureHumanReadablePropertyName": "district"
+    },
+    {
+      "title": "Neighborhood",
+      "description": "",
+      "name": ":Computed_kiegmksq_location",
+      "physicalDatatype": "text",
+      "logicalDatatype": "location",
+      "importance": 1,
+      "shapefileFeatureHumanReadablePropertyName": "name"
+    },
+    {
+      "title": "Zip Code",
+      "description": "",
+      "name": ":Computed_7m4wmua9_location",
+      "physicalDatatype": "text",
+      "logicalDatatype": "location",
+      "importance": 2,
+      "shapefileFeatureHumanReadablePropertyName": "zcta5ce10"
+    }
+  ]
+}

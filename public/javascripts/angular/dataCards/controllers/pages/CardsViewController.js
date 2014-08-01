@@ -54,7 +54,16 @@ angular.module('dataCards.controllers').controller('CardsViewController',
     $scope.bindObservable('pageName', page.observe('name').map(function(name) {
       return _.isUndefined(name) ? 'Untitled' : name;
     }));
+
     $scope.bindObservable('pageDescription', page.observe('description'));
+
+    $scope.bindObservable('datasetCSVDownloadURL', page.observe('dataset').map(function(dataset) {
+      if (dataset && dataset.hasOwnProperty('id')) {
+        return '/api/views/{0}/rows.csv?accessType=DOWNLOAD'.format(dataset.id);
+      } else {
+        return '#';
+      }
+    }));
 
     $scope.bindObservable('rowsOfCardsBySize', rowsOfCardsBySize);
     $scope.bindObservable('cardSizeNamesInDisplayOrder', rowsOfCardsBySize.map(function(sizedCards) {
@@ -113,6 +122,8 @@ angular.module('dataCards.controllers').controller('CardsViewController',
           } else {
             throw new Error('Only = binary operator supported for MVP');
           }
+        } else if (filter instanceof Filter.TimeOperatorFilter) {
+          return 'is';
         } else if (filter instanceof Filter.IsNullFilter) {
           if (filter.isNull) {
             return 'is';
@@ -126,9 +137,16 @@ angular.module('dataCards.controllers').controller('CardsViewController',
 
       function humanReadableOperand(filter) {
         if (filter instanceof Filter.BinaryOperatorFilter) {
-          return filter.operand;
+          return filter.humanReadableOperand || filter.operand;
         } else if (filter instanceof Filter.IsNullFilter) {
           return 'blank';
+        } else if (filter instanceof Filter.TimeOperatorFilter) {
+          var format = {
+            YEAR: 'YYYY',
+            MONTH: 'YYYY MMMM',
+            DAY: 'YYYY MMMM D'
+          }[filter.precision]
+          return moment(filter.operand).format(format);
         } else {
           throw new Error('Unsupported filter type');
         }

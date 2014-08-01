@@ -1,6 +1,6 @@
 {
-  "pageId": "food-0001",
-  "datasetId": "uu3g-zdv7",
+  "pageId": "ords-eat1",
+  "datasetId": "ne84-pzut",
   "name": "Food Inspections",
   "description": "This information is derived from inspections of restaurants and other food establishments in Chicago from January 1, 2010 to the present. Inspections are performed by staff from the Chicago Department of Public Health’s Food Protection Program using a standardized procedure. The results of the inspection are inputted into a database, then reviewed and approved by a State of Illinois Licensed Environmental Health Practitioner (LEHP). For descriptions of the data elements included in this set, go to http://bit.ly/tS9IE8 Disclaimer: Attempts have been made to minimize any and all duplicate inspection reports. However, the dataset may still contain such duplicates and the appropriate precautions should be exercised when viewing or analyzing these data. The result of the inspections (pass, pass with conditions or fail) as well as the violations noted are based on the findings identified and reported by the inspector at the time of the inspection, and may not reflect the findings noted at other times. For more information about Food Inspections, go to http://bit.ly/tD91Sb.",
   "primaryAmountField": null,
@@ -47,33 +47,43 @@
     },
     {
       "description": "Community Area",
-      "fieldName": ":Computed_q52vjuyw_location",
+      "fieldName": ":Computed_xkbhn7hx_location",
       "cardSize": 2,
       "cardCustomStyle": {},
       "expandedCustomStyle": {},
       "displayMode": "visualization",
       "expanded": false,
-      "shapeFile": "q52v-juyw"
+      "shapeFile": "xkbh-n7hx"
     },
     {
       "description": "Zip Code",
-      "fieldName": ":Computed_2dy83vps_location",
+      "fieldName": ":Computed_f523g8ig_location",
       "cardSize": 2,
       "cardCustomStyle": {},
       "expandedCustomStyle": {},
       "displayMode": "visualization",
       "expanded": false,
-      "shapeFile": "2dy8-3vps"
+      "shapeFile": "f523-g8ig"
     },
     {
       "description": "Ward",
-      "fieldName": ":Computed_stkmeqc8_location",
+      "fieldName": ":Computed_ind9qept_location",
       "cardSize": 2,
       "cardCustomStyle": {},
       "expandedCustomStyle": {},
       "displayMode": "visualization",
       "expanded": false,
-      "shapeFile": "stkm-eqc8"
+      "shapeFile": "ind9-qept"
+    },
+    {
+      "description": "Neighborhood",
+      "fieldName": ":Computed_i2inbshz_location",
+      "cardSize": 2,
+      "cardCustomStyle": {},
+      "expandedCustomStyle": {},
+      "displayMode": "visualization",
+      "expanded": false,
+      "shapeFile": "i2in-bshz"
     },
     {
       "description": "Inspection Id",

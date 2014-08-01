@@ -1,0 +1,104 @@
+{
+  "id": "vfb7-5m5h",
+  "rowDisplayUnit": "driver",
+  "defaultAggregateColumn": ":count",
+  "domain": "opendata.test-socrata.com",
+  "ownerId": "jc63-heng",
+  "updatedAt": "2014-05-20T10:42:55.000-07:00",
+  "columns": [
+    {
+      "name": "license",
+      "title": "License",
+      "description": "The Public Chauffeur license number issued to the licensee.",
+      "importance": 1,
+      "logicalDatatype": "identifier",
+      "physicalDatatype": "number"
+    },
+    {
+      "name": "renewed",
+      "title": "Renewal Date",
+      "description": "The date (month/year) the license was last renewed.",
+      "importance": 3,
+      "logicalDatatype": "text",
+      "physicalDatatype": "text"
+    },
+    {
+      "name": "status",
+      "title": "Status",
+      "description": "The current status of the license (Active, Hold, Suspended, Denied, Revoked, Inactive).",
+      "importance": 2,
+      "logicalDatatype": "category",
+      "physicalDatatype": "text"
+    },
+    {
+      "name": "status_date",
+      "title": "Status Date",
+      "description": "The date the license was last updated.",
+      "importance": 3,
+      "logicalDatatype": "time",
+      "physicalDatatype": "timestamp"
+    },
+    {
+      "name": "driver_type",
+      "title": "Driver Type",
+      "description": "The type of public passenger vehicle the licensee is authorized to operate (Taxi, Livery Only, or Horse-Drawn Only).",
+      "importance": 2,
+      "logicalDatatype": "category",
+      "physicalDatatype": "text"
+    },
+    {
+      "name": "license_type",
+      "title": "License Type",
+      "description": "The license term issued to the licensee (Permanent with a one-year term or Temporary with a defined term less than one year).",
+      "importance": 2,
+      "logicalDatatype": "category",
+      "physicalDatatype": "text"
+    },
+    {
+      "name": "issue_date",
+      "title": "Original Issue Date",
+      "description": "The date the licensee was issued his/her first Public Chauffeur license under the indicated license number.",
+      "importance": 3,
+      "logicalDatatype": "time",
+      "physicalDatatype": "timestamp"
+    },
+    {
+      "name": "name",
+      "title": "Name",
+      "description": "The name of the person issued the Public Chauffeur license.",
+      "importance": 1,
+      "logicalDatatype": "name",
+      "physicalDatatype": "text"
+    },
+    {
+      "name": "sex",
+      "title": "Sex",
+      "description": "",
+      "importance": 3,
+      "logicalDatatype": "category",
+      "physicalDatatype": "text"
+    },
+    {
+      "name": "city",
+      "title": "Chauffeur City",
+      "description": "",
+      "importance": 2,
+      "logicalDatatype": "text",
+      "physicalDatatype": "text"
+    },
+    {
+      "name": "state",
+      "title": "Chauffeur State",
+      "description": "",
+      "importance": 2,
+      "logicalDatatype": "text",
+      "physicalDatatype": "text"
+    }
+  ],
+  "pages": {
+    "publisher": [
+      "from-rndy"
+    ],
+    "user": []
+  }
+}

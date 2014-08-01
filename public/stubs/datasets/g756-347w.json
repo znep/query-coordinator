@@ -1,0 +1,151 @@
+{
+  "id": "g756-347w",
+  "rowDisplayUnit": "Case",
+  "defaultAggregateColumn": ":count",
+  "domain": "dataspace-demo.test-socrata.com",
+  "ownerId": "jc63-heng",
+  "updatedAt": "2014-07-09T10:42:55.000-07:00",
+  "columns": [
+    {
+      "title": "Case Id",
+      "name": "case_id",
+      "physicalDatatype": "number",
+      "logicalDatatype": "identifier",
+      "importance": 2
+    },
+    {
+      "title": "Opened At",
+      "name": "opened",
+      "physicalDatatype": "timestamp",
+      "logicalDatatype": "time",
+      "importance": 2
+    },
+    {
+      "title": "Closed At",
+      "name": "closed",
+      "physicalDatatype": "timestamp",
+      "logicalDatatype": "time",
+      "importance": 2
+    },
+    {
+      "title": "Updated At",
+      "name": "updated",
+      "physicalDatatype": "timestamp",
+      "logicalDatatype": "time",
+      "importance": 3
+    },
+    {
+      "title": "Status",
+      "name": "status",
+      "physicalDatatype": "text",
+      "logicalDatatype": "category",
+      "importance": 1
+    },
+    {
+      "title": "Responsible Agency",
+      "name": "responsible_agency",
+      "physicalDatatype": "text",
+      "logicalDatatype": "category",
+      "importance": 2
+    },
+    {
+      "title": "Category",
+      "name": "category",
+      "physicalDatatype": "text",
+      "logicalDatatype": "category",
+      "importance": 1
+    },
+    {
+      "title": "Request Type",
+      "name": "request_type",
+      "physicalDatatype": "text",
+      "logicalDatatype": "category",
+      "importance": 3
+    },
+    {
+      "title": "Request Details",
+      "name": "request_details",
+      "physicalDatatype": "text",
+      "logicalDatatype": "text",
+      "importance": 3
+    },
+    {
+      "title": "Address",
+      "name": "address",
+      "physicalDatatype": "text",
+      "logicalDatatype": "text",
+      "importance": 3
+    },
+    {
+      "title": "Supervisor District",
+      "name": "supervisor_district",
+      "physicalDatatype": "number",
+      "logicalDatatype": "category",
+      "importance": 3
+    },
+    {
+      "title": "Neighborhood",
+      "name": "neighborhood",
+      "physicalDatatype": "text",
+      "logicalDatatype": "category",
+      "importance": 3
+    },
+    {
+      "title": "Location",
+      "name": "point",
+      "physicalDatatype": "geo entity",
+      "logicalDatatype": "location",
+      "importance": 3
+    },
+    {
+      "title": "Source",
+      "name": "source",
+      "physicalDatatype": "text",
+      "logicalDatatype": "category",
+      "importance": 3
+    },
+    {
+      "title": "Media URL",
+      "name": "media_url",
+      "physicalDatatype": "text",
+      "logicalDatatype": "text",
+      "importance": 3
+    },
+    {
+      "title": "Supervisor District",
+      "description": "",
+      "name": ":Computed_3g7x28s9_point",
+      "physicalDatatype": "text",
+      "logicalDatatype": "location",
+      "importance": 1,
+      "shapefileFeatureHumanReadablePropertyName": "supdist"
+    },
+    {
+      "title": "Police District",
+      "description": "",
+      "name": ":Computed_vp3p5wwz_point",
+      "physicalDatatype": "text",
+      "logicalDatatype": "location",
+      "importance": 3,
+      "shapefileFeatureHumanReadablePropertyName": "district"
+    },
+    {
+      "title": "Neighborhood",
+      "description": "",
+      "name": ":Computed_kiegmksq_point",
+      "physicalDatatype": "text",
+      "logicalDatatype": "location",
+      "importance": 1,
+      "shapefileFeatureHumanReadablePropertyName": "name"
+    },
+    {
+      "title": "Zip Code",
+      "description": "",
+      "name": ":Computed_7m4wmua9_point",
+      "physicalDatatype": "text",
+      "logicalDatatype": "location",
+      "importance": 2,
+      "shapefileFeatureHumanReadablePropertyName": "zcta5ce10"
+    }
+  ]
+}

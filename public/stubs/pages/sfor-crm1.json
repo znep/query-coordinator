@@ -1,0 +1,116 @@
+{
+  "pageId": "sfor-crm1",
+  "datasetId": "nzy9-mwjp",
+  "name": "San Francisco Crimes",
+  "description": "Incidents derived from SFPD Crime Incident Reporting system. Previous month. Updated daily.",
+  "primaryAmountField": null,
+  "primaryAggregation": null,
+  "filterSoql": null,
+  "isDefaultPage": false,
+  "pageSource": "admin",
+  "cards": [
+    {
+      "description": "Category",
+      "fieldName": "category",
+      "cardSize": 1,
+      "cardCustomStyle": {},
+      "expandedCustomStyle": {},
+      "displayMode": "visualization",
+      "expanded": false
+    },
+    {
+      "description": "Day of Week",
+      "fieldName": "dayofweek",
+      "cardSize": 3,
+      "cardCustomStyle": {},
+      "expandedCustomStyle": {},
+      "displayMode": "visualization",
+      "expanded": false
+    },
+    {
+      "description": "Resolution",
+      "fieldName": "resolution",
+      "cardSize": 2,
+      "cardCustomStyle": {},
+      "expandedCustomStyle": {},
+      "displayMode": "visualization",
+      "expanded": false
+    },
+    {
+      "description": "Incident Number",
+      "fieldName": "incidntnum",
+      "cardSize": 2,
+      "cardCustomStyle": {},
+      "expandedCustomStyle": {},
+      "displayMode": "visualization",
+      "expanded": false
+    },
+    {
+      "description": "Date",
+      "fieldName": "date",
+      "cardSize": 3,
+      "cardCustomStyle": {},
+      "expandedCustomStyle": {},
+      "displayMode": "visualization",
+      "expanded": false
+    },
+    {
+      "description": "Time",
+      "fieldName": "time",
+      "cardSize": 3,
+      "cardCustomStyle": {},
+      "expandedCustomStyle": {},
+      "displayMode": "visualization",
+      "expanded": false
+    },
+        {
+      "description": "Supervisor District",
+      "fieldName": ":Computed_3g7x28s9_location",
+      "cardSize": 2,
+      "cardCustomStyle": {},
+      "expandedCustomStyle": {},
+      "displayMode": "visualization",
+      "expanded": false,
+      "shapeFile": "3g7x-28s9"
+    },
+    {
+      "description": "Police District",
+      "fieldName": ":Computed_vp3p5wwz_location",
+      "cardSize": 2,
+      "cardCustomStyle": {},
+      "expandedCustomStyle": {},
+      "displayMode": "visualization",
+      "expanded": false,
+      "shapeFile": "vp3p-5wwz"
+    },
+    {
+      "description": "Neighborhood",
+      "fieldName": ":Computed_kiegmksq_location",
+      "cardSize": 2,
+      "cardCustomStyle": {},
+      "expandedCustomStyle": {},
+      "displayMode": "visualization",
+      "expanded": false,
+      "shapeFile": "kieg-mksq"
+    },
+    {
+      "description": "Zip Code",
+      "fieldName": ":Computed_7m4wmua9_location",
+      "cardSize": 2,
+      "cardCustomStyle": {},
+      "expandedCustomStyle": {},
+      "displayMode": "visualization",
+      "expanded": false,
+      "shapeFile": "7m4w-mua9"
+    },
+    {
+      "description": "All Data",
+      "fieldName": "*",
+      "cardSize": 1,
+      "cardCustomStyle": {},
+      "expandedCustomStyle": {},
+      "displayMode": "visualization",
+      "expanded": false
+    }
+  ]
+}

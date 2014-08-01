@@ -18,8 +18,10 @@ angular-app-dataCards:
 - dataCards/_leaflet
 - dataCards/choropleth
 - dataCards/column-chart
+- dataCards/timeline-chart
 - dataCards/table
 - dataCards/cards
+- dataCards/multiline-ellipsis
 
 includes:
 - sass-common

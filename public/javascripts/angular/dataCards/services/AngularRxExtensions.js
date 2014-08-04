@@ -35,9 +35,13 @@ angular.module('dataCards.services').factory('AngularRxExtensions', function() {
   }
 
   function observe(expression) {
-    var observable = new Rx.BehaviorSubject(this.$eval(expression));
+    var evaluatedExpression = this.$eval(expression);
+    var observable = new Rx.BehaviorSubject(evaluatedExpression);
     this.$watch(expression, function(value) {
-      observable.onNext(value);
+      if (value !== evaluatedExpression) {
+        evaluatedExpression = value;
+        observable.onNext(value);
+      }
     });
 
     return observable;

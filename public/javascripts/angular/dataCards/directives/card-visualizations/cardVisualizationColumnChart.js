@@ -5,13 +5,34 @@ angular.module('dataCards.directives').directive('cardVisualizationColumnChart',
     scope: { 'model': '=', 'whereClause': '=' },
     templateUrl: '/angular_templates/dataCards/cardVisualizationColumnChart.html',
     link: function($scope, element, attrs) {
+
       AngularRxExtensions.install($scope);
 
       var model = $scope.observe('model');
       var dataset = model.pluck('page').observeOnLatest('dataset');
       var baseSoqlFilter = model.pluck('page').observeOnLatest('baseSoqlFilter');
+      var dataRequests = new Rx.Subject();
+      var dataResponses = new Rx.Subject();
+      var unfilteredDataSequence = new Rx.Subject();
+      var filteredDataSequence = new Rx.Subject();
 
-      $scope.bindObservable('rowDisplayUnit', dataset.observeOnLatest('rowDisplayUnit'));
+      // Keep track of the number of requests that have been made and the number of
+      // responses that have come back.
+      // .scan() is necessary because the usual aggregation suspect reduce actually
+      // will not execute over a sequence until it has been completed; scan is happy
+      // to operate on active sequences.
+      var dataRequestCount = dataRequests.scan(0, function(acc, x) { return acc + 1; });
+      var dataResponseCount = dataResponses.scan(0, function(acc, x) { return acc + 1; });
+
+      // If the number of requests is greater than the number of responses, we have
+      // a request in progress and we should display the spinner.
+      $scope.bindObservable('busy',
+        Rx.Observable.combineLatest(
+          dataRequestCount,
+          dataResponseCount,
+          function(requests, responses) {
+            return requests === 0 || (requests > responses);
+          }));
 
       var nonBaseFilterApplied = Rx.Observable.combineLatest(
           $scope.observe('whereClause'),
@@ -20,56 +41,83 @@ angular.module('dataCards.directives').directive('cardVisualizationColumnChart',
             return !_.isEmpty(whereClause) && whereClause != baseFilter;
           });
 
-      var unFilteredData = Rx.Observable.combineLatest(
-          model.pluck('fieldName'),
-          baseSoqlFilter,
-          dataset,
-          function(fieldName, baseWhere, dataset) {
-            return Rx.Observable.fromPromise(CardDataService.getData(fieldName, dataset.id, baseWhere));
-          }).switchLatest();
-
-      var filteredData = Rx.Observable.combineLatest(
-          model.pluck('fieldName'),
-          $scope.observe('whereClause'),
-          nonBaseFilterApplied,
-          dataset,
-          function(fieldName, whereClause, nonBaseFilterApplied, dataset) {
-            if (nonBaseFilterApplied) {
-              return Rx.Observable.fromPromise(CardDataService.getData(fieldName, dataset.id, whereClause));
-            } else {
-              return Rx.Observable.returnValue(null);
-            }
-          }).switchLatest();
-
-      $scope.bindObservable('chartData', Rx.Observable.combineLatest(filteredData, unFilteredData, model.observeOnLatest('activeFilters'), function(filtered, unFiltered, filters) {
-        // Joins filtered data and unfiltered data into an array of objects:
-        // [
-        //  { name: 'some_group_name', total: 1234, filtered: 192 },
-        //  ...
-        // ]
-        // If we're unfiltered or the filtered data isn't defined for a particular name, the filtered field is undefined.
-        var unFilteredAsHash = _.reduce(unFiltered, function(acc, datum) {
-          acc[datum.name] = datum.value;
-          return acc;
-        }, {});
-        var filteredAsHash = _.reduce(filtered, function(acc, datum) {
-          acc[datum.name] = datum.value;
-          return acc;
-        }, {});
-
-        var activeFilterNames = _.pluck(filters, 'operand');
-
-        return _.map(_.pluck(unFiltered, 'name'), function(name) {
-          return {
-            name: name,
-            total: unFilteredAsHash[name],
-            filtered: filteredAsHash[name] || 0,
-            special: _.contains(activeFilterNames, name)
-          };
+      var unfilteredData = Rx.Observable.subscribeLatest(
+        model.pluck('fieldName'),
+        dataset,
+        baseSoqlFilter,
+        function(fieldName, dataset, whereClauseFragment) {
+          dataRequests.onNext(1);
+          var dataPromise = CardDataService.getData(fieldName, dataset.id, whereClauseFragment);
+          dataPromise.then(
+            function(res) {
+              // Ok
+              unfilteredDataSequence.onNext(dataPromise);
+              dataResponses.onNext(1);
+            },
+            function(err) {
+              // Do nothing
+            });
+          return Rx.Observable.fromPromise(dataPromise);
         });
-      }));
 
-      $scope.bindObservable('filterApplied', filteredData.map(function(filtered) {
+      var filteredData = Rx.Observable.subscribeLatest(
+        model.pluck('fieldName'),
+        dataset,
+        $scope.observe('whereClause'),
+        nonBaseFilterApplied,
+        function(fieldName, dataset, whereClauseFragment, nonBaseFilterApplied) {
+          dataRequests.onNext(1);
+          var dataPromise = CardDataService.getData(fieldName, dataset.id, whereClauseFragment);
+          dataPromise.then(
+            function(res) {
+              // Ok
+              filteredDataSequence.onNext(dataPromise);
+              dataResponses.onNext(1);
+            },
+            function(err) {
+              // Do nothing
+            });
+          return Rx.Observable.fromPromise(dataPromise);
+        });
+
+      $scope.bindObservable('rowDisplayUnit', dataset.observeOnLatest('rowDisplayUnit'));
+
+      $scope.bindObservable('chartData', Rx.Observable.combineLatest(
+          unfilteredDataSequence.switchLatest(),
+          filteredDataSequence.switchLatest(),
+          model.observeOnLatest('activeFilters'),
+          function(unfilteredData, filteredData, filters) {
+
+            // Joins filtered data and unfiltered data into an array of objects:
+            // [
+            //  { name: 'some_group_name', total: 1234, filtered: 192 },
+            //  ...
+            // ]
+            // If we're unfiltered or the filtered data isn't defined for a particular name, the filtered field is undefined.
+            var unfilteredAsHash = _.reduce(unfilteredData, function(acc, datum) {
+              acc[datum.name] = datum.value;
+              return acc;
+            }, {});
+
+            var filteredAsHash = _.reduce(filteredData, function(acc, datum) {
+              acc[datum.name] = datum.value;
+              return acc;
+            }, {});
+
+            var activeFilterNames = _.pluck(filters, 'operand');
+
+            return _.map(_.pluck(unfilteredData, 'name'), function(name) {
+              return {
+                name: name,
+                total: unfilteredAsHash[name],
+                filtered: filteredAsHash[name] || 0,
+                special: _.contains(activeFilterNames, name)
+              };
+            });
+
+        }));
+
+      $scope.bindObservable('filterApplied', filteredDataSequence.map(function(filtered) {
         return filtered !== null;
       }));
 

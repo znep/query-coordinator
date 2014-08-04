@@ -230,3 +230,48 @@ $facets-list-width: 20%
   height: 100%
   div
     height: 100%
+
+// The loading spinner is actually a sibling of cardVisualization* in the DOM but
+// is styled here since the styles apply globally.
+
+@keyframes loadingspin
+  0%
+    transform: rotateZ(0deg)
+  100%
+    transform: rotateZ(360deg)
+
+@-webkit-keyframes loadingspin
+  0%
+    -webkit-transform: rotateZ(0deg)
+  100%
+    -webkit-transform: rotateZ(360deg)
+
+@-moz-keyframes loadingspin
+  0%
+    -moz-transform: rotateZ(0deg)
+  100%
+    -moz-transform: rotateZ(360deg)
+
+.spinner
+  animation-duration: 0.7s
+  animation-iteration-count: infinite
+  animation-name: loadingspin
+  animation-timing-function: linear
+  -webkit-animation-duration: 0.7s
+  -webkit-animation-iteration-count: infinite
+  -webkit-animation-name: loadingspin
+  -webkit-animation-timing-function: linear
+  -moz-animation-duration: 0.7s
+  -moz-animation-iteration-count: infinite
+  -moz-animation-name: loadingspin
+  -moz-animation-timing-function: linear
+  display: none
+  height: 25px
+  left: 50%
+  position: absolute
+  top: 50%
+  width: 25px
+  z-index: 1001
+
+.spinner.busy
+  display: block

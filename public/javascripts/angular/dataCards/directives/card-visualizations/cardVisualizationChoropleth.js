@@ -13,39 +13,12 @@ angular.module('dataCards.directives').directive('cardVisualizationChoropleth', 
       var model = $scope.observe('model');
       var dataset = model.pluck('page').observeOnLatest('dataset');
       var baseSoqlFilter = model.pluck('page').observeOnLatest('baseSoqlFilter');
-
-      var geojsonRegions = model.observeOnLatest('shapeFile').map(
-        function(shapeFile) {
-          return Rx.Observable.fromPromise(CardDataService.getChoroplethRegions(shapeFile));
-        }).switchLatest();
-
-      var nonBaseFilterApplied = Rx.Observable.combineLatest(
-          $scope.observe('whereClause'),
-          baseSoqlFilter,
-          function (whereClause, baseFilter) {
-            return !_.isEmpty(whereClause) && whereClause != baseFilter;
-          });
-
-      var unfilteredDataObservable = Rx.Observable.combineLatest(
-          model.pluck('fieldName'),
-          baseSoqlFilter,
-          dataset,
-          function(fieldName, baseWhere, dataset) {
-            return Rx.Observable.fromPromise(CardDataService.getData(fieldName, dataset.id, baseWhere));
-          }).switchLatest();
-
-      var filteredDataObservable = Rx.Observable.combineLatest(
-          model.pluck('fieldName'),
-          $scope.observe('whereClause'),
-          nonBaseFilterApplied,
-          dataset,
-          function(fieldName, whereClause, nonBaseFilterApplied, dataset) {
-            if (nonBaseFilterApplied) {
-              return Rx.Observable.fromPromise(CardDataService.getData(fieldName, dataset.id, whereClause));
-            } else {
-              return Rx.Observable.returnValue(null);
-            }
-          }).switchLatest();
+      var shapeFile = model.observeOnLatest('shapeFile');
+      var dataRequests = new Rx.Subject();
+      var dataResponses = new Rx.Subject();
+      var geojsonRegionsSequence = new Rx.Subject();
+      var unfilteredDataSequence = new Rx.Subject();
+      var filteredDataSequence = new Rx.Subject();
 
       // TODO: Update this function to return what we need, not all the other crap.
       // Probably just want to construct a new geojson object from scratch.
@@ -93,15 +66,95 @@ angular.module('dataCards.directives').directive('cardVisualizationChoropleth', 
         };
       };
 
+      // Keep track of the number of requests that have been made and the number of
+      // responses that have come back.
+      // .scan() is necessary because the usual aggregation suspect reduce actually
+      // will not execute over a sequence until it has been completed; scan is happy
+      // to operate on active sequences.
+      var dataRequestCount = dataRequests.scan(0, function(acc, x) { return acc + 1; });
+      var dataResponseCount = dataResponses.scan(0, function(acc, x) { return acc + 1; });
+
+      // If the number of requests is greater than the number of responses, we have
+      // a request in progress and we should display the spinner.
+      $scope.bindObservable('busy',
+        Rx.Observable.combineLatest(
+          dataRequestCount,
+          dataResponseCount,
+          function(requests, responses) {
+            return requests === 0 || (requests > responses);
+          }));
+
+      var nonBaseFilterApplied = Rx.Observable.combineLatest(
+          $scope.observe('whereClause'),
+          baseSoqlFilter,
+          function (whereClause, baseFilter) {
+            return !_.isEmpty(whereClause) && whereClause != baseFilter;
+          });
+
+      var geojsonRegionsData = shapeFile.map(
+        function(shapeFile) {
+          dataRequests.onNext(1);
+          var dataPromise = CardDataService.getChoroplethRegions(shapeFile);
+          dataPromise.then(
+            function(res) {
+              // Ok
+              geojsonRegionsSequence.onNext(dataPromise);
+              dataResponses.onNext(1);
+            },
+            function(err) {
+              // Do nothing
+            });
+          return Rx.Observable.fromPromise(dataPromise);
+        });
+
+      var unfilteredData = Rx.Observable.subscribeLatest(
+        model.pluck('fieldName'),
+        dataset,
+        baseSoqlFilter,
+        function(fieldName, dataset, whereClauseFragment) {
+          dataRequests.onNext(1);
+          var dataPromise = CardDataService.getData(fieldName, dataset.id, whereClauseFragment);
+          dataPromise.then(
+            function(res) {
+              // Ok
+              unfilteredDataSequence.onNext(dataPromise);
+              dataResponses.onNext(1);
+            },
+            function(err) {
+              // Do nothing
+            });
+          return Rx.Observable.fromPromise(dataPromise);
+        });
+
+      var filteredData = Rx.Observable.subscribeLatest(
+        model.pluck('fieldName'),
+        dataset,
+        $scope.observe('whereClause'),
+        nonBaseFilterApplied,
+        function(fieldName, dataset, whereClauseFragment, nonBaseFilterApplied) {
+          dataRequests.onNext(1);
+          var dataPromise = CardDataService.getData(fieldName, dataset.id, whereClauseFragment);
+          dataPromise.then(
+            function(res) {
+              // Ok
+              filteredDataSequence.onNext(dataPromise);
+              dataResponses.onNext(1);
+            },
+            function(err) {
+              // Do nothing
+            });
+          return Rx.Observable.fromPromise(dataPromise);
+        });
+
       $scope.bindObservable('fieldName', model.pluck('fieldName'));
       $scope.bindObservable('rowDisplayUnit', dataset.observeOnLatest('rowDisplayUnit'));
 
       $scope.bindObservable(
         'geojsonAggregateData',
         Rx.Observable.combineLatest(
-          geojsonRegions,
-          unfilteredDataObservable,
-          filteredDataObservable,
+          geojsonRegionsData.switchLatest(),
+          unfilteredDataSequence.switchLatest(),
+          filteredDataSequence.switchLatest(),
           model.observeOnLatest('activeFilters'),
           model.pluck('fieldName'),
           dataset.observeOnLatest('columns'),

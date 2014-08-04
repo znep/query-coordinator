@@ -19,7 +19,7 @@ describe("multilineEllipsis directive", function() {
 
       describe('with not enough room', function() {
         var el;
-        var html = '<div expanded="false" multiline-ellipsis max-lines="2" tolerance="2" text="{{lotsOfText}}">';
+        var html = '<div expanded="false" multiline-ellipsis max-lines="2" tolerance="2" text="{{lotsOfText}}" animation-duration="0">';
         // Can't inject rootScope or testHelpers in describe. Workaround.
         function ensure() {
           if(el) return;
@@ -40,7 +40,7 @@ describe("multilineEllipsis directive", function() {
 
       describe('with enough room', function() {
         var el;
-        var html = '<div expanded="false" multiline-ellipsis max-lines="2000" tolerance="2" text="{{lotsOfText}}">';
+        var html = '<div expanded="false" multiline-ellipsis max-lines="2000" tolerance="2" text="{{lotsOfText}}" animation-duration="0">';
         // Can't inject rootScope or testHelpers in describe. Workaround.
         function ensure() {
           if(el) return;
@@ -64,7 +64,7 @@ describe("multilineEllipsis directive", function() {
     describe('with show-more-mode as title-attr', function() {
       describe('with not enough room', function() {
         it('should have title text', function() {
-          var html = '<div expanded="false" multiline-ellipsis max-lines="2" tolerance="2" text="{{lotsOfText}}" show-more-mode="title-attr">';
+          var html = '<div expanded="false" multiline-ellipsis max-lines="2" tolerance="2" text="{{lotsOfText}}" show-more-mode="title-attr" animation-duration="0">';
           var scope = $rootScope.$new();
           scope.lotsOfText = lotsOfText;
           var el = testHelpers.TestDom.compileAndAppend(html, scope);
@@ -75,7 +75,7 @@ describe("multilineEllipsis directive", function() {
 
       describe('with enough room', function() {
         it('should not have title text', function() {
-          var html = '<div expanded="false" multiline-ellipsis max-lines="2000" tolerance="2" text="{{lotsOfText}}" show-more-mode="title-attr">';
+          var html = '<div expanded="false" multiline-ellipsis max-lines="2000" tolerance="2" text="{{lotsOfText}}" show-more-mode="title-attr" animation-duration="0">';
           var scope = $rootScope.$new();
           scope.lotsOfText = lotsOfText;
           var el = testHelpers.TestDom.compileAndAppend(html, scope);

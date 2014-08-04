@@ -15,6 +15,7 @@ angular.module('dataCards.directives').directive('multilineEllipsis', function($
       'maxLines': '@',
       'tolerance': '@',
       'text': '@',
+      'animationDuration': '@',
       'expanded': '='
     },
     template: '<div class="content" title="{{contentTitleAttr}}"></div>' +
@@ -38,6 +39,7 @@ angular.module('dataCards.directives').directive('multilineEllipsis', function($
 
       var lastText = null;
       var animationRunning = false;
+      var animationDuration = isNaN(parseInt($scope.animationDuration, 10)) ? 500 : parseInt($scope.animationDuration, 10);
 
       // Animate the (max) height of the content
       // between the provided values.
@@ -51,10 +53,9 @@ angular.module('dataCards.directives').directive('multilineEllipsis', function($
           'max-height': to
         }, {
           easing: 'socraticEase',
-          duration: 500, // TODO: Pull this out into an attribute (mostly for unit test speed).
+          duration: animationDuration,
           always: function() { defer.resolve(); }
         });
-
         return defer.promise;
       };
 

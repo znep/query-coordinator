@@ -1,5 +1,4 @@
 angular.module('dataCards.directives').directive('choropleth', function(AngularRxExtensions, ChoroplethHelpers, leafletBoundsHelpers, $log, $timeout) {
-
   // AGGREGATE_VALUE_PROPERTY_NAME is an internal implementation name for the aggregate data
   // value we will display on the choropleth. This name is global, constant and has been
   // chosen so that it is unlikely to collide with any user-defined property on the
@@ -17,7 +16,7 @@ angular.module('dataCards.directives').directive('choropleth', function(AngularR
   /*   TEMPORARY SETTINGS   */
 
       // WARNING: tests depend upon file name.
-      numberOfClasses = function(values) {
+      var numberOfClasses = function(values) {
         // handles numberOfClasses in Jenks (implemented for _.uniq(values).length > 6)
         var numPossibleBreaks = _.uniq(values).length;
         if (numPossibleBreaks <= threshold) {
@@ -110,7 +109,6 @@ angular.module('dataCards.directives').directive('choropleth', function(AngularR
 
     },
     link: function($scope, element) {
-
       AngularRxExtensions.install($scope);
 
       $scope.highlightedFeatures = {};
@@ -120,12 +118,6 @@ angular.module('dataCards.directives').directive('choropleth', function(AngularR
       // includes CSS margins + CSS padding when outerWidth, outerHeight set to true
       var containerPaddingX = element.outerWidth(true) - element.width();
       var containerPaddingY = element.outerHeight(true) - element.height();
-
-      $scope.$on('elementResized', function(event, arguments){
-        $timeout(function(){
-          $scope.$broadcast('mapContainerResized')
-        });
-      });
 
       /* Choropleth styles */
 
@@ -254,7 +246,7 @@ angular.module('dataCards.directives').directive('choropleth', function(AngularR
       // flag to get the right style for the region.
       var multiStyleFn = function(feature, highlighted) {
         // NOTE: leaflet requires separate style functions for each fill class
-        fillClass = 'multi';
+        var fillClass = 'multi';
         return {
           fillColor: fillColor(fillClass, feature, highlighted),
           color: strokeColor(fillClass, feature, highlighted),
@@ -327,6 +319,8 @@ angular.module('dataCards.directives').directive('choropleth', function(AngularR
         }
       }
 
+      var colors, scale;
+
       var updateMulticolorScale = function(colorClass, classBreaks) {
         if (!classBreaks) {
           throw new Error("Invalid class breaks");
@@ -337,7 +331,7 @@ angular.module('dataCards.directives').directive('choropleth', function(AngularR
         // use LAB color space to approximate perceptual brightness,
         // bezier interpolation, and auto-correct for color brightness.
         // See more: https://vis4.net/blog/posts/mastering-multi-hued-color-scales/
-        var colorRange;
+        var colorRange, lightnessCorrection, bezierColorInterpolation;
         switch (colorClass.toLowerCase()) {
           case 'diverging':
             colorRange = divergingColors;
@@ -645,7 +639,6 @@ angular.module('dataCards.directives').directive('choropleth', function(AngularR
             updateGeojsonScope('none');
             updateLegend([], []);
           } else {
-
             $scope.classBreaks = computeClassBreaks(values);
 
             if ($scope.classBreaks.length === 1) {
@@ -656,9 +649,8 @@ angular.module('dataCards.directives').directive('choropleth', function(AngularR
               colors = scale.colors();
               updateGeojsonScope('multi');
             }
-
+            
             updateLegend($scope.classBreaks, colors);
-
           }
 
           updateBounds(geojsonAggregateData);

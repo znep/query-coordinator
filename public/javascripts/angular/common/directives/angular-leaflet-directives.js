@@ -382,7 +382,7 @@
                 return;
               }
               
-              var legendClass = legend.legendClass ? legend.legendClass : 'modern-legend';
+              var legendClass = legend.legendClass || 'modern-legend';
 
               if (legend.colors.length === 0) {
                 // short-circuit d3's exit selections and simply remove the entire legend vs removing individual components.
@@ -392,7 +392,7 @@
 
               var legendClassBreaks = legend.classBreaks;
 
-              if (legend.colors.length !== legend.classBreaks.length - 1) {
+              if (legend.colors.length !== legendClassBreaks.length - 1) {
                 $log.error('[AngularJS - Leaflet] The number of legend colors should be 1 less than the number of class breaks: ', legend);
               }
 
@@ -533,7 +533,7 @@
                   return legendLabelColorHeight(i);
                 }).
                 attr('y', function(c, i){
-                  return yLabelScale(legend.classBreaks[i+1]);
+                  return yLabelScale(legendClassBreaks[i+1]);
                 }).
                 style('fill', function(color){ return color; });
 
@@ -571,11 +571,13 @@
                 interact: true,
                 overflowParent: true,
                 inset: {
-                  horizontal: -5,
+                  horizontal: -3,
                   vertical: 2
                 },
                 html: function($target, $head, options, $element) {
-                  return $target.data('flyout-text');
+                  // do not use $target.data('flyout-text') due to conflicts with jQuery caching .data() results
+                  // [see http://stackoverflow.com/questions/8707226/jquery-data-does-not-work-but-attrdata-itemname-does]
+                  return $target.attr('data-flyout-text');
                 }
               });
             });

@@ -200,7 +200,6 @@ angular.module('dataCards.directives').directive('cardVisualizationChoropleth', 
 
       // Handle filter toggle events sent from the choropleth directive.
       $scope.$on('toggle-dataset-filter:choropleth', function(event, feature, callback) {
-
         var featureId = feature.properties[INTERNAL_DATASET_FEATURE_ID];
         var humanReadableName = feature.properties['__SOCRATA_HUMAN_READABLE_NAME__'];
 

@@ -405,18 +405,18 @@ angular.module('socrataCommon.directives').directive('columnChart', function($pa
         throw new Error("[columnChart] column-chart is missing a .card-visualization (grand)parent.");
       }
 
-      $(element.parent().delegate('.truncation-marker', 'click', function(event) {
+      element.parent().delegate('.truncation-marker', 'click', function(event) {
         scope.$apply(function() {
           scope.$emit('column-chart:truncation-marker-clicked', event);
         });
-      }));
+      });
 
-      $(element.parent().delegate('.bar-group, .labels .label span', 'click', function(event) {
+      element.parent().delegate('.bar-group, .labels .label span', 'click', function(event) {
         var clickedDatum = d3.select(event.currentTarget).datum();
         scope.$apply(function() {
           scope.$emit('column-chart:datum-clicked', clickedDatum);
         });
-      }));
+      });
 
       Rx.Observable.subscribeLatest(
         element.closest('.card-visualization').observeDimensions(),
@@ -435,8 +435,12 @@ angular.module('socrataCommon.directives').directive('columnChart', function($pa
             rowDisplayUnit
           );
         }
-      )
+      );
+      scope.$on('$destroy', function() {
+        element.parent().undelegate();
+        element.find('.chart-scroll').undelegate();
+      });
     }
-  }
+  };
 
 });

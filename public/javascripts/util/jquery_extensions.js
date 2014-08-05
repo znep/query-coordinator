@@ -1,5 +1,4 @@
 // Contains extensions to both jQuery as well as Javascript built-in types.
-
 $.fn.dimensions = function() {
   return {width: this.width(), height: this.height() };
 };
@@ -385,6 +384,12 @@ $.fn.flyout = function(options) {
       renderFlyout($flyout.data('target'));
     }
   });
+
+  // This was added to hopefully plug a memory leak when a flyout is created multiple times
+  // in a render loop.
+  self.undelegate(options.selector, 'mouseenter');
+  self.undelegate(options.selector, 'mouseleave');
+
   self.delegate(options.selector, 'mouseenter', function(e) {
     renderFlyout(this);
   }).delegate(options.selector, 'mouseleave', function(e) {

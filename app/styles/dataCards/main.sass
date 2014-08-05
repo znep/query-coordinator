@@ -253,6 +253,7 @@ $facets-list-width: 20%
     -moz-transform: rotateZ(360deg)
 
 .spinner
+  $spinner-size: 25px
   animation-duration: 0.7s
   animation-iteration-count: infinite
   animation-name: loadingspin
@@ -266,11 +267,13 @@ $facets-list-width: 20%
   -moz-animation-name: loadingspin
   -moz-animation-timing-function: linear
   display: none
-  height: 25px
+  height: $spinner-size
   left: 50%
+  margin-left: -$spinner-size/2
+  margin-top: -$spinner-size/2
   position: absolute
   top: 50%
-  width: 25px
+  width: $spinner-size
   z-index: 1001
 
 .spinner.busy

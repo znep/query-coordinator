@@ -150,15 +150,41 @@ describe('timelineChart', function() {
     });
     it('should create a range label and handles when a selection is dragged', function() {
       var chart = createNewTimelineChart(640, false, true);
-      var segments = $('g.segment');
+      var segments = chart.element.find('g.segment');
       var start = 5;
       var end = 10;
       segments.eq(start).mousedown();
       segments.eq(end).mousemove().mouseup();
       expect(chart.element.find('.label.special').length).to.equal(1);
-      expect(chart.element.find('.label.special .text').text()).to.equal('Jun \'01 - Dec \'01');
+      expect(chart.element.find('.label.special .text').text()).to.equal('Jun \'01 - Nov \'01');
       expect(chart.element.find('g.segment.special').length).to.equal(end - start + 1);
       expect(chart.element.find('g.draghandle').length).to.equal(2);
+    });
+    it('should be able to change a selection via dragging a handle', function() {
+      var chart = createNewTimelineChart(640, false, true);
+      var segments = chart.element.find('g.segment');
+      var start = 5;
+      var end = 10;
+      segments.eq(start).mousedown().mousemove().mouseup();
+      expect(chart.element.find('.label.special').length).to.equal(1);
+      expect(chart.element.find('g.draghandle').length).to.equal(2);
+      expect(chart.element.find('g.segment.special').length).to.equal(1);
+
+      chart.element.find('g.draghandle').eq(1).mousedown();
+      chart.element.find('g.segment').eq(end).mousemove().mouseup();
+      expect(chart.element.find('.label.special').length).to.equal(1);
+      expect(chart.element.find('.label.special .text').text()).to.equal('Jun \'01 - Nov \'01');
+      expect(chart.element.find('g.segment.special').length).to.equal(end - start + 1);
+      expect(chart.element.find('g.draghandle').length).to.equal(2);
+    });
+    it('should clear a range when drag handle is clicked', function() {
+      var chart = createNewTimelineChart(640, false, true);
+      var segment = chart.element.find('g.segment').eq(1);
+      segment.mousedown().mousemove().mouseup();
+      var dragHandles = chart.element.find('g.draghandle');
+      expect(dragHandles.length).to.equal(2);
+      dragHandles.eq(0).mousedown().mouseup();
+      expect(chart.element.find('g.draghandle').length).to.equal(0);
     });
     it('should fire a filter-changed event when selected and a filter-cleared event when cleared', function() {
       var chart = createNewTimelineChart(640, false, true);

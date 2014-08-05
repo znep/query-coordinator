@@ -437,13 +437,17 @@ angular.module('socrataCommon.directives').directive('timelineChart', function(A
       onOpen: function($target, $head, options, $flyout) {
         var data = d3.select($target[0]).datum();
         var flyoutDate = data.date;
-        _.each(element.find('.labels .label'), function(label) {
-          var labelDateStart = d3.select(label).datum().date;
-          var labelDateEnd = labelDateStart + tickRange;
-          if (labelDateStart <= flyoutDate && flyoutDate < labelDateEnd) {
-            $(label).addClass('active');
-          }
-        });
+        if (options.isLabel) {
+          $(options.originalTarget).addClass('active');
+        } else if (!options.isSpecial) {
+          _.each(element.find('.labels .label'), function(label) {
+            var labelDateStart = d3.select(label).datum().date;
+            var labelDateEnd = labelDateStart + tickRange;
+            if (labelDateStart <= flyoutDate && flyoutDate < labelDateEnd) {
+              $(label).addClass('active');
+            }
+          });
+        }
       },
       onClose: function() {
         element.find('.labels .label.active').removeClass('active');
@@ -458,33 +462,45 @@ angular.module('socrataCommon.directives').directive('timelineChart', function(A
 
       var specialLabel = element.find('.labels .label.special');
       if (filterStart && filterEnd) {
-        if(_.isEmpty(specialLabel)) {
+        if (_.isEmpty(specialLabel)) {
           specialLabel = $('<div class="label special">' +
               '<div class="text"></div>' +
               '<div class="cancel"> ×</div>' +
               '</div>');
           element.find('.labels').append(specialLabel);
         }
-        d3.select(specialLabel[0]).datum({date: filterStart});
-        // One segment. Ex: 1 month
-        if (filterEnd.diff(filterStart, precision, true) === 1) {
-          var format = tickDateFormat[precision];
-          var text = filterStart.format(format);
+
+        var range = _.sortBy([filterStart, filterEnd]);
+        var rangeStart = range[0];
+        var rangeEnd = range[1];
+
+        d3.select(specialLabel[0]).datum({date: rangeStart});
+
+        var neverRound = true;
+
+        // One segment at start of <precision>. Ex: 1 month
+        var isStartOfSegment = rangeStart.clone().startOf(precision).isSame(rangeStart);
+        var isOneSegmentWide = rangeEnd.diff(rangeStart, precision, neverRound) === 1;
         // One label unit. Ex: 1 year
-        } else if (filterEnd.diff(filterStart, labelUnit, true) === 1) {
+        var isStartOfLabelSegment = rangeStart.clone().startOf(labelUnit).isSame(rangeStart);
+        var isOneLabelSegmentWide = rangeEnd.diff(rangeStart, labelUnit, neverRound) === 1;
+
+        if (isStartOfSegment && isOneSegmentWide) {
+          var format = tickDateFormat[precision];
+          var text = rangeStart.format(format);
+        } else if (isStartOfLabelSegment && isOneLabelSegmentWide) {
           var format = tickDateFormat[labelUnit.toUpperCase()];
-          var text = filterStart.format(format);
+          var text = rangeStart.format(format);
         // Show as a range
         } else {
           var format = tickDateFormat[precision];
-          var text = '{0} - {1}'.format(
-            filterStart.format(format),
-            filterEnd.format(format)
-          );
+          var text = rangeStart.format(format) + ' - ' +
+            rangeEnd.clone().subtract(1, precision).format(format)
         }
         specialLabel.find('.text').text(text);
+
         var centeringLabelLeft = Math.floor(
-          (horizontalScale(filterStart) + horizontalScale(filterEnd)) / 2  -
+          (horizontalScale(rangeStart) + horizontalScale(rangeEnd)) / 2  -
           specialLabel.outerWidth() / 2
         );
         var maxLeft = chartWidth - specialLabel.outerWidth();
@@ -563,6 +579,7 @@ angular.module('socrataCommon.directives').directive('timelineChart', function(A
       event.preventDefault();
     }).delegate('g.draghandle', 'mousedown', function(event) {
       dragActive = $(event.currentTarget).is('.start') ? 'start' : 'end';
+      moved = false;
 
       element.addClass('selecting');
       event.preventDefault();
@@ -571,9 +588,9 @@ angular.module('socrataCommon.directives').directive('timelineChart', function(A
         var duration = $(event.currentTarget).is('.label') ? tickRange : segmentDuration;
         var clickedDatum = d3.select(event.currentTarget).datum();
         var newEnd = clickedDatum.date;
+        moved = true;
 
         if (selectionActive) {
-          moved = true;
           if (newEnd >= filterStart) {
             filterEnd = moment(newEnd).add(duration);
           } else {
@@ -582,7 +599,7 @@ angular.module('socrataCommon.directives').directive('timelineChart', function(A
             }
             filterEnd = newEnd;
           }
-        } else if(dragActive) {
+        } else if (dragActive) {
           if (dragActive === 'start') {
             filterStart = newEnd;
           } else {
@@ -610,11 +627,14 @@ angular.module('socrataCommon.directives').directive('timelineChart', function(A
       }
     });
 
-    $('body').off('mouseup.TimelineChart').on('mouseup.TimelineChart', function(event) {
+    if (scope.mouseUpHandler) {
+      $('body').off('mouseup.TimelineChart', scope.mouseUpHandler);
+    }
+    scope.mouseUpHandler = function(event) {
       if (dragActive || selectionActive) {
         element.removeClass('selecting');
         // If clicked on a selected segment and the user hasn't moved, clear the filter.
-        if (isSpecial && moved === false) {
+        if ((dragActive || isSpecial) && moved === false) {
           clearFilter();
         } else {
           selectionActive = false;
@@ -628,7 +648,8 @@ angular.module('socrataCommon.directives').directive('timelineChart', function(A
         }
         d3Selection.select('g.container').call(updateLines);
       }
-    });
+    }
+    $('body').on('mouseup.TimelineChart', scope.mouseUpHandler);
   };
 
   return {
@@ -687,6 +708,11 @@ angular.module('socrataCommon.directives').directive('timelineChart', function(A
           lastData = chartData;
         }
       );
+      // Clean up jQuery on card destruction to stop memory leaks.
+      scope.$on('$destroy', function() {
+        element.find('.chart-scroll').undelegate();
+        $('body').off('mouseup.TimelineChart', scope.mouseUpHandler);
+      });
     }
   };
 

@@ -41,22 +41,23 @@ describe('timelineChart', function() {
           ' chart-data="testData" show-filtered="showFiltered" expanded="expanded" precision="precision">' +
         '</div>' +
       '</div>';
+    var childScope = scope.$new();
     var elem = angular.element(html);
 
     $('body').append('<div id="timelineChartTest"></div>');
     $('#timelineChartTest').append(elem);
 
-    var compiledElem = compile(elem)(scope);
+    var compiledElem = compile(elem)(childScope);
 
-    scope.expanded = expanded;
-    scope.testData = data;
-    scope.showFiltered = showFiltered;
-    scope.precision = "MONTH";
-    scope.$digest();
+    childScope.expanded = expanded;
+    childScope.testData = data;
+    childScope.showFiltered = showFiltered;
+    childScope.precision = "MONTH";
+    childScope.$digest();
 
     return {
       element: $(compiledElem),
-      scope: scope
+      scope: childScope
     };
   };
   var removeTimelineChart = function() {
@@ -116,8 +117,9 @@ describe('timelineChart', function() {
     });
     it('when hovering over a label it should highlight and create a flyout', function() {
       var chart = createNewTimelineChart(640, false, true);
-      chart.element.find('.labels .label .text').mouseover();
+      chart.element.find('.labels .label').eq(0).mouseover();
       expect($('.flyout').length).to.equal(1);
+      expect(chart.element.find('g.segment.hover').length).to.equal(12);
       expect(chart.element.find('.labels .label.active').length).to.equal(1);
       expect(chart.element.find('.labels .label.active')).to.be.visible;
     });
@@ -127,6 +129,53 @@ describe('timelineChart', function() {
         return $(label).attr('style');
       });
       expect(_.uniq(positions).length).to.equal(positions.length);
+    });
+    it('should create a range label when a segment is clicked', function() {
+      var chart = createNewTimelineChart(640, false, true);
+      var segment = chart.element.find('g.segment').eq(1);
+      segment.mousedown().mousemove().mouseup();
+      expect(chart.element.find('.label.special').length).to.equal(1);
+      expect(chart.element.find('.label.special .text').text()).to.equal('Feb \'01');
+      expect(chart.element.find('g.segment.special').length).to.equal(1);
+      expect(chart.element.find('g.draghandle').length).to.equal(2);
+    });
+    it('should create a range label and handles when a label is clicked', function() {
+      var chart = createNewTimelineChart(640, false, true);
+      var segment = chart.element.find('.label').eq(1);
+      segment.mousedown().mousemove().mouseup();
+      expect(chart.element.find('.label.special').length).to.equal(1);
+      expect(chart.element.find('.label.special .text').text()).to.equal('2002');
+      expect(chart.element.find('g.segment.special').length).to.equal(12);
+      expect(chart.element.find('g.draghandle').length).to.equal(2);
+    });
+    it('should create a range label and handles when a selection is dragged', function() {
+      var chart = createNewTimelineChart(640, false, true);
+      var segments = $('g.segment');
+      var start = 5;
+      var end = 10;
+      segments.eq(start).mousedown();
+      segments.eq(end).mousemove().mouseup();
+      expect(chart.element.find('.label.special').length).to.equal(1);
+      expect(chart.element.find('.label.special .text').text()).to.equal('Jun \'01 - Dec \'01');
+      expect(chart.element.find('g.segment.special').length).to.equal(end - start + 1);
+      expect(chart.element.find('g.draghandle').length).to.equal(2);
+    });
+    it('should fire a filter-changed event when selected and a filter-cleared event when cleared', function() {
+      var chart = createNewTimelineChart(640, false, true);
+      var segments = $('g.segment');
+      var filterChanged = false;
+      scope.$on('timeline-chart:filter-changed', function(filter) {
+        filterChanged = true;
+      });
+      segments.eq(5).mousedown().mousemove().mouseup();
+      expect(filterChanged).to.equal(true, 'should have recieved the filter-changed event.');
+
+      var filterCleared = false;
+      scope.$on('timeline-chart:filter-cleared', function(filter) {
+        filterCleared = true;
+      });
+      $('.label.special').mousedown().mouseup();
+      expect(filterCleared).to.equal(true, 'should have recieved the filter-cleared event.');
     });
     it('should be able to change data', function(done) {
       var chart = createNewTimelineChart(640, false, true);
@@ -149,7 +198,13 @@ describe('timelineChart', function() {
         });
         done();
       });
-
+    });
+  });
+  describe('when not expanded at 300px', function() {
+    it('should hide some labels', function() {
+      var chart = createNewTimelineChart();
+      expect(chart.element.find('.label:visible').length).to.equal(3);
+      expect(chart.element.find('.label').length).to.equal(13);
     });
   });
 });

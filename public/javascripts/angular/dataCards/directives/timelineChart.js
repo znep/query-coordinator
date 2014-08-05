@@ -1,5 +1,5 @@
-angular.module('socrataCommon.directives').directive('timelineChart', function($parse, AngularRxExtensions) {
-  "use strict";
+angular.module('socrataCommon.directives').directive('timelineChart', function(AngularRxExtensions) {
+  'use strict';
 
   var flyoutDateFormat = {
     DAY: 'D MMMM YYYY',
@@ -15,10 +15,17 @@ angular.module('socrataCommon.directives').directive('timelineChart', function($
     DECADE: 'YYYY[s]'
   };
 
-  var renderTimelineChart = function(element, chartData, showFiltered, dimensions, expanded, precision, rowDisplayUnit, filterChanged) {
+  var renderTimelineChart = function(scope, element, chartData, showFiltered, dimensions, expanded, precision, rowDisplayUnit, filterChanged, filters) {
 
     var bottomMargin = 16;
     var xTickSize = 3;
+
+    if ($.isPresent(filters)) {
+      var filterStart = filters[0].start;
+      var filterEnd = filters[0].end;
+    } else {
+      var filterStart, filterEnd;
+    }
 
     var $chartWrapper = element.find('.timeline-chart-wrapper');
     var $chart = $chartWrapper.find('svg.graph');
@@ -81,7 +88,7 @@ angular.module('socrataCommon.directives').directive('timelineChart', function($
       }
 
       _.each(_.uniq([0].concat(niceTicks)), function(tick) {
-        element.append($('<div>').css('top', Math.floor(chartHeight - verticalScale(tick))).text($.toHumaneNumber(tick, 1)));
+        element.append($('<div>').css('top', Math.floor(chartHeight - verticalScale(tick))).text($.toHumaneNumber(tick)));
       });
       element.css('height', chartHeight);
       return element;
@@ -109,6 +116,10 @@ angular.module('socrataCommon.directives').directive('timelineChart', function($
       var tickRange = moment.duration(1, labelUnit);
     }
 
+    var segmentDuration = moment.duration(1, precision);
+    var segmentWidth = horizontalScale(
+      moment(horizontalScale.domain()[0]).add(segmentDuration));
+
     var dateFormat = tickDateFormat[labelUnit.toUpperCase()];
 
     var specialLabelData = _.pluck(_.filter(chartData, _.property('special')), 'date');
@@ -131,7 +142,8 @@ angular.module('socrataCommon.directives').directive('timelineChart', function($
       labelDivSelectionEnter.append('div').classed('text', true);
 
       var labelPos = function(time, label) {
-        return (horizontalScale(moment(time) + tickRange/2) - $(label).width()/2);
+        return horizontalScale(moment(time) + tickRange / 2) -
+          $(label).width() / 2 - segmentWidth / 2;
       };
 
       labelDivSelection.
@@ -144,12 +156,24 @@ angular.module('socrataCommon.directives').directive('timelineChart', function($
             return labelPos(d.date, this) + 'px';
         }).
         classed('dim', function(d, i) {
-          return specialLabelData.length > 0 && !d.special;
+          return filterStart && filterEnd;
         }).
         style('display', function(d, i) {
-          var right = labelPos(d.date, this) + $(this).width();
+          var left = labelPos(d.date, this);
+          var right = left + $(this).outerWidth();
           if (right > containerWidth) {
             return 'none';
+          }
+          if (i === 0) {
+            if (left < 0) {
+              return 'none';
+            }
+          } else {
+            var prevDiv = element.find('.label').eq(i-1);
+            var prevLeft = labelPos(d3.select(prevDiv[0]).datum().date, this);
+            if (prevDiv.is(':visible') && (prevLeft + prevDiv.outerWidth() > left)) {
+              return 'none';
+            }
           }
         });
 
@@ -175,7 +199,7 @@ angular.module('socrataCommon.directives').directive('timelineChart', function($
          attr('width', xTickSize);
 
       ticks.attr('x', function(d) {
-          return horizontalScale(d.date) - xTickSize/2;
+          return horizontalScale(d.date) - xTickSize / 2 - segmentWidth / 2;
         }).attr('y', chartHeight - xTickSize);
 
       ticks.exit().remove();
@@ -209,8 +233,8 @@ angular.module('socrataCommon.directives').directive('timelineChart', function($
         var next = pointCoords[i+1];
         if (next) {
           midCoords.push({
-            x: (coord.x + next.x)/2,
-            y: (coord.y + next.y)/2
+            x: (coord.x + next.x) / 2,
+            y: (coord.y + next.y) / 2
           });
         }
       });
@@ -220,6 +244,7 @@ angular.module('socrataCommon.directives').directive('timelineChart', function($
     // Extract point and midpoints on either side
     var lineSegmentCoords = function(chartDataIndex, points) {
       var superIndex = chartDataIndex * 2;
+
       return points.slice(_.max([0, superIndex - 1]), superIndex + 2);
     };
 
@@ -234,8 +259,9 @@ angular.module('socrataCommon.directives').directive('timelineChart', function($
     var dFillSegment = function(points, secondPoints) {
       return function(d, i) {
         var coords = lineSegmentCoords(i, points);
-        if (secondPoints && points !== secondPoints) {
+        if (secondPoints) {
           var filtered = lineSegmentCoords(i, secondPoints);
+
           return lineSegment(coords.concat(filtered.reverse()));
         } else {
           var xs = _.pluck(coords, 'x');
@@ -249,27 +275,28 @@ angular.module('socrataCommon.directives').directive('timelineChart', function($
     };
 
     var updateLines = function(selection) {
-      var segmentDuration = moment.duration(1, precision);
-      var segmentWidth = horizontalScale(
-        moment(horizontalScale.domain()[0]).add(segmentDuration));
-      var segments = selection.selectAll("g.segment").
-        data(chartData);
-      var segmentEnter = segments.enter().append("g").
-        attr("class", "segment");
+      var segments = selection.selectAll('g.segment').
+        data(chartData).
+        classed('special', function(d) {
+          return filterStart && filterEnd &&
+            filterStart <= d.date && d.date < filterEnd;
+        });
+      var segmentEnter = segments.enter().append('g').
+        attr('class', 'segment');
 
-      segmentEnter.append("path").
-        attr("class", "fill unfiltered");
-      segmentEnter.append("path").
-        attr("class", "fill filtered");
+      segmentEnter.append('path').
+        attr('class', 'fill unfiltered');
+      segmentEnter.append('path').
+        attr('class', 'fill filtered');
 
-      segmentEnter.append("path").
-        attr("class", "line unfiltered");
-      segmentEnter.append("path").
-        attr("class", "line filtered");
+      segmentEnter.append('path').
+        attr('class', 'line unfiltered');
+      segmentEnter.append('path').
+        attr('class', 'line filtered');
 
-      segmentEnter.append("rect").
-        attr("class", "spacer").
-        attr("y", 0);
+      segmentEnter.append('rect').
+        attr('class', 'spacer').
+        attr('y', 0);
 
 
       var transition = function(select) {
@@ -287,28 +314,24 @@ angular.module('socrataCommon.directives').directive('timelineChart', function($
         var filteredPoints = totalPoints;
       }
 
-      transition(selection.selectAll("g.segment path.line.filtered")).
-        attr("d", dLineSegment(filteredPoints));
+      transition(selection.selectAll('g.segment path.line.filtered'))
+        .attr('d', dLineSegment(filteredPoints));
 
-      transition(selection.selectAll("g.segment path.line.unfiltered")).
-        attr("d", dLineSegment(totalPoints));
+      transition(selection.selectAll('g.segment path.line.unfiltered')).
+        attr('d', dLineSegment(totalPoints));
 
-      transition(selection.selectAll("g.segment path.fill.filtered")).
-        attr("d", dFillSegment(filteredPoints));
+      transition(selection.selectAll('g.segment path.fill.filtered'))
+        .attr('d', dFillSegment(filteredPoints));
 
-      transition(selection.selectAll("g.segment path.fill.unfiltered")).
-        attr("d", dFillSegment(filteredPoints, totalPoints));
+      transition(selection.selectAll('g.segment path.fill.unfiltered')).
+        attr('d', dFillSegment(filteredPoints, totalPoints));
 
-      transition(selection.selectAll("g.segment rect.spacer")).
-        attr("x", function(d, i) {
+      transition(selection.selectAll('g.segment rect.spacer')).
+        attr('x', function(d, i) {
           return Math.floor(horizontalScale(d.date - segmentDuration / 2));
         }).
-        attr("width", function(d, i) {
-          return Math.floor(segmentWidth);
-        }).
-        attr("height", function() {
-          return chartHeight;
-        });
+        attr('width', Math.floor(segmentWidth)).
+        attr('height', chartHeight);
 
       $chart.width(containerWidth);
     };
@@ -317,7 +340,27 @@ angular.module('socrataCommon.directives').directive('timelineChart', function($
 
     d3Selection.select('g.xticks').call(updateTicks);
 
-    labelSelection.call(updateLabels);
+    $chartScroll.undelegate();
+
+    $chartScroll.flyout({
+      selector: 'g.draghandle',
+      parent: document.body,
+      direction: 'top',
+      inset: {
+        vertical: -4
+      },
+      html: 'Drag to change filter range'
+    });
+
+    $chartScroll.flyout({
+      selector: '.labels .label.special .cancel',
+      parent: document.body,
+      direction: 'top',
+      inset: {
+        vertical: -4
+      },
+      html: 'Clear filter range'
+    });
 
     $chartScroll.flyout({
       selector: 'g.container g.segment, .labels .label',
@@ -327,24 +370,67 @@ angular.module('socrataCommon.directives').directive('timelineChart', function($
         vertical: -4
       },
       positionOn: function($target, $head, options) {
-        var targetDate = d3.select($target[0]).datum().date;
-        var segmentIndex = _.indexOf(_.pluck(chartData, 'date'), targetDate);
-        return $chartScroll.find('path.fill.unfiltered').eq(segmentIndex);
+        options.isLabel = $target.is('.label');
+        options.isSpecial = $target.is('.special');
+        options.originalTarget = $target;
+        if (options.isLabel) {
+          if (options.isSpecial) {
+            var labelDateStart = filterStart;
+            var labelDateEnd = filterEnd;
+          } else {
+            var labelDateStart = d3.select($target[0]).datum().date;
+            var labelDateEnd = labelDateStart + tickRange;
+          }
+          options.segments = [];
+          _.each(element.find('g.segment'), function(segment) {
+            var date = d3.select(segment).datum().date;
+            if (labelDateStart <= date && date < labelDateEnd) {
+              options.segments.push(segment);
+              d3.select(segment).classed('hover', true);
+            }
+          });
+          var center = Math.floor(options.segments.length / 2);
+
+          return $(options.segments[center]).find('path.fill.unfiltered');
+        } else {
+          options.datum = d3.select($target[0]).datum();
+          var targetDate = options.datum.date;
+          var segmentIndex = _.indexOf(_.pluck(chartData, 'date'), targetDate);
+
+          return $chartScroll.find('path.fill.unfiltered').eq(segmentIndex);
+        }
       },
       title: function($target, $head, options) {
-        var targetDate = d3.select($target[0]).datum().date;
-        return moment(targetDate).format(flyoutDateFormat[precision]);
+        if (options.isLabel) {
+          return options.originalTarget.find('.text').text();
+        } else {
+          var targetDate = d3.select($target[0]).datum().date;
+
+          return moment(targetDate).format(flyoutDateFormat[precision]);
+        }
       },
       table: function($target, $head, options, $flyout) {
-        var data = d3.select($target[0]).datum();
+        if (options.isLabel) {
+          var total = 0;
+          var filtered = 0;
+          _.each(options.segments, function(segment) {
+            var data = d3.select(segment).datum();
+            total += data.total;
+            filtered += data.filtered;
+          });
+        } else {
+          var data = d3.select($target[0]).datum();
+          var total = data.total;
+          var filtered = data.filtered;
+        }
         var unit = '';
         if (rowDisplayUnit) {
           unit = ' ' + rowDisplayUnit.pluralize();
         }
-        var rows = [["Total", $.toHumaneNumber(data.total, 1) + unit]];
+        var rows = [['Total', $.toHumaneNumber(total) + unit]];
         if (showFiltered) {
-          $flyout.addClass("filtered");
-          rows.push(["Filtered Amount", $.toHumaneNumber(data.filtered, 1) + unit]);
+          $flyout.addClass('filtered');
+          rows.push(['Filtered Amount', $.toHumaneNumber(filtered) + unit]);
         }
         return rows;
       },
@@ -361,6 +447,186 @@ angular.module('socrataCommon.directives').directive('timelineChart', function($
       },
       onClose: function() {
         element.find('.labels .label.active').removeClass('active');
+        _.each(element.find('g.segment.hover'), function(segment) {
+          d3.select(segment).classed('hover', false);
+        });
+      }
+    });
+
+    var updateSpecialLabel = function() {
+      labelSelection.call(updateLabels);
+
+      var specialLabel = element.find('.labels .label.special');
+      if (filterStart && filterEnd) {
+        if(_.isEmpty(specialLabel)) {
+          specialLabel = $('<div class="label special">' +
+              '<div class="text"></div>' +
+              '<div class="cancel"> ×</div>' +
+              '</div>');
+          element.find('.labels').append(specialLabel);
+        }
+        d3.select(specialLabel[0]).datum({date: filterStart});
+        // One segment. Ex: 1 month
+        if (filterEnd.diff(filterStart, precision, true) === 1) {
+          var format = tickDateFormat[precision];
+          var text = filterStart.format(format);
+        // One label unit. Ex: 1 year
+        } else if (filterEnd.diff(filterStart, labelUnit, true) === 1) {
+          var format = tickDateFormat[labelUnit.toUpperCase()];
+          var text = filterStart.format(format);
+        // Show as a range
+        } else {
+          var format = tickDateFormat[precision];
+          var text = '{0} - {1}'.format(
+            filterStart.format(format),
+            filterEnd.format(format)
+          );
+        }
+        specialLabel.find('.text').text(text);
+        var centeringLabelLeft = Math.floor(
+          (horizontalScale(filterStart) + horizontalScale(filterEnd)) / 2  -
+          specialLabel.outerWidth() / 2
+        );
+        var maxLeft = chartWidth - specialLabel.outerWidth();
+        if (centeringLabelLeft < 0) {
+          centeringLabelLeft = 0;
+        } else if (centeringLabelLeft > maxLeft) {
+          centeringLabelLeft = maxLeft;
+        }
+        specialLabel.css('left', centeringLabelLeft);
+      } else {
+        specialLabel.remove();
+      }
+    }
+
+    var updateDragHandles = function() {
+      var segments = d3Selection.selectAll('g.draghandle').
+        data(_.compact(_.sortBy([filterStart, filterEnd])));
+
+      var segmentEnter = segments.enter().append('g').
+        attr('class', function(d, i) {
+          return 'draghandle ' + (i === 0 ? 'start' : 'end');
+        });
+      segmentEnter.append('line').attr('y1', 0);
+      segmentEnter.append('rect').attr('x', -2).attr('width', 5);
+      var handlePath = d3.svg.line().
+        x(function(d) { return d[0] }).
+        y(function(d) { return d[1] });
+      var points = [[0, 0], [10, 0], [10, 8], [0, 16]];
+      segmentEnter.append('path').attr('d', function(d, i) {
+        if (i === 0) {
+          var orientedPoints = _.map(points, function(point) {
+            return [point[0] * -1, point[1]];
+          });
+        } else {
+          var orientedPoints = points;
+        }
+        return handlePath(orientedPoints) + 'Z';
+      });
+      segments.attr('transform', function(d) {
+        return 'translate({0}, 0)'.format(Math.floor(horizontalScale(d - segmentDuration / 2)));
+      });
+      segments.selectAll('line').attr('y2', chartHeight);
+      segments.selectAll('rect').attr('height', chartHeight);
+
+      segments.exit().remove();
+
+      updateSpecialLabel();
+    };
+
+    updateDragHandles();
+
+    var clearFilter = function() {
+      filterStart = null;
+      filterEnd = null;
+      scope.$apply(function() {
+        scope.$emit('timeline-chart:filter-cleared');
+      });
+      updateDragHandles();
+    };
+
+    var selectionActive = false;
+    var dragActive = false;
+    var moved = false;
+    var isSpecial = false;
+    $chartScroll.delegate('g.segment, .labels .label', 'mousedown', function(event) {
+      var clickedDatum = d3.select(event.currentTarget).datum();
+      filterStart = clickedDatum.date;
+      var duration = $(event.currentTarget).is('.label') ? tickRange : segmentDuration;
+      filterEnd = moment(clickedDatum.date).add(duration);
+
+      isSpecial = $(event.currentTarget).is('.special');
+      moved = false;
+      selectionActive = true;
+
+      element.addClass('selecting');
+      event.preventDefault();
+    }).delegate('g.draghandle', 'mousedown', function(event) {
+      dragActive = $(event.currentTarget).is('.start') ? 'start' : 'end';
+
+      element.addClass('selecting');
+      event.preventDefault();
+    }).delegate('g.segment, .labels .label:not(.special)', 'mousemove', function(event) {
+      if (selectionActive || dragActive) {
+        var duration = $(event.currentTarget).is('.label') ? tickRange : segmentDuration;
+        var clickedDatum = d3.select(event.currentTarget).datum();
+        var newEnd = clickedDatum.date;
+
+        if (selectionActive) {
+          moved = true;
+          if (newEnd >= filterStart) {
+            filterEnd = moment(newEnd).add(duration);
+          } else {
+            if (filterEnd >= filterStart) {
+              filterStart = moment(filterStart).add(duration);
+            }
+            filterEnd = newEnd;
+          }
+        } else if(dragActive) {
+          if (dragActive === 'start') {
+            filterStart = newEnd;
+          } else {
+            filterEnd = moment(newEnd).add(duration);
+          }
+        }
+
+        // Clamp the range
+        var domain = horizontalScale.domain();
+        var domainStart = moment(domain[0]);
+        var domainEnd = moment(domain[1]).add(segmentDuration);
+        if (filterEnd > domainEnd) {
+          filterEnd = domainEnd;
+        }
+        if (filterEnd < domainStart) {
+          filterEnd = domainStart;
+        }
+        if (filterStart > domainEnd) {
+          filterStart = domainEnd;
+        }
+        if (filterStart < domainStart) {
+          filterStart = domainStart;
+        }
+        updateDragHandles();
+      }
+    });
+
+    $('body').off('mouseup.TimelineChart').on('mouseup.TimelineChart', function(event) {
+      if (dragActive || selectionActive) {
+        element.removeClass('selecting');
+        // If clicked on a selected segment and the user hasn't moved, clear the filter.
+        if (isSpecial && moved === false) {
+          clearFilter();
+        } else {
+          selectionActive = false;
+          dragActive = false;
+          var sorted = _.sortBy([filterStart, filterEnd]);
+          filterStart = sorted[0];
+          filterEnd = sorted[1];
+          scope.$apply(function() {
+            scope.$emit('timeline-chart:filter-changed', sorted);
+          });
+        }
+        d3Selection.select('g.container').call(updateLines);
       }
     });
   };
@@ -382,21 +648,15 @@ angular.module('socrataCommon.directives').directive('timelineChart', function($
       showFiltered: '=',
       expanded: '=',
       precision: '=',
-      rowDisplayUnit: '='
+      rowDisplayUnit: '=',
+      filters: '='
     },
     link: function(scope, element, attrs) {
       AngularRxExtensions.install(scope);
 
       if (element.closest('.card-visualization').length === 0) {
-        throw new Error("[timelineChart] timeline-chart is missing a .card-visualization (grand)parent.");
+        throw new Error('[timelineChart] timeline-chart is missing a .card-visualization (grand)parent.');
       }
-
-      $(element.delegate('g.segment', 'click', function(event) {
-        var clickedDatum = d3.select(event.currentTarget).datum();
-        scope.$apply(function() {
-          scope.$emit('timeline-chart:datum-clicked', clickedDatum);
-        });
-      }));
 
       var lastFilter = false;
       var lastData = false;
@@ -408,9 +668,11 @@ angular.module('socrataCommon.directives').directive('timelineChart', function($
         scope.observe('expanded'),
         scope.observe('precision'),
         scope.observe('rowDisplayUnit'),
-        function(cardVisualizationDimensions, chartData, showFiltered, expanded, precision, rowDisplayUnit) {
+        scope.observe('filters'),
+        function(cardVisualizationDimensions, chartData, showFiltered, expanded, precision, rowDisplayUnit, filters) {
           if (!chartData || !precision) return;
           renderTimelineChart(
+            scope,
             element,
             chartData,
             showFiltered,
@@ -418,7 +680,8 @@ angular.module('socrataCommon.directives').directive('timelineChart', function($
             expanded,
             precision,
             rowDisplayUnit,
-            lastData && ( lastFilter != showFiltered || lastData != chartData )
+            lastData && ( lastFilter != showFiltered || lastData != chartData ),
+            filters
           );
           lastFilter = showFiltered;
           lastData = chartData;

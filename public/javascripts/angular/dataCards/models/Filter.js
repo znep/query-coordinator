@@ -14,21 +14,18 @@ angular.module('dataCards.models').factory('Filter', function(SoqlHelpers) {
     return SoqlHelpers.replaceHyphensWithUnderscores(field) + this.operator + SoqlHelpers.encodePrimitive(this.operand);
   };
 
-  function TimeOperatorFilter(precision, operand) {
-    if (!_.isString(precision)) { throw new Error('TimeOperatorFilter passed invalid precision'); }
-    var validPrecisions = _.keys(SoqlHelpers.timeIntervalToDateTrunc);
-    if (!_.contains(validPrecisions, precision)) {
-      throw new Error('TimeOperatorFilter passed invalid precision {0}. Valid are {1}.'.
-        format(JSON.stringify(precision), JSON.stringify(validPrecisions)));
-    }
-    if (_.isUndefined(operand) || _.isNull(operand)) { throw new Error('TimeOperatorFilter passed invalid operand'); }
+  function TimeRangeFilter(start, end) {
+    if (!moment(start).isValid() || !moment(end).isValid()) { throw new Error('TimeRangeFilter passed invalid date.'); }
 
-    this.precision = precision;
-    this.operand = operand;
+    this.start = start;
+    this.end = end;
   };
 
-  TimeOperatorFilter.prototype.generateSoqlWhereFragment = function(field) {
-    return SoqlHelpers.replaceHyphensWithUnderscores('date_trunc_{0}({1})='.format(SoqlHelpers.timeIntervalToDateTrunc[this.precision], field)) + SoqlHelpers.encodePrimitive(this.operand);
+  TimeRangeFilter.prototype.generateSoqlWhereFragment = function(field) {
+    field = SoqlHelpers.replaceHyphensWithUnderscores(field);
+    var encodedStart = SoqlHelpers.encodePrimitive(this.start);
+    var encodedEnd = SoqlHelpers.encodePrimitive(this.end);
+    return '{0} > {1} AND {0} < {2} '.format(field, encodedStart, encodedEnd);
   };
 
   function IsNullFilter(isNull) {
@@ -42,7 +39,7 @@ angular.module('dataCards.models').factory('Filter', function(SoqlHelpers) {
   };
 
   return {
-    TimeOperatorFilter: TimeOperatorFilter,
+    TimeRangeFilter: TimeRangeFilter,
     BinaryOperatorFilter: BinaryOperatorFilter,
     IsNullFilter: IsNullFilter
   };

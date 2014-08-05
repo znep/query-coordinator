@@ -1,4 +1,5 @@
 angular.module('dataCards.directives').directive('cardVisualizationTimelineChart', function(AngularRxExtensions, CardDataService, Filter) {
+  'use strict';
 
   return {
     restrict: 'E',
@@ -34,12 +35,18 @@ angular.module('dataCards.directives').directive('cardVisualizationTimelineChart
             return requests === 0 || (requests > responses);
           }));
 
-      var nonBaseFilterApplied = Rx.Observable.combineLatest(
-          $scope.observe('whereClause'),
-          baseSoqlFilter,
-          function (whereClause, baseFilter) {
-            return !_.isEmpty(whereClause) && whereClause != baseFilter;
-          });
+      // Remove the current timeline cards filter from the whereClause
+      function stripWhereClause(whereClause) {
+        var filter = $scope.model.getCurrentValue('activeFilters')[0];
+        if (filter) {
+          var whereFragment = filter.generateSoqlWhereFragment($scope.model.fieldName);
+          return whereClause.
+            replace(new RegExp('AND ' + whereFragment, 'gi'), '').
+            replace(new RegExp(whereFragment + '( AND|)', 'gi'), '');
+        } else {
+          return whereClause;
+        }
+      }
 
       var precision = Rx.Observable.combineLatest(
         model.pluck('fieldName'),
@@ -83,11 +90,10 @@ angular.module('dataCards.directives').directive('cardVisualizationTimelineChart
         model.pluck('fieldName'),
         dataset,
         $scope.observe('whereClause'),
-        nonBaseFilterApplied,
         precision,
-        function(fieldName, dataset, whereClauseFragment, nonBaseFilterApplied, precision) {
+        function(fieldName, dataset, whereClauseFragment, precision) {
           dataRequests.onNext(1);
-          var dataPromise = CardDataService.getTimelineData(fieldName, dataset.id, whereClauseFragment, precision);
+          var dataPromise = CardDataService.getTimelineData(fieldName, dataset.id, stripWhereClause(whereClauseFragment), precision);
           dataPromise.then(
             function(res) {
               // Ok
@@ -120,16 +126,11 @@ angular.module('dataCards.directives').directive('cardVisualizationTimelineChart
             return acc;
           }, {});
 
-          var activeFilterDates = _.map(_.pluck(filters, 'operand'), function(date) {
-            return moment(date).isValid() ? moment(date) : date;
-          });
-
           return _.map(_.pluck(unfilteredData, 'date'), function(date) {
             return {
               date: date,
               total: unfilteredAsHash[date],
-              filtered: filteredAsHash[date] || 0,
-              special: _.contains(activeFilterDates, date)
+              filtered: filteredAsHash[date] || 0
             };
           });
         }));
@@ -142,25 +143,16 @@ angular.module('dataCards.directives').directive('cardVisualizationTimelineChart
 
       $scope.bindObservable('precision', precision);
 
+      $scope.bindObservable('filters', model.observeOnLatest('activeFilters'));
       $scope.bindObservable('rowDisplayUnit', dataset.observeOnLatest('rowDisplayUnit'));
 
-      $scope.$on('timeline-chart:datum-clicked', function(event, datum) {
+      $scope.$on('timeline-chart:filter-cleared', function(event) {
+        $scope.model.set('activeFilters', []);
+      });
 
-        // TODO: Implement range time filters
-
-        // Slice off the timezone.
-        var isoDate = datum.date.format().slice(0, -6);
-        var hasFiltersOnCard = _.any($scope.model.getCurrentValue('activeFilters'), function(filter) {
-          return filter.operand === isoDate;
-        });
-        if (hasFiltersOnCard) {
-          $scope.model.set('activeFilters', []);
-        } else {
-          var filter = moment(datum.date).isValid() ?
-            new Filter.TimeOperatorFilter($scope.precision, isoDate) :
-            new Filter.IsNullFilter(true);
-          $scope.model.set('activeFilters', [filter]);
-        }
+      $scope.$on('timeline-chart:filter-changed', function(event, range) {
+        var filter = new Filter.TimeRangeFilter(range[0], range[1]);
+        $scope.model.set('activeFilters', [filter]);
       });
     }
   };

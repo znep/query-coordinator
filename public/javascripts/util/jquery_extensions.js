@@ -233,11 +233,11 @@ $.fn.flyout = function(options) {
   }
   options = _.extend(defaults, options);
   var self = this;
-  var inflyout = false, intarget = false, flyout;
+  var inFlyout = false, inTarget = false, flyout;
   var renderFlyout = function(target) {
     var $target = $(target);
     var parentElem = $(options.parent || $target);
-    closeFlyout();
+    $('.flyout').remove();
     flyout = $('<div class="flyout"><div class="flyout-arrow"></div></div>');
     flyout.addClass('flyout-' + options.style);
     flyout.data('target', target);
@@ -280,7 +280,10 @@ $.fn.flyout = function(options) {
     while(container.css('overflow') == 'visible' && container[0] != document.body) {
       container = container.parent();
     }
-    var containerRightEdge = window.innerWidth;
+    if (_.isEmpty(container)) {
+      return;
+    }
+    var containerRightEdge = $('body').outerWidth();
     var containerLeftEdge = 0;
     if (container[0] != document.body) {
       containerLeftEdge = container.offset().left;
@@ -367,35 +370,44 @@ $.fn.flyout = function(options) {
     }
     flyout.offset({ top: top, left: left });
     getVal(options.onOpen);
-    inflyout = false;
-    intarget = true;
+    inFlyout = false;
+    inTarget = true;
     flyout.on('mouseover, mouseenter', function(e) {
-      inflyout = true;
+      inFlyout = true;
     }).bind('mouseleave', function(e) {
       if(!options.debugNeverClosePopups) closeFlyout();
     });
   };
   var closeFlyout = function() {
-    if (_.isFunction(options.onClose)) options.onClose();
-    $('.flyout').remove();
+    if (flyout) {
+      if (_.isFunction(options.onClose)) {
+        options.onClose();
+      }
+      flyout.remove();
+    }
   };
   $(window).scroll(function(e) {
-    var $flyout = $('.flyout');
-    if (!_.isEmpty($flyout) && ( inflyout || intarget )) {
-      renderFlyout($flyout.data('target'));
+    if ($.isPresent(flyout) && flyout.is(':visible') && ( inFlyout || inTarget )) {
+      renderFlyout(flyout.data('target'));
     }
   });
-  self.delegate(options.selector, 'mouseenter', function(e) {
+  self.delegate(options.selector, 'mouseover', function(e) {
     renderFlyout(this);
+    e.stopPropagation();
   }).delegate(options.selector, 'mouseleave', function(e) {
     if(!options.debugNeverClosePopups){
-      intarget = false;
-      _.defer(function() {
-        if(!inflyout && !intarget) {
-          closeFlyout();
-        }
-      });
+      inTarget = false;
+      if (options.interact) {
+        _.defer(function() {
+          if(!inFlyout && !inTarget) {
+            closeFlyout();
+          }
+        });
+      } else {
+        closeFlyout();
+      }
     }
+    e.stopPropagation();
   });
   return this;
 };
@@ -403,6 +415,7 @@ $.fn.flyout = function(options) {
 $.easing.socraticEase = function(t) {
   // Just a bunch of disparate functions manually determined and spliced together.
   // Approximates a particular bezier curve.
+  // TODO: Magic numbers!
   if (t < 0.304659) {
     return Math.pow(3 * t, 4);
   } else if (t < 0.46) {

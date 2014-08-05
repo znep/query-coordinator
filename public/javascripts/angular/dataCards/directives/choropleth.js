@@ -568,7 +568,9 @@ angular.module('dataCards.directives').directive('choropleth', function(AngularR
           value = '(No Value)';
           var valueIsUndefined = true;
         }
-        $tooltip.find('.flyout-title').text(featureHumanReadableName.capitaliseEachWord());
+        if (featureHumanReadableName) {
+          $tooltip.find('.flyout-title').text(featureHumanReadableName.capitaliseEachWord());
+        }
         var message = $.commaify(value);
         
         $tooltip.removeClass('undefined');

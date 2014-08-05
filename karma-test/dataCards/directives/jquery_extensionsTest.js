@@ -1,4 +1,4 @@
-describe('jquery_extensions', function() {
+describe('jquery-extensions', function() {
   describe('$.fn.dimensions', function() {
     it('should return the same dimensions as are set', function() {
       var div = $('<div>').

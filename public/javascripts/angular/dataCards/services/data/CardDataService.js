@@ -121,6 +121,9 @@ angular.module('dataCards.services').factory('CardDataService', function($q, $ht
         url += ' where {0}'.format(whereClause);
       }
       return $http.get(url, { cache: true }).then(function(response) {
+        if (_.isEmpty(response.data)) {
+          throw new Error('The response from the server contained no data.');
+        }
         return response.data[0].count_0;
       });
     },

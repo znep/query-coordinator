@@ -1,4 +1,5 @@
 angular.module('socrataCommon.directives').directive('columnChart', function($parse, AngularRxExtensions) {
+  'use strict';
 
   var renderColumnChart = function(element, chartData, showFiltered, dimensions, expanded, rowDisplayUnit) {
 
@@ -8,7 +9,6 @@ angular.module('socrataCommon.directives').directive('columnChart', function($pa
     var topMargin = 0; // Set to zero so .card-text could control padding b/t text & visualization
     var bottomMargin; // Calculated based on label text length
     var tipHeight = 10;
-    var tooltipYOffset = 9999; // invisible (max) height of tooltip above tallest bar; hack to make tooltip appear above chart/card-text
     var horizontalScrollbarHeight = 15; // used to keep horizontal scrollbar within .card-visualization upon expand
     var numberOfDefaultLabels = expanded ? chartData.length : 3;
     var undefinedPlaceholder = '(No value)';
@@ -90,17 +90,18 @@ angular.module('socrataCommon.directives').directive('columnChart', function($pa
 
     */
 
+    var rangeInterval;
     if (rangeBand < minBarWidth) {
       // --> desired rangeBand (bar width) is less than accepted minBarWidth
       // use computeChartDimensions to set rangeBand = minBarWidth
       // and update horizontalScale & rightOffset accordingly
-      var rangeInterval = minBarWidth * numberOfBars / (1 - barPadding);
+      rangeInterval = minBarWidth * numberOfBars / (1 - barPadding);
       computeChartDimensions(rangeInterval);
       if (!expanded) chartTruncated = true;
     } else if (rangeBand > maxBarWidth) {
       // --> desired rangeBand (bar width) is greater than accepted maxBarWidth
       // use computeChartDimensions to set rangeBand = maxBarWidth
-      var rangeInterval = maxBarWidth * numberOfBars / (1 - barPadding) + maxBarWidth * barPadding;
+      rangeInterval = maxBarWidth * numberOfBars / (1 - barPadding) + maxBarWidth * barPadding;
       computeChartDimensions(rangeInterval);
     }
 
@@ -121,11 +122,11 @@ angular.module('socrataCommon.directives').directive('columnChart', function($pa
       var numberOfTicks = 3;
       var element;
 
-      element = $('<div>').addClass('ticks')
-        .css('top', $chartScroll.position().top + topMargin)
-        .css('width', chartWidth);
+      element = $('<div>').addClass('ticks').
+        css('top', $chartScroll.position().top + topMargin).
+        css('width', chartWidth);
       _.each(_.uniq([0].concat(verticalScale.ticks(numberOfTicks))), function(tick) {
-        element.append($('<div>').css('top', chartHeight - verticalScale(tick)).text($.toHumaneNumber(tick, 1)));
+        element.append($('<div>').css('top', chartHeight - verticalScale(tick)).text($.toHumaneNumber(tick)));
       });
       element.css('height', chartHeight + topMargin);
       return element;
@@ -311,20 +312,12 @@ angular.module('socrataCommon.directives').directive('columnChart', function($pa
         style('height', function(d) { return clampHeight(verticalScale(d)) + 'px'; }).
         style('top', function(d) { return verticalOffset - clampHeight(verticalScale(d)) + 1 + 'px'; }).
         attr('class', function(d, i) {
-          return 'bar ' + (i==0 ? 'unfiltered' : 'filtered');
+          return 'bar ' + (i === 0 ? 'unfiltered' : 'filtered');
         });
 
       // EXIT PROCESSING
       bars.exit().remove();
       selection.exit().remove();
-    };
-
-    var mouseoverHoverTriggerBars = function(selection) {
-      selection.style('top', topMargin + tooltipYOffset + 'px');
-      $chartScroll.
-        css('padding-top', tooltipYOffset).
-        css('top', -tooltipYOffset);
-      element.find('.ticks').css('top', $chartScroll.position().top + topMargin + tooltipYOffset);
     };
 
     element.children('.ticks').remove();
@@ -355,10 +348,10 @@ angular.module('socrataCommon.directives').directive('columnChart', function($pa
         if (rowDisplayUnit) {
           unit = ' ' + rowDisplayUnit.pluralize();
         }
-        var rows = [["Total", $.toHumaneNumber(data.total, 1) + unit]];
+        var rows = [["Total", $.toHumaneNumber(data.total) + unit]];
         if (showFiltered) {
           $flyout.addClass("filtered");
-          rows.push(["Filtered Amount", $.toHumaneNumber(data.filtered, 1) + unit]);
+          rows.push(["Filtered Amount", $.toHumaneNumber(data.filtered) + unit]);
         }
         return rows;
       }
@@ -373,12 +366,6 @@ angular.module('socrataCommon.directives').directive('columnChart', function($pa
       $truncationMarker.css('display', 'block');
     } else {
       $truncationMarker.css('display', 'none');
-    }
-    // if re-render was caused by clicking on bar,
-    // (i.e., when render is called while hovering over .column-chart-wrapper)
-    // then keep tooltip visible
-    if (element.find('.column-chart-wrapper:hover').length > 0) {
-      hoverTriggerSelection.call(mouseoverHoverTriggerBars);
     }
   };
 
@@ -401,7 +388,7 @@ angular.module('socrataCommon.directives').directive('columnChart', function($pa
     link: function(scope, element, attrs) {
       AngularRxExtensions.install(scope);
 
-      if (element.closest('.card-visualization').length == 0) {
+      if (_.isEmpty(element.closest('.card-visualization'))) {
         throw new Error("[columnChart] column-chart is missing a .card-visualization (grand)parent.");
       }
 

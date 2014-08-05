@@ -356,7 +356,25 @@ describe('columnChart', function() {
           expect(Math.abs(unfilteredHeight / 2 - filteredHeight) <= 0.5).to.equal(true);
         });
       });
+      it('should show the filtered count in the flyout', function() {
+        var chart = createNewColumnChart(640, false, testDataWithFiltered);
+        var scope = chart.scope;
+        scope.showFiltered = true;
+        scope.$digest();
 
+        chart.element.find('.bar-group').eq(1).mouseover();
+        expect($('.flyout').is(':contains(Filtered Amount)')).to.equal(true);
+      });
+
+    });
+
+    describe('with showFiltered off', function() {
+      it('should show the filtered count in the flyout', function() {
+        var chart = createNewColumnChart(640, false, testDataWithFiltered);
+
+        chart.element.find('.bar-group').eq(1).mouseover();
+        expect($('.flyout').is(':contains(Filtered Amount)')).to.equal(false);
+      });
     });
 
   });

@@ -225,6 +225,22 @@ describe('timelineChart', function() {
         done();
       });
     });
+    describe('if showFiltered', function() {
+      it('should show the filtered count in the flyout', function() {
+        var chart = createNewTimelineChart(640, false, true);
+
+        chart.element.find('g.segment').eq(1).mouseover();
+        expect($('.flyout').is(':contains(Filtered Amount)')).to.equal(true);
+      });
+    });
+    describe('if not showFiltered', function() {
+      it('should not show the filtered count', function() {
+        var chart = createNewTimelineChart(640, false, false);
+
+        chart.element.find('g.segment').eq(1).mouseover();
+        expect($('.flyout').is(':contains(Filtered Amount)')).to.equal(false);
+      });
+    });
   });
   describe('when not expanded at 300px', function() {
     it('should hide some labels', function() {

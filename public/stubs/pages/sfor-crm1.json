@@ -63,7 +63,7 @@
       "displayMode": "visualization",
       "expanded": false
     },
-        {
+    {
       "description": "Supervisor District",
       "fieldName": ":Computed_3g7x28s9_location",
       "cardSize": 2,
@@ -106,7 +106,7 @@
     {
       "description": "All Data",
       "fieldName": "*",
-      "cardSize": 1,
+      "cardSize": 3,
       "cardCustomStyle": {},
       "expandedCustomStyle": {},
       "displayMode": "visualization",

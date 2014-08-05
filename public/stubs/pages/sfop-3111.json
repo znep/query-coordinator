@@ -29,15 +29,6 @@
       "shapeFile": "n8rp-cfd9"
     },
     {
-      "description": "All Data",
-      "fieldName": "*",
-      "cardSize": 1,
-      "cardCustomStyle": {},
-      "expandedCustomStyle": {},
-      "displayMode": "visualization",
-      "expanded": false
-    },
-    {
       "description": "Status",
       "fieldName": "status",
       "cardSize": 2,
@@ -119,6 +110,15 @@
       "displayMode": "visualization",
       "expanded": false,
       "shapeFile": "9ax2-xhmg"
+    },
+    {
+      "description": "All Data",
+      "fieldName": "*",
+      "cardSize": 3,
+      "cardCustomStyle": {},
+      "expandedCustomStyle": {},
+      "displayMode": "visualization",
+      "expanded": false
     }
   ]
 }

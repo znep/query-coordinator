@@ -118,10 +118,12 @@ angular.module('dataCards.services').factory('CardDataService', function($q, $ht
       datasetId = DeveloperOverrides.dataOverrideForDataset(datasetId) || datasetId;
       var url = '/api/id/{0}.json?$query=select count(0)'.format(datasetId);
       if (whereClause) {
-        whereClause = whereClause;
         url += ' where {0}'.format(whereClause);
       }
       return $http.get(url, { cache: true }).then(function(response) {
+        if (_.isEmpty(response.data)) {
+          throw new Error('The response from the server contained no data.');
+        }
         return response.data[0].count_0;
       });
     },
@@ -132,7 +134,6 @@ angular.module('dataCards.services').factory('CardDataService', function($q, $ht
       var url = '/api/id/{0}.json?$offset={1}&$limit={2}&$order={3}'.
         format(datasetId, offset, limit, order);
       if (whereClause) {
-        whereClause = whereClause;
         url += '&$where={0}'.format(whereClause);
       }
       return $http.get(url, { cache: true, timeout: timeout }).then(function(response) {

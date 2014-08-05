@@ -663,6 +663,10 @@ angular.module('dataCards.directives').directive('choropleth', function(AngularR
           }
 
           updateBounds(geojsonAggregateData);
+          $timeout(function() {
+            // wait until card height dynamically sized
+            $scope.$broadcast('mapContainerResized');
+          });
         });
     }
   }

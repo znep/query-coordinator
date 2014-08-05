@@ -22,6 +22,7 @@ div.timeline-chart
   div.timeline-chart-wrapper
 
     svg.graph
+      overflow: visible
 
       g.xticks
         rect.tick
@@ -31,6 +32,8 @@ div.timeline-chart
           fill: $chart-tick-color
 
       g.segment
+        cursor: pointer
+
         path.line
           fill: none
           stroke-linecap: round
@@ -52,7 +55,7 @@ div.timeline-chart
         rect.spacer
           fill: transparent
 
-        &:hover
+        &:hover, &.hover
           path.line
             &.unfiltered
               stroke: $unfiltered-line-color-hover
@@ -64,6 +67,30 @@ div.timeline-chart
             &.filtered
               fill: rgba($filtered-line-color-hover, $fill-opacity)
 
+        &.special
+          path.filtered
+            &.line
+              stroke: $selected-line-color
+            &.fill
+              fill: rgba($selected-line-color, $fill-opacity)
+          &:hover, &.hover
+            path.filtered
+              &.line
+                stroke: $selected-line-color-hover
+              &.fill
+                fill: rgba($selected-line-color-hover, $fill-opacity)
+      g.draghandle
+        cursor: col-resize
+        line
+          stroke: $chart-tick-color
+          stroke-dasharray: 7, 3
+        path
+          stroke: $flyout-border
+          fill: $flyout-chart-background-color
+          stroke-linejoin: round
+        rect
+          fill: transparent
+
   div.labels
     position: absolute
     right: 0
@@ -71,22 +98,29 @@ div.timeline-chart
     height: $base-font-size
 
     div.label
+      cursor: pointer
       position: absolute
       bottom: 0
-      &.dim
+      color: $timeline-label-color
+      font-size: $medium-font-size
+      line-height: $base-font-size
+      white-space: nowrap
+
+      .text, .cancel
+        display: inline-block
+
+      &.dim:not(.active)
         opacity: 0.2
-      &.active
-        font-weight: bold
 
-      div.callout
-        position: absolute
-        border-bottom: 1px solid $chart-tick-color
-        width: 0.5rem
+      &.active, &.special
+        color: $timeline-label-color-active
+        background-color: rgba(255, 255, 255, 0.8)
 
-      div.text
-        color: $chart-tick-color
-        font-size: $medium-font-size
-        line-height: $base-font-size
+        .cancel
+          font-family: 'SSAir'
+          font-size: 1.3em
+          color: black
+          margin-left: 3px
 
   div.ticks
     position: absolute
@@ -100,3 +134,7 @@ div.timeline-chart
       text-align: right
       margin-top: -$tick-height
       font-size: $tick-font-size
+
+  &.selecting div.chart-scroll
+    g.draghandle, .label.special
+      pointer-events: none

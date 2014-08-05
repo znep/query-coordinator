@@ -686,7 +686,8 @@ javascripts:
   # END BOWER-MANAGED ASSETS
 
   angular-jquery-extensions:
-    - public/javascripts/util/jquery_extensions.js
+    - public/javascripts/util/jquery-extensions.js
+    - public/javascripts/util/lodash-mixins.js
 
 dump:
   javascripts:

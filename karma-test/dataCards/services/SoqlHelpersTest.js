@@ -12,7 +12,7 @@ describe("SoqlHelpers service", function() {
       expect(SoqlHelpers.encodeSoqlString("'")).to.equal("''''");
       expect(SoqlHelpers.encodeSoqlString("SOQL's escaping is 'ella confusin'")).to.equal("'SOQL''s escaping is ''ella confusin'''");
     }));
-    it('should throw errors on non-strings', inject(function(SoqlHelpers) {
+    it('should throw errors on non-strings or non-dates', inject(function(SoqlHelpers) {
       expect(function() { SoqlHelpers.encodeSoqlString(undefined); }).to.throw();
       expect(function() { SoqlHelpers.encodeSoqlString(null); }).to.throw();
       expect(function() { SoqlHelpers.encodeSoqlString(0); }).to.throw();
@@ -21,6 +21,9 @@ describe("SoqlHelpers service", function() {
       expect(function() { SoqlHelpers.encodeSoqlString(['']); }).to.throw();
       expect(function() { SoqlHelpers.encodeSoqlString({}); }).to.throw();
       expect(function() { SoqlHelpers.encodeSoqlString({a:2}); }).to.throw();
+    }));
+    it('should encode dates to strings', inject(function(SoqlHelpers) {
+      expect(SoqlHelpers.encodeSoqlDate(moment('2014-08-01T16:36:24'))).to.equal("'2014-08-01T16:36:24'");
     }));
   });
 
@@ -41,6 +44,25 @@ describe("SoqlHelpers service", function() {
       expect(_.flatten(mockedEncode.args)).to.deep.equal(testPrimitives); // Verify passed arguments.
 
       SoqlHelpers.encodeSoqlString.restore();
+    }));
+
+    it('should delegate to encodeSoqlDate for dates', inject(function(SoqlHelpers) {
+      var fakeReturnValue = 'a_special_value';
+      var mockedEncode = sinon.stub(SoqlHelpers, 'encodeSoqlDate').returns(fakeReturnValue);
+
+      var testPrimitives = [
+        moment(),
+        moment('2014-08-01T16:36:24'),
+        new Date()
+      ];
+
+      var returned = _.map(testPrimitives, SoqlHelpers.encodePrimitive);
+
+      expect(mockedEncode.callCount).to.equal(testPrimitives.length);
+      expect(returned).to.deep.equal(_.times(testPrimitives.length, _.constant(fakeReturnValue))); // Verify passthrough.
+      expect(_.flatten(mockedEncode.args)).to.deep.equal(testPrimitives); // Verify passed arguments.
+
+      SoqlHelpers.encodeSoqlDate.restore();
     }));
 
     it('should throw errors on unsupported types', inject(function(SoqlHelpers) {

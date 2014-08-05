@@ -130,12 +130,10 @@ describe("A Choropleth Card Visualization", function() {
       testHelpers.fireMouseEvent(feature, 'mousemove');
       timeout.flush();
       var $flyout = $('#choro-flyout');
-      setTimeout(function() {
-        var flyoutText = $flyout.find('.content').text();
+      var flyoutText = $flyout.text();
         expect($flyout.is(':visible')).to.equal(true);
         expect(( new RegExp(rowDisplayUnit.pluralize()) ).test(flyoutText)).to.equal(true);
         done();
-      }, 200);
     });
   });
 });

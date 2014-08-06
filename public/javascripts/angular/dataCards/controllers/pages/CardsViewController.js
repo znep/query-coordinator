@@ -57,13 +57,36 @@ angular.module('dataCards.controllers').controller('CardsViewController',
 
     $scope.bindObservable('pageDescription', page.observe('description'));
 
-    $scope.bindObservable('datasetCSVDownloadURL', page.observe('dataset').map(function(dataset) {
-      if (dataset && dataset.hasOwnProperty('id')) {
-        return '/api/views/{0}/rows.csv?accessType=DOWNLOAD'.format(dataset.id);
-      } else {
-        return '#';
-      }
-    }));
+    $scope.bindObservable('datasetCSVDownloadURL',
+      page.observe('dataset').map(function(dataset) {
+        if (dataset && dataset.hasOwnProperty('id')) {
+          return '/api/views/{0}/rows.csv?accessType=DOWNLOAD'.format(dataset.id);
+        } else {
+          return '#';
+        }
+      }));
+
+    $scope.bindObservable('datasetAPIURL', Rx.Observable.combineLatest(
+      page.observe('dataset').map(function(dataset) { if (dataset) { return dataset.id; } else { return null; } }),
+      page.observe('dataset').observeOnLatest('domain').map(function(domain) { if (domain) { return domain; } else { return null; } }),
+      function(datasetId, domain) {
+        if ($.isPresent(datasetId) && $.isPresent(domain)) {
+          return 'http://{0}/resource/{1}/rows.json'.format(domain, datasetId);
+        } else {
+          return '';
+        }
+      }));
+
+    $scope.bindObservable('datasetDocumentationURL',Rx.Observable.combineLatest(
+      page.observe('dataset').map(function(dataset) { if (dataset) { return dataset.id; } else { return null; } }),
+      page.observe('dataset').observeOnLatest('domain').map(function(domain) { if (domain) { return domain; } else { return null; } }),
+      function(datasetId, domain) {
+        if ($.isPresent(datasetId) && $.isPresent(domain)) {
+          return 'http://dev.socrata.com/foundry/#/{0}/{1}'.format(domain, datasetId);
+        } else {
+          return '#';
+        }
+      }));
 
     $scope.bindObservable('rowsOfCardsBySize', rowsOfCardsBySize);
     $scope.bindObservable('cardSizeNamesInDisplayOrder', rowsOfCardsBySize.map(function(sizedCards) {
@@ -172,6 +195,55 @@ angular.module('dataCards.controllers').controller('CardsViewController',
       $scope.availableContentHeightStyle = {
         'top': availableContentHeight + 'px'
       };
+    });
+
+    $scope.apiPanelActive = false;
+
+    $('#api-panel-toggle-btn').on('click', function() {
+      $scope.$apply(function() {
+        $scope.apiPanelActive = !$scope.apiPanelActive;
+      });
+    });
+
+    /* Handle selection of the API endpoint URL in the API panel */
+
+    // Don't include this in scope! It either won't work and will require an .$apply()
+    // or it will cause a bunch of digest cycles unnecessarily.
+    var mouseHasNotMovedSinceMouseDown = false;
+    var urlDisplayNotFocused = true;
+
+    $('#api-url-display').on('mousedown', function() {
+      mouseHasNotMovedSinceMouseDown = true;
+    });
+
+    $('#api-url-display').on('mousemove', function() {
+      mouseHasNotMovedSinceMouseDown = false;
+    });
+
+    // Also reset the mouse state on scroll so it doesn't auto-select the API url
+    // when we try to maniuplate the scroll bar.
+    $('#api-url-display').on('scroll', function() {
+      mouseHasNotMovedSinceMouseDown = false;
+    });
+
+    $('#api-url-display').on('mouseup', function() {
+      if (mouseHasNotMovedSinceMouseDown && urlDisplayNotFocused) {
+        $('#api-url-display').select();
+        urlDisplayNotFocused = false;
+      }
+    });
+
+    $('#api-url-display').on('blur', function() {
+      urlDisplayNotFocused = true;
+    });
+
+    $scope.$on('$destroy', function() {
+      $('#api-panel-toggle-btn').off('click');
+      $('#api-url-display').off('mousedown');
+      $('#api-url-display').off('mousemove');
+      $('#api-url-display').off('scroll');
+      $('#api-url-display').off('mouseup');
+      $('#api-url-display').off('blur');
     });
 
     // Given a card's position in its line and the number of cards in its line,

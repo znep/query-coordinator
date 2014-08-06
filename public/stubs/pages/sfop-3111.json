@@ -114,7 +114,7 @@
     {
       "description": "All Data",
       "fieldName": "*",
-      "cardSize": 3,
+      "cardSize": 4,
       "cardCustomStyle": {},
       "expandedCustomStyle": {},
       "displayMode": "visualization",

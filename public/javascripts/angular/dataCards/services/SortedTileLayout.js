@@ -7,7 +7,8 @@ angular.module('dataCards.services').factory('SortedTileLayout', function() {
     tiers: {
       '1': 2,
       '2': 3,
-      '3': 4
+      '3': 4,
+      '4': 1
     },
     tierAccessor: _.property('cardSize')
   };

@@ -12,9 +12,13 @@ $card-padding: $card-padding-top $card-padding-left
 $card-border-width: 2px
 $card-title-line-height: 1rem
 $card-description-padding-bottom: 1rem
-$card-size-1-height: 300px + $card-border-width * 2
-$card-size-2-height: 250px + $card-border-width * 2
-$card-size-3-height: 200px + $card-border-width * 2
+$card-base-sizes: 300px, 250px, 200px, 200px
+
+// Add the border width to each card size
+$card-sizes: ()
+@each $size in $card-base-sizes
+  $card-sizes: append($card-sizes, $size + $card-border-width * 2)
+
 // ---------------------------------
 
 body
@@ -163,14 +167,9 @@ body
       /* LAYOUT */
 
       .collapsed-layout, .expanded-layout .collapsed-cards
-        .card-size-1
-          height: $card-size-1-height
-
-        .card-size-2
-          height: $card-size-2-height
-
-        .card-size-3
-          height: $card-size-3-height
+        @for $i from 1 through length($card-sizes)
+          .card-size-#{$i}
+            height: nth($card-sizes, $i)
 
       .expanded-layout
 

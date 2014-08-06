@@ -4,6 +4,12 @@ $metadata-top-padding: 7px
 $metadata-side-padding: 30px
 $rounded-corners-border-radius: 3px
 $filter-height: 58px
+$action-btn-min-width: 72px
+$action-btn-padding-top: 7px
+$action-btn-padding-left: 18px
+// api panel sizes
+$api-panel-width: 360px
+$api-panel-hint-width: 20px
 // card sizes
 $card-margins: 5px
 $card-padding-top: 26px
@@ -76,9 +82,11 @@ body
       font-weight: lighter
 
     .activities
+      position: relative
       $activities-divider-width: 36px
       padding-right: $metadata-side-padding / 2
       text-align: right
+
       .metadatum-wrapper
 
         &:first-child
@@ -109,14 +117,87 @@ body
 
       .action-btn
         display: inline-block
-        padding: 7px 18px
+        padding: $action-btn-padding-top $action-btn-padding-left
         border-radius: $rounded-corners-border-radius
         border: solid 2px $btn-border-color
         background-color: $btn-bg-color
         margin: 0 0 10px 10px
         color: $aqua-font-color
-        width: 72px
+        min-width: $action-btn-min-width
         text-align: center
+        font-size: 1rem
+        cursor: pointer
+
+        &.l-to-r
+          margin: 0 10px 10px 0
+
+        &.r-to-l
+          margin: 0 0 10px 10px
+
+        &:hover
+          background-color: $btn-border-color
+          border: solid 2px $btn-bg-color
+
+        &:focus
+          outline: none
+
+        &.touched
+          background-color: $btn-touched-bg-color
+          border: solid 2px $btn-touched-border-color
+
+    #api-panel
+      position: absolute
+      display: none
+      margin-top: $api-panel-hint-width / 2
+      right: ($metadata-side-padding / 2) + ($action-btn-min-width / 2)
+      color: $white-font-color
+      background-color: $panel-bg-color
+      text-align: left
+      font-weight: lighter
+      padding: $card-padding-top $card-padding-left
+      z-index: 1003
+      width: $api-panel-width
+
+      #api-panel-hint
+        position: absolute
+        right: 0
+        top: -$api-panel-hint-width
+        width: 0
+        height: 0
+        border-style: solid
+        border-width: 0 0 $api-panel-hint-width $api-panel-hint-width
+        border-color: transparent transparent $panel-bg-color transparent
+
+      h2
+        margin: 0
+        letter-spacing: 0.1rem
+
+      #api-url-display
+        width: 95%
+        overflow-x: scroll
+        overflow-y: hidden
+        background-color: $panel-border-color
+        line-height: 3rem
+        padding: 0 2.5%
+        white-space: nowrap
+        font-family: monospace
+        resize: none
+        font-size: 1.1rem
+        color: $white-font-color
+        height: 4rem
+        border: none
+
+      .api-btn
+        width: auto
+        background-color: $panel-border-color
+        color: $white-font-color
+
+        &:hover
+          background-color: $btn-border-color
+          border: solid 2px $btn-bg-color
+
+    #api-panel.active
+      display: block
 
   .cards-content
     background-color: $cards-bg-color

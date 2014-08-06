@@ -1,4 +1,6 @@
 angular.module('dataCards.directives').directive('stickyHeader', function(AngularRxExtensions) {
+  'use strict';
+
   return {
     restrict: 'A',
     link: function($scope, element, attrs) {
@@ -27,14 +29,27 @@ angular.module('dataCards.directives').directive('stickyHeader', function(Angula
         });
       };
 
+      var $content = element.find('.content');
+      function resizeHeaderContainer() {
+        $scope.headerStyle = {
+          height: $content.outerHeight() + 'px'
+        };
+      }
+      // Watch for resize, and remove the "position: relative" tag resize sets.
+      $content.resize(resizeHeaderContainer).
+        css({ position: '' });
+      resizeHeaderContainer();
+
       function pollLayout() {
-        var windowScrollTop = $(document).scrollTop();
+        // Clamp scroll to stop odd sizes with OSX out of body scrolling.
+        var windowScrollTop = Math.max($(document).scrollTop(), 0);
         var headerPositionTop = element.offset().top;
         var headerHeight = element.height();
 
         var availableContentHeight = headerHeight + Math.max(0, headerPositionTop - windowScrollTop);
 
         $scope.headerIsStuck = windowScrollTop >= headerPositionTop;
+
 
         $scope.$emit('stickyHeaderAvailableContentHeightChanged', availableContentHeight);
       };

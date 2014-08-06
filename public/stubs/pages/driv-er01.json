@@ -65,12 +65,12 @@
     },
     {
       "description": "All Data",
-      "fieldName": "*", 
-      "cardSize": 1,
+      "fieldName": "*",
+      "cardSize": 3,
       "cardCustomStyle": {},
       "expandedCustomStyle": {},
       "displayMode": "visualization",
-      "expanded": false      
+      "expanded": false
     }
   ]
 }

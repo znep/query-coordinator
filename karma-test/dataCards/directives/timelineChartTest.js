@@ -225,6 +225,32 @@ describe('timelineChart', function() {
         done();
       });
     });
+    it('should be able to select a segment within a larger selection', function() {
+      var chart = createNewTimelineChart(640, false, true);
+      var segment = chart.element.find('.label').eq(1);
+      segment.mousedown().mousemove().mouseup();
+      expect(chart.element.find('.label.special').length).to.equal(1);
+      expect(chart.element.find('g.segment.special').length).to.equal(12);
+      chart.element.find('g.segment.special').eq(0).mousedown().mousemove().mouseup();
+      expect(chart.element.find('.label.special').length).to.equal(1);
+      expect(chart.element.find('g.segment.special').length).to.equal(1);
+    });
+    describe('if showFiltered', function() {
+      it('should show the filtered count in the flyout', function() {
+        var chart = createNewTimelineChart(640, false, true);
+
+        chart.element.find('g.segment').eq(1).mouseover();
+        expect($('.flyout').is(':contains(Filtered Amount)')).to.equal(true);
+      });
+    });
+    describe('if not showFiltered', function() {
+      it('should not show the filtered count', function() {
+        var chart = createNewTimelineChart(640, false, false);
+
+        chart.element.find('g.segment').eq(1).mouseover();
+        expect($('.flyout').is(':contains(Filtered Amount)')).to.equal(false);
+      });
+    });
   });
   describe('when not expanded at 300px', function() {
     it('should hide some labels', function() {

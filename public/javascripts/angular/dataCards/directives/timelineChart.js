@@ -561,95 +561,103 @@ angular.module('socrataCommon.directives').directive('timelineChart', function(A
       updateDragHandles();
     };
 
-    var selectionActive = false;
-    var dragActive = false;
-    var moved = false;
-    var isSpecial = false;
-    $chartScroll.delegate('g.segment, .labels .label', 'mousedown', function(event) {
-      var clickedDatum = d3.select(event.currentTarget).datum();
-      filterStart = clickedDatum.date;
-      var duration = $(event.currentTarget).is('.label') ? tickRange : segmentDuration;
-      filterEnd = moment(clickedDatum.date).add(duration);
+    var setupClickHandler = function() {
+      var selectionActive = false;
+      var dragActive = false;
+      var moved = false;
+      var isFilteredTarget = false;
+      var isClearable = false;
 
-      isSpecial = $(event.currentTarget).is('.special');
-      moved = false;
-      selectionActive = true;
-
-      element.addClass('selecting');
-      event.preventDefault();
-    }).delegate('g.draghandle', 'mousedown', function(event) {
-      dragActive = $(event.currentTarget).is('.start') ? 'start' : 'end';
-      moved = false;
-
-      element.addClass('selecting');
-      event.preventDefault();
-    }).delegate('g.segment, .labels .label:not(.special)', 'mousemove', function(event) {
-      if (selectionActive || dragActive) {
-        var duration = $(event.currentTarget).is('.label') ? tickRange : segmentDuration;
+      $chartScroll.delegate('g.segment, .labels .label', 'mousedown', function(event) {
         var clickedDatum = d3.select(event.currentTarget).datum();
-        var newEnd = clickedDatum.date;
-        moved = true;
+        filterStart = clickedDatum.date;
+        var duration = $(event.currentTarget).is('.label') ? tickRange : segmentDuration;
+        filterEnd = moment(clickedDatum.date).add(duration);
 
-        if (selectionActive) {
-          if (newEnd >= filterStart) {
-            filterEnd = moment(newEnd).add(duration);
-          } else {
-            if (filterEnd >= filterStart) {
-              filterStart = moment(filterStart).add(duration);
+        isFilteredTarget = $(event.currentTarget).is('.special');
+        isClearable = $(event.currentTarget).is('.label') ||
+                      element.find('g.segment.special').length === 1;
+        moved = false;
+        selectionActive = true;
+
+        element.addClass('selecting');
+        event.preventDefault();
+      }).delegate('g.draghandle', 'mousedown', function(event) {
+        dragActive = $(event.currentTarget).is('.start') ? 'start' : 'end';
+        isClearable = true;
+        moved = false;
+
+        element.addClass('selecting');
+        event.preventDefault();
+      }).delegate('g.segment, .labels .label:not(.special)', 'mousemove', function(event) {
+        if (selectionActive || dragActive) {
+          var duration = $(event.currentTarget).is('.label') ? tickRange : segmentDuration;
+          var clickedDatum = d3.select(event.currentTarget).datum();
+          var newEnd = clickedDatum.date;
+          moved = true;
+
+          if (selectionActive) {
+            if (newEnd >= filterStart) {
+              filterEnd = moment(newEnd).add(duration);
+            } else {
+              if (filterEnd >= filterStart) {
+                filterStart = moment(filterStart).add(duration);
+              }
+              filterEnd = newEnd;
             }
-            filterEnd = newEnd;
+          } else if (dragActive) {
+            if (dragActive === 'start') {
+              filterStart = newEnd;
+            } else {
+              filterEnd = moment(newEnd).add(duration);
+            }
           }
-        } else if (dragActive) {
-          if (dragActive === 'start') {
-            filterStart = newEnd;
+
+          // Clamp the range
+          var domain = horizontalScale.domain();
+          var domainStart = moment(domain[0]);
+          var domainEnd = moment(domain[1]).add(segmentDuration);
+          if (filterEnd > domainEnd) {
+            filterEnd = domainEnd;
+          }
+          if (filterEnd < domainStart) {
+            filterEnd = domainStart;
+          }
+          if (filterStart > domainEnd) {
+            filterStart = domainEnd;
+          }
+          if (filterStart < domainStart) {
+            filterStart = domainStart;
+          }
+          updateDragHandles();
+        }
+      });
+
+      if (scope.mouseUpHandler) {
+        $('body').off('mouseup.TimelineChart', scope.mouseUpHandler);
+      }
+      scope.mouseUpHandler = function(event) {
+        if (dragActive || selectionActive) {
+          element.removeClass('selecting');
+          // If clicked on a selected segment and the user hasn't moved, clear the filter.
+          if ((dragActive || isFilteredTarget) && isClearable && moved === false) {
+            clearFilter();
           } else {
-            filterEnd = moment(newEnd).add(duration);
+            selectionActive = false;
+            dragActive = false;
+            var sorted = _.sortBy([filterStart, filterEnd]);
+            filterStart = sorted[0];
+            filterEnd = sorted[1];
+            scope.$apply(function() {
+              scope.$emit('timeline-chart:filter-changed', sorted);
+            });
           }
+          d3Selection.select('g.container').call(updateLines);
         }
-
-        // Clamp the range
-        var domain = horizontalScale.domain();
-        var domainStart = moment(domain[0]);
-        var domainEnd = moment(domain[1]).add(segmentDuration);
-        if (filterEnd > domainEnd) {
-          filterEnd = domainEnd;
-        }
-        if (filterEnd < domainStart) {
-          filterEnd = domainStart;
-        }
-        if (filterStart > domainEnd) {
-          filterStart = domainEnd;
-        }
-        if (filterStart < domainStart) {
-          filterStart = domainStart;
-        }
-        updateDragHandles();
       }
-    });
-
-    if (scope.mouseUpHandler) {
-      $('body').off('mouseup.TimelineChart', scope.mouseUpHandler);
-    }
-    scope.mouseUpHandler = function(event) {
-      if (dragActive || selectionActive) {
-        element.removeClass('selecting');
-        // If clicked on a selected segment and the user hasn't moved, clear the filter.
-        if ((dragActive || isSpecial) && moved === false) {
-          clearFilter();
-        } else {
-          selectionActive = false;
-          dragActive = false;
-          var sorted = _.sortBy([filterStart, filterEnd]);
-          filterStart = sorted[0];
-          filterEnd = sorted[1];
-          scope.$apply(function() {
-            scope.$emit('timeline-chart:filter-changed', sorted);
-          });
-        }
-        d3Selection.select('g.container').call(updateLines);
-      }
-    }
-    $('body').on('mouseup.TimelineChart', scope.mouseUpHandler);
+      $('body').on('mouseup.TimelineChart', scope.mouseUpHandler);
+    };
+    setupClickHandler();
   };
 
   return {

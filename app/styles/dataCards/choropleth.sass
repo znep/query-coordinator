@@ -16,10 +16,11 @@
         cursor: inherit
 
       .modern-legend
-        opacity: 0.9
         margin: 15px
         padding: 5px
-        background-color: $card-bg-color
+
+        background-color: transparent
+        
         border-radius: 4px
         position: absolute
         cursor: default
@@ -46,6 +47,10 @@
               line
                 stroke: black
 
+          rect.color
+            stroke: white
+            stroke-width: 1px
+
 /*  EXPANDED VS REGION CARD CHOROPLETH STYLES */
 
 .card.expanded
@@ -57,13 +62,8 @@
 /*   CHORO FLYOUT  */
 
 #choro-flyout
-  padding: 0.5rem 1rem
-  opacity: 0.85
+  opacity: 0.9
+  min-width: initial
 
-  .content
-    h4
-      margin-top: 0
-      margin-bottom: 0.5rem
-
-    &.undefined
-      font-style: italic
+  &.undefined
+    font-style: italic

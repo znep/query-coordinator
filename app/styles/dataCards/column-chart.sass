@@ -8,6 +8,8 @@ $chart-padding-top: 10px
 $chart-padding-bottom: 132px
 $chart-tooltip-offset: 999px
 
+$text-spacing: 0.75rem
+
 div.column-chart
 
   div.chart-scroll
@@ -198,7 +200,6 @@ div.column-chart
     div.label
       position: absolute
       top: 2px
-      right: 0
 
       &.dim
         opacity: 0.1
@@ -211,8 +212,6 @@ div.column-chart
       div.text
         color: $chart-tick-color
         position: absolute
-        text-indent: 0.5rem
-        left: 0.25rem
         font-size: $medium-font-size
         line-height: $base-font-size
         white-space: nowrap
@@ -226,11 +225,13 @@ div.column-chart
           cursor: pointer
 
       &.orientation-right
+
         div.callout
           border-left: 1px solid $chart-tick-color
 
         div.text
-          right: 0
+          left: 0.25rem
+          text-indent: $text-spacing - 0.25rem
 
       &.orientation-left
         div.callout
@@ -238,9 +239,7 @@ div.column-chart
           right: 0
 
         div.text
-          left: 0
-          right: 0
-          padding-right: 0.6rem
+          right: $text-spacing
           text-align: right
 
   div.ticks

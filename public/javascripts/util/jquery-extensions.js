@@ -63,7 +63,7 @@ $.toFixedHumaneNumber = function(val, precision) {
   }
 
   result = val.toFixed(precision);
-  return result == 0 ? 0 : result;
+  return result === 0 ? 0 : result;
 };
 
 $.toHumaneNumber = function(val) {
@@ -225,7 +225,7 @@ $.fn.flyout = function(options) {
       horizontal: 4,
       vertical: 2
     }
-  }
+  };
   if (options.style == 'table') {
     defaults.arrowMargin = 10;
     defaults.margin = 5;
@@ -246,11 +246,12 @@ $.fn.flyout = function(options) {
       } else {
         return data;
       }
-    }
+    };
+    var $positionOn;
     if (_.isUndefined(options.positionOn)) {
-      var $positionOn = $target;
+      $positionOn = $target;
     } else {
-      var $positionOn = $(getVal(options.positionOn));
+      $positionOn = $(getVal(options.positionOn));
     }
     if (!getVal(options.interact)) flyout.addClass('nointeract');
     if (options.title) {
@@ -396,6 +397,7 @@ $.fn.flyout = function(options) {
   self.undelegate(options.selector, 'mouseover');
   self.undelegate(options.selector, 'mouseleave');
 
+
   self.delegate(options.selector, 'mouseover', function(e) {
     renderFlyout(this);
     e.stopPropagation();
@@ -414,6 +416,14 @@ $.fn.flyout = function(options) {
     }
     e.stopPropagation();
   });
+
+  var previousFlyout = $('.flyout');
+  if (_.isPresent(previousFlyout)) {
+    var target = previousFlyout.data('target');
+    if ($(target).is(options.selector) && _.isPresent(self.find(target))) {
+      renderFlyout(target);
+    }
+  }
   return this;
 };
 

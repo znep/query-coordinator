@@ -135,8 +135,9 @@ angular.module('dataCards.directives').directive('cardVisualizationTimelineChart
           });
         }));
 
-      $scope.bindObservable('filterApplied', filteredDataSequence.map(function(filtered) {
-        return filtered !== null;
+      $scope.bindObservable('filterApplied', $scope.observe('whereClause').
+          map(function(whereClause) {
+        return _.isPresent(stripWhereClause(whereClause));
       }));
 
       $scope.bindObservable('expanded', model.observeOnLatest('expanded'));

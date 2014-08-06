@@ -1,5 +1,4 @@
 angular.module('dataCards.directives').directive('choropleth', function(AngularRxExtensions, ChoroplethHelpers, leafletBoundsHelpers, $log, $timeout) {
-
   // AGGREGATE_VALUE_PROPERTY_NAME is an internal implementation name for the aggregate data
   // value we will display on the choropleth. This name is global, constant and has been
   // chosen so that it is unlikely to collide with any user-defined property on the
@@ -17,9 +16,9 @@ angular.module('dataCards.directives').directive('choropleth', function(AngularR
   /*   TEMPORARY SETTINGS   */
 
       // WARNING: tests depend upon file name.
-      numberOfClasses = function(values) {
+      var numberOfClasses = function(values) {
         // handles numberOfClasses in Jenks (implemented for _.uniq(values).length > 6)
-        var numPossibleBreaks = _.uniq(values).length - 1;
+        var numPossibleBreaks = _.uniq(values).length;
         if (numPossibleBreaks <= threshold) {
           throw new Error("[Choropleth] Why are you calling numberOfClasses when # unique values <= " + threshold + "?");
         } else {
@@ -110,7 +109,6 @@ angular.module('dataCards.directives').directive('choropleth', function(AngularR
 
     },
     link: function($scope, element) {
-
       AngularRxExtensions.install($scope);
 
       $scope.highlightedFeatures = {};
@@ -120,12 +118,6 @@ angular.module('dataCards.directives').directive('choropleth', function(AngularR
       // includes CSS margins + CSS padding when outerWidth, outerHeight set to true
       var containerPaddingX = element.outerWidth(true) - element.width();
       var containerPaddingY = element.outerHeight(true) - element.height();
-
-      $scope.$on('elementResized', function(event, arguments){
-        $timeout(function(){
-          $scope.$broadcast('mapContainerResized')
-        });
-      });
 
       /* Choropleth styles */
 
@@ -254,7 +246,7 @@ angular.module('dataCards.directives').directive('choropleth', function(AngularR
       // flag to get the right style for the region.
       var multiStyleFn = function(feature, highlighted) {
         // NOTE: leaflet requires separate style functions for each fill class
-        fillClass = 'multi';
+        var fillClass = 'multi';
         return {
           fillColor: fillColor(fillClass, feature, highlighted),
           color: strokeColor(fillClass, feature, highlighted),
@@ -286,7 +278,6 @@ angular.module('dataCards.directives').directive('choropleth', function(AngularR
         var uniqValues = _.uniq(values);
         var numPossibleBreaks = uniqValues.length - 1;
         var classBreaks;
-
         if (numPossibleBreaks <= threshold) {
           // for such small values, jenks does not make sense (produces duplicate values).
           // use equal interval in such cases.
@@ -328,6 +319,8 @@ angular.module('dataCards.directives').directive('choropleth', function(AngularR
         }
       }
 
+      var colors, scale;
+
       var updateMulticolorScale = function(colorClass, classBreaks) {
         if (!classBreaks) {
           throw new Error("Invalid class breaks");
@@ -338,7 +331,7 @@ angular.module('dataCards.directives').directive('choropleth', function(AngularR
         // use LAB color space to approximate perceptual brightness,
         // bezier interpolation, and auto-correct for color brightness.
         // See more: https://vis4.net/blog/posts/mastering-multi-hued-color-scales/
-        var colorRange;
+        var colorRange, lightnessCorrection, bezierColorInterpolation;
         switch (colorClass.toLowerCase()) {
           case 'diverging':
             colorRange = divergingColors;
@@ -378,10 +371,7 @@ angular.module('dataCards.directives').directive('choropleth', function(AngularR
         $scope.legend = {
           position: defaultLegendPos,
           colors: classBreaks ? colors : [],
-          classBreaks: classBreaks,
-          threshold: threshold,
-          legendStyle: 'modern',
-          legendClass: 'modern-legend'
+          classBreaks: classBreaks
         };
       }
 
@@ -484,7 +474,13 @@ angular.module('dataCards.directives').directive('choropleth', function(AngularR
         $tooltip = $('#choro-flyout');
 
         if ($tooltip.length == 0) {
-          $('body').append('<div class="flyout flyout-table top" id="choro-flyout"><div class="flyout-arrow"></div><span class="content"></span></div>');
+          var html = '<div class="flyout nointeract flyout-chart top" id="choro-flyout">' +
+              '<div class="flyout-arrow center"></div>' + 
+              '<div class="flyout-title"></div>' +
+              '<div class="flyout-row">' +
+              '</div>' +
+            '</div>'
+          $('body').append(html);
           $tooltip = $('#choro-flyout');
           $tooltip.hide();
 
@@ -572,18 +568,20 @@ angular.module('dataCards.directives').directive('choropleth', function(AngularR
           value = '(No Value)';
           var valueIsUndefined = true;
         }
-        var message = '<h4>' + String(featureHumanReadableName).capitaliseEachWord() + '</h4>' +
-                      $.commaify(value);
-
-        $tooltip.find('.content').removeClass('undefined');
+        if (featureHumanReadableName) {
+          $tooltip.find('.flyout-title').text(featureHumanReadableName.capitaliseEachWord());
+        }
+        var message = $.commaify(value);
+        
+        $tooltip.removeClass('undefined');
 
         if (valueIsUndefined) {
-          $tooltip.find('.content').addClass('undefined');
+          $tooltip.addClass('undefined');
         } else if ($scope.rowDisplayUnit) {
           message += ' ' + $scope.rowDisplayUnit.pluralize();
         }
 
-        $tooltip.find('.content').html(message);
+        $tooltip.find('.flyout-row').text(message);
 
         initializeFeatureEventHandlers();
         mouseoverBrighten(leafletEvent);
@@ -641,11 +639,9 @@ angular.module('dataCards.directives').directive('choropleth', function(AngularR
           if (values.length === 0) {
             // no values, just render polygons with no colors
             updateGeojsonScope('none');
+            updateLegend([], []);
           } else {
-
-            if (!$scope.classBreaks) {
-              $scope.classBreaks = computeClassBreaks(values);
-            }
+            $scope.classBreaks = computeClassBreaks(values);
 
             if ($scope.classBreaks.length === 1) {
               colors = [defaultSingleColor];
@@ -655,11 +651,8 @@ angular.module('dataCards.directives').directive('choropleth', function(AngularR
               colors = scale.colors();
               updateGeojsonScope('multi');
             }
-
-            if (!$scope.legend){
-              updateLegend($scope.classBreaks, colors);
-            }
-
+            
+            updateLegend($scope.classBreaks, colors);
           }
 
           updateBounds(geojsonAggregateData);

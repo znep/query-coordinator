@@ -46,18 +46,6 @@ describe("A Choropleth Directive", function() {
     });
   };
 
-  var arrayContainsSubarray = function(arr, subarr) {
-    // filter subarray for only those elements in subarray contained in arr.
-    // e.g., arrayContainsSubarray([1,2],[1,1,1,1,2,2,2,2]); --> true
-    // e.g., arrayContainsSubarray([1,2],[1,1,1,1,2,2,2,2,3]); --> false
-    var filteredSubarray = _.filter(subarr, function(subarrelement) {
-      return _.any(arr, function(arrelement){
-        return arrelement === subarrelement;
-      });
-    });
-    return _.isEqual(subarr, filteredSubarray);
-  };
-
   var createChoropleth = function(expanded) {
     if (!scope.geojsonAggregateData) scope.geojsonAggregateData = testData.polygonData2;
     var choro = '<choropleth geojson-aggregate-data="geojsonAggregateData" show-filtered="filterApplied"></choropleth>';
@@ -110,12 +98,12 @@ describe("A Choropleth Directive", function() {
       var expectedBounds = {
         northEast: { lat: 2, lng: 2 },
         southWest: { lat: -2, lng: -2 }
-      }
+      };
 
       timeout.flush();
       var scopeBounds = el.find('.choropleth-map').isolateScope().bounds;
-      expect(scopeBounds.northEast.lat).to.deep.equal(scopeBounds.northEast.lat);
-      expect(scopeBounds.northEast.lng).to.deep.equal(scopeBounds.northEast.lng);
+      expect(scopeBounds.northEast.lat).to.deep.equal(expectedBounds.northEast.lat);
+      expect(scopeBounds.northEast.lng).to.deep.equal(expectedBounds.northEast.lng);
       expect(scopeBounds.southWest.lat).to.deep.equal(expectedBounds.southWest.lat);
       expect(scopeBounds.southWest.lng).to.deep.equal(expectedBounds.southWest.lng);
       done();
@@ -199,7 +187,7 @@ describe("A Choropleth Directive", function() {
       expect(el.find(legendColorSelector).length).to.be.above(1);
 
       // legend labels should contain feature values
-      expect(arrayContainsSubarray(legendFlyoutValues(), scopedFeatureValues())).to.equal(true);
+      expect(_.intersection(legendFlyoutValues(), scopedFeatureValues()).length).to.equal(scopedFeatureValues().length);
 
       // stroke (if LineString or MultiLineString) or fill (if Polygon or MultiPolygon) color hexes should match legend color hexes
       var fillColors = _.map(el.find(featureGeometrySelector), function(el) {
@@ -211,7 +199,7 @@ describe("A Choropleth Directive", function() {
         return chroma.color(legendColor).hex();
       });
 
-      expect(arrayContainsSubarray(legendColors, fillColors)).to.equal(true);
+      expect(_.intersection(legendColors, fillColors).length).to.equal(fillColors.length);
     });
 
     it('should render proper map features, legend, and legend labels for 3 features', function(){
@@ -230,7 +218,7 @@ describe("A Choropleth Directive", function() {
       expect(el.find(legendColorSelector).length).to.be.above(2);
 
       // legend labels should contain feature values
-      expect(arrayContainsSubarray(legendFlyoutValues(), scopedFeatureValues())).to.equal(true);
+      expect(_.intersection(legendFlyoutValues(), scopedFeatureValues()).length).to.equal(scopedFeatureValues().length);
 
       // stroke (if LineString or MultiLineString) or fill (if Polygon or MultiPolygon) color hexes should match legend color hexes
       var fillColors = _.map(el.find(featureGeometrySelector), function(el) {
@@ -242,7 +230,7 @@ describe("A Choropleth Directive", function() {
         return chroma.color(legendColor).hex();
       });
 
-      expect(arrayContainsSubarray(legendColors, fillColors)).to.equal(true);
+      expect(_.intersection(legendColors, fillColors).length).to.equal(fillColors.length);
 
     });
 
@@ -264,12 +252,13 @@ describe("A Choropleth Directive", function() {
         var fillColor = $(el).css('stroke');
         return chroma.color(fillColor).hex();
       });
+
       var legendColors = _.map(el.find(legendColorSelector), function(el) {
         var legendColor = $(el).css('fill');
         return chroma.color(legendColor).hex();
       });
 
-      expect(arrayContainsSubarray(legendColors, fillColors)).to.equal(true);
+      expect(_.intersection(legendColors, fillColors).length).to.equal(legendColors.length);
     });
 
     it('should not color features that are missing properties', function(){
@@ -492,6 +481,38 @@ describe("A Choropleth Directive", function() {
           var $flyout = $('.flyout');
           expect($flyout.is(':visible')).to.equal(true);
           expect($('.flyout').text()).to.equal(legendColorFlyoutText);
+        });
+
+        it('should contain labels that are not rounded for small enough legend class breaks', function(){
+          // NOTE: important to test for each individual small case (1,2,3) to ensure proper edge case management.
+          var expanded = true;
+          scope.geojsonAggregateData = testData.lineStringData3SmallNumbers;
+          el = createChoropleth(expanded);
+
+          // there should only be 3 features
+          expect(el.find(featureGeometrySelector).length).to.equal(3);
+
+          // there should only be 1 legend
+          expect(el.find(legendSelector).length).to.equal(1);
+
+          // there should only be 3 or more colors in the legend
+          expect(el.find(legendColorSelector).length).to.be.above(2);
+
+          // legend labels should contain feature values
+          expect(_.intersection(legendFlyoutValues(), scopedFeatureValues()).length).to.be.above(1);
+
+          // stroke (if LineString or MultiLineString) or fill (if Polygon or MultiPolygon) color hexes should match legend color hexes
+          var fillColors = _.map(el.find(featureGeometrySelector), function(el) {
+            var fillColor = $(el).css('stroke');
+            return chroma.color(fillColor).hex();
+          });
+          var legendColors = _.map(el.find(legendColorSelector), function(el) {
+            var legendColor = $(el).css('fill');
+            return chroma.color(legendColor).hex();
+          });
+
+          expect(_.intersection(legendColors, fillColors).length).to.equal(fillColors.length);
+
         });
       });
     });

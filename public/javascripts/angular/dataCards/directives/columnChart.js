@@ -41,7 +41,16 @@ angular.module('socrataCommon.directives').directive('columnChart', function($pa
         // The size passed to visualLength() below relates to the width of the div.text in the updateLabels().
         return $.capitalizeWithDefault(item.name, undefinedPlaceholder).visualLength('1rem');
       }));
-      bottomMargin = Math.floor((maxLength + $.relativeToPx('1rem')) / Math.sqrt(2));
+      var maxLabelWidth;
+      if ($('.description-expanded-wrapper').height() <= 20) {
+        maxLabelWidth = 10.5;
+      } else {
+        maxLabelWidth = 8.5;
+      }
+      bottomMargin = Math.floor(Math.min(
+        maxLength + $.relativeToPx('1rem'),
+        $.relativeToPx(maxLabelWidth + 1 + 'rem')
+      ) / Math.sqrt(2));
     } else {
       bottomMargin = $.relativeToPx(numberOfDefaultLabels + 1 + 'rem');
       // do not compensate for chart scrollbar if not expanded (scrollbar would not exist)
@@ -193,7 +202,9 @@ angular.module('socrataCommon.directives').directive('columnChart', function($pa
       labelDivSelection.
         selectAll('.text').
           style('top', function(d, i, j) {
-            if (isOnlyInSpecial(d, j)) {
+            if (expanded) {
+              return '';
+            } else if (isOnlyInSpecial(d, j)) {
               return verticalPositionOfSpecialLabelRem - 0.5 + 'rem';
             } else {
               return defaultLabelData.length - 0.5 - Math.min(j, numberOfDefaultLabels - 1)+ 'rem';
@@ -210,13 +221,7 @@ angular.module('socrataCommon.directives').directive('columnChart', function($pa
       // These widths relate to the visualLength() method call in the maxLength calculation above.
       if (expanded) {
         labelDivSelection.
-          selectAll('.text').style('width', function() {
-            if ($('.description-expanded-wrapper').height() > 20) {
-              return '10.5rem';
-            } else {
-              return '8.5rem';
-            }
-          });
+          selectAll('.text').style('width', maxLabelWidth + 'rem');
       }
 
       labelDivSelection.

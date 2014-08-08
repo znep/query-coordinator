@@ -217,6 +217,7 @@ div.column-chart
         white-space: nowrap
         text-overflow: ellipsis
         overflow: hidden
+        left: 0.25rem
 
         &.undefined
           font-style: italic
@@ -230,7 +231,6 @@ div.column-chart
           border-left: 1px solid $chart-tick-color
 
         div.text
-          left: 0.25rem
           text-indent: $text-spacing - 0.25rem
 
       &.orientation-left
@@ -240,6 +240,7 @@ div.column-chart
 
         div.text
           right: $text-spacing
+          left: auto
           text-align: right
 
   div.ticks
@@ -259,14 +260,17 @@ div.column-chart
 
   div.column-chart
 
-    .labels
+    div.labels
       bottom: auto
-      div.callout
-        display: none
-      div.text
-        @include prefixer(transform, rotate(45deg))
-        @include prefixer(transform-origin, top left)
-        margin-top: -6px
-        overflow: hidden
-        position: initial
+
+      div.label
+        div.callout
+          display: none
+
+        div.text
+          @include prefixer(transform, rotate(45deg))
+          @include prefixer(transform-origin, top left)
+          margin-top: -6px
+          overflow: hidden
+          left: auto
 

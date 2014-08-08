@@ -381,7 +381,7 @@
               if (!legend) {
                 return;
               }
-              
+
               var legendClass = legend.legendClass || 'modern-legend';
 
               if (legend.colors.length === 0) {
@@ -415,7 +415,7 @@
               legendSelection.enter().
                 append('div').
                 classed(legendClass, function() {
-                  return true; 
+                  return true;
                 }).
                 classed(position, true);
 
@@ -483,7 +483,7 @@
                 // We want to just return the value for "small-ranged" data.
                 // --> do not call a tickFormatter on yAxis if range is small.
                 yAxis.tickFormat(bigNumTickFormatter);
-                
+
                 // Due to similar issues, d3's scale#nice method also has
                 // floating point math issues.
                 yTickScaleDomain.nice();
@@ -499,7 +499,7 @@
               legendClassBreaks[legendClassBreaks.length - 1] = yTickScale.domain()[1];
 
               var labels = svg.selectAll('.labels').data([legendClassBreaks]);
-              
+
               labels.enter().
                 append('g').
                 attr('class', 'labels');
@@ -542,7 +542,7 @@
                   rects.
                     attr('data-flyout-text', function(color, i) {
                       return bigNumTickFormatter(legendClassBreaks[i]) + ' - ' + bigNumTickFormatter(legendClassBreaks[i+1]);
-                    });  
+                    });
                 } else {
                   rects.
                     attr('data-flyout-text', function(color, i) {

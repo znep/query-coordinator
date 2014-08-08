@@ -188,7 +188,7 @@ angular.module('dataCards.directives').directive('choropleth', function(AngularR
                 return fillColor(fillClass, feature, fillClass);
               } else {
                 throw new Error("Invalid fillClass on #fill: " + fillClass);
-              }            
+              }
             }
           }
         }
@@ -475,7 +475,7 @@ angular.module('dataCards.directives').directive('choropleth', function(AngularR
 
         if ($tooltip.length == 0) {
           var html = '<div class="flyout nointeract flyout-chart top" id="choro-flyout">' +
-              '<div class="flyout-arrow center"></div>' + 
+              '<div class="flyout-arrow center"></div>' +
               '<div class="flyout-title"></div>' +
               '<div class="flyout-row">' +
               '</div>' +
@@ -502,10 +502,16 @@ angular.module('dataCards.directives').directive('choropleth', function(AngularR
       var positionTooltip = function($tooltip, e){
         var top = e.pageY;
         var left = e.pageX;
-        var height = $tooltip.outerHeight();
-        var width = $tooltip.outerWidth();
+        var height = $tooltip.outerHeight(true) + 2;
+        var width = $tooltip.outerWidth(true) + 2;
+        var arrowMargin = 15;
 
-        $tooltip.css("top", (top - height - 15));
+        // IE HACK: Move the tooltip further from to stop interaction.
+        if (L.Browser.ie) {
+          arrowMargin += 10;
+        }
+
+        $tooltip.css("top", (top - height - arrowMargin));
         $tooltip.css("left", (left - (width/2)));
       };
 
@@ -536,8 +542,24 @@ angular.module('dataCards.directives').directive('choropleth', function(AngularR
         weight: 1
       };
 
+      var clearAllBrighten = function(layer) {
+        _.each(layer._map._layers, function(l) {
+          if (_.isPresent(l.feature)) {
+            var featureId = l.feature.properties[INTERNAL_DATASET_FEATURE_ID];
+            if (!featureIsHighlighted(featureId)) {
+              l.setStyle(unbrightenFeatureStyleObject);
+            }
+          }
+        });
+      }
+
       var mouseoverBrighten = function(leafletEvent) {
         var layer = leafletEvent.target;
+
+        // IE HACK: Attempt to fix the mouseout event not being reliable.
+        if (L.Browser.ie) {
+          clearAllBrighten(layer);
+        }
         var featureId = layer.feature.properties[INTERNAL_DATASET_FEATURE_ID];
         if (!featureIsHighlighted(featureId)) {
           layer.setStyle(brightenFeatureStyleObject);
@@ -572,7 +594,7 @@ angular.module('dataCards.directives').directive('choropleth', function(AngularR
           $tooltip.find('.flyout-title').text(featureHumanReadableName.capitaliseEachWord());
         }
         var message = $.commaify(value);
-        
+
         $tooltip.removeClass('undefined');
 
         if (valueIsUndefined) {
@@ -651,7 +673,7 @@ angular.module('dataCards.directives').directive('choropleth', function(AngularR
               colors = scale.colors();
               updateGeojsonScope('multi');
             }
-            
+
             updateLegend($scope.classBreaks, colors);
           }
 

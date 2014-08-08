@@ -634,7 +634,7 @@ angular.module('socrataCommon.directives').directive('timelineChart', function(A
       });
 
       if (scope.mouseUpHandler) {
-        $('body').off('mouseup.TimelineChart', scope.mouseUpHandler);
+        $(window).off('mouseup.TimelineChart', scope.mouseUpHandler);
       }
       scope.mouseUpHandler = function(event) {
         if (dragActive || selectionActive) {
@@ -654,8 +654,8 @@ angular.module('socrataCommon.directives').directive('timelineChart', function(A
           }
           d3Selection.select('g.container').call(updateLines);
         }
-      }
-      $('body').on('mouseup.TimelineChart', scope.mouseUpHandler);
+      };
+      $(window).on('mouseup.TimelineChart', scope.mouseUpHandler);
     };
     setupClickHandler();
   };
@@ -719,7 +719,7 @@ angular.module('socrataCommon.directives').directive('timelineChart', function(A
       // Clean up jQuery on card destruction to stop memory leaks.
       scope.$on('$destroy', function() {
         element.find('.chart-scroll').undelegate();
-        $('body').off('mouseup.TimelineChart', scope.mouseUpHandler);
+        $(window).off('mouseup.TimelineChart', scope.mouseUpHandler);
       });
     }
   };

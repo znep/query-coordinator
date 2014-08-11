@@ -475,7 +475,7 @@ angular.module('dataCards.directives').directive('choropleth', function(AngularR
 
         if ($tooltip.length == 0) {
           var html = '<div class="flyout nointeract flyout-chart top" id="choro-flyout">' +
-              '<div class="flyout-arrow center"></div>' +
+              '<div class="flyout-arrow left"></div>' +
               '<div class="flyout-title"></div>' +
               '<div class="flyout-row">' +
               '</div>' +
@@ -499,20 +499,51 @@ angular.module('dataCards.directives').directive('choropleth', function(AngularR
         return $tooltip;
       };
 
+      var bodyWidth = document.body.clientWidth;
+      $('body').resize(function(){ bodyWidth = this.clientWidth });
+
       var positionTooltip = function($tooltip, e){
-        var top = e.pageY;
-        var left = e.pageX;
-        var height = $tooltip.outerHeight(true) + 2;
-        var width = $tooltip.outerWidth(true) + 2;
+        var cursorTop = e.pageY;
+        var cursorLeft = e.pageX;
+        var flyoutHeight = $tooltip.outerHeight(true) + 2;
+        var flyoutWidth = $tooltip.outerWidth(true) + 2;
+        var marginX = $tooltip.outerWidth(true) - $tooltip.width();
         var arrowMargin = 15;
+        var cursorArrowOffset = 5; // the "space" that appears between the pointer finger and the flyout arrow
+        var arrowDisplacement = arrowMargin - cursorArrowOffset;
 
         // IE HACK: Move the tooltip further from to stop interaction.
         if (L.Browser.ie) {
           arrowMargin += 10;
         }
 
-        $tooltip.css("top", (top - height - arrowMargin));
-        $tooltip.css("left", (left - (width/2)));
+        $tooltip.css("top", (cursorTop - flyoutHeight - arrowMargin));
+
+        // spec: if the choropleth flyout approaches the edge of the screen,
+        // keep the flyout fully displayed on the screen.
+        // adjust the flyout arrow horizontally to track the mouse move.
+        // flip the orientation of the arrow if you are over halfway across the flyout width.
+
+        var orientationIsRight = cursorLeft > $tooltip.offset().left + $tooltip.width()/2;
+
+        var leftOffset = cursorLeft - marginX/2 + arrowDisplacement;
+        var maxLeftOffset = bodyWidth - flyoutWidth + cursorArrowOffset;
+        var $flyoutArrow = $tooltip.find('.flyout-arrow');
+
+        if (orientationIsRight) {
+          leftOffset -= arrowDisplacement;
+          $flyoutArrow.removeClass('left').addClass('right');
+        } else {
+          $flyoutArrow.removeClass('right').addClass('left');
+        }
+
+        if (leftOffset < maxLeftOffset) {
+          $tooltip.css('left', leftOffset);
+          $flyoutArrow.css('left', 0);
+        } else {
+          $tooltip.css('left', maxLeftOffset);
+          $flyoutArrow.css('left', leftOffset - maxLeftOffset);
+        }
       };
 
       var mousemoveFeature = function(e) {
@@ -577,10 +608,13 @@ angular.module('dataCards.directives').directive('choropleth', function(AngularR
       }
 
       $scope.$on('leafletDirectiveMap.geojsonMouseover', function(event, leafletEvent) {
-        // equivalent to a mouseenter
+        // geojsonMouseover is equivalent to a mouseenter
 
-        // initialize choro flyout element.
-        // can disappear on card collapse.
+        // NOTE: one cannot attach data-attributes from a feature's geojson properties to their associated SVG path element via leaflet easily.
+        // as a result, much of the $.flyout behavior must be custom-implemented, because $.flyout's #html option depends upon
+        // the data being readily available.
+
+        // initialize choro flyout element, can disappear on card collapse.
         $tooltip = initializeChoroFlyout();
         var layer = leafletEvent.target;
         var feature = layer.feature;

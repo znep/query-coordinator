@@ -10,12 +10,24 @@
 #     message_end: 2014-01-25t21:00:00-08:00
 #     downtime_start: 2014-01-25t17:00:00-08:00
 #     downtime_end: 2014-01-25t21:00:00-08:00
+#
+# Supports multiple notifications in an array:
+#
+# development:
+#     - message_start:  2014-08-06t00:00:00-08:00
+#       message_end:    2014-08-07t23:00:00-08:00
+#       downtime_start: 2014-08-07t00:00:00-08:00
+#       downtime_end:   2014-08-09t00:00:00-08:00
+#     - message_start:  2014-08-08t00:00:00-08:00
+#       message_end:    2014-08-10t23:00:00-08:00
+#       downtime_start: 2014-08-06t10:00:00-08:00
+#       downtime_end:   2014-08-10t12:00:00-08:00
 
 development:
-    message_start: 2014-01-13t17:00-08:00
-    message_end: 2014-01-25t21:00:00-08:00
-    downtime_start: 2014-01-25t17:00:00-08:00
-    downtime_end: 2014-01-25t21:00:00-08:00
+      message_start:  2014-08-06t00:00:00-08:00
+      message_end:    2014-08-07t23:00:00-08:00
+      downtime_start: 2014-08-07t00:00:00-08:00
+      downtime_end:   2014-08-09t00:00:00-08:00
 
 azure_staging:
     message_start:  2014-04-08t13:00:00-07:00

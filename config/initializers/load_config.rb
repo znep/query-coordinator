@@ -20,10 +20,18 @@ end
 
 begin
   downtime = YAML.load_file(File.join(Rails.root, "config/downtime.yml"))[Rails.env]
-  DOWNTIME = Downtime.new(downtime['message_start'], downtime['message_end'], downtime['downtime_start'],
-                         downtime['downtime_end'])
+  DOWNTIME = []
+  if downtime.is_a?(Array)
+    downtime.each do |time|
+      DOWNTIME << Downtime.new(time['message_start'], time['message_end'], time['downtime_start'],
+                               time['downtime_end'])
+    end
+  else
+    DOWNTIME << Downtime.new(downtime['message_start'], downtime['message_end'], downtime['downtime_start'],
+                            downtime['downtime_end'])
+  end
 rescue
-  DOWNTIME = Downtime.new(nil, nil, nil, nil)
+  DOWNTIME = []
 end
 
 begin

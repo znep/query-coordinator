@@ -122,23 +122,56 @@
     }
 
     blist.namespace.fetch('blist.configuration');
-    if (blist.configuration.maintenance_message &&
-        window == window.top &&
-        $.cookies.get('maintenance_ack') != blist.configuration.maintenance_hash)
+    if ($.isPresent(blist.configuration.maintenance_message) && window == window.top)
     {
-        var dismissMaintenance = function()
+        var dismissMaintenance = function(target)
         {
-            $('#maintenanceNotice').fadeOut();
+            $(target).closest('.maintenanceNotice').fadeOut();
+            updateMaintenanceAckList(target);
         };
 
-        $('#noticeContainer').append(blist.configuration.maintenance_message);
+        var updateMaintenanceAckList = function(target) {
+          var ack_list = getMaintenanceAckList();
+          ack_list.push($(target).closest('.maintenanceNotice').data('hash'));
+          ack_list = _.compact(_.uniq(ack_list));
+          $.cookies.set('maintenance_ack', JSON.stringify(ack_list));
+        };
+
+        var checkMaintenanceAckList = function(hash) {
+          var ack_list = getMaintenanceAckList();
+          if (!$.isPresent(ack_list)) {
+            return false;
+          }
+          return _.detect(ack_list, function(item) { return item === hash; });
+        };
+
+        var getMaintenanceAckList = function() {
+          var cookie = $.cookies.get('maintenance_ack');
+          var ack_list = [];
+          if ($.isPresent(cookie)) {
+            ack_list = JSON.parse(cookie);
+          }
+          if (!_.isArray(ack_list)) {
+            ack_list = [];
+          }
+          return ack_list;
+        };
+
+        _.each(blist.configuration.maintenance_message, function(message) {
+            var $message = $(message);
+            var hash = $message.data('hash');
+            var active = JSON.parse($message.data('active'));
+            if (active && !checkMaintenanceAckList(hash)) {
+                $('#noticeContainer').append(message);
+            }
+        });
+
         setTimeout(dismissMaintenance, 15000);
 
-        $('#maintenanceNotice a.close').click(function(event)
+        $('.maintenanceNotice a.close').click(function(event)
         {
             event.preventDefault();
-            dismissMaintenance();
-            $.cookies.set('maintenance_ack', blist.configuration.maintenance_hash);
+            dismissMaintenance(event.target);
         });
     }
 
@@ -189,7 +222,7 @@
         $d.text(moment($d.data('rawdatetime') * 1000).format('LLLL'));
     });
     // Special clean-up for maintenance message
-    var $mDates = $('#maintenanceNotice .dateLocalize');
+    var $mDates = $('.maintenanceNotice .dateLocalize');
     if (moment($mDates.eq(0).data('rawdatetime') * 1000).
             isSame($mDates.eq(1).data('rawdatetime') * 1000, 'day'))
     {

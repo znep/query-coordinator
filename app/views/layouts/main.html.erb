@@ -202,10 +202,11 @@ http://www.socrata.com
     blist.namespace.fetch('blist.configuration');
     blist.configuration.strings = <%= safe_json(CurrentDomain.strings) %>;
     blist.configuration.logging = <%= ENV.fetch('JS_LOGGING', false) %>;
+    <% right_now = DateTime.now -%>
 
-    <%- if DOWNTIME.should_display(DateTime.now) -%>
-      blist.configuration.maintenance_hash = '<%= raw DOWNTIME.hash %>';
-      blist.configuration.maintenance_message = '<%= escape_javascript DOWNTIME.html %>';
+    <%- if DOWNTIME.any? { |downtime_message| downtime_message.should_display(right_now) } -%>
+      blist.configuration.maintenance_hash = '<%= DOWNTIME.map(&:hash).to_json %>';
+      blist.configuration.maintenance_message = [<%= raw DOWNTIME.map { |message| message.html(right_now) }.map { |message| "'#{escape_javascript(message)}'" }.join(',') %>];
     <%- end -%>
 
     <%- if !@suppress_chrome -%>

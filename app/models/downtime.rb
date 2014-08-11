@@ -33,13 +33,14 @@ class Downtime
       (@message_finish.nil?  || @message_finish > current_time)
   end
 
-  def html
+  def html(date_time)
     %Q{
-    <div class="flash notice" id="maintenanceNotice">
+    <div class="flash notice maintenanceNotice" data-hash="#{hash}" data-active="#{should_display(date_time)}">
       <a href="#" class="close"><span class="icon">close</span></a>
       #{I18n.t('core.maintenance_notice',
-        :start => ('<span class="dateLocalize" data-rawdatetime="' + @downtime_start.to_i.to_s + '"></span>'),
-        :finish => ('<span class="dateLocalize" data-rawdatetime="' + @downtime_finish.to_i.to_s + '"></span>'))}
+          :start => (%Q{<span class="dateLocalize" data-rawdatetime="#{@downtime_start.to_i}"></span>}),
+          :finish => (%Q{<span class="dateLocalize" data-rawdatetime="#{@downtime_finish.to_i}"></span>})
+        )}
     </div>}.html_safe
   end
 end

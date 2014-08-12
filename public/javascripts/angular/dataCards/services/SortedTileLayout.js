@@ -1,6 +1,6 @@
 // SortedTileLayout is a facility to group a list of tiles into tiers, each tier being
 // composed of a list of lines having a particular number of columns.
-// If the number of items does not evenly divide into the number of column
+// If the number of items does not evenly divide into the number of columns
 // for a given tier, the items are rebalanced evenly across lines.
 angular.module('dataCards.services').factory('SortedTileLayout', function() {
   var defaultOptions = {
@@ -56,14 +56,14 @@ angular.module('dataCards.services').factory('SortedTileLayout', function() {
   // Constructor. Options has any of these optional keys:
   // tiers: Hash. Key is arbitrary tier name. Value is the natural column count for that tier.
   // tierAccessor. Function. Given an item passed to doLayout, returns the tier name.
-  //               The tier name must be in the tiers has.
+  //               The tier name must be in the tiers hash.
   function SortedTileLayout(options) {
     if (!_.isUndefined(options) && !_.isObject(options)) { throw new Error('Options object expected.') };
 
     this.options = $.extend({}, defaultOptions, options);
   };
 
-  // Given an enumeration of items, returns an object whose keys
+  // Given an enumeration of item objects, returns an object whose keys
   // are the tier names, and the corresponding values are arrays
   // of lines (which are themselves arrays containing objects
   // from the items enumeration).

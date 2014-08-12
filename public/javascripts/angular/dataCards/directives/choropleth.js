@@ -4,10 +4,10 @@ angular.module('dataCards.directives').directive('choropleth', function(AngularR
   // chosen so that it is unlikely to collide with any user-defined property on the
   // GeoJSON object we receive.
   var AGGREGATE_VALUE_PROPERTY_NAME = '__SOCRATA_MERGED_VALUE__';
-  var FILTERED_VALUE_PROPERTY_NAME = '__SOCRATA_UNFILTERED_VALUE__';
-  var AGGREGATE_VALUE_HIGHLIGHTED_NAME = '__SOCRATA_FEATURE_HIGHLIGHTED__';
+  var UNFILTERED_VALUE_PROPERTY_NAME = '__SOCRATA_UNFILTERED_VALUE__';
   var HUMAN_READABLE_PROPERTY_NAME = '__SOCRATA_HUMAN_READABLE_NAME__';
   var INTERNAL_DATASET_FEATURE_ID = '_feature_id';
+  var nullValueString = '(No Value)';
 
   // if the number of unique values in the dataset is <= the threshold, displays
   // 1 color for each unique value, and labels them as such in the legend.
@@ -477,7 +477,7 @@ angular.module('dataCards.directives').directive('choropleth', function(AngularR
           var html = '<div class="flyout nointeract flyout-chart top" id="choro-flyout">' +
               '<div class="flyout-arrow left"></div>' +
               '<div class="flyout-title"></div>' +
-              '<div class="flyout-row">' +
+              '<div class="flyout-content">' +
               '</div>' +
             '</div>'
           $('body').append(html);
@@ -486,7 +486,7 @@ angular.module('dataCards.directives').directive('choropleth', function(AngularR
 
           $tooltip
             .mousemove(function(e) {
-                positionTooltip($tooltip, e);
+                positionTooltip.call($tooltip, e);
             })
             .mouseout(function() {
               //remove bug where tooltip doesn't disappear when hovering on map
@@ -502,12 +502,13 @@ angular.module('dataCards.directives').directive('choropleth', function(AngularR
       var bodyWidth = document.body.clientWidth;
       $('body').resize(function(){ bodyWidth = this.clientWidth });
 
-      var positionTooltip = function($tooltip, e){
+      var positionTooltip = function(e){
+        // this: expected jquery selector, e.g. $tooltip.
         var cursorTop = e.pageY;
         var cursorLeft = e.pageX;
-        var flyoutHeight = $tooltip.outerHeight(true) + 2;
-        var flyoutWidth = $tooltip.outerWidth(true) + 2;
-        var marginX = $tooltip.outerWidth(true) - $tooltip.width();
+        var flyoutHeight = this.outerHeight(true) + 2;
+        var flyoutWidth = this.outerWidth(true) + 2;
+        var marginX = this.outerWidth(true) - this.width();
         var arrowMargin = 15;
         var cursorArrowOffset = 5; // the "space" that appears between the pointer finger and the flyout arrow
         var arrowDisplacement = arrowMargin - cursorArrowOffset;
@@ -517,18 +518,18 @@ angular.module('dataCards.directives').directive('choropleth', function(AngularR
           arrowMargin += 10;
         }
 
-        $tooltip.css("top", (cursorTop - flyoutHeight - arrowMargin));
+        this.css("top", (cursorTop - flyoutHeight - arrowMargin));
 
         // spec: if the choropleth flyout approaches the edge of the screen,
         // keep the flyout fully displayed on the screen.
         // adjust the flyout arrow horizontally to track the mouse move.
         // flip the orientation of the arrow if you are over halfway across the flyout width.
 
-        var orientationIsRight = cursorLeft > $tooltip.offset().left + $tooltip.width()/2;
+        var orientationIsRight = cursorLeft > this.offset().left + this.width()/2;
 
         var leftOffset = cursorLeft - marginX/2 + arrowDisplacement;
         var maxLeftOffset = bodyWidth - flyoutWidth + cursorArrowOffset;
-        var $flyoutArrow = $tooltip.find('.flyout-arrow');
+        var $flyoutArrow = this.find('.flyout-arrow');
 
         if (orientationIsRight) {
           leftOffset -= arrowDisplacement;
@@ -538,17 +539,29 @@ angular.module('dataCards.directives').directive('choropleth', function(AngularR
         }
 
         if (leftOffset < maxLeftOffset) {
-          $tooltip.css('left', leftOffset);
+          this.css('left', leftOffset);
           $flyoutArrow.css('left', 0);
         } else {
-          $tooltip.css('left', maxLeftOffset);
+          this.css('left', maxLeftOffset);
           $flyoutArrow.css('left', leftOffset - maxLeftOffset);
         }
       };
 
+      var populateTooltip = function(contents) {
+        var htmlContent = '', valClass = '';
+        for (var i = 0; i < contents.length; i++) {
+          var content = contents[i];
+          htmlContent += '<div class="flyout-row">' +
+            '<span class="flyout-cell">' + content.title + '</span>' +
+            '<span class="flyout-cell ' + (content.italicize ? 'italicize' : '') + '">' + content.body + '</span>' +
+          '</div>';
+        }
+        this.children('.flyout-content').html(htmlContent);
+      }
+
       var mousemoveFeature = function(e) {
         $tooltip.show();
-        positionTooltip($tooltip, e);
+        positionTooltip.call($tooltip, e);
       };
 
       var mouseoutFeature = function() {
@@ -607,6 +620,18 @@ angular.module('dataCards.directives').directive('choropleth', function(AngularR
         }
       }
 
+      var unit = function(val) {
+        if (typeof val != 'number') {
+          return '';
+        } else {
+          if (val != 1) {
+            return ' ' + $scope.rowDisplayUnit.pluralize();
+          } else {
+            return ' ' + $scope.rowDisplayUnit;
+          }
+        }
+      };
+
       $scope.$on('leafletDirectiveMap.geojsonMouseover', function(event, leafletEvent) {
         // geojsonMouseover is equivalent to a mouseenter
 
@@ -620,24 +645,37 @@ angular.module('dataCards.directives').directive('choropleth', function(AngularR
         var feature = layer.feature;
         var featureHumanReadableName = feature.properties[HUMAN_READABLE_PROPERTY_NAME];
         var value = feature.properties[AGGREGATE_VALUE_PROPERTY_NAME];
-        if (value === undefined || value === null) {
-          value = '(No Value)';
-          var valueIsUndefined = true;
+        var unfilteredValue = feature.properties[UNFILTERED_VALUE_PROPERTY_NAME];
+        var featureIsHighlighted = value !== unfilteredValue;
+        var unfilteredValueIsUndefined = false;
+
+        $tooltip.removeClass('undefined').removeClass('filtered');
+
+        var unfilteredValueDisplay, valueDisplay;
+        if (typeof value != 'number') {
+          valueDisplay = 0;
+        } else {
+          valueDisplay = $.toHumaneNumber(value);
         }
+        if (typeof unfilteredValue != 'number') {
+          unfilteredValueDisplay = nullValueString;
+          unfilteredValueIsUndefined = true;
+        } else {
+          unfilteredValueDisplay = $.toHumaneNumber(unfilteredValue);
+        }
+
         if (featureHumanReadableName) {
           $tooltip.find('.flyout-title').text(featureHumanReadableName.capitaliseEachWord());
         }
-        var message = $.commaify(value);
 
-        $tooltip.removeClass('undefined');
+        var contents = [{ title: 'Total', body: unfilteredValueDisplay + unit(unfilteredValue), italicize: unfilteredValueIsUndefined }];
 
-        if (valueIsUndefined) {
-          $tooltip.addClass('undefined');
-        } else if ($scope.rowDisplayUnit) {
-          message += ' ' + $scope.rowDisplayUnit.pluralize();
+        if (featureIsHighlighted) {
+          contents.push({ title: 'Filtered Amount', body: valueDisplay + unit(value) });
+          $tooltip.addClass('filtered');
         }
 
-        $tooltip.find('.flyout-row').text(message);
+        populateTooltip.call($tooltip, contents);
 
         initializeFeatureEventHandlers();
         mouseoverBrighten(leafletEvent);
@@ -690,7 +728,8 @@ angular.module('dataCards.directives').directive('choropleth', function(AngularR
             return;
           }
 
-          values = ChoroplethHelpers.getGeojsonValues(geojsonAggregateData, FILTERED_VALUE_PROPERTY_NAME);
+          values = ChoroplethHelpers.getGeojsonValues(geojsonAggregateData, UNFILTERED_VALUE_PROPERTY_NAME);
+          // uses unfiltered data to preserve the unfiltered choropleth legend and color scale
 
           if (values.length === 0) {
             // no values, just render polygons with no colors

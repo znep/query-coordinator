@@ -67,6 +67,9 @@ $.toFixedHumaneNumber = function(val, precision) {
 };
 
 $.toHumaneNumber = function(val) {
+  if (typeof val != 'number') {
+    throw new Error("Invalid input");
+  }
   var maxLetters = 4;
   var symbol = ['K', 'M', 'B', 'T', 'P', 'E', 'Z', 'Y'];
   var step = 1000;

@@ -651,11 +651,13 @@ angular.module('dataCards.directives').directive('choropleth', function(AngularR
 
         $tooltip.removeClass('undefined').removeClass('filtered');
 
-        var unfilteredValueDisplay, valueDisplay;
+        var unfilteredValueDisplay, filteredValueDisplay;
         if (typeof value != 'number') {
-          valueDisplay = 0;
+          filteredValueDisplay = 0;
+          // filtered value should show as 0, if null/undefined.
+          filteredValue = 0;
         } else {
-          valueDisplay = $.toHumaneNumber(value);
+          filteredValueDisplay = $.toHumaneNumber(value);
         }
         if (typeof unfilteredValue != 'number') {
           unfilteredValueDisplay = nullValueString;
@@ -671,7 +673,7 @@ angular.module('dataCards.directives').directive('choropleth', function(AngularR
         var contents = [{ title: 'Total', body: unfilteredValueDisplay + unit(unfilteredValue), italicize: unfilteredValueIsUndefined }];
 
         if (featureIsHighlighted) {
-          contents.push({ title: 'Filtered Amount', body: valueDisplay + unit(value) });
+          contents.push({ title: 'Filtered Amount', body: filteredValueDisplay + unit(filteredValue) });
           $tooltip.addClass('filtered');
         }
 

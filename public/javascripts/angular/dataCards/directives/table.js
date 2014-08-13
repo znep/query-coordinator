@@ -9,7 +9,9 @@ angular.module('socrataCommon.directives').directive('table', function(AngularRx
     restrict: 'A',
     scope: { rowCount: '=', filteredRowCount: '=', whereClause: '=', getRows: '=', expanded: '=', infinite: '=', columnDetails: '=' },
     link: function(scope, element, attrs) {
-      var myUniqueId = _.uniqueId();
+      // A unique jQuery namespace, specific to one table instance.
+      var instanceUniqueNamespace = 'table.instance{0}'.format(_.uniqueId());
+
       AngularRxExtensions.install(scope);
 
       var currentBlocks = [], sort = '', columnWidths = {},
@@ -26,12 +28,15 @@ angular.module('socrataCommon.directives').directive('table', function(AngularRx
         });
       });
       //TODO leak
-      $('body').delegate('.flyout .caret', 'click', function(e) {
-        if ($(e.currentTarget).parent().data('table-id') !== myUniqueId) return; // The flyout might not be our own!
+      $('body').on('click.{0}'.format(instanceUniqueNamespace), '.flyout .caret', function(e) {
+        if ($(e.currentTarget).parent().data('table-id') !== instanceUniqueNamespace) return; // The flyout might not be our own!
         scope.safeApply(function() {
           var columnId = $(e.currentTarget).parent().data('column-id');
           sortOnColumn(columnId);
         });
+      });
+      scope.$on('$destroy', function() {
+        $('body').off('.{0}'.format(instanceUniqueNamespace));
       });
       scope.$on('tableHeader:click', function(event, headerObject) {
         sortOnColumn(headerObject.columnId);
@@ -82,7 +87,7 @@ angular.module('socrataCommon.directives').directive('table', function(AngularRx
           active = true;
           e.preventDefault();
         });
-        $('body').on('mousemove', function(e) {
+        $('body').on('mousemove.{0}'.format(instanceUniqueNamespace), function(e) {
           if(active) {
             var $cells = $table.find('.cell:nth-child({0}), table-header:nth-child({0}) .th'.
             format(columnIndex + 1));
@@ -92,7 +97,7 @@ angular.module('socrataCommon.directives').directive('table', function(AngularRx
             currentX = e.pageX;
             e.preventDefault();
           }
-        }).on('mouseup', function(e) {
+        }).on('mouseup.{0}'.format(instanceUniqueNamespace), function(e) {
           if(active) active = false;
         });
       };
@@ -317,7 +322,7 @@ angular.module('socrataCommon.directives').directive('table', function(AngularRx
           var active = columnId === sortParts[0];
           var sortUp = sortParts[1] === 'ASC';
           var html = [];
-          $element.data('table-id', myUniqueId);
+          $element.data('table-id', instanceUniqueNamespace);
           $element.data('column-id', columnId);
           if (scope.columnDetails[columnId].sortable) {
             if (active) {

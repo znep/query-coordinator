@@ -135,6 +135,7 @@ describe('table', function() {
         applicatorFunction(el);
 
 
+        //NOTE: this assumes the column defaults to a DESC sort. Not always true, see story 5.04 for details.
         expect(lastSort).to.equal(columnMeta.name + ' DESC');
         expect(el.find('.th').length).to.equal(columnCount);
         expect(el.find('.row-block .table-row').length).to.equal(rowCount);
@@ -173,7 +174,7 @@ describe('table', function() {
       it('should be able to sort using the flyout', function() {
         // Note - this test only checks the value of the first cell to make sure it's updated
         // after the sort. It should probably check all the visible rows.
-        var columnIndexToClick = 1;
+        var columnIndexToClick = 0;
         var columnMeta = metaData.columns[columnIndexToClick];
 
         verifySortingWithSortApplicator(columnIndexToClick, function(el) {
@@ -181,6 +182,71 @@ describe('table', function() {
           expect($('.flyout a').length).to.equal(1);
           $('.flyout a').click();
           scope.$digest();
+        });
+      });
+      describe('toggling sort', function() {
+        it('should be correct for numbers', function() {
+          getSortableTable().find('.th').eq(0).click();
+          scope.$digest();
+          getSortableTable().find('.th').eq(0).click();
+          scope.$digest();
+          expect(lastSort).to.match(/ ASC/);
+        });
+        it('should be correct for text', function() {
+          getSortableTable().find('.th').eq(1).click();
+          scope.$digest();
+          getSortableTable().find('.th').eq(1).click();
+          scope.$digest();
+          expect(lastSort).to.match(/ DESC/);
+        });
+        it('should be correct for dates', function() {
+          getSortableTable().find('.th').eq(2).click();
+          scope.$digest();
+          getSortableTable().find('.th').eq(2).click();
+          scope.$digest();
+          expect(lastSort).to.match(/ ASC/);
+        });
+      });
+      describe('default sort', function() {
+        it('should be correct for numbers', function() {
+          getSortableTable().find('.th').eq(0).click();
+          scope.$digest();
+          expect(lastSort).to.match(/ DESC$/);
+        });
+        it('should be correct for text', function() {
+          getSortableTable().find('.th').eq(1).click();
+          scope.$digest();
+          expect(lastSort).to.match(/ ASC/);
+        });
+        it('should be correct for dates', function() {
+          getSortableTable().find('.th').eq(2).click();
+          scope.$digest();
+          expect(lastSort).to.match(/ DESC$/);
+        });
+      });
+      describe('sort hint caret', function() {
+        it('should be correct for numbers', function() {
+          expect(immutableTable.find('.th').eq(0).find('.caret')[0].className).to.not.have.string('sortUp');
+        });
+        it('should be correct for text', function() {
+          expect(immutableTable.find('.th').eq(1).find('.caret')[0].className).to.have.string('sortUp');
+        });
+        it('should be correct for dates', function() {
+          expect(immutableTable.find('.th').eq(2).find('.caret')[0].className).to.not.have.string('sortUp');
+        });
+      });
+      describe('sort hint text', function() {
+        it('should be correct for numbers', function() {
+          immutableTable.find('.th').eq(0).trigger('mouseenter');
+          expect($('.flyout a').text()).to.equal('Click to sort largest first');
+        });
+        it('should be correct for text', function() {
+          immutableTable.find('.th').eq(1).trigger('mouseenter');
+          expect($('.flyout a').text()).to.equal('Click to sort A-Z');
+        });
+        it('should be correct for dates', function() {
+          immutableTable.find('.th').eq(2).trigger('mouseenter');
+          expect($('.flyout a').text()).to.equal('Click to sort newest first');
         });
       });
     });

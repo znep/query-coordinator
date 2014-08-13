@@ -1,0 +1,9 @@
+<div
+  class="th"
+  data-column-id="{{header.columnId}}"
+  ng-class="{active: header.active, sortable: header.sortable}"
+  ng-style="{width: header.width+'px'}">
+  <span class="caret" ng-class="{sortUp: header.sortUp}" ng-if="header.sortable"></span>
+  <span class="resize"></span>
+  {{header.name}}
+</div>

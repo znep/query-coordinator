@@ -35,53 +35,11 @@
       "importance": 3
     },
     {
-      "title": "IUCR",
-      "name": "iucr",
-      "physicalDatatype": "text",
-      "logicalDatatype": "category",
-      "importance": 2
-    },
-    {
       "title": "Crime Type",
       "name": "primary_type",
       "physicalDatatype": "text",
       "logicalDatatype": "category",
       "importance": 1
-    },
-    {
-      "title": "Crime Description",
-      "name": "description",
-      "physicalDatatype": "text",
-      "logicalDatatype": "category",
-      "importance": 2
-    },
-    {
-      "title": "Location Description",
-      "name": "location_description",
-      "physicalDatatype": "text",
-      "logicalDatatype": "category",
-      "importance": 1
-    },
-    {
-      "title": "Arrest",
-      "name": "arrest",
-      "physicalDatatype": "text",
-      "logicalDatatype": "category",
-      "importance": 2
-    },
-    {
-      "title": "Domestic",
-      "name": "domestic",
-      "physicalDatatype": "text",
-      "logicalDatatype": "category",
-      "importance": 2
-    },
-    {
-      "title": "Beat",
-      "name": "beat",
-      "physicalDatatype": "text",
-      "logicalDatatype": "text",
-      "importance": 3
     },
     {
       "title": "District",
@@ -98,34 +56,6 @@
       "importance": 3
     },
     {
-      "title": "Community Area",
-      "name": "community_area",
-      "physicalDatatype": "text",
-      "logicalDatatype": "text",
-      "importance": 3
-    },
-    {
-      "title": "FBI Code",
-      "name": "fbi_code",
-      "physicalDatatype": "text",
-      "logicalDatatype": "category",
-      "importance": 3
-    },
-    {
-      "title": "X Coordinate",
-      "name": "x_coordinate",
-      "physicalDatatype": "number",
-      "logicalDatatype": "amount",
-      "importance": 4
-    },
-    {
-      "title": "Y Coordinate",
-      "name": "y_coordinate",
-      "physicalDatatype": "number",
-      "logicalDatatype": "amount",
-      "importance": 4
-    },
-    {
       "title": "Year",
       "name": "year",
       "physicalDatatype": "number",
@@ -133,59 +63,11 @@
       "importance": 2
     },
     {
-      "title": "Updated On",
-      "name": "updated_on",
-      "physicalDatatype": "timestamp",
-      "logicalDatatype": "time",
-      "importance": 3
-    },
-    {
-      "title": "Latitude",
-      "name": "latitude",
-      "physicalDatatype": "number",
-      "logicalDatatype": "amount",
-      "importance": 4
-    },
-    {
-      "title": "Longitude",
-      "name": "longitude",
-      "physicalDatatype": "number",
-      "logicalDatatype": "amount",
-      "importance": 4
-    },
-    {
       "title": "Location",
       "name": "location",
       "physicalDatatype": "geo entity",
       "logicalDatatype": "location",
       "importance": 3
-    },
-    {
-      "title": "Community Area",
-      "description": "",
-      "name": ":Computed_xkbhn7hx_location",
-      "physicalDatatype": "text",
-      "logicalDatatype": "location",
-      "importance": 1,
-      "shapefileFeatureHumanReadablePropertyName": "community"
-    },
-    {
-      "title": "Zip Code",
-      "description": "",
-      "name": ":Computed_f523g8ig_location",
-      "physicalDatatype": "text",
-      "logicalDatatype": "location",
-      "importance": 1,
-      "shapefileFeatureHumanReadablePropertyName": "zip"
-    },
-    {
-      "title": "Ward",
-      "description": "",
-      "name": ":Computed_ind9qept_location",
-      "physicalDatatype": "text",
-      "logicalDatatype": "location",
-      "importance": 1,
-      "shapefileFeatureHumanReadablePropertyName": "ward"
     },
     {
       "title": "Neighborhood",

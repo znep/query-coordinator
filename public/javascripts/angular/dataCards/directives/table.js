@@ -119,14 +119,14 @@ angular.module('socrataCommon.directives').directive('table', function(AngularRx
         var active = false, currentX = 0, columnIndex, columnId;
         element.on('mousedown', '.table-head .resize, .table-resize-container .resize', function(e) {
           currentX = e.pageX;
-          columnIndex = $(this).closest('table-header').index();
+          columnIndex = $(this).parent().index();
           columnId = $(this).data('columnId');
           active = true;
           e.preventDefault();
         });
         $('body').on('mousemove.{0}'.format(instanceUniqueNamespace), function(e) {
           if(active) {
-            var $cells = $table.find('.cell:nth-child({0}), table-header:nth-child({0}) .th'.
+            var $cells = $table.find('.cell:nth-child({0}), .th:nth-child({0})'.
             format(columnIndex + 1));
             var newWidth = $cells.width() + e.pageX - currentX;
             $cells.width(newWidth);
@@ -174,7 +174,7 @@ angular.module('socrataCommon.directives').directive('table', function(AngularRx
         updateColumnHeaders();
         _.defer(function() {
           _.each(_.values(scope.columnDetails), function(column, columnIndex) {
-            var $cells = $table.find('.cell:nth-child({0}), table-header:nth-child({0}) .th'.
+            var $cells = $table.find('.cell:nth-child({0}), .th:nth-child({0})'.
               format(columnIndex + 1));
             var maxCell = _.max($cells, function(cell) {
               return cell.clientWidth;

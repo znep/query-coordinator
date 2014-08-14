@@ -184,6 +184,14 @@ describe('table', function() {
           scope.$digest();
         });
       });
+
+      it('should not sort when clicking the header resize thumb', function() {
+        var origSort = lastSort;
+        getSortableTable().find('.th .resize').eq(0).click();
+        scope.$digest();
+        expect(lastSort).to.equal(origSort);
+      });
+
       describe('toggling sort', function() {
         it('should be correct for numbers', function() {
           getSortableTable().find('.th').eq(0).click();

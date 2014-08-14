@@ -1,4 +1,5 @@
 describe("A Choropleth Card Visualization", function() {
+  var testHelpers, rootScope, templateCache, compile, scope, Model, q, timeout;
 
   var testWards = 'karma-test/dataCards/test-data/cardVisualizationChoroplethTest/ward_geojson.json';
   var testAggregates = 'karma-test/dataCards/test-data/cardVisualizationChoroplethTest/geo_values.json';
@@ -94,8 +95,8 @@ describe("A Choropleth Card Visualization", function() {
 
   describe('when created', function() {
     it('should not let click events leak', function() {
-      obj1 = createChoropleth("choro1");
-      obj2 = createChoropleth("choro2");
+      var obj1 = createChoropleth("choro1");
+      var obj2 = createChoropleth("choro2");
 
       obj1.scope.$on('toggle-dataset-filter:choropleth', function(event, feature, callback) {
         obj1.eventFired = true;
@@ -115,16 +116,16 @@ describe("A Choropleth Card Visualization", function() {
 
     it('should not allow the choropleth legend to update when expanded', function() {
 
-      obj1 = createChoropleth('choropleth-1', '');
-      obj1LegendLength = $('#choropleth-1 div.legend.leaflet-control > div.info-label').length;
-      obj2 = createChoropleth('choropleth-2', "ward='10'");
-      obj2LegendLength = $('#choropleth-2 div.legend.leaflet-control > div.info-label').length;
+      var obj1 = createChoropleth('choropleth-1', '');
+      var obj1LegendLength = $('#choropleth-1 div.legend.leaflet-control > div.info-label').length;
+      var obj2 = createChoropleth('choropleth-2', "ward='10'");
+      var obj2LegendLength = $('#choropleth-2 div.legend.leaflet-control > div.info-label').length;
 
       expect(obj1LegendLength).to.equal(obj2LegendLength);
     });
 
     it('should provide a flyout on hover with the current value, and row display unit', function(done){
-      obj1 = createChoropleth('choro1');
+      var obj1 = createChoropleth('choro1');
       var feature = $('#choro1 path')[0];
       testHelpers.fireMouseEvent(feature, 'mouseover');
       testHelpers.fireMouseEvent(feature, 'mousemove');

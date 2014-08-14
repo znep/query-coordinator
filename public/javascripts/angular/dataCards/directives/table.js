@@ -4,23 +4,13 @@ angular.module('socrataCommon.directives').directive('table', function(AngularRx
   var rowsPerBlock = 50,
       rowHeight = $.relativeToPx('2rem');
 
-  // Given a column detail object, returns
-  // this column's default sort (represented
-  // by the strings 'DESC' and 'ASC').
-  function defaultSortOrderForColumn(column) {
-    switch(column.physicalDatatype) {
-      case 'number': case 'timestamp': return 'DESC';
-      default: return 'ASC';
-    }
-  };
-
   return {
     templateUrl: '/angular_templates/dataCards/table.html',
     restrict: 'A',
     scope: { rowCount: '=', filteredRowCount: '=', whereClause: '=', getRows: '=', expanded: '=', infinite: '=', columnDetails: '=' },
     link: function(scope, element, attrs) {
       // A unique jQuery namespace, specific to one table instance.
-      var instanceUniqueNamespace = 'table.instance{0}'.format(_.uniqueId());
+      var instanceUniqueNamespace = 'table.instance{0}'.format(scope.$id);
 
       AngularRxExtensions.install(scope);
 
@@ -60,6 +50,16 @@ angular.module('socrataCommon.directives').directive('table', function(AngularRx
         updateLabel();
       };
 
+      // Given a column detail object, returns
+      // this column's default sort (represented
+      // by the strings 'DESC' and 'ASC').
+      function defaultSortOrderForColumn(column) {
+        switch(column.physicalDatatype) {
+          case 'number': case 'timestamp': return 'DESC';
+          default: return 'ASC';
+        }
+      };
+
       // Given a column ID, computes what sort order
       // should be applied when the user next indicates
       // that the column should be sorted (say, by clicking
@@ -68,11 +68,9 @@ angular.module('socrataCommon.directives').directive('table', function(AngularRx
       // if the column is already sorted, or applies a
       // default sort based upon the column's type.
       var getNextSortForColumn = function(columnId) {
-        var sortParts = sort.split(' ');
-        var active = sortParts[0] === columnId;
-
         var newOrdering;
-        if (active) {
+        if (isSortedOnColumn(columnId)) {
+          var sortParts = sort.split(' ');
           var currentSort = sortParts[1];
           newOrdering = currentSort === 'DESC' ? 'ASC' : 'DESC';
         } else {
@@ -87,9 +85,8 @@ angular.module('socrataCommon.directives').directive('table', function(AngularRx
       // sort is applied, returns the default sort
       // for that column.
       var getCurrentOrDefaultSortForColumn = function(columnId) {
-        var sortParts = sort.split(' ');
-        var active = sortParts[0] === columnId;
-        if (active) {
+        if (isSortedOnColumn(columnId)) {
+          var sortParts = sort.split(' ');
           return sortParts[1];
         } else {
           return getNextSortForColumn(columnId);
@@ -102,6 +99,13 @@ angular.module('socrataCommon.directives').directive('table', function(AngularRx
         sort = '{0} {1}'.format(columnId, newOrdering);
         updateColumnHeaders();
         reloadRows();
+      };
+
+      // Returns true if we're currently sorting
+      // on the given column.
+      var isSortedOnColumn = function(columnId) {
+        var sortParts = sort.split(' ');
+        return sortParts[0] === columnId;
       };
 
       var dragHandles = function(columnIds) {
@@ -150,13 +154,10 @@ angular.module('socrataCommon.directives').directive('table', function(AngularRx
           // Symbols: ▼ ▲
           var ordering = getCurrentOrDefaultSortForColumn(column.name);
 
-          var sortParts = sort.split(' ');
-          var active = column.name === sortParts[0];
-
           return {
             columnId: column.name,
             name: column.title,
-            active: active,
+            active: isSortedOnColumn(column.name),
             sortUp: ordering === 'ASC',
             width: columnWidths[column.name],
             sortable: column.sortable
@@ -164,7 +165,7 @@ angular.module('socrataCommon.directives').directive('table', function(AngularRx
         });
         // Update flyout if present
         var columnId = $(".flyout").data('column-id');
-        if ($.isPresent(columnId)) {
+        if (_.isPresent(columnId)) {
           $head.find('.th:contains({0})'.format(scope.columnDetails[columnId].title)).mouseenter();
         }
       };
@@ -359,11 +360,8 @@ angular.module('socrataCommon.directives').directive('table', function(AngularRx
           var columnId = headerScope.header.columnId;
           var column = scope.columnDetails[columnId];
           var sortParts = sort.split(' ');
-          var active = columnId === sortParts[0];
           var sortUp = sortParts[1] === 'ASC';
-          var defaultSort = defaultSortOrderForColumn(column);
           var html = [];
-
 
           var ascendingString = 'ascending';
           var descendingString = 'descending';
@@ -376,7 +374,7 @@ angular.module('socrataCommon.directives').directive('table', function(AngularRx
           $element.data('table-id', instanceUniqueNamespace);
           $element.data('column-id', columnId);
           if (column.sortable) {
-            if (active) {
+            if (isSortedOnColumn(columnId)) {
               html.push('Sorted {0}'.format(sortUp ? ascendingString : descendingString));
             }
             var wouldSortUp = getNextSortForColumn(columnId) === 'ASC';

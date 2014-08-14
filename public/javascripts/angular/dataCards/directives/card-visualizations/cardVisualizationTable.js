@@ -1,4 +1,4 @@
-angular.module('dataCards.directives').directive('cardVisualizationTable', function(AngularRxExtensions, CardDataService) {
+angular.module('dataCards.directives').directive('cardVisualizationTable', function(AngularRxExtensions, CardDataService, SortedTileLayout) {
   "use strict";
 
   var unsortable = ['geo entity'];
@@ -91,11 +91,28 @@ angular.module('dataCards.directives').directive('cardVisualizationTable', funct
           return Rx.Observable.fromPromise(dataPromise);
         });
 
+      // The default sort is on the first card in the page layout.
+      var layout = new SortedTileLayout();
+      var defaultSortColumnName = model.pluck('page').observeOnLatest('cards').map(function(cards) {
+        if (_.isEmpty(cards)) return null;
+        var sizedCards = _.map(cards, function(card) {
+          return {
+            cardSize: card.getCurrentValue('cardSize'),
+            model: card
+          };
+        });
+        var computedLayout = layout.doLayout(sizedCards);
+        var sortedCardSizes = _.keys(computedLayout).sort();
+        var cardsInFirstSize = _.flatten(computedLayout[_.first(sortedCardSizes)]);
+        return _.first(cardsInFirstSize).model.fieldName;
+      });
+
       $scope.bindObservable('whereClause', whereClause);
       $scope.bindObservable('rowCount', rowCount.switchLatest());
       $scope.bindObservable('filteredRowCount', filteredRowCount.switchLatest());
       $scope.bindObservable('columnDetails', columnDetails);
       $scope.bindObservable('expanded', model.observeOnLatest('expanded'));
+      $scope.bindObservable('defaultSortColumnName', defaultSortColumnName);
 
       $scope.$on('table:expand-clicked', function() {
         $scope.model.page.toggleExpanded($scope.model);

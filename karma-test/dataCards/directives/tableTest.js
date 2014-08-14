@@ -73,7 +73,7 @@ describe('table', function() {
       expect(immutableTable.find('.th').length).to.equal(columnCount);
     });
     it('should format numbers correctly', function() {
-      _.each(immutableTable.find('.row-block .cell'), function(cell, i) {
+      _.each(immutableTable.find('.row-block .cell'), function(cell) {
         var column = metaData.columns[$(cell).index()];
         var datatype = column.physicalDatatype;
         if (datatype === 'number') {
@@ -84,7 +84,7 @@ describe('table', function() {
     it('should load more rows upon scrolling', function(done) {
       var el = createTableCard(true);
       expect(el.find('.row-block .cell').length).to.equal(columnCount * blockSize * 3);
-      $(el).find('.table-body').scrollTop($.relativeToPx('2rem')*51);
+      $(el).find('.table-body').scrollTop($.relativeToPx('2rem') * (blockSize + 1));
       _.defer(function() {
         expect(el.find('.th').length).to.equal(columnCount);
         expect(el.find('.row-block .cell').length).to.equal(columnCount * blockSize * 4);
@@ -192,7 +192,7 @@ describe('table', function() {
         expect(lastSort).to.equal(origSort);
       });
 
-      describe('toggling sort', function() {
+      describe('toggling sort on an unsorted column', function() {
         it('should be correct for numbers', function() {
           getSortableTable().find('.th').eq(0).click();
           scope.$digest();

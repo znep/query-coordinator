@@ -10,6 +10,7 @@ module.exports = function ( karma ) {
      * Configure which files should be preproccessed.
      */
     preprocessors: {
+      'public/javascripts/angular/**/*.js': ['coverage'],
       '**/*.html': ['ng-html2js'],
       '**/*.json': ['ng-html2js'],
       '**/*.sass': ['sass']
@@ -88,12 +89,34 @@ module.exports = function ( karma ) {
     logLevel:  'WARN',
     /**
      * How to report, by default.
+     * Note, not including coverage here as the instrumentation process
+     * makes the code completely unreadable and undebuggable. The rake
+     * test task manually enables coverage. See lib/tasks/karma_tests.rake
      */
-    reporters: ['dots', 'coverage'],
+    reporters: ['dots'],
 
     coverageReporter: {
-      type : 'html',
-      dir : 'karma-test/coverage-reports/dataCards/'
+      reporters: [
+        {
+          type : 'html',
+          dir : 'karma-test/coverage-reports/dataCards/',
+          subdir: '.'
+        },
+        {
+          type: 'text',
+          dir : 'karma-test/coverage-reports/dataCards/',
+          subdir: '.',
+          file: 'coverage.txt'
+        },
+        {
+          type: 'cobertura',
+          dir : 'karma-test/coverage-reports/dataCards/',
+          subdir: '.'
+        },
+        {
+          type: 'text-summary'
+        }
+      ]
     },
     /**
      * On which port should the browser connect, on which port is the test runner

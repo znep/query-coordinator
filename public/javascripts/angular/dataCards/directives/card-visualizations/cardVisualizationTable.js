@@ -95,12 +95,14 @@ angular.module('dataCards.directives').directive('cardVisualizationTable', funct
       var layout = new SortedTileLayout();
       var defaultSortColumnName = model.pluck('page').observeOnLatest('cards').map(function(cards) {
         if (_.isEmpty(cards)) return null;
-        var sizedCards = _.map(cards, function(card) {
+        var sizedCards = _.compact(_.map(cards, function(card) {
+          // Sorting on the table card doesn't make any sense.
+          if (card.fieldName === '*') return null;
           return {
             cardSize: card.getCurrentValue('cardSize'),
             model: card
           };
-        });
+        }));
         var computedLayout = layout.doLayout(sizedCards);
         var sortedCardSizes = _.keys(computedLayout).sort();
         var cardsInFirstSize = _.flatten(computedLayout[_.first(sortedCardSizes)]);

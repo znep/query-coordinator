@@ -24,7 +24,7 @@ describe('table', function() {
     if (!expanded) expanded = false;
     var html =
       '<div class="card ' + (expanded ? 'expanded': '') + '" style="width: 640px; height: 480px;">' +
-        '<div table class="table" row-count="rowCount" get-rows="getRows" where-clause="whereClause" filtered-row-count="filteredRowCount" expanded="expanded" column-details="columnDetails"></div>' +
+        '<div table class="table" row-count="rowCount" get-rows="getRows" where-clause="whereClause" filtered-row-count="filteredRowCount" expanded="expanded" column-details="columnDetails" default-sort-column-name="defaultSortColumnName"></div>' +
       '</div>';
     var compiledElem = testHelpers.TestDom.compileAndAppend(html, scope);
     scope.expanded = expanded;
@@ -39,6 +39,9 @@ describe('table', function() {
         columnCount += 1;
       }
     });
+    // Provide a default sort column. It's a text/category column, so the default sort
+    // order is ASC.
+    scope.defaultSortColumnName = scope.columnDetails[metaData.columns[4].name].name;
     if(getRows) {
       scope.getRows = getRows;
     } else {
@@ -133,7 +136,7 @@ describe('table', function() {
 
         // Apply a sort. Expect it to be DESC
         applicatorFunction(el);
-
+        scope.$digest();
 
         //NOTE: this assumes the column defaults to a DESC sort. Not always true, see story 5.04 for details.
         expect(lastSort).to.equal(columnMeta.name + ' DESC');
@@ -146,7 +149,7 @@ describe('table', function() {
 
         // Now, reverse the sort.
         applicatorFunction(el);
-
+        scope.$digest();
 
         expect(lastSort).to.equal(columnMeta.name + ' ASC');
         expect(el.find('.th').length).to.equal(columnCount);
@@ -156,6 +159,16 @@ describe('table', function() {
         // Value in corresponding cell matches with first data item (since we're sorting normally).
         expect(el.find('.row-block .cell').eq(columnIndexToClick).text()).to.equal(computeDisplayedValue(_.first(data)[columnMeta.name]));
       };
+
+      it('should only reflect the first value of the default sort', function() {
+        var el = getSortableTable();
+        var defaultSortColumnName = el.scope().defaultSortColumnName;
+        expect(lastSort).to.equal(defaultSortColumnName + ' ASC');
+
+        el.scope().defaultSortColumnName = 'bad';
+        scope.$digest();
+        expect(lastSort).to.equal(defaultSortColumnName + ' ASC'); // shouldn't change
+      });
 
       it('should be able to sort using the header', function() {
         // Note - this test only checks the value of the first cell to make sure it's updated
@@ -181,7 +194,6 @@ describe('table', function() {
           el.find('.th').eq(columnIndexToClick).trigger('mouseenter');
           expect($('.flyout a').length).to.equal(1);
           $('.flyout a').click();
-          scope.$digest();
         });
       });
 

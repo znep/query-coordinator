@@ -7,7 +7,16 @@ angular.module('socrataCommon.directives').directive('table', function(AngularRx
   return {
     templateUrl: '/angular_templates/dataCards/table.html',
     restrict: 'A',
-    scope: { rowCount: '=', filteredRowCount: '=', whereClause: '=', getRows: '=', expanded: '=', infinite: '=', columnDetails: '=' },
+    scope: {
+      rowCount: '=',
+      filteredRowCount: '=',
+      whereClause: '=',
+      getRows: '=',
+      expanded: '=',
+      infinite: '=',
+      columnDetails: '=',
+      defaultSortColumnName: '='    // When the table is first created, it will be sorted on this column.
+    },
     link: function(scope, element, attrs) {
       // A unique jQuery namespace, specific to one table instance.
       var instanceUniqueNamespace = 'table.instance{0}'.format(scope.$id);
@@ -397,6 +406,10 @@ angular.module('socrataCommon.directives').directive('table', function(AngularRx
           updateExpanderHeight();
           showOrHideNoRowMessage();
           if (rowCount && expanded) {
+            // Apply a default sort if needed.
+            if (scope.defaultSortColumnName && _.isEmpty(sort)) {
+              sortOnColumn(scope.defaultSortColumnName);
+            }
             renderTable(
               element,
               cardDimensions,

@@ -362,7 +362,7 @@ module DatasetsHelper
   end
 
   def hide_filter_dataset?
-    view.non_tabular? || view.is_form?
+    view.non_tabular? || view.is_form? || view.is_insecure_arcgis?
   end
 
   def hide_calendar_create?

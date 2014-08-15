@@ -1190,6 +1190,12 @@
         return OpenLayers.Bounds.fromArray([box.lon1, box.lat2, box.lon2, box.lat1]);
     };
 
+    OpenLayers.Bounds.fromDatasetMetadata = function(ds)
+    {
+        return OpenLayers.Bounds.fromArray([ds.northWest['long'], ds.southEast.lat,
+                                            ds.southEast['long'], ds.northWest.lat]);
+    };
+
     OpenLayers.Layer.Heatmap.prototype.removeAllFeatures = function()
     {
         this.setDataSet({ max: 50, data: [] });

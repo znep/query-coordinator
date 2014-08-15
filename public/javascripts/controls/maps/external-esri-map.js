@@ -4,6 +4,16 @@
         initialize: function(name, url, params, options) {
             var layer = this;
 
+            this.secure = /^https/.test(url);
+            if (!this.secure)
+            {
+                var errString = name + ' is an insecure \'http\' URL, resulting in a degraded experience.';
+                if (window.console && _.isFunction(console.error))
+                { console.error(errString); }
+                else if (_.isFunction($.debug))
+                { $.debug(errString); }
+            }
+
             var properties = ['externalMapProjection', 'internalMapProjection', 'onloadCallback'];
             _.each(properties, function(property)
             {
@@ -14,41 +24,41 @@
             if (url.match(/nycopendata.esri.com/)) // Hopefully, this can be taken out one day.
             { this.projection = this.internalMapProjection; }
 
-            dojo.require('esri.arcgis.utils');
-            dojo.require('esri.layers.FeatureLayer');
-            dojo.addOnLoad(function()
+            if (this.secure)
             {
-                var path = url.replace(/\/export$/,'');
-                esri.arcgis.utils._getServiceInfo(path).addCallback(
-                    function(layerInfo) { layer.setMetadata(layerInfo); });
-                layer.featureLayer
-                    = new esri.layers.FeatureLayer(path + '/' + layer.layerId);
-
-                dojo.connect(layer.featureLayer, 'onLoad', function()
+                dojo.require('esri.layers.FeatureLayer');
+                dojo.addOnLoad(function()
                 {
-                    if ($.subKeyDefined(layer, 'featureLayer.renderer.infos'))
+                    var path = url.replace(/\/export$/,'');
+                    layer.featureLayer
+                        = new esri.layers.FeatureLayer(path + '/' + layer.layerId);
+
+                    dojo.connect(layer.featureLayer, 'onLoad', function()
                     {
-                        layer._suggestedTolerance = Math.round(Math.max.apply(null,
-                            _(layer.featureLayer.renderer.infos).chain()
-                            .map(function(info) { return [info.symbol.height, info.symbol.width]; })
-                            .flatten().compact().value()));
+                        if ($.subKeyDefined(layer, 'featureLayer.renderer.infos'))
+                        {
+                            layer._suggestedTolerance = Math.round(Math.max.apply(null,
+                                _(layer.featureLayer.renderer.infos).chain()
+                                .map(function(info) { return [info.symbol.height, info.symbol.width]; })
+                                .flatten().compact().value()));
 
-                        // Sometimes there are renderer.infos but no height/widths.
-                        // In such a case, the above evaluates to negative infinity.
-                        if (!isFinite(layer._suggestedTolerance))
-                        { delete layer._suggestedTolerance; }
-                    }
+                            // Sometimes there are renderer.infos but no height/widths.
+                            // In such a case, the above evaluates to negative infinity.
+                            if (!isFinite(layer._suggestedTolerance))
+                            { delete layer._suggestedTolerance; }
+                        }
 
-                    layer.name = layer.featureLayer.name;
-                    if ($.subKeyDefined(layer.dataObj, '_parent._controls.Overview.redraw'))
-                    { layer.dataObj._parent._controls.Overview.redraw(); }
+                        layer.name = layer.featureLayer.name;
+                        if ($.subKeyDefined(layer.dataObj, '_parent._controls.Overview.redraw'))
+                        { layer.dataObj._parent._controls.Overview.redraw(); }
 
-                    if (layer._metadataReady)
-                    { layer.onloadCallback(); }
-                    else
-                    { layer._featureLayerReady = true; }
+                        if (layer._metadataReady)
+                        { layer.onloadCallback(); }
+                        else
+                        { layer._featureLayerReady = true; }
+                    });
                 });
-            });
+            }
 
             OpenLayers.Layer.ArcGIS93Rest.prototype.initialize.apply(this, arguments);
         },
@@ -66,8 +76,9 @@
 
         setInitialExtent: function()
         {
-            this.initialExtent = this.convertEsriToOpenLayers(this.metadata.initialExtent);
-            if (this._featureLayerReady)
+            this.initialExtent = this.metadata.initialExtent
+                .transform(blist.openLayers.geographicProjection, this.internalMapProjection);
+            if (this._featureLayerReady || !this.secure)
             { this.onloadCallback(); }
             else
             { this._metadataReady = true; }
@@ -87,6 +98,7 @@
         filterWith: function(view)
         {
             var layer = this;
+            if (!this.secure) { return; }
             view.bind('query_change', function() { layer.setLayerFilter(layer.layerId,
                 transformFilterToLayerDefinition(view, layer.featureLayer));
                 layer.redraw();
@@ -162,9 +174,17 @@
             layerObj._map.addLayer(layerObj._displayLayer);
             layer.dataObj = this;
 
-            layerObj.buildIdentifyParameters();
-            layerObj.buildAttributeMap();
-            layerObj._map.events.register('click', layerObj, layerObj.clickFeature);
+            // We pull in a suitable spatial extent on load; that is more reliable than
+            // pulling it in from the layer metadata.
+            layer.setMetadata({
+                initialExtent: OpenLayers.Bounds.fromDatasetMetadata(layerObj._view) });
+
+            if (layer.secure)
+            {
+                layerObj.buildIdentifyParameters();
+                layerObj.buildAttributeMap();
+                layerObj._map.events.register('click', layerObj, layerObj.clickFeature);
+            }
 
             layer.events.register('loadend', layerObj._parent, function()
             {
@@ -439,7 +459,7 @@
                         }
                         break;
                     case 'column':
-                        return blist.dataset.columnForID(filter.columnId).name;
+                        return blist.dataset.columnForIdentifier(filter.columnFieldName).name;
                     case 'literal':
                         return filter.value;
                 }

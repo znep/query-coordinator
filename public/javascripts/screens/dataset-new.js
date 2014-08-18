@@ -427,13 +427,15 @@ $wizard.wizard({
     var validator = $('.newDatasetForm').validate({
         rules: {
             "view[attributionLink]": "customUrl",
-            "view[esri_src]": 'customUrl',
+            "view[esri_src]": { customUrl: true, secureUrl: true },
             'crossload_url': 'customHttpMaybeSUrl'
         },
         messages: {
             "view[name]": $.t('screens.dataset_new.errors.missing_name'),
             "view[attributionLink]": $.t('screens.dataset_new.errors.invalid_url'),
-            'view[esri_src]': $.t('screens.dataset_new.errors.missing_esri_url'),
+            'view[esri_src]': {
+                customUrl: $.t('screens.dataset_new.errors.missing_esri_url'),
+                secureUrl: $.t('screens.dataset_new.errors.insecure_esri_url') },
             'crossload_url': $.t('screens.dataset_new.errors.invalid_crossload_url')
         },
         errorPlacement: function (label, $el) {

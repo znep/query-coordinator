@@ -7,8 +7,20 @@ angular.module('socrataCommon.directives').directive('table', function(AngularRx
   return {
     templateUrl: '/angular_templates/dataCards/table.html',
     restrict: 'A',
-    scope: { rowCount: '=', filteredRowCount: '=', whereClause: '=', getRows: '=', expanded: '=', infinite: '=', columnDetails: '=' },
+    scope: {
+      rowCount: '=',
+      filteredRowCount: '=',
+      whereClause: '=',
+      getRows: '=',
+      expanded: '=',
+      infinite: '=',
+      columnDetails: '=',
+      defaultSortColumnName: '='    // When the table is first created, it will be sorted on this column.
+    },
     link: function(scope, element, attrs) {
+      // A unique jQuery namespace, specific to one table instance.
+      var instanceUniqueNamespace = 'table.instance{0}'.format(scope.$id);
+
       AngularRxExtensions.install(scope);
 
       var currentBlocks = [], sort = '', columnWidths = {},
@@ -19,10 +31,23 @@ angular.module('socrataCommon.directives').directive('table', function(AngularRx
           $expander = element.find('.table-expander'),
           $label = element.find('.table-label');
 
-      element.delegate('.expand-message > *', 'click', function() {
+      element.on('click', '.expand-message > *', function() {
         scope.$apply(function() {
           scope.$emit('table:expand-clicked');
         });
+      });
+      $('body').on('click.{0}'.format(instanceUniqueNamespace), '.flyout .caret', function(e) {
+        if ($(e.currentTarget).parent().data('table-id') !== instanceUniqueNamespace) return; // The flyout might not be our own!
+        scope.safeApply(function() {
+          var columnId = $(e.currentTarget).parent().data('column-id');
+          sortOnColumn(columnId);
+        });
+      });
+      scope.$on('$destroy', function() {
+        $('body').off('.{0}'.format(instanceUniqueNamespace));
+      });
+      scope.$on('tableHeader:click', function(event, headerObject) {
+        sortOnColumn(headerObject.columnId);
       });
 
       var renderTable = function(element, dimensions, rowCount, expanded) {
@@ -32,6 +57,64 @@ angular.module('socrataCommon.directives').directive('table', function(AngularRx
         $head.find('.resize').height(tableHeight);
         checkBlocks();
         updateLabel();
+      };
+
+      // Given a column detail object, returns
+      // this column's default sort (represented
+      // by the strings 'DESC' and 'ASC').
+      function defaultSortOrderForColumn(column) {
+        switch(column.physicalDatatype) {
+          case 'number': case 'timestamp': return 'DESC';
+          default: return 'ASC';
+        }
+      };
+
+      // Given a column ID, computes what sort order
+      // should be applied when the user next indicates
+      // that the column should be sorted (say, by clicking
+      // on the header).
+      // Broadly, this either reverses the current sort
+      // if the column is already sorted, or applies a
+      // default sort based upon the column's type.
+      var getNextSortForColumn = function(columnId) {
+        var newOrdering;
+        if (isSortedOnColumn(columnId)) {
+          var sortParts = sort.split(' ');
+          var currentSort = sortParts[1];
+          newOrdering = currentSort === 'DESC' ? 'ASC' : 'DESC';
+        } else {
+          var column = scope.columnDetails[columnId];
+          newOrdering = defaultSortOrderForColumn(column);
+        }
+        return newOrdering;
+      };
+
+      // Given a column ID, computes what sort order
+      // is currently applied to that column. If no
+      // sort is applied, returns the default sort
+      // for that column.
+      var getCurrentOrDefaultSortForColumn = function(columnId) {
+        if (isSortedOnColumn(columnId)) {
+          var sortParts = sort.split(' ');
+          return sortParts[1];
+        } else {
+          return getNextSortForColumn(columnId);
+        }
+      };
+
+      // Apply a sort on the column corresponding to the given columnId.
+      var sortOnColumn = function(columnId) {
+        var newOrdering = getNextSortForColumn(columnId);
+        sort = '{0} {1}'.format(columnId, newOrdering);
+        updateColumnHeaders();
+        reloadRows();
+      };
+
+      // Returns true if we're currently sorting
+      // on the given column.
+      var isSortedOnColumn = function(columnId) {
+        var sortParts = sort.split(' ');
+        return sortParts[0] === columnId;
       };
 
       var dragHandles = function(columnIds) {
@@ -47,14 +130,14 @@ angular.module('socrataCommon.directives').directive('table', function(AngularRx
           $resizeContainer.append($cell);
         });
         var active = false, currentX = 0, columnIndex, columnId;
-        element.delegate('.table-head .resize, .table-resize-container .resize', 'mousedown', function(e) {
+        element.on('mousedown', '.table-head .resize, .table-resize-container .resize', function(e) {
           currentX = e.pageX;
           columnIndex = $(this).parent().index();
           columnId = $(this).data('columnId');
           active = true;
           e.preventDefault();
         });
-        $('body').on('mousemove', function(e) {
+        $('body').on('mousemove.{0}'.format(instanceUniqueNamespace), function(e) {
           if(active) {
             var $cells = $table.find('.cell:nth-child({0}), .th:nth-child({0})'.
             format(columnIndex + 1));
@@ -64,50 +147,34 @@ angular.module('socrataCommon.directives').directive('table', function(AngularRx
             currentX = e.pageX;
             e.preventDefault();
           }
-        }).on('mouseup', function(e) {
+        }).on('mouseup.{0}'.format(instanceUniqueNamespace), function(e) {
           if(active) active = false;
         });
       };
 
-      var setupHead = _.once(function(row) {
-        updateColumnHeaders();
-        $head.delegate('.caret', 'click', sortHandler);
-        $('body').delegate('.flyout .caret', 'click', sortHandler);
-      });
-
-      var sortHandler = function(e) {
-        var columnId = $(e.currentTarget).parent().data('column-id');
-        var sortParts = sort.split(' ');
-        var active = sortParts[0] === columnId;
-        var sortUp = sortParts[1] === 'ASC';
-        if (!active || (active && sortUp)) {
-          sort = columnId + ' DESC';
-        } else {
-          sort = columnId + ' ASC';
+      var ensureColumnHeaders = function() {
+        if(!scope.headers) {
+          updateColumnHeaders();
         }
-        updateColumnHeaders();
-        reloadRows();
-        e.preventDefault();
       };
 
       var updateColumnHeaders = function(){
         scope.headers = _.map(_.values(scope.columnDetails), function(column, i) {
           // Symbols: ▼ ▲
-          var sortParts = sort.split(' ');
-          var active = column.name === sortParts[0];
-          var sortUp = sortParts[1] === 'ASC';
+          var ordering = getCurrentOrDefaultSortForColumn(column.name);
+
           return {
             columnId: column.name,
             name: column.title,
-            active: active,
-            sortUp: active && sortUp,
+            active: isSortedOnColumn(column.name),
+            sortUp: ordering === 'ASC',
             width: columnWidths[column.name],
             sortable: column.sortable
           };
         });
         // Update flyout if present
         var columnId = $(".flyout").data('column-id');
-        if (columnId) {
+        if (_.isPresent(columnId)) {
           $head.find('.th:contains({0})'.format(scope.columnDetails[columnId].title)).mouseenter();
         }
       };
@@ -158,7 +225,7 @@ angular.module('socrataCommon.directives').directive('table', function(AngularRx
         scope.getRows(block * rowsPerBlock, rowsPerBlock, sort, canceler, scope.whereClause).
             then(function(data) {
           delete httpRequests[block];
-          setupHead(data[0]);
+          ensureColumnHeaders();
           if (currentBlocks.indexOf(block) === -1 || data.length === 0) return;
           var blockHtml = '<div class="row-block {0}" data-block-id="{0}" style="top: {1}px; display: none">'.
             format(block, block * rowsPerBlock * rowHeight);
@@ -267,13 +334,15 @@ angular.module('socrataCommon.directives').directive('table', function(AngularRx
       };
       var scrollLeft = $body.scrollLeft(), scrollTop = $body.scrollTop();
       $body.scroll(function(e) {
-        if (scrollLeft !== (scrollLeft = $body.scrollLeft())) {
-          moveHeader();
-        }
-        if (scrollTop !== (scrollTop = $body.scrollTop())) {
-          checkBlocks();
-          updateLabel();
-        }
+        scope.safeApply(function() {
+          if (scrollLeft !== (scrollLeft = $body.scrollLeft())) {
+            moveHeader();
+          }
+          if (scrollTop !== (scrollTop = $body.scrollTop())) {
+            checkBlocks();
+            updateLabel();
+          }
+        });
       });
       $body.flyout({
         selector: '.row-block .cell',
@@ -296,18 +365,30 @@ angular.module('socrataCommon.directives').directive('table', function(AngularRx
           return _.escape($target.text());
         },
         html: function($target, $head, options, $element) {
-          var columnId = $target.data('column-id');
+          var headerScope = $target.scope();
+          var columnId = headerScope.header.columnId;
+          var column = scope.columnDetails[columnId];
           var sortParts = sort.split(' ');
-          var active = columnId === sortParts[0];
           var sortUp = sortParts[1] === 'ASC';
           var html = [];
+
+          var ascendingString = 'ascending';
+          var descendingString = 'descending';
+          switch(column.physicalDatatype) {
+            case 'number': ascendingString = 'smallest first'; descendingString = 'largest first'; break;
+            case 'text': ascendingString = 'A-Z'; descendingString = 'Z-A'; break;
+            case 'timestamp': ascendingString = 'oldest first'; descendingString = 'newest first'; break;
+          }
+
+          $element.data('table-id', instanceUniqueNamespace);
           $element.data('column-id', columnId);
-          if (scope.columnDetails[columnId].sortable) {
-            if (active) {
-              html.push('Sorted {0}'.format(sortUp ? 'ascending' : 'descending'));
+          if (column.sortable) {
+            if (isSortedOnColumn(columnId)) {
+              html.push('Sorted {0}'.format(sortUp ? ascendingString : descendingString));
             }
+            var wouldSortUp = getNextSortForColumn(columnId) === 'ASC';
             html.push('<a class="caret" href="#">Click to sort {0}</a>'.
-              format((active && !sortUp) ? 'ascending' : 'descending'));
+              format(wouldSortUp ? ascendingString : descendingString));
             return html.join('<br>');
           } else {
             return 'No sort available';
@@ -325,6 +406,10 @@ angular.module('socrataCommon.directives').directive('table', function(AngularRx
           updateExpanderHeight();
           showOrHideNoRowMessage();
           if (rowCount && expanded) {
+            // Apply a default sort if needed.
+            if (scope.defaultSortColumnName && _.isEmpty(sort)) {
+              sortOnColumn(scope.defaultSortColumnName);
+            }
             renderTable(
               element,
               cardDimensions,

@@ -986,6 +986,10 @@ class View < Model
       !metadata.data['custom_fields']['Basic']['Source'].blank?
   end
 
+  def is_insecure_arcgis?
+    is_arcgis? && /^https/.match(metadata.data['custom_fields']['Basic']['Source']).nil?
+  end
+
   def is_api?
     displayType == 'api'
   end

@@ -23,6 +23,14 @@
       "importance": 1
     },
     {
+      "name": "x_coordinate",
+      "title": "xcoord",
+      "description": "x",
+      "logicalDatatype": "amount",
+      "physicalDatatype": "number",
+      "importance": 3
+    },
+    {
       "name": "updated_on",
       "title": "Time of incident",
       "description": "Time Batman confused Gordon by mysteriously disappearing mid-conversation.",

@@ -1249,6 +1249,7 @@ en:
         supported: Supported file types are CSV, TSV, and Excel. Supported protocols are HTTP and HTTPS.
         url_prompt: What's the web URL of the file you'd like to import?
       errors:
+        insecure_esri_url: An insecure ESRI map layer URL has been added. Certain features will not work on this dataset as a result.
         invalid_crossload_url: Please enter a valid URL beginning with either HTTP or HTTPS.
         invalid_url: That does not appear to be a valid URL.
         missing_data_provider: You must specify the data provider (attribution) in a Creative Commons license.

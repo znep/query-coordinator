@@ -43,6 +43,14 @@
       "expanded": false
     },
     {
+      "fieldName": "x_coordinate",
+      "cardSize": 3,
+      "cardCustomStyle": {},
+      "expandedCustomStyle": {},
+      "displayMode": "visualization",
+      "expanded": false
+    },
+    {
       "fieldName": "*",
       "cardSize": 4,
       "cardCustomStyle": {},

@@ -8,7 +8,7 @@ $action-btn-min-width: 72px
 $action-btn-padding-top: 7px
 $action-btn-padding-left: 18px
 // api panel sizes
-$api-panel-width: 360px
+$api-panel-width: 512px
 $api-panel-hint-width: 20px
 // card sizes
 $card-margins: 5px
@@ -130,7 +130,8 @@ body
         color: $aqua-font-color
         min-width: $action-btn-min-width
         text-align: center
-        font-size: 1rem
+        font-size: 1em
+        font-weight: bold
         cursor: pointer
 
         &.l-to-r
@@ -140,8 +141,9 @@ body
           margin: 0 0 10px 10px
 
         &:hover
-          background-color: $btn-border-color
-          border: solid 2px $btn-bg-color
+          background-color: $btn-hover-bg-color
+          border: solid 2px $btn-hover-border-color
+          color: $btn-hover-font-color
 
         &:focus
           outline: none
@@ -149,57 +151,62 @@ body
         &.touched
           background-color: $btn-touched-bg-color
           border: solid 2px $btn-touched-border-color
+          color: $btn-touched-font-color
 
     #api-panel
       position: absolute
       display: none
       margin-top: $api-panel-hint-width / 2
       right: ($metadata-side-padding / 2) + ($action-btn-min-width / 2)
-      color: $white-font-color
-      background-color: $panel-bg-color
+      color: $api-panel-white-font-color
+      background-color: $api-panel-bg-color
       text-align: left
-      font-weight: lighter
-      padding: $card-padding-top $card-padding-left
+      padding: $card-padding-top $card-padding-top
       z-index: 1003
       width: $api-panel-width
+      border: solid 1px $api-panel-border-color
 
       #api-panel-hint
         position: absolute
-        right: 0
+        right: -1px
         top: -$api-panel-hint-width
         width: 0
         height: 0
         border-style: solid
         border-width: 0 0 $api-panel-hint-width $api-panel-hint-width
-        border-color: transparent transparent $panel-bg-color transparent
+        border-color: transparent transparent $api-panel-bg-color transparent
 
       h2
         margin: 0
-        letter-spacing: 0.1rem
+        font-size: 1.25em
+        font-weight: bold
 
       #api-url-display
         width: 95%
         overflow-x: scroll
         overflow-y: hidden
-        background-color: $panel-border-color
+        background-color: $api-panel-url-textarea-bg-color
         line-height: 3rem
         padding: 0 2.5%
         white-space: nowrap
-        font-family: monospace
         resize: none
-        font-size: 1.1rem
-        color: $white-font-color
+        font-size: 1.1em
+        color: $api-panel-black-font-color
         height: 4rem
         border: none
 
       .api-btn
         width: auto
-        background-color: $panel-border-color
-        color: $white-font-color
+        background-color: $dark-btn-bg-color
+        border: solid 2px $dark-btn-border-color
+        color: $dark-btn-font-color
+        font-weight: bold
+        font-size: 1em
 
         &:hover
-          background-color: $btn-border-color
-          border: solid 2px $btn-bg-color
+          background-color: $dark-btn-hover-bg-color
+          border: solid 2px $dark-btn-hover-border-color
+          color: $dark-btn-hover-font-color
 
     #api-panel.active
       display: block

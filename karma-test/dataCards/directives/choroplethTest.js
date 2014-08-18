@@ -26,7 +26,7 @@ describe("A Choropleth Directive", function() {
   var featureGeometrySelector = '.leaflet-map-pane .leaflet-objects-pane .leaflet-overlay-pane svg path';
   var flyoutSelector = '#choro-flyout';
 
-  var featureMergedValueName = '__SOCRATA_MERGED_VALUE__';
+  var featureMergedValueName = '__SOCRATA_FILTERED_VALUE__';
 
   var scopedFeatureValues = function() {
     return _.map(scope.geojsonAggregateData.features, function(feature){

@@ -20,9 +20,6 @@ angular.module('dataCards.directives').directive('cardVisualizationChoropleth', 
       var unfilteredDataSequence = new Rx.Subject();
       var filteredDataSequence = new Rx.Subject();
 
-      // TODO: Update this function to return what we need, not all the other crap.
-      // Probably just want to construct a new geojson object from scratch.
-      // Need: aggregate value, related feature id, human name, primary aggregate display unit (i.e. 'crimes')
       var mergeRegionAndAggregateData = function(
         activeFilterNames,
         geojsonRegions,
@@ -38,25 +35,24 @@ angular.module('dataCards.directives').directive('cardVisualizationChoropleth', 
           var name = geojsonFeature.properties[INTERNAL_DATASET_FEATURE_ID];
           var humanReadableName = geojsonFeature.properties[shapefileHumanReadableColumnName];
 
-          if ($.isPresent(filteredDataAsHash)) {
-            var mergedValue = filteredDataAsHash[name];
-          } else {
-            var mergedValue = unfilteredDataAsHash[name];
-          }
-
           var feature = {
             geometry: geojsonFeature.geometry,
             properties: geojsonFeature.properties,
             type: geojsonFeature.type
           };
-          // We're using the property name '__MERGED_SOCRATA_VALUE__' in order to avoid
-          // overwriting existing properties on the geojson object (properties are user-
-          // defined according to the spec).
-          feature.properties['__SOCRATA_MERGED_VALUE__'] = mergedValue;
-          feature.properties['__SOCRATA_UNFILTERED_VALUE__'] = unfilteredDataAsHash[name];
-          feature.properties['__SOCRATA_FEATURE_HIGHLIGHTED__'] = _.contains(activeFilterNames, name);
-          feature.properties['__SOCRATA_HUMAN_READABLE_NAME__'] = humanReadableName;
-          return feature;
+          // Create a new object to get rid of superfluous shapefile-specific
+          // fields coming out of the backend.
+          return {
+            geometry: feature.geometry,
+            properties: {
+              '_feature_id': geojsonFeature.properties['_feature_id'],
+              '__SOCRATA_FILTERED_VALUE__': filteredDataAsHash[name],
+              '__SOCRATA_UNFILTERED_VALUE__': unfilteredDataAsHash[name],
+              '__SOCRATA_FEATURE_HIGHLIGHTED__': _.contains(activeFilterNames, name),
+              '__SOCRATA_HUMAN_READABLE_NAME__': humanReadableName
+            },
+            type: feature.type
+          };
         });
 
         return {

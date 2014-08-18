@@ -3,11 +3,11 @@ angular.module('dataCards.directives').directive('choropleth', function(AngularR
   // value we will display on the choropleth. This name is global, constant and has been
   // chosen so that it is unlikely to collide with any user-defined property on the
   // GeoJSON object we receive.
-  var AGGREGATE_VALUE_PROPERTY_NAME = '__SOCRATA_MERGED_VALUE__';
+  var AGGREGATE_VALUE_PROPERTY_NAME = '__SOCRATA_FILTERED_VALUE__';
   var UNFILTERED_VALUE_PROPERTY_NAME = '__SOCRATA_UNFILTERED_VALUE__';
   var HUMAN_READABLE_PROPERTY_NAME = '__SOCRATA_HUMAN_READABLE_NAME__';
   var INTERNAL_DATASET_FEATURE_ID = '_feature_id';
-  var nullValueString = '(No Value)';
+  var NULL_VALUE_LABEL = '(No Value)';
 
   // if the number of unique values in the dataset is <= the threshold, displays
   // 1 color for each unique value, and labels them as such in the legend.
@@ -109,6 +109,7 @@ angular.module('dataCards.directives').directive('choropleth', function(AngularR
 
     },
     link: function($scope, element) {
+
       AngularRxExtensions.install($scope);
 
       $scope.highlightedFeatures = {};
@@ -646,7 +647,7 @@ angular.module('dataCards.directives').directive('choropleth', function(AngularR
         var featureHumanReadableName = feature.properties[HUMAN_READABLE_PROPERTY_NAME];
         var value = feature.properties[AGGREGATE_VALUE_PROPERTY_NAME];
         var unfilteredValue = feature.properties[UNFILTERED_VALUE_PROPERTY_NAME];
-        var featureIsHighlighted = value !== unfilteredValue;
+        var featureIsHighlighted = (value !== unfilteredValue);
         var unfilteredValueIsUndefined = false;
 
         $tooltip.removeClass('undefined').removeClass('filtered');
@@ -660,7 +661,7 @@ angular.module('dataCards.directives').directive('choropleth', function(AngularR
           filteredValueDisplay = $.toHumaneNumber(value);
         }
         if (typeof unfilteredValue != 'number') {
-          unfilteredValueDisplay = nullValueString;
+          unfilteredValueDisplay = NULL_VALUE_LABEL;
           unfilteredValueIsUndefined = true;
         } else {
           unfilteredValueDisplay = $.toHumaneNumber(unfilteredValue);

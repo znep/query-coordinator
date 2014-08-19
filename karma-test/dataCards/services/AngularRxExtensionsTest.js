@@ -1,4 +1,4 @@
-describe("Page model", function() {
+describe('Angular RX Extensions', function() {
   var _extensions, _$rootScope;
 
   beforeEach(module('dataCards.services'));

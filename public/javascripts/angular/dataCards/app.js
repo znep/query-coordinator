@@ -73,7 +73,25 @@ dataCards.config(function($provide, $stateProvider, $urlRouterProvider, $locatio
 });
 
 dataCards.run(function($location, $log, $rootScope, $state, DeveloperOverrides) {
-  DeveloperOverrides.init();
+  // Shamelessly lifted from http://www.joezimjs.com/javascript/3-ways-to-parse-a-query-string-in-a-url/
+  var parseQueryString = function( queryString ) {
+    var params = {}, queries, temp, i, l;
+
+    // Split into key/value pairs
+    queries = queryString.split("&");
+
+    // Convert the array of strings into an object
+    for ( i = 0, l = queries.length; i < l; i++ ) {
+        temp = queries[i].split('=');
+        params[temp[0]] = temp[1];
+    }
+
+    return params;
+  };
+
+  var queryObject = parseQueryString(decodeURIComponent(window.location.search.substr(1)));
+  DeveloperOverrides.setOverridesFromString(queryObject['override_dataset_data']);
+
   $rootScope.$on('$stateChangeError', function(event, toState, toParams, fromState, fromParams, error) {
     $log.error("Error encountered during state transition:", error);
   });

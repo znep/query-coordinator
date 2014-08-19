@@ -44,7 +44,7 @@ body
     color: black
     padding: $metadata-top-padding $metadata-side-padding
     font-size: 1.25em
-    font-weight: lighter
+
     img
       position: relative
       // While the placeholder logo is correctly centered by pixel, it does not look centered.
@@ -161,7 +161,6 @@ body
       color: $api-panel-white-font-color
       background-color: $api-panel-bg-color
       text-align: left
-      padding: $card-padding-top $card-padding-top
       z-index: 1003
       width: $api-panel-width
       border: solid 1px $api-panel-border-color
@@ -176,24 +175,26 @@ body
         border-width: 0 0 $api-panel-hint-width $api-panel-hint-width
         border-color: transparent transparent $api-panel-bg-color transparent
 
+      #api-panel-inner-container
+        position: relative
+        padding: $card-padding-top
+
       h2
         margin: 0
         font-size: 1.25em
         font-weight: bold
 
       #api-url-display
-        width: 95%
+        padding: 0 1em
+        font-size: 1.1em
+        line-height: 3em
+        white-space: nowrap
+        color: $api-panel-black-font-color
+        background-color: $api-panel-url-textarea-bg-color
+        border: none
+        outline: none
         overflow-x: scroll
         overflow-y: hidden
-        background-color: $api-panel-url-textarea-bg-color
-        line-height: 3rem
-        padding: 0 2.5%
-        white-space: nowrap
-        resize: none
-        font-size: 1.1em
-        color: $api-panel-black-font-color
-        height: 4rem
-        border: none
 
       .api-btn
         width: auto
@@ -202,6 +203,7 @@ body
         color: $dark-btn-font-color
         font-weight: bold
         font-size: 1em
+        margin-bottom: 0
 
         &:hover
           background-color: $dark-btn-hover-bg-color

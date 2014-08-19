@@ -210,7 +210,6 @@ angular.module('dataCards.controllers').controller('CardsViewController',
     // Don't include this in scope! It either won't work and will require an .$apply()
     // or it will cause a bunch of digest cycles unnecessarily.
     var mouseHasNotMovedSinceMouseDown = false;
-    var urlDisplayNotFocused = true;
 
     $('#api-url-display').on('mousedown', function() {
       mouseHasNotMovedSinceMouseDown = true;
@@ -227,9 +226,24 @@ angular.module('dataCards.controllers').controller('CardsViewController',
     });
 
     $('#api-url-display').on('mouseup', function() {
-      if (mouseHasNotMovedSinceMouseDown && urlDisplayNotFocused) {
-        $('#api-url-display').select();
-        urlDisplayNotFocused = false;
+      if (mouseHasNotMovedSinceMouseDown) {
+
+        var text = document.getElementById('api-url-display');
+
+        // Cater to IE...
+        if (document.body.createTextRange) {
+            var range = document.body.createTextRange();
+            range.moveToElementText(text);
+            range.select();
+        // ...or everyone else.
+        } else if (window.getSelection) {
+            var selection = window.getSelection();
+            var range = document.createRange();
+            range.selectNodeContents(text);
+            selection.removeAllRanges();
+            selection.addRange(range);
+        }
+
       }
     });
 

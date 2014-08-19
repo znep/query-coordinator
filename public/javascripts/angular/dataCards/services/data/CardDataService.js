@@ -29,36 +29,65 @@ angular.module('dataCards.services').factory('CardDataService', function($q, $ht
         });
       });
     },
-    getTimelineDomain: function(fieldName, datasetId, whereClauseFragment) {
+    getTimelineDomain: function(fieldName, datasetId) {
+      Assert(_.isString(fieldName), 'fieldName should be a string');
+      Assert(_.isString(datasetId), 'datasetId should be a string');
+
       datasetId = DeveloperOverrides.dataOverrideForDataset(datasetId) || datasetId;
-      var whereClause = 'WHERE date_trunc IS NOT NULL';
-      if (!_.isEmpty(whereClauseFragment)) {
-        whereClause += ' and ' + whereClauseFragment;
-      }
       fieldName = SoqlHelpers.replaceHyphensWithUnderscores(fieldName);
-      var url = '/api/id/{1}.json?$query=SELECT min({0}) as start, max({0}) as end'.format(fieldName, datasetId, whereClause);
+      var url = '/api/id/{1}.json?$query=SELECT min({0}) as start, max({0}) as end'.format(fieldName, datasetId);
       return $http.get(url, { cache: true }).then(function(response) {
-        return _.transform(response.data[0], function(result, date, key) {
-          result[key] = moment(date);
-        });
+        if (_.isEmpty(response.data)) { return $q.reject('Empty response from SODA.'); }
+        var firstRow = response.data[0];
+
+        var domain = {
+          start: moment(firstRow.start, moment.ISO_8601),
+          end: moment(firstRow.end, moment.ISO_8601)
+        };
+
+        if (!domain.start.isValid()) {
+          return $q.reject('Invalid date: ' + firstRow.start);
+        } else if (!domain.end.isValid()) {
+          return $q.reject('Invalid date: ' + firstRow.end);
+        } else {
+          return domain;
+        }
       });
     },
     getTimelineData: function(fieldName, datasetId, whereClauseFragment, precision) {
+      Assert(_.isString(fieldName), 'fieldName should be a string');
+      Assert(_.isString(datasetId), 'datasetId should be a string');
+      Assert(!whereClauseFragment || _.isString(whereClauseFragment), 'whereClauseFragment should be a string if present.');
+      Assert(_.isString(precision), 'precision should be a string');
+
+      var dateTrunc = SoqlHelpers.timeIntervalToDateTrunc[precision];
+      Assert(dateTrunc !== undefined, 'invalid precision name given');
+
       datasetId = DeveloperOverrides.dataOverrideForDataset(datasetId) || datasetId;
       var whereClause = 'WHERE date_trunc IS NOT NULL';
       if (!_.isEmpty(whereClauseFragment)) {
         whereClause += ' and ' + whereClauseFragment;
       }
       fieldName = SoqlHelpers.replaceHyphensWithUnderscores(fieldName);
-      var url = '/api/id/{1}.json?$query=SELECT date_trunc_{3}({0}) AS date_trunc, count(*) AS value {2} GROUP BY date_trunc'.format(fieldName, datasetId, whereClause, SoqlHelpers.timeIntervalToDateTrunc[precision]);
+      var url = '/api/id/{1}.json?$query=SELECT date_trunc_{3}({0}) AS date_trunc, count(*) AS value {2} GROUP BY date_trunc'.format(fieldName, datasetId, whereClause, dateTrunc);
       return $http.get(url, { cache: true }).then(function(response) {
+        if (!_.isArray(response.data)) {
+          return $q.reject('Invalid response from SODA, expected array.');
+        }
         if (_.isEmpty(response.data)) {
           return [];
         }
         var data = _.map(response.data, function(d) {
-          d.date_trunc = moment(d.date_trunc);
+          d.date_trunc = moment(d.date_trunc, moment.ISO_8601);
           return d;
         });
+        var invalidDate = _.find(data, function(datum) {
+          return !datum.date_trunc.isValid();
+        });
+        if (invalidDate) {
+          // _i is the original string given in the constructor. Potentially brittle, don't depend on it for anything important.
+          return $q.reject('Bad date: ' + invalidDate.date_trunc._i);
+        }
         var dates = _.pluck(data, 'date_trunc');
         var timeStart = _.min(dates);
         var timeEnd = _.max(dates);
@@ -70,7 +99,7 @@ angular.module('dataCards.services').factory('CardDataService', function($q, $ht
         });
         return _.map(timeData, function(item, i) {
           if (_.isUndefined(item)) {
-            item = { date: moment(timeStart).add(i, precision), value: 0 };
+            item = { date: moment(timeStart, moment.ISO_8601).add(i, precision), value: 0 };
           }
           return item;
         });
@@ -95,6 +124,10 @@ angular.module('dataCards.services').factory('CardDataService', function($q, $ht
     // paginated queries to get total counts across all rows rather than the hard
     // 1,000-row limit on SoQL queries.
     getChoroplethAggregates: function(fieldName, datasetId, whereClauseFragment) {
+      Assert(_.isString(fieldName), 'fieldName should be a string');
+      Assert(_.isString(datasetId), 'datasetId should be a string');
+      Assert(!whereClauseFragment || _.isString(whereClauseFragment), 'whereClauseFragment should be a string if present.');
+
       datasetId = DeveloperOverrides.dataOverrideForDataset(datasetId) || datasetId;
       if (_.isEmpty(whereClauseFragment)) {
         var whereClause = '';
@@ -109,8 +142,9 @@ angular.module('dataCards.services').factory('CardDataService', function($q, $ht
                  'group by {0} ' +
                  'order by count(*) desc').format(fieldName, datasetId, whereClause);
       return $http.get(url, { cache: true }).then(function(response) {
+        if (!_.isArray(response.data)) return $q.reject('Invalid response from SODA, expected array.');
         return _.map(response.data, function(item) {
-          return { name: item.name, value: Number(item.value) };
+          return { name: item.name, value: parseFloat(item.value) };
         });
       });
     },

@@ -1,4 +1,4 @@
-angular.module('socrataCommon.directives').directive('columnChart', function($parse, AngularRxExtensions) {
+angular.module('socrataCommon.directives').directive('columnChart', function($parse, $timeout, AngularRxExtensions) {
   'use strict';
 
   var renderColumnChart = function(element, chartData, showFiltered, dimensions, expanded, rowDisplayUnit) {
@@ -22,7 +22,6 @@ angular.module('socrataCommon.directives').directive('columnChart', function($pa
     var $chartScroll = element.find('.chart-scroll');
     var d3Selection = d3.select($chart.get(0));
     var barGroupSelection = d3Selection.selectAll('.bar-group').data(chartData, _.property('name'));
-    var hoverTriggerSelection = d3Selection.selectAll('.bar.hover-trigger').data(chartData, _.property('name'));
     var $labels = element.find('.labels');
     var labelSelection = d3.select($labels[0]).selectAll('.label');
     var chartWidth = dimensions.width;
@@ -418,6 +417,8 @@ angular.module('socrataCommon.directives').directive('columnChart', function($pa
         scope.observe('rowDisplayUnit'),
         function(cardVisualizationDimensions, chartData, showFiltered, expanded, rowDisplayUnit) {
           if (!chartData) return;
+          var timestamp = new Date().getTime();
+          scope.$emit('render:start', 'columnChart_{0}'.format(scope.$id), timestamp);
           renderColumnChart(
             element,
             chartData,
@@ -426,6 +427,10 @@ angular.module('socrataCommon.directives').directive('columnChart', function($pa
             expanded,
             rowDisplayUnit
           );
+          // Yield execution to the browser to render, then notify that render is complete
+          $timeout(function() {
+            scope.$emit('render:complete', 'columnChart_{0}'.format(scope.$id), timestamp);
+          });
         }
       );
       scope.$on('$destroy', function() {

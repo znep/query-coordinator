@@ -58,7 +58,7 @@ angular.module('dataCards.directives').directive('choropleth', function(AngularR
     } else {
       return num;
     }
-  }
+  };
 
   var midpoint = function(val1, val2) {
     if (val1 === undefined || val2 === undefined) {
@@ -70,7 +70,7 @@ angular.module('dataCards.directives').directive('choropleth', function(AngularR
     } else {
       return (val2 - val1) / 2 + val1;
     }
-  }
+  };
 
   return {
     restrict: 'E',
@@ -225,7 +225,7 @@ angular.module('dataCards.directives').directive('choropleth', function(AngularR
           weight: strokeWidth(fillClass, feature, highlighted),
           opacity: fillClass == 'none' ? 1 : 0.8,
           dashArray: 0,
-          fillOpacity: fillClass == 'none' ? 1 : 0.8,
+          fillOpacity: fillClass == 'none' ? 1 : 0.8
         };
       };
 
@@ -240,7 +240,7 @@ angular.module('dataCards.directives').directive('choropleth', function(AngularR
           weight: strokeWidth(fillClass, feature, highlighted),
           opacity: fillClass == 'none' ? 1 : 0.8,
           dashArray: 0,
-          fillOpacity: fillClass == 'none' ? 1 : 0.8,
+          fillOpacity: fillClass == 'none' ? 1 : 0.8
         };
       };
 
@@ -255,7 +255,7 @@ angular.module('dataCards.directives').directive('choropleth', function(AngularR
           weight: strokeWidth(fillClass, feature, highlighted),
           opacity: fillClass == 'none' ? 1 : 0.8,
           dashArray: 0,
-          fillOpacity: fillClass == 'none' ? 1 : 0.8,
+          fillOpacity: fillClass == 'none' ? 1 : 0.8
         };
       };
 
@@ -283,13 +283,13 @@ angular.module('dataCards.directives').directive('choropleth', function(AngularR
         if (numPossibleBreaks <= threshold) {
           // for such small values, jenks does not make sense (produces duplicate values).
           // use equal interval in such cases.
-          var classBreaks = ChoroplethHelpers.createClassBreaks({
+          classBreaks = ChoroplethHelpers.createClassBreaks({
             method: 'niceEqualInterval',
             data: values,
             numberOfClasses: values.length
           });
         } else {
-          var classBreaks = ChoroplethHelpers.createClassBreaks({
+          classBreaks = ChoroplethHelpers.createClassBreaks({
             method: 'jenks',
             data: values,
             numberOfClasses: numberOfClasses(values)
@@ -319,7 +319,7 @@ angular.module('dataCards.directives').directive('choropleth', function(AngularR
           }, initialAccum);
           return midpoints;
         }
-      }
+      };
 
       var colors, scale;
 
@@ -375,7 +375,7 @@ angular.module('dataCards.directives').directive('choropleth', function(AngularR
           colors: classBreaks ? colors : [],
           classBreaks: classBreaks
         };
-      }
+      };
 
       /* Choropleth highlight feature effect */
 
@@ -388,13 +388,13 @@ angular.module('dataCards.directives').directive('choropleth', function(AngularR
         // highlighted cache instead:
         $scope.highlightedFeatures = {};
         $scope.highlightedFeatures[featureId] = true;
-      }
+      };
 
       var unhighlightFeature = function(featureId) {
         if ($scope.highlightedFeatures.hasOwnProperty(featureId)) {
           delete $scope.highlightedFeatures[featureId];
         }
-      }
+      };
 
       var featureIsHighlighted = function(featureId) {
         return $scope.highlightedFeatures.hasOwnProperty(featureId);
@@ -407,22 +407,24 @@ angular.module('dataCards.directives').directive('choropleth', function(AngularR
       var filterDataset = function(selectedFeature, callback) {
         var featureId = selectedFeature.properties[INTERNAL_DATASET_FEATURE_ID];
         highlightFeature(featureId);
+        $scope.$emit('dataset-filter:choropleth');
         $scope.$emit(
           'toggle-dataset-filter:choropleth',
           selectedFeature,
           callback);
-      }
+      };
 
       // Send the toggle filter event up the scope to the parent, where it can
       // be handled by the model.
       var clearDatasetFilter = function(selectedFeature, callback) {
         var featureId = selectedFeature.properties[INTERNAL_DATASET_FEATURE_ID];
         unhighlightFeature(featureId);
+        $scope.$emit('dataset-filter-clear:choropleth');
         $scope.$emit(
           'toggle-dataset-filter:choropleth',
           selectedFeature,
           callback);
-      }
+      };
 
       /* Region click handling */
 
@@ -496,7 +498,7 @@ angular.module('dataCards.directives').directive('choropleth', function(AngularR
                 $tooltip.hide();
               }
             });
-        };
+        }
 
         return $tooltip;
       };
@@ -611,7 +613,7 @@ angular.module('dataCards.directives').directive('choropleth', function(AngularR
           layer.setStyle(brightenFeatureStyleObject);
           layer.bringToFront();
         }
-      }
+      };
 
       var mouseoutUnbrighten = function(leafletEvent) {
         var layer = leafletEvent.target;
@@ -620,7 +622,7 @@ angular.module('dataCards.directives').directive('choropleth', function(AngularR
           layer.setStyle(unbrightenFeatureStyleObject);
           layer.bringToBack();
         }
-      }
+      };
 
       var unit = function(val) {
         if (typeof val != 'number') {
@@ -731,6 +733,8 @@ angular.module('dataCards.directives').directive('choropleth', function(AngularR
           if (!geojsonAggregateData) {
             return;
           }
+          var timestamp = new Date().getTime();
+          $scope.$emit('render:start', 'choropleth_{0}'.format($scope.$id), timestamp);
 
           values = ChoroplethHelpers.getGeojsonValues(geojsonAggregateData, UNFILTERED_VALUE_PROPERTY_NAME);
           // uses unfiltered data to preserve the unfiltered choropleth legend and color scale
@@ -758,6 +762,7 @@ angular.module('dataCards.directives').directive('choropleth', function(AngularR
           $timeout(function() {
             // wait until card height dynamically sized
             $scope.$broadcast('mapContainerResized');
+            $scope.$emit('render:complete', 'choropleth_{0}'.format($scope.$id), timestamp);
           });
         });
     }

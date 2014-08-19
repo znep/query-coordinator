@@ -1,4 +1,4 @@
-angular.module('socrataCommon.directives').directive('timelineChart', function(AngularRxExtensions) {
+angular.module('socrataCommon.directives').directive('timelineChart', function($timeout, AngularRxExtensions) {
   'use strict';
 
   var flyoutDateFormat = {
@@ -700,6 +700,8 @@ angular.module('socrataCommon.directives').directive('timelineChart', function(A
         scope.observe('filters'),
         function(cardVisualizationDimensions, chartData, showFiltered, expanded, precision, rowDisplayUnit, filters) {
           if (!chartData || !precision) return;
+          var timestamp = new Date().getTime();
+          scope.$emit('render:start', 'timelineChart_{0}'.format(scope.$id), timestamp);
           renderTimelineChart(
             scope,
             element,
@@ -714,6 +716,9 @@ angular.module('socrataCommon.directives').directive('timelineChart', function(A
           );
           lastFilter = showFiltered;
           lastData = chartData;
+          $timeout(function() {
+            scope.$emit('render:complete', 'timelineChart_{0}'.format(scope.$id), timestamp);
+          }, 0, false)
         }
       );
       // Clean up jQuery on card destruction to stop memory leaks.

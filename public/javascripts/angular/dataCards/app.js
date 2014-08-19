@@ -1,12 +1,51 @@
 var dataCards = angular.module('dataCards', [
   'ui.router',
   'socrataCommon.directives',
+  'socrataCommon.services',
   'dataCards.controllers',
   'dataCards.directives',
   'dataCards.models',
   'leaflet-directive'
   // 'pasvaz.bindonce' NOTE: use in the future to optimize Angular performance.
 ]);
+
+/**
+ * Configure app analytics tracking
+ */
+dataCards.run(function($rootScope, Analytics) {
+  $rootScope.$on('layout:changed', function() {
+    Analytics.setNumberOfCards(0);
+  });
+  $rootScope.$on('cardType', function(event, cardType) {
+    var renderedCards = ['column', 'timeline', 'choropleth', 'table'];
+    if(_(renderedCards).contains(cardType)) {
+      Analytics.incrementNumberOfCards();
+    }
+  });
+  function onEventStart(label) {
+    return function() {
+      Analytics.start(label);
+    }
+  }
+
+  $rootScope.$on('render:start', function(event, id, timestamp) {
+    Analytics.cardRenderStart(id, timestamp);
+  });
+
+  $rootScope.$on('render:complete', function(event, id, timestamp) {
+    Analytics.cardRenderStop(id, timestamp);
+  });
+
+  $rootScope.$on('timeline-chart:filter-changed', onEventStart('timeline-filter'));
+  $rootScope.$on('timeline-chart:filter-cleared', onEventStart('clear-filter'));
+  $rootScope.$on('dataset-filter:choropleth', onEventStart('region-filter'));
+  $rootScope.$on('dataset-filter-clear:choropleth', onEventStart('clear-filter'));
+  $rootScope.$on('column-chart:datum-clicked', function(event, data) {
+    var label = data.special ? 'clear-filter' : 'bar-filter';
+    var eventFn = onEventStart(label);
+    eventFn();
+  });
+});
 
 dataCards.config(function($provide, $stateProvider, $urlRouterProvider, $locationProvider) {
   $stateProvider.
@@ -33,10 +72,10 @@ dataCards.config(function($provide, $stateProvider, $urlRouterProvider, $locatio
     });
 });
 
-dataCards.run(function($rootScope, $state, $location, DeveloperOverrides) {
+dataCards.run(function($location, $log, $rootScope, $state, DeveloperOverrides) {
   DeveloperOverrides.init();
   $rootScope.$on('$stateChangeError', function(event, toState, toParams, fromState, fromParams, error) {
-    console.error("Error encountered during state transition:", error);
+    $log.error("Error encountered during state transition:", error);
   });
 
   // Determine the initial view from the URL.

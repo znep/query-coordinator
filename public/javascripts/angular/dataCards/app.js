@@ -1,5 +1,6 @@
 var dataCards = angular.module('dataCards', [
   'ui.router',
+  'socrataCommon.services',
   'socrataCommon.directives',
   'socrataCommon.services',
   'dataCards.controllers',

@@ -2,6 +2,7 @@
 // we mock out its module definitions here.
 var dataCards = angular.module('dataCards', [
   'test',
+  'socrataCommon.services',
   'socrataCommon.directives',
   'dataCards.controllers',
   'dataCards.models',

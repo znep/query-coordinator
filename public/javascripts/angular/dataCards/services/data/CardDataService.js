@@ -1,4 +1,4 @@
-angular.module('dataCards.services').factory('CardDataService', function($q, $http, DeveloperOverrides, SoqlHelpers) {
+angular.module('dataCards.services').factory('CardDataService', function($q, $http, Assert, DeveloperOverrides, SoqlHelpers) {
 
   // The implementation of the SoQL spec is incomplete at the moment, causing it to choke
   // when it encounters a column name containing a hyphen. The spec states that quoting
@@ -10,21 +10,22 @@ angular.module('dataCards.services').factory('CardDataService', function($q, $ht
   // making the request from the front-end.
   var self = {
     getData: function(fieldName, datasetId, whereClauseFragment) {
+      Assert(_.isString(fieldName), 'fieldName should be a string');
+      Assert(_.isString(datasetId), 'datasetId should be a string');
+      Assert(!whereClauseFragment || _.isString(whereClauseFragment), 'whereClauseFragment should be a string if present.');
+
       datasetId = DeveloperOverrides.dataOverrideForDataset(datasetId) || datasetId;
-      if (fieldName == 'location') {
-        return $q.when([]);
-      }
       if (_.isEmpty(whereClauseFragment)) {
         var whereClause = '';
       } else {
         var whereClause = 'where ' + whereClauseFragment;
       }
       fieldName = SoqlHelpers.replaceHyphensWithUnderscores(fieldName);
-      // TODO: Implement some method for paging/showing data has been truncated.
+      // TODO: Implement some method for paging/showing data that has been truncated.
       var url = '/api/id/{1}.json?$query=select {0} as name, count(*) as value {2} group by {0} order by count(*) desc limit 200'.format(fieldName, datasetId, whereClause);
       return $http.get(url, { cache: true }).then(function(response) {
         return _.map(response.data, function(item) {
-          return { name: item.name, value: Number(item.value) };
+          return { name: item.name, value: parseFloat(item.value) };
         });
       });
     },

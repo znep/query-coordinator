@@ -77,4 +77,25 @@ describe("SoqlHelpers service", function() {
     }));
 
   });
+
+  describe('replaceHyphensWithUnderscores', function() {
+    it('should throw on non-strings', inject(function(SoqlHelpers) {
+      expect(function() { SoqlHelpers.replaceHyphensWithUnderscores(); }).to.throw();
+      expect(function() { SoqlHelpers.replaceHyphensWithUnderscores(1); }).to.throw();
+      expect(function() { SoqlHelpers.replaceHyphensWithUnderscores(0); }).to.throw();
+      expect(function() { SoqlHelpers.replaceHyphensWithUnderscores(null); }).to.throw();
+      expect(function() { SoqlHelpers.replaceHyphensWithUnderscores(undefined); }).to.throw();
+      expect(function() { SoqlHelpers.replaceHyphensWithUnderscores({}); }).to.throw();
+      expect(function() { SoqlHelpers.replaceHyphensWithUnderscores([]); }).to.throw();
+    }));
+    it('replace hyphens with underscores', inject(function(SoqlHelpers) {
+      expect(SoqlHelpers.replaceHyphensWithUnderscores('')).to.equal('');
+      expect(SoqlHelpers.replaceHyphensWithUnderscores('_')).to.equal('_');
+      expect(SoqlHelpers.replaceHyphensWithUnderscores('-')).to.equal('_');
+      expect(SoqlHelpers.replaceHyphensWithUnderscores('a')).to.equal('a');
+      expect(SoqlHelpers.replaceHyphensWithUnderscores('asdf')).to.equal('asdf');
+      expect(SoqlHelpers.replaceHyphensWithUnderscores('---')).to.equal('___');
+      expect(SoqlHelpers.replaceHyphensWithUnderscores('asd-fds')).to.equal('asd_fds');
+    }));
+  });
 });

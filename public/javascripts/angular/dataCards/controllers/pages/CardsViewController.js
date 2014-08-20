@@ -22,7 +22,7 @@ angular.module('dataCards.controllers').controller('CardsViewController',
           });
         }
       );
-    };
+    }
 
     AngularRxExtensions.install($scope);
 
@@ -102,11 +102,18 @@ angular.module('dataCards.controllers').controller('CardsViewController',
     var collapsedCards = expandedZipped.map(function(cards) {
       return _.pluck(_.reject(cards, 'expanded'), 'model');
     });
+
     $scope.bindObservable('collapsedCards', collapsedCards);
     $scope.bindObservable('expandedCards', expandedCards);
-    $scope.bindObservable('useExpandedLayout', expandedCards.map(function(cards) {
+    var useExpandedLayout = expandedCards.map(function(cards) {
       return !_.isEmpty(cards);
-    }));
+    });
+    $scope.bindObservable('useExpandedLayout', useExpandedLayout);
+    useExpandedLayout.
+      distinctUntilChanged().
+      subscribe(function() {
+        $scope.$emit('layout:changed');
+      });
 
     $scope.bindObservable('dataset', page.observe('dataset'));
     $scope.bindObservable('datasetPages', page.observe('dataset').observeOnLatest('pages'));
@@ -156,7 +163,7 @@ angular.module('dataCards.controllers').controller('CardsViewController',
         } else {
           throw new Error('Unsupported filter type');
         }
-      };
+      }
 
       function humanReadableOperand(filter) {
         if (filter instanceof Filter.BinaryOperatorFilter) {
@@ -172,7 +179,7 @@ angular.module('dataCards.controllers').controller('CardsViewController',
         } else {
           throw new Error('Unsupported filter type');
         }
-      };
+      }
 
       return _.reduce(filters, function(accumulator, appliedFilters, fieldName) {
         if ($.isPresent(appliedFilters)) {

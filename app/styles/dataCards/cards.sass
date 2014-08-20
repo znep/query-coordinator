@@ -185,7 +185,8 @@ body
         font-weight: bold
 
       #api-url-display
-        padding: 0 1em
+        margin: 0
+        padding: 0
         font-size: 1.1em
         line-height: 3em
         white-space: nowrap
@@ -195,6 +196,17 @@ body
         outline: none
         overflow-x: scroll
         overflow-y: hidden
+
+        #api-url-content
+          display: inline-block
+
+          // Don't mess with this fiddly crap... it's here to
+          // ensure whitespace before and after the API URL!
+          &:before, &:after
+            content: ''
+            width: 1em
+            display: inline-block
+
 
       .api-btn
         width: auto

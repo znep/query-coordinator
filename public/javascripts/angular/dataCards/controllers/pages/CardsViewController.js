@@ -228,7 +228,7 @@ angular.module('dataCards.controllers').controller('CardsViewController',
     $('#api-url-display').on('mouseup', function() {
       if (mouseHasNotMovedSinceMouseDown) {
 
-        var text = document.getElementById('api-url-display');
+        var text = document.getElementById('api-url-content');
 
         // Cater to IE...
         if (document.body.createTextRange) {

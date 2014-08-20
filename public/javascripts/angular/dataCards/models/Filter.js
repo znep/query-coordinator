@@ -1,4 +1,4 @@
-angular.module('dataCards.models').factory('Filter', function(SoqlHelpers) {
+angular.module('dataCards.models').factory('Filter', function(Assert, SoqlHelpers) {
 
   function BinaryOperatorFilter(operator, operand, humanReadableOperand) {
     if (!_.isString(operator)) { throw new Error('BinaryOperatorFilter passed invalid operator'); }
@@ -15,7 +15,10 @@ angular.module('dataCards.models').factory('Filter', function(SoqlHelpers) {
   };
 
   function TimeRangeFilter(start, end) {
-    if (!moment(start).isValid() || !moment(end).isValid()) { throw new Error('TimeRangeFilter passed invalid date.'); }
+    Assert(moment.isMoment(start), 'TimeRangeFilter passed non-moment start: ' + start);
+    Assert(moment.isMoment(end), 'TimeRangeFilter passed non-moment end: ' + end);
+    Assert(start.isValid(), 'TimeRangeFilter passed invalid start moment: ' + start);
+    Assert(end.isValid(), 'TimeRangeFilter passed invalid end moment: ' + end);
 
     this.start = start;
     this.end = end;
@@ -25,7 +28,7 @@ angular.module('dataCards.models').factory('Filter', function(SoqlHelpers) {
     field = SoqlHelpers.replaceHyphensWithUnderscores(field);
     var encodedStart = SoqlHelpers.encodePrimitive(this.start);
     var encodedEnd = SoqlHelpers.encodePrimitive(this.end);
-    return '{0} > {1} AND {0} < {2} '.format(field, encodedStart, encodedEnd);
+    return '{0} > {1} AND {0} < {2}'.format(field, encodedStart, encodedEnd);
   };
 
   function IsNullFilter(isNull) {

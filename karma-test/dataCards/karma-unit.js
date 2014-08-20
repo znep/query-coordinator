@@ -10,7 +10,7 @@ module.exports = function ( karma ) {
      * Configure which files should be preproccessed.
      */
     preprocessors: {
-      'public/javascripts/angular/**/*.js': ['coverage'],
+      'public/javascripts/angular/**/!(angular-leaflet-directives.js)': ['coverage'],
       '**/*.html': ['ng-html2js'],
       '**/*.json': ['ng-html2js'],
       '**/*.sass': ['sass']

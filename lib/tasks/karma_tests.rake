@@ -14,7 +14,7 @@ namespace :test do
     # we must push the coverage results up to geckoboard ourselves. This task looks at the latest
     # coverage run (rake test:karma) and updates the widget.
 
-    geckoboard_api_key = '59d1bcf5fb0037a1ca6b0d57922dbc45'
+    geckoboard_api_key = 'b84ed380a729972213e3452b5c8de8b7'
     widget_url = URI.parse('https://push.geckoboard.com/v1/send/104764-5f3ebf26-be1e-41c3-86d3-388890f582cc')
 
     coverage_report_file_path = 'karma-test/coverage-reports/dataCards/cobertura-coverage.xml'

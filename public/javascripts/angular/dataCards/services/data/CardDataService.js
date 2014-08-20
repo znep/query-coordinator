@@ -80,11 +80,7 @@ angular.module('dataCards.services').factory('CardDataService', function($q, $ht
     // prepare for live GeoJSON data.
     getChoroplethRegions: function(shapeFileId) {
       shapeFileId = DeveloperOverrides.dataOverrideForDataset(shapeFileId) || shapeFileId;
-      // var url = '/api/resources/{0}/rows.geojson'.format(shapeFileId);
-      // Below is temporary revert to the non-standard endpoint for geojson just so
-      // that we can test things in Staging.
-      // TODO: re-enable the above 'correct' endpoint later.
-      var url = '/views/{0}/rows.geojson'.format(shapeFileId);
+      var url = '/resource/{0}.geojson'.format(shapeFileId);
       return $http.get(
         url,
         {cache: true, headers: {'Accept': 'application/vnd.geo+json'}}

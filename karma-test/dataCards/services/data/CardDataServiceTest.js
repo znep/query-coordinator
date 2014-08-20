@@ -20,7 +20,7 @@ describe("CardDataService", function() {
     fakeDataRequestHandler = $httpBackend.whenGET(new RegExp('^/api/id/{0}\\.json\\?'.format(fake4x4)));
     fakeDataRequestHandler.respond([
       { name: 'fakeNumberColumn', value: 3 }
-      ]);
+    ]);
   }));
 
   describe('getData', function() {
@@ -263,6 +263,7 @@ describe("CardDataService", function() {
       fakeDataRequestHandler.respond(fakeData);
       var response = CardDataService.getTimelineData('fakeNumberColumn', fake4x4, '', 'DAY');
       response.then(function(data) {
+        // 21 is the number of date buckets we expect the call to generate`based on the dates in fakeData.
         expect(data.length).to.equal(21);
         _.each(data, function(datum) {
           expect(datum.date.isValid()).to.be.true;
@@ -272,7 +273,6 @@ describe("CardDataService", function() {
       $httpBackend.flush();
     });
     it('should correctly parse valid values', function(done) {
-      // TODO This is sort of a lame test, sorry. It should check the positions of the numbers.
       var fakeData = [
         {"date_trunc":"2014-05-27T00:00:00.000","value":"1508"},
         {"date_trunc":"2014-05-09T00:00:00.000","value":"238"},
@@ -286,6 +286,8 @@ describe("CardDataService", function() {
           return acc + datum.value;
         }, 0);
         expect(sum).to.equal(1508 + 238 + 624 + 718);
+        var values = _.compact(_.pluck(data, 'value'));
+        expect(values).to.deep.equal([624, 238, 718, 1508]); // Note their order from old-new.
         done();
       });
       $httpBackend.flush();
@@ -442,75 +444,4 @@ describe("CardDataService", function() {
       $httpBackend.flush();
     });
   });
-  /*
-  describe('', function() {
-    it('should throw on bad parameters', function() {
-      expect(function() { CardDataService.getTimelineDomain(); }).to.throw();
-      expect(function() { CardDataService.getTimelineDomain({}); }).to.throw();
-      expect(function() { CardDataService.getTimelineDomain('field'); }).to.throw();
-      expect(function() { CardDataService.getTimelineDomain('field', {}); }).to.throw();
-    });
-
-    it('should access the correct dataset', function(done) {
-      var fakeData = [{
-        min: '1988-01-10T08:00:00.000Z',
-        max: '2101-01-10T08:00:00.000Z'
-      }];
-      fakeDataRequestHandler.respond(fakeData);
-      var response = CardDataService.getTimelineDomain('fakeNumberColumn', fake4x4);
-      response.then(function() {
-        done();
-      });
-      $httpBackend.flush();
-    });
-
-    it('should generate a correct query', function() {
-      $httpBackend.expectGET('/api/id/{1}.json?$query=SELECT min({0}) as start, max({0}) as end'.format('fakeNumberColumn', fake4x4));
-      CardDataService.getTimelineDomain('fakeNumberColumn', fake4x4);
-      $httpBackend.flush();
-    });
-
-    it('should reject the promise on 404', function(done) {
-      fakeDataRequestHandler.respond(404, []);
-      assertReject(CardDataService.getTimelineDomain('fakeNumberColumn', fake4x4), done);
-      $httpBackend.flush();
-    });
-
-    it('should reject the promise on 500', function(done) {
-      fakeDataRequestHandler.respond(500, []);
-      assertReject(CardDataService.getTimelineDomain('fakeNumberColumn', fake4x4), done);
-      $httpBackend.flush();
-    });
-
-    it('should reject the promise on 503', function(done) {
-      fakeDataRequestHandler.respond(503, []);
-      assertReject(CardDataService.getTimelineDomain('fakeNumberColumn', fake4x4), done);
-      $httpBackend.flush();
-    });
-
-    it('should reject the promise when given an empty string response', function(done) {
-      var fakeData = '';
-      fakeDataRequestHandler.respond(fakeData);
-      var response = CardDataService.getTimelineDomain('fakeNumberColumn', fake4x4);
-      assertReject(response, done);
-      $httpBackend.flush();
-    });
-
-    it('should reject the promise when given an empty array response', function(done) {
-      var fakeData = [];
-      fakeDataRequestHandler.respond(fakeData);
-      var response = CardDataService.getTimelineDomain('fakeNumberColumn', fake4x4);
-      assertReject(response, done);
-      $httpBackend.flush();
-    });
-
-    it('should reject the promise when given an empty object response', function(done) {
-      var fakeData = {};
-      fakeDataRequestHandler.respond(fakeData);
-      var response = CardDataService.getTimelineDomain('fakeNumberColumn', fake4x4);
-      assertReject(response, done);
-      $httpBackend.flush();
-    });
-  });
-  */
 });

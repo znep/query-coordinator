@@ -54,7 +54,7 @@ namespace :test do
           {
             'text' => "
               <div><img src='https://opendata.test-socrata.com/api/assets/#{image_key}' style='position: relative; left: calc(50% - 25px);'></img></div>
-              <div style='text-align: center; font-size: 80%; margin-top: 30px;'>Branch: #{'%.0f%' % (100 * branch_rate)} Line: #{'%.0f%' % (100 * line_rate)}</div>
+              <div style='text-align: center; font-size: 80%; margin-top: 30px;'>Branch: #{'%.0f%' % (100 * branch_rate)}<br />Line: #{'%.0f%' % (100 * line_rate)}</div>
               ",
             'type' => branch_rate < coverage_rate_warn_level ? '1' : '0'
           }

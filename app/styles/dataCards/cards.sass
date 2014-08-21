@@ -203,6 +203,11 @@ body
         #api-url-content
           display: inline-block
 
+          &:before, &:after
+            content: ''
+            display: inline-block
+            width: 1em
+
       .api-btn
         width: auto
         background-color: $dark-btn-bg-color

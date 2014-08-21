@@ -15,7 +15,7 @@
    *
    * @constructor
    */
-  function Analytics($http, $log, $window, moment) {
+  function Analytics($log, $window, http, moment) {
 
     // true for IE9+, Chrome, Firefox (as of 8/12/14)
     var hasPerformanceTiming = _.isDefined($window.performance);
@@ -180,7 +180,7 @@
      * @param metricValue
      */
     function sendMetric(metricName, metricValue) {
-      $http({
+      http({
         method: 'post',
         url: analyticsUrl,
         data: JSON.stringify({

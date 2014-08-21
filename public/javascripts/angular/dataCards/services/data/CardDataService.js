@@ -1,4 +1,4 @@
-angular.module('dataCards.services').factory('CardDataService', function($q, $http, Assert, DeveloperOverrides, SoqlHelpers) {
+angular.module('dataCards.services').factory('CardDataService', function($q, http, Assert, DeveloperOverrides, SoqlHelpers) {
 
   // The implementation of the SoQL spec is incomplete at the moment, causing it to choke
   // when it encounters a column name containing a hyphen. The spec states that quoting
@@ -23,7 +23,7 @@ angular.module('dataCards.services').factory('CardDataService', function($q, $ht
       fieldName = SoqlHelpers.replaceHyphensWithUnderscores(fieldName);
       // TODO: Implement some method for paging/showing data that has been truncated.
       var url = '/api/id/{1}.json?$query=select {0} as name, count(*) as value {2} group by {0} order by count(*) desc limit 200'.format(fieldName, datasetId, whereClause);
-      return $http.get(url, { cache: true }).then(function(response) {
+      return http.get(url, { cache: true }).then(function(response) {
         return _.map(response.data, function(item) {
           return { name: item.name, value: parseFloat(item.value) };
         });
@@ -36,7 +36,7 @@ angular.module('dataCards.services').factory('CardDataService', function($q, $ht
       datasetId = DeveloperOverrides.dataOverrideForDataset(datasetId) || datasetId;
       fieldName = SoqlHelpers.replaceHyphensWithUnderscores(fieldName);
       var url = '/api/id/{1}.json?$query=SELECT min({0}) as start, max({0}) as end'.format(fieldName, datasetId);
-      return $http.get(url, { cache: true }).then(function(response) {
+      return http.get(url, { cache: true }).then(function(response) {
         if (_.isEmpty(response.data)) { return $q.reject('Empty response from SODA.'); }
         var firstRow = response.data[0];
 
@@ -70,7 +70,7 @@ angular.module('dataCards.services').factory('CardDataService', function($q, $ht
       }
       fieldName = SoqlHelpers.replaceHyphensWithUnderscores(fieldName);
       var url = '/api/id/{1}.json?$query=SELECT date_trunc_{3}({0}) AS date_trunc, count(*) AS value {2} GROUP BY date_trunc'.format(fieldName, datasetId, whereClause, dateTrunc);
-      return $http.get(url, { cache: true }).then(function(response) {
+      return http.get(url, { cache: true }).then(function(response) {
         if (!_.isArray(response.data)) {
           return $q.reject('Invalid response from SODA, expected array.');
         }
@@ -111,7 +111,7 @@ angular.module('dataCards.services').factory('CardDataService', function($q, $ht
     getChoroplethRegions: function(shapeFileId) {
       shapeFileId = DeveloperOverrides.dataOverrideForDataset(shapeFileId) || shapeFileId;
       var url = '/resource/{0}.geojson'.format(shapeFileId);
-      return $http.get(
+      return http.get(
         url,
         {cache: true, headers: {'Accept': 'application/vnd.geo+json'}}
       ).
@@ -141,7 +141,7 @@ angular.module('dataCards.services').factory('CardDataService', function($q, $ht
                  '{2} ' + // where clause
                  'group by {0} ' +
                  'order by count(*) desc').format(fieldName, datasetId, whereClause);
-      return $http.get(url, { cache: true }).then(function(response) {
+      return http.get(url, { cache: true }).then(function(response) {
         if (!_.isArray(response.data)) return $q.reject('Invalid response from SODA, expected array.');
         return _.map(response.data, function(item) {
           return { name: item.name, value: parseFloat(item.value) };
@@ -155,7 +155,7 @@ angular.module('dataCards.services').factory('CardDataService', function($q, $ht
       if (whereClause) {
         url += ' where {0}'.format(whereClause);
       }
-      return $http.get(url, { cache: true }).then(function(response) {
+      return http.get(url, { cache: true }).then(function(response) {
         if (_.isEmpty(response.data)) {
           throw new Error('The response from the server contained no data.');
         }
@@ -171,7 +171,7 @@ angular.module('dataCards.services').factory('CardDataService', function($q, $ht
       if (whereClause) {
         url += '&$where={0}'.format(whereClause);
       }
-      return $http.get(url, { cache: true, timeout: timeout }).then(function(response) {
+      return http.get(url, { cache: true, timeout: timeout }).then(function(response) {
         return response.data;
       });
     }

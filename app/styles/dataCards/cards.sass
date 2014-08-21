@@ -196,16 +196,12 @@ body
         overflow-x: scroll
         overflow-y: hidden
 
+        .api-url-spacer
+          display: inline-block
+          width: 1em
+
         #api-url-content
           display: inline-block
-
-          // Don't mess with this fiddly crap... it's here to
-          // ensure whitespace before and after the API URL!
-          &:before, &:after
-            content: ''
-            width: 1em
-            display: inline-block
-
 
       .api-btn
         width: auto

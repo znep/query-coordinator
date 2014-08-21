@@ -1,0 +1,11 @@
+(function() {
+  'use strict';
+
+  function momentProvider($window) {
+    return $window.moment;
+  }
+
+  angular.
+    module('socrataCommon.services').
+    factory('moment', momentProvider);
+})();

@@ -10,27 +10,27 @@
     'table-column-sort': 1
   };
 
-  // true for IE9+, Chrome, Firefox (as of 8/12/14)
-  var hasPerformanceTiming = _.isDefined(window.performance);
-
-  var currentTime = function() {
-    return new Date().getTime();
-  };
-
-  var navigationStartTime = function() {
-    var navigationStartTime;
-    if (hasPerformanceTiming && _.isDefined(window.performance.timing)) {
-      navigationStartTime = window.performance.timing.navigationStart || window.performance.timing.fetchStart || undefined;
-    }
-    return navigationStartTime;
-  };
-
   /**
    * Analytics service
    *
    * @constructor
    */
-  function Analytics($http, $log) {
+  function Analytics($http, $log, $window, moment) {
+
+    // true for IE9+, Chrome, Firefox (as of 8/12/14)
+    var hasPerformanceTiming = _.isDefined($window.performance);
+
+    var currentTime = function() {
+      return moment().valueOf();
+    };
+
+    var navigationStartTime = function() {
+      var navigationStartTime;
+      if (hasPerformanceTiming && _.isDefined($window.performance.timing)) {
+        navigationStartTime = $window.performance.timing.navigationStart || $window.performance.timing.fetchStart || undefined;
+      }
+      return navigationStartTime;
+    };
 
     var currentMeasurement = createMeasurement('page-load', navigationStartTime());
     var numCards = 0;
@@ -50,10 +50,6 @@
 
     this.incrementNumberOfCards = function() {
       numCards += 1;
-    };
-
-    this.getCurrentMeasurement = function() {
-      return currentMeasurement;
     };
 
     /**
@@ -80,10 +76,15 @@
         timestamp = currentTime();
       }
       if (_.isPresent(currentMeasurement)) {
-        currentMeasurement.cardsInFlight.push({
+        var cardData = {
           id: id,
           startTime: timestamp
-        });
+        };
+        var existingCardInFlight = _.find(currentMeasurement.cardsInFlight, cardData);
+        if (_.isDefined(existingCardInFlight)) {
+          return;
+        }
+        currentMeasurement.cardsInFlight.push(cardData);
       }
     };
 
@@ -160,9 +161,8 @@
      * @returns {{label: string, startTime: number, cardIds: {}, cardsInFlight: []}}
      */
     function createMeasurement(label, startTime) {
-      if (_.isEmpty(startTime)) {
-        startTime = currentTime();
-      }
+      startTime = startTime || currentTime();
+
       return {
         label: label,
         startTime: startTime,

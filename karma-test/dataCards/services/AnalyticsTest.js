@@ -1,22 +1,32 @@
 describe('Analytics service', function() {
-  var Analytics, $httpBackend, $rootScope;
+  var Analytics, $httpBackend, moment;
+  var INITIAL_NAVIGATION_START_TIME = 222;
+  var INITIAL_MOMENT_TIME = 1234;
+  var INITIAL_TIME_DELTA = INITIAL_MOMENT_TIME - INITIAL_NAVIGATION_START_TIME;
+
+  var mockMomentService = function() {
+    var nextValue = INITIAL_MOMENT_TIME;
+    return function() {
+      return {
+        valueOf: function() {
+          return nextValue;
+        },
+        _next: function(value) {
+          nextValue = value;
+        }
+      };
+    };
+  };
 
   beforeEach(module('socrataCommon.services'));
-  beforeEach(inject(function($injector) {
-    // Set up the mock http service responses
-    $httpBackend = $injector.get('$httpBackend');
-    // Get hold of a scope (i.e. the root scope)
-    $rootScope = $injector.get('$rootScope');
-    // The $controller service is used to create instances of controllers
-    Analytics = $injector.get('Analytics');
-  }));
 
-  afterEach(function() {
-    $httpBackend.verifyNoOutstandingExpectation();
-    $httpBackend.verifyNoOutstandingRequest();
-  });
+  describe('rendering card count', function() {
 
-  describe('Rendering card count', function() {
+    beforeEach(function() {
+      inject(function($injector) {
+        Analytics = $injector.get('Analytics');
+      });
+    });
 
     it('should be able to get the number of cards that will render', function() {
       expect(Analytics.getNumberOfCards).to.exist;
@@ -45,29 +55,57 @@ describe('Analytics service', function() {
 
   });
 
-  describe('Render time measurement', function() {
+  describe('render time measurement', function() {
+
+    beforeEach(function() {
+      module(function($provide) {
+        $provide.factory('moment', mockMomentService);
+      });
+      inject(function($injector) {
+        var $window = $injector.get('$window');
+        $window.performance = {
+          timing: {
+            navigationStart: INITIAL_NAVIGATION_START_TIME
+          }
+        };
+
+        // Set up the mock http service responses
+        $httpBackend = $injector.get('$httpBackend');
+        moment = $injector.get('moment');
+        Analytics = $injector.get('Analytics');
+      });
+    });
+
+    afterEach(function() {
+      $httpBackend.verifyNoOutstandingExpectation();
+      $httpBackend.verifyNoOutstandingRequest();
+    });
 
     it('should track page load initially', function() {
       Analytics.setNumberOfCards(1);
       Analytics.cardRenderStart('my_id', 123);
-      var measurement = Analytics.getCurrentMeasurement();
       Analytics.cardRenderStop('my_id', 123);
 
-      var expectedMetrics = buildExpectedMetrics('js-cardsview-page-load-time', measurement.cardsInFlight[0].stopTime - measurement.startTime);
+      var expectedMetrics = buildExpectedMetrics('js-cardsview-page-load-time', INITIAL_TIME_DELTA);
       $httpBackend.expectPOST('/analytics/add', expectedMetrics).respond(200, '');
       $httpBackend.flush();
     });
 
     it('should track according to the label on subsequent calls', function() {
+      var SECOND_METRIC_START_TIME = 3000;
+      var SECOND_METRIC_STOP_TIME = 3678;
+
       Analytics.setNumberOfCards(1);
       Analytics.cardRenderStart('my_id', 123);
       Analytics.cardRenderStop('my_id', 123);
       $httpBackend.expectPOST('/analytics/add').respond(200, '');
+
+      moment()._next(SECOND_METRIC_START_TIME);
       Analytics.start('my-label');
       Analytics.cardRenderStart('my_id', 123);
-      var measurement = Analytics.getCurrentMeasurement();
+      moment()._next(SECOND_METRIC_STOP_TIME);
       Analytics.cardRenderStop('my_id', 123);
-      var expectedMetrics = buildExpectedMetrics('js-cardsview-my-label-time', measurement.cardsInFlight[0].stopTime - measurement.startTime);
+      var expectedMetrics = buildExpectedMetrics('js-cardsview-my-label-time', SECOND_METRIC_STOP_TIME - SECOND_METRIC_START_TIME);
       $httpBackend.expectPOST('/analytics/add', expectedMetrics).respond(200, '');
       $httpBackend.flush();
     });
@@ -86,9 +124,18 @@ describe('Analytics service', function() {
       Analytics.cardRenderStop('my_card_2', 2);
 
       expect($httpBackend.flush).to.throw(/No pending request/);
-      expect(Analytics.getCurrentMeasurement).to.exist;
       Analytics.cardRenderStop('my_card_1', 1);
       allCardsStopped = true;
+      $httpBackend.flush();
+    });
+
+
+    it('should not record more than one unique card ID / start time combination', function() {
+      Analytics.setNumberOfCards(1);
+      Analytics.cardRenderStart('my_id', 123);
+      Analytics.cardRenderStart('my_id', 123);
+      Analytics.cardRenderStop('my_id', 123);
+      $httpBackend.expectPOST('/analytics/add').respond(200, '');
       $httpBackend.flush();
     });
 

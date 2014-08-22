@@ -478,7 +478,7 @@ describe('columnChart', function() {
         'orientation-left'
       ];
       labels.each(function(i, label) {
-        expect(_.toArray(label.classList)).to.contain(expectedClasses[i]);
+        expect($(label).hasClass(expectedClasses[i])).to.be.true;
       });
     });
   });

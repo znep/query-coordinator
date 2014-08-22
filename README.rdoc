@@ -22,6 +22,16 @@ Make sure you've installed karma-cli and phantomjs globally: `npm install -g kar
 ==== To generate coverage results ====
 Just run `rake`, the karma test task will run karma configured to compute coverage. Coverage results will live in frontend/karma-test/dataCards/coverage/
 
+==== To run tests in BrowserStack ====
+ Karma knows how to launch tests against browsers specified in supported_browsers.json
+ (see karma-unit/dataCards/karma-unit.js to see how we teach this to Karma).
+ Our current SOP is to support two major versions back from a browser's latest version.
+ To speed up testing, we define a set of critical browsers (defined as the latest version
+ of all browsers, plus all supported versions of IE).
+ Please be judicious in your use of BrowserStack - we are limited to 4 hours/day total (including parallel tests).
+ - To launch on _all_ supported browsers: `rake test:karma_browserstack_all`
+ - To launch on only critical browsers: `rake test:karma_browserstack_critical`
+
 
 === Javascript/other asset package management
 

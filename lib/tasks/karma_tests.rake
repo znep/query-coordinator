@@ -7,6 +7,42 @@ namespace :test do
     raise 'Karma test failure' unless success
   end
 
+  def get_supported_browser_launcher_names(critical_only = false)
+    def name_for_browser_instance(browser_name, instance)
+      os = instance['os']
+      "bs_#{browser_name}#{instance['version']}_#{os['name']}_#{os['version']}"
+    end
+
+    supported_browsers = JSON.parse(open('supported_browsers.json').read())
+    browser_names = []
+    critical_browser_names = []
+    supported_browsers.each do |browser_name, browser_instances|
+      browser_instances.each do |instance|
+        instance_name = name_for_browser_instance(browser_name, instance)
+        browser_names.push(instance_name)
+        if instance['critical']
+          critical_browser_names.push(instance_name)
+        end
+      end
+    end
+
+    critical_only ? critical_browser_names : browser_names
+  end
+
+  task :karma_browserstack_critical do
+    browser_names = get_supported_browser_launcher_names(true);
+
+    success = system("karma start karma-test/dataCards/karma-unit.js --browsers #{browser_names.join(',')} --singleRun true")
+    raise 'Karma test failure' unless success
+  end
+
+  task :karma_browserstack_all do
+    browser_names = get_supported_browser_launcher_names(false);
+
+    success = system("karma start karma-test/dataCards/karma-unit.js --browsers #{browser_names.join(',')} --singleRun true")
+    raise 'Karma test failure' unless success
+  end
+
   task :publish_coverage_to_dashboard do
     # We maintain an internal dashboard at socratametrics.geckoboard.com.
     # One of the widgets is a code coverage meter for the frontend unit tests.

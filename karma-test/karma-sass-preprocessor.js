@@ -14,8 +14,6 @@ var TEMPLATE = 'angular.module(\'%s\', []).run(function() {\n' +
     '});';
 
 
-console.log("Processing SASS. This might take a bit...");
-
 var createSassPreprocessor = function(logger, basePath) {
   config = typeof config === 'object' ? config : {};
 

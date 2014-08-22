@@ -459,7 +459,7 @@ describe("A Choropleth Directive", function() {
           var ticks = el.find('.modern-legend .labels .tick');
           var offsets = _.map(ticks, function(tick) {
             var translateString = $(tick).attr('transform');
-            var yOffset = parseInt(translateString.replace('translate(0,',''));
+            var yOffset = parseInt(translateString.replace(/translate\(\d+\D+/,''));
             return yOffset;
           });
           // test for equidistant y offsets (check within +/- 2 px, due to floating point issues)

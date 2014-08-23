@@ -43,9 +43,9 @@ azure_rc:
 
 azure_eastus_production:
     message_start:  2014-08-20t17:00:00-07:00
-    message_end:    2014-08-24t00:00:00-07:00
+    message_end:    2014-08-24t05:00:00-07:00
     downtime_start: 2014-08-22t17:00:00-07:00
-    downtime_end:   2014-08-24t00:00:00-07:00
+    downtime_end:   2014-08-24t05:00:00-07:00
 
 azure_westeurope_production:
     - message_start:  2014-08-13t12:00:00-07:00

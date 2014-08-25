@@ -33,6 +33,7 @@
     "mocha": "~1.18.2",
     "sprintf": "^0.1.4",
     "underscore": "^1.6.0",
-    "underscore.string": "^2.3.3"
+    "underscore.string": "^2.3.3",
+    "lodash": "^2.4.1"
   }
 }

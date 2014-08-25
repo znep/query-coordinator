@@ -204,6 +204,7 @@ describe('timelineChart', function() {
       expect(filterCleared).to.equal(true, 'should have recieved the filter-cleared event.');
     });
     it('should be able to change data', function(done) {
+      this.timeout(4000);
       var chart = createNewTimelineChart(640, false, true);
       var paths = _.map($('path'), function(path) {
         return $(path).attr('d');

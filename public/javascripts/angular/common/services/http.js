@@ -2,31 +2,31 @@
   'use strict';
   var extend = _.extend;
   var forEach = _.forEach;
+  var requestIdHeaderName = 'X-Socrata-RequestId';
 
-  function httpProvider($http, guid) {
+  function httpProvider($http, RequestId) {
     function http(requestConfig) {
-      var requestId = guid;
+      var id = RequestId.generate();
 
       if (requestConfig.hasOwnProperty('headers')) {
-        var hasHeader = requestConfig.headers.hasOwnProperty('X-Socrata-RequestID');
+        var hasHeader = requestConfig.headers.hasOwnProperty(requestIdHeaderName);
 
         if (hasHeader) {
           return $http(requestConfig);
         }
 
         var hasSimilarHeader = _(requestConfig.headers).chain().keys().find(function(key) {
-          return key.toLowerCase() === 'x-socrata-requestid';
+          return key.toLowerCase() === requestIdHeaderName.toLowerCase();
         }).value();
 
         if (hasSimilarHeader) {
           throw new Error('Conflicting Request ID');
         }
 
-        requestConfig.headers['X-Socrata-RequestID'] = requestId;
+        requestConfig.headers[requestIdHeaderName] = id;
       } else {
-        requestConfig.headers = {
-          'X-Socrata-RequestID': requestId
-        };
+        requestConfig.headers = {};
+        requestConfig.headers[requestIdHeaderName] = id;
       }
       return $http(requestConfig);
     }

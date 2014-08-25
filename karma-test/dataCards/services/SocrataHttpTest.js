@@ -1,25 +1,26 @@
 describe('Socrata-flavored $http service', function() {
+  var HEADER_KEY = 'X-Socrata-RequestId';
   var MOCK_GUID = 'MOCKGUID';
   var TEST_HEADER_KEY = 'X-Test-Header';
   var TEST_HEADER_VALUE = 'TEST';
   var TEST_HEADERS = {};
   TEST_HEADERS[TEST_HEADER_KEY] = TEST_HEADER_VALUE;
 
-  var http, $httpBackend, guid;
-  beforeEach(module('socrataCommon.services'));
+  var http, $httpBackend;
 
   beforeEach(function() {
-    module(function($provide) {
-      var mockGuidService = function() {
-        return  MOCK_GUID;
-      };
-      $provide.value('guid', mockGuidService);
+    module('socrataCommon.services', function($provide) {
+      $provide.value('RequestId', {
+        generate: function() {
+          return MOCK_GUID;
+        }
+      });
     });
+    module('socrataCommon.services');
     inject(function($injector) {
       // Set up the mock http service responses
       $httpBackend = $injector.get('$httpBackend');
       http = $injector.get('http');
-      guid = $injector.get('guid');
     });
   });
 
@@ -37,9 +38,9 @@ describe('Socrata-flavored $http service', function() {
     $httpBackend.flush();
   });
 
-  it('should have a X-Socrata-RequestID header', function() {
+  it('should have a X-Socrata-RequestId header', function() {
     $httpBackend.whenGET('/test', function(headers) {
-      return headers['X-Socrata-RequestID'] === MOCK_GUID;
+      return headers[HEADER_KEY] === MOCK_GUID;
     }).respond(200, '');
     http({
       url: '/test'
@@ -47,9 +48,9 @@ describe('Socrata-flavored $http service', function() {
     $httpBackend.flush();
   });
 
-  it('should merge the X-Socrata-RequestID header into existing headers', function() {
+  it('should merge the X-Socrata-RequestId header into existing headers', function() {
     $httpBackend.whenGET('/test', function(headers) {
-      return headers['X-Socrata-RequestID'] === MOCK_GUID && headers[TEST_HEADER_KEY] === TEST_HEADER_VALUE;
+      return headers[HEADER_KEY] === MOCK_GUID && headers[TEST_HEADER_KEY] === TEST_HEADER_VALUE;
     }).respond(200, '');
 
     http({
@@ -60,31 +61,31 @@ describe('Socrata-flavored $http service', function() {
     $httpBackend.flush();
   });
 
-  it('should throw an error if there is a header similar to X-Socrata-RequestID', function() {
+  it('should throw an error if there is a header similar to X-Socrata-RequestId', function() {
 
     expect(function() {
       http({
         url: '/test',
         headers: {
-          'x-socrata-requestid': 'FOO'
+          'x-SoCrAtA-ReQuEsTiD': 'Foo'
         }
       });
     }).to.throw(/conflicting request id/ig);
 
   });
 
-  it('should leave existing X-Socrata-RequestID header alone', function() {
+  it('should leave existing X-Socrata-RequestId header alone', function() {
     var CUSTOM_HEADER_VALUE = 'my custom header value';
+    var headers = {};
+    headers[HEADER_KEY] = CUSTOM_HEADER_VALUE;
 
     $httpBackend.whenGET('/test', function(headers) {
-      return headers['X-Socrata-RequestID'] === CUSTOM_HEADER_VALUE
+      return headers[HEADER_KEY] === CUSTOM_HEADER_VALUE
     }).respond(200, '');
 
     http({
       url: '/test',
-      headers: {
-        'X-Socrata-RequestID': CUSTOM_HEADER_VALUE
-      }
+      headers: headers
     });
 
     $httpBackend.flush();
@@ -97,18 +98,18 @@ describe('Socrata-flavored $http service', function() {
 
     _(methodsWithoutData).forEach(function(method) {
       describe('.{0}()'.format(method), function() {
-        it('should have a X-Socrata-RequestID header', function() {
+        it('should have a X-Socrata-RequestId header', function() {
           $httpBackend.when(method.toUpperCase(), '/test', undefined, function(headers) {
-            return headers['X-Socrata-RequestID'] === MOCK_GUID;
+            return headers[HEADER_KEY] === MOCK_GUID;
           }).respond(200, '');
 
           http[method]('/test');
           $httpBackend.flush();
         });
 
-        it('should merge the X-Socrata-RequestID header into existing headers', function() {
+        it('should merge the X-Socrata-RequestId header into existing headers', function() {
           $httpBackend.when(method.toUpperCase(), '/test', undefined, function(headers) {
-            return headers['X-Socrata-RequestID'] === MOCK_GUID && headers[TEST_HEADER_KEY] === TEST_HEADER_VALUE;
+            return headers[HEADER_KEY] === MOCK_GUID && headers[TEST_HEADER_KEY] === TEST_HEADER_VALUE;
           }).respond(200, '');
 
           http[method]('/test', {
@@ -121,18 +122,18 @@ describe('Socrata-flavored $http service', function() {
 
     _(methodsWithData).forEach(function(method) {
       describe('.{0}()'.format(method), function() {
-        it('should have a X-Socrata-RequestID header', function() {
+        it('should have a X-Socrata-RequestId header', function() {
           $httpBackend.when(method.toUpperCase(), '/test', undefined, function(headers) {
-            return headers['X-Socrata-RequestID'] === MOCK_GUID;
+            return headers[HEADER_KEY] === MOCK_GUID;
           }).respond(200, '');
 
           http[method]('/test', {});
           $httpBackend.flush();
         });
 
-        it('should merge the X-Socrata-RequestID header into existing headers', function() {
+        it('should merge the X-Socrata-RequestId header into existing headers', function() {
           $httpBackend.when(method.toUpperCase(), '/test', undefined, function(headers) {
-            return headers['X-Socrata-RequestID'] === MOCK_GUID && headers[TEST_HEADER_KEY] === TEST_HEADER_VALUE;
+            return headers[HEADER_KEY] === MOCK_GUID && headers[TEST_HEADER_KEY] === TEST_HEADER_VALUE;
           }).respond(200, '');
 
           http[method]('/test', {}, {

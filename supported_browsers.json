@@ -16,6 +16,18 @@
         "critical": true
       }
     ],
+    "safari": [
+      {
+        "version": "7",
+        "os": { "name": "osx", "version": "mavericks" },
+        "critical": true
+      },
+      {
+        "version": "6",
+        "os": { "name": "osx", "version": "lion" },
+        "critical": false
+      }
+    ],
     "chrome": [
       {
         "version": "36",

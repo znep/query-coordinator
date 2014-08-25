@@ -31,6 +31,10 @@ Just run `rake`, the karma test task will run karma configured to compute covera
  Please be judicious in your use of BrowserStack - we are limited to 4 hours/day total (including parallel tests).
  - To launch on _all_ supported browsers: `rake test:karma_browserstack_all`
  - To launch on only critical browsers: `rake test:karma_browserstack_critical`
+ - To launch only a particular browser, run `karma start` manually and specify a browser name formatted like:
+   bs_{browser name}{browser version}_{os}_{os version}
+   So for instance to run tests on Safari 7 on Mavericks, do:
+   `(cd karma-test/dataCards && karma start karma-unit.js --browsers bs_safari7_osx_mavericks --singleRun true)`
 
 
 === Javascript/other asset package management

@@ -3,6 +3,39 @@ class Downtime
 
   attr_accessor :message_start, :message_finish, :downtime_start, :downtime_finish
 
+  def self.any? &block
+    @@downtimes.any?(&block)
+  end
+
+  def self.map &block
+    @@downtimes.map(&block)
+  end
+
+  def self.uncache!
+    @@cache_expiry_time = Time.now
+  end
+
+  def self.needs_update?
+    cached = defined?(@@cache_expiry_time) && @@cache_expiry_time > Time.now
+    return false if cached
+    @@cache_expiry_time = Time.now + 6.hours
+
+    !defined?(@@last_updated) || File.stat(DOWNTIME[:file]).mtime > @@last_updated
+  end
+
+  def self.update!
+    return unless needs_update?
+    begin
+      yaml = YAML.load_file(DOWNTIME[:file])[DOWNTIME[:env]]
+    rescue StandardError
+    end
+    @@downtimes = [yaml].flatten.compact.collect do |time|
+      Downtime.new(time['message_start'], time['message_end'],
+                   time['downtime_start'], time['downtime_end'])
+    end
+    @@last_updated = Time.now
+  end
+
   def initialize(m_start, m_finish, d_start, d_finish)
     @message_start = m_start
     @message_finish = m_finish

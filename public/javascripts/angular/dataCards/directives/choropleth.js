@@ -503,11 +503,11 @@ angular.module('dataCards.directives').directive('choropleth', function(AngularR
         return $tooltip;
       };
 
-      var bodyWidth = document.body.clientWidth;
-      $('body').resize(function(){ bodyWidth = this.clientWidth });
-
       var positionTooltip = function(e){
-        // this: expected jquery selector, e.g. $tooltip.
+
+        // Note: 'this' is a jQuery object.
+
+        var bodyWidth = document.body.clientWidth;
         var cursorTop = e.pageY;
         var cursorLeft = e.pageX;
         var flyoutHeight = this.outerHeight(true) + 2;
@@ -530,9 +530,9 @@ angular.module('dataCards.directives').directive('choropleth', function(AngularR
         // flip the orientation of the arrow if you are over halfway across the flyout width.
 
         var orientationIsRight = cursorLeft > this.offset().left + this.width()/2;
-
-        var leftOffset = cursorLeft - marginX/2 + arrowDisplacement;
+        var leftOffset = cursorLeft - marginX / 2 + arrowDisplacement;
         var maxLeftOffset = bodyWidth - flyoutWidth + cursorArrowOffset;
+
         var $flyoutArrow = this.find('.flyout-arrow');
 
         if (orientationIsRight) {

@@ -80,7 +80,7 @@ angular.module('dataCards.directives').directive('choropleth', function(AngularR
       'rowDisplayUnit': '=?'
     },
     template: '<div class="choropleth-map-container"><leaflet class="choropleth-map" bounds="bounds" defaults="defaults" geojson="geojson" legend="legend"></leaflet></div>',
-    controller: function($scope, $http) {
+    controller: function($scope) {
       // Map settings
       $scope.layers = {
         baselayers: {

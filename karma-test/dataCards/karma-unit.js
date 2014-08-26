@@ -1,4 +1,26 @@
 var grunt = require('grunt');
+var path = require('path');
+var fs = require('fs');
+var sprintf = require('sprintf');
+var _ = require('lodash');
+
+// Parse supported_browsers.json to generate BrowserStack launcher definitions.
+var supportedBrowsers = JSON.parse(fs.readFileSync(path.resolve(__dirname, '../../supported_browsers.json'), {encoding: 'utf8'}));
+var customLaunchers = {};
+_.forIn(supportedBrowsers, function(browserInstances, browserName) {
+  _.each(browserInstances, function(instance) {
+    instance.browserName = browserName;
+    var launcherName = sprintf('bs_%(browserName)s%(version)s_%(os.name)s_%(os.version)s', instance);
+    customLaunchers[launcherName] = {
+      base: 'BrowserStack',
+      browser: browserName,
+      browser_version: instance.version,
+      os: instance.os.name,
+      os_version: instance.os.version
+    };
+  });
+});
+
 module.exports = function ( karma ) {
   karma.set({
     /**
@@ -72,6 +94,15 @@ module.exports = function ( karma ) {
       '/angular_templates/images/': 'http://localhost:7019/base/public/angular_templates/images/'
     },
 
+    browserStack: {
+      username: 'socrataengineeri1',
+      accessKey: 'NY7TjFt1pqdrxzoBYU4E',
+      name: 'dataCards Unit Tests',
+      project: 'FrontEnd'
+    },
+
+    customLaunchers: customLaunchers,
+
     frameworks: [ 'mocha', 'chai', 'chai-as-promised' ],
     plugins: [
       'karma-chai',
@@ -80,6 +111,7 @@ module.exports = function ( karma ) {
       'karma-firefox-launcher',
       'karma-chrome-launcher',
       'karma-phantomjs-launcher',
+      'karma-browserstack-launcher',
       'karma-coverage',
       'karma-mocha-reporter',
       'karma-ng-html2js-preprocessor',
@@ -156,7 +188,8 @@ module.exports = function ( karma ) {
     /**
      * Increase the browser timeout for running tests in the background.
      */
-    browserNoActivityTimeout: 60000,
+    browserNoActivityTimeout: 120000,
+    captureTimeout: 240000,
 
     /**
      * Configure html2js to compile the angular templates.

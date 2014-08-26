@@ -5,7 +5,7 @@ class ApplicationController < ActionController::Base
   include ActionControllerExtensions
   before_filter :hook_auth_controller,  :create_core_server_connection,
     :disable_frame_embedding, :adjust_format, :patch_microsoft_office, :sync_logged_in_cookie,
-    :require_user, :set_user, :set_meta, :force_utf8_params
+    :require_user, :set_user, :set_meta, :force_utf8_params, :poll_downtime_config
   helper :all # include all helpers, all the time
   helper_method :current_user
   helper_method :current_user_session
@@ -305,5 +305,9 @@ private
 
   def check_chrome
     @suppress_chrome = params[:hide_chrome] == 'true'
+  end
+
+  def poll_downtime_config
+    Downtime.update!
   end
 end

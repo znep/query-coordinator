@@ -13,7 +13,7 @@ describe("notifyResize directive", function() {
     testHelpers.TestDom.clear();
   });
 
-  describe('with an attribute value', function() {
+  describe('with an attribute value', function(done) {
     it('should broadcast the named event when the element changes size', function(done) {
       var html = '<div notify-resize="testEventName"><span></span></div>';
       var el = testHelpers.TestDom.compileAndAppend(html, scope);
@@ -38,7 +38,13 @@ describe("notifyResize directive", function() {
 
       scope.$on('testEventName', spy);
 
-      el.find('span').html('two<br>lines');
+      // This defer is only here because jquery-resize falls
+      // back to polling for IE9. In other browsers this isn't
+      // needed.
+      _.defer(function() {
+        el.find('span').html('two<br>lines');
+        done();
+      });
     });
   });
 

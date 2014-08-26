@@ -358,11 +358,10 @@
   ]);
   angular.module('leaflet-directive').directive('legend', [
     '$log',
-    '$http',
     'leafletHelpers',
     '$timeout',
     'numberFormatter',
-    function ($log, $http, leafletHelpers, $timeout, numberFormatter) {
+    function ($log, leafletHelpers, $timeout, numberFormatter) {
       return {
         restrict: 'A',
         scope: false,

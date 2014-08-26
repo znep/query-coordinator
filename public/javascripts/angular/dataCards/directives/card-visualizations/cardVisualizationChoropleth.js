@@ -1,4 +1,4 @@
-angular.module('dataCards.directives').directive('cardVisualizationChoropleth', function(AngularRxExtensions, CardDataService, Filter, $http) {
+angular.module('dataCards.directives').directive('cardVisualizationChoropleth', function(AngularRxExtensions, CardDataService, Filter) {
 
   var INTERNAL_DATASET_FEATURE_ID = '_feature_id';
 

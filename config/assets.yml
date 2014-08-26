@@ -92,7 +92,7 @@ javascripts:
     - public/javascripts/controls/editors/photo-editor.js
   canvas:
     - public/javascripts/plugins/lab.js
-    - public/javascripts/plugins/waypoints.js
+    - public/javascripts/plugins/waypoints-2.0.5.js
     - public/javascripts/util/asset-loading.js
     - public/javascripts/component/util/style-config.js
     - public/javascripts/component/data-context.js
@@ -540,7 +540,7 @@ javascripts:
     - public/javascripts/plugins/hallo.js
     - public/javascripts/controls/hallo-plugins.js
     - public/javascripts/plugins/datepicker.js
-    - public/javascripts/plugins/waypoints.js
+    - public/javascripts/plugins/waypoints-2.0.5.js
     - public/javascripts/plugins/jquery.awesomereorder.js
     - public/javascripts/controls/global-indicator.js
     - public/javascripts/plugins/ajaxupload.js
@@ -629,7 +629,7 @@ javascripts:
   worker-json:
     - public/javascripts/plugins/ace/worker-json.js
   waypoints:
-    - public/javascripts/plugins/waypoints.js
+    - public/javascripts/plugins/waypoints-2.0.5.js
   client-embed:
     - public/javascripts/client-libraries/embed.js
   content-editable:

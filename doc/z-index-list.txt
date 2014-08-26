@@ -1,0 +1,59 @@
+MAIN SITE:
+1-8 dataset grid sidebar tabs
+9 dataset grid active sidebar tab
+50 menu button
+1000 configurator
+3000 modal dialog
+3001 modal dialog overlay
+9997 bt-wrapper
+9998 bt-wrapper canvas
+9999 bt-content
+9999 modal overlay
+10000 menu
+10100 maintenance notification
+
+
+DATASETv2:
+99 toolbar
+
+
+SIDEBAR:
+1 remove link for repeaters
+50 modal (surrounding) overlay
+60 pane overlay
+60 loading overlay
+70 column selector when picking
+80 disabled overlay
+81 disabled message
+
+
+WIDGET:
+50 subheader
+51 header
+2998: main menu dropdown
+
+
+CONTROLS:
+3001 color_selector
+3002 autocompleteComboDropdown
+6000 loading spinner overlay
+10000 loading spinner
+
+
+DATA RENDERING:
+999 map data
+1000 mapLayers, mapLegend
+1004 map controls
+
+
+DATASLATE:
+1000 sidebar
+1500 FixedContainer
+1500 editOverlay
+2000 canvas edit bar
+2001 cfViewsContainer
+2999 edit mask
+3000 focal item
+3001 resize handle
+20000 IE drag image
+ 

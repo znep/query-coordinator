@@ -79,6 +79,7 @@ module.exports = function ( karma ) {
       /*    Test datasets    */
       'karma-test/dataCards/test-data/**/*.json',
       /*    SASS    */
+      'app/styles/dataCards/timeline-chart.sass',
       'app/styles/dataCards/column-chart.sass',
       'app/styles/dataCards/main.sass',
       'app/styles/dataCards/choropleth.sass',

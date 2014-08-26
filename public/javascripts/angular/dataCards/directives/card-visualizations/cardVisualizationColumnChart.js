@@ -129,15 +129,26 @@ angular.module('dataCards.directives').directive('cardVisualizationColumnChart',
       });
 
       $scope.$on('column-chart:datum-clicked', function(event, datum) {
-        var hasFiltersOnCard = _.any($scope.model.getCurrentValue('activeFilters'), function(filter) {
-          return filter.operand === datum.name;
+        var wantsFilterToNull = !_.isString(datum.name);
+
+        var isFilteringOnClickedDatum = _.any($scope.model.getCurrentValue('activeFilters'), function(filter) {
+          if (filter instanceof Filter.BinaryOperatorFilter) {
+            return filter.operand === datum.name;
+          } else if (filter instanceof Filter.IsNullFilter) {
+            return wantsFilterToNull;
+          } else {
+            throw new Error('CardVisualizationColumnChart does not understand the filter on its column: ' + filter);
+          }
         });
-        if (hasFiltersOnCard) {
+
+        // If we're already filtering on the datum that was clicked, we should toggle the filter off.
+        // Otherwise, set up a new filter for the datum.
+        if (isFilteringOnClickedDatum) {
           $scope.model.set('activeFilters', []);
         } else {
-          var filter = _.isString(datum.name) ?
-            new Filter.BinaryOperatorFilter('=', datum.name) :
-            new Filter.IsNullFilter(true);
+          var filter = wantsFilterToNull ?
+            new Filter.IsNullFilter(true) :
+            new Filter.BinaryOperatorFilter('=', datum.name);
           $scope.model.set('activeFilters', [filter]);
         }
       });

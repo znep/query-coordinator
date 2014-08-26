@@ -8,6 +8,8 @@ describe('timelineChart', function() {
 
   beforeEach(module('dataCards.directives'));
 
+  beforeEach(module('dataCards/timeline-chart.sass'));
+
   beforeEach(inject(function($injector) {
     th = $injector.get('testHelpers');
     compile = $injector.get('$compile');
@@ -203,10 +205,10 @@ describe('timelineChart', function() {
       $('.label.special').mousedown().mouseup();
       expect(filterCleared).to.equal(true, 'should have recieved the filter-cleared event.');
     });
-    it('should be able to change data', function(done) {
+    it('should be able to change data', function() {
       this.timeout(4000);
       var chart = createNewTimelineChart(640, false, true);
-      var paths = _.map($('path'), function(path) {
+      var filteredPaths = _.map($('path.fill.filtered'), function(path) {
         return $(path).attr('d');
       });
 
@@ -216,14 +218,16 @@ describe('timelineChart', function() {
       });
 
       chart.scope.$digest();
-      _.defer(function() {
-        var newPaths = _.map($('path.fill'), function(path) {
-          return $(path).attr('d');
-        });
-        _.each(_.zip(paths, newPaths), function(a) {
-          expect(a[0]).to.not.equal(a[1]);
-        });
-        done();
+
+      th.flushAllD3Transitions();
+
+      var newFilteredPaths = _.map(chart.element.find('path.fill.filtered'), function(path) {
+        return $(path).attr('d');
+      });
+      expect(filteredPaths).to.not.be.empty;
+      expect(newFilteredPaths).to.not.be.empty;
+      _.each(_.zip(filteredPaths, newFilteredPaths), function(a) {
+        expect(a[0]).to.not.equal(a[1]);
       });
     });
     it('should be able to select a segment within a larger selection', function() {
@@ -255,8 +259,8 @@ describe('timelineChart', function() {
   });
   describe('when not expanded at 300px', function() {
     it('should hide some labels', function() {
-      var chart = createNewTimelineChart();
-      expect(chart.element.find('.label:visible').length).to.equal(3);
+      var chart = createNewTimelineChart(300);
+      expect(chart.element.find('.label:visible').length).to.equal(6);
       expect(chart.element.find('.label').length).to.equal(13);
     });
   });

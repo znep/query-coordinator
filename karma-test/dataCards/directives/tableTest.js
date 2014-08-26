@@ -87,15 +87,18 @@ describe('table', function() {
     it('should load more rows upon scrolling', function(done) {
       this.timeout(10000); // IE9!
       var el = createTableCard(true);
+      var tableBody = el.find('.table-body');
       _.defer(function(){
         expect(el.find('.row-block .cell').length).to.equal(columnCount * blockSize * 3);
-        $(el).find('.table-body').scrollTop($.relativeToPx('2rem') * (blockSize + 1));
-        _.defer(function() {
-          expect(el.find('.th').length).to.equal(columnCount);
-          expect(el.find('.row-block .cell').length).to.equal(columnCount * blockSize * 4);
-          el.remove();
-          done();
+        tableBody.scroll(function() {
+          _.defer(function() {
+            expect(el.find('.th').length).to.equal(columnCount);
+            expect(el.find('.row-block .cell').length).to.equal(columnCount * blockSize * 4);
+            el.remove();
+            done();
+          });
         });
+        tableBody.scrollTop($.relativeToPx('2rem') * (blockSize + 1));
       });
     });
     describe('sorting', function() {

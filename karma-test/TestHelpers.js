@@ -9,28 +9,15 @@ angular.module('test', [])
       elem.dispatchEvent(evt);
     };
 
-    // Returns a promise which resolves after all currently-executing
-    // d3 transitions complete.
-    // See: https://groups.google.com/forum/#!topic/d3-js/WC_7Xi6VV50
-    var waitForD3Transitions = function() {
-      var d = $q.defer();
-      d3.select('body').transition().call(function(tr, callback) {
-        var n = 0;
-        tr
-          .each(function() { ++n; })
-          .each("end", function() { if (!--n) callback.apply(this, arguments); });
-      }, function() {
-        d.resolve();
-      });
-
-      // TODO revisit this. It's here so you can still see the assertion error if you
-      // forget to do a .catch(done) from your test (which you should do).
-      d.promise.catch(function(e) {
-        console.err(e);
-      });
-
-      return d.promise;
-    };
+    // Hack D3 to finish all transitions immediately.
+    // From mbostock himself.
+    // https://github.com/mbostock/d3/issues/1789
+    var flushAllD3Transitions = function() {
+      var now = Date.now;
+      Date.now = function() { return Infinity; };
+      d3.timer.flush();
+      Date.now = now;
+    }
 
     var TestDom = {
       compileAndAppend: function(element, scope) {
@@ -62,7 +49,7 @@ angular.module('test', [])
     return {
       TestDom: TestDom,
       getTestJson: getTestJson,
-      waitForD3Transitions: waitForD3Transitions,
+      flushAllD3Transitions: flushAllD3Transitions,
       fireMouseEvent: fireMouseEvent
     };
   });

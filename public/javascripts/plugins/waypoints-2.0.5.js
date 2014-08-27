@@ -146,11 +146,9 @@ https://github.com/imakewebthings/jquery-waypoints/blob/master/licenses.txt
 
             // Push to the triggered array here like the library did originally, just
             // based on our custom 'logic'.
-
             if (firstCondition || secondCondition) {
               return triggered.push(waypoint);
             }
-
 
           });
           triggered.sort(function(a, b) {
@@ -218,6 +216,8 @@ https://github.com/imakewebthings/jquery-waypoints/blob/master/licenses.txt
             // The following conditional was a monkey-patched feature into an older version of waypoints.js
             // which (of course) broke eventually and had to be re-ported to a newer version of the library.
             // God help the next poor soul that gets stuck porting this crap to some future version.
+            // See commit 523aadd286047f4b192bb4c3d1de60f5541597be and its diff for
+            // details, if you dare delve so deep. --Chris Laidlaw
             if (waypoint.options.checkTop) {
               waypoint.topOffset = waypoint.element.offsetTop - axis.contextOffset + axis.contextScroll;
             }
@@ -233,6 +233,8 @@ https://github.com/imakewebthings/jquery-waypoints/blob/master/licenses.txt
               return waypoint.trigger([axis.forward]);
 
             // The following conditional... same as above. *le sigh*
+            // See commit 523aadd286047f4b192bb4c3d1de60f5541597be and its diff for
+            // details, if you dare delve so deep. --Chris Laidlaw
             } else if (waypoint.options.checkTop && waypoint.offset < axis.oldScroll && axis.oldScroll < waypoint.topOffset) {
               return waypoint.trigger([axis.forward]);
             }
@@ -359,7 +361,8 @@ https://github.com/imakewebthings/jquery-waypoints/blob/master/licenses.txt
         // library, and of course I'm stuck here looking at a diff and trying to
         // carry over 'performance enhancements' from 2 and a half years ago before
         // I can get back to working on stuff that matters. Original comment follows.
-        // --Chris Laidlaw
+        // (See commit 523aadd286047f4b192bb4c3d1de60f5541597be and its diff for
+        // details, if you dare delve so deep. --Chris Laidlaw)
 
         // Need to re-sort+refresh the waypoints array after new elements are added.
         if (!options || !options.delayRefresh) {
@@ -445,9 +448,9 @@ https://github.com/imakewebthings/jquery-waypoints/blob/master/licenses.txt
       enabled: true,
       horizontal: false,
       offset: 0,
-      triggerOnce: false,
-      delayRefresh: false,
-      checkTop: false
+      triggerOnce: false,  // This was added by Socrata
+      delayRefresh: false, // ...also this
+      checkTop: false      // OH YEAH ALSO THIS.
     };
     jQMethods = {
       refresh: function() {

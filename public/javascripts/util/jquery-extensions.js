@@ -387,6 +387,8 @@ $.fn.flyout = function(options) {
         options.onClose();
       }
       flyout.remove();
+    } else {
+      console.warn('Attempted to close nonexistent flyout.');
     }
   };
   $(window).scroll(function(e) {

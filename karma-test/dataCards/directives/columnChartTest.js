@@ -364,6 +364,8 @@ describe('columnChart', function() {
 
         chart.element.find('.bar-group').eq(1).mouseover();
         expect($('.flyout').is(':contains(Filtered Amount)')).to.equal(true);
+        chart.element.find('.bar-group').eq(1).mouseout();
+        expect($('.flyout').is(':contains(Filtered Amount)')).to.equal(false);
       });
 
     });
@@ -374,6 +376,8 @@ describe('columnChart', function() {
 
         chart.element.find('.bar-group').eq(1).mouseover();
         expect($('.flyout').is(':contains(Filtered Amount)')).to.equal(false);
+        chart.element.find('.bar-group').eq(1).mouseout();
+        expect($('.flyout').length).to.equal(0);
       });
     });
 

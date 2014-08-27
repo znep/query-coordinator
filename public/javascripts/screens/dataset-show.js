@@ -221,7 +221,7 @@ $(function()
         view: blist.dataset,
         defaultTypes: defRen,
         editEnabled: !blist.dataset.isImmutable() &&
-            (blist.dataset.isUnpublished() || blist.dataset.viewType != 'tabular' || blist.dataset.newBackend),
+            (blist.dataset.isUnpublished() || blist.dataset.viewType != 'tabular'),
         columnEditEnabled: !blist.dataset.isImmutable(),
         common: {
             editColumnCallback: function(col)

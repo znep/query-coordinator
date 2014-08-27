@@ -49,7 +49,7 @@ describe("A Choropleth Card Visualization", function() {
     timeout = $injector.get('$timeout');
   }));
 
-  afterEach(function(){
+  after(function(){
     testHelpers.TestDom.clear();
   });
 
@@ -94,42 +94,40 @@ describe("A Choropleth Card Visualization", function() {
   }
 
   describe('when created', function() {
+    var choro1 = null;
+    var choro2 = null;
+    var ensureChoroplethsCreated = _.once(function() {
+      if (choro1 && choro2) return;
+      choro1 = createChoropleth("choro1");
+      choro2 = createChoropleth("choro2");
+      timeout.flush();
+    });
+
     it('should not let click events leak', function() {
-      var obj1 = createChoropleth("choro1");
-      var obj2 = createChoropleth("choro2");
+      var choro1Fired = false;
+      var choro2Fired = false;
 
-      obj1.scope.$on('toggle-dataset-filter:choropleth', function(event, feature, callback) {
-        obj1.eventFired = true;
-      });
-      obj2.scope.$on('toggle-dataset-filter:choropleth', function(event, feature, callback) {
-        obj2.eventFired = true;
-      });
+      ensureChoroplethsCreated();
 
-      var el = obj1.element;
+      choro1.scope.$on('toggle-dataset-filter:choropleth', function(event, feature, callback) {
+        choro1Fired = true;
+      });
+      choro2.scope.$on('toggle-dataset-filter:choropleth', function(event, feature, callback) {
+        choro2Fired = true;
+      });
 
       testHelpers.fireMouseEvent($('#choro1 path')[0], 'click');
       timeout.flush();
 
-      expect(obj1.eventFired).to.equal(true);
-      expect(obj2.eventFired).to.equal(false);
-    });
-
-    it('should not allow the choropleth legend to update when expanded', function() {
-
-      var obj1 = createChoropleth('choropleth-1', '');
-      var obj1LegendLength = $('#choropleth-1 div.legend.leaflet-control > div.info-label').length;
-      var obj2 = createChoropleth('choropleth-2', "ward='10'");
-      var obj2LegendLength = $('#choropleth-2 div.legend.leaflet-control > div.info-label').length;
-
-      expect(obj1LegendLength).to.equal(obj2LegendLength);
+      expect(choro1Fired).to.equal(true);
+      expect(choro2Fired).to.equal(false);
     });
 
     it('should provide a flyout on hover with the current value, and row display unit', function(done){
-      var obj1 = createChoropleth('choro1');
+      ensureChoroplethsCreated();
       var feature = $('#choro1 path')[0];
       testHelpers.fireMouseEvent(feature, 'mouseover');
       testHelpers.fireMouseEvent(feature, 'mousemove');
-      timeout.flush();
       var $flyout = $('#choro-flyout');
       var flyoutText = $flyout.text();
         expect($flyout.is(':visible')).to.equal(true);

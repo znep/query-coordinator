@@ -98,6 +98,13 @@ describe('table', function() {
             done();
           });
         });
+        var originalScrollTop = tableBody.scrollTop();
+        var targetScrollTop = $.relativeToPx('2rem') * (blockSize + 1);
+
+        if (originalScrollTop === targetScrollTop) {
+          throw new Error('Test implementation error - we expect to be triggering a scroll here, but apparently the content is already scrolled to where we want to go. We do not want this. The scroll pos was: ' + targetScrollTop);
+        }
+
         tableBody.scrollTop($.relativeToPx('2rem') * (blockSize + 1));
       });
     });

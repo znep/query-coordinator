@@ -18,7 +18,7 @@
   function Analytics($log, $window, http, moment) {
 
     // true for IE9+, Chrome, Firefox (as of 8/12/14)
-    var hasPerformanceTiming = _.isDefined($window.performance);
+    var hasPerformanceTiming = _.isDefined($window.performance) && _.isDefined($window.performance.timing);
 
     var currentTime = function() {
       return moment().valueOf();
@@ -26,7 +26,7 @@
 
     var navigationStartTime = function() {
       var navigationStartTime;
-      if (hasPerformanceTiming && _.isDefined($window.performance.timing)) {
+      if (hasPerformanceTiming) {
         navigationStartTime = $window.performance.timing.navigationStart || $window.performance.timing.fetchStart || undefined;
       }
       return navigationStartTime;
@@ -34,6 +34,32 @@
 
     var currentMeasurement = createMeasurement('page-load', navigationStartTime());
     var numCards = 0;
+
+    /**
+     * Sends a metric data point for the domComplete timing provided by the browser
+     *
+     */
+    this.measureDomReady = function() {
+      var finalizeMeasurement = function() {
+        var navStartTime = navigationStartTime();
+        var domCompleteTime = $window.performance.timing.domComplete;
+        if (hasPerformanceTiming && navStartTime && domCompleteTime) {
+          sendMetric('js-dom-load-time', domCompleteTime - navStartTime);
+        }
+      };
+      var onReadyStateChange = function() {
+        if ($window.document.readyState === 'complete') {
+          $window.document.removeEventListener('readystatechange', onReadyStateChange);
+          finalizeMeasurement();
+        }
+      };
+
+      if ($window.document.readyState === 'complete') {
+        finalizeMeasurement();
+      } else {
+        $window.document.addEventListener('readystatechange', onReadyStateChange);
+      }
+    };
 
     /**
      * Sets the number of cards on the page, used in validating that all cards have "reported in"
@@ -174,6 +200,8 @@
     /**
      * Posts an analytics metric to the analytics endpoint
      * Analytics endpoint performs checking to determine if it is a valid metric
+     *
+     * @todo - Queue requests and flush when the queue is full and on page unload
      *
      * @private
      * @param metricName

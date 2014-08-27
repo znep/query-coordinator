@@ -3,6 +3,7 @@ describe('Analytics service', function() {
   var INITIAL_NAVIGATION_START_TIME = 222;
   var INITIAL_MOMENT_TIME = 1234;
   var INITIAL_TIME_DELTA = INITIAL_MOMENT_TIME - INITIAL_NAVIGATION_START_TIME;
+  var DOM_READY_TIME = 4119;
 
   var mockMomentService = function() {
     var nextValue = INITIAL_MOMENT_TIME;
@@ -129,7 +130,6 @@ describe('Analytics service', function() {
       $httpBackend.flush();
     });
 
-
     it('should not record more than one unique card ID / start time combination', function() {
       Analytics.setNumberOfCards(1);
       Analytics.cardRenderStart('my_id', 123);
@@ -139,6 +139,74 @@ describe('Analytics service', function() {
       $httpBackend.flush();
     });
 
+  });
+
+  describe('dom-ready time measurement', function() {
+    var $window;
+    var mockWindowPerformance = {
+      timing: {
+        navigationStart: INITIAL_NAVIGATION_START_TIME,
+        domComplete: INITIAL_NAVIGATION_START_TIME + DOM_READY_TIME
+      }
+    };
+
+    afterEach(function() {
+      $httpBackend.verifyNoOutstandingExpectation();
+      $httpBackend.verifyNoOutstandingRequest();
+    });
+
+    it('should listen for dom-ready if the page is not complete', function() {
+      var addEventListenerStub = sinon.stub();
+      var removeEventListenerStub = sinon.stub();
+      module(function($provide) {
+        $provide.factory('$window', function() {
+          return {
+            performance: mockWindowPerformance,
+            document: {
+              readyState: 'loading',
+              addEventListener: addEventListenerStub,
+              removeEventListener: removeEventListenerStub
+            }
+          };
+        });
+        $provide.factory('moment', mockMomentService);
+      });
+      inject(function($injector) {
+        $window = $injector.get('$window');
+        // Set up the mock http service responses
+        $httpBackend = $injector.get('$httpBackend');
+        Analytics = $injector.get('Analytics');
+      });
+
+      Analytics.measureDomReady();
+      expect(addEventListenerStub.calledOnce).to.be.true;
+      expect($httpBackend.flush).to.throw(/No pending request/);
+      addEventListenerStub.yield();
+      expect($httpBackend.flush).to.throw(/No pending request/);
+      $window.document.readyState = 'complete';
+      addEventListenerStub.yield();
+      expect($httpBackend.flush).to.not.throw(/No pending request/);
+      expect(removeEventListenerStub.calledOnce).to.be.true;
+    });
+
+    it('should track the dom-ready time for a page load', function() {
+      module(function($provide) {
+        $provide.factory('moment', mockMomentService);
+      });
+      inject(function($injector) {
+        $window = $injector.get('$window');
+        $window.performance = mockWindowPerformance;
+
+        // Set up the mock http service responses
+        $httpBackend = $injector.get('$httpBackend');
+        Analytics = $injector.get('Analytics');
+      });
+
+      Analytics.measureDomReady();
+      var expectedMetrics = buildExpectedMetrics('js-dom-load-time', DOM_READY_TIME);
+      $httpBackend.expectPOST('/analytics/add', expectedMetrics).respond(200, '');
+      $httpBackend.flush();
+    });
   });
 
   function buildExpectedMetrics(metricValue, incrementValue) {

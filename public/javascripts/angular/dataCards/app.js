@@ -13,7 +13,9 @@ var dataCards = angular.module('dataCards', [
 /**
  * Configure app analytics tracking
  */
-dataCards.run(function($rootScope, Analytics) {
+dataCards.run(function($window, $rootScope, Analytics) {
+  Analytics.measureDomReady();
+
   $rootScope.$on('layout:changed', function() {
     Analytics.setNumberOfCards(0);
   });

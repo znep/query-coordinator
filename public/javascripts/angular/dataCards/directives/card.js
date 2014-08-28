@@ -27,12 +27,11 @@ angular.module('dataCards.directives').directive('card', function(AngularRxExten
 
   return {
     restrict: 'E',
-    scope: { 'model': '=', 'whereClause': '='},
+    scope: { 'model': '=', 'whereClause': '=', 'editMode': '=' },
     templateUrl: '/angular_templates/dataCards/card.html',
     link: function($scope, element, attrs) {
       AngularRxExtensions.install($scope);
 
-      var content = element.find('div.card');
       var modelSubject = $scope.observe('model');
       var datasetObservable = modelSubject.pluck('page').observeOnLatest('dataset');
       var columns = datasetObservable.observeOnLatest('columns');
@@ -64,48 +63,52 @@ angular.module('dataCards.directives').directive('card', function(AngularRxExten
       $scope.bindObservable('title', column.pluck('title'));
       $scope.bindObservable('description', column.pluck('description'));
 
-      $scope.updateCardVisHeight = function() {
-        $timeout(function() {
-          // waits until description is filled in to determine heights
-          var cardVisHeight = element.find('.card').height() - element.find('.card').find('.card-text').outerHeight(true);
-          element.find('.card').find('.card-visualization').height(cardVisHeight);
+      var updateCardLayout = _.throttle(function(textHeight) {
+
+        var updateCardVisualizationHeight = function() {
+          $timeout(function() {
+            // waits until description is filled in to determine heights
+            var cardVisHeight = element.height() - element.find('.card-text').outerHeight(true);
+            element.find('.card-visualization').height(cardVisHeight);
+          });
+        };
+
+        descriptionTruncatedContent.dotdotdot({
+          height: textHeight,
+          tolerance: 2
         });
-      };
+
+        var isClamped = descriptionTruncatedContent.triggerHandler('isTruncated');
+
+        $scope.safeApply(function() {
+          $scope.descriptionClamped = isClamped;
+          $scope.animationsOn = true;
+          updateCardVisualizationHeight();
+        });
+
+      }, 250, { leading: true, trailing: true });
 
       $scope.toggleExpanded = function() {
         $scope.model.page.toggleExpanded($scope.model);
       };
 
-      var descriptionTruncatedContent = content.find('.description-truncated-content');
-      var descriptionElementsWithMaxSize = content.find('.description-expanded-wrapper, .description-expanded-content');
-      var updateClamp = _.throttle(function(height) {
-          descriptionTruncatedContent.dotdotdot({
-            height: height,
-            tolerance: 2
-          });
-
-          var isClamped = descriptionTruncatedContent.triggerHandler('isTruncated');
-
-          $scope.safeApply(function() {
-            $scope.descriptionClamped = isClamped;
-            $scope.animationsOn = true;
-            $scope.updateCardVisHeight();
-          });
-      }, 250, { leading: true, trailing: true });
+      var descriptionTruncatedContent = element.find('.description-truncated-content');
+      var descriptionElementsWithMaxSize = element.find('.description-expanded-wrapper, .description-expanded-content');
 
       Rx.Observable.subscribeLatest(
-        content.observeDimensions(),
+        element.observeDimensions(),
         column.pluck('description'),
         function(dimensions, descriptionText) {
           // Manually update the binding now, because Angular doesn't know that dotdotdot messes with
           // the text.
           descriptionTruncatedContent.text(descriptionText);
+
           var availableSpace = dimensions.height - descriptionTruncatedContent.offsetParent().position().top;
 
-          descriptionElementsWithMaxSize.
-            css('max-height', availableSpace);
+          descriptionElementsWithMaxSize.css('max-height', availableSpace);
 
-          updateClamp(parseInt(descriptionTruncatedContent.css('line-height')) * 2);
+          updateCardLayout(parseInt(descriptionTruncatedContent.css('line-height')) * 2);
+
         });
     }
   };

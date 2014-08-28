@@ -4,7 +4,7 @@ angular.module('dataCards.directives').directive('stickyHeader', function(Angula
   return {
     restrict: 'A',
     link: function($scope, element, attrs) {
-      function addWindowBindings() {
+ /*     function addWindowBindings() {
         $(window).resize(onResize);
         $(window).scroll(onScroll);
         element.on('$destroy', function() {
@@ -18,15 +18,15 @@ angular.module('dataCards.directives').directive('stickyHeader', function(Angula
       };
 
       function onResize() {
-        $scope.$apply(function() {
+        //$scope.$apply(function() {
           pollLayout();
-        });
+        //});
       };
 
       function onScroll() {
-        $scope.$apply(function() {
+        //$scope.$apply(function() {
           pollLayout();
-        });
+        //});
       };
 
       var $content = element.find('.content');
@@ -35,6 +35,7 @@ angular.module('dataCards.directives').directive('stickyHeader', function(Angula
           height: $content.outerHeight() + 'px'
         };
       }
+
       // Watch for resize, and remove the "position: relative" tag resize sets.
       $content.resize(resizeHeaderContainer).
         css({ position: '' });
@@ -42,7 +43,15 @@ angular.module('dataCards.directives').directive('stickyHeader', function(Angula
 
       function pollLayout() {
         // Clamp scroll to stop odd sizes with OSX out of body scrolling.
-        var windowScrollTop = Math.max($(document).scrollTop(), 0);
+
+        // This calculation added because it's ridiculously faster than jQuery's implementation
+        // (4,748,016 ops/second v.s. 243,521 ops/second on my machine at the moment).
+        // Note that this is performance-critical code.
+        var scrollTop = (window.pageYOffset !== undefined) ?
+          window.pageYOffset :
+          (document.documentElement || document.body.parentNode || document.body).scrollTop;
+
+        var windowScrollTop = Math.max(scrollTop, 0);
         var headerPositionTop = element.offset().top;
         var headerHeight = element.height();
 
@@ -50,8 +59,8 @@ angular.module('dataCards.directives').directive('stickyHeader', function(Angula
 
         $scope.headerIsStuck = windowScrollTop >= headerPositionTop;
 
-
         $scope.$emit('stickyHeaderAvailableContentHeightChanged', availableContentHeight);
+
       };
 
       var resizeListenKey = attrs.updateOnResize;
@@ -63,6 +72,6 @@ angular.module('dataCards.directives').directive('stickyHeader', function(Angula
 
       addWindowBindings();
       pollLayout();
-    }
+*/    }
   }
 });

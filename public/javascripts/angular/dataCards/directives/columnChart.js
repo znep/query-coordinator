@@ -191,9 +191,10 @@ angular.module('socrataCommon.directives').directive('columnChart', function($pa
       var verticalPositionOfSpecialLabelRem = 2;
 
       var labelDivSelection = labelSelection.data(labelData, _.property('name'));
-      var labelDivSelectionEnter = labelDivSelection.enter().
+      var labelDivSelectionEnter = labelDivSelection.
+        enter().
         append('div').
-          classed('label', true);
+        classed('label', true);
 
       labelDivSelectionEnter.append('div').classed('text', true).append('span');
       labelDivSelectionEnter.append('div').classed('callout', true);

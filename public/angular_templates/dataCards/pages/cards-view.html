@@ -26,6 +26,7 @@
               </div>
             </div>
           </div>
+          <a ng-click="editMode = !editMode" class="action-btn r-to-l" ng-class="{active: editMode}">Edit</a>
           <a href="{{datasetCSVDownloadURL}}" title="Download this data as CSV" class="action-btn r-to-l">Download</a>
           <button id="api-panel-toggle-btn" title="Access this Dataset via API" ng-class="{touched: apiPanelActive}" class="action-btn r-to-l">API</button>
           <div id="api-panel" ng-class="{active: apiPanelActive}">
@@ -47,47 +48,51 @@
   </div>
   <div class="cards-content">
     <!-- CARDS FILTER BAR -->
-    <div class="quick-filter-bar" sticky-header update-on-resize="headerContent" ng-class="{stuck: headerIsStuck}" ng-style="headerStyle">
-      <div class="content">
-        <span>
-          Showing <span class="light">all {{datasetRowDisplayUnit.pluralize()}}</span>
-        </span>
-        <div class="filter" ng-repeat="filter in appliedFiltersForDisplay">
-          <span ng-if="$first">where</span>
-          <span ng-if="!$first">and</span>
-          <span class="light lowercase">{{filter.column.title}}</span>
-          <span>{{filter.operator}}</span>
-          <span class="light">{{filter.operand}}</span>
+    <!--<div class="quick-filter-bar" sticky-header update-on-resize="headerContent" ng-class="{stuck: headerIsStuck}" ng-style="headerStyle">-->
+    <div id="quick-filter-bar-container">
+      <div class="quick-filter-bar-spacer">&nbsp;</div>
+      <div class="quick-filter-bar">
+        <div class="content">
+          <span>
+            Showing <span class="light">all {{datasetRowDisplayUnit.pluralize()}}</span>
+          </span>
+          <div class="filter" ng-repeat="filter in appliedFiltersForDisplay">
+            <span ng-if="$first">where</span>
+            <span ng-if="!$first">and</span>
+            <span class="light lowercase">{{filter.column.title}}</span>
+            <span>{{filter.operator}}</span>
+            <span class="light">{{filter.operand}}</span>
+          </div>
         </div>
       </div>
     </div>
+
     <!-- CARD TILES -->
-    <div class="cards">
-      <!-- collapsed layout -->
-      <div class="collapsed-layout" ng-if="!useExpandedLayout">
-        <div class="cardSizeGroup" ng-repeat="cardSize in cardSizeNamesInDisplayOrder">
-          <div class="row" ng-repeat="cardLine in rowsOfCardsBySize[cardSize]">
-            <div class="card-tile span{{12/cardLine.length}}"
-            ng-class="classForScreenPosition($index, cardLine.length)"
-            ng-repeat="card in cardLine">
-              <card model="card.model" where-clause="globalWhereClauseFragment"></card>
-            </div>
-          </div>
-        </div>
+    <style id="card-layout"></style>
+    <style id="dragged-card-layout"></style>
+    <div id="card-container" class="cards" card-reorder-target>
+      <!-- Ordering by uniqueId keeps ng-repeat DOM manipulations at a minimum.
+           since we position cards on screen by absolute offsets, the DOM ordering
+           doesn't matter too much. When we deal with keyboard accessibility, we'll
+           definitely need to at least impose a tab ordering. Note that ordering by
+           index in cardModels isn't good enough - it's in pseudo-arbitary order. -->
+      <!-- Additionally, jquery-detect-element-resize breaks if the target node is
+           moved in the dom. The orderBy prevents such movement (only adds/removes
+           remain, which are fine). -->
+      <div id="card-tile-{{cardModel.uniqueId}}"
+           class="card-spot"
+           ng-repeat="cardModel in cardModels | orderBy: 'uniqueId'">
+        <card model="cardModel"
+              class="card"
+              edit-mode="editMode"
+              where-clause="globalWhereClauseFragment"
+              ng-class="{ expanded: cardModel.getCurrentValue('expanded'), dragged: cardModel === grabbedCard }"></card>
+        <div class="card-drop-placeholder" ng-if="cardModel === grabbedCard"></div>
+        <div class="card-drag-overlay" data-card-id="{{cardModel.uniqueId}}" ng-if="editMode && cardModel !== grabbedCard">DRAGME</div>
       </div>
-
-      <div class="expanded-layout" ng-if="useExpandedLayout">
-        <div class="expanded-cards onRight" ng-style="availableContentHeightStyle">
-          <card model="expandedCards[0]" where-clause="globalWhereClauseFragment"></card>
-        </div>
-        <div class="collapsed-cards">
-          <div class="onLeft" ng-repeat="cardModel in collapsedCards">
-            <card model="cardModel" where-clause="globalWhereClauseFragment"></card>
-          </div>
-        </div>
-      </div>
+      <div id="card-group-1-drop-placeholder" class="card-group-drop-placeholder" data-group-id="1"></div>
+      <div id="card-group-2-drop-placeholder" class="card-group-drop-placeholder" data-group-id="2"></div>
+      <div id="card-group-3-drop-placeholder" class="card-group-drop-placeholder" data-group-id="3"></div>
     </div>
-
   </div>
-</div>
 </div>

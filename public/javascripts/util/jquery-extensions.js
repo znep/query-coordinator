@@ -1,6 +1,12 @@
-// Contains extensions to both jQuery as well as Javascript built-in types.
 $.fn.dimensions = function() {
-  return {width: this.width(), height: this.height() };
+  // For reference, this results in a 15% increase in profiled idle time than what is in use:
+  //var el = this[0];
+  //return {
+  //  width: Math.min(el.clientWidth, el.scrollWidth, el.offsetWidth),
+  //  height: Math.min(el.clientHeight, el.scrollHeight, el.offsetHeight)
+  //};
+  // Might be worth looking into next time we make a perf pass.
+  return {width: this.width(), height: this.height()};
 };
 
 // Yields an RX observable sequence of this selection's dimensions.
@@ -141,8 +147,40 @@ String.prototype.visualSize = function(fontSize) {
   }
   $ruler.css('font-size', fontSize);
   $ruler.text(this + '');
+  debugger
   dimensions = { width: $ruler.width(), height: $ruler.height() };
+  
   $ruler.remove();
+
+  return dimensions;
+};
+
+// This function updated by Chris Laidlaw to use
+// native DOM methods rather than uncached jQuery
+// objects since it sits in the hot path and the
+// native DOM methods improved performance by 50%.
+
+String.prototype.visualSize = function(fontSize) {
+
+  var span = document.getElementById('ruler');
+  var dimensions;
+
+  if (span === null) {
+    span = document.createElement('span');
+    span.className = 'ruler';
+    span.id = 'ruler';
+    span.setAttribute('aria-hidden', 'true');
+    span.appendChild(document.createTextNode(this));
+    document.getElementsByTagName('body')[0].appendChild(span);
+  } else {
+    span.lastChild.textContent = this;
+  }
+  
+  if (fontSize) {
+    span.style.fontSize = fontSize;
+  }
+
+  dimensions = { width: span.offsetWidth, height: span.offsetHeight };
 
   return dimensions;
 };
@@ -378,7 +416,11 @@ $.fn.flyout = function(options) {
     flyout.on('mouseover, mouseenter', function(e) {
       inFlyout = true;
     }).bind('mouseleave', function(e) {
-      if(!options.debugNeverClosePopups) closeFlyout();
+      if (!$(e.target).parents().hasClass('dragged')) {
+        if(!options.debugNeverClosePopups) {
+          closeFlyout();
+        }
+      }
     });
   };
   var closeFlyout = function() {
@@ -389,35 +431,46 @@ $.fn.flyout = function(options) {
       flyout.remove();
     }
   };
-  $(window).scroll(function(e) {
-    if ($.isPresent(flyout) && flyout.is(':visible') && ( inFlyout || inTarget )) {
-      renderFlyout(flyout.data('target'));
-    }
-  });
 
-  // This was added to hopefully plug a memory leak when a flyout is created multiple times
-  // in a render loop.
+  // This was added by Tristan Rice in a commit that made some passing
+  // reference to timeline chart bug. Not sure what it is and I don't
+  // see any problem with it despite the fact that the flyout.is(':visible')
+  // call is horribly unperformant, so I'm commenting this out at the moment.
+  // --Chris Laidlaw, 9/9/14
+  //
+  //$(window).scroll(function(e) {
+  //  if ($.isPresent(flyout) && flyout.is(':visible') && ( inFlyout || inTarget )) {
+  //    renderFlyout(flyout.data('target'));
+  //  }
+  //});
+
+  // This was added to hopefully plug a memory leak when a flyout is created
+  // multiple times in a render loop.
   self.undelegate(options.selector, 'mouseover');
   self.undelegate(options.selector, 'mouseleave');
 
 
   self.delegate(options.selector, 'mouseover', function(e) {
-    renderFlyout(this);
-    e.stopPropagation();
-  }).delegate(options.selector, 'mouseleave', function(e) {
-    if(!options.debugNeverClosePopups){
-      inTarget = false;
-      if (options.interact) {
-        _.defer(function() {
-          if(!inFlyout && !inTarget) {
-            closeFlyout();
-          }
-        });
-      } else {
-        closeFlyout();
-      }
+    if (!$(e.target).parents().hasClass('dragged')) {
+      renderFlyout(this);
+      e.stopPropagation();
     }
-    e.stopPropagation();
+  }).delegate(options.selector, 'mouseleave', function(e) {
+    if (!$(e.target).parents().hasClass('dragged')) {
+      if(!options.debugNeverClosePopups){
+        inTarget = false;
+        if (options.interact) {
+          _.defer(function() {
+            if(!inFlyout && !inTarget) {
+              closeFlyout();
+            }
+          });
+        } else {
+          closeFlyout();
+        }
+      }
+      e.stopPropagation();
+    }
   });
 
   var previousFlyout = $('.flyout');

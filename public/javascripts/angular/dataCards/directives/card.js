@@ -93,20 +93,21 @@ angular.module('dataCards.directives').directive('card', function(AngularRxExten
           });
       }, 250, { leading: true, trailing: true });
 
-      Rx.Observable.subscribeLatest(
+      /*Rx.Observable.subscribeLatest(
         content.observeDimensions(),
         column.pluck('description'),
         function(dimensions, descriptionText) {
           // Manually update the binding now, because Angular doesn't know that dotdotdot messes with
           // the text.
           descriptionTruncatedContent.text(descriptionText);
+          debugger
           var availableSpace = dimensions.height - descriptionTruncatedContent.offsetParent().position().top;
 
           descriptionElementsWithMaxSize.
             css('max-height', availableSpace);
 
           updateClamp(parseInt(descriptionTruncatedContent.css('line-height')) * 2);
-        });
+        });*/
     }
   };
 

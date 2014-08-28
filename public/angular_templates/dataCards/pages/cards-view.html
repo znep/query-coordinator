@@ -62,9 +62,11 @@
       </div>
     </div>
     <!-- CARD TILES -->
-    <div class="cards">
+    <style id="card-layout"></style>
+    <div id="card-container" class="cards">
+      <card id="card-{{cardModel.uniqueId}}" class="card card-size-{{cardSize}}" model="cardModel" ng-repeat="cardModel in cardModels" ng-class="{ expanded: expanded }"></card>
       <!-- collapsed layout -->
-      <div class="collapsed-layout" ng-if="!useExpandedLayout">
+      <!--<div class="collapsed-layout" ng-if="!useExpandedLayout">
         <div class="cardSizeGroup" ng-repeat="cardSize in cardSizeNamesInDisplayOrder">
           <div class="row" ng-repeat="cardLine in rowsOfCardsBySize[cardSize]">
             <div class="card-tile span{{12/cardLine.length}}"
@@ -85,7 +87,7 @@
             <card model="cardModel" where-clause="globalWhereClauseFragment"></card>
           </div>
         </div>
-      </div>
+      </div>-->
     </div>
 
   </div>

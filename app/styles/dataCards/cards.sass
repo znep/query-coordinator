@@ -263,6 +263,8 @@ body
 
 
     .cards
+      position: relative
+      display: block
       padding: $metadata-side-padding / 2 - $card-margins
       padding-top: 0
 
@@ -298,11 +300,14 @@ body
             left: 0
 
       .card
+        position: absolute
         border-radius: $rounded-corners-border-radius
         margin: $card-margins
         padding: $card-padding
         color: $lt-grey-font-color
         background: $card-bg-color
+        box-sizing: border-box
+        -moz-box-sizing: border-box
 
         .card-text
           position: relative

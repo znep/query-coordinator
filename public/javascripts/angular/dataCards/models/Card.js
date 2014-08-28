@@ -24,6 +24,7 @@ angular.module('dataCards.models').factory('Card', function($injector, ModelHelp
     var self = this;
     this.page = page;
     this.fieldName = fieldName;
+    this.uniqueId = _.uniqueId();
 
     _.each(_.keys(JJV.schema.serializedCard.properties), function(field) {
       if (field === 'fieldName') return; // fieldName isn't observable.

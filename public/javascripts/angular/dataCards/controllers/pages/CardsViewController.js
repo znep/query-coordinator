@@ -268,9 +268,9 @@
       $scope.bindObservable('cardModels', page.observe('cards'));
 
       Rx.Observable.subscribeLatest(
-        page.observe('cards'),
+        $('#card-container').observeDimensions(),
         rowsOfCardsBySize,
-        function (cards, sortedTileLayoutResult) {
+        function (containerDimensions, sortedTileLayoutResult) {
           function heightForCardSizePx(size) {
             if (size === '1') return 300;
             if (size === '2') return 250;
@@ -288,7 +288,7 @@
           // For instance, containerWidth is the full width of the container,
           // but containerContentWidth is contentWidth minus the gutter.
 
-          var containerWidth = parseInt($('#card-container').width(), 10);
+          var containerWidth = containerDimensions.width;
           var containerContentWidth = containerWidth - gutter * 2;
 
           var cardHeightSoFar = 0;

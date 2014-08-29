@@ -1,4 +1,4 @@
-
+<div ng-class="{transparent: isDragging}">
   <div class="card-text">
     <div class="title-one-line"><div class="wrap">{{title}}</div></div>
     <div class="title-expanded">
@@ -31,3 +31,5 @@
     <span ng-if="expanded" title="Collapse Card" ng-click="toggleExpanded()"></span>
     <span ng-if="!expanded" title="Expand Card" ng-click="toggleExpanded()"></span>
   </div>
+</div>
+<div class="card-drag-overlay" ng-if="editMode" draggable="true">DRAGME</div>

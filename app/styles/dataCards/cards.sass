@@ -139,7 +139,7 @@ body
         &.r-to-l
           margin: 0 0 10px 10px
 
-        &:hover
+        &:hover, &.active
           background-color: $btn-hover-bg-color
           border: solid 2px $btn-hover-border-color
           color: $btn-hover-font-color
@@ -261,7 +261,6 @@ body
           &.light
             opacity: 1
 
-
     .cards
       position: relative
       display: block
@@ -308,6 +307,16 @@ body
         background: $card-bg-color
         box-sizing: border-box
         -moz-box-sizing: border-box
+
+        .card-drag-overlay
+          position: absolute
+          left: 0
+          right: 0
+          top: 0
+          bottom: 0
+          background: rgba(0,0,0,0.1)
+          z-index: 2000
+          cursor: move
 
         .card-text
           position: relative

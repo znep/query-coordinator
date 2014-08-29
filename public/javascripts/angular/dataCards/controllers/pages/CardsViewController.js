@@ -214,6 +214,18 @@
 
       $scope.editMode = false;
 
+      $scope.$on('cardReorderAction', function(event, reorderedCards) {
+        var currentCards = page.getCurrentValue('cards');
+        var indexOfCardDroppedOnto = _.indexOf(currentCards, reorderedCards.droppedOn);
+
+        // Drop the dropped card in front of the card dropped onto.
+        var newCards = _.without(currentCards, reorderedCards.draggedCard);
+        newCards.splice(indexOfCardDroppedOnto, 0, reorderedCards.draggedCard);
+
+        // Inherit the cardSize of the card dropped onto.
+        reorderedCards.draggedCard.set('cardSize', reorderedCards.droppedOn.getCurrentValue('cardSize'));
+        page.set('cards', newCards);
+      });
 
       /**************************
       * Card layout calculation *

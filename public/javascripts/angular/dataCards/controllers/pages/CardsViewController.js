@@ -271,114 +271,56 @@
         page.observe('cards'),
         rowsOfCardsBySize,
         function (cards, sortedTileLayoutResult) {
+          function heightForCardSizePx(size) {
+            if (size === '1') return 300;
+            if (size === '2') return 250;
+            if (size === '3') return 400;
+            else throw new Error('Unsupported card size');
+          };
 
-          var layout = [];
-
-          var i;
-          var j;
-          var k;
-          var thisTierGroup;
-          var thisTier;
-          var thisCard;
-
-          var cardTiers = Object.keys(sortedTileLayoutResult);
-
-          for (i = 0; i < cardTiers.length; i++) {
-            thisTierGroup = sortedTileLayoutResult[cardTiers[i]];
-            for (j = 0; j < thisTierGroup.length; j++) {
-              thisTier = thisTierGroup[j];
-              for (k = 0; k < thisTier.length; k++) {
-                thisCard = thisTier[k];
-                layout.push(thisCard.model.uniqueId);
-              }
-            }
-          }
-
-
-          var containerWidth = parseInt($('#card-container').width(), 10);
-          var containerHeight = 0;
+          var verticalPadding = 5;
+          var horizontalPadding = 5;
           var gutter = 12;
 
-          var styleText = '';      
+          // Terminology:
+          // Content size (width, height) refers to a size with padding/gutter removed.
+          // Otherwise, sizes include padding/gutter.
+          // For instance, containerWidth is the full width of the container,
+          // but containerContentWidth is contentWidth minus the gutter.
 
-          cards.map(function (card) {
+          var containerWidth = parseInt($('#card-container').width(), 10);
+          var containerContentWidth = containerWidth - gutter * 2;
 
-            var $card = $(card);
+          var cardHeightSoFar = 0;
+          var styleText = _.reduce(sortedTileLayoutResult, function(overallStyleAcc, rows, cardSize) {
+            var oneRowHeight = heightForCardSizePx(cardSize);
+            var oneRowContentHeight = oneRowHeight - verticalPadding;
 
-            var cardSize = 3;
-            var cardWidth = 0;
-            var cardHeight = 400;
-            var cardLeft = 0;
-            var cardTop = 0;
-            var cardOffset = 0;
+            var styleForRow = _.reduce(rows, function(styleForRowAcc, row) {
+              var paddingForEntireRow = horizontalPadding * (row.length - 1);
+              var usableContentSpaceForRow = containerContentWidth - paddingForEntireRow;
+              var cardWidth = usableContentSpaceForRow / row.length;
 
-            var cardStyle = '';
+              return styleForRowAcc + _.map(row, function(card, cardIndexInRow) {
+                var spaceTakenByOtherCardsPadding = (cardIndexInRow - 1) * horizontalPadding;
+                var cardLeft = gutter + (cardIndexInRow * cardWidth) + spaceTakenByOtherCardsPadding;
+                var cardTop = cardHeightSoFar;
 
-            var cardId = card.uniqueId;
+                return '#card-' + card.model.uniqueId
+                                + ' {'
+                                + 'left:' + cardLeft + 'px;'
+                                + 'top:' + cardTop + 'px;'
+                                + 'width:' + cardWidth + 'px;'
+                                + 'height:' + oneRowContentHeight + 'px;'
+                                + '}';
+                                }).join(' ');
+            }, '');
 
-            var position = layout.indexOf(cardId);
-            if (position === -1) {
-              throw new Error('Cannot complete layout: unrecognized card id');
-            }
+            cardHeightSoFar += rows.length * oneRowHeight;
+            return overallStyleAcc + styleForRow;
+          }, '');
 
-            // Bump up card size depending on its position in the layout order.
-            switch (position) {
-              case 0:
-                cardSize = 1;
-                cardOffset = 0;
-                break;
-              case 1:
-              case 2:
-                cardSize = 2;
-                cardOffset = position - 1;
-                break;
-              default:
-                cardSize = 3;
-                cardOffset = position - 3;
-                break;
-            }
-
-            switch (cardSize) {
-              case 1:
-                cardWidth = containerWidth;
-                containerHeight += cardHeight + gutter;
-                break;
-              case 2:
-                cardWidth = (containerWidth - gutter) / 2;
-                containerHeight += (cardHeight / 2) + gutter;
-                break;
-              case 3:
-              default:
-                cardWidth = (containerWidth - 2 * gutter) / 3;
-                containerHeight += (cardHeight / 3) + gutter;
-                break;
-            }
-
-            // Card sizes 1 and 2 will never wrap so the math is straightforward.
-            if (cardSize < 3) {
-
-              cardLeft = Math.floor(cardOffset * (cardWidth + gutter));
-              cardTop = Math.floor((cardSize - 1) * (cardHeight + gutter));
-
-            } else {
-
-              cardLeft = Math.floor((cardOffset % 3) * (cardWidth + gutter));
-              cardTop = Math.floor(((cardHeight + gutter) * 2) + Math.floor(cardOffset / 3) * (cardHeight + gutter));
-
-            }
-
-            styleText += '#card-' + card.uniqueId
-                      + ' {'
-                      + 'left:' + cardLeft + 'px;'
-                      + 'top:' + cardTop + 'px;'
-                      + 'width:' + cardWidth + 'px;'
-                      + 'height:' + cardHeight + 'px;'
-                      + '}';
-
-          });
-
-          styleText += '#card-container {height:' + Math.floor(containerHeight) + 'px;}';
-
+          styleText += '#card-container {height:' + Math.floor(cardHeightSoFar) + 'px;}';
           $('#card-layout').text(styleText);
 
         });

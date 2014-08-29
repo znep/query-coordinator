@@ -28,7 +28,7 @@
 
 
       /*****************
-      * API Panel Junk *
+      * API panel junk *
       *****************/
 
       $scope.bindObservable('datasetCSVDownloadURL',
@@ -119,24 +119,18 @@
 
 
       /*******************************
-      * Filters and the Where Clause *
+      * Filters and the where clause *
       *******************************/
+
 
       var allCardsFilters = page.observe('cards').flatMap(function(cards) {
         if (!cards) { return Rx.Observable.never(); }
-        return Rx.Observable.combineLatest(
-          _.map(
-            cards,
-            function(d) {
-              return d.observe('activeFilters');
-            }),
-            function() {
-              return _.zipObject(_.pluck(cards, 'fieldName'), arguments);
-            });
-          });
+        return Rx.Observable.combineLatest(_.map(cards, function(d) { return d.observe('activeFilters');}), function() {
+          return _.zipObject(_.pluck(cards, 'fieldName'), arguments);
+        });
+      });
 
       var allCardsWheres = allCardsFilters.map(function(filters) {
-debugger
         var wheres = _.map(filters, function(operators, field) {
           if (_.isEmpty(operators)) {
             return null;
@@ -144,18 +138,12 @@ debugger
             return _.invoke(operators, 'generateSoqlWhereFragment', field).join(' AND ');
           }
         });
-        return wheres;
+        return _.compact(wheres).join(' AND ');
       });
 
-      $scope.bindObservable(
-        'globalWhereClauseFragment',
-        allCardsWheres.combineLatest(
-          page.observe('baseSoqlFilter'),
-          function(cardWheres, basePageWhere) {
-            console.log(cardWheres, basePageWhere);
-            console.log(_.compact([basePageWhere, cardWheres]).join(' AND '));
-            return _.compact(_.flatten([basePageWhere, cardWheres])).join(' AND ');
-          }));
+      $scope.bindObservable('globalWhereClauseFragment', allCardsWheres.combineLatest(page.observe('baseSoqlFilter'), function(cardWheres, basePageWhere) {
+        return _.compact([basePageWhere, cardWheres]).join(' AND ');
+      }));
 
       $scope.bindObservable('appliedFiltersForDisplay', allCardsFilters.combineLatest(page.observe('dataset').observeOnLatest('columns'), function(filters, columns) {
 
@@ -193,7 +181,7 @@ debugger
           } else {
             throw new Error('Unsupported filter type');
           }
-        }
+        };
 
         return _.reduce(filters, function(accumulator, appliedFilters, fieldName) {
           if ($.isPresent(appliedFilters)) {
@@ -209,6 +197,7 @@ debugger
           }
           return accumulator;
         }, []);
+
       }));
 
       $scope.$on('stickyHeaderAvailableContentHeightChanged', function(event, availableContentHeight) {
@@ -217,6 +206,13 @@ debugger
           'top': availableContentHeight + 'px'
         };
       });
+
+
+      /***************************
+      * View/edit modal behavior *
+      ***************************/
+
+      $scope.editMode = false;
 
 
       /**************************
@@ -294,7 +290,6 @@ debugger
               for (k = 0; k < thisTier.length; k++) {
                 thisCard = thisTier[k];
                 layout.push(thisCard.model.uniqueId);
-                console.log(thisCard.model);
               }
             }
           }

@@ -122,7 +122,6 @@
       * Filters and the where clause *
       *******************************/
 
-
       var allCardsFilters = page.observe('cards').flatMap(function(cards) {
         if (!cards) { return Rx.Observable.never(); }
         return Rx.Observable.combineLatest(_.map(cards, function(d) { return d.observe('activeFilters');}), function() {
@@ -207,150 +206,26 @@
         };
       });
 
-
       /***************************
       * View/edit modal behavior *
       ***************************/
 
       $scope.editMode = false;
 
-      $scope.$on('cardReorderAction', function(event, reorderedCards) {
-        var currentCards = page.getCurrentValue('cards');
-        var indexOfCardDroppedOnto = _.indexOf(currentCards, reorderedCards.droppedOn);
 
-        // Drop the dropped card in front of the card dropped onto.
-        var newCards = _.without(currentCards, reorderedCards.draggedCard);
-        newCards.splice(indexOfCardDroppedOnto, 0, reorderedCards.draggedCard);
+      /******************************************
+      * Clean up if/when the scope is destroyed *
+      ******************************************/
 
-        // Inherit the cardSize of the card dropped onto.
-        reorderedCards.draggedCard.set('cardSize', reorderedCards.droppedOn.getCurrentValue('cardSize'));
-        page.set('cards', newCards);
+      $scope.$on('$destroy', function() {
+        $('#api-panel-toggle-btn').off('click');
+        $('#api-url-display').off('mousedown');
+        $('#api-url-display').off('mousemove');
+        $('#api-url-display').off('scroll');
+        $('#api-url-display').off('mouseup');
+        $('#api-url-display').off('blur');
       });
 
-      /**************************
-      * Card layout calculation *
-      **************************/
-
-      // Given a model property name P and an observable sequence of arrays of models having property P,
-      // returns an observable sequence of arrays of objects pulling the last value yielded from P next
-      // to the model. The elements in the yielded arrays look like:
-      // {
-      //  <P>: <the last value of P from the model>
-      //  model: <the model that yielded the value>
-      // }
-      function zipLatestArray(obs, property) {
-        return obs.flatMapLatest(
-          function(values) {
-            return Rx.Observable.combineLatest(_.map(values, function(val) {
-              return val.observe(property);
-            }), function() {
-              return _.map(_.zip(values, arguments), function(arr) {
-                var r={ model: arr[0] };
-                r[property] = arr[1];
-                return r;
-              });
-            });
-          }
-        );
-      };
-
-      // A hash of:
-      //  "card size" -> array of rows (which themselves are arrays).
-      //
-      // For instance:
-      // {
-      //  "1": [
-      //         [ { cardSize: "1", model: <card model> } ]  // There's only one card of size 1, so it sits in its own row.
-      //       ],
-      //  "2": [
-      //         [ { cardSize: "2", model: <card model> },   // There are 5 cards of size 2. Here, they are split up into a
-      //           { cardSize: "2", model: <card model> } ], // pair of rows containing resp. 2 and 3 cards.
-      //
-      //         [ { cardSize: "2", model: <card model> },
-      //           { cardSize: "2", model: <card model> },
-      //           { cardSize: "2", model: <card model> } ]
-      //       ]
-      //  }
-      var layout = new SortedTileLayout();
-      var rowsOfCardsBySize = zipLatestArray(page.observe('cards'), 'cardSize').
-        map(function(sizedCards) {
-          return layout.doLayout(sizedCards);
-        });
-
-      $scope.bindObservable('cardModels', page.observe('cards'));
-
-      Rx.Observable.subscribeLatest(
-        $('#card-container').observeDimensions(),
-        rowsOfCardsBySize,
-        function (containerDimensions, sortedTileLayoutResult) {
-          function heightForCardSizePx(size) {
-            if (size === '1') return 300;
-            if (size === '2') return 250;
-            if (size === '3') return 400;
-            else throw new Error('Unsupported card size');
-          };
-
-          var verticalPadding = 5;
-          var horizontalPadding = 5;
-          var gutter = 12;
-
-          // Terminology:
-          // Content size (width, height) refers to a size with padding/gutter removed.
-          // Otherwise, sizes include padding/gutter.
-          // For instance, containerWidth is the full width of the container,
-          // but containerContentWidth is contentWidth minus the gutter.
-
-          var containerWidth = containerDimensions.width;
-          var containerContentWidth = containerWidth - gutter * 2;
-
-          var cardHeightSoFar = 0;
-          var styleText = _.reduce(sortedTileLayoutResult, function(overallStyleAcc, rows, cardSize) {
-            var oneRowHeight = heightForCardSizePx(cardSize);
-            var oneRowContentHeight = oneRowHeight - verticalPadding;
-
-            var styleForRow = _.reduce(rows, function(styleForRowAcc, row) {
-              var paddingForEntireRow = horizontalPadding * (row.length - 1);
-              var usableContentSpaceForRow = containerContentWidth - paddingForEntireRow;
-              var cardWidth = usableContentSpaceForRow / row.length;
-
-              return styleForRowAcc + _.map(row, function(card, cardIndexInRow) {
-                var spaceTakenByOtherCardsPadding = (cardIndexInRow - 1) * horizontalPadding;
-                var cardLeft = gutter + (cardIndexInRow * cardWidth) + spaceTakenByOtherCardsPadding;
-                var cardTop = cardHeightSoFar;
-
-                return '#card-' + card.model.uniqueId
-                                + ' {'
-                                + 'left:' + cardLeft + 'px;'
-                                + 'top:' + cardTop + 'px;'
-                                + 'width:' + cardWidth + 'px;'
-                                + 'height:' + oneRowContentHeight + 'px;'
-                                + '}';
-                                }).join(' ');
-            }, '');
-
-            cardHeightSoFar += rows.length * oneRowHeight;
-            return overallStyleAcc + styleForRow;
-          }, '');
-
-          styleText += '#card-container {height:' + Math.floor(cardHeightSoFar) + 'px;}';
-          $('#card-layout').text(styleText);
-
-        });
-
-
-    /******************************************
-    * Clean up if/when the scope is destroyed *
-    ******************************************/
-
-    $scope.$on('$destroy', function() {
-      $('#api-panel-toggle-btn').off('click');
-      $('#api-url-display').off('mousedown');
-      $('#api-url-display').off('mousemove');
-      $('#api-url-display').off('scroll');
-      $('#api-url-display').off('mouseup');
-      $('#api-url-display').off('blur');
     });
-
-  });
 
 })();

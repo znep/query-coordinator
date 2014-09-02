@@ -110,6 +110,7 @@
           $scope.observe('headerIsStuck'),
           expandedCards,
           function (containerDimensions, sortedTileLayoutResult, availableContentHeight, headerIsStuck, expandedCards) {
+
             if (!_.isEmpty(expandedCards)) {
 
               var deriveCardHeight = function(size) {
@@ -240,7 +241,9 @@
                   return styleForRowAcc + _.map(row, function(card, cardIndexInRow) {
 
                     var spaceTakenByOtherCardsPadding = (cardIndexInRow - 1) * horizontalPadding;
+
                     console.log(gutter, (cardIndexInRow * cardWidth), spaceTakenByOtherCardsPadding);
+
                     var cardLeft = gutter + (cardIndexInRow * cardWidth) + spaceTakenByOtherCardsPadding;
                     var cardTop = heightOfAllCards;
 
@@ -282,9 +285,9 @@
         * Drag and drop functionality *
         ******************************/
 
-        var draggedModel = null; //TODO probably remove.
+        //var draggedModel = null; //TODO probably remove.
 
-        var dragTarget = element; //TODO what we want?
+        //var dragTarget = element; //TODO what we want?
 
         function findDropTarget(clientX, clientY) {
           var $window = $(window);
@@ -312,7 +315,8 @@
 
         };
 
-        dragTarget.on('dragover', function(e) {
+
+        /*dragTarget.on('dragover', function(e) {
 
           if (draggedModel) {
 
@@ -341,30 +345,96 @@
 
           }
 
-        });
+        });*/
 
-        dragTarget.on('drop', function(e) {
-          e.preventDefault();
-          console.log(e.originalEvent.dataTransfer.getData('text/html'));
-        });
+        /****************************************************
+        * Manual (non Drag and Drop API-ized) drag and drop *
+        ****************************************************/
 
-        $scope.$on('card: dragStart', function(event, cardModel) {
-          if (draggedModel !== null) {
-            console.warn('dragStart scope event emitted, but already dragging?');
+        var cardGrabbed = null;
+
+        $scope.$on('card-mousedown', function(e, card) {
+          if ($scope.editMode) {
+            cardGrabbed = card;
           }
-          draggedModel = cardModel;
         });
 
-        $scope.$on('card: dragEnd', function(event, cardModel) {
-          if (cardModel !== draggedModel) {
-            console.warn('dragEnd scope event from an unknown card');
+        element.on('mousemove', function(e) {
+
+          if (cardGrabbed !== null) {
+
+            // Card is being dragged.
+
+
+            var deltaTop = e.originalEvent.clientY;
+            var distanceToScrollTop = $(window).scrollTop();
+
+            var deltaBottom = $(window).height() - e.originalEvent.clientY;
+            var distanceToScrollBottom = $(document).height() - $(window).scrollTop();
+
+            if (deltaTop <= 75 && distanceToScrollTop > 0) {
+              var newYOffset = $(window).scrollTop()
+                             - Math.min(
+                                 Math.min(5, Math.pow(75 - deltaTop, 3) / 168.75),
+                                 distanceToScrollTop);
+
+              $(window).scrollTop(newYOffset);
+
+            } else if (deltaBottom <= 75 && distanceToScrollBottom > 0) {
+
+              // Never allow the window to scroll past the bottom.
+              var newYOffset = $(window).scrollTop()
+                             + Math.min(
+                                 Math.min(5, Math.pow(75 - deltaBottom, 3) / 168.75),
+                                 distanceToScrollBottom);
+
+              $(window).scrollTop(newYOffset);
+
+            } else {
+
+              var targetModel = findDropTarget(e.originalEvent.clientX, e.originalEvent.clientY);
+
+              if (targetModel !== cardGrabbed) {
+
+                var currentCards = $scope.page.getCurrentValue('cards');
+
+                var targetModelIndex = _.indexOf(currentCards, targetModel);
+
+                // Drop the dropped card in front of the card dropped onto.
+                var newCards = _.without(currentCards, cardGrabbed);
+
+                cardGrabbed.set('cardSize', targetModel.getCurrentValue('cardSize'));
+                newCards.splice(targetModelIndex, 0, cardGrabbed);
+
+                console.log('apply at ' + Date.now());
+
+                $scope.$apply(function() {
+                  $scope.page.set('cards', newCards);
+                  $scope.$broadcast('layout:redraw');
+                });
+
+              }
+
+            }
+
           }
-          draggedModel = null;
         });
 
-      }
-    }
-  });
+        // This is on the body rather than the individual cards so that dragging
+        // the cursor off of a card and then letting go will correctly transition
+        // the dragging state to false.
+        $('body').on('mouseup', function(e) {
+          cardGrabbed = null;
+        });
+
+        // Clean up after non-angular event listeners.
+        $scope.$on('$destroy', function() {
+          $('body').off('mouseup');
+        });
+
+      }       // link() { ... }
+    }         // return { ... }
+  });         // angular.module().directive() { ... }
 
 })();
 

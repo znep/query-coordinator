@@ -130,19 +130,31 @@ angular.module('dataCards.directives').directive('card', function(AngularRxExten
         });*/
 
       /* Drag and drop */
-      element.on('dragstart', function(e, a) {
+
+      /*element.on('dragstart', function(e, a) {
         e.originalEvent.dataTransfer.setData('text/html', $scope.model.uniqueId);
         $scope.safeApply(function() {
           $scope.isDragging = true;
           $scope.$emit('card: dragStart', $scope.model);
         });
       });
+
       element.on('dragend', function(e, a) {
         $scope.safeApply(function() {
           $scope.isDragging = false;
           $scope.$emit('card: dragEnd', $scope.model);
         });
+      });*/
+
+
+      element.on('mousedown', function(e) {
+        $scope.$emit('card-mousedown', $scope.model);
       });
+
+      // This one is necessary to prevent the default HTML5 Drag and Drop behavior.
+      // It has a similar effect to event.preventDefault() but allows other types
+      // of events to pass through.
+      element.on('dragstart', function() { return false; });
 
     }
   };

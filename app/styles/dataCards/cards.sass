@@ -366,6 +366,10 @@ body
         .description
           padding-bottom: 1rem
 
+          .description-truncated-content
+            position: relative
+            z-index: 2
+
           .description-expand-button
             color: $expand-button-color
             background-color: $card-bg-color
@@ -375,6 +379,7 @@ body
 
           .description-expanded-wrapper
             background: $card-bg-color
+            z-index: 1
 
         .card-visualization
           height: 100%

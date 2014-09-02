@@ -70,8 +70,18 @@
             return layout.doLayout(sizedCards);
           });
 
-        //$scope.cards = $scope.page.observe('cards')
 
+        var availableContentHeightSubject = new Rx.Subject();
+        availableContentHeightSubject.onNext($(window).height() - ($('#card-container').offset().top - $(window).scrollTop()));
+
+        var availableContentHeightTimeout = null;
+
+        $scope.$on('stickyHeaderAvailableContentHeightChanged', function(e) {
+          clearTimeout(availableContentHeightTimeout);
+          availableContentHeightTimeout = setTimeout(function() {
+            availableContentHeightSubject.onNext($(window).height() - ($('#card-container').offset().top - $(window).scrollTop()));
+          }, 500);
+        });
 
         /**************
         * Card layout *
@@ -80,10 +90,12 @@
         Rx.Observable.subscribeLatest(
           $('#card-container').observeDimensions(),
           rowsOfCardsBySize,
+          availableContentHeightSubject,
+          $scope.observe('headerIsStuck'),
           Rx.Observable.returnValue(true),
-          function (containerDimensions, sortedTileLayoutResult, expanded) {
+          function (containerDimensions, sortedTileLayoutResult, availableContentHeight, headerIsStuck, hasExpandedCard) {
 
-            if (true) {
+            if (hasExpandedCard) {
 
               var deriveCardHeight = function(size) {
                 switch (size) {
@@ -98,7 +110,22 @@
                 }
               };
 
+              var horizontalPadding = 5;
+              var verticalPadding = 5;
               var gutter = 12;
+
+              var containerWidth = containerDimensions.width;
+              var containerContentWidth = containerWidth - gutter * 2;
+
+              var expandedColumnWidth = Math.floor(containerContentWidth * 0.65) - horizontalPadding;
+              var unexpandedColumnWidth = containerContentWidth - expandedColumnWidth - horizontalPadding;
+
+              var expandedColumnLeft = unexpandedColumnWidth + gutter + horizontalPadding;
+              var unexpandedColumnLeft = gutter;
+
+              var expandedColumnTop = 0;
+
+              var expandedColumnHeight = availableContentHeight - verticalPadding;
 
               var cards = _.flatten(_.values(sortedTileLayoutResult));
 
@@ -108,85 +135,40 @@
 
               var heightOfAllCards = 0;
 
-              var styleText = _.reduce(unexpandedCards, function(accumulatedStyle, card, index) {
-                  var cardLeft = 0;
+              var styleText = '#card-container{visibility:visible !important;}'
+                            + '#card-' + expandedCard.model.uniqueId
+                            + '{';
+
+              if ($scope.headerIsStuck) {
+                styleText += 'position:fixed;';
+                expandedColumnTop = parseInt($scope.headerStyle['height'], 10);
+                expandedColumnHeight = $(window).height() - expandedColumnTop - verticalPadding;
+              }
+
+              styleText += 'left:' + expandedColumnLeft + 'px;'
+                         + 'top:' + expandedColumnTop + 'px;'
+                         + 'width:' + expandedColumnWidth + 'px;'
+                         + 'height:' + expandedColumnHeight + 'px;'
+                         + '}';
+
+              styleText = _.reduce(unexpandedCards, function(accumulatedStyle, card, index) {
+                  var cardLeft = unexpandedColumnLeft;
                   var cardTop = heightOfAllCards;
-                  var cardWidth = 640;
+                  var cardWidth = unexpandedColumnWidth;
                   var cardHeight = deriveCardHeight(card.cardSize);
-                  heightOfAllCards += gutter + cardHeight;
-                  console.log(heightOfAllCards);
-                    return accumulatedStyle + '#card-' + card.model.uniqueId
-                                            + '{'
-                                            + 'left:' + cardLeft + 'px;'
-                                            + 'top:' + cardTop + 'px;'
-                                            + 'width:' + cardWidth + 'px;'
-                                            + 'height:' + cardHeight + 'px;'
-                                            + '}';
-              }, '#card-1{left:656px;top:0px;height:1000px;width:900px;}');
 
+                  // Keep track of the accumulated height of all cards so that we
+                  // know the top offset of the next card up for layout.
+                  heightOfAllCards += cardHeight + verticalPadding;
 
-
-
-
-
-              /*var cardPositions = [];
-
-              var verticalPadding = 5;
-              var horizontalPadding = 5;
-              var gutter = 12;
-
-              var firstRow = true;
-
-              // Terminology:
-              // Content size (width, height) refers to a size with padding/gutter removed.
-              // Otherwise, sizes include padding/gutter.
-              // For instance, containerWidth is the full width of the container,
-              // but containerContentWidth is contentWidth minus the gutter.
-
-              var containerWidth = containerDimensions.width;
-              var containerContentWidth = containerWidth - gutter * 2;
-
-              var heightOfAllCards = 0;
-
-              //var styleText = _.reduce(sortedTileLayoutResult, function(overallStyleAcc, rows, cardSize) {
-
-                var rowCount = 0;
-                var currentRowHeight = deriveCardHeight(cardSize);
-                var currentRowContentHeight = currentRowHeight - verticalPadding;
-
-                //var styleForRow = _.reduce(rows, function(styleForRowAcc, row) {
-
-                  var paddingForEntireRow = horizontalPadding * (row.length - 1);
-                  var usableContentSpaceForRow = containerContentWidth - paddingForEntireRow;
-                  var cardWidth = Math.floor(usableContentSpaceForRow / row.length);
-
-                  rowCount += 1;
-
-                  return styleForRowAcc + _.map(row, function(card, cardIndexInRow) {
-
-                    var spaceTakenByOtherCardsPadding = (cardIndexInRow - 1) * horizontalPadding;
-                    var cardLeft = gutter + (cardIndexInRow * cardWidth) + spaceTakenByOtherCardsPadding;
-                    var cardTop = heightOfAllCards;
-
-                    cardPositions.push([card.model.uniqueId, cardLeft, cardTop]);
-
-                    return '#card-' + card.model.uniqueId
-                                    + '{'
-                                    + 'left:' + cardLeft + 'px;'
-                                    + 'top:' + cardTop + 'px;'
-                                    + 'width:' + cardWidth + 'px;'
-                                    + 'height:' + currentRowContentHeight + 'px;'
-                                    + '}';
-                  }).join('');
-
-                }, '');
-
-                heightOfAllCards += rows.length * currentRowHeight + (rowCount * 100);
-
-                return overallStyleAcc + styleForRow;
-
-              }, '');*/
-
+                  return accumulatedStyle + '#card-' + card.model.uniqueId
+                                          + '{'
+                                          + 'left:' + cardLeft + 'px;'
+                                          + 'top:' + cardTop + 'px;'
+                                          + 'width:' + cardWidth + 'px;'
+                                          + 'height:' + cardHeight + 'px;'
+                                          + '}';
+              }, styleText);
 
             } else {
 
@@ -205,8 +187,8 @@
 
               var cardPositions = [];
 
-              var verticalPadding = 5;
-              var horizontalPadding = 5;
+              var verticalPadding = 6;
+              var horizontalPadding = 6;
               var gutter = 12;
 
               var firstRow = true;
@@ -239,6 +221,7 @@
                   return styleForRowAcc + _.map(row, function(card, cardIndexInRow) {
 
                     var spaceTakenByOtherCardsPadding = (cardIndexInRow - 1) * horizontalPadding;
+                    console.log(gutter, (cardIndexInRow * cardWidth), spaceTakenByOtherCardsPadding);
                     var cardLeft = gutter + (cardIndexInRow * cardWidth) + spaceTakenByOtherCardsPadding;
                     var cardTop = heightOfAllCards;
 
@@ -263,7 +246,7 @@
 
             }
 
-            styleText += '#card-container{height:' + Math.floor(heightOfAllCards) + 'px;}';
+            styleText += '#card-container-new{height:' + Math.floor(heightOfAllCards) + 'px;visibility:visible;}';
 
             // OMG side-effect, but *what* a side effect, amirite?
             $scope.cardPositions = cardPositions;

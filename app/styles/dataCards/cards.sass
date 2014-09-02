@@ -261,11 +261,12 @@ body
           &.light
             opacity: 1
 
+    #card-container
+      visibility: hidden
+
     .cards
-      position: relative
       display: block
       padding: 0
-      padding-top: 0
 
       /* LAYOUT */
 
@@ -301,7 +302,6 @@ body
       .card
         position: absolute
         border-radius: $rounded-corners-border-radius
-        margin: $card-margins
         padding: $card-padding
         color: $lt-grey-font-color
         background: $card-bg-color

@@ -230,7 +230,7 @@
                 var currentRowHeight = deriveCardHeight(parseInt(cardSize), 10);
                 var currentRowContentHeight = currentRowHeight - verticalPadding;
 
-                var styleForRow = _.reduce(rows, function(styleForRowAcc, row) {
+                var styleForRow = _.reduce(rows, function(styleForRowAcc, row, rowIndex) {
 
                   var paddingForEntireRow = horizontalPadding * (row.length - 1);
                   var usableContentSpaceForRow = containerContentWidth - paddingForEntireRow;
@@ -245,7 +245,7 @@
                     console.log(gutter, (cardIndexInRow * cardWidth), spaceTakenByOtherCardsPadding);
 
                     var cardLeft = gutter + (cardIndexInRow * cardWidth) + spaceTakenByOtherCardsPadding;
-                    var cardTop = heightOfAllCards;
+                    var cardTop = heightOfAllCards + rowIndex * currentRowHeight;
 
                     cardPositions.push([card.model.uniqueId, cardLeft, cardTop]);
 

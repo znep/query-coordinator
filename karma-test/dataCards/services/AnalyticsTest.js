@@ -56,6 +56,18 @@ describe('Analytics service', function() {
 
   });
 
+  it('should not report measurements if statsd is not enabled', function() {
+    inject(function($injector) {
+      $injector.get('ServerConfig').setup({ statsdEnabled: false });
+      $httpBackend = $injector.get('$httpBackend');
+      Analytics = $injector.get('Analytics');
+    });
+    Analytics.setNumberOfCards(1);
+    Analytics.cardRenderStart('my_id', 123);
+    Analytics.cardRenderStop('my_id', 123);
+    expect($httpBackend.flush).to.throw(/No pending request/);
+  });
+
   describe('render time measurement', function() {
 
     beforeEach(function() {
@@ -63,6 +75,7 @@ describe('Analytics service', function() {
         $provide.factory('moment', mockMomentService);
       });
       inject(function($injector) {
+        $injector.get('ServerConfig').setup({ statsdEnabled: true });
         var $window = $injector.get('$window');
         $window.performance = {
           timing: {
@@ -172,6 +185,7 @@ describe('Analytics service', function() {
         $provide.factory('moment', mockMomentService);
       });
       inject(function($injector) {
+        $injector.get('ServerConfig').setup({ statsdEnabled: true });
         $window = $injector.get('$window');
         // Set up the mock http service responses
         $httpBackend = $injector.get('$httpBackend');
@@ -194,6 +208,7 @@ describe('Analytics service', function() {
         $provide.factory('moment', mockMomentService);
       });
       inject(function($injector) {
+        $injector.get('ServerConfig').setup({ statsdEnabled: true });
         $window = $injector.get('$window');
         $window.performance = mockWindowPerformance;
 

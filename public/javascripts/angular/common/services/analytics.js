@@ -15,7 +15,9 @@
    *
    * @constructor
    */
-  function Analytics($log, $window, http, moment) {
+  function Analytics($log, $window, http, moment, ServerConfig) {
+
+    var statsdEnabled = ServerConfig.get('statsdEnabled') || false;
 
     // true for IE9+, Chrome, Firefox (as of 8/12/14)
     var hasPerformanceTiming = _.isDefined($window.performance) && _.isDefined($window.performance.timing);
@@ -208,25 +210,27 @@
      * @param metricValue
      */
     function sendMetric(metricName, metricValue) {
-      http({
-        method: 'post',
-        url: analyticsUrl,
-        data: JSON.stringify({
-          metrics: [
-            {
-              entity: entity,
-              metric: metricName,
-              increment: metricValue
-            }
-          ]
-        }),
-        headers: {
-          'X-Socrata-Auth': 'unauthenticated',
-          'Content-Type': 'application/text'
-        },
-        contentType: 'application/json',
-        dataType: 'json'
-      });
+      if (statsdEnabled) {
+        http({
+          method: 'post',
+          url: analyticsUrl,
+          data: JSON.stringify({
+            metrics: [
+              {
+                entity: entity,
+                metric: metricName,
+                increment: metricValue
+              }
+            ]
+          }),
+          headers: {
+            'X-Socrata-Auth': 'unauthenticated',
+            'Content-Type': 'application/text'
+          },
+          contentType: 'application/json',
+          dataType: 'json'
+        });
+      }
     }
 
   }

@@ -4,6 +4,10 @@ module AngularHelper
     params[:app]
   end
 
+  def angular_config
+    { statsdEnabled: APP_CONFIG['statsd_enabled'] }
+  end
+
   def angular_stylesheet_tag
     rendered_stylesheet_tag("angular-app-#{angular_app}")
   end

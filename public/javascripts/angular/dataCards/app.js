@@ -10,6 +10,11 @@ var dataCards = angular.module('dataCards', [
   // 'pasvaz.bindonce' NOTE: use in the future to optimize Angular performance.
 ]);
 
+dataCards.config(function(ServerConfig) {
+  ServerConfig.setup(window['socrataConfig']);
+  delete window['socrataConfig'];
+});
+
 /**
  * Configure app analytics tracking
  */

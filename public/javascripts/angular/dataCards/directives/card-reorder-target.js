@@ -26,11 +26,21 @@
 
         // Given a model property name P and an observable sequence of arrays of models having property P,
         // returns an observable sequence of arrays of objects pulling the last value yielded from P next
-        // to the model. The elements in the yielded arrays look like:
-        // {
-        //  <P>: <the last value of P from the model>
-        //  model: <the model that yielded the value>
-        // }
+        // to the model. Thus, if the input observable yields an array of models [A, B], the elements from
+        // the returned sequence look like:
+        // [
+        //   {
+        //     <P>: <the last value of P from model A>
+        //     model: <model A>
+        //   },
+        //   {
+        //     <P>: <the last value of P from model B>
+        //     model: <model B>
+        //   }
+        //   ...
+        // ]
+        // A new array is yielded every time the list of models changes or any model gets a new value
+        // for P.
         function zipLatestArray(obs, property) {
           return obs.flatMapLatest(
             function(values) {
@@ -87,15 +97,20 @@
         * Card layout *
         **************/
 
+        var expandedCards = zipLatestArray($scope.page.observe('cards'), 'expanded').map(function(cards) {
+          return _.pluck(
+              _.where(cards, _.property('expanded')),
+              'model');
+        });
+
         Rx.Observable.subscribeLatest(
           $('#card-container').observeDimensions(),
           rowsOfCardsBySize,
           availableContentHeightSubject,
           $scope.observe('headerIsStuck'),
-          Rx.Observable.returnValue(true),
-          function (containerDimensions, sortedTileLayoutResult, availableContentHeight, headerIsStuck, hasExpandedCard) {
-
-            if (hasExpandedCard) {
+          expandedCards,
+          function (containerDimensions, sortedTileLayoutResult, availableContentHeight, headerIsStuck, expandedCards) {
+            if (!_.isEmpty(expandedCards)) {
 
               var deriveCardHeight = function(size) {
                 switch (size) {

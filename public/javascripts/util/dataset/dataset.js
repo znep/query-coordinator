@@ -455,10 +455,35 @@ var Dataset = ServerModel.extend({
         return this._blobs;
     },
 
-    userGrants: function()
+    // CORE-2979: this.grants is unreliable because it's being cached.
+    userGrants: function(successCallback, errorCallback)
     {
-        return _.reject(this.grants || [],
-                function(g) { return _.include(g.flags || [], 'public'); });
+        var ds = this,
+            success = function()
+            {
+                var userGrants = _.reject(ds.grants,
+                    function(g) { return _.include(g.flags || [], 'public'); });
+                if (_.isFunction(successCallback))
+                { successCallback(userGrants); }
+            },
+            callback = function(grants)
+            {
+                ds.grants = grants || [];
+                success();
+                ds._grantsFetched = true;
+            };
+
+        if (!this._grantsFetched)
+        {
+            ds.makeRequest({url: '/api/views/' + ds.id + '/grants.json',
+                success: callback,
+                error: errorCallback });
+            this._grantsFetched = 'fetching';
+        }
+        else if (this._grantsFetched === true)
+        {
+            success();
+        }
     },
 
     removeGrant: function(grant, successCallback, errorCallback)

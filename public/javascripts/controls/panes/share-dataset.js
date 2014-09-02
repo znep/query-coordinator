@@ -112,17 +112,19 @@
         var $span = $context.find('.andSharedHint');
         var $friends = $context.find('.friendsHint');
 
-        var friends = cpObj._view.userGrants();
-        if (friends.length == 0)
+        cpObj._view.userGrants(function(friends)
         {
-            $span.addClass('hide');
-            $context.find('.noShares').show().end()
-                .find('.shareNotifyLink').hide();
-        }
-        else
-        {
-            $span.removeClass('hide');
-        }
+            if (friends.length == 0)
+            {
+                $span.addClass('hide');
+                $context.find('.noShares').show().end()
+                    .find('.shareNotifyLink').hide();
+            }
+            else
+            {
+                $span.removeClass('hide');
+            }
+        });
     };
 
     $.Control.extend('pane_shareDataset', {
@@ -181,25 +183,26 @@
                                   .find('.datasetTypeNameUpcase')
                                     .text(cpObj._view.displayName.capitalize());
 
-                            // When this pane gets refreshed, update to reflect who it's shared with
-                            updateShareText(cpObj, $formElem);
-
-                            var grants = cpObj._view.userGrants();
-
-                            // If they have no shares
-                            if ($.isBlank(grants) || grants.length == 0)
+                            cpObj._view.userGrants(function(grants)
                             {
-                                _.defer(function(){
-                                    $formElem.find('.loadingShares, .itemsList').hide();
-                                    $formElem.find('.noShares').fadeIn();
-                                });
-                                return;
-                            }
+                                // When this pane gets refreshed, update to reflect who it's shared with
+                                updateShareText(cpObj, $formElem);
 
-                            _.defer(function(){ $formElem.find('.shareNotifyArea').fadeIn(); });
+                                // If they have no shares
+                                if ($.isBlank(grants) || grants.length == 0)
+                                {
+                                    _.defer(function(){
+                                        $formElem.find('.loadingShares, .itemsList').hide();
+                                        $formElem.find('.noShares').fadeIn();
+                                    });
+                                    return;
+                                }
 
-                            // Start ajax for getting user names from UIDs
-                            grabShares(cpObj, $formElem, grants);
+                                _.defer(function(){ $formElem.find('.shareNotifyArea').fadeIn(); });
+
+                                // Start ajax for getting user names from UIDs
+                                grabShares(cpObj, $formElem, grants);
+                            });
                         }
                     }
                 }

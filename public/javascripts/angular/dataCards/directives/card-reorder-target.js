@@ -135,22 +135,6 @@
 
               var heightOfAllCards = 0;
 
-              var styleText = '#card-container{visibility:visible !important;}'
-                            + '#card-' + expandedCard.model.uniqueId
-                            + '{';
-
-              if ($scope.headerIsStuck) {
-                styleText += 'position:fixed;';
-                expandedColumnTop = parseInt($scope.headerStyle['height'], 10);
-                expandedColumnHeight = $(window).height() - expandedColumnTop - verticalPadding;
-              }
-
-              styleText += 'left:' + expandedColumnLeft + 'px;'
-                         + 'top:' + expandedColumnTop + 'px;'
-                         + 'width:' + expandedColumnWidth + 'px;'
-                         + 'height:' + expandedColumnHeight + 'px;'
-                         + '}';
-
               styleText = _.reduce(unexpandedCards, function(accumulatedStyle, card, index) {
                   var cardLeft = unexpandedColumnLeft;
                   var cardTop = heightOfAllCards;
@@ -168,7 +152,27 @@
                                           + 'width:' + cardWidth + 'px;'
                                           + 'height:' + cardHeight + 'px;'
                                           + '}';
-              }, styleText);
+              }, '');
+
+              styleText += '#card-' + expandedCard.model.uniqueId
+                         + '{';
+
+              if ($scope.headerIsStuck) {
+                styleText += 'position:fixed;';
+                expandedColumnTop = parseInt($scope.headerStyle['height'], 10);
+                expandedColumnHeight = $(window).height() - expandedColumnTop - verticalPadding;
+              }
+
+              styleText += 'left:' + expandedColumnLeft + 'px;'
+                         + 'top:' + expandedColumnTop + 'px;'
+                         + 'width:' + expandedColumnWidth + 'px;'
+                         + 'height:' + expandedColumnHeight + 'px;'
+                         + '}';
+
+              styleText += '#card-container{'
+                         + 'visibility:visible !important;'
+                         + 'height:' + heightOfAllCards + 'px;'
+                         + '}';
 
             } else {
 
@@ -246,7 +250,10 @@
 
             }
 
-            styleText += '#card-container-new{height:' + Math.floor(heightOfAllCards) + 'px;visibility:visible;}';
+            styleText += '#card-container{'
+                       + 'visibility:visible !important;'
+                       + 'height:' + heightOfAllCards + 'px;'
+                       + '}';
 
             // OMG side-effect, but *what* a side effect, amirite?
             $scope.cardPositions = cardPositions;

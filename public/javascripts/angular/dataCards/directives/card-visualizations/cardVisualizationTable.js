@@ -23,7 +23,7 @@ angular.module('dataCards.directives').directive('cardVisualizationTable', funct
       $scope.getRows = function() {
         var args = [$scope.model.page.getCurrentValue('dataset').id].concat(
           Array.prototype.slice.call(arguments));
-        return CardDataService.getRows.apply(null, args);
+        return CardDataService.getRows.apply(CardDataService, args);
       };
 
       var columnDetails = dataset.observeOnLatest('columns').map(function(columns) {

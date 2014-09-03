@@ -141,8 +141,40 @@ String.prototype.visualSize = function(fontSize) {
   }
   $ruler.css('font-size', fontSize);
   $ruler.text(this + '');
+  debugger
   dimensions = { width: $ruler.width(), height: $ruler.height() };
+  
   $ruler.remove();
+
+  return dimensions;
+};
+
+// This function updated by Chris Laidlaw to use
+// native DOM methods rather than uncached jQuery
+// objects since it sits in the hot path and the
+// native DOM methods improved performance by 50%.
+
+String.prototype.visualSize = function(fontSize) {
+
+  var span = document.getElementById('ruler');
+  var dimensions;
+
+  if (span === null) {
+    span = document.createElement('span');
+    span.className = 'ruler';
+    span.id = 'ruler';
+    span.setAttribute('aria-hidden', 'true');
+    span.appendChild(document.createTextNode(this));
+    document.getElementsByTagName('body')[0].appendChild(span);
+  } else {
+    span.lastChild.textContent = this;
+  }
+  
+  if (fontSize) {
+    span.style.fontSize = fontSize;
+  }
+
+  dimensions = { width: span.offsetWidth, height: span.offsetHeight };
 
   return dimensions;
 };

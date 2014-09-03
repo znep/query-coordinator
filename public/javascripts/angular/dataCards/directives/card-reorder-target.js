@@ -87,10 +87,10 @@
         var availableContentHeightTimeout = null;
 
         $scope.$on('stickyHeaderAvailableContentHeightChanged', function(e) {
-          clearTimeout(availableContentHeightTimeout);
-          availableContentHeightTimeout = setTimeout(function() {
-            availableContentHeightSubject.onNext($(window).height() - ($('#card-container').offset().top - $(window).scrollTop()));
-          }, 500);
+          //clearTimeout(availableContentHeightTimeout);
+          //availableContentHeightTimeout = setTimeout(function() {
+            availableContentHeightSubject.onNext(1);
+          //}, 500);
         });
 
         /**************
@@ -110,6 +110,10 @@
           $scope.observe('headerIsStuck'),
           expandedCards,
           function (containerDimensions, sortedTileLayoutResult, availableContentHeight, headerIsStuck, expandedCards) {
+
+            var scrollTop = (window.pageYOffset !== undefined) ?
+              window.pageYOffset :
+              (document.documentElement || document.body.parentNode || document.body).scrollTop;
 
             if (!_.isEmpty(expandedCards)) {
 
@@ -141,8 +145,6 @@
 
               var expandedColumnTop = 0;
 
-              var expandedColumnHeight = availableContentHeight - verticalPadding;
-
               var cards = _.flatten(_.values(sortedTileLayoutResult));
 
               var expandedCard = cards[0];
@@ -173,14 +175,19 @@
               styleText += '#card-' + expandedCard.model.uniqueId
                          + '{';
 
+              var windowHeight = $(window).height();
+
               if ($scope.headerIsStuck) {
-                styleText += 'position:fixed;';
-                expandedColumnTop = parseInt($scope.headerStyle['height'], 10);
-                expandedColumnHeight = $(window).height() - expandedColumnTop - verticalPadding;
+              //  styleText += 'position:fixed;';
+              //  expandedColumnTop = parseInt($scope.headerStyle['height'], 10);
+                var expandedColumnHeight = windowHeight - parseInt($scope.headerStyle['height'], 10) - verticalPadding;
+              } else {
+                var expandedColumnHeight = windowHeight - ($('#card-container').offset().top - scrollTop) - verticalPadding;
               }
 
-              styleText += 'left:' + expandedColumnLeft + 'px;'
-                         + 'top:' + expandedColumnTop + 'px;'
+              styleText += 'position:fixed;'
+                         + 'left:' + expandedColumnLeft + 'px;'
+                         + 'bottom:' + verticalPadding + 'px;'
                          + 'width:' + expandedColumnWidth + 'px;'
                          + 'height:' + expandedColumnHeight + 'px;'
                          + '}';

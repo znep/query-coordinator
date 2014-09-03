@@ -1,19 +1,31 @@
 (function() {
+
   function PageDataService(http) {
+
     function fetchStub(id) {
-      return http.get('/stubs/pages/' + id + '.json', { cache: true }).then(function(response) {
-        return response.data;
-      });
+      var url = '/stubs/pages/{0}.json'.format(id);
+      var config = {
+        cache: true,
+        requester: this
+      };
+      return http.get(url, config).
+        then(function(response) {
+          return response.data;
+        });
     }
 
-    return {
-      getBaseInfo: function(id) {
-        return fetchStub(id);
-      }
+    this.getBaseInfo = function(id) {
+      return fetchStub.call(this, id);
     };
+
+    this.requesterLabel = function() {
+        return 'page-data-service';
+    };
+
   }
 
   angular.
     module('dataCards.services').
-    factory('PageDataService', PageDataService);
+    service('PageDataService', PageDataService);
+
 })();

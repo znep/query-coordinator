@@ -90,10 +90,7 @@ describe('Analytics service', function() {
       });
     });
 
-    afterEach(function() {
-      $httpBackend.verifyNoOutstandingExpectation();
-      $httpBackend.verifyNoOutstandingRequest();
-    });
+    afterEach(httpBackendAfterEach);
 
     it('should track page load initially', function() {
       Analytics.setNumberOfCards(1);
@@ -154,6 +151,67 @@ describe('Analytics service', function() {
 
   });
 
+  describe('http request time measurement', function() {
+    beforeEach(function() {
+      module(function($provide) {
+        $provide.factory('moment', mockMomentService);
+      });
+      inject(function($injector) {
+        var $window = $injector.get('$window');
+        $window.performance = {
+          timing: {
+            navigationStart: INITIAL_NAVIGATION_START_TIME
+          }
+        };
+
+        $injector.get('ServerConfig').setup({ statsdEnabled: true });
+        // Set up the mock http service responses
+        $httpBackend = $injector.get('$httpBackend');
+        moment = $injector.get('moment');
+        Analytics = $injector.get('Analytics');
+      });
+    });
+
+    afterEach(httpBackendAfterEach);
+
+    it('should track the http request time', function() {
+      var START_TIME = 1000;
+      var END_TIME = 1234;
+      Analytics.startHttpRequest('label', START_TIME);
+      moment()._next(END_TIME);
+      Analytics.stopHttpRequest('label', START_TIME);
+      $httpBackend.expectPOST('/analytics/add', buildExpectedMetrics('js-cardsview-label-time', END_TIME - START_TIME)).
+        respond(200, '');
+      $httpBackend.flush();
+    });
+
+    it('should handle multiple in-flight http request timings with same label and different start times', function() {
+      var START_TIME_1 = 1000;
+      var START_TIME_2 = 1001;
+      var END_TIME_1 = 1234;
+      var END_TIME_2 = 1432;
+
+      Analytics.startHttpRequest('label', START_TIME_1);
+      Analytics.startHttpRequest('label', START_TIME_2);
+      moment()._next(END_TIME_1);
+      Analytics.stopHttpRequest('label', START_TIME_2);
+      moment()._next(END_TIME_2);
+      Analytics.stopHttpRequest('label', START_TIME_1);
+      $httpBackend.expectPOST('/analytics/add', buildExpectedMetrics('js-cardsview-label-time', END_TIME_1 - START_TIME_2)).
+        respond(200, '');
+      $httpBackend.expectPOST('/analytics/add', buildExpectedMetrics('js-cardsview-label-time', END_TIME_2 - START_TIME_1)).
+        respond(200, '');
+      $httpBackend.flush();
+    });
+
+    it('should not fail if there is a stop with no start', function() {
+      var START_TIME = 1000;
+      expect(function() {
+        Analytics.stopHttpRequest('label', START_TIME);
+      }).to.not.throw();
+    });
+  });
+
   describe('dom-ready time measurement', function() {
     var $window;
     var mockWindowPerformance = {
@@ -163,10 +221,7 @@ describe('Analytics service', function() {
       }
     };
 
-    afterEach(function() {
-      $httpBackend.verifyNoOutstandingExpectation();
-      $httpBackend.verifyNoOutstandingRequest();
-    });
+    afterEach(httpBackendAfterEach);
 
     it('should listen for dom-ready if the page is not complete', function() {
       var addEventListenerStub = sinon.stub();
@@ -223,6 +278,11 @@ describe('Analytics service', function() {
       $httpBackend.flush();
     });
   });
+
+  function httpBackendAfterEach() {
+    $httpBackend.verifyNoOutstandingExpectation();
+    $httpBackend.verifyNoOutstandingRequest();
+  }
 
   function buildExpectedMetrics(metricValue, incrementValue) {
     return {

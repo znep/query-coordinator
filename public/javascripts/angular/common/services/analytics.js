@@ -34,7 +34,7 @@
       return navigationStartTime;
     };
 
-    var currentMeasurement = createMeasurement('page-load', navigationStartTime());
+    var currentInteractionMeasurement = createInteractionMeasurement('page-load', navigationStartTime());
     var numCards = 0;
 
     /**
@@ -86,10 +86,10 @@
      * @param {string} label
      */
     this.start = function(label) {
-      if (_.isPresent(currentMeasurement)) {
-        $log.warn('Attempted to start measurement for label {0}, but already started for label {1}'.format(label, currentMeasurement.label));
+      if (_.isPresent(currentInteractionMeasurement)) {
+        $log.warn('Attempted to start measurement for label {0}, but already started for label {1}'.format(label, currentInteractionMeasurement.label));
       } else {
-        currentMeasurement = createMeasurement(label);
+        currentInteractionMeasurement = createInteractionMeasurement(label);
       }
     };
 
@@ -103,16 +103,16 @@
       if (_.isUndefined(timestamp)) {
         timestamp = currentTime();
       }
-      if (_.isPresent(currentMeasurement)) {
+      if (_.isPresent(currentInteractionMeasurement)) {
         var cardData = {
           id: id,
           startTime: timestamp
         };
-        var existingCardInFlight = _.find(currentMeasurement.cardsInFlight, cardData);
+        var existingCardInFlight = _.find(currentInteractionMeasurement.cardsInFlight, cardData);
         if (_.isDefined(existingCardInFlight)) {
           return;
         }
-        currentMeasurement.cardsInFlight.push(cardData);
+        currentInteractionMeasurement.cardsInFlight.push(cardData);
       }
     };
 
@@ -123,16 +123,40 @@
      * @param {number} timestamp - Timestamp to correlate measurement records
      */
     this.cardRenderStop = function(id, timestamp) {
-      if (_.isPresent(currentMeasurement)) {
-        var cardsInFlight = currentMeasurement.cardsInFlight;
+      if (_.isPresent(currentInteractionMeasurement)) {
+        var cardsInFlight = currentInteractionMeasurement.cardsInFlight;
         var cardRecord = _.findWhere(cardsInFlight, function(cardInFlight) {
           return cardInFlight.id === id && cardInFlight.startTime === timestamp;
         });
         if (_.isPresent(cardRecord)) {
           cardRecord.stopTime = currentTime();
         }
-        currentMeasurement.cardIds[id] = true;
+        currentInteractionMeasurement.cardIds[id] = true;
         checkCardsInFlight();
+      }
+    };
+
+    var httpRequests = [];
+
+    this.startHttpRequest = function(label, timestamp) {
+      httpRequests.push({
+        label: label,
+        startTime: timestamp
+      });
+    };
+
+    this.stopHttpRequest = function(label, timestamp) {
+      var stopTime = currentTime();
+      var records = _.remove(httpRequests, function(element) {
+        return element.label === label && element.startTime === timestamp;
+      });
+      if (records.length > 0) {
+        var record = records[0];
+        var timeDelta = stopTime - record.startTime;
+        if (_.isNaN(timeDelta)) {
+          $log.debug('timeDelta was NaN');
+        }
+        sendMetric(baseMetricName.format(label), timeDelta);
       }
     };
 
@@ -142,8 +166,8 @@
      * @private
      */
     function checkCardsInFlight() {
-      var cardIdsSeen = _(currentMeasurement.cardIds).size();
-      var cardsExpected = numExpectedCards[currentMeasurement.label];
+      var cardIdsSeen = _(currentInteractionMeasurement.cardIds).size();
+      var cardsExpected = numExpectedCards[currentInteractionMeasurement.label];
       if (_.isUndefined(cardsExpected)) {
         cardsExpected = numCards;
       }
@@ -152,7 +176,7 @@
         return;
       }
 
-      var noCardsInFlight = _.every(currentMeasurement.cardsInFlight, function(cardInFlight) {
+      var noCardsInFlight = _.every(currentInteractionMeasurement.cardsInFlight, function(cardInFlight) {
         return _.isDefined(cardInFlight.stopTime);
       });
       if (noCardsInFlight) {
@@ -167,17 +191,17 @@
      * @private
      */
     function finalizeMeasurement() {
-      if (_.isEmpty(currentMeasurement) || _.isEmpty(currentMeasurement.cardsInFlight)) {
+      if (_.isEmpty(currentInteractionMeasurement) || _.isEmpty(currentInteractionMeasurement.cardsInFlight)) {
         return;
       }
 
-      var finalRenderedCard = _.max(currentMeasurement.cardsInFlight, 'stopTime');
-      var timeDelta = finalRenderedCard.stopTime - currentMeasurement.startTime;
+      var finalRenderedCard = _.max(currentInteractionMeasurement.cardsInFlight, 'stopTime');
+      var timeDelta = finalRenderedCard.stopTime - currentInteractionMeasurement.startTime;
       if (_.isNaN(timeDelta)) {
         $log.debug('timeDelta was NaN');
       }
-      sendMetric(baseMetricName.format(currentMeasurement.label), timeDelta);
-      currentMeasurement = null;
+      sendMetric(baseMetricName.format(currentInteractionMeasurement.label), timeDelta);
+      currentInteractionMeasurement = null;
     }
 
     /**
@@ -188,7 +212,7 @@
      * @param {number} [startTime]
      * @returns {{label: string, startTime: number, cardIds: {}, cardsInFlight: []}}
      */
-    function createMeasurement(label, startTime) {
+    function createInteractionMeasurement(label, startTime) {
       startTime = startTime || currentTime();
 
       return {

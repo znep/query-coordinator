@@ -97,6 +97,9 @@ module ClientAnalyticsHelper
                               domain-intern/js-cardsview-timeline-filter-time
                               domain-intern/js-cardsview-table-column-sort-time
                               domain-intern/js-cardsview-clear-filter-time
+                              domain-intern/js-cardsview-card-data-service-time
+                              domain-intern/js-cardsview-page-data-service-time
+                              domain-intern/js-cardsview-dataset-data-service-time
                               domain-intern/js-page-load-samples
                               domain-intern/js-page-load-time
                               domain-intern/js-response-start-time

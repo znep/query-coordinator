@@ -4,31 +4,52 @@
   var forEach = _.forEach;
   var requestIdHeaderName = 'X-Socrata-RequestId';
 
-  function httpProvider($http, RequestId) {
+  function httpProvider($http, $rootScope, moment, RequestId) {
     function http(requestConfig) {
-      var id = RequestId.generate();
+      var eventMetadata = {
+        startTime: moment().valueOf()
+      };
+      var id;
+
+      if (requestConfig.hasOwnProperty('requester') && _.isFunction(requestConfig.requester.requesterLabel)) {
+        eventMetadata.requester = requestConfig.requester;
+        eventMetadata.requesterLabel = requestConfig.requester.requesterLabel.call(requestConfig.requester);
+      }
+
+      $rootScope.$emit('http:start', eventMetadata);
+      id = RequestId.generate();
 
       if (requestConfig.hasOwnProperty('headers')) {
         var hasHeader = requestConfig.headers.hasOwnProperty(requestIdHeaderName);
 
-        if (hasHeader) {
-          return $http(requestConfig);
+        if (!hasHeader) {
+          var hasSimilarHeader = _(requestConfig.headers).chain().keys().find(function(key) {
+            return key.toLowerCase() === requestIdHeaderName.toLowerCase();
+          }).value();
+
+          if (hasSimilarHeader) {
+            throw new Error('Conflicting Request ID');
+          }
+
+          requestConfig.headers[requestIdHeaderName] = id;
         }
-
-        var hasSimilarHeader = _(requestConfig.headers).chain().keys().find(function(key) {
-          return key.toLowerCase() === requestIdHeaderName.toLowerCase();
-        }).value();
-
-        if (hasSimilarHeader) {
-          throw new Error('Conflicting Request ID');
-        }
-
-        requestConfig.headers[requestIdHeaderName] = id;
       } else {
         requestConfig.headers = {};
         requestConfig.headers[requestIdHeaderName] = id;
       }
-      return $http(requestConfig);
+      var httpPromise = $http(requestConfig);
+
+      function emitEventFn(eventLabel) {
+        return function() {
+          $rootScope.$emit(eventLabel, extend({ stopTime: moment().valueOf() }, eventMetadata));
+        };
+      }
+      httpPromise.then(
+        emitEventFn('http:stop'),
+        emitEventFn('http:error')
+      );
+
+      return httpPromise;
     }
 
     createShortMethods('delete', 'get', 'head', 'jsonp');

@@ -6,7 +6,22 @@ describe('Socrata-flavored $http service', function() {
   var TEST_HEADERS = {};
   TEST_HEADERS[TEST_HEADER_KEY] = TEST_HEADER_VALUE;
 
-  var http, $httpBackend;
+  var INITIAL_MOMENT_TIME = 1337;
+  var mockMomentService = function() {
+    var nextValue = INITIAL_MOMENT_TIME;
+    return function() {
+      return {
+        valueOf: function() {
+          return nextValue;
+        },
+        _next: function(value) {
+          nextValue = value;
+        }
+      };
+    };
+  };
+
+  var http, $httpBackend, $rootScope, moment;
 
   beforeEach(function() {
     module('socrataCommon.services', function($provide) {
@@ -15,9 +30,12 @@ describe('Socrata-flavored $http service', function() {
           return MOCK_GUID;
         }
       });
+      $provide.factory('moment', mockMomentService);
     });
     module('socrataCommon.services');
     inject(function($injector) {
+      $rootScope = $injector.get('$rootScope');
+      moment = $injector.get('moment');
       // Set up the mock http service responses
       $httpBackend = $injector.get('$httpBackend');
       http = $injector.get('http');
@@ -62,7 +80,6 @@ describe('Socrata-flavored $http service', function() {
   });
 
   it('should throw an error if there is a header similar to X-Socrata-RequestId', function() {
-
     expect(function() {
       http({
         url: '/test',
@@ -71,7 +88,6 @@ describe('Socrata-flavored $http service', function() {
         }
       });
     }).to.throw(/conflicting request id/ig);
-
   });
 
   it('should leave existing X-Socrata-RequestId header alone', function() {
@@ -91,8 +107,134 @@ describe('Socrata-flavored $http service', function() {
     $httpBackend.flush();
   });
 
-  describe('shortcut methods', function() {
+  describe('requester tagging', function() {
+    var REQUESTER_NAME = 'my-requester';
+    var requester;
+    var requesterStub;
 
+    var makeRequest = function() {
+      requesterStub = sinon.stub();
+      requesterStub.returns(REQUESTER_NAME);
+      requester = {
+        requesterLabel: requesterStub
+      };
+      var requestConfig = {
+        url: '/test',
+        requester: requester
+      };
+      http(requestConfig);
+    };
+
+    it('should interrogate a "requester" if one is provided in the requestConfig for its "requesterLabel"', function() {
+      makeRequest();
+
+      expect(requesterStub.calledOnce).to.be.true;
+      var spyCall = requesterStub.getCall(0);
+      expect(spyCall.thisValue).to.equal(requester);
+      $httpBackend.whenGET('/test').respond(200, '');
+      expect($httpBackend.flush).to.not.throw();
+    });
+
+    it('should ignore a "requester" if it does not implement the "requesterLabel" interface', function() {
+      expect(function() {
+        http({
+          url: '/test',
+          requester: {}
+        });
+      }).to.not.throw();
+      $httpBackend.whenGET('/test').respond(200, '');
+      expect($httpBackend.flush).to.not.throw();
+    });
+
+    it('should emit start/stop events with the "httpRequester" information', function() {
+      var httpStartEventHandlerStub = sinon.stub();
+      var httpStopEventHandlerStub = sinon.stub();
+      $rootScope.$on('http:start', httpStartEventHandlerStub);
+      $rootScope.$on('http:stop', httpStopEventHandlerStub);
+
+      makeRequest();
+
+      $httpBackend.whenGET('/test').respond(200, '');
+      $httpBackend.flush();
+
+      var startCall = httpStartEventHandlerStub.getCall(0);
+      var startCallArgs = startCall.args[1];
+      expect(startCallArgs.requester).to.equal(requester);
+      expect(startCallArgs.requesterLabel).to.equal(REQUESTER_NAME);
+      var stopCall = httpStopEventHandlerStub.getCall(0);
+      var stopCallArgs = stopCall.args[1];
+      expect(stopCallArgs.requester).to.equal(requester);
+      expect(stopCallArgs.requesterLabel).to.equal(REQUESTER_NAME);
+    });
+
+  });
+
+  describe('http:* events', function() {
+    var httpStartEventHandlerStub;
+    var httpStopEventHandlerStub;
+    var httpErrorEventHandlerStub;
+
+    beforeEach(function() {
+      httpStartEventHandlerStub = sinon.stub();
+      httpStopEventHandlerStub = sinon.stub();
+      httpErrorEventHandlerStub = sinon.stub();
+      $rootScope.$on('http:start', httpStartEventHandlerStub);
+      $rootScope.$on('http:stop', httpStopEventHandlerStub);
+      $rootScope.$on('http:error', httpErrorEventHandlerStub);
+      http({ url: '/test' });
+    });
+
+    it('should emit an "http:start" and "http:stop" event', function() {
+      $httpBackend.whenGET('/test').respond(200, '');
+      expect(httpStartEventHandlerStub.calledOnce).to.be.true;
+      expect(httpStopEventHandlerStub.called).to.be.false;
+      expect(httpErrorEventHandlerStub.called).to.be.false;
+      $httpBackend.flush();
+      expect(httpStartEventHandlerStub.calledOnce).to.be.true;
+      expect(httpStopEventHandlerStub.calledOnce).to.be.true;
+      expect(httpErrorEventHandlerStub.called).to.be.false;
+    });
+
+    it('should emit an "http:error" if the http request errors', function() {
+      $httpBackend.whenGET('/test').respond(500, '');
+      expect(httpErrorEventHandlerStub.called).to.be.false;
+      expect(httpStopEventHandlerStub.called).to.be.false;
+      $httpBackend.flush();
+      expect(httpErrorEventHandlerStub.calledOnce).to.be.true;
+      expect(httpStopEventHandlerStub.called).to.be.false;
+    });
+
+    it('should include timing data in the start/stop events', function() {
+      var STOP_TIME = 2000;
+      $httpBackend.whenGET('/test').respond(200, '');
+      var startEventCall = httpStartEventHandlerStub.getCall(0);
+      var startEventMetadata = startEventCall.args[1];
+      expect(startEventMetadata).to.exist.and.to.be.an('object');
+      expect(startEventMetadata.startTime).to.exist.and.to.equal(INITIAL_MOMENT_TIME);
+      moment()._next(STOP_TIME);
+      $httpBackend.flush();
+      var stopEventCall = httpStopEventHandlerStub.getCall(0);
+      var stopEventMetadata = stopEventCall.args[1];
+      expect(stopEventMetadata).to.exist.and.to.be.an('object');
+      expect(stopEventMetadata.startTime).to.exist.and.to.equal(INITIAL_MOMENT_TIME);
+      expect(stopEventMetadata.stopTime).to.exist.and.to.equal(STOP_TIME);
+    });
+
+    it('should include timing data in the error events', function() {
+      var ERROR_TIME = 2321;
+      $httpBackend.whenGET('/test').respond(500, '');
+      moment()._next(ERROR_TIME);
+      $httpBackend.flush();
+      var errorEventCall = httpErrorEventHandlerStub.getCall(0);
+      var errorEventMetadata = errorEventCall.args[1];
+      expect(errorEventMetadata).to.exist.and.to.be.an('object');
+      expect(errorEventMetadata.startTime).to.exist.and.to.equal(INITIAL_MOMENT_TIME);
+      expect(errorEventMetadata.stopTime).to.exist.and.to.equal(ERROR_TIME);
+    });
+
+  });
+
+  describe('shortcut methods', function() {
     var methodsWithoutData = ['get', 'delete', 'head', 'jsonp'];
     var methodsWithData = ['post', 'put', 'patch'];
 

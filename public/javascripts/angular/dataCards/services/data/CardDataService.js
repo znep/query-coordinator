@@ -1,5 +1,5 @@
-angular.module('dataCards.services').factory('CardDataService', function($q, http, Assert, DeveloperOverrides, SoqlHelpers) {
-
+(function() {
+  'use strict';
   // The implementation of the SoQL spec is incomplete at the moment, causing it to choke
   // when it encounters a column name containing a hyphen. The spec states that quoting
   // the column name with backticks should ensure the entire field name is used rather
@@ -8,173 +8,203 @@ angular.module('dataCards.services').factory('CardDataService', function($q, htt
   // Instead, since hyphens are supposed to be rewritten to underscores internally anyway,
   // we can avoid the quoting/truncation issue by rewriting hyphens to underscores before
   // making the request from the front-end.
-  var self = {
-    getData: function(fieldName, datasetId, whereClauseFragment) {
-      Assert(_.isString(fieldName), 'fieldName should be a string');
-      Assert(_.isString(datasetId), 'datasetId should be a string');
-      Assert(!whereClauseFragment || _.isString(whereClauseFragment), 'whereClauseFragment should be a string if present.');
+  function CardDataService($q, http, Assert, DeveloperOverrides, SoqlHelpers) {
 
-      datasetId = DeveloperOverrides.dataOverrideForDataset(datasetId) || datasetId;
-      if (_.isEmpty(whereClauseFragment)) {
-        var whereClause = '';
-      } else {
-        var whereClause = 'where ' + whereClauseFragment;
-      }
-      fieldName = SoqlHelpers.replaceHyphensWithUnderscores(fieldName);
-      // TODO: Implement some method for paging/showing data that has been truncated.
-      var url = '/api/id/{1}.json?$query=select {0} as name, count(*) as value {2} group by {0} order by count(*) desc limit 200'.format(fieldName, datasetId, whereClause);
-      return http.get(url, { cache: true }).then(function(response) {
-        return _.map(response.data, function(item) {
-          return { name: item.name, value: parseFloat(item.value) };
-        });
-      });
-    },
-    getTimelineDomain: function(fieldName, datasetId) {
-      Assert(_.isString(fieldName), 'fieldName should be a string');
-      Assert(_.isString(datasetId), 'datasetId should be a string');
-
-      datasetId = DeveloperOverrides.dataOverrideForDataset(datasetId) || datasetId;
-      fieldName = SoqlHelpers.replaceHyphensWithUnderscores(fieldName);
-      var url = '/api/id/{1}.json?$query=SELECT min({0}) as start, max({0}) as end'.format(fieldName, datasetId);
-      return http.get(url, { cache: true }).then(function(response) {
-        if (_.isEmpty(response.data)) { return $q.reject('Empty response from SODA.'); }
-        var firstRow = response.data[0];
-
-        var domain = {
-          start: moment(firstRow.start, moment.ISO_8601),
-          end: moment(firstRow.end, moment.ISO_8601)
-        };
-
-        if (!domain.start.isValid()) {
-          return $q.reject('Invalid date: ' + firstRow.start);
-        } else if (!domain.end.isValid()) {
-          return $q.reject('Invalid date: ' + firstRow.end);
-        } else {
-          return domain;
-        }
-      });
-    },
-    getTimelineData: function(fieldName, datasetId, whereClauseFragment, precision) {
-      Assert(_.isString(fieldName), 'fieldName should be a string');
-      Assert(_.isString(datasetId), 'datasetId should be a string');
-      Assert(!whereClauseFragment || _.isString(whereClauseFragment), 'whereClauseFragment should be a string if present.');
-      Assert(_.isString(precision), 'precision should be a string');
-
-      var dateTrunc = SoqlHelpers.timeIntervalToDateTrunc[precision];
-      Assert(dateTrunc !== undefined, 'invalid precision name given');
-
-      datasetId = DeveloperOverrides.dataOverrideForDataset(datasetId) || datasetId;
-      var whereClause = 'WHERE date_trunc IS NOT NULL';
-      if (!_.isEmpty(whereClauseFragment)) {
-        whereClause += ' and ' + whereClauseFragment;
-      }
-      fieldName = SoqlHelpers.replaceHyphensWithUnderscores(fieldName);
-      var url = '/api/id/{1}.json?$query=SELECT date_trunc_{3}({0}) AS date_trunc, count(*) AS value {2} GROUP BY date_trunc'.format(fieldName, datasetId, whereClause, dateTrunc);
-      return http.get(url, { cache: true }).then(function(response) {
-        if (!_.isArray(response.data)) {
-          return $q.reject('Invalid response from SODA, expected array.');
-        }
-        if (_.isEmpty(response.data)) {
-          return [];
-        }
-        var data = _.map(response.data, function(d) {
-          d.date_trunc = moment(d.date_trunc, moment.ISO_8601);
-          return d;
-        });
-        var invalidDate = _.find(data, function(datum) {
-          return !datum.date_trunc.isValid();
-        });
-        if (invalidDate) {
-          // _i is the original string given in the constructor. Potentially brittle, don't depend on it for anything important.
-          return $q.reject('Bad date: ' + invalidDate.date_trunc._i);
-        }
-        var dates = _.pluck(data, 'date_trunc');
-        var timeStart = _.min(dates);
-        var timeEnd = _.max(dates);
-        var timeData = Array(timeEnd.diff(timeStart, precision));
-        _.each(data, function(item, i) {
-          var date = item.date_trunc;
-          var timeSlot = date.diff(timeStart, precision);
-          timeData[timeSlot] = { date: date, value: Number(item.value) };
-        });
-        return _.map(timeData, function(item, i) {
-          if (_.isUndefined(item)) {
-            item = { date: moment(timeStart, moment.ISO_8601).add(i, precision), value: 0 };
-          }
-          return item;
-        });
-      });
-    },
-
-    // This now appears here rather than cardVizualizationChoropleth.js in order to
-    // prepare for live GeoJSON data.
-    getChoroplethRegions: function(shapeFileId) {
-      shapeFileId = DeveloperOverrides.dataOverrideForDataset(shapeFileId) || shapeFileId;
-      var url = '/resource/{0}.geojson'.format(shapeFileId);
-      return http.get(
-        url,
-        {cache: true, headers: {'Accept': 'application/vnd.geo+json'}}
-      ).
-      then(function(response) {
-        return response.data;
-      });
-    },
-
-    // This is distinct from getData in order to allow for (eventual)
-    // paginated queries to get total counts across all rows rather than the hard
-    // 1,000-row limit on SoQL queries.
-    getChoroplethAggregates: function(fieldName, datasetId, whereClauseFragment) {
-      Assert(_.isString(fieldName), 'fieldName should be a string');
-      Assert(_.isString(datasetId), 'datasetId should be a string');
-      Assert(!whereClauseFragment || _.isString(whereClauseFragment), 'whereClauseFragment should be a string if present.');
-
-      datasetId = DeveloperOverrides.dataOverrideForDataset(datasetId) || datasetId;
-      if (_.isEmpty(whereClauseFragment)) {
-        var whereClause = '';
-      } else {
-        var whereClause = 'where ' + whereClauseFragment;
-      }
-      fieldName = SoqlHelpers.replaceHyphensWithUnderscores(fieldName);
-      var url = ('/api/id/{1}.json?$query=' +
-                 'select {0} as name, ' +
-                 'count(*) as value ' +
-                 '{2} ' + // where clause
-                 'group by {0} ' +
-                 'order by count(*) desc').format(fieldName, datasetId, whereClause);
-      return http.get(url, { cache: true }).then(function(response) {
-        if (!_.isArray(response.data)) return $q.reject('Invalid response from SODA, expected array.');
-        return _.map(response.data, function(item) {
-          return { name: item.name, value: parseFloat(item.value) };
-        });
-      });
-    },
-
-    getRowCount: function(datasetId, whereClause) {
-      datasetId = DeveloperOverrides.dataOverrideForDataset(datasetId) || datasetId;
-      var url = '/api/id/{0}.json?$query=select count(0)'.format(datasetId);
-      if (whereClause) {
-        url += ' where {0}'.format(whereClause);
-      }
-      return http.get(url, { cache: true }).then(function(response) {
-        if (_.isEmpty(response.data)) {
-          throw new Error('The response from the server contained no data.');
-        }
-        return response.data[0].count_0;
-      });
-    },
-
-    getRows: function(datasetId, offset, limit, order, timeout, whereClause) {
-      if (!order) order = '';
-      datasetId = DeveloperOverrides.dataOverrideForDataset(datasetId) || datasetId;
-      var url = '/api/id/{0}.json?$offset={1}&$limit={2}&$order={3}'.
-        format(datasetId, offset, limit, order);
-      if (whereClause) {
-        url += '&$where={0}'.format(whereClause);
-      }
-      return http.get(url, { cache: true, timeout: timeout }).then(function(response) {
-        return response.data;
-      });
+    function httpConfig(config) {
+      return _.extend({
+        requester: this,
+        cache: true
+      }, config);
     }
-  };
-  return self;
-});
+
+    return {
+      getData: function(fieldName, datasetId, whereClauseFragment) {
+        Assert(_.isString(fieldName), 'fieldName should be a string');
+        Assert(_.isString(datasetId), 'datasetId should be a string');
+        Assert(!whereClauseFragment || _.isString(whereClauseFragment), 'whereClauseFragment should be a string if present.');
+
+        datasetId = DeveloperOverrides.dataOverrideForDataset(datasetId) || datasetId;
+        var whereClause;
+        if (_.isEmpty(whereClauseFragment)) {
+          whereClause = '';
+        } else {
+          whereClause = 'where ' + whereClauseFragment;
+        }
+        fieldName = SoqlHelpers.replaceHyphensWithUnderscores(fieldName);
+        // TODO: Implement some method for paging/showing data that has been truncated.
+        var url = '/api/id/{1}.json?$query=select {0} as name, count(*) as value {2} group by {0} order by count(*) desc limit 200'.format(fieldName, datasetId, whereClause);
+        var config = httpConfig.call(this);
+        return http.get(url, config).then(function(response) {
+          return _.map(response.data, function(item) {
+            return { name: item.name, value: parseFloat(item.value) };
+          });
+        });
+      },
+      getTimelineDomain: function(fieldName, datasetId) {
+        Assert(_.isString(fieldName), 'fieldName should be a string');
+        Assert(_.isString(datasetId), 'datasetId should be a string');
+
+        datasetId = DeveloperOverrides.dataOverrideForDataset(datasetId) || datasetId;
+        fieldName = SoqlHelpers.replaceHyphensWithUnderscores(fieldName);
+        var url = '/api/id/{1}.json?$query=SELECT min({0}) as start, max({0}) as end'.format(fieldName, datasetId);
+        var config =  httpConfig.call(this);
+        return http.get(url, config).then(function(response) {
+          if (_.isEmpty(response.data)) {
+            return $q.reject('Empty response from SODA.');
+          }
+          var firstRow = response.data[0];
+
+          var domain = {
+            start: moment(firstRow.start, moment.ISO_8601),
+            end: moment(firstRow.end, moment.ISO_8601)
+          };
+
+          if (!domain.start.isValid()) {
+            return $q.reject('Invalid date: ' + firstRow.start);
+          } else if (!domain.end.isValid()) {
+            return $q.reject('Invalid date: ' + firstRow.end);
+          } else {
+            return domain;
+          }
+        });
+      },
+      getTimelineData: function(fieldName, datasetId, whereClauseFragment, precision) {
+        Assert(_.isString(fieldName), 'fieldName should be a string');
+        Assert(_.isString(datasetId), 'datasetId should be a string');
+        Assert(!whereClauseFragment || _.isString(whereClauseFragment), 'whereClauseFragment should be a string if present.');
+        Assert(_.isString(precision), 'precision should be a string');
+
+        var dateTrunc = SoqlHelpers.timeIntervalToDateTrunc[precision];
+        Assert(dateTrunc !== undefined, 'invalid precision name given');
+
+        datasetId = DeveloperOverrides.dataOverrideForDataset(datasetId) || datasetId;
+        var whereClause = 'WHERE date_trunc IS NOT NULL';
+        if (!_.isEmpty(whereClauseFragment)) {
+          whereClause += ' and ' + whereClauseFragment;
+        }
+        fieldName = SoqlHelpers.replaceHyphensWithUnderscores(fieldName);
+        var url = '/api/id/{1}.json?$query=SELECT date_trunc_{3}({0}) AS date_trunc, count(*) AS value {2} GROUP BY date_trunc'.format(fieldName, datasetId, whereClause, dateTrunc);
+        var config = httpConfig.call(this);
+        return http.get(url, config).then(function(response) {
+          if (!_.isArray(response.data)) {
+            return $q.reject('Invalid response from SODA, expected array.');
+          }
+          if (_.isEmpty(response.data)) {
+            return [];
+          }
+          var data = _.map(response.data, function(d) {
+            d.date_trunc = moment(d.date_trunc, moment.ISO_8601);
+            return d;
+          });
+          var invalidDate = _.find(data, function(datum) {
+            return !datum.date_trunc.isValid();
+          });
+          if (invalidDate) {
+            // _i is the original string given in the constructor. Potentially brittle, don't depend on it for anything important.
+            return $q.reject('Bad date: ' + invalidDate.date_trunc._i);
+          }
+          var dates = _.pluck(data, 'date_trunc');
+          var timeStart = _.min(dates);
+          var timeEnd = _.max(dates);
+          var timeData = Array(timeEnd.diff(timeStart, precision));
+          _.each(data, function(item, i) {
+            var date = item.date_trunc;
+            var timeSlot = date.diff(timeStart, precision);
+            timeData[timeSlot] = { date: date, value: Number(item.value) };
+          });
+          return _.map(timeData, function(item, i) {
+            if (_.isUndefined(item)) {
+              item = { date: moment(timeStart, moment.ISO_8601).add(i, precision), value: 0 };
+            }
+            return item;
+          });
+        });
+      },
+
+      // This now appears here rather than cardVizualizationChoropleth.js in order to
+      // prepare for live GeoJSON data.
+      getChoroplethRegions: function(shapeFileId) {
+        shapeFileId = DeveloperOverrides.dataOverrideForDataset(shapeFileId) || shapeFileId;
+        var url = '/resource/{0}.geojson'.format(shapeFileId);
+        var config = httpConfig.call(this, {
+          headers: {
+            'Accept': 'application/vnd.geo+json'
+          }
+        });
+        return http.get(url, config).
+          then(function(response) {
+            return response.data;
+          });
+      },
+
+      // This is distinct from getData in order to allow for (eventual)
+      // paginated queries to get total counts across all rows rather than the hard
+      // 1,000-row limit on SoQL queries.
+      getChoroplethAggregates: function(fieldName, datasetId, whereClauseFragment) {
+        Assert(_.isString(fieldName), 'fieldName should be a string');
+        Assert(_.isString(datasetId), 'datasetId should be a string');
+        Assert(!whereClauseFragment || _.isString(whereClauseFragment), 'whereClauseFragment should be a string if present.');
+
+        datasetId = DeveloperOverrides.dataOverrideForDataset(datasetId) || datasetId;
+        var whereClause;
+        if (_.isEmpty(whereClauseFragment)) {
+          whereClause = '';
+        } else {
+          whereClause = 'where ' + whereClauseFragment;
+        }
+        fieldName = SoqlHelpers.replaceHyphensWithUnderscores(fieldName);
+        var url = ('/api/id/{1}.json?$query=' +
+          'select {0} as name, ' +
+          'count(*) as value ' +
+          '{2} ' + // where clause
+          'group by {0} ' +
+          'order by count(*) desc').format(fieldName, datasetId, whereClause);
+        var config = httpConfig.call(this);
+        return http.get(url, config).then(function(response) {
+          if (!_.isArray(response.data)) return $q.reject('Invalid response from SODA, expected array.');
+          return _.map(response.data, function(item) {
+            return { name: item.name, value: parseFloat(item.value) };
+          });
+        });
+      },
+
+      getRowCount: function(datasetId, whereClause) {
+        datasetId = DeveloperOverrides.dataOverrideForDataset(datasetId) || datasetId;
+        var url = '/api/id/{0}.json?$query=select count(0)'.format(datasetId);
+        if (whereClause) {
+          url += ' where {0}'.format(whereClause);
+        }
+        var config = httpConfig.call(this);
+        return http.get(url, config).
+          then(function(response) {
+            if (_.isEmpty(response.data)) {
+              throw new Error('The response from the server contained no data.');
+            }
+            return response.data[0].count_0;
+          });
+      },
+
+      getRows: function(datasetId, offset, limit, order, timeout, whereClause) {
+        if (!order) order = '';
+        datasetId = DeveloperOverrides.dataOverrideForDataset(datasetId) || datasetId;
+        var url = '/api/id/{0}.json?$offset={1}&$limit={2}&$order={3}'.
+          format(datasetId, offset, limit, order);
+        if (whereClause) {
+          url += '&$where={0}'.format(whereClause);
+        }
+        var config = httpConfig.call(this, { timeout: timeout });
+        return http.get(url, config).then(function(response) {
+          return response.data;
+        });
+      },
+      requesterLabel: function() {
+        return 'card-data-service';
+      }
+    };
+  }
+
+  angular.
+    module('dataCards.services').
+    factory('CardDataService', CardDataService);
+
+})();

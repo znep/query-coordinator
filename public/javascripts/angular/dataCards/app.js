@@ -53,6 +53,16 @@ dataCards.run(function($window, $rootScope, Analytics) {
     var eventFn = onEventStart(label);
     eventFn();
   });
+  var buildHttpRequestFn = function(method) {
+    return function(event, request) {
+      if (_.isDefined(request.requesterLabel)) {
+        Analytics[method](request.requesterLabel, request.startTime);
+      }
+    };
+  };
+  $rootScope.$on('http:start', buildHttpRequestFn('startHttpRequest'));
+  $rootScope.$on('http:stop', buildHttpRequestFn('stopHttpRequest'));
+  $rootScope.$on('http:error', buildHttpRequestFn('stopHttpRequest'));
 });
 
 dataCards.config(function($provide, $stateProvider, $urlRouterProvider, $locationProvider) {

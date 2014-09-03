@@ -241,13 +241,17 @@
                   return styleForRowAcc + _.map(row, function(card, cardIndexInRow) {
 
                     var spaceTakenByOtherCardsPadding = (cardIndexInRow - 1) * horizontalPadding;
-
-                    console.log(gutter, (cardIndexInRow * cardWidth), spaceTakenByOtherCardsPadding);
-
                     var cardLeft = gutter + (cardIndexInRow * cardWidth) + spaceTakenByOtherCardsPadding;
                     var cardTop = heightOfAllCards + rowIndex * currentRowHeight;
 
-                    cardPositions.push([card.model.uniqueId, cardLeft, cardTop]);
+                    cardPositions.push(
+                      {
+                        model: card.model,
+                        top: cardTop,
+                        left: cardLeft,
+                        width: cardWidth,
+                        height: currentRowContentHeight
+                      });
 
                     return '#card-' + card.model.uniqueId
                                     + '{'
@@ -289,6 +293,9 @@
 
         //var dragTarget = element; //TODO what we want?
 
+        // Given a point, the drop target is the card whose Y axis placement overlaps with the mouse Y position,
+        // and whose top-left corner is closest to the mouse position.
+        // Put another way, it's the closest card to the mouse in the row the mouse is in.
         function findDropTarget(clientX, clientY) {
           var $window = $(window);
           var offset = $('#card-container').offset();
@@ -297,21 +304,22 @@
           var cursorX = clientX - containerXOffset;
           var cursorY = clientY - containerYOffset;
 
-          var distances = $scope.cardPositions.map(function(cardPositionData) {
-            var distance = Math.sqrt(Math.pow(cursorX - cardPositionData[1], 2) + Math.pow(cursorY - cardPositionData[2], 2));
-            return [
-              cardPositionData[0], // Card 'uniqueId'
-              distance
-            ];
-          }).sort(function(a, b) {
-            return a[1] > b[1];
+          var cardsInMyRow = _.where($scope.cardPositions, function(cardPositionData) {
+            return cardPositionData.top <= cursorY && (cardPositionData.top + cardPositionData.height) >= cursorY;
           });
+          var closestCard = cardsInMyRow.reduce(function(currentClosest, cardPositionData) {
+            var distance = Math.sqrt(Math.pow(cursorX - cardPositionData.left, 2) + Math.pow(cursorY - cardPositionData.top, 2));
+            if (currentClosest.distance > distance) {
+              return {
+                model: cardPositionData.model,
+                distance: distance
+              };
+            } else {
+              return currentClosest;
+            }
+          }, {model: null, distance: Infinity});
 
-          var cardToReplace = $scope.cardModels.filter(function(cardModel) {
-            return cardModel.uniqueId == distances[0][0];
-          })[0];
-
-          return cardToReplace;
+          return closestCard.model;
 
         };
 
@@ -322,7 +330,7 @@
 
             var targetModel = findDropTarget(e.originalEvent.clientX, e.originalEvent.clientY);
 
-            if (targetModel !== draggedModel) {
+            if (targetModel !== null && targetModel !== draggedModel) {
 
               var currentCards = $scope.page.getCurrentValue('cards');
 
@@ -394,7 +402,7 @@
 
               var targetModel = findDropTarget(e.originalEvent.clientX, e.originalEvent.clientY);
 
-              if (targetModel !== cardGrabbed) {
+              if (targetModel !== null && targetModel !== cardGrabbed) {
 
                 var currentCards = $scope.page.getCurrentValue('cards');
 

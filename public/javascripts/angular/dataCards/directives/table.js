@@ -117,8 +117,13 @@ angular.module('socrataCommon.directives').directive('table', function(AngularRx
         return sortParts[0] === columnId;
       };
 
+      var columnDrag = false;
       var dragHandles = function(columnIds) {
+        var columnIndex;
+        var columnId;
+        var currentX = 0;
         var $resizeContainer = $expander.find('.table-resize-container');
+        columnDrag = false;
         if($resizeContainer.length === 0) {
           $resizeContainer = $('<div class="table-resize-container table-row"></div>');
           $expander.prepend($resizeContainer);
@@ -129,16 +134,15 @@ angular.module('socrataCommon.directives').directive('table', function(AngularRx
           $cell.find('.resize').data('columnId', columnId);
           $resizeContainer.append($cell);
         });
-        var active = false, currentX = 0, columnIndex, columnId;
         element.on('mousedown', '.table-head .resize, .table-resize-container .resize', function(e) {
           currentX = e.pageX;
           columnIndex = $(this).parent().index();
           columnId = $(this).data('columnId');
-          active = true;
+          columnDrag = true;
           e.preventDefault();
         });
         $('body').on('mousemove.{0}'.format(instanceUniqueNamespace), function(e) {
-          if(active) {
+          if (columnDrag) {
             var $cells = $table.find('.cell:nth-child({0}), .th:nth-child({0})'.
             format(columnIndex + 1));
             var newWidth = $cells.width() + e.pageX - currentX;
@@ -148,7 +152,7 @@ angular.module('socrataCommon.directives').directive('table', function(AngularRx
             e.preventDefault();
           }
         }).on('mouseup.{0}'.format(instanceUniqueNamespace), function(e) {
-          if(active) active = false;
+          columnDrag = false;
         });
       };
 
@@ -393,6 +397,9 @@ angular.module('socrataCommon.directives').directive('table', function(AngularRx
           } else {
             return 'No sort available';
           }
+        },
+        onBeforeRender: function(target) {
+          return !$(target).hasClass('resize') && !columnDrag;
         }
       });
       Rx.Observable.subscribeLatest(

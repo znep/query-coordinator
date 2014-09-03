@@ -218,6 +218,12 @@ describe('table', function() {
         expect(lastSort).to.equal(origSort);
       });
 
+      it('should not show flyout when hovering over the header resize handle', function() { // CORE-3140
+        getSortableTable().find('.th .resize').eq(0).mouseover();
+        scope.$digest();
+        expect($('.flyout').length).to.equal(0);
+      });
+
       describe('toggling sort on an unsorted column', function() {
         it('should be correct for numbers', function() {
           getSortableTable().find('.th').eq(0).click();

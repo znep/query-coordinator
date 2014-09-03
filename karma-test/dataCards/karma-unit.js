@@ -44,9 +44,9 @@ module.exports = function ( karma ) {
     files: [
       'bower_components/jquery/dist/jquery.js',
       'bower_components/javascript-detect-element-resize/jquery.resize.js',
-      'public/javascripts/util/jquery-extensions.js',
       'bower_components/lodash/dist/lodash.js',
       'public/javascripts/util/lodash-mixins.js',
+      'public/javascripts/util/jquery-extensions.js',
       'public/javascripts/bower/jquery.dotdotdot.js',
       'bower_components/angular/angular.js',
       /*    Map-specific libraries    */

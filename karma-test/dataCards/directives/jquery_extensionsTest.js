@@ -76,7 +76,7 @@ describe('jquery-extensions', function() {
   describe('$.fn.flyout', function() {
     beforeEach(function() {
       $('body').append('<div id="test-root"><div id="container">' +
-          '<div class="cell"></div><div class="cell">' +
+        '<div class="cell"></div><div class="cell">' +
         '</div></div>');
     });
     afterEach(function() {
@@ -94,8 +94,70 @@ describe('jquery-extensions', function() {
       _.defer(function() {
         expect($('.flyout').length).to.equal(0);
         done();
-      })
+      });
     });
+    describe('onBeforeRender', function() {
+      it('should cancel rendering by returning false', function(done) {
+        var onBeforeRenderStub = sinon.stub();
+        onBeforeRenderStub.onCall(0).returns(false);
+
+        $('#container').flyout({
+          selector: '.cell',
+          direction: 'bottom',
+          html: 'Mooo!',
+          onBeforeRender: onBeforeRenderStub
+        });
+        $('#container .cell').first().trigger('mouseenter');
+        expect(onBeforeRenderStub.calledOnce).to.be.true;
+        expect($('.flyout').length).to.equal(0);
+        $('#container .cell').trigger('mouseleave');
+        _.defer(function() {
+          expect($('.flyout').length).to.equal(0);
+          done();
+        });
+      });
+      it('should allow rendering by returning true', function(done) {
+        var onBeforeRenderStub = sinon.stub();
+        onBeforeRenderStub.onCall(0).returns(true);
+
+        $('#container').flyout({
+          selector: '.cell',
+          direction: 'bottom',
+          html: 'Mooo!',
+          onBeforeRender: onBeforeRenderStub
+        });
+        $('#container .cell').first().trigger('mouseenter');
+        expect(onBeforeRenderStub.calledOnce).to.be.true;
+        expect($('.flyout').length).to.equal(1);
+        $('#container .cell').trigger('mouseleave');
+        _.defer(function() {
+          expect($('.flyout').length).to.equal(0);
+          done();
+        });
+      });
+      it('should handle the case when it changes from returning true to false', function(done) {
+        var onBeforeRenderStub = sinon.stub();
+        onBeforeRenderStub.onCall(0).returns(true);
+        onBeforeRenderStub.onCall(1).returns(false);
+        $('#container').flyout({
+          selector: '.cell',
+          direction: 'bottom',
+          html: 'Meow?',
+          onBeforeRender: onBeforeRenderStub
+        });
+        // Mouse enter with onBeforeRender returning true
+        $('#container .cell').first().trigger('mouseenter');
+        expect(onBeforeRenderStub.calledOnce).to.be.true;
+        expect($('.flyout').length).to.equal(1);
+        $('#container .cell:nth-child(2)').trigger('mouseenter');
+        _.defer(function() {
+          expect($('.flyout').length).to.equal(0);
+          expect(onBeforeRenderStub.calledTwice).to.be.true;
+          done();
+        });
+      });
+    });
+
     it('should handle functions for all values', function() {
       var count = 0;
       var expectedCount = 0;

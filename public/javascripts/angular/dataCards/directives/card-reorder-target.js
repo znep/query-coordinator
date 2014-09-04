@@ -328,6 +328,10 @@
 
         };
 
+        function placeDraggedCardAtClientCoords(x, y) {
+          $('#dragged-card-layout').text(".dragged { left: {0}px !important; top: {1}px !important;}".format(x, y));
+        };
+
 
         /****************************************************
         * Manual (non Drag and Drop API-ized) drag and drop *
@@ -341,7 +345,10 @@
           if ($scope.editMode && e.button === 0) {
             var scopeOfCard = $(this).scope();
             $scope.$apply(function() {
+              //TODO this is sorely needing some state transition goodness
               $scope.grabbedCard = scopeOfCard.cardModel;
+              //TODO record mouse down position relative to card so it doesn't jump.
+              placeDraggedCardAtClientCoords(e.clientX, e.clientY);
             });
           }
         });
@@ -363,7 +370,7 @@
 
             // Card is being dragged.
 
-            $('#dragged-card-layout').text(".dragged { left: {0}px !important; top: {1}px !important;}".format(e.clientX, e.clientY));
+            placeDraggedCardAtClientCoords(e.clientX, e.clientY);
 
             var deltaTop = e.originalEvent.clientY;
             var distanceToScrollTop = $(window).scrollTop();

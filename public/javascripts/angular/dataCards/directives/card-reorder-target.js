@@ -287,8 +287,6 @@
             // OMG side-effect, but *what* a side effect, amirite?
             $scope.cardPositions = cardPositions;
             $('#card-layout').text(styleText);
-            $scope.$broadcast('layout:redraw');
-
           });
 
 
@@ -353,7 +351,6 @@
 
               $scope.$apply(function() {
                 $scope.page.set('cards', newCards);
-                $scope.$broadcast('layout:redraw');
               });
 
             }

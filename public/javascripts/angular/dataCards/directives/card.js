@@ -95,28 +95,10 @@ angular.module('dataCards.directives').directive('card', function(AngularRxExten
       var descriptionTruncatedContent = element.find('.description-truncated-content');
       var descriptionElementsWithMaxSize = element.find('.description-expanded-wrapper, .description-expanded-content');
 
-      // The following needs to fire whenever any change is made to the cards list. Not sure how to do that at the moment.
-
-      var recalculateCardLayout = function() {
-
-        var textHeight = parseInt(descriptionTruncatedContent.css('line-height')) * 2;
-
-        var availableSpace = element.clientHeight - descriptionTruncatedContent.offsetParent().position.top;
-        descriptionElementsWithMaxSize.css('max-height', availableSpace);
-
-        descriptionTruncatedContent.text($scope.description);
-
-        updateCardLayout(textHeight);
-
-      };
-
-      $scope.$on('layout:redraw', recalculateCardLayout);
-
-      /*Rx.Observable.subscribeLatest(
+      Rx.Observable.subscribeLatest(
         element.observeDimensions(),
         column.pluck('description'),
         function(cardSize, dimensions, descriptionText) {
-          debugger
           // Manually update the binding now, because Angular doesn't know that dotdotdot messes with
           // the text.
           descriptionTruncatedContent.text(descriptionText);
@@ -127,7 +109,7 @@ angular.module('dataCards.directives').directive('card', function(AngularRxExten
             css('max-height', availableSpace);
 
           updateCardLayout(parseInt(descriptionTruncatedContent.css('line-height')) * 2);
-        });*/
+        });
 
       /* Drag and drop */
 

@@ -564,6 +564,7 @@
                     }
                     options = $.extend({}, options, {
                         url: url,
+                        attribution: '<span class="olESRIAttribution">Powered by ESRI</span>',
                         projection: 'EPSG:102113',
                         tileSize: new OpenLayers.Size(256, 256),
                         tileOrigin: new OpenLayers.LonLat(-20037508.342787, 20037508.342787),

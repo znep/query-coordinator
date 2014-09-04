@@ -13,6 +13,11 @@
       restrict: 'A',
       link: function($scope, element, attrs) {
 
+        /******************************************
+         * Grab some template parts we care about *
+         *****************************************/
+        var cardContainer = $('#card-container');
+
         /****************************************
         * Bind card data so we can render cards *
         ****************************************/
@@ -82,7 +87,7 @@
 
 
         var availableContentHeightSubject = new Rx.Subject();
-        availableContentHeightSubject.onNext($(window).height() - ($('#card-container').offset().top - $(window).scrollTop()));
+        availableContentHeightSubject.onNext($(window).height() - (cardContainer.offset().top - $(window).scrollTop()));
 
         var availableContentHeightTimeout = null;
 
@@ -104,7 +109,7 @@
         });
 
         Rx.Observable.subscribeLatest(
-          $('#card-container').observeDimensions(),
+          cardContainer.observeDimensions(),
           rowsOfCardsBySize,
           availableContentHeightSubject,
           $scope.observe('headerIsStuck'),
@@ -182,7 +187,7 @@
               //  expandedColumnTop = parseInt($scope.headerStyle['height'], 10);
                 var expandedColumnHeight = windowHeight - parseInt($scope.headerStyle['height'], 10) - verticalPadding;
               } else {
-                var expandedColumnHeight = windowHeight - ($('#card-container').offset().top - scrollTop) - verticalPadding;
+                var expandedColumnHeight = windowHeight - (cardContainer.offset().top - scrollTop) - verticalPadding;
               }
 
               styleText += 'position:fixed;'
@@ -303,7 +308,7 @@
         // Put another way, it's the closest card to the mouse in the row the mouse is in.
         function findDropTarget(clientX, clientY) {
           var $window = $(window);
-          var offset = $('#card-container').offset();
+          var offset = cardContainer.offset();
           var containerXOffset = offset.left - $window.scrollLeft(); 
           var containerYOffset = offset.top - $window.scrollTop();
           var cursorX = clientX - containerXOffset;
@@ -328,8 +333,20 @@
 
         };
 
+        // Show the dragged card at the given coords. Note that an offset is included
+        // depending on where the card was grabbed.
         function placeDraggedCardAtClientCoords(x, y) {
-          $('#dragged-card-layout').text(".dragged { left: {0}px !important; top: {1}px !important;}".format(x, y));
+
+          // The grab offset needs to be taken into consideration.
+          // However, the grab offset needs to be clamped to the current
+          // size of the card, which may change as the user moves between
+          // sections.
+          var grabbedCardElement = cardContainer.find('.dragged');
+          var offsetX = Math.min(grabbedCardElement.outerWidth(), grabbedCardMouseOffset.x);
+          var offsetY = Math.min(grabbedCardElement.outerWidth(), grabbedCardMouseOffset.y);
+          $('#dragged-card-layout').text(".dragged { left: {0}px !important; top: {1}px !important;}".format(
+                x - offsetX,
+                y - offsetY));
         };
 
 
@@ -338,6 +355,7 @@
         ****************************************************/
 
         $scope.grabbedCard = null;
+        var grabbedCardMouseOffset = null; // Mouse down location on card. Important, otherwise card will jump on drag.
 
         //TODO - consider regular delegated browser event.
         //TODO drag threshold.
@@ -347,9 +365,13 @@
             $scope.$apply(function() {
               //TODO this is sorely needing some state transition goodness
               $scope.grabbedCard = scopeOfCard.cardModel;
-              //TODO record mouse down position relative to card so it doesn't jump.
-              placeDraggedCardAtClientCoords(e.clientX, e.clientY);
+              var rectOfCard = e.target.getBoundingClientRect();
+              grabbedCardMouseOffset = {
+                x: e.clientX - rectOfCard.left,
+                y: e.clientY - rectOfCard.top
+              };
             });
+            placeDraggedCardAtClientCoords(e.clientX, e.clientY);
           }
         });
         // This one is necessary to prevent the default HTML5 Drag and Drop behavior.

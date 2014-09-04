@@ -129,15 +129,6 @@ angular.module('dataCards.directives').directive('card', function(AngularRxExten
       });*/
 
 
-      element.on('mousedown', function(e) {
-        $scope.$emit('card-mousedown', $scope.model);
-      });
-
-      // This one is necessary to prevent the default HTML5 Drag and Drop behavior.
-      // It has a similar effect to event.preventDefault() but allows other types
-      // of events to pass through.
-      element.on('dragstart', function() { return false; });
-
     }
   };
 

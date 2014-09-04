@@ -64,6 +64,7 @@
     </div>
     <!-- CARD TILES -->
     <style id="card-layout"></style>
+    <style id="dragged-card-layout"></style>
     <div id="card-container" class="cards" card-reorder-target>
       <!-- Ordering by uniqueId keeps ng-repeat DOM manipulations at a minimum.
            since we position cards on screen by absolute offsets, the DOM ordering
@@ -73,13 +74,17 @@
       <!-- Additionally, jquery-detect-element-resize breaks if the target node is
            moved in the dom. The orderBy prevents such movement (only adds/removes
            remain, which are fine). -->
-      <card model="cardModel"
-            id="card-{{cardModel.uniqueId}}"
-            class="card"
-            edit-mode="editMode"
-            where-clause="globalWhereClauseFragment"
-            ng-class="{ expanded: expanded }"
-            ng-repeat="cardModel in cardModels | orderBy: 'uniqueId'"></card>
+      <div id="card-{{cardModel.uniqueId}}"
+           class="card-spot"
+           ng-repeat="cardModel in cardModels | orderBy: 'uniqueId'">
+        <card model="cardModel"
+              class="card"
+              edit-mode="editMode"
+              where-clause="globalWhereClauseFragment"
+              ng-class="{ expanded: expanded, dragged: cardModel === grabbedCard }"></card>
+        <div class="card-drop-placeholder" ng-if="cardModel === grabbedCard">DROPME</div>
+        <div class="card-drag-overlay" ng-if="editMode && cardModel !== grabbedCard" draggable="true">DRAGME</div>
+      </div>
     </div>
   </div>
 </div>

@@ -18,15 +18,15 @@ angular.module('dataCards.directives').directive('stickyHeader', function(Angula
       };
 
       function onResize() {
-        $scope.$apply(function() {
+        //$scope.$apply(function() {
           pollLayout();
-        });
+        //});
       };
 
       function onScroll() {
-        $scope.$apply(function() {
+        //$scope.$apply(function() {
           pollLayout();
-        });
+        //});
       };
 
       var $content = element.find('.content');

@@ -1,6 +1,9 @@
-// Contains extensions to both jQuery as well as Javascript built-in types.
+// Updated by Chris Laidlaw because this is in the hot render loop
+// and two calls to jQuery.width()/.height() were slower than
+// native methods.
 $.fn.dimensions = function() {
-  return {width: this.width(), height: this.height() };
+  var el = this[0];
+  return {width: Math.min(el.clientWidth, el.scrollWidth, el.offsetWidth), height: Math.min(el.clientHeight, el.scrollHeight, el.offsetHeight)};
 };
 
 // Yields an RX observable sequence of this selection's dimensions.

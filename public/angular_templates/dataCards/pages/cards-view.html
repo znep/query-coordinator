@@ -82,7 +82,7 @@
               edit-mode="editMode"
               where-clause="globalWhereClauseFragment"
               ng-class="{ expanded: expanded, dragged: cardModel === grabbedCard }"></card>
-        <div class="card-drop-placeholder" ng-if="cardModel === grabbedCard">DROPME</div>
+        <div class="card-drop-placeholder" ng-if="cardModel === grabbedCard"><soc-kitten></soc-kitten></div>
         <div class="card-drag-overlay" ng-if="editMode && cardModel !== grabbedCard" draggable="true">DRAGME</div>
       </div>
     </div>

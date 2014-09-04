@@ -307,8 +307,8 @@ body
           right: 0
           top: 0
           bottom: 0
-          background: rgba(0,200,0,0.2)
-          z-index: 2001
+          background: green
+          opacity: 0.2
         .card-drag-overlay
           position: absolute
           left: 0
@@ -318,23 +318,23 @@ body
           background: rgba(0,0,0,0.1)
           z-index: 2000
           cursor: move
-
+        .card
+          position: absolute
+          top: 0
+          right: 0
+          bottom: 0
+          left: 0
+          &.dragged
+            position: fixed
+            z-index: 3000
 
       .card
-        position: absolute
-        top: 0
-        right: 0
-        bottom: 0
-        left: 0
         border-radius: $rounded-corners-border-radius
         padding: $card-padding
         color: $lt-grey-font-color
         background: $card-bg-color
         box-sizing: border-box
         -moz-box-sizing: border-box
-
-        &.dragged
-          position: fixed
 
         .card-text
           position: relative

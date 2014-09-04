@@ -2,7 +2,7 @@ var dataCards = angular.module('dataCards', [
   'ui.router',
   'socrataCommon.services',
   'socrataCommon.directives',
-  'socrataCommon.services',
+  'socrataCommon.filters',
   'dataCards.controllers',
   'dataCards.directives',
   'dataCards.models',

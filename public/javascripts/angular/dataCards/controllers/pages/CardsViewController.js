@@ -118,11 +118,6 @@ angular.module('dataCards.controllers').controller('CardsViewController',
     $scope.bindObservable('dataset', page.observe('dataset'));
     $scope.bindObservable('datasetPages', page.observe('dataset').observeOnLatest('pages'));
     $scope.bindObservable('datasetRowDisplayUnit', page.observe('dataset').observeOnLatest('rowDisplayUnit'));
-    $scope.bindObservable('datasetDaysUnmodified', page.observe('dataset').observeOnLatest('updatedAt').map(function(date) {
-      // TODO just a placeholder implementation
-      if (!date) return '';
-      return moment(date).fromNow();
-    }));
 
     var allCardsFilters = page.observe('cards').flatMap(function(cards) {
       if (!cards) { return Rx.Observable.never(); }

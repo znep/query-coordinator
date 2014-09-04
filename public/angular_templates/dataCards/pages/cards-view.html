@@ -74,7 +74,7 @@
       <!-- Additionally, jquery-detect-element-resize breaks if the target node is
            moved in the dom. The orderBy prevents such movement (only adds/removes
            remain, which are fine). -->
-      <div id="card-{{cardModel.uniqueId}}"
+      <div id="card-tile-{{cardModel.uniqueId}}"
            class="card-spot"
            ng-repeat="cardModel in cardModels | orderBy: 'uniqueId'">
         <card model="cardModel"

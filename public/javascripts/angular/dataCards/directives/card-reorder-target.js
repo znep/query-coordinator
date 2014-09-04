@@ -163,7 +163,7 @@
                   // know the top offset of the next card up for layout.
                   heightOfAllCards += cardHeight + verticalPadding;
 
-                  return accumulatedStyle + '#card-' + card.model.uniqueId
+                  return accumulatedStyle + '#card-tile-' + card.model.uniqueId
                                           + '{'
                                           + 'left:' + cardLeft + 'px;'
                                           + 'top:' + cardTop + 'px;'
@@ -172,7 +172,7 @@
                                           + '}';
               }, '');
 
-              styleText += '#card-' + expandedCard.model.uniqueId
+              styleText += '#card-tile-' + expandedCard.model.uniqueId
                          + '{';
 
               var windowHeight = $(window).height();
@@ -260,7 +260,7 @@
                         height: currentRowContentHeight
                       });
 
-                    return '#card-' + card.model.uniqueId + ', #card-' + card.model.uniqueId + ' .dragged'
+                    return '#card-tile-' + card.model.uniqueId + ', #card-tile-' + card.model.uniqueId + ' .dragged'
                                     + '{'
                                     + 'left:' + cardLeft + 'px;'
                                     + 'top:' + cardTop + 'px;'

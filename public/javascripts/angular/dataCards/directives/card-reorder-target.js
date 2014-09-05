@@ -8,10 +8,18 @@
   // consider moving all of the card render/layout functionality into here (and rename the directive).
   // This would allow us to get rid of the global ID selectors in CardsViewController as well.
   // We'll chat tomorrow.
-  angular.module('dataCards.directives').directive('cardReorderTarget', function(SortedTileLayout) {
+  angular.module('dataCards.directives').directive('cardReorderTarget', function(UIController, SortedTileLayout) {
     return {
       restrict: 'A',
       link: function($scope, element, attrs) {
+
+
+        var dummyLayout = function(done) {
+          console.log('dummy layout');
+          //done();
+        };
+
+        var controller = UIController.initialize($scope, dummyLayout);
 
         /******************************************
          * Grab some template parts we care about *
@@ -106,6 +114,14 @@
           return _.pluck(
               _.where(cards, _.property('expanded')),
               'model');
+        });
+
+        expandedCards.subscribe(function(expandedCards) {
+          if (expandedCards.length > 0) {
+            $scope.expandedMode = true;
+          } else {
+            $scope.expandedMode = false;
+          }
         });
 
         Rx.Observable.subscribeLatest(

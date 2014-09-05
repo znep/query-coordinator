@@ -65,7 +65,7 @@
                 if (cmObj.settings.columnHideEnabled)
                 { features.hide = true; }
 
-                if (cmObj.settings.columnPropertiesEnabled && !cmObj.settings.view.newBackend)
+                if (cmObj.settings.columnPropertiesEnabled)
                 { features.properties = true; }
 
                 // We've got a menu, so add a class

@@ -159,7 +159,7 @@ var Dataset = ServerModel.extend({
 
     canUpdate: function()
     {
-        return (this.isUnpublished() || !this.isDefault() || this.newBackend) &&
+        return (this.isUnpublished() || !this.isDefault()) &&
             this.hasRight('update_view');
     },
 
@@ -254,7 +254,7 @@ var Dataset = ServerModel.extend({
         if (this.forceEditable()) {
             return false;
         }
-        return (this.isBlobby() || this.isGeoDataset() || this.newBackend);
+        return (this.isBlobby() || this.isGeoDataset());
     },
 
     renderWithArcGISServer: function()

@@ -3,26 +3,33 @@ angular.module('dataCards.directives').directive('card', function(AngularRxExten
   //TODO should probably be a service. And not suck.
   var cardTypeMapping = function(column) {
     column = column || {};
-    var logicalType = column.logicalDatatype;
-    var physicalType = column.physicalDatatype;
-    if (logicalType === 'category') {
+    var logicalDatatype = column.logicalDatatype;
+    var physicalDatatype = column.physicalDatatype;
+    if (logicalDatatype === 'category') {
       return 'column';
-    } else if (logicalType === 'amount') {
-      if (physicalType === 'number') { return 'statBar'; }
-    } else if (logicalType === 'location') {
-      if (physicalType === 'point') { return 'pointMap'; }
-      else if (physicalType === 'text') { return 'choropleth'; }
-      else if (physicalType === 'geo entity') { return 'point-ish map'; }
-    } else if (logicalType === 'time') {
-      if (physicalType === 'timestamp') { return 'timeline'; }
-      else if (physicalType === 'number') { return 'timeline'; }
-    } else if (logicalType === 'text' || logicalType === 'name' || logicalType === 'identifier') {
-      if (physicalType === 'text' || physicalType === 'number') {
+    }
+    if (logicalDatatype === 'amount') {
+      if (physicalDatatype === 'number') { return 'statBar'; }
+    }
+    if (logicalDatatype === 'location') {
+      if (physicalDatatype === 'point') { return 'pointMap'; }
+      if (physicalDatatype === 'text') { return 'choropleth'; }
+      if (physicalDatatype === 'geo_entity') { return 'point-ish map'; }
+    }
+    if (logicalDatatype === 'time') {
+      if (physicalDatatype === 'timestamp') { return 'timeline'; }
+      if (physicalDatatype === 'number') { return 'timeline'; }
+      if (physicalDatatype === 'fixed_timestamp') { return 'timeline'; }
+    }
+    if (logicalDatatype === 'text' || logicalDatatype === 'name' || logicalDatatype === 'identifier') {
+      if (physicalDatatype === 'text' || physicalDatatype === 'number') {
         return 'search';
       }
-    } else if (logicalType === '*') { return 'table'; }
-    throw new Error('Unknown visualization for logicalDatatype: ' + logicalType +
-      ' and physicalDatatype: ' + physicalType);
+      if (physicalDatatype === 'fixed_timestamp') { return 'timeline'; }
+    }
+    if (logicalDatatype === '*') { return 'table'; }
+    throw new Error('Unknown visualization for logicalDatatype: ' + logicalDatatype +
+      ' and physicalDatatype: ' + physicalDatatype);
   };
 
   return {

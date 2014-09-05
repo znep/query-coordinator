@@ -298,10 +298,8 @@
         /******************************
         * Drag and drop functionality *
         ******************************/
-
-        //var draggedModel = null; //TODO probably remove.
-
-        //var dragTarget = element; //TODO what we want?
+        $scope.grabbedCard = null;
+        var grabbedCardMouseOffset = null; // Mouse down location on card. Important, otherwise card will jump on drag.
 
         // Given a point, the drop target is the card whose Y axis placement overlaps with the mouse Y position,
         // and whose top-left corner is closest to the mouse position.
@@ -333,6 +331,10 @@
 
         };
 
+        /****************************************************
+        * Manual (non Drag and Drop API-ized) drag and drop *
+        ****************************************************/
+
         // Show the dragged card at the given coords. Note that an offset is included
         // depending on where the card was grabbed.
         function placeDraggedCardAtClientCoords(x, y) {
@@ -349,15 +351,6 @@
                 y - offsetY));
         };
 
-
-        /****************************************************
-        * Manual (non Drag and Drop API-ized) drag and drop *
-        ****************************************************/
-
-        $scope.grabbedCard = null;
-        var grabbedCardMouseOffset = null; // Mouse down location on card. Important, otherwise card will jump on drag.
-
-        //TODO - consider regular delegated browser event.
         //TODO drag threshold.
         element.on('mousedown', '.card-drag-overlay', function(e) {
           if ($scope.editMode && e.button === 0) {
@@ -374,11 +367,7 @@
             placeDraggedCardAtClientCoords(e.clientX, e.clientY);
           }
         });
-        // This one is necessary to prevent the default HTML5 Drag and Drop behavior.
-        // It has a similar effect to event.preventDefault() but allows other types
-        // of events to pass through.
-        element.on('dragstart', function() { return false; });
-        // TODO Y?
+
         element.on('mousedown', function(e) {
           if ($scope.grabbedCard) {
             e.preventDefault();
@@ -451,7 +440,6 @@
         // the cursor off of a card and then letting go will correctly transition
         // the dragging state to false.
         $('body').on('mouseup', function(e) {
-          //TODO detach
           $scope.$apply(function() {
             $scope.grabbedCard = null;
           });

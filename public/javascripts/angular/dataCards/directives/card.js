@@ -110,25 +110,6 @@ angular.module('dataCards.directives').directive('card', function(AngularRxExten
 
           updateCardLayout(parseInt(descriptionTruncatedContent.css('line-height')) * 2);
         });
-
-      /* Drag and drop */
-
-      /*element.on('dragstart', function(e, a) {
-        e.originalEvent.dataTransfer.setData('text/html', $scope.model.uniqueId);
-        $scope.safeApply(function() {
-          $scope.isDragging = true;
-          $scope.$emit('card: dragStart', $scope.model);
-        });
-      });
-
-      element.on('dragend', function(e, a) {
-        $scope.safeApply(function() {
-          $scope.isDragging = false;
-          $scope.$emit('card: dragEnd', $scope.model);
-        });
-      });*/
-
-
     }
   };
 

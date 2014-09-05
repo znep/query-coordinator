@@ -247,7 +247,7 @@ angular.module('socrataCommon.directives').directive('table', function(AngularRx
                 } else {
                   cellText = _.escape(cellContent);
                 }
-              } else if (cellType == 'geo entity') {
+              } else if (cellType == 'geo_entity') {
                 if (_.isArray(cellContent.coordinates)) {
                   cellText += (' (<span title="Latitude">{0}°</span>, ' +
                     '<span title="Longitude">{1}°</span>)').format(

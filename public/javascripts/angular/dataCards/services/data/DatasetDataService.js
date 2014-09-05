@@ -2,17 +2,18 @@
 
   function DatasetDataService(http) {
 
-    function fetchStub(id) {
-      return http.
-        get('/stubs/datasets/' + id + '.json', { cache: true }).
-        then(function(response) {
+    function fetch(datasetId) {
+      return http.get('/dataset_metadata/' + datasetId + '.json').then(
+        function(response) {
           return response.data;
-        });
+        }
+      );
     }
 
+    // TODO short-circuit this to have callers of getBaseInfo call fetch instead
     return {
       getBaseInfo: function(id) {
-        return fetchStub(id);
+        return fetch(id);
       }
     };
 

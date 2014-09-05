@@ -1,14 +1,19 @@
 (function() {
+
   function PageDataService(http) {
-    function fetchStub(id) {
-      return http.get('/stubs/pages/' + id + '.json', { cache: true }).then(function(response) {
-        return response.data;
-      });
+
+    function fetch(pageId) {
+      return http.get('/page_metadata/' + pageId + '.json').then(
+        function(response) {
+          return response.data;
+        }
+      );
     }
 
+    // TODO short-circuit this to have callers of getBaseInfo call fetch instead
     return {
-      getBaseInfo: function(id) {
-        return fetchStub(id);
+      getBaseInfo: function(pageId) {
+        return fetch(pageId);
       }
     };
   }
@@ -16,4 +21,5 @@
   angular.
     module('dataCards.services').
     factory('PageDataService', PageDataService);
+
 })();

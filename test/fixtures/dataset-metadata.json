@@ -1,9 +1,9 @@
 {
-  "id": "fake-data",
+  "id": "q77b-s2zi",
   "rowDisplayUnit": "crime",
   "defaultAggregateColumn": ":count",
-  "domain": "soda2nbe.test-socrata.com",
-  "ownerId": "jc63-heng",
+  "domain": "localhost",
+  "ownerId": "tugg-icke",
   "updatedAt": "2014-05-20T10:42:55.000-07:00",
   "columns": [
     {
@@ -49,7 +49,7 @@
     }
   ],
   "pages": {
-    "publisher": [ "from-rndy", "from-othr" ],
-    "user": [ "from-user", "from-frnk" ]
+    "publisher": [ ],
+    "user": [ ]
   }
 }

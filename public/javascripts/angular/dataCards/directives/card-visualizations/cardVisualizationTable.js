@@ -1,7 +1,7 @@
 angular.module('dataCards.directives').directive('cardVisualizationTable', function(AngularRxExtensions, CardDataService, SortedTileLayout) {
   "use strict";
 
-  var unsortable = ['geo entity'];
+  var unsortable = ['geo_entity'];
 
   return {
     restrict: 'E',

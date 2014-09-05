@@ -375,6 +375,9 @@ Frontend::Application.routes do
       match '/view/*angularRoute', :action => 'serve_app', :app => 'dataCards' # See angular-app-{:app} in assets.yml.
     end
 
+    resources :dataset_metadata, :controller => :phidippides_datasets
+    resources :page_metadata, :controller => :phidippides_pages
+
     # Custom pages, catalogs, facets
     scope :controller => 'custom_content' do
       # Canvas 1
@@ -385,6 +388,10 @@ Frontend::Application.routes do
         :constraints => { :facet_value => /.*/ }
       match '/styles/:page_type/:config_name.css', :action => 'stylesheet',
         :constraints => { :page_type => /homepage|page|facet_(listing|page)/i }
+
+      #####################################
+      ####### WARNING GREEDY ROUTE! #######
+      #####################################
 
       # Canvas 2
       match '/template/:id', :action => 'template'

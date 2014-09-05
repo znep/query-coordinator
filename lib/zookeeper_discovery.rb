@@ -1,6 +1,7 @@
 require 'zk'
 
 class ZookeeperDiscovery
+
   def self.initialize!
     client
     @@_services = {}
@@ -11,7 +12,12 @@ class ZookeeperDiscovery
     _get(service.to_sym).sample
   end
 
-protected
+  def self.get_json(service_path)
+    JSON.parse(client.get(service_path).first)
+  end
+
+  protected
+
   def self._get(service)
     initialize! if defined?(@@_services).nil?
 
@@ -48,5 +54,5 @@ protected
     ZK.install_fork_hook
     ZK::Client.new(APP_CONFIG['zk_hosts'])
   end
-end
 
+end

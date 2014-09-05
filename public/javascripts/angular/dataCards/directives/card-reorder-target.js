@@ -152,9 +152,13 @@
 
               var cards = _.flatten(_.values(sortedTileLayoutResult));
 
-              var expandedCard = cards[0];
+              var expandedCard = expandedCards[0];
 
-              var unexpandedCards = _.rest(cards);
+              var unexpandedCards = cards.filter(function(card) {
+                  // Note that the 'card' supplied by the iterator is a wrapper around
+                  // the card model, which is what 'expandedCard' is.
+                  return card.model.uniqueId !== expandedCard.uniqueId;
+                });
 
               var heightOfAllCards = 0;
 
@@ -177,7 +181,7 @@
                                           + '}';
               }, '');
 
-              styleText += '#card-tile-' + expandedCard.model.uniqueId
+              styleText += '#card-tile-' + expandedCard.uniqueId
                          + '{';
 
               var windowHeight = $(window).height();

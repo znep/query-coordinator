@@ -183,8 +183,6 @@
               var windowHeight = $(window).height();
 
               if ($scope.headerIsStuck) {
-              //  styleText += 'position:fixed;';
-              //  expandedColumnTop = parseInt($scope.headerStyle['height'], 10);
                 var expandedColumnHeight = windowHeight - parseInt($scope.headerStyle['height'], 10) - verticalPadding;
               } else {
                 var expandedColumnHeight = windowHeight - (cardContainer.offset().top - scrollTop) - verticalPadding;
@@ -306,11 +304,11 @@
         // Put another way, it's the closest card to the mouse in the row the mouse is in.
         function findDropTarget(clientX, clientY) {
           var $window = $(window);
-          var offset = cardContainer.offset();
-          var containerXOffset = offset.left - $window.scrollLeft(); 
-          var containerYOffset = offset.top - $window.scrollTop();
-          var cursorX = clientX - containerXOffset;
-          var cursorY = clientY - containerYOffset;
+          var containerOffset = cardContainer.offset();
+          var containerXOffset = containerOffset.left - $window.scrollLeft();
+          var containerYOffset = containerOffset.top - $window.scrollTop();
+          var cursorX = clientX - containerXOffset - grabbedCardMouseOffset.x;
+          var cursorY = clientY - containerYOffset - grabbedCardMouseOffset.y;
 
           var cardsInMyRow = _.where($scope.cardPositions, function(cardPositionData) {
             return cardPositionData.top <= cursorY && (cardPositionData.top + cardPositionData.height) >= cursorY;

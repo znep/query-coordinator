@@ -368,8 +368,9 @@
           }
         });
 
+        //  Prevent the user from selecting text accidentally while in edit mode.
         element.on('mousedown', function(e) {
-          if ($scope.grabbedCard) {
+          if ($scope.editMode) {
             e.preventDefault();
           }
         });

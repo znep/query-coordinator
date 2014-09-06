@@ -31,6 +31,7 @@
           },
 
           scroll: function(event) {
+
             if (controller.expandedMode) {
               controller.transitionTo('LAYOUT');
             }
@@ -59,7 +60,7 @@
           },
 
           enter: function() {
-
+console.error('_');
             controller.layoutFn.apply(controller, controller.dataModel);
 
             if (!controller.pointerLeft) {

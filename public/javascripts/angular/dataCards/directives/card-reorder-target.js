@@ -131,6 +131,7 @@
 
               var windowHeight = $(window).height();
 
+              // TODO: NEED SOME WAY TO FIGURE OUT IF THE HEADER IS STUCK
               if ($scope.headerIsStuck) {
                 var expandedColumnHeight = windowHeight - parseInt($scope.headerStyle['height'], 10) - verticalPadding;
               } else {

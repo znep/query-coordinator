@@ -4,7 +4,7 @@
 
   angular.module('dataCards.services').factory('UIController', function() {
 
-    var UIController = function($scope, layoutFn) {
+    var UIController = function(layoutFn, dataModelObservable) {
 
       var controller = this;
 
@@ -12,101 +12,134 @@
       * Valid UI states *
       ******************/
 
-      var UIRestState = function() {
-
-        this.name = 'UIRestState';
-
-        console.log('at rest');
+      function UIRestState() {
 
         return {
 
           getState: function() {
-            return this.name;
+
+            return 'UIRestState';
+ 
+          },
+
+          enter: function() {
+
           },
 
           mouseDown: function(event) {
-            controller.transitionTo(UIUpdateState);
+            controller.transitionTo('UPDATE');
           },
 
           scroll: function(event) {
             if (controller.expandedMode) {
-              controller.transitionTo(UILayoutState);
+              controller.transitionTo('LAYOUT');
             }
+          },
+
+          resize: function(event) {
+            controller.transitionTo('LAYOUT');
+          },
+
+          dataChange: function() {
+            controller.transitionTo('LAYOUT');
           }
 
         };
 
       };
 
-      var UILayoutState = function() {
-
-        this.name = 'UILayoutState';
-
-        console.log('doing layout');
-
-        controller.layoutFn();
+      function UILayoutState() {
 
         return {
 
           getState: function() {
-            return this.name;
+
+            return 'UILayoutState';
+
+          },
+
+          enter: function() {
+
+            controller.layoutFn.apply(controller, controller.dataModel);
+
+            if (!controller.pointerLeft) {
+              controller.transitionTo('REST');
+            }
+
           },
 
           mouseDown: function(event) {
-            controller.transitionTo(UIUpdateState);
+            controller.transitionTo('UPDATE');
           },
 
           mouseUp: function(event) {
-            controller.transitionTo(UIUpdateState);
+            controller.transitionTo('UPDATE');
           },
 
           mouseMove: function(event) {
             if (controller.pointerLeft) {
-              controller.transitionTo(UIUpdateState);
+              controller.transitionTo('UPDATE');
             } else {
-              controller.transitionTo(UIRestState);
+              controller.transitionTo('REST');
             }
           },
 
           scroll: function(event) {
             if (controller.expandedMode) {
-              controller.transitionTo(UILayoutState);
+              controller.transitionTo('LAYOUT');
             }
+          },
+
+          resize: function(event) {
+            controller.transitionTo('LAYOUT');
+          },
+
+          dataChange: function() {
+            controller.transitionTo('LAYOUT');
           }
 
         };
 
       };
 
-      var UIUpdateState = function() {
-
-        this.name = 'UIUpdateState';
-
-        console.log('doing update');
+      function UIUpdateState() {
 
         return {
 
           getState: function() {
-            return this.name;
+            return 'UIUpdateState';
+          },
+
+          enter: function() {
+
           },
 
           mouseUp: function(event) {
-            controller.transitionTo(UILayoutState);
+            controller.transitionTo('LAYOUT');
           },
 
           mouseMove: function(event) {
-            controller.transitionTo(UILayoutState);
+            controller.transitionTo('LAYOUT');
           },
 
           scroll: function(event) {
             if (controller.expandedMode) {
-              controller.transitionTo(UILayoutState);
+              controller.transitionTo('LAYOUT');
             }
+          },
+
+          resize: function(event) {
+            controller.transitionTo('LAYOUT');
+          },
+
+          dataChange: function() {
+            controller.transitionTo('LAYOUT');
           }
 
         };
 
       };
+
 
       /**************************************************
       * Event handlers so that the UIController can act *
@@ -129,8 +162,7 @@
 
         controller.pointerTarget = event.target;
 
-        if (controller.hasOwnProperty('currentState') &&
-            typeof controller.currentState.mouseDown === 'function') {
+        if (controller.currentState && typeof controller.currentState.mouseDown === 'function') {
           controller.currentState.mouseDown(event);
         }
 
@@ -152,8 +184,7 @@
 
         controller.pointerTarget = event.target;
 
-        if (controller.hasOwnProperty('currentState') &&
-            typeof controller.currentState.mouseUp === 'function') {
+        if (controller.currentState && typeof controller.currentState.mouseUp === 'function') {
           controller.currentState.mouseUp(event);
         }
 
@@ -165,8 +196,7 @@
         controller.pointerY = event.clientY;
         controller.pointerTarget = event.target;
 
-        if (controller.hasOwnProperty('currentState') &&
-            typeof controller.currentState.mouseMove === 'function') {
+        if (controller.currentState && typeof controller.currentState.mouseMove === 'function') {
           controller.currentState.mouseMove(event);
         }
 
@@ -177,23 +207,51 @@
         controller.scrollX = window.scrollX;
         controller.scrollY = window.scrollY;
 
-        if (controller.hasOwnProperty('currentState') &&
-            typeof controller.currentState.scroll === 'function') {
+        if (controller.currentState && typeof controller.currentState.scroll === 'function') {
           controller.currentState.scroll(event);
         }
 
       };
 
+      var handleResize = function(event) {
+
+        if (controller.currentState && typeof controller.currentState.resize === 'function') {
+          controller.currentState.resize(event);
+        }
+
+      };
+
+      var handleDataModelChange = function(dataModel) {
+
+        controller.dataModel = dataModel;
+
+        if (controller.currentState && typeof controller.currentState.dataChange === 'function') {
+
+          controller.currentState.dataChange();
+
+        }
+
+      };
+
+
       /*********************************************
       * Initialize the controller's internal state *
       *********************************************/
 
-      this.$scope = $scope;
-      this.editMode = $scope.editMode;
-      this.expandedMode = $scope.expandedMode;
-      this.layoutFn = function() { layoutFn(function() { controller.transitionTo(UIRestState); }); };
+      this.editMode = false;
+      this.expandedMode = false;
+
+      this.layoutFn = layoutFn;
+
+      this.STATES = {
+        'REST': new UIRestState(),
+        'LAYOUT': new UILayoutState(),
+        'UPDATE': new UIUpdateState()
+      };
 
       this.currentState = null;
+
+      this.dataModel = null;
 
       this.pointerX = -1;
       this.pointerY = -1;
@@ -208,8 +266,10 @@
       document.addEventListener('mouseup', handleMouseUp, false);
       document.addEventListener('mousemove', handleMouseMove, false);
       document.addEventListener('scroll', handleScroll, false);
+      window.addEventListener('resize', handleResize, false);
+      dataModelObservable.subscribe(handleDataModelChange);
 
-      this.transitionTo(UILayoutState);
+      this.transitionTo('LAYOUT');
 
     };
 
@@ -219,7 +279,10 @@
     };
 
     UIController.prototype.transitionTo = function(newState) {
-      this.currentState = new newState();
+
+      this.currentState = this.STATES[newState];
+      this.currentState.enter();
+
     };
 
     UIController.prototype.setExpandedMode = function(expandedMode) {
@@ -232,8 +295,8 @@
 
     return {
 
-      initialize: function($scope, layoutFn) {
-        return new UIController($scope, layoutFn);
+      initialize: function(layoutFn, dataModelObservable) {
+        return new UIController(layoutFn, dataModelObservable);
       }
 
     };

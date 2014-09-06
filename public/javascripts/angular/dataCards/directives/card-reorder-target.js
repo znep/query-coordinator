@@ -13,85 +13,16 @@
       restrict: 'A',
       link: function($scope, element, attrs) {
 
-
-        var dummyLayout = function(done) {
-          console.log('dummy layout');
-          //done();
-        };
-
-        var controller = UIController.initialize($scope, dummyLayout);
-
         /******************************************
          * Grab some template parts we care about *
          *****************************************/
-        var cardContainer = $('#card-container');
-
-        /****************************************
-        * Bind card data so we can render cards *
-        ****************************************/
-
-        $scope.bindObservable('cardModels', $scope.page.observe('cards'));
 
 
         /**************************
         * Card layout calculation *
         **************************/
 
-        // Given a model property name P and an observable sequence of arrays of models having property P,
-        // returns an observable sequence of arrays of objects pulling the last value yielded from P next
-        // to the model. Thus, if the input observable yields an array of models [A, B], the elements from
-        // the returned sequence look like:
-        // [
-        //   {
-        //     <P>: <the last value of P from model A>
-        //     model: <model A>
-        //   },
-        //   {
-        //     <P>: <the last value of P from model B>
-        //     model: <model B>
-        //   }
-        //   ...
-        // ]
-        // A new array is yielded every time the list of models changes or any model gets a new value
-        // for P.
-        function zipLatestArray(obs, property) {
-          return obs.flatMapLatest(
-            function(values) {
-              return Rx.Observable.combineLatest(_.map(values, function(val) {
-                return val.observe(property);
-              }), function() {
-                return _.map(_.zip(values, arguments), function(arr) {
-                  var r={ model: arr[0] };
-                  r[property] = arr[1];
-                  return r;
-                });
-              });
-            }
-          );
-        };
-
-        // A hash of:
-        //  "card size" -> array of rows (which themselves are arrays).
-        //
-        // For instance:
-        // {
-        //  "1": [
-        //         [ { cardSize: "1", model: <card model> } ]  // There's only one card of size 1, so it sits in its own row.
-        //       ],
-        //  "2": [
-        //         [ { cardSize: "2", model: <card model> },   // There are 5 cards of size 2. Here, they are split up into a
-        //           { cardSize: "2", model: <card model> } ], // pair of rows containing resp. 2 and 3 cards.
-        //
-        //         [ { cardSize: "2", model: <card model> },
-        //           { cardSize: "2", model: <card model> },
-        //           { cardSize: "2", model: <card model> } ]
-        //       ]
-        //  }
-        var layout = new SortedTileLayout();
-        var rowsOfCardsBySize = zipLatestArray($scope.page.observe('cards'), 'cardSize').
-          map(function(sizedCards) {
-            return layout.doLayout(sizedCards);
-          });
+/*
 
 
         var availableContentHeightSubject = new Rx.Subject();
@@ -104,26 +35,16 @@
           //availableContentHeightTimeout = setTimeout(function() {
             availableContentHeightSubject.onNext(1);
           //}, 500);
-        });
+        });*/
 
         /**************
         * Card layout *
         **************/
 
-        var expandedCards = zipLatestArray($scope.page.observe('cards'), 'expanded').map(function(cards) {
-          return _.pluck(
-              _.where(cards, _.property('expanded')),
-              'model');
-        });
 
-        expandedCards.subscribe(function(expandedCards) {
-          if (expandedCards.length > 0) {
-            $scope.expandedMode = true;
-          } else {
-            $scope.expandedMode = false;
-          }
-        });
 
+
+/*
         Rx.Observable.subscribeLatest(
           cardContainer.observeDimensions(),
           rowsOfCardsBySize,
@@ -131,6 +52,14 @@
           $scope.observe('headerIsStuck'),
           expandedCards,
           function (containerDimensions, sortedTileLayoutResult, availableContentHeight, headerIsStuck, expandedCards) {
+*/
+
+
+        var cardContainer = $('#card-container');
+
+        function layoutFn(sortedTileLayoutResult, expandedCards) {
+
+            var containerDimensions = { width: cardContainer.width(), height: cardContainer.height() };
 
             var scrollTop = (window.pageYOffset !== undefined) ?
               window.pageYOffset :
@@ -310,7 +239,110 @@
             // OMG side-effect, but *what* a side effect, amirite?
             $scope.cardPositions = cardPositions;
             $('#card-layout').text(styleText);
+
+          };
+
+
+
+
+
+
+
+
+
+        // Given a model property name P and an observable sequence of arrays of models having property P,
+        // returns an observable sequence of arrays of objects pulling the last value yielded from P next
+        // to the model. Thus, if the input observable yields an array of models [A, B], the elements from
+        // the returned sequence look like:
+        // [
+        //   {
+        //     <P>: <the last value of P from model A>
+        //     model: <model A>
+        //   },
+        //   {
+        //     <P>: <the last value of P from model B>
+        //     model: <model B>
+        //   }
+        //   ...
+        // ]
+        // A new array is yielded every time the list of models changes or any model gets a new value
+        // for P.
+        function zipLatestArray(obs, property) {
+          return obs.flatMapLatest(
+            function(values) {
+              return Rx.Observable.combineLatest(_.map(values, function(val) {
+                return val.observe(property);
+              }), function() {
+                return _.map(_.zip(values, arguments), function(arr) {
+                  var r={ model: arr[0] };
+                  r[property] = arr[1];
+                  return r;
+                });
+              });
+            }
+          );
+        };
+
+        // A hash of:
+        //  "card size" -> array of rows (which themselves are arrays).
+        //
+        // For instance:
+        // {
+        //  "1": [
+        //         [ { cardSize: "1", model: <card model> } ]  // There's only one card of size 1, so it sits in its own row.
+        //       ],
+        //  "2": [
+        //         [ { cardSize: "2", model: <card model> },   // There are 5 cards of size 2. Here, they are split up into a
+        //           { cardSize: "2", model: <card model> } ], // pair of rows containing resp. 2 and 3 cards.
+        //
+        //         [ { cardSize: "2", model: <card model> },
+        //           { cardSize: "2", model: <card model> },
+        //           { cardSize: "2", model: <card model> } ]
+        //       ]
+        //  }
+        var layout = new SortedTileLayout();
+        var rowsOfCardsBySize = zipLatestArray($scope.page.observe('cards'), 'cardSize').
+          map(function(sizedCards) {
+            return layout.doLayout(sizedCards);
           });
+
+        var expandedCards = zipLatestArray($scope.page.observe('cards'), 'expanded').map(function(cards) {
+          return _.pluck(
+              _.where(cards, _.property('expanded')),
+              'model');
+        });
+
+
+        var dataModelObservableSequence = Rx.Observable.combineLatest(rowsOfCardsBySize, expandedCards, function(a, b) {
+          return [a, b];
+        });
+
+
+
+
+        var controller = UIController.initialize(layoutFn, dataModelObservableSequence);
+
+
+        // Link the 'editMode' state to the UI controller
+        $scope.$watch('editMode', function(editMode) {
+          controller.setEditMode(editMode);
+        });
+
+        // Link the 'expandedMode' state to the UI controller
+        expandedCards.subscribe(function(expandedCards) {
+          controller.setExpandedMode(expandedCards.length > 0);
+        });
+
+
+        window.controller = controller;
+
+
+
+        $scope.bindObservable('cardModels', $scope.page.observe('cards'));
+
+
+
+
 
 
         /******************************

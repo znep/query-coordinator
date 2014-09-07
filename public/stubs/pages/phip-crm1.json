@@ -1,0 +1,115 @@
+{
+  "pageId": "phip-crm1",
+  "datasetId": "dd76-j9yp",
+  "name": "Philadelphia Police Advisory Commission Complaints",
+  "description": "Information about complaints filed with the Police Advisory Commission against Philadelphia Police officers from 2009 - 2012. Source data is availabe on Open Data Philly.",
+  "primaryAmountField": null,
+  "primaryAggregation": "count",
+  "filterSoql": null,
+  "isDefaultPage": true,
+  "pageSource": "admin",
+  "cards": [
+    {
+      "description": "All Data",
+      "fieldName": "*",
+      "cardSize": 1,
+      "cardCustomStyle": {},
+      "expandedCustomStyle": {},
+      "displayMode": "visualization",
+      "expanded": false,
+      "logicalType": "table card"
+    },
+    {
+      "description": "Race",
+      "fieldName": "race",
+      "cardSize": 3,
+      "cardCustomStyle": {},
+      "expandedCustomStyle": {},
+      "displayMode": "visualization",
+      "expanded": false,
+      "logicalType": "category"
+    },
+    {
+      "description": "Sex",
+      "fieldName": "sex",
+      "cardSize": 3,
+      "cardCustomStyle": {},
+      "expandedCustomStyle": {},
+      "displayMode": "visualization",
+      "expanded": false,
+      "logicalType": "category"
+    },
+    {
+      "description": "Type",
+      "fieldName": "type",
+      "cardSize": 3,
+      "cardCustomStyle": {},
+      "expandedCustomStyle": {},
+      "displayMode": "visualization",
+      "expanded": false,
+      "logicalType": "category"
+    },
+    {
+      "description": "Date",
+      "fieldName": "date",
+      "cardSize": 1,
+      "cardCustomStyle": {},
+      "expandedCustomStyle": {},
+      "displayMode": "visualization",
+      "expanded": false,
+      "logicalType": "time"
+    },
+    {
+      "description": "Police Districts",
+      "fieldName": ":Computed_7mve5gn9_location_1",
+      "cardSize": 1,
+      "cardCustomStyle": {},
+      "expandedCustomStyle": {},
+      "displayMode": "visualization",
+      "expanded": false,
+      "shapeFile": "7mve5gn9_",
+      "logicalType": "location"
+    },
+    {
+      "description": "Status",
+      "fieldName": "status",
+      "cardSize": 3,
+      "cardCustomStyle": {},
+      "expandedCustomStyle": {},
+      "displayMode": "visualization",
+      "expanded": false,
+      "logicalType": "category"
+    },
+    {
+      "description": "Unit",
+      "fieldName": "unit",
+      "cardSize": 3,
+      "cardCustomStyle": {},
+      "expandedCustomStyle": {},
+      "displayMode": "visualization",
+      "expanded": false,
+      "logicalType": "category"
+    },
+    {
+      "description": "Neighborhoods",
+      "fieldName": ":Computed_82gfy944_location_1",
+      "cardSize": 1,
+      "cardCustomStyle": {},
+      "expandedCustomStyle": {},
+      "displayMode": "visualization",
+      "expanded": false,
+      "shapeFile": "82gfy944_",
+      "logicalType": "location"
+    },
+    {
+      "description": "Action",
+      "fieldName": "action",
+      "cardSize": 3,
+      "cardCustomStyle": {},
+      "expandedCustomStyle": {},
+      "displayMode": "visualization",
+      "expanded": false,
+      "logicalType": "category"
+    }
+  ]
+}

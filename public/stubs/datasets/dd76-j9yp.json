@@ -1,0 +1,146 @@
+{
+  "id": "dd76-j9yp",
+  "rowDisplayUnit": "Complaint",
+  "defaultAggregateColumn": ":count",
+  "domain": "dataspace.demo.socrata.com",
+  "ownerId": "nzs9-qk7u",
+  "updatedAt": "2014-09-07T10:25:11.000-07:00",
+  "columns": [
+    {
+      "physicalDatatype": "row_version",
+      "name": ":version",
+      "title": ":Version",
+      "description": "Information about complaints filed with the Police Advisory Commission against Philadelphia Police officers from 2009 - 2012. Source data is availabe on Open Data Philly.",
+      "logicalDatatype": "text",
+      "importance": 3
+    },
+    {
+      "physicalDatatype": "point",
+      "name": "location_1",
+      "title": "Location 1",
+      "description": "Information about complaints filed with the Police Advisory Commission against Philadelphia Police officers from 2009 - 2012. Source data is availabe on Open Data Philly.",
+      "logicalDatatype": "location",
+      "importance": 3
+    },
+    {
+      "physicalDatatype": "number",
+      "name": "latitude",
+      "title": "Latitude",
+      "description": "Information about complaints filed with the Police Advisory Commission against Philadelphia Police officers from 2009 - 2012. Source data is availabe on Open Data Philly.",
+      "logicalDatatype": "text",
+      "importance": 3
+    },
+    {
+      "physicalDatatype": "timestamp",
+      "name": ":created_at",
+      "title": ":Created_at",
+      "description": "Information about complaints filed with the Police Advisory Commission against Philadelphia Police officers from 2009 - 2012. Source data is availabe on Open Data Philly.",
+      "logicalDatatype": "text",
+      "importance": 3
+    },
+    {
+      "physicalDatatype": "number",
+      "name": "age",
+      "title": "Age",
+      "description": "Information about complaints filed with the Police Advisory Commission against Philadelphia Police officers from 2009 - 2012. Source data is availabe on Open Data Philly.",
+      "logicalDatatype": "amount",
+      "importance": 3
+    },
+    {
+      "physicalDatatype": "text",
+      "name": ":Computed_7mve5gn9_location_1",
+      "title": "Police Districts",
+      "description": "Information about complaints filed with the Police Advisory Commission against Philadelphia Police officers from 2009 - 2012. Source data is availabe on Open Data Philly.",
+      "logicalDatatype": "location",
+      "importance": 3
+    },
+    {
+      "physicalDatatype": "number",
+      "name": "longitude",
+      "title": "Longitude",
+      "description": "Information about complaints filed with the Police Advisory Commission against Philadelphia Police officers from 2009 - 2012. Source data is availabe on Open Data Philly.",
+      "logicalDatatype": "text",
+      "importance": 3
+    },
+    {
+      "physicalDatatype": "text",
+      "name": "sex",
+      "title": "Sex",
+      "description": "Information about complaints filed with the Police Advisory Commission against Philadelphia Police officers from 2009 - 2012. Source data is availabe on Open Data Philly.",
+      "logicalDatatype": "category",
+      "importance": 3
+    },
+    {
+      "physicalDatatype": "timestamp",
+      "name": "date",
+      "title": "Date",
+      "description": "Information about complaints filed with the Police Advisory Commission against Philadelphia Police officers from 2009 - 2012. Source data is availabe on Open Data Philly.",
+      "logicalDatatype": "time",
+      "importance": 3
+    },
+    {
+      "physicalDatatype": "text",
+      "name": "race",
+      "title": "Race",
+      "description": "Information about complaints filed with the Police Advisory Commission against Philadelphia Police officers from 2009 - 2012. Source data is availabe on Open Data Philly.",
+      "logicalDatatype": "category",
+      "importance": 3
+    },
+    {
+      "physicalDatatype": "text",
+      "name": "status",
+      "title": "Status",
+      "description": "Information about complaints filed with the Police Advisory Commission against Philadelphia Police officers from 2009 - 2012. Source data is availabe on Open Data Philly.",
+      "logicalDatatype": "category",
+      "importance": 3
+    },
+    {
+      "physicalDatatype": "timestamp",
+      "name": ":updated_at",
+      "title": ":Updated_at",
+      "description": "Information about complaints filed with the Police Advisory Commission against Philadelphia Police officers from 2009 - 2012. Source data is availabe on Open Data Philly.",
+      "logicalDatatype": "text",
+      "importance": 3
+    },
+    {
+      "physicalDatatype": "text",
+      "name": "unit",
+      "title": "Unit",
+      "description": "Information about complaints filed with the Police Advisory Commission against Philadelphia Police officers from 2009 - 2012. Source data is availabe on Open Data Philly.",
+      "logicalDatatype": "category",
+      "importance": 3
+    },
+    {
+      "physicalDatatype": "row_identifier",
+      "name": ":id",
+      "title": ":Id",
+      "description": "Information about complaints filed with the Police Advisory Commission against Philadelphia Police officers from 2009 - 2012. Source data is availabe on Open Data Philly.",
+      "logicalDatatype": "text",
+      "importance": 3
+    },
+    {
+      "physicalDatatype": "text",
+      "name": "type",
+      "title": "Type",
+      "description": "Information about complaints filed with the Police Advisory Commission against Philadelphia Police officers from 2009 - 2012. Source data is availabe on Open Data Philly.",
+      "logicalDatatype": "category",
+      "importance": 3
+    },
+    {
+      "physicalDatatype": "text",
+      "name": ":Computed_82gfy944_location_1",
+      "title": "Neighborhoods",
+      "description": "Information about complaints filed with the Police Advisory Commission against Philadelphia Police officers from 2009 - 2012. Source data is availabe on Open Data Philly.",
+      "logicalDatatype": "location",
+      "importance": 3
+    },
+    {
+      "physicalDatatype": "text",
+      "name": "action",
+      "title": "Action",
+      "description": "Information about complaints filed with the Police Advisory Commission against Philadelphia Police officers from 2009 - 2012. Source data is availabe on Open Data Philly.",
+      "logicalDatatype": "category",
+      "importance": 3
+    }
+  ]
+}

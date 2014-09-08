@@ -31,10 +31,9 @@
           },
 
           scroll: function(event) {
-
-            if (controller.expandedMode) {
+            //if (controller.expandedMode) {
               controller.transitionTo('LAYOUT');
-            }
+            //}
           },
 
           resize: function(event) {
@@ -60,8 +59,8 @@
           },
 
           enter: function() {
-console.error('_');
-            controller.layoutFn.apply(controller, controller.dataModel);
+
+            controller.layoutFn.apply(controller, controller.dataModel.concat(controller.scrollY));
 
             if (!controller.pointerLeft) {
               controller.transitionTo('REST');
@@ -86,9 +85,9 @@ console.error('_');
           },
 
           scroll: function(event) {
-            if (controller.expandedMode) {
+            //if (controller.expandedMode) {
               controller.transitionTo('LAYOUT');
-            }
+            //}
           },
 
           resize: function(event) {
@@ -124,9 +123,9 @@ console.error('_');
           },
 
           scroll: function(event) {
-            if (controller.expandedMode) {
+            //if (controller.expandedMode) {
               controller.transitionTo('LAYOUT');
-            }
+            //}
           },
 
           resize: function(event) {
@@ -207,7 +206,7 @@ console.error('_');
 
         controller.scrollX = window.scrollX;
         controller.scrollY = window.scrollY;
-
+console.log(window.scrollY);
         if (controller.currentState && typeof controller.currentState.scroll === 'function') {
           controller.currentState.scroll(event);
         }
@@ -252,7 +251,7 @@ console.error('_');
 
       this.currentState = null;
 
-      this.dataModel = null;
+      this.dataModel = [];
 
       this.pointerX = -1;
       this.pointerY = -1;

@@ -54,16 +54,25 @@
           function (containerDimensions, sortedTileLayoutResult, availableContentHeight, headerIsStuck, expandedCards) {
 */
 
+        var cardsMetadata = $('.cards-metadata');
+        var cardsMetadataOffsetTop = cardsMetadata.offset().top;
 
         var cardContainer = $('#card-container');
 
-        function layoutFn(sortedTileLayoutResult, expandedCards) {
+
+        function layoutFn(sortedTileLayoutResult, expandedCards, scrollTop) {
+
+
+            // Figure out the sticky-ness of the QFB and apply the style appropriately
+            var headerStuck = scrollTop >= (cardsMetadataOffsetTop + cardsMetadata.outerHeight());
 
             var containerDimensions = { width: cardContainer.width(), height: cardContainer.height() };
 
-            var scrollTop = (window.pageYOffset !== undefined) ?
-              window.pageYOffset :
-              (document.documentElement || document.body.parentNode || document.body).scrollTop;
+            var horizontalPadding = 5;
+            var verticalPadding = 5;
+            var gutter = 12;
+
+            var cardPositions = [];
 
             if (!_.isEmpty(expandedCards)) {
 
@@ -79,10 +88,6 @@
                     throw new Error('Unsupported card size.');
                 }
               };
-
-              var horizontalPadding = 5;
-              var verticalPadding = 5;
-              var gutter = 12;
 
               var containerWidth = containerDimensions.width;
               var containerContentWidth = containerWidth - gutter * 2;
@@ -129,14 +134,19 @@
               styleText += '#card-tile-' + expandedCard.uniqueId
                          + '{';
 
+
+
+
               var windowHeight = $(window).height();
 
-              // TODO: NEED SOME WAY TO FIGURE OUT IF THE HEADER IS STUCK
-              if ($scope.headerIsStuck) {
-                var expandedColumnHeight = windowHeight - parseInt($scope.headerStyle['height'], 10) - verticalPadding;
+              if (headerStuck) {
+                var expandedColumnHeight = windowHeight - $('.quick-filter-bar').height() - verticalPadding;
               } else {
+                console.log(windowHeight, cardContainer.offset().top, scrollTop, verticalPadding);
                 var expandedColumnHeight = windowHeight - (cardContainer.offset().top - scrollTop) - verticalPadding;
               }
+
+
 
               styleText += 'position:fixed;'
                          + 'left:' + expandedColumnLeft + 'px;'
@@ -164,12 +174,6 @@
                     throw new Error('Unsupported card size.');
                 }
               };
-
-              var cardPositions = [];
-
-              var verticalPadding = 6;
-              var horizontalPadding = 6;
-              var gutter = 12;
 
               var firstRow = true;
 
@@ -200,8 +204,9 @@
 
                   return styleForRowAcc + _.map(row, function(card, cardIndexInRow) {
 
-                    var spaceTakenByOtherCardsPadding = (cardIndexInRow - 1) * horizontalPadding;
+                    var spaceTakenByOtherCardsPadding = Math.max(0, cardIndexInRow * horizontalPadding);
                     var cardLeft = gutter + (cardIndexInRow * cardWidth) + spaceTakenByOtherCardsPadding;
+
                     var cardTop = heightOfAllCards + rowIndex * currentRowHeight;
 
                     cardPositions.push(
@@ -240,6 +245,12 @@
             // OMG side-effect, but *what* a side effect, amirite?
             $scope.cardPositions = cardPositions;
             $('#card-layout').text(styleText);
+
+            if (headerStuck) {
+              $('.quick-filter-bar').addClass('stuck');
+            } else {
+              $('.quick-filter-bar').removeClass('stuck');
+            }
 
           };
 

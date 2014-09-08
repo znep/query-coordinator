@@ -215,37 +215,56 @@ body
     background-color: $cards-bg-color
     color: $white-font-color
 
-    .quick-filter-bar
-      padding: 0
-      box-sizing: border-box
+    #quick-filter-bar-container
+      position: relative
 
-      .content
+      .quick-filter-bar-spacer
+        position:relative
         padding: $metadata-side-padding / 2
-        background-color: $cards-bg-color
         width: 100%
         box-sizing: border-box
         line-height: 1.5rem
+        background-color: white
 
-      &.stuck .content
-        z-index: 1003
-        // = (flyout z-index) + 1
-        // = (expanded-description's z-index + 1) + 1
-        // = ((leaflet's z-index) + 1) + 1) + 1
-        // = 1000 + 1 + 1 + 1
-        // = 1003
-        position: fixed
+      .quick-filter-bar
+        position: absolute
+        width: 100%
         top: 0
+        padding: 0
+        box-sizing: border-box
+        z-index: 1003
 
-      .filter
-        // TODO: responsive design for filters when narrow
-        display: inline-block
-        padding-right: 3px
-        color: $white-font-color
+        &.stuck
+          position: fixed
+          top: 0
 
-        span
-          opacity: 0.6
-          &.light
-            opacity: 1
+        .content
+          padding: $metadata-side-padding / 2
+          background-color: $cards-bg-color
+          width: 100%
+          box-sizing: border-box
+          line-height: 1.5rem
+
+        // &.stuck .content
+        //   z-index: 1003
+        //   // = (flyout z-index) + 1
+        //   // = (expanded-description's z-index + 1) + 1
+        //   // = ((leaflet's z-index) + 1) + 1) + 1
+        //   // = 1000 + 1 + 1 + 1
+        //   // = 1003
+        //   position: fixed
+        //   top: 0
+
+        .filter
+          // TODO: responsive design for filters when narrow
+          display: inline-block
+          padding-right: 3px
+          color: $white-font-color
+
+          span
+            opacity: 0.6
+            &.light
+              opacity: 1
 
     #card-container
       position: relative

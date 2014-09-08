@@ -4,7 +4,7 @@ angular.module('dataCards.directives').directive('stickyHeader', function(Angula
   return {
     restrict: 'A',
     link: function($scope, element, attrs) {
-      function addWindowBindings() {
+ /*     function addWindowBindings() {
         $(window).resize(onResize);
         $(window).scroll(onScroll);
         element.on('$destroy', function() {
@@ -72,6 +72,6 @@ angular.module('dataCards.directives').directive('stickyHeader', function(Angula
 
       addWindowBindings();
       pollLayout();
-    }
+*/    }
   }
 });

@@ -42,23 +42,19 @@ azure_rc:
     downtime_end:   2014-04-12t23:00:00-07:00
 
 azure_eastus_production:
-    message_start:  2014-04-09t15:00:00-07:00
-    message_end:    2014-04-11t23:00:00-07:00
-    downtime_start: 2014-04-11t15:00:00-07:00
-    downtime_end:   2014-04-11t23:00:00-07:00
+    message_start:  2014-09-11t02:00:00-00:00
+    message_end:    2014-09-13t10:00:00-00:00
+    downtime_start: 2014-09-13t02:00:00-00:00
+    downtime_end:   2014-09-13t10:00:00-00:00
 
 azure_westeurope_production:
-    - message_start:  2014-08-13t12:00:00-07:00
-      message_end:    2014-08-16t00:00:00-07:00
-      downtime_start: 2014-08-15t12:00:00-07:00
-      downtime_end:   2014-08-16t00:00:00-07:00
-    - message_start:  2014-08-14t12:00:00-07:00
-      message_end:    2014-08-17t00:00:00-07:00
-      downtime_start: 2014-08-16t12:00:00-07:00
-      downtime_end:   2014-08-17t00:00:00-07:00
+    message_start:  2014-09-11t19:00:00-00:00
+    message_end:    2014-09-14t03:00:00-00:00
+    downtime_start: 2014-09-13t19:00:00-00:00
+    downtime_end:   2014-09-14t03:00:00-00:00
 
 production:
-    message_start:  2014-08-20t11:00:00-07:00
-    message_end:    2014-08-20t13:00:00-07:00
-    downtime_start: 2014-08-20t12:00:00-07:00
-    downtime_end:   2014-08-20t13:00:00-07:00
+    message_start:  2014-09-18t17:00:00-07:00
+    message_end:    2014-09-20t21:00:00-07:00
+    downtime_start: 2014-09-20t17:00:00-07:00
+    downtime_end:   2014-09-20t21:00:00-07:00

@@ -3,7 +3,7 @@ require 'test_helper'
 class PhidippidesPagesControllerTest < ActionController::TestCase
 
   def setup
-    CurrentDomain.set_domain('localhost')
+    CurrentDomain.stubs(:domain => stub(cname: 'localhost'))
     @controller.stubs(:service_end_point => 'http://localhost:2401')
   end
 

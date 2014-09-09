@@ -23,7 +23,7 @@ class Phidog
   def find_or_create_dataset_metadata(data)
     datasetId = data['id']
     domain = data['domain']
-    CurrentDomain.set_domain(domain)
+    CurrentDomain.set_domain(OpenStruct.new(cname: domain))
     puts("Processing dataset metadata for #{datasetId} which belongs to domain #{domain}")
 
     result = fetch_dataset_metadata(datasetId)

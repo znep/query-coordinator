@@ -7,7 +7,7 @@ class PhidippidesTest < Test::Unit::TestCase
   end
 
   def setup
-    CurrentDomain.stubs(:domain => 'localhost')
+    CurrentDomain.stubs(:domain => stub(cname: 'localhost'))
     ::ZookeeperDiscovery.stubs(
       :get => 'instance_id',
       :get_json => { 'address' => 'localhost', 'port' => '2401' }

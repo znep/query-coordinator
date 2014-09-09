@@ -84,9 +84,11 @@ module Phidippides
 
     Rails.logger.debug("#{verb.upcase} to phidippides at #{path} started with request body #{request.body.inspect}")
 
-    request['X-Socrata-Host'] = CurrentDomain.domain
+    request['X-Socrata-Host'] = CurrentDomain.domain.cname
     request['X-Socrata-Wink'] = 'iAmASocrataEmployee'
     request['X-Socrata-RequestId'] = options[:request_id] if options[:request_id].present?
+
+    Rails.logger.debug("X-Socrata-Host is #{CurrentDomain.domain.cname}")
 
     begin
       response = Net::HTTP.start(phidippides_address, phidippides_port) do |http|

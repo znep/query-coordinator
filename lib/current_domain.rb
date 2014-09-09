@@ -189,7 +189,7 @@ class CurrentDomain
     locale = I18n.locale unless locale.present? || I18n.locale.to_s == CurrentDomain.default_locale
 
     # TODO: not sure how to safely per-request cache
-    result = self.properties.strings
+    result = self.properties.strings!
     result.merge!(self.properties.strings[locale] || {}) unless locale.nil?
 
     result

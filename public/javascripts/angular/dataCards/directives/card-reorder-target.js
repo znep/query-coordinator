@@ -1,5 +1,9 @@
 (function() {
 
+  var LAYOUT_HORIZONTAL_PADDING = 5;
+  var LAYOUT_VERTICAL_PADDING = 5;
+  var LAYOUT_GUTTER = 12;
+
   'use strict';
 
   // Directive in charge of orchestrating card reorder.
@@ -118,19 +122,23 @@
 
         function layoutFn(sortedTileLayoutResult, expandedCards, scrollTop) {
 
+          // Figure out if there is an expanded card.
+          if (!_.isEmpty(expandedCards)) {
+            var expandedCard = expandedCards[0];
+          } else {
+            var expandedCard = null;
+          }
 
           // Figure out the sticky-ness of the QFB and apply the style appropriately
           var headerStuck = scrollTop >= (cardsMetadataOffsetTop + cardsMetadata.outerHeight());
 
           var containerDimensions = { width: cardContainer.width(), height: cardContainer.height() };
-
-          var horizontalPadding = 5;
-          var verticalPadding = 5;
-          var gutter = 12;
-
+          var windowHeight = jqueryWindow.height();
           var cardPositions = [];
 
-          if (!_.isEmpty(expandedCards)) {
+
+          // Branch here based on whether or not there is an expanded card.
+          if (expandedCard !== null) {
 
             var deriveCardHeight = function(size) {
               switch (size) {
@@ -146,19 +154,17 @@
             };
 
             var containerWidth = containerDimensions.width;
-            var containerContentWidth = containerWidth - gutter * 2;
+            var containerContentWidth = containerWidth - LAYOUT_GUTTER * 2;
 
-            var expandedColumnWidth = Math.floor(containerContentWidth * 0.65) - horizontalPadding;
-            var unexpandedColumnWidth = containerContentWidth - expandedColumnWidth - horizontalPadding;
+            var expandedColumnWidth = Math.floor(containerContentWidth * 0.65) - LAYOUT_HORIZONTAL_PADDING;
+            var unexpandedColumnWidth = containerContentWidth - expandedColumnWidth - LAYOUT_HORIZONTAL_PADDING;
 
-            var expandedColumnLeft = unexpandedColumnWidth + gutter + horizontalPadding;
-            var unexpandedColumnLeft = gutter;
+            var expandedColumnLeft = unexpandedColumnWidth + LAYOUT_GUTTER + LAYOUT_HORIZONTAL_PADDING;
+            var unexpandedColumnLeft = LAYOUT_GUTTER;
 
             var expandedColumnTop = 0;
 
             var cards = _.flatten(_.values(sortedTileLayoutResult));
-
-            var expandedCard = expandedCards[0];
 
             var unexpandedCards = cards.filter(function(card) {
                 // Note that the 'card' supplied by the iterator is a wrapper around
@@ -176,7 +182,7 @@
 
                 // Keep track of the accumulated height of all cards so that we
                 // know the top offset of the next card up for layout.
-                heightOfAllCards += cardHeight + verticalPadding;
+                heightOfAllCards += cardHeight + LAYOUT_VERTICAL_PADDING;
 
                 return accumulatedStyle + '#card-tile-' + card.model.uniqueId
                                         + '{'
@@ -190,23 +196,15 @@
             styleText += '#card-tile-' + expandedCard.uniqueId
                        + '{';
 
-
-
-
-            var windowHeight = $(window).height();
-
             if (headerStuck) {
-              var expandedColumnHeight = windowHeight - $('.quick-filter-bar').height() - verticalPadding;
+              var expandedColumnHeight = windowHeight - $('.quick-filter-bar').height() - LAYOUT_VERTICAL_PADDING;
             } else {
-              console.log(windowHeight, cardContainer.offset().top, scrollTop, verticalPadding);
-              var expandedColumnHeight = windowHeight - (cardContainer.offset().top - scrollTop) - verticalPadding;
+              var expandedColumnHeight = windowHeight - (cardContainer.offset().top - scrollTop) - LAYOUT_VERTICAL_PADDING;
             }
-
-
 
             styleText += 'position:fixed;'
                        + 'left:' + expandedColumnLeft + 'px;'
-                       + 'bottom:' + verticalPadding + 'px;'
+                       + 'bottom:' + LAYOUT_VERTICAL_PADDING + 'px;'
                        + 'width:' + expandedColumnWidth + 'px;'
                        + 'height:' + expandedColumnHeight + 'px;'
                        + '}';
@@ -234,13 +232,13 @@
             var firstRow = true;
 
             // Terminology:
-            // Content size (width, height) refers to a size with padding/gutter removed.
-            // Otherwise, sizes include padding/gutter.
+            // Content size (width, height) refers to a size with padding/LAYOUT_GUTTER removed.
+            // Otherwise, sizes include padding/LAYOUT_GUTTER.
             // For instance, containerWidth is the full width of the container,
-            // but containerContentWidth is contentWidth minus the gutter.
+            // but containerContentWidth is contentWidth minus the LAYOUT_GUTTER.
 
             var containerWidth = containerDimensions.width;
-            var containerContentWidth = containerWidth - gutter * 2;
+            var containerContentWidth = containerWidth - LAYOUT_GUTTER * 2;
 
             var heightOfAllCards = 0;
 
@@ -248,11 +246,11 @@
 
               var rowCount = 0;
               var currentRowHeight = deriveCardHeight(parseInt(cardSize), 10);
-              var currentRowContentHeight = currentRowHeight - verticalPadding;
+              var currentRowContentHeight = currentRowHeight - LAYOUT_VERTICAL_PADDING;
 
               var styleForRow = _.reduce(rows, function(styleForRowAcc, row, rowIndex) {
 
-                var paddingForEntireRow = horizontalPadding * (row.length - 1);
+                var paddingForEntireRow = LAYOUT_HORIZONTAL_PADDING * (row.length - 1);
                 var usableContentSpaceForRow = containerContentWidth - paddingForEntireRow;
                 var cardWidth = Math.floor(usableContentSpaceForRow / row.length);
 
@@ -260,8 +258,8 @@
 
                 return styleForRowAcc + _.map(row, function(card, cardIndexInRow) {
 
-                  var spaceTakenByOtherCardsPadding = Math.max(0, cardIndexInRow * horizontalPadding);
-                  var cardLeft = gutter + (cardIndexInRow * cardWidth) + spaceTakenByOtherCardsPadding;
+                  var spaceTakenByOtherCardsPadding = Math.max(0, cardIndexInRow * LAYOUT_HORIZONTAL_PADDING);
+                  var cardLeft = LAYOUT_GUTTER + (cardIndexInRow * cardWidth) + spaceTakenByOtherCardsPadding;
 
                   var cardTop = heightOfAllCards + rowIndex * currentRowHeight;
 
@@ -300,6 +298,7 @@
 
           // OMG side-effect, but *what* a side effect, amirite?
           $scope.cardPositions = cardPositions;
+
           $('#card-layout').text(styleText);
 
           if (headerStuck) {

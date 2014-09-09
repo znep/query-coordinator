@@ -430,14 +430,21 @@ $.fn.flyout = function(options) {
       console.warn('Attempted to close nonexistent flyout.');
     }
   };
-  $(window).scroll(function(e) {
-    if ($.isPresent(flyout) && flyout.is(':visible') && ( inFlyout || inTarget )) {
-      renderFlyout(flyout.data('target'));
-    }
-  });
 
-  // This was added to hopefully plug a memory leak when a flyout is created multiple times
-  // in a render loop.
+  // This was added by Tristan Rice in a commit that made some passing
+  // reference to timeline chart bug. Not sure what it is and I don't
+  // see any problem with it despite the fact that the flyout.is(':visible')
+  // call is horribly unperformant, so I'm commenting this out at the moment.
+  // --Chris Laidlaw, 9/9/14
+  //
+  //$(window).scroll(function(e) {
+  //  if ($.isPresent(flyout) && flyout.is(':visible') && ( inFlyout || inTarget )) {
+  //    renderFlyout(flyout.data('target'));
+  //  }
+  //});
+
+  // This was added to hopefully plug a memory leak when a flyout is created
+  // multiple times in a render loop.
   self.undelegate(options.selector, 'mouseover');
   self.undelegate(options.selector, 'mouseleave');
 

@@ -413,7 +413,11 @@ $.fn.flyout = function(options) {
     flyout.on('mouseover, mouseenter', function(e) {
       inFlyout = true;
     }).bind('mouseleave', function(e) {
-      if(!options.debugNeverClosePopups) closeFlyout();
+      if (!$(e.target).parents().hasClass('dragged')) {
+        if(!options.debugNeverClosePopups) {
+          closeFlyout();
+        }
+      }
     });
   };
   var closeFlyout = function() {
@@ -439,22 +443,26 @@ $.fn.flyout = function(options) {
 
 
   self.delegate(options.selector, 'mouseover', function(e) {
-    renderFlyout(this);
-    e.stopPropagation();
-  }).delegate(options.selector, 'mouseleave', function(e) {
-    if(!options.debugNeverClosePopups){
-      inTarget = false;
-      if (options.interact) {
-        _.defer(function() {
-          if(!inFlyout && !inTarget) {
-            closeFlyout();
-          }
-        });
-      } else {
-        closeFlyout();
-      }
+    if (!$(e.target).parents().hasClass('dragged')) {
+      renderFlyout(this);
+      e.stopPropagation();
     }
-    e.stopPropagation();
+  }).delegate(options.selector, 'mouseleave', function(e) {
+    if (!$(e.target).parents().hasClass('dragged')) {
+      if(!options.debugNeverClosePopups){
+        inTarget = false;
+        if (options.interact) {
+          _.defer(function() {
+            if(!inFlyout && !inTarget) {
+              closeFlyout();
+            }
+          });
+        } else {
+          closeFlyout();
+        }
+      }
+      e.stopPropagation();
+    }
   });
 
   var previousFlyout = $('.flyout');

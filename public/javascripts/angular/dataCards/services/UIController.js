@@ -31,9 +31,7 @@
           },
 
           scroll: function(event) {
-            //if (controller.expandedMode) {
-              controller.transitionTo('LAYOUT');
-            //}
+            controller.transitionTo('LAYOUT');
           },
 
           resize: function(event) {
@@ -60,6 +58,8 @@
 
           enter: function() {
 
+            // Pass along the vertical scroll offset to the layout function so it can decide
+            // whether or not to draw the quick filter bar in sticky mode.
             controller.layoutFn.apply(controller, controller.dataModel.concat(controller.scrollY));
 
             if (!controller.pointerLeft) {
@@ -85,9 +85,7 @@
           },
 
           scroll: function(event) {
-            //if (controller.expandedMode) {
-              controller.transitionTo('LAYOUT');
-            //}
+            controller.transitionTo('LAYOUT');
           },
 
           resize: function(event) {
@@ -123,9 +121,7 @@
           },
 
           scroll: function(event) {
-            //if (controller.expandedMode) {
-              controller.transitionTo('LAYOUT');
-            //}
+            controller.transitionTo('LAYOUT');
           },
 
           resize: function(event) {
@@ -148,6 +144,10 @@
 
       var handleMouseDown = function(event) {
 
+        controller.pointerTarget = event.target;
+        controller.lastPointerX = event.clientX;
+        controller.lastPointerY = event.clientY;
+
         switch (event.which) {
           case 1:
             controller.pointerLeft = true;
@@ -160,8 +160,6 @@
             break;
         }
 
-        controller.pointerTarget = event.target;
-
         if (controller.currentState && typeof controller.currentState.mouseDown === 'function') {
           controller.currentState.mouseDown(event);
         }
@@ -169,6 +167,11 @@
       };
 
       var handleMouseUp = function(event) {
+
+        controller.pointerTarget = event.target;
+        controller.lastPointerX = 0;
+        controller.lastPointerY = 0;
+        controller.distanceSinceLastPointerLeft = 0;
 
         switch (event.which) {
           case 1:
@@ -182,7 +185,9 @@
             break;
         }
 
-        controller.pointerTarget = event.target;
+        if (controller.draggedElement !== null) {
+          controller.dropFn(controller.draggedElement);
+        }
 
         if (controller.currentState && typeof controller.currentState.mouseUp === 'function') {
           controller.currentState.mouseUp(event);
@@ -192,9 +197,9 @@
 
       var handleMouseMove = function(event) {
 
+        controller.pointerTarget = event.target;
         controller.pointerX = event.clientX;
         controller.pointerY = event.clientY;
-        controller.pointerTarget = event.target;
 
         if (controller.currentState && typeof controller.currentState.mouseMove === 'function') {
           controller.currentState.mouseMove(event);
@@ -206,7 +211,7 @@
 
         controller.scrollX = window.scrollX;
         controller.scrollY = window.scrollY;
-console.log(window.scrollY);
+
         if (controller.currentState && typeof controller.currentState.scroll === 'function') {
           controller.currentState.scroll(event);
         }
@@ -238,23 +243,27 @@ console.log(window.scrollY);
       * Initialize the controller's internal state *
       *********************************************/
 
-      this.editMode = false;
-      this.expandedMode = false;
-
+      // Callbacks for UI state transitions
       this.layoutFn = layoutFn;
 
+      // Data and state tracking
+      this.dataModel = [];
+      this.editMode = false;
+      this.expandedMode = false;
+      this.draggedElement = null;
+
+      // Actual state machine details
       this.STATES = {
         'REST': new UIRestState(),
         'LAYOUT': new UILayoutState(),
         'UPDATE': new UIUpdateState()
       };
-
       this.currentState = null;
 
-      this.dataModel = [];
-
+      // Input parameters
       this.pointerX = -1;
       this.pointerY = -1;
+
       this.pointerLeft = false;
       this.pointerMiddle = false;
       this.pointerRight = false;
@@ -274,15 +283,12 @@ console.log(window.scrollY);
     };
 
     UIController.prototype.getState = function() {
-      console.log(this.currentState);
       return this.currentState.getState();
     };
 
     UIController.prototype.transitionTo = function(newState) {
-
       this.currentState = this.STATES[newState];
       this.currentState.enter();
-
     };
 
     UIController.prototype.setExpandedMode = function(expandedMode) {

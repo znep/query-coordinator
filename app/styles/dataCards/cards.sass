@@ -232,7 +232,7 @@ body
         top: 0
         padding: 0
         box-sizing: border-box
-        z-index: 1003
+        z-index: 1002
 
         &.stuck
           position: fixed
@@ -244,16 +244,6 @@ body
           width: 100%
           box-sizing: border-box
           line-height: 1.5rem
-
-        // &.stuck .content
-        //   z-index: 1003
-        //   // = (flyout z-index) + 1
-        //   // = (expanded-description's z-index + 1) + 1
-        //   // = ((leaflet's z-index) + 1) + 1) + 1
-        //   // = 1000 + 1 + 1 + 1
-        //   // = 1003
-        //   position: fixed
-        //   top: 0
 
         .filter
           // TODO: responsive design for filters when narrow
@@ -276,6 +266,7 @@ body
       /* LAYOUT */
       .card-spot
         position: absolute
+
         .card-drop-placeholder
           position: absolute
           left: 0
@@ -284,6 +275,7 @@ body
           bottom: 0
           background: green
           opacity: 0.2
+
         .card-drag-overlay
           position: absolute
           left: 0
@@ -291,18 +283,25 @@ body
           top: 0
           bottom: 0
           z-index: 2000
-          cursor: move
+          cursor: grab
+          cursor: -webkit-grab
+
         .card
           position: absolute
           top: 0
           right: 0
           bottom: 0
           left: 0
+
           &.dragged
             position: fixed
             z-index: 3000
-            opacity: 0.7
+            opacity: 0.85
+            cursor: grabbing
+            cursor: -webkit-grabbing
             @include prefixer(transition, "width 1s, height 1s")
+
+
 
 /*  DESKTOP-SPECIFIC STYLES  */
 @media screen

@@ -199,12 +199,6 @@
 
       }));
 
-      /*$scope.$on('stickyHeaderAvailableContentHeightChanged', function(event, availableContentHeight) {
-        event.stopPropagation();
-        $scope.availableContentHeightStyle = {
-          'top': availableContentHeight + 'px'
-        };
-      });*/
 
       /***************************
       * View/edit modal behavior *

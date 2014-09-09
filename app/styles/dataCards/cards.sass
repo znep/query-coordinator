@@ -267,41 +267,53 @@ body
       .card-spot
         position: absolute
 
-        .card-drop-placeholder
-          position: absolute
-          left: 0
-          right: 0
-          top: 0
-          bottom: 0
-          background: green
-          opacity: 0.2
-
         .card-drag-overlay
           position: absolute
           left: 0
           right: 0
           top: 0
           bottom: 0
-          z-index: 2000
-          cursor: grab
-          cursor: -webkit-grab
+          z-index: 2
+          cursor: grab !important
+          cursor: -webkit-grab !important
 
-        .card
+        card
           position: absolute
           top: 0
           right: 0
           bottom: 0
           left: 0
+          z-index: 1
 
           &.dragged
             position: fixed
             z-index: 3000
             opacity: 0.85
-            cursor: grabbing
-            cursor: -webkit-grabbing
+            cursor: grabbing !important
+            cursor: -webkit-grabbing !important
             @include prefixer(transition, "width 1s, height 1s")
 
+      .card-group-drop-placeholder
+        position: absolute
+        display: none
+        height: 128px
+        font-size: 1.5em
+        line-height: 128px
+        text-align: center
+        color: white
+        border: 2px dashed white
+        border-radius: $rounded-corners-border-radius
+        box-sizing: border-box
 
+      .card-drop-placeholder
+        position: absolute
+        left: 0
+        right: 0
+        top: 0
+        bottom: 0
+        background-color: white
+        opacity: 0.5
+        border-radius: $rounded-corners-border-radius
 
 /*  DESKTOP-SPECIFIC STYLES  */
 @media screen

@@ -3,6 +3,8 @@
   var LAYOUT_HORIZONTAL_PADDING = 5;
   var LAYOUT_VERTICAL_PADDING = 5;
   var LAYOUT_GUTTER = 12;
+  var LAYOUT_EDIT_MODE_GROUP_PADDING = 64;
+  var LAYOUT_PLACEHOLDER_DROP_TARGET_HEIGHT = 128;
 
   'use strict';
 
@@ -22,6 +24,8 @@
         ***********************/
 
         var jqueryWindow = $(window);
+        var jqueryDocument = $(document);
+        var jqueryBody = $('body');
         var cardContainer = $('#card-container');
         var cardsMetadata = $('.cards-metadata');
         var cardsMetadataOffsetTop = cardsMetadata.offset().top;
@@ -115,7 +119,6 @@
           controller.setExpandedMode(expandedCards.length > 0);
         });
 
-
         /**************
         * Card layout *
         **************/
@@ -141,7 +144,7 @@
           if (expandedCard !== null) {
 
             var deriveCardHeight = function(size) {
-              switch (size) {
+              switch (parseInt(size, 10)) {
                 case 1:
                   return 250;
                 case 2:
@@ -149,7 +152,7 @@
                 case 3:
                   return 150;
                 default:
-                  throw new Error('Unsupported card size.');
+                  throw new Error('Unsupported card size: ' + size);
               }
             };
 
@@ -217,7 +220,7 @@
           } else {
 
             var deriveCardHeight = function(size) {
-              switch (size) {
+              switch (parseInt(size, 10)) {
                 case 1:
                   return 300;
                 case 2:
@@ -225,11 +228,15 @@
                 case 3:
                   return 200;
                 default:
-                  throw new Error('Unsupported card size.');
+                  throw new Error('Unsupported card size: ' + size);
               }
             };
 
             var firstRow = true;
+
+            // Track whether or not to draw placeholder drop targets
+            // for each card grouping.
+            var placeholderDropTargets = [];
 
             // Terminology:
             // Content size (width, height) refers to a size with padding/LAYOUT_GUTTER removed.
@@ -242,7 +249,24 @@
 
             var heightOfAllCards = 0;
 
+            if ($scope.editMode) {
+              if (!sortedTileLayoutResult.hasOwnProperty('1')) {
+                sortedTileLayoutResult['1'] = [];
+              }
+              if (!sortedTileLayoutResult.hasOwnProperty('2')) {
+                sortedTileLayoutResult['2'] = [];                
+              }
+              if (!sortedTileLayoutResult.hasOwnProperty('3')) {
+                sortedTileLayoutResult['3'] = [];
+              }
+
+            }
+
+            var currentCardGroup = 0;
+
             var styleText = _.reduce(sortedTileLayoutResult, function(overallStyleAcc, rows, cardSize) {
+
+              currentCardGroup += 1;
 
               var rowCount = 0;
               var currentRowHeight = deriveCardHeight(parseInt(cardSize), 10);
@@ -283,7 +307,27 @@
 
               }, '');
 
-              heightOfAllCards += rows.length * currentRowHeight + (rowCount * 100);
+              // Add gap between card groups in edit mode only
+              if ($scope.editMode) {
+
+                // Also accommodate for empty groups and display a placeholder drop target.
+                var groupEmpty = sortedTileLayoutResult[currentCardGroup].length === 0;
+
+                placeholderDropTargets.push({
+                  id: currentCardGroup,
+                  show: groupEmpty,
+                  top: heightOfAllCards
+                });
+
+                if (groupEmpty) {
+                  heightOfAllCards += LAYOUT_PLACEHOLDER_DROP_TARGET_HEIGHT + LAYOUT_EDIT_MODE_GROUP_PADDING;
+                } else {
+                  heightOfAllCards += rows.length * currentRowHeight + rowCount + LAYOUT_EDIT_MODE_GROUP_PADDING;
+                }
+
+              } else {
+                heightOfAllCards += rows.length * currentRowHeight;
+              }
 
               return overallStyleAcc + styleForRow;
 
@@ -296,6 +340,23 @@
                      + 'height:' + heightOfAllCards + 'px;'
                      + '}';
 
+          if ($scope.editMode) {
+
+            placeholderDropTargets.forEach(function(groupData) {
+              styleText += '#card-group-' + groupData.id + '-drop-placeholder{';
+              if (groupData.show) {
+                styleText += 'display:block;';
+              } else {
+                styleText += 'display:none;';
+              }
+              styleText += 'width:' + containerContentWidth + 'px;'
+                         + 'left:' + LAYOUT_GUTTER + 'px;'
+                         + 'top:' + groupData.top + 'px;'
+                         + '}';
+            });
+
+          }
+
           // OMG side-effect, but *what* a side effect, amirite?
           $scope.cardPositions = cardPositions;
 
@@ -306,6 +367,8 @@
           } else {
             $('.quick-filter-bar').removeClass('stuck');
           }
+
+
 
         };
 
@@ -320,22 +383,24 @@
         var distanceSinceDragStart = 0;
         var mouseIsDown = false;
 
+        var grabbedElement = null;
         var cursorToCardOriginXOffset = 0;
         var cursorToCardOriginYOffset = 0;
 
         // Given a point, the drop target is the card whose Y axis placement overlaps with the mouse Y position,
         // and whose top-left corner is closest to the mouse position.
         // Put another way, it's the closest card to the mouse in the row the mouse is in.
-        function findDropTarget(clientX, clientY) {
+        function findDropTarget(cardOriginX, cardOriginY, clientY) {
 
           var containerOffset = cardContainer.offset();
           var containerXOffset = containerOffset.left - jqueryWindow.scrollLeft();
           var containerYOffset = containerOffset.top - jqueryWindow.scrollTop();
-          var cursorX = clientX - containerXOffset;
-          var cursorY = clientY - containerYOffset;
+          var cursorX = cardOriginX - containerXOffset;
+          var cursorY = cardOriginY - containerYOffset;
+          var clientY = clientY - containerYOffset;
 
           var cardsInMyRow = _.where($scope.cardPositions, function(cardPositionData) {
-            return cardPositionData.top <= cursorY && (cardPositionData.top + cardPositionData.height) >= cursorY;
+            return cardPositionData.top <= clientY && (cardPositionData.top + cardPositionData.height) >= clientY;
           });
           var closestCard = cardsInMyRow.reduce(function(currentClosest, cardPositionData) {
             var distance = Math.sqrt(Math.pow(cursorX - cardPositionData.left, 2) + Math.pow(cursorY - cardPositionData.top, 2));
@@ -353,8 +418,18 @@
 
         };
 
+        /*function calculateCursorToCardOriginRatios(clientX, clientY) {
+
+          var targetBoundingClientRect = grabbedElement.getBoundingClientRect();
+
+          cursorToCardOriginXOffset = clientX - targetBoundingClientRect.left;
+          cursorToCardOriginYOffset = clientY - targetBoundingClientRect.top;
+
+          console.log(cursorToCardOriginXOffset, cursorToCardOriginYOffset);
+        }*/
 
         element.on('mousedown', '.card-drag-overlay', function(e) {
+
           if ($scope.editMode) {
 
             if (e.button === 0) {
@@ -364,16 +439,21 @@
               distanceSinceDragStart = 0;
             }
 
+            var boundingClientRect = e.target.getBoundingClientRect();
+            cursorToCardOriginXRatio = (e.clientX - boundingClientRect.left) / boundingClientRect.width;
+            cursorToCardOriginYRatio = (e.clientY - boundingClientRect.top) / boundingClientRect.height;
+
             // Prevent accidental selection of text while in edit mode.
             e.preventDefault();
 
           }
+
         });
 
         // This is on the body rather than the individual cards so that dragging
         // the cursor off of a card and then letting go will correctly transition
         // the dragging state to false.
-        $('body').on('mouseup', function(e) {
+        jqueryBody.on('mouseup', function(e) {
           mouseIsDown = false;
           lastClientX = 0;
           lastClientY = 0;
@@ -383,7 +463,7 @@
           });
         });
 
-        element.on('mousemove', function(e) {
+        jqueryBody.on('mousemove', function(e) {
 
           if (mouseIsDown && $scope.grabbedCard === null) {
 
@@ -397,32 +477,30 @@
 
             // If we're out of the dead zone, start the drag operation.
             if (distanceSinceDragStart > 3) {
+
               $scope.$apply(function() {
 
                 //TODO this is sorely needing some state transition goodness
                 var scopeOfCard = $(e.target).scope();
                 $scope.grabbedCard = scopeOfCard.cardModel;
 
-                var grabbedCardBoundingClientRect = e.target.getBoundingClientRect();
-                cursorToCardOriginXOffset = e.clientX - grabbedCardBoundingClientRect.left;
-                cursorToCardOriginYOffset = e.clientY - grabbedCardBoundingClientRect.top;
-
               });
             }
 
           }
 
-          if ($scope.grabbedCard !== null) {
+          if ($scope.grabbedCard !== null && typeof $scope.grabbedCard !== 'undefined') {
 
             // Card is being dragged.
 
-            var cardX = e.clientX - cursorToCardOriginXOffset;
-            var cardY = e.clientY - cursorToCardOriginYOffset;
+            var newWidth = $('#card-tile-' + $scope.grabbedCard.uniqueId).width();
+            var newHeight = $('#card-tile-' + $scope.grabbedCard.uniqueId).height();
 
-            $('#dragged-card-layout').text(".dragged { left: {0}px !important; top: {1}px !important;}".format(cardX, cardY));
+            cardOriginX = e.clientX - newWidth * cursorToCardOriginXRatio;
+            cardOriginY = e.clientY - newHeight * cursorToCardOriginYRatio;
 
 
-            var targetModel = findDropTarget(e.clientX, e.clientY);
+            var targetModel = findDropTarget(cardOriginX, cardOriginY, e.clientY);
 
             if (targetModel !== null && targetModel !== $scope.grabbedCard) {
 
@@ -433,17 +511,39 @@
               // Drop the dropped card in front of the card dropped onto.
               var newCards = _.without(currentCards, $scope.grabbedCard);
 
-              $scope.grabbedCard.set('cardSize', targetModel.getCurrentValue('cardSize'));
-              newCards.splice(targetModelIndex, 0, $scope.grabbedCard);
+              if ($scope.grabbedCard.getCurrentValue('cardSize') !== targetModel.getCurrentValue('cardSize')) {
 
-              console.log('apply at ' + Date.now());
+                $scope.grabbedCard.set('cardSize', targetModel.getCurrentValue('cardSize'));
+
+              }
+
+              newCards.splice(targetModelIndex, 0, $scope.grabbedCard);
 
               $scope.$apply(function() {
                 $scope.page.set('cards', newCards);
               });
 
+            } else {
+
+              var cardSize = null;
+
+              $('.card-group-drop-placeholder').each(function(index, item) {
+                boundingRect = item.getBoundingClientRect();
+                if (cardOriginX >= boundingRect.left &&
+                    cardOriginX <= boundingRect.left + boundingRect.width &&
+                    e.clientY >= boundingRect.top &&
+                    e.clientY <= boundingRect.top + boundingRect.height) {
+                  cardSize = item.getAttribute('data-group-id');
+                }
+              });
+
+              if (cardSize !== null) {
+                $scope.grabbedCard.set('cardSize', cardSize);
+              }
+
             }
 
+            $('#dragged-card-layout').text(".dragged { left: {0}px !important; top: {1}px !important;}".format(cardOriginX, cardOriginY));
 
             requestAnimationFrame(checkForScroll);
 
@@ -452,20 +552,26 @@
         });
 
 
+        var lastFrameTime = Date.now();
+
         function checkForScroll() {
 
+          var now = Date.now();
+
+          var deltaTime = now - lastFrameTime;
 
           var deltaTop = controller.pointerY;
           var distanceToScrollTop = $(window).scrollTop();
 
           var deltaBottom = jqueryWindow.height() - controller.pointerY;
-          var distanceToScrollBottom = $(document).height() - jqueryWindow.scrollTop();
+          var distanceToScrollBottom = jqueryDocument.height() - jqueryWindow.scrollTop();
 
           if (deltaTop <= 75 && distanceToScrollTop > 0) {
             var newYOffset = jqueryWindow.scrollTop()
                            - Math.min(
                                Math.min(5, Math.pow(75 - deltaTop, 3) / 168.75),
-                               distanceToScrollTop);
+                               distanceToScrollTop)
+                           * (deltaTime / 10);
 
             jqueryWindow.scrollTop(newYOffset);
 
@@ -475,13 +581,15 @@
             var newYOffset = jqueryWindow.scrollTop()
                            + Math.min(
                                Math.min(5, Math.pow(75 - deltaBottom, 3) / 168.75),
-                               distanceToScrollBottom);
+                               distanceToScrollBottom)
+                           * (deltaTime / 10);
 
             jqueryWindow.scrollTop(newYOffset);
 
           }
 
           if ($scope.grabbedCard !== null) {
+            lastFrameTime = now;
             requestAnimationFrame(checkForScroll);
           }
 
@@ -500,7 +608,8 @@
         ***********/
 
         $scope.$on('$destroy', function() {
-          $('body').off('mouseup');
+          jqueryBody.off('mouseup');
+          jqueryBody.off('mousemove');
         });
 
 

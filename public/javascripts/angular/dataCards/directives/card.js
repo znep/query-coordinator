@@ -98,17 +98,17 @@ angular.module('dataCards.directives').directive('card', function(AngularRxExten
       Rx.Observable.subscribeLatest(
         element.observeDimensions(),
         column.pluck('description'),
-        function(cardSize, dimensions, descriptionText) {
+        function(dimensions, descriptionText) {
           // Manually update the binding now, because Angular doesn't know that dotdotdot messes with
           // the text.
           descriptionTruncatedContent.text(descriptionText);
 
           var availableSpace = dimensions.height - descriptionTruncatedContent.offsetParent().position().top;
 
-          descriptionElementsWithMaxSize.
-            css('max-height', availableSpace);
+          descriptionElementsWithMaxSize.css('max-height', availableSpace);
 
           updateCardLayout(parseInt(descriptionTruncatedContent.css('line-height')) * 2);
+
         });
     }
   };

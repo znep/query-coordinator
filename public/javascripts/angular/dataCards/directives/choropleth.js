@@ -369,6 +369,10 @@ angular.module('dataCards.directives').directive('choropleth', function(AngularR
         $scope.bounds = leafletBoundsHelpers.createBoundsFromArray(ChoroplethHelpers.createBoundsArray(geojson));
       };
 
+      var updateZoom = function() {
+
+      };
+
       var updateLegend = function(classBreaks, colors) {
         $scope.legend = {
           position: defaultLegendPos,
@@ -696,8 +700,7 @@ angular.module('dataCards.directives').directive('choropleth', function(AngularR
 
       /* React to data changes further up the stack */
 
-      $scope.observe('geojsonAggregateData').subscribe(
-        function(geojsonAggregateData) {
+      $scope.observe('geojsonAggregateData').subscribe(function(geojsonAggregateData) {
 
           var colors;
           var values;
@@ -733,11 +736,12 @@ angular.module('dataCards.directives').directive('choropleth', function(AngularR
           if (!geojsonAggregateData) {
             return;
           }
-          var timestamp = new Date().getTime();
+
+          var timestamp = Date.now();
           $scope.$emit('render:start', 'choropleth_{0}'.format($scope.$id), timestamp);
 
+          // Use unfiltered data below in order to preserve the unfiltered choropleth legend and color scale
           values = ChoroplethHelpers.getGeojsonValues(geojsonAggregateData, UNFILTERED_VALUE_PROPERTY_NAME);
-          // uses unfiltered data to preserve the unfiltered choropleth legend and color scale
 
           if (values.length === 0) {
             // no values, just render polygons with no colors
@@ -759,12 +763,15 @@ angular.module('dataCards.directives').directive('choropleth', function(AngularR
           }
 
           updateBounds(geojsonAggregateData);
+
           $timeout(function() {
             // wait until card height dynamically sized
-            $scope.$broadcast('mapContainerResized');
+            $scope.$broadcast('updateChoropleth');
             $scope.$emit('render:complete', 'choropleth_{0}'.format($scope.$id), timestamp);
           });
+
         });
+
     }
   }
 });

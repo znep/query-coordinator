@@ -297,6 +297,7 @@
 
     UIController.prototype.setEditMode = function(editMode) {
       this.editMode = editMode;
+      this.transitionTo('LAYOUT');
     };
 
     return {

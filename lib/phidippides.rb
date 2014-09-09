@@ -82,7 +82,7 @@ module Phidippides
       request.body = JSON.dump(options[:data])
     end
 
-    Rails.logger.debug("#{verb.upcase} to phidippides at #{path} started with request body #{request.body.inspect}")
+    Rails.logger.debug("#{verb.upcase} to phidippides at #{service_end_point}/#{path} started with request body #{request.body.inspect}")
 
     request['X-Socrata-Host'] = CurrentDomain.domain.cname
     request['X-Socrata-Wink'] = 'iAmASocrataEmployee'

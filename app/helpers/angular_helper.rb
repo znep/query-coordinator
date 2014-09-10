@@ -5,7 +5,10 @@ module AngularHelper
   end
 
   def angular_config
-    { statsdEnabled: APP_CONFIG['statsd_enabled'] }
+    {
+      statsdEnabled: APP_CONFIG['statsd_enabled'],
+      useViewStubs: FeatureFlags.derive(nil, request)[:use_view_stubs]
+    }
   end
 
   def angular_stylesheet_tag

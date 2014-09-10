@@ -44,3 +44,6 @@ useSoda2:
 govstat_progress_settings:
   description: Allows overriding of goal progress.
   defaultValue: false
+use_view_stubs:
+  description: Use view stub files instead of metadata service.
+  defaultValue: true

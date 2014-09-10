@@ -85,7 +85,7 @@
               where-clause="globalWhereClauseFragment"
               ng-class="{ expanded: cardModel.getCurrentValue('expanded'), dragged: cardModel === grabbedCard }"></card>
         <div class="card-drop-placeholder" ng-if="cardModel === grabbedCard"></div>
-        <div class="card-drag-overlay" data-card-id="{{cardModel.uniqueId}}" ng-if="editMode && cardModel !== grabbedCard">DRAGME</div>
+        <div class="card-drag-overlay" data-card-id="{{cardModel.uniqueId}}" ng-if="editMode && cardModel !== grabbedCard"></div>
       </div>
       <div id="card-group-1-drop-placeholder" class="card-group-drop-placeholder" data-group-id="1"></div>
       <div id="card-group-2-drop-placeholder" class="card-group-drop-placeholder" data-group-id="2"></div>

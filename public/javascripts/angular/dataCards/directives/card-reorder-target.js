@@ -1,12 +1,12 @@
 (function() {
 
+  'use strict';
+
   var LAYOUT_HORIZONTAL_PADDING = 5;
   var LAYOUT_VERTICAL_PADDING = 5;
   var LAYOUT_GUTTER = 12;
   var LAYOUT_EDIT_MODE_GROUP_PADDING = 64;
   var LAYOUT_PLACEHOLDER_DROP_TARGET_HEIGHT = 128;
-
-  'use strict';
 
   // Directive in charge of orchestrating card reorder.
   // TODO dev note to Chris: Totally a placeholder thing. This is probably not what we want.
@@ -364,8 +364,10 @@
         var mouseIsDown = false;
 
         var grabbedElement = null;
-        var cursorToCardOriginXOffset = 0;
-        var cursorToCardOriginYOffset = 0;
+        var cursorToCardOriginXRatio = 0;
+        var cursorToCardOriginYRatio = 0;
+        var cardOriginX = 0;
+        var cardOriginY = 0;
 
         // Given a point, the drop target is the card whose Y axis placement overlaps with the mouse Y position,
         // and whose top-left corner is closest to the mouse position.
@@ -436,7 +438,6 @@
         });
 
         WindowState.mousePositionSubject.subscribe(function(position) {
-          //TODO feels like this should be in UIController...
           if (mouseIsDown && $scope.grabbedCard === null) {
 
             distanceSinceDragStart +=
@@ -452,7 +453,6 @@
 
               $scope.safeApply(function() {
 
-                //TODO this is sorely needing some state transition goodness
                 var scopeOfCard = $(position.target).scope();
                 $scope.grabbedCard = scopeOfCard.cardModel;
 
@@ -500,7 +500,7 @@
               var cardSize = null;
 
               $('.card-group-drop-placeholder').each(function(index, item) {
-                boundingRect = item.getBoundingClientRect();
+                var boundingRect = item.getBoundingClientRect();
                 if (cardOriginX >= boundingRect.left &&
                     cardOriginX <= boundingRect.left + boundingRect.width &&
                     position.clientY >= boundingRect.top &&
@@ -575,15 +575,6 @@
         ******************/
 
         $scope.bindObservable('cardModels', $scope.page.observe('cards'));
-
-
-        /***********
-        * Clean up *
-        ***********/
-
-        $scope.$on('$destroy', function() {
-        });
-
 
       }       // link() { ... }
     }         // return { ... }

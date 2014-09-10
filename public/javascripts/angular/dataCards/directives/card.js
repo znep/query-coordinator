@@ -20,12 +20,14 @@ angular.module('dataCards.directives').directive('card', function(AngularRxExten
       if (physicalDatatype === 'timestamp') { return 'timeline'; }
       if (physicalDatatype === 'number') { return 'timeline'; }
       if (physicalDatatype === 'fixed_timestamp') { return 'timeline'; }
+      if (physicalDatatype === 'floating_timestamp') { return 'timeline'; }
     }
     if (logicalDatatype === 'text' || logicalDatatype === 'name' || logicalDatatype === 'identifier') {
       if (physicalDatatype === 'text' || physicalDatatype === 'number') {
         return 'search';
       }
       if (physicalDatatype === 'fixed_timestamp') { return 'timeline'; }
+      if (physicalDatatype === 'floating_timestamp') { return 'timeline'; }
     }
     if (logicalDatatype === '*') { return 'table'; }
     throw new Error('Unknown visualization for logicalDatatype: ' + logicalDatatype +

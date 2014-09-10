@@ -2,7 +2,7 @@
   "id": "x6qq-d7ac",
   "rowDisplayUnit": "car",
   "defaultAggregateColumn": ":count",
-  "domain": "opendata.test-socrata.com",
+  "domain": "dataspace-demo.test-socrata.com",
   "ownerId": "",
   "updatedAt": "",
   "columns": [

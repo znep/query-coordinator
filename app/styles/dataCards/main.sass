@@ -11,6 +11,7 @@ body
   font-size: 14px
   font-weight: 200
   margin: 0
+  overflow-y: scroll
 
 // Begin workaround for OSX + chrome + Magic Mouse hiding scrollbars by default.
 // Not only does this cause our scrollable content to be rather undiscoverable,
@@ -49,6 +50,9 @@ a
 
 .invisible
   visibility: hidden
+
+.transparent
+  opacity: 0
 
 .hint
   color: #aaa
@@ -276,3 +280,8 @@ $facets-list-width: 20%
 
 .spinner.busy
   display: block
+
+#ruler
+  position: absolute
+  left: -10000px
+  visibility: hidden

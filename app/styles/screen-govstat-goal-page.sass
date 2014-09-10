@@ -151,67 +151,8 @@
       padding-right: 2em
       padding-top: 0.7em
 
-  .progressViewChart
-    color: #999
-    cursor: pointer
-    display: block
+  .progressViewChartToggle
     font-size: 0.7em
-    margin-top: 0.5em
-    @include transition(0.2s, color)
-    .pulldownArrow
-      @include rounded-ends
-      background-color: #fff
-      border: 1px solid #ddd
-      @include prefixer(box-shadow, 0 0 0.3em rgba(0, 0, 0, 0.08))
-      display: inline-block
-      height: 1.3em
-      line-height: 1.6
-      margin-right: 0.6em
-      position: relative
-      @include transition(0.2s, border-color box-shadow)
-      width: 1.3em
-
-      &:after
-        bottom: 0
-        content: ''
-        display: inline-block
-        height: 100%
-        left: 0
-        margin: auto
-        position: absolute
-        right: 0
-        top: 0.5em
-        width: 100%
-
-    span.viewChart, span.hideChart
-      display: none
-      position: relative
-      top: -0.25em
-
-    &.down
-      .pulldownArrow:after
-        @include triangle(0.4em, #999, top)
-        @include transition(0.2s, border-top-color)
-      &:hover .pulldownArrow:after
-        border-top-color: #666
-      span.viewChart
-        display: inline
-    &.up
-      .pulldownArrow:after
-        @include triangle(0.4em, #999, bottom)
-        @include transition(0.2s, border-bottom-color)
-        top: -0.4em
-      &:hover .pulldownArrow:after
-        border-bottom-color: #666
-      span.hideChart
-        display: inline
-
-    &:hover
-      color: #444
-
-      .pulldownArrow
-        @include prefixer(box-shadow, 0 0 0.3em rgba(0, 0, 0, 0.3))
-
     &.progress-none
       display: none
 

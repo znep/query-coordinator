@@ -1,8 +1,8 @@
 @import dataCards/common/colors
+@import dataCards/common/layout
 
 $metadata-top-padding: 7px
 $metadata-side-padding: 30px
-$rounded-corners-border-radius: 3px
 $filter-height: 58px
 $action-btn-min-width: 72px
 $action-btn-padding-top: 7px
@@ -10,20 +10,6 @@ $action-btn-padding-left: 18px
 // api panel sizes
 $api-panel-width: 512px
 $api-panel-hint-width: 20px
-// card sizes
-$card-margins: 5px
-$card-padding-top: 26px
-$card-padding-left: 15px
-$card-padding: $card-padding-top $card-padding-left
-$card-border-width: 2px
-$card-title-line-height: 1rem
-$card-description-padding-bottom: 1rem
-$card-base-sizes: 300px, 250px, 200px, 200px
-
-// Add the border width to each card size
-$card-sizes: ()
-@each $size in $card-base-sizes
-  $card-sizes: append($card-sizes, $size + $card-border-width * 2)
 
 // ---------------------------------
 
@@ -139,7 +125,7 @@ body
         &.r-to-l
           margin: 0 0 10px 10px
 
-        &:hover
+        &:hover, &.active
           background-color: $btn-hover-bg-color
           border: solid 2px $btn-hover-border-color
           color: $btn-hover-font-color
@@ -229,160 +215,105 @@ body
     background-color: $cards-bg-color
     color: $white-font-color
 
-    .quick-filter-bar
-      padding: 0
-      box-sizing: border-box
+    #quick-filter-bar-container
+      position: relative
 
-      .content
+      .quick-filter-bar-spacer
+        position:relative
         padding: $metadata-side-padding / 2
-        background-color: $cards-bg-color
         width: 100%
         box-sizing: border-box
         line-height: 1.5rem
+        background-color: white
 
-      &.stuck .content
-        z-index: 1003
-        // = (flyout z-index) + 1
-        // = (expanded-description's z-index + 1) + 1
-        // = ((leaflet's z-index) + 1) + 1) + 1
-        // = 1000 + 1 + 1 + 1
-        // = 1003
-        position: fixed
+      .quick-filter-bar
+        position: absolute
+        width: 100%
         top: 0
+        padding: 0
+        box-sizing: border-box
+        z-index: 1002
 
-      .filter
-        // TODO: responsive design for filters when narrow
-        display: inline-block
-        padding-right: 3px
-        color: $white-font-color
-
-        span
-          opacity: 0.6
-          &.light
-            opacity: 1
-
-
-    .cards
-      padding: $metadata-side-padding / 2 - $card-margins
-      padding-top: 0
-
-      /* LAYOUT */
-
-      .collapsed-layout, .expanded-layout .collapsed-cards
-        @for $i from 1 through length($card-sizes)
-          .card-size-#{$i}
-            height: nth($card-sizes, $i)
-
-      .expanded-layout
-
-        .card
-          margin-top: 0
-
-        .collapsed-cards
-          width: 35%
-
-        .expanded-cards
+        &.stuck
           position: fixed
           top: 0
-          // top is set in JS
-          left: 35%
+
+        .content
+          padding: $metadata-side-padding / 2
+          background-color: $cards-bg-color
+          width: 100%
+          box-sizing: border-box
+          line-height: 1.5rem
+
+        .filter
+          // TODO: responsive design for filters when narrow
+          display: inline-block
+          padding-right: 3px
+          color: $white-font-color
+
+          span
+            opacity: 0.6
+            &.light
+              opacity: 1
+
+    #card-container
+      position: relative
+
+    .cards
+      display: block
+      padding: 0
+
+      /* LAYOUT */
+      .card-spot
+        position: absolute
+
+        .card-drag-overlay
+          position: absolute
+          left: 0
           right: 0
-          bottom: 2px
+          top: 0
+          bottom: 0
+          z-index: 2
+          cursor: grab !important
+          cursor: -webkit-grab !important
 
-          .card
-            // NOTE: currenlty supports only 1 expanded card (MVP)
-            position: absolute
-            top: 0
-            right: 0
-            bottom: 0
-            left: 0
-
-      .card
-        border-radius: $rounded-corners-border-radius
-        margin: $card-margins
-        padding: $card-padding
-        color: $lt-grey-font-color
-        background: $card-bg-color
-
-        .card-text
-          position: relative
-          // fixes .wrap and .title-expanded in right place
-
-        .title-one-line
-          line-height: $card-title-line-height
-          font-weight: normal
-          text-transform: uppercase
-          color: $filtered-region-bg-color-1
-          display: block
-          padding-bottom: 5px
-
-          &:hover
-
-            + .title-expanded
-              z-index: 1002
-              // z-index is 1 higher than description z-index
-
-              .wrap
-                opacity: 1
-                overflow: visible
-
-        .title-expanded
-          @extend .title-one-line
+        card
           position: absolute
           top: 0
+          right: 0
+          bottom: 0
           left: 0
-          overflow: visible
-          z-index: -1
-          &:hover
-            z-index: 1002
-            // z-index is 1 higher than description z-index
+          z-index: 1
 
-          .wrap
-            max-width: 100%
-            overflow: hidden
-            display: inline-block
-            opacity: 0
-            font-size: inherit
-            white-space: initial
-            background-color: $card-bg-color
-            &:hover
-              opacity: 1
-              overflow: visible
+          &.dragged
+            position: fixed
+            z-index: 3000
+            opacity: 0.85
+            cursor: grabbing !important
+            cursor: -webkit-grabbing !important
+            @include prefixer(transition, "width 1s, height 1s")
 
-        .description
-          padding-bottom: 1rem
+      .card-group-drop-placeholder
+        position: absolute
+        display: none
+        height: 128px
+        font-size: 1.5em
+        line-height: 128px
+        text-align: center
+        color: white
+        border: 2px dashed white
+        border-radius: $rounded-corners-border-radius
+        box-sizing: border-box
 
-          .description-expand-button
-            color: $expand-button-color
-            background-color: $card-bg-color
-
-          &.collapsed .description-expanded-wrapper
-            background: transparent
-
-          .description-expanded-wrapper
-            background: $card-bg-color
-
-        .card-visualization
-          height: 100%
-
-        /* EXPANDED CARD SPECIFIC STYLES */
-        &.expanded
-          min-height: 350px
-          // min-height around 350px required
-          // to prevent column chart from flipping over, etc.
-
-          .card-text
-            .description
-              padding-bottom: $card-description-padding-bottom
-
-          .expandButton
-            span:before
-              content: ''
-
-
-      div[ng-switch="cardType"]
-        position: relative
-        // keeps choropleth in check
+      .card-drop-placeholder
+        position: absolute
+        left: 0
+        right: 0
+        top: 0
+        bottom: 0
+        background-color: white
+        opacity: 0.5
+        border-radius: $rounded-corners-border-radius
 
 /*  DESKTOP-SPECIFIC STYLES  */
 @media screen

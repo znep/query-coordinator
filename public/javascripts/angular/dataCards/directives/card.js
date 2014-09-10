@@ -3,36 +3,44 @@ angular.module('dataCards.directives').directive('card', function(AngularRxExten
   //TODO should probably be a service. And not suck.
   var cardTypeMapping = function(column) {
     column = column || {};
-    var logicalType = column.logicalDatatype;
-    var physicalType = column.physicalDatatype;
-    if (logicalType === 'category') {
+    var logicalDatatype = column.logicalDatatype;
+    var physicalDatatype = column.physicalDatatype;
+    if (logicalDatatype === 'category') {
       return 'column';
-    } else if (logicalType === 'amount') {
-      if (physicalType === 'number') { return 'statBar'; }
-    } else if (logicalType === 'location') {
-      if (physicalType === 'point') { return 'pointMap'; }
-      else if (physicalType === 'text') { return 'choropleth'; }
-      else if (physicalType === 'geo entity') { return 'point-ish map'; }
-    } else if (logicalType === 'time') {
-      if (physicalType === 'timestamp') { return 'timeline'; }
-      else if (physicalType === 'number') { return 'timeline'; }
-    } else if (logicalType === 'text' || logicalType === 'name' || logicalType === 'identifier') {
-      if (physicalType === 'text' || physicalType === 'number') {
+    }
+    if (logicalDatatype === 'amount') {
+      if (physicalDatatype === 'number') { return 'statBar'; }
+    }
+    if (logicalDatatype === 'location') {
+      if (physicalDatatype === 'point') { return 'pointMap'; }
+      if (physicalDatatype === 'text') { return 'choropleth'; }
+      if (physicalDatatype === 'geo_entity') { return 'point-ish map'; }
+    }
+    if (logicalDatatype === 'time') {
+      if (physicalDatatype === 'timestamp') { return 'timeline'; }
+      if (physicalDatatype === 'number') { return 'timeline'; }
+      if (physicalDatatype === 'fixed_timestamp') { return 'timeline'; }
+      if (physicalDatatype === 'floating_timestamp') { return 'timeline'; }
+    }
+    if (logicalDatatype === 'text' || logicalDatatype === 'name' || logicalDatatype === 'identifier') {
+      if (physicalDatatype === 'text' || physicalDatatype === 'number') {
         return 'search';
       }
-    } else if (logicalType === '*') { return 'table'; }
-    throw new Error('Unknown visualization for logicalDatatype: ' + logicalType +
-      ' and physicalDatatype: ' + physicalType);
+      if (physicalDatatype === 'fixed_timestamp') { return 'timeline'; }
+      if (physicalDatatype === 'floating_timestamp') { return 'timeline'; }
+    }
+    if (logicalDatatype === '*') { return 'table'; }
+    throw new Error('Unknown visualization for logicalDatatype: ' + logicalDatatype +
+      ' and physicalDatatype: ' + physicalDatatype);
   };
 
   return {
     restrict: 'E',
-    scope: { 'model': '=', 'whereClause': '='},
+    scope: { 'model': '=', 'whereClause': '=', 'editMode': '=' },
     templateUrl: '/angular_templates/dataCards/card.html',
     link: function($scope, element, attrs) {
       AngularRxExtensions.install($scope);
 
-      var content = element.find('div.card');
       var modelSubject = $scope.observe('model');
       var datasetObservable = modelSubject.pluck('page').observeOnLatest('dataset');
       var columns = datasetObservable.observeOnLatest('columns');
@@ -64,48 +72,52 @@ angular.module('dataCards.directives').directive('card', function(AngularRxExten
       $scope.bindObservable('title', column.pluck('title'));
       $scope.bindObservable('description', column.pluck('description'));
 
-      $scope.updateCardVisHeight = function() {
-        $timeout(function() {
-          // waits until description is filled in to determine heights
-          var cardVisHeight = element.find('.card').height() - element.find('.card').find('.card-text').outerHeight(true);
-          element.find('.card').find('.card-visualization').height(cardVisHeight);
+      var updateCardLayout = _.throttle(function(textHeight) {
+
+        var updateCardVisualizationHeight = function() {
+          $timeout(function() {
+            // waits until description is filled in to determine heights
+            var cardVisHeight = element.height() - element.find('.card-text').outerHeight(true);
+            element.find('.card-visualization').height(cardVisHeight);
+          });
+        };
+
+        descriptionTruncatedContent.dotdotdot({
+          height: textHeight,
+          tolerance: 2
         });
-      };
+
+        var isClamped = descriptionTruncatedContent.triggerHandler('isTruncated');
+
+        $scope.safeApply(function() {
+          $scope.descriptionClamped = isClamped;
+          $scope.animationsOn = true;
+          updateCardVisualizationHeight();
+        });
+
+      }, 250, { leading: true, trailing: true });
 
       $scope.toggleExpanded = function() {
         $scope.model.page.toggleExpanded($scope.model);
       };
 
-      var descriptionTruncatedContent = content.find('.description-truncated-content');
-      var descriptionElementsWithMaxSize = content.find('.description-expanded-wrapper, .description-expanded-content');
-      var updateClamp = _.throttle(function(height) {
-          descriptionTruncatedContent.dotdotdot({
-            height: height,
-            tolerance: 2
-          });
-
-          var isClamped = descriptionTruncatedContent.triggerHandler('isTruncated');
-
-          $scope.safeApply(function() {
-            $scope.descriptionClamped = isClamped;
-            $scope.animationsOn = true;
-            $scope.updateCardVisHeight();
-          });
-      }, 250, { leading: true, trailing: true });
+      var descriptionTruncatedContent = element.find('.description-truncated-content');
+      var descriptionElementsWithMaxSize = element.find('.description-expanded-wrapper, .description-expanded-content');
 
       Rx.Observable.subscribeLatest(
-        content.observeDimensions(),
+        element.observeDimensions(),
         column.pluck('description'),
         function(dimensions, descriptionText) {
           // Manually update the binding now, because Angular doesn't know that dotdotdot messes with
           // the text.
           descriptionTruncatedContent.text(descriptionText);
+
           var availableSpace = dimensions.height - descriptionTruncatedContent.offsetParent().position().top;
 
-          descriptionElementsWithMaxSize.
-            css('max-height', availableSpace);
+          descriptionElementsWithMaxSize.css('max-height', availableSpace);
 
-          updateClamp(parseInt(descriptionTruncatedContent.css('line-height')) * 2);
+          updateCardLayout(parseInt(descriptionTruncatedContent.css('line-height')) * 2);
+
         });
     }
   };

@@ -93,7 +93,7 @@
     {
       "title": "Location",
       "name": "point",
-      "physicalDatatype": "geo entity",
+      "physicalDatatype": "geo_entity",
       "logicalDatatype": "location",
       "importance": 3
     },

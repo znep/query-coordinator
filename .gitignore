@@ -19,3 +19,6 @@ karma-test/coverage-reports
 /node_modules/.bin/phantomjs
 /node_modules/phantomjs/
 .sass-cache
+dev-server/logs
+dev-server/*.pid
+

@@ -8,7 +8,7 @@
 #   Because I don't like YAML arrays, and it enforces simple values.
 #
 # This is truth. Anything not in this list gets ignored.
-# 
+#
 
 bubble:
   description: D3 Bubble Charts
@@ -41,3 +41,9 @@ useSoda2:
   description: Switch to using SODA2.
   defaultValue: never
   expectedValues: never read-only always
+govstat_progress_settings:
+  description: Allows overriding of goal progress.
+  defaultValue: false
+use_view_stubs:
+  description: Use view stub files instead of metadata service.
+  defaultValue: true

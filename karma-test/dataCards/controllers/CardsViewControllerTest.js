@@ -138,7 +138,8 @@ describe("CardsViewController", function() {
     });
   });
 
-  it('should calculate expandedCards, collapsedCards, and useExpandedView correctly', function() {
+  // THIS TEST DEPRECATED BY NEW LAYOUT CODE
+  xit('should calculate expandedCards, collapsedCards, and useExpandedView correctly', function() {
     var controllerHarness = makeController();
 
     var controller = controllerHarness.controller;
@@ -196,7 +197,8 @@ describe("CardsViewController", function() {
     );
   });
 
-  it('should calculate rowsOfCardsBySize and cardSizeNamesInDisplayOrder correctly', function() {
+  // THIS TEST DEPRECATED BY NEW LAYOUT CODE
+  xit('should calculate rowsOfCardsBySize and cardSizeNamesInDisplayOrder correctly', function() {
     var controllerHarness = makeController();
 
     var controller = controllerHarness.controller;
@@ -224,7 +226,8 @@ describe("CardsViewController", function() {
   });
 
   describe('card layout', function() {
-    it('should provide an classForScreenPosition implementation that is left-weighted', function() {
+    // THIS TEST DEPRECATED BY NEW LAYOUT CODE
+    xit('should provide an classForScreenPosition implementation that is left-weighted', function() {
       var controllerHarness = makeController();
       var classForScreenPosition = controllerHarness.scope.classForScreenPosition;
       expect(classForScreenPosition).to.exist;

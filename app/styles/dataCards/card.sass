@@ -1,0 +1,95 @@
+@import dataCards/common/colors
+@import dataCards/common/layout
+
+.card
+  border-radius: $rounded-corners-border-radius
+  padding: $card-padding
+  color: $lt-grey-font-color
+  background: $card-bg-color
+  box-sizing: border-box
+  -moz-box-sizing: border-box
+
+  .card-text
+    position: relative
+    // fixes .wrap and .title-expanded in right place
+
+  .title-one-line
+    line-height: $card-title-line-height
+    font-weight: normal
+    text-transform: uppercase
+    color: $filtered-region-bg-color-1
+    display: block
+    padding-bottom: 5px
+
+    &:hover
+
+      + .title-expanded
+        z-index: 1002
+        // z-index is 1 higher than description z-index
+
+        .wrap
+          opacity: 1
+          overflow: visible
+
+  .title-expanded
+    @extend .title-one-line
+    position: absolute
+    top: 0
+    left: 0
+    overflow: visible
+    z-index: -1
+    &:hover
+      z-index: 1002
+      // z-index is 1 higher than description z-index
+
+    .wrap
+      max-width: 100%
+      overflow: hidden
+      display: inline-block
+      opacity: 0
+      font-size: inherit
+      white-space: initial
+      background-color: $card-bg-color
+      &:hover
+        opacity: 1
+        overflow: visible
+
+  .description
+    padding-bottom: 1rem
+
+    .description-truncated-content
+      position: relative
+      z-index: 2
+
+    .description-expand-button
+      color: $expand-button-color
+      background-color: $card-bg-color
+
+    &.collapsed .description-expanded-wrapper
+      background: transparent
+
+    .description-expanded-wrapper
+      background: $card-bg-color
+      z-index: 1
+
+  .card-visualization
+    height: 100%
+
+  /* EXPANDED CARD SPECIFIC STYLES */
+  &.expanded
+    min-height: 350px
+    // min-height around 350px required
+    // to prevent column chart from flipping over, etc.
+
+    .card-text
+      .description
+        padding-bottom: $card-description-padding-bottom
+
+    .expandButton
+      span:before
+        content: ''
+
+
+div[ng-switch="cardType"]
+  position: relative
+  // keeps choropleth in check

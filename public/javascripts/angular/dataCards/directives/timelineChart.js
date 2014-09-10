@@ -18,6 +18,7 @@ angular.module('socrataCommon.directives').directive('timelineChart', function($
   var renderTimelineChart = function(scope, element, chartData, showFiltered, dimensions, expanded, precision, rowDisplayUnit, filterChanged, filters) {
 
     var bottomMargin = 16;
+
     var xTickSize = 3;
 
     if ($.isPresent(filters)) {
@@ -40,7 +41,8 @@ angular.module('socrataCommon.directives').directive('timelineChart', function($
       return;
     }
 
-    var chartHeight = dimensions.height - bottomMargin;
+    // Bad things happen if chartHeight is less than zero.
+    var chartHeight = Math.max(dimensions.height - bottomMargin, 0);
     var verticalScale = d3.scale.linear().range([chartHeight, 0]);
     var horizontalScale = null;
 

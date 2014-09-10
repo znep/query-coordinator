@@ -1,10 +1,18 @@
+
 (function($, _, window) {
   'use strict';
 
 // Contains extensions to both jQuery as well as Javascript built-in types.
-  $.fn.dimensions = function() {
-    return {width: this.width(), height: this.height() };
-  };
+$.fn.dimensions = function() {
+  // For reference, this results in a 15% increase in profiled idle time than what is in use:
+  //var el = this[0];
+  //return {
+  //  width: Math.min(el.clientWidth, el.scrollWidth, el.offsetWidth),
+  //  height: Math.min(el.clientHeight, el.scrollHeight, el.offsetHeight)
+  //};
+  // Might be worth looking into next time we make a perf pass.
+  return {width: this.width(), height: this.height()};
+};
 
 // Yields an RX observable sequence of this selection's dimensions.
   $.fn.observeDimensions = function() {
@@ -111,6 +119,7 @@
       }
       divider = divider / step;
     }
+
   };
 
   String.prototype.format = function() {
@@ -388,8 +397,10 @@
       flyout.on('mouseover, mouseenter', function(e) {
         inFlyout = true;
       }).bind('mouseleave', function(e) {
-        if (!options.debugNeverClosePopups) {
-          closeFlyout();
+        if (!$(e.target).parents().hasClass('dragged')) {
+          if (!options.debugNeverClosePopups) {
+            closeFlyout();
+          }
         }
       });
     };
@@ -403,11 +414,17 @@
         console.warn('Attempted to close nonexistent flyout.');
       }
     };
-    $(window).scroll(function(e) {
-      if ($.isPresent(flyout) && flyout.is(':visible') && ( inFlyout || inTarget )) {
-        renderFlyout(flyout.data('target'));
-      }
-    });
+    // This was added by Tristan Rice in a commit that made some passing
+    // reference to timeline chart bug. Not sure what it is and I don't
+    // see any problem with it despite the fact that the flyout.is(':visible')
+    // call is horribly unperformant, so I'm commenting this out at the moment.
+    // --Chris Laidlaw, 9/9/14
+    //
+    //$(window).scroll(function(e) {
+    //  if ($.isPresent(flyout) && flyout.is(':visible') && ( inFlyout || inTarget )) {
+    //    renderFlyout(flyout.data('target'));
+    //  }
+    //});
 
     // This was added to hopefully plug a memory leak when a flyout is created multiple times
     // in a render loop.
@@ -416,30 +433,34 @@
 
 
     self.delegate(options.selector, 'mouseover', function(e) {
-      var canRenderFlyout = true;
-      if (options.hasOwnProperty('onBeforeRender') && _(options.onBeforeRender).isFunction() ) {
-        canRenderFlyout = options.onBeforeRender.call(self, e.target);
-      }
-      if (canRenderFlyout) {
-        renderFlyout(this);
-      } else if (flyout) {
-        closeFlyout();
-      }
-      e.stopPropagation();
-    }).delegate(options.selector, 'mouseleave', function(e) {
-      if (!options.debugNeverClosePopups) {
-        inTarget = false;
-        if (options.interact) {
-          _.defer(function() {
-            if (!inFlyout && !inTarget) {
-              closeFlyout();
-            }
-          });
+      if (!$(e.target).parents().hasClass('dragged')) {
+        var canRenderFlyout = true;
+        if (options.hasOwnProperty('onBeforeRender') && _(options.onBeforeRender).isFunction() ) {
+          canRenderFlyout = options.onBeforeRender.call(self, e.target);
+        }
+        if (canRenderFlyout) {
+          renderFlyout(this);
         } else if (flyout) {
           closeFlyout();
         }
+        e.stopPropagation();
       }
-      e.stopPropagation();
+    }).delegate(options.selector, 'mouseleave', function(e) {
+      if (!$(e.target).parents().hasClass('dragged')) {
+        if (!options.debugNeverClosePopups) {
+          inTarget = false;
+          if (options.interact) {
+            _.defer(function() {
+              if (!inFlyout && !inTarget) {
+                closeFlyout();
+              }
+            });
+          } else if (flyout) {
+            closeFlyout();
+          }
+        }
+        e.stopPropagation();
+      }
     });
 
     var previousFlyout = $('.flyout');

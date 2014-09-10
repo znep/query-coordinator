@@ -42,6 +42,7 @@
         ],
         link: function (scope, element, attrs) {
           var isDefined = leafletHelpers.isDefined, defaults = leafletMapDefaults.setDefaults(scope.defaults, attrs.id), genDispatchMapEvent = leafletEvents.genDispatchMapEvent, mapEvents = leafletEvents.getAvailableMapEvents();
+
           // Set width and height if they are defined
           if (isDefined(attrs.width)) {
             if (isNaN(attrs.width)) {
@@ -59,10 +60,13 @@
           }
           // Create the Leaflet Map Object with the options
           var map = new L.Map(element[0], leafletMapDefaults.getMapCreationDefaults(attrs.id));
+          window.map = map;
+
           // Handle map resizing on elementResized event
-          scope.$on('mapContainerResized', function() {
+          scope.$on('updateChoropleth', function() {
             map.invalidateSize(false);
           });
+
           _leafletMap.resolve(map);
           if (!isDefined(attrs.center)) {
             map.setView([
@@ -114,6 +118,7 @@
     'leafletBoundsHelpers',
     'leafletEvents',
     function ($log, $q, $location, leafletMapDefaults, leafletHelpers, leafletBoundsHelpers, leafletEvents) {
+debugger
       var isDefined = leafletHelpers.isDefined, isNumber = leafletHelpers.isNumber, isSameCenterOnMap = leafletHelpers.isSameCenterOnMap, safeApply = leafletHelpers.safeApply, isValidCenter = leafletHelpers.isValidCenter, isEmpty = leafletHelpers.isEmpty, isUndefinedOrEmpty = leafletHelpers.isUndefinedOrEmpty;
       var shouldInitializeMapWithBounds = function (bounds, center) {
         return isDefined(bounds) && !isEmpty(bounds) && isUndefinedOrEmpty(center);

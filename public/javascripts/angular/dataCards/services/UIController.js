@@ -5,7 +5,7 @@
 
   angular.module('dataCards.services').factory('UIController', function() {
 
-    var UIController = function(layoutFn, dataModelObservable) {
+    var UIController = function(layoutFn, dataModelObservable, mouseActivitySeq) {
 
       var controller = this;
 
@@ -272,13 +272,16 @@
       //TODO these are making testing this controller quite hard.
       //Strongly consider passing these in as observables.
       //Also, any particular reason these are not jQuery?
-      document.addEventListener('mousedown', handleMouseDown, false);
-      document.addEventListener('mouseup', handleMouseUp, false);
-      document.addEventListener('mousemove', handleMouseMove, false);
       document.addEventListener('scroll', handleScroll, false);
       window.addEventListener('resize', handleResize, false);
       dataModelObservable.subscribe(handleDataModelChange);
-
+      mouseActivitySeq.subscribe(function(activity) {
+        switch(activity.name) {
+          case 'mousedown': handleMouseDown(activity.event); break;
+          case 'mouseup': handleMouseUp(activity.event); break;
+          case 'mousemove': handleMouseMove(activity.event); break;
+        }
+      });
       //TODO this introduces a nasty null pattern on currentState,
       //How else shall we do this? Maybe a WAITING_FOR_DATAMODEL state?
       dataModelObservable.first().subscribe(function() {
@@ -315,8 +318,8 @@
       // and data model observable. The output of the dataModelObservable
       // will be used as arguments to layoutFn, and is expected to be
       // an array.
-      initialize: function(layoutFn, dataModelObservable) {
-        return new UIController(layoutFn, dataModelObservable);
+      initialize: function(layoutFn, dataModelObservable, mouseActivitySeq) {
+        return new UIController(layoutFn, dataModelObservable, mouseActivitySeq);
       }
 
     };

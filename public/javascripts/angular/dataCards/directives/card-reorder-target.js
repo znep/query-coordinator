@@ -106,7 +106,18 @@
         * Set up UI Controller *
         ***********************/
 
-        var controller = UIController.initialize(layoutFn, dataModelObservableSequence);
+        var mouseActivitySeq = new Rx.Subject();
+        document.addEventListener('mousedown', function(event) {
+          mouseActivitySeq.onNext({name: 'mousedown', event: event});
+        }, false);
+        document.addEventListener('mouseup', function(event) {
+          mouseActivitySeq.onNext({name: 'mouseup', event: event});
+        }, false);
+        document.addEventListener('mousemove', function(event) {
+          mouseActivitySeq.onNext({name: 'mousemove', event: event});
+        }, false);
+
+        var controller = UIController.initialize(layoutFn, dataModelObservableSequence, mouseActivitySeq);
 
         // Link the 'editMode' state to the UI controller
         $scope.$watch('editMode', function(editMode) {

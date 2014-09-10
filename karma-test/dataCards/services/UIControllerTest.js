@@ -1,4 +1,4 @@
-describe('Mutable tile layout (UIController) controller test', function() {
+describe.only('Mutable tile layout (UIController) controller test', function() {
   var service;
   beforeEach(function() {
     module('dataCards.services');
@@ -12,7 +12,7 @@ describe('Mutable tile layout (UIController) controller test', function() {
     it('should call layoutFn when the dataModel is changed', function() {
       var layoutFn = sinon.spy();
       var dataModelObservable = new Rx.Subject();
-      var instance = service.initialize(layoutFn, dataModelObservable);
+      var instance = service.initialize(layoutFn, dataModelObservable, Rx.Observable.never());
       expect(layoutFn.called).to.be.false;
 
       var model1 = ['a'];
@@ -29,7 +29,7 @@ describe('Mutable tile layout (UIController) controller test', function() {
     it('should throw and not call layoutFn when the dataModel is changed to a non-array', function() {
       var layoutFn = sinon.spy();
       var dataModelObservable = new Rx.Subject();
-      var instance = service.initialize(layoutFn, dataModelObservable);
+      var instance = service.initialize(layoutFn, dataModelObservable, Rx.Observable.never());
       expect(layoutFn.called).to.be.false;
       expect(function() { dataModelObservable.onNext(); }).to.throw();
       expect(function() { dataModelObservable.onNext(3); }).to.throw();
@@ -46,12 +46,20 @@ describe('Mutable tile layout (UIController) controller test', function() {
       });
 
       var dataModelObservable = new Rx.Subject();
-      var instance = service.initialize(layoutFn, dataModelObservable);
+      var instance = service.initialize(layoutFn, dataModelObservable, Rx.Observable.never());
       expect(layoutFn.called).to.be.false;
       expect(instance.getState()).to.be.null;
 
       dataModelObservable.onNext([]);
       expect(instance.getState()).to.equal('UIRestState');
+    });
+    it('should transition from UIRestState to UIUpdateState on mouse down', function() {
+      var dataModelObservable = new Rx.BehaviorSubject([]);
+      var mouseActivitySeq = new Rx.Subject();
+      var instance = service.initialize(function(){}, dataModelObservable, mouseActivitySeq);
+      expect(instance.getState()).to.equal('UIRestState');
+      mouseActivitySeq.onNext({ name: 'mousedown', event: null });
+      expect(instance.getState()).to.equal('UIUpdateState');
     });
   });
 

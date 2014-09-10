@@ -127,10 +127,10 @@ class ViewTest < Test::Unit::TestCase
     refute View.new.can_add?, 'Should not be able to add if newBackend is true'
   end
 
-  def test_immutable_is_true_if_new_backend_is_true
+  def test_immutable_is_false_if_new_backend_is_true
     stub_core_server_connection
     View.any_instance.stubs(:new_backend? => true)
-    assert View.new.is_immutable?, 'Expected View instance to be immutable'
+    refute View.new.is_immutable?, 'Expected View instance to be mutable'
   end
 
   def test_immutable_is_false_if_new_backend_is_false

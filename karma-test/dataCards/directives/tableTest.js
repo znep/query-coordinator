@@ -208,6 +208,7 @@ describe('table', function() {
           expect($('.flyout a').length).to.equal(1);
           $('.flyout a').click();
         });
+        $('.flyout').remove();
       });
 
       it('should not sort when clicking the header resize thumb', function() {
@@ -269,6 +270,10 @@ describe('table', function() {
         });
       });
       describe('sort hint text', function() {
+        afterEach(function() {
+          $('.flyout').remove();
+        });
+
         it('should be correct for numbers', function() {
           immutableTable.find('.th').eq(0).trigger('mouseenter');
           expect($('.flyout a').text()).to.equal('Click to sort largest first');

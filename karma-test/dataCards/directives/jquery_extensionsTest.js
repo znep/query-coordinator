@@ -79,6 +79,9 @@ describe('jquery-extensions', function() {
           '<div class="cell"></div><div class="cell">' +
         '</div></div>');
     });
+    afterEach(function() {
+      $('.flyout').remove();
+    });
     it('should flyout on the mouseenter event and close on the mouseleave event', function(done) {
       $('#container').flyout({
         selector: '.cell',

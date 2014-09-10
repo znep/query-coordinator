@@ -819,7 +819,7 @@ class View < Model
   end
 
   def can_edit?
-    mutation_rights? && !is_grouped? && !is_api? && !new_backend?
+    mutation_rights? && !is_grouped? && !is_api?
   end
 
   def rights_include?(right)
@@ -995,7 +995,7 @@ class View < Model
   end
 
   def is_immutable?
-    is_blobby? || is_geo? || new_backend?
+    is_blobby? || is_geo?
   end
 
   def can_email?

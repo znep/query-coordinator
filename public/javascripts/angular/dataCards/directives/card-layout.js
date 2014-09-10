@@ -14,10 +14,18 @@
   // consider moving all of the card render/layout functionality into here (and rename the directive).
   // This would allow us to get rid of the global ID selectors in CardsViewController as well.
   // We'll chat tomorrow.
-  angular.module('dataCards.directives').directive('cardLayout', function(WindowState, SortedTileLayout) {
+  angular.module('dataCards.directives').directive('cardLayout', function(AngularRxExtensions, WindowState, SortedTileLayout) {
     return {
       restrict: 'E',
+      scope: {
+        page: '=',
+        editMode: '=',
+        globalWhereClauseFragment: '=',
+        cardModels: '='
+      },
+      templateUrl: '/angular_templates/dataCards/card-layout.html',
       link: function($scope, cardContainer, attrs) {
+        AngularRxExtensions.install($scope);
 
         /***********************
         * Cache some selectors *

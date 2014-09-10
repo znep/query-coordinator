@@ -1,0 +1,25 @@
+<style id="card-layout"></style>
+<style id="dragged-card-layout"></style>
+<!-- Ordering by uniqueId keeps ng-repeat DOM manipulations at a minimum.
+     since we position cards on screen by absolute offsets, the DOM ordering
+     doesn't matter too much. When we deal with keyboard accessibility, we'll
+     definitely need to at least impose a tab ordering. Note that ordering by
+     index in cardModels isn't good enough - it's in pseudo-arbitary order. -->
+<!-- Additionally, jquery-detect-element-resize breaks if the target node is
+     moved in the dom. The orderBy prevents such movement (only adds/removes
+     remain, which are fine). -->
+<div id="card-tile-{{cardModel.uniqueId}}"
+     class="card-spot"
+     ng-repeat="cardModel in cardModels | orderBy: 'uniqueId'">
+  <card model="cardModel"
+        class="card"
+        edit-mode="editMode"
+        where-clause="globalWhereClauseFragment"
+        ng-class="{ expanded: cardModel.getCurrentValue('expanded'), dragged: cardModel === grabbedCard }"></card>
+  <div class="card-drop-placeholder" ng-if="cardModel === grabbedCard"></div>
+  <div class="card-drag-overlay" data-card-id="{{cardModel.uniqueId}}" ng-if="editMode && cardModel !== grabbedCard"></div>
+</div>
+<div id="card-group-1-drop-placeholder" class="card-group-drop-placeholder" data-group-id="1"></div>
+<div id="card-group-2-drop-placeholder" class="card-group-drop-placeholder" data-group-id="2"></div>
+<div id="card-group-3-drop-placeholder" class="card-group-drop-placeholder" data-group-id="3"></div>
+

@@ -23,7 +23,7 @@
       scrollPositionSubject.onNext(window.scrollY);
     });
 
-    var mousePositionSubject = new Rx.BehaviorSubject({clientX: 0, clientY: 0});
+    var mousePositionSubject = new Rx.BehaviorSubject({clientX: 0, clientY: 0, target: null});
     jqueryBody.on('mousemove', function(e){
       WindowState.mouseClientX = e.originalEvent.clientX;
       WindowState.mouseClientY = e.originalEvent.clientY;
@@ -36,12 +36,12 @@
 
     var mouseLeftButtonPressedSubject = new Rx.BehaviorSubject(false);
     jqueryBody.on('mouseup', function(e) {
-      if (e.originalEvent.which === 1) {
+      if (e.which === 1) {
         mouseLeftButtonPressedSubject.onNext(false);
       }
     });
     jqueryBody.on('mousedown', function(e) {
-      if (e.originalEvent.which === 1) {
+      if (e.which === 1) {
         mouseLeftButtonPressedSubject.onNext(true);
       }
     });

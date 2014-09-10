@@ -7,14 +7,6 @@
   "updatedAt": "2014-09-07T10:25:11.000-07:00",
   "columns": [
     {
-      "physicalDatatype": "row_version",
-      "name": ":version",
-      "title": ":Version",
-      "description": "Information about complaints filed with the Police Advisory Commission against Philadelphia Police officers from 2009 - 2012. Source data is availabe on Open Data Philly.",
-      "logicalDatatype": "text",
-      "importance": 3
-    },
-    {
       "physicalDatatype": "point",
       "name": "location_1",
       "title": "Location 1",
@@ -108,14 +100,6 @@
       "title": "Unit",
       "description": "Information about complaints filed with the Police Advisory Commission against Philadelphia Police officers from 2009 - 2012. Source data is availabe on Open Data Philly.",
       "logicalDatatype": "category",
-      "importance": 3
-    },
-    {
-      "physicalDatatype": "row_identifier",
-      "name": ":id",
-      "title": ":Id",
-      "description": "Information about complaints filed with the Police Advisory Commission against Philadelphia Police officers from 2009 - 2012. Source data is availabe on Open Data Philly.",
-      "logicalDatatype": "text",
       "importance": 3
     },
     {

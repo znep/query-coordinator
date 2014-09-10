@@ -1,3 +1,12 @@
+// A service providing some info on the current window state (including mouse position).
+// API:
+// {
+//   mouseClient{X,Y}: Position of mouse.
+//   mousePositionSubject: RX observable of mouse position.
+//   mouseLeftButtonPressedSubject: RX observable of mouse left button state.
+//   windowSizeSubject: RX observable of window size.
+//   scrollPositionSubject: RX observable of Y scroll position.
+// }
 angular.module('dataCards.services').factory('WindowState', function() {
   var scrollPositionSubject = new Rx.BehaviorSubject(window.scrollY);
   document.addEventListener('scroll', function() {

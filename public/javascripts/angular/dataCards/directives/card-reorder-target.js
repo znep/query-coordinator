@@ -14,10 +14,10 @@
   // consider moving all of the card render/layout functionality into here (and rename the directive).
   // This would allow us to get rid of the global ID selectors in CardsViewController as well.
   // We'll chat tomorrow.
-  angular.module('dataCards.directives').directive('cardReorderTarget', function(WindowState, SortedTileLayout) {
+  angular.module('dataCards.directives').directive('cardLayout', function(WindowState, SortedTileLayout) {
     return {
-      restrict: 'A',
-      link: function($scope, element, attrs) {
+      restrict: 'E',
+      link: function($scope, cardContainer, attrs) {
 
         /***********************
         * Cache some selectors *
@@ -25,9 +25,12 @@
 
         var jqueryWindow = $(window);
         var jqueryDocument = $(document);
-        var cardContainer = $('#card-container');
         var cardsMetadata = $('.cards-metadata');
         var cardsMetadataOffsetTop = cardsMetadata.offset().top;
+
+        if (cardContainer[0].id !== 'card-container') {
+          throw new Error('The cardLayout directive must be given an DOM id attribute of "card-container".');
+        }
 
         /***********************
         * Set up data pipeline *
@@ -400,7 +403,7 @@
 
         };
 
-        element.on('mousedown', '.card-drag-overlay', function(e) {
+        cardContainer.on('mousedown', '.card-drag-overlay', function(e) {
 
           if ($scope.editMode) {
 

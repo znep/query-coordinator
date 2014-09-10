@@ -1,3 +1,4 @@
+//TODO rename
 (function() {
 
   'use strict';
@@ -60,6 +61,8 @@
 
             // Pass along the vertical scroll offset to the layout function so it can decide
             // whether or not to draw the quick filter bar in sticky mode.
+            //TODO Magical param...
+            // Why isn't it part of the data model?
             controller.layoutFn.apply(controller, controller.dataModel.concat(controller.scrollY));
 
             if (!controller.pointerLeft) {
@@ -186,6 +189,7 @@
         }
 
         if (controller.draggedElement !== null) {
+          //TODO used?
           controller.dropFn(controller.draggedElement);
         }
 
@@ -253,6 +257,7 @@
       this.draggedElement = null;
 
       // Actual state machine details
+      //TODO not consistent with what the states name themselves.
       this.STATES = {
         'REST': new UIRestState(),
         'LAYOUT': new UILayoutState(),
@@ -271,6 +276,7 @@
       this.scrollX = 0;
       this.scrollY = 0;
 
+      //TODO cleanup!
       document.addEventListener('mousedown', handleMouseDown, false);
       document.addEventListener('mouseup', handleMouseUp, false);
       document.addEventListener('mousemove', handleMouseMove, false);
@@ -278,12 +284,20 @@
       window.addEventListener('resize', handleResize, false);
       dataModelObservable.subscribe(handleDataModelChange);
 
-      this.transitionTo('LAYOUT');
+      //TODO this introduces a nasty null pattern on currentState,
+      //How else shall we do this? Maybe a WAITING_FOR_DATAMODEL state?
+      dataModelObservable.first().subscribe(function() {
+        controller.transitionTo('LAYOUT');
+      });
 
     };
 
     UIController.prototype.getState = function() {
-      return this.currentState.getState();
+      if (!this.currentState) {
+        return null; //TODO see above comment about null pattern.
+      } else {
+        return this.currentState.getState();
+      }
     };
 
     UIController.prototype.transitionTo = function(newState) {
@@ -302,6 +316,10 @@
 
     return {
 
+      // Initialize a UIController with the given layout function
+      // and data model observable. The output of the dataModelObservable
+      // will be used as arguments to layoutFn, and is expected to be
+      // an array.
       initialize: function(layoutFn, dataModelObservable) {
         return new UIController(layoutFn, dataModelObservable);
       }

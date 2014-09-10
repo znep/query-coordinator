@@ -1,9 +1,14 @@
 (function() {
 
-  function PageDataService(http) {
+  function PageDataService(http, ServerConfig) {
 
     function fetch(id) {
-      var url = '/page_metadata/{0}.json'.format(id);
+      var url = null;
+      if (ServerConfig.get('useViewStubs')) {
+        url = '/stubs/pages/{0}.json'.format(id);
+      } else {
+        url = '/page_metadata/{0}.json'.format(id);
+      }
       var config = {
         cache: true,
         requester: this

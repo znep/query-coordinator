@@ -118,7 +118,6 @@
     'leafletBoundsHelpers',
     'leafletEvents',
     function ($log, $q, $location, leafletMapDefaults, leafletHelpers, leafletBoundsHelpers, leafletEvents) {
-debugger
       var isDefined = leafletHelpers.isDefined, isNumber = leafletHelpers.isNumber, isSameCenterOnMap = leafletHelpers.isSameCenterOnMap, safeApply = leafletHelpers.safeApply, isValidCenter = leafletHelpers.isValidCenter, isEmpty = leafletHelpers.isEmpty, isUndefinedOrEmpty = leafletHelpers.isUndefinedOrEmpty;
       var shouldInitializeMapWithBounds = function (bounds, center) {
         return isDefined(bounds) && !isEmpty(bounds) && isUndefinedOrEmpty(center);

@@ -147,10 +147,6 @@
 
       var handleMouseDown = function(event) {
 
-        controller.pointerTarget = event.target;
-        controller.lastPointerX = event.clientX;
-        controller.lastPointerY = event.clientY;
-
         switch (event.which) {
           case 1:
             controller.pointerLeft = true;
@@ -171,9 +167,6 @@
 
       var handleMouseUp = function(event) {
 
-        controller.pointerTarget = event.target;
-        controller.lastPointerX = 0;
-        controller.lastPointerY = 0;
         controller.distanceSinceLastPointerLeft = 0;
 
         switch (event.which) {
@@ -201,7 +194,6 @@
 
       var handleMouseMove = function(event) {
 
-        controller.pointerTarget = event.target;
         controller.pointerX = event.clientX;
         controller.pointerY = event.clientY;
 
@@ -277,6 +269,9 @@
       this.scrollY = 0;
 
       //TODO cleanup!
+      //TODO these are making testing this controller quite hard.
+      //Strongly consider passing these in as observables.
+      //Also, any particular reason these are not jQuery?
       document.addEventListener('mousedown', handleMouseDown, false);
       document.addEventListener('mouseup', handleMouseUp, false);
       document.addEventListener('mousemove', handleMouseMove, false);

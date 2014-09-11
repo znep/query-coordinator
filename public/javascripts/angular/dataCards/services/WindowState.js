@@ -18,9 +18,9 @@
 
     var WindowState = {};
 
-    var scrollPositionSubject = new Rx.BehaviorSubject(window.scrollY);
+    var scrollPositionSubject = new Rx.BehaviorSubject(window.pageYOffset);
     jqueryDocument.on('scroll', function() {
-      scrollPositionSubject.onNext(window.scrollY);
+      scrollPositionSubject.onNext(window.pageYOffset);
     });
 
     var mousePositionSubject = new Rx.BehaviorSubject({clientX: 0, clientY: 0, target: null});

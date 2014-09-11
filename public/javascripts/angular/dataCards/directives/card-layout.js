@@ -130,26 +130,40 @@
             var containerDimensions = { width: cardContainer.width(), height: cardContainer.height() };
             var cardPositions = [];
 
+            // Terminology:
+            //
+            // Content size (width, height) refers to a size with padding/LAYOUT_GUTTER removed.
+            // Otherwise, sizes include padding/LAYOUT_GUTTER.
+            var containerContentWidth = containerDimensions.width - LAYOUT_GUTTER * 2;
 
-            // Branch here based on whether or not there is an expanded card.
-            if (expandedCard !== null) {
 
-              var deriveCardHeight = function(size) {
-                switch (parseInt(size, 10)) {
+            var deriveCardHeight = function(size) {
+              size = parseInt(size, 10);
+              if (expandedCard === null) {
+                switch (size) {
+                  case 1:
+                    return 300;
+                  case 2:
+                    return 250;
+                  case 3:
+                    return 200;
+                }
+              } else {
+                switch (size) {
                   case 1:
                     return 250;
                   case 2:
                     return 200;
                   case 3:
                     return 150;
-                  default:
-                    throw new Error('Unsupported card size: ' + size);
                 }
-              };
+              }
 
-              var containerWidth = containerDimensions.width;
-              var containerContentWidth = containerWidth - LAYOUT_GUTTER * 2;
+              throw new Error('Unsupported card size: ' + size);
+            };
 
+            // Branch here based on whether or not there is an expanded card.
+            if (expandedCard !== null) {
               var expandedColumnWidth = Math.floor(containerContentWidth * 0.65) - LAYOUT_HORIZONTAL_PADDING;
               var unexpandedColumnWidth = containerContentWidth - expandedColumnWidth - LAYOUT_HORIZONTAL_PADDING;
 
@@ -209,34 +223,9 @@
                          + '}';
 
             } else {
-
-              var deriveCardHeight = function(size) {
-                switch (parseInt(size, 10)) {
-                  case 1:
-                    return 300;
-                  case 2:
-                    return 250;
-                  case 3:
-                    return 200;
-                  default:
-                    throw new Error('Unsupported card size: ' + size);
-                }
-              };
-
-              var firstRow = true;
-
               // Track whether or not to draw placeholder drop targets
               // for each card grouping.
               var placeholderDropTargets = [];
-
-              // Terminology:
-              // Content size (width, height) refers to a size with padding/LAYOUT_GUTTER removed.
-              // Otherwise, sizes include padding/LAYOUT_GUTTER.
-              // For instance, containerWidth is the full width of the container,
-              // but containerContentWidth is contentWidth minus the LAYOUT_GUTTER.
-
-              var containerWidth = containerDimensions.width;
-              var containerContentWidth = containerWidth - LAYOUT_GUTTER * 2;
 
               var heightOfAllCards = 0;
 
@@ -253,13 +242,8 @@
 
               }
 
-              var currentCardGroup = 0;
-
               var styleText = _.reduce(sortedTileLayoutResult, function(overallStyleAcc, rows, cardSize) {
 
-                currentCardGroup += 1;
-
-                var rowCount = 0;
                 var currentRowHeight = deriveCardHeight(parseInt(cardSize), 10);
                 var currentRowContentHeight = currentRowHeight - LAYOUT_VERTICAL_PADDING;
 
@@ -269,8 +253,6 @@
                   var usableContentSpaceForRow = containerContentWidth - paddingForEntireRow;
                   var cardWidth = Math.floor(usableContentSpaceForRow / row.length);
 
-                  rowCount += 1;
-
                   return styleForRowAcc + _.map(row, function(card, cardIndexInRow) {
 
                     var spaceTakenByOtherCardsPadding = Math.max(0, cardIndexInRow * LAYOUT_HORIZONTAL_PADDING);
@@ -278,14 +260,13 @@
 
                     var cardTop = heightOfAllCards + rowIndex * currentRowHeight;
 
-                    cardPositions.push(
-                      {
-                        model: card.model,
-                        top: cardTop,
-                        left: cardLeft,
-                        width: cardWidth,
-                        height: currentRowContentHeight
-                      });
+                    cardPositions.push({
+                      model: card.model,
+                      top: cardTop,
+                      left: cardLeft,
+                      width: cardWidth,
+                      height: currentRowContentHeight
+                    });
 
                     return '#card-tile-' + card.model.uniqueId + ', #card-tile-' + card.model.uniqueId + ' .dragged'
                                     + '{'
@@ -302,10 +283,10 @@
                 if (editMode) {
 
                   // Also accommodate for empty groups and display a placeholder drop target.
-                  var groupEmpty = sortedTileLayoutResult[currentCardGroup].length === 0;
+                  var groupEmpty = rows.length === 0;
 
                   placeholderDropTargets.push({
-                    id: currentCardGroup,
+                    id: cardSize,
                     show: groupEmpty,
                     top: heightOfAllCards
                   });
@@ -313,7 +294,7 @@
                   if (groupEmpty) {
                     heightOfAllCards += LAYOUT_PLACEHOLDER_DROP_TARGET_HEIGHT + LAYOUT_EDIT_MODE_GROUP_PADDING;
                   } else {
-                    heightOfAllCards += rows.length * currentRowHeight + rowCount + LAYOUT_EDIT_MODE_GROUP_PADDING;
+                    heightOfAllCards += rows.length * currentRowHeight + LAYOUT_EDIT_MODE_GROUP_PADDING;
                   }
 
                 } else {
@@ -353,13 +334,7 @@
 
             $('#card-layout').text(styleText);
 
-            if (headerStuck) {
-              $('.quick-filter-bar').addClass('stuck');
-            } else {
-              $('.quick-filter-bar').removeClass('stuck');
-            }
-
-
+            $('.quick-filter-bar').toggleClass('stuck', headerStuck);
 
           });
 

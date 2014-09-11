@@ -22,7 +22,7 @@
     {
       "description": "Race",
       "fieldName": "race",
-      "cardSize": 3,
+      "cardSize": 2,
       "cardCustomStyle": {},
       "expandedCustomStyle": {},
       "displayMode": "visualization",
@@ -32,7 +32,7 @@
     {
       "description": "Sex",
       "fieldName": "sex",
-      "cardSize": 3,
+      "cardSize": 2,
       "cardCustomStyle": {},
       "expandedCustomStyle": {},
       "displayMode": "visualization",
@@ -42,7 +42,7 @@
     {
       "description": "Type",
       "fieldName": "type",
-      "cardSize": 3,
+      "cardSize": 2,
       "cardCustomStyle": {},
       "expandedCustomStyle": {},
       "displayMode": "visualization",
@@ -73,7 +73,7 @@
     {
       "description": "Status",
       "fieldName": "status",
-      "cardSize": 3,
+      "cardSize": 2,
       "cardCustomStyle": {},
       "expandedCustomStyle": {},
       "displayMode": "visualization",
@@ -83,7 +83,7 @@
     {
       "description": "Unit",
       "fieldName": "unit",
-      "cardSize": 3,
+      "cardSize": 2,
       "cardCustomStyle": {},
       "expandedCustomStyle": {},
       "displayMode": "visualization",
@@ -104,7 +104,7 @@
     {
       "description": "Action",
       "fieldName": "action",
-      "cardSize": 3,
+      "cardSize": 2,
       "cardCustomStyle": {},
       "expandedCustomStyle": {},
       "displayMode": "visualization",

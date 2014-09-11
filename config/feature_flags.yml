@@ -8,7 +8,7 @@
 #   Because I don't like YAML arrays, and it enforces simple values.
 #
 # This is truth. Anything not in this list gets ignored.
-#
+# 
 
 bubble:
   description: D3 Bubble Charts

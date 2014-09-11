@@ -18,7 +18,6 @@ angular.module('socrataCommon.directives').directive('timelineChart', function($
   var renderTimelineChart = function(scope, element, chartData, showFiltered, dimensions, expanded, precision, rowDisplayUnit, filterChanged, filters) {
 
     var bottomMargin = 16;
-
     var xTickSize = 3;
 
     if ($.isPresent(filters)) {

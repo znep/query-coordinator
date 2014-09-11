@@ -60,10 +60,9 @@
           }
           // Create the Leaflet Map Object with the options
           var map = new L.Map(element[0], leafletMapDefaults.getMapCreationDefaults(attrs.id));
-          window.map = map;
 
           // Handle map resizing on elementResized event
-          scope.$on('updateChoropleth', function() {
+          scope.$on('mapContainerResized', function() {
             map.invalidateSize(false);
           });
 

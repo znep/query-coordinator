@@ -124,7 +124,6 @@ describe('WindowState service', function() {
       expect(WindowState.scrollPositionSubject.value).to.equal(0);
 
       var handler = sinon.spy(function(scrollTop) {
-        console.log(scrollTop);
         if (handler.calledOnce) {
           expect(scrollTop).to.equal(0);
         } else if (handler.calledTwice) {

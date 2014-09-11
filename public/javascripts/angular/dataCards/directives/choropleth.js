@@ -369,10 +369,6 @@ angular.module('dataCards.directives').directive('choropleth', function(AngularR
         $scope.bounds = leafletBoundsHelpers.createBoundsFromArray(ChoroplethHelpers.createBoundsArray(geojson));
       };
 
-      var updateZoom = function() {
-
-      };
-
       var updateLegend = function(classBreaks, colors) {
         $scope.legend = {
           position: defaultLegendPos,
@@ -766,7 +762,7 @@ angular.module('dataCards.directives').directive('choropleth', function(AngularR
 
           $timeout(function() {
             // wait until card height dynamically sized
-            $scope.$broadcast('updateChoropleth');
+            $scope.$broadcast('mapContainerResized');
             $scope.$emit('render:complete', 'choropleth_{0}'.format($scope.$id), timestamp);
           });
 

@@ -1,20 +1,19 @@
-
 (function($, _, window) {
   'use strict';
 
-// Contains extensions to both jQuery as well as Javascript built-in types.
-$.fn.dimensions = function() {
-  // For reference, this results in a 15% increase in profiled idle time than what is in use:
-  //var el = this[0];
-  //return {
-  //  width: Math.min(el.clientWidth, el.scrollWidth, el.offsetWidth),
-  //  height: Math.min(el.clientHeight, el.scrollHeight, el.offsetHeight)
-  //};
-  // Might be worth looking into next time we make a perf pass.
-  return {width: this.width(), height: this.height()};
-};
+  // Contains extensions to both jQuery as well as Javascript built-in types.
+  $.fn.dimensions = function() {
+    // For reference, this results in a 15% increase in profiled idle time than what is in use:
+    //var el = this[0];
+    //return {
+    //  width: Math.min(el.clientWidth, el.scrollWidth, el.offsetWidth),
+    //  height: Math.min(el.clientHeight, el.scrollHeight, el.offsetHeight)
+    //};
+    // Might be worth looking into next time we make a perf pass.
+    return {width: this.width(), height: this.height()};
+  };
 
-// Yields an RX observable sequence of this selection's dimensions.
+  // Yields an RX observable sequence of this selection's dimensions.
   $.fn.observeDimensions = function() {
     var self = this;
     var dimensionsSubject = new Rx.BehaviorSubject(self.dimensions());
@@ -119,7 +118,6 @@ $.fn.dimensions = function() {
       }
       divider = divider / step;
     }
-
   };
 
   String.prototype.format = function() {

@@ -5523,9 +5523,6 @@ function curCSS( elem, name, computed ) {
 	var width, minWidth, maxWidth, ret,
 		style = elem.style;
 
-//	debugger
-
-
 	computed = computed || getStyles( elem );
 
 	// Support: IE9

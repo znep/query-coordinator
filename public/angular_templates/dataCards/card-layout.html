@@ -13,7 +13,6 @@
      ng-repeat="cardModel in cardModels | orderBy: 'uniqueId'">
   <card model="cardModel"
         class="card"
-        edit-mode="editMode"
         where-clause="globalWhereClauseFragment"
         ng-class="{ expanded: cardModel.getCurrentValue('expanded'), dragged: cardModel === grabbedCard }"></card>
   <div class="card-drop-placeholder" ng-if="cardModel === grabbedCard"></div>

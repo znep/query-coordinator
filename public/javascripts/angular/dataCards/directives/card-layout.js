@@ -554,9 +554,9 @@
           if (deltaTop <= 75 && distanceToScrollTop > 0) {
             var newYOffset = jqueryWindow.scrollTop()
                            - Math.min(
-                               Math.min(5, Math.pow(75 - deltaTop, 3) / 168.75),
-                               distanceToScrollTop)
-                           * (deltaTime / 10);
+                               Math.max(5, Math.pow(75 - deltaTop, 3) / 168.75) * (deltaTime / 1000),
+                               distanceToScrollTop);
+
 
             jqueryWindow.scrollTop(newYOffset);
 
@@ -565,9 +565,8 @@
             // Never allow the window to scroll past the bottom.
             var newYOffset = jqueryWindow.scrollTop()
                            + Math.min(
-                               Math.min(5, Math.pow(75 - deltaBottom, 3) / 168.75),
-                               distanceToScrollBottom)
-                           * (deltaTime / 10);
+                               Math.max(5, Math.pow(75 - deltaBottom, 3) / 168.75) * (deltaTime / 1000),
+                               distanceToScrollBottom);
 
             jqueryWindow.scrollTop(newYOffset);
 

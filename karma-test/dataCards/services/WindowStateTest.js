@@ -111,7 +111,7 @@ describe('WindowState service', function() {
 
   describe('scrollPositionSubject', function() {
     var fakeContentYPosition = 100000;
-    var testContent = $('body').append('<div id="scrollPositionSubjectFakeContent" style="position: absolute; height: ' + fakeContentYPosition + 'px">LOL JQUERY</div>');
+    $('body').append('<div id="scrollPositionSubjectFakeContent" style="position: absolute; height: ' + fakeContentYPosition + 'px">LOL JQUERY</div>');
 
     after(function() {
       $('#scrollPositionSubjectFakeContent').remove();

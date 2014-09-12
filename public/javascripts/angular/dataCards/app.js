@@ -4,9 +4,9 @@ var dataCards = angular.module('dataCards', [
   'socrataCommon.directives',
   'socrataCommon.filters',
   'dataCards.controllers',
+  'dataCards.services',
   'dataCards.directives',
-  'dataCards.models',
-  'leaflet-directive'
+  'dataCards.models'
   // 'pasvaz.bindonce' NOTE: use in the future to optimize Angular performance.
 ]);
 

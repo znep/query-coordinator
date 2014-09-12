@@ -3,58 +3,44 @@
 .card
   position: relative
 
-  .choropleth-map-container
+  .choropleth-container
     padding: 0
     height: 100%
-    border-radius: 5px
 
-    path
-      cursor: inherit
+    .choropleth-map-container
+      height: 100%
 
-  .modern-legend
-    margin: 15px
-    padding: 5px
-    background-color: transparent
-    border-radius: 4px
-    position: absolute
-    cursor: default
-    visibility: collapse
+      path
+        cursor: pointer
 
-    &.topright
-      top: 0
-      right: 0
-    &.topleft
-      top: 0
-      left: 0
-    &.bottomright
-      bottom: 0
-      right: 0
-    &.bottomleft
-      bottom: 0
-      left: 0
+    .choropleth-legend-container
+      position: absolute
+      padding: 15px 15px 15px 35px
+      bottom: 15px
+      right: 15px
+      background-color: white
+      border-radius: 5px
+      cursor: default
 
-    svg
-      overflow: initial
+      svg
+        overflow: initial
 
-      .labels
-        .tick
-          line
-            stroke: black
+        .labels
+          .tick
+            line
+              stroke: black
 
-      rect.color
-        stroke: white
-        stroke-width: 1px
+        rect.color
+          stroke: white
+          stroke-width: 1px
 
-/*  EXPANDED VS REGION CARD CHOROPLETH STYLES */
+.card.dragged
+  .choropleth-container
+    .choropleth-map-container
+      path
+        cursor: grabbing !important
+        cursor: -webkit-grabbing !important
 
-.card.expanded
-  .choropleth-map-container
-    .choropleth-map
-      .modern-legend
-        visibility: visible
-
-/*   CHORO FLYOUT  */
-
-#choro-flyout
+#choropleth-flyout
   margin: 0 10px
   min-width: 200px

@@ -40,6 +40,7 @@
       "rxjs": [
         "bower_components/rxjs/rx.js",
         "bower_components/rxjs/rx.aggregates.js",
+        "bower_components/rxjs/rx.time.js",
         "bower_components/rxjs/rx.binding.js"
       ],
       "flexgrid": [

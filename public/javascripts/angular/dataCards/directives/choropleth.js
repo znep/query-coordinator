@@ -345,7 +345,7 @@
           zoomControlPosition: 'topleft'
         };
 
-        var map = L.map(element.first('.choropleth-map-container')[0], options);
+        var map = L.map(element.find('.choropleth-map-container')[0], options);
 
         // Keep track of the geojson layer so that we can remove it cleanly. Every
         // redraw of the map forces us to remove the layer entirely because there

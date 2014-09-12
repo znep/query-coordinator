@@ -36,6 +36,7 @@
     {
       "fieldName": "ward",
       "shapeFile": "mash-apes",
+      "baseLayerUrl": "https://a.tiles.mapbox.com/v3/socrata-apps.ibp0l899/{z}/{x}/{y}.png",
       "cardSize": 2,
       "cardCustomStyle": {},
       "expandedCustomStyle": {},

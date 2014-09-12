@@ -7,6 +7,7 @@ angular.module('dataCards.models').factory('Card', function($injector, ModelHelp
     'properties': {
       'fieldName': { 'type': 'string', 'minLength': 1 },
       'shapeFile': { 'type': 'string', 'pattern': UID_REGEXP },
+      'baseLayerUrl': { 'type': 'string' },
       'cardSize': { 'type': 'integer' , 'minimum': 1, 'maximum': 4 },
       'displayMode': { 'type': 'string', 'enum': ['figures', 'visualization'] },
       'expanded': { 'type': 'boolean' },

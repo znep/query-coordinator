@@ -143,6 +143,7 @@ angular.module('dataCards.directives').directive('cardVisualizationChoropleth', 
         });
 
       $scope.bindObservable('fieldName', model.pluck('fieldName'));
+      $scope.bindObservable('baseLayerUrl', model.observeOnLatest('baseLayerUrl'));
       $scope.bindObservable('rowDisplayUnit', dataset.observeOnLatest('rowDisplayUnit'));
 
       $scope.bindObservable(

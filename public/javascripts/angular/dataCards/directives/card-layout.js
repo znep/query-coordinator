@@ -34,11 +34,22 @@
         var jqueryWindow = $(window);
         var jqueryDocument = $(document);
         var cardsMetadata = $('.cards-metadata');
-        var cardsMetadataOffsetTop = cardsMetadata.offset().top;
 
+        // NOTE Right now this directive has strict DOM structure requirements.
+        // Ideally these wouldn't be required, but for the time being we'll
+        // verify our requirements are met.
         if (cardContainer[0].id !== 'card-container') {
           throw new Error('The cardLayout directive must be given an DOM id attribute of "card-container".');
         }
+        if (_.isEmpty(cardsMetadata)) {
+          throw new Error('The cardLayout directive must be in the DOM with a node with class "cards-metadata".');
+        }
+        if (_.isEmpty($('.quick-filter-bar'))) {
+          throw new Error('The cardLayout directive must be in the DOM with a node with class "quick-filter-bar".');
+        }
+
+        //TODO This should never change at runtime. If it does, we need to react to that change.
+        var cardsMetadataOffsetTop = cardsMetadata.offset().top;
 
         /***********************
         * Set up data pipeline *
@@ -64,6 +75,9 @@
         function zipLatestArray(obs, property) {
           return obs.flatMapLatest(
             function(values) {
+              if (_.isEmpty(values)) {
+                return Rx.Observable.returnValue([]);
+              }
               return Rx.Observable.combineLatest(_.map(values, function(val) {
                 return val.observe(property);
               }), function() {
@@ -113,10 +127,10 @@
           rowsOfCardsBySize,
           expandedCards,
           $scope.observe('editMode'),
+          cardsMetadata.observeDimensions(),
           WindowState.windowSizeSubject,
           WindowState.scrollPositionSubject,
-          function layoutFn(sortedTileLayoutResult, expandedCards, editMode, windowSize, scrollTop) {
-
+          function layoutFn(sortedTileLayoutResult, expandedCards, editMode, cardsMetadataSize, windowSize, scrollTop) {
             // Figure out if there is an expanded card.
             if (!_.isEmpty(expandedCards)) {
               var expandedCard = expandedCards[0];
@@ -135,7 +149,6 @@
             // Content size (width, height) refers to a size with padding/LAYOUT_GUTTER removed.
             // Otherwise, sizes include padding/LAYOUT_GUTTER.
             var containerContentWidth = containerDimensions.width - LAYOUT_GUTTER * 2;
-
 
             var deriveCardHeight = function(size) {
               size = parseInt(size, 10);
@@ -344,9 +357,8 @@
         ******************************/
         $scope.grabbedCard = null;
 
-        var lastClientX = 0;
-        var lastClientY = 0;
-        var distanceSinceDragStart = 0;
+        var mouseDownClientX = 0;
+        var mouseDownClientY = 0;
         var mouseIsDown = false;
 
         var grabbedElement = null;
@@ -392,9 +404,8 @@
 
             if (e.button === 0) {
               mouseIsDown = true;
-              lastClientX = e.clientX;
-              lastClientY = e.clientY;
-              distanceSinceDragStart = 0;
+              mouseDownClientX = e.clientX;
+              mouseDownClientY = e.clientY;
             }
 
             var boundingClientRect = e.target.getBoundingClientRect();
@@ -414,9 +425,8 @@
         WindowState.mouseLeftButtonPressedSubject.subscribe(function(leftPressed) {
           if (!leftPressed) {
             mouseIsDown = false;
-            lastClientX = 0;
-            lastClientY = 0;
-            distanceSinceDragStart = 0;
+            mouseDownClientX = null;
+            mouseDownClientY = null;
             $scope.safeApply(function() {
               $scope.grabbedCard = null;
             });
@@ -426,13 +436,10 @@
         WindowState.mousePositionSubject.subscribe(function(position) {
           if (mouseIsDown && $scope.grabbedCard === null) {
 
-            distanceSinceDragStart +=
+            var distanceSinceDragStart =
               Math.floor(Math.sqrt(
-                Math.pow(position.clientX - lastClientX, 2) +
-                Math.pow(position.clientY - lastClientY, 2)));
-
-            lastClientX = position.clientX;
-            lastClientY = position.clientY;
+                Math.pow(position.clientX - mouseDownClientX, 2) +
+                Math.pow(position.clientY - mouseDownClientY, 2)));
 
             // If we're out of the dead zone, start the drag operation.
             if (distanceSinceDragStart > 3) {

@@ -19,6 +19,24 @@ angular.module('test', [])
       Date.now = now;
     }
 
+    // Returns a promise that will be resolved when the given
+    // test function returns a truthy value.
+    // NOTE: This is expected to be used with Mocha's auto
+    // test timeout, so there's no built-in timeout functionality.
+    function waitForSatisfy(test) {
+      var p = new Promise(function(resolve, reject) {
+        function check() {
+          if (!test()) {
+            _.delay(check, 25);
+          } else {
+            resolve();
+          }
+        };
+        check();
+      });
+      return p;
+    };
+
     var TestDom = {
       compileAndAppend: function(element, scope) {
         var compiledElem = $compile(TestDom.append(element))(scope);
@@ -50,6 +68,7 @@ angular.module('test', [])
       TestDom: TestDom,
       getTestJson: getTestJson,
       flushAllD3Transitions: flushAllD3Transitions,
-      fireMouseEvent: fireMouseEvent
+      fireMouseEvent: fireMouseEvent,
+      waitForSatisfy: waitForSatisfy
     };
   });

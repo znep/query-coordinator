@@ -141,7 +141,7 @@
     },
     {
       "fieldName": "*",
-      "cardsize": 3,
+      "cardSize": 3,
       "cardCustomStyle": {},
       "expandedCustomStyle": {},
       "displayMode": "visualization",

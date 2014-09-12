@@ -34,7 +34,7 @@ class Phidog
 
     elsif result[:status] == '404'
       result = create_dataset_metadata(data)
-      if result[:status] == '201'
+      if result[:status] == '200'
         warning = ''
         if result[:body] != data
           warning = "WARNING: JSON data doesn't match"
@@ -78,7 +78,7 @@ class Phidog
         puts("CREATING new page since existing page #{pageId} was not found.")
         result = create_page_metadata(page)
 
-        if result[:status] == '201'
+        if result[:status] == '200'
           pageId = result[:body][:pageId]
           oldPageId = page['pageId']
           page['pageId'] = pageId

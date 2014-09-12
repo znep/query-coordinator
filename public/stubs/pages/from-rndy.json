@@ -30,7 +30,7 @@
     {
       "description": "All Data",
       "fieldName": "*",
-      "cardSize": 4,
+      "cardsize": 3,
       "cardCustomStyle": {},
       "expandedCustomStyle": {},
       "displayMode": "visualization",

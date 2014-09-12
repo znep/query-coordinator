@@ -48,6 +48,7 @@
     }
   },
   "devDependencies": {
-    "sinon-browser-only": "~1.9.0"
+    "sinon-browser-only": "~1.9.0",
+    "native-promise-only": "~0.7.5-e"
   }
 }

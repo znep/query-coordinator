@@ -65,6 +65,7 @@ module.exports = function ( karma ) {
       'bower_components/jjv/lib/jjv.js',
       'bower_components/sinon-browser-only/sinon.js',
       'bower_components/moment/moment.js',
+      'bower_components/native-promise-only/lib/npo.src.js',
       'karma-test/TestHelpers.js',
       'karma-test/dataCards/*.js',
       'karma-test/dataCards/**/*.js',

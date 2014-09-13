@@ -38,11 +38,6 @@
             center: [47.609895, -122.330259], // Center on Seattle by default.
             keyboard: false,
             scrollWheelZoom: false,
-            tileLayerOptions: {
-              opacity: 0.15,
-              detectRetina: true,
-              reuseTiles: true
-            },
             zoom: 1,
             zoomControlPosition: 'topleft'
           };
@@ -77,6 +72,9 @@
 
           // Keep a handle for the flyout so we can manipulate it globally.
           var choroplethFlyout;
+
+          // Keep track of the base layer url currently in use so we only reset it when necessary.
+          var currentBaseLayerUrl = null;
 
 
           /**************************************
@@ -542,9 +540,10 @@
             lastClick = now;
             if (delay < doubleClickThreshold) {
               if (lastClickTimeout != null) {
+                // If this is actually a double click, cancel the timeout which selects
+                // the feature and zoom in instead.
                 $timeout.cancel(lastClickTimeout);
-                // Cancels single click event handler.
-                // Map zooms in by default setting on $scope.geojson.zoomOnDoubleClick
+                map.setView(e.latlng, map.getZoom() + 1);
               }
             } else {
               lastClickTimeout = $timeout(function() {
@@ -712,7 +711,6 @@
             this.children('.flyout-content').html(htmlContent);
           }
 
-
           /*********************************
           * React to changes in bound data *
           *********************************/
@@ -723,9 +721,17 @@
             $scope.observe('geojsonAggregateData'),
             function(baseLayerUrl, dimensions, geojsonAggregateData) {
 
+              var classBreaks;
+              var fillType = 'single';
+              var colorScale;
+              var geojsonOptions;
+
               if (_.isDefined(baseLayerUrl)) {
 
-                setTileLayer(baseLayerUrl, { attribution: '', detectRetina: true, opacity: 0.15, unloadInvisibleTiles: true });
+                if (currentBaseLayerUrl !== baseLayerUrl) {
+                  currentBaseLayerUrl = baseLayerUrl;
+                  setTileLayer(baseLayerUrl, { attribution: '', detectRetina: true, opacity: 0.15, unloadInvisibleTiles: true });
+                }
 
                 map.invalidateSize();
 
@@ -738,18 +744,16 @@
                     firstRender = false;
                   }
 
-                  var classBreaks = visualization.calculateDataClassBreaks(geojsonAggregateData, UNFILTERED_VALUE_PROPERTY_NAME);
-
-                  var fillType = 'single';
+                  classBreaks = visualization.calculateDataClassBreaks(geojsonAggregateData, UNFILTERED_VALUE_PROPERTY_NAME);
 
                   if (classBreaks.length > 1) {
-                    visualization.updateMultiColorScale(visualization.defaultColorClass, classBreaks);
+                    colorScale = visualization.updateMultiColorScale(visualization.defaultColorClass, classBreaks);
                     fillType = 'multi';
                   }
 
                   updateLegend(classBreaks, visualization.sampleColorRange(classBreaks.length));
 
-                  var geojsonOptions = {
+                  geojsonOptions = {
                     onEachFeature: function(feature, layer) {
                       layer.on({
                         mouseover: onFeatureMouseOver,
@@ -758,7 +762,7 @@
                         click: onFeatureClick
                       });
                     },
-                    style: visualization.getStyleFn(fillType, featureIsHighlighted)
+                    style: visualization.getStyleFn(fillType)
                   };
 
                   setGeojsonData(geojsonAggregateData, geojsonOptions);

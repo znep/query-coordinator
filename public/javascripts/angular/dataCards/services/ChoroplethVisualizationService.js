@@ -2,6 +2,7 @@
   'use strict';
 
   var AGGREGATE_VALUE_PROPERTY_NAME = '__SOCRATA_FILTERED_VALUE__';
+  var HIGHLIGHTED_PROPERTY_NAME = '__SOCRATA_FEATURE_HIGHLIGHTED__';
   var MAXIMUM_NUMBER_OF_CLASSES_ALLOWED = 7;
   // if the number of unique values in the dataset is <= the threshold, displays
   // 1 color for each unique value, and labels them as such in the legend.
@@ -188,16 +189,19 @@
     };
 
     ChoroplethVisualization.prototype.sampleColorRange = function(samples) {
-      var step = 1 / (samples - 1);
+      var adjustedSamples = samples - 1;
+      var step;
       var position = 0;
       var colors = [];
       var i;
 
-      if (samples === 0) {
+      if (adjustedSamples === 0) {
         throw new Error('Cannot divide color range into zero samples.');
       }
 
-      for (i = 0; i < samples - 1; i++) {
+      step = 1 / adjustedSamples;
+
+      for (i = 0; i < adjustedSamples; i++) {
         colors.push(this.colors(position + (i * step)));
       }
 
@@ -210,127 +214,85 @@
       // been computed by the first time this function is called.
 
       if (this.scale === null) {
-        throw new Error('ChoroplethVisualization.fillColor requires a valid scale to be set by updateMultiColorScale before use.')
+        throw new Error('Cannot calculate fillColor without a valid scale (set by updateMultiColorScale).')
       }
 
-      if (!feature.properties || !feature.properties[AGGREGATE_VALUE_PROPERTY_NAME]) {
+      if (!feature.hasOwnProperty('properties') ||
+          !feature.properties.hasOwnProperty(AGGREGATE_VALUE_PROPERTY_NAME)) {
         return this.nullColor;
-      } else {
-        if (highlighted) {
-          if (fillClass == 'none') {
-            return 'transparent';
-          } else if (fillClass == 'single') {
-            return this.defaultSingleColor;
-          } else if (fillClass == 'multi') {
-            var value = Number(feature.properties[AGGREGATE_VALUE_PROPERTY_NAME]);
-            return this.scale(value).hex();
-          } else {
-            throw new Error("Invalid fillClass on #fill: " + fillClass);
-          }
-        } else {
-          if (fillClass == 'none') {
-            return 'transparent';
-          } else if (fillClass == 'single') {
-            return this.defaultSingleColor;
-          } else if (fillClass == 'multi') {
-            var value = Number(feature.properties[AGGREGATE_VALUE_PROPERTY_NAME]);
-            return this.scale(value).hex();
-          } else {
-            throw new Error("Invalid fillClass on #fill: " + fillClass);
-          }
-        }
+      }
+
+      switch (fillClass) {
+        case 'none':
+          return 'transparent';
+        case 'single':
+          return this.defaultSingleColor;
+        case 'multi':
+          return this.
+            scale(Number(feature.properties[AGGREGATE_VALUE_PROPERTY_NAME])).
+            hex();
+        default:
+          throw new Error('Cannot calculate fill color for invalid fill class "' + fillClass + '".');
       }
     };
 
+
     ChoroplethVisualization.prototype.strokeColor = function(fillClass, feature, highlighted) {
-      if (feature.geometry.type != "LineString" && feature.geometry.type != "MultiLineString") {
-        if (highlighted) {
-          return this.defaultHighlightColor;
-        } else {
-          return this.defaultStrokeColor;
-        }
-      } else {
-        if (!feature.properties || !feature.properties[AGGREGATE_VALUE_PROPERTY_NAME]) {
-          return this.nullColor;
-        } else {
-          if (highlighted) {
-            if (fillClass == 'none') {
-              return this.defaultHighlightColor;
-            } else if (fillClass == 'single') {
-              return this.defaultHighlightColor;
-            } else if (fillClass == 'multi') {
-              return this.defaultHighlightColor;
-            } else {
-              throw new Error("Invalid fillClass on #fill: " + fillClass);
-            }
-          } else {
-            if (fillClass == 'none') {
-              return 'black';
-            } else if (fillClass == 'single') {
-              return this.defaultSingleColor;
-            } else if (fillClass == 'multi') {
-              // for LineString or MultiLineString, strokeColor is the same as a feature's 'fill color'
-              return this.fillColor(fillClass, feature, fillClass);
-            } else {
-              throw new Error("Invalid fillClass on #fill: " + fillClass);
-            }
-          }
-        }
+
+      if (!feature.hasOwnProperty('geometry') ||
+          !feature.geometry.hasOwnProperty('type')) {
+        throw new Error('Cannot calculate stroke color for undefined feature geometry type.');
+      }
+
+      if (feature.geometry.type !== 'LineString' &&
+          feature.geometry.type !== 'MultiLineString') {
+        return (highlighted) ? this.defaultHighlightColor : this.defaultStrokeColor;
+      }
+
+      if (!feature.hasOwnProperty('properties') ||
+          !feature.properties.hasOwnProperty(AGGREGATE_VALUE_PROPERTY_NAME)) {
+        return this.nullColor;
+      }
+
+      switch (fillClass) {
+        case 'none':
+          return (highlighted) ? this.defaultHighlightColor : 'black';
+        case 'single':
+          return (highlighted) ? this.defaultHighlightColor : this.defaultSingleColor;
+        case 'multi':
+          return (highlighted) ? this.defaultHighlightColor : this.fillColor(fillClass, feature, false);
+        default:
+          throw new Error('Cannot calculate stroke color for invalid fill class "' + fillClass + '".');
       }
     };
 
     ChoroplethVisualization.prototype.strokeWidth = function(fillClass, feature, highlighted) {
-      if (feature.geometry.type == 'MultiLineString' || feature.geometry.type == 'LineString') {
-        if (highlighted) {
+
+      if (!feature.hasOwnProperty('geometry') ||
+          !feature.geometry.hasOwnProperty('type')) {
+        throw new Error('Cannot calculate stroke width for undefined feature geometry type.');
+      }
+
+      switch (feature.geometry.type) {
+        case 'LineString':
+        case 'MultiLineString':
           return 3;
-        } else {
-          return 3;
-        }
-      } else {
-        if (highlighted) {
-          return 3;
-        } else {
-          return 1;
-        }
+        default:
+          return (highlighted) ? 3 : 1;
       }
     };
 
     ChoroplethVisualization.prototype.getStyleFn = function(fillClass, featureIsHighlighted) {
       var visualization = this;
-      if (fillClass == 'none') {
-        return function(feature) {
-          var highlighted = featureIsHighlighted(feature);
-          return {
-            fillColor: visualization.fillColor(fillClass, feature, highlighted),
-            color: visualization.strokeColor(fillClass, feature, highlighted),
-            weight: visualization.strokeWidth(fillClass, feature, highlighted),
-            opacity: fillClass == 'none' ? 1 : 0.8,
-            dashArray: 0,
-            fillOpacity: fillClass == 'none' ? 1 : 0.8
-          };
-        };
-      } else if (fillClass == 'single') {
-        return function(feature) {
-          var highlighted = featureIsHighlighted(feature);
-          return {
-            fillColor: visualization.fillColor(fillClass, feature, highlighted),
-            color: visualization.strokeColor(fillClass, feature, highlighted),
-            weight: visualization.strokeWidth(fillClass, feature, highlighted),
-            opacity: fillClass == 'none' ? 1 : 0.8,
-            dashArray: 0,
-            fillOpacity: fillClass == 'none' ? 1 : 0.8
-          };
-        };
-      } else if (fillClass == 'multi') {
-        return function(feature) {
-          return {
-            fillColor: visualization.fillColor(fillClass, feature, feature.properties.__SOCRATA_FEATURE_HIGHLIGHTED__),
-            color: visualization.strokeColor(fillClass, feature, feature.properties.__SOCRATA_FEATURE_HIGHLIGHTED__),
-            weight: visualization.strokeWidth(fillClass, feature, feature.properties.__SOCRATA_FEATURE_HIGHLIGHTED__),
-            opacity: fillClass == 'none' ? 1 : 0.8,
-            dashArray: 0,
-            fillOpacity: fillClass == 'none' ? 1 : 0.8
-          };
+      return function(feature) {
+        var highlighted = feature.properties[HIGHLIGHTED_PROPERTY_NAME];
+        return {
+          fillColor: visualization.fillColor(fillClass, feature, highlighted),
+          color: visualization.strokeColor(fillClass, feature, highlighted),
+          weight: visualization.strokeWidth(fillClass, feature, highlighted),
+          opacity: (fillClass === 'none') ? 1 : 0.8,
+          dashArray: 0,
+          fillOpacity: (fillClass === 'none') ? 1 : 0.8
         };
       }
     };

@@ -1,22 +1,9 @@
 (function() {
   'use strict';
 
-  var AGGREGATE_VALUE_PROPERTY_NAME = '__SOCRATA_FILTERED_VALUE__';
-  var HIGHLIGHTED_PROPERTY_NAME = '__SOCRATA_FEATURE_HIGHLIGHTED__';
-  var MAXIMUM_NUMBER_OF_CLASSES_ALLOWED = 7;
-  // if the number of unique values in the dataset is <= the threshold, displays
-  // 1 color for each unique value, and labels them as such in the legend.
-  var CLASS_BREAK_THRESHOLD = 6;
-  
-  angular.module('dataCards.services').factory('ChoroplethVisualizationService', function() {
+  function ChoroplethVisualizationService(Constants) {
 
     function ChoroplethVisualization() {
-
-      // The scale from which individual fill colors are derived.
-      this.scale = null;
-
-      // The colors assigned to class breaks.
-      this.colors = null;
 
       // Default colors.
       this.nullColor = '#ddd';
@@ -43,7 +30,6 @@
       };
 
     };
-
 
     /*******************
     * Data calculation *
@@ -73,7 +59,7 @@
         if (maximumNumberOfClasses % 2 === 0) {
           maximumNumberOfClasses -= 1;
         }
-        return _.min([maximumNumberOfClasses, MAXIMUM_NUMBER_OF_CLASSES_ALLOWED]);
+        return _.min([maximumNumberOfClasses, Constants.get('MAXIMUM_NUMBER_OF_CLASSES_ALLOWED')]);
       }
 
       function createClassBreaks(options) {
@@ -114,14 +100,15 @@
         throw new Error('Cannot calculate data class breaks with no values.');
       }
 
-      if (numberOfPossibleBreaks <= CLASS_BREAK_THRESHOLD) {
-        // for such small values, jenks does not make sense (produces duplicate values).
-        // use equal interval in such cases.
+      // If the number of unique values in the dataset is less than or equal to
+      // the threshold, display 1 color for each unique value, and label them as such in the legend.
+      if (numberOfPossibleBreaks <= Constants.get('CLASS_BREAK_THRESHOLD')) {
         classBreaks = createClassBreaks({
           method: 'values',
           data: values,
           numberOfClasses: values.length
         });
+      // Otherwise, calculate a dynamic number of classes for Jenks.
       } else {
         classBreaks = createClassBreaks({
           method: 'jenks',
@@ -138,57 +125,56 @@
     * Style calculation *
     ********************/
 
-    ChoroplethVisualization.prototype.updateMultiColorScale = function(colorClass, classBreaks) {
+    ChoroplethVisualization.prototype.calculateColoringParameters = function(colorClass, classBreaks) {
       var colorRange;
       var lightnessCorrection;
       var bezierColorInterpolation;
+      var colorClasses;
+      var scale;
 
       if (!classBreaks) {
-        throw new Error('Invalid class breaks');
-      }
-      if (classBreaks.length < 2) {
-        throw new Error('ChoroplethVisualization.updateMultiColorScale is only valid for choropleths with >= 2 class breaks.');
+        throw new Error('Cannot calculate coloring parameters with nvalid class breaks.');
       }
 
       switch (colorClass.toLowerCase()) {
         case 'diverging':
-          colorRange = this.divergingColors;
+          colorClasses = this.divergingColors;
           lightnessCorrection = false;
           bezierColorInterpolation = false;
           break;
         case 'qualitative':
           if (classBreaks.length > 12) {
-            throw new Error('ChoroplethVisualization.updateMultiColorScale cannot use qualitative scale for > 12 class breaks.');
+            throw new Error('Cannot calculate qualitative coloring parameters for more than 12 class breaks.');
           }
-          colorRange = this.qualitativeColors[classBreaks.length];
+          colorClasses = this.qualitativeColors[classBreaks.length];
           lightnessCorrection = false;
           bezierColorInterpolation = false;
           break;
         case 'sequential':
-          colorRange = this.sequentialColors;
+          colorClasses = this.sequentialColors;
           lightnessCorrection = true;
           bezierColorInterpolation = true;
           break;
         default:
-          throw new Error('ChoroplethVisualization.updateMultiColorScale is only valid for diverging, qualitative or sequential color classes.');
+          throw new Error('Cannot calculate coloring parameters for invalid color class "' + colorClass + '".');
       }
 
       if (bezierColorInterpolation) {
-        this.colors = chroma.interpolate.bezier(colorRange);
-      } else {
-        this.colors = colorRange;
+        colorClasses = chroma.interpolate.bezier(colorClasses);
       }
 
-      this.scale = new chroma.scale(this.colors)
+      scale = new chroma.scale(colorClasses)
         .domain(classBreaks)
         .correctLightness(lightnessCorrection)
         // use LAB color space to approximate perceptual brightness,
         // bezier interpolation, and auto-correct for color brightness.
         // See more: https://vis4.net/blog/posts/mastering-multi-hued-color-scales/
         .mode('lab');
+
+      return { scale: scale, classes: colorClasses };
     };
 
-    ChoroplethVisualization.prototype.sampleColorRange = function(samples) {
+    ChoroplethVisualization.prototype.sampleColorRange = function(colorData, samples) {
       var adjustedSamples = samples - 1;
       var step;
       var position = 0;
@@ -202,23 +188,16 @@
       step = 1 / adjustedSamples;
 
       for (i = 0; i < adjustedSamples; i++) {
-        colors.push(this.colors(position + (i * step)));
+        colors.push(colorData.classes(position + (i * step)));
       }
 
       return colors;
     }
 
-    ChoroplethVisualization.prototype.fillColor = function(fillClass, feature, highlighted) {
-
-      // TODO: Factor out the requirement that this.scale (and thus, class breaks) have already
-      // been computed by the first time this function is called.
-
-      if (this.scale === null) {
-        throw new Error('Cannot calculate fillColor without a valid scale (set by updateMultiColorScale).')
-      }
+    ChoroplethVisualization.prototype.fillColor = function(colorData, fillClass, feature, highlighted) {
 
       if (!feature.hasOwnProperty('properties') ||
-          !feature.properties.hasOwnProperty(AGGREGATE_VALUE_PROPERTY_NAME)) {
+          !feature.properties.hasOwnProperty(Constants.get('FILTERED_VALUE_PROPERTY_NAME'))) {
         return this.nullColor;
       }
 
@@ -228,16 +207,14 @@
         case 'single':
           return this.defaultSingleColor;
         case 'multi':
-          return this.
-            scale(Number(feature.properties[AGGREGATE_VALUE_PROPERTY_NAME])).
-            hex();
+          return colorData.scale(Number(feature.properties[Constants.get('FILTERED_VALUE_PROPERTY_NAME')])).hex();
         default:
           throw new Error('Cannot calculate fill color for invalid fill class "' + fillClass + '".');
       }
     };
 
 
-    ChoroplethVisualization.prototype.strokeColor = function(fillClass, feature, highlighted) {
+    ChoroplethVisualization.prototype.strokeColor = function(colorData, fillClass, feature, highlighted) {
 
       if (!feature.hasOwnProperty('geometry') ||
           !feature.geometry.hasOwnProperty('type')) {
@@ -250,7 +227,7 @@
       }
 
       if (!feature.hasOwnProperty('properties') ||
-          !feature.properties.hasOwnProperty(AGGREGATE_VALUE_PROPERTY_NAME)) {
+          !feature.properties.hasOwnProperty(Constants.get('FILTERED_VALUE_PROPERTY_NAME'))) {
         return this.nullColor;
       }
 
@@ -260,7 +237,7 @@
         case 'single':
           return (highlighted) ? this.defaultHighlightColor : this.defaultSingleColor;
         case 'multi':
-          return (highlighted) ? this.defaultHighlightColor : this.fillColor(fillClass, feature, false);
+          return (highlighted) ? this.defaultHighlightColor : this.fillColor(colorData, fillClass, feature, false);
         default:
           throw new Error('Cannot calculate stroke color for invalid fill class "' + fillClass + '".');
       }
@@ -282,13 +259,13 @@
       }
     };
 
-    ChoroplethVisualization.prototype.getStyleFn = function(fillClass, featureIsHighlighted) {
+    ChoroplethVisualization.prototype.getStyleFn = function(colorData, fillClass, featureIsHighlighted) {
       var visualization = this;
       return function(feature) {
-        var highlighted = feature.properties[HIGHLIGHTED_PROPERTY_NAME];
+        var highlighted = feature.properties[Constants.get('HIGHLIGHTED_PROPERTY_NAME')];
         return {
-          fillColor: visualization.fillColor(fillClass, feature, highlighted),
-          color: visualization.strokeColor(fillClass, feature, highlighted),
+          fillColor: visualization.fillColor(colorData, fillClass, feature, highlighted),
+          color: visualization.strokeColor(colorData, fillClass, feature, highlighted),
           weight: visualization.strokeWidth(fillClass, feature, highlighted),
           opacity: (fillClass === 'none') ? 1 : 0.8,
           dashArray: 0,
@@ -305,6 +282,10 @@
       }
     };
 
-  });
+  }
+
+  angular.
+    module('dataCards.services').
+      factory('ChoroplethVisualizationService', ['Constants', ChoroplethVisualizationService]);
 
 })();

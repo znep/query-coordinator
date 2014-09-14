@@ -4,6 +4,14 @@
   function Constants() {
 
     var constants = {
+
+      // Layout parameters
+      'LAYOUT_HORIZONTAL_PADDING': 5,
+      'LAYOUT_VERTICAL_PADDING': 5,
+      'LAYOUT_GUTTER': 12,
+      'LAYOUT_EDIT_MODE_GROUP_PADDING': 64,
+      'LAYOUT_PLACEHOLDER_DROP_TARGET_HEIGHT': 128,
+
       // Dataset field names and internal calculated values.
       'INTERNAL_DATASET_FEATURE_ID': '_feature_id',
       'UNFILTERED_VALUE_PROPERTY_NAME': '__SOCRATA_UNFILTERED_VALUE__',

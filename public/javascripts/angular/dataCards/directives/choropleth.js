@@ -407,7 +407,7 @@
         // Send the toggle filter event up the scope to the parent, where it can
         // be handled by the model.
         function filterDataset(selectedFeature, callback) {
-          var featureId = selectedFeature.properties[INTERNAL_DATASET_FEATURE_ID];
+          var featureId = selectedFeature.properties[Constants.get('INTERNAL_DATASET_FEATURE_ID')];
           highlightFeature(featureId);
           scope.$emit('dataset-filter:choropleth');
           scope.$emit(
@@ -419,7 +419,7 @@
         // Send the toggle filter event up the scope to the parent, where it can
         // be handled by the model.
         function clearDatasetFilter(selectedFeature, callback) {
-          var featureId = selectedFeature.properties[INTERNAL_DATASET_FEATURE_ID];
+          var featureId = selectedFeature.properties[Constants.get('INTERNAL_DATASET_FEATURE_ID')];
           unhighlightFeature(featureId);
           scope.$emit('dataset-filter-clear:choropleth');
           scope.$emit(
@@ -455,9 +455,9 @@
           choroplethFlyout = initializeChoroplethFlyout();
           var layer = e.target;
           var feature = layer.feature;
-          var featureHumanReadableName = feature.properties[HUMAN_READABLE_PROPERTY_NAME];
-          var value = feature.properties[AGGREGATE_VALUE_PROPERTY_NAME];
-          var unfilteredValue = feature.properties[UNFILTERED_VALUE_PROPERTY_NAME];
+          var featureHumanReadableName = feature.properties[Constants.get('HUMAN_READABLE_PROPERTY_NAME')];
+          var value = feature.properties[Constants.get('FILTERED_VALUE_PROPERTY_NAME')];
+          var unfilteredValue = feature.properties[Constants.get('UNFILTERED_VALUE_PROPERTY_NAME')];
           var filteredValue = 0;
           var featureIsHighlighted = (value !== unfilteredValue);
           var unfilteredValueIsUndefined = false;
@@ -478,7 +478,7 @@
             }
 
             if (typeof unfilteredValue != 'number') {
-              unfilteredValueDisplay = NULL_VALUE_LABEL;
+              unfilteredValueDisplay = Constants.get('NULL_VALUE_LABEL');
               unfilteredValueIsUndefined = true;
             } else {
               unfilteredValueDisplay = $.toHumaneNumber(unfilteredValue);
@@ -537,7 +537,7 @@
             }
           } else {
             lastClickTimeout = $timeout(function() {
-              var featureId = e.target.feature.properties[INTERNAL_DATASET_FEATURE_ID];
+              var featureId = e.target.feature.properties[Constants.get('INTERNAL_DATASET_FEATURE_ID')];
               // single click --> filters dataset
               if (featureIsHighlighted(featureId)) {
                 clearDatasetFilter(e.target.feature, function(ok) {
@@ -565,7 +565,7 @@
         function clearAllBrighten(layer) {
           _.each(layer._map._layers, function(l) {
             if (_.isPresent(l.feature)) {
-              var featureId = l.feature.properties[INTERNAL_DATASET_FEATURE_ID];
+              var featureId = l.feature.properties[Constants.get('INTERNAL_DATASET_FEATURE_ID')];
               if (!featureIsHighlighted(featureId)) {
                 layer.setStyle({
                   weight: 1
@@ -582,7 +582,7 @@
           if (L.Browser.ie) {
             clearAllBrighten(layer);
           }
-          var featureId = layer.feature.properties[INTERNAL_DATASET_FEATURE_ID];
+          var featureId = layer.feature.properties[Constants.get('INTERNAL_DATASET_FEATURE_ID')];
           if (!featureIsHighlighted(featureId)) {
             layer.setStyle({
               weight: 4
@@ -593,7 +593,7 @@
 
         function mouseoutUnbrighten(e) {
           var layer = e.target;
-          var featureId = layer.feature.properties[INTERNAL_DATASET_FEATURE_ID];
+          var featureId = layer.feature.properties[Constants.get('INTERNAL_DATASET_FEATURE_ID')];
           if (!featureIsHighlighted(featureId)) {
             layer.setStyle({
               weight: 1
@@ -621,15 +621,15 @@
             choroplethFlyout = $('#choropleth-flyout');
             choroplethFlyout.hide();
 
-            choroplethFlyout
-              .mousemove(function(e) {
+            choroplethFlyout.
+              mousemove(function(e) {
                 console.log(element, element.parents('.card'));
                 if (element.parent('.card').hasClass('dragged')) {
                   console.log('what');
                 }
                   positionChoroplethFlyout.call(choroplethFlyout, e);
-              })
-              .mouseout(function() {
+              }).
+              mouseout(function() {
                 //remove bug where flyout doesn't disappear when hovering on map
                 if ($("#choropleth-flyout:hover").length == 0) {
                   choroplethFlyout.hide();

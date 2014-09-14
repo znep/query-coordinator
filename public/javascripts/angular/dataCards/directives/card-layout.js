@@ -2,19 +2,7 @@
 
   'use strict';
 
-  var LAYOUT_HORIZONTAL_PADDING = 5;
-  var LAYOUT_VERTICAL_PADDING = 5;
-  var LAYOUT_GUTTER = 12;
-  var LAYOUT_EDIT_MODE_GROUP_PADDING = 64;
-  var LAYOUT_PLACEHOLDER_DROP_TARGET_HEIGHT = 128;
-
-  // Directive in charge of orchestrating card reorder.
-  // TODO dev note to Chris: Totally a placeholder thing. This is probably not what we want.
-  // I added this because CardsViewController (rightfully) doesn't have access to the DOM nodes. We should
-  // consider moving all of the card render/layout functionality into here (and rename the directive).
-  // This would allow us to get rid of the global ID selectors in CardsViewController as well.
-  // We'll chat tomorrow.
-  angular.module('dataCards.directives').directive('cardLayout', function(AngularRxExtensions, WindowState, SortedTileLayout) {
+  function cardLayout(Constants, AngularRxExtensions, WindowState, SortedTileLayout) {
     return {
       restrict: 'E',
       scope: {
@@ -33,6 +21,7 @@
 
         var jqueryWindow = $(window);
         var jqueryDocument = $(document);
+        var pageDescription = $('.page-description');
         var cardsMetadata = $('.cards-metadata');
         var cardsMetadataOffsetTop = cardsMetadata.offset().top;
 
@@ -106,6 +95,7 @@
               'model');
         });
 
+
         /**************
         * Card layout *
         **************/
@@ -115,7 +105,8 @@
           $scope.observe('editMode'),
           WindowState.windowSizeSubject,
           WindowState.scrollPositionSubject,
-          function layoutFn(sortedTileLayoutResult, expandedCards, editMode, windowSize, scrollTop) {
+          pageDescription.observeDimensions().throttle(100),
+          function layoutFn(sortedTileLayoutResult, expandedCards, editMode, windowSize, scrollTop, pageDescriptionDimensions) {
 
             // Figure out if there is an expanded card.
             if (!_.isEmpty(expandedCards)) {
@@ -129,7 +120,6 @@
 
             var containerDimensions = { width: cardContainer.width(), height: cardContainer.height() };
             var cardPositions = [];
-
 
             // Branch here based on whether or not there is an expanded card.
             if (expandedCard !== null) {
@@ -148,13 +138,13 @@
               };
 
               var containerWidth = containerDimensions.width;
-              var containerContentWidth = containerWidth - LAYOUT_GUTTER * 2;
+              var containerContentWidth = containerWidth - Constants.get('LAYOUT_GUTTER') * 2;
 
-              var expandedColumnWidth = Math.floor(containerContentWidth * 0.65) - LAYOUT_HORIZONTAL_PADDING;
-              var unexpandedColumnWidth = containerContentWidth - expandedColumnWidth - LAYOUT_HORIZONTAL_PADDING;
+              var expandedColumnWidth = Math.floor(containerContentWidth * 0.65) - Constants.get('LAYOUT_HORIZONTAL_PADDING');
+              var unexpandedColumnWidth = containerContentWidth - expandedColumnWidth - Constants.get('LAYOUT_HORIZONTAL_PADDING');
 
-              var expandedColumnLeft = unexpandedColumnWidth + LAYOUT_GUTTER + LAYOUT_HORIZONTAL_PADDING;
-              var unexpandedColumnLeft = LAYOUT_GUTTER;
+              var expandedColumnLeft = unexpandedColumnWidth + Constants.get('LAYOUT_GUTTER') + Constants.get('LAYOUT_HORIZONTAL_PADDING');
+              var unexpandedColumnLeft = Constants.get('LAYOUT_GUTTER');
 
               var expandedColumnTop = 0;
 
@@ -176,7 +166,7 @@
 
                   // Keep track of the accumulated height of all cards so that we
                   // know the top offset of the next card up for layout.
-                  heightOfAllCards += cardHeight + LAYOUT_VERTICAL_PADDING;
+                  heightOfAllCards += cardHeight + Constants.get('LAYOUT_VERTICAL_PADDING');
 
                   return accumulatedStyle + '#card-tile-' + card.model.uniqueId
                                           + '{'
@@ -191,14 +181,14 @@
                          + '{';
 
               if (headerStuck) {
-                var expandedColumnHeight = windowSize.height - $('.quick-filter-bar').height() - LAYOUT_VERTICAL_PADDING;
+                var expandedColumnHeight = windowSize.height - $('.quick-filter-bar').height() - Constants.get('LAYOUT_VERTICAL_PADDING');
               } else {
-                var expandedColumnHeight = windowSize.height - (cardContainer.offset().top - scrollTop) - LAYOUT_VERTICAL_PADDING;
+                var expandedColumnHeight = windowSize.height - (cardContainer.offset().top - scrollTop) - Constants.get('LAYOUT_VERTICAL_PADDING');
               }
 
               styleText += 'position:fixed;'
                          + 'left:' + expandedColumnLeft + 'px;'
-                         + 'bottom:' + LAYOUT_VERTICAL_PADDING + 'px;'
+                         + 'bottom:' + Constants.get('LAYOUT_VERTICAL_PADDING') + 'px;'
                          + 'width:' + expandedColumnWidth + 'px;'
                          + 'height:' + expandedColumnHeight + 'px;'
                          + '}';
@@ -236,7 +226,7 @@
               // but containerContentWidth is contentWidth minus the LAYOUT_GUTTER.
 
               var containerWidth = containerDimensions.width;
-              var containerContentWidth = containerWidth - LAYOUT_GUTTER * 2;
+              var containerContentWidth = containerWidth - Constants.get('LAYOUT_GUTTER') * 2;
 
               var heightOfAllCards = 0;
 
@@ -261,11 +251,11 @@
 
                 var rowCount = 0;
                 var currentRowHeight = deriveCardHeight(parseInt(cardSize), 10);
-                var currentRowContentHeight = currentRowHeight - LAYOUT_VERTICAL_PADDING;
+                var currentRowContentHeight = currentRowHeight - Constants.get('LAYOUT_VERTICAL_PADDING');
 
                 var styleForRow = _.reduce(rows, function(styleForRowAcc, row, rowIndex) {
 
-                  var paddingForEntireRow = LAYOUT_HORIZONTAL_PADDING * (row.length - 1);
+                  var paddingForEntireRow = Constants.get('LAYOUT_HORIZONTAL_PADDING') * (row.length - 1);
                   var usableContentSpaceForRow = containerContentWidth - paddingForEntireRow;
                   var cardWidth = Math.floor(usableContentSpaceForRow / row.length);
 
@@ -273,8 +263,8 @@
 
                   return styleForRowAcc + _.map(row, function(card, cardIndexInRow) {
 
-                    var spaceTakenByOtherCardsPadding = Math.max(0, cardIndexInRow * LAYOUT_HORIZONTAL_PADDING);
-                    var cardLeft = LAYOUT_GUTTER + (cardIndexInRow * cardWidth) + spaceTakenByOtherCardsPadding;
+                    var spaceTakenByOtherCardsPadding = Math.max(0, cardIndexInRow * Constants.get('LAYOUT_HORIZONTAL_PADDING'));
+                    var cardLeft = Constants.get('LAYOUT_GUTTER') + (cardIndexInRow * cardWidth) + spaceTakenByOtherCardsPadding;
 
                     var cardTop = heightOfAllCards + rowIndex * currentRowHeight;
 
@@ -311,9 +301,9 @@
                   });
 
                   if (groupEmpty) {
-                    heightOfAllCards += LAYOUT_PLACEHOLDER_DROP_TARGET_HEIGHT + LAYOUT_EDIT_MODE_GROUP_PADDING;
+                    heightOfAllCards += Constants.get('LAYOUT_PLACEHOLDER_DROP_TARGET_HEIGHT') + Constants.get('LAYOUT_EDIT_MODE_GROUP_PADDING');
                   } else {
-                    heightOfAllCards += rows.length * currentRowHeight + rowCount + LAYOUT_EDIT_MODE_GROUP_PADDING;
+                    heightOfAllCards += rows.length * currentRowHeight + rowCount + Constants.get('LAYOUT_EDIT_MODE_GROUP_PADDING');
                   }
 
                 } else {
@@ -341,7 +331,7 @@
                   styleText += 'display:none;';
                 }
                 styleText += 'width:' + containerContentWidth + 'px;'
-                           + 'left:' + LAYOUT_GUTTER + 'px;'
+                           + 'left:' + Constants.get('LAYOUT_GUTTER') + 'px;'
                            + 'top:' + groupData.top + 'px;'
                            + '}';
               });
@@ -395,6 +385,7 @@
           var cardsInMyRow = _.where($scope.cardPositions, function(cardPositionData) {
             return cardPositionData.top <= clientY && (cardPositionData.top + cardPositionData.height) >= clientY;
           });
+
           var closestCard = cardsInMyRow.reduce(function(currentClosest, cardPositionData) {
             var distance = Math.sqrt(Math.pow(cursorX - cardPositionData.left, 2) + Math.pow(cursorY - cardPositionData.top, 2));
             if (currentClosest.distance > distance) {
@@ -586,9 +577,13 @@
 
         $scope.bindObservable('cardModels', $scope.page.observe('cards'));
 
-      }       // link() { ... }
-    }         // return { ... }
-  });         // angular.module().directive() { ... }
+      }
+    }
+  }
+
+  angular.
+    module('dataCards.directives').
+      directive('cardLayout', ['Constants', 'AngularRxExtensions', 'WindowState', 'SortedTileLayout', cardLayout]);
 
 })();
 

@@ -44,7 +44,7 @@ body
     padding: $metadata-top-padding ($metadata-side-padding / 2)
     border-top: 3px solid $metadata-border-color
     border-bottom: 3px solid $metadata-border-color
-    z-index: 1
+    z-index: 2
 
     .page-description
       margin-top: 1rem
@@ -213,8 +213,10 @@ body
       display: block
 
   .cards-content
-    background-color: $cards-bg-color
+    position: relative
     color: $white-font-color
+    background-color: $cards-bg-color
+    z-index: 1
 
     #quick-filter-bar-container
       position: relative

@@ -1,5 +1,4 @@
 (function() {
-
   'use strict';
 
   function cardLayout(Constants, AngularRxExtensions, WindowState, SortedTileLayout) {
@@ -146,12 +145,13 @@
             var containerDimensions = { width: cardContainer.width(), height: cardContainer.height() };
             var cardPositions = [];
             var heightOfAllCards = 0;
+            var styleText = '';
 
             // Terminology:
             //
             // Content size (width, height) refers to a size with padding/LAYOUT_GUTTER removed.
             // Otherwise, sizes include padding/LAYOUT_GUTTER.
-            var containerContentWidth = containerDimensions.width - Constants.get('LAYOUT_GUTTER') * 2;
+            var containerContentWidth = containerDimensions.width - Constants['LAYOUT_GUTTER'] * 2;
 
             var deriveCardHeight = function(size) {
               size = parseInt(size, 10);
@@ -180,11 +180,11 @@
 
             // Branch here based on whether or not there is an expanded card.
             if (expandedCard !== null) {
-              var expandedColumnWidth = Math.floor(containerContentWidth * 0.65) - Constants.get('LAYOUT_HORIZONTAL_PADDING');
-              var unexpandedColumnWidth = containerContentWidth - expandedColumnWidth - Constants.get('LAYOUT_HORIZONTAL_PADDING');
+              var expandedColumnWidth = Math.floor(containerContentWidth * 0.65) - Constants['LAYOUT_HORIZONTAL_PADDING'];
+              var unexpandedColumnWidth = containerContentWidth - expandedColumnWidth - Constants['LAYOUT_HORIZONTAL_PADDING'];
 
-              var expandedColumnLeft = unexpandedColumnWidth + Constants.get('LAYOUT_GUTTER') + Constants.get('LAYOUT_HORIZONTAL_PADDING');
-              var unexpandedColumnLeft = Constants.get('LAYOUT_GUTTER');
+              var expandedColumnLeft = unexpandedColumnWidth + Constants['LAYOUT_GUTTER'] + Constants['LAYOUT_HORIZONTAL_PADDING'];
+              var unexpandedColumnLeft = Constants['LAYOUT_GUTTER'];
 
               var expandedColumnTop = 0;
 
@@ -204,7 +204,7 @@
 
                   // Keep track of the accumulated height of all cards so that we
                   // know the top offset of the next card up for layout.
-                  heightOfAllCards += cardHeight + Constants.get('LAYOUT_VERTICAL_PADDING');
+                  heightOfAllCards += cardHeight + Constants['LAYOUT_VERTICAL_PADDING'];
 
                   return accumulatedStyle + '#card-tile-' + card.model.uniqueId
                                           + '{'
@@ -219,14 +219,14 @@
                          + '{';
 
               if (headerStuck) {
-                var expandedColumnHeight = windowSize.height - quickFilterBar.height() - Constants.get('LAYOUT_VERTICAL_PADDING');
+                var expandedColumnHeight = windowSize.height - quickFilterBar.height() - Constants['LAYOUT_VERTICAL_PADDING'];
               } else {
-                var expandedColumnHeight = windowSize.height - (cardContainer.offset().top - scrollTop) - Constants.get('LAYOUT_VERTICAL_PADDING');
+                var expandedColumnHeight = windowSize.height - (cardContainer.offset().top - scrollTop) - Constants['LAYOUT_VERTICAL_PADDING'];
               }
 
               styleText += 'position:fixed;'
                          + 'left:' + expandedColumnLeft + 'px;'
-                         + 'bottom:' + Constants.get('LAYOUT_VERTICAL_PADDING') + 'px;'
+                         + 'bottom:' + Constants['LAYOUT_VERTICAL_PADDING'] + 'px;'
                          + 'width:' + expandedColumnWidth + 'px;'
                          + 'height:' + expandedColumnHeight + 'px;'
                          + '}';
@@ -255,21 +255,21 @@
 
               }
 
-              var styleText = _.reduce(sortedTileLayoutResult, function(overallStyleAcc, rows, cardSize) {
+              styleText = _.reduce(sortedTileLayoutResult, function(overallStyleAcc, rows, cardSize) {
 
                 var currentRowHeight = deriveCardHeight(parseInt(cardSize), 10);
-                var currentRowContentHeight = currentRowHeight - Constants.get('LAYOUT_VERTICAL_PADDING');
+                var currentRowContentHeight = currentRowHeight - Constants['LAYOUT_VERTICAL_PADDING'];
 
                 var styleForRow = _.reduce(rows, function(styleForRowAcc, row, rowIndex) {
 
-                  var paddingForEntireRow = Constants.get('LAYOUT_HORIZONTAL_PADDING') * (row.length - 1);
+                  var paddingForEntireRow = Constants['LAYOUT_HORIZONTAL_PADDING'] * (row.length - 1);
                   var usableContentSpaceForRow = containerContentWidth - paddingForEntireRow;
                   var cardWidth = Math.floor(usableContentSpaceForRow / row.length);
 
                   return styleForRowAcc + _.map(row, function(card, cardIndexInRow) {
 
-                    var spaceTakenByOtherCardsPadding = Math.max(0, cardIndexInRow * Constants.get('LAYOUT_HORIZONTAL_PADDING'));
-                    var cardLeft = Constants.get('LAYOUT_GUTTER') + (cardIndexInRow * cardWidth) + spaceTakenByOtherCardsPadding;
+                    var spaceTakenByOtherCardsPadding = Math.max(0, cardIndexInRow * Constants['LAYOUT_HORIZONTAL_PADDING']);
+                    var cardLeft = Constants['LAYOUT_GUTTER'] + (cardIndexInRow * cardWidth) + spaceTakenByOtherCardsPadding;
 
                     var cardTop = heightOfAllCards + rowIndex * currentRowHeight;
 
@@ -305,9 +305,9 @@
                   });
 
                   if (groupEmpty) {
-                    heightOfAllCards += Constants.get('LAYOUT_PLACEHOLDER_DROP_TARGET_HEIGHT') + Constants.get('LAYOUT_EDIT_MODE_GROUP_PADDING');
+                    heightOfAllCards += Constants['LAYOUT_PLACEHOLDER_DROP_TARGET_HEIGHT'] + Constants['LAYOUT_EDIT_MODE_GROUP_PADDING'];
                   } else {
-                    heightOfAllCards += rows.length * currentRowHeight + Constants.get('LAYOUT_EDIT_MODE_GROUP_PADDING');
+                    heightOfAllCards += rows.length * currentRowHeight + Constants['LAYOUT_EDIT_MODE_GROUP_PADDING'];
                   }
 
                 } else {
@@ -328,7 +328,7 @@
                     styleText += 'display:none;';
                   }
                   styleText += 'width:' + containerContentWidth + 'px;'
-                             + 'left:' + Constants.get('LAYOUT_GUTTER') + 'px;'
+                             + 'left:' + Constants['LAYOUT_GUTTER'] + 'px;'
                              + 'top:' + groupData.top + 'px;'
                              + '}';
                 });
@@ -524,7 +524,7 @@
             var newYOffset = jqueryWindow.scrollTop()
                            - Math.min(
                                Math.max(5, Math.pow(75 - deltaTop, 3) / 168.75) * (deltaTime / 1000),
-                               distanceToScrollTop);
+                                distanceToScrollTop);
 
 
             jqueryWindow.scrollTop(newYOffset);
@@ -535,7 +535,7 @@
             var newYOffset = jqueryWindow.scrollTop()
                            + Math.min(
                                Math.max(5, Math.pow(75 - deltaBottom, 3) / 168.75) * (deltaTime / 1000),
-                               distanceToScrollBottom);
+                                distanceToScrollBottom);
 
             jqueryWindow.scrollTop(newYOffset);
 
@@ -564,4 +564,3 @@
       directive('cardLayout', cardLayout);
 
 })();
-

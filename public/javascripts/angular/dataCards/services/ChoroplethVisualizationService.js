@@ -31,94 +31,95 @@
 
     };
 
+
     /*******************
     * Data calculation *
     *******************/
 
     ChoroplethVisualization.prototype.calculateDataClassBreaks = function(geojsonAggregateData, propertyName) {
 
-      function extractGeojsonValues(geojsonAggregateData, propertyName) {
+      function getGeojsonValues(geojson, attr) {
         var data = [];
-        _.each(geojsonAggregateData.features, function(feature){
-          if (!_.isDefined(feature) || !feature.hasOwnProperty('properties')) {
-            return [];
-          }
-          if (!feature.properties.hasOwnProperty(propertyName) ||
-              !_.isDefined(feature.properties[propertyName])) {
+        _.each(geojson.features, function(feature){
+          if (!feature || !feature.properties) return [];
+          var val = feature.properties[attr];
+          if (!val) {
             return;
+          } else {
+            data.push(feature.properties[attr]);
           }
-          data.push(feature.properties[propertyName]);
         });
         return data;
       }
 
-      function calculateNumberOfClasses(numberOfPossibleBreaks) {
-        var nearestEvenNumberOfPossibleBreaks = numberOfPossibleBreaks
-                                              - (numberOfPossibleBreaks % 2);;
-        var maximumNumberOfClasses = nearestEvenNumberOfPossibleBreaks / 2;
-        if (maximumNumberOfClasses % 2 === 0) {
-          maximumNumberOfClasses -= 1;
+      function oddNumbered(num) {
+        if (num % 2 == 0) {
+          return num - 1;
+        } else {
+          return num;
         }
-        return _.min([maximumNumberOfClasses, Constants.get('MAXIMUM_NUMBER_OF_CLASSES_ALLOWED')]);
+      }
+
+      function numberOfClasses(values) {
+        // handles numberOfClasses in Jenks (implemented for _.uniq(values).length > 6)
+        var numPossibleBreaks = _.uniq(values).length;
+        if (numPossibleBreaks <= Constants['MAXIMUM_NUMBER_OF_CLASSES_ALLOWED']) {
+          throw new Error("[Choropleth] Why are you calling numberOfClasses when # unique values <= " + Constants['MAXIMUM_NUMBER_OF_CLASSES_ALLOWED'] + "?");
+        } else {
+          var evenPossibleBreaks = numPossibleBreaks - (numPossibleBreaks % 2);
+          var maxNumClasses = evenPossibleBreaks / 2;
+        }
+        return _.min([oddNumbered(maxNumClasses), 7]);
       }
 
       function createClassBreaks(options) {
         var classBreaks;
-        var minVal = _.min(options.data);
-        var maxVal = _.max(options.data);
-
-        options.method = options.method.toLowerCase() || 'jenks';
-
+        options.method = options.method || 'jenks';
         switch(options.method) {
           case 'jenks':
-            classBreaks = ss['jenks'](options.data, options.numberOfClasses);
+            options.methodParam = options.numberOfClasses || 4;
+            classBreaks = ss['jenks'](options.data, options.methodParam);
             break;
           case 'quantile':
-            classBreaks = ss['quantile'](options.data, options.p);
-          case 'values':
+            options.methodParam = options.p;
+            classBreaks = ss['quantile'](options.data, options.methodParam);
+            break;
+          case 'equalInterval':
+            var minVal = _.min(options.data),
+                maxVal = _.max(options.data);
             classBreaks = d3.scale.linear().domain([minVal, maxVal]).nice().ticks(_.min([options.numberOfClasses, 4]));
             // include min and max back into d3 scale, if #nice truncates them
-            if (_.min(classBreaks) > minVal) {
-              classBreaks.unshift(minVal);
-            }
-            if (_.max(classBreaks) < maxVal) {
-              classBreaks.push(maxVal);
-            }
+            if (_.min(classBreaks) > minVal) classBreaks.unshift(minVal);
+            if (_.max(classBreaks) < maxVal) classBreaks.push(maxVal);
             break;
           default:
-            throw new Error('Cannot calculate data class breaks using unsupported method "' + options.method + '".');
+            throw new Error('Invalid/non-supported class breaks method ' + options.method);
         }
         return _.uniq(classBreaks);
       }
 
-      var values = extractGeojsonValues(geojsonAggregateData, propertyName);
-      var uniqueValues = _.uniq(values);
-      var numberOfPossibleBreaks = uniqueValues.length - 1;
-      var classBreaks = null;
+      var values = getGeojsonValues(geojsonAggregateData, propertyName);
 
-      if (values.length == 0) {
-        throw new Error('Cannot calculate data class breaks with no values.');
-      }
-
-      // If the number of unique values in the dataset is less than or equal to
-      // the threshold, display 1 color for each unique value, and label them as such in the legend.
-      if (numberOfPossibleBreaks <= Constants.get('CLASS_BREAK_THRESHOLD')) {
+      var uniqValues = _.uniq(values);
+      var numPossibleBreaks = uniqValues.length - 1;
+      var classBreaks;
+      if (numPossibleBreaks <= Constants['MAXIMUM_NUMBER_OF_CLASSES_ALLOWED']) {
+        // for such small values, jenks does not make sense (produces duplicate values).
+        // use equal interval in such cases.
         classBreaks = createClassBreaks({
-          method: 'values',
+          method: 'equalInterval',
           data: values,
           numberOfClasses: values.length
         });
-      // Otherwise, calculate a dynamic number of classes for Jenks.
       } else {
         classBreaks = createClassBreaks({
           method: 'jenks',
           data: values,
-          numberOfClasses: calculateNumberOfClasses(numberOfPossibleBreaks)
+          numberOfClasses: numberOfClasses(values)
         });
       }
-
       return classBreaks;
-    };
+    }
 
 
     /********************
@@ -132,7 +133,7 @@
       var colorClasses;
       var scale;
 
-      if (!classBreaks) {
+      if (!_.isArray(classBreaks)) {
         throw new Error('Cannot calculate coloring parameters with nvalid class breaks.');
       }
 
@@ -163,41 +164,24 @@
         colorClasses = chroma.interpolate.bezier(colorClasses);
       }
 
-      scale = new chroma.scale(colorClasses)
-        .domain(classBreaks)
-        .correctLightness(lightnessCorrection)
+      scale = new chroma.
+        scale(colorClasses).
+        domain(classBreaks).
+        correctLightness(lightnessCorrection).
         // use LAB color space to approximate perceptual brightness,
         // bezier interpolation, and auto-correct for color brightness.
         // See more: https://vis4.net/blog/posts/mastering-multi-hued-color-scales/
-        .mode('lab');
+        mode('lab');
 
       return { scale: scale, classes: colorClasses };
     };
 
-    ChoroplethVisualization.prototype.sampleColorRange = function(colorData, samples) {
-      var adjustedSamples = samples - 1;
-      var step;
-      var position = 0;
-      var colors = [];
-      var i;
-
-      if (adjustedSamples === 0) {
-        throw new Error('Cannot divide color range into zero samples.');
-      }
-
-      step = 1 / adjustedSamples;
-
-      for (i = 0; i < adjustedSamples; i++) {
-        colors.push(colorData.classes(position + (i * step)));
-      }
-
-      return colors;
-    }
-
     ChoroplethVisualization.prototype.fillColor = function(colorData, fillClass, feature, highlighted) {
 
       if (!feature.hasOwnProperty('properties') ||
-          !feature.properties.hasOwnProperty(Constants.get('FILTERED_VALUE_PROPERTY_NAME'))) {
+          !feature.properties.hasOwnProperty(Constants['FILTERED_VALUE_PROPERTY_NAME']) ||
+          feature.properties[Constants['FILTERED_VALUE_PROPERTY_NAME']] === null ||
+          !_.isDefined(feature.properties[Constants['FILTERED_VALUE_PROPERTY_NAME']])) {
         return this.nullColor;
       }
 
@@ -205,9 +189,8 @@
         case 'none':
           return 'transparent';
         case 'single':
-          return this.defaultSingleColor;
         case 'multi':
-          return colorData.scale(Number(feature.properties[Constants.get('FILTERED_VALUE_PROPERTY_NAME')])).hex();
+          return colorData.scale(Number(feature.properties[Constants['FILTERED_VALUE_PROPERTY_NAME']])).hex();
         default:
           throw new Error('Cannot calculate fill color for invalid fill class "' + fillClass + '".');
       }
@@ -227,7 +210,9 @@
       }
 
       if (!feature.hasOwnProperty('properties') ||
-          !feature.properties.hasOwnProperty(Constants.get('FILTERED_VALUE_PROPERTY_NAME'))) {
+          !feature.properties.hasOwnProperty(Constants['FILTERED_VALUE_PROPERTY_NAME']) ||
+          feature.properties[Constants['FILTERED_VALUE_PROPERTY_NAME']] === null ||
+          !_.isDefined(feature.properties[Constants['FILTERED_VALUE_PROPERTY_NAME']])) {
         return this.nullColor;
       }
 
@@ -235,7 +220,6 @@
         case 'none':
           return (highlighted) ? this.defaultHighlightColor : 'black';
         case 'single':
-          return (highlighted) ? this.defaultHighlightColor : this.defaultSingleColor;
         case 'multi':
           return (highlighted) ? this.defaultHighlightColor : this.fillColor(colorData, fillClass, feature, false);
         default:
@@ -259,10 +243,16 @@
       }
     };
 
-    ChoroplethVisualization.prototype.getStyleFn = function(colorData, fillClass, featureIsHighlighted) {
+    ChoroplethVisualization.prototype.getStyleFn = function(colorData, fillClass) {
       var visualization = this;
+      var selectedPropertyName = Constants['SELECTED_PROPERTY_NAME'];
       return function(feature) {
-        var highlighted = feature.properties[Constants.get('HIGHLIGHTED_PROPERTY_NAME')];
+        var highlighted = false;
+        if (feature.hasOwnProperty('properties') &&
+            feature.properties.hasOwnProperty(selectedPropertyName) &&
+            feature.properties[selectedPropertyName]) {
+          highlighted = feature.properties[selectedPropertyName];
+        }
         return {
           fillColor: visualization.fillColor(colorData, fillClass, feature, highlighted),
           color: visualization.strokeColor(colorData, fillClass, feature, highlighted),
@@ -286,6 +276,6 @@
 
   angular.
     module('dataCards.services').
-      factory('ChoroplethVisualizationService', ['Constants', ChoroplethVisualizationService]);
+      factory('ChoroplethVisualizationService', ChoroplethVisualizationService);
 
 })();

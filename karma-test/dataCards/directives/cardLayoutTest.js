@@ -177,7 +177,9 @@ describe('CardLayout directive test', function() {
         cl.cardsMetadataElement.height(150);
         testHelpers.waitForSatisfy(function() {
           return !hasStuckClass(cl.quickFilterBarElement);
-        }).then(done);
+        }).then(function() {
+          done();
+        });
       });
     });
   });

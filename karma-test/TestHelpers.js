@@ -26,10 +26,14 @@ angular.module('test', [])
     function waitForSatisfy(test) {
       var p = new Promise(function(resolve, reject) {
         function check() {
-          if (!test()) {
-            _.delay(check, 25);
-          } else {
-            resolve();
+          try {
+            if (!test()) {
+              _.delay(check, 25);
+            } else {
+              resolve();
+            }
+          } catch (e) {
+            reject(e);
           }
         };
         check();

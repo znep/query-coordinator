@@ -105,7 +105,7 @@ describe("A Choropleth Card Visualization", function() {
       choro2 = createChoropleth('choropleth-2');
     });
 
-    it.only('should not let click events leak', function(done) {
+    it('should not let click events leak', function() {
       var choro1Fired = false;
       var choro2Fired = false;
 
@@ -117,24 +117,36 @@ describe("A Choropleth Card Visualization", function() {
       choro2.scope.$on('toggle-dataset-filter:choropleth', function(event, feature, callback) {
         choro2Fired = true;
       });
-setTimeout(function() { console.log($('#choropleth-1 .choropleth-container path')[0]); }, 500);
 
-      testHelpers.fireMouseEvent($('#choropleth-1 path')[0], 'click');
+      testHelpers.waitForSatisfy(function() {
+        return $('#choropleth-1 .choropleth-container path').length > 0;
+      }).then(function() {
+        testHelpers.fireMouseEvent($('#choropleth-1 .choropleth-container path')[0], 'click');
+        expect(choro1Fired).to.equal(true);
+        expect(choro2Fired).to.equal(false);
+      });
 
-      expect(choro1Fired).to.equal(true);
-      expect(choro2Fired).to.equal(false);
     });
 
     it('should provide a flyout on hover with the current value, and row display unit', function(done){
       ensureChoroplethsCreated();
-      var feature = $('#choropleth-1 path')[0];
-      testHelpers.fireMouseEvent(feature, 'mouseover');
-      testHelpers.fireMouseEvent(feature, 'mousemove');
-      var $flyout = $('#choropleth-flyout');
-      var flyoutText = $flyout.text();
+
+      testHelpers.waitForSatisfy(function() {
+        return $('#choropleth-1 .choropleth-container path').length > 0;
+      }).then(function() {
+        var feature = $('#choropleth-1 .choropleth-container path')[0];
+        testHelpers.fireMouseEvent(feature, 'mouseover');
+        testHelpers.fireMouseEvent(feature, 'mousemove');
+
+        var $flyout = $('#choropleth-flyout');
+
+        var flyoutText = $flyout.text();
         expect($flyout.is(':visible')).to.equal(true);
         expect(( new RegExp(rowDisplayUnit.pluralize()) ).test(flyoutText)).to.equal(true);
         done();
+
+      });
+
     });
   });
 });

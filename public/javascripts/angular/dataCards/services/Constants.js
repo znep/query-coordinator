@@ -3,8 +3,7 @@
 
   function Constants() {
 
-    var constants = {
-
+    return {
       // Layout parameters
       'LAYOUT_HORIZONTAL_PADDING': 5,
       'LAYOUT_VERTICAL_PADDING': 5,
@@ -16,28 +15,19 @@
       'INTERNAL_DATASET_FEATURE_ID': '_feature_id',
       'UNFILTERED_VALUE_PROPERTY_NAME': '__SOCRATA_UNFILTERED_VALUE__',
       'FILTERED_VALUE_PROPERTY_NAME': '__SOCRATA_FILTERED_VALUE__',
-      'HIGHLIGHTED_PROPERTY_NAME': '__SOCRATA_FEATURE_HIGHLIGHTED__',
+      'SELECTED_PROPERTY_NAME': '__SOCRATA_FEATURE_SELECTED__',
       'HUMAN_READABLE_PROPERTY_NAME': '__SOCRATA_HUMAN_READABLE_NAME__',
 
       // Visualization
       'NULL_VALUE_LABEL': '(No Value)',
+      'DEFAULT_BASE_LAYER_URL': 'https://a.tiles.mapbox.com/v3/socrata-apps.ibp0l899/{z}/{x}/{y}.png',
 
       // Choropleth visualization parameters.
       'MAXIMUM_NUMBER_OF_CLASSES_ALLOWED': 7,
       'CLASS_BREAK_THRESHOLD': 6
-
     };
 
-    return {
-      get: function(name) {
-        if (!constants.hasOwnProperty(name)) {
-          throw new Error('Cannot get non-existent constant "' + name + '".');
-        }
-        return constants[name];
-      }
-    };
-
-  };
+  }
 
   angular.
     module('dataCards.services').

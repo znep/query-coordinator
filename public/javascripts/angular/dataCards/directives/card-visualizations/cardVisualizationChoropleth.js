@@ -22,11 +22,11 @@
           shapefileHumanReadableColumnName) {
 
             var newFeatures = geojsonRegions.features.filter(function(geojsonFeature) {
-              return geojsonFeature.properties.hasOwnProperty(Constants.get('INTERNAL_DATASET_FEATURE_ID')) &&
-                     geojsonFeature.properties[Constants.get('INTERNAL_DATASET_FEATURE_ID')];
+              return geojsonFeature.properties.hasOwnProperty(Constants['INTERNAL_DATASET_FEATURE_ID']) &&
+                     geojsonFeature.properties[Constants['INTERNAL_DATASET_FEATURE_ID']];
             }).map(function(geojsonFeature) {
 
-              var name = geojsonFeature.properties[Constants.get('INTERNAL_DATASET_FEATURE_ID')];
+              var name = geojsonFeature.properties[Constants['INTERNAL_DATASET_FEATURE_ID']];
               var humanReadableName = geojsonFeature.properties[shapefileHumanReadableColumnName];
               /*var feature = {
                 geometry: geojsonFeature.geometry,
@@ -35,11 +35,11 @@
               };*/
 
               var properties = {};
-              properties[Constants.get('INTERNAL_DATASET_FEATURE_ID')] = geojsonFeature.properties[Constants.get('INTERNAL_DATASET_FEATURE_ID')];
-              properties[Constants.get('FILTERED_VALUE_PROPERTY_NAME')] = filteredDataAsHash[name];
-              properties[Constants.get('UNFILTERED_VALUE_PROPERTY_NAME')] = unfilteredDataAsHash[name];
-              properties[Constants.get('HIGHLIGHTED_PROPERTY_NAME')] = _.contains(activeFilterNames, name);
-              properties[Constants.get('HUMAN_READABLE_PROPERTY_NAME')] = humanReadableName;
+              properties[Constants['INTERNAL_DATASET_FEATURE_ID']] = geojsonFeature.properties[Constants['INTERNAL_DATASET_FEATURE_ID']];
+              properties[Constants['FILTERED_VALUE_PROPERTY_NAME']] = filteredDataAsHash[name];
+              properties[Constants['UNFILTERED_VALUE_PROPERTY_NAME']] = unfilteredDataAsHash[name];
+              properties[Constants['SELECTED_PROPERTY_NAME']] = _.contains(activeFilterNames, name);
+              properties[Constants['HUMAN_READABLE_PROPERTY_NAME']] = humanReadableName;
 
               // Create a new object to get rid of superfluous shapefile-specific
               // fields coming out of the backend.
@@ -230,8 +230,8 @@
 
         // Handle filter toggle events sent from the choropleth directive.
         scope.$on('toggle-dataset-filter:choropleth', function(event, feature, callback) {
-          var featureId = feature.properties[Constants.get('INTERNAL_DATASET_FEATURE_ID')];
-          var humanReadableName = feature.properties[Constants.get('HUMAN_READABLE_PROPERTY_NAME')];
+          var featureId = feature.properties[Constants['INTERNAL_DATASET_FEATURE_ID']];
+          var humanReadableName = feature.properties[Constants['HUMAN_READABLE_PROPERTY_NAME']];
 
           var hasFiltersOnCard = _.any(scope.model.getCurrentValue('activeFilters'), function(filter) {
             return filter.operand === featureId;

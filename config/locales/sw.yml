@@ -1,0 +1,2622 @@
+sw:
+  account:
+    common:
+      form:
+        confirm_password: Thibitisha Nenosiri
+        display_name: Onyesha Jina
+        email: Anwani ya Barua pepe
+        forgot_password: Umesahau Nenosiri?
+        lockout_warning: Kwa usalama, majaribio matatu ya kuingia yaliyofeli ndani ya dakika 15 yatasababisha kufungwa kwa akaunti hii kwa muda wa dakika 30.
+        no_account: Huna akaunti?
+        password: Nenosiri
+        password_requirements: |
+          Linahitajika. Neonsiri lako sharti liwe kati ya vibambo 8 na 40 na litosheleze vigezo vitatu kati ya vigezo vinne vifuatavyo:liwe na tarakimu; liwe na herufi ndogo; liwe na herufi kubwa; liwe na alama ambayo si namba wala herufi.
+        password_requirements_html: |
+          <p>Nenosiri lako sharti liwe <b>kati ya vibambo 8 na 40</b> na litosheleze <b>vigezo vitatu kati ya vigezo vinne vifuatavyo:</b>:</p><p></p><ul><li>&bull; liwe na tarakimu</li><li>&bull; liwe na herufi ndogo</li><li>&bull; liwe na herufi kubwa</li><li>&bull; liwe na alama ambayo si namba wala herufi</li></ul>
+        password_restrictions: Kutumia vikomo
+        remember_me: Nikumbuke
+        sign_up_prompt: Sajili sasa
+      inline_auth:
+        sign_in_headline: Ingia kwa kutumia ID yako ya Sokrata
+        sign_up_headline: Tunafurahi unataka kujiunga na %{site}!
+      rpx:
+        description: Jinufaishe na mambo ya ziada yatolewayo na akaunti hizi na ingia kwa kubofya mara moja.
+        prompt:
+          sign_in: Au‰Û_ Tumia moja ya akaunti hizi kuingia.
+          sign_up: Au‰Û_ Tumia moja ya akaunti hizi kujiunga.
+        providers:
+          facebook:
+            sign_in_html: "<strong>Unganisha</strong> na Facebook"
+            sign_up_html: "<strong>Unganisha</strong> na Facebook"
+          google:
+            sign_in_html: "<strong>Ingia</strong> na Google"
+            sign_up_html: "<strong>Jiunge</strong> na Google"
+          openid:
+            sign_in_html: "<strong>Ingia</strong> na OpenID"
+            sign_up_html: "<strong>Jiunge</strong> na OpenID"
+          twitter:
+            sign_in_html: "<strong>Unganisha</strong> na Twitter"
+            sign_up_html: "<strong>Unganisha</strong> na Twitter"
+      validation:
+        mismatch: Manenosiri hayalingani
+        terms: Unapaswa kukubali masharti ya huduma na sera ya faragha.
+  controls:
+    browse:
+      actions:
+        about:
+          button: Kuhusu
+          title: Kuhusu Setidata hii
+        all_options: Tazama Yote
+        clear_all: Futa Chaguzi Zote
+        clear_facet: "(Zote)"
+        compact_list: Tazama kama orodha iliyogandamizwa
+        create_dataset: Unda au pakia setidata yako mwenyewe
+        create_dataset_short: Unda Setidata mpya
+        create_dataset_verb: Unda
+        dataset_subscribe: Shiriki katika mabadiliko kwenye mtazamo huu
+        delete:
+          button: Futa
+          confirm: Je, una uhakika unataka kufuta %{dataset}?
+          title: Futa kipengele hiki
+        expand_section: Bofya ili kukuza
+        less_options: Ona Chache
+        manage_api:
+          button: Simamia
+          title: Simamia API hii
+        moderation:
+          accept: Kubali
+          reject: Kataa
+        permissions:
+          change_button:
+            private_html: Fanya Kuwa ya Umma
+            public_html: Fanya kuwa Binafsi
+          title: Badilisha mwonekano wa umma
+        rich_list: Tazama kama orodha tajiri
+        share_button: Gawiza
+        subscribe: Shiriki
+        suggest_dataset: Hukupata unachokitafuta? Pendekeza setidata.
+        suggest_dataset_short: Pendekeza Setidata
+        suggest_dataset_verb: Pendekeza
+      back_to_dataset: Rudi kwenye Setidata
+      facets:
+        categories_singular_title: aina
+        categories_title: Aina
+        federated_domains_singular_title: miliki
+        federated_domains_title: Anwani za Muungano
+        moderation_status:
+          accepted: Limekubaliwa
+          pending: Linangoja uamuzi
+          rejected: Limekataliwa
+        moderation_status_singular_title: Marekebisho
+        moderation_status_title: Hadhi za Marekebisho
+        topics_singular_title: mada
+        topics_title: Mada
+        view_types:
+          apis: APIs
+          blob: Mafaili na Nyaraka
+          calendars: Kalenda
+          charts: Chati
+          datasets: Setidata
+          filters: Mitazamo Iliyochujwa
+          forms: Fomu
+          href: Setidata za Nje
+          maps: Ramani
+          unpublished: Setidata Ambayo haijachapishwa
+        view_types_singular_title: aina
+        view_types_title: Tazama Aina
+      listing:
+        comment_count: Idadi ya maoni
+        federation_source: Imeungana kutoka %{source}
+        federation_source_html: Imetolewa na %{source_link}
+        no_results: Hakuna Matokeo
+        result_count: Kuonyesha %{this} kwa %{total}
+        table_header:
+          name: Jina
+          popularity: Umaarufu
+          rss: RSS
+          type: Aina
+        timeout: Tunasikitika. Matokeo hayakuweza kupatikana kwa sasa. Tafadhali jaribu tena baadaye.
+      row_results:
+        less_link: Kidogo
+        matching_rows: Kutafuta Setidata kwa mistari inayolingana
+        more_link: Zaidi
+        no_matching_rows: Mistari inayolingana haijapatikana
+        title_html: 'Kuonyesha <span class="rowResultCountText"></span> of <span class="totalResultCountText"></span> mistari inayolingana <a href="#" class="rowSearchLink">(tazama matokeo)</a>:'
+      search: Tafuta
+      sort_period_title: Ainisha Kipindi
+      sort_periods:
+        month: Mwezi huu
+        week: Wiki hii
+        year: Mwaka huu
+      sort_title: Ainisha kwa
+      sorts:
+        alpha: Taratibu ya alfabeti
+        comments: Maoni Zaidi
+        last_modified: Iliyosasishwa Hivi Karibuni
+        most_accessed: Iliyofikiwa zaidi
+        newest: Mpya
+        oldest: Ya Zamani
+        rating: Iliyotathminiwa Kuwa Juu Zaidi
+        relevance: Yahusikayo Zaidi
+      title:
+        default: Tafuta na Soma Soma Setidata na Mitazamo
+        result:
+          facet: "%{facet_type} ya %{facet_value}"
+          facet_main: yenye kulingana %{body}
+          main: Matokeo %{body}
+          term: kwa "%{term}"
+    charts:
+      negatives_in_data: 'Chati Batili: maadili hasi yapo'
+      no_data: Hakuna data
+      other_slice_label: Mingine
+      series_grouping:
+        calculating_time: Inahesabu muda uliobaki…
+        calculation_running: Kuandaa data
+        drawing_progress: Hii inaweza kuchukua muda kidogo…
+        drawing_running: Kuchora chati
+        pause_button_explanation1: |
+          Bahashishi! Inachua muda mrefu? Jaribu kusimamisha kwa muda kasha unda Kichujio
+        pause_button_explanation2: ili kuweka kikomo cha kiasi cha mahesabu kinachohitajika.
+        pause_rendering: Simamisha kwa muda
+        rendering_paused: Matayarisho ya data yamesimamishwa kwa muda
+        rendering_progress: "%{rows_remaining} mistari iliyobaki."
+        rendering_progress_almost_done: "%{rows_remaining} mistari iliyobaki, sekunde chache tu."
+        rendering_progress_minute: "%{rows_remaining} mistari iliyobaki, kama %{time_remaining} dakika."
+        rendering_progress_minutes: "%{rows_remaining} mistari iliyobaki, kama %{time_remaining} dakika."
+        rendering_progress_seconds: "%{rows_remaining} mistari iliyobaki, kama %{time_remaining} sekunde."
+        resume_rendering: Endelea
+      zero_only_data: Hakuna thamani kubwa kuliko sifuri
+    common:
+      auth_required: Unapaswa kuwa umeingia ili %{action_phrase}
+      dataset_picker:
+        button: Chagua
+        title: Chagua Setidata ya Kutumia
+      expander:
+        collapse: Bofya ili kuvunja
+        expand: Bofya ili kukuza
+      image_upload:
+        button: Pakia Picha
+      no_results: Hakuna Matokeo
+      rate:
+        auth_action_phrase: tathmini Setidata hii
+      share:
+        button_prompt: Ifanye ya Umma
+        button_tooltip: Gawiza Setidata hii
+        networks:
+          email: Barua pepe
+          facebook: Facebook
+          twitter: Twitter
+        share_text: 'Angalia %{name}, Setidata katika %{site}: '
+      sidebar:
+        tabs:
+          about: Kuhusu Setidata Hii
+          components: Vijenzi
+          configuration: Umbo
+          discuss: Jadili
+          edit: Hariri
+          embed: Tia ndani
+          export: Hamisha
+          filter: Kichujio
+          manage: Simamia
+          moreViews: Mionekano Zaidi
+          visualize: Pata Taswira
+      stars:
+        tooltip: "%{number} nyota"
+      visualization:
+        in_bing: Tazama kwenye Ramani Kubwa
+        in_google: Tazama kwenye Ramani za Google
+        row_details: Tazama maelezo ya mstari huu
+    editors:
+      actions:
+        add: Ongeza
+        remove: Ondoa
+        replace: Badilisha
+        view: Mwonekano
+      document:
+        add_title: Ongeza waraka mpya
+        remove_title: Ondoa waraka
+        replace_title: Badilisha waraka
+      photo:
+        add_title: Ongeza picha mpya
+        remove_title: Ondoa picha
+        replace_title: Badilisha picha
+        view_title: Tazama picha kwenye dirisha lililotenganishwa
+    embed:
+      create_template_button: Unda Template Mpya
+      custom_size: Ukubwa wa Kawaida
+      embed: Tia ndani Setidata hii
+      form_frame: Tia Fomu hii katika kiunzi
+      form_or: au
+      form_plain: Tia ndani Fomu hii kama HTML ya Wazi
+      height: Urefu
+      minimum_size: 425x425 ndiyo kima cha chini
+      private_warning: |
+        Mtazamo huu ni binafsi kwa sasa. Unaweza ukatazama awali, lakini utahitaji kuifanya iwe ya umma kabla watu hawajaweza kuiona.
+      sdp_template: Template ya Kichezeshi Data ya Jamii
+      size: Ukubwa
+      template: Template
+      width: Upana
+    feed:
+      authed_actions:
+        delete_comment: futa maoni
+        flag_comment: tia alama ya bendera maoni
+        post_comment: posti maono
+        rate_comment: tathmini maoni
+      comment_actions:
+        already_marked_inappropriate: Ilitiwa alama ya bendera
+        delete: Futa
+        delete_confirm: |
+          Je, una uhakika? Maoni yako yatapotea.
+        inappropriate: Haifai
+        marked_inappropriate: Imetiwa alama ya bendera!
+        rate_down: Tathmini maoni haya kuwa duni
+        rate_up: Tathmini maoni haya kuwa bora
+        reply: Jibu
+      comment_form:
+        cancel_button: Batilisha
+        empty_body_error: Sehemu ya maoni haiwezi kuwa wazi.
+        header: Maoni mapya
+        post_button: Posti
+      header:
+        add_comment: Ongeza Maoni
+        cell_comment_header_html: Maoni kwa ajili ya mstari <span class="rowName"></span>, safu <span class="columnName"></span>
+        feed_filter_label: Onyesha
+        pending_moderation: Maoni yako yametumwa na yanangoja marekebisho
+      listing:
+        all_replies: Tazama majibu yote
+        all_replies_with_count: Tazama yote %{count} majibu
+        last_item: Tazama kipengee cha mwisho
+        next_item_page: Tazama vijavyo %{count} vipengee
+        no_results: Hakuna vipengee vya kuonyesha
+        user_create_action: 'Iliunda %{thing}:'
+      types:
+        all items: vipengee vyote
+        comments: maoni
+        views: mitazamo
+    filter:
+      actions:
+        confirm_modify: |
+          Kufanya hivi kutaondoa thamani yote kwenye kichujio chako! Je, una uhakika unataka kufanya hili?
+        disable_filter: Usichuje
+        first_condition: Bofya hapa kuongeza sharti lako la kwanza la kichujio
+        new_condition_button: Ongeza sharti la kichujio kipya
+        remove_filter: Ondoa kichujio
+        select_column: 'Chagua safu ili kuchuja kwa:'
+        select_operation: 'Chagua utendaji ili kuchuja kwa:'
+        select_subcolumn: 'Chagua sehemu ya %{name} ili kuchuja kwa:'
+      edit_default:
+        advanced_body: |
+          Hii inamaanisha kuwa watakuwa na njia kamili ya kufikia chaguzi zipatikanazo kwenye kichujio. Kwa uzoefu bora zaidi unaweza kujaribu namna iliyorahisishwa.
+        advanced_header: Watumiaji wataanza kwenye namna ya juu.
+        advanced_toggle: Badilisha hali ya asili kwenda iliyorahisishwa
+        auto_suggested: Thamani inayopendekezwa inaamuliwa moja kwa moja kwa ajili ya aina hii ya mwendeshaji.
+        cancel_button: Batilisha
+        done_button: Imefanywa
+        instructions: |
+          Tumia zana hapo juu kuunda vichujio, kurekebisha thamani iliyowekwa, kuchagua idadi ya thamani iliyopendekezwa moja kwa moja ambayo kichujio kitajaribu kutoa, na mingineyo. Utakaporidhishwa na chaguzi zilizotolewa, bofya Imefanywa hapo chini ili kuihifadhi:
+        manual_suggested_html: Onyesha katika <select class="autogeneratedCount"></select> thamani iliyopendekezwa
+        mode_button: Hariri Kichujio cha Asili
+        mode_message: 'Kama mchapishaji wa mtazamo huu, unaweza kuelezea seti ya kawaida Ya vichujio ambayo wageni watapewa:'
+        save_confirm: |
+          Utapoteza mabadiliko yoyote ambayo hayajahifadhiwa kama utachagua kuendelea. Tafadhali hifadhi mabadiliko yoyote unayotaka kuyahifadhi kabla ya kuendelea.
+        simplified_body: Hii inamaanisha kuwa hawataweza kuongeza masharti mapya, kubadilisha safu au viendeshi vya vichujio, au kufikia menyu za juu kwenye vichujio.
+        simplified_header: Watumiaji wataanza kwenye namna ya juu.
+        simplified_toggle: Badilisha hali ya asili kwenda ya juu.
+      main:
+        base_explanation: Pamoja na vichujio vya msingi vijavyo
+        base_info: |
+          Vichujio hivi vinatumika daima, pamoja na vichujio vya ziada vilivyoingizwa hapo juu. Vichujio hivi haviwezi kuhaririwa, ama kwa sababu huna idhini ya kuhariri mtazamo wa sasa, au kwa sababu vinatokea kwenye mtazamo mama au Setidata.
+        filter: Kichujio
+        filter_based_on_contents: Chuja Setidata hii ihusuyo yaliyomo.
+        no_conditions: Hakuna masharti yaliyoelezwa.
+        no_suggestions: Hakuna thamani iliyopendekezwa kwa safu hii na kiendeshi.
+        or: au
+        simplified_message: Upo kwenye namna iliyorahisishwa.
+        simplified_toggle: Unaenda ya juu sasa?
+        tutorial_html: |
+          Kamwe hujaunda kichujio kabla? Angalia video fupi ya ukufunzi <a href="/videos/popup#basic-filtering" rel="video" class="noRedirPrompt">hapa</a>.
+        view_has_no_columns: Mtazamo huu hauna safu za kuchuja
+        view_must_be_valid: Mtazamo huu sharti uwe kiakili
+      menu:
+        match_all: Linganisha masharti yote
+        match_any: Linganisha sharti lolote
+        select_many: Chagua nyingi
+        select_one: Chagua moja
+        show_suggested: Onyesha thamani iliyochaguliwa
+        title: Chaguzi
+    global_indicator:
+      error: Kosa
+      saved: Imehifadhiwa
+      saving: Inahifadhi…
+      working: Inafanya kazi…
+    grid:
+      add_column: Ongeza safu mpya…
+      clear_column_filter: Futa Kichujio cha Safu
+      clear_sort: Futa Aina
+      click_for_menu: Bofya Kuona Menyu
+      click_to_sort: Bofya kuainisha
+      column_info: Maelezo ya safu
+      delete_column: Futa Safu
+      delete_row: Futa Mstari
+      delete_warning_multi_column: |
+        Je, unataka kufuta safu zilizochaguliwa?
+        Data zote kwenye safu hizi zitaondolewa!
+      delete_warning_single_column: |
+        Je unataka kufuta safu iliyochaguliwa?
+        Data zote kwenye safu hii zitaondolewa!
+      edit_column_properties: Hariri Vyombo vya Safu
+      filter_this_column: Chuja Safu Hii
+      geocodes_pending: |
+        Mistari katika safu ya mahali bado inapambanua.
+        Tafadhali subiri mpaka imalize kuchapisha data seti hii
+      hide_column: Ficha Safu
+      menu: Menyu
+      must_enter_name: Sharti uandike jina la safu hii
+      new_row: Mpya
+      no_columns: Setidata %{uid} haina safu zozote
+      no_rows: Hakuna safu za kuonyesha
+      permission_denied: Huna njia ya kufikia mtazamo huu.
+      previous: Iliyotangulia
+      required_cols_missing: Safu zinazotakiwa kwa mtazamo huu hazipo
+      sort_ascending: Ainisha kwa Kupanda
+      sort_descending: Ainisha kwa Kushuka
+      totals: Jumla
+      view_cell_comments: Tazama maoni ya seli hii
+      view_first_row: Tazama mstari wa kwanza
+      view_last_row: Tazama mstari wa mwisho
+      view_next_row: Tazama mstari ujao
+      view_previous_row: Tazama mstari uliotangulia
+      view_row: Tazama mstari
+      view_single_row: Tazama Data ya Mstari Mmoja
+      viewing_row_html: Kuona mstari <span class="curPage"></span> wa <span class="totalPages"></span>
+    map:
+      address_prompt: Andika anwani hapa
+      auto: yenyewe
+      base_layers: Matabaka ya Msingi
+      boundary_map: Ramani ya Mpaka
+      current_location: Tumia mahali pa sasa
+      data_layers: Matabaka ya Data
+      data_request_timeout: Ombi la data limechukua muda mrefu mno na limesimama.
+      forever_node_explanation: Data hii ya kundi imefungashwa kwa uzito mno kuonyesha data yenye manufaa kijiografia.
+      forever_node_recommend: Tunashauri kuwa <a href="#openTable">ufungue mtazamo ulioorodheshwa</a> Ili kupata maelezo zaidi.
+      forever_node_title: Data ni nyingi mno
+      geocoding_inaccessible: Huduma ya upambanuaji haiwezekani kufikiwa. Jaribu tena baadaye
+      geocoding_noresults: |
+        Haiwezi kupambanua
+        Hakikisha anwani ni sahihi
+      heat_map: Ramani ya Joto
+      heatmap_ie8_warning: |
+        Ramani ya Joto Mstatili haifanyi kazi katika browser yako ya sasa.
+        Tafadhali pandisha daraja kwenda IE9, tumia Google Chrome au Mozilla Firefox. Asante.
+      loading: Inapakiza…
+      map_legend: Maandishi ya Ramani
+      multiple_layer_instructions: 'Kuna data kwa zaidi ya tabaka moja hapa. Chagua moja:'
+      next: Ijayoz
+      next_row: Mstari ujao
+      no_columns_defined: Hakuna safu zilizobainishwa
+      point_map: Onyesha Ramani
+      previous: Iliyotangulia
+      previous_row: Mstari Uliotangulia
+      request_timed_out: Ombi la data hii lilisimama.
+    nominate:
+      all: Yote
+      approve: "(Thibitisha)"
+      approve_tip: Thibitisha pendekezo hili
+      approved: Limethibitishwa
+      attachment: Kiambatisho
+      attachments: Viambatisho
+      back_to_suggestions: Rudi kwenye Mapendekezo ya Setidata
+      browse: Bofya
+      cancel: Batilisha
+      comments: Maoni
+      contact_author: Wasiliana na Mwandishi wa Pendekezo
+      dataset_suggestions: Mapendekezo ya Setidata
+      delete_attachment: Kiambatisho
+      delete_confirm: Je, una uhakika unataka kufuta hili %{type}?
+      delete_error: Kufuta kosa %{type}
+      delete_suggestion: Pendekezo
+      description: Maelezo
+      description_prompt: Andika maelezo kuhusu pendekezo lako
+      details: Maelezo
+      edit: "(Hariri)"
+      edit_suggestion: Hariri pendekezo hili
+      files: Mafaili
+      filter_by_status: Chuja kwa hadhi
+      form_error: Tafadhali sahihisha makosa hapo juu
+      great_sadness: Kosa linakusanya mwandishi wa pendekezo. Tafadhali jaribu tena baadaye.
+      greater_success: Ujumbe wako umetumwa kwa mwandishi wa pendekezo.
+      message: Ujumbe
+      message_prompt: Andika ujumbe wako
+      moderate: "(Rekebisha)"
+      moderate_error: Makosa wakati wa kubadilisha hadhi
+      moderate_tip: Kubali pendekezo hili na lifungue kwa ajili ya kuchagua
+      needs_moderation: Linahitaji Marekebisho
+      new: Mpya
+      no_result: Hakuna Matokeo
+      open: Fungua
+      rate_down: Siipendi
+      rate_up: Naipenda
+      rating: Tathmini
+      rating_error: Pendekezo la kutathmini kosa
+      reject: "(Imekataliwa)"
+      reject_tip: Kataa pendekezo hili
+      rejected: Limekataliwa
+      remove: "(Ondoa)"
+      remove_tip: Ondoa pendekezo hili
+      required: Inahitajika
+      status: Hadhi
+      submit: Tuma
+      submitted_by: Imetumwa na
+      suggest_a_dataset: Pendekeza Setidata
+      suggestion_received: |
+        Pendekezo lako limepokelewa na lipo kwenye foleni ya marekebisho. Litaonekana katika ukurasa huu baada ya kuthibitishwa na msimamizi
+      suggestion_updated: Pendekezo lako limesasishwa
+      title: Kichwa
+      title_prompt: Andika kichwa
+      user_removed: mtumiaji ambaye aliondolewa
+      user_removed_short: Mtumiaji aliondolewa
+    upload_dialog:
+      browse: Bofya
+      title_file: Pakia Faili
+      title_image: Pakia Picha
+      title_photo: Pakia Picha
+      to_upload_file: 'Faili la Kupakia:'
+      to_upload_image: 'Picha ya Kupakia:'
+      to_upload_photo: 'Picha ya Kupakia:'
+      upload: Pakia
+  core:
+    aggregates:
+      average: Wastani
+      count: Hesabu
+      maximum: Kima cha Juu
+      minimum: Kima cha Chini
+      sum: Kiasi cha Fedha
+    alignment:
+      center: Katikati
+      left: Kushoto
+      right: Kulia
+    analytics:
+      visit: tazama
+      visits: mitazamo
+    and: na
+    auth:
+      invalid_userpass: Jina la mtumiaji au nenosiri ni batili
+      need_login: Sharti uwe umeingia ndani ili kufikia ukurasa huu
+      need_permission: Hauna idhini ya kutazama ukurasa huu
+      too_many_tries: Majaribio ya kuingia mengi mno kwa uingiaji huo. Akaunti imefungwa kwa muda.
+    browser_support:
+      chrome: Chrome
+      internet_explorer: Internet Explorer
+      link_text: Jifunze zaidi.
+      message_html: Tovuti hii inaonekana vizuri kwa kutumia browser mpya. %{link_text}
+    chart_types:
+      area: Chati ya Eneo
+      bar: Chati ya Ufito
+      bubble: Chati ya Povu
+      column: Chati ya Safu
+      donut: Chati ya Donut
+      line: Chati ya Mistari
+      pie: Chati ya Pai
+      stackedbar: Chati ya Fito Zilizorundikana
+      stackedcolumn: Chati ya Safu Zilizorundikana
+      timeline: Kalenda ya matukio
+      treemap: Ramani ya Mti
+    chart_types_short:
+      area: 'Eneo '
+      bar: Ufito
+      bubble: Povu
+      column: Safu
+      donut: Donut
+      line: 'Mstari '
+      pie: 'Pai '
+      stackedbar: Fito Zilizorundikana
+      stackedcolumn: Safu Zilizorundikana
+      timeline: Kalenda ya matukio
+      treemap: Ramani ya Mti
+    data_types:
+      calendar_date: Tarehe na Muda
+      checkbox: Kisanduku cha Kutia Alama
+      dataset_link: Kiungo cha Setidata
+      date: Tarehe na Muda (pamoja na majira)
+      document: |
+        Waraka
+      drop_down_list: Majibu Mengi
+      email: Barua pepe
+      flag: Bendera
+      geospatial: Jiografia ya Sehemu
+      html: Maandiko Yaliyoundwa
+      link: Unga Safu
+      list: Orodha
+      location: Mahali
+      money: Hela
+      nested_table: Jedwali lenye umbo la kiota
+      number: Namba
+      object: Madhumuni
+      percent: Asilimia
+      phone: Simu
+      photo: Picha (Picha)
+      stars: Nyota
+      text: Maandiko ya Kawaida
+      url: URL ya Tovuti
+    date_time:
+      centuries_future: "%{time} karne kuanzia sasa"
+      centuries_past: "%{time} karne zilizopita"
+      current_century_future: karne hii
+      current_century_past: karne hii
+      current_day_future: leo
+      current_day_past: leo
+      current_hour_future: saa hii
+      current_hour_past: saa hii
+      current_minute_future: sasa hivi
+      current_minute_past: sasa hivi
+      current_month_future: mwezi huu
+      current_month_past: mwezi huu
+      current_week_future: Wiki hii
+      current_week_past: wiki hii
+      current_year_future: mwaka huu
+      current_year_past: mwaka huu
+      days_future: "%{time} siku kuanzia sasa"
+      days_past: "%{time} siku zilizopita"
+      hours_future: "%{time} saa kuanzia sasa"
+      hours_past: "%{time} saa zilizopita"
+      minutes_future: "%{time} dakika kuanzia sasa"
+      minutes_past: "%{time} dakika zilizopita"
+      months_future: "%{time} miezi kuanzia sasa"
+      months_past: "%{time} miezi iliyopita"
+      single_century_future: karne moja kuanzia sasa
+      single_century_past: karne iliyopita
+      single_day_future: kesho
+      single_day_past: jana
+      single_hour_future: saa 1 kuanzia sasa
+      single_hour_past: saa 1 iliyopita
+      single_minute_future: dakika 1 kuaznia sasa
+      single_minute_past: dakika 1 iliyopita
+      single_month_future: mwezi ujao
+      single_month_past: mwezi uliopita
+      single_week_future: wiki ijayo
+      single_week_past: wiki iliyopita
+      single_year_future: mwaka ujao
+      single_year_past: mwaka uliopita
+      unknown: wakati fulani
+      weeks_future: "%{time} wiki kuanzia sasa"
+      weeks_past: "%{time} wiki zilizopita"
+      years_future: "%{time} miaka kuanzia sasa"
+      years_past: "%{time} miaka iliyopita"
+    dialogs:
+      apply: Tumia
+      cancel: Batilisha
+      close: Funga
+      continue: Endelea
+      create: Unda
+      delete: Futa
+      done: Imefanywa
+      dont_save: Usihifadhi
+      logout: Umeagishwa.
+      save: Hifadhi
+      session_timeout:
+        notice: |
+          Umeagishwa kwa usalama wako.
+          Tafadhali ingia tena ili kuendelea.
+        warning:
+          belay_button: Usiniagishe!
+          body_html: |
+            Hatujaona harakati yoyote ndani ya dakika chache.
+            Kwa faragha, tutakuagisha ndani ya <span id="secondsRemaining"></span> sekunde.
+          title: Muda wako unakaribia kumalizika.
+      submit: Tuma
+      update: Sasisha
+    expando:
+      expand: Kuza
+      prompt: Bofya ili kukuza
+    features:
+      allow_comments: Kutoa maoni
+      cell_comments: Kutoa maoni ya seli
+    filters:
+      formal:
+        between: kati
+        contains: inakusanya
+        equals: inalingana
+        greater_than: kubwa kuliko
+        greater_than_or_equals: kubwa kuliko au inalingana na
+        is_blank: tupu
+        is_not_blank: si tupu
+        less_than: ndogo kuliko
+        less_than_or_equals: ndogo kuliko au inalingana na
+        not_contains: haukusanyi
+        not_equals: hailingani
+        starts_with: inaanza na
+      informal:
+        between: iko kati ya
+        contains: inakusanya
+        equals: ni
+        greater_than: ni kubwa kuliko
+        greater_than_or_equals: angalau
+        is_blank: tupu
+        is_not_blank: si tupu
+        less_than: ni ndogo kuliko
+        less_than_or_equals: si zaidi ya
+        not_contains: haukusanyi
+        not_equals: siyo
+        starts_with: inaanza na
+    forms:
+      none: hakuna
+      required_field: Eneo Linalohitajika
+    group_function:
+      date_day: Siku
+      date_month: Mwezi
+      date_year: Mwaka
+    interstitial:
+      leaving_explanation_html: Hii <span class="datasetType">Setidata</span> imehifadhiwa na <a href="\\#" rel="external" class="externalDomain">jina linguine la mtumiaji</a>.
+      leaving_notice_html: Unaacha <span class="serverName">%{site_name}</span>
+    maintenance_notice: Tovuti hii inayosaidiwa na Socrata inaweza isipatikane kwa ajili ya matengenezo ya kila siku kuanzia %{start} to %{finish}.
+    map_layers:
+      aerial: Mpasuko wa Angani
+      bing_aerial: Kuwa ya Angani
+      bing_roadmap: Ramani ya Barabara ya Mpasuko
+      bing_roadmap_alias: Mpasuko
+      esri_natural_earth: Ramani ya Dunia ya Asili (ESRI)
+      esri_natural_earth_alias: Ramani ya Dunia ya Asili
+      esri_satellite: Picha ya Setilaiti (ESRI)
+      esri_us_topo: Ramani ya USA ya Sura ya Nchi yenye maelezo (ESRI)
+      esri_us_topo_alias: 'Ramani ya USA ya Sura ya Nchi '
+      esri_world_street_map: Ramani ya Dunia ya Mitaa (ESRI)
+      esri_world_street_map_alias: Ramani ya Dunia ya Mitaa
+      esri_world_topo: Ramani ya Sura ya Nchi ya Dunia iliyofafanuliwa (ESRI)
+      esri_world_topo_alias: Ramani ya Sura ya Nchi ya Dunia
+      google_roadmap: Ramani ya Barabara ya Google
+      google_roadmap_alias: Google
+      google_satellite: Setilaiti ya Google
+      google_terrain: Mandhari ya Google
+      roadmap: Ramani ya Barabara
+      satellite: Setilaiti
+      terrain: Mandhari
+    no_category: Hakuna aina
+    no_js: Batilisha Javascript kwenye ukurasa huu
+    no_license: Hakuna Leseni
+    numbers:
+      eight: nane
+      five: tano
+      four: nne
+      nine: tisa
+      num_one: moja
+      num_two: mbili
+      num_zero: sifuri
+      seven: saba
+      six: sita
+      three: tatu
+    or: au
+    pagination:
+      current_page: Ukurasa wa Sasa
+      first_page: Ukurasa wa Kwanza
+      last_page: Ukurasa wa Mwisho
+      next_page: Ukurasa Ujao
+      page: ukurasa
+      previous_page: Ukurasa Uliotangulia
+    precision_style:
+      scientific: Ya kisayansi (1.0204e+3)
+      standard: Kiwango (1020.4)
+    required: Inahitajika
+    share_types:
+      contributor: Mchangiaji
+      owner: Mmiliki
+      view: Mtazamaji
+      viewer: Mtazamaji
+    validation:
+      accept: Tafadhali andika thamani na upanuzi halali.
+      date: Tafadhali andika tarehe halali
+      dateISO: Tafadhali andika tarehe halali (ISO).
+      digits: Tafadhali andika tarakimu tu.
+      email: Tafadhali andika anwani halali ya barua pepe.
+      equalTo: Tafadhali andika tena thamani ileile
+      max: Tafadhali andika thamani ndogo kuliko au inayolingana na {0}.
+      maxlength: Tafadhali usiandike zaidi ya {0} vibambo.
+      min: Tafadhali andika thamani kubwa kuliko au inayolingana na {0}.
+      minlength: Tafadhali andika angalau {0} vibambo.
+      number: Tafadhali andika namba halali.
+      range: Tafadhali andika thamani kati ya {0} na {1}.
+      rangelength: Tafadhali andika thamani kati ya {0} na {1} vibambo urefu.
+      remote: Tafadhali imarisha sehemu hii.
+      required: Sehemu hii inahitajika.
+      url: Tafadhali andika URL halali
+    view_types:
+      api: Mwonekano wa API
+      blob: faili au waraka usioorodheshwa
+      calendar: kalenda
+      chart: chati
+      dataset: Setidata
+      filter: mwonekano uliochujwa
+      form: fomu
+      group: mwonekano wa vikundi
+      grouped: mwonekano wa vikundi
+      href: |
+        Setidata ya nje
+      map: ramani
+      table: jedwali
+      working_copy: Nakala ya kazi
+    view_types_plural:
+      api: APIs
+      calendar: Kalenda
+      chart: Chati
+      filter: Mitazamo Iliyochujwa
+      form: Fomu
+      grouped: Mionekano vikundi
+      map: Ramani
+    visibility:
+      private: binafsi
+      public: umma
+  dataslate:
+    component:
+      edit: Hariri kijenzi hiki
+      header:
+        height: Urefu
+      invalid_config: Kijenzi hiki hakina umbo halali
+      loading: Inapakiza, tafadhali subiri…
+      picture:
+        alt_attr: Alt
+        alt_attr_prompt: sifa zaalt
+        full_url: URL yenye sifa zinazostahili kwa picha
+        image_source: Chanzo cha Picha
+        large: Kubwa (220x220)
+        medium: Wastani (150x150)
+        original: Asili
+        thumb: Pini (80x80)
+        tiny: Dogo sana (24x24)
+        title_attr: Kichwa
+        title_attr_prompt: sifa za kichwa
+      print:
+        print: Chapa
+        print_this_page: Chapa ukurasa huu
+      remove: Ondoa kijenzi hiki
+      share:
+        email: Gawiza kupitia Barua Pepe
+        email_contents: "%{dataset} juu %{company}"
+        facebook: Gawiza kwenye Facebook
+        share: Gawiza
+        subscribe: Shiriki kupitia Barua Pepe au RSS
+        subscribe_text: Shiriki katika Mabadiliko
+        this_page: Ukurasa huu
+        tweet_contents: 'Angalia %{dataset} katika %{company}: %{url}'
+        twitter: Gawiza kwenye Twitter
+      visualization:
+        exploreLink: Chunguza data
+        exploreLink_prompt: Onyesha Kiungo
+    configurator:
+      actions_components: Hatua
+      advanced_components: Vijenzi vya Juu
+      content_components: Yaliyomo
+      data_components: Data
+      input_components: Pembejeo
+      redo_title: Hakuna cha kufanya upya
+      report_components: Vijenzi vya Kutoa ripoti
+      undo_title: Hakuna cha kutengua
+    context_picker:
+      select_dataset: Chagua Setidata
+      view_data: Tazama Data
+    create:
+      cancel: Batilisha
+      create: Unda
+      create_page: Umba Ukurasa wa Sleti Data
+      page_settings: Mipangilio ya Ukurasa
+      page_title: Kichwa cha Ukurasa
+      page_url: URL ya Ukurasa
+      title: Umba Ukurasa wa Sleti Data
+    edit:
+      editing: Kuhariri
+      permissions: Idhini
+      preview_page: Tazama ukurasa awali
+      redo: Fanya upya
+      revert: Rudia hali ya kwanza
+      save: Hifadhi
+      save_as: Hifadhi Kama
+      settings: Mipangilio
+      undo: Tengua
+      view_editor: Tazama mhariri anayeathiriana
+    edit_component:
+      no_config: Hakuna umbo lipatikanalo kwa %{component}
+      subtitle: Unda kijenzi hiki
+      title: Hariri Kijenzi
+    edit_properties:
+      no_data: Hakuna data iliyowekwa kwa ajili ya kijenzi hiki
+      subtitle: Ongeza vyombo vinavyohusu muktadha wa data kwenye kijenzi hiki
+      title: Vyombo Vilivyopo
+    permissions:
+      cancel: Batilisha
+      private: Binafsi
+      private_desc: Unaona wewe tu
+      public: Umma
+      public_desc: Anaona kila mtu
+      save: Hifadhi
+      shared: Imegawizwa kwenye Tovuti
+      shared_desc: Wanaona wenzako wote, lakini si umma
+      title: Idhini za Ukurasa
+    settings:
+      cancel: Batilisha
+      page_title: Kichwa cha Ukurasa
+      page_url: njia
+      save: Hifadhi
+      title: Mipangilio ya Ukurasa
+  date:
+    abbr_month_names: "--- \n...\n- Jan\n- Feb\n- Mac\n- Apr\n- Mei\n- Juni\n- Jul\n- Ago\n- Sep\n- Okt\n- Nov\n- Dis"
+  error:
+    back: Rudi
+    error_500:
+      description_html: Tafadhali jaribu tena ndani ya muda mfupi, au <a href="http://support.socrata.com">toa habari juu ya kosa hili</a> pamoja na maelezo ya ulichokuwa ukijaribu kukifanya.
+      somethings_wrong: Kitu Fulani si sahihi
+      were_sorry: Tunasikitika, lakini palikuwa tatizo wakati wa kuchakata ombi lako.
+    not_acceptable_406:
+      page_not_found: Ukurasa haujagunduliwa
+      were_sorry: Tunasikitika sana, lakini ukurasa ulioomba haupatikani kwenye umbo lililoombwa.
+    not_found_404:
+      back_to: Rudi katika
+      description_html: |
+        Ukurasa ama haupo au umehama. Tunafikiri kitu bora cha kufanya ni kuanza tena kutokea kwenye <a href="/">ukurasa wa nyumbani</a>. Jisikie huru kuwasiliana nasi ikiwa tatizo litaendelea au ikiwa utaweza kabisa kupata ukitafutacho. Asante.
+      page_not_found: Ukurasa haujagunduliwa
+      were_sorry: Tunasikitika sana, lakini ukurasa ulioomba hauwezi kugundulika.
+    permission_denied_403:
+      description_html: Ikiwa unaamini hili kuwa ni tatizo, jaribu kuaga na kuingia kama mtumiaji mwingine <a href="/login">hapa</a>.
+      no_permission: Huruhusiwi kufikia rasilimali.
+      were_sorry: Tunasikitika, lakini inaonekana kuwa huna idhini ya kufikia ukurasa huu.
+    to_whence_you_came: kuelekea utokapo
+  govstat:
+    chrome:
+      header:
+        links:
+          account: Akaunti
+          account_options: Chaguzi za Akaunti
+          account_tooltip: Tazama na ufanye mabadiliko kwenye akaunti yako ya mtumiaji
+          configuration: Umbo
+          configuration_title: Simamia umbo la GovStat
+          data: Data
+          data_title: Bofya na simamia Data
+          goals: Malengo
+          goals_title: Umba na Fuatilia Malengo
+          home: Nyumbani
+          home_title: Nyumbani
+          my_goals: Malengo Yangu
+          my_goals_tooltip: Ona malengo ambayo nimeunda
+          reports: Ripoti
+          reports_title: Tazama na Unda Ripoti
+    configuration:
+      analytics: Taaluma
+      appearance: Sura
+      config: Umbo
+      content_moderation: Marekebisho ya Yaliyomo
+      data_management: Usimamizi wa Data
+      datasets: Setidata
+      federations: Miungano
+      homepage: Ukurasa wa Nyumbani
+      metadata: Metadata
+      moderation: Marekebisho ya maoni
+      nomination: Marekebisho ya Uteuzi
+      routing: Upelekaji na Idhini
+      sdp_templates: Template ya Kichezeshi Data
+      title: Simamia Umbo la Tovuti
+      users: Watumiaji
+    reports:
+      component:
+        base_map: Ramani ya Msingi
+        chart: Chati
+        formatted_text: Maandiko Yaliyoundwa
+        header: Kichwa
+        horizontal_layout: Mpango wa Mlalo
+        map: Ramani
+        map_layer: Tabaka la Ramani
+        picture: Picha
+        print: Chapa
+        share: Gawiza
+        table: Jedwali
+        title: Kichwa
+        vertical_layout: Mpango wa Wima
+        visualize: Pata Taswira
+      create:
+        create_report: Unda Ripoti
+        title: Unda Ripoti
+      manage:
+        copy: Nakili
+        create_new_report: Unda Ripoti Mpya
+        delete: Futa
+        edit: Hariri
+        home: Nyumbani
+        other_reports: Ripoti Nyingine
+        owner: mmiliki
+        reports: Ripoti
+        title: Simamiza Ripoti
+        updated: ilisasishwa
+        your_reports: Ripoti Zako
+      permissions:
+        title: Idhini ya Ripoti
+      settings:
+        page_title: Kichwa cha Ripoti
+        title: Mipangilio ya Ripoti
+    template:
+      grid_flow_layout: Mpango Mtiririko wa Miraba Fito
+      layouts: Mipango
+      list_layout: |
+        Orodhesha Mpango
+      title: Chagua Mpango
+  plugins:
+    daterangepicker:
+      date_range: Safu ya Tarehe
+      done: Imefanywa
+      end_date: Tarehe ya Mwisho
+      last_month: Mwezi Uliopita
+      month_to_date: Mwezi kwenda Tarehe
+      next: Ijayo
+      prev: Iliyotangulia
+      specific_date: Tarehe Maalumu
+      start_date: Tarehe ya kuanza
+      the_month_of: Mwezi Wa…
+      the_week_of: Wiki Ya…
+      the_year_of: Mwaka Wa…
+      today: Leo
+      week_to_date: Wiki kwenda Tarehe
+      year_to_date: Mwaka kwenda Tarehe
+    fileuploader:
+      drop_files: Dondosha nyaraka hapa ili kupakia
+      failed: Imeshindwa
+      upload_a_file: Pakia faili
+    hallo:
+      body: Mwili
+      bold: Herufi Nzito
+      heading: Kichwa
+      italic: Herufi Mlazo
+      redo: Fanya upya
+      subheading: Kichwa Kidogo
+      undo: Tengua
+    jquery_ui:
+      april: Aprili
+      april_short: Apr
+      august: Agosti
+      august_short: Ago
+      december: Disemba
+      december_short: Dis
+      done: Imefanywa
+      february: Februari
+      february_short: Feb
+      friday: Ijumaa
+      friday_min: Ijm
+      friday_short: Ijm
+      january: Januari
+      january_short: Jan
+      july: Julai
+      july_short: Jul
+      june: Juni
+      june_short: Juni
+      march: Machi
+      march_short: Mac
+      may: Mei
+      may_short: Mei
+      monday: Juma Tatu
+      monday_min: Jtt
+      monday_short: Jtt
+      next: Ijayo
+      november: Novemba
+      november_short: |
+        Nov
+      october: Oktoba
+      october_short: Okt
+      prev: Iliyotangulia
+      saturday: Juma Mosi
+      saturday_min: Jms
+      saturday_short: Jms
+      september: Septemba
+      september_short: Sep
+      sunday: Juma Pili
+      sunday_min: Jpl
+      sunday_short: Jpl
+      thursday: Alhamisi
+      thursday_min: Alh
+      thursday_short: Alh
+      today: Leo
+      tuesday: Juma Nne
+      tuesday_min: Jnn
+      tuesday_short: Jnn
+      wednesday: Juma Tano
+      wednesday_min: Jtn
+      wednesday_short: Jtn
+      week_min: Wiki
+  recaptcha:
+    errors:
+      verification_failed: Vibambo vilivyoandikwa havilingani na picha.
+  screens:
+    about:
+      actions: Hatua
+      activity: Harakati
+      attachments: Viambatisho
+      category: Aina
+      comments: Maoni
+      community: Tathmini ya Jamii
+      contact_dataset_owner: Wasiliana na Mmiliki wa Setidata
+      contributors: Wasiliana na Mmiliki wa Setidata
+      created: Iliundwa
+      data_provided_by: Data Imetolewa na
+      description: Maelezo
+      downloads: Kupakua
+      edit_metadata: Hariri Metadata
+      flag_dataset: Tia Alama ya Bendera Setidata
+      license: Leseni
+      licensing: Utoaji Leseni na Unasibishaji
+      links: Viungo
+      meta: Meta
+      none: "(hakuna)"
+      permalink: Kiungo cha Kudumu
+      permanent_links: Viungo vya Kudumu
+      permissions: idhini
+      private: Binafsi
+      public: Umma
+      raters: Watathmini
+      resource_name: Jina la Rasilimali
+      row_class: Daraja la Mstari
+      row_count: Hesabu ya Mstari
+      row_identifier: Kitambuzi cha Mstari
+      semantics: Semantiki na RDF
+      short_url: URL fupi
+      snapshotted: picha
+      soda2_support: SODA2 Tu
+      soda2_yes: Ndiyo
+      source_link: Kiungo cha Chanzo
+      spatial_extent: Ukubwa wa Anga
+      subject_column: Safu ya Mada
+      tags: Vishikizo
+      terms_of_use: Masharti ya Matumizi
+      updated: Ilisasishwa
+      view_full_page: Tazama Ukurasa Kamili
+      view_statistics: Tazama Takwimu
+      visits: Ziara
+      your: Tathmini Yako
+    admin:
+      datasets:
+        layout_config: Umbo la Mpango
+        left: Kushoto
+        right: Kulia
+        saved: Imehifadhiwa
+        saving: Kuhifadhi
+        sidebar_position: Mahali pa Mwambaa wa Pembeni
+        title: Setidata
+        unpublished_datasets: Setidata Ambayo haijachapishwa
+      federation:
+        accept: Kubali
+        accepted: Limekubaliwa
+        accepted_by: Imekubaliwa Na
+        all: "(wote)"
+        dataset: Setidata
+        flashes:
+          accepted: Muungano umefanikiwa kukubaliwa
+          created: Muungano umefanikiwa kuundwa
+          deleted: Muungano umefanikiwa kufutwa
+          invalid_domain: 'Haikuweza kuunda muungano wa data: Jina la mtumiaji likusudiwalo ni batili'
+          rejected: Muungano umefanikiwa kukataliwa
+        list_domains: |
+          Ifuatayo ni orodha ya majina ya watumiaji unazoweza kuanza nayo data ya muungano. Utakapobofya chapisha, msimamizi kutoka jina la mtumiaji kusudiwa sharti akubali ombi lako.
+        no_domains: Hakuna majina ya watumiaji yanayolingana %{name}.
+        no_federations: Bado hakuna muungano kwa jina hili la mtumiaji.
+        no_pub_datasets: Hakuna setidata iliyochapishwa inalingana na kigezo cha utafutaji wako.
+        pending: Linangoja uamuzi
+        publish: Chapa
+        reject: Kataa
+        search: Tafuta
+        search_boost: Kuongeza Utafutaji
+        search_boost_explain: |
+          Kuuanzia 1 mpaka 0. Thamani ya juu inaifanya Setidata kuonekana kwanza.
+        search_prompt: Tafuta majina ya watumiaji ya Kuchapisha kwenda
+        search_pub_datasets: Tafuta Setidata Zilizochapishwa
+        source_domain: Jina la mtumiaji ja Chanzo
+        status: Hadhi
+        target_domain: Jina la mtumiaji Likusudiwalo
+        terminate: Simamisha
+        title: Fungua Muungano wa Data
+      home:
+        add_featured_dataset: Ongeza Setidata Mpya Iliyoonyeshwa
+        are_you_sure: Je, una uhakika? Tendo hili haliwezi kubatilishwa
+        catalog_layout_configuration: Umbo la Mpango wa Katalogi
+        choose_a_dataset: Chagua Setidata ya Kuonyesha
+        compact_list: Orodha Fupi
+        contents: Yaliyomo
+        create_new_story: Unda hadithi Mpya
+        custom_image: Picha ya Mteja
+        customize_now: Rekebisha Sasa
+        customize_story_appearance: Rekebisha Sura ya Hadithi
+        dataset_display_limit: Setidata nne tu ndiyo zinaweza kuonyeshwa
+        date_published: Tarehe Iliyochapishwa
+        default_catalog_layout: Mpango wa Katalogi wa Kawaida
+        delete: Futa
+        down: Chini
+        edit: Hariri
+        feature_image: onyesha picha
+        filetype_error: |
+          Aina ya faili ni batili. Tafadhali chagua faili la picha
+        flashes:
+          create_error: |
+            Kosa lilitokea wakati wa ombi lako: %{error_message}
+          delete_error: Hadithi uliyojaribu kufuta haipo.
+          edit_error: Hadithi uliyojaribu kuhariri haipo.
+          edit_success: Hadithi yako imehifadhiwa
+          move_error: Hadithi uliyojaribu kuhamisha haipo.
+          move_success: Hadithi yako imehifadhiwa
+        image: Picha
+        left: Kushoto
+        manage_featured_dataset: Simamia Setidata Iliyoonyeshwa
+        manage_story_content: Simamia Maudhui ya Hadithi
+        move_left: Hamishia Kushoto
+        move_right: Hamishia Kulia
+        remove: Ondoa
+        rich_list: Orodha Tajiri
+        right: Kulia
+        save_now: Hifadhi Sasa
+        saved: Imehifadhiwa
+        saved1: Imehifadhiwa.
+        saving: Kuhifadhi
+        saving1: Inahifadhi…
+        set_a_thumbnail: Panga Muhtasari
+        text: Maandiko
+        thumbnail: Muhtasari
+        title: Simamia Ukurasa wa Nyumbani
+        up: Juu
+      metadata:
+        add_new_category: Ongeza Aina Mpya
+        add_new_field: Onegza Eeneo Mpya
+        allowed_values: Thamani inayoruhusiwa
+        are_you_sure: Je una uhakika unataka kufuta seti hii ya eneo na maeneo yote yanayohusika nayo?
+        category_name: Jina la Aina
+        create: Unda
+        create_new_fieldset: Unda Seti Mpya ya Eneo
+        define_categories: Elezea Aina za Setidata
+        define_custom_fields: Elezea Maeneo ya Mteja
+        down: Chini
+        enter_a_name: Andika Jina
+        'false': true
+        field_name: Jina la Eneo
+        flashes:
+          cannot_move_field: 'Haiwezi kuhamisha jina la eneo''%{name}'': '
+          field_duplicated: Huwezi kuunda eneo lililorudufiwa lililotajwa '%{name}'
+          field_name_required: Haiwezi kuunda eneo bila jina
+          field_successful_create: Eneo Limefanikiwa Kuundwa
+          field_successful_remove: Eneo Limefanikiwa Kuondolewa
+          field_successful_save: Eneo Limefanikiwa Kuhifadhiwa
+          fieldset_duplicated: Huwezi kuunda seti ya eneo iliyorudufiwa iliyotajwa '%{name}'
+          fieldset_name_required: Haiwezi kuunda seti ya eneo bila jina
+          no_such_field: Hakuna eneo kama hilo
+          no_such_fieldset: Hakuna seti ya eneo kama hiyo
+          successful_create: Seti ya Eneo Imefanikiwa Kuundwa
+          successful_remove: Seti ya Eneo Imefanikiwa Kuondolewa
+        locales: Mandhari
+        make_optional: Fanya Chaguzi
+        make_private: Fanya kuwa Binafsi
+        make_public: Fanya Kuwa ya Umma
+        make_required: Fanya Inahitajika
+        metadata_explain1: |
+          Metadata maalum imegawanywa katika <span class="code">seti za uga</span> na <span class="code">uga</span>.  <span class="code">seti ya uga</span> ni njia ya kiakili na ya kukusanya pamoja kwa kuona <span class="code">seti za uga</span> moja au nyingi.
+        metadata_explain2: |
+          Maeneo yanaweza kuundwa kwa njia nyingi. Yanaweza <span class="code">hitajika</span>, ambayo yatatiwa nguvu wakati mchapishaji anaunda Setidata mpya na kusasisha metadata iliyopo. Pia yanaweza kuwa <span class="code">binafsi</span>, ikimaanisha kuwa thamami iandikwazo haitaonekana kwa umma.
+        metadata_explain3: Mwisho, unaweza kuchagua kuelezea awali chaguzi kwa ajili ya <span class="code">maeneo yako</span> ikiwa unataka thamani zichaguliwe kutoka kwenye orodha badala ya kuingizwa kama maandiko ya fomu huru.
+        no_data: Hakuna maeneo ya Setidata ya kawaida yaliyoelezewa kwa ajili ya jina lako. Andika jina hapo chini na ubofye 'Unda' ili kuanza.
+        no_fields_defined: Seti ya eneo hii bado haina maeneo yoyote yaliyoelezewa
+        page_title: Ongoza Metadata ya Setidata
+        parent: Mama
+        remove: Ondoa
+        shown: Imeonyeshwa?
+        title: Simamia Metadata
+        'true': 
+        up: Juu
+      users:
+        actions: Hatua
+        all: Yote
+        bulk_create: Unda Ukubwa
+        create_accounts: Unda Akaunti
+        email: Barua pepe
+        email_prompt: 'Andika anwani za barua pepe za akaunti unazotaka kuunda '
+        emails: Barua Pepe
+        error_permission_request: Kosa lilitokea wakati wa kuchakata ombi lako la idhini
+        filter_by: Chuja kwa
+        flashes:
+          accounts_created:
+            one: "%{count} akaunti imefanikiwa kuundwa"
+            other: "%{count} akaunti zimefanikiwa kuundwa"
+          invalid_role: 'Wajibu batili umegunduliwa kwa uundaji wa mtumiaji: %{role}'
+          no_email_addresses: Hakuna anwani za barua pepe zilizogunduliwa
+          pending_permissions_removed: Kungoja idhini kumeondolewa
+          reenable_failed: Kosa lilitokea wakati wa kuiwezesha akaunti ya mtumiaji huyo.
+          reenable_success: Akaunti imefanikiwa kuwezeshwa tena
+          reset_email_failed: Kosa lilitokea wakati wa kutuma barua pepe ya kuseti upya nenosiri.
+          reset_email_sent: Barua pepe ya kuseti upya nenosiri imetumwa
+          successful_update: Mtumiaji amefanikiwa kusasishwa
+        invited: Amealikwa
+        name: Jina
+        no_pending_users: Hakuna watumiaji wanaongoja wanalingana na kichujio chako cha sasa
+        no_users_found: Hakuna watumiaji waliopo waliogunduliwa
+        no_users_match: Hakuna watumiaji wanaolingana na kichujio chako cha sasa.
+        pending_users: Watumiaji wafuatao wana akaunti zinazongoja, lakini bado hawajaziamsha
+        reenable_privileges: Wezesha Tena Haki
+        remove: Ondoa
+        reset_password: Seti Tena Nenosiri
+        return_to_overview: Rudi kwenye mtazamo wa watumiaji
+        role: Nafasi
+        roles:
+          administrator: msimamizi
+          designer: msanii mchoraji
+          editor: mhariri
+          none: hakuna
+          publisher: mchapishaji
+          viewer: mtazamaji
+        search: Tafuta
+        search_for_users: Tafuta Watumiaji wa Kuongeza
+        search_results: Tafuta Matokeo kwa '%{term}'
+        title: Simamia Watumiaji
+        user_saved: Mtumiaji amehifadhiwa
+    dataset_edit:
+      append: Ambatisha
+      append_and_replace: Ambatisha na Badilisha Data
+      append_explain: |
+        Ungependa data iliyopakiwa iongezwe mwisho mwa Setidata yako. Utaweza kuchagua namna gani data yako mpya ionekane kwenye safu zako zilizopo.
+      finish:
+        headline: Seti Dat yako imesasishwa.
+        subheadline: Kuiona bofya kwenye Maliza!
+      headline: Ungependa kufanya nini na data yako iliyosasishwa?
+      import_columns:
+        destination_column: Safu ya makusudio
+        destination_data_type: Aina ya Data ya makusudio
+        headline: Namna gani data kwenye &ldquo;<span class=" fileName "></span>&rdquo; inahusiana na Setidata yako?
+      import_warnings:
+        see_docs: <strong>Umekanganywa?</strong> Pafadhali angalia <a href="%{publisher_link}" rel="external">uandikaji wetu wa hati wa mchapishaji</a> kuhusu uletaji wa data kwa maelezo ya wazi kuhusu namna gani mletaji anashughulikia data.
+      replace: Badilisha
+      replace_data: Badilisha data
+      replace_explain: Ungependa data zote zilizopo ziondolewe kisha zichukue nafasi data zako zilizopakiwa. Utaweza kuchagua namna gani data yako mpya ionekane kwenye safu zako zilizopo. Utendaji huu hauwezi kubatilishwa.
+      replace_layer: Badilisha Tabaka
+      title: Hariri Setidata
+      upload_accessible: Pakia ufikiaji mpya wa data
+    dataset_new:
+      column_template:
+        name_this_col: Taja jina la safu hii
+        options: chaguzi
+        remove: ondoa
+      crossload:
+        downloading: Inapakua faili lako…
+        headline: Tafadhali onyesha lilipo faili lako la data.
+        import: Leta
+        supported: Aina ya mafaili yanayoainiwa ni CSV, TSV, na Excel. Protokoli zinazoainiwa ni HTTP na HTTPS.
+        url_prompt: Ni ipi URL ya tovuti ya faili ambalo ungependa kulileta?
+      errors:
+        invalid_crossload_url: Tafadhali andika URL halali ianzayo ama na HTTP au HTTPS.
+        invalid_url: Hiyo haionekani kuwa ni URL halali.
+        missing_data_provider: Sharti umuelezee mtoaji wa data (mchangiaji) kwenye leseni ya Ubunifu ya Ushirika
+        missing_esri_url: URL halali ya tabaka la ramani ESRI inahitajika.
+        missing_name: Jina la Setidata linahitajika.
+        need_description: Tafadhali elezea “%{name}”
+      finish:
+        headline: Setidata Yako imeundwa.
+        subheadline: Kuiona bofya kwenye Maliza!
+      first_page:
+        blobby: Pakia Faili Lisilokuwa na Data
+        blobby_explain: Chagua hii ikiwa una faili ambalo lina data ndani yake lakini ambalo haliwezi kuletwa, kama faili la PDF, au faili la picha. Litaletwa kwenye katalogi ya data, lakini haliwezi kuathiriana kama data ya asili.
+        create: Chora upya
+        create_explain: Chagua hii ikwa huna data utakayo kuileta. Utaweza kuelezea kielelezo cha data yako, na kukiweka mtandaoni.
+        external: Unga kwenye Data ya Nje
+        external_explain: |
+          Chagua hii ikiwa tayari una data ambayo inahifadhiwa na server nyingine. Data hii haitaletwa.
+        header: Unda Setidata mpya
+        import: Leta Faili la Data
+        import_explain: |
+          Chagua hii ikiwa faili la data utakalo kulileta tayari lipo kwenye kompyuta yako. Miundo inayoainiwa ni .csv, .tsv, .xls, na .xlsx.
+        mapLayer: Unganisha na Tabaka la Ramani ESRI
+        mapLayer_explain: |
+          Chagua hii ikiwa una Tabaka la Ramani ESRI ambalo ungependa kulileta kwenye katalogi. Utahitaji kutoa URL kwenye nukta ya API ambako tabaka la ESRI limehifadhiwa.
+        prompt: Namna gani ungependa kuunda Setidata yako mpya?
+        shapefile: Leta Data ya Jiografia ya Sehemu
+        shapefile_explain: Chagua hii ikiwa una data ya jiografia ya sehemu ambayo ungependa kuituma kwenye katalogi.
+      import:
+        headline: Faili hili limewekwa wapi?
+        local: Kwenye kompyuta yangu
+        local_explain: Chagua hii ikiwa una faili ambalo lipo kwenye kompyuta utumiayo.
+        web: Kwenye Wavuti
+        web_explain: Chagua hii ikiwa una faili ambalo tayari lipo kwenye Wavuti na una URL yake.
+      import_columns:
+        add_new_column: Ongeza Safu Mpya
+        clear_all: Futa Yote
+        data_type: Aina ya Data
+        errors_warnings: Makosa na Tahadhari
+        fewer_rows: Mistari Michache
+        headers: Vichwa
+        headers_instructions: |
+          Vichwa vinapaswa visiangaliwe na viletwe kama data. Tafadhali onyesha mistari mingapi ya faili lako la chanzo ni vichwa
+        headline: |
+          Eleza namna &ldquo;<span class="fileName"></span>&rdquo; inapaswa kuletwa.
+        help_message: Kwa msaada, tazama <a href="%{common_errors}" rel="external">orodha ya tahadhari za kawaida na makosa</a>.
+        more_rows: Mistari Zaidi
+        name: Jina
+        pending_columns: Tafadhali subiri wakati tunapakiza safu zako…
+        reset_to_preset: Panga tena ili kupanga awali
+        set: Panga
+        source_column: Safu ya Chanzo
+        subheadline: Safu za kuleta
+        suggested_alltext: Safu zote kama maandiko
+        suggested_columns: Safu zilizopendekezwa
+        suggested_flat: Safu zilizopendekezwa (hakuna zenye nafasi nyinig)
+        suggested_plus_discrete: Safu zilizopendekezwa (zenye nafasi nyingi na zisizoungana)
+        why_choose_now: Kwa nini ni muhimu kuchagua aina za safu sasahivi?
+      import_help: <strong>Unahitaji msaada?</strong> tunafanyia matengenezo <a href="%{common_errors}" rel="external"> orodha ya tahadhari za kawaida na makosa </a> ambayo inaweza kukusaidia.
+      import_shapefile:
+        crs: Ratibu Mfumo wa Marejeo
+        headline: |
+          Eleza namna &ldquo;<span class="fileName"></span>&rdquo; inapaswa kuletwa.
+        layers_list: Tabaka za kuleta
+        name: Jina
+        pending: Tafadhali subiri wakati tunapakiza tabaka zako…
+        subheadline: Faili hili la muundo linakusanya <span class="featureCount"></span> mandhari kwenye <span class="layerCount"></span> tabaka.
+      import_warnings:
+        headline: Tahadhari wakati wa kuleta
+        see_docs: |
+          <strong>umekanganywa?</strong> tafadhali angalia <a href="%{publisher_link}" rel="external">uandikaji wetu wa hati wa mchapishaji</a> kuhusu uletaji wa data kwa maelezo ya wazi kuhusu namna gani mletaji anashughulikia data. Pia unaweza kutaka kutumia <a href="%{common_errors}" rel="external"> orodha yetu ya tahadhari za kawaida na makosa </a>.
+        subheadline: |
+          Tafadhali zingatia kuwa baadhi ya data zako huenda hazijaletwa kiusahihi.
+      importing_your_data: Inaleta data zako…
+      metadata:
+        creative_commons_type: Aina Bunifu ya Ushirika
+        esri_map_layer_url: URL ya Tabaka la Ramani ESRI
+        esri_source_url: Andika URL ya chanzo
+        privacy_security: Faragha na Usalama
+        privacy_settings: Faragha na Mipangilio
+        private_explain: Data yangu ni <strong>binafsi</strong>
+        prompt: Tafadhali elezea data yako.
+        public_explain: 'Data yangu ni <strong>public</strong>: inaweza kurekebishwa na mimi tu, lakini kila mmoja anaweza kuitazama'
+      processing: Inachakata…
+      title: Setidata Mpya
+      upload_accessible: Pakia ufikiaji mpya wa Setidata
+      upload_file:
+        choose_a_file: Chagua Faili
+        no_file_selected: "Bado faili halijachaguliwa.\t"
+        supported_blist: Miundo inayoainiwa ni .csv, .tsv, .xls, na .xlsx.
+        supported_shapefile: Miundo inayoainiwa ni .kml, .kmz, and .zip (ESRI Shapefile).
+        uploading: Inapakia faili lako…
+      why_choose_now:
+        close: Funga
+        line_1: |
+          Data yako inachakatwa kwa uzito wakati inaletwa, na inaboreshwa kwa matumizi ya kila aina maalumu ya data. Kwa kuongezea, aina nyingi za data zina mandhari maalumu ambayo ikiwa yatawezeshwa safu zitapaswa kupangwa kwa aina hiyo &mdash; safu za mahali, kwa mfano, ni muhimu ili kuunda ramani.
+        line_2: 'Inawezekana kubadilisha aina ya safu baadaye, lakini ni mchakato ambao unachukua muda fulani, hivyo ni bora kuipanga kikamilifu kabla. '
+    ds:
+      bar:
+        api_unsavable: Mitazamo ya API haiwezi kurekebishwa
+        based_on_html: Inahusu <a class="revertLink currentViewName" href="#revert">%{name}</a>
+        based_on_parent_html: Inahusu <a class="parentName"></a>
+        based_on_private_view: mwonekano binafsi.
+        based_on_working_copy_html: Inahusu nakala ya kazi ya <a class="revertLink currentViewName" href="#revert">%{name}</a>
+        find_prompt: Pata kwenye Setidata hii
+        format:
+          bold: Herufi Nzito
+          bullet: Orodha ya Vitone
+          color: Rangi ya Herufi
+          italic: Herufi Mlazo
+          link: Kiungo
+          number: Orodha Zenye Namba
+          redo: Fanya upya
+          strike: Futa
+          underline: Pigia Mistari Chini
+          undo: Tengua
+        full_screen: Geuza skrini yote
+        out_of_date: Setidata hii haijasasishwa kwa %{age}
+        publish_button: Chapisha Setidata
+        publish_prompt: |
+          Setidata hii ni nakala ya kufanyia kazi  Utakapokwisha kufanya mabadiliko yanayohitajika, Setidata hii inapaswa kuchapishwa kuifanya ionekane kwa umma.
+        publish_rights: Mmiliki tu au mchapishaji ndiye anaweza kuchapishwa Setidata hii
+        revert_button: Rudia hali ya kwanza
+        revert_prompt: Rudi kwenye mwonekano uliohifadhiwa
+        save_as_button: Hifadhi kama…
+        save_as_prompt: Hifadhi Mwonekano Kama…
+        save_button: Hifadhi
+        save_progress: Inahifadhi…
+        save_prompt: Hifadhi mwonekano wa sasa
+        share_email: Gawiza kupitia Barua Pepe
+        share_facebook: Gawiza kwenye Facebook
+        share_twitter: Gawiza kwenye Twitter
+        snapshot_notice: |
+          Hili ni toleo la Setidata lililotangazwa kabla.  Linahifadhiwa na haliwezi kurekebishwa.
+        snapshot_title: bila
+        snapshot_title_html: Imepigwa picha %{date}
+        snapshot_unsavable: Setidata zilizopigwa picha haziwezi kuundwa au kurekebishwa
+        subscribe: Shiriki katika Mabadiliko
+        subscribe_prompt: Shiriki kupitia Barua Pepe au RSS
+        unpublished_unsavable: |
+          Mabadiliko ya kwenye data hapo chini yanahifadhiwa moja kwa moja. Vichujio na utafutaji haviwezi kuhifadhiwa kwenye nakala ya Setidata ifanyayo kazi. Tafadhali unda mwonekano kwenye Setidata iliyotangazwa.
+        unsaved_title: Mwonekano haujahifadhiwa
+        up_to_date: Setidata hii imesasishwa kama ya %{current}
+        view_published_html: Tazama iliyotangazwa <span class="publishedName">dataset</span>
+        view_type: Tazama kama %{type}
+        view_types:
+          calendar: kalenda
+          chart: chati
+          fatrow: Orodha tajiri
+          map: ramani
+          page: Mstari mmoja
+          table: jedwali
+        working_copy_notice: |
+          Hii ni nakala ya Setidata ambayo itakuruhusu kuifanyia mabadiliko. Haionekani kwa wengine mpaka uitangaze.
+        working_copy_title: "[Nakala ya Kazi]"
+      blob:
+        data_extraction: Zana hii ya data ya utoaji au program inapatikana kupitia kiungo upande wa kulia
+        download: Pakua
+        external_link: Kiungo cha Nje
+        js_required: Javascript inahitajika ili kumwendesha mtazamaji wa waraka ndani ya browser yako.
+        js_required_download:
+          click_here: Bofya hapa
+          prompt_html: Kupakua faili hili badala, %{click_here}.
+        limited_download: Setidata hii si data iliyoorodheshwa, na inaweza kuwa na mwingiliano wenye kikomo, lakini inapatikana kwa kupakua
+      column_tip:
+        aggregate: "(%{aggregate} kwenye %{data_type})"
+        field_name: Jina la eneo la API
+        original_name: Jina Asili
+      dataset_contact:
+        captcha_failed: Jibu si sahihi, tafadhali jaribu tena.
+        error_message: Kosa lilitokea wakati wa kutuma maoni ya Setidata hii. Tafadhali jaribu baadaye.
+        form:
+          email: Barua Pepe Yako
+          email_prompt: Barua pepe yako itagawizwa kwa wamiliki wa Setidata hii ili waweze kujibu.
+          message: Ujumbe Mfupi
+          purpose: Lengo
+          purposes:
+            copyright_violation: Ukiukaji wa Hakimiliki
+            offensive_content: Maudhui Mbaya
+            other_purpose: Mingine
+            personal_information: Melezo Binafsi
+            prompt: "-- Chagua Lengo --"
+            spam: Spam au vikorokoro
+          send_button: Tuma
+          subject: Mada
+        other_subject: Mgeni amekutumia ujumbe kuhusu '%{dataset_name}' '%{site}' Setidata yako
+        reasons:
+          copyright_violation: kwa ukiukaji wa hakimiliki
+          offensive_content: kwa maudhui mbaya
+          personal_information: kwa kukusanya maelezo binafsi
+          spam: kama spam iwezayo kutokea
+        subject: Setidata yako "%{dataset_name}" imetiwa alama ya bendera %{reason}
+        success_message: Mmiliki wa Setidata amejulishwa.
+        validation:
+          no_body: Ujumbe sharti uwe na mwili.
+          no_email: Barua pepe yako inahitajika.
+          no_purpose: Unapaswa kuchagua lengo la ujumbe huu.
+          no_subject: Unapaswa kuchagua mada ya ujumbe huu.
+      dataset_status:
+        copy_available: |
+          Nakala ifanyayo kazi inapatikana sasa. Kitufe cha Kuhariri Dataset kitakupa njia ukiwa tayari kuhariri.
+        copy_in_progress: |
+          Tafadhali subiri wakati nakala ya kazi inaandaliwa. %{additional}
+        copy_in_progress_additional:
+          processing: Inachakatwa sasahivi (imeanza %{time})
+          queued: |
+            Iko kwenye foleni ikisubiri kuchakatwa (foleni %{time}; %{totalQueued} jumla ya foleni)
+        edit_dataset_button: Hariri Setidata
+        error_publishing_html: |
+          Kosa limetokea wakati wa kuandaa nakala ya kazi ya dataset yako. Tafadhali <a href="http://support.socrata.com" rel="external">wasiliana na msaada wa Socrata</a>.
+        error_publishing_unpublished: Setidata ambazo hazijachapishwa tu ndiyo zinaweza kuchapishwa.
+        immutable: Setidata hii ipo tayari tu na inaweza kuhariri kiprogramu tu. Tafadhali ona uandikaji wa hati SIDA 2 kwa maelezo zaidi.
+        needs_copy: |
+          Setidata hii imechapishwa na haiwezi kuhaririwa moja kwa moja. Nakala ya kazi %{status} ambayo inakuruhusu kufanya mabadiliko yote uyatakayo kabla ya kuyafanya yapatikane kwa umma.
+        needs_copy_status:
+          available: inapatikana
+          can_be_made: inaweza kuandaliwa
+      email:
+        add_email: Ongeza Zaidi
+        email_button: Barua pepe
+        message_prompt: Andika ujumbe wa uchaguzi
+        private_notice: |
+          Zingatia: Hii %{displayName} kwa sasa ni binafsi. Utumaji wa barua pepe utatoa njia ya kufikia kwa wapokeaji wote.
+        prompt_html: 'Gawiza <span class="datasetName">%{name}</span> na anwani za barua pepe zifuatazo:'
+        remove_email: Ondoa
+        success: Barua pepe yako imefanikiwa kutumwa.
+        title_html: Gawiza &quot;<span class="datasetName">%{name}</span>&quot;
+      grid_sidebar:
+        add_column:
+          convert_address:
+            city: Mji
+            city_prompt: Andika Mji
+            state: Jimbo
+            state_prompt: Andika Jimbo
+            street: Mtaa
+            title: Tumia Safu za Anwani Iliyopo
+            zip_code: Namba ya Posta
+            zip_code_prompt: Andika Namba ya Posta
+          convert_latlong:
+            latitude: Latitudo
+            longitude: Longitudo
+            title: Tumia Latitudo na Longitudo zilizopo kwa sasa
+          multiple_choice:
+            add_option_button: Ongeza Uchaguzi
+            option: Uchaguzi
+            title: Chaguzi Zenya Majibu Mengi
+          nested_table:
+            default_column_name: Haina kichwa
+          subtitle: Ongeza safu mpya kwenye Setidata yako
+          success: Safu yako imeongezwa
+          title: Ongeza safu
+          validation:
+            view_column: Huwezi kuongeza safu kwenye mwonekano
+        api:
+          column_ids_title: 'Namba za Safu:'
+          endpoint_title: 'Nukta ya Mwisho ya Kufikia API:'
+          intro_html: |
+            <strong>Data ya Wazi API ya Socrata</strong> (SODA) itaruhusu watengenezaji wa programu kufikia data iliyohifadhiwa kwenye tovuti za data Socrata kiprogramu. Watengenezaji wanaweza kuunda program ambazo zinatumia SODA APIs ili kupata sura na &ldquo;mash-up&rdquo; Setidata za Socrata katika njia mpya na zilizopo. Kuunda programu ya iPhone ambayo itatoa picha ya matumizi ya serikali katika eneo lako, programu ya mtandao ambayo itawaruhusu wananchi kuangalia ruzuku za serikali zinazoweza kutokea ambazo waliziangalia, au huduma ambayo inakutumia barua pepe moja kwa moja wakati alama mpya zimeongezwa katika matangazo ambayo unapenda kufuatilia.
+          reference_html: |
+            Ili kuanza kufikia Setidata hii kwa programu, tumia nukta ya mwisho ya API iliyotolewa hapo chini. Kwa maelezo zaidi na mifano kuhusu utumiaji wa Data ya Wazi API ya Socrata,tumia <a href="http://dev.socrata.com" rel="external">Uandikaji wetu wa Hati wa Mtengenezaji</a>.
+          subtitle: Tembeleaa hii %{view_type} kupitia SODA
+          title: SODA API
+        apis:
+          create_button: Unda API
+          create_button_prompt: Unda Kusano ya Programu ya Uundaji wa Programu (API) ili kutoa njia ya programu ya kufikia data hii.
+          manage_button: Simamia
+          manage_button_prompt: Simamia API iliyochaguliwa
+          prompt_existing_html: |
+            <strong>APIs iliyopo</strong> inaweza kurekebishwa. Unaweza kusimamia idhini, kuseti vikomo vya maombi, kutazama vipimo vya utumiaji, na kuhariri uandikaji wa hati
+          prompt_new_html: "<strong>kalibu API</strong> itakuruhusu kuunda na kuumba Kusano ya wazi na yenye viwango moja au zaidi ya Programu ya Uundaji wa Programu (API) for this dataset."
+          subtitle: Unda na Rekebisha API
+          title: APIs
+        append_replace:
+          subtitle:
+            immutable: Pakia faili mpya la data ambalo maudhui yake itachuakua nafasi ya data ya sasa.
+            mutable: Pakia faili mpya la data ambalo maudhui yake itaongezwa katika au itachuakua nafasi ya data yako ya sasa.
+          title:
+            immutable: Badilisha
+            mutable: Geuza na Badilisha
+          wizard_button:
+            immutable: Zindua Sogora ya Kubadilisha
+            mutable: Zindua Sogora ya Kugeuza na Kubadilisha
+        base:
+          buttons:
+            apply: Tumia
+            cancel: Batilisha
+            create: Unda
+            done: Imefanywa
+            remove: Ondoa
+            update: Sasisha
+          color_select:
+            prompt: Chagua rangi
+          column_select:
+            auto: Yenyewe
+            from_grid: Chagua safu kutoka miraba fito
+            none: "(hakuna)"
+            none_selected: Hakuna safu iliyochaguliwa
+            nonselectable: Safu Batili
+            prompt: Chagua safu
+            selectable: Safu Halali
+            unselect: Usichague safu
+          datatypes:
+            checkbox: kisanduku cha kutia alama
+            dataset_link: kiungo cha Setidata
+            date_time: tarehe na muda
+            date_time_timezone: tarehe na muda (pamoja na majira)
+            document: waraka
+            email: barua pepe
+            flag: bendera
+            formatted_text: 'maandiko '
+            geospatial: jiografia ya mahali
+            list: orodha
+            location: mahali
+            money: hela
+            multiple_choice: majibu mengi
+            nested_table: jedwali lenye umbo la kiota
+            number: namba
+            object: kitu
+            percent: asilimia
+            phone: simu
+            photo: picha (picha)
+            plain_text: maandiko ya kawaida
+            star: nyota
+            website_url: URL ya tovuti
+          generic_select:
+            prompt: Chagua thamani
+          validation:
+            at_least: Thamani sharti iwe angalau %{value}
+            different_value: Huwezi kutumia safu hii mara mbili
+            file_format: "%{format} faili linahitajika"
+            identifier_format: |
+              Vibambo vitambuzi halali vya API ni herufi ndogo, tarakimu na mstari wa chini ya neon. Sharti ianze na herufi na haiwezi kuwa na mistari ya chini ya neno ya mfulizo.
+            invalid_url: URL hii si halali
+            invalid_value: Thamani hii ni batili
+            invalid_values: Tatizo limetokea kwenye thamani iliyoelezwa. Tafadhali angalia makosa hapo juu.
+            invalid_view: Mtazamo huu sharti uwe kiakili
+            no_greater: Thamani sharti iwe kubwa kuliko %{value}
+            numeric: Thamani sharti iwe namba
+            uid_required: Hii inahitaji 4x4 mwonekano UID
+            verifying_url: Eleza URL
+        calendar:
+          dates:
+            end: Tarehe ya Kuisha
+            start: Tarehe ya Kuanza
+            title: Tarehe
+          information:
+            details: Maelezo
+            event_title: Kichwa cha Tukio
+            new_details_button: Ongeza Maelezo
+            title: Maelezo ya Tukio
+          subtitle: Mionekano pamoja na tarehe vinaweza kuonekana katika umbo la kalenda ya mwezi
+          title: Kalenda
+          validation:
+            invalid_columns: Mwonekano huu sharti uwe na safu ya tarehe na safu ya maandiko
+            viz_limit: Mwonekano unaweza kuwa na taswira moja tu
+        chart:
+          advanced: Umbo la Juu
+          annotation: Ufafanuzi
+          auto_update_sort: Mpango wa aina ya kusasisha wa moja kwa moja
+          auto_update_sort_button: Tumia hii sasahivi
+          auto_update_sort_info_donut: Chati za donut zinafanya kazi vizuri zitakapoainishwa katika mpangilio wa kushuka kisaa, ndani kueleke nje.
+          auto_update_sort_info_pie: Chati za pai zinafanya kazi vizuri zitakapoainishwa katika mpangilio wa kushuka kisaa.
+          axes:
+            title: Chaguzi Axis
+            x_axis_title: Kichwa X-Axis
+            x_axis_title_prompt: Andika kichwa cha x-axis
+            y_axis_title: Kichwa Y-Axis
+            y_axis_title_prompt: Andika kichwa cha y-axis
+          base_color: Rangi ya Msingi
+          categories: Aina
+          cdlfmtg_color_override_html: |
+            Rangi inabatilishwa na <a href="#Conditional Formatting" class="showConditionalFormatting">Conditional Formatting</a>.  Bofya <a href="#Clear Conditional Formatting" class="clearConditionalFormatting">here</a> kufuta kanuni zozote za sasa za uumbaji wa masharti.
+          color_options:
+            column_colors: Rangi ya Safu
+          color_override_html: |
+            Rangi inaweza kubatilishwa kwa kutumia <a href="#Conditional Formatting" class="showConditionalFormatting"> Uumbaji wa Masharti </a>. Bofya <a href="#Clear Conditional Formatting" class="clearConditionalFormatting">here</a> kufuta kanuni zozote za sasa za uumbaji wa masharti.
+          colors: Rangi
+          configuration: Umbo
+          data_columns:
+            new_data_column_button: Ongeza Safu ya Data
+            title: Safu za Data
+          data_labels: Lebo za Data
+          data_selection:
+            advanced_data_selection:
+              title: Chaguzi za Juu za Data
+            chart_definition:
+              label_title: Chagua data ya lebo
+              title: Ufafanuzi wa Data
+              value_title: Chagua data ya thamani
+          date: Tarehe
+          details: Maelezo
+          draw_line: Chora mstari
+          dsg_color_override_html: |
+            Zingatia kuwa Mpango wa Kufululiza wa Data utabatilisha rangi iliyochaguliwa kwa ajili ya data ya safu zako. Haitabatilisha <a href="#Conditional Formatting" class="showConditionalFormatting"> Uumbaji wako wa Masharti </a>
+          error_bars:
+            color: Rangi
+            data_high: Chagua safu yenye mpaka wa juu
+            data_low: Chagua safu yenye mpaka wa chini
+            high: Juu
+            low: Chini
+            title: Miambaa ya Kosa
+          flyout:
+            new_details_button: Ongeza Maelezo ya
+            new_values_button: Ongeza Maadili
+            title: Maelezo ya Flyout
+            title_column: Kichwa cha Flyout
+            value: Thamani ya Flyout
+          group_extra: Thamani ya Ziada ya Kundi
+          groups: Makundi
+          headings:
+            chart_details: Maelezo ya Chati
+            data_presentation: Uwasilishaji wa Data
+            data_selection: Uchaguzi wa Data
+          label: Lebo
+          labelInBar: Lebo katika Mwambaa
+          labels_and_values: Lebo na Thamani
+          legend:
+            add_text: Mandiko ya Ziada
+            add_text_button: Ongeza Mandiko ya Ziada
+            annotations: Elezea Ufafanuzi
+            conditional_formats: Elezea maumbo ya Masharti
+            custom_entry: Lebo ya Kawaida
+            display: Onyesha
+            new_custom_entry_button: Ongeza Mlango wa Mteja wa Maandishi ya Ramani
+            position: Maandishi ya Ramani
+            position_prompt: Chagua chaguzi
+            positions:
+              bottom: Chini
+              left: Kushoto
+              none: Hakuna
+              right: Kulia
+              top: Juu
+            series: Elezea Mfululizo
+            title: Umbo la Maandishi ya Ramani
+            title_short: Maandishi ya Ramani
+            value_markers: Elezea Vitiaji Alama vya Thamani
+            values: Elezea Thamani
+          marker:
+            add_button: Ongeza Ufafanuzi
+            caption: Maelezo Mafupi
+            marker_title: Kiweka Alama ya Thamani
+            new_marker_button: Ongeza Kweka Alama
+            title: Ufafanuzi
+            value: Kwa Thamani
+          min_angle: Pembe kima cha chini cha
+          min_angle_html: Pembe Ndogo Mno Ionyeshwayo (&ordm;)
+          names: Majina
+          pie_other: |
+            Tahadhari: %{chart_type} itakusanya maadili tofauti (rows) kupitia %{row_limit}th kwenda aina Nyingine. Jaribu kuunda Roll Up au kichujio ambacho kinatia kikomo idadi ya maadili halafu unda %{chart_type} ya hiyo.
+          pie_truncate: |
+            Tahadhari: %{chart_type} itafupisha Setidata kwa zaidi ya %{row_limit} maadili tofauti (mistari). Jaribu kuunda Roll Up au kichujio ambacho kinatia kikomo idadi ya maadili halafu unda %{chart_type} ya hiyo.
+          point_color: Onyesha Rangi
+          point_size: Onyesha Ukubwa
+          point_title: Kichwa
+          series_group:
+            alphabetize: Panga Makundi Kialfabeti
+            group_by: Panga kwa
+            hideLoadingMsg: Ficha Ujumbe Upakizao
+            new_column_button: Safu ya Mfululizo wa Anwani
+            row_limit_warning: Upangaji wa Mfululizo wa Data utaenda taratibu sana na safu hizi nyingi.
+            title: Upangaji wa Mfululizo wa Data
+          setup:
+            title: Uanzishaji wa Chati
+            type: Aina ya Chati
+            type_prompt: Chagua aina ya chati
+          show_lines: Onyesha Mistari
+          show_percent: Onyesha asilimia(%)
+          show_points: Onyesha Nukta
+          show_values: Onyesha Thamani
+          smooth_line: Sawazisha Mstari
+          subtitle: Mwonekano wa data unaweza kuonyeshwa kwa chati tofauti
+          title: Chati
+          treemap_color_html: Rangi hii inatumika katika ramani ya mti bila utaratibu kwa ajili ya kuunda utofautishaji wa taswira tu. Yenyewe haina maana maalumu.
+          validation:
+            chart_requires: "%{chart_type} inahitaji angalau"
+            chart_requires2: "%{and} %{count} ya aina ya safu ifuatayo:"
+            count: "%{count}"
+            required_columns: "%{chart_type} inahitaji %{column_types} safu"
+            viz_limit: Mwonekano unaweza kuwa na taswira moja tu
+          value: Thamani
+          valueInBar: Tamani katika Mwambaa
+          values: Thamani
+          y_axis_formatting:
+            abbreviate: Fupisha
+            auto: Yenyewe
+            axis_max: Uongezaji wa Axis
+            axis_min: Upunguzaji wa Axis
+            axis_prompt: Andika namba
+            decimals: Sehemu za Desimali
+            no_decimals: Hakuna Desimali
+            precision: Usahihi
+            title: Uumbaji wa Y-Axis
+        column_common:
+          basic:
+            description: Maelezo
+            description_prompt: Andika Maelezo
+            name: Jina
+            name_prompt: Andika Jina
+            title: Maelezo ya Msingi
+          linked_dataset:
+            dataset: Setidata
+            dataset_prompt: URL ya Setidata au 4x4 UID
+            key: Safu Kuu
+            label: Safu ya Lebo
+            title: Setidata Iliyoungwa
+          type:
+            key: Kitufe
+            source: Chanzo
+            title: Aina ya Safu
+            type: Aina ya Data
+            type_prompt: Chagua aina ya data
+        column_order:
+          columns:
+            title: Safu
+          prompt_html: |
+            Buruta safu katika mpangilio uutakao, kasha bofya <strong>apply</strong> ili kuomba mpangilio mpya.
+          subtitle: Badilisha mpangilio wa safu zako
+          title: Mpangilio wa Safu
+          validation:
+            valid_columns: Mwonekano huu sharti uwe halali na sharti uwe na safu zionekanazo.
+        column_properties:
+          advanced:
+            api_identifier: Kitambuzi API
+            new_rdf_button: Ongeza Vyombo vya RDF
+            semantics: Semantiki
+            title: Ya juu
+            url: Andika URL ya mteja
+          column_totals:
+            title: Jumla ya Safu
+            total: Jumla
+            total_prompt: Chagua Jumla ya Safu
+          display_order:
+            new_item_button: Ongeza Kipengee
+            option: Uchaguzi
+            title: Onyesha Mpangilio (kwa Setidata)
+          formatting:
+            alignment: Mfungamano
+            title: Umbo
+            view_style: Tazama Mtindo
+          link:
+            key: Kitufe
+            source: Chanzo
+            title: Kiungo
+          localization:
+            decimal: Desimali
+            thousands: Maelfu
+            title: Kufanya Kuwa ya Mahali Fulani
+          money:
+            abbreviated: Imefupishwa
+            currency: Fedha
+            format_mask_warning: bila
+            no_precision: Hakuna
+            precision: Usahihi
+            title: Umbo la Hela
+          multiple_choice:
+            new_option_button: Ongeza Uchaguzi
+            option: Uchaguzi
+            title: Chaguzi Zenya Majibu Mengi
+          number:
+            display: Onyesha
+            no_commas: Hakuna Maoni
+            no_precision: 'Hakuna '
+            precision: Usahihi
+            title: Umbo la Namba
+          number_advanced:
+            format_mask: Umba Kinyago
+            format_mask_prompt: |
+              Tumia #s kuonyesha tarakimu numerali na vibambo vingine utakapo viende; Kwa mfano namba ya usalama wa jamii ingekuwa ###-##-####
+            format_mask_warning: Hii inaweza kubatilisha baadhi ya mipangilio yako hapo juu.
+            title: Umbo la Juu
+          photo:
+            size: Ukubwa
+            size_prompt: Chagua ukubwa
+            sizes:
+              featured: Imeonyeshwa (150x80)
+              large: Kubwa (220x220)
+              medium: Wastani (150x150)
+              original: Asili
+              thumb: Muhtasari (80x80)
+              tiny: Dogo sana (24x24)
+            title: Chaguzi za Picha
+          subtitle: Sasisha vyombo mbalimbali katika safu hii
+          success: Safu yako imesasishwa
+          title: Vyombo vya Safu
+          url:
+            base_url: URL ya Msingi
+            base_url_prompt: Andika Kiambishi Awali cha Kawaida cha URL
+            title: Chaguzi za URL
+          validation:
+            published: Tafadhali fanya nakala ya kazi au mwonekano wa Setidata hii ubadili vyombo vya safu
+            unsaved: Huwezi kuhariri vyombo vya safu kwenye mwonekano usiohifadhiwa
+        conditional_formatting:
+          change_icon: badilisha
+          conditions:
+            description: Maelezo
+            description_prompt: Elezea mlingano huu
+            item:
+              operator: Chagua mlingano
+              subcolumn: Chagua safu dogo
+              title: 'Sharti:'
+            new_condition_button: Ongeza Sharti
+            new_rule_button: Ongeza Kanuni Mpya
+            title: Masharti
+            when:
+              all: Masharti Yote
+              always: Daima
+              any: Sharti Lolote
+            when_title: Lini
+          format_html: Tumia<br />rangi hii<br />au ikoni hii
+          subtitle: |
+            Umbo la sharti litakuruhusu kubadilisha rangi ya nyuma ya mistari ihusuyo vigezo vya mteja. Kila mstari utatengewa rangi ya sharti la kwanza linalolingana.
+          title: Umbo la Sharti
+          validation:
+            no_columns: Mtazamo huu hauna safu za kuchuja
+            no_icons: Ikoni zinahusika na mwonekano wa ramani tu
+        delete:
+          confirm: Hii itafuta %{view_type} kwa kudumu. Hakuna ubatilishaji! Je, una uhakika unataka kuendelea?
+          delete_button: |
+            Futa hii %{view_type}
+          subtitle: Futa hii %{view_type}
+          title: Futa
+          warning:
+            api: Ufutaji wa API hii utavunja programu yoyote ambayo inatumia API hii.
+            published: Pia ufutaji wa Setidata hii utafuta mwonekano wowote unaohusika nayo.
+            view: Ufutaji wa mwonekano huu utaathiri mionekano mingine tu ambayo inauhusu.
+            working_copy: Unaweza kufuta nakala hii ya kazi na kuandaa nakala mpya ili kurudisha mabadiliko yoyote uliyoyafanya.
+        digital_signing:
+          consumer: |
+            Kupata toleo lililosainiwa la Setidata hii, bofya kwenye kiungo hapo chini ili kufanyiza kitufe na kuanza kupakua. Kitufe na data zipakuliwazo ni maalumu kwa toleo la sasa la Setidata hii; Ikiwa mmiliki atasasisha Setidata hapo baadaye, utapaswa kuanza tena mchakato ili kupata data mpya. Chapisha data ulizopakua pamoja na ufunguo utakaoupokea, na kwa kutumia maelekezo yaliyomo katika kifurushi kilichopakuliwa, pande ya tatu wataweza kuthibitisha kuwa data yako inafaa.
+          generate_button: Fanyiza na Pakua Sasa
+          intro_html: |
+            Kwa kutumia <strong>Setidata ya tarakimu iliyosainiwa</strong>, inawezekana kuthibisha kwa kutumia njia salama za kiuandishi ambazo nakala maalumu ya Setidata ya Socrata haijashindiliwa nayo. Hii inafaa ikiwa, kwa mfano, unataka kuchapisha lawama zihusuzo Setidata hii, na unataka kuweza kuthibitisha uaminifu wake.
+          publisher: |
+            Kufanyiza toleo la Setidata hii lililosainiwa, bofya kwenye kiungo hapo chini ili kufanyiza ufunguo. Zingatia kuwa ikiwa utasasisha Setidata hii hapo baadaye, utapaswa kurudi na kufanyiza ufunguo tena ili kumpa tena mtumiaji njia ya kuifikia. Pia zingatia kuwa mchakato huu unashirikisha utendaji kwenye data nzima, hivyo inaweza kuchukua muda fulani kama Setidata yako ni kubwa, au ina viambatisho vikubwa.
+          publisher_generation: Wamiliki wa Setidata tu ndiyo wanaweza kufanyiza funguo zilizosainiwa.
+          signature_header: Saini
+          subtitle: Leta toleo la data hii mabalo uaminifu wake utathibitishwa.
+          title: Kusaini kwa Tarakimu
+          validation:
+            non_tabular: Data iliyoorodheshwa tu ndiyo inaweza kuchapwa
+        download:
+          download_as: Pakua Kama
+          download_dataset: Tafadhali pakua Setidata kutoka kwenye kitu ambacho umetolewa mwonekano huu.
+          geo_header: Pakua Data ya Jiografia ya Mahali
+          layers_header: 'Pakua bila Data ya Jiografia ya Mahali '
+          subtitle: Pakua nakala ya Setidata hii katika umbo tuli
+          title: Pakua
+        feed:
+          subtitle: Chakula cha mjadala kitakuonyesha mazungumzo na harakati zihusuzo Setidata
+          title: Jadili
+        form:
+          information:
+            name: Jina
+            name_prompt: Andika Jina
+            public: Umma?
+            success: URL ya Ufanisi
+            success_prompt: Andika URL ya Ukurasa wa Tovuti
+            title: Maelezo ya Fomu
+          subtitle: Fomu zitakuruhusu kukusanya data moja kwa moja kutoka kwenye tovuti yako kwenda Setidata
+          title: Fomu
+          validation:
+            no_columns: Mwonekano huu sharti uwe na safu zionekanazo ili kuunda fomu
+        map:
+          advanced:
+            exclusive: Maalumu
+            hide_geolocator: Hakuna Kionyesha Mahali cha Dunia
+            subtitle: Chagua 'Maalumu' kama ramani moja tu ya msingi itapaswa kuonekana wakati Fulani.
+            title: Umbo la Juu
+            use_legend: Tumia Maandishi ya Ramani
+          base_layers:
+            alias: Lakabu
+            layer: Tabaka
+            layer_prompt: Chagua tabaka
+            layer_url: URL ya Tabaka
+            new_base_map_button: Ongeza Ramani ya Msingi
+            opacity: Hali ya Kutopitisha Nuru
+            subtitle: 'Chagua kutoka kwenye orodha ya huduma za ramani kisha umba namna itakavyoonekana. '
+            title: Ramani za Msingi
+          data_layer:
+            alias: Lakabu
+            alias_prompt: Elezea Setidata
+            base_color: Rangi ya Msingi
+            color_high: Rangi (Juu)
+            color_low: Rangi (Chini)
+            flyout:
+              details: Maelezo ya Flyout
+              labels: Na/bila lebo?
+              new_details_button: Ongeza Maelezo ya
+              opacity: Hali ya Kutopitisha Nuru
+              title: Umbo la Flyout
+              title_column: Kichwa
+            highlight_color: Rangi ya Kuzungukazunguka
+            icon: Ikoni
+            location: Mahali
+            mondara_note: Matabaka ya Mondara hayawezi kurekebishwa zaidi kwa sasa.
+            opacity: Hali ya Kutopitisha Nuru
+            plot_style: Mtindo wa Mtiririko
+            plot_style_prompt: Chagua mtindo wa mtiririko
+            point: Urekebishaji wa Nukta
+            point_color: Onyesha Rangi
+            point_size: Onyesha Ukubwa
+            quantity: Wingi
+            region: Eneo
+            region_level_prompt: Chagua daraja la eneo
+            region_prompt: Chagua eneo
+          layers:
+            advanced: Umbo la juu kwa %{name}
+            config: Umbo kwa %{name}
+            custom: Tabaka la Mteja
+            dataset: Setidata
+            edit: Hariri
+            new_data_button: Ongeza Data
+            title: Muhtasari wa Setidata
+          legend:
+            conditional_formats: Elezea maumbo ya Masharti
+            custom_entry: Ongeza Mlango wa Mteja wa Maandishi ya Ramani
+            entry_label: Lebo
+            position: Maandishi ya Ramani
+            position_prompt: Chagua chaguzi
+            positions:
+              bottom_left: Chini Kushoto
+              none: Hakuna
+              top_right: Juu Kulia
+            title: Umbo la Maandishi ya Ramani
+          plots:
+            heatmap: Ramani ya Mpaka
+            point: Onyesha Ramani
+            rastermap: Ramani ya Joto
+          regions:
+            canada_provinces: Mikoa ya Canada
+            counties: Wilaya za Marekani katika
+            countries: Nchi
+            state: Majimbo ya Marekani
+          subtitle: Mionekano na mahali vinaweza kuonyeshwa kama nukta kwenye ramani
+          title: Ramani
+          validation:
+            hidden_location_html: Unaweza <a href="#showLoc" title="Show a location column">kuonyesha safu ya mahali palipofichwa</a>.
+            location_column: Safu ya mahali inahitajika ili kuunda ramani.
+            viz_limit: Mwonekano unaweza kuwa na taswira moja tu
+        odata:
+          endpoint_action: 'Nakili kiungo hiki:'
+          intro_html1: Unda jedwali kwenye Microsoft Excel ili kuchanganua na kupata taswira ya Setidata hii. Kwa kutumia kiungo OData, data itakuwa ni yenye kuchangamshika.
+          intro_html2: |
+            Tumia Microsoft Excel 2010, Microsoft Excel 2013 au Microsoft Power Query. Fuata maelekezo hapa, kwa kutumia <a href="%{doc_link}">uandikaji wa hati OData wa Socrata</a>.
+          subtitle: Fikia Setidata kupitia OData
+          title: OData
+        ownership:
+          error: Tatizo limetokea wakati wa kubadilisha umilikaji
+          me: Mimi
+          subtitle: |
+            Kuhamisha kwenda kwa mtumiaji mwengine, andika anwani ya barua pepe au jina la akunti la namba ya Socrata, kisha chagua akaunti itakiwayo kutoka kwenye orodha ya kuanguka. Pia unaweza kuandika URL ya umbo la mtumiaji kama unaijua. Watumiaji wenye akaunti zilizopo tu ndiyo wanaweza kuchukua umilikaji wa Setidata.
+          success:
+            me: Sasahivi wewe ni mmiliki
+            user: Umilikaji umefanikiwa kuhamishwa kwa %{owner}
+          title: Umilikaji
+          transfer_to: Hamisha umilikaji kwa
+          validation:
+            invalid_user: Mtumiaji hatambuliki. Tafadhali jaribu kumtafuta mtumiaji kwa jina, barua pepe, au URL ya umbo.
+            no_user: Tafadhali chagua mtumiaji.
+            valid_saved: Mwonekano huu sharti uwe halali na umehifadhiwa
+        permissions:
+          error: |
+            Kosa limetokea wakati wa kurekebisha idhini ya Setidata yako. Tafadhali jaribu tena baadaye
+          features_html: Vya ziada <span class="datasetTypeName">dataset</span> vipengele
+          status_html: Hii <span class="datasetTypeName">Setidata</span> kwa sasa <span class="datasetPublicText">%{visibility}</span>
+          subtitle: Simamia idhini ya hii %{view_type}
+          success: Idhini yako imehifadhiwa
+          title: Idhini
+          validation:
+            valid_saved: Mwonekano huu sharti uwe halali na umehifadhiwa
+        print:
+          margins:
+            bottom: 'Chini:'
+            left: 'Kushoto:'
+            right: 'Kulia:'
+            top: 'Juu:'
+          margins_title: 'Pambizo (inchi):'
+          options:
+            fit: Punguza ili iwe sawa na Setidata katika ukurasa mmoja
+            header_icons: Onyesha ikoni katika kichwa cha safu
+            headers_every_page: Chapa kichwa cha safu katika kila ukurasa
+          options_title: 'Chaguzi:'
+          orientation: 'Maelekezo ya mazingira:'
+          orientations:
+            landscape: Mandhari
+            portrait: Taswira
+          paper_size: 'Ukubwa wa Karatasi:'
+          paper_sizes:
+            a0: A0 (841 x 1189mm)
+            a1: A1 (594 x 841mm)
+            a2: A2 (420 x 594mm)
+            a3: A3 (297 x 420mm)
+            a4: A4 (210 x 297mm)
+            legal: Sharia (8.5 x 14 inchi)
+            letter: Barua (8.5 x 11 inchi)
+            tabloid: |
+              Gazeti dogo (11 x 17 inchi)
+          print_button: |
+            Chapa
+          subtitle: Hamisha Setidata hii katika umbo la PDF linalochapika
+          title: Chapa
+          validation:
+            non_tabular: Data iliyoorodheshwa tu ndiyo inaweza kuchapwa
+        sdp:
+          preview: Mwonekano wa awali
+          subtitle: Kichezesha Data cha Jamii kitakuwezesha kuchapisha Setidata hii kwenye Wavuti kwa uhuru
+          title: Kichezesha Data cha Jamii
+          validation:
+            public: Mwonekano huu sharti uwe wa umma kabla ya kuchapishwa
+            valid_saved: Mwonekano huu sharti uwe halali na umehifadhiwa
+        share:
+          error: Tatizo limetokea wakati wa kurekebisha gawizo zako. Tafadhali jaribu tena baadaye
+          loading_shares: Inapakiza gawizo…
+          no_shares_html: Kwa sasa hugawizi hii <span class="datasetTypeName">Setidata</span> kwa yeyote
+          notify_button: Taarifu Mabadiliko Yote
+          notify_success: Taarifa imetumwa
+          prompt_html: Hii <span class="datasetTypeName"> Setidata </span> ni <span class="publicOrPrivate">%{visibility} </span> <span class="andSharedHint %{hide}">na inagawizwa na:</span>
+          share_button_html: Gawiza hii <span class="datasetTypeNameUpcase"> Setidata </span>
+          subtitle: Gawiza hii %{view_type}
+          success: Idhini yako imesasishwa
+          title: Kugawiza
+          validation:
+            valid_saved: Mwonekano huu sharti uwe halali na umehifadhiwa
+        showhide_columns:
+          columns:
+            title: Safu
+          subtitle: Rekebisha safu zipi zionekane katika mwonekano huu
+          title: |
+            Onyesha &amp; Ficha Safu
+        sort_rollup:
+          rollup:
+            add_group_button: Ongeza Safu ya Upangaji
+            add_rollup_button: Ongeza Safu ya Roll-Up
+            function: Kazi
+            group_by: Panga Kwa
+            group_function_label: Inahusu
+            group_function_prompt: Chagua kazi ya upangaji
+            roll_up: Kunjaq
+            roll_up_function: Chagua kazi
+            title: Mikunjo &amp; Mashimo
+          sort:
+            add_column_button: Ongeza safu
+            column: Safu
+            direction: Muelekeo
+            directions:
+              ascending: Ya Kupanda
+              descending: Ya Kushuka
+            title: Aina
+          subtitle: |
+            Unaweza kupanga mistari pamoja na kufupisha data kwa mkunjo; na ainisha safu moja au zaidi
+          title: |
+            Aina &amp;  Kunjaq
+          validation:
+            no_eligible_columns: Mtazamo huu hauna safu za kukunja au kuainisha
+            no_function: Kila safu ya kukunja sharti iwe na kazi
+            no_group_bys: Sharti uunde kundi angalau la safu moja ili kukunja safu
+        tabs:
+          about: Kuhusu
+          discuss: Jadili
+          edit: Hariri
+          embed: Tia ndani
+          export: Hamisha
+          filter: Kichujio
+          manage: Simamia
+          more: Zaidi
+          more_views: Mionekano Zaidi
+          visualize: Pata Taswira
+        view_list:
+          delete_confirm: Je, una uhakika unataka kufuta %{name}?
+          delete_snapshot_confirm: Je, una uhakika unataka kufuta %{name} (iliyopigwa picha %{date})?
+          filter:
+            all: Mionekano Yote
+          filter_title: Onyesha tu
+          item:
+            author_html: <span class="date"></span> kwa <span class="author"></span>
+            delete: Futa mwonekano huu
+            expand: Bofya ili kukuza
+          no_results: Hakuna matokeo
+          no_results_html: 
+          pagination:
+            last: Ona mwonekano wa mwisho
+            next: Ona ijayo %{count} mionekano
+          search: Tafuta mionekano
+          snapshots:
+            subtitle: Tazama toleo la data hii lililochapishwa kabla
+            title: Picha za Setidata
+          sort:
+            alphaAscending: A-Z
+            dateAscending: Ya zamani zaidi kwenda Mpya zaidi
+            dateDescending: Ya Sasa Zaidi
+            popularity: Umaarufu
+          sort_title: Ainisha kwa
+          views:
+            subtitle: Ona vichujio vilivyopo, ramani, chati na mionekano mengine katika Setidata hii
+            title: Mionekano
+        visualize:
+          choose_type: Aina ya Upataji Taswira
+      save_dialog:
+        descriptions:
+          leaving: Una data hazijahifadhiwa ambazo zitapotea kama utaacha ukurasa huu. Tafadhali chagua kama unataka au hutaki kuhifadhi mwonekano huu kabla ya kuondoka; au chagua Batilisha ili kurudi kwenye ukurasa.
+          reload_save: |
+            Badiliko hili linahitaji kupakiza tena. Unaweza kuhifadhi mabadiliko yako ili kuyatazama, au Batilisha ili kubaki kwenye ukurasa huu.
+          reload_update: |
+            Badiliko hili linahitaji kupakiza tena. Unaweza Kusasisha mwonekano huu au kuhifadhi mwonekano mpya ili kuona mabadiliko yako, au Batilisha ili kubaki kwenye ukurasa huu.
+        form:
+          new_name: 'Andika jina la mwonekano wako mpya:'
+        titles:
+          normal: Hifadhi mwonekano
+          prompt: Je, unataka kuhifadhi mwonekano wako?
+        validation:
+          auth_required: Sharti uwe umeingia ili kuhifadhi mwonekano
+          view_name_required: Jina la mwonekano linahitajika
+      show:
+        remove_confirm: Je, una uhakika unataka kuondoa mwonekano huu?
+        unpublished_alert: Setidata hii bado haijachapishwa ili kukuruhusu kufanya mabadiliko yoyote muhimu kabla ya kuifanya iwepo kwa kila mtu. Haitaonekana mpaka uchapishe Setidata hii.
+      subscribe:
+        google_reader: Ongeza katika Google Reader
+        intro_html: '<strong>kushiriki kwenye <span class="datasetName">%{name}</span> Setidata kupitia RSS reader</strong>, tumia moja ya viungo vijavyo:'
+        rss: Pakua kama RSS
+        rss_program: Fungua katika Programu ya Nje
+        subscribe_button: Changia kupitia Barua Pepe
+        subscribe_html: "<strong>Kupokea taarifa za barua pepe</strong> wakati data mpya imechapishwa, tia alama kisanduku cha kushiriki hapo chini."
+        subscribed_html: <strong>sasa umeshirikishwa kwenye hii <span class="datasetTypeName">Setidata</span> kupitia barua pepe</strong>, na utapokea taarifa itakapochapishwa data mpya.
+        title_html: Shiriki kwenye "<span class="datasetName">%{name}</span>" <span class="datasetTypeNameUpcase">Setidata</span>
+        unsubscribe: Ikiwa hutaki kupokea taarifa, ondoa alama katika kisanduku cha kushiriki hapo chini.
+    edit_metadata:
+      about: Kuhusu
+      additional_source: Chanzo cha Ziada
+      alternative_access_prompt: Andikaa nukta ya njia ya kupokezana kwa Setidata hii
+      api_endpoint: Nukta ya Mwisho API
+      attachments: Viambatisho
+      attachmentsDisabledMessagePart1: |
+        Kupakia viambatisho, maliza kuchapisha Setidata hii kwanza. Kisha, bofya
+      attachmentsDisabledMessagePart2: |
+        Katika mwambaa zana, na bofya Hariri Metadata. Kisha utaweza kupakia viambatisho.
+      brief_description: Maelezo Mafupi
+      brief_description_prompt: Andika maelezo
+      cancel: Batilisha
+      category: Categoría
+      contact_email: Barua Pepe ya Mawasiliano
+      contact_information: Maelezo ya Mawasiliano
+      custom: Mteja
+      custom_error: Daraja la maana la mteja sharti liwe url.
+      data_provided_by: Data Imetolewa na
+      data_provided_prompt: Mtu Binafsi ua Shirika
+      data_provider_required: Lazima ueleze mtoa data (cheo chake).
+      dataset_title: Kichwa cha Setidata
+      dataset_title_error: Setidata sharti iwe na kichwa.
+      dataset_title_prompt: Andika kichwa
+      dataset_url: URL ya Setidata
+      dataset_url_prompt: Andika mahali katika Setidata yako ya nje
+      delete: Futa
+      email_address: Anwani ya Barua pepe
+      email_help: |
+        Anwani hii haitaonyeshwa kwa umma. Kama ikiachwa wazi, itaingiza yenyewe anwani yako
+      existing_attachments: Viambatisho Vilivyopo
+      external_confirm: Je, una uhakika unataka kuondoa Setidata hii ya nje?
+      external_dataset: Setidata za Nje
+      external_id: Namba ya Nje
+      external_id_prompt: Andika namba yako ya nje
+      external_identifier: Kitambuzi cha Nje Andika namba yako ya nje
+      file_type: Aina ya Faili
+      general_information: Maelezo ya Jumla
+      headline: Hariri Metadata kwa %{name}
+      keywords_help: Andika neno muhimu moja au zaidi yatenganishwayo na mikato
+      license_help: Chagua masharti ya utoaji leseni kwa watu watakao kutumia Setidata hii.
+      license_type: Aina ya Leseni
+      licensing: Utoaji Leseni
+      licensing_attr: Utoaji Leseni na Uhusishaji
+      list: Orodha
+      metadata_help: Eneo hili limetiwa alama ya binafsi na shirika lako na haionekani kwa umma
+      new_attachment: Kiambatisho Kipya
+      none: "(hakuna)"
+      northwest_latitude: Latitudo za Mashariki Magharibi
+      northwest_longitude: Longitudo za Mashariki Magharibi
+      optional: Chaguo
+      private_help: Eneo hili limetiwa alama ya binafsi na shirika lako na haionekani kwa umma
+      remove_image: Ondoa Picha
+      required_field: Eneo Linalohitajika
+      resource_name: Jina la Rasilimali
+      resource_name_prompt: Andika jina la rasilimali
+      return: Rudi kwenye Setidata
+      row_class: Daraja la Mstari
+      row_identifier: Kitambuzi cha Mstari
+      save: Hifadhi
+      save_changes: Hifadhi mabadiliko
+      semantics_rdf: Semantiki na RDF
+      source_link: Kiungo cha Chanzo
+      source_link_error: Hiyo haionekani kuwa ni url halali.
+      source_link_prompt: Andika Anwani ya Tovuti
+      southeast_latitude: Latitudo za Kusini Mashariki
+      southeast_longitude: Longitudo za Kusini Mashariki
+      spatial_extent: Ukubwa wa Anga
+      subject_column: Safu ya Mada
+      tags_keywords: Vishikizo / Maneno Muhimu
+      tags_prompt: Andika Maneno Muhimu
+      thumbnail_image: Picha ya Muhtasari
+      title: Hariri Metadata ya Setidata
+      upload_error: Tafadhali chagua faili halali la picha
+      upload_help: Picha hii itaingizwa katika mraba
+      upload_image: Pakia Picha
+      upload_new_attachment: Pakia Kiambatisho Kipya
+    forgot_password:
+      already_authenticated: 'Huwezi kuseti tena nenosiri: tayari umeingia'
+      failed: |
+        Tatizo limetokea wakati wa kutuma ombi lako la kuseti upya nenosiri. Tafadhali jaribu tena.
+      form:
+        reset_password_button: Seti Tena Nenosiri
+      prompt: Ikiwa umesahau nenosiri, tunaweza kukutumia barua pepe yenye kiungo ili kuseti upya nenosiri lako,
+      success: |
+        Asante. Barua pepe imetumwa kwenye akaunti katika faili ikiwa na maelezo zaidi.
+      title: Pata Tena Nenosiri Lako
+    header:
+      links:
+        account_html: Habari, <span class="currentUser">Mtumiaji Asiyejulikana</span>
+        account_tooltip: Nyumbani Kwako
+        administration: Idara
+    import_common:
+      addresses_to_geocode: Anwani itapambanuliwa baada ya kukamilisha uletaji.
+      case_sensitive: jambo lepesi
+      city: Mji
+      column: Safu
+      combine_multiple_columns: Changanya Safu Nyingi
+      create_composite: 'Unda safu moja mbali na safu nyingi za chanzo:'
+      create_js_expression: Namna gani naweza kuunda maelezo ya mteja ya JavaScript?
+      custom_javascript: Maelezo ya Mteja ya Javascript…
+      enter_custom: Andika thamani ya mteja
+      existing_cols: Safu za Anwani Zilizopo
+      existing_latlng_cols: Safu za Longitudo na Latitudo Zilizopo
+      find: pata
+      find_and_replace: Pata na Badilisha thamani…
+      import_from_multiple: Leta kutoka <strong>safu nyingi</strong>
+      import_from_single: Leta kutoka <strong>safu moja</strong>
+      latitude: Latitudo
+      location_source_col: 'Safu za Chanzo za Mahali '
+      longitude: Longitudo
+      make_lower_case: Fanya herufi ndogo
+      make_title_case: Fanya Jambo la Kichwa
+      make_upper_case: Fanya HERUFI KUBWA
+      name_this_column: Taja jina la safu hii
+      new_layer: "(Daraja Mpya)"
+      new_source_col: Ongeza safu mpya ya chanzo
+      new_transform: Ongeza mgeuzo mpya
+      options: Chaguzi
+      properly_formatted: Safu sharti iwe <a href="%{formatting_link}" rel="external">imeumbwa sawasawa</a> kabla ya kuleta.
+      regular_expression: Maelezo ya kawaida
+      remove: ondoa
+      replace: na ibadilishe na
+      state: Jimbo
+      street: Mtaa
+      then: kisha
+      to_state_code: Badili majimbo kwenda ishara za herufi mbili
+      transforms: 'Fanya mgeuzo ufuatao wakati wa kuleta:'
+      zip: Namba
+    import_pane:
+      analyzing: Inachanganua faili lako…
+      assure_accessible: Tafadhali hakikisha kuwa faili lako linaweza kufikiwa na ni halali kisha jaribu tena.
+      combine_multiple_cols: "(Changanya safu nyingi...)"
+      downloading: Inapakua faili lako…
+      filetype_error_blist: Tafadhali chagua faili CSV, TSV, XLS, au XLSX.
+      filetype_error_shapefile: Tafadhali chagua faili KML, KMZ, au ZIP.
+      headline_import: Tafadhali chagua faili la kuleta
+      headline_upload: Tafadhali chagua faili la kupakia
+      layer: Tabaka
+      many_headers: "%{num} ya mistari yako ni vichwa."
+      no_file_selected: Bado faili halijachaguliwa.
+      no_headers: Hakuna mistari yako yoyote ambayo ni vichwa
+      no_source_column: "(Hakuna Safu ya Chanzo)"
+      one_header: Moja ya mistari yako ni kichwa
+      problem_importing: Tatizo limetokea wakati wa kuleta faili hilo. Tafadhali hakikisha ni halali.
+      problem_uploading: |
+        Tatizo limetokea wakati wa kupakia faili hilo. Tafadhali hakikisha ni halali.
+      rows_imported: "%{num} mistari iliyoletwa mpaka sasa."
+      try_again: Tafadhali jaribu tena baadaye.
+      unknown_error: Kosa lisilojulikana limetokea
+      uploading: Kupakia faili lako
+    link_account:
+      success: Akaunti yako ya nje imeungwa.
+    profile:
+      app_tokens:
+        item:
+          app_token: Malipo ya Maombi
+          description: Maelezo
+          edit_token_link: Hariri
+          name: Jina
+          no_thumbnail: Hakuna Muhtasari
+          organization: Shirika
+          secret_token: Malipo ya Siri
+          show_secret_link: Onyesha Malipo ya Siri
+          website: Tovuti
+        manage_link: Simamia
+        no_applications: Bado hujaunda maombi yoyote. Bofya 'Simamia' upande wa kulia ili kuanza
+        title: "%{user}maombi ya mtumiaji"
+      bar:
+        edit_settings_link: Hariri Mipangilio ya Akaunti
+        follow_link: Fuata
+        join_date: Alijiunga
+        last_seen_date: Mara ya Kuingia
+        message_link: Tuma Ujumbe
+        unfollow_link: Usifuate
+      browse:
+        owned_datasets: Inamilikiwa Na Mimi
+        shared_datasets: Shared To Me
+        title: "%{user}'s Datasets"
+      contact:
+        message: Ujumbe
+        message_prompt: Andika ujumbe wako
+        subject: Mada
+        subject_prompt: Andika mada
+        title: Wasiliana na Mtumiaji
+      edit:
+        account:
+          add_openid_button: Ongeza Namba ya Wazi au Akaunti ya Nje
+          confirm_email: Thibitisha Barua Pepe
+          confirm_password: Thibitisha Nenosiri
+          connect_openid: Ingia na Facebook yako, Twitter, Google, au hati nyingine ya tatu.
+          current_email: Barua Pepe ya Sasa
+          email:
+            interests:
+              account_provisioned: Akaunti ya upendeleo  hutolewa kwa matumizi ya siku za mbele
+              any_view_created: Mwonekano wowote unaundwa
+              comment_to_moderate: Maoni yanatumwa yakihitaji marekebisho
+              nomination_created: Pendekezo mpya linaundwa
+              nomination_moderated: Pendekezo lolote litarekebishwa
+              privileged_account_created: Mtumiaji ataunda akaunti yake ya bahati
+              user_affected: Matendo ambayo yanakuathiri moja kwa moja, kama vile majibu ya maoni na usasishaji wa hadhi
+              view_deleted: Mwonekano wowote utafutwa
+              view_made_public: Mwonekano wowote utafanywa wa umma
+            policy: "%{site} inaheshimu faragha yako, na kamwe haitatuma barua pepe yako ya mauzo kupitia orodha hii, au kutoa barua pepe yako kwa upande wa tatu. Barua pepe zitumwazo kutoka wavuti hii zinakusanya taarifa za akaunti na usasishaji wa Setidata ambazo uliunda au ulishiriki."
+            send_error: Tatizo limetokea wakati wa kutuma barua pepe yako. Tafadhali jaribu tena baadaye.
+            send_success: Ujumbe wako umetumwa
+            subtitle: Shiriki katika matukio binafsi kwa kutia alama kisanduku husika.
+            title: Taarifa za Barua Pepe
+          learn_openid: Jifunze kuhusu Namba ya Wazi
+          new_email: Ujumbe Mpya
+          new_password: Neonsiri Mpya
+          no_openid: Bado huna kitambuzi cha Namba ya Wazi kihusucho akaunti hii.
+          old_password: Nenosiri la zamani
+          password: Nenosiri
+          password_prompt: "(Kwa usalama wako)"
+          password_restrictions_html: (Matumizi yenye vikomo <span class="icon"> </span>)
+          title: Mipangilio ya Akaunti
+        app_tokens:
+          application_name: Jina la Programu
+          application_name_prompt: Andika jina la program yako
+          callback_prefix: Kiambishi Awali cha Kupiga simu tena
+          callback_prefix_help_html: |
+            Kwa mfano, ikiwa program yako itapiga sime tena kwa <span class="code">https://my-domain.com/socrata-app/oauth/validated</span> na <span class="code">https://my-domain.com/socrata-app/profile</span>, utatakiwa kuweka <span class="code">https://my-domain.com/socrata-app</span> kama kiambishi chako awali. Zingatia kuwa unapaswa kuweka angalau jina lote la anwani.
+          callback_prefix_prompt: Toa kiambishi awali kwa (https) callback uri salama utumiapo OAuth
+          core_error:
+            already_exists: Tayari kuna programu iityayo %{app_name}
+            another_user: Haiwezi kuunda program kwa mtumiaji mwingine
+          create_error: 'Kosa limetokea wakati wa kuunda malipo ya programu yako: %{message}'
+          create_success: Programu yako imeundwa
+          delete_confirm: |
+            Je, una uhakika unataka kufuta programu hii? Malipo ya programu yakubalianayo hayatakuwa halali
+          delete_error: 'Kosa limetokea wakati wa kuunda malipo ya programu yako: %{message}'
+          delete_success: Programu yako imefutwa
+          description: Maelezo
+          description_prompt: Andika maelezo ya program yako
+          new_app_button: Unda Program Mpya
+          organization: Shirika
+          organization_prompt: Andika shirika lihusikalo na programu hii
+          public: Umma?
+          save_success: Programu yako imefanikiwa kuhifadhiwa
+          thumbnail: Muhtasari
+          title: Malipo ya Programu
+          title_full: Programu Zako
+          title_single: Hariri Malipo ya Programu
+          website: Tovuti
+          website_prompt: Weka kiungo cha program hii au cha tovuti ya shirika
+        back_link: Rudi Kwenye Umbo Langu
+        image:
+          error: |
+            Kosa wakati wa kupakia picha mpya: %{message}
+          success: Picha yako imesasishwa
+          title: Picha ya Umbo
+          upload_image_button: Pakia Picha Mpya
+        info:
+          city: Mji
+          country: Nchi
+          description:
+            prompt: Andika maelezo yoyote ambayo ungependa kugawiza
+            title: Maelezo
+          display_name: Onyesha Jina
+          first_name: Jina la Kwanza
+          interests:
+            prompt: Andika upendeleo wako
+            title: Upendeleo
+          last_name: Jina la Mwisho
+          link_prompt: Andika URL
+          organization: Shirika
+          state: Jimbo
+          title: Maelezo ya Msingi
+          title_full: Maelezo ya Msingi
+          user_title: Kichwa
+        success: 'Umbo lako limefanikiwa kusasishwa. '
+        validation:
+          email_mismatch: Barua pepe mpya hazilingani
+          image_format: Tafadhali chagua aina halali ya picha (PNG, JPG, au GIF)
+          invalid_links: |
+            Tatizo limetokea wakati wa kusasisha liungo chako. %{message}
+          no_display_name: |
+            Kosa: Inahitajika 'Kuonyesha Jina'
+          no_password_no_openid: Huweza kuondoa vitambuzi vyako vyote vya Namba ya Wazi kabla ya kuseti nenosiri
+          password_mismatch: Nenosiri mpya halilingani
+          user_missing: Mtumiaji huyu hawezi kugunduliwa, au amefutwa.
+      info:
+        edit_link: Hariri
+        external_links: Viungo vya Nje
+        interests: Upendeleo
+        links:
+          facebook: Facebook
+          flickr: Flickr
+          my_blog: Blog Yangu
+          my_company: Kampuni Yangu
+          my_site: Tovuti Yangu
+          twitter: Twitter
+        no_description: Maelezo hayajatolewa
+        other_ext_link: Mingine
+        title: Maelezo ya Msingi
+      sidebar:
+        all_contacts_link: Tazama Yote
+        edit_image_link: Hariri Picha
+        followers: Wafuasi
+        following: Ufuatiliaji
+        hide_contacts_link: Ficha
+    reset_password:
+      failed: |
+        Kosa lilitokea wakati wa kuseti nenosiri lako. Tafadhali jaribu tena.
+      form:
+        reset_password_button: Seti Tena Nenosiri
+      prompt: |
+        Karibu tena! Tafadhali chagua nenosiri mpya.
+      success: Nenosiri limefanikiwa kusetiwa
+      title: Seti Tena Nenosiri
+    sign_in:
+      failed: |
+        Umeshindwa kuingia na barua pepe hiyo na nenosiri; Tafadhali jaribu tena
+      form:
+        sign_in_button: Ingia
+      headline: Ingia katika %{site}
+      mismatch: |
+        Manenosiri hayalingani; Tafadhali jaribu tena
+      prompt_html: Ingia na <strong>Namba yako ya Socrata</strong>
+      tips_html: Tumia Barua Pepe yako na Nenosiri kuingia katika <strong><a href="http://www.socrata.com" rel="external">Socrata</a> powered</strong> tovuti zote.
+    sign_up:
+      form:
+        create_account_button: Unda Akaunti Yangu
+        have_account_link: Tayari nina akaunti
+      headline: Tunafurahi unataka kujiunga na %{site}!
+      prompt_html: Unda <strong> Namba mpya ya Socrata </strong>
+      terms_html: Kwa kubofya kwenye "Unda Akaunti Yangu" hapo chini, unakubali <a href="http://www.socrata.com/terms-of-service" rel="external">Masharti yetu ya Huduma</a> na <a href="http://www.socrata.com/privacy" rel="external">Sera ya Faragha.</a>
+      third_party: Baada ya kuingia, hati yako ya utambulisho ya upande wa tatu itahusishwa na akaunti hii.
+      third_party_return: Kabla ya kutumia hati hii sharti
+      third_party_return_create: uunde akaunti ya Socrata
+      third_party_return_link: Iunge na namba ya Socrata iliyopo
+    stats:
+      api: API
+      apply: Tumia
+      bytes_out: Baiti Zilizoisha
+      chart_created: Chati iliyoundwa
+      charts: Chati
+      charts_created: chati zilizoundwa
+      comment_created: Maoni yaliyoundwa
+      comments: Maoni
+      comments_created: Maoni yaliyoundwa
+      daily: Kila siku
+      deleted_application: programu iliyofutwa
+      dependent_metrics: Vipimo Vitegemeavyo
+      download: ilipakuliwa
+      downloads: vilipakuliwa
+      during_time_period: wakati wa kipindi hiki
+      embed: Ilitiwa ndani
+      embeds: zilitiwa ndani
+      error_loading: Kosa lilitokea wakati wa kupakiza data ya vipimo. Tafadhali jaribu tena baadaye
+      filter_created: kichujio kiliundwa
+      filters: Vichujio
+      filters_created: vichujio viliundwa
+      govstat_hits: GovStat Hits
+      hit_served: hit ilihifadhiwa
+      hits_served: hits ilihifadhiwa
+      hourly: Kila saa
+      map_created: ramani iliundwa
+      maps: Ramani
+      maps_created: ramani ziliundwa
+      metric_backed: kipimo kilirudishwa
+      metrics_backed: vipimo vilirudishwa
+      monthly: Kila mweazi
+      name: Jina
+      no_data_time_period: Hakuna data kwa kipindi hichi
+      page_viewed: ukurasa ulitazamwa
+      pages_viewed: 'kurasa zilitazamwa '
+      referrals: Rufaa
+      rows_loaded: Mistari Ilipakizwa
+      sdp: SDP
+      select_chart_type: Chagua aina ya chati ili kuonyesha kutoka katika menyu
+      show_more: Onyesha Zaidi
+      time_period_unavailable: Data ya kipimo haipatikani kwa wakati huu
+      title: Taaluma ya Setidata
+      top_embeds: 'Bora Zilizotiwa ndani '
+      top_referrers: Rufaa Bora
+      total: Jumla
+      total_govstat_hits: Jumla ya GovStat Hits
+      views: Mionekano
+      views_loaded: Miono Imepakiwa
+      website: Tovuti
+      weekly: Kila Wiki
+    thumbnail:
+      discard_changes: Ondoa Mabadiliko
+      edit_thumbnail: Hariri Muhtasari kwa %{name}
+      error_blob: Faili hili lililotiwa ndani haliwezi kutiwa muhtasari kwa sababu haliwezi kuonyeshwa katika browser
+      error_generic: |
+        Tatizo lilitokea wakati wa kuhifadhi muhtasari wako. Tafadhali jaribu tena baadaye.
+      error_invalid: Mwonekano huu ni batili na hauwezi kutiwa muhtasari katika hali yake ya sasa
+      error_private: |
+        Kwa faragha yako, Setidata za umma tu ndiyo zinaweza kutiwa muhtasari. Ikiwa unataka kuwa na picha ya mwonekano wa awali, tafadhali ifanye Setidata hii kuwa ya umma kutoka kwenye kidirisha cha Idhini cha mwambaa wa pembeni wa Usimamizi.
+      error_processing: |
+        Kosa lilitokea wakati wa kuchakata ombi lako la muhtasari. Tafadhali jaribu tena baadaye
+      full_image: Picha Nzima
+      please_wait: |
+        Bado hakuna mihutasari kwa Setidata hii. Tafadhali subiri wakati tunakuandalia muhtasari
+      preview: Mwonekano wa awali
+      refresh_thumbnail: Changamsha Muhtasari
+      return_to_dataset: Rudi kwenye Setidata
+      save_thumbnail: Hifadhi Muhtasari
+      success: Muhtasari umehifadhiwa
+      title: Setidata ya Muhtasari
+      unsaved: Haijahifadhiwa
+    widget:
+      create_new:
+        name: Jina Mpya la Template
+        title: Unda Template Mpya
+    wizard:
+      cancel: Batilisha
+      finish: Maliza
+      next: Ijayo
+      previous: Iliyotangulia
+  support:
+    array:
+      last_word_connector: ", na "
+      two_words_connector: na
+    array_or:
+      last_word_connector: ", au"
+      two_words_connector: au

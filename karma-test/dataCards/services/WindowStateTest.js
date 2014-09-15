@@ -111,8 +111,11 @@ describe('WindowState service', function() {
 
   describe('scrollPositionSubject', function() {
     var fakeContentYPosition = 100000;
-    var testContent = $('body').append('<div style="position: absolute; height: ' + fakeContentYPosition + 'px">LOL JQUERY</div>');
+    $('body').append('<div id="scrollPositionSubjectFakeContent" style="position: absolute; height: ' + fakeContentYPosition + 'px">LOL JQUERY</div>');
 
+    after(function() {
+      $('#scrollPositionSubjectFakeContent').remove();
+    });
     // NOTE: PhantomJS accomodates its window size to the content (with no upper bound).
     // So this test is not going to work in PhantomJS. Detect that here.
     var skipTest = $(window).height() >= fakeContentYPosition;

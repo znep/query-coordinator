@@ -242,7 +242,8 @@
       inset: {
         horizontal: 4,
         vertical: 2
-      }
+      },
+      debugNeverClosePopups: false
     };
     if (options.style == 'table') {
       defaults.arrowMargin = 10;

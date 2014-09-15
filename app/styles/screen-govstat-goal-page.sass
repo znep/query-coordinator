@@ -309,6 +309,14 @@ $chartHeight: 210px
     svg .calloutConnectorLine.targetValueCallout
       display: none
 
+  &.isTrendlineDisabled
+    .currentValueLine, .projectionLine, .projectionLineShadow
+      display: none !important
+
+  &.isBurndownDisabled
+    .burndownLine, .redArea, .yellowArea, .greenArea
+      display: none !important
+
   .goalUid
     display: none
 

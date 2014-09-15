@@ -28,11 +28,11 @@ module Phidippides
   end
 
   def phidippides_address
-    phidippides_connection_details['address']
+    ENV['PHIDIPPIDES_ADDRESS'] || phidippides_connection_details['address']
   end
 
   def phidippides_port
-    phidippides_connection_details['port']
+    ENV['PHIDIPPIDES_PORT'] || phidippides_connection_details['port']
   end
 
   def service_end_point

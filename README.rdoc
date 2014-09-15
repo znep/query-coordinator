@@ -62,7 +62,7 @@ A few complications are introduced:
 ===== Setting up bower locally
  1. Install node.js (platform dependent).
  2. Install bower: `# npm install -g bower`
- 3. Install bower-installer: `# npm install -g bower-installer`
+ 3. Install bower-installer: `# npm install -g bower-installer@0.7.1`
 
 ===== Installing new bower packages (and save to bower.json):
  1. `frontend# bower install --save awesome-package`

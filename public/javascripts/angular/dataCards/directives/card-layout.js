@@ -22,10 +22,9 @@
         var pageDescription = $('.page-description');
         var quickFilterBar = $('.quick-filter-bar');
         var cardsMetadata = $('.cards-metadata');
-        var cardsMetadataOffsetTop = cardsMetadata.offset().top;
 
-        var lastClientX = 0;
-        var lastClientY = 0;
+        var mouseDownClientX = 0;
+        var mouseDownClientY = 0;
         var distanceSinceDragStart = 0;
         var mouseIsDown = false;
 
@@ -37,9 +36,21 @@
 
         var lastFrameTime = Date.now();
 
+        // NOTE Right now this directive has strict DOM structure requirements.
+        // Ideally these wouldn't be required, but for the time being we'll
+        // verify our requirements are met.
         if (cardContainer[0].id !== 'card-container') {
           throw new Error('The cardLayout directive must be given an DOM id attribute of "card-container".');
         }
+        if (_.isEmpty(cardsMetadata)) {
+          throw new Error('The cardLayout directive must be in the DOM with a node with class "cards-metadata".');
+        }
+        if (_.isEmpty($('.quick-filter-bar'))) {
+          throw new Error('The cardLayout directive must be in the DOM with a node with class "quick-filter-bar".');
+        }
+
+        //TODO This should never change at runtime. If it does, we need to react to that change.
+        var cardsMetadataOffsetTop = cardsMetadata.offset().top;
 
         /***********************
         * Set up data pipeline *
@@ -65,6 +76,9 @@
         function zipLatestArray(obs, property) {
           return obs.flatMapLatest(
             function(values) {
+              if (_.isEmpty(values)) {
+                return Rx.Observable.returnValue([]);
+              }
               return Rx.Observable.combineLatest(_.map(values, function(val) {
                 return val.observe(property);
               }), function() {
@@ -115,11 +129,10 @@
           rowsOfCardsBySize,
           expandedCards,
           scope.observe('editMode'),
+          cardsMetadata.observeDimensions(),
           WindowState.windowSizeSubject,
           WindowState.scrollPositionSubject,
-          pageDescription.observeDimensions().throttle(100),
-          function layoutFn(sortedTileLayoutResult, expandedCards, editMode, windowSize, scrollTop, pageDescriptionDimensions) {
-
+          function layoutFn(sortedTileLayoutResult, expandedCards, editMode, cardsMetadataSize, windowSize, scrollTop) {
             // Figure out if there is an expanded card.
             if (!_.isEmpty(expandedCards)) {
               var expandedCard = expandedCards[0];
@@ -132,26 +145,41 @@
 
             var containerDimensions = { width: cardContainer.width(), height: cardContainer.height() };
             var cardPositions = [];
+            var heightOfAllCards = 0;
 
-            // Branch here based on whether or not there is an expanded card.
-            if (expandedCard !== null) {
+            // Terminology:
+            //
+            // Content size (width, height) refers to a size with padding/LAYOUT_GUTTER removed.
+            // Otherwise, sizes include padding/LAYOUT_GUTTER.
+            var containerContentWidth = containerDimensions.width - Constants.get('LAYOUT_GUTTER') * 2;
 
-              var deriveCardHeight = function(size) {
-                switch (parseInt(size, 10)) {
+            var deriveCardHeight = function(size) {
+              size = parseInt(size, 10);
+              if (expandedCard === null) {
+                switch (size) {
+                  case 1:
+                    return 300;
+                  case 2:
+                    return 250;
+                  case 3:
+                    return 200;
+                }
+              } else {
+                switch (size) {
                   case 1:
                     return 250;
                   case 2:
                     return 200;
                   case 3:
                     return 150;
-                  default:
-                    throw new Error('Unsupported card size: ' + size);
                 }
-              };
+              }
 
-              var containerWidth = containerDimensions.width;
-              var containerContentWidth = containerWidth - Constants.get('LAYOUT_GUTTER') * 2;
+              throw new Error('Unsupported card size: ' + size);
+            };
 
+            // Branch here based on whether or not there is an expanded card.
+            if (expandedCard !== null) {
               var expandedColumnWidth = Math.floor(containerContentWidth * 0.65) - Constants.get('LAYOUT_HORIZONTAL_PADDING');
               var unexpandedColumnWidth = containerContentWidth - expandedColumnWidth - Constants.get('LAYOUT_HORIZONTAL_PADDING');
 
@@ -167,8 +195,6 @@
                   // the card model, which is what 'expandedCard' is.
                   return card.model.uniqueId !== expandedCard.uniqueId;
                 });
-
-              var heightOfAllCards = 0;
 
               styleText = _.reduce(unexpandedCards, function(accumulatedStyle, card, index) {
                   var cardLeft = unexpandedColumnLeft;
@@ -211,35 +237,9 @@
                          + '}';
 
             } else {
-
-              var deriveCardHeight = function(size) {
-                switch (parseInt(size, 10)) {
-                  case 1:
-                    return 300;
-                  case 2:
-                    return 250;
-                  case 3:
-                    return 200;
-                  default:
-                    throw new Error('Unsupported card size: ' + size);
-                }
-              };
-
-              var firstRow = true;
-
               // Track whether or not to draw placeholder drop targets
               // for each card grouping.
               var placeholderDropTargets = [];
-
-              // Terminology:
-              // Content size (width, height) refers to a size with padding/LAYOUT_GUTTER removed.
-              // Otherwise, sizes include padding/LAYOUT_GUTTER.
-              // For instance, containerWidth is the full width of the container,
-              // but containerContentWidth is contentWidth minus the LAYOUT_GUTTER.
-
-              var containerWidth = containerDimensions.width;
-              var containerContentWidth = containerWidth - Constants.get('LAYOUT_GUTTER') * 2;
-
               var heightOfAllCards = 0;
 
               if (editMode) {
@@ -255,13 +255,8 @@
 
               }
 
-              var currentCardGroup = 0;
-
               var styleText = _.reduce(sortedTileLayoutResult, function(overallStyleAcc, rows, cardSize) {
 
-                currentCardGroup += 1;
-
-                var rowCount = 0;
                 var currentRowHeight = deriveCardHeight(parseInt(cardSize), 10);
                 var currentRowContentHeight = currentRowHeight - Constants.get('LAYOUT_VERTICAL_PADDING');
 
@@ -271,8 +266,6 @@
                   var usableContentSpaceForRow = containerContentWidth - paddingForEntireRow;
                   var cardWidth = Math.floor(usableContentSpaceForRow / row.length);
 
-                  rowCount += 1;
-
                   return styleForRowAcc + _.map(row, function(card, cardIndexInRow) {
 
                     var spaceTakenByOtherCardsPadding = Math.max(0, cardIndexInRow * Constants.get('LAYOUT_HORIZONTAL_PADDING'));
@@ -280,14 +273,13 @@
 
                     var cardTop = heightOfAllCards + rowIndex * currentRowHeight;
 
-                    cardPositions.push(
-                      {
-                        model: card.model,
-                        top: cardTop,
-                        left: cardLeft,
-                        width: cardWidth,
-                        height: currentRowContentHeight
-                      });
+                    cardPositions.push({
+                      model: card.model,
+                      top: cardTop,
+                      left: cardLeft,
+                      width: cardWidth,
+                      height: currentRowContentHeight
+                    });
 
                     return '#card-tile-' + card.model.uniqueId + ', #card-tile-' + card.model.uniqueId + ' .dragged'
                                     + '{'
@@ -304,10 +296,10 @@
                 if (editMode) {
 
                   // Also accommodate for empty groups and display a placeholder drop target.
-                  var groupEmpty = sortedTileLayoutResult[currentCardGroup].length === 0;
+                  var groupEmpty = rows.length === 0;
 
                   placeholderDropTargets.push({
-                    id: currentCardGroup,
+                    id: cardSize,
                     show: groupEmpty,
                     top: heightOfAllCards
                   });
@@ -315,7 +307,7 @@
                   if (groupEmpty) {
                     heightOfAllCards += Constants.get('LAYOUT_PLACEHOLDER_DROP_TARGET_HEIGHT') + Constants.get('LAYOUT_EDIT_MODE_GROUP_PADDING');
                   } else {
-                    heightOfAllCards += rows.length * currentRowHeight + rowCount + Constants.get('LAYOUT_EDIT_MODE_GROUP_PADDING');
+                    heightOfAllCards += rows.length * currentRowHeight + Constants.get('LAYOUT_EDIT_MODE_GROUP_PADDING');
                   }
 
                 } else {
@@ -355,13 +347,7 @@
 
             $('#card-layout').text(styleText);
 
-            if (headerStuck) {
-              quickFilterBar.addClass('stuck');
-            } else {
-              quickFilterBar.removeClass('stuck');
-            }
-
-
+            quickFilterBar.toggleClass('stuck', headerStuck);
 
           });
 
@@ -408,9 +394,8 @@
 
             if (e.button === 0) {
               mouseIsDown = true;
-              lastClientX = e.clientX;
-              lastClientY = e.clientY;
-              distanceSinceDragStart = 0;
+              mouseDownClientX = e.clientX;
+              mouseDownClientY = e.clientY;
             }
 
             var boundingClientRect = e.target.getBoundingClientRect();
@@ -430,9 +415,8 @@
         WindowState.mouseLeftButtonPressedSubject.subscribe(function(leftPressed) {
           if (!leftPressed) {
             mouseIsDown = false;
-            lastClientX = 0;
-            lastClientY = 0;
-            distanceSinceDragStart = 0;
+            mouseDownClientX = null;
+            mouseDownClientY = null;
             scope.safeApply(function() {
               scope.grabbedCard = null;
             });
@@ -442,13 +426,10 @@
         WindowState.mousePositionSubject.subscribe(function(position) {
           if (mouseIsDown && scope.grabbedCard === null) {
 
-            distanceSinceDragStart +=
+            var distanceSinceDragStart =
               Math.floor(Math.sqrt(
-                Math.pow(position.clientX - lastClientX, 2) +
-                Math.pow(position.clientY - lastClientY, 2)));
-
-            lastClientX = position.clientX;
-            lastClientY = position.clientY;
+                Math.pow(position.clientX - mouseDownClientX, 2) +
+                Math.pow(position.clientY - mouseDownClientY, 2)));
 
             // If we're out of the dead zone, start the drag operation.
             if (distanceSinceDragStart > 3) {

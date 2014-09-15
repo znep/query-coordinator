@@ -34,7 +34,7 @@ describe('timelineChart', function() {
       console.log('Unexpected flyout found, possible test bug:', $(flyout).html());
     });
     $('.flyout').remove();
-  };
+  }
 
   after(function() {
     removeTimelineChart();
@@ -179,26 +179,41 @@ describe('timelineChart', function() {
       segments.eq(Math.floor(segments.length/2)).mouseout();
       expect($(expectedFlyoutSelector).length).to.equal(0);
     });
-    it('when hovering over a label it should highlight and create a flyout', function() {
-      printAllFlyoutContent();
-      var expectedFlyoutSelector = '.flyout:contains(480K):contains(Total)';
+    describe('flyout', function() {
+      it('should appear when hovering over a label, also highlighting the area', function() {
+        printAllFlyoutContent();
+        var expectedFlyoutSelector = '.flyout:contains(480K):contains(Total)';
 
-      var chart = getChartWithScenario('640px unexpanded filtered');
-      chart.element.find('.labels .label').eq(0).mouseover();
-      expect($(expectedFlyoutSelector).length).to.be.above(0);
-      expect(chart.element.find('g.segment.hover').length).to.equal(12);
+        var chart = getChartWithScenario('640px unexpanded filtered');
+        chart.element.find('.labels .label').eq(0).mouseover();
+        expect($(expectedFlyoutSelector).length).to.be.above(0);
+        expect(chart.element.find('g.segment.hover').length).to.equal(12);
 
-      var activeLabels = chart.element.find('.labels .label.active');
-      expect(activeLabels.length).to.be.above(0); //NOTE for some reason, multiple labels appear but only on BrowserStack.
-                                                  //Works fine locally, even when the tests are run continuously for an hour.
-      if (activeLabels.length > 1) {
-        console.warn('Multiple active labels popped up - ignoring for now.');
-        console.warn('Text: ' + activeLabels.text());
-      }
+        var activeLabels = chart.element.find('.labels .label.active');
+        expect(activeLabels.length).to.be.above(0); //NOTE for some reason, multiple labels appear but only on BrowserStack.
+                                                    //Works fine locally, even when the tests are run continuously for an hour.
+        if (activeLabels.length > 1) {
+          console.warn('Multiple active labels popped up - ignoring for now.');
+          console.warn('Text: ' + activeLabels.text());
+        }
 
-      expect(activeLabels).to.be.visible;
-      chart.element.find('.labels .label').eq(0).mouseout();
-      expect($(expectedFlyoutSelector).length).to.equal(0);
+        expect(activeLabels).to.be.visible;
+        chart.element.find('.labels .label').eq(0).mouseout();
+        expect($(expectedFlyoutSelector).length).to.equal(0);
+      });
+      it('should switch orientation when hovering a section near the right edge of the card', function() {
+        var $flyout;
+        printAllFlyoutContent();
+        var chart = getChartWithScenario('640px unexpanded filtered');
+        var $segments = chart.element.find('g.segment');
+        $segments.filter(':first').mouseover();
+        $flyout = $('.flyout');
+        expect($flyout.find('.flyout-arrow').hasClass('right')).to.be.false;
+        $segments.filter(':last').mouseover();
+        $flyout = $('.flyout');
+        expect($flyout.find('.flyout-arrow').hasClass('right')).to.be.true;
+        $segments.mouseout();
+      });
     });
     it('should create labels with different positions', function() {
       var chart = getChartWithScenario('640px unexpanded filtered');
@@ -329,8 +344,29 @@ describe('timelineChart', function() {
   describe('when not expanded at 300px', function() {
     it('should hide some labels', function() {
       var chart = getChartWithScenario('300px unexpanded unfiltered');
-      expect(chart.element.find('.label:visible').length).to.equal(6);
       expect(chart.element.find('.label').length).to.equal(13);
+      expect(chart.element.find('.label').filter(function() { return $(this).css('opacity') > 0; }).length).to.equal(6);
+    });
+    it('should show hidden labels when the segment is moused over', function() {
+      var SECTION_INDEX = 4;
+      var SEGMENT_INDEX = SECTION_INDEX * 12;
+      var chart = getChartWithScenario('300px unexpanded unfiltered');
+      var $segment = chart.element.find('g.segment').eq(SEGMENT_INDEX);
+      var $label = chart.element.find('.label').eq(SECTION_INDEX);
+      expect(parseFloat($label.css('opacity'))).to.equal(0);
+      $segment.mouseover();
+      expect(parseFloat($label.css('opacity'))).to.equal(1);
+      $segment.mouseout();
+    });
+    it('should show a hidden label when that label\'s area is moused over', function() {
+      var SECTION_INDEX = 2;
+      var chart = getChartWithScenario('300px unexpanded unfiltered');
+      var $label = chart.element.find('.label').eq(SECTION_INDEX);
+      expect(parseFloat($label.css('opacity'))).to.equal(0);
+      $label.mouseover();
+      expect(parseFloat($label.css('opacity'))).to.equal(1);
+      $label.mouseout();
+      expect(parseFloat($label.css('opacity'))).to.equal(0);
     });
   });
 });

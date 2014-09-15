@@ -580,7 +580,7 @@
 
   angular.
     module('dataCards.directives').
-      directive('cardLayout', ['Constants', 'AngularRxExtensions', 'WindowState', 'SortedTileLayout', cardLayout]);
+      directive('cardLayout', cardLayout);
 
 })();
 

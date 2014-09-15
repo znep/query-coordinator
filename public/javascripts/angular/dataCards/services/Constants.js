@@ -25,6 +25,7 @@
       // Choropleth visualization parameters.
       'MAXIMUM_NUMBER_OF_CLASSES_ALLOWED': 7,
       'CLASS_BREAK_THRESHOLD': 6
+
     };
 
     return {

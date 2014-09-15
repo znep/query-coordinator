@@ -60,6 +60,7 @@ describe("A Choropleth Card Visualization", function() {
     model.fieldName = 'ward';
     model.defineObservableProperty('activeFilters', []);
     model.defineObservableProperty('shapeFile', 'mash-apes');
+    model.defineObservableProperty('baseLayerUrl', 'https://a.tiles.mapbox.com/v3/socrata-apps.ibp0l899/{z}/{x}/{y}.png');
 
     var datasetModel = new Model();
     datasetModel.id = "bana-nas!";
@@ -97,13 +98,14 @@ describe("A Choropleth Card Visualization", function() {
     var choro1 = null;
     var choro2 = null;
     var ensureChoroplethsCreated = _.once(function() {
-      if (choro1 && choro2) return;
-      choro1 = createChoropleth("choro1");
-      choro2 = createChoropleth("choro2");
-      timeout.flush();
+      if (choro1 && choro2) {
+        return;
+      }
+      choro1 = createChoropleth('choropleth-1');
+      choro2 = createChoropleth('choropleth-2');
     });
 
-    it('should not let click events leak', function() {
+    it.only('should not let click events leak', function(done) {
       var choro1Fired = false;
       var choro2Fired = false;
 
@@ -115,9 +117,9 @@ describe("A Choropleth Card Visualization", function() {
       choro2.scope.$on('toggle-dataset-filter:choropleth', function(event, feature, callback) {
         choro2Fired = true;
       });
+setTimeout(function() { console.log($('#choropleth-1 .choropleth-container path')[0]); }, 500);
 
-      testHelpers.fireMouseEvent($('#choro1 path')[0], 'click');
-      timeout.flush();
+      testHelpers.fireMouseEvent($('#choropleth-1 path')[0], 'click');
 
       expect(choro1Fired).to.equal(true);
       expect(choro2Fired).to.equal(false);
@@ -125,10 +127,10 @@ describe("A Choropleth Card Visualization", function() {
 
     it('should provide a flyout on hover with the current value, and row display unit', function(done){
       ensureChoroplethsCreated();
-      var feature = $('#choro1 path')[0];
+      var feature = $('#choropleth-1 path')[0];
       testHelpers.fireMouseEvent(feature, 'mouseover');
       testHelpers.fireMouseEvent(feature, 'mousemove');
-      var $flyout = $('#choro-flyout');
+      var $flyout = $('#choropleth-flyout');
       var flyoutText = $flyout.text();
         expect($flyout.is(':visible')).to.equal(true);
         expect(( new RegExp(rowDisplayUnit.pluralize()) ).test(flyoutText)).to.equal(true);

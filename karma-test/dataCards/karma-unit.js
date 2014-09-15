@@ -62,6 +62,7 @@ module.exports = function ( karma ) {
       'bower_components/rxjs/rx.js',
       'bower_components/rxjs/rx.binding.js',
       'bower_components/rxjs/rx.aggregates.js',
+      'bower_components/rxjs/rx.time.js',
       'bower_components/jjv/lib/jjv.js',
       'bower_components/sinon-browser-only/sinon.js',
       'bower_components/moment/moment.js',

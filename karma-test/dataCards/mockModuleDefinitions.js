@@ -6,7 +6,6 @@ var dataCards = angular.module('dataCards', [
   'socrataCommon.directives',
   'dataCards.controllers',
   'dataCards.models',
-  'leaflet-directive',
   'dataCards.directives'
 ]);
 

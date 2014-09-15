@@ -2,7 +2,7 @@
 
   'use strict';
 
-  function CardsViewController($scope, AngularRxExtensions, SortedTileLayout, Filter, page) {
+  function CardsViewController($scope, $log, AngularRxExtensions, SortedTileLayout, Filter, page) {
 
     AngularRxExtensions.install($scope);
 
@@ -184,7 +184,7 @@
       return _.reduce(filters, function(accumulator, appliedFilters, fieldName) {
         if ($.isPresent(appliedFilters)) {
           if (appliedFilters.length > 1) {
-            throw new Error('Cannot apply multiple filters to a single card.');
+            $log.warn('Cannot apply multiple filters to a single card.');
           }
           var filter = _.first(appliedFilters);
           accumulator.push({
@@ -223,6 +223,6 @@
 
   angular.
     module('dataCards.controllers').
-      controller('CardsViewController', ['$scope', 'AngularRxExtensions', 'SortedTileLayout', 'Filter', 'page', CardsViewController]);
+      controller('CardsViewController', CardsViewController);
 
 })();

@@ -1,5 +1,9 @@
 describe("CardsViewController", function() {
-  var Card, Page, $q, $rootScope, $controller;
+  var Page;
+  var Card;
+  var $q;
+  var $rootScope;
+  var $controller;
   var mockPageDataService = {
   };
   var mockDatasetDataService = {

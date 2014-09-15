@@ -253,6 +253,6 @@
 
   angular.
     module('dataCards.directives').
-      directive('cardVisualizationChoropleth', ['Constants', 'AngularRxExtensions', 'CardDataService', 'Filter', cardVisualizationChoropleth]);
+      directive('cardVisualizationChoropleth', cardVisualizationChoropleth);
 
 })();

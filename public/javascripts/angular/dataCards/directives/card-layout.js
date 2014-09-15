@@ -22,6 +22,7 @@
         var jqueryWindow = $(window);
         var jqueryDocument = $(document);
         var pageDescription = $('.page-description');
+        var quickFilterBar = $('.quick-filter-bar');
         var cardsMetadata = $('.cards-metadata');
         var cardsMetadataOffsetTop = cardsMetadata.offset().top;
 
@@ -181,9 +182,9 @@
                          + '{';
 
               if (headerStuck) {
-                var expandedColumnHeight = windowSize.height - $('.quick-filter-bar').height() - Constants.get('LAYOUT_VERTICAL_PADDING');
+                var expandedColumnHeight = windowSize.height - quickFilterBar.height() - Constants.get('LAYOUT_VERTICAL_PADDING');
               } else {
-                var expandedColumnHeight = windowSize.height - (cardContainer.offset().top - scrollTop) - Constants.get('LAYOUT_VERTICAL_PADDING');
+                var expandedColumnHeight = windowSize.height - cardContainer.offset().top - scrollTop - Constants.get('LAYOUT_VERTICAL_PADDING');
               }
 
               styleText += 'position:fixed;'
@@ -191,11 +192,6 @@
                          + 'bottom:' + Constants.get('LAYOUT_VERTICAL_PADDING') + 'px;'
                          + 'width:' + expandedColumnWidth + 'px;'
                          + 'height:' + expandedColumnHeight + 'px;'
-                         + '}';
-
-              styleText += '#card-container{'
-                         + 'visibility:visible !important;'
-                         + 'height:' + heightOfAllCards + 'px;'
                          + '}';
 
             } else {
@@ -230,6 +226,8 @@
 
               var heightOfAllCards = 0;
 
+              // If we're in edit mode, we have to make sure that every category is
+              // represented even if it 
               if (editMode) {
                 if (!sortedTileLayoutResult.hasOwnProperty('1')) {
                   sortedTileLayoutResult['1'] = [];

@@ -312,29 +312,29 @@
 
               }, '');
 
+              if (editMode) {
+
+                placeholderDropTargets.forEach(function(groupData) {
+                  styleText += '#card-group-' + groupData.id + '-drop-placeholder{';
+                  if (groupData.show) {
+                    styleText += 'display:block;';
+                  } else {
+                    styleText += 'display:none;';
+                  }
+                  styleText += 'width:' + containerContentWidth + 'px;'
+                             + 'left:' + Constants.get('LAYOUT_GUTTER') + 'px;'
+                             + 'top:' + groupData.top + 'px;'
+                             + '}';
+                });
+
+              }
+
             }
 
             styleText += '#card-container{'
                        + 'visibility:visible !important;'
                        + 'height:' + heightOfAllCards + 'px;'
                        + '}';
-
-            if (editMode) {
-
-              placeholderDropTargets.forEach(function(groupData) {
-                styleText += '#card-group-' + groupData.id + '-drop-placeholder{';
-                if (groupData.show) {
-                  styleText += 'display:block;';
-                } else {
-                  styleText += 'display:none;';
-                }
-                styleText += 'width:' + containerContentWidth + 'px;'
-                           + 'left:' + Constants.get('LAYOUT_GUTTER') + 'px;'
-                           + 'top:' + groupData.top + 'px;'
-                           + '}';
-              });
-
-            }
 
             // OMG side-effect, but *what* a side effect, amirite?
             $scope.cardPositions = cardPositions;

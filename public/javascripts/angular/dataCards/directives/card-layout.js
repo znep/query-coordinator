@@ -12,12 +12,10 @@
         cardModels: '='
       },
       templateUrl: '/angular_templates/dataCards/card-layout.html',
-      link: function($scope, cardContainer, attrs) {
-        AngularRxExtensions.install($scope);
+      link: function(scope, cardContainer, attrs) {
+        AngularRxExtensions.install(scope);
 
-        /***********************
-        * Cache some selectors *
-        ***********************/
+        scope.grabbedCard = null;
 
         var jqueryWindow = $(window);
         var jqueryDocument = $(document);
@@ -25,6 +23,19 @@
         var quickFilterBar = $('.quick-filter-bar');
         var cardsMetadata = $('.cards-metadata');
         var cardsMetadataOffsetTop = cardsMetadata.offset().top;
+
+        var lastClientX = 0;
+        var lastClientY = 0;
+        var distanceSinceDragStart = 0;
+        var mouseIsDown = false;
+
+        var grabbedElement = null;
+        var cursorToCardOriginXRatio = 0;
+        var cursorToCardOriginYRatio = 0;
+        var cardOriginX = 0;
+        var cardOriginY = 0;
+
+        var lastFrameTime = Date.now();
 
         if (cardContainer[0].id !== 'card-container') {
           throw new Error('The cardLayout directive must be given an DOM id attribute of "card-container".');
@@ -85,12 +96,12 @@
         //       ]
         //  }
         var layout = new SortedTileLayout();
-        var rowsOfCardsBySize = zipLatestArray($scope.page.observe('cards'), 'cardSize').
+        var rowsOfCardsBySize = zipLatestArray(scope.page.observe('cards'), 'cardSize').
           map(function(sizedCards) {
             return layout.doLayout(sizedCards);
           });
 
-        var expandedCards = zipLatestArray($scope.page.observe('cards'), 'expanded').map(function(cards) {
+        var expandedCards = zipLatestArray(scope.page.observe('cards'), 'expanded').map(function(cards) {
           return _.pluck(
               _.where(cards, _.property('expanded')),
               'model');
@@ -103,7 +114,7 @@
         Rx.Observable.subscribeLatest(
           rowsOfCardsBySize,
           expandedCards,
-          $scope.observe('editMode'),
+          scope.observe('editMode'),
           WindowState.windowSizeSubject,
           WindowState.scrollPositionSubject,
           pageDescription.observeDimensions().throttle(100),
@@ -184,7 +195,7 @@
               if (headerStuck) {
                 var expandedColumnHeight = windowSize.height - quickFilterBar.height() - Constants.get('LAYOUT_VERTICAL_PADDING');
               } else {
-                var expandedColumnHeight = windowSize.height - cardContainer.offset().top - scrollTop - Constants.get('LAYOUT_VERTICAL_PADDING');
+                var expandedColumnHeight = windowSize.height - (cardContainer.offset().top - scrollTop) - Constants.get('LAYOUT_VERTICAL_PADDING');
               }
 
               styleText += 'position:fixed;'
@@ -192,6 +203,11 @@
                          + 'bottom:' + Constants.get('LAYOUT_VERTICAL_PADDING') + 'px;'
                          + 'width:' + expandedColumnWidth + 'px;'
                          + 'height:' + expandedColumnHeight + 'px;'
+                         + '}';
+
+              styleText += '#card-container{'
+                         + 'visibility:visible !important;'
+                         + 'height:' + heightOfAllCards + 'px;'
                          + '}';
 
             } else {
@@ -226,8 +242,6 @@
 
               var heightOfAllCards = 0;
 
-              // If we're in edit mode, we have to make sure that every category is
-              // represented even if it 
               if (editMode) {
                 if (!sortedTileLayoutResult.hasOwnProperty('1')) {
                   sortedTileLayoutResult['1'] = [];
@@ -337,14 +351,14 @@
                        + '}';
 
             // OMG side-effect, but *what* a side effect, amirite?
-            $scope.cardPositions = cardPositions;
+            scope.cardPositions = cardPositions;
 
             $('#card-layout').text(styleText);
 
             if (headerStuck) {
-              $('.quick-filter-bar').addClass('stuck');
+              quickFilterBar.addClass('stuck');
             } else {
-              $('.quick-filter-bar').removeClass('stuck');
+              quickFilterBar.removeClass('stuck');
             }
 
 
@@ -355,18 +369,6 @@
         /******************************
         * Drag and drop functionality *
         ******************************/
-        $scope.grabbedCard = null;
-
-        var lastClientX = 0;
-        var lastClientY = 0;
-        var distanceSinceDragStart = 0;
-        var mouseIsDown = false;
-
-        var grabbedElement = null;
-        var cursorToCardOriginXRatio = 0;
-        var cursorToCardOriginYRatio = 0;
-        var cardOriginX = 0;
-        var cardOriginY = 0;
 
         // Given a point, the drop target is the card whose Y axis placement overlaps with the mouse Y position,
         // and whose top-left corner is closest to the mouse position.
@@ -380,7 +382,7 @@
           var cursorY = cardOriginY - containerYOffset;
           var clientY = clientY - containerYOffset;
 
-          var cardsInMyRow = _.where($scope.cardPositions, function(cardPositionData) {
+          var cardsInMyRow = _.where(scope.cardPositions, function(cardPositionData) {
             return cardPositionData.top <= clientY && (cardPositionData.top + cardPositionData.height) >= clientY;
           });
 
@@ -402,7 +404,7 @@
 
         cardContainer.on('mousedown', '.card-drag-overlay', function(e) {
 
-          if ($scope.editMode) {
+          if (scope.editMode) {
 
             if (e.button === 0) {
               mouseIsDown = true;
@@ -431,14 +433,14 @@
             lastClientX = 0;
             lastClientY = 0;
             distanceSinceDragStart = 0;
-            $scope.safeApply(function() {
-              $scope.grabbedCard = null;
+            scope.safeApply(function() {
+              scope.grabbedCard = null;
             });
           }
         });
 
         WindowState.mousePositionSubject.subscribe(function(position) {
-          if (mouseIsDown && $scope.grabbedCard === null) {
+          if (mouseIsDown && scope.grabbedCard === null) {
 
             distanceSinceDragStart +=
               Math.floor(Math.sqrt(
@@ -451,22 +453,22 @@
             // If we're out of the dead zone, start the drag operation.
             if (distanceSinceDragStart > 3) {
 
-              $scope.safeApply(function() {
+              scope.safeApply(function() {
 
                 var scopeOfCard = $(position.target).scope();
-                $scope.grabbedCard = scopeOfCard.cardModel;
+                scope.grabbedCard = scopeOfCard.cardModel;
 
               });
             }
 
           }
 
-          if ($scope.grabbedCard !== null && typeof $scope.grabbedCard !== 'undefined') {
+          if (scope.grabbedCard !== null && typeof scope.grabbedCard !== 'undefined') {
 
             // Card is being dragged.
 
-            var newWidth = $('#card-tile-' + $scope.grabbedCard.uniqueId).width();
-            var newHeight = $('#card-tile-' + $scope.grabbedCard.uniqueId).height();
+            var newWidth = $('#card-tile-' + scope.grabbedCard.uniqueId).width();
+            var newHeight = $('#card-tile-' + scope.grabbedCard.uniqueId).height();
 
             cardOriginX = position.clientX - newWidth * cursorToCardOriginXRatio;
             cardOriginY = position.clientY - newHeight * cursorToCardOriginYRatio;
@@ -474,25 +476,25 @@
 
             var targetModel = findDropTarget(cardOriginX, cardOriginY, position.clientY);
 
-            if (targetModel !== null && targetModel !== $scope.grabbedCard) {
+            if (targetModel !== null && targetModel !== scope.grabbedCard) {
 
-              var currentCards = $scope.page.getCurrentValue('cards');
+              var currentCards = scope.page.getCurrentValue('cards');
 
               var targetModelIndex = _.indexOf(currentCards, targetModel);
 
               // Drop the dropped card in front of the card dropped onto.
-              var newCards = _.without(currentCards, $scope.grabbedCard);
+              var newCards = _.without(currentCards, scope.grabbedCard);
 
-              if ($scope.grabbedCard.getCurrentValue('cardSize') !== targetModel.getCurrentValue('cardSize')) {
+              if (scope.grabbedCard.getCurrentValue('cardSize') !== targetModel.getCurrentValue('cardSize')) {
 
-                $scope.grabbedCard.set('cardSize', targetModel.getCurrentValue('cardSize'));
+                scope.grabbedCard.set('cardSize', targetModel.getCurrentValue('cardSize'));
 
               }
 
-              newCards.splice(targetModelIndex, 0, $scope.grabbedCard);
+              newCards.splice(targetModelIndex, 0, scope.grabbedCard);
 
-              $scope.safeApply(function() {
-                $scope.page.set('cards', newCards);
+              scope.safeApply(function() {
+                scope.page.set('cards', newCards);
               });
 
             } else {
@@ -510,8 +512,8 @@
               });
 
               if (cardSize !== null) {
-                $scope.safeApply(function() {
-                  $scope.grabbedCard.set('cardSize', cardSize);
+                scope.safeApply(function() {
+                  scope.grabbedCard.set('cardSize', cardSize);
                 });
               }
 
@@ -524,9 +526,6 @@
           }
 
         });
-
-
-        var lastFrameTime = Date.now();
 
         function checkForScroll() {
 
@@ -561,7 +560,7 @@
 
           }
 
-          if ($scope.grabbedCard !== null) {
+          if (scope.grabbedCard !== null) {
             lastFrameTime = now;
             requestAnimationFrame(checkForScroll);
           }
@@ -573,7 +572,7 @@
         * Bind observable *
         ******************/
 
-        $scope.bindObservable('cardModels', $scope.page.observe('cards'));
+        scope.bindObservable('cardModels', scope.page.observe('cards'));
 
       }
     }

@@ -164,6 +164,7 @@ $card-description-transition-duration: 0.5s
         @include prefixer(transition-duration, "#{$card-description-transition-duration}, 0s")
         @include prefixer(transition-timing-function, "ease, step-end")
         @include prefixer(transition-delay, "0, 0")
+        z-index: 3
       .description-truncated-content
         @include prefixer(transition-property, "visibility")
         @include prefixer(transition-duration, "0")

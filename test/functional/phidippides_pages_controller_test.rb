@@ -33,7 +33,7 @@ class PhidippidesPagesControllerTest < ActionController::TestCase
       :current_user => 'user',
       :issue_phidippides_request => ''
     )
-    post :create, :pageMetadata => { :datasetId => 'four-four' }
+    post :create, :pageMetadata => { :datasetId => 'four-four' }.to_json
     assert_response(406)
   end
 
@@ -52,7 +52,7 @@ class PhidippidesPagesControllerTest < ActionController::TestCase
       :current_user => 'user',
       :issue_phidippides_request => { body: mock_page_metadata, status: 201 }
     )
-    post :create, :pageMetadata => JSON.parse(mock_page_metadata), :format => :json
+    post :create, :pageMetadata => mock_page_metadata, :format => :json
     assert_response(201)
   end
 

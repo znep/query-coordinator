@@ -18,7 +18,8 @@ $.component.Component.extend('Print', 'actions', {
             cObj.$link.on('click.printButton', function(e)
             {
                 e.preventDefault();
-                $.waypoints().trigger('waypoint.reached', 'visible');
+                // Trigger all existing waypoints to make sure the whole page is visible.
+                _($.waypoints()).chain().values().flatten().invoke('trigger');
                 var checkPrint = function()
                 {
                     if ($.component.isLoading())

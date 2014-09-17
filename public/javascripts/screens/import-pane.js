@@ -1456,7 +1456,7 @@ var prepareColumnsAndUI = function($paneLocal, paneConfig, state, command)
             'class': { value: 'header', onlyIf: i < scan.summary.headers },
             contents: _.map(scan.summary.sample[i], function(cell)
                 {
-                    return { tagName: 'td', contents: $.htmlEscape(cell) };
+                    return { tagName: 'td', contents: cell };
                 })
         }));
     });

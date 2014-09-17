@@ -665,8 +665,9 @@ describe("A Choropleth Directive", function() {
           el = createChoropleth(expanded);
 
           testHelpers.
-            waitForSatisfy(function() { return $('.choropleth-legend').length > 0; }).
+            waitForSatisfy(function() { return el.find(featureGeometrySelector).length > 0; }).
             then(function() {
+
               var legendColor = el.find(legendColorSelector)[0];
               var legendColorFlyoutText = $(legendColor).data('flyout-text');
               testHelpers.fireMouseEvent(legendColor, 'mouseover');

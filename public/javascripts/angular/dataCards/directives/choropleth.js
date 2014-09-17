@@ -701,7 +701,7 @@
 
         Rx.Observable.subscribeLatest(
           scope.observe('baseLayerUrl'),
-          element.observeDimensions(),//.throttle(500),
+          element.observeDimensions().throttle(500),
           scope.observe('geojsonAggregateData'),
           function(baseLayerUrl, dimensions, geojsonAggregateData) {
 
@@ -710,8 +710,11 @@
             var coloring;
             var geojsonOptions;
 
-            if (_.isDefined(baseLayerUrl) &&
-                _.isDefined(geojsonAggregateData)) {
+            if (_.isDefined(geojsonAggregateData)) {
+
+              if (!_.isDefined(baseLayerUrl)) {
+                baseLayerUrl = Constants['DEFAULT_MAP_BASE_LAYER_URL'];
+              }
 
               if (currentBaseLayerUrl !== baseLayerUrl) {
                 currentBaseLayerUrl = baseLayerUrl;

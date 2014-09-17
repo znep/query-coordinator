@@ -20,7 +20,7 @@
 
       // Visualization
       'NULL_VALUE_LABEL': '(No Value)',
-      'DEFAULT_BASE_LAYER_URL': 'https://a.tiles.mapbox.com/v3/socrata-apps.ibp0l899/{z}/{x}/{y}.png',
+      'DEFAULT_MAP_BASE_LAYER_URL': 'https://a.tiles.mapbox.com/v3/socrata-apps.ibp0l899/{z}/{x}/{y}.png',
 
       // Choropleth visualization parameters.
       'MAXIMUM_NUMBER_OF_CLASSES_ALLOWED': 7,

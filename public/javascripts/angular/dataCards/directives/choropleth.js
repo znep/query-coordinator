@@ -314,7 +314,13 @@
             rects.exit().
               remove();
 
-            element.find('.' + className).show();
+            var legendPadding = parseInt(element.find('.' + className).css('padding'), 10);
+
+            var maxLabelWidth = _.reduce(element.find('.labels > .tick > text'), function(accumulator, element) {
+              return Math.max(accumulator, $(element).width());
+            }, 0);
+
+            element.find('.' + className).css('padding-left', legendPadding + yAxis.innerTickSize() + maxLabelWidth).show();
 
             // set up legend color flyouts
             $(element).find('.choropleth-legend').flyout({

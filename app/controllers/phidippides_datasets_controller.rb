@@ -2,6 +2,11 @@ class PhidippidesDatasetsController < ActionController::Base
 
   include Phidippides
 
+  before_filter :hook_auth_controller
+  helper :all # include all helpers, all the time
+  helper_method :current_user
+  helper_method :current_user_session
+
   def index
     return render :nothing => true, :status => 400 unless params[:id].present?
 
@@ -60,6 +65,31 @@ class PhidippidesDatasetsController < ActionController::Base
 
   def destroy
     render :nothing => true, :status => 403
+  end
+
+  hide_action :current_user, :current_user_session
+  def current_user
+    @current_user ||= current_user_session ? current_user_session.user : nil
+  end
+
+  def basic_auth
+    authenticate_with_http_basic { |u, p|
+      user_session = UserSession.new('login' => u, 'password' => p)
+      user_session.save
+    }
+  end
+
+  def current_user_session
+    @current_user_session ||= UserSession.find || basic_auth
+  end
+
+  def current_user_session=(user_session)
+    @current_user_session = user_session
+  end
+
+  private
+  def hook_auth_controller
+    UserSession.controller = self
   end
 
 end

@@ -2,6 +2,11 @@ class PhidippidesPagesController < ActionController::Base
 
   include Phidippides
 
+  before_filter :hook_auth_controller
+  helper :all # include all helpers, all the time
+  helper_method :current_user
+  helper_method :current_user_session
+
   def index
     render :nothing => true, :status => 403
   end
@@ -20,10 +25,11 @@ class PhidippidesPagesController < ActionController::Base
   def create
     return render :nothing => true, :status => 401 unless current_user
     return render :nothing => true, :status => 405 unless request.post?
+    return render :nothing => true, :status => 400 unless params[:pageMetadata].present?
 
     respond_to do |format|
       begin
-        result = create_page_metadata(params[:pageMetadata], :request_id => request_id)
+        result = create_page_metadata(JSON.parse(params[:pageMetadata]), :request_id => request_id)
         format.json { render :json => result[:body], :status => result[:status] }
       rescue ConnectionError
         format.json { render :json => { body: 'Phidippides connection error' }, status: 500 }
@@ -40,7 +46,7 @@ class PhidippidesPagesController < ActionController::Base
 
     respond_to do |format|
       begin
-        result = update_page_metadata(params[:id], :data => params[:pageMetadata], :request_id => request_id)
+        result = update_page_metadata(params[:id], :data => JSON.parse(params[:pageMetadata]), :request_id => request_id)
         format.json { render :json => result[:body], :status => result[:status] }
       rescue ConnectionError
         format.json { render :json => { body: 'Phidippides connection error' }, status: 500 }
@@ -50,6 +56,31 @@ class PhidippidesPagesController < ActionController::Base
 
   def destroy
     render :nothing => true, :status => 403
+  end
+
+  hide_action :current_user, :current_user_session
+  def current_user
+    @current_user ||= current_user_session ? current_user_session.user : nil
+  end
+
+  def basic_auth
+    authenticate_with_http_basic { |u, p|
+      user_session = UserSession.new('login' => u, 'password' => p)
+      user_session.save
+    }
+  end
+
+  def current_user_session
+    @current_user_session ||= UserSession.find || basic_auth
+  end
+
+  def current_user_session=(user_session)
+    @current_user_session = user_session
+  end
+
+  private
+  def hook_auth_controller
+    UserSession.controller = self
   end
 
 end

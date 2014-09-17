@@ -46,4 +46,4 @@ govstat_progress_settings:
   defaultValue: false
 use_view_stubs:
   description: Use view stub files instead of metadata service.
-  defaultValue: true
+  defaultValue: false

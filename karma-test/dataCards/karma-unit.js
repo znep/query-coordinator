@@ -89,7 +89,6 @@ module.exports = function ( karma ) {
       /*    Images */
       { pattern: 'public/angular_templates/images/**/*.png', watched: false,
         included: false, served: true },
-      'karma-test/BrowserstackDebugHelper.js'
     ],
     exclude: [
       'public/javascripts/angular/dataCards/app.js'

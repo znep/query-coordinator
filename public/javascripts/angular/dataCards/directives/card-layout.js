@@ -171,7 +171,9 @@
                   case 2:
                     return 200;
                   case 3:
-                    return 150;
+                    //TODO this should be 150, but for demo purposes we're bumping it up to work around some padding overflow
+                    //issues.
+                    return 200;
                 }
               }
 

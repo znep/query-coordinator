@@ -44,9 +44,13 @@
 
           function buildPositionArray(positions) {
 
+            var cleanPositions = positions.filter(function(position) {
+              return typeof position[0] === 'number' && typeof position[1] === 'number';
+            });
+
             // IMPORTANT NOTE: in geojson, positions are denoted as [longitude, latitude] pairs
-            var lngs = _.map(positions, function(lngLat){ return lngLat[0]; });
-            var lats = _.map(positions, function(lngLat){ return lngLat[1]; });
+            var lngs = _.map(cleanPositions, function(lngLat){ return lngLat[0]; });
+            var lats = _.map(cleanPositions, function(lngLat){ return lngLat[1]; });
 
             // Clamp values to min and max
             if (_.min(lngs) < minLng) {

@@ -132,7 +132,7 @@
             boundsArray[0][1]
           ]));
 
-        };
+        }
 
         function updateLegend(classBreaks, colors) {
 
@@ -731,13 +731,16 @@
                 setTileLayer(baseLayerUrl, { attribution: '', detectRetina: true, opacity: 0.15, unloadInvisibleTiles: true });
               }
 
+              // Critical to invalidate size prior to updating bounds
+              // Otherwise, leaflet will fit the bounds to an incorrectly sized viewport.
+              // This manifests itself as the map being zoomed all of the way out.
+              map.invalidateSize();
+
               // Only update bounds on the first render so we can persist
               // users' panning and zooming.
               if (firstRender) {
                 updateBounds(geojsonAggregateData);
                 firstRender = false;
-              } else {
-                map.invalidateSize();
               }
 
               classBreaks = visualization.calculateDataClassBreaks(geojsonAggregateData, Constants['UNFILTERED_VALUE_PROPERTY_NAME']);

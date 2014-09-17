@@ -61,6 +61,9 @@ module Frontend
     # Activate observers that should always be running
     # Please note that observers generated using script/generate observer need to have an _observer suffix
     # config.active_record.observers = :cacher, :garbage_collector, :forum_observer
+
+    # Disable rack-cache, as we have ATS and it's entirely redundant. Also, failing randomly.
+    config.action_dispatch.rack_cache = nil
   end
 end
 

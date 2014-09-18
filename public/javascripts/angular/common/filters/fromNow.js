@@ -1,4 +1,5 @@
 (function() {
+  'use strict';
 
   function FromNowFilter(moment) {
     return function(input) {

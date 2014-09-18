@@ -54,6 +54,7 @@ angular.module('dataCards.models').factory('Dataset', function(ModelHelper, Mode
   //TODO cache instances or share cache.
   function Dataset(id) {
     var self = this;
+    Model.call(this);
     var Page = $injector.get('Page'); // Inject Page here to avoid circular dep.
 
     if (!UID_REGEXP.test(id)) {
@@ -118,7 +119,7 @@ angular.module('dataCards.models').factory('Dataset', function(ModelHelper, Mode
     });
   };
 
-  Dataset.prototype = new Model();
+  Model.extend(Dataset);
 
   return Dataset;
 });

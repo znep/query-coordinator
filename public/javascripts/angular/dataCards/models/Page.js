@@ -1,5 +1,6 @@
 angular.module('dataCards.models').factory('Page', function(Dataset, Card, Model, PageDataService) {
   function Page(id) {
+    Model.call(this);
     if (_.isEmpty(id)) {
       throw new Error('All pages must have an ID');
     }
@@ -36,7 +37,7 @@ angular.module('dataCards.models').factory('Page', function(Dataset, Card, Model
     });
   }
 
-  Page.prototype = new Model();
+  Model.extend(Page);
   Page.prototype.toggleExpanded = function(theCard) {
     // NOTE: For the MVP, we only ever allow one expanded card.
     // Enforce that here.

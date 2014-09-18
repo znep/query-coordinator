@@ -18,6 +18,7 @@ angular.module('dataCards.models').factory('Card', function($injector, ModelHelp
   });
 
   function Card(page, fieldName) {
+    Model.call(this);
     var Page = $injector.get('Page'); // Inject Page here to avoid circular dep.
     if(!(page instanceof Page)) { throw new Error('Cards must have parent Page models.'); }
     if(!_.isString(fieldName) || _.isEmpty(fieldName)) { throw new Error('Cards must have a non-empty field name.'); }
@@ -35,7 +36,7 @@ angular.module('dataCards.models').factory('Card', function($injector, ModelHelp
     self.defineObservableProperty('activeFilters', []);
   }
 
-  Card.prototype = new Model();
+  Model.extend(Card);
   Card.deserialize = function(page, blob) {
     var errors = JJV.validate('serializedCard', blob);
     if (errors) {

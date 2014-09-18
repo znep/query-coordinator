@@ -2,6 +2,7 @@ angular.module('dataCards.models').factory('Model', function(ModelHelper) {
   // A model with observable properties.
   function Model() {
     this._writes = new Rx.Subject();
+    this._sets = new Rx.Subject();
     this._propertyTable = {};
   }
 
@@ -12,6 +13,8 @@ angular.module('dataCards.models').factory('Model', function(ModelHelper) {
   // value. While the promise is being evaluated, the value of the property is the default value
   // provided as the second argument.
   Model.prototype.defineObservableProperty = function(propertyName, initialValue, defaultGenerator) {
+    var self = this;
+
     if (defaultGenerator && !_.isFunction(defaultGenerator)) {
       throw new Error('Unexpected defaultGenerator value');
     }
@@ -20,12 +23,21 @@ angular.module('dataCards.models').factory('Model', function(ModelHelper) {
       throw new Error('Object ' + this + ' already has property: ' + propertyName);
     }
 
+    var inner;
     if (_.isFunction(defaultGenerator)) {
       // If initial value specified as function, it's assumed to be a lazy initializer.
-      ModelHelper.addPropertyWithLazyDefault(propertyName, this._propertyTable, defaultGenerator, initialValue);
+      inner = ModelHelper.addPropertyWithLazyDefault(propertyName, this._propertyTable, defaultGenerator, initialValue);
     } else {
-      ModelHelper.addProperty(propertyName, this._propertyTable, initialValue);
+      inner = ModelHelper.addProperty(propertyName, this._propertyTable, initialValue);
     }
+
+    inner.subscribe(function(valueFromDefault) {
+        self._writes.onNext({
+          model: self,
+          property: propertyName,
+          newValue: valueFromDefault
+        });
+      })
   };
 
   Model.prototype._assertProperty = function(propertyName) {
@@ -43,11 +55,24 @@ angular.module('dataCards.models').factory('Model', function(ModelHelper) {
   Model.prototype.set = function(propertyName, value) {
     this._assertProperty(propertyName);
     this._propertyTable[propertyName] = value;
+    this._sets.onNext({
+      model: this,
+      property: propertyName,
+      newValue: value
+    });
   };
 
   Model.prototype.getCurrentValue = function(propertyName) {
     this._assertProperty(propertyName);
     return this._propertyTable[propertyName].value;
+  };
+
+  Model.prototype.observeWrites = function() {
+    return this._writes;
+  };
+
+  Model.prototype.observeSets = function() {
+    return this._sets;
   };
 
   // See:

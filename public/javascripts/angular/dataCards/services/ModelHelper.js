@@ -3,6 +3,7 @@
 angular.module('dataCards.services').factory('ModelHelper', function() {
   // Adds a (RxJS) observable of the given name to the object provided. The default value
   // is specified.
+  // Returns a sequence of values set to this property (including the initial value).
   function addProperty(propertyName, model, initialValue) {
     var subject = new Rx.BehaviorSubject(initialValue);
     Object.defineProperty(model, propertyName, {
@@ -11,6 +12,7 @@ angular.module('dataCards.services').factory('ModelHelper', function() {
         subject.onNext(val);
       }
     });
+    return subject;
   };
 
   // Adds an (RxJS) observable of the given name to the object provided. The default value
@@ -21,6 +23,7 @@ angular.module('dataCards.services').factory('ModelHelper', function() {
   //
   // The default lazy value promise is generated if the property getter is called before
   // the setter.
+  // Returns a sequence of values set to this property (including the initial and lazy values, if used).
   function addPropertyWithLazyDefault(propertyName, model, defaultValuePromiseGenerator, initialValue) {
     // These two sequences represent values from the lazy default promise and this property's
     // setter, respectively.
@@ -55,6 +58,8 @@ angular.module('dataCards.services').factory('ModelHelper', function() {
         fromSetter.onNext(n);
       }
     });
+
+    return outer;
   };
 
   return {

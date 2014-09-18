@@ -10,6 +10,8 @@ describe('timelineChart', function() {
 
   beforeEach(module('dataCards/timeline-chart.sass'));
 
+  beforeEach(module('/angular_templates/dataCards/timelineChart.html'));
+
   beforeEach(inject(function($injector) {
     th = $injector.get('testHelpers');
     compile = $injector.get('$compile');
@@ -226,18 +228,18 @@ describe('timelineChart', function() {
       var chart = getChartWithScenario('640px unexpanded filtered');
       var segment = chart.element.find('g.segment').eq(1);
       segment.mousedown().mousemove().mouseup();
-      expect(chart.element.find('.label.special').length).to.equal(1);
-      expect(chart.element.find('.label.special .text').text()).to.equal('Feb \'01');
-      expect(chart.element.find('g.segment.special').length).to.equal(1);
+      expect(chart.element.find('.label.highlighted').length).to.equal(1);
+      expect(chart.element.find('.label.highlighted .text').text()).to.equal('Feb \'01');
+      expect(chart.element.find('g.segment.highlighted').length).to.equal(1);
       expect(chart.element.find('g.draghandle').length).to.equal(2);
     });
     it('should create a range label and handles when a label is clicked', function() {
       var chart = getChartWithScenario('640px unexpanded filtered');
       var segment = chart.element.find('.label').eq(1);
       segment.mousedown().mousemove().mouseup();
-      expect(chart.element.find('.label.special').length).to.equal(1);
-      expect(chart.element.find('.label.special .text').text()).to.equal('2002');
-      expect(chart.element.find('g.segment.special').length).to.equal(12);
+      expect(chart.element.find('.label.highlighted').length).to.equal(1);
+      expect(chart.element.find('.label.highlighted .text').text()).to.equal('2002');
+      expect(chart.element.find('g.segment.highlighted').length).to.equal(12);
       expect(chart.element.find('g.draghandle').length).to.equal(2);
     });
     it('should create a range label and handles when a selection is dragged', function() {
@@ -247,26 +249,74 @@ describe('timelineChart', function() {
       var end = 10;
       segments.eq(start).mousedown();
       segments.eq(end).mousemove().mouseup();
-      expect(chart.element.find('.label.special').length).to.equal(1);
-      expect(chart.element.find('.label.special .text').text()).to.equal('Jun \'01 - Nov \'01');
-      expect(chart.element.find('g.segment.special').length).to.equal(end - start + 1);
+      expect(chart.element.find('.label.highlighted').length).to.equal(1);
+      expect(chart.element.find('.label.highlighted .text').text()).to.equal('Jun \'01 - Nov \'01');
+      expect(chart.element.find('g.segment.highlighted').length).to.equal(end - start + 1);
       expect(chart.element.find('g.draghandle').length).to.equal(2);
     });
+
+    it('should highlight labels onhover when not actively selecting', function() {
+      var chart = getChartWithScenario('640px unexpanded filtered');
+      var segments = chart.element.find('g.segment');
+      var start = 5;
+      var end = 10;
+
+      expect(chart.element.find('.label.active').length).to.equal(0);
+
+      // Hover over data for the last label, and make sure it emboldens
+      var farRightLabel = chart.element.find('.label:visible:not(.highlighted)').last();
+      var farRightDate = d3.select(farRightLabel[0]).datum().date;
+      // Now find one of the data points in the graph to hover over
+      $(d3.select(chart.element[0]).selectAll('g.segment').filter(function(d) {
+        return d.date > farRightDate;
+      })[0][0]).mouseover();
+
+      expect(chart.element.find('.label.active').length).not.to.equal(0);
+
+      // clean up
+      segments.eq(end).mouseleave().mouseup();
+    });
+    it('should not highlight labels onhover when actively selecting', function() {
+      var chart = getChartWithScenario('640px unexpanded filtered');
+      var segments = chart.element.find('g.segment');
+      var start = 5;
+      var end = 10;
+      // Creating a new filter
+      segments.eq(start).mousedown();
+      segments.eq(end).mousemove();
+
+      expect(chart.element.find('.label.active').length).to.equal(0);
+
+      // Hover over data for the last label, and make sure it doesn't embolden
+      var farRightLabel = chart.element.find('.label:visible:not(.highlighted)').last();
+      var farRightDate = d3.select(farRightLabel[0]).datum().date;
+      // Now find one of the data points in the graph to hover over
+      $(d3.select(chart.element[0]).selectAll('g.segment').filter(function(d) {
+        return d.date > farRightDate;
+      })[0][0]).mouseover();
+
+      // Since we're in the middle of a filter selection, it should not become active.
+      expect(chart.element.find('.label.active').length).to.equal(0);
+
+      // clean up
+      segments.eq(end).mouseleave().mouseup();
+    });
+
     it('should be able to change a selection via dragging a handle', function() {
       var chart = getChartWithScenario('640px unexpanded filtered');
       var segments = chart.element.find('g.segment');
       var start = 5;
       var end = 10;
       segments.eq(start).mousedown().mousemove().mouseup();
-      expect(chart.element.find('.label.special').length).to.equal(1);
+      expect(chart.element.find('.label.highlighted').length).to.equal(1);
       expect(chart.element.find('g.draghandle').length).to.equal(2);
-      expect(chart.element.find('g.segment.special').length).to.equal(1);
+      expect(chart.element.find('g.segment.highlighted').length).to.equal(1);
 
       chart.element.find('g.draghandle').eq(1).mousedown();
       chart.element.find('g.segment').eq(end).mousemove().mouseup();
-      expect(chart.element.find('.label.special').length).to.equal(1);
-      expect(chart.element.find('.label.special .text').text()).to.equal('Jun \'01 - Nov \'01');
-      expect(chart.element.find('g.segment.special').length).to.equal(end - start + 1);
+      expect(chart.element.find('.label.highlighted').length).to.equal(1);
+      expect(chart.element.find('.label.highlighted .text').text()).to.equal('Jun \'01 - Nov \'01');
+      expect(chart.element.find('g.segment.highlighted').length).to.equal(end - start + 1);
       expect(chart.element.find('g.draghandle').length).to.equal(2);
     });
     it('should clear a range when drag handle is clicked', function() {
@@ -293,7 +343,7 @@ describe('timelineChart', function() {
       scope.$on('timeline-chart:filter-cleared', function(filter) {
         filterCleared = true;
       });
-      $('.label.special').mousedown().mouseup();
+      $('.label.highlighted').mousedown().mouseup();
       expect(filterCleared).to.equal(true, 'should have recieved the filter-cleared event.');
     });
     it('should be able to change data', function() {
@@ -325,11 +375,11 @@ describe('timelineChart', function() {
       var chart = getChartWithScenario('640px unexpanded filtered');
       var segment = chart.element.find('.label').eq(1);
       segment.mousedown().mousemove().mouseup();
-      expect(chart.element.find('.label.special').length).to.equal(1);
-      expect(chart.element.find('g.segment.special').length).to.equal(12);
-      chart.element.find('g.segment.special').eq(0).mousedown().mousemove().mouseup();
-      expect(chart.element.find('.label.special').length).to.equal(1);
-      expect(chart.element.find('g.segment.special').length).to.equal(1);
+      expect(chart.element.find('.label.highlighted').length).to.equal(1);
+      expect(chart.element.find('g.segment.highlighted').length).to.equal(12);
+      chart.element.find('g.segment.highlighted').eq(0).mousedown().mousemove().mouseup();
+      expect(chart.element.find('.label.highlighted').length).to.equal(1);
+      expect(chart.element.find('g.segment.highlighted').length).to.equal(1);
     });
     describe('if showFiltered', function() {
       it('should show the filtered count in the flyout', function() {

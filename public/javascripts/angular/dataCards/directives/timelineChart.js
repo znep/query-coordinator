@@ -4,7 +4,7 @@
   'use strict';
 
   // TODO(jerjou): this should be in css
-  var MARGIN_BOTTOM = 0;
+  var MARGIN_BOTTOM = 16;
   var TICK_SIZE = 3;
   var NUMBER_OF_TICKS = 3;
   var FLYOUT_DATE_FORMAT = {

@@ -1,4 +1,4 @@
-angular.module('dataCards.directives').directive('card', function(AngularRxExtensions, $timeout) {
+angular.module('dataCards.directives').directive('card', function(AngularRxExtensions, $timeout, $log) {
 
   //TODO should probably be a service. And not suck.
   var cardTypeMapping = function(column) {
@@ -13,7 +13,11 @@ angular.module('dataCards.directives').directive('card', function(AngularRxExten
     }
     if (logicalDatatype === 'location') {
       if (physicalDatatype === 'point') { return 'pointMap'; }
-      if (physicalDatatype === 'text') { return 'choropleth'; }
+      if (physicalDatatype === 'number') { return 'choropleth'; }
+      if (physicalDatatype === 'text') {
+        $log.warn('Encountered location column "{0}" with text physical type - this is deprecated (expected number type).'.format(column.name));
+        return 'choropleth';
+      }
       if (physicalDatatype === 'geo_entity') { return 'point-ish map'; }
     }
     if (logicalDatatype === 'time') {

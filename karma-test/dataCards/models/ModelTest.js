@@ -463,6 +463,99 @@ describe("Model", function() {
 
       });
 
+
+      it('should provide events on arrays of models', function() {
+        var parent = new Model();
+        var changes = [];
+        var expectedChanges = [];
+
+        parent.defineObservableProperty('children', []);
+
+        parent.observeSetsRecursive().subscribe(function(change) {
+          changes.push(change);
+        });
+
+        expect(changes).to.deep.equal(expectedChanges);
+
+        function make() {
+          var m = new Model();
+          m.defineObservableProperty('testProp', null);
+          return m;
+        };
+
+        var childrenA = _.times(10, make);
+
+        // Set child array. Expect notification from parent.
+        parent.set('children', childrenA);
+        expectedChanges.push({
+          model: parent,
+          property: 'children',
+          newValue: childrenA
+        });
+        expect(changes).to.deep.equal(expectedChanges);
+
+        // Set properties on children. Expect notifications.
+        _.each(childrenA, function(child, index) {
+          child.set('testProp', index);
+          expectedChanges.push({
+            model: child,
+            property: 'testProp',
+            newValue: index
+          });
+        });
+        expect(changes).to.deep.equal(expectedChanges);
+
+        // Set child array again, with new models. Expect notification from parent.
+        var childrenB = _.times(10, make);
+        parent.set('children', childrenB);
+        expectedChanges.push({
+          model: parent,
+          property: 'children',
+          newValue: childrenB
+        });
+        expect(changes).to.deep.equal(expectedChanges);
+
+        // Set properties on BOTH sets of children. Expect notification ONLY on B.
+        _.invoke(childrenA, 'set', 'testProp', 'badvalue');
+
+        _.each(childrenB, function(child, index) {
+          child.set('testProp', index * 100);
+          expectedChanges.push({
+            model: child,
+            property: 'testProp',
+            newValue: index * 100
+          });
+        });
+        expect(changes).to.deep.equal(expectedChanges);
+
+        // Set child array with one child from sets A and B each. Expect notification from parent.
+        var firstChildrenFromAAndB = [ childrenA[0], childrenB[0] ]; 
+
+        parent.set('children', firstChildrenFromAAndB);
+        expectedChanges.push({
+          model: parent,
+          property: 'children',
+          newValue: firstChildrenFromAAndB
+        });
+        expect(changes).to.deep.equal(expectedChanges);
+
+        childrenA[0].set('testProp', 'gooda');
+        childrenA[1].set('testProp', 'bada');
+        childrenB[0].set('testProp', 'goodb');
+        childrenB[1].set('testProp', 'badb');
+        expectedChanges.push({
+          model: childrenA[0],
+          property: 'testProp',
+          newValue: 'gooda'
+        });
+        expectedChanges.push({
+          model: childrenB[0],
+          property: 'testProp',
+          newValue: 'goodb'
+        });
+        expect(changes).to.deep.equal(expectedChanges);
+      });
+
       it('should correctly handle non-models set on properties', function() {
         var parent = new Model();
         var changes = [];

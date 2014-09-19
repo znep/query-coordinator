@@ -14,16 +14,19 @@ angular.module('dataCards.models').factory('Model', function(ModelHelper) {
     //TODO only start caring if someone calls observeSetsRecursive.
     this.observeWrites().subscribe(function(write) {
       var oldValue = self._children[write.property];
-      if (oldValue instanceof Model) {
-        delete self._children[write.property];
-        oldValue.setParent(null);
-      }
+      _.invoke(oldValue, 'setParent', null);
+      delete self._children[write.property];
 
-      if (write.newValue instanceof Model) {
-        var child = write.newValue;
-        self._children[write.property] = child;
-        child.setParent(self);
-      }
+      var candidateModels = _.isArray(write.newValue) ? write.newValue : [write.newValue];
+
+      var actualModels = [];
+      _.each(candidateModels, function(maybeModel) {
+        if (maybeModel instanceof Model) {
+          maybeModel.setParent(self);
+          actualModels.push(maybeModel);
+        }
+      });
+      self._children[write.property] = actualModels;
     });
   }
 

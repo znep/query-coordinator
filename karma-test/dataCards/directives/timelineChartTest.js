@@ -405,7 +405,7 @@ describe('timelineChart', function() {
       var $label = chart.element.find('.label').eq(SECTION_INDEX);
       expect(parseFloat($label.css('opacity'))).to.equal(0);
       $segment.mouseover();
-      expect(parseFloat($label.css('opacity'))).to.equal(1);
+      expect(parseFloat($label.css('opacity'))).to.be.above(0);
       $segment.mouseout();
     });
     it('should show a hidden label when that label\'s area is moused over', function() {
@@ -414,7 +414,7 @@ describe('timelineChart', function() {
       var $label = chart.element.find('.label').eq(SECTION_INDEX);
       expect(parseFloat($label.css('opacity'))).to.equal(0);
       $label.mouseover();
-      expect(parseFloat($label.css('opacity'))).to.equal(1);
+      expect(parseFloat($label.css('opacity'))).to.be.above(0);
       $label.mouseout();
       expect(parseFloat($label.css('opacity'))).to.equal(0);
     });

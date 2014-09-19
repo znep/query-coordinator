@@ -12,7 +12,7 @@
     {
       "description": "application type",
       "fieldName": "application_type",
-      "cardSize": 3,
+      "cardSize": 2,
       "cardCustomStyle": {},
       "expandedCustomStyle": {},
       "displayMode": "visualization",
@@ -57,7 +57,7 @@
     {
       "description": "site number",
       "fieldName": "site_number",
-      "cardSize": 3,
+      "cardSize": 2,
       "cardCustomStyle": {},
       "expandedCustomStyle": {},
       "displayMode": "visualization",
@@ -66,7 +66,7 @@
     {
       "description": "account number",
       "fieldName": "account_number",
-      "cardSize": 3,
+      "cardSize": 2,
       "cardCustomStyle": {},
       "expandedCustomStyle": {},
       "displayMode": "visualization",
@@ -151,7 +151,7 @@
     {
       "description": "All Data",
       "fieldName": "*",
-      "cardSize": 3,
+      "cardSize": 2,
       "cardCustomStyle": {},
       "expandedCustomStyle": {},
       "displayMode": "visualization",

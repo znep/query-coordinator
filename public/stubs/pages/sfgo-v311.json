@@ -39,7 +39,7 @@
     {
       "description": "Request Type",
       "fieldName": "request_type",
-      "cardSize": 3,
+      "cardSize": 2,
       "cardCustomStyle": {},
       "expandedCustomStyle": {},
       "displayMode": "visualization",
@@ -48,7 +48,7 @@
     {
       "description": "Source",
       "fieldName": "source",
-      "cardSize": 3,
+      "cardSize": 2,
       "cardCustomStyle": {},
       "expandedCustomStyle": {},
       "displayMode": "visualization",
@@ -124,7 +124,7 @@
     {
       "description": "All Data",
       "fieldName": "*",
-      "cardSize": 3,
+      "cardSize": 2,
       "cardCustomStyle": {},
       "expandedCustomStyle": {},
       "displayMode": "visualization",

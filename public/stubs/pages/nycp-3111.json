@@ -78,7 +78,7 @@
     {
       "description": "Descriptor",
       "fieldName": "descriptor",
-      "cardSize": 3,
+      "cardSize": 2,
       "cardCustomStyle": {},
       "expandedCustomStyle": {},
       "displayMode": "visualization",
@@ -87,7 +87,7 @@
     {
       "description": "Due Date",
       "fieldName": "due_date",
-      "cardSize": 3,
+      "cardSize": 2,
       "cardCustomStyle": {},
       "expandedCustomStyle": {},
       "displayMode": "visualization",
@@ -96,7 +96,7 @@
     {
       "description": "Closed Date",
       "fieldName": "closed_date",
-      "cardSize": 3,
+      "cardSize": 2,
       "cardCustomStyle": {},
       "expandedCustomStyle": {},
       "displayMode": "visualization",
@@ -105,7 +105,7 @@
     {
       "description": "All Data",
       "fieldName": "*",
-      "cardSize": 3,
+      "cardSize": 2,
       "cardCustomStyle": {},
       "expandedCustomStyle": {},
       "displayMode": "visualization",

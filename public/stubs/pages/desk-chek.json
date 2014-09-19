@@ -44,7 +44,7 @@
     },
     {
       "fieldName": "x_coordinate",
-      "cardSize": 3,
+      "cardSize": 2,
       "cardCustomStyle": {},
       "expandedCustomStyle": {},
       "displayMode": "visualization",
@@ -52,7 +52,7 @@
     },
     {
       "fieldName": "*",
-      "cardSize": 3,
+      "cardSize": 2,
       "cardCustomStyle": {},
       "expandedCustomStyle": {},
       "displayMode": "visualization",

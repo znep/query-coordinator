@@ -21,7 +21,7 @@
     {
       "description": "Risk",
       "fieldName": "risk",
-      "cardSize": 3,
+      "cardSize": 2,
       "cardCustomStyle": {},
       "expandedCustomStyle": {},
       "displayMode": "visualization",
@@ -88,7 +88,7 @@
     {
       "description": "Inspection Id",
       "fieldName": "inspection_id",
-      "cardSize": 3,
+      "cardSize": 2,
       "cardCustomStyle": {},
       "expandedCustomStyle": {},
       "displayMode": "visualization",
@@ -115,7 +115,7 @@
     {
       "description": "All Data",
       "fieldName": "*",
-      "cardSize": 3,
+      "cardSize": 2,
       "cardCustomStyle": {},
       "expandedCustomStyle": {},
       "displayMode": "visualization",

@@ -10,7 +10,8 @@ angular.module('dataCards.services').factory('ModelHelper', function() {
       get: _.constant(subject),
       set: function(val) {
         subject.onNext(val);
-      }
+      },
+      enumerable: true
     });
     return subject;
   };
@@ -56,7 +57,8 @@ angular.module('dataCards.services').factory('ModelHelper', function() {
       },
       set: function(n) {
         fromSetter.onNext(n);
-      }
+      },
+      enumerable: true
     });
 
     return outer;

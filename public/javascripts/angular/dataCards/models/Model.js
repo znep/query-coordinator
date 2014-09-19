@@ -118,6 +118,37 @@ angular.module('dataCards.models').factory('Model', function(ModelHelper) {
     return this._propertyTable[propertyName].value;
   };
 
+  // Get a snapshot of this model. Child models are descended
+  // into.
+  //
+  // Children of a Model M are defined as all Models which
+  // are directly assigned to one of M's properties, or are
+  // in an array assigned to one of M's properties.
+  Model.prototype.serialize = function() {
+    var self = this;
+    var artifact = {};
+    _.forOwn(self._propertyTable, function(seq, propertyName) {
+      var currentValue = self.getCurrentValue(propertyName);
+      var serializedProperty;
+      if (currentValue instanceof Model) {
+        // Models get serialized intelligently.
+        serializedProperty = currentValue.serialize();
+      } else if (_.isArray(currentValue)) {
+        // Arrays are special - they contain models which we care about.
+        // TODO Care about nested arrays?
+        serializedProperty = _.map(currentValue, function(valInArray) {
+          return (valInArray instanceof Model) ? valInArray.serialize() : valInArray;
+        });
+      } else if (_.isFunction(currentValue)) {
+        throw new Error('Tried to serialize a model having a function as a property value');
+      } else {
+        serializedProperty = currentValue;
+      }
+      artifact[propertyName] = serializedProperty;
+    });
+    return artifact;
+  };
+
   // A sequence of all writes on this Model. This includes
   // values written by defaults, lazy or otherwise.
   // Writes are represented by objects of this form:

@@ -647,4 +647,87 @@ describe("Model", function() {
       });
     });
   });
+
+  describe('serialize', function() {
+    it('should correctly serialize an empty model', function() {
+      var model = new Model();
+      expect(model.serialize()).to.deep.equal({});
+    });
+    it('should correctly serialize a model with flat primitives only', function() {
+      var model = new Model();
+      model.defineObservableProperty('number', 5);
+      model.defineObservableProperty('string', 'asd');
+      model.defineObservableProperty('undef', undefined);
+      model.defineObservableProperty('null', null);
+      expect(model.serialize()).to.deep.equal({
+        number: 5,
+        string: 'asd',
+        undef: undefined,
+        null: null
+      });
+    });
+    it('should correctly serialize a model with objects and arrays', function() {
+      var model = new Model();
+      model.defineObservableProperty('array', [5, 6, 7]);
+      model.defineObservableProperty('object', { a: 'foo' });
+      expect(model.serialize()).to.deep.equal({
+        array: [5, 6, 7],
+        object: { a: 'foo' }
+      });
+    });
+    it('should throw an exception if a function is encountered as a value', function() {
+      var model = new Model();
+      model.defineObservableProperty('f', function(){});
+      expect(function() { model.serialize(); }).to.throw();
+    });
+    it('should dive into children as direct values', function() {
+      var parent = new Model();
+      var child = new Model();
+      var grandchild = new Model();
+      parent.defineObservableProperty('child', child);
+      parent.defineObservableProperty('testProp', 5);
+
+      child.defineObservableProperty('child', grandchild);
+      child.defineObservableProperty('testProp2', 50);
+
+      grandchild.defineObservableProperty('testProp3', 500);
+      expect(parent.serialize()).to.deep.equal({
+        testProp: 5,
+        child: {
+          testProp2: 50,
+          child: {
+            testProp3: 500
+          }
+        }
+      });
+    });
+    it('should dive into children in arrays', function() {
+      var parent = new Model();
+      var childA = new Model();
+      var childB = new Model();
+      var grandchild = new Model();
+
+      parent.defineObservableProperty('children', [childA, childB]);
+      parent.defineObservableProperty('testProp', 5);
+
+      childA.defineObservableProperty('children', [grandchild]);
+      childA.defineObservableProperty('testProp2', 50);
+
+      childB.defineObservableProperty('testProp3', 55);
+
+      grandchild.defineObservableProperty('testProp4', 500);
+      expect(parent.serialize()).to.deep.equal({
+        testProp: 5,
+        children: [
+          {
+            testProp2: 50,
+            children: [ { testProp4: 500 } ]
+          },
+          {
+            testProp3: 55
+          }
+        ]
+      });
+    });
+  });
 });

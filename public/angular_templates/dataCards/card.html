@@ -27,8 +27,8 @@
       <div style="background: url(/stubs/mock-visualizations/{{cardType}}.png) no-repeat; background-size: 100%"></div>
     </div>
   </div>
-  <div class="expandButton">
-    <span ng-if="expanded" title="Collapse Card" ng-click="toggleExpanded()"></span>
-    <span ng-if="!expanded" title="Expand Card" ng-click="toggleExpanded()"></span>
+  <div class="expand-button">
+    <span ng-if="expanded" class="expand-button-target" title="Collapse Card" ng-click="toggleExpanded()"></span>
+    <span ng-if="!expanded" class="expand-button-target" title="Expand Card" ng-click="toggleExpanded()"></span>
   </div>
 </div>

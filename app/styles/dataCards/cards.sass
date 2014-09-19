@@ -318,7 +318,9 @@ body
         opacity: 0.5
         border-radius: $rounded-corners-border-radius
 
+
 /*  DESKTOP-SPECIFIC STYLES  */
+
 @media screen
   @media (min-width: 768px)
     .cards-view
@@ -329,25 +331,41 @@ body
               // left-hand activities on full-width
               margin-right: 35px
 
+
 /*   ICONS AND COMPONENTS */
 
-.expandButton
-  // TODO: rename to expand-button
-  font-family: "SSAir"
+.expand-button, .delete-button
   position: absolute
+  width: 20px
+  height: 20px
+  right: 5px
   top: 5px
-  right: 23px
+  text-align: center
+  line-height: 20px
+  font-family: 'SSAir'
+  background-color: white
   z-index: 3
+
   span
     cursor: pointer
     display: block
-    width: 0
     position: relative
     color: #888
+
     &:hover
       color: #ccc
-    &:before
-      content: '⤢'
+
+.expand-button span:before
+  content: '⤢'
+
+.delete-button span
+  &:before
+    content: '×'
+    font-size: 22px
+    line-height: 0
+
+  &:hover
+    color: red
 
 .table-icon
   .grid-lines

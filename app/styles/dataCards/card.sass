@@ -10,9 +10,12 @@
   -moz-box-sizing: border-box
   overflow: hidden
 
+  // This appears to keep elements with the .wrap and
+  // .title-expanded classes in the right box context.
+  // Without this position: relative, the content will
+  // be relative to the card, not the card content.
   .card-text
     position: relative
-    // fixes .wrap and .title-expanded in right place
 
   .title-one-line
     line-height: $card-title-line-height
@@ -24,9 +27,9 @@
 
     &:hover
 
+      // This z-index must be higher than that of the desciption.
       + .title-expanded
         z-index: 1002
-        // z-index is 1 higher than description z-index
 
         .wrap
           opacity: 1
@@ -39,9 +42,10 @@
     left: 0
     overflow: visible
     z-index: -1
+
+    // This z-index must be higher than that of the desciption.
     &:hover
       z-index: 1002
-      // z-index is 1 higher than description z-index
 
     .wrap
       max-width: 100%
@@ -76,21 +80,21 @@
   .card-visualization
     height: 100%
 
-  /* EXPANDED CARD SPECIFIC STYLES */
+  // A minimum height of 350px is required to prevent d3 from
+  // flipping out and literally flipping column charts negatively
+  // along the y-axis due to lack of sufficient element height.
   &.expanded
     min-height: 350px
-    // min-height around 350px required
-    // to prevent column chart from flipping over, etc.
 
     .card-text
       .description
         padding-bottom: $card-description-padding-bottom
 
-    .expandButton
+    .expand-button
       span:before
         content: ''
 
-
+// This fixes a problem where, among other things, the spinner on
+// choropleth cards is not vertically centered when it should be.
 div[ng-switch="cardType"]
   position: relative
-  // keeps choropleth in check

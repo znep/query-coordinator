@@ -211,6 +211,97 @@ describe('CardLayout directive test', function() {
       expect(cl.element.find('.card-drag-overlay').length).to.equal(cards.length);
     });
 
+    it('should display a delete card button', function() {
+      var cl = createCardLayout();
+
+      var card1 = new Card(cl.pageModel, 'testField1');
+      var card2 = new Card(cl.pageModel, 'testField2');
+      var card3 = new Card(cl.pageModel, 'testField3');
+      var cards = [ card1, card2, card3 ];
+
+      card1.set('cardSize', '1');
+      card2.set('cardSize', '2');
+      card3.set('cardSize', '3');
+
+      mockWindowStateService.windowSizeSubject.onNext({width: 1000, height: 1000});
+      mockWindowStateService.scrollPositionSubject.onNext(0);
+
+      cl.pageModel.set('cards', cards);
+      cl.outerScope.editMode = true;
+      cl.outerScope.$apply();
+
+      expect(cl.element.find('.delete-button-target').length).to.equal(3);
+
+    });
+
+    it('should display a flyout when hovering on a delete card button', function() {
+      var cl = createCardLayout();
+
+      var card1 = new Card(cl.pageModel, 'testField1');
+      var card2 = new Card(cl.pageModel, 'testField2');
+      var card3 = new Card(cl.pageModel, 'testField3');
+      var cards = [ card1, card2, card3 ];
+
+      card1.set('cardSize', '1');
+      card2.set('cardSize', '2');
+      card3.set('cardSize', '3');
+
+      mockWindowStateService.windowSizeSubject.onNext({width: 1000, height: 1000});
+      mockWindowStateService.scrollPositionSubject.onNext(0);
+
+      cl.pageModel.set('cards', cards);
+      cl.outerScope.editMode = true;
+      cl.outerScope.$apply();
+
+      var thirdDeleteButtonPosition = $(cl.element.find('.delete-button-target')[2]).position();
+
+      var clientX = thirdDeleteButtonPosition.left;
+      var clientY = thirdDeleteButtonPosition.top;
+      var hintHeight = 20;
+
+      mockWindowStateService.mousePositionSubject.onNext({
+        clientX: clientX,
+        clientY: clientY,
+        target: cl.element.find('.delete-button-target')[2]
+      });
+
+      // In order to accommodate for the border, the flyout is always drawn 1 px to the left
+      // of the cursor's actual x position.
+      expect($('#uber-flyout').css('left')).to.equal((clientX - 1) + 'px');
+      // Note that this is actually the y offset of the element itself because it seems that
+      // the height of the flyout and the hint are 0 in the test environment (wtf?)
+      expect($('#uber-flyout').css('top')).to.equal(clientY + 'px');
+
+    });
+
+    it('should remove a card when the delete button is clicked', function() {
+      var cl = createCardLayout();
+
+      var card1 = new Card(cl.pageModel, 'testField1');
+      var card2 = new Card(cl.pageModel, 'testField2');
+      var card3 = new Card(cl.pageModel, 'testField3');
+      var cards = [ card1, card2, card3 ];
+
+      card1.set('cardSize', '1');
+      card2.set('cardSize', '2');
+      card3.set('cardSize', '3');
+
+      mockWindowStateService.windowSizeSubject.onNext({width: 1000, height: 1000});
+      mockWindowStateService.scrollPositionSubject.onNext(0);
+
+      cl.pageModel.set('cards', cards);
+      cl.outerScope.editMode = true;
+      cl.outerScope.$apply();
+
+      expect(cl.pageModel.getCurrentValue('cards').length).to.equal(3);
+
+      var thirdDeleteButton = $(cl.element.find('.delete-button-target')[2]);
+      thirdDeleteButton.trigger('click');
+
+      expect(cl.pageModel.getCurrentValue('cards')).to.deep.equal([card1, card2]);
+
+    });
+
     it('should show the correct drop placeholders', function() {
       var cl = createCardLayout();
 
@@ -278,6 +369,7 @@ describe('CardLayout directive test', function() {
     });
 
     describe('drag and drop', function() {
+
       it('should show the drop placeholder for the dragged card when the mouse is moved 4 pixels from mouse down location, until mouse up', function() {
         var cl = createCardLayout();
 
@@ -307,28 +399,34 @@ describe('CardLayout directive test', function() {
         }));
 
         // Drag it 2 pixels (not enough).
+        // NOTE: the target component of mousePositionSubject must be a raw DOM node,
+        // not a jQuery object (hence the [0]).
         mockWindowStateService.mousePositionSubject.onNext({
           clientX: 102,
           clientY: 100,
-          target: card2Overlay
+          target: card2Overlay[0]
         });
         expect(cl.element.find('.card-drag-overlay').length).to.equal(cards.length);
         expect(cl.element.find('.card-drop-placeholder').length).to.equal(0);
 
         // Drag it a total of 2.8 pixels (still not enough).
+        // NOTE: the target component of mousePositionSubject must be a raw DOM node,
+        // not a jQuery object (hence the [0]).
         mockWindowStateService.mousePositionSubject.onNext({
           clientX: 102,
           clientY: 102,
-          target: card2Overlay
+          target: card2Overlay[0]
         });
         expect(cl.element.find('.card-drag-overlay').length).to.equal(cards.length);
         expect(cl.element.find('.card-drop-placeholder').length).to.equal(0);
 
         // Drag it a total of 4 pixels (enough).
+        // NOTE: the target component of mousePositionSubject must be a raw DOM node,
+        // not a jQuery object (hence the [0]).
         mockWindowStateService.mousePositionSubject.onNext({
           clientX: 96,
           clientY: 100,
-          target: card2Overlay
+          target: card2Overlay[0]
         });
 
         expect(cl.element.find('.card-drag-overlay').length).to.equal(cards.length - 1);
@@ -378,33 +476,42 @@ describe('CardLayout directive test', function() {
           clientX: card2Dom.parent().offset().left,
           clientY: card2Dom.parent().offset().top + cardContainerOffset
         }));
+
+        // NOTE: the target component of mousePositionSubject must be a raw DOM node,
+        // not a jQuery object (hence the [0]).
         mockWindowStateService.mousePositionSubject.onNext({
           clientX: card2Dom.parent().offset().left - 5,
           clientY: card2Dom.parent().offset().top + cardContainerOffset,
-          target: card2Overlay
+          target: card2Overlay[0]
         });
 
         // Drag it above card 1.
+        // NOTE: the target component of mousePositionSubject must be a raw DOM node,
+        // not a jQuery object (hence the [0]).
         mockWindowStateService.mousePositionSubject.onNext({
           clientX: card1Dom.parent().offset().left,
           clientY: card1Dom.parent().offset().top + cardContainerOffset,
-          target: card2Overlay
+          target: card2Overlay[0]
         });
         expect(cl.pageModel.getCurrentValue('cards')).to.deep.equal([ card2, card1, card3 ]);
 
         // Drag it back above card 1 - this should restore the original order.
+        // NOTE: the target component of mousePositionSubject must be a raw DOM node,
+        // not a jQuery object (hence the [0]).
         mockWindowStateService.mousePositionSubject.onNext({
           clientX: card1Dom.parent().offset().left,
           clientY: card1Dom.parent().offset().top + cardContainerOffset,
-          target: card2Overlay
+          target: card2Overlay[0]
         });
         expect(cl.pageModel.getCurrentValue('cards')).to.deep.equal([ card1, card2, card3 ]);
 
         // Drag it down to the next card size (card3).
+        // NOTE: the target component of mousePositionSubject must be a raw DOM node,
+        // not a jQuery object (hence the [0]).
         mockWindowStateService.mousePositionSubject.onNext({
           clientX: card3Dom.parent().offset().left,
           clientY: card3Dom.parent().offset().top + cardContainerOffset,
-          target: card2Overlay
+          target: card2Overlay[0]
         });
         expect(cl.pageModel.getCurrentValue('cards')).to.deep.equal([ card1, card3, card2 ]);
         expect(card2.getCurrentValue('cardSize')).equals('2');
@@ -446,17 +553,22 @@ describe('CardLayout directive test', function() {
           clientX: card1Dom.offset().left,
           clientY: card1Dom.offset().top + cardContainerOffset
         }));
+
+        // NOTE: the target component of mousePositionSubject must be a raw DOM node,
+        // not a jQuery object (hence the [0]).
         mockWindowStateService.mousePositionSubject.onNext({
           clientX: card1Dom.offset().left - 5,
           clientY: card1Dom.offset().top + cardContainerOffset,
-          target: card1Overlay
+          target: card1Overlay[0]
         });
 
         // Drag it to the overlay.
+        // NOTE: the target component of mousePositionSubject must be a raw DOM node,
+        // not a jQuery object (hence the [0]).
         mockWindowStateService.mousePositionSubject.onNext({
           clientX: card1Dom.offset().left,
           clientY: card1Dom.offset().top + cardContainerOffset + placeholder2.offset().top + cardContainerOffset,
-          target: card1Overlay
+          target: card1Overlay[0]
         });
         expect(card1.getCurrentValue('cardSize')).to.equal('2');
 

@@ -5,6 +5,71 @@ $flyout-background: white
 $flyout-padding-vertical: 5px
 $flyout-padding-horizontal: 10px
 
+#uber-flyout
+  position: fixed
+  padding: $flyout-padding-vertical $flyout-padding-horizontal
+  color: $flyout-chart-text-color
+  font-size: $flyout-chart-text-size
+  word-wrap: break-word
+  white-space: normal
+  background-color: $flyout-chart-background-color
+  border: 1px solid $flyout-border
+  z-index: 99999
+  pointer-events: none
+
+  .hint
+    position: absolute
+    height: 20px
+    width: 20px
+    bottom: -20px
+    border: 0
+    background-color: transparent
+
+    &:after, &:before
+      border: solid transparent
+      content: " "
+      height: 0
+      width: 0
+      position: absolute
+
+#uber-flyout.left
+  .hint
+    left: 0
+
+    &:after
+      border-color: $flyout-chart-background-color transparent transparent transparent
+      border-width: $flyout-chart-tip-size $flyout-chart-tip-size 0 0
+
+    &:before
+      border-color: $flyout-border transparent transparent transparent
+      border-width: ($flyout-chart-tip-size + 1) ($flyout-chart-tip-size + 1) 0 0
+      top: 1px
+      left: -1px
+
+#uber-flyout.right
+  .hint
+    right: -10px
+
+    &:after
+      border-color: transparent $flyout-chart-background-color transparent transparent
+      border-width: 0 $flyout-chart-tip-size $flyout-chart-tip-size 0
+
+    &:before
+      border-color: transparent $flyout-border transparent transparent
+      border-width: 0 ($flyout-chart-tip-size + 1) ($flyout-chart-tip-size + 1) 0
+      top: 1px
+
+  .flyout-title
+    font-weight: bold
+    color: $flyout-chart-title-color
+
+
+
+
+
+
+
+
 .flyout
   border: 1px solid $flyout-border
   position: absolute

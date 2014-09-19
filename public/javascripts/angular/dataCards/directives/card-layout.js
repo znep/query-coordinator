@@ -1,7 +1,7 @@
 (function() {
   'use strict';
 
-  function cardLayout(Constants, AngularRxExtensions, WindowState, SortedTileLayout) {
+  function cardLayout(Constants, AngularRxExtensions, WindowState, SortedTileLayout, Flyout) {
     return {
       restrict: 'E',
       scope: {
@@ -549,6 +549,15 @@
           }
 
         };
+
+        scope.deleteCard = function(cardModel) {
+          scope.safeApply(function() {
+            scope.page.set('cards', _.without(scope.cardModels, cardModel));
+          });
+        };
+
+        Flyout.register('expand-button-target', function(el) { return '<div class="flyout-title">Expand this Card</div>'; });
+        Flyout.register('delete-button-target', function(el) { return '<div class="flyout-title">Remove this Card</div>'; });
 
 
         /******************

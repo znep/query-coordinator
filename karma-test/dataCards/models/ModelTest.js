@@ -684,6 +684,10 @@ describe("Model", function() {
       var parent = new Model();
       var child = new Model();
       var grandchild = new Model();
+      var greatGrandchild = {
+        serialize: _.constant('customSerialization')
+      };
+
       parent.defineObservableProperty('child', child);
       parent.defineObservableProperty('testProp', 5);
 
@@ -691,12 +695,14 @@ describe("Model", function() {
       child.defineObservableProperty('testProp2', 50);
 
       grandchild.defineObservableProperty('testProp3', 500);
+      grandchild.defineObservableProperty('child', greatGrandchild);
       expect(parent.serialize()).to.deep.equal({
         testProp: 5,
         child: {
           testProp2: 50,
           child: {
-            testProp3: 500
+            testProp3: 500,
+            child: 'customSerialization'
           }
         }
       });

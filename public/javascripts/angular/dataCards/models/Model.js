@@ -133,7 +133,7 @@ angular.module('dataCards.models').factory('Model', function(ModelHelper) {
     // objects without recursing on
     // properties. This is fine for now.
     function serializeArbitrary(val) {
-      if (val instanceof Model) {
+      if (_.isObject(val) && _.isFunction(val.serialize)) {
         return val.serialize();
       } else if (_.isArray(val)) {
         // Arrays are special - they contain models which we care about.

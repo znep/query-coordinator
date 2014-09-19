@@ -1,10 +1,44 @@
 angular.module('dataCards.models').factory('Model', function(ModelHelper) {
   // A model with observable properties.
   function Model() {
+    var self = this;
     this._writes = new Rx.Subject();
     this._sets = new Rx.Subject();
+    this._recursiveSets = new Rx.Subject();
     this._propertyTable = {};
+
+    //All children (= models set as values).
+    //TODO maybe invert this to avoid having to track this separately.
+    this._children = {};
+
+    //TODO only start caring if someone calls observeSetsRecursive.
+    this.observeWrites().subscribe(function(write) {
+      var oldValue = self._children[write.property];
+      if (oldValue instanceof Model) {
+        delete self._children[write.property];
+        oldValue.setParent(null);
+      }
+
+      if (write.newValue instanceof Model) {
+        var child = write.newValue;
+        self._children[write.property] = child;
+        child.setParent(self);
+      }
+    });
   }
+
+  Model.prototype.setParent = function(parent) {
+    if (this._observeSetsSubscriptionForParent) {
+      this._observeSetsSubscriptionForParent.dispose();
+      delete this._observeSetsSubscriptionForParent;
+    }
+
+    if (parent) {
+      this._observeSetsSubscriptionForParent = this.observeSetsRecursive().subscribe(function(set) {
+        parent._recursiveSets.onNext(set);
+      });
+    }
+  };
 
   // Define a new observable property. The first argument is the string property name.
   // The second argument is the initial value.
@@ -73,6 +107,10 @@ angular.module('dataCards.models').factory('Model', function(ModelHelper) {
 
   Model.prototype.observeSets = function() {
     return this._sets;
+  };
+
+  Model.prototype.observeSetsRecursive = function() {
+    return Rx.Observable.merge(this._recursiveSets, this._sets);
   };
 
   // See:

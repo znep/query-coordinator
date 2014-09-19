@@ -68,7 +68,6 @@ module.exports = function ( karma ) {
       'bower_components/moment/moment.js',
       'bower_components/native-promise-only/lib/npo.src.js',
       'bower_components/requestAnimationFrame-polyfill/requestAnimationFrame.js',
-      'bower_components/html5-polyfills/classList.js',
       'karma-test/TestHelpers.js',
       'karma-test/dataCards/*.js',
       'karma-test/dataCards/**/*.js',

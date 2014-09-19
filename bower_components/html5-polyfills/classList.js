@@ -1,5 +1,4 @@
-(function () {
-
+/*
 if (typeof window.Element === "undefined" || "classList" in document.documentElement) return;
 
 var prototype = Array.prototype,
@@ -68,3 +67,4 @@ defineElementGetter(Element.prototype, 'classList', function () {
 });
 
 })();
+*/

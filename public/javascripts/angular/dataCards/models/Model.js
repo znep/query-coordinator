@@ -127,24 +127,29 @@ angular.module('dataCards.models').factory('Model', function(ModelHelper) {
   Model.prototype.serialize = function() {
     var self = this;
     var artifact = {};
-    _.forOwn(self._propertyTable, function(seq, propertyName) {
-      var currentValue = self.getCurrentValue(propertyName);
-      var serializedProperty;
-      if (currentValue instanceof Model) {
-        // Models get serialized intelligently.
-        serializedProperty = currentValue.serialize();
-      } else if (_.isArray(currentValue)) {
+
+    // Serialize an arbitrary value.
+    // TODO Currently passes through
+    // objects without recursing on
+    // properties. This is fine for now.
+    function serializeArbitrary(val) {
+      if (val instanceof Model) {
+        return val.serialize();
+      } else if (_.isArray(val)) {
         // Arrays are special - they contain models which we care about.
-        // TODO Care about nested arrays?
-        serializedProperty = _.map(currentValue, function(valInArray) {
-          return (valInArray instanceof Model) ? valInArray.serialize() : valInArray;
+        return _.map(val, function(valInArray) {
+          return serializeArbitrary(valInArray);
         });
-      } else if (_.isFunction(currentValue)) {
+      } else if (_.isFunction(val)) {
         throw new Error('Tried to serialize a model having a function as a property value');
       } else {
-        serializedProperty = currentValue;
+        return val;
       }
-      artifact[propertyName] = serializedProperty;
+    };
+
+    _.forOwn(self._propertyTable, function(seq, propertyName) {
+      var currentValue = self.getCurrentValue(propertyName);
+      artifact[propertyName] = serializeArbitrary(currentValue);
     });
     return artifact;
   };

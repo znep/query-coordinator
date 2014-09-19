@@ -76,7 +76,7 @@ describe('timelineChart', function() {
   var activeChartScenario = null;
   var activeChart = null;
 
-  var getChartWithScenario = function(type) {
+  var getOrCreateChartScenario = function(type) {
     if (activeChartScenario !== type) {
       switch(type) {
         case '640px unexpanded unfiltered': activeChart = createNewTimelineChart(640, false, false); break;
@@ -92,17 +92,22 @@ describe('timelineChart', function() {
     removeTimelineChart();
     activeChart = null;
     activeChartScenario = null;
+    // Flyouts will sometimes stick around and cause unexpected behavior, since
+    // initializing them will cause them to look for an existing one and - under certain
+    // conditions - cause the rendering code immediately if it finds one.
+    // TODO(jerjou): flyouts should behave more reasonably, but for now:
+    $('.flyout').remove();
   };
 
 
   describe('when not expanded at 640px', function() {
     it('should create segments and 13 labels', function() {
-      var chart = getChartWithScenario('640px unexpanded unfiltered');
+      var chart = getOrCreateChartScenario('640px unexpanded unfiltered');
       expect($('g.segment').length).to.equal(testData.length);
       expect(chart.element.find('.labels div.label').length).to.equal(13);
     });
     it('should create segments with correct children', function() {
-      var chart = getChartWithScenario('640px unexpanded unfiltered');
+      var chart = getOrCreateChartScenario('640px unexpanded unfiltered');
       _.each($('g.segment'), function(segment) {
         $seg = $(segment);
         expect($seg.children().length).to.equal(5);
@@ -114,18 +119,18 @@ describe('timelineChart', function() {
       });
     });
     it('should create 3 ticks on the y-axis', function() {
-      var chart = getChartWithScenario('640px unexpanded unfiltered');
+      var chart = getOrCreateChartScenario('640px unexpanded unfiltered');
       expect(chart.element.find('.ticks > div').length).to.equal(3);
     });
     it('should create 13 ticks on the x-axis', function() {
-      var chart = getChartWithScenario('640px unexpanded unfiltered');
+      var chart = getOrCreateChartScenario('640px unexpanded unfiltered');
       expect(chart.element.find('g.xticks > rect.tick').length).to.equal(13);
     });
     it('should create a popup on mouse over with no filter and total of 16.4K', function() {
       printAllFlyoutContent();
       var expectedFlyoutSelector = '.flyout:contains(16.4K)';
 
-      var chart = getChartWithScenario('640px unexpanded unfiltered');
+      var chart = getOrCreateChartScenario('640px unexpanded unfiltered');
       chart.element.find('g.segment rect.spacer').mouseover();
       expect($(expectedFlyoutSelector).length).to.equal(1);
       var $rows = $(expectedFlyoutSelector + " .flyout-row");
@@ -139,7 +144,7 @@ describe('timelineChart', function() {
         printAllFlyoutContent();
         var expectedFlyoutSelector = '.flyout:contains(Filtered Amount)';
 
-        var chart = getChartWithScenario('640px unexpanded unfiltered');
+        var chart = getOrCreateChartScenario('640px unexpanded unfiltered');
 
         chart.element.find('g.segment').eq(1).mouseover();
         expect($(expectedFlyoutSelector).length).to.equal(0);
@@ -151,7 +156,7 @@ describe('timelineChart', function() {
       printAllFlyoutContent();
       var expectedFlyoutSelector = '.flyout:contains(8,204)';
 
-      var chart = getChartWithScenario('640px unexpanded filtered');
+      var chart = getOrCreateChartScenario('640px unexpanded filtered');
       chart.element.find('g.segment rect.spacer').mouseover();
       expect($(expectedFlyoutSelector).length).to.equal(1);
       var $rows = $(expectedFlyoutSelector + " .flyout-row");
@@ -164,7 +169,7 @@ describe('timelineChart', function() {
       printAllFlyoutContent();
       var expectedFlyoutSelector = '.flyout:contains(June 2007)';
 
-      var chart = getChartWithScenario('640px unexpanded filtered');
+      var chart = getOrCreateChartScenario('640px unexpanded filtered');
       var segments = chart.element.find('g.segment rect.spacer');
       segments.eq(Math.floor(segments.length/2)).mouseover();
       expect($(expectedFlyoutSelector).length).to.be.above(0);
@@ -186,7 +191,7 @@ describe('timelineChart', function() {
         printAllFlyoutContent();
         var expectedFlyoutSelector = '.flyout:contains(480K):contains(Total)';
 
-        var chart = getChartWithScenario('640px unexpanded filtered');
+        var chart = getOrCreateChartScenario('640px unexpanded filtered');
         chart.element.find('.labels .label').eq(0).mouseover();
         expect($(expectedFlyoutSelector).length).to.be.above(0);
         expect(chart.element.find('g.segment.hover').length).to.equal(12);
@@ -206,7 +211,7 @@ describe('timelineChart', function() {
       it('should switch orientation when hovering a section near the right edge of the card', function() {
         var $flyout;
         printAllFlyoutContent();
-        var chart = getChartWithScenario('640px unexpanded filtered');
+        var chart = getOrCreateChartScenario('640px unexpanded filtered');
         var $segments = chart.element.find('g.segment');
         $segments.filter(':first').mouseover();
         $flyout = $('.flyout');
@@ -218,14 +223,14 @@ describe('timelineChart', function() {
       });
     });
     it('should create labels with different positions', function() {
-      var chart = getChartWithScenario('640px unexpanded filtered');
+      var chart = getOrCreateChartScenario('640px unexpanded filtered');
       var positions = _.map(chart.element.find('.labels div.label'), function(label) {
         return $(label).attr('style');
       });
       expect(_.uniq(positions).length).to.equal(positions.length);
     });
     it('should create a range label when a segment is clicked', function() {
-      var chart = getChartWithScenario('640px unexpanded filtered');
+      var chart = getOrCreateChartScenario('640px unexpanded filtered');
       var segment = chart.element.find('g.segment').eq(1);
       segment.mousedown().mousemove().mouseup();
       expect(chart.element.find('.label.highlighted').length).to.equal(1);
@@ -234,7 +239,7 @@ describe('timelineChart', function() {
       expect(chart.element.find('g.draghandle').length).to.equal(2);
     });
     it('should create a range label and handles when a label is clicked', function() {
-      var chart = getChartWithScenario('640px unexpanded filtered');
+      var chart = getOrCreateChartScenario('640px unexpanded filtered');
       var segment = chart.element.find('.label').eq(1);
       segment.mousedown().mousemove().mouseup();
       expect(chart.element.find('.label.highlighted').length).to.equal(1);
@@ -243,7 +248,7 @@ describe('timelineChart', function() {
       expect(chart.element.find('g.draghandle').length).to.equal(2);
     });
     it('should create a range label and handles when a selection is dragged', function() {
-      var chart = getChartWithScenario('640px unexpanded filtered');
+      var chart = getOrCreateChartScenario('640px unexpanded filtered');
       var segments = chart.element.find('g.segment');
       var start = 5;
       var end = 10;
@@ -256,7 +261,8 @@ describe('timelineChart', function() {
     });
 
     it('should highlight labels onhover when not actively selecting', function() {
-      var chart = getChartWithScenario('640px unexpanded filtered');
+      removeAllScenarioCharts();
+      var chart = getOrCreateChartScenario('640px unexpanded filtered');
       var segments = chart.element.find('g.segment');
       var start = 5;
       var end = 10;
@@ -277,7 +283,8 @@ describe('timelineChart', function() {
       segments.eq(end).mouseleave().mouseup();
     });
     it('should not highlight labels onhover when actively selecting', function() {
-      var chart = getChartWithScenario('640px unexpanded filtered');
+      removeAllScenarioCharts();
+      var chart = getOrCreateChartScenario('640px unexpanded filtered');
       var segments = chart.element.find('g.segment');
       var start = 5;
       var end = 10;
@@ -303,7 +310,7 @@ describe('timelineChart', function() {
     });
 
     it('should be able to change a selection via dragging a handle', function() {
-      var chart = getChartWithScenario('640px unexpanded filtered');
+      var chart = getOrCreateChartScenario('640px unexpanded filtered');
       var segments = chart.element.find('g.segment');
       var start = 5;
       var end = 10;
@@ -320,7 +327,7 @@ describe('timelineChart', function() {
       expect(chart.element.find('g.draghandle').length).to.equal(2);
     });
     it('should clear a range when drag handle is clicked', function() {
-      var chart = getChartWithScenario('640px unexpanded filtered');
+      var chart = getOrCreateChartScenario('640px unexpanded filtered');
       var segment = chart.element.find('g.segment').eq(1);
       segment.mousedown().mousemove().mouseup();
       var dragHandles = chart.element.find('g.draghandle');
@@ -330,7 +337,7 @@ describe('timelineChart', function() {
       removeAllScenarioCharts(); // Too annoying to clear state properly.
     });
     it('should fire a filter-changed event when selected and a filter-cleared event when cleared', function() {
-      var chart = getChartWithScenario('640px unexpanded filtered');
+      var chart = getOrCreateChartScenario('640px unexpanded filtered');
       var segments = $('g.segment');
       var filterChanged = false;
       scope.$on('timeline-chart:filter-changed', function(filter) {
@@ -348,7 +355,7 @@ describe('timelineChart', function() {
     });
     it('should be able to change data', function() {
       this.timeout(4000);
-      var chart = getChartWithScenario('640px unexpanded filtered');
+      var chart = getOrCreateChartScenario('640px unexpanded filtered');
       var filteredPaths = _.map($('path.fill.filtered'), function(path) {
         return $(path).attr('d');
       });
@@ -372,7 +379,7 @@ describe('timelineChart', function() {
       });
     });
     it('should be able to select a segment within a larger selection', function() {
-      var chart = getChartWithScenario('640px unexpanded filtered');
+      var chart = getOrCreateChartScenario('640px unexpanded filtered');
       var segment = chart.element.find('.label').eq(1);
       segment.mousedown().mousemove().mouseup();
       expect(chart.element.find('.label.highlighted').length).to.equal(1);
@@ -384,7 +391,7 @@ describe('timelineChart', function() {
     describe('if showFiltered', function() {
       it('should show the filtered count in the flyout', function() {
         printAllFlyoutContent();
-        var chart = getChartWithScenario('640px unexpanded filtered');
+        var chart = getOrCreateChartScenario('640px unexpanded filtered');
 
         chart.element.find('g.segment').eq(1).mouseover();
         expect($('.flyout').is(':contains(Filtered Amount)')).to.equal(true);
@@ -393,14 +400,14 @@ describe('timelineChart', function() {
   });
   describe('when not expanded at 300px', function() {
     it('should hide some labels', function() {
-      var chart = getChartWithScenario('300px unexpanded unfiltered');
+      var chart = getOrCreateChartScenario('300px unexpanded unfiltered');
       expect(chart.element.find('.label').length).to.equal(13);
       expect(chart.element.find('.label').filter(function() { return $(this).css('opacity') > 0; }).length).to.equal(6);
     });
     it('should show hidden labels when the segment is moused over', function() {
       var SECTION_INDEX = 4;
       var SEGMENT_INDEX = SECTION_INDEX * 12;
-      var chart = getChartWithScenario('300px unexpanded unfiltered');
+      var chart = getOrCreateChartScenario('300px unexpanded unfiltered');
       var $segment = chart.element.find('g.segment').eq(SEGMENT_INDEX);
       var $label = chart.element.find('.label').eq(SECTION_INDEX);
       expect(parseFloat($label.css('opacity'))).to.equal(0);
@@ -410,7 +417,7 @@ describe('timelineChart', function() {
     });
     it('should show a hidden label when that label\'s area is moused over', function() {
       var SECTION_INDEX = 2;
-      var chart = getChartWithScenario('300px unexpanded unfiltered');
+      var chart = getOrCreateChartScenario('300px unexpanded unfiltered');
       var $label = chart.element.find('.label').eq(SECTION_INDEX);
       expect(parseFloat($label.css('opacity'))).to.equal(0);
       $label.mouseover();

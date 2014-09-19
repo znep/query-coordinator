@@ -17,13 +17,23 @@ angular.module('dataCards.services').factory('Flyout', function(WindowState) {
 
     if (!_.isEmpty(uberFlyout)) {
 
-      if (e.target !== null) {
+      // This is a double-fisted workaround for IE9:
+      //
+      // 1. SVG elements apparently do not have classNames
+      // 2. IE9 does not support <DOM Element>.classList
+      //
+      // We used to use a polyfill for classList, but the
+      // polyfill itself would have required a polyfill,
+      // so we chose to just do this the messy way instead.
+      if (e.target !== null && typeof e.target.className === 'string') {
 
-        classCount = e.target.classList.length;
+        var classList = (e.target.className === '') ? [] : e.target.className.split(/\s+/);
+
+        classCount = classList.length;
 
         for (i = 0; i < classCount; i++) {
 
-          className = e.target.classList[i];
+          className = classList[i];
 
           if (handlers.hasOwnProperty(className)) {
 

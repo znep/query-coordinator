@@ -106,6 +106,7 @@ describe("A Choropleth Card Visualization", function() {
     });
 
     it('should not let click events leak', function() {
+
       var choro1Fired = false;
       var choro2Fired = false;
 

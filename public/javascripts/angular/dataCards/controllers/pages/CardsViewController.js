@@ -2,7 +2,7 @@
 
   'use strict';
 
-  function CardsViewController($scope, $log, AngularRxExtensions, SortedTileLayout, Filter, page) {
+  function CardsViewController($scope, $log, AngularRxExtensions, SortedTileLayout, Filter, PageDataService, page) {
 
     AngularRxExtensions.install($scope);
 
@@ -204,6 +204,12 @@
     ***************************/
 
     $scope.editMode = false;
+
+    $scope.bindObservable('hasChanges', page.observeSetsRecursive());
+
+    $scope.savePage = function() {
+      PageDataService.save(page);
+    };
 
 
     /******************************************

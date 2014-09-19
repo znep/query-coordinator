@@ -25,6 +25,11 @@
       return fetch.call(this, id);
     };
 
+    this.save = function(pageModel) {
+      var json = JSON.stringify(pageModel.serialize());
+      console.log('Would save: ' + json);
+    };
+
     this.requesterLabel = function() {
       return 'page-data-service';
     };

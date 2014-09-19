@@ -239,8 +239,7 @@
                 return 0;
               }
             }
-            // Otherwise, set back to its inherited opacity
-            return '';
+            return 1;
           });
 
         labelDivSelection.exit().remove();
@@ -606,12 +605,11 @@
         onOpen: function(target, head, options, $flyout) {
           var toggleLabel = function($label) {
             $label.addClass('active');
-            if (!$label.hasClass('edge-label') &&
-                parseFloat($label.css('opacity')) === 0) {
+            if (!$label.hasClass('edge-label') && $label.css('opacity') < 1) {
               $label.
                 data('labelWasHidden', true).
                 css({
-                  opacity: '', // Set back to its inherited value
+                  opacity: 1,
                   zIndex: 10
                 });
             }

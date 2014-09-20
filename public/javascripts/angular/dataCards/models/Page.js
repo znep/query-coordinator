@@ -38,6 +38,15 @@ angular.module('dataCards.models').factory('Page', function(Dataset, Card, Model
   }
 
   Model.extend(Page);
+
+  Page.prototype.serialize = function() {
+    var dataset = this.getCurrentValue('dataset');
+    var serialized = Model.prototype.serialize.call(this);
+    serialized.datasetId = dataset.id;
+    delete serialized.dataset;
+    return serialized;
+  };
+
   Page.prototype.toggleExpanded = function(theCard) {
     // NOTE: For the MVP, we only ever allow one expanded card.
     // Enforce that here.

@@ -37,6 +37,13 @@ angular.module('dataCards.models').factory('Card', function($injector, ModelHelp
   }
 
   Model.extend(Card);
+
+  Card.prototype.serialize = function() {
+    var serialized = Model.prototype.serialize.call(this);
+    serialized.fieldName = this.fieldName;
+    return serialized;
+  };
+
   Card.deserialize = function(page, blob) {
     var errors = JJV.validate('serializedCard', blob);
     if (errors) {

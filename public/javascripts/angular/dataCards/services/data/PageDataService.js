@@ -26,8 +26,20 @@
     };
 
     this.save = function(pageModel) {
+      if (ServerConfig.get('useViewStubs')) {
+        throw new Error('Using stubs - save not allowed');
+      }
+      var url = '/page_metadata/{0}.json'.format(pageModel.id);
+      var config = {
+        requester: this
+      };
+
       var json = JSON.stringify(pageModel.serialize());
-      console.log('Would save: ' + json);
+      return http.put(url, {'pageMetadata':  json}, config).
+        then(function(response) {
+          console.log('saved');
+        }
+      );
     };
 
     this.requesterLabel = function() {

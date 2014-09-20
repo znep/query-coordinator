@@ -42,7 +42,10 @@ angular.module('dataCards.models').factory('Page', function(Dataset, Card, Model
     // NOTE: For the MVP, we only ever allow one expanded card.
     // Enforce that here.
     _.each(this.getCurrentValue('cards'), function(card) {
-      card.set('expanded', card === theCard ? !theCard.getCurrentValue('expanded') : false);
+      var expanded = card === theCard ? !theCard.getCurrentValue('expanded') : false;
+      if (expanded != card.getCurrentValue('expanded')) {
+        card.set('expanded', expanded);
+      }
     });
   };
 

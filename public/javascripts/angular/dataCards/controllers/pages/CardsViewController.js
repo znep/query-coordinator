@@ -205,7 +205,7 @@
 
     $scope.editMode = false;
 
-    $scope.bindObservable('hasChanges', page.observeSetsRecursive());
+    $scope.bindObservable('hasChanges', page.observeSetsRecursive().any());
 
     $scope.savePage = function() {
       PageDataService.save(page);

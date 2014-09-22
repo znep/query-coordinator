@@ -23,7 +23,7 @@
               <last-updated class="metadatum"></last-updated>
             </div>
           </div>
-          <a ng-click="savePage()" class="action-btn r-to-l" ng-class="{disabled: !hasChanges}" ng-if="currentUser">Save</a>
+          <a ng-click="savePage()" class="save-button action-btn r-to-l" ng-class="{disabled: !hasChanges}" ng-if="currentUser">Save</a>
           <a href="{{datasetCSVDownloadURL}}" title="Download this data as CSV" class="action-btn r-to-l">Download</a>
           <a ng-click="editMode = !editMode" class="action-btn r-to-l">{{editMode | editPreview}}</a>
           <button id="api-panel-toggle-btn" title="Access this Dataset via API" ng-class="{touched: apiPanelActive}" class="action-btn r-to-l">API</button>

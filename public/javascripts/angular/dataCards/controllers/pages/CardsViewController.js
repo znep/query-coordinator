@@ -2,7 +2,7 @@
 
   'use strict';
 
-  function CardsViewController($scope, $log, AngularRxExtensions, SortedTileLayout, Filter, PageDataService, UserSession, page) {
+  function CardsViewController($scope, $log, AngularRxExtensions, SortedTileLayout, Filter, PageDataService, UserSession, Flyout, page) {
 
     AngularRxExtensions.install($scope);
 
@@ -219,6 +219,10 @@
     $scope.savePage = function() {
       PageDataService.save(page);
     };
+
+    Flyout.register('save-button', function() {
+      return $scope.hasChanges ? null : 'Nothing to save';
+    });
 
 
     /******************************************

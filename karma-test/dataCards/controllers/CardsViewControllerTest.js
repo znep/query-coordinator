@@ -24,12 +24,18 @@ describe("CardsViewController", function() {
       });
     }
   };
+  var mockUserSessionService = {
+    getCurrentUser: function() {
+      return $q.when(null);
+    }
+  };
 
   beforeEach(module('dataCards'));
   beforeEach(function() {
     module(function($provide) {
       $provide.value('PageDataService', mockPageDataService);
       $provide.value('DatasetDataService', mockDatasetDataService);
+      $provide.value('UserSession', mockUserSessionService);
     });
   });
   beforeEach(inject(['$q', 'Card', 'Page', '$rootScope', '$controller', function(_$q, _Card, _Page, _$rootScope, _$controller) {

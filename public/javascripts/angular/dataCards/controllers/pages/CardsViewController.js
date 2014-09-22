@@ -2,7 +2,7 @@
 
   'use strict';
 
-  function CardsViewController($scope, $log, AngularRxExtensions, SortedTileLayout, Filter, PageDataService, page) {
+  function CardsViewController($scope, $log, AngularRxExtensions, SortedTileLayout, Filter, PageDataService, UserSession, page) {
 
     AngularRxExtensions.install($scope);
 
@@ -24,6 +24,15 @@
       if (!date) return '';
       return moment(date).fromNow();
     }));
+
+
+    /***************
+    * User session *
+    ***************/
+
+    // Bind the current user to the scope, or null if no user is logged in or there was an error
+    // fetching the current user.
+    $scope.bindObservable('currentUser', Rx.Observable.fromPromise(UserSession.getCurrentUser()), _.constant(null));
 
 
     /*****************

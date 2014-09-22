@@ -217,7 +217,9 @@
     $scope.bindObservable('hasChanges', page.observeSetsRecursive().any());
 
     $scope.savePage = function() {
-      PageDataService.save(page);
+      if ($scope.hasChanges) {
+        PageDataService.save(page);
+      }
     };
 
     Flyout.register('save-button', function() {

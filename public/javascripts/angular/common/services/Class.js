@@ -7,7 +7,7 @@
    * MIT Licensed.
    */
   // Inspired by base2 and Prototype
-  var ClassProvider = (function(){
+  var ClassProvider = (function() {
     var initializing = false, fnTest = /xyz/.test(function(){xyz;}) ? /\b_super\b/ : /.*/;
 
     // The base Class implementation (does nothing)

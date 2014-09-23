@@ -54,7 +54,7 @@ describe('Page model', function() {
 
     var shouldBeResolved = false;
 
-    var staticInfoDefer =$q.defer();
+    var staticInfoDefer = $q.defer();
     var getBaseInfoCalled = false;
     MockPageDataService.getBaseInfo = function(id) {
       expect(getBaseInfoCalled).to.be.false;
@@ -71,7 +71,7 @@ describe('Page model', function() {
     });
 
     shouldBeResolved = true;
-    staticInfoDefer.resolve({ 'description': descFromApi});
+    staticInfoDefer.resolve({ 'description': descFromApi });
     $rootScope.$digest();
     expect(getBaseInfoCalled).to.be.true;
 
@@ -84,7 +84,7 @@ describe('Page model', function() {
     var id = 'dead-beef';
     var datasetId = 'fooo-baar';
 
-    var staticInfoDefer =$q.defer();
+    var staticInfoDefer = $q.defer();
     MockPageDataService.getBaseInfo = function(id) {
       expect(id).to.equal(id);
       return staticInfoDefer.promise;

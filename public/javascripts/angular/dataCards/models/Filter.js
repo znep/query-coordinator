@@ -26,7 +26,7 @@ angular.module('dataCards.models').factory('Filter', function(Assert, SoqlHelper
   };
 
   BinaryOperatorFilter.deserialize = function(blob) {
-    var args = blob.arguments;
+    var args = blob['arguments'];
     return new BinaryOperatorFilter(args.operator, args.operand, args.humanReadableOperand);
   };
 
@@ -58,7 +58,7 @@ angular.module('dataCards.models').factory('Filter', function(Assert, SoqlHelper
   };
 
   TimeRangeFilter.deserialize = function(blob) {
-    var args = blob.arguments;
+    var args = blob['arguments'];
     return new TimeRangeFilter(moment(args.start, moment.ISO_8601), moment(args.end, moment.ISO_8601));
   };
 
@@ -82,20 +82,20 @@ angular.module('dataCards.models').factory('Filter', function(Assert, SoqlHelper
   };
 
   IsNullFilter.deserialize = function(blob) {
-    return new IsNullFilter(blob.arguments.isNull);
+    return new IsNullFilter(blob['arguments'].isNull);
   };
 
   function deserialize(blob) {
-    if (!_.isObject(blob.arguments)) {
+    if (!_.isObject(blob['arguments'])) {
       throw new Error('No arguments provided in serialized filter')
     }
 
     var filterClass;
-    switch(blob.function) {
+    switch(blob['function']) {
       case 'IsNull': filterClass = IsNullFilter; break;
       case 'BinaryOperator': filterClass = BinaryOperatorFilter; break;
       case 'TimeRange': filterClass = TimeRangeFilter; break;
-      default: throw new Error('Unsupported serialized filter function: ' + blob.function);
+      default: throw new Error('Unsupported serialized filter function: ' + blob['function']);
     }
 
     return filterClass.deserialize(blob);

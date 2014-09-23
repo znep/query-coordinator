@@ -110,7 +110,7 @@ describe("Filter models", function() {
       var serializedFilter = parseAsJson(filter.serialize());
 
       // Hack the serialized form to have a malformed end time.
-      serializedFilter.arguments.end = '1/3/2013' // Not valid ISO8601
+      serializedFilter['arguments'].end = '1/3/2013' // Not valid ISO8601
 
       expect(function() {
         Filter.deserialize(serializedFilter);

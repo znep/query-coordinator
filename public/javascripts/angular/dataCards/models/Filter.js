@@ -17,14 +17,17 @@ angular.module('dataCards.models').factory('Filter', function(Assert, SoqlHelper
   BinaryOperatorFilter.prototype.serialize = function() {
     return {
       'function': 'BinaryOperator',
-      'operator': this.operator,
-      'operand': this.operand,
-      'humanReadableOperand': this.humanReadableOperand
+      'arguments': {
+        'operator': this.operator,
+        'operand': this.operand,
+        'humanReadableOperand': this.humanReadableOperand
+      }
     };
   };
 
   BinaryOperatorFilter.deserialize = function(blob) {
-    return new BinaryOperatorFilter(blob.operator, blob.operand, blob.humanReadableOperand);
+    var args = blob.arguments;
+    return new BinaryOperatorFilter(args.operator, args.operand, args.humanReadableOperand);
   };
 
   function TimeRangeFilter(start, end) {
@@ -47,13 +50,16 @@ angular.module('dataCards.models').factory('Filter', function(Assert, SoqlHelper
   TimeRangeFilter.prototype.serialize = function() {
     return {
       'function': 'TimeRange',
-      'start': this.start,
-      'end': this.end
+      'arguments': {
+        'start': this.start,
+        'end': this.end
+      }
     };
   };
 
   TimeRangeFilter.deserialize = function(blob) {
-    return new TimeRangeFilter(moment(blob.start), moment(blob.end));
+    var args = blob.arguments;
+    return new TimeRangeFilter(moment(args.start), moment(args.end));
   };
 
   function IsNullFilter(isNull) {
@@ -69,20 +75,27 @@ angular.module('dataCards.models').factory('Filter', function(Assert, SoqlHelper
   IsNullFilter.prototype.serialize = function() {
     return {
       'function': 'IsNull',
-      'isNull': this.isNull
+      'arguments': {
+        'isNull': this.isNull
+      }
     };
   };
 
   IsNullFilter.deserialize = function(blob) {
-    return new IsNullFilter(blob.isNull);
+    return new IsNullFilter(blob.arguments.isNull);
   };
 
   function deserialize(blob) {
+    if (!_.isObject(blob.arguments)) {
+      throw new Error('No arguments provided in serialized filter')
+    }
+
     var filterClass;
     switch(blob.function) {
       case 'IsNull': filterClass = IsNullFilter; break;
       case 'BinaryOperator': filterClass = BinaryOperatorFilter; break;
       case 'TimeRange': filterClass = TimeRangeFilter; break;
+      default: throw new Error('Unsupported serialized filter function: ' + blob.function);
     }
 
     return filterClass.deserialize(blob);

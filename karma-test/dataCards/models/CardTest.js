@@ -16,7 +16,9 @@ describe('Card model', function() {
       'activeFilters': [
         {
           'function': 'IsNull',
-          'isNull': false
+          'arguments': {
+            'isNull': false
+          }
         }
       ]
     };

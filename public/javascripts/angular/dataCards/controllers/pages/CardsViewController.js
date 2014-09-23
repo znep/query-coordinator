@@ -218,10 +218,11 @@
     $scope.editMode = false;
 
     // We've got changes if the last action was an edit (vs. a save).
+    // All sets map to true, and all saves map to false. The latest
+    // value is what we want to set to hasChanges.
     $scope.bindObservable('hasChanges', Rx.Observable.merge(
-        page.observeSetsRecursive().map(_.constant(true)),
-        successfulSaves.map(_.constant(false))
-        ));
+        page.observeSetsRecursive().map(_.constant(true)), successfulSaves.map(_.constant(false))
+      ));
 
     successfulSaves.subscribe(function() {
       $scope.editMode = false;

@@ -35,11 +35,7 @@
       };
 
       var json = JSON.stringify(pageModel.serialize());
-      return http.put(url, {'pageMetadata':  json}, config).
-        then(function(response) {
-          console.log('saved');
-        }
-      );
+      return http.put(url, {'pageMetadata':  json}, config);
     };
 
     this.requesterLabel = function() {

@@ -1,29 +1,38 @@
-describe("Card model", function() {
+describe('Card model', function() {
   beforeEach(module('dataCards'));
 
   it('should define a serializedCard JSON schema', inject(function(Card, JJV) {
     expect(JJV.schema).to.have.property('serializedCard');
   }));
 
-  it('deserialization should return an instance of Card with correct properties set', inject(function(Card, Page, JJV) {
+  it('deserialization should return an instance of Card with correct properties set', inject(function(Card, Page, JJV, Filter) {
     var blob = {
-      "fieldName": "test_crime_type",
-      "cardSize": 2,
-      "cardCustomStyle": { "test_barColor": "#659CEF" },
-      "expandedCustomStyle": { "test_zebraStripeRows" : true } ,
-      "displayMode": "figures",
-      "expanded": false
+      'fieldName': 'test_crime_type',
+      'cardSize': 2,
+      'cardCustomStyle': { 'test_barColor': '#659CEF' },
+      'expandedCustomStyle': { 'test_zebraStripeRows' : true } ,
+      'displayMode': 'figures',
+      'expanded': false,
+      'activeFilters': [
+        {
+          'function': 'IsNull',
+          'isNull': false
+        }
+      ]
     };
 
-    // Ensure the test has an up-to-date blob. If this fails, update the above blob.
     var requiredKeys = JJV.schema.serializedCard.required;
-    expect(blob).to.have.keys(requiredKeys);
 
     var instance = Card.deserialize(new Page('fake-asdf'), blob);
     expect(instance).to.be.instanceof(Card);
     expect(instance.page).to.be.instanceof(Page);
 
     var out = {fieldName: blob.fieldName};
+    expect(instance.getCurrentValue('activeFilters')).to.deep.equal([
+        new Filter.IsNullFilter(false)
+      ]);
+    out['activeFilters'] = _.invoke(instance.getCurrentValue('activeFilters'), 'serialize');
+
     _.each(requiredKeys, function(field) {
       if (field === 'fieldName') { // fieldName isn't observable.
         expect(instance[field]).to.exist;

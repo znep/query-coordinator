@@ -52,74 +52,75 @@ angular.module('dataCards.models').factory('Dataset', function(ModelHelper, Mode
   });
 
   //TODO cache instances or share cache.
-  function Dataset(id) {
-    var self = this;
-    Model.call(this);
-    var Page = $injector.get('Page'); // Inject Page here to avoid circular dep.
+  var Dataset = Model.extend({
+    init: function(id) {
+      this._super();
 
-    if (!UID_REGEXP.test(id)) {
-      throw new Error('Bad dataset ID passed to Dataset constructor.');
-    }
-    this.id = id;
+      var self = this;
+      var Page = $injector.get('Page'); // Inject Page here to avoid circular dep.
 
-    // Reuse promises across lazy properties.
-    // NOTE! It's important that the various getters on PageDataService are _not_ called
-    // until the lazy evaluator gets called. Otherwise we'll fetch all the data before we
-    // actually need it.
-    var baseInfoPromise = function() {
-      return DatasetDataService.getBaseInfo(self.id).then(function(blob) {
-        var errors = JJV.validate('datasetMetadata', blob);
-        if (errors) {
-          throw new Error('Dataset metadata deserialization failed: ' + JSON.stringify(errors) + JSON.stringify(blob));
-        }
-        return blob;
-      }).then(function(blob) {
-        blob.updatedAt = new Date(blob.updatedAt);
-        return blob;
-      }).then(function(blob) {
-        blob.columns.push({
-          "name": "*",
-          "title": "All Data",
-          "description": "",
-          "logicalDatatype": "*",
-          "physicalDatatype": "*",
-          "importance": 1
-        });
-        return blob;
-      });
-    };
+      if (!UID_REGEXP.test(id)) {
+        throw new Error('Bad dataset ID passed to Dataset constructor.');
+      }
+      this.id = id;
 
-    var fields = ['title', 'rowDisplayUnit', 'defaultAggregateColumn', 'domain', 'ownerId', 'updatedAt'];
-    _.each(fields, function(field) {
-      self.defineObservableProperty(field, undefined, function() {
-        return baseInfoPromise().then(_.property(field));
-      });
-    });
-
-    self.defineObservableProperty('columns', {}, function() {
-      // Columns are provided as an array of objects.
-      // For ease of use, transform it into an object where
-      // the keys are the column names.
-      return baseInfoPromise().then(function(data) {
-        return _.reduce(data.columns, function(acc, column) {
-          acc[column.name] = column;
-          return acc;
-        }, {});
-      });
-    });
-
-    self.defineObservableProperty('pages', {}, function() {
-      return baseInfoPromise().then(function(data) {
-        return _.transform(data.pages, function(res, ids, source) {
-          res[source] = _.map(ids, function(id) {
-            return new Page(id);
+      // Reuse promises across lazy properties.
+      // NOTE! It's important that the various getters on PageDataService are _not_ called
+      // until the lazy evaluator gets called. Otherwise we'll fetch all the data before we
+      // actually need it.
+      var baseInfoPromise = function() {
+        return DatasetDataService.getBaseInfo(self.id).then(function(blob) {
+          var errors = JJV.validate('datasetMetadata', blob);
+          if (errors) {
+            throw new Error('Dataset metadata deserialization failed: ' + JSON.stringify(errors) + JSON.stringify(blob));
+          }
+          return blob;
+        }).then(function(blob) {
+          blob.updatedAt = new Date(blob.updatedAt);
+          return blob;
+        }).then(function(blob) {
+          blob.columns.push({
+            "name": "*",
+            "title": "All Data",
+            "description": "",
+            "logicalDatatype": "*",
+            "physicalDatatype": "*",
+            "importance": 1
           });
-        })
-      });
-    });
-  };
+          return blob;
+        });
+      };
 
-  Model.extend(Dataset);
+      var fields = ['title', 'rowDisplayUnit', 'defaultAggregateColumn', 'domain', 'ownerId', 'updatedAt'];
+      _.each(fields, function(field) {
+        self.defineObservableProperty(field, undefined, function() {
+          return baseInfoPromise().then(_.property(field));
+        });
+      });
+
+      self.defineObservableProperty('columns', {}, function() {
+        // Columns are provided as an array of objects.
+        // For ease of use, transform it into an object where
+        // the keys are the column names.
+        return baseInfoPromise().then(function(data) {
+          return _.reduce(data.columns, function(acc, column) {
+            acc[column.name] = column;
+            return acc;
+          }, {});
+        });
+      });
+
+      self.defineObservableProperty('pages', {}, function() {
+        return baseInfoPromise().then(function(data) {
+          return _.transform(data.pages, function(res, ids, source) {
+            res[source] = _.map(ids, function(id) {
+              return new Page(id);
+            });
+          })
+        });
+      });
+    }
+  });
 
   return Dataset;
 });

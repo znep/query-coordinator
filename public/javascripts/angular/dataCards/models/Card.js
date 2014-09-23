@@ -19,32 +19,33 @@ angular.module('dataCards.models').factory('Card', function($injector, ModelHelp
     'required': ['fieldName', 'cardSize', 'cardCustomStyle', 'expandedCustomStyle', 'displayMode', 'expanded']
   });
 
-  function Card(page, fieldName) {
-    Model.call(this);
-    var Page = $injector.get('Page'); // Inject Page here to avoid circular dep.
-    if(!(page instanceof Page)) { throw new Error('Cards must have parent Page models.'); }
-    if(!_.isString(fieldName) || _.isEmpty(fieldName)) { throw new Error('Cards must have a non-empty field name.'); }
+  var Card = Model.extend({
+    init: function(page, fieldName) {
+      this._super();
 
-    var self = this;
-    this.page = page;
-    this.fieldName = fieldName;
-    this.uniqueId = _.uniqueId();
+      var Page = $injector.get('Page'); // Inject Page here to avoid circular dep.
+      if(!(page instanceof Page)) { throw new Error('Cards must have parent Page models.'); }
+      if(!_.isString(fieldName) || _.isEmpty(fieldName)) { throw new Error('Cards must have a non-empty field name.'); }
 
-    _.each(_.keys(JJV.schema.serializedCard.properties), function(field) {
-      if (field === 'fieldName') return; // fieldName isn't observable.
-      self.defineObservableProperty(field);
-    });
+      var self = this;
+      this.page = page;
+      this.fieldName = fieldName;
+      this.uniqueId = _.uniqueId();
 
-    self.set('activeFilters', []);
-  }
+      _.each(_.keys(JJV.schema.serializedCard.properties), function(field) {
+        if (field === 'fieldName') return; // fieldName isn't observable.
+        self.defineObservableProperty(field);
+      });
 
-  Model.extend(Card);
+      self.set('activeFilters', []);
+    },
 
-  Card.prototype.serialize = function() {
-    var serialized = Model.prototype.serialize.call(this);
-    serialized.fieldName = this.fieldName;
-    return serialized;
-  };
+    serialize: function() {
+      var serialized = this._super();
+      serialized.fieldName = this.fieldName;
+      return serialized;
+    },
+  });
 
   Card.deserialize = function(page, blob) {
     var errors = JJV.validate('serializedCard', blob);

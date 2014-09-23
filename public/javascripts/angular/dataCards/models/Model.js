@@ -12,10 +12,10 @@ angular.module('dataCards.models').factory('Model', function(Class, ModelHelper)
       //to an array containing children).
       this._children = {};
 
-      //TODO Possible perf optimization: only start caring if someone calls observeSetsRecursive.
+      //TODO Possible perf optimization: only start caring if someone calls observePropertyChangesRecursively.
       //Right now this isn't needed, as our models right now are one giant tree, and we
-      //call observeSetsRecursive on the root.
-      this.observeWrites().subscribe(function(changeNotification) {
+      //call observePropertyChangesRecursively on the root.
+      this.observePropertyWrites().subscribe(function(changeNotification) {
         var oldChildrenUnderThisProperty = self._children[changeNotification.property];
         _.invoke(oldChildrenUnderThisProperty, '_setParentModel', null);
         delete self._children[changeNotification.property];
@@ -35,15 +35,15 @@ angular.module('dataCards.models').factory('Model', function(Class, ModelHelper)
 
     _setParentModel: function(parentModel) {
       // Stop telling our old parent about our property changes.
-      if (this._observeSetsSubscriptionForParent) {
-        this._observeSetsSubscriptionForParent.dispose();
-        delete this._observeSetsSubscriptionForParent;
+      if (this._observePropertyChangesSubscriptionForParent) {
+        this._observePropertyChangesSubscriptionForParent.dispose();
+        delete this._observePropertyChangesSubscriptionForParent;
       }
 
       if (parentModel) {
         // Start telling our new parent about our property changes.
         // Store the subscription so we can detach it later.
-        this._observeSetsSubscriptionForParent = this.observeSetsRecursive().subscribe(function(changeNotification) {
+        this._observePropertyChangesSubscriptionForParent = this.observePropertyChangesRecursively().subscribe(function(changeNotification) {
           parentModel._recursiveSets.onNext(changeNotification);
         });
       }
@@ -168,7 +168,7 @@ angular.module('dataCards.models').factory('Model', function(Class, ModelHelper)
     //   property: <string name of changed property>,
     //   newValue: <new value of the property>
     // }
-    observeWrites: function() {
+    observePropertyWrites: function() {
       return this._writes;
     },
 
@@ -182,7 +182,7 @@ angular.module('dataCards.models').factory('Model', function(Class, ModelHelper)
     //   property: <string name of changed property>,
     //   newValue: <new value of the property>
     // }
-    observeSets: function() {
+    observePropertyChanges: function() {
       return this._sets;
     },
 
@@ -192,13 +192,13 @@ angular.module('dataCards.models').factory('Model', function(Class, ModelHelper)
     // in an array assigned to one of M's properties.
     //
     // In other words, this returns a merged sequence of all
-    // child models' observeSets().
+    // child models' observePropertyChanges().
     //
-    // Sets are represented in the same way as in observeSets.
+    // Sets are represented in the same way as in observePropertyChanges.
     //
     // Note that this does not include values from defaults,
-    // lazy or otherwise, just like observeSets.
-    observeSetsRecursive: function() {
+    // lazy or otherwise, just like observePropertyChanges.
+    observePropertyChangesRecursively: function() {
       return Rx.Observable.merge(this._recursiveSets, this._sets);
     }
 

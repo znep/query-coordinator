@@ -66,13 +66,13 @@ describe("Model", function() {
     expect(seen).to.deep.equal([5, 10]);
   }));
 
-  describe('observeWrites', function() {
+  describe('observePropertyWrites', function() {
     describe('on a non-lazy property', function() {
       it('should emit on property add', function() {
         var model = new Model();
         var changes = [];
         var expectedChanges = [];
-        model.observeWrites().subscribe(function(change) {
+        model.observePropertyWrites().subscribe(function(change) {
           changes.push(change);
         });
 
@@ -92,7 +92,7 @@ describe("Model", function() {
         model.defineObservableProperty('myProp', 5);
         model.defineObservableProperty('myProp2', 60);
 
-        model.observeWrites().subscribe(function(change) {
+        model.observePropertyWrites().subscribe(function(change) {
           changes.push(change);
         });
 
@@ -137,7 +137,7 @@ describe("Model", function() {
           return defer.promise;
         };
 
-        model.observeWrites().subscribe(function(change) {
+        model.observePropertyWrites().subscribe(function(change) {
           changes.push(change);
         });
 
@@ -184,7 +184,7 @@ describe("Model", function() {
           return defer.promise;
         };
 
-        model.observeWrites().subscribe(function(change) {
+        model.observePropertyWrites().subscribe(function(change) {
           changes.push(change);
         });
 
@@ -227,12 +227,12 @@ describe("Model", function() {
     });
   });
 
-  describe('observeSets', function() {
+  describe('observePropertyChanges', function() {
     describe('on a non-lazy property', function() {
       it('should not emit on property add', function() {
         var model = new Model();
         var changes = [];
-        model.observeSets().subscribe(function(change) {
+        model.observePropertyChanges().subscribe(function(change) {
           changes.push(change);
         });
 
@@ -246,7 +246,7 @@ describe("Model", function() {
         model.defineObservableProperty('myProp', 5);
         model.defineObservableProperty('myProp2', 60);
 
-        model.observeSets().subscribe(function(change) {
+        model.observePropertyChanges().subscribe(function(change) {
           changes.push(change);
         });
 
@@ -288,7 +288,7 @@ describe("Model", function() {
           return defer.promise;
         };
 
-        model.observeSets().subscribe(function(change) {
+        model.observePropertyChanges().subscribe(function(change) {
           changes.push(change);
         });
 
@@ -311,7 +311,7 @@ describe("Model", function() {
           return defer.promise;
         };
 
-        model.observeSets().subscribe(function(change) {
+        model.observePropertyChanges().subscribe(function(change) {
           changes.push(change);
         });
 
@@ -339,7 +339,7 @@ describe("Model", function() {
     });
   });
 
-  describe('observeSetsRecursive', function() {
+  describe('observePropertyChangesRecursively', function() {
     describe('on a single model with no children', function() {
       it('should emit on set', function() {
         var model = new Model();
@@ -347,7 +347,7 @@ describe("Model", function() {
         var expectedChanges = [];
         model.defineObservableProperty('myProp', 5);
 
-        model.observeSetsRecursive().subscribe(function(change) {
+        model.observePropertyChangesRecursively().subscribe(function(change) {
           changes.push(change);
         });
 
@@ -382,7 +382,7 @@ describe("Model", function() {
         parent.defineObservableProperty('propOnParent', 5);
         child.defineObservableProperty('propOnChild', 15);
 
-        parent.observeSetsRecursive().subscribe(function(change) {
+        parent.observePropertyChangesRecursively().subscribe(function(change) {
           changes.push(change);
         });
 
@@ -419,13 +419,13 @@ describe("Model", function() {
         childA.defineObservableProperty('A', 15);
         childB.defineObservableProperty('B', 16);
 
-        parent.observeSetsRecursive().subscribe(function(change) {
+        parent.observePropertyChangesRecursively().subscribe(function(change) {
           changesOnParent.push(change);
         });
-        childA.observeSetsRecursive().subscribe(function(change) {
+        childA.observePropertyChangesRecursively().subscribe(function(change) {
           changesOnA.push(change);
         });
-        childB.observeSetsRecursive().subscribe(function(change) {
+        childB.observePropertyChangesRecursively().subscribe(function(change) {
           changesOnB.push(change);
         });
 
@@ -471,7 +471,7 @@ describe("Model", function() {
 
         parent.defineObservableProperty('children', []);
 
-        parent.observeSetsRecursive().subscribe(function(change) {
+        parent.observePropertyChangesRecursively().subscribe(function(change) {
           changes.push(change);
         });
 
@@ -564,7 +564,7 @@ describe("Model", function() {
         // Start out with a parent with a child property set to a non-model.
         parent.defineObservableProperty('child', 5);
 
-        parent.observeSetsRecursive().subscribe(function(change) {
+        parent.observePropertyChangesRecursively().subscribe(function(change) {
           changes.push(change);
         });
 
@@ -628,7 +628,7 @@ describe("Model", function() {
           models.push(current);
         }
 
-        _.first(models).observeSetsRecursive().subscribe(function(change) {
+        _.first(models).observePropertyChangesRecursively().subscribe(function(change) {
           changes.push(change);
         });
 

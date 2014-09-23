@@ -227,7 +227,7 @@
     $scope.bindObservable(
       'hasChanges',
       Rx.Observable.merge(
-        page.observeSetsRecursive().map(_.constant(true)),
+        page.observePropertyChangesRecursively().map(_.constant(true)),
         successfulSaves.map(_.constant(false))
       )
     );

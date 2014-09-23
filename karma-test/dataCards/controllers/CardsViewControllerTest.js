@@ -332,7 +332,7 @@ describe("CardsViewController", function() {
 
       scope.page.set('name', 'name2');
       scope.savePage();
-      scope.$apply();
+      $rootScope.$apply(); // Must call $apply, as savePage uses a $q promise internally. Grah.
       expect(scope.hasChanges).to.be.false;
     });
 
@@ -342,7 +342,7 @@ describe("CardsViewController", function() {
 
       scope.page.set('name', 'name2');
       scope.savePage();
-      scope.$apply();
+      $rootScope.$apply(); // Must call $apply, as savePage uses a $q promise internally. Grah.
       scope.page.set('name', 'name3');
       expect(scope.hasChanges).to.be.true;
     });
@@ -354,7 +354,7 @@ describe("CardsViewController", function() {
       scope.editMode = true;
       scope.page.set('name', 'name2');
       scope.savePage();
-      scope.$apply();
+      $rootScope.$apply(); // Must call $apply, as savePage uses a $q promise internally. Grah.
       expect(scope.editMode).to.be.false;
     });
   });

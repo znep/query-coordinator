@@ -7,38 +7,44 @@ angular.module('dataCards.models').factory('Model', function(ModelHelper) {
     this._recursiveSets = new Rx.Subject();
     this._propertyTable = {};
 
-    //All children (= models set as values).
-    //TODO maybe invert this to avoid having to track this separately.
+    //Keeps track of children we've told that this instance is their parent.
+    //Maps property names to arrays of children (because a property can be set
+    //to an array containing children).
     this._children = {};
 
-    //TODO only start caring if someone calls observeSetsRecursive.
-    this.observeWrites().subscribe(function(write) {
-      var oldValue = self._children[write.property];
-      _.invoke(oldValue, 'setParent', null);
-      delete self._children[write.property];
+    //TODO Possible perf optimization: only start caring if someone calls observeSetsRecursive.
+    //Right now this isn't needed, as our models right now are one giant tree, and we
+    //call observeSetsRecursive on the root.
+    this.observeWrites().subscribe(function(changeNotification) {
+      var oldChildrenUnderThisProperty = self._children[changeNotification.property];
+      _.invoke(oldChildrenUnderThisProperty, '_setParentModel', null);
+      delete self._children[changeNotification.property];
 
-      var candidateModels = _.isArray(write.newValue) ? write.newValue : [write.newValue];
+      var candidateModels = _.isArray(changeNotification.newValue) ? changeNotification.newValue : [changeNotification.newValue];
 
       var actualModels = [];
       _.each(candidateModels, function(maybeModel) {
-        if (maybeModel instanceof Model) {
-          maybeModel.setParent(self);
+        if (_.isObject(maybeModel) && _.isFunction(maybeModel._setParentModel)) {
+          maybeModel._setParentModel(self);
           actualModels.push(maybeModel);
         }
       });
-      self._children[write.property] = actualModels;
+      self._children[changeNotification.property] = actualModels;
     });
   }
 
-  Model.prototype.setParent = function(parent) {
+  Model.prototype._setParentModel = function(parentModel) {
+    // Stop telling our old parent about our property changes.
     if (this._observeSetsSubscriptionForParent) {
       this._observeSetsSubscriptionForParent.dispose();
       delete this._observeSetsSubscriptionForParent;
     }
 
-    if (parent) {
-      this._observeSetsSubscriptionForParent = this.observeSetsRecursive().subscribe(function(set) {
-        parent._recursiveSets.onNext(set);
+    if (parentModel) {
+      // Start telling our new parent about our property changes.
+      // Store the subscription so we can detach it later.
+      this._observeSetsSubscriptionForParent = this.observeSetsRecursive().subscribe(function(changeNotification) {
+        parentModel._recursiveSets.onNext(changeNotification);
       });
     }
   };
@@ -60,19 +66,18 @@ angular.module('dataCards.models').factory('Model', function(ModelHelper) {
       throw new Error('Object ' + this + ' already has property: ' + propertyName);
     }
 
-    var inner;
+    var writesSequence;
     if (_.isFunction(defaultGenerator)) {
-      // If initial value specified as function, it's assumed to be a lazy initializer.
-      inner = ModelHelper.addPropertyWithLazyDefault(propertyName, this._propertyTable, defaultGenerator, initialValue);
+      writesSequence = ModelHelper.addPropertyWithLazyDefault(propertyName, this._propertyTable, defaultGenerator, initialValue);
     } else {
-      inner = ModelHelper.addProperty(propertyName, this._propertyTable, initialValue);
+      writesSequence = ModelHelper.addProperty(propertyName, this._propertyTable, initialValue);
     }
 
-    inner.subscribe(function(valueFromDefault) {
+    writesSequence.subscribe(function(value) {
         self._writes.onNext({
           model: self,
           property: propertyName,
-          newValue: valueFromDefault
+          newValue: value
         });
       })
   };
@@ -151,6 +156,7 @@ angular.module('dataCards.models').factory('Model', function(ModelHelper) {
       var currentValue = self.getCurrentValue(propertyName);
       artifact[propertyName] = serializeArbitrary(currentValue);
     });
+
     return artifact;
   };
 

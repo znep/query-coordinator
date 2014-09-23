@@ -49,7 +49,11 @@ angular.module('dataCards.services').factory('AngularRxExtensions', function() {
       set(onCompleted.apply(this, arguments));
     };
 
-    observable.subscribe(set, onError ? errorHandler : undefined, onCompleted ? completedHandler : undefined);
+    observable.subscribe(
+      set,
+      onError ? errorHandler : undefined,
+      onCompleted ? completedHandler : undefined
+    );
   }
 
   function observe(expression) {

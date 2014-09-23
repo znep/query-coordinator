@@ -32,7 +32,11 @@
 
     // Bind the current user to the scope, or null if no user is logged in or there was an error
     // fetching the current user.
-    $scope.bindObservable('currentUser', Rx.Observable.fromPromise(UserSession.getCurrentUser()), _.constant(null));
+    $scope.bindObservable(
+      'currentUser',
+      Rx.Observable.fromPromise(UserSession.getCurrentUser()),
+      _.constant(null)
+    );
 
 
     /*****************
@@ -218,14 +222,20 @@
     $scope.editMode = false;
 
     // We've got changes if the last action was an edit (vs. a save).
-    // All sets map to true, and all saves map to false. The latest
+    // All sets map to true, and all saves map to false. Thus, the latest
     // value is what we want to set to hasChanges.
-    $scope.bindObservable('hasChanges', Rx.Observable.merge(
-        page.observeSetsRecursive().map(_.constant(true)), successfulSaves.map(_.constant(false))
-      ));
+    $scope.bindObservable(
+      'hasChanges',
+      Rx.Observable.merge(
+        page.observeSetsRecursive().map(_.constant(true)),
+        successfulSaves.map(_.constant(false))
+      )
+    );
 
     successfulSaves.subscribe(function() {
-      $scope.editMode = false;
+      $scope.safeApply(function() {
+        $scope.editMode = false;
+      });
     });
 
     $scope.savePage = function() {
@@ -243,7 +253,7 @@
     };
 
     FlyoutService.register('save-button', function() {
-      return $scope.hasChanges ? null : 'Nothing to save';
+      return $scope.hasChanges ? 'Click to save your changes' : 'No changes to be saved';
     });
 
 

@@ -315,6 +315,7 @@ describe("CardsViewController", function() {
       expect(spy.calledOnce).to.be.true;
       mockPageDataService.save.restore();
     });
+
     it('should not call PageDataService.save when savePage is called with hasChanges = false', function() {
       var controllerHarness = makeController();
       var scope = controllerHarness.scope;
@@ -341,6 +342,7 @@ describe("CardsViewController", function() {
 
       scope.page.set('name', 'name2');
       scope.savePage();
+      scope.$apply();
       scope.page.set('name', 'name3');
       expect(scope.hasChanges).to.be.true;
     });

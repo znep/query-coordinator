@@ -22,6 +22,7 @@ describe('UserSessionService', function() {
         expect(UserSession.getCurrentUser()).to.eventually.be.rejectedWith(UserSession.Errors.UnknownError).and.notify(done);
         $httpBackend.flush();
       });
+
       it('should reject the promise with Errors.NotLoggedIn for 404s', function(done) {
         $httpBackend.expectGET('/api/users/current.json').respond(404);
         expect(UserSession.getCurrentUser()).to.eventually.be.rejectedWith(UserSession.Errors.NotLoggedIn).and.notify(done);

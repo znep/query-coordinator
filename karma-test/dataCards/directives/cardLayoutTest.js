@@ -269,12 +269,12 @@ describe('CardLayout directive test', function() {
       // of the cursor's actual x position.
       // ALSO NOTE: using jQuery's .left() method inexplicably returns 'auto' in PhantomJS on
       // Linux, so we are using the raw style property for this test instead.
-      expect($('#uber-flyout')[0].style.left).to.equal(clientX + 'px');
+      expect(parseInt($('#uber-flyout')[0].style.left, 10)).to.equal(clientX);
       // Note that this is actually the y offset of the element itself because it seems that
       // the height of the flyout and the hint are 0 in the test environment (wtf?)
       // ALSO NOTE: using jQuery's .top() method inexplicably returns 'auto' in PhantomJS on
       // Linux, so we are using the raw style property for this test instead.
-      expect($('#uber-flyout')[0].style.top).to.equal(clientY + 'px');
+      expect(parseInt($('#uber-flyout')[0].style.top, 10)).to.equal(clientY);
 
     });
 

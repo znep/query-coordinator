@@ -13,6 +13,8 @@ angular.module('dataCards.services').factory('FlyoutService', function(WindowSta
     var jqueryTarget;
     var jqueryTargetOffset;
     var leftOffset;
+    var scrollLeft = window.scrollX || window.pageXOffset;
+    var scrollTop = window.scrollY || window.pageYOffset;
     var topOffset;
     var rightSideHint;
     var i;
@@ -49,10 +51,10 @@ angular.module('dataCards.services').factory('FlyoutService', function(WindowSta
             // Subtract scroll position to compensate for .offset()
             // reporting values relative to the viewport, not the
             // document.
-            leftOffset = (jqueryTargetOffset.left - window.scrollX)
+            leftOffset = (jqueryTargetOffset.left - scrollLeft)
                        + Math.floor(jqueryTarget.outerWidth() / 2);
 
-            topOffset = (jqueryTargetOffset.top - window.scrollY)
+            topOffset = (jqueryTargetOffset.top - scrollTop)
                       - (flyoutHeight + Math.floor(hintHeight * 0.5));
 
             rightSideHint = false;

@@ -44,7 +44,7 @@
       page.observe('dataset').observeOnLatest('domain').map(function(domain) { if (domain) { return domain; } else { return null; } }),
       function(datasetId, domain) {
         if ($.isPresent(datasetId) && $.isPresent(domain)) {
-          return 'http://{0}/resource/{1}/rows.json'.format(domain, datasetId);
+          return 'https://{0}/resource/{1}.json'.format(domain, datasetId);
         } else {
           return '#';
         }

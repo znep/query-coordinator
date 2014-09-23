@@ -1,4 +1,4 @@
-angular.module('dataCards.models').factory('Card', function($injector, ModelHelper, Model, CardDataService, JJV) {
+angular.module('dataCards.models').factory('Card', function($injector, ModelHelper, Model, CardDataService, JJV, Filter) {
 
   var UID_REGEXP = /^\w{4}-\w{4}$/;
 
@@ -12,7 +12,9 @@ angular.module('dataCards.models').factory('Card', function($injector, ModelHelp
       'displayMode': { 'type': 'string', 'enum': ['figures', 'visualization'] },
       'expanded': { 'type': 'boolean' },
       'cardCustomStyle': { 'type': 'object' },
-      'expandedCustomStyle': { 'type': 'object' }
+      'expandedCustomStyle': { 'type': 'object' },
+      'activeFilters': { 'type': 'array' }
+
     },
     'required': ['fieldName', 'cardSize', 'cardCustomStyle', 'expandedCustomStyle', 'displayMode', 'expanded']
   });
@@ -33,7 +35,7 @@ angular.module('dataCards.models').factory('Card', function($injector, ModelHelp
       self.defineObservableProperty(field);
     });
 
-    self.defineObservableProperty('activeFilters', []);
+    self.set('activeFilters', []);
   }
 
   Model.extend(Card);
@@ -53,7 +55,12 @@ angular.module('dataCards.models').factory('Card', function($injector, ModelHelp
     var instance = new Card(page, blob.fieldName);
     _.each(_.keys(JJV.schema.serializedCard.properties), function(field) {
       if (field === 'fieldName') return; // fieldName isn't observable.
-      instance.set(field, blob[field]);
+      if (field === 'activeFilters') {
+        // activeFilters needs a bit more deserialization
+        instance.set(field, _.map(blob[field], Filter.deserialize));
+      } else {
+        instance.set(field, blob[field]);
+      }
     });
 
     return instance;

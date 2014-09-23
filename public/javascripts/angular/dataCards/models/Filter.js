@@ -14,6 +14,19 @@ angular.module('dataCards.models').factory('Filter', function(Assert, SoqlHelper
     return SoqlHelpers.replaceHyphensWithUnderscores(field) + this.operator + SoqlHelpers.encodePrimitive(this.operand);
   };
 
+  BinaryOperatorFilter.prototype.serialize = function() {
+    return {
+      'function': 'BinaryOperator',
+      'operator': this.operator,
+      'operand': this.operand,
+      'humanReadableOperand': this.humanReadableOperand
+    };
+  };
+
+  BinaryOperatorFilter.deserialize = function(blob) {
+    return new BinaryOperatorFilter(blob.operator, blob.operand, blob.humanReadableOperand);
+  };
+
   function TimeRangeFilter(start, end) {
     Assert(moment.isMoment(start), 'TimeRangeFilter passed non-moment start: ' + start);
     Assert(moment.isMoment(end), 'TimeRangeFilter passed non-moment end: ' + end);
@@ -31,6 +44,18 @@ angular.module('dataCards.models').factory('Filter', function(Assert, SoqlHelper
     return '{0} > {1} AND {0} < {2}'.format(field, encodedStart, encodedEnd);
   };
 
+  TimeRangeFilter.prototype.serialize = function() {
+    return {
+      'function': 'TimeRange',
+      'start': this.start,
+      'end': this.end
+    };
+  };
+
+  TimeRangeFilter.deserialize = function(blob) {
+    return new TimeRangeFilter(moment(blob.start), moment(blob.end));
+  };
+
   function IsNullFilter(isNull) {
     if (!_.isBoolean(isNull)) { throw new Error('IsNullFilter constructor passed non-boolean'); }
     this.isNull = isNull;
@@ -41,9 +66,32 @@ angular.module('dataCards.models').factory('Filter', function(Assert, SoqlHelper
     return SoqlHelpers.replaceHyphensWithUnderscores(field) + ' ' + fragment;
   };
 
+  IsNullFilter.prototype.serialize = function() {
+    return {
+      'function': 'IsNull',
+      'isNull': this.isNull
+    };
+  };
+
+  IsNullFilter.deserialize = function(blob) {
+    return new IsNullFilter(blob.isNull);
+  };
+
+  function deserialize(blob) {
+    var filterClass;
+    switch(blob.function) {
+      case 'IsNull': filterClass = IsNullFilter; break;
+      case 'BinaryOperator': filterClass = BinaryOperatorFilter; break;
+      case 'TimeRange': filterClass = TimeRangeFilter; break;
+    }
+
+    return filterClass.deserialize(blob);
+  };
+
   return {
     TimeRangeFilter: TimeRangeFilter,
     BinaryOperatorFilter: BinaryOperatorFilter,
-    IsNullFilter: IsNullFilter
+    IsNullFilter: IsNullFilter,
+    deserialize: deserialize
   };
 });

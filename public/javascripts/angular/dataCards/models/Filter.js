@@ -51,15 +51,15 @@ angular.module('dataCards.models').factory('Filter', function(Assert, SoqlHelper
     return {
       'function': 'TimeRange',
       'arguments': {
-        'start': this.start,
-        'end': this.end
+        'start': this.start.toISOString(),
+        'end': this.end.toISOString()
       }
     };
   };
 
   TimeRangeFilter.deserialize = function(blob) {
     var args = blob.arguments;
-    return new TimeRangeFilter(moment(args.start), moment(args.end));
+    return new TimeRangeFilter(moment(args.start, moment.ISO_8601), moment(args.end, moment.ISO_8601));
   };
 
   function IsNullFilter(isNull) {

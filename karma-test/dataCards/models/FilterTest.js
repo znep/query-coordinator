@@ -101,7 +101,24 @@ describe("Filter models", function() {
 
       expect(deserializedFilter).to.deep.equal(filter);
     }));
+
+    it('should fail when deserializing with a non-ISO8601 time.', inject(function(Filter) {
+      var start = moment('1988-01-10T08:00:00.000Z');
+      var end = moment('2101-01-10T08:00:00.000Z');
+      var filter = new Filter.TimeRangeFilter(start, end);
+
+      var serializedFilter = parseAsJson(filter.serialize());
+
+      // Hack the serialized form to have a malformed end time.
+      serializedFilter.arguments.end = '1/3/2013' // Not valid ISO8601
+
+      expect(function() {
+        Filter.deserialize(serializedFilter);
+      }).to.throw();
+    }));
+
   });
+
   it('should throw errors on bad data passed into the top-level deserialize', inject(function(Filter) {
     expect(function() {
       Filter.deserialize();

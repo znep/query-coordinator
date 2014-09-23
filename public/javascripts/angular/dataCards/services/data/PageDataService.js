@@ -25,6 +25,19 @@
       return fetch.call(this, id);
     };
 
+    this.save = function(pageModel) {
+      if (ServerConfig.get('useViewStubs')) {
+        throw new Error('Using stubs - save not allowed');
+      }
+      var url = '/page_metadata/{0}.json'.format(pageModel.id);
+      var config = {
+        requester: this
+      };
+
+      var json = JSON.stringify(pageModel.serialize());
+      return http.put(url, {'pageMetadata':  json}, config);
+    };
+
     this.requesterLabel = function() {
       return 'page-data-service';
     };

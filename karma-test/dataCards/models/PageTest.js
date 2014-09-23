@@ -1,5 +1,5 @@
-describe("Page model", function() {
-  var _Page, _Dataset, _$q;
+describe('Page model', function() {
+  var Page, Dataset, $q, $rootScope, Model;
 
   var MockPageDataService = {};
 
@@ -10,11 +10,12 @@ describe("Page model", function() {
     })
   });
 
-  beforeEach(inject(function(Page, Dataset, $q, $rootScope) {
-    _Page = Page;
-    _Dataset = Dataset;
-    _$q = $q;
-    _$rootScope = $rootScope;
+  beforeEach(inject(function($injector) {
+    Page = $injector.get('Page');
+    Dataset = $injector.get('Dataset');
+    $q = $injector.get('$q');
+    $rootScope = $injector.get('$rootScope');
+    Model = $injector.get('Model');
   }));
 
   it('should correctly report the id passed into the constructor.', inject(function(Page) {
@@ -31,10 +32,10 @@ describe("Page model", function() {
     var expectedSequence = [desc1, desc2, desc3];
 
     MockPageDataService.getBaseInfo = function(id) {
-      throw new Error("Should never try to get base info.");
+      throw new Error('Should never try to get base info.');
     };
 
-    var instance = new _Page(id);
+    var instance = new Page(id);
     instance.set('description', desc1);
     instance.observe('description').subscribe(function(val) {
       expect(val).to.equal(expectedSequence.shift());
@@ -53,7 +54,7 @@ describe("Page model", function() {
 
     var shouldBeResolved = false;
 
-    var staticInfoDefer =_$q.defer();
+    var staticInfoDefer = $q.defer();
     var getBaseInfoCalled = false;
     MockPageDataService.getBaseInfo = function(id) {
       expect(getBaseInfoCalled).to.be.false;
@@ -62,7 +63,7 @@ describe("Page model", function() {
       return staticInfoDefer.promise;
     };
 
-    var instance = new _Page(id);
+    var instance = new Page(id);
     instance.observe('description').subscribe(function(val) {
       var exp = expectedSequence.shift();
       expect(shouldBeResolved).to.equal(exp !== undefined); // If it's undefined, it shouldn't be resolved
@@ -70,8 +71,8 @@ describe("Page model", function() {
     });
 
     shouldBeResolved = true;
-    staticInfoDefer.resolve({ "description": descFromApi});
-    _$rootScope.$digest();
+    staticInfoDefer.resolve({ 'description': descFromApi });
+    $rootScope.$digest();
     expect(getBaseInfoCalled).to.be.true;
 
     instance.set('description', descFromSetter1);
@@ -83,21 +84,92 @@ describe("Page model", function() {
     var id = 'dead-beef';
     var datasetId = 'fooo-baar';
 
-    var staticInfoDefer =_$q.defer();
+    var staticInfoDefer = $q.defer();
     MockPageDataService.getBaseInfo = function(id) {
       expect(id).to.equal(id);
       return staticInfoDefer.promise;
     };
 
-    var instance = new _Page(id);
+    var instance = new Page(id);
     instance.observe('dataset').subscribe(function(val) {
-      if (val instanceof _Dataset) {
+      if (val instanceof Dataset) {
         expect(val.id).to.equal(datasetId);
         done();
       }
     });
 
-    staticInfoDefer.resolve({ "datasetId": datasetId});
-    _$rootScope.$digest();
+    staticInfoDefer.resolve({ 'datasetId': datasetId});
+    $rootScope.$digest();
+  });
+
+  it('should correctly serialize', function(done) {
+    var id = 'dead-beef';
+    var datasetId = 'fooo-baar';
+
+    var staticInfoDefer = $q.defer();
+    MockPageDataService.getBaseInfo = function(id) {
+      expect(id).to.equal(id);
+      return staticInfoDefer.promise;
+    };
+
+    var instance = new Page(id);
+    instance.observe('dataset').subscribe(function(val) {
+      if (val instanceof Dataset) {
+        var serialized = instance.serialize();
+        //TODO real schema in JJV.
+        var fields = ['description', 'name', 'layoutMode', 'primaryAmountField', 'primaryAggregation', 'isDefaultPage', 'pageSource', 'baseSoqlFilter', 'cards', 'datasetId'];
+        expect(serialized).to.have.keys(fields);
+        expect(serialized).to.have.property('datasetId', datasetId);
+        done();
+      }
+    });
+
+    staticInfoDefer.resolve({ 'datasetId': datasetId});
+    $rootScope.$digest();
+  });
+
+  describe('toggleExpanded', function() {
+    it('should toggle expanded on the given card', function() {
+      var staticInfoDefer = $q.defer();
+      MockPageDataService.getBaseInfo = _.constant($q.when({ 'datasetId': 'fake-fbfr' }));
+
+      var instance = new Page('dead-beef');
+
+      var card = new Model();
+      card.defineObservableProperty('expanded', false);
+      instance.set('cards', [ card ]);
+
+      instance.toggleExpanded(card);
+      expect(card.getCurrentValue('expanded')).to.be.true;
+      instance.toggleExpanded(card);
+      expect(card.getCurrentValue('expanded')).to.be.false;
+    });
+
+    it('should only allow expanded on one card', function() {
+      var staticInfoDefer = $q.defer();
+      MockPageDataService.getBaseInfo = _.constant($q.when({ 'datasetId': 'fake-fbfr' }));
+
+      var instance = new Page('dead-beef');
+
+      var cards = [ new Model(), new Model(), new Model() ]
+      _.each(cards, function(card) {
+        card.defineObservableProperty('expanded', false);
+      });
+
+      function expandedValues() {
+        return _.map(cards, function(card) {
+          return card.getCurrentValue('expanded');
+        });
+      };
+
+      instance.set('cards', cards);
+
+      instance.toggleExpanded(cards[0]);
+      expect(expandedValues()).to.deep.equal([true, false, false]);
+      instance.toggleExpanded(cards[2]);
+      expect(expandedValues()).to.deep.equal([false, false, true]);
+      instance.toggleExpanded(cards[2]);
+      expect(expandedValues()).to.deep.equal([false, false, false]);
+    });
   });
 });

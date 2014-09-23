@@ -4,7 +4,7 @@
 $metadata-top-padding: 7px
 $metadata-side-padding: 30px
 $filter-height: 58px
-$action-btn-min-width: 72px
+$action-btn-min-width: 40px
 $action-btn-padding-top: 7px
 $action-btn-padding-left: 18px
 // api panel sizes
@@ -130,6 +130,12 @@ body
           background-color: $btn-hover-bg-color
           border: solid 2px $btn-hover-border-color
           color: $btn-hover-font-color
+
+        &.disabled
+          background-color: $btn-disabled-bg-color
+          border: solid 2px $btn-disabled-border-color
+          color: $btn-disabled-font-color
+          cursor: default
 
         &:focus
           outline: none

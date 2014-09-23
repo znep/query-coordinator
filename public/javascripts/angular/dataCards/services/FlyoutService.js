@@ -59,26 +59,29 @@ angular.module('dataCards.services').factory('FlyoutService', function(WindowSta
 
             rightSideHint = false;
 
-            uberFlyoutContent.html(handlers[className](e.target));
+            var renderedContent = handlers[className](e.target);
+            if (renderedContent !== null) {
+              uberFlyoutContent.html(renderedContent);
 
-            flyoutWidth = uberFlyout.outerWidth();
+              flyoutWidth = uberFlyout.outerWidth();
 
-            if (leftOffset + flyoutWidth > window.innerWidth) {
-              leftOffset = leftOffset - flyoutWidth;
-              rightSideHint = true;
+              if (leftOffset + flyoutWidth > window.innerWidth) {
+                leftOffset = leftOffset - flyoutWidth;
+                rightSideHint = true;
+              }
+              if (topOffset - flyoutHeight < 0) {
+                topOffset = flyoutHeight;
+              }
+
+              if (rightSideHint) {
+                uberFlyout.removeClass('left').addClass('right').css({left: leftOffset, top: topOffset}).show();
+              } else {
+                uberFlyout.removeClass('right').addClass('left').css({left: leftOffset, top: topOffset}).show();
+              }
+
+              return;
+
             }
-            if (topOffset - flyoutHeight < 0) {
-              topOffset = flyoutHeight;
-            }
-
-            if (rightSideHint) {
-              uberFlyout.removeClass('left').addClass('right').css({left: leftOffset, top: topOffset}).show();
-            } else {
-              uberFlyout.removeClass('right').addClass('left').css({left: leftOffset, top: topOffset}).show();
-            }
-
-            return;
-
           }
         }
 

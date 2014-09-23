@@ -1,4 +1,4 @@
-angular.module('dataCards.models').factory('Card', function($injector, ModelHelper, Model, CardDataService, JJV) {
+angular.module('dataCards.models').factory('Card', function($injector, ModelHelper, Model, CardDataService, JJV, Filter) {
 
   var UID_REGEXP = /^\w{4}-\w{4}$/;
 
@@ -12,30 +12,41 @@ angular.module('dataCards.models').factory('Card', function($injector, ModelHelp
       'displayMode': { 'type': 'string', 'enum': ['figures', 'visualization'] },
       'expanded': { 'type': 'boolean' },
       'cardCustomStyle': { 'type': 'object' },
-      'expandedCustomStyle': { 'type': 'object' }
+      'expandedCustomStyle': { 'type': 'object' },
+      'activeFilters': { 'type': 'array' }
+
     },
     'required': ['fieldName', 'cardSize', 'cardCustomStyle', 'expandedCustomStyle', 'displayMode', 'expanded']
   });
 
-  function Card(page, fieldName) {
-    var Page = $injector.get('Page'); // Inject Page here to avoid circular dep.
-    if(!(page instanceof Page)) { throw new Error('Cards must have parent Page models.'); }
-    if(!_.isString(fieldName) || _.isEmpty(fieldName)) { throw new Error('Cards must have a non-empty field name.'); }
+  var Card = Model.extend({
+    init: function(page, fieldName) {
+      this._super();
 
-    var self = this;
-    this.page = page;
-    this.fieldName = fieldName;
-    this.uniqueId = _.uniqueId();
+      var Page = $injector.get('Page'); // Inject Page here to avoid circular dep.
+      if(!(page instanceof Page)) { throw new Error('Cards must have parent Page models.'); }
+      if(!_.isString(fieldName) || _.isEmpty(fieldName)) { throw new Error('Cards must have a non-empty field name.'); }
 
-    _.each(_.keys(JJV.schema.serializedCard.properties), function(field) {
-      if (field === 'fieldName') return; // fieldName isn't observable.
-      self.defineObservableProperty(field);
-    });
+      var self = this;
+      this.page = page;
+      this.fieldName = fieldName;
+      this.uniqueId = _.uniqueId();
 
-    self.defineObservableProperty('activeFilters', []);
-  }
+      _.each(_.keys(JJV.schema.serializedCard.properties), function(field) {
+        if (field === 'fieldName') return; // fieldName isn't observable.
+        self.defineObservableProperty(field);
+      });
 
-  Card.prototype = new Model();
+      self.set('activeFilters', []);
+    },
+
+    serialize: function() {
+      var serialized = this._super();
+      serialized.fieldName = this.fieldName;
+      return serialized;
+    },
+  });
+
   Card.deserialize = function(page, blob) {
     var errors = JJV.validate('serializedCard', blob);
     if (errors) {
@@ -45,7 +56,12 @@ angular.module('dataCards.models').factory('Card', function($injector, ModelHelp
     var instance = new Card(page, blob.fieldName);
     _.each(_.keys(JJV.schema.serializedCard.properties), function(field) {
       if (field === 'fieldName') return; // fieldName isn't observable.
-      instance.set(field, blob[field]);
+      if (field === 'activeFilters') {
+        // activeFilters needs a bit more deserialization
+        instance.set(field, _.map(blob[field], Filter.deserialize));
+      } else {
+        instance.set(field, blob[field]);
+      }
     });
 
     return instance;

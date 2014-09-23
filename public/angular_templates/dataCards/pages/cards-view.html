@@ -10,12 +10,12 @@
   <!-- METADATA BAR -->
   <div class="cards-metadata">
     <div class="row">
-      <div class="span9 padded-wrapper">
+      <div class="span8 padded-wrapper">
         <header multiline-ellipsis max-lines="2" tolerance="8" text="{{pageName}}" show-more-mode="title-attr"></header>
         <!-- description -->
         <div class="page-description" expanded="expanded" multiline-ellipsis max-lines="3" tolerance="2" text="{{pageDescription}}"></div>
       </div>
-      <div class="span3">
+      <div class="span4">
         <!-- activities -->
         <div class="activities span12">
           <div class="metadata">
@@ -23,6 +23,7 @@
               <last-updated class="metadatum"></last-updated>
             </div>
           </div>
+          <a ng-click="savePage()" class="save-button action-btn r-to-l" ng-class="{disabled: !hasChanges}" ng-if="currentUser">Save</a>
           <a ng-click="editMode = !editMode" class="action-btn r-to-l">{{editMode | editPreview}}</a>
           <a href="{{datasetCSVDownloadURL}}" title="Download this data as CSV" class="action-btn r-to-l">Download</a>
           <button id="api-panel-toggle-btn" title="Access this Dataset via API" ng-class="{touched: apiPanelActive}" class="action-btn r-to-l">API</button>

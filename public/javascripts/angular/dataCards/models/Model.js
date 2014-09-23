@@ -68,7 +68,7 @@ angular.module('dataCards.models').factory('Model', function(Class, ModelHelper)
 
       var writesSequence;
       if (_.isFunction(defaultGenerator)) {
-        writesSequence = ModelHelper.addPropertyWithLazyDefault(propertyName, this._propertyTable, defaultGenerator, initialValue);
+        writesSequence = ModelHelper.addPropertyWithLazyDefault(propertyName, this._propertyTable, initialValue, defaultGenerator);
       } else {
         writesSequence = ModelHelper.addProperty(propertyName, this._propertyTable, initialValue);
       }

@@ -212,13 +212,32 @@
     * View/edit modal behavior *
     ***************************/
 
+    // Sequence of all successful saves.
+    var successfulSaves = new Rx.Subject();
+
     $scope.editMode = false;
 
-    $scope.bindObservable('hasChanges', page.observeSetsRecursive().any());
+    // We've got changes if the last action was an edit (vs. a save).
+    $scope.bindObservable('hasChanges', Rx.Observable.merge(
+        page.observeSetsRecursive().map(_.constant(true)),
+        successfulSaves.map(_.constant(false))
+        ));
+
+    successfulSaves.subscribe(function() {
+      $scope.editMode = false;
+    });
 
     $scope.savePage = function() {
       if ($scope.hasChanges) {
-        PageDataService.save(page);
+        PageDataService.save(page).then(function() {
+          // Success.
+          successfulSaves.onNext();
+        },
+        function(error) {
+          // TODO: Handling the error case is a separate, future story. For now,
+          // at least tell the user what went wrong.
+          alert('Unable to save: {0}: {1}'.format(error.status, error.statusText));
+        });
       }
     };
 

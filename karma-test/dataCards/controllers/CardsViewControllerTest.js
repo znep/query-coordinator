@@ -5,6 +5,9 @@ describe("CardsViewController", function() {
   var $rootScope;
   var $controller;
   var mockPageDataService = {
+    save: function() {
+      return $q.when({});
+    }
   };
   var mockDatasetDataService = {
     getBaseInfo: function() {
@@ -287,6 +290,70 @@ describe("CardsViewController", function() {
               ));
         }));
       });
+    });
+  });
+
+  describe('page unsaved state', function() {
+    it('should set hasChanges to true when a property changes on any model hooked to the page', function() {
+      var controllerHarness = makeController();
+      var scope = controllerHarness.scope;
+
+      expect(scope.hasChanges).to.be.falsy;
+
+      scope.page.set('name', 'name2');
+      expect(scope.hasChanges).to.be.true;
+    });
+
+    it('should call PageDataService.save when savePage is called with hasChanges = true', function() {
+      var controllerHarness = makeController();
+      var scope = controllerHarness.scope;
+
+      scope.page.set('name', 'name2'); // Cause a change.
+
+      var spy = sinon.spy(mockPageDataService, 'save');
+      scope.savePage();
+      expect(spy.calledOnce).to.be.true;
+      mockPageDataService.save.restore();
+    });
+    it('should not call PageDataService.save when savePage is called with hasChanges = false', function() {
+      var controllerHarness = makeController();
+      var scope = controllerHarness.scope;
+
+      var spy = sinon.spy(mockPageDataService, 'save');
+      scope.savePage();
+      expect(spy.called).to.be.false;
+      mockPageDataService.save.restore();
+    });
+
+    it('should set hasChanges to false after saving', function() {
+      var controllerHarness = makeController();
+      var scope = controllerHarness.scope;
+
+      scope.page.set('name', 'name2');
+      scope.savePage();
+      scope.$apply();
+      expect(scope.hasChanges).to.be.false;
+    });
+
+    it('should set hasChanges to true after making a change after saving', function() {
+      var controllerHarness = makeController();
+      var scope = controllerHarness.scope;
+
+      scope.page.set('name', 'name2');
+      scope.savePage();
+      scope.page.set('name', 'name3');
+      expect(scope.hasChanges).to.be.true;
+    });
+
+    it('should set editMode to false after saving', function() {
+      var controllerHarness = makeController();
+      var scope = controllerHarness.scope;
+
+      scope.editMode = true;
+      scope.page.set('name', 'name2');
+      scope.savePage();
+      scope.$apply();
+      expect(scope.editMode).to.be.false;
     });
   });
 });

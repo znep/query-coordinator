@@ -13,41 +13,40 @@
   // }
   angular.module('dataCards.services').factory('WindowState', function() {
     var jqueryWindow = $(window);
-    var jqueryDocument = $(document);
-    var jqueryBody = $('body');
+    var body = document.getElementsByTagName('body')[0];
 
     var WindowState = {};
 
     var scrollPositionSubject = new Rx.BehaviorSubject(window.pageYOffset);
-    jqueryDocument.on('scroll', function() {
+    window.addEventListener('scroll', function() {
       scrollPositionSubject.onNext(window.pageYOffset);
     });
 
     var mousePositionSubject = new Rx.BehaviorSubject({clientX: 0, clientY: 0, target: null});
-    jqueryBody.on('mousemove', function(e){
-      WindowState.mouseClientX = e.originalEvent.clientX;
-      WindowState.mouseClientY = e.originalEvent.clientY;
+    body.addEventListener('mousemove', function(e){
+      WindowState.mouseClientX = e.clientX;
+      WindowState.mouseClientY = e.clientY;
       mousePositionSubject.onNext({
-        clientX: e.originalEvent.clientX,
-        clientY: e.originalEvent.clientY,
+        clientX: e.clientX,
+        clientY: e.clientY,
         target: e.target
       });
     });
 
     var mouseLeftButtonPressedSubject = new Rx.BehaviorSubject(false);
-    jqueryBody.on('mouseup', function(e) {
+    body.addEventListener('mouseup', function(e) {
       if (e.which === 1) {
         mouseLeftButtonPressedSubject.onNext(false);
       }
     });
-    jqueryBody.on('mousedown', function(e) {
+    body.addEventListener('mousedown', function(e) {
       if (e.which === 1) {
         mouseLeftButtonPressedSubject.onNext(true);
       }
     });
 
     var windowSizeSubject = new Rx.BehaviorSubject(jqueryWindow.dimensions());
-    jqueryWindow.on('resize', function() {
+    window.addEventListener('resize', function() {
       windowSizeSubject.onNext(jqueryWindow.dimensions());
     });
 

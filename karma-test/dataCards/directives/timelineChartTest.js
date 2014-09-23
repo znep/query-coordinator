@@ -9,6 +9,7 @@ describe('timelineChart', function() {
   beforeEach(module('dataCards.directives'));
 
   beforeEach(module('dataCards/timeline-chart.sass'));
+  beforeEach(module('dataCards/flyout.sass'));
 
   beforeEach(module('/angular_templates/dataCards/timelineChart.html'));
 
@@ -46,7 +47,7 @@ describe('timelineChart', function() {
     removeTimelineChart();
 
     var html =
-      '<div class="card-visualization" style="width: ' + width + 'px; height: 480px;">' +
+      '<div class="card-visualization" style="width: ' + width + 'px; height: 480px;overflow:hidden;">' +
         '<div timeline-chart class="timeline-chart"' +
           ' chart-data="testData" show-filtered="showFiltered" expanded="expanded" precision="precision">' +
         '</div>' +
@@ -212,14 +213,14 @@ describe('timelineChart', function() {
         var $flyout;
         printAllFlyoutContent();
         var chart = getOrCreateChartScenario('640px unexpanded filtered');
+
         var $segments = chart.element.find('g.segment');
-        $segments.filter(':first').mouseover();
-        $flyout = $('.flyout');
-        expect($flyout.find('.flyout-arrow').hasClass('right')).to.be.false;
         $segments.filter(':last').mouseover();
         $flyout = $('.flyout');
+
         expect($flyout.find('.flyout-arrow').hasClass('right')).to.be.true;
         $segments.mouseout();
+
       });
     });
     it('should create labels with different positions', function() {

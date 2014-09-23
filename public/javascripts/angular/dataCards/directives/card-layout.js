@@ -1,7 +1,7 @@
 (function() {
   'use strict';
 
-  function cardLayout(Constants, AngularRxExtensions, WindowState, SortedTileLayout, Flyout) {
+  function cardLayout(Constants, AngularRxExtensions, WindowState, SortedTileLayout, FlyoutService) {
     return {
       restrict: 'E',
       scope: {
@@ -556,8 +556,8 @@
           });
         };
 
-        Flyout.register('expand-button-target', function(el) { return '<div class="flyout-title">Expand this Card</div>'; });
-        Flyout.register('delete-button-target', function(el) { return '<div class="flyout-title">Remove this Card</div>'; });
+        FlyoutService.register('expand-button-target', function(el) { return '<div class="flyout-title">Expand this Card</div>'; });
+        FlyoutService.register('delete-button-target', function(el) { return '<div class="flyout-title">Remove this Card</div>'; });
 
 
         /******************

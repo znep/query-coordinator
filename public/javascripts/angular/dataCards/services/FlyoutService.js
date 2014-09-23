@@ -1,4 +1,4 @@
-angular.module('dataCards.services').factory('Flyout', function(WindowState) {
+angular.module('dataCards.services').factory('FlyoutService', function(WindowState) {
 
   var handlers = {};
   var uberFlyout;
@@ -9,6 +9,8 @@ angular.module('dataCards.services').factory('Flyout', function(WindowState) {
   WindowState.mousePositionSubject.subscribe(function(e) {
     var flyoutWidth;
     var flyoutHeight;
+    var jqueryTarget;
+    var jqueryTargetOffset;
     var leftOffset;
     var topOffset;
     var rightSideHint;
@@ -37,14 +39,19 @@ angular.module('dataCards.services').factory('Flyout', function(WindowState) {
 
           if (handlers.hasOwnProperty(className)) {
 
-            flyoutWidth = uberFlyout.outerWidth();
             flyoutHeight = uberFlyout.outerHeight();
-            // Minus one for the border.
-            leftOffset = e.clientX - 1;
-            topOffset = Math.floor(e.clientY - flyoutHeight - (hintHeight * 0.75));
+
+            jqueryTarget = $(e.target);
+            jqueryTargetOffset = jqueryTarget.offset();
+
+            leftOffset = jqueryTargetOffset.left + Math.floor(jqueryTarget.outerWidth() / 2);
+
+            topOffset = jqueryTargetOffset.top - flyoutHeight - Math.floor(hintHeight * 0.5);
             rightSideHint = false;
 
             uberFlyoutContent.html(handlers[className](e.target));
+
+            flyoutWidth = uberFlyout.outerWidth();
 
             if (leftOffset + flyoutWidth > window.innerWidth) {
               leftOffset = leftOffset - flyoutWidth;
@@ -53,6 +60,7 @@ angular.module('dataCards.services').factory('Flyout', function(WindowState) {
             if (topOffset - flyoutHeight < 0) {
               topOffset = flyoutHeight;
             }
+
             if (rightSideHint) {
               uberFlyout.removeClass('left').addClass('right').css({left: leftOffset, top: topOffset}).show();
             } else {
@@ -89,9 +97,12 @@ angular.module('dataCards.services').factory('Flyout', function(WindowState) {
     // className is treated as unique in this context (should it be an id? maybe so!)
     // renderCallback should return a string that will be interpreted as HTML.
     register: function(className, renderCallback) {
-      if (handlers.hasOwnProperty(className)) {
-        throw new Error('Duplicate selctor found.');
-      }
+      // TODO: Figure out what to do here. Should we be using ids instead of classes?
+      // Or just warn that a duplicate selector has been found rather than throwing
+      // an exception?
+      //if (handlers.hasOwnProperty(className)) {
+      //  throw new Error('Duplicate selctor found.');
+      //}
       handlers[className] = renderCallback;
     }
   };

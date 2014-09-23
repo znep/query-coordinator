@@ -1,4 +1,4 @@
-angular.module('socrataCommon.directives').directive('columnChart', function($parse, $timeout, AngularRxExtensions) {
+angular.module('socrataCommon.directives').directive('columnChart', function($parse, $timeout, AngularRxExtensions, FlyoutService) {
   'use strict';
 
   var renderColumnChart = function(element, chartData, showFiltered, dimensions, expanded, rowDisplayUnit) {
@@ -27,7 +27,6 @@ angular.module('socrataCommon.directives').directive('columnChart', function($pa
     var chartWidth = dimensions.width;
     var chartTruncated = false;
     var $truncationMarker = element.find('.truncation-marker');
-    var $truncationMarkerTooltip = $truncationMarker.next();
     var truncationMarkerWidth = $truncationMarker.width();
 
     if (chartWidth <= 0) {
@@ -364,8 +363,6 @@ angular.module('socrataCommon.directives').directive('columnChart', function($pa
 
     // Set "Click to Expand" truncation marker + its tooltip
     $truncationMarker.css('height', $labels.height());
-    // tooltip
-    $truncationMarkerTooltip.css('margin-bottom', $labels.height() + tipHeight);
 
     if (chartTruncated) {
       $truncationMarker.css('display', 'block');
@@ -379,7 +376,6 @@ angular.module('socrataCommon.directives').directive('columnChart', function($pa
       '<div class="chart-scroll">' +
         '<div class="column-chart-wrapper" ng-class="{filtered: showFiltered}">' +
           '<div class="truncation-marker">&raquo;</div>' +
-          '<div class="tooltip"><div>Click to expand</div><span class="tip"></span></div>' +
         '</div>' +
         '<div class="labels"></div>' +
       '</div>',
@@ -391,6 +387,7 @@ angular.module('socrataCommon.directives').directive('columnChart', function($pa
       rowDisplayUnit: '='
     },
     link: function(scope, element, attrs) {
+
       AngularRxExtensions.install(scope);
 
       if (_.isEmpty(element.closest('.card-visualization'))) {
@@ -402,6 +399,8 @@ angular.module('socrataCommon.directives').directive('columnChart', function($pa
           scope.$emit('column-chart:truncation-marker-clicked', event);
         });
       });
+
+      FlyoutService.register('truncation-marker', function(el) { return '<div class="flyout-title">Click to expand</div>'; });
 
       element.parent().delegate('.bar-group, .labels .label span', 'click', function(event) {
         var clickedDatum = d3.select(event.currentTarget).datum();

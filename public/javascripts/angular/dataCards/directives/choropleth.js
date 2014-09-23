@@ -399,7 +399,8 @@
           // as a result, much of the $.flyout behavior must be custom-implemented, because $.flyout's #html option depends upon
           // the data being readily available.
 
-          // initialize choro flyout element, can disappear on card collapse.
+          // initialize choropleth flyout element, can disappear on card collapse.
+
           choroplethFlyout = initializeChoroplethFlyout();
           var layer = e.target;
           var feature = layer.feature;
@@ -452,6 +453,7 @@
         }
 
         function onFeatureMouseOut(e) {
+          choroplethFlyout = initializeChoroplethFlyout();
           if (!element.parents('.card').hasClass('dragged')) {
             if (_.isEmpty($('#choropleth-flyout:hover'))) {
               choroplethFlyout.hide();
@@ -462,6 +464,7 @@
 
 
         function onFeatureMouseMove(e) {
+          choroplethFlyout = initializeChoroplethFlyout();
           if (element.parents('.card').hasClass('dragged')) {
             choroplethFlyout.hide();
           } else {

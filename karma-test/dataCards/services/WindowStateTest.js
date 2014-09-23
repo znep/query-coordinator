@@ -11,41 +11,52 @@ describe('WindowState service', function() {
   describe('mouseLeftButtonPressedSubject', function() {
 
     function generateFakeMouseDown(button) {
-      return jQuery.Event( "mousedown", {
-        which: button,
-             pageX: 1337,
-             pageY: 666
-      });
+      var ev = document.createEvent('HTMLEvents');
+      ev.initEvent('mousedown', true, true);
+      ev.which = button;
+      ev.pageX = 1337;
+      ev.pageY = 666;
+      return ev;
     };
 
     function generateFakeMouseUp(button) {
-      return jQuery.Event( "mouseup", {
-        which: button,
-             pageX: 1337,
-             pageY: 666
-      });
+      var ev = document.createEvent('HTMLEvents');
+      ev.initEvent('mouseup', true, true);
+      ev.which = button;
+      ev.pageX = 1337;
+      ev.pageY = 666;
+      return ev;
     };
 
     it('should react to left mousedown', function() {
       expect(WindowState.mouseLeftButtonPressedSubject.value).to.be.false;
 
-      $('body').trigger(generateFakeMouseDown(1));
+      var body = document.getElementsByTagName('body')[0];
+
+      body.dispatchEvent(generateFakeMouseDown(1));
+
       expect(WindowState.mouseLeftButtonPressedSubject.value).to.be.true;
     });
 
     it('should not react to right mousedown', function() {
       expect(WindowState.mouseLeftButtonPressedSubject.value).to.be.false;
 
-      $('body').trigger(generateFakeMouseDown(3));
+      var body = document.getElementsByTagName('body')[0];
+
+      body.dispatchEvent(generateFakeMouseDown(3));
+
       expect(WindowState.mouseLeftButtonPressedSubject.value).to.be.false;
     });
 
     it('should react to left mouseup after left mousedown', function() {
       expect(WindowState.mouseLeftButtonPressedSubject.value).to.be.false;
 
-      $('body').trigger(generateFakeMouseDown(1));
+      var body = document.getElementsByTagName('body')[0];
+
+      body.dispatchEvent(generateFakeMouseDown(1));
       expect(WindowState.mouseLeftButtonPressedSubject.value).to.be.true;
-      $('body').trigger(generateFakeMouseUp(1));
+
+      body.dispatchEvent(generateFakeMouseUp(1));
       expect(WindowState.mouseLeftButtonPressedSubject.value).to.be.false;
     });
 
@@ -54,17 +65,16 @@ describe('WindowState service', function() {
   describe('mousePositionSubject', function() {
 
     function generateFakeMouseMove(clientX, clientY, target) {
-      return jQuery.Event( "mousemove", {
-        originalEvent: {
-          clientX: clientX,
-          clientY: clientY
-        },
-        target: target
-      });
+      var ev = document.createEvent('HTMLEvents');
+      ev.initEvent('mousemove', true, true);
+      ev.clientX = clientX,
+      ev.clientY = clientY,
+      ev.target = target
+      return ev;
     };
 
     it('should report the correct mouse position on mousemove', function() {
-      var target = $('body');
+      var body = document.getElementsByTagName('body')[0];
 
       expect(WindowState.mousePositionSubject.value).to.deep.equal({
         clientX: 0,
@@ -72,23 +82,26 @@ describe('WindowState service', function() {
         target: null
       });
 
-      $('body').trigger(generateFakeMouseMove(10, 20, target));
+      body.dispatchEvent(generateFakeMouseMove(10, 20, body));
+
       expect(WindowState.mousePositionSubject.value).to.deep.equal({
         clientX: 10,
         clientY: 20,
-        target: target
+        target: body
       });
       expect(WindowState.mouseClientX).to.equal(10);
       expect(WindowState.mouseClientY).to.equal(20);
 
-      $('body').trigger(generateFakeMouseMove(100, 200, target));
+      body.dispatchEvent(generateFakeMouseMove(100, 200, body));
+
       expect(WindowState.mousePositionSubject.value).to.deep.equal({
         clientX: 100,
         clientY: 200,
-        target: target
+        target: body
       });
       expect(WindowState.mouseClientX).to.equal(100);
       expect(WindowState.mouseClientY).to.equal(200);
+
     });
   });
 
@@ -99,7 +112,9 @@ describe('WindowState service', function() {
       WindowState.windowSizeSubject.subscribe(handler);
       expect(handler.calledOnce).to.be.true;
 
-      $(window).trigger(jQuery.Event('resize', {}));
+      var ev = document.createEvent('HTMLEvents');
+      ev.initEvent('resize', true, true);
+      window.dispatchEvent(ev);
 
       expect(handler.calledTwice).to.be.true;
 

@@ -7,6 +7,7 @@ angular.module('dataCards.services').factory('FlyoutService', function(WindowSta
 
 
   WindowState.mousePositionSubject.subscribe(function(e) {
+
     var flyoutWidth;
     var flyoutHeight;
     var jqueryTarget;
@@ -42,11 +43,18 @@ angular.module('dataCards.services').factory('FlyoutService', function(WindowSta
             flyoutHeight = uberFlyout.outerHeight();
 
             jqueryTarget = $(e.target);
+
             jqueryTargetOffset = jqueryTarget.offset();
 
-            leftOffset = jqueryTargetOffset.left + Math.floor(jqueryTarget.outerWidth() / 2);
+            // Subtract scroll position to compensate for .offset()
+            // reporting values relative to the viewport, not the
+            // document.
+            leftOffset = (jqueryTargetOffset.left - window.scrollX)
+                       + Math.floor(jqueryTarget.outerWidth() / 2);
 
-            topOffset = jqueryTargetOffset.top - flyoutHeight - Math.floor(hintHeight * 0.5);
+            topOffset = (jqueryTargetOffset.top - window.scrollY)
+                      - (flyoutHeight + Math.floor(hintHeight * 0.5));
+
             rightSideHint = false;
 
             uberFlyoutContent.html(handlers[className](e.target));

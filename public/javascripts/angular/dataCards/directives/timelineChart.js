@@ -99,9 +99,9 @@
     }
   }
 
-  function revertLabel(label, scope) {
+  function revertLabel(label, state) {
     label.removeClass('active');
-    if (!scope.hasFilters() && label.hasClass('hidden')) {
+    if (!state.hasFilter() && label.hasClass('hidden')) {
       label.closest('.labels').removeClass('dim');
     }
   }
@@ -118,8 +118,8 @@
       var labelDateStart;
       var labelDateEnd;
       if (target.hasClass('highlighted')) {
-        labelDateStart = scope.filters[0].start;
-        labelDateEnd = scope.filters[0].end;
+        labelDateStart = state.filter.start;
+        labelDateEnd = state.filter.end;
       } else {
         var datum = d3.select(this).datum();
         labelDateStart = datum.date;
@@ -155,12 +155,12 @@
     // Remove all the highlighting
     }).on('mouseleave', 'g.segment,.label', function(e) {
       // Unhighlight ALL the things!
-      revertLabel(container.find('.labels .label.active'), scope);
+      revertLabel(container.find('.labels .label.active'), state);
       d3.select(container[0]).selectAll('g.segment.hover').classed('hover', false);
     });
 
     scope.$on('timeline-chart:filter-cleared', function() {
-      container.find('.labels').toggleClass('dim', scope.hasFilters());
+      container.find('.labels').toggleClass('dim', state.hasFilter());
     });
   }
 
@@ -170,25 +170,12 @@
    * Turns the tagged element into a timeline chart.
    */
   function timelineChartDirective($timeout, AngularRxExtensions) {
-    // Keep track of some state
-    var state = {
-      selectionActive: false // whether we're currently selecting a range
-    };
-    var renderTimelineChart = function(scope, element, dimensions, filterChanged) {
+    function renderTimelineChart(scope, element, dimensions, filterChanged, state) {
       var chartData = scope.chartData;
       var showFiltered = scope.showFiltered;
       var expanded = scope.expanded;
       var precision = scope.precision;
       var rowDisplayUnit = scope.rowDisplayUnit;
-      var filters = scope.filters;
-
-      // We sometimes want to highlight a subset of the data
-      var filterStart;
-      var filterEnd;
-      if ($.isPresent(filters)) {
-        filterStart = filters[0].start;
-        filterEnd = filters[0].end;
-      }
 
       // Draw the chart
       var chart = setChartDimensions(element, scope, dimensions, chartData);
@@ -328,7 +315,7 @@
 
       var updateHighlightedLabel = function() {
         var highlightedLabel = element.find('.labels .label.highlighted');
-        if (filterStart && filterEnd) {
+        if (state.hasFilter()) {
           // TOOD: creating document fragment ourselves might be faster here
           if (_.isEmpty(highlightedLabel)) {
             highlightedLabel = $('<div class="label highlighted">' +
@@ -338,7 +325,7 @@
             element.find('.labels').append(highlightedLabel);
           }
 
-          var range = _.sortBy([filterStart, filterEnd]);
+          var range = _.sortBy([state.filter.start, state.filter.end]);
           var rangeStart = range[0];
           var rangeEnd = range[1];
 
@@ -389,7 +376,7 @@
 
       var updateDragHandles = function() {
         var segments = chart.d3.selectAll('g.draghandle').
-          data(_.compact(_.sortBy([filterStart, filterEnd])));
+          data(_.compact(_.sortBy([state.filter.start, state.filter.end])));
 
         var segmentEnter = segments.enter().append('g').
           attr('class', function(datum, i) {
@@ -435,9 +422,9 @@
 
       updateDragHandles();
 
-      var clearFilter = function() {
-        filterStart = null;
-        filterEnd = null;
+      var clearFilter = function(state) {
+        state.filter.start = null;
+        state.filter.end = null;
         scope.$emit('timeline-chart:filter-cleared');
         updateDragHandles();
       };
@@ -445,7 +432,7 @@
       // Dim the x-axis labels if we're filtering at the moment
       // .toggleClass wants an actual boolean value, so force the && expression to be
       // boolean
-      element.find('.labels').toggleClass('dim', !!(filterStart && filterEnd));
+      element.find('.labels').toggleClass('dim', state.hasFilter());
 
       // Now render the data
 
@@ -517,8 +504,8 @@
         var segments = selection.selectAll('g.segment').
           data(chartData).
           classed('highlighted', function(datum) {
-            return filterStart && filterEnd &&
-              filterStart <= datum.date && datum.date < filterEnd;
+            return state.hasFilter() &&
+              state.filter.start <= datum.date && datum.date < state.filter.end;
           });
         var segmentEnter = segments.enter().append('g').
           attr('class', 'segment');
@@ -612,8 +599,8 @@
           var labelDateEnd;
           if (target.hasClass('highlighted')) {
             // Position the flyout centered above the highlighted region
-            labelDateStart = filterStart;
-            labelDateEnd = filterEnd;
+            labelDateStart = state.filter.start;
+            labelDateEnd = state.filter.end;
           } else {
             // Position the flyout centered above the label's region
             var datum = d3.select(target[0]).datum();
@@ -691,10 +678,10 @@
             return;
           }
           var clickedDatum = d3.select(event.currentTarget).datum();
-          filterStart = clickedDatum.date;
+          state.filter.start = clickedDatum.date;
           var duration = $(event.currentTarget).is('.label') ?
               clickedDatum.range : segmentDuration;
-          filterEnd = moment(clickedDatum.date).add(duration);
+          state.filter.end = moment(clickedDatum.date).add(duration);
 
           isFilteredTarget = $(event.currentTarget).is('.highlighted');
           isClearable = $(event.currentTarget).is('.label') ||
@@ -721,19 +708,19 @@
               moved = true;
 
               if (state.selectionActive) {
-                if (newEnd >= filterStart) {
-                  filterEnd = moment(newEnd).add(duration);
+                if (newEnd >= state.filter.start) {
+                  state.filter.end = moment(newEnd).add(duration);
                 } else {
-                  if (filterEnd >= filterStart) {
-                    filterStart = moment(filterStart).add(duration);
+                  if (state.filter.end >= state.filter.start) {
+                    state.filter.start = moment(state.filter.start).add(duration);
                   }
-                  filterEnd = newEnd;
+                  state.filter.end = newEnd;
                 }
               } else if (dragActive) {
                 if (dragActive === 'start') {
-                  filterStart = newEnd;
+                  state.filter.start = newEnd;
                 } else {
-                  filterEnd = moment(newEnd).add(duration);
+                  state.filter.end = moment(newEnd).add(duration);
                 }
               }
 
@@ -741,17 +728,17 @@
               var domain = scales.horiz.domain();
               var domainStart = moment(domain[0]);
               var domainEnd = moment(domain[1]).add(segmentDuration);
-              if (filterEnd > domainEnd) {
-                filterEnd = domainEnd;
+              if (state.filter.end > domainEnd) {
+                state.filter.end = domainEnd;
               }
-              if (filterEnd < domainStart) {
-                filterEnd = domainStart;
+              if (state.filter.end < domainStart) {
+                state.filter.end = domainStart;
               }
-              if (filterStart > domainEnd) {
-                filterStart = domainEnd;
+              if (state.filter.start > domainEnd) {
+                state.filter.start = domainEnd;
               }
-              if (filterStart < domainStart) {
-                filterStart = domainStart;
+              if (state.filter.start < domainStart) {
+                state.filter.start = domainStart;
               }
               updateDragHandles();
             }
@@ -766,13 +753,13 @@
             // If clicked on a selected segment and the user hasn't moved, clear the
             // filter.
             if ((dragActive || isFilteredTarget) && isClearable && moved === false) {
-              clearFilter();
+              clearFilter(state);
             } else {
               state.selectionActive = false;
               dragActive = false;
-              var sorted = _.sortBy([filterStart, filterEnd]);
-              filterStart = sorted[0];
-              filterEnd = sorted[1];
+              var sorted = _.sortBy([state.filter.start, state.filter.end]);
+              state.filter.start = sorted[0];
+              state.filter.end = sorted[1];
               scope.$emit('timeline-chart:filter-changed', sorted);
             }
             chart.d3.select('g.container').call(updateLines);
@@ -799,10 +786,13 @@
 
         var lastFilter = false;
         var lastData = false;
-
-        scope.hasFilters = function() {
-          return (this.filters && this.filters.length && this.filters[0].start &&
-                  this.filters[0].end);
+        // Keep track of some state
+        var state = {
+          selectionActive: false, // whether we're currently selecting a range
+          filter: {},
+          hasFilter: function() {
+            return !!(this.filter && this.filter.start && this.filter.end);
+          }
         };
 
         setupHighlighting(element, state, scope);
@@ -824,7 +814,8 @@
 
             renderTimelineChart(
               scope, element, cardVisualizationDimensions,
-              lastData && ( lastFilter != showFiltered || lastData != chartData )
+              lastData && ( lastFilter != showFiltered || lastData != chartData ),
+              state
             );
 
             lastFilter = showFiltered;

@@ -99,7 +99,8 @@ dataCards.config(function($provide, $stateProvider, $urlRouterProvider, $locatio
     state('dataset.metadata', {
       views: {
         'mainContent': {
-          templateUrl: '/angular_templates/dataCards/pages/dataset-metadata.html'
+          templateUrl: '/angular_templates/dataCards/pages/dataset-metadata.html',
+          controller: 'DatasetMetadataController'
         }
       }
     });

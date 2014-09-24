@@ -393,9 +393,9 @@
       getVal(options.onOpen);
       inFlyout = false;
       inTarget = true;
-      flyout.on('mouseover, mouseenter', function(e) {
+      flyout.on('mouseover.soc-flyout, mouseenter.soc-flyout', function(e) {
         inFlyout = true;
-      }).bind('mouseleave', function(e) {
+      }).bind('mouseleave.soc-flyout', function(e) {
         if (!$(e.target).parents().hasClass('dragged')) {
           if (!options.debugNeverClosePopups) {
             closeFlyout();
@@ -427,11 +427,10 @@
 
     // This was added to hopefully plug a memory leak when a flyout is created multiple times
     // in a render loop.
-    self.undelegate(options.selector, 'mouseover');
-    self.undelegate(options.selector, 'mouseleave');
+    self.undelegate(options.selector, '.soc-flyout');
 
 
-    self.delegate(options.selector, 'mouseover', function(e) {
+    self.delegate(options.selector, 'mouseover.soc-flyout', function(e) {
       if (!$(e.target).parents().hasClass('dragged')) {
         var canRenderFlyout = true;
         if (options.hasOwnProperty('onBeforeRender') && _(options.onBeforeRender).isFunction() ) {
@@ -442,9 +441,8 @@
         } else if (flyout) {
           closeFlyout();
         }
-        e.stopPropagation();
       }
-    }).delegate(options.selector, 'mouseleave', function(e) {
+    }).delegate(options.selector, 'mouseleave.soc-flyout', function(e) {
       if (!$(e.target).parents().hasClass('dragged')) {
         if (!options.debugNeverClosePopups) {
           inTarget = false;
@@ -458,7 +456,6 @@
             closeFlyout();
           }
         }
-        e.stopPropagation();
       }
     });
 

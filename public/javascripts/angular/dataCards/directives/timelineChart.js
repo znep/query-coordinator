@@ -91,11 +91,89 @@
     return element;
   };
 
+  // Functions for highlighting segments and labels
+  function showLabel(label) {
+    label.addClass('active');
+    if (label.hasClass('hidden')) {
+      label.closest('.labels').addClass('dim');
+    }
+  }
+
+  function revertLabel(label, scope) {
+    label.removeClass('active');
+    if (!scope.hasFilters() && label.hasClass('hidden')) {
+      label.closest('.labels').removeClass('dim');
+    }
+  }
+
+  /**
+   * When you hover over a data segment, the label should highlight. When you highlight
+   * over a label, the data segments in its range should highlight.
+   */
+  function setupHighlighting(container, state, scope) {
+    // Highlight the relevant data when you mouse over a label.
+    container.on('mouseenter', '.label', function(e) {
+      var target = $(this);
+      // Highlight (ie set class 'hover' on) all the columns above this label
+      var labelDateStart;
+      var labelDateEnd;
+      if (target.hasClass('highlighted')) {
+        labelDateStart = scope.filters[0].start;
+        labelDateEnd = scope.filters[0].end;
+      } else {
+        var datum = d3.select(this).datum();
+        labelDateStart = datum.date;
+        labelDateEnd = labelDateStart + datum.range;
+      }
+
+      // Add class 'hover' to the segments corresponding to this label
+      d3.select(container[0]).selectAll('g.segment').classed('hover', function(datum) {
+        var date = datum.date;
+        return labelDateStart <= date && date < labelDateEnd;
+      });
+
+      showLabel(target);
+
+    // Highlight the label relevant to this segment
+    }).on('mouseenter', 'g.segment', function(e) {
+      if ($(this).hasClass('highlighted') || state.selectionActive) {
+        return;
+      }
+      var data = d3.select(this).datum();
+      var segmentDate = data.date;
+      // Find the correct label for this date and set it to active
+      d3.select(container[0]).selectAll('.labels .label').each(function (datum) {
+        var label = $(this);
+        var labelDateStart = datum.date;
+        var labelDateEnd = labelDateStart + datum.range;
+
+        if (labelDateStart <= segmentDate && segmentDate < labelDateEnd) {
+          showLabel(label);
+        }
+      });
+
+    // Remove all the highlighting
+    }).on('mouseleave', 'g.segment,.label', function(e) {
+      // Unhighlight ALL the things!
+      revertLabel(container.find('.labels .label.active'), scope);
+      d3.select(container[0]).selectAll('g.segment.hover').classed('hover', false);
+    });
+
+    scope.$on('timeline-chart:filter-cleared', function() {
+      container.find('.labels').toggleClass('dim', scope.hasFilters());
+    });
+  }
+
+
   /**
    * The <div timeline-chart /> directive.
    * Turns the tagged element into a timeline chart.
    */
   function timelineChartDirective($timeout, AngularRxExtensions) {
+    // Keep track of some state
+    var state = {
+      selectionActive: false // whether we're currently selecting a range
+    };
     var renderTimelineChart = function(scope, element, dimensions, filterChanged) {
       var chartData = scope.chartData;
       var showFiltered = scope.showFiltered;
@@ -145,7 +223,6 @@
         labelUnit = 'year';
       }
 
-      // MARK
       var tickDates;
       var tickRange;
 
@@ -157,13 +234,22 @@
         tickRange = moment.duration(1, labelUnit);
       }
 
-      // TODO: faster way to do this? ie pick out the datums that correspond to the ticks
       // Grab the data for each tick
-      var labelData = _.map(tickDates, function(date) {
-        return _.find(chartData, function(datum) {
-          return datum.date.isSame(date, labelUnit);
-        });
-      });
+      var labelData = [];
+      // For each tickDate, find the first datum in chartData that's that date.
+      // Since tickDate and chartData are both ordered, keep a pointer into chartData, and
+      // pick up where we left off, when searching for the next tickDate.
+      var chartPointer = 0;
+      for (var i = 0, len = tickDates.length; i < len; i++) {
+        for (var chartLen = chartData.length; chartPointer < chartLen; chartPointer++) {
+          if (chartData[chartPointer].date.isSame(tickDates[i], labelUnit)) {
+            // Found it. Save it, and break to look for the next tick
+            chartData[chartPointer].range = tickRange;
+            labelData.push(chartData[chartPointer]);
+            break;
+          }
+        }
+      }
 
       var segmentDuration = moment.duration(1, precision);
       var segmentWidth = scales.horiz(
@@ -181,8 +267,8 @@
            attr('height', TICK_SIZE).
            attr('width', TICK_SIZE);
 
-        ticks.attr('x', function(d) {
-            return scales.horiz(d.date) - TICK_SIZE / 2 - segmentWidth / 2;
+        ticks.attr('x', function(datum) {
+            return scales.horiz(datum.date) - TICK_SIZE / 2 - segmentWidth / 2;
           }).attr('y', chart.height - TICK_SIZE);
 
         ticks.exit().remove();
@@ -193,55 +279,47 @@
        * Adds labels and sets their text and stuff.
        */
       var updateLabels = function() {
-        var labelDivSelection = d3.select(element[0]).
-            select('.labels').selectAll('.label').data(labelData);
+        var labels = element.find('.labels');
+        var labelDivSelection = d3.select(labels[0]).
+            selectAll('.label').data(labelData);
 
         labelDivSelection.enter().
           append('div').classed('label', true).
           append('div').classed('text', true);
 
-        var labelPos = function(time, label) {
-          return scales.horiz(moment(time) + tickRange / 2) -
-            $(label).width() / 2 - segmentWidth / 2;
+        var labelPos = function(datum, label) {
+          return scales.horiz(moment(datum.date) + datum.range / 2) -
+            (($(label).width() + segmentWidth) / 2);
         };
 
         labelDivSelection.selectAll('.text').
-          text(function(d, i, j) {
-            return moment(d.date).format(TICK_DATE_FORMAT[labelUnit.toUpperCase()]);
+          text(function(datum, i, j) {
+            return moment(datum.date).format(TICK_DATE_FORMAT[labelUnit.toUpperCase()]);
           });
         labelDivSelection.
-          style('left', function(d, i, j) {
-              return labelPos(d.date, this) + 'px';
+          style('left', function(datum, i, j) {
+              return labelPos(datum, this) + 'px';
           }).
-          classed('dim', function(d, i) {
-            return filterStart && filterEnd;
-          }).
-          classed('edge-label', function(d, i) {
-            var left = labelPos(d.date, this);
+          classed('edge-label', function(datum, i) {
+            var left = labelPos(datum, this);
             var right = left + $(this).outerWidth();
             return (right > chart.width || (i === 0 && left < 0));
-          }).
-          style('opacity', function(d, i) {
-            var left = labelPos(d.date, this);
-            var right = left + $(this).outerWidth();
-            if (right > chart.width) {
-              return 0;
-            }
-            if (i === 0) {
-              if (left < 0) {
-                return 0;
-              }
-            } else {
-              var prevDiv = element.find('.label').eq(i-1);
-              var prevLeft = labelPos(d3.select(prevDiv[0]).datum().date, this);
-              if (prevDiv.css('opacity') > 0 &&
-                  (prevLeft + prevDiv.outerWidth() > left)) {
-                return 0;
-              }
-            }
-            // Otherwise, set back to its inherited opacity
-            return '';
           });
+
+        // Space out the labels appropriately
+        var maxWidth = 0;
+        _.each(labelDivSelection[0], function(el, i) {
+          if (el.offsetWidth > maxWidth) {
+            maxWidth = el.offsetWidth;
+          }
+        });
+        // We show only the first out of every `period` label - eg 1 out of every 3
+        var tickSpacing = scales.horiz(labelData[1].date)
+                        - scales.horiz(labelData[0].date);
+        var period = Math.ceil(maxWidth / tickSpacing);
+        labelDivSelection.classed('hidden', function(datum, i) {
+          return i % period;
+        });
 
         labelDivSelection.exit().remove();
 
@@ -272,8 +350,10 @@
           var isStartOfSegment = rangeStart.clone().startOf(precision).isSame(rangeStart);
           var isOneSegmentWide = rangeEnd.diff(rangeStart, precision, neverRound) === 1;
           // One label unit. Ex: 1 year
-          var isStartOfLabelSegment = rangeStart.clone().startOf(labelUnit).isSame(rangeStart);
-          var isOneLabelSegmentWide = rangeEnd.diff(rangeStart, labelUnit, neverRound) === 1;
+          var isStartOfLabelSegment = rangeStart.clone().
+              startOf(labelUnit).isSame(rangeStart);
+          var isOneLabelSegmentWide = rangeEnd.diff(
+            rangeStart, labelUnit, neverRound) === 1;
 
           var format;
           var text;
@@ -312,7 +392,7 @@
           data(_.compact(_.sortBy([filterStart, filterEnd])));
 
         var segmentEnter = segments.enter().append('g').
-          attr('class', function(d, i) {
+          attr('class', function(datum, i) {
             return 'draghandle ' + (i === 0 ? 'start' : 'end');
           });
         segmentEnter.append('line').attr('y1', 0);
@@ -342,7 +422,8 @@
           return handlePath(orientedPoints) + 'Z';
         });
         segments.attr('transform', function(d) {
-          return 'translate({0}, 0)'.format(Math.floor(scales.horiz(d - segmentDuration / 2)));
+          return 'translate({0}, 0)'.format(
+            Math.floor(scales.horiz(d - segmentDuration / 2)));
         });
         segments.selectAll('line').attr('y2', chart.height);
         segments.selectAll('rect').attr('height', chart.height);
@@ -361,6 +442,10 @@
         updateDragHandles();
       };
 
+      // Dim the x-axis labels if we're filtering at the moment
+      // .toggleClass wants an actual boolean value, so force the && expression to be
+      // boolean
+      element.find('.labels').toggleClass('dim', !!(filterStart && filterEnd));
 
       // Now render the data
 
@@ -409,10 +494,10 @@
       // Since the timeline is rendered in sections, we have to calculate the midpoints.
       function pointsToRender(field) {
         var pointCoords = [];
-        _.each(chartData, function(d, i) {
+        _.each(chartData, function(datum, i) {
           pointCoords.push({
-            x: scales.horiz(d.date),
-            y: chart.height - scales.vert(d[field])
+            x: scales.horiz(datum.date),
+            y: chart.height - scales.vert(datum[field])
           });
         });
         var midCoords = [];
@@ -431,9 +516,9 @@
       var updateLines = function(selection) {
         var segments = selection.selectAll('g.segment').
           data(chartData).
-          classed('highlighted', function(d) {
+          classed('highlighted', function(datum) {
             return filterStart && filterEnd &&
-              filterStart <= d.date && d.date < filterEnd;
+              filterStart <= datum.date && datum.date < filterEnd;
           });
         var segmentEnter = segments.enter().append('g').
           attr('class', 'segment');
@@ -482,8 +567,8 @@
           attr('d', dFillSegment(filteredPoints, totalPoints));
 
         transition(selection.selectAll('g.segment rect.spacer')).
-          attr('x', function(d, i) {
-            return Math.floor(scales.horiz(d.date - segmentDuration / 2));
+          attr('x', function(datum, i) {
+            return Math.floor(scales.horiz(datum.date - segmentDuration / 2));
           }).
           attr('width', Math.floor(segmentWidth)).
           attr('height', chart.height);
@@ -496,104 +581,70 @@
       chartScroll.undelegate();
 
       var cardMargin = parseInt(element.closest('.card').css('padding-right'), 10) || 15;
-      chartScroll.flyout({
+      // Common options for flyouts
+      var flyoutOpts = {
+        parent: document.body,
+        direction: 'top',
+        inset: {
+          vertical: -4
+        },
+        margin: cardMargin,
+      };
+      chartScroll.flyout($.extend({
         selector: 'g.draghandle',
-        parent: document.body,
-        direction: 'top',
-        inset: {
-          vertical: -4
-        },
-        margin: cardMargin,
         html: 'Drag to change filter range'
-      });
+      }, flyoutOpts));
 
-      chartScroll.flyout({
+      chartScroll.flyout($.extend({
         selector: '.labels .label.highlighted .cancel',
-        parent: document.body,
-        direction: 'top',
-        inset: {
-          vertical: -4
-        },
-        margin: cardMargin,
         html: 'Clear filter range'
-      });
+      }, flyoutOpts));
 
       // This is set to true when the user is selecting a region, and back to false when
       // they finish. We care, because we want the label highlighting behavior to be
       // different during a selection than normal.
-      var selectionActive = false;
+      state.selectionActive = false;
 
-      chartScroll.flyout({
-        selector: 'g.container g.segment, .labels .label',
-        parent: document.body,
-        direction: 'top',
-        inset: {
-          vertical: -4
-        },
-        margin: cardMargin,
+      chartScroll.flyout($.extend({
+        selector: '.label',
         positionOn: function(target, head, options) {
-          options.isLabel = target.is('.label');
-          options.isHighlighted = target.is('.highlighted');
-          options.originalTarget = target;
-          if (options.isLabel) {
-            // TODO(jerjou): break this out, since it has nothing to do with the flyout
-            // Highlight (ie set class 'hover' on) all the columns above this label
-            var labelDateStart;
-            var labelDateEnd;
-            if (options.isHighlighted) {
-              labelDateStart = filterStart;
-              labelDateEnd = filterEnd;
-            } else {
-              labelDateStart = d3.select(target[0]).datum().date;
-              labelDateEnd = labelDateStart + tickRange;
-            }
-
-            options.segments = [];
-            // Add class 'hover' to the segments corresponding to this label
-            d3.selectAll(element.find('g.segment')).filter(function(d) {
-              var date = d.date;
-              return labelDateStart <= date && date < labelDateEnd;
-            }).classed('hover', function() {
-              options.segments.push(this);
-              return true;
-            });
-            var center = Math.floor(options.segments.length / 2);
-
-            return $(options.segments[center]).find('path.fill.unfiltered');
+          var labelDateStart;
+          var labelDateEnd;
+          if (target.hasClass('highlighted')) {
+            // Position the flyout centered above the highlighted region
+            labelDateStart = filterStart;
+            labelDateEnd = filterEnd;
           } else {
-            options.datum = d3.select(target[0]).datum();
-            var targetDate = options.datum.date;
-            var segmentIndex = _.indexOf(_.pluck(chartData, 'date'), targetDate);
-
-            return chartScroll.find('path.fill.unfiltered').eq(segmentIndex);
+            // Position the flyout centered above the label's region
+            var datum = d3.select(target[0]).datum();
+            labelDateStart = datum.date;
+            labelDateEnd = labelDateStart + datum.range;
           }
+
+          // Find the center segment to position over
+          // Find all the segments encompassed by this label
+          options.segments = d3.selectAll(element.find('g.segment')).filter(
+            function(datum) {
+              var date = datum.date;
+              return labelDateStart <= date && date < labelDateEnd;
+            });
+
+          var center = Math.floor(options.segments[0].length / 2);
+          return $(options.segments[0][center]).find('path.fill.unfiltered');
         },
         title: function(target, head, options) {
-          if (options.isLabel) {
-            return options.originalTarget.find('.text').text();
-          } else {
-            var targetDate = d3.select(target[0]).datum().date;
-
-            return moment(targetDate).format(FLYOUT_DATE_FORMAT[precision]);
-          }
+          return target.find('.text').text();
         },
         table: function(target, head, options, $flyout) {
           var total = 0;
           var filtered = 0;
-          if (options.isLabel) {
-            d3.selectAll(options.segments).each(function(data) {
-              total += data.total;
-              filtered += data.filtered;
-            });
-          } else {
-            var data = d3.select(target[0]).datum();
-            total = data.total;
-            filtered = data.filtered;
-          }
-          var unit = '';
-          if (rowDisplayUnit) {
-            unit = ' ' + rowDisplayUnit.pluralize();
-          }
+
+          // Use the filtered segments list made in positionOn to sum
+          options.segments.each(function(data) {
+            total += data.total;
+            filtered += data.filtered;
+          });
+          var unit = rowDisplayUnit ? ' ' + rowDisplayUnit.pluralize() : '';
           var rows = [
             ['Total', $.toHumaneNumber(total) + unit]
           ];
@@ -602,57 +653,31 @@
             rows.push(['Filtered Amount', $.toHumaneNumber(filtered) + unit]);
           }
           return rows;
-        },
-        onOpen: function(target, head, options, $flyout) {
-          var toggleLabel = function($label) {
-            $label.addClass('active');
-            if (!$label.hasClass('edge-label') &&
-                parseFloat($label.css('opacity')) === 0) {
-              $label.
-                data('labelWasHidden', true).
-                css({
-                  opacity: '', // Set back to its inherited value
-                  zIndex: 10
-                });
-            }
-          };
-          var data = d3.select(target[0]).datum();
-          var flyoutDate = data.date;
-          if (options.isLabel) {
-            toggleLabel($(options.originalTarget));
-          } else if (!(options.isHighlighted || selectionActive)) {
-            // Find the correct label for this date and set it to active
-            d3.selectAll(element).selectAll('.labels .label').each(function (d) {
-              var label = $(this);
-              var labelDateStart = d.date;
-              var labelDateEnd = labelDateStart + tickRange;
-
-              if (labelDateStart <= flyoutDate && flyoutDate < labelDateEnd) {
-                toggleLabel(label);
-              } else if (label.data('labelWasHidden')) {
-                label.
-                  data('labelWasHidden', false).
-                  css({
-                    opacity: 0,
-                    zIndex: ''
-                  });
-              }
-            });
-          }
-        },
-        onClose: function() {
-          var label = element.find('.labels .label.active');
-          label.removeClass('active');
-          if (label.data('labelWasHidden')) {
-            label.data('labelWasHidden', false).
-              css({
-                opacity: 0,
-                zIndex: ''
-              });
-          }
-          d3.selectAll(element).selectAll('g.segment.hover').classed('hover', false);
         }
-      });
+      }, flyoutOpts));
+      chartScroll.flyout($.extend({
+        selector: 'g.segment',
+        positionOn: function(target, head, options) {
+          return target.find('path.fill.unfiltered');
+        },
+        title: function(target, head, options) {
+          var targetDate = d3.select(target[0]).datum().date;
+          return moment(targetDate).format(FLYOUT_DATE_FORMAT[precision]);
+        },
+        // Construct the data to display
+        table: function(target, head, options, $flyout) {
+          var data = d3.select(target[0]).datum();
+          var unit = rowDisplayUnit ? ' ' + rowDisplayUnit.pluralize() : '';
+          var rows = [
+            ['Total', $.toHumaneNumber(data.total) + unit]
+          ];
+          if (showFiltered) {
+            $flyout.addClass('filtered');
+            rows.push(['Filtered Amount', $.toHumaneNumber(data.filtered) + unit]);
+          }
+          return rows;
+        }
+      }, flyoutOpts));
 
       var setupClickHandler = function() {
         var dragActive = false;
@@ -661,16 +686,21 @@
         var isClearable = false;
 
         chartScroll.on('mousedown', 'g.segment, .labels .label', function(event) {
+          if (event.which > 1) {
+            // Don't capture right-clicks
+            return;
+          }
           var clickedDatum = d3.select(event.currentTarget).datum();
           filterStart = clickedDatum.date;
-          var duration = $(event.currentTarget).is('.label') ? tickRange : segmentDuration;
+          var duration = $(event.currentTarget).is('.label') ?
+              clickedDatum.range : segmentDuration;
           filterEnd = moment(clickedDatum.date).add(duration);
 
           isFilteredTarget = $(event.currentTarget).is('.highlighted');
           isClearable = $(event.currentTarget).is('.label') ||
                         element.find('g.segment.highlighted').length === 1;
           moved = false;
-          selectionActive = true;
+          state.selectionActive = true;
 
           element.addClass('selecting');
           event.preventDefault();
@@ -681,61 +711,64 @@
 
           element.addClass('selecting');
           event.preventDefault();
-        }).on('mousemove', 'g.segment, .labels .label:not(.highlighted)', function(event) {
-          if (selectionActive || dragActive) {
-            var duration = $(event.currentTarget).is('.label') ? tickRange : segmentDuration;
-            var clickedDatum = d3.select(event.currentTarget).datum();
-            var newEnd = clickedDatum.date;
-            moved = true;
+        }).on('mousemove', 'g.segment, .labels .label:not(.highlighted)',
+          function(event) {
+            if (state.selectionActive || dragActive) {
+              var clickedDatum = d3.select(event.currentTarget).datum();
+              var duration = $(event.currentTarget).is('.label') ?
+                  clickedDatum.range : segmentDuration;
+              var newEnd = clickedDatum.date;
+              moved = true;
 
-            if (selectionActive) {
-              if (newEnd >= filterStart) {
-                filterEnd = moment(newEnd).add(duration);
-              } else {
-                if (filterEnd >= filterStart) {
-                  filterStart = moment(filterStart).add(duration);
+              if (state.selectionActive) {
+                if (newEnd >= filterStart) {
+                  filterEnd = moment(newEnd).add(duration);
+                } else {
+                  if (filterEnd >= filterStart) {
+                    filterStart = moment(filterStart).add(duration);
+                  }
+                  filterEnd = newEnd;
                 }
-                filterEnd = newEnd;
+              } else if (dragActive) {
+                if (dragActive === 'start') {
+                  filterStart = newEnd;
+                } else {
+                  filterEnd = moment(newEnd).add(duration);
+                }
               }
-            } else if (dragActive) {
-              if (dragActive === 'start') {
-                filterStart = newEnd;
-              } else {
-                filterEnd = moment(newEnd).add(duration);
-              }
-            }
 
-            // Clamp the range
-            var domain = scales.horiz.domain();
-            var domainStart = moment(domain[0]);
-            var domainEnd = moment(domain[1]).add(segmentDuration);
-            if (filterEnd > domainEnd) {
-              filterEnd = domainEnd;
+              // Clamp the range
+              var domain = scales.horiz.domain();
+              var domainStart = moment(domain[0]);
+              var domainEnd = moment(domain[1]).add(segmentDuration);
+              if (filterEnd > domainEnd) {
+                filterEnd = domainEnd;
+              }
+              if (filterEnd < domainStart) {
+                filterEnd = domainStart;
+              }
+              if (filterStart > domainEnd) {
+                filterStart = domainEnd;
+              }
+              if (filterStart < domainStart) {
+                filterStart = domainStart;
+              }
+              updateDragHandles();
             }
-            if (filterEnd < domainStart) {
-              filterEnd = domainStart;
-            }
-            if (filterStart > domainEnd) {
-              filterStart = domainEnd;
-            }
-            if (filterStart < domainStart) {
-              filterStart = domainStart;
-            }
-            updateDragHandles();
-          }
-        });
+          });
 
         if (scope.mouseUpHandler) {
           $(window).off('mouseup.TimelineChart', scope.mouseUpHandler);
         }
         scope.mouseUpHandler = function(event) {
-          if (dragActive || selectionActive) {
+          if (dragActive || state.selectionActive) {
             element.removeClass('selecting');
-            // If clicked on a selected segment and the user hasn't moved, clear the filter.
+            // If clicked on a selected segment and the user hasn't moved, clear the
+            // filter.
             if ((dragActive || isFilteredTarget) && isClearable && moved === false) {
               clearFilter();
             } else {
-              selectionActive = false;
+              state.selectionActive = false;
               dragActive = false;
               var sorted = _.sortBy([filterStart, filterEnd]);
               filterStart = sorted[0];
@@ -766,6 +799,13 @@
 
         var lastFilter = false;
         var lastData = false;
+
+        scope.hasFilters = function() {
+          return (this.filters && this.filters.length && this.filters[0].start &&
+                  this.filters[0].end);
+        };
+
+        setupHighlighting(element, state, scope);
 
         Rx.Observable.subscribeLatest(
           element.closest('.card-visualization').observeDimensions(),

@@ -403,28 +403,32 @@ describe('timelineChart', function() {
     it('should hide some labels', function() {
       var chart = getOrCreateChartScenario('300px unexpanded unfiltered');
       expect(chart.element.find('.label').length).to.equal(13);
-      expect(chart.element.find('.label').filter(function() { return $(this).css('opacity') > 0; }).length).to.equal(6);
+      expect(chart.element.find('.label').filter(function() { return $(this).css('opacity') > 0; }).length).to.be.below(13);
     });
     it('should show hidden labels when the segment is moused over', function() {
       var SECTION_INDEX = 4;
       var SEGMENT_INDEX = SECTION_INDEX * 12;
       var chart = getOrCreateChartScenario('300px unexpanded unfiltered');
-      var $segment = chart.element.find('g.segment').eq(SEGMENT_INDEX);
-      var $label = chart.element.find('.label').eq(SECTION_INDEX);
-      expect(parseFloat($label.css('opacity'))).to.equal(0);
-      $segment.mouseover();
-      expect(parseFloat($label.css('opacity'))).to.be.above(0);
-      $segment.mouseout();
+      var $label = chart.element.find('.label.hidden');
+      var startDate = d3.select($label[0]).datum().date;
+      var endDate = d3.select($label.eq(0).next()[0]).datum().date;
+      var segments = d3.select(chart.element[0]).selectAll('g.segment').filter(function(d) {
+        return startDate < d.date && d.date < endDate;
+      });
+      expect($label.hasClass('active')).to.be.false;
+      $(segments[0][1]).mouseover();
+      expect($label.hasClass('active')).to.be.true;
+      $(segments[0][1]).mouseout();
     });
     it('should show a hidden label when that label\'s area is moused over', function() {
       var SECTION_INDEX = 2;
       var chart = getOrCreateChartScenario('300px unexpanded unfiltered');
       var $label = chart.element.find('.label').eq(SECTION_INDEX);
-      expect(parseFloat($label.css('opacity'))).to.equal(0);
+      expect($label.hasClass('active')).to.be.false;
       $label.mouseover();
-      expect(parseFloat($label.css('opacity'))).to.be.above(0);
+      expect($label.hasClass('active')).to.be.true;
       $label.mouseout();
-      expect(parseFloat($label.css('opacity'))).to.equal(0);
+      expect($label.hasClass('active')).to.be.false;
     });
   });
 });

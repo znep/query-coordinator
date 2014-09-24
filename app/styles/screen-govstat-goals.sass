@@ -221,10 +221,9 @@ $baseline_header_color: #1b87e0
 $headline_header_color: #6fab34
 $summary_header_color: #e07e1b
 $config_header_color: #711e8c
-$progress_header_color: #67b5cc
 
-.titleContainer .goalBox.edit
-  > h2, .progressHeader
+.titleContainer .goalBox.edit, .goalBox.edit
+  > h2
     border-bottom: 1px solid #666
     font-size: 1.6em
     margin-bottom: 1em
@@ -254,10 +253,6 @@ $progress_header_color: #67b5cc
     &.configHeader
       border-color: $config_header_color
       color: $config_header_color
-
-    &.progressHeader
-      border-color: $progress_header_color
-      color: $progress_header_color
 
   .goalIntro
     color: #666
@@ -953,62 +948,6 @@ $wizard_border_color: #ccc
 
   .narrativeContainer
     padding: 2em 0
-
-  .progressStateToggle
-    .expander
-      font-size: 1.4em
-
-  .progressState
-    margin-top: 1rem
-    .goalProgress
-      font-size: 0.8rem
-      float: left
-      .progressText
-        font-size: 1.6rem
-        padding-top: 0.4rem
-      .progressOverrideStatus
-        color: #666
-        padding-top: 0.2rem
-
-    &.overridden
-      > .goalProgress
-        opacity: 0.6
-
-  .progressSettingsOverrideToggle
-    float: right
-    padding-top: 0.8em
-
-  .progressSettingsOverride
-    clear: both
-    padding-top: 20px
-    .listEnum
-      li
-        display: inline-block
-        width: 25%
-        position: relative
-        min-height: 60px
-        .selectControls
-          position: absolute
-          width: 100%
-        .selectControls
-          top: 40px
-          text-align: center
-        .selectItem
-          width: 100%
-        .goalProgress
-          padding-left: 0
-          margin-left: -40px
-          float: none
-          text-align: center
-        .progressText, .progressIcon
-          font-size: 1.2rem
-          display: inline-block
-        .progressIcon
-          position: relative
-          left: 40px
-        .progressText
-          padding-right: 0
-          padding-left: 42px
 
 .measure.edit
   h2

@@ -1,16 +1,18 @@
 @import dataCards/ellipsis
+@import dataCards/common/layout
 @import dataCards/common/colors
 
-$fgColor: #333
-$bgColor: #4a525a
-
 body
-  background: $bgColor
   color: white
+  background-color: $bg-color
+
   font-family: 'myriad-pro', 'Helvetica Neue', Helvetica, Arial, sans-serif
   font-size: 14px
   font-weight: 200
+
   margin: 0
+  padding: 0
+  overflow-x: hidden
   overflow-y: scroll
 
 // Begin workaround for OSX + chrome + Magic Mouse hiding scrollbars by default.
@@ -63,6 +65,20 @@ a
 .lowercase
   text-transform: lowercase
 
+.logo
+  background-color: $logo-background-color
+  color: black
+  padding: $header-logo-padding
+  font-size: 1.25em
+
+  img
+    position: relative
+    // While the placeholder logo is correctly centered by pixel, it does not look centered.
+    // Apply some manual correction.
+    top: 2px
+
+
+
 $quickFilterBarHeight: 40px
 $cardBorder: 2px
 $pageNameLineHeight: 1.5rem
@@ -71,7 +87,7 @@ $pageNameMaxLineCount: 2
   .pageName
     position: absolute
     top: 0
-    @include multiline-with-ellipsis($pageNameMaxLineCount, $pageNameLineHeight, $bgColor)
+    @include multiline-with-ellipsis($pageNameMaxLineCount, $pageNameLineHeight, $bg-color)
   // The multiline-with-ellipsis mixin requires a fixed height on the content regardless
   // of whether or not the content is wrapping. So, we take the ellipsified content out
   // of layout and instead use this pageNameMeasuringStick to reserve the right amount

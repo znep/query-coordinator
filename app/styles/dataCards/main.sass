@@ -4,7 +4,6 @@
 
 body
   color: white
-  background-color: $bg-color
 
   font-family: 'myriad-pro', 'Helvetica Neue', Helvetica, Arial, sans-serif
   font-size: 14px
@@ -78,7 +77,7 @@ a
     top: 2px
 
 
-
+// Why is this not in cards.sass?
 $quickFilterBarHeight: 40px
 $cardBorder: 2px
 $pageNameLineHeight: 1.5rem
@@ -87,7 +86,7 @@ $pageNameMaxLineCount: 2
   .pageName
     position: absolute
     top: 0
-    @include multiline-with-ellipsis($pageNameMaxLineCount, $pageNameLineHeight, $bg-color)
+    @include multiline-with-ellipsis($pageNameMaxLineCount, $pageNameLineHeight, $view-cards-bg-color)
   // The multiline-with-ellipsis mixin requires a fixed height on the content regardless
   // of whether or not the content is wrapping. So, we take the ellipsified content out
   // of layout and instead use this pageNameMeasuringStick to reserve the right amount

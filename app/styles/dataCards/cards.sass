@@ -13,7 +13,8 @@ $api-panel-width: 512px
 $api-panel-hint-width: 20px
 
 /* MOBILE/RESPONSIVE DESIGN. SEE DESKTOP-SPECIFIC STYLES BELOW */
-.cards-view
+body.state-view-cards
+  background-color: $view-cards-bg-color
 
   *:focus
     outline-width: 2px
@@ -202,7 +203,7 @@ $api-panel-hint-width: 20px
   .cards-content
     position: relative
     color: $white-font-color
-    background-color: $bg-color
+    background-color: $view-cards-bg-color
     z-index: 1
 
     #quick-filter-bar-container
@@ -230,7 +231,7 @@ $api-panel-hint-width: 20px
 
         .content
           padding: $metadata-side-padding / 2
-          background-color: $bg-color
+          background-color: $view-cards-bg-color
           width: 100%
           box-sizing: border-box
           line-height: 1.5rem

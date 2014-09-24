@@ -130,6 +130,21 @@ dataCards.run(function($location, $log, $rootScope, $state, Routes, DeveloperOve
     $log.error("Error encountered during state transition:", error);
   });
 
+  // In order for us to apply page-specific styles to elements outside
+  // of the page controller's scope (like page background, global font, etc),
+  // we apply state-specific classes to the body.
+  $rootScope.$on('$stateChangeSuccess', function(event, toState, toParams, fromState, fromParams) {
+    function classNameFromStateName(stateName) {
+      var dashified = stateName.replace(/\./g, '-');
+      return "state-" + dashified;
+    };
+
+    var oldClass = classNameFromStateName(fromState.name);
+    var newClass = classNameFromStateName(toState.name);
+    $('body').removeClass(oldClass);
+    $('body').addClass(newClass);
+  });
+
   // Determine the initial view from the URL.
   // We can't use the UI router's built in URL parsing because
   // our UX considerations require our URL to not depend on a document

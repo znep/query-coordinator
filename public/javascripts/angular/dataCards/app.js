@@ -86,6 +86,22 @@ dataCards.config(function($provide, $stateProvider, $urlRouterProvider, $locatio
           controller: 'CardsViewController'
         }
       }
+    }).
+    state('dataset', {
+      template: '<!--Overall chrome--><div ui-view="mainContent"><div>',
+      params: ['datasetId'],
+      resolve: {
+        dataset: function($stateParams, Dataset) {
+          return new Dataset($stateParams['datasetId']);
+        }
+      }
+    }).
+    state('dataset.metadata', {
+      views: {
+        'mainContent': {
+          templateUrl: '/angular_templates/dataCards/pages/dataset-metadata.html'
+        }
+      }
     });
 });
 

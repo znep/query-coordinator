@@ -6,11 +6,15 @@
       var stateName = '404';
       var params = {};
 
-      var viewUrlMatch = urlPathname.match(/^\/view\/(\w{4}-\w{4})$/);
+      var cardsViewUrlMatch = urlPathname.match(/^\/view\/(\w{4}-\w{4})$/);
+      var datasetMetadataUrlMatch = urlPathname.match(/^\/ux\/dataset\/(\w{4}-\w{4})$/);
 
-      if (viewUrlMatch) {
+      if (cardsViewUrlMatch) {
         stateName = 'view.cards';
-        params.id = viewUrlMatch[1];
+        params.id = cardsViewUrlMatch[1];
+      } else if (datasetMetadataUrlMatch) {
+        stateName = 'dataset.metadata';
+        params.datasetId = datasetMetadataUrlMatch[1];
       }
 
       return {

@@ -261,6 +261,16 @@ Frontend::Application.routes do
       end
     end
 
+    scope :controller => 'angular', :constraints => { :id => UID_REGEXP } do
+      # NOTE: The dataCards angular app is capable of rendering multiple views (Pages and Dataset Metadata, for instance).
+      # As of 9/24/2014, the angular app itself figures out what particular view to render.
+      # So if you change these routes, make sure public/javascripts/angular/dataCards/app.js is also updated to
+      # reflect the changes.
+      match '/view/:id', :action => 'serve_app', :app => 'dataCards'
+      match '/view/*angularRoute', :action => 'serve_app', :app => 'dataCards' # See angular-app-{:app} in assets.yml.
+      match '/ux/dataset/:id', :action => 'serve_app', :app => 'dataCards'
+    end
+
     # Dataset SEO URLs (only add here if the action has a view with it;
     # otherwise just add to the :member key in the datasets resource above.)
     scope :controller => 'datasets', :constraints => {:id => UID_REGEXP,
@@ -303,6 +313,7 @@ Frontend::Application.routes do
       get 'd/:id/:row_id', :action => 'show',
         :constraints => {:row_id => /\d+/}
     end
+
 
     # Semantic web cannoical URLs
     %w{resource id}.each do |prefix|
@@ -368,11 +379,6 @@ Frontend::Application.routes do
       match '/manage/site_config', :action => 'manage_config'
       get '/manage/template', :action => 'manage_template'
       post '/manage/template', :action => 'manage_template_update'
-    end
-
-    scope :controller => 'angular', :constraints => { :id => UID_REGEXP } do
-      match '/view/:id', :action => 'serve_app', :app => 'dataCards'
-      match '/view/*angularRoute', :action => 'serve_app', :app => 'dataCards' # See angular-app-{:app} in assets.yml.
     end
 
     resources :dataset_metadata, :controller => :phidippides_datasets

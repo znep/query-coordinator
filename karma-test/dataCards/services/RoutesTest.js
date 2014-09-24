@@ -13,6 +13,18 @@ describe('Routes service', function() {
       expect(Routes.getUIStateAndConfigFromUrl('/view/fake-fbfr')).to.have.deep.property('parameters.id', 'fake-fbfr');
     }));
   });
+  describe('Dataset metadata view routes', function() {
+    it('should return a view of dataset.metadata for a valid dataset metadata URL', inject(function(Routes) {
+      expect(Routes.getUIStateAndConfigFromUrl('/ux/dataset/fake-fbfr')).to.have.property('stateName', 'dataset.metadata');
+    }));
+    it('should not return a view of dataset.metadata for an invalid dataset 4x4', inject(function(Routes) {
+      expect(Routes.getUIStateAndConfigFromUrl('/ux/dataset/fake-fbf')).to.not.have.property('stateName', 'dataset.metadata');
+      expect(Routes.getUIStateAndConfigFromUrl('/ux/dataset/fake-fbfr/')).to.not.have.property('stateName', 'dataset.metadata');
+    }));
+    it('should return parameters with the correct dataset ID for a valid dataset metadata URL', inject(function(Routes) {
+      expect(Routes.getUIStateAndConfigFromUrl('/ux/dataset/fake-fbfr')).to.have.deep.property('parameters.datasetId', 'fake-fbfr');
+    }));
+  });
   describe('Bad routes', function() {
     // Yeah, literally trying to reduce an infinite number of strings to a few test cases.
     it('should return a view of 404 for some bad routes I could think up', inject(function(Routes) {

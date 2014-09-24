@@ -6,12 +6,11 @@
       var stateName = '404';
       var params = {};
 
-      var id = urlPathname.match(/\/\w{4}-\w{4}$/);
-      if (_.isEmpty(id)) {
-        stateName = '404'
-      } else {
+      var viewUrlMatch = urlPathname.match(/^\/view\/(\w{4}-\w{4})$/);
+
+      if (viewUrlMatch) {
         stateName = 'view.cards';
-        params.id = id[0];
+        params.id = viewUrlMatch[1];
       }
 
       return {

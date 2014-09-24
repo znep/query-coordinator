@@ -64,17 +64,18 @@ a
 .lowercase
   text-transform: lowercase
 
-.logo
+.page-header
   background-color: $logo-background-color
-  color: black
-  padding: $header-logo-padding
-  font-size: 1.25em
+  .logo
+    color: black
+    padding: $header-logo-padding
+    font-size: 1.25em
 
-  img
-    position: relative
-    // While the placeholder logo is correctly centered by pixel, it does not look centered.
-    // Apply some manual correction.
-    top: 2px
+    img
+      position: relative
+      // While the placeholder logo is correctly centered by pixel, it does not look centered.
+      // Apply some manual correction.
+      top: 2px
 
 
 // Why is this not in cards.sass?

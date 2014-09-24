@@ -7,7 +7,6 @@ var dataCards = angular.module('dataCards', [
   'dataCards.services',
   'dataCards.directives',
   'dataCards.models'
-  // 'pasvaz.bindonce' NOTE: use in the future to optimize Angular performance.
 ]);
 
 dataCards.config(function(ServerConfig) {
@@ -90,7 +89,7 @@ dataCards.config(function($provide, $stateProvider, $urlRouterProvider, $locatio
     });
 });
 
-dataCards.run(function($location, $log, $rootScope, $state, DeveloperOverrides) {
+dataCards.run(function($location, $log, $rootScope, $state, Routes, DeveloperOverrides) {
   // Shamelessly lifted from http://www.joezimjs.com/javascript/3-ways-to-parse-a-query-string-in-a-url/
   var parseQueryString = function( queryString ) {
     var params = {}, queries, temp, i, l;
@@ -115,12 +114,10 @@ dataCards.run(function($location, $log, $rootScope, $state, DeveloperOverrides) 
   });
 
   // Determine the initial view from the URL.
-  var id = location.pathname.match(/\/\w{4}-\w{4}$/);
-  if (_.isEmpty(id)) {
-    $state.go('404');
-  } else {
-    $state.go('view.cards', {
-      id: id[0]
-    });
-  }
+  // We can't use the UI router's built in URL parsing because
+  // our UX considerations require our URL to not depend on a document
+  // fragment. We'd be able to use html5 mode on the router to satisfy this,
+  // but we need to support IE9.
+  var initialAppUIState = Routes.getUIStateAndConfigFromUrl(location.pathname);
+  $state.go(initialAppUIState.stateName, initialAppUIState.parameters);
 });

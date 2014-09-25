@@ -1,12 +1,13 @@
-
 angular.module('socrataCommon.directives').directive('table', function(AngularRxExtensions, $q, $timeout) {
-  "use strict";
-  var rowsPerBlock = 50,
-      rowHeight = $.relativeToPx('2rem');
+  'use strict';
+
+  var rowsPerBlock = 50;
+  var rowHeight = $.relativeToPx('2rem');
 
   return {
     templateUrl: '/angular_templates/dataCards/table.html',
     restrict: 'A',
+
     scope: {
       rowCount: '=',
       filteredRowCount: '=',
@@ -17,41 +18,52 @@ angular.module('socrataCommon.directives').directive('table', function(AngularRx
       columnDetails: '=',
       defaultSortColumnName: '='    // When the table is first created, it will be sorted on this column.
     },
+
     link: function(scope, element, attrs) {
       // A unique jQuery namespace, specific to one table instance.
       var instanceUniqueNamespace = 'table.instance{0}'.format(scope.$id);
 
       AngularRxExtensions.install(scope);
 
-      var currentBlocks = [], sort = '', columnWidths = {},
-          httpRequests = {}, oldBlock = -1;
-      var $table = element.find('.table-inner'),
-          $head = element.find('.table-inner > .table-head'),
-          $body = element.find('.table-inner > .table-body'),
-          $expander = element.find('.table-expander'),
-          $label = element.find('.table-label');
+      var currentBlocks = [];
+      var sort = '';
+      var columnWidths = {};
+      var httpRequests = {};
+      var oldBlock = -1;
+      var $table = element.find('.table-inner');
+      var $head = element.find('.table-inner > .table-head');
+      var $body = element.find('.table-inner > .table-body');
+      var $expander = element.find('.table-expander');
+      var $label = element.find('.table-label');
 
       element.on('click', '.expand-message > *', function() {
         scope.$apply(function() {
           scope.$emit('table:expand-clicked');
         });
       });
+
       $('body').on('click.{0}'.format(instanceUniqueNamespace), '.flyout .caret', function(e) {
-        if ($(e.currentTarget).parent().data('table-id') !== instanceUniqueNamespace) return; // The flyout might not be our own!
+        if ($(e.currentTarget).parent().data('table-id') !== instanceUniqueNamespace) {
+          return; // The flyout might not be our own!
+        }
         scope.safeApply(function() {
           var columnId = $(e.currentTarget).parent().data('column-id');
+
           sortOnColumn(columnId);
         });
       });
+
       scope.$on('$destroy', function() {
         $('body').off('.{0}'.format(instanceUniqueNamespace));
       });
+
       scope.$on('tableHeader:click', function(event, headerObject) {
         sortOnColumn(headerObject.columnId);
       });
 
       var renderTable = function(element, dimensions, rowCount, expanded) {
         var tableHeight = dimensions.height - element.position().top;
+
         element.height(tableHeight);
         $body.height(tableHeight - $head.height() - rowHeight);
         $head.find('.resize').height(tableHeight);
@@ -67,7 +79,7 @@ angular.module('socrataCommon.directives').directive('table', function(AngularRx
           case 'number': case 'timestamp': return 'DESC';
           default: return 'ASC';
         }
-      };
+      }
 
       // Given a column ID, computes what sort order
       // should be applied when the user next indicates
@@ -78,14 +90,18 @@ angular.module('socrataCommon.directives').directive('table', function(AngularRx
       // default sort based upon the column's type.
       var getNextSortForColumn = function(columnId) {
         var newOrdering;
+
         if (isSortedOnColumn(columnId)) {
           var sortParts = sort.split(' ');
           var currentSort = sortParts[1];
+
           newOrdering = currentSort === 'DESC' ? 'ASC' : 'DESC';
         } else {
           var column = scope.columnDetails[columnId];
+
           newOrdering = defaultSortOrderForColumn(column);
         }
+
         return newOrdering;
       };
 
@@ -96,6 +112,7 @@ angular.module('socrataCommon.directives').directive('table', function(AngularRx
       var getCurrentOrDefaultSortForColumn = function(columnId) {
         if (isSortedOnColumn(columnId)) {
           var sortParts = sort.split(' ');
+
           return sortParts[1];
         } else {
           return getNextSortForColumn(columnId);
@@ -105,6 +122,7 @@ angular.module('socrataCommon.directives').directive('table', function(AngularRx
       // Apply a sort on the column corresponding to the given columnId.
       var sortOnColumn = function(columnId) {
         var newOrdering = getNextSortForColumn(columnId);
+
         sort = '{0} {1}'.format(columnId, newOrdering);
         updateColumnHeaders();
         reloadRows();
@@ -114,26 +132,36 @@ angular.module('socrataCommon.directives').directive('table', function(AngularRx
       // on the given column.
       var isSortedOnColumn = function(columnId) {
         var sortParts = sort.split(' ');
+
         return sortParts[0] === columnId;
       };
 
       var columnDrag = false;
+
       var dragHandles = function(columnIds) {
         var columnIndex;
         var columnId;
         var currentX = 0;
         var $resizeContainer = $expander.find('.table-resize-container');
+
         columnDrag = false;
-        if($resizeContainer.length === 0) {
+
+        if ($resizeContainer.length === 0) {
           $resizeContainer = $('<div class="table-resize-container table-row"></div>');
           $expander.prepend($resizeContainer);
         }
-        if($resizeContainer.children().length > 0) return;
+
+        if ($resizeContainer.children().length > 0) {
+          return;
+        }
+
         _.each(columnWidths, function(width, columnId) {
           var $cell = $('<div class="cell"><span class="resize"></span></div>').width(width);
+
           $cell.find('.resize').data('columnId', columnId);
           $resizeContainer.append($cell);
         });
+
         element.on('mousedown', '.table-head .resize, .table-resize-container .resize', function(e) {
           currentX = e.pageX;
           columnIndex = $(this).parent().index();
@@ -141,11 +169,12 @@ angular.module('socrataCommon.directives').directive('table', function(AngularRx
           columnDrag = true;
           e.preventDefault();
         });
+
         $('body').on('mousemove.{0}'.format(instanceUniqueNamespace), function(e) {
           if (columnDrag) {
-            var $cells = $table.find('.cell:nth-child({0}), .th:nth-child({0})'.
-            format(columnIndex + 1));
+            var $cells = $table.find('.cell:nth-child({0}), .th:nth-child({0})'.format(columnIndex + 1));
             var newWidth = $cells.width() + e.pageX - currentX;
+
             $cells.width(newWidth);
             columnWidths[columnId] = newWidth;
             currentX = e.pageX;
@@ -157,7 +186,7 @@ angular.module('socrataCommon.directives').directive('table', function(AngularRx
       };
 
       var ensureColumnHeaders = function() {
-        if(!scope.headers) {
+        if (!scope.headers) {
           updateColumnHeaders();
         }
       };
@@ -176,8 +205,10 @@ angular.module('socrataCommon.directives').directive('table', function(AngularRx
             sortable: column.sortable
           };
         });
+
         // Update flyout if present
         var columnId = $(".flyout").data('column-id');
+
         if (_.isPresent(columnId)) {
           $head.find('.th:contains({0})'.format(scope.columnDetails[columnId].title)).mouseenter();
         }
@@ -194,8 +225,13 @@ angular.module('socrataCommon.directives').directive('table', function(AngularRx
               return cell.clientWidth;
             });
             var width = $(maxCell).width();
-            if (width > 300) width = 300;
-            else if(width < 75) width = 75;
+
+            if (width > 300) {
+              width = 300;
+            } else if (width < 75) {
+              width = 75;
+            }
+
             columnWidths[column.name] = width;
             $cells.width(width);
           });
@@ -203,6 +239,7 @@ angular.module('socrataCommon.directives').directive('table', function(AngularRx
           dragHandles();
         });
       });
+
       var updateExpanderHeight = function() {
         if (scope.infinite) {
           $expander.height(rowHeight * filteredRowCount);
@@ -211,11 +248,14 @@ angular.module('socrataCommon.directives').directive('table', function(AngularRx
             return $(block).data().blockId;
           });
           var height = 0;
+
           if (_.isElement(lastLoadedBlock)) {
             var $lastLoadedBlock = $(lastLoadedBlock);
             var lastHeight = $lastLoadedBlock.height() || 0;
+
             height = rowHeight * $lastLoadedBlock.data().blockId * rowsPerBlock + lastHeight;
           }
+
           $expander.height(height);
         }
       };
@@ -225,70 +265,94 @@ angular.module('socrataCommon.directives').directive('table', function(AngularRx
           return;
         }
         var canceler = $q.defer();
+
         httpRequests[block] = canceler;
-        scope.getRows(block * rowsPerBlock, rowsPerBlock, sort, canceler, scope.whereClause).
-            then(function(data) {
+
+        scope.getRows(block * rowsPerBlock, rowsPerBlock, sort, canceler, scope.whereClause).then(function(data) {
           delete httpRequests[block];
           ensureColumnHeaders();
-          if (currentBlocks.indexOf(block) === -1 || data.length === 0) return;
+
+          if (currentBlocks.indexOf(block) === -1 || data.length === 0) {
+            return;
+          }
+
           var blockHtml = '<div class="row-block {0}" data-block-id="{0}" style="top: {1}px; display: none">'.
             format(block, block * rowsPerBlock * rowHeight);
+
           _.each(data, function(data_row) {
             blockHtml += '<div class="table-row">';
-            _.each(_.values(scope.columnDetails), function(column, columnIndex) {
-              var cellClasses = 'cell';
+            _.each(_.values(scope.columnDetails), function(column) {
+              var cellClasses = ['cell'];
               var cellContent = data_row[column.name] || '';
               var cellText = '';
               var cellType = scope.columnDetails[column.name].physicalDatatype;
+
+              cellClasses.push(cellType);
+
               // Is Boolean?
+              // TODO: Add test coverage for this cellType (needs this type in the fixture data)
               if (cellType === 'boolean') {
                 cellText = cellContent ? '✓' : '✗';
+
               } else if (cellType === 'number') {
-                cellClasses += ' number';
                 // TODO: Remove this. This is just to satisfy Clint's pet peeve about years.
                 if (cellContent.length >= 5) {
                   cellText = _.escape($.commaify(cellContent));
                 } else {
                   cellText = _.escape(cellContent);
                 }
-              } else if (cellType == 'geo_entity') {
+
+              } else if (cellType === 'geo_entity' || cellType === 'point') {
+                var latitudeCoordinateIndex = 1;
+                var longitudeCoordinateIndex = 0;
                 if (_.isArray(cellContent.coordinates)) {
-                  cellText += (' (<span title="Latitude">{0}°</span>, ' +
-                    '<span title="Longitude">{1}°</span>)').format(
-                      cellContent.coordinates[1],
-                      cellContent.coordinates[0]);
+                  cellText = (
+                    '(<span title="Latitude">{0}°</span>, <span title="Longitude">{1}°</span>)'
+                  ).format(
+                    cellContent.coordinates[latitudeCoordinateIndex],
+                    cellContent.coordinates[longitudeCoordinateIndex]
+                  );
                 }
+
               } else if (cellType === 'timestamp') {
                 var time = moment(cellContent);
+
                 // Check if Date or Date/Time
                 if (time.format('HH:mm:ss') === '00:00:00') {
                   cellText = time.format('YYYY MMM D');
                 } else {
                   cellText = time.format('YYYY MMM DD HH:mm:ss');
                 }
+
               } else {
                 cellText = _.escape(cellContent);
               }
+
               blockHtml += '<div class="{0}" style="width: {1}px">{2}</div>'.
-                format(cellClasses, columnWidths[column.name], cellText);
+                format(cellClasses.join(' '), columnWidths[column.name], cellText);
             });
             blockHtml += '</div>';
           });
           blockHtml += '</div>';
+
           $expander.append(blockHtml);
           $('.row-block.{0}'.format(block)).fadeIn();
           calculateColumnWidths();
           _.delay(updateExpanderHeight, 1);
         });
       };
+
       var moveHeader = function() {
         $head.css('left', - $body.scrollLeft());
       };
+
       var checkBlocks = function() {
         var currentBlock = Math.floor($body.scrollTop() / (rowHeight * rowsPerBlock));
 
         // Short circuit
-        if(currentBlock === oldBlock) return;
+        if (currentBlock === oldBlock) {
+          return;
+        }
         oldBlock = currentBlock;
 
         var blocksToLoad = _.map([-1, 0, 1, 2], function(i) {
@@ -318,9 +382,13 @@ angular.module('socrataCommon.directives').directive('table', function(AngularRx
       var updateLabel = function() {
         var topRow = Math.floor($body.scrollTop() / rowHeight) + 1;
         var bottomRow = Math.floor(($body.scrollTop() + $body.height()) / rowHeight);
-        $label.text('Showing {0} to {1} of {2} (Total: {3})'.format(topRow,
-            _.min([bottomRow, scope.filteredRowCount]), scope.filteredRowCount,
-            scope.rowCount));
+
+        $label.text('Showing {0} to {1} of {2} (Total: {3})'.format(
+          topRow,
+          _.min([bottomRow, scope.filteredRowCount]),
+          scope.filteredRowCount,
+          scope.rowCount)
+        );
       };
 
       var reloadRows = function() {
@@ -329,6 +397,7 @@ angular.module('socrataCommon.directives').directive('table', function(AngularRx
         oldBlock = -1;
         checkBlocks();
       };
+
       var showOrHideNoRowMessage = function() {
         if (scope.filteredRowCount === 0) {
           element.find('.table-no-rows-message').fadeIn();
@@ -336,7 +405,9 @@ angular.module('socrataCommon.directives').directive('table', function(AngularRx
           element.find('.table-no-rows-message').fadeOut();
         }
       };
+
       var scrollLeft = $body.scrollLeft(), scrollTop = $body.scrollTop();
+
       $body.scroll(function(e) {
         scope.safeApply(function() {
           if (scrollLeft !== (scrollLeft = $body.scrollLeft())) {
@@ -348,17 +419,19 @@ angular.module('socrataCommon.directives').directive('table', function(AngularRx
           }
         });
       });
+
       $body.flyout({
         selector: '.row-block .cell',
         interact: true,
         style: 'table',
         direction: 'horizontal',
         html: function($target, $head, options) {
-          if($target[0].clientWidth < $target[0].scrollWidth) {
+          if ($target[0].clientWidth < $target[0].scrollWidth) {
             return _.escape($target.text());
           }
         }
       });
+
       $head.flyout({
         selector: '.th',
         direction: 'top',
@@ -375,9 +448,9 @@ angular.module('socrataCommon.directives').directive('table', function(AngularRx
           var sortParts = sort.split(' ');
           var sortUp = sortParts[1] === 'ASC';
           var html = [];
-
           var ascendingString = 'ascending';
           var descendingString = 'descending';
+
           switch(column.physicalDatatype) {
             case 'number': ascendingString = 'smallest first'; descendingString = 'largest first'; break;
             case 'text': ascendingString = 'A-Z'; descendingString = 'Z-A'; break;
@@ -386,11 +459,13 @@ angular.module('socrataCommon.directives').directive('table', function(AngularRx
 
           $element.data('table-id', instanceUniqueNamespace);
           $element.data('column-id', columnId);
+
           if (column.sortable) {
             if (isSortedOnColumn(columnId)) {
               html.push('Sorted {0}'.format(sortUp ? ascendingString : descendingString));
             }
             var wouldSortUp = getNextSortForColumn(columnId) === 'ASC';
+
             html.push('<a class="caret" href="#">Click to sort {0}</a>'.
               format(wouldSortUp ? ascendingString : descendingString));
             return html.join('<br>');
@@ -402,6 +477,7 @@ angular.module('socrataCommon.directives').directive('table', function(AngularRx
           return !$(target).hasClass('resize') && !columnDrag;
         }
       });
+
       Rx.Observable.subscribeLatest(
         element.closest('.card-visualization').observeDimensions(),
         scope.observe('rowCount'),
@@ -411,9 +487,11 @@ angular.module('socrataCommon.directives').directive('table', function(AngularRx
         scope.observe('infinite'),
         function(cardDimensions, rowCount, filteredRowCount, expanded, columnDetails, infinite) {
           var timestamp = new Date().getTime();
+
           scope.$emit('render:start', 'table_{0}'.format(scope.$id), timestamp);
           updateExpanderHeight();
           showOrHideNoRowMessage();
+
           if (rowCount && expanded) {
             // Apply a default sort if needed.
             if (scope.defaultSortColumnName && _.isEmpty(sort)) {
@@ -426,16 +504,18 @@ angular.module('socrataCommon.directives').directive('table', function(AngularRx
               expanded
             );
           }
+
           // Yield execution to the browser to render, then notify that render is complete
           $timeout(function() {
             scope.$emit('render:complete', 'table_{0}'.format(scope.$id), timestamp);
           }, 0, false);
         }
       );
+
       Rx.Observable.subscribeLatest(
         scope.observe('whereClause'),
         function(whereClause) {
-          if(scope.getRows && scope.expanded) {
+          if (scope.getRows && scope.expanded) {
             reloadRows();
           }
         }

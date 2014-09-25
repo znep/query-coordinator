@@ -35,13 +35,11 @@
       it('should be disabled if pageHasChanges is false', function() {
         var $saveAs = createElement(elementTemplate.format('false'));
         var $saveAsButton = $saveAs.find('.tool-panel-toggle-btn');
-        expect($saveAsButton.is(':disabled')).to.be.true;
         expect($saveAsButton.hasClass('disabled')).to.be.true;
       });
       it('should be enabled if pageHasChanges is true', function() {
         var $saveAs = createElement(elementTemplate.format('true'));
         var $saveAsButton = $saveAs.find('.tool-panel-toggle-btn');
-        expect($saveAsButton.is(':disabled')).to.be.false;
         expect($saveAsButton.hasClass('disabled')).to.be.false;
       });
       it('should make the tool panel active when clicked', function() {

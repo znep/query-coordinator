@@ -430,8 +430,7 @@
       };
 
       // Dim the x-axis labels if we're filtering at the moment
-      // .toggleClass wants an actual boolean value, so force the && expression to be
-      // boolean
+      // .toggleClass wants an actual boolean value
       element.find('.labels').toggleClass('dim', state.hasFilter());
 
       // Now render the data
@@ -502,13 +501,21 @@
 
       var updateLines = function(selection) {
         var segments = selection.selectAll('g.segment').
-          data(chartData).
-          classed('highlighted', function(datum) {
-            return state.hasFilter() &&
-              state.filter.start <= datum.date && datum.date < state.filter.end;
-          });
+          data(chartData);
         var segmentEnter = segments.enter().append('g').
           attr('class', 'segment');
+
+        if (state.hasFilter()) {
+          // Highlight segments within the filter, both in existing segments, and new ones
+          var highlighted = function(datum) {
+            return state.filter.start <= datum.date && datum.date < state.filter.end;
+          };
+          segmentEnter.classed('highlighted', highlighted);
+          segments.classed('highlighted', highlighted);
+        } else {
+          // Reset the highlights
+          segments.classed('highlighted', false);
+        }
 
         segmentEnter.append('path').
           attr('class', 'fill unfiltered');
@@ -561,7 +568,7 @@
           attr('height', chart.height);
       };
 
-      chart.d3.select('g.container').call(updateLines);
+      updateLines(chart.d3.select('g.container'));
 
 
       // Flyouts
@@ -791,6 +798,7 @@
           selectionActive: false, // whether we're currently selecting a range
           filter: {},
           hasFilter: function() {
+            // use !! to return an actual boolean value (mostly for toggleClass())
             return !!(this.filter && this.filter.start && this.filter.end);
           }
         };
@@ -811,6 +819,11 @@
             }
             var timestamp = _.now();
             scope.$emit('render:start', 'timelineChart_{0}'.format(scope.$id), timestamp);
+
+            // If it's the scope filters that have changed, update the state.
+            if (!_.isEmpty(scope.filters)) {
+              state.filter = scope.filters[0];
+            }
 
             renderTimelineChart(
               scope, element, cardVisualizationDimensions,

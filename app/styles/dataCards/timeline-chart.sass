@@ -93,13 +93,20 @@ div.timeline-chart
         rect
           fill: transparent
 
+  $dim-opacity: 0.2
+
   div.labels
     position: absolute
     right: 0
     left: 0
     height: $base-font-size
 
-    div.label
+    &.dim>div.label
+      @include transitions(opacity .2s linear)
+      opacity: $dim-opacity
+      z-index: 1
+
+    >div.label
       cursor: pointer
       position: absolute
       bottom: 0
@@ -118,12 +125,35 @@ div.timeline-chart
       &.active, &.highlighted
         color: $timeline-label-color-active
         background-color: rgba(255, 255, 255, 0.8)
+        opacity: 1
+        z-index: 2
 
         .cancel
           font-family: 'SSAir'
           font-size: 1.3em
           color: black
           margin-left: 3px
+
+  &.selecting
+    div.labels
+      >div.label
+        // During selection, all labels (except the highlighted one) should be translucent
+        &, &.active
+          opacity: $dim-opacity
+          color: $timeline-label-color
+          z-index: 1
+
+        &.hidden
+          opacity: 0
+          z-index: 1
+
+        &.highlighted
+          opacity: 1
+          z-index: 2
+
+    div.chart-scroll
+      g.draghandle, .label.highlighted
+        pointer-events: none
 
   div.ticks
     position: absolute
@@ -138,27 +168,3 @@ div.timeline-chart
       margin-top: -$tick-height
       font-size: $tick-font-size
 
-  &.selecting div.chart-scroll
-    g.draghandle, .label.highlighted
-      pointer-events: none
-
-  &.selecting div.label, div.labels.dim>div.label
-    @include transitions(opacity .2s linear)
-    opacity: 0.2
-    z-index: 1
-
-  div.labels
-    &.dim>div.label.active, &.dim>div.label.highlighted, >div.label.highlighted
-      opacity: 1
-      z-index: 2
-
-  &.selecting
-    // we need to select on .dim in order to get precedence - the 'selecting' state wants
-    // the highlighting to behave more demurely
-    div.labels, div.labels.dim
-      div.label
-        &.hidden
-          opacity: 0
-        &.highlighted
-          opacity: 1
-          z-index: 2

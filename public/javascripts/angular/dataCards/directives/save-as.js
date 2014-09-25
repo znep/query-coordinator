@@ -13,6 +13,7 @@
       link: function($scope, element, attrs) {
         AngularRxExtensions.install($scope);
         var $nameInput = element.find('#save-as-name');
+        var $descriptionInput = element.find('#save-as-description');
         var $document = $($window.document);
 
         $scope.defaultNamePlaceholder = 'Enter a name';
@@ -21,6 +22,15 @@
         $scope.name = '';
         $scope.description = '';
         $scope.save = function save() {
+
+          // These two checks are a workaround for IE9, which apparently
+          // does not update scope variables when they are bound via ng-model?
+          // (Verify this by checking the .val() of $nameInput against
+          // $scope.name, which is bound to the input element in the
+          // markup.)
+          $scope.name = $nameInput.val();
+          $scope.description = $descriptionInput.val();
+
           if ($scope.name.trim() === '') {
             $nameInput.addClass('form-error').focus();
           } else {

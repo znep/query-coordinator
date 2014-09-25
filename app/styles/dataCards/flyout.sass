@@ -46,9 +46,8 @@ $flyout-padding-horizontal: 10px
       margin-left: 15px
       float: right
 
-
-
 #uber-flyout.left
+
   .hint
     left: 0
 
@@ -63,6 +62,7 @@ $flyout-padding-horizontal: 10px
       left: -1px
 
 #uber-flyout.right
+
   .hint
     right: -10px
 
@@ -75,6 +75,22 @@ $flyout-padding-horizontal: 10px
       border-width: 0 ($flyout-chart-tip-size + 1) ($flyout-chart-tip-size + 1) 0
       top: 1px
 
+#uber-flyout.right.horizontal
+
+  .hint
+    right: 0
+    top: 50%
+    left: 100%
+
+    &:after
+      border-color: transparent transparent transparent $flyout-chart-background-color
+      border-width: ($flyout-chart-tip-size / 2) 0 ($flyout-chart-tip-size / 2) $flyout-chart-tip-size
+      margin-top: -($flyout-chart-tip-size / 2)
+
+    &:before
+      border-color: transparent transparent transparent $flyout-border
+      border-width: (($flyout-chart-tip-size / 2) + 2) 0 (($flyout-chart-tip-size / 2) + 2) ($flyout-chart-tip-size + 2)
+      margin-top: -(($flyout-chart-tip-size / 2) + 3)
 
 
 

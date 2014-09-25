@@ -84,11 +84,13 @@
 
       it('should call the savePageAs callback when a name is provided and the "Save" button is clicked', function() {
         var TEST_INPUT = 'test input';
-        $saveAs.find('#save-as-name').val(TEST_INPUT).trigger('input');
-        scope.$apply();
+        $saveAsName = $saveAs.find('#save-as-name');
+        $saveAsName.val(TEST_INPUT).trigger('keyup');
         $saveAs.find('button[data-action="save"]').click();
+
         scope.$apply();
-        expect($saveAs.find('#save-as-name').hasClass('form-error')).to.be.false;
+        
+        expect($saveAsName.hasClass('form-error')).to.be.false;
         expect(scope.savePageAs.calledOnce).to.be.true;
         var savePageAsCall = scope.savePageAs.getCall(0);
         expect(savePageAsCall.calledWithExactly(TEST_INPUT, '')).to.be.true;

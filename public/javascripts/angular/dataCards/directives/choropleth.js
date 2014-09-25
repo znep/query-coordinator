@@ -573,14 +573,17 @@
           }
 
         },
-        // The last argument specifies whether the flyout should follow
+        // The second-to-last argument specifies whether the flyout should follow
         // the cursor (true) or be fixed to the target element (false).
-        true);
+        true,
+        false);
 
         FlyoutService.register('choropleth-legend-color', function(element) {
           return '<div class="flyout-title">{0}</div>'.format(element.getAttribute('data-flyout-text'));
         },
-        false);
+        false,
+        // The last argument specifies a horizontal display mode.
+        true);
 
         /***************
         * Set up state *

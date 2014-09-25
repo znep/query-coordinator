@@ -3,17 +3,16 @@
   <div id="save-as-panel" ng-class="{active: panelActive}" class="tool-panel-main">
     <div id="save-as-panel-inner-container" class="tool-panel-inner-container">
       <div class="tool-panel-hint"></div>
-
       <h2>Save As</h2>
 
       <div class="tool-panel-input-group">
         <label for="save-as-name">Save the current view with a new name</label>
-        <input id="save-as-name" class="form-control" type="text" placeholder="{{namePlaceholder}}" ng-focus="namePlaceholder = ''" ng-blur="namePlaceholder = defaultNamePlaceholder" ng-model="name" />
+        <input id="save-as-name" class="form-control" type="text" placeholder="{{namePlaceholder}}" ng-focus="namePlaceholder = ''" ng-blur="namePlaceholder = defaultNamePlaceholder" />
       </div>
 
       <div class="tool-panel-input-group">
         <label for="save-as-description">Enter a description for your new view (optional)</label>
-        <textarea id="save-as-description" class="form-control" rows="5" ng-model="description"></textarea>
+        <textarea id="save-as-description" class="form-control" rows="5"></textarea>
       </div>
 
       <div class="tool-panel-input-group">

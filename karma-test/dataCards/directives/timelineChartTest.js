@@ -107,6 +107,7 @@ describe('timelineChart', function() {
       expect($('g.segment').length).to.equal(testData.length);
       expect(chart.element.find('.labels div.label').length).to.equal(13);
     });
+
     it('should create segments with correct children', function() {
       var chart = getOrCreateChartScenario('640px unexpanded unfiltered');
       _.each($('g.segment'), function(segment) {
@@ -119,27 +120,51 @@ describe('timelineChart', function() {
         expect($seg.find('rect.spacer').length).to.equal(1);
       });
     });
+
     it('should create 3 ticks on the y-axis', function() {
       var chart = getOrCreateChartScenario('640px unexpanded unfiltered');
       expect(chart.element.find('.ticks > div').length).to.equal(3);
     });
+
     it('should create 13 ticks on the x-axis', function() {
       var chart = getOrCreateChartScenario('640px unexpanded unfiltered');
       expect(chart.element.find('g.xticks > rect.tick').length).to.equal(13);
     });
-    it('should create a popup on mouse over with no filter and total of 16.4K', function() {
-      printAllFlyoutContent();
-      var expectedFlyoutSelector = '.flyout:contains(16.4K)';
 
-      var chart = getOrCreateChartScenario('640px unexpanded unfiltered');
-      chart.element.find('g.segment rect.spacer').mouseover();
-      expect($(expectedFlyoutSelector).length).to.equal(1);
-      var $rows = $(expectedFlyoutSelector + " .flyout-row");
-      expect($rows.length).to.equal(1);
-      expect($rows.children().last().text()).to.equal('16.4K');
-      chart.element.find('g.segment rect.spacer').mouseout();
-      expect($(expectedFlyoutSelector).length).to.equal(0);
+    it('should create labels with different positions', function() {
+      var chart = getOrCreateChartScenario('640px unexpanded filtered');
+      var positions = _.map(chart.element.find('.labels div.label'), function(label) {
+        return $(label).attr('style');
+      });
+      expect(_.uniq(positions).length).to.equal(positions.length);
     });
+
+    it('should be able to change data', function() {
+      this.timeout(4000);
+      var chart = getOrCreateChartScenario('640px unexpanded filtered');
+      var filteredPaths = _.map($('path.fill.filtered'), function(path) {
+        return $(path).attr('d');
+      });
+
+      chart.scope.testData = _.map(testData, function(datum) {
+        datum.filtered /= 2;
+        return datum;
+      });
+
+      chart.scope.$digest();
+
+      th.flushAllD3Transitions();
+
+      var newFilteredPaths = _.map(chart.element.find('path.fill.filtered'), function(path) {
+        return $(path).attr('d');
+      });
+      expect(filteredPaths).to.not.be.empty;
+      expect(newFilteredPaths).to.not.be.empty;
+      _.each(_.zip(filteredPaths, newFilteredPaths), function(a) {
+        expect(a[0]).to.not.equal(a[1]);
+      });
+    });
+
     describe('if not showFiltered', function() {
       it('should not show the filtered count', function() {
         printAllFlyoutContent();
@@ -153,41 +178,34 @@ describe('timelineChart', function() {
         expect($(expectedFlyoutSelector).length).to.equal(0);
       });
     });
-    it('should create a popup on mouse over with filter of 8,204', function() {
-      printAllFlyoutContent();
-      var expectedFlyoutSelector = '.flyout:contains(8,204)';
 
-      var chart = getOrCreateChartScenario('640px unexpanded filtered');
-      chart.element.find('g.segment rect.spacer').mouseover();
-      expect($(expectedFlyoutSelector).length).to.equal(1);
-      var $rows = $(expectedFlyoutSelector + " .flyout-row");
-      expect($rows.length).to.equal(2);
-      expect($rows.last().children().last().text()).to.equal('8,204');
-      chart.element.find('g.segment rect.spacer').mouseout();
-      expect($(expectedFlyoutSelector).length).to.equal(0);
-    });
-    it('should highlight a label when hovering over the chart', function() {
-      printAllFlyoutContent();
-      var expectedFlyoutSelector = '.flyout:contains(June 2007)';
-
-      var chart = getOrCreateChartScenario('640px unexpanded filtered');
-      var segments = chart.element.find('g.segment rect.spacer');
-      segments.eq(Math.floor(segments.length/2)).mouseover();
-      expect($(expectedFlyoutSelector).length).to.be.above(0);
-
-      var activeLabels = chart.element.find('.labels .label.active');
-      expect(activeLabels.length).to.be.above(0); //NOTE for some reason, multiple labels appear but only on BrowserStack.
-                                                  //Works fine locally, even when the tests are run continuously for an hour.
-      if (activeLabels.length > 1) {
-        console.warn('Multiple active labels popped up - ignoring for now.');
-        console.warn('Text: ' + activeLabels.text());
-      }
-
-      expect(activeLabels).to.be.visible;
-      segments.eq(Math.floor(segments.length/2)).mouseout();
-      expect($(expectedFlyoutSelector).length).to.equal(0);
-    });
     describe('flyout', function() {
+      it('should pop up on mouse over with no filter and total of 16.4K', function() {
+        printAllFlyoutContent();
+        var expectedFlyoutSelector = '.flyout:contains(16.4K)';
+
+        var chart = getOrCreateChartScenario('640px unexpanded unfiltered');
+        chart.element.find('g.segment rect.spacer').mouseover();
+        expect($(expectedFlyoutSelector).length).to.equal(1);
+        var $rows = $(expectedFlyoutSelector + " .flyout-row");
+        expect($rows.length).to.equal(1);
+        expect($rows.children().last().text()).to.equal('16.4K');
+        chart.element.find('g.segment rect.spacer').mouseout();
+        expect($(expectedFlyoutSelector).length).to.equal(0);
+      });
+      it('should popup on mouse over with filter of 8,204', function() {
+        printAllFlyoutContent();
+        var expectedFlyoutSelector = '.flyout:contains(8,204)';
+
+        var chart = getOrCreateChartScenario('640px unexpanded filtered');
+        chart.element.find('g.segment rect.spacer').mouseover();
+        expect($(expectedFlyoutSelector).length).to.equal(1);
+        var $rows = $(expectedFlyoutSelector + " .flyout-row");
+        expect($rows.length).to.equal(2);
+        expect($rows.last().children().last().text()).to.equal('8,204');
+        chart.element.find('g.segment rect.spacer').mouseout();
+        expect($(expectedFlyoutSelector).length).to.equal(0);
+      });
       it('should appear when hovering over a label, also highlighting the area', function() {
         printAllFlyoutContent();
         var expectedFlyoutSelector = '.flyout:contains(480K):contains(Total)';
@@ -223,172 +241,173 @@ describe('timelineChart', function() {
 
       });
     });
-    it('should create labels with different positions', function() {
-      var chart = getOrCreateChartScenario('640px unexpanded filtered');
-      var positions = _.map(chart.element.find('.labels div.label'), function(label) {
-        return $(label).attr('style');
+
+    describe('range label', function() {
+      it('should be created when a segment is clicked', function() {
+        var chart = getOrCreateChartScenario('640px unexpanded filtered');
+        var segment = chart.element.find('g.segment').eq(1);
+        segment.mousedown().mousemove().mouseup();
+        expect(chart.element.find('.label.highlighted').length).to.equal(1);
+        expect(chart.element.find('.label.highlighted .text').text()).to.equal(
+          'Feb \'01');
+        expect(chart.element.find('g.segment.highlighted').length).to.equal(1);
+        expect(chart.element.find('g.draghandle').length).to.equal(2);
       });
-      expect(_.uniq(positions).length).to.equal(positions.length);
-    });
-    it('should create a range label when a segment is clicked', function() {
-      var chart = getOrCreateChartScenario('640px unexpanded filtered');
-      var segment = chart.element.find('g.segment').eq(1);
-      segment.mousedown().mousemove().mouseup();
-      expect(chart.element.find('.label.highlighted').length).to.equal(1);
-      expect(chart.element.find('.label.highlighted .text').text()).to.equal('Feb \'01');
-      expect(chart.element.find('g.segment.highlighted').length).to.equal(1);
-      expect(chart.element.find('g.draghandle').length).to.equal(2);
-    });
-    it('should create a range label and handles when a label is clicked', function() {
-      var chart = getOrCreateChartScenario('640px unexpanded filtered');
-      var segment = chart.element.find('.label').eq(1);
-      segment.mousedown().mousemove().mouseup();
-      expect(chart.element.find('.label.highlighted').length).to.equal(1);
-      expect(chart.element.find('.label.highlighted .text').text()).to.equal('2002');
-      expect(chart.element.find('g.segment.highlighted').length).to.equal(12);
-      expect(chart.element.find('g.draghandle').length).to.equal(2);
-    });
-    it('should create a range label and handles when a selection is dragged', function() {
-      var chart = getOrCreateChartScenario('640px unexpanded filtered');
-      var segments = chart.element.find('g.segment');
-      var start = 5;
-      var end = 10;
-      segments.eq(start).mousedown();
-      segments.eq(end).mousemove().mouseup();
-      expect(chart.element.find('.label.highlighted').length).to.equal(1);
-      expect(chart.element.find('.label.highlighted .text').text()).to.equal('Jun \'01 - Nov \'01');
-      expect(chart.element.find('g.segment.highlighted').length).to.equal(end - start + 1);
-      expect(chart.element.find('g.draghandle').length).to.equal(2);
-    });
-
-    it('should highlight labels onhover when not actively selecting', function() {
-      removeAllScenarioCharts();
-      var chart = getOrCreateChartScenario('640px unexpanded filtered');
-      var segments = chart.element.find('g.segment');
-      var start = 5;
-      var end = 10;
-
-      expect(chart.element.find('.label.active').length).to.equal(0);
-
-      // Hover over data for the last label, and make sure it emboldens
-      var farRightLabel = chart.element.find('.label:visible:not(.highlighted)').last();
-      var farRightDate = d3.select(farRightLabel[0]).datum().date;
-      // Now find one of the data points in the graph to hover over
-      $(d3.select(chart.element[0]).selectAll('g.segment').filter(function(d) {
-        return d.date > farRightDate;
-      })[0][0]).mouseover();
-
-      expect(chart.element.find('.label.active').length).not.to.equal(0);
-
-      // clean up
-      segments.eq(end).mouseleave().mouseup();
-    });
-    it('should not highlight labels onhover when actively selecting', function() {
-      removeAllScenarioCharts();
-      var chart = getOrCreateChartScenario('640px unexpanded filtered');
-      var segments = chart.element.find('g.segment');
-      var start = 5;
-      var end = 10;
-      // Creating a new filter
-      segments.eq(start).mousedown();
-      segments.eq(end).mousemove();
-
-      expect(chart.element.find('.label.active').length).to.equal(0);
-
-      // Hover over data for the last label, and make sure it doesn't embolden
-      var farRightLabel = chart.element.find('.label:visible:not(.highlighted)').last();
-      var farRightDate = d3.select(farRightLabel[0]).datum().date;
-      // Now find one of the data points in the graph to hover over
-      $(d3.select(chart.element[0]).selectAll('g.segment').filter(function(d) {
-        return d.date > farRightDate;
-      })[0][0]).mouseover();
-
-      // Since we're in the middle of a filter selection, it should not become active.
-      expect(chart.element.find('.label.active').length).to.equal(0);
-
-      // clean up
-      segments.eq(end).mouseleave().mouseup();
-    });
-
-    it('should be able to change a selection via dragging a handle', function() {
-      var chart = getOrCreateChartScenario('640px unexpanded filtered');
-      var segments = chart.element.find('g.segment');
-      var start = 5;
-      var end = 10;
-      segments.eq(start).mousedown().mousemove().mouseup();
-      expect(chart.element.find('.label.highlighted').length).to.equal(1);
-      expect(chart.element.find('g.draghandle').length).to.equal(2);
-      expect(chart.element.find('g.segment.highlighted').length).to.equal(1);
-
-      chart.element.find('g.draghandle').eq(1).mousedown();
-      chart.element.find('g.segment').eq(end).mousemove().mouseup();
-      expect(chart.element.find('.label.highlighted').length).to.equal(1);
-      expect(chart.element.find('.label.highlighted .text').text()).to.equal('Jun \'01 - Nov \'01');
-      expect(chart.element.find('g.segment.highlighted').length).to.equal(end - start + 1);
-      expect(chart.element.find('g.draghandle').length).to.equal(2);
-    });
-    it('should clear a range when drag handle is clicked', function() {
-      var chart = getOrCreateChartScenario('640px unexpanded filtered');
-      var segment = chart.element.find('g.segment').eq(1);
-      segment.mousedown().mousemove().mouseup();
-      var dragHandles = chart.element.find('g.draghandle');
-      expect(dragHandles.length).to.equal(2);
-      dragHandles.eq(0).mousedown().mouseup();
-      expect(chart.element.find('g.draghandle').length).to.equal(0);
-      removeAllScenarioCharts(); // Too annoying to clear state properly.
-    });
-    it('should fire a filter-changed event when selected and a filter-cleared event when cleared', function() {
-      var chart = getOrCreateChartScenario('640px unexpanded filtered');
-      var segments = $('g.segment');
-      var filterChanged = false;
-      scope.$on('timeline-chart:filter-changed', function(filter) {
-        filterChanged = true;
+      it('should be created with handles when a label is clicked', function() {
+        var chart = getOrCreateChartScenario('640px unexpanded filtered');
+        var segment = chart.element.find('.label').eq(1);
+        segment.mousedown().mousemove().mouseup();
+        expect(chart.element.find('.label.highlighted').length).to.equal(1);
+        expect(chart.element.find('.label.highlighted .text').text()).to.equal('2002');
+        expect(chart.element.find('g.segment.highlighted').length).to.equal(12);
+        expect(chart.element.find('g.draghandle').length).to.equal(2);
       });
-      segments.eq(5).mousedown().mousemove().mouseup();
-      expect(filterChanged).to.equal(true, 'should have recieved the filter-changed event.');
-
-      var filterCleared = false;
-      scope.$on('timeline-chart:filter-cleared', function(filter) {
-        filterCleared = true;
-      });
-      $('.label.highlighted').mousedown().mouseup();
-      expect(filterCleared).to.equal(true, 'should have recieved the filter-cleared event.');
-    });
-    it('should be able to change data', function() {
-      this.timeout(4000);
-      var chart = getOrCreateChartScenario('640px unexpanded filtered');
-      var filteredPaths = _.map($('path.fill.filtered'), function(path) {
-        return $(path).attr('d');
-      });
-
-      chart.scope.testData = _.map(testData, function(datum) {
-        datum.filtered /= 2;
-        return datum;
-      });
-
-      chart.scope.$digest();
-
-      th.flushAllD3Transitions();
-
-      var newFilteredPaths = _.map(chart.element.find('path.fill.filtered'), function(path) {
-        return $(path).attr('d');
-      });
-      expect(filteredPaths).to.not.be.empty;
-      expect(newFilteredPaths).to.not.be.empty;
-      _.each(_.zip(filteredPaths, newFilteredPaths), function(a) {
-        expect(a[0]).to.not.equal(a[1]);
+      it('should be created with handles when a selection is dragged', function() {
+        var chart = getOrCreateChartScenario('640px unexpanded filtered');
+        var segments = chart.element.find('g.segment');
+        var start = 5;
+        var end = 10;
+        segments.eq(start).mousedown();
+        segments.eq(end).mousemove().mouseup();
+        expect(chart.element.find('.label.highlighted').length).to.equal(1);
+        expect(chart.element.find('.label.highlighted .text').text()).to.equal(
+          'Jun \'01 - Nov \'01');
+        expect(chart.element.find('g.segment.highlighted').length).to.equal(
+          end - start + 1);
+        expect(chart.element.find('g.draghandle').length).to.equal(2);
       });
     });
-    it('should be able to select a segment within a larger selection', function() {
-      var chart = getOrCreateChartScenario('640px unexpanded filtered');
-      var segment = chart.element.find('.label').eq(1);
-      segment.mousedown().mousemove().mouseup();
-      expect(chart.element.find('.label.highlighted').length).to.equal(1);
-      expect(chart.element.find('g.segment.highlighted').length).to.equal(12);
-      chart.element.find('g.segment.highlighted').eq(0).mousedown().mousemove().mouseup();
-      expect(chart.element.find('.label.highlighted').length).to.equal(1);
-      expect(chart.element.find('g.segment.highlighted').length).to.equal(1);
+
+    describe('highlighting labels', function() {
+      var chart;
+      var segments;
+      var start;
+      var end;
+      beforeEach(function() {
+        removeAllScenarioCharts();
+        chart = getOrCreateChartScenario('640px unexpanded filtered');
+        segments = chart.element.find('g.segment');
+        start = 5;
+        end = 10;
+        expect(chart.element.find('.label.active').length).to.equal(0);
+      });
+      afterEach(function() {
+        // clean up
+        segments.eq(end).mouseleave().mouseup();
+      });
+
+      it('should highlight a label when hovering over the chart', function() {
+        var expectedFlyoutSelector = '.flyout:contains(June 2007)';
+
+        var spacers = segments.find('rect.spacer');
+        spacers.eq(Math.floor(spacers.length/2)).mouseover();
+        expect($(expectedFlyoutSelector).length).to.be.above(0);
+
+        var activeLabels = chart.element.find('.labels .label.active');
+        // NOTE for some reason, multiple labels appear but only on BrowserStack.
+        // Works fine locally, even when the tests are run continuously for an hour.
+        expect(activeLabels.length).to.be.above(0);
+        if (activeLabels.length > 1) {
+          console.warn('Multiple active labels popped up - ignoring for now.');
+          console.warn('Text: ' + activeLabels.text());
+        }
+
+        expect(activeLabels).to.be.visible;
+        spacers.eq(Math.floor(spacers.length/2)).mouseout();
+        expect($(expectedFlyoutSelector).length).to.equal(0);
+      });
+      it('should occur onhover', function() {
+        // Hover over data for the last label, and make sure it emboldens
+        var farRightLabel = chart.element.find('.label:visible:not(.highlighted)').last();
+        var farRightDate = d3.select(farRightLabel[0]).datum().date;
+        // Now find one of the data points in the graph to hover over
+        $(d3.select(chart.element[0]).selectAll('g.segment').filter(function(d) {
+          return d.date > farRightDate;
+        })[0][0]).mouseover();
+
+        expect(chart.element.find('.label.active').length).not.to.equal(0);
+      });
+      it('should not occur onhover when actively selecting', function() {
+        // Creating a new active filter
+        segments.eq(start).mousedown();
+        segments.eq(end).mousemove();
+
+        expect(chart.element.find('.label.active').length).to.equal(0);
+
+        // Hover over data for the last label, and make sure it doesn't embolden
+        var farRightLabel = chart.element.find('.label:visible:not(.highlighted)').last();
+        var farRightDate = d3.select(farRightLabel[0]).datum().date;
+        // Now find one of the data points in the graph to hover over
+        $(d3.select(chart.element[0]).selectAll('g.segment').filter(function(d) {
+          return d.date > farRightDate;
+        })[0][0]).mouseover();
+
+        // Since we're in the middle of a filter selection, it should not become active.
+        expect(chart.element.find('.label.active').length).to.equal(0);
+      });
     });
+
+    describe('an existing selection', function() {
+      var chart;
+      beforeEach(function() {
+        chart = getOrCreateChartScenario('640px unexpanded filtered');
+      });
+      it('should be able to change by dragging a handle', function() {
+        var segments = chart.element.find('g.segment');
+        var start = 5;
+        var end = 10;
+        segments.eq(start).mousedown().mousemove().mouseup();
+        expect(chart.element.find('.label.highlighted').length).to.equal(1);
+        expect(chart.element.find('g.draghandle').length).to.equal(2);
+        expect(chart.element.find('g.segment.highlighted').length).to.equal(1);
+
+        chart.element.find('g.draghandle').eq(1).mousedown();
+        chart.element.find('g.segment').eq(end).mousemove().mouseup();
+        expect(chart.element.find('.label.highlighted').length).to.equal(1);
+        expect(chart.element.find('.label.highlighted .text').text()).to.equal(
+          'Jun \'01 - Nov \'01');
+        expect(chart.element.find('g.segment.highlighted').length).to.equal(
+          end - start + 1);
+        expect(chart.element.find('g.draghandle').length).to.equal(2);
+      });
+      it('should clear when drag handle is clicked', function() {
+        var segment = chart.element.find('g.segment').eq(1);
+        segment.mousedown().mousemove().mouseup();
+        var dragHandles = chart.element.find('g.draghandle');
+        expect(dragHandles.length).to.equal(2);
+        dragHandles.eq(0).mousedown().mouseup();
+        expect(chart.element.find('g.draghandle').length).to.equal(0);
+        removeAllScenarioCharts(); // Too annoying to clear state properly.
+      });
+      it('should fire filter-changed when changed, and ' +
+         'a filter-cleared events when cleared', function() {
+        var segments = $('g.segment');
+        var filterChanged = false;
+        scope.$on('timeline-chart:filter-changed', function(filter) {
+          filterChanged = true;
+        });
+        segments.eq(5).mousedown().mousemove().mouseup();
+        expect(filterChanged).to.equal(true, 'should have recieved the filter-changed event.');
+
+        var filterCleared = false;
+        scope.$on('timeline-chart:filter-cleared', function(filter) {
+          filterCleared = true;
+        });
+        $('.label.highlighted').mousedown().mouseup();
+        expect(filterCleared).to.equal(true, 'should have recieved the filter-cleared event.');
+      });
+
+      it('should be able to select a sub-selection', function() {
+        var segment = chart.element.find('.label').eq(1);
+        segment.mousedown().mousemove().mouseup();
+        expect(chart.element.find('.label.highlighted').length).to.equal(1);
+        expect(chart.element.find('g.segment.highlighted').length).to.equal(12);
+        chart.element.find('g.segment.highlighted').eq(0).mousedown().mousemove().mouseup();
+        expect(chart.element.find('.label.highlighted').length).to.equal(1);
+        expect(chart.element.find('g.segment.highlighted').length).to.equal(1);
+      });
+    });
+
     describe('if showFiltered', function() {
       it('should show the filtered count in the flyout', function() {
         printAllFlyoutContent();
@@ -399,11 +418,14 @@ describe('timelineChart', function() {
       });
     });
   });
+
   describe('when not expanded at 300px', function() {
     it('should hide some labels', function() {
       var chart = getOrCreateChartScenario('300px unexpanded unfiltered');
       expect(chart.element.find('.label').length).to.equal(13);
-      expect(chart.element.find('.label').filter(function() { return $(this).css('opacity') > 0; }).length).to.be.below(13);
+      expect(chart.element.find('.label').filter(function() {
+        return $(this).css('opacity') > 0;
+      }).length).to.be.below(13);
     });
     it('should show hidden labels when the segment is moused over', function() {
       var SECTION_INDEX = 4;
@@ -412,9 +434,10 @@ describe('timelineChart', function() {
       var $label = chart.element.find('.label.hidden');
       var startDate = d3.select($label[0]).datum().date;
       var endDate = d3.select($label.eq(0).next()[0]).datum().date;
-      var segments = d3.select(chart.element[0]).selectAll('g.segment').filter(function(d) {
-        return startDate < d.date && d.date < endDate;
-      });
+      var segments = d3.select(chart.element[0]).selectAll('g.segment').filter(
+        function(d) {
+          return startDate < d.date && d.date < endDate;
+        });
       expect($label.hasClass('active')).to.be.false;
       $(segments[0][1]).mouseover();
       expect($label.hasClass('active')).to.be.true;

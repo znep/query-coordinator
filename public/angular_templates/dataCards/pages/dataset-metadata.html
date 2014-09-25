@@ -17,7 +17,7 @@
              eat newlines. I can only conjecture why. -->
         <!-- Of note. btf-markdown internally uses $sanitize, so if any HTML leaks through the filters
              it will ultimately be eaten. -->
-        <div btf-markdown="datasetDescription | escapeHtml | singleNewlinesToDoubleNewlines | urlsToMarkdownLinks"></div>
+        <div btf-markdown="datasetDescription | escapeHtml | singleNewlinesToDoubleNewlines | linkifyUrls"></div>
       </div>
     </div>
   </div>

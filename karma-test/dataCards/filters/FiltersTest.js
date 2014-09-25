@@ -36,9 +36,9 @@ describe('Filter', function() {
     }));
   });
 
-  describe('urlsToMarkdownLinks', function() {
+  describe('linkifyUrls', function() {
     it('should return undefined for non-strings', inject(function($filter) {
-      var f = $filter('urlsToMarkdownLinks');
+      var f = $filter('linkifyUrls');
       expect(f()).to.equal(undefined);
       expect(f(null)).to.equal(undefined);
       expect(f([])).to.equal(undefined);
@@ -48,7 +48,7 @@ describe('Filter', function() {
     }));
 
     it('should pass through strings with no links unmolested', inject(function($filter) {
-      var f = $filter('urlsToMarkdownLinks');
+      var f = $filter('linkifyUrls');
       expect(f('a\n\nsd')).to.equal('a\n\nsd');
       expect(f('\n\nsd')).to.equal('\n\nsd');
       expect(f('a\n\n')).to.equal('a\n\n');
@@ -58,22 +58,22 @@ describe('Filter', function() {
     }));
 
     it('should linkify links, leaving the rest of the text unmolested', inject(function($filter) {
-      var f = $filter('urlsToMarkdownLinks');
-      expect(f('\nhttp://socrata.com\n')).to.equal('\n[http://socrata.com](http://socrata.com)\n');
-      expect(f('http://socrata.com')).to.equal('[http://socrata.com](http://socrata.com)');
-      expect(f('https://socrata.com')).to.equal('[https://socrata.com](https://socrata.com)');
-      expect(f('text https://socrata.com')).to.equal('text [https://socrata.com](https://socrata.com)');
-      expect(f('text https://socrata.com text')).to.equal('text [https://socrata.com](https://socrata.com) text');
-      expect(f('text https://socrata.com. text')).to.equal('text [https://socrata.com](https://socrata.com). text');
-      expect(f('https://socrata.com text')).to.equal('[https://socrata.com](https://socrata.com) text');
+      var f = $filter('linkifyUrls');
+      expect(f('\nhttp://socrata.com\n')).to.equal('\n<a href="http://socrata.com" rel="nofollow">http://socrata.com</a>\n');
+      expect(f('http://socrata.com')).to.equal('<a href="http://socrata.com" rel="nofollow">http://socrata.com</a>');
+      expect(f('https://socrata.com')).to.equal('<a href="https://socrata.com" rel="nofollow">https://socrata.com</a>');
+      expect(f('text https://socrata.com')).to.equal('text <a href="https://socrata.com" rel="nofollow">https://socrata.com</a>');
+      expect(f('text https://socrata.com text')).to.equal('text <a href="https://socrata.com" rel="nofollow">https://socrata.com</a> text');
+      expect(f('text https://socrata.com. text')).to.equal('text <a href="https://socrata.com" rel="nofollow">https://socrata.com</a>. text');
+      expect(f('https://socrata.com text')).to.equal('<a href="https://socrata.com" rel="nofollow">https://socrata.com</a> text');
     }));
 
     it('should linkify links even if the string is HTML escaped', inject(function($filter) {
       var escapeHtml = $filter('escapeHtml');
-      var linkify = $filter('urlsToMarkdownLinks');
+      var linkify = $filter('linkifyUrls');
 
       var escaped = escapeHtml('\nhttp://socrata.com\n');
-      expect(linkify(escaped)).to.equal('\n[http://socrata.com](http://socrata.com)\n');
+      expect(linkify(escaped)).to.equal('\n<a href="http://socrata.com" rel="nofollow">http://socrata.com</a>\n');
     }));
   });
 

@@ -83,7 +83,7 @@ angular.module('dataCards.models').factory('Dataset', function(ModelHelper, Mode
         }).then(function(blob) {
           blob.columns.push({
             "name": "*",
-            "title": "All Data",
+            "title": "Data Table",
             "description": "",
             "logicalDatatype": "*",
             "physicalDatatype": "*",

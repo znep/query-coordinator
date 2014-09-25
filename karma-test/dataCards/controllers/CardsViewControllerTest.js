@@ -81,7 +81,7 @@ describe("CardsViewController", function() {
 
     var controller = $controller('CardsViewController', {
       $scope: scope,
-      page: page,
+      page: page
     });
 
     scope.$apply();

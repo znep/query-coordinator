@@ -10,12 +10,12 @@
   <!-- METADATA BAR -->
   <div class="cards-metadata">
     <div class="row">
-      <div class="span8 padded-wrapper">
+      <div class="span6 padded-wrapper">
         <header multiline-ellipsis max-lines="2" tolerance="8" text="{{pageName}}" show-more-mode="title-attr"></header>
         <!-- description -->
         <div class="page-description" expanded="expanded" multiline-ellipsis max-lines="3" tolerance="2" text="{{pageDescription}}"></div>
       </div>
-      <div class="span4">
+      <div class="span6">
         <!-- activities -->
         <div class="activities span12">
           <div class="metadata">
@@ -25,7 +25,7 @@
           </div>
           <button type="button" ng-click="savePage()" class="save-button action-btn r-to-l" ng-class="{disabled: !hasChanges}" ng-if="currentUser">Save</button>
           <save-as page-has-changes="hasChanges" save-page-as="savePageAs" ng-if="currentUser"></save-as>
-          <button type="button" ng-click="editMode = !editMode" class="action-btn r-to-l">{{editMode | ifElse:'Preview':'Customize'}}</button>
+          <button type="button" ng-click="editMode = !editMode" class="action-btn r-to-l" ng-show="currentUser">{{editMode | ifElse:'Preview':'Customize'}}</button>
           <a href="{{datasetCSVDownloadURL}}" title="Download this data as CSV" class="action-btn r-to-l">Download</a>
           <button id="api-panel-toggle-btn" title="Access this Dataset via API" ng-class="{touched: apiPanelActive}" class="action-btn r-to-l">API</button>
           <div id="api-panel" ng-class="{active: apiPanelActive}">

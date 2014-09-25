@@ -2,6 +2,8 @@
 // we mock out its module definitions here.
 var dataCards = angular.module('dataCards', [
   'test',
+  'ngSanitize',
+  'btford.markdown',
   'socrataCommon.services',
   'socrataCommon.directives',
   'dataCards.controllers',

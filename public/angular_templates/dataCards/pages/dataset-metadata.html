@@ -11,7 +11,13 @@
     <div class="standard-metadata row">
       <div class="span12">
         <h1>{{datasetName}}</h1>
-        <div ng-bind-html="datasetDescription"></div>
+        <!-- We double the single newlines to make all newlines become paragraph breaks.
+             This is specified behavior. -->
+        <!-- We use urlsToMarkdownLinks instead of ngSanitize's linky filter because linky will
+             eat newlines. I can only conjecture why. -->
+        <!-- Of note. btf-markdown internally uses $sanitize, so if any HTML leaks through the filters
+             it will ultimately be eaten. -->
+        <div btf-markdown="datasetDescription | escapeHtml | singleNewlinesToDoubleNewlines | urlsToMarkdownLinks"></div>
       </div>
     </div>
   </div>

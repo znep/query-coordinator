@@ -1,6 +1,7 @@
 var dataCards = angular.module('dataCards', [
   'ui.router',
   'ngSanitize',
+  'btford.markdown',
   'socrataCommon.services',
   'socrataCommon.directives',
   'socrataCommon.filters',

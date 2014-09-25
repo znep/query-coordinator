@@ -48,6 +48,7 @@ module.exports = function ( karma ) {
       'public/javascripts/util/lodash-mixins.js',
       'public/javascripts/util/jquery-extensions.js',
       'public/javascripts/bower/jquery.dotdotdot.js',
+      'bower_components/showdown/src/showdown.js',
       'bower_components/angular/angular.js',
       /*    Map-specific libraries    */
       'bower_components/leaflet/dist/leaflet.js',
@@ -75,6 +76,7 @@ module.exports = function ( karma ) {
       'public/javascripts/angular/common/*.js',
       'public/javascripts/angular/common/**/*.js',
       'bower_components/angular-sanitize/angular-sanitize.js',
+      'bower_components/angular-markdown-directive/markdown.js',
       'public/javascripts/angular/dataCards/controllers.js',
       'public/javascripts/angular/dataCards/models.js',
       'public/javascripts/angular/dataCards/**/*.js',

@@ -178,7 +178,7 @@ describe("A Choropleth Card Visualization", function() {
 
           testHelpers.fireEvent(feature, 'mousemove');
 
-          flyout = $('#uber-flyout');          
+          flyout = $('#uber-flyout');
           flyoutTitle = flyout.find('.flyout-title').text();
           flyoutText = flyout.find('.content').text();
 

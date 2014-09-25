@@ -9,10 +9,10 @@
   "homepage": "http://socrata.com",
   "private": true,
   "dependencies": {
-    "angular": "~1.2.16",
+    "angular": "~1.2.25",
     "angular-ui-router": "~0.2.10",
     "jquery": "~2.1.1",
-    "angular-mocks": "~1.2.16",
+    "angular-mocks": "~1.2.25",
     "rxjs": "~2.2.20",
     "flexgrid": "ptb/flexgrid",
     "javascript-detect-element-resize": "sdecima/javascript-detect-element-resize#~0.5.1",

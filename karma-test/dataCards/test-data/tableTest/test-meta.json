@@ -7,15 +7,29 @@
   "updatedAt": "2014-07-11T10:42:55.000-07:00",
   "columns": [
     {
-      "title": "Id",
-      "name": "id",
-      "physicalDatatype": "number",
-      "logicalDatatype": "identifier",
+      "title": "Beat",
+      "name": "beat",
+      "physicalDatatype": "text",
+      "logicalDatatype": "text",
+      "importance": 3
+    },
+    {
+      "title": "Block",
+      "name": "block",
+      "physicalDatatype": "text",
+      "logicalDatatype": "text",
       "importance": 3
     },
     {
       "title": "Case Number",
       "name": "case_number",
+      "physicalDatatype": "text",
+      "logicalDatatype": "text",
+      "importance": 3
+    },
+    {
+      "title": "Community Area",
+      "name": "community_area",
       "physicalDatatype": "text",
       "logicalDatatype": "identifier",
       "importance": 3
@@ -28,18 +42,11 @@
       "importance": 1
     },
     {
-      "title": "Block",
-      "name": "block",
+      "title": "Description",
+      "name": "description",
       "physicalDatatype": "text",
       "logicalDatatype": "text",
       "importance": 3
-    },
-    {
-      "title": "Crime Type",
-      "name": "primary_type",
-      "physicalDatatype": "text",
-      "logicalDatatype": "category",
-      "importance": 1
     },
     {
       "title": "District",
@@ -49,10 +56,73 @@
       "importance": 3
     },
     {
+      "title": "FBI Code",
+      "name": "fbi_code",
+      "physicalDatatype": "text",
+      "logicalDatatype": "category",
+      "importance": 3
+    },
+    {
+      "title": "Id",
+      "name": "id",
+      "physicalDatatype": "number",
+      "logicalDatatype": "identifier",
+      "importance": 3
+    },
+    {
+      "title": "IUCR",
+      "name": "iucr",
+      "physicalDatatype": "text",
+      "logicalDatatype": "category",
+      "importance": 3
+    },
+    {
+      "title": "Latitude",
+      "name": "latitude",
+      "physicalDatatype": "number",
+      "logicalDatatype": "amount",
+      "importance": 3
+    },
+    {
+      "title": "Location Description",
+      "name": "location_description",
+      "physicalDatatype": "text",
+      "logicalDatatype": "text",
+      "importance": 3
+    },
+    {
+      "title": "Longitude",
+      "name": "longitude",
+      "physicalDatatype": "number",
+      "logicalDatatype": "amount",
+      "importance": 3
+    },
+    {
+      "title": "Primary Type",
+      "name": "primary_type",
+      "physicalDatatype": "text",
+      "logicalDatatype": "category",
+      "importance": 3
+    },
+    {
       "title": "Ward",
       "name": "ward",
+      "physicalDatatype": "text",
+      "logicalDatatype": "location",
+      "importance": 3
+    },
+    {
+      "title": "X Coordinate",
+      "name": "x_coordinate",
       "physicalDatatype": "number",
-      "logicalDatatype": "text",
+      "logicalDatatype": "amount",
+      "importance": 3
+    },
+    {
+      "title": "Y Coordinate",
+      "name": "y_coordinate",
+      "physicalDatatype": "number",
+      "logicalDatatype": "amount",
       "importance": 3
     },
     {
@@ -64,8 +134,8 @@
     },
     {
       "title": "Location",
-      "name": "location",
-      "physicalDatatype": "geo_entity",
+      "name": "point",
+      "physicalDatatype": "point",
       "logicalDatatype": "location",
       "importance": 3
     },

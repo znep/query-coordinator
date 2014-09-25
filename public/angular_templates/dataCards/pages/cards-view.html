@@ -1,6 +1,6 @@
 <div class="cards-view" notify-resize="headerContent">
   <!-- HEADER -->
-  <div class="row">
+  <div class="page-header row">
     <div class="span12">
       <div class="logo">
         <img src="/stubs/images/generic-logo.png" alt="Customer Logo"></img>
@@ -25,7 +25,7 @@
           </div>
           <a ng-click="savePage()" class="save-button action-btn r-to-l" ng-class="{disabled: !hasChanges}" ng-if="currentUser">Save</a>
           <save-as page-has-changes="hasChanges" save-page-as="savePageAs" ng-if="currentUser"></save-as>
-          <a ng-click="editMode = !editMode" class="action-btn r-to-l">{{editMode | editPreview}}</a>
+          <button type="button" ng-click="editMode = !editMode" class="action-btn r-to-l">{{editMode | ifElse:'Preview':'Customize'}}</button>
           <a href="{{datasetCSVDownloadURL}}" title="Download this data as CSV" class="action-btn r-to-l">Download</a>
           <button id="api-panel-toggle-btn" title="Access this Dataset via API" ng-class="{touched: apiPanelActive}" class="action-btn r-to-l">API</button>
           <div id="api-panel" ng-class="{active: apiPanelActive}">

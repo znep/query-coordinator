@@ -12,31 +12,12 @@ $action-btn-padding-left: 18px
 $api-panel-width: 512px
 $api-panel-hint-width: 20px
 
-// ---------------------------------
-
-body
-  background-color: $cards-bg-color
-  padding: 0
-  overflow-x: hidden
-
-
 /* MOBILE/RESPONSIVE DESIGN. SEE DESKTOP-SPECIFIC STYLES BELOW */
-.cards-view
+body.state-view-cards
+  background-color: $view-cards-bg-color
 
   *:focus
     outline-width: 2px
-
-  .logo
-    background-color: $logo-background-color
-    color: black
-    padding: $metadata-top-padding $metadata-side-padding
-    font-size: 1.25em
-
-    img
-      position: relative
-      // While the placeholder logo is correctly centered by pixel, it does not look centered.
-      // Apply some manual correction.
-      top: 2px
 
   .cards-metadata
     position: relative
@@ -222,7 +203,7 @@ body
   .cards-content
     position: relative
     color: $white-font-color
-    background-color: $cards-bg-color
+    background-color: $view-cards-bg-color
     z-index: 1
 
     #quick-filter-bar-container
@@ -250,7 +231,7 @@ body
 
         .content
           padding: $metadata-side-padding / 2
-          background-color: $cards-bg-color
+          background-color: $view-cards-bg-color
           width: 100%
           box-sizing: border-box
           line-height: 1.5rem

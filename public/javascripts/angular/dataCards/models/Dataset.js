@@ -6,6 +6,8 @@ angular.module('dataCards.models').factory('Dataset', function(ModelHelper, Mode
     'type': 'object',
     'properties': {
       'id': { 'type': 'string', 'pattern': UID_REGEXP },
+      'name': { 'type': 'string', 'minLength': 1 },
+      'description': { 'type': 'string', 'minLength': 1 },
       'rowDisplayUnit': { 'type': 'string', 'minLength': 1 },
       'defaultAggregateColumn': { 'type': 'string', 'minLength': 1 },
       'ownerId': { 'type': 'string', 'pattern': UID_REGEXP },
@@ -48,7 +50,7 @@ angular.module('dataCards.models').factory('Dataset', function(ModelHelper, Mode
         }
       }
     },
-    'required': [ 'id', 'rowDisplayUnit', 'defaultAggregateColumn', 'ownerId', 'updatedAt', 'columns' ]
+    'required': [ 'id', 'name', 'rowDisplayUnit', 'defaultAggregateColumn', 'ownerId', 'updatedAt', 'columns' ]
   });
 
   //TODO cache instances or share cache.
@@ -91,7 +93,7 @@ angular.module('dataCards.models').factory('Dataset', function(ModelHelper, Mode
         });
       };
 
-      var fields = ['title', 'rowDisplayUnit', 'defaultAggregateColumn', 'domain', 'ownerId', 'updatedAt'];
+      var fields = ['description', 'name', 'rowDisplayUnit', 'defaultAggregateColumn', 'domain', 'ownerId', 'updatedAt'];
       _.each(fields, function(field) {
         self.defineObservableProperty(field, undefined, function() {
           return baseInfoPromise().then(_.property(field));

@@ -1,5 +1,7 @@
 var dataCards = angular.module('dataCards', [
   'ui.router',
+  'ngSanitize',
+  'btford.markdown',
   'socrataCommon.services',
   'socrataCommon.directives',
   'socrataCommon.filters',
@@ -7,7 +9,6 @@ var dataCards = angular.module('dataCards', [
   'dataCards.services',
   'dataCards.directives',
   'dataCards.models'
-  // 'pasvaz.bindonce' NOTE: use in the future to optimize Angular performance.
 ]);
 
 dataCards.config(function(ServerConfig) {
@@ -87,10 +88,27 @@ dataCards.config(function($provide, $stateProvider, $urlRouterProvider, $locatio
           controller: 'CardsViewController'
         }
       }
+    }).
+    state('dataset', {
+      template: '<!--Overall chrome--><div ui-view="mainContent"><div>',
+      params: ['datasetId'],
+      resolve: {
+        dataset: function($stateParams, Dataset) {
+          return new Dataset($stateParams['datasetId']);
+        }
+      }
+    }).
+    state('dataset.metadata', {
+      views: {
+        'mainContent': {
+          templateUrl: '/angular_templates/dataCards/pages/dataset-metadata.html',
+          controller: 'DatasetMetadataController'
+        }
+      }
     });
 });
 
-dataCards.run(function($location, $log, $rootScope, $state, DeveloperOverrides) {
+dataCards.run(function($location, $log, $rootScope, $state, Routes, DeveloperOverrides) {
   // Shamelessly lifted from http://www.joezimjs.com/javascript/3-ways-to-parse-a-query-string-in-a-url/
   var parseQueryString = function( queryString ) {
     var params = {}, queries, temp, i, l;
@@ -114,13 +132,26 @@ dataCards.run(function($location, $log, $rootScope, $state, DeveloperOverrides) 
     $log.error("Error encountered during state transition:", error);
   });
 
+  // In order for us to apply page-specific styles to elements outside
+  // of the page controller's scope (like page background, global font, etc),
+  // we apply state-specific classes to the body.
+  $rootScope.$on('$stateChangeSuccess', function(event, toState, toParams, fromState, fromParams) {
+    function classNameFromStateName(stateName) {
+      var dashified = stateName.replace(/\./g, '-');
+      return "state-" + dashified;
+    };
+
+    var oldClass = classNameFromStateName(fromState.name);
+    var newClass = classNameFromStateName(toState.name);
+    $('body').removeClass(oldClass);
+    $('body').addClass(newClass);
+  });
+
   // Determine the initial view from the URL.
-  var id = location.pathname.match(/\/\w{4}-\w{4}$/);
-  if (_.isEmpty(id)) {
-    $state.go('404');
-  } else {
-    $state.go('view.cards', {
-      id: id[0]
-    });
-  }
+  // We can't use the UI router's built in URL parsing because
+  // our UX considerations require our URL to not depend on a document
+  // fragment. We'd be able to use html5 mode on the router to satisfy this,
+  // but we need to support IE9.
+  var initialAppUIState = Routes.getUIStateAndConfigFromUrl(location.pathname);
+  $state.go(initialAppUIState.stateName, initialAppUIState.parameters);
 });

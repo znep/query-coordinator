@@ -89,7 +89,7 @@
         $saveAs.find('button[data-action="save"]').click();
 
         scope.$apply();
-        
+
         expect($saveAsName.hasClass('form-error')).to.be.false;
         expect(scope.savePageAs.calledOnce).to.be.true;
         var savePageAsCall = scope.savePageAs.getCall(0);

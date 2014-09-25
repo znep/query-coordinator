@@ -131,7 +131,7 @@
     return self;
   };
 
-  String.prototype.capitaliseEachWord = function() {
+  String.prototype.capitalizeEachWord = function() {
     return this.split(' ').map(function(word) {
       return word.charAt(0).toUpperCase() + word.slice(1).toLowerCase();
     }).join(' ');
@@ -180,7 +180,7 @@
 
   $.capitalizeWithDefault = function(value, placeHolder) {
     placeHolder = placeHolder || '(Blank)';
-    return $.isBlank(value) ? placeHolder : value.capitaliseEachWord();
+    return $.isBlank(value) ? placeHolder : value.capitalizeEachWord();
   };
   /*
    * flyout is an internal Socrata utility for creating flyouts.

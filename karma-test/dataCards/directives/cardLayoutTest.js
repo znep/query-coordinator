@@ -265,16 +265,24 @@ describe('CardLayout directive test', function() {
         target: cl.element.find('.delete-button-target')[2]
       });
 
-      // In order to accommodate for the border, the flyout is always drawn 1 px to the left
-      // of the cursor's actual x position.
       // ALSO NOTE: using jQuery's .left() method inexplicably returns 'auto' in PhantomJS on
       // Linux, so we are using the raw style property for this test instead.
       expect(parseInt($('#uber-flyout')[0].style.left, 10)).to.equal(clientX);
-      // Note that this is actually the y offset of the element itself because it seems that
-      // the height of the flyout and the hint are 0 in the test environment (wtf?)
+
+      // NOTE: The flyout should be positioned along the Y axis at
+      // (clientY - flyoutHeight - hintHeight * 0.75).
+      var boundingRect = $('#uber-flyout')[0].getBoundingClientRect();
+      var calculatedFlyoutYOffset = Math.round(
+                                      clientY
+                                      - boundingRect.height
+                                      - Math.floor(0.75 * $('#uber-flyout').children('.hint').height())
+                                    );
       // ALSO NOTE: using jQuery's .top() method inexplicably returns 'auto' in PhantomJS on
       // Linux, so we are using the raw style property for this test instead.
-      expect(parseInt($('#uber-flyout')[0].style.top, 10)).to.equal(clientY);
+      // SUPER ADDITIONAL NOTE: It seems IE9 is consistently off by 1 pixel, so I'm going to just
+      // hand-wave it for results within 5 pixels of the expected value.
+      // --Chris Laidlaw, 9/24/2014
+      expect(Math.abs(parseInt($('#uber-flyout')[0].style.top, 10) - calculatedFlyoutYOffset)).to.below(5);
 
     });
 

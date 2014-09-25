@@ -1,6 +1,14 @@
 angular.module('test', [])
   .factory('testHelpers', function($compile, $templateCache, $q) {
 
+    var fireEvent = function(target, name) {
+      var evt = document.createEvent('HTMLEvents');
+      evt.initEvent(name, true, true);
+      evt.clientX = 0;
+      evt.clientY = 0;
+      target.dispatchEvent(evt);
+    };
+
     // D3 doesn't have a jQuery-like trigger. So if you want to simulate mouse events,
     // we need to use real browser events.
     var fireMouseEvent = function(elem, evtName) {
@@ -72,6 +80,7 @@ angular.module('test', [])
       TestDom: TestDom,
       getTestJson: getTestJson,
       flushAllD3Transitions: flushAllD3Transitions,
+      fireEvent: fireEvent,
       fireMouseEvent: fireMouseEvent,
       waitForSatisfy: waitForSatisfy
     };

@@ -37,6 +37,17 @@ $flyout-padding-horizontal: 10px
     font-weight: bold
     color: $flyout-chart-title-color
 
+  .flyout-row
+
+    .flyout-cell.emphasis
+      color: $filtered-line-color-hover
+
+    .flyout-cell:last-child
+      margin-left: 15px
+      float: right
+
+
+
 #uber-flyout.left
   .hint
     left: 0
@@ -68,7 +79,9 @@ $flyout-padding-horizontal: 10px
 
 
 
-
+.flyout.filtered
+  .flyout-row:last-child
+    color: $filtered-line-color-hover
 
 
 .flyout

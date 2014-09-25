@@ -33,6 +33,16 @@
       });
     });
 
+    body.addEventListener('surrogate-mousemove', function(e) {
+      WindowState.mouseClientX = e.clientX;
+      WindowState.mouseClientY = e.clientY;
+      mousePositionSubject.onNext({
+        clientX: e.clientX,
+        clientY: e.clientY,
+        target: e.target
+      });
+    });
+
     var mouseLeftButtonPressedSubject = new Rx.BehaviorSubject(false);
     body.addEventListener('mouseup', function(e) {
       if (e.which === 1) {

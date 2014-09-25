@@ -53,9 +53,8 @@ describe("A Choropleth Card Visualization", function() {
     testHelpers.TestDom.clear();
   });
 
-  var rowDisplayUnit = 'crime';
+  function createChoropleth(id, whereClause) {
 
-  var createChoropleth = function(id, whereClause) {
     var model = new Model();
     model.fieldName = 'ward';
     model.defineObservableProperty('activeFilters', []);
@@ -74,7 +73,7 @@ describe("A Choropleth Card Visualization", function() {
       "logicalDatatype": "location",
       "physicalDatatype": "text",
       "importance": 2,
-      "shapefileColumn": "ward"
+      "shapefileFeatureHumanReadablePropertyName": "ward"
     }]);
 
     var pageModel = new Model();
@@ -94,61 +93,117 @@ describe("A Choropleth Card Visualization", function() {
     };
   }
 
+  var choropleth1 = null;
+  var choropleth2 = null;
+  var rowDisplayUnit = 'crime';
+
   describe('when created', function() {
-    var choro1 = null;
-    var choro2 = null;
-    var ensureChoroplethsCreated = _.once(function() {
-      if (choro1 && choro2) {
-        return;
-      }
-      choro1 = createChoropleth('choropleth-1');
-      choro2 = createChoropleth('choropleth-2');
-    });
 
-    it('should not let click events leak', function() {
+    it('should not let click events leak', function(done) {
 
-      var choro1Fired = false;
-      var choro2Fired = false;
+      this.timeout(5000);
 
-      ensureChoroplethsCreated();
+      var choropleth1Fired = false;
+      var choropleth2Fired = false;
 
-      choro1.scope.$on('toggle-dataset-filter:choropleth', function(event, feature, callback) {
-        choro1Fired = true;
+      $('#choropleth-1').remove();
+      $('#choropleth-2').remove();
+
+      choropleth1 = createChoropleth('choropleth-1');
+      choropleth2 = createChoropleth('choropleth-2');
+
+      choropleth1.scope.$on('toggle-dataset-filter:choropleth', function(event, feature, callback) {
+        choropleth1Fired = true;
       });
-      choro2.scope.$on('toggle-dataset-filter:choropleth', function(event, feature, callback) {
-        choro2Fired = true;
+
+      choropleth2.scope.$on('toggle-dataset-filter:choropleth', function(event, feature, callback) {
+        choropleth2Fired = true;
       });
 
       testHelpers.waitForSatisfy(function() {
         return $('#choropleth-1 .choropleth-container path').length > 0;
       }).then(function() {
-        testHelpers.fireMouseEvent($('#choropleth-1 .choropleth-container path')[0], 'click');
-        expect(choro1Fired).to.equal(true);
-        expect(choro2Fired).to.equal(false);
-      });
 
-    });
-
-    it('should provide a flyout on hover with the current value, and row display unit', function(done){
-      ensureChoroplethsCreated();
-
-      testHelpers.waitForSatisfy(function() {
-        return $('#choropleth-1 .choropleth-container path').length > 0;
-      }).then(function() {
         var feature = $('#choropleth-1 .choropleth-container path')[0];
-        testHelpers.fireMouseEvent(feature, 'mouseover');
-        testHelpers.fireMouseEvent(feature, 'mousemove');
 
-        var $flyout = $('#choropleth-flyout');
+        testHelpers.fireEvent(feature, 'click');
 
-        var flyoutText = $flyout.text();
-        expect($flyout.is(':visible')).to.equal(true);
-        expect(( new RegExp(rowDisplayUnit.pluralize()) ).test(flyoutText)).to.equal(true);
+        timeout.flush();
+
+        expect(choropleth1Fired).to.equal(true);
+        expect(choropleth2Fired).to.equal(false);
         done();
 
       });
 
     });
+
+    it('should provide a flyout on hover with the current value, and row display unit on the first choropleth encountered', function(done){
+
+      this.timeout(5000);
+
+      $('#choropleth-1').remove();
+      $('#choropleth-2').remove();
+
+      choropleth1 = createChoropleth('choropleth-1');
+      choropleth2 = createChoropleth('choropleth-2');
+
+      testHelpers.waitForSatisfy(function() {
+        return $('#choropleth-1 .choropleth-container path').length > 0;
+      }).then(function() {
+
+        var feature = $('#choropleth-1 .choropleth-container path')[0];
+
+        testHelpers.fireEvent(feature, 'mousemove');
+
+        var flyout = $('#uber-flyout');
+        expect(flyout.is(':visible')).to.equal(true);
+
+        var flyoutTitle = flyout.find('.flyout-title').text();
+        expect(flyoutTitle).to.equal('4');
+
+        var flyoutText = flyout.find('.content').text();
+        expect(( new RegExp(rowDisplayUnit.pluralize()) ).test(flyoutText)).to.equal(true);
+
+        done();
+      });
+
+    });
+
+    it('should provide a flyout on hover with the current value, and row display unit on the second choropleth encountered', function(done){
+
+      this.timeout(5000);
+
+      $('#choropleth-1').remove();
+      $('#choropleth-2').remove();
+
+      choropleth1 = createChoropleth('choropleth-1');
+      choropleth2 = createChoropleth('choropleth-2');
+
+      testHelpers.waitForSatisfy(function() {
+        return $('#choropleth-2 .choropleth-container path').length > 0;
+      }).then(function() {
+
+        var feature = $('#choropleth-2 .choropleth-container path')[1];
+
+        testHelpers.fireEvent(feature, 'mousemove');
+
+        var flyout = $('#uber-flyout');
+        expect(flyout.is(':visible')).to.equal(true);
+
+        var flyoutTitle = flyout.find('.flyout-title').text();
+        expect(flyoutTitle).to.equal('33');
+
+        var flyoutText = flyout.find('.content').text();
+        expect(( new RegExp(rowDisplayUnit.pluralize()) ).test(flyoutText)).to.equal(true);
+
+        done();
+      });
+
+    });
+
   });
+
+
 });
 

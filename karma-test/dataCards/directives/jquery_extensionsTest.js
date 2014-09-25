@@ -26,13 +26,13 @@ describe('jquery-extensions', function() {
       expect('{0}, {1}, {2}, {3}, {4}'.format(1, 2, 3, 4, 5)).to.equal('1, 2, 3, 4, 5');
     });
   });
-  describe('String.prototype.capitaliseEachWord', function() {
+  describe('String.prototype.capitalizeEachWord', function() {
     it('should capitalize a string correctly', function() {
-      expect('asdf dfkj skja sdjfa jasldkfjalsd'.capitaliseEachWord()).to.
+      expect('asdf dfkj skja sdjfa jasldkfjalsd'.capitalizeEachWord()).to.
         equal('Asdf Dfkj Skja Sdjfa Jasldkfjalsd');
     });
     it('should downcase an all caps string', function() {
-      expect('SDFS SKDF'.capitaliseEachWord()).to.equal('Sdfs Skdf');
+      expect('SDFS SKDF'.capitalizeEachWord()).to.equal('Sdfs Skdf');
     });
   });
   describe('String.prototype.visualSize', function() {

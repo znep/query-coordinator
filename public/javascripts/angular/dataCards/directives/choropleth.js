@@ -6,7 +6,13 @@
   // 'selected' is what happens when you are filtering by a feature (this is currently an orange stroke).
   // 'highlighted' is what happens when you mouseover a feature (this is currently a white stroke).
 
-  function choropleth(Constants, AngularRxExtensions, $timeout, numberFormatter, ChoroplethVisualizationService) {
+  function choropleth(Constants,
+                      AngularRxExtensions,
+                      $timeout,
+                      numberFormatter,
+                      ChoroplethVisualizationService,
+                      WindowState,
+                      FlyoutService) {
 
     return {
       restrict: 'E',
@@ -277,13 +283,13 @@
               remove();
 
             // draw legend colors
-            var rects = svg.selectAll('.color').data(colors);
+            var rects = svg.selectAll('.choropleth-legend-color').data(colors);
 
             rects.enter().
               append('rect');
 
             rects.
-              attr('class', 'color').
+              attr('class', 'choropleth-legend-color').
               attr('width', colorWidth).
               attr('height', function(c, i) {
                 return legendLabelColorHeight(i, height);
@@ -326,25 +332,6 @@
 
             element.find('.' + className).css('padding-left', legendPadding + yAxis.innerTickSize() + maxLabelWidth).show();
 
-            // set up legend color flyouts
-            $(element).find('.choropleth-legend').flyout({
-              selector: '.color',
-              direction: 'horizontal',
-              style: 'table',
-              parent: document.body,
-              interact: true,
-              overflowParent: true,
-              inset: {
-                horizontal: -3,
-                vertical: 2
-              },
-              html: function($target, $head, options, $element) {
-                // do not use $target.data('flyout-text') due to conflicts with jQuery caching .data() results
-                // [see http://stackoverflow.com/questions/8707226/jquery-data-does-not-work-but-attrdata-itemname-does]
-                return $target.attr('data-flyout-text');
-              }
-            });
-
           }
 
         }
@@ -382,94 +369,27 @@
         **********************/
 
         function onFeatureMouseOver(e) {
-
-          function applyRowDisplayUnit(val) {
-            if (typeof val != 'number') {
-              return '';
-            } else {
-              if (val != 1) {
-                return ' ' + scope.rowDisplayUnit.pluralize();
-              } else {
-                return ' ' + scope.rowDisplayUnit;
-              }
-            }
-          };
-
-          // NOTE: one cannot attach data-attributes from a feature's geojson properties to their associated SVG path element via leaflet easily.
-          // as a result, much of the $.flyout behavior must be custom-implemented, because $.flyout's #html option depends upon
-          // the data being readily available.
-
-          // initialize choropleth flyout element, can disappear on card collapse.
-
-          choroplethFlyout = initializeChoroplethFlyout();
-          var layer = e.target;
-          var feature = layer.feature;
-          var featureHumanReadableName = feature.properties[Constants['HUMAN_READABLE_PROPERTY_NAME']];
-          var value = feature.properties[Constants['FILTERED_VALUE_PROPERTY_NAME']];
-          var unfilteredValue = feature.properties[Constants['UNFILTERED_VALUE_PROPERTY_NAME']];
-          var filteredValue = 0;
-          var featureIsSelected = (value !== unfilteredValue);
-          var unfilteredValueIsUndefined = false;
-          var unfilteredValueDisplay;
-          var filteredValueDisplay;
-          var contents = [];
-
           if (!element.parents('.card').hasClass('dragged')) {
-
-            choroplethFlyout.removeClass('undefined').removeClass('filtered');
-
-            if (typeof value != 'number') {
-              filteredValueDisplay = 0;
-              // filtered value should show as 0, if null/undefined.
-              filteredValue = 0;
-            } else {
-              filteredValueDisplay = $.toHumaneNumber(value);
-            }
-
-            if (typeof unfilteredValue != 'number') {
-              unfilteredValueDisplay = Constants['NULL_VALUE_LABEL'];
-              unfilteredValueIsUndefined = true;
-            } else {
-              unfilteredValueDisplay = $.toHumaneNumber(unfilteredValue);
-            }
-
-            if (featureHumanReadableName) {
-              choroplethFlyout.find('.flyout-title').text(featureHumanReadableName.capitaliseEachWord());
-            }
-
-            contents = [{ title: 'Total', body: unfilteredValueDisplay + applyRowDisplayUnit(unfilteredValue), italicize: unfilteredValueIsUndefined }];
-
-            if (featureIsSelected) {
-              contents.push({ title: 'Filtered Amount', body: filteredValueDisplay + applyRowDisplayUnit(filteredValue) });
-              choroplethFlyout.addClass('filtered');
-            }
-
-            populateFlyout.call(choroplethFlyout, contents);
-
             addHighlight(e);
-
           }
+        }
+
+        function onFeatureMouseMove(e) {
+
+          currentFeature = e.target.feature;
+
+          var evt = document.createEvent('HTMLEvents');
+          evt.initEvent('surrogate-mousemove', true, true);
+          evt.clientX = e.originalEvent.clientX;
+          evt.clientY = e.originalEvent.clientY;
+          e.originalEvent.target.dispatchEvent(evt);
 
         }
 
         function onFeatureMouseOut(e) {
-          choroplethFlyout = initializeChoroplethFlyout();
           if (!element.parents('.card').hasClass('dragged')) {
-            if (_.isEmpty($('#choropleth-flyout:hover'))) {
-              choroplethFlyout.hide();
-            }
+            currentFeature = null;
             removeHighlight(e);
-          }
-        }
-
-
-        function onFeatureMouseMove(e) {
-          choroplethFlyout = initializeChoroplethFlyout();
-          if (element.parents('.card').hasClass('dragged')) {
-            choroplethFlyout.hide();
-          } else {
-            choroplethFlyout.show();
-            positionChoroplethFlyout.call(choroplethFlyout, e);
           }
         }
 
@@ -573,96 +493,94 @@
         * Handle flyout behavior *
         *************************/
 
-        function initializeChoroplethFlyout() {
-          choroplethFlyout = $('#choropleth-flyout');
-
-          if (choroplethFlyout.length === 0) {
-            var html = '<div id="choropleth-flyout" class="flyout nointeract flyout-chart top">' +
-              '<div class="flyout-arrow left"></div>' +
-              '<div class="flyout-title"></div>' +
-              '<div class="flyout-content">' +
-              '</div>' +
-            '</div>';
-            $('body').append(html);
-            choroplethFlyout = $('#choropleth-flyout');
-            choroplethFlyout.hide();
-
-            choroplethFlyout.
-              mousemove(function(e) {
-                positionChoroplethFlyout.call(choroplethFlyout, e);
-              }).
-              mouseout(function() {
-                //remove bug where flyout doesn't disappear when hovering on map
-                if ($("#choropleth-flyout:hover").length == 0) {
-                  choroplethFlyout.hide();
-                }
-              });
+        function applyRowDisplayUnit(value) {
+          if (value !== '1') {
+            return value + ' ' + scope.rowDisplayUnit.pluralize();
+          } else {
+            return value + ' ' + scope.rowDisplayUnit;
           }
-
-          return choroplethFlyout;
-
         }
 
-        function positionChoroplethFlyout(e){
+        FlyoutService.register('leaflet-clickable', function(element) {
 
-          // Note: 'this' is a jQuery object.
+          var featureHumanReadableName;
+          var value;
+          var unfilteredValue;
+          var filteredValue;
+          var filterApplied;
+          var html;
 
-          var bodyWidth = document.body.clientWidth;
-          var cursorTop = e.originalEvent.pageY;
-          var cursorLeft = e.originalEvent.pageX;
-          var flyoutHeight = this.outerHeight(true) + 2;
-          var flyoutWidth = this.outerWidth(true) + 2;
-          var marginX = this.outerWidth(true) - this.width();
-          var arrowMargin = 15;
-          var cursorArrowOffset = 5; // the "space" that appears between the pointer finger and the flyout arrow
-          var arrowDisplacement = arrowMargin - cursorArrowOffset;
-
-          // IE HACK: Move the flyout further from to stop interaction.
-          if (L.Browser.ie) {
-            arrowMargin += 10;
+          // To ensure that only one choropleth instance will ever draw
+          // a flyout at a given point in time, we check to see if the
+          // directive's private scope includes a non-null currentFeature.
+          // This is set to a non-null value when a feature controlled by
+          // the choropleth raises a mousemove event, and reset to null
+          // when a feature controlled by the choropleth raises a mouseout
+          // event. (See onFeatureMouseMove and onFeatureMouseOut).
+          if (null === currentFeature) {
+            return;
           }
 
-          this.css("top", (cursorTop - flyoutHeight - arrowMargin));
+          featureHumanReadableName = currentFeature.properties[Constants['HUMAN_READABLE_PROPERTY_NAME']];
+          value = currentFeature.properties[Constants['FILTERED_VALUE_PROPERTY_NAME']];
+          unfilteredValue = currentFeature.properties[Constants['UNFILTERED_VALUE_PROPERTY_NAME']];
+          filteredValue = 0;
 
-          // spec: if the choropleth flyout approaches the edge of the screen,
-          // keep the flyout fully displayed on the screen.
-          // adjust the flyout arrow horizontally to track the mouse move.
-          // flip the orientation of the arrow if you are over halfway across the flyout width.
+          filterApplied = (value !== unfilteredValue);
 
-          var orientationIsRight = cursorLeft > this.offset().left + this.width()/2;
-          var leftOffset = cursorLeft - marginX / 2 + arrowDisplacement;
-          var maxLeftOffset = bodyWidth - flyoutWidth + cursorArrowOffset;
-
-          var choroplethFlyoutArrow = this.find('.flyout-arrow');
-
-          if (orientationIsRight) {
-            leftOffset -= arrowDisplacement;
-            choroplethFlyoutArrow.removeClass('left').addClass('right');
+          if (typeof unfilteredValue !== 'number') {
+            unfilteredValue = Constants['NULL_VALUE_LABEL'];
           } else {
-            choroplethFlyoutArrow.removeClass('right').addClass('left');
+            unfilteredValue = applyRowDisplayUnit($.toHumaneNumber(unfilteredValue));
           }
 
-          if (leftOffset < maxLeftOffset) {
-            this.css('left', leftOffset);
-            choroplethFlyoutArrow.css('left', 0);
+          if (typeof value !== 'number') {
+            // filtered value should show as 0, if null/undefined.
+            filteredValue = applyRowDisplayUnit('0');
           } else {
-            this.css('left', maxLeftOffset);
-            choroplethFlyoutArrow.css('left', leftOffset - maxLeftOffset);
+            filteredValue = applyRowDisplayUnit($.toHumaneNumber(value));
           }
-        };
 
-        function populateFlyout(contents) {
-          var htmlContent = '', valClass = '';
-          for (var i = 0; i < contents.length; i++) {
-            var content = contents[i];
-            htmlContent += '<div class="flyout-row">' +
-              '<span class="flyout-cell">' + content.title + '</span>' +
-              '<span class="flyout-cell ' + (content.italicize ? 'italicize' : '') + '">' + content.body + '</span>' +
-            '</div>';
+          if (filterApplied) {
+
+            html = '<div class="flyout-title">{0}</div>'
+                 + '<div class="flyout-row">'
+                 + '<span class="flyout-cell">{1}</span>'
+                 + '<span class="flyout-cell">{2}</span>'
+                 + '</div>'
+                 + '<div class="flyout-row">'
+                 + '<span class="flyout-cell emphasis">{3}</span>'
+                 + '<span class="flyout-cell emphasis">{4}</span>'
+                 + '</div>';
+
+            return html.format(featureHumanReadableName.capitalizeEachWord(),
+                               'Total',
+                               unfilteredValue,
+                               'Filtered amount',
+                               filteredValue);
+          } else {
+
+            html = '<div class="flyout-title">{0}</div>'
+                 + '<div class="flyout-row">'
+                 + '<span class="flyout-cell">{1}</span>'
+                 + '<span class="flyout-cell">{2}</span>'
+                 + '</div>';
+
+            return html.format(featureHumanReadableName.capitalizeEachWord(),
+                               'Total',
+                               unfilteredValue);
+
           }
-          this.children('.flyout-content').html(htmlContent);
-        }
 
+        },
+        // The last argument specifies whether the flyout should follow
+        // the cursor (true) or be fixed to the target element (false).
+        true);
+
+        FlyoutService.register('choropleth-legend-color', function(element) {
+          return '<div class="flyout-title">{0}</div>'.format(element.getAttribute('data-flyout-text'));
+        },
+        false);
 
         /***************
         * Set up state *
@@ -701,8 +619,9 @@
         var lastClick = 0;
         var lastClickTimeout = null;
 
-        // Keep a handle for the flyout so we can manipulate it globally.
-        var choroplethFlyout;
+        // Keep track of the currently-hovered-over feature so we can render flyouts outside
+        // of Leaflet.
+        var currentFeature = null;
 
         // Keep track of the base layer url currently in use so we only reset it when necessary.
         var currentBaseLayerUrl = null;
@@ -790,14 +709,19 @@
 
             }
           });
-
       }
-
     }
   }
 
   angular.
     module('dataCards.directives').
-      directive('choropleth', ['Constants', 'AngularRxExtensions', '$timeout', 'numberFormatter', 'ChoroplethVisualizationService', choropleth]);
+      directive('choropleth', ['Constants',
+                               'AngularRxExtensions',
+                               '$timeout',
+                               'numberFormatter',
+                               'ChoroplethVisualizationService',
+                               'WindowState',
+                               'FlyoutService',
+                               choropleth]);
 
 })();

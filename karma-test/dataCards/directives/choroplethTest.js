@@ -37,9 +37,9 @@ describe("A Choropleth Directive", function() {
   var el;
   var testJson  = 'karma-test/dataCards/test-data/choroplethTest/data.json';
   var legendSelector = '.choropleth-legend';
-  var legendColorSelector = '.choropleth-legend .color';
+  var legendColorSelector = '.choropleth-legend .choropleth-legend-color';
   var featureGeometrySelector = '.leaflet-map-pane .leaflet-objects-pane .leaflet-overlay-pane svg path';
-  var flyoutSelector = '#choropleth-flyout';
+  var flyoutSelector = '#uber-flyout';
   var featureMergedValueName = '__SOCRATA_FILTERED_VALUE__';
 
 
@@ -471,14 +471,12 @@ describe("A Choropleth Directive", function() {
           var polygon = el.find('path')[0];
           var defaultStrokeWidth = parseInt($(polygon).css('strokeWidth'));
 
-          testHelpers.fireMouseEvent(polygon, 'dblclick');
+          testHelpers.fireEvent(polygon, 'dblclick');
 
-          setTimeout(function() {
-            // polygon should not be highlighted
-            var strokeWidth = parseInt($(polygon).css('strokeWidth'));
-            expect(strokeWidth).to.equal(defaultStrokeWidth);
-            done();
-          }, 400);
+          var strokeWidth = parseInt($(polygon).css('strokeWidth'));
+
+          expect(strokeWidth).to.equal(defaultStrokeWidth);
+          done();
         });
     });
 
@@ -495,14 +493,16 @@ describe("A Choropleth Directive", function() {
           var feature = $(el).find(featureGeometrySelector)[0];
           var defaultStrokeWidth = parseInt($(feature).css('strokeWidth'));
 
-          testHelpers.fireMouseEvent(feature, 'mouseover');
-          testHelpers.fireMouseEvent(feature, 'mousemove');
+          testHelpers.fireEvent(feature, 'mouseover');
 
-          // mouseover should highlight feature by amplifying stroke width
+          testHelpers.fireEvent(feature, 'mousemove');
+
+          // mouseover should highlight feature by increasing stroke width
           var highlightedStrokeWidth = parseInt($(feature).css('strokeWidth'));
           expect(highlightedStrokeWidth).to.be.above(defaultStrokeWidth);
 
-          testHelpers.fireMouseEvent(feature, 'mouseout');
+          testHelpers.fireEvent(feature, 'mouseout');
+
           var unhighlightedStrokeWidth = parseInt($(feature).css('strokeWidth'));
           expect(unhighlightedStrokeWidth).to.equal(defaultStrokeWidth);
           done();
@@ -522,6 +522,7 @@ describe("A Choropleth Directive", function() {
         testHelpers.
           waitForSatisfy(function() { return el.find(featureGeometrySelector).length > 0; }).
           then(function() {
+
             var polygon = el.find('path')[0];
             var secondLine = el.find('path')[1];
             var defaultStrokeWidth = parseInt($(polygon).css('strokeWidth'));
@@ -531,7 +532,7 @@ describe("A Choropleth Directive", function() {
               toggleFilterByRegionEventReceived = true;
             });
 
-            testHelpers.fireMouseEvent(polygon, 'click');
+            testHelpers.fireEvent(polygon, 'click');
 
             timeout.flush(); // click promise (lastTimer on geojsonClick in Choropleth.js)
 
@@ -585,8 +586,10 @@ describe("A Choropleth Directive", function() {
 
               var legendColor = el.find(legendColorSelector)[0];
               var legendColorFlyoutText = $(legendColor).data('flyout-text');
-              testHelpers.fireMouseEvent(legendColor, 'mouseover');
-              var $flyout = $('.flyout');
+
+              testHelpers.fireEvent(legendColor, 'mousemove');
+
+              var $flyout = $(flyoutSelector);
               expect($flyout.is(':visible')).to.equal(true);
               expect($flyout.text()).to.equal(legendColorFlyoutText);
               done();
@@ -670,10 +673,12 @@ describe("A Choropleth Directive", function() {
 
               var legendColor = el.find(legendColorSelector)[0];
               var legendColorFlyoutText = $(legendColor).data('flyout-text');
-              testHelpers.fireMouseEvent(legendColor, 'mouseover');
-              var $flyout = $('.flyout');
+
+              testHelpers.fireEvent(legendColor, 'mousemove');
+
+              var $flyout = $(flyoutSelector);
               expect($flyout.is(':visible')).to.equal(true);
-              expect($flyout.text()).to.equal(legendColorFlyoutText);
+              expect($flyout.find('.flyout-title').text()).to.equal(legendColorFlyoutText);
               done();
             });
         });

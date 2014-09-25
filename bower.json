@@ -22,7 +22,8 @@
     "jQuery.dotdotdot": "~1.6.14",
     "moment": "~2.7.0",
     "requestAnimationFrame-polyfill": "*",
-    "angular-sanitize": "~1.2.25"
+    "angular-sanitize": "~1.2.25",
+    "angular-markdown-directive": "~0.3.0"
   },
   "install": {
     "path": {
@@ -47,7 +48,8 @@
       ],
       "flexgrid": [
         "bower_components/flexgrid/modernizr.js"
-      ]
+      ],
+      "showdown": "bower_components/showdown/src/showdown.js"
     }
   },
   "devDependencies": {

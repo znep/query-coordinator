@@ -17,6 +17,8 @@
 
   // Convert all url-looking things in the input to markdown links.
   filter('urlsToMarkdownLinks', function() {
+    // NOTE: this regex matches slashes in HTTP-entity form (&#x2F;) as well as in regular / form.
+    // This is to allow compatibility with escaping the incoming markdown first.
     var urlPattern = /(http|ftp|https):\/\/[\w-]+(\.[\w-]+)+([\w.,@?^=%&amp;:\/~+#-]*[\w@?^=%&amp;\/~+#-])?/gi;
     return function(input) {
       if (!_.isString(input)) return undefined;
@@ -35,13 +37,14 @@
       "<": "&lt;",
       ">": "&gt;",
       '"': '&quot;',
-      "'": '&#39;',
-      "/": '&#x2F;'
+      "'": '&#39;'
+      // "/": '&#x2F;' SOCRATA: Removing this as it's making links very difficult to autodetect and linkify.
     };
 
     return function escapeHtml(input) {
       if (!_.isString(input)) return undefined;
-      return input.replace(/[&<>"'\/]/g, function (s) {
+      // SOCRATA: Removed / from here too.
+      return input.replace(/[&<>"']/g, function (s) {
         return entityMap[s];
       });
     };

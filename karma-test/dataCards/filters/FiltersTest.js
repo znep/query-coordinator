@@ -67,6 +67,14 @@ describe('Filter', function() {
       expect(f('text https://socrata.com. text')).to.equal('text [https://socrata.com](https://socrata.com). text');
       expect(f('https://socrata.com text')).to.equal('[https://socrata.com](https://socrata.com) text');
     }));
+
+    it('should linkify links even if the string is HTML escaped', inject(function($filter) {
+      var escapeHtml = $filter('escapeHtml');
+      var linkify = $filter('urlsToMarkdownLinks');
+
+      var escaped = escapeHtml('\nhttp://socrata.com\n');
+      expect(linkify(escaped)).to.equal('\n[http://socrata.com](http://socrata.com)\n');
+    }));
   });
 
   describe('escapeHtml', function() {
@@ -84,8 +92,9 @@ describe('Filter', function() {
     describe('mustache tests', function() {
       it('escaped', inject(function($filter) {
         var f = $filter('escapeHtml');
+        // note we removed / from the escaped chars, as it was interfering with autolinking.
         expect(f('Bear > Shark')).to.equal('Bear &gt; Shark');
-        expect(f("And even &quot; \"'<>/,")).to.equal('And even &amp;quot; &quot;&#39;&lt;&gt;&#x2F;,');
+        expect(f("And even &quot; \"'<>/,")).to.equal('And even &amp;quot; &quot;&#39;&lt;&gt;/,');
       }));
     });
   });

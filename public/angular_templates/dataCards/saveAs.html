@@ -1,0 +1,25 @@
+<div class="tool-panel">
+  <button ng-class="{touched: panelActive, disabled: !hasChanges}" class="tool-panel-toggle-btn action-btn r-to-l" ng-click="panelActive = !panelActive" ng-disabled="!hasChanges">Save As</button>
+  <div id="save-as-panel" ng-class="{active: panelActive}" class="tool-panel-main">
+    <div id="save-as-panel-inner-container" class="tool-panel-inner-container">
+      <div class="tool-panel-hint"></div>
+
+      <h2>Save As</h2>
+
+      <div class="tool-panel-input-group">
+        <label for="save-as-name">Save the current view with a new name</label>
+        <input id="save-as-name" class="form-control" type="text" placeholder="{{namePlaceholder}}" ng-focus="namePlaceholder = ''" ng-blur="namePlaceholder = defaultNamePlaceholder" ng-model="name" />
+      </div>
+
+      <div class="tool-panel-input-group">
+        <label for="save-as-description">Enter a description for your new view (optional)</label>
+        <textarea id="save-as-description" class="form-control" rows="5" ng-model="description"></textarea>
+      </div>
+
+      <div class="tool-panel-input-group">
+        <button title="Save" data-action="save" class="tool-panel-btn action-btn l-to-r" ng-click="save()">Save</button>
+        <button title="Cancel" data-action="cancel" class="tool-panel-btn action-btn l-to-r" ng-click="cancel()">Cancel</button>
+      </div>
+    </div>
+</div>
+</div>

@@ -3,25 +3,26 @@
 angular.module('dataCards.services').factory('ModelHelper', function() {
   // Adds a (RxJS) observable of the given name to the object provided. The default value
   // is specified.
+  // Returns a sequence of values set to this property (including the initial value).
   function addProperty(propertyName, model, initialValue) {
     var subject = new Rx.BehaviorSubject(initialValue);
     Object.defineProperty(model, propertyName, {
       get: _.constant(subject),
       set: function(val) {
         subject.onNext(val);
-      }
+      },
+      enumerable: true
     });
+    return subject;
   };
 
   // Adds an (RxJS) observable of the given name to the object provided. The default value
   // is specified as a function which returns a promise. This allows us to skip requesting
-  // the default value unless necessary.
-  // While the default value is being fetched, the value of the property is undefined.
-  // An alternate placeholder value may be specified as the last argument.
+  // the default value unless someone causes a read on the property.
+  // Until the default value is fetched, the property will have a value given by `initialValue`.
   //
-  // The default lazy value promise is generated if the property getter is called before
-  // the setter.
-  function addPropertyWithLazyDefault(propertyName, model, defaultValuePromiseGenerator, initialValue) {
+  // Returns a sequence of values set to this property (including the initial and lazy values, if used).
+  function addPropertyWithLazyDefault(propertyName, model, initialValue, defaultValuePromiseGenerator) {
     // These two sequences represent values from the lazy default promise and this property's
     // setter, respectively.
     var fromDefault = new Rx.AsyncSubject();
@@ -53,8 +54,11 @@ angular.module('dataCards.services').factory('ModelHelper', function() {
       },
       set: function(n) {
         fromSetter.onNext(n);
-      }
+      },
+      enumerable: true
     });
+
+    return outer;
   };
 
   return {

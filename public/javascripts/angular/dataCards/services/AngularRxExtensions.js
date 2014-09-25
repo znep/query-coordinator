@@ -19,19 +19,41 @@ angular.module('dataCards.services').factory('AngularRxExtensions', function() {
   // For example, this will cause the 'ticks' property
   // on scope $scope to increment every second:
   // $scope.bindObservable('ticks', Rx.Observable.interval(1000));
-  function bindObservable(propName, observable) {
+  // Separate optional callbacks are provided for error and completed cases.
+  // In these, the value returned from the callback is applied to the scope's property.
+  function bindObservable(propName, observable, onError, onCompleted) {
     if (_.isEmpty(propName) || !_.isString(propName)) {
       throw new Error('Expected non-empty string property name');
     }
     if (!(observable instanceof Rx.Observable)) {
       throw new Error('Expected Rx.Observable instance');
     }
+    if (onError && !_.isFunction(onError)) {
+      throw new Error('onError provided, but it is not a function.');
+    }
+    if (onCompleted && !_.isFunction(onCompleted)) {
+      throw new Error('onCompleted provided, but it is not a function.');
+    }
+
     var self = this;
-    observable.subscribe(function(newValue) {
+    function set(newValue) {
       self.safeApply(function() {
         self[propName] = newValue;
       });
-    });
+    };
+
+    function errorHandler(error) {
+      set(onError.apply(this, arguments));
+    };
+    function completedHandler() {
+      set(onCompleted.apply(this, arguments));
+    };
+
+    observable.subscribe(
+      set,
+      onError ? errorHandler : undefined,
+      onCompleted ? completedHandler : undefined
+    );
   }
 
   function observe(expression) {

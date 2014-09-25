@@ -1,4 +1,4 @@
-describe("Page model", function() {
+describe('ModelHelper', function() {
   var _mh, _$q, _$rootScope;
 
   beforeEach(module('dataCards.services'));
@@ -39,8 +39,8 @@ describe("Page model", function() {
     };
 
     var instance = {};
-    _mh.addPropertyWithLazyDefault('title', instance, promiser);
-    _mh.addPropertyWithLazyDefault('description', instance, promiser);
+    _mh.addPropertyWithLazyDefault('title', instance, undefined, promiser);
+    _mh.addPropertyWithLazyDefault('description', instance, undefined, promiser);
     
     instance.title = title1;
     instance.title.subscribe(function(val) {
@@ -77,7 +77,7 @@ describe("Page model", function() {
     };
 
     var instance = {};
-    _mh.addPropertyWithLazyDefault('description', instance, promiser);
+    _mh.addPropertyWithLazyDefault('description', instance, undefined, promiser);
 
     instance.description.subscribe(function(val) {
       expect(expectedSequence).to.not.be.empty;
@@ -116,7 +116,7 @@ describe("Page model", function() {
     };
 
     var instance = {};
-    _mh.addPropertyWithLazyDefault('description', instance, promiser);
+    _mh.addPropertyWithLazyDefault('description', instance, undefined, promiser);
 
     // Start the sequence.
     instance.description.subscribe(function(val) {

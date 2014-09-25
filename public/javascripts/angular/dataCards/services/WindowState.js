@@ -44,9 +44,11 @@
     });
 
     var mouseLeftButtonPressedSubject = new Rx.BehaviorSubject(false);
+    var mouseLeftButtonClickSubject = new Rx.Subject();
     body.addEventListener('mouseup', function(e) {
       if (e.which === 1) {
         mouseLeftButtonPressedSubject.onNext(false);
+        mouseLeftButtonClickSubject.onNext(e);
       }
     });
     body.addEventListener('mousedown', function(e) {
@@ -64,6 +66,7 @@
     WindowState.scrollPositionSubject = scrollPositionSubject;
     WindowState.mousePositionSubject = mousePositionSubject;
     WindowState.mouseLeftButtonPressedSubject = mouseLeftButtonPressedSubject;
+    WindowState.mouseLeftButtonClickSubject = mouseLeftButtonClickSubject;
     WindowState.windowSizeSubject = windowSizeSubject;
 
     return WindowState;

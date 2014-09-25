@@ -4,7 +4,18 @@ describe("CardsViewController", function() {
   var $q;
   var $rootScope;
   var $controller;
+  var $window;
+
+  var TEST_PAGE_ID = 'boom-poww';
+
   var mockPageDataService = {
+    save: function() {
+      return $q.when({
+        data: {
+          pageId: TEST_PAGE_ID
+        }
+      });
+    }
   };
   var mockDatasetDataService = {
     getBaseInfo: function() {
@@ -24,20 +35,36 @@ describe("CardsViewController", function() {
       });
     }
   };
+  var mockUserSessionService = {
+    getCurrentUser: function() {
+      return $q.when(null);
+    }
+  };
+
+  var mockPageSerializationData = {
+    ping: 'pong'
+  };
 
   beforeEach(module('dataCards'));
   beforeEach(function() {
     module(function($provide) {
       $provide.value('PageDataService', mockPageDataService);
       $provide.value('DatasetDataService', mockDatasetDataService);
+      $provide.value('UserSession', mockUserSessionService);
+      $provide.value('$window', {
+        location: {
+          href: ''
+        }
+      });
     });
   });
-  beforeEach(inject(['$q', 'Card', 'Page', '$rootScope', '$controller', function(_$q, _Card, _Page, _$rootScope, _$controller) {
+  beforeEach(inject(['$q', 'Card', 'Page', '$rootScope', '$controller', '$window', function(_$q, _Card, _Page, _$rootScope, _$controller, _$window) {
     Card = _Card;
     Page = _Page;
     $q = _$q;
     $rootScope = _$rootScope;
     $controller = _$controller;
+    $window = _$window;
   }]));
 
   function makeController() {
@@ -49,6 +76,7 @@ describe("CardsViewController", function() {
     mockPageDataService.getBaseInfo = function() { return baseInfoPromise.promise; };
 
     var page = new Page(fakePageId);
+    page.serialize = function() { return mockPageSerializationData; };
 
     var controller = $controller('CardsViewController', {
       $scope: scope,
@@ -283,4 +311,104 @@ describe("CardsViewController", function() {
       });
     });
   });
+
+  describe('page unsaved state', function() {
+    it('should set hasChanges to true when a property changes on any model hooked to the page', function() {
+      var controllerHarness = makeController();
+      var scope = controllerHarness.scope;
+
+      expect(scope.hasChanges).to.be.falsy;
+
+      scope.page.set('name', 'name2');
+      expect(scope.hasChanges).to.be.true;
+    });
+
+    it('should call PageDataService.save when savePage is called with hasChanges = true', function() {
+      var controllerHarness = makeController();
+      var scope = controllerHarness.scope;
+
+      scope.page.set('name', 'name2'); // Cause a change.
+
+      var spy = sinon.spy(mockPageDataService, 'save');
+      scope.savePage();
+      expect(spy.calledOnce).to.be.true;
+      mockPageDataService.save.restore();
+    });
+
+    it('should not call PageDataService.save when savePage is called with hasChanges = false', function() {
+      var controllerHarness = makeController();
+      var scope = controllerHarness.scope;
+
+      var spy = sinon.spy(mockPageDataService, 'save');
+      scope.savePage();
+      expect(spy.called).to.be.false;
+      mockPageDataService.save.restore();
+    });
+
+    it('should set hasChanges to false after saving', function() {
+      var controllerHarness = makeController();
+      var scope = controllerHarness.scope;
+
+      scope.page.set('name', 'name2');
+      scope.savePage();
+      $rootScope.$apply(); // Must call $apply, as savePage uses a $q promise internally. Grah.
+      expect(scope.hasChanges).to.be.false;
+    });
+
+    it('should set hasChanges to true after making a change after saving', function() {
+      var controllerHarness = makeController();
+      var scope = controllerHarness.scope;
+
+      scope.page.set('name', 'name2');
+      scope.savePage();
+      $rootScope.$apply(); // Must call $apply, as savePage uses a $q promise internally. Grah.
+      scope.page.set('name', 'name3');
+      expect(scope.hasChanges).to.be.true;
+    });
+
+    it('should set editMode to false after saving', function() {
+      var controllerHarness = makeController();
+      var scope = controllerHarness.scope;
+
+      scope.editMode = true;
+      scope.page.set('name', 'name2');
+      scope.savePage();
+      $rootScope.$apply(); // Must call $apply, as savePage uses a $q promise internally. Grah.
+      expect(scope.editMode).to.be.false;
+    });
+  });
+
+  describe('savePageAs', function() {
+    var controllerHarness;
+    var scope;
+    var NEW_PAGE_NAME = 'my new page name';
+    var NEW_PAGE_DESCRIPTION = 'my new page description';
+
+    beforeEach(function() {
+      controllerHarness = makeController();
+      scope = controllerHarness.scope;
+    });
+
+    it('should call save on PageDataService with no ID and updated data', function() {
+      var expectedPageSerializationData = {
+        ping: 'pong',
+        name: NEW_PAGE_NAME,
+        description: NEW_PAGE_DESCRIPTION
+      };
+      var saveSpy = sinon.spy(mockPageDataService, 'save');
+      scope.savePageAs(NEW_PAGE_NAME, NEW_PAGE_DESCRIPTION);
+      expect(saveSpy.calledOnce).to.be.true;
+      var saveCall = saveSpy.getCall(0);
+      expect(saveCall.calledWithExactly(expectedPageSerializationData)).to.be.true;
+      mockPageDataService.save.restore();
+    });
+
+    it('should redirect to the new page URL on success', function() {
+      scope.savePageAs(NEW_PAGE_NAME, NEW_PAGE_DESCRIPTION);
+      $rootScope.$apply();
+      expect($window.location.href).to.equal('/view/{0}'.format(TEST_PAGE_ID));
+    });
+
+  });
+
 });

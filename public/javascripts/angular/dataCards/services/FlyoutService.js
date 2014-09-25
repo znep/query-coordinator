@@ -99,11 +99,10 @@ angular.module('dataCards.services').factory('FlyoutService', function(WindowSta
                   uberFlyout.removeClass('right').addClass('left').css({left: leftOffset, top: topOffset}).show();
                 }
 
+                return;
+
               }
             }
-
-            return;
-
           }
         }
       }

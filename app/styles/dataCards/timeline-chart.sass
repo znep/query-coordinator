@@ -111,8 +111,9 @@ div.timeline-chart
       .text, .cancel
         display: inline-block
 
-      &.dim:not(.active)
-        opacity: 0.2
+      &.hidden
+        opacity: 0
+        z-index: 1
 
       &.active, &.highlighted
         color: $timeline-label-color-active
@@ -140,3 +141,24 @@ div.timeline-chart
   &.selecting div.chart-scroll
     g.draghandle, .label.highlighted
       pointer-events: none
+
+  &.selecting div.label, div.labels.dim>div.label
+    @include transitions(opacity .2s linear)
+    opacity: 0.2
+    z-index: 1
+
+  div.labels
+    &.dim>div.label.active, &.dim>div.label.highlighted, >div.label.highlighted
+      opacity: 1
+      z-index: 2
+
+  &.selecting
+    // we need to select on .dim in order to get precedence - the 'selecting' state wants
+    // the highlighting to behave more demurely
+    div.labels, div.labels.dim
+      div.label
+        &.hidden
+          opacity: 0
+        &.highlighted
+          opacity: 1
+          z-index: 2

@@ -2,7 +2,7 @@
 
   'use strict';
 
-  function CardsViewController($scope, $log, AngularRxExtensions, SortedTileLayout, Filter, page) {
+  function CardsViewController($scope, $location, $log, $window, AngularRxExtensions, SortedTileLayout, Filter, PageDataService, UserSession, FlyoutService, page) {
 
     AngularRxExtensions.install($scope);
 
@@ -24,6 +24,19 @@
       if (!date) return '';
       return moment(date).fromNow();
     }));
+
+
+    /***************
+    * User session *
+    ***************/
+
+    // Bind the current user to the scope, or null if no user is logged in or there was an error
+    // fetching the current user.
+    $scope.bindObservable(
+      'currentUser',
+      Rx.Observable.fromPromise(UserSession.getCurrentUser()),
+      _.constant(null)
+    );
 
 
     /*****************
@@ -203,7 +216,63 @@
     * View/edit modal behavior *
     ***************************/
 
+    // Sequence of all successful saves.
+    var successfulSaves = new Rx.Subject();
+
     $scope.editMode = false;
+
+    // We've got changes if the last action was an edit (vs. a save).
+    // All sets map to true, and all saves map to false. Thus, the latest
+    // value is what we want to set to hasChanges.
+    $scope.bindObservable(
+      'hasChanges',
+      Rx.Observable.merge(
+        page.observePropertyChangesRecursively().map(_.constant(true)),
+        successfulSaves.map(_.constant(false))
+      )
+    );
+
+    successfulSaves.subscribe(function() {
+      $scope.safeApply(function() {
+        $scope.editMode = false;
+      });
+    });
+
+    $scope.savePageAs = function(name, description) {
+      var newPage = _.extend(page.serialize(), {
+        name: name,
+        description: description
+      });
+      PageDataService.
+        save(newPage).
+        then(function(response) {
+          var data = response.data;
+          $window.location.href = '/view/{0}'.format(data.pageId);
+        },
+        function(error) {
+          // TODO: Handling the error case is a separate, future story. For now,
+          // at least tell the user what went wrong.
+          alert('Unable to save: {0}: {1}'.format(error.status, error.statusText));
+        });
+    };
+
+    $scope.savePage = function() {
+      if ($scope.hasChanges) {
+        PageDataService.save(page.serialize(), page.id).then(function() {
+          // Success.
+          successfulSaves.onNext();
+        },
+        function(error) {
+          // TODO: Handling the error case is a separate, future story. For now,
+          // at least tell the user what went wrong.
+          alert('Unable to save: {0}: {1}'.format(error.status, error.statusText));
+        });
+      }
+    };
+
+    FlyoutService.register('save-button', function() {
+      return $scope.hasChanges ? 'Click to save your changes' : 'No changes to be saved';
+    });
 
 
     /******************************************

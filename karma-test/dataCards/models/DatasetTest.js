@@ -5,6 +5,7 @@ describe("Dataset model", function() {
   // Minimal Dataset blob which will validate.
   var minimalBlob = {
     id: 'asdf-fdsa',
+    name: 'test dataset name',
     defaultAggregateColumn: 'foo',
     rowDisplayUnit: 'bar',
     ownerId: 'fdsa-asdf',

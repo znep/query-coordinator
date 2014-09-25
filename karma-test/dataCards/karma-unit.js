@@ -74,6 +74,7 @@ module.exports = function ( karma ) {
       /*    Angular    */
       'public/javascripts/angular/common/*.js',
       'public/javascripts/angular/common/**/*.js',
+      'bower_components/angular-sanitize/angular-sanitize.js',
       'public/javascripts/angular/dataCards/controllers.js',
       'public/javascripts/angular/dataCards/models.js',
       'public/javascripts/angular/dataCards/**/*.js',

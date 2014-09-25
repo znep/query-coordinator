@@ -7,6 +7,7 @@ describe('DatasetMetadataController', function() {
     getBaseInfo: function() {
       return $q.when({
         id: 'asdf-fdsa',
+        name: 'test dataset name',
         defaultAggregateColumn: 'foo',
         rowDisplayUnit: 'bar',
         ownerId: 'fdsa-asdf',
@@ -60,18 +61,18 @@ describe('DatasetMetadataController', function() {
     };
   };
 
-  describe('dataset title', function() {
+  describe('dataset name', function() {
     it('should update on the scope when the property changes on the model', function() {
       var controllerHarness = makeController();
 
       var controller = controllerHarness.controller;
       var scope = controllerHarness.scope;
 
-      var title1 = _.uniqueId('title');
-      var title2 = _.uniqueId('title');
+      var name1 = _.uniqueId('name');
+      var name2 = _.uniqueId('name');
       controllerHarness.baseInfoPromise.resolve({
         id: 'fake-fbfr',
-        title: title1,
+        name: name1,
         rowDisplayUnit: 'rdu',
         defaultAggregateColumn: 'foo',
         ownerId: 'fake-user',
@@ -80,10 +81,10 @@ describe('DatasetMetadataController', function() {
       });
       $rootScope.$digest();
 
-      expect(scope.datasetTitle).to.equal(title1);
+      expect(scope.datasetName).to.equal(name1);
 
-      controllerHarness.dataset.set('title', title2);
-      expect(scope.datasetTitle).to.equal(title2);
+      controllerHarness.dataset.set('name', name2);
+      expect(scope.datasetName).to.equal(name2);
     });
   });
 });

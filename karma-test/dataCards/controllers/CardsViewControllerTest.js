@@ -21,6 +21,7 @@ describe("CardsViewController", function() {
     getBaseInfo: function() {
       return $q.when({
         id: 'asdf-fdsa',
+        name: 'test dataset name',
         defaultAggregateColumn: 'foo',
         rowDisplayUnit: 'bar',
         ownerId: 'fdsa-asdf',

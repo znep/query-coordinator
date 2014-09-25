@@ -11,9 +11,10 @@
     *************************/
 
     $scope.dataset = dataset;
-    $scope.bindObservable('datasetTitle', dataset.observe('title').map(function(title) {
-      return _.isUndefined(title) ? 'Untitled' : title;
+    $scope.bindObservable('datasetName', dataset.observe('name').map(function(name) {
+      return _.isUndefined(name) ? 'Untitled' : name;
     }));
+    $scope.bindObservable('datasetDescription', dataset.observe('description'));
   };
 
   angular.

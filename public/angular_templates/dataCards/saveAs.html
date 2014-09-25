@@ -1,5 +1,5 @@
 <div class="tool-panel">
-  <button ng-class="{touched: panelActive, disabled: !hasChanges}" class="tool-panel-toggle-btn action-btn r-to-l" ng-click="panelActive = !panelActive" ng-disabled="!hasChanges">Save As</button>
+  <button ng-class="{touched: panelActive, disabled: !hasChanges}" class="save-as-button tool-panel-toggle-btn action-btn r-to-l" ng-click="conditionallyShowPanel()">Save As</button>
   <div id="save-as-panel" ng-class="{active: panelActive}" class="tool-panel-main">
     <div id="save-as-panel-inner-container" class="tool-panel-inner-container">
       <div class="tool-panel-hint"></div>

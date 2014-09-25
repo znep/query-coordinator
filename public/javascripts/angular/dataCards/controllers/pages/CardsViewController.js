@@ -271,7 +271,13 @@
     };
 
     FlyoutService.register('save-button', function() {
-      return $scope.hasChanges ? 'Click to save your changes' : 'No changes to be saved';
+      return $scope.hasChanges ? '<div class="flyout-title">Click to save your changes</div>'
+                               : '<div class="flyout-title">No changes to be saved</div>';
+    });
+
+    FlyoutService.register('save-as-button', function() {
+      return $scope.hasChanges ? '<div class="flyout-title">Click to save your changes as a new view</div>'
+                               : '<div class="flyout-title">No changes to be saved</div>';
     });
 
 

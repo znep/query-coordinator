@@ -1,5 +1,6 @@
 {
   "id": "fake-data",
+  "name": "Fake Data",
   "rowDisplayUnit": "crime",
   "defaultAggregateColumn": ":count",
   "domain": "soda2nbe.test-socrata.com",

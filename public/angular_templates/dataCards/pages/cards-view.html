@@ -23,7 +23,7 @@
               <last-updated class="metadatum"></last-updated>
             </div>
           </div>
-          <a ng-click="savePage()" class="save-button action-btn r-to-l" ng-class="{disabled: !hasChanges}" ng-if="currentUser">Save</a>
+          <button type="button" ng-click="savePage()" class="save-button action-btn r-to-l" ng-class="{disabled: !hasChanges}" ng-if="currentUser">Save</button>
           <save-as page-has-changes="hasChanges" save-page-as="savePageAs" ng-if="currentUser"></save-as>
           <button type="button" ng-click="editMode = !editMode" class="action-btn r-to-l">{{editMode | ifElse:'Preview':'Customize'}}</button>
           <a href="{{datasetCSVDownloadURL}}" title="Download this data as CSV" class="action-btn r-to-l">Download</a>

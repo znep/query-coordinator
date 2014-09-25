@@ -1,5 +1,4 @@
 (function() {
-
   'use strict';
 
   function saveAs($window, AngularRxExtensions, WindowState) {
@@ -11,7 +10,10 @@
       },
       templateUrl: '/angular_templates/dataCards/saveAs.html',
       link: function($scope, element, attrs) {
+
         AngularRxExtensions.install($scope);
+
+        var $saveAsButton = element.find('.save-as-button');
         var $nameInput = element.find('#save-as-name');
         var $descriptionInput = element.find('#save-as-description');
         var $document = $($window.document);
@@ -21,6 +23,13 @@
         $scope.panelActive = false;
         $scope.name = '';
         $scope.description = '';
+
+        $scope.conditionallyShowPanel = function conditionallyShowPanel() {
+          if (!$saveAsButton.hasClass('disabled')) {
+            $scope.panelActive = !$scope.panelActive;
+          }
+        };
+
         $scope.save = function save() {
 
           // These two checks are a workaround for IE9, which apparently

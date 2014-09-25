@@ -2,7 +2,7 @@
 
   'use strict';
 
-  function CardsViewController($scope, $log, AngularRxExtensions, SortedTileLayout, Filter, PageDataService, UserSession, FlyoutService, page) {
+  function CardsViewController($scope, $location, $log, $window, AngularRxExtensions, SortedTileLayout, Filter, PageDataService, UserSession, FlyoutService, page) {
 
     AngularRxExtensions.install($scope);
 
@@ -238,9 +238,27 @@
       });
     });
 
+    $scope.savePageAs = function(name, description) {
+      var newPage = _.extend(page.serialize(), {
+        name: name,
+        description: description
+      });
+      PageDataService.
+        save(newPage).
+        then(function(response) {
+          var data = response.data;
+          $window.location.href = '/view/{0}'.format(data.pageId);
+        },
+        function(error) {
+          // TODO: Handling the error case is a separate, future story. For now,
+          // at least tell the user what went wrong.
+          alert('Unable to save: {0}: {1}'.format(error.status, error.statusText));
+        });
+    };
+
     $scope.savePage = function() {
       if ($scope.hasChanges) {
-        PageDataService.save(page).then(function() {
+        PageDataService.save(page.serialize(), page.id).then(function() {
           // Success.
           successfulSaves.onNext();
         },

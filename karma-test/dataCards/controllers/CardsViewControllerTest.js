@@ -4,9 +4,17 @@ describe("CardsViewController", function() {
   var $q;
   var $rootScope;
   var $controller;
+  var $window;
+
+  var TEST_PAGE_ID = 'boom-poww';
+
   var mockPageDataService = {
     save: function() {
-      return $q.when({});
+      return $q.when({
+        data: {
+          pageId: TEST_PAGE_ID
+        }
+      });
     }
   };
   var mockDatasetDataService = {
@@ -33,20 +41,30 @@ describe("CardsViewController", function() {
     }
   };
 
+  var mockPageSerializationData = {
+    ping: 'pong'
+  };
+
   beforeEach(module('dataCards'));
   beforeEach(function() {
     module(function($provide) {
       $provide.value('PageDataService', mockPageDataService);
       $provide.value('DatasetDataService', mockDatasetDataService);
       $provide.value('UserSession', mockUserSessionService);
+      $provide.value('$window', {
+        location: {
+          href: ''
+        }
+      });
     });
   });
-  beforeEach(inject(['$q', 'Card', 'Page', '$rootScope', '$controller', function(_$q, _Card, _Page, _$rootScope, _$controller) {
+  beforeEach(inject(['$q', 'Card', 'Page', '$rootScope', '$controller', '$window', function(_$q, _Card, _Page, _$rootScope, _$controller, _$window) {
     Card = _Card;
     Page = _Page;
     $q = _$q;
     $rootScope = _$rootScope;
     $controller = _$controller;
+    $window = _$window;
   }]));
 
   function makeController() {
@@ -58,6 +76,7 @@ describe("CardsViewController", function() {
     mockPageDataService.getBaseInfo = function() { return baseInfoPromise.promise; };
 
     var page = new Page(fakePageId);
+    page.serialize = function() { return mockPageSerializationData; };
 
     var controller = $controller('CardsViewController', {
       $scope: scope,
@@ -358,4 +377,38 @@ describe("CardsViewController", function() {
       expect(scope.editMode).to.be.false;
     });
   });
+
+  describe('savePageAs', function() {
+    var controllerHarness;
+    var scope;
+    var NEW_PAGE_NAME = 'my new page name';
+    var NEW_PAGE_DESCRIPTION = 'my new page description';
+
+    beforeEach(function() {
+      controllerHarness = makeController();
+      scope = controllerHarness.scope;
+    });
+
+    it('should call save on PageDataService with no ID and updated data', function() {
+      var expectedPageSerializationData = {
+        ping: 'pong',
+        name: NEW_PAGE_NAME,
+        description: NEW_PAGE_DESCRIPTION
+      };
+      var saveSpy = sinon.spy(mockPageDataService, 'save');
+      scope.savePageAs(NEW_PAGE_NAME, NEW_PAGE_DESCRIPTION);
+      expect(saveSpy.calledOnce).to.be.true;
+      var saveCall = saveSpy.getCall(0);
+      expect(saveCall.calledWithExactly(expectedPageSerializationData)).to.be.true;
+      mockPageDataService.save.restore();
+    });
+
+    it('should redirect to the new page URL on success', function() {
+      scope.savePageAs(NEW_PAGE_NAME, NEW_PAGE_DESCRIPTION);
+      $rootScope.$apply();
+      expect($window.location.href).to.equal('/view/{0}'.format(TEST_PAGE_ID));
+    });
+
+  });
+
 });

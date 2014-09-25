@@ -1,0 +1,76 @@
+@import dataCards/common/colors
+@import dataCards/common/layout
+
+$tool-panel-width: 512px
+$tool-panel-hint-size: 20px
+$tool-panel-padding: 15px 25px 5px
+$tool-panel-z-index: 1004
+
+.tool-panel
+  display: inline-block
+  position: relative
+  .tool-panel-main
+    &.active
+      display: block
+    position: absolute
+    display: none
+    margin-top: $tool-panel-hint-size / 2
+    right: 50%
+    margin-right: -10px
+    color: $tool-panel-white-font-color
+    background-color: $tool-panel-bg-color
+    text-align: left
+    z-index: $tool-panel-z-index
+    width: $tool-panel-width
+    border: solid 1px $tool-panel-border-color
+  .tool-panel-hint
+    position: absolute
+    right: -1px
+    top: -$tool-panel-hint-size
+    width: 0
+    height: 0
+    border-style: solid
+    border-width: 0 0 $tool-panel-hint-size $tool-panel-hint-size
+    border-color: transparent transparent $tool-panel-bg-color transparent
+
+  .tool-panel-inner-container
+    position: relative
+    padding: $tool-panel-padding
+
+  h2
+    margin: 0
+    font-size: 1.25em
+    font-weight: bold
+
+  .tool-panel-input-group
+    padding: 10px 0
+
+  .form-control
+    box-sizing: border-box
+    display: block
+    width: 100%
+    padding: 8px 6px
+    color: #555
+    background: #fff none
+    border: 3px solid transparent
+    margin-top: 5px
+    &.form-error
+      border-color: $form-error-border-color
+
+  textarea.form-control
+    height: auto
+
+  .tool-panel-btn.action-btn
+    width: auto
+    background-color: $dark-btn-bg-color
+    border: solid 2px $dark-btn-border-color
+    color: $dark-btn-font-color
+    font-weight: bold
+    font-size: 1em
+    margin-bottom: 0
+
+    &:hover
+      background-color: $dark-btn-hover-bg-color
+      border: solid 2px $dark-btn-hover-border-color
+      color: $dark-btn-hover-font-color
+

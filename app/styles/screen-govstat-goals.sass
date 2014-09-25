@@ -971,8 +971,21 @@ $wizard_border_color: #ccc
         padding-top: 0.2rem
 
     &.overridden
-      > .goalProgress
-        opacity: 0.6
+      .progressOverride > .goalProgress
+        @include opacity(0.35)
+
+      .overridden_as-bad
+        .progress-within_tolerance, .progress-good, .progress-no_judgement
+          @include opacity(0.35)
+      .overridden_as-within_tolerance
+        .progress-bad, .progress-good, .progress-no_judgement
+          @include opacity(0.35)
+      .overridden_as-good
+        .progress-bad, .progress-within_tolerance, .progress-no_judgement
+          @include opacity(0.35)
+      .overridden_as-no_judgement
+        .progress-bad, .progress-within_tolerance, .progress-good
+          @include opacity(0.35)
 
   .progressSettingsOverrideToggle
     float: right

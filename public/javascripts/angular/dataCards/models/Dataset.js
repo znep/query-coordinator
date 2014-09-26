@@ -39,7 +39,7 @@ angular.module('dataCards.models').factory('Dataset', function(ModelHelper, Mode
             'columnDisplayUnit': { 'type': 'string' },
             'shapefileFeatureHumanReadablePropertyName': { 'type': 'string' }
           },
-          'required': [ 'title', 'logicalDatatype', 'physicalDatatype', 'importance' ]
+          'required': [ 'name', 'logicalDatatype', 'physicalDatatype', 'importance' ]
         }
       },
       'pages': {

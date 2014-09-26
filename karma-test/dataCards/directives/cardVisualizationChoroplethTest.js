@@ -101,7 +101,7 @@ describe("A Choropleth Card Visualization", function() {
 
     it('should not let click events leak', function(done) {
 
-      this.timeout(8000);
+      this.timeout(15000);
 
       var choropleth1Fired = false;
       var choropleth2Fired = false;
@@ -148,7 +148,7 @@ describe("A Choropleth Card Visualization", function() {
 
     it('should provide a flyout on hover with the current value, and row display unit on the first and second choropleth encountered', function(done){
 
-      this.timeout(8000);
+      this.timeout(15000);
 
       $('#choropleth-1').remove();
       $('#choropleth-2').remove();

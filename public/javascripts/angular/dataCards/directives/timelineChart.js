@@ -169,7 +169,7 @@
    * The <div timeline-chart /> directive.
    * Turns the tagged element into a timeline chart.
    */
-  function timelineChartDirective($timeout, AngularRxExtensions) {
+  function timelineChartDirective($timeout, AngularRxExtensions, FlyoutService) {
     function renderTimelineChart(scope, element, dimensions, filterChanged, state) {
       var chartData = scope.chartData;
       var showFiltered = scope.showFiltered;
@@ -320,7 +320,7 @@
           if (_.isEmpty(highlightedLabel)) {
             highlightedLabel = $('<div class="label highlighted">' +
                 '<div class="text"></div>' +
-                '<div class="cancel"> ×</div>' +
+                '<div class="timeline-clear-selection"> ×</div>' +
                 '</div>');
             element.find('.labels').append(highlightedLabel);
           }
@@ -582,16 +582,11 @@
         inset: {
           vertical: -4
         },
-        margin: cardMargin,
+        margin: cardMargin
       };
       chartScroll.flyout($.extend({
         selector: 'g.draghandle',
         html: 'Drag to change filter range'
-      }, flyoutOpts));
-
-      chartScroll.flyout($.extend({
-        selector: '.labels .label.highlighted .cancel',
-        html: 'Clear filter range'
       }, flyoutOpts));
 
       // This is set to true when the user is selecting a region, and back to false when
@@ -804,6 +799,8 @@
         };
 
         setupHighlighting(element, state, scope);
+        FlyoutService.register('timeline-clear-selection',
+                               _.constant('Clear filter range'));
 
         Rx.Observable.subscribeLatest(
           element.closest('.card-visualization').observeDimensions(),

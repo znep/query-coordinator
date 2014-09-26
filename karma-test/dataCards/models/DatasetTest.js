@@ -98,4 +98,49 @@ describe("Dataset model", function() {
     def.resolve(serializedBlob);
     _$rootScope.$digest();
   });
+
+  it('should distinguish between system and non-system columns', function(done) {
+    var fakeColumns = [
+      {
+        title: 'title',
+        name: 'normal_column',
+        logicalDatatype: 'category',
+        physicalDatatype: 'number',
+        importance: 1
+      },
+      {
+        title: 'title',
+        name: ':system_column',
+        logicalDatatype: 'category',
+        physicalDatatype: 'number',
+        importance: 1
+      },
+      {
+        title: 'title',
+        name: 'still_a_:normal_column:',
+        logicalDatatype: 'category',
+        physicalDatatype: 'number',
+        importance: 1
+      }
+    ];
+    var serializedBlob = $.extend({}, minimalBlob, { "columns": fakeColumns });
+
+    var def =_$q.defer();
+    MockDataService.getBaseInfo = function(id) {
+      return def.promise;
+    };
+
+    var instance = new _Dataset('fake-data');
+    instance.observe('columns').subscribe(function(columns) {
+      if (!_.isEmpty(columns)) {
+        expect(columns['normal_column'].isSystemColumn).to.be.false;
+        expect(columns[':system_column'].isSystemColumn).to.be.true;
+        expect(columns['still_a_:normal_column:'].isSystemColumn).to.be.false;
+        done();
+      }
+    });
+
+    def.resolve(serializedBlob);
+    _$rootScope.$digest();
+  });
 });

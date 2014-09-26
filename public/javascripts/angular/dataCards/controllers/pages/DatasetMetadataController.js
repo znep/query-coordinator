@@ -16,9 +16,11 @@
     }));
     $scope.bindObservable('datasetDescription', dataset.observe('description'));
     $scope.bindObservable('datasetColumns', dataset.observe('columns').map(function(columnsHash) {
-      // Both convert the hash (column name -> column details) to an array of column details,
-      // and remove the hack table column.
-      return _.reject(columnsHash, _.property('fakeColumnGeneratedByFrontEnd'));
+      // Convert the hash (column name -> column details) to an array of column details,
+      // and remove system and the hack table column.
+      return _.reject(columnsHash, function(column) {
+        return column.fakeColumnGeneratedByFrontEnd || column.isSystemColumn;
+      });
     }));
   };
 

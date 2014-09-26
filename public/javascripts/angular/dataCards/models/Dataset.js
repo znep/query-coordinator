@@ -102,11 +102,18 @@ angular.module('dataCards.models').factory('Dataset', function(ModelHelper, Mode
       });
 
       self.defineObservableProperty('columns', {}, function() {
+        function isSystemColumn (column) {
+          // A column is a system column if its name starts with a :.
+          // Note that as of 9/26/2014, computed columns don't adhere to this
+          // standard. This will be addressed in the backend.
+          return column.name[0] === ':';
+        };
         // Columns are provided as an array of objects.
         // For ease of use, transform it into an object where
         // the keys are the column names.
         return baseInfoPromise().then(function(data) {
           return _.reduce(data.columns, function(acc, column) {
+            column.isSystemColumn = isSystemColumn(column);
             acc[column.name] = column;
             return acc;
           }, {});

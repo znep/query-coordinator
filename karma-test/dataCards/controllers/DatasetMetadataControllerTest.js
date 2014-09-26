@@ -123,5 +123,34 @@ describe('DatasetMetadataController', function() {
       expect(scope.datasetColumns).to.be.an.array;
       expect(scope.datasetColumns).to.deep.equal([ columnsBlob[0] ]);
     });
+
+    it('should not include system columns', function() {
+      var columnsBlob = [
+        {
+          title: 'fake column title',
+          name: 'fake_column',
+          logicalDatatype: 'category',
+          physicalDatatype: 'number',
+          importance: 1
+        },
+        {
+          title: 'sys',
+          name: ':sys_column',
+          logicalDatatype: 'category',
+          physicalDatatype: 'number',
+          importance: 1
+        }
+      ];
+
+      var controllerHarness = makeController();
+
+      var controller = controllerHarness.controller;
+      var scope = controllerHarness.scope;
+      controllerHarness.baseInfoPromise.resolve($.extend({}, datasetBlob, { columns: columnsBlob }));
+      $rootScope.$digest();
+
+      expect(scope.datasetColumns).to.be.an.array;
+      expect(scope.datasetColumns).to.deep.equal([ columnsBlob[0] ]);
+    });
   });
 });

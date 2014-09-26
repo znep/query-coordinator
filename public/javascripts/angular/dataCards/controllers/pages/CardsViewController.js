@@ -25,6 +25,15 @@
       return moment(date).fromNow();
     }));
 
+    $scope.bindObservable('sourceDatasetName', page.observe('dataset').observeOnLatest('name'));
+
+    $scope.bindObservable('sourceDatasetURL',
+      page.observe('datasetId').map(function(datasetId) {
+//        return '/ux/{0}'.format(datasetId);
+//        TODO return the actual URL when the corresponding ticket is completed
+        return '#';
+      })
+    );
 
     /***************
     * User session *
@@ -176,7 +185,7 @@
         } else {
           throw new Error('Cannot apply filter of unsupported type "' + filter + '".');
         }
-      };
+      }
 
       function humanReadableOperand(filter) {
         if (filter instanceof Filter.BinaryOperatorFilter) {
@@ -192,7 +201,7 @@
         } else {
           throw new Error('Cannot apply filter of unsupported type "' + filter + '".');
         }
-      };
+      }
 
       return _.reduce(filters, function(accumulator, appliedFilters, fieldName) {
         if ($.isPresent(appliedFilters)) {
@@ -279,7 +288,6 @@
       return $scope.hasChanges ? '<div class="flyout-title">Click to save your changes as a new view</div>'
                                : '<div class="flyout-title">No changes to be saved</div>';
     });
-
 
     /******************************************
     * Clean up if/when the scope is destroyed *

@@ -44,7 +44,7 @@ angular.module('dataCards.models').factory('Card', function($injector, ModelHelp
       var serialized = this._super();
       serialized.fieldName = this.fieldName;
       return serialized;
-    },
+    }
   });
 
   Card.deserialize = function(page, blob) {

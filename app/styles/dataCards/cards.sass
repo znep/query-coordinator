@@ -60,21 +60,19 @@ body.state-view-cards
       padding-right: $metadata-side-padding / 2
       text-align: right
 
-      .metadatum-wrapper
+      .metadata
+        padding-bottom: 10px
 
-        &:first-child
-          .metadatum
-            padding-top: 20px
+      .metadatum-wrapper
 
         &:last-child
           .metadatum
             margin-bottom: 10px
 
         .metadatum
-          padding: 10px 0
+          padding: 10px 0 0 10px
           white-space: nowrap
           overflow: hidden
-          margin: 10px 0
           width: 100%
 
           span
@@ -83,10 +81,18 @@ body.state-view-cards
               text-transform: uppercase
               padding-right: 0.3em
 
-            &.value
+            &.value, &.value a
               text-transform: capitalize
               font-weight: bold
               color: $aqua-font-color
+
+            &.value.source-dataset-name
+              max-width: 15rem
+              display: inline-block
+
+              & .content
+                position: relative
+                top: 3px
 
       .action-btn
         display: inline-block

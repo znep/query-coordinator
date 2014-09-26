@@ -9,7 +9,7 @@
 //
 // Example:
 // <div multiline-ellipsis max-lines="2" tolerance="2" show-more-mode="expand-link" text="{{large_multi_line_content}}"></div>
-angular.module('dataCards.directives').directive('multilineEllipsis', function($q, AngularRxExtensions) {
+angular.module('dataCards.directives').directive('multilineEllipsis', function($q, AngularRxExtensions, FlyoutService) {
   return {
     scope: {
       'maxLines': '@',
@@ -21,16 +21,23 @@ angular.module('dataCards.directives').directive('multilineEllipsis', function($
     template: '<div class="content" title="{{contentTitleAttr}}"></div>' +
       '<div ng-if="showMoreMode == \'expand-link\'" class="show-more" ng-class="{less: expanded, clamped: textClamped}" ng-click="$parent.expanded = !expanded"><span class="show-more-arrow"></span></div>',
     restrict : 'A',
+
     link: function($scope, element, attrs) {
+      var content = element.find('.content');
+      var contentFlyoutClass;
+
       AngularRxExtensions.install($scope);
 
       $scope.showMoreMode = attrs['showMoreMode'] || 'expand-link';
 
-      var content = element.find('.content');
+      if ($scope.showMoreMode === 'flyout') {
+        contentFlyoutClass = _.uniqueId('multiline-ellipsis-flyout-');
+        content.addClass(contentFlyoutClass);
+      }
 
       // Hello! My name is col. hack! (P.S. 16px * 1.5 == 24px)
       var lineHeight = function() {
-        return parseInt(element.css('line-height') === 'normal' ? '24px' : element.css('line-height'));
+        return parseInt(element.css('line-height') === 'normal' ? '24px' : element.css('line-height'), 10);
       };
 
       $scope.toggleExpanded = function() {
@@ -57,7 +64,7 @@ angular.module('dataCards.directives').directive('multilineEllipsis', function($
           always: function() { defer.resolve(); }
         });
         return defer.promise;
-      };
+      }
 
       // Cancels any running height animation and allows the content
       // to return to its natural height.
@@ -65,7 +72,17 @@ angular.module('dataCards.directives').directive('multilineEllipsis', function($
         animationRunning = false;
         content.stop();
         content.css('max-height', 'none');
-      };
+      }
+
+      if ($scope.showMoreMode === 'flyout') {
+        FlyoutService.register(contentFlyoutClass, function() {
+          if (content.triggerHandler('isTruncated')) {
+            return '<div class="flyout-title">{0}</div>'.format($scope.text);
+          } else {
+            return undefined;
+          }
+        });
+      }
 
       // We _could_ support maintaining the height animation if these are changed
       // while animating, but I value my sanity more.
@@ -76,7 +93,7 @@ angular.module('dataCards.directives').directive('multilineEllipsis', function($
         $scope.observe('maxLines'),
         $scope.observe('tolerance'),
         $scope.observe('expanded')
-        ).subscribe(resetHeightAnimation);
+      ).subscribe(resetHeightAnimation);
 
       Rx.Observable.subscribeLatest(
         element.observeDimensions(),
@@ -139,7 +156,7 @@ angular.module('dataCards.directives').directive('multilineEllipsis', function($
             var currentExpandedHeight = content.height();
             var targetCollapsedHeight = lineHeight() * maxLines;
             var currentlyTruncated = content.triggerHandler('isTruncated');
-            var wouldBeTruncated = targetCollapsedHeight < currentExpandedHeight - tolerance; 
+            var wouldBeTruncated = targetCollapsedHeight < currentExpandedHeight - tolerance;
             var needsAnimation = !currentlyTruncated && wouldBeTruncated;
 
             function applyEllipsis() {
@@ -147,9 +164,9 @@ angular.module('dataCards.directives').directive('multilineEllipsis', function($
                 height: targetCollapsedHeight,
                 tolerance: tolerance
               });
-            };
+            }
 
-            if(needsAnimation) {
+            if (needsAnimation) {
               // If needed, force the UI to still show the expand button while animating.
               // See definition of this var for details.
               forceReportAsClamped = wouldBeTruncated;
@@ -165,6 +182,7 @@ angular.module('dataCards.directives').directive('multilineEllipsis', function($
           }
 
           var isClamped = forceReportAsClamped || content.triggerHandler('isTruncated');
+
           $scope.safeApply(function() {
             $scope.textClamped = isClamped;
             $scope.contentTitleAttr = ($scope.showMoreMode === 'title-attr' && isClamped) ? text : null;

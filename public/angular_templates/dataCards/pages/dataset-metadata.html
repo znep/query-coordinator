@@ -26,6 +26,7 @@
         <div ng-repeat="datasetColumn in datasetColumns"
           class="dataset-column">
           <h2>{{datasetColumn.title || datasetColumn.name}}</h2>
+          <div>{{datasetColumn.description | escapeHtml | singleNewlinesToDoubleNewlines | linkifyUrls}}</div>
           <hr ng-if="!$last"></hr>
         </div>
       </div>

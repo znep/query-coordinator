@@ -20,3 +20,6 @@ karma-test/coverage-reports
 /node_modules/phantomjs/
 /node_modules/karma-browserstack-launcher/node_modules/browserstacktunnel-wrapper/bin
 .sass-cache
+dev-server/logs
+dev-server/*.pid
+

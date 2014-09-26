@@ -15,6 +15,11 @@
       return _.isUndefined(name) ? 'Untitled' : name;
     }));
     $scope.bindObservable('datasetDescription', dataset.observe('description'));
+    $scope.bindObservable('datasetColumns', dataset.observe('columns').map(function(columnsHash) {
+      // Both convert the hash (column name -> column details) to an array of column details,
+      // and remove the hack table column.
+      return _.reject(columnsHash, _.property('fakeColumnGeneratedByFrontEnd'));
+    }));
   };
 
   angular.

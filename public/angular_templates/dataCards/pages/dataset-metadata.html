@@ -20,5 +20,15 @@
         <div btf-markdown="datasetDescription | escapeHtml | singleNewlinesToDoubleNewlines | linkifyUrls"></div>
       </div>
     </div>
+    <div class="dataset-column-metadata row">
+      <div class="span12 dataset-columns">
+        <h1>Columns in this Dataset</h1>
+        <div ng-repeat="datasetColumn in datasetColumns"
+          class="dataset-column">
+          <h2>{{datasetColumn.title || datasetColumn.name}}</h2>
+          <hr ng-if="!$last"></hr>
+        </div>
+      </div>
+    </div>
   </div>
 </div>

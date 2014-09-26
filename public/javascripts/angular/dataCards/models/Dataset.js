@@ -87,7 +87,8 @@ angular.module('dataCards.models').factory('Dataset', function(ModelHelper, Mode
             "description": "",
             "logicalDatatype": "*",
             "physicalDatatype": "*",
-            "importance": 1
+            "importance": 1,
+            "fakeColumnGeneratedByFrontEnd": true //TODO move away from this hack. The table isn't optional anymore.
           });
           return blob;
         });

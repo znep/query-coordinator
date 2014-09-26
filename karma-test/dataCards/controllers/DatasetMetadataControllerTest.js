@@ -3,6 +3,7 @@ describe('DatasetMetadataController', function() {
   var $q;
   var $rootScope;
   var $controller;
+  var Model;
   var mockDatasetDataService = {
     getBaseInfo: function() {
       return $q.when({
@@ -34,6 +35,7 @@ describe('DatasetMetadataController', function() {
     $q = $injector.get('$q');
     $rootScope = $injector.get('$rootScope');
     $controller = $injector.get('$controller');
+    Model = $injector.get('Model');
   }));
 
   function makeController() {
@@ -85,6 +87,41 @@ describe('DatasetMetadataController', function() {
 
       controllerHarness.dataset.set('name', name2);
       expect(scope.datasetName).to.equal(name2);
+    });
+  });
+
+  describe('dataset columns', function() {
+
+    var columnsBlob = [
+      {
+        title: 'fake column title',
+        name: 'fake_column',
+        logicalDatatype: 'category',
+        physicalDatatype: 'number',
+        importance: 1
+      }
+    ];
+
+    var datasetBlob = {
+      id: 'fake-fbfr',
+      name: 'fake dataset name',
+      rowDisplayUnit: 'rdu',
+      defaultAggregateColumn: 'foo',
+      ownerId: 'fake-user',
+      updatedAt: moment().toISOString(),
+      columns: columnsBlob
+    };
+
+    it('should only include the real columns', function() {
+      var controllerHarness = makeController();
+
+      var controller = controllerHarness.controller;
+      var scope = controllerHarness.scope;
+      controllerHarness.baseInfoPromise.resolve($.extend({}, datasetBlob));
+      $rootScope.$digest();
+
+      expect(scope.datasetColumns).to.be.an.array;
+      expect(scope.datasetColumns).to.deep.equal([ columnsBlob[0] ]);
     });
   });
 });

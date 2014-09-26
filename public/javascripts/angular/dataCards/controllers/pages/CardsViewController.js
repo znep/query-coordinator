@@ -29,9 +29,7 @@
 
     $scope.bindObservable('sourceDatasetURL',
       page.observe('datasetId').map(function(datasetId) {
-//        return '/ux/{0}'.format(datasetId);
-//        TODO return the actual URL when the corresponding ticket is completed
-        return '#';
+        return '/ux/dataset/{0}'.format(datasetId);
       })
     );
 

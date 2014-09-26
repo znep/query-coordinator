@@ -13,7 +13,7 @@
       {
         "version": "11",
         "os": { "name": "windows", "version": "8.1" },
-        "critical": true
+        "critical": false
       }
     ],
     "safari": [
@@ -69,7 +69,7 @@
     {
       "version": "31",
       "os": { "name": "osx", "version": "lion" },
-      "critical": true
+      "critical": false
     },
     {
       "version": "30",

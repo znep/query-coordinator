@@ -24,30 +24,38 @@
         Assert(!whereClauseFragment || _.isString(whereClauseFragment), 'whereClauseFragment should be a string if present.');
 
         datasetId = DeveloperOverrides.dataOverrideForDataset(datasetId) || datasetId;
+
         var whereClause;
+
         if (_.isEmpty(whereClauseFragment)) {
           whereClause = '';
         } else {
           whereClause = 'where ' + whereClauseFragment;
         }
+
         fieldName = SoqlHelpers.replaceHyphensWithUnderscores(fieldName);
+
         // TODO: Implement some method for paging/showing data that has been truncated.
         var url = '/api/id/{1}.json?$query=select {0} as name, count(*) as value {2} group by {0} order by count(*) desc limit 200'.format(fieldName, datasetId, whereClause);
         var config = httpConfig.call(this);
+
         return http.get(url, config).then(function(response) {
           return _.map(response.data, function(item) {
             return { name: item.name, value: parseFloat(item.value) };
           });
         });
       },
+
       getTimelineDomain: function(fieldName, datasetId) {
         Assert(_.isString(fieldName), 'fieldName should be a string');
         Assert(_.isString(datasetId), 'datasetId should be a string');
 
         datasetId = DeveloperOverrides.dataOverrideForDataset(datasetId) || datasetId;
         fieldName = SoqlHelpers.replaceHyphensWithUnderscores(fieldName);
+
         var url = '/api/id/{1}.json?$query=SELECT min({0}) as start, max({0}) as end'.format(fieldName, datasetId);
         var config =  httpConfig.call(this);
+
         return http.get(url, config).then(function(response) {
           if (_.isEmpty(response.data)) {
             return $q.reject('Empty response from SODA.');
@@ -68,6 +76,7 @@
           }
         });
       },
+
       getTimelineData: function(fieldName, datasetId, whereClauseFragment, precision) {
         Assert(_.isString(fieldName), 'fieldName should be a string');
         Assert(_.isString(datasetId), 'datasetId should be a string');

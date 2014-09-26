@@ -3,9 +3,13 @@ class PhidippidesPagesController < ActionController::Base
   include Phidippides
 
   before_filter :hook_auth_controller
+
   helper :all # include all helpers, all the time
+
   helper_method :current_user
   helper_method :current_user_session
+
+  hide_action :current_user, :current_user_session
 
   def index
     render :nothing => true, :status => 403
@@ -58,16 +62,15 @@ class PhidippidesPagesController < ActionController::Base
     render :nothing => true, :status => 403
   end
 
-  hide_action :current_user, :current_user_session
   def current_user
     @current_user ||= current_user_session ? current_user_session.user : nil
   end
 
   def basic_auth
-    authenticate_with_http_basic { |u, p|
+    authenticate_with_http_basic do |u, p|
       user_session = UserSession.new('login' => u, 'password' => p)
       user_session.save
-    }
+    end
   end
 
   def current_user_session
@@ -79,6 +82,7 @@ class PhidippidesPagesController < ActionController::Base
   end
 
   private
+
   def hook_auth_controller
     UserSession.controller = self
   end

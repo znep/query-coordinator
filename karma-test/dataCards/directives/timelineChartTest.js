@@ -43,16 +43,17 @@ describe('timelineChart', function() {
     removeTimelineChart();
   });
 
-  var createNewTimelineChart = function(width, expanded, showFiltered) {
-    removeTimelineChart();
-
+  var createNewTimelineChart = function(width, expanded, showFiltered, moreScope) {
     var html =
       '<div class="card-visualization" style="width: ' + width + 'px; height: 480px;overflow:hidden;">' +
         '<div timeline-chart class="timeline-chart"' +
-          ' chart-data="testData" show-filtered="showFiltered" expanded="expanded" precision="precision">' +
+          ' chart-data="testData" show-filtered="showFiltered" expanded="expanded" precision="precision" filters="filters">' +
         '</div>' +
       '</div>';
     var childScope = scope.$new();
+    if (moreScope) {
+      $.extend(childScope, moreScope);
+    }
     var elem = angular.element(html);
 
     $('body').append('<div id="timelineChartTest"></div>');
@@ -79,6 +80,7 @@ describe('timelineChart', function() {
 
   var getOrCreateChartScenario = function(type) {
     if (activeChartScenario !== type) {
+      removeTimelineChart();
       switch(type) {
         case '640px unexpanded unfiltered': activeChart = createNewTimelineChart(640, false, false); break;
         case '300px unexpanded unfiltered': activeChart = createNewTimelineChart(300, false, false); break;
@@ -242,6 +244,15 @@ describe('timelineChart', function() {
       });
     });
 
+    describe('during a selection', function() {
+      it('should dim the labels', function() {
+        var chart = getOrCreateChartScenario('640px unexpanded filtered');
+        var segment = chart.element.find('g.segment').eq(1);
+        segment.mousedown().mousemove();
+        expect(chart.element.find('.selecting').length).to.equal(1);
+      });
+    });
+
     describe('range label', function() {
       it('should be created when a segment is clicked', function() {
         var chart = getOrCreateChartScenario('640px unexpanded filtered');
@@ -396,7 +407,6 @@ describe('timelineChart', function() {
         $('.label.highlighted').mousedown().mouseup();
         expect(filterCleared).to.equal(true, 'should have recieved the filter-cleared event.');
       });
-
       it('should be able to select a sub-selection', function() {
         var segment = chart.element.find('.label').eq(1);
         segment.mousedown().mousemove().mouseup();
@@ -405,6 +415,65 @@ describe('timelineChart', function() {
         chart.element.find('g.segment.highlighted').eq(0).mousedown().mousemove().mouseup();
         expect(chart.element.find('.label.highlighted').length).to.equal(1);
         expect(chart.element.find('g.segment.highlighted').length).to.equal(1);
+      });
+
+      describe('when existing onload', function() {
+        var chart;
+        beforeEach(function() {
+          removeAllScenarioCharts();
+          chart = createNewTimelineChart(640, false, true, {
+            // Add a filter
+            filters: [{
+              start: testData[Math.floor(.2 * testData.length)].date,
+              end: testData[Math.ceil(.8 * testData.length)].date
+            }]
+          });
+        });
+        afterEach(function() {
+          removeAllScenarioCharts();
+        });
+        it('should start out highlighted', function() {
+          expect(chart.element.find('g.draghandle').length).to.equal(2);
+          expect(chart.element.find('g.segment.highlighted').length).to.be.above(0);
+          expect(chart.element.find('.label.highlighted').length).to.equal(1);
+        });
+        it('should dim the labels', function() {
+          var labels = chart.element.find('.labels.dim');
+          expect(labels.length).to.equal(1);
+        });
+      });
+    });
+
+    describe('multiple timeline charts', function() {
+      var chart1;
+      var chart2;
+      beforeEach(function() {
+        chart1 = createNewTimelineChart(640, false, false);
+        chart2 = createNewTimelineChart(640, false, false);
+      });
+      it('should keep separate selections', function() {
+        var range1 = {start: 1, end: 5};
+        var range2 = {start:2, end: 7};
+        // Select the first range
+        chart1.element.find('g.segment').eq(range1.start).
+          mousedown().mousemove().
+          end().eq(range1.end).
+          mousemove().mouseup();
+        // select the second
+        chart2.element.find('g.segment').eq(range2.start).
+          mousedown().mousemove().
+          end().eq(range2.end).
+          mousemove().mouseup();
+
+        expect(chart1.element.find('g.draghandle').length).to.equal(2);
+        var highlightedSegments = chart1.element.find('g.segment.highlighted');
+        expect(highlightedSegments.length).to.equal(1 + range1.end - range1.start);
+        expect(highlightedSegments.eq(0).index()).to.equal(range1.start);
+
+        expect(chart2.element.find('g.draghandle').length).to.equal(2);
+        var highlightedSegments = chart2.element.find('g.segment.highlighted');
+        expect(highlightedSegments.length).to.equal(1 + range2.end - range2.start);
+        expect(highlightedSegments.eq(0).index()).to.equal(range2.start);
       });
     });
 

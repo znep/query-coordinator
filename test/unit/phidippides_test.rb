@@ -41,6 +41,18 @@ class PhidippidesTest < Test::Unit::TestCase
     refute(@mock_request['X-Socrata-RequestId'])
   end
 
+  def test_includes_cookies_when_present
+    prepare_stubs(:body => pages_for_dataset, :path => 'datasets/four-four/pages', :verb => :get)
+    phidippides.fetch_pages_for_dataset('four-four', :cookies => 'some cookies')
+    assert_equal('some cookies', @mock_request['Cookie'])
+  end
+
+  def test_does_not_include_cookies_when_absent
+    prepare_stubs(:body => pages_for_dataset, :path => 'datasets/four-four/pages', :verb => :get)
+    phidippides.fetch_pages_for_dataset('four-four')
+    refute(@mock_request['Cookie'])
+  end
+
   def test_fetch_page_metadata
     prepare_stubs(:body => page_metadata, :path => 'datasets/four-four', :verb => :get)
     result = phidippides.issue_phidippides_request(:verb => :get, :path => 'datasets/four-four', :request_id => 'request_id')

@@ -1,6 +1,7 @@
 require 'test_helper'
 
 class PhidippidesDatasetsControllerTest < ActionController::TestCase
+  include Phidippides
 
   def setup
     CurrentDomain.stubs(:domain => stub(cname: 'localhost'))

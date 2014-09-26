@@ -16,7 +16,7 @@ class PhidippidesDatasetsController < ActionController::Base
 
     respond_to do |format|
       begin
-        result = fetch_pages_for_dataset(params[:id], :request_id => request_id)
+        result = fetch_pages_for_dataset(params[:id], :request_id => request_id, :cookies => forwardable_session_cookies)
         format.json { render :json => result[:body], :status => result[:status] }
       rescue ConnectionError
         format.json { render :json => { body: 'Phidippides connection error' }, status: 500 }
@@ -29,7 +29,7 @@ class PhidippidesDatasetsController < ActionController::Base
 
     respond_to do |format|
       begin
-        result = fetch_dataset_metadata(params[:id], :request_id => request_id)
+        result = fetch_dataset_metadata(params[:id], :request_id => request_id, :cookies => forwardable_session_cookies)
         format.json { render :json => result[:body], :status => result[:status] }
       rescue ConnectionError
         format.json { render :json => { body: 'Phidippides connection error' }, status: 500 }
@@ -44,7 +44,7 @@ class PhidippidesDatasetsController < ActionController::Base
 
     respond_to do |format|
       begin
-        result = create_dataset_metadata(JSON.parse(params[:datasetMetadata]), :request_id => request_id)
+        result = create_dataset_metadata(JSON.parse(params[:datasetMetadata]), :request_id => request_id, :cookies => forwardable_session_cookies)
         format.json { render :json => result[:body], :status => result[:status] }
       rescue ConnectionError
         format.json { render :json => { body: 'Phidippides connection error' }, status: 500 }
@@ -59,7 +59,7 @@ class PhidippidesDatasetsController < ActionController::Base
 
     respond_to do |format|
       begin
-        result = update_dataset_metadata(params[:id], :data => JSON.parse(params[:datasetMetadata]), :request_id => request_id)
+        result = update_dataset_metadata(params[:id], :data => JSON.parse(params[:datasetMetadata]), :request_id => request_id, :cookies => forwardable_session_cookies)
         format.json { render :json => result[:body], :status => result[:status] }
       rescue ConnectionError
         format.json { render :json => { body: 'Phidippides connection error' }, status: 500 }

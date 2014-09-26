@@ -40,33 +40,33 @@ module Phidippides
   end
 
   def fetch_pages_for_dataset(dataset_id, options = {})
-    issue_phidippides_request(:verb => :get, :path => "datasets/#{dataset_id}/pages", :request_id => options[:request_id])
+    issue_phidippides_request(:verb => :get, :path => "datasets/#{dataset_id}/pages", :request_id => options[:request_id], :cookies => options[:cookies])
   end
 
   def fetch_page_metadata(page_id, options = {})
-    issue_phidippides_request(:verb => :get, :path => "pages/#{page_id}", :request_id => options[:request_id])
+    issue_phidippides_request(:verb => :get, :path => "pages/#{page_id}", :request_id => options[:request_id], :cookies => options[:cookies])
   end
 
   def create_page_metadata(data, options = {})
     raise ArgumentError unless data.key?('datasetId')
-    issue_phidippides_request(:verb => :post, :path => 'pages', :data => data, :request_id => options[:request_id])
+    issue_phidippides_request(:verb => :post, :path => 'pages', :data => data, :request_id => options[:request_id], :cookies => options[:cookies])
   end
 
   def update_page_metadata(page_id, options = {})
-    issue_phidippides_request(:verb => :put, :path => "pages/#{page_id}", :data => options[:data], :request_id => options[:request_id])
+    issue_phidippides_request(:verb => :put, :path => "pages/#{page_id}", :data => options[:data], :request_id => options[:request_id], :cookies => options[:cookies])
   end
 
   def fetch_dataset_metadata(dataset_id, options = {})
-    issue_phidippides_request(:verb => :get, :path => "datasets/#{dataset_id}", :request_id => options[:request_id])
+    issue_phidippides_request(:verb => :get, :path => "datasets/#{dataset_id}", :request_id => options[:request_id], :cookies => options[:cookies])
   end
 
   def create_dataset_metadata(data, options = {})
     raise ArgumentError unless data.key?('id')
-    issue_phidippides_request(:verb => :post, :path => 'datasets', :data => data, :request_id => options[:request_id])
+    issue_phidippides_request(:verb => :post, :path => 'datasets', :data => data, :request_id => options[:request_id], :cookies => options[:cookies])
   end
 
   def update_dataset_metadata(dataset_id, options = {})
-    issue_phidippides_request(:verb => :put, :path => "datasets/#{dataset_id}", :data => options[:data], :request_id => options[:request_id])
+    issue_phidippides_request(:verb => :put, :path => "datasets/#{dataset_id}", :data => options[:data], :request_id => options[:request_id], :cookies => options[:cookies])
   end
 
   def issue_phidippides_request(options)
@@ -87,7 +87,7 @@ module Phidippides
     request['X-Socrata-Host'] = CurrentDomain.domain.cname
     request['X-Socrata-Wink'] = 'iAmASocrataEmployee'
     request['X-Socrata-RequestId'] = options[:request_id] if options[:request_id].present?
-
+    request['Cookie'] = options[:cookies] if options[:cookies].present?
     Rails.logger.debug("X-Socrata-Host is #{CurrentDomain.domain.cname}")
 
     begin
@@ -121,6 +121,17 @@ module Phidippides
 
   def request_id
     request.headers['X-Socrata-RequestId'] || request.headers['action_dispatch.request_id']
+  end
+
+  def forwardable_session_cookies
+    # select only the cookies that interest us
+    valid_cookies = ["logged_in", "socrata-csrf-token", "_socrata_session_id", "_core_session_id"]
+    session_cookies = valid_cookies.map do |key|
+      value=cookies[key]
+      "#{key}=#{value}" unless value.nil?
+    end
+    session_cookies=session_cookies.compact
+    session_cookies.join("; ") if session_cookies.any?
   end
 
 end

@@ -14,7 +14,7 @@ class PhidippidesPagesController < ActionController::Base
   def show
     respond_to do |format|
       begin
-        result = fetch_page_metadata(params[:id], :request_id => request_id)
+        result = fetch_page_metadata(params[:id], :request_id => request_id, :cookies => forwardable_session_cookies)
         format.json { render :json => result[:body], :status => result[:status] }
       rescue ConnectionError
         format.json { render :json => { body: 'Phidippides connection error' }, status: 500 }
@@ -29,7 +29,7 @@ class PhidippidesPagesController < ActionController::Base
 
     respond_to do |format|
       begin
-        result = create_page_metadata(JSON.parse(params[:pageMetadata]), :request_id => request_id)
+        result = create_page_metadata(JSON.parse(params[:pageMetadata]), :request_id => request_id, :cookies => forwardable_session_cookies)
         format.json { render :json => result[:body], :status => result[:status] }
       rescue ConnectionError
         format.json { render :json => { body: 'Phidippides connection error' }, status: 500 }
@@ -46,7 +46,7 @@ class PhidippidesPagesController < ActionController::Base
 
     respond_to do |format|
       begin
-        result = update_page_metadata(params[:id], :data => JSON.parse(params[:pageMetadata]), :request_id => request_id)
+        result = update_page_metadata(params[:id], :data => JSON.parse(params[:pageMetadata]), :request_id => request_id, :cookies => forwardable_session_cookies)
         format.json { render :json => result[:body], :status => result[:status] }
       rescue ConnectionError
         format.json { render :json => { body: 'Phidippides connection error' }, status: 500 }

@@ -9,9 +9,12 @@ $tool-panel-z-index: 1004
 .tool-panel
   display: inline-block
   position: relative
+
   .tool-panel-main
+
     &.active
       display: block
+
     position: absolute
     display: none
     margin-top: $tool-panel-hint-size / 2
@@ -23,6 +26,7 @@ $tool-panel-z-index: 1004
     z-index: $tool-panel-z-index
     width: $tool-panel-width
     border: solid 1px $tool-panel-border-color
+
   .tool-panel-hint
     position: absolute
     right: -1px
@@ -59,6 +63,9 @@ $tool-panel-z-index: 1004
 
   textarea.form-control
     height: auto
+
+  textarea.no-resize
+    resize: none
 
   .tool-panel-btn.action-btn
     width: auto

@@ -1,13 +1,11 @@
 @import dataCards/common/colors
 @import dataCards/common/layout
+@import dataCards/action-button
 @import dataCards/tool-panel
 
 $metadata-top-padding: 7px
 $metadata-side-padding: 30px
 $filter-height: 58px
-$action-btn-min-width: 40px
-$action-btn-padding-top: 7px
-$action-btn-padding-left: 18px
 // api panel sizes
 $api-panel-width: 512px
 $api-panel-hint-width: 20px
@@ -93,45 +91,6 @@ body.state-view-cards
               & .content
                 position: relative
                 top: 3px
-
-      .action-btn
-        display: inline-block
-        padding: $action-btn-padding-top $action-btn-padding-left
-        border-radius: $rounded-corners-border-radius
-        border: solid 2px $btn-border-color
-        background-color: $btn-bg-color
-        margin: 0 0 10px 10px
-        color: $aqua-font-color
-        min-width: $action-btn-min-width
-        text-align: center
-        font-size: 1em
-        font-weight: bold
-        cursor: pointer
-
-        &.l-to-r
-          margin: 0 10px 10px 0
-
-        &.r-to-l
-          margin: 0 0 10px 10px
-
-        &:hover, &.active
-          background-color: $btn-hover-bg-color
-          border: solid 2px $btn-hover-border-color
-          color: $btn-hover-font-color
-
-        &.disabled
-          background-color: $btn-disabled-bg-color
-          border: solid 2px $btn-disabled-border-color
-          color: $btn-disabled-font-color
-          cursor: default
-
-        &:focus
-          outline: none
-
-        &.touched
-          background-color: $btn-touched-bg-color
-          border: solid 2px $btn-touched-border-color
-          color: $btn-touched-font-color
 
     #api-panel
       position: absolute

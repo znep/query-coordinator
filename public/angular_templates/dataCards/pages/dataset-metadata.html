@@ -27,7 +27,7 @@
           class="dataset-column">
           <h2>{{datasetColumn.title || datasetColumn.name}}</h2>
           <div btf-markdown="datasetColumn.description | escapeHtml | singleNewlinesToDoubleNewlines | linkifyUrls"></div>
-          <hr ng-if="!$last"></hr>
+          <hr ng-if="!$last" />
         </div>
       </div>
     </div>

@@ -3,7 +3,6 @@ describe('DatasetMetadataController', function() {
   var $q;
   var $rootScope;
   var $controller;
-  var Model;
   var mockDatasetDataService = {
     getBaseInfo: function() {
       return $q.when({
@@ -35,7 +34,6 @@ describe('DatasetMetadataController', function() {
     $q = $injector.get('$q');
     $rootScope = $injector.get('$rootScope');
     $controller = $injector.get('$controller');
-    Model = $injector.get('Model');
   }));
 
   function makeController() {

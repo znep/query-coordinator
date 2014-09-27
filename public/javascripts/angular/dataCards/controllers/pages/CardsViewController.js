@@ -45,11 +45,9 @@
       _.constant(null)
     );
 
-
-    /*****************
-    * API panel junk *
-    *****************/
-
+    /**
+     * CSV download Button
+     */
     $scope.bindObservable('datasetCSVDownloadURL',
       page.observe('dataset').map(function(dataset) {
         if (dataset && dataset.hasOwnProperty('id')) {
@@ -58,84 +56,6 @@
           return '#';
         }
       }));
-
-    $scope.bindObservable('datasetAPIURL', Rx.Observable.combineLatest(
-      page.observe('dataset').map(function(dataset) { if (dataset) { return dataset.id; } else { return null; } }),
-      page.observe('dataset').observeOnLatest('domain').map(function(domain) { if (domain) { return domain; } else { return null; } }),
-      function(datasetId, domain) {
-        if ($.isPresent(datasetId) && $.isPresent(domain)) {
-          return 'https://{0}/resource/{1}.json'.format(domain, datasetId);
-        } else {
-          return '#';
-        }
-      }));
-
-    $scope.bindObservable('datasetDocumentationURL',Rx.Observable.combineLatest(
-      page.observe('dataset').map(function(dataset) { if (dataset) { return dataset.id; } else { return null; } }),
-      page.observe('dataset').observeOnLatest('domain').map(function(domain) { if (domain) { return domain; } else { return null; } }),
-      function(datasetId, domain) {
-        if ($.isPresent(datasetId) && $.isPresent(domain)) {
-          return 'http://dev.socrata.com/foundry/#/{0}/{1}'.format(domain, datasetId);
-        } else {
-          return '#';
-        }
-      }));
-
-    // Track whether or not the panel is visible in the UI.
-    $scope.apiPanelActive = false;
-
-    $('#api-panel-toggle-btn').on('click', function() {
-      $scope.$apply(function() {
-        $scope.apiPanelActive = !$scope.apiPanelActive;
-      });
-    });
-
-    /* Handle selection of the API endpoint URL in the API panel */
-
-    // Don't include this in scope! It either won't work and will require an .$apply()
-    // or it will cause a bunch of digest cycles unnecessarily.
-    var mouseHasNotMovedSinceMouseDown = false;
-
-    $('#api-url-display').on('mousedown', function() {
-      mouseHasNotMovedSinceMouseDown = true;
-    });
-
-    $('#api-url-display').on('mousemove', function() {
-      mouseHasNotMovedSinceMouseDown = false;
-    });
-
-    // Also reset the mouse state on scroll so it doesn't auto-select the API url
-    // when we try to maniuplate the scroll bar.
-    $('#api-url-display').on('scroll', function() {
-      mouseHasNotMovedSinceMouseDown = false;
-    });
-
-    $('#api-url-display').on('mouseup', function() {
-      if (mouseHasNotMovedSinceMouseDown) {
-
-        var text = document.getElementById('api-url-content');
-
-        // Cater to IE...
-        if (document.body.createTextRange) {
-            var range = document.body.createTextRange();
-            range.moveToElementText(text);
-            range.select();
-        // ...or everyone else.
-        } else if (window.getSelection) {
-            var selection = window.getSelection();
-            var range = document.createRange();
-            range.selectNodeContents(text);
-            selection.removeAllRanges();
-            selection.addRange(range);
-        }
-
-      }
-    });
-
-    $('#api-url-display').on('blur', function() {
-      urlDisplayNotFocused = true;
-    });
-
 
     /*******************************
     * Filters and the where clause *

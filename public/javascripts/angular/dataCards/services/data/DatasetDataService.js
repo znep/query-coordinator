@@ -1,6 +1,6 @@
 (function() {
 
-  function DatasetDataService(http, ServerConfig) {
+  function DatasetDataService(http, Assert, ServerConfig) {
 
     function fetch(id) {
       var url = null;
@@ -22,8 +22,24 @@
     }
 
     this.getBaseInfo = function(id) {
+      Assert(_.isString(id), 'id should be a string');
       return fetch.call(this, id);
     };
+
+    this.getGeoJsonInfo = function(id, additionalConfig) {
+      Assert(_.isString(id), 'id should be a string');
+      var url = '/resource/{0}.geojson'.format(id);
+
+      var config = _.extend({
+        headers: {
+          'Accept': 'application/vnd.geo+json'
+        },
+        cache: true,
+        requester: this
+      }, additionalConfig);
+
+      return http.get(url, config);
+    }
 
     this.requesterLabel = function() {
       return 'dataset-data-service';

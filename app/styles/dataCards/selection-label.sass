@@ -1,0 +1,30 @@
+$api-panel-bg-color: #4d5968
+$api-panel-border-color: #3f4752
+$api-panel-white-font-color: #ffffff
+$api-panel-black-font-color: #000000
+$api-panel-url-textarea-bg-color: #ffffff
+
+.selection-label-outer
+  margin: 0
+  padding: 0
+  font-size: 1.1em
+  line-height: 3em
+  white-space: nowrap
+  color: $api-panel-black-font-color
+  background-color: $api-panel-url-textarea-bg-color
+  border: none
+  outline: none
+  overflow-x: scroll
+  overflow-y: hidden
+
+  .api-url-spacer
+    display: inline-block
+    width: 1em
+
+  .selection-label-inner
+    display: inline-block
+
+    &:before, &:after
+      content: ''
+      display: inline-block
+      width: 1em

@@ -43,7 +43,7 @@ describe('Flyout service', function() {
 
     var flyoutOffset = flyout.offset();
     var targetOffset = target.offset();
-    expect(flyoutOffset.top + flyout.outerHeight()).to.be.closeTo(targetOffset.top, 10);
+    expect(flyoutOffset.top + flyout.outerHeight()).to.be.closeTo(targetOffset.top, 11);
     expect(flyoutOffset.left).to.be.closeTo(targetOffset.left, 10);
 
     // Make sure it disappears too

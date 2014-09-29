@@ -70,7 +70,45 @@
       page="page"
       edit-mode="editMode"
       global-where-clause-fragment="globalWhereClauseFragment"
-      card-models="cardModels">
+      card-models="cardModels"
+      allow-add-card="!hasAllCards">
     </card-layout>
+
   </div>
 </div>
+
+<modal-dialog id="add-card-dialog">
+  <!-- Since the contents of modal-dialog are transcluded, we need to use
+       $parent[name] to access properties on the CardsViewController scope. -->
+  <h2>Add a card</h2>
+  <div class="add-card-select-column">
+    <select id="add-card-select-column-control"
+      ng-model="$parent.addCardSelectedColumnFieldName">
+      <option
+        value="null"
+        disabled="disabled"
+        ng-selected="$parent.addCardSelectedColumnFieldName === null">Choose a column...</option>
+      <option
+        value="{{column.name}}"
+        ng-disabled="!column.available"
+        ng-repeat="column in datasetColumns">{{column.name}}</option>
+    </select>
+    <div class="arrow"></div>
+  </div>
+  <div class="add-card-preview">
+    <span ng-if="$parent.addCardModel === null">Choose a column from the dropdown above to add a new card</span>
+    <div class="card-spot" ng-if="$parent.addCardModel !== null">
+      <card model="$parent.addCardModel"
+            interactive="false"
+            class="card preview"></card>
+    </div>
+  </div>
+  <div class="add-card-buttons">
+    <button type="button" class="action-btn dark r-to-l" ng-click="closeAddCardDialog()">Cancel</button>
+    <button
+      type="button"
+      class="action-btn dark r-to-l"
+      ng-class="{disabled: $parent.addCardModel === null}"
+      ng-click="addCard()">Add card</button>
+  </div>
+</modal-dialog>

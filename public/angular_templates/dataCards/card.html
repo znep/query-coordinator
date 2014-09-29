@@ -23,12 +23,13 @@
     <card-visualization-timeline-chart ng-switch-when="timeline" model="model" where-clause="whereClause"></card-visualization-timeline-chart>
     <card-visualization-choropleth ng-switch-when="choropleth" model="model" where-clause="whereClause"></card-visualization-choropleth>
     <card-visualization-table ng-switch-when="table" model="model" where-clause="whereClause"></card-visualization-table>
-    <div ng-switch-default class="mock-visualization" ng-if="cardType" >
+    <!--<div ng-switch-default class="mock-visualization" ng-if="cardType" >
       <div style="background: url(/stubs/mock-visualizations/{{cardType}}.png) no-repeat; background-size: 100%"></div>
-    </div>
+    </div>-->
   </div>
   <div class="expand-button">
-    <span ng-if="expanded" class="expand-button-target" title="Collapse Card" ng-click="toggleExpanded()"></span>
-    <span ng-if="!expanded" class="expand-button-target" title="Expand Card" ng-click="toggleExpanded()"></span>
+    <span ng-if="expanded && interactive" class="expand-button-target" title="Collapse Card" ng-click="toggleExpanded()"></span>
+    <span ng-if="!expanded && interactive" class="expand-button-target" title="Expand Card" ng-click="toggleExpanded()"></span>
   </div>
+  <div class="flypaper" ng-if="!interactive"></div>
 </div>

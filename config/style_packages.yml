@@ -24,6 +24,7 @@ angular-app-dataCards:
 - dataCards/dataset-metadata
 - dataCards/card
 - dataCards/multiline-ellipsis
+- dataCards/modal-dialog
 
 includes:
 - sass-common

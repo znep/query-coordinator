@@ -521,6 +521,10 @@
             return;
           }
 
+          if ($(element).parents('.card').hasClass('dragged')) {
+            return;
+          }
+
           featureHumanReadableName = currentFeature.properties[Constants['HUMAN_READABLE_PROPERTY_NAME']];
           value = currentFeature.properties[Constants['FILTERED_VALUE_PROPERTY_NAME']];
           unfilteredValue = currentFeature.properties[Constants['UNFILTERED_VALUE_PROPERTY_NAME']];
@@ -579,6 +583,9 @@
         false);
 
         FlyoutService.register('choropleth-legend-color', function(element) {
+          if ($(element).parents('.card').hasClass('dragged')) {
+            return;
+          }
           return '<div class="flyout-title">{0}</div>'.format(element.getAttribute('data-flyout-text'));
         },
         false,

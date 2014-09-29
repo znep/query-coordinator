@@ -14,6 +14,7 @@
   <card model="cardModel"
         class="card"
         where-clause="globalWhereClauseFragment"
+        interactive="true"
         ng-class="{ expanded: cardModel.getCurrentValue('expanded'), dragged: cardModel === grabbedCard }"></card>
   <div class="card-drop-placeholder" ng-if="cardModel === grabbedCard"></div>
   <div class="card-drag-overlay" data-card-id="{{cardModel.uniqueId}}" ng-if="editMode && cardModel !== grabbedCard">
@@ -25,3 +26,25 @@
 <div id="card-group-1-drop-placeholder" class="card-group-drop-placeholder" data-group-id="1"></div>
 <div id="card-group-2-drop-placeholder" class="card-group-drop-placeholder" data-group-id="2"></div>
 <div id="card-group-3-drop-placeholder" class="card-group-drop-placeholder" data-group-id="3"></div>
+<button
+  type="button"
+  id="add-card-button-group-1"
+  class="add-card-button action-btn dark l-to-r"
+  ng-class="{disabled: !allowAddCard}"
+  ng-show="editMode"
+  ng-click="addCard(1);">Add card here</button>
+<button
+  type="button"
+  id="add-card-button-group-2"
+  class="add-card-button action-btn dark l-to-r"
+  ng-class="{disabled: !allowAddCard}"
+  ng-show="editMode"
+  ng-click="addCard(2)">Add card here</button>
+<button
+  ng-repeat="n in [1, 2, 3]"
+  type="button"
+  id="add-card-button-group-3"
+  class="add-card-button action-btn dark l-to-r"
+  ng-class="{disabled: !allowAddCard}"
+  ng-show="editMode"
+  ng-click="addCard(3)">Add card here</button>

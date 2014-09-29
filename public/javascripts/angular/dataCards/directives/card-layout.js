@@ -8,7 +8,8 @@
         page: '=',
         editMode: '=',
         globalWhereClauseFragment: '=',
-        cardModels: '='
+        cardModels: '=',
+        allowAddCard: '='
       },
       templateUrl: '/angular_templates/dataCards/card-layout.html',
       link: function(scope, cardContainer, attrs) {
@@ -116,8 +117,8 @@
 
         var expandedCards = zipLatestArray(scope.page.observe('cards'), 'expanded').map(function(cards) {
           return _.pluck(
-              _.where(cards, _.property('expanded')),
-              'model');
+            _.where(cards, _.property('expanded')),
+            'model');
         });
 
 
@@ -128,10 +129,12 @@
           rowsOfCardsBySize,
           expandedCards,
           scope.observe('editMode'),
+          scope.observe('allowAddCard'),
           cardsMetadata.observeDimensions(),
           WindowState.windowSizeSubject,
           WindowState.scrollPositionSubject,
-          function layoutFn(sortedTileLayoutResult, expandedCards, editMode, cardsMetadataSize, windowSize, scrollTop) {
+          function layoutFn(sortedTileLayoutResult, expandedCards, editMode, allowAddCard, cardsMetadataSize, windowSize, scrollTop) {
+
             // Figure out if there is an expanded card.
             if (!_.isEmpty(expandedCards)) {
               var expandedCard = expandedCards[0];
@@ -239,12 +242,18 @@
                          + '}';
 
             } else {
+
               // Track whether or not to draw placeholder drop targets
               // for each card grouping.
               var placeholderDropTargets = [];
+
+              // Track each 'add card' button's position in the layout
+              var addCardButtons = [];
+
               var heightOfAllCards = 0;
 
               if (editMode) {
+
                 if (!sortedTileLayoutResult.hasOwnProperty('1')) {
                   sortedTileLayoutResult['1'] = [];
                 }
@@ -307,10 +316,19 @@
                   });
 
                   if (groupEmpty) {
-                    heightOfAllCards += Constants['LAYOUT_PLACEHOLDER_DROP_TARGET_HEIGHT'] + Constants['LAYOUT_EDIT_MODE_GROUP_PADDING'];
+                    heightOfAllCards += Constants['LAYOUT_PLACEHOLDER_DROP_TARGET_HEIGHT'];
                   } else {
-                    heightOfAllCards += rows.length * currentRowHeight + Constants['LAYOUT_EDIT_MODE_GROUP_PADDING'];
+                    heightOfAllCards += rows.length * currentRowHeight;
                   }
+
+                  heightOfAllCards += 10;
+
+                  addCardButtons.push({
+                    id: cardSize,
+                    top: heightOfAllCards
+                  });
+
+                  heightOfAllCards += Constants['LAYOUT_EDIT_MODE_GROUP_PADDING'];
 
                 } else {
                   heightOfAllCards += rows.length * currentRowHeight;
@@ -332,6 +350,13 @@
                   styleText += 'width:' + containerContentWidth + 'px;'
                              + 'left:' + Constants['LAYOUT_GUTTER'] + 'px;'
                              + 'top:' + groupData.top + 'px;'
+                             + '}';
+                });
+
+                addCardButtons.forEach(function(button) {
+                  styleText += '#add-card-button-group-' + button.id + '{';
+                  styleText += 'left:' + Constants['LAYOUT_GUTTER'] + 'px;'
+                             + 'top:' + button.top + 'px;'
                              + '}';
                 });
 
@@ -554,6 +579,12 @@
           scope.safeApply(function() {
             scope.page.set('cards', _.without(scope.cardModels, cardModel));
           });
+        };
+
+        scope.addCard = function(cardSize) {
+          if (scope.allowAddCard) {
+            scope.$emit('modal-open-surrogate', {id: 'add-card-dialog', cardSize: cardSize});
+          }
         };
 
         FlyoutService.register('expand-button-target', function(el) { return '<div class="flyout-title">Expand this Card</div>'; });

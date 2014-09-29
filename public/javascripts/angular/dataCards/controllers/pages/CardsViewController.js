@@ -1,8 +1,7 @@
 (function() {
-
   'use strict';
 
-  function CardsViewController($scope, $location, $log, $window, AngularRxExtensions, SortedTileLayout, Filter, PageDataService, UserSession, FlyoutService, page) {
+  function CardsViewController($scope, $location, $log, $window, AngularRxExtensions, SortedTileLayout, Filter, PageDataService, UserSession, FlyoutService, page, Card) {
 
     AngularRxExtensions.install($scope);
 
@@ -21,7 +20,9 @@
     $scope.bindObservable('datasetRowDisplayUnit', page.observe('dataset').observeOnLatest('rowDisplayUnit'));
     $scope.bindObservable('datasetDaysUnmodified', page.observe('dataset').observeOnLatest('updatedAt').map(function(date) {
       // TODO just a placeholder implementation
-      if (!date) return '';
+      if (!date) {
+        return '';
+      }
       return moment(date).fromNow();
     }));
 
@@ -212,8 +213,112 @@
     }));
 
 
+    /************************
+    * Add new card behavior *
+    ************************/
+
+    $scope.addCardSelectedColumnFieldName = null;
+    $scope.addCardCardSize = null;
+    $scope.addCardModel = null;
+
+    $scope.$watch('addCardSelectedColumnFieldName', function(fieldName) {
+
+      if (page.getCurrentValue('dataset') !== null) {
+
+        var columns = page.getCurrentValue('dataset').getCurrentValue('columns');
+console.log(columns);
+        if (fieldName === null) {
+          $scope.addCardModel = null; 
+        } else {
+          var serializedCard = {
+            'fieldName': columns[fieldName].name,
+            'cardSize': $scope.addCardCardSize,
+            'cardCustomStyle': {},
+            'expandedCustomStyle': {},
+            'displayMode': 'visualization',
+            'expanded': false
+          };
+          $scope.addCardModel = Card.deserialize(page, serializedCard);
+        }
+      }
+    });
+
+    // Rebroadcast events back down the scope chain to allow siblings to communicate with each other
+    $scope.$on('modal-open-surrogate', function(e, data) {
+      $scope.addCardCardSize = data.cardSize;
+      $scope.$broadcast('modal-open', data);
+    });
+
+    $scope.$on('modal-close-surrogate', function(e, data) {
+      $scope.$broadcast('modal-close', data);
+    });
+
+    $scope.addCard = function() {
+      if ($scope.addCardSelectedColumn !== null) {
+        console.log('adding card with fieldName ', $scope.addCardSelectedColumn,  ' to cardSize ' + $scope.addCardCardSize);
+        $scope.$broadcast('modal-close', {id: 'add-card-dialog'});
+      }
+    };
+
+    $scope.closeAddCardDialog = function() {
+      $scope.addCardSelectedColumnFieldName = null;
+      $scope.addCardModel = null;
+      $scope.$broadcast('modal-close', {id: 'add-card-dialog'});
+    };
+
+    var datasetColumnsWithoutDataTable = page.
+      observe('dataset').
+      observeOnLatest('columns').map(
+        function(columns) {
+          return _.values(_.omit(columns, '*'));
+        });
+
+    var datasetColumns = Rx.Observable.combineLatest(
+      datasetColumnsWithoutDataTable,
+      page.observe('cards'),
+      function(columns, cards) {
+
+        var datasetColumns = [];
+        var hasAvailableCards = false;
+
+        var sortedColumns = columns.sort(function(a, b) { return a.name > b.name; });
+
+        var sortedCards = cards.
+          filter(function(card) { return card.fieldName !== '*'; }).
+          sort(function(a, b) { return a.fieldName > b.fieldName });
+
+        var i = 0;
+        var j = 0;
+        var available = false;
+        var availableCardCount = sortedColumns.length;
+
+        for (i = 0; i < sortedColumns.length; i++) {
+          available = true;
+          for (j = 0; j < sortedCards.length; j++) {
+            if (sortedColumns[i].name === sortedCards[j].fieldName) {
+              available = false;
+              availableCardCount--;
+            }
+          }
+          sortedColumns[i].available = available;
+          datasetColumns.push(sortedColumns[i]);
+        }
+
+        return datasetColumns;
+
+      });
+
+    var hasAllCards = Rx.Observable.returnValue(false);
+
+    $scope.bindObservable('datasetColumns', datasetColumns);
+    $scope.bindObservable('hasAllCards', datasetColumns.map(
+      function(columns) {
+        return columns.filter(
+          function(column) { return column.available; }).length === 0; }));
+
+
     /***************************
-    * View/edit modal behavior *
+    * View/edit cards behavior *
     ***************************/
 
     // Sequence of all successful saves.

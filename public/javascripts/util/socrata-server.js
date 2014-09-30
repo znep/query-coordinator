@@ -33,8 +33,9 @@ var ServerModel = Model.extend({
                 // The first argument is xhr in error case.
                 // For historical compatibility, we hack the status code only instead of swapping the arguments.
                 var statusCode = ((isSuccess ? xhr : arguments[0]) || {}).status;
+
                 // Support retry responses from core server
-                if (statusCode == 202 || statusCode == 503)
+                if (statusCode == 202)
                 {
                     var retryTime = req.retryTime || 5000;
                     model.trigger('request_status', [((dataset || {}).details || {}).message ||
@@ -61,7 +62,10 @@ var ServerModel = Model.extend({
                     return;
                 }
                 else if (statusCode >= 500 && statusCode < 600)
-                { throw new Error('There was a problem with our servers'); }
+                {
+                  model._finishRequest();
+                  throw new Error('There was a problem with our servers');
+                }
 
                 // TODO This is a terrible hack to serve until code in the Rails backend is settled
                 // TODO This doesn't handle filtered views, which could depend on OoD datasets

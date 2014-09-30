@@ -172,4 +172,35 @@ describe('Page model', function() {
       expect(expandedValues()).to.deep.equal([false, false, false]);
     });
   });
+  describe('deserialization', function() {
+    it('should throw if missing the ID from the serialized blob', function() {
+      expect(function() {
+        new Page({
+          description: "foo"
+        });
+      }).to.throw();
+    });
+    it('should not attempt to fetch data if the page was given a serialized blob first', function(done) {
+      var id = 'dead-beef';
+      var description = 'Page from serialized blob'
+
+      MockPageDataService.getBaseInfo = function(id) {
+        throw new Error('Should never try to get base info.');
+      };
+
+      var instance = new Page({
+        pageId: id,
+        description: description
+      });
+
+      instance.observe('description').subscribe(function(descr) {
+        if (descr) {
+          expect(descr).to.equal(description);
+          done();
+        }
+      });
+
+      $rootScope.$digest();
+    });
+  });
 });

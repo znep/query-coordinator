@@ -1,7 +1,12 @@
-angular.module('dataCards.models').factory('Page', function(Dataset, Card, Model, PageDataService) {
+angular.module('dataCards.models').factory('Page', function($q, Dataset, Card, Model, PageDataService) {
   var Page = Model.extend({
-    init: function(id) {
+    // Builds a page model from either the page ID (given as a string),
+    // or as a full serialized blob.
+    init: function(idOrSerializedBlob) {
       this._super();
+
+      var usingBlob = _.isObject(idOrSerializedBlob);
+      var id = usingBlob ? idOrSerializedBlob.pageId : idOrSerializedBlob;
 
       if (_.isEmpty(id)) {
         throw new Error('All pages must have an ID');
@@ -15,7 +20,12 @@ angular.module('dataCards.models').factory('Page', function(Dataset, Card, Model
       // is given to the ModelHelper. If we were to obtain the below promises right away,
       // the HTTP calls required to fulfill them would be made without any regard to whether
       // or not the calls are needed.
-      var baseInfoPromise = function() { return PageDataService.getBaseInfo(self.id); };
+
+      if (usingBlob) {
+        var baseInfoPromise = function() { return $q.when(idOrSerializedBlob); };
+      } else {
+        var baseInfoPromise = function() { return PageDataService.getBaseInfo(self.id); };
+      }
 
       var fields = ['datasetId', 'description', 'name', 'layoutMode', 'primaryAmountField', 'primaryAggregation', 'isDefaultPage', 'pageSource', 'baseSoqlFilter'];
       _.each(fields, function(field) {
@@ -58,6 +68,10 @@ angular.module('dataCards.models').factory('Page', function(Dataset, Card, Model
       });
     }
   });
+
+  Page.deserialize = function(blob) {
+    return new Page(blob);
+  };
 
   return Page;
 });

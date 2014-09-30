@@ -59,7 +59,6 @@ angular.module('dataCards.models').factory('Dataset', function(ModelHelper, Mode
       this._super();
 
       var self = this;
-      var Page = $injector.get('Page'); // Inject Page here to avoid circular dep.
 
       if (!UID_REGEXP.test(id)) {
         throw new Error('Bad dataset ID passed to Dataset constructor.');
@@ -94,6 +93,24 @@ angular.module('dataCards.models').factory('Dataset', function(ModelHelper, Mode
         });
       };
 
+      var pagesPromise = function() {
+        var Page = $injector.get('Page'); // Inject Page here to avoid circular dep.
+        return DatasetDataService.getPagesUsingDataset(self.id).
+          then(function(pagesBySource) {
+            var publisherPages = _.map(pagesBySource.publisher, function(blob) {
+              return new Page(blob.pageId);
+            });
+            var userPages = _.map(pagesBySource.user, function(blob) {
+              return new Page(blob.pageId);
+            });
+            return {
+              publisher: publisherPages,
+              user: userPages
+            };
+          }
+        );
+      };
+
       var fields = ['description', 'name', 'rowDisplayUnit', 'defaultAggregateColumn', 'domain', 'ownerId', 'updatedAt'];
       _.each(fields, function(field) {
         self.defineObservableProperty(field, undefined, function() {
@@ -120,15 +137,7 @@ angular.module('dataCards.models').factory('Dataset', function(ModelHelper, Mode
         });
       });
 
-      self.defineObservableProperty('pages', {}, function() {
-        return baseInfoPromise().then(function(data) {
-          return _.transform(data.pages, function(res, ids, source) {
-            res[source] = _.map(ids, function(id) {
-              return new Page(id);
-            });
-          })
-        });
-      });
+      self.defineObservableProperty('pages', {}, pagesPromise);
     }
   });
 

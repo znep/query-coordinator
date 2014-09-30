@@ -29,6 +29,19 @@
       return 'dataset-data-service';
     };
 
+    // Get all pages which use this dataset, as JSON blobs.
+    // If you want models instead, use the Dataset model's pages property.
+    this.getPagesUsingDataset = function(datasetId) {
+      var url = '/dataset_metadata/?id={0}&format=json'.format(datasetId);
+
+      var config = {
+        cache: true,
+        requester: this
+      };
+
+      return http.get(url, config).then(_.property('data'));
+    };
+
   }
 
   angular.

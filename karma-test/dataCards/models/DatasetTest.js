@@ -68,15 +68,19 @@ describe("Dataset model", function() {
     var id = 'dead-beef';
     var fakePageIds = {
         'user': _.times(4, function(idx) {
-          return _.uniqueId('fakeUserPageId');
+          return {pageId: _.uniqueId('fakeUserPageId')};
         }),
         'publisher': _.times(3, function(idx) {
-          return _.uniqueId('fakePublisherPageId');
+          return {pageId: _.uniqueId('fakePublisherPageId')};
         })
       };
-    var serializedBlob = $.extend({}, minimalBlob, { "pages": fakePageIds });
-    var def =_$q.defer();
+
     MockDataService.getBaseInfo = function(id) {
+      return $q.when(minimalBlob);
+    };
+
+    var def =_$q.defer();
+    MockDataService.getPagesUsingDataset = function(id) {
       expect(id).to.equal(id);
       return def.promise;
     };
@@ -84,18 +88,17 @@ describe("Dataset model", function() {
     var instance = new _Dataset(id);
     instance.observe('pages').subscribe(function(pagesBySource) {
       if (!_.isEmpty(pagesBySource)) {
-        expect(_.keys(pagesBySource)).to.deep.equal(_.keys(fakePageIds));
         _.each(pagesBySource, function(pages, source) {
           _.each(pages, function(page, idx) {
             expect(page).to.be.instanceof(_Page);
-            expect(page.id).to.equal(fakePageIds[source][idx]);
+            expect(page.id).to.equal(fakePageIds[source][idx].pageId);
           });
         });
         done();
       }
     });
 
-    def.resolve(serializedBlob);
+    def.resolve(fakePageIds);
     _$rootScope.$digest();
   });
 

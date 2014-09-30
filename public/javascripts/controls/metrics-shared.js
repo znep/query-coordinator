@@ -317,8 +317,17 @@ metricsNS.summarySectionCallback = function($context)
     mappedData.total = Highcharts.numberFormat(mappedData.total, 0);
     mappedData.delta = Highcharts.numberFormat(mappedData.delta, 0);
 
-    metricsNS.renderSummarySection($context, mappedData,
-        metricsNS.summaryDataDirective, 'metricsSummaryData');
+    var templateName = 'metricsSummaryData';
+    var summaryDirective = metricsNS.summaryDataDirective;
+    // Omit the delta box if summaries.range = false
+    if (!$.isBlank(summaries.range) && !summaries.range) {
+	templateName = 'metricsSimpleSummaryData';
+	summaryDirective = metricsNS.simpleSummaryDataDirective;
+    }
+    metricsNS.renderSummarySection($context,
+				   mappedData,
+				   summaryDirective,
+				   templateName);
 };
 
 metricsNS.renderSummarySection = function($context, data, directive, templateName)
@@ -406,6 +415,11 @@ metricsNS.summaryDataDirective = {
     '.totalValue' : 'total',
     '.totalValue@title' : 'totalText',
     '.deltaBox@class+': 'deltaClass'
+};
+
+metricsNS.simpleSummaryDataDirective = {
+    '.totalValue' : 'total',
+    '.totalValue@title' : 'totalText'
 };
 
 metricsNS.detailDataDirective = {

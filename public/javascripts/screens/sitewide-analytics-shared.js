@@ -50,41 +50,53 @@ blist.metrics.sitewideShared = {
     summarySections: _.filter([
         {
             id: 'summaryVisits',      displayName: 'Page Views',
-            summary: {plus: 'page-views', verbPhrase: 'pages viewed',
+            summary: {
+		plus: 'page-views', 
+		verbPhrase: 'pages viewed',
                 verbPhraseSingular: 'page viewed'
             }
         },
         {
             id: 'summaryDash',        displayName: 'Total Dashboards',
-            summary: {plus: 'govstat-total-dash',
-                verbPhrase: 'dashboards created', verbPhraseSingular: 'dashboards created'
+            summary: {
+		plus: 'govstat-total-dash',
+                verbPhrase: 'dashboards created', 
+		verbPhraseSingular: 'dashboards created'
             },
             enabled: blist.configuration.govStatMetricsEnabled || false
         },
         {
             id: 'summaryGoals',        displayName: 'Total Goals',
-            summary: {plus: 'govstat-total-goals',
-                verbPhrase: 'goals created', verbPhraseSingular: 'goal created'
+            summary: {
+		plus: 'govstat-total-goals',
+                verbPhrase: 'goals created', 
+		verbPhraseSingular: 'goal created'
             },
             enabled: blist.configuration.govStatMetricsEnabled || false
         },
         {
             id: 'summaryDatasets',    displayName: 'Total Datasets',
             summary: {
-                plus: ['datasets-created', 'datasets-deleted-snapshot'],
-                minus: ['datasets-deleted', 'datasets-created-snapshot'],
-                verbPhrase: 'datasets created', verbPhraseSingular: 'dataset created'
+                plus: 'datasets',
+		range: false,
+                verbPhrase: 'datasets created', 
+		verbPhraseSingular: 'dataset created'
             }
         },
         {
             id: 'summaryRows',        displayName: 'Total Rows',
-            summary: {plus: 'rows-created', minus: 'rows-deleted',
-                verbPhrase: 'rows created', verbPhraseSingular: 'row created'
+            summary: {
+		plus: 'rows-created', 
+		minus: 'rows-deleted',
+                verbPhrase: 'rows created', 
+		verbPhraseSingular: 'row created'
             }
         },
         {
             id: 'summaryEmbeds',      displayName: 'Embeds',
-            summary: {plus: 'embeds', verbPhrase: 'embeds',
+            summary: {
+		plus: 'embeds', 
+		verbPhrase: 'embeds',
                 verbPhraseSingular: 'embed'
             }
         }

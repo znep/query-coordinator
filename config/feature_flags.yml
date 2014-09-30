@@ -47,3 +47,6 @@ govstat_progress_settings:
 use_view_stubs:
   description: Use view stub files instead of metadata service.
   defaultValue: false
+disable_dataset_search_box:
+  description: Disable the search box in dataset pages.
+  defaultValue: false

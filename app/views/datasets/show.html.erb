@@ -68,7 +68,7 @@
         </ul>
         <%- end -%>
       </li>
-      <%- if @view.is_tabular? && !@view.is_form? -%>
+      <%- if @view.is_tabular? && !@view.is_form? && !FeatureFlags.derive(@view, request).disable_dataset_search_box -%>
       <li>
         <form id="searchForm" action="#">
           <span class="icon"></span>

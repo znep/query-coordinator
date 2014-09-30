@@ -74,4 +74,48 @@ describe('bindFromModel directive', function() {
     expect(el.scope().propA).to.equal(50);
     expect(el.scope().propB).to.equal('fifty');
   });
+
+  it('should only bind values from the latest model from the scope', function() {
+    var scope = $rootScope.$new();
+    var el = $compile('<div bind-from-model="myModel.propA"></div>')(scope);
+
+    var modelA = new Model();
+    var modelB = new Model();
+    modelA.defineObservableProperty('propA', 10);
+    modelB.defineObservableProperty('propA', 'ten');
+
+    scope.myModel = modelA;
+    scope.$digest();
+
+    // Remember the bindings happen on the inner scope.
+    expect(el.scope().propA).to.equal(10);
+
+    modelA.set('propA', 11);
+    modelB.set('propA', 'eleven');
+    expect(el.scope().propA).to.equal(11);
+
+    scope.myModel = modelB;
+    scope.$digest();
+
+    // Scope should take new model's value.
+    expect(el.scope().propA).to.equal('eleven');
+
+    // This should not mess with the scope value.
+    modelA.set('propA', 12);
+    expect(el.scope().propA).to.equal('eleven');
+
+    modelB.set('propA', 'twelve');
+    expect(el.scope().propA).to.equal('twelve');
+
+    // Go back to model A.
+    scope.myModel = modelA;
+    scope.$digest();
+
+    // Scope should take new model's value.
+    expect(el.scope().propA).to.equal(12);
+
+    // This should not mess with the scope value.
+    modelB.set('propA', 'thirteen');
+    expect(el.scope().propA).to.equal(12);
+  });
 });

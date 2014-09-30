@@ -25,7 +25,7 @@
         <h1>Official views of this data</h1>
         <div ng-repeat="page in datasetPublisherPages"
           class="page"
-          bind-from-model="page.name, page.description" >
+          scope-bind-from-model="page.name, page.description" >
           <a ng-href="/view/{{page.id}}">
             <h2>{{name}}</h2>
             <p multiline-ellipsis

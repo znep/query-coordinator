@@ -31,7 +31,7 @@
 
     // Get all pages which use this dataset, as JSON blobs.
     // If you want models instead, use the Dataset model's pages property.
-    this.getPagesUsingDataset = function(datasetId) {
+    this.getPagesForDataset = function(datasetId) {
       var url = '/dataset_metadata/?id={0}&format=json'.format(datasetId);
 
       var config = {

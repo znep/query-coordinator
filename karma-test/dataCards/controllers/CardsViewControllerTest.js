@@ -29,7 +29,7 @@ describe("CardsViewController", function() {
         columns: []
       });
     },
-    getPagesUsingDataset: function() {
+    getPagesForDataset: function() {
       return $q.when({
         publisher: [],
         user: []

@@ -95,7 +95,7 @@ angular.module('dataCards.models').factory('Dataset', function(ModelHelper, Mode
 
       var pagesPromise = function() {
         var Page = $injector.get('Page'); // Inject Page here to avoid circular dep.
-        return DatasetDataService.getPagesUsingDataset(self.id).
+        return DatasetDataService.getPagesForDataset(self.id).
           then(function(pagesBySource) {
             var publisherPages = _.map(pagesBySource.publisher, function(blob) {
               return Page.deserialize(blob);

@@ -40,7 +40,7 @@ describe('DatasetMetadataController', function() {
     var pagesInfoPromise = $q.defer();
 
     mockDatasetDataService.getBaseInfo = function() { return baseInfoPromise.promise; };
-    mockDatasetDataService.getPagesUsingDataset = function() { return pagesInfoPromise.promise; };
+    mockDatasetDataService.getPagesForDataset = function() { return pagesInfoPromise.promise; };
 
     var controller = $controller('DatasetMetadataController', {
       $scope: scope,

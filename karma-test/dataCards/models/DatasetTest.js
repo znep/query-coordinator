@@ -80,7 +80,7 @@ describe("Dataset model", function() {
     };
 
     var def =_$q.defer();
-    MockDataService.getPagesUsingDataset = function(id) {
+    MockDataService.getPagesForDataset = function(id) {
       expect(id).to.equal(id);
       return def.promise;
     };

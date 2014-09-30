@@ -179,8 +179,8 @@ describe('DatasetMetadataController', function() {
 
         var controller = controllerHarness.controller;
         var scope = controllerHarness.scope;
-        controllerHarness.baseInfoPromise.resolve($.extend({}, datasetBlob));
-        controllerHarness.pagesInfoPromise.resolve($.extend({}, pagesBlob));
+        controllerHarness.baseInfoPromise.resolve(datasetBlob);
+        controllerHarness.pagesInfoPromise.resolve(pagesBlob);
         $rootScope.$digest();
 
         expect(scope.datasetPublisherPages).to.be.instanceof(Array).and.to.have.length(pagesBlob.publisher.length);

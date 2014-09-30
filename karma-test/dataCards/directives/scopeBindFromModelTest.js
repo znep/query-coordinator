@@ -25,6 +25,18 @@ describe('scopeBindFromModel directive', function() {
     expect(function() {
       scope.$digest();
     }).to.throw(/propA/);
+
+  });
+
+  it('should throw an exception if binding against something that does not implement observe()', function() {
+    var scope = $rootScope.$new();
+    var el = $compile('<div scope-bind-from-model="myUnModel.propA"></div>')(scope);
+
+    scope.myUnModel = {};
+
+    expect(function() {
+      scope.$digest();
+    }).to.throw();
     
   });
 

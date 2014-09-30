@@ -98,10 +98,10 @@ angular.module('dataCards.models').factory('Dataset', function(ModelHelper, Mode
         return DatasetDataService.getPagesForDataset(self.id).
           then(function(pagesBySource) {
             var publisherPages = _.map(pagesBySource.publisher, function(blob) {
-              return Page.deserialize(blob);
+              return new Page(blob);
             });
             var userPages = _.map(pagesBySource.user, function(blob) {
-              return Page.deserialize(blob);
+              return new Page(blob);
             });
             return {
               publisher: publisherPages,

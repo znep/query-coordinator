@@ -69,9 +69,5 @@ angular.module('dataCards.models').factory('Page', function($q, Dataset, Card, M
     }
   });
 
-  Page.deserialize = function(blob) {
-    return new Page(blob);
-  };
-
   return Page;
 });

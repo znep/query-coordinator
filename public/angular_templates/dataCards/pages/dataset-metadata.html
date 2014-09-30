@@ -20,12 +20,28 @@
         <div btf-markdown="datasetDescription | escapeHtml | singleNewlinesToDoubleNewlines | linkifyUrls"></div>
       </div>
     </div>
+    <div class="dataset-related-pages row">
+      <div class="span12">
+        <h1>Official views of this data</h1>
+        <div ng-repeat="page in datasetPublisherPages"
+          class="page"
+          bind-from-model="page.name, page.description" >
+          <a ng-href="/view/{{page.id}}">
+            <h2>{{name}}</h2>
+            <p multiline-ellipsis
+               max-lines="2" tolerance="2" text="{{description}}" show-more-mode="title-attr"></p>
+          </a>
+          <hr ng-if="!$last" />
+        </div>
+      </div>
+    </div>
     <div class="dataset-column-metadata row">
       <div class="span12 dataset-columns">
         <h1>Columns in this Dataset</h1>
         <div ng-repeat="datasetColumn in datasetColumns"
           class="dataset-column">
           <h2>{{datasetColumn.title || datasetColumn.name}}</h2>
+          <!-- If you're confused with this giraffe of a filter list see the comments in standard-metadata above. -->
           <div btf-markdown="datasetColumn.description | escapeHtml | singleNewlinesToDoubleNewlines | linkifyUrls"></div>
           <hr ng-if="!$last" />
         </div>

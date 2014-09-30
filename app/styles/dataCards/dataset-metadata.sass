@@ -13,15 +13,39 @@ body.state-dataset-metadata
       font-size: 24px
 
     h2
+      margin-top: 0.3rem
       margin-bottom: 0.3rem
       font-weight: bold
       font-size: 18px
 
+    p
+      margin: 0.3rem 0 0.5rem 0
+
     .row
+      $row-padding-side: 1rem
+
       margin-bottom: 2rem
-      padding: 1.4rem 1rem
+      padding: 1.4rem $row-padding-side
       background-color: $dataset-metadata-box-color
       a
+        display: block
         color: $dataset-metadata-box-link-color
 
-    .standard-metadata
+      &.dataset-related-pages
+        .page
+          // This hackery is to make the hover highlight go right to the edge of the box horizontally.
+          margin-left: -$row-padding-side
+          margin-right: -$row-padding-side
+          padding-left: $row-padding-side
+          padding-right: $row-padding-side
+
+          &:hover
+            background: lighten($dataset-metadata-box-color, 5)
+          a
+            color: $dataset-metadata-fg-color
+          h2
+            color: $link-font-color
+            padding-top: 0.3rem
+            margin-top: 0
+          hr
+            margin: 0

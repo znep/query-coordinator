@@ -1662,11 +1662,14 @@ var Dataset = ServerModel.extend({
         var name = blist.snapshot.name;
         // use the current viewport
         setTimeout(function()
-                   {
-                       socrataScreenshot.defineRegion(name, 0, 0, window.innerWidth, window.innerHeight);
-                       socrataScreenshot.snap(name);
-                       socrataScreenshot.done();
-                   }, 1000);
+            {
+                // NOTE: socrataScreenshot is injected into the window by the snapper
+                // service itself (snapper hosts webkit and pulls up the frontend).
+                // socrataScreenshot isn't defined in normal operation.
+                socrataScreenshot.defineRegion(name, 0, 0, window.innerWidth, window.innerHeight);
+                socrataScreenshot.snap(name);
+                socrataScreenshot.done();
+            }, 1000);
     },
 
 

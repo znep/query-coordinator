@@ -40,6 +40,8 @@
     <%= render_view_js %>
 
     <script type="text/javascript">
+      blist.feature_flags = <%= raw FeatureFlags.derive(@view, request).to_json %>;
+
       blist.namespace.fetch('blist.snapshot');
 
       blist.snapshot.takeSnapshot = true;

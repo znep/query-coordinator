@@ -32,9 +32,14 @@
         }
         fieldName = SoqlHelpers.replaceHyphensWithUnderscores(fieldName);
         // TODO: Implement some method for paging/showing data that has been truncated.
-        var url = '/api/id/{1}.json?$query=select {0} as name, count(*) as value {2} group by {0} order by count(*) desc limit 200'.format(fieldName, datasetId, whereClause);
+        var params = {
+          $query: ('select {0} as name, count(*) as value {1} ' +
+                   'group by {0} order by count(*) desc limit 200').format(
+                     fieldName, whereClause)
+        };
+        var url = '/api/id/' + datasetId + '.json?';
         var config = httpConfig.call(this);
-        return http.get(url, config).then(function(response) {
+        return http.get(url + $.param(params), config).then(function(response) {
           return _.map(response.data, function(item) {
             return { name: item.name, value: parseFloat(item.value) };
           });
@@ -46,9 +51,12 @@
 
         datasetId = DeveloperOverrides.dataOverrideForDataset(datasetId) || datasetId;
         fieldName = SoqlHelpers.replaceHyphensWithUnderscores(fieldName);
-        var url = '/api/id/{1}.json?$query=SELECT min({0}) as start, max({0}) as end'.format(fieldName, datasetId);
+        var params = {
+          $query: 'SELECT min({0}) as start, max({0}) as end'.format(fieldName)
+        };
+        var url = '/api/id/' + datasetId + '.json?';
         var config =  httpConfig.call(this);
-        return http.get(url, config).then(function(response) {
+        return http.get(url + $.param(params), config).then(function(response) {
           if (_.isEmpty(response.data)) {
             return $q.reject('Empty response from SODA.');
           }
@@ -83,9 +91,14 @@
           whereClause += ' and ' + whereClauseFragment;
         }
         fieldName = SoqlHelpers.replaceHyphensWithUnderscores(fieldName);
-        var url = '/api/id/{1}.json?$query=SELECT date_trunc_{3}({0}) AS date_trunc, count(*) AS value {2} GROUP BY date_trunc'.format(fieldName, datasetId, whereClause, dateTrunc);
+        var params = {
+          $query: ('SELECT date_trunc_{2}({0}) AS date_trunc, count(*) AS value {1} ' +
+                   'GROUP BY date_trunc').format(
+                     fieldName, whereClause, dateTrunc)
+        };
+        var url = '/api/id/' + datasetId + '.json?';
         var config = httpConfig.call(this);
-        return http.get(url, config).then(function(response) {
+        return http.get(url + $.param(params), config).then(function(response) {
           if (!_.isArray(response.data)) {
             return $q.reject('Invalid response from SODA, expected array.');
           }
@@ -153,14 +166,14 @@
           whereClause = 'where ' + whereClauseFragment;
         }
         fieldName = SoqlHelpers.replaceHyphensWithUnderscores(fieldName);
-        var url = ('/api/id/{1}.json?$query=' +
-          'select {0} as name, ' +
-          'count(*) as value ' +
-          '{2} ' + // where clause
-          'group by {0} ' +
-          'order by count(*) desc').format(fieldName, datasetId, whereClause);
+        var params = {
+          $query: ('select {0} as name, count(*) as value {1} ' +
+                   'group by {0} order by count(*) desc').format(
+                     fieldName, whereClause),
+        };
+        var url = '/api/id/' + datasetId + '.json?';
         var config = httpConfig.call(this);
-        return http.get(url, config).then(function(response) {
+        return http.get(url + $.param(params), config).then(function(response) {
           if (!_.isArray(response.data)) return $q.reject('Invalid response from SODA, expected array.');
           return _.map(response.data, function(item) {
             return { name: item.name, value: parseFloat(item.value) };
@@ -170,12 +183,15 @@
 
       getRowCount: function(datasetId, whereClause) {
         datasetId = DeveloperOverrides.dataOverrideForDataset(datasetId) || datasetId;
-        var url = '/api/id/{0}.json?$query=select count(0)'.format(datasetId);
+        var params = {
+          $query: 'select count(0)'
+        };
         if (whereClause) {
-          url += ' where {0}'.format(whereClause);
+          params.$query += ' where {0}'.format(whereClause);
         }
+        var url = '/api/id/' + datasetId + '.json?';
         var config = httpConfig.call(this);
-        return http.get(url, config).
+        return http.get(url + $.param(params), config).
           then(function(response) {
             if (_.isEmpty(response.data)) {
               throw new Error('The response from the server contained no data.');
@@ -187,13 +203,17 @@
       getRows: function(datasetId, offset, limit, order, timeout, whereClause) {
         if (!order) order = '';
         datasetId = DeveloperOverrides.dataOverrideForDataset(datasetId) || datasetId;
-        var url = '/api/id/{0}.json?$offset={1}&$limit={2}&$order={3}'.
-          format(datasetId, offset, limit, order);
+        var params = {
+          $offset: offset,
+          $limit: limit,
+          $order: order
+        };
         if (whereClause) {
-          url += '&$where={0}'.format(whereClause);
+          params.$where = whereClause;
         }
+        var url = '/api/id/' + datasetId + '.json?';
         var config = httpConfig.call(this, { timeout: timeout });
-        return http.get(url, config).then(function(response) {
+        return http.get(url + $.param(params), config).then(function(response) {
           return response.data;
         });
       },

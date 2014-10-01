@@ -44,7 +44,7 @@ angular.module('dataCards.models').factory('Filter', function(Assert, SoqlHelper
     field = SoqlHelpers.replaceHyphensWithUnderscores(field);
     var encodedStart = SoqlHelpers.encodePrimitive(this.start);
     var encodedEnd = SoqlHelpers.encodePrimitive(this.end);
-    return '{0} > {1} AND {0} < {2}'.format(field, encodedStart, encodedEnd);
+    return '{0} >= {1} AND {0} < {2}'.format(field, encodedStart, encodedEnd);
   };
 
   TimeRangeFilter.prototype.serialize = function() {

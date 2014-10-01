@@ -4,6 +4,19 @@ describe("CardDataService", function() {
 
   var fake4x4 = 'fake-data';
 
+  /**
+   * Takes a uri and returns a regex that matches plausible encodings of it in a uri.
+   */
+  function toUriRegex(str) {
+    return new RegExp(str.
+                      replace(/([.*()?])/g, '\\$1').
+                      replace(/ /g, '(%20|[+])').
+                      replace(/[$,]/g, function(m) {
+                        return encodeURIComponent(m);
+                      })
+                     );
+  }
+
   function assertReject(response, done) {
     response.then(function(data) {
       throw new Error('Should not resolve promise');
@@ -41,8 +54,8 @@ describe("CardDataService", function() {
     });
 
     it('should pass through the where clause', function() {
-      $httpBackend.expectGET('/api/id/{0}.json?$query=select fakeNumberColumn as name, count(*) as value  group by fakeNumberColumn order by count(*) desc limit 200'.format(fake4x4));
-      $httpBackend.expectGET('/api/id/{0}.json?$query=select fakeNumberColumn as name, count(*) as value where MAGICAL_WHERE_CLAUSE group by fakeNumberColumn order by count(*) desc limit 200'.format(fake4x4));
+      $httpBackend.expectGET(toUriRegex('/api/id/{0}.json?$query=select fakeNumberColumn as name, count(*) as value  group by fakeNumberColumn order by count(*) desc limit 200'.format(fake4x4)));
+      $httpBackend.expectGET(toUriRegex('/api/id/{0}.json?$query=select fakeNumberColumn as name, count(*) as value where MAGICAL_WHERE_CLAUSE group by fakeNumberColumn order by count(*) desc limit 200'.format(fake4x4)));
 
       CardDataService.getData('fakeNumberColumn', fake4x4);
       CardDataService.getData('fakeNumberColumn', fake4x4, 'MAGICAL_WHERE_CLAUSE');
@@ -117,7 +130,7 @@ describe("CardDataService", function() {
     });
 
     it('should generate a correct query', function() {
-      $httpBackend.expectGET('/api/id/{1}.json?$query=SELECT min({0}) as start, max({0}) as end'.format('fakeNumberColumn', fake4x4));
+      $httpBackend.expectGET(toUriRegex('/api/id/{1}.json?$query=SELECT min({0}) as start, max({0}) as end'.format('fakeNumberColumn', fake4x4)));
       CardDataService.getTimelineDomain('fakeNumberColumn', fake4x4);
       $httpBackend.flush();
     });
@@ -225,8 +238,8 @@ describe("CardDataService", function() {
     });
 
     it('should pass through the where clause fragment', function() {
-      $httpBackend.expectGET('/api/id/{1}.json?$query=SELECT date_trunc_ymd(fakeNumberColumn) AS date_trunc, count(*) AS value WHERE date_trunc IS NOT NULL GROUP BY date_trunc'.format('fakeNumberColumn', fake4x4));
-      $httpBackend.expectGET('/api/id/{1}.json?$query=SELECT date_trunc_ymd(fakeNumberColumn) AS date_trunc, count(*) AS value WHERE date_trunc IS NOT NULL and MAGICAL_WHERE_CLAUSE GROUP BY date_trunc'.format('fakeNumberColumn', fake4x4));
+      $httpBackend.expectGET(toUriRegex('/api/id/{1}.json?$query=SELECT date_trunc_ymd(fakeNumberColumn) AS date_trunc, count(*) AS value WHERE date_trunc IS NOT NULL GROUP BY date_trunc'.format('fakeNumberColumn', fake4x4)));
+      $httpBackend.expectGET(toUriRegex('/api/id/{1}.json?$query=SELECT date_trunc_ymd(fakeNumberColumn) AS date_trunc, count(*) AS value WHERE date_trunc IS NOT NULL and MAGICAL_WHERE_CLAUSE GROUP BY date_trunc'.format('fakeNumberColumn', fake4x4)));
       CardDataService.getTimelineData('fakeNumberColumn', fake4x4, '', 'DAY');
       CardDataService.getTimelineData('fakeNumberColumn', fake4x4, 'MAGICAL_WHERE_CLAUSE', 'DAY');
       $httpBackend.flush();
@@ -348,6 +361,7 @@ describe("CardDataService", function() {
       $httpBackend.flush();
     });
   });
+
   describe('getChoroplethAggregates', function() {
     it('should throw on bad parameters', function() {
       expect(function() { CardDataService.getChoroplethAggregates(); }).to.throw();
@@ -368,8 +382,8 @@ describe("CardDataService", function() {
     });
 
     it('should generate a correct query', function() {
-      $httpBackend.expectGET('/api/id/{1}.json?$query=select {0} as name, count(*) as value  group by {0} order by count(*) desc'.format('afakeNumberColumn', fake4x4));
-      $httpBackend.expectGET('/api/id/{1}.json?$query=select {0} as name, count(*) as value where MAGICAL_WHERE_CLAUSE group by {0} order by count(*) desc'.format('afakeNumberColumn', fake4x4));
+      $httpBackend.expectGET(toUriRegex('/api/id/{1}.json?$query=select {0} as name, count(*) as value  group by {0} order by count(*) desc'.format('afakeNumberColumn', fake4x4)));
+      $httpBackend.expectGET(toUriRegex('/api/id/{1}.json?$query=select {0} as name, count(*) as value where MAGICAL_WHERE_CLAUSE group by {0} order by count(*) desc'.format('afakeNumberColumn', fake4x4)));
       CardDataService.getChoroplethAggregates('afakeNumberColumn', fake4x4);
       CardDataService.getChoroplethAggregates('afakeNumberColumn', fake4x4, 'MAGICAL_WHERE_CLAUSE');
       $httpBackend.flush();

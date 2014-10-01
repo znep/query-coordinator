@@ -50,4 +50,29 @@ describe('Flyout service', function() {
     testHelpers.fireMouseEvent($('body')[0], 'mousemove');
     expect(flyout.is(':visible')).to.be.false;
   });
+
+  it('should update the flyout message when refreshFlyout is called.', function() {
+    var someMagicalState = true;
+
+    flyoutService.register('dynamic-flyout-test', function() {
+      return someMagicalState ? 'initial' : 'final';
+    });
+
+    var target = $('<div class="dynamic-flyout-test" />');
+    container.append(target);
+
+    testHelpers.fireMouseEvent(target[0], 'mousemove');
+
+    var flyout = $(FLYOUT_SELECTOR);
+
+    expect(flyout.text()).to.equal('initial');
+    someMagicalState = false;
+    flyoutService.refreshFlyout();
+    expect(flyout.text()).to.equal('final');
+
+
+    // Make sure it disappears too
+    testHelpers.fireMouseEvent($('body')[0], 'mousemove');
+    expect(flyout.is(':visible')).to.be.false;
+  });
 });

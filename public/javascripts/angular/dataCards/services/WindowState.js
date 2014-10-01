@@ -22,7 +22,7 @@
       scrollPositionSubject.onNext(window.pageYOffset);
     });
 
-    var mousePositionSubject = new Rx.BehaviorSubject({clientX: 0, clientY: 0, target: null});
+    var mousePositionSubject = new Rx.BehaviorSubject({clientX: 0, clientY: 0, target: document.body });
     body.addEventListener('mousemove', function(e){
       WindowState.mouseClientX = e.clientX;
       WindowState.mouseClientY = e.clientY;

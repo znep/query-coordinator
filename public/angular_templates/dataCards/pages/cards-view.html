@@ -31,7 +31,21 @@
               </div>
             </div>
           </div>
-          <button type="button" ng-click="savePage()" class="save-button action-btn r-to-l" ng-class="{disabled: !hasChanges}" ng-if="currentUser">Save</button>
+          <button
+            type="button"
+            ng-click="savePage()"
+            class="save-button action-btn r-to-l"
+            ng-class="{disabled: !hasChanges, working: saveStatus === 'saving', success: saveStatus === 'saved', error: saveStatus === 'failed'}"
+            ng-if="currentUser">
+            <span class="button-text">{{saveStatusText}}</span>
+            <div class="saving-spinner-wrapper">
+              <div class="saving-spinner">
+                <svg width="17px" height="17px" viewBox="0 0 40 40" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
+                  <path d="M20,4 C28.836556,4 36,11.163444 36,20 C36,28.836556 28.836556,36 20,36 L20,30 C25.5228475,30 30,25.5228475 30,20 C30,14.4771525 25.5228475,10 20,10 L20,4 Z" id="inner" fill="#FFFFFF"></path>
+                </svg>
+              </div>
+            </div>
+          </button>
           <save-as page-has-changes="hasChanges" save-page-as="savePageAs" ng-if="currentUser"></save-as>
           <button type="button" ng-click="editMode = !editMode" class="action-btn r-to-l" ng-show="currentUser">{{editMode | ifElse:'Preview':'Customize'}}</button>
           <a href="{{datasetCSVDownloadURL}}" title="Download this data as CSV" class="action-btn r-to-l">Download</a>

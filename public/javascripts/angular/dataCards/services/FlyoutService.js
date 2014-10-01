@@ -7,8 +7,14 @@ angular.module('dataCards.services').factory('FlyoutService', function(WindowSta
   var hintWidth;
   var hintHeight;
 
+  // To support refreshFlyout, we have an additional stream of mouse positions
+  // that replays events from WindowState.mousePositionSubject when needed.
+  var replayedMousePositionSubject = new Rx.Subject();
 
-  WindowState.mousePositionSubject.subscribe(function(e) {
+  Rx.Observable.merge(
+    WindowState.mousePositionSubject,
+    replayedMousePositionSubject
+  ).subscribe(function(e) {
 
     var className = null;
     var classList;
@@ -178,6 +184,11 @@ angular.module('dataCards.services').factory('FlyoutService', function(WindowSta
         handlers[className] = [];
       }
       handlers[className].push({ render: renderCallback, trackCursor: trackCursor, horizontal: horizontal });
+    },
+    // Flyout handlers are typically rechecked on mouse movement. If you've made changes to the handlers or their
+    // source data and want to see the changes immediately, this function will force a refresh.
+    refreshFlyout: function() {
+      replayedMousePositionSubject.onNext(WindowState.mousePositionSubject.value);
     }
   };
 

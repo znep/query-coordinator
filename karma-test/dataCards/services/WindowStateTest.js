@@ -79,7 +79,7 @@ describe('WindowState service', function() {
       expect(WindowState.mousePositionSubject.value).to.deep.equal({
         clientX: 0,
         clientY: 0,
-        target: null
+        target: document.body
       });
 
       body.dispatchEvent(generateFakeMouseMove(10, 20, body));

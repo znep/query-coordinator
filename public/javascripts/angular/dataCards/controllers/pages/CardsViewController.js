@@ -223,10 +223,23 @@
     * View/edit modal behavior *
     ***************************/
 
-    // Sequence of all successful saves.
-    var successfulSaves = new Rx.Subject();
-
     $scope.editMode = false;
+
+    // Global save events. Elements in this stream include only:
+    // * 'idle': Initial and resting state.
+    // * 'saving': A save was started.
+    // * 'saved': A save was successfully completed.
+    // * 'failed': A save failed to complete.
+    var globalSaveEvents = new Rx.BehaviorSubject('idle');
+
+    $scope.bindObservable('saveStatus', globalSaveEvents);
+    $scope.bindObservable('saveStatusText', globalSaveEvents.map(function(activity) {
+      if (activity === 'saving') { return 'Saving'; }
+      if (activity === 'saved') { return 'Saved!'; }
+      if (activity === 'failed') { return 'Failed'; }
+
+      return 'Save';
+    }));
 
     // We've got changes if the last action was an edit (vs. a save).
     // All sets map to true, and all saves map to false. Thus, the latest
@@ -235,15 +248,70 @@
       'hasChanges',
       Rx.Observable.merge(
         page.observePropertyChangesRecursively().map(_.constant(true)),
-        successfulSaves.map(_.constant(false))
+        globalSaveEvents.filter(function(activity) { return activity === 'saved'; }).map(_.constant(false))
       )
     );
 
-    successfulSaves.subscribe(function() {
-      $scope.safeApply(function() {
+    $scope.savePage = function() {
+      if ($scope.hasChanges) {
+        var savedMessagePersistenceMsec = 3000;
+        var failureMessagePersistenceMsec = 8000;
+        var pretendSaveTakesAtLeastThisLongMsec = 300;
+
+        globalSaveEvents.onNext('saving');
+
+        // Desired behavior is to jump out of edit mode immediately upon hitting save.
         $scope.editMode = false;
-      });
-    });
+
+        var savePromise = PageDataService.save(page.serialize(), page.id);
+
+        // Sequence of exactly one false or exactly one true, signifying failure or success, respectively.
+        var successOrFailure = Rx.Observable.fromPromise(savePromise).
+          map(_.constant(true)).                        // We don't care what the promise returns. If it resolves, it's a success.
+          catchException(Rx.Observable.return(false));  // All exceptions mean that we failed.
+
+        // Convenience.
+        var failures = successOrFailure.filter(function(v) { return !v; });
+        var successes = successOrFailure.filter(_.identity);
+
+        // We want to pretend that the save always takes at least
+        // a few ms, otherwise the action taken isn't clear.
+
+        // Subscription is shared, so only one timer will be made.
+        var timeout = Rx.Observable.timer(pretendSaveTakesAtLeastThisLongMsec).share();
+
+        var debouncedSuccesses = Rx.Observable.firstToReact(timeout, successes). // Surface the sequence which reacts first.
+          map(function(sequence) {
+            // Depending on which sequence reacted first, figure out when to tell the user success happened.
+            if (sequence === timeout) return successes; // Timeout happened, which means the minimum delay was reached. Just use the real success.
+            else return timeout; // Success happened too fast. Return success when the timeout completes.
+          }).
+          switchLatest(); // Use the sequence from the map above.
+
+        // Ultimately, we need to return to idle after showing a message for a few seconds.
+        // So, delay the success or failure message appropriately.
+        var successOrFailureDelayed = Rx.Observable.merge(
+            debouncedSuccesses,
+            failures
+          ).
+          delayWithSelector(
+            function(result) {
+              return Rx.Observable.timer(
+                result ? savedMessagePersistenceMsec : failureMessagePersistenceMsec
+              );
+            }
+          );
+
+        // Translate these sequences into global page event nomenclature, and pipe to globalSaveEvents
+        Rx.Observable.merge(
+          debouncedSuccesses.map(_.constant('saved')),
+          failures.map(_.constant('failed')),
+          successOrFailureDelayed.map(_.constant('idle')), // Ultimate time-shifted failure or success always causes us to revert to idle.
+          Rx.Observable.never() // Make this sequence never complete, otherwise we'll cause globalSaveEvents to complete too.
+        ).
+        subscribe(globalSaveEvents); 
+      }
+    };
 
     $scope.savePageAs = function(name, description) {
       var newPage = _.extend(page.serialize(), {
@@ -263,29 +331,28 @@
         });
     };
 
-    $scope.savePage = function() {
-      if ($scope.hasChanges) {
-        PageDataService.save(page.serialize(), page.id).then(function() {
-          // Success.
-          successfulSaves.onNext();
-        },
-        function(error) {
-          // TODO: Handling the error case is a separate, future story. For now,
-          // at least tell the user what went wrong.
-          alert('Unable to save: {0}: {1}'.format(error.status, error.statusText));
-        });
-      }
-    };
 
+    //TODO consider extending register() to take a selector, too.
     FlyoutService.register('save-button', function() {
-      return $scope.hasChanges ? '<div class="flyout-title">Click to save your changes</div>'
-                               : '<div class="flyout-title">No changes to be saved</div>';
+      if (globalSaveEvents.value === 'failed') {
+        return '<div class="flyout-title">An error occurred</div><div>Please contact Socrata Support</div>';
+      } else if (globalSaveEvents.value === 'idle') {
+        return $scope.hasChanges ? '<div class="flyout-title">Click to save your changes</div>'
+                                 : '<div class="flyout-title">No changes to be saved</div>';
+      }
     });
 
     FlyoutService.register('save-as-button', function() {
       return $scope.hasChanges ? '<div class="flyout-title">Click to save your changes as a new view</div>'
                                : '<div class="flyout-title">No changes to be saved</div>';
     });
+    //
+    // Since we have a flyout handler whose output depends on globalSaveEvents and $scope.hasChanges,
+    // we need to poke the FlyoutService. We want the flyout to update immediately.
+    globalSaveEvents.merge($scope.observe('hasChanges')).subscribe(function() {
+      FlyoutService.refreshFlyout();
+    });
+
 
     /******************************************
     * Clean up if/when the scope is destroyed *

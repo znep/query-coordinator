@@ -346,14 +346,37 @@ describe("CardsViewController", function() {
       mockPageDataService.save.restore();
     });
 
-    it('should set hasChanges to false after saving', function() {
+    it('should set hasChanges to false after successfully saving', function(done) {
       var controllerHarness = makeController();
       var scope = controllerHarness.scope;
 
       scope.page.set('name', 'name2');
       scope.savePage();
       $rootScope.$apply(); // Must call $apply, as savePage uses a $q promise internally. Grah.
-      expect(scope.hasChanges).to.be.false;
+
+      // Due to our save debouncing, this change is intentionally delayed.
+      scope.$watch('hasChanges', function(hasChanges) {
+        if (!hasChanges) { done(); }
+      });
+    });
+
+    it('should NOT set hasChanges to false after failing to save', function() {
+      var controllerHarness = makeController();
+      var scope = controllerHarness.scope;
+
+      scope.page.set('name', 'name2');
+
+      var origSave = mockPageDataService.save;
+
+      // Hack the mock to always fail the save.
+      mockPageDataService.save = _.constant($q.reject());
+
+      scope.savePage();
+      $rootScope.$apply(); // Must call $apply, as savePage uses a $q promise internally. Grah.
+
+      mockPageDataService.save = origSave;
+
+      expect(scope.hasChanges).to.be.true;
     });
 
     it('should set hasChanges to true after making a change after saving', function() {

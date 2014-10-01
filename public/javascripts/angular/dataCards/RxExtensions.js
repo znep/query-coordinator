@@ -38,3 +38,31 @@ Rx.Observable.prototype.observeOnLatest = function(prop) {
     }
   }).switchLatest();
 };
+
+// Returns a single-element sequence containing the first sequence to produce an element.
+// Similar to Rx.Observable.amb, but it creates a sequence of sequences instead of a sequence
+// of values.
+// Example:
+// var seqA = new Rx.Subject();
+// var seqB = new Rx.Subject();
+//
+// var first = Rx.Observable.firstToReact(seqA, seqB);
+// first.subscribe(function(seq) {
+//   console.log(seq === seqA ? 'A first' : 'B first');
+// }, undefined, function() {
+//   console.log('complete');
+// });
+//
+// seqA.onNext();
+// seqB.onNext();
+//
+// Output:
+// A first
+// complete
+Rx.Observable.firstToReact = function() {
+  var mappedToSelf = _.map(arguments, function(sequence) {
+    return sequence.map(_.constant(sequence));
+  });
+
+  return Rx.Observable.merge.apply(Rx.Observable, mappedToSelf).first().share();
+};

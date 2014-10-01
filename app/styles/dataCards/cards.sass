@@ -92,6 +92,31 @@ body.state-view-cards
                 position: relative
                 top: 3px
 
+      .save-button
+        position: relative
+        .saving-spinner-wrapper
+          $spinner-size: 17px
+          position: absolute
+          top: calc(50% - #{$spinner-size / 2})
+          bottom: 0
+          left: calc(50% - #{$spinner-size / 2})
+          right: 0
+          .saving-spinner
+            @include prefixer(animation-duration, '0.7s')
+            @include prefixer(animation-iteration-count, 'infinite')
+            @include prefixer(animation-timing-function, 'linear')
+            @include prefixer(animation-name, 'loadingspin')
+            display: none
+            height: $spinner-size
+            width: $spinner-size
+
+        &.working
+          .saving-spinner
+            display: block
+          .button-text
+            visibility: hidden
+
+
     #api-panel
       position: absolute
       display: none

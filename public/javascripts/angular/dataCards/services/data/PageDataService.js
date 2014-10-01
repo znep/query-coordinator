@@ -2,7 +2,7 @@
 
   'use strict';
 
-  function PageDataService(http, Assert, ServerConfig) {
+  function PageDataService(http, Assert, ServerConfig, $q) {
 
     function fetch(id) {
       var url = null;

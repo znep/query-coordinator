@@ -45,9 +45,9 @@
       blist.namespace.fetch('blist.snapshot');
 
       blist.namespace.fetch('blist.configuration');
-      blist.configuration.newChartsEnabled = <%= module_enabled?(:new_charts) || true %>;
-      blist.configuration.newMapsEnabled = <%= module_enabled?(:new_maps) == true %>;
-      blist.configuration.oldChartsForced = <%= module_enabled?(:old_charts) == true %>;
+
+      // D3 charts are currently broken for our thumbnailer. So, force old charts for now.
+      blist.configuration.oldChartsForced = true;
 
       blist.snapshot.takeSnapshot = true;
       blist.snapshot.name = '<%= @snapshot_name %>';

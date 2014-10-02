@@ -19,6 +19,7 @@ describe("CardsViewController", function() {
       });
     }
   };
+
   var mockDatasetDataService = {
     getBaseInfo: function() {
       return $q.when({
@@ -38,6 +39,7 @@ describe("CardsViewController", function() {
       });
     }
   };
+
   var mockUserSessionService = {
     getCurrentUser: function() {
       return $q.when(null);
@@ -465,72 +467,6 @@ describe("CardsViewController", function() {
       scope.savePageAs(NEW_PAGE_NAME, NEW_PAGE_DESCRIPTION);
       $rootScope.$apply();
       expect($window.location.href).to.equal('/view/{0}'.format(TEST_PAGE_ID));
-    });
-
-  });
-
-  describe('add card functionality', function() {
-
-    it.only('should not show the "Add a card" modal dialog when a disabled "Add card here" button is clicked', function() {
-      var c = makeController();
-
-      c.scope.addCard(1);
-
-      expect(false).to.be.true;
-    });
-
-    it('should show the "Add a card" modal dialog when an enabled "Add card here" button is clicked', function() {
-
-      expect(false).to.be.true;
-    });
-
-    describe('using the "Add a card" modal dialog', function() {
-
-      it('should close the modal dialog and not add a card when the "x" button is clicked', function() {
-
-        expect(false).to.be.true;
-      });
-
-      it('should close the modal dialog and not add a card when the "Cancel" button is clicked', function() {
-
-        expect(false).to.be.true;
-      });
-
-      it('should close the modal dialog and not add a card when the area outside the dialog is clicked', function() {
-
-        expect(false).to.be.true;
-      });
-
-      it('should show all columns as options in the "Choose a column..." select control', function() {
-
-        expect(false).to.be.true;
-      });
-
-      it('should disable columns that are represented by cards in the "Choose a column..." select control', function() {
-
-        expect(false).to.be.true;
-      });
-
-      it('should disable the "Add card" button when no column in the "Choose a column..." select control is selected', function() {
-
-        expect(false).to.be.true;
-      });
-
-      it('should enable the "Add card" button when an enabled column in the "Choose a column..." select control is selected', function() {
-
-        expect(false).to.be.true;
-      });
-
-      it('should display a sample card visualization when an enabled column in the "Choose a column..." select control is selected', function() {
-
-        expect(false).to.be.true;
-      });
-
-      it('should add a card in the correct CardSize group when an enabled column in the "Choose a column..." select control is selected and the "Add card" button is clicked', function() {
-
-        expect(false).to.be.true;
-      });
-
     });
 
   });

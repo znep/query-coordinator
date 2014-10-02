@@ -587,9 +587,19 @@
           }
         };
 
-        FlyoutService.register('expand-button-target', function(el) { return '<div class="flyout-title">Expand this Card</div>'; });
-        FlyoutService.register('delete-button-target', function(el) { return '<div class="flyout-title">Remove this Card</div>'; });
+        FlyoutService.register('expand-button-target', function(el) {
+            return '<div class="flyout-title">Expand this Card</div>';
+          });
 
+        FlyoutService.register('delete-button-target', function(el) {
+            return '<div class="flyout-title">Remove this Card</div>';
+          });
+
+        FlyoutService.register('add-card-button', function(el) {
+            if ($(el).hasClass('disabled')) {
+              return '<div class="flyout-title">All cards are present</div>';
+            }
+          });
 
         /******************
         * Bind observable *

@@ -1,7 +1,7 @@
 (function() {
   'use strict';
 
-  function addCardDialog(Constants, AngularRxExtensions, Card, FlyoutService) {
+  function addCardDialog(Card, FlyoutService) {
     return {
       restrict: 'E',
       scope: {
@@ -11,8 +11,6 @@
       },
       templateUrl: '/angular_templates/dataCards/addCardDialog.html',
       link: function(scope, element, attrs) {
-
-        AngularRxExtensions.install(scope);
 
         /************************
         * Add new card behavior *
@@ -24,15 +22,13 @@
 
         scope.$watch('addCardSelectedColumnFieldName', function(fieldName) {
 
-          if (scope.page.getCurrentValue('dataset') !== null) {
-
-            var columns = scope.page.getCurrentValue('dataset').getCurrentValue('columns');
+          if (_.isDefined(scope.datasetColumns)) {
 
             if (fieldName === null) {
               scope.addCardModel = null; 
             } else {
               var serializedCard = {
-                'fieldName': columns[fieldName].name,
+                'fieldName': fieldName,
                 'cardSize': scope.addCardCardSize,
                 'cardCustomStyle': {},
                 'expandedCustomStyle': {},
@@ -44,7 +40,6 @@
           }
         });
 
-        // Rebroadcast events back down the scope chain to allow siblings to communicate with each other
         scope.$on('modal-open', function(e, data) {
           scope.addCardCardSize = data.cardSize;
           // Reset the contents of the modal on each open event.
@@ -63,6 +58,7 @@
               filter(function(card) {
                 return card.getCurrentValue('cardSize') <= scope.addCardCardSize; }).length;
 
+            // TODO: There's certainly a less garbage way to do this.
             newCardModels = scope.cardModels.slice(0, preceedingCardCount).
               concat([scope.addCardModel]).
               concat(scope.cardModels.slice(preceedingCardCount));
@@ -75,12 +71,6 @@
         scope.closeAddCardDialog = function() {
           scope.$emit('modal-close-surrogate', {id: 'add-card-dialog'});
         };
-
-        FlyoutService.register('add-card-button', function(el) {
-            if ($(el).hasClass('disabled')) {
-              return '<div class="flyout-title">All cards are present</div>';
-            }
-          });
 
       }
     };

@@ -103,7 +103,7 @@ describe('CardLayout directive test', function() {
       model: model,
       element: element,
       outerScope: outerScope,
-      scope: element.find('card-layout').scope(),
+      scope: element.find('card-layout').scope().$$childHead,
       cardsMetadataElement: element.find('.cards-metadata'),
       quickFilterBarElement: element.find('.quick-filter-bar'),
       findCardForModel: findCardForModel,
@@ -408,11 +408,70 @@ describe('CardLayout directive test', function() {
         expect($('.add-card-button').first().hasClass('disabled')).to.be.true;
       });
 
-      // Note that it is impossible to test for flyouts containing the right message here
-      // without constructing an entire CardsViewController around the <card-layout> directive.
-      // This is because the logic for adding/removing cards lives in CardsViewController
-      // (which is where the flyout is registered) but the buttons themselves are part of
-      // card-layout in order to make them flow with the rest of the layout. Ugh.
+      it('should show a flyout with the text "All cards are present" when a disabled "Add card here" button is mousemoved', function() {
+        var cl = createCardLayout();
+
+        cl.outerScope.hasAllCards = true;
+        cl.outerScope.editMode = true;
+        cl.outerScope.$apply();
+
+        mockWindowStateService.mousePositionSubject.onNext({
+          clientX: 0,
+          clientY: 0,
+          target: $('.add-card-button')[0]
+        });
+
+        expect($('#uber-flyout').text()).to.equal('All cards are present');
+      });
+
+      it('should not show a flyout with the text "All cards are present" when an enabled "Add card here" button is mousemoved', function() {
+        var cl = createCardLayout();
+
+        cl.outerScope.hasAllCards = false;
+        cl.outerScope.editMode = true;
+        cl.outerScope.$apply();
+
+        mockWindowStateService.mousePositionSubject.onNext({
+          clientX: 0,
+          clientY: 0,
+          target: $('.add-card-button')[0]
+        });
+
+        expect($('#uber-flyout').text()).to.equal('');
+      });
+
+      it('should not show the "Add a card" modal dialog when a disabled "Add card here" button is clicked', function() {
+        var cl = createCardLayout();
+
+        cl.outerScope.hasAllCards = true;
+        cl.outerScope.editMode = true;
+        cl.outerScope.$apply();
+
+        var opened = false;
+
+        cl.outerScope.$on('modal-open-surrogate', function() { opened = true; });
+
+        testHelpers.fireEvent($('.add-card-button')[0], 'click');
+
+        expect(opened).to.be.false;
+        
+      });
+
+      it('should show the "Add a card" modal dialog when an enabled "Add card here" button is clicked', function() {
+        var cl = createCardLayout();
+
+        cl.outerScope.hasAllCards = false;
+        cl.outerScope.editMode = true;
+        cl.outerScope.$apply();
+
+        var opened = false;
+
+        cl.outerScope.$on('modal-open-surrogate', function() { opened = true; });
+
+        testHelpers.fireEvent($('.add-card-button')[0], 'click');
+
+        expect(opened).to.be.true;
+      });
 
     });
 

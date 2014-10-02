@@ -1,6 +1,8 @@
 describe("CardsViewController", function() {
-  var Page;
+  var testHelpers;
   var Card;
+  var Page;
+  var Model;
   var $q;
   var $rootScope;
   var $controller;
@@ -46,6 +48,17 @@ describe("CardsViewController", function() {
     ping: 'pong'
   };
 
+  beforeEach(module('/angular_templates/dataCards/pages/cards-view.html'));
+  beforeEach(module('/angular_templates/dataCards/card-layout.html'));
+  beforeEach(module('/angular_templates/dataCards/card.html'));
+  beforeEach(module('/angular_templates/dataCards/cardVisualizationColumnChart.html'));
+  beforeEach(module('/angular_templates/dataCards/cardVisualizationChoropleth.html'));
+  beforeEach(module('/angular_templates/dataCards/cardVisualizationTimelineChart.html'));
+  beforeEach(module('/angular_templates/dataCards/timelineChart.html'));
+  beforeEach(module('/angular_templates/dataCards/cardVisualizationTable.html'));
+  beforeEach(module('/angular_templates/dataCards/table.html'));
+  beforeEach(module('/angular_templates/dataCards/tableHeader.html'));
+
   beforeEach(module('dataCards'));
   beforeEach(function() {
     module(function($provide) {
@@ -59,29 +72,73 @@ describe("CardsViewController", function() {
       });
     });
   });
-  beforeEach(inject(['$q', 'Card', 'Page', '$rootScope', '$controller', '$window', function(_$q, _Card, _Page, _$rootScope, _$controller, _$window) {
-    Card = _Card;
-    Page = _Page;
-    $q = _$q;
-    $rootScope = _$rootScope;
-    $controller = _$controller;
-    $window = _$window;
-  }]));
+
+  beforeEach(inject(function($injector) {
+    testHelpers = $injector.get('testHelpers');
+    $q = $injector.get('$q');
+    Card = $injector.get('Card');
+    Page = $injector.get('Page');
+    Model = $injector.get('Model');
+    $rootScope = $injector.get('$rootScope');
+    $controller = $injector.get('$controller');
+    AngularRxExtensions = $injector.get('AngularRxExtensions');
+    $window = $('window');
+  }));
+
+  beforeEach(inject(function($injector) {
+    testHelpers = $injector.get('testHelpers');
+  }));
+
+  afterEach(function(){
+    testHelpers.TestDom.clear();
+  });
 
   function makeController() {
-    var scope = $rootScope.$new();
-    var fakePageId = 'fooo-baar';
 
+    var fakePageId = 'fooo-baar';
     var baseInfoPromise = $q.defer();
 
     mockPageDataService.getBaseInfo = function() { return baseInfoPromise.promise; };
 
-    var page = new Page(fakePageId);
-    page.serialize = function() { return mockPageSerializationData; };
+    var model = new Model();
+    model.fieldName = 'ward';
+    model.defineObservableProperty('activeFilters', []);
+    model.defineObservableProperty('expanded', false);
+
+    var datasetModel = new Model();
+    datasetModel.id = 'roll-dice';
+    datasetModel.fieldName = 'ward';
+    datasetModel.defineObservableProperty('rowDisplayUnit', 'row');
+    datasetModel.defineObservableProperty('pages', []);
+    datasetModel.defineObservableProperty('updatedAt', '');
+    datasetModel.defineObservableProperty('domain', '');
+    datasetModel.defineObservableProperty('columns', {
+      'test_column': {
+        "name": "test_column",
+        "title": "test column title",
+        "description": "test column description",
+        "logicalDatatype": "amount",
+        "physicalDatatype": "number",
+        "importance": 2
+      }
+    });
+
+    var pageModel = new Page('asdf-fdsa');
+    pageModel.set('dataset', datasetModel);
+    pageModel.set('baseSoqlFilter', null);
+    pageModel.set('cards', []);
+    model.page = pageModel;
+
+    var scope = $rootScope.$new();
+    AngularRxExtensions.install(scope);
+    scope.page = pageModel;
+    scope.where = '';
+    scope.editMode = false;
+    scope.bindObservable('cardModels', pageModel.observe('cards'));
 
     var controller = $controller('CardsViewController', {
       $scope: scope,
-      page: page,
+      page: pageModel
     });
 
     scope.$apply();
@@ -91,9 +148,9 @@ describe("CardsViewController", function() {
       baseInfoPromise: baseInfoPromise,
       scope: scope,
       controller: controller,
-      page: page
+      page: pageModel
     };
-  };
+  }
 
   function testCard() {
     return {
@@ -105,7 +162,7 @@ describe("CardsViewController", function() {
       'displayMode': 'figures',
       'expanded': false
     };
-  };
+  }
 
   describe('page name', function() {
     it('should update on the scope when the property changes on the model', function() {
@@ -408,6 +465,72 @@ describe("CardsViewController", function() {
       scope.savePageAs(NEW_PAGE_NAME, NEW_PAGE_DESCRIPTION);
       $rootScope.$apply();
       expect($window.location.href).to.equal('/view/{0}'.format(TEST_PAGE_ID));
+    });
+
+  });
+
+  describe('add card functionality', function() {
+
+    it.only('should not show the "Add a card" modal dialog when a disabled "Add card here" button is clicked', function() {
+      var c = makeController();
+
+      c.scope.addCard(1);
+
+      expect(false).to.be.true;
+    });
+
+    it('should show the "Add a card" modal dialog when an enabled "Add card here" button is clicked', function() {
+
+      expect(false).to.be.true;
+    });
+
+    describe('using the "Add a card" modal dialog', function() {
+
+      it('should close the modal dialog and not add a card when the "x" button is clicked', function() {
+
+        expect(false).to.be.true;
+      });
+
+      it('should close the modal dialog and not add a card when the "Cancel" button is clicked', function() {
+
+        expect(false).to.be.true;
+      });
+
+      it('should close the modal dialog and not add a card when the area outside the dialog is clicked', function() {
+
+        expect(false).to.be.true;
+      });
+
+      it('should show all columns as options in the "Choose a column..." select control', function() {
+
+        expect(false).to.be.true;
+      });
+
+      it('should disable columns that are represented by cards in the "Choose a column..." select control', function() {
+
+        expect(false).to.be.true;
+      });
+
+      it('should disable the "Add card" button when no column in the "Choose a column..." select control is selected', function() {
+
+        expect(false).to.be.true;
+      });
+
+      it('should enable the "Add card" button when an enabled column in the "Choose a column..." select control is selected', function() {
+
+        expect(false).to.be.true;
+      });
+
+      it('should display a sample card visualization when an enabled column in the "Choose a column..." select control is selected', function() {
+
+        expect(false).to.be.true;
+      });
+
+      it('should add a card in the correct CardSize group when an enabled column in the "Choose a column..." select control is selected and the "Add card" button is clicked', function() {
+
+        expect(false).to.be.true;
+      });
+
     });
 
   });

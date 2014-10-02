@@ -133,7 +133,6 @@ angular.module('socrataCommon.directives').directive('columnChart', function($pa
         css('top', $chartScroll.position().top + topMargin).
         css('width', chartWidth);
       _.each(_.uniq([0].concat(verticalScale.ticks(numberOfTicks))), function(tick) {
-        console.log(chartHeight, verticalScale(tick));
         element.append($('<div>').css('top', chartHeight - verticalScale(tick)).text($.toHumaneNumber(tick)));
       });
       element.css('height', chartHeight + topMargin);

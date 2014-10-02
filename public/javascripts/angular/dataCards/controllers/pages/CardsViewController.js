@@ -217,55 +217,6 @@
     * Add new card behavior *
     ************************/
 
-    $scope.addCardSelectedColumnFieldName = null;
-    $scope.addCardCardSize = null;
-    $scope.addCardModel = null;
-
-    $scope.$watch('addCardSelectedColumnFieldName', function(fieldName) {
-
-      if (page.getCurrentValue('dataset') !== null) {
-
-        var columns = page.getCurrentValue('dataset').getCurrentValue('columns');
-console.log(columns);
-        if (fieldName === null) {
-          $scope.addCardModel = null; 
-        } else {
-          var serializedCard = {
-            'fieldName': columns[fieldName].name,
-            'cardSize': $scope.addCardCardSize,
-            'cardCustomStyle': {},
-            'expandedCustomStyle': {},
-            'displayMode': 'visualization',
-            'expanded': false
-          };
-          $scope.addCardModel = Card.deserialize(page, serializedCard);
-        }
-      }
-    });
-
-    // Rebroadcast events back down the scope chain to allow siblings to communicate with each other
-    $scope.$on('modal-open-surrogate', function(e, data) {
-      $scope.addCardCardSize = data.cardSize;
-      $scope.$broadcast('modal-open', data);
-    });
-
-    $scope.$on('modal-close-surrogate', function(e, data) {
-      $scope.$broadcast('modal-close', data);
-    });
-
-    $scope.addCard = function() {
-      if ($scope.addCardSelectedColumn !== null) {
-        console.log('adding card with fieldName ', $scope.addCardSelectedColumn,  ' to cardSize ' + $scope.addCardCardSize);
-        $scope.$broadcast('modal-close', {id: 'add-card-dialog'});
-      }
-    };
-
-    $scope.closeAddCardDialog = function() {
-      $scope.addCardSelectedColumnFieldName = null;
-      $scope.addCardModel = null;
-      $scope.$broadcast('modal-close', {id: 'add-card-dialog'});
-    };
-
     var datasetColumnsWithoutDataTable = page.
       observe('dataset').
       observeOnLatest('columns').map(
@@ -308,13 +259,19 @@ console.log(columns);
 
       });
 
-    var hasAllCards = Rx.Observable.returnValue(false);
-
     $scope.bindObservable('datasetColumns', datasetColumns);
     $scope.bindObservable('hasAllCards', datasetColumns.map(
       function(columns) {
         return columns.filter(
           function(column) { return column.available; }).length === 0; }));
+
+    $scope.$on('modal-open-surrogate', function(e, data) {
+      $scope.$broadcast('modal-open', data);
+    });
+
+    $scope.$on('modal-close-surrogate', function(e, data) {
+      $scope.$broadcast('modal-close', data);
+    });
 
 
     /***************************

@@ -82,7 +82,7 @@ describe('CardLayout directive test', function() {
         '<div>',
           '<div class="quick-filter-bar"></div>',
           '<div class="cards-metadata"></div>',
-          '<card-layout id="card-container" page="page" card-models="cardModels" global-where-clause-fragment="where" edit-mode="editMode"></card-layout>',
+          '<card-layout id="card-container" page="page" card-models="cardModels" global-where-clause-fragment="where" edit-mode="editMode" allow-add-card="!hasAllCards"></card-layout>',
         '</div>'
           ].join('');
     var element = testHelpers.TestDom.compileAndAppend(html, outerScope);
@@ -103,7 +103,7 @@ describe('CardLayout directive test', function() {
       model: model,
       element: element,
       outerScope: outerScope,
-      scope: element.find('div[column-chart]').scope(),
+      scope: element.find('card-layout').scope(),
       cardsMetadataElement: element.find('.cards-metadata'),
       quickFilterBarElement: element.find('.quick-filter-bar'),
       findCardForModel: findCardForModel,
@@ -378,6 +378,42 @@ describe('CardLayout directive test', function() {
       card2.set('cardSize', '3');
       card3.set('cardSize', '3');
       expect(visibilities()).to.deep.equal([false, true, false]);
+    });
+
+    describe('add card behavior', function() {
+
+      it('should display "Add card here" buttons in edit mode', function() {
+        var cl = createCardLayout();
+
+        expect($('.add-card-button').first().css('display')).to.equal('none');
+
+        cl.outerScope.editMode = true;
+        cl.outerScope.$apply();
+
+        expect($('.add-card-button').first().css('display')).to.not.equal('none');
+      });
+
+      it('should enable or disable "Add card here" buttons as the controller indicates', function() {
+        var cl = createCardLayout();
+
+        cl.outerScope.hasAllCards = false;
+        cl.outerScope.editMode = true;
+        cl.outerScope.$apply();
+
+        expect($('.add-card-button').first().hasClass('disabled')).to.be.false;
+
+        cl.outerScope.hasAllCards = true;
+        cl.outerScope.$apply();
+
+        expect($('.add-card-button').first().hasClass('disabled')).to.be.true;
+      });
+
+      // Note that it is impossible to test for flyouts containing the right message here
+      // without constructing an entire CardsViewController around the <card-layout> directive.
+      // This is because the logic for adding/removing cards lives in CardsViewController
+      // (which is where the flyout is registered) but the buttons themselves are part of
+      // card-layout in order to make them flow with the rest of the layout. Ugh.
+
     });
 
     describe('drag and drop', function() {

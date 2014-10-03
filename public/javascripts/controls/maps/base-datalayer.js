@@ -424,7 +424,8 @@
 
             layerObj.richRenderer.renderRow($item, row, true);
 
-            if (layerObj.settings.showRowLink && !layerObj._displayFormat.hideRowLink)
+            if (row.id
+                && layerObj.settings.showRowLink && !layerObj._displayFormat.hideRowLink)
             {
                 $item.append($.tag({tagName: 'a',
                     href: layerObj._view.url + '/' + row.id,

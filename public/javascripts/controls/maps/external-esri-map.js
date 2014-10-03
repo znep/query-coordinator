@@ -369,7 +369,11 @@
 
             var rows = _.map(features, function(feature)
             {
-                var row = { data: {}};
+                var objectid = layerObj._attrMap['OBJECTID'],
+                    dsRow = _.detect(layerObj._view.loadedRows(), function(row)
+                    { return row.data[objectid] == feature.attributes['OBJECTID']; });
+
+                var row = { data: {}, id: dsRow.id };
                 _.each(feature.attributes, function(val, attr)
                 { row.data[layerObj._attrMap[attr]] = val; });
                 return row;

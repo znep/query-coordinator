@@ -24,7 +24,7 @@
       model.id = FAKE4x4;
       model.defineObservableProperty('domain', TEST_DOMAIN);
       var scope = $rootScope.$new();
-      scope.myTestObservable = Rx.Observable.return(model);
+      scope.myTestObservable = Rx.Observable.returnValue(model);
       var element = testHelpers.TestDom.compileAndAppend(
         '<api-explorer dataset-observable="myTestObservable"></api-explorer>',
         scope);
@@ -153,7 +153,7 @@
           model.id = '';
           model.defineObservableProperty('domain', null);
           var scope = $rootScope.$new();
-          scope.myTestObservable = Rx.Observable.return(model);
+          scope.myTestObservable = Rx.Observable.returnValue(model);
           element = testHelpers.TestDom.compileAndAppend(
             '<api-explorer dataset-observable="myTestObservable"></api-explorer>', scope);
         });

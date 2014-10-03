@@ -69,7 +69,7 @@
           datasetIdStream,
           domainStream,
           safeUrlFormatFn('http://dev.socrata.com/foundry/#/{0}/{1}'));
-        var jsonAvailableStream = Rx.Observable.return(true);
+        var jsonAvailableStream = Rx.Observable.returnValue(true);
         var geoJsonAvailableStream = datasetIdStream.
           filter(function(value) { return !_.isNull(value); }).
           flatMapLatest(function(id) {
@@ -95,7 +95,7 @@
             case 'GeoJSON':
               return geoJsonApiUrlStream;
             default:
-              return Rx.Observable.return('#');
+              return Rx.Observable.returnValue('#');
           }
         });
 

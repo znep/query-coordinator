@@ -10,8 +10,11 @@
       },
       templateUrl: '/angular_templates/dataCards/saveAs.html',
       link: function($scope, element, attrs) {
-
         AngularRxExtensions.install($scope);
+
+        var saveEvents = new Rx.BehaviorSubject({ status: 'idle' });
+
+        $scope.bindObservable('saveStatus', saveEvents.pluck('status'));
 
         var $saveAsButton = element.find('.save-as-button');
         var $nameInput = element.find('#save-as-name');
@@ -43,8 +46,8 @@
           if ($scope.name.trim() === '') {
             $nameInput.addClass('form-error').focus();
           } else {
-            $scope.panelActive = false;
-            $scope.saveAs($scope.name.trim(), $scope.description.trim());
+            $scope.saveAs($scope.name.trim(), $scope.description.trim()).
+              subscribe(saveEvents);
           }
         };
 

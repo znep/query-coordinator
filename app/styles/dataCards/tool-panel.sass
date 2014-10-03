@@ -67,17 +67,33 @@ $tool-panel-z-index: 1004
   textarea.no-resize
     resize: none
 
-  .tool-panel-btn.action-btn
-    width: auto
-    background-color: $dark-btn-bg-color
-    border: solid 2px $dark-btn-border-color
-    color: $dark-btn-font-color
-    font-weight: bold
-    font-size: 1em
-    margin-bottom: 0
+  .tool-panel-input-group
+    .action-btn
+      width: auto
+      background-color: $dark-btn-bg-color
+      border: solid 2px $dark-btn-border-color
+      color: $dark-btn-font-color
+      font-weight: bold
+      font-size: 1em
+      margin-bottom: 0
 
-    &:hover
-      background-color: $dark-btn-hover-bg-color
-      border: solid 2px $dark-btn-hover-border-color
-      color: $dark-btn-hover-font-color
+      &:hover
+        background-color: $dark-btn-hover-bg-color
+        border: solid 2px $dark-btn-hover-border-color
+        color: $dark-btn-hover-font-color
+
+      &.error
+        background-color: $btn-error-bg-color
+        border: solid 2px $btn-error-border-color
+        color: $btn-error-font-color
+
+      &.success
+        background-color: $btn-success-bg-color
+        border: solid 2px $btn-success-border-color
+        color: $btn-success-font-color
+
+      &.working
+        background-color: $dark-btn-working-bg-color
+        border: solid 2px $dark-btn-working-border-color
+        color: $dark-btn-working-font-color
 

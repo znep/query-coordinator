@@ -1,4 +1,5 @@
 <div class="tool-panel">
+
   <button type="button" ng-class="{touched: panelActive, disabled: !hasChanges}" class="save-as-button tool-panel-toggle-btn action-btn r-to-l" ng-click="conditionallyShowPanel()">Save As</button>
   <div id="save-as-panel" ng-class="{active: panelActive}" class="tool-panel-main">
     <div id="save-as-panel-inner-container" class="tool-panel-inner-container">
@@ -16,7 +17,11 @@
       </div>
 
       <div class="tool-panel-input-group">
-        <button title="Save" data-action="save" class="tool-panel-btn action-btn l-to-r" ng-click="save()">Save</button>
+        <save-button
+          ng-click="save()"
+          enabled="hasChanges"
+          save-status="saveStatus">
+        </save-button>
         <button title="Cancel" data-action="cancel" class="tool-panel-btn action-btn l-to-r" ng-click="cancel()">Cancel</button>
       </div>
     </div>

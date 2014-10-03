@@ -39,6 +39,57 @@ Rx.Observable.prototype.observeOnLatest = function(prop) {
   }).switchLatest();
 };
 
+// Catch the error terminating this sequence and presents
+// the error itself as a new single-element sequence.
+Rx.Observable.prototype.errors = function() {
+  return this.filter(_.constant(false)).catchException(function(error) {
+    return Rx.Observable.returnValue(error);
+  });
+};
+
+// Catches all errors in the sequence and ignores them.
+Rx.Observable.prototype.ignoreErrors = function() {
+  return this.catchException(Rx.Observable.never());
+};
+
+// Prints out the activity of the sequence to the console.
+// For debugging purposes. Can pass in an optional name
+// for this sequence to help clarify the output.
+Rx.Observable.prototype.dump = function(optionalName) {
+  var name = optionalName ?
+    (optionalName + ' ') :
+    '';
+
+  return this.subscribe(
+    function(value) {
+      console.log(name + 'onNext: ', value);
+    },
+    function(error) {
+      console.log(name + 'onError: ', error);
+    },
+    function() {
+      console.log(name + 'completed');
+    }
+  );
+}
+
+// Ensure the first element in the sequence takes at least windoeMsec
+// to show up.
+Rx.Observable.prototype.imposeMinimumDelay = function(windowMsec) {
+  var self = this;
+    // Subscription is shared, so only one timer will be made.
+  var timeout = Rx.Observable.timer(windowMsec).share();
+
+  return Rx.Observable.mergeAllAndGiveSource(timeout, self). // Surface the sequence which reacts first.
+    map(function(reaction) {
+      // Depending on which sequence reacted first, figure out when to tell the user success happened.
+      if (reaction.cause === timeout) return self; // Timeout happened, which means the minimum delay was reached. Just use the real success.
+      else return timeout.map(_.constant(reaction.value)); // Success happened too fast. Return success when the timeout completes.
+    }).
+    switchLatest(); // Use the sequence from the map above.
+};
+
+
 // Returns a single-element sequence containing the first sequence to produce an element.
 // Similar to Rx.Observable.amb, but it creates a sequence of sequences instead of a sequence
 // of values.
@@ -60,9 +111,35 @@ Rx.Observable.prototype.observeOnLatest = function(prop) {
 // A first
 // complete
 Rx.Observable.firstToReact = function() {
+  return Rx.Observable.mergeAllAndGiveSource.apply(Rx.Observable, arguments).
+    first().
+    pluck('cause');
+};
+
+// Similar to Rx.Observable.merge, but also gives you the sequence
+// that caused the message.
+// Example:
+// var seqA = new Rx.Subject();
+// var seqB = new Rx.Subject();
+//
+// Rx.Observable.mergeAllAndGiveSource(seqA, seqB).dump();
+//
+// seqA.onNext();
+// seqB.onNext();
+//
+// Output:
+// onNext: { cause: seqA, value: 'A first' }
+// onNext: { cause: seqB, value: 'B first' }
+// complete
+Rx.Observable.mergeAllAndGiveSource = function() {
   var mappedToSelf = _.map(arguments, function(sequence) {
-    return sequence.map(_.constant(sequence));
+    return sequence.map(function(value) {
+      return {
+        cause: sequence,
+        value: value
+      };
+    });
   });
 
-  return Rx.Observable.merge.apply(Rx.Observable, mappedToSelf).first().share();
+  return Rx.Observable.merge.apply(Rx.Observable, mappedToSelf).share();
 };

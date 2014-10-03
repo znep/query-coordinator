@@ -4,9 +4,11 @@
     var scope;
     var $window;
     var testHelpers;
+    var saveAsEventSubject;
 
     beforeEach(function() {
       module('/angular_templates/dataCards/saveAs.html');
+      module('/angular_templates/dataCards/saveButton.html');
       module('socrataCommon.services');
       module('dataCards.directives');
       module('dataCards.services');
@@ -22,8 +24,9 @@
       var element = angular.element(html);
 
       inject(function($compile, $rootScope) {
+        saveAsEventSubject = new Rx.Subject();
         scope = $rootScope.$new();
-        scope.savePageAs = sinon.stub();
+        scope.savePageAs = sinon.spy(_.constant(saveAsEventSubject));
         saveAs = $compile(element)(scope);
         scope.$digest();
       });

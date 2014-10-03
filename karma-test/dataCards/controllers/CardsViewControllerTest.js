@@ -4,17 +4,38 @@ describe("CardsViewController", function() {
   var $q;
   var $rootScope;
   var $controller;
-  var $window;
+
+
+  // Define a mock window service and surface writes to location.href.
+  var mockWindowService = {
+    location: {}
+  };
+
+  var mockWindowServiceLocationSeq = new Rx.BehaviorSubject(undefined);
+  Object.defineProperty(
+    mockWindowService.location,
+    'href',
+    {
+      get: function() { return mockWindowServiceLocationSeq.value; },
+      set: function(value) { mockWindowServiceLocationSeq.onNext(value); }
+    }
+  );
+
 
   var TEST_PAGE_ID = 'boom-poww';
 
   var mockPageDataService = {
     save: function() {
-      return $q.when({
-        data: {
-          pageId: TEST_PAGE_ID
+      // Stupid promise not tied to $digests.
+      return {
+        then: function(callback) {
+          return callback({
+            data: {
+              pageId: TEST_PAGE_ID
+            }
+          })
         }
-      });
+      };
     }
   };
   var mockDatasetDataService = {
@@ -52,11 +73,7 @@ describe("CardsViewController", function() {
       $provide.value('PageDataService', mockPageDataService);
       $provide.value('DatasetDataService', mockDatasetDataService);
       $provide.value('UserSession', mockUserSessionService);
-      $provide.value('$window', {
-        location: {
-          href: ''
-        }
-      });
+      $provide.value('$window', mockWindowService);
     });
   });
   beforeEach(inject(['$q', 'Card', 'Page', '$rootScope', '$controller', '$window', function(_$q, _Card, _Page, _$rootScope, _$controller, _$window) {
@@ -413,24 +430,34 @@ describe("CardsViewController", function() {
       scope = controllerHarness.scope;
     });
 
-    it('should call save on PageDataService with no ID and updated data', function() {
+    it('should call save on PageDataService with no ID and updated data', function(done) {
       var expectedPageSerializationData = {
         ping: 'pong',
         name: NEW_PAGE_NAME,
         description: NEW_PAGE_DESCRIPTION
       };
       var saveSpy = sinon.spy(mockPageDataService, 'save');
-      scope.savePageAs(NEW_PAGE_NAME, NEW_PAGE_DESCRIPTION);
-      expect(saveSpy.calledOnce).to.be.true;
-      var saveCall = saveSpy.getCall(0);
-      expect(saveCall.calledWithExactly(expectedPageSerializationData)).to.be.true;
-      mockPageDataService.save.restore();
+      var saveEvents = scope.savePageAs(NEW_PAGE_NAME, NEW_PAGE_DESCRIPTION);
+      saveEvents.subscribe(function(event) {
+        if (event.status === 'saved') {
+          expect(saveSpy.calledOnce).to.be.true;
+          var saveCall = saveSpy.getCall(0);
+          expect(saveCall.calledWithExactly(expectedPageSerializationData, undefined)).to.be.true;
+          mockPageDataService.save.restore();
+          done();
+        }
+      });
     });
 
-    it('should redirect to the new page URL on success', function() {
-      scope.savePageAs(NEW_PAGE_NAME, NEW_PAGE_DESCRIPTION);
-      $rootScope.$apply();
-      expect($window.location.href).to.equal('/view/{0}'.format(TEST_PAGE_ID));
+    it('should redirect to the new page URL on success', function(done) {
+      mockWindowServiceLocationSeq.onNext(undefined);
+      var saveEvents = scope.savePageAs(NEW_PAGE_NAME, NEW_PAGE_DESCRIPTION);
+      mockWindowServiceLocationSeq.subscribe(function(href) {
+        if (href) {
+          expect(href).to.equal('/view/{0}'.format(TEST_PAGE_ID));
+          done();
+        }
+      });
     });
 
   });

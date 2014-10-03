@@ -371,7 +371,7 @@
             {
                 var objectid = layerObj._attrMap['OBJECTID'],
                     dsRow = _.detect(layerObj._view.loadedRows(), function(row)
-                    { return row.data[objectid] == feature.attributes['OBJECTID']; });
+                    { return row.data[objectid] == feature.attributes['OBJECTID']; }) || {};
 
                 var row = { data: {}, id: dsRow.id };
                 _.each(feature.attributes, function(val, attr)

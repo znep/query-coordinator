@@ -186,6 +186,7 @@ describe('CardLayout directive test', function() {
   });
 
   describe('in edit mode', function() {
+
     // This is hard to test as we can't do a hittest from the browser to simulate a real
     // mouse click.
     // Best we can do is see if the interaction catcher comes up in edit mode.
@@ -284,6 +285,9 @@ describe('CardLayout directive test', function() {
       // --Chris Laidlaw, 9/24/2014
       expect(Math.abs(parseInt($('#uber-flyout')[0].style.top, 10) - calculatedFlyoutYOffset)).to.below(5);
 
+      // Reset flyout
+      $('#uber-flyout .content').text('');
+      mockWindowStateService.mouseLeftButtonPressedSubject.onNext(true);
     });
 
     it('should remove a card when the delete button is clicked', function() {
@@ -311,7 +315,6 @@ describe('CardLayout directive test', function() {
       thirdDeleteButton.trigger('click');
 
       expect(cl.pageModel.getCurrentValue('cards')).to.deep.equal([card1, card2]);
-
     });
 
     it('should show the correct drop placeholders', function() {
@@ -421,7 +424,11 @@ describe('CardLayout directive test', function() {
           target: $('.add-card-button')[0]
         });
 
-        expect($('#uber-flyout').text()).to.equal('All cards are present');
+        expect($('#uber-flyout .content').text()).to.equal('All cards are present');
+
+        // Reset flyout
+        $('#uber-flyout .content').text('');
+        mockWindowStateService.mouseLeftButtonPressedSubject.onNext(true);
       });
 
       it('should not show a flyout with the text "All cards are present" when an enabled "Add card here" button is mousemoved', function() {
@@ -437,7 +444,11 @@ describe('CardLayout directive test', function() {
           target: $('.add-card-button')[0]
         });
 
-        expect($('#uber-flyout').text()).to.equal('');
+        expect($('#uber-flyout').css('display')).to.equal('none');
+
+        // Reset flyout
+        $('#uber-flyout .content').text('');
+        mockWindowStateService.mouseLeftButtonPressedSubject.onNext(true);
       });
 
       it('should not show the "Add a card" modal dialog when a disabled "Add card here" button is clicked', function() {

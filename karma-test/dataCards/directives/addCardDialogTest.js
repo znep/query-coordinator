@@ -123,18 +123,6 @@ describe('addCardDialog', function() {
 
     describe('using the "Add a card" modal dialog', function() {
 
-      it('should close the modal dialog and not add a card when the "x" button is clicked', function() {
-
-        expect(false).to.be.true;
-      });
-
-      it('should close the modal dialog and not add a card when the area outside the dialog is clicked', function() {
-
-        expect(false).to.be.true;
-      });
-
-
-
       it('should close the modal dialog and not add a card when the "Cancel" button is clicked', function() {
         var d = createDialog();
 

@@ -22,7 +22,7 @@ describe("card directive", function() {
 
   describe('expansion toggle', function() {
     var el;
-    var html = '<card model="model"></card>';
+    var html = '<card model="model" interactive="true"></card>';
     var model;
     // Can't inject rootScope or testHelpers in describe. Workaround.
     function ensure() {

@@ -1,8 +1,6 @@
 describe("CardsViewController", function() {
-  var testHelpers;
-  var Card;
   var Page;
-  var Model;
+  var Card;
   var $q;
   var $rootScope;
   var $controller;
@@ -19,7 +17,6 @@ describe("CardsViewController", function() {
       });
     }
   };
-
   var mockDatasetDataService = {
     getBaseInfo: function() {
       return $q.when({
@@ -39,7 +36,6 @@ describe("CardsViewController", function() {
       });
     }
   };
-
   var mockUserSessionService = {
     getCurrentUser: function() {
       return $q.when(null);
@@ -49,17 +45,6 @@ describe("CardsViewController", function() {
   var mockPageSerializationData = {
     ping: 'pong'
   };
-
-  beforeEach(module('/angular_templates/dataCards/pages/cards-view.html'));
-  beforeEach(module('/angular_templates/dataCards/card-layout.html'));
-  beforeEach(module('/angular_templates/dataCards/card.html'));
-  beforeEach(module('/angular_templates/dataCards/cardVisualizationColumnChart.html'));
-  beforeEach(module('/angular_templates/dataCards/cardVisualizationChoropleth.html'));
-  beforeEach(module('/angular_templates/dataCards/cardVisualizationTimelineChart.html'));
-  beforeEach(module('/angular_templates/dataCards/timelineChart.html'));
-  beforeEach(module('/angular_templates/dataCards/cardVisualizationTable.html'));
-  beforeEach(module('/angular_templates/dataCards/table.html'));
-  beforeEach(module('/angular_templates/dataCards/tableHeader.html'));
 
   beforeEach(module('dataCards'));
   beforeEach(function() {
@@ -74,73 +59,29 @@ describe("CardsViewController", function() {
       });
     });
   });
-
-  beforeEach(inject(function($injector) {
-    testHelpers = $injector.get('testHelpers');
-    $q = $injector.get('$q');
-    Card = $injector.get('Card');
-    Page = $injector.get('Page');
-    Model = $injector.get('Model');
-    $rootScope = $injector.get('$rootScope');
-    $controller = $injector.get('$controller');
-    AngularRxExtensions = $injector.get('AngularRxExtensions');
-    $window = $('window');
-  }));
-
-  beforeEach(inject(function($injector) {
-    testHelpers = $injector.get('testHelpers');
-  }));
-
-  afterEach(function(){
-    testHelpers.TestDom.clear();
-  });
+  beforeEach(inject(['$q', 'Card', 'Page', '$rootScope', '$controller', '$window', function(_$q, _Card, _Page, _$rootScope, _$controller, _$window) {
+    Card = _Card;
+    Page = _Page;
+    $q = _$q;
+    $rootScope = _$rootScope;
+    $controller = _$controller;
+    $window = _$window;
+  }]));
 
   function makeController() {
-
+    var scope = $rootScope.$new();
     var fakePageId = 'fooo-baar';
+
     var baseInfoPromise = $q.defer();
 
     mockPageDataService.getBaseInfo = function() { return baseInfoPromise.promise; };
 
-    var model = new Model();
-    model.fieldName = 'ward';
-    model.defineObservableProperty('activeFilters', []);
-    model.defineObservableProperty('expanded', false);
-
-    var datasetModel = new Model();
-    datasetModel.id = 'roll-dice';
-    datasetModel.fieldName = 'ward';
-    datasetModel.defineObservableProperty('rowDisplayUnit', 'row');
-    datasetModel.defineObservableProperty('pages', []);
-    datasetModel.defineObservableProperty('updatedAt', '');
-    datasetModel.defineObservableProperty('domain', '');
-    datasetModel.defineObservableProperty('columns', {
-      'test_column': {
-        "name": "test_column",
-        "title": "test column title",
-        "description": "test column description",
-        "logicalDatatype": "amount",
-        "physicalDatatype": "number",
-        "importance": 2
-      }
-    });
-
-    var pageModel = new Page('asdf-fdsa');
-    pageModel.set('dataset', datasetModel);
-    pageModel.set('baseSoqlFilter', null);
-    pageModel.set('cards', []);
-    model.page = pageModel;
-
-    var scope = $rootScope.$new();
-    AngularRxExtensions.install(scope);
-    scope.page = pageModel;
-    scope.where = '';
-    scope.editMode = false;
-    scope.bindObservable('cardModels', pageModel.observe('cards'));
+    var page = new Page(fakePageId);
+    page.serialize = function() { return mockPageSerializationData; };
 
     var controller = $controller('CardsViewController', {
       $scope: scope,
-      page: pageModel
+      page: page,
     });
 
     scope.$apply();
@@ -150,9 +91,9 @@ describe("CardsViewController", function() {
       baseInfoPromise: baseInfoPromise,
       scope: scope,
       controller: controller,
-      page: pageModel
+      page: page
     };
-  }
+  };
 
   function testCard() {
     return {
@@ -164,7 +105,7 @@ describe("CardsViewController", function() {
       'displayMode': 'figures',
       'expanded': false
     };
-  }
+  };
 
   describe('page name', function() {
     it('should update on the scope when the property changes on the model', function() {

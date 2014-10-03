@@ -27,7 +27,8 @@
       var TEST_CONTENT = 'this is my test content';
       var scope = $rootScope.$new();
       scope.myTestContent = TEST_CONTENT;
-      var element = testHelpers.TestDom.compileAndAppend('<selection-label content="myTestContent"></selection-label>', scope);
+      var element = testHelpers.TestDom.compileAndAppend(
+        '<selection-label content="myTestContent"></selection-label>', scope);
       expect(element.is(':contains({0})'.format(TEST_CONTENT))).to.be.true;
       expect(element.isolateScope().content).to.equal(TEST_CONTENT);
     });
@@ -37,7 +38,8 @@
       var TEST_CONTENT_2 = 'my new test content';
       var scope = $rootScope.$new();
       scope.content = TEST_CONTENT_1;
-      var element = testHelpers.TestDom.compileAndAppend('<selection-label content="content"></selection-label>', scope);
+      var element = testHelpers.TestDom.compileAndAppend(
+        '<selection-label content="content"></selection-label>', scope);
       expect(element.find('.selection-label-inner').text()).to.equal(TEST_CONTENT_1);
       scope.content = TEST_CONTENT_2;
       scope.$digest();
@@ -49,10 +51,12 @@
       var scope;
       var element;
       var $content;
+
       beforeEach(function() {
         scope = $rootScope.$new();
         scope.content = TEST_CONTENT;
-        element = testHelpers.TestDom.compileAndAppend('<selection-label content="content"></selection-label>', scope);
+        element = testHelpers.TestDom.compileAndAppend(
+          '<selection-label content="content"></selection-label>', scope);
         $content = element.find('.selection-label-inner');
       });
 
@@ -67,6 +71,15 @@
         $content.
           trigger('mousedown').
           trigger('mousemove').
+          trigger('mouseup');
+        var selection = $window.getSelection();
+        expect(selection.toString()).to.equal('');
+      });
+
+      it('should not auto-select the test when scrolling the element', function() {
+        $content.
+          trigger('mousedown').
+          trigger('scroll').
           trigger('mouseup');
         var selection = $window.getSelection();
         expect(selection.toString()).to.equal('');

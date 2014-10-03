@@ -5,8 +5,6 @@
     var $httpBackend;
     var DatasetDataService;
     var ServerConfig;
-    var fakeDatasetRequestHandler;
-    var fakeGeoJsonRequestHandler;
     var fake4x4 = 'fake-data';
     var datasetDataUrl = '/dataset_metadata/{0}.json'.format(fake4x4);
     var fakeDatasetData = {
@@ -41,17 +39,15 @@
         }
       }
     };
-    
+
     beforeEach(module('dataCards'));
 
     beforeEach(inject(function($injector) {
       DatasetDataService = $injector.get('DatasetDataService');
       ServerConfig = $injector.get('ServerConfig');
       $httpBackend = $injector.get('$httpBackend');
-      fakeDatasetRequestHandler = $httpBackend.whenGET(datasetDataUrl);
-      fakeDatasetRequestHandler.respond(fakeDatasetData);
-      fakeGeoJsonRequestHandler = $httpBackend.whenGET(geoJsonDataUrl);
-      fakeGeoJsonRequestHandler.respond(fakeGeoJsonData);
+      $httpBackend.whenGET(datasetDataUrl).respond(fakeDatasetData);
+      $httpBackend.whenGET(geoJsonDataUrl).respond(fakeGeoJsonData);
     }));
 
     describe('getBaseInfo', function() {
@@ -72,14 +68,15 @@
         var TEST_DATA = 'testData';
         var getServerConfigStub = sinon.stub(ServerConfig, 'get');
         getServerConfigStub.withArgs('useViewStubs').returns(true);
-        $httpBackend.expectGET('/stubs/datasets/{0}.json'.format(fake4x4)).respond(200, TEST_DATA);
+        $httpBackend.expectGET('/stubs/datasets/{0}.json'.format(fake4x4)).
+          respond(200, TEST_DATA);
         var response = DatasetDataService.getBaseInfo(fake4x4);
-        getServerConfigStub.restore();
         response.then(function(data) {
           expect(data).to.equal(TEST_DATA);
           done();
         });
         $httpBackend.flush();
+        getServerConfigStub.restore();
       });
 
     });

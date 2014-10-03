@@ -22,8 +22,10 @@
          */
 
         /**
-         * Given a template URL string, produces a function that accepts a datasetId and domain and returns a
-         * formatted version of the URL, or '#' if the inputs are invalid
+         * Given a template URL string, produces a function that accepts a datasetId and
+         * domain and returns a formatted version of the URL, or '#' if the inputs are
+         * invalid
+         *
          * @param template Template URL
          * @returns {Function} formatting function
          */

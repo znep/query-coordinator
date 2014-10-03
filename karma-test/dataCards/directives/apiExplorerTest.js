@@ -2,15 +2,36 @@
 
   'use strict';
 
-  describe('<selection-label/>', function() {
+  describe('API Explorer', function() {
     var FAKE4x4 = 'fake-data';
     var TEST_DOMAIN = 'config.ru';
+    var DOCUMENTATION_URL = 'http://dev.socrata.com/foundry/#/{0}/{1}'.format(
+      TEST_DOMAIN, FAKE4x4);
+    var JSON_URL = 'https://{0}/resource/{1}.json'.format(TEST_DOMAIN, FAKE4x4);
+    var GEOJSON_URL = 'https://{0}/views/{1}/rows.geojson'.format(TEST_DOMAIN, FAKE4x4);
 
     var $window;
     var testHelpers;
     var $rootScope;
     var $httpBackend;
     var Model;
+
+    /**
+     * Create the <api-explorer> element with the proper wiring and add it to the dom.
+     */
+    function addValidElement() {
+      var model = new Model();
+      model.id = FAKE4x4;
+      model.defineObservableProperty('domain', TEST_DOMAIN);
+      var scope = $rootScope.$new();
+      scope.myTestObservable = Rx.Observable.return(model);
+      var element = testHelpers.TestDom.compileAndAppend(
+        '<api-explorer dataset-observable="myTestObservable"></api-explorer>',
+        scope);
+      $httpBackend.flush();
+      $rootScope.$digest();
+      return element;
+    }
 
     beforeEach(function() {
       module('/angular_templates/dataCards/apiExplorer.html');
@@ -35,98 +56,140 @@
       testHelpers.TestDom.clear();
     });
 
-    it('accept a datasetObservable attribute', function() {
-      var scope = $rootScope.$new();
-      var TEST_OBSERVABLE = new Rx.Subject();
-      scope.myTestObservable = TEST_OBSERVABLE;
-      var element = testHelpers.TestDom.compileAndAppend('<api-explorer dataset-observable="myTestObservable"></api-explorer>', scope);
-      expect(element.isolateScope().datasetObservable).to.equal(TEST_OBSERVABLE);
+    describe('the tag itself', function() {
+      it('accepts a datasetObservable attribute', function() {
+        var scope = $rootScope.$new();
+        var TEST_OBSERVABLE = new Rx.Subject();
+        scope.myTestObservable = TEST_OBSERVABLE;
+        var element = testHelpers.TestDom.compileAndAppend(
+          '<api-explorer dataset-observable="myTestObservable"></api-explorer>', scope);
+        expect(element.isolateScope().datasetObservable).to.equal(TEST_OBSERVABLE);
+      });
     });
 
-    describe('URLs', function() {
-      var scope;
-      var element;
-
-      beforeEach(function() {
-        $httpBackend.whenGET(new RegExp('/resource/[^.]*\\.geojson\\?\\$limit=1')).respond({geojson: true});
-      });
-
+    describe('when more than one dataset format is available', function() {
       describe('with a valid Dataset', function() {
+        var element;
 
         beforeEach(function() {
-          var model = new Model();
-          model.id = FAKE4x4;
-          model.defineObservableProperty('domain', TEST_DOMAIN);
-          scope = $rootScope.$new();
-          scope.myTestObservable = Rx.Observable.return(model);
-          element = testHelpers.TestDom.compileAndAppend('<api-explorer dataset-observable="myTestObservable"></api-explorer>', scope);
-          $httpBackend.flush();
-          $rootScope.$digest();
+          $httpBackend.whenGET(new RegExp(
+            '/resource/[^.]+\\.geojson\\?\\$limit=1')).respond({geojson: true});
+          element = addValidElement();
         });
 
-        it('should populate the documentation URL link', function() {
-          var EXPECTED_URL = 'http://dev.socrata.com/foundry/#/{0}/{1}'.format(TEST_DOMAIN, FAKE4x4);
-          expect(element.find('[data-action="documentation"]').attr('href')).to.equal(EXPECTED_URL);
+        describe('its default JSON state', function() {
+          it('should populate the documentation URL link', function() {
+            expect(element.find('[data-action="documentation"]').attr('href')).
+              to.equal(DOCUMENTATION_URL);
+          });
+
+          it('should populate the selection label with the JSON API URL', function() {
+            expect(element.find('.selection-label-inner').text()).to.equal(JSON_URL);
+          });
+
+          it('should show the JSON as selected', function() {
+            var selected = element.find('button.active');
+            expect(selected.length).to.equal(1);
+            expect(selected.is('[title="JSON"]')).to.be.true;
+          });
+
+          it('should show geoJSON as an option', function() {
+            expect(element.find('[title="GeoJSON"]').length).to.equal(1);
+          });
         });
 
-        it('should populate the selection label with the JSON API URL', function() {
-          var EXPECTED_URL = 'https://{0}/resource/{1}.json'.format(TEST_DOMAIN, FAKE4x4);
-          expect(element.find('.selection-label-inner').text()).to.equal(EXPECTED_URL);
+        describe('choosing the GeoJSON format', function() {
+          beforeEach(function() {
+            element.find('[title="GeoJSON"]').click();
+          });
+
+          it('should populate the selection label with the GeoJSON API URL', function() {
+            expect(element.find('.selection-label-inner').text()).to.equal(GEOJSON_URL);
+          });
+
+          it('should keep the documentation URL link', function() {
+            expect(element.find('[data-action="documentation"]').attr('href')).to.equal(
+              DOCUMENTATION_URL);
+          });
+
+          it('should show the GeoJSON as selected', function() {
+            var selected = element.find('button.active');
+            expect(selected.length).to.equal(1);
+            expect(selected.is('[title="GeoJSON"]')).to.be.true;
+          });
         });
 
-        it('should have the "format" selectable', function() {
-          expect(element.find('[title="JSON"]').is(':visible')).to.be.true;
+        describe('re-choosing the JSON format', function() {
+          beforeEach(function() {
+            element.find('[title="GeoJSON"]').click();
+            element.find('[title="JSON"]').click();
+          });
+
+          it('should populate the selection label with the JSON API URL', function() {
+            expect(element.find('.selection-label-inner').text()).to.equal(JSON_URL);
+          });
+
+          it('should populate the documentation URL link', function() {
+            expect(element.find('[data-action="documentation"]').attr('href')).to.equal(
+              DOCUMENTATION_URL);
+          });
+
+          it('should show the JSON as selected', function() {
+            var selected = element.find('button.active');
+            expect(selected.length).to.equal(1);
+            expect(selected.is('[title="JSON"]')).to.be.true;
+          });
         });
-
-        it('should switch the "format" when GeoJSON is selected', function() {
-          var EXPECTED_URL = 'https://{0}/views/{1}/rows.geojson'.format(TEST_DOMAIN, FAKE4x4);
-          element.find('[title="GeoJSON"]').click();
-          expect(element.find('.selection-label-inner').text()).to.equal(EXPECTED_URL);
-        })
-
       });
 
       describe('with an invalid Dataset', function() {
+        var element;
 
         beforeEach(function() {
+          $httpBackend.whenGET(new RegExp(
+            '/resource/[^.]*\\.geojson\\?\\$limit=1')).respond({geojson: true});
+
           var model = new Model();
           model.id = '';
           model.defineObservableProperty('domain', null);
-          scope = $rootScope.$new();
+          var scope = $rootScope.$new();
           scope.myTestObservable = Rx.Observable.return(model);
-          element = testHelpers.TestDom.compileAndAppend('<api-explorer dataset-observable="myTestObservable"></api-explorer>', scope);
+          element = testHelpers.TestDom.compileAndAppend(
+            '<api-explorer dataset-observable="myTestObservable"></api-explorer>', scope);
         });
 
         it('should populate the documentation URL link', function() {
-          expect(element.find('[data-action="documentation"]').attr('href')).to.equal('#');
+          expect(element.find('[data-action="documentation"]').attr('href')).
+            to.equal('#');
         });
 
         it('should populate the selection label with the JSON API URL', function() {
           expect(element.find('.selection-label-inner').text()).to.equal('#');
         });
-
       });
-
     });
 
-    describe('when no GeoJSON available for dataset', function() {
-      var scope;
+    describe('when only one type of dataset is available', function() {
       var element;
 
       beforeEach(function() {
-        $httpBackend.whenGET(new RegExp('/resource/[^.]*\\.geojson\\?\\$limit=0')).respond({});
-        var model = new Model();
-        model.id = FAKE4x4;
-        model.defineObservableProperty('domain', TEST_DOMAIN);
-        scope = $rootScope.$new();
-        scope.myTestObservable = Rx.Observable.return(model);
-        element = testHelpers.TestDom.compileAndAppend('<api-explorer dataset-observable="myTestObservable"></api-explorer>', scope);
+        $httpBackend.whenGET(new RegExp('/resource/[^.]+\\.geojson\\?\\$limit=1')).
+          respond({});
+        element = addValidElement();
       });
 
-      it('should ')
+      it('should not display the the geojson option', function() {
+        expect(element.find('[title="GeoJSON"]:visible').length).to.equal(0);
+      });
 
+      it('should populate the documentation URL link', function() {
+        expect(element.find('[data-action="documentation"]').attr('href')).to.equal(
+          DOCUMENTATION_URL);
+      });
+
+      it('should populate the selection label with the JSON API URL', function() {
+        expect(element.find('.selection-label-inner').text()).to.equal(JSON_URL);
+      });
     });
-
   });
-
 })();

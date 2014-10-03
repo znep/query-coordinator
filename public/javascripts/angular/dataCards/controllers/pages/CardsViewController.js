@@ -268,7 +268,7 @@
         // Sequence of exactly one false or exactly one true, signifying failure or success, respectively.
         var successOrFailure = Rx.Observable.fromPromise(savePromise).
           map(_.constant(true)).                        // We don't care what the promise returns. If it resolves, it's a success.
-          catchException(Rx.Observable.return(false));  // All exceptions mean that we failed.
+          catchException(Rx.Observable.returnValue(false));  // All exceptions mean that we failed.
 
         // Convenience.
         var failures = successOrFailure.filter(function(v) { return !v; });

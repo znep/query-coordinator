@@ -36,8 +36,7 @@ angular.module('dataCards.models').factory('Dataset', function(ModelHelper, Mode
               'enum': [ 'number', 'point', 'geo_entity', 'text', 'timestamp', 'row_version', 'row_identifier', 'fixed_timestamp', 'floating_timestamp', '*' ]
             },
             'importance': { 'type': 'integer' , 'minimum': 1, 'maximum': 4 },
-            'columnDisplayUnit': { 'type': 'string' },
-            'shapefileFeatureHumanReadablePropertyName': { 'type': 'string' }
+            'columnDisplayUnit': { 'type': 'string' }
           },
           'required': [ 'title', 'logicalDatatype', 'physicalDatatype', 'importance' ]
         }

@@ -60,7 +60,6 @@
         var model = scope.observe('model');
         var dataset = model.pluck('page').observeOnLatest('dataset');
         var baseSoqlFilter = model.pluck('page').observeOnLatest('baseSoqlFilter');
-        var shapeFile = model.observeOnLatest('shapeFile');
         var dataRequests = new Rx.Subject();
         var dataResponses = new Rx.Subject();
         var geojsonRegionsSequence = new Rx.Subject();
@@ -80,6 +79,51 @@
         var unfilteredData;
         var filteredData;
 
+
+        function getShapefileFeatureHumanReadablePropertyName(regions) {
+          var p = regions.features[0].properties;
+          // Chicago
+          if (p.hasOwnProperty('community') && p.hasOwnProperty('area_numbe')) {
+            return 'community';
+          }
+          // Chicago, SF or Philly (zillow?)
+          if (p.hasOwnProperty('name') && p.hasOwnProperty('city') && p.hasOwnProperty('county') && p.hasOwnProperty('state')) {
+            return 'name';
+          }
+          // Chicago
+          if (p.hasOwnProperty('alderman') && p.hasOwnProperty('hall_offic') && p.hasOwnProperty('ward')) {
+            return 'ward';
+          }
+          // Chicago
+          if (p.hasOwnProperty('zip')) {
+            return 'zip';
+          }
+          // NYC
+          if (p.hasOwnProperty('borocd')) {
+            return 'borocd';
+          }
+          // SF
+          if (p.hasOwnProperty('numbertext') && p.hasOwnProperty('supdist') && p.hasOwnProperty('supervisor') && p.hasOwnProperty('supname')) {
+            return 'supdist';
+          }
+          // SF
+          if (p.hasOwnProperty('city') && p.hasOwnProperty('district') && p.hasOwnProperty('secondary')) {
+            return 'district';
+          }
+          // NYS
+          if (p.hasOwnProperty('countyns') && p.hasOwnProperty('funcstat') && p.hasOwnProperty('namelsad') && p.hasOwnProperty('statefp')) {
+            return 'namelsad';
+          }
+          // NYS
+          if (p.hasOwnProperty('abbrev') && p.hasOwnProperty('businessph') && p.hasOwnProperty('city') && p.hasOwnProperty('name')) {
+            return 'name';
+          }
+          // Philly
+          if (p.hasOwnProperty('dist_num') && p.hasOwnProperty('dist_numc') && p.hasOwnProperty('div_code')) {
+            return 'dist_numc';
+          }
+
+        }
 
         /*************************************
         * FIRST set up the 'busy' indicator. *
@@ -110,10 +154,12 @@
               return !_.isEmpty(whereClause) && whereClause != baseFilter;
             });
 
-        geojsonRegionsData = shapeFile.map(
-          function(shapeFile) {
+        geojsonRegionsData = Rx.Observable.combineLatest(
+          model.pluck('fieldName'),
+          dataset.observeOnLatest('columns'),
+          function(fieldName, columns) {
             dataRequests.onNext(1);
-            var dataPromise = CardDataService.getChoroplethRegions(shapeFile);
+            var dataPromise = CardDataService.getChoroplethRegions(columns[fieldName].shapefile);
             dataPromise.then(
               function(res) {
                 // Ok
@@ -207,11 +253,7 @@
                 throw new Error('Could not match fieldName to human-readable column name.');
               }
 
-              // Geospatial columns are required to have a "shapefileColumn" property,
-              // which acts as a foreign key into the column's shapefile and allows us
-              // to access a human-readable name in a data-driven manner rather than
-              // relying on a hard-coded value.
-              var shapefileFeatureHumanReadablePropertyName = column.shapefileFeatureHumanReadablePropertyName;
+              var shapefileFeatureHumanReadablePropertyName = getShapefileFeatureHumanReadablePropertyName(geojsonRegions);
 
               return mergeRegionAndAggregateData(
                 activeFilterNames,

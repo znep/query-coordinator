@@ -16,10 +16,6 @@ describe('addCardDialog', function() {
 
   beforeEach(inject(function($injector) {
     testHelpers = $injector.get('testHelpers');
-  }));
-
-  beforeEach(inject(function($injector) {
-    testHelpers = $injector.get('testHelpers');
     Card = $injector.get('Card');
     Page = $injector.get('Page');
     Model = $injector.get('Model');
@@ -60,45 +56,75 @@ describe('addCardDialog', function() {
     pageModel.set('baseSoqlFilter', null);
     pageModel.set('cards', []);
 
-    var datasetColumnsWithoutDataTable = pageModel.
-      observe('dataset').
-      observeOnLatest('columns').map(
-        function(columns) {
-          return _.values(_.omit(columns, '*'));
-        });
-
     var datasetColumns = Rx.Observable.combineLatest(
-      datasetColumnsWithoutDataTable,
+      pageModel.observe('dataset').observeOnLatest('columns'),
       pageModel.observe('cards'),
       function(columns, cards) {
 
         var datasetColumns = [];
         var hasAvailableCards = false;
 
-        var sortedColumns = columns.sort(function(a, b) { return a.name > b.name; });
+        var sortedColumns = _.values(columns).
+          filter(function(column) {
+            // We need to ignore 'system' fieldNames that begin with ':' but
+            // retain computed column fieldNames, which (somewhat inconveniently)
+            // begin with ':@'.
+            return column.name.substring(0, 2).match(/\:[\_A-Za-z0-9]/) === null &&
+                   column.physicalDatatype !== '*' &&
+                   column.physicalDatatype !== 'point';
+          }).
+          sort(function(a, b) { return a.name > b.name; });
 
         var sortedCards = cards.
-          filter(function(card) { return card.fieldName !== '*'; }).
+          filter(function(card) {
+            return card.fieldName !== '*'; }).
           sort(function(a, b) { return a.fieldName > b.fieldName });
 
         var i = 0;
         var j = 0;
         var available = false;
         var availableCardCount = sortedColumns.length;
+        var availableColumns = [];
+        var unavailableColumns = [];
 
         for (i = 0; i < sortedColumns.length; i++) {
+
           available = true;
+
           for (j = 0; j < sortedCards.length; j++) {
             if (sortedColumns[i].name === sortedCards[j].fieldName) {
               available = false;
               availableCardCount--;
             }
           }
+
           sortedColumns[i].available = available;
-          datasetColumns.push(sortedColumns[i]);
+
+          if (available) {
+            availableColumns.push(sortedColumns[i]);
+          } else {
+            unavailableColumns.push(sortedColumns[i]);
+          }
+
         }
 
-        return datasetColumns;
+        return availableColumns.sort(function(a, b) {
+          if (a.title < b.title) {
+            return -1;
+          }
+          if (a.title > b.title) {
+            return 1;
+          }
+          return 0;
+        }).concat(unavailableColumns.sort(function(a, b) {
+          if (a.title < b.title) {
+            return -1;
+          }
+          if (a.title > b.title) {
+            return 1;
+          }
+          return 0;
+        }));
 
       });
 
@@ -124,23 +150,15 @@ describe('addCardDialog', function() {
     describe('using the "Add a card" modal dialog', function() {
 
       it('should close the modal dialog and not add a card when the "Cancel" button is clicked', function() {
-        var d = createDialog();
+        var dialog = createDialog();
 
         var closed = false;
 
-        d.outerScope.$on('modal-close-surrogate', function() {
+        dialog.outerScope.$on('modal-close-surrogate', function() {
           closed = true;
         });
 
-        var button = null;
-
-        var buttons = d.element.find('button');
-        for (var i = 0; i < buttons.length; i++) {
-          if ($(buttons[i]).text() === 'Cancel') {
-            button = buttons[i];
-            break;
-          }
-        }
+        var button = dialog.element.find('button:contains("Cancel")')[0];
 
         if (button !== null) {
           testHelpers.fireEvent(button, 'click');
@@ -150,17 +168,15 @@ describe('addCardDialog', function() {
       });
 
       it('should show all columns as options in the "Choose a column..." select control', function() {
-        var d = createDialog();
+        var dialog = createDialog();
 
-        var options = d.element.find('option').filter(
-          function(index, option) {
-            return option.value !== 'null';
-          });
+        var options = dialog.element.find('option:not(:first)');
+
         expect(options.length).to.equal(2);
       });
 
       it('should disable columns that are represented by cards in the "Choose a column..." select control', function() {
-        var d = createDialog();
+        var dialog = createDialog();
 
         var serializedCard = {
           'fieldName': 'spot',
@@ -170,76 +186,48 @@ describe('addCardDialog', function() {
           'displayMode': 'visualization',
           'expanded': false
         };
-        d.scope.page.set('cards', [Card.deserialize(d.scope.page, serializedCard)]);
+        dialog.scope.page.set('cards', [Card.deserialize(dialog.scope.page, serializedCard)]);
 
-        var options = d.element.find('option').filter(
-          function(index, option) {
-            return option.disabled !== true;
-          });
+        var options = dialog.element.find('option:enabled');
 
         expect(options.length).to.equal(1);
       });
 
       it('should disable the "Add card" button when no column in the "Choose a column..." select control is selected', function() {
-        var d = createDialog();
+        var dialog = createDialog();
 
-        var button = null;
-
-        var buttons = d.element.find('button');
-        for (var i = 0; i < buttons.length; i++) {
-          if ($(buttons[i]).text() === 'Add card') {
-            button = buttons[i];
-            break;
-          }
-        }
+        var button = dialog.element.find('button:contains("Add card")')[0];
 
         expect($(button).hasClass('disabled')).to.be.true;
       });
 
       it('should enable the "Add card" button when an enabled column in the "Choose a column..." select control is selected', function() {
-        var d = createDialog();
+        var dialog = createDialog();
 
-        d.scope.addCardCardSize = 1;
-        d.element.find('select').val('spot');
-        testHelpers.fireEvent(d.element.find('select')[0], 'change');
+        dialog.scope.addCardCardSize = 1;
+        // There's probably a jQuery method to set the value AND fire the event, but I don't know what it is. --Chris Laidlaw
+        dialog.element.find('select').val('spot');
+        testHelpers.fireEvent(dialog.element.find('select')[0], 'change');
 
-        var button = null;
-
-        var buttons = d.element.find('button');
-        for (var i = 0; i < buttons.length; i++) {
-          if ($(buttons[i]).text() === 'Add card') {
-            button = buttons[i];
-            break;
-          }
-        }
+        var button = dialog.element.find('button:contains("Add card")')[0];
 
         expect($(button).hasClass('disabled')).to.be.false;
       });
 
       it('should display a sample card visualization when an enabled column in the "Choose a column..." select control is selected', function() {
-        var d = createDialog();
+        var dialog = createDialog();
 
-        var serializedCard = {
-          'fieldName': 'spot',
-          'cardSize': 1,
-          'cardCustomStyle': {},
-          'expandedCustomStyle': {},
-          'displayMode': 'visualization',
-          'expanded': false
-        };
-        d.scope.page.set('cards', [Card.deserialize(d.scope.page, serializedCard)]);
+        expect(dialog.element.find('card').length).to.equal(0);
 
-        expect(d.element.find('card').length).to.equal(0);
+        dialog.scope.addCardCardSize = 2;
+        dialog.element.find('select').val('ward');
+        testHelpers.fireEvent(dialog.element.find('select')[0], 'change');
 
-        d.scope.addCardCardSize = 2;
-        d.element.find('select').val('ward');
-        testHelpers.fireEvent(d.element.find('select')[0], 'change');
-
-        expect(d.element.find('card').length).to.equal(1);
+        expect(dialog.element.find('card').length).to.equal(1);
       });
 
       it('should add a card in the correct CardSize group when an enabled column in the "Choose a column..." select control is selected and the "Add card" button is clicked', function() {
-        var d = createDialog();
+        var dialog = createDialog();
 
         var serializedCard = {
           'fieldName': 'spot',
@@ -249,16 +237,16 @@ describe('addCardDialog', function() {
           'displayMode': 'visualization',
           'expanded': false
         };
-        d.scope.page.set('cards', [Card.deserialize(d.scope.page, serializedCard)]);
+        dialog.scope.page.set('cards', [Card.deserialize(dialog.scope.page, serializedCard)]);
 
-        d.scope.addCardCardSize = 2;
-        d.element.find('select').val('ward');
-        testHelpers.fireEvent(d.element.find('select')[0], 'change');
+        dialog.scope.addCardCardSize = 2;
+        dialog.element.find('select').val('ward');
+        testHelpers.fireEvent(dialog.element.find('select')[0], 'change');
 
-        d.scope.addCard();
+        dialog.scope.addCard();
 
-        expect(d.scope.cardModels[0].fieldName).to.equal('spot');
-        expect(d.scope.cardModels[1].fieldName).to.equal('ward');
+        expect(dialog.scope.cardModels[0].fieldName).to.equal('spot');
+        expect(dialog.scope.cardModels[1].fieldName).to.equal('ward');
       });
 
     });

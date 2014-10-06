@@ -33,7 +33,9 @@
         });
 
         document.addEventListener('keydown', function (e) {
+          console.log(e);
           // Escape key
+          console.log(e.keyCode, e.which);
           if (e.which === 27) {
             scope.$apply(function () {
               scope.hideModal();

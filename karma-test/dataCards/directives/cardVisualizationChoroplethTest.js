@@ -58,23 +58,28 @@ describe("A Choropleth Card Visualization", function() {
     var model = new Model();
     model.fieldName = 'ward';
     model.defineObservableProperty('activeFilters', []);
-    model.defineObservableProperty('shapeFile', 'mash-apes');
     model.defineObservableProperty('baseLayerUrl', 'https://a.tiles.mapbox.com/v3/socrata-apps.ibp0l899/{z}/{x}/{y}.png');
 
     var datasetModel = new Model();
-    datasetModel.id = "bana-nas!";
+    datasetModel.id = 'four-four';
     datasetModel.fieldName = 'ward';
     datasetModel.defineObservableProperty('rowDisplayUnit', rowDisplayUnit);
+    // Note that although dataset columns come back from Phidippides as an array,
+    // there is some internal mechanism in the Model that translates it into a
+    // dictionary of the form "fieldName" : { ... }. This test data needs to
+    // fake the second form since it (somehow?) seems to sidestep that transformation.
     datasetModel.defineObservableProperty('columns',
-    [{
-      "name": "ward",
-      "title": "Ward where crime was committed.",
-      "description": "Batman has bigger fish to fry sometimes, you know.",
-      "logicalDatatype": "location",
-      "physicalDatatype": "text",
-      "importance": 2,
-      "shapefileFeatureHumanReadablePropertyName": "ward"
-    }]);
+    {
+      "ward": {
+        "name": "ward",
+        "title": "Ward where crime was committed.",
+        "description": "Batman has bigger fish to fry sometimes, you know.",
+        "logicalDatatype": "location",
+        "physicalDatatype": "text",
+        "importance": 2,
+        "shapefile": "mash-apes"
+      }
+    });
 
     var pageModel = new Model();
     pageModel.defineObservableProperty('dataset', datasetModel);

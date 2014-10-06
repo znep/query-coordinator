@@ -27,6 +27,7 @@
             if (fieldName === null) {
               scope.addCardModel = null; 
             } else {
+              // TODO: Enforce some kind of schema validation at this step.
               var serializedCard = {
                 'fieldName': fieldName,
                 'cardSize': scope.addCardCardSize,

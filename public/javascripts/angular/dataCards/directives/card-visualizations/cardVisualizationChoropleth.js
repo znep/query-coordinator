@@ -159,6 +159,9 @@
           dataset.observeOnLatest('columns'),
           function(fieldName, columns) {
             dataRequests.onNext(1);
+            if (!columns[fieldName].hasOwnProperty('shapefile')) {
+              throw new Error('Dataset metadata column for computed georegion column does not include shapfile.');
+            }
             var dataPromise = CardDataService.getChoroplethRegions(columns[fieldName].shapefile);
             dataPromise.then(
               function(res) {

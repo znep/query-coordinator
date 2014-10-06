@@ -10,9 +10,11 @@
       ng-attr-title="{{!column.available ? 'This card is already on the page' : 'Add this card'}}"
       value="{{column.name}}"
       ng-disabled="!column.available"
-      ng-repeat="column in datasetColumns">{{column.name}}</option>
+      ng-repeat="column in datasetColumns">{{column.title}}</option>
   </select>
-  <div class="arrow"></div>
+  <div class="arrow-container">
+    <div class="arrow"></div>
+  </div>
 </div>
 <div class="add-card-preview">
   <span ng-if="addCardModel === null">Choose a column from the dropdown above to add a new card</span>

@@ -1,0 +1,34 @@
+<h2>Add a card</h2>
+<div class="add-card-select-column">
+  <select id="add-card-select-column-control"
+    ng-model="addCardSelectedColumnFieldName">
+    <option
+      value="null"
+      disabled="disabled"
+      ng-selected="addCardSelectedColumnFieldName === null">Choose a column...</option>
+    <option
+      ng-attr-title="{{!column.available ? 'This card is already on the page' : 'Add this card'}}"
+      value="{{column.name}}"
+      ng-disabled="!column.available"
+      ng-repeat="column in datasetColumns">{{column.title}}</option>
+  </select>
+  <div class="arrow-container">
+    <div class="arrow"></div>
+  </div>
+</div>
+<div class="add-card-preview">
+  <span ng-if="addCardModel === null">Choose a column from the dropdown above to add a new card</span>
+  <div class="card-spot" ng-if="addCardModel !== null">
+    <card model="addCardModel"
+          interactive="false"
+          class="card preview"></card>
+  </div>
+</div>
+<div class="add-card-buttons">
+  <button type="button" class="action-btn dark r-to-l" ng-click="closeAddCardDialog()">Cancel</button>
+  <button
+    type="button"
+    class="action-btn dark r-to-l"
+    ng-class="{disabled: addCardModel === null}"
+    ng-click="addCard()">Add card</button>
+</div>

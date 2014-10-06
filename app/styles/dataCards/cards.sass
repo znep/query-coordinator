@@ -116,7 +116,6 @@ body.state-view-cards
           .button-text
             visibility: hidden
 
-
     #api-panel
       position: absolute
       display: none
@@ -296,6 +295,8 @@ body.state-view-cards
         opacity: 0.5
         border-radius: $rounded-corners-border-radius
 
+      .add-card-button
+        position: absolute
 
 /*  DESKTOP-SPECIFIC STYLES  */
 
@@ -350,3 +351,118 @@ body.state-view-cards
     fill: $aqua-font-color
   .grid-cells
     fill: lighten($aqua-font-color, 10)
+
+
+// Standardized buttons
+
+.action-btn
+  display: inline-block
+  padding: $action-btn-padding-top $action-btn-padding-left
+  border-radius: $rounded-corners-border-radius
+  border: solid 2px $btn-border-color
+  background-color: $btn-bg-color
+  margin: 0 0 10px 10px
+  color: $aqua-font-color
+  min-width: $action-btn-min-width
+  text-align: center
+  font-size: 1em
+  font-weight: bold
+  cursor: pointer
+
+  &.l-to-r
+    margin: 0 10px 10px 0
+
+  &.r-to-l
+    margin: 0 0 10px 10px
+
+  &:hover, &.active
+    background-color: $btn-hover-bg-color
+    border: solid 2px $btn-hover-border-color
+    color: $btn-hover-font-color
+
+  &.disabled
+    background-color: $btn-disabled-bg-color
+    border: solid 2px $btn-disabled-border-color
+    color: $btn-disabled-font-color
+    cursor: default
+
+  &:focus
+    outline: none
+
+  &.touched
+    background-color: $btn-touched-bg-color
+    border: solid 2px $btn-touched-border-color
+    color: $btn-touched-font-color
+
+.action-btn.dark
+  background-color: $dark-btn-bg-color
+  border: solid 2px $dark-btn-border-color
+  color: $dark-btn-font-color
+
+  &:hover
+    background-color: $dark-btn-hover-bg-color
+    border: solid 2px $dark-btn-hover-border-color
+    color: $dark-btn-hover-font-color
+
+  &.disabled
+    background-color: $btn-disabled-bg-color
+    border: solid 2px $btn-disabled-border-color
+    color: $btn-disabled-font-color
+    cursor: default
+
+.add-card-select-column
+  position: relative
+  width: 240px
+  height: 40px
+  margin: 1em 1em 1em 0
+  background-color: $api-panel-border-color
+
+  select
+    width: 100%
+    height: 100%
+    padding: 1em 3em 1em 1em
+    color: $modal-white-font-color
+    background-color: transparent
+    border: none
+    outline: none
+    -webkit-appearance: none
+    -moz-appearance: none
+    appearance: none
+
+  .arrow-container
+    position: absolute
+    width: 2rem
+    height: 100%
+    top: 0
+    right: 0
+    background-color: $api-panel-border-color
+    pointer-events: none
+
+    .arrow
+      position: absolute
+      width: 0
+      height: 0
+      top: 50%
+      left: 30%
+      border-style: solid
+      border-width: 5px 5px 0 5px
+      border-color: white transparent transparent transparent
+      pointer-events: none
+
+.add-card-preview
+  position: relative
+  display: block
+  width: 100%
+  height: 300px
+  margin: 1em 0
+  line-height: 300px
+  text-align: center
+  background-color: #6d7988
+  border: 2px dashed $modal-white-font-color
+  border-radius: $rounded-corners-border-radius
+
+.add-card-buttons
+  text-align: right
+
+  .action-btn
+    margin-bottom: 0

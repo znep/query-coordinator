@@ -6,15 +6,14 @@ angular.module('dataCards.models').factory('Card', function($injector, ModelHelp
     'type': 'object',
     'properties': {
       'fieldName': { 'type': 'string', 'minLength': 1 },
-      'shapeFile': { 'type': 'string', 'pattern': UID_REGEXP },
       'baseLayerUrl': { 'type': 'string' },
       'cardSize': { 'type': 'integer' , 'minimum': 1, 'maximum': 4 },
       'displayMode': { 'type': 'string', 'enum': ['figures', 'visualization'] },
       'expanded': { 'type': 'boolean' },
       'cardCustomStyle': { 'type': 'object' },
       'expandedCustomStyle': { 'type': 'object' },
-      'activeFilters': { 'type': 'array' }
-
+      'activeFilters': { 'type': 'array' },
+      'shapefileFeatureHumanReadablePropertyName': { 'type': 'string' }
     },
     'required': ['fieldName', 'cardSize', 'cardCustomStyle', 'expandedCustomStyle', 'displayMode', 'expanded']
   });

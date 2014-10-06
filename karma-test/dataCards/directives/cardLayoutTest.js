@@ -82,7 +82,7 @@ describe('CardLayout directive test', function() {
         '<div>',
           '<div class="quick-filter-bar"></div>',
           '<div class="cards-metadata"></div>',
-          '<card-layout id="card-container" page="page" card-models="cardModels" global-where-clause-fragment="where" edit-mode="editMode"></card-layout>',
+          '<card-layout id="card-container" page="page" card-models="cardModels" global-where-clause-fragment="where" edit-mode="editMode" allow-add-card="!hasAllCards"></card-layout>',
         '</div>'
           ].join('');
     var element = testHelpers.TestDom.compileAndAppend(html, outerScope);
@@ -103,7 +103,7 @@ describe('CardLayout directive test', function() {
       model: model,
       element: element,
       outerScope: outerScope,
-      scope: element.find('div[column-chart]').scope(),
+      scope: element.find('card-layout').scope().$$childHead,
       cardsMetadataElement: element.find('.cards-metadata'),
       quickFilterBarElement: element.find('.quick-filter-bar'),
       findCardForModel: findCardForModel,
@@ -186,6 +186,7 @@ describe('CardLayout directive test', function() {
   });
 
   describe('in edit mode', function() {
+
     // This is hard to test as we can't do a hittest from the browser to simulate a real
     // mouse click.
     // Best we can do is see if the interaction catcher comes up in edit mode.
@@ -284,6 +285,9 @@ describe('CardLayout directive test', function() {
       // --Chris Laidlaw, 9/24/2014
       expect(Math.abs(parseInt($('#uber-flyout')[0].style.top, 10) - calculatedFlyoutYOffset)).to.below(5);
 
+      // Reset flyout
+      $('#uber-flyout .content').text('');
+      mockWindowStateService.mouseLeftButtonPressedSubject.onNext(true);
     });
 
     it('should remove a card when the delete button is clicked', function() {
@@ -311,7 +315,6 @@ describe('CardLayout directive test', function() {
       thirdDeleteButton.trigger('click');
 
       expect(cl.pageModel.getCurrentValue('cards')).to.deep.equal([card1, card2]);
-
     });
 
     it('should show the correct drop placeholders', function() {
@@ -378,6 +381,109 @@ describe('CardLayout directive test', function() {
       card2.set('cardSize', '3');
       card3.set('cardSize', '3');
       expect(visibilities()).to.deep.equal([false, true, false]);
+    });
+
+    describe('add card behavior', function() {
+
+      it('should display "Add card here" buttons in edit mode', function() {
+        var cl = createCardLayout();
+
+        expect($('.add-card-button').first().css('display')).to.equal('none');
+
+        cl.outerScope.editMode = true;
+        cl.outerScope.$apply();
+
+        expect($('.add-card-button').first().css('display')).to.not.equal('none');
+      });
+
+      it('should enable or disable "Add card here" buttons as the controller indicates', function() {
+        var cl = createCardLayout();
+
+        cl.outerScope.hasAllCards = false;
+        cl.outerScope.editMode = true;
+        cl.outerScope.$apply();
+
+        expect($('.add-card-button').first().hasClass('disabled')).to.be.false;
+
+        cl.outerScope.hasAllCards = true;
+        cl.outerScope.$apply();
+
+        expect($('.add-card-button').first().hasClass('disabled')).to.be.true;
+      });
+
+      it('should show a flyout with the text "All cards are present" when a disabled "Add card here" button is mousemoved', function() {
+        var cl = createCardLayout();
+
+        cl.outerScope.hasAllCards = true;
+        cl.outerScope.editMode = true;
+        cl.outerScope.$apply();
+
+        mockWindowStateService.mousePositionSubject.onNext({
+          clientX: 0,
+          clientY: 0,
+          target: $('.add-card-button')[0]
+        });
+
+        expect($('#uber-flyout .content').text()).to.equal('All cards are present');
+
+        // Reset flyout
+        $('#uber-flyout .content').text('');
+        mockWindowStateService.mouseLeftButtonPressedSubject.onNext(true);
+      });
+
+      it('should not show a flyout with the text "All cards are present" when an enabled "Add card here" button is mousemoved', function() {
+        var cl = createCardLayout();
+
+        cl.outerScope.hasAllCards = false;
+        cl.outerScope.editMode = true;
+        cl.outerScope.$apply();
+
+        mockWindowStateService.mousePositionSubject.onNext({
+          clientX: 0,
+          clientY: 0,
+          target: $('.add-card-button')[0]
+        });
+
+        expect($('#uber-flyout').css('display')).to.equal('none');
+
+        // Reset flyout
+        $('#uber-flyout .content').text('');
+        mockWindowStateService.mouseLeftButtonPressedSubject.onNext(true);
+      });
+
+      it('should not show the "Add a card" modal dialog when a disabled "Add card here" button is clicked', function() {
+        var cl = createCardLayout();
+
+        cl.outerScope.hasAllCards = true;
+        cl.outerScope.editMode = true;
+        cl.outerScope.$apply();
+
+        var opened = false;
+
+        cl.outerScope.$on('modal-open-surrogate', function() { opened = true; });
+
+        testHelpers.fireEvent($('.add-card-button')[0], 'click');
+
+        expect(opened).to.be.false;
+        
+      });
+
+      it('should show the "Add a card" modal dialog when an enabled "Add card here" button is clicked', function() {
+        var cl = createCardLayout();
+
+        cl.outerScope.hasAllCards = false;
+        cl.outerScope.editMode = true;
+        cl.outerScope.$apply();
+
+        var opened = false;
+
+        cl.outerScope.$on('modal-open-surrogate', function() { opened = true; });
+
+        testHelpers.fireEvent($('.add-card-button')[0], 'click');
+
+        expect(opened).to.be.true;
+      });
+
     });
 
     describe('drag and drop', function() {

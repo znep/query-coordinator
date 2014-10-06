@@ -40,9 +40,10 @@ angular.module('dataCards.directives').directive('card', function(AngularRxExten
 
   return {
     restrict: 'E',
-    scope: { 'model': '=', 'whereClause': '=' },
+    scope: { 'model': '=', 'whereClause': '=', 'interactive': '=' },
     templateUrl: '/angular_templates/dataCards/card.html',
     link: function($scope, element, attrs) {
+
       AngularRxExtensions.install($scope);
 
       var modelSubject = $scope.observe('model');

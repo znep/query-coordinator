@@ -1,8 +1,7 @@
 (function() {
-
   'use strict';
 
-  function CardsViewController($scope, $location, $log, $window, AngularRxExtensions, SortedTileLayout, Filter, PageDataService, UserSession, FlyoutService, page) {
+  function CardsViewController($scope, $location, $log, $window, AngularRxExtensions, SortedTileLayout, Filter, PageDataService, UserSession, FlyoutService, page, Card) {
 
     AngularRxExtensions.install($scope);
 
@@ -21,7 +20,9 @@
     $scope.bindObservable('datasetRowDisplayUnit', page.observe('dataset').observeOnLatest('rowDisplayUnit'));
     $scope.bindObservable('datasetDaysUnmodified', page.observe('dataset').observeOnLatest('updatedAt').map(function(date) {
       // TODO just a placeholder implementation
-      if (!date) return '';
+      if (!date) {
+        return '';
+      }
       return moment(date).fromNow();
     }));
 
@@ -139,8 +140,100 @@
     }));
 
 
+    /************************
+    * Add new card behavior *
+    ************************/
+
+    var datasetColumns = Rx.Observable.combineLatest(
+      page.observe('dataset').observeOnLatest('columns'),
+      page.observe('cards'),
+      function(columns, cards) {
+
+        var datasetColumns = [];
+        var hasAvailableCards = false;
+
+        var sortedColumns = _.values(columns).
+          filter(function(column) {
+            // We need to ignore 'system' fieldNames that begin with ':' but
+            // retain computed column fieldNames, which (somewhat inconveniently)
+            // begin with ':@'.
+            return column.name.substring(0, 2).match(/\:[\_A-Za-z0-9]/) === null &&
+                   column.physicalDatatype !== '*' &&
+                   column.physicalDatatype !== 'point';
+          }).
+          sort(function(a, b) { return a.name > b.name; });
+
+        var sortedCards = cards.
+          filter(function(card) {
+            return card.fieldName !== '*'; }).
+          sort(function(a, b) { return a.fieldName > b.fieldName });
+
+        var i = 0;
+        var j = 0;
+        var available = false;
+        var availableCardCount = sortedColumns.length;
+        var availableColumns = [];
+        var unavailableColumns = [];
+
+        for (i = 0; i < sortedColumns.length; i++) {
+
+          available = true;
+
+          for (j = 0; j < sortedCards.length; j++) {
+            if (sortedColumns[i].name === sortedCards[j].fieldName) {
+              available = false;
+              availableCardCount--;
+            }
+          }
+
+          sortedColumns[i].available = available;
+
+          if (available) {
+            availableColumns.push(sortedColumns[i]);
+          } else {
+            unavailableColumns.push(sortedColumns[i]);
+          }
+
+        }
+
+        return availableColumns.sort(function(a, b) {
+          if (a.title < b.title) {
+            return -1;
+          }
+          if (a.title > b.title) {
+            return 1;
+          }
+          return 0;
+        }).concat(unavailableColumns.sort(function(a, b) {
+          if (a.title < b.title) {
+            return -1;
+          }
+          if (a.title > b.title) {
+            return 1;
+          }
+          return 0;
+        }));
+
+      });
+
+    $scope.bindObservable('datasetColumns', datasetColumns);
+    $scope.bindObservable('hasAllCards', datasetColumns.map(function(columns) {
+      return columns.filter(function(column) {
+        return column.available; }).length === 0;
+      }
+    ));
+
+    $scope.$on('modal-open-surrogate', function(e, data) {
+      $scope.$broadcast('modal-open', data);
+    });
+
+    $scope.$on('modal-close-surrogate', function(e, data) {
+      $scope.$broadcast('modal-close', data);
+    });
+
+
     /***************************
-    * View/edit modal behavior *
+    * View/edit cards behavior *
     ***************************/
 
     $scope.editMode = false;

@@ -70,7 +70,13 @@
       page="page"
       edit-mode="editMode"
       global-where-clause-fragment="globalWhereClauseFragment"
-      card-models="cardModels">
+      card-models="cardModels"
+      allow-add-card="!hasAllCards">
     </card-layout>
+
   </div>
 </div>
+
+<modal-dialog id="add-card-dialog">
+  <add-card-dialog page="page" card-models="cardModels" dataset-columns="datasetColumns"></add-card-dialog>
+</modal-dialog>

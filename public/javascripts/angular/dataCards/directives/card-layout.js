@@ -8,7 +8,8 @@
         page: '=',
         editMode: '=',
         globalWhereClauseFragment: '=',
-        cardModels: '='
+        cardModels: '=',
+        allowAddCard: '='
       },
       templateUrl: '/angular_templates/dataCards/card-layout.html',
       link: function(scope, cardContainer, attrs) {
@@ -116,8 +117,8 @@
 
         var expandedCards = zipLatestArray(scope.page.observe('cards'), 'expanded').map(function(cards) {
           return _.pluck(
-              _.where(cards, _.property('expanded')),
-              'model');
+            _.where(cards, _.property('expanded')),
+            'model');
         });
 
 
@@ -128,10 +129,12 @@
           rowsOfCardsBySize,
           expandedCards,
           scope.observe('editMode'),
+          scope.observe('allowAddCard'),
           cardsMetadata.observeDimensions(),
           WindowState.windowSizeSubject,
           WindowState.scrollPositionSubject,
-          function layoutFn(sortedTileLayoutResult, expandedCards, editMode, cardsMetadataSize, windowSize, scrollTop) {
+          function layoutFn(sortedTileLayoutResult, expandedCards, editMode, allowAddCard, cardsMetadataSize, windowSize, scrollTop) {
+
             // Figure out if there is an expanded card.
             if (!_.isEmpty(expandedCards)) {
               var expandedCard = expandedCards[0];
@@ -208,17 +211,15 @@
                   // know the top offset of the next card up for layout.
                   heightOfAllCards += cardHeight + Constants['LAYOUT_VERTICAL_PADDING'];
 
-                  return accumulatedStyle + '#card-tile-' + card.model.uniqueId
-                                          + '{'
-                                          + 'left:' + cardLeft + 'px;'
-                                          + 'top:' + cardTop + 'px;'
-                                          + 'width:' + cardWidth + 'px;'
-                                          + 'height:' + cardHeight + 'px;'
-                                          + '}';
+                  return accumulatedStyle + '#card-tile-{0}{'.format(card.model.uniqueId) +
+                                              'left:' + cardLeft + 'px;' +
+                                              'top:' + cardTop + 'px;' +
+                                              'width:' + cardWidth + 'px;' +
+                                              'height:' + cardHeight + 'px;' +
+                                            '}';
               }, '');
 
-              styleText += '#card-tile-' + expandedCard.uniqueId
-                         + '{';
+              styleText += '#card-tile-{0}{'.format(expandedCard.uniqueId);
 
               if (headerStuck) {
                 var expandedColumnHeight = windowSize.height - quickFilterBar.height() - Constants['LAYOUT_VERTICAL_PADDING'];
@@ -226,25 +227,31 @@
                 var expandedColumnHeight = windowSize.height - (cardContainer.offset().top - scrollTop) - Constants['LAYOUT_VERTICAL_PADDING'];
               }
 
-              styleText += 'position:fixed;'
-                         + 'left:' + expandedColumnLeft + 'px;'
-                         + 'bottom:' + Constants['LAYOUT_VERTICAL_PADDING'] + 'px;'
-                         + 'width:' + expandedColumnWidth + 'px;'
-                         + 'height:' + expandedColumnHeight + 'px;'
+              styleText +=   'position:fixed;' +
+                             'left:' + expandedColumnLeft + 'px;' +
+                             'bottom:' + Constants['LAYOUT_VERTICAL_PADDING'] + 'px;' +
+                             'width:' + expandedColumnWidth + 'px;' +
+                             'height:' + expandedColumnHeight + 'px;' +
                          + '}';
 
-              styleText += '#card-container{'
-                         + 'visibility:visible !important;'
-                         + 'height:' + heightOfAllCards + 'px;'
-                         + '}';
+              styleText += '#card-container{' +
+                             'visibility:visible !important;' +
+                             'height:{0}px;' +
+                           '}'.format(heightOfAllCards);
 
             } else {
+
               // Track whether or not to draw placeholder drop targets
               // for each card grouping.
               var placeholderDropTargets = [];
+
+              // Track each 'add card' button's position in the layout
+              var addCardButtons = [];
+
               var heightOfAllCards = 0;
 
               if (editMode) {
+
                 if (!sortedTileLayoutResult.hasOwnProperty('1')) {
                   sortedTileLayoutResult['1'] = [];
                 }
@@ -283,13 +290,13 @@
                       height: currentRowContentHeight
                     });
 
-                    return '#card-tile-' + card.model.uniqueId + ', #card-tile-' + card.model.uniqueId + ' .dragged'
-                                    + '{'
-                                    + 'left:' + cardLeft + 'px;'
-                                    + 'top:' + cardTop + 'px;'
-                                    + 'width:' + cardWidth + 'px;'
-                                    + 'height:' + currentRowContentHeight + 'px;'
-                                    + '}';
+                    return '#card-tile-{0}, #card-tile-{1} .dragged {'.format(card.model.uniqueId, card.model.uniqueId) +
+                             'left:' + cardLeft + 'px;' +
+                             'top:' + cardTop + 'px;' +
+                             'width:' + cardWidth + 'px;' +
+                             'height:' + currentRowContentHeight + 'px;' +
+                           '}';
+
                   }).join('');
 
                 }, '');
@@ -307,10 +314,19 @@
                   });
 
                   if (groupEmpty) {
-                    heightOfAllCards += Constants['LAYOUT_PLACEHOLDER_DROP_TARGET_HEIGHT'] + Constants['LAYOUT_EDIT_MODE_GROUP_PADDING'];
+                    heightOfAllCards += Constants['LAYOUT_PLACEHOLDER_DROP_TARGET_HEIGHT'];
                   } else {
-                    heightOfAllCards += rows.length * currentRowHeight + Constants['LAYOUT_EDIT_MODE_GROUP_PADDING'];
+                    heightOfAllCards += rows.length * currentRowHeight;
                   }
+
+                  heightOfAllCards += 10;
+
+                  addCardButtons.push({
+                    id: cardSize,
+                    top: heightOfAllCards
+                  });
+
+                  heightOfAllCards += Constants['LAYOUT_EDIT_MODE_GROUP_PADDING'];
 
                 } else {
                   heightOfAllCards += rows.length * currentRowHeight;
@@ -323,26 +339,33 @@
               if (editMode) {
 
                 placeholderDropTargets.forEach(function(groupData) {
-                  styleText += '#card-group-' + groupData.id + '-drop-placeholder{';
+                  styleText += '#card-group-{0}-drop-placeholder{'.format(groupData.id);
                   if (groupData.show) {
                     styleText += 'display:block;';
                   } else {
                     styleText += 'display:none;';
                   }
-                  styleText += 'width:' + containerContentWidth + 'px;'
-                             + 'left:' + Constants['LAYOUT_GUTTER'] + 'px;'
-                             + 'top:' + groupData.top + 'px;'
-                             + '}';
+                  styleText +=   'width:' + containerContentWidth + 'px;' +
+                                 'left:' + Constants['LAYOUT_GUTTER'] + 'px;' +
+                                 'top:' + groupData.top + 'px;' +
+                               '}';
+                });
+
+                addCardButtons.forEach(function(button) {
+                  styleText += '#add-card-button-group-' + button.id + '{' +
+                                 'left:' + Constants['LAYOUT_GUTTER'] + 'px;' +
+                                 'top:' + button.top + 'px;' +
+                               '}';
                 });
 
               }
 
-            }
+           }
 
-            styleText += '#card-container{'
-                       + 'visibility:visible !important;'
-                       + 'height:' + heightOfAllCards + 'px;'
-                       + '}';
+            styleText += '#card-container{' +
+                           'visibility:visible !important;' +
+                           'height:' + heightOfAllCards + 'px;' +
+                         '}';
 
             // OMG side-effect, but *what* a side effect, amirite?
             scope.cardPositions = cardPositions;
@@ -556,9 +579,25 @@
           });
         };
 
-        FlyoutService.register('expand-button-target', function(el) { return '<div class="flyout-title">Expand this Card</div>'; });
-        FlyoutService.register('delete-button-target', function(el) { return '<div class="flyout-title">Remove this Card</div>'; });
+        scope.addCard = function(cardSize) {
+          if (scope.allowAddCard) {
+            scope.$emit('modal-open-surrogate', {id: 'add-card-dialog', cardSize: cardSize});
+          }
+        };
 
+        FlyoutService.register('expand-button-target', function(el) {
+            return '<div class="flyout-title">Expand this Card</div>';
+          });
+
+        FlyoutService.register('delete-button-target', function(el) {
+            return '<div class="flyout-title">Remove this Card</div>';
+          });
+
+        FlyoutService.register('add-card-button', function(el) {
+            if ($(el).hasClass('disabled')) {
+              return '<div class="flyout-title">All cards are present</div>';
+            }
+          });
 
         /******************
         * Bind observable *

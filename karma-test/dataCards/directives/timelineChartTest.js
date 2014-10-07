@@ -1,5 +1,5 @@
 describe('timelineChart', function() {
-  var th, compile, rootScope, scope, timeout, testData;
+  var th, compile, rootScope, scope, timeout, testData, AngularRxExtensions;
 
   var testJson = 'karma-test/dataCards/test-data/timelineChartTest/chicago-crimes.json';
   beforeEach(module(testJson));
@@ -19,6 +19,7 @@ describe('timelineChart', function() {
     rootScope = $injector.get('$rootScope');
     scope = rootScope.$new();
     timeout = $injector.get('$timeout');
+    AngularRxExtensions = $injector.get('AngularRxExtensions');
     testData = _.map(th.getTestJson(testJson), function(datum) {
       return {
         date: moment(datum.date_trunc),
@@ -102,6 +103,39 @@ describe('timelineChart', function() {
     $('.flyout').remove();
   };
 
+
+  describe('render timing events', function() {
+    it('should emit render:start and render:complete events on rendering', function(done) {
+      // Need a clean chart, otherwise we might not get a render.
+      removeAllScenarioCharts();
+      var chart = getOrCreateChartScenario('300px unexpanded unfiltered');
+
+      scope = chart.scope;
+      AngularRxExtensions.install(scope);
+
+      var renderEvents = scope.eventToObservable('render:start').merge(scope.eventToObservable('render:complete'));
+
+      renderEvents.take(2).toArray().subscribe(
+        function(events) {
+          // Vis id is a string and is the same across events.
+          expect(events[0].args[0].source).to.satisfy(_.isString);
+          expect(events[1].args[0].source).to.equal(events[0].args[0].source);
+
+          // Times are ints and are in order.
+          expect(events[0].args[0].timestamp).to.satisfy(_.isFinite);
+          expect(events[1].args[0].timestamp).to.satisfy(_.isFinite);
+
+          expect(events[0].args[0].timestamp).to.be.below(events[1].args[0].timestamp);
+          done();
+        }
+      );
+
+      // Pretend we got new data.
+      scope.testData = testData.concat([]);
+      scope.$digest();
+      timeout.flush(); // Needed to simulate a frame. Render:complete won't be emitted otherwise.
+    });
+  });
 
   describe('when not expanded at 640px', function() {
     it('should create segments and 13 labels', function() {
@@ -523,4 +557,5 @@ describe('timelineChart', function() {
       expect($label.hasClass('active')).to.be.false;
     });
   });
+
 });

@@ -22,29 +22,30 @@ dataCards.config(function(ServerConfig) {
 dataCards.run(function($window, $rootScope, Analytics) {
   Analytics.measureDomReady();
 
-  $rootScope.$on('layout:changed', function() {
-    Analytics.setNumberOfCards(0);
-  });
-  $rootScope.$on('cardType', function(event, cardType) {
-    var renderedCards = ['column', 'timeline', 'choropleth', 'table'];
-    if(_(renderedCards).contains(cardType)) {
-      Analytics.incrementNumberOfCards();
-    }
-  });
+  // The analytics controller can use knowledge of when user interactions happen
+  // to make more accurate measurements of page load time and user interactions.
+  // The more we can give it the better, but it's critical that this event never
+  // fire unless the user really did do an action (otherwise the reported timings
+  // will be very inaccurate).
+  var intentionalUserActions = Rx.Observable.merge(
+    $rootScope.eventToObservable('timeline-chart:filter-changed'),
+    $rootScope.eventToObservable('timeline-chart:filter-cleared'),
+    $rootScope.eventToObservable('datset-filter:choropleth'),
+    $rootScope.eventToObservable('dataset-filter-clear:choropleth'),
+    $rootScope.eventToObservable('column-chart:datum-clicked'),
+    $rootScope.eventToObservable('page:dirtied'),
+    Rx.Observable.fromEvent($($window), 'unload')   // Navigating away counts as an action.
+  );
+  $rootScope.emitEventsFromObservable('user-interacted', intentionalUserActions);
+
   function onEventStart(label) {
     return function() {
       Analytics.start(label);
     }
   }
 
-  $rootScope.$on('render:start', function(event, id, timestamp) {
-    Analytics.cardRenderStart(id, timestamp);
-  });
-
-  $rootScope.$on('render:complete', function(event, id, timestamp) {
-    Analytics.cardRenderStop(id, timestamp);
-  });
-
+  // Tell the Analytics service to start a specifically-named measurement
+  // whenever these user actions are taken.
   $rootScope.$on('timeline-chart:filter-changed', onEventStart('timeline-filter'));
   $rootScope.$on('timeline-chart:filter-cleared', onEventStart('clear-filter'));
   $rootScope.$on('dataset-filter:choropleth', onEventStart('region-filter'));

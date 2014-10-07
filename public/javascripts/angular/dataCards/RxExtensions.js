@@ -90,6 +90,13 @@ Rx.Observable.prototype.imposeMinimumDelay = function(windowMsec) {
     switchLatest(); // Use the sequence from the map above.
 };
 
+// Waits until the sequence stops giving elements for the given
+// amount of time. Returns a sequence of the debounced values.
+Rx.Observable.prototype.debounce = function(settleTimeMsec) {
+  return this.map(function(value) {
+    return Rx.Observable.timer(settleTimeMsec).map(_.constant(value));
+  }).switchLatest();
+};
 
 // Returns a single-element sequence containing the first sequence to produce an element.
 // Similar to Rx.Observable.amb, but it creates a sequence of sequences instead of a sequence

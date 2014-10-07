@@ -1,9 +1,10 @@
 describe('Analytics service', function() {
-  var Analytics, $httpBackend, moment;
+  var Analytics, $httpBackend, moment, $rootScope, ServerConfig;
   var INITIAL_NAVIGATION_START_TIME = 222;
   var INITIAL_MOMENT_TIME = 1234;
   var INITIAL_TIME_DELTA = INITIAL_MOMENT_TIME - INITIAL_NAVIGATION_START_TIME;
   var DOM_READY_TIME = 4119;
+  var fakeClock;
 
   var mockMomentService = function() {
     var nextValue = INITIAL_MOMENT_TIME;
@@ -17,282 +18,295 @@ describe('Analytics service', function() {
         }
       };
     };
+  }();
+
+  var mockWindowPerformance = {
+    timing: {
+      navigationStart: INITIAL_NAVIGATION_START_TIME,
+      domComplete: INITIAL_NAVIGATION_START_TIME + DOM_READY_TIME
+    }
+  };
+  var mockWindowService = {
+    performance: mockWindowPerformance,
+    document: {
+      readyState: 'loading',
+      addEventListener: function(){},
+      removeEventListener: function(){}
+    }
   };
 
   beforeEach(module('socrataCommon.services'));
 
-  describe('rendering card count', function() {
-
-    beforeEach(function() {
-      inject(function($injector) {
-        Analytics = $injector.get('Analytics');
-      });
-    });
-
-    it('should be able to get the number of cards that will render', function() {
-      expect(Analytics.getNumberOfCards).to.exist;
-      expect(Analytics.getNumberOfCards).to.be.a('function');
-      var numCards = Analytics.getNumberOfCards();
-      expect(numCards).to.equal(0);
-    });
-
-    it('should be able to increment the number of cards that will render', function() {
-      expect(Analytics.incrementNumberOfCards).to.exist;
-      expect(Analytics.incrementNumberOfCards).to.be.a('function');
-      Analytics.incrementNumberOfCards();
-      expect(Analytics.getNumberOfCards()).to.equal(1);
-      Analytics.incrementNumberOfCards();
-      expect(Analytics.getNumberOfCards()).to.equal(2);
-    });
-
-    it('should be able to set the number of cards that will render', function() {
-      expect(Analytics.setNumberOfCards).to.exist;
-      expect(Analytics.setNumberOfCards).to.be.a('function');
-      Analytics.setNumberOfCards(10);
-      expect(Analytics.getNumberOfCards()).to.equal(10);
-      Analytics.setNumberOfCards(0);
-      expect(Analytics.getNumberOfCards()).to.equal(0);
-    });
-
-  });
-
-  it('should not report measurements if statsd is not enabled', function() {
-    inject(function($injector) {
-      $injector.get('ServerConfig').setup({ statsdEnabled: false });
-      $httpBackend = $injector.get('$httpBackend');
-      Analytics = $injector.get('Analytics');
-    });
-    Analytics.setNumberOfCards(1);
-    Analytics.cardRenderStart('my_id', 123);
-    Analytics.cardRenderStop('my_id', 123);
-    expect($httpBackend.flush).to.throw(/No pending request/);
-  });
-
-  describe('render time measurement', function() {
-
-    beforeEach(function() {
-      module(function($provide) {
-        $provide.factory('moment', mockMomentService);
-      });
-      inject(function($injector) {
-        $injector.get('ServerConfig').setup({ statsdEnabled: true });
-        var $window = $injector.get('$window');
-        $window.performance = {
-          timing: {
-            navigationStart: INITIAL_NAVIGATION_START_TIME
-          }
-        };
-
-        // Set up the mock http service responses
-        $httpBackend = $injector.get('$httpBackend');
-        moment = $injector.get('moment');
-        Analytics = $injector.get('Analytics');
-      });
-    });
-
-    afterEach(httpBackendAfterEach);
-
-    it('should track page load initially', function() {
-      Analytics.setNumberOfCards(1);
-      Analytics.cardRenderStart('my_id', 123);
-      Analytics.cardRenderStop('my_id', 123);
-
-      var expectedMetrics = buildExpectedMetrics('js-cardsview-page-load-time', INITIAL_TIME_DELTA);
-      $httpBackend.expectPOST('/analytics/add', expectedMetrics).respond(200, '');
-      $httpBackend.flush();
-    });
-
-    it('should track according to the label on subsequent calls', function() {
-      var SECOND_METRIC_START_TIME = 3000;
-      var SECOND_METRIC_STOP_TIME = 3678;
-
-      Analytics.setNumberOfCards(1);
-      Analytics.cardRenderStart('my_id', 123);
-      Analytics.cardRenderStop('my_id', 123);
-      $httpBackend.expectPOST('/analytics/add').respond(200, '');
-
-      moment()._next(SECOND_METRIC_START_TIME);
-      Analytics.start('my-label');
-      Analytics.cardRenderStart('my_id', 123);
-      moment()._next(SECOND_METRIC_STOP_TIME);
-      Analytics.cardRenderStop('my_id', 123);
-      var expectedMetrics = buildExpectedMetrics('js-cardsview-my-label-time', SECOND_METRIC_STOP_TIME - SECOND_METRIC_START_TIME);
-      $httpBackend.expectPOST('/analytics/add', expectedMetrics).respond(200, '');
-      $httpBackend.flush();
-    });
-
-    it('should track multiple rendering cards', function() {
-      var allCardsStopped = false;
-
-      $httpBackend.whenPOST('/analytics/add', function() {
-        expect(allCardsStopped).to.equal(true, 'All cards should be stopped');
-        return allCardsStopped;
-      }).respond(200, '');
-
-      Analytics.setNumberOfCards(2);
-      Analytics.cardRenderStart('my_card_1', 1);
-      Analytics.cardRenderStart('my_card_2', 2);
-      Analytics.cardRenderStop('my_card_2', 2);
-
-      expect($httpBackend.flush).to.throw(/No pending request/);
-      Analytics.cardRenderStop('my_card_1', 1);
-      allCardsStopped = true;
-      $httpBackend.flush();
-    });
-
-    it('should not record more than one unique card ID / start time combination', function() {
-      Analytics.setNumberOfCards(1);
-      Analytics.cardRenderStart('my_id', 123);
-      Analytics.cardRenderStart('my_id', 123);
-      Analytics.cardRenderStop('my_id', 123);
-      $httpBackend.expectPOST('/analytics/add').respond(200, '');
-      $httpBackend.flush();
-    });
-
-  });
-
-  describe('http request time measurement', function() {
-    beforeEach(function() {
-      module(function($provide) {
-        $provide.factory('moment', mockMomentService);
-      });
-      inject(function($injector) {
-        var $window = $injector.get('$window');
-        $window.performance = {
-          timing: {
-            navigationStart: INITIAL_NAVIGATION_START_TIME
-          }
-        };
-
-        $injector.get('ServerConfig').setup({ statsdEnabled: true });
-        // Set up the mock http service responses
-        $httpBackend = $injector.get('$httpBackend');
-        moment = $injector.get('moment');
-        Analytics = $injector.get('Analytics');
-      });
-    });
-
-    afterEach(httpBackendAfterEach);
-
-    it('should track the http request time', function() {
-      var START_TIME = 1000;
-      var END_TIME = 1234;
-      Analytics.startHttpRequest('label', START_TIME);
-      moment()._next(END_TIME);
-      Analytics.stopHttpRequest('label', START_TIME);
-      $httpBackend.expectPOST('/analytics/add', buildExpectedMetrics('js-cardsview-label-time', END_TIME - START_TIME)).
-        respond(200, '');
-      $httpBackend.flush();
-    });
-
-    it('should handle multiple in-flight http request timings with same label and different start times', function() {
-      var START_TIME_1 = 1000;
-      var START_TIME_2 = 1001;
-      var END_TIME_1 = 1234;
-      var END_TIME_2 = 1432;
-
-      Analytics.startHttpRequest('label', START_TIME_1);
-      Analytics.startHttpRequest('label', START_TIME_2);
-      moment()._next(END_TIME_1);
-      Analytics.stopHttpRequest('label', START_TIME_2);
-      moment()._next(END_TIME_2);
-      Analytics.stopHttpRequest('label', START_TIME_1);
-      $httpBackend.expectPOST('/analytics/add', buildExpectedMetrics('js-cardsview-label-time', END_TIME_1 - START_TIME_2)).
-        respond(200, '');
-      $httpBackend.expectPOST('/analytics/add', buildExpectedMetrics('js-cardsview-label-time', END_TIME_2 - START_TIME_1)).
-        respond(200, '');
-      $httpBackend.flush();
-    });
-
-    it('should not fail if there is a stop with no start', function() {
-      var START_TIME = 1000;
-      expect(function() {
-        Analytics.stopHttpRequest('label', START_TIME);
-      }).to.not.throw();
+  beforeEach(function() {
+    module(function($provide) {
+      $provide.value('moment', mockMomentService);
+      $provide.value('$window', mockWindowService);
     });
   });
 
-  describe('dom-ready time measurement', function() {
-    var $window;
-    var mockWindowPerformance = {
-      timing: {
-        navigationStart: INITIAL_NAVIGATION_START_TIME,
-        domComplete: INITIAL_NAVIGATION_START_TIME + DOM_READY_TIME
-      }
-    };
+  beforeEach(inject(function($injector) {
+    $rootScope = $injector.get('$rootScope');
+    ServerConfig = $injector.get('ServerConfig');
+    $httpBackend = $injector.get('$httpBackend');
+    Analytics = $injector.get('Analytics');
 
-    afterEach(httpBackendAfterEach);
+    ServerConfig.setup({ statsdEnabled: true });
+  }));
 
-    it('should listen for dom-ready if the page is not complete', function() {
-      var addEventListenerStub = sinon.stub();
-      var removeEventListenerStub = sinon.stub();
-      module(function($provide) {
-        $provide.factory('$window', function() {
-          return {
-            performance: mockWindowPerformance,
-            document: {
-              readyState: 'loading',
-              addEventListener: addEventListenerStub,
-              removeEventListener: removeEventListenerStub
-            }
-          };
-        });
-        $provide.factory('moment', mockMomentService);
-      });
-      inject(function($injector) {
-        $injector.get('ServerConfig').setup({ statsdEnabled: true });
-        $window = $injector.get('$window');
-        // Set up the mock http service responses
-        $httpBackend = $injector.get('$httpBackend');
-        Analytics = $injector.get('Analytics');
-      });
 
-      Analytics.measureDomReady();
-      expect(addEventListenerStub.calledOnce).to.be.true;
-      expect($httpBackend.flush).to.throw(/No pending request/);
-      addEventListenerStub.yield();
-      expect($httpBackend.flush).to.throw(/No pending request/);
-      $window.document.readyState = 'complete';
-      addEventListenerStub.yield();
-      expect($httpBackend.flush).to.not.throw(/No pending request/);
-      expect(removeEventListenerStub.calledOnce).to.be.true;
-    });
-
-    it('should track the dom-ready time for a page load', function() {
-      module(function($provide) {
-        $provide.factory('moment', mockMomentService);
-      });
-      inject(function($injector) {
-        $injector.get('ServerConfig').setup({ statsdEnabled: true });
-        $window = $injector.get('$window');
-        $window.performance = mockWindowPerformance;
-
-        // Set up the mock http service responses
-        $httpBackend = $injector.get('$httpBackend');
-        Analytics = $injector.get('Analytics');
-      });
-
-      Analytics.measureDomReady();
-      var expectedMetrics = buildExpectedMetrics('js-dom-load-time', DOM_READY_TIME);
-      $httpBackend.expectPOST('/analytics/add', expectedMetrics).respond(200, '');
-      $httpBackend.flush();
-    });
+  // *** Fake synchronous timing. ***
+  beforeEach(function() {
+    fakeClock = sinon.useFakeTimers();
   });
 
-  function httpBackendAfterEach() {
+  afterEach(function() {
+    fakeClock.restore();
+    fakeClock = undefined;
+  });
+
+  // Analytics has a timeout to let the page settle.
+  // Synchronously force that timeout to complete.
+  function allowPageToSettle() {
+    fakeClock.tick(Analytics.idleTimeForRendererToBeConsideredSettled * 2);
+  }
+
+  // *** Helpers to verify calls to /analytics/add. ***
+  function expectAnalyticsHttpPost(optionalMetricName, optionalMetricValue) {
+    if (optionalMetricName || optionalMetricValue) {
+      $httpBackend.expectPOST('/analytics/add', function verifier(blob) {
+        var blob = JSON.parse(blob);
+        return blob.metrics &&
+               blob.metrics.length === 1 &&
+               blob.metrics[0].entity === 'domain-intern' &&
+               (_.isUndefined(optionalMetricName) || blob.metrics[0].metric === optionalMetricName) &&
+               (_.isUndefined(optionalMetricValue) || blob.metrics[0].increment === optionalMetricValue);
+      }).respond(200);
+    } else {
+      $httpBackend.expectPOST('/analytics/add').respond(200);
+    }
+  }
+
+  function flushHttp() {
+    $httpBackend.flush();
+  }
+
+  afterEach(function() {
     $httpBackend.verifyNoOutstandingExpectation();
     $httpBackend.verifyNoOutstandingRequest();
+  });
+
+  // *** Some helpers to emit scope events analytics cares about. ***
+  function emitRenderComplete(optionalRenderTime) {
+    $rootScope.$emit('render:complete', { source: _.uniqueId(), timestamp: optionalRenderTime || _.now() });
   }
 
-  function buildExpectedMetrics(metricValue, incrementValue) {
-    return {
-      "metrics": [
-        {
-          "entity": "domain-intern",
-          "metric": metricValue,
-          "increment": incrementValue
-        }
-      ]
-    };
+  function emitUserInteraction() {
+    $rootScope.$emit('user-interacted');
   }
+
+  // *** Actual tests. ***
+  describe('with statsd disabled', function() {
+    it('should not report measurements', function() {
+      ServerConfig.setup({ statsdEnabled: false });
+
+      Analytics.start('some_fake_metric');
+
+      // Metric is considered complete after at least one render complete is received,
+      // and the timeout has passed.
+      emitRenderComplete();
+
+      allowPageToSettle();
+
+      expect($httpBackend.flush).to.throw(/No pending request/);
+    });
+  });
+
+  describe('with statsd enabled', function() {
+    describe('page-load metric', function() {
+      it('should not report page load time immediately on render complete', function() {
+        emitRenderComplete();
+
+        expect($httpBackend.flush).to.throw(/No pending request/);
+      });
+
+      it('should report page load time on natural settling', function() {
+        var fakeRenderEndTime = _.now();
+        expectAnalyticsHttpPost('js-cardsview-page-load-time', fakeRenderEndTime - mockWindowPerformance.timing.navigationStart);
+
+        // Metric is considered complete after at least one render complete is received,
+        // and the timeout has passed.
+        emitRenderComplete(fakeRenderEndTime);
+
+        allowPageToSettle();
+
+        flushHttp();
+      });
+
+      it('should report page load time immediately on user action', function() {
+        var fakeRenderEndTime = _.now();
+        expectAnalyticsHttpPost('js-cardsview-page-load-time', fakeRenderEndTime - mockWindowPerformance.timing.navigationStart);
+
+        // Metric is considered complete after at least one render complete is received,
+        // and the timeout has passed.
+        emitRenderComplete(fakeRenderEndTime);
+
+        emitUserInteraction();
+
+        flushHttp();
+      });
+
+      it('should report page load time only once', function() {
+        var fakeRenderEndTime = _.now();
+        expectAnalyticsHttpPost('js-cardsview-page-load-time', fakeRenderEndTime - mockWindowPerformance.timing.navigationStart);
+
+        // Metric is considered complete after at least one render complete is received,
+        // and the timeout has passed.
+        emitRenderComplete(fakeRenderEndTime);
+
+        emitUserInteraction();
+        emitUserInteraction();
+
+        allowPageToSettle();
+
+        flushHttp();
+      });
+
+      it('should NOT report page load time if no render complete is received', function() {
+        emitUserInteraction(); // Should be entirely ignored.
+        allowPageToSettle(); // Should also be entirely ignored.
+
+        expect($httpBackend.flush).to.throw(/No pending request/);
+      });
+    });
+
+    describe('custom metric', function() {
+      it('should not report custom metric time immediately on render complete', function() {
+        Analytics.start('my-fake-metric');
+        emitRenderComplete();
+
+        expect($httpBackend.flush).to.throw(/No pending request/);
+      });
+
+      it('should report custom metric time on natural settling', function() {
+        var fakeRenderEndTime1 = INITIAL_MOMENT_TIME - 1000;
+        var fakeRenderEndTime2 = INITIAL_MOMENT_TIME + 1000;
+
+        expectAnalyticsHttpPost('js-cardsview-page-load-time'); // Always emitted.
+        expectAnalyticsHttpPost('js-cardsview-my-fake-metric-time', fakeRenderEndTime2 - INITIAL_MOMENT_TIME);
+
+        emitRenderComplete(fakeRenderEndTime1);
+        Analytics.start('my-fake-metric');
+        // Metric is considered complete after at least one render complete is received,
+        // and the timeout has passed.
+        emitRenderComplete(fakeRenderEndTime2);
+
+        allowPageToSettle();
+
+        flushHttp();
+      });
+
+      it('should report custom metric time immediately on user action', function() {
+        var fakeRenderEndTime1 = INITIAL_MOMENT_TIME - 1000;
+        var fakeRenderEndTime2 = INITIAL_MOMENT_TIME + 1000;
+
+        expectAnalyticsHttpPost('js-cardsview-page-load-time'); // Always emitted.
+        expectAnalyticsHttpPost('js-cardsview-my-fake-metric-time', fakeRenderEndTime2 - INITIAL_MOMENT_TIME);
+
+        emitRenderComplete(fakeRenderEndTime1);
+        Analytics.start('my-fake-metric');
+        // Metric is considered complete after at least one render complete is received,
+        // and the timeout has passed.
+        emitRenderComplete(fakeRenderEndTime2);
+
+        emitUserInteraction();
+
+        flushHttp();
+      });
+
+      it('should report custom metric time only once', function() {
+        var fakeRenderEndTime = INITIAL_MOMENT_TIME + 100;
+
+        expectAnalyticsHttpPost('js-cardsview-page-load-time'); // Always emitted.
+        expectAnalyticsHttpPost('js-cardsview-my-fake-metric-time', fakeRenderEndTime - INITIAL_MOMENT_TIME);
+
+        Analytics.start('my-fake-metric');
+        emitRenderComplete(fakeRenderEndTime);
+
+        emitUserInteraction();
+        emitUserInteraction();
+
+        flushHttp();
+      });
+
+      it('should NOT report custom metric time if no render complete is received after the call to start()', function() {
+        expectAnalyticsHttpPost('js-cardsview-page-load-time'); // Always emitted.
+
+        emitRenderComplete(2); // Should be entirely ignored.
+        Analytics.start('my-fake-metric');
+
+        emitUserInteraction(); // Should also be entirely ignored.
+
+        flushHttp(); // Will throw if more than one POST.
+      });
+    });
+
+    describe('http request time measurement', function() {
+      it('should track the http request time', function() {
+        var START_TIME = 1000;
+        var END_TIME = 1234;
+        Analytics.startHttpRequest('label', START_TIME);
+        mockMomentService()._next(END_TIME);
+        Analytics.stopHttpRequest('label', START_TIME);
+        expectAnalyticsHttpPost('js-cardsview-label-time', END_TIME - START_TIME);
+        flushHttp();
+      });
+
+      it('should handle multiple in-flight http request timings with same label and different start times', function() {
+        var START_TIME_1 = 1000;
+        var START_TIME_2 = 1001;
+        var END_TIME_1 = 1234;
+        var END_TIME_2 = 1432;
+
+        Analytics.startHttpRequest('label', START_TIME_1);
+        Analytics.startHttpRequest('label', START_TIME_2);
+        mockMomentService()._next(END_TIME_1);
+        Analytics.stopHttpRequest('label', START_TIME_2);
+        mockMomentService()._next(END_TIME_2);
+        Analytics.stopHttpRequest('label', START_TIME_1);
+        expectAnalyticsHttpPost('js-cardsview-label-time', END_TIME_1 - START_TIME_2);
+        expectAnalyticsHttpPost('js-cardsview-label-time', END_TIME_2 - START_TIME_1);
+        flushHttp();
+      });
+
+      it('should not fail if there is a stop with no start', function() {
+        var START_TIME = 1000;
+        expect(function() {
+          Analytics.stopHttpRequest('label', START_TIME);
+        }).to.not.throw();
+      });
+    });
+
+    describe('dom-ready time measurement', function() {
+      it('should listen for dom-ready if the page is not complete', function() {
+        var addEventListenerStub = sinon.stub(mockWindowService.document, 'addEventListener');
+        var removeEventListenerStub = sinon.stub(mockWindowService.document, 'removeEventListener');
+
+        Analytics.measureDomReady();
+        expect(addEventListenerStub.calledOnce).to.be.true;
+        expect($httpBackend.flush).to.throw(/No pending request/);
+        addEventListenerStub.yield();
+        expect($httpBackend.flush).to.throw(/No pending request/);
+        mockWindowService.document.readyState = 'complete';
+        addEventListenerStub.yield();
+        expect($httpBackend.flush).to.not.throw(/No pending request/);
+        expect(removeEventListenerStub.calledOnce).to.be.true;
+      });
+
+      it('should track the dom-ready time for a page load', function() {
+        Analytics.measureDomReady();
+        expectAnalyticsHttpPost('js-dom-load-time', DOM_READY_TIME);
+        flushHttp();
+      });
+    });
+  });
 });

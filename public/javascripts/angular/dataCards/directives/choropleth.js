@@ -654,6 +654,8 @@
 
             if (_.isDefined(geojsonAggregateData)) {
 
+              scope.$emit('render:start', { source: 'choropleth_{0}'.format(scope.$id), timestamp: _.now() });
+
               if (!_.isDefined(baseLayerUrl)) {
                 baseLayerUrl = Constants['DEFAULT_MAP_BASE_LAYER_URL'];
               }
@@ -717,6 +719,10 @@
                   }
                 });
 
+              // Yield execution to the browser to render, then notify that render is complete
+              $timeout(function() {
+                scope.$emit('render:complete', { source: 'choropleth_{0}'.format(scope.$id), timestamp: _.now() });
+              });
             }
           });
       }

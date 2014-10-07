@@ -264,13 +264,15 @@
     // We've got changes if the last action was an edit (vs. a save).
     // All sets map to true, and all saves map to false. Thus, the latest
     // value is what we want to set to hasChanges.
+    var hasChangesObservable = Rx.Observable.merge(
+      page.observePropertyChangesRecursively().map(_.constant(true)),
+      currentPageSaveEvents.filter(function(event) { return event.status === 'saved'; }).map(_.constant(false))
+    );
     $scope.bindObservable(
       'hasChanges',
-      Rx.Observable.merge(
-        page.observePropertyChangesRecursively().map(_.constant(true)),
-        currentPageSaveEvents.filter(function(event) { return event.status === 'saved'; }).map(_.constant(false))
-      )
+      hasChangesObservable
     );
+    $scope.emitEventsFromObservable('page:dirtied', hasChangesObservable.filter(_.identity));
 
     function writeSerializedPageJsonAndNotify(serializedJson, publishTo) {
       var savedMessagePersistenceMsec = 3000;

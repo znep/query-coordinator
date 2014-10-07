@@ -85,11 +85,7 @@ module.exports = function ( karma ) {
       /*    Test datasets    */
       'karma-test/dataCards/test-data/**/*.json',
       /*    SASS    */
-      'app/styles/dataCards/flyout.sass',
-      'app/styles/dataCards/timeline-chart.sass',
-      'app/styles/dataCards/column-chart.sass',
-      'app/styles/dataCards/main.sass',
-      'app/styles/dataCards/choropleth.sass',
+      'app/styles/dataCards/*.sass',
       /*    Images */
       { pattern: 'public/angular_templates/images/**/*.png', watched: false,
         included: false, served: true },

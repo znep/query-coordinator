@@ -122,7 +122,7 @@ angular.module('dataCards.services').factory('FlyoutService', function(WindowSta
                       rightSideHint = true;
                     }
                     if (topOffset - flyoutHeight < 0) {
-                      topOffset = flyoutHeight;
+                      topOffset = 0;
                     }
 
                   }

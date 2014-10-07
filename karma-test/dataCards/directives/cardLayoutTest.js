@@ -11,6 +11,8 @@ describe('CardLayout directive test', function() {
   beforeEach(module('/angular_templates/dataCards/table.html'));
   beforeEach(module('/angular_templates/dataCards/tableHeader.html'));
   beforeEach(module('/angular_templates/dataCards/timelineChart.html'));
+  beforeEach(module('dataCards/cards.sass'));
+  beforeEach(module('dataCards/flyout.sass'));
 
   beforeEach(module('dataCards'));
   beforeEach(module('dataCards.directives'));
@@ -728,6 +730,7 @@ describe('CardLayout directive test', function() {
       };
       return createCardLayout({cards: cards});
     }
+
     it('should not show an expanded card if there is none in the model', function() {
       var cl = createLayoutWithCards();
 
@@ -774,6 +777,67 @@ describe('CardLayout directive test', function() {
 
       cl.element.find('.expand-button span').eq(0).click();
       expect(cl.scope.cardExpanded).to.be.true;
+    });
+
+    describe('flyout', function() {
+      afterEach(function() {
+        // Get rid of the flyout
+        mockWindowStateService.mousePositionSubject.onNext({
+          clientX: 0,
+          clientY: 0,
+          target: document.body
+        });
+      });
+
+      it('should display "Expand" over the expand button', function() {
+        var cl = createLayoutWithCards();
+        var flyout = $('#uber-flyout');
+        expect(flyout.is(':visible')).to.be.false;
+
+        var expand = cl.element.find('.expand-button-target').eq(0);
+        mockWindowStateService.mousePositionSubject.onNext({
+          clientX: 0,
+          clientY: 0,
+          target: expand[0]
+        });
+
+        // Verify position
+        var flyoutOffset = flyout.
+            // mostly we care about the arrow position
+            find('.hint').offset();
+        var expandOffset = expand.offset();
+        expect(expandOffset.top - flyoutOffset.top).to.be.within(-20, 20);
+        expect(expandOffset.left - flyoutOffset.left).to.be.within(0, 5);
+
+        expect(flyout.is(':visible')).to.be.true;
+        expect(flyout.text()).to.equal('Expand this Card');
+      });
+
+      it('should display "Collapse" over the collapse button', function() {
+        var cl = createLayoutWithCards();
+        var flyout = $('#uber-flyout');
+        expect(flyout.is(':visible')).to.be.false;
+
+        var card = cl.element.find('card').eq(5);
+        card.find('.expand-button-target').click();
+        mockWindowStateService.mousePositionSubject.onNext({
+          clientX: 0,
+          clientY: 0,
+          // Re-find the expand button, because expanding re-draws it
+          target: card.find('.expand-button-target')[0]
+        });
+
+        // Verify position
+        var flyoutOffset = flyout.
+            // mostly we care about the arrow position
+            find('.hint').offset();
+        var expandOffset = card.find('.expand-button-target').offset();
+        expect(expandOffset.top - flyoutOffset.top).to.be.within(-20, 20);
+        expect(expandOffset.left - flyoutOffset.left).to.be.within(0, 5);
+
+        expect(flyout.is(':visible')).to.be.true;
+        expect(flyout.text()).to.equal('Collapse this Card');
+      });
     });
   });
 

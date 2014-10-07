@@ -592,8 +592,10 @@
         };
 
         FlyoutService.register('expand-button-target', function(el) {
-            return '<div class="flyout-title">Expand this Card</div>';
-          });
+          return '<div class="flyout-title">'
+            + ($(el).attr('title').indexOf('Collapse') >= 0 ? 'Collapse' : 'Expand')
+            + ' this Card</div>';
+        });
 
         FlyoutService.register('delete-button-target', function(el) {
             return '<div class="flyout-title">Remove this Card</div>';

@@ -11,6 +11,9 @@ describe('CardLayout directive test', function() {
   beforeEach(module('/angular_templates/dataCards/table.html'));
   beforeEach(module('/angular_templates/dataCards/tableHeader.html'));
   beforeEach(module('/angular_templates/dataCards/timelineChart.html'));
+  beforeEach(module('dataCards/cards.sass'));
+  beforeEach(module('dataCards/card.sass'));
+  beforeEach(module('dataCards/flyout.sass'));
 
   beforeEach(module('dataCards'));
   beforeEach(module('dataCards.directives'));
@@ -37,18 +40,24 @@ describe('CardLayout directive test', function() {
     Card = $injector.get('Card');
     Page = $injector.get('Page');
     AngularRxExtensions = $injector.get('AngularRxExtensions');
-    testHelpers = $injector.get('testHelpers');
   }));
 
   afterEach(function(){
     testHelpers.TestDom.clear();
   });
 
-  var createCardLayout = function() {
-    var model = new Model();
-    model.fieldName = 'ward';
-    model.defineObservableProperty('activeFilters', []);
-    model.defineObservableProperty('expanded', false);
+  /**
+   * Generates and compiles the html with a card-layout directive.
+   *
+   * @param {Object=} options An object with any of the keys:
+   *   cards: A function that takes the Page Model as an argument, and returns an array of
+   *     Card Models to attach to the Page Model.
+   * @returns {Object} with the generated models scopes and other useful stuff.
+   */
+  function createCardLayout(options) {
+    options = _.defaults(options || {}, {
+      cards: _.constant([]),
+    });
 
     var datasetModel = new Model();
     datasetModel.id = "bana-nas!";
@@ -68,8 +77,7 @@ describe('CardLayout directive test', function() {
     var pageModel = new Page('asdf-fdsa');
     pageModel.set('dataset', datasetModel);
     pageModel.set('baseSoqlFilter', null);
-    pageModel.set('cards', []);
-    model.page = pageModel;
+    pageModel.set('cards', options.cards(pageModel));
 
     var outerScope = rootScope.$new();
     AngularRxExtensions.install(outerScope);
@@ -79,10 +87,19 @@ describe('CardLayout directive test', function() {
     outerScope.bindObservable('cardModels', pageModel.observe('cards'));
 
     var html = [
-        '<div>',
-          '<div class="quick-filter-bar"></div>',
+        '<div class="cards-content">',
+          '<div id="quick-filter-bar-container">',
+            '<div class="quick-filter-bar"></div>',
+          '</div>',
           '<div class="cards-metadata"></div>',
-          '<card-layout id="card-container" page="page" card-models="cardModels" global-where-clause-fragment="where" edit-mode="editMode" allow-add-card="!hasAllCards"></card-layout>',
+          '<card-layout id="card-container" ',
+          ' class="cards"',
+          ' page="page"',
+          ' card-models="cardModels"',
+          ' global-where-clause-fragment="where"',
+          ' edit-mode="editMode"',
+          ' allow-add-card="!hasAllCards"',
+          ' card-expanded="cardExpanded"></card-layout>',
         '</div>'
           ].join('');
     var element = testHelpers.TestDom.compileAndAppend(html, outerScope);
@@ -97,10 +114,12 @@ describe('CardLayout directive test', function() {
       return findCardForModel(model).siblings('.card-drag-overlay');
     };
 
+    // The css styles are scoped to the body class
+    $('body').addClass('state-view-cards');
+
     return {
       pageModel: pageModel,
       datasetModel: datasetModel,
-      model: model,
       element: element,
       outerScope: outerScope,
       scope: element.find('card-layout').scope().$$childHead,
@@ -110,6 +129,7 @@ describe('CardLayout directive test', function() {
       findDragOverlayForModel: findDragOverlayForModel
     };
   }
+
   describe('DOM requirements', function() {
     it('should require the correct id', function() {
       var html = '<card-layout id="test-id"></card-layout>';
@@ -136,25 +156,29 @@ describe('CardLayout directive test', function() {
     });
   });
 
+  // QFB == "quick filter/fajita bar"
   describe('QFB stickyness', function() {
     function hasStuckClass(e) { return e.hasClass('stuck'); };
 
     it('should be updated to reflect scroll position', function() {
       var cl = createCardLayout();
-      cl.cardsMetadataElement.height(100);
+      var elHeight = cl.cardsMetadataElement.outerHeight();
 
       mockWindowStateService.windowSizeSubject.onNext({width: 1000, height: 1000});
       expect(cl.quickFilterBarElement).to.not.satisfy(hasStuckClass);
 
       var cardsMetadataOffsetTop = cl.cardsMetadataElement.offset().top;
 
-      mockWindowStateService.scrollPositionSubject.onNext(99 + cardsMetadataOffsetTop);
+      mockWindowStateService.scrollPositionSubject.onNext(
+        (elHeight - 1) + cardsMetadataOffsetTop);
       expect(cl.quickFilterBarElement).to.not.satisfy(hasStuckClass);
 
-      mockWindowStateService.scrollPositionSubject.onNext(100000 + cardsMetadataOffsetTop);
+      mockWindowStateService.scrollPositionSubject.onNext(
+        100000 + cardsMetadataOffsetTop);
       expect(cl.quickFilterBarElement).to.satisfy(hasStuckClass);
 
-      mockWindowStateService.scrollPositionSubject.onNext(100 + cardsMetadataOffsetTop);
+      mockWindowStateService.scrollPositionSubject.onNext(
+        elHeight + cardsMetadataOffsetTop);
       expect(cl.quickFilterBarElement).to.satisfy(hasStuckClass);
 
       mockWindowStateService.scrollPositionSubject.onNext(0);
@@ -254,7 +278,7 @@ describe('CardLayout directive test', function() {
       cl.outerScope.editMode = true;
       cl.outerScope.$apply();
 
-      var thirdDeleteButtonPosition = $(cl.element.find('.delete-button-target')[2]).position();
+      var thirdDeleteButtonPosition = $(cl.element.find('.delete-button-target')[2]).offset();
 
       var clientX = thirdDeleteButtonPosition.left;
       var clientY = thirdDeleteButtonPosition.top;
@@ -266,25 +290,17 @@ describe('CardLayout directive test', function() {
         target: cl.element.find('.delete-button-target')[2]
       });
 
-      // ALSO NOTE: using jQuery's .left() method inexplicably returns 'auto' in PhantomJS on
-      // Linux, so we are using the raw style property for this test instead.
-      expect(parseInt($('#uber-flyout')[0].style.left, 10)).to.equal(clientX);
+      var hintOffset = $('#uber-flyout .hint').offset();
+      // The flyout could bind towards the left or right depending on the edge of the
+      // screen, so just make sure the hint (ie the triangle attached to the flyout) is
+      // close enough.
+      expect(clientX - hintOffset.left).to.be.lessThan(10);
 
       // NOTE: The flyout should be positioned along the Y axis at
       // (clientY - flyoutHeight - hintHeight * 0.75).
-      var boundingRect = $('#uber-flyout')[0].getBoundingClientRect();
-      var calculatedFlyoutYOffset = Math.round(
-                                      clientY
-                                      - boundingRect.height
-                                      - Math.floor(0.75 * $('#uber-flyout').children('.hint').height())
-                                    );
-      // ALSO NOTE: using jQuery's .top() method inexplicably returns 'auto' in PhantomJS on
-      // Linux, so we are using the raw style property for this test instead.
-      // SUPER ADDITIONAL NOTE: It seems IE9 is consistently off by 1 pixel, so I'm going to just
-      // hand-wave it for results within 5 pixels of the expected value.
-      // --Chris Laidlaw, 9/24/2014
-      expect(Math.abs(parseInt($('#uber-flyout')[0].style.top, 10) - calculatedFlyoutYOffset)).to.below(5);
+      expect(hintOffset.top - clientY).to.below(5);
 
+      expect($('#uber-flyout').text()).to.equal('Remove this Card');
       // Reset flyout
       $('#uber-flyout .content').text('');
       mockWindowStateService.mouseLeftButtonPressedSubject.onNext(true);
@@ -653,8 +669,8 @@ describe('CardLayout directive test', function() {
         cl.pageModel.set('cards', cards);
         cl.outerScope.editMode = true;
         cl.outerScope.$apply();
+        expect(cl.element.find('.card-drag-overlay').length).to.be.above(0);
         cl.element.find('card-layout').css('display', 'block').width(900).height(300);
-        cl.element.append('<style>.card-spot { position: absolute; } .card-group-drop-placeholder { position: absolute; height: 100px; } .card-drag-overlay { position: absolute; left: 0; right: 0; top: 0; bottom: 0 }</style>');
         mockWindowStateService.windowSizeSubject.onNext({width: 1000, height: 1000});
         mockWindowStateService.scrollPositionSubject.onNext(0);
 
@@ -672,20 +688,28 @@ describe('CardLayout directive test', function() {
           clientY: card1Dom.offset().top + cardContainerOffset
         }));
 
-        // NOTE: the target component of mousePositionSubject must be a raw DOM node,
-        // not a jQuery object (hence the [0]).
+        // We only start tracking the movement of the card after it's grabbed. We only
+        // grab the card after we move the mouse a bit on the overlay. So do a move.
         mockWindowStateService.mousePositionSubject.onNext({
-          clientX: card1Dom.offset().left - 5,
-          clientY: card1Dom.offset().top + cardContainerOffset,
+          clientX: placeholder1.offset().left,
+          clientY: placeholder1.offset().top,
           target: card1Overlay[0]
         });
 
-        // Drag it to the overlay.
+        // Drag to group 1
         // NOTE: the target component of mousePositionSubject must be a raw DOM node,
         // not a jQuery object (hence the [0]).
         mockWindowStateService.mousePositionSubject.onNext({
-          clientX: card1Dom.offset().left,
-          clientY: card1Dom.offset().top + cardContainerOffset + placeholder2.offset().top + cardContainerOffset,
+          clientX: placeholder1.offset().left + 5,
+          clientY: placeholder1.offset().top + 5,
+          target: placeholder1[0]
+        });
+        expect(card1.getCurrentValue('cardSize')).to.equal('1');
+
+        // Drag to group 2
+        mockWindowStateService.mousePositionSubject.onNext({
+          clientX: placeholder2.offset().left + 5,
+          clientY: placeholder2.offset().top + 5,
           target: card1Overlay[0]
         });
         expect(card1.getCurrentValue('cardSize')).to.equal('2');
@@ -697,6 +721,140 @@ describe('CardLayout directive test', function() {
       });
     });
 
+  });
+
+  describe('card expansion', function() {
+    var NUM_CARDS = 10;
+    var EXPANDED_CARD_INDEX = 2;
+
+    function createLayoutWithCards(opts) {
+      var cards = function(pageModel) {
+        return _.map(_.range(NUM_CARDS), function(v, i) {
+          var c = new Card(pageModel, 'fieldname' + i);
+          if (opts && opts.expanded && EXPANDED_CARD_INDEX === i) {
+            c.set('expanded', true);
+          } else {
+            c.set('expanded', false);
+          }
+          return c;
+        });
+      };
+      return createCardLayout({cards: cards});
+    }
+
+    it("should not expand any cards if the page model's 'cards' array doesn't contain any cards with the expanded property set", function() {
+      var cl = createLayoutWithCards();
+
+      expect(cl.element.find('card').length).to.equal(NUM_CARDS);
+      expect(cl.element.find('.expanded').length).to.equal(0);
+    });
+
+    it('should show an expanded card if there is one in the model', function() {
+      var cl = createLayoutWithCards({expanded: true});
+
+      var cards = cl.element.find('card');
+      expect(cards.length).to.equal(NUM_CARDS);
+      expect(cards.eq(EXPANDED_CARD_INDEX).hasClass('expanded')).to.be.true;
+    });
+
+    it('should expand a card when clicking the expand-card button', function() {
+      var cl = createLayoutWithCards();
+
+      cl.element.find('.expand-button span').eq(EXPANDED_CARD_INDEX + 1).click();
+      expect(cl.element.find('card').eq(EXPANDED_CARD_INDEX + 1).
+             hasClass('expanded')).to.be.true;
+    });
+
+    it('should unexpand when clicking unexpand button of an expanded card', function() {
+      var cl = createLayoutWithCards({expanded: true});
+
+      var expanded = cl.element.find('card').eq(EXPANDED_CARD_INDEX);
+      expect(expanded.hasClass('expanded')).to.be.true;
+      expanded.find('.expand-button span').click();
+      expect(cl.element.find('.expanded').length).to.equal(0);
+    });
+
+    it("sets the scope's cardExpanded state if there are any expanded cards", function() {
+      var cl = createLayoutWithCards({expanded: true});
+
+      expect(cl.outerScope.cardExpanded).to.be.true;
+    });
+
+    it("doesn't set the cardExpanded state if there aren't any expanded cards", function() {
+      var cl = createLayoutWithCards();
+
+      expect(cl.scope.cardExpanded).not.to.be.ok;
+    });
+
+    it("sets the cardExpanded state when you expand a card", function() {
+      var cl = createLayoutWithCards();
+      expect(cl.scope.cardExpanded).not.to.be.ok;
+
+      cl.element.find('.expand-button span').eq(0).click();
+      expect(cl.scope.cardExpanded).to.be.true;
+    });
+
+    describe('flyout', function() {
+      afterEach(function() {
+        // Get rid of the flyout
+        $('#uber-flyout').remove();
+      });
+
+      it('should display "Expand" over the expand button', function() {
+        var cl = createLayoutWithCards();
+        var flyout = $('#uber-flyout');
+        expect(flyout.is(':visible')).to.be.false;
+
+        var expand = cl.element.find('.expand-button-target').eq(0);
+        mockWindowStateService.mousePositionSubject.onNext({
+          clientX: 0,
+          clientY: 0,
+          target: expand[0]
+        });
+
+        // Verify position
+        var flyoutOffset = flyout.
+            // mostly we care about the arrow position
+            find('.hint').offset();
+        var expandOffset = expand.offset();
+        expect(expandOffset.top - flyoutOffset.top).to.be.within(-20, 20);
+        // Make sure it's pretty centered
+        expect((expandOffset.left + expand.width()/2) - flyoutOffset.left).
+          to.be.within(-2, 2);
+
+        expect(flyout.is(':visible')).to.be.true;
+        expect(flyout.text()).to.equal('Expand this Card');
+      });
+
+      it('should display "Collapse" over the collapse button', function() {
+        var cl = createLayoutWithCards();
+        var flyout = $('#uber-flyout');
+        expect(flyout.is(':visible')).to.be.false;
+
+        var card = cl.element.find('card').eq(5);
+        card.find('.expand-button-target').click();
+        mockWindowStateService.mousePositionSubject.onNext({
+          clientX: 0,
+          clientY: 0,
+          // Re-find the expand button, because expanding re-draws it
+          target: card.find('.expand-button-target')[0]
+        });
+
+        // Verify position
+        var flyoutOffset = flyout.
+            // mostly we care about the arrow position
+            find('.hint').offset();
+        var expand = card.find('.expand-button-target');
+        var expandOffset = expand.offset();
+        expect(expandOffset.top - flyoutOffset.top).to.be.within(-20, 20);
+        // Make sure it's pretty centered
+        expect((expandOffset.left + expand.width()/2) - flyoutOffset.left).
+          to.be.within(-2, 2);
+
+        expect(flyout.is(':visible')).to.be.true;
+        expect(flyout.text()).to.equal('Collapse this Card');
+      });
+    });
   });
 
 });

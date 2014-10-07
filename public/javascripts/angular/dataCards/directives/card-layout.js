@@ -6,6 +6,7 @@
       restrict: 'E',
       scope: {
         page: '=',
+        cardExpanded: '=',
         editMode: '=',
         globalWhereClauseFragment: '=',
         cardModels: '=',
@@ -121,6 +122,11 @@
             'model');
         });
 
+        // Keep track of whether the layout is an expanded-card layout, so upstream scopes
+        // can do things like disable edit buttons
+        expandedCards.subscribe(function(expandedCards) {
+          scope.cardExpanded = !_.isEmpty(expandedCards);
+        });
 
         /**************
         * Card layout *
@@ -586,11 +592,11 @@
         };
 
         FlyoutService.register('expand-button-target', function(el) {
-            return '<div class="flyout-title">Expand this Card</div>';
-          });
+          return '<div class="flyout-title">{0}</div>'.format($(el).attr('title'));
+        });
 
         FlyoutService.register('delete-button-target', function(el) {
-            return '<div class="flyout-title">Remove this Card</div>';
+            return '<div class="flyout-title">{0}</div>'.format($(el).attr('title'));
           });
 
         FlyoutService.register('add-card-button', function(el) {

@@ -121,8 +121,8 @@ angular.module('dataCards.services').factory('FlyoutService', function(WindowSta
                       leftOffset = leftOffset - flyoutWidth;
                       rightSideHint = true;
                     }
-                    if (topOffset - flyoutHeight < 0) {
-                      topOffset = flyoutHeight;
+                    if (topOffset < 0) {
+                      topOffset = 0;
                     }
 
                   }

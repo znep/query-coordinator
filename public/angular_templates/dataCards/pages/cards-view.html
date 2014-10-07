@@ -38,7 +38,11 @@
             ng-if="currentUser">
           </save-button>
           <save-as page-has-changes="hasChanges" save-page-as="savePageAs" ng-if="currentUser"></save-as>
-          <button type="button" ng-click="editMode = !editMode" class="action-btn r-to-l" ng-show="currentUser">{{editMode | ifElse:'Preview':'Customize'}}</button>
+          <button type="button"
+            ng-click="editMode = !cardExpanded && !editMode"
+            class="action-btn r-to-l"
+            ng-class='{disabled: cardExpanded, "cards-edit-disabled": cardExpanded}'
+            ng-show="currentUser">{{editMode | ifElse:'Preview':'Customize'}}</button>
           <a href="{{datasetCSVDownloadURL}}" title="Download this data as CSV" class="action-btn r-to-l">Download</a>
           <api-explorer dataset-observable="page.observe('dataset')"></api-explorer>
         </div>
@@ -67,6 +71,7 @@
     <card-layout
       id="card-container"
       class="cards"
+      card-expanded="cardExpanded"
       page="page"
       edit-mode="editMode"
       global-where-clause-fragment="globalWhereClauseFragment"

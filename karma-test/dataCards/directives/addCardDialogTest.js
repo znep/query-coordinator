@@ -22,7 +22,12 @@ describe('addCardDialog', function() {
     $rootScope = $injector.get('$rootScope');
     $controller = $injector.get('$controller');
     AngularRxExtensions = $injector.get('AngularRxExtensions');
+    CardTypeMappingService = $injector.get('CardTypeMappingService');
   }));
+
+  afterEach(function() {
+    $('#test-root').remove();
+  });
 
   var columns = [
     {
@@ -30,21 +35,34 @@ describe('addCardDialog', function() {
       "title": "Spot where cool froods hang out.",
       "description": "???",
       "logicalDatatype": "location",
-      "physicalDatatype": "text",
+      "physicalDatatype": "number",
       "importance": 2,
-      "shapefileFeatureHumanReadablePropertyName": "spot"
+      "shapefile": "mash-apes"
     },
     {
       "name": "ward",
       "title": "Ward where crime was committed.",
       "description": "Batman has bigger fish to fry sometimes, you know.",
       "logicalDatatype": "location",
-      "physicalDatatype": "text",
+      "physicalDatatype": "number",
       "importance": 2,
-      "shapefileFeatureHumanReadablePropertyName": "ward"
+      "shapefile": "mash-apes"
     }];
 
   function createDialog() {
+
+    // Such higher-order!
+    function alphaCompareOnProperty(property) {
+      return function(a, b) {
+        if (a[property] < b[property]) {
+          return -1;
+        }
+        if (a[property] > b[property]) {
+          return 1;
+        }
+        return 0;
+      }
+    }
 
     var datasetModel = new Model();
     datasetModel.id = "rook-king";
@@ -73,19 +91,25 @@ describe('addCardDialog', function() {
                    column.physicalDatatype !== '*' &&
                    column.physicalDatatype !== 'point';
           }).
-          sort(function(a, b) { return a.name > b.name; });
+          sort(function(a, b) {
+            return a.name > b.name;
+          });
 
         var sortedCards = cards.
           filter(function(card) {
-            return card.fieldName !== '*'; }).
-          sort(function(a, b) { return a.fieldName > b.fieldName });
+            return card.fieldName !== '*'; 
+          }).
+          sort(function(a, b) {
+            return a.fieldName > b.fieldName
+          });
 
         var i = 0;
         var j = 0;
         var available = false;
         var availableCardCount = sortedColumns.length;
         var availableColumns = [];
-        var unavailableColumns = [];
+        var alreadyOnPageColumns = [];
+        var visualizationUnsupportedColumns = [];
 
         for (i = 0; i < sortedColumns.length; i++) {
 
@@ -100,31 +124,23 @@ describe('addCardDialog', function() {
 
           sortedColumns[i].available = available;
 
-          if (available) {
-            availableColumns.push(sortedColumns[i]);
+          if (CardTypeMappingService.cardTypeForColumnIsSupported(sortedColumns[i])) {
+            if (available) {
+              availableColumns.push(sortedColumns[i]);
+            } else {
+              alreadyOnPageColumns.push(sortedColumns[i]);
+            }
           } else {
-            unavailableColumns.push(sortedColumns[i]);
+            visualizationUnsupportedColumns.push(sortedColumns[i]);
           }
 
         }
 
-        return availableColumns.sort(function(a, b) {
-          if (a.title < b.title) {
-            return -1;
-          }
-          if (a.title > b.title) {
-            return 1;
-          }
-          return 0;
-        }).concat(unavailableColumns.sort(function(a, b) {
-          if (a.title < b.title) {
-            return -1;
-          }
-          if (a.title > b.title) {
-            return 1;
-          }
-          return 0;
-        }));
+        return {
+          available: availableColumns.sort(alphaCompareOnProperty('title')),
+          alreadyOnPage: alreadyOnPageColumns.sort(alphaCompareOnProperty('title')),
+          visualizationUnsupporetd: visualizationUnsupportedColumns.sort(alphaCompareOnProperty('title'))
+        };
 
       });
 
@@ -170,7 +186,7 @@ describe('addCardDialog', function() {
       it('should show all columns as options in the "Choose a column..." select control', function() {
         var dialog = createDialog();
 
-        var options = dialog.element.find('option:not(:first)');
+        var options = dialog.element.find('option:enabled');
 
         expect(options.length).to.equal(2);
       });

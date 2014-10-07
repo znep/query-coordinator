@@ -155,6 +155,8 @@ angular.module('dataCards.services').factory('FlyoutService', function(WindowSta
     }
   });
 
+  // Ensure we only ever have one #uber-flyout
+  $('#uber-flyout').remove();
   $('body').append('<div id="uber-flyout"><div class="content"></div><div class="hint"></div></div>');
 
   uberFlyout = $('#uber-flyout');

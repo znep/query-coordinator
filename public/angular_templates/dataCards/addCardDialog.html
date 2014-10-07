@@ -2,15 +2,45 @@
 <div class="add-card-select-column">
   <select id="add-card-select-column-control"
     ng-model="addCardSelectedColumnFieldName">
+
     <option
       value="null"
       disabled="disabled"
       ng-selected="addCardSelectedColumnFieldName === null">Choose a column...</option>
+
+    <option value="null" disabled="disabled" ng-if="datasetColumns.available.length > 0"></option>
+
     <option
-      ng-attr-title="{{!column.available ? 'This card is already on the page' : 'Add this card'}}"
+      ng-attr-title="Add this card"
       value="{{column.name}}"
-      ng-disabled="!column.available"
-      ng-repeat="column in datasetColumns">{{column.title}}</option>
+      ng-repeat="column in datasetColumns.available">{{column.title}}</option>
+
+    <option value="null" disabled="disabled" ng-if="datasetColumns.alreadyOnPage.length > 0"></option>
+
+    <option
+      value="null"
+      disabled="disabled"
+      ng-if="datasetColumns.alreadyOnPage.length > 0"><b>Card already on page</b></option>
+
+    <option
+      ng-attr-title="This card is already on the page"
+      value="{{column.name}}"
+      disabled="disabled"
+      ng-repeat="column in datasetColumns.alreadyOnPage">-{{column.title}}</option>
+
+    <option value="null" disabled="disabled" ng-if="datasetColumns.visualizationUnsupporetd.length > 0"></option>
+
+    <option
+      value="null"
+      disabled="disabled"
+      ng-if="datasetColumns.visualizationUnsupporetd.length > 0">Not currently supported</option>
+
+    <option
+      ng-attr-title="This card type is currently unsupported"
+      value="{{column.name}}"
+      disabled="disabled"
+      ng-repeat="column in datasetColumns.visualizationUnsupporetd">-{{column.title}}</option>
+
   </select>
   <div class="arrow-container">
     <div class="arrow"></div>

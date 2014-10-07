@@ -1,7 +1,20 @@
 (function() {
   'use strict';
 
-  function CardsViewController($scope, $location, $log, $window, AngularRxExtensions, SortedTileLayout, Filter, PageDataService, UserSession, FlyoutService, page, Card) {
+  // Such higher-order!
+  function alphaCompareOnProperty(property) {
+    return function(a, b) {
+      if (a[property] < b[property]) {
+        return -1;
+      }
+      if (a[property] > b[property]) {
+        return 1;
+      }
+      return 0;
+    }
+  }
+
+  function CardsViewController($scope, $location, $log, $window, AngularRxExtensions, SortedTileLayout, Filter, PageDataService, UserSession, CardTypeMappingService, FlyoutService, page, Card) {
 
     AngularRxExtensions.install($scope);
 
@@ -161,19 +174,25 @@
                    column.physicalDatatype !== '*' &&
                    column.physicalDatatype !== 'point';
           }).
-          sort(function(a, b) { return a.name > b.name; });
+          sort(function(a, b) {
+            return a.name > b.name;
+          });
 
         var sortedCards = cards.
           filter(function(card) {
-            return card.fieldName !== '*'; }).
-          sort(function(a, b) { return a.fieldName > b.fieldName });
+            return card.fieldName !== '*'; 
+          }).
+          sort(function(a, b) {
+            return a.fieldName > b.fieldName
+          });
 
         var i = 0;
         var j = 0;
         var available = false;
         var availableCardCount = sortedColumns.length;
         var availableColumns = [];
-        var unavailableColumns = [];
+        var alreadyOnPageColumns = [];
+        var visualizationUnsupportedColumns = [];
 
         for (i = 0; i < sortedColumns.length; i++) {
 
@@ -188,40 +207,30 @@
 
           sortedColumns[i].available = available;
 
-          if (available) {
-            availableColumns.push(sortedColumns[i]);
+          if (CardTypeMappingService.cardTypeForColumnIsSupported(sortedColumns[i])) {
+            if (available) {
+              availableColumns.push(sortedColumns[i]);
+            } else {
+              alreadyOnPageColumns.push(sortedColumns[i]);
+            }
           } else {
-            unavailableColumns.push(sortedColumns[i]);
+            visualizationUnsupportedColumns.push(sortedColumns[i]);
           }
 
         }
 
-        return availableColumns.sort(function(a, b) {
-          if (a.title < b.title) {
-            return -1;
-          }
-          if (a.title > b.title) {
-            return 1;
-          }
-          return 0;
-        }).concat(unavailableColumns.sort(function(a, b) {
-          if (a.title < b.title) {
-            return -1;
-          }
-          if (a.title > b.title) {
-            return 1;
-          }
-          return 0;
-        }));
+        return {
+          available: availableColumns.sort(alphaCompareOnProperty('title')),
+          alreadyOnPage: alreadyOnPageColumns.sort(alphaCompareOnProperty('title')),
+          visualizationUnsupporetd: visualizationUnsupportedColumns.sort(alphaCompareOnProperty('title'))
+        };
 
       });
 
     $scope.bindObservable('datasetColumns', datasetColumns);
     $scope.bindObservable('hasAllCards', datasetColumns.map(function(columns) {
-      return columns.filter(function(column) {
-        return column.available; }).length === 0;
-      }
-    ));
+      return columns.available.length === 0;
+    }));
 
     $scope.$on('modal-open-surrogate', function(e, data) {
       $scope.$broadcast('modal-open', data);

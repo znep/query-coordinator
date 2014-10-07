@@ -601,7 +601,7 @@
 
         FlyoutService.register('add-card-button', function(el) {
             if ($(el).hasClass('disabled')) {
-              return '<div class="flyout-title">All cards are present</div>';
+              return '<div class="flyout-title">All available cards are already on the page</div>';
             }
           });
 

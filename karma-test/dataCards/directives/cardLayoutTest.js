@@ -162,15 +162,7 @@ describe('CardLayout directive test', function() {
 
     it('should be updated to reflect scroll position', function() {
       var cl = createCardLayout();
-      var elHeight = 100;
-      // Zero out anything that will affect the height of the element, so we can do
-      // precise assertions below
-      cl.cardsMetadataElement.css({
-        height: elHeight,
-        padding: 0,
-        margin: 0,
-        border: 0
-      });
+      var elHeight = cl.cardsMetadataElement.outerHeight();
 
       mockWindowStateService.windowSizeSubject.onNext({width: 1000, height: 1000});
       expect(cl.quickFilterBarElement).to.not.satisfy(hasStuckClass);
@@ -308,6 +300,7 @@ describe('CardLayout directive test', function() {
       // (clientY - flyoutHeight - hintHeight * 0.75).
       expect(hintOffset.top - clientY).to.below(5);
 
+      expect($('#uber-flyout').text()).to.equal('Remove this Card');
       // Reset flyout
       $('#uber-flyout .content').text('');
       mockWindowStateService.mouseLeftButtonPressedSubject.onNext(true);
@@ -678,7 +671,6 @@ describe('CardLayout directive test', function() {
         cl.outerScope.$apply();
         expect(cl.element.find('.card-drag-overlay').length).to.be.above(0);
         cl.element.find('card-layout').css('display', 'block').width(900).height(300);
-        cl.element.append('<style>.card-group-drop-placeholder { height: 100px !important; } .card-drag-overlay { position: absolute; left: 0; right: 0; top: 0; bottom: 0 }</style>');
         mockWindowStateService.windowSizeSubject.onNext({width: 1000, height: 1000});
         mockWindowStateService.scrollPositionSubject.onNext(0);
 
@@ -733,12 +725,13 @@ describe('CardLayout directive test', function() {
 
   describe('card expansion', function() {
     var NUM_CARDS = 10;
+    var EXPANDED_CARD_INDEX = 2;
 
     function createLayoutWithCards(opts) {
       var cards = function(pageModel) {
         return _.map(_.range(NUM_CARDS), function(v, i) {
           var c = new Card(pageModel, 'fieldname' + i);
-          if (opts && opts.expanded && 2 === i) {
+          if (opts && opts.expanded && EXPANDED_CARD_INDEX === i) {
             c.set('expanded', true);
           } else {
             c.set('expanded', false);
@@ -749,7 +742,7 @@ describe('CardLayout directive test', function() {
       return createCardLayout({cards: cards});
     }
 
-    it('should not show an expanded card if there is none in the model', function() {
+    it("should not expand any cards if the page model's 'cards' array doesn't contain any cards with the expanded property set", function() {
       var cl = createLayoutWithCards();
 
       expect(cl.element.find('card').length).to.equal(NUM_CARDS);
@@ -759,21 +752,25 @@ describe('CardLayout directive test', function() {
     it('should show an expanded card if there is one in the model', function() {
       var cl = createLayoutWithCards({expanded: true});
 
-      expect(cl.element.find('card').length).to.equal(NUM_CARDS);
-      expect(cl.element.find('.expanded').length).to.equal(1);
+      var cards = cl.element.find('card');
+      expect(cards.length).to.equal(NUM_CARDS);
+      expect(cards.eq(EXPANDED_CARD_INDEX).hasClass('expanded')).to.be.true;
     });
 
     it('should expand a card when clicking the expand-card button', function() {
       var cl = createLayoutWithCards();
 
-      cl.element.find('.expand-button span').click();
-      expect(cl.element.find('.expanded').length).to.equal(1);
+      cl.element.find('.expand-button span').eq(EXPANDED_CARD_INDEX + 1).click();
+      expect(cl.element.find('card').eq(EXPANDED_CARD_INDEX + 1).
+             hasClass('expanded')).to.be.true;
     });
 
     it('should unexpand when clicking unexpand button of an expanded card', function() {
       var cl = createLayoutWithCards({expanded: true});
 
-      cl.element.find('.expanded .expand-button span').click();
+      var expanded = cl.element.find('card').eq(EXPANDED_CARD_INDEX);
+      expect(expanded.hasClass('expanded')).to.be.true;
+      expanded.find('.expand-button span').click();
       expect(cl.element.find('.expanded').length).to.equal(0);
     });
 
@@ -783,7 +780,7 @@ describe('CardLayout directive test', function() {
       expect(cl.outerScope.cardExpanded).to.be.true;
     });
 
-    it("does not set the cardExpanded state sans expanded cards", function() {
+    it("doesn't set the cardExpanded state if there aren't any expanded cards", function() {
       var cl = createLayoutWithCards();
 
       expect(cl.scope.cardExpanded).not.to.be.ok;

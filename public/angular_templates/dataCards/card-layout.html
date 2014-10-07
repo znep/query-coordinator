@@ -19,7 +19,7 @@
   <div class="card-drop-placeholder" ng-if="cardModel === grabbedCard"></div>
   <div class="card-drag-overlay" data-card-id="{{cardModel.uniqueId}}" ng-if="editMode && cardModel !== grabbedCard">
     <div class="delete-button">
-      <span class="delete-button-target" title="Delete Card" ng-click="deleteCard(cardModel)"></span>
+      <span class="delete-button-target" title="Remove this Card" ng-click="deleteCard(cardModel)"></span>
     </div>
   </div>
 </div>

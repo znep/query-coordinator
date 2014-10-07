@@ -425,6 +425,7 @@ describe("CardsViewController", function() {
       testHelpers = _testHelpers;
       controllerHarness = makeController();
     }]));
+
     afterEach(function() {
       testHelpers.TestDom.clear();
       testHelpers.fireMouseEvent(document.body, 'mousemove');

@@ -39,17 +39,21 @@ describe("card directive", function() {
       it('should contain a link with a title of "Expand Card"', function() {
         ensure();
         model.set('expanded', false);
-        expect(el.find('.expand-button span[title="Collapse Card"]')).to.have.length(0);
-        expect(el.find('.expand-button span[title="Expand Card"]')).to.have.length(1);
+        expect(el.find('.expand-button span[title="Collapse this Card"]')).
+          to.have.length(0);
+        expect(el.find('.expand-button span[title="Expand this Card"]')).
+          to.have.length(1);
       });
     });
 
     describe('when the card is expanded', function() {
-      it('should contain a link with a title of "Collapse Card"', function() {
+      it('should contain a link with a title of "Collapse this Card"', function() {
         ensure();
         model.set('expanded', true);
-        expect(el.find('.expand-button span[title="Collapse Card"]')).to.have.length(1);
-        expect(el.find('.expand-button span[title="Expand Card"]')).to.have.length(0);
+        expect(el.find('.expand-button span[title="Collapse this Card"]')).
+          to.have.length(1);
+        expect(el.find('.expand-button span[title="Expand this Card"]')).
+          to.have.length(0);
       });
     });
 

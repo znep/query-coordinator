@@ -1,5 +1,5 @@
 describe('columnChart', function() {
-  var th, compile, httpBackend, rootScope, scope, timeout;
+  var th, compile, httpBackend, rootScope, scope, timeout, AngularRxExtensions;
 
   var minSmallCardBarWidth = 8;
   var maxSmallCardBarWidth = 30;
@@ -126,6 +126,7 @@ describe('columnChart', function() {
     rootScope = $injector.get('$rootScope');
     scope = rootScope.$new();
     timeout = $injector.get('$timeout');
+    AngularRxExtensions = $injector.get('AngularRxExtensions');
   }));
 
   after(function() {
@@ -621,6 +622,39 @@ describe('columnChart', function() {
       expect($label.length > 0).to.equal(true);
       expect(labelRightOffset).to.equal(76);// TODO this magic number seems a bit brittle
 
+    });
+
+  });
+
+  describe('render timing events', function() {
+    it('should emit render:start and render:complete events on rendering', function(done) {
+      var chart, scope, element;
+
+      chart = createNewColumnChart();
+      scope = chart.scope;
+      AngularRxExtensions.install(scope);
+
+      var renderEvents = scope.eventToObservable('render:start').merge(scope.eventToObservable('render:complete'));
+
+      renderEvents.take(2).toArray().subscribe(
+        function(events) {
+          // Vis id is a string and is the same across events.
+          expect(events[0].args[0].source).to.satisfy(_.isString);
+          expect(events[1].args[0].source).to.equal(events[0].args[0].source);
+
+          // Times are ints and are in order.
+          expect(events[0].args[0].timestamp).to.satisfy(_.isFinite);
+          expect(events[1].args[0].timestamp).to.satisfy(_.isFinite);
+
+          expect(events[0].args[0].timestamp).to.be.below(events[1].args[0].timestamp);
+          done();
+        }
+      );
+
+      // Pretend we got new data.
+      scope.testData = testData.concat([]);
+      scope.$digest();
+      timeout.flush(); // Needed to simulate a frame. Render:complete won't be emitted otherwise.
     });
 
   });

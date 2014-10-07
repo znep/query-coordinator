@@ -30,9 +30,11 @@ describe("A Choropleth Directive", function() {
     return testHelpers.TestDom.compileAndAppend(html, scope);
   }
 
+  var rootScope;
   var scope;
   var testHelpers;
   var timeout;
+  var AngularRxExtensions;
   var testData;
   var el;
   var testJson = 'karma-test/dataCards/test-data/choroplethTest/data.json';
@@ -53,6 +55,7 @@ describe("A Choropleth Directive", function() {
     rootScope = $injector.get('$rootScope');
     scope = rootScope.$new();
     timeout = $injector.get('$timeout');
+    AngularRxExtensions = $injector.get('AngularRxExtensions');
     testData = testHelpers.getTestJson(testJson);
   }));
 
@@ -62,6 +65,43 @@ describe("A Choropleth Directive", function() {
 
 
   describe('with a valid geojsonAggregateData input', function() {
+    describe('render timing events', function() {
+      it('should emit render:start and render:complete events on rendering', function(done) {
+        AngularRxExtensions.install(rootScope);
+
+        var renderEvents = Rx.Observable.merge(
+          rootScope.eventToObservable('render:start').first(),
+          rootScope.eventToObservable('render:complete').first()
+        );
+
+        // Needed to simulate a frame. Render:complete won't be emitted otherwise.
+        // We need to call timeout.flush() after render:start's callstack completes,
+        // because only that will guarantee that the choropleth actually started
+        // a timeout. Bleh.
+        renderEvents.first().delay(1).subscribe(function() {
+          timeout.flush();
+        });
+
+        renderEvents.take(2).toArray().subscribe(
+          function(events) {
+            // Vis id is a string and is the same across events.
+            expect(events[0].args[0].source).to.satisfy(_.isString);
+            expect(events[1].args[0].source).to.equal(events[0].args[0].source);
+
+            // Times are ints and are in order.
+            expect(events[0].args[0].timestamp).to.satisfy(_.isFinite);
+            expect(events[1].args[0].timestamp).to.satisfy(_.isFinite);
+
+            expect(events[0].args[0].timestamp).to.be.below(events[1].args[0].timestamp);
+            done();
+          }
+        );
+
+        el = createChoropleth();
+      });
+
+    });
+
     // TODO: INVALID INPUT?
 
     it('should render a leaflet map, with zoom controls', function() {

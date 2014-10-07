@@ -69,6 +69,32 @@ angular.module('dataCards.services').factory('AngularRxExtensions', function() {
     return observable;
   }
 
+  function eventToObservable(eventName) {
+    if (_.isEmpty(eventName) || !_.isString(eventName)) {
+      throw new Error('eventToObservable not passed a string event name');
+    }
+
+    var eventSubject = new Rx.Subject();
+    this.$on(eventName, function(event) {
+      eventSubject.onNext( { event: event, args: _.rest(arguments) } );
+    });
+    return eventSubject;
+  }
+
+  function emitEventsFromObservable(eventName, observable) {
+    var self = this;
+
+    if (_.isEmpty(eventName) || !_.isString(eventName)) {
+      throw new Error('emitEventsFromObservable not passed a string event name');
+    }
+
+    return observable.subscribe(function(value) {
+      self.safeApply(function() {
+        self.$emit(eventName, value);
+      });
+    });
+  }
+
   return {
     // Installs the extensions on the given scope.
     // Typical usage is to install on the root scope, so
@@ -81,10 +107,19 @@ angular.module('dataCards.services').factory('AngularRxExtensions', function() {
       if (!_.isUndefined(scope.observe) && scope.observe !== observe) {
         throw new Error('Naming collision: scope.observe.');
       }
+      if (!_.isUndefined(scope.eventToObservable) && scope.eventToObservable !== eventToObservable) {
+        throw new Error('Naming collision: scope.eventToObservable.');
+      }
+
+      if (!_.isUndefined(scope.emitEventsFromObservable) && scope.emitEventsFromObservable !== emitEventsFromObservable) {
+        throw new Error('Naming collision: scope.emitEventsFromObservable.');
+      }
 
       scope.bindObservable = bindObservable;
       scope.observe = observe;
       scope.safeApply = safeApply;
+      scope.eventToObservable = eventToObservable;
+      scope.emitEventsFromObservable = emitEventsFromObservable;
     }
   };
 

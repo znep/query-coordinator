@@ -814,8 +814,7 @@
             if (!_.isDefined(chartData) || !_.isDefined(precision)) {
               return;
             }
-            var timestamp = _.now();
-            scope.$emit('render:start', 'timelineChart_{0}'.format(scope.$id), timestamp);
+            scope.$emit('render:start', { source: 'timelineChart_{0}'.format(scope.$id), timestamp: _.now() });
 
             // If it's the scope filters that have changed, update the state.
             if (!_.isEmpty(scope.filters)) {
@@ -831,8 +830,7 @@
             lastFilter = showFiltered;
             lastData = chartData;
             $timeout(function() {
-              scope.$emit('render:complete', 'timelineChart_{0}'.format(scope.$id),
-                          timestamp);
+              scope.$emit('render:complete', { source: 'timelineChart_{0}'.format(scope.$id), timestamp: _.now() });
             }, 0, false)
           }
         );

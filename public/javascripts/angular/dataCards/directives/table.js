@@ -481,9 +481,8 @@ angular.module('socrataCommon.directives').directive('table', function(AngularRx
         scope.observe('infinite'),
         function(cardDimensions, rowCount, filteredRowCount, expanded, columnDetails, infinite) {
 
-          var timestamp = new Date().getTime();
+          scope.$emit('render:start', { source: 'table_{0}'.format(scope.$id), timestamp: _.now() });
 
-          scope.$emit('render:start', 'table_{0}'.format(scope.$id), timestamp);
           updateExpanderHeight();
           showOrHideNoRowMessage();
 
@@ -501,7 +500,7 @@ angular.module('socrataCommon.directives').directive('table', function(AngularRx
 
           // Yield execution to the browser to render, then notify that render is complete
           $timeout(function() {
-            scope.$emit('render:complete', 'table_{0}'.format(scope.$id), timestamp);
+            scope.$emit('render:complete', { source: 'table_{0}'.format(scope.$id), timestamp: _.now() });
           }, 0, false);
         }
       );

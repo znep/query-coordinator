@@ -417,8 +417,7 @@ angular.module('socrataCommon.directives').directive('columnChart', function($pa
         scope.observe('rowDisplayUnit'),
         function(cardVisualizationDimensions, chartData, showFiltered, expanded, rowDisplayUnit) {
           if (!chartData) return;
-          var timestamp = new Date().getTime();
-          scope.$emit('render:start', 'columnChart_{0}'.format(scope.$id), timestamp);
+          scope.$emit('render:start', { source: 'columnChart_{0}'.format(scope.$id), timestamp: _.now() });
           renderColumnChart(
             element,
             chartData,
@@ -429,7 +428,7 @@ angular.module('socrataCommon.directives').directive('columnChart', function($pa
           );
           // Yield execution to the browser to render, then notify that render is complete
           $timeout(function() {
-            scope.$emit('render:complete', 'columnChart_{0}'.format(scope.$id), timestamp);
+            scope.$emit('render:complete', { source: 'columnChart_{0}'.format(scope.$id), timestamp: _.now() });
           });
         }
       );

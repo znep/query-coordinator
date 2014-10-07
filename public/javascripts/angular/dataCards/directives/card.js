@@ -18,13 +18,6 @@ angular.module('dataCards.directives').directive('card', function(AngularRxExten
           return column ? CardTypeMappingService.cardTypeForColumn(column) : null;
         }
       );
-      cardType.
-        filter(function(type) {
-          return _.isPresent(type);
-        }).
-        subscribe(function(type) {
-          $scope.$emit('cardType', type);
-        });
 
       var column = modelSubject.pluck('fieldName').combineLatest(columns, function(fieldName, columns) {
         return columns[fieldName];

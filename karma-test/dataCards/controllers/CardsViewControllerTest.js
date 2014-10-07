@@ -26,16 +26,13 @@ describe("CardsViewController", function() {
 
   var mockPageDataService = {
     save: function() {
-      // Stupid promise not tied to $digests.
-      return {
-        then: function(callback) {
-          return callback({
-            data: {
-              pageId: TEST_PAGE_ID
-            }
-          })
+      return Promise.resolve(
+        {
+          data: {
+            pageId: TEST_PAGE_ID
+          }
         }
-      };
+      );
     }
   };
   var mockDatasetDataService = {

@@ -353,14 +353,25 @@
           $window.location.href = '/view/{0}'.format(newSavedPageId);
         });
 
-      return saveStatusSubject.filter(
-          function(event) {
-            // Never tell the client we're back to idle.
+      return saveStatusSubject.
+        bufferWithCount(2, 1). // Buffers of 2 in length, but overlapping by 1.
+        filter(
+          function(lastTwoEvents) {
+            var previousEvent = lastTwoEvents[0];
+            var currentEvent = lastTwoEvents[1];
             // UX wants the page to remain stuck in "Saved"
-            // until the redirect kicks in.
-            return event.status !== 'idle';
+            // until the redirect kicks in. However we also want the user
+            // to be able to retry on failure. So, filter out only
+            // idle states that were not immediately preceded by failed
+            // states.
+            if (currentEvent.status === 'idle') {
+              return previousEvent.status === 'failed';
+            } else {
+              return true;
+            }
           }
-        );
+        ).
+        pluck(1); // We're done with the buffer - only care about the current event.
     };
 
 

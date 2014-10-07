@@ -73,7 +73,7 @@ Rx.Observable.prototype.dump = function(optionalName) {
   );
 }
 
-// Ensure the first element in the sequence takes at least windoeMsec
+// Ensure the first element in the sequence takes at least windowMsec
 // to show up.
 Rx.Observable.prototype.imposeMinimumDelay = function(windowMsec) {
   var self = this;
@@ -81,6 +81,7 @@ Rx.Observable.prototype.imposeMinimumDelay = function(windowMsec) {
   var timeout = Rx.Observable.timer(windowMsec).share();
 
   return Rx.Observable.mergeAllAndGiveSource(timeout, self). // Surface the sequence which reacts first.
+    take(1).
     map(function(reaction) {
       // Depending on which sequence reacted first, figure out when to tell the user success happened.
       if (reaction.cause === timeout) return self; // Timeout happened, which means the minimum delay was reached. Just use the real success.
@@ -112,7 +113,7 @@ Rx.Observable.prototype.imposeMinimumDelay = function(windowMsec) {
 // complete
 Rx.Observable.firstToReact = function() {
   return Rx.Observable.mergeAllAndGiveSource.apply(Rx.Observable, arguments).
-    first().
+    take(1). // Note that first() throws an error if the sequence closes without emitting anything.
     pluck('cause');
 };
 

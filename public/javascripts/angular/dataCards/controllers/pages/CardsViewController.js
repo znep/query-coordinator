@@ -376,7 +376,11 @@
 
 
     //TODO consider extending register() to take a selector, too.
-    FlyoutService.register('save-button', function() {
+    //TODO The controller shouldn't know about this magical target inside save-button!
+    //     There needs to be significant refactoring though to make this right:
+    //     1- Make flyouts capable of registering on trees, not individual elements.
+    //     2- Make refreshing the flyout on data changes more automatic.
+    FlyoutService.register('save-button-flyout-target', function() {
       if (currentPageSaveEvents.value.status === 'failed') {
         return '<div class="flyout-title">An error occurred</div><div>Please contact Socrata Support</div>';
       } else if (currentPageSaveEvents.value.status === 'idle') {

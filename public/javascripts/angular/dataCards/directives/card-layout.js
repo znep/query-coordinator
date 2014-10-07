@@ -6,6 +6,7 @@
       restrict: 'E',
       scope: {
         page: '=',
+        cardExpanded: '=',
         editMode: '=',
         globalWhereClauseFragment: '=',
         cardModels: '=',
@@ -121,6 +122,11 @@
             'model');
         });
 
+        // Keep track of whether the layout is an expanded-card layout, so upstream scopes
+        // can do things like disable edit buttons
+        expandedCards.subscribe(function(expandedCards) {
+          scope.cardExpanded = !_.isEmpty(expandedCards);
+        });
 
         /**************
         * Card layout *

@@ -37,18 +37,24 @@ describe('CardLayout directive test', function() {
     Card = $injector.get('Card');
     Page = $injector.get('Page');
     AngularRxExtensions = $injector.get('AngularRxExtensions');
-    testHelpers = $injector.get('testHelpers');
   }));
 
   afterEach(function(){
     testHelpers.TestDom.clear();
   });
 
-  var createCardLayout = function() {
-    var model = new Model();
-    model.fieldName = 'ward';
-    model.defineObservableProperty('activeFilters', []);
-    model.defineObservableProperty('expanded', false);
+  /**
+   * Generates and compiles the html with a card-layout directive.
+   *
+   * @param {Object=} options An object with any of the keys:
+   *   cards: A function that takes the Page Model as an argument, and returns an array of
+   *     Card Models to attach to the Page Model.
+   * @returns {Object} with the generated models scopes and other useful stuff.
+   */
+  function createCardLayout(options) {
+    options = _.defaults(options || {}, {
+      cards: _.constant([]),
+    });
 
     var datasetModel = new Model();
     datasetModel.id = "bana-nas!";
@@ -68,8 +74,7 @@ describe('CardLayout directive test', function() {
     var pageModel = new Page('asdf-fdsa');
     pageModel.set('dataset', datasetModel);
     pageModel.set('baseSoqlFilter', null);
-    pageModel.set('cards', []);
-    model.page = pageModel;
+    pageModel.set('cards', options.cards(pageModel));
 
     var outerScope = rootScope.$new();
     AngularRxExtensions.install(outerScope);
@@ -82,7 +87,13 @@ describe('CardLayout directive test', function() {
         '<div>',
           '<div class="quick-filter-bar"></div>',
           '<div class="cards-metadata"></div>',
-          '<card-layout id="card-container" page="page" card-models="cardModels" global-where-clause-fragment="where" edit-mode="editMode" allow-add-card="!hasAllCards"></card-layout>',
+          '<card-layout id="card-container" ',
+          ' page="page"',
+          ' card-models="cardModels"',
+          ' global-where-clause-fragment="where"',
+          ' edit-mode="editMode"',
+          ' allow-add-card="!hasAllCards"',
+          ' card-expanded="cardExpanded"></card-layout>',
         '</div>'
           ].join('');
     var element = testHelpers.TestDom.compileAndAppend(html, outerScope);
@@ -100,7 +111,6 @@ describe('CardLayout directive test', function() {
     return {
       pageModel: pageModel,
       datasetModel: datasetModel,
-      model: model,
       element: element,
       outerScope: outerScope,
       scope: element.find('card-layout').scope().$$childHead,
@@ -110,6 +120,7 @@ describe('CardLayout directive test', function() {
       findDragOverlayForModel: findDragOverlayForModel
     };
   }
+
   describe('DOM requirements', function() {
     it('should require the correct id', function() {
       var html = '<card-layout id="test-id"></card-layout>';
@@ -136,6 +147,7 @@ describe('CardLayout directive test', function() {
     });
   });
 
+  // QFB == "quick filter/fajita bar"
   describe('QFB stickyness', function() {
     function hasStuckClass(e) { return e.hasClass('stuck'); };
 
@@ -697,6 +709,72 @@ describe('CardLayout directive test', function() {
       });
     });
 
+  });
+
+  describe('card expansion', function() {
+    var NUM_CARDS = 10;
+
+    function createLayoutWithCards(opts) {
+      var cards = function(pageModel) {
+        return _.map(_.range(NUM_CARDS), function(v, i) {
+          var c = new Card(pageModel, 'fieldname' + i);
+          if (opts && opts.expanded && 2 === i) {
+            c.set('expanded', true);
+          } else {
+            c.set('expanded', false);
+          }
+          return c;
+        });
+      };
+      return createCardLayout({cards: cards});
+    }
+    it('should not show an expanded card if there is none in the model', function() {
+      var cl = createLayoutWithCards();
+
+      expect(cl.element.find('card').length).to.equal(NUM_CARDS);
+      expect(cl.element.find('.expanded').length).to.equal(0);
+    });
+
+    it('should show an expanded card if there is one in the model', function() {
+      var cl = createLayoutWithCards({expanded: true});
+
+      expect(cl.element.find('card').length).to.equal(NUM_CARDS);
+      expect(cl.element.find('.expanded').length).to.equal(1);
+    });
+
+    it('should expand a card when clicking the expand-card button', function() {
+      var cl = createLayoutWithCards();
+
+      cl.element.find('.expand-button span').click();
+      expect(cl.element.find('.expanded').length).to.equal(1);
+    });
+
+    it('should unexpand when clicking unexpand button of an expanded card', function() {
+      var cl = createLayoutWithCards({expanded: true});
+
+      cl.element.find('.expanded .expand-button span').click();
+      expect(cl.element.find('.expanded').length).to.equal(0);
+    });
+
+    it("sets the scope's cardExpanded state if there are any expanded cards", function() {
+      var cl = createLayoutWithCards({expanded: true});
+
+      expect(cl.outerScope.cardExpanded).to.be.true;
+    });
+
+    it("does not set the cardExpanded state sans expanded cards", function() {
+      var cl = createLayoutWithCards();
+
+      expect(cl.scope.cardExpanded).not.to.be.ok;
+    });
+
+    it("sets the cardExpanded state when you expand a card", function() {
+      var cl = createLayoutWithCards();
+      expect(cl.scope.cardExpanded).not.to.be.ok;
+
+      cl.element.find('.expand-button span').eq(0).click();
+      expect(cl.scope.cardExpanded).to.be.true;
+    });
   });
 
 });

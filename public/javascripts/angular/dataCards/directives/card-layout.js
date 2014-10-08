@@ -151,7 +151,9 @@
           WindowState.windowSizeSubject,
           WindowState.scrollPositionSubject,
           function layoutFn(sortedTileLayoutResult, expandedCards, editMode, allowAddCard, cardsMetadataSize, windowSize, scrollTop) {
-
+console.log('TESTING MYSTERIOUS PHANTOMJS FAILURE');
+console.log('sortedTileLayoutResult.editableCards', sortedTileLayoutResult.editableCards);
+console.log('sortedTileLayoutResult.dataCard', sortedTileLayoutResult.dataCard);
             if (sortedTileLayoutResult.editableCards.length === 0 || sortedTileLayoutResult.dataCard === null) {
               return;
             }

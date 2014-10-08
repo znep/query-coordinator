@@ -444,7 +444,7 @@ describe('CardLayout directive test', function() {
           target: $('.add-card-button')[0]
         });
 
-        expect($('#uber-flyout .content').text()).to.equal('All cards are present');
+        expect($('#uber-flyout .content').text()).to.equal('All available cards are already on the page');
 
         // Reset flyout
         $('#uber-flyout .content').text('');

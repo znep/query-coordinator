@@ -11,8 +11,8 @@
     <option value="null" disabled="disabled" ng-if="datasetColumns.available.length > 0"></option>
 
     <option
-      ng-attr-title="Add this card"
       value="{{column.name}}"
+      title="Add this card"
       ng-repeat="column in datasetColumns.available">{{column.title}}</option>
 
     <option value="null" disabled="disabled" ng-if="datasetColumns.alreadyOnPage.length > 0"></option>
@@ -23,8 +23,8 @@
       ng-if="datasetColumns.alreadyOnPage.length > 0"><b>Card already on page</b></option>
 
     <option
-      ng-attr-title="This card is already on the page"
       value="{{column.name}}"
+      title="This card is already on the page"
       disabled="disabled"
       ng-repeat="column in datasetColumns.alreadyOnPage">-{{column.title}}</option>
 
@@ -36,8 +36,8 @@
       ng-if="datasetColumns.visualizationUnsupporetd.length > 0">Not currently supported</option>
 
     <option
-      ng-attr-title="This card type is currently unsupported"
       value="{{column.name}}"
+      title="This card type is currently unsupported"
       disabled="disabled"
       ng-repeat="column in datasetColumns.visualizationUnsupporetd">-{{column.title}}</option>
 

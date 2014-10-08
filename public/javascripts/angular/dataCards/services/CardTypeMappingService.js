@@ -34,6 +34,9 @@
         if (physicalDatatype === 'text' || physicalDatatype === 'number') {
           return 'search';
         }
+        if (physicalDatatype === 'point') {
+          return 'pointMap';
+        }
         if (physicalDatatype === 'fixed_timestamp') { return 'timeline'; }
         if (physicalDatatype === 'floating_timestamp') { return 'timeline'; }
       }

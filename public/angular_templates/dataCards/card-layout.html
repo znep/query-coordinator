@@ -16,13 +16,14 @@
         where-clause="globalWhereClauseFragment"
         interactive="true"
         ng-class="{ expanded: cardModel.getCurrentValue('expanded'), dragged: cardModel === grabbedCard }"></card>
-  <div class="card-drop-placeholder" ng-if="cardModel === grabbedCard"></div>
-  <div class="card-drag-overlay" data-card-id="{{cardModel.uniqueId}}" ng-if="editMode && cardModel !== grabbedCard">
+  <div class="card-drop-placeholder" ng-if="cardModel === grabbedCard && cardModel.fieldName !== '*'"></div>
+  <div class="card-drag-overlay" data-card-id="{{cardModel.uniqueId}}" ng-if="editMode && cardModel !== grabbedCard && cardModel.fieldName !== '*'">
     <div class="delete-button">
       <span class="delete-button-target" title="Delete Card" ng-click="deleteCard(cardModel)"></span>
     </div>
   </div>
 </div>
+
 <div ng-repeat="n in [1, 2, 3]"
      id="card-group-{{n}}-drop-placeholder"
      class="card-group-drop-placeholder"

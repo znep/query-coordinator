@@ -80,12 +80,6 @@
   .card-visualization
     height: 100%
 
-  // A minimum height of 350px is required to prevent d3 from
-  // flipping out and literally flipping column charts negatively
-  // along the y-axis due to lack of sufficient element height.
-  &.expanded
-    min-height: 350px
-
     .card-text
       .description
         padding-bottom: $card-description-padding-bottom
@@ -93,6 +87,9 @@
     .expand-button
       span:before
         content: ''
+
+.edit-mode .expand-button
+  display: none
 
   .flypaper
     position: absolute

@@ -7,36 +7,7 @@ $row-height: 2rem
 $expand-message-height: 93px
 $border-radius: 4px
 
-.card:not(.expanded) .table
-  height: 100%
-
-  .table-inner
-    display: none
-
-  .expand-message
-    margin: auto
-    text-align: center
-    height: $expand-message-height
-    margin-top: -$expand-message-height/2
-    position: absolute
-    width: 100%
-    top: 50%
-
-
-    img, small
-      vertical-align: middle
-      cursor: pointer
-      &:hover
-        @include prefixer(opacity, 0.8)
-
-    small
-      display: inline-block
-      font-weight: bold
-      padding-left: 1rem
-      text-align: left
-      max-width: 130px
-
-.card.expanded
+.card
 
   .expand-message
     display: none

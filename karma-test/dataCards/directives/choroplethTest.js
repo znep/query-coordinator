@@ -35,7 +35,7 @@ describe("A Choropleth Directive", function() {
   var timeout;
   var testData;
   var el;
-  var testJson  = 'karma-test/dataCards/test-data/choroplethTest/data.json';
+  var testJson = 'karma-test/dataCards/test-data/choroplethTest/data.json';
   var legendSelector = '.choropleth-legend';
   var legendColorSelector = '.choropleth-legend .choropleth-legend-color';
   var featureGeometrySelector = '.leaflet-map-pane .leaflet-objects-pane .leaflet-overlay-pane svg path';

@@ -1,56 +1,16 @@
+
 describe('table', function() {
-  'use strict';
 
-  var blockSize = 50; // The table loads chunks of this size. The tests shouldn't really know, but they do for now.
-  var testJson = 'karma-test/dataCards/test-data/tableTest/test-rows.json';
-  var testMetaJson = 'karma-test/dataCards/test-data/tableTest/test-meta.json';
-  var testHelpers;
-  var $q;
-  var $rootScope;
-  var fixtureData;
-  var reversedFixtureData;
-  var fixtureMetadata;
-  var columnCount;
-  var rowCount = 5;
-  var lastSort = null;
-  var idColumnIndex = 8;
-  var beatColumnIndex = 0;
-  var dateColumnIndex = 4;
-  var descriptionColumnIndex = 5;
-
-  beforeEach(module('/angular_templates/dataCards/table.html'));
-
-  beforeEach(module('/angular_templates/dataCards/tableHeader.html'));
-
-  beforeEach(module(testJson));
-
-  beforeEach(module(testMetaJson));
-
-  beforeEach(module('dataCards'));
-
-  beforeEach(module('dataCards.directives'));
-
-  beforeEach(inject(function($injector) {
-    console.log('BEFORE EACH');
-    testHelpers = $injector.get('testHelpers');
-    $q = $injector.get('$q');
-    $rootScope = $injector.get('$rootScope').$new();
-    fixtureData = testHelpers.getTestJson(testJson);
-    reversedFixtureData = [].concat(fixtureData).reverse();
-    fixtureMetadata = testHelpers.getTestJson(testMetaJson);
-  }));
-
-  var createTableCard = function(expanded, getRows) {
-
-    var outerScope = $rootScope.new();
+  function createTableCard(expanded, getRows) {
 
     outerScope.expanded = expanded || false;
     outerScope.rowCount = 200;
     outerScope.filteredRowCount = 170;
     outerScope.columnDetails = {};
+
     columnCount = 0;
 
-    /*_.each(fixtureMetadata.columns, function(column) {
+    _.each(fixtureMetadata.columns, function(column) {
       if (column.name[0].match(/[a-zA-Z0-9]/g)) {
         column.sortable = true;
         outerScope.columnDetails[column.name] = column;
@@ -60,7 +20,7 @@ describe('table', function() {
 
     // Provide a default sort column. It's a text/category column, so the default sort
     // order is ASC.
-    outerScope.defaultSortColumnName = $rootScope.columnDetails[fixtureMetadata.columns[beatColumnIndex].name].name;
+   outerScope.defaultSortColumnName = outerScope.columnDetails[fixtureMetadata.columns[beatColumnIndex].name].name;
     if (getRows) {
       outerScope.getRows = getRows;
     } else {
@@ -68,7 +28,7 @@ describe('table', function() {
         return $q.when(fixtureData);
       };
     }
-    outerScope.$digest();*/
+    outerScope.$digest();
 
     var html =
       '<div class="card {0}" style="width: 640px; height: 480px;">' +
@@ -99,6 +59,47 @@ describe('table', function() {
       return $q.when(_.take(reversedFixtureData, rowCount));
     }
   }
+
+  var testHelpers;
+  var $rootScope;
+  var outerScope;
+  var $q;
+  var fixtureData;
+  var reversedFixtureData;
+  var fixtureMetadata;
+  var testJson = 'karma-test/dataCards/test-data/tableTest/test-rows.json';
+  var testMetaJson = 'karma-test/dataCards/test-data/tableTest/test-meta.json';
+  var blockSize = 50; // The table loads chunks of this size. The tests shouldn't really know, but they do for now.
+  var columnCount;
+  var rowCount = 5;
+  var lastSort = null;
+  var idColumnIndex = 8;
+  var beatColumnIndex = 0;
+  var dateColumnIndex = 4;
+  var descriptionColumnIndex = 5;
+
+  beforeEach(module('/angular_templates/dataCards/table.html'));
+  beforeEach(module('/angular_templates/dataCards/tableHeader.html'));
+
+  beforeEach(module('dataCards'));
+  beforeEach(module('dataCards.directives'));
+
+  beforeEach(module(testJson));
+  beforeEach(module(testMetaJson));
+
+  beforeEach(inject(function($injector) {
+    try {
+      testHelpers = $injector.get('testHelpers');
+      $rootScope = $injector.get('$rootScope');
+      outerScope = $rootScope.$new();
+      $q = $injector.get('$q');
+      fixtureData = testHelpers.getTestJson(testJson);
+      reversedFixtureData = [].concat(fixtureData).reverse();
+      fixtureMetadata = testHelpers.getTestJson(testMetaJson);
+    } catch (e) {
+      console.log(e);
+    }
+  }));
 
   describe('when rendering cell data', function() {
 
@@ -170,15 +171,14 @@ describe('table', function() {
       });
     });
 
-    it.only('should load more rows upon scrolling', function(done) {
-      //this.timeout(10000); // IE9!
+    it('should load more rows upon scrolling', function(done) {
+      this.timeout(10000); // IE9!
       var el = createTableCard(true);
       var tableBody = el.find('.table-body');
       _.defer(function(){
         expect(el.find('.row-block .cell').length).to.equal(columnCount * blockSize * 3);
         tableBody.scroll(function() {
           _.defer(function() {
-            console.log('deferred');
             expect(el.find('.th').length).to.equal(columnCount);
             expect(el.find('.row-block .cell').length).to.equal(columnCount * blockSize * 4);
             el.remove();

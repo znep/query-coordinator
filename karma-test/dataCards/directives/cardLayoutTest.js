@@ -94,6 +94,7 @@ describe('CardLayout directive test', function() {
           '<div class="cards-metadata"></div>',
           '<card-layout id="card-container" ',
           ' class="cards"',
+          ' ng-class="{\'edit-mode\': editMode}" ',
           ' page="page"',
           ' card-models="cardModels"',
           ' global-where-clause-fragment="where"',
@@ -162,10 +163,31 @@ describe('CardLayout directive test', function() {
 
   // QFB == "quick filter/fajita bar"
   describe('QFB stickyness', function() {
-    function hasStuckClass(e) { return e.hasClass('stuck'); };
+
+    function hasStuckClass(e) {
+      return e.hasClass('stuck');
+    };
 
     it('should be updated to reflect scroll position', function() {
+
       var cl = createCardLayout();
+
+      var card1 = new Card(cl.pageModel, 'testField1');
+      var card2 = new Card(cl.pageModel, 'testField2');
+      var card3 = new Card(cl.pageModel, 'testField3');
+      // Note that the data card (fieldName === '*') is required for layout to happen.
+      // If we do not include it in the cardModels, the layout function will terminate
+      // early and the tests will fail.
+      var card4 = new Card(cl.pageModel, '*');
+      var cards = [ card1, card2, card3, card4 ];
+
+      card1.set('cardSize', '1');
+      card2.set('cardSize', '2');
+      card3.set('cardSize', '2');
+      card4.set('cardSize', '3');
+
+      cl.pageModel.set('cards', cards);
+
       var elHeight = cl.cardsMetadataElement.outerHeight();
 
       mockWindowStateService.windowSizeSubject.onNext({width: 1000, height: 1000});
@@ -187,10 +209,29 @@ describe('CardLayout directive test', function() {
 
       mockWindowStateService.scrollPositionSubject.onNext(0);
       expect(cl.quickFilterBarElement).to.not.satisfy(hasStuckClass);
+
     });
 
     it('should be updated to reflect cardsMetadata height', function(done) {
+
       var cl = createCardLayout();
+
+      var card1 = new Card(cl.pageModel, 'testField1');
+      var card2 = new Card(cl.pageModel, 'testField2');
+      var card3 = new Card(cl.pageModel, 'testField3');
+      // Note that the data card (fieldName === '*') is required for layout to happen.
+      // If we do not include it in the cardModels, the layout function will terminate
+      // early and the tests will fail.
+      var card4 = new Card(cl.pageModel, '*');
+      var cards = [ card1, card2, card3, card4 ];
+
+      card1.set('cardSize', '1');
+      card2.set('cardSize', '2');
+      card3.set('cardSize', '2');
+      card4.set('cardSize', '3');
+
+      cl.pageModel.set('cards', cards);
+
       cl.cardsMetadataElement.height(100);
 
       mockWindowStateService.windowSizeSubject.onNext({width: 1000, height: 1000});
@@ -219,38 +260,54 @@ describe('CardLayout directive test', function() {
     // mouse click.
     // Best we can do is see if the interaction catcher comes up in edit mode.
     it('should pop up card-drag-overlay', function() {
+
       var cl = createCardLayout();
 
       var card1 = new Card(cl.pageModel, 'testField1');
       var card2 = new Card(cl.pageModel, 'testField2');
       var card3 = new Card(cl.pageModel, 'testField3');
-      var cards = [ card1, card2, card3 ];
+      // Note that the data card (fieldName === '*') is required for layout to happen.
+      // If we do not include it in the cardModels, the layout function will terminate
+      // early and the tests will fail.
+      var card4 = new Card(cl.pageModel, '*');
+      var cards = [ card1, card2, card3, card4 ];
 
       card1.set('cardSize', '1');
       card2.set('cardSize', '2');
-      card3.set('cardSize', '3');
+      card3.set('cardSize', '2');
+      card4.set('cardSize', '3');
 
       cl.pageModel.set('cards', cards);
+
       mockWindowStateService.windowSizeSubject.onNext({width: 1000, height: 1000});
       mockWindowStateService.scrollPositionSubject.onNext(0);
       expect(cl.element.find('.card-drag-overlay').length).to.equal(0);
 
       cl.outerScope.editMode = true;
       cl.outerScope.$apply();
-      expect(cl.element.find('.card-drag-overlay').length).to.equal(cards.length);
+      // The data card (fieldname === '*') does not have a '.card-drag-overlay' element.
+      expect(cl.element.find('.card-drag-overlay').length).to.equal(cards.length - 1);
     });
 
     it('should display a delete card button', function() {
+
       var cl = createCardLayout();
 
       var card1 = new Card(cl.pageModel, 'testField1');
       var card2 = new Card(cl.pageModel, 'testField2');
       var card3 = new Card(cl.pageModel, 'testField3');
-      var cards = [ card1, card2, card3 ];
+      // Note that the data card (fieldName === '*') is required for layout to happen.
+      // If we do not include it in the cardModels, the layout function will terminate
+      // early and the tests will fail.
+      var card4 = new Card(cl.pageModel, '*');
+      var cards = [ card1, card2, card3, card4 ];
 
       card1.set('cardSize', '1');
       card2.set('cardSize', '2');
-      card3.set('cardSize', '3');
+      card3.set('cardSize', '2');
+      card4.set('cardSize', '3');
+
+      cl.pageModel.set('cards', cards);
 
       mockWindowStateService.windowSizeSubject.onNext({width: 1000, height: 1000});
       mockWindowStateService.scrollPositionSubject.onNext(0);
@@ -264,21 +321,28 @@ describe('CardLayout directive test', function() {
     });
 
     it('should display a flyout when hovering on a delete card button', function() {
+
       var cl = createCardLayout();
 
       var card1 = new Card(cl.pageModel, 'testField1');
       var card2 = new Card(cl.pageModel, 'testField2');
       var card3 = new Card(cl.pageModel, 'testField3');
-      var cards = [ card1, card2, card3 ];
+      // Note that the data card (fieldName === '*') is required for layout to happen.
+      // If we do not include it in the cardModels, the layout function will terminate
+      // early and the tests will fail.
+      var card4 = new Card(cl.pageModel, '*');
+      var cards = [ card1, card2, card3, card4 ];
 
       card1.set('cardSize', '1');
       card2.set('cardSize', '2');
-      card3.set('cardSize', '3');
+      card3.set('cardSize', '2');
+      card4.set('cardSize', '3');
+
+      cl.pageModel.set('cards', cards);
 
       mockWindowStateService.windowSizeSubject.onNext({width: 1000, height: 1000});
       mockWindowStateService.scrollPositionSubject.onNext(0);
 
-      cl.pageModel.set('cards', cards);
       cl.outerScope.editMode = true;
       cl.outerScope.$apply();
 
@@ -311,30 +375,45 @@ describe('CardLayout directive test', function() {
     });
 
     it('should remove a card when the delete button is clicked', function() {
+
       var cl = createCardLayout();
 
       var card1 = new Card(cl.pageModel, 'testField1');
       var card2 = new Card(cl.pageModel, 'testField2');
       var card3 = new Card(cl.pageModel, 'testField3');
-      var cards = [ card1, card2, card3 ];
+      // Note that the data card (fieldName === '*') is required for layout to happen.
+      // If we do not include it in the cardModels, the layout function will terminate
+      // early and the tests will fail.
+      var card4 = new Card(cl.pageModel, '*');
+      var cards = [ card1, card2, card3, card4 ];
 
       card1.set('cardSize', '1');
       card2.set('cardSize', '2');
-      card3.set('cardSize', '3');
+      card3.set('cardSize', '2');
+      card4.set('cardSize', '3');
+
+      cl.pageModel.set('cards', cards);
 
       mockWindowStateService.windowSizeSubject.onNext({width: 1000, height: 1000});
       mockWindowStateService.scrollPositionSubject.onNext(0);
 
-      cl.pageModel.set('cards', cards);
       cl.outerScope.editMode = true;
       cl.outerScope.$apply();
 
-      expect(cl.pageModel.getCurrentValue('cards').length).to.equal(3);
+      expect(cl.pageModel.getCurrentValue('cards').length).to.equal(cards.length);
 
       var thirdDeleteButton = $(cl.element.find('.delete-button-target')[2]);
       thirdDeleteButton.trigger('click');
 
-      expect(cl.pageModel.getCurrentValue('cards')).to.deep.equal([card1, card2]);
+      var foundCards = cl.pageModel.getCurrentValue('cards');
+      var card3Found = false;
+      for (i = 0; i < foundCards.length; i++) {
+        if (foundCards[i].fieldName === 'testField3') {
+          card3Found = true;
+        }
+      }
+
+      expect(card3Found).to.be.false;
     });
 
     it('should show the correct drop placeholders', function() {
@@ -343,11 +422,16 @@ describe('CardLayout directive test', function() {
       var card1 = new Card(cl.pageModel, 'testField1');
       var card2 = new Card(cl.pageModel, 'testField2');
       var card3 = new Card(cl.pageModel, 'testField3');
-      var cards = [ card1, card2, card3 ];
+      // Note that the data card (fieldName === '*') is required for layout to happen.
+      // If we do not include it in the cardModels, the layout function will terminate
+      // early and the tests will fail.
+      var card4 = new Card(cl.pageModel, '*');
+      var cards = [ card1, card2, card3, card4 ];
 
       card1.set('cardSize', '1');
       card2.set('cardSize', '2');
-      card3.set('cardSize', '3');
+      card3.set('cardSize', '2');
+      card4.set('cardSize', '3');
 
       cl.pageModel.set('cards', cards);
       cl.outerScope.editMode = true;
@@ -583,17 +667,19 @@ describe('CardLayout directive test', function() {
         var card1 = new Card(cl.pageModel, 'testField1');
         var card2 = new Card(cl.pageModel, 'testField2');
         var card3 = new Card(cl.pageModel, 'testField3');
-        var cards = [ card1, card2, card3 ];
+        var card4 = new Card(cl.pageModel, '*');
+        var cards = [ card1, card2, card3, card4 ];
 
         card1.set('cardSize', '1');
         card2.set('cardSize', '1');
         card3.set('cardSize', '2');
+        card4.set('cardSize', '3');
 
         cl.pageModel.set('cards', cards);
         cl.outerScope.editMode = true;
         cl.outerScope.$apply();
         cl.element.find('card-layout').css('display', 'block').width(900).height(300);
-        cl.element.append('<style>.card-spot { position: absolute; } .card-drag-overlay { position: absolute; left: 0; right: 0; top: 0; bottom: 0 }</style>');
+
         mockWindowStateService.windowSizeSubject.onNext({width: 1000, height: 1000});
         mockWindowStateService.scrollPositionSubject.onNext(0);
 
@@ -631,7 +717,7 @@ describe('CardLayout directive test', function() {
           clientY: card1Dom.parent().offset().top + cardContainerOffset,
           target: card2Overlay[0]
         });
-        expect(cl.pageModel.getCurrentValue('cards')).to.deep.equal([ card2, card1, card3 ]);
+        expect(cl.pageModel.getCurrentValue('cards')).to.deep.equal([ card2, card1, card3, card4 ]);
 
         // Drag it back above card 1 - this should restore the original order.
         // NOTE: the target component of mousePositionSubject must be a raw DOM node,
@@ -641,7 +727,7 @@ describe('CardLayout directive test', function() {
           clientY: card1Dom.parent().offset().top + cardContainerOffset,
           target: card2Overlay[0]
         });
-        expect(cl.pageModel.getCurrentValue('cards')).to.deep.equal([ card1, card2, card3 ]);
+        expect(cl.pageModel.getCurrentValue('cards')).to.deep.equal([ card1, card2, card3, card4 ]);
 
         // Drag it down to the next card size (card3).
         // NOTE: the target component of mousePositionSubject must be a raw DOM node,
@@ -651,14 +737,14 @@ describe('CardLayout directive test', function() {
           clientY: card3Dom.parent().offset().top + cardContainerOffset,
           target: card2Overlay[0]
         });
-        expect(cl.pageModel.getCurrentValue('cards')).to.deep.equal([ card1, card3, card2 ]);
+        expect(cl.pageModel.getCurrentValue('cards')).to.deep.equal([ card1, card3, card2, card4 ]);
         expect(card2.getCurrentValue('cardSize')).equals('2');
 
         // Finally, release the card.
         // This should have no effect on the card order.
-        expect(cl.pageModel.getCurrentValue('cards')).to.deep.equal([ card1, card3, card2 ]);
+        expect(cl.pageModel.getCurrentValue('cards')).to.deep.equal([ card1, card3, card2, card4 ]);
         mockWindowStateService.mouseLeftButtonPressedSubject.onNext(false);
-        expect(cl.element.find('.card-drag-overlay').length).to.equal(cards.length);
+        expect(cl.element.find('.card-drag-overlay').length).to.equal(cards.length - 1);
         expect(cl.element.find('.card-drop-placeholder').length).to.equal(0);
       });
 
@@ -761,7 +847,7 @@ describe('CardLayout directive test', function() {
 
       var cards = cl.element.find('card');
       expect(cards.length).to.equal(NUM_CARDS);
-      expect(cards.eq(EXPANDED_CARD_INDEX).hasClass('expanded')).to.be.true;
+      expect(cl.element.find('.expanded').length).to.equal(1);
     });
 
     it('should expand a card when clicking the expand-card button', function() {

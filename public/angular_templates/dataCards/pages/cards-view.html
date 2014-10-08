@@ -71,11 +71,12 @@
     <card-layout
       id="card-container"
       class="cards"
-      card-expanded="cardExpanded"
+      ng-class="{'edit-mode': editMode}"
       page="page"
       edit-mode="editMode"
       global-where-clause-fragment="globalWhereClauseFragment"
       card-models="cardModels"
+      card-expanded="cardExpanded"
       allow-add-card="!hasAllCards">
     </card-layout>
 

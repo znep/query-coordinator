@@ -31,6 +31,7 @@ describe('table', function() {
   beforeEach(module('dataCards.directives'));
 
   beforeEach(inject(function($injector) {
+    console.log('BEFORE EACH');
     testHelpers = $injector.get('testHelpers');
     $q = $injector.get('$q');
     $rootScope = $injector.get('$rootScope').$new();
@@ -39,8 +40,35 @@ describe('table', function() {
     fixtureMetadata = testHelpers.getTestJson(testMetaJson);
   }));
 
-  function createTableCard(expanded, getRows) {
-    if (!expanded) expanded = false;
+  var createTableCard = function(expanded, getRows) {
+
+    var outerScope = $rootScope.new();
+
+    outerScope.expanded = expanded || false;
+    outerScope.rowCount = 200;
+    outerScope.filteredRowCount = 170;
+    outerScope.columnDetails = {};
+    columnCount = 0;
+
+    /*_.each(fixtureMetadata.columns, function(column) {
+      if (column.name[0].match(/[a-zA-Z0-9]/g)) {
+        column.sortable = true;
+        outerScope.columnDetails[column.name] = column;
+        columnCount += 1;
+      }
+    });
+
+    // Provide a default sort column. It's a text/category column, so the default sort
+    // order is ASC.
+    outerScope.defaultSortColumnName = $rootScope.columnDetails[fixtureMetadata.columns[beatColumnIndex].name].name;
+    if (getRows) {
+      outerScope.getRows = getRows;
+    } else {
+      outerScope.getRows = function() {
+        return $q.when(fixtureData);
+      };
+    }
+    outerScope.$digest();*/
 
     var html =
       '<div class="card {0}" style="width: 640px; height: 480px;">' +
@@ -48,33 +76,9 @@ describe('table', function() {
         'filtered-row-count="filteredRowCount" expanded="expanded" column-details="columnDetails" ' +
         'default-sort-column-name="defaultSortColumnName"></div>' +
       '</div>'.format(expanded ? 'expanded': '');
-    var compiledElem = testHelpers.TestDom.compileAndAppend(html, $rootScope);
+    
+    var compiledElem = testHelpers.TestDom.compileAndAppend(html, outerScope);
 
-    $rootScope.expanded = expanded;
-    $rootScope.rowCount = 200;
-    $rootScope.filteredRowCount = 170;
-    $rootScope.columnDetails = {};
-    columnCount = 0;
-
-    _.each(fixtureMetadata.columns, function(column) {
-      if (column.name[0].match(/[a-zA-Z0-9]/g)) {
-        column.sortable = true;
-        $rootScope.columnDetails[column.name] = column;
-        columnCount += 1;
-      }
-    });
-
-    // Provide a default sort column. It's a text/category column, so the default sort
-    // order is ASC.
-    $rootScope.defaultSortColumnName = $rootScope.columnDetails[fixtureMetadata.columns[beatColumnIndex].name].name;
-    if (getRows) {
-      $rootScope.getRows = getRows;
-    } else {
-      $rootScope.getRows = function() {
-        return $q.when(fixtureData);
-      };
-    }
-    $rootScope.$digest();
     return compiledElem;
   }
 
@@ -166,14 +170,15 @@ describe('table', function() {
       });
     });
 
-    it('should load more rows upon scrolling', function(done) {
-      this.timeout(10000); // IE9!
+    it.only('should load more rows upon scrolling', function(done) {
+      //this.timeout(10000); // IE9!
       var el = createTableCard(true);
       var tableBody = el.find('.table-body');
       _.defer(function(){
         expect(el.find('.row-block .cell').length).to.equal(columnCount * blockSize * 3);
         tableBody.scroll(function() {
           _.defer(function() {
+            console.log('deferred');
             expect(el.find('.th').length).to.equal(columnCount);
             expect(el.find('.row-block .cell').length).to.equal(columnCount * blockSize * 4);
             el.remove();

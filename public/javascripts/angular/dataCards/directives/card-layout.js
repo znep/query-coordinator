@@ -84,7 +84,7 @@
                 return val.observe(property);
               }), function() {
                 return _.map(_.zip(values, arguments), function(arr) {
-                  var r={ model: arr[0] };
+                  var r = { model: arr[0] };
                   r[property] = arr[1];
                   return r;
                 });
@@ -113,7 +113,18 @@
         var layout = new SortedTileLayout();
         var rowsOfCardsBySize = zipLatestArray(scope.page.observe('cards'), 'cardSize').
           map(function(sizedCards) {
-            return layout.doLayout(sizedCards);
+            var dataCard = null;
+            var editableCards = sizedCards.filter(function(card) {
+              if (card.model.fieldName === '*') {
+                dataCard = card;
+                return false;
+              }
+              return true;
+            });
+            return {
+              editableCards: layout.doLayout(editableCards),
+              dataCard: dataCard
+            };
           });
 
         var expandedCards = zipLatestArray(scope.page.observe('cards'), 'expanded').map(function(cards) {
@@ -140,6 +151,10 @@
           WindowState.windowSizeSubject,
           WindowState.scrollPositionSubject,
           function layoutFn(sortedTileLayoutResult, expandedCards, editMode, allowAddCard, cardsMetadataSize, windowSize, scrollTop) {
+
+            if (sortedTileLayoutResult.editableCards.length === 0 || sortedTileLayoutResult.dataCard === null) {
+              return;
+            }
 
             // Figure out if there is an expanded card.
             if (!_.isEmpty(expandedCards)) {
@@ -191,6 +206,7 @@
 
             // Branch here based on whether or not there is an expanded card.
             if (expandedCard !== null) {
+
               var expandedColumnWidth = Math.floor(containerContentWidth * 0.65) - Constants['LAYOUT_HORIZONTAL_PADDING'];
               var unexpandedColumnWidth = containerContentWidth - expandedColumnWidth - Constants['LAYOUT_HORIZONTAL_PADDING'];
 
@@ -199,7 +215,7 @@
 
               var expandedColumnTop = 0;
 
-              var cards = _.flatten(_.values(sortedTileLayoutResult));
+              var cards = _.flatten(_.values(sortedTileLayoutResult.editableCards));
 
               var unexpandedCards = cards.filter(function(card) {
                   // Note that the 'card' supplied by the iterator is a wrapper around
@@ -208,6 +224,7 @@
                 });
 
               styleText = _.reduce(unexpandedCards, function(accumulatedStyle, card, index) {
+
                   var cardLeft = unexpandedColumnLeft;
                   var cardTop = heightOfAllCards;
                   var cardWidth = unexpandedColumnWidth;
@@ -223,32 +240,67 @@
                                               'width:' + cardWidth + 'px;' +
                                               'height:' + cardHeight + 'px;' +
                                             '}';
+
               }, '');
 
-              styleText += '#card-tile-{0}{'.format(expandedCard.uniqueId);
-
-              var expandedColumnHeight;
-              if (headerStuck) {
-                expandedColumnHeight = windowSize.height
-                  - quickFilterBar.height()
-                  - Constants['LAYOUT_VERTICAL_PADDING'];
-              } else {
-                expandedColumnHeight = windowSize.height
-                  - (cardContainer.offset().top - scrollTop)
-                  - Constants['LAYOUT_VERTICAL_PADDING'];
+              if (heightOfAllCards === 0) {
+                heightOfAllCards = Constants['LAYOUT_MIN_EXPANDED_CARD_HEIGHT'] + (Constants['LAYOUT_VERTICAL_PADDING'] * 2);
               }
 
-              styleText +=   'position:fixed;' +
-                             'left:' + expandedColumnLeft + 'px;' +
-                             'bottom:' + Constants['LAYOUT_VERTICAL_PADDING'] + 'px;' +
-                             'width:' + expandedColumnWidth + 'px;' +
-                             'height:' + expandedColumnHeight + 'px;' +
-                         + '}';
+              if (expandedCard.fieldName === '*') {
 
-              styleText += '#card-container{' +
-                             'visibility:visible !important;' +
-                             'height:{0}px;' +
-                           '}'.format(heightOfAllCards);
+                styleText += '#card-tile-{0}{'.format(expandedCard.uniqueId);
+
+                var expandedColumnHeight;
+                if (headerStuck) {
+                  expandedColumnHeight = windowSize.height
+                    - quickFilterBar.height()
+                    - Constants['LAYOUT_VERTICAL_PADDING'];
+                } else {
+                  expandedColumnHeight = windowSize.height
+                    - (cardContainer.offset().top - scrollTop)
+                    - Constants['LAYOUT_VERTICAL_PADDING'];
+                }
+
+                styleText +=  'position:fixed;' +
+                              'left:' + expandedColumnLeft + 'px;' +
+                              'bottom:' + Constants['LAYOUT_VERTICAL_PADDING'] + 'px;' +
+                              'width:' + expandedColumnWidth + 'px;' +
+                              'height:' + expandedColumnHeight + 'px;' +
+                            '}';
+
+              } else {
+
+                styleText += '#card-tile-{0}{'.format(expandedCard.uniqueId);
+
+                var expandedColumnHeight;
+                if (headerStuck) {
+                  expandedColumnHeight = windowSize.height
+                    - quickFilterBar.height()
+                    - Constants['LAYOUT_VERTICAL_PADDING'];
+                } else {
+                  expandedColumnHeight = windowSize.height
+                    - (cardContainer.offset().top - scrollTop)
+                    - Constants['LAYOUT_VERTICAL_PADDING'];
+                }
+
+                var footerOffset = Math.max(0, (scrollTop + windowSize.height) - (cardContainer.offset().top + heightOfAllCards));
+
+                styleText +=  'position:fixed;' +
+                              'left:' + expandedColumnLeft + 'px;' +
+                              'bottom:' + (Constants['LAYOUT_VERTICAL_PADDING'] + footerOffset) + 'px;' +
+                              'width:' + expandedColumnWidth + 'px;' +
+                              'height:' + (expandedColumnHeight - footerOffset) + 'px;' +
+                            '}';
+
+                styleText += '#card-tile-{0}{'.format(sortedTileLayoutResult.dataCard.model.uniqueId) +
+                               'left:' + Constants['LAYOUT_GUTTER'] + 'px;' +
+                               'top:' + heightOfAllCards + 'px;' +
+                               'width:' + containerContentWidth + 'px;' +
+                               'height:' + Constants['LAYOUT_DATA_CARD_HEIGHT'] + 'px;' +
+                             '}';
+
+              }
 
             } else {
 
@@ -263,19 +315,19 @@
 
               if (editMode) {
 
-                if (!sortedTileLayoutResult.hasOwnProperty('1')) {
-                  sortedTileLayoutResult['1'] = [];
+                if (!sortedTileLayoutResult.editableCards.hasOwnProperty('1')) {
+                  sortedTileLayoutResult.editableCards['1'] = [];
                 }
-                if (!sortedTileLayoutResult.hasOwnProperty('2')) {
-                  sortedTileLayoutResult['2'] = [];
+                if (!sortedTileLayoutResult.editableCards.hasOwnProperty('2')) {
+                  sortedTileLayoutResult.editableCards['2'] = [];
                 }
-                if (!sortedTileLayoutResult.hasOwnProperty('3')) {
-                  sortedTileLayoutResult['3'] = [];
+                if (!sortedTileLayoutResult.editableCards.hasOwnProperty('3')) {
+                  sortedTileLayoutResult.editableCards['3'] = [];
                 }
 
               }
 
-              styleText = _.reduce(sortedTileLayoutResult, function(overallStyleAcc, rows, cardSize) {
+              styleText = _.reduce(sortedTileLayoutResult.editableCards, function(overallStyleAcc, rows, cardSize) {
 
                 var currentRowHeight = deriveCardHeight(parseInt(cardSize), 10);
                 var currentRowContentHeight = currentRowHeight - Constants['LAYOUT_VERTICAL_PADDING'];
@@ -371,7 +423,16 @@
 
               }
 
-           }
+              styleText += '#card-tile-{0}{'.format(sortedTileLayoutResult.dataCard.model.uniqueId) +
+                             'left:' + Constants['LAYOUT_GUTTER'] + 'px;' +
+                             'top:' + heightOfAllCards + 'px;' +
+                             'width:' + containerContentWidth + 'px;' +
+                             'height:' + Constants['LAYOUT_DATA_CARD_HEIGHT'] + 'px;' +
+                           '}';
+
+              heightOfAllCards += Constants['LAYOUT_DATA_CARD_HEIGHT'] + Constants['LAYOUT_VERTICAL_PADDING'];
+
+            }
 
             styleText += '#card-container{' +
                            'visibility:visible !important;' +

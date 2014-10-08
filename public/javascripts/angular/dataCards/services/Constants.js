@@ -10,6 +10,8 @@
       'LAYOUT_GUTTER': 12,
       'LAYOUT_EDIT_MODE_GROUP_PADDING': 64,
       'LAYOUT_PLACEHOLDER_DROP_TARGET_HEIGHT': 128,
+      'LAYOUT_DATA_CARD_HEIGHT': 480,
+      'LAYOUT_MIN_EXPANDED_CARD_HEIGHT': 480,
 
       // Dataset field names and internal calculated values.
       'INTERNAL_DATASET_FEATURE_ID': '_feature_id',

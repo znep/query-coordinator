@@ -116,10 +116,6 @@ angular.module('dataCards.directives').directive('cardVisualizationTable', funct
       $scope.bindObservable('expanded', model.observeOnLatest('expanded'));
       $scope.bindObservable('defaultSortColumnName', defaultSortColumnName);
 
-      $scope.$on('table:expand-clicked', function() {
-        $scope.model.page.toggleExpanded($scope.model);
-      });
-
     }
   };
 

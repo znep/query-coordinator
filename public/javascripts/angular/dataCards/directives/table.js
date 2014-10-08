@@ -36,12 +36,6 @@ angular.module('socrataCommon.directives').directive('table', function(AngularRx
       var $expander = element.find('.table-expander');
       var $label = element.find('.table-label');
 
-      element.on('click', '.expand-message > *', function() {
-        scope.$apply(function() {
-          scope.$emit('table:expand-clicked');
-        });
-      });
-
       $('body').on('click.{0}'.format(instanceUniqueNamespace), '.flyout .caret', function(e) {
         if ($(e.currentTarget).parent().data('table-id') !== instanceUniqueNamespace) {
           return; // The flyout might not be our own!
@@ -61,12 +55,13 @@ angular.module('socrataCommon.directives').directive('table', function(AngularRx
         sortOnColumn(headerObject.columnId);
       });
 
-      var renderTable = function(element, dimensions, rowCount, expanded) {
+      var renderTable = function(element, dimensions, rowCount) {
         var tableHeight = dimensions.height - element.position().top;
 
         element.height(tableHeight);
         $body.height(tableHeight - $head.height() - rowHeight);
         $head.find('.resize').height(tableHeight);
+
         checkBlocks();
         updateLabel();
       };
@@ -348,7 +343,6 @@ angular.module('socrataCommon.directives').directive('table', function(AngularRx
 
       var checkBlocks = function() {
         var currentBlock = Math.floor($body.scrollTop() / (rowHeight * rowsPerBlock));
-
         // Short circuit
         if (currentBlock === oldBlock) {
           return;
@@ -486,13 +480,14 @@ angular.module('socrataCommon.directives').directive('table', function(AngularRx
         scope.observe('columnDetails'),
         scope.observe('infinite'),
         function(cardDimensions, rowCount, filteredRowCount, expanded, columnDetails, infinite) {
+
           var timestamp = new Date().getTime();
 
           scope.$emit('render:start', 'table_{0}'.format(scope.$id), timestamp);
           updateExpanderHeight();
           showOrHideNoRowMessage();
 
-          if (rowCount && expanded) {
+          if (rowCount) {
             // Apply a default sort if needed.
             if (scope.defaultSortColumnName && _.isEmpty(sort)) {
               sortOnColumn(scope.defaultSortColumnName);
@@ -500,8 +495,7 @@ angular.module('socrataCommon.directives').directive('table', function(AngularRx
             renderTable(
               element,
               cardDimensions,
-              rowCount,
-              expanded
+              rowCount
             );
           }
 
@@ -515,7 +509,7 @@ angular.module('socrataCommon.directives').directive('table', function(AngularRx
       Rx.Observable.subscribeLatest(
         scope.observe('whereClause'),
         function(whereClause) {
-          if (scope.getRows && scope.expanded) {
+          if (scope.getRows) {
             reloadRows();
           }
         }

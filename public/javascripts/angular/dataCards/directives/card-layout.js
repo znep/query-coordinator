@@ -441,12 +441,7 @@
 
             // OMG side-effect, but *what* a side effect, amirite?
             scope.cardPositions = cardPositions;
-console.log('FINAL HEIGHT OF ALL CARDS');
-console.log(heightOfAllCards);
-console.log('CARD POSITIONS');
-console.log(cardPositions);
-console.log('STYLE TEXT');
-console.log(styleText);
+
             $('#card-layout').text(styleText);
 
             quickFilterBar.toggleClass('stuck', headerStuck);

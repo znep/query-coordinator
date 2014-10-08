@@ -692,6 +692,12 @@ describe('CardLayout directive test', function() {
         var card3Dom = cl.findCardForModel(card3);
 
         // Checking test assumptions - we need card 1 to be left of card 2, and card 3 to be below card 2.
+        console.log('CARD OFFSETS IN THE DOM');
+        console.log('card1', card1Dom.offset());
+        console.log('card2', card2Dom.offset());
+        console.log('card3', card3Dom.offset());
+        console.log('expecting card1.left to be below card2.left');
+        console.log('expecting card3.top to be above card2.top');
         expect(card1Dom.offset().left).to.be.below(card2Dom.offset().left);
         expect(card3Dom.offset().top).to.be.above(card2Dom.offset().top);
 

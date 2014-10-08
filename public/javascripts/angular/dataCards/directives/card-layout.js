@@ -151,9 +151,7 @@
           WindowState.windowSizeSubject,
           WindowState.scrollPositionSubject,
           function layoutFn(sortedTileLayoutResult, expandedCards, editMode, allowAddCard, cardsMetadataSize, windowSize, scrollTop) {
-console.log('TESTING MYSTERIOUS PHANTOMJS FAILURE');
-console.log('sortedTileLayoutResult.editableCards', sortedTileLayoutResult.editableCards);
-console.log('sortedTileLayoutResult.dataCard', sortedTileLayoutResult.dataCard);
+
             if (sortedTileLayoutResult.editableCards.length === 0 || sortedTileLayoutResult.dataCard === null) {
               return;
             }
@@ -330,10 +328,11 @@ console.log('sortedTileLayoutResult.dataCard', sortedTileLayoutResult.dataCard);
               }
 
               styleText = _.reduce(sortedTileLayoutResult.editableCards, function(overallStyleAcc, rows, cardSize) {
-
+console.log('HEIGHT OF ALL CARDS AT BEGINNING OF REDUCE', heightOfAllCards);
                 var currentRowHeight = deriveCardHeight(parseInt(cardSize), 10);
                 var currentRowContentHeight = currentRowHeight - Constants['LAYOUT_VERTICAL_PADDING'];
 
+console.log('HEIGHT OF ALL CARDS AT BEGINNING OF CARD ROW REDUCE', heightOfAllCards);
                 var styleForRow = _.reduce(rows, function(styleForRowAcc, row, rowIndex) {
 
                   var paddingForEntireRow = Constants['LAYOUT_HORIZONTAL_PADDING'] * (row.length - 1);
@@ -346,6 +345,15 @@ console.log('sortedTileLayoutResult.dataCard', sortedTileLayoutResult.dataCard);
                     var cardLeft = Constants['LAYOUT_GUTTER'] + (cardIndexInRow * cardWidth) + spaceTakenByOtherCardsPadding;
 
                     var cardTop = heightOfAllCards + rowIndex * currentRowHeight;
+
+console.log('PUSHING CARD POSITION');
+console.log({
+  model: card.model,
+  top: cardTop,
+  left: cardLeft,
+  width: cardWidth,
+  height: currentRowContentHeight
+});
 
                     cardPositions.push({
                       model: card.model,
@@ -365,7 +373,7 @@ console.log('sortedTileLayoutResult.dataCard', sortedTileLayoutResult.dataCard);
                   }).join('');
 
                 }, '');
-
+console.log('HEIGHT OF ALL CARDS AFTER CARD ROW REDUCE', heightOfAllCards);
                 // Add gap between card groups in edit mode only
                 if (editMode) {
 
@@ -400,7 +408,7 @@ console.log('sortedTileLayoutResult.dataCard', sortedTileLayoutResult.dataCard);
                 return overallStyleAcc + styleForRow;
 
               }, '');
-
+console.log('HEIGHT OF ALL CARDS AFTER REDUCE', heightOfAllCards);
               if (editMode) {
 
                 placeholderDropTargets.forEach(function(groupData) {

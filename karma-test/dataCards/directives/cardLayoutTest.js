@@ -118,7 +118,9 @@ describe('CardLayout directive test', function() {
     $('body').addClass('state-view-cards');
 
     // Trigger some rx events once, so that subscribeLatest will run
-    mockWindowStateService.windowSizeSubject.onNext({width: 1000, height: 100});
+    var jqWindow = $(window);
+    mockWindowStateService.windowSizeSubject.onNext({
+      width: jqWindow.width(), height: jqWindow.height()});
     mockWindowStateService.scrollPositionSubject.onNext($(window).scrollTop());
 
     return {
@@ -662,7 +664,7 @@ describe('CardLayout directive test', function() {
         expect(cl.element.find('.card-drop-placeholder').length).to.equal(0);
       });
 
-      xit('should assign the correct card size when dragged over a placeholder', function() {
+      it('should assign the correct card size when dragged over a placeholder', function() {
         var cl = createCardLayout();
 
         var card1 = new Card(cl.pageModel, 'testField1');
@@ -832,7 +834,7 @@ describe('CardLayout directive test', function() {
         $('#uber-flyout').remove();
       });
 
-      xit('should display "Expand" over the expand button', function() {
+      it('should display "Expand" over the expand button', function() {
         var cl = createLayoutWithCards();
         var flyout = $('#uber-flyout');
         expect(flyout.is(':visible')).to.be.false;

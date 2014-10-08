@@ -20,13 +20,10 @@ var createSassPreprocessor = function(logger, basePath) {
   var log = logger.create('preprocessor.sass');
 
   return function(content, file, done) {
-    log.error('Processing "%s".', file.originalPath);
+    log.debug('Processing "%s".', file.originalPath);
     var dir = file.originalPath.split("/").slice(0,-2).join("/")+"/";
-    log.error('transformed to ' + dir);
     var htmlPath = file.originalPath.replace(basePath + '/', '').replace('app/styles/', '');
-    log.error('html path is ' + htmlPath);
     var sassId = htmlPath.replace(/[/.]/g, '-');
-    log.error('sass id now ' + sassId);
 
     var child = spawn("bundle", ["exec", "sass", "-C", "-I", dir]);
     child.stdin.setEncoding('utf8');
@@ -42,7 +39,7 @@ var createSassPreprocessor = function(logger, basePath) {
       log.error(buff.toString());
     });
     child.on('close', function(code, signal) {
-      log.error('Finished "%s".', file.originalPath);
+      log.debug('Finished "%s".', file.originalPath);
       done(util.format(TEMPLATE, htmlPath, sassId, escapeContent(data)));
     });
     child.stdin.end();

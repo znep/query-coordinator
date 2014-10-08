@@ -26,7 +26,9 @@ var createSassPreprocessor = function(logger, basePath) {
     var sassId = htmlPath.replace(/[/.]/g, '-');
 
     var child = spawn("bundle", ["exec", "sass", "-C", "-I", dir]);
-    child.stdin.setEncoding = 'utf-8';
+    child.stdin.setEncoding('utf8');
+    child.stdout.setEncoding('utf8');
+    child.stderr.setEncoding('utf8');
     child.stdin.write('@import sass-common\n' + content);
 
     var data = '';
@@ -34,7 +36,7 @@ var createSassPreprocessor = function(logger, basePath) {
       data += buff.toString();
     });
     child.stderr.on('data', function(buff) {
-      log.error(buff.toString);
+      log.error(buff.toString());
     });
     child.on('close', function(code, signal) {
       log.debug('Finished "%s".', file.originalPath);

@@ -238,7 +238,7 @@
           disabled = !dataset_flags.has_key?(key) -%>
       <div class="line clearfix<%= disabled ? ' disabled' : '' %>" title="<%= flag_config.description %>">
         <label><%= key %><br /><span>(From Domain: <%= domain_flags[key] %>)</span></label>
-        <div class="enableButton"><%= disabled ? 'Enable' : 'Disable' %></div>
+        <a class="enableButton button"><%= disabled ? 'Override' : 'Use Domain Setting' %></a>
         <div class="valueBox"><%= feature_flag_input key, flag_config, value, :edit_metadata => true, :disabled => disabled %></div>
       </div>
     <%- end -%>
@@ -278,10 +278,10 @@
         $('.enableButton').click(function()
         {
             var $this = $(this);
-            var disabled = $this.text() == 'Disable';
+            var disabled = $this.text() == 'Use Domain Setting';
             $this.parents('.line').toggleClass('disabled', disabled)
                    .find('input, select').prop('disabled', disabled);
-            $this.text( disabled ? 'Enable' : 'Disable' );
+            $this.text( disabled ? 'Override' : 'Use Domain Setting' );
         });
     });
   </script>

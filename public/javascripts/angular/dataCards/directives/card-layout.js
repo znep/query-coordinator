@@ -328,11 +328,10 @@
               }
 
               styleText = _.reduce(sortedTileLayoutResult.editableCards, function(overallStyleAcc, rows, cardSize) {
-console.log('HEIGHT OF ALL CARDS AT BEGINNING OF REDUCE', heightOfAllCards);
+
                 var currentRowHeight = deriveCardHeight(parseInt(cardSize), 10);
                 var currentRowContentHeight = currentRowHeight - Constants['LAYOUT_VERTICAL_PADDING'];
 
-console.log('HEIGHT OF ALL CARDS AT BEGINNING OF CARD ROW REDUCE', heightOfAllCards);
                 var styleForRow = _.reduce(rows, function(styleForRowAcc, row, rowIndex) {
 
                   var paddingForEntireRow = Constants['LAYOUT_HORIZONTAL_PADDING'] * (row.length - 1);
@@ -345,15 +344,6 @@ console.log('HEIGHT OF ALL CARDS AT BEGINNING OF CARD ROW REDUCE', heightOfAllCa
                     var cardLeft = Constants['LAYOUT_GUTTER'] + (cardIndexInRow * cardWidth) + spaceTakenByOtherCardsPadding;
 
                     var cardTop = heightOfAllCards + rowIndex * currentRowHeight;
-
-console.log('PUSHING CARD POSITION');
-console.log({
-  model: card.model,
-  top: cardTop,
-  left: cardLeft,
-  width: cardWidth,
-  height: currentRowContentHeight
-});
 
                     cardPositions.push({
                       model: card.model,
@@ -373,7 +363,7 @@ console.log({
                   }).join('');
 
                 }, '');
-console.log('HEIGHT OF ALL CARDS AFTER CARD ROW REDUCE', heightOfAllCards);
+
                 // Add gap between card groups in edit mode only
                 if (editMode) {
 
@@ -408,7 +398,7 @@ console.log('HEIGHT OF ALL CARDS AFTER CARD ROW REDUCE', heightOfAllCards);
                 return overallStyleAcc + styleForRow;
 
               }, '');
-console.log('HEIGHT OF ALL CARDS AFTER REDUCE', heightOfAllCards);
+
               if (editMode) {
 
                 placeholderDropTargets.forEach(function(groupData) {

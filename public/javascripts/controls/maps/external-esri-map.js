@@ -295,11 +295,28 @@
                         return;
                     }
 
-                    var flyoutContent = layerObj.getFlyout(idResults);
-                    if (flyoutContent)
-                    { flyoutContent = flyoutContent[0].innerHTML; }
+                    if (idResults[0].feature) { idResults = _.pluck(features, 'feature'); }
 
-                    layerObj.flyoutHandler().add(layerObj, lonlat, flyoutContent);
+                    var objectids = _.map(features, function(feature)
+                    { return feature.attributes['OBJECTID']; });
+
+                    // Yes, this is a Core request inside a callback from an ESRI request.
+                    // That is how awesome our ESRI integration is.
+                    layerObj._view.makeRequest({
+                        url: '/resource/' + layerObj._view.id + '.json',
+                        isSODA: true,
+                        params: { '$$exclude_system_fields': false,
+                                  '$where': 'any_of(objectid, ' + objectids.join(',') + ')' },
+                        success: function(results)
+                        {
+                            var flyoutContent = layerObj.getFlyout(results);
+                            if (flyoutContent)
+                            { flyoutContent = flyoutContent[0].innerHTML; }
+
+                            layerObj.flyoutHandler().add(layerObj, lonlat, flyoutContent);
+                        },
+                        error: function() { layerObj.flyoutHandler().cancel(); }
+                    });
                 },
                 function(error)
                 {
@@ -359,27 +376,6 @@
                 { opacity = 1; }
             }
             return opacity;
-        },
-
-        getFlyout: function(features)
-        {
-            var layerObj = this;
-
-            if (features[0].feature) { features = _.pluck(features, 'feature'); }
-
-            var rows = _.map(features, function(feature)
-            {
-                var objectid = layerObj._attrMap['OBJECTID'],
-                    dsRow = _.detect(layerObj._view.loadedRows(), function(row)
-                    { return row.data[objectid] == feature.attributes['OBJECTID']; }) || {};
-
-                var row = { data: {}, id: dsRow.id };
-                _.each(feature.attributes, function(val, attr)
-                { row.data[layerObj._attrMap[attr]] = val; });
-                return row;
-            });
-
-            return this._super(rows);
         },
 
         preferredExtent: function()

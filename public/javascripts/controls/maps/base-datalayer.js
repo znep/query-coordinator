@@ -424,11 +424,11 @@
 
             layerObj.richRenderer.renderRow($item, row, true);
 
-            if (row.id
+            if ((row.id || row[':id'])
                 && layerObj.settings.showRowLink && !layerObj._displayFormat.hideRowLink)
             {
                 $item.append($.tag({tagName: 'a',
-                    href: layerObj._view.url + '/' + row.id,
+                    href: layerObj._view.url + '/' + (row.id || row[':id']),
                     target: layerObj.settings.externalizeRowLink ? '_blank' : '',
                     'class': ['viewRow', 'noInterstitial', 'noRedirPrompt'],
                     contents: $.t('controls.common.visualization.row_details')}));

@@ -6,7 +6,17 @@ var _ = require('lodash');
 
 // Parse supported_browsers.json to generate BrowserStack launcher definitions.
 var supportedBrowsers = JSON.parse(fs.readFileSync(path.resolve(__dirname, '../../supported_browsers.json'), {encoding: 'utf8'}));
-var customLaunchers = {};
+var customLaunchers = {
+  'PhantomJS_custom': {
+    base: 'PhantomJS',
+    options: {
+      viewportSize: {
+        width: 1024,
+        height: 768
+      }
+    }
+  }
+};
 _.forIn(supportedBrowsers, function(browserInstances, browserName) {
   _.each(browserInstances, function(instance) {
     instance.browserName = browserName;
@@ -186,7 +196,7 @@ module.exports = function ( karma ) {
     browsers: [
       'Chrome',
       'Firefox',
-      'PhantomJS'
+      'PhantomJS_custom'
     ],
 
     /**

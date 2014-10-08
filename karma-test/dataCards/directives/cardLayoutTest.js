@@ -117,6 +117,10 @@ describe('CardLayout directive test', function() {
     // The css styles are scoped to the body class
     $('body').addClass('state-view-cards');
 
+    // Trigger some rx events once, so that subscribeLatest will run
+    mockWindowStateService.windowSizeSubject.onNext({width: 1000, height: 100});
+    mockWindowStateService.scrollPositionSubject.onNext($(window).scrollTop());
+
     return {
       pageModel: pageModel,
       datasetModel: datasetModel,
@@ -682,34 +686,36 @@ describe('CardLayout directive test', function() {
 
         // Drag card 1.
         var cardContainerOffset = cl.element.find('card-layout').offset().top;
+        var startPos = card1Dom.offset();
         card1Overlay.trigger(jQuery.Event( "mousedown", {
           button: 0,
-          clientX: card1Dom.offset().left,
-          clientY: card1Dom.offset().top + cardContainerOffset
+          clientX: startPos.left,
+          clientY: startPos.top
         }));
 
         // We only start tracking the movement of the card after it's grabbed. We only
         // grab the card after we move the mouse a bit on the overlay. So do a move.
         mockWindowStateService.mousePositionSubject.onNext({
-          clientX: placeholder1.offset().left,
-          clientY: placeholder1.offset().top,
+          // Move enough so we start tracking it
+          clientX: startPos.left + 100,
+          clientY: startPos.top + 100,
+          // NOTE: the target component of mousePositionSubject must be a raw DOM node,
+          // not a jQuery object (hence the [0]).
           target: card1Overlay[0]
         });
 
         // Drag to group 1
-        // NOTE: the target component of mousePositionSubject must be a raw DOM node,
-        // not a jQuery object (hence the [0]).
         mockWindowStateService.mousePositionSubject.onNext({
-          clientX: placeholder1.offset().left + 5,
-          clientY: placeholder1.offset().top + 5,
+          clientX: placeholder1.offset().left + 10,
+          clientY: placeholder1.offset().top + 10,
           target: placeholder1[0]
         });
         expect(card1.getCurrentValue('cardSize')).to.equal('1');
 
         // Drag to group 2
         mockWindowStateService.mousePositionSubject.onNext({
-          clientX: placeholder2.offset().left + 5,
-          clientY: placeholder2.offset().top + 5,
+          clientX: placeholder2.offset().left + 10,
+          clientY: placeholder2.offset().top + 10,
           target: card1Overlay[0]
         });
         expect(card1.getCurrentValue('cardSize')).to.equal('2');
@@ -736,6 +742,7 @@ describe('CardLayout directive test', function() {
           } else {
             c.set('expanded', false);
           }
+          c.set('cardSize', '1');
           return c;
         });
       };
@@ -795,6 +802,27 @@ describe('CardLayout directive test', function() {
     });
 
     describe('flyout', function() {
+      function expectFlyoutPosition(target, flyout) {
+        var hint = flyout.find('.hint');
+        var hintOffset = hint.offset();
+        var targetOffset = target.offset();
+        if (flyout.hasClass('left')) {
+          expect(targetOffset.top - (hintOffset.top + hint.outerHeight())).
+            to.be.within(-20, 20);
+          // A 'left' flyout aligns its left edge to the middle of the target
+          expect((targetOffset.left + target.width()/2) - hintOffset.left).
+            to.be.within(-2, 2);
+        } else {
+          expect(targetOffset.top - (hintOffset.top + hint.outerHeight())).
+            to.be.within(-20, 20);
+          // A 'right' flyout aligns its right edge to the middle of the target
+          expect((targetOffset.left + target.width()/2)
+                 // Turns out the right edge of the hint actually happens in the center of
+                 // the element -_-;
+                 - (hintOffset.left + hint.width()/2)).
+            to.be.within(-2, 2);
+        }
+      }
       afterEach(function() {
         // Get rid of the flyout
         $('#uber-flyout').remove();
@@ -813,14 +841,8 @@ describe('CardLayout directive test', function() {
         });
 
         // Verify position
-        var flyoutOffset = flyout.
-            // mostly we care about the arrow position
-            find('.hint').offset();
-        var expandOffset = expand.offset();
-        expect(expandOffset.top - flyoutOffset.top).to.be.within(-20, 20);
-        // Make sure it's pretty centered
-        expect((expandOffset.left + expand.width()/2) - flyoutOffset.left).
-          to.be.within(-2, 2);
+        // mostly we care about the arrow position
+        expectFlyoutPosition(expand, flyout);
 
         expect(flyout.is(':visible')).to.be.true;
         expect(flyout.text()).to.equal('Expand this Card');
@@ -841,15 +863,8 @@ describe('CardLayout directive test', function() {
         });
 
         // Verify position
-        var flyoutOffset = flyout.
-            // mostly we care about the arrow position
-            find('.hint').offset();
-        var expand = card.find('.expand-button-target');
-        var expandOffset = expand.offset();
-        expect(expandOffset.top - flyoutOffset.top).to.be.within(-20, 20);
-        // Make sure it's pretty centered
-        expect((expandOffset.left + expand.width()/2) - flyoutOffset.left).
-          to.be.within(-2, 2);
+        // mostly we care about the arrow position
+        expectFlyoutPosition(card.find('.expand-button-target'), flyout);
 
         expect(flyout.is(':visible')).to.be.true;
         expect(flyout.text()).to.equal('Collapse this Card');

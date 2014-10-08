@@ -227,10 +227,15 @@
 
               styleText += '#card-tile-{0}{'.format(expandedCard.uniqueId);
 
+              var expandedColumnHeight;
               if (headerStuck) {
-                var expandedColumnHeight = windowSize.height - quickFilterBar.height() - Constants['LAYOUT_VERTICAL_PADDING'];
+                expandedColumnHeight = windowSize.height
+                  - quickFilterBar.height()
+                  - Constants['LAYOUT_VERTICAL_PADDING'];
               } else {
-                var expandedColumnHeight = windowSize.height - (cardContainer.offset().top - scrollTop) - Constants['LAYOUT_VERTICAL_PADDING'];
+                expandedColumnHeight = windowSize.height
+                  - (cardContainer.offset().top - scrollTop)
+                  - Constants['LAYOUT_VERTICAL_PADDING'];
               }
 
               styleText +=   'position:fixed;' +

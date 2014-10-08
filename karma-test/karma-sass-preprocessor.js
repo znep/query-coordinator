@@ -34,7 +34,7 @@ var createSassPreprocessor = function(logger, basePath) {
       data += buff.toString();
     });
     child.stderr.on('data', function(buff) {
-      log.error(buff.toString);
+      log.error(buff.toString());
     });
     child.on('close', function(code, signal) {
       log.debug('Finished "%s".', file.originalPath);

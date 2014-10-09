@@ -152,21 +152,17 @@
           WindowState.scrollPositionSubject,
           function layoutFn(sortedTileLayoutResult, expandedCards, editMode, allowAddCard, cardsMetadataSize, windowSize, scrollTop) {
 
-            if (sortedTileLayoutResult.editableCards.length === 0 || sortedTileLayoutResult.dataCard === null) {
+            if (_.isEmpty(sortedTileLayoutResult.editableCards) ||
+                sortedTileLayoutResult.dataCard === null) {
               return;
             }
 
             // Figure out if there is an expanded card.
-            if (!_.isEmpty(expandedCards)) {
-              var expandedCard = expandedCards[0];
-            } else {
-              var expandedCard = null;
-            }
+            var expandedCard = _.isEmpty(expandedCards) ? null : expandedCards[0];
 
             // Figure out the sticky-ness of the QFB and apply the style appropriately
             var headerStuck = scrollTop >= (cardsMetadataOffsetTop + cardsMetadata.outerHeight());
 
-            var containerDimensions = { width: cardContainer.width(), height: cardContainer.height() };
             var cardPositions = [];
             var heightOfAllCards = 0;
             var styleText = '';
@@ -175,7 +171,8 @@
             //
             // Content size (width, height) refers to a size with padding/LAYOUT_GUTTER removed.
             // Otherwise, sizes include padding/LAYOUT_GUTTER.
-            var containerContentWidth = containerDimensions.width - Constants['LAYOUT_GUTTER'] * 2;
+            var containerContentWidth = cardContainer.width()
+              - Constants['LAYOUT_GUTTER'] * 2;
 
             var deriveCardHeight = function(size) {
               size = parseInt(size, 10);
@@ -329,7 +326,7 @@
 
               styleText = _.reduce(sortedTileLayoutResult.editableCards, function(overallStyleAcc, rows, cardSize) {
 
-                var currentRowHeight = deriveCardHeight(parseInt(cardSize), 10);
+                var currentRowHeight = deriveCardHeight(cardSize);
                 var currentRowContentHeight = currentRowHeight - Constants['LAYOUT_VERTICAL_PADDING'];
 
                 var styleForRow = _.reduce(rows, function(styleForRowAcc, row, rowIndex) {

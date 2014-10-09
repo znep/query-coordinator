@@ -24,13 +24,17 @@
         Assert(!whereClauseFragment || _.isString(whereClauseFragment), 'whereClauseFragment should be a string if present.');
 
         datasetId = DeveloperOverrides.dataOverrideForDataset(datasetId) || datasetId;
+
         var whereClause;
+
         if (_.isEmpty(whereClauseFragment)) {
           whereClause = '';
         } else {
           whereClause = 'where ' + whereClauseFragment;
         }
+
         fieldName = SoqlHelpers.replaceHyphensWithUnderscores(fieldName);
+
         // TODO: Implement some method for paging/showing data that has been truncated.
         var params = {
           $query: ('select {0} as name, count(*) as value {1} ' +
@@ -45,6 +49,7 @@
           });
         });
       },
+
       getTimelineDomain: function(fieldName, datasetId) {
         Assert(_.isString(fieldName), 'fieldName should be a string');
         Assert(_.isString(datasetId), 'datasetId should be a string');
@@ -76,6 +81,7 @@
           }
         });
       },
+
       getTimelineData: function(fieldName, datasetId, whereClauseFragment, precision) {
         Assert(_.isString(fieldName), 'fieldName should be a string');
         Assert(_.isString(datasetId), 'datasetId should be a string');

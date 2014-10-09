@@ -164,6 +164,6 @@ class Phidog
 
 end
 
-puts("Using Phidippides endpoint: #{Phidog.new.service_end_point}")
+puts("Using Phidippides endpoint: #{Phidog.new.end_point}")
 
 Phidog.new.process_stubs('./public/stubs')

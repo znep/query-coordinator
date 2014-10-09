@@ -32,6 +32,9 @@ group :test do
   gem 'mocha', :require => false
   gem 'minitest'
   gem 'minitest-reporters', '>= 0.5.0'
+  gem 'guard'
+  gem 'guard-minitest'
+  gem 'rb-fsevent'
 end
 
 group :development, :test do

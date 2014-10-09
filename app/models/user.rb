@@ -57,7 +57,7 @@ class User < Model
 
   def update_password(params)
     path = "/users/#{id}.json"
-    return self.class.parse(CoreServer::Base.connection.update_request(path, params.to_json))
+    self.class.parse(CoreServer::Base.connection.update_request(path, params.to_json))
   end
 
   def to_json(options = nil)
@@ -487,7 +487,7 @@ class User < Model
             "ZM" => "Zambia",
             "ZW" => "Zimbabwe"
   }
-  
+
   @@sorts = [
     ["ACTIVITY", "Socrata Grade"],
     ["ALPHA", "A - Z"],

@@ -1,6 +1,6 @@
 class PhidippidesPagesController < ActionController::Base
 
-  include Phidippides
+  include CommonPhidippidesMethods
 
   before_filter :hook_auth_controller
 
@@ -17,43 +17,61 @@ class PhidippidesPagesController < ActionController::Base
 
   def show
     respond_to do |format|
-      begin
-        result = fetch_page_metadata(params[:id], :request_id => request_id, :cookies => forwardable_session_cookies)
-        format.json { render :json => result[:body], :status => result[:status] }
-      rescue ConnectionError
-        format.json { render :json => { body: 'Phidippides connection error' }, status: 500 }
+      format.json do
+        begin
+          result = page_metadata_manager.fetch(
+            params[:id],
+            :request_id => request_id,
+            :cookies => forwardable_session_cookies
+          )
+          render :json => result[:body], :status => result[:status]
+        rescue Phidippides::ConnectionError
+          render :json => { body: 'Phidippides connection error' }, status: 500
+        end
       end
     end
   end
 
   def create
-    return render :nothing => true, :status => 401 unless current_user
+    return render :nothing => true, :status => 401 unless has_rights?
     return render :nothing => true, :status => 405 unless request.post?
     return render :nothing => true, :status => 400 unless params[:pageMetadata].present?
 
     respond_to do |format|
-      begin
-        result = create_page_metadata(JSON.parse(params[:pageMetadata]), :request_id => request_id, :cookies => forwardable_session_cookies)
-        format.json { render :json => result[:body], :status => result[:status] }
-      rescue ConnectionError
-        format.json { render :json => { body: 'Phidippides connection error' }, status: 500 }
-      rescue JSON::ParserError => e
-        format.json { render :json => { body: "Invalid JSON payload. Error: #{e.to_s}" }, status: 500 }
+      format.json do
+        begin
+          result = page_metadata_manager.create(
+            params[:pageMetadata],
+            :request_id => request_id,
+            :cookies => forwardable_session_cookies
+          )
+        render :json => result[:body], :status => result[:status]
+        rescue Phidippides::ConnectionError
+          render :json => { body: 'Phidippides connection error' }, status: 500
+        rescue JSON::ParserError => error
+          render :json => { body: "Invalid JSON payload. Error: #{error.to_s}" }, status: 500
+        end
       end
     end
   end
 
   def update
-    return render :nothing => true, :status => 401 unless current_user
+    return render :nothing => true, :status => 401 unless has_rights?
     return render :nothing => true, :status => 405 unless request.put?
     return render :nothing => true, :status => 400 unless params[:pageMetadata].present?
 
     respond_to do |format|
-      begin
-        result = update_page_metadata(params[:id], :data => JSON.parse(params[:pageMetadata]), :request_id => request_id, :cookies => forwardable_session_cookies)
-        format.json { render :json => result[:body], :status => result[:status] }
-      rescue ConnectionError
-        format.json { render :json => { body: 'Phidippides connection error' }, status: 500 }
+      format.json do
+        begin
+          result = page_metadata_manager.update(
+            params[:pageMetadata],
+            :request_id => request_id,
+            :cookies => forwardable_session_cookies
+          )
+          render :json => result[:body], :status => result[:status]
+        rescue Phidippides::ConnectionError
+          render :json => { body: 'Phidippides connection error' }, status: 500
+        end
       end
     end
   end
@@ -67,8 +85,8 @@ class PhidippidesPagesController < ActionController::Base
   end
 
   def basic_auth
-    authenticate_with_http_basic do |u, p|
-      user_session = UserSession.new('login' => u, 'password' => p)
+    authenticate_with_http_basic do |username, password|
+      user_session = UserSession.new('login' => username, 'password' => password)
       user_session.save
     end
   end
@@ -82,6 +100,10 @@ class PhidippidesPagesController < ActionController::Base
   end
 
   private
+
+  def dataset
+    View.find(JSON.parse(params[:pageMetadata])['datasetId'])
+  end
 
   def hook_auth_controller
     UserSession.controller = self

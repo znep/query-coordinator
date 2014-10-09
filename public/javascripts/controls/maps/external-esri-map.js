@@ -295,10 +295,9 @@
                         return;
                     }
 
-                    if (idResults[0].feature) { idResults = _.pluck(idResults, 'feature'); }
-
-                    var objectids = _.map(features, function(feature)
-                    { return feature.attributes['OBJECTID']; });
+                    var objectids = _.map(idResults, function(feature)
+                    { return feature.feature ? feature.feature.attributes['OBJECTID']
+                                             :         feature.attributes['OBJECTID']; });
 
                     // Yes, this is a Core request inside a callback from an ESRI request.
                     // That is how awesome our ESRI integration is.

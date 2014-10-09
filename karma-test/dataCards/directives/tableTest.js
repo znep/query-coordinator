@@ -172,7 +172,7 @@ describe('table', function() {
     });
 
     it('should load more rows upon scrolling', function(done) {
-      this.timeout(10000); // IE9!
+      this.timeout(20000); // IE10!
       var el = createTableCard(true);
       var tableBody = el.find('.table-body');
       _.defer(function(){

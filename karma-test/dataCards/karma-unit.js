@@ -6,17 +6,7 @@ var _ = require('lodash');
 
 // Parse supported_browsers.json to generate BrowserStack launcher definitions.
 var supportedBrowsers = JSON.parse(fs.readFileSync(path.resolve(__dirname, '../../supported_browsers.json'), {encoding: 'utf8'}));
-var customLaunchers = {
-  'PhantomJS_custom': {
-    base: 'PhantomJS',
-    options: {
-      viewportSize: {
-        width: 1024,
-        height: 768
-      }
-    }
-  }
-};
+var customLaunchers = {};
 _.forIn(supportedBrowsers, function(browserInstances, browserName) {
   _.each(browserInstances, function(instance) {
     instance.browserName = browserName;
@@ -117,6 +107,16 @@ module.exports = function ( karma ) {
 
     customLaunchers: customLaunchers,
 
+    // Options for phantomJS launcher
+    phantomjsLauncher: {
+      options: {
+        viewportSize: {
+          width: 1024,
+          height: 768
+        }
+      }
+    },
+
     frameworks: [ 'mocha', 'chai', 'chai-as-promised' ],
     plugins: [
       'karma-chai',
@@ -182,7 +182,7 @@ module.exports = function ( karma ) {
     singleRun: true,
 
     /**
-     * The list of browsers to launch to test ondest     * default, but other browser names include:
+     * The list of browsers to launch to test by default, but other browser names include:
      * Chrome, ChromeCanary, Firefox, Opera, Safari, PhantomJS
      *
      * Note that you can also use the executable name of the browser, like "chromium"
@@ -196,7 +196,7 @@ module.exports = function ( karma ) {
     browsers: [
       'Chrome',
       'Firefox',
-      'PhantomJS_custom'
+      'PhantomJS'
     ],
 
     /**

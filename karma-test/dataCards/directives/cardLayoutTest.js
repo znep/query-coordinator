@@ -1,5 +1,7 @@
 describe('CardLayout directive test', function() {
-  var testHelpers, rootScope, Model, Card, Page, AngularRxExtensions, testHelpers;
+  var NUM_CARDS = 10;
+
+  var testHelpers, rootScope, Model, Card, Page, AngularRxExtensions;
   var mockWindowStateService = null;
 
   beforeEach(module('/angular_templates/dataCards/card-layout.html'));
@@ -136,6 +138,39 @@ describe('CardLayout directive test', function() {
       findDragOverlayForModel: findDragOverlayForModel
     };
   }
+
+  /**
+   * Create a layout that includes cards on init.
+   *
+   * @param {object=} opts
+   * @property {number=-1} expanded Which card to make expanded. Set below 0 to start with
+   *   no card expanded.
+   * @property {number=NUM_CARDS} numCards How many cards to generate.
+   * @property {number=0} dataCard The index of the datacard card. Set below 0 to start
+   *   with no datacard.
+   */
+  function createLayoutWithCards(opts) {
+    // set default values
+    opts = $.extend({}, {
+      expanded: -1,
+      numCards: NUM_CARDS,
+      dataCard: 0
+    }, opts);
+    var cards = function(pageModel) {
+      return _.map(_.range(opts.numCards), function(v, i) {
+        var c = new Card(pageModel, i === opts.dataCard ? '*' : 'fieldname' + i);
+        if (opts.expanded === i) {
+          c.set('expanded', true);
+        } else {
+          c.set('expanded', false);
+        }
+        c.set('cardSize', '1');
+        return c;
+      });
+    };
+    return createCardLayout({cards: cards});
+  }
+
 
   describe('DOM requirements', function() {
     it('should require the correct id', function() {
@@ -750,21 +785,18 @@ describe('CardLayout directive test', function() {
         expect(cl.element.find('.card-drop-placeholder').length).to.equal(0);
       });
 
-      xit('should assign the correct card size when dragged over a placeholder', function() {
-        var cl = createCardLayout();
-
-        var card1 = new Card(cl.pageModel, 'testField1');
-        var cards = [ card1 ];
-
-        card1.set('cardSize', '1');
-
-        cl.pageModel.set('cards', cards);
+      it('should assign the correct card size when dragged over a placeholder', function() {
+        var cl = createLayoutWithCards({
+          dataCard: 1,
+          numCards: 2
+        });
         cl.outerScope.editMode = true;
         cl.outerScope.$apply();
+
+        var cards = cl.pageModel.getCurrentValue('cards');
+        var card1 = cards[0];
+
         expect(cl.element.find('.card-drag-overlay').length).to.be.above(0);
-        cl.element.find('card-layout').css('display', 'block').width(900).height(300);
-        mockWindowStateService.windowSizeSubject.onNext({width: 1000, height: 1000});
-        mockWindowStateService.scrollPositionSubject.onNext(0);
 
         // Find DOM nodes for various bits we need.
         var card1Dom = cl.findCardForModel(card1);
@@ -810,7 +842,9 @@ describe('CardLayout directive test', function() {
 
         // Finally, release the card.
         mockWindowStateService.mouseLeftButtonPressedSubject.onNext(false);
-        expect(cl.element.find('.card-drag-overlay').length).to.equal(cards.length);
+        expect(cl.element.find('.card-drag-overlay').length).to.
+          // No overlay for the datacard
+          equal(cards.length - 1);
         expect(cl.element.find('.card-drop-placeholder').length).to.equal(0);
       });
     });
@@ -818,25 +852,7 @@ describe('CardLayout directive test', function() {
   });
 
   describe('card expansion', function() {
-    var NUM_CARDS = 10;
     var EXPANDED_CARD_INDEX = 2;
-
-    function createLayoutWithCards(opts) {
-      var cards = function(pageModel) {
-        return _.map(_.range(NUM_CARDS), function(v, i) {
-          var c = new Card(pageModel, 'fieldname' + i);
-          if (opts && opts.expanded && EXPANDED_CARD_INDEX === i) {
-            c.set('expanded', true);
-          } else {
-            c.set('expanded', false);
-          }
-          c.set('cardSize', '1');
-          return c;
-        });
-      };
-      return createCardLayout({cards: cards});
-    }
-
     it("should not expand any cards if the page model's 'cards' array doesn't contain any cards with the expanded property set", function() {
       var cl = createLayoutWithCards();
 
@@ -845,7 +861,7 @@ describe('CardLayout directive test', function() {
     });
 
     it('should show an expanded card if there is one in the model', function() {
-      var cl = createLayoutWithCards({expanded: true});
+      var cl = createLayoutWithCards({expanded: EXPANDED_CARD_INDEX});
 
       var cards = cl.element.find('card');
       expect(cards.length).to.equal(NUM_CARDS);
@@ -861,7 +877,7 @@ describe('CardLayout directive test', function() {
     });
 
     it('should unexpand when clicking unexpand button of an expanded card', function() {
-      var cl = createLayoutWithCards({expanded: true});
+      var cl = createLayoutWithCards({expanded: EXPANDED_CARD_INDEX});
 
       var expanded = cl.element.find('card').eq(EXPANDED_CARD_INDEX);
       expect(expanded.hasClass('expanded')).to.be.true;
@@ -870,7 +886,7 @@ describe('CardLayout directive test', function() {
     });
 
     it("sets the scope's cardExpanded state if there are any expanded cards", function() {
-      var cl = createLayoutWithCards({expanded: true});
+      var cl = createLayoutWithCards({expanded: EXPANDED_CARD_INDEX});
 
       expect(cl.outerScope.cardExpanded).to.be.true;
     });

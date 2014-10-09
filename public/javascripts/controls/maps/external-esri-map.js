@@ -295,7 +295,7 @@
                         return;
                     }
 
-                    if (idResults[0].feature) { idResults = _.pluck(features, 'feature'); }
+                    if (idResults[0].feature) { idResults = _.pluck(idResults, 'feature'); }
 
                     var objectids = _.map(features, function(feature)
                     { return feature.attributes['OBJECTID']; });

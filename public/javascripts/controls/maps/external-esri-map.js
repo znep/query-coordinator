@@ -176,8 +176,17 @@
 
             // We pull in a suitable spatial extent on load; that is more reliable than
             // pulling it in from the layer metadata.
-            layer.setMetadata({
-                initialExtent: OpenLayers.Bounds.fromDatasetMetadata(layerObj._view) });
+            if (layerObj._view.northWest)
+            { layer.setMetadata({
+                initialExtent: OpenLayers.Bounds.fromDatasetMetadata(layerObj._view) }); }
+            else
+            {
+                layerObj._view.getParentView(function(parentView)
+                {
+                    layer.setMetadata({
+                        initialExtent: OpenLayers.Bounds.fromDatasetMetadata(parentView) });
+                });
+            }
 
             if (layer.secure)
             {

@@ -1,7 +1,7 @@
 (function() {
   'use strict';
 
-  function saveAs($window, AngularRxExtensions, WindowState) {
+  function saveAs($window, AngularRxExtensions, WindowState, FlyoutService) {
     return {
       restrict: 'E',
       scope: {
@@ -15,6 +15,12 @@
         var saveEvents = new Rx.BehaviorSubject({ status: 'idle' });
 
         $scope.bindObservable('saveStatus', saveEvents.pluck('status'));
+
+        // Since we have a flyout handler whose output depends on currentPageSaveEvents and $scope.hasChanges,
+        // we need to poke the FlyoutService. We want the flyout to update immediately.
+        saveEvents.subscribe(function() {
+          FlyoutService.refreshFlyout();
+        });
 
         var $saveAsButton = element.find('.save-as-button');
         var $nameInput = element.find('#save-as-name');
@@ -71,6 +77,19 @@
               $nameInput.removeClass('form-error');
             }
           });
+
+        // We need to make sure that the save-button we're rendering the flyout for is actually
+        // our instance of save-button. save-button-flyout-target is not under our control.
+        var mySaveButtonScope = element.find('save-button').scope();
+        FlyoutService.register('save-button-flyout-target', function(element) {
+          var closestSaveButtonScope = $(element).closest('save-button').scope();
+          if (closestSaveButtonScope != mySaveButtonScope) { return undefined; }
+          if (saveEvents.value.status === 'failed') {
+            return '<div class="flyout-title">An error occurred</div><div>Please contact Socrata Support</div>';
+          } else if (saveEvents.value.status === 'idle') {
+            return '<div class="flyout-title">Click to save your changes</div>';
+          }
+        });
       }
     };
   }

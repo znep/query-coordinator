@@ -380,7 +380,11 @@
     //     There needs to be significant refactoring though to make this right:
     //     1- Make flyouts capable of registering on trees, not individual elements.
     //     2- Make refreshing the flyout on data changes more automatic.
-    FlyoutService.register('save-button-flyout-target', function() {
+    //BIG FAT NOTE: This handler deals with _all_ save buttons. This includes the Save button
+    //in the toolbar, and also the Save button in the Save As dialog. We need to check that this
+    //is _our_ save button.
+    FlyoutService.register('save-button-flyout-target', function(element) {
+      if ($(element).closest('.save-this-page').length == 0) { return undefined; }
       if (currentPageSaveEvents.value.status === 'failed') {
         return '<div class="flyout-title">An error occurred</div><div>Please contact Socrata Support</div>';
       } else if (currentPageSaveEvents.value.status === 'idle') {
@@ -393,7 +397,7 @@
       return $scope.hasChanges ? '<div class="flyout-title">Click to save your changes as a new view</div>'
                                : '<div class="flyout-title">No changes to be saved</div>';
     });
-    //
+
     // Since we have a flyout handler whose output depends on currentPageSaveEvents and $scope.hasChanges,
     // we need to poke the FlyoutService. We want the flyout to update immediately.
     currentPageSaveEvents.merge($scope.observe('hasChanges')).subscribe(function() {

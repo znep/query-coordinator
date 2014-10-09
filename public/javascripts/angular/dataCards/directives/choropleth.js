@@ -396,7 +396,6 @@
         function onFeatureClick(e) {
 
           var now = Date.now();
-          // NOTE: uses real timestamp, so testing this requires an actual timeout, not just a mocked timeout!
           var delay = now - lastClick;
           var featureIsSelected = false;
           lastClick = now;
@@ -606,6 +605,10 @@
         };
 
         var map = L.map(element.find('.choropleth-map-container')[0], options);
+        // emit a zoom event, so tests can check it
+        map.on('zoomstart zoomend', function(e) {
+          scope.$emit(e.type, e.target);
+        });
 
         // Keep track of the geojson layers so that we can remove them cleanly.
         // Every redraw of the map forces us to remove the layer entirely because

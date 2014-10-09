@@ -63,13 +63,6 @@ describe("A Choropleth Card Visualization", function() {
     fakeClock = null;
   });
 
-  // The choropleth throttles its renderer.
-  // Lie to it that enough time has passed,
-  // so it renders now.
-  function forceRender() {
-    fakeClock.tick(500);
-  }
-
   function createChoropleth(id, whereClause) {
 
     var model = new Model();
@@ -108,8 +101,14 @@ describe("A Choropleth Card Visualization", function() {
     childScope.model = model;
 
     var html = '<card-visualization-choropleth id="{0}" model="model" where-clause="whereClause"></card-visualization-choropleth>'.format(id);
+    var el = testHelpers.TestDom.compileAndAppend(html, childScope);
+
+    // The choropleth throttles its renderer.
+    // Lie to it that enough time has passed, so it renders now.
+    fakeClock.tick(500);
+
     return {
-      element: testHelpers.TestDom.compileAndAppend(html, childScope),
+      element: el,
       scope: childScope,
       eventFired: false
     };
@@ -142,8 +141,6 @@ describe("A Choropleth Card Visualization", function() {
         choropleth2Fired = true;
       });
 
-      forceRender();
-
       var feature = $('#choropleth-1 .choropleth-container path')[0];
 
       testHelpers.fireEvent(feature, 'click');
@@ -166,8 +163,6 @@ describe("A Choropleth Card Visualization", function() {
       choropleth2 = createChoropleth('choropleth-2');
 
       scope.$apply();
-
-      forceRender();
 
       var feature;
       var flyout;

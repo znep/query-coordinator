@@ -27,7 +27,11 @@ describe("A Choropleth Directive", function() {
     }
 
     var html = '<choropleth base-layer-url="baseLayerUrl" geojson-aggregate-data="geojsonAggregateData" row-display-unit="rowDisplayUnit" style="height: 400px; display: block"></choropleth>';
-    return testHelpers.TestDom.compileAndAppend(html, scope);
+    var el = testHelpers.TestDom.compileAndAppend(html, scope);
+    // The choropleth throttles its renderer.
+    // Lie to it that enough time has passed, so it renders now.
+    fakeClock.tick(500);
+    return el;
   }
 
   var rootScope;
@@ -77,13 +81,6 @@ describe("A Choropleth Directive", function() {
     fakeClock = null;
   });
 
-  // The choropleth throttles its renderer.
-  // Lie to it that enough time has passed,
-  // so it renders now.
-  function forceRender() {
-    fakeClock.tick(500);
-  }
-
 
   describe('with a valid geojsonAggregateData input', function() {
     describe('render timing events', function() {
@@ -114,7 +111,6 @@ describe("A Choropleth Directive", function() {
         // We need to call timeout.flush() after a clock tick,
         // because only that will guarantee that the choropleth actually started
         // a timeout (choropleth throttles its renders);
-        forceRender();
         timeout.flush();
       });
 
@@ -135,7 +131,6 @@ describe("A Choropleth Directive", function() {
       scope.geojsonAggregateData = testData.polygonData3;
       el = createChoropleth();
 
-      forceRender();
       expect(el.find(featureGeometrySelector).length).to.equal(3);
     });
 
@@ -143,7 +138,6 @@ describe("A Choropleth Directive", function() {
       scope.geojsonAggregateData = testData.multiPolygonData2;
       el = createChoropleth();
 
-      forceRender();
       expect(el.find(featureGeometrySelector).length).to.equal(2+3);
     });
 
@@ -151,7 +145,6 @@ describe("A Choropleth Directive", function() {
       scope.geojsonAggregateData = testData.multiLineStringData4;
       el = createChoropleth();
 
-      forceRender();
       expect(el.find(featureGeometrySelector).length).to.equal(12+15+6+3);
     });
 
@@ -159,7 +152,6 @@ describe("A Choropleth Directive", function() {
       scope.geojsonAggregateData = testData.lineStringData7;
       el = createChoropleth();
 
-      forceRender();
       expect(el.find(featureGeometrySelector).length).to.equal(7);
     });
 
@@ -183,7 +175,6 @@ describe("A Choropleth Directive", function() {
       scope.geojsonAggregateData = testData.multiLineStringData4;
       el = createChoropleth();
 
-      forceRender();
       expect(el.find(legendSelector).length).to.equal(1);
     });
 
@@ -191,7 +182,6 @@ describe("A Choropleth Directive", function() {
       scope.geojsonAggregateData = testData.polygonData2NoValues;
       el = createChoropleth();
 
-      forceRender();
       expect(el.find(legendSelector).children().length).to.equal(0);
     });
 
@@ -200,8 +190,6 @@ describe("A Choropleth Directive", function() {
       var expanded = true;
       scope.geojsonAggregateData = testData.lineStringData1;
       el = createChoropleth(expanded);
-
-      forceRender();
 
       // there should only be 1 feature
       expect(el.find(featureGeometrySelector).length).to.equal(1);
@@ -228,8 +216,6 @@ describe("A Choropleth Directive", function() {
       scope.geojsonAggregateData = testData.polygonData1;
       el = createChoropleth(expanded);
 
-      forceRender();
-
       // there should only be 1 feature
       expect(el.find(featureGeometrySelector).length).to.equal(1);
 
@@ -253,8 +239,6 @@ describe("A Choropleth Directive", function() {
       var expanded = true;
       scope.geojsonAggregateData = testData.polygonData2;
       el = createChoropleth(expanded);
-
-      forceRender();
 
       // there should only be 2 features
       expect(el.find(featureGeometrySelector).length).to.equal(2);
@@ -287,8 +271,6 @@ describe("A Choropleth Directive", function() {
       scope.geojsonAggregateData = testData.lineStringData3;
       el = createChoropleth(expanded);
 
-      forceRender();
-
       // there should only be 3 features
       expect(el.find(featureGeometrySelector).length).to.equal(3);
 
@@ -318,8 +300,6 @@ describe("A Choropleth Directive", function() {
       scope.geojsonAggregateData = testData.lineStringData52;
       el = createChoropleth();
 
-      forceRender();
-
       // there should only be 52 features
       expect(el.find(featureGeometrySelector).length).to.equal(52);
 
@@ -347,8 +327,6 @@ describe("A Choropleth Directive", function() {
       scope.geojsonAggregateData = testData.polygonData2PropertyMissing;
       el = createChoropleth();
 
-      forceRender();
-
       // there should only be 2 features
       expect(el.find(featureGeometrySelector).length).to.equal(2);
 
@@ -370,8 +348,6 @@ describe("A Choropleth Directive", function() {
       scope.geojsonAggregateData = testData.polygonData2ValueNull;
       el = createChoropleth();
 
-      forceRender();
-
       // there should only be 2 features
       expect(el.find(featureGeometrySelector).length).to.equal(2);
 
@@ -392,8 +368,6 @@ describe("A Choropleth Directive", function() {
       scope.geojsonAggregateData = testData.polygonData2ValueUndefined;
       el = createChoropleth();
 
-      forceRender();
-
       // there should only be 2 features
       expect(el.find(featureGeometrySelector).length).to.equal(2);
 
@@ -412,52 +386,52 @@ describe("A Choropleth Directive", function() {
 
     /* ---- DOUBLE CLICK EFFECTS ---- */
 
-    //TODO find a better way of asserting that leaflet zoomed, like reading zoom level (which we don't
-    //currently expose in any way). Right now reading the animation class doesn't work, and is an evil
-    //thing anyway. (APPLIES TO THE FOLLOWING TWO TESTS).
-    xit('should zoom the map if a map tile was double clicked', function() {
+    it('should zoom the map if a map tile was double clicked', function() {
       scope.geojsonAggregateData = testData.polygonData2ValueUndefined;
       el = createChoropleth();
 
-      forceRender();
+      // Listen for the zoom events
+      var zoomStart = -1;
+      var zoomEnd = -1;
+      scope.$on('zoomstart', function(e, map) {
+        zoomStart = map.getZoom();
+      });
+      scope.$on('zoomend', function(e, map) {
+        zoomEnd = map.getZoom();
+      });
 
-      expect(el.find('.leaflet-map-pane').hasClass('leaflet-zoom-anim')).to.equal(false);
-      var tile = el.find('.leaflet-tile')[0];
-      testHelpers.fireMouseEvent(tile, 'dblclick');
+      testHelpers.fireMouseEvent(el.find('.leaflet-tile')[0], 'dblclick');
 
-      forceRender();
-      //TODO this waitForSatisfy can probably go away, but since the test doesn't work
-      //anyway I'm not sure.
-      testHelpers.waitForSatisfy(function() {
-        // map should be zooming
-        return el.find('.leaflet-map-pane').hasClass('leaflet-zoom-anim');
-      }).then(done);
+      expect(zoomStart).to.be.above(-1);
+      expect(zoomStart).to.be.below(zoomEnd);
     });
 
-    xit('should zoom the map if a choropleth feature was double clicked', function(done) {
+    it('should zoom the map if a choropleth feature was double clicked', function() {
       scope.geojsonAggregateData = testData.polygonData2ValueUndefined;
       el = createChoropleth();
 
-      forceRender();
-
-      expect(el.find('.leaflet-map-pane').hasClass('leaflet-zoom-anim')).to.equal(false);
+      // Listen for the zoom events
+      var zoomStart = -1;
+      var zoomEnd = -1;
+      scope.$on('zoomstart', function(e, map) {
+        zoomStart = map.getZoom();
+      });
+      scope.$on('zoomend', function(e, map) {
+        zoomEnd = map.getZoom();
+      });
       
       var polygon = el.find('path')[0];
-      testHelpers.fireMouseEvent(polygon, 'dblclick');
-      timeout.flush();
+      testHelpers.fireMouseEvent(polygon, 'click');
+      fakeClock.tick(50);
+      testHelpers.fireMouseEvent(polygon, 'click');
 
-      setTimeout(function() {
-        // map should be zooming
-        expect(el.find('.leaflet-map-pane').hasClass('leaflet-zoom-anim')).to.equal(true);
-        done();
-      }, 100);
+      expect(zoomStart).to.be.above(-1);
+      expect(zoomStart).to.be.below(zoomEnd);
     });
 
     it('should preserve the styles on a highlighted feature if the highlighted feature was double clicked', function() {
       scope.geojsonAggregateData = testData.polygonData2ValueUndefined;
       el = createChoropleth();
-
-      forceRender();
 
       var polygon = el.find('path')[0];
       var defaultStrokeWidth = parseInt($(polygon).css('strokeWidth'));
@@ -474,8 +448,6 @@ describe("A Choropleth Directive", function() {
     it('should toggle highlight on an unfiltered region on mouseover and mouseout', function() {
       scope.geojsonAggregateData = testData.polygonData2ValueUndefined;
       el = createChoropleth();
-
-      forceRender();
 
       var feature = $(el).find(featureGeometrySelector)[0];
       var defaultStrokeWidth = parseInt($(feature).css('strokeWidth'));
@@ -503,8 +475,6 @@ describe("A Choropleth Directive", function() {
       it('should signal the region to toggle in the active filter names', function() {
         scope.geojsonAggregateData = testData.polygonData2;
         el = createChoropleth();
-
-        forceRender();
 
         var polygon = el.find('path')[0];
         var secondLine = el.find('path')[1];
@@ -535,8 +505,6 @@ describe("A Choropleth Directive", function() {
           scope.geojsonAggregateData = testData.polygonData2;
           el = createChoropleth(expanded);
 
-          forceRender();
-
           var ticks = el.find(legendSelector + ' .labels .tick');
           var offsets = _.map(ticks, function(tick) {
             var translateString = $(tick).attr('transform');
@@ -557,8 +525,6 @@ describe("A Choropleth Directive", function() {
           scope.geojsonAggregateData = testData.polygonData2;
           el = createChoropleth(expanded);
 
-          forceRender();
-
           var legendColor = el.find(legendColorSelector)[0];
           var legendColorFlyoutText = $(legendColor).data('flyout-text');
 
@@ -573,8 +539,6 @@ describe("A Choropleth Directive", function() {
           // NOTE: important to test for each individual small case (1,2,3) to ensure proper edge case management.
           scope.geojsonAggregateData = testData.lineStringData3SmallNumbers;
           el = createChoropleth(expanded);
-
-          forceRender();
 
           // there should only be 3 features
           expect(el.find(featureGeometrySelector).length).to.equal(3);
@@ -610,8 +574,6 @@ describe("A Choropleth Directive", function() {
           scope.geojsonAggregateData = testData.polygonData2;
           el = createChoropleth(expanded);
 
-          forceRender();
-
           var ticks = el.find(legendSelector + ' .labels .tick');
           var offsets = _.map(ticks, function(tick) {
             var translateString = $(tick).attr('transform');
@@ -632,8 +594,6 @@ describe("A Choropleth Directive", function() {
           scope.geojsonAggregateData = testData.polygonData2;
           el = createChoropleth(expanded);
 
-          forceRender();
-
           var legendColor = el.find(legendColorSelector)[0];
           var legendColorFlyoutText = $(legendColor).data('flyout-text');
 
@@ -648,8 +608,6 @@ describe("A Choropleth Directive", function() {
           // NOTE: important to test for each individual small case (1,2,3) to ensure proper edge case management.
           scope.geojsonAggregateData = testData.lineStringData3SmallNumbers;
           el = createChoropleth(expanded);
-
-          forceRender();
 
           // there should only be 3 features
           expect(el.find(featureGeometrySelector).length).to.equal(3);

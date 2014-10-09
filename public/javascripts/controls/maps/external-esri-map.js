@@ -317,7 +317,7 @@
                                   '$where': 'any_of(objectid, ' + objectids.join(',') + ')' },
                         success: function(results)
                         {
-                            var flyoutContent = layerObj.getFlyout(results);
+                            var flyoutContent = layerObj.getFlyout(idResults, results);
                             if (flyoutContent)
                             { flyoutContent = flyoutContent[0].innerHTML; }
 
@@ -384,6 +384,26 @@
                 { opacity = 1; }
             }
             return opacity;
+        },
+
+        getFlyout: function(features, complementRows)
+        {
+            var layerObj = this;
+
+            if (features[0].feature) { features = _.pluck(features, 'feature'); }
+
+            var rows = _.map(features, function(feature)
+            {
+                var dsRow = _.detect(complementRows, function(cRow)
+                    { return cRow['objectid'] == feature.attributes['OBJECTID']; });
+
+                var row = { data: {}, id: dsRow[':id'] };
+                _.each(feature.attributes, function(val, attr)
+                { row.data[layerObj._attrMap[attr]] = val; });
+                return row;
+            });
+
+            return this._super(rows);
         },
 
         preferredExtent: function()

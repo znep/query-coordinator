@@ -3,7 +3,7 @@
       {
         "version": "9",
         "os": { "name": "windows", "version": "7" },
-        "critical": true
+        "critical": false
       },
       {
         "version": "10",
@@ -20,7 +20,7 @@
       {
         "version": "7",
         "os": { "name": "osx", "version": "mavericks" },
-        "critical": true
+        "critical": false
       },
       {
         "version": "6",
@@ -32,7 +32,7 @@
       {
         "version": "36",
         "os": { "name": "windows", "version": "7" },
-        "critical": true
+        "critical": false
       },
       {
         "version": "36",
@@ -64,7 +64,7 @@
     {
       "version": "31",
       "os": { "name": "windows", "version": "7" },
-      "critical": true
+      "critical": false
     },
     {
       "version": "31",

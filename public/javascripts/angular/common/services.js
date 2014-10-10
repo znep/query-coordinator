@@ -1,5 +1,5 @@
 (function() {
   'use strict';
 
-  angular.module('socrataCommon.services', ['dataCards.services']); //TODO
+  angular.module('socrataCommon.services', []);
 })();

@@ -1,7 +1,7 @@
 describe('Angular RX Extensions', function() {
   var _extensions, _$rootScope;
 
-  beforeEach(module('dataCards.services'));
+  beforeEach(module('socrataCommon.services'));
   beforeEach(inject(function(AngularRxExtensions, $rootScope) {
     _extensions = AngularRxExtensions;
     _$rootScope = $rootScope;

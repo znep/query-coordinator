@@ -144,7 +144,6 @@
      * @param metricValue
      */
     function sendMetric(metricName, metricValue) {
-      $log.info('Computed metric:', metricName, metricValue);
       if (isStatsdEnabled()) {
         http({
           method: 'post',

@@ -246,7 +246,9 @@ describe('Analytics service', function() {
 
         emitUserInteraction(); // Should also be entirely ignored.
 
-        flushHttp(); // Will throw if more than one POST.
+        flushHttp();
+
+        // the afterEach hook that verifies the mock $http expectations will throw if unexpected POSTs are sent.
       });
     });
 

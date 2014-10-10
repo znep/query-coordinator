@@ -1,5 +1,6 @@
 describe("A Choropleth Card Visualization", function() {
   var testHelpers, rootScope, templateCache, compile, scope, Model, q, timeout;
+  var fakeClock = null;
 
   var testWards = 'karma-test/dataCards/test-data/cardVisualizationChoroplethTest/ward_geojson.json';
   var testAggregates = 'karma-test/dataCards/test-data/cardVisualizationChoroplethTest/geo_values.json';
@@ -53,6 +54,22 @@ describe("A Choropleth Card Visualization", function() {
     testHelpers.TestDom.clear();
   });
 
+  beforeEach(function() {
+    fakeClock = sinon.useFakeTimers();
+  });
+
+  afterEach(function() {
+    fakeClock.restore();
+    fakeClock = null;
+  });
+
+  // The choropleth throttles its renderer.
+  // Lie to it that enough time has passed,
+  // so it renders now.
+  function forceRender() {
+    fakeClock.tick(500);
+  }
+
   function createChoropleth(id, whereClause) {
 
     var model = new Model();
@@ -104,7 +121,7 @@ describe("A Choropleth Card Visualization", function() {
 
   describe('when created', function() {
 
-    it('should not let click events leak', function(done) {
+    it('should not let click events leak', function() {
 
       this.timeout(15000);
 
@@ -125,33 +142,20 @@ describe("A Choropleth Card Visualization", function() {
         choropleth2Fired = true;
       });
 
-      testHelpers.waitForSatisfy(function() {
-        try {
-          return $('#choropleth-1 .choropleth-container path').length > 0;
-        } catch (e) {
-          console.log(e);
-        }
-      }).then(function() {
-        try {
+      forceRender();
 
-        var feature = $('#choropleth-1 .choropleth-container path')[0];
+      var feature = $('#choropleth-1 .choropleth-container path')[0];
 
-        testHelpers.fireEvent(feature, 'click');
+      testHelpers.fireEvent(feature, 'click');
 
-        timeout.flush();
+      timeout.flush();
 
-        expect(choropleth1Fired).to.equal(true);
-        expect(choropleth2Fired).to.equal(false);
-        done();
-
-        } catch (e) {
-          console.log(e);
-        }
-      });
+      expect(choropleth1Fired).to.equal(true);
+      expect(choropleth2Fired).to.equal(false);
 
     });
 
-    it('should provide a flyout on hover with the current value, and row display unit on the first and second choropleth encountered', function(done){
+    it('should provide a flyout on hover with the current value, and row display unit on the first and second choropleth encountered', function(){
 
       this.timeout(15000);
 
@@ -163,55 +167,40 @@ describe("A Choropleth Card Visualization", function() {
 
       scope.$apply();
 
-      testHelpers.waitForSatisfy(function() {
-        try {
-          return $('#choropleth-1 .choropleth-container path').length > 0 &&
-                 $('#choropleth-2 .choropleth-container path').length > 0;
-        } catch (e) {
-          console.log(e);
-        }
-      }).then(function() {
-        try {
+      forceRender();
 
-          var feature;
-          var flyout;
-          var flyoutTitle;
-          var flyoutText;
+      var feature;
+      var flyout;
+      var flyoutTitle;
+      var flyoutText;
 
-          // First, test a feature on the first choropleth.
-          feature = $('#choropleth-1 .choropleth-container path')[0];
+      // First, test a feature on the first choropleth.
+      feature = $('#choropleth-1 .choropleth-container path')[0];
 
-          testHelpers.fireEvent(feature, 'mousemove');
+      testHelpers.fireEvent(feature, 'mousemove');
 
-          flyout = $('#uber-flyout');
-          flyoutTitle = flyout.find('.flyout-title').text();
-          flyoutText = flyout.find('.content').text();
+      flyout = $('#uber-flyout');
+      flyoutTitle = flyout.find('.flyout-title').text();
+      flyoutText = flyout.find('.content').text();
 
-          expect(flyoutTitle).to.equal('4');
-          expect(flyout.is(':visible')).to.be.true;
+      expect(flyoutTitle).to.equal('4');
+      expect(flyout.is(':visible')).to.be.true;
 
-          testHelpers.fireEvent(feature, 'mouseout');
+      testHelpers.fireEvent(feature, 'mouseout');
 
-          // Second, test a feature on the second choropleth.
-          feature = $('#choropleth-2 .choropleth-container path')[1];
+      // Second, test a feature on the second choropleth.
+      feature = $('#choropleth-2 .choropleth-container path')[1];
 
-          testHelpers.fireEvent(feature, 'mousemove');
+      testHelpers.fireEvent(feature, 'mousemove');
 
-          flyout = $('#uber-flyout');
-          flyoutTitle = flyout.find('.flyout-title').text();
-          flyoutText = flyout.find('.content').text();
+      flyout = $('#uber-flyout');
+      flyoutTitle = flyout.find('.flyout-title').text();
+      flyoutText = flyout.find('.content').text();
 
-          expect(flyoutTitle).to.equal('33');
-          expect(flyout.is(':visible')).to.be.true;
+      expect(flyoutTitle).to.equal('33');
+      expect(flyout.is(':visible')).to.be.true;
 
-          testHelpers.fireEvent(feature, 'mouseout');
-
-          done();
-
-        } catch (e) {
-          console.log(e);
-        }
-      });
+      testHelpers.fireEvent(feature, 'mouseout');
 
     });
 

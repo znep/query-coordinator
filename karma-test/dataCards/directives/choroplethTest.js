@@ -44,6 +44,11 @@ describe("A Choropleth Directive", function() {
   var flyoutSelector = '#uber-flyout';
   var featureMergedValueName = '__SOCRATA_FILTERED_VALUE__';
 
+  // NOTE! We mock out the clock.
+  // This is done to get around choropleth
+  // throttling its rendering.
+  var fakeClock = null;
+
 
   beforeEach(module('dataCards'));
   beforeEach(module('dataCards.directives'));
@@ -63,6 +68,22 @@ describe("A Choropleth Directive", function() {
     testHelpers.TestDom.clear();
   });
 
+  beforeEach(function() {
+    fakeClock = sinon.useFakeTimers();
+  });
+
+  afterEach(function() {
+    fakeClock.restore();
+    fakeClock = null;
+  });
+
+  // The choropleth throttles its renderer.
+  // Lie to it that enough time has passed,
+  // so it renders now.
+  function forceRender() {
+    fakeClock.tick(500);
+  }
+
 
   describe('with a valid geojsonAggregateData input', function() {
     describe('render timing events', function() {
@@ -73,14 +94,6 @@ describe("A Choropleth Directive", function() {
           rootScope.eventToObservable('render:start').first(),
           rootScope.eventToObservable('render:complete').first()
         );
-
-        // Needed to simulate a frame. Render:complete won't be emitted otherwise.
-        // We need to call timeout.flush() after render:start's callstack completes,
-        // because only that will guarantee that the choropleth actually started
-        // a timeout. Bleh.
-        renderEvents.first().delay(1).subscribe(function() {
-          timeout.flush();
-        });
 
         renderEvents.take(2).toArray().subscribe(
           function(events) {
@@ -97,7 +110,12 @@ describe("A Choropleth Directive", function() {
           }
         );
 
-        el = createChoropleth();
+        createChoropleth();
+        // We need to call timeout.flush() after a clock tick,
+        // because only that will guarantee that the choropleth actually started
+        // a timeout (choropleth throttles its renders);
+        forceRender();
+        timeout.flush();
       });
 
     });
@@ -113,56 +131,36 @@ describe("A Choropleth Directive", function() {
       expect(el.find('.leaflet-map-pane').length).to.equal(1);
     });
 
-    it('should render Polygons on the map, if the geojson contains Polygons', function(done) {
+    it('should render Polygons on the map, if the geojson contains Polygons', function() {
       scope.geojsonAggregateData = testData.polygonData3;
       el = createChoropleth();
 
-      testHelpers.
-        waitForSatisfy(function() { return el.find(featureGeometrySelector).length > 0; }).
-        then(function() {
-
-          expect(el.find(featureGeometrySelector).length).to.equal(3);
-          done();
-        });
+      forceRender();
+      expect(el.find(featureGeometrySelector).length).to.equal(3);
     });
 
-    it('should render MultiPolygons on the map, if the geojson contains MultiPolygons', function(done) {
+    it('should render MultiPolygons on the map, if the geojson contains MultiPolygons', function() {
       scope.geojsonAggregateData = testData.multiPolygonData2;
       el = createChoropleth();
 
-      testHelpers.
-        waitForSatisfy(function() { return el.find(featureGeometrySelector).length > 0; }).
-        then(function() {
-
-          expect(el.find(featureGeometrySelector).length).to.equal(2+3);
-          done();
-        });
+      forceRender();
+      expect(el.find(featureGeometrySelector).length).to.equal(2+3);
     });
 
-    it('should render MultiLineStrings on the map, if the geojson contains MultiLineStrings', function(done) {
+    it('should render MultiLineStrings on the map, if the geojson contains MultiLineStrings', function() {
       scope.geojsonAggregateData = testData.multiLineStringData4;
       el = createChoropleth();
 
-      testHelpers.
-        waitForSatisfy(function() { return el.find(featureGeometrySelector).length > 0; }).
-        then(function() {
-
-          expect(el.find(featureGeometrySelector).length).to.equal(12+15+6+3);
-          done();
-        });
+      forceRender();
+      expect(el.find(featureGeometrySelector).length).to.equal(12+15+6+3);
     });
 
-    it('should render LineStrings on the map, if the geojson contains LineStrings', function(done) {
+    it('should render LineStrings on the map, if the geojson contains LineStrings', function() {
       scope.geojsonAggregateData = testData.lineStringData7;
       el = createChoropleth();
 
-      testHelpers.
-        waitForSatisfy(function() { return el.find(featureGeometrySelector).length > 0; }).
-        then(function() {
-
-          expect(el.find(featureGeometrySelector).length).to.equal(7);
-          done();
-        });
+      forceRender();
+      expect(el.find(featureGeometrySelector).length).to.equal(7);
     });
 
     xit('should render a map with a bounding box that contains all the features', function() {
@@ -181,138 +179,402 @@ describe("A Choropleth Directive", function() {
       expect(scopeBounds.southWest.lng).to.deep.equal(expectedBounds.southWest.lng);
     });
 
-    it('should be able to render a legend if the choropleth has values', function(done) {
+    it('should be able to render a legend if the choropleth has values', function() {
       scope.geojsonAggregateData = testData.multiLineStringData4;
       el = createChoropleth();
 
-      testHelpers.
-        waitForSatisfy(function() { return el.find(legendSelector).length > 0; }).
-        then(function() {
-          expect(el.find(legendSelector).length).to.equal(1);
-          done();
-        });
+      forceRender();
+      expect(el.find(legendSelector).length).to.equal(1);
     });
 
-    it('should not render a legend if the choropleth has no values', function(done) {
+    it('should not render a legend if the choropleth has no values', function() {
       scope.geojsonAggregateData = testData.polygonData2NoValues;
       el = createChoropleth();
 
-      testHelpers.
-        waitForSatisfy(function() { return el.find(featureGeometrySelector).length > 0; }).
-        then(function() {
-
-          expect(el.find(legendSelector).children().length).to.equal(0);
-          done();
-        });
+      forceRender();
+      expect(el.find(legendSelector).children().length).to.equal(0);
     });
 
-    it('should render proper map features, legend, and legend labels for 1 line feature', function(done) {
+    it('should render proper map features, legend, and legend labels for 1 line feature', function() {
       // NOTE: important to test for each individual small case (1,2,3) to ensure proper edge case management.
       var expanded = true;
       scope.geojsonAggregateData = testData.lineStringData1;
       el = createChoropleth(expanded);
 
-      testHelpers.
-        waitForSatisfy(function() { return el.find(featureGeometrySelector).length > 0; }).
-        then(function() {
+      forceRender();
 
-          // there should only be 1 feature
-          expect(el.find(featureGeometrySelector).length).to.equal(1);
+      // there should only be 1 feature
+      expect(el.find(featureGeometrySelector).length).to.equal(1);
 
-          // there should only be 1 legend
-          expect(el.find(legendSelector).length).to.equal(1);
+      // there should only be 1 legend
+      expect(el.find(legendSelector).length).to.equal(1);
 
-          // there should only be 1 color in the legend
-          expect(el.find(legendColorSelector).length).to.equal(1);
+      // there should only be 1 color in the legend
+      expect(el.find(legendColorSelector).length).to.equal(1);
 
-          // legend label should match feature value
-          expect(legendFlyoutValues()).to.deep.equal(scopedFeatureValues());
+      // legend label should match feature value
+      expect(legendFlyoutValues()).to.deep.equal(scopedFeatureValues());
 
-          // stroke (if LineString or MultiLineString) or fill (if Polygon or MultiPolygon) color hex(es) should match legend color hex(es)
-          var fillColor = el.find(featureGeometrySelector).css('stroke');
-          var legendColor = el.find(legendColorSelector).css('fill');
+      // stroke (if LineString or MultiLineString) or fill (if Polygon or MultiPolygon) color hex(es) should match legend color hex(es)
+      var fillColor = el.find(featureGeometrySelector).css('stroke');
+      var legendColor = el.find(legendColorSelector).css('fill');
 
-          expect(chroma.color(fillColor).hex()).to.equal(chroma.color(legendColor).hex());
-          done();
-        });
+      expect(chroma.color(fillColor).hex()).to.equal(chroma.color(legendColor).hex());
     });
 
-    it('should render proper map features, legend, and legend labels for 1 polygon feature', function(done) {
+    it('should render proper map features, legend, and legend labels for 1 polygon feature', function() {
       // NOTE: important to test for each individual small case (1,2,3) to ensure proper edge case management.
       var expanded = true;
       scope.geojsonAggregateData = testData.polygonData1;
       el = createChoropleth(expanded);
 
-      testHelpers.
-        waitForSatisfy(function() { return el.find(featureGeometrySelector).length > 0; }).
-        then(function() {
+      forceRender();
 
-          // there should only be 1 feature
-          expect(el.find(featureGeometrySelector).length).to.equal(1);
+      // there should only be 1 feature
+      expect(el.find(featureGeometrySelector).length).to.equal(1);
 
-          // there should only be 1 legend
-          expect(el.find(legendSelector).length).to.equal(1);
+      // there should only be 1 legend
+      expect(el.find(legendSelector).length).to.equal(1);
 
-          // there should only be 1 color in the legend
-          expect(el.find(legendColorSelector).length).to.equal(1);
+      // there should only be 1 color in the legend
+      expect(el.find(legendColorSelector).length).to.equal(1);
 
-          // legend label should match feature value
-          expect(legendFlyoutValues()).to.deep.equal(scopedFeatureValues());
+      // legend label should match feature value
+      expect(legendFlyoutValues()).to.deep.equal(scopedFeatureValues());
 
-          // stroke (if LineString or MultiLineString) or fill (if Polygon or MultiPolygon) color hex(es) should match legend color hex(es)
-          var fillColor = el.find(featureGeometrySelector).css('fill');
-          var legendColor = el.find(legendColorSelector).css('fill');
-          expect(chroma.color(fillColor).hex()).to.equal(chroma.color(legendColor).hex());
-          done();
-        });
+      // stroke (if LineString or MultiLineString) or fill (if Polygon or MultiPolygon) color hex(es) should match legend color hex(es)
+      var fillColor = el.find(featureGeometrySelector).css('fill');
+      var legendColor = el.find(legendColorSelector).css('fill');
+      expect(chroma.color(fillColor).hex()).to.equal(chroma.color(legendColor).hex());
     });
 
-    it('should render proper map features, legend, and legend labels for 2 features', function(done) {
+    it('should render proper map features, legend, and legend labels for 2 features', function() {
       // NOTE: important to test for each individual small case (1,2,3) to ensure proper edge case management.
       var expanded = true;
       scope.geojsonAggregateData = testData.polygonData2;
       el = createChoropleth(expanded);
 
-      testHelpers.
-        waitForSatisfy(function() { return el.find(featureGeometrySelector).length > 0; }).
-        then(function() {
+      forceRender();
 
-          // there should only be 2 features
-          expect(el.find(featureGeometrySelector).length).to.equal(2);
+      // there should only be 2 features
+      expect(el.find(featureGeometrySelector).length).to.equal(2);
 
-          // there should only be 1 legend
-          expect(el.find(legendSelector).length).to.equal(1);
+      // there should only be 1 legend
+      expect(el.find(legendSelector).length).to.equal(1);
 
-          // there should only be 2 or more colors in the legend
-          expect(el.find(legendColorSelector).length).to.be.above(1);
+      // there should only be 2 or more colors in the legend
+      expect(el.find(legendColorSelector).length).to.be.above(1);
 
-          // legend labels should contain feature values
-          expect(_.intersection(legendFlyoutValues(), scopedFeatureValues()).length).to.equal(scopedFeatureValues().length);
+      // legend labels should contain feature values
+      expect(_.intersection(legendFlyoutValues(), scopedFeatureValues()).length).to.equal(scopedFeatureValues().length);
 
-          // stroke (if LineString or MultiLineString) or fill (if Polygon or MultiPolygon) color hexes should match legend color hexes
-          var fillColors = _.map(el.find(featureGeometrySelector), function(el) {
-            var fillColor = $(el).css('fill');
-            return chroma.color(fillColor).hex();
-          });
-          var legendColors = _.map(el.find(legendColorSelector), function(el) {
-            var legendColor = $(el).css('fill');
-            return chroma.color(legendColor).hex();
-          });
+      // stroke (if LineString or MultiLineString) or fill (if Polygon or MultiPolygon) color hexes should match legend color hexes
+      var fillColors = _.map(el.find(featureGeometrySelector), function(el) {
+        var fillColor = $(el).css('fill');
+        return chroma.color(fillColor).hex();
+      });
+      var legendColors = _.map(el.find(legendColorSelector), function(el) {
+        var legendColor = $(el).css('fill');
+        return chroma.color(legendColor).hex();
+      });
 
-          expect(_.intersection(legendColors, fillColors).length).to.equal(fillColors.length);
-          done();
-        });
+      expect(_.intersection(legendColors, fillColors).length).to.equal(fillColors.length);
     });
 
-    it('should render proper map features, legend, and legend labels for 3 features', function(done) {
+    it('should render proper map features, legend, and legend labels for 3 features', function() {
       // NOTE: important to test for each individual small case (1,2,3) to ensure proper edge case management.
       var expanded = true;
       scope.geojsonAggregateData = testData.lineStringData3;
       el = createChoropleth(expanded);
 
-      testHelpers.
-        waitForSatisfy(function() { return el.find(featureGeometrySelector).length > 0; }).
-        then(function() {
+      forceRender();
+
+      // there should only be 3 features
+      expect(el.find(featureGeometrySelector).length).to.equal(3);
+
+      // there should only be 1 legend
+      expect(el.find(legendSelector).length).to.equal(1);
+
+      // there should only be 3 or more colors in the legend
+      expect(el.find(legendColorSelector).length).to.be.above(2);
+
+      // legend labels should contain feature values
+      expect(_.intersection(legendFlyoutValues(), scopedFeatureValues()).length).to.equal(scopedFeatureValues().length);
+
+      // stroke (if LineString or MultiLineString) or fill (if Polygon or MultiPolygon) color hexes should match legend color hexes
+      var fillColors = _.map(el.find(featureGeometrySelector), function(el) {
+        var fillColor = $(el).css('stroke');
+        return chroma.color(fillColor).hex();
+      });
+      var legendColors = _.map(el.find(legendColorSelector), function(el) {
+        var legendColor = $(el).css('fill');
+        return chroma.color(legendColor).hex();
+      });
+
+      expect(_.intersection(legendColors, fillColors).length).to.equal(fillColors.length);
+    });
+
+    it('should render proper map features, legend, and legend labels for many features', function() {
+      scope.geojsonAggregateData = testData.lineStringData52;
+      el = createChoropleth();
+
+      forceRender();
+
+      // there should only be 52 features
+      expect(el.find(featureGeometrySelector).length).to.equal(52);
+
+      // there should only be 1 legend
+      expect(el.find(legendSelector).length).to.equal(1);
+
+      // there should only be less than 20 colors in the legend
+      expect(el.find(legendColorSelector).length < 20).to.equal(true);
+
+      // stroke (if LineString or MultiLineString) or fill (if Polygon or MultiPolygon) color hexes should match legend color hexes
+      var fillColors = _.map(el.find(featureGeometrySelector), function(el) {
+        var fillColor = $(el).css('stroke');
+        return chroma.color(fillColor).hex();
+      });
+
+      var legendColors = _.map(el.find(legendColorSelector), function(el) {
+        var legendColor = $(el).css('fill');
+        return chroma.color(legendColor).hex();
+      });
+
+      expect(_.intersection(legendColors, fillColors).length).to.equal(legendColors.length);
+    });
+
+    it('should not color features that are missing properties', function() {
+      scope.geojsonAggregateData = testData.polygonData2PropertyMissing;
+      el = createChoropleth();
+
+      forceRender();
+
+      // there should only be 2 features
+      expect(el.find(featureGeometrySelector).length).to.equal(2);
+
+      // there should only be 1 legend with 1 color
+      expect(el.find(legendSelector).length).to.equal(1);
+      expect(el.find(legendColorSelector).length).to.equal(1);
+
+      // stroke (if LineString or MultiLineString) or fill (if Polygon or MultiPolygon) color hexes should match legend color hexes
+      var fillColors = _.map(el.find(featureGeometrySelector), function(el){
+        var color = $(el).css('fill');
+        return chroma.color(color).hex();
+      });
+      var nullColors = _.filter(fillColors, function(fc){ return chroma.color(fc).hex() == '#dddddd' });
+
+      expect(nullColors.length).to.equal(1);
+    });
+
+    it('should not color features that have null values', function(){
+      scope.geojsonAggregateData = testData.polygonData2ValueNull;
+      el = createChoropleth();
+
+      forceRender();
+
+      // there should only be 2 features
+      expect(el.find(featureGeometrySelector).length).to.equal(2);
+
+      // there should only be 1 legend with 1 color
+      expect(el.find(legendSelector).length).to.equal(1);
+      expect(el.find(legendColorSelector).length).to.equal(1);
+
+      // stroke (if LineString or MultiLineString) or fill (if Polygon or MultiPolygon) color hexes should match legend color hexes
+      var fillColors = _.map(el.find(featureGeometrySelector), function(el){
+        var color = $(el).css('fill');
+        return chroma.color(color).hex();
+      });
+      var nullColors = _.filter(fillColors, function(fc){ return chroma.color(fc).hex() == '#dddddd' });
+      expect(nullColors.length).to.equal(1);
+    });
+
+    it('should not color features that have undefined values', function(){
+      scope.geojsonAggregateData = testData.polygonData2ValueUndefined;
+      el = createChoropleth();
+
+      forceRender();
+
+      // there should only be 2 features
+      expect(el.find(featureGeometrySelector).length).to.equal(2);
+
+      // there should only be 1 legend with 1 color
+      expect(el.find(legendSelector).length).to.equal(1);
+      expect(el.find(legendColorSelector).length).to.equal(1);
+
+      // stroke (if LineString or MultiLineString) or fill (if Polygon or MultiPolygon) color hexes should match legend color hexes
+      var fillColors = _.map(el.find(featureGeometrySelector), function(el){
+        var color = $(el).css('fill');
+        return chroma.color(color).hex();
+      });
+      var nullColors = _.filter(fillColors, function(fc){ return chroma.color(fc).hex() == '#dddddd' });
+      expect(nullColors.length).to.equal(1);
+    });
+
+    /* ---- DOUBLE CLICK EFFECTS ---- */
+
+    //TODO find a better way of asserting that leaflet zoomed, like reading zoom level (which we don't
+    //currently expose in any way). Right now reading the animation class doesn't work, and is an evil
+    //thing anyway. (APPLIES TO THE FOLLOWING TWO TESTS).
+    xit('should zoom the map if a map tile was double clicked', function() {
+      scope.geojsonAggregateData = testData.polygonData2ValueUndefined;
+      el = createChoropleth();
+
+      forceRender();
+
+      expect(el.find('.leaflet-map-pane').hasClass('leaflet-zoom-anim')).to.equal(false);
+      var tile = el.find('.leaflet-tile')[0];
+      testHelpers.fireMouseEvent(tile, 'dblclick');
+
+      forceRender();
+      //TODO this waitForSatisfy can probably go away, but since the test doesn't work
+      //anyway I'm not sure.
+      testHelpers.waitForSatisfy(function() {
+        // map should be zooming
+        return el.find('.leaflet-map-pane').hasClass('leaflet-zoom-anim');
+      }).then(done);
+    });
+
+    xit('should zoom the map if a choropleth feature was double clicked', function(done) {
+      scope.geojsonAggregateData = testData.polygonData2ValueUndefined;
+      el = createChoropleth();
+
+      forceRender();
+
+      expect(el.find('.leaflet-map-pane').hasClass('leaflet-zoom-anim')).to.equal(false);
+      
+      var polygon = el.find('path')[0];
+      testHelpers.fireMouseEvent(polygon, 'dblclick');
+      timeout.flush();
+
+      setTimeout(function() {
+        // map should be zooming
+        expect(el.find('.leaflet-map-pane').hasClass('leaflet-zoom-anim')).to.equal(true);
+        done();
+      }, 100);
+    });
+
+    it('should preserve the styles on a highlighted feature if the highlighted feature was double clicked', function() {
+      scope.geojsonAggregateData = testData.polygonData2ValueUndefined;
+      el = createChoropleth();
+
+      forceRender();
+
+      var polygon = el.find('path')[0];
+      var defaultStrokeWidth = parseInt($(polygon).css('strokeWidth'));
+
+      testHelpers.fireEvent(polygon, 'dblclick');
+
+      var strokeWidth = parseInt($(polygon).css('strokeWidth'));
+
+      expect(strokeWidth).to.equal(defaultStrokeWidth);
+    });
+
+    /* ---- MOUSEOVER EVENTS -------------------------------- */
+
+    it('should toggle highlight on an unfiltered region on mouseover and mouseout', function() {
+      scope.geojsonAggregateData = testData.polygonData2ValueUndefined;
+      el = createChoropleth();
+
+      forceRender();
+
+      var feature = $(el).find(featureGeometrySelector)[0];
+      var defaultStrokeWidth = parseInt($(feature).css('strokeWidth'));
+
+      testHelpers.fireEvent(feature, 'mouseover');
+
+      testHelpers.fireEvent(feature, 'mousemove');
+
+      // mouseover should highlight feature by increasing stroke width
+      var highlightedStrokeWidth = parseInt($(feature).css('strokeWidth'));
+      expect(highlightedStrokeWidth).to.be.above(defaultStrokeWidth);
+
+      testHelpers.fireEvent(feature, 'mouseout');
+
+      var unhighlightedStrokeWidth = parseInt($(feature).css('strokeWidth'));
+      expect(unhighlightedStrokeWidth).to.equal(defaultStrokeWidth);
+    });
+
+    /* ---- FILTERING EVENTS -------------------------------- */
+
+    describe('on clicking a region', function(){
+      // TODO: UNSUCCESSFUL FILTERING?
+
+
+      it('should signal the region to toggle in the active filter names', function() {
+        scope.geojsonAggregateData = testData.polygonData2;
+        el = createChoropleth();
+
+        forceRender();
+
+        var polygon = el.find('path')[0];
+        var secondLine = el.find('path')[1];
+        var defaultStrokeWidth = parseInt($(polygon).css('strokeWidth'));
+        var toggleFilterByRegionEventReceived = false;
+
+        scope.$on('toggle-dataset-filter:choropleth', function() {
+          toggleFilterByRegionEventReceived = true;
+        });
+
+        testHelpers.fireEvent(polygon, 'click');
+
+        timeout.flush(); // click promise (lastTimer on geojsonClick in Choropleth.js)
+
+        expect(toggleFilterByRegionEventReceived).to.equal(true);
+      });
+    });
+
+
+    /*    LEGEND     */
+    describe('legend', function() {
+
+      describe('on an unexpanded card', function() {
+
+        var expanded = false;
+
+        it('should contain labels that are evenly spaced numbers', function() {
+          scope.geojsonAggregateData = testData.polygonData2;
+          el = createChoropleth(expanded);
+
+          forceRender();
+
+          var ticks = el.find(legendSelector + ' .labels .tick');
+          var offsets = _.map(ticks, function(tick) {
+            var translateString = $(tick).attr('transform');
+            var yOffset = parseInt(translateString.replace(/translate\(\d+\D+/,''));
+            return yOffset;
+          });
+          // test for equidistant y offsets (check within +/- 2 px, due to floating point issues)
+          var isEquidistant = _.reduce(offsets, function(difference, offset, i) {
+            if (i == offsets.length - 1) {
+              return difference ? true: false;
+            }
+            return Math.abs(difference - (offset - offsets[i+1])) <= 2 ? difference : false;
+          }, offsets[0] - offsets[1]);
+          expect(isEquidistant).to.equal(true);
+        });
+
+        it('should show a flyout with text upon hover over a legend color', function() {
+          scope.geojsonAggregateData = testData.polygonData2;
+          el = createChoropleth(expanded);
+
+          forceRender();
+
+          var legendColor = el.find(legendColorSelector)[0];
+          var legendColorFlyoutText = $(legendColor).data('flyout-text');
+
+          testHelpers.fireEvent(legendColor, 'mousemove');
+
+          var $flyout = $(flyoutSelector);
+          expect($flyout.is(':visible')).to.equal(true);
+          expect($flyout.text()).to.equal(legendColorFlyoutText);
+        });
+
+        it('should contain labels that are not rounded for small enough legend class breaks', function(){
+          // NOTE: important to test for each individual small case (1,2,3) to ensure proper edge case management.
+          scope.geojsonAggregateData = testData.lineStringData3SmallNumbers;
+          el = createChoropleth(expanded);
+
+          forceRender();
 
           // there should only be 3 features
           expect(el.find(featureGeometrySelector).length).to.equal(3);
@@ -324,7 +586,7 @@ describe("A Choropleth Directive", function() {
           expect(el.find(legendColorSelector).length).to.be.above(2);
 
           // legend labels should contain feature values
-          expect(_.intersection(legendFlyoutValues(), scopedFeatureValues()).length).to.equal(scopedFeatureValues().length);
+          expect(_.intersection(legendFlyoutValues(), scopedFeatureValues()).length).to.be.above(1);
 
           // stroke (if LineString or MultiLineString) or fill (if Polygon or MultiPolygon) color hexes should match legend color hexes
           var fillColors = _.map(el.find(featureGeometrySelector), function(el) {
@@ -337,339 +599,6 @@ describe("A Choropleth Directive", function() {
           });
 
           expect(_.intersection(legendColors, fillColors).length).to.equal(fillColors.length);
-          done();
-        });
-    });
-
-    it('should render proper map features, legend, and legend labels for many features', function(done) {
-      scope.geojsonAggregateData = testData.lineStringData52;
-      el = createChoropleth();
-
-      testHelpers.
-        waitForSatisfy(function() { return el.find(featureGeometrySelector).length > 0; }).
-        then(function() {
-
-          // there should only be 52 features
-          expect(el.find(featureGeometrySelector).length).to.equal(52);
-
-          // there should only be 1 legend
-          expect(el.find(legendSelector).length).to.equal(1);
-
-          // there should only be less than 20 colors in the legend
-          expect(el.find(legendColorSelector).length < 20).to.equal(true);
-
-          // stroke (if LineString or MultiLineString) or fill (if Polygon or MultiPolygon) color hexes should match legend color hexes
-          var fillColors = _.map(el.find(featureGeometrySelector), function(el) {
-            var fillColor = $(el).css('stroke');
-            return chroma.color(fillColor).hex();
-          });
-
-          var legendColors = _.map(el.find(legendColorSelector), function(el) {
-            var legendColor = $(el).css('fill');
-            return chroma.color(legendColor).hex();
-          });
-
-          expect(_.intersection(legendColors, fillColors).length).to.equal(legendColors.length);
-          done();
-        });
-    });
-
-    it('should not color features that are missing properties', function(done) {
-      scope.geojsonAggregateData = testData.polygonData2PropertyMissing;
-      el = createChoropleth();
-
-      testHelpers.
-        waitForSatisfy(function() { return el.find(featureGeometrySelector).length > 0; }).
-        then(function() {
-
-          // there should only be 2 features
-          expect(el.find(featureGeometrySelector).length).to.equal(2);
-
-          // there should only be 1 legend with 1 color
-          expect(el.find(legendSelector).length).to.equal(1);
-          expect(el.find(legendColorSelector).length).to.equal(1);
-
-          // stroke (if LineString or MultiLineString) or fill (if Polygon or MultiPolygon) color hexes should match legend color hexes
-          var fillColors = _.map(el.find(featureGeometrySelector), function(el){
-            var color = $(el).css('fill');
-            return chroma.color(color).hex();
-          });
-          var nullColors = _.filter(fillColors, function(fc){ return chroma.color(fc).hex() == '#dddddd' });
-
-          expect(nullColors.length).to.equal(1);
-          done();
-        });
-    });
-
-    it('should not color features that have null values', function(done){
-      scope.geojsonAggregateData = testData.polygonData2ValueNull;
-      el = createChoropleth();
-
-      testHelpers.
-        waitForSatisfy(function() { return el.find(featureGeometrySelector).length > 0; }).
-        then(function() {
-
-          // there should only be 2 features
-          expect(el.find(featureGeometrySelector).length).to.equal(2);
-
-          // there should only be 1 legend with 1 color
-          expect(el.find(legendSelector).length).to.equal(1);
-          expect(el.find(legendColorSelector).length).to.equal(1);
-
-          // stroke (if LineString or MultiLineString) or fill (if Polygon or MultiPolygon) color hexes should match legend color hexes
-          var fillColors = _.map(el.find(featureGeometrySelector), function(el){
-            var color = $(el).css('fill');
-            return chroma.color(color).hex();
-          });
-          var nullColors = _.filter(fillColors, function(fc){ return chroma.color(fc).hex() == '#dddddd' });
-          expect(nullColors.length).to.equal(1);
-
-          done();
-        });
-    });
-
-    it('should not color features that have undefined values', function(done){
-      scope.geojsonAggregateData = testData.polygonData2ValueUndefined;
-      el = createChoropleth();
-
-      testHelpers.
-        waitForSatisfy(function() { return el.find(featureGeometrySelector).length > 0; }).
-        then(function() {
-
-          // there should only be 2 features
-          expect(el.find(featureGeometrySelector).length).to.equal(2);
-
-          // there should only be 1 legend with 1 color
-          expect(el.find(legendSelector).length).to.equal(1);
-          expect(el.find(legendColorSelector).length).to.equal(1);
-
-          // stroke (if LineString or MultiLineString) or fill (if Polygon or MultiPolygon) color hexes should match legend color hexes
-          var fillColors = _.map(el.find(featureGeometrySelector), function(el){
-            var color = $(el).css('fill');
-            return chroma.color(color).hex();
-          });
-          var nullColors = _.filter(fillColors, function(fc){ return chroma.color(fc).hex() == '#dddddd' });
-          expect(nullColors.length).to.equal(1);
-
-          done();
-        });
-    });
-
-    /* ---- DOUBLE CLICK EFFECTS ---- */
-
-    //TODO find a better way of asserting that leaflet zoomed, like reading zoom level (which we don't
-    //currently expose in any way). Right now reading the animation class doesn't work, and is an evil
-    //thing anyway. (APPLIES TO THE FOLLOWING TWO TESTS).
-    xit('should zoom the map if a map tile was double clicked', function(done) {
-      scope.geojsonAggregateData = testData.polygonData2ValueUndefined;
-      el = createChoropleth();
-
-      testHelpers.
-        waitForSatisfy(function() { return el.find(featureGeometrySelector).length > 0; }).
-        then(function() {
-
-          expect(el.find('.leaflet-map-pane').hasClass('leaflet-zoom-anim')).to.equal(false);
-          var tile = el.find('.leaflet-tile')[0];
-          testHelpers.fireMouseEvent(tile, 'dblclick');
-
-          testHelpers.waitForSatisfy(function() {
-            // map should be zooming
-            return el.find('.leaflet-map-pane').hasClass('leaflet-zoom-anim');
-          }).then(done);
-        });
-    });
-
-    xit('should zoom the map if a choropleth feature was double clicked', function(done) {
-      scope.geojsonAggregateData = testData.polygonData2ValueUndefined;
-      el = createChoropleth();
-
-      testHelpers.
-        waitForSatisfy(function() { return el.find(featureGeometrySelector).length > 0; }).
-        then(function() {
-
-          expect(el.find('.leaflet-map-pane').hasClass('leaflet-zoom-anim')).to.equal(false);
-          
-          var polygon = el.find('path')[0];
-          testHelpers.fireMouseEvent(polygon, 'dblclick');
-          timeout.flush();
-
-          setTimeout(function() {
-            // map should be zooming
-            expect(el.find('.leaflet-map-pane').hasClass('leaflet-zoom-anim')).to.equal(true);
-            done();
-          }, 100);
-        });
-    });
-
-    it('should preserve the styles on a highlighted feature if the highlighted feature was double clicked', function(done) {
-      scope.geojsonAggregateData = testData.polygonData2ValueUndefined;
-      el = createChoropleth();
-
-      testHelpers.
-        waitForSatisfy(function() { return el.find(featureGeometrySelector).length > 0; }).
-        then(function() {
-          var polygon = el.find('path')[0];
-          var defaultStrokeWidth = parseInt($(polygon).css('strokeWidth'));
-
-          testHelpers.fireEvent(polygon, 'dblclick');
-
-          var strokeWidth = parseInt($(polygon).css('strokeWidth'));
-
-          expect(strokeWidth).to.equal(defaultStrokeWidth);
-          done();
-        });
-    });
-
-    /* ---- MOUSEOVER EVENTS -------------------------------- */
-
-    it('should toggle highlight on an unfiltered region on mouseover and mouseout', function(done) {
-      scope.geojsonAggregateData = testData.polygonData2ValueUndefined;
-      el = createChoropleth();
-
-      testHelpers.
-        waitForSatisfy(function() { return el.find(featureGeometrySelector).length > 0; }).
-        then(function() {
-
-          var feature = $(el).find(featureGeometrySelector)[0];
-          var defaultStrokeWidth = parseInt($(feature).css('strokeWidth'));
-
-          testHelpers.fireEvent(feature, 'mouseover');
-
-          testHelpers.fireEvent(feature, 'mousemove');
-
-          // mouseover should highlight feature by increasing stroke width
-          var highlightedStrokeWidth = parseInt($(feature).css('strokeWidth'));
-          expect(highlightedStrokeWidth).to.be.above(defaultStrokeWidth);
-
-          testHelpers.fireEvent(feature, 'mouseout');
-
-          var unhighlightedStrokeWidth = parseInt($(feature).css('strokeWidth'));
-          expect(unhighlightedStrokeWidth).to.equal(defaultStrokeWidth);
-          done();
-        });
-    });
-
-    /* ---- FILTERING EVENTS -------------------------------- */
-
-    describe('on clicking a region', function(){
-      // TODO: UNSUCCESSFUL FILTERING?
-
-
-      it('should signal the region to toggle in the active filter names', function(done) {
-        scope.geojsonAggregateData = testData.polygonData2;
-        el = createChoropleth();
-
-        testHelpers.
-          waitForSatisfy(function() { return el.find(featureGeometrySelector).length > 0; }).
-          then(function() {
-
-            var polygon = el.find('path')[0];
-            var secondLine = el.find('path')[1];
-            var defaultStrokeWidth = parseInt($(polygon).css('strokeWidth'));
-            var toggleFilterByRegionEventReceived = false;
-
-            scope.$on('toggle-dataset-filter:choropleth', function() {
-              toggleFilterByRegionEventReceived = true;
-            });
-
-            testHelpers.fireEvent(polygon, 'click');
-
-            timeout.flush(); // click promise (lastTimer on geojsonClick in Choropleth.js)
-
-            expect(toggleFilterByRegionEventReceived).to.equal(true);
-            done();
-          });
-        });
-    });
-
-
-    /*    LEGEND     */
-    describe('legend', function() {
-
-      describe('on an unexpanded card', function() {
-
-        var expanded = false;
-
-        it('should contain labels that are evenly spaced numbers', function(done) {
-          scope.geojsonAggregateData = testData.polygonData2;
-          el = createChoropleth(expanded);
-
-          testHelpers.
-            waitForSatisfy(function() { return el.find(featureGeometrySelector).length > 0; }).
-            then(function() {
-
-              var ticks = el.find(legendSelector + ' .labels .tick');
-              var offsets = _.map(ticks, function(tick) {
-                var translateString = $(tick).attr('transform');
-                var yOffset = parseInt(translateString.replace(/translate\(\d+\D+/,''));
-                return yOffset;
-              });
-              // test for equidistant y offsets (check within +/- 2 px, due to floating point issues)
-              var isEquidistant = _.reduce(offsets, function(difference, offset, i) {
-                if (i == offsets.length - 1) {
-                  return difference ? true: false;
-                }
-                return Math.abs(difference - (offset - offsets[i+1])) <= 2 ? difference : false;
-              }, offsets[0] - offsets[1]);
-              expect(isEquidistant).to.equal(true);
-              done();
-            });
-        });
-
-        it('should show a flyout with text upon hover over a legend color', function(done) {
-          scope.geojsonAggregateData = testData.polygonData2;
-          el = createChoropleth(expanded);
-
-          testHelpers.
-            waitForSatisfy(function() { return el.find(featureGeometrySelector).length > 0; }).
-            then(function() {
-
-              var legendColor = el.find(legendColorSelector)[0];
-              var legendColorFlyoutText = $(legendColor).data('flyout-text');
-
-              testHelpers.fireEvent(legendColor, 'mousemove');
-
-              var $flyout = $(flyoutSelector);
-              expect($flyout.is(':visible')).to.equal(true);
-              expect($flyout.text()).to.equal(legendColorFlyoutText);
-              done();
-            });
-        });
-
-        it('should contain labels that are not rounded for small enough legend class breaks', function(done){
-          // NOTE: important to test for each individual small case (1,2,3) to ensure proper edge case management.
-          scope.geojsonAggregateData = testData.lineStringData3SmallNumbers;
-          el = createChoropleth(expanded);
-
-          testHelpers.
-            waitForSatisfy(function() { return el.find(featureGeometrySelector).length > 0; }).
-            then(function() {
-
-              // there should only be 3 features
-              expect(el.find(featureGeometrySelector).length).to.equal(3);
-
-              // there should only be 1 legend
-              expect(el.find(legendSelector).length).to.equal(1);
-
-              // there should only be 3 or more colors in the legend
-              expect(el.find(legendColorSelector).length).to.be.above(2);
-
-              // legend labels should contain feature values
-              expect(_.intersection(legendFlyoutValues(), scopedFeatureValues()).length).to.be.above(1);
-
-              // stroke (if LineString or MultiLineString) or fill (if Polygon or MultiPolygon) color hexes should match legend color hexes
-              var fillColors = _.map(el.find(featureGeometrySelector), function(el) {
-                var fillColor = $(el).css('stroke');
-                return chroma.color(fillColor).hex();
-              });
-              var legendColors = _.map(el.find(legendColorSelector), function(el) {
-                var legendColor = $(el).css('fill');
-                return chroma.color(legendColor).hex();
-              });
-
-              expect(_.intersection(legendColors, fillColors).length).to.equal(fillColors.length);
-              done();
-            });
         });
       });
 
@@ -677,86 +606,74 @@ describe("A Choropleth Directive", function() {
 
         var expanded = true;
 
-        it('should contain labels that are evenly spaced numbers', function(done) {
+        it('should contain labels that are evenly spaced numbers', function() {
           scope.geojsonAggregateData = testData.polygonData2;
           el = createChoropleth(expanded);
 
-          testHelpers.
-            waitForSatisfy(function() { return el.find(featureGeometrySelector).length > 0; }).
-            then(function() {
+          forceRender();
 
-              var ticks = el.find(legendSelector + ' .labels .tick');
-              var offsets = _.map(ticks, function(tick) {
-                var translateString = $(tick).attr('transform');
-                var yOffset = parseInt(translateString.replace(/translate\(\d+\D+/,''));
-                return yOffset;
-              });
-              // test for equidistant y offsets (check within +/- 2 px, due to floating point issues)
-              var isEquidistant = _.reduce(offsets, function(difference, offset, i) {
-                if (i == offsets.length - 1) {
-                  return difference ? true: false;
-                }
-                return Math.abs(difference - (offset - offsets[i+1])) <= 2 ? difference : false;
-              }, offsets[0] - offsets[1]);
-              expect(isEquidistant).to.equal(true);
-              done();
-            });
+          var ticks = el.find(legendSelector + ' .labels .tick');
+          var offsets = _.map(ticks, function(tick) {
+            var translateString = $(tick).attr('transform');
+            var yOffset = parseInt(translateString.replace(/translate\(\d+\D+/,''));
+            return yOffset;
+          });
+          // test for equidistant y offsets (check within +/- 2 px, due to floating point issues)
+          var isEquidistant = _.reduce(offsets, function(difference, offset, i) {
+            if (i == offsets.length - 1) {
+              return difference ? true: false;
+            }
+            return Math.abs(difference - (offset - offsets[i+1])) <= 2 ? difference : false;
+          }, offsets[0] - offsets[1]);
+          expect(isEquidistant).to.equal(true);
         });
 
-        it('should show a flyout with text upon hover over a legend color', function(done) {
+        it('should show a flyout with text upon hover over a legend color', function() {
           scope.geojsonAggregateData = testData.polygonData2;
           el = createChoropleth(expanded);
 
-          testHelpers.
-            waitForSatisfy(function() { return el.find(featureGeometrySelector).length > 0; }).
-            then(function() {
+          forceRender();
 
-              var legendColor = el.find(legendColorSelector)[0];
-              var legendColorFlyoutText = $(legendColor).data('flyout-text');
+          var legendColor = el.find(legendColorSelector)[0];
+          var legendColorFlyoutText = $(legendColor).data('flyout-text');
 
-              testHelpers.fireEvent(legendColor, 'mousemove');
+          testHelpers.fireEvent(legendColor, 'mousemove');
 
-              var $flyout = $(flyoutSelector);
-              expect($flyout.is(':visible')).to.equal(true);
-              expect($flyout.find('.flyout-title').text()).to.equal(legendColorFlyoutText);
-              done();
-            });
+          var $flyout = $(flyoutSelector);
+          expect($flyout.is(':visible')).to.equal(true);
+          expect($flyout.find('.flyout-title').text()).to.equal(legendColorFlyoutText);
         });
 
-        it('should contain labels that are not rounded for small enough legend class breaks', function(done){
+        it('should contain labels that are not rounded for small enough legend class breaks', function(){
           // NOTE: important to test for each individual small case (1,2,3) to ensure proper edge case management.
           scope.geojsonAggregateData = testData.lineStringData3SmallNumbers;
           el = createChoropleth(expanded);
 
-          testHelpers.
-            waitForSatisfy(function() { return el.find(featureGeometrySelector).length > 0; }).
-            then(function() {
+          forceRender();
 
-              // there should only be 3 features
-              expect(el.find(featureGeometrySelector).length).to.equal(3);
+          // there should only be 3 features
+          expect(el.find(featureGeometrySelector).length).to.equal(3);
 
-              // there should only be 1 legend
-              expect(el.find(legendSelector).length).to.equal(1);
+          // there should only be 1 legend
+          expect(el.find(legendSelector).length).to.equal(1);
 
-              // there should only be 3 or more colors in the legend
-              expect(el.find(legendColorSelector).length).to.be.above(2);
+          // there should only be 3 or more colors in the legend
+          expect(el.find(legendColorSelector).length).to.be.above(2);
 
-              // legend labels should contain feature values
-              expect(_.intersection(legendFlyoutValues(), scopedFeatureValues()).length).to.be.above(1);
+          // legend labels should contain feature values
+          expect(_.intersection(legendFlyoutValues(), scopedFeatureValues()).length).to.be.above(1);
 
-              // stroke (if LineString or MultiLineString) or fill (if Polygon or MultiPolygon) color hexes should match legend color hexes
-              var fillColors = _.map(el.find(featureGeometrySelector), function(el) {
-                var fillColor = $(el).css('stroke');
-                return chroma.color(fillColor).hex();
-              });
-              var legendColors = _.map(el.find(legendColorSelector), function(el) {
-                var legendColor = $(el).css('fill');
-                return chroma.color(legendColor).hex();
-              });
+          // stroke (if LineString or MultiLineString) or fill (if Polygon or MultiPolygon) color hexes should match legend color hexes
+          var fillColors = _.map(el.find(featureGeometrySelector), function(el) {
+            var fillColor = $(el).css('stroke');
+            return chroma.color(fillColor).hex();
+          });
+          var legendColors = _.map(el.find(legendColorSelector), function(el) {
+            var legendColor = $(el).css('fill');
+            return chroma.color(legendColor).hex();
+          });
 
-              expect(_.intersection(legendColors, fillColors).length).to.equal(fillColors.length);
-              done();
-            });
+          expect(_.intersection(legendColors, fillColors).length).to.equal(fillColors.length);
         });
       });
     });

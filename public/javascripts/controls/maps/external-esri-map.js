@@ -52,6 +52,11 @@
                         if ($.subKeyDefined(layer.dataObj, '_parent._controls.Overview.redraw'))
                         { layer.dataObj._parent._controls.Overview.redraw(); }
 
+                        var objectIdField = _.detect(layer.featureLayer.fields, function(field)
+                            { return field.type == 'esriFieldTypeOID'; });
+                        if (objectIdField)
+                        { layer.objectIdKey = objectIdField.alias || objectIdField.name; }
+
                         if (layer._metadataReady)
                         { layer.onloadCallback(); }
                         else
@@ -304,9 +309,10 @@
                         return;
                     }
 
+                    var objectIdKey = layerObj._displayLayer.objectIdKey || 'OBJECTID';
                     var objectids = _.map(idResults, function(feature)
-                    { return feature.feature ? feature.feature.attributes['OBJECTID']
-                                             :         feature.attributes['OBJECTID']; });
+                    { return feature.feature ? feature.feature.attributes[objectIdKey]
+                                             :         feature.attributes[objectIdKey]; });
 
                     // Yes, this is a Core request inside a callback from an ESRI request.
                     // That is how awesome our ESRI integration is.

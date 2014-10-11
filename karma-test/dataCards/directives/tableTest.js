@@ -435,6 +435,26 @@ describe('table', function() {
 
     });
 
+    it('should not have a class of has-rows if there are no rows', function() {
+      var el = createTableCard(true, function(offset, limit, order, timeout, whereClause) {
+        return $q.when([]);
+      });
+
+      outerScope.filteredRowCount = 0;
+      $rootScope.$digest();
+      expect(el.find('.has-rows').length).to.equal(0);
+    });
+
+    it('should have a class of has-rows if there are rows', function() {
+      var el = createTableCard(true, function(offset, limit, order, timeout, whereClause) {
+        return $q.when([]);
+      });
+
+      outerScope.filteredRowCount = 10;
+      $rootScope.$digest();
+      expect(el.find('.has-rows').length).to.equal(1);
+    });
+
   });
 
   describe('render timing events', function() {

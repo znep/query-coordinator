@@ -202,7 +202,7 @@
             if (_.isEmpty(response.data)) {
               throw new Error('The response from the server contained no data.');
             }
-            return response.data[0].count_0;
+            return parseInt(response.data[0].count_0, 10);
           });
       },
 

@@ -137,8 +137,12 @@ $border-radius: 4px
     .table-label
       height: $row-height
       line-height: $row-height
-    .table-no-rows-message
-      display: none
+
+    &.has-rows
+      .table-has-no-rows-message
+        display: none
+
+    .table-has-no-rows-message
       content: 'No rows to display'
       position: absolute
       top: 50%

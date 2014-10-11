@@ -393,11 +393,7 @@ angular.module('socrataCommon.directives').directive('table', function(AngularRx
       };
 
       var showOrHideNoRowMessage = function() {
-        if (scope.filteredRowCount === 0) {
-          element.find('.table-no-rows-message').fadeIn();
-        } else {
-          element.find('.table-no-rows-message').fadeOut();
-        }
+        element.toggleClass('has-rows', scope.filteredRowCount !== 0);
       };
 
       var scrollLeft = $body.scrollLeft(), scrollTop = $body.scrollTop();

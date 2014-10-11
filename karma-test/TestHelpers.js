@@ -76,12 +76,36 @@ angular.module('test', [])
       return a;
     }
 
+    // IE9 starts ignoring styles if we create too many <style> tags, I think. So don't
+    // create it here (since in tests, factories are recreated for every module) - create
+    // it only on demand, and remove it when toggled off.
+    var transitionOverride;
+    /**
+     * Toggle whether jquery and css animations should happen.
+     *
+     * @param {boolean} on If true, turns transitions on. Otherwise, turns transitions
+     * off.
+     */
+    function toggleTransitions(on) {
+      if (on) {
+        transitionOverride.remove();
+        jQuery.fx.off = false;
+      } else {
+        var prefices = ['-webkit-', '-moz-', '-ms-', '-o-'];
+        var style = 'transition: none !important;\n';
+        transitionOverride = $('<style />').appendTo('body');
+        transitionOverride.html('* { ' + prefices.join(style) + style + ' }');
+        jQuery.fx.off = true;
+      }
+    }
+
     return {
       TestDom: TestDom,
       getTestJson: getTestJson,
       flushAllD3Transitions: flushAllD3Transitions,
       fireEvent: fireEvent,
       fireMouseEvent: fireMouseEvent,
+      toggleTransitions: toggleTransitions,
       waitForSatisfy: waitForSatisfy
     };
   });

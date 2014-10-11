@@ -248,6 +248,7 @@ body.state-view-cards
       /* LAYOUT */
       .card-spot
         position: absolute
+        @include prefixer(transition, 'all 0.5s')
 
         .card-drag-overlay
           position: absolute

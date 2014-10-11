@@ -42,10 +42,13 @@ describe('CardLayout directive test', function() {
     Card = $injector.get('Card');
     Page = $injector.get('Page');
     AngularRxExtensions = $injector.get('AngularRxExtensions');
+
+    testHelpers.toggleTransitions(false);
   }));
 
   afterEach(function(){
     testHelpers.TestDom.clear();
+    testHelpers.toggleTransitions(true);
   });
 
   /**

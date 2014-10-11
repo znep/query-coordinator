@@ -26,7 +26,13 @@
 
       // Choropleth visualization parameters.
       'MAXIMUM_NUMBER_OF_CLASSES_ALLOWED': 7,
-      'CLASS_BREAK_THRESHOLD': 6
+      'CLASS_BREAK_THRESHOLD': 6,
+
+      // Timeline chart visualization paramters.
+      'TIMELINE_CHART_MARGIN_BOTTOM': 16,
+      'TIMELINE_CHART_NUMBER_OF_TICKS': 3,
+      'TIMELINE_CHART_TICK_SIZE': 3
+
     };
 
   }

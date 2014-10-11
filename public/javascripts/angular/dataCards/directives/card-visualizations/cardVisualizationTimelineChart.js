@@ -144,7 +144,7 @@ angular.module('dataCards.directives').directive('cardVisualizationTimelineChart
 
       $scope.bindObservable('precision', precision);
 
-      $scope.bindObservable('filters', model.observeOnLatest('activeFilters'));
+      $scope.bindObservable('activeFilters', model.observeOnLatest('activeFilters'));
       $scope.bindObservable('rowDisplayUnit', dataset.observeOnLatest('rowDisplayUnit'));
 
       $scope.$on('timeline-chart:filter-cleared', function(event) {

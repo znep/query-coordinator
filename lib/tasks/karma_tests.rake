@@ -1,5 +1,5 @@
 namespace :test do
-  desc "Run all karma tests"
+  desc "Run all karma tests and update test-coverage result"
   task :karma do
     # Manually enable the coverage reporter. It isn't enabled by default as the instrumentation step makes
     # the product code unintelligible.
@@ -29,6 +29,7 @@ namespace :test do
     critical_only ? critical_browser_names : browser_names
   end
 
+  desc "Run all karma tests under browsers flagged as critical"
   task :karma_browserstack_critical do
     browser_names = get_supported_browser_launcher_names(true);
 
@@ -36,6 +37,7 @@ namespace :test do
     raise 'Karma test failure' unless success
   end
 
+  desc "Run all karma tests in all supported browsers"
   task :karma_browserstack_all do
     browser_names = get_supported_browser_launcher_names(false);
 
@@ -43,6 +45,7 @@ namespace :test do
     raise 'Karma test failure' unless success
   end
 
+  desc "Publish test-coverage result to graphite dashboard"
   task :publish_coverage_to_dashboard do
     # We maintain an internal dashboard at socratametrics.geckoboard.com.
     # One of the widgets is a code coverage meter for the frontend unit tests.

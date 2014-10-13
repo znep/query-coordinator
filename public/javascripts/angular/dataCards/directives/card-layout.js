@@ -40,9 +40,6 @@
         // NOTE Right now this directive has strict DOM structure requirements.
         // Ideally these wouldn't be required, but for the time being we'll
         // verify our requirements are met.
-        if (cardContainer[0].id !== 'card-container') {
-          throw new Error('The cardLayout directive must be given an DOM id attribute of "card-container".');
-        }
         if (_.isEmpty(cardsMetadata)) {
           throw new Error('The cardLayout directive must be in the DOM with a node with class "cards-metadata".');
         }
@@ -145,14 +142,13 @@
             }
 
             // Figure out if there is an expanded card.
-            var expandedCard = _.isEmpty(expandedCards) ? null : expandedCards[0].model;
+            var expandedCard = _.isEmpty(expandedCards) ? null : expandedCards[0];
 
             // Figure out the sticky-ness of the QFB and apply the style appropriately
             var headerStuck = scrollTop >= (cardsMetadataOffsetTop + cardsMetadata.outerHeight());
 
             var cardPositions = [];
             var heightOfAllCards = 0;
-            var styleText = '';
 
             // Terminology:
             //
@@ -188,6 +184,13 @@
               throw new Error('Unsupported card size: ' + size);
             };
 
+            // Track whether or not to draw placeholder drop targets
+            // for each card grouping.
+            var placeholderDropTargets = [];
+
+            // Track each 'add card' button's position in the layout
+            var addCardButtons = [];
+
             // Branch here based on whether or not there is an expanded card.
             if (expandedCard !== null) {
               var EXPANDED_COL_RATIO = 0.65;
@@ -205,13 +208,20 @@
               var expandedColumnTop = 0;
 
               var unexpandedCards = cardsBySize.normal.filter(function(card) {
-                  // Note that the 'card' supplied by the iterator is a wrapper around
-                  // the card model, which is what 'expandedCard' is.
-                  return card.model.uniqueId !== expandedCard.uniqueId;
-                });
+                // Note that the 'card' supplied by the iterator is a wrapper around
+                // the card model, which is what 'expandedCard' is.
+                if (card.model.uniqueId === expandedCard.model.uniqueId) {
+                  // Keep a handle on the object within cardsBySize, so we can set the
+                  // style on that object, and process all the cardsBySize at once.
+                  expandedCard = card;
+                  return false;
+                } else {
+                  return true;
+                }
+              });
 
               // Set the styles for the left-column cards
-              styleText = _.reduce(unexpandedCards, function(accumulatedStyle, card, index) {
+              _.map(unexpandedCards, function(card, index) {
 
                   var cardLeft = unexpandedColumnLeft;
                   var cardTop = heightOfAllCards;
@@ -222,14 +232,13 @@
                   // know the top offset of the next card up for layout.
                   heightOfAllCards += cardHeight + Constants['LAYOUT_VERTICAL_PADDING'];
 
-                  return accumulatedStyle + '#card-tile-{0}{'.format(card.model.uniqueId) +
-                                              'left:' + cardLeft + 'px;' +
-                                              'top:' + cardTop + 'px;' +
-                                              'width:' + cardWidth + 'px;' +
-                                              'height:' + cardHeight + 'px;' +
-                                            '}';
-
-              }, '');
+                  card.style = {
+                    left: cardLeft,
+                    top: cardTop,
+                    width: cardWidth,
+                    height: cardHeight,
+                  };
+              });
 
               // Enforce a minimum height
               if (heightOfAllCards === 0) {
@@ -237,7 +246,6 @@
               }
 
               // Set the style for the expanded card.
-              styleText += '#card-tile-{0}{'.format(expandedCard.uniqueId);
               var expandedColumnHeight;
               if (headerStuck) {
                 expandedColumnHeight = windowSize.height
@@ -248,39 +256,32 @@
                   - (cardContainer.offset().top - scrollTop)
                   - Constants['LAYOUT_VERTICAL_PADDING'];
               }
-              var footerOffset = expandedCard.fieldName === '*' ?
+              var footerOffset = expandedCard.model.fieldName === '*' ?
                   0 :
                   Math.max(0, (scrollTop + windowSize.height) - (
                     cardContainer.offset().top + heightOfAllCards));
 
-              styleText +=  'position:fixed;' +
-                            'left:' + expandedColumnLeft + 'px;' +
-                            'bottom:' + (Constants['LAYOUT_VERTICAL_PADDING'] + footerOffset) + 'px;' +
-                            'width:' + expandedColumnWidth + 'px;' +
-                            'height:' + (expandedColumnHeight - footerOffset) + 'px;' +
-                          '}';
+              expandedCard.style = {
+                position: 'fixed',
+                left: expandedColumnLeft,
+                bottom: Constants.LAYOUT_VERTICAL_PADDING + footerOffset,
+                width: expandedColumnWidth,
+                height: expandedColumnHeight - footerOffset,
+              };
 
 
               // If the datacard isn't expanded, then add it to the bottom
-              if (expandedCard.fieldName !== '*') {
-                styleText += '#card-tile-{0}{'.format(cardsBySize.dataCard[0].model.uniqueId) +
-                               'left:' + Constants['LAYOUT_GUTTER'] + 'px;' +
-                               'top:' + heightOfAllCards + 'px;' +
-                               'width:' + containerContentWidth + 'px;' +
-                               'height:' + Constants['LAYOUT_DATA_CARD_HEIGHT'] + 'px;' +
-                             '}';
-
+              if (expandedCard.model.fieldName !== '*') {
+                cardsBySize.dataCard[0].style = {
+                  left: Constants['LAYOUT_GUTTER'],
+                  top: heightOfAllCards,
+                  width: containerContentWidth,
+                  height: Constants['LAYOUT_DATA_CARD_HEIGHT']
+                };
               }
 
               // END EXPANDED CARD
             } else {
-
-              // Track whether or not to draw placeholder drop targets
-              // for each card grouping.
-              var placeholderDropTargets = [];
-
-              // Track each 'add card' button's position in the layout
-              var addCardButtons = [];
 
               var heightOfAllCards = 0;
 
@@ -302,22 +303,24 @@
               }
 
               // Position the rows of cards
-              styleText = _.reduce(editableCards, function(overallStyleAcc, rows, cardSize) {
-
+              _.map(editableCards, function(rows, cardSize) {
                 var currentRowHeight = deriveCardHeight(cardSize);
-                var currentRowContentHeight = currentRowHeight - Constants['LAYOUT_VERTICAL_PADDING'];
+                var currentRowContentHeight = currentRowHeight
+                  - Constants['LAYOUT_VERTICAL_PADDING'];
 
-                var styleForRow = _.reduce(rows, function(styleForRowAcc, row, rowIndex) {
+                _.map(rows, function(row, rowIndex) {
 
-                  var paddingForEntireRow = Constants['LAYOUT_HORIZONTAL_PADDING'] * (row.length - 1);
-                  var usableContentSpaceForRow = containerContentWidth - paddingForEntireRow;
+                  var paddingForEntireRow = Constants['LAYOUT_HORIZONTAL_PADDING']
+                    * (row.length - 1);
+                  var usableContentSpaceForRow = containerContentWidth
+                    - paddingForEntireRow;
                   var cardWidth = Math.floor(usableContentSpaceForRow / row.length);
 
-                  return styleForRowAcc + _.map(row, function(card, cardIndexInRow) {
-
-                    var spaceTakenByOtherCardsPadding = Math.max(0, cardIndexInRow * Constants['LAYOUT_HORIZONTAL_PADDING']);
-                    var cardLeft = Constants['LAYOUT_GUTTER'] + (cardIndexInRow * cardWidth) + spaceTakenByOtherCardsPadding;
-
+                  _.map(row, function(card, cardIndexInRow) {
+                    var spaceTakenByOtherCardsPadding = Math.max(
+                      0, cardIndexInRow * Constants['LAYOUT_HORIZONTAL_PADDING']);
+                    var cardLeft = Constants['LAYOUT_GUTTER'] + (
+                      cardIndexInRow * cardWidth) + spaceTakenByOtherCardsPadding;
                     var cardTop = heightOfAllCards + rowIndex * currentRowHeight;
 
                     cardPositions.push({
@@ -328,16 +331,14 @@
                       height: currentRowContentHeight
                     });
 
-                    return '#card-tile-{0}, #card-tile-{1} .dragged {'.format(card.model.uniqueId, card.model.uniqueId) +
-                             'left:' + cardLeft + 'px;' +
-                             'top:' + cardTop + 'px;' +
-                             'width:' + cardWidth + 'px;' +
-                             'height:' + currentRowContentHeight + 'px;' +
-                           '}';
-
-                  }).join('');
-
-                }, '');
+                    card.style = {
+                      left: cardLeft,
+                      top: cardTop,
+                      width: cardWidth,
+                      height: currentRowContentHeight
+                    };
+                  });
+                });
 
                 // Add gap between card groups in edit mode only
                 if (editMode) {
@@ -347,8 +348,12 @@
 
                   placeholderDropTargets.push({
                     id: cardSize,
-                    show: groupEmpty,
-                    top: heightOfAllCards
+                    style: {
+                      display: groupEmpty ? 'block' : 'none',
+                      width: containerContentWidth,
+                      left: Constants['LAYOUT_GUTTER'],
+                      top: heightOfAllCards
+                    }
                   });
 
                   if (groupEmpty) {
@@ -361,7 +366,10 @@
 
                   addCardButtons.push({
                     id: cardSize,
-                    top: heightOfAllCards
+                    style: {
+                      top: heightOfAllCards,
+                      left: Constants['LAYOUT_GUTTER']
+                    }
                   });
 
                   heightOfAllCards += Constants['LAYOUT_EDIT_MODE_GROUP_PADDING'];
@@ -369,58 +377,62 @@
                 } else {
                   heightOfAllCards += rows.length * currentRowHeight;
                 }
+              });
 
-                return overallStyleAcc + styleForRow;
+              cardsBySize.dataCard[0].style = {
+                left: Constants['LAYOUT_GUTTER'],
+                top: heightOfAllCards,
+                width: containerContentWidth,
+                height: Constants['LAYOUT_DATA_CARD_HEIGHT']
+              };
 
-              }, '');
-
-              if (editMode) {
-
-                placeholderDropTargets.forEach(function(groupData) {
-                  styleText += '#card-group-{0}-drop-placeholder{'.format(groupData.id);
-                  if (groupData.show) {
-                    styleText += 'display:block;';
-                  } else {
-                    styleText += 'display:none;';
-                  }
-                  styleText +=   'width:' + containerContentWidth + 'px;' +
-                                 'left:' + Constants['LAYOUT_GUTTER'] + 'px;' +
-                                 'top:' + groupData.top + 'px;' +
-                               '}';
-                });
-
-                addCardButtons.forEach(function(button) {
-                  styleText += '#add-card-button-group-' + button.id + '{' +
-                                 'left:' + Constants['LAYOUT_GUTTER'] + 'px;' +
-                                 'top:' + button.top + 'px;' +
-                               '}';
-                });
-
-              }
-
-              styleText += '#card-tile-{0}{'.format(cardsBySize.dataCard[0].model.uniqueId) +
-                             'left:' + Constants['LAYOUT_GUTTER'] + 'px;' +
-                             'top:' + heightOfAllCards + 'px;' +
-                             'width:' + containerContentWidth + 'px;' +
-                             'height:' + Constants['LAYOUT_DATA_CARD_HEIGHT'] + 'px;' +
-                           '}';
-
-              heightOfAllCards += Constants['LAYOUT_DATA_CARD_HEIGHT'] + Constants['LAYOUT_VERTICAL_PADDING'];
+              heightOfAllCards += Constants['LAYOUT_DATA_CARD_HEIGHT']
+                + Constants['LAYOUT_VERTICAL_PADDING'];
 
             }
 
-            styleText += '#card-container{' +
-                           'visibility:visible !important;' +
-                           'height:' + heightOfAllCards + 'px;' +
-                         '}';
+            cardContainer.css({
+              visibility: 'visible',
+              height: heightOfAllCards
+            });
 
             // OMG side-effect, but *what* a side effect, amirite?
             scope.cardPositions = cardPositions;
 
-            $('#card-layout').text(styleText);
+            function styleToString(style) {
+              return _.map(style, function(v, k) {
+                return k + ':' + (_.isNumber(v) ? v + 'px' : v);
+              }).join(';')
+            }
+            $('#card-layout').text(
+              [_.map(cardsBySize.normal.concat(cardsBySize.dataCard),
+                     function(card) {
+                       var styles = styleToString(card.style);
+                       return '#card-tile-{0} { {1}; }'.format(
+                         card.model.uniqueId, styles)
+                         + '#card-tile-{0} .dragged { {1}; }'.format(
+                           card.model.uniqueId, styles);
+                     }).join(''),
+               _.map(addCardButtons,
+                     function(button) {
+                       return '#add-card-button-group-{0} { {1}; }'.format(
+                         button.id,
+                         styleToString(button.style)
+                       );
+                     }).join(''),
+              _.map(placeholderDropTargets,
+                    function(placeholder) {
+                       return '#card-group-{0}-drop-placeholder { {1}; }'.format(
+                         placeholder.id,
+                         styleToString(placeholder.style)
+                       );
+                    }).join('')
+              ].join('')
+            );
 
             quickFilterBar.toggleClass('stuck', headerStuck);
 
+            console.log('rerender');
           });
 
 
@@ -490,6 +502,10 @@
             mouseDownClientX = null;
             mouseDownClientY = null;
             scope.safeApply(function() {
+              if (scope.grabbedCard) {
+                // Reset the element to default
+                scope.grabbedCard.jqEl.css({top: '', left: ''});
+              }
               scope.grabbedCard = null;
             });
           }
@@ -508,20 +524,25 @@
 
               scope.safeApply(function() {
 
-                var scopeOfCard = $(position.target).scope();
-                scope.grabbedCard = scopeOfCard.cardModel;
-
+                var jqEl = $(position.target);
+                scope.grabbedCard = {
+                  model: jqEl.scope().cardModel,
+                  jqEl: jqEl.siblings('card')
+                };
               });
             }
 
           }
 
-          if (scope.grabbedCard !== null && typeof scope.grabbedCard !== 'undefined') {
+          if (!_.isEmpty(scope.grabbedCard)) {
 
             // Card is being dragged.
 
-            var newWidth = $('#card-tile-' + scope.grabbedCard.uniqueId).width();
-            var newHeight = $('#card-tile-' + scope.grabbedCard.uniqueId).height();
+            var cardTile = scope.grabbedCard.jqEl.closest('.card-spot');
+            var newWidth = cardTile.width();
+            var newHeight = cardTile.height();
+
+            var cardModel = scope.grabbedCard.model;
 
             cardOriginX = position.clientX - newWidth * cursorToCardOriginXRatio;
             cardOriginY = position.clientY - newHeight * cursorToCardOriginYRatio;
@@ -529,22 +550,22 @@
 
             var targetModel = findDropTarget(cardOriginX, cardOriginY, position.clientY);
 
-            if (targetModel !== null && targetModel !== scope.grabbedCard) {
+            if (targetModel !== null && targetModel !== cardModel) {
 
               var currentCards = scope.page.getCurrentValue('cards');
 
               var targetModelIndex = _.indexOf(currentCards, targetModel);
 
               // Drop the dropped card in front of the card dropped onto.
-              var newCards = _.without(currentCards, scope.grabbedCard);
+              var newCards = _.without(currentCards, cardModel);
 
-              if (scope.grabbedCard.getCurrentValue('cardSize') !== targetModel.getCurrentValue('cardSize')) {
+              if (cardModel.getCurrentValue('cardSize') !== targetModel.getCurrentValue('cardSize')) {
 
-                scope.grabbedCard.set('cardSize', targetModel.getCurrentValue('cardSize'));
+                cardModel.set('cardSize', targetModel.getCurrentValue('cardSize'));
 
               }
 
-              newCards.splice(targetModelIndex, 0, scope.grabbedCard);
+              newCards.splice(targetModelIndex, 0, cardModel);
 
               scope.safeApply(function() {
                 scope.page.set('cards', newCards);
@@ -566,16 +587,18 @@
 
               if (cardSize !== null) {
                 scope.safeApply(function() {
-                  scope.grabbedCard.set('cardSize', cardSize);
+                  cardModel.set('cardSize', cardSize);
                 });
               }
 
             }
 
-            $('#dragged-card-layout').text(".dragged { left: {0}px !important; top: {1}px !important;}".format(cardOriginX, cardOriginY));
+            scope.grabbedCard.jqEl.css({
+              top: cardOriginY,
+              left: cardOriginX
+            });
 
             requestAnimationFrame(checkForScroll);
-
           }
 
         });

@@ -50,3 +50,6 @@ use_view_stubs:
 disable_dataset_search_box:
   description: Disable the search box in dataset pages.
   defaultValue: false
+enable_fullstory_tracking:
+  description: Enable Fullstory™ tracking of page interactions (see CORE-3561 for more information)
+  defaultValue: false

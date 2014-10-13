@@ -102,6 +102,10 @@ module TestHelperMethods
     end
   end
 
+  def application_helper
+    @application_helper ||= ActionView::Base.send(:include, ApplicationHelper).new
+  end
+
 end
 
 [Test::Unit::TestCase, MiniTest::Unit::TestCase].each do |klass|

@@ -536,4 +536,21 @@ module ApplicationHelper
   def suppress_govstat?
     @suppress_govstat || CurrentDomain.member?(current_user) == false
   end
+
+  def render_fullstory_tracking
+    return nil unless FeatureFlags.derive(nil, request)[:enable_fullstory_tracking]
+
+    javascript_tag("
+      window['_fs_debug'] = false;
+      window['_fs_host'] = 'www.fullstory.com';
+      window['_fs_org'] = 'o07';
+      (function(m,n,e,t,l,o,g,y){
+        g=m[e]=function(a,b){g.q?g.q.push([a,b]):g._api(a,b);};g.q=[];
+        o=n.createElement(t);o.async=1;o.src='https://'+_fs_host+'/s/fs.js';
+        y=n.getElementsByTagName(t)[0];y.parentNode.insertBefore(o,y);
+        g.identify=function(i,v){g(l,{uid:i});if(v)g(l,v)};g.setUserVars=function(v){FS(l,v)};
+        g.setSessionVars=function(v){FS('session',v)};g.setPageVars=function(v){FS('page',v)};
+      })(window,document,'FS','script','user');
+    ")
+  end
 end

@@ -7,7 +7,8 @@ module AngularHelper
   def angular_config
     {
       statsdEnabled: APP_CONFIG['statsd_enabled'],
-      useViewStubs: FeatureFlags.derive(nil, request)[:use_view_stubs]
+      useViewStubs: FeatureFlags.derive(nil, request)[:use_view_stubs],
+      enableFullstoryTracking: FeatureFlags.derive(nil, request)[:enable_fullstory_tracking]
     }
   end
 

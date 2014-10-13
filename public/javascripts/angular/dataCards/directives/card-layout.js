@@ -1,7 +1,220 @@
 (function() {
   'use strict';
 
+  var sortedTileLayout;
+  var EXPANDED_SIZE_TO_HEIGHT = {
+    1: 250,
+    2: 200,
+    // TODO this should be 150, but for demo purposes we're bumping it up to work around
+    // some padding overflow issues.
+    3: 200
+  };
+  var COLLAPSED_SIZE_TO_HEIGHT = {
+    1: 300,
+    2: 250,
+    3: 200
+  };
+
+  function layoutExpanded(cardsBySize, expandedCard, heightOfAllCards,
+                          containerContentWidth, cardContainer, windowSize, scrollTop,
+                          headerStuck, quickFilterBar, Constants) {
+    var heightOfAllCards = 0;
+    var EXPANDED_COL_RATIO = 0.65;
+
+    var unexpandedColumnWidth = Math.floor(
+      (1 - EXPANDED_COL_RATIO) * containerContentWidth);
+    var expandedColumnWidth = Math.floor(
+      EXPANDED_COL_RATIO * containerContentWidth)
+      - Constants['LAYOUT_HORIZONTAL_PADDING'];
+
+    var expandedColumnLeft = unexpandedColumnWidth
+      + Constants['LAYOUT_GUTTER'] + Constants['LAYOUT_HORIZONTAL_PADDING'];
+    var unexpandedColumnLeft = Constants['LAYOUT_GUTTER'];
+
+    var expandedColumnTop = 0;
+
+    var unexpandedCards = cardsBySize.normal.filter(function(card) {
+      // Note that the 'card' supplied by the iterator is a wrapper around
+      // the card model, which is what 'expandedCard' is.
+      if (card.model.uniqueId === expandedCard.model.uniqueId) {
+        // Keep a handle on the object within cardsBySize, so we can set the
+        // style on that object, and process all the cardsBySize at once.
+        expandedCard = card;
+        return false;
+      } else {
+        return true;
+      }
+    });
+
+    // Set the styles for the left-column cards
+    _.map(unexpandedCards, function(card, index) {
+
+        var cardLeft = unexpandedColumnLeft;
+        var cardTop = heightOfAllCards;
+        var cardWidth = unexpandedColumnWidth;
+        var cardHeight = EXPANDED_SIZE_TO_HEIGHT[parseInt(card.cardSize, 10)];
+
+        // Keep track of the accumulated height of all cards so that we
+        // know the top offset of the next card up for layout.
+        heightOfAllCards += cardHeight + Constants['LAYOUT_VERTICAL_PADDING'];
+
+        card.style = {
+          left: cardLeft,
+          top: cardTop,
+          width: cardWidth,
+          height: cardHeight,
+        };
+    });
+
+    // Enforce a minimum height
+    if (heightOfAllCards === 0) {
+      heightOfAllCards = Constants['LAYOUT_MIN_EXPANDED_CARD_HEIGHT']
+        + (Constants['LAYOUT_VERTICAL_PADDING'] * 2);
+    }
+
+    // Set the style for the expanded card.
+    var expandedColumnHeight = windowSize.height - Constants.LAYOUT_VERTICAL_PADDING;
+    if (headerStuck) {
+      expandedColumnHeight -= quickFilterBar.height();
+    } else {
+      expandedColumnHeight -= cardContainer.offset().top - scrollTop;
+    }
+    var footerOffset = expandedCard.model.fieldName === '*' ?
+        0 :
+        Math.max(0, (scrollTop + windowSize.height) - (
+          cardContainer.offset().top + heightOfAllCards));
+
+    expandedCard.style = {
+      position: 'fixed',
+      left: expandedColumnLeft,
+      bottom: Constants.LAYOUT_VERTICAL_PADDING + footerOffset,
+      width: expandedColumnWidth,
+      height: expandedColumnHeight - footerOffset,
+    };
+
+
+    // If the datacard isn't expanded, then add it to the bottom
+    if (expandedCard.model.fieldName !== '*') {
+      cardsBySize.dataCard[0].style = {
+        left: Constants['LAYOUT_GUTTER'],
+        top: heightOfAllCards,
+        width: containerContentWidth,
+        height: Constants['LAYOUT_DATA_CARD_HEIGHT']
+      };
+    }
+
+    return heightOfAllCards;
+  }
+
+  function layoutCollapsed(cardsBySize, editMode, containerContentWidth, cardPositions, placeholderDropTargets, addCardButtons, Constants) {
+    var heightOfAllCards = 0;
+
+    // Lay out the cards into rows
+    var editableCards = sortedTileLayout.doLayout(cardsBySize.normal);
+
+    if (editMode) {
+      if (!editableCards.hasOwnProperty('1')) {
+        editableCards['1'] = [];
+      }
+      if (!editableCards.hasOwnProperty('2')) {
+        editableCards['2'] = [];
+      }
+      if (!editableCards.hasOwnProperty('3')) {
+        editableCards['3'] = [];
+      }
+    }
+
+    // Position the rows of cards
+    _.map(editableCards, function(rows, cardSize) {
+      var currentRowHeight = COLLAPSED_SIZE_TO_HEIGHT[parseInt(cardSize, 10)];
+      var currentRowContentHeight = currentRowHeight
+        - Constants['LAYOUT_VERTICAL_PADDING'];
+
+      _.map(rows, function(row, rowIndex) {
+
+        var paddingForEntireRow = Constants['LAYOUT_HORIZONTAL_PADDING']
+          * (row.length - 1);
+        var usableContentSpaceForRow = containerContentWidth
+          - paddingForEntireRow;
+        var cardWidth = Math.floor(usableContentSpaceForRow / row.length);
+
+        _.map(row, function(card, cardIndexInRow) {
+          var spaceTakenByOtherCardsPadding = Math.max(
+            0, cardIndexInRow * Constants['LAYOUT_HORIZONTAL_PADDING']);
+          var cardLeft = Constants['LAYOUT_GUTTER'] + (
+            cardIndexInRow * cardWidth) + spaceTakenByOtherCardsPadding;
+          var cardTop = heightOfAllCards + rowIndex * currentRowHeight;
+
+          cardPositions.push({
+            model: card.model,
+            top: cardTop,
+            left: cardLeft,
+            width: cardWidth,
+            height: currentRowContentHeight
+          });
+
+          card.style = {
+            left: cardLeft,
+            top: cardTop,
+            width: cardWidth,
+            height: currentRowContentHeight
+          };
+        });
+      });
+
+      // Add gap between card groups in edit mode only
+      if (editMode) {
+
+        // Also accommodate for empty groups and display a placeholder drop target.
+        var groupEmpty = rows.length === 0;
+
+        placeholderDropTargets.push({
+          id: cardSize,
+          style: {
+            display: groupEmpty ? 'block' : 'none',
+            width: containerContentWidth,
+            left: Constants['LAYOUT_GUTTER'],
+            top: heightOfAllCards
+          }
+        });
+
+        if (groupEmpty) {
+          heightOfAllCards += Constants['LAYOUT_PLACEHOLDER_DROP_TARGET_HEIGHT'];
+        } else {
+          heightOfAllCards += rows.length * currentRowHeight;
+        }
+
+        heightOfAllCards += 10;
+
+        addCardButtons.push({
+          id: cardSize,
+          style: {
+            top: heightOfAllCards,
+            left: Constants['LAYOUT_GUTTER']
+          }
+        });
+
+        heightOfAllCards += Constants['LAYOUT_EDIT_MODE_GROUP_PADDING'];
+
+      } else {
+        heightOfAllCards += rows.length * currentRowHeight;
+      }
+    });
+
+    cardsBySize.dataCard[0].style = {
+      left: Constants['LAYOUT_GUTTER'],
+      top: heightOfAllCards,
+      width: containerContentWidth,
+      height: Constants['LAYOUT_DATA_CARD_HEIGHT']
+    };
+
+    heightOfAllCards += Constants['LAYOUT_DATA_CARD_HEIGHT']
+      + Constants['LAYOUT_VERTICAL_PADDING'];
+
+    return heightOfAllCards;
+  }
   function cardLayout(Constants, AngularRxExtensions, WindowState, SortedTileLayout, FlyoutService) {
+    sortedTileLayout = new SortedTileLayout();
     return {
       restrict: 'E',
       scope: {
@@ -107,7 +320,6 @@
         //           { cardSize: "2", model: <card model> } ]
         //       ]
         //  }
-        var layout = new SortedTileLayout();
         var cardsBySize = zipLatestArray(scope.page.observe('cards'), 'cardSize').map(function(cards) {
           return _.groupBy(cards, function(card) {
             return card.model.fieldName === '*' ? 'dataCard' : 'normal';
@@ -148,7 +360,6 @@
             var headerStuck = scrollTop >= (cardsMetadataOffsetTop + cardsMetadata.outerHeight());
 
             var cardPositions = [];
-            var heightOfAllCards = 0;
 
             // Terminology:
             //
@@ -156,33 +367,6 @@
             // Otherwise, sizes include padding/LAYOUT_GUTTER.
             var containerContentWidth = cardContainer.width()
               - Constants['LAYOUT_GUTTER'] * 2;
-
-            var deriveCardHeight = function(size) {
-              size = parseInt(size, 10);
-              if (expandedCard === null) {
-                switch (size) {
-                  case 1:
-                    return 300;
-                  case 2:
-                    return 250;
-                  case 3:
-                    return 200;
-                }
-              } else {
-                switch (size) {
-                  case 1:
-                    return 250;
-                  case 2:
-                    return 200;
-                  case 3:
-                    //TODO this should be 150, but for demo purposes we're bumping it up to work around some padding overflow
-                    //issues.
-                    return 200;
-                }
-              }
-
-              throw new Error('Unsupported card size: ' + size);
-            };
 
             // Track whether or not to draw placeholder drop targets
             // for each card grouping.
@@ -192,203 +376,15 @@
             var addCardButtons = [];
 
             // Branch here based on whether or not there is an expanded card.
+            var heightOfAllCards;
             if (expandedCard !== null) {
-              var EXPANDED_COL_RATIO = 0.65;
-
-              var unexpandedColumnWidth = Math.floor(
-                (1 - EXPANDED_COL_RATIO) * containerContentWidth);
-              var expandedColumnWidth = Math.floor(
-                EXPANDED_COL_RATIO * containerContentWidth)
-                - Constants['LAYOUT_HORIZONTAL_PADDING'];
-
-              var expandedColumnLeft = unexpandedColumnWidth
-                + Constants['LAYOUT_GUTTER'] + Constants['LAYOUT_HORIZONTAL_PADDING'];
-              var unexpandedColumnLeft = Constants['LAYOUT_GUTTER'];
-
-              var expandedColumnTop = 0;
-
-              var unexpandedCards = cardsBySize.normal.filter(function(card) {
-                // Note that the 'card' supplied by the iterator is a wrapper around
-                // the card model, which is what 'expandedCard' is.
-                if (card.model.uniqueId === expandedCard.model.uniqueId) {
-                  // Keep a handle on the object within cardsBySize, so we can set the
-                  // style on that object, and process all the cardsBySize at once.
-                  expandedCard = card;
-                  return false;
-                } else {
-                  return true;
-                }
-              });
-
-              // Set the styles for the left-column cards
-              _.map(unexpandedCards, function(card, index) {
-
-                  var cardLeft = unexpandedColumnLeft;
-                  var cardTop = heightOfAllCards;
-                  var cardWidth = unexpandedColumnWidth;
-                  var cardHeight = deriveCardHeight(card.cardSize);
-
-                  // Keep track of the accumulated height of all cards so that we
-                  // know the top offset of the next card up for layout.
-                  heightOfAllCards += cardHeight + Constants['LAYOUT_VERTICAL_PADDING'];
-
-                  card.style = {
-                    left: cardLeft,
-                    top: cardTop,
-                    width: cardWidth,
-                    height: cardHeight,
-                  };
-              });
-
-              // Enforce a minimum height
-              if (heightOfAllCards === 0) {
-                heightOfAllCards = Constants['LAYOUT_MIN_EXPANDED_CARD_HEIGHT'] + (Constants['LAYOUT_VERTICAL_PADDING'] * 2);
-              }
-
-              // Set the style for the expanded card.
-              var expandedColumnHeight;
-              if (headerStuck) {
-                expandedColumnHeight = windowSize.height
-                  - quickFilterBar.height()
-                  - Constants['LAYOUT_VERTICAL_PADDING'];
-              } else {
-                expandedColumnHeight = windowSize.height
-                  - (cardContainer.offset().top - scrollTop)
-                  - Constants['LAYOUT_VERTICAL_PADDING'];
-              }
-              var footerOffset = expandedCard.model.fieldName === '*' ?
-                  0 :
-                  Math.max(0, (scrollTop + windowSize.height) - (
-                    cardContainer.offset().top + heightOfAllCards));
-
-              expandedCard.style = {
-                position: 'fixed',
-                left: expandedColumnLeft,
-                bottom: Constants.LAYOUT_VERTICAL_PADDING + footerOffset,
-                width: expandedColumnWidth,
-                height: expandedColumnHeight - footerOffset,
-              };
-
-
-              // If the datacard isn't expanded, then add it to the bottom
-              if (expandedCard.model.fieldName !== '*') {
-                cardsBySize.dataCard[0].style = {
-                  left: Constants['LAYOUT_GUTTER'],
-                  top: heightOfAllCards,
-                  width: containerContentWidth,
-                  height: Constants['LAYOUT_DATA_CARD_HEIGHT']
-                };
-              }
-
-              // END EXPANDED CARD
+              heightOfAllCards = layoutExpanded(cardsBySize, expandedCard,
+                                                heightOfAllCards, containerContentWidth,
+                                                cardContainer, windowSize, scrollTop,
+                                                headerStuck, quickFilterBar, Constants);
             } else {
-
-              var heightOfAllCards = 0;
-
-              // Lay out the cards into rows
-              var editableCards = layout.doLayout(cardsBySize.normal);
-
-              if (editMode) {
-
-                if (!editableCards.hasOwnProperty('1')) {
-                  editableCards['1'] = [];
-                }
-                if (!editableCards.hasOwnProperty('2')) {
-                  editableCards['2'] = [];
-                }
-                if (!editableCards.hasOwnProperty('3')) {
-                  editableCards['3'] = [];
-                }
-
-              }
-
-              // Position the rows of cards
-              _.map(editableCards, function(rows, cardSize) {
-                var currentRowHeight = deriveCardHeight(cardSize);
-                var currentRowContentHeight = currentRowHeight
-                  - Constants['LAYOUT_VERTICAL_PADDING'];
-
-                _.map(rows, function(row, rowIndex) {
-
-                  var paddingForEntireRow = Constants['LAYOUT_HORIZONTAL_PADDING']
-                    * (row.length - 1);
-                  var usableContentSpaceForRow = containerContentWidth
-                    - paddingForEntireRow;
-                  var cardWidth = Math.floor(usableContentSpaceForRow / row.length);
-
-                  _.map(row, function(card, cardIndexInRow) {
-                    var spaceTakenByOtherCardsPadding = Math.max(
-                      0, cardIndexInRow * Constants['LAYOUT_HORIZONTAL_PADDING']);
-                    var cardLeft = Constants['LAYOUT_GUTTER'] + (
-                      cardIndexInRow * cardWidth) + spaceTakenByOtherCardsPadding;
-                    var cardTop = heightOfAllCards + rowIndex * currentRowHeight;
-
-                    cardPositions.push({
-                      model: card.model,
-                      top: cardTop,
-                      left: cardLeft,
-                      width: cardWidth,
-                      height: currentRowContentHeight
-                    });
-
-                    card.style = {
-                      left: cardLeft,
-                      top: cardTop,
-                      width: cardWidth,
-                      height: currentRowContentHeight
-                    };
-                  });
-                });
-
-                // Add gap between card groups in edit mode only
-                if (editMode) {
-
-                  // Also accommodate for empty groups and display a placeholder drop target.
-                  var groupEmpty = rows.length === 0;
-
-                  placeholderDropTargets.push({
-                    id: cardSize,
-                    style: {
-                      display: groupEmpty ? 'block' : 'none',
-                      width: containerContentWidth,
-                      left: Constants['LAYOUT_GUTTER'],
-                      top: heightOfAllCards
-                    }
-                  });
-
-                  if (groupEmpty) {
-                    heightOfAllCards += Constants['LAYOUT_PLACEHOLDER_DROP_TARGET_HEIGHT'];
-                  } else {
-                    heightOfAllCards += rows.length * currentRowHeight;
-                  }
-
-                  heightOfAllCards += 10;
-
-                  addCardButtons.push({
-                    id: cardSize,
-                    style: {
-                      top: heightOfAllCards,
-                      left: Constants['LAYOUT_GUTTER']
-                    }
-                  });
-
-                  heightOfAllCards += Constants['LAYOUT_EDIT_MODE_GROUP_PADDING'];
-
-                } else {
-                  heightOfAllCards += rows.length * currentRowHeight;
-                }
-              });
-
-              cardsBySize.dataCard[0].style = {
-                left: Constants['LAYOUT_GUTTER'],
-                top: heightOfAllCards,
-                width: containerContentWidth,
-                height: Constants['LAYOUT_DATA_CARD_HEIGHT']
-              };
-
-              heightOfAllCards += Constants['LAYOUT_DATA_CARD_HEIGHT']
-                + Constants['LAYOUT_VERTICAL_PADDING'];
-
+              heightOfAllCards = layoutCollapsed(
+                cardsBySize, editMode, containerContentWidth, cardPositions, placeholderDropTargets, addCardButtons, Constants);
             }
 
             cardContainer.css({

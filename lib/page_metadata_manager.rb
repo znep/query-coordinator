@@ -42,8 +42,6 @@ class PageMetadataManager
   end
 
   def update_soda_fountain(args)
-    response = soda_fountain.delete_rollup_table(args)
-    Rails.logger.info("Delete rollup table for page #{args[:page_id]} response: #{response.inspect}")
     response = soda_fountain.create_or_update_rollup_table(args)
     if response[:status] != 204
       Rails.logger.warn("Unable to update rollup table for page #{args.fetch(:page_id)} due to error: #{response.inspect}")

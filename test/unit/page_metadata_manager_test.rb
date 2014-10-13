@@ -60,7 +60,7 @@ class PageMetadataManagerTest < Test::Unit::TestCase
     Phidippides.any_instance.stubs(
       :fetch_pages_for_dataset => { status: '200', body: { publisher: [ page_metadata ] } }
     )
-    pages = manager.pages_for_dataset(OpenStruct.new(id: 'dd76-j9yp'))
+    pages = manager.pages_for_dataset(OpenStruct.new(id: 'dd76-j9yp'))[:body]
     assert(pages[:publisher].length > 0)
     assert(pages[:publisher].all? { |page| page[:datasetId] == 'dd76-j9yp' })
   end
@@ -69,7 +69,7 @@ class PageMetadataManagerTest < Test::Unit::TestCase
     Phidippides.any_instance.stubs(
       :fetch_pages_for_dataset => { status: '200', body: { publisher: [ page_metadata ] } }
     )
-    pages = manager.pages_for_dataset('dd76-j9yp')
+    pages = manager.pages_for_dataset('dd76-j9yp')[:body]
     assert(pages[:publisher].length > 0)
     assert(pages[:publisher].all? { |page| page[:datasetId] == 'dd76-j9yp' })
   end
@@ -78,7 +78,7 @@ class PageMetadataManagerTest < Test::Unit::TestCase
     Phidippides.any_instance.stubs(
       :fetch_pages_for_dataset => { status: '200', body: { publisher: [ page_metadata ] } }
     )
-    pages = manager.pages_for_dataset(id: 'dd76-j9yp')
+    pages = manager.pages_for_dataset(id: 'dd76-j9yp')[:body]
     assert(pages[:publisher].length > 0)
     assert(pages[:publisher].all? { |page| page[:datasetId] == 'dd76-j9yp' })
   end

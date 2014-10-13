@@ -19,7 +19,7 @@ class PageMetadataManager
       dataset_id ||= dataset_or_id.with_indifferent_access.fetch(:id)
     end
     dataset_id ||= dataset_or_id
-    phidippides.fetch_pages_for_dataset(dataset_id, options).fetch(:body)
+    phidippides.fetch_pages_for_dataset(dataset_id, options)
   end
 
   private

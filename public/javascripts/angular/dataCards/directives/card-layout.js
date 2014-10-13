@@ -111,26 +111,14 @@
         //       ]
         //  }
         var layout = new SortedTileLayout();
-        var rowsOfCardsBySize = zipLatestArray(scope.page.observe('cards'), 'cardSize').
-          map(function(sizedCards) {
-            var dataCard = null;
-            var editableCards = sizedCards.filter(function(card) {
-              if (card.model.fieldName === '*') {
-                dataCard = card;
-                return false;
-              }
-              return true;
-            });
-            return {
-              editableCards: layout.doLayout(editableCards),
-              dataCard: dataCard
-            };
+        var cardsBySize = zipLatestArray(scope.page.observe('cards'), 'cardSize').map(function(cards) {
+          return _.groupBy(cards, function(card) {
+            return card.model.fieldName === '*' ? 'dataCard' : 'normal';
           });
+        });
 
         var expandedCards = zipLatestArray(scope.page.observe('cards'), 'expanded').map(function(cards) {
-          return _.pluck(
-            _.where(cards, _.property('expanded')),
-            'model');
+          return _.where(cards, _.property('expanded'));
         });
 
         // Keep track of whether the layout is an expanded-card layout, so upstream scopes
@@ -143,22 +131,21 @@
         * Card layout *
         **************/
         Rx.Observable.subscribeLatest(
-          rowsOfCardsBySize,
+          cardsBySize,
           expandedCards,
           scope.observe('editMode'),
           scope.observe('allowAddCard'),
           cardsMetadata.observeDimensions(),
           WindowState.windowSizeSubject,
           WindowState.scrollPositionSubject,
-          function layoutFn(sortedTileLayoutResult, expandedCards, editMode, allowAddCard, cardsMetadataSize, windowSize, scrollTop) {
+          function layoutFn(cardsBySize, expandedCards, editMode, allowAddCard, cardsMetadataSize, windowSize, scrollTop) {
 
-            if (_.isEmpty(sortedTileLayoutResult.editableCards) ||
-                sortedTileLayoutResult.dataCard === null) {
+            if (_.isEmpty(cardsBySize.normal) || _.isEmpty(cardsBySize.dataCard)) {
               return;
             }
 
             // Figure out if there is an expanded card.
-            var expandedCard = _.isEmpty(expandedCards) ? null : expandedCards[0];
+            var expandedCard = _.isEmpty(expandedCards) ? null : expandedCards[0].model;
 
             // Figure out the sticky-ness of the QFB and apply the style appropriately
             var headerStuck = scrollTop >= (cardsMetadataOffsetTop + cardsMetadata.outerHeight());
@@ -203,23 +190,27 @@
 
             // Branch here based on whether or not there is an expanded card.
             if (expandedCard !== null) {
+              var EXPANDED_COL_RATIO = 0.65;
 
-              var expandedColumnWidth = Math.floor(containerContentWidth * 0.65) - Constants['LAYOUT_HORIZONTAL_PADDING'];
-              var unexpandedColumnWidth = containerContentWidth - expandedColumnWidth - Constants['LAYOUT_HORIZONTAL_PADDING'];
+              var unexpandedColumnWidth = Math.floor(
+                (1 - EXPANDED_COL_RATIO) * containerContentWidth);
+              var expandedColumnWidth = Math.floor(
+                EXPANDED_COL_RATIO * containerContentWidth)
+                - Constants['LAYOUT_HORIZONTAL_PADDING'];
 
-              var expandedColumnLeft = unexpandedColumnWidth + Constants['LAYOUT_GUTTER'] + Constants['LAYOUT_HORIZONTAL_PADDING'];
+              var expandedColumnLeft = unexpandedColumnWidth
+                + Constants['LAYOUT_GUTTER'] + Constants['LAYOUT_HORIZONTAL_PADDING'];
               var unexpandedColumnLeft = Constants['LAYOUT_GUTTER'];
 
               var expandedColumnTop = 0;
 
-              var cards = _.flatten(_.values(sortedTileLayoutResult.editableCards));
-
-              var unexpandedCards = cards.filter(function(card) {
+              var unexpandedCards = cardsBySize.normal.filter(function(card) {
                   // Note that the 'card' supplied by the iterator is a wrapper around
                   // the card model, which is what 'expandedCard' is.
                   return card.model.uniqueId !== expandedCard.uniqueId;
                 });
 
+              // Set the styles for the left-column cards
               styleText = _.reduce(unexpandedCards, function(accumulatedStyle, card, index) {
 
                   var cardLeft = unexpandedColumnLeft;
@@ -240,57 +231,39 @@
 
               }, '');
 
+              // Enforce a minimum height
               if (heightOfAllCards === 0) {
                 heightOfAllCards = Constants['LAYOUT_MIN_EXPANDED_CARD_HEIGHT'] + (Constants['LAYOUT_VERTICAL_PADDING'] * 2);
               }
 
-              if (expandedCard.fieldName === '*') {
-
-                styleText += '#card-tile-{0}{'.format(expandedCard.uniqueId);
-
-                var expandedColumnHeight;
-                if (headerStuck) {
-                  expandedColumnHeight = windowSize.height
-                    - quickFilterBar.height()
-                    - Constants['LAYOUT_VERTICAL_PADDING'];
-                } else {
-                  expandedColumnHeight = windowSize.height
-                    - (cardContainer.offset().top - scrollTop)
-                    - Constants['LAYOUT_VERTICAL_PADDING'];
-                }
-
-                styleText +=  'position:fixed;' +
-                              'left:' + expandedColumnLeft + 'px;' +
-                              'bottom:' + Constants['LAYOUT_VERTICAL_PADDING'] + 'px;' +
-                              'width:' + expandedColumnWidth + 'px;' +
-                              'height:' + expandedColumnHeight + 'px;' +
-                            '}';
-
+              // Set the style for the expanded card.
+              styleText += '#card-tile-{0}{'.format(expandedCard.uniqueId);
+              var expandedColumnHeight;
+              if (headerStuck) {
+                expandedColumnHeight = windowSize.height
+                  - quickFilterBar.height()
+                  - Constants['LAYOUT_VERTICAL_PADDING'];
               } else {
+                expandedColumnHeight = windowSize.height
+                  - (cardContainer.offset().top - scrollTop)
+                  - Constants['LAYOUT_VERTICAL_PADDING'];
+              }
+              var footerOffset = expandedCard.fieldName === '*' ?
+                  0 :
+                  Math.max(0, (scrollTop + windowSize.height) - (
+                    cardContainer.offset().top + heightOfAllCards));
 
-                styleText += '#card-tile-{0}{'.format(expandedCard.uniqueId);
+              styleText +=  'position:fixed;' +
+                            'left:' + expandedColumnLeft + 'px;' +
+                            'bottom:' + (Constants['LAYOUT_VERTICAL_PADDING'] + footerOffset) + 'px;' +
+                            'width:' + expandedColumnWidth + 'px;' +
+                            'height:' + (expandedColumnHeight - footerOffset) + 'px;' +
+                          '}';
 
-                var expandedColumnHeight;
-                if (headerStuck) {
-                  expandedColumnHeight = windowSize.height
-                    - quickFilterBar.height()
-                    - Constants['LAYOUT_VERTICAL_PADDING'];
-                } else {
-                  expandedColumnHeight = windowSize.height
-                    - (cardContainer.offset().top - scrollTop)
-                    - Constants['LAYOUT_VERTICAL_PADDING'];
-                }
 
-                var footerOffset = Math.max(0, (scrollTop + windowSize.height) - (cardContainer.offset().top + heightOfAllCards));
-
-                styleText +=  'position:fixed;' +
-                              'left:' + expandedColumnLeft + 'px;' +
-                              'bottom:' + (Constants['LAYOUT_VERTICAL_PADDING'] + footerOffset) + 'px;' +
-                              'width:' + expandedColumnWidth + 'px;' +
-                              'height:' + (expandedColumnHeight - footerOffset) + 'px;' +
-                            '}';
-
-                styleText += '#card-tile-{0}{'.format(sortedTileLayoutResult.dataCard.model.uniqueId) +
+              // If the datacard isn't expanded, then add it to the bottom
+              if (expandedCard.fieldName !== '*') {
+                styleText += '#card-tile-{0}{'.format(cardsBySize.dataCard[0].model.uniqueId) +
                                'left:' + Constants['LAYOUT_GUTTER'] + 'px;' +
                                'top:' + heightOfAllCards + 'px;' +
                                'width:' + containerContentWidth + 'px;' +
@@ -299,6 +272,7 @@
 
               }
 
+              // END EXPANDED CARD
             } else {
 
               // Track whether or not to draw placeholder drop targets
@@ -310,21 +284,25 @@
 
               var heightOfAllCards = 0;
 
+              // Lay out the cards into rows
+              var editableCards = layout.doLayout(cardsBySize.normal);
+
               if (editMode) {
 
-                if (!sortedTileLayoutResult.editableCards.hasOwnProperty('1')) {
-                  sortedTileLayoutResult.editableCards['1'] = [];
+                if (!editableCards.hasOwnProperty('1')) {
+                  editableCards['1'] = [];
                 }
-                if (!sortedTileLayoutResult.editableCards.hasOwnProperty('2')) {
-                  sortedTileLayoutResult.editableCards['2'] = [];
+                if (!editableCards.hasOwnProperty('2')) {
+                  editableCards['2'] = [];
                 }
-                if (!sortedTileLayoutResult.editableCards.hasOwnProperty('3')) {
-                  sortedTileLayoutResult.editableCards['3'] = [];
+                if (!editableCards.hasOwnProperty('3')) {
+                  editableCards['3'] = [];
                 }
 
               }
 
-              styleText = _.reduce(sortedTileLayoutResult.editableCards, function(overallStyleAcc, rows, cardSize) {
+              // Position the rows of cards
+              styleText = _.reduce(editableCards, function(overallStyleAcc, rows, cardSize) {
 
                 var currentRowHeight = deriveCardHeight(cardSize);
                 var currentRowContentHeight = currentRowHeight - Constants['LAYOUT_VERTICAL_PADDING'];
@@ -420,7 +398,7 @@
 
               }
 
-              styleText += '#card-tile-{0}{'.format(sortedTileLayoutResult.dataCard.model.uniqueId) +
+              styleText += '#card-tile-{0}{'.format(cardsBySize.dataCard[0].model.uniqueId) +
                              'left:' + Constants['LAYOUT_GUTTER'] + 'px;' +
                              'top:' + heightOfAllCards + 'px;' +
                              'width:' + containerContentWidth + 'px;' +

@@ -56,6 +56,21 @@ class PageMetadataManagerTest < Test::Unit::TestCase
     assert_equal('bar', updated_result.fetch(:body).fetch(:foo))
   end
 
+  def test_update_does_not_delete_rollup_first
+    SodaFountain.any_instance.expects(:delete_rollup_table).never
+    Phidippides.any_instance.stubs(
+      :create_page_metadata => { status: '200', body: page_metadata },
+      :fetch_dataset_metadata => { status: '200', body: dataset_metadata },
+      :fetch_page_metadata => { status: '200', body: page_metadata },
+      :update_page_metadata => { status: '200', body: page_metadata.merge('bunch' => 'other stuff', 'foo' => 'bar') }
+    )
+    result = manager.create(page_metadata.to_json)
+    page_id = result.fetch(:body).fetch(:pageId)
+    result = manager.fetch(page_id)
+    assert(result[:status] == '200', result.inspect)
+    manager.update(result.fetch(:body).to_json)
+  end
+
   def test_pages_for_dataset_with_dataset_object_succeeds
     Phidippides.any_instance.stubs(
       :fetch_pages_for_dataset => { status: '200', body: { publisher: [ page_metadata ] } }

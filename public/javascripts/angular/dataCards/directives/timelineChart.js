@@ -817,7 +817,9 @@
             scope.$emit('render:start', { source: 'timelineChart_{0}'.format(scope.$id), timestamp: _.now() });
 
             // If it's the scope filters that have changed, update the state.
-            if (!_.isEmpty(scope.filters)) {
+            if (_.isEmpty(scope.filters)) {
+              state.filter = {};
+            } else {
               state.filter = scope.filters[0];
             }
 

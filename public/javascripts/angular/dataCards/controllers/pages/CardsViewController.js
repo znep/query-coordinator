@@ -77,7 +77,9 @@
 
     var allCardsFilters = page.observe('cards').flatMap(function(cards) {
       if (!cards) { return Rx.Observable.never(); }
-      return Rx.Observable.combineLatest(_.map(cards, function(d) { return d.observe('activeFilters');}), function() {
+      return Rx.Observable.combineLatest(_.map(cards, function(d) {
+        return d.observe('activeFilters');
+      }), function() {
         return _.zipObject(_.pluck(cards, 'fieldName'), arguments);
       });
     });
@@ -151,6 +153,14 @@
       }, []);
 
     }));
+
+    $scope.clearAllFilters = function() {
+      _.each($scope.page.getCurrentValue('cards'), function(card) {
+        if (!_.isEmpty(card.getCurrentValue('activeFilters'))) {
+          card.set('activeFilters', []);
+        }
+      });
+    };
 
 
     /************************

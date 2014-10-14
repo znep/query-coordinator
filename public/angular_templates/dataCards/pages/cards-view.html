@@ -65,6 +65,7 @@
             <span>{{filter.operator}}</span>
             <span class="light">{{filter.operand}}</span>
           </div>
+          <button class="clear-all-filters-button action-btn dark" ng-if="appliedFiltersForDisplay.length > 0" ng-click="clearAllFilters()">Clear All ×</button>
         </div>
       </div>
     </div>

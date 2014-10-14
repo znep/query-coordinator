@@ -48,6 +48,124 @@ angular.module('dataCards.directives').directive('cardVisualizationTimelineChart
         }
       }
 
+      function transformChartDataForRendering(chartData) {
+
+        var minDate = null;
+        var maxDate = null;
+        var minValue = Number.POSITIVE_INFINITY;
+        var maxValue = Number.NEGATIVE_INFINITY;
+        var meanValue;
+        var offsets;
+        var duration;
+        var labelUnit;
+        var breakCount;
+        var breakSize;
+        var i;
+        var breaks;
+        var offsets;
+
+        var allValues = chartData.map(function(datum) {
+
+          if (minDate === null) {
+            minDate = datum.date;
+          } else if (datum.date < minDate) {
+            minDate = datum.date;
+          }
+
+          if (maxDate === null) {
+            maxDate = datum.date;
+          } else if (datum.date > maxDate) {
+            maxDate = datum.date;
+          }
+
+          if (datum.total < minValue) {
+            minValue = datum.total;
+          }
+
+          if (datum.total > maxValue) {
+            maxValue = datum.total;
+          }
+
+/*
+WHY IS UNFILTERED EQUAL TO FILTERED WHEN THE CHART IS NOT FILTERED?
+*/
+
+          return {
+            date: datum.date.toDate(),
+            filtered: datum.filtered,
+            unfiltered: datum.total
+          }
+        });
+
+        minValue = Math.min(0, minValue);
+
+        meanValue = (maxValue - minValue) / 2;
+
+        // We receive individual rows from the back-end
+        // but we want to display intelligent aggregates
+        // on the chart. We do this by bucketing each
+        // datum; in order to accomplish that we must first
+        // derive the number of buckets and the  temporal
+        // span of each one.
+        duration = moment.duration(maxDate - minDate);
+
+        if (duration <= 0) {
+          throw new Error('Cannot transform timeline chart data for rendering: the time interval of the data is less than or equal to zero.');
+        }
+
+        // Note that we are intentionally wrapping minDate in
+        // a new moment object in the tests below because
+        // the .add() method is destructive... the actual
+        // value of a non-wrapped minDate object after these
+        // tests are made is more 22 years, 2 months after
+        // the actual intended minDate.
+        if (moment(minDate).add('months', 2).isAfter(maxDate)) {
+          labelUnit = 'day';
+          breakCount = Math.round(duration.asDays());
+        } else if (moment(minDate).add('years', 2).isAfter(maxDate)) {
+          labelUnit = 'month';
+          breakCount = Math.round(duration.asMonths());
+        } else if (moment(minDate).add('years', 20).isAfter(maxDate)) {
+          labelUnit = 'year';
+          breakCount = Math.round(duration.asYears());
+        } else {
+          labelUnit = 'decade';
+          breakCount = Math.round(duration.asYears() / 10);
+        }
+
+        breakSize = duration.asMilliseconds() / breakCount;
+
+        breaks = [minDate.toDate()];
+
+        for (i = 1; i <= breakCount; i++) {
+          breaks.push(moment(minDate).add((i * breakSize), 'milliseconds').toDate());
+        }
+
+        // Map each datum to the range [0 .. 1] so we can easily
+        // determine which data to highlight when the mouse moves
+        // across the chart.
+        //_.each(allValues, function(value) {
+        //  value.offset = moment.duration(value.date - minDate).asMilliseconds() /
+        //                 duration.asMilliseconds();
+        //});
+
+        offsets = allValues.map(function(value) {
+          return moment(value.date).diff(minDate) / duration.asMilliseconds();
+        });
+
+        return {
+          minDate: minDate.toDate(),
+          maxDate: maxDate.toDate(),
+          offsets: offsets,
+          minValue: minValue,
+          meanValue: meanValue,
+          maxValue: maxValue,
+          values: allValues,
+          labelUnit: labelUnit,
+          breaks: breaks
+        }
+      }
+
       var precision = Rx.Observable.combineLatest(
         model.pluck('fieldName'),
         dataset,
@@ -117,6 +235,7 @@ angular.module('dataCards.directives').directive('cardVisualizationTimelineChart
           //  ...
           // ]
           // If we're unfiltered or the filtered data isn't defined for a particular name, the filtered field is undefined.
+
           var unfilteredAsHash = _.reduce(unfilteredData, function(acc, datum) {
             acc[datum.date] = datum.value;
             return acc;
@@ -126,25 +245,30 @@ angular.module('dataCards.directives').directive('cardVisualizationTimelineChart
             return acc;
           }, {});
 
-          return _.map(_.pluck(unfilteredData, 'date'), function(date) {
-            return {
-              date: date,
-              total: unfilteredAsHash[date],
-              filtered: filteredAsHash[date] || 0
-            };
-          });
+          return transformChartDataForRendering(
+            _.map(_.pluck(unfilteredData, 'date'), function(date) {
+              return {
+                date: date,
+                total: unfilteredAsHash[date],
+                filtered: filteredAsHash[date] || 0
+              };
+            })
+          );
         }));
 
-      $scope.bindObservable('filterApplied', $scope.observe('whereClause').
-          map(function(whereClause) {
-        return _.isPresent(stripWhereClause(whereClause));
-      }));
+
 
       $scope.bindObservable('expanded', model.observeOnLatest('expanded'));
 
       $scope.bindObservable('precision', precision);
 
       $scope.bindObservable('activeFilters', model.observeOnLatest('activeFilters'));
+
+      $scope.bindObservable('pageIsFiltered', $scope.observe('whereClause').
+          map(function(whereClause) {
+            return _.isPresent(stripWhereClause(whereClause));
+          }));
+
       $scope.bindObservable('rowDisplayUnit', dataset.observeOnLatest('rowDisplayUnit'));
 
       $scope.$on('timeline-chart:filter-cleared', function(event) {

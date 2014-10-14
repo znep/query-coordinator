@@ -224,10 +224,30 @@ describe("CardsViewController", function() {
         });
       });
     });
+
     describe('with card filters applied', function() {
+      var harness;
+      beforeEach(function() {
+        harness = makeMinimalController();
+      });
+      it('should be clear-all-able', inject(function(Filter) {
+        var filters = [
+          new Filter.IsNullFilter(true),
+          new Filter.BinaryOperatorFilter('=', 'test'),
+        ];
+        var cards = harness.page.getCurrentValue('cards');
+        cards[0].set('activeFilters', [filters[0]]);
+        cards[2].set('activeFilters', [filters[1]]);
+
+        harness.scope.clearAllFilters();
+
+        expect(cards[0].getCurrentValue('activeFilters')).to.be.empty;
+        expect(cards[1].getCurrentValue('activeFilters')).to.be.empty;
+        expect(cards[2].getCurrentValue('activeFilters')).to.be.empty;
+      }));
+
       describe('with no base filter', function() {
         it("should yield just the filtered card's WHERE", inject(function(Filter) {
-          var harness = makeMinimalController();
           var filterOne = new Filter.IsNullFilter(true);
           var filterTwo = new Filter.BinaryOperatorFilter('=', 'test');
 
@@ -256,7 +276,6 @@ describe("CardsViewController", function() {
               ));
         }));
         it("should yield the filtered column names on appliedFiltersForDisplay", inject(function(Filter) {
-          var harness = makeMinimalController();
           var filterOne = new Filter.IsNullFilter(false);
           var filterTwo = new Filter.BinaryOperatorFilter('=', 'test');
 
@@ -284,8 +303,6 @@ describe("CardsViewController", function() {
 
       describe('with a base filter', function() {
         it('should reflect the base filterSoql', inject(function(Filter) {
-          var harness = makeMinimalController();
-
           var fakeBaseFilter = "fakeField='fakeValueForBase'";
           harness.page.set('baseSoqlFilter', fakeBaseFilter);
 

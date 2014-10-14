@@ -377,18 +377,23 @@
           quickFilterBar.toggleClass('stuck', headerStuck);
         });
 
-        // We also change the height of the expanded card onscroll
-        WindowState.scrollPositionSubject.where(function() {
+        // We also change the height of the expanded card onscroll, and if the QFB height
+        // changes
+        Rx.Observable.combineLatest(
+          WindowState.scrollPositionSubject,
+          quickFilterBar.observeDimensions(),
+          function() { return arguments; }
+        ).filter(function() {
           // Cast to a boolean
           return !!scope.expandedCard;
-        }).subscribe(function(scrollTop) {
+        }).subscribe(function(args) {
           var jqEl = cardContainer.find('.expanded').closest('.card-spot');
           var localScope = jqEl.scope();
           // TODO: hack so that if you hit this code during a transition, the
           // transitionend handler will get the correct fixed-position style.
           var styles = localScope.cardPosition.endStyle || {};
           updateExpandedVerticalDims(styles, scope.expandedCard,
-                                     jqueryWindow.scrollTop(), jqueryWindow.dimensions(),
+                                     args[0], jqueryWindow.dimensions(),
                                      cardContainer.height());
           jqEl.css(styles);
         });

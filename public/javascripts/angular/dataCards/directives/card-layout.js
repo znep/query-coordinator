@@ -76,20 +76,20 @@
          */
         function updateExpandedVerticalDims(style, cardModel, scrollTop,
                                             windowSize, heightOfAllCards) {
-          var expandedColumnHeight = windowSize.height - Constants.LAYOUT_VERTICAL_PADDING;
-          if (quickFilterBar.hasClass('stuck')) {
-            expandedColumnHeight -= quickFilterBar.height();
-          } else {
-            expandedColumnHeight -= cardContainer.offset().top - scrollTop;
-          }
+          style.height = windowSize.height - Constants.LAYOUT_VERTICAL_PADDING;
+
+          style.top = quickFilterBar.hasClass('stuck') ?
+              quickFilterBar.height() :
+              cardContainer.offset().top - scrollTop;
+
+          style.height -= style.top;
 
           var footerOffset = cardModel.fieldName === '*' ?
               0 :
               Math.max(0, (scrollTop + windowSize.height) - (
                 cardContainer.offset().top + heightOfAllCards));
 
-          style.bottom = Constants.LAYOUT_VERTICAL_PADDING + footerOffset;
-          style.height = expandedColumnHeight - footerOffset;
+          style.height -= footerOffset;
         }
 
         /**
@@ -97,7 +97,8 @@
          */
         function layoutExpanded(cardsBySize, containerContentWidth, windowSize) {
           var heightOfAllCards = 0;
-          var expandedCardPos;
+          // If we find the expanded card among the normal cards, we'll reset this.
+          var expandedCardPos = cardsBySize.dataCard[0];
           var EXPANDED_COL_RATIO = 0.65;
 
           var unexpandedColumnWidth = Math.floor(
@@ -125,22 +126,31 @@
 
           // Set the styles for the left-column cards
           _.map(unexpandedCards, function(card, index) {
+            var cardLeft = unexpandedColumnLeft;
+            var cardTop = heightOfAllCards;
+            var cardWidth = unexpandedColumnWidth;
+            var cardHeight = EXPANDED_SIZE_TO_HEIGHT[parseInt(card.cardSize, 10)];
 
-              var cardLeft = unexpandedColumnLeft;
-              var cardTop = heightOfAllCards;
-              var cardWidth = unexpandedColumnWidth;
-              var cardHeight = EXPANDED_SIZE_TO_HEIGHT[parseInt(card.cardSize, 10)];
+            // Keep track of the accumulated height of all cards so that we
+            // know the top offset of the next card up for layout.
+            heightOfAllCards += cardHeight + Constants['LAYOUT_VERTICAL_PADDING'];
 
-              // Keep track of the accumulated height of all cards so that we
-              // know the top offset of the next card up for layout.
-              heightOfAllCards += cardHeight + Constants['LAYOUT_VERTICAL_PADDING'];
+            var style = {
+              position: '',
+              left: cardLeft,
+              top: cardTop,
+              width: cardWidth,
+              height: cardHeight,
+            };
+            if (card.style.position === 'fixed') {
+              // This card used to be expanded. Animating from fixed position to
+              // absolute is jerky 'cuz top/left mean something different. So start it
+              // in the analogous absolute position.
+              card.style.top = cardTop - (scrollTop + cardContainer.offset().top);
 
-              card.style = {
-                left: cardLeft,
-                top: cardTop,
-                width: cardWidth,
-                height: cardHeight,
-              };
+            } else {
+              card.style = style;
+            }
           });
 
           // Enforce a minimum height
@@ -150,19 +160,27 @@
           }
 
           // Set the style for the expanded card.
-          expandedCardPos.style = {
+          // For smooth transitions, start with absolute positioning, and only when we
+          // finish the animation do we transition to fixed
+          var scrollTop = jqueryWindow.scrollTop();
+          expandedCardPos.endStyle = {
             position: 'fixed',
             left: expandedColumnLeft,
             width: expandedColumnWidth
           };
-          updateExpandedVerticalDims(expandedCardPos.style, expandedCardPos.model,
-                                     jqueryWindow.scrollTop(), windowSize,
+          updateExpandedVerticalDims(expandedCardPos.endStyle, expandedCardPos.model,
+                                     scrollTop, windowSize,
                                      heightOfAllCards);
+          expandedCardPos.style = $.extend({}, expandedCardPos.endStyle, {
+            position: '',
+            top: scrollTop + expandedCardPos.endStyle.top - cardContainer.offset().top
+          });
 
 
           // If the datacard isn't expanded, then add it to the bottom
-          if (expandedCardPos.model.fieldName !== '*') {
+          if (expandedCardPos !== cardsBySize.dataCard[0]) {
             cardsBySize.dataCard[0].style = {
+              position: '',
               left: Constants['LAYOUT_GUTTER'],
               top: heightOfAllCards,
               width: containerContentWidth,
@@ -219,6 +237,7 @@
                 var cardTop = heightOfAllCards + rowIndex * currentRowHeight;
 
                 card.style = {
+                  position: '',
                   top: cardTop,
                   left: cardLeft,
                   width: cardWidth,
@@ -267,6 +286,7 @@
           });
 
           cardsBySize.dataCard[0].style = {
+            position: '',
             left: Constants['LAYOUT_GUTTER'],
             top: heightOfAllCards,
             width: containerContentWidth,
@@ -278,6 +298,20 @@
 
           return heightOfAllCards;
         }
+
+
+        // Animation clean-up
+        cardContainer.on('transitionend webkitTransitionEnd oTransitionEnd MSTransitionEnd', '.card-spot', function() {
+          var jqEl = $(this);
+          // Remove transition
+          jqEl.css('transition', '');
+
+          var localScope = jqEl.scope();
+          if (localScope.cardPosition.endStyle) {
+            jqEl.css(localScope.cardPosition.endStyle);
+            localScope.cardPosition.endStyle = null;
+          }
+        });
 
 
         /***********************
@@ -332,29 +366,34 @@
               return _.where(cards, _.property('expanded'));
             });
 
-        // Stuff that changes when we scroll
+        /**
+         * Subscriptions for laying things out.
+         */
+
+        // Figure out the sticky-ness of the QFB onscroll and un/stick appropriately
         WindowState.scrollPositionSubject.subscribe(function(scrollTop) {
-          // Figure out the sticky-ness of the QFB and apply the style appropriately
           var headerStuck = scrollTop >= (
             cardsMetadataOffsetTop + cardsMetadata.outerHeight());
           quickFilterBar.toggleClass('stuck', headerStuck);
+        });
 
         // We also change the height of the expanded card onscroll
-        });
         WindowState.scrollPositionSubject.where(function() {
           // Cast to a boolean
           return !!scope.expandedCard;
         }).subscribe(function(scrollTop) {
-          var styles = {};
+          var jqEl = cardContainer.find('.expanded').closest('.card-spot');
+          var localScope = jqEl.scope();
+          // TODO: hack so that if you hit this code during a transition, the
+          // transitionend handler will get the correct fixed-position style.
+          var styles = localScope.cardPosition.endStyle || {};
           updateExpandedVerticalDims(styles, scope.expandedCard,
                                      jqueryWindow.scrollTop(), jqueryWindow.dimensions(),
                                      cardContainer.height());
-          cardContainer.find('.expanded').closest('.card-spot').css(styles);
+          jqEl.css(styles);
         });
 
-        /**************
-        * Card layout *
-        **************/
+
         Rx.Observable.subscribeLatest(
           cardsBySizeObs,
           expandedCardsObs,
@@ -371,7 +410,14 @@
             // Figure out if there is an expanded card.
             // Keep track of whether the layout is an expanded-card layout, so upstream
             // scopes can do things like disable edit buttons
-            scope.expandedCard = _.isEmpty(expandedCards) ? null : expandedCards[0].model;
+            var expandedCard = _.isEmpty(expandedCards) ? null : expandedCards[0].model;
+            var expandedId;
+            var expandChanged = false;
+            if (scope.expandedCard != expandedCard) { // == to deal with null vs undef
+              expandedId = (expandedCard || scope.expandedCard).uniqueId;
+              scope.expandedCard = expandedCard;
+              expandChanged = true;
+            }
 
             // Terminology:
             //
@@ -389,7 +435,7 @@
 
             // Branch here based on whether or not there is an expanded card.
             var heightOfAllCards;
-            if (scope.expandedCard !== null) {
+            if (scope.expandedCard) {
               heightOfAllCards = layoutExpanded(
                 cardsBySize, containerContentWidth, windowSize);
             } else {
@@ -397,6 +443,35 @@
                 cardsBySize, editMode, containerContentWidth,
                 placeholderDropTargets, addCardButtons);
             }
+
+            // We only want to animate during expansion changes. Not eg during customize
+            if (expandChanged || scope.expandedCard) {
+              // Animate the card position changes
+              _.each(cardsBySize.normal.concat(cardsBySize.dataCard), function(card, i) {
+                if (expandedId === card.model.uniqueId) {
+                  if (card.endStyle) {
+                    $.extend(card.style, {
+                      transition: 'all .5s linear',
+                      zIndex: 10
+                    });
+                  } else {
+                    card.endStyle = $.extend({}, card.style);
+                    $.extend(card.style, {
+                      transition: 'all .5s linear',
+                      zIndex: 10,
+                      position: 'fixed',
+                      top: (card.style.top + cardContainer.offset().top) - jqueryWindow.scrollTop()
+                    });
+                  }
+                } else {
+                  card.style.transition = 'all .5s {0}s linear'.format(
+                    .04 * (i < 10 ? i + 1 : 11));
+                }
+              });
+            }
+
+            // TODO: updating the cardsBySize.style attributes shouldn't trigger a redraw
+            // of their element styles, but it seems to be working. What's going on??
 
             cardContainer.css({
               visibility: 'visible',

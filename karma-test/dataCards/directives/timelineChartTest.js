@@ -65,6 +65,12 @@ describe('timelineChart', function() {
     childScope.expanded = expanded;
     childScope.testData = testData;
     childScope.showFiltered = showFiltered;
+    if (showFiltered) {
+      childScope.filters = [{
+        start: testData[Math.floor(.2 * testData.length)].date,
+        end: testData[Math.ceil(.8 * testData.length)].date
+      }];
+    }
     childScope.precision = "MONTH";
     childScope.$digest();
 
@@ -449,6 +455,13 @@ describe('timelineChart', function() {
         chart.element.find('g.segment.highlighted').eq(0).mousedown().mousemove().mouseup();
         expect(chart.element.find('.label.highlighted').length).to.equal(1);
         expect(chart.element.find('g.segment.highlighted').length).to.equal(1);
+      });
+
+      it('should clear when cleared from a parent scope', function() {
+        expect(chart.element.find('g.draghandle').length).not.to.equal(0);
+        chart.scope.filters = [];
+        chart.scope.$digest();
+        expect(chart.element.find('g.draghandle').length).to.equal(0);
       });
 
       describe('when existing onload', function() {

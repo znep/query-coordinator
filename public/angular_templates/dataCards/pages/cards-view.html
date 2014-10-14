@@ -40,9 +40,9 @@
           </save-button>
           <save-as page-has-changes="hasChanges" save-page-as="savePageAs" ng-if="currentUser"></save-as>
           <button type="button"
-            ng-click="editMode = !cardExpanded && !editMode"
+            ng-click="editMode = !expandedCard && !editMode"
             class="action-btn r-to-l"
-            ng-class='{disabled: cardExpanded, "cards-edit-disabled": cardExpanded}'
+            ng-class='{disabled: !!expandedCard, "cards-edit-disabled": !!expandedCard}'
             ng-show="currentUser">{{editMode | ifElse:'Preview':'Customize'}}</button>
           <a href="{{datasetCSVDownloadURL}}" title="Download this data as CSV" class="action-btn r-to-l">Download</a>
           <api-explorer dataset-observable="page.observe('dataset')"></api-explorer>
@@ -79,7 +79,7 @@
       edit-mode="editMode"
       global-where-clause-fragment="globalWhereClauseFragment"
       card-models="cardModels"
-      card-expanded="cardExpanded"
+      expanded-card="expandedCard"
       allow-add-card="!hasAllCards">
     </card-layout>
 

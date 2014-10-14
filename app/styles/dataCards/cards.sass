@@ -276,6 +276,12 @@ body.state-view-cards
             cursor: -webkit-grabbing !important
             @include prefixer(transition, 'width 0.55s, height 0.55s')
 
+            // Don't let our dimensions freak out when we're dragged
+            top: inherit
+            left: inherit
+            width: inherit
+            height: inherit
+
       .card-group-drop-placeholder
         position: absolute
         display: none
@@ -339,6 +345,9 @@ body.state-view-cards
 
 .expand-button span:before
   content: '⤢'
+
+.expand-button.collapse span:before
+  content: ''
 
 .delete-button span
   &:before

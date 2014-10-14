@@ -27,7 +27,7 @@
       <div style="background: url(/stubs/mock-visualizations/{{cardType}}.png) no-repeat; background-size: 100%"></div>
     </div>-->
   </div>
-  <div class="expand-button">
+  <div class="expand-button" ng-class="{ collapse: expanded }">
     <span ng-if="expanded && interactive" class="expand-button-target" title="Collapse this Card" ng-click="toggleExpanded()"></span>
     <span ng-if="!expanded && interactive" class="expand-button-target" title="Expand this Card" ng-click="toggleExpanded()"></span>
   </div>

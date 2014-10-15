@@ -1,4 +1,4 @@
-describe.only('withSpacer directive', function() {
+describe('withSpacer directive', function() {
   var testHelpers;
   var $rootScope;
 
@@ -24,6 +24,7 @@ describe.only('withSpacer directive', function() {
       margin: '14px',
       'line-height': '1em',
       position: 'absolute',
+      // Add a non-relevant property
       color: 'blue'
     };
     var el = testHelpers.TestDom.compileAndAppend(
@@ -43,6 +44,7 @@ describe.only('withSpacer directive', function() {
 
     expect(spacer.css('position')).to.equal('relative');
     expect(spacer.css('position')).not.to.equal(el.css('position'));
+    // Make sure the non-relevant property isn't copied over
     expect(spacer.css('color')).not.to.equal(el.css('color'));
   });
 
@@ -65,5 +67,18 @@ describe.only('withSpacer directive', function() {
       return spacer.width() === el.width() &&
         spacer.height() === el.height();
     }).then(done);
+  });
+
+  it('should clean up after itself when the scope is destroyed', function() {
+    var scope = $rootScope.$new();
+    var el = testHelpers.TestDom.compileAndAppend('<div with-spacer></div>', scope);
+
+    expect(el.siblings('.spacer').length).to.equal(1);
+    expect(el.observeDimensions().observers.length).to.be.equal(1);
+
+    scope.$emit('$destroy');
+
+    expect(el.siblings('.spacer').length).to.equal(0);
+    expect(el.observeDimensions().observers.length).to.be.equal(0);
   });
 });

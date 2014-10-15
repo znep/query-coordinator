@@ -4,7 +4,6 @@
  */
 angular.module('dataCards.directives').directive('withSpacer', function() {
   return {
-    scope: {},
     restrict : 'A',
 
     link: function($scope, element, attrs) {
@@ -12,8 +11,13 @@ angular.module('dataCards.directives').directive('withSpacer', function() {
         position: 'relative'
       }, element.css(['width', 'height', 'box-sizing', 'padding', 'margin', 'border-width', 'line-height'])));
       element.after(spacer);
-      element.observeDimensions().subscribe(function() {
+      var subscription = element.observeDimensions().subscribe(function() {
         spacer.css(element.css(['width', 'height']));
+      });
+
+      $scope.$on('$destroy', function() {
+        subscription.dispose();
+        spacer.remove();
       });
     }
   }

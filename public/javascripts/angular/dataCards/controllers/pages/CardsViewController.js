@@ -14,7 +14,7 @@
     }
   }
 
-  function CardsViewController($scope, $location, $log, $window, AngularRxExtensions, SortedTileLayout, Filter, PageDataService, UserSession, CardTypeMappingService, FlyoutService, page, Card) {
+  function CardsViewController($scope, $location, $log, $window, $q, AngularRxExtensions, SortedTileLayout, Filter, PageDataService, UserSession, CardTypeMappingService, FlyoutService, page, Card) {
 
     AngularRxExtensions.install($scope);
 
@@ -284,7 +284,7 @@
     );
     $scope.emitEventsFromObservable('page:dirtied', hasChangesObservable.filter(_.identity));
 
-    function writeSerializedPageJsonAndNotify(serializedJson, publishTo) {
+    function notifyUserOfSaveProgress(savePromise, publishTo) {
       var savedMessagePersistenceMsec = 3000;
       var failureMessagePersistenceMsec = 8000;
       var pretendSaveTakesAtLeastThisLongMsec = 300;
@@ -293,8 +293,6 @@
 
       // Desired behavior is to jump out of edit mode immediately upon hitting save.
       $scope.editMode = false;
-
-      var savePromise = PageDataService.save(serializedJson, serializedJson.pageId);
 
       var saveResponseData = Rx.Observable.fromPromise(savePromise).pluck('data');
 
@@ -331,12 +329,20 @@
 
     $scope.savePage = function() {
       if ($scope.hasChanges) {
-        writeSerializedPageJsonAndNotify(
-          $.extend(
+        try {
+          var serializedBlob = $.extend(
             page.serialize(),
             { pageId: page.id }
-          ),
-          currentPageSaveEvents);
+          );
+          var savePromise = PageDataService.save(serializedBlob, page.id);
+        } catch (exception) {
+          // If the serialization failed, reject the promise.
+          // Don't just error out immediately, because we still
+          // want to notify the user below.
+          $log.error('Serialization failed', exception);
+          var savePromise = $q.reject(exception);
+        }
+        notifyUserOfSaveProgress(savePromise, currentPageSaveEvents);
       }
     };
 
@@ -351,7 +357,8 @@
       // If it's set, it will do a regular save. We want it to save a new page.
       delete newPage.pageId;
 
-      writeSerializedPageJsonAndNotify(newPage, saveStatusSubject);
+      var savePromise = PageDataService.save(newPage);
+      notifyUserOfSaveProgress(savePromise, saveStatusSubject);
 
       // Redirect to a new page once Save As completed (plus a small delay).
       saveStatusSubject.filter(

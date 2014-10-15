@@ -484,7 +484,7 @@ describe("CardsViewController", function() {
         if (event.status === 'saved') {
           expect(saveSpy.calledOnce).to.be.true;
           var saveCall = saveSpy.getCall(0);
-          expect(saveCall.calledWithExactly(expectedPageSerializationData, undefined)).to.be.true;
+          expect(saveCall.calledWithExactly(expectedPageSerializationData)).to.be.true;
           mockPageDataService.save.restore();
           done();
         }

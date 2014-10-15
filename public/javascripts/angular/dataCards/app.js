@@ -1,4 +1,4 @@
-var dataCards = angular.module('dataCards', [
+var dependencies = [
   'ui.router',
   'ngSanitize',
   'btford.markdown',
@@ -9,7 +9,13 @@ var dataCards = angular.module('dataCards', [
   'dataCards.services',
   'dataCards.directives',
   'dataCards.models'
-]);
+];
+
+if (window['socrataConfig'].enableAirbrakeJs) {
+  dependencies.push('exceptionNotifier');
+}
+
+var dataCards = angular.module('dataCards', dependencies);
 
 dataCards.config(function(ServerConfig) {
   ServerConfig.setup(window['socrataConfig']);

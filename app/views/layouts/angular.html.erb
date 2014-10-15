@@ -1,22 +1,32 @@
 <!doctype html>
 <html>
+
   <head>
+
     <meta http-equiv="content-type" content="text/html;charset=utf-8" />
+
     <link type="text/css" media="all" rel="stylesheet" href="/webfonts/ss-air.css"/>
-    <%= rendered_stylesheet_tag "bower-styles-all" %>
+
+    <%= rendered_stylesheet_tag 'bower-styles-all' %>
     <%= angular_stylesheet_tag %>
+
     <%= yield :head %>
+
     <%- unless CurrentDomain.properties.typekit_id.blank? -%>
       <script type="text/javascript" src="//use.typekit.net/<%= CurrentDomain.properties.typekit_id %>.js"></script>
       <script type="text/javascript">try{Typekit.load();}catch(e){}</script>
     <%- end -%>
-    <script type="text/javascript">
-      var socrataConfig = <%= raw JSON(angular_config) %>;
-    </script>
+
+    <%= render_angular_config %>
     <%= render_fullstory_tracking %>
+
   </head>
+
+  <%# See also: app/views/angular/serve_app.html.erb %>
+
   <body ng-app="<%= angular_app %>">
     <%= render angular_app %>
     <%= yield :layout %>
   </body>
+
 </html>

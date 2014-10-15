@@ -55,7 +55,7 @@
               features: newFeatures,
               type: geojsonRegions.type
             };
-        };
+        }
 
         var model = scope.observe('model');
         var dataset = model.pluck('page').observeOnLatest('dataset');
@@ -76,9 +76,6 @@
 
         var nonBaseFilterApplied;
         var geojsonRegionsData;
-        var unfilteredData;
-        var filteredData;
-
 
         function getShapefileFeatureHumanReadablePropertyName(regions) {
           var p = regions.features[0].properties;
@@ -159,8 +156,9 @@
           dataset.observeOnLatest('columns'),
           function(fieldName, columns) {
             dataRequests.onNext(1);
+            // TODO Change "shapefile" to "shapeFile" throughout code base since case-style is inconsistent.
             if (!columns[fieldName].hasOwnProperty('shapefile')) {
-              throw new Error('Dataset metadata column for computed georegion column does not include shapfile.');
+              throw new Error('Dataset metadata column for computed georegion column does not include shapefile.');
             }
             var dataPromise = CardDataService.getChoroplethRegions(columns[fieldName].shapefile);
             dataPromise.then(
@@ -175,7 +173,7 @@
             return Rx.Observable.fromPromise(dataPromise);
           });
 
-        unfilteredData = Rx.Observable.subscribeLatest(
+        Rx.Observable.subscribeLatest(
           model.pluck('fieldName'),
           dataset,
           baseSoqlFilter,
@@ -194,12 +192,11 @@
             return Rx.Observable.fromPromise(dataPromise);
           });
 
-        filteredData = Rx.Observable.subscribeLatest(
+        Rx.Observable.subscribeLatest(
           model.pluck('fieldName'),
           dataset,
           scope.observe('whereClause'),
-          nonBaseFilterApplied,
-          function(fieldName, dataset, whereClauseFragment, nonBaseFilterApplied) {
+          function(fieldName, dataset, whereClauseFragment) {
             dataRequests.onNext(1);
             var dataPromise = CardDataService.getData(fieldName, dataset.id, whereClauseFragment);
             dataPromise.then(

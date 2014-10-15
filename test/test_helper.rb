@@ -103,7 +103,15 @@ module TestHelperMethods
   end
 
   def application_helper
-    @application_helper ||= ActionView::Base.send(:include, ApplicationHelper).new
+    @application_helper ||= begin
+      klass = ActionView::Base
+      Dir.foreach("#{Rails.root}/app/helpers").each do |file|
+        next if file =~ /^\./
+
+        klass.send(:include, File.basename(file, '.rb').classify.constantize)
+      end
+      klass.new
+    end
   end
 
 end

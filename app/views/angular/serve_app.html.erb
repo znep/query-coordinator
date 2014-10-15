@@ -1,4 +1,9 @@
+<%# See also: app/views/layouts/angular.html.erb %>
+
 <%= include_javascripts 'bower-all' %>
 <%= include_javascripts 'angular-jquery-extensions' %>
 <%= include_javascripts_unminified 'angular-socrata-common' %>
+<%= stacktrace_javascript_tag %>
+<%= render_airbrake_shim %>
+<%= render_airbrake_notifier %>
 <%= angular_javascript_tag %>

@@ -53,3 +53,6 @@ disable_dataset_search_box:
 enable_fullstory_tracking:
   description: Enable Fullstory™ tracking of page interactions (see CORE-3561 for more information)
   defaultValue: false
+enable_airbrake_js:
+  description: Enable Airbrake error tracking of Javascript errors (see CORE-3365 for more information)
+  defaultValue: true

@@ -1,7 +1,7 @@
 (function() {
   'use strict';
 
-  function CardTypeMappingService($log) {
+  function CardTypeMappingService($exceptionHandler) {
 
     var supportedCardTypes = ['column', 'choropleth', 'timeline'];
 
@@ -19,7 +19,11 @@
         if (physicalDatatype === 'point') { return 'pointMap'; }
         if (physicalDatatype === 'number') { return 'choropleth'; }
         if (physicalDatatype === 'text') {
-          $log.warn('Encountered location column "{0}" with text physical type - this is deprecated (expected number type).'.format(column.name));
+          var message = 'Encountered location column "{0}" with text physical type - this is deprecated (expected number type).'.format(column.name);
+          // TODO If you are the poor bastard that is looking at this, the problem is that the model's
+          // lazy loading behavior is intolerant of exceptions being thrown in the current implementation.
+          // We still want to log an "error" in this deprecation case, but we can't throw an error here.
+          $exceptionHandler(new Error(message));
           return 'choropleth';
         }
         if (physicalDatatype === 'geo_entity') { return 'point-ish map'; }

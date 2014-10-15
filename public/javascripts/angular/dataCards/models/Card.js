@@ -42,15 +42,13 @@ angular.module('dataCards.models').factory('Card', function($injector, ModelHelp
     serialize: function() {
       var serialized = this._super();
       serialized.fieldName = this.fieldName;
+      validateCardBlobSchema(serialized);
       return serialized;
     }
   });
 
   Card.deserialize = function(page, blob) {
-    var errors = JJV.validate('serializedCard', blob);
-    if (errors) {
-      throw new Error('Card deserialization failed: ' + JSON.stringify(errors));
-    }
+    validateCardBlobSchema(blob);
 
     var instance = new Card(page, blob.fieldName);
     _.each(_.keys(JJV.schema.serializedCard.properties), function(field) {
@@ -58,13 +56,20 @@ angular.module('dataCards.models').factory('Card', function($injector, ModelHelp
       if (field === 'activeFilters') {
         // activeFilters needs a bit more deserialization
         instance.set(field, _.map(blob[field], Filter.deserialize));
-      } else {
+      } else if (_.isDefined(blob[field])){
         instance.set(field, blob[field]);
       }
     });
 
     return instance;
   };
+
+  function validateCardBlobSchema(blob) {
+    var errors = JJV.validate('serializedCard', blob);
+    if (errors) {
+      throw new Error('Card deserialization failed: ' + JSON.stringify(errors));
+    }
+  }
 
   return Card;
 });

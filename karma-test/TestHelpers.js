@@ -83,19 +83,26 @@ angular.module('test', [])
     /**
      * Toggle whether jquery and css animations should happen.
      *
-     * @param {boolean} on If true, turns transitions on. Otherwise, turns transitions
-     * off.
+     * @param {String|boolean} value If falsy, lets transitions through. If true, disables
+     * transitions. If truey but not true, sets the transition duration to that value.
      */
-    function toggleTransitions(on) {
-      if (on) {
-        transitionOverride.remove();
-        jQuery.fx.off = false;
-      } else {
-        var prefices = ['-webkit-', '-moz-', '-ms-', '-o-'];
-        var style = 'transition: none !important;\n';
-        transitionOverride = $('<style />').appendTo('body');
+    function overrideTransitions(value) {
+      if (value) {
+        var prefices = ['-webkit-', '-moz-', '-ms-', '-o-', ''];
+        var style;
+        if (true === value) {
+          style = 'transition: none !important;\n';
+        } else {
+          style = 'transition-duration: ' + (_.isNumber(value) ? value + 's' : value)
+            + ' !important;\n';
+        }
+        transitionOverride = transitionOverride || $('<style />').appendTo('body');
         transitionOverride.html('* { ' + prefices.join(style) + style + ' }');
         jQuery.fx.off = true;
+      } else {
+        transitionOverride.remove();
+        transitionOverride = false;
+        jQuery.fx.off = false;
       }
     }
 
@@ -105,7 +112,7 @@ angular.module('test', [])
       flushAllD3Transitions: flushAllD3Transitions,
       fireEvent: fireEvent,
       fireMouseEvent: fireMouseEvent,
-      toggleTransitions: toggleTransitions,
+      overrideTransitions: overrideTransitions,
       waitForSatisfy: waitForSatisfy
     };
   });

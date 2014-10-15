@@ -13,6 +13,8 @@
       'LAYOUT_DATA_CARD_HEIGHT': 480,
       'LAYOUT_MIN_EXPANDED_CARD_HEIGHT': 480,
 
+      'TRANSITION_DURATION': .5,
+
       // Dataset field names and internal calculated values.
       'INTERNAL_DATASET_FEATURE_ID': '_feature_id',
       'UNFILTERED_VALUE_PROPERTY_NAME': '__SOCRATA_UNFILTERED_VALUE__',

@@ -2,6 +2,7 @@
   'use strict';
 
   var sortedTileLayout;
+  // Map from a cardSize category to a height in pixels
   var EXPANDED_SIZE_TO_HEIGHT = {
     1: 250,
     2: 200,
@@ -51,6 +52,7 @@
         var cardOriginY = 0;
 
         var lastFrameTime = Date.now();
+        var subscriptions = [];
 
         // NOTE Right now this directive has strict DOM structure requirements.
         // Ideally these wouldn't be required, but for the time being we'll
@@ -135,22 +137,13 @@
             // know the top offset of the next card up for layout.
             heightOfAllCards += cardHeight + Constants['LAYOUT_VERTICAL_PADDING'];
 
-            var style = {
+            card.style = {
               position: '',
               left: cardLeft,
               top: cardTop,
               width: cardWidth,
               height: cardHeight,
             };
-            if (card.style.position === 'fixed') {
-              // This card used to be expanded. Animating from fixed position to
-              // absolute is jerky 'cuz top/left mean something different. So start it
-              // in the analogous absolute position.
-              card.style.top = cardTop - (scrollTop + cardContainer.offset().top);
-
-            } else {
-              card.style = style;
-            }
           });
 
           // Enforce a minimum height
@@ -163,17 +156,17 @@
           // For smooth transitions, start with absolute positioning, and only when we
           // finish the animation do we transition to fixed
           var scrollTop = jqueryWindow.scrollTop();
-          expandedCardPos.endStyle = {
+          expandedCardPos.styleToApplyAtEndOfTransition = {
             position: 'fixed',
             left: expandedColumnLeft,
             width: expandedColumnWidth
           };
-          updateExpandedVerticalDims(expandedCardPos.endStyle, expandedCardPos.model,
-                                     scrollTop, windowSize,
+          updateExpandedVerticalDims(expandedCardPos.styleToApplyAtEndOfTransition,
+                                     expandedCardPos.model, scrollTop, windowSize,
                                      heightOfAllCards);
-          expandedCardPos.style = $.extend({}, expandedCardPos.endStyle, {
+          expandedCardPos.style = $.extend({}, expandedCardPos.styleToApplyAtEndOfTransition, {
             position: '',
-            top: scrollTop + expandedCardPos.endStyle.top - cardContainer.offset().top
+            top: scrollTop + expandedCardPos.styleToApplyAtEndOfTransition.top - cardContainer.offset().top
           });
 
 
@@ -204,14 +197,14 @@
           var editableCards = sortedTileLayout.doLayout(cardsBySize.normal);
 
           if (editMode) {
-            if (!editableCards.hasOwnProperty('1')) {
-              editableCards['1'] = [];
+            if (!editableCards.hasOwnProperty(1)) {
+              editableCards[1] = [];
             }
-            if (!editableCards.hasOwnProperty('2')) {
-              editableCards['2'] = [];
+            if (!editableCards.hasOwnProperty(2)) {
+              editableCards[2] = [];
             }
-            if (!editableCards.hasOwnProperty('3')) {
-              editableCards['3'] = [];
+            if (!editableCards.hasOwnProperty(3)) {
+              editableCards[3] = [];
             }
           }
 
@@ -303,13 +296,22 @@
         // Animation clean-up
         cardContainer.on('transitionend webkitTransitionEnd oTransitionEnd MSTransitionEnd', '.card-spot', function() {
           var jqEl = $(this);
-          // Remove transition
+          // Let the child readjust itself
+          jqEl.children().css({
+            bottom: '',
+            right: '',
+            width: '',
+            height: ''
+          });
+          // Remove transition - eg so during drag/drop, you don't interfere with the js
+          // moving the card with the mouse
           jqEl.css('transition', '');
 
+          // Apply the final style if it exists
           var localScope = jqEl.scope();
-          if (localScope.cardPosition.endStyle) {
-            jqEl.css(localScope.cardPosition.endStyle);
-            localScope.cardPosition.endStyle = null;
+          if (localScope.cardPosition.styleToApplyAtEndOfTransition) {
+            jqEl.css(localScope.cardPosition.styleToApplyAtEndOfTransition);
+            localScope.cardPosition.styleToApplyAtEndOfTransition = null;
           }
         });
 
@@ -370,64 +372,79 @@
          * Subscriptions for laying things out.
          */
 
+        var observableForStaticElements = Rx.Observable.combineLatest(
+          WindowState.scrollPositionSubject,
+          quickFilterBar.observeDimensions(),
+          cardsMetadata.observeDimensions(),
+          WindowState.windowSizeSubject,
+          function() { return arguments; }
+        );
+
         // Figure out the sticky-ness of the QFB onscroll and un/stick appropriately
-        WindowState.scrollPositionSubject.subscribe(function(scrollTop) {
-          var headerStuck = scrollTop >= (
+        subscriptions.push(observableForStaticElements.subscribe(function(args) {
+          var headerStuck = args[0] >= (
             cardsMetadataOffsetTop + cardsMetadata.outerHeight());
           quickFilterBar.toggleClass('stuck', headerStuck);
-        });
+        }));
 
         // We also change the height of the expanded card onscroll, and if the QFB height
         // changes
-        Rx.Observable.combineLatest(
-          WindowState.scrollPositionSubject,
-          quickFilterBar.observeDimensions(),
-          function() { return arguments; }
-        ).filter(function() {
+        subscriptions.push(observableForStaticElements.filter(function() {
           // Cast to a boolean
           return !!scope.expandedCard;
         }).subscribe(function(args) {
           var jqEl = cardContainer.find('.expanded').closest('.card-spot');
           var localScope = jqEl.scope();
-          // TODO: hack so that if you hit this code during a transition, the
-          // transitionend handler will get the correct fixed-position style.
-          var styles = localScope.cardPosition.endStyle || {};
-          updateExpandedVerticalDims(styles, scope.expandedCard,
-                                     args[0], jqueryWindow.dimensions(),
-                                     cardContainer.height());
-          jqEl.css(styles);
-        });
+          if (localScope) {
+            // TODO: hack so that if you hit this code during a transition, the
+            // transitionend handler will get the correct fixed-position style.
+            var styles = localScope.cardPosition.styleToApplyAtEndOfTransition || {};
+            updateExpandedVerticalDims(styles, scope.expandedCard,
+                                       args[0], jqueryWindow.dimensions(),
+                                       cardContainer.height());
+            jqEl.css(styles);
+          }
+        }));
 
 
-        Rx.Observable.subscribeLatest(
+        subscriptions.push(Rx.Observable.subscribeLatest(
           cardsBySizeObs,
           expandedCardsObs,
           scope.observe('editMode'),
           scope.observe('allowAddCard'),
-          cardsMetadata.observeDimensions(),
           WindowState.windowSizeSubject,
-          function layoutFn(cardsBySize, expandedCards, editMode, allowAddCard, cardsMetadataSize, windowSize) {
-
+          function layoutFn(cardsBySize, expandedCards, editMode, allowAddCard, windowSize) {
             if (_.isEmpty(cardsBySize.normal) || _.isEmpty(cardsBySize.dataCard)) {
               return;
             }
 
             // Figure out if there is an expanded card.
-            // Keep track of whether the layout is an expanded-card layout, so upstream
-            // scopes can do things like disable edit buttons
+            if (expandedCards.length > 1) {
+              // We're in an intermediate state while the scope.page is switching which
+              // card is expanded - ie it turns the new one on first, then the old one
+              // off. So ignore. The animation of the expansion & collapse of cards
+              // depends on knowing whether it was previously expanded or collapsed or
+              // not, so it can decide to start it in fixed/absolute position and end in
+              // absolute/fixed (ie the opposite) or not. So changing the state during an
+              // intermediate state is no good.
+              return;
+            }
             var expandedCard = _.isEmpty(expandedCards) ? null : expandedCards[0].model;
-            var expandedId;
-            var expandChanged = false;
+            // Keep track of either the one expanded previously, or the new expanded one
+            var oldExpandedId;
+            var newExpandedId;
             if (scope.expandedCard != expandedCard) { // == to deal with null vs undef
-              expandedId = (expandedCard || scope.expandedCard).uniqueId;
+              oldExpandedId = scope.expandedCard && scope.expandedCard.uniqueId;
+              newExpandedId = expandedCard && expandedCard.uniqueId;
+              // Keep track of whether the layout is an expanded-card layout, so upstream
+              // scopes can do things like disable edit buttons
               scope.expandedCard = expandedCard;
-              expandChanged = true;
             }
 
             // Terminology:
             //
             // Content size (width, height) refers to a size with padding/LAYOUT_GUTTER
-            // removed.  Otherwise, sizes include padding/LAYOUT_GUTTER.
+            // removed. Otherwise, sizes include padding/LAYOUT_GUTTER.
             var containerContentWidth = cardContainer.width()
               - Constants['LAYOUT_GUTTER'] * 2;
 
@@ -438,8 +455,12 @@
             // Track each 'add card' button's position in the layout
             var addCardButtons = [];
 
-            // Branch here based on whether or not there is an expanded card.
             var heightOfAllCards;
+            // First reset the styles of all the cards
+            _.each(cardsBySize.normal.concat(cardsBySize.dataCard), function(v) {
+              v.style = v.styleToApplyAtEndOfTransition = null;
+            });
+            // Branch here based on whether or not there is an expanded card.
             if (scope.expandedCard) {
               heightOfAllCards = layoutExpanded(
                 cardsBySize, containerContentWidth, windowSize);
@@ -450,33 +471,43 @@
             }
 
             // We only want to animate during expansion changes. Not eg during customize
-            if (expandChanged || scope.expandedCard) {
+            if (oldExpandedId || newExpandedId) {
               // Animate the card position changes
               _.each(cardsBySize.normal.concat(cardsBySize.dataCard), function(card, i) {
-                if (expandedId === card.model.uniqueId) {
-                  if (card.endStyle) {
-                    $.extend(card.style, {
-                      transition: 'all .5s linear',
-                      zIndex: 10
-                    });
-                  } else {
-                    card.endStyle = $.extend({}, card.style);
-                    $.extend(card.style, {
-                      transition: 'all .5s linear',
-                      zIndex: 10,
-                      position: 'fixed',
-                      top: (card.style.top + cardContainer.offset().top) - jqueryWindow.scrollTop()
-                    });
-                  }
+                // Set the child to fixed dimensions during transition, so it doesn't
+                // transition
+                card.childStyle = {
+                  bottom: 'auto',
+                  right: 'auto',
+                  width: card.style.width,
+                  height: card.style.height
+                };
+
+                // Transitioning from fixed-position to absolute-position (and vice-versa)
+                // sucks - top/left have completely different reference points. SO - keep
+                // its position-property the same (and translate the top/left to the
+                // cooresponding coordinate system) until the transition ends, and THEN
+                // set the card's style to its final state (so scrolling works as
+                // expected).
+                if (newExpandedId === card.model.uniqueId) {
+                  $.extend(card.style, {
+                    transition: 'all ' + Constants.TRANSITION_DURATION + 's ease-in-out',
+                    zIndex: 10
+                  });
+                } else if(oldExpandedId === card.model.uniqueId) {
+                  card.styleToApplyAtEndOfTransition = $.extend({}, card.style);
+                  $.extend(card.style, {
+                    transition: 'all ' + Constants.TRANSITION_DURATION + 's ease-in-out',
+                    zIndex: 10,
+                    position: 'fixed',
+                    top: (card.style.top + cardContainer.offset().top) - jqueryWindow.scrollTop()
+                  });
                 } else {
-                  card.style.transition = 'all .5s {0}s linear'.format(
-                    .04 * (i < 10 ? i + 1 : 11));
+                  card.style.transition = 'all ' + Constants.TRANSITION_DURATION + 's ' +
+                    (.04 * (i < 10 ? i + 1 : 11)) + 's ease-in-out';
                 }
               });
             }
-
-            // TODO: updating the cardsBySize.style attributes shouldn't trigger a redraw
-            // of their element styles, but it seems to be working. What's going on??
 
             cardContainer.css({
               visibility: 'visible',
@@ -486,9 +517,7 @@
             scope.cardPositions = cardsBySize.normal.concat(cardsBySize.dataCard);
             scope.placeholderDropTargets = placeholderDropTargets;
             scope.addCardButtons = addCardButtons;
-
-            console.log('rerender');
-          });
+          }));
 
 
         /******************************
@@ -551,7 +580,7 @@
         // This is on the body rather than the individual cards so that dragging
         // the cursor off of a card and then letting go will correctly transition
         // the dragging state to false.
-        WindowState.mouseLeftButtonPressedSubject.subscribe(function(leftPressed) {
+        subscriptions.push(WindowState.mouseLeftButtonPressedSubject.subscribe(function(leftPressed) {
           if (!leftPressed) {
             mouseIsDown = false;
             mouseDownClientX = null;
@@ -564,9 +593,9 @@
               scope.grabbedCard = null;
             });
           }
-        });
+        }));
 
-        WindowState.mousePositionSubject.subscribe(function(position) {
+        subscriptions.push(WindowState.mousePositionSubject.subscribe(function(position) {
           if (mouseIsDown && scope.grabbedCard === null) {
 
             var distanceSinceDragStart =
@@ -656,7 +685,7 @@
             requestAnimationFrame(checkForScroll);
           }
 
-        });
+        }));
 
         function checkForScroll() {
 
@@ -729,6 +758,12 @@
         ******************/
 
         scope.bindObservable('cardModels', scope.page.observe('cards'));
+
+        scope.$on('$destroy', function() {
+          _.each(subscriptions, function(sub) {
+            sub.dispose();
+          });
+        });
 
       }
     }

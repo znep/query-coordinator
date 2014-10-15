@@ -60,10 +60,21 @@ angular.module('dataCards.models').factory('Page', function($q, Dataset, Card, M
     toggleExpanded: function(theCard) {
       // NOTE: For the MVP, we only ever allow one expanded card.
       // Enforce that here.
-      _.each(this.getCurrentValue('cards'), function(card) {
-        var expanded = card === theCard ? !theCard.getCurrentValue('expanded') : false;
-        if (expanded != card.getCurrentValue('expanded')) {
-          card.set('expanded', expanded);
+
+      // Since swapping the expanded card is not an atomic operation, observers listening
+      // to the expanded state (eg card-layout.js) will trigger multiple times for the
+      // same operation. Ideally it'd be an atomic operation, but since it isn't, let's
+      // at least let the subscribers know by preferring to set more cards to expanded.
+      // (ie since having 0 expanded cards is a valid state, but having 2 expanded cards
+      // isn't, subscribers can just ignore the intermediate state of having 2 expanded
+      // cards.)
+      var currentlyExpanded = _.filter(this.getCurrentValue('cards'), function(card) {
+        return card.getCurrentValue('expanded');
+      });
+      theCard.set('expanded', !theCard.getCurrentValue('expanded'));
+      _.each(currentlyExpanded, function(card) {
+        if (card !== theCard) {
+          card.set('expanded', false);
         }
       });
     }

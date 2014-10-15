@@ -657,13 +657,35 @@ describe("Model", function() {
       var model = new Model();
       model.defineObservableProperty('number', 5);
       model.defineObservableProperty('string', 'asd');
-      model.defineObservableProperty('undef', undefined);
+      //TODO see comments in Model to see why we don't support this right now.
+      //model.defineObservableProperty('undef', undefined);
       model.defineObservableProperty('null', null);
       expect(model.serialize()).to.deep.equal({
         number: 5,
         string: 'asd',
-        undef: undefined,
+        //TODO see above.
+        //undef: undefined,
         null: null
+      });
+    });
+    it('should not include fields which were never written to', function() {
+      var model = new Model();
+      model.defineObservableProperty('number', 5);
+      model.defineObservableProperty('notDefinedInitially');
+      model.defineObservableProperty('null', null);
+      expect(model.serialize()).to.deep.equal({
+        number: 5,
+        null: null
+      });
+    });
+    it('should not include fields which were never written to', function() {
+      var model = new Model();
+      model.defineObservableProperty('number', 5);
+      model.defineObservableProperty('notDefinedInitially');
+      model.set('notDefinedInitially', 10);
+      expect(model.serialize()).to.deep.equal({
+        number: 5,
+        notDefinedInitially: 10
       });
     });
     it('should correctly serialize a model with objects and arrays', function() {
@@ -734,6 +756,79 @@ describe("Model", function() {
           }
         ]
       });
+    });
+  });
+  describe('isSet', function() {
+    it('should be false for non-lazy properties with no initial value', function() {
+      var model = new Model();
+      model.defineObservableProperty('noInitialValue');
+      expect(model.isSet('noInitialValue')).to.be.false;
+    });
+
+    it('should be true for non-lazy properties with an initial value', function() {
+      var model = new Model();
+      model.defineObservableProperty('initialValue', 5);
+      expect(model.isSet('initialValue')).to.be.true;
+    });
+
+    it('should become true after calling set() on non-lazy properties with no initial value', function() {
+      var model = new Model();
+      model.defineObservableProperty('noInitialValue');
+      model.set('noInitialValue', 123);
+      expect(model.isSet('noInitialValue')).to.be.true;
+    });
+
+    it('should be false for lazy properties with no initial value', function() {
+      var model = new Model();
+      function promiseGenerator() {
+        throw new Error('should not be called');
+      };
+
+      model.defineObservableProperty('noInitialValue', undefined, promiseGenerator);
+      expect(model.isSet('noInitialValue')).to.be.false;
+    });
+
+    it('should become true for lazy properties with no initial value when set() is called.', function() {
+      var model = new Model();
+      function promiseGenerator() {
+        throw new Error('should not be called');
+      };
+
+      model.defineObservableProperty('noInitialValue', undefined, promiseGenerator);
+      model.set('noInitialValue', 'value');
+      expect(model.isSet('noInitialValue')).to.be.true;
+    });
+
+    it('should be true for lazy properties with an initial value', function() {
+      var model = new Model();
+      function promiseGenerator() {
+        throw new Error('should not be called');
+      };
+
+      model.defineObservableProperty('noInitialValue', 'a value', promiseGenerator);
+      expect(model.isSet('noInitialValue')).to.be.true;
+    });
+
+    it('should become true after the lazy evaluator fulfills for lazy properties with no initial value', function(done) {
+      var model = new Model();
+      var fulfill;
+      var promise = new Promise(function(f){fulfill = f});
+
+      function promiseGenerator() {
+        return promise;
+      };
+
+      model.defineObservableProperty('noInitialValue', undefined, promiseGenerator);
+      expect(model.isSet('noInitialValue')).to.be.false; // No subscribers yet, so promise shouldn't be resolved yet.
+
+      model.observe('noInitialValue').subscribe(function(value){
+        if (value === 132) {
+          expect(model.isSet('noInitialValue')).to.be.true;
+          done();
+        }
+      });
+
+      fulfill(132);
     });
   });
 });

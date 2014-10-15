@@ -113,18 +113,40 @@ describe('Page model', function() {
     };
 
     var instance = new Page(id);
-    instance.observe('dataset').subscribe(function(val) {
-      if (val instanceof Dataset) {
-        var serialized = instance.serialize();
-        //TODO real schema in JJV.
-        var fields = ['description', 'name', 'layoutMode', 'primaryAmountField', 'primaryAggregation', 'isDefaultPage', 'pageSource', 'baseSoqlFilter', 'cards', 'datasetId'];
-        expect(serialized).to.have.keys(fields);
-        expect(serialized).to.have.property('datasetId', datasetId);
-        done();
-      }
+
+    var observableFields = ['description', 'name', 'layoutMode', 'primaryAmountField', 'primaryAggregation', 'isDefaultPage', 'pageSource', 'cards'];
+    var expectedFields = observableFields.concat([ 'datasetId' ]);
+
+    // Ask for all of the fields, otherwise Page will never bother to fetch them.
+    // Build sequences that will terminate when the field is set to something other than
+    // undefined.
+    var allFieldsAsObservables = _.map(observableFields, function(field) {
+      return instance.observe(field).filter(_.isDefined).first().ignoreElements();
+    });
+    // Model's ready when all the above sequences terminatel.
+    var modelReady = Rx.Observable.merge.apply(Rx.Observable, allFieldsAsObservables);
+
+    // Make sure the serialized blob looks right.
+    modelReady.subscribe(undefined, undefined, function() {
+      var serialized = instance.serialize();
+      //TODO real schema in JJV.
+      expect(serialized).to.have.keys(expectedFields);
+      expect(serialized).to.have.property('datasetId', datasetId);
+      done();
     });
 
-    staticInfoDefer.resolve({ 'datasetId': datasetId});
+    instance.set('dataset', {id: datasetId});
+    staticInfoDefer.resolve({
+      'datasetId': datasetId,
+      'description': 'desc',
+      'name': 'dsName',
+      'layoutMode': 'figures',
+      'primaryAmountField': 'something',
+      'primaryAggregation': 'count',
+      'isDefaultPage': true,
+      'pageSource': 'admin',
+      'cards': []
+    });
     $rootScope.$digest();
   });
 

@@ -6,6 +6,7 @@ angular.module('dataCards.models').factory('Model', function(Class, ModelHelper)
       this._sets = new Rx.Subject();
       this._recursiveSets = new Rx.Subject();
       this._propertyTable = {};
+      this._propertyHasBeenWritten = {};
 
       //Keeps track of children we've told that this instance is their parent.
       //Maps property names to arrays of children (because a property can be set
@@ -31,6 +32,12 @@ angular.module('dataCards.models').factory('Model', function(Class, ModelHelper)
         });
         self._children[changeNotification.property] = actualModels;
       });
+
+      // Track which properties have ever had writes, via defaults or regular
+      // set().
+      this.observePropertyWrites().subscribe(function(changeNotification) {
+        self._propertyHasBeenWritten[changeNotification.property] = true;
+      });
     },
 
     _setParentModel: function(parentModel) {
@@ -55,6 +62,9 @@ angular.module('dataCards.models').factory('Model', function(Class, ModelHelper)
     // If provided, the third argument is a function returning a promise that yields the default
     // value. While the promise is being evaluated, the value of the property is the default value
     // provided as the second argument.
+    // BEWARE: if initialValue is undefined (or not passed), the property will not be considered
+    // set (see isSet) until set() is called on this property, or the defaultGenerator (if provided)
+    // resolves.
     defineObservableProperty: function(propertyName, initialValue, defaultGenerator) {
       var self = this;
 
@@ -73,7 +83,15 @@ angular.module('dataCards.models').factory('Model', function(Class, ModelHelper)
         writesSequence = ModelHelper.addProperty(propertyName, this._propertyTable, initialValue);
       }
 
-      writesSequence.subscribe(function(value) {
+      // Push write notifications for this property to the writes sequence.
+      // This includes the initial value and the lazy default.
+      // There's a special case if the initial value is not defined - ModelHelper
+      // will still emit a write event in this case (for "undefined"), which we don't
+      // want to consider as a write.
+      //TODO right now we don't distinguish between passing null and not passing initialValue
+      //at all.
+      (_.isDefined(initialValue) ? writesSequence : writesSequence.skip(1))
+        .subscribe(function(value) {
           self._writes.onNext({
             model: self,
             property: propertyName,
@@ -110,6 +128,16 @@ angular.module('dataCards.models').factory('Model', function(Class, ModelHelper)
       });
     },
 
+    // Returns true if any of these hold:
+    //   * The property has been written by a call to set(), or
+    //   * The property has been initialized to a non-undefined value via defineObservableProperty
+    //     (either due to an initial value being provided or due to a lazy default resolving).
+    // Will throw an exception if that property
+    // hasn't been defined on this Model.
+    isSet: function(propertyName) {
+      return this._propertyHasBeenWritten[propertyName] === true;
+    },
+
     // Gets the current value of the named property on this model.
     // Will throw an exception if that property
     // hasn't been defined on this Model.
@@ -124,7 +152,9 @@ angular.module('dataCards.models').factory('Model', function(Class, ModelHelper)
     },
 
     // Get a snapshot of this model. Child models are descended
-    // into.
+    // into. Properties that have never been set (see isSet) will
+    // not be represented (if you want them to be, set those
+    // properties manually to undefined).
     //
     // Children of a Model M are defined as all Models which
     // are directly assigned to one of M's properties, or are
@@ -142,9 +172,7 @@ angular.module('dataCards.models').factory('Model', function(Class, ModelHelper)
           return val.serialize();
         } else if (_.isArray(val)) {
           // Arrays are special - they contain models which we care about.
-          return _.map(val, function(valInArray) {
-            return serializeArbitrary(valInArray);
-          });
+          return _.map(val, serializeArbitrary);
         } else if (_.isFunction(val)) {
           throw new Error('Tried to serialize a model having a function as a property value');
         } else {
@@ -154,7 +182,9 @@ angular.module('dataCards.models').factory('Model', function(Class, ModelHelper)
 
       _.forOwn(self._propertyTable, function(seq, propertyName) {
         var currentValue = self.getCurrentValue(propertyName);
-        artifact[propertyName] = serializeArbitrary(currentValue);
+        if (self.isSet(propertyName)) {
+          artifact[propertyName] = serializeArbitrary(currentValue);
+        }
       });
 
       return artifact;

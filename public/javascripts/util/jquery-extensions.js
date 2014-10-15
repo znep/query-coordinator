@@ -16,17 +16,21 @@
   // Yields an RX observable sequence of this selection's dimensions.
   $.fn.observeDimensions = function() {
     var self = this;
-    var dimensionsSubject = new Rx.BehaviorSubject(self.dimensions());
+    var dimensionsSubject = self.data('dimensionsSubject');
+    if (!dimensionsSubject) {
+      dimensionsSubject = new Rx.BehaviorSubject(self.dimensions())
+      self.data('dimensionsSubject', dimensionsSubject);
 
-    self.resize(function() {
-      // We must check to see if the dimensions really did change,
-      // as jQuery.resize-plugin has a bug in versions of IE which require polling for size changes.
-      var oldDimensions = dimensionsSubject.value;
-      var newDimensions = self.dimensions();
-      if (oldDimensions.width !== newDimensions.width || oldDimensions.height !== newDimensions.height) {
-        dimensionsSubject.onNext(newDimensions);
-      }
-    });
+      self.resize(function() {
+        // We must check to see if the dimensions really did change,
+        // as jQuery.resize-plugin has a bug in versions of IE which require polling for size changes.
+        var oldDimensions = dimensionsSubject.value;
+        var newDimensions = self.dimensions();
+        if (oldDimensions.width !== newDimensions.width || oldDimensions.height !== newDimensions.height) {
+          dimensionsSubject.onNext(newDimensions);
+        }
+      });
+    }
 
     return dimensionsSubject;
   };

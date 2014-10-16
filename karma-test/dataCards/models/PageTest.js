@@ -54,13 +54,13 @@ describe('Page model', function() {
 
     var shouldBeResolved = false;
 
-    var staticInfoDefer = $q.defer();
+    var mockBaseInfoDefer = $q.defer();
     var getBaseInfoCalled = false;
     MockPageDataService.getBaseInfo = function(id) {
       expect(getBaseInfoCalled).to.be.false;
       getBaseInfoCalled = true;
       expect(id).to.equal(id);
-      return staticInfoDefer.promise;
+      return mockBaseInfoDefer.promise;
     };
 
     var instance = new Page(id);
@@ -71,7 +71,7 @@ describe('Page model', function() {
     });
 
     shouldBeResolved = true;
-    staticInfoDefer.resolve({ 'description': descFromApi });
+    mockBaseInfoDefer.resolve({ 'description': descFromApi });
     $rootScope.$digest();
     expect(getBaseInfoCalled).to.be.true;
 
@@ -84,10 +84,10 @@ describe('Page model', function() {
     var id = 'dead-beef';
     var datasetId = 'fooo-baar';
 
-    var staticInfoDefer = $q.defer();
+    var mockBaseInfoDefer = $q.defer();
     MockPageDataService.getBaseInfo = function(id) {
       expect(id).to.equal(id);
-      return staticInfoDefer.promise;
+      return mockBaseInfoDefer.promise;
     };
 
     var instance = new Page(id);
@@ -98,7 +98,7 @@ describe('Page model', function() {
       }
     });
 
-    staticInfoDefer.resolve({ 'datasetId': datasetId});
+    mockBaseInfoDefer.resolve({ 'datasetId': datasetId});
     $rootScope.$digest();
   });
 
@@ -106,10 +106,10 @@ describe('Page model', function() {
     var id = 'dead-beef';
     var datasetId = 'fooo-baar';
 
-    var staticInfoDefer = $q.defer();
+    var mockBaseInfoDefer = $q.defer();
     MockPageDataService.getBaseInfo = function(id) {
       expect(id).to.equal(id);
-      return staticInfoDefer.promise;
+      return mockBaseInfoDefer.promise;
     };
 
     var instance = new Page(id);
@@ -123,7 +123,7 @@ describe('Page model', function() {
     var allFieldsAsObservables = _.map(observableFields, function(field) {
       return instance.observe(field).filter(_.isDefined).first().ignoreElements();
     });
-    // Model's ready when all the above sequences terminatel.
+    // Model's ready when all the above sequences terminate.
     var modelReady = Rx.Observable.merge.apply(Rx.Observable, allFieldsAsObservables);
 
     // Make sure the serialized blob looks right.
@@ -136,7 +136,7 @@ describe('Page model', function() {
     });
 
     instance.set('dataset', {id: datasetId});
-    staticInfoDefer.resolve({
+    mockBaseInfoDefer.resolve({
       'datasetId': datasetId,
       'description': 'desc',
       'name': 'dsName',
@@ -152,7 +152,7 @@ describe('Page model', function() {
 
   describe('toggleExpanded', function() {
     it('should toggle expanded on the given card', function() {
-      var staticInfoDefer = $q.defer();
+      var mockBaseInfoDefer = $q.defer();
       MockPageDataService.getBaseInfo = _.constant($q.when({ 'datasetId': 'fake-fbfr' }));
 
       var instance = new Page('dead-beef');
@@ -168,7 +168,7 @@ describe('Page model', function() {
     });
 
     it('should only allow expanded on one card', function() {
-      var staticInfoDefer = $q.defer();
+      var mockBaseInfoDefer = $q.defer();
       MockPageDataService.getBaseInfo = _.constant($q.when({ 'datasetId': 'fake-fbfr' }));
 
       var instance = new Page('dead-beef');

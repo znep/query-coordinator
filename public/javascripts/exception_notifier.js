@@ -25,7 +25,7 @@
   };
 
   angular.module('exceptionNotifier', []).
-    factory('$exceptionHandler', function () {
+    factory('$exceptionHandler', function ($log) {
       return function(exception, cause) {
         pushExceptionToAirbrake(exception, cause);
         $log.error(exception);

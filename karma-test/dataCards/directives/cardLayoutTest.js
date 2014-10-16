@@ -164,7 +164,7 @@ describe('CardLayout directive test', function() {
         } else {
           c.set('expanded', false);
         }
-        c.set('cardSize', '1');
+        c.set('cardSize', 1);
         return c;
       });
     };
@@ -218,10 +218,10 @@ describe('CardLayout directive test', function() {
       var card4 = new Card(cl.pageModel, '*');
       var cards = [ card1, card2, card3, card4 ];
 
-      card1.set('cardSize', '1');
-      card2.set('cardSize', '2');
-      card3.set('cardSize', '2');
-      card4.set('cardSize', '3');
+      card1.set('cardSize', 1);
+      card2.set('cardSize', 2);
+      card3.set('cardSize', 2);
+      card4.set('cardSize', 3);
 
       cl.pageModel.set('cards', cards);
 
@@ -262,10 +262,10 @@ describe('CardLayout directive test', function() {
       var card4 = new Card(cl.pageModel, '*');
       var cards = [ card1, card2, card3, card4 ];
 
-      card1.set('cardSize', '1');
-      card2.set('cardSize', '2');
-      card3.set('cardSize', '2');
-      card4.set('cardSize', '3');
+      card1.set('cardSize', 1);
+      card2.set('cardSize', 2);
+      card3.set('cardSize', 2);
+      card4.set('cardSize', 3);
 
       cl.pageModel.set('cards', cards);
 
@@ -309,10 +309,10 @@ describe('CardLayout directive test', function() {
       var card4 = new Card(cl.pageModel, '*');
       var cards = [ card1, card2, card3, card4 ];
 
-      card1.set('cardSize', '1');
-      card2.set('cardSize', '2');
-      card3.set('cardSize', '2');
-      card4.set('cardSize', '3');
+      card1.set('cardSize', 1);
+      card2.set('cardSize', 2);
+      card3.set('cardSize', 2);
+      card4.set('cardSize', 3);
 
       cl.pageModel.set('cards', cards);
 
@@ -339,10 +339,10 @@ describe('CardLayout directive test', function() {
       var card4 = new Card(cl.pageModel, '*');
       var cards = [ card1, card2, card3, card4 ];
 
-      card1.set('cardSize', '1');
-      card2.set('cardSize', '2');
-      card3.set('cardSize', '2');
-      card4.set('cardSize', '3');
+      card1.set('cardSize', 1);
+      card2.set('cardSize', 2);
+      card3.set('cardSize', 2);
+      card4.set('cardSize', 3);
 
       cl.pageModel.set('cards', cards);
 
@@ -370,10 +370,10 @@ describe('CardLayout directive test', function() {
       var card4 = new Card(cl.pageModel, '*');
       var cards = [ card1, card2, card3, card4 ];
 
-      card1.set('cardSize', '1');
-      card2.set('cardSize', '2');
-      card3.set('cardSize', '2');
-      card4.set('cardSize', '3');
+      card1.set('cardSize', 1);
+      card2.set('cardSize', 2);
+      card3.set('cardSize', 2);
+      card4.set('cardSize', 3);
 
       cl.pageModel.set('cards', cards);
 
@@ -424,10 +424,10 @@ describe('CardLayout directive test', function() {
       var card4 = new Card(cl.pageModel, '*');
       var cards = [ card1, card2, card3, card4 ];
 
-      card1.set('cardSize', '1');
-      card2.set('cardSize', '2');
-      card3.set('cardSize', '2');
-      card4.set('cardSize', '3');
+      card1.set('cardSize', 1);
+      card2.set('cardSize', 2);
+      card3.set('cardSize', 2);
+      card4.set('cardSize', 3);
 
       cl.pageModel.set('cards', cards);
 
@@ -465,10 +465,10 @@ describe('CardLayout directive test', function() {
       var card4 = new Card(cl.pageModel, '*');
       var cards = [ card1, card2, card3, card4 ];
 
-      card1.set('cardSize', '1');
-      card2.set('cardSize', '2');
-      card3.set('cardSize', '2');
-      card4.set('cardSize', '3');
+      card1.set('cardSize', 1);
+      card2.set('cardSize', 2);
+      card3.set('cardSize', 2);
+      card4.set('cardSize', 3);
 
       cl.pageModel.set('cards', cards);
       cl.outerScope.editMode = true;
@@ -488,39 +488,39 @@ describe('CardLayout directive test', function() {
         ];
       };
 
-      card1.set('cardSize', '1');
-      card2.set('cardSize', '2');
-      card3.set('cardSize', '3');
+      card1.set('cardSize', 1);
+      card2.set('cardSize', 2);
+      card3.set('cardSize', 3);
       expect(visibilities()).to.deep.equal([false, false, false]);
 
-      card1.set('cardSize', '2');
-      card2.set('cardSize', '2');
-      card3.set('cardSize', '3');
+      card1.set('cardSize', 2);
+      card2.set('cardSize', 2);
+      card3.set('cardSize', 3);
       expect(visibilities()).to.deep.equal([true, false, false]);
 
-      card1.set('cardSize', '1');
-      card2.set('cardSize', '2');
-      card3.set('cardSize', '2');
+      card1.set('cardSize', 1);
+      card2.set('cardSize', 2);
+      card3.set('cardSize', 2);
       expect(visibilities()).to.deep.equal([false, false, true]);
 
-      card1.set('cardSize', '1');
-      card2.set('cardSize', '1');
-      card3.set('cardSize', '1');
+      card1.set('cardSize', 1);
+      card2.set('cardSize', 1);
+      card3.set('cardSize', 1);
       expect(visibilities()).to.deep.equal([false, true, true]);
 
-      card1.set('cardSize', '2');
-      card2.set('cardSize', '2');
-      card3.set('cardSize', '2');
+      card1.set('cardSize', 2);
+      card2.set('cardSize', 2);
+      card3.set('cardSize', 2);
       expect(visibilities()).to.deep.equal([true, false, true]);
 
-      card1.set('cardSize', '3');
-      card2.set('cardSize', '3');
-      card3.set('cardSize', '3');
+      card1.set('cardSize', 3);
+      card2.set('cardSize', 3);
+      card3.set('cardSize', 3);
       expect(visibilities()).to.deep.equal([true, true, false]);
 
-      card1.set('cardSize', '1');
-      card2.set('cardSize', '3');
-      card3.set('cardSize', '3');
+      card1.set('cardSize', 1);
+      card2.set('cardSize', 3);
+      card3.set('cardSize', 3);
       expect(visibilities()).to.deep.equal([false, true, false]);
     });
 
@@ -637,9 +637,9 @@ describe('CardLayout directive test', function() {
         var card3 = new Card(cl.pageModel, 'testField3');
         var cards = [ card1, card2, card3 ];
 
-        card1.set('cardSize', '1');
-        card2.set('cardSize', '2');
-        card3.set('cardSize', '3');
+        card1.set('cardSize', 1);
+        card2.set('cardSize', 2);
+        card3.set('cardSize', 3);
 
         cl.pageModel.set('cards', cards);
         cl.outerScope.editMode = true;
@@ -707,10 +707,10 @@ describe('CardLayout directive test', function() {
         var card4 = new Card(cl.pageModel, '*');
         var cards = [ card1, card2, card3, card4 ];
 
-        card1.set('cardSize', '1');
-        card2.set('cardSize', '1');
-        card3.set('cardSize', '2');
-        card4.set('cardSize', '3');
+        card1.set('cardSize', 1);
+        card2.set('cardSize', 1);
+        card3.set('cardSize', 2);
+        card4.set('cardSize', 3);
 
         cl.pageModel.set('cards', cards);
         cl.outerScope.editMode = true;
@@ -775,7 +775,7 @@ describe('CardLayout directive test', function() {
           target: card2Overlay[0]
         });
         expect(cl.pageModel.getCurrentValue('cards')).to.deep.equal([ card1, card3, card2, card4 ]);
-        expect(card2.getCurrentValue('cardSize')).equals('2');
+        expect(card2.getCurrentValue('cardSize')).equals(2);
 
         // Finally, release the card.
         // This should have no effect on the card order.
@@ -830,7 +830,7 @@ describe('CardLayout directive test', function() {
           clientY: placeholder1.offset().top + placeholder1.height() / 2,
           target: placeholder1[0]
         });
-        expect(card1.getCurrentValue('cardSize')).to.equal('1');
+        expect(card1.getCurrentValue('cardSize')).to.equal(1);
 
         // Drag to group 2
         mockWindowStateService.mousePositionSubject.onNext({
@@ -838,7 +838,7 @@ describe('CardLayout directive test', function() {
           clientY: placeholder2.offset().top + placeholder2.height() / 2,
           target: card1Overlay[0]
         });
-        expect(card1.getCurrentValue('cardSize')).to.equal('2');
+        expect(card1.getCurrentValue('cardSize')).to.equal(2);
 
         // Finally, release the card.
         mockWindowStateService.mouseLeftButtonPressedSubject.onNext(false);

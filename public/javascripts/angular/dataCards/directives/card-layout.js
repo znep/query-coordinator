@@ -582,7 +582,7 @@
                     cardOriginX <= boundingRect.left + boundingRect.width &&
                     position.clientY >= boundingRect.top &&
                     position.clientY <= boundingRect.top + boundingRect.height) {
-                  cardSize = item.getAttribute('data-group-id');
+                  cardSize = parseInt(item.getAttribute('data-group-id'), 10);
                 }
               });
 

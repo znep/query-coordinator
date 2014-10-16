@@ -678,7 +678,7 @@ describe("Model", function() {
         null: null
       });
     });
-    it('should not include fields which were never written to', function() {
+    it('should include fields whose values were not defined initially, but were written to later', function() {
       var model = new Model();
       model.defineObservableProperty('number', 5);
       model.defineObservableProperty('notDefinedInitially');

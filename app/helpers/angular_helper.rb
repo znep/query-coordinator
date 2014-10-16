@@ -28,7 +28,7 @@ module AngularHelper
   def render_airbrake_notifier
     return nil unless FeatureFlags.derive(nil, request)[:enable_airbrake_js]
 
-    include_javascripts('exception_notifier')
+    include_javascripts_unminified('exception_notifier')
   end
 
 end

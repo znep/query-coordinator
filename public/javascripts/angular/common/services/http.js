@@ -4,16 +4,20 @@
   var forEach = _.forEach;
   var requestIdHeaderName = 'X-Socrata-RequestId';
 
-  function httpProvider($http, $rootScope, moment, RequestId) {
+  function httpProvider($http, $rootScope, moment, RequestId, $log) {
     function http(requestConfig) {
+      var id;
       var eventMetadata = {
         startTime: moment().valueOf()
       };
-      var id;
 
-      if (requestConfig.hasOwnProperty('requester') && _.isFunction(requestConfig.requester.requesterLabel)) {
-        eventMetadata.requester = requestConfig.requester;
-        eventMetadata.requesterLabel = requestConfig.requester.requesterLabel.call(requestConfig.requester);
+      if (_.isDefined(requestConfig.requester)) {
+        if (_.isFunction(requestConfig.requester.requesterLabel)) {
+          eventMetadata.requester = requestConfig.requester;
+          eventMetadata.requesterLabel = requestConfig.requester.requesterLabel.call(requestConfig.requester);
+        }
+      } else {
+        $log.debug("requestConfig.requester was undefined!");
       }
 
       $rootScope.$emit('http:start', eventMetadata);

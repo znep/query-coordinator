@@ -73,8 +73,6 @@
         // to operate on active sequences.
         var dataRequestCount = dataRequests.scan(0, function(acc, x) { return acc + 1; });
         var dataResponseCount = dataResponses.scan(0, function(acc, x) { return acc + 1; });
-
-        var nonBaseFilterApplied;
         var geojsonRegionsData;
 
         function getShapefileFeatureHumanReadablePropertyName(regions) {
@@ -272,7 +270,6 @@
             model.pluck('fieldName'),
             dataset.observeOnLatest('columns'),
             function(geojsonRegions, unfilteredData, filteredData, activeFilters, fieldName, columns) {
-              console.debug("geojsonRegions = ", geojsonRegions);
               var activeFilterNames = _.pluck(activeFilters, 'operand');
 
               var unfilteredDataAsHash = _.reduce(unfilteredData, function(acc, datum) {

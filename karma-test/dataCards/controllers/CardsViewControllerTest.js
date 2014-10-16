@@ -226,10 +226,19 @@ describe("CardsViewController", function() {
     });
 
     describe('with card filters applied', function() {
+      var testHelpers;
       var harness;
-      beforeEach(function() {
+
+      beforeEach(inject(['testHelpers', function(_testHelpers) {
         harness = makeMinimalController();
+        testHelpers = _testHelpers;
+      }]));
+
+      afterEach(function() {
+        testHelpers.TestDom.clear();
+        testHelpers.fireMouseEvent(document.body, 'mousemove');
       });
+
       it('should be clear-all-able', inject(function(Filter) {
         var filters = [
           new Filter.IsNullFilter(true),
@@ -245,6 +254,18 @@ describe("CardsViewController", function() {
         expect(cards[1].getCurrentValue('activeFilters')).to.be.empty;
         expect(cards[2].getCurrentValue('activeFilters')).to.be.empty;
       }));
+
+      it('should register a flyout for a clear-all-filters button', function() {
+        var jqEl = testHelpers.TestDom.append(
+          '<button class="clear-all-filters-button" />');
+        expect($('.flyout-title').length).to.equal(0);
+
+        testHelpers.fireMouseEvent(jqEl[0], 'mousemove');
+
+        var flyout = $('.flyout-title');
+        expect(flyout.length).to.equal(1);
+        expect(flyout.text().indexOf('Click to reset all filters')).to.be.greaterThan(-1);
+      });
 
       describe('with no base filter', function() {
         it("should yield just the filtered card's WHERE", inject(function(Filter) {

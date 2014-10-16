@@ -162,6 +162,10 @@
       });
     };
 
+    var flyoutContent = $("<div class='flyout-title'>Click to reset all filters</div>");
+    FlyoutService.register('clear-all-filters-button',
+                           _.constant(flyoutContent));
+
 
     /************************
     * Add new card behavior *

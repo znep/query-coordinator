@@ -660,6 +660,13 @@ javascripts:
   tagcloud:
     - public/javascripts/plugins/jquery.tagcloud.js
 
+  airbrake-shim:
+    - public/javascripts/airbrake-shim.js
+
+  exception_notifier:
+    - public/javascripts/stacktrace.js
+    - public/javascripts/exception_notifier.js
+
   angular-socrata-common:
     - public/javascripts/angular/common/**/*.js
 

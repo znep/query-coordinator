@@ -557,18 +557,12 @@ module ApplicationHelper
   def render_airbrake_shim
     return nil unless FeatureFlags.derive(nil, request)[:enable_airbrake_js]
 
-    javascript_include_tag(
-      'airbrake-shim.js',
+    include_javascripts(
+      'airbrake-shim',
       'data-airbrake-project-id' => 'Dataspace',
       'data-airbrake-project-key' => Airbrake::configuration.js_api_key,
       'data-airbrake-environment-name' => Rails.env
     )
-  end
-
-  def stacktrace_javascript_tag
-    return nil unless FeatureFlags.derive(nil, request)[:enable_airbrake_js]
-
-    javascript_include_tag('stacktrace.js')
   end
 
 end

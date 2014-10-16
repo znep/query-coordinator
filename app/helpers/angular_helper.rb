@@ -9,12 +9,12 @@ module AngularHelper
   end
 
   def angular_config
-    {
-      statsdEnabled: APP_CONFIG['statsd_enabled'],
-      useViewStubs: FeatureFlags.derive(nil, request)[:use_view_stubs],
-      enableFullstoryTracking: FeatureFlags.derive(nil, request)[:enable_fullstory_tracking],
-      enableAirbrakeJs: FeatureFlags.derive(nil, request)[:enable_airbrake_js]
-    }
+    { 'statsdEnabled' => APP_CONFIG['statsd_enabled'] }.tap do |config|
+      FeatureFlags.list.each do |feature_key|
+        js_feature_key = "#{feature_key[0]}#{feature_key.camelize[1..-1]}"
+        config.merge!(js_feature_key => FeatureFlags.derive(nil, request)[feature_key.to_sym])
+      end
+    end
   end
 
   def angular_stylesheet_tag

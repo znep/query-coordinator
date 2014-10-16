@@ -26,18 +26,32 @@ angular.module('dataCards.directives').directive('cardVisualizationTable', funct
         return CardDataService.getRows.apply(CardDataService, args);
       };
 
-      var columnDetails = dataset.observeOnLatest('columns').map(function(columns) {
+      function removeSystemColumns(columns) {
         var filteredColumns = {};
-        _.each(columns, function(column, name) {
-          // Filter out names like :Computed_banana and *
-          if (name[0].match(/[a-zA-Z0-9]/g)) {
-            // Check if sortable
+        _.each(columns, function(column, fieldName) {
+          if (
+               // ...for column fieldNames with more than two characters...
+               ( fieldName.length >= 2
+                 &&
+                 (fieldName.substring(0, 2) === ':@' ||
+                  fieldName.substring(0, 2).match(/[A-Za-z0-9\_][A-Za-z0-9\_]/) !== null)
+               )
+               ||
+               // ...and for column fieldNames with only one character...
+               (fieldName.length === 1 && fieldName.substring(0, 1) !== ':' && fieldName.substring(0, 1) !== '*')
+             ) {
+
             column.sortable = !_.contains(unsortable, column.physicalDatatype);
-            filteredColumns[name] = column;
+            filteredColumns[fieldName] = column;
+
           }
+          // ... but not for column fieldNames with 0 characters. Is this even possible?
         });
+
         return filteredColumns;
-      });
+      }
+
+      var columnDetails = dataset.observeOnLatest('columns').map(removeSystemColumns);
 
       // Keep track of the number of requests that have been made and the number of
       // responses that have come back.

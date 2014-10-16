@@ -57,12 +57,14 @@
           <span>
             Showing <span class="light">all {{datasetRowDisplayUnit.pluralize()}}</span>
           </span>
-          <div class="filter" ng-repeat="filter in appliedFiltersForDisplay">
-            <span ng-if="$first">where</span>
-            <span ng-if="!$first">and</span>
-            <span class="light lowercase">{{filter.column.title}}</span>
-            <span>{{filter.operator}}</span>
-            <span class="light">{{filter.operand}}</span>
+          <div class="filters">
+            <div class="filter" ng-repeat="filter in appliedFiltersForDisplay">
+              <span ng-if="$first">where</span>
+              <span ng-if="!$first">and</span>
+              <span class="light lowercase">{{filter.column.title}}</span>
+              <span>{{filter.operator}}</span>
+              <span class="light">{{filter.operand}}</span>
+            </div>
           </div>
           <button class="clear-all-filters-button action-btn dark" ng-if="appliedFiltersForDisplay.length > 0" ng-click="clearAllFilters()">Clear All ×</button>
         </div>

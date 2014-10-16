@@ -3,7 +3,10 @@ angular.module('dataCards.directives').directive('cardVisualizationTimelineChart
 
   return {
     restrict: 'E',
-    scope: { 'model': '=', 'whereClause': '=' },
+    scope: {
+      'model': '=',
+      'whereClause': '='
+    },
     templateUrl: '/angular_templates/dataCards/cardVisualizationTimelineChart.html',
     link: function($scope, element, attrs) {
 
@@ -25,8 +28,18 @@ angular.module('dataCards.directives').directive('cardVisualizationTimelineChart
       var dataRequestCount = dataRequests.scan(0, function(acc, x) { return acc + 1; });
       var dataResponseCount = dataResponses.scan(0, function(acc, x) { return acc + 1; });
 
+      var nonBaseFilterApplied;
+
+
+      /*************************************
+      * FIRST set up the 'busy' indicator. *
+      *************************************/
+
       // If the number of requests is greater than the number of responses, we have
       // a request in progress and we should display the spinner.
+      // SUPER IMPORTANT NOTE: Because of the way that RxJS works, we need to bind
+      // this one here and not below with the other bound observables... so unfortunately
+      // this code is location-dependent within the file.
       $scope.bindObservable('busy',
         Rx.Observable.combineLatest(
           dataRequestCount,
@@ -34,6 +47,18 @@ angular.module('dataCards.directives').directive('cardVisualizationTimelineChart
           function(requests, responses) {
             return requests === 0 || (requests > responses);
           }));
+
+
+      /******************************************
+      * THEN set up other observable sequences. *
+      ******************************************/
+
+      nonBaseFilterApplied = Rx.Observable.combineLatest(
+          $scope.observe('whereClause'),
+          baseSoqlFilter,
+          function (whereClause, baseFilter) {
+            return !_.isEmpty(whereClause) && whereClause != baseFilter;
+          });
 
       // Remove the current timeline cards filter from the whereClause
       function stripWhereClause(whereClause) {
@@ -195,6 +220,7 @@ WHY IS UNFILTERED EQUAL TO FILTERED WHEN THE CHART IS NOT FILTERED?
           dataPromise.then(
             function(res) {
               // Ok
+              console.log('UNFILTERED', res);
               unfilteredDataSequence.onNext(dataPromise);
               dataResponses.onNext(1);
             },
@@ -208,13 +234,17 @@ WHY IS UNFILTERED EQUAL TO FILTERED WHEN THE CHART IS NOT FILTERED?
         model.pluck('fieldName'),
         dataset,
         $scope.observe('whereClause'),
+        nonBaseFilterApplied,
         precision,
-        function(fieldName, dataset, whereClauseFragment, precision) {
+        function(fieldName, dataset, whereClauseFragment, nonBaseFilterApplied, precision) {
+          console.log('GETTING FILTERED DATA');
+          console.log(fieldName, dataset, whereClauseFragment, nonBaseFilterApplied, precision);
           dataRequests.onNext(1);
-          var dataPromise = CardDataService.getTimelineData(fieldName, dataset.id, stripWhereClause(whereClauseFragment), precision);
+          var dataPromise = CardDataService.getTimelineData(fieldName, dataset.id, whereClauseFragment, precision);
           dataPromise.then(
             function(res) {
               // Ok
+              console.log('FILTERED', res);
               filteredDataSequence.onNext(dataPromise);
               dataResponses.onNext(1);
             },
@@ -240,6 +270,7 @@ WHY IS UNFILTERED EQUAL TO FILTERED WHEN THE CHART IS NOT FILTERED?
             acc[datum.date] = datum.value;
             return acc;
           }, {});
+console.log(filteredData);
           var filteredAsHash = _.reduce(filteredData, function(acc, datum) {
             acc[datum.date] = datum.value;
             return acc;

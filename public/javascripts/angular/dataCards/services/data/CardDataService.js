@@ -105,6 +105,7 @@
         var url = '/api/id/' + datasetId + '.json?';
         var config = httpConfig.call(this);
         return http.get(url + $.param(params), config).then(function(response) {
+
           if (!_.isArray(response.data)) {
             return $q.reject('Invalid response from SODA, expected array.');
           }

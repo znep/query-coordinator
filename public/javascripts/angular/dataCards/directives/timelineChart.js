@@ -312,9 +312,8 @@
             series[name] = {name: name, values:[]};
             seriesStack.push(series[name]);
           });
-console.log(chartData.values);
+
           chartData.values.forEach(function (d) {
-            console.log(d);
             varNames.map(function (name) {
               if (name === 'unfiltered') {
                 console.log(d['unfiltered'], d['filtered']);

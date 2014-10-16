@@ -125,6 +125,7 @@
 
         }
 
+
         /*************************************
         * FIRST set up the 'busy' indicator. *
         *************************************/
@@ -200,6 +201,8 @@
           scope.observe('whereClause'),
           nonBaseFilterApplied,
           function(fieldName, dataset, whereClauseFragment, nonBaseFilterApplied) {
+          console.log('GETTING SHOROPLETH FILTERED DATA');
+          console.log(fieldName, dataset, whereClauseFragment, nonBaseFilterApplied);
             dataRequests.onNext(1);
             var dataPromise = CardDataService.getData(fieldName, dataset.id, whereClauseFragment);
             dataPromise.then(

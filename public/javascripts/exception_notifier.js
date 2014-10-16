@@ -21,8 +21,14 @@
       exceptionInformation.context.stackTrace = stackTrace;
     }
 
-    Airbrake.push(exceptionInformation);
-  };
+    try {
+      Airbrake.push(exceptionInformation);
+    } catch (airbrakeError) {
+      if (console && console.error) {
+        console.error("Exception encountered when reporting an error to Airbrake: ", airbrakeError);
+      }
+    }
+  }
 
   angular.module('exceptionNotifier', []).
     factory('$exceptionHandler', function ($log) {
@@ -34,13 +40,17 @@
     factory('httpErrorInterceptor', function ($q) {
       return {
         responseError: function responseError(rejection) {
-          Airbrake.push({
-            error: new Error('HTTP response error'),
-            context: {
-              config: rejection.config,
-              status: rejection.status
-            }
-          });
+          try {
+            Airbrake.push({
+              error: new Error('HTTP response error'),
+              context: {
+                config: rejection.config,
+                status: rejection.status
+              }
+            });
+          } catch(airbrakeError) {
+            $log.error("Exception encountered when reporting an HTTP error to Airbrake: ", airbrakeError);
+          }
           return $q.reject(rejection);
         }
       }

@@ -8,7 +8,7 @@
   // Instead, since hyphens are supposed to be rewritten to underscores internally anyway,
   // we can avoid the quoting/truncation issue by rewriting hyphens to underscores before
   // making the request from the front-end.
-  function CardDataService($q, http, Assert, DeveloperOverrides, SoqlHelpers) {
+  function CardDataService($q, http, Assert, DeveloperOverrides, SoqlHelpers, ServerConfig, $log) {
 
     function httpConfig(config) {
       return _.extend({
@@ -17,7 +17,7 @@
       }, config);
     }
 
-    return {
+    var serviceDefinition = {
       getData: function(fieldName, datasetId, whereClauseFragment) {
         Assert(_.isString(fieldName), 'fieldName should be a string');
         Assert(_.isString(datasetId), 'datasetId should be a string');
@@ -227,6 +227,55 @@
         return 'card-data-service';
       }
     };
+
+    if (ServerConfig.get('enableBoundingBoxes')) {
+      serviceDefinition['getChoroplethRegions'] = function(datasetId, datasetSourceColumn, shapeFileId) {
+        datasetId = DeveloperOverrides.dataOverrideForDataset(datasetId) || datasetId;
+
+        // http://dataspace-demo.test-socrata.com/resource/vtvh-wqgq.json?$select=extent(point)
+        var extentUrl = '/resource/{0}.json?$select=extent({1})'.format(datasetId, datasetSourceColumn);
+
+        var config = httpConfig.call(this);
+        var self = this;
+
+        return http.get(extentUrl, config).then(function(response) {
+          if (response.status === 200) {
+            shapeFileId = DeveloperOverrides.dataOverrideForDataset(shapeFileId) || shapeFileId;
+
+            var jsonPayload = response.data[0];
+            var extentKey = _.keys(jsonPayload)[0];
+            var extents = response.data[0][extentKey].coordinates;
+            // Beware, data from extent query comes back as long/lat but has to be formatted as lat/long here
+            var upperLeftCorner = extents[0][0][1][1] + ',' + extents[0][0][1][0];
+            var lowerRightCorner = extents[0][0][3][1] + ',' + extents[0][0][3][0];
+
+            // https://dataspace.demo.socrata.com/resource/fdqy-yyme.geojson?$select=*&
+            //   $where=within_box(the_geom,41.86956082699455,-87.73681640625,41.85319643776675,-87.71484375)
+            var shapeFileUrl = '/resource/{0}.geojson?$select=*&$where=within_box(the_geom,{1},{2})'.
+              format(shapeFileId, upperLeftCorner, lowerRightCorner);
+
+            var config = httpConfig.call(self, {
+              headers: {
+                'Accept': 'application/vnd.geo+json'
+              }
+            });
+            return http.get(shapeFileUrl, config).
+              then(function(response) {
+                return response.data;
+              });
+
+          } else if (response.status >= 400 && response.status < 500) {
+            // TODO: Figure out how to handle error conditions.
+          } else if (response.status >= 500 && response.status < 600) {
+            // TODO: Figure out how to handle error conditions.
+          } else {
+            // TODO: Figure out how to handle error conditions.
+          }
+        });
+      }
+    }
+
+    return serviceDefinition;
   }
 
   angular.

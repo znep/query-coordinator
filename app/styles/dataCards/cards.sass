@@ -354,7 +354,7 @@ body.state-view-cards
   select
     width: 100%
     height: 100%
-    padding: 1em 3em 1em 1em
+    padding: 0 3em 0 1em
     color: $modal-white-font-color
     background-color: transparent
     border: none
@@ -362,6 +362,14 @@ body.state-view-cards
     -webkit-appearance: none
     -moz-appearance: none
     appearance: none
+    &::-ms-expand
+      display: none
+
+    option
+      background-color: $modal-dropdown-background-color
+      color: $modal-dark-font-color
+      &:disabled
+        color: $modal-disabled-font-color
 
   .arrow-container
     position: absolute

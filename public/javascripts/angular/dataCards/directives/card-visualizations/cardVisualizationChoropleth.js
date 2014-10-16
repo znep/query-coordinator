@@ -1,7 +1,7 @@
 (function() {
   'use strict';
 
-  function cardVisualizationChoropleth(Constants, AngularRxExtensions, CardDataService, Filter) {
+  function cardVisualizationChoropleth(Constants, AngularRxExtensions, CardDataService, Filter, ServerConfig) {
 
     return {
       restrict: 'E',
@@ -73,8 +73,6 @@
         // to operate on active sequences.
         var dataRequestCount = dataRequests.scan(0, function(acc, x) { return acc + 1; });
         var dataResponseCount = dataResponses.scan(0, function(acc, x) { return acc + 1; });
-
-        var nonBaseFilterApplied;
         var geojsonRegionsData;
 
         function getShapefileFeatureHumanReadablePropertyName(regions) {
@@ -144,34 +142,76 @@
         * THEN set up other observable sequences. *
         ******************************************/
 
-        nonBaseFilterApplied = Rx.Observable.combineLatest(
-            scope.observe('whereClause'),
-            baseSoqlFilter,
-            function (whereClause, baseFilter) {
-              return !_.isEmpty(whereClause) && whereClause != baseFilter;
-            });
+        Rx.Observable.combineLatest(
+          scope.observe('whereClause'),
+          baseSoqlFilter,
+          function (whereClause, baseFilter) {
+            return !_.isEmpty(whereClause) && whereClause != baseFilter;
+          }
+        );
 
-        geojsonRegionsData = Rx.Observable.combineLatest(
-          model.pluck('fieldName'),
-          dataset.observeOnLatest('columns'),
-          function(fieldName, columns) {
-            dataRequests.onNext(1);
-            // TODO Change "shapefile" to "shapeFile" throughout code base since case-style is inconsistent.
-            if (!columns[fieldName].hasOwnProperty('shapefile')) {
-              throw new Error('Dataset metadata column for computed georegion column does not include shapefile.');
-            }
-            var dataPromise = CardDataService.getChoroplethRegions(columns[fieldName].shapefile);
-            dataPromise.then(
-              function(res) {
-                // Ok
-                geojsonRegionsSequence.onNext(dataPromise);
-                dataResponses.onNext(1);
-              },
-              function(err) {
-                // Do nothing
+        if (ServerConfig.get('enableBoundingBoxes')) {
+          geojsonRegionsData = Rx.Observable.combineLatest(
+            dataset,
+            model.pluck('fieldName'),
+            dataset.observeOnLatest('columns'),
+            function(dataset, fieldName, columns) {
+
+              dataRequests.onNext(1);
+
+              if (!columns[fieldName].hasOwnProperty('shapefile')) {
+                throw new Error('Dataset metadata column for computed georegion column does not include shapefile.');
+              }
+
+              var sourceColumn = null;
+              _.each(columns, function(column) {
+                if (column.physicalDatatype === 'point' && column.logicalDatatype === 'location') {
+                  sourceColumn = column.name;
+                }
               });
-            return Rx.Observable.fromPromise(dataPromise);
-          });
+
+              if (sourceColumn === null) {
+                throw new Error('No column with geometry found.');
+              }
+
+              var dataPromise = CardDataService.getChoroplethRegions(dataset.id, sourceColumn, columns[fieldName].shapefile);
+              dataPromise.then(
+                function(res) {
+                  // Ok
+                  geojsonRegionsSequence.onNext(dataPromise);
+                  dataResponses.onNext(1);
+                },
+                function(err) {
+                  // Do nothing
+                });
+
+              return Rx.Observable.fromPromise(dataPromise);
+            }
+          );
+        } else {
+          geojsonRegionsData = Rx.Observable.combineLatest(
+            model.pluck('fieldName'),
+            dataset.observeOnLatest('columns'),
+            function(fieldName, columns) {
+              dataRequests.onNext(1);
+              // TODO Change "shapefile" to "shapeFile" throughout code base since case-style is inconsistent.
+              if (!columns[fieldName].hasOwnProperty('shapefile')) {
+                throw new Error('Dataset metadata column for computed georegion column does not include shapefile.');
+              }
+              var dataPromise = CardDataService.getChoroplethRegions(columns[fieldName].shapefile);
+              dataPromise.then(
+                function(res) {
+                  // Ok
+                  geojsonRegionsSequence.onNext(dataPromise);
+                  dataResponses.onNext(1);
+                },
+                function(err) {
+                  // Do nothing
+                });
+              return Rx.Observable.fromPromise(dataPromise);
+            }
+          );
+        }
 
         Rx.Observable.subscribeLatest(
           model.pluck('fieldName'),
@@ -230,7 +270,6 @@
             model.pluck('fieldName'),
             dataset.observeOnLatest('columns'),
             function(geojsonRegions, unfilteredData, filteredData, activeFilters, fieldName, columns) {
-
               var activeFilterNames = _.pluck(activeFilters, 'operand');
 
               var unfilteredDataAsHash = _.reduce(unfilteredData, function(acc, datum) {

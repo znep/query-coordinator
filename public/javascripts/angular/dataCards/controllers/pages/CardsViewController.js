@@ -339,7 +339,7 @@
           // If the serialization failed, reject the promise.
           // Don't just error out immediately, because we still
           // want to notify the user below.
-          $log.error('Serialization failed', exception);
+          $log.error('Serialization failed on save', exception);
           var savePromise = $q.reject(exception);
         }
         notifyUserOfSaveProgress(savePromise, currentPageSaveEvents);
@@ -349,15 +349,23 @@
     $scope.savePageAs = function(name, description) {
       var saveStatusSubject = new Rx.BehaviorSubject();
 
-      var newPage = _.extend(page.serialize(), {
-        name: name,
-        description: description
-      });
-      // PageDataService looks at whether or not pageId is set on the blob.
-      // If it's set, it will do a regular save. We want it to save a new page.
-      delete newPage.pageId;
+      try {
+        var newPageSerializedBlob = _.extend(page.serialize(), {
+          name: name,
+          description: description
+        });
+        // PageDataService looks at whether or not pageId is set on the blob.
+        // If it's set, it will do a regular save. We want it to save a new page.
+        delete newPageSerializedBlob.pageId;
+        var savePromise = PageDataService.save(newPageSerializedBlob);
+      } catch (exception) {
+        // If the serialization failed, reject the promise.
+        // Don't just error out immediately, because we still
+        // want to notify the user below.
+        $log.error('Serialization failed on save as', exception);
+        var savePromise = $q.reject(exception);
+      }
 
-      var savePromise = PageDataService.save(newPage);
       notifyUserOfSaveProgress(savePromise, saveStatusSubject);
 
       // Redirect to a new page once Save As completed (plus a small delay).

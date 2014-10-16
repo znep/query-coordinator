@@ -48,11 +48,25 @@ describe("A Table Card Visualization", function() {
     testHelpers.TestDom.clear();
   });
 
-  var createTable = function(whereClause) {
+  function newCard(pageModel, blob) {
+    var baseCard = {
+      "cardCustomStyle": {},
+      "expandedCustomStyle": {},
+      "displayMode": "visualization",
+      "expanded": false
+    };
+    return Card.deserialize(pageModel, $.extend({}, baseCard, blob));
+  }
+
+  function createTable(expanded, cardBlobs, whereClause) {
+
+    expanded = expanded || false;
+    cardBlobs = cardBlobs || [];
+
     var model = new Model();
-    model.fieldName = 'ward';
+    model.fieldName = '*';
     model.defineObservableProperty('activeFilters', []);
-    model.defineObservableProperty('expanded', false);
+    model.defineObservableProperty('expanded', expanded);
 
     var datasetModel = new Model();
     datasetModel.id = 'test-data';
@@ -65,15 +79,46 @@ describe("A Table Card Visualization", function() {
         "description": "test column description",
         "logicalDatatype": "amount",
         "physicalDatatype": "number",
-        "importance": 2
+        "importance": 2,
+        "isSystemColumn": false,
+      },
+      ":@test_computed_column": {
+        "name": ":@test_computed_column",
+        "title": "Community Districts",
+        "description": "Community district reporting 311 request",
+        "logicalDatatype": "location",
+        "physicalDatatype": "text",
+        "importance": 1,
+        "shapefile": "7a5b-8kcq",
+        "isSystemColumn": true
+      },
+      ":test_system_column": {
+        "name": ":test_system_column",
+        "title": ":test_system_column",
+        "logicalDatatype": "text",
+        "physicalDatatype": "row_identifier",
+        "importance": 3,
+        "isSystemColumn": true
+      },
+      '*': {
+        "name": "*",
+        "title": "Data Table",
+        "description": "",
+        "logicalDatatype": "*",
+        "physicalDatatype": "*",
+        "importance": 1,
+        "isSystemColumn": false,
+        "fakeColumnGeneratedByFrontEnd": true
       }
     });
 
-    var pageModel = new Page('asdf-fdsa');
+    var pageModel = new Page('test-page');
     pageModel.set('dataset', datasetModel);
     pageModel.set('baseSoqlFilter', null);
-    pageModel.set('cards', []);
     model.page = pageModel;
+
+    var cardModels = cardBlobs.map(function(cardBlob) { return newCard(pageModel, cardBlob); })
+    model.page.set('cards', cardModels);
 
     var outerScope = rootScope.$new();
     outerScope.whereClause = whereClause;
@@ -81,6 +126,7 @@ describe("A Table Card Visualization", function() {
 
     var html = '<card-visualization-table model="model" where-clause="whereClause"></card-visualization-table>';
     var element = testHelpers.TestDom.compileAndAppend(html, outerScope);
+
     return {
       pageModel: pageModel,
       datasetModel: datasetModel,
@@ -98,7 +144,7 @@ describe("A Table Card Visualization", function() {
       expect(table.scope.rowCount).to.equal(1337);
       expect(table.scope.filteredRowCount).to.equal(1337);
 
-      table.outerScope.whereClause = "bogus";
+      table.outerScope.whereClause = 'invalid where clause';
       table.outerScope.$digest();
       expect(table.scope.rowCount).to.equal(1337);
       expect(table.scope.filteredRowCount).to.equal(42);
@@ -108,33 +154,25 @@ describe("A Table Card Visualization", function() {
   describe('default sort', function() {
     it('should be correct', function(){
       var table = createTable();
-      function newCard(blob) {
-        var baseCard = {
-          "cardCustomStyle": {},
-          "expandedCustomStyle": {},
-          "displayMode": "visualization",
-          "expanded": false
-        };
-        return Card.deserialize(table.pageModel, $.extend({}, baseCard, blob));
-      };
 
       table.pageModel.set('cards', []);
       expect(table.scope.defaultSortColumnName).to.equal(null);
 
       table.pageModel.set('cards', [
-        newCard({
+        newCard(table.pageModel, {
           "fieldName": "field1",
           "cardSize": 2
         })
       ]);
+
       expect(table.scope.defaultSortColumnName).to.equal('field1');
 
       table.pageModel.set('cards', [
-        newCard({
+        newCard(table.pageModel, {
           "fieldName": "field2",
           "cardSize": 3
         }),
-        newCard({
+        newCard(table.pageModel, {
           "fieldName": "field3",
           "cardSize": 2
         })
@@ -142,15 +180,15 @@ describe("A Table Card Visualization", function() {
       expect(table.scope.defaultSortColumnName).to.equal('field3');
 
       table.pageModel.set('cards', [
-        newCard({
+        newCard(table.pageModel, {
           "fieldName": "field4",
           "cardSize": 3
         }),
-        newCard({
+        newCard(table.pageModel, {
           "fieldName": "field5",
           "cardSize": 2
         }),
-        newCard({
+        newCard(table.pageModel, {
           "fieldName": "field6",
           "cardSize": 2
         })
@@ -158,15 +196,15 @@ describe("A Table Card Visualization", function() {
       expect(table.scope.defaultSortColumnName).to.equal('field5');
 
       table.pageModel.set('cards', [
-        newCard({
+        newCard(table.pageModel, {
           "fieldName": "field7",
           "cardSize": 2
         }),
-        newCard({
+        newCard(table.pageModel, {
           "fieldName": "field8",
           "cardSize": 3
         }),
-        newCard({
+        newCard(table.pageModel, {
           "fieldName": "field9",
           "cardSize": 2
         })
@@ -174,5 +212,35 @@ describe("A Table Card Visualization", function() {
       expect(table.scope.defaultSortColumnName).to.equal('field7');
     });
   });
+
+  describe('custom sort', function() {
+
+    it('should include computed columns', function() {
+
+      var cards = [
+        {
+          "fieldName": ":@test_computed_column",
+          "cardSize": 1
+        },
+        {
+          "fieldName": "test_column",
+          "cardSize": 2
+        }
+      ];
+
+      var exceptionRaised = false;
+
+      try {
+        var table = createTable(true, cards);
+      } catch (e) {
+        exceptionRaised = true;
+      }
+
+      expect(exceptionRaised).to.be.false;
+
+    });
+
+  });
+
 });
 

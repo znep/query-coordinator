@@ -58,8 +58,7 @@ angular.module('socrataCommon.directives').directive('columnChart', function($pa
     bottomMargin = bottomMargin > maximumBottomMargin ? maximumBottomMargin : bottomMargin;
 
     var chartHeight = dimensions.height - topMargin - bottomMargin - horizontalScrollbarHeight;
-    var verticalScale = d3.scale.linear().range([chartHeight, 0]);
-    var verticalOffset = topMargin + chartHeight;
+    var verticalScale = d3.scale.linear().range([chartHeight, 0]).clamp(true);
     var horizontalScale = null;
     var rightOffset = 0;
     var rangeBand = 0;
@@ -274,10 +273,6 @@ angular.module('socrataCommon.directives').directive('columnChart', function($pa
       labelDivSelection.exit().remove();
     };
 
-    var clampHeight = function(height) {
-      return height > chartHeight ? chartHeight : height;
-    };
-
     var horizontalBarPosition = function(d) {
       return horizontalScale(d.name) - chartLeftOffset;
     };
@@ -313,8 +308,8 @@ angular.module('socrataCommon.directives').directive('columnChart', function($pa
       // Update the position of the individual bars.
       bars.
         style('width', rangeBand + 'px').
-        style('height', function(d) { return clampHeight(verticalScale(d)) + 'px'; }).
-        style('top', function(d) { return verticalOffset - clampHeight(verticalScale(d)) + 1 + 'px'; }).
+        style('height', function(d) { return Math.ceil(verticalScale(d)) + 'px'; }).
+        style('bottom', 0).
         attr('class', function(d, i) {
           return 'bar ' + (i === 0 ? 'unfiltered' : 'filtered');
         });

@@ -903,7 +903,7 @@ describe('CardLayout directive', function() {
       expect(!!cl.scope.expandedCard).to.be.true;
     });
 
-    describe('animation', function() {
+    (Modernizr.csstransitions ? describe : xdescribe)('animation', function() {
       it('collapses an expanded element (and all others) smoothly', function(done) {
         var cl = createLayoutWithCards({
           expanded: 2

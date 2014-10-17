@@ -47,9 +47,7 @@
         "bower_components/rxjs/rx.time.js",
         "bower_components/rxjs/rx.binding.js"
       ],
-      "flexgrid": [
-        "bower_components/flexgrid/modernizr.js"
-      ],
+      "flexgrid": [],
       "showdown": "bower_components/showdown/src/showdown.js"
     }
   },

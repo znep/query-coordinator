@@ -153,22 +153,15 @@
           }
 
           // Set the style for the expanded card.
-          // For smooth transitions, start with absolute positioning, and only when we
-          // finish the animation do we transition to fixed
           var scrollTop = jqueryWindow.scrollTop();
-          expandedCardPos.styleToApplyAtEndOfTransition = {
+          expandedCardPos.style = {
             position: 'fixed',
             left: expandedColumnLeft,
             width: expandedColumnWidth
           };
-          updateExpandedVerticalDims(expandedCardPos.styleToApplyAtEndOfTransition,
+          updateExpandedVerticalDims(expandedCardPos.style,
                                      expandedCardPos.model, scrollTop, windowSize,
                                      heightOfAllCards);
-          expandedCardPos.style = $.extend({}, expandedCardPos.styleToApplyAtEndOfTransition, {
-            position: '',
-            top: scrollTop + expandedCardPos.styleToApplyAtEndOfTransition.top - cardContainer.offset().top
-          });
-
 
           // If the datacard isn't expanded, then add it to the bottom
           if (expandedCardPos !== cardsBySize.dataCard[0]) {
@@ -471,7 +464,7 @@
             }
 
             // We only want to animate during expansion changes. Not eg during customize
-            if (oldExpandedId || newExpandedId) {
+            if (Modernizr.csstransitions && (oldExpandedId || newExpandedId)) {
               // Animate the card position changes
               _.each(cardsBySize.normal.concat(cardsBySize.dataCard), function(card, i) {
                 // Set the child to fixed dimensions during transition, so it doesn't
@@ -490,9 +483,13 @@
                 // set the card's style to its final state (so scrolling works as
                 // expected).
                 if (newExpandedId === card.model.uniqueId) {
+                  card.styleToApplyAtEndOfTransition = $.extend({}, card.style);
                   $.extend(card.style, {
                     transition: 'all ' + Constants.TRANSITION_DURATION + 's ease-in-out',
-                    zIndex: 10
+                    zIndex: 10,
+                    position: '',
+                    top: jqueryWindow.scrollTop() + card.style.top
+                      - cardContainer.offset().top
                   });
                 } else if(oldExpandedId === card.model.uniqueId) {
                   card.styleToApplyAtEndOfTransition = $.extend({}, card.style);
@@ -500,7 +497,8 @@
                     transition: 'all ' + Constants.TRANSITION_DURATION + 's ease-in-out',
                     zIndex: 10,
                     position: 'fixed',
-                    top: (card.style.top + cardContainer.offset().top) - jqueryWindow.scrollTop()
+                    top: (card.style.top + cardContainer.offset().top)
+                      - jqueryWindow.scrollTop()
                   });
                 } else {
                   card.style.transition = 'all ' + Constants.TRANSITION_DURATION + 's ' +

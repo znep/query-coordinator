@@ -393,7 +393,7 @@
             // transitionend handler will get the correct fixed-position style.
             var styles = localScope.cardPosition.styleToApplyAtEndOfTransition || {};
             updateExpandedVerticalDims(styles, scope.expandedCard,
-                                       args[0], jqueryWindow.dimensions(),
+                                       args[0], args[3],
                                        cardContainer.height());
             jqEl.css(styles);
           }

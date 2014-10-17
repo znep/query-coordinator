@@ -848,7 +848,7 @@ describe('CardLayout directive', function() {
 
   });
 
-  describe('card expansion', function() {
+  describe('expanded card', function() {
     var EXPANDED_CARD_INDEX = 2;
     it("should not expand any cards if the page model's 'cards' array doesn't contain any cards with the expanded property set", function() {
       var cl = createLayoutWithCards();
@@ -901,6 +901,57 @@ describe('CardLayout directive', function() {
       cl.element.find('.expand-button span').eq(0).click();
       cl.scope.$digest();
       expect(!!cl.scope.expandedCard).to.be.true;
+    });
+
+    describe('height adjustment', function() {
+      var cl;
+      var expandedCard
+      var winDimensions = {
+        width: 1024,
+        height: 768
+      };
+      beforeEach(function() {
+        cl = createLayoutWithCards({
+          dataCard: 0,
+          expanded: 2
+        });
+        // Start at the top of the page
+        mockWindowStateService.scrollPositionSubject.onNext(0);
+        mockWindowStateService.windowSizeSubject.onNext(winDimensions);
+
+        expandedCard = cl.element.find('.expanded').parent();
+        // Assert an assumption we're making, which makes the tests meaningful
+        expect(expandedCard.css('position')).to.equal('fixed');
+      });
+
+      it('should align the top of the card with rest of the container', function() {
+        var container = cl.element.find('#card-container');
+        expect(expandedCard.offset().top).to.equal(container.offset().top);
+      });
+
+      it('should adjust the top of the card when the QFB sticks', function() {
+        var qfb = cl.quickFilterBarElement;
+        mockWindowStateService.scrollPositionSubject.onNext(
+          cl.cardsMetadataElement.offset().top + cl.cardsMetadataElement.outerHeight() + 10);
+        expect(qfb.css('position')).to.equal('fixed');
+        expect(expandedCard.offset().top).to.equal(qfb.offset().top + qfb.height());
+      });
+
+      it('should align the bottom of the card with the viewport bottom', function() {
+        expect(expandedCard.offset().top + expandedCard.height()).
+          to.be.closeTo(winDimensions.height, 10);
+      });
+
+      it('should adjust the bottom of the card when it butts into the datacard', function() {
+        var dataTable = cl.pageModel.getCurrentValue('cards')[0];
+        expect(dataTable.fieldName).to.equal('*');
+        var dataTableEl = cl.findCardForModel(dataTable);
+        // Scroll to close to the dataTable
+        var scrollTop = dataTableEl.offset().top - 50;
+        mockWindowStateService.scrollPositionSubject.onNext(scrollTop);
+        expect(scrollTop + expandedCard.offset().top + expandedCard.height()).
+          to.be.closeTo(dataTableEl.offset().top, 10);
+      });
     });
 
     (Modernizr.csstransitions ? describe : xdescribe)('animation', function() {

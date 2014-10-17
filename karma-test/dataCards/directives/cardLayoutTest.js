@@ -945,12 +945,44 @@ describe('CardLayout directive', function() {
       it('should adjust the bottom of the card when it butts into the datacard', function() {
         var dataTable = cl.pageModel.getCurrentValue('cards')[0];
         expect(dataTable.fieldName).to.equal('*');
-        var dataTableEl = cl.findCardForModel(dataTable);
-        // Scroll to close to the dataTable
-        var scrollTop = dataTableEl.offset().top - 50;
+        var dataTableElement = cl.findCardForModel(dataTable);
+        // Scroll to close enough to the dataTable that it interferes with the expanded card
+        var scrollTop = dataTableElement.offset().top - (winDimensions.height - 100);
+
+        var originalHeight = expandedCard.height();
         mockWindowStateService.scrollPositionSubject.onNext(scrollTop);
-        expect(scrollTop + expandedCard.offset().top + expandedCard.height()).
-          to.be.closeTo(dataTableEl.offset().top, 10);
+
+        // The presence of the dataCard should shrink the height of the expanded card
+        expect(originalHeight).to.be.greaterThan(expandedCard.height());
+        // The bottom should still align with the datacard
+        expect(expandedCard.offset().top + expandedCard.height()).
+          to.be.closeTo(dataTableElement.offset().top - scrollTop, 10);
+      });
+
+      describe('minimum height', function() {
+        it('sticks to the top if we\'re up top and the window height is small',
+           inject(function(Constants) {
+             mockWindowStateService.windowSizeSubject.onNext({width: 768, height: 100});
+
+             var container = cl.element.find('#card-container');
+             expect(expandedCard.offset().top).to.equal(container.offset().top);
+             expect(expandedCard.height()).to.equal(Constants.LAYOUT_MIN_EXPANDED_CARD_HEIGHT);
+           }));
+
+        it('sticks on bottom if we butt into the datacard down below',
+           inject(function(Constants) {
+             var dataTable = cl.pageModel.getCurrentValue('cards')[0];
+             expect(dataTable.fieldName).to.equal('*');
+             var dataTableElement = cl.findCardForModel(dataTable);
+             mockWindowStateService.windowSizeSubject.onNext({width: 768, height: 100});
+             // Scroll to too-close to the dataTable
+             var scrollTop = dataTableElement.offset().top - 50;
+             mockWindowStateService.scrollPositionSubject.onNext(scrollTop);
+
+             expect(expandedCard.offset().top + expandedCard.height()).
+               to.be.closeTo(dataTableElement.offset().top - scrollTop, 10);
+             expect(expandedCard.height()).to.equal(Constants.LAYOUT_MIN_EXPANDED_CARD_HEIGHT);
+           }));
       });
     });
 

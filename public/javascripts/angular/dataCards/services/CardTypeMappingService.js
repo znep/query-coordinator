@@ -1,7 +1,7 @@
 (function() {
   'use strict';
 
-  function CardTypeMappingService($exceptionHandler) {
+  function CardTypeMappingService($exceptionHandler, $log) {
 
     var supportedCardTypes = ['column', 'choropleth', 'timeline'];
 
@@ -9,6 +9,7 @@
       column = column || {};
       var logicalDatatype = column.logicalDatatype;
       var physicalDatatype = column.physicalDatatype;
+
       if (logicalDatatype === 'category') {
         return 'column';
       }
@@ -45,8 +46,12 @@
         if (physicalDatatype === 'floating_timestamp') { return 'timeline'; }
       }
       if (logicalDatatype === '*') { return 'table'; }
-      throw new Error('Unknown visualization for logicalDatatype: ' + logicalDatatype +
+
+      // UH OH
+      $log.error('Unknown visualization for logicalDatatype: ' + logicalDatatype +
         ' and physicalDatatype: ' + physicalDatatype);
+      return 'unknown';
+
     }
 
     function _cardTypeForColumnIsSupported(column) {

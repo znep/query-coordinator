@@ -1,7 +1,7 @@
 (function() {
   'use strict';
 
-  function cardVisualizationChoropleth(Constants, AngularRxExtensions, CardDataService, Filter, ServerConfig) {
+  function cardVisualizationChoropleth(Constants, AngularRxExtensions, CardDataService, Filter, ServerConfig, $log) {
 
     return {
       restrict: 'E',
@@ -329,7 +329,7 @@
               var shapefileFeatureHumanReadablePropertyName = getShapefileFeatureHumanReadablePropertyName(geojsonRegions, column.shapefile);
 
               if (!shapefileFeatureHumanReadablePropertyName) {
-                $log.error('Unable to determine shapefileFeatureHumanReadablePropertyName for shapefile: '.format(column.shapefile));
+                $log.error('Unable to determine shapefileFeatureHumanReadablePropertyName for shapefile: {0}'.format(column.shapefile));
               }
 
               return mergeRegionAndAggregateData(

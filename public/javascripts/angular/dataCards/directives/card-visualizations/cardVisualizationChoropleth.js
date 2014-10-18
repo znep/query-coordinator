@@ -75,7 +75,8 @@
         var dataResponseCount = dataResponses.scan(0, function(acc, x) { return acc + 1; });
         var geojsonRegionsData;
 
-        function getShapefileFeatureHumanReadablePropertyName(regions) {
+        function getShapefileFeatureHumanReadablePropertyName(regions, shapefile) {
+
           var p = regions.features[0].properties;
           // Chicago
           if (p.hasOwnProperty('community') && p.hasOwnProperty('area_numbe')) {
@@ -116,6 +117,39 @@
           // Philly
           if (p.hasOwnProperty('dist_num') && p.hasOwnProperty('dist_numc') && p.hasOwnProperty('div_code')) {
             return 'dist_numc';
+          }
+
+          // This mapping provides the shapefileHumanReadablePropertyName for a given shapefile 4x4.
+          // This is a temporary measure until this information can be provided by the metadata service.
+          var shapefileFeatureNameMapping = {
+            '7vkw-k8eh': 'community',
+            'snuk-a5kv': 'ward',
+            '99f5-m626': 'zip',
+            'qttw-wpd6': 'name',
+            'ernj-gade': 'supdist',
+            '9ax2-xhmg': 'district',
+            'e2nj-t6rn': 'name',
+            'a9zv-gp2q': 'zcta5ce10',
+            '7a5b-8kcq': 'borocd',
+            '9qyy-j3br': 'schooldist',
+            'fvid-vsfz': 'countdist',
+            'szt7-kj5n': 'geoid10',
+            '9gf2-g78j': 'name',
+            'afrk-7ibz': 'name',
+            '7mve-5gn9': 'dist_numc',
+            '82gf-y944': 'name',
+            '5tni-guuj': 'name',
+            'pqdv-qiia': 'name',
+            '5trx-7ni6': 'name',
+            'nmuc-gpu5': 'name',
+            '8fjz-g95m': 'tract',
+            '2q28-58m6': 'tractce',
+            '86dh-mgvd': 'geoid10',
+            '8thk-xhvj': 'name'
+          };
+
+          if (shapefile) {
+            return shapefileFeatureNameMapping[shapefile];
           }
 
         }
@@ -292,7 +326,11 @@
                 throw new Error('Could not match fieldName to human-readable column name.');
               }
 
-              var shapefileFeatureHumanReadablePropertyName = getShapefileFeatureHumanReadablePropertyName(geojsonRegions);
+              var shapefileFeatureHumanReadablePropertyName = getShapefileFeatureHumanReadablePropertyName(geojsonRegions, column.shapefile);
+
+              if (!shapefileFeatureHumanReadablePropertyName) {
+                $log.error('Unable to determine shapefileFeatureHumanReadablePropertyName for shapefile: '.format(column.shapefile));
+              }
 
               return mergeRegionAndAggregateData(
                 activeFilterNames,

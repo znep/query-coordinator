@@ -42,7 +42,7 @@
         });
 
         scope.$on('modal-open', function(e, data) {
-          scope.addCardCardSize = data.cardSize;
+          scope.addCardCardSize = parseInt(data.cardSize, 10);
           // Reset the contents of the modal on each open event.
           scope.addCardSelectedColumnFieldName = null;
           scope.addCardModel = null;

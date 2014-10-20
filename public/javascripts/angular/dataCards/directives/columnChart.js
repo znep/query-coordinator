@@ -57,7 +57,7 @@ angular.module('socrataCommon.directives').directive('columnChart', function($pa
     // Clamp the bottom margin to a reasonable maximum since long labels are ellipsified.
     bottomMargin = bottomMargin > maximumBottomMargin ? maximumBottomMargin : bottomMargin;
 
-    var chartHeight = dimensions.height - topMargin - bottomMargin - horizontalScrollbarHeight;
+    var chartHeight = Math.max(0, dimensions.height - topMargin - bottomMargin - horizontalScrollbarHeight);
     var verticalScale = d3.scale.linear().range([chartHeight, 0]).clamp(true);
     var horizontalScale = null;
     var rightOffset = 0;

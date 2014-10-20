@@ -405,7 +405,12 @@ angular.module('socrataCommon.directives').directive('columnChart', function($pa
       });
 
       Rx.Observable.subscribeLatest(
-        element.closest('.card-visualization').observeDimensions(),
+        element.closest('.card-visualization').observeDimensions().map(function(dimensions) {
+          return {
+            width: Math.max(dimensions.width, 0),
+            height: Math.max(dimensions.height, 0)
+          };
+        }),
         scope.observe('chartData'),
         scope.observe('showFiltered'),
         scope.observe('expanded'),

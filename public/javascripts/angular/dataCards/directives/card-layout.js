@@ -298,29 +298,6 @@
         }
 
 
-        // Animation clean-up
-        cardContainer.on('transitionend webkitTransitionEnd oTransitionEnd MSTransitionEnd', '.card-spot', function() {
-          var jqEl = $(this);
-          // Let the child readjust itself
-          jqEl.children().css({
-            bottom: '',
-            right: '',
-            width: '',
-            height: ''
-          });
-          // Remove transition - eg so during drag/drop, you don't interfere with the js
-          // moving the card with the mouse
-          jqEl.css('transition', '');
-
-          // Apply the final style if it exists
-          var localScope = jqEl.scope();
-          if (localScope.cardPosition.styleToApplyAtEndOfTransition) {
-            jqEl.css(localScope.cardPosition.styleToApplyAtEndOfTransition);
-            localScope.cardPosition.styleToApplyAtEndOfTransition = null;
-          }
-        });
-
-
         /***********************
         * Set up data pipeline *
         ***********************/
@@ -403,7 +380,7 @@
           if (localScope) {
             // TODO: hack so that if you hit this code during a transition, the
             // transitionend handler will get the correct fixed-position style.
-            var styles = localScope.cardPosition.styleToApplyAtEndOfTransition || {};
+            var styles = localScope.newStyles || {};
             updateExpandedVerticalDims(styles, scope.expandedCard,
                                        args[0], args[3],
                                        cardContainer.height());
@@ -463,7 +440,7 @@
             var heightOfAllCards;
             // First reset the styles of all the cards
             _.each(cardsBySize.normal.concat(cardsBySize.dataCard), function(v) {
-              v.style = v.styleToApplyAtEndOfTransition = null;
+              v.style = null;
             });
             // Branch here based on whether or not there is an expanded card.
             if (scope.expandedCard) {
@@ -475,46 +452,21 @@
                 placeholderDropTargets, addCardButtons);
             }
 
-            // We only want to animate during expansion changes. Not eg during customize
-            if (Modernizr.csstransitions && (oldExpandedId || newExpandedId)) {
-              // Animate the card position changes
-              _.each(cardsBySize.normal.concat(cardsBySize.dataCard), function(card, i) {
-                // Set the child to fixed dimensions during transition, so it doesn't
-                // transition
-                card.childStyle = {
-                  bottom: 'auto',
-                  right: 'auto',
-                  width: card.style.width,
-                  height: card.style.height
-                };
+            scope.cardPositions = cardsBySize.normal.concat(cardsBySize.dataCard);
 
-                // Transitioning from fixed-position to absolute-position (and vice-versa)
-                // sucks - top/left have completely different reference points. SO - keep
-                // its position-property the same (and translate the top/left to the
-                // cooresponding coordinate system) until the transition ends, and THEN
-                // set the card's style to its final state (so scrolling works as
-                // expected).
-                if (newExpandedId === card.model.uniqueId) {
-                  card.styleToApplyAtEndOfTransition = $.extend({}, card.style);
-                  $.extend(card.style, {
-                    transition: 'all ' + Constants.TRANSITION_DURATION + 's ease-in-out',
-                    zIndex: 10,
-                    position: '',
-                    top: jqueryWindow.scrollTop() + card.style.top
-                      - cardContainer.offset().top
-                  });
-                } else if(oldExpandedId === card.model.uniqueId) {
-                  card.styleToApplyAtEndOfTransition = $.extend({}, card.style);
-                  $.extend(card.style, {
-                    transition: 'all ' + Constants.TRANSITION_DURATION + 's ease-in-out',
-                    zIndex: 10,
-                    position: 'fixed',
-                    top: (card.style.top + cardContainer.offset().top)
-                      - jqueryWindow.scrollTop()
-                  });
+            // The order in which things will animate
+            if (editMode) {
+              // Don't animate
+              _.each(scope.cardPositions, function(card) {
+                card.index = -1;
+              });
+            } else {
+              var index = 1;
+              _.each(scope.cardPositions, function(card, i) {
+                if (newExpandedId === card.model.uniqueId || oldExpandedId === card.model.uniqueId) {
+                  card.index = 0;
                 } else {
-                  card.style.transition = 'all ' + Constants.TRANSITION_DURATION + 's ' +
-                    (.04 * (i < 10 ? i + 1 : 11)) + 's ease-in-out';
+                  card.index = index++;
                 }
               });
             }
@@ -524,7 +476,6 @@
               height: heightOfAllCards
             });
 
-            scope.cardPositions = cardsBySize.normal.concat(cardsBySize.dataCard);
             scope.placeholderDropTargets = placeholderDropTargets;
             scope.addCardButtons = addCardButtons;
           }));

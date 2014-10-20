@@ -26,26 +26,22 @@ angular.module('dataCards.directives').directive('cardVisualizationTable', funct
         return CardDataService.getRows.apply(CardDataService, args);
       };
 
+      var isComputedColumn = function(columnName) {
+        return columnName.length > 1 && columnName.substring(0, 2) === ':@';
+      };
+
+      var isSystemColumn = function(columnName) {
+        return columnName.length > 1 && columnName.substring(0, 2).match(/[A-Za-z0-9\_][A-Za-z0-9\_]/) !== null;
+      };
+
       function removeSystemColumns(columns) {
         var filteredColumns = {};
-        _.each(columns, function(column, fieldName) {
-          if (
-               // ...for column fieldNames with more than two characters...
-               ( fieldName.length >= 2
-                 &&
-                 (fieldName.substring(0, 2) === ':@' ||
-                  fieldName.substring(0, 2).match(/[A-Za-z0-9\_][A-Za-z0-9\_]/) !== null)
-               )
-               ||
-               // ...and for column fieldNames with only one character...
-               (fieldName.length === 1 && fieldName.substring(0, 1) !== ':' && fieldName.substring(0, 1) !== '*')
-             ) {
 
+        _.each(columns, function(column, fieldName) {
+          if (isComputedColumn(fieldName) || isSystemColumn(fieldName)) {
             column.sortable = !_.contains(unsortable, column.physicalDatatype);
             filteredColumns[fieldName] = column;
-
           }
-          // ... but not for column fieldNames with 0 characters. Is this even possible?
         });
 
         return filteredColumns;

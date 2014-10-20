@@ -42,6 +42,13 @@
       "importance": 1
     },
     {
+      "title": "Time",
+      "name": "time",
+      "physicalDatatype": "floating_timestamp",
+      "logicalDatatpye": "time",
+      "importance": 1
+    },
+    {
       "title": "Description",
       "name": "description",
       "physicalDatatype": "text",

@@ -71,8 +71,12 @@ angular.module('socrataCommon.directives').directive('table', function(AngularRx
       // by the strings 'DESC' and 'ASC').
       function defaultSortOrderForColumn(column) {
         switch(column.physicalDatatype) {
-          case 'number': case 'timestamp': return 'DESC';
-          default: return 'ASC';
+          case 'number':
+          case 'timestamp':
+          case 'floating_timestamp':
+            return 'DESC';
+          default:
+            return 'ASC';
         }
       }
 
@@ -133,7 +137,7 @@ angular.module('socrataCommon.directives').directive('table', function(AngularRx
 
       var columnDrag = false;
 
-      var dragHandles = function(columnIds) {
+      var dragHandles = function() {
         var columnIndex;
         var columnId;
         var currentX = 0;
@@ -309,7 +313,7 @@ angular.module('socrataCommon.directives').directive('table', function(AngularRx
                   );
                 }
 
-              } else if (cellType === 'timestamp') {
+              } else if (cellType === 'timestamp' || cellType === 'floating_timestamp') {
                 var time = moment(cellContent);
 
                 // Check if Date or Date/Time
@@ -415,6 +419,7 @@ angular.module('socrataCommon.directives').directive('table', function(AngularRx
         interact: true,
         style: 'table',
         direction: 'horizontal',
+
         html: function($target, $head, options) {
           if ($target[0].clientWidth < $target[0].scrollWidth) {
             return _.escape($target.text());
@@ -428,9 +433,11 @@ angular.module('socrataCommon.directives').directive('table', function(AngularRx
         style: 'table',
         parent: document.body,
         interact: true,
+
         title: function($target, $head, options) {
           return _.escape($target.text());
         },
+
         html: function($target, $head, options, $element) {
           var headerScope = $target.scope();
           var columnId = headerScope.header.columnId;
@@ -442,9 +449,21 @@ angular.module('socrataCommon.directives').directive('table', function(AngularRx
           var descendingString = 'descending';
 
           switch(column.physicalDatatype) {
-            case 'number': ascendingString = 'smallest first'; descendingString = 'largest first'; break;
-            case 'text': ascendingString = 'A-Z'; descendingString = 'Z-A'; break;
-            case 'timestamp': ascendingString = 'oldest first'; descendingString = 'newest first'; break;
+            case 'number':
+              ascendingString = 'smallest first';
+              descendingString = 'largest first';
+              break;
+
+            case 'text':
+              ascendingString = 'A-Z';
+              descendingString = 'Z-A';
+              break;
+
+            case 'timestamp':
+            case 'floating_timestamp':
+              ascendingString = 'oldest first';
+              descendingString = 'newest first';
+              break;
           }
 
           $element.data('table-id', instanceUniqueNamespace);

@@ -223,7 +223,11 @@ angular.module('socrataCommon.directives').directive('table', function(AngularRx
             var maxCell = _.max($cells, function(cell) {
               return cell.clientWidth;
             });
-            var width = $(maxCell).width();
+            // text-overflow: ellipsis starts ellipsifying things when the widths are equal, which
+            // makes it hard to detect (in that case) if we should display a flyout or not (since
+            // scrollWidth == clientWidth both for too-short text as well as just-ellipsified text).
+            // So - offset by one, to at least make that situation less common.
+            var width = $(maxCell).width() + 1;
 
             if (width > 300) {
               width = 300;

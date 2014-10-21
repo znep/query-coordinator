@@ -986,54 +986,102 @@ describe('CardLayout directive', function() {
       });
     });
 
-    (Modernizr.csstransitions ? describe : xdescribe)('animation', function() {
-      it('collapses an expanded element (and all others) smoothly', function(done) {
-        var cl = createLayoutWithCards({
-          expanded: 2
+    if (Modernizr.csstransitions) {
+      describe('animation', function() {
+        it('collapses an expanded element (and all others) smoothly', function(done) {
+          var cl = createLayoutWithCards({
+            expanded: 2
+          });
+          testHelpers.overrideTransitions(.1);
+          var card = cl.element.find('card.expanded').parent();
+          card.find('.expand-button span').click();
+          cl.scope.$digest();
+
+          // The expanded card should start fixed position, and end absolute positioned
+          expect(card.css('position')).to.equal('fixed');
+          // normal cards should start and end absolutely, but at different positions
+          var normalCard = card.next();
+          expect(normalCard.css('position')).to.equal('absolute');
+          var normalCardPos = normalCard.position();
+
+          testHelpers.waitForSatisfy(function() {
+            var normalCardNewPos = normalCard.position();
+            return card.css('position') === 'absolute' &&
+              normalCard.css('position') === 'absolute' &&
+              (normalCardPos.top != normalCardNewPos.top ||
+               normalCardPos.left != normalCardNewPos.left);
+          }).then(done);
         });
-        testHelpers.overrideTransitions(.1);
-        var card = cl.element.find('card.expanded').parent();
-        card.find('.expand-button span').click();
-        cl.scope.$digest();
 
-        // The expanded card should start fixed position, and end absolute positioned
-        expect(card.css('position')).to.equal('fixed');
-        // normal cards should start and end absolutely, but at different positions
-        var normalCard = card.next();
-        expect(normalCard.css('position')).to.equal('absolute');
-        var normalCardPos = normalCard.position();
+        it('expands a collapsed element (and all others) smoothly', function(done) {
+          var cl = createLayoutWithCards();
+          testHelpers.overrideTransitions(.1);
+          var card = cl.element.find('card').eq(3).parent();
+          card.find('.expand-button span').click();
+          cl.scope.$digest();
 
-        testHelpers.waitForSatisfy(function() {
-          var normalCardNewPos = normalCard.position();
-          return card.css('position') === 'absolute' &&
-            normalCard.css('position') === 'absolute' &&
-            (normalCardPos.top != normalCardNewPos.top ||
-             normalCardPos.left != normalCardNewPos.left);
-        }).then(done);
+          // The expanding card should start absolute position, and end fixed positioned
+          expect(card.css('position')).to.equal('absolute');
+          var normalCard = card.next();
+          expect(normalCard.css('position')).to.equal('absolute');
+          var normalCardPos = normalCard.position();
+
+          testHelpers.waitForSatisfy(function() {
+            var normalCardNewPos = normalCard.position();
+            return card.css('position') === 'fixed' &&
+              normalCard.css('position') === 'absolute' &&
+              (normalCardPos.top != normalCardNewPos.top ||
+               normalCardPos.left != normalCardNewPos.left);
+          }).then(done);
+        });
       });
+    } else {
+      // Test the different behavior (ie no transitions) in IE9
+      describe('(lack of) animation', function() {
+        it('collapses an expanded element (and all others) immediately', function() {
+          var cl = createLayoutWithCards({
+            expanded: 2
+          });
+          testHelpers.overrideTransitions(.1);
+          var expandedCard = cl.element.find('card.expanded').parent();
+          var normalCard = expandedCard.next();
 
-      it('expands a collapsed element (and all others) smoothly', function(done) {
-        var cl = createLayoutWithCards();
-        testHelpers.overrideTransitions(.1);
-        var card = cl.element.find('card').eq(3).parent();
-        card.find('.expand-button span').click();
-        cl.scope.$digest();
+          var expandedOriginalPosition = expandedCard.position();
+          var normalCardOriginalPosition = normalCard.position();
 
-        // The expanding card should start absolute position, and end fixed positioned
-        expect(card.css('position')).to.equal('absolute');
-        var normalCard = card.next();
-        expect(normalCard.css('position')).to.equal('absolute');
-        var normalCardPos = normalCard.position();
+          expandedCard.find('.expand-button span').click();
+          cl.scope.$digest();
 
-        testHelpers.waitForSatisfy(function() {
-          var normalCardNewPos = normalCard.position();
-          return card.css('position') === 'fixed' &&
-            normalCard.css('position') === 'absolute' &&
-            (normalCardPos.top != normalCardNewPos.top ||
-             normalCardPos.left != normalCardNewPos.left);
-        }).then(done);
+          expect(expandedCard.css('position')).to.equal('absolute');
+          expect(normalCard.css('position')).to.equal('absolute');
+
+          // Should move
+          expect(expandedCard.position()).not.to.deep.equal(expandedOriginalPosition);
+          expect(normalCard.position()).not.to.deep.equal(normalCardOriginalPosition);
+        });
+
+        it('expands a collapsed element (and all others) immediately', function() {
+          var cl = createLayoutWithCards();
+          testHelpers.overrideTransitions(.1);
+          var expandingCard = cl.element.find('card').eq(3).parent();
+          var normalCard = expandingCard.next();
+
+          var expandingOriginalPosition = expandingCard.position();
+          var normalCardOriginalPosition = normalCard.position();
+
+          expandingCard.find('.expand-button span').click();
+          cl.scope.$digest();
+
+          // The expanding card should immediately be fixed-position
+          expect(expandingCard.css('position')).to.equal('fixed');
+          expect(normalCard.css('position')).to.equal('absolute');
+
+          // Should move
+          expect(expandingCard.position()).not.to.deep.equal(expandingOriginalPosition);
+          expect(normalCard.position()).not.to.deep.equal(normalCardOriginalPosition);
+        });
       });
-    });
+    }
 
     describe('flyout', function() {
       // For some reason, a tolerance of 20 fails ONLY in jenkins+PhantomJS. Can't figure

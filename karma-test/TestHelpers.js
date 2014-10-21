@@ -100,8 +100,10 @@ angular.module('test', [])
         transitionOverride.html('* { ' + prefices.join(style) + style + ' }');
         jQuery.fx.off = true;
       } else {
-        transitionOverride.remove();
-        transitionOverride = false;
+        if (transitionOverride) {
+          transitionOverride.remove();
+          transitionOverride = false;
+        }
         jQuery.fx.off = false;
       }
     }

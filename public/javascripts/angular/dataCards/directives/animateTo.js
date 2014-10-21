@@ -37,7 +37,9 @@ angular.module('dataCards.directives').directive('animateTo', function() {
           var styles = $.extend({}, newStyles);
           $scope.newStyles = newStyles;
           // Don't animate if it's the first time setting the styles, or the index is -1
-          if (oldStyles && attrs.animateToIndex >= 0 && !_.isEqual(oldStyles, styles)) {
+          if (oldStyles &&
+              (!attrs.animateToIndex || attrs.animateToIndex > 0) &&
+              !_.isEqual(oldStyles, styles)) {
             if (styles.position !== oldStyles.position) {
               // Transitioning from fixed-position to absolute-position (and vice-versa) sucks -
               // top/left have completely different reference points. SO - keep its position-property

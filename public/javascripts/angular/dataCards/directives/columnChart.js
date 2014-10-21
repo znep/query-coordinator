@@ -357,7 +357,7 @@ angular.module('socrataCommon.directives').directive('columnChart', function($pa
     });
 
     // Set "Click to Expand" truncation marker + its tooltip
-    $truncationMarker.css('height', $labels.height());
+    $truncationMarker.css('bottom', $labels.height() - $truncationMarker.height());
 
     if (chartTruncated) {
       $truncationMarker.css('display', 'block');

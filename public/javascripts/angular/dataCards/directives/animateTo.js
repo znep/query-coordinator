@@ -3,10 +3,10 @@
  * Assumptions:
  *   The position of the element is either fixed or absolute.
  *   There is one child element, and it is the one setting the background color.
- *
- * TODO: If you drag/drop too much, then expanding / etc kills the observeDimensions() handlers
  */
 angular.module('dataCards.directives').directive('animateTo', function() {
+  var ANIMATION_DURATION = .5,
+      ANIMATION_STAGGER = .04;
   return {
     restrict: 'A',
 
@@ -90,10 +90,11 @@ angular.module('dataCards.directives').directive('animateTo', function() {
             });
 
             // The actual animation stuff
-            styles.transition = 'all .5s ease-in-out';
+            styles.transition = 'all ' + ANIMATION_DURATION + 's ease-in-out';
             // Order animations as necessary
             if (attrs.animateToIndex) {
-              styles.transition += ' ' + (parseInt(attrs.animateToIndex, 10) * .04) + 's';
+              styles.transition += ' ' + (parseInt(attrs.animateToIndex, 10) * ANIMATION_STAGGER) +
+                's';
             }
             restoreFunctions.push(function(element) {
               // Remove transition - eg so during drag/drop, you don't interfere with the js

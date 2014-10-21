@@ -24,7 +24,6 @@ body.state-view-cards
     padding: $metadata-top-padding ($metadata-side-padding / 2)
     border-top: 3px solid $metadata-border-color
     border-bottom: 3px solid $metadata-border-color
-    z-index: 2
 
     .page-description
       margin-top: 1rem
@@ -115,79 +114,6 @@ body.state-view-cards
             display: block
           .button-text
             visibility: hidden
-
-    #api-panel
-      position: absolute
-      display: none
-      margin-top: $api-panel-hint-width / 2
-      right: ($metadata-side-padding / 2) + ($action-btn-min-width / 2)
-      color: $api-panel-white-font-color
-      background-color: $api-panel-bg-color
-      text-align: left
-      z-index: 1003
-      width: $api-panel-width
-      border: solid 1px $api-panel-border-color
-
-      #api-panel-hint
-        position: absolute
-        right: -1px
-        top: -$api-panel-hint-width
-        width: 0
-        height: 0
-        border-style: solid
-        border-width: 0 0 $api-panel-hint-width $api-panel-hint-width
-        border-color: transparent transparent $api-panel-bg-color transparent
-
-      #api-panel-inner-container
-        position: relative
-        padding: $card-padding
-
-      h2
-        margin: 0
-        font-size: 1.25em
-        font-weight: bold
-
-      #api-url-display
-        margin: 0
-        padding: 0
-        font-size: 1.1em
-        line-height: 3em
-        white-space: nowrap
-        color: $api-panel-black-font-color
-        background-color: $api-panel-url-textarea-bg-color
-        border: none
-        outline: none
-        overflow-x: scroll
-        overflow-y: hidden
-
-        .api-url-spacer
-          display: inline-block
-          width: 1em
-
-        #api-url-content
-          display: inline-block
-
-          &:before, &:after
-            content: ''
-            display: inline-block
-            width: 1em
-
-      .api-btn
-        width: auto
-        background-color: $dark-btn-bg-color
-        border: solid 2px $dark-btn-border-color
-        color: $dark-btn-font-color
-        font-weight: bold
-        font-size: 1em
-        margin-bottom: 0
-
-        &:hover, &.active
-          background-color: $dark-btn-hover-bg-color
-          border: solid 2px $dark-btn-hover-border-color
-          color: $dark-btn-hover-font-color
-
-    #api-panel.active
-      display: block
 
   .cards-content
     position: relative

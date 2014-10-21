@@ -250,6 +250,9 @@ body.state-view-cards
         position: absolute
 
         .card-drag-overlay
+          // IE9 ignores this overlay for JUST the column chart labels unless you give this
+          // a background color (transparent doesn't work).
+          background-color: rgba(0, 0, 0, 0)
           position: absolute
           left: 0
           right: 0

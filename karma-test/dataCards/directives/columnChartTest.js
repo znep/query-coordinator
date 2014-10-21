@@ -6,6 +6,8 @@ describe('columnChart', function() {
   var minExpandedCardBarWidth = 15;
   var maxExpandedCardBarWidth = 40;
 
+  var CHART_HEIGHT = 480;
+
   var testData = [
     {"name": "THEFT", "total": 21571},
     {"name": "BATTERY", "total": 18355},
@@ -119,6 +121,8 @@ describe('columnChart', function() {
 
   beforeEach(module('dataCards.directives'));
 
+  beforeEach(module('dataCards/column-chart.sass'));
+
   beforeEach(inject(function($injector) {
     th = $injector.get('testHelpers');
     compile = $injector.get('$compile');
@@ -140,7 +144,8 @@ describe('columnChart', function() {
     if (!data) data = testData;
 
     var html =
-      '<div class="card-visualization" style="width: ' + width + 'px; height: 480px;">' +
+      '<div class="card-visualization" style="width: ' +
+        width + 'px; height: ' + CHART_HEIGHT + 'px;">' +
         '<div column-chart class="column-chart"' +
           ' chart-data="testData" show-filtered="showFiltered" expanded="expanded">' +
         '</div>' +
@@ -188,6 +193,52 @@ describe('columnChart', function() {
       expect($('.truncation-marker').css('display')).to.equal('none');
     });
 
+    it('should place the bars above the axis', function() {
+      var chart = createNewColumnChart();
+      // Find the x-axis. It's the bottommost one of the ticks
+      var xAxis = $(_.reduce(chart.element.find('.ticks').children(), function(accum, element) {
+        if ($(accum).position().top < $(element).position().top) {
+          return element;
+        } else {
+          return accum;
+        }
+      }));
+      var xAxisPosition = xAxis.offset().top + xAxis.outerHeight();
+
+      var bars = chart.element.find('.bar');
+      expect(bars.length).to.be.above(1);
+      bars.each(function() {
+        var element = $(this);
+        expect(element.offset().top + element.height() + 1).to.equal(xAxisPosition);
+      });
+    });
+
+    it('should show a minimum of 1 pixel if there is a non-zero value', function() {
+      // Craft the data such that the scale will result in a <.5px value
+      var testData = [
+        {"name": "THEFT", "total": 10}
+      ];
+      var chart = createNewColumnChart(null, null, testData);
+      var bars = chart.element.find('.bar.unfiltered');
+      // the column chart adds padding and stuff. Get the ACTUAL height we want to be.
+      var maxHeight = bars.eq(0).height();
+
+      chart.scope.testData = [
+        {"name": "THEFT", "total": maxHeight},
+        {"name": "FOULLANGUAGE", "total": 50},
+        {"name": "JAYWALKING", "total": 1},
+        {"name": "PICKINGNOSE", "total": .4}
+      ];
+      chart.scope.$digest();
+
+      // Make sure it laid out the way we expected
+      bars = chart.element.find('.bar.unfiltered');
+      expect(bars.eq(0).height()).to.equal(maxHeight);
+      expect(bars.eq(1).height()).to.equal(50);
+      expect(bars.eq(2).height()).to.equal(1);
+      // Now make sure the sub-pixel one rounded up
+      expect(bars.eq(3).height()).to.equal(1);
+    });
   });
 
   describe('when not expanded at 100px', function() {
@@ -433,6 +484,7 @@ describe('columnChart', function() {
     });
 
   });
+
   describe('column labels', function() {
     var chart, scope, element;
     var ensureChart = _.once(function() {
@@ -487,6 +539,7 @@ describe('columnChart', function() {
       });
     });
   });
+
   describe('when the truncation marker is clicked', function() {
 
     it('should emit the column-chart:truncation-marker-clicked event', function() {

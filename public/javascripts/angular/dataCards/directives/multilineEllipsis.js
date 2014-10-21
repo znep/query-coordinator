@@ -95,8 +95,17 @@ angular.module('dataCards.directives').directive('multilineEllipsis', function($
         $scope.observe('expanded')
       ).subscribe(resetHeightAnimation);
 
+      // Track whether or not we ever rendered. This is used to prevent expansion animations
+      // on first render.
+      var everRendered = false;
+
       Rx.Observable.subscribeLatest(
-        element.observeDimensions(),
+        element.observeDimensions().throttle(100), // Mild throttling. This is to:
+                                                   // 1) Not waste time on spurious size changes on initial load.
+                                                   // 2) Ignore spurious incorrect size notifications on IE9,
+                                                   //    which can cause infinite loops (IE will notify us of
+                                                   //    old sizes occasionally and then immediately correct
+                                                   //    itself. This causes us to bounce between two sizes).
         $scope.observe('text'),
         $scope.observe('maxLines'),
         $scope.observe('tolerance'),
@@ -138,7 +147,7 @@ angular.module('dataCards.directives').directive('multilineEllipsis', function($
           // we need to start an animation to this UI state if we're currently
           // showing the old state.
           if (expanded) {
-            var needsAnimation = content.triggerHandler('isTruncated');
+            var needsAnimation = everRendered && content.triggerHandler('isTruncated');
             var currentUnexpandedHeight = content.height();
 
             content.dotdotdot({
@@ -157,7 +166,7 @@ angular.module('dataCards.directives').directive('multilineEllipsis', function($
             var targetCollapsedHeight = lineHeight() * maxLines;
             var currentlyTruncated = content.triggerHandler('isTruncated');
             var wouldBeTruncated = targetCollapsedHeight < currentExpandedHeight - tolerance;
-            var needsAnimation = !currentlyTruncated && wouldBeTruncated;
+            var needsAnimation = everRendered && !currentlyTruncated && wouldBeTruncated;
 
             function applyEllipsis() {
               content.dotdotdot({
@@ -187,6 +196,8 @@ angular.module('dataCards.directives').directive('multilineEllipsis', function($
             $scope.textClamped = isClamped;
             $scope.contentTitleAttr = ($scope.showMoreMode === 'title-attr' && isClamped) ? text : null;
           });
+
+          everRendered = true;
         }
       );
 

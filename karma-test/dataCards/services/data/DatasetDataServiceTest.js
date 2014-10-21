@@ -63,22 +63,6 @@
         });
         $httpBackend.flush();
       });
-
-      it('should handle stubs if configured', function(done) {
-        var TEST_DATA = 'testData';
-        var getServerConfigStub = sinon.stub(ServerConfig, 'get');
-        getServerConfigStub.withArgs('useViewStubs').returns(true);
-        $httpBackend.expectGET('/stubs/datasets/{0}.json'.format(fake4x4)).
-          respond(200, TEST_DATA);
-        var response = DatasetDataService.getBaseInfo(fake4x4);
-        response.then(function(data) {
-          expect(data).to.equal(TEST_DATA);
-          done();
-        });
-        $httpBackend.flush();
-        getServerConfigStub.restore();
-      });
-
     });
 
     describe('getGeoJsonInfo', function() {

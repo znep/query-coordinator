@@ -2,15 +2,10 @@
 
   'use strict';
 
-  function PageDataService(http, Assert, ServerConfig, $q) {
+  function PageDataService(http, Assert) {
 
     function fetch(id) {
-      var url = null;
-      if (ServerConfig.get('useViewStubs')) {
-        url = '/stubs/pages/{0}.json'.format(id);
-      } else {
-        url = '/page_metadata/{0}.json'.format(id);
-      }
+      var url = '/page_metadata/{0}.json'.format(id);
       var config = {
         cache: true,
         requester: this
@@ -33,9 +28,6 @@
       Assert(_.isObject(pageData), 'pageData should be an object');
       if (idIsDefined) {
         Assert(_.isString(id), 'id should be a string');
-      }
-      if (ServerConfig.get('useViewStubs')) {
-        throw new Error('Using stubs - save not allowed');
       }
       var json = JSON.stringify(pageData);
       var config = {

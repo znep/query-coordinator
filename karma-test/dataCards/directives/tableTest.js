@@ -35,7 +35,7 @@ describe('table', function() {
         'filtered-row-count="filteredRowCount" expanded="expanded" column-details="columnDetails" ' +
         'default-sort-column-name="defaultSortColumnName"></div>' +
       '</div>'.format(expanded ? 'expanded': '');
-    
+
     var compiledElem = testHelpers.TestDom.compileAndAppend(html, outerScope);
 
     return compiledElem;
@@ -74,10 +74,10 @@ describe('table', function() {
   var columnCount;
   var rowCount = 5;
   var lastSort = null;
-  var idColumnIndex = 8;
-  var beatColumnIndex = 0;
-  var dateColumnIndex = 4;
-  var descriptionColumnIndex = 5;
+  var beatColumnIndex;
+  var dateColumnIndex;
+  var descriptionColumnIndex;
+  var idColumnIndex;
 
   beforeEach(module('/angular_templates/dataCards/table.html'));
   beforeEach(module('/angular_templates/dataCards/tableHeader.html'));
@@ -99,6 +99,12 @@ describe('table', function() {
       fixtureData = testHelpers.getTestJson(testJson);
       reversedFixtureData = [].concat(fixtureData).reverse();
       fixtureMetadata = testHelpers.getTestJson(testMetaJson);
+
+      var columnNames = _.pluck(fixtureMetadata['columns'], 'name');
+      beatColumnIndex = columnNames.indexOf('beat');
+      dateColumnIndex = columnNames.indexOf('date');
+      descriptionColumnIndex = columnNames.indexOf('description');
+      idColumnIndex = columnNames.indexOf('id');
     } catch (e) {
       console.log(e);
     }
@@ -121,6 +127,14 @@ describe('table', function() {
       var timestampCell = el.find('.table-row .cell.timestamp').first();
 
       expect(timestampCell.html()).to.match(/\d{4}\s\w{3}\s\d{2}\s\d{2}:\d{2}:\d{2}/);
+      done();
+    });
+
+    it('should render floating_timestamp cells with date & time as YYYY MMM DD HH:mm:ss', function(done) {
+      var el = createTableCard(true, fakeDataSource);
+      var floatingTimestampCell = el.find('.table-row .cell.floating_timestamp').first();
+
+      expect(floatingTimestampCell.html()).to.match(/\d{4}\s\w{3}\s\d{2}\s\d{2}:\d{2}:\d{2}/);
       done();
     });
 

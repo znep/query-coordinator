@@ -92,6 +92,18 @@
                 cardContainer.offset().top + heightOfAllCards));
 
           style.height -= footerOffset;
+
+          // enforce a minimum height
+          if (style.height < Constants.LAYOUT_MIN_EXPANDED_CARD_HEIGHT) {
+            var diff = Constants.LAYOUT_MIN_EXPANDED_CARD_HEIGHT - style.height;
+            style.height = Constants.LAYOUT_MIN_EXPANDED_CARD_HEIGHT;
+
+            // Let the footer push us up.
+            if (footerOffset) {
+              style.top -= diff;
+            }
+            // Otherwise, we overflow downward
+          }
         }
 
         /**
@@ -147,10 +159,10 @@
           });
 
           // Enforce a minimum height
-          if (heightOfAllCards === 0) {
-            heightOfAllCards = Constants['LAYOUT_MIN_EXPANDED_CARD_HEIGHT']
-              + (Constants['LAYOUT_VERTICAL_PADDING'] * 2);
-          }
+          heightOfAllCards = Math.max(
+            Constants.LAYOUT_MIN_EXPANDED_CARD_HEIGHT + (Constants.LAYOUT_VERTICAL_PADDING * 2),
+            heightOfAllCards
+          );
 
           // Set the style for the expanded card.
           var scrollTop = jqueryWindow.scrollTop();

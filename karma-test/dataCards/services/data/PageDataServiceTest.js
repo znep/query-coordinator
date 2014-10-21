@@ -57,21 +57,6 @@
         });
         $httpBackend.flush();
       });
-
-      it('should handle stubs if configured', function(done) {
-        var TEST_DATA = 'testData';
-        var getServerConfigStub = sinon.stub(ServerConfig, 'get');
-        getServerConfigStub.withArgs('useViewStubs').returns(true);
-        $httpBackend.expectGET('/stubs/pages/{0}.json'.format(fake4x4)).respond(200, TEST_DATA);
-        var response = PageDataService.getBaseInfo(fake4x4);
-        getServerConfigStub.restore();
-        response.then(function(data) {
-          expect(data).to.equal(TEST_DATA);
-          done();
-        });
-        $httpBackend.flush();
-      });
-
     });
 
     describe('save', function() {
@@ -79,10 +64,6 @@
         expect(function() { PageDataService.save(); }).to.throw();
         expect(function() { PageDataService.save('foo'); }).to.throw();
         expect(function() { PageDataService.save({}, {}); }).to.throw();
-        var getServerConfigStub = sinon.stub(ServerConfig, 'get');
-        getServerConfigStub.withArgs('useViewStubs').returns(true);
-        expect(function() { PageDataService.save({}); }).to.throw();
-        getServerConfigStub.restore();
       });
       it('should PUT if an ID is provided', function() {
         $httpBackend.expectPUT(pageDataUrl, { pageMetadata: JSON.stringify(fakePageData) }).respond(200, 'ok');

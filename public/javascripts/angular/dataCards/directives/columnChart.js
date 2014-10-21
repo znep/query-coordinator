@@ -57,9 +57,8 @@ angular.module('socrataCommon.directives').directive('columnChart', function($pa
     // Clamp the bottom margin to a reasonable maximum since long labels are ellipsified.
     bottomMargin = bottomMargin > maximumBottomMargin ? maximumBottomMargin : bottomMargin;
 
-    var chartHeight = dimensions.height - topMargin - bottomMargin - horizontalScrollbarHeight;
-    var verticalScale = d3.scale.linear().range([chartHeight, 0]);
-    var verticalOffset = topMargin + chartHeight;
+    var chartHeight = Math.max(0, dimensions.height - topMargin - bottomMargin - horizontalScrollbarHeight);
+    var verticalScale = d3.scale.linear().range([chartHeight, 0]).clamp(true);
     var horizontalScale = null;
     var rightOffset = 0;
     var rangeBand = 0;
@@ -274,10 +273,6 @@ angular.module('socrataCommon.directives').directive('columnChart', function($pa
       labelDivSelection.exit().remove();
     };
 
-    var clampHeight = function(height) {
-      return height > chartHeight ? chartHeight : height;
-    };
-
     var horizontalBarPosition = function(d) {
       return horizontalScale(d.name) - chartLeftOffset;
     };
@@ -313,8 +308,8 @@ angular.module('socrataCommon.directives').directive('columnChart', function($pa
       // Update the position of the individual bars.
       bars.
         style('width', rangeBand + 'px').
-        style('height', function(d) { return clampHeight(verticalScale(d)) + 'px'; }).
-        style('top', function(d) { return verticalOffset - clampHeight(verticalScale(d)) + 1 + 'px'; }).
+        style('height', function(d) { return Math.ceil(verticalScale(d)) + 'px'; }).
+        style('bottom', 0).
         attr('class', function(d, i) {
           return 'bar ' + (i === 0 ? 'unfiltered' : 'filtered');
         });
@@ -362,7 +357,7 @@ angular.module('socrataCommon.directives').directive('columnChart', function($pa
     });
 
     // Set "Click to Expand" truncation marker + its tooltip
-    $truncationMarker.css('height', $labels.height());
+    $truncationMarker.css('bottom', $labels.height() - $truncationMarker.height());
 
     if (chartTruncated) {
       $truncationMarker.css('display', 'block');
@@ -410,7 +405,12 @@ angular.module('socrataCommon.directives').directive('columnChart', function($pa
       });
 
       Rx.Observable.subscribeLatest(
-        element.closest('.card-visualization').observeDimensions(),
+        element.closest('.card-visualization').observeDimensions().map(function(dimensions) {
+          return {
+            width: Math.max(dimensions.width, 0),
+            height: Math.max(dimensions.height, 0)
+          };
+        }),
         scope.observe('chartData'),
         scope.observe('showFiltered'),
         scope.observe('expanded'),

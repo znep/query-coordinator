@@ -1,14 +1,9 @@
 (function() {
 
-  function DatasetDataService(http, Assert, ServerConfig) {
+  function DatasetDataService(http, Assert) {
 
     function fetch(id) {
-      var url = null;
-      if (ServerConfig.get('useViewStubs')) {
-        url = '/stubs/datasets/{0}.json'.format(id);
-      } else {
-        url = '/dataset_metadata/{0}.json'.format(id);
-      }
+      var url = '/dataset_metadata/{0}.json'.format(id);
       var config = {
         cache: true,
         requester: this

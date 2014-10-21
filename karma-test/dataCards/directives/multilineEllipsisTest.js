@@ -13,6 +13,18 @@ describe("multilineEllipsis directive", function(FlyoutService) {
 
   beforeEach(module('dataCards'));
 
+  // NOTE! We mock out the clock, as rendering is throttled (async).
+  var fakeClock = null;
+
+  beforeEach(function() {
+    fakeClock = sinon.useFakeTimers();
+  });
+
+  afterEach(function() {
+    fakeClock.restore();
+    fakeClock = null;
+  });
+
   // Overriding providers must occur _after_ the dataCards module has been loaded because load order...
   beforeEach(function() {
     module(function($provide) {
@@ -42,6 +54,7 @@ describe("multilineEllipsis directive", function(FlyoutService) {
           var scope = $rootScope.$new();
           scope.lotsOfText = lotsOfText;
           el = testHelpers.TestDom.compileAndAppend(html, scope);
+          fakeClock.tick(1000);
         }
 
         it('should show an ellipsis when there are more than two lines of text and the height is 24 pixels', function() {
@@ -65,6 +78,7 @@ describe("multilineEllipsis directive", function(FlyoutService) {
           var scope = $rootScope.$new();
           scope.lotsOfText = lotsOfText;
           el = testHelpers.TestDom.compileAndAppend(html, scope);
+          fakeClock.tick(1000);
         }
 
         it('should show the full amount of text and no ellipsis', function() {
@@ -87,6 +101,7 @@ describe("multilineEllipsis directive", function(FlyoutService) {
           var scope = $rootScope.$new();
           scope.lotsOfText = lotsOfText;
           var el = testHelpers.TestDom.compileAndAppend(html, scope);
+          fakeClock.tick(1000);
           expect(el.text()).to.contain('...');
           expect(el.find('.content').attr('title')).to.equal(lotsOfText);
         });
@@ -98,6 +113,7 @@ describe("multilineEllipsis directive", function(FlyoutService) {
           var scope = $rootScope.$new();
           scope.lotsOfText = lotsOfText;
           var el = testHelpers.TestDom.compileAndAppend(html, scope);
+          fakeClock.tick(1000);
           expect(el.text()).to.equal(lotsOfText);
           expect(el.find('.content').attr('title')).to.be.empty;
         });
@@ -115,6 +131,7 @@ describe("multilineEllipsis directive", function(FlyoutService) {
           var registrationSpy = sinon.spy(mockFlyoutService, 'register');
           var element = testHelpers.TestDom.compileAndAppend(html, scope);
           var content = element.find('.content');
+          fakeClock.tick(1000);
 
           expect(content.text()).to.contain('...');
           expect(content.attr('title')).to.be.empty;
@@ -130,25 +147,20 @@ describe("multilineEllipsis directive", function(FlyoutService) {
     });
 
     describe('with show-more-mode as none', function() {
-      it('should not register a flyout of set the title when show-more-mode is none', function(done) {
-        try {
-          var html = '<div expanded="false" multiline-ellipsis max-lines="1" tolerance="1" text="{{lotsOfText}}" show-more-mode="none" animation-duration="0">';
-          var scope = $rootScope.$new();
-          scope.lotsOfText = lotsOfText;
+      it('should not register a flyout of set the title when show-more-mode is none', function() {
+        var html = '<div expanded="false" multiline-ellipsis max-lines="1" tolerance="1" text="{{lotsOfText}}" show-more-mode="none" animation-duration="0">';
+        var scope = $rootScope.$new();
+        scope.lotsOfText = lotsOfText;
 
-          var registrationSpy = sinon.spy(mockFlyoutService, 'register');
-          var element = testHelpers.TestDom.compileAndAppend(html, scope);
-          var content = element.find('.content');
+        var registrationSpy = sinon.spy(mockFlyoutService, 'register');
+        var element = testHelpers.TestDom.compileAndAppend(html, scope);
+        var content = element.find('.content');
+        fakeClock.tick(1000);
 
-          expect(content.text()).to.contain('...');
-          expect(content.attr('title')).to.be.empty;
-          expect(registrationSpy.called, 'FlyoutService.register never called').to.be.false;
-          mockFlyoutService.register.restore();
-          done();
-        } catch (err) {
-          console.log("Exception raised: ", err);
-          throw(err);
-        }
+        expect(content.text()).to.contain('...');
+        expect(content.attr('title')).to.be.empty;
+        expect(registrationSpy.called, 'FlyoutService.register never called').to.be.false;
+        mockFlyoutService.register.restore();
       });
     });
 

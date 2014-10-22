@@ -78,11 +78,11 @@
 	
 	function createStyles() {
 		if (!stylesCreated) {
-			var prefices = ['-moz-', '-webkit-', '-ms-', '-o-', ''];
+			var prefixes = ['-moz-', '-webkit-', '-ms-', '-o-', ''];
 			var declaration = 'keyframes nodeInserted { from {outline-color: rgba(255,255,255,.1);} to {outline-color: rgba(255,255,255,0);}}';
-			var keyframes = '@' + prefices.join(declaration + '@') + declaration;
+			var keyframes = '@' + prefixes.join(declaration + '@') + declaration;
 			var animationDeclaration = 'animation: nodeInserted .01s;';
-			var animation = prefices.join(animationDeclaration) + animationDeclaration;
+			var animation = prefixes.join(animationDeclaration) + animationDeclaration;
 
 			var css = keyframes + '.resize-triggers { visibility: hidden; ' + animation + ' } .resize-triggers, .resize-triggers > div, .contract-trigger:before { content: \" \"; display: block; position: absolute; top: 0; left: 0; height: 100%; width: 100%; overflow: hidden; } .resize-triggers > div { background: #eee; overflow: auto; } .contract-trigger:before { width: 200%; height: 200%; }',
 				head = document.head || document.getElementsByTagName('head')[0],

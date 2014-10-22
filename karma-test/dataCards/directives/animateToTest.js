@@ -225,8 +225,7 @@ describe('animate-to directive', function() {
           expect(parseInt(child[0].style.height, 10)).to.equal(child.height());
 
           testHelpers.waitForSatisfy(function() {
-            return child[0].style.width === '' &&
-              child[0].style.height === '';
+            return child[0].style.width === '' && child[0].style.height === '';
           }).then(done);
         });
       });

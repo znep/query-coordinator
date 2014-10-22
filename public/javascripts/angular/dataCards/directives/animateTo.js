@@ -5,8 +5,8 @@
  *   There is one child element, and it is the one setting the background color.
  */
 angular.module('dataCards.directives').directive('animateTo', function() {
-  var ANIMATION_DURATION = .5,
-      ANIMATION_STAGGER = .04;
+  var ANIMATION_DURATION = .5;
+  var ANIMATION_STAGGER = .04;
   return {
     restrict: 'A',
 
@@ -95,8 +95,7 @@ angular.module('dataCards.directives').directive('animateTo', function() {
             styles.transition = 'all ' + ANIMATION_DURATION + 's ease-in-out';
             // Order animations as necessary
             if (attrs.animateToIndex) {
-              styles.transition += ' ' + (parseInt(attrs.animateToIndex, 10) * ANIMATION_STAGGER) +
-                's';
+              styles.transition += ' ' + (parseInt(attrs.animateToIndex, 10) * ANIMATION_STAGGER) + 's';
             }
             restoreFunctions.push(function(element) {
               // Remove transition - eg so during drag/drop, you don't interfere with the js

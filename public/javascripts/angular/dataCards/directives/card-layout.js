@@ -381,9 +381,13 @@
             // TODO: hack so that if you hit this code during a transition, the
             // transitionend handler will get the correct fixed-position style.
             var styles = localScope.newStyles || {};
-            updateExpandedVerticalDims(styles, scope.expandedCard,
-                                       args[0], args[3],
-                                       cardContainer.height());
+            updateExpandedVerticalDims(
+              styles,
+              scope.expandedCard,
+              args[0],
+              args[3],
+              cardContainer.height()
+            );
             jqEl.css(styles);
           }
         }));

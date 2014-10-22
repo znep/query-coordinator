@@ -181,8 +181,8 @@
         $httpBackend.whenGET(new RegExp('/resource/[^.]+\\.geojson\\?\\$limit=1')).
           respond({});
         element = addValidElement();
-        element.find('#api-panel-toggle-btn').click();
-        expect(element.find('#api-panel:visible').length).to.equal(1);
+        element.find('button:visible').click();
+        expect(element.find('.tool-panel-main:visible').length).to.equal(1);
       });
 
       it('should not display the the geojson option', function() {
@@ -199,22 +199,36 @@
       });
 
       it('should show the panel when clicked, and hide it when clicking outside', function() {
-        expect(element.find('#api-panel-inner-container:visible').length).to.equal(1);
-        testHelpers.fireMouseEvent(element.find('#api-panel-inner-container')[0], 'mouseup');
+        expect(element.find('.tool-panel-inner-container:visible').length).to.equal(1);
+        testHelpers.fireMouseEvent(element.find('.tool-panel-inner-container')[0], 'mouseup');
         // no effect
-        expect(element.find('#api-panel-inner-container:visible').length).to.equal(1);
+        expect(element.find('.tool-panel-inner-container:visible').length).to.equal(1);
         testHelpers.fireMouseEvent($('body')[0], 'mouseup');
-        expect(element.find('#api-panel-inner-container:visible').length).to.equal(0);
+        expect(element.find('.tool-panel-inner-container:visible').length).to.equal(0);
       });
 
       it('should show the panel when clicked, and hide it when hitting escape', function() {
-        expect(element.find('#api-panel-inner-container:visible').length).to.equal(1);
-        testHelpers.fireMouseEvent(element.find('#api-panel-inner-container')[0], 'mouseup');
+        expect(element.find('.tool-panel-inner-container:visible').length).to.equal(1);
+        testHelpers.fireMouseEvent(element.find('.tool-panel-inner-container')[0], 'mouseup');
         // no effect
-        expect(element.find('#api-panel-inner-container:visible').length).to.equal(1);
+        expect(element.find('.tool-panel-inner-container:visible').length).to.equal(1);
         testHelpers.fireEvent(document, 'keydown', {which: 27});
-        expect(element.find('#api-panel-inner-container:visible').length).to.equal(0);
+        expect(element.find('.tool-panel-inner-container:visible').length).to.equal(0);
       });
+
+      it('should clean up after itself when the scope is destroyed', inject(function(WindowState) {
+        var scope = element.scope();
+        var cleanedUp = false;
+        scope.$on('cleaned-up', function() {
+          cleanedUp = true;
+        });
+
+        expect(cleanedUp).to.be.false;
+
+        scope.$broadcast('$destroy');
+
+        expect(cleanedUp).to.be.true;
+      }));
     });
   });
 })();

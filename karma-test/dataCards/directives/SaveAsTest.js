@@ -30,8 +30,22 @@
         saveAs = $compile(element)(scope);
         scope.$digest();
       });
-      return saveAs
+      return saveAs;
     }
+
+    it('should clean up after itself when the scope is destroyed', inject(function(WindowState) {
+      var element = createElement('<save-as></save-as>');
+      var cleanedUp = false;
+      scope.$on('cleaned-up', function() {
+        cleanedUp = true;
+      });
+
+      expect(cleanedUp).to.be.false;
+
+      scope.$broadcast('$destroy');
+
+      expect(cleanedUp).to.be.true;
+    }));
 
     describe('"Save As" button', function() {
       var elementTemplate = '<save-as page-has-changes="{0}"></save-as>';

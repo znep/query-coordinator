@@ -121,10 +121,11 @@
 
 
         // Clean up
-        scope.$on('$destroy', function() {
+        $scope.$on('$destroy', function() {
           _.each(subscriptions, function(sub) {
             sub.dispose();
           });
+          $scope.$emit('cleaned-up');
         });
       }
     };

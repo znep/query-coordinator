@@ -17,6 +17,7 @@
 
     var WindowState = {};
 
+    // TODO: convert these BehaviorSubjects to use Rx.Observable.fromEvent
     var scrollPositionSubject = new Rx.BehaviorSubject(window.pageYOffset);
     window.addEventListener('scroll', function() {
       scrollPositionSubject.onNext(window.pageYOffset);

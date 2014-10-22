@@ -57,3 +57,43 @@ DATASLATE:
 3001 resize handle
 20000 IE drag image
  
+
+DataCards:
+1 Cards area
+1 Cards themselves, except when dragged
+2 Cards input blocker overlay for edit mode.
+1001 loading spinners
+1002 quick filter bar
+1002 old flyouts (column chart bars, timeline chart hover, table hover)
+1003 API panel
+1004 Tool panel
+3000 Currently dragged card.
+9999 Modal translucent overlay
+10000 Modal dialog
+99999 other flyouts (uber flyouts)
+
+Cards:
+ 3 Expand and delete buttons.
+ -1 expanded title (unexpanded has no z-index unless hovered)
+ 1002 expanded or unexpanded card title on hover
+
+ 1 expanded card description
+ 2 unexpanded and truncated card description
+ 3 animating expanded card description
+ 1001 static expanded card description
+
+ 99999 catcher to prevent expand button from being clicked when in edit mode.
+
+Column chart:
+ 2 expand button (>>)
+
+Timeline chart:
+ 1 dim or hidden labels
+ 1 active labels while selecting
+ 2 highlighted labels
+ 2 active labels while not selecting
+
+Table:
+ 1 Column resize thumb
+
+

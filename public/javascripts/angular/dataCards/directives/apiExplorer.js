@@ -1,7 +1,7 @@
 (function() {
   'use strict';
 
-  function ApiExplorer(AngularRxExtensions, DatasetDataService) {
+  function ApiExplorer(AngularRxExtensions, DatasetDataService, WindowState) {
     return {
       restrict: 'E',
       templateUrl: '/angular_templates/dataCards/apiExplorer.html',
@@ -9,6 +9,7 @@
         datasetObservable: '=datasetObservable'
       },
       link: function($scope, element, attrs) {
+        var subscriptions = [];
         AngularRxExtensions.install($scope);
 
         /*
@@ -99,6 +100,18 @@
           }
         });
 
+        // Hide the panel
+        subscriptions.push(WindowState.closeDialogEventObservable.
+          filter(function(e) {
+            return $scope.panelActive && $(e.target).closest(element).length === 0;
+          }).
+          subscribe(function() {
+            $scope.safeApply(function() {
+              $scope.panelActive = false;
+            });
+          }));
+
+
         /*
          * Bind streams to scope
          */
@@ -106,6 +119,13 @@
         $scope.bindObservable('datasetDocumentationUrl', datasetDocumentationUrlStream);
         $scope.bindObservable('multipleFormatsAvailable', multipleFormatsAvailableStream);
 
+
+        // Clean up
+        scope.$on('$destroy', function() {
+          _.each(subscriptions, function(sub) {
+            sub.dispose();
+          });
+        });
       }
     };
   }

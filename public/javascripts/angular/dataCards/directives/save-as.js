@@ -61,7 +61,7 @@
           $scope.panelActive = false;
         };
 
-        WindowState.mouseLeftButtonClickSubject.
+        WindowState.closeDialogEventObservable.
           filter(function(e) {
             return $scope.panelActive && $(e.target).closest(element).length === 0;
           }).

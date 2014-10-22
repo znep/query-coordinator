@@ -26,7 +26,7 @@
       var scope = $rootScope.$new();
       scope.myTestObservable = Rx.Observable.returnValue(model);
       var element = testHelpers.TestDom.compileAndAppend(
-        '<api-explorer dataset-observable="myTestObservable"></api-explorer>',
+        '<api-explorer class="cards-metadata" dataset-observable="myTestObservable"></api-explorer>',
         scope);
       $httpBackend.flush();
       $rootScope.$digest();
@@ -42,6 +42,11 @@
       module('dataCards.models');
       module('dataCards');
       module('test');
+      module('dataCards/cards.sass');
+      module('dataCards/action-button.sass');
+      module('dataCards/flyout.sass');
+
+      $('body').addClass('state-view-cards');
 
       inject(['$httpBackend', '$rootScope', '$window', 'testHelpers', 'Model', function(_$httpBackend, _$rootScope, _$window, _testHelpers, _Model) {
         $rootScope = _$rootScope;
@@ -62,7 +67,7 @@
         var TEST_OBSERVABLE = new Rx.Subject();
         scope.myTestObservable = TEST_OBSERVABLE;
         var element = testHelpers.TestDom.compileAndAppend(
-          '<api-explorer dataset-observable="myTestObservable"></api-explorer>', scope);
+          '<api-explorer class="cards-metadata" dataset-observable="myTestObservable"></api-explorer>', scope);
         expect(element.isolateScope().datasetObservable).to.equal(TEST_OBSERVABLE);
       });
     });
@@ -155,7 +160,7 @@
           var scope = $rootScope.$new();
           scope.myTestObservable = Rx.Observable.returnValue(model);
           element = testHelpers.TestDom.compileAndAppend(
-            '<api-explorer dataset-observable="myTestObservable"></api-explorer>', scope);
+            '<api-explorer class="cards-metadata" dataset-observable="myTestObservable"></api-explorer>', scope);
         });
 
         it('should populate the documentation URL link', function() {
@@ -176,6 +181,8 @@
         $httpBackend.whenGET(new RegExp('/resource/[^.]+\\.geojson\\?\\$limit=1')).
           respond({});
         element = addValidElement();
+        element.find('#api-panel-toggle-btn').click();
+        expect(element.find('#api-panel:visible').length).to.equal(1);
       });
 
       it('should not display the the geojson option', function() {
@@ -189,6 +196,24 @@
 
       it('should populate the selection label with the JSON API URL', function() {
         expect(element.find('.selection-label-inner').text()).to.equal(JSON_URL);
+      });
+
+      it('should show the panel when clicked, and hide it when clicking outside', function() {
+        expect(element.find('#api-panel-inner-container:visible').length).to.equal(1);
+        testHelpers.fireMouseEvent(element.find('#api-panel-inner-container')[0], 'mouseup');
+        // no effect
+        expect(element.find('#api-panel-inner-container:visible').length).to.equal(1);
+        testHelpers.fireMouseEvent($('body')[0], 'mouseup');
+        expect(element.find('#api-panel-inner-container:visible').length).to.equal(0);
+      });
+
+      it('should show the panel when clicked, and hide it when hitting escape', function() {
+        expect(element.find('#api-panel-inner-container:visible').length).to.equal(1);
+        testHelpers.fireMouseEvent(element.find('#api-panel-inner-container')[0], 'mouseup');
+        // no effect
+        expect(element.find('#api-panel-inner-container:visible').length).to.equal(1);
+        testHelpers.fireEvent(document, 'keydown', {which: 27});
+        expect(element.find('#api-panel-inner-container:visible').length).to.equal(0);
       });
     });
   });

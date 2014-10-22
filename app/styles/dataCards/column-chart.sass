@@ -63,29 +63,6 @@ div.column-chart
         span.tip
           display: block
 
-    div.truncation-marker + div.tooltip
-      display: none
-      position: absolute
-      border: 1px solid $chart-tick-color
-      color: $chart-tick-color
-      padding: 5px 5px 0 5px
-      background-color: $tooltip-background-color
-      font-size: $small-font-size
-      height: 1rem
-      bottom: 3px
-      right: 1px
-      z-index: 2
-
-      span.tip
-        width: 0
-        display: none
-        border-left: 4px solid transparent
-        border-right: 4px solid transparent
-        border-top: 8px solid $chart-tick-color
-        bottom: -8px
-        position: absolute
-        right: 0
-
     div.field-name
       color: $chart-description-color
 
@@ -106,84 +83,6 @@ div.column-chart
 
     .bar
       position: absolute
-
-      div.tooltip
-        pointer-events: none
-        display: none
-        position: absolute
-        // width: determined dynamically by directive
-        border: 1px solid $tooltip-border-color
-        padding: 5px
-        background-color: $tooltip-background-color
-        font-size: $small-font-size
-        font-weight: bold
-        z-index: 2
-
-        div.datum
-          padding: 5px
-
-          div.name
-            white-space: normal
-            color: $tooltip-name-color
-            text-overflow: ellipsis
-            overflow-x: hidden
-
-            &.undefined
-              font-style: italic
-
-          .label
-            display: none
-
-          .value-filtered
-            display: none
-
-        &.filtered
-          div.datum
-            margin-bottom: 10px
-
-            .label
-              display: block
-
-            div.name
-              margin-bottom: 0.2rem
-
-            .value-unfiltered
-              color: $unfiltered-value-color
-              clear: both
-
-              .label
-                float: left
-              .value
-                float: right
-                text-align: right
-
-            .value-filtered
-              display: block
-              color: $filtered-bar-color
-              clear: both
-
-              .label
-                float: left
-              .value
-                float: right
-                text-align: right
-
-      span.tip
-        width: 0
-        display: none
-        border-left: 4px solid transparent
-        border-right: 4px solid transparent
-        border-top: 8px solid $tooltip-border-color
-        bottom: -8px
-        position: absolute
-
-      &.active:hover
-
-        div.tooltip
-          display: block
-
-        span.tip
-          display: block
 
   div.labels
     position: absolute

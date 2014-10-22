@@ -169,7 +169,7 @@
    * The <div timeline-chart /> directive.
    * Turns the tagged element into a timeline chart.
    */
-  function timelineChartDirective($timeout, AngularRxExtensions, FlyoutService) {
+  function timelineChartDirective($timeout, AngularRxExtensions, FlyoutService, InputHacks) {
     function renderTimelineChart(scope, element, dimensions, filterChanged, state) {
       var chartData = scope.chartData;
       var showFiltered = scope.showFiltered;
@@ -668,17 +668,42 @@
         }
       }, flyoutOpts));
 
-      var setupClickHandler = function() {
-        var dragActive = false;
+      function setupMouseInteraction() {
+        // NOTE: This needs refactoring, as this is confusing.
+        // Currently this can take these values:
+        // null: Not dragging a _handle_. Note that this either means no drag is happening,
+        //  or the user is dragging on the chart itself (as opposed to mousing down on a handle).
+        var currentlyGrabbedHandle = null;
+
+        // Whether or not the mouse moved between mouse down and the present moment.
         var moved = false;
+
+
+        // Did the user mouse down on a segment/label that is currently filtered on?
         var isFilteredTarget = false;
+
+        // Is the thing the user moused down on represent a clearable filter?
+        // TODO I'm not really sure why this exists.
         var isClearable = false;
 
+        function commonMouseDownHandler(event) {
+          startTrackingDrag();
+          moved = false;
+          currentlyGrabbedHandle = null;
+          element.addClass('selecting');
+
+          event.preventDefault();
+        }
+
         chartScroll.on('mousedown', 'g.segment, .labels .label', function(event) {
-          if (event.which > 1) {
-            // Don't capture right-clicks
+          if (event.which !== 1 && !_.isUndefined(event.which)) {
+            // Only capture left clicks (or no button defined, which we'll treat as
+            // left click).
             return;
           }
+
+          commonMouseDownHandler(event);
+
           var clickedDatum = d3.select(event.currentTarget).datum();
           state.filter.start = clickedDatum.date;
           var duration = $(event.currentTarget).is('.label') ?
@@ -688,77 +713,146 @@
           isFilteredTarget = $(event.currentTarget).is('.highlighted');
           isClearable = $(event.currentTarget).is('.label') ||
                         element.find('g.segment.highlighted').length === 1;
-          moved = false;
           state.selectionActive = true;
-
-          element.addClass('selecting');
-          event.preventDefault();
         }).on('mousedown', 'g.draghandle', function(event) {
-          dragActive = $(event.currentTarget).is('.start') ? 'start' : 'end';
+          if (event.which !== 1 && !_.isUndefined(event.which)) {
+            // Only capture left clicks (or no button defined, which we'll treat as
+            // left click).
+            return;
+          }
+
+          commonMouseDownHandler(event);
+
+          currentlyGrabbedHandle = $(event.currentTarget).is('.start') ? 'start' : 'end';
           isClearable = true;
-          moved = false;
+        });
 
-          element.addClass('selecting');
-          event.preventDefault();
-        }).on('mousemove', 'g.segment, .labels .label:not(.highlighted)',
-          function(event) {
-            if (state.selectionActive || dragActive) {
-              var clickedDatum = d3.select(event.currentTarget).datum();
-              var duration = $(event.currentTarget).is('.label') ?
-                  clickedDatum.range : segmentDuration;
-              var newEnd = clickedDatum.date;
-              moved = true;
+        function startTrackingDrag() {
+          // Set up an event redirect for all mouse events outside of our chart scroller
+          // (this includes catching events outside of this chart). This is a poor-man's
+          // implementation of mouse capture.
+          var capturedMouseEvents = InputHacks.captureAllMouseEventsOutsideOf(chartScroll);
 
-              if (state.selectionActive) {
-                if (newEnd >= state.filter.start) {
-                  state.filter.end = moment(newEnd).add(duration);
-                } else {
-                  if (state.filter.end >= state.filter.start) {
-                    state.filter.start = moment(state.filter.start).add(duration);
-                  }
-                  state.filter.end = newEnd;
-                }
-              } else if (dragActive) {
-                if (dragActive === 'start') {
-                  state.filter.start = newEnd;
-                } else {
-                  state.filter.end = moment(newEnd).add(duration);
-                }
-              }
+          // Build a sequence of mouse events comprising this drag:
+          // - the above captured mouse events
+          // - mouse events on the timeline itself.
+          // The sequence terminates when the mouse is released, or the document scrolls.
+          var mouseEventsInThisDrag = Rx.Observable.merge(
+            capturedMouseEvents,
+            Rx.Observable.fromAllMouseEvents(element)
+          ).takeWhile(function(event) {
+            return event.type !== 'mouseup';
+          }).
+          // Required because otherwise we'll miss mouseup if the user moves outside the window.
+          takeUntil(Rx.Observable.fromEvent(document, 'mouseup')).
+          // Give up if the user scrolls.
+          takeUntil(Rx.Observable.fromEvent(document, 'scroll'));
 
-              // Clamp the range
-              var domain = scales.horiz.domain();
-              var domainStart = moment(domain[0]);
-              var domainEnd = moment(domain[1]).add(segmentDuration);
-              if (state.filter.end > domainEnd) {
-                state.filter.end = domainEnd;
-              }
-              if (state.filter.end < domainStart) {
-                state.filter.end = domainStart;
-              }
-              if (state.filter.start > domainEnd) {
-                state.filter.start = domainEnd;
-              }
-              if (state.filter.start < domainStart) {
-                state.filter.start = domainStart;
-              }
-              updateDragHandles();
-            }
-          });
-
-        if (scope.mouseUpHandler) {
-          $(window).off('mouseup.TimelineChart', scope.mouseUpHandler);
+          // Pipe mouse moves to dragMove, and pipe the sequence termination to dragEnd.
+          mouseEventsInThisDrag.
+            filter(function(event) { return event.type === 'mousemove'; }).
+            subscribe(dragMove, undefined, dragEnd);
         }
-        scope.mouseUpHandler = function(event) {
-          if (dragActive || state.selectionActive) {
+        
+        function dragMove(event) {
+          function findSvgSegmentCorrespondingToDate(date) {
+            var correspondingGroup = _.find(element.find('g.segment'), function(segmentGroup) {
+              return d3.select(segmentGroup).datum().date == date;
+            });
+            return $(correspondingGroup);
+          };
+
+          if (state.selectionActive || currentlyGrabbedHandle) {
+            var newEnd;
+            var duration;
+
+            if ($(event.target).closest('g.segment, .labels .label:not(.highlighted)').length > 0) {
+              var clickedDatum = d3.select(event.target).datum();
+              duration = $(event.target).closest('.label').length > 0 ?
+                  clickedDatum.range : segmentDuration;
+              newEnd = clickedDatum.date;
+            } else if (event.externalCorner === 'left') {
+              // This mouse event came from captureAllMouseEventsOutsideOf().
+              // It's telling us the user moved off of the left side of the chart.
+              // This means the user wants to filter right to the beginning of the displayed time range.
+              newEnd = _.first(chartData).date;
+              duration = segmentDuration;
+            } else if (event.externalCorner === 'right') {
+              // This mouse event came from captureAllMouseEventsOutsideOf().
+              // It's telling us the user moved off of the right side of the chart.
+              // This means the user wants to filter right to the end of the displayed time range.
+              newEnd = _.last(chartData).date;
+              duration = segmentDuration;
+            } else if (event.externalCorner === 'top' || event.externalCorner === 'bottom') {
+              // This mouse event came from captureAllMouseEventsOutsideOf().
+              // It's telling us the user moved above or below the chart. We must
+              // figure out which date to filter on based on the mouse position alone.
+ 
+              // Get the exact date the mouse is at, on a continuous scale.
+              var dateMouseAt = scales.horiz.invert(event.offsetX || event.originalEvent.layerX);
+
+              // Now translate that to an actual piece of data.
+              var datumMouseAt = _.find(chartData, function(d) { return d.date > dateMouseAt; });
+
+              if (datumMouseAt) {
+                newEnd = datumMouseAt.date;
+                duration = segmentDuration;
+              }
+            }
+
+            if (!newEnd || !duration) { return; }
+
+            findSvgSegmentCorrespondingToDate(newEnd).mouseover();
+
+            moved = true;
+
+            if (state.selectionActive) {
+              if (newEnd >= state.filter.start) {
+                state.filter.end = moment(newEnd).add(duration);
+              } else {
+                if (state.filter.end >= state.filter.start) {
+                  state.filter.start = moment(state.filter.start).add(duration);
+                }
+                state.filter.end = newEnd;
+              }
+            } else if (currentlyGrabbedHandle) {
+              if (currentlyGrabbedHandle === 'start') {
+                state.filter.start = newEnd;
+              } else {
+                state.filter.end = moment(newEnd).add(duration);
+              }
+            }
+
+            // Clamp the range
+            var domain = scales.horiz.domain();
+            var domainStart = moment(domain[0]);
+            var domainEnd = moment(domain[1]).add(segmentDuration);
+            if (state.filter.end > domainEnd) {
+              state.filter.end = domainEnd;
+            }
+            if (state.filter.end < domainStart) {
+              state.filter.end = domainStart;
+            }
+            if (state.filter.start > domainEnd) {
+              state.filter.start = domainEnd;
+            }
+            if (state.filter.start < domainStart) {
+              state.filter.start = domainStart;
+            }
+            updateDragHandles();
+          }
+        };
+
+        function dragEnd() {
+          if (currentlyGrabbedHandle || state.selectionActive) {
             element.removeClass('selecting');
             // If clicked on a selected segment and the user hasn't moved, clear the
             // filter.
-            if ((dragActive || isFilteredTarget) && isClearable && moved === false) {
+            if ((currentlyGrabbedHandle || isFilteredTarget) && isClearable && moved === false) {
               clearFilter(state);
             } else {
               state.selectionActive = false;
-              dragActive = false;
+              currentlyGrabbedHandle = null;
               var sorted = _.sortBy([state.filter.start, state.filter.end]);
               state.filter.start = sorted[0];
               state.filter.end = sorted[1];
@@ -767,9 +861,9 @@
             chart.d3.select('g.container').call(updateLines);
           }
         };
-        $(window).on('mouseup.TimelineChart', scope.mouseUpHandler);
-      };
-      setupClickHandler();
+      }
+
+      setupMouseInteraction();
     };
 
     return {

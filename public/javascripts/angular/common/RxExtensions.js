@@ -151,3 +151,15 @@ Rx.Observable.mergeAllAndGiveSource = function() {
 
   return Rx.Observable.merge.apply(Rx.Observable, mappedToSelf).share();
 };
+
+// Convenience merged fromEvent sequence of mouse{down, up, enter, exit, move} and click.
+Rx.Observable.fromAllMouseEvents = function(element) {
+  return Rx.Observable.merge(
+    Rx.Observable.fromEvent(element, 'mousedown'),
+    Rx.Observable.fromEvent(element, 'mouseup'),
+    Rx.Observable.fromEvent(element, 'click'),
+    Rx.Observable.fromEvent(element, 'mouseenter'),
+    Rx.Observable.fromEvent(element, 'mouseexit'),
+    Rx.Observable.fromEvent(element, 'mousemove')
+  );
+};

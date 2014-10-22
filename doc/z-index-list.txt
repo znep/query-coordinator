@@ -70,6 +70,7 @@ DataCards:
 3000 Currently dragged card.
 9999 Modal translucent overlay
 10000 Modal dialog
+10010 Mouse capture overlay (InputHacks)
 99999 other flyouts (uber flyouts)
 
 Cards:

@@ -46,7 +46,7 @@ describe('timelineChart', function() {
 
   var createNewTimelineChart = function(width, expanded, showFiltered, moreScope) {
     var html =
-      '<div class="card-visualization" style="width: ' + width + 'px; height: 480px;overflow:hidden;">' +
+      '<div class="card-visualization" style="position: relative; left: 20px; width: ' + width + 'px; height: 480px;overflow:hidden;">' +
         '<div timeline-chart class="timeline-chart"' +
           ' chart-data="testData" show-filtered="showFiltered" expanded="expanded" precision="precision" filters="filters">' +
         '</div>' +
@@ -400,6 +400,9 @@ describe('timelineChart', function() {
 
     describe('an existing selection', function() {
       var chart;
+      function hitTestRelToChart(xOffset, yOffset) {
+        return $(document.elementFromPoint(chart.element.offset().left + xOffset, chart.element.offset().top + yOffset));
+      };
       beforeEach(function() {
         chart = getOrCreateChartScenario('640px unexpanded filtered');
       });
@@ -420,6 +423,36 @@ describe('timelineChart', function() {
         expect(chart.element.find('g.segment.highlighted').length).to.equal(
           end - start + 1);
         expect(chart.element.find('g.draghandle').length).to.equal(2);
+      });
+      it('should be able to change by dragging a handle off the left or right of the chart', function(done) {
+        AngularRxExtensions.install(chart.scope);
+        var segments = chart.element.find('g.segment');
+        var start = 5;
+
+        chart.scope.eventToObservable('timeline-chart:filter-changed').
+          pluck('args'). // Get args from event
+          pluck(0).      // Get the first and only arg in each event.
+          take(2).       // Only care about first two events.
+          toArray().
+          subscribe(function(filters) {
+            var firstFilter = filters[0];
+            var secondFilter = filters[1];
+            expect(firstFilter[1]).to.be.at.least(_.last(testData).date);
+            expect(secondFilter[0]).to.be.at.most(_.first(testData).date);
+            done();
+          });
+
+        // Test the right side.
+        segments.eq(start).mousedown().mousemove(); // Make the handles show up.
+        chart.element.find('g.draghandle').eq(1).mousedown(); // mousedown on the right handle
+        var rightElement = hitTestRelToChart(chart.element.width() + 10, 0);
+        rightElement.mousemove().mouseup();
+
+        // Test the left side.
+        segments.eq(start).mousedown().mousemove(); // Make the handles show up.
+        chart.element.find('g.draghandle').eq(0).mousedown(); // mousedown on the left handle
+        var leftElement = hitTestRelToChart(-10, 0);
+        leftElement.mousemove().mouseup();
       });
       it('should clear when drag handle is clicked', function() {
         var segment = chart.element.find('g.segment').eq(1);

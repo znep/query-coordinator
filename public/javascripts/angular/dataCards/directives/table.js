@@ -382,12 +382,16 @@ angular.module('socrataCommon.directives').directive('table', function(AngularRx
       };
 
       var updateLabel = function() {
-        var topRow = Math.floor($body.scrollTop() / rowHeight) + 1;
-        var bottomRow = Math.floor(($body.scrollTop() + $body.height()) / rowHeight);
+        var bottomRow = Math.min(
+          Math.floor(($body.scrollTop() + $body.height()) / rowHeight),
+          scope.filteredRowCount);
+        var topRow = Math.min(
+          Math.floor($body.scrollTop() / rowHeight) + 1,
+          bottomRow);
 
         $label.text('Showing {0} to {1} of {2} (Total: {3})'.format(
           topRow,
-          _.min([bottomRow, scope.filteredRowCount]),
+          bottomRow,
           scope.filteredRowCount,
           scope.rowCount)
         );
@@ -443,7 +447,7 @@ angular.module('socrataCommon.directives').directive('table', function(AngularRx
         },
 
         html: function($target, $head, options, $element) {
-          var headerScope = $target.scope();
+          var headerScope = $target.children().scope();
           var columnId = headerScope.header.columnId;
           var column = scope.columnDetails[columnId];
           var sortParts = sort.split(' ');
@@ -505,7 +509,8 @@ angular.module('socrataCommon.directives').directive('table', function(AngularRx
           updateExpanderHeight();
           showOrHideNoRowMessage();
 
-          if (rowCount) {
+          // Make sure rowCount is a number (ie not undefined)
+          if (rowCount > -1) {
             // Apply a default sort if needed.
             if (scope.defaultSortColumnName && _.isEmpty(sort)) {
               sortOnColumn(scope.defaultSortColumnName);

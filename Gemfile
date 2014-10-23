@@ -27,6 +27,7 @@ gem 'snappy'
 gem 'xray', :require => 'xray/thread_dump_signal_handler'
 gem 'recaptcha', :require => 'recaptcha/rails'
 gem 'zk', '~>1.9.2'
+gem 'zookeeper', '~> 1.4.9'
 
 group :test do
   gem 'mocha', :require => false

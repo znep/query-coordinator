@@ -3,8 +3,8 @@ describe('table directive', function() {
 
   function createTableCard(expanded, getRows, rowCount) {
     outerScope.expanded = expanded || false;
-    outerScope.rowCount = rowCount > -1 ? rowCount : 200;
-    outerScope.filteredRowCount = rowCount > -1 ? rowCount : 170;
+    outerScope.rowCount = rowCount >= 0 ? rowCount : 200;
+    outerScope.filteredRowCount = rowCount >= 0 ? rowCount : 170;
     outerScope.columnDetails = {};
 
     columnCount = 0;

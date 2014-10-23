@@ -510,7 +510,7 @@ angular.module('socrataCommon.directives').directive('table', function(AngularRx
           showOrHideNoRowMessage();
 
           // Make sure rowCount is a number (ie not undefined)
-          if (rowCount > -1) {
+          if (rowCount >= 0) {
             // Apply a default sort if needed.
             if (scope.defaultSortColumnName && _.isEmpty(sort)) {
               sortOnColumn(scope.defaultSortColumnName);

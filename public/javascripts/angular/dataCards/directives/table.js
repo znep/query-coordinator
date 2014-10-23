@@ -447,7 +447,7 @@ angular.module('socrataCommon.directives').directive('table', function(AngularRx
         },
 
         html: function($target, $head, options, $element) {
-          var headerScope = $target.children().scope();
+          var headerScope = $target.scope();
           var columnId = headerScope.header.columnId;
           var column = scope.columnDetails[columnId];
           var sortParts = sort.split(' ');
@@ -496,7 +496,7 @@ angular.module('socrataCommon.directives').directive('table', function(AngularRx
       });
 
       Rx.Observable.subscribeLatest(
-        element.closest('.card-visualization').observeDimensions(),
+        element.offsetParent().observeDimensions(),
         scope.observe('rowCount'),
         scope.observe('filteredRowCount'),
         scope.observe('expanded'),

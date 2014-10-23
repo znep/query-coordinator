@@ -458,4 +458,59 @@ describe("CardDataService", function() {
       $httpBackend.flush();
     });
   });
+
+  describe('getRowCount', function() {
+    it('should get the count from the specified dataset', function() {
+      $httpBackend.expectGET(toUriRegex('/api/id/{0}.json?$query=select count(0)'.format(fake4x4)));
+
+      CardDataService.getRowCount(fake4x4);
+
+      $httpBackend.flush();
+    });
+
+    it('should accept a where clause', function() {
+      $httpBackend.expectGET(toUriRegex(
+        '/api/id/{0}.json?$query=select count(0) where stuff'.format(fake4x4)));
+
+      CardDataService.getRowCount(fake4x4, 'stuff');
+
+      $httpBackend.flush();
+    });
+
+    it('throws an error if the response has no data', function() {
+      $httpBackend.expectGET(toUriRegex('/api/id/{0}.json?$query=select count(0)'.format(fake4x4))).
+        respond({});
+
+      CardDataService.getRowCount(fake4x4);
+      expect($httpBackend.flush).to.throw();
+    });
+
+    it('returns a promise that provides the count returned by the server', function() {
+      $httpBackend.expectGET(toUriRegex('/api/id/{0}.json?$query=select count(0)'.format(fake4x4))).
+        respond([{count_0: 5}]);
+
+      var count = -1;
+      CardDataService.getRowCount(fake4x4).then(function(value) {
+        count = value;
+      });
+
+      $httpBackend.flush();
+
+      expect(count).to.equal(5);
+    });
+
+    it('returns 0 if the server responds with an empty result.', function() {
+      $httpBackend.expectGET(toUriRegex('/api/id/{0}.json?$query=select count(0)'.format(fake4x4))).
+        respond([{}]);
+
+      var count = -1;
+      CardDataService.getRowCount(fake4x4).then(function(value) {
+        count = value;
+      });
+
+      $httpBackend.flush();
+
+      expect(count).to.equal(0);
+    });
+  });
 });

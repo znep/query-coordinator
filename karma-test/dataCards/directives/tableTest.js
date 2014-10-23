@@ -1,10 +1,10 @@
-describe('table', function() {
+describe('table directive', function() {
   'use strict';
 
-  function createTableCard(expanded, getRows) {
+  function createTableCard(expanded, getRows, rowCount) {
     outerScope.expanded = expanded || false;
-    outerScope.rowCount = 200;
-    outerScope.filteredRowCount = 170;
+    outerScope.rowCount = rowCount > -1 ? rowCount : 200;
+    outerScope.filteredRowCount = rowCount > -1 ? rowCount : 170;
     outerScope.columnDetails = {};
 
     columnCount = 0;
@@ -30,11 +30,12 @@ describe('table', function() {
     outerScope.$digest();
 
     var html =
-      '<div class="card {0}" style="width: 640px; height: 480px;">' +
+      '<div class="card {0}" style="width: 640px; height: 480px; position: relative;">'.
+      format(expanded ? 'expanded': '') +
         '<div table class="table" row-count="rowCount" get-rows="getRows" where-clause="whereClause" ' +
         'filtered-row-count="filteredRowCount" expanded="expanded" column-details="columnDetails" ' +
         'default-sort-column-name="defaultSortColumnName"></div>' +
-      '</div>'.format(expanded ? 'expanded': '');
+      '</div>';
 
     var compiledElem = testHelpers.TestDom.compileAndAppend(html, outerScope);
 
@@ -84,6 +85,9 @@ describe('table', function() {
 
   beforeEach(module('dataCards'));
   beforeEach(module('dataCards.directives'));
+  beforeEach(module('dataCards/card.sass'));
+  beforeEach(module('dataCards/cards.sass'));
+  beforeEach(module('dataCards/table.sass'));
 
   beforeEach(module(testJson));
   beforeEach(module(testMetaJson));
@@ -111,6 +115,7 @@ describe('table', function() {
   }));
 
   describe('when rendering cell data', function() {
+    afterEach(destroyAllTableCards);
 
     it('should render point cells with latitude & longitude', function(done) {
       var el = createTableCard(true, fakeDataSource);
@@ -151,26 +156,28 @@ describe('table', function() {
   });
 
   describe('when not expanded', function() {
+    afterEach(destroyAllTableCards);
 
     it('should create', function() {
       var el = createTableCard(false);
 
       expect(el.find('.expand-message')).to.not.be.empty;
-      destroyAllTableCards();
     });
 
   });
 
   describe('when expanded', function() {
 
-    after(function() {
-      destroyAllTableCards();
-    });
+    after(destroyAllTableCards);
 
     var immutableTable;
 
-    before(function() {
-      immutableTable = createTableCard(true);
+    beforeEach(function() {
+      // For some reason, if we do this in a before() block instead of a beforeEach(), then if we
+      // describe.only this block, the before() block will run before the global beforeEach()
+      // blocks, causing outerScope to be undefined whic makes createTableCard fail.
+      if (!immutableTable)
+        immutableTable = createTableCard(true);
     });
 
     it('should create and load data', function() {
@@ -448,30 +455,35 @@ describe('table', function() {
       });
 
     });
+  });
 
-    it('should not have a class of has-rows if there are no rows', function() {
-      var el = createTableCard(true, function(offset, limit, order, timeout, whereClause) {
-        return $q.when([]);
-      });
+  describe('table label & no-rows message', function() {
+    afterEach(destroyAllTableCards);
+
+    it('should update if there are no filtered rows', function() {
+      var el = createTableCard(true, _.constant($q.when([])), 103);
 
       outerScope.filteredRowCount = 0;
       $rootScope.$digest();
+
       expect(el.find('.has-rows').length).to.equal(0);
+      expect(el.find('.table-label').text()).to.equal("Showing 0 to 0 of 0 (Total: 103)");
     });
 
-    it('should have a class of has-rows if there are rows', function() {
+    it('should update if there are rows', function() {
       var el = createTableCard(true, function(offset, limit, order, timeout, whereClause) {
-        return $q.when([]);
-      });
+        return $q.when(_.take(fixtureData, 10));
+      }, 101);
 
       outerScope.filteredRowCount = 10;
       $rootScope.$digest();
       expect(el.find('.has-rows').length).to.equal(1);
+      expect(el.find('.table-label').text()).to.equal("Showing 1 to 10 of 10 (Total: 101)");
     });
-
   });
 
   describe('render timing events', function() {
+    afterEach(destroyAllTableCards);
     it('should emit render:start and render:complete events on rendering', function(done) {
       AngularRxExtensions.install(outerScope);
 

@@ -1,9 +1,9 @@
 <div class="card-spot"
-     ng-style="cardPosition.style"
+     animate-to="cardPosition.style"
+     animate-to-index="{{ cardPosition.index }}"
      ng-repeat="cardPosition in cardPositions track by cardPosition.model.uniqueId">
   <card model="cardPosition.model"
         class="card"
-        ng-style="cardPosition.childStyle"
         where-clause="globalWhereClauseFragment"
         interactive="true"
         ng-class="{ expanded: cardPosition.model.getCurrentValue('expanded'), dragged: cardPosition.model === grabbedCard.model }"></card>

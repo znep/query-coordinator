@@ -384,10 +384,12 @@ angular.module('socrataCommon.directives').directive('table', function(AngularRx
       var updateLabel = function() {
         var bottomRow = Math.min(
           Math.floor(($body.scrollTop() + $body.height()) / rowHeight),
-          scope.filteredRowCount);
+          scope.filteredRowCount
+        );
         var topRow = Math.min(
           Math.floor($body.scrollTop() / rowHeight) + 1,
-          bottomRow);
+          bottomRow
+        );
 
         $label.text('Showing {0} to {1} of {2} (Total: {3})'.format(
           topRow,

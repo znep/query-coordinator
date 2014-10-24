@@ -20,6 +20,7 @@ angular.module('socrataCommon.directives').directive('table', function(AngularRx
     },
 
     link: function(scope, element, attrs) {
+      var subscriptions = [];
       // A unique jQuery namespace, specific to one table instance.
       var instanceUniqueNamespace = 'table.instance{0}'.format(scope.$id);
 
@@ -497,7 +498,7 @@ angular.module('socrataCommon.directives').directive('table', function(AngularRx
         }
       });
 
-      Rx.Observable.subscribeLatest(
+      subscriptions.push(Rx.Observable.subscribeLatest(
         element.offsetParent().observeDimensions(),
         scope.observe('rowCount'),
         scope.observe('filteredRowCount'),
@@ -529,16 +530,23 @@ angular.module('socrataCommon.directives').directive('table', function(AngularRx
             scope.$emit('render:complete', { source: 'table_{0}'.format(scope.$id), timestamp: _.now() });
           }, 0, false);
         }
-      );
+      ));
 
-      Rx.Observable.subscribeLatest(
+      subscriptions.push(Rx.Observable.subscribeLatest(
         scope.observe('whereClause'),
         function(whereClause) {
           if (scope.getRows) {
             reloadRows();
           }
         }
-      );
+      ));
+
+
+      scope.$on('$destroy', function() {
+        _.each(subscriptions, function(sub) {
+          sub.dispose();
+        });
+      });
     }
   };
 

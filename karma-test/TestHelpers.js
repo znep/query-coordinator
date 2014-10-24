@@ -89,15 +89,22 @@ angular.module('test', [])
     function overrideTransitions(value) {
       if (value) {
         var prefices = ['-webkit-', '-moz-', '-ms-', '-o-', ''];
-        var style;
+        var styles;
         if (true === value) {
-          style = 'transition: none !important;\n';
+          styles = ['transition: none !important;\n'];
         } else {
-          style = 'transition-duration: ' + (_.isNumber(value) ? value + 's' : value)
-            + ' !important;\n';
+          styles = [
+            'transition-duration: ' + (_.isNumber(value) ? value + 's' : value) + ' !important;\n',
+            // PhantomJS defaults transition-property to all, which means if we add a duration,
+            // everything is transitioned. So - default it to none.
+            'transition-property: none;\n'
+          ];
         }
         transitionOverride = transitionOverride || $('<style />').appendTo('body');
-        transitionOverride.html('* { ' + prefices.join(style) + style + ' }');
+        transitionOverride.html('* { ' + _.map(styles, function(style) {
+          return prefices.join(style) + style;
+        }).join('\n') + ' }');
+
         jQuery.fx.off = true;
       } else {
         if (transitionOverride) {

@@ -48,6 +48,7 @@ describe("A Table Card Visualization", function() {
   }));
 
   afterEach(function(){
+    rootScope.$broadcast('$destroy');
     testHelpers.TestDom.clear();
   });
 
@@ -144,7 +145,7 @@ describe("A Table Card Visualization", function() {
     outerScope.whereClause = whereClause;
     outerScope.model = model;
 
-    var html = '<card-visualization-table model="model" where-clause="whereClause"></card-visualization-table>';
+    var html = '<div style="position: relative"><card-visualization-table model="model" where-clause="whereClause"></card-visualization-table></div>';
     var element = testHelpers.TestDom.compileAndAppend(html, outerScope);
 
     return {
@@ -232,6 +233,11 @@ describe("A Table Card Visualization", function() {
         })
       ]);
       expect(table.scope.defaultSortColumnName).to.equal('field7');
+
+      // The table doesn't actually have a field7 column, so reset it so that async operations that
+      // use defaultSortColumnName are happy
+      table.scope.defaultSortColumnName = null;
+      table.scope.$digest();
     });
 
   });

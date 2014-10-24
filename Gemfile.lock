@@ -228,7 +228,7 @@ GEM
     zk (1.9.2)
       logging (~> 1.7.2)
       zookeeper (~> 1.4.0)
-    zookeeper (1.4.7)
+    zookeeper (1.4.9)
 
 PLATFORMS
   ruby
@@ -264,3 +264,4 @@ DEPENDENCIES
   timecop
   xray
   zk (~> 1.9.2)
+  zookeeper (~> 1.4.9)

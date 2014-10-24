@@ -202,7 +202,9 @@
             if (_.isEmpty(response.data)) {
               throw new Error('The response from the server contained no data.');
             }
-            return parseInt(response.data[0].count_0, 10);
+            // Apparently the server could respond with an empty object instead of a an object with
+            // a count... so default to 0
+            return parseInt(response.data[0].count_0, 10) || 0;
           });
       },
 

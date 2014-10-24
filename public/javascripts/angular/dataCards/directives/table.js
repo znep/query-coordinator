@@ -382,12 +382,18 @@ angular.module('socrataCommon.directives').directive('table', function(AngularRx
       };
 
       var updateLabel = function() {
-        var topRow = Math.floor($body.scrollTop() / rowHeight) + 1;
-        var bottomRow = Math.floor(($body.scrollTop() + $body.height()) / rowHeight);
+        var bottomRow = Math.min(
+          Math.floor(($body.scrollTop() + $body.height()) / rowHeight),
+          scope.filteredRowCount
+        );
+        var topRow = Math.min(
+          Math.floor($body.scrollTop() / rowHeight) + 1,
+          bottomRow
+        );
 
         $label.text('Showing {0} to {1} of {2} (Total: {3})'.format(
           topRow,
-          _.min([bottomRow, scope.filteredRowCount]),
+          bottomRow,
           scope.filteredRowCount,
           scope.rowCount)
         );
@@ -492,7 +498,7 @@ angular.module('socrataCommon.directives').directive('table', function(AngularRx
       });
 
       Rx.Observable.subscribeLatest(
-        element.closest('.card-visualization').observeDimensions(),
+        element.offsetParent().observeDimensions(),
         scope.observe('rowCount'),
         scope.observe('filteredRowCount'),
         scope.observe('expanded'),
@@ -505,7 +511,8 @@ angular.module('socrataCommon.directives').directive('table', function(AngularRx
           updateExpanderHeight();
           showOrHideNoRowMessage();
 
-          if (rowCount) {
+          // Make sure rowCount is a number (ie not undefined)
+          if (rowCount >= 0) {
             // Apply a default sort if needed.
             if (scope.defaultSortColumnName && _.isEmpty(sort)) {
               sortOnColumn(scope.defaultSortColumnName);

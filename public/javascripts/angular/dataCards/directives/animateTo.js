@@ -36,9 +36,10 @@ angular.module('dataCards.directives').directive('animateTo', function() {
           restoreFunctions = [];
           var styles = $.extend({}, newStyles);
           $scope.newStyles = newStyles;
+          var animateToIndex = parseInt(attrs.animateToIndex, 10);
           // Don't animate if it's the first time setting the styles, or the index is -1
           if (oldStyles &&
-              (!attrs.animateToIndex || attrs.animateToIndex > 0) &&
+              (!animateToIndex || animateToIndex > 0) &&
               !_.isEqual(oldStyles, styles)) {
             if (styles.position !== oldStyles.position) {
               // Transitioning from fixed-position to absolute-position (and vice-versa) sucks -
@@ -76,10 +77,10 @@ angular.module('dataCards.directives').directive('animateTo', function() {
 
               // Animating a resize when the background is transparent is basically like not
               // animating at all...
-              if (/rgba([^)]*, *0)|transparent/.test(element.css('background'))) {
-                element.css('background', child.css('background'));
+              if (/rgba([^)]*, *0)|transparent/.test(element.css('background-color'))) {
+                element.css(child.css(['background-color']));
                 restoreFunctions.push(function(element) {
-                  element.css('background', '');
+                  element.css('background-color', '');
                 });
               }
             }
@@ -94,8 +95,8 @@ angular.module('dataCards.directives').directive('animateTo', function() {
             // The actual animation stuff
             styles.transition = 'all ' + ANIMATION_DURATION + 's ease-in-out';
             // Order animations as necessary
-            if (attrs.animateToIndex) {
-              styles.transition += ' ' + (parseInt(attrs.animateToIndex, 10) * ANIMATION_STAGGER) + 's';
+            if (animateToIndex) {
+              styles.transition += ' ' + (animateToIndex * ANIMATION_STAGGER) + 's';
             }
             restoreFunctions.push(function(element) {
               // Remove transition - eg so during drag/drop, you don't interfere with the js
@@ -104,6 +105,12 @@ angular.module('dataCards.directives').directive('animateTo', function() {
             });
           }
 
+          // IE won't fire transitionend during tests if the transition property isn't set before
+          // the other properties... So set it separately. -_-;
+          if (styles.transition) {
+            element.css('transition', styles.transition);
+            delete styles.transition;
+          }
           element.css(styles);
           oldStyles = newStyles;
         });

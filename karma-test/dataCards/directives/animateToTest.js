@@ -18,6 +18,11 @@ describe('animate-to directive', function() {
   });
 
   it('applies the style on the first load without animating', function() {
+    // If we have a transition-duration property, PhantomJS interprets that as having a
+    // transition:all, and will transition everything. So since this test doesn't expect a
+    // transition anyway, let them through untouched.
+    testHelpers.overrideTransitions(false);
+
     var scope = $rootScope.$new();
     scope.styles = {
       position: 'absolute',
@@ -200,10 +205,10 @@ describe('animate-to directive', function() {
 
         var blueRegex = /rgba?\( *0, *0, *[^,)]*[1-9]|#00[1-9a-f]|#0000.?[1-9a-f]/i;
         testHelpers.waitForSatisfy(function() {
-          return blueRegex.test(el.css('background'));
+          return blueRegex.test(el.css('background-color'));
         }).then(function() {
           testHelpers.waitForSatisfy(function() {
-            return !blueRegex.test(el.css('background'));
+            return !blueRegex.test(el.css('background-color'));
           }).then(done);
         });
       });

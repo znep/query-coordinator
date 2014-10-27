@@ -10,6 +10,8 @@
       },
       templateUrl: '/angular_templates/dataCards/saveAs.html',
       link: function($scope, element, attrs) {
+        var subscriptions = [];
+
         AngularRxExtensions.install($scope);
 
         var saveEvents = new Rx.BehaviorSubject({ status: 'idle' });
@@ -18,9 +20,9 @@
 
         // Since we have a flyout handler whose output depends on currentPageSaveEvents and $scope.hasChanges,
         // we need to poke the FlyoutService. We want the flyout to update immediately.
-        saveEvents.subscribe(function() {
+        subscriptions.push(saveEvents.subscribe(function() {
           FlyoutService.refreshFlyout();
-        });
+        }));
 
         var $saveAsButton = element.find('.save-as-button');
         var $nameInput = element.find('#save-as-name');
@@ -61,7 +63,7 @@
           $scope.panelActive = false;
         };
 
-        WindowState.mouseLeftButtonClickSubject.
+        subscriptions.push(WindowState.closeDialogEventObservable.
           filter(function(e) {
             return $scope.panelActive && $(e.target).closest(element).length === 0;
           }).
@@ -69,7 +71,7 @@
             $scope.safeApply(function() {
               $scope.panelActive = false;
             });
-          });
+          }));
 
         $nameInput.
           on('keyup', function() {
@@ -89,6 +91,13 @@
           } else if (saveEvents.value.status === 'idle') {
             return '<div class="flyout-title">Click to save your changes</div>';
           }
+        });
+
+        $scope.$on('$destroy', function() {
+          _.each(subscriptions, function(sub) {
+            sub.dispose();
+          });
+          $scope.$emit('cleaned-up');
         });
       }
     };

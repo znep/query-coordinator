@@ -17,6 +17,7 @@
 
     var WindowState = {};
 
+    // TODO: convert these BehaviorSubjects to use Rx.Observable.fromEvent
     var scrollPositionSubject = new Rx.BehaviorSubject(window.pageYOffset);
     window.addEventListener('scroll', function() {
       scrollPositionSubject.onNext(window.pageYOffset);
@@ -62,12 +63,20 @@
       windowSizeSubject.onNext(jqueryWindow.dimensions());
     });
 
+    var keyDownObservable = Rx.Observable.fromEvent($(document), 'keydown');
 
     WindowState.scrollPositionSubject = scrollPositionSubject;
     WindowState.mousePositionSubject = mousePositionSubject;
     WindowState.mouseLeftButtonPressedSubject = mouseLeftButtonPressedSubject;
     WindowState.mouseLeftButtonClickSubject = mouseLeftButtonClickSubject;
     WindowState.windowSizeSubject = windowSizeSubject;
+    WindowState.closeDialogEventObservable = Rx.Observable.merge(
+      WindowState.mouseLeftButtonClickSubject,
+      keyDownObservable.filter(function(e) {
+        // Escape key
+        return 27 === e.which;
+      })
+    );
 
     return WindowState;
 

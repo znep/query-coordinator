@@ -1,11 +1,14 @@
 angular.module('test', [])
   .factory('testHelpers', function($compile, $templateCache, $q) {
 
-    var fireEvent = function(target, name) {
+    var fireEvent = function(target, name, opts) {
       var evt = document.createEvent('HTMLEvents');
       evt.initEvent(name, true, true);
       evt.clientX = 0;
       evt.clientY = 0;
+      if (opts) {
+        $.extend(evt, opts);
+      }
       target.dispatchEvent(evt);
     };
 

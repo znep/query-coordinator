@@ -214,31 +214,50 @@ angular.module('socrataCommon.directives').directive('table', function(AngularRx
         }
       };
 
-      // TODO: Clean this up. It's horribly expensive. ~400ms in tests.
       var calculateColumnWidths = _.once(function() {
         updateColumnHeaders();
         _.defer(function() {
-          _.each(_.values(scope.columnDetails), function(column, columnIndex) {
-            var $cells = $table.find('.cell:nth-child({0}), .th:nth-child({0})'.
-              format(columnIndex + 1));
-            var maxCell = _.max($cells, function(cell) {
-              return cell.clientWidth;
-            });
-            // text-overflow: ellipsis starts ellipsifying things when the widths are equal, which
-            // makes it hard to detect (in that case) if we should display a flyout or not (since
-            // scrollWidth == clientWidth both for too-short text as well as just-ellipsified text).
-            // So - offset by one, to at least make that situation less common.
-            var width = $(maxCell).width() + 1;
+          columnWidths = {};
+          var maxCells = {};
+          var cells = $table.find('.cell, .th');
+          var columns = _.values(scope.columnDetails);
 
-            if (width > 300) {
-              width = 300;
-            } else if (width < 75) {
-              width = 75;
+          // Find the widest cell in each column
+          cells.each(function(i, cell) {
+            var jqueryCell = $(cell);
+            var colName = columns[jqueryCell.index()].name;
+            var width = cell.clientWidth;
+            if (!columnWidths[colName] || columnWidths[colName] < width) {
+              maxCells[colName] = cell;
+              columnWidths[colName] = width;
             }
-
-            columnWidths[column.name] = width;
-            $cells.width(width);
           });
+
+          // Get the jquery width of the widest elements
+          _.each(columnWidths, function(v, k) {
+            var width = parseInt(window.getComputedStyle(maxCells[k]).width, 10);
+            // Apply a min/max
+            if (width > 300) {
+              columnWidths[k] = 300;
+            } else if (width < 75) {
+              columnWidths[k] = 75;
+            } else {
+              // text-overflow: ellipsis starts ellipsifying things when the widths are equal, which
+              // makes it hard to detect (in that case) if we should display a flyout or not (since
+              // scrollWidth == clientWidth both for too-short text as well as just-ellipsified
+              // text).  So - offset by one, to at least make that situation less common.
+              columnWidths[k] = width + 1;
+            }
+          });
+
+          // Now set each cell to the maximum cell width for its column
+          cells.each(function(i, cell) {
+            var jqueryCell = $(cell);
+            var colName = columns[jqueryCell.index()].name;
+            // Setting the style.width is a lot faster than jquery.width()
+            cell.style.width = columnWidths[colName] + 'px';
+          });
+
           updateColumnHeaders();
           dragHandles();
         });

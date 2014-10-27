@@ -204,13 +204,10 @@ describe('animate-to directive', function() {
         scope.$digest();
 
         var blueRegex = /rgba?\( *0, *0, *[^,)]*[1-9]|#00[1-9a-f]|#0000.?[1-9a-f]/i;
+        blueRegex.test(el.css('background-color'));
         testHelpers.waitForSatisfy(function() {
-          return blueRegex.test(el.css('background-color'));
-        }).then(function() {
-          testHelpers.waitForSatisfy(function() {
-            return !blueRegex.test(el.css('background-color'));
-          }).then(done);
-        });
+          return !blueRegex.test(el.css('background-color'));
+        }).then(done);
       });
 
       describe('child element', function() {

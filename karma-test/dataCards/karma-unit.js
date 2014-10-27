@@ -61,7 +61,7 @@ module.exports = function ( karma ) {
       'bower_components/d3/d3.min.js',
       'bower_components/lodash/dist/lodash.js',
       'bower_components/rxjs/rx.js',
-      "bower_components/rxjs/rx.async.js",
+      'bower_components/rxjs/rx.async.js',
       'bower_components/rxjs/rx.aggregates.js',
       'bower_components/rxjs/rx.time.js',
       'bower_components/rxjs/rx.binding.js',

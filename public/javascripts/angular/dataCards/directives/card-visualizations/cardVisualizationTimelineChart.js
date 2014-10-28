@@ -220,7 +220,6 @@ WHY IS UNFILTERED EQUAL TO FILTERED WHEN THE CHART IS NOT FILTERED?
           dataPromise.then(
             function(res) {
               // Ok
-              console.log('UNFILTERED', res);
               unfilteredDataSequence.onNext(dataPromise);
               dataResponses.onNext(1);
             },
@@ -237,14 +236,11 @@ WHY IS UNFILTERED EQUAL TO FILTERED WHEN THE CHART IS NOT FILTERED?
         nonBaseFilterApplied,
         precision,
         function(fieldName, dataset, whereClauseFragment, nonBaseFilterApplied, precision) {
-          console.log('GETTING FILTERED DATA');
-          console.log(fieldName, dataset, whereClauseFragment, nonBaseFilterApplied, precision);
           dataRequests.onNext(1);
           var dataPromise = CardDataService.getTimelineData(fieldName, dataset.id, whereClauseFragment, precision);
           dataPromise.then(
             function(res) {
               // Ok
-              console.log('FILTERED', res);
               filteredDataSequence.onNext(dataPromise);
               dataResponses.onNext(1);
             },
@@ -270,7 +266,7 @@ WHY IS UNFILTERED EQUAL TO FILTERED WHEN THE CHART IS NOT FILTERED?
             acc[datum.date] = datum.value;
             return acc;
           }, {});
-console.log(filteredData);
+
           var filteredAsHash = _.reduce(filteredData, function(acc, datum) {
             acc[datum.date] = datum.value;
             return acc;

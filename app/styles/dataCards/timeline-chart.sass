@@ -17,60 +17,109 @@ $fill-opacity: 0.5
 
 
 
+.timeline-chart-wrapper
+  cursor: pointer
 
-
+.timeline-chart-wrapper.selecting
+  cursor: col-resize
 
 .timeline-chart-highlight-target
+  display: block
   position: absolute
   top: 0
-  z-index: 4
+  z-index: 5
 
 .timeline-chart-highlight-container
   position: absolute
   overflow: visible
+  z-index: 4
 
   .timeline-chart-highlight
     fill: $timeline-highlight-fill
     stroke: $timeline-highlight-stroke
 
-
-
+.selecting .timeline-chart-highlight-container
+  display: none
 
 
 
 .timeline-chart-selection
   position: absolute
   top: 0
+  z-index: 3
 
   .selection
     fill: rgba(255,255,0,0.5)
     stroke: $timeline-highlight-stroke
 
+.timeline-chart-left-selection-marker,
+.timeline-chart-right-selection-marker
+  display: none
+  position: absolute
+  top: 0
+  width: 24px
+  cursor: col-resize
+  z-index: 8
 
+  svg
+    width: 24px
+    height: 100%
 
-.clear-chart-selection-button
+    line
+      stroke: #8a8686
+      stroke-width: 2px
+      stroke-dasharray: 7,3
+
+    rect
+      fill: transparent
+
+    path
+      stroke: #8a8686
+      fill: #c0bbbb
+      stroke-linejoin: round
+
+.timeline-chart-left-selection-marker svg g
+  transform: translate(11px, 0)
+
+.timeline-chart-right-selection-marker svg g
+  transform: translate(12px, 0)
+
+.selecting .timeline-chart-left-selection-marker,
+.selecting .timeline-chart-right-selection-marker,
+.selected .timeline-chart-left-selection-marker,
+.selected .timeline-chart-right-selection-marker
+  display: block
+
+.timeline-chart-clear-selection-button
+  display: none
   position: absolute
   margin-top: 4px
   text-align: center
   background-color: white
-  z-index: 2
+  z-index: 7
 
-.timeline-chart
-  z-index: 3
-  cursor: pointer
+.selecting .timeline-chart-clear-selection-button,
+.selected .timeline-chart-clear-selection-button
+  display: block
+
+.timeline-chart-visualization
+  position: absolute
+  top: 0
+  z-index: 2
 
   .context
     fill: $timeline-context-fill
     stroke: $timeline-context-stroke
 
   .shaded
+    display: block
     fill: $timeline-shaded-fill
     stroke: $timeline-shaded-stroke
 
 .x-ticks
   position: absolute
   bottom: 0
-  z-index: 2
+  z-index: 6
 
   .x-tick
     position: absolute
@@ -88,6 +137,11 @@ $fill-opacity: 0.5
 
     &.dimmed
       opacity: 0.5
+
+.selecting .x-tick-label,
+.selected .x-tick-label
+  opacity: 0.5
+
 
 .y-ticks
   position: absolute

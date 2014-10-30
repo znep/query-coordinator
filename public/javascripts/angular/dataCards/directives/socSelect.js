@@ -2,6 +2,7 @@
  * A socrata-styled drop-down selector.
  */
 angular.module('dataCards.directives').directive('socSelect', function() {
+
   /**
    * Apply the given dom attributes to the given element, ignoring angular-specific ones (ie those
    * prefixed with a $).
@@ -11,14 +12,15 @@ angular.module('dataCards.directives').directive('socSelect', function() {
    */
   function applyAttributes($attrs, element) {
     var filteredAttrs = {};
-    _.each($attrs, function(v, k) {
+    _.each($attrs, function(value, key) {
       // Ignore angular properties
-      if (k.charAt(0) !== '$') {
-        filteredAttrs[k] = v;
+      if (key.charAt(0) !== '$') {
+        filteredAttrs[key] = value;
       }
     });
     element.attr(filteredAttrs);
   }
+
   return {
     scope: {
       ngModel: '='

@@ -31,7 +31,8 @@
       var fakeModel = new Object();
       scope.m = fakeModel;
       var element = testHelpers.TestDom.compileAndAppend(
-        '<soc-select ng-model="m"></soc-select>', scope);
+        '<soc-select ng-model="m"></soc-select>', scope
+      );
       expect(element.find('select').scope().ngModel).to.equal(fakeModel);
     });
 
@@ -41,7 +42,8 @@
         '<soc-select name="alpha">' +
         '<soc-option value="a">Ay</soc-option>' +
         '<soc-option value="b" disabled>Bee</soc-option>' +
-        '</soc-select>', scope);
+        '</soc-select>', scope
+      );
       var select = element.find('select[name="alpha"]');
       expect(select.length).to.equal(1);
       expect(select.find('option[value="a"]:contains("Ay")').length).to.equal(1);

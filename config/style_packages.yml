@@ -26,6 +26,9 @@ angular-app-dataCards:
 - dataCards/multiline-ellipsis
 - dataCards/modal-dialog
 
+ie9:
+- dataCards/ie9
+
 includes:
 - sass-common
 - icons

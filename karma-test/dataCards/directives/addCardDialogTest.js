@@ -6,13 +6,14 @@ describe('addCardDialog', function() {
 
   beforeEach(module('/angular_templates/dataCards/addCardDialog.html'));
   beforeEach(module('/angular_templates/dataCards/card.html'));
-  beforeEach(module('/angular_templates/dataCards/cardVisualizationColumnChart.html'));
   beforeEach(module('/angular_templates/dataCards/cardVisualizationChoropleth.html'));
-  beforeEach(module('/angular_templates/dataCards/cardVisualizationTimelineChart.html'));
-  beforeEach(module('/angular_templates/dataCards/timelineChart.html'));
+  beforeEach(module('/angular_templates/dataCards/cardVisualizationColumnChart.html'));
   beforeEach(module('/angular_templates/dataCards/cardVisualizationTable.html'));
-  beforeEach(module('/angular_templates/dataCards/table.html'));
+  beforeEach(module('/angular_templates/dataCards/cardVisualizationTimelineChart.html'));
+  beforeEach(module('/angular_templates/dataCards/socSelect.html'));
   beforeEach(module('/angular_templates/dataCards/tableHeader.html'));
+  beforeEach(module('/angular_templates/dataCards/table.html'));
+  beforeEach(module('/angular_templates/dataCards/timelineChart.html'));
 
   beforeEach(inject(function($injector) {
     testHelpers = $injector.get('testHelpers');

@@ -15,29 +15,62 @@ $fill-opacity: 0.5
   cursor: grabbing
   cursor: -webkit-grabbing !important
 
-.context
-  fill: $timeline-context-fill
-  stroke: $timeline-context-stroke
 
-.shaded
-  fill: $timeline-shaded-fill
-  stroke: $timeline-shaded-stroke
+
+
+
+
+.timeline-chart-highlight-target
+  position: absolute
+  top: 0
+  z-index: 4
 
 .timeline-chart-highlight-container
   position: absolute
   overflow: visible
 
-.timeline-chart-highlight-target
+  .timeline-chart-highlight
+    fill: $timeline-highlight-fill
+    stroke: $timeline-highlight-stroke
+
+
+
+
+
+
+.timeline-chart-selection
   position: absolute
   top: 0
 
-.timeline-chart-highlight
-  fill: $timeline-highlight-fill
-  stroke: $timeline-highlight-stroke
+  .selection
+    fill: rgba(255,255,0,0.5)
+    stroke: $timeline-highlight-stroke
+
+
+
+.clear-chart-selection-button
+  position: absolute
+  margin-top: 4px
+  text-align: center
+  background-color: white
+  z-index: 2
+
+.timeline-chart
+  z-index: 3
+  cursor: pointer
+
+  .context
+    fill: $timeline-context-fill
+    stroke: $timeline-context-stroke
+
+  .shaded
+    fill: $timeline-shaded-fill
+    stroke: $timeline-shaded-stroke
 
 .x-ticks
   position: absolute
   bottom: 0
+  z-index: 2
 
   .x-tick
     position: absolute
@@ -48,20 +81,18 @@ $fill-opacity: 0.5
 
   .x-tick-label
     position: absolute
+    height: 100%
     top: 4px
     text-align: center
-    -webkit-touch-callout: none
-    -webkit-user-select: none
-    -khtml-user-select: none
-    -moz-user-select: none
-    -ms-user-select: none
-    user-select: none
+    cursor: pointer
 
     &.dimmed
       opacity: 0.5
 
 .y-ticks
   position: absolute
+  top: 0
+  z-index: 1
 
   .y-tick
     position: absolute

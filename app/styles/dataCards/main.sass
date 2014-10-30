@@ -4,16 +4,21 @@
 @import dataCards/selection-label
 
 body
+  margin: 0
+  padding: 0
   color: white
-
   font-family: 'myriad-pro', 'Helvetica Neue', Helvetica, Arial, sans-serif
   font-size: 14px
   font-weight: 200
-
-  margin: 0
-  padding: 0
   overflow-x: hidden
   overflow-y: scroll
+
+  &.prevent-user-select
+    -moz-user-select: none
+    -khtml-user-select: none
+    -webkit-user-select: none
+    -o-user-select: none
+    user-select: none
 
 // Begin workaround for OSX + chrome + Magic Mouse hiding scrollbars by default.
 // Not only does this cause our scrollable content to be rather undiscoverable,

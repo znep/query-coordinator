@@ -8,11 +8,11 @@ angular.module('dataCards.directives').directive('cardVisualizationTimelineChart
       'whereClause': '='
     },
     templateUrl: '/angular_templates/dataCards/cardVisualizationTimelineChart.html',
-    link: function($scope, element, attrs) {
+    link: function(scope, element, attrs) {
 
-      AngularRxExtensions.install($scope);
+      AngularRxExtensions.install(scope);
 
-      var model = $scope.observe('model');
+      var model = scope.observe('model');
       var dataset = model.pluck('page').observeOnLatest('dataset');
       var baseSoqlFilter = model.pluck('page').observeOnLatest('baseSoqlFilter');
       var dataRequests = new Rx.Subject();
@@ -40,7 +40,7 @@ angular.module('dataCards.directives').directive('cardVisualizationTimelineChart
       // SUPER IMPORTANT NOTE: Because of the way that RxJS works, we need to bind
       // this one here and not below with the other bound observables... so unfortunately
       // this code is location-dependent within the file.
-      $scope.bindObservable('busy',
+      scope.bindObservable('busy',
         Rx.Observable.combineLatest(
           dataRequestCount,
           dataResponseCount,
@@ -54,7 +54,7 @@ angular.module('dataCards.directives').directive('cardVisualizationTimelineChart
       ******************************************/
 
       nonBaseFilterApplied = Rx.Observable.combineLatest(
-          $scope.observe('whereClause'),
+          scope.observe('whereClause'),
           baseSoqlFilter,
           function (whereClause, baseFilter) {
             return !_.isEmpty(whereClause) && whereClause != baseFilter;
@@ -62,9 +62,9 @@ angular.module('dataCards.directives').directive('cardVisualizationTimelineChart
 
       // Remove the current timeline cards filter from the whereClause
       function stripWhereClause(whereClause) {
-        var filter = $scope.model.getCurrentValue('activeFilters')[0];
+        var filter = scope.model.getCurrentValue('activeFilters')[0];
         if (filter) {
-          var whereFragment = filter.generateSoqlWhereFragment($scope.model.fieldName);
+          var whereFragment = filter.generateSoqlWhereFragment(scope.model.fieldName);
           return whereClause.
             replace(new RegExp('AND ' + whereFragment, 'gi'), '').
             replace(new RegExp(whereFragment + '( AND|)', 'gi'), '');
@@ -110,10 +110,6 @@ angular.module('dataCards.directives').directive('cardVisualizationTimelineChart
           if (datum.total > maxValue) {
             maxValue = datum.total;
           }
-
-/*
-WHY IS UNFILTERED EQUAL TO FILTERED WHEN THE CHART IS NOT FILTERED?
-*/
 
           return {
             date: datum.date.toDate(),
@@ -232,7 +228,7 @@ WHY IS UNFILTERED EQUAL TO FILTERED WHEN THE CHART IS NOT FILTERED?
       var filteredData = Rx.Observable.subscribeLatest(
         model.pluck('fieldName'),
         dataset,
-        $scope.observe('whereClause'),
+        scope.observe('whereClause'),
         nonBaseFilterApplied,
         precision,
         function(fieldName, dataset, whereClauseFragment, nonBaseFilterApplied, precision) {
@@ -250,7 +246,7 @@ WHY IS UNFILTERED EQUAL TO FILTERED WHEN THE CHART IS NOT FILTERED?
           return Rx.Observable.fromPromise(dataPromise);
         });
 
-      $scope.bindObservable('chartData', Rx.Observable.combineLatest(
+      scope.bindObservable('chartData', Rx.Observable.combineLatest(
         unfilteredDataSequence.switchLatest(),
         filteredDataSequence.switchLatest(),
         model.observeOnLatest('activeFilters'),
@@ -285,27 +281,31 @@ WHY IS UNFILTERED EQUAL TO FILTERED WHEN THE CHART IS NOT FILTERED?
 
 
 
-      $scope.bindObservable('expanded', model.observeOnLatest('expanded'));
+      scope.bindObservable('expanded', model.observeOnLatest('expanded'));
 
-      $scope.bindObservable('precision', precision);
+      scope.bindObservable('precision', precision);
 
-      $scope.bindObservable('activeFilters', model.observeOnLatest('activeFilters'));
+      scope.bindObservable('activeFilters', model.observeOnLatest('activeFilters'));
 
-      $scope.bindObservable('pageIsFiltered', $scope.observe('whereClause').
+      scope.bindObservable('pageIsFiltered', scope.observe('whereClause').
           map(function(whereClause) {
             return _.isPresent(stripWhereClause(whereClause));
           }));
 
-      $scope.bindObservable('rowDisplayUnit', dataset.observeOnLatest('rowDisplayUnit'));
+      scope.bindObservable('rowDisplayUnit', dataset.observeOnLatest('rowDisplayUnit'));
 
-      $scope.$on('timeline-chart:filter-cleared', function(event) {
-        $scope.model.set('activeFilters', []);
+      // Handle filtering
+      scope.$on('filter-timeline-chart', function(event, data) {
+        if (_.isEmpty(scope.model.getCurrentValue('activeFilters'))) {
+          var filter = new Filter.TimeRangeFilter(moment(data.start), moment(data.end));
+          console.log(filter);
+          scope.model.set('activeFilters', [filter]);
+        } else {
+          scope.model.set('activeFilters', []);  
+        }
       });
 
-      $scope.$on('timeline-chart:filter-changed', function(event, range) {
-        var filter = new Filter.TimeRangeFilter(range[0], range[1]);
-        $scope.model.set('activeFilters', [filter]);
-      });
+
     }
   };
 

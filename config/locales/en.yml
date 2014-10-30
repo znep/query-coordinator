@@ -822,6 +822,10 @@ en:
     - Dec
   error:
     back: Back
+    error_site_unavailable:
+      title: Site Currently Unavailable
+      description: This Socrata-powered site is currently unavailable.
+      help_html: You can always check the status of Socrata at <a href="http://status.socrata.com">http://status.socrata.com</a> or check our twitter account at <a href="https://twitter.com/socrata">@socrata</a>.
     error_500:
       description_html: Please try again in a few moments, or <a href="http://support.socrata.com">report this error</a> with the details of what you were trying to do.
       somethings_wrong: Something's wrong!

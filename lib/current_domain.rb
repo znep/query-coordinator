@@ -28,7 +28,7 @@ class CurrentDomain
   end
 
   def self.set?
-    defined?(@@current_domain)
+    @@current_domain.present?
   end
 
   def self.reload(cname = nil)
@@ -261,6 +261,11 @@ class CurrentDomain
 
     locale_props.properties[cname] || locale_props.properties['*'] || 'en'
   end
+
+  def self.site_title
+    set? ? strings.site_title : 'Socrata'
+  end
+
 
   # CurrentDomain['preference name'] returns properties
   def self.[](key)

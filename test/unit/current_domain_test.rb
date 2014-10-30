@@ -52,6 +52,23 @@ class CurrentDomainTest < MiniTest::Unit::TestCase
     assert_equal false, CurrentDomain.default_widget_customization_id
   end
 
+  def test_site_title_defaults_to_socrata_if_domain_not_set
+    CurrentDomain.class_variable_set('@@current_domain', nil)
+    assert_equal 'Socrata', CurrentDomain.site_title
+  end
+
+  def test_site_title_returns_proper_site_title_if_domain_is_set
+    test_title = 'sproing'
+    CurrentDomain.class_variable_set('@@current_domain',
+      :modules => [{'name' => 'bar_module'}],
+      :data => Hashie::Mash.new.tap { |data|
+        data.feature = ['bar_module']
+        data.stubs(:default_configuration => stub(:properties => stub(:strings! => stub(:site_title => test_title), :[] => nil)))
+      }
+    )
+    assert_equal test_title, CurrentDomain.site_title
+  end
+
   private
 
   def setup_default_widget_customization_preconditions(val)

@@ -330,6 +330,9 @@ Frontend::Application.routes do
     # The /version page
     get '/version(.:format)' => 'version#index'
 
+    # Static error pages to be mirrored and served outside of our infrastructure.
+    match '/static_sitewide_messages/:action', :controller => 'static_sitewide_messages'
+
     # Auth/login/register paths
     match '/forgot_password', :to => 'accounts#forgot_password', :as => 'forgot_password'
     match '/reset_password/:uid/:reset_code', :to => 'accounts#reset_password', :as => 'reset_password',

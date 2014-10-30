@@ -8,7 +8,7 @@ angular.module('dataCards.directives').directive('card', function(AngularRxExten
 
       AngularRxExtensions.install($scope);
 
-      var modelSubject = $scope.observe('model');
+      var modelSubject = $scope.observe('model').filter(_.identity);
       var datasetObservable = modelSubject.pluck('page').observeOnLatest('dataset');
       var columns = datasetObservable.observeOnLatest('columns');
 

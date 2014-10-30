@@ -79,20 +79,36 @@ dataCards.config(function($provide, $stateProvider, $urlRouterProvider, $locatio
       template: '<h1>404</h1>You probably wanted something, but have this kitten instead: <br /><soc-kitten w="800" h="600"></soc-kitten>'
     }).
     state('view', {
-      template: '<!--Overall chrome--><div ui-view="mainContent"><div>',
+      template: '<!--Overall chrome--><div ui-view="mainContent"><div>'
+    }).
+    state('view.cards', {
       params: ['id'],
       resolve: {
         page: function($stateParams, Page) {
           return new Page($stateParams['id']);
         }
-      }
-    }).
-    state('view.cards', {
+      },
       views: {
         'mainContent': {
           //TODO figure out a way of getting the template dir out of rails.
           templateUrl: '/angular_templates/dataCards/pages/cards-view.html',
           controller: 'CardsViewController'
+        }
+      }
+    }).
+    state('view.card', {
+      params: ['pageId', 'fieldName'],
+      resolve: {
+        page: function($stateParams, Page) {
+          return new Page($stateParams['pageId']);
+        },
+        fieldName: function($stateParams) { return $stateParams.fieldName; }
+      },
+      views: {
+        'mainContent': {
+          //TODO figure out a way of getting the template dir out of rails.
+          templateUrl: '/angular_templates/dataCards/pages/single-card-view.html',
+          controller: 'SingleCardViewController'
         }
       }
     }).

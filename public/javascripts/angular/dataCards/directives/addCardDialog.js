@@ -1,23 +1,30 @@
 (function() {
   'use strict';
 
-  function addCardDialog(Card, FlyoutService) {
+  function addCardDialog(Card, FlyoutService, CardTypeMappingService) {
     return {
       restrict: 'E',
       scope: {
         page: '=',
         cardModels: '=',
-        datasetColumns: '='
+        cardSize: '=',
+        datasetColumns: '=',
+        dialogState: '=?',
+        // A function to call to start the customize-card flow
+        customizeCard: '='
       },
       templateUrl: '/angular_templates/dataCards/addCardDialog.html',
       link: function(scope, element, attrs) {
+        if (!scope.dialogState) {
+          dialogState = {show: true};
+        }
 
         /************************
         * Add new card behavior *
         ************************/
 
         scope.addCardSelectedColumnFieldName = null;
-        scope.addCardCardSize = null;
+        scope.addCardCardSize = parseInt(scope.cardSize, 10);
         scope.addCardModel = null;
 
         scope.$watch('addCardSelectedColumnFieldName', function(fieldName) {
@@ -41,13 +48,6 @@
           }
         });
 
-        scope.$on('modal-open', function(e, data) {
-          scope.addCardCardSize = parseInt(data.cardSize, 10);
-          // Reset the contents of the modal on each open event.
-          scope.addCardSelectedColumnFieldName = null;
-          scope.addCardModel = null;
-        });
-
         scope.addCard = function() {
           var newCardModels = [];
           var i = 0;
@@ -65,14 +65,11 @@
               concat(scope.cardModels.slice(preceedingCardCount));
 
             scope.page.set('cards', newCardModels);
-            scope.closeAddCardDialog();
+            scope.dialogState.show = false;
           }
         };
 
-        scope.closeAddCardDialog = function() {
-          scope.$emit('modal-close-surrogate', {id: 'add-card-dialog'});
-        };
-
+        scope.isCustomizable = CardTypeMappingService.isCustomizable;
       }
     };
   }

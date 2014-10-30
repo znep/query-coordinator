@@ -1,0 +1,22 @@
+<h2 class="icon-settings">Settings</h2>
+<card model="cardModel"
+      interactive="false"
+      class="card preview"></card>
+
+<div class="configurable"
+     ng-repeat="field in configurableFields">
+  <h3>{{ field.name }}</h3>
+  <div ng-switch="field.type">
+    <div ng-switch-where="baselayer">
+      <soc-select ng-model="field.value">
+        <soc-option value="null" ng-selected="field.value === null">Default Map</soc-option>
+        <soc-option value="custom">Custom Map</soc-option>
+      </soc-select>
+    </div>
+  </div>
+</div>
+
+<div class="controls">
+  <button class="action-btn dark" ng-click="addOrUpdate()">Done</button>
+  <button class="action-btn dark" ng-click="dialogState.show = false">Cancel</button>
+</div>

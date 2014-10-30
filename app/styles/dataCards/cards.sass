@@ -213,6 +213,67 @@ body.state-view-cards
             width: inherit
             height: inherit
 
+      customize-card-dialog
+        >h2
+          &::before
+            font-size: 0.9rem
+        card
+          float: left
+          width: 100%
+          max-width: 500px
+          margin: 0 1rem 1rem 0
+
+        .configurable
+          h3
+            white-space: nowrap
+            display: inline-block
+            margin: 0 0 1rem
+            min-width: 10rem
+
+        .controls
+          overflow: hidden
+          clear: both
+
+          button
+            float: right
+
+
+      add-card-dialog
+        display: block
+
+        >h2
+          &::before
+            content: '+'
+            line-height: 1.5rem
+            font-size: 1.6rem
+            font-weight: bold
+
+        .card-spot
+          position: relative
+
+          .icon-settings
+            white-space: nowrap
+            padding: 0.2rem 0.3rem 0.3rem
+            color: $link-font-color
+            border-radius: $rounded-corners-border-radius
+            display: block
+
+            &::before
+              color: $card-control-color
+
+            &:hover
+              background-color: $btn-hover-bg-color
+              color: $btn-hover-font-color
+
+              &::before
+                color: $btn-hover-font-color
+
+          card.preview
+            position: relative
+            display: block
+            height: 300px
+            text-align: left
+
       .card-group-drop-placeholder
         position: absolute
         display: none
@@ -253,41 +314,52 @@ body.state-view-cards
 
 /*   ICONS AND COMPONENTS */
 
-.expand-button, .delete-button
-  position: absolute
-  width: 20px
-  height: 20px
-  right: 5px
-  top: 5px
-  text-align: center
-  line-height: 20px
-  font-family: 'SSAir'
-  background-color: white
-  z-index: 3
+.card-spot
+  .card-controls
+    position: absolute
+    right: 5px
+    top: 5px
+    z-index: 3
+    background-color: white
+    border: 1px solid white
 
-  span
-    cursor: pointer
-    display: block
-    position: relative
-    color: #888
+    >.card-control
+      position: relative
+      text-align: center
+      cursor: pointer
+      color: $card-control-color
+      display: inline-block
+      padding: 1px
 
-    &:hover
-      color: #ccc
+      &:hover
+        color: #ccc
+        border-color: #ccc
 
-.expand-button span:before
-  content: '⤢'
+      span
+        display: block
+        position: relative
 
-.expanded .expand-button span:before
-  content: ''
 
-.delete-button span
-  &:before
-    content: '×'
-    font-size: 22px
-    line-height: 0
+    >.icon-settings
+      &:hover
+        color: $btn-hover-border-color
 
-  &:hover
-    color: red
+      &.disabled
+        opacity: .25
+
+
+    >.icon-close
+      &:hover
+        color: red
+
+    >.icon-expand, >.icon-collapse
+      $size: .75rem
+      line-height: $size
+      font-size: $size
+      width: $size
+      height: $size
+      border: 1px solid $card-control-color
+      border-radius: 2px
 
 .table-icon
   .grid-lines
@@ -296,11 +368,10 @@ body.state-view-cards
     fill: lighten($aqua-font-color, 10)
 
 .add-card-select-column
-  position: relative
-  width: 240px
-  height: 40px
-  margin: 1em 1em 1em 0
-  background-color: $api-panel-border-color
+  soc-select
+    max-width: 33%
+    margin: 0 1em 1em 0
+    background-color: $api-panel-border-color
 
 .add-card-preview
   position: relative

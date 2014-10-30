@@ -1,5 +1,5 @@
-
 describe('addCardDialog', function() {
+  'use strict';
 
   beforeEach(module('dataCards'));
   beforeEach(module('dataCards.directives'));
@@ -14,6 +14,17 @@ describe('addCardDialog', function() {
   beforeEach(module('/angular_templates/dataCards/tableHeader.html'));
   beforeEach(module('/angular_templates/dataCards/table.html'));
   beforeEach(module('/angular_templates/dataCards/timelineChart.html'));
+  beforeEach(module('dataCards/cards.sass'));
+
+  var testHelpers;
+  var Card;
+  var Page;
+  var Model;
+  var $rootScope;
+  var $controller;
+  var AngularRxExtensions;
+  var CardTypeMappingService;
+  var $httpBackend;
 
   beforeEach(inject(function($injector) {
     testHelpers = $injector.get('testHelpers');
@@ -24,31 +35,39 @@ describe('addCardDialog', function() {
     $controller = $injector.get('$controller');
     AngularRxExtensions = $injector.get('AngularRxExtensions');
     CardTypeMappingService = $injector.get('CardTypeMappingService');
+    $httpBackend = $injector.get('$httpBackend');
   }));
 
   afterEach(function() {
     $('#test-root').remove();
   });
 
-  var columns = [
-    {
-      "name": "spot",
-      "title": "Spot where cool froods hang out.",
-      "description": "???",
-      "logicalDatatype": "location",
-      "physicalDatatype": "number",
-      "importance": 2,
-      "shapefile": "mash-apes"
+  var columns = {
+    spot: {
+      name: 'spot',
+      title: 'Spot where cool froods hang out.',
+      description: '???',
+      logicalDatatype: 'location',
+      physicalDatatype: 'number',
+      importance: 2,
+      shapefile: 'mash-apes'
     },
-    {
-      "name": "ward",
-      "title": "Ward where crime was committed.",
-      "description": "Batman has bigger fish to fry sometimes, you know.",
-      "logicalDatatype": "location",
-      "physicalDatatype": "number",
-      "importance": 2,
-      "shapefile": "mash-apes"
-    }];
+    bar: {
+      name: 'bar',
+      title: 'A bar where cool froods hang out.',
+      description: '???',
+      logicalDatatype: 'amount',
+      physicalDatatype: 'number'
+    },
+    ward: {
+      name: 'ward',
+      title: 'Ward where crime was committed.',
+      description: 'Batman has bigger fish to fry sometimes, you know.',
+      logicalDatatype: 'location',
+      physicalDatatype: 'number',
+      importance: 2,
+      shapefile: 'mash-apes'
+    }};
 
   function createDialog() {
 
@@ -66,7 +85,7 @@ describe('addCardDialog', function() {
     }
 
     var datasetModel = new Model();
-    datasetModel.id = "rook-king";
+    datasetModel.id = 'rook-king';
     datasetModel.defineObservableProperty('rowDisplayUnit', 'row');
     datasetModel.defineObservableProperty('columns', columns);
 
@@ -152,122 +171,180 @@ describe('addCardDialog', function() {
     outerScope.page = pageModel;
     outerScope.bindObservable('cardModels', pageModel.observe('cards'));
     outerScope.bindObservable('datasetColumns', datasetColumns);
+    outerScope.customizeCard = function(card) {
+      outerScope._test_cardToCustomize = card;
+    };
+    outerScope.dialogState = {show: true};
 
-    var html = '<add-card-dialog page="page" card-models="cardModels" dataset-columns="datasetColumns"></add-card-dialog>';
+    var html = [
+      '<div ng-if="dialogState.show"> ',
+        '<add-card-dialog ',
+          'style="display:block" ',
+          'card-models="cardModels" ',
+          'card-size="1" ',
+          'customize-card="customizeCard" ',
+          'dataset-columns="datasetColumns" ',
+          'dialog-state="dialogState" ',
+          'page="page" ',
+        '></add-card-dialog>',
+      '</div>'].join('');
+
+    var element = testHelpers.TestDom.compileAndAppend(html, outerScope);
+
+    // Because we have an ng-if, the element returned by $compile isn't the one we want (it's a
+    // comment). So grab all the children of the element's parent.
+    element = element.parent().children();
 
     return {
       outerScope: outerScope,
-      element: testHelpers.TestDom.compileAndAppend(html, outerScope),
-      scope: outerScope.$$childHead
+      element: element,
+      // The ng-if introduces another scope
+      scope: outerScope.$$childHead.$$childHead
     };
   }
 
-  describe('add card functionality', function() {
+  it('should close the modal dialog and not add a card when the "Cancel" button is clicked', function() {
+    var dialog = createDialog();
 
-    describe('using the "Add a card" modal dialog', function() {
+    expect(dialog.element.is(':visible')).to.be.true;
 
-      it('should close the modal dialog and not add a card when the "Cancel" button is clicked', function() {
-        var dialog = createDialog();
+    var button = dialog.element.find('button:contains("Cancel")');
 
-        var closed = false;
+    button.click();
 
-        dialog.outerScope.$on('modal-close-surrogate', function() {
-          closed = true;
-        });
+    dialog.outerScope.$digest();
 
-        var button = dialog.element.find('button:contains("Cancel")')[0];
-
-        if (button !== null) {
-          testHelpers.fireEvent(button, 'click');
-        }
-
-        expect(closed).to.be.true;
-      });
-
-      it('should show all columns as options in the "Choose a column..." select control', function() {
-        var dialog = createDialog();
-
-        var options = dialog.element.find('option:enabled');
-
-        expect(options.length).to.equal(2);
-      });
-
-      it('should disable columns that are represented by cards in the "Choose a column..." select control', function() {
-        var dialog = createDialog();
-
-        var serializedCard = {
-          'fieldName': 'spot',
-          'cardSize': 1,
-          'cardCustomStyle': {},
-          'expandedCustomStyle': {},
-          'displayMode': 'visualization',
-          'expanded': false
-        };
-        dialog.scope.page.set('cards', [Card.deserialize(dialog.scope.page, serializedCard)]);
-
-        var options = dialog.element.find('option:enabled');
-
-        expect(options.length).to.equal(1);
-      });
-
-      it('should disable the "Add card" button when no column in the "Choose a column..." select control is selected', function() {
-        var dialog = createDialog();
-
-        var button = dialog.element.find('button:contains("Add card")')[0];
-
-        expect($(button).hasClass('disabled')).to.be.true;
-      });
-
-      it('should enable the "Add card" button when an enabled column in the "Choose a column..." select control is selected', function() {
-        var dialog = createDialog();
-
-        dialog.scope.addCardCardSize = 1;
-        // There's probably a jQuery method to set the value AND fire the event, but I don't know what it is. --Chris Laidlaw
-        dialog.element.find('select').val('spot');
-        testHelpers.fireEvent(dialog.element.find('select')[0], 'change');
-
-        var button = dialog.element.find('button:contains("Add card")')[0];
-
-        expect($(button).hasClass('disabled')).to.be.false;
-      });
-
-      it('should display a sample card visualization when an enabled column in the "Choose a column..." select control is selected', function() {
-        var dialog = createDialog();
-
-        expect(dialog.element.find('card').length).to.equal(0);
-
-        dialog.scope.addCardCardSize = 2;
-        dialog.element.find('select').val('ward');
-        testHelpers.fireEvent(dialog.element.find('select')[0], 'change');
-
-        expect(dialog.element.find('card').length).to.equal(1);
-      });
-
-      it('should add a card in the correct CardSize group when an enabled column in the "Choose a column..." select control is selected and the "Add card" button is clicked', function() {
-        var dialog = createDialog();
-
-        var serializedCard = {
-          'fieldName': 'spot',
-          'cardSize': 1,
-          'cardCustomStyle': {},
-          'expandedCustomStyle': {},
-          'displayMode': 'visualization',
-          'expanded': false
-        };
-        dialog.scope.page.set('cards', [Card.deserialize(dialog.scope.page, serializedCard)]);
-
-        dialog.scope.addCardCardSize = 2;
-        dialog.element.find('select').val('ward');
-        testHelpers.fireEvent(dialog.element.find('select')[0], 'change');
-
-        dialog.scope.addCard();
-
-        expect(dialog.scope.cardModels[0].fieldName).to.equal('spot');
-        expect(dialog.scope.cardModels[1].fieldName).to.equal('ward');
-      });
-
-    });
-
+    expect(dialog.element.is(':visible')).to.be.false;
   });
 
+  it('should show all columns as options in the "Choose a column..." select control', function() {
+    var dialog = createDialog();
+
+    var options = dialog.element.find('option:enabled');
+
+    expect(options.length).to.equal(2);
+  });
+
+  it('should disable columns that are represented by cards in the "Choose a column..." select control', function() {
+    var dialog = createDialog();
+
+    var serializedCard = {
+      fieldName: 'spot',
+      cardSize: 1,
+      cardCustomStyle: {},
+      expandedCustomStyle: {},
+      displayMode: 'visualization',
+      expanded: false
+    };
+    dialog.scope.page.set('cards', [Card.deserialize(dialog.scope.page, serializedCard)]);
+
+    var options = dialog.element.find('option:enabled');
+
+    expect(options.length).to.equal(1);
+  });
+
+  it('should disable the "Add card" button when no column in the "Choose a column..." select control is selected', function() {
+    var dialog = createDialog();
+
+    var button = dialog.element.find('button:contains("Add card")')[0];
+
+    expect($(button).hasClass('disabled')).to.be.true;
+  });
+
+  it('should enable the "Add card" button when an enabled column in the "Choose a column..." select control is selected', function() {
+    var dialog = createDialog();
+
+    dialog.scope.addCardCardSize = 1;
+    $httpBackend.expectGET(/\/api\/id\/rook-king.json.*/).respond([]);
+    $httpBackend.expectGET(/\/resource\/mash-apes.geojson.*/).respond([]);
+    dialog.element.find('option[value=spot]').prop('selected', true).trigger('change');
+
+    var button = dialog.element.find('button:contains("Add card")')[0];
+
+    expect($(button).hasClass('disabled')).to.be.false;
+  });
+
+  it('should display a sample card visualization when an enabled column in the "Choose a column..." select control is selected', function() {
+    var dialog = createDialog();
+
+    expect(dialog.element.find('card').length).to.equal(0);
+
+    dialog.scope.addCardCardSize = 2;
+    $httpBackend.expectGET(/\/api\/id\/rook-king.json.*/).respond([]);
+    $httpBackend.expectGET(/\/resource\/mash-apes.geojson.*/).respond([]);
+    dialog.element.find('option[value=ward]').prop('selected', true).trigger('change');
+
+    expect(dialog.element.find('card').length).to.equal(1);
+  });
+
+  it('should add a card in the correct CardSize group when an enabled column in the "Choose a column..." select control is selected and the "Add card" button is clicked', function() {
+    var dialog = createDialog();
+
+    var serializedCard = {
+      fieldName: 'spot',
+      cardSize: 1,
+      cardCustomStyle: {},
+      expandedCustomStyle: {},
+      displayMode: 'visualization',
+      expanded: false
+    };
+    dialog.scope.page.set('cards', [Card.deserialize(dialog.scope.page, serializedCard)]);
+
+    dialog.scope.addCardCardSize = 2;
+    $httpBackend.expectGET(/\/api\/id\/rook-king.json.*/).respond([]);
+    $httpBackend.expectGET(/\/resource\/mash-apes.geojson.*/).respond([]);
+    dialog.element.find('option[value=ward]').prop('selected', true).trigger('change');
+
+    dialog.scope.addCard();
+
+    expect(dialog.scope.cardModels[0].fieldName).to.equal('spot');
+    expect(dialog.scope.cardModels[1].fieldName).to.equal('ward');
+  });
+
+  it('displays a "customize" button for choropleths that calls the customize function', function() {
+    var dialog = createDialog();
+
+    var customizeButton = dialog.element.find('.card-control[title^="Customize"]');
+    expect(customizeButton.length).to.equal(0); // should only appear for choropleths
+
+    $httpBackend.expectGET(/\/api\/id\/rook-king.json.*/).respond([]);
+    $httpBackend.expectGET(/\/resource\/mash-apes.geojson.*/).respond([]);
+    dialog.element.find('select>option[value="bar"]').prop('selected', true).trigger('change');
+
+    customizeButton = dialog.element.find('.card-control[title^="Customize"]');
+    expect(customizeButton.length).to.equal(0); // should only appear for choropleths
+
+    // Now select the choropleth
+    $httpBackend.expectGET(/\/api\/id\/rook-king.json.*/).respond([]);
+    $httpBackend.expectGET(/\/resource\/mash-apes.geojson.*/).respond([]);
+    dialog.element.find('select>option[value="ward"]').prop('selected', true).trigger('change');
+
+    customizeButton = dialog.element.find('.card-control[title^="Customize"]');
+    expect(customizeButton.length).to.equal(1);
+
+    /* Technically, there should be a flyout here. But since we're using the same mechanism to give
+     * this button a flyout, as we are for the other card-controls in a card-layout, the flyout is
+     * only registered in the card-layout code. So it's not actually registered when this dialog is
+     * instantiated outside a card-layout.
+     * But keep this code around for documentation.
+
+    // It should have a flyout
+    testHelpers.fireMouseEvent(customizeButton[0], 'mousemove');
+    var flyout = $('#uber-flyout');
+    expect(flyout.text()).to.equal('Customize this card');
+
+    var hint = flyout.find('.hint');
+    var hintOffset = hint.offset();
+    var buttonOffset = customizeButton.offset();
+    expect(hintOffset.left).to.be.closeTo(buttonOffset.left, 10);
+    expect(hintOffset.top).to.be.closeTo(buttonOffset.top, 10);
+    */
+
+    // We've stubbed the customize function to set this variable
+    expect(dialog.outerScope._test_cardToCustomize).to.not.be.ok;
+
+    customizeButton.click();
+
+    expect(dialog.outerScope._test_cardToCustomize).to.be.ok;
+  });
 });

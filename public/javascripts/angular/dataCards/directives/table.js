@@ -562,9 +562,7 @@ angular.module('socrataCommon.directives').directive('table', function(AngularRx
 
 
       scope.$on('$destroy', function() {
-        _.each(subscriptions, function(sub) {
-          sub.dispose();
-        });
+        _.invoke(subscriptions, 'dispose');
       });
     }
   };

@@ -1,6 +1,6 @@
 @import dataCards/common/colors
 
-$modal-padding: 20px
+$modal-padding: 2rem
 
 .modal-container
 
@@ -25,23 +25,27 @@ $modal-padding: 20px
     background-color: $api-panel-bg-color
     border: solid 1px $api-panel-border-color
     z-index: 10000
+    padding: $modal-padding
 
     .modal-dialog-content
       @include prefixer(box-sizing, border-box)
       color: $modal-white-font-color
-      padding: $modal-padding
       text-align: left
       width: 100%
 
       h2
-        margin: 0
+        margin: 0 0 1rem
         font-size: 1.25em
         font-weight: bold
 
+        &::before
+          margin-right: .5rem
+          vertical-align: bottom
+
     .modal-close-button
       position: absolute
-      top: $modal-padding
-      right: $modal-padding
+      top: .5 * $modal-padding
+      right: .5 * $modal-padding
       padding: 0
       cursor: pointer
       font-size: 20px

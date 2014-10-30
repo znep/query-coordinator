@@ -94,9 +94,7 @@
         });
 
         $scope.$on('$destroy', function() {
-          _.each(subscriptions, function(sub) {
-            sub.dispose();
-          });
+          _.invoke(subscriptions, 'dispose');
           $scope.$emit('cleaned-up');
         });
       }

@@ -47,13 +47,23 @@
     <card model="addCardModel"
           interactive="false"
           class="card preview"></card>
+    <div class="card-controls">
+      <div class="card-control icon-settings"
+           title="Customize this card"
+           ng-if="isCustomizable(addCardModel)"
+           ng-click="dialogState.show = false; customizeCard(addCardModel)"
+           >
+        Settings
+      </div>
+    </div>
   </div>
 </div>
 <div class="add-card-buttons">
-  <button type="button" class="action-btn dark r-to-l" ng-click="closeAddCardDialog()">Cancel</button>
-  <button
-    type="button"
-    class="action-btn dark r-to-l"
-    ng-class="{disabled: addCardModel === null}"
-    ng-click="addCard()">Add card</button>
+  <button type="button"
+          class="action-btn dark r-to-l"
+          ng-click="dialogState.show = false">Cancel</button>
+  <button type="button"
+          class="action-btn dark r-to-l"
+          ng-class="{disabled: addCardModel === null}"
+          ng-click="addCard()">Add card</button>
 </div>

@@ -1,46 +1,34 @@
 (function() {
   'use strict';
 
-  function modalDialog() {
+  function modalDialog(WindowState) {
     return {
       restrict: 'E',
-      scope: {},
+      scope: {
+        // Toggles modal dialog visibility
+        state: '=?dialogState'
+      },
       transclude: true,
       templateUrl: '/angular_templates/dataCards/modalDialog.html',
       link: function (scope, element, attrs) {
+        var subscriptions = [];
 
-        // Toggles modal dialog visibility
-        scope.show = false;
-
-        scope.showModal = function() {
-          scope.show = true;
+        if (!scope.state) {
+          scope.state = {show: false};
         }
 
-        scope.hideModal = function() {
-          scope.show = false;
-        }
+        subscriptions.push(WindowState.closeDialogEventObservable.filter(function(e) {
+          return !$(e.target).closest('.modal-dialog').length;
+        }).subscribe(function(e) {
+          scope.$apply(function() {
+            scope.state.show = false;
+          })
+        }));
 
-        scope.$on('modal-open', function (e, data) {
-          if (element.attr('id') === data.id) {
-            scope.showModal();
-          }
+        // Clean up after ourselves
+        scope.$on('$destroy', function() {
+          _.invoke(subscriptions, 'dispose');
         });
-
-        scope.$on('modal-close', function (e, data) {
-          if (element.attr('id') === data.id) {
-            scope.hideModal();
-          }
-        });
-
-        document.addEventListener('keydown', function (e) {
-          // Escape key
-          if (e.which === 27) {
-            scope.$apply(function () {
-              scope.hideModal();
-            })
-          }
-        });
-
       }
     };
   }

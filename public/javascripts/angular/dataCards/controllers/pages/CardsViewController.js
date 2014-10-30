@@ -246,14 +246,6 @@
       return columns.available.length === 0;
     }));
 
-    $scope.$on('modal-open-surrogate', function(e, data) {
-      $scope.$broadcast('modal-open', data);
-    });
-
-    $scope.$on('modal-close-surrogate', function(e, data) {
-      $scope.$broadcast('modal-close', data);
-    });
-
 
     /***************************
     * View/edit cards behavior *

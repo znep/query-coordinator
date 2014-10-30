@@ -320,7 +320,7 @@
           if (_.isEmpty(highlightedLabel)) {
             highlightedLabel = $('<div class="label highlighted">' +
                 '<div class="text"></div>' +
-                '<div class="timeline-clear-selection"> ×</div>' +
+                '<div class="icon-close timeline-clear-selection"></div>' +
                 '</div>');
             element.find('.labels').append(highlightedLabel);
           }

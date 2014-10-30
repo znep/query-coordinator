@@ -28,7 +28,7 @@ class CurrentDomain
   end
 
   def self.set?
-    @@current_domain.present?
+    defined?(@@current_domain) && @@current_domain.present?
   end
 
   def self.reload(cname = nil)

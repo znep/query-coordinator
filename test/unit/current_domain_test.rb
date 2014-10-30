@@ -67,6 +67,7 @@ class CurrentDomainTest < MiniTest::Unit::TestCase
       }
     )
     assert_equal test_title, CurrentDomain.site_title
+    CurrentDomain.class_variable_set('@@current_domain', nil)
   end
 
   private

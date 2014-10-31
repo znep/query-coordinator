@@ -319,8 +319,8 @@ angular.module('socrataCommon.directives').directive('columnChart', function($pa
       selection.exit().remove();
     };
 
-    element.children('.ticks').remove();
-    element.prepend(ticks);
+    $chartScroll.children('.ticks').remove();
+    $chartScroll.prepend(ticks);
 
     barGroupSelection.call(updateBars);
     labelSelection.call(updateLabels);
@@ -368,11 +368,13 @@ angular.module('socrataCommon.directives').directive('columnChart', function($pa
 
   return {
     template:
-      '<div class="chart-scroll">' +
-        '<div class="column-chart-wrapper" ng-class="{filtered: showFiltered}">' +
-          '<div class="truncation-marker">&raquo;</div>' +
+      '<div class="column-chart" ng-class="{ expanded: expanded }">' +
+        '<div class="chart-scroll">' +
+          '<div class="column-chart-wrapper" ng-class="{filtered: showFiltered}">' +
+            '<div class="truncation-marker">&raquo;</div>' +
+          '</div>' +
+          '<div class="labels"></div>' +
         '</div>' +
-        '<div class="labels"></div>' +
       '</div>',
     restrict: 'A',
     scope: {

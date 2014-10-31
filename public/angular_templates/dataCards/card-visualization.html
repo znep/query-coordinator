@@ -1,0 +1,6 @@
+<div class="card-visualization" ng-switch="cardType">
+  <card-visualization-column-chart ng-switch-when="column" model="model" where-clause="whereClause"></card-visualization-column-chart>
+  <card-visualization-timeline-chart ng-switch-when="timeline" model="model" where-clause="whereClause"></card-visualization-timeline-chart>
+  <card-visualization-choropleth ng-switch-when="choropleth" model="model" where-clause="whereClause" hide-interaction-controls="hideInteractionControls"></card-visualization-choropleth>
+  <card-visualization-table ng-switch-when="table" model="model" where-clause="whereClause"></card-visualization-table>
+</div>

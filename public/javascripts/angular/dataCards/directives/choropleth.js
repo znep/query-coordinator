@@ -20,7 +20,8 @@
       scope: {
         'baseLayerUrl': '=',
         'geojsonAggregateData': '=',
-        'rowDisplayUnit': '=?'
+        'rowDisplayUnit': '=?',
+        'hideInteractionControls': '=?'
       },
       template: ['<div class="choropleth-container">',
                     '<div class="choropleth-map-container"></div>',
@@ -29,6 +30,10 @@
       link: function(scope, element) {
 
         AngularRxExtensions.install(scope);
+
+        scope.$watch('hideInteractionControls', function(shouldHide) {
+          element.toggleClass('interaction-controls-hidden', shouldHide === true);
+        });
 
         /***********************
         * Mutate Leaflet state *

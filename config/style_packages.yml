@@ -21,6 +21,7 @@ angular-app-dataCards:
 - dataCards/timeline-chart
 - dataCards/table
 - dataCards/cards
+- dataCards/single-card-view
 - dataCards/dataset-metadata
 - dataCards/card
 - dataCards/multiline-ellipsis

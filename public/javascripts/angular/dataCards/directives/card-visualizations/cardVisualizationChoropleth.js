@@ -7,7 +7,8 @@
       restrict: 'E',
       scope: {
         'model': '=',
-        'whereClause': '='
+        'whereClause': '=',
+        'hideInteractionControls': '=?'
       },
       templateUrl: '/angular_templates/dataCards/cardVisualizationChoropleth.html',
       link: function(scope, element, attrs) {

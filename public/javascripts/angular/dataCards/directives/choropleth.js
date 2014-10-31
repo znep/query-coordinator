@@ -204,6 +204,8 @@
             var maxBreak = classBreaks[classBreaks.length - 1];
 
             var colorWidth = 15;
+            // Reserve some padding space for the bottom-most tick label text.
+            var bottomPadding = 15;
             var width = Math.floor(colorWidth);
             var height = Math.floor(Math.min(element.height() - 60, 250));
 
@@ -223,8 +225,8 @@
               append('g');
 
             svg.
-              attr('width', width).
-              attr('height', height);
+              attr('width', element.width()).
+              attr('height', height + bottomPadding);
 
             var yTickScale = d3.scale.linear().range([height - 1, 1]);
             var yLabelScale = d3.scale.linear().range([height, 0]);
@@ -278,6 +280,10 @@
               select('path').
               remove();
 
+            // Move the labels right enough to just touch the color rects.
+            labels.
+              attr('transform', 'translate({0})'.format(element.width() - width));
+
             labels.
               exit().
               remove();
@@ -294,6 +300,7 @@
               attr('height', function(c, i) {
                 return legendLabelColorHeight(i, height);
               }).
+              attr('x', element.width() - width).
               attr('y', function(c, i) {
                 return Math.floor(yLabelScale(classBreaks[i + 1]));
               }).

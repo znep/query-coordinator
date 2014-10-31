@@ -4,8 +4,7 @@ angular.module('dataCards.directives').directive('cardVisualization', function(A
     restrict: 'E',
     scope: {
       'model': '=',
-      'whereClause': '=',
-      'hideInteractionControls': '=?'
+      'whereClause': '='
     },
     templateUrl: '/angular_templates/dataCards/card-visualization.html',
     link: function($scope, element, attrs) {

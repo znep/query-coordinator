@@ -107,10 +107,19 @@ $fill-opacity: 0.5
 .selected .timeline-chart-clear-selection-button
   display: block
 
-.timeline-chart-visualization
+.timeline-chart-unfiltered-mask,
+.timeline-chart-filtered-mask
   position: absolute
   top: 0
   z-index: 2
+
+.timeline-chart-filtered-mask
+  z-index: 3
+
+.timeline-chart-unfiltered-visualization,
+.timeline-chart-filtered-visualization
+  position: absolute
+  top: 0
 
   .context
     fill: $timeline-context-fill

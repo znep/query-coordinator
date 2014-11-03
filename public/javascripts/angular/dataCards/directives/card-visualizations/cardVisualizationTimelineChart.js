@@ -297,8 +297,7 @@ angular.module('dataCards.directives').directive('cardVisualizationTimelineChart
       // Handle filtering
       scope.$on('filter-timeline-chart', function(event, data) {
         if (data !== null) {
-          var filter = new Filter.TimeRangeFilter(moment(data.start), moment(data.end));
-          console.log(filter);
+          var filter = new Filter.TimeRangeFilter(data.start, data.end);
           scope.model.set('activeFilters', [filter]);
         } else {
           scope.model.set('activeFilters', []);  

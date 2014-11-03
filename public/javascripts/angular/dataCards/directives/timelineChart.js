@@ -59,7 +59,7 @@
         var d3ChartElement = d3.select(jqueryChartElement[0]);
 
         // The X and Y scales that d3 uses are global to the directive so
-        // that we can use the same ones between the renderTimelineChart and
+        // that we can use the same ones between the renderChart and
         // renderChartHighlight functions.
         // They are initialized to null so that we don't accidentally try
         // to render a highlight before a chart is rendered.
@@ -71,7 +71,7 @@
         // to recalcualte on every pass of renderChartHighlighted and regardless
         // can be expensive in terms of performance. Therefore, we only update the sequences
         // when necessary.
-        var chartOffsetSubject = new Rx.Subject(); // This one is updated in renderTimelineChart.
+        var chartOffsetSubject = new Rx.Subject(); // This one is updated in renderChart.
         var chartDimensionsSubject = element.closest('.card-visualization').observeDimensions();
 
         // currentDatum is used to persist information about the highlighted region between
@@ -477,6 +477,8 @@
 
           if (minDate !== null && maxDate !== null) {
 
+            renderChartFilteredValues();
+
             stack = d3.
               layout.
                 stack().
@@ -641,14 +643,13 @@
           var labelUnit;
           var tickDates;
           var tickInterval;
-          var tickWidth = (chartData.offsets[1] - chartData.offsets[0]) * chartWidth;
-          var halfTickWidth = tickWidth / 2;
           var labelData = [];
           var i;
           var j;
           var jqueryAxisContainer;
           var labelDatumStep;
           var cumulativeLabelOffsets;
+          var halfTickWidth = 2; // Half the width of the visualized x-axis tick (in pixels)
           var shouldDrawLabel;
           var jqueryAxisTick;
           var labelStartDate;
@@ -696,7 +697,7 @@
           for (j = 0; j < tickDates.length; j++) {
             for (i; i < chartData.values.length; i++) {
               if (moment(chartData.values[i].date).isSame(tickDates[j], labelUnit)) {
-                labelData.push({ datum: chartData.values[i], offset: d3XScale(chartData.values[i].date) });
+                labelData.push({ datum: chartData.values[i], offset: Math.floor(d3XScale(chartData.values[i].date)) });
                 break;
               }
             }
@@ -720,12 +721,12 @@
             // but keep it in the iteration so that we
             // can label the gap between the last tick
             // and the edge of the chart as necessary.
-            if (i < labelData.length - 1) {
+            if (i > 0 && i < labelData.length - 1) {
 
               jqueryAxisTick = $('<rect>').
                 addClass('x-tick').
                 css({
-                  left: Math.floor(labelData[i].offset - 2)
+                  left: Math.floor(labelData[i].offset - halfTickWidth)
                 });
 
               jqueryAxisContainer.append(jqueryAxisTick);
@@ -892,7 +893,8 @@
           var chartWidth;
           var chartHeight;
           var stack;
-          var area;
+          var unfilteredArea;
+          var filteredArea;
           var svgChart;
           var labelVar;
           var varNames;
@@ -940,20 +942,23 @@
                 range([chartHeight, 0]).
                 clamp(true); // Is this necessary?!
 
-          stack = d3.
+          /*stack = d3.
             layout.
               stack().
                 offset('zero').
                 values(function (d) { return d.values; }).
                   x(function (d) { return d3XScale(d.label); }).
                   y(function (d) { return d.value; });
-
-          area = d3.
+*/
+          unfilteredArea = d3.
             svg.
               area().
-                x(function (d) { return d3XScale(d.label); }).
-                y0(function (d) { return d3YScale(d.y0); }).
-                y1(function (d) { return d3YScale(d.y0 + d.y); });
+                x(function (d) { return d3XScale(d.date); }).
+                y0(function (d) { return d3YScale(0); }).
+                y1(function (d) { return d3YScale(d.unfiltered); });
+
+
+
 
           //
           // Render the x-axis.
@@ -992,45 +997,92 @@
 
 
           //
-          // Render the chart itself.
+          // Render the unfiltered values of the chart.
           //
 
-          seriesStack = transformChartDataForStackedRendering(chartData, pageIsFiltered);
-
-          stack(seriesStack);
-
           svgChart = d3ChartElement.
-            select('svg.timeline-chart-visualization').
-              attr('width',  chartWidth  + margin.left + margin.right).
-              attr('height', chartHeight + margin.top  + margin.bottom).
-              select('g').
-                attr('transform', 'translate(' + margin.left + ',' + margin.top + ')');
+            select('svg.timeline-chart-unfiltered-visualization').
+              attr('width', chartWidth + margin.left + margin.right).
+              attr('height', chartHeight + margin.top + margin.bottom).
+            select('g').
+              attr('transform', 'translate(' + margin.left + ',' + margin.top + ')');
 
           selection = svgChart.
-            selectAll('.series').
-              data(seriesStack); 
-          
+            selectAll('path').
+              data([cachedChartData.values]);
+
           selection.
             enter().
-              append('g').
-                attr('class', 'series').
-                append('path');
+              append('path');
 
           selection.
             exit().
               remove();
 
           selection.
-            select('path').
-              attr('class', function (d) {
-                if (pageIsFiltered) {
-                  return (d.name === 'unfiltered') ? 'context' : 'shaded';
-                } else {
-                  return 'shaded';
-                }
-              }).
-              attr('d', function (d) { return area(d.values); });
+            attr('class', function() { return pageIsFiltered ? 'context' : 'shaded'; }).
+            attr('d', unfilteredArea);
 
+
+          if (pageIsFiltered) {
+            renderChartFilteredValues();
+          }
+
+        }
+
+
+        function renderChartFilteredValues() {
+            var chartWidth;
+            var chartHeight;
+            var margin;
+            var svgChart;
+            var selection;
+            var filteredArea;
+
+          filteredArea = d3.
+            svg.
+              area().
+                x(function (d) { return d3XScale(d.date); }).
+                y0(function (d) { return d3YScale(0); }).
+                y1(function (d) { return d3YScale(d.filtered); });
+
+            margin = { top: 0, right: 0, bottom: Constants['TIMELINE_CHART_MARGIN_BOTTOM'], left: 0 };
+
+            // chartWidth and chartHeight do not include margins so that
+            // we can use the margins to render axis ticks.
+            chartWidth = cachedChartDimensions.width - margin.left - margin.right;
+            chartHeight = cachedChartDimensions.height - margin.top - margin.bottom;
+
+            if (selectionActive) {
+              var filteredValues = cachedChartData.values.filter(function(datum) {
+                return datum.date >= selectionStartDate && datum.date <= selectionEndDate;
+              });
+            } else {
+              var filteredValues = cachedChartData.values;
+            }
+
+            svgChart = d3ChartElement.
+              select('svg.timeline-chart-filtered-visualization').
+                attr('width', chartWidth + margin.left + margin.right).
+                attr('height', chartHeight + margin.top + margin.bottom).
+              select('g').
+                attr('transform', 'translate(' + margin.left + ',' + margin.top + ')');
+
+            selection = svgChart.
+              selectAll('path').
+                data([filteredValues]);
+
+            selection.
+              enter().
+                append('path');
+
+            selection.
+              exit().
+                remove();
+
+            selection.
+              attr('class', 'shaded').
+              attr('d', filteredArea);
         }
 
 
@@ -1163,9 +1215,9 @@
          */
 
         function enterDraggingState() {
-console.log('ENTERING DRAGGING STATE');
           currentlyDragging = true;
           selectionActive = false;
+          $('.timeline-chart-filtered-mask').hide();
           jqueryBodyElement.addClass('prevent-user-select');
           jqueryChartElement.removeClass('selected').addClass('selecting');
         }
@@ -1178,9 +1230,9 @@ console.log('ENTERING DRAGGING STATE');
          */
 
         function enterSelectedState() {
-console.log('ENTERING SELECTED STATE');
           currentlyDragging = false;
           selectionActive = true;
+          $('.timeline-chart-filtered-mask').show();
           jqueryBodyElement.removeClass('prevent-user-select');
           jqueryChartElement.removeClass('selecting').addClass('selected');
         }
@@ -1193,7 +1245,6 @@ console.log('ENTERING SELECTED STATE');
          */
 
         function enterDefaultState() {
-console.log('ENTERING DEFAULT STATE');
           currentlyDragging = false;
           selectionActive = false;
           clearChartSelection();
@@ -1209,7 +1260,7 @@ console.log('ENTERING DEFAULT STATE');
          */
 
         function filterChartByCurrentSelection() {
-          scope.$emit('filter-timeline-chart', { start: selectionStartDate, end: selectionEndDate });
+          scope.$emit('filter-timeline-chart', { start: moment(selectionStartDate), end: moment(selectionEndDate).add(1, datasetPrecision) });
         }
 
 

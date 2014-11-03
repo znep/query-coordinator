@@ -94,6 +94,7 @@
         datasetId = DeveloperOverrides.dataOverrideForDataset(datasetId) || datasetId;
         var whereClause = 'WHERE date_trunc IS NOT NULL';
         if (!_.isEmpty(whereClauseFragment)) {
+          console.log(fieldName, whereClauseFragment);
           whereClause += ' and ' + whereClauseFragment;
         }
         fieldName = SoqlHelpers.replaceHyphensWithUnderscores(fieldName);

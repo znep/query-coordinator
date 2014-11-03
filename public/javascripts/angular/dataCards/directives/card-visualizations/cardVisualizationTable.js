@@ -5,7 +5,7 @@ angular.module('dataCards.directives').directive('cardVisualizationTable', funct
 
   return {
     restrict: 'E',
-    scope: { 'model': '=', 'whereClause': '=' },
+    scope: { 'model': '=', 'whereClause': '=', 'showCount': '=?', 'firstColumn': '=?' },
     templateUrl: '/angular_templates/dataCards/cardVisualizationTable.html',
     link: function($scope, element, attrs) {
 
@@ -18,6 +18,12 @@ angular.module('dataCards.directives').directive('cardVisualizationTable', funct
       var dataResponses = new Rx.Subject();
       var rowCountSequence = new Rx.Subject();
       var filteredRowCountSequence = new Rx.Subject();
+
+      $scope.$watch('showCount', function(newVal, oldVal, scope) {
+        if (!angular.isDefined(newVal)){
+          scope.showCount = true;
+        }
+      });
 
       // TODO: Let's figure out how to functional-reactify this request as well.
       $scope.getRows = function() {
@@ -51,6 +57,16 @@ angular.module('dataCards.directives').directive('cardVisualizationTable', funct
 
       var columnDetailsAsArray = columnDetails.map(function(val) {
         var asArray = _.toArray(val);
+        if ($.isPresent($scope.firstColumn)) {
+          var columnName = $scope.firstColumn;
+          var columnIndex = _.findIndex(asArray, function(column) {
+            return column.name === columnName;
+          });
+          if (columnIndex >= 0) {
+            var column = asArray.splice(columnIndex, 1)[0];
+            asArray.splice(0, 0, column);
+          }
+        }
         return asArray;
       });
 

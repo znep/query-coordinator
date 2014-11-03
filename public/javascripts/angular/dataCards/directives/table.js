@@ -9,6 +9,7 @@ angular.module('socrataCommon.directives').directive('table', function(AngularRx
     restrict: 'A',
 
     scope: {
+      showCount: '=?',
       rowCount: '=',
       filteredRowCount: '=',
       whereClause: '=',
@@ -47,6 +48,12 @@ angular.module('socrataCommon.directives').directive('table', function(AngularRx
         return scope.columnDetails;
       };
 
+      scope.$watch('showCount', function(newVal, oldVal, scope){
+        if (!angular.isDefined(newVal)){
+          scope.showCount = true;
+        }
+      });
+
       $('body').on('click.{0}'.format(instanceUniqueNamespace), '.flyout .caret', function(e) {
         if ($(e.currentTarget).parent().data('table-id') !== instanceUniqueNamespace) {
           return; // The flyout might not be our own!
@@ -70,7 +77,7 @@ angular.module('socrataCommon.directives').directive('table', function(AngularRx
         var tableHeight = dimensions.height - element.position().top;
 
         element.height(tableHeight);
-        $body.height(tableHeight - $head.height() - rowHeight);
+        $body.height(tableHeight - $head.height() - (scope.showCount ? rowHeight : 0));
         $head.find('.resize').height(tableHeight);
 
         checkBlocks();

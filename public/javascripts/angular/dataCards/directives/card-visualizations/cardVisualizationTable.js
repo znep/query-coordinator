@@ -49,6 +49,11 @@ angular.module('dataCards.directives').directive('cardVisualizationTable', funct
 
       var columnDetails = dataset.observeOnLatest('columns').map(removeSystemColumns);
 
+      var columnDetailsAsArray = columnDetails.map(function(val) {
+        var asArray = _.toArray(val);
+        return asArray;
+      });
+
       // Keep track of the number of requests that have been made and the number of
       // responses that have come back.
       // .scan() is necessary because the usual aggregation suspect reduce actually
@@ -122,7 +127,7 @@ angular.module('dataCards.directives').directive('cardVisualizationTable', funct
       $scope.bindObservable('whereClause', whereClause);
       $scope.bindObservable('rowCount', rowCount.switchLatest());
       $scope.bindObservable('filteredRowCount', filteredRowCount.switchLatest());
-      $scope.bindObservable('columnDetails', columnDetails);
+      $scope.bindObservable('columnDetails', columnDetailsAsArray);
       $scope.bindObservable('expanded', model.observeOnLatest('expanded'));
       $scope.bindObservable('defaultSortColumnName', defaultSortColumnName);
 

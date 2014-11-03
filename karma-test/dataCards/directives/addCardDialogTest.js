@@ -118,7 +118,7 @@ describe('addCardDialog', function() {
 
         var sortedCards = cards.
           filter(function(card) {
-            return card.fieldName !== '*'; 
+            return card.fieldName !== '*';
           }).
           sort(function(a, b) {
             return a.fieldName > b.fieldName

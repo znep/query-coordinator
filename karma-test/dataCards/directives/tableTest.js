@@ -5,21 +5,26 @@ describe('table directive', function() {
     outerScope.expanded = expanded || false;
     outerScope.rowCount = rowCount >= 0 ? rowCount : 200;
     outerScope.filteredRowCount = rowCount >= 0 ? rowCount : 170;
-    outerScope.columnDetails = {};
+    outerScope.columnDetails = [];
 
     columnCount = 0;
 
     _.each(fixtureMetadata.columns, function(column) {
       if (column.name[0].match(/[a-zA-Z0-9]/g)) {
         column.sortable = true;
-        outerScope.columnDetails[column.name] = column;
+        outerScope.columnDetails.push(column);
         columnCount += 1;
       }
     });
 
     // Provide a default sort column. It's a text/category column, so the default sort
     // order is ASC.
-   outerScope.defaultSortColumnName = outerScope.columnDetails[fixtureMetadata.columns[beatColumnIndex].name].name;
+    var beatColumnName = fixtureMetadata.columns[beatColumnIndex].name;
+    var defaultSortColumn = _.find(outerScope.columnDetails, function(column) {
+      return column.name === beatColumnName;
+    });
+    outerScope.defaultSortColumnName = defaultSortColumn.name;
+
     if (getRows) {
       outerScope.getRows = getRows;
     } else {

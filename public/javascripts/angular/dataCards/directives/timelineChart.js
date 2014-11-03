@@ -1,6 +1,11 @@
 (function() {
   'use strict';
 
+// TODO
+// 1. Flyout on interval highlights (i.e. when you mouse over a decade label, it should show a highlight above the selection)
+// 2. Labels for show-every-nth x-axis labels
+
+
   var FLYOUT_DATE_FORMAT = {
     DAY: 'D MMMM YYYY',
     MONTH: 'MMMM YYYY',
@@ -83,7 +88,11 @@
         // for this reason it's cached globally.
         var datasetPrecision = null;
 
-        // Keep track of the row display unit so that the flyout can correctly format quantities.
+        // Cache a bunch of stuff that is useful in a lot of places that don't need to be
+        // wrapped in Rx mojo.
+        var cachedChartDimensions = null;
+        var cachedChartOffsets = null;
+        var cachedChartData = null;
         var cachedRowDisplayUnit = null;
 
         // Keep track of whether or not the mouse button is pressed, which we compare with
@@ -105,25 +114,15 @@
         var halfVisualizedDatumWidth = 0;
 
         var valueAndPositionOnClickObservable;
-        var selectionStartDate = null;
-        var selectionEndDate = null;
+
         var selectionActive = false;
         var setDateOnMouseUp = false;
 
-        var cachedChartDimensions = null;
-        var cachedChartOffsets = null;
-        var cachedChartData = null;
 
-        var selectionType = null;
+        // Keep track of the start and end of the selection.
+        var selectionStartDate = null;
+        var selectionEndDate = null;
 
-        var candidateSelectionStartDate;
-        var alternateSelectionStartDate;
-        var candidateSelectionEndDate;
-        var alternateSelectionEndDate;
-
-
-        var date1;
-        var date2;
 
         /**********************************************************************
          *
@@ -476,8 +475,6 @@
           }
 
           if (minDate !== null && maxDate !== null) {
-
-            renderChartFilteredValues();
 
             stack = d3.
               layout.
@@ -1023,7 +1020,6 @@
             attr('class', function() { return pageIsFiltered ? 'context' : 'shaded'; }).
             attr('d', unfilteredArea);
 
-
           if (pageIsFiltered) {
             renderChartFilteredValues();
           }
@@ -1058,6 +1054,7 @@
                 return datum.date >= selectionStartDate && datum.date <= selectionEndDate;
               });
             } else {
+              console.log('this selection not active');
               var filteredValues = cachedChartData.values;
             }
 
@@ -1217,7 +1214,7 @@
         function enterDraggingState() {
           currentlyDragging = true;
           selectionActive = false;
-          $('.timeline-chart-filtered-mask').hide();
+          jqueryChartElement.find('.timeline-chart-filtered-mask').hide();
           jqueryBodyElement.addClass('prevent-user-select');
           jqueryChartElement.removeClass('selected').addClass('selecting');
         }
@@ -1232,7 +1229,7 @@
         function enterSelectedState() {
           currentlyDragging = false;
           selectionActive = true;
-          $('.timeline-chart-filtered-mask').show();
+          jqueryChartElement.find('.timeline-chart-filtered-mask').show();
           jqueryBodyElement.removeClass('prevent-user-select');
           jqueryChartElement.removeClass('selecting').addClass('selected');
         }
@@ -1276,7 +1273,13 @@
 
 
 
-//------------------------------------------------------------------------------------------
+        /**********************************************************************
+         *
+         * setCurrentDatumByDate
+         *
+         * This is used to keep the flyout updated as you drag a selection marker.
+         *
+         */
 
 
         function setCurrentDatumByDate(date) {
@@ -1665,8 +1668,6 @@
 
           }
         );
-
-
 
 
         //

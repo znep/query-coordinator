@@ -87,6 +87,7 @@
         // function, but we only really have a notion of it within the context of Rx reactions;
         // for this reason it's cached globally.
         var datasetPrecision = null;
+        var labelPrecision = null;
 
         // Cache a bunch of stuff that is useful in a lot of places that don't need to be
         // wrapped in Rx mojo.
@@ -122,6 +123,11 @@
         // Keep track of the start and end of the selection.
         var selectionStartDate = null;
         var selectionEndDate = null;
+
+
+        var cachedLabelDates = [];
+        var allChartLabelsShown = true;
+
 
 
         /**********************************************************************
@@ -554,7 +560,7 @@
               labelWidth = minLabelWidth;
             }
 
-            dateRangeLabel = minDate.getFullYear() + '-' + maxDate.getFullYear() + ' ×';
+            dateRangeLabel = formatSelectionRangeLabel(minDate, maxDate);
 
             jqueryClearSelectionButton.
               text(dateRangeLabel).
@@ -596,27 +602,27 @@
 
         function renderChartXAxis(jqueryChartElement, chartWidth, chartHeight, d3XScale, chartData) {
 
-          function deriveXAxisLabelUnit() {
+          function deriveXAxislabelPrecision() {
 
             var domain;
-            var labelUnit;
+            var labelPrecision;
 
             domain = _.map(d3XScale.domain(), function(date) {
               return moment(date);
             });
 
-            labelUnit = 'decade';
+            labelPrecision = 'DECADE';
 
             // ...then use the domain to derive a timeline granularity.
             if (moment(domain[0]).add(2, 'months').isAfter(domain[1])) {
-              labelUnit = 'day';
+              labelPrecision = 'DAY';
             } else if (moment(domain[0]).add(2, 'years').isAfter(domain[1])) {
-              labelUnit = 'month';
+              labelPrecision = 'MONTH';
             } else if (moment(domain[0]).add(20, 'years').isAfter(domain[1])) {
-              labelUnit = 'year';
+              labelPrecision = 'YEAR';
             }
 
-            return labelUnit;
+            return labelPrecision;
 
           }
 
@@ -627,17 +633,19 @@
             // number of possible labels. The higher the number, the more we step
             // over per actual rendered label.
             if (labelData.length > 20) {
+              allChartLabelsShown = false;
               return 7;
             } else if (labelData.length > 10) {
+              allChartLabelsShown = false;
               return 5;
             } else {
+              allChartLabelsShown = true;
               return 1;
             }
 
           }
 
 
-          var labelUnit;
           var tickDates;
           var tickInterval;
           var labelData = [];
@@ -651,6 +659,8 @@
           var jqueryAxisTick;
           var labelStartDate;
           var labelEndDate;
+          var labelIntervalStartDate;
+          var labelIntervalEndDate;
           var labelWidth;
           var labelOffset;
           var jqueryAxisTickLabel;
@@ -659,13 +669,13 @@
           var filteredAggregate;
 
 
-          labelUnit = deriveXAxisLabelUnit();
+          labelPrecision = deriveXAxislabelPrecision();
 
           // THIS MAY NEED UPDATES BECAUSE OF THINGS LIKE LEAP-YEARS
 
           // Since moment doesn't natively support decades as a unit, we
           // pass it a unit of 'year' and a value of 10 instead.
-          if (labelUnit === 'decade') {
+          if (labelPrecision === 'DECADE') {
 
             // Ticks at the decade scale seem to get a little messed up by d3, so we
             // need to book-end them with the min and max dates from the underlying
@@ -681,9 +691,9 @@
             // Ticks at other scales, meanwhile, work 'correctly' if we only book-end them
             // with the max date from the underlying dataset. This is, at the moment, pretty
             // cargo-cultish but my priorities lie elsewhere.
-            tickDates = d3XScale.ticks(d3.time[labelUnit], 1).
+            tickDates = d3XScale.ticks(d3.time[labelPrecision.toLowerCase()], 1).
                           concat([chartData.values[chartData.values.length - 1].date]);
-            tickInterval = moment.duration(1, labelUnit).asMilliseconds();
+            tickInterval = moment.duration(1, labelPrecision).asMilliseconds();
 
           }
 
@@ -693,7 +703,7 @@
           i = 0;
           for (j = 0; j < tickDates.length; j++) {
             for (i; i < chartData.values.length; i++) {
-              if (moment(chartData.values[i].date).isSame(tickDates[j], labelUnit)) {
+              if (moment(chartData.values[i].date).isSame(tickDates[j], labelPrecision)) {
                 labelData.push({ datum: chartData.values[i], offset: Math.floor(d3XScale(chartData.values[i].date)) });
                 break;
               }
@@ -711,6 +721,7 @@
           labelDatumStep = deriveXAxisLabelDatumStep(labelData);
 
           cumulativeLabelOffsets = 0;
+          cachedLabelDates = [];
 
           for (i = 1; i < labelData.length; i++) {
 
@@ -744,6 +755,28 @@
               // The label's width should be the span between the previous
               // and the current 'offset' into the width of the chart.
               labelWidth = (labelData[i].offset - labelData[i - 1].offset);
+
+              labelIntervalStartDate = labelStartDate;
+              labelIntervalEndDate = labelEndDate;
+
+
+
+
+
+              if (labelDatumStep > 1) {
+  
+                labelIntervalStartDate = moment(labelStartDate).subtract(labelDatumStep - 1, datasetPrecision).toDate();
+
+                labelWidth *= labelDatumStep;
+                labelStartDate = moment(labelStartDate).subtract(Math.floor(labelDatumStep / 2), datasetPrecision).toDate();
+
+                cachedLabelDates.push(labelStartDate.toISOString());
+
+              }
+
+
+
+
 
               // HOWEVER, we need to modify the label's width for the following
               // two special cases:
@@ -795,12 +828,12 @@
                 // Finally, add the label to the x-axis container.
                 jqueryAxisTickLabel = $('<span>').
                   addClass('x-tick-label').
-                  attr('data-start', labelStartDate).
-                  attr('data-end', labelEndDate).
+                  attr('data-start', labelIntervalStartDate).
+                  attr('data-end', labelIntervalEndDate).
                   attr('data-aggregate-unfiltered', unfilteredAggregate).
                   attr('data-aggregate-filtered', filteredAggregate).
-                  attr('data-flyout-label', formatDateLabel(labelStartDate, labelUnit, true)).
-                  text(formatDateLabel(labelStartDate, labelUnit, false)).
+                  attr('data-flyout-label', formatDateLabel(labelStartDate, true)).
+                  text(formatDateLabel(labelStartDate, false)).
                   css({
                     width: Math.floor(labelWidth),
                     left: Math.floor(labelOffset)
@@ -939,23 +972,6 @@
                 range([chartHeight, 0]).
                 clamp(true); // Is this necessary?!
 
-          /*stack = d3.
-            layout.
-              stack().
-                offset('zero').
-                values(function (d) { return d.values; }).
-                  x(function (d) { return d3XScale(d.label); }).
-                  y(function (d) { return d.value; });
-*/
-          unfilteredArea = d3.
-            svg.
-              area().
-                x(function (d) { return d3XScale(d.date); }).
-                y0(function (d) { return d3YScale(0); }).
-                y1(function (d) { return d3YScale(d.unfiltered); });
-
-
-
 
           //
           // Render the x-axis.
@@ -994,8 +1010,50 @@
 
 
           //
-          // Render the unfiltered values of the chart.
+          // Render the unfiltered and filtered values of the chart.
           //
+
+          renderChartUnfilteredValues();
+          renderChartFilteredValues();
+
+        }
+
+
+        /**********************************************************************
+         *
+         * renderChartUnfilteredValues
+         *
+         * Rendering the chart's unfiltered and filtered values are decoupled
+         * so that we can independently update and manipulate the filtered
+         * values as selections are made.
+         *
+         */
+
+        function renderChartUnfilteredValues() {
+
+          var margin;
+          var chartWidth;
+          var chartHeight;
+          var values;
+          var area;
+          var svgChart;
+          var selection;
+
+          margin = { top: 0, right: 0, bottom: Constants['TIMELINE_CHART_MARGIN_BOTTOM'], left: 0 };
+
+          // chartWidth and chartHeight do not include margins so that
+          // we can use the margins to render axis ticks.
+          chartWidth = cachedChartDimensions.width - margin.left - margin.right;
+          chartHeight = cachedChartDimensions.height - margin.top - margin.bottom;
+
+          values = [cachedChartData.values];
+
+          area = d3.
+            svg.
+              area().
+                x(function (d) { return d3XScale(d.date); }).
+                y0(function (d) { return d3YScale(0); }).
+                y1(function (d) { return d3YScale(d.unfiltered); });
 
           svgChart = d3ChartElement.
             select('svg.timeline-chart-unfiltered-visualization').
@@ -1006,7 +1064,7 @@
 
           selection = svgChart.
             selectAll('path').
-              data([cachedChartData.values]);
+              data(values);
 
           selection.
             enter().
@@ -1017,69 +1075,78 @@
               remove();
 
           selection.
-            attr('class', function() { return pageIsFiltered ? 'context' : 'shaded'; }).
-            attr('d', unfilteredArea);
-
-          if (pageIsFiltered) {
-            renderChartFilteredValues();
-          }
+            attr('class', 'context').
+            attr('d', area);
 
         }
 
 
-        function renderChartFilteredValues() {
-            var chartWidth;
-            var chartHeight;
-            var margin;
-            var svgChart;
-            var selection;
-            var filteredArea;
+        /**********************************************************************
+         *
+         * renderChartFilteredValues
+         *
+         * Rendering the chart's unfiltered and filtered values are decoupled
+         * so that we can independently update and manipulate the filtered
+         * values as selections are made.
+         *
+         */
 
-          filteredArea = d3.
+        function renderChartFilteredValues() {
+
+          var margin;
+          var chartWidth;
+          var chartHeight;
+          var values;
+          var area;
+          var svgChart;
+          var selection;
+
+
+          margin = { top: 0, right: 0, bottom: Constants['TIMELINE_CHART_MARGIN_BOTTOM'], left: 0 };
+
+          // chartWidth and chartHeight do not include margins so that
+          // we can use the margins to render axis ticks.
+          chartWidth = cachedChartDimensions.width - margin.left - margin.right;
+          chartHeight = cachedChartDimensions.height - margin.top - margin.bottom;
+
+          if (selectionActive) {
+            values = [cachedChartData.values.filter(function(datum) {
+              return datum.date >= selectionStartDate && datum.date <= selectionEndDate;
+            })];
+          } else {
+            values = [cachedChartData.values];
+          }
+
+          area = d3.
             svg.
               area().
                 x(function (d) { return d3XScale(d.date); }).
                 y0(function (d) { return d3YScale(0); }).
                 y1(function (d) { return d3YScale(d.filtered); });
 
-            margin = { top: 0, right: 0, bottom: Constants['TIMELINE_CHART_MARGIN_BOTTOM'], left: 0 };
+          svgChart = d3ChartElement.
+            select('svg.timeline-chart-filtered-visualization').
+              attr('width', chartWidth + margin.left + margin.right).
+              attr('height', chartHeight + margin.top + margin.bottom).
+            select('g').
+              attr('transform', 'translate(' + margin.left + ',' + margin.top + ')');
 
-            // chartWidth and chartHeight do not include margins so that
-            // we can use the margins to render axis ticks.
-            chartWidth = cachedChartDimensions.width - margin.left - margin.right;
-            chartHeight = cachedChartDimensions.height - margin.top - margin.bottom;
+          selection = svgChart.
+            selectAll('path').
+              data(values);
 
-            if (selectionActive) {
-              var filteredValues = cachedChartData.values.filter(function(datum) {
-                return datum.date >= selectionStartDate && datum.date <= selectionEndDate;
-              });
-            } else {
-              console.log('this selection not active');
-              var filteredValues = cachedChartData.values;
-            }
+          selection.
+            enter().
+              append('path');
 
-            svgChart = d3ChartElement.
-              select('svg.timeline-chart-filtered-visualization').
-                attr('width', chartWidth + margin.left + margin.right).
-                attr('height', chartHeight + margin.top + margin.bottom).
-              select('g').
-                attr('transform', 'translate(' + margin.left + ',' + margin.top + ')');
+          selection.
+            exit().
+              remove();
 
-            selection = svgChart.
-              selectAll('path').
-                data([filteredValues]);
+          selection.
+            attr('class', 'shaded').
+            attr('d', area);
 
-            selection.
-              enter().
-                append('path');
-
-            selection.
-              exit().
-                remove();
-
-            selection.
-              attr('class', 'shaded').
-              attr('d', filteredArea);
         }
 
 
@@ -1149,6 +1216,21 @@
         }
 
 
+        function formatSelectionRangeLabel(startDate, endDate) {
+          switch (labelPrecision) {
+            case 'DECADE':
+            case 'YEAR':
+            case 'MONTH':
+              return formatDateLabel(startDate, false) + ' - ' + formatDateLabel(endDate, false) + ' ×';
+            case 'DAY':
+              if (startDate.getTime() !== endDate.getTime()) {
+                return formatDateLabel(startDate, false) + ' - ' + formatDateLabel(endDate, false) + ' ×';
+              } else {
+                return formatDateLabel(startDate, false) + ' ×';
+              }
+          }
+        }
+
         /**********************************************************************
          *
          * formatDateLabel
@@ -1158,7 +1240,7 @@
          *
          */
 
-        function formatDateLabel(labelDate, unit, forFlyout) {
+        function formatDateLabel(labelDate, forFlyout) {
 
           var FULL_MONTH_NAMES = [
             'January', 'February', 'March',
@@ -1174,22 +1256,22 @@
             'Oct', 'Nov', 'Dec'
           ];
 
-          switch (unit) {
+          switch (labelPrecision) {
 
-            case 'decade':
+            case 'DECADE':
               return String(labelDate.getFullYear()).substring(0, 3) + '0s';
 
-            case 'year':
+            case 'YEAR':
               return labelDate.getFullYear();
 
-            case 'month':
+            case 'MONTH':
               if (forFlyout) {
                 return FULL_MONTH_NAMES[labelDate.getMonth()] + ' ' + labelDate.getFullYear();
               } else {
                 return SHORT_MONTH_NAMES[labelDate.getMonth()] + ' ’' + labelDate.getYear();
               }
 
-            case 'day':
+            case 'DAY':
               if (forFlyout) {
                 return labelDate.getDate() + ' ' + FULL_MONTH_NAMES[labelDate.getMonth()] + ' ' + labelDate.getFullYear();
               } else {
@@ -1214,6 +1296,7 @@
         function enterDraggingState() {
           currentlyDragging = true;
           selectionActive = false;
+          hideDatumLabel();
           jqueryChartElement.find('.timeline-chart-filtered-mask').hide();
           jqueryBodyElement.addClass('prevent-user-select');
           jqueryChartElement.removeClass('selected').addClass('selecting');
@@ -1229,6 +1312,8 @@
         function enterSelectedState() {
           currentlyDragging = false;
           selectionActive = true;
+          hideDatumLabel();
+          renderChartFilteredValues();
           jqueryChartElement.find('.timeline-chart-filtered-mask').show();
           jqueryBodyElement.removeClass('prevent-user-select');
           jqueryChartElement.removeClass('selecting').addClass('selected');
@@ -1245,6 +1330,8 @@
           currentlyDragging = false;
           selectionActive = false;
           clearChartSelection();
+          hideDatumLabel();
+          renderChartFilteredValues();
           jqueryBodyElement.removeClass('prevent-user-select');
           jqueryChartElement.removeClass('selecting').removeClass('selected');
         }
@@ -1271,6 +1358,30 @@
           scope.$emit('filter-timeline-chart', null);
         }
 
+
+        /**********************************************************************
+         *
+         * getDatumByDate
+         *
+         * This is used to get a datum by date.
+         *
+         */
+
+
+        function getDatumByDate(date) {
+
+          var i;
+          var chartData = cachedChartData;
+
+          for (i = 0; i < chartData.values.length; i++) {
+            if (chartData.values[i].date >= date) {
+              break;
+            }
+          }
+
+          return chartData.values[i];
+
+        }
 
 
         /**********************************************************************
@@ -1416,6 +1527,7 @@
           if (mouseStatus.leftButtonPressed && !currentlyDragging) {
 
             if (mousePositionWithinChartLabels) {
+
               candidateStartDate = mouseStatus.position.target.getAttribute('data-start');
               if (candidateStartDate !== null) {
                 selectionStartDate = new Date(candidateStartDate);
@@ -1561,9 +1673,9 @@
 
             }
 
+
             var offsetX;
             var offsetY;
-            var highlightData;
             var startDate;
             var endDate;
             var sortedStartAndEndDates;
@@ -1613,12 +1725,11 @@
 
               if (mousePositionWithinChartDisplay) {
 
-                highlightData = filterChartDataByOffset(cachedChartData, offsetX, cachedChartDimensions);
-
-                renderChartHighlight(
-                  highlightData,
-                  cachedChartDimensions
-                );
+                if (datasetPrecision === 'DAY' && labelPrecision === 'DAY') {
+                  highlightChartByDay(offsetX, mousePosition.target);
+                } else {
+                  highlightChartByMouseOffset(offsetX);
+                }
 
               } else if (mousePositionWithinChartLabels && !mouseLeftButtonNowPressed) {
 
@@ -1627,40 +1738,28 @@
                 if ($(mousePosition.target).attr('class').match('clear-selection') !== null) {
 
                   clearChartHighlight();
+                  hideDatumLabel();
 
                 // Otherwise, render a highlight over the interval indicated by the label
                 // that is currently under the mouse.
                 } else {
 
-                  startDate = new Date(mousePosition.target.getAttribute('data-start'));
-                  endDate = new Date(mousePosition.target.getAttribute('data-end'));
+                  if (datasetPrecision === 'DAY' && labelPrecision === 'DAY') {
 
-                  if (endDate > startDate) {
+                    highlightChartByDay(offsetX, mousePosition.target);
 
-                    highlightData = filterChartDataByInterval(
-                      cachedChartData,
-                      offsetX,
-                      cachedChartDimensions,
-                      startDate,
-                      endDate
-                    );
+                  } else {
 
-                    renderChartHighlight(
-                      highlightData,
-                      cachedChartDimensions
-                    );
-
-                    currentDatum = {
-                      unfiltered: mousePosition.target.getAttribute('data-aggregate-unfiltered'),
-                      filtered: mousePosition.target.getAttribute('data-aggregate-filtered'),
-                      label: mousePosition.target.getAttribute('data-flyout-label')
-                    };
-
-                    //fireMouseMoveEventOnHighlightTarget(mousePosition.clientX, mousePosition.clientY);
+                    highlightChartByLabel(offsetX, mousePosition.target);
 
                   }
 
                 }
+
+              } else {
+
+                jqueryChartElement.find('.datum-label').hide();
+                jqueryChartElement.removeClass('dimmed');
 
               }
 
@@ -1668,6 +1767,134 @@
 
           }
         );
+
+
+
+        function startDateInCachedLabelDates(startDate) {
+          return cachedLabelDates.indexOf(startDate.toISOString()) >= 0;
+        }
+
+        function shouldDimChartLabels(startDate) {
+          return !(allChartLabelsShown || startDateInCachedLabelDates(startDate));
+        }
+
+
+        function highlightChartByMouseOffset(offsetX) {
+
+          var highlightData;
+
+          highlightData = filterChartDataByOffset(cachedChartData, offsetX, cachedChartDimensions);
+
+          renderChartHighlight(
+            highlightData,
+            cachedChartDimensions
+          );
+
+          hideDatumLabel();
+
+        }
+
+        function highlightChartByLabelMetadata(offsetX, startDate, endDate) {
+
+          var highlightData;
+
+          highlightData = filterChartDataByInterval(
+            cachedChartData,
+            offsetX,
+            cachedChartDimensions,
+            startDate,
+            endDate
+          );
+
+          setCurrentDatumByDate(startDate);
+
+          renderChartHighlight(
+            highlightData,
+            cachedChartDimensions
+          );
+
+        }
+
+        function highlightChartByDay(offsetX, target) {
+
+          var startDate;
+          var endDate;
+          var value;
+
+
+          startDate = moment(getDateFromMousePosition(offsetX)).add(1, datasetPrecision).toDate();
+          endDate = moment(startDate).add(1, datasetPrecision).toDate();
+
+          if (shouldDimChartLabels(startDate)) {
+
+            value = getDatumByDate(startDate);
+
+              if (_.isDefined(value)) {
+              // dim all the existing labels
+              // set the value of the datum label to the startDate
+              // show the datum label
+              jqueryChartElement.find('.datum-label').
+                text(formatDateLabel(startDate, false)).
+                attr('data-start', startDate).
+                attr('data-end', endDate).
+                attr('data-aggregate-unfiltered', value.unfiltered).
+                attr('data-aggregate-filtered', value.filtered).
+                attr('data-flyout-label', formatDateLabel(startDate, true)).
+                css({
+                  left: Math.floor(d3XScale(startDate)),
+                }).show();
+              jqueryChartElement.addClass('dimmed');
+
+            }
+
+          } else {
+
+            hideDatumLabel();
+
+          }
+          
+          /*
+          // FACTOR THIS OUT, SEE ALSO filterChartDataByOffset()'S USE
+          currentDatum = {
+            unfiltered: target.getAttribute('data-aggregate-unfiltered'),
+            filtered: target.getAttribute('data-aggregate-filtered'),
+            label: target.getAttribute('data-flyout-label')
+          };*/
+
+          highlightChartByLabelMetadata(offsetX, startDate, endDate);
+
+          //fireMouseMoveEventOnHighlightTarget(mousePosition.clientX, mousePosition.clientY);
+
+        }
+
+        function highlightChartByLabel(offsetX, target) {
+
+          var startDate;
+          var endDate;
+
+          startDate = new Date(target.getAttribute('data-start'));
+          endDate = new Date(target.getAttribute('data-end'));
+
+          hideDatumLabel();
+
+          // FACTOR THIS OUT, SEE ALSO filterChartDataByOffset()'S USE
+          currentDatum = {
+            unfiltered: target.getAttribute('data-aggregate-unfiltered'),
+            filtered: target.getAttribute('data-aggregate-filtered'),
+            label: target.getAttribute('data-flyout-label')
+          };
+
+          highlightChartByLabelMetadata(offsetX, startDate, endDate);
+
+          //fireMouseMoveEventOnHighlightTarget(mousePosition.clientX, mousePosition.clientY);
+
+        }
+
+
+        function hideDatumLabel() {
+          jqueryChartElement.find('.datum-label').hide();
+          jqueryChartElement.removeClass('dimmed');
+        }
 
 
         //

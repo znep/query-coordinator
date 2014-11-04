@@ -94,14 +94,26 @@ $fill-opacity: 0.5
   display: none
   position: absolute
   height: 100%
-  font-weight: 800
+  font-weight: bold
   line-height: 30px
   text-align: center
-  background-color: white
+  background-color: rgba(255, 255, 255, 0.75)
   z-index: 5
 
+
+.datum-label
+  display: none
+  position: absolute
+  height: 30px
+  bottom: 0
+  font-weight: bold
+  line-height: 30px
+  text-align: center
+  cursor: pointer
+  z-index: 8
+
 .selected .timeline-chart-clear-selection-button
-  z-index: 7
+  z-index: 9
 
 .selecting .timeline-chart-clear-selection-button,
 .selected .timeline-chart-clear-selection-button
@@ -149,6 +161,7 @@ $fill-opacity: 0.5
     text-align: center
     cursor: pointer
 
+.dimmed .x-tick-label,
 .selecting .x-tick-label,
 .selected .x-tick-label
   opacity: 0.25

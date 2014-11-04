@@ -91,8 +91,8 @@
         var overlay1 = modal1.element.find('.modal-overlay');
         var overlay2 = modal2.element.find('.modal-overlay');
 
-        expect(parseInt(overlay1.css('z-index'), 10)).to.be.below(
-          parseInt(overlay2.css('z-index'), 10));
+        expect(parseInt(overlay1.css('z-index'), 10)).
+          to.be.below(parseInt(overlay2.css('z-index'), 10));
 
         expect(overlay1.is(':visible')).to.be.true;
         expect(overlay2.is(':visible')).to.be.true;
@@ -118,8 +118,8 @@
         var overlay1 = modal1.element.find('.modal-overlay');
         var overlay2 = modal2.element.find('.modal-overlay');
 
-        expect(parseInt(overlay1.css('z-index'), 10)).to.be.below(
-          parseInt(overlay2.css('z-index'), 10));
+        expect(parseInt(overlay1.css('z-index'), 10)).
+          to.be.below(parseInt(overlay2.css('z-index'), 10));
 
         expect(overlay1.is(':visible')).to.be.true;
         expect(overlay2.is(':visible')).to.be.true;

@@ -128,6 +128,20 @@ angular.module('dataCards.models').factory('Model', function(Class, ModelHelper)
       });
     },
 
+    // Unsets the named property, and forget it has ever been set.
+    // Will throw an exception if that property
+    // hasn't been defined on this Model.
+    unset: function(propertyName) {
+      this._assertProperty(propertyName);
+      this._propertyTable[propertyName] = undefined;
+      this._propertyHasBeenWritten[propertyName] = false;
+      this._sets.onNext({
+        model: this,
+        property: propertyName,
+        newValue: undefined
+      });
+    },
+
     // Returns true if any of these hold:
     //   * The property has been written by a call to set(), or
     //   * The property has been initialized to a non-undefined value via defineObservableProperty

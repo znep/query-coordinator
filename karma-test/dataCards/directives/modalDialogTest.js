@@ -23,7 +23,7 @@
     function createModal(show) {
       var scope = rootScope.$new();
       scope.state = {show: show};
-      var html = '<modal-dialog dialog-state="state" id="test-modal"/>';
+      var html = '<modal-dialog dialog-state="state" id="test-modal"></modal-dialog>';
       return {
         element: testHelpers.TestDom.compileAndAppend(html, scope),
         outerScope: scope,
@@ -98,15 +98,13 @@
         expect(overlay2.is(':visible')).to.be.true;
 
         $('body').trigger($.Event('keydown', { which: 27 }));
-        modal1.scope.$digest();
-        modal2.scope.$digest();
+        modal1.outerScope.$digest();
 
         expect(overlay1.is(':visible')).to.be.true;
         expect(overlay2.is(':visible')).to.be.false;
 
         $('body').trigger($.Event('keydown', { which: 27 }));
-        modal1.scope.$digest();
-        modal2.scope.$digest();
+        modal1.outerScope.$digest();
 
         expect(overlay1.is(':visible')).to.be.false;
         expect(overlay2.is(':visible')).to.be.false;
@@ -127,15 +125,13 @@
         expect(overlay2.is(':visible')).to.be.true;
 
         overlay2.click();
-        modal1.scope.$digest();
-        modal2.scope.$digest();
+        modal1.outerScope.$digest();
 
         expect(overlay1.is(':visible')).to.be.true;
         expect(overlay2.is(':visible')).to.be.false;
 
         overlay1.click();
-        modal1.scope.$digest();
-        modal2.scope.$digest();
+        modal1.outerScope.$digest();
 
         expect(overlay1.is(':visible')).to.be.false;
         expect(overlay2.is(':visible')).to.be.false;

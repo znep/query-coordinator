@@ -38,7 +38,6 @@
         // Clean up after ourselves
         scope.$on('$destroy', function() {
           _.invoke(subscriptions, 'dispose');
-          element.off('click', '.modal-overlay');
         });
       }
     };

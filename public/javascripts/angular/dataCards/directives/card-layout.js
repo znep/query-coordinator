@@ -16,7 +16,8 @@
     3: 200
   };
 
-  function cardLayout(Constants, AngularRxExtensions, WindowState, SortedTileLayout, FlyoutService) {
+  function cardLayout(Constants, AngularRxExtensions, WindowState, SortedTileLayout, FlyoutService, CardTypeMappingService) {
+
     sortedTileLayout = new SortedTileLayout();
     return {
       restrict: 'E',
@@ -26,6 +27,7 @@
         editMode: '=',
         globalWhereClauseFragment: '=',
         cardModels: '=',
+        datasetColumns: '=',
         allowAddCard: '='
       },
       templateUrl: '/angular_templates/dataCards/card-layout.html',
@@ -698,19 +700,34 @@
           });
         };
 
+        /**
+         * Some modal dialogs.
+         */
+        // This is an object, so that we can pass it to child scopes, and they can control the
+        // visibility of the customize modal.
+        scope.addCardState = {};
         scope.addCard = function(cardSize) {
           if (scope.allowAddCard) {
-            scope.$emit('modal-open-surrogate', {id: 'add-card-dialog', cardSize: cardSize});
+            scope.cardSize = cardSize;
+            scope.addCardState.show = true;
           }
         };
 
-        FlyoutService.register('expand-button-target', function(el) {
+        scope.isCustomizable = CardTypeMappingService.isCustomizable;
+        scope.customizeState = {};
+        scope.customizeCard = function(cardModel) {
+          if (scope.isCustomizable(cardModel)) {
+            scope.cardModel = cardModel;
+            scope.customizeState.show = true;
+          }
+        };
+
+        /**
+         * Flyouts.
+         */
+        FlyoutService.register('card-control', function(el) {
           return '<div class="flyout-title">{0}</div>'.format($(el).attr('title'));
         });
-
-        FlyoutService.register('delete-button-target', function(el) {
-            return '<div class="flyout-title">{0}</div>'.format($(el).attr('title'));
-          });
 
         FlyoutService.register('add-card-button', function(el) {
             if ($(el).hasClass('disabled')) {
@@ -725,9 +742,7 @@
         scope.bindObservable('cardModels', scope.page.observe('cards'));
 
         scope.$on('$destroy', function() {
-          _.each(subscriptions, function(sub) {
-            sub.dispose();
-          });
+          _.invoke(subscriptions, 'dispose');
         });
 
       }

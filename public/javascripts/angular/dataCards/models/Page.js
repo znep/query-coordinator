@@ -77,6 +77,44 @@ angular.module('dataCards.models').factory('Page', function($q, Dataset, Card, M
           card.set('expanded', false);
         }
       });
+    },
+
+    /**
+     * Adds the given card to the page's collection of cards. The card will be added immediately
+     * after the last existing card with the same cardSize.
+     *
+     * @param {Card} card The card to add.
+     */
+    addCard: function(card) {
+      var cards = this.getCurrentValue('cards');
+      var cardSize = card.getCurrentValue('cardSize');
+      var insertionIndex = _.findIndex(cards, function(model) {
+        return model.getCurrentValue('cardSize') > cardSize;
+      });
+      if (insertionIndex < 0) {
+        insertionIndex = cards.length;
+      }
+      cards.splice(insertionIndex, 0, card);
+      this.set('cards', cards);
+      return cards;
+    },
+
+    /**
+     * Updates the card within the collection if it already exists. Otherwise, adds it.
+     */
+    addOrUpdateCard: function(card) {
+      var uniqueId = card.uniqueId;
+      var cards = this.getCurrentValue('cards');
+      var existingModelIndex = _.findIndex(cards, function(model) {
+        return model.uniqueId === uniqueId;
+      });
+      if (existingModelIndex >= 0) {
+        cards[existingModelIndex] = card;
+        this.set('cards', cards);
+      } else {
+        cards = this.addCard(card);
+      }
+      return cards;
     }
   });
 

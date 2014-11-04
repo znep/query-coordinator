@@ -48,7 +48,7 @@ angular.module('socrataCommon.directives').directive('table', function(AngularRx
         return scope.columnDetails;
       };
 
-      scope.$watch('showCount', function(newVal, oldVal, scope){
+      scope.$watch('showCount', function(newVal, oldVal, scope) {
         if (!angular.isDefined(newVal)){
           scope.showCount = true;
         }
@@ -312,6 +312,8 @@ angular.module('socrataCommon.directives').directive('table', function(AngularRx
           delete httpRequests[block];
           ensureColumnHeaders();
 
+          scope.$emit('rows:loaded', block * rowsPerBlock);
+
           if (currentBlocks.indexOf(block) === -1 || data.length === 0) {
             return;
           }
@@ -543,7 +545,7 @@ angular.module('socrataCommon.directives').directive('table', function(AngularRx
         function(cardDimensions, rowCount, filteredRowCount, expanded, columnDetails, infinite) {
 
           scope.$emit('render:start', { source: 'table_{0}'.format(scope.$id), timestamp: _.now() });
-
+          scope.$emit('rows:info', { hasRows: filteredRowCount !== 0, rowCount: rowCount, filteredRowCount: filteredRowCount });
           updateExpanderHeight();
           showOrHideNoRowMessage();
 

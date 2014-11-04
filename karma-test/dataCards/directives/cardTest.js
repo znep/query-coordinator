@@ -14,6 +14,8 @@ describe("card directive", function() {
     _$templateCache.put('/angular_templates/dataCards/cardVisualizationChoropleth.html', '');
     _$templateCache.put('/angular_templates/dataCards/cardVisualizationTable.html', '');
     _$templateCache.put('/angular_templates/dataCards/cardVisualizationTimelineChart.html', '');
+    _$templateCache.put('/angular_templates/dataCards/cardVisualizationSearch.html', '');
+    _$templateCache.put('/angular_templates/dataCards/clearableInput.html', '');
   }]));
 
   afterEach(function() {

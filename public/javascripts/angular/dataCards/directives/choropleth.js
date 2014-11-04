@@ -34,10 +34,6 @@
         * Mutate Leaflet state *
         ***********************/
 
-        function setTileLayer(url, options) {
-          L.tileLayer(url, options).addTo(map);
-        }
-
         function setGeojsonData(data, options) {
           if (geojsonBaseLayer !== null) {
             map.removeLayer(geojsonBaseLayer);
@@ -643,19 +639,31 @@
         // of Leaflet.
         var currentFeature = null;
 
-        // Keep track of the base layer url currently in use so we only reset it when necessary.
-        var currentBaseLayerUrl = null;
-
-
         /*********************************
         * React to changes in bound data *
         *********************************/
 
+        var tileLayer = scope.observe('baseLayerUrl').
+          map(function(url) {
+            if (!_.isDefined(url)) {
+              return Constants['DEFAULT_MAP_BASE_LAYER_URL'];
+            } else {
+              return url;
+            }
+          }).
+          distinctUntilChanged().
+          map(function(url) {
+            return L.tileLayer(url, { attribution: '', detectRetina: true, opacity: 0.15, unloadInvisibleTiles: true });
+          });
+
+        tileLayer.subscribe(function(layer) {
+          layer.addTo(map);
+        });
+
         Rx.Observable.subscribeLatest(
-          scope.observe('baseLayerUrl'),
           element.observeDimensions().throttle(500),
           scope.observe('geojsonAggregateData'),
-          function(baseLayerUrl, dimensions, geojsonAggregateData) {
+          function(dimensions, geojsonAggregateData) {
 
             var classBreaks;
             var fillClass;
@@ -665,15 +673,6 @@
             if (_.isDefined(geojsonAggregateData)) {
 
               scope.$emit('render:start', { source: 'choropleth_{0}'.format(scope.$id), timestamp: _.now() });
-
-              if (!_.isDefined(baseLayerUrl)) {
-                baseLayerUrl = Constants['DEFAULT_MAP_BASE_LAYER_URL'];
-              }
-
-              if (currentBaseLayerUrl !== baseLayerUrl) {
-                currentBaseLayerUrl = baseLayerUrl;
-                setTileLayer(baseLayerUrl, { attribution: '', detectRetina: true, opacity: 0.15, unloadInvisibleTiles: true });
-              }
 
               // Critical to invalidate size prior to updating bounds
               // Otherwise, leaflet will fit the bounds to an incorrectly sized viewport.

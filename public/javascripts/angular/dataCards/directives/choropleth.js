@@ -656,6 +656,9 @@
             return L.tileLayer(url, { attribution: '', detectRetina: true, opacity: 0.15, unloadInvisibleTiles: true });
           });
 
+        tileLayer.bufferWithCount(2, 1).subscribe(function(layers) {
+          map.removeLayer(layers[1]);
+        });
         tileLayer.subscribe(function(layer) {
           layer.addTo(map);
         });

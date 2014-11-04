@@ -186,6 +186,7 @@ javascripts:
     - public/javascripts/plugins/rangy-selectionsaverestore.js
     - public/javascripts/plugins/hallo.js
     - public/javascripts/controls/hallo-plugins.js
+    - public/javascripts/plugins/hallo.betterlink.js
     - public/javascripts/plugins/html2markdown.js
     - public/javascripts/plugins/htmldomparser.js
     - public/javascripts/component/util/markdown-utils.js
@@ -539,6 +540,7 @@ javascripts:
     - public/javascripts/plugins/rangy-selectionsaverestore.js
     - public/javascripts/plugins/hallo.js
     - public/javascripts/controls/hallo-plugins.js
+    - public/javascripts/plugins/hallo.betterlink.js
     - public/javascripts/plugins/datepicker.js
     - public/javascripts/plugins/waypoints-2.0.5.js
     - public/javascripts/plugins/jquery.awesomereorder.js
@@ -563,6 +565,7 @@ javascripts:
     - public/javascripts/plugins/rangy-selectionsaverestore.js
     - public/javascripts/plugins/hallo.js
     - public/javascripts/controls/hallo-plugins.js
+    - public/javascripts/plugins/hallo.betterlink.js
     - public/javascripts/plugins/waypoints2.js
     - public/javascripts/plugins/colorpicker.js
     - public/javascripts/plugins/ajaxupload.js

@@ -2515,6 +2515,10 @@
           left = position.left - this.toolbar.outerWidth() / 2 + 30;
         }
         this.toolbar.css('top', top);
+        // Stan Rawrysz 11/5/2014
+        // problem with toolbar going off the right side
+        maxLeft = document.body.clientWidth - this.toolbar.outerWidth() - 30;
+        left = Math.min(left, maxLeft)
         return this.toolbar.css('left', left);
       },
       _bindEvents: function() {
@@ -2768,11 +2772,16 @@
       protectFocusFrom: function(el) {
         var _this = this;
         return el.on("mousedown", function(event) {
-          event.preventDefault();
-          _this._protectToolbarFocus = true;
-          return setTimeout(function() {
-            return _this._protectToolbarFocus = false;
-          }, 300);
+          // HACK - Stan Rawrysz - ugh. I hate this, but whatever. jquery-ui.
+          $target = jQuery(event.target);
+          isBetterLink = $target.closest('.hallobetterlink').length > 0;
+          if (!(isBetterLink && $target.is('input[name=url]'))) {
+            event.preventDefault();
+            _this._protectToolbarFocus = true;
+            return setTimeout(function() {
+              return _this._protectToolbarFocus = false;
+            }, 300);
+          }
         });
       },
       keepActivated: function(_keepActivated) {

@@ -2,12 +2,13 @@
 
 $modal-padding: 2rem
 
+$modal-z-start: 9999
 .modal-container
 
   .modal-overlay
     /* A dark translucent div that covers the whole screen */
     position: fixed
-    z-index: 9999
+    z-index: $modal-z-start
     top: 0
     left: 0
     width: 100%
@@ -24,7 +25,7 @@ $modal-padding: 2rem
     @include prefixer('transform', 'translate(-50%, -50%)')
     background-color: $api-panel-bg-color
     border: solid 1px $api-panel-border-color
-    z-index: 10000
+    z-index: $modal-z-start + 1
     padding: $modal-padding
 
     .modal-dialog-content
@@ -56,3 +57,10 @@ $modal-padding: 2rem
 
       &:hover
         opacity: 1
+
+modal-dialog.second
+  .modal-overlay
+    z-index: $modal-z-start + 2
+
+  .modal-dialog
+    z-index: $modal-z-start + 3

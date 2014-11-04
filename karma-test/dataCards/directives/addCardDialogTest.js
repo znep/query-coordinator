@@ -4,6 +4,7 @@ describe('addCardDialog', function() {
   beforeEach(module('dataCards'));
   beforeEach(module('dataCards.directives'));
 
+  // TODO: mock out these directives to make this more unit-testy
   beforeEach(module('/angular_templates/dataCards/addCardDialog.html'));
   beforeEach(module('/angular_templates/dataCards/card.html'));
   beforeEach(module('/angular_templates/dataCards/cardVisualizationChoropleth.html'));
@@ -182,7 +183,7 @@ describe('addCardDialog', function() {
           'style="display:block" ',
           'card-models="cardModels" ',
           'card-size="1" ',
-          'customize-card="customizeCard" ',
+          'on-customize-card="customizeCard" ',
           'dataset-columns="datasetColumns" ',
           'dialog-state="dialogState" ',
           'page="page" ',
@@ -324,21 +325,11 @@ describe('addCardDialog', function() {
 
     /* Technically, there should be a flyout here. But since we're using the same mechanism to give
      * this button a flyout, as we are for the other card-controls in a card-layout, the flyout is
-     * only registered in the card-layout code. So it's not actually registered when this dialog is
-     * instantiated outside a card-layout.
-     * But keep this code around for documentation.
-
-    // It should have a flyout
-    testHelpers.fireMouseEvent(customizeButton[0], 'mousemove');
-    var flyout = $('#uber-flyout');
-    expect(flyout.text()).to.equal('Customize this card');
-
-    var hint = flyout.find('.hint');
-    var hintOffset = hint.offset();
-    var buttonOffset = customizeButton.offset();
-    expect(hintOffset.left).to.be.closeTo(buttonOffset.left, 10);
-    expect(hintOffset.top).to.be.closeTo(buttonOffset.top, 10);
-    */
+     * only registered in the card-layout code. So just test to make sure the conditions are met for
+     * the card-layout-registered flyout to work.
+     */
+    expect(customizeButton.hasClass('card-control')).to.be.true;
+    expect(customizeButton.prop('title')).to.match(/customize this card/i);
 
     // We've stubbed the customize function to set this variable
     expect(dialog.outerScope._test_cardToCustomize).to.not.be.ok;

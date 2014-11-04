@@ -43,7 +43,7 @@
 
       testHelpers.fireEvent(modal.element.find('.modal-close-button')[0], 'click');
 
-      expect(modal.element.find('.modal-container').is(':visible')).to.be.false;    
+      expect(modal.element.find('.modal-container').is(':visible')).to.be.false;
     });
 
     it('should close an open modal dialog when the area outside the dialog is clicked', function() {
@@ -53,7 +53,7 @@
 
       testHelpers.fireMouseEvent(modal.element.find('.modal-overlay')[0], 'mouseup');
 
-      expect(modal.element.find('.modal-container').is(':visible')).to.be.false;    
+      expect(modal.element.find('.modal-container').is(':visible')).to.be.false;
     });
 
     it('should close an open modal dialog when the escape key is pressed', function() {
@@ -70,7 +70,7 @@
 
       $('body').trigger($.Event('keydown', { which: 27 }));
 
-      expect(modal.element.find('.modal-container').is(':visible')).to.be.false;    
+      expect(modal.element.find('.modal-container').is(':visible')).to.be.false;
     });
 
   });

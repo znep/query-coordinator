@@ -11,7 +11,7 @@
         datasetColumns: '=',
         dialogState: '=?',
         // A function to call to start the customize-card flow
-        customizeCard: '='
+        onCustomizeCard: '='
       },
       templateUrl: '/angular_templates/dataCards/addCardDialog.html',
       link: function(scope, element, attrs) {
@@ -24,7 +24,6 @@
         ************************/
 
         scope.addCardSelectedColumnFieldName = null;
-        scope.addCardCardSize = parseInt(scope.cardSize, 10);
         scope.addCardModel = null;
 
         scope.$watch('addCardSelectedColumnFieldName', function(fieldName) {
@@ -37,7 +36,7 @@
               // TODO: Enforce some kind of schema validation at this step.
               var serializedCard = {
                 'fieldName': fieldName,
-                'cardSize': scope.addCardCardSize,
+                'cardSize': parseInt(scope.cardSize, 10),
                 'cardCustomStyle': {},
                 'expandedCustomStyle': {},
                 'displayMode': 'visualization',
@@ -49,22 +48,8 @@
         });
 
         scope.addCard = function() {
-          var newCardModels = [];
-          var i = 0;
-
           if (scope.addCardModel !== null) {
-
-            var preceedingCardCount = scope.
-              cardModels.
-              filter(function(card) {
-                return card.getCurrentValue('cardSize') <= scope.addCardCardSize; }).length;
-
-            // TODO: There's certainly a less garbage way to do this.
-            newCardModels = scope.cardModels.slice(0, preceedingCardCount).
-              concat([scope.addCardModel]).
-              concat(scope.cardModels.slice(preceedingCardCount));
-
-            scope.page.set('cards', newCardModels);
+            scope.page.addCard(scope.addCardModel);
             scope.dialogState.show = false;
           }
         };

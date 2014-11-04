@@ -45,7 +45,7 @@
   <add-card-dialog
     card-models="cardModels"
     card-size="cardSize"
-    customize-card="customizeCard"
+    on-customize-card="customizeCard"
     dataset-columns="datasetColumns"
     dialog-state="addCardState"
     page="page"
@@ -53,6 +53,7 @@
 </modal-dialog>
 
 <modal-dialog
+  class="second"
   ng-if="customizeState.show"
   dialog-state="customizeState">
   <customize-card-dialog

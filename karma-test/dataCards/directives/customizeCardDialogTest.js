@@ -39,8 +39,8 @@ describe('customize card dialog', function() {
   });
 
   var columns = {
-    spot: {
-      name: 'spot',
+    choropleth: {
+      name: 'choropleth',
       title: 'Spot where cool froods hang out.',
       description: '???',
       logicalDatatype: 'location',
@@ -103,7 +103,7 @@ describe('customize card dialog', function() {
   it('should display a card preview', function() {
     var cards = [];
     var card = {
-      fieldName: 'spot',
+      fieldName: 'choropleth',
       cardSize: 2,
       cardCustomStyle: {},
       expandedCustomStyle: {},
@@ -115,7 +115,7 @@ describe('customize card dialog', function() {
     var dialog = createDialog(cards, card);
 
     expect(dialog.element.find('card').length).to.equal(1);
-    expect(dialog.element.find('card').scope().$$childHead.model).
+    expect(dialog.element.find('card').scope().cardModel).
       to.equal(dialog.outerScope.cardModel);
     expect(dialog.element.find('option:contains("Default Map")').length).to.equal(1);
   });

@@ -433,7 +433,7 @@ describe('CardLayout directive', function() {
       // The flyout could bind towards the left or right depending on the edge of the
       // screen, so just make sure the hint (ie the triangle attached to the flyout) is
       // close enough.
-      expect(hintOffset.left).to.be.closeTo(clientX, 5);
+      expect(hintOffset.left + hint[0].clientWidth / 2).to.be.closeTo(clientX, 5);
 
       // NOTE: The flyout should be positioned along the Y axis at
       // (clientY - flyoutHeight - hintHeight * 0.75).
@@ -1226,14 +1226,14 @@ describe('CardLayout directive', function() {
       it('should display a different message over the customize button of non-choropleths', function() {
         var cl = createLayoutWithCards([
           {fieldName: '*'},
-          {fieldName: 'choropleth_column'},
           {fieldName: 'timeline_column'}
         ]);
         var flyout = $('#uber-flyout');
         expect(flyout.is(':visible')).to.be.false;
 
-        var visualizations = cl.element.find('.card-visualization').children().
-            not('card-visualization-choropleth').closest('.card-spot');
+        var visualizations = cl.element.find('.card-visualization').
+            children('card-visualization-timeline-chart').
+            closest('.card-spot');
         expect(visualizations.length).to.equal(1);
         expect(visualizations.find('.card-control[title^="Customize"]').length).to.equal(0);
 

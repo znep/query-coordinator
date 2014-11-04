@@ -129,7 +129,6 @@
         var allChartLabelsShown = true;
 
 
-
         /**********************************************************************
          *
          * transformChartDataForStackedRendering
@@ -552,7 +551,7 @@
               });
 
             labelWidth = selectionWidth;
-            minLabelWidth = 100;
+            minLabelWidth = 150;
             labelNegativeXOffset = 0;
 
             if (labelWidth < minLabelWidth) {
@@ -756,27 +755,23 @@
               // and the current 'offset' into the width of the chart.
               labelWidth = (labelData[i].offset - labelData[i - 1].offset);
 
-              labelIntervalStartDate = labelStartDate;
-              labelIntervalEndDate = labelEndDate;
-
-
-
-
-
+              // Handle special case for x-axes where some labels are hidden
               if (labelDatumStep > 1) {
-  
-                labelIntervalStartDate = moment(labelStartDate).subtract(labelDatumStep - 1, datasetPrecision).toDate();
 
                 labelWidth *= labelDatumStep;
                 labelStartDate = moment(labelStartDate).subtract(Math.floor(labelDatumStep / 2), datasetPrecision).toDate();
 
                 cachedLabelDates.push(labelStartDate.toISOString());
 
+                labelIntervalStartDate = labelStartDate;
+                labelIntervalEndDate = moment(labelStartDate).add(1, labelPrecision).toDate();
+
+              } else {
+
+                labelIntervalStartDate = labelStartDate;
+                labelIntervalEndDate = labelEndDate;
+
               }
-
-
-
-
 
               // HOWEVER, we need to modify the label's width for the following
               // two special cases:
@@ -829,6 +824,7 @@
                 jqueryAxisTickLabel = $('<span>').
                   addClass('x-tick-label').
                   attr('data-start', labelIntervalStartDate).
+                  attr('data-median', labelStartDate).
                   attr('data-end', labelIntervalEndDate).
                   attr('data-aggregate-unfiltered', unfilteredAggregate).
                   attr('data-aggregate-filtered', filteredAggregate).
@@ -1587,6 +1583,154 @@
         }
 
 
+        function hideDatumLabel() {
+          jqueryChartElement.find('.datum-label').hide();
+          jqueryChartElement.removeClass('dimmed');
+        }
+
+        function isStartDateInCachedLabelDates(startDate) {
+          return cachedLabelDates.indexOf(startDate.toISOString()) >= 0;
+        }
+
+        function shouldDimChartLabels(startDate) {
+          return !(allChartLabelsShown || isStartDateInCachedLabelDates(startDate));
+        }
+
+        function shouldBoldChartLabel(startDate) {
+          return isStartDateInCachedLabelDates(startDate);
+        }
+
+
+
+        function highlightChart(offsetX, startDate, endDate) {
+
+          var highlightData;
+
+          highlightData = filterChartDataByInterval(
+            cachedChartData,
+            offsetX,
+            cachedChartDimensions,
+            startDate,
+            endDate
+          );
+
+          setCurrentDatumByDate(startDate);
+
+          renderChartHighlight(
+            highlightData,
+            cachedChartDimensions
+          );
+
+        }
+
+
+        // Highlight the chart in different contexts
+
+        function highlightChartByMouseOffset(offsetX) {
+
+          var highlightData;
+
+          highlightData = filterChartDataByOffset(cachedChartData, offsetX, cachedChartDimensions);
+
+          renderChartHighlight(
+            highlightData,
+            cachedChartDimensions
+          );
+
+          hideDatumLabel();
+
+        }
+
+        function highlightChartByDay(offsetX, target) {
+
+          var startDate;
+          var endDate;
+          var value;
+          var halfLabelWidth = 50;
+          var labels;
+
+          startDate = getDateFromMousePosition(offsetX);
+          endDate = moment(startDate).add(1, datasetPrecision).toDate();
+
+          if (shouldDimChartLabels(startDate)) {
+
+            value = getDatumByDate(startDate);
+
+              if (_.isDefined(value)) {
+              // dim all the existing labels
+              // set the value of the datum label to the startDate
+              // show the datum label
+              jqueryChartElement.find('.datum-label').
+                text(formatDateLabel(startDate, false)).
+                attr('data-start', startDate).
+                attr('data-end', endDate).
+                attr('data-aggregate-unfiltered', value.unfiltered).
+                attr('data-aggregate-filtered', value.filtered).
+                attr('data-flyout-label', formatDateLabel(startDate, true)).
+                css({
+                  left: Math.floor(d3XScale(startDate)) - halfLabelWidth + halfVisualizedDatumWidth,
+                }).show();
+              jqueryChartElement.addClass('dimmed');
+
+            }
+
+            $('.x-tick-label').removeClass('emphasis');
+
+          } else if (shouldBoldChartLabel(startDate)) {
+
+            var i;
+
+            labels = jqueryChartElement.find('.x-tick-label');
+
+            for (i = 0; i < labels.length; i++) {
+              if (startDate.toString() === labels[i].getAttribute('data-median')) {
+                $(labels[i]).addClass('emphasis');
+              }
+
+            }
+
+            hideDatumLabel();
+
+          } else {
+
+            hideDatumLabel();
+
+            $('.x-tick-label').removeClass('emphasis');
+
+          }
+
+          highlightChart(offsetX, startDate, endDate);
+
+          //fireMouseMoveEventOnHighlightTarget(mousePosition.clientX, mousePosition.clientY);
+
+        }
+
+        function highlightChartByInterval(offsetX, target) {
+
+          var startDate;
+          var endDate;
+
+          startDate = new Date(target.getAttribute('data-start'));
+          endDate = new Date(target.getAttribute('data-end'));
+
+          hideDatumLabel();
+
+          // FACTOR THIS OUT, SEE ALSO filterChartDataByOffset()'S USE
+          currentDatum = {
+            unfiltered: target.getAttribute('data-aggregate-unfiltered'),
+            filtered: target.getAttribute('data-aggregate-filtered'),
+            label: target.getAttribute('data-flyout-label')
+          };
+
+          highlightChart(offsetX, startDate, endDate);
+
+          //fireMouseMoveEventOnHighlightTarget(mousePosition.clientX, mousePosition.clientY);
+
+        }
+
+
+
+
 
 
 
@@ -1750,7 +1894,7 @@
 
                   } else {
 
-                    highlightChartByLabel(offsetX, mousePosition.target);
+                    highlightChartByInterval(offsetX, mousePosition.target);
 
                   }
 
@@ -1758,8 +1902,8 @@
 
               } else {
 
-                jqueryChartElement.find('.datum-label').hide();
-                jqueryChartElement.removeClass('dimmed');
+                jqueryChartElement.find('.x-tick-label').removeClass('emphasis');
+                hideDatumLabel();
 
               }
 
@@ -1767,134 +1911,6 @@
 
           }
         );
-
-
-
-        function startDateInCachedLabelDates(startDate) {
-          return cachedLabelDates.indexOf(startDate.toISOString()) >= 0;
-        }
-
-        function shouldDimChartLabels(startDate) {
-          return !(allChartLabelsShown || startDateInCachedLabelDates(startDate));
-        }
-
-
-        function highlightChartByMouseOffset(offsetX) {
-
-          var highlightData;
-
-          highlightData = filterChartDataByOffset(cachedChartData, offsetX, cachedChartDimensions);
-
-          renderChartHighlight(
-            highlightData,
-            cachedChartDimensions
-          );
-
-          hideDatumLabel();
-
-        }
-
-        function highlightChartByLabelMetadata(offsetX, startDate, endDate) {
-
-          var highlightData;
-
-          highlightData = filterChartDataByInterval(
-            cachedChartData,
-            offsetX,
-            cachedChartDimensions,
-            startDate,
-            endDate
-          );
-
-          setCurrentDatumByDate(startDate);
-
-          renderChartHighlight(
-            highlightData,
-            cachedChartDimensions
-          );
-
-        }
-
-        function highlightChartByDay(offsetX, target) {
-
-          var startDate;
-          var endDate;
-          var value;
-
-
-          startDate = moment(getDateFromMousePosition(offsetX)).add(1, datasetPrecision).toDate();
-          endDate = moment(startDate).add(1, datasetPrecision).toDate();
-
-          if (shouldDimChartLabels(startDate)) {
-
-            value = getDatumByDate(startDate);
-
-              if (_.isDefined(value)) {
-              // dim all the existing labels
-              // set the value of the datum label to the startDate
-              // show the datum label
-              jqueryChartElement.find('.datum-label').
-                text(formatDateLabel(startDate, false)).
-                attr('data-start', startDate).
-                attr('data-end', endDate).
-                attr('data-aggregate-unfiltered', value.unfiltered).
-                attr('data-aggregate-filtered', value.filtered).
-                attr('data-flyout-label', formatDateLabel(startDate, true)).
-                css({
-                  left: Math.floor(d3XScale(startDate)),
-                }).show();
-              jqueryChartElement.addClass('dimmed');
-
-            }
-
-          } else {
-
-            hideDatumLabel();
-
-          }
-          
-          /*
-          // FACTOR THIS OUT, SEE ALSO filterChartDataByOffset()'S USE
-          currentDatum = {
-            unfiltered: target.getAttribute('data-aggregate-unfiltered'),
-            filtered: target.getAttribute('data-aggregate-filtered'),
-            label: target.getAttribute('data-flyout-label')
-          };*/
-
-          highlightChartByLabelMetadata(offsetX, startDate, endDate);
-
-          //fireMouseMoveEventOnHighlightTarget(mousePosition.clientX, mousePosition.clientY);
-
-        }
-
-        function highlightChartByLabel(offsetX, target) {
-
-          var startDate;
-          var endDate;
-
-          startDate = new Date(target.getAttribute('data-start'));
-          endDate = new Date(target.getAttribute('data-end'));
-
-          hideDatumLabel();
-
-          // FACTOR THIS OUT, SEE ALSO filterChartDataByOffset()'S USE
-          currentDatum = {
-            unfiltered: target.getAttribute('data-aggregate-unfiltered'),
-            filtered: target.getAttribute('data-aggregate-filtered'),
-            label: target.getAttribute('data-flyout-label')
-          };
-
-          highlightChartByLabelMetadata(offsetX, startDate, endDate);
-
-          //fireMouseMoveEventOnHighlightTarget(mousePosition.clientX, mousePosition.clientY);
-
-        }
-
-
-        function hideDatumLabel() {
-          jqueryChartElement.find('.datum-label').hide();
-          jqueryChartElement.removeClass('dimmed');
-        }
 
 
         //

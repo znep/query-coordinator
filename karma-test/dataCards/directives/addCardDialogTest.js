@@ -177,18 +177,18 @@ describe('addCardDialog', function() {
     };
     outerScope.dialogState = {show: true};
 
-    var html = [
-      '<div ng-if="dialogState.show"> ',
-        '<add-card-dialog ',
-          'style="display:block" ',
-          'card-models="cardModels" ',
-          'card-size="1" ',
-          'on-customize-card="customizeCard" ',
-          'dataset-columns="datasetColumns" ',
-          'dialog-state="dialogState" ',
-          'page="page" ',
-        '></add-card-dialog>',
-      '</div>'].join('');
+    var html =
+      '<div ng-if="dialogState.show"> ' +
+        '<add-card-dialog ' +
+          'style="display:block" ' +
+          'card-models="cardModels" ' +
+          'card-size="1" ' +
+          'on-customize-card="customizeCard" ' +
+          'dataset-columns="datasetColumns" ' +
+          'dialog-state="dialogState" ' +
+          'page="page" ' +
+        '></add-card-dialog>' +
+      '</div>';
 
     var element = testHelpers.TestDom.compileAndAppend(html, outerScope);
 

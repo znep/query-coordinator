@@ -76,12 +76,13 @@
     WindowState.mouseLeftButtonPressedSubject = mouseLeftButtonPressedSubject;
     WindowState.mouseLeftButtonClickSubject = mouseLeftButtonClickSubject;
     WindowState.windowSizeSubject = windowSizeSubject;
+    WindowState.escapeKeyObservable = keyDownObservable.filter(function(e) {
+      // Escape key
+      return 27 === e.which;
+    });
     WindowState.closeDialogEventObservable = Rx.Observable.merge(
       WindowState.mouseLeftButtonClickSubject,
-      keyDownObservable.filter(function(e) {
-        // Escape key
-        return 27 === e.which;
-      })
+      WindowState.escapeKeyObservable
     );
 
     return WindowState;

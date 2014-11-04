@@ -117,6 +117,6 @@ describe('customize card dialog', function() {
     expect(dialog.element.find('card').length).to.equal(1);
     expect(dialog.element.find('card').scope().cardModel).
       to.equal(dialog.outerScope.cardModel);
-    expect(dialog.element.find('option:contains("Default Map")').length).to.equal(1);
+    expect(dialog.element.find('option:contains("Standard")').length).to.equal(1);
   });
 });

@@ -9,7 +9,8 @@
   <div ng-switch="field.type">
     <div ng-switch-where="baselayer">
       <soc-select ng-model="field.value">
-        <soc-option value="null" ng-selected="field.value === null">Default Map</soc-option>
+        <soc-option value="null" ng-selected="field.value === null">Standard</soc-option>
+        <soc-option value="esri" ng-selected="field.value === esri">Esri</soc-option>
         <soc-option value="custom">Custom Map</soc-option>
       </soc-select>
     </div>

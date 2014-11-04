@@ -46,6 +46,7 @@ describe('CardLayout directive', function() {
       mockWindowStateService.mouseLeftButtonPressedSubject = new Rx.Subject();
       mockWindowStateService.mousePositionSubject = new Rx.Subject();
       mockWindowStateService.closeDialogEventObservable = new Rx.Subject();
+      mockWindowStateService.escapeKeyObservable = new Rx.Subject();
 
       $provide.value('WindowState', mockWindowStateService);
     });

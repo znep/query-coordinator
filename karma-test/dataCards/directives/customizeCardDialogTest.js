@@ -98,7 +98,6 @@ describe('customize card dialog', function() {
     AngularRxExtensions.install(outerScope);
 
     outerScope.page = pageModel;
-    outerScope.bindObservable('cardModels', pageModel.observe('cards'));
     outerScope.dialogState = {show: true};
     outerScope.cardModel = Card.deserialize(pageModel, card);
 
@@ -109,7 +108,6 @@ describe('customize card dialog', function() {
     var html = [
       '<div ng-if="dialogState.show"> ',
         '<customize-card-dialog ',
-          'card-models="cardModels" ',
           'card-model="cardModel" ',
           'dialog-state="dialogState" ',
           'page="page" ',
@@ -197,12 +195,10 @@ describe('customize card dialog', function() {
     expect(cardModel.getCurrentValue('baseLayerUrl')).to.equal('http://www.socrata.com/{x}/{y}/{z}');
   });
 
-  it('should add to the array of models when clicking "Done", when the model is new', function() {
+  it('should update the given model when clicking "Done"', function() {
     var dialog = createDialog();
     var page = dialog.outerScope.page;
-    var cards = page.getCurrentValue('cards');
-
-    expect(cards.length).to.equal(0);
+    var card = dialog.outerScope.cardModel;
 
     var esri = dialog.element.find('option:contains("Esri")');
     esri.prop('selected', true).change();
@@ -210,33 +206,13 @@ describe('customize card dialog', function() {
 
     dialog.element.find('button:contains("Done")').click();
 
-    expect(cards.length).to.equal(1);
-    expect(cards[0].getCurrentValue('baseLayerUrl')).to.equal(Constants.ESRI_BASE_URL);
+    expect(card.getCurrentValue('baseLayerUrl')).to.equal(Constants.ESRI_BASE_URL);
   });
 
-  it('should edit the array of models when clicking "Done", when the model exists', function() {
-    var dialog = createDialog({preexisting: true});
-    var page = dialog.outerScope.page;
-    var cards = page.getCurrentValue('cards');
-
-    expect(cards.length).to.equal(1);
-
-    var esri = dialog.element.find('option:contains("Esri")');
-    esri.prop('selected', true).change();
-    dialog.scope.$digest();
-
-    dialog.element.find('button:contains("Done")').click();
-
-    expect(cards.length).to.equal(1);
-    expect(cards[0].getCurrentValue('baseLayerUrl')).to.equal(Constants.ESRI_BASE_URL);
-  });
-
-  it('should discard new cards when clicking "Cancel"', function() {
+  it('should discard card changes when clicking "Cancel"', function() {
     var dialog = createDialog();
     var page = dialog.outerScope.page;
-    var cards = page.getCurrentValue('cards');
-
-    expect(cards.length).to.equal(0);
+    var card = dialog.outerScope.cardModel;
 
     var esri = dialog.element.find('option:contains("Esri")');
     esri.prop('selected', true).change();
@@ -244,23 +220,6 @@ describe('customize card dialog', function() {
 
     dialog.element.find('button:contains("Cancel")').click();
 
-    expect(cards.length).to.equal(0);
-  });
-
-  it('should discard changes to existing cards when clicking "Cancel"', function() {
-    var dialog = createDialog({preexisting: true});
-    var page = dialog.outerScope.page;
-    var cards = page.getCurrentValue('cards');
-
-    expect(cards.length).to.equal(1);
-
-    var esri = dialog.element.find('option:contains("Esri")');
-    esri.prop('selected', true).change();
-    dialog.scope.$digest();
-
-    dialog.element.find('button:contains("Cancel")').click();
-
-    expect(cards.length).to.equal(1);
-    expect(cards[0].getCurrentValue('baseLayerUrl')).to.be.undefined;
+    expect(card.getCurrentValue('baseLayerUrl')).to.equal(undefined);
   });
 });

@@ -152,6 +152,22 @@ angular.module('dataCards.models').factory('Model', function(Class, ModelHelper)
       return this._propertyHasBeenWritten[propertyName] === true;
     },
 
+    /**
+     * Updates this model so all its properties are the same as the given model.
+     */
+    update: function(model) {
+      angular.forEach(this._propertyTable, function(value, key) {
+        var newValue = model.getCurrentValue(key);
+        if (newValue !== value.value) {
+          if (model.isSet(key)) {
+            this.set(key, newValue);
+          } else {
+            this.unset(key);
+          }
+        }
+      }, this);
+    },
+
     // Gets the current value of the named property on this model.
     // Will throw an exception if that property
     // hasn't been defined on this Model.

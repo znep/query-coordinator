@@ -56,7 +56,6 @@
       restrict: 'E',
       scope: {
         cardModel: '=',
-        cardModels: '=',
         dialogState: '=?',
         page: '='
       },
@@ -74,10 +73,10 @@
         setupBaseLayerSelect($scope.customizedCard, $scope, element, Constants);
 
         /**
-         * Save the model by adding it if it doesn't exist, or updating it if it does.
+         * Save the model by updating the model passed in, with our cloned copy.
          */
-        $scope.addOrUpdate = function() {
-          $scope.page.addOrUpdateCard($scope.customizedCard);
+        $scope.updateCard = function() {
+          $scope.cardModel.update($scope.customizedCard);
 
           // Now close the dialog
           $scope.dialogState.show = false;

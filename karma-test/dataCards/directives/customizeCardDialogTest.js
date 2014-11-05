@@ -222,4 +222,45 @@ describe('customize card dialog', function() {
 
     expect(card.getCurrentValue('baseLayerUrl')).to.equal(undefined);
   });
+
+  it('should load the customized url on open, if it\'s set', function() {
+    var url = 'http://www.socrata.com/{x}/{y}/{z}';
+    var card = {
+      fieldName: 'choropleth',
+      cardSize: 2,
+      cardCustomStyle: {},
+      expandedCustomStyle: {},
+      displayMode: 'visualization',
+      baseLayerUrl: url,
+      expanded: false
+    };
+    var dialog = createDialog({card: card});
+    expect(dialog.element.find('option:contains("Custom")').is(':selected')).to.equal(true);
+    expect(dialog.element.find('input[name=customLayerUrl]').val()).to.equal(url);
+  });
+
+  it('should set back to custom baselayer when coming back to customize', function() {
+    var dialog = createDialog();
+    var card = dialog.scope.customizedCard;
+    var custom = dialog.element.find('option:contains("Custom")');
+    var customInput = dialog.element.find('input[name=customLayerUrl]');
+    var standard = dialog.element.find('option:contains("Standard")');
+
+    // Set a custom url
+    var url = 'http://www.socrata.com/{x}/{y}/{z}';
+    custom.prop('selected', true).change();
+    expect(customInput.is(':visible')).to.equal(true);
+    customInput.val(url).trigger('input').trigger('change');
+    dialog.scope.$digest();
+    expect(card.getCurrentValue('baseLayerUrl')).to.equal(url);
+
+    // Now go back to the standard
+    standard.prop('selected', true).change();
+    expect(card.getCurrentValue('baseLayerUrl')).to.equal(undefined);
+
+    // Now back to custom
+    custom.prop('selected', true).change();
+    // It should set the base layer back to the custom url from before
+    expect(card.getCurrentValue('baseLayerUrl')).to.equal(url);
+  });
 });

@@ -1,25 +1,31 @@
 describe('table directive', function() {
   'use strict';
 
-  function createTableCard(expanded, getRows, rowCount) {
+  function createTableCard(expanded, getRows, rowCount, showCount) {
     outerScope.expanded = expanded || false;
     outerScope.rowCount = rowCount >= 0 ? rowCount : 200;
     outerScope.filteredRowCount = rowCount >= 0 ? rowCount : 170;
-    outerScope.columnDetails = {};
+    outerScope.columnDetails = [];
+    outerScope.showCount = showCount;
 
     columnCount = 0;
 
     _.each(fixtureMetadata.columns, function(column) {
       if (column.name[0].match(/[a-zA-Z0-9]/g)) {
         column.sortable = true;
-        outerScope.columnDetails[column.name] = column;
+        outerScope.columnDetails.push(column);
         columnCount += 1;
       }
     });
 
     // Provide a default sort column. It's a text/category column, so the default sort
     // order is ASC.
-   outerScope.defaultSortColumnName = outerScope.columnDetails[fixtureMetadata.columns[beatColumnIndex].name].name;
+    var beatColumnName = fixtureMetadata.columns[beatColumnIndex].name;
+    var defaultSortColumn = _.find(outerScope.columnDetails, function(column) {
+      return column.name === beatColumnName;
+    });
+    outerScope.defaultSortColumnName = defaultSortColumn.name;
+
     if (getRows) {
       outerScope.getRows = getRows;
     } else {
@@ -34,11 +40,11 @@ describe('table directive', function() {
       format(expanded ? 'expanded': '') +
         '<div table class="table" row-count="rowCount" get-rows="getRows" where-clause="whereClause" ' +
         'filtered-row-count="filteredRowCount" expanded="expanded" column-details="columnDetails" ' +
+        'show-count="showCount" ' +
         'default-sort-column-name="defaultSortColumnName"></div>' +
       '</div>';
 
     var compiledElem = testHelpers.TestDom.compileAndAppend(html, outerScope);
-
     return compiledElem;
   }
 
@@ -480,6 +486,11 @@ describe('table directive', function() {
       expect(el.find('.has-rows').length).to.equal(1);
       expect(el.find('.table-label').text()).to.equal("Showing 1 to 10 of 10 (Total: 101)");
     });
+
+    it('should not show the row count if the "show-count" attribute is false', function() {
+      var el = createTableCard(true, _.constant($q.when([])), 103, false);
+      expect(el.find('.table-label').is(':visible')).to.be.false;
+    })
   });
 
   describe('render timing events', function() {

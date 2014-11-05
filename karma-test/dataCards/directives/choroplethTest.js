@@ -31,6 +31,7 @@ describe("A Choropleth Directive", function() {
     // The choropleth throttles its renderer.
     // Lie to it that enough time has passed, so it renders now.
     fakeClock.tick(500);
+
     return el;
   }
 

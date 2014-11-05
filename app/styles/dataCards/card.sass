@@ -110,3 +110,30 @@ card-visualization
 // choropleth cards is not vertically centered when it should be.
 div[ng-switch="cardType"]
   position: relative
+
+.card-form-group
+  padding: 10px 0
+  display: table
+  width: 100%
+
+  .input-group
+    display: table
+    width: 100%
+  .form-control
+    width: 100%
+    box-sizing: border-box
+    display: table-cell
+    padding: $card-input-vertical-padding 6px
+    color: #555
+    background: #fff none
+    border: 3px solid transparent
+    border-bottom: 1px solid $lt-grey-font-color-rgba
+    margin-top: 5px
+  .input-group-addon
+    display: table-cell
+    width: 1%
+
+.card-example-text
+  .one-line
+    overflow: hidden
+    height: 1rem

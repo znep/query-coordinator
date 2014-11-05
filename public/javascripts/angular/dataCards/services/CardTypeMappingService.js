@@ -3,7 +3,21 @@
 
   function CardTypeMappingService($exceptionHandler, $log) {
 
-    var supportedCardTypes = ['column', 'choropleth', 'timeline'];
+    var supportedCardTypes = ['column', 'choropleth', 'search', 'timeline'];
+    // A lookup for whether a particular card type is customizable
+    var CUSTOMIZABLE_CARD_TYPES = {
+      choropleth: true
+    };
+
+    /**
+     * Determines whether or not the given card is customizeable.
+     */
+    function _isCustomizable(cardModel) {
+      return CUSTOMIZABLE_CARD_TYPES[
+        _cardTypeForModel(cardModel)
+      ];
+    }
+
 
     function _cardTypeForColumn(column) {
       column = column || {};
@@ -55,10 +69,18 @@
     }
 
     function _cardTypeForColumnIsSupported(column) {
-      return supportedCardTypes.indexOf(_cardTypeForColumn(column)) > -1;
+      return _.contains(supportedCardTypes, _cardTypeForColumn(column));
+    }
+
+    function _cardTypeForModel(cardModel) {
+      // TODO: how would I reactify this?
+      var columns = cardModel.page.getCurrentValue('dataset').getCurrentValue('columns');
+      return _cardTypeForColumn(columns[cardModel.fieldName]);
     }
 
     return {
+      isCustomizable: _isCustomizable,
+      cardTypeForModel: _cardTypeForModel,
       cardTypeForColumn: _cardTypeForColumn,
       cardTypeForColumnIsSupported: _cardTypeForColumnIsSupported
     };

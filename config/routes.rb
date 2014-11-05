@@ -194,10 +194,6 @@ Frontend::Application.routes do
     post '/analytics/add/:domain_entity/:metric' => 'analytics#add'
     post '/analytics/add' => 'analytics#add_all'
 
-    scope :controller => 'console' do
-      get 'console', :action => 'index'
-    end
-
     scope :controller => 'profile', :path => '/profile',
           :constraints => {:id => UID_REGEXP, :profile_name => /(\w|-)+/} do
       get 'account', :action => 'generic_account', :as => 'generic_account'

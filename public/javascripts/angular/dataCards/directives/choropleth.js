@@ -31,8 +31,8 @@
         AngularRxExtensions.install(scope);
 
         /***********************
-        * Mutate Leaflet state *
-        ***********************/
+         * Mutate Leaflet state *
+         ***********************/
 
         function setGeojsonData(data, options) {
           if (geojsonBaseLayer !== null) {
@@ -444,10 +444,6 @@
         function addHighlight(e) {
           var layer = e.target;
 
-          // IE HACK: Attempt to fix the mouseout event not being reliable.
-          if (L.Browser.ie) {
-            clearHighlights(layer);
-          }
           if (layer.hasOwnProperty('feature') &&
               layer.feature.hasOwnProperty('properties') &&
               layer.feature.properties.hasOwnProperty(Constants['SELECTED_PROPERTY_NAME']) &&
@@ -456,7 +452,18 @@
             layer.setStyle({
               weight: 4
             });
-            layer.bringToFront();
+
+            // IE HACK (CORE-3566): IE exhibits (not fully-characterized) pointer madness if you bring a layer 
+            // containing a MultiPolygon which actually contains more than one polygon to the
+            // front in a featureMouseOver. The rough cause is that the paths corresponding to this
+            // layer get removed and re-added elsewhere in the dom while the mouseover is getting handled.
+            // The symptoms of this are IE spewing mouseout events all over the place on each mousemove.
+            // Since we've spent well over 4 dev days across the team trying to fix this, we'll just
+            // sacrifice some prettiness (= getting a uniform stroke highlight) in exchange for actually
+            // getting a featureMouseOut later.
+            if (!L.Browser.ie) {
+              layer.bringToFront();
+            }
           }
         }
 
@@ -483,7 +490,7 @@
                 l.feature.properties.hasOwnProperty(Constants['SELECTED_PROPERTY_NAME']) &&
                 l.feature.properties[Constants['SELECTED_PROPERTY_NAME']]) {
 
-              layer.setStyle({
+              l.setStyle({
                 weight: 1
               });
             }
@@ -608,6 +615,8 @@
         };
 
         var map = L.map(element.find('.choropleth-map-container')[0], options);
+        // Manage the layers in a layerGroup, so we can clear them all at once.
+        var layerGroup = L.layerGroup().addTo(map);
         // emit a zoom event, so tests can check it
         map.on('zoomstart zoomend', function(e) {
           scope.$emit(e.type, e.target);
@@ -646,14 +655,22 @@
         var tileLayer = scope.observe('baseLayerUrl').
           map(function(url) {
             if (!_.isDefined(url)) {
-              return Constants['DEFAULT_MAP_BASE_LAYER_URL'];
+              return {
+                url: Constants['DEFAULT_MAP_BASE_LAYER_URL'],
+                opacity: 0.15
+              };
             } else {
-              return url;
+              return {
+                url: url,
+                opacity: 0.35
+              };
             }
           }).
-          distinctUntilChanged().
-          map(function(url) {
-            return L.tileLayer(url, { attribution: '', detectRetina: true, opacity: 0.15, unloadInvisibleTiles: true });
+          distinctUntilChanged(_.property('url')).
+          map(function(layerInfo) {
+            var url = layerInfo.url;
+            var opacity = layerInfo.opacity;
+            return L.tileLayer(url, { attribution: '', detectRetina: true, opacity: opacity, unloadInvisibleTiles: true });
           }).
           publish(); // Only subscribe once everything is wired up,
                      // otherwise some subscribers may miss the first

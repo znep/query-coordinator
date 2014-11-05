@@ -105,6 +105,7 @@
         var url = '/api/id/' + datasetId + '.json?';
         var config = httpConfig.call(this);
         return http.get(url + $.param(params), config).then(function(response) {
+
           if (!_.isArray(response.data)) {
             return $q.reject('Invalid response from SODA, expected array.');
           }
@@ -206,6 +207,10 @@
             // a count... so default to 0
             return parseInt(response.data[0].count_0, 10) || 0;
           });
+      },
+
+      getSampleData: function(fieldName, datasetId) {
+        return serviceDefinition.getData(fieldName, datasetId);
       },
 
       getRows: function(datasetId, offset, limit, order, timeout, whereClause) {

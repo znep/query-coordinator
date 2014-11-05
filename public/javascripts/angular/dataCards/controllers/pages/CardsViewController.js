@@ -75,6 +75,13 @@
     * Filters and the where clause *
     *******************************/
 
+    $scope.clearAllFilters = function() {
+      $scope.$broadcast('clear-all-filters');
+      _.each($scope.page.getCurrentValue('cards'), function(card) {
+        card.set('activeFilters', []);
+      });
+    };
+
     var allCardsFilters = page.observe('cards').flatMap(function(cards) {
       if (!cards) { return Rx.Observable.never(); }
       return Rx.Observable.combineLatest(_.map(cards, function(d) {
@@ -93,6 +100,12 @@
         }
       });
       return _.compact(wheres).join(' AND ');
+    });
+
+    // side-effecting map on allCardsFilters that updates the height of the spacer
+    // that keeps the card layout in the correct position below the quick filter bar.
+    var updateQuickFilterBarSpacerHeight = allCardsFilters.delay(25).subscribe(function(filters) {
+      $('.quick-filter-bar-spacer').height($('.quick-filter-bar .content').height());
     });
 
     $scope.bindObservable('globalWhereClauseFragment', allCardsWheres.combineLatest(page.observe('baseSoqlFilter'), function(cardWheres, basePageWhere) {
@@ -245,14 +258,6 @@
     $scope.bindObservable('hasAllCards', datasetColumns.map(function(columns) {
       return columns.available.length === 0;
     }));
-
-    $scope.$on('modal-open-surrogate', function(e, data) {
-      $scope.$broadcast('modal-open', data);
-    });
-
-    $scope.$on('modal-close-surrogate', function(e, data) {
-      $scope.$broadcast('modal-close', data);
-    });
 
 
     /***************************
@@ -443,6 +448,10 @@
         'is coming soon. For now, collapse the',
         'expanded card to customize.'].join('<br/>') +
         '</div>';
+    });
+
+    FlyoutService.register('clear-all-filters-button', function() {
+      return '<div class="flyout-title">Click to reset all filters</div>';
     });
 
 

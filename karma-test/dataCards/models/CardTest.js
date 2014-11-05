@@ -76,4 +76,26 @@ describe('Card model', function() {
 
     expect(function() { instance.serialize(); }).to.throw();
   });
+
+  it('should create a clone with the same properties, including the unique id', function() {
+    var blob = {
+      'fieldName': 'testField',
+      'cardSize': 2,
+      'cardCustomStyle': {},
+      'expandedCustomStyle': {} ,
+      'displayMode': 'figures',
+      'expanded': false,
+      'activeFilters': []
+    };
+
+    var instance = Card.deserialize(new Page('fake-asdf'), blob);
+
+    var clone = instance.clone();
+
+    expect(clone.fieldName).to.equal(instance.fieldName);
+    expect(clone.getCurrentValue('cardSize')).to.equal(instance.getCurrentValue('cardSize'));
+    expect(clone.getCurrentValue('displayMode')).to.equal(instance.getCurrentValue('displayMode'));
+    expect(clone.getCurrentValue('expanded')).to.equal(instance.getCurrentValue('expanded'));
+    expect(clone.uniqueId).to.equal(instance.uniqueId);
+  });
 });

@@ -13,6 +13,10 @@ require 'test_helper'
 # for hash keys and array members is error prone and should be refactored. TODO RHA
 class CurrentDomainTest < MiniTest::Unit::TestCase
 
+  def teardown
+    CurrentDomain.remove_class_variable('@@current_domain')
+  end
+
   def test_module_enabled_returns_false
     CurrentDomain.class_variable_set('@@current_domain', :modules => [])
     refute CurrentDomain.module_enabled?(:foo_module)
@@ -61,13 +65,12 @@ class CurrentDomainTest < MiniTest::Unit::TestCase
     test_title = 'sproing'
     CurrentDomain.class_variable_set('@@current_domain',
       :modules => [{'name' => 'bar_module'}],
-      :data => Hashie::Mash.new.tap { |data|
+      :data => Hashie::Mash.new.tap do |data|
         data.feature = ['bar_module']
         data.stubs(:default_configuration => stub(:properties => stub(:strings! => stub(:site_title => test_title), :[] => nil)))
-      }
+      end
     )
     assert_equal test_title, CurrentDomain.site_title
-    CurrentDomain.class_variable_set('@@current_domain', nil)
   end
 
   private

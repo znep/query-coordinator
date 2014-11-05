@@ -13,8 +13,14 @@
   <div class="card-drag-overlay"
     data-card-id="{{cardPosition.model.uniqueId}}"
     ng-if="editMode && cardPosition.model !== grabbedCard.model && cardPosition.model.fieldName !== '*'">
-    <div class="delete-button">
-      <span class="delete-button-target" title="Remove this Card" ng-click="deleteCard(cardPosition.model)"></span>
+    <div class="card-controls">
+      <div class="card-control icon-settings"
+           ng-class="{disabled: !isCustomizable(cardPosition.model)}"
+           ng-click="customizeCard(cardPosition.model)"
+           title="{{ isCustomizable(cardPosition.model) ? 'Customize this card' : 'There are no customization options for this card yet' }}"></div>
+      <div class="card-control icon-close"
+           title="Remove this card"
+           ng-click="deleteCard(cardPosition.model)"></div>
     </div>
   </div>
 </div>
@@ -31,3 +37,29 @@
   ng-class="{disabled: !allowAddCard}"
   ng-show="editMode"
   ng-click="addCard(button.cardSize)">Add card here</button>
+
+<modal-dialog
+  ng-if="addCardState.show"
+  dialog-state="addCardState"
+  >
+  <add-card-dialog
+    card-models="cardModels"
+    card-size="cardSize"
+    on-customize-card="customizeCard"
+    dataset-columns="datasetColumns"
+    dialog-state="addCardState"
+    page="page"
+    ></add-card-dialog>
+</modal-dialog>
+
+<modal-dialog
+  class="second"
+  ng-if="customizeState.show"
+  dialog-state="customizeState">
+  <customize-card-dialog
+    card-model="cardModel"
+    card-models="cardModels"
+    dialog-state="customizeState"
+    page="page"
+  />
+</modal-dialog>

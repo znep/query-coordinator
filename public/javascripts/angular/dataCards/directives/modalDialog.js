@@ -1,46 +1,44 @@
 (function() {
   'use strict';
 
-  function modalDialog() {
+  function modalDialog(WindowState) {
     return {
       restrict: 'E',
-      scope: {},
+      scope: {
+        // Toggles modal dialog visibility
+        state: '=?dialogState'
+      },
       transclude: true,
       templateUrl: '/angular_templates/dataCards/modalDialog.html',
       link: function (scope, element, attrs) {
+        var subscriptions = [];
 
-        // Toggles modal dialog visibility
-        scope.show = false;
-
-        scope.showModal = function() {
-          scope.show = true;
+        if (!scope.state) {
+          scope.state = {show: false};
         }
 
-        scope.hideModal = function() {
-          scope.show = false;
+        // The various conditions under which we can close the dialog
+        function closeDialog() {
+          scope.$apply(function() {
+            scope.state.show = false;
+          });
         }
+        element.on('click', '.modal-overlay', closeDialog);
+        subscriptions.push(WindowState.escapeKeyObservable.filter(function(e) {
+          // Only close this dialog if we're the one on top
+          var dialog = element.find('.modal-dialog');
+          var testPoint = dialog.position();
+          // Make sure we're within the dialog
+          testPoint.top += 1;
+          testPoint.left += 1;
+          var topMostElement = document.elementFromPoint(testPoint.left, testPoint.top);
+          return dialog[0] === topMostElement;
+        }).subscribe(closeDialog));
 
-        scope.$on('modal-open', function (e, data) {
-          if (element.attr('id') === data.id) {
-            scope.showModal();
-          }
+        // Clean up after ourselves
+        scope.$on('$destroy', function() {
+          _.invoke(subscriptions, 'dispose');
         });
-
-        scope.$on('modal-close', function (e, data) {
-          if (element.attr('id') === data.id) {
-            scope.hideModal();
-          }
-        });
-
-        document.addEventListener('keydown', function (e) {
-          // Escape key
-          if (e.which === 27) {
-            scope.$apply(function () {
-              scope.hideModal();
-            })
-          }
-        });
-
       }
     };
   }

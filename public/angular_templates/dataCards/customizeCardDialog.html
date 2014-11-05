@@ -1,0 +1,33 @@
+<h2 class="icon-settings">Settings</h2>
+<card ng-if="customizedCard"
+      model="customizedCard"
+      interactive="false"
+      class="card preview"></card>
+
+<div class="configurable">
+  <div>
+    <h3>Map base layer</h3>
+    <div>
+      <soc-select ng-model="baseLayerOption">
+        <soc-option value="standard">Standard</soc-option>
+        <soc-option value="esri">Esri</soc-option>
+        <soc-option value="custom">Custom Map</soc-option>
+      </soc-select>
+      <input name="customLayerUrl"
+             type="url"
+             class="dark"
+             placeholder="http://domain.com/.../{x}/{y}/{z}.png"
+             ng-model="customLayerUrl"
+             ng-pattern="TILEURL_REGEX"
+             ng-show="baseLayerOption === 'custom'"
+             ng-min-length="5"
+             ng-max-length="5165"
+      />
+    </div>
+  </div>
+</div>
+
+<div class="controls">
+  <button class="action-btn dark" ng-click="addOrUpdate()">Done</button>
+  <button class="action-btn dark" ng-click="dialogState.show = false">Cancel</button>
+</div>

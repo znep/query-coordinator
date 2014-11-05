@@ -46,15 +46,21 @@
 
     var mouseLeftButtonPressedSubject = new Rx.BehaviorSubject(false);
     var mouseLeftButtonClickSubject = new Rx.Subject();
+
+    var mouseLeftButtonPressedWithTargetSubject = new Rx.Subject();
+
+
     body.addEventListener('mouseup', function(e) {
       if (e.which === 1) {
         mouseLeftButtonPressedSubject.onNext(false);
         mouseLeftButtonClickSubject.onNext(e);
+        mouseLeftButtonPressedWithTargetSubject.onNext({value: false, target: e.target});
       }
     });
     body.addEventListener('mousedown', function(e) {
       if (e.which === 1) {
         mouseLeftButtonPressedSubject.onNext(true);
+        mouseLeftButtonPressedWithTargetSubject.onNext({value: true, target: e.target});
       }
     });
 
@@ -63,7 +69,11 @@
       windowSizeSubject.onNext(jqueryWindow.dimensions());
     });
 
-    var keyDownObservable = Rx.Observable.fromEvent($(document), 'keydown');
+    WindowState.keyDownObservable = Rx.Observable.fromEvent($(document), 'keydown');
+    WindowState.escapeKeyObservable = WindowState.keyDownObservable.filter(function(e) {
+      // Escape key
+      return 27 === e.which;
+    });
 
     WindowState.scrollPositionSubject = scrollPositionSubject;
     WindowState.mousePositionSubject = mousePositionSubject;
@@ -72,10 +82,7 @@
     WindowState.windowSizeSubject = windowSizeSubject;
     WindowState.closeDialogEventObservable = Rx.Observable.merge(
       WindowState.mouseLeftButtonClickSubject,
-      keyDownObservable.filter(function(e) {
-        // Escape key
-        return 27 === e.which;
-      })
+      WindowState.escapeKeyObservable
     );
 
     return WindowState;

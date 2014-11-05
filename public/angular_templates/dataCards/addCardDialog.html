@@ -1,50 +1,45 @@
 <h2>Add a card</h2>
 <div class="add-card-select-column">
-  <select id="add-card-select-column-control"
-    ng-model="addCardSelectedColumnFieldName">
-
-    <option
+  <soc-select ng-model="addCardSelectedColumnFieldName">
+    <soc-option
       value="null"
       disabled="disabled"
-      ng-selected="addCardSelectedColumnFieldName === null">Choose a column...</option>
+      ng-selected="addCardSelectedColumnFieldName === null">Choose a column...</soc-option>
 
-    <option value="null" disabled="disabled" ng-if="datasetColumns.available.length > 0"></option>
+    <soc-option value="null" disabled="disabled" ng-if="datasetColumns.available.length > 0"></soc-option>
 
-    <option
+    <soc-option
       value="{{column.name}}"
       title="Add this card"      
-      ng-repeat="column in datasetColumns.available">{{column.title}}</option>
+      ng-repeat="column in datasetColumns.available">{{column.title}}</soc-option>
 
-    <option value="null" disabled="disabled" ng-if="datasetColumns.alreadyOnPage.length > 0"></option>
+    <soc-option value="null" disabled="disabled" ng-if="datasetColumns.alreadyOnPage.length > 0"></soc-option>
 
-    <option
+    <soc-option
       value="null"
       disabled="disabled"
-      ng-if="datasetColumns.alreadyOnPage.length > 0"><b>Card already on page</b></option>
+      ng-if="datasetColumns.alreadyOnPage.length > 0"><b>Card already on page</b></soc-option>
 
-    <option
+    <soc-option
       value="{{column.name}}"
       title="This card is already on the page"
       disabled="disabled"
-      ng-repeat="column in datasetColumns.alreadyOnPage">-{{column.title}}</option>
+      ng-repeat="column in datasetColumns.alreadyOnPage">-{{column.title}}</soc-option>
 
-    <option value="null" disabled="disabled" ng-if="datasetColumns.visualizationUnsupporetd.length > 0"></option>
+    <soc-option value="null" disabled="disabled" ng-if="datasetColumns.visualizationUnsupporetd.length > 0"></soc-option>
 
-    <option
+    <soc-option
       value="null"
       disabled="disabled"
-      ng-if="datasetColumns.visualizationUnsupporetd.length > 0">Not currently supported</option>
+      ng-if="datasetColumns.visualizationUnsupporetd.length > 0">Not currently supported</soc-option>
 
-    <option
+    <soc-option
       value="{{column.name}}"
       title="This card type is currently unsupported"
       disabled="disabled"
-      ng-repeat="column in datasetColumns.visualizationUnsupporetd">-{{column.title}}</option>
+      ng-repeat="column in datasetColumns.visualizationUnsupporetd">-{{column.title}}</soc-option>
 
-  </select>
-  <div class="arrow-container">
-    <div class="arrow"></div>
-  </div>
+  </soc-select>
 </div>
 <div class="add-card-preview">
   <span ng-if="addCardModel === null">Choose a column from the dropdown above to add a new card</span>
@@ -52,13 +47,23 @@
     <card model="addCardModel"
           interactive="false"
           class="card preview"></card>
+    <div class="card-controls">
+      <div class="card-control icon-settings"
+           title="Customize this card"
+           ng-if="isCustomizable(addCardModel)"
+           ng-click="onCustomizeCard(addCardModel)"
+           >
+        Settings
+      </div>
+    </div>
   </div>
 </div>
 <div class="add-card-buttons">
-  <button type="button" class="action-btn dark r-to-l" ng-click="closeAddCardDialog()">Cancel</button>
-  <button
-    type="button"
-    class="action-btn dark r-to-l"
-    ng-class="{disabled: addCardModel === null}"
-    ng-click="addCard()">Add card</button>
+  <button type="button"
+          class="action-btn dark r-to-l"
+          ng-click="dialogState.show = false">Cancel</button>
+  <button type="button"
+          class="action-btn dark r-to-l"
+          ng-class="{disabled: addCardModel === null}"
+          ng-click="addCard()">Add card</button>
 </div>

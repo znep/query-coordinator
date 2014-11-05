@@ -2,6 +2,7 @@
 @import dataCards/common/layout
 @import dataCards/action-button
 @import dataCards/tool-panel
+@import dataCards/inputs
 
 $metadata-top-padding: 7px
 $metadata-side-padding: 30px
@@ -11,11 +12,12 @@ $api-panel-width: 512px
 $api-panel-hint-width: 20px
 
 /* MOBILE/RESPONSIVE DESIGN. SEE DESKTOP-SPECIFIC STYLES BELOW */
-body.state-view-cards
-  background-color: $view-cards-bg-color
-
+.state-view-cards
   *:focus
     outline-width: 2px
+
+body.state-view-cards
+  background-color: $view-cards-bg-color
 
   .cards-metadata
     position: relative
@@ -124,6 +126,20 @@ body.state-view-cards
     #quick-filter-bar-container
       position: relative
 
+      // This exists to keep the card layout in the right position
+      // since the actual quick filter bar content is 'position: absolute;'
+      // or 'position: fixed;' depending on it's "sticky" state.
+      // We still have to adjust the height of this element when
+      // the filter content changes, hoewver, since multi-line filter text
+      // will not be reflected by any static or percentage height value on
+      // the '.quick-filter-bar-spacer' element.
+      .quick-filter-bar-spacer
+        position: relative
+        padding: $metadata-side-padding / 2
+        width: 100%
+        box-sizing: border-box
+        background-color: white
+
       .quick-filter-bar
         position: absolute
         width: 100%
@@ -140,8 +156,12 @@ body.state-view-cards
           padding: $metadata-side-padding / 2
           background-color: $view-cards-bg-color
           width: 100%
+          min-height: 4.5rem
+          line-height: 2.75rem
           box-sizing: border-box
-          line-height: 1.5rem
+
+          .clear-all-filters-button
+            margin: 0
 
         .filters
           display: inline
@@ -212,6 +232,75 @@ body.state-view-cards
             width: inherit
             height: inherit
 
+      customize-card-dialog
+        >h2
+          &::before
+            font-size: 0.9rem
+
+        card
+          float: left
+          width: 100%
+          max-width: 500px
+          margin: 0 1rem 1rem 0
+
+        .configurable
+          >div
+            display: inline-block
+          h3
+            white-space: nowrap
+            display: inline-block
+            margin: 0 0 1rem
+            min-width: 10rem
+
+          input
+            display: block
+            margin-top: 1rem
+            width: 15rem
+
+        .controls
+          overflow: hidden
+          clear: both
+
+          button
+            float: right
+
+
+      add-card-dialog
+        display: block
+
+        >h2
+          &::before
+            content: '+'
+            line-height: 1.5rem
+            font-size: 1.6rem
+            font-weight: bold
+
+        .card-spot
+          position: relative
+
+          .icon-settings
+            white-space: nowrap
+            padding: 0.2rem 0.3rem 0.3rem
+            color: $link-font-color
+            border-radius: $rounded-corners-border-radius
+            display: block
+
+            &::before
+              color: $card-control-color
+
+            &:hover
+              background-color: $btn-hover-bg-color
+              color: $btn-hover-font-color
+
+              &::before
+                color: $btn-hover-font-color
+
+          card.preview
+            position: relative
+            display: block
+            height: 300px
+            text-align: left
+
       .card-group-drop-placeholder
         position: absolute
         display: none
@@ -252,41 +341,46 @@ body.state-view-cards
 
 /*   ICONS AND COMPONENTS */
 
-.expand-button, .delete-button
-  position: absolute
-  width: 20px
-  height: 20px
-  right: 5px
-  top: 5px
-  text-align: center
-  line-height: 20px
-  font-family: 'SSAir'
-  background-color: white
-  z-index: 3
+.card-spot
+  .card-controls
+    position: absolute
+    right: 0.5rem
+    top: 0.5rem
+    z-index: 3
+    background-color: white
 
-  span
-    cursor: pointer
-    display: block
-    position: relative
-    color: #888
+    >.card-control
+      position: relative
+      text-align: center
+      cursor: pointer
+      color: $card-control-color
+      display: inline-block
 
-    &:hover
-      color: #ccc
+      &:hover
+        color: #ccc
+        border-color: #ccc
 
-.expand-button span:before
-  content: '⤢'
+      span
+        display: block
+        position: relative
 
-.expanded .expand-button span:before
-  content: ''
 
-.delete-button span
-  &:before
-    content: '×'
-    font-size: 22px
-    line-height: 0
+    >.icon-settings
+      &:hover
+        color: $btn-hover-border-color
 
-  &:hover
-    color: red
+      &.disabled
+        opacity: .25
+
+
+    >.icon-close
+      &:hover
+        color: red
+
+    >.icon-expand, >.icon-collapse
+      $size: .75rem
+      line-height: $size
+      font-size: $size
 
 .table-icon
   .grid-lines
@@ -295,51 +389,10 @@ body.state-view-cards
     fill: lighten($aqua-font-color, 10)
 
 .add-card-select-column
-  position: relative
-  width: 240px
-  height: 40px
-  margin: 1em 1em 1em 0
-  background-color: $api-panel-border-color
-
-  select
-    width: 100%
-    height: 100%
-    padding: 0 3em 0 1em
-    color: $modal-white-font-color
-    background-color: transparent
-    border: none
-    outline: none
-    -webkit-appearance: none
-    -moz-appearance: none
-    appearance: none
-    &::-ms-expand
-      display: none
-
-    option
-      background-color: $modal-dropdown-background-color
-      color: $modal-dark-font-color
-      &:disabled
-        color: $modal-disabled-font-color
-
-  .arrow-container
-    position: absolute
-    width: 2rem
-    height: 100%
-    top: 0
-    right: 0
+  soc-select
+    max-width: 33%
+    margin: 0 1em 1em 0
     background-color: $api-panel-border-color
-    pointer-events: none
-
-    .arrow
-      position: absolute
-      width: 0
-      height: 0
-      top: 50%
-      left: 30%
-      border-style: solid
-      border-width: 5px 5px 0 5px
-      border-color: white transparent transparent transparent
-      pointer-events: none
 
 .add-card-preview
   position: relative

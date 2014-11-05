@@ -26,6 +26,7 @@ dataCards.config(function(ServerConfig) {
  * Configure app analytics tracking
  */
 dataCards.run(function($window, $rootScope, Analytics) {
+  //TODO disable for single card view.
   Analytics.measureDomReady();
 
   // The analytics controller can use knowledge of when user interactions happen

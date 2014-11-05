@@ -114,6 +114,8 @@ describe("A Choropleth Directive", function() {
         timeout.flush();
       });
 
+      //it('should emit render:mapTilesLoaded event on rendering all tiles', function(done) {});
+      //This test is unimplemented as it would require mocking out leaflet's event system and tile layer API.
     });
 
     // TODO: INVALID INPUT?

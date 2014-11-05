@@ -654,14 +654,39 @@
           distinctUntilChanged().
           map(function(url) {
             return L.tileLayer(url, { attribution: '', detectRetina: true, opacity: 0.15, unloadInvisibleTiles: true });
-          });
+          }).
+          publish(); // Only subscribe once everything is wired up,
+                     // otherwise some subscribers may miss the first
+                     // value from the scope.observe().
 
+        // Remove old map layers.
         tileLayer.bufferWithCount(2, 1).subscribe(function(layers) {
           map.removeLayer(layers[1]);
         });
+
+        // Add new map layers.
         tileLayer.subscribe(function(layer) {
           layer.addTo(map);
         });
+        
+        scope.emitEventsFromObservable(
+          'render:mapTilesLoading',
+          tileLayer.map(_.noop)
+        );
+        // Emit render:mapTilesLoadedwhen the layer
+        // finishes loading tiles (throttled).
+        scope.emitEventsFromObservable(
+          'render:mapTilesLoaded',
+          tileLayer.map(function(layer) {
+            return Rx.Observable.fromCallback(layer.on, undefined, layer)('load');
+          }).
+          switchLatest().
+          throttle(250)
+        );
+
+        // Now that everything's hooked up, connect the subscription.
+        tileLayer.connect();
+
 
         Rx.Observable.subscribeLatest(
           element.observeDimensions().throttle(500),

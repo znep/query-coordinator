@@ -7,6 +7,13 @@
     UnknownError: function(code, message) { this.code = code; this.message = message; }
   };
 
+  function httpConfig(config) {
+    return _.extend({
+      requester: this,
+      cache: true
+    }, config);
+  }
+
   function UserSessionService($http, $q) {
     function User(id) {
       this.id = id;
@@ -21,7 +28,9 @@
     // issue getting the current user from the backend.
     function getCurrentUser() {
       // NOTE: If nobody is logged in, then this returns a 404.
-      var config = { headers: {'Cache-Control': 'nocache'} };
+
+      var config = httpConfig.call(this, { headers: {'Cache-Control': 'nocache'}, 'airbrakeShouldIgnore404Errors': true });
+
       return $http.get('/api/users/current.json', config).then(function(response) {
         // 200s
         if (_.isEmpty(response.data)) {

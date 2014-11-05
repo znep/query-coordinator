@@ -395,13 +395,14 @@
         getFlyout: function(features, complementRows)
         {
             var layerObj = this;
+            var objectIdKey = layerObj._displayLayer.objectIdKey || 'OBJECTID';
 
             if (features[0].feature) { features = _.pluck(features, 'feature'); }
 
             var rows = _.map(features, function(feature)
             {
                 var dsRow = _.detect(complementRows, function(cRow)
-                    { return cRow['objectid'] == feature.attributes['OBJECTID']; });
+                    { return cRow['objectid'] == feature.attributes[objectIdKey]; });
 
                 var row = { data: {}, id: dsRow[':id'] };
                 _.each(feature.attributes, function(val, attr)

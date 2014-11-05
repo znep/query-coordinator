@@ -3,7 +3,7 @@
 
   function CardTypeMappingService($exceptionHandler, $log) {
 
-    var supportedCardTypes = ['column', 'choropleth', 'timeline'];
+    var supportedCardTypes = ['column', 'choropleth', 'search', 'timeline'];
     // A lookup for whether a particular card type is customizable
     var CUSTOMIZABLE_CARD_TYPES = {
       choropleth: true
@@ -69,7 +69,7 @@
     }
 
     function _cardTypeForColumnIsSupported(column) {
-      return supportedCardTypes.indexOf(_cardTypeForColumn(column)) > -1;
+      return _.contains(supportedCardTypes, _cardTypeForColumn(column));
     }
 
     function _cardTypeForModel(cardModel) {

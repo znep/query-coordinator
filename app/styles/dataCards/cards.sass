@@ -2,7 +2,7 @@
 @import dataCards/common/layout
 @import dataCards/action-button
 @import dataCards/tool-panel
-@import dataCards/soc-select
+@import dataCards/inputs
 
 $metadata-top-padding: 7px
 $metadata-side-padding: 30px
@@ -12,11 +12,12 @@ $api-panel-width: 512px
 $api-panel-hint-width: 20px
 
 /* MOBILE/RESPONSIVE DESIGN. SEE DESKTOP-SPECIFIC STYLES BELOW */
-body.state-view-cards
-  background-color: $view-cards-bg-color
-
+.state-view-cards
   *:focus
     outline-width: 2px
+
+body.state-view-cards
+  background-color: $view-cards-bg-color
 
   .cards-metadata
     position: relative
@@ -235,6 +236,7 @@ body.state-view-cards
         >h2
           &::before
             font-size: 0.9rem
+
         card
           float: left
           width: 100%
@@ -242,11 +244,18 @@ body.state-view-cards
           margin: 0 1rem 1rem 0
 
         .configurable
+          >div
+            display: inline-block
           h3
             white-space: nowrap
             display: inline-block
             margin: 0 0 1rem
             min-width: 10rem
+
+          input
+            display: block
+            margin-top: 1rem
+            width: 15rem
 
         .controls
           overflow: hidden

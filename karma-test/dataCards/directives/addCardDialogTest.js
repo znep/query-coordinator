@@ -9,6 +9,10 @@ describe('addCardDialog', function() {
   beforeEach(module('/angular_templates/dataCards/card.html'));
   beforeEach(module('/angular_templates/dataCards/cardVisualizationChoropleth.html'));
   beforeEach(module('/angular_templates/dataCards/cardVisualizationColumnChart.html'));
+  beforeEach(module('/angular_templates/dataCards/cardVisualizationTimelineChart.html'));
+  beforeEach(module('/angular_templates/dataCards/cardVisualizationSearch.html'));
+  beforeEach(module('/angular_templates/dataCards/clearableInput.html'));
+  beforeEach(module('/angular_templates/dataCards/timelineChart.html'));
   beforeEach(module('/angular_templates/dataCards/cardVisualizationTable.html'));
   beforeEach(module('/angular_templates/dataCards/cardVisualizationTimelineChart.html'));
   beforeEach(module('/angular_templates/dataCards/socSelect.html'));
@@ -118,10 +122,10 @@ describe('addCardDialog', function() {
 
         var sortedCards = cards.
           filter(function(card) {
-            return card.fieldName !== '*'; 
+            return card.fieldName !== '*';
           }).
           sort(function(a, b) {
-            return a.fieldName > b.fieldName
+            return a.fieldName > b.fieldName;
           });
 
         var i = 0;
@@ -177,18 +181,18 @@ describe('addCardDialog', function() {
     };
     outerScope.dialogState = {show: true};
 
-    var html = [
-      '<div ng-if="dialogState.show"> ',
-        '<add-card-dialog ',
-          'style="display:block" ',
-          'card-models="cardModels" ',
-          'card-size="1" ',
-          'on-customize-card="customizeCard" ',
-          'dataset-columns="datasetColumns" ',
-          'dialog-state="dialogState" ',
-          'page="page" ',
-        '></add-card-dialog>',
-      '</div>'].join('');
+    var html =
+      '<div ng-if="dialogState.show"> ' +
+        '<add-card-dialog ' +
+          'style="display:block" ' +
+          'card-models="cardModels" ' +
+          'card-size="1" ' +
+          'on-customize-card="customizeCard" ' +
+          'dataset-columns="datasetColumns" ' +
+          'dialog-state="dialogState" ' +
+          'page="page" ' +
+        '></add-card-dialog>' +
+      '</div>';
 
     var element = testHelpers.TestDom.compileAndAppend(html, outerScope);
 

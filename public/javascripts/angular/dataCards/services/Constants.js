@@ -25,6 +25,8 @@
       // Visualization
       'NULL_VALUE_LABEL': '(No Value)',
       'DEFAULT_MAP_BASE_LAYER_URL': 'https://a.tiles.mapbox.com/v3/socrata-apps.ibp0l899/{z}/{x}/{y}.png',
+      'ESRI_BASE_URL': 'https://server.arcgisonline.com/ArcGIS/rest/services/World_Street_Map/MapServer/tile/{z}/{y}/{x}',
+      'TILEURL_REGEX': /^ *https?:\/\/(.*\{[xyz]\}){3}/,
 
       // Choropleth visualization parameters.
       'MAXIMUM_NUMBER_OF_CLASSES_ALLOWED': 7,

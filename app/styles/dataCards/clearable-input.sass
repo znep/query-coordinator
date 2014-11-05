@@ -1,0 +1,18 @@
+@import dataCards/common/layout
+
+.clearable-input-wrapper
+  position: relative
+  input:focus
+    outline-width: 0
+  .clearable-input-trigger
+    display: none
+    position: absolute
+    top: -($card-input-vertical-padding / 2)
+    right: 0
+    background-color: transparent
+    border: 0
+    font-size: 1rem
+    cursor: pointer
+  &.clearable
+    .clearable-input-trigger
+      display: block

@@ -19,7 +19,7 @@ angular.module('dataCards.models').factory('Card', function($injector, ModelHelp
   });
 
   var Card = Model.extend({
-    init: function(page, fieldName) {
+    init: function(page, fieldName, id) {
       this._super();
 
       var Page = $injector.get('Page'); // Inject Page here to avoid circular dep.
@@ -29,7 +29,7 @@ angular.module('dataCards.models').factory('Card', function($injector, ModelHelp
       var self = this;
       this.page = page;
       this.fieldName = fieldName;
-      this.uniqueId = _.uniqueId();
+      this.uniqueId = id || _.uniqueId();
 
       _.each(_.keys(JJV.schema.serializedCard.properties), function(field) {
         if (field === 'fieldName') return; // fieldName isn't observable.
@@ -39,6 +39,14 @@ angular.module('dataCards.models').factory('Card', function($injector, ModelHelp
       self.set('activeFilters', []);
     },
 
+    /**
+     * Creates a clone of this Card, including its id and everything.
+     *
+     * Useful for modifying the card's contents without committing them.
+     */
+    clone: function() {
+      return Card.deserialize(this.page, this.serialize(), this.uniqueId);
+    },
     serialize: function() {
       var serialized = this._super();
       serialized.fieldName = this.fieldName;
@@ -47,10 +55,10 @@ angular.module('dataCards.models').factory('Card', function($injector, ModelHelp
     }
   });
 
-  Card.deserialize = function(page, blob) {
+  Card.deserialize = function(page, blob, id) {
     validateCardBlobSchema(blob);
 
-    var instance = new Card(page, blob.fieldName);
+    var instance = new Card(page, blob.fieldName, id);
     _.each(_.keys(JJV.schema.serializedCard.properties), function(field) {
       if (field === 'fieldName') return; // fieldName isn't observable.
       if (field === 'activeFilters') {

@@ -513,4 +513,18 @@ describe("CardDataService", function() {
       expect(count).to.equal(0);
     });
   });
+
+  describe('getSampleData', function() {
+    it('should get the sample data', function() {
+      var TEST_FIELD_NAME = 'my test field';
+      var TEST_DATASET_ID = 'wibl-wobl';
+      var getDataStub = sinon.stub(CardDataService, 'getData');
+
+      CardDataService.getSampleData(TEST_FIELD_NAME, TEST_DATASET_ID);
+
+      expect(getDataStub.calledOnce).to.be.true;
+      expect(getDataStub.calledWith(TEST_FIELD_NAME, TEST_DATASET_ID)).to.be.true;
+    });
+  });
+
 });

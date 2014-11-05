@@ -46,15 +46,21 @@
 
     var mouseLeftButtonPressedSubject = new Rx.BehaviorSubject(false);
     var mouseLeftButtonClickSubject = new Rx.Subject();
+
+    var mouseLeftButtonPressedWithTargetSubject = new Rx.Subject();
+
+
     body.addEventListener('mouseup', function(e) {
       if (e.which === 1) {
         mouseLeftButtonPressedSubject.onNext(false);
         mouseLeftButtonClickSubject.onNext(e);
+        mouseLeftButtonPressedWithTargetSubject.onNext({value: false, target: e.target});
       }
     });
     body.addEventListener('mousedown', function(e) {
       if (e.which === 1) {
         mouseLeftButtonPressedSubject.onNext(true);
+        mouseLeftButtonPressedWithTargetSubject.onNext({value: true, target: e.target});
       }
     });
 

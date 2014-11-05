@@ -1,10 +1,43 @@
-<div class="chart-scroll">
-  <div class="timeline-chart-wrapper" ng-class="{filtered: showFiltered}">
-    <svg class="graph">
-      <g class="container"></g>
-      <g class="xticks"></g>
+<div class="timeline-chart-wrapper">
+  <div class="y-ticks"></div>
+  <div class="x-ticks"></div>
+  <div class="datum-label"></div>
+  <div class="timeline-chart-unfiltered-mask">
+    <svg class="timeline-chart-unfiltered-visualization">
+      <g></g>
     </svg>
   </div>
-  <div class="labels"></div>
+  <div class="timeline-chart-filtered-mask">
+    <svg class="timeline-chart-filtered-visualization">
+      <g></g>
+    </svg>
+  </div>
+  <div class="timeline-chart-selection-mask">
+    <svg class="timeline-chart-selection">
+      <g></g>
+    </svg>
+  </div>
+  <div class="timeline-chart-left-selection-marker">
+    <svg>
+      <g>
+        <line y1="0" y2="100%"></line>
+        <path d="M0,0L-10,0L-10,8L0,16Z"></path>
+        <rect class="selection-marker" data-selection-target="left" x="-12" width="24" height="100%"></rect>
+      </g>
+    </svg>
+  </div>
+  <div class="timeline-chart-right-selection-marker">
+    <svg>
+      <g>
+        <line y1="0" y2="100%"></line>
+        <path d="M0,0L10,0L10,8L0,16Z"></path>
+        <rect class="selection-marker" data-selection-target="right" x="-12" width="24" height="100%"></rect>
+      </g>
+    </svg>
+  </div>
+  <svg class="timeline-chart-highlight-container">
+    <g></g>
+  </svg>
+  <div class="timeline-chart-highlight-target"></div>
+  <span class="timeline-chart-clear-selection-button"></span>
 </div>
-

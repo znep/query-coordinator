@@ -30,32 +30,32 @@
     ],
     "chrome": [
       {
-        "version": "36",
+        "version": "38",
         "os": { "name": "windows", "version": "7" },
         "critical": false
       },
       {
-        "version": "36",
+        "version": "38",
         "os": { "name": "osx", "version": "lion" },
         "critical": true
       },
       {
-        "version": "35",
+        "version": "37",
         "os": { "name": "windows", "version": "7" },
         "critical": false
       },
       {
-        "version": "35",
+        "version": "37",
         "os": { "name": "osx", "version": "lion" },
         "critical": false
       },
       {
-        "version": "34",
+        "version": "36",
         "os": { "name": "windows", "version": "7" },
         "critical": false
       },
       {
-        "version": "34",
+        "version": "36",
         "os": { "name": "osx", "version": "lion" },
         "critical": false
       }

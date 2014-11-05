@@ -15,159 +15,173 @@ $fill-opacity: 0.5
   cursor: grabbing
   cursor: -webkit-grabbing !important
 
-div.timeline-chart
 
-  div.chart-scroll
+
+.timeline-chart-wrapper
+  cursor: pointer
+
+.timeline-chart-wrapper.selecting
+  cursor: col-resize
+
+.timeline-chart-highlight-target
+  display: block
+  position: absolute
+  top: 0
+  z-index: 5
+
+.timeline-chart-highlight-container
+  position: absolute
+  overflow: visible
+  z-index: 4
+
+  .timeline-chart-highlight
+    fill: $timeline-highlight-fill
+    stroke: $timeline-highlight-stroke
+
+.selecting .timeline-chart-highlight-container
+  display: none
+
+
+
+.timeline-chart-selection
+  position: absolute
+  top: 0
+  z-index: 3
+
+  .selection
+    fill: rgba(255,255,0,0.5)
+    stroke: $timeline-highlight-stroke
+
+.timeline-chart-left-selection-marker,
+.timeline-chart-right-selection-marker
+  display: none
+  position: absolute
+  top: 0
+  width: 24px
+  cursor: col-resize
+  z-index: 8
+
+  svg
+    width: 24px
+    height: 100%
+
+    line
+      stroke: #8a8686
+      stroke-width: 2px
+      stroke-dasharray: 7,3
+
+    rect
+      fill: transparent
+
+    path
+      stroke: #8a8686
+      fill: #c0bbbb
+      stroke-linejoin: round
+
+.timeline-chart-left-selection-marker svg g
+  transform: translate(11px, 0)
+
+.timeline-chart-right-selection-marker svg g
+  transform: translate(12px, 0)
+
+.selecting .timeline-chart-left-selection-marker,
+.selecting .timeline-chart-right-selection-marker,
+.selected .timeline-chart-left-selection-marker,
+.selected .timeline-chart-right-selection-marker
+  display: block
+
+.timeline-chart-clear-selection-button
+  display: none
+  position: absolute
+  height: 100%
+  font-weight: bold
+  line-height: 30px
+  text-align: center
+  background-color: rgba(255, 255, 255, 0.75)
+  z-index: 5
+
+
+.datum-label
+  display: none
+  position: absolute
+  width: 100px
+  height: 30px
+  bottom: 0
+  font-weight: bold
+  line-height: 30px
+  text-align: center
+  cursor: pointer
+  z-index: 8
+
+.selected .timeline-chart-clear-selection-button
+  z-index: 9
+
+.selecting .timeline-chart-clear-selection-button,
+.selected .timeline-chart-clear-selection-button
+  display: block
+
+.timeline-chart-unfiltered-mask,
+.timeline-chart-filtered-mask
+  position: absolute
+  top: 0
+  z-index: 2
+
+.timeline-chart-filtered-mask
+  z-index: 3
+
+.timeline-chart-unfiltered-visualization,
+.timeline-chart-filtered-visualization
+  position: absolute
+  top: 0
+
+  .context
+    fill: $timeline-context-fill
+    stroke: $timeline-context-stroke
+
+  .shaded
+    display: block
+    fill: $timeline-shaded-fill
+    stroke: $timeline-shaded-stroke
+
+.x-ticks
+  position: absolute
+  bottom: 0
+  z-index: 6
+
+  .x-tick
     position: absolute
+    top: -3px
+    width: 4px
+    height: 4px
+    background-color: white
 
-  div.timeline-chart-wrapper
-
-    svg.graph
-      overflow: visible
-
-      g.xticks
-        rect.tick
-          fill: white
-
-        &.tick-dark rect.tick
-          fill: $chart-tick-color
-
-      g.segment
-        cursor: pointer
-
-        path.line
-          fill: none
-          stroke-linecap: round
-          stroke-linejoin: round
-          stroke-width: 2px
-
-          &.unfiltered
-            stroke: $unfiltered-line-color
-          &.filtered
-            stroke: $filtered-line-color
-
-        path.fill
-
-          &.unfiltered
-            fill: rgba($unfiltered-line-color, $fill-opacity)
-          &.filtered
-            fill: rgba($filtered-line-color, $fill-opacity)
-
-        rect.spacer
-          fill: transparent
-
-        &:hover, &.hover
-          path.line
-            &.unfiltered
-              stroke: $unfiltered-line-color-hover
-            &.filtered
-              stroke: $filtered-line-color-hover
-          path.fill
-            &.unfiltered
-              fill: rgba($unfiltered-line-color-hover, $fill-opacity)
-            &.filtered
-              fill: rgba($filtered-line-color-hover, $fill-opacity)
-
-        &.highlighted
-          path.filtered
-            &.line
-              stroke: $selected-line-color
-            &.fill
-              fill: rgba($selected-line-color, $fill-opacity)
-          &:hover, &.hover
-            path.filtered
-              &.line
-                stroke: $selected-line-color-hover
-              &.fill
-                fill: rgba($selected-line-color-hover, $fill-opacity)
-
-      g.draghandle
-        cursor: col-resize
-        line
-          stroke: $draghandle-line-color
-          stroke-dasharray: 7, 3
-        path
-          stroke: $draghandle-border
-          fill: $draghandle-fill
-          stroke-linejoin: round
-        rect
-          fill: transparent
-
-  $dim-opacity: 0.2
-
-  div.labels
+  .x-tick-label
     position: absolute
-    right: 0
-    left: 0
-    height: $base-font-size
+    height: 100%
+    line-height: 30px
+    text-align: center
+    cursor: pointer
 
-    &.dim>div.label
-      @include transitions(opacity .2s linear)
-      opacity: $dim-opacity
-      z-index: 1
+  .x-tick-label.emphasis
+    font-weight: bold
 
-    >div.label
-      cursor: pointer
-      position: absolute
-      bottom: 0
-      color: $timeline-label-color
-      font-size: $medium-font-size
-      line-height: $base-font-size
-      white-space: nowrap
+.dimmed .x-tick-label,
+.selecting .x-tick-label,
+.selected .x-tick-label
+  opacity: 0.25
 
-      .text, .timeline-clear-selection
-        display: inline-block
 
-      &.edge-label
-        display: none
+.y-ticks
+  position: absolute
+  top: 0
+  z-index: 1
 
-      &.hidden
-        opacity: 0
-        z-index: 1
-
-      &.active, &.highlighted
-        color: $timeline-label-color-active
-        background-color: rgba(255, 255, 255, 0.8)
-        opacity: 1
-        z-index: 2
-        display: block
-
-        .icon-close
-          font-size: .7rem
-          color: black
-          margin-left: 3px
-
-  &.selecting
-    div.labels
-      >div.label
-        // During selection, all labels (except the highlighted one) should be translucent
-        &, &.active
-          opacity: $dim-opacity
-          color: $timeline-label-color
-          z-index: 1
-
-        &.hidden
-          opacity: 0
-          z-index: 1
-
-        &.highlighted
-          opacity: 1
-          z-index: 2
-
-    div.chart-scroll
-      g.draghandle, .label.highlighted
-        pointer-events: none
-
-  div.ticks
+  .y-tick
     position: absolute
-
-    div
-      height: $tick-height
-      border-bottom: 1px solid $chart-tick-color
-      position: absolute
-      width: 100%
-      color: $chart-tick-color
-      text-align: right
-      margin-top: -$tick-height
-      font-size: $tick-font-size
-
+    width: 100%
+    height: $tick-height
+    margin-top: -$tick-height
+    color: $chart-tick-color
+    text-align: right    
+    font-size: $tick-font-size
+    border-bottom: 1px solid $chart-tick-color

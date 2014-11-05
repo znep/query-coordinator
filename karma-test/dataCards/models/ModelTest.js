@@ -778,6 +778,26 @@ describe("Model", function() {
       expect(model.isSet('noInitialValue')).to.be.true;
     });
 
+    it('should become false after calling unset()', function() {
+      var model = new Model();
+      model.defineObservableProperty('noInitialValue');
+      var newestValue = null;
+      model.observe('noInitialValue').subscribe(function(val) {
+        newestValue = val;
+      });
+
+      model.set('noInitialValue', 123);
+
+      expect(model.isSet('noInitialValue')).to.be.true;
+      expect(newestValue).to.equal(123);
+
+      model.unset('noInitialValue');
+
+      expect(model.isSet('noInitialValue')).to.be.false;
+      // Should still emit
+      expect(newestValue).to.equal(undefined);
+    });
+
     it('should be false for lazy properties with no initial value', function() {
       var model = new Model();
       function promiseGenerator() {

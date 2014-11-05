@@ -11,6 +11,7 @@ describe('CardLayout directive', function() {
   var $q;
   var rootScope;
   var testHelpers;
+  var $templateCache;
 
   beforeEach(module('/angular_templates/dataCards/addCardDialog.html'));
   beforeEach(module('/angular_templates/dataCards/card-layout.html'));
@@ -19,7 +20,6 @@ describe('CardLayout directive', function() {
   beforeEach(module('/angular_templates/dataCards/cardVisualizationTimelineChart.html'));
   beforeEach(module('/angular_templates/dataCards/cardVisualizationChoropleth.html'));
   beforeEach(module('/angular_templates/dataCards/cardVisualizationTable.html'));
-  beforeEach(module('/angular_templates/dataCards/customizeCardDialog.html'));
   beforeEach(module('/angular_templates/dataCards/modalDialog.html'));
   beforeEach(module('/angular_templates/dataCards/socSelect.html'));
   beforeEach(module('/angular_templates/dataCards/table.html'));
@@ -46,10 +46,15 @@ describe('CardLayout directive', function() {
       mockWindowStateService.mouseLeftButtonPressedSubject = new Rx.Subject();
       mockWindowStateService.mousePositionSubject = new Rx.Subject();
       mockWindowStateService.closeDialogEventObservable = new Rx.Subject();
+      mockWindowStateService.escapeKeyObservable = new Rx.Subject();
 
       $provide.value('WindowState', mockWindowStateService);
     });
   });
+  beforeEach(inject(function($injector) {
+    $templateCache = $injector.get('$templateCache');
+    $templateCache.put('/angular_templates/dataCards/customizeCardDialog.html', '');
+  }));
   beforeEach(inject(function($injector) {
     testHelpers = $injector.get('testHelpers');
     rootScope = $injector.get('$rootScope');
@@ -202,10 +207,12 @@ describe('CardLayout directive', function() {
     var cardGenerator = function(pageModel) {
       return _.map(cards, function(card, i) {
         var c = new Card(pageModel, card.fieldName || 'fieldname' + i);
-        if (card.expanded) {
-          c.set('expanded', true);
-        }
+        c.set('expanded', !!card.expanded);
+        // Add required fields so this will validate
         c.set('cardSize', 1);
+        c.set('cardCustomStyle', {});
+        c.set('expandedCustomStyle', {});
+        c.set('displayMode', 'figures');
         return c;
       });
     };

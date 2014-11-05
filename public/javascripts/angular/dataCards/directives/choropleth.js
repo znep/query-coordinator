@@ -31,11 +31,12 @@
         AngularRxExtensions.install(scope);
 
         /***********************
-        * Mutate Leaflet state *
-        ***********************/
+         * Mutate Leaflet state *
+         ***********************/
 
         function setTileLayer(url, options) {
-          L.tileLayer(url, options).addTo(map);
+          layerGroup.clearLayers();
+          layerGroup.addLayer(L.tileLayer(url, options));
         }
 
         function setGeojsonData(data, options) {
@@ -612,6 +613,8 @@
         };
 
         var map = L.map(element.find('.choropleth-map-container')[0], options);
+        // Manage the layers in a layerGroup, so we can clear them all at once.
+        var layerGroup = L.layerGroup().addTo(map);
         // emit a zoom event, so tests can check it
         map.on('zoomstart zoomend', function(e) {
           scope.$emit(e.type, e.target);
@@ -666,13 +669,21 @@
 
               scope.$emit('render:start', { source: 'choropleth_{0}'.format(scope.$id), timestamp: _.now() });
 
+              var opacity = 0.35;
+
               if (!_.isDefined(baseLayerUrl)) {
                 baseLayerUrl = Constants['DEFAULT_MAP_BASE_LAYER_URL'];
+                opacity = 0.15;
               }
 
               if (currentBaseLayerUrl !== baseLayerUrl) {
                 currentBaseLayerUrl = baseLayerUrl;
-                setTileLayer(baseLayerUrl, { attribution: '', detectRetina: true, opacity: 0.15, unloadInvisibleTiles: true });
+                setTileLayer(baseLayerUrl, {
+                  attribution: '',
+                  detectRetina: true,
+                  opacity: opacity,
+                  unloadInvisibleTiles: true
+                });
               }
 
               // Critical to invalidate size prior to updating bounds

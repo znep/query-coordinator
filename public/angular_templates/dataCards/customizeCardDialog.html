@@ -1,17 +1,28 @@
 <h2 class="icon-settings">Settings</h2>
-<card model="cardModel"
+<card ng-if="customizedCard"
+      model="customizedCard"
       interactive="false"
       class="card preview"></card>
 
-<div class="configurable"
-     ng-repeat="field in configurableFields">
-  <h3>{{ field.name }}</h3>
-  <div ng-switch="field.type">
-    <div ng-switch-where="baselayer">
-      <soc-select ng-model="field.value">
-        <soc-option value="null" ng-selected="field.value === null">Default Map</soc-option>
+<div class="configurable">
+  <div>
+    <h3>Map base layer</h3>
+    <div>
+      <soc-select ng-model="baseLayerOption">
+        <soc-option value="standard">Standard</soc-option>
+        <soc-option value="esri">Esri</soc-option>
         <soc-option value="custom">Custom Map</soc-option>
       </soc-select>
+      <input name="customLayerUrl"
+             type="url"
+             class="dark"
+             placeholder="http://domain.com/.../{x}/{y}/{z}.png"
+             ng-model="customLayerUrl"
+             ng-pattern="TILEURL_REGEX"
+             ng-show="baseLayerOption === 'custom'"
+             ng-min-length="5"
+             ng-max-length="5165"
+      />
     </div>
   </div>
 </div>

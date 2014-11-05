@@ -9,6 +9,7 @@ angular.module('socrataCommon.directives').directive('table', function(AngularRx
     restrict: 'A',
 
     scope: {
+      showCount: '=?',
       rowCount: '=',
       filteredRowCount: '=',
       whereClause: '=',
@@ -37,6 +38,22 @@ angular.module('socrataCommon.directives').directive('table', function(AngularRx
       var $expander = element.find('.table-expander');
       var $label = element.find('.table-label');
 
+      var getColumn = function(columnId) {
+        return _.find(getColumns(), function(column) {
+          return column.name === columnId;
+        });
+      };
+
+      var getColumns = function() {
+        return scope.columnDetails;
+      };
+
+      scope.$watch('showCount', function(newVal, oldVal, scope) {
+        if (!angular.isDefined(newVal)){
+          scope.showCount = true;
+        }
+      });
+
       $('body').on('click.{0}'.format(instanceUniqueNamespace), '.flyout .caret', function(e) {
         if ($(e.currentTarget).parent().data('table-id') !== instanceUniqueNamespace) {
           return; // The flyout might not be our own!
@@ -60,7 +77,7 @@ angular.module('socrataCommon.directives').directive('table', function(AngularRx
         var tableHeight = dimensions.height - element.position().top;
 
         element.height(tableHeight);
-        $body.height(tableHeight - $head.height() - rowHeight);
+        $body.height(tableHeight - $head.height() - (scope.showCount ? rowHeight : 0));
         $head.find('.resize').height(tableHeight);
 
         checkBlocks();
@@ -97,7 +114,7 @@ angular.module('socrataCommon.directives').directive('table', function(AngularRx
 
           newOrdering = currentSort === 'DESC' ? 'ASC' : 'DESC';
         } else {
-          var column = scope.columnDetails[columnId];
+          var column = getColumn(columnId);
 
           newOrdering = defaultSortOrderForColumn(column);
         }
@@ -192,7 +209,7 @@ angular.module('socrataCommon.directives').directive('table', function(AngularRx
       };
 
       var updateColumnHeaders = function(){
-        scope.headers = _.map(_.values(scope.columnDetails), function(column, i) {
+        scope.headers = _.map(getColumns(), function(column, i) {
           // Symbols: ▼ ▲
           var ordering = getCurrentOrDefaultSortForColumn(column.name);
 
@@ -210,7 +227,7 @@ angular.module('socrataCommon.directives').directive('table', function(AngularRx
         var columnId = $(".flyout").data('column-id');
 
         if (_.isPresent(columnId)) {
-          $head.find('.th:contains({0})'.format(scope.columnDetails[columnId].title)).mouseenter();
+          $head.find('.th:contains({0})'.format(getColumn(columnId).title)).mouseenter();
         }
       };
 
@@ -220,7 +237,7 @@ angular.module('socrataCommon.directives').directive('table', function(AngularRx
           columnWidths = {};
           var maxCells = {};
           var cells = $table.find('.cell, .th');
-          var columns = _.values(scope.columnDetails);
+          var columns = getColumns();
 
           // Find the widest cell in each column
           cells.each(function(i, cell) {
@@ -295,6 +312,8 @@ angular.module('socrataCommon.directives').directive('table', function(AngularRx
           delete httpRequests[block];
           ensureColumnHeaders();
 
+          scope.$emit('rows:loaded', block * rowsPerBlock);
+
           if (currentBlocks.indexOf(block) === -1 || data.length === 0) {
             return;
           }
@@ -304,11 +323,11 @@ angular.module('socrataCommon.directives').directive('table', function(AngularRx
 
           _.each(data, function(data_row) {
             blockHtml += '<div class="table-row">';
-            _.each(_.values(scope.columnDetails), function(column) {
+            _.each(getColumns(), function(column) {
               var cellClasses = ['cell'];
               var cellContent = data_row[column.name] || '';
               var cellText = '';
-              var cellType = scope.columnDetails[column.name].physicalDatatype;
+              var cellType = column.physicalDatatype;
 
               cellClasses.push(cellType);
 
@@ -469,9 +488,8 @@ angular.module('socrataCommon.directives').directive('table', function(AngularRx
         },
 
         html: function($target, $head, options, $element) {
-          var headerScope = $target.scope();
-          var columnId = headerScope.header.columnId;
-          var column = scope.columnDetails[columnId];
+          var columnId = $target.data('columnId');
+          var column = getColumn(columnId);
           var sortParts = sort.split(' ');
           var sortUp = sortParts[1] === 'ASC';
           var html = [];
@@ -527,7 +545,7 @@ angular.module('socrataCommon.directives').directive('table', function(AngularRx
         function(cardDimensions, rowCount, filteredRowCount, expanded, columnDetails, infinite) {
 
           scope.$emit('render:start', { source: 'table_{0}'.format(scope.$id), timestamp: _.now() });
-
+          scope.$emit('rows:info', { hasRows: filteredRowCount !== 0, rowCount: rowCount, filteredRowCount: filteredRowCount });
           updateExpanderHeight();
           showOrHideNoRowMessage();
 

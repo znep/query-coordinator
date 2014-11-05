@@ -69,17 +69,17 @@
       windowSizeSubject.onNext(jqueryWindow.dimensions());
     });
 
-    var keyDownObservable = Rx.Observable.fromEvent($(document), 'keydown');
+    WindowState.keyDownObservable = Rx.Observable.fromEvent($(document), 'keydown');
+    WindowState.escapeKeyObservable = WindowState.keyDownObservable.filter(function(e) {
+      // Escape key
+      return 27 === e.which;
+    });
 
     WindowState.scrollPositionSubject = scrollPositionSubject;
     WindowState.mousePositionSubject = mousePositionSubject;
     WindowState.mouseLeftButtonPressedSubject = mouseLeftButtonPressedSubject;
     WindowState.mouseLeftButtonClickSubject = mouseLeftButtonClickSubject;
     WindowState.windowSizeSubject = windowSizeSubject;
-    WindowState.escapeKeyObservable = keyDownObservable.filter(function(e) {
-      // Escape key
-      return 27 === e.which;
-    });
     WindowState.closeDialogEventObservable = Rx.Observable.merge(
       WindowState.mouseLeftButtonClickSubject,
       WindowState.escapeKeyObservable

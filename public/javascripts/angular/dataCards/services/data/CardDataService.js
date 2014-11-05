@@ -209,6 +209,10 @@
           });
       },
 
+      getSampleData: function(fieldName, datasetId) {
+        return serviceDefinition.getData(fieldName, datasetId);
+      },
+
       getRows: function(datasetId, offset, limit, order, timeout, whereClause) {
         if (!order) order = '';
         datasetId = DeveloperOverrides.dataOverrideForDataset(datasetId) || datasetId;

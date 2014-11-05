@@ -1,0 +1,28 @@
+<div class="card-form-group">
+  <form novalidate>
+    <div class="input-group">
+      <clearable-input input-id="search-card-input" placeholder="Search" search="search"></clearable-input>
+      <span class="input-group-addon">
+        <button type="submit" class="action-btn inverted btn-slim">
+          <div class="rotate-45-ccw">
+            &#9906;
+          </div>
+        </button>
+      </span>
+    </div>
+  </form>
+  <div class="search-card-text card-example-text" ng-show="sampleOne && !showResults">
+    <div>Type some text and press enter to search</div>
+    <div class="one-line">(Examples: '{{sampleOne}}'<span ng-show="sampleTwo"> or '{{sampleTwo}}'</span>)</div>
+  </div>
+</div>
+<div ng-show="isInvalidSearch" class="search-card-results">
+  <div class="search-card-text invalid-value">Try searching for a number containing no letters.</div>
+</div>
+<div ng-class="{invisible: !showResults}" class="search-card-results">
+  <div ng-hide="noResults" class="search-card-text no-results">Your search returned no results. Check your spelling, or try a different term.</div>
+  <div ng-class="{invisible: !tableRendered}">
+    <div class="search-card-info">Showing {{rowCount}} of {{totalRowCount}} matching results</div>
+    <card-visualization-table model="model" where-clause="searchWhere" show-count="false" first-column="fieldName"></card-visualization-table>
+  </div>
+</div>

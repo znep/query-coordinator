@@ -1340,7 +1340,11 @@
          */
 
         function filterChartByCurrentSelection() {
-          if (selectionStartDate instanceof Date && selectionEndDate instanceof Date) {
+
+          var selectionStartDateAsMoment = moment(selectionStartDate);
+          var selectionEndDateAsMoment = moment(selectionEndDate).add(1, datasetPrecision);
+
+          if (selectionStartDateAsMoment.isValid() && selectionEndDateAsMoment.isValid()) {
             scope.$emit(
               'filter-timeline-chart',
               {
@@ -1539,8 +1543,9 @@
               if (candidateStartDate !== null) {
                 selectionStartDate = new Date(candidateStartDate);
                 selectionEndDate = new Date(mouseStatus.position.target.getAttribute('data-end'));
+                enterDraggingState();
               }
-              enterDraggingState();
+
             }
 
             if (mousePositionWithinChartDisplay) {

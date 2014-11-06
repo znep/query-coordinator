@@ -162,7 +162,7 @@ angular.module('dataCards.models').factory('Model', function(Class, ModelHelper)
     // to this Model. Strongly consider using observe() instead.
     getCurrentValue: function(propertyName) {
       this._assertProperty(propertyName);
-      return this._propertyTable[propertyName].value;
+      return ModelHelper.currentValueOfProperty(this._propertyTable, propertyName);
     },
 
     // Get a snapshot of this model. Child models are descended

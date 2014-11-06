@@ -39,6 +39,33 @@ describe("Model", function() {
     expect(seen).to.deep.equal([5, 10]);
   });
 
+  it('should emit the current value on all new subscribers', inject(function($q) {
+    var model = new Model();
+    var changes = [];
+    model.defineObservableProperty('notLazy', 5);
+    model.defineObservableProperty('lazy', 15, _.constant($q.defer().promise));
+
+    model.observe('notLazy').subscribe(function(change) {
+      changes.push({ a: change });
+    });
+    model.observe('notLazy').subscribe(function(change) {
+      changes.push({ b: change });
+    });
+    model.observe('lazy').subscribe(function(change) {
+      changes.push({ a: change });
+    });
+    model.observe('lazy').subscribe(function(change) {
+      changes.push({ b: change });
+    });
+
+    expect(changes).to.deep.equal([
+      { a: 5 },
+      { b: 5 },
+      { a: 15 },
+      { b: 15 }
+    ]);
+  }));
+
   it('should honor default value generation with default', inject(function($q, $rootScope) {
     var model = new Model();
     var seen = [];

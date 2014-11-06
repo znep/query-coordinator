@@ -1,6 +1,22 @@
 (function() {
   'use strict';
 
+  /*
+
+  KNOWN BUGS
+
+  1. Dragging the mouse over the chart display when the '.timeline-chart-highlight-target' has not
+     caught up with it (thus making the mouse move evnet's target something other than the highlight
+     target) will cause no highlight to occur. That is because we're explicitly whitelisting against
+     the target in the mouse move and mouse down handling code.
+
+  2. The heuristic by which we decide when to display only some labels is pretty fucked up.
+
+  3. We limit displaying non-visible labels to the 'DAY' && 'DAY' case when really we need to
+     just do it whenever we're not displaying some labels.
+
+  */
+
   var FLYOUT_DATE_FORMAT = {
     DAY: 'D MMMM YYYY',
     MONTH: 'MMMM YYYY',
@@ -624,18 +640,23 @@
 
           function deriveXAxisLabelDatumStep(labelData) {
 
-            // Determine the granularity of our labeling by looking at the total
-            // number of possible labels. The higher the number, the more we step
-            // over per actual rendered label.
-            if (labelData.length > 20) {
+            var widthOfEachLabel = cachedChartDimensions.width / labelData.length;
+
+            if (widthOfEachLabel >= 50) {
+              allChartLabelsShown = true;
+              return 1;
+            } else if ((widthOfEachLabel * 2) >= 50) {
               allChartLabelsShown = false;
-              return 7;
-            } else if (labelData.length > 10) {
+              return 2;
+            } else if ((widthOfEachLabel * 3) >= 50) {
+              allChartLabelsShown = false;
+              return 3;
+            } else if ((widthOfEachLabel * 5) >= 50) {
               allChartLabelsShown = false;
               return 5;
             } else {
-              allChartLabelsShown = true;
-              return 1;
+              allChartLabelsShown = false;
+              return 7;
             }
 
           }
@@ -769,31 +790,14 @@
 
               }
 
-              // HOWEVER, we need to modify the label's width for the following
-              // two special cases:
-              if (i === 1) {
-                // In the case of the first label, subtract half a tick's
-                // width since the first datum is always half-width... this
-                // is because highlights need to span individual points on the
-                // line with half before and half after, but the ticks themselves
-                // need to preceed the full highlight (i.e. a translation
-                // in the -x direction of half the highlight's width).
-
-                //labelWidth -= halfTickWidth;
-              } else if (i === labelData.length - 1) {
+              if (i === labelData.length - 1) {
                 // In the case of the final label, just consume all remaining
                 // space instead. This is so the last label fits snugly in the
                 // variable amount of space available to it.
                 labelWidth = chartWidth - cumulativeLabelOffsets;
               }
 
-              // Only draw the label if its width is greater than 10% of the total.
-              // This is pretty arbitrary, but the AC specifies that we should
-              // "render as many labels for the ticks as possible without the labels
-              // running into each other."
-              // As far as I know this is humorously non-trivial in JavaScript, so
-              // we'll 'eyeball' it like so and see if anyone notices.
-              if (labelWidth > chartWidth / 10) {
+              if ((cachedChartDimensions.width - cumulativeLabelOffsets) >= 50) {
 
                 labelOffset = cumulativeLabelOffsets;
 
@@ -1336,13 +1340,19 @@
          */
 
         function filterChartByCurrentSelection() {
-          scope.$emit(
-            'filter-timeline-chart',
-            {
-              start: moment(selectionStartDate),
-              end: moment(selectionEndDate).add(1, datasetPrecision)
-            }
-          );
+
+          var selectionStartDateAsMoment = moment(selectionStartDate);
+          var selectionEndDateAsMoment = moment(selectionEndDate).add(1, datasetPrecision);
+
+          if (selectionStartDateAsMoment.isValid() && selectionEndDateAsMoment.isValid()) {
+            scope.$emit(
+              'filter-timeline-chart',
+              {
+                start: moment(selectionStartDate),
+                end: moment(selectionEndDate).add(1, datasetPrecision)
+              }
+            );
+          }
         }
 
 
@@ -1462,23 +1472,27 @@
             candidateSelectionEndDate = getDateFromMousePosition(offsetX);
           }
 
-          // Prevent null selections by auto-incrementing by a 'datasetPrecision' unit if
-          // the calculated start and end dates are the same.
-          if (candidateSelectionEndDate.getTime() === selectionStartDate.getTime()) {
-            candidateSelectionEndDate = getDateFromMousePosition(offsetX + visualizedDatumWidth);
+          if (candidateSelectionEndDate !== null && selectionStartDate !== null) {
+
+            // Prevent null selections by auto-incrementing by a 'datasetPrecision' unit if
+            // the calculated start and end dates are the same.
+            if (candidateSelectionEndDate.getTime() === selectionStartDate.getTime()) {
+              candidateSelectionEndDate = getDateFromMousePosition(offsetX + visualizedDatumWidth);
+            }
+
+            if (candidateSelectionEndDate < cachedChartData.minDate) {
+              candidateSelectionEndDate = cachedChartData.minDate;
+            }
+
+            if (candidateSelectionEndDate > cachedChartData.maxDate) {
+              candidateSelectionEndDate = cachedChartData.maxDate;
+            }
+
+            setCurrentDatumByDate(candidateSelectionEndDate);
+
+            selectionEndDate = candidateSelectionEndDate;
+
           }
-
-          if (candidateSelectionEndDate < cachedChartData.minDate) {
-            candidateSelectionEndDate = cachedChartData.minDate;
-          }
-
-          if (candidateSelectionEndDate > cachedChartData.maxDate) {
-            candidateSelectionEndDate = cachedChartData.maxDate;
-          }
-
-          setCurrentDatumByDate(candidateSelectionEndDate);
-
-          selectionEndDate = candidateSelectionEndDate;
 
         }
 
@@ -1529,13 +1543,12 @@
               if (candidateStartDate !== null) {
                 selectionStartDate = new Date(candidateStartDate);
                 selectionEndDate = new Date(mouseStatus.position.target.getAttribute('data-end'));
+                enterDraggingState();
               }
-              enterDraggingState();
+
             }
 
-            if (mousePositionWithinChartDisplay &&
-               (mouseStatus.position.target.className === 'timeline-chart-highlight-target' ||
-                mouseStatus.position.target.className.baseVal === 'selection-marker')) {
+            if (mousePositionWithinChartDisplay) {
 
               // The target markers on the left and right of the selection have a
               // 'data-selection-target' attribute value of 'left' and 'right',
@@ -1634,7 +1647,7 @@
 
           var highlightData;
 
-          if (target.className === 'timeline-chart-highlight-target') {
+          if (mousePositionWithinChartDisplay || mousePositionWithinChartLabels) {
 
             highlightData = filterChartDataByOffset(cachedChartData, offsetX, cachedChartDimensions);
 
@@ -1649,7 +1662,7 @@
 
         }
 
-        function highlightChartByDay(offsetX, target) {
+        function highlightChartWithHiddenLabelsByMouseOffset(offsetX, target) {
 
           var startDate;
           var endDate;
@@ -1815,6 +1828,10 @@
 
             }
 
+            function isMouseOverChartElement(target) {
+              return $(target).closest('.timeline-chart-wrapper').length > 0;
+            }
+
             function fireMouseMoveEventOnHighlightTarget(clientX, clientY) {
 
               // Trigger mouseover event on the thing that will draw the flyout
@@ -1830,6 +1847,7 @@
 
             var offsetX;
             var offsetY;
+            var mouseIsOverChartElement;
             var startDate;
             var endDate;
             var sortedStartAndEndDates;
@@ -1842,16 +1860,17 @@
 
             offsetX = mousePosition.clientX - cachedChartOffsets.left;
             offsetY = mousePosition.clientY + scrollPosition - cachedChartOffsets.top;
+            mouseIsOverChartElement = isMouseOverChartElement(mousePosition.target);
 
             // First figure out which region (display, labels, outside) of the
             // visualization the mouse is currently over and cache the result
             // for this and other functions to use.
-            if (isMouseWithinChartDisplay(offsetX, offsetY)) {
+            if (isMouseWithinChartDisplay(offsetX, offsetY) && mouseIsOverChartElement) {
 
               mousePositionWithinChartDisplay = true;
               mousePositionWithinChartLabels = false;
 
-            } else if (isMouseWithinChartLabels(offsetX, offsetY)) {
+            } else if (isMouseWithinChartLabels(offsetX, offsetY) && mouseIsOverChartElement) {
 
               mousePositionWithinChartDisplay = false;
               mousePositionWithinChartLabels = true;
@@ -1878,8 +1897,8 @@
 
               if (mousePositionWithinChartDisplay) {
 
-                if (datasetPrecision === 'DAY' && labelPrecision === 'DAY') {
-                  highlightChartByDay(offsetX, mousePosition.target);
+                if (!allChartLabelsShown) {
+                  highlightChartWithHiddenLabelsByMouseOffset(offsetX, mousePosition.target);
                 } else {
                   highlightChartByMouseOffset(offsetX, mousePosition.target);
                 }
@@ -1897,9 +1916,9 @@
                 // that is currently under the mouse.
                 } else {
 
-                  if (datasetPrecision === 'DAY' && labelPrecision === 'DAY') {
+                  if (!allChartLabelsShown) {
 
-                    highlightChartByDay(offsetX, mousePosition.target);
+                    highlightChartWithHiddenLabelsByMouseOffset(offsetX, mousePosition.target);
 
                   } else {
 

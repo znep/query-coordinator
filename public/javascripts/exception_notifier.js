@@ -40,16 +40,19 @@
     factory('httpErrorInterceptor', function ($q) {
       return {
         responseError: function responseError(rejection) {
-          try {
-            Airbrake.push({
-              error: new Error('HTTP response error'),
-              context: {
-                config: rejection.config,
-                status: rejection.status
-              }
-            });
-          } catch(airbrakeError) {
-            $log.error("Exception encountered when reporting an HTTP error to Airbrake: ", airbrakeError);
+          if (!rejection.config.hasOwnProperty('airbrakeShouldIgnore404Errors') &&
+              !rejection.config.airbrakeShouldIgnore404Errors) {
+            try {
+              Airbrake.push({
+                error: new Error('HTTP response error'),
+                context: {
+                  config: rejection.config,
+                  status: rejection.status
+                }
+              });
+            } catch(airbrakeError) {
+              $log.error("Exception encountered when reporting an HTTP error to Airbrake: ", airbrakeError);
+            }
           }
           return $q.reject(rejection);
         }

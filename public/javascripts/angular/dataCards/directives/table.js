@@ -88,14 +88,15 @@ angular.module('socrataCommon.directives').directive('table', function(AngularRx
       // this column's default sort (represented
       // by the strings 'DESC' and 'ASC').
       function defaultSortOrderForColumn(column) {
-        switch(column.physicalDatatype) {
-          case 'number':
-          case 'timestamp':
-          case 'floating_timestamp':
-            return 'DESC';
-          default:
-            return 'ASC';
+        if (column) {
+          switch (column.physicalDatatype) {
+            case 'number':
+            case 'timestamp':
+            case 'floating_timestamp':
+              return 'DESC';
+          }
         }
+        return 'ASC';
       }
 
       // Given a column ID, computes what sort order

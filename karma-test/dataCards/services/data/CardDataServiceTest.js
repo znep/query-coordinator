@@ -170,6 +170,16 @@ describe("CardDataService", function() {
       $httpBackend.flush();
     });
 
+    it('should return undefined when the response is an empty object', function(done) {
+      var fakeDataInvalidMin = [{}];
+      fakeDataRequestHandler.respond(fakeDataInvalidMin);
+      var response = CardDataService.getTimelineDomain('fakeNumberColumn', fake4x4).then(function(response){
+        expect(response).to.equal(undefined);
+        done();
+      });
+      $httpBackend.flush();
+    });
+
     it('should reject the promise when bad start date is given', function(done) {
       var fakeDataInvalidMin = [{
         start: '01101988',

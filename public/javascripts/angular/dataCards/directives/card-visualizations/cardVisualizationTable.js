@@ -2,6 +2,7 @@ angular.module('dataCards.directives').directive('cardVisualizationTable', funct
   "use strict";
 
   var unsortable = ['geo_entity'];
+  var validColumnRegex = new RegExp('^[\\d\\w_]{2}');
 
   return {
     restrict: 'E',
@@ -32,25 +33,19 @@ angular.module('dataCards.directives').directive('cardVisualizationTable', funct
         return CardDataService.getRows.apply(CardDataService, args);
       };
 
-      var isComputedColumn = function(columnName) {
-        return columnName.length > 1 && columnName.substring(0, 2) === ':@';
-      };
-
-      var isSystemColumn = function(columnName) {
-        return columnName.length > 1 && columnName.substring(0, 2).match(/[A-Za-z0-9\_][A-Za-z0-9\_]/) !== null;
-      };
+      function isDisplayableColumn(column) {
+        return validColumnRegex.test(column.name);
+      }
 
       function removeSystemColumns(columns) {
-        var filteredColumns = {};
-
-        _.each(columns, function(column, fieldName) {
-          if (isComputedColumn(fieldName) || isSystemColumn(fieldName)) {
+        var filteredColumns = _(columns).
+          filter(isDisplayableColumn).
+          map(function(column) {
             column.sortable = !_.contains(unsortable, column.physicalDatatype);
-            filteredColumns[fieldName] = column;
-          }
-        });
-
-        return filteredColumns;
+            return column;
+          }).
+          value();
+        return _.zipObject(_.pluck(filteredColumns, 'name'), filteredColumns);
       }
 
       var columnDetails = dataset.observeOnLatest('columns').map(removeSystemColumns);
@@ -127,12 +122,16 @@ angular.module('dataCards.directives').directive('cardVisualizationTable', funct
       var defaultSortColumnName = model.pluck('page').observeOnLatest('cards').map(function(cards) {
         if (_.isEmpty(cards)) return null;
         var sizedCards = _.compact(_.map(cards, function(card) {
-          // Sorting on the table card doesn't make any sense.
-          if (card.fieldName === '*') return null;
-          return {
-            cardSize: card.getCurrentValue('cardSize'),
-            model: card
-          };
+          // Sorting on the table card doesn't make any sense; computed and
+          // system columns are not included either.
+          if (card.fieldName === '*' || card.fieldName.charAt(0) === ':') {
+            return null;
+          } else {
+            return {
+              cardSize: card.getCurrentValue('cardSize'),
+              model: card
+            };
+          }
         }));
         var computedLayout = layout.doLayout(sizedCards);
         var sortedCardSizes = _.keys(computedLayout).sort();

@@ -199,11 +199,12 @@
             var minBreak = classBreaks[0];
             var maxBreak = classBreaks[classBreaks.length - 1];
 
-            var colorWidth = 15;
+            // Size of the colored scale.
+            var colorBarWidth = 15;
+            var colorBarHeight = Math.floor(Math.min(element.height() - 60, 250));
+
             // Reserve some padding space for the bottom-most tick label text.
             var bottomPadding = 15;
-            var width = Math.floor(colorWidth);
-            var height = Math.floor(Math.min(element.height() - 60, 250));
 
             var legendSelection = d3.select(element.find('.' + className)[0]).data([{colors: colors, classBreaks: classBreaks}]);
 
@@ -221,11 +222,10 @@
               append('g');
 
             svg.
-              attr('width', element.width()).
-              attr('height', height + bottomPadding);
+              attr('height', colorBarHeight + bottomPadding);
 
-            var yTickScale = d3.scale.linear().range([height - 1, 1]);
-            var yLabelScale = d3.scale.linear().range([height, 0]);
+            var yTickScale = d3.scale.linear().range([colorBarHeight - 1, 1]);
+            var yLabelScale = d3.scale.linear().range([colorBarHeight, 0]);
 
             var yAxis = d3.svg.
                           axis().
@@ -276,13 +276,23 @@
               select('path').
               remove();
 
-            // Move the labels right enough to just touch the color rects.
-            labels.
-              attr('transform', 'translate({0})'.format(element.width() - width));
-
             labels.
               exit().
               remove();
+
+            var maxLabelWidth = _.reduce(element.find('.labels > .tick > text'), function(accumulator, element) {
+              return Math.max(accumulator, $(element).width());
+            }, 0);
+            var tickAreaWidth = maxLabelWidth + yAxis.tickSize() + yAxis.tickPadding();
+
+            // The d3 axis places all elements LEFT of the origin (negative X coords).
+            // Translate everything to within the bounds of the SVG.
+            labels.
+              attr('transform', 'translate({0})'.format(tickAreaWidth));
+
+            // Size the SVG appropriately.
+            svg.
+              attr('width', tickAreaWidth + colorBarWidth);
 
             // draw legend colors
             var rects = svg.selectAll('.choropleth-legend-color').data(colors);
@@ -292,11 +302,11 @@
 
             rects.
               attr('class', 'choropleth-legend-color').
-              attr('width', colorWidth).
+              attr('width', colorBarWidth).
               attr('height', function(c, i) {
-                return legendLabelColorHeight(i, height);
+                return legendLabelColorHeight(i, colorBarHeight);
               }).
-              attr('x', element.width() - width).
+              attr('x', tickAreaWidth).
               attr('y', function(c, i) {
                 return Math.floor(yLabelScale(classBreaks[i + 1]));
               }).
@@ -326,15 +336,6 @@
 
             rects.exit().
               remove();
-
-            var legendPadding = parseInt(element.find('.' + className).css('padding'), 10);
-
-            var maxLabelWidth = _.reduce(element.find('.labels > .tick > text'), function(accumulator, element) {
-              return Math.max(accumulator, $(element).width());
-            }, 0);
-
-            element.find('.' + className).css('padding-left', legendPadding + yAxis.innerTickSize() + maxLabelWidth).show();
-
           }
 
         }

@@ -1340,13 +1340,15 @@
          */
 
         function filterChartByCurrentSelection() {
-          scope.$emit(
-            'filter-timeline-chart',
-            {
-              start: moment(selectionStartDate),
-              end: moment(selectionEndDate).add(1, datasetPrecision)
-            }
-          );
+          if (selectionStartDate instanceof Date && selectionEndDate instanceof Date) {
+            scope.$emit(
+              'filter-timeline-chart',
+              {
+                start: moment(selectionStartDate),
+                end: moment(selectionEndDate).add(1, datasetPrecision)
+              }
+            );
+          }
         }
 
 

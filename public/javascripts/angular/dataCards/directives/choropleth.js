@@ -679,7 +679,7 @@
 
         // Remove old map layers.
         tileLayer.bufferWithCount(2, 1).subscribe(function(layers) {
-          map.removeLayer(layers[1]);
+          map.removeLayer(layers[0]);
         });
 
         // Add new map layers.

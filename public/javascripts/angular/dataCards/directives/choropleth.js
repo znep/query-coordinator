@@ -687,24 +687,8 @@
           layer.addTo(map);
         });
         
-        scope.emitEventsFromObservable(
-          'render:mapTilesLoading',
-          tileLayer.map(_.noop)
-        );
-        // Emit render:mapTilesLoadedwhen the layer
-        // finishes loading tiles (throttled).
-        scope.emitEventsFromObservable(
-          'render:mapTilesLoaded',
-          tileLayer.map(function(layer) {
-            return Rx.Observable.fromCallback(layer.on, undefined, layer)('load');
-          }).
-          switchLatest().
-          throttle(250)
-        );
-
         // Now that everything's hooked up, connect the subscription.
         tileLayer.connect();
-
 
         Rx.Observable.subscribeLatest(
           element.observeDimensions().throttle(500),

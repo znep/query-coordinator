@@ -863,17 +863,21 @@ describe("Model", function() {
       });
 
       model.set('prop', 123);
+      var serialized = model.serialize();
 
       expect(newestValue).to.equal(123);
+      expect(serialized.hasOwnProperty('prop')).to.equal(true);
 
       model.unset('prop');
+      serialized = model.serialize();
 
       expect(newestValue).to.equal(undefined);
       expect(model.getCurrentValue('prop')).to.equal(undefined);
+      expect(serialized.hasOwnProperty('prop')).to.equal(false);
     });
   });
 
-  describe('update', function() {
+  describe('setFrom', function() {
     it('should set the properties to the new values', function() {
       var model1 = new Model();
       model1.defineObservableProperty('prop');
@@ -883,7 +887,7 @@ describe("Model", function() {
       model1.set('prop', 123);
       model2.set('prop', 234);
 
-      model1.update(model2);
+      model1.setFrom(model2);
 
       expect(model1.getCurrentValue('prop')).to.equal(234);
     });
@@ -907,7 +911,7 @@ describe("Model", function() {
       });
       newValue = null;
 
-      model1.update(model2);
+      model1.setFrom(model2);
 
       expect(model1.getCurrentValue('prop')).to.equal(234);
       expect(model1.getCurrentValue('prop2')).to.equal('abc');
@@ -915,7 +919,7 @@ describe("Model", function() {
       expect(newValue).to.equal(null);
     });
 
-    it('should unset undefined properties', function() {
+    it('should unset properties on this model which are not set on the argument model', function() {
       var model1 = new Model();
       model1.defineObservableProperty('prop');
       var model2 = new Model();
@@ -929,12 +933,43 @@ describe("Model", function() {
       model1.set('prop', 123);
       expect(newestValue).to.equal(123);
 
-      model1.update(model2);
+      model1.setFrom(model2);
 
       expect(model1.getCurrentValue('prop')).to.equal(undefined);
       expect(newestValue).not.to.equal(null);
       expect(newestValue).to.equal(undefined);
       expect(model1.isSet('prop')).to.equal(false);
+    });
+
+    it('should set only its own properties', function() {
+      var model1 = new Model();
+      model1.defineObservableProperty('prop');
+      var model2 = new Model();
+      model2.defineObservableProperty('prop');
+      model2.defineObservableProperty('prop2');
+
+      model1.set('prop', 123);
+      model2.set('prop', 234);
+      model2.set('prop2', 234);
+
+      model1.setFrom(model2);
+
+      expect(model1.getCurrentValue('prop')).to.equal(234);
+      expect(function() { model1.getCurrentValue('prop2'); }).to.throw();
+    });
+
+    it('should throw on argument Models with different properties', function() {
+      var model1 = new Model();
+      model1.defineObservableProperty('prop');
+      model1.defineObservableProperty('prop2');
+      var model2 = new Model();
+      model2.defineObservableProperty('prop');
+
+      model1.set('prop', 123);
+      model1.set('prop2', 234);
+      model2.set('prop', 345);
+
+      expect(function() { model1.setFrom(model2); }).to.throw();
     });
   });
 });

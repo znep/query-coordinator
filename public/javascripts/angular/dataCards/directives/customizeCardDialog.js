@@ -76,7 +76,7 @@
          * Save the model by updating the model passed in, with our cloned copy.
          */
         $scope.updateCard = function() {
-          $scope.cardModel.update($scope.customizedCard);
+          $scope.cardModel.setFrom($scope.customizedCard);
 
           // Now close the dialog
           $scope.dialogState.show = false;

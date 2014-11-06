@@ -57,21 +57,28 @@
     // Choropleth doesn't consider map tiles while deciding whether to emit
     // render:complete (by design, as the event is intended for internal timing
     // computation. We don't want to include external services in that).
-    // The event for choropleth is render:mapTilesLoaded.
-    // Simply count render starts and ends, and render when count becomes
-    // equal.
+    // So instead, we wait for all images to finish loading (yeah...).
 
+    // Sequence of render:complete events.
     var renderComplete = $rootScope.eventToObservable('render:complete');
-    renderComplete.dump('rcomp');
 
+    // Sequence of true/false representing whether or not all images on
+    // the page are complete.
     var imagesComplete = Rx.Observable.timer(100, 100).map(function() {
       var allImages = $('img');
+      // NOTE! The complete property has bugs in Firefox. Fortunately,
+      // this should only be running in PhantomJS, which has no problems
+      // here.
       return allImages.length > 0 && _.all(allImages, _.property('complete'));
-    }).first(_.identity);
+    });
 
-    var actuallyComplete = renderComplete.map(_.constant(imagesComplete)).first().switch().ignoreElements();
-    actuallyComplete.
-      subscribe(undefined, undefined, function() {
+    // Sequence like imagesComplete, but only begins after renderComplete emits.
+    var imagesCompleteAfterRenderComplete = renderComplete.first().ignoreElements().concat(imagesComplete);
+
+    // Tell Phantom we're ready, once we get a renderComplete AND all images are loaded.
+    imagesCompleteAfterRenderComplete.
+      first(_.identity).
+      subscribe(function() {
         if (_.isFunction(window.callPhantom)) {
           callPhantom('snapshotReady');
         } else {

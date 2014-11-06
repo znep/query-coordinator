@@ -1988,6 +1988,13 @@
 
             renderChart(chartData, chartDimensions, precision, pageIsFiltered);
 
+            // Make sure we also re-render the chart selection if it is visible
+            // (such as in the case of a visualization re-render triggered by
+            // the window being resized).
+            if (selectionActive) {
+              renderChartSelection();
+            }
+
             // Yield execution to the browser to render, then notify that render is complete
             $timeout(function() {
               scope.$emit('render:complete', { source: 'timelineChart_{0}'.format(scope.$id), timestamp: _.now() });

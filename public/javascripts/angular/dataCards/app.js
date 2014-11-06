@@ -26,7 +26,6 @@ dataCards.config(function(ServerConfig) {
  * Configure app analytics tracking
  */
 dataCards.run(function($window, $rootScope, Analytics) {
-  //TODO disable for single card view.
   Analytics.measureDomReady();
 
   // The analytics controller can use knowledge of when user interactions happen
@@ -95,7 +94,8 @@ dataCards.config(function($provide, $stateProvider, $urlRouterProvider, $locatio
           templateUrl: '/angular_templates/dataCards/pages/cards-view.html',
           controller: 'CardsViewController'
         }
-      }
+      },
+      analyticsEnabled: true
     }).
     state('view.card', {
       params: ['pageId', 'fieldName'],
@@ -132,7 +132,7 @@ dataCards.config(function($provide, $stateProvider, $urlRouterProvider, $locatio
     });
 });
 
-dataCards.run(function($location, $log, $rootScope, $state, Routes, DeveloperOverrides) {
+dataCards.run(function($location, $log, $rootScope, $state, Analytics, Routes, ServerConfig, DeveloperOverrides) {
   // Shamelessly lifted from http://www.joezimjs.com/javascript/3-ways-to-parse-a-query-string-in-a-url/
   var parseQueryString = function( queryString ) {
     var params = {}, queries, temp, i, l;
@@ -176,6 +176,11 @@ dataCards.run(function($location, $log, $rootScope, $state, Routes, DeveloperOve
   // our UX considerations require our URL to not depend on a document
   // fragment. We'd be able to use html5 mode on the router to satisfy this,
   // but we need to support IE9.
-  var initialAppUIState = Routes.getUIStateAndConfigFromUrl(location.pathname);
-  $state.go(initialAppUIState.stateName, initialAppUIState.parameters);
+  var initialRoute = Routes.getUIStateAndConfigFromUrl(location.pathname);
+  var initialAppUIState = $state.get(initialRoute.stateName);
+  $state.go(initialAppUIState, initialRoute.parameters);
+
+  // Enable analytics upload iff we're configured to AND the app UI state calls for it.
+  var isStatsdEnabled = ServerConfig.get('statsdEnabled') || false;
+  Analytics.setServerUploadEnabled(isStatsdEnabled && initialAppUIState.analyticsEnabled || false);
 });

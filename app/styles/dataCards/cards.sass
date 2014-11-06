@@ -117,6 +117,31 @@ body.state-view-cards
           .button-text
             visibility: hidden
 
+      button.download-menu
+        $border-width: 2px
+        position: relative
+        border-width: $border-width
+
+        >div
+          position: absolute
+          top: 100%
+          // Compensate for the border on the containing button
+          left: -$border-width
+          background-color: inherit
+          z-index: 5
+
+          >a
+            white-space: nowrap
+            color: inherit
+            display: block
+            line-height: 2rem
+            text-align: left
+            padding: $action-btn-padding-top $action-btn-padding-left
+
+            &:hover
+              background-color: $btn-bg-color
+              color: $aqua-font-color
+
   .cards-content
     position: relative
     color: $white-font-color

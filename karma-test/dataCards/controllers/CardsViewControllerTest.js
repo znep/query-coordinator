@@ -1,6 +1,7 @@
 describe("CardsViewController", function() {
   var Page;
   var Card;
+  var testHelpers;
   var $q;
   var $rootScope;
   var $controller;
@@ -73,13 +74,15 @@ describe("CardsViewController", function() {
       $provide.value('$window', mockWindowService);
     });
   });
-  beforeEach(inject(['$q', 'Card', 'Page', '$rootScope', '$controller', '$window', function(_$q, _Card, _Page, _$rootScope, _$controller, _$window) {
+  beforeEach(inject(['$q', 'Card', 'Page', '$rootScope', '$controller', '$window', 'testHelpers',
+                    function(_$q, _Card, _Page, _$rootScope, _$controller, _$window, _testHelpers) {
     Card = _Card;
     Page = _Page;
     $q = _$q;
     $rootScope = _$rootScope;
     $controller = _$controller;
     $window = _$window;
+    testHelpers = _testHelpers;
   }]));
 
   function makeController() {
@@ -226,13 +229,11 @@ describe("CardsViewController", function() {
     });
 
     describe('with card filters applied', function() {
-      var testHelpers;
       var harness;
 
-      beforeEach(inject(['testHelpers', function(_testHelpers) {
+      beforeEach(function() {
         harness = makeMinimalController();
-        testHelpers = _testHelpers;
-      }]));
+      });
 
       afterEach(function() {
         testHelpers.TestDom.clear();
@@ -523,6 +524,64 @@ describe("CardsViewController", function() {
       });
     });
 
+  });
+
+  describe('download button', function() {
+    var controllerHarness;
+
+    beforeEach(function() {
+      controllerHarness = makeController();
+    });
+
+    afterEach(function() {
+      testHelpers.TestDom.clear();
+    });
+
+    it('should provide a (correct) csv download link', function() {
+      expect(controllerHarness.scope.datasetCSVDownloadURL).to.equal('#');
+
+      controllerHarness.baseInfoPromise.resolve({
+        datasetId: 'fake-fbfr',
+        name: 'some name'
+      });
+      controllerHarness.scope.$digest();
+
+      expect(controllerHarness.scope.datasetCSVDownloadURL).
+        to.equal('/api/views/fake-fbfr/rows.csv?accessType=DOWNLOAD');
+    });
+
+    it('closes the dialog when clicking (or hitting esc) outside it', function() {
+      var body = $('body');
+      controllerHarness.scope.downloadOpened = true;
+      testHelpers.fireMouseEvent(body[0], 'mouseup');
+      controllerHarness.scope.$digest();
+      expect(controllerHarness.scope.downloadOpened).to.equal(false);
+
+      controllerHarness.scope.downloadOpened = true;
+      body.trigger($.Event('keydown', { which: 27 }));
+      controllerHarness.scope.$digest();
+      expect(controllerHarness.scope.downloadOpened).to.equal(false);
+
+      // should ignore events when the download isn't opened
+      controllerHarness.scope.downloadOpened = null;
+      body.trigger($.Event('keydown', { which: 27 }));
+      controllerHarness.scope.$digest();
+      expect(controllerHarness.scope.downloadOpened).to.equal(null);
+
+
+      // Now test clicking inside a download menu
+      var element = $('<button class="download-menu"><div><a>link</a></div></button>');
+      testHelpers.TestDom.append(element);
+
+      controllerHarness.scope.downloadOpened = true;
+      testHelpers.fireMouseEvent(element[0], 'mouseup');
+      controllerHarness.scope.$digest();
+      expect(controllerHarness.scope.downloadOpened).to.equal(true);
+
+      testHelpers.fireMouseEvent(element.find('a')[0], 'mouseup');
+      controllerHarness.scope.$digest();
+      expect(controllerHarness.scope.downloadOpened).to.equal(true);
+    });
   });
 
 });

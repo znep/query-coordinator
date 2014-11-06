@@ -14,7 +14,37 @@
     }
   }
 
-  function CardsViewController($scope, $location, $log, $window, $q, AngularRxExtensions, SortedTileLayout, Filter, PageDataService, UserSession, CardTypeMappingService, FlyoutService, page, Card) {
+  function initDownload($scope, page, WindowState) {
+    // The CSV download url
+    $scope.bindObservable('datasetCSVDownloadURL',
+      page.observe('dataset').map(function(dataset) {
+        if (dataset && dataset.hasOwnProperty('id')) {
+          return '/api/views/{0}/rows.csv?accessType=DOWNLOAD'.format(dataset.id);
+        } else {
+          return '#';
+        }
+      }));
+
+    // Download menu
+    WindowState.closeDialogEventObservable.filter(function(e) {
+      var target = $(e.target);
+      return $scope.downloadOpened &&
+        // The stuff in the menu has its own event handlers
+        !target.add(target.parent().parent()).hasClass('download-menu');;
+    }).subscribe(function() {
+      $scope.$apply(function(e) {
+        $scope.downloadOpened = false;
+      });
+    });
+
+    $scope.chooserMode = {show: false};
+    $scope.$watch('chooserMode.show', function(on) {
+      if (on) {
+      }
+    });
+  }
+
+  function CardsViewController($scope, $location, $log, $window, $q, AngularRxExtensions, SortedTileLayout, Filter, PageDataService, UserSession, CardTypeMappingService, FlyoutService, page, Card, WindowState) {
 
     AngularRxExtensions.install($scope);
 
@@ -59,17 +89,7 @@
       _.constant(null)
     );
 
-    /**
-     * CSV download Button
-     */
-    $scope.bindObservable('datasetCSVDownloadURL',
-      page.observe('dataset').map(function(dataset) {
-        if (dataset && dataset.hasOwnProperty('id')) {
-          return '/api/views/{0}/rows.csv?accessType=DOWNLOAD'.format(dataset.id);
-        } else {
-          return '#';
-        }
-      }));
+    initDownload($scope, page, WindowState);
 
     /*******************************
     * Filters and the where clause *

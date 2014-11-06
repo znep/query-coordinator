@@ -44,7 +44,16 @@
             class="action-btn r-to-l"
             ng-class='{disabled: !!expandedCard, "cards-edit-disabled": !!expandedCard}'
             ng-show="currentUser">{{editMode | ifElse:'Preview':'Customize'}}</button>
-          <a href="{{datasetCSVDownloadURL}}" title="Download this data as CSV" class="action-btn r-to-l">Download</a>
+          <button
+            ng-click="downloadOpened = !downloadOpened"
+            class="action-btn r-to-l download-menu"
+            ng-class="{active: downloadOpened}"
+            >Download
+            <div ng-if="downloadOpened">
+              <a href="{{datasetCSVDownloadURL}}">Data as tabular spreadsheet</a>
+              <a href='#' ng-click="chooserMode.show = true">Visualization as image</a>
+            </div>
+          </button>
           <api-explorer dataset-observable="page.observe('dataset')"></api-explorer>
         </div>
       </div>

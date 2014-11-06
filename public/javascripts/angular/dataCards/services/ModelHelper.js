@@ -80,6 +80,28 @@ angular.module('dataCards.services').factory('ModelHelper', function() {
     return outer;
   };
 
+  // Add a read-only property whose value comes from the given sequence.
+  // Returns a sequence of values written while observers were listening.
+  function addReadOnlyProperty(propertyName, model, valueSequence) {
+    var lastSeenValue = new Rx.BehaviorSubject(undefined);
+    var sideEffectedSequence = valueSequence.do(function(value) {
+      lastSeenValue.onNext(value);
+    });
+
+    Object.defineProperty(model, propertyName, {
+      get: _.constant(sideEffectedSequence),
+      enumerable: true
+    });
+
+    Object.defineProperty(model, currentValuePropertyNamePrefix + propertyName, {
+      get: function() {
+        return lastSeenValue.value;
+      }
+    });
+
+    return lastSeenValue.skip(1); // Skip first, as it's going to be the initial undefined value from the BehaviorSubject.
+  };
+
   // A hack to expose a property's instantaneous value. When ModelHelper is moved back
   // into Model, this should go away (and its spirit moved into Model.getCurrentValue).
   function currentValueOfProperty(model, propertyName) {
@@ -89,6 +111,7 @@ angular.module('dataCards.services').factory('ModelHelper', function() {
   return {
     addProperty: addProperty,
     addPropertyWithLazyDefault: addPropertyWithLazyDefault,
+    addReadOnlyProperty: addReadOnlyProperty,
     currentValueOfProperty: currentValueOfProperty
   };
 });

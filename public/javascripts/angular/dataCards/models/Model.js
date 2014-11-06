@@ -90,14 +90,36 @@ angular.module('dataCards.models').factory('Model', function(Class, ModelHelper)
       // want to consider as a write.
       //TODO right now we don't distinguish between passing null and not passing initialValue
       //at all.
-      (_.isDefined(initialValue) ? writesSequence : writesSequence.skip(1))
-        .subscribe(function(value) {
+      (_.isDefined(initialValue) ? writesSequence : writesSequence.skip(1)).
+        subscribe(function(value) {
           self._writes.onNext({
             model: self,
             property: propertyName,
             newValue: value
           });
-        })
+        });
+    },
+
+    defineReadOnlyObservableProperty: function(propertyName, valueSequence) {
+      var self = this;
+
+      if (valueSequence && !_.isFunction(valueSequence.asObservable)) {
+        throw new Error('Expected valueSequence to be an observable');
+      }
+
+      if (this._propertyTable.hasOwnProperty(propertyName)) {
+        throw new Error('Object ' + this + ' already has property: ' + propertyName);
+      }
+
+      ModelHelper.addReadOnlyProperty(propertyName, this._propertyTable, valueSequence.asObservable()).
+        subscribe(function(value) {
+          self._writes.onNext({
+            model: self,
+            property: propertyName,
+            newValue: value
+          });
+        });
+
     },
 
     _assertProperty: function(propertyName) {

@@ -14,9 +14,12 @@ angular.module('test', [])
 
     // D3 doesn't have a jQuery-like trigger. So if you want to simulate mouse events,
     // we need to use real browser events.
-    var fireMouseEvent = function(elem, evtName) {
+    var fireMouseEvent = function(elem, evtName, eventProps) {
       var evt = document.createEvent("MouseEvents");
       evt.initMouseEvent(evtName, true, true, window, 0, 0, 0, 0, 0, false, false, false, false, 0, null);
+      if (eventProps) {
+        $.extend(evt, eventProps);
+      }
       elem.dispatchEvent(evt);
     };
 

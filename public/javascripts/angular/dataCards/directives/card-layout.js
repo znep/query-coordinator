@@ -16,6 +16,17 @@
     3: 200
   };
 
+  function initCardSelection(scope) {
+    scope.isPngExportable = function(model) {
+      // Only datacards are not exportable
+      return model.fieldName !== '*';
+    };
+
+    scope.getDownloadUrl = function(model) {
+      return './' + scope.page.id + '/' + model.fieldName + '.png';
+    }
+  }
+
   function cardLayout(Constants, AngularRxExtensions, WindowState, SortedTileLayout, FlyoutService, CardTypeMappingService) {
 
     sortedTileLayout = new SortedTileLayout();
@@ -25,6 +36,7 @@
         page: '=',
         expandedCard: '=',
         editMode: '=',
+        chooserMode: '=',
         globalWhereClauseFragment: '=',
         cardModels: '=',
         datasetColumns: '=',
@@ -699,6 +711,8 @@
             scope.page.set('cards', _.without(scope.cardModels, cardModel));
           });
         };
+
+        initCardSelection(scope);
 
         /**
          * Some modal dialogs.

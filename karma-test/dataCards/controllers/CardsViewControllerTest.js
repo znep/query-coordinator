@@ -553,7 +553,7 @@ describe("CardsViewController", function() {
     it('closes the dialog when clicking (or hitting esc) outside it', function() {
       var body = $('body');
       controllerHarness.scope.downloadOpened = true;
-      testHelpers.fireMouseEvent(body[0], 'mouseup');
+      testHelpers.fireMouseEvent(body[0], 'click');
       controllerHarness.scope.$digest();
       expect(controllerHarness.scope.downloadOpened).to.equal(false);
 
@@ -568,19 +568,14 @@ describe("CardsViewController", function() {
       controllerHarness.scope.$digest();
       expect(controllerHarness.scope.downloadOpened).to.equal(null);
 
-
       // Now test clicking inside a download menu
       var element = $('<button class="download-menu"><div><a>link</a></div></button>');
       testHelpers.TestDom.append(element);
 
       controllerHarness.scope.downloadOpened = true;
-      testHelpers.fireMouseEvent(element[0], 'mouseup');
+      testHelpers.fireMouseEvent(element.find('a')[0], 'click');
       controllerHarness.scope.$digest();
-      expect(controllerHarness.scope.downloadOpened).to.equal(true);
-
-      testHelpers.fireMouseEvent(element.find('a')[0], 'mouseup');
-      controllerHarness.scope.$digest();
-      expect(controllerHarness.scope.downloadOpened).to.equal(true);
+      expect(controllerHarness.scope.downloadOpened).to.equal(false);
     });
   });
 

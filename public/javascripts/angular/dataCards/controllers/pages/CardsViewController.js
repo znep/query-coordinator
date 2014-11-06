@@ -27,10 +27,7 @@
 
     // Download menu
     WindowState.closeDialogEventObservable.filter(function(e) {
-      var target = $(e.target);
-      return $scope.downloadOpened &&
-        // The stuff in the menu has its own event handlers
-        !target.add(target.parent().parent()).hasClass('download-menu');;
+      return $scope.downloadOpened;
     }).subscribe(function() {
       $scope.$apply(function(e) {
         $scope.downloadOpened = false;
@@ -38,10 +35,19 @@
     });
 
     $scope.chooserMode = {show: false};
-    $scope.$watch('chooserMode.show', function(on) {
-      if (on) {
+
+    $scope.onDownloadClick = function(event) {
+      // Don't double-handle closing the dialog
+      event.stopPropagation();
+
+      // Clicking the 'Cancel' button
+      if (event.target.nodeName === 'BUTTON' && $scope.chooserMode.show) {
+        $scope.chooserMode.show = false;
+      } else {
+        // Otherwise, close the dialog
+        $scope.downloadOpened = !$scope.downloadOpened;
       }
-    });
+    };
   }
 
   function CardsViewController($scope, $location, $log, $window, $q, AngularRxExtensions, SortedTileLayout, Filter, PageDataService, UserSession, CardTypeMappingService, FlyoutService, page, Card, WindowState) {

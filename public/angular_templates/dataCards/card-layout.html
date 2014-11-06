@@ -10,7 +10,17 @@
   <div class="card-drop-placeholder"
     ng-if="cardPosition.model === grabbedCard.model && cardPosition.model.fieldName !== '*'"
     ></div>
-  <div class="card-drag-overlay"
+  <div ng-if="chooserMode.show"
+    class="card-chooser overlay"
+    ng-class="{enabled: isPngExportable(cardPosition.model)}"
+    >
+    <form action="{{ getDownloadUrl(cardPosition.model) }}">
+      <button class="action-btn"
+              ng-disabled="!isPngExportable(cardPosition.model)"
+              >Download</button>
+    </form>
+  </div>
+  <div class="card-drag-overlay overlay"
     data-card-id="{{cardPosition.model.uniqueId}}"
     ng-if="editMode && cardPosition.model !== grabbedCard.model && cardPosition.model.fieldName !== '*'">
     <div class="card-controls">

@@ -200,16 +200,16 @@
 
       it('should show the panel when clicked, and hide it when clicking outside', function() {
         expect(element.find('.tool-panel-inner-container:visible').length).to.equal(1);
-        testHelpers.fireMouseEvent(element.find('.tool-panel-inner-container')[0], 'mouseup');
+        testHelpers.fireMouseEvent(element.find('.tool-panel-inner-container')[0], 'click');
         // no effect
         expect(element.find('.tool-panel-inner-container:visible').length).to.equal(1);
-        testHelpers.fireMouseEvent($('body')[0], 'mouseup');
+        testHelpers.fireMouseEvent($('body')[0], 'click');
         expect(element.find('.tool-panel-inner-container:visible').length).to.equal(0);
       });
 
       it('should show the panel when clicked, and hide it when hitting escape', function() {
         expect(element.find('.tool-panel-inner-container:visible').length).to.equal(1);
-        testHelpers.fireMouseEvent(element.find('.tool-panel-inner-container')[0], 'mouseup');
+        testHelpers.fireMouseEvent(element.find('.tool-panel-inner-container')[0], 'click');
         // no effect
         expect(element.find('.tool-panel-inner-container:visible').length).to.equal(1);
         testHelpers.fireEvent(document, 'keydown', {which: 27});

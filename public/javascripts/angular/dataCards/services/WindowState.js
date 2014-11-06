@@ -45,7 +45,8 @@
     });
 
     var mouseLeftButtonPressedSubject = new Rx.BehaviorSubject(false);
-    var mouseLeftButtonClickSubject = new Rx.Subject();
+    var mouseLeftButtonClickSubject = Rx.Observable.fromEvent(body, 'click').
+        filter(function(e) { return e.which === 1; });
 
     var mouseLeftButtonPressedWithTargetSubject = new Rx.Subject();
 
@@ -53,7 +54,6 @@
     body.addEventListener('mouseup', function(e) {
       if (e.which === 1) {
         mouseLeftButtonPressedSubject.onNext(false);
-        mouseLeftButtonClickSubject.onNext(e);
         mouseLeftButtonPressedWithTargetSubject.onNext({value: false, target: e.target});
       }
     });

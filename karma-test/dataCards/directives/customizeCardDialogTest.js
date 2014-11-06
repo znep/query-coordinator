@@ -8,6 +8,7 @@ describe('customize card dialog', function() {
   beforeEach(module('/angular_templates/dataCards/customizeCardDialog.html'));
   beforeEach(module('/angular_templates/dataCards/socSelect.html'));
   beforeEach(module('/angular_templates/dataCards/cardVisualizationSearch.html'));
+  beforeEach(module('/angular_templates/dataCards/cardVisualization.html'));
   beforeEach(module('/angular_templates/dataCards/clearableInput.html'));
 
   var AngularRxExtensions;

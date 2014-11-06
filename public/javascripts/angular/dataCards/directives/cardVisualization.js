@@ -6,7 +6,7 @@ angular.module('dataCards.directives').directive('cardVisualization', function(A
       'model': '=',
       'whereClause': '='
     },
-    templateUrl: '/angular_templates/dataCards/card-visualization.html',
+    templateUrl: '/angular_templates/dataCards/cardVisualization.html',
     link: function($scope, element, attrs) {
       AngularRxExtensions.install($scope);
 

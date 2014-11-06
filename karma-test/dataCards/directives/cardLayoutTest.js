@@ -21,6 +21,7 @@ describe('CardLayout directive', function() {
   beforeEach(module('/angular_templates/dataCards/cardVisualizationChoropleth.html'));
   beforeEach(module('/angular_templates/dataCards/cardVisualizationTable.html'));
   beforeEach(module('/angular_templates/dataCards/cardVisualizationSearch.html'));
+  beforeEach(module('/angular_templates/dataCards/cardVisualization.html'));
   beforeEach(module('/angular_templates/dataCards/clearableInput.html'));
   beforeEach(module('/angular_templates/dataCards/customizeCardDialog.html'));
   beforeEach(module('/angular_templates/dataCards/modalDialog.html'));

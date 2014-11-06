@@ -11,9 +11,9 @@
       </span>
     </div>
   </form>
-  <div class="search-card-text card-example-text" ng-show="sampleOne && !showResults">
+  <div class="search-card-text card-example-text" ng-show="!showResults">
     <div>Type some text and press enter to search</div>
-    <div class="one-line">(Examples: '{{sampleOne}}'<span ng-show="sampleTwo"> or '{{sampleTwo}}'</span>)</div>
+    <div class="one-line" ng-show="sampleOne">(Examples: '{{sampleOne}}'<span ng-show="sampleTwo"> or '{{sampleTwo}}'</span>)</div>
   </div>
 </div>
 <div ng-show="isInvalidSearch" class="search-card-results">

@@ -115,6 +115,12 @@ div[ng-switch="cardType"]
   .input-group
     display: table
     width: 100%
+    .form-control,
+    .input-group-addon
+      display: table-cell
+    .input-group-addon
+      width: 1%
+
   .form-control
     width: 100%
     box-sizing: border-box
@@ -125,9 +131,6 @@ div[ng-switch="cardType"]
     border: 3px solid transparent
     border-bottom: 1px solid $lt-grey-font-color-rgba
     margin-top: 5px
-  .input-group-addon
-    display: table-cell
-    width: 1%
 
 .card-example-text
   .one-line

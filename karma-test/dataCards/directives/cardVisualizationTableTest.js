@@ -255,15 +255,9 @@ describe("A Table Card Visualization", function() {
         'cardSize': 2
       }];
 
-      var exceptionRaised = false;
-
-      try {
+      expect(function() {
         createTable(true, cards);
-      } catch (e) {
-        exceptionRaised = true;
-      }
-
-      expect(exceptionRaised).to.be.false;
+      }).to.not.throw();
 
     });
 

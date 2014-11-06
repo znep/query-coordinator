@@ -82,25 +82,7 @@
       });
     };
 
-    var allCardsFilters = page.observe('cards').flatMap(function(cards) {
-      if (!cards) { return Rx.Observable.never(); }
-      return Rx.Observable.combineLatest(_.map(cards, function(d) {
-        return d.observe('activeFilters');
-      }), function() {
-        return _.zipObject(_.pluck(cards, 'fieldName'), arguments);
-      });
-    });
-
-    var allCardsWheres = allCardsFilters.map(function(filters) {
-      var wheres = _.map(filters, function(operators, field) {
-        if (_.isEmpty(operators)) {
-          return null;
-        } else {
-          return _.invoke(operators, 'generateSoqlWhereFragment', field).join(' AND ');
-        }
-      });
-      return _.compact(wheres).join(' AND ');
-    });
+    var allCardsFilters = page.observe('activeFilters');
 
     // side-effecting map on allCardsFilters that updates the height of the spacer
     // that keeps the card layout in the correct position below the quick filter bar.
@@ -108,9 +90,7 @@
       $('.quick-filter-bar-spacer').height($('.quick-filter-bar .content').height());
     });
 
-    $scope.bindObservable('globalWhereClauseFragment', allCardsWheres.combineLatest(page.observe('baseSoqlFilter'), function(cardWheres, basePageWhere) {
-      return _.compact([basePageWhere, cardWheres]).join(' AND ');
-    }));
+    $scope.bindObservable('globalWhereClauseFragment', page.observe('computedWhereClauseFragment'));
 
     $scope.bindObservable('appliedFiltersForDisplay', allCardsFilters.combineLatest(page.observe('dataset').observeOnLatest('columns'), function(filters, columns) {
 

@@ -30,29 +30,8 @@
     * Filters and the where clause *
     *******************************/
 
-    var allCardsFilters = page.observe('cards').flatMap(function(cards) {
-      if (!cards) { return Rx.Observable.never(); }
-      return Rx.Observable.combineLatest(_.map(cards, function(d) {
-        return d.observe('activeFilters');
-      }), function() {
-        return _.zipObject(_.pluck(cards, 'fieldName'), arguments);
-      });
-    });
 
-    var allCardsWheres = allCardsFilters.map(function(filters) {
-      var wheres = _.map(filters, function(operators, field) {
-        if (_.isEmpty(operators)) {
-          return null;
-        } else {
-          return _.invoke(operators, 'generateSoqlWhereFragment', field).join(' AND ');
-        }
-      });
-      return _.compact(wheres).join(' AND ');
-    });
-
-    $scope.bindObservable('globalWhereClauseFragment', allCardsWheres.combineLatest(page.observe('baseSoqlFilter'), function(cardWheres, basePageWhere) {
-      return _.compact([basePageWhere, cardWheres]).join(' AND ');
-    }));
+    $scope.bindObservable('globalWhereClauseFragment', page.observe('computedWhereClauseFragment'));
 
     // Choropleth doesn't consider map tiles while deciding whether to emit
     // render:complete (by design, as the event is intended for internal timing

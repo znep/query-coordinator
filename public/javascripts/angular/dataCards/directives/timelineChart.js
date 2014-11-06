@@ -1340,13 +1340,19 @@
          */
 
         function filterChartByCurrentSelection() {
-          scope.$emit(
-            'filter-timeline-chart',
-            {
-              start: moment(selectionStartDate),
-              end: moment(selectionEndDate).add(1, datasetPrecision)
-            }
-          );
+
+          var selectionStartDateAsMoment = moment(selectionStartDate);
+          var selectionEndDateAsMoment = moment(selectionEndDate).add(1, datasetPrecision);
+
+          if (selectionStartDateAsMoment.isValid() && selectionEndDateAsMoment.isValid()) {
+            scope.$emit(
+              'filter-timeline-chart',
+              {
+                start: moment(selectionStartDate),
+                end: moment(selectionEndDate).add(1, datasetPrecision)
+              }
+            );
+          }
         }
 
 
@@ -1537,8 +1543,9 @@
               if (candidateStartDate !== null) {
                 selectionStartDate = new Date(candidateStartDate);
                 selectionEndDate = new Date(mouseStatus.position.target.getAttribute('data-end'));
+                enterDraggingState();
               }
-              enterDraggingState();
+
             }
 
             if (mousePositionWithinChartDisplay) {

@@ -14,9 +14,12 @@
     class="card-chooser overlay"
     ng-class="{enabled: isPngExportable(cardPosition.model)}"
     >
-    <form action="{{ getDownloadUrl(cardPosition.model) }}">
+    <form
+      ng-class=""
+      action="{{ getDownloadUrl(cardPosition.model) }}">
       <button class="action-btn"
-              ng-disabled="!isPngExportable(cardPosition.model)"
+              ng-class="{'export-visualization-disabled': !isPngExportable(cardPosition.model),
+                         disabled: !isPngExportable(cardPosition.model)}"
               >Download</button>
     </form>
   </div>

@@ -43,6 +43,19 @@
       ];
     }
 
+    var UNEXPORTABLE_CARD_TYPES = {
+      table: true,
+      search: true
+    };
+    /**
+     * Determines whether or not the given card is able to be exported as a PNG.
+     */
+    function _isExportable(cardModel) {
+      return !UNEXPORTABLE_CARD_TYPES[
+        _cardTypeForModel(cardModel)
+      ];
+    }
+
 
     function _cardTypeForColumn(column) {
       column = column || {};
@@ -104,6 +117,7 @@
 
     return {
       isCustomizable: _isCustomizable,
+      isExportable: _isExportable,
       cardTypeForModel: _cardTypeForModel,
       cardTypeForColumn: _cardTypeForColumn,
       cardTypeForColumnIsSupported: _cardTypeForColumnIsSupported

@@ -16,15 +16,17 @@
     3: 200
   };
 
-  function initCardSelection(scope) {
-    scope.isPngExportable = function(model) {
-      // Only datacards are not exportable
-      return model.fieldName !== '*';
-    };
+  function initCardSelection(scope, CardTypeMappingService, FlyoutService) {
+    scope.isPngExportable = CardTypeMappingService.isExportable;
 
     scope.getDownloadUrl = function(model) {
       return './' + scope.page.id + '/' + model.fieldName + '.png';
     }
+
+    FlyoutService.register('export-visualization-disabled', _.constant(
+          '<div class="flyout-title">This visualization is not available' +
+          '<br/>for image export</div>'
+    ));
   }
 
   function cardLayout(Constants, AngularRxExtensions, WindowState, SortedTileLayout, FlyoutService, CardTypeMappingService) {
@@ -712,7 +714,7 @@
           });
         };
 
-        initCardSelection(scope);
+        initCardSelection(scope, CardTypeMappingService, FlyoutService);
 
         /**
          * Some modal dialogs.

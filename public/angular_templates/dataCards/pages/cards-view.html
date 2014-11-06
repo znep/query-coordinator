@@ -52,7 +52,7 @@
             <dropdown-menu show="downloadOpened">
               <a href="{{datasetCSVDownloadURL}}">Data as tabular spreadsheet</a>
               <a href='#'
-                 ng-class="{disabled: hasChanges}"
+                 ng-class="{'download-menu-item-disabled': hasChanges}"
                  ng-click="chooserMode.show = !hasChanges && true"
                  >Visualization as image</a>
             </dropdown-menu>

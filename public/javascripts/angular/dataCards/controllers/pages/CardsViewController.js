@@ -14,7 +14,7 @@
     }
   }
 
-  function initDownload($scope, page, WindowState) {
+  function initDownload($scope, page, WindowState, FlyoutService) {
     // The CSV download url
     $scope.bindObservable('datasetCSVDownloadURL',
       page.observe('dataset').map(function(dataset) {
@@ -48,6 +48,12 @@
         $scope.downloadOpened = !$scope.downloadOpened;
       }
     };
+
+    FlyoutService.register('download-menu-item-disabled', _.constant(
+      '<div class="flyout-title">' +
+      'Please save the page in order to export a visualization as image' +
+      '</div>'
+    ));
   }
 
   function CardsViewController($scope, $location, $log, $window, $q, AngularRxExtensions, SortedTileLayout, Filter, PageDataService, UserSession, CardTypeMappingService, FlyoutService, page, Card, WindowState) {
@@ -95,7 +101,7 @@
       _.constant(null)
     );
 
-    initDownload($scope, page, WindowState);
+    initDownload($scope, page, WindowState, FlyoutService);
 
     /*******************************
     * Filters and the where clause *

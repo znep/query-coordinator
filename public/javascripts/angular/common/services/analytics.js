@@ -168,7 +168,7 @@
           },
           'contentType': 'application/json',
           'dataType': 'json',
-          'requester': 'analytics'
+          'requester': {}
         }
 
         http.post(analyticsUrl, analyticsPayload, analyticsConfig);

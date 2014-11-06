@@ -1,4 +1,4 @@
-angular.module('dataCards.directives').directive('cardVisualizationTimelineChart', function(AngularRxExtensions, CardDataService, Filter) {
+angular.module('dataCards.directives').directive('cardVisualizationTimelineChart', function(AngularRxExtensions, CardDataService, Filter, $log) {
   'use strict';
 
   return {
@@ -72,6 +72,17 @@ angular.module('dataCards.directives').directive('cardVisualizationTimelineChart
           return whereClause;
         }
       }
+
+      var reportInvalidTimelineDomain = _.once(function() {
+        $log.error(
+          [
+            'Cannot render timeline chart with invalid domain (',
+            'column fieldName: "',
+            scope.model.fieldName,
+            '").'
+          ].join('')
+        );
+      });
 
       function transformChartDataForRendering(chartData) {
 
@@ -187,42 +198,54 @@ angular.module('dataCards.directives').directive('cardVisualizationTimelineChart
         }
       }
 
-      var precision = Rx.Observable.combineLatest(
+      var datasetPrecision = Rx.Observable.combineLatest(
         model.pluck('fieldName'),
         dataset,
         function(fieldName, dataset) {
-          return Rx.Observable.fromPromise(CardDataService.
-            getTimelineDomain(fieldName, dataset.id));
+          return Rx.Observable.fromPromise(
+            CardDataService.getTimelineDomain(fieldName, dataset.id)
+          );
         }).switchLatest().map(function(domain) {
-          var interval;
-          if (moment(domain.start).add('years', 1).isAfter(domain.end)) {
-            interval = 'DAY';
-          } else if (moment(domain.start).add('years', 20).isAfter(domain.end)) {
-            interval = 'MONTH';
-          } else {
-            interval = 'YEAR';
+
+          var precision;
+
+          if (_.isUndefined(domain)) {
+            reportInvalidTimelineDomain();
+            return;
           }
-          return interval;
+
+          if (moment(domain.start).add('years', 1).isAfter(domain.end)) {
+            precision = 'DAY';
+          } else if (moment(domain.start).add('years', 20).isAfter(domain.end)) {
+            precision = 'MONTH';
+          } else {
+            precision = 'YEAR';
+          }
+
+          return precision;
+
         });
 
       var unfilteredData = Rx.Observable.subscribeLatest(
         model.pluck('fieldName'),
         dataset,
         baseSoqlFilter,
-        precision,
-        function(fieldName, dataset, whereClauseFragment, precision) {
-          dataRequests.onNext(1);
-          var dataPromise = CardDataService.getTimelineData(fieldName, dataset.id, whereClauseFragment, precision);
-          dataPromise.then(
-            function(res) {
-              // Ok
-              unfilteredDataSequence.onNext(dataPromise);
-              dataResponses.onNext(1);
-            },
-            function(err) {
-              // Do nothing
-            });
-          return Rx.Observable.fromPromise(dataPromise);
+        datasetPrecision,
+        function(fieldName, dataset, whereClauseFragment, datasetPrecision) {
+          if (_.isDefined(datasetPrecision)) {
+            dataRequests.onNext(1);
+            var dataPromise = CardDataService.getTimelineData(fieldName, dataset.id, whereClauseFragment, datasetPrecision);
+            dataPromise.then(
+              function(res) {
+                // Ok
+                unfilteredDataSequence.onNext(dataPromise);
+                dataResponses.onNext(1);
+              },
+              function(err) {
+                // Do nothing
+              });
+            return Rx.Observable.fromPromise(dataPromise);
+          }
         });
 
       var filteredData = Rx.Observable.subscribeLatest(
@@ -230,20 +253,22 @@ angular.module('dataCards.directives').directive('cardVisualizationTimelineChart
         dataset,
         scope.observe('whereClause'),
         nonBaseFilterApplied,
-        precision,
-        function(fieldName, dataset, whereClauseFragment, nonBaseFilterApplied, precision) {
-          dataRequests.onNext(1);
-          var dataPromise = CardDataService.getTimelineData(fieldName, dataset.id, whereClauseFragment, precision);
-          dataPromise.then(
-            function(res) {
-              // Ok
-              filteredDataSequence.onNext(dataPromise);
-              dataResponses.onNext(1);
-            },
-            function(err) {
-              // Do nothing
-            });
-          return Rx.Observable.fromPromise(dataPromise);
+        datasetPrecision,
+        function(fieldName, dataset, whereClauseFragment, nonBaseFilterApplied, datasetPrecision) {
+          if (_.isDefined(datasetPrecision)) {
+            dataRequests.onNext(1);
+            var dataPromise = CardDataService.getTimelineData(fieldName, dataset.id, whereClauseFragment, datasetPrecision);
+            dataPromise.then(
+              function(res) {
+                // Ok
+                filteredDataSequence.onNext(dataPromise);
+                dataResponses.onNext(1);
+              },
+              function(err) {
+                // Do nothing
+              });
+            return Rx.Observable.fromPromise(dataPromise);
+          }
         });
 
       scope.bindObservable('chartData', Rx.Observable.combineLatest(
@@ -283,7 +308,7 @@ angular.module('dataCards.directives').directive('cardVisualizationTimelineChart
 
       scope.bindObservable('expanded', model.observeOnLatest('expanded'));
 
-      scope.bindObservable('precision', precision);
+      scope.bindObservable('precision', datasetPrecision);
 
       scope.bindObservable('activeFilters', model.observeOnLatest('activeFilters'));
 

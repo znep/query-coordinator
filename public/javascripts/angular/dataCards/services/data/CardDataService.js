@@ -50,6 +50,9 @@
         });
       },
 
+      // This function's return value is undefined if the domain of the
+      // dataset is undefined. The cardVisualizationTimelineChart checks for
+      // undefined values and responds accordingly.
       getTimelineDomain: function(fieldName, datasetId) {
         Assert(_.isString(fieldName), 'fieldName should be a string');
         Assert(_.isString(datasetId), 'datasetId should be a string');
@@ -62,23 +65,36 @@
         var url = '/api/id/' + datasetId + '.json?';
         var config =  httpConfig.call(this);
         return http.get(url + $.param(params), config).then(function(response) {
+
           if (_.isEmpty(response.data)) {
             return $q.reject('Empty response from SODA.');
           }
+
           var firstRow = response.data[0];
+          var domain;
 
-          var domain = {
-            start: moment(firstRow.start, moment.ISO_8601),
-            end: moment(firstRow.end, moment.ISO_8601)
-          };
+          if (firstRow.hasOwnProperty('start') && firstRow.hasOwnProperty('end')) {
 
-          if (!domain.start.isValid()) {
-            return $q.reject('Invalid date: ' + firstRow.start);
-          } else if (!domain.end.isValid()) {
-            return $q.reject('Invalid date: ' + firstRow.end);
-          } else {
-            return domain;
+            var domainStart = moment(firstRow.start, moment.ISO_8601);
+            var domainEnd = moment(firstRow.end, moment.ISO_8601);
+
+            if (!domainStart.isValid()) {
+              return $q.reject('Invalid start date.');
+            }
+
+            if (!domainEnd.isValid()) {
+              return $q.reject('Invalid end date.');
+            }
+
+            domain = {
+              start: moment(firstRow.start, moment.ISO_8601),
+              end: moment(firstRow.end, moment.ISO_8601)
+            };
+
           }
+
+          return domain;
+
         });
       },
 

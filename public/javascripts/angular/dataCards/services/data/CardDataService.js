@@ -146,11 +146,7 @@
       getChoroplethRegions: function(shapeFileId) {
         shapeFileId = DeveloperOverrides.dataOverrideForDataset(shapeFileId) || shapeFileId;
         var url = '/resource/{0}.geojson'.format(shapeFileId);
-        var config = httpConfig.call(this, {
-          headers: {
-            'Accept': 'application/vnd.geo+json'
-          }
-        });
+        var config = httpConfig.call(this, { headers: { 'Accept': 'application/vnd.geo+json' } });
         return http.get(url, config).
           then(function(response) {
             return response.data;

@@ -5,6 +5,13 @@
   var entity = 'domain-intern';
   var baseMetricName = 'js-cardsview-{0}-time';
 
+  function httpConfig(config) {
+    return _.extend({
+      requester: this,
+      cache: false
+    }, config);
+  }
+
   /**
    * Analytics service
    *
@@ -144,26 +151,33 @@
      * @param metricValue
      */
     function sendMetric(metricName, metricValue) {
+
+      var analyticsPayload;
+      var config;
+
       if (isStatsdEnabled()) {
-        http({
-          method: 'post',
-          url: analyticsUrl,
-          data: JSON.stringify({
-            metrics: [
-              {
-                entity: entity,
-                metric: metricName,
-                increment: metricValue
-              }
-            ]
-          }),
-          headers: {
+
+        analyticsPayload = JSON.stringify({
+          metrics: [
+            {
+              entity: entity,
+              metric: metricName,
+              increment: metricValue
+            }
+          ]
+        });
+
+        config = httpConfig.call(this, {
+          'headers': {
             'X-Socrata-Auth': 'unauthenticated',
             'Content-Type': 'application/text'
           },
-          contentType: 'application/json',
-          dataType: 'json'
+          'contentType': 'application/json',
+          'dataType': 'json'
         });
+
+        http.post(analyticsUrl, analyticsPayload, config);
+
       }
     }
 

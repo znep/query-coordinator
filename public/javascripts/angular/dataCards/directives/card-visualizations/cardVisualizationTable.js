@@ -2,6 +2,7 @@ angular.module('dataCards.directives').directive('cardVisualizationTable', funct
   "use strict";
 
   var unsortable = ['geo_entity'];
+  var validColumnRegex = new RegExp('^[\\d\\w_]{2}');
 
   return {
     restrict: 'E',
@@ -32,25 +33,19 @@ angular.module('dataCards.directives').directive('cardVisualizationTable', funct
         return CardDataService.getRows.apply(CardDataService, args);
       };
 
-      var isComputedColumn = function(columnName) {
-        return columnName.length > 1 && columnName.substring(0, 2) === ':@';
-      };
-
-      var isSystemColumn = function(columnName) {
-        return columnName.length > 1 && (columnName.substring(0, 1) === ':' || columnName === '*');
-      };
+      function isDisplayableColumn(column) {
+        return validColumnRegex.test(column.name);
+      }
 
       function removeSystemColumns(columns) {
-        var filteredColumns = {};
-
-        _.each(columns, function(column, fieldName) {
-          if (!isComputedColumn(fieldName) && !isSystemColumn(fieldName)) {
+        var filteredColumns = _(columns).
+          filter(isDisplayableColumn).
+          map(function(column) {
             column.sortable = !_.contains(unsortable, column.physicalDatatype);
-            filteredColumns[fieldName] = column;
-          }
-        });
-
-        return filteredColumns;
+            return column;
+          }).
+          value();
+        return _.zipObject(_.pluck(filteredColumns, 'name'), filteredColumns);
       }
 
       var columnDetails = dataset.observeOnLatest('columns').map(removeSystemColumns);

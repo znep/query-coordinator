@@ -114,13 +114,14 @@
         var dfd = q.defer();
         getSampleDataStub.returns(dfd.promise);
         var cardData = createCard();
-        expect(cardData.element.find('.card-example-text').is(':visible')).to.be.false;
+        var helpText = cardData.element.find('.search-card-text');
+        expect(helpText.find('.one-line').is(':visible')).to.be.false;
         dfd.resolve([
           { name: SAMPLE_1 },
           { name: SAMPLE_2 }
         ]);
         cardData.scope.$apply();
-        expect(cardData.element.find('.card-example-text').is(':visible')).to.be.true;
+        expect(helpText.find('.one-line').is(':visible')).to.be.true;
       });
 
       it('should show the sample data', function() {
@@ -129,8 +130,9 @@
           { name: SAMPLE_2 }
         ]));
         var cardData = createCard();
-        expect(cardData.element.find('.card-example-text').text()).to.contain(SAMPLE_1);
-        expect(cardData.element.find('.card-example-text').text()).to.contain(SAMPLE_2);
+        var sampleText = cardData.element.find('.search-card-text .one-line');
+        expect(sampleText.text()).to.contain(SAMPLE_1);
+        expect(sampleText.text()).to.contain(SAMPLE_2);
       });
     });
 

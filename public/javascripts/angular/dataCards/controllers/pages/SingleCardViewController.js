@@ -61,31 +61,17 @@
     // Simply count render starts and ends, and render when count becomes
     // equal.
 
-    $rootScope.eventToObservable('render:start').dump('rs');
-    $rootScope.eventToObservable('render:complete').dump('rc');
-    $rootScope.eventToObservable('render:mapTilesLoading').dump('ts');
-    $rootScope.eventToObservable('render:mapTilesLoaded').dump('tc');
-    var outstandingNormalRenders = Rx.Observable.merge(
-      $rootScope.eventToObservable('render:start').map(_.constant(1)),
-      $rootScope.eventToObservable('render:complete').map(_.constant(-1))
-    ).scan(0, function(acc, val) { return acc + val; });
-    var outstandingChoroplethRenders = Rx.Observable.merge(
-      $rootScope.eventToObservable('render:mapTilesLoading').map(_.constant(1)),
-      $rootScope.eventToObservable('render:mapTilesLoaded').map(_.constant(-1))
-    ).scan(0, function(acc, val) { return acc + val; });
-
-    var renderComplete = Rx.Observable.combineLatest(
-      outstandingNormalRenders,
-      outstandingChoroplethRenders,
-      function(normal, choro) {
-        return (normal === 0) && (choro === 0);
-      }).filter(_.identity);
+    var renderComplete = $rootScope.eventToObservable('render:complete');
     renderComplete.dump('rcomp');
 
-    renderComplete.
-      merge(Rx.Observable.timer(1000)). // 1-sec timeout
-      first().
-      subscribe(function() {
+    var imagesComplete = Rx.Observable.timer(100, 100).map(function() {
+      var allImages = $('img');
+      return allImages.length > 0 && _.all(allImages, _.property('complete'));
+    }).first(_.identity);
+
+    var actuallyComplete = renderComplete.map(_.constant(imagesComplete)).first().switch().ignoreElements();
+    actuallyComplete.
+      subscribe(undefined, undefined, function() {
         if (_.isFunction(window.callPhantom)) {
           callPhantom('snapshotReady');
         } else {

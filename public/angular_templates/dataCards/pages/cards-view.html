@@ -45,6 +45,7 @@
             ng-class='{disabled: !!expandedCard, "cards-edit-disabled": !!expandedCard}'
             ng-show="currentUser">{{editMode | ifElse:'Preview':'Customize'}}</button>
           <button
+            ng-disabled="editMode"
             ng-click="onDownloadClick($event)"
             class="action-btn r-to-l download-menu"
             ng-class="{active: downloadOpened || chooserMode.show}"

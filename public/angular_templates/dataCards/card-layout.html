@@ -15,12 +15,14 @@
     ng-class="{enabled: isPngExportable(cardState.model)}"
     >
     <button class="action-btn"
-            ng-click="downloadPng(cardState.model)"
+            ng-click="downloadPng(cardState)"
             ng-class="{'export-visualization-disabled': !isPngExportable(cardState.model),
                        disabled: !isPngExportable(cardState.model),
-                       active: downloadingCard === cardState.model}"
-            >Download
-      <spinner ng-if="downloadingCard === cardState.model"></spinner>
+                       working: cardState.downloadState === 'loading',
+                       success: cardState.downloadState === 'success',
+                       error: cardState.downloadState === 'error'}"
+      >{{ downloadStateText(cardState.downloadState) }}
+      <spinner ng-if="cardState.downloadState === 'loading'"></spinner>
     </button>
   </div>
   <div class="card-drag-overlay overlay"

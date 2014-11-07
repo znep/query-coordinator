@@ -16,16 +16,33 @@
     3: 200
   };
 
-  function initCardSelection(scope, CardTypeMappingService, FlyoutService) {
+  function initCardSelection(scope, CardTypeMappingService, FlyoutService, $window, $timeout) {
     scope.isPngExportable = CardTypeMappingService.isExportable;
 
     function getDownloadUrl(model) {
       return './' + scope.page.id + '/' + model.fieldName + '.png';
     }
-    scope.downloadPng = function(model) {
-      scope.downloadingCard = model;
+    function resetButton(cardState) {
+      $timeout(function() {
+        delete cardState.downloadState;
+      }, 2000);
+    }
+    scope.downloadPng = function(cardState) {
+      cardState.downloadState = 'loading';
+      $window.location.href = getDownloadUrl(cardState.model);
+      resetButton();
     };
-    scope.downloadingCard = null;
+
+    scope.downloadStateText = function(state) {
+      switch(state) {
+        case 'success':
+          return 'Success';
+        case 'error':
+          return 'Error';
+        default:
+          return 'Download';
+      }
+    };
 
     FlyoutService.register('export-visualization-disabled', _.constant(
           '<div class="flyout-title">This visualization is not available' +
@@ -33,7 +50,7 @@
     ));
   }
 
-  function cardLayout(Constants, AngularRxExtensions, WindowState, SortedTileLayout, FlyoutService, CardTypeMappingService) {
+  function cardLayout(Constants, AngularRxExtensions, WindowState, SortedTileLayout, FlyoutService, CardTypeMappingService, $window, $timeout) {
 
     sortedTileLayout = new SortedTileLayout();
     return {
@@ -718,7 +735,7 @@
           });
         };
 
-        initCardSelection(scope, CardTypeMappingService, FlyoutService);
+        initCardSelection(scope, CardTypeMappingService, FlyoutService, $window, $timeout);
 
         /**
          * Some modal dialogs.

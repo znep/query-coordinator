@@ -100,6 +100,9 @@ angular.module('dataCards.models').factory('Model', function(Class, ModelHelper)
         });
     },
 
+    // Define a new observable property whose value is sourced by the given sequence.
+    // Setting values on this property via setValue is not supported, and will result
+    // in an error being thrown.
     defineReadOnlyObservableProperty: function(propertyName, valueSequence) {
       var self = this;
 

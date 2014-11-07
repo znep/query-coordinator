@@ -84,7 +84,7 @@ angular.module('dataCards.services').factory('ModelHelper', function() {
   // Returns a sequence of values written while observers were listening.
   function addReadOnlyProperty(propertyName, model, valueSequence) {
     var lastSeenValue = new Rx.BehaviorSubject(undefined);
-    var sideEffectedSequence = valueSequence.do(function(value) {
+    var sideEffectedSequence = valueSequence.doAction(function(value) {
       lastSeenValue.onNext(value);
     });
 

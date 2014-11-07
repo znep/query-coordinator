@@ -6,16 +6,16 @@
     AngularRxExtensions.install($scope);
 
     var cardObservable = page.
-    observe('cards').
-    map(function(allCards) {
-      var foundCards = _.where(allCards, { fieldName: fieldName });
-      if (foundCards > 0) { throw new Error('Multiple cards with the same fieldName: ' + fieldName); }
-      return _.first(foundCards);
-    }).
-    filter(_.identity).
-    do(function(cardModel) {
-      cardModel.set('expanded', true);
-    });
+      observe('cards').
+      map(function(allCards) {
+        var foundCards = _.where(allCards, { fieldName: fieldName });
+        if (foundCards > 0) { throw new Error('Multiple cards with the same fieldName: ' + fieldName); }
+        return _.first(foundCards);
+      }).
+      filter(_.identity).
+      doAction(function(cardModel) {
+        cardModel.set('expanded', true);
+      });
 
     /*************************
     * General metadata stuff *

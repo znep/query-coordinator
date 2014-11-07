@@ -152,6 +152,7 @@
      * @param metricValue
      */
     function sendMetric(metricName, metricValue) {
+
       var analyticsPayload;
       var analyticsConfig;
 

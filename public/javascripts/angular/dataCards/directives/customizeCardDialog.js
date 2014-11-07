@@ -1,17 +1,20 @@
 (function() {
   'use strict';
 
+  var REFRESH_BASE_LAYER_DELAY = 1000;
+
   /**
    * Set up watchers and stuff for changing the base layer url.
    */
   function setupBaseLayerSelect(cardModel, $scope, element, Constants) {
     var baseLayerObservable = cardModel.observe('baseLayerUrl');
 
-    $scope.$watch('customLayerUrl', _.debounce(function(val) {
-      if (val) {
-        cardModel.set('baseLayerUrl', val);
+    $scope.$watch('customLayerUrl', _.debounce(function(customLayerUrl) {
+      // Only update it if it's valid, and the 'custom' option is chosen
+      if (customLayerUrl && $scope.baseLayerOption === 'custom') {
+        cardModel.set('baseLayerUrl', decodeURI(customLayerUrl));
       }
-    }, 2000));
+    }, REFRESH_BASE_LAYER_DELAY, {leading: true, trailing: true}));
 
     $scope.TILEURL_REGEX = Constants.TILEURL_REGEX;
 
@@ -29,6 +32,11 @@
         }
       }));
 
+    // Initialize the customLayerUrl if this choropleth has one
+    if ($scope.baseLayerOption === 'custom') {
+      $scope.customLayerUrl = cardModel.getCurrentValue('baseLayerUrl');
+    }
+
     // Map the selected option to the actual baseLayerUrl
     $scope.$watch('baseLayerOption', function(value) {
       switch(value) {
@@ -39,6 +47,10 @@
           cardModel.set('baseLayerUrl', Constants.ESRI_BASE_URL);
           break;
         case 'custom':
+          if ($scope.customLayerUrl) {
+            cardModel.set('baseLayerUrl', decodeURI($scope.customLayerUrl));
+          }
+
           // Focus the field on the next frame
           _.defer(function() {
             element.find('input[name="customLayerUrl"]').focus();

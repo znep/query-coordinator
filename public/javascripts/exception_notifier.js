@@ -5,10 +5,7 @@
 
     try {
       stackTrace = new StackTrace().fromError(exception).join("\n");
-    } catch(stackTraceError) {
-      console.log('CATCHING STACK TRACE ERROR');
-      stackTrace = 'WHAT';
-    }
+    } catch(stackTraceError) { }
 
     exceptionInformation = { error: exception, context: {} };
 
@@ -22,8 +19,6 @@
 
     if (stackTrace) {
       exceptionInformation.context.stackTrace = stackTrace;
-    } else {
-      console.log('STILL NO STACK TRACE');
     }
 
     try {

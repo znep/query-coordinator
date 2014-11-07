@@ -19,9 +19,13 @@
   function initCardSelection(scope, CardTypeMappingService, FlyoutService) {
     scope.isPngExportable = CardTypeMappingService.isExportable;
 
-    scope.getDownloadUrl = function(model) {
+    function getDownloadUrl(model) {
       return './' + scope.page.id + '/' + model.fieldName + '.png';
     }
+    scope.downloadPng = function(model) {
+      scope.downloadingCard = model;
+    };
+    scope.downloadingCard = null;
 
     FlyoutService.register('export-visualization-disabled', _.constant(
           '<div class="flyout-title">This visualization is not available' +

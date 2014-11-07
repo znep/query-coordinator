@@ -14,14 +14,14 @@
     class="card-chooser overlay"
     ng-class="{enabled: isPngExportable(cardPosition.model)}"
     >
-    <form
-      ng-class=""
-      action="{{ getDownloadUrl(cardPosition.model) }}">
-      <button class="action-btn"
-              ng-class="{'export-visualization-disabled': !isPngExportable(cardPosition.model),
-                         disabled: !isPngExportable(cardPosition.model)}"
-              >Download</button>
-    </form>
+    <button class="action-btn"
+            ng-click="downloadPng(cardPosition.model)"
+            ng-class="{'export-visualization-disabled': !isPngExportable(cardPosition.model),
+                       disabled: !isPngExportable(cardPosition.model),
+                       active: downloadingCard === cardPosition.model}"
+            >Download
+      <spinner ng-if="downloadingCard === cardPosition.model"></spinner>
+    </button>
   </div>
   <div class="card-drag-overlay overlay"
     data-card-id="{{cardPosition.model.uniqueId}}"

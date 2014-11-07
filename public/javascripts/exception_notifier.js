@@ -5,7 +5,10 @@
 
     try {
       stackTrace = new StackTrace().fromError(exception).join("\n");
-    } catch(stackTraceError) { }
+    } catch(stackTraceError) {
+      console.log('CATCHING STACK TRACE ERROR');
+      stackTrace = 'WHAT';
+    }
 
     exceptionInformation = { error: exception, context: {} };
 
@@ -19,6 +22,8 @@
 
     if (stackTrace) {
       exceptionInformation.context.stackTrace = stackTrace;
+    } else {
+      console.log('STILL NO STACK TRACE');
     }
 
     try {
@@ -33,6 +38,31 @@
   angular.module('exceptionNotifier', []).
     factory('$exceptionHandler', function ($log) {
       return function(exception, cause) {
+
+        // Check to make sure that we are actually passing an error
+        // to Airbrake, which expects an error and barfs out '[object Object]'
+        // when it stupidly stringifies its arguments. This is the case right
+        // now when a promise without an error handler is rejected; We should
+        // probably take some time in the future to look at why promises in
+        // our codebase do not handle error conditions robustly.
+        if (!(exception instanceof Error)) {
+
+          // This catches the special case of HTTP errors coming
+          // back from rejected promises being objects but not
+          // objects instantiating the 'Error' class. In this case
+          // we try to recover some useful text rather than just
+          // stringifying the entire object with gleeful abandon.
+          if (exception.hasOwnProperty('data') &&
+              exception.data.hasOwnProperty('error') &&
+              typeof exception.data.error === 'string') {
+            exception = new Error(String(exception.data.error));
+
+          } else {
+            exception = new Error(JSON.stringify(exception));
+          }
+
+        }
+
         pushExceptionToAirbrake(exception, cause);
         $log.error(exception);
       };
@@ -81,7 +111,7 @@
             );
           } else {
             pushExceptionToAirbrake(
-              new Error(nonExceptionArgs.join(', '))
+              nonExceptionArgs.map(JSON.stringify).join(', ')
             );
           }
         };

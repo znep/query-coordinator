@@ -9,6 +9,31 @@
       choropleth: true
     };
 
+    // Keep track of which logical/physical datatype combinations have already
+    // triggered warnings so that we don't get rate-limited by Airbrake in
+    // cases where we have hundreds of columns for which we cannot determine
+    // a visualization type.
+    var warnedOn = {};
+
+    function warnOnceOnUnknownCardType(logicalDatatype, physicalDatatype) {
+
+      if (warnedOn.hasOwnProperty(logicalDatatype) && warnedOn[logicalDatatype].hasOwnProperty(physicalDatatype)) {
+        return;
+      }
+
+      if (!warnedOn.hasOwnProperty(logicalDatatype)) {
+        warnedOn[logicalDatatype] = {};
+      }
+
+      warnedOn[logicalDatatype][physicalDatatype] = true;
+
+      $log.error(
+        'Unknown visualization for logicalDatatype: {0} and physicalDatatype {1}'.
+        format(logicalDatatype, physicalDatatype)
+      );
+
+    }
+
     /**
      * Determines whether or not the given card is customizeable.
      */
@@ -61,9 +86,8 @@
       }
       if (logicalDatatype === '*') { return 'table'; }
 
-      // UH OH
-      $log.error('Unknown visualization for logicalDatatype: ' + logicalDatatype +
-        ' and physicalDatatype: ' + physicalDatatype);
+      warnOnceOnUnknownCardType(logicalDatatype, physicalDatatype);
+
       return 'unknown';
 
     }

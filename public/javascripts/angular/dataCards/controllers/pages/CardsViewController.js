@@ -84,12 +84,6 @@
 
     var allCardsFilters = page.observe('activeFilters');
 
-    // side-effecting map on allCardsFilters that updates the height of the spacer
-    // that keeps the card layout in the correct position below the quick filter bar.
-    var updateQuickFilterBarSpacerHeight = allCardsFilters.delay(25).subscribe(function(filters) {
-      $('.quick-filter-bar-spacer').height($('.quick-filter-bar .content').height());
-    });
-
     $scope.bindObservable('globalWhereClauseFragment', page.observe('computedWhereClauseFragment'));
 
     $scope.bindObservable('appliedFiltersForDisplay', allCardsFilters.combineLatest(page.observe('dataset').observeOnLatest('columns'), function(filters, columns) {

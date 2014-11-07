@@ -126,20 +126,6 @@ body.state-view-cards
     #quick-filter-bar-container
       position: relative
 
-      // This exists to keep the card layout in the right position
-      // since the actual quick filter bar content is 'position: absolute;'
-      // or 'position: fixed;' depending on it's "sticky" state.
-      // We still have to adjust the height of this element when
-      // the filter content changes, hoewver, since multi-line filter text
-      // will not be reflected by any static or percentage height value on
-      // the '.quick-filter-bar-spacer' element.
-      .quick-filter-bar-spacer
-        position: relative
-        padding: $metadata-side-padding / 2
-        width: 100%
-        box-sizing: border-box
-        background-color: white
-
       .quick-filter-bar
         position: absolute
         width: 100%

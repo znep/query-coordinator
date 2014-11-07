@@ -102,11 +102,11 @@
           if (loggedException) {
             pushExceptionToAirbrake(
               loggedException,
-              nonExceptionArgs.join(', ')
+              nonExceptionArgs.map(JSON.stringify).join(', ')
             );
           } else {
             pushExceptionToAirbrake(
-              nonExceptionArgs.map(JSON.stringify).join(', ')
+              new Error(nonExceptionArgs.map(JSON.stringify).join(', '))
             );
           }
         };

@@ -171,10 +171,27 @@ angular.module('dataCards.models').factory('Model', function(Class, ModelHelper)
     //   * The property has been written by a call to set(), or
     //   * The property has been initialized to a non-undefined value via defineObservableProperty
     //     (either due to an initial value being provided or due to a lazy default resolving).
-    // Will throw an exception if that property
-    // hasn't been defined on this Model.
     isSet: function(propertyName) {
       return this._propertyHasBeenWritten[propertyName] === true;
+    },
+
+    /**
+     * Sets the properties of this model to the values of the given model.
+     *
+     * @param {Model} otherModel The Model to get the new values from. The argument Model must be
+     * the same type as (or a subclass of) this Model.
+     */
+    setFrom: function(otherModel) {
+      angular.forEach(this._propertyTable, function(subject, propertyName) {
+        var newValue = otherModel.getCurrentValue(propertyName);
+        if (newValue !== subject.value) {
+          if (otherModel.isSet(propertyName)) {
+            this.set(propertyName, newValue);
+          } else {
+            this.unset(propertyName);
+          }
+        }
+      }, this);
     },
 
     // Gets the current value of the named property on this model.

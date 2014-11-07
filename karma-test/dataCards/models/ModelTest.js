@@ -862,6 +862,7 @@ describe("Model", function() {
       });
     });
   });
+
   describe('isSet', function() {
     it('should be false for non-lazy properties with no initial value', function() {
       var model = new Model();
@@ -953,6 +954,126 @@ describe("Model", function() {
       });
 
       fulfill(132);
+    });
+  });
+
+  describe('unset', function() {
+    it('should unset the variable', function() {
+      var model = new Model();
+      model.defineObservableProperty('prop');
+      var newestValue = null;
+      model.observe('prop').subscribe(function(val) {
+        newestValue = val;
+      });
+
+      model.set('prop', 123);
+      var serialized = model.serialize();
+
+      expect(newestValue).to.equal(123);
+      expect(serialized.hasOwnProperty('prop')).to.equal(true);
+
+      model.unset('prop');
+      serialized = model.serialize();
+
+      expect(newestValue).to.equal(undefined);
+      expect(model.getCurrentValue('prop')).to.equal(undefined);
+      expect(serialized.hasOwnProperty('prop')).to.equal(false);
+    });
+  });
+
+  describe('setFrom', function() {
+    it('should set the properties to the new values', function() {
+      var model1 = new Model();
+      model1.defineObservableProperty('prop');
+      var model2 = new Model();
+      model2.defineObservableProperty('prop');
+
+      model1.set('prop', 123);
+      model2.set('prop', 234);
+
+      model1.setFrom(model2);
+
+      expect(model1.getCurrentValue('prop')).to.equal(234);
+    });
+
+    it('should not set properties that didn\'t change', function() {
+      var model1 = new Model();
+      model1.defineObservableProperty('prop');
+      model1.defineObservableProperty('prop2');
+      var model2 = new Model();
+      model2.defineObservableProperty('prop');
+      model2.defineObservableProperty('prop2');
+
+      model1.set('prop', 123);
+      model1.set('prop2', 'abc');
+      model2.set('prop', 234);
+      model2.set('prop2', 'abc');
+
+      var newValue;
+      model1.observe('prop2').subscribe(function(val) {
+        newValue = val;
+      });
+      newValue = null;
+
+      model1.setFrom(model2);
+
+      expect(model1.getCurrentValue('prop')).to.equal(234);
+      expect(model1.getCurrentValue('prop2')).to.equal('abc');
+      // Should not have emitted
+      expect(newValue).to.equal(null);
+    });
+
+    it('should unset properties on this model which are not set on the argument model', function() {
+      var model1 = new Model();
+      model1.defineObservableProperty('prop');
+      var model2 = new Model();
+      model2.defineObservableProperty('prop');
+
+      var newestValue = null;
+      model1.observe('prop').subscribe(function(val) {
+        newestValue = val;
+      });
+
+      model1.set('prop', 123);
+      expect(newestValue).to.equal(123);
+
+      model1.setFrom(model2);
+
+      expect(model1.getCurrentValue('prop')).to.equal(undefined);
+      expect(newestValue).not.to.equal(null);
+      expect(newestValue).to.equal(undefined);
+      expect(model1.isSet('prop')).to.equal(false);
+    });
+
+    it('should set only its own properties', function() {
+      var model1 = new Model();
+      model1.defineObservableProperty('prop');
+      var model2 = new Model();
+      model2.defineObservableProperty('prop');
+      model2.defineObservableProperty('prop2');
+
+      model1.set('prop', 123);
+      model2.set('prop', 234);
+      model2.set('prop2', 234);
+
+      model1.setFrom(model2);
+
+      expect(model1.getCurrentValue('prop')).to.equal(234);
+      expect(function() { model1.getCurrentValue('prop2'); }).to.throw();
+    });
+
+    it('should throw on argument Models with different properties', function() {
+      var model1 = new Model();
+      model1.defineObservableProperty('prop');
+      model1.defineObservableProperty('prop2');
+      var model2 = new Model();
+      model2.defineObservableProperty('prop');
+
+      model1.set('prop', 123);
+      model1.set('prop2', 234);
+      model2.set('prop', 345);
+
+      expect(function() { model1.setFrom(model2); }).to.throw();
     });
   });
 });

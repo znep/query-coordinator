@@ -49,7 +49,7 @@ enable_fullstory_tracking:
   defaultValue: false
 enable_airbrake_js:
   description: Enable Airbrake error tracking of Javascript errors (see CORE-3365 for more information)
-  defaultValue: true
+  defaultValue: false
 enable_bounding_boxes:
   description: Enable use of bounding boxes on geojson shape queries against geospace
   defaultValue: false

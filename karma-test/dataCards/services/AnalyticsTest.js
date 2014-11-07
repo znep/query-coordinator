@@ -1,5 +1,5 @@
 describe('Analytics service', function() {
-  var Analytics, $httpBackend, moment, $rootScope, ServerConfig;
+  var Analytics, $httpBackend, moment, $rootScope;
   var INITIAL_NAVIGATION_START_TIME = 222;
   var INITIAL_MOMENT_TIME = 1234;
   var INITIAL_TIME_DELTA = INITIAL_MOMENT_TIME - INITIAL_NAVIGATION_START_TIME;
@@ -46,11 +46,8 @@ describe('Analytics service', function() {
 
   beforeEach(inject(function($injector) {
     $rootScope = $injector.get('$rootScope');
-    ServerConfig = $injector.get('ServerConfig');
     $httpBackend = $injector.get('$httpBackend');
     Analytics = $injector.get('Analytics');
-
-    ServerConfig.setup({ statsdEnabled: true });
   }));
 
 
@@ -105,10 +102,9 @@ describe('Analytics service', function() {
   }
 
   // *** Actual tests. ***
-  describe('with statsd disabled', function() {
+  describe('with upload disabled', function() {
     it('should not report measurements', function() {
-      ServerConfig.setup({ statsdEnabled: false });
-
+      Analytics.setServerUploadEnabled(false);
       Analytics.start('some_fake_metric');
 
       // Metric is considered complete after at least one render complete is received,
@@ -121,7 +117,7 @@ describe('Analytics service', function() {
     });
   });
 
-  describe('with statsd enabled', function() {
+  describe('with server upload enabled', function() {
     describe('page-load metric', function() {
       it('should not report page load time immediately on render complete', function() {
         emitRenderComplete();

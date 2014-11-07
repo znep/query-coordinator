@@ -47,6 +47,40 @@ angular.module('dataCards.models').factory('Page', function($q, Dataset, Card, M
           });
         });
       });
+
+
+      var allCardsFilters = self.observe('cards').flatMap(function(cards) {
+        if (!cards) { return Rx.Observable.never(); }
+        return Rx.Observable.combineLatest(_.map(cards, function(d) {
+          return d.observe('activeFilters');
+        }), function() {
+          return _.zipObject(_.pluck(cards, 'fieldName'), arguments);
+        });
+      });
+
+      self.defineReadOnlyObservableProperty('activeFilters', allCardsFilters);
+
+      var allCardsWheres = allCardsFilters.map(function(filters) {
+        var wheres = _.map(filters, function(operators, field) {
+          if (_.isEmpty(operators)) {
+            return null;
+          } else {
+            return _.invoke(operators, 'generateSoqlWhereFragment', field).join(' AND ');
+          }
+        });
+        return _.compact(wheres).join(' AND ');
+      });
+
+      self.defineReadOnlyObservableProperty('computedWhereClauseFragment',
+        allCardsWheres.
+        combineLatest(
+          self.observe('baseSoqlFilter'),
+          function(cardWheres, basePageWhere) {
+            return _.compact([basePageWhere, cardWheres]).join(' AND ');
+          }
+        )
+      );
+
     },
 
     serialize: function() {

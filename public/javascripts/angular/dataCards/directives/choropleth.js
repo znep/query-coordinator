@@ -34,11 +34,6 @@
          * Mutate Leaflet state *
          ***********************/
 
-        function setTileLayer(url, options) {
-          layerGroup.clearLayers();
-          layerGroup.addLayer(L.tileLayer(url, options));
-        }
-
         function setGeojsonData(data, options) {
           if (geojsonBaseLayer !== null) {
             map.removeLayer(geojsonBaseLayer);
@@ -204,9 +199,12 @@
             var minBreak = classBreaks[0];
             var maxBreak = classBreaks[classBreaks.length - 1];
 
-            var colorWidth = 15;
-            var width = Math.floor(colorWidth);
-            var height = Math.floor(Math.min(element.height() - 60, 250));
+            // Size of the colored scale.
+            var colorBarWidth = 15;
+            var colorBarHeight = Math.floor(Math.min(element.height() - 60, 250));
+
+            // Reserve some padding space for the bottom-most tick label text.
+            var bottomPadding = 15;
 
             var legendSelection = d3.select(element.find('.' + className)[0]).data([{colors: colors, classBreaks: classBreaks}]);
 
@@ -224,11 +222,10 @@
               append('g');
 
             svg.
-              attr('width', width).
-              attr('height', height);
+              attr('height', colorBarHeight + bottomPadding);
 
-            var yTickScale = d3.scale.linear().range([height - 1, 1]);
-            var yLabelScale = d3.scale.linear().range([height, 0]);
+            var yTickScale = d3.scale.linear().range([colorBarHeight - 1, 1]);
+            var yLabelScale = d3.scale.linear().range([colorBarHeight, 0]);
 
             var yAxis = d3.svg.
                           axis().
@@ -283,6 +280,20 @@
               exit().
               remove();
 
+            var maxLabelWidth = _.reduce(element.find('.labels > .tick > text'), function(accumulator, element) {
+              return Math.max(accumulator, $(element).width());
+            }, 0);
+            var tickAreaWidth = maxLabelWidth + yAxis.tickSize() + yAxis.tickPadding();
+
+            // The d3 axis places all elements LEFT of the origin (negative X coords).
+            // Translate everything to within the bounds of the SVG.
+            labels.
+              attr('transform', 'translate({0})'.format(tickAreaWidth));
+
+            // Size the SVG appropriately.
+            svg.
+              attr('width', tickAreaWidth + colorBarWidth);
+
             // draw legend colors
             var rects = svg.selectAll('.choropleth-legend-color').data(colors);
 
@@ -291,10 +302,11 @@
 
             rects.
               attr('class', 'choropleth-legend-color').
-              attr('width', colorWidth).
+              attr('width', colorBarWidth).
               attr('height', function(c, i) {
-                return legendLabelColorHeight(i, height);
+                return legendLabelColorHeight(i, colorBarHeight);
               }).
+              attr('x', tickAreaWidth).
               attr('y', function(c, i) {
                 return Math.floor(yLabelScale(classBreaks[i + 1]));
               }).
@@ -324,15 +336,6 @@
 
             rects.exit().
               remove();
-
-            var legendPadding = parseInt(element.find('.' + className).css('padding'), 10);
-
-            var maxLabelWidth = _.reduce(element.find('.labels > .tick > text'), function(accumulator, element) {
-              return Math.max(accumulator, $(element).width());
-            }, 0);
-
-            element.find('.' + className).css('padding-left', legendPadding + yAxis.innerTickSize() + maxLabelWidth).show();
-
           }
 
         }
@@ -646,19 +649,51 @@
         // of Leaflet.
         var currentFeature = null;
 
-        // Keep track of the base layer url currently in use so we only reset it when necessary.
-        var currentBaseLayerUrl = null;
-
-
         /*********************************
         * React to changes in bound data *
         *********************************/
 
+        var tileLayer = scope.observe('baseLayerUrl').
+          map(function(url) {
+            if (!_.isDefined(url)) {
+              return {
+                url: Constants['DEFAULT_MAP_BASE_LAYER_URL'],
+                opacity: 0.15
+              };
+            } else {
+              return {
+                url: url,
+                opacity: 0.35
+              };
+            }
+          }).
+          distinctUntilChanged(_.property('url')).
+          map(function(layerInfo) {
+            var url = layerInfo.url;
+            var opacity = layerInfo.opacity;
+            return L.tileLayer(url, { attribution: '', detectRetina: true, opacity: opacity, unloadInvisibleTiles: true });
+          }).
+          publish(); // Only subscribe once everything is wired up,
+                     // otherwise some subscribers may miss the first
+                     // value from the scope.observe().
+
+        // Remove old map layers.
+        tileLayer.bufferWithCount(2, 1).subscribe(function(layers) {
+          map.removeLayer(layers[0]);
+        });
+
+        // Add new map layers.
+        tileLayer.subscribe(function(layer) {
+          layer.addTo(map);
+        });
+        
+        // Now that everything's hooked up, connect the subscription.
+        tileLayer.connect();
+
         Rx.Observable.subscribeLatest(
-          scope.observe('baseLayerUrl'),
           element.observeDimensions().throttle(500),
           scope.observe('geojsonAggregateData'),
-          function(baseLayerUrl, dimensions, geojsonAggregateData) {
+          function(dimensions, geojsonAggregateData) {
 
             var classBreaks;
             var fillClass;
@@ -668,23 +703,6 @@
             if (_.isDefined(geojsonAggregateData)) {
 
               scope.$emit('render:start', { source: 'choropleth_{0}'.format(scope.$id), timestamp: _.now() });
-
-              var opacity = 0.35;
-
-              if (!_.isDefined(baseLayerUrl)) {
-                baseLayerUrl = Constants['DEFAULT_MAP_BASE_LAYER_URL'];
-                opacity = 0.15;
-              }
-
-              if (currentBaseLayerUrl !== baseLayerUrl) {
-                currentBaseLayerUrl = baseLayerUrl;
-                setTileLayer(baseLayerUrl, {
-                  attribution: '',
-                  detectRetina: true,
-                  opacity: opacity,
-                  unloadInvisibleTiles: true
-                });
-              }
 
               // Critical to invalidate size prior to updating bounds
               // Otherwise, leaflet will fit the bounds to an incorrectly sized viewport.

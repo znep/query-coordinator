@@ -3,35 +3,35 @@
 .card
   position: relative
 
-  .choropleth-container
-    padding: 0
+.choropleth-container
+  padding: 0
+  height: 100%
+
+  .choropleth-map-container
     height: 100%
 
-    .choropleth-map-container
-      height: 100%
+    path
+      cursor: pointer
 
-      path
-        cursor: pointer
+  .choropleth-legend
+    position: absolute
+    padding: 15px
+    bottom: 15px
+    right: 15px
+    cursor: default
 
-    .choropleth-legend
-      position: absolute
-      padding: 15px
-      bottom: 15px
-      right: 15px
-      cursor: default
+    svg
+      display: block
+      overflow: initial
 
-      svg
-        display: block
-        overflow: initial
+      .labels
+        .tick
+          line
+            stroke: black
 
-        .labels
-          .tick
-            line
-              stroke: black
-
-        rect.choropleth-legend-color
-          stroke: white
-          stroke-width: 1px
+      rect.choropleth-legend-color
+        stroke: white
+        stroke-width: 1px
 
 .card.dragged
   .choropleth-container

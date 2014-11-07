@@ -26,7 +26,8 @@
     // true for IE9+, Chrome, Firefox (as of 8/12/14)
     var hasPerformanceTiming = _.isDefined($window.performance) && _.isDefined($window.performance.timing);
 
-    var isStatsdEnabled = function() { return ServerConfig.get('statsdEnabled') || false; };
+    // Whether or not we should send computed metrics to the analytics service backend.
+    var serverUploadEnabled = true;
 
     var currentTime = function() {
       return moment().valueOf();
@@ -134,6 +135,12 @@
       }
     };
 
+    // Controls whether or not to send computed metrics up to
+    // the backend. Defaults to enabled.
+    this.setServerUploadEnabled = function(isEnabled) {
+      serverUploadEnabled = isEnabled;
+    };
+
     /**
      * Posts an analytics metric to the analytics endpoint
      * Analytics endpoint performs checking to determine if it is a valid metric
@@ -145,11 +152,10 @@
      * @param metricValue
      */
     function sendMetric(metricName, metricValue) {
-
       var analyticsPayload;
       var analyticsConfig;
 
-      if (isStatsdEnabled()) {
+      if (serverUploadEnabled) {
 
         analyticsPayload = JSON.stringify({
           metrics: [

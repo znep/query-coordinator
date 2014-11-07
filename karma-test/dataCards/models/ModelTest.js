@@ -39,6 +39,33 @@ describe("Model", function() {
     expect(seen).to.deep.equal([5, 10]);
   });
 
+  it('should emit the current value on all new subscribers', inject(function($q) {
+    var model = new Model();
+    var changes = [];
+    model.defineObservableProperty('notLazy', 5);
+    model.defineObservableProperty('lazy', 15, _.constant($q.defer().promise));
+
+    model.observe('notLazy').subscribe(function(change) {
+      changes.push({ a: change });
+    });
+    model.observe('notLazy').subscribe(function(change) {
+      changes.push({ b: change });
+    });
+    model.observe('lazy').subscribe(function(change) {
+      changes.push({ a: change });
+    });
+    model.observe('lazy').subscribe(function(change) {
+      changes.push({ b: change });
+    });
+
+    expect(changes).to.deep.equal([
+      { a: 5 },
+      { b: 5 },
+      { a: 15 },
+      { b: 15 }
+    ]);
+  }));
+
   it('should honor default value generation with default', inject(function($q, $rootScope) {
     var model = new Model();
     var seen = [];
@@ -66,7 +93,70 @@ describe("Model", function() {
     expect(seen).to.deep.equal([5, 10]);
   }));
 
+  describe('defineReadOnlyObservableProperty', function() {
+    it('should reflect changes in the given sequence', function() {
+      var model = new Model();
+      var valueSeq = new Rx.Subject();
+      var seen = [];
+      model.defineReadOnlyObservableProperty('prop', valueSeq);
+      model.observe('prop').subscribe(function(val) { seen.push(val); });
+
+      expect(model.getCurrentValue('prop')).to.equal(undefined);
+
+      valueSeq.onNext('foo');
+      expect(model.getCurrentValue('prop')).to.equal('foo');
+
+      valueSeq.onNext('bar');
+      expect(model.getCurrentValue('prop')).to.equal('bar');
+
+      expect(seen).to.deep.equal([ 'foo', 'bar']);
+    });
+
+    it('should throw on setValue', function() {
+      var model = new Model();
+      model.defineReadOnlyObservableProperty('prop', Rx.Observable.never());
+      expect(function() { model.setValue('prop'); }).to.throw();
+    });
+
+    it('should always return false for isSet', function() {
+      var model = new Model();
+      model.defineReadOnlyObservableProperty('prop', Rx.Observable.never());
+      expect(model.isSet('prop')).to.equal(false);
+    });
+  });
+
   describe('observePropertyWrites', function() {
+    describe('on a read-only property', function() {
+      it('should emit on values', function() {
+        var model = new Model();
+        var valueSeq = new Rx.Subject();
+
+        var changes = [];
+        var expectedChanges = [];
+        model.observePropertyWrites().subscribe(function(change) {
+          changes.push(change);
+        });
+
+        model.defineReadOnlyObservableProperty('prop', valueSeq);
+        model.observe('prop').subscribe(_.noop);
+
+        valueSeq.onNext('asd');
+        expectedChanges.push({
+          model: model,
+          property: 'prop',
+          newValue: 'asd'
+        });
+        valueSeq.onNext('def');
+        expectedChanges.push({
+          model: model,
+          property: 'prop',
+          newValue: 'def'
+        });
+
+        expect(changes).to.deep.equal(expectedChanges);
+      });
+    });
+
     describe('on a non-lazy property', function() {
       it('should emit on property add', function() {
         var model = new Model();
@@ -228,6 +318,20 @@ describe("Model", function() {
   });
 
   describe('observePropertyChanges', function() {
+    describe('on a read-only property', function() {
+      it('should never emit', function() {
+        var model = new Model();
+        var valueSeq = new Rx.Subject();
+
+        model.observePropertyChanges().subscribe(function() {
+          throw new Error('should never see a change for read-only properties');
+        });
+
+        model.defineReadOnlyObservableProperty('prop', valueSeq);
+        model.observe('prop').subscribe(_.noop);
+        valueSeq.onNext('asd');
+      });
+    });
     describe('on a non-lazy property', function() {
       it('should not emit on property add', function() {
         var model = new Model();

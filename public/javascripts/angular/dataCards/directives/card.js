@@ -8,16 +8,9 @@ angular.module('dataCards.directives').directive('card', function(AngularRxExten
 
       AngularRxExtensions.install($scope);
 
-      var modelSubject = $scope.observe('model');
+      var modelSubject = $scope.observe('model').filter(_.identity);
       var datasetObservable = modelSubject.pluck('page').observeOnLatest('dataset');
       var columns = datasetObservable.observeOnLatest('columns');
-
-      var cardType = modelSubject.pluck('fieldName').combineLatest(columns,
-        function(cardField, datasetFields) {
-          var column = datasetFields[cardField];
-          return column ? CardTypeMappingService.cardTypeForColumn(column) : null;
-        }
-      );
 
       var column = modelSubject.pluck('fieldName').combineLatest(columns, function(fieldName, columns) {
         return columns[fieldName];
@@ -25,9 +18,7 @@ angular.module('dataCards.directives').directive('card', function(AngularRxExten
 
       $scope.descriptionCollapsed = true;
 
-      $scope.bindObservable('cardType', cardType);
       $scope.bindObservable('expanded', modelSubject.observeOnLatest('expanded'));
-      $scope.bindObservable('cardSize', modelSubject.observeOnLatest('cardSize'));
 
       $scope.bindObservable('title', column.pluck('title'));
       $scope.bindObservable('description', column.pluck('description'));
@@ -38,7 +29,7 @@ angular.module('dataCards.directives').directive('card', function(AngularRxExten
           $timeout(function() {
             // waits until description is filled in to determine heights
             var cardVisHeight = element.height() - element.find('.card-text').outerHeight(true);
-            element.find('.card-visualization').height(cardVisHeight);
+            element.find('card-visualization').height(cardVisHeight);
           });
         };
 

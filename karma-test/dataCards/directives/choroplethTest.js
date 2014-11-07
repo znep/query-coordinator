@@ -114,7 +114,6 @@ describe("A Choropleth Directive", function() {
         // a timeout (choropleth throttles its renders);
         timeout.flush();
       });
-
     });
 
     // TODO: INVALID INPUT?

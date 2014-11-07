@@ -193,7 +193,7 @@ describe('columnChart', function() {
       expect($('.truncation-marker').css('display')).to.equal('none');
     });
 
-    xit('should place the bars above the axis', function() {
+    it('should place the bars above the axis', function() {
       var chart = createNewColumnChart();
       // Find the x-axis. It's the bottommost one of the ticks
       var xAxis = $(_.reduce(chart.element.find('.ticks').children(), function(accum, element) {

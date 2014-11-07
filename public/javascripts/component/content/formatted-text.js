@@ -187,7 +187,8 @@ $.component.Component.extend('Formatted Text', 'content', {
                             halloheadings: {},
                             halloreundo: {},
                             hallolists: {},
-                            halloplainpaster: {}
+                            halloplainpaster: {},
+                            hallobetterlink: {}
                         }
                     });
             }

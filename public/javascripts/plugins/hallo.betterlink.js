@@ -26,7 +26,15 @@
     },
 
     _bindEvents: function() {
-      var _this = this;
+      var onBodyClick,
+        _this = this;
+
+      onBodyClick = function(event) {
+        var target = jQuery(event.target);
+        if (target.closest('.hallobetterlink').length === 0) {
+          _this.options.editable.element.trigger('hallobetterlinkfinished');
+        }
+      }
 
       this.options.editable.element.on('halloselected', function(event, data) {
         _this.options.savedToolbarPosition = data;
@@ -39,10 +47,14 @@
 
       this.options.editable.element.on('hallobetterlinkfinished, hallounselected', function(){
         _this.options.editing = false;
+        _this.options.editable.element.focus();
+        _this.options.editable.keepActivated(false);
         _this.options.buttonset.removeClass('expanded');
         _this.options.urlInput.val(_this.options.defaultUrl);
         _this.options.linkInput.removeClass('urlError');
         _this.options.toolbar.hide();
+        jQuery(document.body).off('click', onBodyClick);
+
       });
 
       this.options.clearButton.on('click', function() {
@@ -85,9 +97,13 @@
 
       this.options.button.on('click', function(event) {
         var buttonSelector, selectionParent;
+
         if (_this.options.editing) {
           return false;
         }
+
+        jQuery(document.body).on('click', onBodyClick);
+
         _this.options.editing = true;
         _this._initializeUrlInputValue();
         _this._setClearButtonState();
@@ -177,8 +193,6 @@
           this.lastSelection.startContainer.parentNode.href = link;
         }
       }
-      this.options.editable.element.focus();
-      this.options.editable.keepActivated(false);
 
       this.options.editable.element.trigger('change');
       this.options.editable.removeAllSelections();

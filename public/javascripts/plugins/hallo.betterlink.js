@@ -6,8 +6,10 @@
       defaultUrl: '',
       toolbar: null,
       linkInput: null,
+      urlForm: null,
       urlInput: null,
       clearButton: null,
+      submitButton: null,
       button: null,
       buttonset: null,
       execCommandOverride: function() { document.execCommand.apply(document, arguments); },
@@ -19,6 +21,7 @@
       },
       buttonCssClass: null,
       editing: false,
+      saved: null,
       savedToolbarPosition: null
     },
 
@@ -56,11 +59,12 @@
         _this.options.linkInput.removeClass('urlError');
       });
 
-      this.options.linkInput.find('form').on('change', function(e){
-        _this._saveUrl();
+      this.options.linkInput.on('change', function(e) {
+        _this.options.urlForm.submit();
       });
 
-      jQuery(this.options.urlInput[0].form).find('input[type=submit]').on('click', function() {
+      this.options.urlForm.on('submit', function(e) {
+        e.preventDefault();
         _this._saveUrl();
       });
 
@@ -97,24 +101,24 @@
     },
 
     _initializeUrlInputValue: function() {
-      var $submitButton, $selection, selectionParent, urlInput;
+      var selection, selectionParent, urlInput, submitButton;
       urlInput = this.options.urlInput;
+      submitButton = this.options.submitButton;
       urlInput.prop('disabled', false);
       this.lastSelection = this.options.editable.getSelection();
       selectionParent = this.lastSelection.startContainer.parentNode;
-      $submitButton = jQuery(urlInput[0].form).find('input[type=submit]')
       if (!selectionParent.href) {
-        $selection = jQuery('<div>').html(this.lastSelection.toHtml());
-        if (jQuery('a', $selection).length > 1) {
+        selection = jQuery('<div>').html(this.lastSelection.toHtml());
+        if (jQuery('a', selection).length > 1) {
           urlInput.prop('disabled', true).val('(multiple links selected)');
         } else {
           urlInput.val(this.options.defaultUrl);
-          $submitButton.val(butTitle);
+          submitButton.val(butTitle);
         }
       } else {
         urlInput.val(jQuery(selectionParent).attr('href'));
         this._setUrlErrorState();
-        $submitButton.val(butUpdateTitle);
+        submitButton.val(butUpdateTitle);
         if (!this.options.buttonset.hasClass('expanded')) {
           this.options.button.click();
         }
@@ -131,19 +135,18 @@
 
     _setUrlErrorState: function() {
       var url = this.options.urlInput.val();
-      if (!(/^(http(?:s)?\:\/\/[a-zA-Z0-9\-]+(?:\.[a-zA-Z0-9\-]+)*\.[a-zA-Z]{2,6}(?:\/?|(?:\/[\w\-]+)*)(?:\/?|\/\w+\.[a-zA-Z]{2,4}(?:\?[\w]+\=[\w\-]+)?)?(?:\&[\w]+\=[\w\-]+)*)$/).test(url)) {
-        this.options.linkInput.addClass('urlError');
-      } else {
+      if (blist.util.patterns.customUrl.test(url)) {
         this.options.linkInput.removeClass('urlError');
+      } else {
+        this.options.linkInput.addClass('urlError');
       }
     },
 
     _saveUrl: function() {
-      var link, selectionStart, urlInput,
+      var link, selectionStart,
         _this = this;
 
-      urlInput = this.options.urlInput;
-      link = urlInput.val();
+      link = this.options.urlInput.val();
       this.options.editable.restoreSelection(this.lastSelection);
 
       isEmptyLink = function(link) {
@@ -196,6 +199,8 @@
       this.options.linkInput = linkInput;
       this.options.urlInput = jQuery('input[name=url]', linkInput);
       this.options.clearButton = jQuery('.clear', linkInput);
+      this.options.urlForm = jQuery(this.options.urlInput[0].form)
+      this.options.submitButton = this.options.urlForm.find('input[type=submit]');
 
       this.options.buttonset = buttonset = jQuery('<span class="' + widget.widgetName + '"></span>');
 

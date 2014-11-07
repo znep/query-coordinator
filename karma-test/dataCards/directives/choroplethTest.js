@@ -386,47 +386,47 @@ describe("A Choropleth Directive", function() {
 
     /* ---- DOUBLE CLICK EFFECTS ---- */
 
-    it('should zoom the map if a map tile was double clicked', function() {
+    it('should zoom the map if a map tile was double clicked', function(done) {
       scope.geojsonAggregateData = testData.polygonData2ValueUndefined;
       el = createChoropleth();
 
       // Listen for the zoom events
-      var zoomStart = -1;
-      var zoomEnd = -1;
+      var zoomStart = null;
+      var zoomEnd = null;
       scope.$on('zoomstart', function(e, map) {
         zoomStart = map.getZoom();
       });
       scope.$on('zoomend', function(e, map) {
         zoomEnd = map.getZoom();
+        expect(zoomStart).to.not.equal(null);
+        expect(zoomStart).to.be.below(zoomEnd);
+        done();
       });
 
       testHelpers.fireMouseEvent(el.find('.leaflet-tile')[0], 'dblclick');
-
-      expect(zoomStart).to.be.above(-1);
-      expect(zoomStart).to.be.below(zoomEnd);
     });
 
-    it('should zoom the map if a choropleth feature was double clicked', function() {
+    it('should zoom the map if a choropleth feature was double clicked', function(done) {
       scope.geojsonAggregateData = testData.polygonData2ValueUndefined;
       el = createChoropleth();
 
       // Listen for the zoom events
-      var zoomStart = -1;
-      var zoomEnd = -1;
+      var zoomStart = null;
+      var zoomEnd = null;
       scope.$on('zoomstart', function(e, map) {
         zoomStart = map.getZoom();
       });
       scope.$on('zoomend', function(e, map) {
         zoomEnd = map.getZoom();
+        expect(zoomStart).to.not.equal(null);
+        expect(zoomStart).to.be.below(zoomEnd);
+        done();
       });
       
       var polygon = el.find('path')[0];
       testHelpers.fireMouseEvent(polygon, 'click');
       fakeClock.tick(50);
       testHelpers.fireMouseEvent(polygon, 'click');
-
-      expect(zoomStart).to.be.above(-1);
-      expect(zoomStart).to.be.below(zoomEnd);
     });
 
     it('should preserve the styles on a highlighted feature if the highlighted feature was double clicked', function() {

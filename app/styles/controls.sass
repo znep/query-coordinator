@@ -962,19 +962,51 @@ ul.autocompleteComboDropdown
 
   > .ui-buttonset
     margin-left: 1em
+    margin-right: 0
 
     &:first-child
       margin-left: 0
 
     &.hallobetterlink
-      position: relative
+      button
+        position: relative
       &.expanded
         .linkForm
           display: inherit
         .ui-button-text
           left: 0.3em
           position: absolute
-          top: -0.3em
+          top: 0.3em
+
+  .ui-corner-left
+    -moz-border-radius-topleft: 0
+    -webkit-border-top-left-radius: 0
+    border-top-left-radius: 0
+    -moz-border-radius-bottomleft: 0
+    -webkit-border-bottom-left-radius: 0
+    border-bottom-left-radius: 0
+
+  .ui-corner-right
+    -moz-border-radius-topright: 0
+    -webkit-border-top-right-radius: 0
+    border-top-right-radius: 0
+    -moz-border-radius-bottomright: 0
+    -webkit-border-bottom-right-radius: 0
+    border-bottom-right-radius: 0
+
+  .ui-buttonset
+    .ui-button
+      margin-left: 0
+      margin-right: 0
+
+  .ui-button
+    .ui-button-text
+      line-height: normal
+      padding: 0
+
+  button
+    span
+      padding: 0
 
   input:disabled
     color: #aaaaaa
@@ -1011,7 +1043,7 @@ ul.autocompleteComboDropdown
     .clear, .warning
       position: absolute
       right: 1em
-      top: -0.2em
+      top: 0.7em
 
     .warning
       display: none
@@ -1026,11 +1058,11 @@ ul.autocompleteComboDropdown
       display: inherit
 
   .halloheadings
-    button
+    .ui-button
       position: relative
       top: 1px
 
-      span
+      .ui-button-text
         display: block
         font-size: 1.2em
         padding: 0.2em 0.3em

@@ -83,13 +83,15 @@
                 // Capture scrollbar clicks; or as a side effect, just general clicks in this div
                 $target.closest('.socrata-cf-side').length > 0;
 
-        // If they are interacting with the properties editor, let them
+        // If they are interacting with the properties editor or toolbar, let them
         // Or, if the component explicitly disables mouse interaction
         // (by adding the socrata-cf-mouse class) and we're *not*
         // in editOnly mode, don't fire events
+
         if ((mouseTrap && !$.cf.configuration().editOnly) ||
              $target.closest('#color_selector').length > 0 ||
-             $target.closest('.colorpicker').length > 0)
+             $target.closest('.colorpicker').length > 0 ||
+             $target.closest('.hallobetterlink').length > 0)
         { return; }
 
         focusOnTarget(target);

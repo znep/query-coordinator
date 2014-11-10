@@ -2721,9 +2721,8 @@
         }
       },
       removeAllSelections: function() {
-        if (ie) {
-          return range.empty();
-        } else {
+        // Stan Rawrysz - 11/10/14 - had some issues with IE11 not working
+        if (window.getSelection().removeAllRanges !== "undefined") {
           return window.getSelection().removeAllRanges();
         }
       },

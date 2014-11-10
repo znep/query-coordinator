@@ -32,7 +32,7 @@
       onBodyClick = function(event) {
         var target = jQuery(event.target);
         if (target.closest('.hallobetterlink').length === 0) {
-          _this.options.editable.element.trigger('hallobetterlinkfinished');
+          _this.options.editable.element.trigger('hallounselected');
         }
       }
 
@@ -45,7 +45,7 @@
         _this.options.editable.element.trigger('halloselected', _this.options.savedToolbarPosition);
       });
 
-      this.options.editable.element.on('hallobetterlinkfinished, hallounselected', function(){
+      this.options.editable.element.on('hallounselected', function(){
         _this.options.editing = false;
         _this.options.editable.element.focus();
         _this.options.editable.keepActivated(false);
@@ -58,20 +58,24 @@
       });
 
       this.options.clearButton.on('click', function() {
-        _this.element.trigger('clearlink');
+        _this.options.editable.element.trigger('clearlink');
       });
 
       this.options.urlInput.on('keyup', function(e) {
         _this._setClearButtonState();
+        if (e.which === 13) {
+          e.preventDefault();
+          _this.options.urlForm.submit();
+        }
       });
 
-      this.element.on('clearlink', function(){
+      this.options.editable.element.on('clearlink', function() {
         _this.options.urlInput.val(_this.options.defaultUrl);
         _this._setClearButtonState();
         _this.options.linkInput.removeClass('urlError');
       });
 
-      this.options.linkInput.on('change', function(e) {
+      this.options.urlInput.on('change', function(e) {
         _this.options.urlForm.submit();
       });
 
@@ -197,7 +201,7 @@
       this.options.editable.element.trigger('change');
       this.options.editable.removeAllSelections();
 
-      this.options.editable.element.trigger('hallobetterlinkfinished');
+      this.options.editable.element.trigger('hallounselected');
     },
 
     populateToolbar: function(toolbar) {
@@ -209,7 +213,7 @@
       linkInputId = '' + this.options.uuid + '-linkInput';
       butTitle = this.options.linkInputOpts.buttonTitle;
       butUpdateTitle = this.options.linkInputOpts.buttonUpdateTitle;
-      linkInput = jQuery('<span id="hbl' + linkInputId + '"> <form action="#" method="post" class="linkForm"> <input class="url" type="text" name="url" placeholder="Enter website URL" value="' + this.options.defaultUrl + '" /> <input type="submit" id="addlinkButton" value="' + butTitle + '"/> <span class="warning" title="This is not a valid website URL"><i class="icon-warning-sign"></i></span> <span class="clear"><i class="icon-remove"></i></span> </form></span>');
+      linkInput = jQuery('<span id="hbl' + linkInputId + '"> <form action="#" method="post" class="linkForm"> <input class="url" type="text" name="url" placeholder="Enter website URL" value="' + this.options.defaultUrl + '" /> <span class="warning" title="This is not a valid website URL"><i class="icon-warning-sign"></i></span> <span class="clear"><i class="icon-remove"></i></span> </form></span>');
       this.options.linkInput = linkInput;
       this.options.urlInput = jQuery('input[name=url]', linkInput);
       this.options.clearButton = jQuery('.clear', linkInput);

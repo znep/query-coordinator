@@ -85,8 +85,8 @@ describe("CardsViewController", function() {
     testHelpers = _testHelpers;
   }]));
 
-  function makeController() {
-    var scope = $rootScope.$new();
+  function makeContext() {
+    var $scope = $rootScope.$new();
     var fakePageId = 'fooo-baar';
 
     var baseInfoPromise = $q.defer();
@@ -96,20 +96,23 @@ describe("CardsViewController", function() {
     var page = new Page(fakePageId);
     page.serialize = function() { return mockPageSerializationData; };
 
-    var controller = $controller('CardsViewController', {
-      $scope: scope,
-      page: page
-    });
-
-    scope.$apply();
-    expect(scope.page).to.be.instanceof(Page);
-
     return {
       baseInfoPromise: baseInfoPromise,
-      scope: scope,
-      controller: controller,
+      $scope: $scope,
       page: page
     };
+  }
+
+  function makeController() {
+    var context = makeContext();
+    var controller = $controller('CardsViewController', context);
+
+    context.$scope.$apply();
+    expect(context.$scope.page).to.be.instanceof(Page);
+
+    return $.extend(context, {
+      controller: controller
+    });
   };
 
   function testCard() {
@@ -129,7 +132,7 @@ describe("CardsViewController", function() {
       var controllerHarness = makeController();
 
       var controller = controllerHarness.controller;
-      var scope = controllerHarness.scope;
+      var $scope = controllerHarness.$scope;
 
       var nameOne = _.uniqueId('name');
       var nameTwo = _.uniqueId('name');
@@ -139,17 +142,17 @@ describe("CardsViewController", function() {
       });
       $rootScope.$digest();
 
-      expect(scope.pageName).to.equal(nameOne);
+      expect($scope.pageName).to.equal(nameOne);
 
-      scope.page.set('name', nameTwo);
-      expect(scope.pageName).to.equal(nameTwo);
+      $scope.page.set('name', nameTwo);
+      expect($scope.pageName).to.equal(nameTwo);
     });
 
     it('should default to "Untitled"', function() {
       var controllerHarness = makeController();
 
       var controller = controllerHarness.controller;
-      var scope = controllerHarness.scope;
+      var $scope = controllerHarness.$scope;
 
       var nameOne = undefined;
       var nameTwo = _.uniqueId('name');
@@ -159,10 +162,10 @@ describe("CardsViewController", function() {
       });
       $rootScope.$digest();
 
-      expect(scope.pageName).to.equal("Untitled");
+      expect($scope.pageName).to.equal("Untitled");
 
-      scope.page.set('name', nameTwo);
-      expect(scope.pageName).to.equal(nameTwo);
+      $scope.page.set('name', nameTwo);
+      expect($scope.pageName).to.equal(nameTwo);
     });
   });
 
@@ -171,7 +174,7 @@ describe("CardsViewController", function() {
       var controllerHarness = makeController();
 
       var controller = controllerHarness.controller;
-      var scope = controllerHarness.scope;
+      var $scope = controllerHarness.$scope;
 
       var descriptionOne = _.uniqueId('description');
       var descriptionTwo = _.uniqueId('description');
@@ -181,10 +184,10 @@ describe("CardsViewController", function() {
       });
       $rootScope.$digest();
 
-      expect(scope.pageDescription).to.equal(descriptionOne);
+      expect($scope.pageDescription).to.equal(descriptionOne);
 
-      scope.page.set('description', descriptionTwo);
-      expect(scope.pageDescription).to.equal(descriptionTwo);
+      $scope.page.set('description', descriptionTwo);
+      expect($scope.pageDescription).to.equal(descriptionTwo);
     });
   });
 
@@ -204,11 +207,11 @@ describe("CardsViewController", function() {
       describe('with no base filter', function() {
         it('should yield an empty WHERE', function() {
           var harness = makeMinimalController();
-          expect(harness.scope.globalWhereClauseFragment).to.be.empty;
+          expect(harness.$scope.globalWhereClauseFragment).to.be.empty;
         });
         it('should yield an empty set of filtered column names', function() {
           var harness = makeMinimalController();
-          expect(harness.scope.appliedFiltersForDisplay).to.be.empty;
+          expect(harness.$scope.appliedFiltersForDisplay).to.be.empty;
         });
       });
 
@@ -217,13 +220,13 @@ describe("CardsViewController", function() {
           var harness = makeMinimalController();
           var fakeFilter = "fakeField='fakeValue'";
           harness.page.set('baseSoqlFilter', fakeFilter);
-          expect(harness.scope.globalWhereClauseFragment).to.equal(fakeFilter);
+          expect(harness.$scope.globalWhereClauseFragment).to.equal(fakeFilter);
         });
         it('should yield an empty set of filtered column names', function() {
           var harness = makeMinimalController();
           var fakeFilter = "fakeField='fakeValue'";
           harness.page.set('baseSoqlFilter', fakeFilter);
-          expect(harness.scope.appliedFiltersForDisplay).to.be.empty;
+          expect(harness.$scope.appliedFiltersForDisplay).to.be.empty;
         });
       });
     });
@@ -249,7 +252,7 @@ describe("CardsViewController", function() {
         cards[0].set('activeFilters', [filters[0]]);
         cards[2].set('activeFilters', [filters[1]]);
 
-        harness.scope.clearAllFilters();
+        harness.$scope.clearAllFilters();
 
         expect(cards[0].getCurrentValue('activeFilters')).to.be.empty;
         expect(cards[1].getCurrentValue('activeFilters')).to.be.empty;
@@ -278,11 +281,11 @@ describe("CardsViewController", function() {
 
           // Just one card
           firstCard.set('activeFilters', [filterOne]);
-          expect(harness.scope.globalWhereClauseFragment).to.equal(filterOne.generateSoqlWhereFragment(firstCard.fieldName));
+          expect(harness.$scope.globalWhereClauseFragment).to.equal(filterOne.generateSoqlWhereFragment(firstCard.fieldName));
 
           // Two filtered cards
           thirdCard.set('activeFilters', [filterTwo]);
-          expect(harness.scope.globalWhereClauseFragment).to.equal(
+          expect(harness.$scope.globalWhereClauseFragment).to.equal(
             "{0} AND {1}".format(
               filterOne.generateSoqlWhereFragment(firstCard.fieldName),
               filterTwo.generateSoqlWhereFragment(thirdCard.fieldName)
@@ -291,7 +294,7 @@ describe("CardsViewController", function() {
           // One filtered card, with two filters.
           firstCard.set('activeFilters', [filterOne, filterTwo]);
           thirdCard.set('activeFilters', []);
-          expect(harness.scope.globalWhereClauseFragment).to.equal(
+          expect(harness.$scope.globalWhereClauseFragment).to.equal(
             "{0} AND {1}".format(
               filterOne.generateSoqlWhereFragment(firstCard.fieldName),
               filterTwo.generateSoqlWhereFragment(firstCard.fieldName)
@@ -306,20 +309,20 @@ describe("CardsViewController", function() {
 
           // Just one card
           firstCard.set('activeFilters', [filterOne]);
-          expect(_.pluck(harness.scope.appliedFiltersForDisplay, 'operator')).to.deep.equal([ 'is not' ]);
-          expect(_.pluck(harness.scope.appliedFiltersForDisplay, 'operand')).to.deep.equal([ 'blank' ]);
+          expect(_.pluck(harness.$scope.appliedFiltersForDisplay, 'operator')).to.deep.equal([ 'is not' ]);
+          expect(_.pluck(harness.$scope.appliedFiltersForDisplay, 'operand')).to.deep.equal([ 'blank' ]);
 
           // Two filtered cards
           thirdCard.set('activeFilters', [filterTwo]);
-          expect(_.pluck(harness.scope.appliedFiltersForDisplay, 'operator')).to.deep.equal([ 'is not' , 'is' ]);
-          expect(_.pluck(harness.scope.appliedFiltersForDisplay, 'operand')).to.deep.equal([ 'blank', filterTwo.operand ]);
+          expect(_.pluck(harness.$scope.appliedFiltersForDisplay, 'operator')).to.deep.equal([ 'is not' , 'is' ]);
+          expect(_.pluck(harness.$scope.appliedFiltersForDisplay, 'operand')).to.deep.equal([ 'blank', filterTwo.operand ]);
 
           // One filtered card, with two filters.
           firstCard.set('activeFilters', [filterOne, filterTwo]);
           thirdCard.set('activeFilters', []);
           // NOTE: for MVP, only the first filter is honored for a particular card. See todo in production code.
-          expect(_.pluck(harness.scope.appliedFiltersForDisplay, 'operator')).to.deep.equal([ 'is not' ]);
-          expect(_.pluck(harness.scope.appliedFiltersForDisplay, 'operand')).to.deep.equal([ 'blank' ]);
+          expect(_.pluck(harness.$scope.appliedFiltersForDisplay, 'operator')).to.deep.equal([ 'is not' ]);
+          expect(_.pluck(harness.$scope.appliedFiltersForDisplay, 'operand')).to.deep.equal([ 'blank' ]);
         }));
       });
 
@@ -335,9 +338,9 @@ describe("CardsViewController", function() {
 
           // Just one card
           firstCard.set('activeFilters', [filterOne]);
-          harness.scope.$digest();
+          harness.$scope.$digest();
 
-          expect(harness.scope.globalWhereClauseFragment).to.equal(
+          expect(harness.$scope.globalWhereClauseFragment).to.equal(
             "{0} AND {1}".format(
               fakeBaseFilter,
               filterOne.generateSoqlWhereFragment(firstCard.fieldName))
@@ -345,7 +348,7 @@ describe("CardsViewController", function() {
 
           // Two filtered cards
           thirdCard.set('activeFilters', [filterTwo]);
-          expect(harness.scope.globalWhereClauseFragment).to.equal(
+          expect(harness.$scope.globalWhereClauseFragment).to.equal(
             "{0} AND {1} AND {2}".format(
               fakeBaseFilter,
               filterOne.generateSoqlWhereFragment(firstCard.fieldName),
@@ -355,7 +358,7 @@ describe("CardsViewController", function() {
           // One filtered card, with two filters.
           firstCard.set('activeFilters', [filterOne, filterTwo]);
           thirdCard.set('activeFilters', []);
-          expect(harness.scope.globalWhereClauseFragment).to.equal(
+          expect(harness.$scope.globalWhereClauseFragment).to.equal(
             "{0} AND {1} AND {2}".format(
               fakeBaseFilter,
               filterOne.generateSoqlWhereFragment(firstCard.fieldName),
@@ -369,89 +372,89 @@ describe("CardsViewController", function() {
   describe('page unsaved state', function() {
     it('should set hasChanges to true when a property changes on any model hooked to the page', function() {
       var controllerHarness = makeController();
-      var scope = controllerHarness.scope;
+      var $scope = controllerHarness.$scope;
 
-      expect(scope.hasChanges).to.be.falsy;
+      expect($scope.hasChanges).to.be.falsy;
 
-      scope.page.set('name', 'name2');
-      expect(scope.hasChanges).to.be.true;
+      $scope.page.set('name', 'name2');
+      expect($scope.hasChanges).to.be.true;
     });
 
     it('should call PageDataService.save when savePage is called with hasChanges = true', function() {
       var controllerHarness = makeController();
-      var scope = controllerHarness.scope;
+      var $scope = controllerHarness.$scope;
 
-      scope.page.set('name', 'name2'); // Cause a change.
+      $scope.page.set('name', 'name2'); // Cause a change.
 
       var spy = sinon.spy(mockPageDataService, 'save');
-      scope.savePage();
+      $scope.savePage();
       expect(spy.calledOnce).to.be.true;
       mockPageDataService.save.restore();
     });
 
     it('should not call PageDataService.save when savePage is called with hasChanges = false', function() {
       var controllerHarness = makeController();
-      var scope = controllerHarness.scope;
+      var $scope = controllerHarness.$scope;
 
       var spy = sinon.spy(mockPageDataService, 'save');
-      scope.savePage();
+      $scope.savePage();
       expect(spy.called).to.be.false;
       mockPageDataService.save.restore();
     });
 
     it('should set hasChanges to false after successfully saving', function(done) {
       var controllerHarness = makeController();
-      var scope = controllerHarness.scope;
+      var $scope = controllerHarness.$scope;
 
-      scope.page.set('name', 'name2');
-      scope.savePage();
+      $scope.page.set('name', 'name2');
+      $scope.savePage();
       $rootScope.$apply(); // Must call $apply, as savePage uses a $q promise internally. Grah.
 
       // Due to our save debouncing, this change is intentionally delayed.
-      scope.$watch('hasChanges', function(hasChanges) {
+      $scope.$watch('hasChanges', function(hasChanges) {
         if (!hasChanges) { done(); }
       });
     });
 
     it('should NOT set hasChanges to false after failing to save', function() {
       var controllerHarness = makeController();
-      var scope = controllerHarness.scope;
+      var $scope = controllerHarness.$scope;
 
-      scope.page.set('name', 'name2');
+      $scope.page.set('name', 'name2');
 
       var origSave = mockPageDataService.save;
 
       // Hack the mock to always fail the save.
       mockPageDataService.save = _.constant($q.reject());
 
-      scope.savePage();
+      $scope.savePage();
       $rootScope.$apply(); // Must call $apply, as savePage uses a $q promise internally. Grah.
 
       mockPageDataService.save = origSave;
 
-      expect(scope.hasChanges).to.be.true;
+      expect($scope.hasChanges).to.be.true;
     });
 
     it('should set hasChanges to true after making a change after saving', function() {
       var controllerHarness = makeController();
-      var scope = controllerHarness.scope;
+      var $scope = controllerHarness.$scope;
 
-      scope.page.set('name', 'name2');
-      scope.savePage();
+      $scope.page.set('name', 'name2');
+      $scope.savePage();
       $rootScope.$apply(); // Must call $apply, as savePage uses a $q promise internally. Grah.
-      scope.page.set('name', 'name3');
-      expect(scope.hasChanges).to.be.true;
+      $scope.page.set('name', 'name3');
+      expect($scope.hasChanges).to.be.true;
     });
 
     it('should set editMode to false after saving', function() {
       var controllerHarness = makeController();
-      var scope = controllerHarness.scope;
+      var $scope = controllerHarness.$scope;
 
-      scope.editMode = true;
-      scope.page.set('name', 'name2');
-      scope.savePage();
+      $scope.editMode = true;
+      $scope.page.set('name', 'name2');
+      $scope.savePage();
       $rootScope.$apply(); // Must call $apply, as savePage uses a $q promise internally. Grah.
-      expect(scope.editMode).to.be.false;
+      expect($scope.editMode).to.be.false;
     });
   });
 
@@ -485,13 +488,13 @@ describe("CardsViewController", function() {
 
   describe('savePageAs', function() {
     var controllerHarness;
-    var scope;
+    var $scope;
     var NEW_PAGE_NAME = 'my new page name';
     var NEW_PAGE_DESCRIPTION = 'my new page description';
 
     beforeEach(function() {
       controllerHarness = makeController();
-      scope = controllerHarness.scope;
+      $scope = controllerHarness.$scope;
     });
 
     it('should call save on PageDataService with no ID and updated data', function(done) {
@@ -501,7 +504,7 @@ describe("CardsViewController", function() {
         description: NEW_PAGE_DESCRIPTION
       };
       var saveSpy = sinon.spy(mockPageDataService, 'save');
-      var saveEvents = scope.savePageAs(NEW_PAGE_NAME, NEW_PAGE_DESCRIPTION);
+      var saveEvents = $scope.savePageAs(NEW_PAGE_NAME, NEW_PAGE_DESCRIPTION);
       saveEvents.subscribe(function(event) {
         if (event.status === 'saved') {
           expect(saveSpy.calledOnce).to.be.true;
@@ -515,7 +518,7 @@ describe("CardsViewController", function() {
 
     it('should redirect to the new page URL on success', function(done) {
       mockWindowServiceLocationSeq.onNext(undefined);
-      var saveEvents = scope.savePageAs(NEW_PAGE_NAME, NEW_PAGE_DESCRIPTION);
+      var saveEvents = $scope.savePageAs(NEW_PAGE_NAME, NEW_PAGE_DESCRIPTION);
       mockWindowServiceLocationSeq.subscribe(function(href) {
         if (href) {
           expect(href).to.equal('/view/{0}'.format(TEST_PAGE_ID));
@@ -527,10 +530,7 @@ describe("CardsViewController", function() {
   });
 
   describe('download button', function() {
-    var controllerHarness;
-
     beforeEach(function() {
-      controllerHarness = makeController();
     });
 
     afterEach(function() {
@@ -538,44 +538,46 @@ describe("CardsViewController", function() {
     });
 
     it('should provide a (correct) csv download link', function() {
-      expect(controllerHarness.scope.datasetCSVDownloadURL).to.equal('#');
+      var controllerHarness = makeController();
+      expect(controllerHarness.$scope.datasetCSVDownloadURL).to.equal('#');
 
       controllerHarness.baseInfoPromise.resolve({
         datasetId: 'fake-fbfr',
         name: 'some name'
       });
-      controllerHarness.scope.$digest();
+      controllerHarness.$scope.$digest();
 
-      expect(controllerHarness.scope.datasetCSVDownloadURL).
+      expect(controllerHarness.$scope.datasetCSVDownloadURL).
         to.equal('/api/views/fake-fbfr/rows.csv?accessType=DOWNLOAD');
     });
 
     it('closes the dialog when clicking (or hitting esc) outside it', function() {
+      var controllerHarness = makeController();
       var body = $('body');
-      controllerHarness.scope.downloadOpened = true;
+      controllerHarness.$scope.downloadOpened = true;
       testHelpers.fireMouseEvent(body[0], 'click');
-      controllerHarness.scope.$digest();
-      expect(controllerHarness.scope.downloadOpened).to.equal(false);
+      controllerHarness.$scope.$digest();
+      expect(controllerHarness.$scope.downloadOpened).to.equal(false);
 
-      controllerHarness.scope.downloadOpened = true;
+      controllerHarness.$scope.downloadOpened = true;
       body.trigger($.Event('keydown', { which: 27 }));
-      controllerHarness.scope.$digest();
-      expect(controllerHarness.scope.downloadOpened).to.equal(false);
+      controllerHarness.$scope.$digest();
+      expect(controllerHarness.$scope.downloadOpened).to.equal(false);
 
       // should ignore events when the download isn't opened
-      controllerHarness.scope.downloadOpened = null;
+      controllerHarness.$scope.downloadOpened = null;
       body.trigger($.Event('keydown', { which: 27 }));
-      controllerHarness.scope.$digest();
-      expect(controllerHarness.scope.downloadOpened).to.equal(null);
+      controllerHarness.$scope.$digest();
+      expect(controllerHarness.$scope.downloadOpened).to.equal(null);
 
       // Now test clicking inside a download menu
       var element = $('<button class="download-menu"><div><a>link</a></div></button>');
       testHelpers.TestDom.append(element);
 
-      controllerHarness.scope.downloadOpened = true;
+      controllerHarness.$scope.downloadOpened = true;
       testHelpers.fireMouseEvent(element.find('a')[0], 'click');
-      controllerHarness.scope.$digest();
-      expect(controllerHarness.scope.downloadOpened).to.equal(false);
+      controllerHarness.$scope.$digest();
+      expect(controllerHarness.$scope.downloadOpened).to.equal(false);
     });
   });
 

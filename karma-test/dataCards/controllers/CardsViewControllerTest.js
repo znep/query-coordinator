@@ -9,7 +9,8 @@ describe("CardsViewController", function() {
 
   // Define a mock window service and surface writes to location.href.
   var mockWindowService = {
-    location: {}
+    location: {},
+    scrollTo: _.noop
   };
 
   var mockWindowServiceLocationSeq = new Rx.BehaviorSubject(undefined);
@@ -66,8 +67,17 @@ describe("CardsViewController", function() {
   };
 
   beforeEach(module('dataCards'));
+  beforeEach(module('socrataCommon.filters'));
+  beforeEach(module('/angular_templates/dataCards/pages/cards-view.html'));
+  beforeEach(module('/angular_templates/dataCards/saveAs.html'));
+  beforeEach(module('/angular_templates/dataCards/saveButton.html'));
+  beforeEach(module('/angular_templates/dataCards/selectionLabel.html'));
+  beforeEach(module('/angular_templates/dataCards/spinner.html'));
+
+  var _$provide;
   beforeEach(function() {
     module(function($provide) {
+      _$provide = $provide;
       $provide.value('PageDataService', mockPageDataService);
       $provide.value('DatasetDataService', mockDatasetDataService);
       $provide.value('UserSession', mockUserSessionService);
@@ -114,6 +124,30 @@ describe("CardsViewController", function() {
       controller: controller
     });
   };
+
+  function renderCardsView() {
+    var context = makeContext();
+    var cardLayout = {};
+    testHelpers.mockDirective(_$provide, 'apiExplorer');
+    testHelpers.mockDirective(_$provide, 'cardLayout', function() {
+      return {
+        link: function($scope) {
+          cardLayout.$scope = $scope;
+        }
+      };
+    });
+    testHelpers.mockDirective(_$provide, 'lastUpdated');
+    testHelpers.mockDirective(_$provide, 'multilineEllipsis');
+    testHelpers.mockDirective(_$provide, 'notifyResize');
+    _$provide.value('page', context.page);
+    var html = '<ng-include ng-controller="CardsViewController"' +
+        'src="\'/angular_templates/dataCards/pages/cards-view.html\'"></ng-include>';
+    var element = testHelpers.TestDom.compileAndAppend(html, context.$scope);
+    return $.extend({
+      cardLayout: cardLayout,
+      element: element.parent().children()
+    }, context);
+  }
 
   function testCard() {
     return {
@@ -463,7 +497,7 @@ describe("CardsViewController", function() {
     var testHelpers;
     var container;
 
-    beforeEach(inject(['testHelpers', function(_testHelpers, _$templateCache) {
+    beforeEach(inject(['testHelpers', function(_testHelpers) {
       testHelpers = _testHelpers;
       controllerHarness = makeController();
     }]));
@@ -578,6 +612,46 @@ describe("CardsViewController", function() {
       testHelpers.fireMouseEvent(element.find('a')[0], 'click');
       controllerHarness.$scope.$digest();
       expect(controllerHarness.$scope.downloadOpened).to.equal(false);
+    });
+
+    it('disables png download (and displays help text) if the page isn\'t saved', function() {
+      var context = renderCardsView();
+      var downloadButton = context.element.find('.download-menu');
+      downloadButton.click();
+      var menuItem = downloadButton.find('a:contains("Visualization")');
+      expect(menuItem.hasClass('download-menu-item-disabled')).to.equal(false);
+
+      context.$scope.hasChanges = true;
+      context.$scope.$digest();
+
+      expect(menuItem.hasClass('download-menu-item-disabled')).to.equal(true);
+
+      // Now check the flyout
+      testHelpers.fireMouseEvent(menuItem[0], 'mousemove');
+      var flyout = $('#uber-flyout');
+      expect(flyout.text()).to.match(/Please save the page/);
+    });
+
+    it('triggers chooser mode when selecting png download', function() {
+      var context = renderCardsView();
+      var downloadButton = context.element.find('.download-menu');
+      downloadButton.click();
+      downloadButton.find('a:contains("Visualization")').click();
+      expect(context.cardLayout.$scope.chooserMode.show).to.equal(true);
+    });
+
+    it('turns into a cancel button in chooser mode, which cancels chooser mode', function() {
+      var context = renderCardsView();
+      var downloadButton = context.element.find('.download-menu');
+      downloadButton.click();
+      downloadButton.find('a:contains("Visualization")').click();
+      expect(downloadButton.text()).to.match(/Cancel/);
+
+      expect(context.cardLayout.$scope.chooserMode.show).to.equal(true);
+
+      downloadButton.click();
+
+      expect(context.cardLayout.$scope.chooserMode.show).to.equal(false);
     });
   });
 

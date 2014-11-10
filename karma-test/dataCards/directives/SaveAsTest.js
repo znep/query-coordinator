@@ -9,6 +9,7 @@
     beforeEach(function() {
       module('/angular_templates/dataCards/saveAs.html');
       module('/angular_templates/dataCards/saveButton.html');
+      module('/angular_templates/dataCards/spinner.html');
       module('socrataCommon.services');
       module('dataCards.directives');
       module('dataCards.services');

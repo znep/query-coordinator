@@ -1,6 +1,5 @@
-angular.module('test', [])
-  .factory('testHelpers', function($compile, $templateCache, $q) {
-
+(function() {
+  angular.module('test', []).factory('testHelpers', function($compile, $templateCache, $q) {
     var fireEvent = function(target, name, opts) {
       var evt = document.createEvent('HTMLEvents');
       evt.initEvent(name, true, true);
@@ -121,6 +120,31 @@ angular.module('test', [])
       }
     }
 
+    /**
+     * Mocks a directive.
+     * This is sort of an ugly hack, from:
+     * http://stackoverflow.com/questions/17533052
+     *
+     * @param {String} directive The directive to mock, as a camelCase string.
+     * @param {Function} f The alternate factory function that returns a directive definition.
+     */
+    function mockDirective($provide, directive, f) {
+      $provide.factory(directive + 'Directive', function() {
+        var directiveDefinition = f ? f.apply(this, arguments) : {};
+        var foo = directive;
+        return [
+          $.extend({
+            template: '',
+            compile: function() {
+              return directiveDefinition.link;
+            },
+            restrict: 'EA',
+            priority: 0
+          }, directiveDefinition)
+        ];
+      });
+    }
+
     return {
       TestDom: TestDom,
       getTestJson: getTestJson,
@@ -128,6 +152,8 @@ angular.module('test', [])
       fireEvent: fireEvent,
       fireMouseEvent: fireMouseEvent,
       overrideTransitions: overrideTransitions,
+      mockDirective: mockDirective,
       waitForSatisfy: waitForSatisfy
     };
   });
+})();

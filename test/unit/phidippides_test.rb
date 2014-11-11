@@ -145,6 +145,10 @@ class PhidippidesTest < Test::Unit::TestCase
     ).yields(@mock_http).returns(@mock_response)
   end
 
+  def teardown
+    Net::HTTP.unstub(:start)
+  end
+
   def page_metadata
     @page_metadata ||= JSON.parse(File.read("#{Rails.root}/test/fixtures/page-metadata.json"))
   end

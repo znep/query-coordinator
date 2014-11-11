@@ -605,7 +605,9 @@ describe("CardsViewController", function() {
       expect(controllerHarness.$scope.downloadOpened).to.equal(null);
 
       // Now test clicking inside a download menu
-      var element = $('<button class="download-menu"><div><a>link</a></div></button>');
+      var element = $('<button class="download-menu">' +
+                      '<dropdown-menu><a>link</a></dropdown-menu>' +
+                      '</button>');
       testHelpers.TestDom.append(element);
 
       controllerHarness.$scope.downloadOpened = true;

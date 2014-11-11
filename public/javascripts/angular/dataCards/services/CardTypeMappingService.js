@@ -43,6 +43,24 @@
       ];
     }
 
+    // A whitelist of card types available for export
+    var EXPORTABLE_CARD_TYPES = [
+      'choropleth',
+      'column',
+      'point-ish map',
+      'pointMap',
+      //'search',
+      'statBar',
+      //'table',
+      'timeline'
+    ];
+    /**
+     * Determines whether or not the given card is able to be exported as a PNG.
+     */
+    function _isExportable(cardModel) {
+      return _.contains(EXPORTABLE_CARD_TYPES, _cardTypeForModel(cardModel));
+    }
+
 
     function _cardTypeForColumn(column) {
       column = column || {};
@@ -104,6 +122,7 @@
 
     return {
       isCustomizable: _isCustomizable,
+      isExportable: _isExportable,
       cardTypeForModel: _cardTypeForModel,
       cardTypeForColumn: _cardTypeForColumn,
       cardTypeForColumnIsSupported: _cardTypeForColumnIsSupported

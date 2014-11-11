@@ -9,6 +9,7 @@
     beforeEach(function() {
       module('/angular_templates/dataCards/saveAs.html');
       module('/angular_templates/dataCards/saveButton.html');
+      module('/angular_templates/dataCards/spinner.html');
       module('socrataCommon.services');
       module('dataCards.directives');
       module('dataCards.services');
@@ -121,10 +122,8 @@
 
       it('should become inactive if the an area outside of the panel is clicked', function(done) {
         testHelpers.TestDom.append($saveAs);
-        var ev = $window.document.createEvent('HTMLEvents');
-        ev.initEvent('mouseup', true, true);
-        ev.which = 1;
-        $window.document.getElementsByTagName('body')[0].dispatchEvent(ev);
+        testHelpers.fireMouseEvent($window.document.getElementsByTagName('body')[0],
+                                   'click', {which: 1});
         _.defer(function() {
           expect($toolPanel.hasClass('active')).to.be.false;
           testHelpers.TestDom.clear();

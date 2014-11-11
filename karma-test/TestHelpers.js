@@ -1,6 +1,5 @@
-angular.module('test', [])
-  .factory('testHelpers', function($compile, $templateCache, $q) {
-
+(function() {
+  angular.module('test', []).factory('testHelpers', function($compile, $templateCache, $q) {
     var fireEvent = function(target, name, opts) {
       var evt = document.createEvent('HTMLEvents');
       evt.initEvent(name, true, true);
@@ -14,9 +13,12 @@ angular.module('test', [])
 
     // D3 doesn't have a jQuery-like trigger. So if you want to simulate mouse events,
     // we need to use real browser events.
-    var fireMouseEvent = function(elem, evtName) {
+    var fireMouseEvent = function(elem, evtName, eventProps) {
       var evt = document.createEvent("MouseEvents");
       evt.initMouseEvent(evtName, true, true, window, 0, 0, 0, 0, 0, false, false, false, false, 0, null);
+      if (eventProps) {
+        $.extend(evt, eventProps);
+      }
       elem.dispatchEvent(evt);
     };
 
@@ -118,6 +120,31 @@ angular.module('test', [])
       }
     }
 
+    /**
+     * Mocks a directive.
+     * This is sort of an ugly hack, from:
+     * http://stackoverflow.com/questions/17533052
+     *
+     * @param {String} directive The directive to mock, as a camelCase string.
+     * @param {Function} f The alternate factory function that returns a directive definition.
+     */
+    function mockDirective($provide, directive, f) {
+      $provide.factory(directive + 'Directive', function() {
+        var directiveDefinition = f ? f.apply(this, arguments) : {};
+        var foo = directive;
+        return [
+          $.extend({
+            template: '',
+            compile: function() {
+              return directiveDefinition.link;
+            },
+            restrict: 'EA',
+            priority: 0
+          }, directiveDefinition)
+        ];
+      });
+    }
+
     return {
       TestDom: TestDom,
       getTestJson: getTestJson,
@@ -125,6 +152,8 @@ angular.module('test', [])
       fireEvent: fireEvent,
       fireMouseEvent: fireMouseEvent,
       overrideTransitions: overrideTransitions,
+      mockDirective: mockDirective,
       waitForSatisfy: waitForSatisfy
     };
   });
+})();

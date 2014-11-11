@@ -14,7 +14,49 @@
     }
   }
 
-  function CardsViewController($scope, $location, $log, $window, $q, AngularRxExtensions, SortedTileLayout, Filter, PageDataService, UserSession, CardTypeMappingService, FlyoutService, page, Card) {
+  function initDownload($scope, page, WindowState, FlyoutService) {
+    // The CSV download url
+    $scope.bindObservable('datasetCSVDownloadURL',
+      page.observe('dataset').map(function(dataset) {
+        if (dataset && dataset.hasOwnProperty('id')) {
+          return '/api/views/{0}/rows.csv?accessType=DOWNLOAD'.format(dataset.id);
+        } else {
+          return '#';
+        }
+      }));
+
+    // Download menu
+    WindowState.closeDialogEventObservable.filter(function(e) {
+      return $scope.downloadOpened;
+    }).subscribe(function() {
+      $scope.$apply(function(e) {
+        $scope.downloadOpened = false;
+      });
+    });
+
+    $scope.chooserMode = {show: false};
+
+    $scope.onDownloadClick = function(event) {
+      // Don't double-handle closing the dialog
+      event.stopPropagation();
+
+      // Clicking the 'Cancel' button
+      if (event.target.nodeName === 'BUTTON' && $scope.chooserMode.show) {
+        $scope.chooserMode.show = false;
+      } else {
+        // Otherwise, close the dialog
+        $scope.downloadOpened = !$scope.downloadOpened;
+      }
+    };
+
+    FlyoutService.register('download-menu-item-disabled', _.constant(
+      '<div class="flyout-title">' +
+      'Please save the page in order to export a visualization as image' +
+      '</div>'
+    ));
+  }
+
+  function CardsViewController($scope, $location, $log, $window, $q, AngularRxExtensions, SortedTileLayout, Filter, PageDataService, UserSession, CardTypeMappingService, FlyoutService, page, Card, WindowState) {
 
     AngularRxExtensions.install($scope);
 
@@ -59,17 +101,7 @@
       _.constant(null)
     );
 
-    /**
-     * CSV download Button
-     */
-    $scope.bindObservable('datasetCSVDownloadURL',
-      page.observe('dataset').map(function(dataset) {
-        if (dataset && dataset.hasOwnProperty('id')) {
-          return '/api/views/{0}/rows.csv?accessType=DOWNLOAD'.format(dataset.id);
-        } else {
-          return '#';
-        }
-      }));
+    initDownload($scope, page, WindowState, FlyoutService);
 
     /*******************************
     * Filters and the where clause *

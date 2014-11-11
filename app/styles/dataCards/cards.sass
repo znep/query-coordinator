@@ -12,12 +12,11 @@ $api-panel-width: 512px
 $api-panel-hint-width: 20px
 
 /* MOBILE/RESPONSIVE DESIGN. SEE DESKTOP-SPECIFIC STYLES BELOW */
-.state-view-cards
-  *:focus
-    outline-width: 2px
-
 body.state-view-cards
   background-color: $view-cards-bg-color
+
+  *:focus
+    outline-width: 2px
 
   .cards-metadata
     position: relative
@@ -95,27 +94,36 @@ body.state-view-cards
 
       .save-button
         position: relative
-        .saving-spinner-wrapper
-          $spinner-size: 17px
-          display: none
-          position: absolute
-          top: calc(50% - #{$spinner-size / 2})
-          bottom: 0
-          left: calc(50% - #{$spinner-size / 2})
-          right: 0
-          .saving-spinner
-            @include prefixer(animation-duration, '0.7s')
-            @include prefixer(animation-iteration-count, 'infinite')
-            @include prefixer(animation-timing-function, 'linear')
-            @include prefixer(animation-name, 'loadingspin')
-            height: $spinner-size
-            width: $spinner-size
 
-        &.working
-          .saving-spinner-wrapper
+      button.download-menu
+        $border-width: 2px
+        position: relative
+        border-width: $border-width
+        z-index: 5
+
+        dropdown-menu
+          position: absolute
+          top: 100%
+          // Compensate for the border on the containing button
+          margin: 0 #{-$border-width}
+          background-color: inherit
+
+          a
+            white-space: nowrap
+            color: inherit
             display: block
-          .button-text
-            visibility: hidden
+            line-height: 2rem
+            text-align: left
+            padding: $action-btn-padding-top $action-btn-padding-left
+
+            &:hover
+              background-color: $btn-bg-color
+              color: $aqua-font-color
+
+            &.download-menu-item-disabled, &.download-menu-item-disabled:hover
+              cursor: default
+              color: $lt-grey-font-color-rgba
+              background-color: inherit
 
   .cards-content
     position: relative
@@ -181,16 +189,41 @@ body.state-view-cards
       .card-spot
         position: absolute
 
-        .card-drag-overlay
-          // IE9 ignores this overlay for JUST the column chart labels unless you give this
-          // a background color (transparent doesn't work).
-          background-color: rgba(0, 0, 0, 0)
+        .overlay
           position: absolute
           left: 0
           right: 0
           top: 0
           bottom: 0
           z-index: 2
+
+          &.card-chooser
+            background-color: rgba(0, 0, 0, .5)
+            @include prefixer(transition, 'background-color 0.1s')
+
+            &.enabled:hover
+              background-color: rgba(0, 0, 0, .1)
+
+            button
+              position: absolute
+              top: 50%
+              left: 50%
+              @include prefixer('transform', 'translate(-50%, -50%)')
+              @include prefixer(box-shadow, 0 0 3rem -.1rem rgba(0, 0, 0, 0.3))
+
+              spinner
+                position: absolute
+                top: 0
+                left: 0
+                bottom: 0
+                right: 0
+                background-color: inherit
+
+        .card-drag-overlay
+          // IE9 ignores this overlay for JUST the column chart labels unless you give this
+          // a background color (transparent doesn't work).
+          background-color: rgba(0, 0, 0, 0)
+
           cursor: move !important
           cursor: grab !important
           cursor: -webkit-grab !important
@@ -399,3 +432,31 @@ body.state-view-cards
 
   .action-btn
     margin-bottom: 0
+
+spinner
+  $spinner-size: 17px
+  display: block
+  position: relative
+
+  .saving-spinner-wrapper
+    position: absolute
+    top: 50%
+    left: 50%
+    @include prefixer('transform', 'translate(-50%, -50%)')
+
+    .saving-spinner
+      display: inline-block
+      @include prefixer(animation-duration, '0.7s')
+      @include prefixer(animation-iteration-count, 'infinite')
+      @include prefixer(animation-timing-function, 'linear')
+      @include prefixer(animation-name, 'loadingspin')
+      height: $spinner-size
+      width: $spinner-size
+
+button>spinner
+  position: absolute
+  top: 0
+  left: 0
+  bottom: 0
+  right: 0
+  background-color: inherit

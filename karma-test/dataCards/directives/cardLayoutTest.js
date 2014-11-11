@@ -6,8 +6,10 @@ describe('CardLayout directive', function() {
   var AngularRxExtensions;
   var Card;
   var mockWindowStateService = null;
+  var mockWindow;
   var Model;
   var Page;
+  var _$provide;
   var $q;
   var rootScope;
   var testHelpers;
@@ -26,6 +28,7 @@ describe('CardLayout directive', function() {
   beforeEach(module('/angular_templates/dataCards/customizeCardDialog.html'));
   beforeEach(module('/angular_templates/dataCards/modalDialog.html'));
   beforeEach(module('/angular_templates/dataCards/socSelect.html'));
+  beforeEach(module('/angular_templates/dataCards/spinner.html'));
   beforeEach(module('/angular_templates/dataCards/table.html'));
   beforeEach(module('/angular_templates/dataCards/tableHeader.html'));
   beforeEach(module('/angular_templates/dataCards/timelineChart.html'));
@@ -37,9 +40,11 @@ describe('CardLayout directive', function() {
   beforeEach(module('dataCards.directives'));
   beforeEach(function() {
     module(function($provide) {
+      _$provide = $provide;
       var mockCardDataService = {
         getData: function(){ return $q.when([]);},
         getChoroplethRegions: function() { return {then: _.noop}; },
+        getRowCount: function() { return {then: _.noop}; },
         getTimelineDomain: function() { return {then: _.noop}; }
       };
       $provide.value('CardDataService', mockCardDataService);
@@ -53,6 +58,9 @@ describe('CardLayout directive', function() {
       mockWindowStateService.escapeKeyObservable = new Rx.Subject();
 
       $provide.value('WindowState', mockWindowStateService);
+
+      mockWindow = {location: {}};
+      $provide.value('$window', mockWindow);
     });
   });
   beforeEach(inject(function($injector) {
@@ -123,6 +131,9 @@ describe('CardLayout directive', function() {
         name: 'search_column',
         logicalDatatype: 'text',
         physicalDatatype: 'text'
+      },
+      '*': {
+        logicalDatatype: '*'
       }
     });
 
@@ -137,6 +148,7 @@ describe('CardLayout directive', function() {
     outerScope.where = '';
     outerScope.editMode = false;
     outerScope.bindObservable('cardModels', pageModel.observe('cards'));
+    outerScope.chooserMode = {};
 
     var html = [
         '<div class="cards-content">',
@@ -151,6 +163,7 @@ describe('CardLayout directive', function() {
           ' card-models="cardModels"',
           ' global-where-clause-fragment="where"',
           ' edit-mode="editMode"',
+          ' chooser-mode="chooserMode"',
           ' allow-add-card="!hasAllCards"',
           ' expanded-card="expandedCard"></card-layout>',
         '</div>'
@@ -159,7 +172,7 @@ describe('CardLayout directive', function() {
 
     function findCardForModel(model) {
       return $(_.find(element.find('card'), function(cardElement) {
-        return $(cardElement).scope().cardPosition.model === model;
+        return $(cardElement).scope().cardState.model === model;
       }));
     };
 
@@ -729,7 +742,7 @@ describe('CardLayout directive', function() {
 
         expect(cl.element.find('.card-drag-overlay').length).to.equal(cards.length - 2);
         expect(cl.element.find('.card-drop-placeholder').length).to.equal(1);
-        expect(cl.element.find('.card-drop-placeholder').scope().cardPosition.model).to.equal(card2);
+        expect(cl.element.find('.card-drop-placeholder').scope().cardState.model).to.equal(card2);
 
         // Release it.
         mockWindowStateService.mouseLeftButtonPressedSubject.onNext(false);
@@ -1271,5 +1284,58 @@ describe('CardLayout directive', function() {
     });
   });
 
+  describe('download chooser mode', function() {
+    var cl;
+    
+    beforeEach(function() {
+      _.each(['ColumnChart', 'TimelineChart', 'Choropleth', 'Table', 'Search'], function(type) {
+        testHelpers.mockDirective(_$provide, 'cardVisualization' + type);
+      });
+      cl = createLayoutWithCards([
+        {fieldName: '*'},
+        {fieldName: 'timeline_column'},
+        {fieldName: 'search_column'},
+        {fieldName: 'choropleth_column'}
+      ]);
+    });
+
+    it('displays overlays when chooserMode is activated', function() {
+      expect(cl.element.find('.card-chooser').length).to.equal(0);
+
+      cl.scope.chooserMode.show = true;
+      cl.scope.$digest();
+
+      expect(cl.element.find('.card-chooser').length).to.be.above(0);
+    });
+
+    it('disables download button for table and search cards', function() {
+      cl.scope.chooserMode.show = true;
+      cl.scope.$digest();
+
+      var tableButton = cl.element.find('card-visualization-table').
+          closest('card').siblings('.card-chooser').children('button');
+      var timelineButton = cl.element.find('card-visualization-timeline-chart').
+          closest('card').siblings('.card-chooser').children('button');
+      var searchButton = cl.element.find('card-visualization-search').
+          closest('card').siblings('.card-chooser').children('button');
+      var choroplethButton = cl.element.find('card-visualization-choropleth').
+          closest('card').siblings('.card-chooser').children('button');
+
+      expect(tableButton.hasClass('disabled')).to.equal(true);
+      expect(timelineButton.hasClass('disabled')).to.equal(false);
+      expect(searchButton.hasClass('disabled')).to.equal(true);
+      expect(choroplethButton.hasClass('disabled')).to.equal(false);
+    });
+
+    it('downloads the png url when clicking the download button', function() {
+      cl.scope.chooserMode.show = true;
+      cl.scope.$digest();
+
+      var button = cl.element.find('.card-chooser button:not(.disabled)');
+      button.click();
+
+      expect(mockWindow.location.href).to.equal('./asdf-fdsa/choropleth_column.png');
+    });
+  });
 });
 

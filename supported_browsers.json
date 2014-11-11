@@ -1,94 +1,94 @@
 {
-    "ie": [
-      {
-        "version": "9",
-        "os": { "name": "windows", "version": "7" },
-        "critical": false
-      },
-      {
-        "version": "10",
-        "os": { "name": "windows", "version": "7" },
-        "critical": true
-      },
-      {
-        "version": "11",
-        "os": { "name": "windows", "version": "8.1" },
-        "critical": false
-      }
-    ],
-    "safari": [
-      {
-        "version": "7",
-        "os": { "name": "osx", "version": "mavericks" },
-        "critical": false
-      },
-      {
-        "version": "6",
-        "os": { "name": "osx", "version": "lion" },
-        "critical": false
-      }
-    ],
-    "chrome": [
-      {
-        "version": "38",
-        "os": { "name": "windows", "version": "7" },
-        "critical": false
-      },
-      {
-        "version": "38",
-        "os": { "name": "osx", "version": "lion" },
-        "critical": true
-      },
-      {
-        "version": "37",
-        "os": { "name": "windows", "version": "7" },
-        "critical": false
-      },
-      {
-        "version": "37",
-        "os": { "name": "osx", "version": "lion" },
-        "critical": false
-      },
-      {
-        "version": "36",
-        "os": { "name": "windows", "version": "7" },
-        "critical": false
-      },
-      {
-        "version": "36",
-        "os": { "name": "osx", "version": "lion" },
-        "critical": false
-      }
+  "internet explorer": [
+    {
+      "version": "9",
+      "platform": "Windows 7",
+      "critical": false
+    },
+    {
+      "version": "10",
+      "platform": "Windows 8",
+      "critical": true
+    },
+    {
+      "version": "11",
+      "platform": "Windows 8.1",
+      "critical": false
+    }
+  ],
+  "safari": [
+    {
+      "version": "7",
+      "platform": "OS X 10.9",
+      "critical": false
+    },
+    {
+      "version": "6",
+      "platform": "OS X 10.8",
+      "critical": false
+    }
+  ],
+  "chrome": [
+    {
+      "version": "38",
+      "platform": "Windows 7",
+      "critical": false
+    },
+    {
+      "version": "38",
+      "platform": "OS X 10.9",
+      "critical": true
+    },
+    {
+      "version": "37",
+      "platform": "Windows 7",
+      "critical": false
+    },
+    {
+      "version": "37",
+      "platform": "OS X 10.9",
+      "critical": false
+    },
+    {
+      "version": "36",
+      "platform": "Windows 7",
+      "critical": false
+    },
+    {
+      "version": "36",
+      "platform": "OS X 10.9",
+      "critical": false
+    }
   ],
   "firefox" : [
     {
-      "version": "31",
-      "os": { "name": "windows", "version": "7" },
+      "version": "33",
+      "platform": "Windows 7",
+      "critical": false
+    },
+    {
+      "version": "33",
+      "platform": "OS X 10.9",
+      "critical": false
+    },
+    {
+      "version": "32",
+      "platform": "Windows 7",
+      "critical": false
+    },
+    {
+      "version": "32",
+      "platform": "OS X 10.9",
       "critical": false
     },
     {
       "version": "31",
-      "os": { "name": "osx", "version": "lion" },
+      "platform": "Windows 7",
       "critical": false
     },
     {
-      "version": "30",
-      "os": { "name": "windows", "version": "7" },
-      "critical": false
-    },
-    {
-      "version": "30",
-      "os": { "name": "osx", "version": "lion" },
-      "critical": false
-    },
-    {
-      "version": "29",
-      "os": { "name": "windows", "version": "7" },
-      "critical": false
-    },
-    {
-      "version": "29",
-      "os": { "name": "osx", "version": "lion" },
+      "version": "31",
+      "platform": "OS X 10.9",
       "critical": false
     }
   ]

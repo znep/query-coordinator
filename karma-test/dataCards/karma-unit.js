@@ -10,13 +10,12 @@ var customLaunchers = {};
 _.forIn(supportedBrowsers, function(browserInstances, browserName) {
   _.each(browserInstances, function(instance) {
     instance.browserName = browserName;
-    var launcherName = sprintf('bs_%(browserName)s%(version)s_%(os.name)s_%(os.version)s', instance);
+    var launcherName = sprintf('saucelabs %(browserName)s %(version)s %(platform)s', instance).toLowerCase();
     customLaunchers[launcherName] = {
-      base: 'BrowserStack',
-      browser: browserName,
-      browser_version: instance.version,
-      os: instance.os.name,
-      os_version: instance.os.version
+      base: 'SauceLabs',
+      browserName: browserName,
+      version: instance.version,
+      platform: instance.platform
     };
   });
 });
@@ -100,11 +99,10 @@ module.exports = function ( karma ) {
       '/angular_templates/images/': 'http://localhost:7019/base/public/angular_templates/images/'
     },
 
-    browserStack: {
-      username: 'socrataengineeri1',
-      accessKey: 'NY7TjFt1pqdrxzoBYU4E',
-      name: 'dataCards Unit Tests',
-      project: 'FrontEnd'
+    sauceLabs: {
+      testName: 'dataCards Unit Tests',
+      username: 'socrata-saucelabs',
+      accessKey: '9207e751-711a-4ed0-940a-229a42c06bcc'
     },
 
     customLaunchers: customLaunchers,
@@ -127,7 +125,7 @@ module.exports = function ( karma ) {
       'karma-firefox-launcher',
       'karma-chrome-launcher',
       'karma-phantomjs-launcher',
-      'karma-browserstack-launcher',
+      'karma-sauce-launcher',
       'karma-coverage',
       'karma-mocha-reporter',
       'karma-ng-html2js-preprocessor',
@@ -141,7 +139,7 @@ module.exports = function ( karma ) {
      * makes the code completely unreadable and undebuggable. The rake
      * test task manually enables coverage. See lib/tasks/karma_tests.rake
      */
-    reporters: ['dots'],
+    reporters: ['dots', 'saucelabs'],
 
     coverageReporter: {
       reporters: [
@@ -174,7 +172,7 @@ module.exports = function ( karma ) {
     urlRoot: '/',
 
     /**
-     * Disable file watching by default.
+     * Enable file watching by default.
      */
     autoWatch: true,
 

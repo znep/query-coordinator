@@ -9,8 +9,7 @@ namespace :test do
 
   def get_supported_browser_launcher_names(critical_only = false)
     def name_for_browser_instance(browser_name, instance)
-      os = instance['os']
-      "bs_#{browser_name}#{instance['version']}_#{os['name']}_#{os['version']}"
+      "saucelabs #{browser_name} #{instance['version']} #{instance['platform']}".downcase
     end
 
     supported_browsers = JSON.parse(open('supported_browsers.json').read())
@@ -30,18 +29,18 @@ namespace :test do
   end
 
   desc "Run all karma tests under browsers flagged as critical"
-  task :karma_browserstack_critical do
+  task :karma_sauce_critical do
     browser_names = get_supported_browser_launcher_names(true);
 
-    success = system("karma start karma-test/dataCards/karma-unit.js --browsers #{browser_names.join(',')} --singleRun true")
+    success = system("karma start karma-test/dataCards/karma-unit.js --browsers \"#{browser_names.join(',')}\" --singleRun true")
     raise 'Karma test failure' unless success
   end
 
   desc "Run all karma tests in all supported browsers"
-  task :karma_browserstack_all do
+  task :karma_sauce_all do
     browser_names = get_supported_browser_launcher_names(false);
 
-    success = system("karma start karma-test/dataCards/karma-unit.js --browsers #{browser_names.join(',')} --singleRun true")
+    success = system("karma start karma-test/dataCards/karma-unit.js --browsers \"#{browser_names.join(',')}\" --singleRun true")
     raise 'Karma test failure' unless success
   end
 

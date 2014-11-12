@@ -202,8 +202,11 @@ module.exports = function ( karma ) {
     /**
      * Increase the browser timeout for running tests in the background.
      */
-    browserNoActivityTimeout: 1000 * 60 * 10,
-    captureTimeout: 1000 * 60 * 10,
+    browserNoActivityTimeout: 1000 * 55,
+    browserDisconnectTimeout: 1000 * 5,
+    browserDisconnectTolerance: 3,
+    captureTimeout: 1000 * 60,
+
 
     /**
      * Configure html2js to compile the angular templates.

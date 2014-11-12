@@ -6,7 +6,7 @@ describe('CardLayout directive', function() {
   var AngularRxExtensions;
   var Card;
   var mockWindowStateService = null;
-  var mockWindow;
+  var mockDownloadService;
   var Model;
   var Page;
   var _$provide;
@@ -59,8 +59,14 @@ describe('CardLayout directive', function() {
 
       $provide.value('WindowState', mockWindowStateService);
 
-      mockWindow = {location: {}};
-      $provide.value('$window', mockWindow);
+      mockDownloadService = {
+        download: function() {
+          mockDownloadService.calledWith = arguments;
+          return {then: _.noop};
+        }
+      };
+
+      $provide.value('DownloadService', mockDownloadService);
     });
   });
   beforeEach(inject(function($injector) {
@@ -1334,7 +1340,7 @@ describe('CardLayout directive', function() {
       var button = cl.element.find('.card-chooser button:not(.disabled)');
       button.click();
 
-      expect(mockWindow.location.href).to.equal('./asdf-fdsa/choropleth_column.png');
+      expect(mockDownloadService.calledWith[0]).to.deep.equal('./asdf-fdsa/choropleth_column.png');
     });
   });
 });

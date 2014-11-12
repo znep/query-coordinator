@@ -14,6 +14,14 @@ angular.module('dataCards.directives').directive('dropdownMenu', function(Window
     link: function($scope, element, attrs) {
       var subscriptions = [];
 
+      // Disable anchors that don't have urls
+      element.on('click', 'a', function(e) {
+        var href = $(e.target).attr('href');
+        if (!href || '#' === href) {
+          e.preventDefault();
+        }
+      });
+
       // This won't work if we can't position based on the parent element
       if (element.parent().css('position') === 'static') {
         element.parent().css('position', 'relative');

@@ -9,9 +9,9 @@ describe('InputHacks', function() {
     testHelpers = $injector.get('testHelpers');
   }));
 
-  var testDivWidth = 200;
-  var testDivHeight = 150;
-  var testDivTop = 300;
+  var testDivWidth = 20;
+  var testDivHeight = 15;
+  var testDivTop = 30;
   var testDivLeft = 10;
 
   function makeTestDiv() {

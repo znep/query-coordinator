@@ -44,20 +44,19 @@
             class="action-btn r-to-l"
             ng-class='{disabled: !!expandedCard, "cards-edit-disabled": !!expandedCard}'
             ng-show="currentUser">{{editMode | ifElse:'Preview':'Customize'}}</button>
-          <button
-            ng-disabled="editMode"
+          <div
             ng-click="onDownloadClick($event)"
             class="action-btn r-to-l download-menu"
-            ng-class="{active: downloadOpened || chooserMode.show}"
+            ng-class="{active: downloadOpened || chooserMode.show, disabled: editMode}"
             >{{ chooserMode.show ? 'Cancel' : 'Download' }}
-            <dropdown-menu show="downloadOpened">
+            <dropdown-menu ng-if="downloadOpened">
               <a href="{{datasetCSVDownloadURL}}">Data as tabular spreadsheet</a>
               <a href='#'
                  ng-class="{'download-menu-item-disabled': hasChanges}"
                  ng-click="chooserMode.show = !hasChanges && true"
                  >Visualization as image</a>
             </dropdown-menu>
-          </button>
+          </div>
           <api-explorer dataset-observable="page.observe('dataset')"></api-explorer>
         </div>
       </div>

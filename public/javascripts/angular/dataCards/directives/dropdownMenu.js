@@ -7,12 +7,13 @@ angular.module('dataCards.directives').directive('dropdownMenu', function(Window
   return {
     restrict: 'E',
     scope: {
-      show: '='
     },
-    template: '<div ng-if="show" ng-transclude></div>',
+    template: '<div ng-transclude></div>',
     transclude: true,
 
     link: function($scope, element, attrs) {
+      var subscriptions = [];
+
       // This won't work if we can't position based on the parent element
       if (element.parent().css('position') === 'static') {
         element.parent().css('position', 'relative');
@@ -20,7 +21,7 @@ angular.module('dataCards.directives').directive('dropdownMenu', function(Window
 
       // Make sure the menu doesn't go off the screen
       var windowDimensions = {};
-      Rx.Observable.subscribeLatest(
+      subscriptions.push(Rx.Observable.subscribeLatest(
         WindowState.windowSizeSubject,
         element.observeDimensions(),
         function(windowDimensions, elementDimensions) {
@@ -37,6 +38,12 @@ angular.module('dataCards.directives').directive('dropdownMenu', function(Window
               });
             }
           }
+      }));
+
+      $scope.$on('$destroy', function() {
+        // During unit tests, these subscriptions stick around and cause errors (since element isn't
+        // in the dom anymore, so no parent()), so practice good hygiene!
+        _.invoke(subscriptions, 'dispose');
       });
     }
   }

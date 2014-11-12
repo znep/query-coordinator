@@ -3,7 +3,7 @@
     {
       "version": "9",
       "platform": "Windows 7",
-      "critical": false
+      "critical": true
     },
     {
       "version": "10",
@@ -13,14 +13,14 @@
     {
       "version": "11",
       "platform": "Windows 8.1",
-      "critical": false
+      "critical": true
     }
   ],
   "safari": [
     {
       "version": "7",
       "platform": "OS X 10.9",
-      "critical": false
+      "critical": true
     },
     {
       "version": "6",
@@ -52,7 +52,7 @@
     {
       "version": "36",
       "platform": "Windows 7",
-      "critical": false
+      "critical": true
     },
     {
       "version": "36",
@@ -69,12 +69,12 @@
     {
       "version": "33",
       "platform": "OS X 10.9",
-      "critical": false
+      "critical": true
     },
     {
       "version": "32",
       "platform": "Windows 7",
-      "critical": false
+      "critical": true
     },
     {
       "version": "32",

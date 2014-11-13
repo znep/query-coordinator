@@ -65,11 +65,11 @@ class SocrataHttp
   end
 
   def end_point
-    if port.nil?
-      "http://#{address}"
-    else
-      "http://#{address}:#{port}"
-    end
+    options = {
+        host: address
+    }
+    options[:port] = port.to_i unless port.nil?
+    URI::HTTP.build(options).to_s
   end
 
   def port

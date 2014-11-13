@@ -257,7 +257,7 @@ Frontend::Application.routes do
       end
     end
 
-    scope :controller => 'polaroid', :constraints => { :page_id => UID_REGEXP, :field_id => /(\w|-)+/ } do
+    scope :controller => 'polaroid', :constraints => { :page_id => UID_REGEXP, :field_id => /(:@)?([a-z][a-z_0-9\-]*)/ } do
       match '/view/:page_id/:field_id.png', :via => :get, :action => 'proxy_request'
     end
 

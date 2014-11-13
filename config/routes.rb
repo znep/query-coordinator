@@ -257,6 +257,10 @@ Frontend::Application.routes do
       end
     end
 
+    scope :controller => 'polaroid', :constraints => { :page_id => UID_REGEXP, :field_id => /(\w|-)+/ } do
+      match '/view/:page_id/:field_id.png', :via => :get, :action => 'proxy_request'
+    end
+
     scope :controller => 'angular', :constraints => { :id => UID_REGEXP } do
       # NOTE: The dataCards angular app is capable of rendering multiple views (Pages and Dataset Metadata, for instance).
       # As of 9/24/2014, the angular app itself figures out what particular view to render.

@@ -66,6 +66,12 @@ describe("CardsViewController", function() {
     ping: 'pong'
   };
 
+  var mockServerConfig = {
+    get: function(key) {
+      return true;
+    }
+  };
+
   beforeEach(module('dataCards'));
   beforeEach(module('socrataCommon.filters'));
   beforeEach(module('/angular_templates/dataCards/pages/cards-view.html'));
@@ -82,6 +88,7 @@ describe("CardsViewController", function() {
       $provide.value('DatasetDataService', mockDatasetDataService);
       $provide.value('UserSession', mockUserSessionService);
       $provide.value('$window', mockWindowService);
+      $provide.constant('ServerConfig', mockServerConfig);
     });
   });
   beforeEach(inject(['$q', 'Card', 'Page', '$rootScope', '$controller', '$window', 'testHelpers',

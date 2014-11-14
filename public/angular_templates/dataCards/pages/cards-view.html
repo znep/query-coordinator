@@ -48,6 +48,7 @@
             ng-click="onDownloadClick($event)"
             class="action-btn r-to-l download-menu"
             ng-class="{active: downloadOpened || chooserMode.show, disabled: editMode}"
+            ng-if="showDownloadButton"
             >{{ chooserMode.show ? 'Cancel' : 'Download' }}
             <dropdown-menu ng-if="downloadOpened">
               <a href="{{datasetCSVDownloadURL}}">Data as tabular spreadsheet</a>

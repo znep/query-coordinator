@@ -14,7 +14,7 @@
     }
   }
 
-  function initDownload($scope, page, WindowState, FlyoutService) {
+  function initDownload($scope, page, WindowState, FlyoutService, ServerConfig) {
     // The CSV download url
     $scope.bindObservable('datasetCSVDownloadURL',
       page.observe('dataset').map(function(dataset) {
@@ -26,6 +26,7 @@
       }));
 
     // Download menu
+    $scope.showDownloadButton = ServerConfig.get('enablePngDownloadUi');
     WindowState.closeDialogEventObservable.filter(function(e) {
       return $scope.downloadOpened;
     }).subscribe(function() {
@@ -57,7 +58,7 @@
     ));
   }
 
-  function CardsViewController($scope, $location, $log, $window, $q, AngularRxExtensions, SortedTileLayout, Filter, PageDataService, UserSession, CardTypeMappingService, FlyoutService, page, Card, WindowState) {
+  function CardsViewController($scope, $location, $log, $window, $q, AngularRxExtensions, SortedTileLayout, Filter, PageDataService, UserSession, CardTypeMappingService, FlyoutService, page, Card, WindowState, ServerConfig) {
 
     AngularRxExtensions.install($scope);
 
@@ -102,7 +103,7 @@
       _.constant(null)
     );
 
-    initDownload($scope, page, WindowState, FlyoutService);
+    initDownload($scope, page, WindowState, FlyoutService, ServerConfig);
 
     /*******************************
     * Filters and the where clause *

@@ -56,3 +56,6 @@ enable_bounding_boxes:
 enable_png_download_ui:
   description: Enable the UI for downloading PNG versions of datacard visualizations
   defaultValue: false
+include_sr_in_esri:
+  description: ESRI-only; stop using SRs in the export URL.
+  defaultValue: false

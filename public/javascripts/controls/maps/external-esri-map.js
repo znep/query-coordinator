@@ -121,10 +121,15 @@
             var newParams = {
                 'BBOX': bounds.toBBOX(),
                 'SIZE': imageSize.w + "," + imageSize.h,
-                'F': "image",
-                'BBOXSR': srid,
-                'IMAGESR': srid
+                'F': "image"
             };
+
+            if (blist.feature_flags.include_sr_in_esri) {
+                $.extend(newParams, {
+                    'BBOXSR': srid,
+                    'IMAGESR': srid
+                });
+            }
 
             // Now add the filter parameters.
             if (this.layerDefs) {

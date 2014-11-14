@@ -626,7 +626,7 @@ describe("CardsViewController", function() {
     it('disables png download (and displays help text) if the page isn\'t saved', function() {
       var context = renderCardsView();
       var downloadButton = context.element.find('.download-menu');
-      downloadButton.click();
+      testHelpers.fireMouseEvent(downloadButton[0], 'click');
       var menuItem = downloadButton.find('a:contains("Visualization")');
       expect(menuItem.hasClass('download-menu-item-disabled')).to.equal(false);
 
@@ -644,21 +644,21 @@ describe("CardsViewController", function() {
     it('triggers chooser mode when selecting png download', function() {
       var context = renderCardsView();
       var downloadButton = context.element.find('.download-menu');
-      downloadButton.click();
-      downloadButton.find('a:contains("Visualization")').click();
+      testHelpers.fireMouseEvent(downloadButton[0], 'click');
+      testHelpers.fireMouseEvent(downloadButton.find('a:contains("Visualization")')[0], 'click');
       expect(context.cardLayout.$scope.chooserMode.show).to.equal(true);
     });
 
     it('turns into a cancel button in chooser mode, which cancels chooser mode', function() {
       var context = renderCardsView();
       var downloadButton = context.element.find('.download-menu');
-      downloadButton.click();
-      downloadButton.find('a:contains("Visualization")').click();
+      testHelpers.fireMouseEvent(downloadButton[0], 'click');
+      testHelpers.fireMouseEvent(downloadButton.find('a:contains("Visualization")')[0], 'click');
       expect(downloadButton.text()).to.match(/Cancel/);
 
       expect(context.cardLayout.$scope.chooserMode.show).to.equal(true);
 
-      downloadButton.click();
+      testHelpers.fireMouseEvent(downloadButton[0], 'click');
 
       expect(context.cardLayout.$scope.chooserMode.show).to.equal(false);
     });

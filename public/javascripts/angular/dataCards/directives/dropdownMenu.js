@@ -14,12 +14,21 @@ angular.module('dataCards.directives').directive('dropdownMenu', function(Window
     link: function($scope, element, attrs) {
       var subscriptions = [];
 
+      // Disable anchors that don't have urls
+      element.on('click', 'a', function(e) {
+        var href = $(e.target).attr('href');
+        if (!href || '#' === href) {
+          e.preventDefault();
+        }
+      });
+
       // This won't work if we can't position based on the parent element
       if (element.parent().css('position') === 'static') {
         element.parent().css('position', 'relative');
       }
 
       // Make sure the menu doesn't go off the screen
+      element.css('visibility', 'hidden');
       var windowDimensions = {};
       subscriptions.push(Rx.Observable.subscribeLatest(
         WindowState.windowSizeSubject,
@@ -29,12 +38,14 @@ angular.module('dataCards.directives').directive('dropdownMenu', function(Window
             if (element.parent().offset().left + elementDimensions.width > windowDimensions.width) {
               element.css({
                 left: 'auto',
-                right: 0
+                right: 0,
+                visibility: ''
               });
             } else {
               element.css({
                 left: 0,
-                right: 'auto'
+                right: 'auto',
+                visibility: ''
               });
             }
           }

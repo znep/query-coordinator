@@ -16,7 +16,7 @@
     3: 200
   };
 
-  function initCardSelection(scope, CardTypeMappingService, FlyoutService, $window, $timeout) {
+  function initCardSelection(scope, CardTypeMappingService, FlyoutService, DownloadService, $timeout) {
     scope.isPngExportable = CardTypeMappingService.isExportable;
 
     function getDownloadUrl(model) {
@@ -28,15 +28,27 @@
       }, 2000);
     }
     scope.downloadPng = function(cardState) {
+      if (cardState.downloadState) return;
       cardState.downloadState = 'loading';
-      $window.location.href = getDownloadUrl(cardState.model);
-      resetButton();
+      DownloadService.download(getDownloadUrl(cardState.model)).then(
+        function success() {
+          scope.$apply(function() {
+            cardState.downloadState = 'success';
+            scope.chooserMode.show = false;
+            resetButton(cardState);
+          });
+        }, function error(err) {
+          scope.$apply(function() {
+            cardState.downloadState = 'error';
+            resetButton(cardState);
+          });
+        });
     };
 
     scope.downloadStateText = function(state) {
       switch(state) {
         case 'success':
-          return 'Success';
+          return 'Downloading';
         case 'error':
           return 'Error';
         default:
@@ -50,7 +62,7 @@
     ));
   }
 
-  function cardLayout(Constants, AngularRxExtensions, WindowState, SortedTileLayout, FlyoutService, CardTypeMappingService, $window, $timeout) {
+  function cardLayout(Constants, AngularRxExtensions, WindowState, SortedTileLayout, FlyoutService, CardTypeMappingService, DownloadService, $timeout) {
 
     sortedTileLayout = new SortedTileLayout();
     return {
@@ -735,7 +747,7 @@
           });
         };
 
-        initCardSelection(scope, CardTypeMappingService, FlyoutService, $window, $timeout);
+        initCardSelection(scope, CardTypeMappingService, FlyoutService, DownloadService, $timeout);
 
         /**
          * Some modal dialogs.

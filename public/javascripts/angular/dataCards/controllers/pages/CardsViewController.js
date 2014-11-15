@@ -172,8 +172,8 @@
             // retain computed column fieldNames, which (somewhat inconveniently)
             // begin with ':@'.
             return column.name.substring(0, 2).match(/\:[\_A-Za-z0-9]/) === null &&
-                   column.physicalDatatype !== '*' &&
-                   column.physicalDatatype !== 'point';
+                   column.physicalDatatype !== '*';// &&
+                   //column.physicalDatatype !== 'point';
           }).
           sort(function(a, b) {
             return a.name > b.name;

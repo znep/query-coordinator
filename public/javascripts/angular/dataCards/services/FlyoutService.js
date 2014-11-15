@@ -28,8 +28,6 @@ angular.module('dataCards.services').factory('FlyoutService', function(WindowSta
     var horizontalHint;
     var rightSideHint;
     var targetBoundingClientRect;
-    var leftOffset;
-    var topOffset;
 
     if (!_.isEmpty(uberFlyout)) {
 
@@ -75,6 +73,8 @@ angular.module('dataCards.services').factory('FlyoutService', function(WindowSta
                 horizontalHint = handlers[className][j].horizontal;
                 rightSideHint = false;
 
+                var css = {right: '', left: ''};
+
 
                 // Hints can be horizontal or cursor-tracking, but not both.
 
@@ -82,11 +82,12 @@ angular.module('dataCards.services').factory('FlyoutService', function(WindowSta
 
                   targetBoundingClientRect = e.target.getBoundingClientRect();
 
-                  leftOffset = (targetBoundingClientRect.left)
-                             - (flyoutWidth + Math.floor(hintWidth * 0.5));
+                  css.left = (targetBoundingClientRect.left) -
+                    (flyoutWidth + Math.floor(hintWidth * 0.5));
 
-                  topOffset = (targetBoundingClientRect.top + Math.floor(targetBoundingClientRect.height / 2))
-                            - Math.floor(flyoutHeight / 2);
+                  css.top = (targetBoundingClientRect.top +
+                             Math.floor(targetBoundingClientRect.height / 2)) -
+                            Math.floor(flyoutHeight / 2);
 
                   rightSideHint = true;
 
@@ -96,33 +97,34 @@ angular.module('dataCards.services').factory('FlyoutService', function(WindowSta
 
                     // Subtract the flyout's height so that flyout hovers above,
                     // and the hint points to, the cursor.
-                    leftOffset = e.clientX;
-                    topOffset = e.clientY - (flyoutHeight + Math.floor(hintHeight * 0.75));
+                    css.left = e.clientX;
+                    css.top = e.clientY - (flyoutHeight + Math.floor(hintHeight * 0.75));
 
-                    if (leftOffset + flyoutWidth > window.innerWidth) {
-                      leftOffset = leftOffset - flyoutWidth;
+                    if (css.left + flyoutWidth > window.innerWidth) {
+                      css.left = css.left - flyoutWidth;
                       rightSideHint = true;
                     }
-                    if (topOffset - flyoutHeight < 0) {
-                      topOffset = flyoutHeight;
+                    if (css.top - flyoutHeight < 0) {
+                      css.top = flyoutHeight;
                     }
 
                   } else {
 
                     targetBoundingClientRect = e.target.getBoundingClientRect();
 
-                    leftOffset = (targetBoundingClientRect.left)
+                    css.left = (targetBoundingClientRect.left)
                                + Math.floor(targetBoundingClientRect.width / 2);
 
-                    topOffset = (targetBoundingClientRect.top)
+                    css.top = (targetBoundingClientRect.top)
                               - (flyoutHeight + Math.floor(hintHeight * 0.5));
 
-                    if (leftOffset + flyoutWidth > window.innerWidth) {
-                      leftOffset = leftOffset - flyoutWidth;
+                    if (css.left + flyoutWidth > window.innerWidth) {
+                      css.right = $(window).width() - css.left;
+                      css.left = '';
                       rightSideHint = true;
                     }
-                    if (topOffset < 0) {
-                      topOffset = 0;
+                    if (css.top < 0) {
+                      css.top = 0;
                     }
 
                   }
@@ -133,7 +135,7 @@ angular.module('dataCards.services').factory('FlyoutService', function(WindowSta
                   toggleClass('left', !rightSideHint).
                   toggleClass('right', rightSideHint).
                   toggleClass('horizontal', horizontalHint).
-                  css({left: leftOffset, top: topOffset}).
+                  css(css).
                   show();
 
                 return;

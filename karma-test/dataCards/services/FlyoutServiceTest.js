@@ -51,6 +51,32 @@ describe('Flyout service', function() {
     expect(flyout.is(':visible')).to.be.false;
   });
 
+  it('should position correctly when on the right edge of the screen', function() {
+    flyoutService.register('right-edge',
+                           // A string of 20 words separated by spaces
+                           _.constant(_.map(_.range(20), _.constant('text')).join(' ')));
+    var target = $('<div class="right-edge" />').css({
+      position: 'absolute',
+      right: 5,
+      top: 100
+    }).appendTo('body');
+
+    try {
+      testHelpers.fireMouseEvent(target[0], 'mousemove');
+
+      var hint = $(FLYOUT_SELECTOR).find('.hint');
+
+      var hintOffset = hint.offset();
+      var targetOffset = target.offset();
+
+      expect(hintOffset.top + hint.outerHeight()).to.be.closeTo(targetOffset.top, 11);
+      expect(hintOffset.left + hint.outerWidth() / 2).to.be.closeTo(targetOffset.left, 10);
+    } finally {
+      // be a good citizen and clean up after ourselves
+      target.remove();
+    }
+  });
+
   it('should update the flyout message when refreshFlyout is called.', function() {
     var someMagicalState = true;
 

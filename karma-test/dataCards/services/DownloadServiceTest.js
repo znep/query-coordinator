@@ -78,11 +78,18 @@ describe('Download Service', function() {
     it('runs the error callback if the page loads', function(done) {
       var success;
       var error;
+      var realIframe = $('<iframe />');
 
-      DownloadService.download('/does-not-exist').then(function() {
-        success = true;
-      }, function(obj) {
-        error = obj;
+      DownloadService.download('about:blank', realIframe).
+        then(function() {
+          success = true;
+        }, function(obj) {
+          error = obj;
+        });
+
+      // Give it time to load the contentDocument and stuff
+      _.defer(function() {
+        realIframe.trigger('load');
       });
 
       testHelpers.waitForSatisfy(function() {
@@ -91,17 +98,18 @@ describe('Download Service', function() {
         expect(success).not.to.equal(true);
         expect(error).to.be.ok;
         expect(error.timeout).not.to.be.ok;
-        expect(error.error).to.be.ok;
+        expect(_.has(error, 'error')).to.equal(true);
         // For IE9, we can't access the contents of the iframe on error, so we just set error.error
         // to true.
-        expect(/not found/i.test(error.error) || error.error).to.equal(true);
+        expect('' === error.error || error.error).to.equal(true);
         // make sure it cleans up
-        expect(fakeIframe.closest('body').length).to.equal(0);
+        expect(realIframe.closest('body').length).to.equal(0);
+        realIframe.remove();
         done();
       });
     });
 
-    it('runs the success callback if the cookie is set, and deletes the cookie', function(done) {
+    it('runs the success callback if the cookie is set, and deletes the cookie', function() {
       var success;
       var error;
 
@@ -112,18 +120,14 @@ describe('Download Service', function() {
       });
       var trackingId = fakeIframe.prop('src').split('=')[1];
       document.cookie = 'renderTrackingId_' + trackingId + '=1';
-      fakeClock.tick(50000);
+      fakeClock.tick(1500);
 
-      // PhantomJS for some reason needs this check to be async
-      testHelpers.waitForSatisfy(function() {
-        return success && !error;
-      }).then(function() {
-        // Chrome doesn't like it when the iframe goes away while you're downloading. So it should
-        // be left around.
-        expect(fakeIframe.closest('body').length).to.equal(1);
-        expect(document.cookie.indexOf('renderTrackingId_' + trackingId)).to.equal(-1);
-        done();
-      });
+      expect(success).to.equal(true);
+      expect(error).not.to.be.ok;
+      // Chrome doesn't like it when the iframe goes away while you're downloading. So it should
+      // be left around.
+      expect(fakeIframe.closest('body').length).to.equal(1);
+      expect(document.cookie.indexOf('renderTrackingId_' + trackingId)).to.equal(-1);
     });
 
     it('can take just an error callback', function() {

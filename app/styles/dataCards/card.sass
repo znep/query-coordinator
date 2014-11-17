@@ -125,6 +125,16 @@ div[ng-switch="cardType"]
     .input-group-addon
       width: 1%
 
+      button
+        .icon-search
+          font-size: .7rem
+          padding: .2rem
+
+        &:hover
+          .icon-search
+            &::before, &::after
+              border-color: inherit
+
   .form-control
     width: 100%
     box-sizing: border-box

@@ -10,7 +10,7 @@ default: &default
   app_token: U29jcmF0YS0td2VraWNrYXNz0
   statsd_enabled: false
   polaroid_hostname: polaroid.service.aws-us-west-2-production.socrata.consul
-  polaroid_port: 1337
+  polaroid_port: 13379
 
 # Local development
 development:

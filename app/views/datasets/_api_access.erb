@@ -4,6 +4,7 @@
   <p>
     <%# Someday, change this into a github-style click-to-copy %>
     <input style="width: 100%;" type="text" value="<%= @view.api_foundry_url %>" readonly="readonly" />
+    <button data-clipboard-text="<%= @view.api_foundry_url %>" title="Copy to clipboard">Copy to Cipboard</button>
   </p>
 
   <%- if @view.is_tabular? && @view.visible_columns.present? -%>

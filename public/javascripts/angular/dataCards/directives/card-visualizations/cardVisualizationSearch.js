@@ -7,7 +7,7 @@
       return val.args[0];
     }
 
-    function handleSampleData($scope, element, model, dataset) {
+    function handleSampleData($scope, model, dataset) {
       var sampleDataObservable = Rx.Observable.combineLatest(
         model.pluck('fieldName'),
         dataset.pluck('id'),
@@ -195,7 +195,7 @@
         $scope.bindObservable('searchWhere', searchWhereObservable);
         $scope.bindObservable('fieldName', fieldNameObservable);
 
-        handleSampleData($scope, element, model, dataset);
+        handleSampleData($scope, model, dataset);
       }
     };
   }

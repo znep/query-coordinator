@@ -32,7 +32,7 @@ angular.module('socrataCommon.directives').directive('table', function(AngularRx
       var columnWidths = {};
       var httpRequests = {};
       var oldBlock = -1;
-      var $table = element.find('.table-inner');
+      var $table = element.children('.table-inner');
       var $head = element.find('.table-inner > .table-head');
       var $body = element.find('.table-inner > .table-body');
       var $expander = element.find('.table-expander');
@@ -215,6 +215,7 @@ angular.module('socrataCommon.directives').directive('table', function(AngularRx
           var ordering = getCurrentOrDefaultSortForColumn(column.name);
 
           return {
+            index: i,
             columnId: column.name,
             name: column.title,
             active: isSortedOnColumn(column.name),
@@ -237,13 +238,16 @@ angular.module('socrataCommon.directives').directive('table', function(AngularRx
         _.defer(function() {
           columnWidths = {};
           var maxCells = {};
-          var cells = $table.find('.cell, .th');
+          var cells = $expander.
+              // row_block.row.cell
+              children().children().children();
+          cells = cells.add($head.children());
           var columns = getColumns();
 
           // Find the widest cell in each column
           cells.each(function(i, cell) {
             var jqueryCell = $(cell);
-            var colName = columns[jqueryCell.index()].name;
+            var colName = columns[jqueryCell.data('index')].name;
             var width = cell.clientWidth;
             if (!columnWidths[colName] || columnWidths[colName] < width) {
               maxCells[colName] = cell;
@@ -324,7 +328,7 @@ angular.module('socrataCommon.directives').directive('table', function(AngularRx
 
           _.each(data, function(data_row) {
             blockHtml += '<div class="table-row">';
-            _.each(getColumns(), function(column) {
+            _.each(getColumns(), function(column, index) {
               var cellClasses = ['cell'];
               var cellContent = data_row[column.name] || '';
               var cellText = '';
@@ -371,8 +375,8 @@ angular.module('socrataCommon.directives').directive('table', function(AngularRx
                 cellText = _.escape(cellContent);
               }
 
-              blockHtml += '<div class="{0}" style="width: {1}px">{2}</div>'.
-                format(cellClasses.join(' '), columnWidths[column.name], cellText);
+              blockHtml += '<div class="{0}" data-index="{3}" style="width: {1}px">{2}</div>'.
+                format(cellClasses.join(' '), columnWidths[column.name], cellText, index);
             });
             blockHtml += '</div>';
           });

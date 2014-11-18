@@ -133,9 +133,17 @@
         margin-bottom: 1em
 
       .apiEndpointWrapper
+        display: -ms-flexbox
+        display: -webkit-flex
         display: flex
+        -webkit-flex-direction: row
+        -ms-flex-direction: row
         flex-direction: row
+        -webkit-flex-wrap: nowrap
+        -ms-flex-wrap: nowrap
         flex-wrap: nowrap
+        -webkit-align-content: stretch
+        -ms-flex-line-pack: stretch
         align-content: stretch
 
         input

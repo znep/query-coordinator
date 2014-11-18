@@ -746,6 +746,11 @@ class View < Model
      "#{root_url(host: self.domainCName || CurrentDomain.cname)}api/views/#{self.id}/rows.#{ext}"
   end
 
+  def api_foundry_url
+    domain = self.federated? ? self.domainCName : CurrentDomain.cname
+    "http://dev.socrata.com/foundry/#/#{domain}/#{id}"
+  end
+
   def tweet
     I18n.t('controls.common.share.share_text', :name => name, :site => CurrentDomain.strings.company) + short_view_url(self)
   end

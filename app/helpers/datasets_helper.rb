@@ -347,9 +347,11 @@ module DatasetsHelper
   end
 
   def hide_api_foundry?
-    !module_enabled?(:api_foundry) || (!view.is_blist? && !view.is_api?) ||
-      !view.is_published? || !view.has_rights?('update_view') || !view.can_publish? ||
-      view.new_backend? || view.is_arcgis?
+    # CORE-3871: michael.chui@socrata.com was too lazy to actually rip out all the appropriate pieces.
+    #!module_enabled?(:api_foundry) || (!view.is_blist? && !view.is_api?) ||
+    #  !view.is_published? || !view.has_rights?('update_view') || !view.can_publish? ||
+    #  view.new_backend? || view.is_arcgis?
+    true
   end
 
   # Note: This controls visibility of columnOrder, not to be confused with the aptly named "manage.columnOrder" config. :-/

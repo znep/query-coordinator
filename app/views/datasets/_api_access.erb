@@ -1,10 +1,10 @@
 <div class="apiContentWrapper">
-  <p><%= t('screens.ds.grid_sidebar.api.intro_html') %></p>
-  <p><%= t('screens.ds.grid_sidebar.api.reference_html') %></p>
+  <p><%= t('screens.ds.grid_sidebar.api.intro_html', view_foundry_url: @view.api_foundry_url ) %></p>
   <h3><%= t('screens.ds.grid_sidebar.api.endpoint_title') %></h3>
-  <div class="apiEndpointWrapper">
-    <pre><%= "#{CurrentDomain.domain.protocol}://#{CurrentDomain.cname}#{CurrentDomain.domain.port}/resource/#{@view.id}.json" %></pre>
-  </div>
+  <p class="apiEndpointWrapper">
+    <%= content_tag('input', nil, value: @view.api_foundry_url, readonly: 'readonly') %>
+    <button data-clipboard-text="<%= @view.api_foundry_url %>" title="Copy to clipboard"><i class="icon-clipboard"></i></button>
+  </p>
 
   <%- if @view.is_tabular? && @view.visible_columns.present? -%>
     <h3><%= t('screens.ds.grid_sidebar.api.column_ids_title') %></h3>

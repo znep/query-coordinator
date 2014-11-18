@@ -38,11 +38,14 @@
 
       this.options.editable.element.on('halloselected', function(event, data) {
         _this.options.savedToolbarPosition = data;
-        _this._initializeUrlInputValue();
+        if (data.alreadyInitialized !== true) {
+          _this._initializeUrlInputValue();
+        }
       });
 
       this.options.editable.element.on('hallobetterlinkexpanded', function() {
-        _this.options.editable.element.trigger('halloselected', _this.options.savedToolbarPosition);
+        var data = jQuery.extend(_this.options.savedToolbarPosition, { alreadyInitialized: true });
+        _this.options.editable.element.trigger('halloselected', data);
       });
 
       this.options.editable.element.on('hallounselected', function(){
@@ -58,7 +61,10 @@
       });
 
       this.options.clearButton.on('click', function() {
-        _this.options.editable.element.trigger('clearlink');
+        _this.options.urlInput.val(_this.options.defaultUrl);
+        _this._setClearButtonState();
+        _this.options.linkInput.removeClass('urlError');
+        _this._saveUrl();
       });
 
       this.options.urlInput.on('keyup', function(e) {
@@ -67,12 +73,6 @@
           e.preventDefault();
           _this.options.urlForm.submit();
         }
-      });
-
-      this.options.editable.element.on('clearlink', function() {
-        _this.options.urlInput.val(_this.options.defaultUrl);
-        _this._setClearButtonState();
-        _this.options.linkInput.removeClass('urlError');
       });
 
       this.options.urlInput.on('change', function(e) {
@@ -101,15 +101,15 @@
 
       this.options.button.on('click', function(event) {
         var buttonSelector, selectionParent;
+        var $target = jQuery(event.target);
 
-        if (_this.options.editing) {
+        if (_this.options.editing || $target.is('.icon-remove, .clear')) {
           return false;
         }
 
         jQuery(document.body).on('click', onBodyClick);
 
         _this.options.editing = true;
-        _this._initializeUrlInputValue();
         _this._setClearButtonState();
         _this.options.editable.keepActivated(true);
         _this.options.buttonset.addClass('expanded');

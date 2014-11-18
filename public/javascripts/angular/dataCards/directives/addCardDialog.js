@@ -16,7 +16,7 @@
       templateUrl: '/angular_templates/dataCards/addCardDialog.html',
       link: function(scope, element, attrs) {
         if (!scope.dialogState) {
-          dialogState = {show: true};
+          scope.dialogState = { show: true };
         }
 
         /************************

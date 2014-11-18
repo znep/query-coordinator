@@ -30,8 +30,6 @@
         var dataRequestCount = dataRequests.scan(0, function(acc, x) { return acc + 1; });
         var dataResponseCount = dataResponses.scan(0, function(acc, x) { return acc + 1; });
 
-        var queryBoundingBox = null;
-
 
         function stringifyCoordinates(coordinates) {
           return coordinates[0] + ',' + coordinates[1];
@@ -64,10 +62,6 @@
           });
 
         }
-
-        scope.$on('feature-map:update-query-bounding-box', function(event, boundingBox) {
-          queryBoundingBox = boundingBox;
-        });
 
 
         /*************************************
@@ -143,9 +137,7 @@
         * Bind non-busy-indicating observables. *
         ****************************************/
 
-        scope.bindObservable('fieldName', model.pluck('fieldName'));
         scope.bindObservable('baseLayerUrl', model.observeOnLatest('baseLayerUrl'));
-        scope.bindObservable('rowDisplayUnit', dataset.observeOnLatest('rowDisplayUnit'));
 
         scope.bindObservable(
           'featureData',
@@ -158,10 +150,26 @@
 
             }));
 
-        scope.bindObservable('datasetId', dataset.map(function(dataset) { return dataset.id; }));
-
         scope.bindObservable(
-          'whereClause', scope.observe('whereClause'));
+          'featureLayerUrl',
+          Rx.Observable.combineLatest(
+            model.pluck('fieldName'),
+            dataset,
+            scope.observe('whereClause'),
+            function(fieldName, dataset, whereClause) {
+
+              var url = '/tiles/' + dataset.id + '/' + fieldName + '/{z}/{x}/{y}.pbf?$limit=50000';
+
+              if (!_.isEmpty(whereClause)) {
+                url += '&$where=' + encodeURIComponent(whereClause);
+              }
+
+              return url;
+            }
+          )
+        );
+
+        scope.bindObservable('rowDisplayUnit', dataset.observeOnLatest('rowDisplayUnit'));
 
       }
     };

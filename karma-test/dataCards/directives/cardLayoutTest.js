@@ -21,6 +21,7 @@ describe('CardLayout directive', function() {
   beforeEach(module('/angular_templates/dataCards/cardVisualizationChoropleth.html'));
   beforeEach(module('/angular_templates/dataCards/cardVisualizationTable.html'));
   beforeEach(module('/angular_templates/dataCards/cardVisualizationSearch.html'));
+  beforeEach(module('/angular_templates/dataCards/cardVisualizationFeatureMap.html'));
   beforeEach(module('/angular_templates/dataCards/cardVisualization.html'));
   beforeEach(module('/angular_templates/dataCards/clearableInput.html'));
   beforeEach(module('/angular_templates/dataCards/customizeCardDialog.html'));
@@ -29,6 +30,7 @@ describe('CardLayout directive', function() {
   beforeEach(module('/angular_templates/dataCards/table.html'));
   beforeEach(module('/angular_templates/dataCards/tableHeader.html'));
   beforeEach(module('/angular_templates/dataCards/timelineChart.html'));
+  beforeEach(module('/angular_templates/dataCards/featureMap.html'));
   beforeEach(module('dataCards/cards.sass'));
   beforeEach(module('dataCards/card.sass'));
   beforeEach(module('dataCards/flyout.sass'));

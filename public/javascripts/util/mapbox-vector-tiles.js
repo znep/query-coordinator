@@ -47,6 +47,7 @@
   };
 
   ieee754.prototype.write = function(buffer, value, offset, isLE, mLen, nBytes) {
+
     var e;
     var m;
     var c;
@@ -121,7 +122,9 @@
 
   Protobuf.prototype = {
 
-    get length() { return this.buf.length; }
+    get length() {
+      return this.buf.length;
+    }
 
   };
 
@@ -839,13 +842,11 @@
    */
 
   function VectorTileLayer(buffer, end) {
-    // Public
+
     this.version = 1;
     this.name = null;
     this.extent = 4096;
     this.length = 0;
-
-    // Private
     this._buffer = buffer;
     this._keys = [];
     this._values = [];
@@ -862,22 +863,21 @@
       tag = val >> 3;
 
       if (tag === 15) {
-          this.version = buffer.readVarint();
+        this.version = buffer.readVarint();
       } else if (tag === 1) {
-          this.name = buffer.readString();
+        this.name = buffer.readString();
       } else if (tag === 5) {
-          this.extent = buffer.readVarint();
+        this.extent = buffer.readVarint();
       } else if (tag === 2) {
-          this.length++;
-          this._features.push(buffer.pos);
-          buffer.skip(val);
-
+        this.length++;
+        this._features.push(buffer.pos);
+        buffer.skip(val);
       } else if (tag === 3) {
-          this._keys.push(buffer.readString());
+        this._keys.push(buffer.readString());
       } else if (tag === 4) {
-          this._values.push(this.readFeatureValue());
+        this._values.push(this.readFeatureValue());
       } else {
-          buffer.skip(val);
+        buffer.skip(val);
       }
 
     }
@@ -899,21 +899,21 @@
       tag = val >> 3;
 
       if (tag == 1) {
-          value = buffer.readString();
+        value = buffer.readString();
       } else if (tag == 2) {
-          throw new Error('read float');
+        throw new Error('read float');
       } else if (tag == 3) {
-          value = buffer.readDouble();
+        value = buffer.readDouble();
       } else if (tag == 4) {
-          value = buffer.readVarint();
+        value = buffer.readVarint();
       } else if (tag == 5) {
-          throw new Error('read uint');
+        throw new Error('read uint');
       } else if (tag == 6) {
-          value = buffer.readSVarint();
+        value = buffer.readSVarint();
       } else if (tag == 7) {
-          value = Boolean(buffer.readVarint());
+        value = Boolean(buffer.readVarint());
       } else {
-          buffer.skip(val);
+        buffer.skip(val);
       }
 
     }
@@ -925,12 +925,14 @@
   // return feature `i` from this layer as a `VectorTileFeature`
   VectorTileLayer.prototype.feature = function(i) {
 
+    var end;
+
     if (i < 0 || i >= this._features.length) {
       throw new Error('feature index out of bounds');
     }
 
     this._buffer.pos = this._features[i];
-    var end = this._buffer.readVarint() + this._buffer.pos;
+    end = this._buffer.readVarint() + this._buffer.pos;
 
     return new VectorTileFeature(this._buffer, end, this.extent, this._keys, this._values);
 
@@ -947,6 +949,10 @@
 
   function VectorTile(buffer, end) {
 
+    var val;
+    var tag;
+    var layer;
+
     this.layers = {};
     this._buffer = buffer;
 
@@ -954,12 +960,12 @@
 
     while (buffer.pos < end) {
 
-      var val = buffer.readVarint();
-      var tag = val >> 3;
+      val = buffer.readVarint();
+      tag = val >> 3;
 
       if (tag == 3) {
 
-        var layer = this.readLayer();
+        layer = this.readLayer();
 
         if (layer.length) {
           this.layers[layer.name] = layer;
@@ -1457,6 +1463,10 @@
     var ctx2d;
 // cml PERFORMANCE IMPROVEMENT ('try x catch y' cannot be optimized)
     //try{
+    if (typeof c === 'undefined') {
+      return;
+    }
+
       ctx2d = c.getContext('2d');
     //}
     //catch(e){
@@ -1791,7 +1801,7 @@
 
       var self = this;
       var tilePoint = ctx.tile;
-      var layerCtx  = { canvas: null, id: ctx.id, tile: ctx.tile, zoom: ctx.zoom, tileSize: ctx.tileSize};
+      var layerCtx  = { canvas: ctx.canvas, id: ctx.id, tile: ctx.tile, zoom: ctx.zoom, tileSize: ctx.tileSize};
 
       //See if we can pluck the child tile from this PBF tile layer based on the master layer's tile id.
       layerCtx.canvas = self._tiles[tilePoint.x + ":" + tilePoint.y];
@@ -1831,7 +1841,7 @@
           getIDForLayerFeature = MVTUtil.getIDForLayerFeature;
         }
 
-        var uniqueID = self.options.getIDForLayerFeature(vtf) || i;
+        var uniqueID = self.options.getIDForLayerFeature(vtf, i) || i;
         var mvtFeature = self.features[uniqueID];
 
         /**
@@ -1969,6 +1979,7 @@
       //id is the entire zoom:x:y.  we just want x:y.
       var ca = id.split(":");
       var canvasId = ca[1] + ":" + ca[2];
+
       if (typeof this._tiles[canvasId] === 'undefined') {
         console.error("typeof this._tiles[canvasId] === 'undefined'");
         return;
@@ -1995,7 +2006,9 @@
     redrawTile: function(canvasID) {
 
       //First, clear the canvas
-      this.clearTile(canvasID);
+      if (this._tiles.hasOwnProperty(canvasID)) {
+        this.clearTile(canvasID);
+      }
 
       // If the features are not in the tile, then there is nothing to redraw.
       // This may happen if you call redraw before features have loaded and initially
@@ -2131,6 +2144,10 @@
     layers: {}, //Keep a list of the layers contained in the PBFs
     processedTiles: {}, //Keep a list of tiles that have been processed already
     _eventHandlers: {},
+
+    useBase64Fallback: function() {
+      return false;
+    },
 
     style: function(feature) {
       var style = {};
@@ -2279,8 +2296,23 @@
       g.strokeText(ctx.zoom + ' ' + ctx.tile.x + ' ' + ctx.tile.y, max / 2 - 30, max / 2 - 10);
     },
 
+    _emitTileLoadingEvent: function() {
+      var evt = document.createEvent('HTMLEvents');
+      evt.initEvent('protobuffer-tile-loading', true, true);
+      evt.tilesToProcess = this._tilesToProcess;
+      this.map._container.dispatchEvent(evt);
+    },
+
+    _emitTileLoadedEvent: function() {
+      var evt = document.createEvent('HTMLEvents');
+      evt.initEvent('protobuffer-tile-loaded', true, true);
+      evt.tilesToProcess = this._tilesToProcess;
+      this.map._container.dispatchEvent(evt);
+    },
+
     _draw: function(ctx) {
       var self = this;
+      var url = self.options.url;
 
   //    //This works to skip fetching and processing tiles if they've already been processed.
   //    var vectorTile = this.processedTiles[ctx.zoom][ctx.id];
@@ -2293,18 +2325,27 @@
   //    }
 
       if (!this.options.url) return;
-      var url = self.options.url.replace("{z}", ctx.zoom).replace("{x}", ctx.tile.x).replace("{y}", ctx.tile.y);
-console.log('Fetching tile "' + url + '".');
+
+      if (self.useBase64Fallback()) {
+        url = url.replace('{y}.pbf', '{y}.b64pbf');
+      }
+
+      url = url.replace("{z}", ctx.zoom).replace("{x}", ctx.tile.x).replace("{y}", ctx.tile.y);
+
       var xhr = new XMLHttpRequest();
 
-
-
       xhr.onload = function() {
+
         if (xhr.status == "200") {
+
+          if (self.useBase64Fallback()) {
+            xhr.response = atob(xhr.response);
+          }
 
           if(!xhr.response) return;
 
           var arrayBuffer = new Uint8Array(xhr.response);
+
           var buf = new Protobuf(arrayBuffer);
           var vt = new VectorTile(buf);
           //Check the current map layer zoom.  If fast zooming is occurring, then short circuit tiles that are for a different zoom level than we're currently on.
@@ -2313,7 +2354,9 @@ console.log('Fetching tile "' + url + '".');
             return;
           }
           self.checkVectorTileLayers(parseVT(vt), ctx);
-console.log('Completed fetching tile "' + url + '".');
+
+          self._emitTileLoadedEvent();
+
           tileLoaded(self, ctx);
         }
       };
@@ -2321,6 +2364,8 @@ console.log('Completed fetching tile "' + url + '".');
       xhr.onerror = function() {
         console.log("xhr error: " + xhr.status)
       };
+
+      self._emitTileLoadingEvent();
 
       xhr.open('GET', url, true); //async is true
 
@@ -2333,6 +2378,7 @@ console.log('Completed fetching tile "' + url + '".');
 // end Allow Custom Headers
 
       xhr.responseType = 'arraybuffer';
+
       xhr.send();
 
       //either way, reduce the count of tilesToProcess tiles here

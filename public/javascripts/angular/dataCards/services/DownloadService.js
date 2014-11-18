@@ -51,7 +51,7 @@
       }).share();
 
       // Poll for the existence of the cookie that confirms that this request has connected.
-      var successObservable = Rx.Observable.timer(1, POLL_INTERVAL).takeUntil(timeout).
+      var successObservable = Rx.Observable.timer(POLL_INTERVAL, POLL_INTERVAL).takeUntil(timeout).
           filter(function poll() {
             if (document.cookie.indexOf(cookieName + '=') >= 0) {
               document.cookie = cookieName + '=;path=/;expires=' + (new Date(0).toUTCString());

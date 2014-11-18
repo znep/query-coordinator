@@ -43,7 +43,12 @@
             if (!test()) {
               _.delay(check, 25);
             } else {
-              resolve();
+              try {
+                resolve();
+              } catch (e) {
+                console.log(e, e.stack);
+                throw e;
+              }
             }
           } catch (e) {
             reject(e);

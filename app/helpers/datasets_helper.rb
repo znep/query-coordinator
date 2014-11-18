@@ -347,6 +347,7 @@ module DatasetsHelper
   end
 
   def hide_api_foundry?
+    # CORE-3871: michael.chui@socrata.com was too lazy to actually rip out all the appropriate pieces.
     #!module_enabled?(:api_foundry) || (!view.is_blist? && !view.is_api?) ||
     #  !view.is_published? || !view.has_rights?('update_view') || !view.can_publish? ||
     #  view.new_backend? || view.is_arcgis?

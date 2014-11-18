@@ -1,10 +1,9 @@
 <div class="apiContentWrapper">
   <p><%= t('screens.ds.grid_sidebar.api.intro_html', view_foundry_url: @view.api_foundry_url ) %></p>
   <h3><%= t('screens.ds.grid_sidebar.api.endpoint_title') %></h3>
-  <p>
-    <%# Someday, change this into a github-style click-to-copy %>
-    <input style="width: 100%;" type="text" value="<%= @view.api_foundry_url %>" readonly="readonly" />
-    <button data-clipboard-text="<%= @view.api_foundry_url %>" title="Copy to clipboard">Copy to Cipboard</button>
+  <p class="apiEndpointWrapper">
+    <input type="text" value="<%= @view.api_foundry_url %>" readonly="readonly" />
+    <button data-clipboard-text="<%= @view.api_foundry_url %>" title="Copy to clipboard"><i class="icon-clipboard"></i></button>
   </p>
 
   <%- if @view.is_tabular? && @view.visible_columns.present? -%>

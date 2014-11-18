@@ -161,6 +161,7 @@ dataset-new:
 dataset-show:
 - control-pane
 - control-pane-custom
+- font-awesome
 - grid-sidebar
 - table-core
 - dataset-grid

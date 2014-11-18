@@ -133,14 +133,15 @@
         margin-bottom: 1em
 
       .apiEndpointWrapper
-        background-color: #ddd
-        margin: 1em
-        overflow-x: auto
-        overflow-y: hidden
-        padding: 2em
+        display: flex
+        flex-direction: row
+        flex-wrap: nowrap
+        align-content: stretch
 
-        pre
-          font-size: 1.3em
+        input
+          width: 100%
+
+        button
 
   &.odata
     .odataContentWrapper

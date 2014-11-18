@@ -76,36 +76,27 @@ describe('Download Service', function() {
     });
 
     it('runs the error callback if the page loads', function(done) {
-      var success;
-      var error;
       var realIframe = $('<iframe />');
 
       DownloadService.download('about:blank', realIframe).
         then(function() {
-          success = true;
-        }, function(obj) {
-          error = obj;
+          throw new Error('this promise should not be resolved');
+        }, function(error) {
+          expect(error).to.be.ok;
+          expect(error.timeout).not.to.be.ok;
+          expect(_.has(error, 'error')).to.equal(true);
+          // For IE9, we can't access the contents of the iframe on error, so we just set error.error
+          // to true.
+          expect('' === error.error || error.error).to.equal(true);
+          // make sure it cleans up
+          expect(realIframe.closest('body').length).to.equal(0);
+          realIframe.remove();
+          done();
         });
 
       // Give it time to load the contentDocument and stuff
       _.defer(function() {
         realIframe.trigger('load');
-      });
-
-      testHelpers.waitForSatisfy(function() {
-        return error;
-      }).then(function() {
-        expect(success).not.to.equal(true);
-        expect(error).to.be.ok;
-        expect(error.timeout).not.to.be.ok;
-        expect(_.has(error, 'error')).to.equal(true);
-        // For IE9, we can't access the contents of the iframe on error, so we just set error.error
-        // to true.
-        expect('' === error.error || error.error).to.equal(true);
-        // make sure it cleans up
-        expect(realIframe.closest('body').length).to.equal(0);
-        realIframe.remove();
-        done();
       });
     });
 

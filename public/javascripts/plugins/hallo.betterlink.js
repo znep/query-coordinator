@@ -121,22 +121,29 @@
     },
 
     _initializeUrlInputValue: function() {
-      var selection, selectionParent, urlInput, submitButton;
+      var selection, selectionParentNode, urlInput, submitButton, getParentNode, linkInSelection, links;
       urlInput = this.options.urlInput;
       submitButton = this.options.submitButton;
       urlInput.prop('disabled', false);
       this.lastSelection = this.options.editable.getSelection();
-      selectionParent = this.lastSelection.startContainer.parentNode;
-      if (!selectionParent.href) {
+      selectionParentNode = this.lastSelection.startContainer.parentNode;
+      if (!selectionParentNode.href) {
         selection = jQuery('<div>').html(this.lastSelection.toHtml());
-        if (jQuery('a', selection).length > 1) {
+        links = jQuery('a', selection)
+        if (links.length === 1) {
+          linkInSelection = links.first();
+        } else if (links.length > 1) {
           urlInput.prop('disabled', true).val('(multiple links selected)');
         } else {
           urlInput.val(this.options.defaultUrl);
           submitButton.val(butTitle);
         }
       } else {
-        urlInput.val(jQuery(selectionParent).attr('href'));
+        linkInSelection = selectionParentNode;
+      }
+
+      if (linkInSelection !== undefined) {
+        urlInput.val(jQuery(linkInSelection).attr('href'));
         this._setUrlErrorState();
         submitButton.val(butUpdateTitle);
         if (!this.options.buttonset.hasClass('expanded')) {
@@ -191,10 +198,11 @@
         if (!(/:\/\//.test(link)) && !(/^mailto:/.test(link))) {
           link = 'http://' + link;
         }
-        if (this.lastSelection.startContainer.parentNode.href === void 0) {
+        selectionParentNode = this.lastSelection.startContainer.parentNode;
+        if (selectionParentNode.href === void 0) {
           this.options.execCommandOverride('createLink', null, link);
         } else {
-          this.lastSelection.startContainer.parentNode.href = link;
+          selectionParentNode.href = link;
         }
       }
 

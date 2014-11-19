@@ -44,22 +44,18 @@ describe('featureMapChart', function() {
     scope = rootScope.$new();
     timeout = $injector.get('$timeout');
     AngularRxExtensions = $injector.get('AngularRxExtensions');
-    featureData = testHelpers.getTestJson(testJson);
+    featureExtent = testHelpers.getTestJson(testJson);
     protocolBuffers = deserializeBytes(testHelpers.getTestJson(protocolBufferEndpointResponses));
 
     // Set up the fake XMLHttpRequest interface.
     setUpFakeXHR();
-
   }));
 
   afterEach(function() {
-
     removeFeatureMap();
 
     // Restore default XMLHttpRequest functionality.
     restoreXHR();
-    
-
   });
 
 
@@ -127,22 +123,20 @@ describe('featureMapChart', function() {
 
   }
 
-
   function restoreXHR() {
     window.XMLHttpRequest = _XMLHttpRequest;
   }
 
-
   function createFeatureMap(width, expanded) {
 
-    var chartId = $('#test-timeline-chart').length === 0 ? 'test-timeline-chart' : 'alternate-test-timeline-chart';
+    var chartId = $('#test-feature-map').length === 0 ? 'test-feature-map' : 'alternate-test-feature-map';
     var html = [
       '<div id="{0}">'.format(chartId),
         '<div class="card-visualization" style="width: {0}px; height: 300px;">'.format(width),
           '<feature-map ',
             'class="feature-map" ',
             'base-layer-url="baseLayerUrl" ',
-            'feature-data="featureData" ',
+            'feature-extent="featureExtent" ',
             'feature-layer-url="featureLayerUrl" ',
             'row-display-unit="rowDisplayUnit">',
           '</feature-map>',
@@ -151,7 +145,7 @@ describe('featureMapChart', function() {
     ].join('');
 
     scope.baseLayerUrl = 'https://a.tiles.mapbox.com/v3/socrata-apps.ibp0l899/{z}/{x}/{y}.png';
-    scope.featureData = featureData;
+    scope.featureExtent = featureExtent;
     scope.featureLayerUrl = defaultFeatureLayerUrl;
     scope.rowDisplayUnit = 'rowDisplayUnit';
 
@@ -188,6 +182,7 @@ describe('featureMapChart', function() {
 
   }
 
+  // This is not currently used but may be useful in the future.
   function getCanvasUniqueColors(canvas) {
 
     var imageData = canvas.
@@ -269,9 +264,9 @@ describe('featureMapChart', function() {
 
           expect(canvases.length).to.be.above(0);
 
-          point1Color = getCanvasColorAt(canvases[3], { x: 48, y: 2 });
-          point2Color = getCanvasColorAt(canvases[3], { x: 33, y: 88 });
-          point3Color = getCanvasColorAt(canvases[3], { x: 118, y: 156 });
+          point1Color = getCanvasColorAt(canvases[1], { x: 48, y: 10 });
+          point2Color = getCanvasColorAt(canvases[1], { x: 128, y: 142 });
+          point3Color = getCanvasColorAt(canvases[1], { x: 168, y: 160 });
 
           expect(point1Color).to.equal(expectedPointColor);
           expect(point2Color).to.equal(expectedPointColor);
@@ -317,9 +312,9 @@ describe('featureMapChart', function() {
 
             expect(canvases.length).to.be.above(0);
 
-            point1Color = getCanvasColorAt(canvases[3], { x: 48, y: 2 });
-            point2Color = getCanvasColorAt(canvases[3], { x: 33, y: 88 });
-            point3Color = getCanvasColorAt(canvases[3], { x: 118, y: 156 });
+            point1Color = getCanvasColorAt(canvases[1], { x: 48, y: 2 });
+            point2Color = getCanvasColorAt(canvases[1], { x: 33, y: 88 });
+            point3Color = getCanvasColorAt(canvases[1], { x: 118, y: 156 });
 
             expect(point1Color).to.equal(pointColor);
             expect(point2Color).to.equal(pointColor);

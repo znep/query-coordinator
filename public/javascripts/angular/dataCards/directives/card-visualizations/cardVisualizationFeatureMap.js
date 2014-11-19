@@ -19,8 +19,7 @@
         var baseSoqlFilter = model.pluck('page').observeOnLatest('baseSoqlFilter');
         var dataRequests = new Rx.Subject();
         var dataResponses = new Rx.Subject();
-        var unfilteredDataSequence = new Rx.Subject();
-        var filteredDataSequence = new Rx.Subject();
+        var featureExtentDataSequence = new Rx.Subject();
 
         // Keep track of the number of requests that have been made and the number of
         // responses that have come back.
@@ -29,39 +28,6 @@
         // to operate on active sequences.
         var dataRequestCount = dataRequests.scan(0, function(acc, x) { return acc + 1; });
         var dataResponseCount = dataResponses.scan(0, function(acc, x) { return acc + 1; });
-
-
-        function stringifyCoordinates(coordinates) {
-          return coordinates[0] + ',' + coordinates[1];
-        }
-
-        function mergeUnfilteredAndFilteredData(unfilteredData, filteredData) {
-
-          var unfilteredDataAsHash = _.reduce(unfilteredData, function(acc, datum) {
-            acc[stringifyCoordinates(datum.name.coordinates)] = {
-              feature: datum.name,
-              value: datum.value
-            };
-            return acc;
-          }, {});
-
-          var filteredDataAsHash = _.reduce(unfilteredData, function(acc, datum) {
-            acc[stringifyCoordinates(datum.name.coordinates)] = {
-              feature: datum.name,
-              value: datum.value
-            };
-            return acc;
-          }, {});
-
-          return unfilteredData.map(function(datum) {
-            return {
-              feature: new L.LatLng(datum.name.coordinates[1], datum.name.coordinates[0]),
-              unfiltered: unfilteredDataAsHash[stringifyCoordinates(datum.name.coordinates)].value,
-              filtered: filteredDataAsHash[stringifyCoordinates(datum.name.coordinates)].value
-            };
-          });
-
-        }
 
 
         /*************************************
@@ -100,30 +66,11 @@
           baseSoqlFilter,
           function(fieldName, dataset, whereClauseFragment) {
             dataRequests.onNext(1);
-            var dataPromise = CardDataService.getData(fieldName, dataset.id, whereClauseFragment);
+            var dataPromise = CardDataService.getFeatureExtent(fieldName, dataset.id);
             dataPromise.then(
               function(res) {
                 // Ok
-                unfilteredDataSequence.onNext(dataPromise);
-                dataResponses.onNext(1);
-              },
-              function(err) {
-                // Do nothing
-              });
-            return Rx.Observable.fromPromise(dataPromise);
-          });
-
-        Rx.Observable.subscribeLatest(
-          model.pluck('fieldName'),
-          dataset,
-          scope.observe('whereClause'),
-          function(fieldName, dataset, whereClauseFragment) {
-            dataRequests.onNext(1);
-            var dataPromise = CardDataService.getData(fieldName, dataset.id, whereClauseFragment);
-            dataPromise.then(
-              function(res) {
-                // Ok
-                filteredDataSequence.onNext(dataPromise);
+                featureExtentDataSequence.onNext(dataPromise);
                 dataResponses.onNext(1);
               },
               function(err) {
@@ -140,15 +87,8 @@
         scope.bindObservable('baseLayerUrl', model.observeOnLatest('baseLayerUrl'));
 
         scope.bindObservable(
-          'featureData',
-          Rx.Observable.combineLatest(
-            unfilteredDataSequence.switchLatest(),
-            filteredDataSequence.switchLatest(),
-            function(unfilteredData, filteredData) {
-
-              return mergeUnfilteredAndFilteredData(unfilteredData, filteredData);
-
-            }));
+          'featureExtent',
+          featureExtentDataSequence.switchLatest());
 
         scope.bindObservable(
           'featureLayerUrl',
@@ -158,6 +98,9 @@
             scope.observe('whereClause'),
             function(fieldName, dataset, whereClause) {
 
+              // We can't use the .format() method here because we need to retain the literal
+              // {z}, {x} and {y} components of the string provided to Leaflet as a tile URL
+              // template.
               var url = '/tiles/' + dataset.id + '/' + fieldName + '/{z}/{x}/{y}.pbf?$limit=50000';
 
               if (!_.isEmpty(whereClause)) {

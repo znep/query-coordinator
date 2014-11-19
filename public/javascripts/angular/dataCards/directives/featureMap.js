@@ -3,7 +3,6 @@
 
   function featureMap(Constants,
                       AngularRxExtensions,
-                      GeospatialService,
                       WindowState,
                       FlyoutService,
                       $timeout) {
@@ -12,7 +11,7 @@
       restrict: 'E',
       scope: {
         'baseLayerUrl': '=',
-        'featureData': '=',
+        'featureExtent': '=',
         'featureLayerUrl': '=',
         'rowDisplayUnit': '=?'
       },
@@ -21,9 +20,9 @@
 
         AngularRxExtensions.install(scope);
 
-        /***************
-        * Set up state *
-        ***************/
+        //
+        // Set up state.
+        //
 
         var cachedFeatureData = null;
 
@@ -287,7 +286,7 @@
           }
 
         }
-window.map = map;
+
 
         /**
          *
@@ -298,36 +297,30 @@ window.map = map;
          *
          */
 
-        function fitMapBounds(southwesternLatLng, northeasternLatLng) {
-
-          var boundingBox = GeospatialService.calculateBoundingBox(cachedFeatureData);
+        function fitMapBounds(featureExtent) {
 
           map.fitBounds(
             [
-              boundingBox.southwest,
-              boundingBox.northeast
+              featureExtent.southwest,
+              featureExtent.northeast
             ]
           );
 
         }
 
 
-        /**********************************************************************
-        *
-        * Respond to clicks.
-        *
-        */
+        //
+        // Respond to clicks.
+        //
 
         map.on('click', function(e) {
-          console.log(e.latlng, e.layerPoint);
+          // TODO: Something
         });
 
 
-        /**********************************************************************
-        *
-        * Keep the baseTileLayer in sync with the baseLayerUrl observable.
-        *
-        */
+        //
+        // Keep the baseTileLayer in sync with the baseLayerUrl observable.
+        //
 
         baseTileLayer = scope.observe('baseLayerUrl').
           map(function(url) {
@@ -375,12 +368,10 @@ window.map = map;
         baseTileLayer.connect();
 
 
-        /**********************************************************************
-        *
-        * Emit analytics events on render start and complete events
-        * for protocol buffer vector tiles.
-        *
-        */
+        //
+        // Emit analytics events on render start and complete events
+        // for protocol buffer vector tiles.
+        //
 
         element.on('protobuffer-tile-loading', function(e) {
 
@@ -408,12 +399,10 @@ window.map = map;
         });
 
 
-        /**********************************************************************
-        *
-        * React to changes to the featureLayerUrl observable
-        * (which changes indicate that a re-render is needed).
-        *
-        */
+        //
+        // React to changes to the featureLayerUrl observable
+        // (which changes indicate that a re-render is needed).
+        //
 
         Rx.Observable.subscribeLatest(
           scope.observe('featureLayerUrl'),
@@ -422,33 +411,29 @@ window.map = map;
           });
 
 
-        /**********************************************************************
-        *
-        * React to changes to the visualization's dimensions
-        * and the underlying feature data
-        * (which changes indicate that the map's starting
-        * zoom level and viewport bounds should be calculated).
-        *
-        */ 
+        //
+        // React to changes to the visualization's dimensions
+        // and the underlying feature data
+        // (which changes indicate that the map's starting
+        // zoom level and viewport bounds should be calculated).
+        //
 
         Rx.Observable.subscribeLatest(
           element.observeDimensions(),
-          scope.observe('featureData'),
-          function(dimensions, featureData) {
+          scope.observe('featureExtent'),
+          function(dimensions, featureExtent) {
 
-            if (_.isDefined(featureData)) {
+            if (_.isDefined(featureExtent)) {
 
               scope.$emit('render:start', { source: 'feature_map_{0}'.format(scope.$id), timestamp: _.now() });
 
-              // Critical to invalidate size prior to updating bounds
+              // It is citical to invalidate size prior to updating bounds.
               // Otherwise, leaflet will fit the bounds to an incorrectly sized viewport.
               // This manifests itself as the map being zoomed all of the way out.
               map.invalidateSize();
 
-              cachedFeatureData = featureData;
-
               if (firstRender) {
-                fitMapBounds();
+                fitMapBounds(featureExtent);
                 firstRender = false;
               }
 
@@ -467,7 +452,6 @@ window.map = map;
     module('dataCards.directives').
       directive('featureMap', ['Constants',
                                'AngularRxExtensions',
-                               'GeospatialService',
                                'WindowState',
                                'FlyoutService',
                                '$timeout',

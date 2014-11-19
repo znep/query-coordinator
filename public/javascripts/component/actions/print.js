@@ -19,7 +19,7 @@ $.component.Component.extend('Print', 'actions', {
             {
                 e.preventDefault();
                 // Trigger all existing waypoints to make sure the whole page is visible.
-                _($.waypoints()).chain().values().flatten().invoke('trigger');
+                $.waypoints('trigger');
                 var checkPrint = function()
                 {
                     if ($.component.isLoading())

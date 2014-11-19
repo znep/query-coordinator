@@ -532,6 +532,10 @@ https://github.com/imakewebthings/jquery-waypoints/blob/master/licenses.txt
       destroy: function() {
         return jQMethods._invoke('destroy');
       },
+      // michael.chui@socrata.com - Adding an endpoint to trigger all waypoints.
+      trigger: function() {
+        return jQMethods._invoke('trigger');
+      },
       extendFn: function(methodName, f) {
         return methods[methodName] = f;
       },

@@ -58,6 +58,9 @@
                  >Visualization as image</a>
             </dropdown-menu>
           </div>
+          <a ng-if="!showDownloadButton"
+             class="action-btn r-to-l"
+             href="{{datasetCSVDownloadURL}}">Download</a>
           <api-explorer dataset-observable="page.observe('dataset')"></api-explorer>
         </div>
       </div>

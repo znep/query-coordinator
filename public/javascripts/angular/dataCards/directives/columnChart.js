@@ -299,6 +299,7 @@ angular.module('socrataCommon.directives').directive('columnChart', function($pa
       // UPDATE PROCESSING
       // Update the position of the groups.
       selection.
+        attr('data-bar-name', function(d) { return _.isPresent(d.name) ? d.name : ''; }).
         style('left', function(d) { return horizontalBarPosition(d) + 'px'; }).
         style('width', rangeBand + 'px').
         style('height', function() { return chartHeight + 'px'; }).
@@ -333,9 +334,9 @@ angular.module('socrataCommon.directives').directive('columnChart', function($pa
         vertical: -4
       },
       positionOn: function($target, $head, options) {
-        var index = _.indexOf(_.pluck(chartData, 'name'),
-          d3.select($target[0]).datum().name);
-        return element.find(".bar.unfiltered").eq(index);
+        var name = d3.select($target[0]).datum().name;
+        name = _.isPresent(name) ? name : '';
+        return element.find('[data-bar-name="{0}"].bar-group .bar.unfiltered'.format(name));
       },
       title: function($target, $head, options) {
         var data = d3.select($target[0]).datum();

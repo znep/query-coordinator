@@ -974,9 +974,10 @@ ul.autocompleteComboDropdown
       margin-left: 0
 
     &.hallobetterlink
+      .ui-button,
       button
         position: relative
-        padding-top: 3px
+        height: 22px
       &.expanded
         .linkForm
           display: inherit
@@ -1011,16 +1012,18 @@ ul.autocompleteComboDropdown
     .ui-button-text
       line-height: normal
       padding: 0
-
-  button
     span
       padding: 0
+
+  a.ui-button
+    display: inline-block
+    height: 22px
 
   input:disabled
     color: #aaaaaa
     font-style: italic
 
-  button
+  .ui-button
     background-color: #ddd
     border: 1px solid #bbb
     cursor: pointer
@@ -1044,7 +1047,7 @@ ul.autocompleteComboDropdown
       display: none
     input[type=text]
       height: 22px
-      margin: 0
+      margin: -1px 0 0 0
       padding-top: 0
       padding-bottom: 0
       padding-left: 18px
@@ -1071,7 +1074,8 @@ ul.autocompleteComboDropdown
       display: inherit
 
   .halloheadings
-    .ui-button
+    .ui-button,
+    button
       .ui-button-text
         display: block
         font-size: 13px

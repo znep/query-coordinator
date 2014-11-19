@@ -2113,7 +2113,8 @@
         command: null,
         commandValue: null,
         queryState: true,
-        cssClass: null
+        cssClass: null,
+        buttonElement: 'button'
       },
       _create: function() {
         var hoverclass, id, opts, _base, _ref,
@@ -2220,7 +2221,7 @@
       _createButton: function(id, command, label, icon) {
         var classes;
         classes = ['ui-button', 'ui-widget', 'ui-state-default', 'ui-corner-all', 'ui-button-text-only', "" + command + "_button"];
-        return jQuery("<button id=\"" + id + "\"        class=\"" + (classes.join(' ')) + "\" title=\"" + label + "\">          <span class=\"ui-button-text\">            <i class=\"" + icon + "\"></i>          </span>        </button>");
+        return jQuery("<" + this.options.buttonElement + " id=\"" + id + "\"        class=\"" + (classes.join(' ')) + "\" title=\"" + label + "\">          <span class=\"ui-button-text\">            <i class=\"" + icon + "\"></i>          </span>        </" + this.options.buttonElement + ">");
       }
     });
     return jQuery.widget('IKS.hallobuttonset', {

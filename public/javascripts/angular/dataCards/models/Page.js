@@ -21,10 +21,11 @@ angular.module('dataCards.models').factory('Page', function($q, Dataset, Card, M
       // the HTTP calls required to fulfill them would be made without any regard to whether
       // or not the calls are needed.
 
+      var baseInfoPromise;
       if (usingBlob) {
-        var baseInfoPromise = function() { return $q.when(idOrSerializedBlob); };
+        baseInfoPromise = function() { return $q.when(idOrSerializedBlob); };
       } else {
-        var baseInfoPromise = function() { return PageDataService.getBaseInfo(self.id); };
+        baseInfoPromise = function() { return PageDataService.getBaseInfo(self.id); };
       }
 
       var fields = ['datasetId', 'description', 'name', 'layoutMode', 'primaryAmountField', 'primaryAggregation', 'isDefaultPage', 'pageSource', 'baseSoqlFilter'];

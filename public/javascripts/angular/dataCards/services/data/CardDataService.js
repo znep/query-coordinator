@@ -17,8 +17,23 @@
       }, config);
     }
 
+    function buildAggregationClause(aggregationClauseData) {
+      var aggregationClause = 'count(*)';
+      if (_.isDefined(aggregationClauseData)) {
+        if (
+          _.isPresent(aggregationClauseData.aggregation) &&
+          aggregationClauseData.aggregation !== 'count' &&
+          _.isPresent(aggregationClauseData.field)
+          ) {
+          aggregationClause = '{0}({1})'.
+            format(aggregationClauseData.aggregation, aggregationClauseData.field);
+        }
+      }
+      return aggregationClause;
+    }
+
     var serviceDefinition = {
-      getData: function(fieldName, datasetId, whereClauseFragment) {
+      getData: function(fieldName, datasetId, whereClauseFragment, aggregationClauseData) {
         Assert(_.isString(fieldName), 'fieldName should be a string');
         Assert(_.isString(datasetId), 'datasetId should be a string');
         Assert(!whereClauseFragment || _.isString(whereClauseFragment), 'whereClauseFragment should be a string if present.');
@@ -33,13 +48,15 @@
           whereClause = 'where ' + whereClauseFragment;
         }
 
+        var aggregationClause = buildAggregationClause(aggregationClauseData);
+
         fieldName = SoqlHelpers.replaceHyphensWithUnderscores(fieldName);
 
         // TODO: Implement some method for paging/showing data that has been truncated.
         var params = {
-          $query: ('select {0} as name, count(*) as value {1} ' +
-                   'group by {0} order by count(*) desc limit 200').format(
-                     fieldName, whereClause)
+          $query: ('select {0} as name, {2} as value {1} ' +
+                   'group by {0} order by {2} desc limit 200').format(
+                     fieldName, whereClause, aggregationClause)
         };
         var url = '/api/id/' + datasetId + '.json?';
         var config = httpConfig.call(this);
@@ -98,7 +115,7 @@
         });
       },
 
-      getTimelineData: function(fieldName, datasetId, whereClauseFragment, precision) {
+      getTimelineData: function(fieldName, datasetId, whereClauseFragment, precision, aggregationClauseData) {
         Assert(_.isString(fieldName), 'fieldName should be a string');
         Assert(_.isString(datasetId), 'datasetId should be a string');
         Assert(!whereClauseFragment || _.isString(whereClauseFragment), 'whereClauseFragment should be a string if present.');
@@ -112,11 +129,14 @@
         if (!_.isEmpty(whereClauseFragment)) {
           whereClause += ' and ' + whereClauseFragment;
         }
+
+        var aggregationClause = buildAggregationClause(aggregationClauseData);
+
         fieldName = SoqlHelpers.replaceHyphensWithUnderscores(fieldName);
         var params = {
-          $query: ('SELECT date_trunc_{2}({0}) AS date_trunc, count(*) AS value {1} ' +
+          $query: ('SELECT date_trunc_{2}({0}) AS date_trunc, {3} AS value {1} ' +
                    'GROUP BY date_trunc').format(
-                     fieldName, whereClause, dateTrunc)
+                     fieldName, whereClause, dateTrunc, aggregationClause)
         };
         var url = '/api/id/' + datasetId + '.json?';
         var config = httpConfig.call(this);

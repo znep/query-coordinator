@@ -94,6 +94,7 @@ describe("A Choropleth Card Visualization", function() {
     var pageModel = new Model();
     pageModel.defineObservableProperty('dataset', datasetModel);
     pageModel.defineObservableProperty('baseSoqlFilter', null);
+    pageModel.defineObservableProperty('aggregation', null);
     model.page = pageModel;
 
     var childScope = scope.$new();

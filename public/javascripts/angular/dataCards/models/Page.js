@@ -49,6 +49,16 @@ angular.module('dataCards.models').factory('Page', function($q, Dataset, Card, M
         });
       });
 
+      // Synchronize changes between primaryAmountField and primaryAggregation
+      var aggregationObservable = self.observe('primaryAmountField').
+        combineLatest(self.observe('primaryAggregation'),
+        function(primaryAmountField, primaryAggregation) {
+          return { field: primaryAmountField || null, aggregation: primaryAggregation || null };
+        }).
+        startWith({ field: null, aggregation: null }).
+        distinctUntilChanged();
+
+      self.defineReadOnlyObservableProperty('aggregation', aggregationObservable);
 
       var allCardsFilters = self.observe('cards').flatMap(function(cards) {
         if (!cards) { return Rx.Observable.never(); }

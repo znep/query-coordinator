@@ -15,6 +15,7 @@ angular.module('dataCards.directives').directive('cardVisualizationTimelineChart
       var model = scope.observe('model');
       var dataset = model.pluck('page').observeOnLatest('dataset');
       var baseSoqlFilter = model.pluck('page').observeOnLatest('baseSoqlFilter');
+      var aggregationObservable = model.pluck('page').observeOnLatest('aggregation');
       var dataRequests = new Rx.Subject();
       var dataResponses = new Rx.Subject();
       var unfilteredDataSequence = new Rx.Subject();
@@ -231,10 +232,11 @@ angular.module('dataCards.directives').directive('cardVisualizationTimelineChart
         dataset,
         baseSoqlFilter,
         datasetPrecision,
-        function(fieldName, dataset, whereClauseFragment, datasetPrecision) {
+        aggregationObservable,
+        function(fieldName, dataset, whereClauseFragment, datasetPrecision, aggregationData) {
           if (_.isDefined(datasetPrecision)) {
             dataRequests.onNext(1);
-            var dataPromise = CardDataService.getTimelineData(fieldName, dataset.id, whereClauseFragment, datasetPrecision);
+            var dataPromise = CardDataService.getTimelineData(fieldName, dataset.id, whereClauseFragment, datasetPrecision, aggregationData);
             dataPromise.then(
               function(res) {
                 // Ok
@@ -254,10 +256,11 @@ angular.module('dataCards.directives').directive('cardVisualizationTimelineChart
         scope.observe('whereClause'),
         nonBaseFilterApplied,
         datasetPrecision,
-        function(fieldName, dataset, whereClauseFragment, nonBaseFilterApplied, datasetPrecision) {
+        aggregationObservable,
+        function(fieldName, dataset, whereClauseFragment, nonBaseFilterApplied, datasetPrecision, aggregationData) {
           if (_.isDefined(datasetPrecision)) {
             dataRequests.onNext(1);
-            var dataPromise = CardDataService.getTimelineData(fieldName, dataset.id, whereClauseFragment, datasetPrecision);
+            var dataPromise = CardDataService.getTimelineData(fieldName, dataset.id, whereClauseFragment, datasetPrecision, aggregationData);
             dataPromise.then(
               function(res) {
                 // Ok

@@ -100,6 +100,8 @@ describe('addCardDialog', function() {
     var pageModel = new Page('asdf-fdsa');
     pageModel.set('dataset', datasetModel);
     pageModel.set('baseSoqlFilter', null);
+    pageModel.set('primaryAmountField', null);
+    pageModel.set('primaryAggregation', null);
     pageModel.set('cards', []);
 
     var datasetColumns = Rx.Observable.combineLatest(

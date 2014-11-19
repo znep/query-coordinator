@@ -1,4 +1,4 @@
-describe("CardsViewController", function() {
+describe('CardsViewController', function() {
   var Page;
   var Card;
   var testHelpers;
@@ -146,6 +146,7 @@ describe("CardsViewController", function() {
     testHelpers.mockDirective(_$provide, 'lastUpdated');
     testHelpers.mockDirective(_$provide, 'multilineEllipsis');
     testHelpers.mockDirective(_$provide, 'notifyResize');
+    testHelpers.mockDirective(_$provide, 'aggregationChooser');
     _$provide.value('page', context.page);
     var html = '<ng-include ng-controller="CardsViewController"' +
         'src="\'/angular_templates/dataCards/pages/cards-view.html\'"></ng-include>';

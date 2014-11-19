@@ -11,6 +11,7 @@ angular.module('dataCards.directives').directive('cardVisualizationColumnChart',
       var model = $scope.observe('model');
       var dataset = model.pluck('page').observeOnLatest('dataset');
       var baseSoqlFilter = model.pluck('page').observeOnLatest('baseSoqlFilter');
+      var aggregationObservable = model.pluck('page').observeOnLatest('aggregation');
       var dataRequests = new Rx.Subject();
       var dataResponses = new Rx.Subject();
       var unfilteredDataSequence = new Rx.Subject();
@@ -45,9 +46,10 @@ angular.module('dataCards.directives').directive('cardVisualizationColumnChart',
         model.pluck('fieldName'),
         dataset,
         baseSoqlFilter,
-        function(fieldName, dataset, whereClauseFragment) {
+        aggregationObservable,
+        function(fieldName, dataset, whereClauseFragment, aggregationData) {
           dataRequests.onNext(1);
-          var dataPromise = CardDataService.getData(fieldName, dataset.id, whereClauseFragment);
+          var dataPromise = CardDataService.getData(fieldName, dataset.id, whereClauseFragment, aggregationData);
           dataPromise.then(
             function(res) {
               // Ok
@@ -65,9 +67,10 @@ angular.module('dataCards.directives').directive('cardVisualizationColumnChart',
         dataset,
         $scope.observe('whereClause'),
         nonBaseFilterApplied,
-        function(fieldName, dataset, whereClauseFragment, nonBaseFilterApplied) {
+        aggregationObservable,
+        function(fieldName, dataset, whereClauseFragment, nonBaseFilterApplied, aggregationData) {
           dataRequests.onNext(1);
-          var dataPromise = CardDataService.getData(fieldName, dataset.id, whereClauseFragment);
+          var dataPromise = CardDataService.getData(fieldName, dataset.id, whereClauseFragment, aggregationData);
           dataPromise.then(
             function(res) {
               // Ok

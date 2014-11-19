@@ -1,0 +1,94 @@
+@import dataCards/common/colors
+@import dataCards/common/layout
+
+$tool-panel-hint-size: 22px
+
+aggregation-chooser
+  float: right
+
+  .information
+    opacity: 0.6
+
+  .aggregation-chooser-trigger
+    cursor: pointer
+    color: $dark-input-font-color
+    padding-right: 15px
+    position: relative
+
+    &::after
+      content: ''
+      position: absolute
+      width: 0
+      height: 0
+      top: 50%
+      right: 0
+      border-style: solid
+      border-width: 5px 5px 0 5px
+      border-color: $dark-input-font-color transparent transparent transparent
+
+  .tool-panel .tool-panel-main
+    right: 4rem
+    margin-top: 14px
+
+  .tool-panel-main
+    line-height: 1rem
+    padding-bottom: 10px
+
+  .tool-panel-hint::before
+    content: ''
+    position: absolute
+    right: -1px
+    top: -3px
+    width: 0
+    height: 0
+    z-index: -1
+    border-style: solid
+    border-width: 0 0 $tool-panel-hint-size + 1 $tool-panel-hint-size + 1
+    border-color: transparent transparent $tool-panel-border-color transparent
+
+  .aggregation-functions, .aggregation-columns
+
+    .aggregation-option:first-child
+      height: 2rem
+      margin-bottom: 1rem
+
+  .aggregation-columns.count
+
+    .aggregation-option.count:hover
+      background-color: $panel-bg-color
+
+  .aggregation-columns.no-count
+
+    .aggregation-option.no-count:hover
+      background-color: $panel-bg-color
+
+  .aggregation-option
+    outline: 0
+    color: $tool-panel-white-font-color
+    display: block
+    cursor: pointer
+    position: relative
+    padding: 5px
+    overflow: hidden
+    white-space: nowrap
+    text-overflow: ellipsis
+
+    &.disconnected
+      margin-right: 1rem
+
+    &.active
+      background-color: $panel-bg-color
+
+    &.disabled
+      cursor: default
+      color: rgba($tool-panel-white-font-color, 0.5)
+
+    .label, .sublabel
+      display: block
+
+    .label
+      font-weight: bold
+      clear: both
+
+    .sublabel
+      font-size: smaller

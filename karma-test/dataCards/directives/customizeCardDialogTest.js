@@ -110,6 +110,8 @@ describe('Customize card dialog', function() {
     var pageModel = new Page('asdf-fdsa');
     pageModel.set('dataset', datasetModel);
     pageModel.set('baseSoqlFilter', null);
+    pageModel.set('primaryAmountField', null);
+    pageModel.set('primaryAggregation', null);
     pageModel.set('cards', cards);
 
     var outerScope = $rootScope.$new();

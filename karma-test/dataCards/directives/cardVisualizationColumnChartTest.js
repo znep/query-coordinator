@@ -51,6 +51,8 @@ describe("A Column Chart Card Visualization", function() {
     var pageModel = new Page('asdf-fdsa');
     pageModel.set('dataset', datasetModel);
     pageModel.set('baseSoqlFilter', null);
+    pageModel.set('primaryAmountField', null);
+    pageModel.set('primaryAggregation', null);
     pageModel.set('cards', []);
     model.page = pageModel;
 

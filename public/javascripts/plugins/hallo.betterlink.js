@@ -233,7 +233,8 @@
           command: null,
           queryState: false,
           uuid: _this.options.uuid,
-          cssClass: _this.options.buttonCssClass
+          cssClass: _this.options.buttonCssClass,
+          buttonElement: 'a'
         });
 
         buttonset.append(buttonHolder);
@@ -241,7 +242,7 @@
       };
 
       buttonize('A');
-      jQuery('button', this.options.button).prepend(linkInput);
+      jQuery('.ui-button', this.options.button).prepend(linkInput);
       buttonset.hallobuttonset();
 
       this._bindEvents();

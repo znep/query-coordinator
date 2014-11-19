@@ -169,37 +169,6 @@
           });
       },
 
-      // This is distinct from getData in order to allow for (eventual)
-      // paginated queries to get total counts across all rows rather than the hard
-      // 1,000-row limit on SoQL queries.
-      getChoroplethAggregates: function(fieldName, datasetId, whereClauseFragment) {
-        Assert(_.isString(fieldName), 'fieldName should be a string');
-        Assert(_.isString(datasetId), 'datasetId should be a string');
-        Assert(!whereClauseFragment || _.isString(whereClauseFragment), 'whereClauseFragment should be a string if present.');
-
-        datasetId = DeveloperOverrides.dataOverrideForDataset(datasetId) || datasetId;
-        var whereClause;
-        if (_.isEmpty(whereClauseFragment)) {
-          whereClause = '';
-        } else {
-          whereClause = 'where ' + whereClauseFragment;
-        }
-        fieldName = SoqlHelpers.replaceHyphensWithUnderscores(fieldName);
-        var params = {
-          $query: ('select {0} as name, count(*) as value {1} ' +
-                   'group by {0} order by count(*) desc').format(
-                     fieldName, whereClause),
-        };
-        var url = '/api/id/' + datasetId + '.json?';
-        var config = httpConfig.call(this);
-        return http.get(url + $.param(params), config).then(function(response) {
-          if (!_.isArray(response.data)) return $q.reject('Invalid response from SODA, expected array.');
-          return _.map(response.data, function(item) {
-            return { name: item.name, value: parseFloat(item.value) };
-          });
-        });
-      },
-
       getRowCount: function(datasetId, whereClause) {
         datasetId = DeveloperOverrides.dataOverrideForDataset(datasetId) || datasetId;
         var params = {

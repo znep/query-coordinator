@@ -32,20 +32,16 @@ angular.module('socrataCommon.directives').directive('table', function(AngularRx
       var columnWidths = {};
       var httpRequests = {};
       var oldBlock = -1;
-      var $table = element.find('.table-inner');
+      var $table = element.children('.table-inner');
       var $head = element.find('.table-inner > .table-head');
       var $body = element.find('.table-inner > .table-body');
       var $expander = element.find('.table-expander');
       var $label = element.find('.table-label');
 
       var getColumn = function(columnId) {
-        return _.find(getColumns(), function(column) {
+        return _.find(scope.columnDetails, function(column) {
           return column.name === columnId;
         });
-      };
-
-      var getColumns = function() {
-        return scope.columnDetails;
       };
 
       scope.$watch('showCount', function(newVal, oldVal, scope) {
@@ -210,11 +206,12 @@ angular.module('socrataCommon.directives').directive('table', function(AngularRx
       };
 
       var updateColumnHeaders = function(){
-        scope.headers = _.map(getColumns(), function(column, i) {
+        scope.headers = _.map(scope.columnDetails, function(column, i) {
           // Symbols: ▼ ▲
           var ordering = getCurrentOrDefaultSortForColumn(column.name);
 
           return {
+            index: i,
             columnId: column.name,
             name: column.title,
             active: isSortedOnColumn(column.name),
@@ -237,13 +234,16 @@ angular.module('socrataCommon.directives').directive('table', function(AngularRx
         _.defer(function() {
           columnWidths = {};
           var maxCells = {};
-          var cells = $table.find('.cell, .th');
-          var columns = getColumns();
+          var cells = $expander.
+              // row_block.row.cell
+              children().children().children();
+          cells = cells.add($head.children());
+          var columns = scope.columnDetails;
 
           // Find the widest cell in each column
           cells.each(function(i, cell) {
             var jqueryCell = $(cell);
-            var colName = columns[jqueryCell.index()].name;
+            var colName = columns[jqueryCell.data('index')].name;
             var width = cell.clientWidth;
             if (!columnWidths[colName] || columnWidths[colName] < width) {
               maxCells[colName] = cell;
@@ -319,18 +319,19 @@ angular.module('socrataCommon.directives').directive('table', function(AngularRx
             return;
           }
 
-          var blockHtml = '<div class="row-block {0}" data-block-id="{0}" style="top: {1}px; display: none">'.
-            format(block, block * rowsPerBlock * rowHeight);
+          var columns = scope.columnDetails;
+          var blockHtml = '<div class="row-block ' + block +
+              '" data-block-id="' + block + '" style="top: ' + (block * rowsPerBlock * rowHeight) +
+              'px; display: none">';
 
-          _.each(data, function(data_row) {
+          for (var row = 0, rowLen = data.length; row < rowLen; row++) {
             blockHtml += '<div class="table-row">';
-            _.each(getColumns(), function(column) {
-              var cellClasses = ['cell'];
-              var cellContent = data_row[column.name] || '';
-              var cellText = '';
-              var cellType = column.physicalDatatype;
 
-              cellClasses.push(cellType);
+            for (var col = 0, colLen = columns.length; col < colLen; col++) {
+              var cellContent = data[row][columns[col].name] || '';
+              var cellText = '';
+              var cellType = columns[col].physicalDatatype;
+              var cellClasses = 'cell ' + cellType;
 
               // Is Boolean?
               // TODO: Add test coverage for this cellType (needs this type in the fixture data)
@@ -349,19 +350,18 @@ angular.module('socrataCommon.directives').directive('table', function(AngularRx
                 var latitudeCoordinateIndex = 1;
                 var longitudeCoordinateIndex = 0;
                 if (_.isArray(cellContent.coordinates)) {
-                  cellText = (
-                    '(<span title="Latitude">{0}°</span>, <span title="Longitude">{1}°</span>)'
-                  ).format(
-                    cellContent.coordinates[latitudeCoordinateIndex],
-                    cellContent.coordinates[longitudeCoordinateIndex]
-                  );
+                  cellText = '(<span title="Latitude">' +
+                    cellContent.coordinates[latitudeCoordinateIndex] +
+                    '°</span>, <span title="Longitude">' +
+                    cellContent.coordinates[longitudeCoordinateIndex] +
+                    '°</span>)';
                 }
 
               } else if (cellType === 'timestamp' || cellType === 'floating_timestamp') {
                 var time = moment(cellContent);
 
                 // Check if Date or Date/Time
-                if (time.format('HH:mm:ss') === '00:00:00') {
+                if (time.hour() + time.minute() + time.second() + time.millisecond() === 0) {
                   cellText = time.format('YYYY MMM D');
                 } else {
                   cellText = time.format('YYYY MMM DD HH:mm:ss');
@@ -371,17 +371,19 @@ angular.module('socrataCommon.directives').directive('table', function(AngularRx
                 cellText = _.escape(cellContent);
               }
 
-              blockHtml += '<div class="{0}" style="width: {1}px">{2}</div>'.
-                format(cellClasses.join(' '), columnWidths[column.name], cellText);
-            });
+              blockHtml += '<div class="' + cellClasses +
+                '" data-index="' + col +
+                '" style="width: ' + columnWidths[columns[col].name] +
+                'px">' + cellText + '</div>';
+            }
             blockHtml += '</div>';
-          });
+          }
           blockHtml += '</div>';
 
-          $expander.append(blockHtml);
-          $('.row-block.{0}'.format(block)).fadeIn();
+          $(blockHtml).appendTo($expander).
+            fadeIn();
           calculateColumnWidths();
-          _.delay(updateExpanderHeight, 1);
+          _.defer(updateExpanderHeight);
         });
       };
 

@@ -115,13 +115,13 @@
         getSampleDataStub.returns(dfd.promise);
         var cardData = createCard();
         var helpText = cardData.element.find('.search-card-text');
-        expect(helpText.find('.one-line').is(':visible')).to.be.false;
+        expect(helpText.find('.one-line').is(':visible')).to.equal(false);
         dfd.resolve([
           { name: SAMPLE_1 },
           { name: SAMPLE_2 }
         ]);
         cardData.scope.$apply();
-        expect(helpText.find('.one-line').is(':visible')).to.be.true;
+        expect(helpText.find('.one-line').is(':visible')).to.equal(true);
       });
 
       it('should show the sample data', function() {
@@ -158,17 +158,17 @@
             cardData.scope.$apply(function() {
               cardData.element.find('form').triggerHandler('submit');
             });
-            expect(toggleExpandedSpy.calledOnce).to.be.true;
-            expect(cardData.element.find('.search-card-results').is(':visible')).to.be.true;
-            expect(cardData.element.find('.search-card-text.no-results').is(':visible')).to.be.false;
+            expect(toggleExpandedSpy.calledOnce).to.equal(true);
+            expect(cardData.element.find('.search-card-results').is(':visible')).to.equal(true);
+            expect(cardData.element.find('.search-card-text.no-results').is(':visible')).to.equal(false);
           });
 
           it('should submit when you click the search button', function() {
             cardData.scope.$apply(function() {
               cardData.element.find('button[type="submit"]').click();
             });
-            expect(toggleExpandedSpy.calledOnce).to.be.true;
-            expect(cardData.element.find('.search-card-results').is(':visible')).to.be.true;
+            expect(toggleExpandedSpy.calledOnce).to.equal(true);
+            expect(cardData.element.find('.search-card-results').is(':visible')).to.equal(true);
           });
 
           it('should display with the column corresponding to the fieldname of this card in the first position', function() {
@@ -183,7 +183,7 @@
               cardData.element.find('form').triggerHandler('submit');
             });
             cardData.element.find('card-visualization-search').isolateScope().observe('rowCount').subscribe(function(rowCount) {
-              expect(getRowsStub.called).to.be.true;
+              expect(getRowsStub.called).to.equal(true);
               expect(cardData.element.find('.search-card-info').text()).to.equal('Showing {0} of {1} matching results'.format(rowCount, ROW_COUNT));
               done();
             });
@@ -196,11 +196,11 @@
             cardData.scope.$apply(function() {
               cardData.element.find('form').triggerHandler('submit');
             });
-            expect(toggleExpandedSpy.calledOnce).to.be.true;
+            expect(toggleExpandedSpy.calledOnce).to.equal(true);
             var $results = cardData.element.find('.search-card-results');
-            expect($results.is(':visible')).to.be.true;
-            expect($results.find('.search-card-text').is(':visible')).to.be.false;
-            expect($results.find('card-visualization-table').parent().hasClass('invisible')).to.be.true;
+            expect($results.is(':visible')).to.equal(true);
+            expect($results.find('.search-card-text').is(':visible')).to.equal(false);
+            expect($results.find('card-visualization-table:visible').length).to.equal(0);
           });
         });
       });
@@ -224,8 +224,8 @@
             cardData.scope.$apply(function() {
               cardData.element.find('form').triggerHandler('submit');
             });
-            expect(toggleExpandedSpy.calledOnce).to.be.true;
-            expect(cardData.element.find('.search-card-text.invalid-value').is(':visible')).to.be.false;
+            expect(toggleExpandedSpy.calledOnce).to.equal(true);
+            expect(cardData.element.find('.search-card-text.invalid-value').is(':visible')).to.equal(false);
           });
 
         });
@@ -242,15 +242,15 @@
             cardData.scope.$apply(function() {
               cardData.element.find('form').triggerHandler('submit');
             });
-            expect(toggleExpandedSpy.calledOnce).to.be.true;
-            expect(cardData.element.find('.search-card-text.invalid-value').is(':visible')).to.be.true;
+            expect(toggleExpandedSpy.calledOnce).to.equal(true);
+            expect(cardData.element.find('.search-card-text.invalid-value').is(':visible')).to.equal(true);
           });
 
           it('should clear the message when a valid value is submitted', function() {
             cardData.scope.$apply(function() {
               cardData.element.find('card-visualization-search').isolateScope().search = '1';
             });
-            expect(cardData.element.find('.search-card-text.invalid-value').is(':visible')).to.be.false;
+            expect(cardData.element.find('.search-card-text.invalid-value').is(':visible')).to.equal(false);
           });
 
         });

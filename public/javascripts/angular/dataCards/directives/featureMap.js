@@ -24,8 +24,6 @@
         // Set up state.
         //
 
-        var cachedFeatureData = null;
-
         var mapOptions = {
           attributionControl: false,
           center: [47.609895, -122.330259], // Center on Seattle by default.
@@ -45,8 +43,14 @@
         var thisFeatureLayer = null;
         var lastFeatureLayer = null;
 
+        // We only want to calculate the extent on page load, so we track whether or
+        // not this is the first render. After the first render this flag gets switched
+        // to false and we will no longer set the map bounds based on the colum's extent.
         var firstRender = true;
 
+        // We track how many protocol buffer tile requests are in-flight so that we can
+        // swap out the old tiles when all the new ones have loaded (see the explanation
+        // of thisFeatureLayer and lastFeatureLayer above).
         var tilesToProcess = 0;
 
 
@@ -232,25 +236,25 @@
 
         /**
          *
-         * createFeatureLayer
+         * createNewFeatureLayer
          *
-         * Creates a new feature layer with a specific tileserver endpoint
+         * Creates a new feature layer with a specific tileServer endpoint
          * and adds it to the map. Because of the way vector tiles are
          * implemented (in mapbox-vector-tiles.js) it is necessary to
          * create an entirely new feature layer every time the page's
          * global where clause changes.
          *
-         * This function should be used in conjunction with removeFeatureLayer
+         * This function should be used in conjunction with removeOldFeatureLayer
          * so that there is only ever one active feature layer attached to the
          * map at a time.
          *
          */
 
-        function createFeatureLayer(map, featureLayerUrl) {
+        function createNewFeatureLayer(map, featureLayerUrl) {
 
           var featureLayerOptions = {
             url: featureLayerUrl,
-            headers: { 'X-Socrata-Host': 'localhost:8080' },
+            headers: { },
             debug: false,
             clickableLayers: [],
             getIDForLayerFeature: getFeatureId,
@@ -269,14 +273,14 @@
 
         /**
          *
-         * removeFeatureLayer
+         * removeOldFeatureLayer
          *
          * Removes an existing feature layer from the map. This is used in
-         * conjunction with createFeatureLayer.
+         * conjunction with createNewFeatureLayer.
          *
          */
 
-        function removeFeatureLayer(map) {
+        function removeOldFeatureLayer(map) {
 
           if (lastFeatureLayer !== null) {
 
@@ -385,14 +389,10 @@
 
         element.on('protobuffer-tile-loaded', function(e) {
 
-          if (e.originalEvent.tilesToProcess > tilesToProcess) {
-            tilesToProcess = e.originalEvent.tilesToProcess;
-          }
+          tilesToProcess = e.originalEvent.tilesToProcess - 1;
 
-          tilesToProcess -= 1;
-
-          if (tilesToProcess === 0) {
-            removeFeatureLayer(map);
+          if (tilesToProcess <= 0) {
+            removeOldFeatureLayer(map);
             scope.$emit('render:complete', { source: 'feature_map_{0}'.format(scope.$id), timestamp: _.now() });
           }
 
@@ -407,7 +407,7 @@
         Rx.Observable.subscribeLatest(
           scope.observe('featureLayerUrl'),
           function(featureLayerUrl) {
-            createFeatureLayer(map, featureLayerUrl);
+            createNewFeatureLayer(map, featureLayerUrl);
           });
 
 
@@ -418,12 +418,15 @@
         // zoom level and viewport bounds should be calculated).
         //
 
+        // TODO: Maybe split the below into two subscriptions, one to each
+        // and which react to one source only.
+
         Rx.Observable.subscribeLatest(
           element.observeDimensions(),
           scope.observe('featureExtent'),
           function(dimensions, featureExtent) {
 
-            if (_.isDefined(featureExtent)) {
+            if (dimensions.height > 0 && _.isDefined(featureExtent)) {
 
               scope.$emit('render:start', { source: 'feature_map_{0}'.format(scope.$id), timestamp: _.now() });
 

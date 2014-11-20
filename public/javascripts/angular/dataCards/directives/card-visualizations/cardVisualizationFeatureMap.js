@@ -84,11 +84,15 @@
         * Bind non-busy-indicating observables. *
         ****************************************/
 
-        scope.bindObservable('baseLayerUrl', model.observeOnLatest('baseLayerUrl'));
+        scope.bindObservable(
+          'baseLayerUrl',
+          model.observeOnLatest('baseLayerUrl')
+        );
 
         scope.bindObservable(
           'featureExtent',
-          featureExtentDataSequence.switchLatest());
+          featureExtentDataSequence.switchLatest()
+        );
 
         scope.bindObservable(
           'featureLayerUrl',
@@ -101,6 +105,9 @@
               // We can't use the .format() method here because we need to retain the literal
               // {z}, {x} and {y} components of the string provided to Leaflet as a tile URL
               // template.
+              //
+              // The limit of 50,000 is chosen to be unrealistically-large so that we get
+              // all probable--and even some unlikely--points per tile.
               var url = '/tiles/' + dataset.id + '/' + fieldName + '/{z}/{x}/{y}.pbf?$limit=50000';
 
               if (!_.isEmpty(whereClause)) {
@@ -112,7 +119,10 @@
           )
         );
 
-        scope.bindObservable('rowDisplayUnit', dataset.observeOnLatest('rowDisplayUnit'));
+        scope.bindObservable(
+          'rowDisplayUnit',
+          dataset.observeOnLatest('rowDisplayUnit')
+        );
 
       }
     };

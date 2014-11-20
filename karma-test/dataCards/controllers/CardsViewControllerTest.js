@@ -593,35 +593,58 @@ describe("CardsViewController", function() {
     });
 
     it('closes the dialog when clicking (or hitting esc) outside it', function() {
-      var controllerHarness = makeController();
+      var context = renderCardsView();
       var body = $('body');
-      controllerHarness.$scope.downloadOpened = true;
+      var downloadButton = context.element.find('.download-menu');
+
+      function openMenu() {
+        downloadButton.click();
+        context.$scope.$digest();
+        expect(downloadButton.find('dropdown-menu').length).to.equal(1);
+      }
+      function expectClosedMenu() {
+        expect(downloadButton.find('dropdown-menu').length).to.equal(0);
+      }
+
+      openMenu();
       testHelpers.fireMouseEvent(body[0], 'click');
-      controllerHarness.$scope.$digest();
-      expect(controllerHarness.$scope.downloadOpened).to.equal(false);
+      context.$scope.$digest();
+      expectClosedMenu();
 
-      controllerHarness.$scope.downloadOpened = true;
+      openMenu();
       body.trigger($.Event('keydown', { which: 27 }));
-      controllerHarness.$scope.$digest();
-      expect(controllerHarness.$scope.downloadOpened).to.equal(false);
-
-      // should ignore events when the download isn't opened
-      controllerHarness.$scope.downloadOpened = null;
-      body.trigger($.Event('keydown', { which: 27 }));
-      controllerHarness.$scope.$digest();
-      expect(controllerHarness.$scope.downloadOpened).to.equal(null);
+      context.$scope.$digest();
+      expectClosedMenu();
 
       // Now test clicking inside a download menu
-      var element = $('<div class="download-menu">' +
-                      '<dropdown-menu><a>link</a></dropdown-menu>' +
-                      '</div>');
-      testHelpers.TestDom.append(element);
-
-      controllerHarness.$scope.downloadOpened = true;
-      testHelpers.fireMouseEvent(element.find('a')[0], 'click');
-      controllerHarness.$scope.$digest();
-      expect(controllerHarness.$scope.downloadOpened).to.equal(false);
+      openMenu();
+      downloadButton.find('a').click();
+      expectClosedMenu();
     });
+
+    it('allows other dialogs to close when clicking download', inject(function(WindowState) {
+      var context = renderCardsView();
+
+      // Simulate another dialog waiting to be closed
+      var closed = false;
+      var subscription = WindowState.closeDialogEventObservable.subscribe(function() {
+        closed = true;
+      });
+
+      try {
+        // Now click the download button.
+        var downloadButton = context.element.find('.download-menu');
+        expect(downloadButton.find('dropdown-menu').length).to.equal(0);
+        testHelpers.fireMouseEvent(downloadButton[0], 'click');
+        context.$scope.$digest();
+
+        expect(downloadButton.find('dropdown-menu').length).to.equal(1);
+        expect(closed).to.equal(true);
+      } finally {
+        // Clean up after ourselves
+        subscription.dispose();
+      }
+    }));
 
     it('disables png download (and displays help text) if the page isn\'t saved', function() {
       var context = renderCardsView();

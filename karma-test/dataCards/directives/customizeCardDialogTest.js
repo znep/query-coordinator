@@ -54,6 +54,14 @@ describe('Customize card dialog', function() {
       importance: 2,
       shapefile: 'mash-apes'
     },
+    feature: {
+      name: 'feature',
+      title: 'Froods who really know where their towels are.',
+      description: '???',
+      logicalDatatype: 'location',
+      physicalDatatype: 'point',
+      importance: 2
+    },
     bar: {
       name: 'bar',
       title: 'A bar where cool froods hang out.',
@@ -70,9 +78,6 @@ describe('Customize card dialog', function() {
    * @property {boolean=false} preexisting Whether or not the card added is a pre-existing card.
    */
   function createDialog(options) {
-    // These fire when creating a choropleth dialog
-    $httpBackend.expectGET(/\/api\/id\/rook-king.json.*/).respond([]);
-    $httpBackend.expectGET(/\/resource\/mash-apes.geojson.*/).respond([]);
 
     options = options || {};
 
@@ -85,6 +90,15 @@ describe('Customize card dialog', function() {
       displayMode: 'visualization',
       expanded: false
     };
+
+    if (card.fieldName === 'choropleth') {
+      // These fire when creating a choropleth
+      $httpBackend.expectGET(/\/api\/id\/rook-king.json.*/).respond([]);
+      $httpBackend.expectGET(/\/resource\/mash-apes.geojson.*/).respond([]);
+    } else if (card.fieldName === 'feature') {
+      // This fires when creating a feature map
+      $httpBackend.expectGET(/\/resource\/rook-king.json.*/).respond([]);
+    }
 
     var cards = options.cards || [];
 
@@ -144,8 +158,75 @@ describe('Customize card dialog', function() {
     expect(dialog.element.find('option:contains("Standard")').length).to.equal(1);
   });
 
-  it('should provide baselayer options that change the baseLayerUrl', function() {
+  it('should provide baselayer options that change the choropleth baseLayerUrl', function() {
     var dialog = createDialog();
+    var cardModel = dialog.scope.customizedCard;
+
+    var standard = dialog.element.find('option:contains("Standard")');
+    var esri = dialog.element.find('option:contains("Esri")');
+    var custom = dialog.element.find('option:contains("Custom")');
+
+    expect(standard.length).to.equal(1);
+    expect(esri.length).to.equal(1);
+    expect(custom.length).to.equal(1);
+
+    // Assert the default is right
+    expect(standard.is(':selected')).to.be.true;
+    expect(esri.is(':selected')).to.be.false;
+
+    // Select the Esri
+    esri.prop('selected', true).change();
+    dialog.scope.$digest();
+
+    expect(cardModel.getCurrentValue('baseLayerUrl')).to.equal(Constants.ESRI_BASE_URL);
+
+    // Select Standard
+    standard.prop('selected', true).change();
+    dialog.scope.$digest();
+
+    expect(cardModel.getCurrentValue('baseLayerUrl')).to.be.undefined;
+
+    // Select Custom
+    var input = dialog.element.find('input[name=customLayerUrl]')
+    expect(input.is(':visible')).to.equal(false);
+
+    custom.prop('selected', true).change();
+    dialog.scope.$digest();
+
+    expect(input.is(':visible')).to.equal(true);
+    // Shouldn't change the baseLayerUrl yet
+    expect(cardModel.getCurrentValue('baseLayerUrl')).to.be.undefined;
+
+    // Shouldn't change the baseLayerUrl when given a non-url
+    input.val('foobar').trigger('input').trigger('change');
+    dialog.scope.$digest();
+    expect(cardModel.getCurrentValue('baseLayerUrl')).to.be.undefined;
+
+    // Shouldn't change the baseLayerUrl when given a url without {x}, {y}, {z}
+    input.val('http://www.google.com/').trigger('input').trigger('change');
+    dialog.scope.$digest();
+    expect(cardModel.getCurrentValue('baseLayerUrl')).to.be.undefined;
+
+    // Should change the baseLayerUrl when given a url with {x}, {y}, {z}
+    input.val('http://www.socrata.com/{x}/{y}/{z}').trigger('input').trigger('change');
+    dialog.scope.$digest();
+    expect(cardModel.getCurrentValue('baseLayerUrl')).to.equal('http://www.socrata.com/{x}/{y}/{z}');
+  });
+
+  it('should provide baselayer options that change the feature map baseLayerUrl', function() {
+    var options = {
+      'card': {
+        fieldName: 'feature',
+        cardSize: 1,
+        cardCustomStyle: {},
+        expandedCustomStyle: {},
+        displayMode: 'visualization',
+        expanded: false
+      }
+    };
+
+    var dialog = createDialog(options);
+
     var cardModel = dialog.scope.customizedCard;
 
     var standard = dialog.element.find('option:contains("Standard")');

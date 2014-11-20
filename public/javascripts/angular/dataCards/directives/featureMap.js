@@ -254,7 +254,10 @@
 
           var featureLayerOptions = {
             url: featureLayerUrl,
-            headers: { },
+            // The X-Socrata-Host header is a temporary local development
+            // stopgap until TileServer can discover Soda Fountain on its
+            // own.
+            headers: { 'X-Socrata-Host': 'localhost:8080' },
             debug: false,
             clickableLayers: [],
             getIDForLayerFeature: getFeatureId,
@@ -366,6 +369,7 @@
         // Add new map layers.
         baseTileLayer.subscribe(function(layer) {
           layer.addTo(map);
+          layer.bringToBack(map);
         });
         
         // Now that everything's hooked up, connect the subscription.

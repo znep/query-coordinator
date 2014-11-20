@@ -215,7 +215,7 @@ describe('featureMapChart', function() {
 
   describe('timing events', function() {
 
-    xit('should emit render:start and render:complete events appropriately and in the correct order', function(done) {
+    it('should emit render:start and render:complete events appropriately and in the correct order', function(done) {
 
       AngularRxExtensions.install(scope);
 
@@ -247,7 +247,7 @@ describe('featureMapChart', function() {
 
   describe('at the default calculated zoom level', function() {
 
-    xit('should render visible points at expected locations', function(done) {
+    it('should render visible points at expected locations', function(done) {
 
       var canvases;
       var expectedPointColor = 'rgba(48,134,171,1.0)';

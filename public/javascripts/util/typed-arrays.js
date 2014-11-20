@@ -456,12 +456,12 @@
         relativeEnd = len;
       else
         relativeEnd = ToInt32(end);
-      var final;
+      var _final;
       if (relativeEnd < 0)
-        final = max(len + relativeEnd, 0);
+        _final = max(len + relativeEnd, 0);
       else
-        final = min(relativeEnd, len);
-      var count = min(final - from, len - to);
+        _final = min(relativeEnd, len);
+      var count = min(_final - from, len - to);
       var direction;
       if (from < to && to < from + count) {
         direction = -1;
@@ -516,12 +516,12 @@
         relativeEnd = len;
       else
         relativeEnd = ToInt32(end);
-      var final;
+      var _final;
       if (relativeEnd < 0)
-        final = max((len + relativeEnd), 0);
+        _final = max((len + relativeEnd), 0);
       else
-        final = min(relativeEnd, len);
-      while (k < final) {
+        _final = min(relativeEnd, len);
+      while (k < _final) {
         o._setter(k, value);
         k += 1;
       }
@@ -790,12 +790,12 @@
       var relativeStart = ToInt32(start);
       var k = (relativeStart < 0) ? max(len + relativeStart, 0) : min(relativeStart, len);
       var relativeEnd = (end === undefined) ? len : ToInt32(end);
-      var final = (relativeEnd < 0) ? max(len + relativeEnd, 0) : min(relativeEnd, len);
-      var count = final - k;
+      var _final = (relativeEnd < 0) ? max(len + relativeEnd, 0) : min(relativeEnd, len);
+      var count = _final - k;
       var c = o.constructor;
       var a = new c(count);
       var n = 0;
-      while (k < final) {
+      while (k < _final) {
         var kValue = o._getter(k);
         a._setter(n, kValue);
         ++k;

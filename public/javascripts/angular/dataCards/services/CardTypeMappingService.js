@@ -3,10 +3,11 @@
 
   function CardTypeMappingService($exceptionHandler, $log) {
 
-    var supportedCardTypes = ['column', 'choropleth', 'search', 'timeline'];
+    var supportedCardTypes = ['column', 'choropleth', 'feature', 'search', 'timeline'];
     // A lookup for whether a particular card type is customizable
     var CUSTOMIZABLE_CARD_TYPES = {
-      choropleth: true
+      choropleth: true,
+      feature: true
     };
 
     // Keep track of which logical/physical datatype combinations have already
@@ -48,19 +49,19 @@
       'choropleth',
       'column',
       'point-ish map',
-      'pointMap',
+      'feature',
       //'search',
       'statBar',
       //'table',
       'timeline'
     ];
+
     /**
      * Determines whether or not the given card is able to be exported as a PNG.
      */
     function _isExportable(cardModel) {
       return _.contains(EXPORTABLE_CARD_TYPES, _cardTypeForModel(cardModel));
     }
-
 
     function _cardTypeForColumn(column) {
       column = column || {};
@@ -74,7 +75,7 @@
         if (physicalDatatype === 'number') { return 'statBar'; }
       }
       if (logicalDatatype === 'location') {
-        if (physicalDatatype === 'point') { return 'pointMap'; }
+        if (physicalDatatype === 'point') { return 'feature'; }
         if (physicalDatatype === 'number') { return 'choropleth'; }
         if (physicalDatatype === 'text') {
           var message = 'Encountered location column "{0}" with text physical type - this is deprecated (expected number type).'.format(column.name);
@@ -97,7 +98,7 @@
           return 'search';
         }
         if (physicalDatatype === 'point') {
-          return 'pointMap';
+          return 'feature';
         }
         if (physicalDatatype === 'fixed_timestamp') { return 'timeline'; }
         if (physicalDatatype === 'floating_timestamp') { return 'timeline'; }

@@ -1,4 +1,4 @@
-describe('customize card dialog', function() {
+describe('Customize card dialog', function() {
   'use strict';
 
   beforeEach(module('dataCards'));
@@ -37,6 +37,7 @@ describe('customize card dialog', function() {
     $templateCache.put('/angular_templates/dataCards/cardVisualizationTimelineChart.html', '');
     $templateCache.put('/angular_templates/dataCards/cardVisualizationChoropleth.html', '');
     $templateCache.put('/angular_templates/dataCards/cardVisualizationTable.html', '');
+    $templateCache.put('/angular_templates/dataCards/cardVisualizationFeatureMap.html', '');
   }));
 
   afterEach(function() {

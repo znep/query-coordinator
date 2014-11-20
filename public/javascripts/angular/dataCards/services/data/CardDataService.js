@@ -242,9 +242,43 @@
           return response.data;
         });
       },
+
       requesterLabel: function() {
         return 'card-data-service';
+      },
+
+      getFeatureExtent: function(fieldName, datasetId) {
+
+        var url;
+        var config;
+
+        datasetId = DeveloperOverrides.dataOverrideForDataset(datasetId) || datasetId;
+        url = '/resource/{0}.json?$select=extent({1})'.format(datasetId, fieldName);
+        config = httpConfig.call(this);
+
+        return http.get(url, config).then(function(response) {
+
+          if (_.isEmpty(response.data)) {
+            return $q.reject('Empty response.');
+          }
+
+          try {
+
+            var coordinates = response.data[0]['extent_{0}'.format(fieldName)].coordinates[0][0];
+
+            return {
+              southwest: [ coordinates[0][1], coordinates[0][0] ],
+              northeast: [ coordinates[2][1], coordinates[2][0] ]
+            };
+
+          } catch (e) {
+            return $q.reject('Invalid coordinates.');
+          }
+
+        });
+
       }
+
     };
 
     if (ServerConfig.get('enableBoundingBoxes')) {

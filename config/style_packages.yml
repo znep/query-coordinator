@@ -27,6 +27,7 @@ angular-app-dataCards:
 - dataCards/card
 - dataCards/multiline-ellipsis
 - dataCards/modal-dialog
+- dataCards/feature-map
 
 ie9:
 - dataCards/ie9

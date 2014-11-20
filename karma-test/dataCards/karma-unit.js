@@ -53,6 +53,8 @@ module.exports = function ( karma ) {
       'bower_components/leaflet/dist/leaflet.js',
       'bower_components/chroma-js/chroma.js',
       'bower_components/simple-statistics/src/simple_statistics.js',
+      'public/javascripts/util/typed-arrays.js',
+      'public/javascripts/util/mapbox-vector-tiles.js',
       'app/styles/bower/leaflet.css',
       'app/styles/dataCards/testing.css',
       /* ------- */

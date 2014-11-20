@@ -11,6 +11,7 @@ describe('addCardDialog', function() {
   beforeEach(module('/angular_templates/dataCards/cardVisualizationColumnChart.html'));
   beforeEach(module('/angular_templates/dataCards/cardVisualizationTimelineChart.html'));
   beforeEach(module('/angular_templates/dataCards/cardVisualizationSearch.html'));
+  beforeEach(module('/angular_templates/dataCards/cardVisualizationFeatureMap.html'));
   beforeEach(module('/angular_templates/dataCards/clearableInput.html'));
   beforeEach(module('/angular_templates/dataCards/timelineChart.html'));
   beforeEach(module('/angular_templates/dataCards/cardVisualizationTable.html'));
@@ -20,6 +21,7 @@ describe('addCardDialog', function() {
   beforeEach(module('/angular_templates/dataCards/tableHeader.html'));
   beforeEach(module('/angular_templates/dataCards/table.html'));
   beforeEach(module('/angular_templates/dataCards/timelineChart.html'));
+  beforeEach(module('/angular_templates/dataCards/featureMap.html'));
   beforeEach(module('dataCards/cards.sass'));
 
   var testHelpers;

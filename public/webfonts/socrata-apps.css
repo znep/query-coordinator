@@ -1,10 +1,10 @@
 @font-face {
 	font-family: 'socrata-apps';
-	src:url('socrata-apps/socrata-apps.eot?pr141x');
-	src:url('socrata-apps/socrata-apps.eot?#iefixpr141x') format('embedded-opentype'),
-		url('socrata-apps/socrata-apps.woff?pr141x') format('woff'),
-		url('socrata-apps/socrata-apps.ttf?pr141x') format('truetype'),
-		url('socrata-apps/socrata-apps.svg?pr141x#socrata-apps') format('svg');
+	src:url('socrata-apps/socrata-apps.eot');
+	src:url('socrata-apps/socrata-apps.eot') format('embedded-opentype'),
+		url('socrata-apps/socrata-apps.woff') format('woff'),
+		url('socrata-apps/socrata-apps.ttf') format('truetype'),
+		url('socrata-apps/socrata-apps.svg') format('svg');
 	font-weight: normal;
 	font-style: normal;
 }
@@ -23,6 +23,18 @@
 	-moz-osx-font-smoothing: grayscale;
 }
 
+.icon-close:before {
+	content: "\e60f";
+}
+.icon-search:before {
+	content: "\e609";
+}
+.icon-chevron-up:before {
+	content: "\e60d";
+}
+.icon-chevron-down:before {
+	content: "\e60e";
+}
 .icon-number:before {
 	content: "\e600";
 }
@@ -49,9 +61,6 @@
 }
 .icon-chart:before {
 	content: "\e608";
-}
-.icon-close:before {
-	content: "\e609";
 }
 .icon-expand:before {
 	content: "\e60a";

@@ -324,13 +324,13 @@ angular.module('socrataCommon.directives').directive('table', function(AngularRx
               '" data-block-id="' + block + '" style="top: ' + (block * rowsPerBlock * rowHeight) +
               'px; display: none">';
 
-          for (var row = 0, rowLen = data.length; row < rowLen; row++) {
+          _.each(data, function(data_row) {
             blockHtml += '<div class="table-row">';
 
-            for (var col = 0, colLen = columns.length; col < colLen; col++) {
-              var cellContent = data[row][columns[col].name] || '';
+            _.each(columns, function(column, index) {
+              var cellContent = data_row[column.name] || '';
               var cellText = '';
-              var cellType = columns[col].physicalDatatype;
+              var cellType = column.physicalDatatype;
               var cellClasses = 'cell ' + cellType;
 
               // Is Boolean?
@@ -372,12 +372,12 @@ angular.module('socrataCommon.directives').directive('table', function(AngularRx
               }
 
               blockHtml += '<div class="' + cellClasses +
-                '" data-index="' + col +
-                '" style="width: ' + columnWidths[columns[col].name] +
+                '" data-index="' + index +
+                '" style="width: ' + columnWidths[column.name] +
                 'px">' + cellText + '</div>';
-            }
+            });
             blockHtml += '</div>';
-          }
+          });
           blockHtml += '</div>';
 
           $(blockHtml).appendTo($expander).

@@ -125,38 +125,38 @@ $card-description-transition-duration: 0.5s
     line-height: $card-description-line-height
     padding-right: 30px
     color: $lt-grey-font-color-rgba
+
     .description-expand-button
       display: none
       position: absolute
       visibility: collapse
-      font-family: "SSAir"
       right: 0
       bottom: 0
       width: 15px
       height: 25px
-      span
-        /* Can't set separate cursor prop on pseudo, so must be a separate element. */
-        cursor: pointer
-        font-size: 0.7rem
-        &:before
-          content: "\F500"
+      cursor: pointer
+
     .description-expanded-wrapper
       position: absolute
       overflow: hidden
       opacity: 0.9
+
       .description-expanded-content
         color: #000
         background: rgba($card-bg-color, 0.9)
         overflow-y: auto
         overflow-x: hidden
         padding-bottom: 0
+
       top: 0
       display: block
       padding-right: 20px
       z-index: 1001
       /* z-index must override leaflet's z-index (1001) on choropleths */
+
       .description-expand-button
         display: block
+
     .description-truncated-content
       visibility: hidden
 
@@ -174,8 +174,6 @@ $card-description-transition-duration: 0.5s
         max-height: $card-description-line-height * 2 !important
       .description-truncated-content
         visibility: visible
-      .description-expand-button span:before
-        content: "\F501"
 
     &.with-animation
       .description-expanded-wrapper
@@ -302,37 +300,3 @@ $facets-list-width: 20%
   position: absolute
   left: -10000px
   visibility: hidden
-
-.icon-search
-  width: 2em
-  height: 2em
-  position: relative
-
-  $thickness: 0.2em
-  $color: rgba(255, 255, 255, 0.9)
-  &::before
-    position: absolute
-    bottom: 50%
-    right: 50%
-    margin: 0 -0.65em -0.3em 0
-
-    display: block
-    content: '\feff'
-    width: 0.8em
-    height: 0.8em
-    border: $thickness solid $color
-    @include prefixer(border-radius, 100%)
-
-  &::after
-    position: absolute
-    top: 50%
-    left: 50%
-    margin: 0.2em 0 0 0.4em
-
-    display: block
-    height: 0.5em
-    content: '\feff'
-    @include prefixer(transform-origin, 0 0)
-    @include prefixer(transform, rotate(-45deg))
-    border: 0.8 * $thickness solid $color
-    @include prefixer(border-radius, 0 0 0.5em 0.5em)

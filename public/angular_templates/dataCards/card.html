@@ -14,7 +14,11 @@
         <div class="description-expanded-content">
           {{description}}
         </div>
-        <div class="description-expand-button"><span ng-click="descriptionCollapsed = !descriptionCollapsed"></span></div>
+        <div class="description-expand-button"
+             ng-class="{'icon-chevron-down': descriptionCollapsed,
+                        'icon-chevron-up': !descriptionCollapsed}"
+             ng-click="descriptionCollapsed = !descriptionCollapsed"
+        ></div>
       </div>
     </div>
   </div>

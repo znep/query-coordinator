@@ -751,6 +751,10 @@ class View < Model
     "http://dev.socrata.com/foundry/#/#{domain}/#{id}"
   end
 
+  def resource_url
+    "#{CurrentDomain.domain.protocol}://#{CurrentDomain.cname}#{CurrentDomain.domain.port}/resource/#{id}.json"
+  end
+
   def tweet
     I18n.t('controls.common.share.share_text', :name => name, :site => CurrentDomain.strings.company) + short_view_url(self)
   end

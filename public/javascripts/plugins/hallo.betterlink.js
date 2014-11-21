@@ -137,7 +137,7 @@
       urlInput.prop('disabled', false);
       this.lastSelection = this.options.editable.getSelection();
       selectionParentNode = this.lastSelection.startContainer.parentNode;
-      if (selectionParentNode.href === undefined) {
+      if (_.isUndefined(selectionParentNode.href)) {
         selection = jQuery('<div>').html(this.lastSelection.toHtml());
         links = jQuery('a', selection)
         if (links.length === 1) {
@@ -148,7 +148,7 @@
           urlInput.val(this.options.defaultUrl);
           submitButton.val(butTitle);
         }
-      } else if (selectionParentNode.href !== undefined) {
+      } else if (!_.isUndefined(selectionParentNode.href)) {
         this.options.linkInSelection = selectionParentNode;
       }
 

@@ -39,7 +39,6 @@ class AnalyticsController < ApplicationController
       return render :json => 'Not a valid URL.', :status => 400
     end
     Rails.logger.info("Loaded ESRI Layer #{esri_layer_url} from #{request.referer}; received #{content_size} bytes.")
-    add_metric('domain-intern', 'esri-layer-size', content_size)
     render :json => 'OK'.to_json
   end
 
@@ -105,7 +104,6 @@ module ClientAnalyticsHelper
 
 
   STATIC_ALLOWED_METRICS = %w(domain/js-page-view
-                              domain-intern/esri-layer-size
                               domain-intern/js-cardsview-page-load-time
                               domain-intern/js-cardsview-bar-filter-time
                               domain-intern/js-cardsview-region-filter-time

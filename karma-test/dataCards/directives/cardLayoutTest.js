@@ -15,7 +15,6 @@ describe('CardLayout directive', function() {
   var testHelpers;
   var $templateCache;
 
-  beforeEach(module('/angular_templates/dataCards/addCardDialog.html'));
   beforeEach(module('/angular_templates/dataCards/card-layout.html'));
   beforeEach(module('/angular_templates/dataCards/card.html'));
   beforeEach(module('/angular_templates/dataCards/cardVisualizationColumnChart.html'));
@@ -25,7 +24,6 @@ describe('CardLayout directive', function() {
   beforeEach(module('/angular_templates/dataCards/cardVisualizationSearch.html'));
   beforeEach(module('/angular_templates/dataCards/cardVisualizationFeatureMap.html'));
   beforeEach(module('/angular_templates/dataCards/cardVisualization.html'));
-  beforeEach(module('/angular_templates/dataCards/clearableInput.html'));
   beforeEach(module('/angular_templates/dataCards/customizeCardDialog.html'));
   beforeEach(module('/angular_templates/dataCards/modalDialog.html'));
   beforeEach(module('/angular_templates/dataCards/socSelect.html'));
@@ -85,6 +83,9 @@ describe('CardLayout directive', function() {
     $q = $injector.get('$q');
 
     testHelpers.overrideTransitions(true);
+    testHelpers.mockDirective(_$provide, 'aggregationChooser');
+    testHelpers.mockDirective(_$provide, 'clearableInput');
+    testHelpers.mockDirective(_$provide, 'addCardDialog');
   }));
 
   afterEach(function(){
@@ -148,6 +149,8 @@ describe('CardLayout directive', function() {
     var pageModel = new Page('asdf-fdsa');
     pageModel.set('dataset', datasetModel);
     pageModel.set('baseSoqlFilter', null);
+    pageModel.set('primaryAmountField', null);
+    pageModel.set('primaryAggregation', null);
     pageModel.set('cards', options.cards(pageModel));
 
     var outerScope = rootScope.$new();

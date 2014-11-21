@@ -60,6 +60,7 @@
         var model = scope.observe('model');
         var dataset = model.pluck('page').observeOnLatest('dataset');
         var baseSoqlFilter = model.pluck('page').observeOnLatest('baseSoqlFilter');
+        var aggregationObservable = model.pluck('page').observeOnLatest('aggregation');
         var dataRequests = new Rx.Subject();
         var dataResponses = new Rx.Subject();
         var geojsonRegionsSequence = new Rx.Subject();
@@ -252,9 +253,10 @@
           model.pluck('fieldName'),
           dataset,
           baseSoqlFilter,
-          function(fieldName, dataset, whereClauseFragment) {
+          aggregationObservable,
+          function(fieldName, dataset, whereClauseFragment, aggregationData) {
             dataRequests.onNext(1);
-            var dataPromise = CardDataService.getData(fieldName, dataset.id, whereClauseFragment);
+            var dataPromise = CardDataService.getData(fieldName, dataset.id, whereClauseFragment, aggregationData);
             dataPromise.then(
               function(res) {
                 // Ok
@@ -271,9 +273,10 @@
           model.pluck('fieldName'),
           dataset,
           scope.observe('whereClause'),
-          function(fieldName, dataset, whereClauseFragment) {
+          aggregationObservable,
+          function(fieldName, dataset, whereClauseFragment, aggregationData) {
             dataRequests.onNext(1);
-            var dataPromise = CardDataService.getData(fieldName, dataset.id, whereClauseFragment);
+            var dataPromise = CardDataService.getData(fieldName, dataset.id, whereClauseFragment, aggregationData);
             dataPromise.then(
               function(res) {
                 // Ok

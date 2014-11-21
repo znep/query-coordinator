@@ -243,7 +243,16 @@ angular.module('socrataCommon.directives').directive('table', function(AngularRx
           // Find the widest cell in each column
           cells.each(function(i, cell) {
             var jqueryCell = $(cell);
-            var colName = columns[jqueryCell.data('index')].name;
+            var cellIndex = jqueryCell.data('index');
+
+            // TODO: This could probably be fixed, either by not having a separate tableHeader directive,
+            // TODO: or some sort of Angular directive priority black magic
+            // This resolves an issue where the index on table header cells doesn't exist
+            // We can still find the index with jquery.index()
+            if (_.isUndefined(cellIndex)) {
+              cellIndex = jqueryCell.index();
+            }
+            var colName = columns[cellIndex].name;
             var width = cell.clientWidth;
             if (!columnWidths[colName] || columnWidths[colName] < width) {
               maxCells[colName] = cell;

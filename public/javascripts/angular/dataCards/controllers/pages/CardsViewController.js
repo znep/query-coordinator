@@ -108,13 +108,6 @@
     * Filters and the where clause *
     *******************************/
 
-    $scope.clearAllFilters = function() {
-      $scope.$broadcast('clear-all-filters');
-      _.each($scope.page.getCurrentValue('cards'), function(card) {
-        card.set('activeFilters', []);
-      });
-    };
-
     var allCardsFilters = page.observe('activeFilters');
 
     $scope.bindObservable('globalWhereClauseFragment', page.observe('computedWhereClauseFragment'));

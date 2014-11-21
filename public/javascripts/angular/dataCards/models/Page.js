@@ -21,10 +21,11 @@ angular.module('dataCards.models').factory('Page', function($q, Dataset, Card, M
       // the HTTP calls required to fulfill them would be made without any regard to whether
       // or not the calls are needed.
 
+      var baseInfoPromise;
       if (usingBlob) {
-        var baseInfoPromise = function() { return $q.when(idOrSerializedBlob); };
+        baseInfoPromise = function() { return $q.when(idOrSerializedBlob); };
       } else {
-        var baseInfoPromise = function() { return PageDataService.getBaseInfo(self.id); };
+        baseInfoPromise = function() { return PageDataService.getBaseInfo(self.id); };
       }
 
       var fields = ['datasetId', 'description', 'name', 'layoutMode', 'primaryAmountField', 'primaryAggregation', 'isDefaultPage', 'pageSource', 'baseSoqlFilter'];
@@ -48,6 +49,16 @@ angular.module('dataCards.models').factory('Page', function($q, Dataset, Card, M
         });
       });
 
+      // Synchronize changes between primaryAmountField and primaryAggregation
+      var aggregationObservable = self.observe('primaryAmountField').
+        combineLatest(self.observe('primaryAggregation'),
+        function(primaryAmountField, primaryAggregation) {
+          return { field: primaryAmountField || null, aggregation: primaryAggregation || null };
+        }).
+        startWith({ field: null, aggregation: null }).
+        distinctUntilChanged();
+
+      self.defineReadOnlyObservableProperty('aggregation', aggregationObservable);
 
       var allCardsFilters = self.observe('cards').flatMap(function(cards) {
         if (!cards) { return Rx.Observable.never(); }

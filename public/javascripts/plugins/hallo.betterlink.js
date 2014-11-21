@@ -22,21 +22,23 @@
       buttonCssClass: null,
       editing: false,
       saved: null,
-      savedToolbarPosition: null
+      savedToolbarPosition: null,
+      linkInSelection: null,
+      dirty: false
     },
 
     _bindEvents: function() {
       var onBodyClick,
         _this = this;
 
-      onBodyClick = function(event) {
-        var target = jQuery(event.target);
+      onBodyClick = function(e) {
+        var target = jQuery(e.target);
         if (target.closest('.hallobetterlink').length === 0) {
           _this.options.editable.element.trigger('hallounselected');
         }
       }
 
-      this.options.editable.element.on('halloselected', function(event, data) {
+      this.options.editable.element.on('halloselected', function(e, data) {
         _this.options.savedToolbarPosition = data;
         if (data.alreadyInitialized !== true) {
           _this._initializeUrlInputValue();
@@ -49,19 +51,24 @@
       });
 
       this.options.editable.element.on('hallounselected', function(){
+        if (_this.options.dirty === true) {
+          return false;
+        }
         _this.options.editing = false;
+        _this.options.dirty = false;
         _this.options.editable.element.focus();
         _this.options.editable.keepActivated(false);
         _this.options.buttonset.removeClass('expanded');
         _this.options.urlInput.val(_this.options.defaultUrl);
         _this.options.linkInput.removeClass('urlError');
+        _this.options.linkInSelection = null;
         _this.options.toolbar.hide();
         jQuery(document.body).off('click', onBodyClick);
-
       });
 
       this.options.clearButton.on('click', function() {
         _this.options.urlInput.val(_this.options.defaultUrl);
+        _this.options.dirty = true;
         _this._setClearButtonState();
         _this.options.linkInput.removeClass('urlError');
         _this._saveUrl();
@@ -75,16 +82,17 @@
         }
       });
 
-      this.options.urlInput.on('change', function(e) {
-        _this.options.urlForm.submit();
-      });
-
-      this.options.urlForm.on('submit', function(e) {
+      this.options.urlForm.on('change submit', function(e) {
         e.preventDefault();
+        e.stopPropagation();
         _this._saveUrl();
       });
 
-      this.element.on('keyup paste change mouseup', function(event) {
+      this.options.urlInput.on('keyup paste change', function(e) {
+        _this.options.dirty = true;
+      });
+
+      this.element.on('keyup paste change mouseup', function() {
         var nodeName, start;
         start = jQuery(_this.options.editable.getSelection().startContainer);
         if (start.prop('nodeName')) {
@@ -99,9 +107,11 @@
         return jQuery('label', _this.options.button).removeClass('ui-state-active');
       });
 
-      this.options.button.on('click', function(event) {
+      this.options.button.on('click', function(e) {
         var buttonSelector, selectionParent;
-        var $target = jQuery(event.target);
+        var $target = jQuery(e.target);
+
+        e.preventDefault();
 
         if (_this.options.editing || $target.is('.icon-remove, .clear')) {
           return false;
@@ -121,22 +131,29 @@
     },
 
     _initializeUrlInputValue: function() {
-      var selection, selectionParent, urlInput, submitButton;
+      var selection, selectionParentNode, urlInput, submitButton, linkInSelection, links;
       urlInput = this.options.urlInput;
       submitButton = this.options.submitButton;
       urlInput.prop('disabled', false);
       this.lastSelection = this.options.editable.getSelection();
-      selectionParent = this.lastSelection.startContainer.parentNode;
-      if (!selectionParent.href) {
+      selectionParentNode = this.lastSelection.startContainer.parentNode;
+      if (_.isUndefined(selectionParentNode.href)) {
         selection = jQuery('<div>').html(this.lastSelection.toHtml());
-        if (jQuery('a', selection).length > 1) {
-          urlInput.prop('disabled', true).val('(multiple links selected)');
+        links = jQuery('a', selection)
+        if (links.length === 1) {
+          this.options.linkInSelection = links.first();
+        } else if (links.length > 1) {
+          urlInput.val('(multiple links selected)').prop('disabled', true);
         } else {
           urlInput.val(this.options.defaultUrl);
           submitButton.val(butTitle);
         }
-      } else {
-        urlInput.val(jQuery(selectionParent).attr('href'));
+      } else if (!_.isUndefined(selectionParentNode.href)) {
+        this.options.linkInSelection = selectionParentNode;
+      }
+
+      if (this.options.linkInSelection !== null) {
+        urlInput.val(jQuery(this.options.linkInSelection).attr('href'));
         this._setUrlErrorState();
         submitButton.val(butUpdateTitle);
         if (!this.options.buttonset.hasClass('expanded')) {
@@ -166,6 +183,10 @@
       var link, selectionStart,
         _this = this;
 
+      if (this.options.dirty !== true) {
+        return false;
+      }
+
       link = this.options.urlInput.val();
       this.options.editable.restoreSelection(this.lastSelection);
 
@@ -191,13 +212,15 @@
         if (!(/:\/\//.test(link)) && !(/^mailto:/.test(link))) {
           link = 'http://' + link;
         }
-        if (this.lastSelection.startContainer.parentNode.href === void 0) {
+        if (this.options.linkInSelection === null) {
           this.options.execCommandOverride('createLink', null, link);
         } else {
-          this.lastSelection.startContainer.parentNode.href = link;
+          this.options.linkInSelection.href = link;
         }
       }
 
+      this.options.linkInSelection = null;
+      this.options.dirty = false;
       this.options.editable.element.trigger('change');
       this.options.editable.removeAllSelections();
 

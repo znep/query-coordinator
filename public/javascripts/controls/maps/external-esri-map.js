@@ -150,9 +150,7 @@
                 }
             }
             var requestString = this.getFullRequestString(newParams);
-            // Logging ESRI layer URLs fired. Not using socrataServer for simplicity's sake.
-            $.ajax({ url: '/analytics/esri', type: 'POST', data: { esri_layer_url: requestString }});
-            return requestString;
+            return '/analytics/esri?esri_layer_url=' + encodeURIComponent(requestString);
         }
     });
 

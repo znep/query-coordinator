@@ -4,7 +4,7 @@
 * https://github.com/sdecima/javascript-detect-element-resize
 * Sebastian Decima
 *
-* version: 0.5
+* version: 0.5.3
 **/
 
 (function ( $ ) {
@@ -50,7 +50,6 @@
 			contract.scrollTop = contract.scrollHeight;
 			expandChild.style.width = expand.offsetWidth + 1 + 'px';
 			expandChild.style.height = expand.offsetHeight + 1 + 'px';
-
 			expand.scrollLeft = expand.scrollWidth;
 			expand.scrollTop = expand.scrollHeight;
 		};
@@ -74,17 +73,44 @@
 				}
 			});
 		};
+		
+		/* Detect CSS Animations support to detect element display/re-attach */
+		var animation = false,
+			animationstring = 'animation',
+			keyframeprefix = '',
+			animationstartevent = 'animationstart',
+			domPrefixes = 'Webkit Moz O ms'.split(' '),
+			startEvents = 'webkitAnimationStart animationstart oAnimationStart MSAnimationStart'.split(' '),
+			pfx  = '';
+		{
+			var elm = document.createElement('fakeelement');
+			if( elm.style.animationName !== undefined ) { animation = true; }    
+			
+			if( animation === false ) {
+				for( var i = 0; i < domPrefixes.length; i++ ) {
+					if( elm.style[ domPrefixes[i] + 'AnimationName' ] !== undefined ) {
+						pfx = domPrefixes[ i ];
+						animationstring = pfx + 'Animation';
+						keyframeprefix = '-' + pfx.toLowerCase() + '-';
+						animationstartevent = startEvents[ i ];
+						animation = true;
+						break;
+					}
+				}
+			}
+		}
+		
+		var animationName = 'resizeanim';
+		var animationKeyframes = '@' + keyframeprefix + 'keyframes ' + animationName + ' { from { opacity: 0; } to { opacity: 0; } } ';
+		var animationStyle = keyframeprefix + 'animation: 1ms ' + animationName + '; ';
 	}
 	
 	function createStyles() {
 		if (!stylesCreated) {
-			var prefixes = ['-moz-', '-webkit-', '-ms-', '-o-', ''];
-			var declaration = 'keyframes nodeInserted { from {outline-color: rgba(255,255,255,.1);} to {outline-color: rgba(255,255,255,0);}}';
-			var keyframes = '@' + prefixes.join(declaration + '@') + declaration;
-			var animationDeclaration = 'animation: nodeInserted .01s;';
-			var animation = prefixes.join(animationDeclaration) + animationDeclaration;
-
-			var css = keyframes + '.resize-triggers { visibility: hidden; ' + animation + ' } .resize-triggers, .resize-triggers > div, .contract-trigger:before { content: \" \"; display: block; position: absolute; top: 0; left: 0; height: 100%; width: 100%; overflow: hidden; } .resize-triggers > div { background: #eee; overflow: auto; } .contract-trigger:before { width: 200%; height: 200%; }',
+			//opacity:0 works around a chrome bug https://code.google.com/p/chromium/issues/detail?id=286360
+			var css = (animationKeyframes ? animationKeyframes : '') +
+					'.resize-triggers { ' + (animationStyle ? animationStyle : '') + 'visibility: hidden; opacity: 0; } ' +
+					'.resize-triggers, .resize-triggers > div, .contract-trigger:before { content: \" \"; display: block; position: absolute; top: 0; left: 0; height: 100%; width: 100%; overflow: hidden; } .resize-triggers > div { background: #eee; overflow: auto; } .contract-trigger:before { width: 200%; height: 200%; }',
 				head = document.head || document.getElementsByTagName('head')[0],
 				style = document.createElement('style');
 			
@@ -110,19 +136,16 @@
 				element.__resizeListeners__ = [];
 				(element.__resizeTriggers__ = document.createElement('div')).className = 'resize-triggers';
 				element.__resizeTriggers__.innerHTML = '<div class="expand-trigger"><div></div></div>' +
-																						   '<div class="contract-trigger"></div>';
+																						'<div class="contract-trigger"></div>';
 				element.appendChild(element.__resizeTriggers__);
 				resetTriggers(element);
 				element.addEventListener('scroll', scrollListener, true);
-
-				function resetOnInsert(e) {
-					if (e.animationName === 'nodeInserted') {
+				
+				/* Listen for a css animation to detect element display/re-attach */
+				animationstartevent && element.__resizeTriggers__.addEventListener(animationstartevent, function(e) {
+					if(e.animationName == animationName)
 						resetTriggers(element);
-					}
-				}
-				element.addEventListener('animationstart', resetOnInsert, true);
-				element.addEventListener('MSAnimationStart', resetOnInsert, true);
-				element.addEventListener('webkitAnimationStart', resetOnInsert, true);
+				});
 			}
 			element.__resizeListeners__.push(fn);
 		}

@@ -150,7 +150,7 @@
                 }
             }
             var requestString = this.getFullRequestString(newParams);
-            return requestString;
+            return '/analytics/esri?esri_layer_url=' + encodeURIComponent(requestString);
         }
     });
 

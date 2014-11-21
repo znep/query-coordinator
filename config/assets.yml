@@ -678,6 +678,8 @@ javascripts:
   # Angular apps served from the Angular controller.
   # These packages are referenced via the :app parameter to serve_app.
   angular-app-dataCards:
+    - public/javascripts/util/typed-arrays.js
+    - public/javascripts/util/mapbox-vector-tiles.js
     - public/javascripts/angular/dataCards/app.js
     - public/javascripts/angular/dataCards/controllers.js
     - public/javascripts/angular/dataCards/**/*.js
@@ -703,8 +705,6 @@ javascripts:
   angular-jquery-extensions:
     - public/javascripts/util/jquery-extensions.js
     - public/javascripts/util/lodash-mixins.js
-    - public/javascripts/util/typed-arrays.js
-    - public/javascripts/util/mapbox-vector-tiles.js
 
 dump:
   javascripts:

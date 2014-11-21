@@ -1,4 +1,4 @@
-(function() {
+(function(thisObject) {
   'use strict';
 
   /****************************************************************************
@@ -7,7 +7,7 @@
    *
    */
 
-  var object = typeof exports != 'undefined' ? exports : this; // #8: web workers
+  //var thisObject = typeof exports != 'undefined' ? exports : this; // #8: web workers
   var chars = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789+/=';
 
   function InvalidCharacterError(message) {
@@ -18,8 +18,8 @@
 
   // encoder
   // [https://gist.github.com/999166] by [https://github.com/nignag]
-  object.btoa || (
-  object.btoa = function (input) {
+  thisObject.btoa || (
+  thisObject.btoa = function (input) {
     var str = String(input);
     for (
       // initialize result and counter
@@ -42,8 +42,8 @@
 
   // decoder
   // [https://gist.github.com/1020396] by [https://github.com/atk]
-  object.atob || (
-  object.atob = function (input) {
+  thisObject.atob || (
+  thisObject.atob = function (input) {
     var str = String(input).replace(/=+$/, '');
     if (str.length % 4 == 1) {
       throw new InvalidCharacterError("'atob' failed: The string to be decoded is not correctly encoded.");
@@ -2211,7 +2211,7 @@
     _eventHandlers: {},
 
     useBase64Fallback: function() {
-      return true;
+      return false;
     },
 
     style: function(feature) {
@@ -2747,4 +2747,4 @@
     return vtl;
   }
 
-})();
+})(this);

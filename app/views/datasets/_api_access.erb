@@ -1,5 +1,9 @@
 <div class="apiContentWrapper">
   <p><%= t('screens.ds.grid_sidebar.api.intro_html', view_foundry_url: @view.api_foundry_url ) %></p>
+  <ul class="finishButtons actionButtons clearfix">
+    <li><%= link_to(t('screens.ds.grid_sidebar.api.api_docs'), @view.api_foundry_url, :class => 'button') %></li>
+    <li><%= link_to(t('screens.ds.grid_sidebar.api.developer_portal'), 'http://dev.socrata.com', :class => 'button') %></li>
+  </ul>
   <h3><%= t('screens.ds.grid_sidebar.api.endpoint_title') %></h3>
   <p class="apiEndpointWrapper">
     <%= content_tag('input', nil, value: @view.resource_url, readonly: 'readonly') %>

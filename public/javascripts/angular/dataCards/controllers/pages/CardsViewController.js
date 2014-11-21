@@ -28,7 +28,9 @@
     // Download menu
     $scope.showDownloadButton = ServerConfig.get('enablePngDownloadUi');
     WindowState.closeDialogEventObservable.filter(function(e) {
-      return $scope.downloadOpened;
+      return $scope.downloadOpened &&
+        // Don't double-handle toggling downloadOpened
+        !$(e.target).closest('.download-menu').length;
     }).subscribe(function() {
       $scope.$apply(function(e) {
         $scope.downloadOpened = false;
@@ -38,15 +40,12 @@
     $scope.chooserMode = {show: false};
 
     $scope.onDownloadClick = function(event) {
-      // Don't double-handle closing the dialog
-      event.stopPropagation();
-
       // Clicking the 'Cancel' button
       if ($(event.target).hasClass('download-menu') &&
           $scope.chooserMode.show && !$scope.editMode) {
         $scope.chooserMode.show = false;
       } else {
-        // Otherwise, close the dialog
+        // Otherwise, toggle the dialog
         $scope.downloadOpened = !$scope.downloadOpened;
       }
     };

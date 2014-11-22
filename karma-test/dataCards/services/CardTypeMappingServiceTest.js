@@ -32,7 +32,7 @@
 
   var specialCase = { logical: 'location', physical: 'text', expected: 'choropleth' }
 
-  describe.only('Card Type Mapping Service', function() {
+  describe('Card Type Mapping Service', function() {
     var ServerConfig;
     var CardTypeMappingService;
     var $exceptionHandler;

@@ -1,9 +1,47 @@
 (function() {
   'use strict';
 
-  function CardTypeMappingService($exceptionHandler, $log) {
+  function CardTypeMappingService(ServerConfig, $exceptionHandler, $log) {
+window.ServerConfig = ServerConfig;
+    if (ServerConfig.get('oduxEnableFeatureMap')) {
 
-    var supportedCardTypes = ['column', 'choropleth', 'feature', 'search', 'timeline'];
+      var supportedCardTypes = ['column', 'choropleth', 'feature', 'search', 'timeline'];
+      var CUSTOMIZABLE_CARD_TYPES = {
+        choropleth: true,
+        feature: true
+      };
+      // A whitelist of card types available for export
+      var EXPORTABLE_CARD_TYPES = [
+        'choropleth',
+        'column',
+        'point-ish map',
+        'feature',
+        //'search',
+        'statBar',
+        //'table',
+        'timeline'
+      ];
+
+    } else {
+
+      var supportedCardTypes = ['column', 'choropleth', 'search', 'timeline'];
+      var CUSTOMIZABLE_CARD_TYPES = {
+        choropleth: true
+      };
+      // A whitelist of card types available for export
+      var EXPORTABLE_CARD_TYPES = [
+        'choropleth',
+        'column',
+        'point-ish map',
+        //'feature',
+        //'search',
+        'statBar',
+        //'table',
+        'timeline'
+      ];
+
+    }
+
     // A lookup for whether a particular card type is customizable
     var CUSTOMIZABLE_CARD_TYPES = {
       choropleth: true,
@@ -44,18 +82,6 @@
       ];
     }
 
-    // A whitelist of card types available for export
-    var EXPORTABLE_CARD_TYPES = [
-      'choropleth',
-      'column',
-      'point-ish map',
-      'feature',
-      //'search',
-      'statBar',
-      //'table',
-      'timeline'
-    ];
-
     /**
      * Determines whether or not the given card is able to be exported as a PNG.
      */
@@ -75,7 +101,7 @@
         if (physicalDatatype === 'number') { return 'statBar'; }
       }
       if (logicalDatatype === 'location') {
-        if (physicalDatatype === 'point') { return 'feature'; }
+        if (physicalDatatype === 'point') { return ServerConfig.get('oduxEnableFeatureMap') ? 'feature' : 'unsupported'; }
         if (physicalDatatype === 'number') { return 'choropleth'; }
         if (physicalDatatype === 'text') {
           var message = 'Encountered location column "{0}" with text physical type - this is deprecated (expected number type).'.format(column.name);
@@ -98,7 +124,7 @@
           return 'search';
         }
         if (physicalDatatype === 'point') {
-          return 'feature';
+          return ServerConfig.get('oduxEnableFeatureMap') ? 'feature' : 'unsupported';
         }
         if (physicalDatatype === 'fixed_timestamp') { return 'timeline'; }
         if (physicalDatatype === 'floating_timestamp') { return 'timeline'; }

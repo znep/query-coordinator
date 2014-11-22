@@ -10,11 +10,10 @@
     { logical: 'text', physical: 'number', expected: 'search', supported: true },
     { logical: 'name', physical: 'number', expected: 'search', supported: true },
     { logical: 'identifier', physical: 'number', expected: 'search', supported: true },
-// Reliably mocking out the ServerConfig service 
-//    { logical: 'text', physical: 'point', expected: 'feature', supported: true },
-//    { logical: 'name', physical: 'point', expected: 'feature', supported: true },
-//    { logical: 'identifier', physical: 'point', expected: 'feature', supported: true },
-//    { logical: 'location', physical: 'point', expected: 'feature', supported: true },
+    { logical: 'text', physical: 'point', expected: 'feature', supported: true },
+    { logical: 'name', physical: 'point', expected: 'feature', supported: true },
+    { logical: 'identifier', physical: 'point', expected: 'feature', supported: true },
+    { logical: 'location', physical: 'point', expected: 'feature', supported: true },
     { logical: 'text', physical: 'fixed_timestamp', expected: 'timeline', supported: true },
     { logical: 'name', physical: 'fixed_timestamp', expected: 'timeline', supported: true },
     { logical: 'identifier', physical: 'fixed_timestamp', expected: 'timeline', supported: true },
@@ -33,7 +32,7 @@
 
   var specialCase = { logical: 'location', physical: 'text', expected: 'choropleth' }
 
-  describe('Card Type Mapping Service', function() {
+  describe.only('Card Type Mapping Service', function() {
     var ServerConfig;
     var CardTypeMappingService;
     var $exceptionHandler;

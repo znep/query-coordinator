@@ -90,7 +90,7 @@
     }
 
     function _cardTypeForColumn(column) {
-      debugger
+
       column = column || {};
       var logicalDatatype = column.logicalDatatype;
       var physicalDatatype = column.physicalDatatype;

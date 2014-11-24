@@ -1,5 +1,5 @@
-<div class="tool-panel">
-  <span class="information">View by the </span>
+<div class="tool-panel" ng-hide="unitLabel.name == ''">
+  <span class="information">by the </span>
   <span
     class="aggregation-chooser-static-label"
     ng-hide="canAggregate">Number of {{unitLabel.pluralCapitalized}}
@@ -23,7 +23,7 @@
             data-aggregation-type="count"
             ng-class="{ active: (aggregationFunction.type == 'count') || countFunctionHover }"
             ng-click="setAggregationFunction('count')">
-              <span class="label">The number of</span>
+              <span class="label">Number of</span>
               <span class="sublabel">count {{unitLabel.plural}} per element</span>
           </a>
           <a

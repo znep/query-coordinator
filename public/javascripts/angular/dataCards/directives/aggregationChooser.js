@@ -12,13 +12,17 @@
   // pluralized and capitalized versions (saves having to use filters in the HTML)
   var pluralizeAndCapitalize = function(value) {
     var name = (value || '').toLowerCase();
-    var plural = name.pluralize();
+    var plural = name === '' ? '' : name.pluralize();
     return {
       name: name,
       plural: plural,
       capitalized: name.capitalizeEachWord(),
       pluralCapitalized: plural.capitalizeEachWord()
     }
+  };
+
+  var validColumnFilter = function(column) {
+    return column.physicalDatatype === 'number' && column.logicalDatatype === 'amount';
   };
 
   function AggregationChooser(AngularRxExtensions, DatasetDataService, FlyoutService, WindowState) {
@@ -107,10 +111,8 @@
 
         // Observable that goes true if we should show the dropdown selector, false otherwise
         var canAggregateObservable = columnsObservable.map(function(columns) {
-          var numberColumns = _(columns).filter(function(column) {
-            return column.physicalDatatype === 'number';
-          }).value();
-          return numberColumns.length > 0 &&numberColumns.length <= 10;
+          var numberColumns = _(columns).filter(validColumnFilter).value();
+          return numberColumns.length > 0 && numberColumns.length <= 10;
         });
 
         // Observable that maps all columns to just number columns and augments with
@@ -124,9 +126,7 @@
               reject(function(column) {
                 return column.isSystemColumn || column.name === '*';
               }).
-              filter(function(column) {
-                return column.physicalDatatype === 'number' && column.logicalDatatype === 'amount';
-              }).
+              filter(validColumnFilter).
               map(function(column) {
                 var enabled = aggregationFunction !== 'count';
                 return _.extend(pluralizeAndCapitalize(column.title), { id: column.name, enabled: enabled });
@@ -181,7 +181,7 @@
          */
         WindowState.closeDialogEventObservable.takeUntil($scope.eventToObservable('$destroy')).
           filter(function(e) {
-            return $scope.panelActive && $(e.target).closest(element).length === 0;
+            return e.type === 'keydown' || ($scope.panelActive && $(e.target).closest(element).length === 0);
           }).
           subscribe(function() {
             $scope.safeApply(function() {

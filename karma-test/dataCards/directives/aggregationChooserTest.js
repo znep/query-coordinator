@@ -238,4 +238,67 @@ describe('<aggregation-chooser/>', function() {
     expect(flyout.length).to.equal(1);
     expect(flyout.text().toLowerCase()).to.contain('this column cannot be used with a');
   });
+
+  it('should not be a dropdown if there are no number fields', function() {
+    var models = createModels({
+      columns: {
+        pointMap_column: {
+          name: 'pointMap_column',
+          logicalDatatype: 'location',
+          physicalDatatype: 'point'
+        },
+        choropleth_column: {
+          name: 'choropleth_column',
+          logicalDatatype: 'location',
+          physicalDatatype: 'number',
+          shapefile: 'fake-shap'
+        },
+        timeline_column: {
+          name: 'timeline_column',
+          logicalDatatype: 'time',
+          physicalDatatype: 'number'
+        },
+        search_column: {
+          name: 'search_column',
+          logicalDatatype: 'text',
+          physicalDatatype: 'text'
+        },
+        '*': {
+          logicalDatatype: '*'
+        }
+      }
+    });
+    var subjectUnderTest = createElement(
+      '<aggregation-chooser page="page"></aggregation-chooser>',
+      { page: models.page }
+    );
+    testHelpers.TestDom.append(subjectUnderTest);
+    expect(subjectUnderTest.find('.aggregation-chooser-static-label').is(':visible')).to.be.true;
+    expect(subjectUnderTest.find('.aggregation-chooser-trigger').is(':visible')).to.be.false;
+  });
+
+  it('should not be a dropdown if there are more than 10 number fields', function() {
+    var columns = {};
+    _.each(_.range(12), function(value) {
+      var column = {
+        name: 'column_{0}'.format(value),
+        title: 'test column title - {0}'.format(value),
+        description: 'test column description - {0}'.format(value),
+        logicalDatatype: 'amount',
+        physicalDatatype: 'number',
+        importance: 2
+      };
+      columns[column.name] = column;
+    });
+    var models = createModels({
+      columns: columns
+    });
+    var subjectUnderTest = createElement(
+      '<aggregation-chooser page="page"></aggregation-chooser>',
+      { page: models.page }
+    );
+    testHelpers.TestDom.append(subjectUnderTest);
+    expect(subjectUnderTest.find('.aggregation-chooser-static-label').is(':visible')).to.be.true;
+    expect(subjectUnderTest.find('.aggregation-chooser-trigger').is(':visible')).to.be.false;
+  });
 });

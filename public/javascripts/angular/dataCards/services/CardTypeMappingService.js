@@ -2,7 +2,7 @@
   'use strict';
 
   function CardTypeMappingService(ServerConfig, $exceptionHandler, $log) {
-debugger
+
     if (ServerConfig.get('oduxEnableFeatureMap')) {
 
       var supportedCardTypes = ['column', 'choropleth', 'feature', 'search', 'timeline'];

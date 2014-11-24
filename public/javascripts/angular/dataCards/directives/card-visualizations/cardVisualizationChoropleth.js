@@ -146,12 +146,17 @@
             '8fjz-g95m': 'tract',
             '2q28-58m6': 'tractce',
             '86dh-mgvd': 'geoid10',
-            '8thk-xhvj': 'name'
+            '8thk-xhvj': 'name',
+            'hak8-5bvb': 'coundist'
           };
 
           if (shapefile) {
             return shapefileFeatureNameMapping[shapefile];
           }
+
+          $log.error('Could not determine shapeFileHumanReadablePropertyName for shapeFile "{0}".'.format(shapefile));
+
+          return '';
 
         }
 

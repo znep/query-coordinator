@@ -153,6 +153,10 @@
             return shapefileFeatureNameMapping[shapefile];
           }
 
+          $log.error('Could not determine shapeFileHumanReadablePropertyName for shapeFile "{0}".'.format(shapefile));
+
+          return '';
+
         }
 
 

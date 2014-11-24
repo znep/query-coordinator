@@ -13,6 +13,7 @@
     { logical: 'text', physical: 'point', expected: 'feature', supported: true },
     { logical: 'name', physical: 'point', expected: 'feature', supported: true },
     { logical: 'identifier', physical: 'point', expected: 'feature', supported: true },
+    { logical: 'location', physical: 'point', expected: 'feature', supported: true },
     { logical: 'text', physical: 'fixed_timestamp', expected: 'timeline', supported: true },
     { logical: 'name', physical: 'fixed_timestamp', expected: 'timeline', supported: true },
     { logical: 'identifier', physical: 'fixed_timestamp', expected: 'timeline', supported: true },
@@ -23,7 +24,6 @@
     { logical: 'time', physical: 'number', expected: 'timeline', supported: true },
     { logical: 'time', physical: 'fixed_timestamp', expected: 'timeline', supported: true },
     { logical: 'time', physical: 'floating_timestamp', expected: 'timeline', supported: true },
-    { logical: 'location', physical: 'point', expected: 'feature', supported: true },
     { logical: 'location', physical: 'number', expected: 'choropleth', supported: true },
     { logical: 'location', physical: 'geo_entity', expected: 'point-ish map', supported: false },
     { logical: 'amount', physical: 'number', expected: 'statBar', supported: false },
@@ -32,8 +32,8 @@
 
   var specialCase = { logical: 'location', physical: 'text', expected: 'choropleth' }
 
-
   describe('Card Type Mapping Service', function() {
+    var ServerConfig;
     var CardTypeMappingService;
     var $exceptionHandler;
     beforeEach(module('dataCards'));
@@ -42,6 +42,10 @@
       $exceptionHandlerProvider.mode('log');
     }));
     beforeEach(inject(function($injector) {
+      ServerConfig = $injector.get('ServerConfig');
+      // We need to simulate the Feature Map feature flag being turned on
+      // in order to test card type mappings to feature maps.
+      ServerConfig.setup({ 'oduxEnableFeatureMap': true });
       CardTypeMappingService = $injector.get('CardTypeMappingService');
       $exceptionHandler = $injector.get('$exceptionHandler');
     }));

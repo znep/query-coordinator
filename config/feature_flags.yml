@@ -59,3 +59,6 @@ enable_png_download_ui:
 include_sr_in_esri:
   description: ESRI-only; stop using SRs in the export URL.
   defaultValue: false
+odux_enable_feature_map:
+  description: Enable feature maps.
+  defaultValue: false

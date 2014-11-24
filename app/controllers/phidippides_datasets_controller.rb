@@ -75,33 +75,9 @@ class PhidippidesDatasetsController < ActionController::Base
     render :nothing => true, :status => 403
   end
 
-  def current_user
-    @current_user ||= current_user_session ? current_user_session.user : nil
-  end
-
-  def basic_auth
-    authenticate_with_http_basic do |u, p|
-      user_session = UserSession.new('login' => u, 'password' => p)
-      user_session.save
-    end
-  end
-
-  def current_user_session
-    @current_user_session ||= UserSession.find || basic_auth
-  end
-
-  def current_user_session=(user_session)
-    @current_user_session = user_session
-  end
-
   private
 
   def dataset
     View.find(JSON.parse(params[:datasetMetadata])['id'])
   end
-
-  def hook_auth_controller
-    UserSession.controller = self
-  end
-
 end

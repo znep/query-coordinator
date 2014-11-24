@@ -73,7 +73,6 @@
         editMode: '=',
         chooserMode: '=',
         globalWhereClauseFragment: '=',
-        cardModels: '=',
         datasetColumns: '=',
         allowAddCard: '='
       },

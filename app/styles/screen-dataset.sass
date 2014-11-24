@@ -495,3 +495,47 @@ html, body
 
     &:last-child
       margin-bottom: 0
+
+.new-ux-link
+  font-size: 1.5em
+  position: fixed
+  bottom: 0
+  right: 1em
+  background-color: $new-ux-link-color
+  color: white
+  padding: 0.5em
+  letter-spacing: -1px
+  white-space: nowrap
+  overflow: hidden
+
+  >a
+    cursor: pointer
+    @include prefixer(transition, 'all 0.2s ease-out')
+    margin: 0 1.5em 0 0.5em
+    float: right
+    color: inherit
+    text-decoration: none
+
+  .icon-close
+    position: absolute
+    right: 0.5em
+    top: 0
+    font-size: 0.5em
+    line-height: 2em
+    height: 100%
+    padding: 1em
+    font-weight: 100
+    background-color: inherit
+
+    &:hover
+      font-weight: 900
+
+  &.collapsed
+    >a
+      width: 0 !important
+      margin: 0
+      color: rgba(255, 255, 255, 0)
+
+    .icon-close
+      display: none
+

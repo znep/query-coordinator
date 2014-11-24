@@ -1,4 +1,8 @@
 class Phidippides < SocrataHttp
+  # TODO: Should these actually be ignore-case?
+  # Note - these are aligned so as to exemplify the differences between the regexes
+  COLUMN_ID_REGEX =    /(:@)?([a-z][a-z_0-9\-]*)/i
+  SYSTEM_COLUMN_ID_REGEX = /:([a-z][a-z_0-9\-]*)/i
 
   # curl -k -v -X POST -H "X-Socrata-Host: localhost" -H "X-Socrata-Wink: iAmASocrataEmployee" -d @dataset_metadata.json http://localhost:2401/datasets
   # curl -k -v -X GET  -H "X-Socrata-Host: localhost" http://localhost:2401/datasets/q77b-s2zi

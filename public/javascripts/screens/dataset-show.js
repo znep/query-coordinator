@@ -785,4 +785,53 @@ $(function()
         $.analytics.trackEvent('dataset page (v4-chrome)',
             'page loaded', blist.dataset.id);
     });
+
+    (function() {
+        var newUxLink = $('<div class="new-ux-link icon-cards"><div class="icon-close"/>' +
+                          '<a>{0}</a></div>'.format($.t('screens.ds.new_ux_link')));
+        var anchor = newUxLink.find('a');
+
+        if (blist.dataset.newBackend) {
+          // Kratos shapefiles apparently are datasets, but have no dataset metadata, which we need
+          // to create a newux page. So - check that there's dataset metadata before showing the
+          // link.
+          $.get('/dataset_metadata/{0}.json'.format(blist.dataset.id), function(r) {
+            // If we get a 200 response, we cna show the link
+            anchor.attr('href', '/view/bootstrap/' + blist.dataset.id);
+            newUxLink.appendTo('body');
+          });
+        } else {
+          // This is an old BE 4x4. Check to see if it's been migrated, and if so, set and show
+          // the link.
+          $.get('/api/migrations/' + blist.dataset.id).done(function(data) {
+              if (data.nbeId) {
+                  anchor.attr('href', '/view/bootstrap/' + data.nbeId);
+                  newUxLink.appendTo('body');
+              }
+          });
+        }
+
+        // The collapse/expand functionality
+        newUxLink.on('click', function(e) {
+            var $self = $(this);
+            // If we're collapsed, expand ourselves.
+            if ($self.hasClass('collapsed')) {
+                $self.removeClass('collapsed');
+            }
+
+        }).on('click', '.icon-close', function(e) {
+            e.stopPropagation();
+            var textElem = $(e.currentTarget).siblings('a');
+            if (!textElem.data('widthSet')) {
+                // Set the expanded width so we can animate to it later
+                textElem.css('width', textElem.css('width'));
+                textElem.data('widthSet', true);
+            }
+            // Kick it to the next frame - otherwise, the width doesn't set in time for the
+            // start of the animation
+            _.defer(function() {
+                newUxLink.addClass('collapsed');
+            });
+        });
+    })();
 });

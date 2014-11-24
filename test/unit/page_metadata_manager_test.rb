@@ -15,7 +15,7 @@ class PageMetadataManagerTest < Test::Unit::TestCase
   end
 
   def test_create_succeeds
-    PageMetadataManager.any_instance.expects(:update_soda_fountain).times(1)
+    PageMetadataManager.any_instance.expects(:update_rollup_table).times(1)
     Phidippides.any_instance.stubs(
       create_page_metadata: { status: '200', body: page_metadata },
       fetch_dataset_metadata: { status: '200', body: dataset_metadata }
@@ -25,8 +25,35 @@ class PageMetadataManagerTest < Test::Unit::TestCase
     assert(result.fetch(:body).fetch(:pageId), 'Expected a non-nil pageId to be created')
   end
 
+  def test_create_doesnt_bork_when_no_rollup
+    PageMetadataManager.any_instance.expects(:update_rollup_table).times(0)
+    Phidippides.any_instance.stubs(
+      create_page_metadata: { status: '200', body: page_metadata },
+      fetch_dataset_metadata: { status: '200', body: dataset_metadata_without_rollup_columns }
+    )
+    result = manager.create(page_metadata.to_json)
+    assert(result.fetch(:status) == '200', result.inspect)
+    assert(result.fetch(:body).fetch(:pageId), 'Expected a non-nil pageId to be created')
+  end
+
+  def test_create_ensures_table_card
+    PageMetadataManager.any_instance.expects(:update_rollup_table).times(1)
+    Phidippides.any_instance.stubs(
+      fetch_dataset_metadata: { status: '200', body: dataset_metadata }
+    )
+    Phidippides.any_instance.expects(:create_page_metadata).times(1).then.with do |json, options|
+      json['cards'].find { |card| card['fieldName'] == '*' }
+    end.then.returns(
+      status: '200',
+      body: page_metadata
+    )
+
+    result = manager.create(page_metadata_without_tablecard.to_json)
+    assert(result.fetch(:status) == '200', result.inspect)
+  end
+
   def test_fetch_succeeds
-    PageMetadataManager.any_instance.expects(:update_soda_fountain).times(1)
+    PageMetadataManager.any_instance.expects(:update_rollup_table).times(1)
     Phidippides.any_instance.stubs(
       create_page_metadata: { status: '200', body: page_metadata },
       fetch_dataset_metadata: { status: '200', body: dataset_metadata },
@@ -39,7 +66,7 @@ class PageMetadataManagerTest < Test::Unit::TestCase
   end
 
   def test_update_succeeds
-    PageMetadataManager.any_instance.expects(:update_soda_fountain).times(2)
+    PageMetadataManager.any_instance.expects(:update_rollup_table).times(2)
     Phidippides.any_instance.stubs(
       create_page_metadata: { status: '200', body: page_metadata },
       fetch_dataset_metadata: { status: '200', body: dataset_metadata },
@@ -102,7 +129,7 @@ class PageMetadataManagerTest < Test::Unit::TestCase
   # Yes, this is a private method, but it warranted at least some unit testing
   def test_build_soql
     manager.stubs(phidippides: stub(fetch_dataset_metadata: { body: dataset_metadata }))
-    soql = manager.send(:build_soql, page_metadata)
+    soql = manager.send(:build_rollup_soql, page_metadata)
     assert_equal('select sex, race, status, unit, type, action, count(*) as value group by sex, race, status, unit, type, action', soql)
   end
 
@@ -230,6 +257,12 @@ class PageMetadataManagerTest < Test::Unit::TestCase
         ]
       }
     ').with_indifferent_access
+  end
+
+  def page_metadata_without_tablecard
+    page_metadata.dup.tap do |page_md|
+      page_md['cards'] = page_md['cards'].select { |card| card['fieldName'] != '*' }
+    end
   end
 
   def dataset_metadata
@@ -365,5 +398,14 @@ class PageMetadataManagerTest < Test::Unit::TestCase
         ]
       }
    ').with_indifferent_access
+  end
+
+  def dataset_metadata_without_rollup_columns
+    dataset_metadata.dup.tap do |dataset_md|
+      dataset_md['columns'] = dataset_md['columns'].reject do |column|
+        (column['logicalDatatype'] == 'category' ||
+         column['logicalDatatype'] == 'location')
+      end
+    end
   end
 end

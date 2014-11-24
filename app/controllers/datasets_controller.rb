@@ -88,6 +88,7 @@ class DatasetsController < ApplicationController
       if Rails.env.production? && request.path =~ /^\/dataset\/\w{4}-\w{4}/
         logger.info("Doing a dataset redirect from #{request.referrer}")
       end
+      flash.keep
       return redirect_to(href.call + '?' + request.query_string)
     end
 

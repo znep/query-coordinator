@@ -1,7 +1,7 @@
 (function() {
   'use strict';
 
-  function addCardDialog(Card, FlyoutService, CardTypeMappingService) {
+  function addCardDialog(Card, FlyoutService, CardTypeMapping) {
     return {
       restrict: 'E',
       scope: {
@@ -54,7 +54,7 @@
           }
         };
 
-        scope.isCustomizable = CardTypeMappingService.isCustomizable;
+        scope.isCustomizable = CardTypeMapping.modelIsCustomizable;
       }
     };
   }

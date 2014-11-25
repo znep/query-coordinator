@@ -31,7 +31,7 @@ describe('addCardDialog', function() {
   var $rootScope;
   var $controller;
   var AngularRxExtensions;
-  var CardTypeMappingService;
+  var CardTypeMapping;
   var $httpBackend;
 
   beforeEach(inject(function($injector) {
@@ -42,7 +42,7 @@ describe('addCardDialog', function() {
     $rootScope = $injector.get('$rootScope');
     $controller = $injector.get('$controller');
     AngularRxExtensions = $injector.get('AngularRxExtensions');
-    CardTypeMappingService = $injector.get('CardTypeMappingService');
+    CardTypeMapping = $injector.get('CardTypeMapping');
     $httpBackend = $injector.get('$httpBackend');
   }));
 
@@ -154,7 +154,7 @@ describe('addCardDialog', function() {
 
           sortedColumns[i].available = available;
 
-          if (CardTypeMappingService.cardTypeForColumnIsSupported(sortedColumns[i])) {
+          if (CardTypeMapping.visualizationSupportedForColumn(sortedColumns[i])) {
             if (available) {
               availableColumns.push(sortedColumns[i]);
             } else {

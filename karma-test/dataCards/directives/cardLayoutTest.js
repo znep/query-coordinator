@@ -142,7 +142,8 @@ describe('CardLayout directive', function() {
         physicalDatatype: 'text'
       },
       '*': {
-        logicalDatatype: '*'
+        logicalDatatype: '*',
+        physicalDatatype: '*'
       }
     });
 

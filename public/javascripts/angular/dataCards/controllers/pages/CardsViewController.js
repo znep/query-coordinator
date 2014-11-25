@@ -57,7 +57,7 @@
     ));
   }
 
-  function CardsViewController($scope, $location, $log, $window, $q, AngularRxExtensions, SortedTileLayout, Filter, PageDataService, UserSession, CardTypeMappingService, FlyoutService, page, Card, WindowState, ServerConfig) {
+  function CardsViewController($scope, $location, $log, $window, $q, AngularRxExtensions, SortedTileLayout, Filter, PageDataService, UserSession, CardTypeMapping, FlyoutService, page, Card, WindowState, ServerConfig) {
 
     AngularRxExtensions.install($scope);
 
@@ -233,7 +233,7 @@
 
           sortedColumns[i].available = available;
 
-          if (CardTypeMappingService.cardTypeForColumnIsSupported(sortedColumns[i])) {
+          if (CardTypeMapping.visualizationSupportedForColumn(sortedColumns[i])) {
             if (available) {
               availableColumns.push(sortedColumns[i]);
             } else {

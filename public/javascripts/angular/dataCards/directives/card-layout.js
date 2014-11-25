@@ -16,8 +16,8 @@
     3: 200
   };
 
-  function initCardSelection(scope, CardTypeMappingService, FlyoutService, DownloadService, $timeout) {
-    scope.isPngExportable = CardTypeMappingService.isExportable;
+  function initCardSelection(scope, CardTypeMapping, FlyoutService, DownloadService, $timeout) {
+    scope.isPngExportable = CardTypeMapping.modelIsExportable;
 
     function getDownloadUrl(model) {
       return './' + scope.page.id + '/' + model.fieldName + '.png';
@@ -62,7 +62,7 @@
     ));
   }
 
-  function cardLayout(Constants, AngularRxExtensions, WindowState, SortedTileLayout, FlyoutService, CardTypeMappingService, DownloadService, $timeout) {
+  function cardLayout(Constants, AngularRxExtensions, WindowState, SortedTileLayout, FlyoutService, CardTypeMapping, DownloadService, $timeout) {
 
     sortedTileLayout = new SortedTileLayout();
     return {
@@ -747,7 +747,7 @@
           });
         };
 
-        initCardSelection(scope, CardTypeMappingService, FlyoutService, DownloadService, $timeout);
+        initCardSelection(scope, CardTypeMapping, FlyoutService, DownloadService, $timeout);
 
         /**
          * Some modal dialogs.
@@ -762,7 +762,7 @@
           }
         };
 
-        scope.isCustomizable = CardTypeMappingService.isCustomizable;
+        scope.isCustomizable = CardTypeMapping.modelIsCustomizable;
         scope.customizeState = {};
         scope.customizeCard = function(cardModel) {
           if (scope.isCustomizable(cardModel)) {

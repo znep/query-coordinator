@@ -62,3 +62,6 @@ include_sr_in_esri:
 odux_enable_feature_map:
   description: Enable feature maps.
   defaultValue: false
+enable_api_foundry_pane:
+  description: Will allow the api_foundry pane to be displayed. If there is another reason for the api_foundry pane to be hidden, it will still be hidden.
+  defaultValue: true

@@ -8,7 +8,7 @@
 
         case 'category':
           return {
-            avaiableTypes: ['column', 'search'],
+            availableTypes: ['column', 'search'],
             defaultType: 'column'
           };
 
@@ -28,7 +28,7 @@
         case 'name':
         case 'identifier':
           return {
-            avaiableTypes: ['column', 'search'],
+            availableTypes: ['column', 'search'],
             defaultType: 'search'
           };
 
@@ -43,7 +43,7 @@
 
         case 'location':
           return {
-            avaiableTypes: ['feature'],
+            availableTypes: ['feature'],
             defaultType: 'feature'
           };
 
@@ -61,7 +61,7 @@
 
         case 'category':
           return {
-            avaiableTypes: ['column', 'search'],
+            availableTypes: ['column', 'search'],
             defaultType: 'column'
           };
 
@@ -79,7 +79,7 @@
         case 'name':
         case 'identifier':
           return {
-            avaiableTypes: ['column', 'search'],
+            availableTypes: ['column', 'search'],
             defaultType: 'search'
           };
 
@@ -103,7 +103,7 @@
 
         case 'category':
           return {
-            avaiableTypes: ['column'],
+            availableTypes: ['column'],
             defaultType: 'column'
           };
 
@@ -112,7 +112,7 @@
         case 'name':
         case 'identifier':
           return {
-            avaiableTypes: ['timeline'],
+            availableTypes: ['timeline'],
             defaultType: 'timeline'
           };
 
@@ -127,7 +127,7 @@
 
         case 'category':
           return {
-            avaiableTypes: ['column'],
+            availableTypes: ['column'],
             defaultType: 'column'
           };
 
@@ -142,13 +142,13 @@
 
         case 'category':
           return {
-            avaiableTypes: ['column'],
+            availableTypes: ['column'],
             defaultType: 'column'
           };
 
         case 'time':
           return {
-            avaiableTypes: ['column'],
+            availableTypes: ['timeline'],
             defaultType: 'timeline'
           };
 
@@ -156,7 +156,7 @@
         case 'name':
         case 'identifier':
           return {
-            avaiableTypes: ['column'],
+            availableTypes: ['search'],
             defaultType: 'search'
           };
 
@@ -305,7 +305,7 @@
       if (columnCardTypes === null) {
         return [];
       }
-      return columnCardTypes.availabletypes;
+      return columnCardTypes.availableTypes;
      }
 
     /**
@@ -341,7 +341,10 @@
      */
 
     function modelIsCustomizable(cardModel) {
-      var modelCardType = _getDefaultCardTypeForModel(cardModel);
+      var modelCardType = cardModel.getCurrentValue('cardType');
+      if (_.isUndefined(modelCardType)) {
+        modelCardType = _getDefaultCardTypeForModel(cardModel);
+      }
       return CARD_TYPES.hasOwnProperty(modelCardType) &&
              CARD_TYPES[modelCardType].customizable;
     }

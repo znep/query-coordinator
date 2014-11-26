@@ -41,6 +41,50 @@
 
   </soc-select>
 </div>
+<div class="add-card-options">
+  <ul>
+    <li ng-show="availableCardTypes.indexOf('timeline') > -1 && availableCardTypes.length > 1">
+      <button
+        class="add-card-type-option icon-line-chart"
+        ng-class="{ selected: addCardModel.getCurrentValue('cardType') === 'timeline' }"
+        ng-click="setCardType('timeline')"
+        data-visualization-name="Timeline Chart"></button>
+      <span>Timeline Chart</span>
+    </li>
+    <li ng-show="availableCardTypes.indexOf('search') > -1 && availableCardTypes.length > 1">
+      <button
+      class="add-card-type-option icon-search"
+      ng-class="{ selected: addCardModel.getCurrentValue('cardType') === 'search' }"
+      ng-click="setCardType('search')"
+      data-visualization-name="Search Card"></button>
+      <span>Search Card</span>
+    </li>
+    <li ng-show="availableCardTypes.indexOf('feature') > -1 && availableCardTypes.length > 1">
+      <button
+        class="add-card-type-option icon-map"
+        ng-class="{ selected: addCardModel.getCurrentValue('cardType') === 'feature' }"
+        ng-click="setCardType('feature')"
+        data-visualization-name="Feature Map"></button>
+      <span>Feature Map</span>
+    </li>
+    <li ng-show="availableCardTypes.indexOf('column') > -1 && availableCardTypes.length > 1">
+      <button
+        class="add-card-type-option icon-bar-chart"
+        ng-class="{ selected: addCardModel.getCurrentValue('cardType') === 'column' }"
+        ng-click="setCardType('column')"
+        data-visualization-name="Column Chart"></button>
+      <span>Column Chart</span>
+    </li>
+    <li ng-show="availableCardTypes.indexOf('choropleth') > -1 && availableCardTypes.length > 1">
+      <button
+        class="add-card-type-option icon-region"
+        ng-class="{ selected: addCardModel.getCurrentValue('cardType') === 'choropleth' }"
+        ng-click="setCardType('choropleth')"
+        data-visualization-name="Choropleth"></button>
+      <span>Choropleth</span>
+    </li>
+  </ul>
+</div>
 <div class="add-card-preview">
   <span ng-if="addCardModel === null">Choose a column from the dropdown above to add a new card</span>
   <div class="card-spot" ng-if="addCardModel !== null">

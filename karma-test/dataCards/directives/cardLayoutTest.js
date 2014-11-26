@@ -659,32 +659,21 @@ describe('CardLayout directive', function() {
         mockWindowStateService.mouseLeftButtonPressedSubject.onNext(true);
       });
 
-      it('should not show the "Add a card" modal dialog when a disabled "Add card here" button is clicked', function() {
+      it('should emit an "add-card-with-size" event when an enabled "Add card here" button is clicked', function(done) {
         var cl = createLayoutWithCards();
-
-        cl.outerScope.hasAllCards = true;
-        cl.outerScope.editMode = true;
-        cl.outerScope.$apply();
-
-        expect(cl.element.find('add-card-dialog:visible').length).to.equal(0);
-
-        testHelpers.fireEvent($('.add-card-button')[0], 'click');
-
-        expect(cl.element.find('add-card-dialog:visible').length).to.equal(0);
-      });
-
-      it('should show the "Add a card" modal dialog when an enabled "Add card here" button is clicked', function() {
-        var cl = createLayoutWithCards();
+        var hasBeenCalled = false;
 
         cl.outerScope.hasAllCards = false;
         cl.outerScope.editMode = true;
         cl.outerScope.$apply();
 
-        expect(cl.element.find('add-card-dialog:visible').length).to.equal(0);
+        cl.outerScope.$on('add-card-with-size', function(e, cardSize) {
+          hasBeenCalled = true;
+          expect(hasBeenCalled).to.equal(true);
+          done();
+        });
 
         testHelpers.fireEvent($('.add-card-button')[0], 'click');
-
-        expect(cl.element.find('add-card-dialog:visible').length).to.equal(1);
       });
 
     });
@@ -965,17 +954,25 @@ describe('CardLayout directive', function() {
       expect(!!cl.scope.expandedCard).to.be.true;
     });
 
-    it('opens a modal when clicking the customize button', function() {
+    it('emit a "customize-card-with-model" event when clicking the customize button', function(done) {
       var cl = createLayoutWithCards([{fieldName: '*'}, {fieldName: 'choropleth_column'}]);
+      var eventEmitted = false;
+
       cl.outerScope.editMode = true;
       cl.outerScope.$apply();
 
       var choropleth = cl.element.find('card-visualization-choropleth').closest('.card-spot');
       var customize = choropleth.find('.card-control[title^="Customize"]');
 
-      expect(cl.element.find('customize-card-dialog').length).to.equal(0);
+      expect(eventEmitted).to.equal(false);
+
+      cl.outerScope.$on('customize-card-with-model', function(e, cardModel) {
+        eventEmitted = true;
+        expect(eventEmitted).to.equal(true);
+        done();
+      });
+
       customize.click();
-      expect(cl.element.find('customize-card-dialog').length).to.equal(1);
     });
 
     describe('height adjustment', function() {

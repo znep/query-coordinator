@@ -741,35 +741,23 @@
 
         };
 
+        scope.addCard = function(cardSize) {
+          scope.$emit('add-card-with-size', cardSize);
+        };
+
         scope.deleteCard = function(cardModel) {
           scope.safeApply(function() {
             scope.page.set('cards', _.without(scope.cardModels, cardModel));
           });
         };
 
+        scope.isCustomizable = CardTypeMapping.modelIsCustomizable;
+        scope.customizeCard = function(cardModel) {
+          scope.$emit('customize-card-with-model', cardModel);
+        };
+
         initCardSelection(scope, CardTypeMapping, FlyoutService, DownloadService, $timeout);
 
-        /**
-         * Some modal dialogs.
-         */
-        // This is an object, so that we can pass it to child scopes, and they can control the
-        // visibility of the customize modal.
-        scope.addCardState = {};
-        scope.addCard = function(cardSize) {
-          if (scope.allowAddCard) {
-            scope.cardSize = cardSize;
-            scope.addCardState.show = true;
-          }
-        };
-
-        scope.isCustomizable = CardTypeMapping.modelIsCustomizable;
-        scope.customizeState = {};
-        scope.customizeCard = function(cardModel) {
-          if (scope.isCustomizable(cardModel)) {
-            scope.cardModel = cardModel;
-            scope.customizeState.show = true;
-          }
-        };
 
         /**
          * Flyouts.

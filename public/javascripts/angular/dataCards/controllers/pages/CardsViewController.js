@@ -254,9 +254,6 @@
       });
 
     $scope.bindObservable('datasetColumns', datasetColumns);
-    $scope.bindObservable('hasAllCards', datasetColumns.map(function(columns) {
-      return columns.available.length === 0;
-    }));
 
 
     /***************************
@@ -409,6 +406,34 @@
         pluck(1); // We're done with the buffer - only care about the current event.
     };
 
+
+    /**
+     * Some modal dialogs.
+     */
+
+    $scope.hasAllCards = false;
+
+    datasetColumns.subscribe(function(columns) {
+      $scope.hasAllCards = columns.available.length === 0;
+    });
+
+    // This is an object, so that we can pass it to child scopes, and they can control the
+    // visibility of the customize modal.
+    $scope.addCardState = {};
+    $scope.$on('add-card-with-size', function(e, cardSize) {
+      if (!$scope.hasAllCards) {
+        $scope.cardSize = cardSize;
+        $scope.addCardState.show = true;
+      }
+    });
+
+    $scope.customizeState = {};
+    $scope.$on('customize-card-with-model', function(e, cardModel) {
+      if (CardTypeMapping.modelIsCustomizable(cardModel)) {
+        $scope.cardModel = cardModel;
+        $scope.customizeState.show = true;
+      }
+    });
 
     //TODO consider extending register() to take a selector, too.
     //TODO The controller shouldn't know about this magical target inside save-button!

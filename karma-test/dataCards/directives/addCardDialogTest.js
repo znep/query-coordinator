@@ -51,7 +51,7 @@ describe('addCardDialog', function() {
   });
 
   var columns = {
-    spot: {
+    'spot': {
       name: 'spot',
       title: 'Spot where cool froods hang out.',
       description: '???',
@@ -60,14 +60,14 @@ describe('addCardDialog', function() {
       importance: 2,
       shapefile: 'mash-apes'
     },
-    bar: {
+    'bar': {
       name: 'bar',
       title: 'A bar where cool froods hang out.',
       description: '???',
       logicalDatatype: 'amount',
       physicalDatatype: 'number'
     },
-    ward: {
+    'ward': {
       name: 'ward',
       title: 'Ward where crime was committed.',
       description: 'Batman has bigger fish to fry sometimes, you know.',
@@ -75,7 +75,15 @@ describe('addCardDialog', function() {
       physicalDatatype: 'number',
       importance: 2,
       shapefile: 'mash-apes'
-    }};
+    },
+    'multipleVisualizations': {
+      name: 'multipleVisualizations',
+      title: 'A card for which multiple visualizations are possible.',
+      description: '???',
+      logicalDatatype: 'text',
+      physicalDatatype: 'text'
+    }
+  };
 
   function createDialog() {
 
@@ -232,7 +240,7 @@ describe('addCardDialog', function() {
 
     var options = dialog.element.find('option:enabled');
 
-    expect(options.length).to.equal(2);
+    expect(options.length).to.equal(3);
   });
 
   it('should disable columns that are represented by cards in the "Choose a column..." select control', function() {
@@ -250,7 +258,7 @@ describe('addCardDialog', function() {
 
     var options = dialog.element.find('option:enabled');
 
-    expect(options.length).to.equal(1);
+    expect(options.length).to.equal(2);
   });
 
   it('should disable the "Add card" button when no column in the "Choose a column..." select control is selected', function() {
@@ -285,6 +293,38 @@ describe('addCardDialog', function() {
     dialog.element.find('option[value=ward]').prop('selected', true).trigger('change');
 
     expect(dialog.element.find('card').length).to.equal(1);
+  });
+
+  it('should display multiple visualization choices when a column in the "Choose a column..." select control is selected which allows multiple visualizations', function() {
+    var dialog = createDialog();
+
+    expect(dialog.element.find('.add-card-type-option:visible').length).to.equal(0);
+
+    dialog.scope.addCardCardSize = 2;
+    $httpBackend.expectGET(/\/api\/id\/rook-king.json.*/).respond([]);
+    dialog.element.find('option[value=multipleVisualizations]').prop('selected', true).trigger('change');
+
+    expect(dialog.element.find('.add-card-type-option:visible').length).to.equal(2);
+    expect(dialog.element.find('.add-card-type-option.icon-bar-chart').length).to.equal(1);
+    expect(dialog.element.find('.add-card-type-option.icon-search').length).to.equal(1);
+  });
+
+  it('should change the visualization type of the preview card when a card type option button is clicked', function() {
+    var dialog = createDialog();
+
+    expect(dialog.element.find('.add-card-type-option:visible').length).to.equal(0);
+
+    dialog.scope.addCardCardSize = 2;
+    $httpBackend.expectGET(/\/api\/id\/rook-king.json.*/).respond([]);
+    dialog.element.find('option[value=multipleVisualizations]').prop('selected', true).trigger('change');
+
+    expect(dialog.element.find('.add-card-type-option:visible').length).to.equal(2);
+    expect(dialog.scope.addCardModel.getCurrentValue('cardType')).to.equal('search');
+
+    dialog.element.find('.icon-bar-chart').click();
+    dialog.scope.$digest();
+
+    expect(dialog.scope.addCardModel.getCurrentValue('cardType')).to.equal('column');
   });
 
   it('should add a card in the correct CardSize group when an enabled column in the "Choose a column..." select control is selected and the "Add card" button is clicked', function() {

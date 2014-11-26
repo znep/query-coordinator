@@ -1,5 +1,6 @@
 describe('CardsViewController', function() {
   var Page;
+  var Dataset;
   var Card;
   var testHelpers;
   var $q;
@@ -23,7 +24,6 @@ describe('CardsViewController', function() {
     }
   );
 
-
   var TEST_PAGE_ID = 'boom-poww';
 
   var mockPageDataService = {
@@ -46,7 +46,24 @@ describe('CardsViewController', function() {
         rowDisplayUnit: 'bar',
         ownerId: 'fdsa-asdf',
         updatedAt: '2004-05-20T17:42:55+00:00',
-        columns: []
+        columns: [
+          {
+            'title': 'nonCustomizableFieldName',
+            'name': 'nonCustomizableFieldName',
+            'physicalDatatype': 'text',
+            'logicalDatatype': 'text',
+            'description': 'non-customizable test field',
+            'importance': 1
+          },
+          {
+            'title': 'customizableFieldName',
+            'name': 'customizableFieldName',
+            'physicalDatatype': 'point',
+            'logicalDatatype': 'location',
+            'description': 'customizable test field',
+            'importance': 1
+          }
+        ]
       });
     },
     getPagesForDataset: function() {
@@ -79,6 +96,23 @@ describe('CardsViewController', function() {
   beforeEach(module('/angular_templates/dataCards/saveButton.html'));
   beforeEach(module('/angular_templates/dataCards/selectionLabel.html'));
   beforeEach(module('/angular_templates/dataCards/spinner.html'));
+  beforeEach(module('/angular_templates/dataCards/addCardDialog.html'));
+  beforeEach(module('/angular_templates/dataCards/modalDialog.html'));
+  beforeEach(module('/angular_templates/dataCards/customizeCardDialog.html'));
+  beforeEach(module('/angular_templates/dataCards/socSelect.html'));
+  beforeEach(module('/angular_templates/dataCards/card.html'));
+  beforeEach(module('/angular_templates/dataCards/cardVisualization.html'));
+  beforeEach(module('/angular_templates/dataCards/cardVisualizationChoropleth.html'));
+  beforeEach(module('/angular_templates/dataCards/cardVisualizationColumnChart.html'));
+  beforeEach(module('/angular_templates/dataCards/cardVisualizationFeatureMap.html'));
+  beforeEach(module('/angular_templates/dataCards/cardVisualizationSearch.html'));
+  beforeEach(module('/angular_templates/dataCards/cardVisualizationTable.html'));
+  beforeEach(module('/angular_templates/dataCards/cardVisualizationTimelineChart.html'));
+  beforeEach(module('/angular_templates/dataCards/featureMap.html'));
+  beforeEach(module('/angular_templates/dataCards/clearableInput.html'));
+  beforeEach(module('/angular_templates/dataCards/table.html'));
+  beforeEach(module('/angular_templates/dataCards/timelineChart.html'));
+  beforeEach(module('/angular_templates/dataCards/tableHeader.html'));
 
   var _$provide;
   beforeEach(function() {
@@ -91,10 +125,11 @@ describe('CardsViewController', function() {
       $provide.constant('ServerConfig', mockServerConfig);
     });
   });
-  beforeEach(inject(['$q', 'Card', 'Page', '$rootScope', '$controller', '$window', 'testHelpers',
-                    function(_$q, _Card, _Page, _$rootScope, _$controller, _$window, _testHelpers) {
+  beforeEach(inject(['$q', 'Card', 'Page', 'Dataset', '$rootScope', '$controller', '$window', 'testHelpers',
+                    function(_$q, _Card, _Page, _Dataset, _$rootScope, _$controller, _$window, _testHelpers) {
     Card = _Card;
     Page = _Page;
+    Dataset = _Dataset;
     $q = _$q;
     $rootScope = _$rootScope;
     $controller = _$controller;
@@ -500,6 +535,138 @@ describe('CardsViewController', function() {
     });
   });
 
+  describe('add card modal dialog', function() {
+
+    beforeEach(inject(['testHelpers', function(_testHelpers) {
+      testHelpers = _testHelpers;
+      controllerHarness = makeController();
+      $scope = controllerHarness.$scope;
+    }]));
+
+    afterEach(function() {
+      testHelpers.TestDom.clear();
+    });
+
+    it('should become visible when an "add-card-with-size" event is received', function(done) {
+
+      testHelpers.TestDom.compileAndAppend('<modal-dialog ng-if="addCardState.show" dialog-state="addCardState">{{addCardState.show}}</modal-dialog>', $scope);
+
+      expect($(document).find('modal-dialog').length).to.equal(0);
+
+      $scope.$on('add-card-with-size', function(e, cardSize) {
+
+        $scope.$apply();
+
+        expect($(document).find('modal-dialog').length).to.equal(1);
+        done();
+      });
+
+      $rootScope.$broadcast('add-card-with-size', 1);
+
+    });
+
+  });
+
+  describe('customize card modal dialog', function() {
+
+    beforeEach(inject(['testHelpers', function(_testHelpers) {
+      testHelpers = _testHelpers;
+      controllerHarness = makeController();
+      $scope = controllerHarness.$scope;
+    }]));
+
+    afterEach(function() {
+      testHelpers.TestDom.clear();
+    });
+
+    it('should not become visible when a "customize-card-with-model" event is received which includes a model of a non-customizable card type', function(done) {
+
+      var serializedCard;
+      var cardModel;
+
+      testHelpers.TestDom.compileAndAppend('<modal-dialog class="second" ng-if="customizeState.show" dialog-state="customizeState">{{customizeState.show}}</modal-dialog>', $scope);
+
+      controllerHarness.baseInfoPromise.resolve({
+        datasetId: 'fake-fbfr',
+        name: 'some name'
+      });
+      controllerHarness.$scope.$digest();
+
+      expect($(document).find('modal-dialog').length).to.equal(0);
+
+      $scope.$on('customize-card-with-model', function(e, model) {
+
+        $scope.$apply();
+
+        // NOTE: In order for this to work the physical and logical
+        // datatypes of the column referenced by the fieldName of the
+        // newly-created card must map to a card type which is actually
+        // customizable. In this case we want to ensure that we do
+        // not actually display the dialog for a non-customizable
+        // card type mapping.
+        expect($(document).find('modal-dialog').length).to.equal(0);
+        done();
+      });
+
+      serializedCard = {
+        'cardCustomStyle': {},
+        'cardSize': 1,
+        'displayMode': 'visualization',
+        'expanded': false,
+        'expandedCustomStyle': {},
+        'fieldName': 'nonCustomizableFieldName'
+      };
+
+      cardModel = Card.deserialize($scope.page, serializedCard);
+
+      $rootScope.$broadcast('customize-card-with-model', cardModel);
+
+    });
+
+    it('should become visible when a "customize-card-with-model" event is received which includes a model of a customizable card type', function(done) {
+
+      var serializedCard;
+      var cardModel;
+
+      testHelpers.TestDom.compileAndAppend('<modal-dialog class="second" ng-if="customizeState.show" dialog-state="customizeState">{{customizeState.show}}</modal-dialog>', $scope);
+
+      controllerHarness.baseInfoPromise.resolve({
+        datasetId: 'fake-fbfr',
+        name: 'some name'
+      });
+      controllerHarness.$scope.$digest();
+
+      expect($(document).find('modal-dialog').length).to.equal(0);
+
+      $scope.$on('customize-card-with-model', function(e, model) {
+
+        $scope.$apply();
+
+        // NOTE: In order for this to work the physical and logical
+        // datatypes of the column referenced by the fieldName of the
+        // newly-created card must map to a card type which is actually
+        // customizable.
+        expect($(document).find('modal-dialog').length).to.equal(1);
+        done();
+      });
+
+      serializedCard = {
+        'cardCustomStyle': {},
+        'cardSize': 1,
+        'displayMode': 'visualization',
+        'expanded': false,
+        'expandedCustomStyle': {},
+        'fieldName': 'customizableFieldName'
+      };
+
+      cardModel = Card.deserialize($scope.page, serializedCard);
+
+      $rootScope.$broadcast('customize-card-with-model', cardModel);
+
+    });
+
+  });
+
   describe('customize', function() {
     var controllerHarness;
     var testHelpers;
@@ -581,6 +748,7 @@ describe('CardsViewController', function() {
 
     it('should provide a (correct) csv download link', function() {
       var controllerHarness = makeController();
+
       expect(controllerHarness.$scope.datasetCSVDownloadURL).to.equal('#');
 
       controllerHarness.baseInfoPromise.resolve({

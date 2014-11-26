@@ -1,6 +1,5 @@
 require_relative '../test_helper'
 
-
 class PolaroidTest < Test::Unit::TestCase
 
   def polaroid
@@ -25,6 +24,30 @@ class PolaroidTest < Test::Unit::TestCase
 
   def test_service_end_point
     assert_equal("http://#{polaroid.address}:#{polaroid.port}", polaroid.end_point)
+  end
+
+  def test_end_point_does_not_include_port_when_absent
+    Polaroid.any_instance.stubs(:connection_details => {
+      'address' => 'localhost',
+      'port' => nil
+    })
+    assert_equal("http://#{polaroid.address}", polaroid.end_point)
+  end
+
+  def test_end_point_does_include_port_when_present
+    Polaroid.any_instance.stubs(:connection_details => {
+      'address' => 'localhost',
+      'port' => 1337
+    })
+    assert_equal("http://#{polaroid.address}:#{polaroid.port}", polaroid.end_point)
+  end
+
+  def test_end_point_raises_on_blank_address
+    Polaroid.any_instance.stubs(:connection_details => {
+      'address' => nil,
+      'port' => nil
+    })
+    assert_raises(SocrataHttp::ConfigurationError) { polaroid.end_point }
   end
 
   def test_fetch_image_success

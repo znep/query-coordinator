@@ -1,6 +1,7 @@
 class SocrataHttp
 
   class ConnectionError < RuntimeError; end
+  class ConfigurationError < RuntimeError; end
 
   def issue_request(options)
     raise ArgumentError.new('Missing option :verb') unless options[:verb].present?
@@ -65,9 +66,8 @@ class SocrataHttp
   end
 
   def end_point
-    options = {
-        host: address
-    }
+    raise ConfigurationError.new("Invalid endpoint for #{self.class} - address cannot be nil") unless address.present?
+    options = { host: address }
     options[:port] = port.to_i unless port.nil?
     URI::HTTP.build(options).to_s
   end

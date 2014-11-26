@@ -3,7 +3,10 @@ namespace :manifest do
     desc "Create a changelog between the last two #{environment} releases"
     task environment.to_sym do
       tags = `git tag -l #{environment}/*`.split.sort
-      system "git log #{tags[-2]}..#{tags[-1]} --no-merges --date-order --reverse --shortstat --abbrev-commit"
+      from_tag = ENV['FROM_TAG'] || tags[-2]
+      to_tag = ENV['TO_TAG'] || tags[-1]
+      puts("= FRONTEND = (from #{from_tag} to #{to_tag})")
+      system "git log #{from_tag}..#{to_tag} --no-merges --date-order --reverse --shortstat --abbrev-commit"
     end
   end
 end

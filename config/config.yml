@@ -1,3 +1,24 @@
+###############################################################################
+# NOTE! All configuration information in this file are overwritten by chef when
+# the app is deployed. If you wish to ensure that new configuration information
+# is deployed along with this app, then make sure it is added to appropriate
+# JSON file in the environments folder of the metachef repo.
+#
+# Attributes that you wish to add to the "default" section below should be
+# added under the "default_attributes" hash key in the appropriate JSON file
+# mentioned above.
+#
+# At the time of this writing, the following metachef environment files are
+# germane to this application and where it is deployed:
+#
+#  azure-eastus-production.json
+#  azure-westeurope-production.json
+#  production.json
+#  production-ord1.json
+#  azure-staging.json
+#  azure-rc.json
+#
+
 default: &default
   coreservice_uri: http://localhost:8080
   activemq_hosts: stomp://localhost:61613

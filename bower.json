@@ -15,7 +15,7 @@
     "angular-mocks": "~1.2.25",
     "rxjs": "~2.2.20",
     "flexgrid": "ptb/flexgrid",
-    "javascript-detect-element-resize": "progman32/javascript-detect-element-resize#master",
+    "javascript-detect-element-resize": "sdecima/javascript-detect-element-resize#~0.5.3",
     "simple-statistics": "~0.8.1",
     "leaflet": "~0.7.3",
     "chroma-js": "~0.5.6",

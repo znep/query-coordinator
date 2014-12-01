@@ -258,7 +258,11 @@ Frontend::Application.routes do
       end
     end
 
-    scope :controller => 'polaroid', :constraints => { :page_id => UID_REGEXP, :field_id => /(:@)?([a-z][a-z_0-9\-]*)/ } do
+    scope :controller => 'new_ux_bootstrap', :constraints => { :id => UID_REGEXP } do
+      get '/view/bootstrap/:id', :action => 'bootstrap'
+    end
+
+    scope :controller => 'polaroid', :constraints => { :page_id => UID_REGEXP, :field_id => Phidippides::COLUMN_ID_REGEX } do
       match '/view/:page_id/:field_id.png', :via => :get, :action => 'proxy_request'
     end
 

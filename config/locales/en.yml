@@ -2109,6 +2109,8 @@ en:
             title: Views
         visualize:
           choose_type: Visualization Type
+      new_ux_error: A preview is not available for this dataset.
+      new_ux_link: Try this dataset in our new data exploration tool (beta)
       save_dialog:
         descriptions:
           leaving: You have unsaved data that will be lost if you leave this page. Please choose whether or not you wish to save this view before you leave; or choose Cancel to return to the page.

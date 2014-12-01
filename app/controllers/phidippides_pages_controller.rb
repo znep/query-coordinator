@@ -45,7 +45,7 @@ class PhidippidesPagesController < ActionController::Base
             :request_id => request_id,
             :cookies => forwardable_session_cookies
           )
-        render :json => result[:body], :status => result[:status]
+          render :json => result[:body], :status => result[:status]
         rescue Phidippides::ConnectionError
           render :json => { body: 'Phidippides connection error' }, status: 500
         rescue JSON::ParserError => error
@@ -80,33 +80,9 @@ class PhidippidesPagesController < ActionController::Base
     render :nothing => true, :status => 403
   end
 
-  def current_user
-    @current_user ||= current_user_session ? current_user_session.user : nil
-  end
-
-  def basic_auth
-    authenticate_with_http_basic do |username, password|
-      user_session = UserSession.new('login' => username, 'password' => password)
-      user_session.save
-    end
-  end
-
-  def current_user_session
-    @current_user_session ||= UserSession.find || basic_auth
-  end
-
-  def current_user_session=(user_session)
-    @current_user_session = user_session
-  end
-
   private
 
   def dataset
     View.find(JSON.parse(params[:pageMetadata])['datasetId'])
   end
-
-  def hook_auth_controller
-    UserSession.controller = self
-  end
-
 end

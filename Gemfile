@@ -41,5 +41,8 @@ end
 group :development, :test do
   gem 'jazz_hands' unless ENV['RM_INFO']
   gem 'thin'
+  gem 'rb-readline'
+  gem 'pry'
+  gem 'pry-nav'
 end
 

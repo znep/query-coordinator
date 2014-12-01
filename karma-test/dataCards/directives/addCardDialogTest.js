@@ -47,41 +47,41 @@ describe('addCardDialog', function() {
   }));
 
   afterEach(function() {
-    $('#test-root').remove();
+    testHelpers.TestDom.clear();
   });
 
   var columns = {
     'spot': {
-      name: 'spot',
-      title: 'Spot where cool froods hang out.',
-      description: '???',
-      logicalDatatype: 'location',
-      physicalDatatype: 'number',
-      importance: 2,
-      shapefile: 'mash-apes'
+      'name': 'spot',
+      'title': 'Spot where cool froods hang out.',
+      'description': '???',
+      'logicalDatatype': 'location',
+      'physicalDatatype': 'number',
+      'importance': 2,
+      'shapefile': 'mash-apes'
     },
     'bar': {
-      name: 'bar',
-      title: 'A bar where cool froods hang out.',
-      description: '???',
-      logicalDatatype: 'amount',
-      physicalDatatype: 'number'
+      'name': 'bar',
+      'title': 'A bar where cool froods hang out.',
+      'description': '???',
+      'logicalDatatype': 'amount',
+      'physicalDatatype': 'number'
     },
     'ward': {
-      name: 'ward',
-      title: 'Ward where crime was committed.',
-      description: 'Batman has bigger fish to fry sometimes, you know.',
-      logicalDatatype: 'location',
-      physicalDatatype: 'number',
-      importance: 2,
-      shapefile: 'mash-apes'
+      'name': 'ward',
+      'title': 'Ward where crime was committed.',
+      'description': 'Batman has bigger fish to fry sometimes, you know.',
+      'logicalDatatype': 'location',
+      'physicalDatatype': 'number',
+      'importance': 2,
+      'shapefile': 'mash-apes'
     },
     'multipleVisualizations': {
-      name: 'multipleVisualizations',
-      title: 'A card for which multiple visualizations are possible.',
-      description: '???',
-      logicalDatatype: 'text',
-      physicalDatatype: 'text'
+      'name': 'multipleVisualizations',
+      'title': 'A card for which multiple visualizations are possible.',
+      'description': '???',
+      'logicalDatatype': 'text',
+      'physicalDatatype': 'text'
     }
   };
 
@@ -192,14 +192,16 @@ describe('addCardDialog', function() {
     outerScope.customizeCard = function(card) {
       outerScope._test_cardToCustomize = card;
     };
-    outerScope.dialogState = {show: true};
+    outerScope.dialogState = {
+      'cardSize': 1,
+      'show': true
+    };
 
     var html =
       '<div ng-if="dialogState.show"> ' +
         '<add-card-dialog ' +
           'style="display:block" ' +
           'card-models="cardModels" ' +
-          'card-size="1" ' +
           'on-customize-card="customizeCard" ' +
           'dataset-columns="datasetColumns" ' +
           'dialog-state="dialogState" ' +
@@ -238,9 +240,9 @@ describe('addCardDialog', function() {
   it('should show all columns as options in the "Choose a column..." select control', function() {
     var dialog = createDialog();
 
-    var options = dialog.element.find('option:enabled');
+    var selectableColumnOptions = dialog.element.find('option:enabled');
 
-    expect(options.length).to.equal(3);
+    expect(selectableColumnOptions.length).to.equal(3);
   });
 
   it('should disable columns that are represented by cards in the "Choose a column..." select control', function() {
@@ -256,9 +258,9 @@ describe('addCardDialog', function() {
     };
     dialog.scope.page.set('cards', [Card.deserialize(dialog.scope.page, serializedCard)]);
 
-    var options = dialog.element.find('option:enabled');
+    var selectableColumnOptions = dialog.element.find('option:enabled');
 
-    expect(options.length).to.equal(2);
+    expect(selectableColumnOptions.length).to.equal(2);
   });
 
   it('should disable the "Add card" button when no column in the "Choose a column..." select control is selected', function() {
@@ -272,7 +274,7 @@ describe('addCardDialog', function() {
   it('should enable the "Add card" button when an enabled column in the "Choose a column..." select control is selected', function() {
     var dialog = createDialog();
 
-    dialog.scope.addCardCardSize = 1;
+    dialog.scope.dialogState.cardSize = 1;
     $httpBackend.expectGET(/\/api\/id\/rook-king.json.*/).respond([]);
     $httpBackend.expectGET(/\/resource\/mash-apes.geojson.*/).respond([]);
     dialog.element.find('option[value=spot]').prop('selected', true).trigger('change');
@@ -287,7 +289,7 @@ describe('addCardDialog', function() {
 
     expect(dialog.element.find('card').length).to.equal(0);
 
-    dialog.scope.addCardCardSize = 2;
+    dialog.scope.dialogState.cardSize = 2;
     $httpBackend.expectGET(/\/api\/id\/rook-king.json.*/).respond([]);
     $httpBackend.expectGET(/\/resource\/mash-apes.geojson.*/).respond([]);
     dialog.element.find('option[value=ward]').prop('selected', true).trigger('change');
@@ -300,7 +302,7 @@ describe('addCardDialog', function() {
 
     expect(dialog.element.find('.add-card-type-option:visible').length).to.equal(0);
 
-    dialog.scope.addCardCardSize = 2;
+    dialog.scope.dialogState.cardSize = 2;
     $httpBackend.expectGET(/\/api\/id\/rook-king.json.*/).respond([]);
     dialog.element.find('option[value=multipleVisualizations]').prop('selected', true).trigger('change');
 
@@ -314,7 +316,7 @@ describe('addCardDialog', function() {
 
     expect(dialog.element.find('.add-card-type-option:visible').length).to.equal(0);
 
-    dialog.scope.addCardCardSize = 2;
+    dialog.scope.dialogState.cardSize = 2;
     $httpBackend.expectGET(/\/api\/id\/rook-king.json.*/).respond([]);
     dialog.element.find('option[value=multipleVisualizations]').prop('selected', true).trigger('change');
 
@@ -340,7 +342,7 @@ describe('addCardDialog', function() {
     };
     dialog.scope.page.set('cards', [Card.deserialize(dialog.scope.page, serializedCard)]);
 
-    dialog.scope.addCardCardSize = 2;
+    dialog.scope.dialogState.cardSize = 2;
     $httpBackend.expectGET(/\/api\/id\/rook-king.json.*/).respond([]);
     $httpBackend.expectGET(/\/resource\/mash-apes.geojson.*/).respond([]);
     dialog.element.find('option[value=ward]').prop('selected', true).trigger('change');

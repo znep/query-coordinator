@@ -42,8 +42,8 @@
   </soc-select>
 </div>
 <div class="add-card-options">
-  <ul>
-    <li ng-show="availableCardTypes.indexOf('timeline') > -1 && availableCardTypes.length > 1">
+  <ul class="cf" ng-show="availableCardTypes.length > 1">
+    <li ng-show="availableCardTypes.indexOf('timeline') > -1">
       <button
         class="add-card-type-option icon-line-chart"
         ng-class="{ selected: addCardModel.getCurrentValue('cardType') === 'timeline' }"
@@ -51,7 +51,7 @@
         data-visualization-name="Timeline Chart"></button>
       <span>Timeline Chart</span>
     </li>
-    <li ng-show="availableCardTypes.indexOf('search') > -1 && availableCardTypes.length > 1">
+    <li ng-show="availableCardTypes.indexOf('search') > -1">
       <button
       class="add-card-type-option icon-search"
       ng-class="{ selected: addCardModel.getCurrentValue('cardType') === 'search' }"
@@ -59,7 +59,7 @@
       data-visualization-name="Search Card"></button>
       <span>Search Card</span>
     </li>
-    <li ng-show="availableCardTypes.indexOf('feature') > -1 && availableCardTypes.length > 1">
+    <li ng-show="availableCardTypes.indexOf('feature') > -1">
       <button
         class="add-card-type-option icon-map"
         ng-class="{ selected: addCardModel.getCurrentValue('cardType') === 'feature' }"
@@ -67,7 +67,7 @@
         data-visualization-name="Feature Map"></button>
       <span>Feature Map</span>
     </li>
-    <li ng-show="availableCardTypes.indexOf('column') > -1 && availableCardTypes.length > 1">
+    <li ng-show="availableCardTypes.indexOf('column') > -1">
       <button
         class="add-card-type-option icon-bar-chart"
         ng-class="{ selected: addCardModel.getCurrentValue('cardType') === 'column' }"
@@ -75,7 +75,7 @@
         data-visualization-name="Column Chart"></button>
       <span>Column Chart</span>
     </li>
-    <li ng-show="availableCardTypes.indexOf('choropleth') > -1 && availableCardTypes.length > 1">
+    <li ng-show="availableCardTypes.indexOf('choropleth') > -1">
       <button
         class="add-card-type-option icon-region"
         ng-class="{ selected: addCardModel.getCurrentValue('cardType') === 'choropleth' }"

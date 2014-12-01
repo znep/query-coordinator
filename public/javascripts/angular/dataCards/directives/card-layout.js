@@ -741,7 +741,7 @@
 
         };
 
-        scope.addCard = function(cardSize) {
+        scope.addCardWithSize = function(cardSize) {
           scope.$emit('add-card-with-size', cardSize);
         };
 

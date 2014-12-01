@@ -68,27 +68,23 @@
       restrict: 'E',
       scope: {
         cardModel: '=',
-        dialogState: '=?',
+        dialogState: '=',
         page: '='
       },
       templateUrl: '/angular_templates/dataCards/customizeCardDialog.html',
       link: function($scope, element, attrs) {
         AngularRxExtensions.install($scope);
 
-        // This controls whether this dialog is shown or not
-        if (!$scope.dialogState) {
-          $scope.dialogState = {show: true};
-        }
-
         // Clone the card, so we can cancel without having made any changes
-        $scope.customizedCard = $scope.cardModel.clone();
+        $scope.customizedCard = $scope.dialogState.cardModel.clone();
+
         setupBaseLayerSelect($scope.customizedCard, $scope, element, Constants);
 
         /**
          * Save the model by updating the model passed in, with our cloned copy.
          */
         $scope.updateCard = function() {
-          $scope.cardModel.setFrom($scope.customizedCard);
+          $scope.dialogState.cardModel.setFrom($scope.customizedCard);
 
           // Now close the dialog
           $scope.dialogState.show = false;

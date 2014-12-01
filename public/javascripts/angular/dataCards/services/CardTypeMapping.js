@@ -3,67 +3,88 @@
 
   function CardTypeMapping(ServerConfig, $exceptionHandler, $log) {
 
-    function _getCardTypeForNumber(logicalDatatype) {
+    function getCardTypeForNumber(logicalDatatype) {
+
+      var mapping = null;
+
       switch (logicalDatatype) {
 
         case 'category':
-          return {
-            availableTypes: ['column', 'search'],
-            defaultType: 'column'
+          mapping = {
+            'availableTypes': ['column', 'search'],
+            'defaultType': 'column'
           };
+          break;
 
         case 'location':
-          return {
-            availableTypes: ['choropleth'],
-            defaultType: 'choropleth'
+          mapping = {
+            'availableTypes': ['choropleth'],
+            'defaultType': 'choropleth'
           };
+          break;
 
         case 'time':
-          return {
-            availableTypes: ['timeline'],
-            defaultType: 'timeline'
+          mapping = {
+            'availableTypes': ['timeline'],
+            'defaultType': 'timeline'
           };
+          break;
 
         case 'text':
         case 'name':
         case 'identifier':
-          return {
-            availableTypes: ['column', 'search'],
-            defaultType: 'search'
+          mapping = {
+            'availableTypes': ['column', 'search'],
+            'defaultType': 'search'
           };
+          break;
 
         default:
-          return null;
+          break;
 
       }
+
+      return mapping;
+
     }
 
-    function _getCardTypeForPoint(logicalDatatype) {
+    function getCardTypeForPoint(logicalDatatype) {
+
+      var mapping = null;
+
       switch (logicalDatatype) {
 
         case 'location':
-          return {
-            availableTypes: ['feature'],
-            defaultType: 'feature'
+          mapping = {
+            'availableTypes': ['feature'],
+            'defaultType': 'feature'
           };
+          break;
 
         default:
-          return null;
+          break;
 
       }
+
+      return mapping;
+
     }
 
 
-    function _getCardTypeForText(logicalDatatype) {
+    function getCardTypeForText(logicalDatatype) {
+
+      var mapping = null;
+
       // It is possible for this to also map to choropleth cards with a 'location' logical data
       // type but that has been removed. We should treat anything that breaks as a result as bad data.
       switch (logicalDatatype) {
 
         case 'category':
-          return {
-            availableTypes: ['column', 'search'],
-            defaultType: 'column'
+          mapping = {
+            'availableTypes': ['column', 'search'],
+            'defaultType': 'column'
           };
+          break;
 
         // DEPRECATED
         case 'location':
@@ -72,101 +93,134 @@
           var message = 'Encountered column with physicalDatatype "text" ' +
                         'and logicalDatatype "location".';
           $exceptionHandler(new Error(message));
-          return null;
           break;
 
         case 'text':
         case 'name':
         case 'identifier':
-          return {
-            availableTypes: ['column', 'search'],
-            defaultType: 'search'
+          mapping = {
+            'availableTypes': ['column', 'search'],
+            'defaultType': 'search'
           };
+          break;
 
         default:
-          return null;
+          break;
 
       }
+
+      return mapping;
+
     }
 
-    function _getCardTypeForGeoEntity(logicalDatatype) {
+    function getCardTypeForGeoEntity(logicalDatatype) {
+
+      var mapping = null;
+
       switch (logicalDatatype) {
 
         default:
-          return null;
+          break;
 
       }
+
+      return mapping;
+
     }
 
-    function _getCardTypeForTimestamp(logicalDatatype) {
+    function getCardTypeForTimestamp(logicalDatatype) {
+
+      var mapping = null;
+
       switch (logicalDatatype) {
 
         case 'category':
-          return {
-            availableTypes: ['column'],
-            defaultType: 'column'
+          mapping = {
+            'availableTypes': ['column'],
+            'defaultType': 'column'
           };
+          break;
 
         case 'time':
         case 'text':
         case 'name':
         case 'identifier':
-          return {
-            availableTypes: ['timeline'],
-            defaultType: 'timeline'
+          mapping = {
+            'availableTypes': ['timeline'],
+            'defaultType': 'timeline'
           };
+          break;
 
         default:
-          return null;
+          break;
 
       }
+
+      return mapping;
+
     }
 
-    function _getCardTypeForBoolean(logicalDatatype) {
+    function getCardTypeForBoolean(logicalDatatype) {
+
+      var mapping = null;
+
       switch (logicalDatatype) {
 
         case 'category':
-          return {
-            availableTypes: ['column'],
-            defaultType: 'column'
+          mapping = {
+            'availableTypes': ['column'],
+            'defaultType': 'column'
           };
+          break;
 
         default:
-          return null;
+          break;
 
       }
+
+      return mapping;
+
     }
 
-    function _getCardTypeForMoney(logicalDatatype) {
+    function getCardTypeForMoney(logicalDatatype) {
+
+      var mapping = null;
+
       switch (logicalDatatype) {
 
         case 'category':
-          return {
-            availableTypes: ['column'],
-            defaultType: 'column'
+          mapping = {
+            'availableTypes': ['column'],
+            'defaultType': 'column'
           };
+          break;
 
         case 'time':
-          return {
-            availableTypes: ['timeline'],
-            defaultType: 'timeline'
+          mapping = {
+            'availableTypes': ['timeline'],
+            'defaultType': 'timeline'
           };
+          break;
 
         case 'text':
         case 'name':
         case 'identifier':
-          return {
-            availableTypes: ['search'],
-            defaultType: 'search'
+          mapping = {
+            'availableTypes': ['search'],
+            'defaultType': 'search'
           };
+          break;
 
         default:
-          return null;
+          break;
 
       }
+
+      return mapping;
+
     }
 
-    function _getCardTypesForColumn(column) {
+    function getCardTypesForColumn(column) {
 
       var physicalDatatype;
       var logicalDatatype;
@@ -180,7 +234,10 @@
       if (!column.hasOwnProperty('physicalDatatype') ||
           !column.hasOwnProperty('logicalDatatype')) {
 
-        $log.error('Could not determine card type for column: "{0}".'.format(JSON.stringify(column)));
+        $log.error(
+          'Could not determine card type for column: "{0}" (physical and/or logical datatype is missing).'.
+          format(JSON.stringify(column))
+        );
         return null;
 
       }
@@ -192,40 +249,40 @@
       switch (physicalDatatype) {
 
         case 'number':
-          cardType = _getCardTypeForNumber(logicalDatatype);
+          cardType = getCardTypeForNumber(logicalDatatype);
           break;
 
         case 'point':
-          cardType = _getCardTypeForPoint(logicalDatatype);
+          cardType = getCardTypeForPoint(logicalDatatype);
           break;
 
         case 'text':
-          cardType = _getCardTypeForText(logicalDatatype);
+          cardType = getCardTypeForText(logicalDatatype);
           break;
 
         case 'geo_entity':
-          cardType = _getCardTypeForGeoEntity(logicalDatatype);
+          cardType = getCardTypeForGeoEntity(logicalDatatype);
           break;
 
         case 'timestamp':           // To be deprecated
         case 'fixed_timestamp':     // To be deprecated
         case 'floating_timestamp':
-          cardType = _getCardTypeForTimestamp(logicalDatatype);
+          cardType = getCardTypeForTimestamp(logicalDatatype);
           break;
 
         case 'boolean':
-          cardType = _getCardTypeForBoolean(logicalDatatype);
+          cardType = getCardTypeForBoolean(logicalDatatype);
           break;
 
         case 'money':
-          cardType = _getCardTypeForMoney(logicalDatatype);
+          cardType = getCardTypeForMoney(logicalDatatype);
           break;
 
         default:
           if (logicalDatatype === '*') {
             cardType = {
-              avaialbleTypes: ['table'],
-              defaultType: 'table'
+              'avaialbleTypes': ['table'],
+              'defaultType': 'table'
             };
           }
           break;
@@ -233,41 +290,41 @@
       }
 
       if (cardType === null) {
-        _warnOnceOnUnknownCardType(logicalDatatype, physicalDatatype);
+        warnOnceOnUnknownCardType(logicalDatatype, physicalDatatype);
       }
 
       return cardType;
 
     }
 
-    function _getdefaultVisualizationForColumn(column) {
+    function getdefaultVisualizationForColumn(column) {
 
-      var cardTypes = _getCardTypesForColumn(column);
+      var cardTypes = getCardTypesForColumn(column);
 
       if (cardTypes === null) {
-        return 'unsupported';
+        return null;
       }
 
       return cardTypes.defaultType;
 
     }
 
-    function _getDefaultCardTypeForModel(cardModel) {
+    function getDefaultCardTypeForModel(cardModel) {
 
       // TODO: how would I reactify this?
       var columns = cardModel.page.getCurrentValue('dataset').getCurrentValue('columns');
       var column = columns[cardModel.fieldName];
-      var cardTypes = _getCardTypesForColumn(column);
+      var cardTypes = getCardTypesForColumn(column);
 
       if (cardTypes === null) {
-        return 'unsupported';
+        return null;
       }
 
       return cardTypes.defaultType;
 
     }
 
-    function _warnOnceOnUnknownCardType(logicalDatatype, physicalDatatype) {
+    function warnOnceOnUnknownCardType(logicalDatatype, physicalDatatype) {
 
       var warnedOn = physicalLogicalDatatypePairingsAlreadyWarnedOn;
 
@@ -301,7 +358,7 @@
      */
 
      function availableVisualizationsForColumn(column) {
-      var columnCardTypes = _getCardTypesForColumn(column);
+      var columnCardTypes = getCardTypesForColumn(column);
       if (columnCardTypes === null) {
         return [];
       }
@@ -316,11 +373,11 @@
      */
 
      function defaultVisualizationForColumn(column) {
-      var columnCardTypes = _getCardTypesForColumn(column);
+      var columnCardTypes = getCardTypesForColumn(column);
       if (columnCardTypes === null) {
-        return 'unsupported';
+        return null;
       }
-      return _getCardTypesForColumn(column).defaultType;
+      return getCardTypesForColumn(column).defaultType;
      }
 
     /**
@@ -331,7 +388,7 @@
      */
 
     function visualizationSupportedForColumn(column) {
-      return CARD_TYPES.hasOwnProperty(_getdefaultVisualizationForColumn(column));
+      return CARD_TYPES.hasOwnProperty(getdefaultVisualizationForColumn(column));
     }
 
     /**
@@ -343,7 +400,7 @@
     function modelIsCustomizable(cardModel) {
       var modelCardType = cardModel.getCurrentValue('cardType');
       if (_.isUndefined(modelCardType)) {
-        modelCardType = _getDefaultCardTypeForModel(cardModel);
+        modelCardType = getDefaultCardTypeForModel(cardModel);
       }
       return CARD_TYPES.hasOwnProperty(modelCardType) &&
              CARD_TYPES[modelCardType].customizable;
@@ -356,7 +413,7 @@
      */
 
     function modelIsExportable(cardModel) {
-      var modelCardType = _getDefaultCardTypeForModel(cardModel);
+      var modelCardType = getDefaultCardTypeForModel(cardModel);
       return CARD_TYPES.hasOwnProperty(modelCardType) &&
              CARD_TYPES[modelCardType].exportable;
     }

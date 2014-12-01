@@ -127,7 +127,7 @@ angular.module('dataCards.models').factory('Model', function(Class, ModelHelper)
 
     _assertProperty: function(propertyName) {
       if (!this._propertyTable.hasOwnProperty(propertyName)) {
-        throw new Error("Object " + this + " has no such property: " + propertyName);
+        throw new Error("Object " + JSON.stringify(this) + " has no such property: " + propertyName);
       }
     },
 

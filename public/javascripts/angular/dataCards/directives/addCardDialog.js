@@ -3,12 +3,7 @@
 
   function getColumnByFieldName(columns, fieldName) {
     var selectedColumn = null;
-    _.each(columns, function(column) {
-      if (column.name === fieldName) {
-        selectedColumn = column;
-      }
-    });
-    return selectedColumn;
+    return _.find(columns, function(column) { return column.name === fieldName; });
   }
 
   function addCardDialog(Card, FlyoutService, CardTypeMapping) {
@@ -17,9 +12,8 @@
       scope: {
         page: '=',
         cardModels: '=',
-        cardSize: '=',
         datasetColumns: '=',
-        dialogState: '=?',
+        dialogState: '=',
         // A function to call to start the customize-card flow
         onCustomizeCard: '='
       },
@@ -46,47 +40,45 @@
           if (_.isDefined(scope.datasetColumns)) {
 
             if (fieldName === null) {
-              scope.addCardModel = null; 
-            } else {
-
-              column = getColumnByFieldName(scope.datasetColumns.available, fieldName);
-
-              // TODO: Enforce some kind of schema validation at this step.
-              serializedCard = {
-                'cardCustomStyle': {},
-                'cardSize': parseInt(scope.cardSize, 10),
-                'cardType': CardTypeMapping.defaultVisualizationForColumn(column),
-                'displayMode': 'visualization',
-                'expanded': false,
-                'expandedCustomStyle': {},
-                'fieldName': fieldName
-              };
-
-              scope.availableCardTypes = CardTypeMapping.availableVisualizationsForColumn(column);
-              scope.addCardModel = Card.deserialize(scope.page, serializedCard);
-
+              scope.addCardModel = null;
+              return;
             }
+
+            column = getColumnByFieldName(scope.datasetColumns.available, fieldName);
+
+            if (_.isUndefined(column)) {
+              $log.error('Could not get column by fieldName.');
+              scope.addCardModel = null;
+              return;
+            }
+
+            // TODO: Enforce some kind of schema validation at this step.
+            serializedCard = {
+              'cardCustomStyle': {},
+              'cardSize': parseInt(scope.dialogState.cardSize, 10),
+              'cardType': CardTypeMapping.defaultVisualizationForColumn(column),
+              'displayMode': 'visualization',
+              'expanded': false,
+              'expandedCustomStyle': {},
+              'fieldName': fieldName
+            };
+
+            scope.availableCardTypes = CardTypeMapping.availableVisualizationsForColumn(column);
+            scope.addCardModel = Card.deserialize(scope.page, serializedCard);
+
           }
         });
 
         scope.setCardType = function(cardType) {
 
-          if (scope.addCardModel !== null &&
-              scope.availableCardTypes.indexOf(cardType) > -1) {
-
-            // TODO: Enforce some kind of schema validation at this step.
-            serializedCard = {
-              'cardCustomStyle': {},
-              'cardSize': parseInt(scope.cardSize, 10),
-              'cardType': cardType,
-              'displayMode': 'visualization',
-              'expanded': false,
-              'expandedCustomStyle': {},
-              'fieldName': scope.addCardModel.fieldName
-            };
-
-            scope.addCardModel = Card.deserialize(scope.page, serializedCard);
+          if (scope.addCardModel === null ||
+              scope.availableCardTypes.indexOf(cardType) === -1) {
+            $log.error('Could not set card type of "{0}".'.format(cardType));
+            return;
           }
+
+          scope.addCardModel.set('cardType', cardType);
+
         };
 
         scope.addCard = function() {

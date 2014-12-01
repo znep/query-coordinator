@@ -411,26 +411,32 @@
      * Some modal dialogs.
      */
 
-    $scope.hasAllCards = false;
+    $scope.allVisualizableColumnsVisualized = false;
 
     datasetColumns.subscribe(function(columns) {
-      $scope.hasAllCards = columns.available.length === 0;
+      $scope.allVisualizableColumnsVisualized = (columns.available.length === 0);
     });
 
     // This is an object, so that we can pass it to child scopes, and they can control the
     // visibility of the customize modal.
-    $scope.addCardState = {};
+    $scope.addCardState = {
+      'cardSize': null,
+      'show': false
+    };
     $scope.$on('add-card-with-size', function(e, cardSize) {
-      if (!$scope.hasAllCards) {
-        $scope.cardSize = cardSize;
+      if (!$scope.allVisualizableColumnsVisualized) {
+        $scope.addCardState.cardSize = cardSize;
         $scope.addCardState.show = true;
       }
     });
 
-    $scope.customizeState = {};
+    $scope.customizeState = {
+      'cardModel': null,
+      'show': false
+    };
     $scope.$on('customize-card-with-model', function(e, cardModel) {
       if (CardTypeMapping.modelIsCustomizable(cardModel)) {
-        $scope.cardModel = cardModel;
+        $scope.customizeState.cardModel = cardModel;
         $scope.customizeState.show = true;
       }
     });

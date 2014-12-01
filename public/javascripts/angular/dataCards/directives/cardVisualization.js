@@ -14,16 +14,12 @@ angular.module('dataCards.directives').directive('cardVisualization', function(A
       var datasetObservable = modelSubject.pluck('page').observeOnLatest('dataset');
       var columns = datasetObservable.observeOnLatest('columns');
 
-      // TODO: Make this more efficient by not watching the entire model all the time.
-      // I couldn't figure out the right combination of commands to get it to watch both
-      // the fieldName and also the cardtype at the same time. Blech. --cml, 11/25/2014
       var cardType = Rx.Observable.combineLatest(
-        modelSubject,
+        modelSubject.pluck('fieldName'),
+        modelSubject.observeOnLatest('cardType'),
         columns,
-        function(cardModel, columns) {
-          var fieldName = cardModel.fieldName;
+        function(fieldName, overriddenCardType, columns) {
           var column = columns[fieldName];
-          var overriddenCardType = cardModel.getCurrentValue('cardType');
           if (_.isDefined(overriddenCardType)) {
             return overriddenCardType;
           } else {

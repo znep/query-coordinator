@@ -32,6 +32,7 @@ describe("card directive", function() {
       model = new Model();
       model.defineObservableProperty('expanded', false);
       model.defineObservableProperty('cardSize', 1);
+      model.defineObservableProperty('cardType', 'column');
       scope.model = model;
       el = testHelpers.TestDom.compileAndAppend(html, scope);
     });

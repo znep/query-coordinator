@@ -158,7 +158,8 @@ describe('CardsViewController', function() {
   function makeController() {
     var context = makeContext();
     var controller = $controller('CardsViewController', context);
-
+    testHelpers.mockDirective(_$provide, 'modalDialog');
+    testHelpers.mockDirective(_$provide, 'addCardDialog');
     context.$scope.$apply();
     expect(context.$scope.page).to.be.instanceof(Page);
 
@@ -549,15 +550,13 @@ describe('CardsViewController', function() {
 
     it('should become visible when an "add-card-with-size" event is received', function(done) {
 
-      testHelpers.TestDom.compileAndAppend('<modal-dialog ng-if="addCardState.show" dialog-state="addCardState">{{addCardState.show}}</modal-dialog>', $scope);
-
-      expect($(document).find('modal-dialog').length).to.equal(0);
+      expect($scope.addCardState.show).to.equal(false);
 
       $scope.$on('add-card-with-size', function(e, cardSize) {
 
         $scope.$apply();
 
-        expect($(document).find('modal-dialog').length).to.equal(1);
+        expect($scope.addCardState.show).to.equal(true);
         done();
       });
 
@@ -584,15 +583,13 @@ describe('CardsViewController', function() {
       var serializedCard;
       var cardModel;
 
-      testHelpers.TestDom.compileAndAppend('<modal-dialog class="second" ng-if="customizeState.show" dialog-state="customizeState">{{customizeState.show}}</modal-dialog>', $scope);
-
       controllerHarness.baseInfoPromise.resolve({
         datasetId: 'fake-fbfr',
         name: 'some name'
       });
       controllerHarness.$scope.$digest();
 
-      expect($(document).find('modal-dialog').length).to.equal(0);
+      expect($scope.customizeState.show).to.equal(false);
 
       $scope.$on('customize-card-with-model', function(e, model) {
 
@@ -604,7 +601,7 @@ describe('CardsViewController', function() {
         // customizable. In this case we want to ensure that we do
         // not actually display the dialog for a non-customizable
         // card type mapping.
-        expect($(document).find('modal-dialog').length).to.equal(0);
+        expect($scope.customizeState.show).to.equal(false);
         done();
       });
 
@@ -628,15 +625,13 @@ describe('CardsViewController', function() {
       var serializedCard;
       var cardModel;
 
-      testHelpers.TestDom.compileAndAppend('<modal-dialog class="second" ng-if="customizeState.show" dialog-state="customizeState">{{customizeState.show}}</modal-dialog>', $scope);
-
       controllerHarness.baseInfoPromise.resolve({
         datasetId: 'fake-fbfr',
         name: 'some name'
       });
       controllerHarness.$scope.$digest();
 
-      expect($(document).find('modal-dialog').length).to.equal(0);
+      expect($scope.customizeState.show).to.equal(false);
 
       $scope.$on('customize-card-with-model', function(e, model) {
 
@@ -646,7 +641,7 @@ describe('CardsViewController', function() {
         // datatypes of the column referenced by the fieldName of the
         // newly-created card must map to a card type which is actually
         // customizable.
-        expect($(document).find('modal-dialog').length).to.equal(1);
+        expect($scope.customizeState.show).to.equal(true);
         done();
       });
 

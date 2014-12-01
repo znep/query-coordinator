@@ -1,4 +1,4 @@
-angular.module('dataCards.directives').directive('card', function(AngularRxExtensions, CardTypeMapping, $timeout, $log) {
+angular.module('dataCards.directives').directive('card', function(AngularRxExtensions, $timeout, $log) {
 
   return {
     restrict: 'E',

@@ -14,9 +14,7 @@ class PageMetadataManager
 
   # Creates a new page
   def create(data, options = {})
-    if data.is_a?(String)
-      data = JSON.parse(data)
-    end
+    data = JSON.parse(data) if data.is_a?(String)
     # Make sure that there is a table card
     if data['cards'].present?
       table_card = data['cards'].find { |card| card['fieldName'] == '*' }
@@ -99,9 +97,7 @@ class PageMetadataManager
     end
 
     # Nothing to roll up
-    if columns.blank?
-      return
-    end
+    return if columns.blank?
 
     soql << columns.pluck('name').join(', ')
     soql << ', count(*) as value ' # TODO This will have to respect different aggregation functions, i.e. "sum"

@@ -2109,7 +2109,7 @@ en:
             title: Views
         visualize:
           choose_type: Visualization Type
-      new_ux_error: This dataset cannot be previewed at this time.
+      new_ux_error: A preview is not available for this dataset.
       new_ux_link: Try this dataset in our new data exploration tool (beta)
       save_dialog:
         descriptions:

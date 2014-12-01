@@ -15,7 +15,7 @@ class NewUxBootstrapControllerTest < ActionController::TestCase
   end
 
   test 'bootstrap has no route if no id' do
-    assert_raise ActionController::RoutingError do
+    assert_raise(ActionController::RoutingError) do
       get :bootstrap
     end
   end
@@ -25,15 +25,28 @@ class NewUxBootstrapControllerTest < ActionController::TestCase
     assert_response(403)
   end
 
-  test 'bootstrap redirects to the first page if the 4x4 already has pages' do
+  test 'bootstrap redirects to the last page if the 4x4 already has pages' do
     @controller.stubs(has_rights?: true)
     @page_metadata_manager.stubs(
       pages_for_dataset: {
-        status: '200', body: { publisher: [ pageId: 'page-xist' ] }
+        status: '200', body: { publisher: [
+          { pageId: 'page-xist' },
+          { pageId: 'last-page' }
+        ] }
       }
     )
     get :bootstrap, id: 'four-four'
-    assert_redirected_to '/view/page-xist'
+    assert_redirected_to('/view/last-page')
+  end
+
+  test 'bootstrap redirects to dataset page with error, if page_metadata_manager hates us' do
+    @controller.stubs(has_rights?: true)
+    @page_metadata_manager.stubs(
+      pages_for_dataset: { status: '500', body: { error: 'you suck' } }
+    )
+    get :bootstrap, id: 'four-four'
+    assert_redirected_to('/datasets/four-four')
+    assert_equal(@controller.flash[:error], 'A preview is not available for this dataset.')
   end
 
   test 'bootstrap returns 404 if dataset does not exist' do
@@ -61,7 +74,7 @@ class NewUxBootstrapControllerTest < ActionController::TestCase
       }
     )
     get :bootstrap, id: 'four-four'
-    assert_redirected_to '/view/neoo-page'
+    assert_redirected_to('/view/neoo-page')
   end
 
   test 'bootstrap redirects to dataset page with error if error while creating page' do
@@ -77,8 +90,8 @@ class NewUxBootstrapControllerTest < ActionController::TestCase
       }
     )
     get :bootstrap, id: 'four-four'
-    assert_redirected_to '/datasets/four-four'
-    assert_equal @controller.flash[:error], 'This dataset cannot be previewed at this time.'
+    assert_redirected_to('/datasets/four-four')
+    assert_equal(@controller.flash[:error], 'A preview is not available for this dataset.')
   end
 
   private

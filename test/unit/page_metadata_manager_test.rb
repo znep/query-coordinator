@@ -25,13 +25,24 @@ class PageMetadataManagerTest < Test::Unit::TestCase
     assert(result.fetch(:body).fetch(:pageId), 'Expected a non-nil pageId to be created')
   end
 
-  def test_create_doesnt_bork_when_no_rollup
+  def test_create_does_not_try_to_create_rollup_table_when_not_given_eligible_columns
     PageMetadataManager.any_instance.expects(:update_rollup_table).times(0)
+    # Make sure our assumptions about the dataset we're using are true
+    rollup_column_doesnt_exist = dataset_metadata_without_rollup_columns['columns'].none? do |column|
+      column['logicalDatatype'] == 'category'
+    end
+    assert(rollup_column_doesnt_exist)
+    rollup_column_exists = dataset_metadata['columns'].find do |column|
+      column['logicalDatatype'] == 'category'
+    end
+    assert(rollup_column_exists)
+
     Phidippides.any_instance.stubs(
       create_page_metadata: { status: '200', body: page_metadata },
       fetch_dataset_metadata: { status: '200', body: dataset_metadata_without_rollup_columns }
     )
     result = manager.create(page_metadata.to_json)
+
     assert(result.fetch(:status) == '200', result.inspect)
     assert(result.fetch(:body).fetch(:pageId), 'Expected a non-nil pageId to be created')
   end
@@ -403,8 +414,7 @@ class PageMetadataManagerTest < Test::Unit::TestCase
   def dataset_metadata_without_rollup_columns
     dataset_metadata.dup.tap do |dataset_md|
       dataset_md['columns'] = dataset_md['columns'].reject do |column|
-        (column['logicalDatatype'] == 'category' ||
-         column['logicalDatatype'] == 'location')
+        %w(category location).include?(column['logicalDatatype'])
       end
     end
   end

@@ -2210,10 +2210,6 @@
     processedTiles: {}, //Keep a list of tiles that have been processed already
     _eventHandlers: {},
 
-    useBase64Fallback: function() {
-      return false;
-    },
-
     style: function(feature) {
       var style = {};
 
@@ -2391,49 +2387,32 @@
 
       if (!this.options.url) return;
 
-      if (self.useBase64Fallback()) {
-        url = url.replace('{y}.pbf', '{y}.bpbf');
-      }
-
       url = url.replace("{z}", ctx.zoom).replace("{x}", ctx.tile.x).replace("{y}", ctx.tile.y);
 
       var xhr = new XMLHttpRequest();
 
       xhr.onload = function() {
 
-        var response;
-        var byteLength;
         var arrayBuffer;
-        var i;
 
         if (xhr.status == "200") {
 
-          // Assign the value of xhr.responseText to response if this is IE9
-          // and xhr.response doesn't work.
-          if (typeof xhr.response === 'undefined' && xhr.responseText) {
-            response = xhr.responseText;
-          // Alternatively, quit early if this is not IE9 and we have an empty
-          // response (i.e. a tile with no points).
-          } else if (!xhr.response) {
-            return;
-          // Finally, interpret a non-empty response as a valid protocol buffer
-          // vector tile.
-          } else {
-            response = xhr.response;
+          // Obtain the data as an array.
+          // Some browsers (IE9) don't support xhr.response. Try alternatives.
+          if (typeof xhr.response === 'undefined') {
+            // IE9 specific hack, if available.
+            // See: http://stackoverflow.com/a/4330882
+            if (typeof xhr.responseBody === 'unknown' && typeof window.VBArray !== 'undefined') {
+              arrayBuffer = new VBArray(xhr.responseBody).toArray();
+            }
+          } else if (xhr.response) {
+            arrayBuffer = new Uint8Array(xhr.response);
           }
 
-          // If we are using Base64, we need to manually build the byte array.
-          if (self.useBase64Fallback()) {
-            response = atob(response);
-            byteLength = response.length;
-            arrayBuffer = new Uint8Array(byteLength);
-            for (i = 0; i < byteLength; i++) {
-              arrayBuffer[i] = response.charCodeAt(i);
-            }
-          // If we're using a native arrayBuffer over the wire, just shove
-          // it into a Uint8 view.
-          } else {
-            arrayBuffer = new Uint8Array(xhr.response);
+          if (!arrayBuffer) {
+            // No/empty data (i.e. a tile with no points).
+            // Nothing to do.
+            return;
           }
 
           var buf = new Protobuf(arrayBuffer);
@@ -2465,9 +2444,7 @@
         xhr.setRequestHeader(headerKeys[i], self.options.headers[headerKeys[i]])
       }
 
-      if (!self.useBase64Fallback()) {
-        xhr.responseType = 'arraybuffer';
-      }
+      xhr.responseType = 'arraybuffer';
 
       xhr.send();
 

@@ -65,3 +65,6 @@ odux_enable_feature_map:
 enable_api_foundry_pane:
   description: Will allow the api_foundry pane to be displayed. If there is another reason for the api_foundry pane to be hidden, it will still be hidden.
   defaultValue: true
+enable_newux_bootstrap_link:
+  description: Will display a link in the old UX, to its corresponding new UX page.
+  defaultValue: false

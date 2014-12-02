@@ -41,6 +41,8 @@ development:
   metrics_dir: tmp/metriclogs
   <<: *default
   mixpanel_token: 59b0b54697603105463834afdf20accf
+  tileserver_hostname: localhost
+  tileserver_port: 2048
 
 # Running unit tests; NOT test.socrata.com
 test:

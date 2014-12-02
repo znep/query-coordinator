@@ -3,6 +3,7 @@
 Frontend::Application.routes do
 
   UID_REGEXP = /\w{4}-\w{4}/
+  INTEGER_REGEXP = /-?\d+/
 
   # styling routes
   scope :path => '/styles', :controller => 'styles' do
@@ -264,6 +265,17 @@ Frontend::Application.routes do
 
     scope :controller => 'polaroid', :constraints => { :page_id => UID_REGEXP, :field_id => Phidippides::COLUMN_ID_REGEX } do
       match '/view/:page_id/:field_id.png', :via => :get, :action => 'proxy_request'
+    end
+
+    # Temporary proxy for tileserver, while ops finishes the work to expose AWS services to the 'net directly.
+    scope :controller => 'tile_server', :constraints => {
+        :page_id => UID_REGEXP,
+        :field_id => Phidippides::COLUMN_ID_REGEX,
+        :zoom => INTEGER_REGEXP,
+        :x_coord => INTEGER_REGEXP,
+        :y_coord => INTEGER_REGEXP
+      } do
+      match '/tiles/:page_id/:field_id/:zoom/:x_coord/:y_coord.pbf', :via => :get, :action => 'proxy_request'
     end
 
     scope :controller => 'angular', :constraints => { :id => UID_REGEXP } do

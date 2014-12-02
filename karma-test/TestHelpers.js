@@ -136,7 +136,7 @@
     function mockDirective($provide, directive, f) {
       $provide.factory(directive + 'Directive', function() {
         var directiveDefinition = f ? f.apply(this, arguments) : {};
-        var foo = directive;
+
         return [
           $.extend({
             template: '',

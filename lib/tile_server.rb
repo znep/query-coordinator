@@ -4,12 +4,19 @@ class TileServer < SocrataHttp
     "tiles/#{page_id}/#{field_id}/#{zoom}/#{x_coord}/#{y_coord}.pbf?$limit=#{row_limit}"
   end
 
-  def fetch_tile(page_id, field_id, zoom, x_coord, y_coord, options = {})
+  def fetch_tile(options)
     issue_request(
       :verb => :get,
       :request_id => options[:request_id],
       :cookies => options[:cookies],
-      :path => path(page_id, field_id, zoom, x_coord, y_coord, options[:row_limit])
+      :path => path(
+        options.fetch(:page_id),
+        options.fetch(:field_id),
+        options.fetch(:zoom),
+        options.fetch(:x_coord),
+        options.fetch(:y_coord),
+        options.fetch('$limit')
+      )
     )
   end
 

@@ -786,7 +786,7 @@ $(function()
             'page loaded', blist.dataset.id);
     });
 
-    (function initNewUXLink() {
+    function initNewUXLink() {
         var newUxLink = $('<div class="new-ux-link icon-cards"><div class="icon-close"/>' +
                           '<a>{0}</a></div>'.format($.t('screens.ds.new_ux_link')));
         var anchor = newUxLink.find('a');
@@ -833,5 +833,8 @@ $(function()
                 newUxLink.addClass('collapsed');
             });
         });
-    })();
+    }
+    if (blist.feature_flags.enable_newux_bootstrap_link) {
+      initNewUXLink();
+    }
 });

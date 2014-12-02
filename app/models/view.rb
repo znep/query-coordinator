@@ -752,7 +752,7 @@ class View < Model
   end
 
   def resource_url
-    "#{CurrentDomain.domain.protocol}://#{CurrentDomain.cname}#{CurrentDomain.domain.port}/resource/#{id}.json"
+    "https://#{CurrentDomain.cname}#{CurrentDomain.domain.port}/resource/#{id}.json"
   end
 
   def tweet

@@ -2,6 +2,8 @@ describe("card directive", function() {
   var $rootScope, testHelpers, Model;
 
   beforeEach(module('/angular_templates/dataCards/card.html'));
+  beforeEach(module('dataCards/cards.sass'));
+  beforeEach(module('dataCards/card.sass'));
   beforeEach(module('test'));
   beforeEach(module('dataCards'));
 
@@ -17,6 +19,9 @@ describe("card directive", function() {
     _$templateCache.put('/angular_templates/dataCards/cardVisualizationSearch.html', '');
     _$templateCache.put('/angular_templates/dataCards/cardVisualization.html', '');
     _$templateCache.put('/angular_templates/dataCards/clearableInput.html', '');
+
+    // The css styles are scoped to the body class
+    $('body').addClass('state-view-cards');
   }]));
 
   afterEach(function() {
@@ -64,6 +69,71 @@ describe("card directive", function() {
         el.find('.card-control').click();
         expect(model.page.toggleExpanded.calledOnce).to.equal(true);
         expect(model.page.toggleExpanded.calledWith(model)).to.be.true;
+      });
+    });
+  });
+
+  describe('visualization height', function() {
+    var el;
+    var html = '<card model="model" interactive="true"></card>';
+    var model;
+    beforeEach(function() {
+      var scope = $rootScope.$new();
+      model = new Model();
+      model.defineObservableProperty('expanded', false);
+      model.defineObservableProperty('cardSize', 1);
+      model.defineObservableProperty('cardType', 'column');
+      scope.model = model;
+      el = testHelpers.TestDom.compileAndAppend(html, scope);
+      el.css({
+        height: $(window).height(),
+        display: 'block'
+      });
+    });
+
+    it('should be set whenever the description height changes', function(done) {
+      var textElement = el.find('.card-text').find('.title-one-line').text('');
+      var visualizationElement = el.find('card-visualization');
+      var originalHeight = visualizationElement.height();
+
+      textElement.text(_.range(100).join('text '));
+
+      // Let the resize event handler run
+      testHelpers.waitForSatisfy(function() {
+        return visualizationElement.height() !== originalHeight;
+      }).then(function() {
+        var lotsaTextHeight = visualizationElement.height();
+
+        textElement.text('text');
+
+        testHelpers.waitForSatisfy(function() {
+          return visualizationElement.height() !== lotsaTextHeight;
+        }).then(function() {
+          expect(visualizationElement.height()).to.be.greaterThan(lotsaTextHeight);
+          done();
+        });
+      });
+    });
+
+    it('should be set whenever the card height changes', function(done) {
+      var textElement = el.find('.card-text').find('.title-one-line').text('');
+      var visualizationElement = el.find('card-visualization');
+      var originalHeight = visualizationElement.height();
+
+      el.height(2 * (el.height() + 1));
+
+      // Let the resize event handler run
+      testHelpers.waitForSatisfy(function() {
+        return visualizationElement.height() !== originalHeight;
+      }).then(function() {
+        var biggerContainerHeight = visualizationElement.height();
+        expect(biggerContainerHeight).to.be.greaterThan(originalHeight);
+
+        el.height(el.height() / 2);
+
+        testHelpers.waitForSatisfy(function() {
+          return visualizationElement.height() < biggerContainerHeight;
+        }).then(done);
       });
     });
   });

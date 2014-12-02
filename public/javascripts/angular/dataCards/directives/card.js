@@ -24,15 +24,6 @@ angular.module('dataCards.directives').directive('card', function(AngularRxExten
       $scope.bindObservable('description', column.pluck('description'));
 
       var updateCardLayout = _.throttle(function(textHeight) {
-
-        var updateCardVisualizationHeight = function() {
-          $timeout(function() {
-            // waits until description is filled in to determine heights
-            var cardVisHeight = element.height() - element.find('.card-text').outerHeight(true);
-            element.find('card-visualization').height(cardVisHeight);
-          });
-        };
-
         descriptionTruncatedContent.dotdotdot({
           height: textHeight,
           tolerance: 2
@@ -43,7 +34,6 @@ angular.module('dataCards.directives').directive('card', function(AngularRxExten
         $scope.safeApply(function() {
           $scope.descriptionClamped = isClamped;
           $scope.animationsOn = true;
-          updateCardVisualizationHeight();
         });
 
       }, 250, { leading: true, trailing: true });
@@ -55,8 +45,21 @@ angular.module('dataCards.directives').directive('card', function(AngularRxExten
       var descriptionTruncatedContent = element.find('.description-truncated-content');
       var descriptionElementsWithMaxSize = element.find('.description-expanded-wrapper, .description-expanded-content');
 
+      var dimensionsObservable = element.observeDimensions().share();
+
+      // Give the visualization all the height that the description isn't using.
+      var description = element.find('.card-text');
       Rx.Observable.subscribeLatest(
-        element.observeDimensions(),
+        description.observeDimensions(),
+        dimensionsObservable,
+        function(descriptionDimensions, elementDimensions) {
+          element.find('card-visualization').height(
+            elementDimensions.height - description.outerHeight(true)
+          );
+        });
+
+      Rx.Observable.subscribeLatest(
+        dimensionsObservable,
         column.pluck('description'),
         function(dimensions, descriptionText) {
           // Manually update the binding now, because Angular doesn't know that dotdotdot messes with
@@ -70,6 +73,7 @@ angular.module('dataCards.directives').directive('card', function(AngularRxExten
           updateCardLayout(parseInt(descriptionTruncatedContent.css('line-height')) * 2);
 
         });
+
     }
   };
 

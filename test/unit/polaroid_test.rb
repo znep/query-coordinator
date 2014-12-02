@@ -116,25 +116,25 @@ class PolaroidTest < Test::Unit::TestCase
   # noinspection RubyArgCount
   def prepare_stubs(options)
     @mock_response = stub(
-        code: options[:code] || '200',
-        body: options.fetch(:body, 'no body'),
-        content_type: options.fetch(:content_type, 'image/png'),
-        kind_of?: options.fetch(:kind_of, true)
+      code: options[:code] || '200',
+      body: options.fetch(:body, 'no body'),
+      content_type: options.fetch(:content_type, 'image/png'),
+      kind_of?: options.fetch(:kind_of, true)
     )
 
     @mock_request = {}
     @mock_request.expects(:body).returns(options.fetch(:body, ''))
 
     "Net::HTTP::#{options[:verb].capitalize}".constantize.expects(:new).
-        with("#{polaroid.end_point}/domain/#{polaroid.cname}/view/#{options[:page_id]}/#{options[:field_id]}.png").
-        returns(@mock_request)
+      with("#{polaroid.end_point}/domain/#{polaroid.cname}/view/#{options[:page_id]}/#{options[:field_id]}.png").
+      returns(@mock_request)
 
     @mock_http = stub
     @mock_http.expects(:request)
 
     Net::HTTP.expects(:start).with(
-        polaroid.address,
-        polaroid.port
+      polaroid.address,
+      polaroid.port
     ).yields(@mock_http).returns(@mock_response)
   end
 

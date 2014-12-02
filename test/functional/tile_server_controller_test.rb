@@ -41,7 +41,7 @@ class TileServerControllerTest < ActionController::TestCase
   test 'should call TileServer#fetch_tile with appropriate parameters (with no cookies)' do
     TileServer.any_instance.expects(:fetch_tile).
       with(@request_params).
-      returns({:status => '200', :body => '', :content_type => ''})
+      returns(:status => '200', :body => '', :content_type => '')
     get :proxy_request, @request_params
   end
 
@@ -54,7 +54,7 @@ class TileServerControllerTest < ActionController::TestCase
 
     TileServer.any_instance.expects(:fetch_tile).
       with(request_params_with_cookies).
-      returns({:status => '200', :body => '', :content_type => ''})
+      returns(:status => '200', :body => '', :content_type => '')
     get :proxy_request, @request_params
   end
 

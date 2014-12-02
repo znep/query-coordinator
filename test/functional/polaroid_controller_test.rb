@@ -55,7 +55,7 @@ class PolaroidControllerTest < ActionController::TestCase
 
     Polaroid.any_instance.expects(:fetch_image).
       with(@page_id, @field_id, cookies_hash).
-      returns({:status => '200', :body => '', :content_type => ''})
+      returns(:status => '200', :body => '', :content_type => '')
     get :proxy_request, @request_params
   end
 

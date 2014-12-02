@@ -112,7 +112,7 @@ class TileServerTest < Test::Unit::TestCase
     y_coord = 3
     limit = 11088
 
-    prepare_stubs({
+    prepare_stubs(
       :code => '500',
       :verb => :get,
       :page_id => page_id,
@@ -124,16 +124,16 @@ class TileServerTest < Test::Unit::TestCase
       :kind_of => false,
       :content_type => 'application/json',
       :body => '{"error":true,"reason":"Error"}'
-    })
+    )
 
-    result = tileserver.fetch_tile({
+    result = tileserver.fetch_tile(
       :page_id => page_id,
       :field_id => field_id,
       :zoom => zoom,
       :x_coord => x_coord,
       :y_coord => y_coord,
       '$limit' => limit
-    })
+    )
 
     assert_equal({
       'status' => '500',
@@ -153,7 +153,7 @@ class TileServerTest < Test::Unit::TestCase
     y_coord = 3
     limit = 11088
 
-    prepare_stubs({
+    prepare_stubs(
       :code => '500',
       :verb => :get,
       :page_id => page_id,
@@ -163,16 +163,16 @@ class TileServerTest < Test::Unit::TestCase
       :y_coord => y_coord,
       '$limit' => limit,
       :kind_of => false
-    })
+    )
 
-    result = tileserver.fetch_tile({
+    result = tileserver.fetch_tile(
       :page_id => page_id,
       :field_id => field_id,
       :zoom => zoom,
       :x_coord => x_coord,
       :y_coord => y_coord,
       '$limit' => limit
-    })
+    )
 
     assert_equal({
       'status' => '500',
@@ -190,25 +190,25 @@ class TileServerTest < Test::Unit::TestCase
   # noinspection RubyArgCount
   def prepare_stubs(options)
     @mock_response = stub(
-        code: options[:code] || '200',
-        body: options.fetch(:body, 'no body'),
-        content_type: options.fetch(:content_type, 'application/octet-stream'),
-        kind_of?: options.fetch(:kind_of, true)
+      code: options[:code] || '200',
+      body: options.fetch(:body, 'no body'),
+      content_type: options.fetch(:content_type, 'application/octet-stream'),
+      kind_of?: options.fetch(:kind_of, true)
     )
 
     @mock_request = {}
     @mock_request.expects(:body).returns(options.fetch(:body, ''))
 
     "Net::HTTP::#{options[:verb].capitalize}".constantize.expects(:new).
-        with("#{tileserver.end_point}/tiles/#{options[:page_id]}/#{options[:field_id]}/#{options[:zoom]}/#{options[:x_coord]}/#{options[:y_coord]}.pbf?$limit=#{options['$limit']}").
-        returns(@mock_request)
+      with("#{tileserver.end_point}/tiles/#{options[:page_id]}/#{options[:field_id]}/#{options[:zoom]}/#{options[:x_coord]}/#{options[:y_coord]}.pbf?$limit=#{options['$limit']}").
+      returns(@mock_request)
 
     @mock_http = stub
     @mock_http.expects(:request)
 
     Net::HTTP.expects(:start).with(
-        tileserver.address,
-        tileserver.port
+      tileserver.address,
+      tileserver.port
     ).yields(@mock_http).returns(@mock_response)
   end
 

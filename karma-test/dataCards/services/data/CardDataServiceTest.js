@@ -23,7 +23,7 @@ describe("CardDataService", function() {
     }, function(error) {
       done();
     });
-  };
+  }
 
   beforeEach(module('dataCards'));
 

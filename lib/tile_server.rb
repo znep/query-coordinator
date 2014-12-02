@@ -40,7 +40,7 @@ class TileServer < SocrataHttp
   end
 
   def on_success(response, url, verb)
-    if image?(response.content_type)
+    if tile?(response.content_type)
       result = { status: '200', body: response.body, content_type: response.content_type }
     else
       result = {
@@ -55,9 +55,8 @@ class TileServer < SocrataHttp
 
   end
 
-  def image?(content_type)
-    content_type =~ /^image\/.*$/
-    true
+  def tile?(content_type)
+    content_type == 'application/octet-stream'
   end
 
   def json?(content_type)

@@ -33,7 +33,8 @@ class Polaroid < SocrataHttp
     else
       result[:body] = {
         error: true,
-        reason: 'Received error status and unexpected return type from image service'
+        reason: 'Received error status and unexpected return type from image service',
+        details: response.content_type
       }
     end
     result
@@ -47,7 +48,8 @@ class Polaroid < SocrataHttp
         status: '500',
         body: {
           error: true,
-          reason: 'Unexpected return type from image service'
+          reason: 'Unexpected return type from image service',
+          details: response.content_type
         }
       }
     end

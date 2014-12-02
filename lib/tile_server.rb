@@ -34,13 +34,14 @@ class TileServer < SocrataHttp
         Rails.logger.error("#{verb.upcase} at #{url} failed with error: #{error}")
         result[:body] = {
           error: true,
-          reason: 'Received error from image service'
+          reason: 'Received error from TileServer'
         }
       end
     else
       result[:body] = {
         error: true,
-        reason: 'Received error status and unexpected return type from image service'
+        reason: 'Received error status and unexpected return type from TileServer',
+        details: response.content_type
       }
     end
     result
@@ -54,7 +55,8 @@ class TileServer < SocrataHttp
         status: '500',
         body: {
           error: true,
-          reason: 'Unexpected return type from image service'
+          reason: 'Unexpected return type from TileServer',
+          details: response.content_type
         }
       }
     end
@@ -63,6 +65,7 @@ class TileServer < SocrataHttp
   end
 
   def tile?(content_type)
+    # TileServer doesn't provide anything more specific at this time.
     content_type == 'application/octet-stream'
   end
 

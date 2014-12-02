@@ -105,7 +105,8 @@ class PolaroidTest < Test::Unit::TestCase
       'content_type' => 'application/json',
       'body' => {
         'error' => true,
-        'reason' => 'Received error status and unexpected return type from image service'
+        'reason' => 'Received error status and unexpected return type from image service',
+        'details' => 'image/png'
       }
     }, result)
   end

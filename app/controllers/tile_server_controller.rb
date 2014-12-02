@@ -1,12 +1,10 @@
+# Simple proxy so the JS can access TileServer. Intended to be temporary; TileServer will be
+# exposed to the 'net once some required AWS work is completed.
 class TileServerController < ActionController::Base
   include ActionControllerExtensions
   include CommonSocrataMethods
 
   def proxy_request
-
-    if params['renderTrackingId']
-      cookies["renderTrackingId_#{params['renderTrackingId']}"] = 1
-    end
 
     begin
       result = tileserver.fetch_tile(

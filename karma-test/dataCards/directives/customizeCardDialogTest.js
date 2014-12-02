@@ -118,8 +118,11 @@ describe('Customize card dialog', function() {
     AngularRxExtensions.install(outerScope);
 
     outerScope.page = pageModel;
-    outerScope.dialogState = {show: true};
-    outerScope.cardModel = Card.deserialize(pageModel, card);
+    outerScope.dialogState = {
+      'cardModel': Card.deserialize(pageModel, card),
+      'show': true
+    };
+    //outerScope.cardModel = Card.deserialize(pageModel, card);
 
     if (options.preexisting) {
       cards.push(outerScope.cardModel);
@@ -128,10 +131,9 @@ describe('Customize card dialog', function() {
     var html = [
       '<div ng-if="dialogState.show"> ',
         '<customize-card-dialog ',
-          'card-model="cardModel" ',
           'dialog-state="dialogState" ',
           'page="page" ',
-        '></add-card-dialog>',
+        '></customize-card-dialog>',
       '</div>'].join('');
 
     // Stub out debounce so we can test synchronously
@@ -285,7 +287,7 @@ describe('Customize card dialog', function() {
   it('should update the given model when clicking "Done"', function() {
     var dialog = createDialog();
     var page = dialog.outerScope.page;
-    var card = dialog.outerScope.cardModel;
+    var card = dialog.scope.customizedCard;
 
     var esri = dialog.element.find('option:contains("Esri")');
     esri.prop('selected', true).change();
@@ -299,7 +301,7 @@ describe('Customize card dialog', function() {
   it('should discard card changes when clicking "Cancel"', function() {
     var dialog = createDialog();
     var page = dialog.outerScope.page;
-    var card = dialog.outerScope.cardModel;
+    var card = dialog.scope.dialogState.cardModel;
 
     var esri = dialog.element.find('option:contains("Esri")');
     esri.prop('selected', true).change();
@@ -321,7 +323,7 @@ describe('Customize card dialog', function() {
       baseLayerUrl: url,
       expanded: false
     };
-    var dialog = createDialog({card: card});
+    var dialog = createDialog( { card: card } );
     expect(dialog.element.find('option:contains("Custom")').is(':selected')).to.equal(true);
     expect(dialog.element.find('input[name=customLayerUrl]').val()).to.equal(url);
   });

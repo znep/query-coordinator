@@ -57,7 +57,7 @@
     ));
   }
 
-  function CardsViewController($scope, $location, $log, $window, $q, AngularRxExtensions, SortedTileLayout, Filter, PageDataService, UserSession, CardTypeMappingService, FlyoutService, page, Card, WindowState, ServerConfig) {
+  function CardsViewController($scope, $location, $log, $window, $q, AngularRxExtensions, SortedTileLayout, Filter, PageDataService, UserSession, CardTypeMapping, FlyoutService, page, Card, WindowState, ServerConfig) {
 
     AngularRxExtensions.install($scope);
 
@@ -233,7 +233,7 @@
 
           sortedColumns[i].available = available;
 
-          if (CardTypeMappingService.cardTypeForColumnIsSupported(sortedColumns[i])) {
+          if (CardTypeMapping.visualizationSupportedForColumn(sortedColumns[i])) {
             if (available) {
               availableColumns.push(sortedColumns[i]);
             } else {
@@ -254,9 +254,6 @@
       });
 
     $scope.bindObservable('datasetColumns', datasetColumns);
-    $scope.bindObservable('hasAllCards', datasetColumns.map(function(columns) {
-      return columns.available.length === 0;
-    }));
 
 
     /***************************
@@ -409,6 +406,40 @@
         pluck(1); // We're done with the buffer - only care about the current event.
     };
 
+
+    /**
+     * Some modal dialogs.
+     */
+
+    $scope.allVisualizableColumnsVisualized = false;
+
+    datasetColumns.subscribe(function(columns) {
+      $scope.allVisualizableColumnsVisualized = (columns.available.length === 0);
+    });
+
+    // This is an object, so that we can pass it to child scopes, and they can control the
+    // visibility of the customize modal.
+    $scope.addCardState = {
+      'cardSize': null,
+      'show': false
+    };
+    $scope.$on('add-card-with-size', function(e, cardSize) {
+      if (!$scope.allVisualizableColumnsVisualized) {
+        $scope.addCardState.cardSize = cardSize;
+        $scope.addCardState.show = true;
+      }
+    });
+
+    $scope.customizeState = {
+      'cardModel': null,
+      'show': false
+    };
+    $scope.$on('customize-card-with-model', function(e, cardModel) {
+      if (CardTypeMapping.modelIsCustomizable(cardModel)) {
+        $scope.customizeState.cardModel = cardModel;
+        $scope.customizeState.show = true;
+      }
+    });
 
     //TODO consider extending register() to take a selector, too.
     //TODO The controller shouldn't know about this magical target inside save-button!

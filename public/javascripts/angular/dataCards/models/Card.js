@@ -5,14 +5,15 @@ angular.module('dataCards.models').factory('Card', function($injector, ModelHelp
   JJV.addSchema('serializedCard', {
     'type': 'object',
     'properties': {
-      'fieldName': { 'type': 'string', 'minLength': 1 },
+      'activeFilters': { 'type': 'array' },
       'baseLayerUrl': { 'type': 'string' },
+      'cardCustomStyle': { 'type': 'object' },
       'cardSize': { 'type': 'integer' , 'minimum': 1, 'maximum': 4 },
+      'cardType': { 'type': 'string', },
       'displayMode': { 'type': 'string', 'enum': ['figures', 'visualization'] },
       'expanded': { 'type': 'boolean' },
-      'cardCustomStyle': { 'type': 'object' },
       'expandedCustomStyle': { 'type': 'object' },
-      'activeFilters': { 'type': 'array' },
+      'fieldName': { 'type': 'string', 'minLength': 1 },
       'shapefileFeatureHumanReadablePropertyName': { 'type': 'string' }
     },
     'required': ['fieldName', 'cardSize', 'cardCustomStyle', 'expandedCustomStyle', 'displayMode', 'expanded']

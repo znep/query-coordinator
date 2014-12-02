@@ -16,8 +16,8 @@
     3: 200
   };
 
-  function initCardSelection(scope, CardTypeMappingService, FlyoutService, DownloadService, $timeout) {
-    scope.isPngExportable = CardTypeMappingService.isExportable;
+  function initCardSelection(scope, CardTypeMapping, FlyoutService, DownloadService, $timeout) {
+    scope.isPngExportable = CardTypeMapping.modelIsExportable;
 
     function getDownloadUrl(model) {
       return './' + scope.page.id + '/' + model.fieldName + '.png';
@@ -62,7 +62,7 @@
     ));
   }
 
-  function cardLayout(Constants, AngularRxExtensions, WindowState, SortedTileLayout, FlyoutService, CardTypeMappingService, DownloadService, $timeout) {
+  function cardLayout(Constants, AngularRxExtensions, WindowState, SortedTileLayout, FlyoutService, CardTypeMapping, DownloadService, $timeout) {
 
     sortedTileLayout = new SortedTileLayout();
     return {
@@ -740,35 +740,23 @@
 
         };
 
+        scope.addCardWithSize = function(cardSize) {
+          scope.$emit('add-card-with-size', cardSize);
+        };
+
         scope.deleteCard = function(cardModel) {
           scope.safeApply(function() {
             scope.page.set('cards', _.without(scope.cardModels, cardModel));
           });
         };
 
-        initCardSelection(scope, CardTypeMappingService, FlyoutService, DownloadService, $timeout);
-
-        /**
-         * Some modal dialogs.
-         */
-        // This is an object, so that we can pass it to child scopes, and they can control the
-        // visibility of the customize modal.
-        scope.addCardState = {};
-        scope.addCard = function(cardSize) {
-          if (scope.allowAddCard) {
-            scope.cardSize = cardSize;
-            scope.addCardState.show = true;
-          }
-        };
-
-        scope.isCustomizable = CardTypeMappingService.isCustomizable;
-        scope.customizeState = {};
+        scope.isCustomizable = CardTypeMapping.modelIsCustomizable;
         scope.customizeCard = function(cardModel) {
-          if (scope.isCustomizable(cardModel)) {
-            scope.cardModel = cardModel;
-            scope.customizeState.show = true;
-          }
+          scope.$emit('customize-card-with-model', cardModel);
         };
+
+        initCardSelection(scope, CardTypeMapping, FlyoutService, DownloadService, $timeout);
+
 
         /**
          * Flyouts.

@@ -101,5 +101,31 @@
       chooser-mode="chooserMode"
       >
     </card-layout>
+
   </div>
+
+  <modal-dialog
+    ng-if="addCardState.show"
+    dialog-state="addCardState">
+
+    <add-card-dialog
+      card-models="cardModels"
+      on-customize-card="customizeCard"
+      dataset-columns="datasetColumns"
+      dialog-state="addCardState"
+      page="page"></add-card-dialog>
+
+  </modal-dialog>
+
+  <modal-dialog
+    class="second"
+    ng-if="customizeState.show"
+    dialog-state="customizeState">
+
+    <customize-card-dialog
+      dialog-state="customizeState"
+      page="page" />
+
+  </modal-dialog>
+
 </div>

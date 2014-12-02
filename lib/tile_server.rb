@@ -34,14 +34,16 @@ class TileServer < SocrataHttp
         Rails.logger.error("#{verb.upcase} at #{url} failed with error: #{error}")
         result[:body] = {
           error: true,
-          reason: 'Received error from TileServer'
+          reason: 'Received error from TileServer which could not be parsed as JSON',
         }
       end
     else
       result[:body] = {
         error: true,
         reason: 'Received error status and unexpected return type from TileServer',
-        details: response.content_type
+        details: {
+          content_type: response.content_type
+        }
       }
     end
     result

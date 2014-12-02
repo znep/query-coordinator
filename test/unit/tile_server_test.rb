@@ -12,8 +12,8 @@ class TileServerTest < Test::Unit::TestCase
   def setup
     CurrentDomain.stubs(domain: stub(cname: 'localhost'))
     TileServer.any_instance.stubs(:connection_details => {
-        'address' => 'localhost',
-        'port' => '4242'
+      'address' => 'localhost',
+      'port' => '4242'
     })
   end
 
@@ -77,7 +77,7 @@ class TileServerTest < Test::Unit::TestCase
     limit = 11088
     test_body = 'insert juicy binary tile here'
 
-    prepare_stubs({
+    prepare_stubs(
       :verb => :get,
       :page_id => page_id,
       :field_id => field_id,
@@ -86,16 +86,16 @@ class TileServerTest < Test::Unit::TestCase
       :y_coord => y_coord,
       '$limit' => limit,
       :body => test_body
-    })
+    )
 
-    result = tileserver.fetch_tile({
+    result = tileserver.fetch_tile(
       :page_id => page_id,
       :field_id => field_id,
       :zoom => zoom,
       :x_coord => x_coord,
       :y_coord => y_coord,
       '$limit' => limit
-    })
+    )
 
     assert_equal({
       'status' => '200',
@@ -180,7 +180,7 @@ class TileServerTest < Test::Unit::TestCase
       'body' => {
         'error' => true,
         'reason' => 'Received error status and unexpected return type from TileServer',
-        'details' => 'application/octet-stream'
+        'details' => { 'content_type' => 'application/octet-stream' }
       }
     }, result)
   end

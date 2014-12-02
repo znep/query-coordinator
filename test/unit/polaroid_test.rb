@@ -12,8 +12,8 @@ class PolaroidTest < Test::Unit::TestCase
   def setup
     CurrentDomain.stubs(domain: stub(cname: 'localhost'))
     Polaroid.any_instance.stubs(:connection_details => {
-        'address' => 'localhost',
-        'port' => '1337'
+      'address' => 'localhost',
+      'port' => '1337'
     })
   end
 
@@ -106,7 +106,7 @@ class PolaroidTest < Test::Unit::TestCase
       'body' => {
         'error' => true,
         'reason' => 'Received error status and unexpected return type from image service',
-        'details' => 'image/png'
+        'details' => { 'content_type' => 'image/png' }
       }
     }, result)
   end

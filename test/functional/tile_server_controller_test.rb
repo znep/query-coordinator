@@ -35,12 +35,25 @@ class TileServerControllerTest < ActionController::TestCase
   test 'should successfully get proxy_request with a valid page_id field_id zoom x_coord y_coord $limit' do
     @tileserver.stubs(:fetch_tile).returns(@mock_result)
     get :proxy_request, @request_params
-    assert_response :success
+    assert_response(:success)
   end
 
-  test 'should call TileServer#fetch_tile with appropriate parameters' do
+  test 'should call TileServer#fetch_tile with appropriate parameters (with no cookies)' do
     TileServer.any_instance.expects(:fetch_tile).
       with(@request_params).
+      returns({:status => '200', :body => '', :content_type => ''})
+    get :proxy_request, @request_params
+  end
+
+  test 'should call TileServer#fetch_tile with appropriate parameters (with session cookies)' do
+    @request.cookies['_socrata_session_id'] = 'some_id'
+    @request.cookies['some_other_cookie'] = 'some_other_value'
+
+    # NOTE: Only the session cookie should be passed through.
+    request_params_with_cookies = @request_params.merge(:cookies => '_socrata_session_id=some_id')
+
+    TileServer.any_instance.expects(:fetch_tile).
+      with(request_params_with_cookies).
       returns({:status => '200', :body => '', :content_type => ''})
     get :proxy_request, @request_params
   end
@@ -56,7 +69,7 @@ class TileServerControllerTest < ActionController::TestCase
     @tileserver.stubs(:fetch_tile).returns(result)
     get :proxy_request, @request_params
     assert_response(500)
-    assert /^application\/json/.match(@response.headers['Content-Type'])
-    assert_equal result[:body], JSON.parse(@response.body)
+    assert(/^application\/json/.match(@response.headers['Content-Type']))
+    assert_equal(result[:body], JSON.parse(@response.body))
   end
 end

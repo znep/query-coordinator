@@ -1,5 +1,5 @@
 # Simple proxy so the JS can access TileServer. Intended to be temporary; TileServer will be
-# exposed to the 'net once some required AWS work is completed.
+# exposed to the 'net once some prerequisite AWS work is completed.
 class TileServerController < ActionController::Base
   include ActionControllerExtensions
   include CommonSocrataMethods

@@ -508,6 +508,10 @@ html, body
   white-space: nowrap
   overflow: hidden
 
+  // Set this explicitly here, so it doesn't get overridden by fontawesome
+  &[class^="icon-"], &[class*=" icon-"], [class^="icon-"], [class*=" icon-"]
+    font-family: 'socrata-apps'
+
   >a
     cursor: pointer
     @include prefixer(transition, 'all 0.2s ease-out')

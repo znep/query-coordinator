@@ -25,8 +25,41 @@ class NewUxBootstrapControllerTest < ActionController::TestCase
     assert_response(403)
   end
 
+  test 'bootstrap returns 403 if role is not set' do
+    stub_user = stub(roleName: nil)
+    @controller.stubs(has_rights?: true, current_user: stub_user)
+
+    get :bootstrap, id: 'four-four'
+    assert_response(403)
+  end
+
+  test 'bootstrap returns 403 if role is viewer' do
+    stub_user = stub(roleName: 'viewer')
+    @controller.stubs(has_rights?: true, current_user: stub_user)
+
+    get :bootstrap, id: 'four-four'
+    assert_response(403)
+  end
+
+  test 'bootstrap does not return 403 if role is administrator' do
+    stub_user = stub(roleName: 'administrator')
+    @controller.stubs(has_rights?: true, current_user: stub_user)
+
+    get :bootstrap, id: 'four-four'
+    assert_not_equal(@response.response_code, 403)
+  end
+
+  test 'bootstrap does not return 403 if role is publisher' do
+    stub_user = stub(roleName: 'publisher')
+    @controller.stubs(has_rights?: true, current_user: stub_user)
+
+    get :bootstrap, id: 'four-four'
+    assert_not_equal(@response.response_code, 403)
+  end
+
   test 'bootstrap redirects to the last page if the 4x4 already has pages' do
-    @controller.stubs(has_rights?: true)
+    stub_user = stub(roleName: 'administrator')
+    @controller.stubs(has_rights?: true, current_user: stub_user)
     @page_metadata_manager.stubs(
       pages_for_dataset: {
         status: '200', body: { publisher: [
@@ -40,7 +73,8 @@ class NewUxBootstrapControllerTest < ActionController::TestCase
   end
 
   test 'bootstrap redirects to dataset page with error, if page_metadata_manager hates us' do
-    @controller.stubs(has_rights?: true)
+    stub_user = stub(roleName: 'administrator')
+    @controller.stubs(has_rights?: true, current_user: stub_user)
     @page_metadata_manager.stubs(
       pages_for_dataset: { status: '500', body: { error: 'you suck' } }
     )
@@ -50,7 +84,8 @@ class NewUxBootstrapControllerTest < ActionController::TestCase
   end
 
   test 'bootstrap returns 404 if dataset does not exist' do
-    @controller.stubs(has_rights?: true)
+    stub_user = stub(roleName: 'administrator')
+    @controller.stubs(has_rights?: true, current_user: stub_user)
     @page_metadata_manager.stubs(
       pages_for_dataset: { status: '404', body: [] }
     )
@@ -62,7 +97,8 @@ class NewUxBootstrapControllerTest < ActionController::TestCase
   end
 
   test 'bootstrap creates & redirects to new page with cards for the first 10 non-system columns' do
-    @controller.stubs(has_rights?: true)
+    stub_user = stub(roleName: 'administrator')
+    @controller.stubs(has_rights?: true, current_user: stub_user)
     @page_metadata_manager.stubs(
       pages_for_dataset: { status: '404', body: [] },
       create: { status: '200', body: { pageId: 'neoo-page' } },
@@ -78,7 +114,8 @@ class NewUxBootstrapControllerTest < ActionController::TestCase
   end
 
   test 'bootstrap redirects to dataset page with error if error while creating page' do
-    @controller.stubs(has_rights?: true)
+    stub_user = stub(roleName: 'administrator')
+    @controller.stubs(has_rights?: true, current_user: stub_user)
     @page_metadata_manager.stubs(
       pages_for_dataset: { status: '404', body: [] },
       create: { status: '500' },

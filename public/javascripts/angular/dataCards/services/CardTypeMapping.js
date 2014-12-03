@@ -297,7 +297,7 @@
 
     }
 
-    function getdefaultVisualizationForColumn(column) {
+    function getDefaultVisualizationForColumn(column) {
 
       var cardTypes = getCardTypesForColumn(column);
 
@@ -388,7 +388,7 @@
      */
 
     function visualizationSupportedForColumn(column) {
-      return CARD_TYPES.hasOwnProperty(getdefaultVisualizationForColumn(column));
+      return CARD_TYPES.hasOwnProperty(getDefaultVisualizationForColumn(column));
     }
 
     /**

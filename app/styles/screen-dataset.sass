@@ -512,6 +512,9 @@ html, body
   &[class^="icon-"], &[class*=" icon-"], [class^="icon-"], [class*=" icon-"]
     font-family: 'socrata-apps'
 
+  &.icon-cards::before
+    float: left
+
   >a
     cursor: pointer
     @include prefixer(transition, 'all 0.2s ease-out')

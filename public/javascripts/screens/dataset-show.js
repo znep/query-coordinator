@@ -839,6 +839,21 @@ $(function()
                 newUxLink.addClass('collapsed');
                 $.cookies.set('newUxCollapsed', true);
             });
+        }).on('click', 'a', function(e) {
+          // Add some feedback
+          var screenOverlay = $('<div class="overlay"/>');
+          var spinner = $('<img class="spinner" title="{0}" src="/images/spinner.svg" />'.format(
+            $.t('screens.ds.new_ux_creating_page')
+          ));
+
+          newUxLink.addClass('loading').
+            append(spinner).
+            after(screenOverlay);
+
+          // Push the reveal to the next frame so the animation actually happens
+          _.defer(function() {
+            screenOverlay.css('opacity', 1);
+          });
         });
     }
     if (blist.feature_flags.enable_newux_bootstrap_link) {

@@ -9,7 +9,10 @@ module AngularHelper
   end
 
   def angular_config
-    { 'statsdEnabled' => APP_CONFIG['statsd_enabled'] }.tap do |config|
+    {
+      'statsdEnabled' => APP_CONFIG['statsd_enabled'],
+      'cardTypeMapping' => JSON(File.read("#{Rails.root}/lib/data/card-type-mapping.json"))
+    }.tap do |config|
       FeatureFlags.list.each do |feature_key|
         js_feature_key = "#{feature_key[0]}#{feature_key.camelize[1..-1]}"
         config.merge!(js_feature_key => FeatureFlags.derive(nil, request)[feature_key.to_sym])

@@ -1,224 +1,7 @@
 (function() {
   'use strict';
 
-  function CardTypeMapping(ServerConfig, $exceptionHandler, $log) {
-
-    function getCardTypeForNumber(logicalDatatype) {
-
-      var mapping = null;
-
-      switch (logicalDatatype) {
-
-        case 'category':
-          mapping = {
-            'availableTypes': ['column', 'search'],
-            'defaultType': 'column'
-          };
-          break;
-
-        case 'location':
-          mapping = {
-            'availableTypes': ['choropleth'],
-            'defaultType': 'choropleth'
-          };
-          break;
-
-        case 'time':
-          mapping = {
-            'availableTypes': ['timeline'],
-            'defaultType': 'timeline'
-          };
-          break;
-
-        case 'text':
-        case 'name':
-        case 'identifier':
-          mapping = {
-            'availableTypes': ['column', 'search'],
-            'defaultType': 'search'
-          };
-          break;
-
-        default:
-          break;
-
-      }
-
-      return mapping;
-
-    }
-
-    function getCardTypeForPoint(logicalDatatype) {
-
-      var mapping = null;
-
-      switch (logicalDatatype) {
-
-        case 'location':
-          mapping = {
-            'availableTypes': ['feature'],
-            'defaultType': 'feature'
-          };
-          break;
-
-        default:
-          break;
-
-      }
-
-      return mapping;
-
-    }
-
-
-    function getCardTypeForText(logicalDatatype) {
-
-      var mapping = null;
-
-      // It is possible for this to also map to choropleth cards with a 'location' logical data
-      // type but that has been removed. We should treat anything that breaks as a result as bad data.
-      switch (logicalDatatype) {
-
-        case 'category':
-          mapping = {
-            'availableTypes': ['column', 'search'],
-            'defaultType': 'column'
-          };
-          break;
-
-        // DEPRECATED
-        case 'location':
-          // Note that we must wrap this exception in the $exceptionHandler because
-          // otherwise the model's lazy loading breaks.
-          var message = 'Encountered column with physicalDatatype "text" ' +
-                        'and logicalDatatype "location".';
-          $exceptionHandler(new Error(message));
-          break;
-
-        case 'text':
-        case 'name':
-        case 'identifier':
-          mapping = {
-            'availableTypes': ['column', 'search'],
-            'defaultType': 'search'
-          };
-          break;
-
-        default:
-          break;
-
-      }
-
-      return mapping;
-
-    }
-
-    function getCardTypeForGeoEntity(logicalDatatype) {
-
-      var mapping = null;
-
-      switch (logicalDatatype) {
-
-        default:
-          break;
-
-      }
-
-      return mapping;
-
-    }
-
-    function getCardTypeForTimestamp(logicalDatatype) {
-
-      var mapping = null;
-
-      switch (logicalDatatype) {
-
-        case 'category':
-          mapping = {
-            'availableTypes': ['column'],
-            'defaultType': 'column'
-          };
-          break;
-
-        case 'time':
-        case 'text':
-        case 'name':
-        case 'identifier':
-          mapping = {
-            'availableTypes': ['timeline'],
-            'defaultType': 'timeline'
-          };
-          break;
-
-        default:
-          break;
-
-      }
-
-      return mapping;
-
-    }
-
-    function getCardTypeForBoolean(logicalDatatype) {
-
-      var mapping = null;
-
-      switch (logicalDatatype) {
-
-        case 'category':
-          mapping = {
-            'availableTypes': ['column'],
-            'defaultType': 'column'
-          };
-          break;
-
-        default:
-          break;
-
-      }
-
-      return mapping;
-
-    }
-
-    function getCardTypeForMoney(logicalDatatype) {
-
-      var mapping = null;
-
-      switch (logicalDatatype) {
-
-        case 'category':
-          mapping = {
-            'availableTypes': ['column'],
-            'defaultType': 'column'
-          };
-          break;
-
-        case 'time':
-          mapping = {
-            'availableTypes': ['timeline'],
-            'defaultType': 'timeline'
-          };
-          break;
-
-        case 'text':
-        case 'name':
-        case 'identifier':
-          mapping = {
-            'availableTypes': ['search'],
-            'defaultType': 'search'
-          };
-          break;
-
-        default:
-          break;
-
-      }
-
-      return mapping;
-
-    }
+  function CardTypeMapping(ServerConfig, Constants, $exceptionHandler, $log) {
 
     function getCardTypesForColumn(column) {
 
@@ -245,51 +28,10 @@
       physicalDatatype = column.physicalDatatype;
       logicalDatatype = column.logicalDatatype;
 
-
-      switch (physicalDatatype) {
-
-        case 'number':
-          cardType = getCardTypeForNumber(logicalDatatype);
-          break;
-
-        case 'point':
-          cardType = getCardTypeForPoint(logicalDatatype);
-          break;
-
-        case 'text':
-          cardType = getCardTypeForText(logicalDatatype);
-          break;
-
-        case 'geo_entity':
-          cardType = getCardTypeForGeoEntity(logicalDatatype);
-          break;
-
-        case 'timestamp':           // To be deprecated
-        case 'fixed_timestamp':     // To be deprecated
-        case 'floating_timestamp':
-          cardType = getCardTypeForTimestamp(logicalDatatype);
-          break;
-
-        case 'boolean':
-          cardType = getCardTypeForBoolean(logicalDatatype);
-          break;
-
-        case 'money':
-          cardType = getCardTypeForMoney(logicalDatatype);
-          break;
-
-        default:
-          if (logicalDatatype === '*') {
-            cardType = {
-              'avaialbleTypes': ['table'],
-              'defaultType': 'table'
-            };
-          }
-          break;
-
-      }
-
-      if (cardType === null) {
+      if (cardTypeMapping.hasOwnProperty(logicalDatatype) &&
+          cardTypeMapping[logicalDatatype].hasOwnProperty(physicalDatatype)) {
+        cardType = cardTypeMapping[logicalDatatype][physicalDatatype];
+      } else {
         warnOnceOnUnknownCardType(logicalDatatype, physicalDatatype);
       }
 
@@ -300,12 +42,30 @@
     function getDefaultVisualizationForColumn(column) {
 
       var cardTypes = getCardTypesForColumn(column);
+      var cardinality;
+      var defaultType;
 
-      if (cardTypes === null) {
+      // If there is no defined card type, fail early with a null result.
+      if (cardTypes.available.length === 0) {
         return null;
       }
 
-      return cardTypes.defaultType;
+      // If the cardinality is known for this column, use it. Otherwise,
+      // fall back to Number.MAX_SAFE_INTEGER.
+      if (!column.hasOwnProperty('cardinality') || column.cardinality > Number.MAX_SAFE_INTEGER) {
+        cardinality = Number.MAX_SAFE_INTEGER;
+      } else {
+        cardinality = parseInt(column.cardinality, 10);
+      }
+
+      // Finally, determine which type to which we will map based on the column's cardinality.
+      if (cardinality <= parseInt(Constants['VISUALIZATION_MAPPING_CARDINALITY_THRESHOLD'], 10)) {
+        defaultType = cardTypes.lowCardinalityDefault;
+      } else {
+        defaultType = cardTypes.highCardinalityDefault;
+      }
+
+      return defaultType;
 
     }
 
@@ -362,7 +122,7 @@
       if (columnCardTypes === null) {
         return [];
       }
-      return columnCardTypes.availableTypes;
+      return columnCardTypes.available;
      }
 
     /**
@@ -373,11 +133,7 @@
      */
 
      function defaultVisualizationForColumn(column) {
-      var columnCardTypes = getCardTypesForColumn(column);
-      if (columnCardTypes === null) {
-        return null;
-      }
-      return getCardTypesForColumn(column).defaultType;
+       return getDefaultVisualizationForColumn(column);
      }
 
     /**
@@ -454,6 +210,8 @@
       };
 
     }
+
+    var cardTypeMapping = ServerConfig.get('cardTypeMapping');
 
     // Keep track of which logical/physical datatype combinations have already
     // triggered warnings so that we don't get rate-limited by Airbrake in

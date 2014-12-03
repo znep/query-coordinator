@@ -791,6 +791,11 @@ $(function()
                           '<a>{0}</a></div>'.format($.t('screens.ds.new_ux_link')));
         var anchor = newUxLink.find('a');
 
+        // Restore the state
+        if ($.cookies.get('newUxCollapsed')) {
+          newUxLink.addClass('collapsed');
+        }
+
         if (blist.dataset.newBackend) {
             // Kratos shapefiles apparently are datasets, but have no dataset metadata, which we
             // need to create a newux page. So - check that there's dataset metadata before showing
@@ -817,6 +822,7 @@ $(function()
             // If we're collapsed, expand ourselves.
             if ($self.hasClass('collapsed')) {
                 $self.removeClass('collapsed');
+                $.cookies.del('newUxCollapsed');
             }
 
         }).on('click', '.icon-close', function(e) {
@@ -831,6 +837,7 @@ $(function()
             // start of the animation
             _.defer(function() {
                 newUxLink.addClass('collapsed');
+                $.cookies.set('newUxCollapsed', true);
             });
         });
     }

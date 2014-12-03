@@ -46,7 +46,7 @@ class NewUxBootstrapControllerTest < ActionController::TestCase
     @controller.stubs(has_rights?: true, current_user: stub_user)
 
     get :bootstrap, id: 'four-four'
-    assert_not_equal @response.response_code, 403
+    assert_not_equal(@response.response_code, 403)
   end
 
   test 'bootstrap does not return 403 if role is publisher' do
@@ -54,7 +54,7 @@ class NewUxBootstrapControllerTest < ActionController::TestCase
     @controller.stubs(has_rights?: true, current_user: stub_user)
 
     get :bootstrap, id: 'four-four'
-    assert_not_equal @response.response_code, 403
+    assert_not_equal(@response.response_code, 403)
   end
 
   test 'bootstrap redirects to the last page if the 4x4 already has pages' do

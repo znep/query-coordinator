@@ -842,9 +842,11 @@ $(function()
         }).on('click', 'a', function(e) {
           // Add some feedback
           var screenOverlay = $('<div class="overlay"/>');
-          var spinner = $('<img class="spinner" title="{0}" src="/images/spinner.svg" />'.format(
-            $.t('screens.ds.new_ux_creating_page')
-          ));
+          var spinner = $(
+            '<img class="spinner" ' +
+            'title="{0}" '.format($.t('screens.ds.new_ux_creating_page')) +
+            'src="/stylesheets/images/common/BrandedSpinner.gif" />'
+          );
 
           newUxLink.addClass('loading').
             append(spinner).
@@ -852,7 +854,7 @@ $(function()
 
           // Push the reveal to the next frame so the animation actually happens
           _.defer(function() {
-            screenOverlay.css('opacity', 1);
+            screenOverlay.add(spinner).css('opacity', 1);
           });
         });
     }

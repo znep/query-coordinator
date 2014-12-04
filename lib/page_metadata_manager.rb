@@ -10,7 +10,7 @@ class PageMetadataManager
     'displayMode' => 'visualization',
     'expanded' => false,
     'cardinality' => nil,
-  }
+  }.freeze
 
   # Creates a new page
   def create(data, options = {})

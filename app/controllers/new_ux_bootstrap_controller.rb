@@ -81,7 +81,7 @@ class NewUxBootstrapController < ActionController::Base
     cards = dataset_metadata[:columns].map do |column|
       unless Phidippides::SYSTEM_COLUMN_ID_REGEX.match(column[:name])
         card = PageMetadataManager::CARD_TEMPLATE.deep_dup
-        card.merge!(
+        card.merge(
           'description' => column[:title],
           'fieldName' => column[:name],
           'cardinality' => column[:cardinality],

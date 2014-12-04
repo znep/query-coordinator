@@ -1,6 +1,9 @@
 (function() {
   'use strict';
 
+  var MAX_SAFE_INTEGER = Number.MAX_SAFE_INTEGER || 9007199254740991;
+  var MIN_SAFE_INTEGER = Number.MIN_SAFE_INTEGER || -9007199254740991;
+
   function CardTypeMapping(ServerConfig, Constants, $exceptionHandler, $log) {
 
     function getCardTypesForColumn(column) {
@@ -53,8 +56,8 @@
       // If the cardinality is known for this column and it is within the bounds
       // of safe integers, use the column's cardinality. Otherwise, fall back to 0.
       if (!column.hasOwnProperty('cardinality') ||
-          column.cardinality < Number.MIN_SAFE_INTEGER ||
-          column.cardinality > Number.MAX_SAFE_INTEGER) {
+          column.cardinality < MIN_SAFE_INTEGER ||
+          column.cardinality > MAX_SAFE_INTEGER) {
         cardinality = 0;
       } else {
         cardinality = parseInt(column.cardinality, 10);

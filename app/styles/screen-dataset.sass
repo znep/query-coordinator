@@ -504,13 +504,16 @@ html, body
   background-color: $new-ux-link-color
   color: white
   padding: 0.5em
-  letter-spacing: -1px
   white-space: nowrap
-  overflow: hidden
+  z-index: 101
+  // Because this element has an icon- class on it (for the icon), our actual text's font gets
+  // messed up. So, get the normal font.
+  font-family: inherit
 
   // Set this explicitly here, so it doesn't get overridden by fontawesome
   &[class^="icon-"], &[class*=" icon-"], [class^="icon-"], [class*=" icon-"]
-    font-family: 'socrata-apps'
+    &::before
+      font-family: 'socrata-apps'
 
   &.icon-cards::before
     float: left
@@ -538,6 +541,16 @@ html, body
     &:hover
       font-weight: 900
 
+  .spinner
+    @include prefixer(transition, 'all 0.05s ease-out')
+    position: absolute
+    bottom: 0
+    left: 0
+    height: 100%
+    @include prefixer(border-radius, 100px)
+    opacity: 0
+    background-color: rgba(255, 255, 255, .9)
+
   &.collapsed
     >a
       width: 0 !important
@@ -550,3 +563,33 @@ html, body
     &.icon-cards
       cursor: pointer
 
+  // The overlay for the link itself - this one dims the link
+  &::after
+    content: '\feff'
+    opacity: 0
+    @include prefixer(transition, 'opacity 0.05s ease-out')
+
+  // The overlay for the entire page underneath the link
+  + .overlay, &.loading::after
+    position: fixed
+    top: 0
+    left: 0
+    bottom: 0
+    right: 0
+    background-color: rgba(128, 128, 128, 0.4)
+    opacity: 0
+    z-index: 100
+    @include prefixer(transition, 'all 0.05s ease-out')
+    text-align: center
+    padding: 2em
+
+  &.loading
+    padding-left: 1.75em
+
+    &::before
+      content: ''
+
+    &::after
+      position: absolute
+      background-color: rgba(255, 255, 255, .2)
+      opacity: 1

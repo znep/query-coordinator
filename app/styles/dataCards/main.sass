@@ -3,7 +3,7 @@
 @import dataCards/common/colors
 @import dataCards/selection-label
 @import dataCards/clearable-input
-
+@import dataCards/animations
 
 body
   margin: 0
@@ -258,24 +258,6 @@ $facets-list-width: 20%
 
 // The loading spinner is actually a sibling of cardVisualization* in the DOM but
 // is styled here since the styles apply globally.
-
-@keyframes loadingspin
-  0%
-    transform: rotateZ(0deg)
-  100%
-    transform: rotateZ(360deg)
-
-@-webkit-keyframes loadingspin
-  0%
-    -webkit-transform: rotateZ(0deg)
-  100%
-    -webkit-transform: rotateZ(360deg)
-
-@-moz-keyframes loadingspin
-  0%
-    -moz-transform: rotateZ(0deg)
-  100%
-    -moz-transform: rotateZ(360deg)
 
 .spinner
   $spinner-size: 25px

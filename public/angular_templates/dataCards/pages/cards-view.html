@@ -96,10 +96,9 @@
       edit-mode="editMode"
       global-where-clause-fragment="globalWhereClauseFragment"
       expanded-card="expandedCard"
-      allow-add-card="!hasAllCards"
+      allow-add-card="!allVisualizableColumnsVisualized"
       dataset-columns="datasetColumns"
-      chooser-mode="chooserMode"
-      >
+      chooser-mode="chooserMode">
     </card-layout>
 
   </div>
@@ -113,7 +112,8 @@
       on-customize-card="customizeCard"
       dataset-columns="datasetColumns"
       dialog-state="addCardState"
-      page="page"></add-card-dialog>
+      page="page">
+    </add-card-dialog>
 
   </modal-dialog>
 
@@ -124,7 +124,8 @@
 
     <customize-card-dialog
       dialog-state="customizeState"
-      page="page" />
+      page="page">
+    </customize-card-dialog>
 
   </modal-dialog>
 

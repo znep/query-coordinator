@@ -187,7 +187,7 @@ describe('CardLayout directive', function() {
           ' global-where-clause-fragment="where"',
           ' edit-mode="editMode"',
           ' chooser-mode="chooserMode"',
-          ' allow-add-card="!hasAllCards"',
+          ' allow-add-card="!allVisualizableColumnsVisualized"',
           ' expanded-card="expandedCard"></card-layout>',
         '</div>'
           ].join('');
@@ -618,13 +618,13 @@ describe('CardLayout directive', function() {
       it('should enable or disable "Add card here" buttons as the controller indicates', function() {
         var cl = createLayoutWithCards();
 
-        cl.outerScope.hasAllCards = false;
+        cl.outerScope.allVisualizableColumnsVisualized = false;
         cl.outerScope.editMode = true;
         cl.outerScope.$apply();
 
         expect($('.add-card-button').first().hasClass('disabled')).to.be.false;
 
-        cl.outerScope.hasAllCards = true;
+        cl.outerScope.allVisualizableColumnsVisualized = true;
         cl.outerScope.$apply();
 
         expect($('.add-card-button').first().hasClass('disabled')).to.be.true;
@@ -633,7 +633,7 @@ describe('CardLayout directive', function() {
       it('should show a flyout with the text "All cards are present" when a disabled "Add card here" button is mousemoved', function() {
         var cl = createLayoutWithCards();
 
-        cl.outerScope.hasAllCards = true;
+        cl.outerScope.allVisualizableColumnsVisualized = true;
         cl.outerScope.editMode = true;
         cl.outerScope.$apply();
 
@@ -653,7 +653,7 @@ describe('CardLayout directive', function() {
       it('should not show a flyout with the text "All cards are present" when an enabled "Add card here" button is mousemoved', function() {
         var cl = createLayoutWithCards();
 
-        cl.outerScope.hasAllCards = false;
+        cl.outerScope.allVisualizableColumnsVisualized = false;
         cl.outerScope.editMode = true;
         cl.outerScope.$apply();
 
@@ -674,7 +674,7 @@ describe('CardLayout directive', function() {
         var cl = createLayoutWithCards();
         var hasBeenCalled = false;
 
-        cl.outerScope.hasAllCards = false;
+        cl.outerScope.allVisualizableColumnsVisualized = false;
         cl.outerScope.editMode = true;
         cl.outerScope.$apply();
 

@@ -34,6 +34,22 @@ describe('addCardDialog', function() {
   var CardTypeMapping;
   var $httpBackend;
 
+  var mockServerConfig = {
+    get: function(key) {
+      if (key === 'oduxCardTypeMapping') {
+        return {"amount":{"boolean":{"lowCardinalityDefault":null,"highCardinalityDefault":null,"available":[]},"fixed_timestamp":{"lowCardinalityDefault":null,"highCardinalityDefault":null,"available":[]},"floating_timestamp":{"lowCardinalityDefault":null,"highCardinalityDefault":null,"available":[]},"geo_entity":{"lowCardinalityDefault":null,"highCardinalityDefault":null,"available":[]},"money":{"lowCardinalityDefault":null,"highCardinalityDefault":null,"available":[]},"number":{"lowCardinalityDefault":null,"highCardinalityDefault":null,"available":[]},"point":{"lowCardinalityDefault":null,"highCardinalityDefault":null,"available":[]},"text":{"lowCardinalityDefault":null,"highCardinalityDefault":null,"available":[]},"timestamp":{"lowCardinalityDefault":null,"highCardinalityDefault":null,"available":[]},"*":{"lowCardinalityDefault":"table","highCardinalityDefault":"table","available":["table"]}},"category":{"boolean":{"lowCardinalityDefault":"column","highCardinalityDefault":"column","available":["column"]},"fixed_timestamp":{"lowCardinalityDefault":"column","highCardinalityDefault":"column","available":["column"]},"floating_timestamp":{"lowCardinalityDefault":"column","highCardinalityDefault":"column","available":["column"]},"geo_entity":{"lowCardinalityDefault":null,"highCardinalityDefault":null,"available":[]},"money":{"lowCardinalityDefault":"column","highCardinalityDefault":"column","available":["column"]},"number":{"lowCardinalityDefault":"column","highCardinalityDefault":"search","available":["column","search"]},"point":{"lowCardinalityDefault":null,"highCardinalityDefault":null,"available":[]},"text":{"lowCardinalityDefault":"column","highCardinalityDefault":"search","available":["column","search"]},"timestamp":{"lowCardinalityDefault":"column","highCardinalityDefault":"column","available":["column"]},"*":{"lowCardinalityDefault":"table","highCardinalityDefault":"table","available":["table"]}},"identifier":{"boolean":{"lowCardinalityDefault":null,"highCardinalityDefault":null,"available":[]},"fixed_timestamp":{"lowCardinalityDefault":"timeline","highCardinalityDefault":"timeline","available":["timeline"]},"floating_timestamp":{"lowCardinalityDefault":"timeline","highCardinalityDefault":"timeline","available":["timeline"]},"geo_entity":{"lowCardinalityDefault":null,"highCardinalityDefault":null,"available":[]},"money":{"lowCardinalityDefault":"search","highCardinalityDefault":"search","available":["search"]},"number":{"lowCardinalityDefault":"search","highCardinalityDefault":"search","available":["column","search"]},"point":{"lowCardinalityDefault":null,"highCardinalityDefault":null,"available":[]},"text":{"lowCardinalityDefault":"search","highCardinalityDefault":"search","available":["column","search"]},"timestamp":{"lowCardinalityDefault":"timeline","highCardinalityDefault":"timeline","available":["timeline"]},"*":{"lowCardinalityDefault":"table","highCardinalityDefault":"table","available":["table"]}},"location":{"boolean":{"lowCardinalityDefault":null,"highCardinalityDefault":null,"available":[]},"fixed_timestamp":{"lowCardinalityDefault":null,"highCardinalityDefault":null,"available":[]},"floating_timestamp":{"lowCardinalityDefault":null,"highCardinalityDefault":null,"available":[]},"geo_entity":{"lowCardinalityDefault":null,"highCardinalityDefault":null,"available":[]},"money":{"lowCardinalityDefault":null,"highCardinalityDefault":null,"available":[]},"number":{"lowCardinalityDefault":"choropleth","highCardinalityDefault":"choropleth","available":["choropleth"]},"point":{"lowCardinalityDefault":"feature","highCardinalityDefault":"feature","available":["feature"]},"text":{"lowCardinalityDefault":"choropleth","highCardinalityDefault":"choropleth","available":["choropleth"]},"timestamp":{"lowCardinalityDefault":null,"highCardinalityDefault":null,"available":[]},"*":{"lowCardinalityDefault":"table","highCardinalityDefault":"table","available":["table"]}},"name":{"boolean":{"lowCardinalityDefault":null,"highCardinalityDefault":null,"available":[]},"fixed_timestamp":{"lowCardinalityDefault":"timeline","highCardinalityDefault":"timeline","available":["timeline"]},"floating_timestamp":{"lowCardinalityDefault":"timeline","highCardinalityDefault":"timeline","available":["timeline"]},"geo_entity":{"lowCardinalityDefault":null,"highCardinalityDefault":null,"available":[]},"money":{"lowCardinalityDefault":"search","highCardinalityDefault":"search","available":["search"]},"number":{"lowCardinalityDefault":"search","highCardinalityDefault":"search","available":["column","search"]},"point":{"lowCardinalityDefault":null,"highCardinalityDefault":null,"available":[]},"text":{"lowCardinalityDefault":"search","highCardinalityDefault":"search","available":["column","search"]},"timestamp":{"lowCardinalityDefault":"timeline","highCardinalityDefault":"timeline","available":["timeline"]},"*":{"lowCardinalityDefault":"table","highCardinalityDefault":"table","available":["table"]}},"text":{"boolean":{"lowCardinalityDefault":null,"highCardinalityDefault":null,"available":[]},"fixed_timestamp":{"lowCardinalityDefault":"timeline","highCardinalityDefault":"timeline","available":["timeline"]},"floating_timestamp":{"lowCardinalityDefault":"timeline","highCardinalityDefault":"timeline","available":["timeline"]},"geo_entity":{"lowCardinalityDefault":null,"highCardinalityDefault":null,"available":[]},"money":{"lowCardinalityDefault":"search","highCardinalityDefault":"search","available":["search"]},"number":{"lowCardinalityDefault":"search","highCardinalityDefault":"search","available":["column","search"]},"point":{"lowCardinalityDefault":null,"highCardinalityDefault":null,"available":[]},"text":{"lowCardinalityDefault":"search","highCardinalityDefault":"search","available":["column","search"]},"timestamp":{"lowCardinalityDefault":"timeline","highCardinalityDefault":"timeline","available":["timeline"]},"*":{"lowCardinalityDefault":"table","highCardinalityDefault":"table","available":["table"]}},"time":{"boolean":{"lowCardinalityDefault":null,"highCardinalityDefault":null,"available":[]},"fixed_timestamp":{"lowCardinalityDefault":"timeline","highCardinalityDefault":"timeline","available":["timeline"]},"floating_timestamp":{"lowCardinalityDefault":"timeline","highCardinalityDefault":"timeline","available":["timeline"]},"geo_entity":{"lowCardinalityDefault":null,"highCardinalityDefault":null,"available":[]},"money":{"lowCardinalityDefault":"timeline","highCardinalityDefault":"timeline","available":["timeline"]},"number":{"lowCardinalityDefault":"timeline","highCardinalityDefault":"timeline","available":["timeline"]},"point":{"lowCardinalityDefault":null,"highCardinalityDefault":null,"available":[]},"text":{"lowCardinalityDefault":null,"highCardinalityDefault":null,"available":[]},"timestamp":{"lowCardinalityDefault":"timeline","highCardinalityDefault":"timeline","available":["timeline"]},"*":{"lowCardinalityDefault":"table","highCardinalityDefault":"table","available":["table"]}},"*":{"boolean":{"lowCardinalityDefault":null,"highCardinalityDefault":null,"available":[]},"fixed_timestamp":{"lowCardinalityDefault":null,"highCardinalityDefault":null,"available":[]},"floating_timestamp":{"lowCardinalityDefault":null,"highCardinalityDefault":null,"available":[]},"geo_entity":{"lowCardinalityDefault":null,"highCardinalityDefault":null,"available":[]},"money":{"lowCardinalityDefault":null,"highCardinalityDefault":null,"available":[]},"number":{"lowCardinalityDefault":null,"highCardinalityDefault":null,"available":[]},"point":{"lowCardinalityDefault":null,"highCardinalityDefault":null,"available":[]},"text":{"lowCardinalityDefault":null,"highCardinalityDefault":null,"available":[]},"timestamp":{"lowCardinalityDefault":null,"highCardinalityDefault":null,"available":[]},"*":{"lowCardinalityDefault":"table","highCardinalityDefault":"table","available":["table"]}},":version":"0.2"};
+      } else {
+        return true;
+      }
+    }
+  };
+
+  beforeEach(function() {
+    module(function($provide) {
+      $provide.constant('ServerConfig', mockServerConfig);
+    });
+  });
+
   beforeEach(inject(function($injector) {
     testHelpers = $injector.get('testHelpers');
     Card = $injector.get('Card');
@@ -66,6 +82,14 @@ describe('addCardDialog', function() {
       'description': '???',
       'logicalDatatype': 'amount',
       'physicalDatatype': 'number'
+    },
+    'point': {
+      'name': 'point',
+      'title': 'Points where crimes have been committed.',
+      'description': 'Points.',
+      'logicalDatatype': 'location',
+      'physicalDatatype': 'point',
+      'importance': 2
     },
     'ward': {
       'name': 'ward',
@@ -276,6 +300,7 @@ describe('addCardDialog', function() {
 
     dialog.scope.dialogState.cardSize = 1;
     $httpBackend.expectGET(/\/api\/id\/rook-king.json.*/).respond([]);
+    $httpBackend.expectGET(/\/resource\/rook-king.json.*/).respond([]);
     $httpBackend.expectGET(/\/resource\/mash-apes.geojson.*/).respond([]);
     dialog.element.find('option[value=spot]').prop('selected', true).trigger('change');
 
@@ -291,6 +316,7 @@ describe('addCardDialog', function() {
 
     dialog.scope.dialogState.cardSize = 2;
     $httpBackend.expectGET(/\/api\/id\/rook-king.json.*/).respond([]);
+    $httpBackend.expectGET(/\/resource\/rook-king.json.*/).respond([]);
     $httpBackend.expectGET(/\/resource\/mash-apes.geojson.*/).respond([]);
     dialog.element.find('option[value=ward]').prop('selected', true).trigger('change');
 
@@ -304,6 +330,7 @@ describe('addCardDialog', function() {
 
     dialog.scope.dialogState.cardSize = 2;
     $httpBackend.expectGET(/\/api\/id\/rook-king.json.*/).respond([]);
+    $httpBackend.expectGET(/\/resource\/rook-king.json.*/).respond([]);
     dialog.element.find('option[value=multipleVisualizations]').prop('selected', true).trigger('change');
 
     expect(dialog.element.find('.add-card-type-option:visible').length).to.equal(2);
@@ -318,6 +345,7 @@ describe('addCardDialog', function() {
 
     dialog.scope.dialogState.cardSize = 2;
     $httpBackend.expectGET(/\/api\/id\/rook-king.json.*/).respond([]);
+    $httpBackend.expectGET(/\/resource\/rook-king.json.*/).respond([]);
     dialog.element.find('option[value=multipleVisualizations]').prop('selected', true).trigger('change');
 
     expect(dialog.element.find('.add-card-type-option:visible').length).to.equal(2);
@@ -344,6 +372,7 @@ describe('addCardDialog', function() {
 
     dialog.scope.dialogState.cardSize = 2;
     $httpBackend.expectGET(/\/api\/id\/rook-king.json.*/).respond([]);
+    $httpBackend.expectGET(/\/resource\/rook-king.json.*/).respond([]);
     $httpBackend.expectGET(/\/resource\/mash-apes.geojson.*/).respond([]);
     dialog.element.find('option[value=ward]').prop('selected', true).trigger('change');
 
@@ -360,16 +389,19 @@ describe('addCardDialog', function() {
     expect(customizeButton.length).to.equal(0); // should only appear for choropleths
 
     $httpBackend.expectGET(/\/api\/id\/rook-king.json.*/).respond([]);
+    $httpBackend.expectGET(/\/resource\/rook-king.json.*/).respond([]);
     $httpBackend.expectGET(/\/resource\/mash-apes.geojson.*/).respond([]);
-    dialog.element.find('select>option[value="bar"]').prop('selected', true).trigger('change');
+    dialog.element.find('select > option[value="bar"]').prop('selected', true).trigger('change');
 
     customizeButton = dialog.element.find('.card-control[title^="Customize"]');
     expect(customizeButton.length).to.equal(0); // should only appear for choropleths
 
     // Now select the choropleth
     $httpBackend.expectGET(/\/api\/id\/rook-king.json.*/).respond([]);
+    $httpBackend.expectGET(/\/resource\/rook-king.json.*/).respond([]);
     $httpBackend.expectGET(/\/resource\/mash-apes.geojson.*/).respond([]);
-    dialog.element.find('select>option[value="ward"]').prop('selected', true).trigger('change');
+    dialog.element.find('select > option[value="ward"]').prop('selected', true).trigger('change');
+
 
     customizeButton = dialog.element.find('.card-control[title^="Customize"]');
     expect(customizeButton.length).to.equal(1);

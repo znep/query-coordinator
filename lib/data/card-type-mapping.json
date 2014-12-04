@@ -43,7 +43,7 @@
     "money": { "lowCardinalityDefault": null, "highCardinalityDefault": null, "available": [] },
     "number": { "lowCardinalityDefault": "choropleth", "highCardinalityDefault": "choropleth", "available": ["choropleth"] },
     "point": { "lowCardinalityDefault": "feature", "highCardinalityDefault": "feature", "available": ["feature"] },
-    "text": { "lowCardinalityDefault": "choropleth", "highCardinalityDefault": "choropleth", "available": ["choropleth"] },
+    "text": { "lowCardinalityDefault": null, "highCardinalityDefault": null, "available": [] },
     "timestamp": { "lowCardinalityDefault": null, "highCardinalityDefault": null, "available": [] },
     "*": { "lowCardinalityDefault": "table", "highCardinalityDefault": "table", "available": ["table"] }
   },

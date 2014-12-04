@@ -14,8 +14,8 @@
         return null;
       }
 
-      if (!column.hasOwnProperty('physicalDatatype') ||
-          !column.hasOwnProperty('logicalDatatype')) {
+      if (!column.hasOwnProperty('logicalDatatype') ||
+          !column.hasOwnProperty('physicalDatatype')) {
 
         $log.error(
           'Could not determine card type for column: "{0}" (physical and/or logical datatype is missing).'.
@@ -46,7 +46,7 @@
       var defaultType;
 
       // If there is no defined card type, fail early with a null result.
-      if (cardTypes.available.length === 0) {
+      if (cardTypes === null) {
         return null;
       }
 
@@ -59,7 +59,7 @@
       }
 
       // Finally, determine which type to which we will map based on the column's cardinality.
-      if (cardinality <= parseInt(Constants['VISUALIZATION_MAPPING_CARDINALITY_THRESHOLD'], 10)) {
+      if (cardinality <= parseInt(Constants['CARD_TYPE_MAPPING_CARDINALITY_THRESHOLD'], 10)) {
         defaultType = cardTypes.lowCardinalityDefault;
       } else {
         defaultType = cardTypes.highCardinalityDefault;
@@ -74,13 +74,7 @@
       // TODO: how would I reactify this?
       var columns = cardModel.page.getCurrentValue('dataset').getCurrentValue('columns');
       var column = columns[cardModel.fieldName];
-      var cardTypes = getCardTypesForColumn(column);
-
-      if (cardTypes === null) {
-        return null;
-      }
-
-      return cardTypes.defaultType;
+      return getDefaultVisualizationForColumn(column);
 
     }
 
@@ -118,11 +112,11 @@
      */
 
      function availableVisualizationsForColumn(column) {
-      var columnCardTypes = getCardTypesForColumn(column);
-      if (columnCardTypes === null) {
+      var cardTypes = getCardTypesForColumn(column);
+      if (cardTypes === null) {
         return [];
       }
-      return columnCardTypes.available;
+      return cardTypes.available;
      }
 
     /**
@@ -154,12 +148,12 @@
      */
 
     function modelIsCustomizable(cardModel) {
-      var modelCardType = cardModel.getCurrentValue('cardType');
-      if (_.isUndefined(modelCardType)) {
-        modelCardType = getDefaultCardTypeForModel(cardModel);
+      var cardType = cardModel.getCurrentValue('cardType');
+      if (_.isUndefined(cardType)) {
+        cardType = getDefaultCardTypeForModel(cardModel);
       }
-      return CARD_TYPES.hasOwnProperty(modelCardType) &&
-             CARD_TYPES[modelCardType].customizable;
+      return CARD_TYPES.hasOwnProperty(cardType) &&
+             CARD_TYPES[cardType].customizable;
     }
 
     /**
@@ -211,7 +205,7 @@
 
     }
 
-    var cardTypeMapping = ServerConfig.get('cardTypeMapping');
+    var cardTypeMapping = ServerConfig.get('oduxCardTypeMapping');
 
     // Keep track of which logical/physical datatype combinations have already
     // triggered warnings so that we don't get rate-limited by Airbrake in

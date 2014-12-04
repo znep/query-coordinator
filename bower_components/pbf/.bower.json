@@ -1,0 +1,36 @@
+{
+  "name": "pbf",
+  "main": "index.js",
+  "version": "0.0.3",
+  "homepage": "https://github.com/devTristan/pbf",
+  "authors": [
+    "Konstantin Kaefer"
+  ],
+  "description": "a protocol buffer implementation in javascript",
+  "moduleType": [
+    "node"
+  ],
+  "keywords": [
+    "protocol",
+    "buffer",
+    "pbf"
+  ],
+  "license": "BSD",
+  "ignore": [
+    "**/.*",
+    "node_modules",
+    "bower_components",
+    "test",
+    "examples"
+  ],
+  "_release": "0.0.3",
+  "_resolution": {
+    "type": "version",
+    "tag": "v0.0.3",
+    "commit": "fb8360da1597c9bcbd6ce36366757b13e9b0558a"
+  },
+  "_source": "git://github.com/devTristan/pbf.git",
+  "_target": "~0.0.3",
+  "_originalSource": "pbf",
+  "_direct": true
+}

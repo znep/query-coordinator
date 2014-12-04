@@ -698,6 +698,7 @@ javascripts:
     - public/javascripts/bower/angular-sanitize.js
     - public/javascripts/bower/showdown.js
     - public/javascripts/bower/markdown.js
+    - public/javascripts/bower/pbf.min.js
 
     - public/javascripts/bower/**/*.js
   # END BOWER-MANAGED ASSETS

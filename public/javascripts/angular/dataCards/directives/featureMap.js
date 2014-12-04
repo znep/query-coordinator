@@ -4,6 +4,7 @@
   function featureMap(Constants,
                       AngularRxExtensions,
                       WindowState,
+                      VectorTiles,
                       FlyoutService,
                       $timeout) {
 
@@ -267,7 +268,7 @@
           };
 
           lastFeatureLayer = thisFeatureLayer;
-          thisFeatureLayer = new L.TileLayer.MVTSource(featureLayerOptions);
+          thisFeatureLayer = VectorTiles.create(featureLayerOptions);
 
           map.addLayer(thisFeatureLayer);
 
@@ -460,6 +461,7 @@
       directive('featureMap', ['Constants',
                                'AngularRxExtensions',
                                'WindowState',
+                               'VectorTiles',
                                'FlyoutService',
                                '$timeout',
                                featureMap]);

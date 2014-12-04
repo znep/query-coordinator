@@ -679,7 +679,6 @@ javascripts:
   # These packages are referenced via the :app parameter to serve_app.
   angular-app-dataCards:
     - public/javascripts/util/typed-arrays.js
-    - public/javascripts/util/mapbox-vector-tiles.js
     - public/javascripts/angular/dataCards/app.js
     - public/javascripts/angular/dataCards/controllers.js
     - public/javascripts/angular/dataCards/**/*.js

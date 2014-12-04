@@ -20,15 +20,14 @@ angular.module('dataCards.models').factory('Card', function($injector, ModelHelp
   });
 
   var Card = Model.extend({
-    init: function(page, fieldName, id) {
+    init: function(parentPageModel, fieldName, id) {
       this._super();
 
-      var Page = $injector.get('Page'); // Inject Page here to avoid circular dep.
-      if(!(page instanceof Page)) { throw new Error('Cards must have parent Page models.'); }
+      if(!(parentPageModel instanceof Model)) { throw new Error('Cards must have parent Page models.'); }
       if(!_.isString(fieldName) || _.isEmpty(fieldName)) { throw new Error('Cards must have a non-empty field name.'); }
 
       var self = this;
-      this.page = page;
+      this.page = parentPageModel;
       this.fieldName = fieldName;
       this.uniqueId = id || _.uniqueId();
 
@@ -48,6 +47,7 @@ angular.module('dataCards.models').factory('Card', function($injector, ModelHelp
     clone: function() {
       return Card.deserialize(this.page, this.serialize(), this.uniqueId);
     },
+
     serialize: function() {
       var serialized = this._super();
       serialized.fieldName = this.fieldName;

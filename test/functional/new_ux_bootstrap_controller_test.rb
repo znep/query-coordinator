@@ -45,6 +45,19 @@ class NewUxBootstrapControllerTest < ActionController::TestCase
     stub_user = stub(roleName: 'administrator')
     @controller.stubs(has_rights?: true, current_user: stub_user)
 
+    # Stub out services, so we don't end up trying
+    # to connect to external endpoints.
+    @page_metadata_manager.stubs(
+      pages_for_dataset: {
+        status: '500', body: {}
+      }
+    )
+    @phidippides.stubs(
+      fetch_dataset_metadata: {
+        status: '500', body: {}
+      }
+    )
+
     get :bootstrap, id: 'four-four'
     assert_not_equal(@response.response_code, 403)
   end
@@ -52,6 +65,19 @@ class NewUxBootstrapControllerTest < ActionController::TestCase
   test 'bootstrap does not return 403 if role is publisher' do
     stub_user = stub(roleName: 'publisher')
     @controller.stubs(has_rights?: true, current_user: stub_user)
+
+    # Stub out services, so we don't end up trying
+    # to connect to external endpoints.
+    @page_metadata_manager.stubs(
+      pages_for_dataset: {
+        status: '500', body: {}
+      }
+    )
+    @phidippides.stubs(
+      fetch_dataset_metadata: {
+        status: '500', body: {}
+      }
+    )
 
     get :bootstrap, id: 'four-four'
     assert_not_equal(@response.response_code, 403)

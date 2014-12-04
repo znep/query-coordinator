@@ -105,7 +105,8 @@ describe('addCardDialog', function() {
       'title': 'A card for which multiple visualizations are possible.',
       'description': '???',
       'logicalDatatype': 'text',
-      'physicalDatatype': 'text'
+      'physicalDatatype': 'text',
+      'cardinality': 2000
     }
   };
 
@@ -336,6 +337,22 @@ describe('addCardDialog', function() {
     expect(dialog.element.find('.add-card-type-option:visible').length).to.equal(2);
     expect(dialog.element.find('.add-card-type-option.icon-bar-chart').length).to.equal(1);
     expect(dialog.element.find('.add-card-type-option.icon-search').length).to.equal(1);
+  });
+
+  it("should display a warning for 'column' card type option buttons when a column's cardinality is greater than 100", function() {
+    var dialog = createDialog();
+
+    expect(dialog.element.find('.add-card-type-option:visible').length).to.equal(0);
+
+    dialog.scope.dialogState.cardSize = 2;
+    $httpBackend.expectGET(/\/api\/id\/rook-king.json.*/).respond([]);
+    $httpBackend.expectGET(/\/resource\/rook-king.json.*/).respond([]);
+    dialog.element.find('option[value=multipleVisualizations]').prop('selected', true).trigger('change');
+
+    expect(dialog.element.find('.add-card-type-option:visible').length).to.equal(2);
+
+    expect(dialog.element.find('.icon-bar-chart > .warning-icon:visible').length).to.equal(1);
+
   });
 
   it('should change the visualization type of the preview card when a card type option button is clicked', function() {

@@ -6,7 +6,7 @@
     return _.find(columns, function(column) { return column.name === fieldName; });
   }
 
-  function addCardDialog(Card, FlyoutService, CardTypeMapping) {
+  function addCardDialog(Constants, CardTypeMapping, Card, FlyoutService) {
     return {
       restrict: 'E',
       scope: {
@@ -33,9 +33,12 @@
 
         scope.addCardSelectedColumnFieldName = null;
         scope.addCardModel = null;
+        scope.showCardinalityWarning = false;
         scope.availableCardTypes = [];
 
         scope.$watch('addCardSelectedColumnFieldName', function(fieldName) {
+
+          var columnCardinality;
 
           if (_.isDefined(scope.datasetColumns)) {
 
@@ -65,6 +68,14 @@
 
             scope.availableCardTypes = CardTypeMapping.availableVisualizationsForColumn(column);
             scope.addCardModel = Card.deserialize(scope.page, serializedCard);
+
+            if (column.hasOwnProperty('cardinality')) {
+              columnCardinality = parseInt(column.cardinality, 10);
+            } else {
+              columnCardinality = 0;
+            }
+
+            scope.showCardinalityWarning = (columnCardinality > parseInt(Constants['COLUMN_CHART_CARDINALITY_WARNING_THRESHOLD'], 10));
 
           }
         });
@@ -98,7 +109,17 @@
             return;
           }
 
-          return '<div class="flyout-title">Visualize this column as a {0}</div>'.format(visualizationName);
+          if (scope.showCardinalityWarning && $(el).hasClass('warn')) {
+            return '<div class="flyout-title">WARNING: Visualizing this column as a column chart will result in more than one hundred columns and may degrade performance</div>';
+          } else {
+            return '<div class="flyout-title">Visualize this column as a {0}</div>'.format(visualizationName);
+          }
+
+        });
+
+        FlyoutService.register('warning-icon', function(el) {
+
+          return '<div class="flyout-title">WARNING: Visualizing this column as a column chart will result in more than one hundred columns and may degrade performance</div>';
 
         });
 

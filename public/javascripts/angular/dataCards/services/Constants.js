@@ -30,6 +30,9 @@
       'ESRI_BASE_URL': 'https://server.arcgisonline.com/ArcGIS/rest/services/World_Street_Map/MapServer/tile/{z}/{y}/{x}',
       'TILEURL_REGEX': /^ *https?:\/\/(.*(\{|%7b)[xyz](\}|%7d)){3}/i,
 
+      // Column chart visualization parameters.
+      'COLUMN_CHART_CARDINALITY_WARNING_THRESHOLD': 100,
+
       // Choropleth visualization parameters.
       'MAXIMUM_NUMBER_OF_CLASSES_ALLOWED': 7,
       'CLASS_BREAK_THRESHOLD': 6,

@@ -70,9 +70,11 @@
     <li ng-show="availableCardTypes.indexOf('column') > -1">
       <button
         class="add-card-type-option icon-bar-chart"
-        ng-class="{ selected: addCardModel.getCurrentValue('cardType') === 'column' }"
+        ng-class="{ selected: addCardModel.getCurrentValue('cardType') === 'column', warn: showCardinalityWarning }"
         ng-click="setCardType('column')"
-        data-visualization-name="Column Chart"></button>
+        data-visualization-name="Column Chart">
+          <span class="warning-icon icon-close"></span>
+        </button>
       <span>Column Chart</span>
     </li>
     <li ng-show="availableCardTypes.indexOf('choropleth') > -1">

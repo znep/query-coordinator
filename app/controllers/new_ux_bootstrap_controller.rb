@@ -4,9 +4,13 @@ class NewUxBootstrapController < ActionController::Base
   before_filter :hook_auth_controller
 
   def bootstrap
+    # Check to make sure they have permission to create a page
     allowed_roles = %w(administrator publisher)
     has_permission = current_user && allowed_roles.include?(current_user.roleName) && has_rights?
-    return render :json => { error: true, reason: "User must be one of these roles: #{allowed_roles.join(', ')}" }, :status => :forbidden unless has_permission
+    return render :json => {
+      error: true,
+      reason: "User must be one of these roles: #{allowed_roles.join(', ')}"
+    }, :status => :forbidden unless has_permission
 
     # Grab the page 4x4s associated with this dataset id
     pages = page_metadata_manager.pages_for_dataset(

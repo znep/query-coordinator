@@ -858,7 +858,10 @@ $(function()
           });
         });
     }
-    if (blist.feature_flags.enable_newux_bootstrap_link) {
-      initNewUXLink();
-    }
+    blist.configuration.onCurrentUser(function(user) {
+      if (blist.feature_flags.enable_newux_bootstrap_link &&
+          ['administrator', 'publisher'].indexOf(user.roleName) >= 0) {
+        initNewUXLink();
+      }
+    });
 });

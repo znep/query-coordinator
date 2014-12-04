@@ -72,10 +72,10 @@
             if (column.hasOwnProperty('cardinality')) {
               columnCardinality = parseInt(column.cardinality, 10);
             } else {
-              columnCardinality = 200;
+              columnCardinality = 0;
             }
 
-            scope.showCardinalityWarning = (columnCardinality > Constants['COLUMN_CHART_CARDINALITY_WARNING_THRESHOLD']);
+            scope.showCardinalityWarning = (columnCardinality > parseInt(Constants['COLUMN_CHART_CARDINALITY_WARNING_THRESHOLD'], 10));
 
           }
         });
@@ -110,13 +110,9 @@
           }
 
           if (scope.showCardinalityWarning && $(el).hasClass('warn')) {
-
             return '<div class="flyout-title">WARNING: Visualizing this column as a column chart will result in more than one hundred columns and may degrade performance</div>';
-
           } else {
-
             return '<div class="flyout-title">Visualize this column as a {0}</div>'.format(visualizationName);
-
           }
 
         });

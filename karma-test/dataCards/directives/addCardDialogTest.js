@@ -105,7 +105,8 @@ describe('addCardDialog', function() {
       'title': 'A card for which multiple visualizations are possible.',
       'description': '???',
       'logicalDatatype': 'text',
-      'physicalDatatype': 'text'
+      'physicalDatatype': 'text',
+      'cardinality': 2000
     }
   };
 

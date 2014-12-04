@@ -506,6 +506,8 @@ html, body
   padding: 0.5em
   white-space: nowrap
   z-index: 101
+  // Because this element has an icon- class on it (for the icon), our actual text's font gets
+  // messed up. So, get the normal font.
   font-family: inherit
 
   // Set this explicitly here, so it doesn't get overridden by fontawesome
@@ -546,7 +548,6 @@ html, body
     left: 0
     height: 100%
     @include prefixer(border-radius, 100px)
-    z-index: 101
     opacity: 0
     background-color: rgba(255, 255, 255, .9)
 
@@ -562,11 +563,13 @@ html, body
     &.icon-cards
       cursor: pointer
 
+  // The overlay for the link itself - this one dims the link
   &::after
     content: '\feff'
     opacity: 0
     @include prefixer(transition, 'opacity 0.05s ease-out')
 
+  // The overlay for the entire page underneath the link
   + .overlay, &.loading::after
     position: fixed
     top: 0

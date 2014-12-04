@@ -68,3 +68,5 @@ enable_api_foundry_pane:
 enable_newux_bootstrap_link:
   description: Will display a link in the old UX, to its corresponding new UX page.
   defaultValue: false
+enable_opendata_ga_tracking:
+  description: Enable Google Analytics in the new UX

@@ -13,7 +13,9 @@
       'LAYOUT_DATA_CARD_HEIGHT': 480,
       'LAYOUT_MIN_EXPANDED_CARD_HEIGHT': 480,
 
-      'TRANSITION_DURATION': .5,
+      'TRANSITION_DURATION': 0.5,
+
+      'CARD_TYPE_MAPPING_CARDINALITY_THRESHOLD': 100,
 
       // Dataset field names and internal calculated values.
       'INTERNAL_DATASET_FEATURE_ID': '_feature_id',

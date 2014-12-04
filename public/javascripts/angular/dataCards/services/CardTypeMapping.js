@@ -50,10 +50,12 @@
         return null;
       }
 
-      // If the cardinality is known for this column, use it. Otherwise,
-      // fall back to Number.MAX_SAFE_INTEGER.
-      if (!column.hasOwnProperty('cardinality') || column.cardinality > Number.MAX_SAFE_INTEGER) {
-        cardinality = Number.MAX_SAFE_INTEGER;
+      // If the cardinality is known for this column and it is within the bounds
+      // of safe integers, use the column's cardinality. Otherwise, fall back to 0.
+      if (!column.hasOwnProperty('cardinality') ||
+          column.cardinality < Number.MIN_SAFE_INTEGER ||
+          column.cardinality > Number.MAX_SAFE_INTEGER) {
+        cardinality = 0;
       } else {
         cardinality = parseInt(column.cardinality, 10);
       }

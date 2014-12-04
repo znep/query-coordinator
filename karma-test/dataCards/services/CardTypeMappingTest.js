@@ -18,9 +18,9 @@
     { physical: 'money', logical: 'amount', expectedDefault: null, expectedAvailable: [], supported: false },                        // UNSUPPORTED
 
     // Category
-    { physical: 'number', logical: 'category', expectedDefault: 'search', expectedAvailable: ['column', 'search'], supported: true },
+    { physical: 'number', logical: 'category', expectedDefault: 'column', expectedAvailable: ['column', 'search'], supported: true },
     { physical: 'point', logical: 'category', expectedDefault: null, expectedAvailable: [], supported: false },                      // UNSUPPORTED
-    { physical: 'text', logical: 'category', expectedDefault: 'search', expectedAvailable: ['column', 'search'], supported: true },
+    { physical: 'text', logical: 'category', expectedDefault: 'column', expectedAvailable: ['column', 'search'], supported: true },
     { physical: 'geo_entity', logical: 'category', expectedDefault: null, expectedAvailable: [], supported: false },                 // UNSUPPORTED
     { physical: 'timestamp', logical: 'category', expectedDefault: 'column', expectedAvailable: ['column'], supported: true },
     { physical: 'fixed_timestamp', logical: 'category', expectedDefault: 'column', expectedAvailable: ['column'], supported: true },

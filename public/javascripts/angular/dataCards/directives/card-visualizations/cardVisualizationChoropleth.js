@@ -147,7 +147,29 @@
             '2q28-58m6': 'tractce',
             '86dh-mgvd': 'geoid10',
             '8thk-xhvj': 'name',
-            'hak8-5bvb': 'coundist'
+            'hak8-5bvb': 'coundist',
+            'swkg-bavi': 'zone_type',
+            'rffn-qbt6': 'name',
+            'rcj3-ccgu': 'geoid10',
+            'ueqj-g33x': 'lname',
+            'asue-2ipu': 'district_1',
+            'cjq3-kq3a': 'geoid10',
+            'buyp-4dp9': 'geoid10',
+            '4rat-gsiv': 'geoid10',
+            'ndi2-bfht': 'district',
+            'u9vc-vmbc': 'district',
+            '28yu-qtqf': 'geoid10',
+            'ce8n-ahaq': 'zone_type',
+            'xv2v-ia46': 'name',
+            'bwdd-ss8w': 'geoid10',
+            'w7nm-sadn': 'lname',
+            'bf3n-hej2': 'district_1',
+            'wrxk-qft3': 'geoid10',
+            'nr9s-8m49': 'geoid10',
+            '6t63-sezg': 'geoid10',
+            '8f9p-hupj': 'district',
+            'c62z-keqd': 'district',
+            'tbvr-2deq': 'geoid10'
           };
 
           if (shapefile) {

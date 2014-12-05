@@ -17,10 +17,6 @@
       return [zoom, tilePoint.x, tilePoint.y].join(':');
     };
 
-    VectorTileUtil.getFeatureId = function(feature) {
-      return feature.properties.id;
-    };
-
     VectorTileUtil.getTileInfoByPointAndZoomLevel = function(point, zoom) {
 
       function deg2rad(degrees) {
@@ -51,6 +47,36 @@
 
     };
 
+    // Reads raw VectorTile data and creates an array of
+    // features on each VectorTileLayer instance assigned
+    // to the tile.
+    VectorTileUtil.unpackVectorTile = function(vectorTile) {
+
+      var keys = Object.keys(vectorTile.layers);
+      var i = keys.length;
+      var vectorTileLayer;
+      var features;
+      var j;
+      var vectorTileFeature;
+
+      while (i--) {
+        vectorTileLayer = vectorTile.layers[keys[i]];
+        vectorTileLayer.features = [];
+        features = vectorTileLayer._features;
+        j = features.length;
+
+        while (j--) {
+          vectorTileFeature = vectorTileLayer.feature(j);
+          vectorTileFeature.coordinates = vectorTileFeature.loadGeometry();
+          vectorTileLayer.features.push(vectorTileFeature);
+        }
+
+      }
+
+      return vectorTile;
+
+    };
+
 
     /****************************************************************************
      *
@@ -63,7 +89,6 @@
      */
 
     function VectorTileFeature(layer, feature, tile, id, style) {
-
       var keys;
       var i;
       var key;
@@ -83,14 +108,9 @@
         this[key] = feature[key];
       }
 
-
       this.tileLayer = layer;
       this.tileManager = this.tileLayer.tileManager;
       this.map = this.tileManager.map;
-
-      //this.layerLink = this.tileManager.layerLink;
-      //this.toggleEnabled = true;
-      //this.selected = false;
 
       // how much we divide the coordinate from the vector tile
       this.divisor = feature.extent / tile.tileSize;
@@ -452,45 +472,6 @@
         //Draw is handled by the parent VectorTileManager object
       },
 
-      /**
-       * See https://github.com/ariya/phantomjs/blob/master/examples/waitfor.js
-       *
-       * Wait until the test condition is true or a timeout occurs. Useful for waiting
-       * on a server response or for a ui change (fadeIn, etc.) to occur.
-       *
-       * @param testFx javascript condition that evaluates to a boolean,
-       * it can be passed in as a string (e.g.: "1 == 1" or "$('#bar').is(':visible')" or
-       * as a callback function.
-       * @param onReady what to do when testFx condition is fulfilled,
-       * it can be passed in as a string (e.g.: "1 == 1" or "$('#bar').is(':visible')" or
-       * as a callback function.
-       * @param timeOutMillis the max amount of time to wait. If not specified, 3 sec is used.
-       */
-       waitFor: function(testFx, onReady, timeOutMillis) {
-
-        var maxtimeOutMillis = timeOutMillis ? timeOutMillis : 3000; //< Default Max Timout is 3s
-        var start = new Date().getTime();
-        var condition = (typeof (testFx) === "string" ? eval(testFx) : testFx()); //< defensive code
-        var interval = setInterval(function () {
-            if ((new Date().getTime() - start < maxtimeOutMillis) && !condition) {
-              // If not time-out yet and condition not yet fulfilled
-              condition = (typeof (testFx) === "string" ? eval(testFx) : testFx()); //< defensive code
-            } else {
-              if (!condition) {
-                // If condition still not fulfilled (timeout but condition is 'false')
-                console.log("'waitFor()' timeout");
-                clearInterval(interval); //< Stop this interval
-                typeof (onReady) === "string" ? eval(onReady) : onReady('timeout'); //< Do what it's supposed to do once the condition is fulfilled
-              } else {
-                // Condition fulfilled (timeout and/or condition is 'true')
-                console.log("'waitFor()' finished in " + (new Date().getTime() - start) + "ms.");
-                clearInterval(interval); //< Stop this interval
-                typeof (onReady) === "string" ? eval(onReady) : onReady('success'); //< Do what it's supposed to do once the condition is fulfilled
-              }
-            }
-          }, 50); //< repeat check every 50ms
-      },
-
       getCanvas: function(parentCtx){
         //This gets called if a vector tile feature has already been parsed.
         //We've already got the geom, just get on with the drawing.
@@ -507,22 +488,9 @@
 
         var self = this;
 
-        //This is a timer that will wait for a criterion to return true.
-        //If not true within the timeout duration, it will move on.
-        /*waitFor(function () {
-            ctx = self._tiles[tilePoint.x + ":" + tilePoint.y];
-            if(ctx) {
-              return true;
-            }
-          },
-          function(){*/
-            //When it finishes, do this.
             ctx = self._tiles[tilePoint.x + ":" + tilePoint.y];
             parentCtx.canvas = ctx;
             self.redrawTile(parentCtx.id);
-
-          //}, //when done, go to next flow
-          //2000); //The Timeout milliseconds.  After this, give up and move on
 
       },
 
@@ -543,7 +511,7 @@
           this.clearTileFeatureHash(layerCtx.id);
         }
 
-        var features = vtl.parsedFeatures;
+        var features = vtl.features;
 
         for (var i = 0, len = features.length; i < len; i++) {
 
@@ -560,7 +528,7 @@
             }
           }
 
-          var uniqueID = VectorTileUtil.getFeatureId(vtf, i) || i;
+          var uniqueID = vtf.properties.id || i;
           var feature = self.features[uniqueID];
 
           // Use layerOrdering function to apply a zIndex property to each vtf.  This is defined in
@@ -763,6 +731,7 @@
 
     });
 
+
     /****************************************************************************
      *
      * VectorTileManager
@@ -781,12 +750,20 @@
           throw new Error('Cannot create VectorTileManager: options is not an object.');
         }
 
-        if (!options.hasOwnProperty('style') || !_.isFunction(options.style)) {
-          throw new Error('Cannot create VectorTileManager: options.style is not a function.');
-        }
-
         if (!options.hasOwnProperty('url') || !_.isString(options.url)) {
           throw new Error('Cannot create VectorTileManager: options.url is not a string.');
+        }
+
+        if (!options.hasOwnProperty('filter') || !_.isFunction(options.filter)) {
+          throw new Error('Cannot create VectorTileManager: options.filter is not a function.');
+        }
+
+        if (!options.hasOwnProperty('layerOrdering') || !_.isFunction(options.layerOrdering)) {
+          throw new Error('Cannot create VectorTileManager: options.layerOrdering is not a function.');
+        }
+
+        if (!options.hasOwnProperty('style') || !_.isFunction(options.style)) {
+          throw new Error('Cannot create VectorTileManager: options.style is not a function.');
         }
 
         this.style = options.style;
@@ -795,28 +772,22 @@
           debug: false,
           url: '', //URL TO Vector Tile Source,
           headers: {},
-          tileSize: 256,
-          visibleLayers: []
+          tileSize: 256
         };
         L.Util.setOptions(this, options);
 
         // Layers present in the protocol buffer responses
         this.layers = {};
-        // Tiles that are present in the viewport
-        this.activeTiles = {};
-        // Tiles that have already been processed and are cached.
-        this.cachedTiles = {};
-        // Tiles that are present in the viewport and have already been rendered.
-        this.renderedTiles = {};
         // Store the max number of tiles to be loaded.  Later, we can use this count to count down PBF loading.
         this.tilesNotYetRendered = 0;
 
       },
 
       onAdd: function(map) {
-
         var self = this;
         var mapClickCallback;
+
+        this.emitRenderStartEvent();
 
         if (_.isFunction(this.options.onClick)) {
 
@@ -828,6 +799,10 @@
           map.on('click', mapClickCallback);
 
         }
+
+        map.on('zoom', function(e) {
+          console.log('ZOOMING', e);
+        });
 
         map.on('layerremove', function(e) {
           // check to see if the layer removed is this one
@@ -841,14 +816,13 @@
         });
 
         this.map = map;
-        this.addChildLayers(map);
+        this.addChildLayers();
 
         L.TileLayer.Canvas.prototype.onAdd.call(this, map);
 
       },
 
       drawTile: function(canvas, tilePoint, zoom) {
-
         var tile = {
           id: VectorTileUtil.getTileId(tilePoint, zoom),
           canvas: canvas,
@@ -865,22 +839,15 @@
           this.tilesNotYetRendered = this._tilesToLoad;
         }
 
-        this.activeTiles[tile.id] = tile;
-
-        if(_.isUndefined(this.cachedTiles[tile.zoom])) {
-          this.cachedTiles[tile.zoom] = {};
-        }
-
         if (this.options.debug) {
           this.renderDebugInfo(tile);
         }
 
-        this.render(tile);
+        this.getTileData(tile, this.renderTile);
 
       },
 
-      render: function(tile) {
-
+      getTileData: function(tile, renderFn) {
         var self = this;
         var xhr = new XMLHttpRequest();
         var url = this.options.url.
@@ -888,16 +855,7 @@
           replace("{x}", tile.tilePoint.x).
           replace("{y}", tile.tilePoint.y);
 
-    //    //This works to skip fetching and processing tiles if they've already been processed.
-    //    var vectorTile = this.cachedTiles[ctx.zoom][ctx.id];
-    //    //if we've already parsed it, don't get it again.
-    //    if(vectorTile){
-    //      console.log("Skipping fetching " + ctx.id);
-    //      self.checkVectorTileLayers(self.parseVT(vectorTile), ctx, true);
-    //      self.reduceTilesToProcessCount();
-    //      return;
-    //    }
-
+        this.registerOutstandingRequest(tile.zoom, tile.id, xhr);
 
         xhr.onload = function() {
 
@@ -905,53 +863,52 @@
 
           if (parseInt(xhr.status, 10) === 200) {
 
-            // Obtain the data as an array.
-            // Some browsers (IE9) don't support binary in xhr.response. Try alternatives.
+            self.deregisterOutstandingRequest(tile.zoom, tile.id);
 
-            // IE9 specific hack, if available.
-            // See: http://stackoverflow.com/a/4330882
+            // Check the current map layer zoom.  If fast zooming is occurring, then short-
+            // circuit tiles that are for a different zoom level than we're currently on.
+            if (self.map.getZoom() != tile.zoom) {
+              console.log('Fetched tile for zoom level {0}. Map is at zoom level {1}'.format(tile.zoom, self._map.getZoom()));
+              return;
+            }
+
+            // IE9 doesn't support binary data in xhr.response, so we have to
+            // use a righteous hack (See: http://stackoverflow.com/a/4330882).
             if (_.isUndefined(xhr.response) &&
                 _.isDefined(window.VBArray) &&
                 typeof xhr.responseBody === 'unknown') {
               arrayBuffer = new VBArray(xhr.responseBody).toArray();
+            // Default for well-behaved browsers.
             } else if (xhr.response) {
               arrayBuffer = new Uint8Array(xhr.response);
             }
 
-            if (!arrayBuffer.length === 0) {
-              // No/empty data (i.e. a tile with no points).
-              // Nothing to do.
+            // If this is a tile with no features to be drawn, quit early.
+            if (arrayBuffer.length === 0) {
               return;
             }
 
-            var buf = new pbf(arrayBuffer);
-            var vt = new VectorTile(buf);
-            //Check the current map layer zoom.  If fast zooming is occurring, then short circuit tiles that are for a different zoom level than we're currently on.
-            if(self.map && self.map.getZoom() != tile.zoom) {
-              console.log("Fetched tile for zoom level " + tile.zoom + ". Map is at zoom level " + self._map.getZoom());
-              return;
-            }
-            self.checkVectorTileLayers(self.parseVT(vt), tile);
+            // Invoke renderFn within the context of 'self'
+            // (the current instance of VectorTileManager).
+            renderFn.call(self, arrayBuffer, tile);
 
-            self._emitTileLoadedEvent();
-
-            self.tileLoaded(self, tile);
           }
+
         };
 
         xhr.onerror = function() {
-          console.log("xhr error: " + xhr.status)
+          self.deregisterOutstandingRequest(tile.zoom, tile.id);
+          throw new Error('Could not retrieve protocol buffer tile from tileServer: "{0} {1}"'.format(xhr.status, xhr.response));
         };
 
         self._emitTileLoadingEvent();
 
-        xhr.open('GET', url, true); //async is true
+        xhr.open('GET', url, true);
 
-        var headerKeys = Object.keys(self.options.headers);
-        var i;
-        for (i = 0; i < headerKeys.length; i++) {
-          xhr.setRequestHeader(headerKeys[i], self.options.headers[headerKeys[i]])
-        }
+        // Set user-defined headers.
+        _.each(self.options.headers, function(value, key) {
+          xhr.setRequestHeader(key, value);
+        });
 
         xhr.responseType = 'arraybuffer';
 
@@ -959,10 +916,25 @@
 
         //either way, reduce the count of tilesNotYetRendered tiles here
         self.reduceTilesToProcessCount();
+
+      },
+
+      renderTile: function(arrayBuffer, tile) {
+        var vectorTile;
+
+        vectorTile = VectorTileUtil.unpackVectorTile(
+          new VectorTile(
+            new pbf(arrayBuffer)
+          )
+        );
+
+        this.processVectorTileLayers(vectorTile, tile);
+
+        this._emitTileLoadedEvent();
+
       },
 
       renderDebugInfo: function(tile) {
-        
         var ctx = tile.canvas.getContext('2d');
         var tilePoint = tile.tilePoint;
         var tileSize = tile.tileSize;
@@ -972,8 +944,8 @@
         ctx.fillStyle = '#ffff00';
         ctx.font = '12px Arial';
 
+        // Border
         ctx.strokeRect(0, 0, tileSize, tileSize);
-        
         // Top-left cornder
         ctx.fillRect(0, 0, 5, 5);
         // Top-right corner
@@ -989,207 +961,62 @@
 
       },
 
+      processVectorTileLayers: function(vectorTile, tile) {
+        var layerIds = Object.keys(vectorTile.layers);
+        var i = layerIds.length;
+        var layerId;
+        var layer;
 
+        while (i--) {
+          layerId = layerIds[i];
+          layer = vectorTile.layers[layerId];
 
+          if (!this.layers.hasOwnProperty(layerId)) {
 
+            this.layers[layerId] = new VectorTileLayer(
+              this,
+              {
+                filter: this.options.filter,
+                layerOrdering: this.options.layerOrdering,
+                style: this.style,
+                name: layerId
+              }
+            ).
+            addTo(this.map);
 
-
-
-
-
-
-
-
-
-      _emitTileLoadingEvent: function() {
-        var evt = document.createEvent('HTMLEvents');
-        evt.initEvent('protobuffer-tile-loading', true, true);
-        evt.tilesToProcess = this.tilesNotYetRendered;
-        this.map._container.dispatchEvent(evt);
-      },
-
-      _emitTileLoadedEvent: function() {
-        var evt = document.createEvent('HTMLEvents');
-        evt.initEvent('protobuffer-tile-loaded', true, true);
-        evt.tilesToProcess = this.tilesNotYetRendered;
-        this.map._container.dispatchEvent(evt);
-      },
-
-      tileLoaded: function(pbfSource, ctx) {
-        pbfSource.renderedTiles[ctx.id] = ctx;
-      },
-
-      parseVT: function(vt){
-
-        function parseVTFeatures(vtl){
-          vtl.parsedFeatures = [];
-          var features = vtl._features;
-          for (var i = 0, len = features.length; i < len; i++) {
-            var vtf = vtl.feature(i);
-            vtf.coordinates = vtf.loadGeometry();
-            vtl.parsedFeatures.push(vtf);
           }
-          return vtl;
-        }
 
-        for (var key in vt.layers) {
-          var lyr = vt.layers[key];
-          parseVTFeatures(lyr);
-        }
-        return vt;
-      },
+          this.layers[layerId].parseVectorTileLayer(layer, tile);
 
-
-
-      reduceTilesToProcessCount: function(){
-        this.tilesNotYetRendered--;
-        if(this.tilesNotYetRendered === 0){
-          //Trigger event letting us know that all tiles have been loaded and rendered (or 404'd).
-          this.bringToFront();
-        }
-      },
-
-      checkVectorTileLayers: function(vt, ctx, parsed) {
-        var self = this;
-
-        //Check if there are specified visible layers
-        if(self.options.visibleLayers && self.options.visibleLayers.length > 0){
-          //only let thru the layers listed in the visibleLayers array
-          for(var i=0; i < self.options.visibleLayers.length; i++){
-            var layerName = self.options.visibleLayers[i];
-            if(vt.layers[layerName]){
-               //Proceed with parsing
-              self.prepareVectorTileLayers(vt.layers[layerName], layerName, ctx, parsed);
-            }
-          }
-        }else{
-          //Parse all vt.layers
-          for (var key in vt.layers) {
-            self.prepareVectorTileLayers(vt.layers[key], key, ctx, parsed);
-          }
-        }
-      },
-
-      prepareVectorTileLayers: function(lyr ,key, ctx, parsed) {
-        var self = this;
-
-        if (!self.layers[key]) {
-          //Create VectorTileLayer or MVTPointLayer for user
-          self.layers[key] = self.createVectorTileLayer(key, lyr.parsedFeatures[0].type || null);
-        }
-
-        if (parsed) {
-          //We've already parsed it.  Go get canvas and draw.
-          self.layers[key].getCanvas(ctx, lyr);
-        } else {
-          self.layers[key].parseVectorTileLayer(lyr, ctx);
         }
 
       },
 
-      createVectorTileLayer: function(key, type) {
-        var self = this;
+      addChildLayers: function() {
+        var layerIds = Object.keys(this.layers);
+        var i = layerIds.length;
+        var layer;
 
-        //Take the layer and create a new VectorTileLayer or MVTPointLayer if one doesn't exist.
-        var layer = new VectorTileLayer(self, {
-            filter: self.options.filter,
-            layerOrdering: self.options.layerOrdering,
-            style: self.style,
-            name: key,
-            asynch: true
-          }).addTo(self.map);
-
-        return layer;
-      },
-
-      getLayers: function() {
-        return this.layers;
-      },
-
-      hideLayer: function(id) {
-        if (this.layers[id]) {
-          this._map.removeLayer(this.layers[id]);
-          if(this.options.visibleLayers.indexOf("id") > -1){
-            this.visibleLayers.splice(this.options.visibleLayers.indexOf("id"), 1);
-          }
-        }
-      },
-
-      showLayer: function(id) {
-        if (this.layers[id]) {
-          this._map.addLayer(this.layers[id]);
-          if(this.options.visibleLayers.indexOf("id") == -1){
-            this.visibleLayers.push(id);
-          }
-        }
-        //Make sure manager layer is always in front
-        this.bringToFront();
-      },
-
-      removeChildLayers: function(map){
-        //Remove child layers of this group layer
-        for (var key in this.layers) {
-          var layer = this.layers[key];
-          map.removeLayer(layer);
-        }
-      },
-
-      addChildLayers: function(map) {
-        var self = this;
-        if(self.options.visibleLayers.length > 0){
-          //only let thru the layers listed in the visibleLayers array
-          for(var i=0; i < self.options.visibleLayers.length; i++){
-            var layerName = self.options.visibleLayers[i];
-            var layer = this.layers[layerName];
-            if(layer){
-              //Proceed with parsing
-              map.addLayer(layer);
-            }
-          }
-        }else{
-          //Add all layers
-          for (var key in this.layers) {
-            var layer = this.layers[key];
-            // layer is set to visible and is not already on map
-            if (!layer._map) {
-              map.addLayer(layer);
-            }
-          }
-        }
-      },
-
-
-      _onClick: function(evt) {
-        //Here, pass the event on to the child VectorTileLayer and have it do the hit test and handle the result.
-        var self = this;
-        var onClick = self.options.onClick;
-        var clickableLayers = self.options.clickableLayers;
-        var layers = self.layers;
-
-        evt.tileID =  VectorTileUtil.getTileUrlByPointAndZoomLevel(evt.latlng, this.map.getZoom());
-
-        // We must have an array of clickable layers, otherwise, we just pass
-        // the event to the public onClick callback in options.
-        if (clickableLayers && clickableLayers.length > 0) {
-          for (var i = 0, len = clickableLayers.length; i < len; i++) {
-            var key = clickableLayers[i];
-            var layer = layers[key];
-            if (layer) {
-              layer.handleClickEvent(evt, function(evt) {
-                if (typeof onClick === 'function') {
-                  onClick(evt);
-                }
-              });
-            }
-          }
-        } else {
-          if (typeof onClick === 'function') {
-            onClick(evt);
+        while (i--) {
+          layer = this.layers[layerIds[i]];
+          if (layer.hasOwnProperty('_map')) {
+            this.map.addLayer(layer);
           }
         }
 
       },
 
+      removeChildLayers: function() {
+        var layerIds = Object.keys(this.layers);
+        var i = layerIds.length;
+        var layer;
+
+        while (i--) {
+          layer = this.layers[layerIds[i]];
+          this.map.removeLayer(layer);
+        }
+
+      },
 
       /**
        * Take in a new style function and propogate to child layers.
@@ -1213,6 +1040,7 @@
       setVisibleLayersStyle:function(style, value) {
         var keys = Object.keys(this.layers);
         var i = keys.length;
+
         while (i--) {
           this.layers[keys[i]]._tileContainer.style[style] = value;
         }
@@ -1224,7 +1052,48 @@
 
       setZIndex:function(zIndex) {
         this.setVisibleLayersStyle('zIndex', zIndex);
+      },
+
+
+// THIS STUFF IS STILL WIP
+
+      registerOutstandingRequest: function(zoom, id, xhr) {
+
+      },
+
+      deregisterOutstandingRequest: function(zoom, id) {
+
+      },
+
+      reduceTilesToProcessCount: function(){
+        this.tilesNotYetRendered--;
+        if(this.tilesNotYetRendered === 0){
+          //Trigger event letting us know that all tiles have been loaded and rendered (or 404'd).
+          this.bringToFront();
+        }
+      },
+
+      _emitTileLoadingEvent: function() {
+        var evt = document.createEvent('HTMLEvents');
+        evt.initEvent('protobuffer-tile-loading', true, true);
+        evt.tilesToProcess = this.tilesNotYetRendered;
+        this.map._container.dispatchEvent(evt);
+      },
+
+      _emitTileLoadedEvent: function() {
+        var evt = document.createEvent('HTMLEvents');
+        evt.initEvent('protobuffer-tile-loaded', true, true);
+        evt.tilesToProcess = this.tilesNotYetRendered;
+        this.map._container.dispatchEvent(evt);
+      },
+
+      emitRenderStartEvent: function() {
+        console.log('RENDER STARTED');
+      },
+      emitRenderEndEvent: function() {
+        console.log('RENDER COMPLETE');
       }
+
 
     });
 

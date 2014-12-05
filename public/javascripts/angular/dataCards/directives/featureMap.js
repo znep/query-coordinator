@@ -245,7 +245,6 @@
             // own.
             headers: { 'X-Socrata-Host': 'localhost:8080' },
             debug: false,
-            clickableLayers: [],
             getIDForLayerFeature: getFeatureId,
             filter: filterLayerFeature,
             layerOrdering: getFeatureZIndex,

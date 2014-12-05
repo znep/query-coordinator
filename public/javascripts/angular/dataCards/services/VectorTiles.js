@@ -778,11 +778,15 @@
       initialize: function(options) {
 
         if (!_.isObject(options)) {
-          throw new Error('Cannot create VectorTileManager: options is not an object');
+          throw new Error('Cannot create VectorTileManager: options is not an object.');
         }
 
         if (!options.hasOwnProperty('style') || !_.isFunction(options.style)) {
-          throw new Error('Cannot create VectorTileManager: options.style is not a function');
+          throw new Error('Cannot create VectorTileManager: options.style is not a function.');
+        }
+
+        if (!options.hasOwnProperty('url') || !_.isString(options.url)) {
+          throw new Error('Cannot create VectorTileManager: options.url is not a string.');
         }
 
         this.style = options.style;
@@ -875,9 +879,14 @@
 
       },
 
-      render: function(ctx) {
+      render: function(tile) {
+
         var self = this;
-        var url = self.options.url;
+        var xhr = new XMLHttpRequest();
+        var url = this.options.url.
+          replace("{z}", tile.zoom).
+          replace("{x}", tile.tilePoint.x).
+          replace("{y}", tile.tilePoint.y);
 
     //    //This works to skip fetching and processing tiles if they've already been processed.
     //    var vectorTile = this.cachedTiles[ctx.zoom][ctx.id];
@@ -889,31 +898,27 @@
     //      return;
     //    }
 
-        if (!this.options.url) return;
-
-        url = url.replace("{z}", ctx.zoom).replace("{x}", ctx.tilePoint.x).replace("{y}", ctx.tilePoint.y);
-
-        var xhr = new XMLHttpRequest();
 
         xhr.onload = function() {
 
-          var arrayBuffer;
+          var arrayBuffer = [];
 
-          if (xhr.status == "200") {
+          if (parseInt(xhr.status, 10) === 200) {
 
             // Obtain the data as an array.
-            // Some browsers (IE9) don't support xhr.response. Try alternatives.
-            if (typeof xhr.response === 'undefined') {
-              // IE9 specific hack, if available.
-              // See: http://stackoverflow.com/a/4330882
-              if (typeof xhr.responseBody === 'unknown' && typeof window.VBArray !== 'undefined') {
-                arrayBuffer = new VBArray(xhr.responseBody).toArray();
-              }
+            // Some browsers (IE9) don't support binary in xhr.response. Try alternatives.
+
+            // IE9 specific hack, if available.
+            // See: http://stackoverflow.com/a/4330882
+            if (_.isUndefined(xhr.response) &&
+                _.isDefined(window.VBArray) &&
+                typeof xhr.responseBody === 'unknown') {
+              arrayBuffer = new VBArray(xhr.responseBody).toArray();
             } else if (xhr.response) {
               arrayBuffer = new Uint8Array(xhr.response);
             }
 
-            if (!arrayBuffer) {
+            if (!arrayBuffer.length === 0) {
               // No/empty data (i.e. a tile with no points).
               // Nothing to do.
               return;
@@ -922,15 +927,15 @@
             var buf = new pbf(arrayBuffer);
             var vt = new VectorTile(buf);
             //Check the current map layer zoom.  If fast zooming is occurring, then short circuit tiles that are for a different zoom level than we're currently on.
-            if(self.map && self.map.getZoom() != ctx.zoom) {
-              console.log("Fetched tile for zoom level " + ctx.zoom + ". Map is at zoom level " + self._map.getZoom());
+            if(self.map && self.map.getZoom() != tile.zoom) {
+              console.log("Fetched tile for zoom level " + tile.zoom + ". Map is at zoom level " + self._map.getZoom());
               return;
             }
-            self.checkVectorTileLayers(self.parseVT(vt), ctx);
+            self.checkVectorTileLayers(self.parseVT(vt), tile);
 
             self._emitTileLoadedEvent();
 
-            self.tileLoaded(self, ctx);
+            self.tileLoaded(self, tile);
           }
         };
 

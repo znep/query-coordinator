@@ -134,11 +134,7 @@
         function getPointStyleFn() {
           return {
             color: 'rgba(48,134,171,1.0)',
-            radius: scalePointFeatureRadiusByZoomLevel,
-            selected: {
-              color: 'rgba(255,255,0,0.5)',
-              radius: 6
-            }
+            radius: scalePointFeatureRadiusByZoomLevel
           };
         }
 
@@ -158,11 +154,7 @@
         function getLineStringStyleFn() {
           return {
             color: 'rgba(161,217,155,0.8)',
-            size: 3,
-            selected: {
-              color: 'rgba(255,255,0,0.5)',
-              size: 6
-            }
+            size: 3
           };
         }
 
@@ -185,13 +177,6 @@
             outline: {
               color: 'rgb(20,20,20)',
               size: 2
-            },
-            selected: {
-              color: 'rgba(255,255,0,0.5)',
-              outline: {
-                color: '#d9534f',
-                size: 3
-              }
             }
           };
         }

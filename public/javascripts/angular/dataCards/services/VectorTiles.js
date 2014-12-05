@@ -13,15 +13,15 @@
 
     function VectorTileUtil() { }
 
-    VectorTileUtil.getTileId = function(tile) {
-      return [tile.zoom, tile.tile.x, tile.tile.y].join(':');
+    VectorTileUtil.getTileId = function(tilePoint, zoom) {
+      return [zoom, tilePoint.x, tilePoint.y].join(':');
     };
 
     VectorTileUtil.getFeatureId = function(feature) {
       return feature.properties.id;
     };
 
-    VectorTileUtil.getTileUrlByPointAndZoomLevel = function(point, zoom) {
+    VectorTileUtil.getTileInfoByPointAndZoomLevel = function(point, zoom) {
 
       function deg2rad(degrees) {
         return degrees * Math.PI / 180;
@@ -30,20 +30,24 @@
       var lat = deg2rad(point.lat);
       var lng = deg2rad(point.lng);
 
-      var xTile = parseInt(
+      var tileY = parseInt(
         Math.floor(
           (lng + 180) / 360 * (1 << zoom)
         )
       );
 
-      var yTile = parseInt(
+      var tileX = parseInt(
         Math.floor(
           (1 - Math.log(Math.tan(deg2rad(lat)) + 1 /
           Math.cos(deg2rad(lat))) / Math.PI) / 2 * (1 << zoom)
         )
       );
 
-      return [zoom, xTile, yTile].concat(':');
+      return {
+        zoom: zoom,
+        tileX: tileX,
+        tileY: tileY
+      };
 
     };
 
@@ -116,21 +120,21 @@
       var feature = tileInfo.feature;
       var tile = tileInfo.tile;
       //Get the actual canvas from the parent layer's _tiles object.
-      var xy = canvasId.split(":").slice(1, 3).join(':');
+      var internalTileId = canvasId.split(":").slice(1, 3).join(':');
 
-      tile.canvas = this.tileLayer._tiles[xy];
+      tile.canvas = this.tileLayer._tiles[internalTileId];
 
       switch (feature.type) {
         case 1: //Point
-          this._drawPoint(tile, feature.coordinates, this.style);
+          this.drawPoint(tile, feature.coordinates, this.style);
           break;
 
         case 2: //LineString
-          this._drawLineString(tile, feature.coordinates, this.style);
+          this.drawLineString(tile, feature.coordinates, this.style);
           break;
 
         case 3: //Polygon
-          this._drawPolygon(tile, feature.coordinates, this.style);
+          this.drawPolygon(tile, feature.coordinates, this.style);
           break;
 
         default:
@@ -187,61 +191,62 @@
 
     };
 
-    VectorTileFeature.prototype._drawPoint = function(tile, coordsArray, style) {
+    VectorTileFeature.prototype.drawPoint = function(tileInfo, geometry, computedStyle) {
 
-      var thisTile;
+      var tile;
       var point;
       var canvas;
       var radius;
       var context;
 
-      if (!style) {
+      if (!computedStyle.hasOwnProperty('color') || !computedStyle.hasOwnProperty('radius')) {
         return;
       }
 
-      thisTile = this.tiles[tile.id];
-      point = this._tilePoint(coordsArray[0][0]);
-      canvas = tile.canvas;
+      tile = this.tiles[tileInfo.id];
+
+      if (_.isUndefined(tileInfo.canvas)) {
+        return;
+      }
+
+      canvas = tileInfo.canvas;
+      point = this.mapGeometryToTilePoint(geometry[0][0]);
 
       // If style.radius is a function, we pass the zoom level to it in order
       // to get a zoom-level-dependent radius. Otherwise, we treat it as a
       // number and use it directly.
-      if (_.isFunction(style.radius)) {
-        radius = style.radius(tile.zoom);
+      if (_.isFunction(computedStyle.radius)) {
+        radius = computedStyle.radius(tileInfo.zoom);
       } else{
-        radius = style.radius;
-      }
-
-      if (_.isUndefined(canvas)) {
-        return;
+        radius = computedStyle.radius;
       }
 
       context = canvas.getContext('2d');
 
       if (context === null) {
-        throw new Error('_drawPoint error: {0}'.format(e));
+        throw new Error('drawPoint error: {0}'.format(e));
       }
 
       context.beginPath();
-      context.fillStyle = style.color;
+      context.fillStyle = computedStyle.color;
       context.arc(point.x, point.y, radius, 0, Math.PI * 2);
       context.closePath();
       context.fill();
 
-      if (style.lineWidth && style.strokeStyle) {
+      if (computedStyle.lineWidth && computedStyle.strokeStyle) {
 
-        context.lineWidth = style.lineWidth;
-        context.strokeStyle = style.strokeStyle;
+        context.lineWidth = computedStyle.lineWidth;
+        context.strokeStyle = computedStyle.strokeStyle;
         context.stroke();
 
       }
 
       context.restore();
-      thisTile.paths.push([point]);
+      tile.paths.push([point]);
 
     };
 
-    VectorTileFeature.prototype._drawLineString = function(tile, coordsArray, style) {
+    VectorTileFeature.prototype.drawLineString = function(tile, coordsArray, style) {
 
       if (!style) {
         return;
@@ -260,7 +265,7 @@
 
         for (i = 0; i < coords.length; i++) {
           var method = (i === 0 ? 'move' : 'line') + 'To';
-          var proj = this._tilePoint(coords[i]);
+          var proj = this.mapGeometryToTilePoint(coords[i]);
           projCoords.push(proj);
           ctx2d[method](proj.x, proj.y);
         }
@@ -273,7 +278,7 @@
 
     };
 
-    VectorTileFeature.prototype._drawPolygon = function(tile, coordsArray, style) {
+    VectorTileFeature.prototype.drawPolygon = function(tile, coordsArray, style) {
 
       if (!style) {
         return;
@@ -308,7 +313,7 @@
         for (var i = 0; i < coords.length; i++) {
           var coord = coords[i];
           var method = (i === 0 ? 'move' : 'line') + 'To';
-          var proj = this._tilePoint(coords[i]);
+          var proj = this.mapGeometryToTilePoint(coords[i]);
           projCoords.push(proj);
           ctx2d[method](proj.x, proj.y);
         }
@@ -349,7 +354,7 @@
     // @param coords
     // @returns {eGeomType.Point}
     // @private
-    VectorTileFeature.prototype._tilePoint = function(coords) {
+    VectorTileFeature.prototype.mapGeometryToTilePoint = function(coords) {
 
       return new L.Point(coords.x / this.divisor, coords.y / this.divisor);
 
@@ -389,12 +394,13 @@
           isHiddenLayer: false,
           tileSize: 256
         };
+        L.Util.setOptions(this, options);
+
 
         this._featureIsClicked = {};
 
         this.tileManager = tileManager;
-        L.Util.setOptions(this, options);
-
+        
         this.style = options.style;
         this.name = options.name;
         this._canvasIDToFeatures = {};
@@ -414,15 +420,13 @@
       drawTile: function(canvas, tilePoint, zoom) {
 
         var tile = {
-          id: null,
+          id: VectorTileUtil.getTileId(tilePoint, zoom),
           canvas: canvas,
           // The x/y values of tilePoint correspond to the x/y coordinates of the tile
           tile: tilePoint,
           zoom: zoom,
           tileSize: this.options.tileSize
         };
-
-        tile.id = VectorTileUtil.getTileId(tile);
 
         if (!this._canvasIDToFeatures[tile.id]) {
           this._initializeFeaturesHash(tile);
@@ -525,8 +529,8 @@
       parseVectorTileLayer: function(vtl, ctx) {
 
         var self = this;
-        var tilePoint = ctx.tile;
-        var layerCtx  = { canvas: ctx.canvas, id: ctx.id, tile: ctx.tile, zoom: ctx.zoom, tileSize: ctx.tileSize};
+        var tilePoint = ctx.tilePoint;
+        var layerCtx  = { canvas: ctx.canvas, id: ctx.id, tilePoint: ctx.tilePoint, zoom: ctx.zoom, tileSize: ctx.tileSize};
 
         //See if we can pluck the child tile from this PBF tile layer based on the master layer's tile id.
         layerCtx.canvas = self._tiles[tilePoint.x + ":" + tilePoint.y];
@@ -773,6 +777,16 @@
 
       initialize: function(options) {
 
+        if (!_.isObject(options)) {
+          throw new Error('Cannot create VectorTileManager: options is not an object');
+        }
+
+        if (!options.hasOwnProperty('style') || !_.isFunction(options.style)) {
+          throw new Error('Cannot create VectorTileManager: options.style is not a function');
+        }
+
+        this.style = options.style;
+
         this.options = {
           debug: false,
           url: '', //URL TO Vector Tile Source,
@@ -780,169 +794,93 @@
           tileSize: 256,
           visibleLayers: []
         };
-
-        this.layers = {}; //Keep a list of the layers contained in the PBFs
-
-        this.processedTiles = {}; //Keep a list of tiles that have been processed already
-
-        this.eventHandlers = {};
-
-        this.style = null;
-
-
         L.Util.setOptions(this, options);
 
-        //a list of the layers contained in the PBFs
+        // Layers present in the protocol buffer responses
         this.layers = {};
-
-        // tiles currently in the viewport
+        // Tiles that are present in the viewport
         this.activeTiles = {};
-
-        // thats that have been loaded and drawn
-        this.loadedTiles = {};
-
-        if (typeof options.style === 'function') {
-          this.style = options.style;
-        } else {
-          throw new Error('Cannot create VectorTileManager: options.style is not a function');
-        }
-
-        if (typeof options.ajaxSource === 'function') {
-          this.ajaxSource = options.ajaxSource;
-        }
-
-        this.layerLink = options.layerLink;
-
-        this.eventHandlers = {};
-
+        // Tiles that have already been processed and are cached.
+        this.cachedTiles = {};
+        // Tiles that are present in the viewport and have already been rendered.
+        this.renderedTiles = {};
         // Store the max number of tiles to be loaded.  Later, we can use this count to count down PBF loading.
-        this._tilesToProcess = 0;
+        this.tilesNotYetRendered = 0;
 
       },
 
       onAdd: function(map) {
+
         var self = this;
-        self.map = map;
-        L.TileLayer.Canvas.prototype.onAdd.call(this, map);
+        var mapClickCallback;
 
-        var mapOnClickCallback = function(e) {
-          self._onClick(e);
-        };
+        if (_.isFunction(this.options.onClick)) {
 
-        map.on('click', mapOnClickCallback);
+          mapClickCallback = function(e) {
+            e.tileInfo = VectorTileUtil.getTileInfoByPointAndZoomLevel(e.latlng, map.getZoom());
+            self.options.onClick(e);
+          };
 
-        map.on("layerremove", function(e) {
+          map.on('click', mapClickCallback);
+
+        }
+
+        map.on('layerremove', function(e) {
           // check to see if the layer removed is this one
           // call a method to remove the child layers (the ones that actually have something drawn on them).
           if (e.layer._leaflet_id === self._leaflet_id && e.layer.removeChildLayers) {
             e.layer.removeChildLayers(map);
-            map.off('click', mapOnClickCallback);
+            if (_.isFunction(self.options.onClick)) {
+              map.off('click', mapOnClickCallback);
+            }
           }
         });
 
-        self.addChildLayers(map);
+        this.map = map;
+        this.addChildLayers(map);
 
-        //if (typeof DynamicLabel === 'function' ) {
-        //  this.dynamicLabel = new DynamicLabel(map, this, {});
-        //}
+        L.TileLayer.Canvas.prototype.onAdd.call(this, map);
 
       },
 
       drawTile: function(canvas, tilePoint, zoom) {
 
         var tile = {
-          id: null,
+          id: VectorTileUtil.getTileId(tilePoint, zoom),
           canvas: canvas,
-          tile: tilePoint,
+          tilePoint: tilePoint,
           zoom: zoom,
-          tileSize: this.options.tileSize
+          tileSize: this.options.tileSize,
+          rendered: false
         };
 
-        tile.id = VectorTileUtil.getTileId(tile);
-
-        // Capture the max number of the tiles to load here. this._tilesToProcess is
-        // an internal number we use to know when we've finished requesting PBFs.
-        if (this._tilesToProcess < this._tilesToLoad) {
-          this._tilesToProcess = this._tilesToLoad;
+        // Capture the max number of the tiles to load here. this.tilesNotYetRendered is
+        // an internal number we use to know when we've finished requesting all the active tiles.
+        // this._tilesToLoad is maintained by Leaflet; this.tilesNotYetRendered is maintained by us.
+        if (this.tilesNotYetRendered < this._tilesToLoad) {
+          this.tilesNotYetRendered = this._tilesToLoad;
         }
 
         this.activeTiles[tile.id] = tile;
 
-        if(!this.processedTiles[tile.zoom]) {
-          this.processedTiles[tile.zoom] = {};
+        if(_.isUndefined(this.cachedTiles[tile.zoom])) {
+          this.cachedTiles[tile.zoom] = {};
         }
 
         if (this.options.debug) {
-          this._drawDebugInfo(tile);
+          this.renderDebugInfo(tile);
         }
 
-        this._draw(tile);
+        this.render(tile);
 
       },
 
-
-
-
-
-      _drawDebugInfo: function(ctx) {
-        var max = this.options.tileSize;
-        var g = ctx.canvas.getContext('2d');
-        g.strokeStyle = '#000000';
-        g.fillStyle = '#ffff00';
-        g.strokeRect(0, 0, max, max);
-        g.font = '12px Arial';
-        g.fillRect(0, 0, 5, 5);
-        g.fillRect(0, max - 5, 5, 5);
-        g.fillRect(max - 5, 0, 5, 5);
-        g.fillRect(max - 5, max - 5, 5, 5);
-        g.fillRect(max / 2 - 5, max / 2 - 5, 10, 10);
-        g.strokeText(ctx.zoom + ' ' + ctx.tile.x + ' ' + ctx.tile.y, max / 2 - 30, max / 2 - 10);
-      },
-
-      _emitTileLoadingEvent: function() {
-        var evt = document.createEvent('HTMLEvents');
-        evt.initEvent('protobuffer-tile-loading', true, true);
-        evt.tilesToProcess = this._tilesToProcess;
-        this.map._container.dispatchEvent(evt);
-      },
-
-      _emitTileLoadedEvent: function() {
-        var evt = document.createEvent('HTMLEvents');
-        evt.initEvent('protobuffer-tile-loaded', true, true);
-        evt.tilesToProcess = this._tilesToProcess;
-        this.map._container.dispatchEvent(evt);
-      },
-
-      tileLoaded: function(pbfSource, ctx) {
-        pbfSource.loadedTiles[ctx.id] = ctx;
-      },
-
-      parseVT: function(vt){
-
-        function parseVTFeatures(vtl){
-          vtl.parsedFeatures = [];
-          var features = vtl._features;
-          for (var i = 0, len = features.length; i < len; i++) {
-            var vtf = vtl.feature(i);
-            vtf.coordinates = vtf.loadGeometry();
-            vtl.parsedFeatures.push(vtf);
-          }
-          return vtl;
-        }
-
-        for (var key in vt.layers) {
-          var lyr = vt.layers[key];
-          parseVTFeatures(lyr);
-        }
-        return vt;
-      },
-
-      _draw: function(ctx) {
+      render: function(ctx) {
         var self = this;
         var url = self.options.url;
 
     //    //This works to skip fetching and processing tiles if they've already been processed.
-    //    var vectorTile = this.processedTiles[ctx.zoom][ctx.id];
+    //    var vectorTile = this.cachedTiles[ctx.zoom][ctx.id];
     //    //if we've already parsed it, don't get it again.
     //    if(vectorTile){
     //      console.log("Skipping fetching " + ctx.id);
@@ -953,7 +891,7 @@
 
         if (!this.options.url) return;
 
-        url = url.replace("{z}", ctx.zoom).replace("{x}", ctx.tile.x).replace("{y}", ctx.tile.y);
+        url = url.replace("{z}", ctx.zoom).replace("{x}", ctx.tilePoint.x).replace("{y}", ctx.tilePoint.y);
 
         var xhr = new XMLHttpRequest();
 
@@ -1014,17 +952,94 @@
 
         xhr.send();
 
-        //either way, reduce the count of tilesToProcess tiles here
+        //either way, reduce the count of tilesNotYetRendered tiles here
         self.reduceTilesToProcessCount();
       },
 
-      reduceTilesToProcessCount: function(){
-        this._tilesToProcess--;
-        if(!this._tilesToProcess){
-          //Trigger event letting us know that all PBFs have been loaded and processed (or 404'd).
-          if (this.eventHandlers["PBFLoad"]) {
-            this.eventHandlers["PBFLoad"]();
+      renderDebugInfo: function(tile) {
+        
+        var ctx = tile.canvas.getContext('2d');
+        var tilePoint = tile.tilePoint;
+        var tileSize = tile.tileSize;
+        var zoomLevel = tile.zoomLevel;
+
+        ctx.strokeStyle = '#000000';
+        ctx.fillStyle = '#ffff00';
+        ctx.font = '12px Arial';
+
+        ctx.strokeRect(0, 0, tileSize, tileSize);
+        
+        // Top-left cornder
+        ctx.fillRect(0, 0, 5, 5);
+        // Top-right corner
+        ctx.fillRect(0, (tileSize - 5), 5, 5);
+        // Bottom-left corner
+        ctx.fillRect(tileSize - 5, 0, 5, 5);
+        // Bottom-right corner
+        ctx.fillRect(tileSize - 5, tileSize - 5, 5, 5);
+        // Center
+        ctx.fillRect(tileSize / 2 - 5, tileSize / 2 - 5, 10, 10);
+        // Label
+        ctx.strokeText(zoomLevel + ' ' + tilePoint.x + ' ' + tilePoint.y, tileSize / 2 - 30, tileSize / 2 - 10);
+
+      },
+
+
+
+
+
+
+
+
+
+
+
+
+
+      _emitTileLoadingEvent: function() {
+        var evt = document.createEvent('HTMLEvents');
+        evt.initEvent('protobuffer-tile-loading', true, true);
+        evt.tilesToProcess = this.tilesNotYetRendered;
+        this.map._container.dispatchEvent(evt);
+      },
+
+      _emitTileLoadedEvent: function() {
+        var evt = document.createEvent('HTMLEvents');
+        evt.initEvent('protobuffer-tile-loaded', true, true);
+        evt.tilesToProcess = this.tilesNotYetRendered;
+        this.map._container.dispatchEvent(evt);
+      },
+
+      tileLoaded: function(pbfSource, ctx) {
+        pbfSource.renderedTiles[ctx.id] = ctx;
+      },
+
+      parseVT: function(vt){
+
+        function parseVTFeatures(vtl){
+          vtl.parsedFeatures = [];
+          var features = vtl._features;
+          for (var i = 0, len = features.length; i < len; i++) {
+            var vtf = vtl.feature(i);
+            vtf.coordinates = vtf.loadGeometry();
+            vtl.parsedFeatures.push(vtf);
           }
+          return vtl;
+        }
+
+        for (var key in vt.layers) {
+          var lyr = vt.layers[key];
+          parseVTFeatures(lyr);
+        }
+        return vt;
+      },
+
+
+
+      reduceTilesToProcessCount: function(){
+        this.tilesNotYetRendered--;
+        if(this.tilesNotYetRendered === 0){
+          //Trigger event letting us know that all tiles have been loaded and rendered (or 404'd).
           this.bringToFront();
         }
       },

@@ -1,4 +1,4 @@
-describe('featureMapChart', function() {
+describe('featureMap', function() {
 
   var testHelpers;
   var rootScope;

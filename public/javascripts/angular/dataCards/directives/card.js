@@ -48,12 +48,17 @@ angular.module('dataCards.directives').directive('card', function(AngularRxExten
       var dimensionsObservable = element.observeDimensions();
 
       // Give the visualization all the height that the description isn't using.
+      // Note that we set the height on a wrapper instead of the card-visualization itself.
+      // This is because the card-visualization DOM node itself can be ripped out and replaced
+      // by angular at any time (typically when the card-visualization template finishes loading
+      // asynchronously).
+      // See: https://github.com/angular/angular.js/issues/8877
       var description = element.find('.card-text');
       Rx.Observable.subscribeLatest(
         description.observeDimensions(),
         dimensionsObservable,
         function(descriptionDimensions, elementDimensions) {
-          element.find('card-visualization').height(
+          element.find('.card-visualization-wrapper').height(
             elementDimensions.height - description.outerHeight(true)
           );
         });

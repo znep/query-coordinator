@@ -53,7 +53,7 @@ class PageMetadataManagerTest < Test::Unit::TestCase
       fetch_dataset_metadata: { status: '200', body: dataset_metadata }
     )
     Phidippides.any_instance.expects(:create_page_metadata).times(1).then.with do |json, options|
-      json['cards'].find { |card| card['fieldName'] == '*' }
+      json['cards'].find { |card| card['cardType'] == 'table' }
     end.then.returns(
       status: '200',
       body: page_metadata

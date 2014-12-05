@@ -9,7 +9,6 @@ class PageMetadataManager
     'expandedCustomStyle' => {},
     'displayMode' => 'visualization',
     'expanded' => false,
-    'cardinality' => nil,
   }.freeze
 
   # Creates a new page
@@ -17,12 +16,15 @@ class PageMetadataManager
     data = JSON.parse(data) if data.is_a?(String)
     # Make sure that there is a table card
     if data['cards'].present?
-      table_card = data['cards'].find { |card| card['fieldName'] == '*' }
+      table_card = data['cards'].find do |card|
+        card['fieldName'] == '*' || card['cardType'] == 'table'
+      end
       unless table_card
         table_card = CARD_TEMPLATE.deep_dup
         table_card.merge!(
           'fieldName' => '*',
           'cardSize' => 2,
+          'cardType' => 'table',
         )
         data['cards'] << table_card
       end

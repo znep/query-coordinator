@@ -4,7 +4,7 @@
   var MAX_SAFE_INTEGER = Number.MAX_SAFE_INTEGER || 9007199254740991;
   var MIN_SAFE_INTEGER = Number.MIN_SAFE_INTEGER || -9007199254740991;
 
-  function CardTypeMapping(ServerConfig, Constants, $exceptionHandler, $log) {
+  function CardTypeMapping(ServerConfig, $exceptionHandler, $log) {
 
     function getCardTypesForColumn(column) {
 
@@ -31,9 +31,9 @@
       physicalDatatype = column.physicalDatatype;
       logicalDatatype = column.logicalDatatype;
 
-      if (cardTypeMapping.hasOwnProperty(logicalDatatype) &&
-          cardTypeMapping[logicalDatatype].hasOwnProperty(physicalDatatype)) {
-        cardType = cardTypeMapping[logicalDatatype][physicalDatatype];
+      if (cardTypeMapping.map.hasOwnProperty(logicalDatatype) &&
+          cardTypeMapping.map[logicalDatatype].hasOwnProperty(physicalDatatype)) {
+        cardType = cardTypeMapping.map[logicalDatatype][physicalDatatype];
       } else {
         warnOnceOnUnknownCardType(logicalDatatype, physicalDatatype);
       }
@@ -64,7 +64,7 @@
       }
 
       // Finally, determine which type to which we will map based on the column's cardinality.
-      if (cardinality <= parseInt(Constants['CARD_TYPE_MAPPING_CARDINALITY_THRESHOLD'], 10)) {
+      if (cardinality < cardTypeMapping.cardinalityThreshold) {
         defaultType = cardTypes.lowCardinalityDefault;
       } else {
         defaultType = cardTypes.highCardinalityDefault;

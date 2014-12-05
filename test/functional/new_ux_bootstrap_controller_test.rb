@@ -127,14 +127,41 @@ class NewUxBootstrapControllerTest < ActionController::TestCase
     @controller.stubs(has_rights?: true, current_user: stub_user)
     @page_metadata_manager.stubs(
       pages_for_dataset: { status: '404', body: [] },
-      create: { status: '200', body: { pageId: 'neoo-page' } },
     )
+
     @phidippides.stubs(
       fetch_dataset_metadata: {
         status: '200',
         body: dataset_metadata
       }
     )
+    # Make sure the page we're creating is the correct one
+    @page_metadata_manager.expects(:create).with do |page, params|
+      has_ten = page['cards'].length == 10
+      lacks_system_cols = page['cards'].none? do |card|
+        Phidippides::SYSTEM_COLUMN_ID_REGEX.match(card['fieldName'])
+      end
+
+      # make sure there exists cards that have the same logical and physical types, but different
+      # card types, according to cardinality.
+      seen_multi_cards = {}
+      differing_card_types = page['cards'].map do |card|
+        if card['fieldName'].start_with?('multi')
+          if seen_multi_cards.has_key?(card['fieldName'])
+            assert_not_equal(seen_multi_cards[card['fieldName']]['cardType'],
+                             card['fieldName']['cardType'])
+            card
+          else
+            seen_multi_cards[card['fieldName']] = card
+          end
+        end
+      end.compact
+      # Make sure we checked some cards
+      uses_cardinality = differing_card_types.present?
+
+      has_ten && lacks_system_cols && uses_cardinality
+    end.then.returns({ status: '200', body: { pageId: 'neoo-page' } })
+
     get :bootstrap, id: 'four-four'
     assert_redirected_to('/view/neoo-page')
   end
@@ -159,18 +186,61 @@ class NewUxBootstrapControllerTest < ActionController::TestCase
 
   private
 
+  def column_for_type(logical_type, physical_type, cardinality, name)
+    {
+      title: name,
+      name: name,
+      logicalDatatype: logical_type,
+      physicalDatatype: physical_type,
+      cardinality: cardinality,
+    }
+  end
+
+  def columns_for_cardtypes(types, prefix)
+    cardinality_threshold = CardTypeMapping::CARD_TYPE_MAPPING['cardinalityThreshold']
+    cardinality_toggle = 1
+    counter = 0
+    types.keys.map do |logical_type|
+      counter += 1
+      types[logical_type].map do |physical_type|
+        cardinality_toggle *= -1
+        column_for_type(logical_type, physical_type,
+                        cardinality_threshold + cardinality_toggle, "#{prefix}#{counter}")
+      end
+    end.flatten(1)
+  end
+
   def dataset_metadata
+    multiple_cardtype_types = {
+      'category' => ['number', 'text'],
+      'identifier' => ['number', 'text'],
+      'name' => ['number', 'text'],
+      'text' => ['number', 'text'],
+    }
+    # A sampling of datatypes that map to only one cardtype
+    single_cardtype_types = {
+      'amount' => ['*'],
+      'category' => ['boolean'],
+      'identifier' => ['fixed_timestamp', 'money'],
+      'location' => ['number', 'point'],
+    }
+    no_cardtype_types = {
+      '*' => ['boolean'],
+      'time' => ['geo_entity']
+    }
+
+    counter = 0
+
+    multi_cardtype_cols = columns_for_cardtypes(multiple_cardtype_types, 'multi')
+    single_cardtype_cols = columns_for_cardtypes(single_cardtype_types, 'single')
+    no_cardtype_cols = columns_for_cardtypes(no_cardtype_types, 'none')
+
     {
       id: 'data-iden',
       name: 'test dataset',
       description: 'dataset for unit test',
-      columns: [{ title: ':system', name: ':system' }] + (1..10).map do |n|
-        {
-          title: "col#{n}",
-          name: "col#{n}",
-          cardinality: n,
-        }
-      end
+      columns: [{ title: ':system', name: ':system' }] +
+        multi_cardtype_cols + single_cardtype_cols + no_cardtype_cols
     }
   end
 end

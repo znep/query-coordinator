@@ -76,8 +76,9 @@ class NewUxBootstrapController < ActionController::Base
 
   private
 
+  include CardTypeMapping
+
   def create_new_ux_page(dataset_metadata)
-    # TODO: filter based on available card types & cardinality
     cards = dataset_metadata[:columns].map do |column|
       unless Phidippides::SYSTEM_COLUMN_ID_REGEX.match(column[:name])
         card = PageMetadataManager::CARD_TEMPLATE.deep_dup
@@ -85,9 +86,10 @@ class NewUxBootstrapController < ActionController::Base
           'description' => column[:title],
           'fieldName' => column[:name],
           'cardinality' => column[:cardinality],
+          'cardType' => card_type_for(column)
         )
       end
-    end.compact.first(9) # 9 cards, + the table card
+    end.compact.first(10)
 
     {
       'datasetId' => dataset_metadata[:id],

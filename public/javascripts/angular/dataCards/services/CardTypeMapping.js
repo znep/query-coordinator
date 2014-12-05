@@ -42,44 +42,12 @@
 
     }
 
-    function getDefaultVisualizationForColumn(column) {
-
-      var cardTypes = getCardTypesForColumn(column);
-      var cardinality;
-      var defaultType;
-
-      // If there is no defined card type, fail early with a null result.
-      if (cardTypes === null) {
-        return null;
-      }
-
-      // If the cardinality is known for this column and it is within the bounds
-      // of safe integers, use the column's cardinality. Otherwise, fall back to 0.
-      if (!column.hasOwnProperty('cardinality') ||
-          column.cardinality < MIN_SAFE_INTEGER ||
-          column.cardinality > MAX_SAFE_INTEGER) {
-        cardinality = 0;
-      } else {
-        cardinality = parseInt(column.cardinality, 10);
-      }
-
-      // Finally, determine which type to which we will map based on the column's cardinality.
-      if (cardinality < cardTypeMapping.cardinalityThreshold) {
-        defaultType = cardTypes.lowCardinalityDefault;
-      } else {
-        defaultType = cardTypes.highCardinalityDefault;
-      }
-
-      return defaultType;
-
-    }
-
     function getDefaultCardTypeForModel(cardModel) {
 
       // TODO: how would I reactify this?
       var columns = cardModel.page.getCurrentValue('dataset').getCurrentValue('columns');
       var column = columns[cardModel.fieldName];
-      return getDefaultVisualizationForColumn(column);
+      return defaultVisualizationForColumn(column);
 
     }
 
@@ -116,13 +84,13 @@
      *
      */
 
-     function availableVisualizationsForColumn(column) {
+    function availableVisualizationsForColumn(column) {
       var cardTypes = getCardTypesForColumn(column);
       if (cardTypes === null) {
         return [];
       }
       return cardTypes.available;
-     }
+    }
 
     /**
      *
@@ -130,10 +98,35 @@
      * column's physical and logical datatypes.
      *
      */
+    function defaultVisualizationForColumn(column) {
+      var cardTypes = getCardTypesForColumn(column);
+      var cardinality;
+      var defaultType;
 
-     function defaultVisualizationForColumn(column) {
-       return getDefaultVisualizationForColumn(column);
-     }
+      // If there is no defined card type, fail early with a null result.
+      if (cardTypes === null) {
+        return null;
+      }
+
+      // If the cardinality is known for this column and it is within the bounds
+      // of safe integers, use the column's cardinality. Otherwise, fall back to 0.
+      if (!column.hasOwnProperty('cardinality') ||
+          column.cardinality < MIN_SAFE_INTEGER ||
+          column.cardinality > MAX_SAFE_INTEGER) {
+        cardinality = 0;
+      } else {
+        cardinality = parseInt(column.cardinality, 10);
+      }
+
+      // Finally, determine which type to which we will map based on the column's cardinality.
+      if (cardinality < cardTypeMapping.cardinalityThreshold) {
+        defaultType = cardTypes.lowCardinalityDefault;
+      } else {
+        defaultType = cardTypes.highCardinalityDefault;
+      }
+
+      return defaultType;
+    }
 
     /**
      *
@@ -143,7 +136,7 @@
      */
 
     function visualizationSupportedForColumn(column) {
-      return CARD_TYPES.hasOwnProperty(getDefaultVisualizationForColumn(column));
+      return CARD_TYPES.hasOwnProperty(defaultVisualizationForColumn(column));
     }
 
     /**

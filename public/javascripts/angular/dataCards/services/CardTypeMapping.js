@@ -98,7 +98,9 @@
      * column's physical and logical datatypes.
      *
      */
+
     function defaultVisualizationForColumn(column) {
+
       var cardTypes = getCardTypesForColumn(column);
       var cardinality;
       var defaultType;
@@ -108,24 +110,27 @@
         return null;
       }
 
-      // If the cardinality is known for this column and it is within the bounds
-      // of safe integers, use the column's cardinality. Otherwise, fall back to 0.
+      // If the cardinality is known for this column and it is within the bounds of safe integers,
+      // use the column's cardinality. Otherwise, fall back to the minimum cardinality.
       if (!column.hasOwnProperty('cardinality') ||
           column.cardinality < MIN_SAFE_INTEGER ||
           column.cardinality > MAX_SAFE_INTEGER) {
-        cardinality = 0;
+        cardinality = cardTypeMapping.cardinality.min;
       } else {
         cardinality = parseInt(column.cardinality, 10);
       }
 
       // Finally, determine which type to which we will map based on the column's cardinality.
-      if (cardinality < cardTypeMapping.cardinalityThreshold) {
+      if (cardinality < cardTypeMapping.cardinality.min) {
+        return null;
+      } else if (cardinality < cardTypeMapping.cardinality.threshold) {
         defaultType = cardTypes.lowCardinalityDefault;
       } else {
         defaultType = cardTypes.highCardinalityDefault;
       }
 
       return defaultType;
+
     }
 
     /**

@@ -159,7 +159,14 @@ class NewUxBootstrapControllerTest < ActionController::TestCase
       # Make sure we checked some cards
       uses_cardinality = differing_card_types.present?
 
-      has_ten && lacks_system_cols && uses_cardinality
+      discards_when_cardinality_too_low = page['cards'].none? do |card|
+        card['fieldName'] == 'below'
+      end
+
+      cards_all_have_types = page['cards'].all? { |card| card['cardType'] }
+
+      has_ten && lacks_system_cols && uses_cardinality && discards_when_cardinality_too_low &&
+        cards_all_have_types
     end.then.returns({ status: '200', body: { pageId: 'neoo-page' } })
 
     get :bootstrap, id: 'four-four'
@@ -197,7 +204,7 @@ class NewUxBootstrapControllerTest < ActionController::TestCase
   end
 
   def columns_for_cardtypes(types, prefix)
-    cardinality_threshold = CardTypeMapping::CARD_TYPE_MAPPING['cardinalityThreshold']
+    cardinality_threshold = CardTypeMapping::CARD_TYPE_MAPPING['cardinality']['threshold']
     cardinality_toggle = 1
     counter = 0
     types.keys.map do |logical_type|
@@ -234,13 +241,23 @@ class NewUxBootstrapControllerTest < ActionController::TestCase
     multi_cardtype_cols = columns_for_cardtypes(multiple_cardtype_types, 'multi')
     single_cardtype_cols = columns_for_cardtypes(single_cardtype_types, 'single')
     no_cardtype_cols = columns_for_cardtypes(no_cardtype_types, 'none')
+    below_minimum_cardinality = [{
+      title: 'below min cardinality',
+      name: 'below',
+      logicalDatatype: 'category',
+      physicalDatatype: 'number',
+      cardinality: CardTypeMapping::CARD_TYPE_MAPPING['cardinality']['min'] - 1
+    }]
 
     {
       id: 'data-iden',
       name: 'test dataset',
       description: 'dataset for unit test',
       columns: [{ title: ':system', name: ':system' }] +
-        multi_cardtype_cols + single_cardtype_cols + no_cardtype_cols
+        below_minimum_cardinality +
+        no_cardtype_cols.first(2) +
+        single_cardtype_cols.first(4) +
+        multi_cardtype_cols.first(6)
     }
   end
 end

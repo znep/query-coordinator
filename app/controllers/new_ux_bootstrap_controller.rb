@@ -81,13 +81,16 @@ class NewUxBootstrapController < ActionController::Base
   def create_new_ux_page(dataset_metadata)
     cards = dataset_metadata[:columns].map do |column|
       unless Phidippides::SYSTEM_COLUMN_ID_REGEX.match(column[:name])
-        card = PageMetadataManager::CARD_TEMPLATE.deep_dup
-        card.merge(
-          'description' => column[:title],
-          'fieldName' => column[:name],
-          'cardinality' => column[:cardinality],
-          'cardType' => card_type_for(column)
-        )
+        card_type = card_type_for(column)
+        if card_type
+          card = PageMetadataManager::CARD_TEMPLATE.deep_dup
+          card.merge(
+            'description' => column[:title],
+            'fieldName' => column[:name],
+            'cardinality' => column[:cardinality],
+            'cardType' => card_type,
+          )
+        end
       end
     end.compact.first(10)
 

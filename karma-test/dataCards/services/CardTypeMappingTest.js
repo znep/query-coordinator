@@ -95,7 +95,8 @@
     var column = {
       physicalDatatype: testCase.physical,
       logicalDatatype: testCase.logical,
-      name: '{0} {1}'.format(testCase.logical, testCase.physical)
+      name: '{0} {1}'.format(testCase.logical, testCase.physical),
+      cardinality: testCase.cardinality || 15
     };
     return column;
   }
@@ -127,17 +128,36 @@
       $exceptionHandler = $injector.get('$exceptionHandler');
     }));
 
-    _.each(mapping, function(testCase) {
-      var column = createColumn(testCase);
-      describe('when encountering the physical/logical datatype pairing "{1}"/"{0}"'.format(testCase.physical, testCase.logical), function() {
-        describe('using defaultVisualizationForColumn', function() {
+    describe('defaultVisualizationForColumn', function() {
+      _.each(mapping, function(testCase) {
+        var column = createColumn(testCase);
+        describe('when encountering the physical/logical datatype pairing "{1}"/"{0}"'.
+                 format(testCase.physical, testCase.logical), function() {
           it('should return {0}'.format(testCase.expectedDefault), function() {
-            expect(CardTypeMapping.defaultVisualizationForColumn(column)).to.equal(testCase.expectedDefault);
+            expect(CardTypeMapping.defaultVisualizationForColumn(column)).
+              to.equal(testCase.expectedDefault);
           });
         });
-        describe('using visualizationSupportedForColumn', function() {
+      });
+
+      it('should return null for columns with cardinality less than the minimum', function() {
+        var column = createColumn({
+          physical: 'number',
+          logical: 'category',
+          cardinality: 1
+        });
+        expect(CardTypeMapping.defaultVisualizationForColumn(column)).to.equal(null);
+      });
+    });
+
+    describe('visualizationSupportedForColumn', function() {
+      _.each(mapping, function(testCase) {
+        var column = createColumn(testCase);
+        describe('when encountering the physical/logical datatype pairing "{1}"/"{0}"'.
+                 format(testCase.physical, testCase.logical), function() {
           it('should return {0}'.format(testCase.supported), function () {
-            expect(CardTypeMapping.visualizationSupportedForColumn(column)).to.equal(testCase.supported);
+            expect(CardTypeMapping.visualizationSupportedForColumn(column)).
+              to.equal(testCase.supported);
           });
         });
       });

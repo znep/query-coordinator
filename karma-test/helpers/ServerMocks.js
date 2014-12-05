@@ -101,7 +101,10 @@
         "*": { "lowCardinalityDefault": "table", "highCardinalityDefault": "table", "available": ["table"] }
       }
     },
-    "cardinalityThreshold": 100,
+    "cardinality": {
+      "min": 2,
+      "threshold": 35
+    },
     ":version": "0.2"
   };
 

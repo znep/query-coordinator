@@ -120,18 +120,12 @@
       //An object to store the paths and contexts for this feature
       this.tiles = {};
 
-      this.style = style;
+      this.styleFn = style;
 
       //Add to the collection
       this.addTileFeature(feature, tile);
 
     }
-
-    VectorTileFeature.prototype.setStyle = function(styleFn) {
-
-      this.style = styleFn(this, null);
-
-    };
 
     VectorTileFeature.prototype.draw = function(canvasId) {
 
@@ -146,15 +140,15 @@
 
       switch (feature.type) {
         case 1: //Point
-          this.drawPoint(tile, feature.coordinates, this.style);
+          this.drawPoint(tile, feature.coordinates, this.styleFn);
           break;
 
         case 2: //LineString
-          this.drawLineString(tile, feature.coordinates, this.style);
+          this.drawLineString(tile, feature.coordinates, this.styleFn);
           break;
 
         case 3: //Polygon
-          this.drawPolygon(tile, feature.coordinates, this.style);
+          this.drawPolygon(tile, feature.coordinates, this.styleFn);
           break;
 
         default:
@@ -164,10 +158,13 @@
     };
 
     VectorTileFeature.prototype.getPathsForTile = function(canvasId) {
-
       //Get the info from the parts list
       return this.tiles[canvasId].paths;
+    };
 
+    // Takes a coordinate from a vector tile and turns it into a Leaflet Point.
+    VectorTileFeature.prototype.projectGeometryToTilePoint = function(coords) {
+      return new L.Point(coords.x / this.divisor, coords.y / this.divisor);
     };
 
     VectorTileFeature.prototype.addTileFeature = function(feature, tile) {
@@ -214,12 +211,13 @@
     VectorTileFeature.prototype.drawPoint = function(tileInfo, geometry, computedStyle) {
 
       var tile;
+      var ctx;
       var point;
-      var canvas;
       var radius;
-      var context;
 
-      if (!computedStyle.hasOwnProperty('color') || !computedStyle.hasOwnProperty('radius')) {
+      if (!_.isObject(computedStyle) ||
+          !computedStyle.hasOwnProperty('color') ||
+          !computedStyle.hasOwnProperty('radius')) {
         return;
       }
 
@@ -229,8 +227,9 @@
         return;
       }
 
-      canvas = tileInfo.canvas;
-      point = this.mapGeometryToTilePoint(geometry[0][0]);
+      ctx = canvas.getContext('2d');
+
+      point = this.projectGeometryToTilePoint(geometry[0][0]);
 
       // If style.radius is a function, we pass the zoom level to it in order
       // to get a zoom-level-dependent radius. Otherwise, we treat it as a
@@ -241,60 +240,74 @@
         radius = computedStyle.radius;
       }
 
-      context = canvas.getContext('2d');
-
       if (context === null) {
         throw new Error('drawPoint error: {0}'.format(e));
       }
 
-      context.beginPath();
-      context.fillStyle = computedStyle.color;
-      context.arc(point.x, point.y, radius, 0, Math.PI * 2);
-      context.closePath();
-      context.fill();
+      ctx.beginPath();
+      ctx.fillStyle = computedStyle.color;
+      ctx.arc(point.x, point.y, radius, 0, Math.PI * 2);
+      ctx.closePath();
+      ctx.fill();
 
       if (computedStyle.lineWidth && computedStyle.strokeStyle) {
 
-        context.lineWidth = computedStyle.lineWidth;
-        context.strokeStyle = computedStyle.strokeStyle;
-        context.stroke();
+        ctx.lineWidth = computedStyle.lineWidth;
+        ctx.strokeStyle = computedStyle.strokeStyle;
+        ctx.stroke();
 
       }
 
-      context.restore();
+      ctx.restore();
       tile.paths.push([point]);
 
     };
 
-    VectorTileFeature.prototype.drawLineString = function(tile, coordsArray, style) {
+    VectorTileFeature.prototype.drawLineString = function(tileInfo, coordsArray, computedStyle) {
 
-      if (!style) {
+      var ctx;
+      var projectedCoordinates;
+      var i;
+      var coordinates;
+      var j;
+      var projectedPoint;
+      var method;
+
+      if (!_.isObject(computedStyle) ||
+          !computedStyle.hasOwnProperty('color') ||
+          !computedStyle.hasOwnProperty('size')) {
         return;
       }
 
-      var ctx2d = tile.canvas.getContext('2d');
-      ctx2d.strokeStyle = style.color;
-      ctx2d.lineWidth = style.size;
-      ctx2d.beginPath();
+      if (_.isUndefined(tileInfo.canvas)) {
+        return;
+      }
 
-      var projCoords = [];
-      var thisTile = this.tiles[tile.id];
+      ctx = tileInfo.canvas.getContext('2d');
+      ctx.strokeStyle = computedStyle.color;
+      ctx.lineWidth = computedStyle.size;
+      ctx.beginPath();
 
-      for (var gidx in coordsArray) {
-        var coords = coordsArray[gidx];
+      projectedCoordinates = [];
 
-        for (i = 0; i < coords.length; i++) {
-          var method = (i === 0 ? 'move' : 'line') + 'To';
-          var proj = this.mapGeometryToTilePoint(coords[i]);
-          projCoords.push(proj);
-          ctx2d[method](proj.x, proj.y);
+      i = coordinateArray.length;
+
+      while (i--) {
+        coordinates = coordinateArray[i];
+        j = coordinates.length;
+
+        while (j--) {
+          projectedPoint = this.projectGeometryToTilePoint(coords[i]);
+          projectedCoordinates.push(projectedPoint);
+          method = (i === 0 ? 'move' : 'line') + 'To';
+          ctx[method](projectedPoint.x, projectedPoint.y);
         }
       }
 
-      ctx2d.stroke();
-      ctx2d.restore();
+      ctx.stroke();
+      ctx.restore();
 
-      thisTile.paths.push(projCoords);
+      this.tiles[tileInfo.id].paths.push(projectedCoordinates);
 
     };
 
@@ -333,7 +346,7 @@
         for (var i = 0; i < coords.length; i++) {
           var coord = coords[i];
           var method = (i === 0 ? 'move' : 'line') + 'To';
-          var proj = this.mapGeometryToTilePoint(coords[i]);
+          var proj = this.projectGeometryToTilePoint(coords[i]);
           projCoords.push(proj);
           ctx2d[method](proj.x, proj.y);
         }
@@ -346,37 +359,6 @@
       }
 
       thisTile.paths.push(projCoords);
-
-    };
-
-    // Projects a vector tile point to the Spherical Mercator pixel space for a given zoom level.
-    //
-    // @param vecPt
-    // @param tileX
-    // @param tileY
-    // @param extent
-    // @param tileSize
-    VectorTileFeature.prototype._project = function(vecPt, tileX, tileY, extent, tileSize) {
-
-      var xOffset = tileX * tileSize;
-      var yOffset = tileY * tileSize;
-
-      return {
-        x: Math.floor(vecPt.x + xOffset),
-        y: Math.floor(vecPt.y + yOffset)
-      };
-
-    };
-
-    // Takes a coordinate from a vector tile and turns it into a Leaflet Point.
-    //
-    // @param ctx
-    // @param coords
-    // @returns {eGeomType.Point}
-    // @private
-    VectorTileFeature.prototype.mapGeometryToTilePoint = function(coords) {
-
-      return new L.Point(coords.x / this.divisor, coords.y / this.divisor);
 
     };
 
@@ -574,28 +556,6 @@
         }
 
         self.redrawTile(layerCtx.id);
-
-      },
-
-      setStyle: function(styleFn) {
-
-        // refresh the number for the highest count value
-        // this is used only for choropleth
-        this._highestCount = 0;
-
-        this.style = styleFn;
-
-        for (var key in this.features) {
-          var feat = this.features[key];
-          feat.setStyle(styleFn);
-        }
-
-        var z = this.map.getZoom();
-
-        for (var key in this._tiles) {
-          var id = z + ':' + key;
-          this.redrawTile(id);
-        }
 
       },
 
@@ -1016,25 +976,6 @@
           this.map.removeLayer(layer);
         }
 
-      },
-
-      /**
-       * Take in a new style function and propogate to child layers.
-       * If you do not set a layer name, it resets the style for all of the layers.
-       * @param styleFunction
-       * @param layerName
-       */
-      setStyle: function(styleFn, layerName) {
-        for (var key in this.layers) {
-          var layer = this.layers[key];
-          if (layerName) {
-            if(key.toLowerCase() == layerName.toLowerCase()) {
-              layer.setStyle(styleFn);
-            }
-          } else {
-            layer.setStyle(styleFn);
-          }
-        }
       },
 
       setVisibleLayersStyle:function(style, value) {

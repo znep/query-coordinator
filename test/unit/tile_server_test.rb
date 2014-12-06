@@ -68,7 +68,7 @@ class TileServerTest < Test::Unit::TestCase
     end
   end
 
-  def test_fetch_tile_success
+  def test_fetch_tile_success_no_where
     page_id = 'test-page'
     field_id = 'test_field'
     zoom = 14
@@ -95,6 +95,45 @@ class TileServerTest < Test::Unit::TestCase
       :x_coord => x_coord,
       :y_coord => y_coord,
       '$limit' => limit
+    )
+
+    assert_equal({
+      'status' => '200',
+      'body' => test_body,
+      'content_type' => 'application/octet-stream'
+    }, result)
+  end
+
+  def test_fetch_tile_success_with_where
+    page_id = 'test-page'
+    field_id = 'test_field'
+    zoom = 14
+    x_coord = 2
+    y_coord = 3
+    limit = 11088
+    where = 'test_field=3'
+    test_body = 'insert juicy binary tile here'
+
+    prepare_stubs(
+      :verb => :get,
+      :page_id => page_id,
+      :field_id => field_id,
+      :zoom => zoom,
+      :x_coord => x_coord,
+      :y_coord => y_coord,
+      '$limit' => limit,
+      '$where' => where,
+      :body => test_body
+    )
+
+    result = tileserver.fetch_tile(
+      :page_id => page_id,
+      :field_id => field_id,
+      :zoom => zoom,
+      :x_coord => x_coord,
+      :y_coord => y_coord,
+      '$limit' => limit,
+      '$where' => where
     )
 
     assert_equal({
@@ -199,8 +238,10 @@ class TileServerTest < Test::Unit::TestCase
     @mock_request = {}
     @mock_request.expects(:body).returns(options.fetch(:body, ''))
 
+    where_clause = options['$where'] || '0=0'
+
     "Net::HTTP::#{options[:verb].capitalize}".constantize.expects(:new).
-      with("#{tileserver.end_point}/tiles/#{options[:page_id]}/#{options[:field_id]}/#{options[:zoom]}/#{options[:x_coord]}/#{options[:y_coord]}.pbf?$limit=#{options['$limit']}").
+      with("#{tileserver.end_point}/tiles/#{options[:page_id]}/#{options[:field_id]}/#{options[:zoom]}/#{options[:x_coord]}/#{options[:y_coord]}.pbf?$limit=#{options['$limit']}&$where=#{CGI::escape(where_clause)}").
       returns(@mock_request)
 
     @mock_http = stub

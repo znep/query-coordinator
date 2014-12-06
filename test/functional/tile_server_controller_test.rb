@@ -55,7 +55,15 @@ class TileServerControllerTest < ActionController::TestCase
     TileServer.any_instance.expects(:fetch_tile).
       with(request_params_with_cookies).
       returns(:status => '200', :body => '', :content_type => '')
-    get :proxy_request, @request_params
+    get :proxy_request, request_params_with_cookies
+  end
+
+  test 'should call TileServer#fetch_tile with appropriate parameters (with where clause)' do
+    request_params_with_where = @request_params.merge('$where' => 'subjectiveoration=foo')
+    TileServer.any_instance.expects(:fetch_tile).
+      with(request_params_with_where).
+      returns(:status => '200', :body => '', :content_type => '')
+    get :proxy_request, request_params_with_where
   end
 
   test 'should return error as JSON' do

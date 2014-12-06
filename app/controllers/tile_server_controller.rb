@@ -14,7 +14,8 @@ class TileServerController < ActionController::Base
           :zoom,
           :x_coord,
           :y_coord,
-          '$limit'
+          '$limit',
+          '$where'
         ).merge(:cookies => forwardable_session_cookies)
       )
     rescue => error

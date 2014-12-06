@@ -227,7 +227,7 @@
         return;
       }
 
-      ctx = canvas.getContext('2d');
+      ctx = tileInfo.canvas.getContext('2d');
 
       point = this.projectGeometryToTilePoint(geometry[0][0]);
 
@@ -240,8 +240,8 @@
         radius = computedStyle.radius;
       }
 
-      if (context === null) {
-        throw new Error('drawPoint error: {0}'.format(e));
+      if (ctx === null) {
+        throw new Error('Could not draw point: canvas context is null.');
       }
 
       ctx.beginPath();
@@ -284,6 +284,11 @@
       }
 
       ctx = tileInfo.canvas.getContext('2d');
+
+      if (ctx === null) {
+        throw new Error('Could not draw lineString: canvas context is null.');
+      }
+
       ctx.strokeStyle = computedStyle.color;
       ctx.lineWidth = computedStyle.size;
       ctx.beginPath();

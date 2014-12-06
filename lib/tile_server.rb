@@ -1,7 +1,7 @@
 class TileServer < SocrataHttp
 
-  def path(page_id, field_id, zoom, x_coord, y_coord, row_limit)
-    "tiles/#{page_id}/#{field_id}/#{zoom}/#{x_coord}/#{y_coord}.pbf?$limit=#{row_limit}"
+  def path(page_id, field_id, zoom, x_coord, y_coord, row_limit, where)
+    "tiles/#{page_id}/#{field_id}/#{zoom}/#{x_coord}/#{y_coord}.pbf?$limit=#{row_limit}&$where=#{CGI::escape(where)}"
   end
 
   def fetch_tile(options)
@@ -15,7 +15,8 @@ class TileServer < SocrataHttp
         options.fetch(:zoom),
         options.fetch(:x_coord),
         options.fetch(:y_coord),
-        options.fetch('$limit')
+        options.fetch('$limit'),
+        options['$where'] || '0=0'
       )
     )
   end

@@ -1,6 +1,12 @@
 (function() {
   'use strict';
 
+TODO:
+1. remove getPathsForTile and all the accompanying stuff
+2. update drawPolygon
+3. wrap up refactor of VectorTileFeature
+4. begin refactor of VectorTileLayer
+
   function VectorTiles() {
 
     /****************************************************************************

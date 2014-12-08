@@ -65,8 +65,7 @@ class NewUxBootstrapController < ActionController::Base
         :request => { :params => params },
         :context => { :page_creation_result => page_creation_result }
       )
-      Rails.logger.error("Error creating page for dataset #{params[:id]}: " +
-                         "#{page_creation_result[:status]} #{page_creation_result[:body]}")
+      Rails.logger.error("Error creating page for dataset #{params[:id]}: #{page_creation_result}")
       flash[:error] = I18n.t('screens.ds.new_ux_error')
       return redirect_to action: 'show', controller: 'datasets'
     end

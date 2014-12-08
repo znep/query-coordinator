@@ -137,10 +137,11 @@ class NewUxBootstrapControllerTest < ActionController::TestCase
     )
     # Make sure the page we're creating is the correct one
     @page_metadata_manager.expects(:create).with do |page, params|
-      has_ten = page['cards'].length == 10
-      lacks_system_cols = page['cards'].none? do |card|
+      assert_equal(10, page['cards'].length, 'Should create 10 cards')
+
+      assert(page['cards'].none? do |card|
         Phidippides::SYSTEM_COLUMN_ID_REGEX.match(card['fieldName'])
-      end
+      end, 'should omit system columns')
 
       # make sure there exists cards that have the same logical and physical types, but different
       # card types, according to cardinality.
@@ -148,8 +149,11 @@ class NewUxBootstrapControllerTest < ActionController::TestCase
       differing_card_types = page['cards'].map do |card|
         if card['fieldName'].start_with?('multi')
           if seen_multi_cards.has_key?(card['fieldName'])
-            assert_not_equal(seen_multi_cards[card['fieldName']]['cardType'],
-                             card['fieldName']['cardType'])
+            assert_not_equal(
+              seen_multi_cards[card['fieldName']]['cardType'],
+              card['fieldName']['cardType'],
+              'For a given physical/logical type, different cardinality creates different cardType'
+            )
             card
           else
             seen_multi_cards[card['fieldName']] = card
@@ -157,16 +161,19 @@ class NewUxBootstrapControllerTest < ActionController::TestCase
         end
       end.compact
       # Make sure we checked some cards
-      uses_cardinality = differing_card_types.present?
+      assert(differing_card_types.present?)
 
-      discards_when_cardinality_too_low = page['cards'].none? do |card|
-        card['fieldName'] == 'below'
-      end
+      assert(page['cards'].any? do |card|
+        card['description'] == 'no cardinality' && card['cardType'] == 'column'
+      end, 'A column with no cardinality should default to its low-cardinality default')
 
-      cards_all_have_types = page['cards'].all? { |card| card['cardType'] }
+      assert(page['cards'].none? do |card|
+        card['description'] == 'below min cardinality'
+      end, 'too-low cardinality columns should be omitted')
 
-      has_ten && lacks_system_cols && uses_cardinality && discards_when_cardinality_too_low &&
-        cards_all_have_types
+      assert(page['cards'].all? { |card| card['cardType'] }, 'Every card should have cardType set')
+
+      true
     end.then.returns({ status: '200', body: { pageId: 'neoo-page' } })
 
     get :bootstrap, id: 'four-four'
@@ -248,12 +255,19 @@ class NewUxBootstrapControllerTest < ActionController::TestCase
       physicalDatatype: 'number',
       cardinality: CardTypeMapping::CARD_TYPE_MAPPING['cardinality']['min'] - 1
     }]
+    no_cardinality = [{
+      title: 'no cardinality',
+      name: 'none',
+      logicalDatatype: 'category',
+      physicalDatatype: 'number',
+    }]
 
     {
       id: 'data-iden',
       name: 'test dataset',
       description: 'dataset for unit test',
       columns: [{ title: ':system', name: ':system' }] +
+        no_cardinality +
         below_minimum_cardinality +
         no_cardtype_cols.first(2) +
         single_cardtype_cols.first(4) +

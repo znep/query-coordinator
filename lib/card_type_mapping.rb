@@ -8,13 +8,16 @@ module CardTypeMapping
       try(:[], column[:physicalDatatype])
 
     if mapping
-      if column[:cardinality].is_a?(Numeric) &&
-          column[:cardinality] >= CARD_TYPE_MAPPING['cardinality']['min']
-        if column[:cardinality] < CARD_TYPE_MAPPING['cardinality']['threshold']
-          mapping['lowCardinalityDefault']
-        else
-          mapping['highCardinalityDefault']
+      if column[:cardinality].is_a?(Numeric)
+        if column[:cardinality] >= CARD_TYPE_MAPPING['cardinality']['min']
+          if column[:cardinality] < CARD_TYPE_MAPPING['cardinality']['threshold']
+            mapping['lowCardinalityDefault']
+          else
+            mapping['highCardinalityDefault']
+          end
         end
+      else
+        mapping['lowCardinalityDefault']
       end
     end
   end

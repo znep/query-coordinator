@@ -66,9 +66,9 @@
       "floating_timestamp": { "lowCardinalityDefault": "timeline", "highCardinalityDefault": "timeline", "available": ["timeline"] },
       "geo_entity": { "lowCardinalityDefault": null, "highCardinalityDefault": null, "available": [] },
       "money": { "lowCardinalityDefault": "search", "highCardinalityDefault": "search", "available": ["search"] },
-      "number": { "lowCardinalityDefault": "search", "highCardinalityDefault": "search", "available": ["column", "search"] },
+      "number": { "lowCardinalityDefault": "column", "highCardinalityDefault": "search", "available": ["column", "search"] },
       "point": { "lowCardinalityDefault": null, "highCardinalityDefault": null, "available": [] },
-      "text": { "lowCardinalityDefault": "search", "highCardinalityDefault": "search", "available": ["column", "search"] },
+      "text": { "lowCardinalityDefault": "column", "highCardinalityDefault": "search", "available": ["column", "search"] },
       "timestamp": { "lowCardinalityDefault": "timeline", "highCardinalityDefault": "timeline", "available": ["timeline"] },
       "*": { "lowCardinalityDefault": "table", "highCardinalityDefault": "table", "available": ["table"] }
     },

@@ -76,22 +76,49 @@ class NewUxBootstrapController < ActionController::Base
   private
 
   include CardTypeMapping
+  require 'set'
 
   def create_new_ux_page(dataset_metadata)
+    # Keep track of the types of cards we added, so we can give a spread
+    added_card_types = Set.new
+    skipped_cards_by_type = Hash.new { |h, k| h[k] = [] }
+
     cards = dataset_metadata[:columns].map do |column|
       unless Phidippides::SYSTEM_COLUMN_ID_REGEX.match(column[:name])
         card_type = card_type_for(column)
         if card_type
           card = PageMetadataManager::CARD_TEMPLATE.deep_dup
-          card.merge(
+          card.merge!(
             'description' => column[:title],
             'fieldName' => column[:name],
             'cardinality' => column[:cardinality],
             'cardType' => card_type,
           )
+
+          if added_card_types.add?(card_type)
+            card
+          else
+            skipped_cards_by_type[card_type] << card
+            nil
+          end
         end
       end
-    end.compact.first(10)
+    end.compact
+
+    if cards.length < 10
+      # skipped_cards is an array of arrays, grouped by card type
+      skipped_cards = skipped_cards_by_type.values
+      # Find the card type with the most cards (to facilitate the zip operation)
+      most_cards_of_this_type = skipped_cards.max_by(&:length)
+      # Interleave the cards of different types, for the best variety
+      interleaved_cards = most_cards_of_this_type.zip(*skipped_cards.select do |cards|
+        cards != most_cards_of_this_type
+      end).flatten(1).compact
+      # Fill out the rest of the cards for the page
+      cards = cards.concat(interleaved_cards.first(10 - cards.length))
+    else
+      cards = cards.first(10)
+    end
 
     {
       'datasetId' => dataset_metadata[:id],

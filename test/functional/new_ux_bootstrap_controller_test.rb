@@ -173,6 +173,13 @@ class NewUxBootstrapControllerTest < ActionController::TestCase
 
       assert(page['cards'].all? { |card| card['cardType'] }, 'Every card should have cardType set')
 
+      previous_card = {}
+      page['cards'].first(4).each do |card|
+        assert_not_equal(previous_card['cardType'], card['cardType'],
+                         'There should be a variety of cards created')
+        previous_card = card
+      end
+
       true
     end.then.returns({ status: '200', body: { pageId: 'neoo-page' } })
 

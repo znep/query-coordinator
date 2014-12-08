@@ -22,7 +22,9 @@
       </div>
     </div>
   </div>
-  <card-visualization model="model" where-clause="whereClause"></card-visualization>
+  <div class="card-visualization-wrapper">
+    <card-visualization model="model" where-clause="whereClause"></card-visualization>
+  </div>
   <div class="card-controls" ng-if="interactive">
     <div ng-attr-title="{{ expanded ? 'Collapse this card' : 'Expand this card' }}"
          ng-click="toggleExpanded()"

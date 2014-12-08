@@ -1,11 +1,10 @@
 (function() {
   'use strict';
 
-TODO:
-1. remove getPathsForTile and all the accompanying stuff
-2. update drawPolygon
+/*TODO:
+
 3. wrap up refactor of VectorTileFeature
-4. begin refactor of VectorTileLayer
+4. begin refactor of VectorTileLayer*/
 
   function VectorTiles() {
 
@@ -120,10 +119,9 @@ TODO:
 
       // how much we divide the coordinate from the vector tile
       this.divisor = feature.extent / tile.tileSize;
-      this.extent = feature.extent;
       this.tileSize = tile.tileSize;
 
-      //An object to store the paths and contexts for this feature
+      //An object to store the contexts for this feature
       this.tiles = {};
 
       this.styleFn = style;
@@ -163,11 +161,6 @@ TODO:
 
     };
 
-    VectorTileFeature.prototype.getPathsForTile = function(canvasId) {
-      //Get the info from the parts list
-      return this.tiles[canvasId].paths;
-    };
-
     // Takes a coordinate from a vector tile and turns it into a Leaflet Point.
     VectorTileFeature.prototype.projectGeometryToTilePoint = function(coords) {
       return new L.Point(coords.x / this.divisor, coords.y / this.divisor);
@@ -189,8 +182,7 @@ TODO:
 
       this.tiles[tile.id] = {
         tile: tile,
-        feature: feature,
-        paths: []
+        feature: feature
       };
 
     };
@@ -216,7 +208,6 @@ TODO:
 
     VectorTileFeature.prototype.drawPoint = function(tileInfo, geometry, computedStyle) {
 
-      var tile;
       var ctx;
       var point;
       var radius;
@@ -226,8 +217,6 @@ TODO:
           !computedStyle.hasOwnProperty('radius')) {
         return;
       }
-
-      tile = this.tiles[tileInfo.id];
 
       if (_.isUndefined(tileInfo.canvas)) {
         return;
@@ -265,11 +254,10 @@ TODO:
       }
 
       ctx.restore();
-      tile.paths.push([point]);
 
     };
 
-    VectorTileFeature.prototype.drawLineString = function(tileInfo, coordsArray, computedStyle) {
+    VectorTileFeature.prototype.drawLineString = function(tileInfo, coordinateArray, computedStyle) {
 
       var ctx;
       var projectedCoordinates;
@@ -277,7 +265,6 @@ TODO:
       var coordinates;
       var j;
       var projectedPoint;
-      var method;
 
       if (!_.isObject(computedStyle) ||
           !computedStyle.hasOwnProperty('color') ||
@@ -295,81 +282,114 @@ TODO:
         throw new Error('Could not draw lineString: canvas context is null.');
       }
 
-      ctx.strokeStyle = computedStyle.color;
-      ctx.lineWidth = computedStyle.size;
-      ctx.beginPath();
-
       projectedCoordinates = [];
 
-      i = coordinateArray.length;
+      ctx.strokeStyle = computedStyle.color;
+      ctx.lineWidth = computedStyle.size;
 
-      while (i--) {
+      ctx.beginPath();
+
+      coordinateGroupCount = coordinateArray.length;
+
+      for (i = 0; i < coordinateGroupCount; i++) {
+
         coordinates = coordinateArray[i];
-        j = coordinates.length;
+        coordinateCount = coordinates.length;
 
-        while (j--) {
-          projectedPoint = this.projectGeometryToTilePoint(coords[i]);
+        for (j = 0; j < coordinateCount; j++) {
+          projectedPoint = this.projectGeometryToTilePoint(coordinates[i]);
           projectedCoordinates.push(projectedPoint);
-          method = (i === 0 ? 'move' : 'line') + 'To';
-          ctx[method](projectedPoint.x, projectedPoint.y);
+
+          if (j === 0) {
+            ctx.moveTo(projectedPoint.x, projectedPoint.y);
+          } else {
+            ctx.lineTo(projectedPoint.x, projectedPoint.y);
+          }
+
         }
       }
 
       ctx.stroke();
       ctx.restore();
 
-      this.tiles[tileInfo.id].paths.push(projectedCoordinates);
-
     };
 
-    VectorTileFeature.prototype.drawPolygon = function(tile, coordsArray, style) {
+    VectorTileFeature.prototype.drawPolygon = function(tileInfo, coordinateArray, computedStyle) {
 
-      if (!style) {
+      function validateOutline(outline) {
+        var validatedOutline = null;
+        if (outline.hasOwnProperty('color') && outline.hasOwnProperty('size')) {
+          validatedOutline = outline;
+        }
+        return validatedOutline;
+      }
+
+      var ctx;
+      var outline;
+      var projectedCoordinates;
+      var coordinateGroupCount;
+      var i;
+      var coordinateCount;
+      var j;
+      var projectedPoint;
+
+      if (!_.isObject(computedStyle) ||
+          !computedStyle.hasOwnProperty('color') ||
+          !computedStyle.hasOwnProperty('size')) {
         return;
       }
 
-      if (!tile.canvas) {
+      if (_.isUndefined(tileInfo.canvas)) {
         return;
       }
 
-      var ctx2d = ctx.canvas.getContext('2d');
-      var outline = style.outline;
+      ctx = tileInfo.canvas.getContext('2d');
+      outline = computedStyle.hasOwnProperty('outline') ? validateOutline(computedStyle.outline) : null;
 
-      // color may be defined via function to make choropleth work right
-      if (typeof style.color === 'function') {
-        ctx2d.fillStyle = style.color();
+      projectedCoordinates = [];
+
+      // computedStyle.color may be a function or a value.
+      if (_.isFunction(computedStyle.color)) {
+        ctx.fillStyle = style.color();
       } else {
-        ctx2d.fillStyle = style.color;
+        ctx.fillStyle = style.color;
       }
 
-      if (outline) {
-        ctx2d.strokeStyle = outline.color;
-        ctx2d.lineWidth = outline.size;
+      if (outline !== null) {
+        ctx.strokeStyle = outline.color;
+        ctx.lineWidth = outline.size;
       }
+
       ctx2d.beginPath();
 
-      var projCoords = [];
-      var thisTile = this.tiles[tile.id];
+      coordinateGroupCount = coordinateArray.length;
 
-      for (var gidx = 0, len = coordsArray.length; gidx < len; gidx++) {
-        var coords = coordsArray[gidx];
+      for (i = 0; i < coordinateGroupCount; i++) {
 
-        for (var i = 0; i < coords.length; i++) {
-          var coord = coords[i];
-          var method = (i === 0 ? 'move' : 'line') + 'To';
-          var proj = this.projectGeometryToTilePoint(coords[i]);
-          projCoords.push(proj);
-          ctx2d[method](proj.x, proj.y);
+        coordinates = coordinateArray[i];
+        coordinateCount = coordinates.length;
+
+        for (j = 0; j < coordinateCount; j++) {
+          projectedPoint = this.projectGeometryToTilePoint(coordinates[j]);
+          projectedCoordinates.push(projectedPoint);
+
+          if (j === 0) {
+            ctx.moveTo(projectedPoint.x, projectedPoint.y);
+          } else {
+            ctx.lineTo(projectedPoint.x, projectedPoint.y);
+          }
+
         }
       }
 
-      ctx2d.closePath();
-      ctx2d.fill();
-      if (outline) {
-        ctx2d.stroke();
+      ctx.closePath();
+      ctx.fill();
+
+      if (outline !== null) {
+        ctx.stroke();
       }
 
-      thisTile.paths.push(projCoords);
+      ctx.restore();
 
     };
 
@@ -602,21 +622,7 @@ TODO:
         var y = evt.layerPoint.y - canvas._leaflet_pos.y;
 
         var tilePoint = {x: x, y: y};
-        var features = this._canvasIDToFeatures[evt.tileID].features;
-        for (var i = 0; i < features.length; i++) {
-          var feature = features[i];
-          var paths = feature.getPathsForTile(evt.tileID);
-          for (var j = 0; j < paths.length; j++) {
-            if (this._isPointInPoly(tilePoint, paths[j])) {
-              if (feature.toggleEnabled) {
-                feature.toggle();
-              }
-              evt.feature = feature;
-              cb(evt);
-              return;
-            }
-          }
-        }
+
         //no match
         //return evt with empty feature
         evt.feature = null;

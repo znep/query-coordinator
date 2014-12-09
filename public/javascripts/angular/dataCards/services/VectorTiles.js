@@ -134,9 +134,8 @@
     VectorTileFeature.prototype.draw = function(canvasId) {
 
       //Get the info from the tiles list
-      var tileInfo = this.tiles[canvasId];
-      var feature = tileInfo.feature;
-      var tile = tileInfo.tile;
+      var tile = this.tiles[canvasId];
+      var feature = tile.feature;
       //Get the actual canvas from the parent layer's _tiles object.
       var internalTileId = canvasId.split(":").slice(1, 3).join(':');
 
@@ -144,15 +143,15 @@
 
       switch (feature.type) {
         case 1: //Point
-          this.drawPoint(tile, feature.coordinates, this.styleFn);
+          this.drawPoint(tile.tileInfo.canvas, tile.tileInfo.zoom, feature.coordinates, this.styleFn);
           break;
 
         case 2: //LineString
-          this.drawLineString(tile, feature.coordinates, this.styleFn);
+          this.drawLineString(tile.tileInfo, feature.coordinates, this.styleFn);
           break;
 
         case 3: //Polygon
-          this.drawPolygon(tile, feature.coordinates, this.styleFn);
+          this.drawPolygon(tile.tileInfo, feature.coordinates, this.styleFn);
           break;
 
         default:
@@ -181,7 +180,7 @@
       this.clearTileFeatures(zoom); 
 
       this.tiles[tile.id] = {
-        tile: tile,
+        tileInfo: tile,
         feature: feature
       };
 
@@ -206,7 +205,7 @@
 
     };
 
-    VectorTileFeature.prototype.drawPoint = function(tileInfo, geometry, computedStyle) {
+    VectorTileFeature.prototype.drawPoint = function(canvas, zoomLevel, geometry, computedStyle) {
 
       var ctx;
       var point;
@@ -218,11 +217,11 @@
         return;
       }
 
-      if (_.isUndefined(tileInfo.canvas)) {
+      if (_.isUndefined(canvas)) {
         return;
       }
 
-      ctx = tileInfo.canvas.getContext('2d');
+      ctx = canvas.getContext('2d');
 
       point = this.projectGeometryToTilePoint(geometry[0][0]);
 
@@ -230,7 +229,7 @@
       // to get a zoom-level-dependent radius. Otherwise, we treat it as a
       // number and use it directly.
       if (_.isFunction(computedStyle.radius)) {
-        radius = computedStyle.radius(tileInfo.zoom);
+        radius = computedStyle.radius(zoomLevel);
       } else{
         radius = computedStyle.radius;
       }

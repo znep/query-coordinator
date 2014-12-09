@@ -286,15 +286,21 @@
 
             var jsonPayload = response.data[0];
             var extentKey = _.keys(jsonPayload)[0];
-            var extents = response.data[0][extentKey].coordinates;
-            // Beware, data from extent query comes back as long/lat but has to be formatted as lat/long here
-            var upperLeftCorner = extents[0][0][1][1] + ',' + extents[0][0][1][0];
-            var lowerRightCorner = extents[0][0][3][1] + ',' + extents[0][0][3][0];
+            var extents = response.data[0][extentKey].coordinates[0][0];
 
-            // https://dataspace.demo.socrata.com/resource/fdqy-yyme.geojson?$select=*&
-            //   $where=within_box(the_geom,41.86956082699455,-87.73681640625,41.85319643776675,-87.71484375)
-            var shapeFileUrl = '/resource/{0}.geojson?$select=*&$where=within_box(the_geom,{1},{2})'.
-              format(shapeFileId, upperLeftCorner, lowerRightCorner);
+            var bottomLeft = extents[0].join(' ');
+            var topLeft = extents[1].join(' ');
+            var topRight = extents[2].join(' ');
+            var bottomRight = extents[3].join(' ');
+
+            //  /resource/bwdd-ss8w.geojson?$select=*&$where=intersects(
+            //  the_geom,
+            //  'MULTIPOLYGON(((-71.153911%2042.398355,-71.153911%2042.354528,-71.076298%2042.354528,-71.076298%2042.398355,-71.153911%2042.398355)))')
+            var multiPolygon = "'MULTIPOLYGON((({0},{1},{2},{3},{0})))'".
+              format(bottomLeft, topLeft, topRight, bottomRight);
+
+            var shapeFileUrl = '/resource/{0}.geojson?$select=*&$where=intersects(the_geom,{1})'.
+              format(shapeFileId, multiPolygon);
 
             var config = httpConfig.call(self, {
               headers: {

@@ -5,12 +5,10 @@ class NewUxBootstrapController < ActionController::Base
 
   def bootstrap
     # Check to make sure they have permission to create a page
-    allowed_roles = %w(administrator publisher)
-    has_permission = current_user && allowed_roles.include?(current_user.roleName) && has_rights?
     return render :json => {
       error: true,
-      reason: "User must be one of these roles: #{allowed_roles.join(', ')}"
-    }, :status => :forbidden unless has_permission
+      reason: "User must be one of these roles: #{ALLOWED_ROLES.join(', ')}"
+    }, :status => :forbidden unless has_rights?
 
     # Grab the page 4x4s associated with this dataset id
     pages = page_metadata_manager.pages_for_dataset(
@@ -78,6 +76,8 @@ class NewUxBootstrapController < ActionController::Base
   include CardTypeMapping
   require 'set'
 
+  ALLOWED_ROLES = %w(administrator publisher)
+
   def create_new_ux_page(dataset_metadata)
     # Keep track of the types of cards we added, so we can give a spread
     added_card_types = Set.new
@@ -130,6 +130,13 @@ class NewUxBootstrapController < ActionController::Base
 
   def dataset
     View.find(params[:id])
+  end
+
+  def has_rights?
+    current_user && (ALLOWED_ROLES.include?(current_user.roleName) ||
+                     current_user.is_owner?(dataset) ||
+                     current_user.is_admin?
+                    )
   end
 end
 

@@ -1,6 +1,6 @@
 module CommonSocrataMethods
   def valid_cookies
-    %w(logged_in socrata-csrf-token _socrata_session_id _core_session_id)
+    %w(logged_in _socrata_session_id _core_session_id)
   end
 
   def forwardable_session_cookies

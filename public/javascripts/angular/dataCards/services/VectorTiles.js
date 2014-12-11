@@ -93,7 +93,7 @@
      *
      */
 
-    function VectorTileFeature(layer, feature, tile, id, style) {
+    function VectorTileFeature(layer, feature, styleFn) {
       var keys;
       var i;
       var key;
@@ -101,8 +101,6 @@
       if (!feature) {
         return null;
       }
-
-      this.id = id;
 
       // Apply all of the properties of feature to this object.
       keys = Object.keys(feature);
@@ -114,44 +112,40 @@
       }
 
       this.tileLayer = layer;
-      this.tileManager = this.tileLayer.tileManager;
+      this.tileManager = layer.tileManager;
       this.map = this.tileManager.map;
 
       // how much we divide the coordinate from the vector tile
-      this.divisor = feature.extent / tile.tileSize;
-      this.tileSize = tile.tileSize;
+      this.divisor = feature.extent / layer.options.tileSize;
+      this.tileSize = layer.options.tileSize;
 
       //An object to store the contexts for this feature
       this.tiles = {};
 
-      this.styleFn = style;
+      this.feature = feature;
 
-      //Add to the collection
-      this.addTileFeature(feature, tile);
+      this.styleFn = styleFn;
 
     }
 
     VectorTileFeature.prototype.draw = function(canvasId) {
 
-      //Get the info from the tiles list
-      var tile = this.tiles[canvasId];
-      var feature = tile.feature;
-      //Get the actual canvas from the parent layer's _tiles object.
+      var feature = this.feature;
+      //Get the canvas from the parent layer's _tiles object.
       var internalTileId = canvasId.split(":").slice(1, 3).join(':');
-
-      tile.canvas = this.tileLayer._tiles[internalTileId];
+      var canvas = this.tileLayer._tiles[internalTileId];
 
       switch (feature.type) {
         case 1: //Point
-          this.drawPoint(tile.tileInfo.canvas, tile.tileInfo.zoom, feature.coordinates, this.styleFn);
+          this.drawPoint(canvas, feature.coordinates, this.styleFn);
           break;
 
         case 2: //LineString
-          this.drawLineString(tile.tileInfo, feature.coordinates, this.styleFn);
+          this.drawLineString(canvas, feature.coordinates, this.styleFn);
           break;
 
         case 3: //Polygon
-          this.drawPolygon(tile.tileInfo, feature.coordinates, this.styleFn);
+          this.drawPolygon(canvas, feature.coordinates, this.styleFn);
           break;
 
         default:
@@ -165,47 +159,7 @@
       return new L.Point(coords.x / this.divisor, coords.y / this.divisor);
     };
 
-    VectorTileFeature.prototype.addTileFeature = function(feature, tile) {
-      //Store the important items in the tiles list
-
-      //We only want to store info for tiles for the current map zoom.  If it is tile info for another zoom level, ignore it
-      //Also, if there are existing tiles in the list for other zoom levels, expunge them.
-      var zoom = this.map.getZoom();
-
-      if (tile.zoom != zoom) {
-        return;
-      }
-
-      //TODO: This iterates thru all tiles every time a new tile is added.  Figure out a better way to do this.
-      this.clearTileFeatures(zoom); 
-
-      this.tiles[tile.id] = {
-        tileInfo: tile,
-        feature: feature
-      };
-
-    };
-
-
-    // Clear the inner list of tile features if they don't match the given zoom.
-    //
-    // @param zoom
-    VectorTileFeature.prototype.clearTileFeatures = function(zoom) {
-
-      //If stored tiles exist for other zoom levels, expunge them from the list.
-      var keys = Object.keys(this.tiles);
-      var i = keys.length;
-      var key;
-      while (i--) {
-        key = keys[i];
-        if (key.split(':')[0] !== zoom) {
-          delete this.tiles[key];
-        }
-      }
-
-    };
-
-    VectorTileFeature.prototype.drawPoint = function(canvas, zoomLevel, geometry, computedStyle) {
+    VectorTileFeature.prototype.drawPoint = function(canvas, geometry, computedStyle) {
 
       var ctx;
       var point;
@@ -225,14 +179,7 @@
 
       point = this.projectGeometryToTilePoint(geometry[0][0]);
 
-      // If style.radius is a function, we pass the zoom level to it in order
-      // to get a zoom-level-dependent radius. Otherwise, we treat it as a
-      // number and use it directly.
-      if (_.isFunction(computedStyle.radius)) {
-        radius = computedStyle.radius(zoomLevel);
-      } else{
-        radius = computedStyle.radius;
-      }
+      radius = computedStyle.radius;
 
       if (ctx === null) {
         throw new Error('Could not draw point: canvas context is null.');
@@ -256,7 +203,7 @@
 
     };
 
-    VectorTileFeature.prototype.drawLineString = function(tileInfo, coordinateArray, computedStyle) {
+    VectorTileFeature.prototype.drawLineString = function(canvas, coordinateArray, computedStyle) {
 
       var ctx;
       var projectedCoordinates;
@@ -271,11 +218,11 @@
         return;
       }
 
-      if (_.isUndefined(tileInfo.canvas)) {
+      if (_.isUndefined(canvas)) {
         return;
       }
 
-      ctx = tileInfo.canvas.getContext('2d');
+      ctx = canvas.getContext('2d');
 
       if (ctx === null) {
         throw new Error('Could not draw lineString: canvas context is null.');
@@ -313,7 +260,7 @@
 
     };
 
-    VectorTileFeature.prototype.drawPolygon = function(tileInfo, coordinateArray, computedStyle) {
+    VectorTileFeature.prototype.drawPolygon = function(canvas, coordinateArray, computedStyle) {
 
       function validateOutline(outline) {
         var validatedOutline = null;
@@ -338,11 +285,11 @@
         return;
       }
 
-      if (_.isUndefined(tileInfo.canvas)) {
+      if (_.isUndefined(canvas)) {
         return;
       }
 
-      ctx = tileInfo.canvas.getContext('2d');
+      ctx = canvas.getContext('2d');
       outline = computedStyle.hasOwnProperty('outline') ? validateOutline(computedStyle.outline) : null;
 
       projectedCoordinates = [];
@@ -407,18 +354,6 @@
 
     var VectorTileLayer = L.TileLayer.Canvas.extend({
 
-      _isPointInPoly: function(pt, poly) {
-
-        if(poly && poly.length) {
-          for (var c = false, i = -1, l = poly.length, j = l - 1; ++i < l; j = i)
-            ((poly[i].y <= pt.y && pt.y < poly[j].y) || (poly[j].y <= pt.y && pt.y < poly[i].y))
-            && (pt.x < (poly[j].x - poly[i].x) * (pt.y - poly[i].y) / (poly[j].y - poly[i].y) + poly[i].x)
-            && (c = !c);
-          return c;
-        }
-
-      },
-
       initialize: function(tileManager, options) {
 
         this.options = {
@@ -428,17 +363,11 @@
         };
         L.Util.setOptions(this, options);
 
-
-        this._featureIsClicked = {};
-
         this.tileManager = tileManager;
-        
-        this.style = options.style;
-        this.name = options.name;
-        this._canvasIDToFeatures = {};
-        this.features = {};
-        this.featuresWithLabels = [];
-        this._highestCount = 0;
+
+        this.styleFn = options.style;
+        this.tiles = {};
+        this.featuresByTile = {};
 
       },
 
@@ -451,162 +380,39 @@
 
       drawTile: function(canvas, tilePoint, zoom) {
 
-        var tile = {
-          id: VectorTileUtil.getTileId(tilePoint, zoom),
+        var tileId = VectorTileUtil.getTileId(tilePoint, zoom);
+
+        this.tiles[tileId] = {
           canvas: canvas,
-          // The x/y values of tilePoint correspond to the x/y coordinates of the tile
-          tile: tilePoint,
           zoom: zoom,
-          tileSize: this.options.tileSize
-        };
-
-        if (!this._canvasIDToFeatures[tile.id]) {
-          this._initializeFeaturesHash(tile);
+          size: this.options.tileSize
         }
 
-        if (!this.features) {
-          this.features = {};
-        }
+        this.featuresByTile[tileId] = [];
 
         return this;
 
       },
 
-      _initializeFeaturesHash: function(ctx){
+      parseVectorTileLayer: function(vectorTileLayer, tileId) {
 
-        this._canvasIDToFeatures[ctx.id] = {};
-        this._canvasIDToFeatures[ctx.id].features = [];
-        this._canvasIDToFeatures[ctx.id].canvas = ctx.canvas;
+        var features = vectorTileLayer.features;
+        var i;
+        var featureCount = features.length;
+        var feature;
+        var id;
 
-      },
+        for (i = 0; i < featureCount; i++) {
 
-      _draw: function(ctx) {
-        //Draw is handled by the parent VectorTileManager object
-      },
+          feature = features[i];
+          feature.layer = vectorTileLayer;
+          id = feature.properties.id || i;
 
-      getCanvas: function(parentCtx){
-        //This gets called if a vector tile feature has already been parsed.
-        //We've already got the geom, just get on with the drawing.
-        //Need a way to pluck a canvas element from this layer given the parent layer's id.
-        //Wait for it to get loaded before proceeding.
-        var tilePoint = parentCtx.tile;
-        var ctx = this._tiles[tilePoint.x + ":" + tilePoint.y];
-
-        if(ctx){
-          parentCtx.canvas = ctx;
-          this.redrawTile(parentCtx.id);
-          return;
-        }
-
-        var self = this;
-
-            ctx = self._tiles[tilePoint.x + ":" + tilePoint.y];
-            parentCtx.canvas = ctx;
-            self.redrawTile(parentCtx.id);
-
-      },
-
-      parseVectorTileLayer: function(vtl, ctx) {
-
-        var self = this;
-        var tilePoint = ctx.tilePoint;
-        var layerCtx  = { canvas: ctx.canvas, id: ctx.id, tilePoint: ctx.tilePoint, zoom: ctx.zoom, tileSize: ctx.tileSize};
-
-        //See if we can pluck the child tile from this PBF tile layer based on the master layer's tile id.
-        layerCtx.canvas = self._tiles[tilePoint.x + ":" + tilePoint.y];
-
-        //Initialize this tile's feature storage hash, if it hasn't already been created.  Used for when filters are updated, and features are cleared to prepare for a fresh redraw.
-        if (!this._canvasIDToFeatures[layerCtx.id]) {
-          this._initializeFeaturesHash(layerCtx);
-        }else{
-          //Clear this tile's previously saved features.
-          this.clearTileFeatureHash(layerCtx.id);
-        }
-
-        var features = vtl.features;
-
-        for (var i = 0, len = features.length; i < len; i++) {
-
-          var vtf = features[i]; //vector tile feature
-          vtf.layer = vtl;
-
-          // Apply filter on feature if there is one. Defined in the options object
-          // of TileLayer.VectorTileManager.js
-          var filter = self.options.filter;
-
-          if (typeof filter === 'function') {
-            if ( filter(vtf, layerCtx) === false ) {
-              continue;
-            }
-          }
-
-          var uniqueID = vtf.properties.id || i;
-          var feature = self.features[uniqueID];
-
-          // Use layerOrdering function to apply a zIndex property to each vtf.  This is defined in
-          // TileLayer.VectorTileManager.js.  Used below to sort features.npm
-          var layerOrdering = self.options.layerOrdering;
-
-          if (typeof layerOrdering === 'function') {
-            layerOrdering(vtf, layerCtx); //Applies a custom property to the feature, which is used after we're thru iterating to sort
-          }
-
-          //Create a new VectorTileFeature if one doesn't already exist for this feature.
-          if (!feature) {
-
-            //Get a style for the feature - set it just once for each new VectorTileFeature
-            var style = self.style(vtf);
-
-            //create a new feature
-            self.features[uniqueID] = feature = new VectorTileFeature(self, vtf, layerCtx, uniqueID, style);
-
-            if (typeof style.dynamicLabel === 'function') {
-              self.featuresWithLabels.push(feature);
-            }
-
-          } else {
-            //Add the new part to the existing feature
-            feature.addTileFeature(vtf, layerCtx);
-          }
-
-          //Associate & Save this feature with this tile for later
-          if(layerCtx && layerCtx.id) self._canvasIDToFeatures[layerCtx.id]['features'].push(feature);
+          this.featuresByTile[tileId].push(new VectorTileFeature(this, feature, this.styleFn(feature)));
 
         }
 
-        // Apply sorting (zIndex) on feature if there is a function defined in the options object
-        // of TileLayer.VectorTileManager.js
-        var layerOrdering = self.options.layerOrdering;
-
-        if (layerOrdering) {
-          //We've assigned the custom zIndex property when iterating above.  Now just sort.
-          self._canvasIDToFeatures[layerCtx.id].features = self._canvasIDToFeatures[layerCtx.id].features.sort(function(a, b) {
-            return -(b.properties.zIndex - a.properties.zIndex)
-          });
-        }
-
-        self.redrawTile(layerCtx.id);
-
-      },
-
-      // As counts for choropleths come in with the ajax data,
-      // we want to keep track of which value is the highest
-      // to create the color ramp for the fills of polygons.
-      // @param count
-      setHighestCount: function(count) {
-
-        if (count > this._highestCount) {
-          this._highestCount = count;
-        }
-
-      },
-
-      // Returns the highest number of all of the counts that have come in
-      // from setHighestCount. This is assumed to be set via ajax callbacks.
-      // @returns {number}
-      getHighestCount: function() {
-
-        return this._highestCount;
+        this.redrawTile(tileId);
 
       },
 
@@ -646,62 +452,27 @@
 
       },
 
-      clearTileFeatureHash: function(canvasID){
+      redrawTile: function(tileId) {
 
-        this._canvasIDToFeatures[canvasID] = { features: []}; //Get rid of all saved features
-
-      },
-
-      clearLayerFeatureHash: function(){
-
-        this.features = {};
-
-      },
-
-      redrawTile: function(canvasID) {
+        var features;
+        var featureCount;
+        var i;
 
         //First, clear the canvas
-        if (this._tiles.hasOwnProperty(canvasID)) {
-          this.clearTile(canvasID);
+        if (this._tiles.hasOwnProperty(tileId)) {
+          this.clearTile(tileId);
         }
 
-        // If the features are not in the tile, then there is nothing to redraw.
-        // This may happen if you call redraw before features have loaded and initially
-        // drawn the tile.
-        var featfeats = this._canvasIDToFeatures[canvasID];
-        if (!featfeats) {
+        features = this.featuresByTile[tileId];
+        featureCount = features.length;
+
+        if (featureCount === 0) {
           return;
         }
 
-        //Get the features for this tile, and redraw them.
-        var features = featfeats.features;
-
-        // we want to skip drawing the selected features and draw them last
-        var selectedFeatures = [];
-
-        // drawing all of the non-selected features
-        for (var i = 0; i < features.length; i++) {
-          var feature = features[i];
-          if (feature.selected) {
-            selectedFeatures.push(feature);
-          } else {
-            feature.draw(canvasID);
-          }
+        for (i = 0; i < featureCount; i++) {
+          features[i].draw(tileId);
         }
-
-        // drawing the selected features last
-        for (var j = 0, len2 = selectedFeatures.length; j < len2; j++) {
-          var selFeat = selectedFeatures[j];
-          selFeat.draw(canvasID);
-        }
-
-      },
-
-      _resetCanvasIDToFeatures: function(canvasID, canvas) {
-
-        this._canvasIDToFeatures[canvasID] = {};
-        this._canvasIDToFeatures[canvasID].features = [];
-        this._canvasIDToFeatures[canvasID].canvas = canvas;
 
       }
 
@@ -799,14 +570,6 @@
       },
 
       drawTile: function(canvas, tilePoint, zoom) {
-        var tile = {
-          id: VectorTileUtil.getTileId(tilePoint, zoom),
-          canvas: canvas,
-          tilePoint: tilePoint,
-          zoom: zoom,
-          tileSize: this.options.tileSize,
-          rendered: false
-        };
 
         // Capture the max number of the tiles to load here. this.tilesNotYetRendered is
         // an internal number we use to know when we've finished requesting all the active tiles.
@@ -816,22 +579,22 @@
         }
 
         if (this.options.debug) {
-          this.renderDebugInfo(tile);
+          this.renderDebugInfo(tilePoint, zoom);
         }
 
-        this.getTileData(tile, this.renderTile);
+        this.getTileData(tilePoint, zoom, this.renderTile);
 
       },
 
-      getTileData: function(tile, renderFn) {
+      getTileData: function(tilePoint, zoom, renderFn) {
         var self = this;
         var xhr = new XMLHttpRequest();
         var url = this.options.url.
-          replace("{z}", tile.zoom).
-          replace("{x}", tile.tilePoint.x).
-          replace("{y}", tile.tilePoint.y);
+          replace("{z}", zoom).
+          replace("{x}", tilePoint.x).
+          replace("{y}", tilePoint.y);
 
-        this.registerOutstandingRequest(tile.zoom, tile.id, xhr);
+        this.registerOutstandingRequest(zoom, VectorTileUtil.getTileId(tilePoint, zoom), xhr);
 
         xhr.onload = function() {
 
@@ -839,12 +602,12 @@
 
           if (parseInt(xhr.status, 10) === 200) {
 
-            self.deregisterOutstandingRequest(tile.zoom, tile.id);
+            self.deregisterOutstandingRequest(VectorTileUtil.getTileId(tilePoint, zoom));
 
             // Check the current map layer zoom.  If fast zooming is occurring, then short-
             // circuit tiles that are for a different zoom level than we're currently on.
-            if (self.map.getZoom() != tile.zoom) {
-              console.log('Fetched tile for zoom level {0}. Map is at zoom level {1}'.format(tile.zoom, self._map.getZoom()));
+            if (self.map.getZoom() !== zoom) {
+              console.log('Fetched tile for zoom level {0}. Map is at zoom level {1}'.format(zoom, self._map.getZoom()));
               return;
             }
 
@@ -866,7 +629,7 @@
 
             // Invoke renderFn within the context of 'self'
             // (the current instance of VectorTileManager).
-            renderFn.call(self, arrayBuffer, tile);
+            renderFn.call(self, arrayBuffer, VectorTileUtil.getTileId(tilePoint, zoom));
 
           }
 
@@ -895,7 +658,7 @@
 
       },
 
-      renderTile: function(arrayBuffer, tile) {
+      renderTile: function(arrayBuffer, tileId) {
         var vectorTile;
 
         vectorTile = VectorTileUtil.unpackVectorTile(
@@ -904,7 +667,7 @@
           )
         );
 
-        this.processVectorTileLayers(vectorTile, tile);
+        this.processVectorTileLayers(vectorTile, tileId);
 
         this._emitTileLoadedEvent();
 
@@ -937,7 +700,7 @@
 
       },
 
-      processVectorTileLayers: function(vectorTile, tile) {
+      processVectorTileLayers: function(vectorTile, tileId) {
         var layerIds = Object.keys(vectorTile.layers);
         var i = layerIds.length;
         var layerId;
@@ -962,7 +725,7 @@
 
           }
 
-          this.layers[layerId].parseVectorTileLayer(layer, tile);
+          this.layers[layerId].parseVectorTileLayer(layer, tileId);
 
         }
 

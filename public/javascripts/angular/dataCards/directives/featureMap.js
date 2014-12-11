@@ -99,28 +99,6 @@
 
         /**
          *
-         * scalePointFeatureRadiusByZoomLevel
-         *
-         * Scales points according to zoom level. The maximum zoom level
-         * in Leaflet is 18; the minimum is 1.
-         *
-         */
-
-        function scalePointFeatureRadiusByZoomLevel(zoomLevel) {
-
-          if (zoomLevel > 10) {
-            return 3;
-          } else if (zoomLevel > 7) {
-            return 2;
-          } else {
-            return 1;
-          }
-
-        }
-
-
-        /**
-         *
          * getPointStyleFn
          *
          * Returns an object specifying the styles with which a point feature
@@ -134,7 +112,7 @@
         function getPointStyleFn() {
           return {
             color: 'rgba(48,134,171,1.0)',
-            radius: scalePointFeatureRadiusByZoomLevel
+            radius: 2.5
           };
         }
 

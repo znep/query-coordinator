@@ -20,43 +20,61 @@ class NewUxBootstrapControllerTest < ActionController::TestCase
     end
   end
 
-  test 'bootstrap returns 403 if no rights' do
+  test 'bootstrap returns 403 if anonymous' do
     get :bootstrap, id: 'four-four'
     assert_response(403)
   end
 
-  test 'bootstrap returns 403 if role is not set' do
-    stub_user = stub(roleName: nil)
-    @controller.stubs(has_rights?: true, current_user: stub_user)
+  test 'bootstrap returns 403 if role is not set, and not admin' do
+    stub_user = stub(is_owner?: false, is_admin?: false, roleName: nil)
+    @controller.stubs(is_owner?: false, is_admin?: false, current_user: stub_user)
 
     get :bootstrap, id: 'four-four'
     assert_response(403)
   end
 
-  test 'bootstrap returns 403 if role is viewer' do
-    stub_user = stub(roleName: 'viewer')
-    @controller.stubs(has_rights?: true, current_user: stub_user)
+  test 'bootstrap returns 403 if role is viewer, and not admin' do
+    stub_user = stub(is_owner?: false, is_admin?: false, roleName: 'viewer')
+    @controller.stubs(current_user: stub_user)
 
     get :bootstrap, id: 'four-four'
     assert_response(403)
+  end
+
+  test 'bootstrap does not return 403 if no role, but dataset owner' do
+    stub_user = stub(roleName: '', is_owner?: true)
+    @controller.stubs(current_user: stub_user)
+
+    # Stub out services, so we don't end up trying
+    # to connect to external endpoints.
+    @page_metadata_manager.stubs(pages_for_dataset: { status: '500', body: {} })
+    @phidippides.stubs(fetch_dataset_metadata: { status: '500', body: {} })
+
+    get :bootstrap, id: 'four-four'
+    assert_not_equal(@response.response_code, 403)
+  end
+
+  test 'bootstrap does not return 403 if no role, but superadmin' do
+    stub_user = stub(roleName: '', is_admin?: true, is_owner?: false)
+    @controller.stubs(current_user: stub_user)
+
+    # Stub out services, so we don't end up trying
+    # to connect to external endpoints.
+    @page_metadata_manager.stubs(pages_for_dataset: { status: '500', body: {} })
+    @phidippides.stubs(fetch_dataset_metadata: { status: '500', body: {} })
+
+    get :bootstrap, id: 'four-four'
+    assert_not_equal(@response.response_code, 403)
   end
 
   test 'bootstrap does not return 403 if role is administrator' do
     stub_user = stub(roleName: 'administrator')
-    @controller.stubs(has_rights?: true, current_user: stub_user)
+    @controller.stubs(current_user: stub_user)
 
     # Stub out services, so we don't end up trying
     # to connect to external endpoints.
-    @page_metadata_manager.stubs(
-      pages_for_dataset: {
-        status: '500', body: {}
-      }
-    )
-    @phidippides.stubs(
-      fetch_dataset_metadata: {
-        status: '500', body: {}
-      }
-    )
+    @page_metadata_manager.stubs(pages_for_dataset: { status: '500', body: {} })
+    @phidippides.stubs(fetch_dataset_metadata: { status: '500', body: {} })
 
     get :bootstrap, id: 'four-four'
     assert_not_equal(@response.response_code, 403)
@@ -64,20 +82,12 @@ class NewUxBootstrapControllerTest < ActionController::TestCase
 
   test 'bootstrap does not return 403 if role is publisher' do
     stub_user = stub(roleName: 'publisher')
-    @controller.stubs(has_rights?: true, current_user: stub_user)
+    @controller.stubs(current_user: stub_user)
 
     # Stub out services, so we don't end up trying
     # to connect to external endpoints.
-    @page_metadata_manager.stubs(
-      pages_for_dataset: {
-        status: '500', body: {}
-      }
-    )
-    @phidippides.stubs(
-      fetch_dataset_metadata: {
-        status: '500', body: {}
-      }
-    )
+    @page_metadata_manager.stubs(pages_for_dataset: { status: '500', body: {} })
+    @phidippides.stubs(fetch_dataset_metadata: { status: '500', body: {} })
 
     get :bootstrap, id: 'four-four'
     assert_not_equal(@response.response_code, 403)
@@ -85,7 +95,7 @@ class NewUxBootstrapControllerTest < ActionController::TestCase
 
   test 'bootstrap redirects to the last page if the 4x4 already has pages' do
     stub_user = stub(roleName: 'administrator')
-    @controller.stubs(has_rights?: true, current_user: stub_user)
+    @controller.stubs(current_user: stub_user)
     @page_metadata_manager.stubs(
       pages_for_dataset: {
         status: '200', body: { publisher: [
@@ -100,7 +110,7 @@ class NewUxBootstrapControllerTest < ActionController::TestCase
 
   test 'bootstrap redirects to dataset page with error, if page_metadata_manager hates us' do
     stub_user = stub(roleName: 'administrator')
-    @controller.stubs(has_rights?: true, current_user: stub_user)
+    @controller.stubs(current_user: stub_user)
     @page_metadata_manager.stubs(
       pages_for_dataset: { status: '500', body: { error: 'you suck' } }
     )
@@ -111,7 +121,7 @@ class NewUxBootstrapControllerTest < ActionController::TestCase
 
   test 'bootstrap returns 404 if dataset does not exist' do
     stub_user = stub(roleName: 'administrator')
-    @controller.stubs(has_rights?: true, current_user: stub_user)
+    @controller.stubs(current_user: stub_user)
     @page_metadata_manager.stubs(
       pages_for_dataset: { status: '404', body: [] }
     )
@@ -124,7 +134,7 @@ class NewUxBootstrapControllerTest < ActionController::TestCase
 
   test 'bootstrap creates & redirects to new page with cards for the first 10 non-system columns' do
     stub_user = stub(roleName: 'administrator')
-    @controller.stubs(has_rights?: true, current_user: stub_user)
+    @controller.stubs(current_user: stub_user)
     @page_metadata_manager.stubs(
       pages_for_dataset: { status: '404', body: [] },
       create: { status: '200', body: { pageId: 'neoo-page' } },
@@ -141,7 +151,7 @@ class NewUxBootstrapControllerTest < ActionController::TestCase
 
   test 'bootstrap redirects to dataset page with error if error while creating page' do
     stub_user = stub(roleName: 'administrator')
-    @controller.stubs(has_rights?: true, current_user: stub_user)
+    @controller.stubs(current_user: stub_user)
     @page_metadata_manager.stubs(
       pages_for_dataset: { status: '404', body: [] },
       create: { status: '500' },

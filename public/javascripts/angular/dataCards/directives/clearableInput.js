@@ -23,9 +23,15 @@
           distinctUntilChanged();
 
         var clearInput = function() {
-          $scope.safeApply(function() {
-            $scope.search = '';
-          })
+          /*
+           * Without the defer the search property gets set back to whatever
+           * was in the input in Firefox.
+           */
+          _.defer(function() {
+            $scope.safeApply(function() {
+              $scope.search = '';
+            });
+          });
         };
 
         $scope.clearInput = clearInput;

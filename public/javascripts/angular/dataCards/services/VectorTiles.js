@@ -1,11 +1,8 @@
 (function() {
   'use strict';
 
-/*TODO:
-
-3. wrap up refactor of VectorTileFeature
-4. begin refactor of VectorTileLayer*/
-
+  // This is the Angular wrapper around VectorTileUtil, VectorTileFeature,
+  // VectorTileLayer and VectorTileManager.
   function VectorTiles() {
 
     /****************************************************************************
@@ -16,69 +13,76 @@
      *
      */
 
-    function VectorTileUtil() { }
+    var VectorTileUtil = {
 
-    VectorTileUtil.getTileId = function(tilePoint, zoom) {
-      return [zoom, tilePoint.x, tilePoint.y].join(':');
-    };
+      getTileId: function(tilePoint, zoom) {
+        return [zoom, tilePoint.x, tilePoint.y].join(':');
+      },
 
-    VectorTileUtil.getTileInfoByPointAndZoomLevel = function(point, zoom) {
+      getTileInfoByPointAndZoomLevel: function(point, zoom) {
 
-      function deg2rad(degrees) {
-        return degrees * Math.PI / 180;
-      }
-
-      var lat = deg2rad(point.lat);
-      var lng = deg2rad(point.lng);
-
-      var tileY = parseInt(
-        Math.floor(
-          (lng + 180) / 360 * (1 << zoom)
-        )
-      );
-
-      var tileX = parseInt(
-        Math.floor(
-          (1 - Math.log(Math.tan(deg2rad(lat)) + 1 /
-          Math.cos(deg2rad(lat))) / Math.PI) / 2 * (1 << zoom)
-        )
-      );
-
-      return {
-        zoom: zoom,
-        tileX: tileX,
-        tileY: tileY
-      };
-
-    };
-
-    // Reads raw VectorTile data and creates an array of
-    // features on each VectorTileLayer instance assigned
-    // to the tile.
-    VectorTileUtil.unpackVectorTile = function(vectorTile) {
-
-      var keys = Object.keys(vectorTile.layers);
-      var i = keys.length;
-      var vectorTileLayer;
-      var features;
-      var j;
-      var vectorTileFeature;
-
-      while (i--) {
-        vectorTileLayer = vectorTile.layers[keys[i]];
-        vectorTileLayer.features = [];
-        features = vectorTileLayer._features;
-        j = features.length;
-
-        while (j--) {
-          vectorTileFeature = vectorTileLayer.feature(j);
-          vectorTileFeature.coordinates = vectorTileFeature.loadGeometry();
-          vectorTileLayer.features.push(vectorTileFeature);
+        function deg2rad(degrees) {
+          return degrees * Math.PI / 180;
         }
 
-      }
+        var lat = deg2rad(point.lat);
+        var lng = deg2rad(point.lng);
 
-      return vectorTile;
+        var tileY = parseInt(
+          Math.floor(
+            (lng + 180) / 360 * (1 << zoom)
+          )
+        );
+
+        var tileX = parseInt(
+          Math.floor(
+            (1 - Math.log(Math.tan(deg2rad(lat)) + 1 /
+            Math.cos(deg2rad(lat))) / Math.PI) / 2 * (1 << zoom)
+          )
+        );
+
+        return {
+          zoom: zoom,
+          tileX: tileX,
+          tileY: tileY
+        };
+
+      },
+
+      // Reads raw VectorTile data and creates an array of
+      // features on each VectorTileLayer instance assigned
+      // to the tile.
+      unpackVectorTile: function(vectorTile) {
+
+        var keys = Object.keys(vectorTile.layers);
+        var i = keys.length;
+        var vectorTileLayer;
+        var features;
+        var j;
+        var vectorTileFeature;
+
+        while (i--) {
+          vectorTileLayer = vectorTile.layers[keys[i]];
+          vectorTileLayer.features = [];
+          features = vectorTileLayer._features;
+          j = features.length;
+
+          while (j--) {
+            vectorTileFeature = vectorTileLayer.feature(j);
+            vectorTileFeature.coordinates = vectorTileFeature.loadGeometry();
+            vectorTileLayer.features.push(vectorTileFeature);
+          }
+
+        }
+
+        return vectorTile;
+
+      },
+
+      getTileLayerCanvas: function(tileLayer, canvasId) {
+        var leafletTileId = canvasId.split(':').slice(1, 3).join(':');
+        return tileLayer._tiles[leafletTileId];
+      }
 
     };
 
@@ -94,6 +98,7 @@
      */
 
     function VectorTileFeature(layer, feature, styleFn) {
+
       var keys;
       var i;
       var key;
@@ -112,18 +117,12 @@
       }
 
       this.tileLayer = layer;
-      this.tileManager = layer.tileManager;
-      this.map = this.tileManager.map;
-
-      // how much we divide the coordinate from the vector tile
-      this.divisor = feature.extent / layer.options.tileSize;
       this.tileSize = layer.options.tileSize;
-
-      //An object to store the contexts for this feature
-      this.tiles = {};
-
+      this.map = layer.tileManager.map;
+      // Divisor is the amount by which we divide coordinate values in
+      // order to project them into the vector tile's coordinate space.
+      this.divisor = feature.extent / this.tileSize;
       this.feature = feature;
-
       this.styleFn = styleFn;
 
     }
@@ -131,9 +130,7 @@
     VectorTileFeature.prototype.draw = function(canvasId) {
 
       var feature = this.feature;
-      //Get the canvas from the parent layer's _tiles object.
-      var internalTileId = canvasId.split(":").slice(1, 3).join(':');
-      var canvas = this.tileLayer._tiles[internalTileId];
+      var canvas = VectorTileUtil.getTileLayerCanvas(this.tileLayer, canvasId);
 
       switch (feature.type) {
         case 1: //Point
@@ -155,14 +152,14 @@
     };
 
     // Takes a coordinate from a vector tile and turns it into a Leaflet Point.
-    VectorTileFeature.prototype.projectGeometryToTilePoint = function(coords) {
-      return new L.Point(coords.x / this.divisor, coords.y / this.divisor);
+    VectorTileFeature.prototype.projectGeometryToTilePoint = function(coordinates) {
+      return new L.Point(coordinates.x / this.divisor, coordinates.y / this.divisor);
     };
 
     VectorTileFeature.prototype.drawPoint = function(canvas, geometry, computedStyle) {
 
       var ctx;
-      var point;
+      var projectedPoint;
       var radius;
 
       if (!_.isObject(computedStyle) ||
@@ -177,9 +174,13 @@
 
       ctx = canvas.getContext('2d');
 
-      point = this.projectGeometryToTilePoint(geometry[0][0]);
+      projectedPoint = this.projectGeometryToTilePoint(geometry[0][0]);
 
-      radius = computedStyle.radius;
+      if (_.isFunction(computedStyle.radius)) {
+        radius = computedStyle.radius(this.map.getZoom());
+      } else {
+        radius = computedStyle.radius;
+      }
 
       if (ctx === null) {
         throw new Error('Could not draw point: canvas context is null.');
@@ -187,7 +188,7 @@
 
       ctx.beginPath();
       ctx.fillStyle = computedStyle.color;
-      ctx.arc(point.x, point.y, radius, 0, Math.PI * 2);
+      ctx.arc(projectedPoint.x, projectedPoint.y, radius, 0, Math.PI * 2);
       ctx.closePath();
       ctx.fill();
 
@@ -378,6 +379,41 @@
 
       },
 
+      parseVectorTileLayer: function(vectorTileLayer, tileId, tileRenderedCallback) {
+
+        var features = vectorTileLayer.features;
+        var i;
+        var featureCount = features.length;
+        var feature;
+        var id;
+
+        for (i = 0; i < featureCount; i++) {
+
+          feature = features[i];
+          feature.layer = vectorTileLayer;
+          id = feature.properties.id || i;
+
+          if (!this.featuresByTile.hasOwnProperty(tileId)) {
+            this.featuresByTile[tileId] = [];
+          }
+
+          this.featuresByTile[tileId].push(
+            new VectorTileFeature(this, feature, this.styleFn(feature))
+          );
+
+        }
+
+        this.renderTile(tileId);
+
+        tileRenderedCallback();
+
+      },
+
+      // drawTile is a method that Leaflet expects to exist with
+      // the specified signature. This is called when we need to
+      // prepare a tile for rendering, but the actual rendering
+      // is handled by our own `renderTile` method instead (as
+      // a result of needing to fetch and parse protocol buffers.
       drawTile: function(canvas, tilePoint, zoom) {
 
         var tileId = VectorTileUtil.getTileId(tilePoint, zoom);
@@ -394,65 +430,7 @@
 
       },
 
-      parseVectorTileLayer: function(vectorTileLayer, tileId) {
-
-        var features = vectorTileLayer.features;
-        var i;
-        var featureCount = features.length;
-        var feature;
-        var id;
-
-        for (i = 0; i < featureCount; i++) {
-
-          feature = features[i];
-          feature.layer = vectorTileLayer;
-          id = feature.properties.id || i;
-
-          this.featuresByTile[tileId].push(new VectorTileFeature(this, feature, this.styleFn(feature)));
-
-        }
-
-        this.redrawTile(tileId);
-
-      },
-
-      //This is the old way.  It works, but is slow for mouseover events.  Fine for click events.
-      handleClickEvent: function(evt, cb) {
-
-        //Click happened on the GroupLayer (Manager) and passed it here
-        var tileID = evt.tileID.split(":").slice(1, 3).join(":");
-        var canvas = this._tiles[tileID];
-        if(!canvas) (cb(evt)); //break out
-        var x = evt.layerPoint.x - canvas._leaflet_pos.x;
-        var y = evt.layerPoint.y - canvas._leaflet_pos.y;
-
-        var tilePoint = {x: x, y: y};
-
-        //no match
-        //return evt with empty feature
-        evt.feature = null;
-        cb(evt);
-
-      },
-
-      clearTile: function(id) {
-
-        //id is the entire zoom:x:y.  we just want x:y.
-        var ca = id.split(":");
-        var canvasId = ca[1] + ":" + ca[2];
-
-        if (typeof this._tiles[canvasId] === 'undefined') {
-          console.error("typeof this._tiles[canvasId] === 'undefined'");
-          return;
-        }
-        var canvas = this._tiles[canvasId];
-
-        var context = canvas.getContext('2d');
-        context.clearRect(0, 0, canvas.width, canvas.height);
-
-      },
-
-      redrawTile: function(tileId) {
+      renderTile: function(tileId) {
 
         var features;
         var featureCount;
@@ -473,6 +451,36 @@
         for (i = 0; i < featureCount; i++) {
           features[i].draw(tileId);
         }
+
+      },
+
+      clearTile: function(canvasId) {
+
+        var canvas = VectorTileUtil.getTileLayerCanvas(this.tileLayer, canvasId);
+        var ctx = canvas.getContext('2d');
+
+        ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+      },
+
+      // TODO: This is hangover from before the refactor. Not sure how
+      // we want to handle clicks or selection yet, so I have left it
+      // in place. --cml, 12/11/14
+      handleClickEvent: function(evt, cb) {
+
+        //Click happened on the GroupLayer (Manager) and passed it here
+        var tileId = evt.tileId.split(":").slice(1, 3).join(":");
+        var canvas = this._tiles[tileId];
+        if(!canvas) (cb(evt)); //break out
+        var x = evt.layerPoint.x - canvas._leaflet_pos.x;
+        var y = evt.layerPoint.y - canvas._leaflet_pos.y;
+
+        var tilePoint = {x: x, y: y};
+
+        //no match
+        //return evt with empty feature
+        evt.feature = null;
+        cb(evt);
 
       }
 
@@ -517,43 +525,65 @@
 
         this.options = {
           debug: false,
-          url: '', //URL TO Vector Tile Source,
+          url: '',
           headers: {},
           tileSize: 256
         };
         L.Util.setOptions(this, options);
 
-        // Layers present in the protocol buffer responses
+        // Layers present in the protocol buffer responses.
         this.layers = {};
-        // Store the max number of tiles to be loaded.  Later, we can use this count to count down PBF loading.
-        this.tilesNotYetRendered = 0;
+
+        this.tilesInFlight = 0;
+
+        this.map = null;
 
       },
 
       onAdd: function(map) {
+
         var self = this;
-        var mapClickCallback;
+        var mapMousedownCallback;
+        var mapMouseupCallback;
+        var mapMousemoveCallback;
 
-        this.emitRenderStartEvent();
+        if (_.isFunction(this.options.mousedown)) {
 
-        if (_.isFunction(this.options.onClick)) {
-
-          mapClickCallback = function(e) {
+          mapMousedownCallback = function(e) {
             e.tileInfo = VectorTileUtil.getTileInfoByPointAndZoomLevel(e.latlng, map.getZoom());
-            self.options.onClick(e);
+            self.options.mousedown(e);
           };
 
-          map.on('click', mapClickCallback);
+          map.on('mousedown', mapMousedownCallback);
 
         }
 
-        map.on('zoom', function(e) {
-          console.log('ZOOMING', e);
-        });
+        if (_.isFunction(this.options.mouseup)) {
+
+          mapMouseupCallback = function(e) {
+            e.tileInfo = VectorTileUtil.getTileInfoByPointAndZoomLevel(e.latlng, map.getZoom());
+            self.options.mouseup(e);
+          };
+
+          map.on('mouseup', mapMouseupCallback);
+
+        }
+
+        if (_.isFunction(this.options.mousemove)) {
+
+          mapMousemoveCallback = function(e) {
+            e.tileInfo = VectorTileUtil.getTileInfoByPointAndZoomLevel(e.latlng, map.getZoom());
+            self.options.mousemove(e);
+          };
+
+          map.on('mousemove', mapMousemoveCallback);
+
+        }
 
         map.on('layerremove', function(e) {
           // check to see if the layer removed is this one
-          // call a method to remove the child layers (the ones that actually have something drawn on them).
+          // call a method to remove the child layers (the
+          // ones that actually have something drawn on them).
           if (e.layer._leaflet_id === self._leaflet_id && e.layer.removeChildLayers) {
             e.layer.removeChildLayers(map);
             if (_.isFunction(self.options.onClick)) {
@@ -565,36 +595,39 @@
         this.map = map;
         this.addChildLayers();
 
+        this.emitRenderStartedEvent();
+
         L.TileLayer.Canvas.prototype.onAdd.call(this, map);
 
       },
 
       drawTile: function(canvas, tilePoint, zoom) {
 
-        // Capture the max number of the tiles to load here. this.tilesNotYetRendered is
-        // an internal number we use to know when we've finished requesting all the active tiles.
-        // this._tilesToLoad is maintained by Leaflet; this.tilesNotYetRendered is maintained by us.
-        if (this.tilesNotYetRendered < this._tilesToLoad) {
-          this.tilesNotYetRendered = this._tilesToLoad;
+        // Capture the max number of the tiles to load here. this.tilesInFlight is
+        // active tiles. an internal number we use to know when we've finished
+        // requesting all the this._tilesToLoad is maintained by Leaflet;
+        // this.tilesInFlight is maintained by us.
+        if (this.tilesInFlight < this._tilesToLoad) {
+          this.tilesInFlight = this._tilesToLoad;
         }
 
         if (this.options.debug) {
           this.renderDebugInfo(tilePoint, zoom);
         }
 
-        this.getTileData(tilePoint, zoom, this.renderTile);
+        this.getTileData(tilePoint, zoom, this.processVectorTileLayers);
 
       },
 
       getTileData: function(tilePoint, zoom, renderFn) {
+
         var self = this;
+        var tileId = VectorTileUtil.getTileId(tilePoint, zoom);
         var xhr = new XMLHttpRequest();
         var url = this.options.url.
-          replace("{z}", zoom).
-          replace("{x}", tilePoint.x).
-          replace("{y}", tilePoint.y);
-
-        this.registerOutstandingRequest(zoom, VectorTileUtil.getTileId(tilePoint, zoom), xhr);
+          replace('{z}', zoom).
+          replace('{x}', tilePoint.x).
+          replace('{y}', tilePoint.y);
 
         xhr.onload = function() {
 
@@ -602,12 +635,9 @@
 
           if (parseInt(xhr.status, 10) === 200) {
 
-            self.deregisterOutstandingRequest(VectorTileUtil.getTileId(tilePoint, zoom));
-
             // Check the current map layer zoom.  If fast zooming is occurring, then short-
             // circuit tiles that are for a different zoom level than we're currently on.
             if (self.map.getZoom() !== zoom) {
-              console.log('Fetched tile for zoom level {0}. Map is at zoom level {1}'.format(zoom, self._map.getZoom()));
               return;
             }
 
@@ -624,6 +654,7 @@
 
             // If this is a tile with no features to be drawn, quit early.
             if (arrayBuffer.length === 0) {
+              self.tileLoaded(tileId);
               return;
             }
 
@@ -636,11 +667,9 @@
         };
 
         xhr.onerror = function() {
-          self.deregisterOutstandingRequest(tile.zoom, tile.id);
+          self.tileLoaded(tileId);
           throw new Error('Could not retrieve protocol buffer tile from tileServer: "{0} {1}"'.format(xhr.status, xhr.response));
         };
-
-        self._emitTileLoadingEvent();
 
         xhr.open('GET', url, true);
 
@@ -653,31 +682,12 @@
 
         xhr.send();
 
-        //either way, reduce the count of tilesNotYetRendered tiles here
-        self.reduceTilesToProcessCount();
-
       },
 
-      renderTile: function(arrayBuffer, tileId) {
-        var vectorTile;
+      renderDebugInfo: function(tilePoint, zoom) {
 
-        vectorTile = VectorTileUtil.unpackVectorTile(
-          new VectorTile(
-            new pbf(arrayBuffer)
-          )
-        );
-
-        this.processVectorTileLayers(vectorTile, tileId);
-
-        this._emitTileLoadedEvent();
-
-      },
-
-      renderDebugInfo: function(tile) {
-        var ctx = tile.canvas.getContext('2d');
-        var tilePoint = tile.tilePoint;
-        var tileSize = tile.tileSize;
-        var zoomLevel = tile.zoomLevel;
+        var ctx = this._tiles[tilePoint.x + ':' + tilePoint.y].getContext('2d');
+        var tileSize = this.options.tileSize;
 
         ctx.strokeStyle = '#000000';
         ctx.fillStyle = '#ffff00';
@@ -696,15 +706,31 @@
         // Center
         ctx.fillRect(tileSize / 2 - 5, tileSize / 2 - 5, 10, 10);
         // Label
-        ctx.strokeText(zoomLevel + ' ' + tilePoint.x + ' ' + tilePoint.y, tileSize / 2 - 30, tileSize / 2 - 10);
+        ctx.strokeText(zoom + ':' + tilePoint.x + ':' + tilePoint.y, tileSize / 2 - 30, tileSize / 2 - 10);
 
       },
 
-      processVectorTileLayers: function(vectorTile, tileId) {
-        var layerIds = Object.keys(vectorTile.layers);
-        var i = layerIds.length;
+      processVectorTileLayers: function(arrayBuffer, tileId) {
+
+        var self = this;
+        var vectorTile;
+        var layerIds;
+        var i;
         var layerId;
         var layer;
+
+        function tileRenderedCallback() {
+          self.tileLoaded(tileId);
+        }
+
+        vectorTile = VectorTileUtil.unpackVectorTile(
+          new VectorTile(
+            new pbf(arrayBuffer)
+          )
+        );
+
+        layerIds = Object.keys(vectorTile.layers);
+        i = layerIds.length;
 
         while (i--) {
           layerId = layerIds[i];
@@ -725,13 +751,14 @@
 
           }
 
-          this.layers[layerId].parseVectorTileLayer(layer, tileId);
+          this.layers[layerId].parseVectorTileLayer(layer, tileId, tileRenderedCallback);
 
         }
 
       },
 
       addChildLayers: function() {
+
         var layerIds = Object.keys(this.layers);
         var i = layerIds.length;
         var layer;
@@ -746,6 +773,7 @@
       },
 
       removeChildLayers: function() {
+
         var layerIds = Object.keys(this.layers);
         var i = layerIds.length;
         var layer;
@@ -757,63 +785,31 @@
 
       },
 
-      setVisibleLayersStyle:function(style, value) {
-        var keys = Object.keys(this.layers);
-        var i = keys.length;
-
-        while (i--) {
-          this.layers[keys[i]]._tileContainer.style[style] = value;
-        }
-      },
-
-      setOpacity:function(opacity) {
-        this.setVisibleLayersStyle('opacity', opacity);
-      },
-
-      setZIndex:function(zIndex) {
-        this.setVisibleLayersStyle('zIndex', zIndex);
-      },
-
-
-// THIS STUFF IS STILL WIP
-
-      registerOutstandingRequest: function(zoom, id, xhr) {
-
-      },
-
-      deregisterOutstandingRequest: function(zoom, id) {
-
-      },
-
-      reduceTilesToProcessCount: function(){
-        this.tilesNotYetRendered--;
-        if(this.tilesNotYetRendered === 0){
-          //Trigger event letting us know that all tiles have been loaded and rendered (or 404'd).
-          this.bringToFront();
-        }
-      },
-
-      _emitTileLoadingEvent: function() {
+      emitRenderStartedEvent: function() {
         var evt = document.createEvent('HTMLEvents');
-        evt.initEvent('protobuffer-tile-loading', true, true);
-        evt.tilesToProcess = this.tilesNotYetRendered;
+        evt.initEvent('vector-tile-render-started', true, true);
         this.map._container.dispatchEvent(evt);
       },
 
-      _emitTileLoadedEvent: function() {
+      emitRenderCompleteEvent: function() {
         var evt = document.createEvent('HTMLEvents');
-        evt.initEvent('protobuffer-tile-loaded', true, true);
-        evt.tilesToProcess = this.tilesNotYetRendered;
+        evt.initEvent('vector-tile-render-complete', true, true);
         this.map._container.dispatchEvent(evt);
       },
 
-      emitRenderStartEvent: function() {
-        console.log('RENDER STARTED');
-      },
-      emitRenderEndEvent: function() {
-        console.log('RENDER COMPLETE');
+      tileLoaded: function(tileId) {
+        // Somehow Leaflet will, on initialization, report that
+        // _tileLayersToLoad is NaN. This wreaks havoc on our
+        // attempts to count how many tile layers are left to
+        // load, so we only decrement the count if _tileLayersToLoad
+        // is actually a number.
+        if (!isNaN(this.map._tileLayersToLoad)) {
+          this.tilesInFlight--;
+          if (this.tilesInFlight === 0) {
+            this.emitRenderCompleteEvent();
+          }
+        }
       }
-
 
     });
 

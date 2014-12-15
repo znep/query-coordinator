@@ -99,6 +99,22 @@
 
         /**
          *
+         * scalePointFeatureRadiusByZoomLevel
+         *
+         * Scales points according to zoom level. The maximum zoom level
+         * in Leaflet is 18; the minimum is 1.
+         *
+         */
+
+        function scalePointFeatureRadiusByZoomLevel(zoomLevel) {
+
+          return Math.pow(zoomLevel * 0.125, 2) + 1;
+
+        }
+
+
+        /**
+         *
          * getPointStyleFn
          *
          * Returns an object specifying the styles with which a point feature
@@ -112,7 +128,9 @@
         function getPointStyleFn() {
           return {
             color: 'rgba(48,134,171,1.0)',
-            radius: 2.5
+            radius: scalePointFeatureRadiusByZoomLevel,
+            lineWidth: 1,
+            strokeStyle: 'rgba(255,255,255,1.0)'
           };
         }
 
@@ -223,10 +241,15 @@
             // own.
             headers: { 'X-Socrata-Host': 'localhost:8080' },
             debug: false,
-            getIDForLayerFeature: getFeatureId,
+            getFeatureId: getFeatureId,
             filter: filterLayerFeature,
             layerOrdering: getFeatureZIndex,
             style: getFeatureStyle
+            // You can interact with mouse events by passing
+            // callbacks on three property names: 'mousedown',
+            // 'mouseup' and 'mousemove'.
+            // E.g.
+            // mousemove: function(e) { /* do stuff with e.latLng */ }
           };
 
           lastFeatureLayer = thisFeatureLayer;
@@ -344,24 +367,16 @@
         // for protocol buffer vector tiles.
         //
 
-        element.on('protobuffer-tile-loading', function(e) {
+        element.on('vector-tile-render-started', function(e) {
 
-          if (e.originalEvent.tilesToProcess > tilesToProcess) {
-            tilesToProcess = e.originalEvent.tilesToProcess;
-            scope.$emit('render:start', { source: 'feature_map_{0}'.format(scope.$id), timestamp: _.now() });
-          }
+          scope.$emit('render:start', { source: 'feature_map_{0}'.format(scope.$id), timestamp: _.now() });
 
         });
 
+        element.on('vector-tile-render-complete', function(e) {
 
-        element.on('protobuffer-tile-loaded', function(e) {
-
-          tilesToProcess = e.originalEvent.tilesToProcess - 1;
-
-          if (tilesToProcess <= 0) {
-            removeOldFeatureLayer(map);
-            scope.$emit('render:complete', { source: 'feature_map_{0}'.format(scope.$id), timestamp: _.now() });
-          }
+          removeOldFeatureLayer(map);
+          scope.$emit('render:complete', { source: 'feature_map_{0}'.format(scope.$id), timestamp: _.now() });
 
         });
 

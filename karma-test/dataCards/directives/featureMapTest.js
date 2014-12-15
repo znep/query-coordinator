@@ -260,21 +260,17 @@ describe('featureMap', function() {
 
         var canvases = $('canvas');
 
-        if (canvases.length > 0) {        
+        expect(canvases.length).to.be.above(0);
 
-          expect(canvases.length).to.be.above(0);
+        point1Color = getCanvasColorAt(canvases[1], { x: 47, y: 10 });
+        point2Color = getCanvasColorAt(canvases[1], { x: 128, y: 142 });
+        point3Color = getCanvasColorAt(canvases[1], { x: 168, y: 160 });
 
-          point1Color = getCanvasColorAt(canvases[1], { x: 48, y: 10 });
-          point2Color = getCanvasColorAt(canvases[1], { x: 128, y: 142 });
-          point3Color = getCanvasColorAt(canvases[1], { x: 168, y: 160 });
+        expect(point1Color).to.equal(expectedPointColor);
+        expect(point2Color).to.equal(expectedPointColor);
+        expect(point3Color).to.equal(expectedPointColor);
 
-          expect(point1Color).to.equal(expectedPointColor);
-          expect(point2Color).to.equal(expectedPointColor);
-          expect(point3Color).to.equal(expectedPointColor);
-
-          done();
-
-        }
+        done();
 
       });
 
@@ -284,14 +280,17 @@ describe('featureMap', function() {
 
   });
 
-  describe('when zoomed in', function() {
+  xdescribe('when zoomed in', function() {
 
     // Something wierd is happening here and it's not actually rendering the zoomed-in
     // tiles even though it successfully downloads them via the fake XHR object.
-    xit('should render visible points at expected locations', function(done) {
+    it('should render visible points at expected locations', function(done) {
 
       var canvases;
-      var uniqueColors;
+      var expectedPointColor = 'rgba(48,134,171,1.0)';
+      var point1color;
+      var point2color;
+      var point3color;
       var hasZoomed = false;
 
       // Wait for rendering to complete before checking the content of the canvas tiles.
@@ -307,8 +306,6 @@ describe('featureMap', function() {
             hasZoomed = true;
 
           } else {
-
-            var pointColor = 'rgba(48,134,171,1.0)';
 
             expect(canvases.length).to.be.above(0);
 

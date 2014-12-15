@@ -9,8 +9,6 @@
      *
      * VectorTileUtil
      *
-     * Created by Nicholas Hallahan <nhallahan@spatialdev.com> on 8/15/14.
-     *
      */
 
     var VectorTileUtil = {
@@ -93,8 +91,6 @@
      *
      * Depends on `VectorTileUtil`
      *
-     * Created by Ryan Whitley, Daniel Duarte, and Nicholas Hallahan on 6/03/14.
-     *
      */
 
     function VectorTileFeature(layer, feature, styleFn) {
@@ -162,13 +158,10 @@
       var projectedPoint;
       var radius;
 
-      if (!_.isObject(computedStyle) ||
+      if (_.isUndefined(canvas) ||
+          !_.isObject(computedStyle) ||
           !computedStyle.hasOwnProperty('color') ||
           !computedStyle.hasOwnProperty('radius')) {
-        return;
-      }
-
-      if (_.isUndefined(canvas)) {
         return;
       }
 
@@ -345,9 +338,7 @@
      *
      * VectorTileLayer
      *
-     * Created by Ryan Whitley on 5/17/14.
-     *
-     * Forked from https://gist.github.com/DGuidi/1716010
+     * Originally forked from https://gist.github.com/DGuidi/1716010
      *
      * Depends on `VectorTileFeature`
      *
@@ -358,8 +349,6 @@
       initialize: function(tileManager, options) {
 
         this.options = {
-          debug: false,
-          isHiddenLayer: false,
           tileSize: 256
         };
         L.Util.setOptions(this, options);
@@ -461,27 +450,6 @@
 
         ctx.clearRect(0, 0, canvas.width, canvas.height);
 
-      },
-
-      // TODO: This is hangover from before the refactor. Not sure how
-      // we want to handle clicks or selection yet, so I have left it
-      // in place. --cml, 12/11/14
-      handleClickEvent: function(evt, cb) {
-
-        //Click happened on the GroupLayer (Manager) and passed it here
-        var tileId = evt.tileId.split(":").slice(1, 3).join(":");
-        var canvas = this._tiles[tileId];
-        if(!canvas) (cb(evt)); //break out
-        var x = evt.layerPoint.x - canvas._leaflet_pos.x;
-        var y = evt.layerPoint.y - canvas._leaflet_pos.y;
-
-        var tilePoint = {x: x, y: y};
-
-        //no match
-        //return evt with empty feature
-        evt.feature = null;
-        cb(evt);
-
       }
 
     });
@@ -490,8 +458,6 @@
     /****************************************************************************
      *
      * VectorTileManager
-     *
-     * Created by Nicholas Hallahan <nhallahan@spatialdev.com> on 8/15/14.
      *
      * Depends on `pbf`, `VectorTileUtil` and `VectorTileLayer`
      *
@@ -581,15 +547,16 @@
         }
 
         map.on('layerremove', function(e) {
-          // check to see if the layer removed is this one
-          // call a method to remove the child layers (the
-          // ones that actually have something drawn on them).
+
+          // Check to see if the layer removed is this one, and if it is
+          // remove its child layers.
           if (e.layer._leaflet_id === self._leaflet_id && e.layer.removeChildLayers) {
             e.layer.removeChildLayers(map);
             if (_.isFunction(self.options.onClick)) {
               map.off('click', mapOnClickCallback);
             }
           }
+
         });
 
         this.map = map;
@@ -798,6 +765,7 @@
       },
 
       tileLoaded: function(tileId) {
+
         // Somehow Leaflet will, on initialization, report that
         // _tileLayersToLoad is NaN. This wreaks havoc on our
         // attempts to count how many tile layers are left to

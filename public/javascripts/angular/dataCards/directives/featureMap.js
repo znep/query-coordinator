@@ -107,7 +107,11 @@
          */
 
         function scalePointFeatureRadiusByZoomLevel(zoomLevel) {
-
+          // This was created somewhat arbitrarily by Chris to
+          // result in point features which get slightly larger
+          // as the map is zoomed in. It can be replaced with
+          // any function which computes a number that makes
+          // sense as the radius of a point feature in pixels.
           return Math.pow(zoomLevel * 0.125, 2) + 1;
 
         }

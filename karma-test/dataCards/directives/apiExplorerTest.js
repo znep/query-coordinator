@@ -8,7 +8,7 @@
     var DOCUMENTATION_URL = 'http://dev.socrata.com/foundry/#/{0}/{1}'.format(
       TEST_DOMAIN, FAKE4x4);
     var JSON_URL = 'https://{0}/resource/{1}.json'.format(TEST_DOMAIN, FAKE4x4);
-    var GEOJSON_URL = 'https://{0}/views/{1}/rows.geojson'.format(TEST_DOMAIN, FAKE4x4);
+    var GEOJSON_URL = 'https://{0}/resource/{1}.geojson'.format(TEST_DOMAIN, FAKE4x4);
 
     var $window;
     var testHelpers;

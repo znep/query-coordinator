@@ -65,7 +65,7 @@
         var geoJsonApiUrlStream = Rx.Observable.combineLatest(
           datasetIdStream,
           domainStream,
-          safeUrlFormatFn('https://{0}/views/{1}/rows.geojson'));
+          safeUrlFormatFn('https://{0}/resource/{1}.geojson'));
         var datasetDocumentationUrlStream = Rx.Observable.combineLatest(
           datasetIdStream,
           domainStream,

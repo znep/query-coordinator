@@ -77,6 +77,8 @@ class NewUxBootstrapController < ActionController::Base
   require 'set'
 
   ALLOWED_ROLES = %w(administrator publisher)
+  # An arbitrary number of cards to create, if there are that many columns available
+  MAX_NUMBER_OF_CARDS = 10
 
   def create_new_ux_page(dataset_metadata)
     # Keep track of the types of cards we added, so we can give a spread
@@ -105,7 +107,7 @@ class NewUxBootstrapController < ActionController::Base
       end
     end.compact
 
-    if cards.length < 10
+    if cards.length < MAX_NUMBER_OF_CARDS
       # skipped_cards is an array of arrays, grouped by card type
       skipped_cards = skipped_cards_by_type.values
       # Find the card type with the most cards (to facilitate the zip operation)
@@ -115,9 +117,9 @@ class NewUxBootstrapController < ActionController::Base
         cards != most_cards_of_this_type
       end).flatten(1).compact
       # Fill out the rest of the cards for the page
-      cards = cards.concat(interleaved_cards.first(10 - cards.length))
+      cards = cards.concat(interleaved_cards.first(MAX_NUMBER_OF_CARDS - cards.length))
     else
-      cards = cards.first(10)
+      cards = cards.first(MAX_NUMBER_OF_CARDS)
     end
 
     {

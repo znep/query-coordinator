@@ -4,6 +4,7 @@
   function featureMap(Constants,
                       AngularRxExtensions,
                       WindowState,
+                      VectorTiles,
                       FlyoutService,
                       $timeout) {
 
@@ -106,14 +107,12 @@
          */
 
         function scalePointFeatureRadiusByZoomLevel(zoomLevel) {
-
-          if (zoomLevel > 10) {
-            return 3;
-          } else if (zoomLevel > 7) {
-            return 2;
-          } else {
-            return 1;
-          }
+          // This was created somewhat arbitrarily by Chris to
+          // result in point features which get slightly larger
+          // as the map is zoomed in. It can be replaced with
+          // any function which computes a number that makes
+          // sense as the radius of a point feature in pixels.
+          return Math.pow(zoomLevel * 0.125, 2) + 1;
 
         }
 
@@ -134,10 +133,8 @@
           return {
             color: 'rgba(48,134,171,1.0)',
             radius: scalePointFeatureRadiusByZoomLevel,
-            selected: {
-              color: 'rgba(255,255,0,0.5)',
-              radius: 6
-            }
+            lineWidth: 1,
+            strokeStyle: 'rgba(255,255,255,1.0)'
           };
         }
 
@@ -157,11 +154,7 @@
         function getLineStringStyleFn() {
           return {
             color: 'rgba(161,217,155,0.8)',
-            size: 3,
-            selected: {
-              color: 'rgba(255,255,0,0.5)',
-              size: 6
-            }
+            size: 3
           };
         }
 
@@ -184,13 +177,6 @@
             outline: {
               color: 'rgb(20,20,20)',
               size: 2
-            },
-            selected: {
-              color: 'rgba(255,255,0,0.5)',
-              outline: {
-                color: '#d9534f',
-                size: 3
-              }
             }
           };
         }
@@ -259,15 +245,19 @@
             // own.
             headers: { 'X-Socrata-Host': 'localhost:8080' },
             debug: false,
-            clickableLayers: [],
-            getIDForLayerFeature: getFeatureId,
+            getFeatureId: getFeatureId,
             filter: filterLayerFeature,
             layerOrdering: getFeatureZIndex,
             style: getFeatureStyle
+            // You can interact with mouse events by passing
+            // callbacks on three property names: 'mousedown',
+            // 'mouseup' and 'mousemove'.
+            // E.g.
+            // mousemove: function(e) { /* do stuff with e.latLng */ }
           };
 
           lastFeatureLayer = thisFeatureLayer;
-          thisFeatureLayer = new L.TileLayer.MVTSource(featureLayerOptions);
+          thisFeatureLayer = VectorTiles.create(featureLayerOptions);
 
           map.addLayer(thisFeatureLayer);
 
@@ -381,24 +371,16 @@
         // for protocol buffer vector tiles.
         //
 
-        element.on('protobuffer-tile-loading', function(e) {
+        element.on('vector-tile-render-started', function(e) {
 
-          if (e.originalEvent.tilesToProcess > tilesToProcess) {
-            tilesToProcess = e.originalEvent.tilesToProcess;
-            scope.$emit('render:start', { source: 'feature_map_{0}'.format(scope.$id), timestamp: _.now() });
-          }
+          scope.$emit('render:start', { source: 'feature_map_{0}'.format(scope.$id), timestamp: _.now() });
 
         });
 
+        element.on('vector-tile-render-complete', function(e) {
 
-        element.on('protobuffer-tile-loaded', function(e) {
-
-          tilesToProcess = e.originalEvent.tilesToProcess - 1;
-
-          if (tilesToProcess <= 0) {
-            removeOldFeatureLayer(map);
-            scope.$emit('render:complete', { source: 'feature_map_{0}'.format(scope.$id), timestamp: _.now() });
-          }
+          removeOldFeatureLayer(map);
+          scope.$emit('render:complete', { source: 'feature_map_{0}'.format(scope.$id), timestamp: _.now() });
 
         });
 
@@ -460,6 +442,7 @@
       directive('featureMap', ['Constants',
                                'AngularRxExtensions',
                                'WindowState',
+                               'VectorTiles',
                                'FlyoutService',
                                '$timeout',
                                featureMap]);

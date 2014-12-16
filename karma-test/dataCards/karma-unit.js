@@ -54,7 +54,8 @@ module.exports = function ( karma ) {
       'bower_components/chroma-js/chroma.js',
       'bower_components/simple-statistics/src/simple_statistics.js',
       'public/javascripts/util/typed-arrays.js',
-      'public/javascripts/util/mapbox-vector-tiles.js',
+      'public/javascripts/bower/pbf.min.js',
+      'public/javascripts/bower/vectortile.min.js',
       'app/styles/bower/leaflet.css',
       'app/styles/dataCards/testing.css',
       /* ------- */

@@ -1,0 +1,31 @@
+{
+  "name": "vector-tile-js",
+  "main": "index.js",
+  "version": "0.1.1",
+  "homepage": "https://github.com/devTristan/vector-tile-js",
+  "authors": [
+    "Vladimir Agafonkin <agafonkin@gmail.com>",
+    "Tom MacWright <tom@macwright.org>"
+  ],
+  "description": "Parses vector tiles",
+  "moduleType": [
+    "node"
+  ],
+  "license": "BSD",
+  "ignore": [
+    "**/.*",
+    "node_modules",
+    "bower_components",
+    "test"
+  ],
+  "_release": "0.1.1",
+  "_resolution": {
+    "type": "version",
+    "tag": "v0.1.1",
+    "commit": "0a39e7b09dd86b3fd8328956527a34df9fbfe547"
+  },
+  "_source": "git://github.com/devTristan/vector-tile-js.git",
+  "_target": "~0.1.1",
+  "_originalSource": "devTristan/vector-tile-js",
+  "_direct": true
+}

@@ -45,7 +45,7 @@ angular.module('dataCards.directives').directive('card', function(AngularRxExten
       var descriptionTruncatedContent = element.find('.description-truncated-content');
       var descriptionElementsWithMaxSize = element.find('.description-expanded-wrapper, .description-expanded-content');
 
-      var dimensionsObservable = element.observeDimensions().share();
+      var dimensionsObservable = element.observeDimensions();
 
       // Give the visualization all the height that the description isn't using.
       var description = element.find('.card-text');

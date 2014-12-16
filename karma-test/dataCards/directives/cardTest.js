@@ -7,10 +7,11 @@ describe("card directive", function() {
   beforeEach(module('test'));
   beforeEach(module('dataCards'));
 
-  beforeEach(inject(['$rootScope', '$templateCache', 'testHelpers', 'Model', function(_$rootScope, _$templateCache, _testHelpers, _Model) {
+  beforeEach(inject(['$rootScope', '$templateCache', 'testHelpers', 'Model', 'Card', function(_$rootScope, _$templateCache, _testHelpers, _Model, _Card) {
     $rootScope = _$rootScope;
     testHelpers = _testHelpers;
     Model = _Model;
+    Card = _Card;
     // Override the templates of the other directives. We don't need to test them.
     _$templateCache.put('/angular_templates/dataCards/cardVisualizationColumnChart.html', '');
     _$templateCache.put('/angular_templates/dataCards/cardVisualizationChoropleth.html', '');
@@ -30,21 +31,21 @@ describe("card directive", function() {
 
   describe('expansion toggle', function() {
     var el;
-    var html = '<card model="model" interactive="true"></card>';
-    var model;
+    var html = '<card model="cardModel" interactive="true"></card>';
+    var cardModel;
     beforeEach(function() {
       var scope = $rootScope.$new();
-      model = new Model();
-      model.defineObservableProperty('expanded', false);
-      model.defineObservableProperty('cardSize', 1);
-      model.defineObservableProperty('cardType', 'column');
-      scope.model = model;
+      cardModel = new Model();
+      cardModel.defineObservableProperty('expanded', false);
+      cardModel.defineObservableProperty('cardSize', 1);
+      cardModel.defineObservableProperty('cardType', 'column');
+      scope.cardModel = cardModel;
       el = testHelpers.TestDom.compileAndAppend(html, scope);
     });
 
     describe('when the card is not expanded', function() {
       it('should contain a link with a title of "Expand this card"', function() {
-        model.set('expanded', false);
+        cardModel.set('expanded', false);
         expect(el.find('.card-control[title="Collapse this card"]')).
           to.have.length(0);
         expect(el.find('.card-control[title="Expand this card"]')).
@@ -54,7 +55,7 @@ describe("card directive", function() {
 
     describe('when the card is expanded', function() {
       it('should contain a link with a title of "Collapse this card"', function() {
-        model.set('expanded', true);
+        cardModel.set('expanded', true);
         expect(el.find('.card-control[title="Collapse this card"]')).
           to.have.length(1);
         expect(el.find('.card-control[title="Expand this card"]')).
@@ -64,26 +65,26 @@ describe("card directive", function() {
 
     describe('click', function() {
       it('should call the toggleExpanded method on the parent Page', function() {
-        model.page = new Model();
-        model.page.toggleExpanded = sinon.spy();
+        cardModel.page = new Model();
+        cardModel.page.toggleExpanded = sinon.spy();
         el.find('.card-control').click();
-        expect(model.page.toggleExpanded.calledOnce).to.equal(true);
-        expect(model.page.toggleExpanded.calledWith(model)).to.be.true;
+        expect(cardModel.page.toggleExpanded.calledOnce).to.equal(true);
+        expect(cardModel.page.toggleExpanded.calledWith(cardModel)).to.be.true;
       });
     });
   });
 
   describe('visualization height', function() {
     var el;
-    var html = '<card model="model" interactive="true"></card>';
-    var model;
+    var html = '<card model="cardModel" interactive="true"></card>';
+    var cardModel;
     beforeEach(function() {
       var scope = $rootScope.$new();
-      model = new Model();
-      model.defineObservableProperty('expanded', false);
-      model.defineObservableProperty('cardSize', 1);
-      model.defineObservableProperty('cardType', 'column');
-      scope.model = model;
+      cardModel = new Model();
+      cardModel.defineObservableProperty('expanded', false);
+      cardModel.defineObservableProperty('cardSize', 1);
+      cardModel.defineObservableProperty('cardType', 'column');
+      scope.cardModel = cardModel;
       el = testHelpers.TestDom.compileAndAppend(html, scope);
       el.css({
         height: $(window).height(),
@@ -135,6 +136,57 @@ describe("card directive", function() {
           return visualizationElement.height() < biggerContainerHeight;
         }).then(done);
       });
+    });
+  });
+
+  describe('card description text', function() {
+    var html = '<card model="cardModel" interactive="true"></card>';
+    var cardModel;
+    var datasetModel;
+    var initialDescriptionText = 'some description text';
+    var truncatedDescriptionElement;
+    beforeEach(function() {
+      var scope = $rootScope.$new();
+
+      datasetModel = new Model();
+      datasetModel.defineObservableProperty('columns', {
+        myFieldName: { description: initialDescriptionText }
+      });
+
+      var pageModel = new Model();
+      pageModel.defineObservableProperty('dataset', datasetModel);
+
+      cardModel = new Card(pageModel, 'myFieldName');
+
+      scope.cardModel = cardModel;
+
+      var el = testHelpers.TestDom.compileAndAppend(html, scope);
+      truncatedDescriptionElement = el.find('.card-text').find('.description-truncated-content')
+    });
+
+    describe('when collapsed', function() {
+      it('should be rendered initially', function(done) {
+        // Defer due to the card directive using observeDimensions, which can be async.
+        _.defer(function() {
+          expect(truncatedDescriptionElement.text()).to.equal(initialDescriptionText);
+          done();
+        });
+      });
+
+      it('should be updated when changed', function(done) {
+        var newDescriptionText = 'new description';
+
+        datasetModel.set('columns', {
+          myFieldName: { description: newDescriptionText }
+        });
+
+        // Defer due to the card directive using observeDimensions, which can be async.
+        _.defer(function() {
+          expect(truncatedDescriptionElement.text()).to.equal(newDescriptionText);
+          done();
+        });
+      });
+
     });
   });
 });

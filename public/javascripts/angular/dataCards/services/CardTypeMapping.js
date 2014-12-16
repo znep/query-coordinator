@@ -1,9 +1,6 @@
 (function() {
   'use strict';
 
-  var MAX_SAFE_INTEGER = Number.MAX_SAFE_INTEGER || 9007199254740991;
-  var MIN_SAFE_INTEGER = Number.MIN_SAFE_INTEGER || -9007199254740991;
-
   function CardTypeMapping(ServerConfig, $exceptionHandler, $log) {
 
     function getCardTypesForColumn(column) {
@@ -102,35 +99,24 @@
     function defaultVisualizationForColumn(column) {
 
       var cardTypes = getCardTypesForColumn(column);
-      var cardinality;
-      var defaultType;
 
-      // If there is no defined card type, fail early with a null result.
+      // If there is no defined card type, we shouldn't show a card for this column.
       if (cardTypes === null) {
         return null;
       }
 
-      // If the cardinality is known for this column and it is within the bounds of safe integers,
-      // use the column's cardinality. Otherwise, fall back to the minimum cardinality.
-      if (!column.hasOwnProperty('cardinality') ||
-          column.cardinality < MIN_SAFE_INTEGER ||
-          column.cardinality > MAX_SAFE_INTEGER) {
-        cardinality = cardTypeMapping.cardinality.min;
-      } else {
-        cardinality = parseInt(column.cardinality, 10);
-      }
+      // If the cardinality is not known for this column, fall back to the minimum cardinality.
+      var cardinality = column.cardinality || cardTypeMapping.cardinality.min;
 
-      // Finally, determine which type to which we will map based on the column's cardinality.
+      // Otherwise, determine which type to which we will map based on the column's cardinality.
       if (cardinality < cardTypeMapping.cardinality.min) {
+        // Don't show cards for columns that don't have varying data.
         return null;
       } else if (cardinality < cardTypeMapping.cardinality.threshold) {
-        defaultType = cardTypes.lowCardinalityDefault;
+        return cardTypes.lowCardinalityDefault;
       } else {
-        defaultType = cardTypes.highCardinalityDefault;
+        return cardTypes.highCardinalityDefault;
       }
-
-      return defaultType;
-
     }
 
     /**

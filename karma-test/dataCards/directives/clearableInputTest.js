@@ -75,11 +75,13 @@
           expect(element.scope().search).to.equal(TEST_VALUE);
         });
 
-        it('should clear the focused input on "esc"', function() {
+        it('should clear the focused input on "esc"', function(done) {
           testHelpers.fireEvent(input[0], 'focus');
           testHelpers.fireEvent($document[0], 'keydown', { which: 27 });
           input.scope().$apply();
-          expect(input.val()).to.equal('');
+          testHelpers.waitForSatisfy(function() {
+            return input.val() === '';
+          }).then(done);
         });
 
         it('should not clear the unfocused input on "esc"', function() {
@@ -117,10 +119,12 @@
           expect(button.is(':visible')).to.be.true;
         });
 
-        it('should clear the input on click', function() {
+        it('should clear the input on click', function(done) {
           button.click();
           input.scope().$apply();
-          expect(input.val()).to.equal('');
+          testHelpers.waitForSatisfy(function() {
+            return input.val() === '';
+          }).then(done);
         })
 
       });

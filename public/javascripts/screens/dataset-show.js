@@ -860,7 +860,9 @@ $(function()
     }
     blist.configuration.onCurrentUser(function(user) {
       if (blist.feature_flags.enable_newux_bootstrap_link &&
-          ['administrator', 'publisher'].indexOf(user.roleName) >= 0) {
+          user && (['administrator', 'publisher'].indexOf(user.roleName) >= 0 ||
+                   blist.dataset.owner.id === user.id ||
+                   user.isAdmin())) {
         initNewUXLink();
       }
     });

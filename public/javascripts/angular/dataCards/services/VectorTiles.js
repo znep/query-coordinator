@@ -26,17 +26,13 @@
         var lat = deg2rad(point.lat);
         var lng = deg2rad(point.lng);
 
-        var tileY = parseInt(
-          Math.floor(
-            (lng + 180) / 360 * (1 << zoom)
-          )
+        var tileY = Math.floor(
+          (lng + 180) / 360 * (1 << zoom)
         );
 
-        var tileX = parseInt(
-          Math.floor(
-            (1 - Math.log(Math.tan(deg2rad(lat)) + 1 /
-            Math.cos(deg2rad(lat))) / Math.PI) / 2 * (1 << zoom)
-          )
+        var tileX = Math.floor(
+          (1 - Math.log(Math.tan(deg2rad(lat)) + 1 /
+          Math.cos(deg2rad(lat))) / Math.PI) / 2 * (1 << zoom)
         );
 
         return {
@@ -77,8 +73,8 @@
 
       },
 
-      getTileLayerCanvas: function(tileLayer, canvasId) {
-        var leafletTileId = canvasId.split(':').slice(1, 3).join(':');
+      getTileLayerCanvas: function(tileLayer, tileId) {
+        var leafletTileId = tileId.split(':').slice(1, 3).join(':');
         return tileLayer._tiles[leafletTileId];
       }
 
@@ -123,10 +119,15 @@
 
     }
 
-    VectorTileFeature.prototype.draw = function(canvasId) {
+    // Takes a coordinate from a vector tile and turns it into a Leaflet Point.
+    VectorTileFeature.prototype.projectGeometryToTilePoint = function(coordinates) {
+      return new L.Point(coordinates.x / this.divisor, coordinates.y / this.divisor);
+    };
+
+    VectorTileFeature.prototype.draw = function(tileId) {
 
       var feature = this.feature;
-      var canvas = VectorTileUtil.getTileLayerCanvas(this.tileLayer, canvasId);
+      var canvas = VectorTileUtil.getTileLayerCanvas(this.tileLayer, tileId);
 
       switch (feature.type) {
         case 1: //Point
@@ -147,11 +148,6 @@
 
     };
 
-    // Takes a coordinate from a vector tile and turns it into a Leaflet Point.
-    VectorTileFeature.prototype.projectGeometryToTilePoint = function(coordinates) {
-      return new L.Point(coordinates.x / this.divisor, coordinates.y / this.divisor);
-    };
-
     VectorTileFeature.prototype.drawPoint = function(canvas, geometry, computedStyle) {
 
       var ctx;
@@ -167,6 +163,10 @@
 
       ctx = canvas.getContext('2d');
 
+      if (ctx === null) {
+        throw new Error('Could not draw VectorTileFeature point: canvas context is null.');
+      }
+
       projectedPoint = this.projectGeometryToTilePoint(geometry[0][0]);
 
       if (_.isFunction(computedStyle.radius)) {
@@ -175,12 +175,8 @@
         radius = computedStyle.radius;
       }
 
-      if (ctx === null) {
-        throw new Error('Could not draw point: canvas context is null.');
-      }
-
-      ctx.beginPath();
       ctx.fillStyle = computedStyle.color;
+      ctx.beginPath();
       ctx.arc(projectedPoint.x, projectedPoint.y, radius, 0, Math.PI * 2);
       ctx.closePath();
       ctx.fill();
@@ -354,9 +350,7 @@
         L.Util.setOptions(this, options);
 
         this.tileManager = tileManager;
-
         this.styleFn = options.style;
-        this.tiles = {};
         this.featuresByTile = {};
 
       },
@@ -365,36 +359,6 @@
 
         this.map = map;
         L.TileLayer.Canvas.prototype.onAdd.call(this, map);
-
-      },
-
-      parseVectorTileLayer: function(vectorTileLayer, tileId, tileRenderedCallback) {
-
-        var features = vectorTileLayer.features;
-        var i;
-        var featureCount = features.length;
-        var feature;
-        var id;
-
-        for (i = 0; i < featureCount; i++) {
-
-          feature = features[i];
-          feature.layer = vectorTileLayer;
-          id = feature.properties.id || i;
-
-          if (!this.featuresByTile.hasOwnProperty(tileId)) {
-            this.featuresByTile[tileId] = [];
-          }
-
-          this.featuresByTile[tileId].push(
-            new VectorTileFeature(this, feature, this.styleFn(feature))
-          );
-
-        }
-
-        this.renderTile(tileId);
-
-        tileRenderedCallback();
 
       },
 
@@ -407,15 +371,39 @@
 
         var tileId = VectorTileUtil.getTileId(tilePoint, zoom);
 
-        this.tiles[tileId] = {
-          canvas: canvas,
-          zoom: zoom,
-          size: this.options.tileSize
-        }
-
         this.featuresByTile[tileId] = [];
 
         return this;
+
+      },
+
+      loadData: function(vectorTileData, tileId, tileRenderedCallback) {
+
+        var features = vectorTileData.features;
+        var i;
+        var featureCount = features.length;
+        var feature;
+        var featureArray;
+
+        if (!this.featuresByTile.hasOwnProperty(tileId) && featureCount > 0) {
+          this.featuresByTile[tileId] = [];
+        }
+
+        featureArray = this.featuresByTile[tileId];
+
+        for (i = 0; i < featureCount; i++) {
+
+          feature = features[i];
+
+          featureArray.push(
+            new VectorTileFeature(this, feature, this.styleFn(feature))
+          );
+
+        }
+
+        this.renderTile(tileId);
+
+        tileRenderedCallback();
 
       },
 
@@ -433,19 +421,15 @@
         features = this.featuresByTile[tileId];
         featureCount = features.length;
 
-        if (featureCount === 0) {
-          return;
-        }
-
         for (i = 0; i < featureCount; i++) {
           features[i].draw(tileId);
         }
 
       },
 
-      clearTile: function(canvasId) {
+      clearTile: function(tileId) {
 
-        var canvas = VectorTileUtil.getTileLayerCanvas(this.tileLayer, canvasId);
+        var canvas = VectorTileUtil.getTileLayerCanvas(this.tileLayer, tileId);
         var ctx = canvas.getContext('2d');
 
         ctx.clearRect(0, 0, canvas.width, canvas.height);
@@ -508,15 +492,21 @@
 
       onAdd: function(map) {
 
+        function getTileInfo(e) {
+          e.tileInfo = VectorTileUtil.getTileInfoByPointAndZoomLevel(e.latlng, map.getZoom());
+        }
+
         var self = this;
         var mapMousedownCallback;
         var mapMouseupCallback;
         var mapMousemoveCallback;
 
+        this.map = map;
+
         if (_.isFunction(this.options.mousedown)) {
 
           mapMousedownCallback = function(e) {
-            e.tileInfo = VectorTileUtil.getTileInfoByPointAndZoomLevel(e.latlng, map.getZoom());
+            addTileInfo(e);
             self.options.mousedown(e);
           };
 
@@ -527,7 +517,7 @@
         if (_.isFunction(this.options.mouseup)) {
 
           mapMouseupCallback = function(e) {
-            e.tileInfo = VectorTileUtil.getTileInfoByPointAndZoomLevel(e.latlng, map.getZoom());
+            addTileInfo(e);
             self.options.mouseup(e);
           };
 
@@ -538,7 +528,7 @@
         if (_.isFunction(this.options.mousemove)) {
 
           mapMousemoveCallback = function(e) {
-            e.tileInfo = VectorTileUtil.getTileInfoByPointAndZoomLevel(e.latlng, map.getZoom());
+            addTileInfo(e);
             self.options.mousemove(e);
           };
 
@@ -551,15 +541,25 @@
           // Check to see if the layer removed is this one, and if it is
           // remove its child layers.
           if (e.layer._leaflet_id === self._leaflet_id && e.layer.removeChildLayers) {
+
             e.layer.removeChildLayers(map);
-            if (_.isFunction(self.options.onClick)) {
-              map.off('click', mapOnClickCallback);
+
+            if (_.isFunction(self.options.mousedown)) {
+              map.off('mousedown', mapMousedownCallback);
             }
+
+            if (_.isFunction(self.options.mouseup)) {
+              map.off('mouseup', mapMouseupCallback);
+            }
+
+            if (_.isFunction(self.options.mousemove)) {
+              map.off('mousemove', mapMousemoveCallback);
+            }
+
           }
 
         });
 
-        this.map = map;
         this.addChildLayers();
 
         this.emitRenderStartedEvent();
@@ -586,7 +586,7 @@
 
       },
 
-      getTileData: function(tilePoint, zoom, renderFn) {
+      getTileData: function(tilePoint, zoom, callback) {
 
         var self = this;
         var tileId = VectorTileUtil.getTileId(tilePoint, zoom);
@@ -625,9 +625,9 @@
               return;
             }
 
-            // Invoke renderFn within the context of 'self'
+            // Invoke `callback` within the context of 'self'
             // (the current instance of VectorTileManager).
-            renderFn.call(self, arrayBuffer, VectorTileUtil.getTileId(tilePoint, zoom));
+            callback.call(self, arrayBuffer, tileId);
 
           }
 
@@ -718,7 +718,7 @@
 
           }
 
-          this.layers[layerId].parseVectorTileLayer(layer, tileId, tileRenderedCallback);
+          this.layers[layerId].loadData(layer, tileId, tileRenderedCallback);
 
         }
 

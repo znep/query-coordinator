@@ -70,3 +70,6 @@ enable_newux_bootstrap_link:
   defaultValue: false
 enable_opendata_ga_tracking:
   description: Enable Google Analytics in the new UX
+use_auth0:
+  description: Force use of Auth0 to authenticate users. DO NOT ENABLE ON ANY ENVIRONMENT OTHER THAN STAGING OR LOCAL.
+  defaultValue: false

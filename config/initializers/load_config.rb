@@ -41,3 +41,7 @@ end
 STYLE_PACKAGES = YAML.load_file("#{Rails.root}/config/style_packages.yml") || {}
 
 FEATURE_FLAGS = YAML.load_file("#{Rails.root}/config/feature_flags.yml") || {}
+
+AUTH0_URI = APP_CONFIG['auth0_uri']
+AUTH0_ID = APP_CONFIG['auth0_id']
+AUTH0_SECRET = APP_CONFIG['auth0_secret']

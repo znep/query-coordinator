@@ -44,7 +44,7 @@ namespace :test do
     raise 'Karma test failure' unless success
   end
 
-  desc "Publish test-coverage result to graphite dashboard"
+  desc "Publish test-coverage result to geckoboard dashboard"
   task :publish_coverage_to_dashboard do
     # We maintain an internal dashboard at socratametrics.geckoboard.com.
     # One of the widgets is a code coverage meter for the frontend unit tests.
@@ -53,7 +53,7 @@ namespace :test do
     # coverage run (rake test:karma) and updates the widget.
 
     geckoboard_api_key = 'b84ed380a729972213e3452b5c8de8b7'
-    widget_url = URI.parse('https://push.geckoboard.com/v1/send/104764-5f3ebf26-be1e-41c3-86d3-388890f582cc')
+    widget_url = URI.parse('https://push.geckoboard.com/v1/send/106298-84d0c65a-5787-4109-87c6-3fc24e8b1958')
 
     coverage_report_file_path = 'karma-test/coverage-reports/dataCards/cobertura-coverage.xml'
     coverage_rate_warn_level = 0.70

@@ -1,4 +1,10 @@
 namespace :test do
+  # Keep this <= the maximum concurrency listed on the SauceLabs account dashboard. Otherwise timeouts will occur.
+  # Currently this is the max concurrenty / 2, as going higher than this causes some instability that hasn't
+  # quite been traced out yet.
+  MAX_SAUCELABS_CONCURRENT_RUNS = 3
+  SUPPORTED_BROWSERS = JSON.parse(open('supported_browsers.json').read())
+
   desc "Run all karma tests and update test-coverage result"
   task :karma do
     # Manually enable the coverage reporter. It isn't enabled by default as the instrumentation step makes
@@ -7,20 +13,28 @@ namespace :test do
     raise 'Karma test failure' unless success
   end
 
-  def get_supported_browser_launcher_names(critical_only = false)
+  def get_supported_browser_launcher_names(critical_only, browser_families)
     def name_for_browser_instance(browser_name, instance)
       "saucelabs #{browser_name} #{instance['version']} #{instance['platform']}".downcase
     end
 
-    supported_browsers = JSON.parse(open('supported_browsers.json').read())
+    all_supported_browser_families = SUPPORTED_BROWSERS.keys();
+    unsupported_browser_families = browser_families - all_supported_browser_families
+
+    unless unsupported_browser_families.empty?
+      raise "Unsupported browser families: #{unsupported_browser_families}. Supported families: #{all_supported_browser_families}" 
+    end
+
     browser_names = []
     critical_browser_names = []
-    supported_browsers.each do |browser_name, browser_instances|
-      browser_instances.each do |instance|
-        instance_name = name_for_browser_instance(browser_name, instance)
-        browser_names.push(instance_name)
-        if instance['critical']
-          critical_browser_names.push(instance_name)
+    SUPPORTED_BROWSERS.each do |browser_name, browser_instances|
+      if browser_families.include?(browser_name)
+        browser_instances.each do |instance|
+          instance_name = name_for_browser_instance(browser_name, instance)
+          browser_names.push(instance_name)
+          if instance['critical']
+            critical_browser_names.push(instance_name)
+          end
         end
       end
     end
@@ -28,20 +42,36 @@ namespace :test do
     critical_only ? critical_browser_names : browser_names
   end
 
-  desc "Run all karma tests under browsers flagged as critical"
-  task :karma_sauce_critical do
-    browser_names = get_supported_browser_launcher_names(true);
+  desc 'Run karma tests in SauceLabs. Accepts CRITICAL_BROWSERS_ONLY=true|false and BROWSER_FAMILIES="comma separated browser names" ENV variables'
+  task :karma_sauce do
+    env_browser_families = ENV['BROWSER_FAMILIES']
+    browser_families =
+      if env_browser_families then
+        env_browser_families.downcase.split(',').collect(&:strip)
+      else
+        SUPPORTED_BROWSERS.keys()
+      end
 
-    success = system("karma start karma-test/dataCards/karma-unit.js --browsers \"#{browser_names.join(',')}\" --singleRun true")
-    raise 'Karma test failure' unless success
-  end
+    critical_only = ENV['CRITICAL_BROWSERS_ONLY'] == 'true'
 
-  desc "Run all karma tests in all supported browsers"
-  task :karma_sauce_all do
-    browser_names = get_supported_browser_launcher_names(false);
+    browser_names = get_supported_browser_launcher_names(critical_only, browser_families)
 
-    success = system("karma start karma-test/dataCards/karma-unit.js --browsers \"#{browser_names.join(',')}\" --singleRun true")
-    raise 'Karma test failure' unless success
+    if browser_names.empty?
+      raise "No browsers found that match constraints: CRITICAL_BROWSERS_ONLY=#{critical_only} BROWSER_FAMILIES=#{browser_families.join(', ')}"
+    end
+
+    puts "About to launch SauceLabs test run against #{browser_names.length} browser(s). Last chance to terminate cleanly (5s)"
+    sleep 5
+    puts "Launching in batches of #{MAX_SAUCELABS_CONCURRENT_RUNS} browsers"
+
+    browser_names.each_slice(MAX_SAUCELABS_CONCURRENT_RUNS) do |this_slice_browser_names|
+      puts "Launching batch: #{this_slice_browser_names}"
+      success = system("karma start karma-test/dataCards/karma-unit.js --browsers \"#{this_slice_browser_names.join(',')}\" --singleRun true")
+      raise 'Karma test failure' unless success
+    end
+
+    puts 'Overall run passed without failures'
+
   end
 
   desc "Publish test-coverage result to graphite dashboard"

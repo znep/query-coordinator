@@ -29,8 +29,14 @@ Just run `rake`, the karma test task will run karma configured to compute covera
  To speed up testing, we define a set of critical browsers (defined as the latest version
  of all browsers, plus all supported versions of IE).
  Please be judicious in your use of SauceLabs - we are limited in usage (see the SauceLabs dashboard using the creds in LastPass to see how much we have remaining for the month).
- - To launch on _all_ supported browsers: `rake test:karma_sauce_all`
- - To launch on only critical browsers: `rake test:karma_sauce_critical`
+ The rake task is `rake test:karma_sauce [CRITICAL_BROWSERS_ONLY=true|false] [BROWSER_FAMILIES="comma-separated browser names"]
+ CRITICAL_BROWSERS_ONLY tells the runner to only run tests on critical browsers. It defaults to false (run on all browsers).
+ BROWSER_FAMILIES limits the run to a comma-separated list of browser names (chrome, internet explorer, etc)
+
+ Examples:
+ - To launch on _all_ supported browsers: `rake test:karma_sauce`
+ - To launch on only critical browsers: `rake test:karma_sauce CRITICAL_BROWSERS_ONLY=true`
+ - To launch on only a particular set of browser families: `rake test:karma_sauce BROWSER_FAMILIES="safari, internet explorer"`
  - To launch only a particular browser, run `karma start` manually and specify a browser name formatted like:
    "saucelabs {browser name} {browser version} {platform}
    So for instance to run tests on Safari 7 on Mavericks, do:

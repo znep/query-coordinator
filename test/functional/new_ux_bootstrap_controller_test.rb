@@ -188,14 +188,18 @@ class NewUxBootstrapControllerTest < ActionController::TestCase
   test 'bootstrap creates & redirects to new page with cards for the first 10 non-system columns' do
     stub_user = stub(roleName: 'administrator')
     @controller.stubs(current_user: stub_user)
-    @page_metadata_manager.stubs(
-      pages_for_dataset: { status: '404', body: [] },
-    )
+    connection_stub = stub.tap do |stub|
+      stub.stubs(get_request: "[{\"count_0\": 1234}]",
+                 reset_counters: {requests: {}, runtime: 0})
+    end
+    CoreServer::Base.stubs(connection: connection_stub)
+    @page_metadata_manager.stubs(pages_for_dataset: { status: '404', body: [] })
+    @phidippides.stubs(fetch_dataset_metadata: {status: '200', body: mock_dataset_metadata})
 
     @phidippides.stubs(
       fetch_dataset_metadata: {
         status: '200',
-        body: dataset_metadata
+        body: mock_dataset_metadata
       }
     )
     @phidippides.expects(:update_dataset_metadata).
@@ -204,7 +208,7 @@ class NewUxBootstrapControllerTest < ActionController::TestCase
         dataset_metadata[:defaultPage] == 'neoo-page'
       end
 
-    # Make sure the page we're creating is the correct one
+    # Make sure the page we're creating fits certain criteria
     @page_metadata_manager.expects(:create).with do |page, params|
       assert_equal(10, page['cards'].length, 'Should create 10 cards')
 
@@ -256,9 +260,38 @@ class NewUxBootstrapControllerTest < ActionController::TestCase
     assert_redirected_to('/view/neoo-page')
   end
 
+  test 'bootstrap creates page ommitting column charts where cardinality == dataset_size' do
+    stub_user = stub(roleName: 'administrator')
+    @controller.stubs(current_user: stub_user)
+    connection_stub = stub.tap do |stub|
+      stub.stubs(get_request: "[{\"count_0\": 34}]",
+                 reset_counters: {requests: {}, runtime: 0})
+    end
+    CoreServer::Base.stubs(connection: connection_stub)
+    @page_metadata_manager.stubs(pages_for_dataset: { status: '404', body: [] })
+    @phidippides.stubs(fetch_dataset_metadata: {
+      status: '200', body: mock_dataset_metadata_with_uninteresting_column_chart
+    })
+
+    # Make sure the page we're creating fits certain criteria
+    @page_metadata_manager.expects(:create).with do |page, params|
+      assert_equal(0, page['cards'].length,
+                   'Should not create column card with cardinality == dataset_size')
+      true
+    end.then.returns({ status: '200', body: { pageId: 'neoo-page' } })
+
+    get :bootstrap, id: 'four-four'
+    assert_redirected_to('/view/neoo-page')
+  end
+
   test 'bootstrap redirects to dataset page with error if error while creating page' do
     stub_user = stub(roleName: 'administrator')
     @controller.stubs(current_user: stub_user)
+    connection_stub = stub.tap do |stub|
+      stub.stubs(get_request: "[{\"count_0\": 1234}]",
+                 reset_counters: {requests: {}, runtime: 0})
+    end
+    CoreServer::Base.stubs(connection: connection_stub)
     @page_metadata_manager.stubs(
       pages_for_dataset: { status: '404', body: [] },
       create: { status: '500' },
@@ -266,7 +299,7 @@ class NewUxBootstrapControllerTest < ActionController::TestCase
     @phidippides.stubs(
       fetch_dataset_metadata: {
         status: '200',
-        body: dataset_metadata
+        body: mock_dataset_metadata
       }
     )
     get :bootstrap, id: 'four-four'
@@ -300,7 +333,22 @@ class NewUxBootstrapControllerTest < ActionController::TestCase
     end.flatten(1)
   end
 
-  def dataset_metadata
+  def mock_dataset_metadata_with_uninteresting_column_chart
+    cardinality_threshold = CardTypeMapping::CARD_TYPE_MAPPING['cardinality']['threshold']
+    cardinality_equal_to_dataset_size = [{
+      title: 'cardinality equal to dataset size',
+      name: 'too_much',
+      logicalDatatype: 'category',
+      physicalDatatype: 'number',
+      cardinality: cardinality_threshold - 1,
+    }]
+
+    mock_metadata = mock_dataset_metadata
+    mock_metadata[:columns] = cardinality_equal_to_dataset_size
+    mock_metadata
+  end
+
+  def mock_dataset_metadata
     multiple_cardtype_types = {
       'category' => ['number', 'text'],
       'identifier' => ['number', 'text'],

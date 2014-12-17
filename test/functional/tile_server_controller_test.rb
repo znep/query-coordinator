@@ -66,6 +66,15 @@ class TileServerControllerTest < ActionController::TestCase
     get :proxy_request, request_params_with_where
   end
 
+  test 'should call TileServer#fetch_tile with app token if present' do
+    request_params_with_app_token = @request_params.merge('$$app_token' => 'aaaaaaaaabbbbbbbbbb')
+    TileServer.any_instance.expects(:fetch_tile).
+      with(request_params_with_app_token).
+      returns(:status => '200', :body => '', :content_type => '')
+    get :proxy_request, request_params_with_app_token
+  end
+
+
   test 'should return error as JSON' do
     result = {
       :status => '500',

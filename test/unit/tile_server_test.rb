@@ -143,6 +143,38 @@ class TileServerTest < Test::Unit::TestCase
     }, result)
   end
 
+  def test_pass_app_token_to_socrata_http
+    page_id = 'test-page'
+    field_id = 'test_field'
+    zoom = 14
+    x_coord = 2
+    y_coord = 3
+    limit = 11088
+    app_token = 'aaaabbbb'
+
+    expected_params = {
+      :verb => :get,
+      :request_id => nil,
+      :cookies => nil,
+      :path => 'tiles/test-page/test_field/14/2/3.pbf?$limit=11088&$where=0%3D0',
+      :app_token => app_token
+    }
+
+    TileServer.any_instance.expects(:issue_request).
+      with(expected_params).
+      returns(:status => '200', :body => '', :content_type => '')
+
+    result = tileserver.fetch_tile(
+      :page_id => page_id,
+      :field_id => field_id,
+      :zoom => zoom,
+      :x_coord => x_coord,
+      :y_coord => y_coord,
+      '$limit' => limit,
+      '$$app_token' => app_token
+    )
+  end
+
   def test_failure_json_response
     page_id = 'test-page'
     field_id = 'test_field'

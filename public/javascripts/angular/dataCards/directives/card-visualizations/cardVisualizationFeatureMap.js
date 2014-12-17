@@ -1,7 +1,7 @@
 (function() {
   'use strict';
 
-  function cardVisualizationFeatureMap(Constants, AngularRxExtensions, CardDataService, Filter) {
+  function cardVisualizationFeatureMap(Constants, ServerConfig, AngularRxExtensions, CardDataService, Filter) {
 
     return {
       restrict: 'E',
@@ -109,6 +109,14 @@
               // The limit of 50,000 is chosen to be unrealistically-large so that we get
               // all probable--and even some unlikely--points per tile.
               var url = '/tiles/' + dataset.id + '/' + fieldName + '/{z}/{x}/{y}.pbf?$limit=50000';
+
+              // Tile requests do not go through $http, so we must add the app token parameter here.
+              // Technically the preferred method is through a header, but there's no easy way to
+              // do that here.
+              var appToken = ServerConfig.get('dataCardsAppToken');
+              if (!_.isEmpty(appToken)) {
+                url += '&$$app_token=' + appToken;
+              }
 
               if (!_.isEmpty(whereClause)) {
                 url += '&$where=' + encodeURIComponent(whereClause);

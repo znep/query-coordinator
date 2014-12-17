@@ -70,3 +70,6 @@ enable_newux_bootstrap_link:
   defaultValue: false
 enable_opendata_ga_tracking:
   description: Enable Google Analytics in the new UX
+data_cards_app_token:
+  description: The SODA application token to be used by the dataCards app.
+  defaultValue: zvQamMSTi4GNuZWWDwjLdLPhW

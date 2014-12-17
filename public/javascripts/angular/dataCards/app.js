@@ -17,9 +17,13 @@ if (window['socrataConfig'].enableAirbrakeJs) {
 
 var dataCards = angular.module('dataCards', dependencies);
 
-dataCards.config(function(ServerConfig) {
+dataCards.config(function(ServerConfig, $httpProvider) {
   ServerConfig.setup(window['socrataConfig']);
   delete window['socrataConfig'];
+
+  // Automatically add the app token header to requests done through $http.
+  // NOTE: This does not work for requests made through some other means.
+  $httpProvider.defaults.headers.common['X-App-Token'] = ServerConfig.get('dataCardsAppToken');
 });
 
 /**

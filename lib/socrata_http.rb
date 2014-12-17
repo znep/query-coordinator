@@ -22,6 +22,7 @@ class SocrataHttp
     headers.each { |key, value| request[key] = value }
     request['X-Socrata-Host'] = cname
     request['X-Socrata-RequestId'] = options[:request_id] if options[:request_id].present?
+    request['X-App-Token'] = options[:app_token] if options[:app_token].present?
     request['Cookie'] = options[:cookies] if options[:cookies].present?
 
     Rails.logger.debug("X-Socrata-Host is #{cname}")

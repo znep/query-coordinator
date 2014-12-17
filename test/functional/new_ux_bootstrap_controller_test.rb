@@ -12,6 +12,11 @@ class NewUxBootstrapControllerTest < ActionController::TestCase
       :phidippides => @phidippides,
       :page_metadata_manager => @page_metadata_manager,
     )
+    Airbrake.stubs(notify: nil)
+    connection_stub = stub.tap do |stub|
+      stub.stubs(get_request: '[]', reset_counters: {requests: {}, runtime: 0})
+    end
+    CoreServer::Base.stubs(connection: connection_stub)
   end
 
   test 'bootstrap has no route if no id' do

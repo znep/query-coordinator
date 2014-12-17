@@ -76,7 +76,7 @@ dataCards.run(function($window, $rootScope, Analytics) {
 dataCards.config(function($provide, $stateProvider, $urlRouterProvider, $locationProvider) {
   $stateProvider.
     state('404', {
-      template: '<h1>404</h1>You probably wanted something, but have this kitten instead: <br /><soc-kitten w="800" h="600"></soc-kitten>'
+      templateUrl: '/404'
     }).
     state('view', {
       template: '<!--Overall chrome--><div ui-view="mainContent"><div>'

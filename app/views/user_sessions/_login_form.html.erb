@@ -1,4 +1,8 @@
 <div class="loginForm">
+  <%- unless defined? @flashes_displayed -%>
+    <%= display_standard_flashes %>
+    <%- @flashes_displayed = true -%>
+  <%- end -%>
   <%- if FeatureFlags.derive.use_auth0 # Display auth0 login widget -%>
     <%- url_base = "https://#{CurrentDomain.cname}:#{APP_CONFIG['ssl_port']}" -%>
     <div id="auth0login" style="width: 280px; margin: 10px auto;"></div>
@@ -6,27 +10,17 @@
     <script>
       var lock = new Auth0Lock('<%= AUTH0_ID %>', '<%= AUTH0_URI %>');
       lock.show({
-        container: 'auth0login'
-        , callbackURL: '<%= url_base %>/auth/auth0/callback'
-        , responseType: 'code'
-        , authParams: {
+        container: 'auth0login',
+        callbackURL: '<%= url_base %>/auth/auth0/callback',
+        responseType: 'code',
+        authParams: {
           scope: 'openid profile'
-        }
-        , resetLink: '<%= url_base %>/forgot_password'
-        , signupLink: '<%= url_base %>/signup'
+        },
+        resetLink: '<%= url_base %>/forgot_password',
+        signupLink: '<%= url_base %>/signup'
       });
     </script>
-    <style>
-      #a0-lock .a0-panel {
-        -webkit-box-shadow: 0 0 0 rgba(0,0,0,0);
-        box-shadow: 0 0 0 rgba(0,0,0,0);
-      }
-    </style>
   <%- else # Display legacy Socrata login page -%>
-    <%- unless defined? @flashes_displayed -%>
-      <%= display_standard_flashes %>
-      <%- @flashes_displayed = true -%>
-    <%- end -%>
     <div class="authProvider socrata">
       <span class="iconContainer">
         <span class="icon"></span>

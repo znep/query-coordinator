@@ -27,8 +27,20 @@ class Auth0ControllerTest < ActionController::TestCase
     })
     @request.env['omniauth.auth'] = OmniAuth.config.mock_auth[:auth0]
     get :callback, :protocol => 'https'
+    assert_redirected_to('/500')
     assert_nil(@response.cookies['_core_session_id'])
     assert_nil(@response.cookies['logged_in'])
   end
 
+  test 'a uid not prefixed with "auth0|" should be rejected' do
+    OmniAuth.config.mock_auth[:auth0] = OmniAuth::AuthHash.new({
+      :provider => 'auth0',
+      :uid => 'anotherprovider|abcd-efgh'
+    })
+    @request.env['omniauth.auth'] = OmniAuth.config.mock_auth[:auth0]
+    get :callback, :protocol => 'https'
+    assert_redirected_to('/500')
+    assert_nil(@response.cookies['_core_session_id'])
+    assert_nil(@response.cookies['logged_in'])
+  end
 end

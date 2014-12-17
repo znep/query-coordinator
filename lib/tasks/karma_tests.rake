@@ -45,9 +45,12 @@ namespace :test do
   desc 'Run karma tests in SauceLabs. Accepts CRITICAL_BROWSERS_ONLY=true|false and BROWSER_FAMILIES="comma separated browser names" ENV variables'
   task :karma_sauce do
     env_browser_families = ENV['BROWSER_FAMILIES']
-    browser_families = env_browser_families ?
-      env_browser_families.downcase.split(',').collect(&:strip) :
-      SUPPORTED_BROWSERS.keys()
+    browser_families =
+      if env_browser_families then
+        env_browser_families.downcase.split(',').collect(&:strip)
+      else
+        SUPPORTED_BROWSERS.keys()
+      end
 
     critical_only = ENV['CRITICAL_BROWSERS_ONLY'] == 'true'
 

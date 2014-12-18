@@ -179,11 +179,11 @@ class NewUxBootstrapControllerTest < ActionController::TestCase
       assert(differing_card_types.present?)
 
       assert(page['cards'].any? do |card|
-        card['description'] == 'no cardinality' && card['cardType'] == 'column'
+        card['fieldName'] == 'none' && card['cardType'] == 'column'
       end, 'A column with no cardinality should default to its low-cardinality default')
 
       assert(page['cards'].none? do |card|
-        card['description'] == 'below min cardinality'
+        card['fieldName'] == 'below'
       end, 'too-low cardinality columns should be omitted')
 
       assert(page['cards'].all? { |card| card['cardType'] }, 'Every card should have cardType set')

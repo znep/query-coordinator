@@ -39,7 +39,9 @@
             escapedSection = markdown;
         }
 
-        escapedSection = escapedSection.replace(blist.util.autolinker.urlMatcher, function(url)
+        var urlMatcherSource = blist.util.autolinker.urlMatcher.source;
+        var globalUrlMatcher = new RegExp(urlMatcherSource, "g");
+        escapedSection = escapedSection.replace(globalUrlMatcher, function(url)
         {
             return url.replace(/_/g, "\\_");
         });

@@ -6,6 +6,7 @@ class Auth0ControllerTest < ActionController::TestCase
     init_core_session
     init_current_domain
     OmniAuth.config.test_mode = true
+    @request.env['HTTPS'] = 'on'
   end
 
   test 'a valid uid should create a valid cookie' do

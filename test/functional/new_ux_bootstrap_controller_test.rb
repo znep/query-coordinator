@@ -53,7 +53,7 @@ class NewUxBootstrapControllerTest < ActionController::TestCase
     # Stub out services, so we don't end up trying
     # to connect to external endpoints.
     @page_metadata_manager.stubs(pages_for_dataset: { status: '500', body: {} })
-    @phidippides.stubs(fetch_dataset_metadata: { status: '500', body: {} })
+    @phidippides.stubs(fetch_dataset_metadata: { status: '500', body: {columns: nil} })
 
     get :bootstrap, id: 'four-four'
     assert_not_equal(@response.response_code, 403)
@@ -66,7 +66,7 @@ class NewUxBootstrapControllerTest < ActionController::TestCase
     # Stub out services, so we don't end up trying
     # to connect to external endpoints.
     @page_metadata_manager.stubs(pages_for_dataset: { status: '500', body: {} })
-    @phidippides.stubs(fetch_dataset_metadata: { status: '500', body: {} })
+    @phidippides.stubs(fetch_dataset_metadata: { status: '500', body: {columns: nil} })
 
     get :bootstrap, id: 'four-four'
     assert_not_equal(@response.response_code, 403)
@@ -79,7 +79,7 @@ class NewUxBootstrapControllerTest < ActionController::TestCase
     # Stub out services, so we don't end up trying
     # to connect to external endpoints.
     @page_metadata_manager.stubs(pages_for_dataset: { status: '500', body: {} })
-    @phidippides.stubs(fetch_dataset_metadata: { status: '500', body: {} })
+    @phidippides.stubs(fetch_dataset_metadata: { status: '500', body: {columns: nil} })
 
     get :bootstrap, id: 'four-four'
     assert_not_equal(@response.response_code, 403)
@@ -92,15 +92,61 @@ class NewUxBootstrapControllerTest < ActionController::TestCase
     # Stub out services, so we don't end up trying
     # to connect to external endpoints.
     @page_metadata_manager.stubs(pages_for_dataset: { status: '500', body: {} })
-    @phidippides.stubs(fetch_dataset_metadata: { status: '500', body: {} })
+    @phidippides.stubs(fetch_dataset_metadata: { status: '500', body: {columns: nil} })
 
     get :bootstrap, id: 'four-four'
     assert_not_equal(@response.response_code, 403)
   end
 
-  test 'bootstrap redirects to the last page if the 4x4 already has pages' do
+  test 'bootstrap redirects to the default page if the 4x4 already has a default page' do
     stub_user = stub(roleName: 'administrator')
     @controller.stubs(current_user: stub_user)
+    @phidippides.stubs(fetch_dataset_metadata: { status: '200', body: {defaultPage: 'defa-ultp'} })
+    @page_metadata_manager.stubs(
+      pages_for_dataset: {
+        status: '200', body: { publisher: [
+          { pageId: 'page-xist' },
+          { pageId: 'defa-ultp' },
+          { pageId: 'last-page' }
+        ] }
+      }
+    )
+    get :bootstrap, id: 'four-four'
+    assert_redirected_to('/view/defa-ultp')
+  end
+
+  test 'bootstrap sets & redirects to the default page if the 4x4 only has non-default pages' do
+    stub_user = stub(roleName: 'administrator')
+    @controller.stubs(current_user: stub_user)
+    @phidippides.stubs(:fetch_dataset_metadata).returns({ status: '200', body: {columns: nil} })
+    @phidippides.expects(:update_dataset_metadata).
+      returns({ status: '200' }).
+      with do |dataset_metadata|
+        dataset_metadata[:defaultPage] == 'last-page'
+      end
+
+    @page_metadata_manager.stubs(
+      pages_for_dataset: {
+        status: '200', body: { publisher: [
+          { pageId: 'page-xist' },
+          { pageId: 'last-page' }
+        ] }
+      }
+    )
+    get :bootstrap, id: 'four-four'
+    assert_redirected_to('/view/last-page')
+  end
+
+  test 'bootstrap sets & redirects to a new default page if the current one doesn\'t exist' do
+    stub_user = stub(roleName: 'administrator')
+    @controller.stubs(current_user: stub_user)
+    @phidippides.stubs(:fetch_dataset_metadata).
+      returns({status: '200', body: {defaultPage: 'nnot-xist'}})
+    @phidippides.expects(:update_dataset_metadata).
+      returns({ status: '200' }).
+      with do |dataset_metadata|
+        dataset_metadata[:defaultPage] == 'last-page'
+      end
     @page_metadata_manager.stubs(
       pages_for_dataset: {
         status: '200', body: { publisher: [
@@ -116,6 +162,7 @@ class NewUxBootstrapControllerTest < ActionController::TestCase
   test 'bootstrap redirects to dataset page with error, if page_metadata_manager hates us' do
     stub_user = stub(roleName: 'administrator')
     @controller.stubs(current_user: stub_user)
+    @phidippides.stubs(fetch_dataset_metadata: {status: '200', body: {columns: nil}})
     @page_metadata_manager.stubs(
       pages_for_dataset: { status: '500', body: { error: 'you suck' } }
     )
@@ -127,6 +174,7 @@ class NewUxBootstrapControllerTest < ActionController::TestCase
   test 'bootstrap returns 404 if dataset does not exist' do
     stub_user = stub(roleName: 'administrator')
     @controller.stubs(current_user: stub_user)
+    @phidippides.stubs(fetch_dataset_metadata: {status: '200', body: {columns: nil}})
     @page_metadata_manager.stubs(
       pages_for_dataset: { status: '404', body: [] }
     )
@@ -288,6 +336,7 @@ class NewUxBootstrapControllerTest < ActionController::TestCase
       id: 'data-iden',
       name: 'test dataset',
       description: 'dataset for unit test',
+      defaultPage: 'defa-ultp',
       columns: [{ title: ':system', name: ':system' }] +
         no_cardinality +
         below_minimum_cardinality +

@@ -10,18 +10,35 @@ class NewUxBootstrapController < ActionController::Base
       reason: "User must be one of these roles: #{ALLOWED_ROLES.join(', ')}"
     }, :status => :forbidden unless has_rights?
 
+    # Grab the dataset metadata, for default page info and column/cardinality information
+    if !dataset_metadata
+      return render :nothing => true, :status => 404
+    end
+
+
     # Grab the page 4x4s associated with this dataset id
-    pages = page_metadata_manager.pages_for_dataset(
+    pages_response = page_metadata_manager.pages_for_dataset(
       params[:id],
       :request_id => request_id,
       :cookies => forwardable_session_cookies
     )
 
-    case pages[:status]
+    case pages_response[:status]
     when '200'
       # If has page ids already, redirect to them
-      if pages.try(:[], :body).try(:[], :publisher).present?
-        return redirect_to "/view/#{pages[:body][:publisher].last[:pageId]}"
+      pages = pages_response.try(:[], :body).try(:[], :publisher)
+      if pages.present?
+        default_page = nil
+        if dataset_metadata[:defaultPage]
+          default_page = pages.find { |page| page[:pageId] == dataset_metadata[:defaultPage] }
+        end
+
+        if default_page
+          return redirect_to "/view/#{default_page[:pageId]}"
+        else
+          set_default_page(dataset_metadata, pages.last[:pageId])
+          return redirect_to "/view/#{pages.last[:pageId]}"
+        end
       end
     when '404'
       # do nothing - let it fall through
@@ -30,25 +47,16 @@ class NewUxBootstrapController < ActionController::Base
         :error_class => "BootstrapUXFailure",
         :error_message => "Dataset #{params[:id]} failed to return pages for bootstrapping.",
         :request => { :params => params },
-        :context => { :pages_response => pages }
+        :context => { :pages_response => pages_response }
       )
       Rails.logger.error("Dataset #{params[:id]} failed to return pages for bootstrapping. " +
-                         "#{pages[:status]} #{pages[:body]}")
+                         "#{pages_response[:status]} #{pages_response[:body]}")
       flash[:error] = I18n.t('screens.ds.new_ux_error')
       return redirect_to action: 'show', controller: 'datasets'
     end
 
-    # Grab the dataset metadata and use the cardinality to create cards
-    dataset_metadata_result = phidippides.fetch_dataset_metadata(
-      params[:id],
-      :request_id => request_id,
-      :cookies => forwardable_session_cookies
-    )
-    if dataset_metadata_result[:status] != '200' || dataset_metadata_result.try(:[], :body).blank?
-      return render :nothing => true, :status => 404
-    end
 
-    newux_page = create_new_ux_page(dataset_metadata_result[:body])
+    newux_page = create_new_ux_page(dataset_metadata)
 
     page_creation_result = page_metadata_manager.create(
       newux_page,
@@ -68,7 +76,11 @@ class NewUxBootstrapController < ActionController::Base
       return redirect_to action: 'show', controller: 'datasets'
     end
 
-    return redirect_to "/view/#{page_creation_result[:body][:pageId]}"
+    page_id = page_creation_result[:body][:pageId]
+
+    # Set the default page to this page we just created.
+    set_default_page(dataset_metadata, page_id)
+    return redirect_to "/view/#{page_id}"
   end
 
   private
@@ -80,12 +92,12 @@ class NewUxBootstrapController < ActionController::Base
   # An arbitrary number of cards to create, if there are that many columns available
   MAX_NUMBER_OF_CARDS = 10
 
-  def create_new_ux_page(dataset_metadata)
+  def create_new_ux_page(new_dataset_metadata)
     # Keep track of the types of cards we added, so we can give a spread
     added_card_types = Set.new
     skipped_cards_by_type = Hash.new { |h, k| h[k] = [] }
 
-    cards = dataset_metadata[:columns].map do |column|
+    cards = new_dataset_metadata[:columns].map do |column|
       unless Phidippides::SYSTEM_COLUMN_ID_REGEX.match(column[:name])
         card_type = card_type_for(column)
         if card_type
@@ -123,11 +135,23 @@ class NewUxBootstrapController < ActionController::Base
     end
 
     {
-      'datasetId' => dataset_metadata[:id],
-      'name' => dataset_metadata[:name],
-      'description' => dataset_metadata[:description],
+      'datasetId' => new_dataset_metadata[:id],
+      'name' => new_dataset_metadata[:name],
+      'description' => new_dataset_metadata[:description],
       'cards' => cards
     }
+  end
+
+  def set_default_page(new_dataset_metadata, page_id)
+    # Set the last page to be the default page
+    new_dataset_metadata[:defaultPage] = page_id
+    # Send a request to phidippides to set the default page.
+    result = phidippides.update_dataset_metadata(new_dataset_metadata)
+    if result[:status] != '200'
+      # It's more important to do a redirect than it is to save the default page, so just log it.
+      Rails.logger.warn('Error saving new default page for ' +
+                        "dataset_id=#{params[:id]}, page_id=#{page_id}: #{result}")
+    end
   end
 
   def dataset

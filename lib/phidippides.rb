@@ -106,8 +106,7 @@ class Phidippides < SocrataHttp
     )
   end
 
-  def update_dataset_metadata(data, options = {})
-    json = JSON.parse(data)
+  def update_dataset_metadata(json, options = {})
     issue_request(
       :verb => :put,
       :path => "datasets/#{json['id']}",

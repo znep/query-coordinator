@@ -27,7 +27,7 @@ class Auth0ControllerTest < ActionController::TestCase
     })
     @request.env['omniauth.auth'] = OmniAuth.config.mock_auth[:auth0]
     get :callback, :protocol => 'https'
-    assert_redirected_to('/500')
+    assert_response(:error)
     assert_nil(@response.cookies['_core_session_id'])
     assert_nil(@response.cookies['logged_in'])
   end
@@ -39,7 +39,7 @@ class Auth0ControllerTest < ActionController::TestCase
     })
     @request.env['omniauth.auth'] = OmniAuth.config.mock_auth[:auth0]
     get :callback, :protocol => 'https'
-    assert_redirected_to('/500')
+    assert_response(:error)
     assert_nil(@response.cookies['_core_session_id'])
     assert_nil(@response.cookies['logged_in'])
   end

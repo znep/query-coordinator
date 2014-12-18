@@ -14,7 +14,7 @@ class Auth0Controller < ApplicationController
       # Do some primitive validation on the returned UID
       if uid.nil? || !uid.match(/^\w{4}-\w{4}$/)
         Rails.logger.error("Invalid UID returned from Auth0: #{uid}")
-        redirect_to '/500'
+        render_500
       else # UID is of the form xxxx-xxxx
         Rails.logger.info("Successful Auth0 login with UID: #{uid}")
         cookies[:_core_session_id] = gen_cookie(uid)
@@ -23,7 +23,7 @@ class Auth0Controller < ApplicationController
       end
     else
       Rails.logger.error("Invalid provider/UID pair returned from Auth0: #{session[:userinfo][:uid]}")
-      redirect_to '/500'
+      render_500
     end
   end
 

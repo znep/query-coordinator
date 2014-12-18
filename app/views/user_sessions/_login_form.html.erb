@@ -3,7 +3,7 @@
     <%= display_standard_flashes %>
     <%- @flashes_displayed = true -%>
   <%- end -%>
-  <%- if FeatureFlags.derive.use_auth0 # Display auth0 login widget -%>
+  <%- if FeatureFlags.derive.use_auth0 && AUTH0_CONFIGURED # Display auth0 login widget-%>
     <%- url_base = "https://#{CurrentDomain.cname}:#{APP_CONFIG['ssl_port']}" -%>
     <div id="auth0login" style="width: 280px; margin: 10px auto;"></div>
     <script src="https://cdn.auth0.com/js/lock-6.2.min.js"></script>

@@ -355,9 +355,11 @@ Frontend::Application.routes do
     match '/reset_password/:uid/:reset_code', :to => 'accounts#reset_password', :as => 'reset_password',
       :conditions => {:uid => UID_REGEXP}
 
-    scope :protocol => 'https' do
-      match '/auth/auth0/callback' => 'auth0#callback'
-      match '/auth/failure' => 'auth0#failure'
+    if AUTH0_CONFIGURED
+      scope :protocol => 'https' do
+        match '/auth/auth0/callback' => 'auth0#callback'
+        match '/auth/failure' => 'auth0#failure'
+      end
     end
 
     scope :protocol => "https", :port => APP_CONFIG['ssl_port'] || 443 do

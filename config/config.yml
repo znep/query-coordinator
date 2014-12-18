@@ -54,6 +54,9 @@ development:
 test:
   metrics_dir: tmp/metriclogs
   <<: *default
+  auth0_uri: exists
+  auth0_id: exists
+  auth0_secret: exists
 
 # test.socrata.com
 staging:

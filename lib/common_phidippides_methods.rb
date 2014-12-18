@@ -37,6 +37,20 @@ module CommonPhidippidesMethods
     @current_user_session = user_session
   end
 
+  def dataset_metadata
+    return @dataset_metadata if defined? @dataset_metadata
+    result = phidippides.fetch_dataset_metadata(
+      params[:id],
+      :request_id => request_id,
+      :cookies => forwardable_session_cookies
+    )
+    if result[:status] != '200' || result.try(:[], :body).blank?
+      @dataset_metadata = nil
+    else
+      @dataset_metadata = result[:body]
+    end
+  end
+
   private
 
   def hook_auth_controller

@@ -63,7 +63,7 @@ class PhidippidesDatasetsController < ActionController::Base
 
     respond_to do |format|
       begin
-        result = phidippides.update_dataset_metadata(params[:datasetMetadata], :request_id => request_id, :cookies => forwardable_session_cookies)
+        result = phidippides.update_dataset_metadata(JSON.parse(params[:datasetMetadata]), :request_id => request_id, :cookies => forwardable_session_cookies)
         format.json { render :json => result[:body], :status => result[:status] }
       rescue Phidippides::ConnectionError
         format.json { render :json => { body: 'Phidippides connection error' }, status: 500 }

@@ -85,7 +85,7 @@ class PhidippidesTest < Test::Unit::TestCase
 
   def test_update_dataset_metadata
     prepare_stubs(body: dataset_metadata, path: 'datasets/q77b-s2zi', verb: :put, request_body: dataset_metadata)
-    result = phidippides.update_dataset_metadata(dataset_metadata.to_json, request_id: 'request_id')
+    result = phidippides.update_dataset_metadata(dataset_metadata, request_id: 'request_id')
     assert_equal(dataset_metadata, result[:body])
   end
 

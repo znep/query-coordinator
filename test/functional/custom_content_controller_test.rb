@@ -96,6 +96,7 @@ class CustomContentControllerTest < ActionController::TestCase
   end
 
   test 'Render Page With DataSet' do
+    load_sample_data('test/fixtures/sample-data.json')
     prepare_page(fixture = 'test/fixtures/pie-charts-and-repeaters.json', anonymous = true)
     get :page, :path => 'pie-repeat'
     assert_response :success

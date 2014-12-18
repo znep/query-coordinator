@@ -17,7 +17,7 @@ class Auth0Controller < ApplicationController
         render_500
       else # UID is of the form xxxx-xxxx
         Rails.logger.info("Successful Auth0 login with UID: #{uid}")
-        cookies[:_core_session_id] = gen_cookie(uid)
+        cookies[:_core_session_id] = {value: "#{gen_cookie(uid)}", secure: true}
         cookies[:logged_in] = true
         redirect_to '/profile'
       end

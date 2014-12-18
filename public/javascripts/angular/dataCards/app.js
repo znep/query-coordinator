@@ -17,9 +17,13 @@ if (window['socrataConfig'].enableAirbrakeJs) {
 
 var dataCards = angular.module('dataCards', dependencies);
 
-dataCards.config(function(ServerConfig) {
+dataCards.config(function(ServerConfig, $httpProvider) {
   ServerConfig.setup(window['socrataConfig']);
   delete window['socrataConfig'];
+
+  // Automatically add the app token header to requests done through $http.
+  // NOTE: This does not work for requests made through some other means.
+  $httpProvider.defaults.headers.common['X-App-Token'] = ServerConfig.get('dataCardsAppToken');
 });
 
 /**
@@ -76,7 +80,7 @@ dataCards.run(function($window, $rootScope, Analytics) {
 dataCards.config(function($provide, $stateProvider, $urlRouterProvider, $locationProvider) {
   $stateProvider.
     state('404', {
-      template: '<h1>404</h1>You probably wanted something, but have this kitten instead: <br /><soc-kitten w="800" h="600"></soc-kitten>'
+      templateUrl: '/404'
     }).
     state('view', {
       template: '<!--Overall chrome--><div ui-view="mainContent"><div>'

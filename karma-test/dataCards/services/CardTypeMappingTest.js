@@ -95,7 +95,8 @@
     var column = {
       physicalDatatype: testCase.physical,
       logicalDatatype: testCase.logical,
-      name: '{0} {1}'.format(testCase.logical, testCase.physical)
+      name: '{0} {1}'.format(testCase.logical, testCase.physical),
+      cardinality: testCase.cardinality || 15
     };
     return column;
   }
@@ -116,27 +117,47 @@
 
     beforeEach(inject(function($injector) {
       ServerConfig = $injector.get('ServerConfig');
+      var serverMocks = $injector.get('serverMocks');
       // We need to simulate the Feature Map feature flag being turned on
       // in order to test card type mappings to feature maps.
       ServerConfig.setup({
         'oduxEnableFeatureMap': true,
-        'oduxCardTypeMapping': {"amount":{"boolean":{"lowCardinalityDefault":null,"highCardinalityDefault":null,"available":[]},"fixed_timestamp":{"lowCardinalityDefault":null,"highCardinalityDefault":null,"available":[]},"floating_timestamp":{"lowCardinalityDefault":null,"highCardinalityDefault":null,"available":[]},"geo_entity":{"lowCardinalityDefault":null,"highCardinalityDefault":null,"available":[]},"money":{"lowCardinalityDefault":null,"highCardinalityDefault":null,"available":[]},"number":{"lowCardinalityDefault":null,"highCardinalityDefault":null,"available":[]},"point":{"lowCardinalityDefault":null,"highCardinalityDefault":null,"available":[]},"text":{"lowCardinalityDefault":null,"highCardinalityDefault":null,"available":[]},"timestamp":{"lowCardinalityDefault":null,"highCardinalityDefault":null,"available":[]},"*":{"lowCardinalityDefault":"table","highCardinalityDefault":"table","available":["table"]}},"category":{"boolean":{"lowCardinalityDefault":"column","highCardinalityDefault":"column","available":["column"]},"fixed_timestamp":{"lowCardinalityDefault":"column","highCardinalityDefault":"column","available":["column"]},"floating_timestamp":{"lowCardinalityDefault":"column","highCardinalityDefault":"column","available":["column"]},"geo_entity":{"lowCardinalityDefault":null,"highCardinalityDefault":null,"available":[]},"money":{"lowCardinalityDefault":"column","highCardinalityDefault":"column","available":["column"]},"number":{"lowCardinalityDefault":"column","highCardinalityDefault":"search","available":["column","search"]},"point":{"lowCardinalityDefault":null,"highCardinalityDefault":null,"available":[]},"text":{"lowCardinalityDefault":"column","highCardinalityDefault":"search","available":["column","search"]},"timestamp":{"lowCardinalityDefault":"column","highCardinalityDefault":"column","available":["column"]},"*":{"lowCardinalityDefault":"table","highCardinalityDefault":"table","available":["table"]}},"identifier":{"boolean":{"lowCardinalityDefault":null,"highCardinalityDefault":null,"available":[]},"fixed_timestamp":{"lowCardinalityDefault":"timeline","highCardinalityDefault":"timeline","available":["timeline"]},"floating_timestamp":{"lowCardinalityDefault":"timeline","highCardinalityDefault":"timeline","available":["timeline"]},"geo_entity":{"lowCardinalityDefault":null,"highCardinalityDefault":null,"available":[]},"money":{"lowCardinalityDefault":"search","highCardinalityDefault":"search","available":["search"]},"number":{"lowCardinalityDefault":"search","highCardinalityDefault":"search","available":["column","search"]},"point":{"lowCardinalityDefault":null,"highCardinalityDefault":null,"available":[]},"text":{"lowCardinalityDefault":"search","highCardinalityDefault":"search","available":["column","search"]},"timestamp":{"lowCardinalityDefault":"timeline","highCardinalityDefault":"timeline","available":["timeline"]},"*":{"lowCardinalityDefault":"table","highCardinalityDefault":"table","available":["table"]}},"location":{"boolean":{"lowCardinalityDefault":null,"highCardinalityDefault":null,"available":[]},"fixed_timestamp":{"lowCardinalityDefault":null,"highCardinalityDefault":null,"available":[]},"floating_timestamp":{"lowCardinalityDefault":null,"highCardinalityDefault":null,"available":[]},"geo_entity":{"lowCardinalityDefault":null,"highCardinalityDefault":null,"available":[]},"money":{"lowCardinalityDefault":null,"highCardinalityDefault":null,"available":[]},"number":{"lowCardinalityDefault":"choropleth","highCardinalityDefault":"choropleth","available":["choropleth"]},"point":{"lowCardinalityDefault":"feature","highCardinalityDefault":"feature","available":["feature"]},"text":{"lowCardinalityDefault":null,"highCardinalityDefault":null,"available":[]},"timestamp":{"lowCardinalityDefault":null,"highCardinalityDefault":null,"available":[]},"*":{"lowCardinalityDefault":"table","highCardinalityDefault":"table","available":["table"]}},"name":{"boolean":{"lowCardinalityDefault":null,"highCardinalityDefault":null,"available":[]},"fixed_timestamp":{"lowCardinalityDefault":"timeline","highCardinalityDefault":"timeline","available":["timeline"]},"floating_timestamp":{"lowCardinalityDefault":"timeline","highCardinalityDefault":"timeline","available":["timeline"]},"geo_entity":{"lowCardinalityDefault":null,"highCardinalityDefault":null,"available":[]},"money":{"lowCardinalityDefault":"search","highCardinalityDefault":"search","available":["search"]},"number":{"lowCardinalityDefault":"search","highCardinalityDefault":"search","available":["column","search"]},"point":{"lowCardinalityDefault":null,"highCardinalityDefault":null,"available":[]},"text":{"lowCardinalityDefault":"search","highCardinalityDefault":"search","available":["column","search"]},"timestamp":{"lowCardinalityDefault":"timeline","highCardinalityDefault":"timeline","available":["timeline"]},"*":{"lowCardinalityDefault":"table","highCardinalityDefault":"table","available":["table"]}},"text":{"boolean":{"lowCardinalityDefault":null,"highCardinalityDefault":null,"available":[]},"fixed_timestamp":{"lowCardinalityDefault":"timeline","highCardinalityDefault":"timeline","available":["timeline"]},"floating_timestamp":{"lowCardinalityDefault":"timeline","highCardinalityDefault":"timeline","available":["timeline"]},"geo_entity":{"lowCardinalityDefault":null,"highCardinalityDefault":null,"available":[]},"money":{"lowCardinalityDefault":"search","highCardinalityDefault":"search","available":["search"]},"number":{"lowCardinalityDefault":"search","highCardinalityDefault":"search","available":["column","search"]},"point":{"lowCardinalityDefault":null,"highCardinalityDefault":null,"available":[]},"text":{"lowCardinalityDefault":"search","highCardinalityDefault":"search","available":["column","search"]},"timestamp":{"lowCardinalityDefault":"timeline","highCardinalityDefault":"timeline","available":["timeline"]},"*":{"lowCardinalityDefault":"table","highCardinalityDefault":"table","available":["table"]}},"time":{"boolean":{"lowCardinalityDefault":null,"highCardinalityDefault":null,"available":[]},"fixed_timestamp":{"lowCardinalityDefault":"timeline","highCardinalityDefault":"timeline","available":["timeline"]},"floating_timestamp":{"lowCardinalityDefault":"timeline","highCardinalityDefault":"timeline","available":["timeline"]},"geo_entity":{"lowCardinalityDefault":null,"highCardinalityDefault":null,"available":[]},"money":{"lowCardinalityDefault":"timeline","highCardinalityDefault":"timeline","available":["timeline"]},"number":{"lowCardinalityDefault":"timeline","highCardinalityDefault":"timeline","available":["timeline"]},"point":{"lowCardinalityDefault":null,"highCardinalityDefault":null,"available":[]},"text":{"lowCardinalityDefault":null,"highCardinalityDefault":null,"available":[]},"timestamp":{"lowCardinalityDefault":"timeline","highCardinalityDefault":"timeline","available":["timeline"]},"*":{"lowCardinalityDefault":"table","highCardinalityDefault":"table","available":["table"]}},"*":{"boolean":{"lowCardinalityDefault":null,"highCardinalityDefault":null,"available":[]},"fixed_timestamp":{"lowCardinalityDefault":null,"highCardinalityDefault":null,"available":[]},"floating_timestamp":{"lowCardinalityDefault":null,"highCardinalityDefault":null,"available":[]},"geo_entity":{"lowCardinalityDefault":null,"highCardinalityDefault":null,"available":[]},"money":{"lowCardinalityDefault":null,"highCardinalityDefault":null,"available":[]},"number":{"lowCardinalityDefault":null,"highCardinalityDefault":null,"available":[]},"point":{"lowCardinalityDefault":null,"highCardinalityDefault":null,"available":[]},"text":{"lowCardinalityDefault":null,"highCardinalityDefault":null,"available":[]},"timestamp":{"lowCardinalityDefault":null,"highCardinalityDefault":null,"available":[]},"*":{"lowCardinalityDefault":"table","highCardinalityDefault":"table","available":["table"]}},":version":"0.2"}
+        'oduxCardTypeMapping': serverMocks.CARD_TYPE_MAPPING
       });
       CardTypeMapping = $injector.get('CardTypeMapping');
       $exceptionHandler = $injector.get('$exceptionHandler');
     }));
 
-    _.each(mapping, function(testCase) {
-      var column = createColumn(testCase);
-      describe('when encountering the physical/logical datatype pairing "{1}"/"{0}"'.format(testCase.physical, testCase.logical), function() {
-        describe('using defaultVisualizationForColumn', function() {
+    describe('defaultVisualizationForColumn', function() {
+      _.each(mapping, function(testCase) {
+        var column = createColumn(testCase);
+        describe('when encountering the physical/logical datatype pairing "{1}"/"{0}"'.
+                 format(testCase.physical, testCase.logical), function() {
           it('should return {0}'.format(testCase.expectedDefault), function() {
-            expect(CardTypeMapping.defaultVisualizationForColumn(column)).to.equal(testCase.expectedDefault);
+            expect(CardTypeMapping.defaultVisualizationForColumn(column)).
+              to.equal(testCase.expectedDefault);
           });
         });
-        describe('using visualizationSupportedForColumn', function() {
+      });
+
+      it('should return null for columns with cardinality less than the minimum', function() {
+        var column = createColumn({
+          physical: 'number',
+          logical: 'category',
+          cardinality: 1
+        });
+        expect(CardTypeMapping.defaultVisualizationForColumn(column)).to.equal(null);
+      });
+    });
+
+    describe('visualizationSupportedForColumn', function() {
+      _.each(mapping, function(testCase) {
+        var column = createColumn(testCase);
+        describe('when encountering the physical/logical datatype pairing "{1}"/"{0}"'.
+                 format(testCase.physical, testCase.logical), function() {
           it('should return {0}'.format(testCase.supported), function () {
-            expect(CardTypeMapping.visualizationSupportedForColumn(column)).to.equal(testCase.supported);
+            expect(CardTypeMapping.visualizationSupportedForColumn(column)).
+              to.equal(testCase.supported);
           });
         });
       });

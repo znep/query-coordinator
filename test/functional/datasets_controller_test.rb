@@ -17,6 +17,7 @@ class DatasetsControllerTest < ActionController::TestCase
   # https://opendata.test-socrata.com/dataset/28-Formwidtest/zwjk-24g6.json?text=1
   # should redirect to https://opendata.test-socrata.com/resource/zwjk-24g6.json?text=1
   test 'redirects to format URLs include query string parameters' do
+    load_sample_data('test/fixtures/sample-data.json')
     @user = login
     get :show, { :id => @view.id, :format => 'json' }.merge(@params)
     assert_redirected_to resource_url({:id => @view.id, :format => 'json'}.merge(@params.except('controller')))

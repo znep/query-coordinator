@@ -5,12 +5,10 @@ class NewUxBootstrapController < ActionController::Base
 
   def bootstrap
     # Check to make sure they have permission to create a page
-    allowed_roles = %w(administrator publisher)
-    has_permission = current_user && allowed_roles.include?(current_user.roleName) && has_rights?
     return render :json => {
       error: true,
-      reason: "User must be one of these roles: #{allowed_roles.join(', ')}"
-    }, :status => :forbidden unless has_permission
+      reason: "User must be one of these roles: #{ALLOWED_ROLES.join(', ')}"
+    }, :status => :forbidden unless has_rights?
 
     # Grab the page 4x4s associated with this dataset id
     pages = page_metadata_manager.pages_for_dataset(
@@ -65,8 +63,7 @@ class NewUxBootstrapController < ActionController::Base
         :request => { :params => params },
         :context => { :page_creation_result => page_creation_result }
       )
-      Rails.logger.error("Error creating page for dataset #{params[:id]}: " +
-                         "#{page_creation_result[:status]} #{page_creation_result[:body]}")
+      Rails.logger.error("Error creating page for dataset #{params[:id]}: #{page_creation_result}")
       flash[:error] = I18n.t('screens.ds.new_ux_error')
       return redirect_to action: 'show', controller: 'datasets'
     end
@@ -76,18 +73,54 @@ class NewUxBootstrapController < ActionController::Base
 
   private
 
+  include CardTypeMapping
+  require 'set'
+
+  ALLOWED_ROLES = %w(administrator publisher)
+  # An arbitrary number of cards to create, if there are that many columns available
+  MAX_NUMBER_OF_CARDS = 10
+
   def create_new_ux_page(dataset_metadata)
-    # TODO: filter based on available card types & cardinality
+    # Keep track of the types of cards we added, so we can give a spread
+    added_card_types = Set.new
+    skipped_cards_by_type = Hash.new { |h, k| h[k] = [] }
+
     cards = dataset_metadata[:columns].map do |column|
       unless Phidippides::SYSTEM_COLUMN_ID_REGEX.match(column[:name])
-        card = PageMetadataManager::CARD_TEMPLATE.deep_dup
-        card.merge!(
-          'description' => column[:title],
-          'fieldName' => column[:name],
-          'cardinality' => column[:cardinality],
-        )
+        card_type = card_type_for(column)
+        if card_type
+          card = PageMetadataManager::CARD_TEMPLATE.deep_dup
+          card.merge!(
+            'description' => column[:title],
+            'fieldName' => column[:name],
+            'cardinality' => column[:cardinality],
+            'cardType' => card_type,
+          )
+
+          if added_card_types.add?(card_type)
+            card
+          else
+            skipped_cards_by_type[card_type] << card
+            nil
+          end
+        end
       end
-    end.compact.first(9) # 9 cards, + the table card
+    end.compact
+
+    if cards.length < MAX_NUMBER_OF_CARDS
+      # skipped_cards is an array of arrays, grouped by card type
+      skipped_cards = skipped_cards_by_type.values
+      # Find the card type with the most cards (to facilitate the zip operation)
+      most_cards_of_this_type = skipped_cards.max_by(&:length)
+      # Interleave the cards of different types, for the best variety
+      interleaved_cards = most_cards_of_this_type.zip(*skipped_cards.select do |cards|
+        cards != most_cards_of_this_type
+      end).flatten(1).compact
+      # Fill out the rest of the cards for the page
+      cards = cards.concat(interleaved_cards.first(MAX_NUMBER_OF_CARDS - cards.length))
+    else
+      cards = cards.first(MAX_NUMBER_OF_CARDS)
+    end
 
     {
       'datasetId' => dataset_metadata[:id],
@@ -99,6 +132,13 @@ class NewUxBootstrapController < ActionController::Base
 
   def dataset
     View.find(params[:id])
+  end
+
+  def has_rights?
+    current_user && (ALLOWED_ROLES.include?(current_user.roleName) ||
+                     current_user.is_owner?(dataset) ||
+                     current_user.is_admin?
+                    )
   end
 end
 

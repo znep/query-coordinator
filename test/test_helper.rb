@@ -3,27 +3,6 @@ require File.expand_path('../../config/environment', __FILE__)
 require 'rails/test_help'
 require 'minitest/autorun'
 
-module CoreServer
-  class Connection
-    cattr_accessor :data
-
-    def _get_request(path, custom_headers = {}, use_batching = false, is_anon = false)
-      @@data ||= {}
-      @@data["get_request"]
-    end
-
-    def _create_request(path, payload = "{}", custom_headers = {}, cache_req = false, use_batching = false, is_anon = false)
-      @@data ||= {}
-      @@data["create_request"]
-    end
-
-    def self.set_data(key, val)
-      @@data ||= {}
-      @@data[key] = val
-    end
-  end
-end
-
 # Add more helper methods to be used by all tests here...
 module TestHelperMethods
 
@@ -94,11 +73,7 @@ module TestHelperMethods
   def load_sample_data(file)
     sample_data = JSON::parse(File.open(file).read)
     sample_data.each do |k, v|
-      CoreServer::Connection.set_data(k, v.to_json)
-    end
-    CoreServer::Connection.class_eval do
-      alias_method :get_request, :_get_request
-      alias_method :create_request, :_create_request
+      CoreServer::Connection.any_instance.stubs(k).returns(v.to_json)
     end
   end
 

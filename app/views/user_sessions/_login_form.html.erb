@@ -3,14 +3,33 @@
     <%= display_standard_flashes %>
     <%- @flashes_displayed = true -%>
   <%- end -%>
-  <div class="authProvider socrata">
-    <span class="iconContainer">
-      <span class="icon"></span>
-    </span>
-    <span class="description"><%= t('screens.sign_in.prompt_html') %></span>
-    <p class="loginTips"><%= t('screens.sign_in.tips_html') %></p>
-  </div>
-  <%= form_for @user_session do |f| %>
-    <%= render :partial => 'user_sessions/login_form_data', :locals => {:f => f} %>
+  <%- if FeatureFlags.derive.use_auth0 && AUTH0_CONFIGURED # Display auth0 login widget-%>
+    <%- url_base = "https://#{CurrentDomain.cname}:#{APP_CONFIG['ssl_port']}" -%>
+    <div id="auth0login" style="width: 280px; margin: 10px auto;"></div>
+    <script src="https://cdn.auth0.com/js/lock-6.2.min.js"></script>
+    <script>
+      var lock = new Auth0Lock('<%= AUTH0_ID %>', '<%= AUTH0_URI %>');
+      lock.show({
+        container: 'auth0login',
+        callbackURL: '<%= url_base %>/auth/auth0/callback',
+        responseType: 'code',
+        authParams: {
+          scope: 'openid profile'
+        },
+        resetLink: '<%= url_base %>/forgot_password',
+        signupLink: '<%= url_base %>/signup'
+      });
+    </script>
+  <%- else # Display legacy Socrata login page -%>
+    <div class="authProvider socrata">
+      <span class="iconContainer">
+        <span class="icon"></span>
+      </span>
+      <span class="description"><%= t('screens.sign_in.prompt_html') %></span>
+      <p class="loginTips"><%= t('screens.sign_in.tips_html') %></p>
+    </div>
+    <%= form_for @user_session do |f| %>
+      <%= render :partial => 'user_sessions/login_form_data', :locals => {:f => f} %>
+    <%- end -%>
   <%- end -%>
 </div>

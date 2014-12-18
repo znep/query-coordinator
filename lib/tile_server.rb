@@ -7,6 +7,7 @@ class TileServer < SocrataHttp
   def fetch_tile(options)
     issue_request(
       :verb => :get,
+      :app_token => options['$$app_token'],
       :request_id => options[:request_id],
       :cookies => options[:cookies],
       :path => path(

@@ -15,8 +15,6 @@
 
       'TRANSITION_DURATION': 0.5,
 
-      'CARD_TYPE_MAPPING_CARDINALITY_THRESHOLD': 100,
-
       // Dataset field names and internal calculated values.
       'INTERNAL_DATASET_FEATURE_ID': '_feature_id',
       'UNFILTERED_VALUE_PROPERTY_NAME': '__SOCRATA_UNFILTERED_VALUE__',

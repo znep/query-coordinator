@@ -1,7 +1,7 @@
 (function() {
   'use strict';
 
-  function CardTypeMapping(ServerConfig, Constants, $exceptionHandler, $log) {
+  function CardTypeMapping(ServerConfig, $exceptionHandler, $log) {
 
     function getCardTypesForColumn(column) {
 
@@ -28,9 +28,9 @@
       physicalDatatype = column.physicalDatatype;
       logicalDatatype = column.logicalDatatype;
 
-      if (cardTypeMapping.hasOwnProperty(logicalDatatype) &&
-          cardTypeMapping[logicalDatatype].hasOwnProperty(physicalDatatype)) {
-        cardType = cardTypeMapping[logicalDatatype][physicalDatatype];
+      if (cardTypeMapping.map.hasOwnProperty(logicalDatatype) &&
+          cardTypeMapping.map[logicalDatatype].hasOwnProperty(physicalDatatype)) {
+        cardType = cardTypeMapping.map[logicalDatatype][physicalDatatype];
       } else {
         warnOnceOnUnknownCardType(logicalDatatype, physicalDatatype);
       }
@@ -39,44 +39,12 @@
 
     }
 
-    function getDefaultVisualizationForColumn(column) {
-
-      var cardTypes = getCardTypesForColumn(column);
-      var cardinality;
-      var defaultType;
-
-      // If there is no defined card type, fail early with a null result.
-      if (cardTypes === null) {
-        return null;
-      }
-
-      // If the cardinality is known for this column and it is within the bounds
-      // of safe integers, use the column's cardinality. Otherwise, fall back to 0.
-      if (!column.hasOwnProperty('cardinality') ||
-          column.cardinality < Number.MIN_SAFE_INTEGER ||
-          column.cardinality > Number.MAX_SAFE_INTEGER) {
-        cardinality = 0;
-      } else {
-        cardinality = parseInt(column.cardinality, 10);
-      }
-
-      // Finally, determine which type to which we will map based on the column's cardinality.
-      if (cardinality <= parseInt(Constants['CARD_TYPE_MAPPING_CARDINALITY_THRESHOLD'], 10)) {
-        defaultType = cardTypes.lowCardinalityDefault;
-      } else {
-        defaultType = cardTypes.highCardinalityDefault;
-      }
-
-      return defaultType;
-
-    }
-
     function getDefaultCardTypeForModel(cardModel) {
 
       // TODO: how would I reactify this?
       var columns = cardModel.page.getCurrentValue('dataset').getCurrentValue('columns');
       var column = columns[cardModel.fieldName];
-      return getDefaultVisualizationForColumn(column);
+      return defaultVisualizationForColumn(column);
 
     }
 
@@ -113,13 +81,13 @@
      *
      */
 
-     function availableVisualizationsForColumn(column) {
+    function availableVisualizationsForColumn(column) {
       var cardTypes = getCardTypesForColumn(column);
       if (cardTypes === null) {
         return [];
       }
       return cardTypes.available;
-     }
+    }
 
     /**
      *
@@ -128,9 +96,28 @@
      *
      */
 
-     function defaultVisualizationForColumn(column) {
-       return getDefaultVisualizationForColumn(column);
-     }
+    function defaultVisualizationForColumn(column) {
+
+      var cardTypes = getCardTypesForColumn(column);
+
+      // If there is no defined card type, we shouldn't show a card for this column.
+      if (cardTypes === null) {
+        return null;
+      }
+
+      // If the cardinality is not known for this column, fall back to the minimum cardinality.
+      var cardinality = column.cardinality || cardTypeMapping.cardinality.min;
+
+      // Otherwise, determine which type to which we will map based on the column's cardinality.
+      if (cardinality < cardTypeMapping.cardinality.min) {
+        // Don't show cards for columns that don't have varying data.
+        return null;
+      } else if (cardinality < cardTypeMapping.cardinality.threshold) {
+        return cardTypes.lowCardinalityDefault;
+      } else {
+        return cardTypes.highCardinalityDefault;
+      }
+    }
 
     /**
      *
@@ -140,7 +127,7 @@
      */
 
     function visualizationSupportedForColumn(column) {
-      return CARD_TYPES.hasOwnProperty(getDefaultVisualizationForColumn(column));
+      return CARD_TYPES.hasOwnProperty(defaultVisualizationForColumn(column));
     }
 
     /**

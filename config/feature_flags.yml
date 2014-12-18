@@ -73,3 +73,6 @@ enable_opendata_ga_tracking:
 data_cards_app_token:
   description: The SODA application token to be used by the dataCards app.
   defaultValue: zvQamMSTi4GNuZWWDwjLdLPhW
+use_auth0:
+  description: Force use of Auth0 to authenticate users. DO NOT ENABLE ON ANY ENVIRONMENT OTHER THAN STAGING OR LOCAL.
+  defaultValue: false

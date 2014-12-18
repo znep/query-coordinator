@@ -46,11 +46,17 @@ development:
   tileserver_port: 2048
   polaroid_hostname: localhost
   polaroid_port: 1337
+# auth0_uri: <auth0-account>.auth0.com
+# auth0_id: <auth0-provided-id>
+# auth0_secret: <auth0-provided-secret>
 
 # Running unit tests; NOT test.socrata.com
 test:
   metrics_dir: tmp/metriclogs
   <<: *default
+  auth0_uri: exists
+  auth0_id: exists
+  auth0_secret: exists
 
 # test.socrata.com
 staging:

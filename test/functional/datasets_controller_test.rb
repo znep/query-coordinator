@@ -66,6 +66,7 @@ class DatasetsControllerTest < ActionController::TestCase
 
   test 'redirects to homepage for datasets that are on the NBE and user is not admin and page metadata does not exist' do
     setup_nbe_dataset_test(false, false)
+    Phidippides.any_instance.stubs(fetch_dataset_metadata: { status: '404', body: {} })
     get :show, { :category => 'dataset', :view_name => 'dataset', :id => 'four-four' }
     assert_redirected_to '/home'
   end
@@ -85,6 +86,14 @@ class DatasetsControllerTest < ActionController::TestCase
               { pageId: 'last-page' }
             ]
           }
+        }
+      )
+      @controller.stubs(page_metadata_manager: @page_metadata_manager)
+    else
+      @page_metadata_manager.stubs(
+        pages_for_dataset: {
+          status: '404',
+          body: {}
         }
       )
       @controller.stubs(page_metadata_manager: @page_metadata_manager)

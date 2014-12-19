@@ -227,7 +227,7 @@ class NewUxBootstrapControllerTest < ActionController::TestCase
               previous_card = card
             end
 
-            true
+            next true
           end.then.returns({ status: '200', body: { pageId: 'neoo-page' } })
 
           get :bootstrap, id: 'four-four'
@@ -248,7 +248,7 @@ class NewUxBootstrapControllerTest < ActionController::TestCase
           @page_metadata_manager.expects(:create).with do |page, params|
             assert_equal(0, page['cards'].length,
                          'Should not create column card with cardinality == dataset_size')
-            true
+            next true
           end.then.returns({ status: '200', body: { pageId: 'neoo-page' } })
 
           get :bootstrap, id: 'four-four'

@@ -220,6 +220,10 @@
             dataset.observeOnLatest('columns'),
             function(dataset, fieldName, columns) {
 
+              if (_.isEmpty(columns)) {
+                return;
+              }
+
               dataRequests.onNext(1);
 
               if (!columns[fieldName].hasOwnProperty('shapefile')) {

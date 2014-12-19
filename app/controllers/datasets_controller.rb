@@ -1,5 +1,6 @@
 class DatasetsController < ApplicationController
   include DatasetsHelper
+  include CommonPhidippidesMethods
   prepend_before_filter :check_chrome, :only => [:show, :alt]
   skip_before_filter :require_user, :only => [:show, :blob, :alt, :widget_preview, :contact, :validate_contact_owner, :form_success, :form_error, :external, :external_download, :download, :about]
   skip_before_filter :disable_frame_embedding, :only => [:form_success, :form_error]
@@ -36,6 +37,41 @@ class DatasetsController < ApplicationController
 
     dsmtime = VersionAuthority.get_core_dataset_mtime(@view.id)[@view.id]
     user = @current_user.nil? ? "ANONYMOUS" : @current_user.id
+
+    if @view.new_backend?
+      flash.now[:notice] = I18n.t('screens.ds.new_ux_nbe_warning')
+
+      if current_user.nil? || !current_user.is_admin?
+        dataset_metadata_response = phidippides.fetch_dataset_metadata(
+          params[:id],
+          :request_id => request_id,
+          :cookies => forwardable_session_cookies
+        )
+
+        new_ux_page = dataset_metadata_response.try(:[], :body).try(:[], :defaultPage) if dataset_metadata_response[:status] == '200'
+        return redirect_to "/view/#{new_ux_page}" if new_ux_page.present?
+
+        pages_response = page_metadata_manager.pages_for_dataset(
+          params[:id],
+          :request_id => request_id,
+          :cookies => forwardable_session_cookies
+        )
+
+        case pages_response[:status]
+          when '200'
+            # If has page ids already, redirect to them
+            pages = pages_response.try(:[], :body).try(:[], :publisher)
+
+            if pages.present?
+              return redirect_to "/view/#{pages.last[:pageId]}"
+            end
+
+          else
+            return redirect_to :controller => 'profile', :action => 'index'
+        end
+      end
+    end
+
     etag = "#{dsmtime}-#{user}"
     ConditionalRequestHandler.set_etag(response, etag)
     ConditionalRequestHandler.set_cache_control_headers(response, @current_user.nil?)

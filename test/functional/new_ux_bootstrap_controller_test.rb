@@ -198,6 +198,12 @@ class NewUxBootstrapControllerTest < ActionController::TestCase
         body: dataset_metadata
       }
     )
+    @phidippides.expects(:update_dataset_metadata).
+      returns({ status: '200' }).
+      with do |dataset_metadata|
+        dataset_metadata[:defaultPage] == 'neoo-page'
+      end
+
     # Make sure the page we're creating is the correct one
     @page_metadata_manager.expects(:create).with do |page, params|
       assert_equal(10, page['cards'].length, 'Should create 10 cards')

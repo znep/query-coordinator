@@ -243,7 +243,7 @@
             // The X-Socrata-Host header is a temporary local development
             // stopgap until TileServer can discover Soda Fountain on its
             // own.
-            headers: { 'X-Socrata-Host': 'localhost:8080' },
+            headers: {},
             debug: false,
             getFeatureId: getFeatureId,
             filter: filterLayerFeature,

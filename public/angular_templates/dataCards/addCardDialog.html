@@ -26,18 +26,18 @@
       disabled="disabled"
       ng-repeat="column in datasetColumns.alreadyOnPage">-{{column.title}}</soc-option>
 
-    <soc-option value="null" disabled="disabled" ng-if="datasetColumns.visualizationUnsupporetd.length > 0"></soc-option>
+    <soc-option value="null" disabled="disabled" ng-if="datasetColumns.visualizationUnsupported.length > 0"></soc-option>
 
     <soc-option
       value="null"
       disabled="disabled"
-      ng-if="datasetColumns.visualizationUnsupporetd.length > 0">Not currently supported</soc-option>
+      ng-if="datasetColumns.visualizationUnsupported.length > 0">Not currently supported</soc-option>
 
     <soc-option
       value="{{column.name}}"
       title="This card type is currently unsupported"
       disabled="disabled"
-      ng-repeat="column in datasetColumns.visualizationUnsupporetd">-{{column.title}}</soc-option>
+      ng-repeat="column in datasetColumns.visualizationUnsupported">-{{column.title}}</soc-option>
 
   </soc-select>
 </div>

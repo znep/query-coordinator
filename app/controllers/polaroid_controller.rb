@@ -5,7 +5,10 @@ class PolaroidController < ActionController::Base
   def proxy_request
 
     if params['renderTrackingId']
-      cookies["renderTrackingId_#{params['renderTrackingId']}"] = 1
+      cookies["renderTrackingId_#{params['renderTrackingId']}"] = {
+        value: 1,
+        expires: 1.hour.from_now
+      }
     end
 
     begin

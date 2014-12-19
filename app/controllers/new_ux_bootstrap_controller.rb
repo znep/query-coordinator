@@ -103,7 +103,6 @@ class NewUxBootstrapController < ActionController::Base
         if card_type
           card = PageMetadataManager::CARD_TEMPLATE.deep_dup
           card.merge!(
-            'description' => column[:title],
             'fieldName' => column[:name],
             'cardinality' => column[:cardinality],
             'cardType' => card_type,

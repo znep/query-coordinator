@@ -2,7 +2,6 @@
 # Also handles managing rollup tables in soda fountain.
 class PageMetadataManager
   CARD_TEMPLATE = {
-    'description' => nil,
     'fieldName' => nil,
     'cardSize' => 1,
     'cardCustomStyle' => {},

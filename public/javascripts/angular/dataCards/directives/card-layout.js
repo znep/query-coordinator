@@ -387,11 +387,12 @@
         };
 
         var cardsBySizeObs = zipLatestArray(scope.page.observe('cards'), 'cardSize').
-            map(function(cards) {
-              return _.groupBy(cards, function(card) {
-                return card.model.fieldName === '*' ? 'dataCard' : 'normal';
-              });
+          map(function(cards) {
+            var groupedCards = _.groupBy(cards, function(card) {
+              return card.model.fieldName === '*' ? 'dataCard' : 'normal';
             });
+            return _.defaults(groupedCards, { normal: [], dataCard: [] });
+          });
 
         var expandedCardsObs = zipLatestArray(scope.page.observe('cards'), 'expanded').
             map(function(cards) {
@@ -448,7 +449,7 @@
           scope.observe('allowAddCard'),
           WindowState.windowSizeSubject,
           function layoutFn(cardsBySize, expandedCards, editMode, allowAddCard, windowSize) {
-            if (_.isEmpty(cardsBySize.normal) || _.isEmpty(cardsBySize.dataCard)) {
+            if (_.isEmpty(cardsBySize.normal) && _.isEmpty(cardsBySize.dataCard)) {
               return;
             }
 

@@ -87,6 +87,7 @@ class NewUxBootstrapController < ActionController::Base
 
   include CardTypeMapping
   require 'set'
+  require 'json'
 
   ALLOWED_ROLES = %w(administrator publisher)
   # An arbitrary number of cards to create, if there are that many columns available
@@ -99,7 +100,7 @@ class NewUxBootstrapController < ActionController::Base
 
     cards = new_dataset_metadata[:columns].map do |column|
       unless Phidippides::SYSTEM_COLUMN_ID_REGEX.match(column[:name])
-        card_type = card_type_for(column)
+        card_type = card_type_for(column, dataset_size)
         if card_type
           card = PageMetadataManager::CARD_TEMPLATE.deep_dup
           card.merge!(
@@ -123,12 +124,16 @@ class NewUxBootstrapController < ActionController::Base
       skipped_cards = skipped_cards_by_type.values
       # Find the card type with the most cards (to facilitate the zip operation)
       most_cards_of_this_type = skipped_cards.max_by(&:length)
-      # Interleave the cards of different types, for the best variety
-      interleaved_cards = most_cards_of_this_type.zip(*skipped_cards.select do |cards|
-        cards != most_cards_of_this_type
-      end).flatten(1).compact
-      # Fill out the rest of the cards for the page
-      cards = cards.concat(interleaved_cards.first(MAX_NUMBER_OF_CARDS - cards.length))
+      if most_cards_of_this_type.present?
+        # Interleave the cards of different types, for the best variety
+        interleaved_cards = most_cards_of_this_type.zip(*skipped_cards.select do |cards|
+          cards != most_cards_of_this_type
+        end).flatten(1).compact
+        # Fill out the rest of the cards for the page
+        cards = cards.concat(interleaved_cards.first(MAX_NUMBER_OF_CARDS - cards.length))
+      else
+        cards
+      end
     else
       cards = cards.first(MAX_NUMBER_OF_CARDS)
     end
@@ -150,6 +155,19 @@ class NewUxBootstrapController < ActionController::Base
       # It's more important to do a redirect than it is to save the default page, so just log it.
       Rails.logger.warn('Error saving new default page for ' +
                         "dataset_id=#{params[:id]}, page_id=#{page_id}: #{result}")
+    end
+  end
+
+  def dataset_size
+    # Get the size of the dataset so we can compare it against the cardinality when creating cards
+    @dataset_size ||= begin
+      JSON.parse(
+        CoreServer::Base.connection.get_request("/id/#{params[:id]}?%24query=select+count(0)")
+      )[0]['count_0']
+    rescue CoreServer::Error => e
+      Rails.logger.error('Core server error while retrieving dataset size of dataset ' +
+                         "(#{params[:id]}): #{e}")
+      nil
     end
   end
 

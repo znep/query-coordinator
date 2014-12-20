@@ -226,6 +226,7 @@ GEM
       nokogiri (>= 1.4.4, < 1.6)
       nokogiri (>= 1.4.4, < 1.6)
     sass (3.2.5)
+    shoulda-context (1.2.1)
     slop (3.6.0)
     snappy (0.0.8)
     sprockets (2.2.2)
@@ -287,6 +288,7 @@ DEPENDENCIES
   rinku
   sanitize
   sass (~> 3.2)
+  shoulda-context
   snappy
   statsd-ruby!
   stomp (= 1.1.6)

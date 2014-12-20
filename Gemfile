@@ -38,6 +38,7 @@ group :test do
   gem 'guard'
   gem 'guard-minitest'
   gem 'rb-fsevent'
+  gem 'shoulda-context'
 end
 
 group :development, :test do

@@ -533,6 +533,28 @@ describe('CardLayout directive', function() {
       expect(card3Found).to.be.false;
     });
 
+    it('should allow deleting all datacards, leaving table card', function() {
+      _.each(['TimelineChart', 'Table'], function(type) {
+        testHelpers.mockDirective(_$provide, 'cardVisualization' + type);
+      });
+      var cl = createLayoutWithCards([
+        {fieldName: '*'},
+        {fieldName: 'timeline_column'}
+      ]);
+
+      mockWindowStateService.windowSizeSubject.onNext({width: 1000, height: 1000});
+      mockWindowStateService.scrollPositionSubject.onNext(0);
+
+      cl.outerScope.editMode = true;
+      cl.outerScope.$apply();
+
+      var deleteButton = cl.element.find('.card-control[title^="Remove"]');
+      deleteButton.trigger('click');
+
+      var foundCards = cl.pageModel.getCurrentValue('cards');
+      expect(foundCards.length).to.equal(1);
+    });
+
     it('should show the correct drop placeholders', function() {
       var cl = createCardLayout();
 
@@ -1359,5 +1381,15 @@ describe('CardLayout directive', function() {
       expect(mockDownloadService.calledWith[0]).to.deep.equal('./asdf-fdsa/choropleth_column.png');
     });
   });
+
+  it('should show the table card if no other cards are present', function() {
+    testHelpers.mockDirective(_$provide, 'cardVisualizationTable');
+    var cl = createLayoutWithCards([
+      {fieldName: '*'}
+    ]);
+
+    expect(cl.element.find('card-visualization-table').length).to.equal(1);
+  });
+
 });
 

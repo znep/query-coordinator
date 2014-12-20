@@ -97,7 +97,9 @@ class NewUxBootstrapControllerTest < ActionController::TestCase
 
       context 'default page' do
         should 'redirect to the default page if the 4x4 already has a default page' do
-          @phidippides.stubs(fetch_dataset_metadata: { status: '200', body: {defaultPage: 'defa-ultp'} })
+          @phidippides.stubs(
+            fetch_dataset_metadata: { status: '200', body: {defaultPage: 'defa-ultp'} }
+          )
           @page_metadata_manager.stubs(
             pages_for_dataset: {
               status: '200', body: { publisher: [
@@ -175,7 +177,6 @@ class NewUxBootstrapControllerTest < ActionController::TestCase
           end
           CoreServer::Base.stubs(connection: connection_stub)
           @phidippides.stubs(fetch_dataset_metadata: {status: '200', body: mock_dataset_metadata})
-
           @phidippides.expects(:update_dataset_metadata).
             returns({ status: '200' }).
             with do |dataset_metadata|
@@ -190,8 +191,8 @@ class NewUxBootstrapControllerTest < ActionController::TestCase
               Phidippides::SYSTEM_COLUMN_ID_REGEX.match(card['fieldName'])
             end, 'should omit system columns')
 
-            # make sure there exists cards that have the same logical and physical types, but different
-            # card types, according to cardinality.
+            # make sure there exists cards that have the same logical and physical types, but
+            # different card types, according to cardinality.
             seen_multi_cards = {}
             differing_card_types = page['cards'].map do |card|
               if card['fieldName'].start_with?('multi')
@@ -199,7 +200,8 @@ class NewUxBootstrapControllerTest < ActionController::TestCase
                   assert_not_equal(
                     seen_multi_cards[card['fieldName']]['cardType'],
                     card['fieldName']['cardType'],
-                    'For a given physical/logical type, different cardinality creates different cardType'
+                    'Given a physical/logical type, differing cardinality should create ' +
+                    'different cardType'
                   )
                   card
                 else
@@ -218,7 +220,9 @@ class NewUxBootstrapControllerTest < ActionController::TestCase
               card['fieldName'] == 'below'
             end, 'too-low cardinality columns should be omitted')
 
-            assert(page['cards'].all? { |card| card['cardType'] }, 'Every card should have cardType set')
+            assert(page['cards'].all? do |card|
+              card['cardType']
+            end, 'Every card should have cardType set')
 
             previous_card = {}
             page['cards'].first(4).each do |card|
@@ -243,6 +247,11 @@ class NewUxBootstrapControllerTest < ActionController::TestCase
           @phidippides.stubs(fetch_dataset_metadata: {
             status: '200', body: mock_dataset_metadata_with_uninteresting_column_chart
           })
+          @phidippides.expects(:update_dataset_metadata).
+            returns({ status: '200' }).
+            with do |dataset_metadata|
+              dataset_metadata[:defaultPage] == 'neoo-page'
+            end
 
           # Make sure the page we're creating fits certain criteria
           @page_metadata_manager.expects(:create).with do |page, params|

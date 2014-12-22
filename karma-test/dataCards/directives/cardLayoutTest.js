@@ -1335,13 +1335,13 @@ describe('CardLayout directive', function() {
       cl.scope.$digest();
 
       var tableButton = cl.element.find('card-visualization-table').
-          closest('card').siblings('.card-chooser').children('button');
+          closest('card').siblings('.card-chooser').find('.action-png-export');
       var timelineButton = cl.element.find('card-visualization-timeline-chart').
-          closest('card').siblings('.card-chooser').children('button');
+          closest('card').siblings('.card-chooser').find('.action-png-export');
       var searchButton = cl.element.find('card-visualization-search').
-          closest('card').siblings('.card-chooser').children('button');
+          closest('card').siblings('.card-chooser').find('.action-png-export');
       var choroplethButton = cl.element.find('card-visualization-choropleth').
-          closest('card').siblings('.card-chooser').children('button');
+          closest('card').siblings('.card-chooser').find('.action-png-export');
 
       expect(tableButton.hasClass('disabled')).to.equal(true);
       expect(timelineButton.hasClass('disabled')).to.equal(false);
@@ -1353,7 +1353,7 @@ describe('CardLayout directive', function() {
       cl.scope.chooserMode.show = true;
       cl.scope.$digest();
 
-      var button = cl.element.find('.card-chooser button:not(.disabled)');
+      var button = cl.element.find('.card-chooser .action-png-export:not(.disabled)');
       button.click();
 
       expect(mockDownloadService.calledWith[0]).to.deep.equal('./asdf-fdsa/choropleth_column.png');

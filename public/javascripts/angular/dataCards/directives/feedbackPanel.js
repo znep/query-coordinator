@@ -92,15 +92,7 @@
               '<!-- End of Zendesk Widget script -->',
               '<script>',
                 'zE(function(){',
-                  // An apparent race condition can cause the page to scroll down
-                  // in a strange way if we call `zE.activate()` directly after
-                  // calling zE.hide(). We therefore give it a second to catch
-                  // its breath. A widget-provided "onload" callback would, in
-                  // fact, be pretty sweet.
-                  'setTimeout(function() {',
-                    'zE.activate();',
-                  '},1000);',
-                  'zE.hide();',
+                  'zE.activate();',  
                 '});',
               '</script>'
             ].join('');

@@ -1,5 +1,6 @@
 class NewUxBootstrapController < ActionController::Base
   include CommonPhidippidesMethods
+  include UserAuthMethods
 
   before_filter :hook_auth_controller
 

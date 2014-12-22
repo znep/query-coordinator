@@ -132,7 +132,9 @@
     }
 
     blist.namespace.fetch('blist.configuration');
-    if ($.isPresent(blist.configuration.maintenance_message) && window == window.top)
+    if (window == window.top &&
+        ($.isPresent(blist.configuration.maintenance_message) ||
+         blist.feature_flags.domain_decommissioning))
     {
         var dismissMaintenance = function(target)
         {
@@ -175,6 +177,17 @@
                 $('#noticeContainer').append(message);
             }
         });
+
+        if (blist.feature_flags.domain_decommissioning) {
+            $('#noticeContainer').append(
+                $.tag2({ _: 'div', className: 'flash notice maintenanceNotice', contents: [
+                    { _: 'a', href: '#', className: 'close', contents: [
+                        { _: 'span', className: 'icon', contents: 'close' }]
+                    },
+                    'We are shutting down this site, effective February 1, 2015'
+                ] })
+            );
+        }
 
         setTimeout(dismissMaintenance, 15000);
 

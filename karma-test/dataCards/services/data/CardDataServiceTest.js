@@ -36,6 +36,11 @@ describe("CardDataService", function() {
     ]);
   }));
 
+  afterEach(function() {
+    $httpBackend.verifyNoOutstandingExpectation();
+    $httpBackend.verifyNoOutstandingRequest();
+  });
+
   describe('getData', function() {
     it('should throw on bad parameters', function() {
       expect(function() { CardDataService.getData(); }).to.throw();
@@ -50,6 +55,12 @@ describe("CardDataService", function() {
       response.then(function() {
         done();
       });
+      $httpBackend.flush();
+    });
+
+    it('should not alias a column whose name is "name"', function() {
+      $httpBackend.expectGET(toUriRegex('/api/id/{0}.json?$query=select name, count(*) as value  group by name order by count(*) desc limit 200'.format(fake4x4)));
+      CardDataService.getData('name', fake4x4);
       $httpBackend.flush();
     });
 

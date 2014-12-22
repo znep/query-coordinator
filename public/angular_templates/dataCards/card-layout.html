@@ -19,19 +19,28 @@
     ng-if="chooserMode.show"
     class="card-chooser overlay"
     ng-class="{ enabled: isPngExportable(cardState.model) }">
-    <button
-      class="action-btn"
-      ng-click="downloadPng(cardState)"
-      ng-class="{
-        'export-visualization-disabled': !isPngExportable(cardState.model),
-        disabled: !isPngExportable(cardState.model),
-        working: cardState.downloadState === 'loading',
-        success: cardState.downloadState === 'success',
-        error: cardState.downloadState === 'error'
-      }">
-      {{ downloadStateText(cardState.downloadState) }}
-      <spinner ng-if="cardState.downloadState === 'loading'"></spinner>
-    </button>
+    <div
+      ng-switch="isPngExportable(cardState.model)">
+      <a
+        ng-switch-when="true"
+        class="action-btn action-png-export"
+        href="{{ getDownloadUrl(cardState.model) }}"
+        ng-click="downloadPng(cardState, $event)"
+        ng-class="{
+          disabled: !isPngExportable(cardState.model),
+          working: cardState.downloadState === 'loading',
+          success: cardState.downloadState === 'success',
+          error: cardState.downloadState === 'error'
+        }">
+        {{ downloadStateText(cardState.downloadState) }}
+        <spinner ng-if="cardState.downloadState === 'loading'"></spinner>
+      </a>
+      <span
+        ng-switch-default
+        class="action-btn action-png-export export-visualization-disabled disabled">
+        {{ downloadStateText(cardState.downloadState) }}
+      </span>
+    </div>
   </div>
   <div
     class="card-drag-overlay overlay"

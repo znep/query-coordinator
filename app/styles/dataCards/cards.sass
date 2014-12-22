@@ -208,12 +208,17 @@ body.state-view-cards
             &.enabled:hover
               background-color: rgba(0, 0, 0, .1)
 
-            button
+            .action-png-export
               position: absolute
               top: 50%
               left: 50%
               @include prefixer('transform', 'translate(-50%, -50%)')
               @include prefixer(box-shadow, 0 0.2rem 1.3rem -0.1rem rgba(0, 0, 0, 0.3))
+
+              &:focus
+                background-color: $btn-hover-bg-color
+                border: solid 2px $btn-hover-border-color
+                color: $btn-hover-font-color
 
               spinner
                 position: absolute

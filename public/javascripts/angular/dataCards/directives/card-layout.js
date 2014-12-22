@@ -19,18 +19,28 @@
   function initCardSelection(scope, CardTypeMapping, FlyoutService, DownloadService, $timeout) {
     scope.isPngExportable = CardTypeMapping.modelIsExportable;
 
-    function getDownloadUrl(model) {
+    scope.getDownloadUrl = function(model) {
       return './' + scope.page.id + '/' + model.fieldName + '.png';
-    }
+    };
+
     function resetButton(cardState) {
       $timeout(function() {
         delete cardState.downloadState;
       }, 2000);
     }
-    scope.downloadPng = function(cardState) {
-      if (cardState.downloadState) return;
+
+    scope.downloadPng = function(cardState, event) {
+      if (event && event.metaKey) {
+        return;
+      }
+      if (event) {
+        event.preventDefault();
+      }
+      if (cardState.downloadState) {
+        return;
+      }
       cardState.downloadState = 'loading';
-      DownloadService.download(getDownloadUrl(cardState.model)).then(
+      DownloadService.download(scope.getDownloadUrl(cardState.model)).then(
         function success() {
           scope.$apply(function() {
             cardState.downloadState = 'success';

@@ -1,4 +1,4 @@
-describe.only('CardsViewController', function() {
+describe('CardsViewController', function() {
   var Page;
   var Dataset;
   var Card;
@@ -118,6 +118,7 @@ describe.only('CardsViewController', function() {
   beforeEach(module('/angular_templates/dataCards/table.html'));
   beforeEach(module('/angular_templates/dataCards/timelineChart.html'));
   beforeEach(module('/angular_templates/dataCards/tableHeader.html'));
+  beforeEach(module('/angular_templates/dataCards/feedbackPanel.html'));
 
   beforeEach(function() {
     module(function($provide) {

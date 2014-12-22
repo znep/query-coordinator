@@ -11,6 +11,7 @@
 
         var feedbackButton;
         var feedbackContent;
+        var feedbackContentLinks;
         var includeScreenshotButton;
         var doNotIncludeScreenshotButton;
 
@@ -18,6 +19,7 @@
 
           feedbackButton = element.find('.feedback-panel-button');
           feedbackContent = element.find('.feedback-panel-content');
+          feedbackContentLinks = element.find('.feedback-panel-content a');
           includeScreenshotButton = element.find('.include-screenshot');
           doNotIncludeScreenshotButton = element.find('.do-not-include-screenshot');
 
@@ -29,6 +31,10 @@
           feedbackContent.on('click', function() {
             feedbackContent.removeClass('active');
             feedbackButton.addClass('active');
+          });
+
+          feedbackContentLinks.on('click', function(e) {
+            e.stopPropagation();
           });
 
           includeScreenshotButton.on('click', function(e) {

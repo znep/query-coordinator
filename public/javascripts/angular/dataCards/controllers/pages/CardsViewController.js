@@ -248,7 +248,7 @@
         return {
           available: availableColumns.sort(alphaCompareOnProperty('title')),
           alreadyOnPage: alreadyOnPageColumns.sort(alphaCompareOnProperty('title')),
-          visualizationUnsupporetd: visualizationUnsupportedColumns.sort(alphaCompareOnProperty('title'))
+          visualizationUnsupported: visualizationUnsupportedColumns.sort(alphaCompareOnProperty('title'))
         };
 
       });

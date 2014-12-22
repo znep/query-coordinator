@@ -309,7 +309,16 @@ angular.module('socrataCommon.directives').directive('columnChart', function($pa
       // Update the position of the individual bars.
       bars.
         style('width', rangeBand + 'px').
-        style('height', function(d) { return Math.ceil(verticalScale(d)) + 'px'; }).
+        style('height', function(d) {
+          var verticalScaleValue = verticalScale(d);
+          if (verticalScaleValue > 0) {
+            return Math.ceil(verticalScaleValue) + 'px';
+          } else if (verticalScaleValue < 0) {
+            return Math.floor(verticalScaleValue) + 'px';
+          } else {
+            return '0';
+          }
+        }).
         style('bottom', 0).
         attr('class', function(d, i) {
           return 'bar ' + (i === 0 ? 'unfiltered' : 'filtered');

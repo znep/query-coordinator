@@ -36,14 +36,14 @@
             ng-click="savePage()"
             enabled="hasChanges"
             save-status="saveStatus"
-            ng-if="currentUser">
+            ng-if="currentUserHasSaveRight">
           </save-button>
-          <save-as page-has-changes="hasChanges" save-page-as="savePageAs" ng-if="currentUser"></save-as>
+          <save-as page-has-changes="hasChanges" save-page-as="savePageAs" ng-if="currentUserHasSaveRight"></save-as>
           <button type="button"
             ng-click="editMode = !expandedCard && !editMode"
             class="action-btn r-to-l"
             ng-class='{disabled: !!expandedCard, "cards-edit-disabled": !!expandedCard}'
-            ng-show="currentUser">{{editMode | ifElse:'Preview':'Customize'}}</button>
+            ng-show="currentUserHasSaveRight">{{editMode | ifElse:'Preview':'Customize'}}</button>
           <div
             ng-click="onDownloadClick($event)"
             class="action-btn r-to-l download-menu"

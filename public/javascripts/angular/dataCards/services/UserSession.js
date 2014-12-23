@@ -15,13 +15,6 @@
   }
 
   function UserSessionService($http, $q) {
-    function User(id) {
-      this.id = id;
-      if (!id) {
-        throw new Error('User class must be given an ID');
-      }
-    };
-
     // Get a promise for the current user.
     // Will be rejected with an appropriate error
     // if nobody is logged in or there's another
@@ -43,9 +36,8 @@
           return $q.reject(new Errors.UnknownError(null, 'Missing ID from user service API response'));
         }
 
-        //TODO when needed, do a real User.deserialize. The response
-        //contains many fields of interest.
-        return new User(response.data.id);
+        //TODO when needed, implement a real User model.
+        return response.data;
       }, function(response) {
         // 400s, 500s
         if (response.status === 404) {

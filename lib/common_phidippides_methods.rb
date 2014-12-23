@@ -2,8 +2,17 @@ module CommonPhidippidesMethods
 
   include CommonSocrataMethods
 
+  # A user's right to write to phidippides is currently determined by role.
+  # This is not sustainable but adding a right to a role involves writing a
+  # migration what parses JSON. The risk associated with that was deemed worse
+  # than keying off of the role.
+  # Note that bootstrapping old backend datasets is controlled by this as well.
+  ROLES_ALLOWED_TO_WRITE_TO_PHIDIPPIDES = %w(administrator publisher)
   def has_rights?
-    current_user && (current_user.is_owner?(dataset) || current_user.is_admin?)
+    current_user && 
+      (ROLES_ALLOWED_TO_WRITE_TO_PHIDIPPIDES.include?(current_user.roleName) ||
+       current_user.is_owner?(dataset) ||
+       current_user.is_admin?)
   end
 
   def page_metadata_manager

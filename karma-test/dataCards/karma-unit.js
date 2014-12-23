@@ -207,9 +207,9 @@ module.exports = function ( karma ) {
      * Increase the browser timeout for running tests in the background.
      */
     browserNoActivityTimeout: 1000 * 55,
-    browserDisconnectTimeout: 1000 * 5,
-    browserDisconnectTolerance: 3,
-    captureTimeout: 1000 * 60,
+    browserDisconnectTimeout: 1000 * 10,
+    browserDisconnectTolerance: 5,
+    captureTimeout: 1000 * 80,
 
 
     /**

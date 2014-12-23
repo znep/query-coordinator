@@ -8,7 +8,7 @@ class NewUxBootstrapController < ActionController::Base
     # Check to make sure they have permission to create a page
     return render :json => {
       error: true,
-      reason: "User must be one of these roles: #{ALLOWED_ROLES.join(', ')}"
+      reason: "User must be one of these roles: #{ROLES_ALLOWED_TO_WRITE_TO_PHIDIPPIDES.join(', ')}"
     }, :status => :forbidden unless has_rights?
 
     # Grab the dataset metadata, for default page info and column/cardinality information
@@ -90,7 +90,6 @@ class NewUxBootstrapController < ActionController::Base
   require 'set'
   require 'json'
 
-  ALLOWED_ROLES = %w(administrator publisher)
   # An arbitrary number of cards to create, if there are that many columns available
   MAX_NUMBER_OF_CARDS = 10
 
@@ -176,11 +175,5 @@ class NewUxBootstrapController < ActionController::Base
     View.find(params[:id])
   end
 
-  def has_rights?
-    current_user && (ALLOWED_ROLES.include?(current_user.roleName) ||
-                     current_user.is_owner?(dataset) ||
-                     current_user.is_admin?
-                    )
-  end
 end
 

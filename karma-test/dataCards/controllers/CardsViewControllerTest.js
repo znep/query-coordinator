@@ -38,6 +38,8 @@ describe('CardsViewController', function() {
       );
     }
   };
+
+  var datasetOwnerId = 'ownr-idxx';
   var mockDatasetDataService = {
     getBaseInfo: function() {
       return $q.when({
@@ -45,7 +47,7 @@ describe('CardsViewController', function() {
         name: 'test dataset name',
         defaultAggregateColumn: 'foo',
         rowDisplayUnit: 'bar',
-        ownerId: 'fdsa-asdf',
+        ownerId: datasetOwnerId,
         updatedAt: '2004-05-20T17:42:55+00:00',
         columns: [
           {
@@ -74,11 +76,7 @@ describe('CardsViewController', function() {
       });
     }
   };
-  var mockUserSessionService = {
-    getCurrentUser: function() {
-      return $q.when(null);
-    }
-  };
+  var mockUserSessionService = {};
 
   var mockPageSerializationData = {
     ping: 'pong'
@@ -165,6 +163,9 @@ describe('CardsViewController', function() {
   }
 
   function makeController() {
+    var currentUserDefer = $q.defer();
+    mockUserSessionService.getCurrentUser = _.constant(currentUserDefer.promise);
+
     var context = makeContext();
     var controller = $controller('CardsViewController', context);
     testHelpers.mockDirective(_$provide, 'modalDialog');
@@ -173,7 +174,8 @@ describe('CardsViewController', function() {
     expect(context.$scope.page).to.be.instanceof(Page);
 
     return $.extend(context, {
-      controller: controller
+      controller: controller,
+      currentUserDefer: currentUserDefer
     });
   };
 
@@ -452,6 +454,76 @@ describe('CardsViewController', function() {
               filterTwo.generateSoqlWhereFragment(firstCard.fieldName)
               ));
         }));
+      });
+    });
+  });
+
+  describe('user save rights', function() {
+    describe('currentUserHasSaveRight on scope', function() {
+      function mockUser(isAdmin, id, roleName) {
+        return {
+          flags: isAdmin ? [ 'admin' ] : [],
+          roleName: roleName,
+          id: id
+        };
+      }
+
+      function runCase(isAdmin, isOwner, userRole) {
+        var controllerHarness = makeController();
+        var $scope = controllerHarness.$scope;
+
+        controllerHarness.currentUserDefer.resolve(mockUser(isAdmin, isOwner ? datasetOwnerId : 'xnot-ownr', userRole));
+        controllerHarness.baseInfoPromise.resolve({
+          datasetId: 'fake-fbfr'
+        });
+
+        $scope.$digest();
+        return {
+          expect: function(expectation) {
+            expect($scope.currentUserHasSaveRight).to.equal(expectation);
+          }
+        };
+      }
+
+      it('should be false if no user is logged in', function() {
+        var controllerHarness = makeController();
+        var $scope = controllerHarness.$scope;
+
+        controllerHarness.currentUserDefer.reject({});
+        controllerHarness.baseInfoPromise.resolve({
+          datasetId: 'fake-fbfr'
+        });
+        $scope.$digest();
+        expect($scope.currentUserHasSaveRight).to.be.false;
+      });
+
+      it('should be true if a superadmin is logged in', function() {
+        runCase(true, false, 'administrator').expect(true);
+        runCase(true, true, 'administrator').expect(true);
+      });
+
+      describe('with a dataset owned by somebody else', function() {
+        it('should be true if a publisher is logged in', function() {
+          runCase(false, false, 'publisher').expect(true);
+        });
+        it('should be true if an (non-super) administrator is logged in', function() {
+          runCase(false, false, 'administrator').expect(true);
+        });
+        it('should be false if an editor is logged in', function() {
+          runCase(false, false, 'editor').expect(false);
+        });
+      });
+
+      describe('with a dataset owned by the user', function() {
+        it('should be true if a publisher is logged in', function() {
+          runCase(false, true, 'publisher').expect(true);
+        });
+        it('should be true if an (non-super) administrator is logged in', function() {
+          runCase(false, true, 'administrator').expect(true);
+        });
+        it('should be true if an editor is logged in', function() {
+          runCase(false, true, 'editor').expect(true);
+        });
       });
     });
   });

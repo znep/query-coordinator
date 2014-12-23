@@ -87,13 +87,13 @@ class PhidippidesPagesControllerTest < ActionController::TestCase
   end
 
   test 'has_rights? returns true when logged in and user is dataset owner (publisher)' do
-    stub_user = stub(is_owner?: true, is_admin?: false)
+    stub_user = stub(is_owner?: true, is_admin?: false, roleName: 'publisher')
     @controller.stubs(current_user: stub_user, dataset: 'foo')
     assert(@controller.send(:has_rights?))
   end
 
-  test 'has_rights? returns true when logged in and user is admin' do
-    stub_user = stub(is_owner?: false, is_admin?: true)
+  test 'has_rights? returns true when logged in and user is (super) admin' do
+    stub_user = stub(is_owner?: false, is_admin?: true, roleName: 'administrator')
     @controller.stubs(current_user: stub_user, dataset: 'foo')
     assert(@controller.send(:has_rights?))
   end
@@ -103,11 +103,25 @@ class PhidippidesPagesControllerTest < ActionController::TestCase
     refute(@controller.send(:has_rights?))
   end
 
-  test 'has_rights? returns false when logged in but not database owner and not admin' do
-    stub_user = stub(is_owner?: false, is_admin?: false)
+  test 'has_rights? returns false when logged in but not database owner and not admin or publisher' do
+    stub_user = stub(is_owner?: false, is_admin?: false, roleName: 'editor')
     @controller.stubs(current_user: stub_user, dataset: 'foo')
     refute(@controller.send(:has_rights?))
   end
+
+  test 'has_rights? returns true when logged in and user is (non-super) admin' do
+    stub_user = stub(is_owner?: false, is_admin?: false, roleName: 'administrator')
+    @controller.stubs(current_user: stub_user, dataset: 'foo')
+    assert(@controller.send(:has_rights?))
+  end
+
+
+  test 'has_rights? returns true when logged in and user is publisher' do
+    stub_user = stub(is_owner?: false, is_admin?: false, roleName: 'publisher')
+    @controller.stubs(current_user: stub_user, dataset: 'foo')
+    assert(@controller.send(:has_rights?))
+  end
+
 
   private
 

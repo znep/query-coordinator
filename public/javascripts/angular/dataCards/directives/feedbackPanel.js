@@ -39,19 +39,19 @@
                   placeholder: "Feedback Type",
                   options: [
                     {
-                      key: 1,
+                      key: "I like this",
                       value: "I like this"
                     },
                     {
-                      key: 2,
+                      key: "I\'m missing a feature",
                       value: "I\'m missing a feature"
                     },
                     {
-                      key: 3,
+                      key: "Something seems broken",
                       value: "Something seems broken"
                     },
                     {
-                      key: 4,
+                      key: "Other",
                       value: "Other"
                     }
                   ],

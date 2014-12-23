@@ -62,14 +62,14 @@
 
         var jqueryBodyElement = $('body');
         var jqueryChartElement = element.find('.timeline-chart-wrapper');
-        
+
         var jqueryHighlightTargetElement = element.find('.timeline-chart-highlight-target');
         var jqueryHighlightContainerElement = element.find('.timeline-chart-highlight-container');
 
         var jqueryChartSelectionElement = element.find('.timeline-chart-selection');
         var jqueryLeftSelectionMarker = element.find('.timeline-chart-left-selection-marker');
         var jqueryRightSelectionMarker = element.find('.timeline-chart-right-selection-marker');
-        var jqueryClearSelectionButton = element.find('.timeline-chart-clear-selection-button');
+        var jqueryClearSelectionLabel = element.find('.timeline-chart-clear-selection-label');
 
         var d3ChartElement = d3.select(jqueryChartElement[0]);
 
@@ -531,8 +531,8 @@
 
             selection = svgChart.
               selectAll('.series').
-                data(seriesStack); 
-            
+                data(seriesStack);
+
             selection.
               enter().
                 append('g').
@@ -589,8 +589,8 @@
                 selectionDelta + Constants['TIMELINE_CHART_GUTTER'];
             }
 
-            jqueryClearSelectionButton.
-              text(dateRangeLabel).
+            jqueryClearSelectionLabel.
+              html(dateRangeLabel).
               css({
                 left: selectionButtonLeftOffset,
                 width: labelWidth,
@@ -872,7 +872,7 @@
         /**********************************************************************
          *
          * renderChartYAxis
-         * 
+         *
          * Is comparatively straightforward, but functions
          * in the same way as renderChartXAxis.
          *
@@ -1015,7 +1015,7 @@
             // data set. However, we really only want to represent values from the minimum
             // to the maximum found in the data set, so we use those values for the tick
             // labels as the last argument to renderChartYAxisTicks instead of what d3 chooses
-            // to provide for us.        
+            // to provide for us.
             [
               Math.round(chartData.minValue),
               Math.round(chartData.meanValue),
@@ -1231,18 +1231,21 @@
 
 
         function formatSelectionRangeLabel(startDate, endDate) {
+          var label;
           switch (labelPrecision) {
             case 'DECADE':
             case 'YEAR':
             case 'MONTH':
-              return formatDateLabel(startDate, false) + ' - ' + formatDateLabel(endDate, false) + ' ×';
+              label = '{0} - {1}'.format(formatDateLabel(startDate, false), formatDateLabel(endDate, false));
+              break;
             case 'DAY':
               if (startDate.getTime() !== endDate.getTime()) {
-                return formatDateLabel(startDate, false) + ' - ' + formatDateLabel(endDate, false) + ' ×';
+                label = '{0} - {1}'.format(formatDateLabel(startDate, false), formatDateLabel(endDate, false));
               } else {
-                return formatDateLabel(startDate, false) + ' ×';
+                label = formatDateLabel(startDate, false);
               }
           }
+          return '{0} <span class="timeline-chart-clear-selection-button">×</span>'.format(label);
         }
 
         /**********************************************************************
@@ -1784,7 +1787,7 @@
           return '<div class="flyout-title">Clear filter range</div>';
         });
 
-        jqueryClearSelectionButton.on('mousedown', function(e) {
+        jqueryClearSelectionLabel.on('mousedown', function(e) {
           clearChartFilter();
           enterDefaultState();
         });
@@ -1996,7 +1999,7 @@
             // This is global to the directive, but only updated here.
             datasetPrecision = precision;
 
-            // Cache the row display unit for use in the flyout (which necessarily 
+            // Cache the row display unit for use in the flyout (which necessarily
             // is handled outside the scope of this subscribeLatest and which probably
             // shouldn't be wrapped in its own subscribeLatest or other combinator).
             cachedRowDisplayUnit = rowDisplayUnit;
@@ -2032,7 +2035,7 @@
 
       }
     };
-  };
+  }
 
   angular.
     module('socrataCommon.directives').

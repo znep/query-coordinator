@@ -478,6 +478,9 @@
           var minLabelWidth;
           var labelNegativeXOffset;
           var dateRangeLabel;
+          var selectionButtonLeftOffset;
+          var selectionButtonRightPosition;
+          var selectionDelta;
 
           if (d3XScale === null || d3YScale === null) {
             return;
@@ -573,13 +576,28 @@
 
             dateRangeLabel = formatSelectionRangeLabel(minDate, maxDate);
 
+            // Bounds-check the position of the label and keep it from
+            // overflowing the card bounds
+            selectionButtonLeftOffset = selectionStartPosition - labelNegativeXOffset;
+            if (selectionButtonLeftOffset < -(Constants['TIMELINE_CHART_GUTTER'])) {
+              selectionButtonLeftOffset = -(Constants['TIMELINE_CHART_GUTTER']);
+            }
+            selectionButtonRightPosition = selectionButtonLeftOffset + labelWidth;
+            if (selectionButtonRightPosition > cachedChartDimensions.width) {
+              selectionDelta = selectionButtonRightPosition - cachedChartDimensions.width;
+              selectionButtonLeftOffset = selectionButtonLeftOffset -
+                selectionDelta + Constants['TIMELINE_CHART_GUTTER'];
+            }
+
             jqueryClearSelectionButton.
               text(dateRangeLabel).
               css({
-                left: selectionStartPosition - labelNegativeXOffset,
+                left: selectionButtonLeftOffset,
                 width: labelWidth,
                 height: Constants['TIMELINE_CHART_MARGIN_BOTTOM'],
-                top: cachedChartDimensions.height - Constants['TIMELINE_CHART_MARGIN_TOP'] - Constants['TIMELINE_CHART_MARGIN_BOTTOM']
+                top: cachedChartDimensions.height -
+                  Constants['TIMELINE_CHART_MARGIN_TOP'] -
+                  Constants['TIMELINE_CHART_MARGIN_BOTTOM']
               });
 
           }

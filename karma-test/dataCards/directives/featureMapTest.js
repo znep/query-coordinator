@@ -223,7 +223,7 @@ describe('featureMap', function() {
     it('when changed from null to a real value should cause the vector tiles to render', function(done) {
       var eventExpected = false;
       scope.$on('render:start', function(event, args) {
-        if(args.tag === 'vector-tile-render') {
+        if(args.tag === 'vector_tile_render') {
           expect(eventExpected).to.equal(true);
           done();
         }

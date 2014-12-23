@@ -127,12 +127,17 @@ describe('featureMap', function() {
     window.XMLHttpRequest = _XMLHttpRequest;
   }
 
-  function createFeatureMap(width, expanded) {
+  function createFeatureMap(options) {
+
+    options = _.defaults(options || {}, {
+      width: 640,
+      featureLayerUrl: defaultFeatureLayerUrl
+    });
 
     var chartId = $('#test-feature-map').length === 0 ? 'test-feature-map' : 'alternate-test-feature-map';
     var html = [
       '<div id="{0}">'.format(chartId),
-        '<div class="card-visualization" style="width: {0}px; height: 300px;">'.format(width),
+        '<div class="card-visualization" style="width: {0}px; height: 300px;">'.format(options.width),
           '<feature-map ',
             'class="feature-map" ',
             'base-layer-url="baseLayerUrl" ',
@@ -146,7 +151,7 @@ describe('featureMap', function() {
 
     scope.baseLayerUrl = 'https://a.tiles.mapbox.com/v3/socrata-apps.ibp0l899/{z}/{x}/{y}.png';
     scope.featureExtent = featureExtent;
-    scope.featureLayerUrl = defaultFeatureLayerUrl;
+    scope.featureLayerUrl = options.featureLayerUrl;
     scope.rowDisplayUnit = 'rowDisplayUnit';
 
     return testHelpers.TestDom.compileAndAppend(html, scope);
@@ -213,6 +218,31 @@ describe('featureMap', function() {
 
   }
 
+  describe('featureLayerUrl', function() {
+
+    it('when changed from null to a real value should cause the vector tiles to render', function(done) {
+      var eventExpected = false;
+      scope.$on('render:start', function(event, args) {
+        if(args.tag === 'vector-tile-render') {
+          expect(eventExpected).to.equal(true);
+          done();
+        }
+      });
+
+      var map = createFeatureMap({
+        featureLayerUrl: null
+      });
+
+      scope.$digest();
+
+      eventExpected = true;
+      scope.featureLayerUrl = defaultFeatureLayerUrl;
+      scope.$digest();
+
+    });
+  });
+
+
   describe('timing events', function() {
 
     it('should emit render:start and render:complete events appropriately and in the correct order', function(done) {
@@ -239,7 +269,7 @@ describe('featureMap', function() {
         }
       );
 
-      var map = createFeatureMap(640, false);
+      var map = createFeatureMap();
 
     });
 
@@ -274,7 +304,7 @@ describe('featureMap', function() {
 
       });
 
-      var map = createFeatureMap(640, false);
+      var map = createFeatureMap();
 
     });
 
@@ -325,7 +355,7 @@ describe('featureMap', function() {
 
       });
 
-      var map = createFeatureMap(640, false);
+      var map = createFeatureMap();
 
     });
 

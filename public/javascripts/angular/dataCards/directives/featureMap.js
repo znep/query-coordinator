@@ -373,14 +373,14 @@
 
         element.on('vector-tile-render-started', function(e) {
 
-          scope.$emit('render:start', { source: 'feature_map_{0}'.format(scope.$id), timestamp: _.now() });
+          scope.$emit('render:start', { source: 'feature_map_{0}'.format(scope.$id), timestamp: _.now(), tag: 'vector-tile-render' });
 
         });
 
         element.on('vector-tile-render-complete', function(e) {
 
           removeOldFeatureLayer(map);
-          scope.$emit('render:complete', { source: 'feature_map_{0}'.format(scope.$id), timestamp: _.now() });
+          scope.$emit('render:complete', { source: 'feature_map_{0}'.format(scope.$id), timestamp: _.now(), tag: 'vector-tile-render' });
 
         });
 
@@ -393,7 +393,11 @@
         Rx.Observable.subscribeLatest(
           scope.observe('featureLayerUrl'),
           function(featureLayerUrl) {
-            createNewFeatureLayer(map, featureLayerUrl);
+            if (featureLayerUrl) {
+              createNewFeatureLayer(map, featureLayerUrl);
+            } else {
+              removeOldFeatureLayer(map);
+            }
           });
 
 
@@ -414,7 +418,7 @@
 
             if (dimensions.height > 0 && _.isDefined(featureExtent)) {
 
-              scope.$emit('render:start', { source: 'feature_map_{0}'.format(scope.$id), timestamp: _.now() });
+              scope.$emit('render:start', { source: 'feature_map_{0}'.format(scope.$id), timestamp: _.now(), tag: 'fit bounds' });
 
               // It is citical to invalidate size prior to updating bounds.
               // Otherwise, leaflet will fit the bounds to an incorrectly sized viewport.
@@ -428,7 +432,7 @@
 
               // Yield execution to the browser to render, then notify that render is complete
               $timeout(function() {
-                scope.$emit('render:complete', { source: 'feature_map_{0}'.format(scope.$id), timestamp: _.now() });
+                scope.$emit('render:complete', { source: 'feature_map_{0}'.format(scope.$id), timestamp: _.now(), tag: 'fit bounds' });
               });
             }
           });

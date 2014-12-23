@@ -1,0 +1,55 @@
+@import dataCards/common/colors
+@import dataCards/action-button
+
+feedback-panel
+  position: fixed
+  width: 36rem
+  bottom: 0
+  right: 0
+  font-size: 0.8rem
+  z-index: 9999
+
+  .feedback-panel-button
+    position: fixed
+    padding: 0.5rem 1rem 1rem 1rem
+    bottom: -2.7rem
+    right: 0.25rem
+    font-size: 1rem
+    color: $feedback-panel-font-color
+    background-color: $feedback-panel-bg-color
+    border: 1px solid $feedback-panel-border-color
+    border-bottom: none
+    border-radius: $rounded-corners-border-radius $rounded-corners-border-radius 0 0
+    outline: none
+    cursor: pointer
+    @include prefixer(transition, '0.25s')
+
+    &.active
+      bottom: -0.35rem
+
+    &.active:hover
+      bottom: 0
+
+  .feedback-panel-content
+    position: fixed
+    padding: 0.5rem 1rem
+    bottom: -10rem
+    color: $feedback-panel-font-color
+    background-color: $feedback-panel-bg-color
+    border: 1px solid $feedback-panel-border-color
+    border-bottom: none
+    @include prefixer(transition, '0.25s')
+
+    &.active
+      bottom: 0
+
+    h2
+      font-size: 1rem
+      line-height: 1.2rem
+
+    p
+      line-height: 1.2rem
+
+    a
+      font-weight: bold
+      color: $feedback-panel-link-color

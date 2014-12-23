@@ -7,7 +7,7 @@ describe('CardsViewController', function() {
   var $q;
   var $rootScope;
   var $controller;
-
+  var _$provide;
 
   // Define a mock window service and surface writes to location.href.
   var mockWindowService = {
@@ -118,8 +118,8 @@ describe('CardsViewController', function() {
   beforeEach(module('/angular_templates/dataCards/table.html'));
   beforeEach(module('/angular_templates/dataCards/timelineChart.html'));
   beforeEach(module('/angular_templates/dataCards/tableHeader.html'));
+  beforeEach(module('/angular_templates/dataCards/feedbackPanel.html'));
 
-  var _$provide;
   beforeEach(function() {
     module(function($provide) {
       _$provide = $provide;
@@ -130,6 +130,7 @@ describe('CardsViewController', function() {
       $provide.constant('ServerConfig', mockServerConfig);
     });
   });
+
   beforeEach(inject([
     '$q', 'Card', 'Page', 'Dataset', '$rootScope', '$controller', '$window', 'testHelpers',
     'serverMocks', function(_$q, _Card, _Page, _Dataset, _$rootScope, _$controller, _$window,

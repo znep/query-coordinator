@@ -422,7 +422,7 @@ describe('timelineChart', function() {
 
       var chart = createTimelineChart(640, false);
 
-      var selectionRangeLabelWasNotVisible = $('.timeline-chart-clear-selection-button').css('display') === 'none';
+      var selectionRangeLabelWasNotVisible = $('.timeline-chart-clear-selection-label').css('display') === 'none';
 
       mockWindowStateService.scrollPositionSubject.onNext(0);
       mockWindowStateService.mouseLeftButtonPressedSubject.onNext(true);
@@ -440,7 +440,7 @@ describe('timelineChart', function() {
 
       var wasSelecting = $('.timeline-chart-wrapper').hasClass('selecting');
 
-      var selectionRangeLabelWasThenVisible = $('.timeline-chart-clear-selection-button').css('display') === 'block';
+      var selectionRangeLabelWasThenVisible = $('.timeline-chart-clear-selection-label').css('display') === 'block';
 
       expect(selectionRangeLabelWasNotVisible).to.equal(true);
       expect(wasSelecting).to.equal(true);
@@ -456,7 +456,7 @@ describe('timelineChart', function() {
 
       var chart = createTimelineChart(640, false);
 
-      var selectionRangeLabelWasNotVisible = $('.timeline-chart-clear-selection-button').css('display') === 'none';
+      var selectionRangeLabelWasNotVisible = $('.timeline-chart-clear-selection-label').css('display') === 'none';
 
       mockWindowStateService.scrollPositionSubject.onNext(0);
       mockWindowStateService.mouseLeftButtonPressedSubject.onNext(true);
@@ -474,7 +474,7 @@ describe('timelineChart', function() {
       });
 
       var wasSelected = $('.timeline-chart-wrapper').hasClass('selected');
-      var selectionRangeLabelWasThenVisible = $('.timeline-chart-clear-selection-button').css('display') === 'block';
+      var selectionRangeLabelWasThenVisible = $('.timeline-chart-clear-selection-label').css('display') === 'block';
 
       expect(selectionRangeLabelWasNotVisible).to.equal(true);
       expect(wasSelected).to.equal(true);
@@ -509,7 +509,7 @@ describe('timelineChart', function() {
       });
 
       var wasSelected = $('.timeline-chart-wrapper').hasClass('selected');
-      var selectionRangeLabelWasThenVisible = $('.timeline-chart-clear-selection-button').css('display') === 'block';
+      var selectionRangeLabelWasThenVisible = $('.timeline-chart-clear-selection-label').css('display') === 'block';
 
       expect(wasSelected).to.equal(true);
       expect(selectionRangeLabelWasThenVisible).to.equal(true);
@@ -520,7 +520,7 @@ describe('timelineChart', function() {
 
       var chart = createTimelineChart(640, false);
 
-      var selectionRangeLabelWasNotVisible = $('.timeline-chart-clear-selection-button').css('display') === 'none';
+      var selectionRangeLabelWasNotVisible = $('.timeline-chart-clear-selection-label').css('display') === 'none';
 
       mockWindowStateService.scrollPositionSubject.onNext(0);
       mockWindowStateService.mouseLeftButtonPressedSubject.onNext(true);
@@ -539,7 +539,7 @@ describe('timelineChart', function() {
 
       var wasSelected = $('.timeline-chart-wrapper').hasClass('selected');
 
-      var selectionRangeLabelWasThenVisible = $('.timeline-chart-clear-selection-button').css('display') === 'block';
+      var selectionRangeLabelWasThenVisible = $('.timeline-chart-clear-selection-label').css('display') === 'block';
 
       var selectionRangeOriginalWidth = $('.selection')[0].getBoundingClientRect().width;
 
@@ -570,7 +570,7 @@ describe('timelineChart', function() {
 
       var chart = createTimelineChart(640, false);
 
-      var selectionRangeLabelWasNotVisible = $('.timeline-chart-clear-selection-button').css('display') === 'none';
+      var selectionRangeLabelWasNotVisible = $('.timeline-chart-clear-selection-label').css('display') === 'none';
 
       mockWindowStateService.scrollPositionSubject.onNext(0);
       mockWindowStateService.mouseLeftButtonPressedSubject.onNext(true);
@@ -589,7 +589,7 @@ describe('timelineChart', function() {
 
       var wasSelected = $('.timeline-chart-wrapper').hasClass('selected');
 
-      var selectionRangeLabelWasThenVisible = $('.timeline-chart-clear-selection-button').css('display') === 'block';
+      var selectionRangeLabelWasThenVisible = $('.timeline-chart-clear-selection-label').css('display') === 'block';
 
       var selectionRangeOriginalWidth = $('.selection')[0].getBoundingClientRect().width;
 
@@ -636,7 +636,7 @@ describe('timelineChart', function() {
       });
 
       var wasSelected = $('.timeline-chart-wrapper').hasClass('selected');
-      var selectionRangeLabelWasThenVisible = $('.timeline-chart-clear-selection-button').css('display') === 'block';
+      var selectionRangeLabelWasThenVisible = $('.timeline-chart-clear-selection-label').css('display') === 'block';
 
       expect(wasSelected).to.equal(true);
       expect(selectionRangeLabelWasThenVisible).to.equal(true);
@@ -650,7 +650,7 @@ describe('timelineChart', function() {
 
       });
 
-      testHelpers.fireEvent($('.timeline-chart-clear-selection-button')[0], 'mousedown');
+      testHelpers.fireEvent($('.timeline-chart-clear-selection-label')[0], 'mousedown');
 
     });
 
@@ -674,12 +674,12 @@ describe('timelineChart', function() {
       });
 
       var wasSelected = $('.timeline-chart-wrapper').hasClass('selected');
-      var selectionRangeLabelWasThenVisible = $('.timeline-chart-clear-selection-button').css('display') === 'block';
+      var selectionRangeLabelWasThenVisible = $('.timeline-chart-clear-selection-label').css('display') === 'block';
 
       expect(wasSelected).to.equal(true);
       expect(selectionRangeLabelWasThenVisible).to.equal(true);
 
-      testHelpers.fireEvent($('.timeline-chart-clear-selection-button')[0], 'mousedown');
+      testHelpers.fireEvent($('.timeline-chart-clear-selection-label')[0], 'mousedown');
 
       var wasThenInTheDefaultState = !$('.timeline-chart-wrapper').hasClass('selecting') &&
                                      !$('.timeline-chart-wrapper').hasClass('selected');

@@ -4,40 +4,25 @@
   function feedbackPanel(ServerConfig) {
     return {
       restrict: 'E',
-      scope: {
-      },
+      scope: { },
       templateUrl: '/angular_templates/dataCards/feedbackPanel.html',
       link: function(scope, element) {
 
-        var feedbackButton;
-        var feedbackContent;
-        var feedbackContentLinks;
-        var includeScreenshotButton;
-        var doNotIncludeScreenshotButton;
-
         if (ServerConfig.get('enableFeedback')) {
 
-          feedbackButton = element.find('.feedback-panel-button');
-          feedbackContent = element.find('.feedback-panel-content');
-          feedbackContentLinks = element.find('.feedback-panel-content a');
-          includeScreenshotButton = element.find('.include-screenshot');
-          doNotIncludeScreenshotButton = element.find('.do-not-include-screenshot');
+          scope.showFeedbackButton = true;
+          scope.showFeedbackContent = false;
 
-          feedbackButton.on('click', function() {
-            feedbackButton.removeClass('active');
-            feedbackContent.addClass('active');
-          });
+          scope.switchFeedbackInterfaceState = function(e) {
+            // Don't dismiss the feedback panel when the user clicks on a link,
+            // only when the user clicks on the panel itself.
+            if (!e.target.hasOwnProperty('href')) {
+              scope.showFeedbackButton = !scope.showFeedbackButton;
+              scope.showFeedbackContent = !scope.showFeedbackContent;
+            }
+          };
 
-          feedbackContent.on('click', function() {
-            feedbackContent.removeClass('active');
-            feedbackButton.addClass('active');
-          });
-
-          feedbackContentLinks.on('click', function(e) {
-            e.stopPropagation();
-          });
-
-          includeScreenshotButton.on('click', function(e) {
+          scope.includeScreenshot = function(e) {
             var scriptContent = [
               '<script type="text/javascript">',
                 '(function() {',
@@ -52,12 +37,17 @@
               '</script>'
             ].join('');
 
-            $('head').append($(scriptContent));
-            feedbackContent.removeClass('active');
-            e.stopPropagation();
-          });
 
-          doNotIncludeScreenshotButton.on('click', function(e) {
+            e.stopPropagation();
+
+            $('head').append($(scriptContent));
+
+            scope.showFeedbackContent = false;
+
+          };
+
+          scope.doNotIncludeScreenshot = function(e) {
+
             var scriptContent = [
               '<!-- Start of Zendesk Widget script -->',
               '<script>',
@@ -103,10 +93,14 @@
               '</script>'
             ].join('');
 
-            $('head').append($(scriptContent));
-            feedbackContent.removeClass('active');
+
             e.stopPropagation();
-          });
+
+            $('head').append($(scriptContent));
+
+            scope.showFeedbackContent = false;
+
+          };
 
         } else {
 

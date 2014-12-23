@@ -35,7 +35,7 @@
       'MAXIMUM_NUMBER_OF_CLASSES_ALLOWED': 7,
       'CLASS_BREAK_THRESHOLD': 6,
 
-      // Timeline chart visualization paramters.
+      // Timeline chart visualization parameters.
       'TIMELINE_CHART_MARGIN_TOP': 0,
       'TIMELINE_CHART_MARGIN_RIGHT': 0,
       'TIMELINE_CHART_MARGIN_BOTTOM': 30,
@@ -43,6 +43,7 @@
       'TIMELINE_CHART_NUMBER_OF_TICKS': 3,
       'TIMELINE_CHART_TICK_SIZE': 3,
       'TIMELINE_CHART_HIGHLIGHT_TARGET_MARGIN': 50,
+      'TIMELINE_CHART_GUTTER': 15,
       'TIMELINE_CHART_SELECTION_MARKER_NEGATIVE_X_OFFSET': 11
 
     };

@@ -96,11 +96,33 @@
 
     // Bind the current user to the scope, or null if no user is logged in or there was an error
     // fetching the current user.
+    var currentUserSequence = Rx.Observable.fromPromise(UserSession.getCurrentUser());
     $scope.bindObservable(
       'currentUser',
-      Rx.Observable.fromPromise(UserSession.getCurrentUser()),
+      currentUserSequence,
       _.constant(null)
     );
+
+    var isCurrentUserAdminOrPublisher =
+      currentUserSequence.
+      map(function(user) {
+        var roleName = user.roleName;
+        return _.contains(user.flags, 'admin') || roleName === 'administrator' || roleName === 'publisher';
+      });
+
+    var isCurrentUserOwnerOfDataset =
+      page.
+      observe('dataset').
+      observeOnLatest('ownerId').
+      combineLatest(currentUserSequence.pluck('id'), function(ownerId, userId) { return ownerId === userId; });
+
+    $scope.bindObservable(
+      'currentUserHasSaveRight',
+      isCurrentUserAdminOrPublisher.
+      combineLatest(isCurrentUserOwnerOfDataset, function(a, b) { return a || b; }).
+      catchException(Rx.Observable.returnValue(false))
+    );
+
 
     initDownload($scope, page, WindowState, FlyoutService, ServerConfig);
 

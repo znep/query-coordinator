@@ -23,8 +23,54 @@
           };
 
           scope.includeScreenshot = function(e) {
+
+            var usersnapConfig = {
+              customfields:[
+                {
+                  name: "email",
+                  type: "email",
+                  placeholder: "E-mail address",
+                  required: false,
+                  pos: 0,
+                },
+                {
+                  name: "type",
+                  type: "select",
+                  placeholder: "Feedback Type",
+                  options: [
+                    {
+                      key: 1,
+                      value: "I like this"
+                    },
+                    {
+                      key: 2,
+                      value: "I\'m missing a feature"
+                    },
+                    {
+                      key: 3,
+                      value: "Something seems broken"
+                    },
+                    {
+                      key: 4,
+                      value: "Other"
+                    }
+                  ],
+                  required: true,
+                  pos: 1
+                },
+                {
+                  name: "comment",
+                  type: "textarea",
+                  placeholder: "Please add comments here",
+                  required: true,
+                  pos: 2,
+                }
+              ]
+            };
+
             var scriptContent = [
               '<script type="text/javascript">',
+                '_usersnapconfig = {0};'.format(JSON.stringify(usersnapConfig)),
                 '(function() {',
                   'var s = document.createElement("script");',
                   's.type = "text/javascript";',

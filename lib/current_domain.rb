@@ -188,11 +188,19 @@ class CurrentDomain
     # current locale, unless it's the default one.
     locale = I18n.locale unless locale.present? || I18n.locale.to_s == CurrentDomain.default_locale
 
-    # TODO: not sure how to safely per-request cache
-    result = self.properties.strings!
-    result.merge!(self.properties.strings[locale] || {}) unless locale.nil?
+    default_strings = self.properties.strings!
 
-    result
+    if locale.present?
+      # If necessary, merge the default strings with the locale strings and cache the result.
+      computed_merged_with_default = self.properties.strings.computed_merged_with_default!
+      if !computed_merged_with_default.key?(locale)
+        computed_merged_with_default[locale] = default_strings.dup.deep_merge!(self.properties.strings[locale] || {})
+      end
+
+      return computed_merged_with_default[locale]
+    else
+      return default_strings
+    end
   end
 
   def self.features

@@ -7,6 +7,9 @@ clearable-input
 
     input
       display: block
+      &::-ms-clear
+        width: 0
+        height: 0
 
       &:focus
         outline-width: 0

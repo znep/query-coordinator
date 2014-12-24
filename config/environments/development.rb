@@ -2,8 +2,8 @@ Frontend::Application.configure do
   # Settings specified here will take precedence over those in config/application.rb
 
   # In the development environment your application's code is reloaded on
-  # every request. This slows down response time but is perfect for development
-  # since you don't have to restart the web server when you make code changes.
+  # every request, so rails doesn't need to be restarted every time code is changed.
+  # However, do note that this can hide cross-request bugs (not hypothetical, see CORE-1806).
   config.cache_classes = false
 
   # Log error messages when you accidentally call methods on nil.

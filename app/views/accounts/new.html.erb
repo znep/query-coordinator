@@ -33,6 +33,9 @@
 </div>
 
 <% content_for :js_footer do %>
+  <script type="text/javascript">
+    blist.configuration.show_domain_decommissioning_message = <%= FeatureFlags.derive(nil, request).domain_decommissioning %>;
+  </script>
   <%- unless params[:no_js].present? -%>
     <%= include_javascripts 'screen-login-signup' %>
     <%= javascript_include_tag 'https://rpxnow.com/openid/v2/widget' %>

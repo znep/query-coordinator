@@ -502,7 +502,7 @@
 					
 				}
 				if(options.overflow && !scrollHorizontally){
-					var IE6 = false /*@cc_on || @_jscript_version < 5.7 @*/;
+					var IE6 = false; /*@cc_on || @_jscript_version < 5.7 @*/
 					var IE7 = (document.all) && (navigator.appVersion.indexOf("MSIE 7.") != -1);
 					if(IE6 || IE7){
 						var html = "";

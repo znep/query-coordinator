@@ -1,56 +1,60 @@
 // This model is intended to be an immutable reference to a Dataset.
-angular.module('dataCards.models').factory('Dataset', function(ModelHelper, Model, DatasetDataService, JJV, $injector) {
+angular.module('dataCards.models').factory('Dataset', function(ModelHelper, Model, DatasetDataService, Schemas, $injector) {
   var UID_REGEXP = /^\w{4}-\w{4}$/;
 
-  JJV.addSchema('datasetMetadata', {
-    'type': 'object',
-    'properties': {
-      'id': { 'type': 'string', 'pattern': UID_REGEXP },
-      'name': { 'type': 'string', 'minLength': 1 },
-      'description': { 'type': 'string', 'minLength': 1 },
-      'rowDisplayUnit': { 'type': 'string', 'minLength': 1 },
-      'defaultAggregateColumn': { 'type': 'string', 'minLength': 1 },
-      'ownerId': { 'type': 'string', 'pattern': UID_REGEXP },
-      'updatedAt': { 'type': 'string' }, //TODO ISO8601
-      'columns': {
-        'type': 'array',
-        'items': {
+  var schemas = Schemas.regarding('dataset_metadata');
+  schemas.addSchemaWithVersion(
+    '0',
+    {
+      'type': 'object',
+      'properties': {
+        'id': { 'type': 'string', 'pattern': UID_REGEXP },
+        'name': { 'type': 'string', 'minLength': 1 },
+        'description': { 'type': 'string', 'minLength': 1 },
+        'rowDisplayUnit': { 'type': 'string', 'minLength': 1 },
+        'defaultAggregateColumn': { 'type': 'string', 'minLength': 1 },
+        'ownerId': { 'type': 'string', 'pattern': UID_REGEXP },
+        'updatedAt': { 'type': 'string' }, //TODO ISO8601
+        'columns': {
+          'type': 'array',
+          'items': {
+            'type': 'object',
+            'properties': {
+              'title': {
+                'type': 'string'
+              },
+              'description': {
+                'type': 'string'
+              },
+              'name': {
+                'type': 'string',
+                'minLength': 1
+              },
+              'logicalDatatype': {
+                'type': 'string',
+                'enum': [ 'category', 'amount', 'location', 'time', 'text', 'name', 'identifier', '*' ]
+              },
+              'physicalDatatype': {
+                'type': 'string',
+                'enum': [ 'number', 'point', 'geo_entity', 'text', 'timestamp', 'row_version', 'row_identifier', 'fixed_timestamp', 'floating_timestamp', 'boolean', 'money', '*' ]
+              },
+              'importance': { 'type': 'integer' , 'minimum': 1, 'maximum': 4 },
+              'columnDisplayUnit': { 'type': 'string' }
+            },
+            'required': [ 'name', 'logicalDatatype', 'physicalDatatype', 'importance' ]
+          }
+        },
+        'pages': {
           'type': 'object',
           'properties': {
-            'title': {
-              'type': 'string'
-            },
-            'description': {
-              'type': 'string'
-            },
-            'name': {
-              'type': 'string',
-              'minLength': 1
-            },
-            'logicalDatatype': {
-              'type': 'string',
-              'enum': [ 'category', 'amount', 'location', 'time', 'text', 'name', 'identifier', '*' ]
-            },
-            'physicalDatatype': {
-              'type': 'string',
-              'enum': [ 'number', 'point', 'geo_entity', 'text', 'timestamp', 'row_version', 'row_identifier', 'fixed_timestamp', 'floating_timestamp', 'boolean', 'money', '*' ]
-            },
-            'importance': { 'type': 'integer' , 'minimum': 1, 'maximum': 4 },
-            'columnDisplayUnit': { 'type': 'string' }
-          },
-          'required': [ 'name', 'logicalDatatype', 'physicalDatatype', 'importance' ]
+            'publisher': { 'type': 'array', 'items': { 'type': 'string', 'pattern': UID_REGEXP } },
+            'user': { 'type': 'array', 'items': { 'type': 'string', 'pattern': UID_REGEXP } }
+          }
         }
       },
-      'pages': {
-        'type': 'object',
-        'properties': {
-          'publisher': { 'type': 'array', 'items': { 'type': 'string', 'pattern': UID_REGEXP } },
-          'user': { 'type': 'array', 'items': { 'type': 'string', 'pattern': UID_REGEXP } }
-        }
-      }
-    },
-    'required': [ 'id', 'name', 'rowDisplayUnit', 'defaultAggregateColumn', 'ownerId', 'updatedAt', 'columns' ]
-  });
+      'required': [ 'id', 'name', 'rowDisplayUnit', 'defaultAggregateColumn', 'ownerId', 'updatedAt', 'columns' ]
+    }
+  );
 
   //TODO cache instances or share cache.
   var Dataset = Model.extend({
@@ -70,11 +74,13 @@ angular.module('dataCards.models').factory('Dataset', function(ModelHelper, Mode
       // actually need it.
       var baseInfoPromise = function() {
         return DatasetDataService.getBaseInfo(self.id).then(function(blob) {
-          var errors = JJV.validate('datasetMetadata', blob);
-          if (errors) {
-            throw new Error('Dataset metadata deserialization failed: ' + JSON.stringify(errors) + JSON.stringify(blob));
+          // Only support schema version 0 for now.
+          if (schemas.isValidAgainstVersion('0', blob)) {
+            return blob;
+          } else {
+            var validationErrors = schemas.validateAgainstVersion('0', blob).errors;
+            throw new Error('Dataset metadata deserialization failed: ' + JSON.stringify(validationErrors) + JSON.stringify(blob));
           }
-          return blob;
         }).then(function(blob) {
           blob.updatedAt = new Date(blob.updatedAt);
           return blob;

@@ -26,32 +26,25 @@ angular.module('dataCards.services').factory('Schemas', function(JJV) {
   function regarding(schemaSubjectName) {
     return {
       // Checks the given object for validity on a particular version of this schema.
-      // Returns a validation object:
-      // {
-      //   valid: Boolean. True if the object matches this version schema, false otherwise.
-      //   errors: Array of validation errors, or null if the object validated.
-      // }
-      validateAgainstVersion: function(schemaVersion, objectToValidate) {
-        var schemaCollection = fetchSchemaCollectionForSubject(schemaSubjectName);
-        var schemaWithDesiredVersion = schemaCollection[schemaVersion];
-
-        var validationErrors = JJV.validate(schemaWithDesiredVersion, objectToValidate);
-        return {
-          valid: _.isEmpty(validationErrors),
-          errors: validationErrors
-        }
+      // returns an object of validation errors, or null if the object validated successfully.
+      getValidationErrorsAgainstVersion: function(schemaVersion, objectToValidate) {
+        return JJV.validate(this.getSchemaWithVersion(schemaVersion), objectToValidate);
       },
 
       // Checks the given object for validity on a particular version of this schema.
       // Returns true of the object matches this version schema, false otherwise.
       // If you want access to the validation errors, use validateAgainstVersion.
       isValidAgainstVersion: function(schemaVersion, objectToValidate) {
-        return this.validateAgainstVersion(schemaVersion, objectToValidate).valid;
+        return _.isEmpty(this.getValidationErrorsAgainstVersion(schemaVersion, objectToValidate));
       },
 
       addSchemaWithVersion: function(schemaVersion, schema) {
         fetchSchemaCollectionForSubject(schemaSubjectName)[schemaVersion] = schema;
-      }
+      },
+
+      getSchemaWithVersion: function(schemaVersion) {
+        return fetchSchemaCollectionForSubject(schemaSubjectName)[schemaVersion];
+      },
     };
   }
 

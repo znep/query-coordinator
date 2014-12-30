@@ -1,23 +1,27 @@
-angular.module('dataCards.models').factory('Card', function($injector, ModelHelper, Model, CardDataService, JJV, Filter) {
+angular.module('dataCards.models').factory('Card', function($injector, ModelHelper, Model, CardDataService, Schemas, Filter) {
 
   var UID_REGEXP = /^\w{4}-\w{4}$/;
 
-  JJV.addSchema('serializedCard', {
-    'type': 'object',
-    'properties': {
-      'activeFilters': { 'type': 'array' },
-      'baseLayerUrl': { 'type': 'string' },
-      'cardCustomStyle': { 'type': 'object' },
-      'cardSize': { 'type': 'integer' , 'minimum': 1, 'maximum': 4 },
-      'cardType': { 'type': 'string', },
-      'displayMode': { 'type': 'string', 'enum': ['figures', 'visualization'] },
-      'expanded': { 'type': 'boolean' },
-      'expandedCustomStyle': { 'type': 'object' },
-      'fieldName': { 'type': 'string', 'minLength': 1 },
-      'shapefileFeatureHumanReadablePropertyName': { 'type': 'string' }
-    },
-    'required': ['fieldName', 'cardSize', 'cardCustomStyle', 'expandedCustomStyle', 'displayMode', 'expanded']
-  });
+  var schemas = Schemas.regarding('card_metadata');
+  schemas.addSchemaWithVersion(
+    '0',
+    {
+      'type': 'object',
+      'properties': {
+        'activeFilters': { 'type': 'array' },
+        'baseLayerUrl': { 'type': 'string' },
+        'cardCustomStyle': { 'type': 'object' },
+        'cardSize': { 'type': 'integer' , 'minimum': 1, 'maximum': 4 },
+        'cardType': { 'type': 'string', },
+        'displayMode': { 'type': 'string', 'enum': ['figures', 'visualization'] },
+        'expanded': { 'type': 'boolean' },
+        'expandedCustomStyle': { 'type': 'object' },
+        'fieldName': { 'type': 'string', 'minLength': 1 },
+        'shapefileFeatureHumanReadablePropertyName': { 'type': 'string' }
+      },
+      'required': ['fieldName', 'cardSize', 'cardCustomStyle', 'expandedCustomStyle', 'displayMode', 'expanded']
+    }
+  );
 
   var Card = Model.extend({
     init: function(parentPageModel, fieldName, id) {
@@ -31,7 +35,7 @@ angular.module('dataCards.models').factory('Card', function($injector, ModelHelp
       this.fieldName = fieldName;
       this.uniqueId = id || _.uniqueId();
 
-      _.each(_.keys(JJV.schema.serializedCard.properties), function(field) {
+      _.each(_.keys(schemas.getSchemaWithVersion('0').properties), function(field) {
         if (field === 'fieldName') return; // fieldName isn't observable.
         self.defineObservableProperty(field);
       });
@@ -60,7 +64,7 @@ angular.module('dataCards.models').factory('Card', function($injector, ModelHelp
     validateCardBlobSchema(blob);
 
     var instance = new Card(page, blob.fieldName, id);
-    _.each(_.keys(JJV.schema.serializedCard.properties), function(field) {
+    _.each(_.keys(schemas.getSchemaWithVersion('0').properties), function(field) {
       if (field === 'fieldName') return; // fieldName isn't observable.
       if (field === 'activeFilters') {
         // activeFilters needs a bit more deserialization
@@ -74,7 +78,7 @@ angular.module('dataCards.models').factory('Card', function($injector, ModelHelp
   };
 
   function validateCardBlobSchema(blob) {
-    var errors = JJV.validate('serializedCard', blob);
+    var errors = schemas.getValidationErrorsAgainstVersion('0', blob);
     if (errors) {
       throw new Error('Card deserialization failed: ' + JSON.stringify(errors));
     }

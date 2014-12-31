@@ -1,24 +1,83 @@
 (function() {
   'use strict';
 
+  function computeAvailableCardTypesInPreferenceOrder(candidateCardTypes, column) {
+    function visit(node, stringCallback, objectCallback) {
+      if (_.isString(node)) {
+        return stringCallback(node);
+      } else {
+        return objectCallback(node);
+      }
+    }
+
+    function computeExpressionValue(expression) {
+      var values = {
+        isHighCardinality:   column.cardinality >= cardTypeMapping.cardinality.threshold,
+        isLowCardinality:    !isHighCardinality && column.cardinality >= cardTypeMapping.cardinality.min,
+        isGeoregionComputed: column.computationStrategy === 'georegion_match_on_string' ||
+                             column.computationStrategy === 'georegion_match_on_point'
+      };
+
+      if (!values.hasOwnProperty(expression)) {
+        throw new Error('Unknown expression in card-type-mapping: ' + expression);
+      }
+
+      return values[expression];
+    }
+
+    // Sort the possible card types to have the defaults first.
+    // NOTE: stable sort.
+    var defaultTypesFirst = _.sortBy(candidateCardTypes, function(candidateCardType) {
+      return visit(candidateCardType, function() {
+        // String: Not explicitly default.
+        return 0;
+      },
+      function(object) {
+        var isDefault = false;
+        if (object.hasOwnProperty('defaultIf')) {
+          isDefault = computeExpressionValue(object.defaultIf);
+        }
+        return isDefault ? 1 : 0;
+      });
+    });
+
+    // Filter out card types whose onlyIf evaluates to false.
+    return _.compact(_.map(defaultTypesFirst, function(candidateCardType) {
+      return visit(
+        candidateCardType,
+        _.identity, //string case
+        function(object) {
+          if (object.hasOwnProperty('onlyIf')) {
+            if(computeExpressionValue(object.onlyIf)) {
+              return object.type;
+            } else {
+              return null;
+            }
+          } else {
+            return object.type;
+          }
+        });
+    }));
+  }
+
   function CardTypeMapping(ServerConfig, $exceptionHandler, $log) {
 
-    function getCardTypesForColumn(column) {
+    function getCardTypesForColumnInPreferenceOrder(column) {
 
       var physicalDatatype;
-      var logicalDatatype;
-      var cardType = null;
+      var physicalTypeMapping;
+      var cardTypes = [];
 
       if (_.isUndefined(column)) {
         $log.error('Could not determine card type for undefined column.');
         return null;
       }
 
-      if (!column.hasOwnProperty('logicalDatatype') ||
+      if (!column.hasOwnProperty('cardinality') ||
           !column.hasOwnProperty('physicalDatatype')) {
 
         $log.error(
-          'Could not determine card type for column: "{0}" (physical and/or logical datatype is missing).'.
+          'Could not determine card type for column: "{0}" (physical datatype and/or cardinality is missing).'.
           format(JSON.stringify(column))
         );
         return null;
@@ -26,47 +85,32 @@
       }
 
       physicalDatatype = column.physicalDatatype;
-      logicalDatatype = column.logicalDatatype;
+      physicalTypeMapping = cardTypeMapping.map[physicalDatatype];
 
-      if (cardTypeMapping.map.hasOwnProperty(logicalDatatype) &&
-          cardTypeMapping.map[logicalDatatype].hasOwnProperty(physicalDatatype)) {
-        cardType = cardTypeMapping.map[logicalDatatype][physicalDatatype];
+      if (physicalTypeMapping) {
+        cardTypes = computeAvailableCardTypesInPreferenceOrder(physicalDatatype, column);
       } else {
-        warnOnceOnUnknownCardType(logicalDatatype, physicalDatatype);
+        warnOnceOnUnknownPhysicalType(physicalDatatype);
       }
 
-      return cardType;
+      return cardTypes;
 
     }
 
-    function getDefaultCardTypeForModel(cardModel) {
+    function warnOnceOnUnknownPhysicalType(physicalDatatype) {
 
-      // TODO: how would I reactify this?
-      var columns = cardModel.page.getCurrentValue('dataset').getCurrentValue('columns');
-      var column = columns[cardModel.fieldName];
-      return defaultVisualizationForColumn(column);
+      var warnedOn = physicalTypesAlreadyWarnedOn;
 
-    }
-
-    function warnOnceOnUnknownCardType(logicalDatatype, physicalDatatype) {
-
-      var warnedOn = physicalLogicalDatatypePairingsAlreadyWarnedOn;
-
-      if (warnedOn.hasOwnProperty(logicalDatatype) && warnedOn[logicalDatatype].hasOwnProperty(physicalDatatype)) {
+      if (warnedOn[physicalDatatype]) {
         return;
+      } else {
+        warnedOn[physicalDatatype] = true;
+
+        $log.error(
+          'Unknown visualization for physicalDatatype "{0}".'.
+          format(physicalDatatype)
+        );
       }
-
-      if (!warnedOn.hasOwnProperty(logicalDatatype)) {
-        warnedOn[logicalDatatype] = {};
-      }
-
-      warnedOn[logicalDatatype][physicalDatatype] = true;
-
-      $log.error(
-        'Unknown visualization for logicalDatatype: "{0}" and physicalDatatype "{1}".'.
-        format(logicalDatatype, physicalDatatype)
-      );
-
     }
 
 
@@ -82,11 +126,7 @@
      */
 
     function availableVisualizationsForColumn(column) {
-      var cardTypes = getCardTypesForColumn(column);
-      if (cardTypes === null) {
-        return [];
-      }
-      return cardTypes.available;
+      return getCardTypesForColumnInPreferenceOrder(column);
     }
 
     /**
@@ -97,26 +137,7 @@
      */
 
     function defaultVisualizationForColumn(column) {
-
-      var cardTypes = getCardTypesForColumn(column);
-
-      // If there is no defined card type, we shouldn't show a card for this column.
-      if (cardTypes === null) {
-        return null;
-      }
-
-      // If the cardinality is not known for this column, fall back to the minimum cardinality.
-      var cardinality = column.cardinality || cardTypeMapping.cardinality.min;
-
-      // Otherwise, determine which type to which we will map based on the column's cardinality.
-      if (cardinality < cardTypeMapping.cardinality.min) {
-        // Don't show cards for columns that don't have varying data.
-        return null;
-      } else if (cardinality < cardTypeMapping.cardinality.threshold) {
-        return cardTypes.lowCardinalityDefault;
-      } else {
-        return cardTypes.highCardinalityDefault;
-      }
+      return _.first(availableVisualizationsForColumn(column));
     }
 
     /**
@@ -139,7 +160,7 @@
     function modelIsCustomizable(cardModel) {
       var cardType = cardModel.getCurrentValue('cardType');
       if (_.isUndefined(cardType)) {
-        cardType = getDefaultCardTypeForModel(cardModel);
+        throw new Error('In order to determine customizability, card must have a defined cardType');
       }
       return CARD_TYPES.hasOwnProperty(cardType) &&
              CARD_TYPES[cardType].customizable;
@@ -152,9 +173,9 @@
      */
 
     function modelIsExportable(cardModel) {
-      var modelCardType = getDefaultCardTypeForModel(cardModel);
-      return CARD_TYPES.hasOwnProperty(modelCardType) &&
-             CARD_TYPES[modelCardType].exportable;
+      var cardType = cardModel.getCurrentValue('cardType');
+      return CARD_TYPES.hasOwnProperty(cardType) &&
+             CARD_TYPES[cardType].exportable;
     }
 
     /**
@@ -196,11 +217,11 @@
 
     var cardTypeMapping = ServerConfig.get('oduxCardTypeMapping');
 
-    // Keep track of which logical/physical datatype combinations have already
+    // Keep track of which physical datatypes have already
     // triggered warnings so that we don't get rate-limited by Airbrake in
     // cases where we have hundreds of columns for which we cannot determine
     // a visualization type.
-    var physicalLogicalDatatypePairingsAlreadyWarnedOn = {};
+    var physicalTypesAlreadyWarnedOn = {};
 
     return {
       availableVisualizationsForColumn: availableVisualizationsForColumn,

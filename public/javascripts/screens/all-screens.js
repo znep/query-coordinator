@@ -178,7 +178,9 @@
             }
         });
 
-        if (blist.configuration.show_domain_decommissioning_message) {
+        if (blist.configuration.show_domain_decommissioning_message &&
+            !checkMaintenanceAckList('decommissioning'))
+        {
             $('#noticeContainer').append(
                 $.tag2({ _: 'div', className: 'flash notice maintenanceNotice decommissionMessage', contents: [
                     { _: 'a', href: '#', className: 'close', contents: [
@@ -186,7 +188,7 @@
                     },
                     { _: 'p', contents: [ 'Effective February 1, 2015 this Socrata demonstration site (', { _: 'a', href: 'https://opendata.socrata.com', contents: 'https://opendata.socrata.com' }, ') will no longer be available. We encourage all users to immediately remove all data data prior to the February 1, 2015 site shut down.'] },
                     { _: 'p', contents: ['Additional questions please contact', { _: 'a', href: 'mailto:support@socrata.com', contents: 'support@socrata.com' }]}
-                ] })
+                ] }).data('hash', 'decommissioning')
             );
         }
 

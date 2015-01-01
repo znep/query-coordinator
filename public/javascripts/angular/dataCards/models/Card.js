@@ -53,7 +53,7 @@ angular.module('dataCards.models').factory('Card', function($injector, ModelHelp
             var defaultCardType = CardTypeMapping.defaultVisualizationForColumn(column);
             return defaultCardType;
           }
-        ).toPromise();
+        ).toPromise(Promise);
       });
     },
 

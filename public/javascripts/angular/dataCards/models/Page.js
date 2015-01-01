@@ -46,13 +46,14 @@ angular.module('dataCards.models').factory('Page', function($q, Dataset, Card, M
             self.observe('dataset').filter(_.isPresent).observeOnLatest('columns').filter(_.isPresent).first().toPromise(),
             baseInfoPromise()
           ]).then(
-          function(args) {
-            var data = args[1];
-            var columns = args[0];
-            return _.map(data.cards, function(serializedCard) {
-              return Card.deserialize(self, columns, serializedCard);
-            });
-          });
+            function(args) {
+              var data = args[1];
+              var columns = args[0];
+              return _.map(data.cards, function(serializedCard) {
+                return Card.deserialize(self, columns, serializedCard);
+              });
+            }
+          );
       });
 
       // Synchronize changes between primaryAmountField and primaryAggregation

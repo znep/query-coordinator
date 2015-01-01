@@ -42,18 +42,13 @@ angular.module('dataCards.models').factory('Page', function($q, Dataset, Card, M
       });
 
       self.defineObservableProperty('cards', [], function() {
-        return $q.all([
-            self.observe('dataset').filter(_.isPresent).observeOnLatest('columns').filter(_.isPresent).first().toPromise(),
-            baseInfoPromise()
-          ]).then(
-            function(args) {
-              var data = args[1];
-              var columns = args[0];
-              return _.map(data.cards, function(serializedCard) {
-                return Card.deserialize(self, columns, serializedCard);
-              });
-            }
-          );
+        return baseInfoPromise().then(
+          function(data) {
+            return _.map(data.cards, function(serializedCard) {
+              return Card.deserialize(self, serializedCard);
+            });
+          }
+        );
       });
 
       // Synchronize changes between primaryAmountField and primaryAggregation

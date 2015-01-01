@@ -23,26 +23,6 @@ angular.module('dataCards.models').factory('Card', function($injector, ModelHelp
     }
   );
 
-  schemas.addSchemaWithVersion(
-    '0.1',
-    {
-      'type': 'object',
-      'properties': {
-        'activeFilters': { 'type': 'array' },
-        'baseLayerUrl': { 'type': 'string' },
-        'cardCustomStyle': { 'type': 'object' },
-        'cardSize': { 'type': 'integer' , 'minimum': 1, 'maximum': 4 },
-        'cardType': { 'type': 'string', 'enum': [ 'table', 'timeline', 'column', 'search', 'choropleth', 'feature', 'numberHistogram' ]},
-        'displayMode': { 'type': 'string', 'enum': [ 'figures', 'visualization' ] },
-        'expanded': { 'type': 'boolean' },
-        'expandedCustomStyle': { 'type': 'object' },
-        'fieldName': { 'type': 'string', 'minLength': 1 },
-        'shapefileFeatureHumanReadablePropertyName': { 'type': 'string' }
-      },
-      'required': ['fieldName', 'cardSize', 'cardType', 'cardCustomStyle', 'expandedCustomStyle', 'displayMode', 'expanded']
-    }
-  );
-
   var Card = Model.extend({
     init: function(parentPageModel, fieldName, id) {
       this._super();
@@ -55,12 +35,26 @@ angular.module('dataCards.models').factory('Card', function($injector, ModelHelp
       this.fieldName = fieldName;
       this.uniqueId = id || _.uniqueId();
 
-      _.each(_.keys(schemas.getSchemaWithVersion('0.1').properties), function(field) {
+      _.each(_.keys(schemas.getSchemaWithVersion('0').properties), function(field) {
         if (field === 'fieldName') return; // fieldName isn't observable.
+        if (field === 'cardType') return; // cardType needs a lazy default.
         self.defineObservableProperty(field);
       });
 
       self.set('activeFilters', []);
+
+      // To compute default cardType, we need column info.
+      // Usually the default is overridden during deserialization, but
+      // in case cardType isn't set, we have a sane default.
+      self.defineObservableProperty('cardType', undefined, function() {
+        return self.page.observe('dataset').filter(_.isPresent).observeOnLatest('columns').filter(_.isPresent).first().map(
+          function(columns) {
+            var column = columns[fieldName];
+            var defaultCardType = CardTypeMapping.defaultVisualizationForColumn(column);
+            return defaultCardType;
+          }
+        ).toPromise();
+      });
     },
 
     /**
@@ -80,11 +74,11 @@ angular.module('dataCards.models').factory('Card', function($injector, ModelHelp
     }
   });
 
-  Card.deserialize = function(page, columns, blob, id) {
-    blob = coerceBlobToLatestSchema(blob, page, columns);
+  Card.deserialize = function(page, blob, id) {
+    validateCardBlobSchema(blob);
 
     var instance = new Card(page, blob.fieldName, id);
-    _.each(_.keys(schemas.getSchemaWithVersion('0.1').properties), function(field) {
+    _.each(_.keys(schemas.getSchemaWithVersion('0').properties), function(field) {
       if (field === 'fieldName') return; // fieldName isn't observable.
       if (field === 'activeFilters') {
         // activeFilters needs a bit more deserialization
@@ -97,36 +91,8 @@ angular.module('dataCards.models').factory('Card', function($injector, ModelHelp
     return instance;
   };
 
-
-  // So we only maintain one parsing codepath, coerce an incoming metadata blob to conform to the latest version,
-  // choosing defaults on a best-effort basis.
-  function coerceBlobToLatestSchema(blob, page, columns) {
-    if (schemas.isValidAgainstVersion('0.1', blob)) {
-      return blob;
-    } else if (schemas.isValidAgainstVersion('0', blob)) {
-      return convertV0BlobToV0_1Blob(blob, page, columns);
-    } else {
-      var validationErrors = schemas.getValidationErrorsAgainstVersion('0.1', blob);
-      throw new Error('Card metadata deserialization failed: ' + JSON.stringify(validationErrors) + JSON.stringify(blob));
-    }
-  }
-
-  function convertV0BlobToV0_1Blob(v0Blob, page, columns) {
-      var converted = _.cloneDeep(v0Blob);
-
-      var column = columns[v0Blob.fieldName];
-      converted.cardType = CardTypeMapping.defaultVisualizationForColumn(column);
-      console.log(v0Blob.fieldName, converted.cardType);
-
-      if (!schemas.isValidAgainstVersion('0.1', converted)) {
-        throw new Error('Conversion of card metadata blob from schema 0 to 0.1 failed to validate: ' + JSON.stringify(converted));
-      } else {
-        return converted;
-      }
-  };
-
   function validateCardBlobSchema(blob) {
-    var errors = schemas.getValidationErrorsAgainstVersion('0.1', blob);
+    var errors = schemas.getValidationErrorsAgainstVersion('0', blob);
     if (errors) {
       throw new Error('Card deserialization failed: ' + JSON.stringify(errors));
     }

@@ -12,11 +12,11 @@
     "money": [
       {
         "type": "column",
-        "defaultIf": "lowCardinality"
+        "defaultIf": "isLowCardinality"
       },
       {
         "type": "numberHistogram",
-        "defaultIf": "highCardinality"
+        "defaultIf": "isHighCardinality"
       },
       "search"
     ],
@@ -27,11 +27,11 @@
       },
       {
         "type": "column",
-        "defaultIf": "lowCardinality"
+        "defaultIf": "isLowCardinality"
       },
       {
         "type": "numberHistogram",
-        "defaultIf": "highCardinality"
+        "defaultIf": "isHighCardinality"
       },
       "search"
     ],
@@ -41,7 +41,7 @@
     "text": [
       {
         "type": "column",
-        "defaultIf": "lowCardinality"
+        "defaultIf": "isLowCardinality"
       },
       "search"
     ],

@@ -1,71 +1,74 @@
 (function() {
   'use strict';
 
-  function computeAvailableCardTypesInPreferenceOrder(candidateCardTypes, column) {
-    function visit(node, stringCallback, objectCallback) {
-      if (_.isString(node)) {
-        return stringCallback(node);
-      } else {
-        return objectCallback(node);
-      }
-    }
-
-    function computeExpressionValue(expression) {
-      var values = {
-        isHighCardinality:   column.cardinality >= cardTypeMapping.cardinality.threshold,
-        isLowCardinality:    !isHighCardinality && column.cardinality >= cardTypeMapping.cardinality.min,
-        isGeoregionComputed: column.computationStrategy === 'georegion_match_on_string' ||
-                             column.computationStrategy === 'georegion_match_on_point'
-      };
-
-      if (!values.hasOwnProperty(expression)) {
-        throw new Error('Unknown expression in card-type-mapping: ' + expression);
-      }
-
-      return values[expression];
-    }
-
-    // Sort the possible card types to have the defaults first.
-    // NOTE: stable sort.
-    var defaultTypesFirst = _.sortBy(candidateCardTypes, function(candidateCardType) {
-      return visit(candidateCardType, function() {
-        // String: Not explicitly default.
-        return 0;
-      },
-      function(object) {
-        var isDefault = false;
-        if (object.hasOwnProperty('defaultIf')) {
-          isDefault = computeExpressionValue(object.defaultIf);
-        }
-        return isDefault ? 1 : 0;
-      });
-    });
-
-    // Filter out card types whose onlyIf evaluates to false.
-    return _.compact(_.map(defaultTypesFirst, function(candidateCardType) {
-      return visit(
-        candidateCardType,
-        _.identity, //string case
-        function(object) {
-          if (object.hasOwnProperty('onlyIf')) {
-            if(computeExpressionValue(object.onlyIf)) {
-              return object.type;
-            } else {
-              return null;
-            }
-          } else {
-            return object.type;
-          }
-        });
-    }));
-  }
-
   function CardTypeMapping(ServerConfig, $exceptionHandler, $log) {
+
+    function computeAvailableCardTypesInPreferenceOrder(candidateCardTypes, column) {
+      function visit(node, stringCallback, objectCallback) {
+        if (_.isString(node)) {
+          return stringCallback(node);
+        } else {
+          return objectCallback(node);
+        }
+      }
+
+      function computeExpressionValue(expression) {
+        var values = {
+          isHighCardinality:   column.cardinality >= cardTypeMapping.cardinality.threshold,
+          isLowCardinality:    column.cardinality < cardTypeMapping.cardinality.threshold &&
+                               column.cardinality >= cardTypeMapping.cardinality.min,
+          isGeoregionComputed: column.computationStrategy === 'georegion_match_on_string' ||
+                               column.computationStrategy === 'georegion_match_on_point'
+        };
+
+        if (!values.hasOwnProperty(expression)) {
+          throw new Error('Unknown expression in card-type-mapping: ' + expression);
+        }
+
+        return values[expression];
+      }
+
+      // Sort the possible card types to have the defaults first.
+      // NOTE: stable sort.
+      // Output should be in this order:
+      // [ <all isDefault = true>, <all without defaultIf>, <all isDefault = false> ]
+      var defaultTypesFirst = _.sortBy(candidateCardTypes, function(candidateCardType) {
+        return visit(candidateCardType, function() {
+          // String: Not explicitly default.
+          return 1;
+        },
+        function(object) {
+          var isDefault = false;
+          if (object.hasOwnProperty('defaultIf')) {
+            isDefault = computeExpressionValue(object.defaultIf);
+          }
+          return isDefault ? 0 : 2;
+        });
+      });
+
+      // Filter out card types whose onlyIf evaluates to false.
+      return _.compact(_.map(defaultTypesFirst, function(candidateCardType) {
+        return visit(
+          candidateCardType,
+          _.identity, //string case
+          function(object) {
+            if (object.hasOwnProperty('onlyIf')) {
+              if(computeExpressionValue(object.onlyIf)) {
+                return object.type;
+              } else {
+                return null;
+              }
+            } else {
+              return object.type;
+            }
+          });
+      }));
+    }
 
     function getCardTypesForColumnInPreferenceOrder(column) {
 
       var physicalDatatype;
-      var physicalTypeMapping;
+      var physicalDatatypeMapping;
       var cardTypes = [];
 
       if (_.isUndefined(column)) {
@@ -85,10 +88,10 @@
       }
 
       physicalDatatype = column.physicalDatatype;
-      physicalTypeMapping = cardTypeMapping.map[physicalDatatype];
+      physicalDatatypeMapping = cardTypeMapping.map[physicalDatatype];
 
-      if (physicalTypeMapping) {
-        cardTypes = computeAvailableCardTypesInPreferenceOrder(physicalDatatype, column);
+      if (physicalDatatypeMapping) {
+        cardTypes = computeAvailableCardTypesInPreferenceOrder(physicalDatatypeMapping, column);
       } else {
         warnOnceOnUnknownPhysicalType(physicalDatatype);
       }

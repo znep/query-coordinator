@@ -27,7 +27,7 @@
 
     $.templates.downloadsTable = {
         downloadTypes: {
-            'normal': [ 'CSV', 'JSON', 'PDF', 'RDF', 'RSS', 'XLS', 'XLSX', 'XML'  ],
+            'normal': [ 'CSV', 'CSV for Excel', 'JSON', 'PDF', 'RDF', 'RSS', 'XLS', 'XLSX', 'XML'  ],
             'geo_attributes': [ 'CSV', 'JSON' ],
             'nbe': [ 'CSV', 'JSON' ],
             'geo': [ 'KML', 'KMZ', 'Shapefile', 'Original' ]

@@ -36,15 +36,31 @@
             ng-click="savePage()"
             enabled="hasChanges"
             save-status="saveStatus"
-            ng-if="currentUser">
+            ng-if="currentUserHasSaveRight">
           </save-button>
-          <save-as page-has-changes="hasChanges" save-page-as="savePageAs" ng-if="currentUser"></save-as>
+          <save-as page-has-changes="hasChanges" save-page-as="savePageAs" ng-if="currentUserHasSaveRight"></save-as>
           <button type="button"
             ng-click="editMode = !expandedCard && !editMode"
             class="action-btn r-to-l"
             ng-class='{disabled: !!expandedCard, "cards-edit-disabled": !!expandedCard}'
-            ng-show="currentUser">{{editMode | ifElse:'Preview':'Customize'}}</button>
-          <a href="{{datasetCSVDownloadURL}}" title="Download this data as CSV" class="action-btn r-to-l">Download</a>
+            ng-show="currentUserHasSaveRight">{{editMode | ifElse:'Preview':'Customize'}}</button>
+          <div
+            ng-click="onDownloadClick($event)"
+            class="action-btn r-to-l download-menu"
+            ng-class="{active: downloadOpened || chooserMode.show, disabled: editMode}"
+            ng-if="showDownloadButton"
+            >{{ chooserMode.show ? 'Cancel' : 'Download' }}
+            <dropdown-menu ng-if="downloadOpened">
+              <a href="{{datasetCSVDownloadURL}}">Data as tabular spreadsheet</a>
+              <a href='#'
+                 ng-class="{'download-menu-item-disabled': hasChanges}"
+                 ng-click="chooserMode.show = !hasChanges && true"
+                 >Visualization as image</a>
+            </dropdown-menu>
+          </div>
+          <a ng-if="!showDownloadButton"
+             class="action-btn r-to-l"
+             href="{{datasetCSVDownloadURL}}">Download</a>
           <api-explorer dataset-observable="page.observe('dataset')"></api-explorer>
         </div>
       </div>
@@ -67,6 +83,7 @@
             </div>
           </div>
           <button class="clear-all-filters-button action-btn dark" ng-if="appliedFiltersForDisplay.length > 0" ng-click="clearAllFilters()">Clear All ×</button>
+          <aggregation-chooser page="page"></aggregation-chooser>
         </div>
       </div>
     </div>
@@ -78,14 +95,40 @@
       page="page"
       edit-mode="editMode"
       global-where-clause-fragment="globalWhereClauseFragment"
-      card-models="cardModels"
       expanded-card="expandedCard"
-      allow-add-card="!hasAllCards">
+      allow-add-card="!allVisualizableColumnsVisualized"
+      dataset-columns="datasetColumns"
+      chooser-mode="chooserMode">
     </card-layout>
 
   </div>
-</div>
 
-<modal-dialog id="add-card-dialog">
-  <add-card-dialog page="page" card-models="cardModels" dataset-columns="datasetColumns"></add-card-dialog>
-</modal-dialog>
+  <modal-dialog
+    ng-if="addCardState.show"
+    dialog-state="addCardState">
+
+    <add-card-dialog
+      card-models="cardModels"
+      on-customize-card="customizeCard"
+      dataset-columns="datasetColumns"
+      dialog-state="addCardState"
+      page="page">
+    </add-card-dialog>
+
+  </modal-dialog>
+
+  <modal-dialog
+    class="second"
+    ng-if="customizeState.show"
+    dialog-state="customizeState">
+
+    <customize-card-dialog
+      dialog-state="customizeState"
+      page="page">
+    </customize-card-dialog>
+
+  </modal-dialog>
+
+  <feedback-panel></feedback-panel>
+
+</div>

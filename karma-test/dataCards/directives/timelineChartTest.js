@@ -1,8 +1,17 @@
 describe('timelineChart', function() {
-  var th, compile, rootScope, scope, timeout, testData, AngularRxExtensions;
 
-  var testJson = 'karma-test/dataCards/test-data/timelineChartTest/chicago-crimes.json';
+  var mockWindowStateService;
+  var testHelpers;
+  var rootScope;
+  var scope;
+  var timeout;
+  var testData;
+  var AngularRxExtensions;
+  var testJson = 'karma-test/dataCards/test-data/timelineChartTest/timelineChartTestData.json';
+  var hiddenLabelTestJson = 'karma-test/dataCards/test-data/timelineChartTest/hiddenLabelTimelineChartTestData.json';
+
   beforeEach(module(testJson));
+  beforeEach(module(hiddenLabelTestJson));
 
   beforeEach(module('dataCards'));
 
@@ -13,105 +22,122 @@ describe('timelineChart', function() {
 
   beforeEach(module('/angular_templates/dataCards/timelineChart.html'));
 
+  beforeEach(function() {
+    module(function($provide) {
+
+      mockWindowStateService = {};
+      mockWindowStateService.scrollPositionSubject = new Rx.Subject();
+      mockWindowStateService.windowSizeSubject = new Rx.Subject();
+      mockWindowStateService.mouseLeftButtonPressedSubject = new Rx.Subject();
+      mockWindowStateService.mousePositionSubject = new Rx.Subject();
+      mockWindowStateService.closeDialogEventObservable = new Rx.Subject();
+
+      $provide.value('WindowState', mockWindowStateService);
+    });
+  });
+
   beforeEach(inject(function($injector) {
-    th = $injector.get('testHelpers');
-    compile = $injector.get('$compile');
+    testHelpers = $injector.get('testHelpers');
     rootScope = $injector.get('$rootScope');
     scope = rootScope.$new();
     timeout = $injector.get('$timeout');
     AngularRxExtensions = $injector.get('AngularRxExtensions');
-    testData = _.map(th.getTestJson(testJson), function(datum) {
-      return {
-        date: moment(datum.date_trunc),
-        total: Number(datum.value),
-        filtered: Number(datum.value)/2,
-        special: false
-      };
-    });
+    unfilteredTestData = unpickleTestData(testHelpers.getTestJson(testJson), false);
+    filteredTestData = unpickleTestData(testHelpers.getTestJson(testJson), true);
+    hiddenLabelTestData = unpickleTestData(testHelpers.getTestJson(hiddenLabelTestJson), false);
   }));
+
+  afterEach(function() {
+    removeTimelineChart();
+  });
 
   // NOTE: TEMPORARY TEST DEBUGGING
   // For some reason, flyouts keep appearing in inconsistent numbers.
   // Log out the contents for debugging help.
-  function printAllFlyoutContent() {
+  /*function printAllFlyoutContent() {
     $('.flyout').each(function(i, flyout) {
       console.log('Unexpected flyout found, possible test bug:', $(flyout).html());
     });
     $('.flyout').remove();
+  }*/
+
+  function unpickleTestData(testData, shouldFilter) {
+
+    testData.minDate = new Date(testData.minDate);
+    testData.maxDate = new Date(testData.maxDate);
+    testData.breaks = testData.breaks.map(
+      function(dateString) {
+        return new Date(dateString);
+      }
+    );
+    testData.values = testData.values.map(
+      function(value) {
+        if (shouldFilter) {
+          return {
+            date: new Date(value.date),
+            unfiltered: value.unfiltered,
+            filtered: Math.floor(value.filtered / 2)
+          };
+        } else {
+          return {
+            date: new Date(value.date),
+            unfiltered: value.unfiltered,
+            filtered: value.filtered
+          };
+        }
+      }
+    );
+
+    return testData;
+
   }
 
-  after(function() {
-    removeTimelineChart();
-  });
+  function createTimelineChart(width, expanded) {
 
-  var createNewTimelineChart = function(width, expanded, showFiltered, moreScope) {
-    var html =
-      '<div class="card-visualization" style="position: relative; left: 20px; width: ' + width + 'px; height: 480px;overflow:hidden;">' +
-        '<div timeline-chart class="timeline-chart"' +
-          ' chart-data="testData" show-filtered="showFiltered" expanded="expanded" precision="precision" filters="filters">' +
-        '</div>' +
-      '</div>';
-    var childScope = scope.$new();
-    if (moreScope) {
-      $.extend(childScope, moreScope);
-    }
-    var elem = angular.element(html);
+    var html;
+    var childScope;
+    var element;
+    var compiledElement;
 
-    $('body').append('<div id="timelineChartTest"></div>');
-    $('#timelineChartTest').append(elem);
+    var chartId = $('#test-timeline-chart').length === 0 ? 'test-timeline-chart' : 'alternate-test-timeline-chart';
 
-    var compiledElem = compile(elem)(childScope);
+    var html = [
+      '<div id="{0}">'.format(chartId),
+        '<div class="card-visualization" style="width: {0}px; height: 300px;">'.format(width),
+          '<div timeline-chart ',
+            'class="timeline-chart"',
+            'chart-data="chartData" ',
+            'expanded="expanded" ',
+            'precision="precision" ',
+            'row-display-unit="rowDisplayUnit" ',
+            'active-filters="activeFilters" ',
+            'page-is-filtered="pageIsFiltered">',
+          '</div>',
+        '</div>',
+      '</div>'
+    ].join('');
 
-    childScope.expanded = expanded;
-    childScope.testData = testData;
-    childScope.showFiltered = showFiltered;
-    if (showFiltered) {
-      childScope.filters = [{
-        start: testData[Math.floor(.2 * testData.length)].date,
-        end: testData[Math.ceil(.8 * testData.length)].date
-      }];
-    }
-    childScope.precision = "MONTH";
-    childScope.$digest();
+    scope.chartData = unfilteredTestData;
+    scope.expanded = expanded;
+    scope.precision = 'MONTH';
+    scope.rowDisplayUnit = 'rowDisplayUnit';
+    scope.activeFilters = [];
+    scope.pageIsFiltered = false;
 
-    return {
-      element: $(compiledElem),
-      scope: childScope
-    };
-  };
-  var removeTimelineChart = function() {
-    $('#timelineChartTest').remove();
-  };
-  var activeChartScenario = null;
-  var activeChart = null;
+    return testHelpers.TestDom.compileAndAppend(html, scope);
 
-  var getOrCreateChartScenario = function(type) {
-    if (activeChartScenario !== type) {
-      removeTimelineChart();
-      switch(type) {
-        case '640px unexpanded unfiltered': activeChart = createNewTimelineChart(640, false, false); break;
-        case '300px unexpanded unfiltered': activeChart = createNewTimelineChart(300, false, false); break;
-        case '640px unexpanded filtered': activeChart = createNewTimelineChart(640, false, true); break;
-        default: throw new Error('unsupported chart scenario'); break;
-      }
-      activeChartScenario = type;
-    }
-    return activeChart;
-  };
-  var removeAllScenarioCharts = function() {
-    removeTimelineChart();
-    activeChart = null;
-    activeChartScenario = null;
-    // Flyouts will sometimes stick around and cause unexpected behavior, since
-    // initializing them will cause them to look for an existing one and - under certain
-    // conditions - cause the rendering code immediately if it finds one.
-    // TODO(jerjou): flyouts should behave more reasonably, but for now:
-    $('.flyout').remove();
-  };
+  }
+
+  function removeTimelineChart() {
+    $('#test-timeline-chart').remove();
+    $('#alternate-test-timeline-chart').remove();
+    $('#uber-flyout').hide();
+  }
+
 
 
   describe('render timing events', function() {
-    it('should emit render:start and render:complete events on rendering', function(done) {
+    xit('should emit render:start and render:complete events on rendering', function(done) {
       // Need a clean chart, otherwise we might not get a render.
       removeAllScenarioCharts();
       var chart = getOrCreateChartScenario('300px unexpanded unfiltered');
@@ -143,465 +169,759 @@ describe('timelineChart', function() {
     });
   });
 
-  describe('when not expanded at 640px', function() {
-    it('should create segments and 13 labels', function() {
-      var chart = getOrCreateChartScenario('640px unexpanded unfiltered');
-      expect($('g.segment').length).to.equal(testData.length);
-      expect(chart.element.find('.labels div.label').length).to.equal(13);
-    });
 
-    it('should create segments with correct children', function() {
-      var chart = getOrCreateChartScenario('640px unexpanded unfiltered');
-      _.each($('g.segment'), function(segment) {
-        $seg = $(segment);
-        expect($seg.children().length).to.equal(5);
-        expect($seg.find('.filtered.line').length).to.equal(1);
-        expect($seg.find('.unfiltered.line').length).to.equal(1);
-        expect($seg.find('.filtered.fill').length).to.equal(1);
-        expect($seg.find('.unfiltered.fill').length).to.equal(1);
-        expect($seg.find('rect.spacer').length).to.equal(1);
-      });
-    });
+  it("should create 1 grey ('.context') and 1 blue ('.shaded') path", function() {
 
-    it('should create 3 ticks on the y-axis', function() {
-      var chart = getOrCreateChartScenario('640px unexpanded unfiltered');
-      expect(chart.element.find('.ticks > div').length).to.equal(3);
-    });
+    var chart = createTimelineChart(640, false);
 
-    it('should create 13 ticks on the x-axis', function() {
-      var chart = getOrCreateChartScenario('640px unexpanded unfiltered');
-      expect(chart.element.find('g.xticks > rect.tick').length).to.equal(13);
-    });
+    expect($('path.context').length).to.equal(1);
+    expect($('path.shaded').length).to.equal(1);
 
-    it('should create labels with different positions', function() {
-      var chart = getOrCreateChartScenario('640px unexpanded filtered');
-      var positions = _.map(chart.element.find('.labels div.label'), function(label) {
-        return $(label).attr('style');
-      });
-      expect(_.uniq(positions).length).to.equal(positions.length);
-    });
-
-    it('should be able to change data', function() {
-      this.timeout(4000);
-      var chart = getOrCreateChartScenario('640px unexpanded filtered');
-      var filteredPaths = _.map($('path.fill.filtered'), function(path) {
-        return $(path).attr('d');
-      });
-
-      chart.scope.testData = _.map(testData, function(datum) {
-        datum.filtered /= 2;
-        return datum;
-      });
-
-      chart.scope.$digest();
-
-      th.flushAllD3Transitions();
-
-      var newFilteredPaths = _.map(chart.element.find('path.fill.filtered'), function(path) {
-        return $(path).attr('d');
-      });
-      expect(filteredPaths).to.not.be.empty;
-      expect(newFilteredPaths).to.not.be.empty;
-      _.each(_.zip(filteredPaths, newFilteredPaths), function(a) {
-        expect(a[0]).to.not.equal(a[1]);
-      });
-    });
-
-    describe('if not showFiltered', function() {
-      it('should not show the filtered count', function() {
-        printAllFlyoutContent();
-        var expectedFlyoutSelector = '.flyout:contains(Filtered Amount)';
-
-        var chart = getOrCreateChartScenario('640px unexpanded unfiltered');
-
-        chart.element.find('g.segment').eq(1).mouseover();
-        expect($(expectedFlyoutSelector).length).to.equal(0);
-        chart.element.find('g.segment').eq(1).mouseout();
-        expect($(expectedFlyoutSelector).length).to.equal(0);
-      });
-    });
-
-    describe('flyout', function() {
-      it('should pop up on mouse over with no filter and total of 16.4K', function() {
-        printAllFlyoutContent();
-        var expectedFlyoutSelector = '.flyout:contains(16.4K)';
-
-        var chart = getOrCreateChartScenario('640px unexpanded unfiltered');
-        chart.element.find('g.segment rect.spacer').mouseover();
-        expect($(expectedFlyoutSelector).length).to.equal(1);
-        var $rows = $(expectedFlyoutSelector + " .flyout-row");
-        expect($rows.length).to.equal(1);
-        expect($rows.children().last().text()).to.equal('16.4K');
-        chart.element.find('g.segment rect.spacer').mouseout();
-        expect($(expectedFlyoutSelector).length).to.equal(0);
-      });
-      it('should popup on mouse over with filter of 8,204', function() {
-        printAllFlyoutContent();
-        var expectedFlyoutSelector = '.flyout:contains(8,204)';
-
-        var chart = getOrCreateChartScenario('640px unexpanded filtered');
-        chart.element.find('g.segment rect.spacer').mouseover();
-        expect($(expectedFlyoutSelector).length).to.equal(1);
-        var $rows = $(expectedFlyoutSelector + " .flyout-row");
-        expect($rows.length).to.equal(2);
-        expect($rows.last().children().last().text()).to.equal('8,204');
-        chart.element.find('g.segment rect.spacer').mouseout();
-        expect($(expectedFlyoutSelector).length).to.equal(0);
-      });
-      it('should appear when hovering over a label, also highlighting the area', function() {
-        printAllFlyoutContent();
-        var expectedFlyoutSelector = '.flyout:contains(480K):contains(Total)';
-
-        var chart = getOrCreateChartScenario('640px unexpanded filtered');
-        chart.element.find('.labels .label').eq(0).mouseover();
-        expect($(expectedFlyoutSelector).length).to.be.above(0);
-        expect(chart.element.find('g.segment.hover').length).to.equal(12);
-
-        var activeLabels = chart.element.find('.labels .label.active');
-        expect(activeLabels.length).to.be.above(0); //NOTE for some reason, multiple labels appear but only on BrowserStack.
-                                                    //Works fine locally, even when the tests are run continuously for an hour.
-        if (activeLabels.length > 1) {
-          console.warn('Multiple active labels popped up - ignoring for now.');
-          console.warn('Text: ' + activeLabels.text());
-        }
-
-        expect(activeLabels).to.be.visible;
-        chart.element.find('.labels .label').eq(0).mouseout();
-        expect($(expectedFlyoutSelector).length).to.equal(0);
-      });
-      it('should switch orientation when hovering a section near the right edge of the card', function() {
-        var $flyout;
-        printAllFlyoutContent();
-        var chart = getOrCreateChartScenario('640px unexpanded filtered');
-
-        var $segments = chart.element.find('g.segment');
-        $segments.filter(':last').mouseover();
-        $flyout = $('.flyout');
-
-        expect($flyout.find('.flyout-arrow').hasClass('right')).to.be.true;
-        $segments.mouseout();
-
-      });
-    });
-
-    describe('during a selection', function() {
-      it('should dim the labels', function() {
-        var chart = getOrCreateChartScenario('640px unexpanded filtered');
-        var segment = chart.element.find('g.segment').eq(1);
-        segment.mousedown().mousemove();
-        expect(chart.element.find('.selecting').length).to.equal(1);
-      });
-    });
-
-    describe('range label', function() {
-      it('should be created when a segment is clicked', function() {
-        var chart = getOrCreateChartScenario('640px unexpanded filtered');
-        var segment = chart.element.find('g.segment').eq(1);
-        segment.mousedown().mousemove().mouseup();
-        expect(chart.element.find('.label.highlighted').length).to.equal(1);
-        expect(chart.element.find('.label.highlighted .text').text()).to.equal(
-          'Feb \'01');
-        expect(chart.element.find('g.segment.highlighted').length).to.equal(1);
-        expect(chart.element.find('g.draghandle').length).to.equal(2);
-      });
-      it('should be created with handles when a label is clicked', function() {
-        var chart = getOrCreateChartScenario('640px unexpanded filtered');
-        var segment = chart.element.find('.label').eq(1);
-        segment.mousedown().mousemove().mouseup();
-        expect(chart.element.find('.label.highlighted').length).to.equal(1);
-        expect(chart.element.find('.label.highlighted .text').text()).to.equal('2002');
-        expect(chart.element.find('g.segment.highlighted').length).to.equal(12);
-        expect(chart.element.find('g.draghandle').length).to.equal(2);
-      });
-      it('should be created with handles when a selection is dragged', function() {
-        var chart = getOrCreateChartScenario('640px unexpanded filtered');
-        var segments = chart.element.find('g.segment');
-        var start = 5;
-        var end = 10;
-        segments.eq(start).mousedown();
-        segments.eq(end).mousemove().mouseup();
-        expect(chart.element.find('.label.highlighted').length).to.equal(1);
-        expect(chart.element.find('.label.highlighted .text').text()).to.equal(
-          'Jun \'01 - Nov \'01');
-        expect(chart.element.find('g.segment.highlighted').length).to.equal(
-          end - start + 1);
-        expect(chart.element.find('g.draghandle').length).to.equal(2);
-      });
-    });
-
-    describe('highlighting labels', function() {
-      var chart;
-      var segments;
-      var start;
-      var end;
-      beforeEach(function() {
-        removeAllScenarioCharts();
-        chart = getOrCreateChartScenario('640px unexpanded filtered');
-        segments = chart.element.find('g.segment');
-        start = 5;
-        end = 10;
-        expect(chart.element.find('.label.active').length).to.equal(0);
-      });
-      afterEach(function() {
-        // clean up
-        segments.eq(end).mouseleave().mouseup();
-      });
-
-      it('should highlight a label when hovering over the chart', function() {
-        var expectedFlyoutSelector = '.flyout:contains(June 2007)';
-
-        var spacers = segments.find('rect.spacer');
-        spacers.eq(Math.floor(spacers.length/2)).mouseover();
-        expect($(expectedFlyoutSelector).length).to.be.above(0);
-
-        var activeLabels = chart.element.find('.labels .label.active');
-        // NOTE for some reason, multiple labels appear but only on BrowserStack.
-        // Works fine locally, even when the tests are run continuously for an hour.
-        expect(activeLabels.length).to.be.above(0);
-        if (activeLabels.length > 1) {
-          console.warn('Multiple active labels popped up - ignoring for now.');
-          console.warn('Text: ' + activeLabels.text());
-        }
-
-        expect(activeLabels).to.be.visible;
-        spacers.eq(Math.floor(spacers.length/2)).mouseout();
-        expect($(expectedFlyoutSelector).length).to.equal(0);
-      });
-      it('should occur onhover', function() {
-        // Hover over data for the last label, and make sure it emboldens
-        var farRightLabel = chart.element.find('.label:visible:not(.highlighted)').last();
-        var farRightDate = d3.select(farRightLabel[0]).datum().date;
-        // Now find one of the data points in the graph to hover over
-        $(d3.select(chart.element[0]).selectAll('g.segment').filter(function(d) {
-          return d.date > farRightDate;
-        })[0][0]).mouseover();
-
-        expect(chart.element.find('.label.active').length).not.to.equal(0);
-      });
-      it('should not occur onhover when actively selecting', function() {
-        // Creating a new active filter
-        segments.eq(start).mousedown();
-        segments.eq(end).mousemove();
-
-        expect(chart.element.find('.label.active').length).to.equal(0);
-
-        // Hover over data for the last label, and make sure it doesn't embolden
-        var farRightLabel = chart.element.find('.label:visible:not(.highlighted)').last();
-        var farRightDate = d3.select(farRightLabel[0]).datum().date;
-        // Now find one of the data points in the graph to hover over
-        $(d3.select(chart.element[0]).selectAll('g.segment').filter(function(d) {
-          return d.date > farRightDate;
-        })[0][0]).mouseover();
-
-        // Since we're in the middle of a filter selection, it should not become active.
-        expect(chart.element.find('.label.active').length).to.equal(0);
-      });
-    });
-
-    describe('an existing selection', function() {
-      var chart;
-      function hitTestRelToChart(xOffset, yOffset) {
-        return $(document.elementFromPoint(chart.element.offset().left + xOffset, chart.element.offset().top + yOffset));
-      };
-      beforeEach(function() {
-        chart = getOrCreateChartScenario('640px unexpanded filtered');
-      });
-      it('should be able to change by dragging a handle', function() {
-        var segments = chart.element.find('g.segment');
-        var start = 5;
-        var end = 10;
-        segments.eq(start).mousedown().mousemove().mouseup();
-        expect(chart.element.find('.label.highlighted').length).to.equal(1);
-        expect(chart.element.find('g.draghandle').length).to.equal(2);
-        expect(chart.element.find('g.segment.highlighted').length).to.equal(1);
-
-        chart.element.find('g.draghandle').eq(1).mousedown();
-        chart.element.find('g.segment').eq(end).mousemove().mouseup();
-        expect(chart.element.find('.label.highlighted').length).to.equal(1);
-        expect(chart.element.find('.label.highlighted .text').text()).to.equal(
-          'Jun \'01 - Nov \'01');
-        expect(chart.element.find('g.segment.highlighted').length).to.equal(
-          end - start + 1);
-        expect(chart.element.find('g.draghandle').length).to.equal(2);
-      });
-      it('should be able to change by dragging a handle off the left or right of the chart', function(done) {
-        AngularRxExtensions.install(chart.scope);
-        var segments = chart.element.find('g.segment');
-        var start = 5;
-
-        chart.scope.eventToObservable('timeline-chart:filter-changed').
-          pluck('args'). // Get args from event
-          pluck(0).      // Get the first and only arg in each event.
-          take(2).       // Only care about first two events.
-          toArray().
-          subscribe(function(filters) {
-            var firstFilter = filters[0];
-            var secondFilter = filters[1];
-            expect(firstFilter[1]).to.be.at.least(_.last(testData).date);
-            expect(secondFilter[0]).to.be.at.most(_.first(testData).date);
-            done();
-          });
-
-        // Test the right side.
-        segments.eq(start).mousedown().mousemove(); // Make the handles show up.
-        chart.element.find('g.draghandle').eq(1).mousedown(); // mousedown on the right handle
-        var rightElement = hitTestRelToChart(chart.element.width() + 10, 0);
-        rightElement.mousemove().mouseup();
-
-        // Test the left side.
-        segments.eq(start).mousedown().mousemove(); // Make the handles show up.
-        chart.element.find('g.draghandle').eq(0).mousedown(); // mousedown on the left handle
-        var leftElement = hitTestRelToChart(-10, 0);
-        leftElement.mousemove().mouseup();
-      });
-      it('should clear when drag handle is clicked', function() {
-        var segment = chart.element.find('g.segment').eq(1);
-        segment.mousedown().mousemove().mouseup();
-        var dragHandles = chart.element.find('g.draghandle');
-        expect(dragHandles.length).to.equal(2);
-        dragHandles.eq(0).mousedown().mouseup();
-        expect(chart.element.find('g.draghandle').length).to.equal(0);
-        removeAllScenarioCharts(); // Too annoying to clear state properly.
-      });
-      it('should fire filter-changed when changed, and ' +
-         'a filter-cleared events when cleared', function() {
-        var segments = $('g.segment');
-        var filterChanged = false;
-        scope.$on('timeline-chart:filter-changed', function(filter) {
-          filterChanged = true;
-        });
-        segments.eq(5).mousedown().mousemove().mouseup();
-        expect(filterChanged).to.equal(true, 'should have recieved the filter-changed event.');
-
-        var filterCleared = false;
-        scope.$on('timeline-chart:filter-cleared', function(filter) {
-          filterCleared = true;
-        });
-        $('.label.highlighted').mousedown().mouseup();
-        expect(filterCleared).to.equal(true, 'should have recieved the filter-cleared event.');
-      });
-      it('should be able to select a sub-selection', function() {
-        var segment = chart.element.find('.label').eq(1);
-        segment.mousedown().mousemove().mouseup();
-        expect(chart.element.find('.label.highlighted').length).to.equal(1);
-        expect(chart.element.find('g.segment.highlighted').length).to.equal(12);
-        chart.element.find('g.segment.highlighted').eq(0).mousedown().mousemove().mouseup();
-        expect(chart.element.find('.label.highlighted').length).to.equal(1);
-        expect(chart.element.find('g.segment.highlighted').length).to.equal(1);
-      });
-
-      it('should clear when cleared from a parent scope', function() {
-        expect(chart.element.find('g.draghandle').length).not.to.equal(0);
-        chart.scope.filters = [];
-        chart.scope.$digest();
-        expect(chart.element.find('g.draghandle').length).to.equal(0);
-      });
-
-      describe('when existing onload', function() {
-        var chart;
-        beforeEach(function() {
-          removeAllScenarioCharts();
-          chart = createNewTimelineChart(640, false, true, {
-            // Add a filter
-            filters: [{
-              start: testData[Math.floor(.2 * testData.length)].date,
-              end: testData[Math.ceil(.8 * testData.length)].date
-            }]
-          });
-        });
-        afterEach(function() {
-          removeAllScenarioCharts();
-        });
-        it('should start out highlighted', function() {
-          expect(chart.element.find('g.draghandle').length).to.equal(2);
-          expect(chart.element.find('g.segment.highlighted').length).to.be.above(0);
-          expect(chart.element.find('.label.highlighted').length).to.equal(1);
-        });
-        it('should dim the labels', function() {
-          var labels = chart.element.find('.labels.dim');
-          expect(labels.length).to.equal(1);
-        });
-      });
-    });
-
-    describe('multiple timeline charts', function() {
-      var chart1;
-      var chart2;
-      beforeEach(function() {
-        chart1 = createNewTimelineChart(640, false, false);
-        chart2 = createNewTimelineChart(640, false, false);
-      });
-      it('should keep separate selections', function() {
-        var range1 = {start: 1, end: 5};
-        var range2 = {start:2, end: 7};
-        // Select the first range
-        chart1.element.find('g.segment').eq(range1.start).
-          mousedown().mousemove().
-          end().eq(range1.end).
-          mousemove().mouseup();
-        // select the second
-        chart2.element.find('g.segment').eq(range2.start).
-          mousedown().mousemove().
-          end().eq(range2.end).
-          mousemove().mouseup();
-
-        expect(chart1.element.find('g.draghandle').length).to.equal(2);
-        var highlightedSegments = chart1.element.find('g.segment.highlighted');
-        expect(highlightedSegments.length).to.equal(1 + range1.end - range1.start);
-        expect(highlightedSegments.eq(0).index()).to.equal(range1.start);
-
-        expect(chart2.element.find('g.draghandle').length).to.equal(2);
-        var highlightedSegments = chart2.element.find('g.segment.highlighted');
-        expect(highlightedSegments.length).to.equal(1 + range2.end - range2.start);
-        expect(highlightedSegments.eq(0).index()).to.equal(range2.start);
-      });
-    });
-
-    describe('if showFiltered', function() {
-      it('should show the filtered count in the flyout', function() {
-        printAllFlyoutContent();
-        var chart = getOrCreateChartScenario('640px unexpanded filtered');
-
-        chart.element.find('g.segment').eq(1).mouseover();
-        expect($('.flyout').is(':contains(Filtered Amount)')).to.equal(true);
-      });
-    });
   });
 
-  describe('when not expanded at 300px', function() {
-    it('should hide some labels', function() {
-      var chart = getOrCreateChartScenario('300px unexpanded unfiltered');
-      expect(chart.element.find('.label').length).to.equal(13);
-      expect(chart.element.find('.label').filter(function() {
-        return $(this).css('opacity') > 0;
-      }).length).to.be.below(13);
+  xit('should create 6 x-axis ticks and 6 x-axis labels', function() {
+
+    var chart = createTimelineChart(640, false);
+
+    expect($('.x-tick').length).to.equal(6);
+    expect($('.x-tick-label').length).to.equal(6);
+
+  });
+
+  it('should create 3 y-axis ticks and 3 y-axis labels', function() {
+
+    var chart = createTimelineChart(640, false);
+
+    expect($('.y-tick').length).to.equal(3);
+
+  });
+
+  it('should create x-axis labels with unique positions', function() {
+
+    var chart = createTimelineChart(640, false);
+
+    var positions = _.map($('.x-tick-label'), function(label) {
+      return $(label).attr('style');
     });
-    it('should show hidden labels when the segment is moused over', function() {
-      var SECTION_INDEX = 4;
-      var SEGMENT_INDEX = SECTION_INDEX * 12;
-      var chart = getOrCreateChartScenario('300px unexpanded unfiltered');
-      var $label = chart.element.find('.label.hidden');
-      var startDate = d3.select($label[0]).datum().date;
-      var endDate = d3.select($label.eq(0).next()[0]).datum().date;
-      var segments = d3.select(chart.element[0]).selectAll('g.segment').filter(
-        function(d) {
-          return startDate < d.date && d.date < endDate;
+
+    expect(_.uniq(positions).length).to.equal(positions.length);
+
+  });
+
+  it('should react to filtered values', function() {
+
+    var chart = createTimelineChart(640, false);
+
+    var unfilteredPath = $('.shaded').attr('d');
+
+    scope.chartData = filteredTestData;
+    scope.$apply();
+
+    var filteredPath = $('.shaded').attr('d');
+
+    expect(unfilteredPath).to.not.be.empty;
+    expect(filteredPath).to.not.be.empty;
+    expect(unfilteredPath).to.not.equal(filteredPath);
+
+  });
+
+  it('should highlight the chart when the mouse is moved over the chart display', function() {
+
+    var chart = createTimelineChart(640, false);
+
+    var wasUnhighlighted = $('.timeline-chart-highlight-container').children('g').children().length === 0;
+
+    mockWindowStateService.scrollPositionSubject.onNext(0);
+    mockWindowStateService.mouseLeftButtonPressedSubject.onNext(false);
+    mockWindowStateService.mousePositionSubject.onNext({
+      clientX: 320,
+      clientY: 100,
+      target: $('.timeline-chart-highlight-target')[0]
+    });
+
+    var wasThenHighlighted = $('.timeline-chart-highlight-container').children('g').children().length === 1;
+
+    expect(wasUnhighlighted).to.equal(true);
+    expect(wasThenHighlighted).to.equal(true);
+
+  });
+
+  it('should create a selection when the mouse is clicked on the chart display', function() {
+
+    var chart = createTimelineChart(640, false);
+
+    var wasUnhighlighted = $('.timeline-chart-highlight-container').children('g').children().length === 0;
+
+    mockWindowStateService.scrollPositionSubject.onNext(0);
+    mockWindowStateService.mouseLeftButtonPressedSubject.onNext(true);
+    mockWindowStateService.mousePositionSubject.onNext({
+      clientX: 320,
+      clientY: 100,
+      target: $('.timeline-chart-highlight-target')[0]
+    });
+
+    var wasThenHighlighted = $('.timeline-chart-highlight-container').children('g').children().length === 1;
+
+    mockWindowStateService.mouseLeftButtonPressedSubject.onNext(false);
+    mockWindowStateService.mousePositionSubject.onNext({
+      clientX: 320,
+      clientY: 100,
+      target: $('.timeline-chart-highlight-target')[0]
+    });
+
+    var wasThenSelected = $('.timeline-chart-wrapper').hasClass('selected');
+
+    expect(wasUnhighlighted).to.equal(true);
+    expect(wasThenHighlighted).to.equal(true);
+    expect(wasThenSelected).to.equal(true);
+
+  });
+
+  it('should highlight the chart when the mouse is moved over the chart labels', function() {
+
+    var chart = createTimelineChart(640, false);
+
+    var wasUnhighlighted = $('.timeline-chart-highlight-container').children('g').children().length === 0;
+
+    mockWindowStateService.scrollPositionSubject.onNext(0);
+    mockWindowStateService.mouseLeftButtonPressedSubject.onNext(false);
+    mockWindowStateService.mousePositionSubject.onNext({
+      clientX: 10,
+      clientY: $('#test-timeline-chart').offset().top + $('#test-timeline-chart').height() - 15,
+      target: $('.x-tick-label')[0]
+    });
+
+    var wasThenHighlighted = $('.timeline-chart-highlight-container').children('g').children().length === 1;
+
+    expect(wasUnhighlighted).to.equal(true);
+    expect(wasThenHighlighted).to.equal(true);
+
+  });
+
+  it('should create a selection when the mouse is clicked on a chart label', function() {
+
+    var chart = createTimelineChart(640, false);
+
+    var wasNotSelected = !$('.timeline-chart-wrapper').hasClass('selected');
+
+    mockWindowStateService.scrollPositionSubject.onNext(0);
+    mockWindowStateService.mouseLeftButtonPressedSubject.onNext(true);
+    mockWindowStateService.mousePositionSubject.onNext({
+      clientX: 10,
+      clientY: $('#test-timeline-chart').offset().top + $('#test-timeline-chart').height() - 15,
+      target: $('.x-tick-label')[0]
+    });
+
+    mockWindowStateService.mouseLeftButtonPressedSubject.onNext(false);
+    mockWindowStateService.mousePositionSubject.onNext({
+      clientX: 10,
+      clientY: $('#test-timeline-chart').offset().top + $('#test-timeline-chart').height() - 15,
+      target: $('.x-tick-label')[0]
+    });
+
+    var wasThenSelected = $('.timeline-chart-wrapper').hasClass('selected');
+
+    expect(wasNotSelected).to.equal(true);
+    expect(wasThenSelected).to.equal(true);
+
+  });
+
+  describe('when selecting', function() {
+
+    it('should start selecting on mousedown within the chart display and stop selecting on mouse up within the chart display', function() {
+
+      var chart = createTimelineChart(640, false);
+
+      mockWindowStateService.scrollPositionSubject.onNext(0);
+      mockWindowStateService.mouseLeftButtonPressedSubject.onNext(true);
+      mockWindowStateService.mousePositionSubject.onNext({
+        clientX: 320,
+        clientY: 100,
+        target: $('.timeline-chart-highlight-target')[0]
+      });
+
+      var wasSelecting = $('.timeline-chart-wrapper').hasClass('selecting');
+
+      mockWindowStateService.mouseLeftButtonPressedSubject.onNext(false);
+      mockWindowStateService.mousePositionSubject.onNext({
+        clientX: 370,
+        clientY: 100,
+        target: $('.timeline-chart-highlight-target')[0]
+      });
+
+      var wasThenNotSelecting = !$('.timeline-chart-wrapper').hasClass('selecting');
+      var wasThenSelected = $('.timeline-chart-wrapper').hasClass('selected');
+
+      expect(wasSelecting).to.equal(true);
+      expect(wasThenNotSelecting).to.equal(true);
+      expect(wasThenSelected).to.equal(true);
+
+    });
+
+    it('should start selecting on mousedown within the chart display and stop selecting on mouse up within the chart labels', function() {
+
+      var chart = createTimelineChart(640, false);
+
+      mockWindowStateService.scrollPositionSubject.onNext(0);
+      mockWindowStateService.mouseLeftButtonPressedSubject.onNext(true);
+      mockWindowStateService.mousePositionSubject.onNext({
+        clientX: 320,
+        clientY: 100,
+        target: $('.timeline-chart-highlight-target')[0]
+      });
+
+      var wasSelecting = $('.timeline-chart-wrapper').hasClass('selecting');
+
+      mockWindowStateService.mouseLeftButtonPressedSubject.onNext(false);
+      mockWindowStateService.mousePositionSubject.onNext({
+        clientX: 370,
+        clientY: $('#test-timeline-chart').offset().top + $('#test-timeline-chart').height() - 15,
+        target: $('.x-tick-label')[0]
+      });
+
+      var wasThenNotSelecting = !$('.timeline-chart-wrapper').hasClass('selecting');
+      var wasThenSelected = $('.timeline-chart-wrapper').hasClass('selected');
+
+      expect(wasSelecting).to.equal(true);
+      expect(wasThenNotSelecting).to.equal(true);
+      expect(wasThenSelected).to.equal(true);
+
+    });
+
+    it('should start selecting on mousedown within the chart display and stop selecting on mouse up outside the chart display and labels', function() {
+
+      var chart = createTimelineChart(640, false);
+
+      mockWindowStateService.scrollPositionSubject.onNext(0);
+      mockWindowStateService.mouseLeftButtonPressedSubject.onNext(true);
+      mockWindowStateService.mousePositionSubject.onNext({
+        clientX: 320,
+        clientY: 100,
+        target: $('.timeline-chart-highlight-target')[0]
+      });
+
+      var wasSelecting = $('.timeline-chart-wrapper').hasClass('selecting');
+
+      mockWindowStateService.mouseLeftButtonPressedSubject.onNext(false);
+      mockWindowStateService.mousePositionSubject.onNext({
+        clientX: 1000,
+        clientY: 1000,
+        target: $('body')[0]
+      });
+
+      var wasThenNotSelecting = !$('.timeline-chart-wrapper').hasClass('selecting');
+      var wasThenSelected = $('.timeline-chart-wrapper').hasClass('selected');
+
+      expect(wasSelecting).to.equal(true);
+      expect(wasThenNotSelecting).to.equal(true);
+      expect(wasThenSelected).to.equal(true);
+
+    });
+
+    it('should display a selection range label', function() {
+
+      var chart = createTimelineChart(640, false);
+
+      var selectionRangeLabelWasNotVisible = $('.timeline-chart-clear-selection-label').css('display') === 'none';
+
+      mockWindowStateService.scrollPositionSubject.onNext(0);
+      mockWindowStateService.mouseLeftButtonPressedSubject.onNext(true);
+      mockWindowStateService.mousePositionSubject.onNext({
+        clientX: 320,
+        clientY: 100,
+        target: $('.timeline-chart-highlight-target')[0]
+      });
+
+      mockWindowStateService.mousePositionSubject.onNext({
+        clientX: 370,
+        clientY: 100,
+        target: $('.timeline-chart-highlight-target')[0]
+      });
+
+      var wasSelecting = $('.timeline-chart-wrapper').hasClass('selecting');
+
+      var selectionRangeLabelWasThenVisible = $('.timeline-chart-clear-selection-label').css('display') === 'block';
+
+      expect(selectionRangeLabelWasNotVisible).to.equal(true);
+      expect(wasSelecting).to.equal(true);
+      expect(selectionRangeLabelWasThenVisible).to.equal(true);
+
+    });
+
+  });
+
+  describe('when selected', function() {
+
+    it('should display a selection range label', function() {
+
+      var chart = createTimelineChart(640, false);
+
+      var selectionRangeLabelWasNotVisible = $('.timeline-chart-clear-selection-label').css('display') === 'none';
+
+      mockWindowStateService.scrollPositionSubject.onNext(0);
+      mockWindowStateService.mouseLeftButtonPressedSubject.onNext(true);
+      mockWindowStateService.mousePositionSubject.onNext({
+        clientX: 320,
+        clientY: 100,
+        target: $('.timeline-chart-highlight-target')[0]
+      });
+
+      mockWindowStateService.mouseLeftButtonPressedSubject.onNext(false);
+      mockWindowStateService.mousePositionSubject.onNext({
+        clientX: 370,
+        clientY: 100,
+        target: $('.timeline-chart-highlight-target')[0]
+      });
+
+      var wasSelected = $('.timeline-chart-wrapper').hasClass('selected');
+      var selectionRangeLabelWasThenVisible = $('.timeline-chart-clear-selection-label').css('display') === 'block';
+
+      expect(selectionRangeLabelWasNotVisible).to.equal(true);
+      expect(wasSelected).to.equal(true);
+      expect(selectionRangeLabelWasThenVisible).to.equal(true);
+
+    });
+
+    it('should request a filter dataset operation', function(done) {
+
+      var chart = createTimelineChart(640, false);
+
+      rootScope.$on('filter-timeline-chart', function(event, data) {
+
+        expect(data).to.not.equal(null);
+        done();
+
+      });
+
+      mockWindowStateService.scrollPositionSubject.onNext(0);
+      mockWindowStateService.mouseLeftButtonPressedSubject.onNext(true);
+      mockWindowStateService.mousePositionSubject.onNext({
+        clientX: 320,
+        clientY: 100,
+        target: $('.timeline-chart-highlight-target')[0]
+      });
+
+      mockWindowStateService.mouseLeftButtonPressedSubject.onNext(false);
+      mockWindowStateService.mousePositionSubject.onNext({
+        clientX: 370,
+        clientY: 100,
+        target: $('.timeline-chart-highlight-target')[0]
+      });
+
+      var wasSelected = $('.timeline-chart-wrapper').hasClass('selected');
+      var selectionRangeLabelWasThenVisible = $('.timeline-chart-clear-selection-label').css('display') === 'block';
+
+      expect(wasSelected).to.equal(true);
+      expect(selectionRangeLabelWasThenVisible).to.equal(true);
+
+    });
+
+    it('should adjust the selected range when a selection marker is dragged to the left', function() {
+
+      var chart = createTimelineChart(640, false);
+
+      var selectionRangeLabelWasNotVisible = $('.timeline-chart-clear-selection-label').css('display') === 'none';
+
+      mockWindowStateService.scrollPositionSubject.onNext(0);
+      mockWindowStateService.mouseLeftButtonPressedSubject.onNext(true);
+      mockWindowStateService.mousePositionSubject.onNext({
+        clientX: 320,
+        clientY: 100,
+        target: $('.timeline-chart-highlight-target')[0]
+      });
+
+      mockWindowStateService.mouseLeftButtonPressedSubject.onNext(false);
+      mockWindowStateService.mousePositionSubject.onNext({
+        clientX: 370,
+        clientY: 100,
+        target: $('.timeline-chart-highlight-target')[0]
+      });
+
+      var wasSelected = $('.timeline-chart-wrapper').hasClass('selected');
+
+      var selectionRangeLabelWasThenVisible = $('.timeline-chart-clear-selection-label').css('display') === 'block';
+
+      var selectionRangeOriginalWidth = $('.selection')[0].getBoundingClientRect().width;
+
+      mockWindowStateService.mouseLeftButtonPressedSubject.onNext(true);
+      mockWindowStateService.mousePositionSubject.onNext({
+        clientX: 320,
+        clientY: 100,
+        target: $('.selection-marker')[0]
+      });
+
+      mockWindowStateService.mouseLeftButtonPressedSubject.onNext(false);
+      mockWindowStateService.mousePositionSubject.onNext({
+        clientX: 100,
+        clientY: 100,
+        target: $('.selection-marker')[0]
+      });
+
+      var selectionRangeFinalWidth = $('.selection')[0].getBoundingClientRect().width;
+
+      expect(selectionRangeLabelWasNotVisible).to.equal(true);
+      expect(wasSelected).to.equal(true);
+      expect(selectionRangeLabelWasThenVisible).to.equal(true);
+      expect(selectionRangeOriginalWidth).to.be.below(selectionRangeFinalWidth);
+
+    });
+
+    it('should adjust the selected range when a selection marker is dragged to the right', function() {
+
+      var chart = createTimelineChart(640, false);
+
+      var selectionRangeLabelWasNotVisible = $('.timeline-chart-clear-selection-label').css('display') === 'none';
+
+      mockWindowStateService.scrollPositionSubject.onNext(0);
+      mockWindowStateService.mouseLeftButtonPressedSubject.onNext(true);
+      mockWindowStateService.mousePositionSubject.onNext({
+        clientX: 320,
+        clientY: 100,
+        target: $('.timeline-chart-highlight-target')[0]
+      });
+
+      mockWindowStateService.mouseLeftButtonPressedSubject.onNext(false);
+      mockWindowStateService.mousePositionSubject.onNext({
+        clientX: 370,
+        clientY: 100,
+        target: $('.timeline-chart-highlight-target')[0]
+      });
+
+      var wasSelected = $('.timeline-chart-wrapper').hasClass('selected');
+
+      var selectionRangeLabelWasThenVisible = $('.timeline-chart-clear-selection-label').css('display') === 'block';
+
+      var selectionRangeOriginalWidth = $('.selection')[0].getBoundingClientRect().width;
+
+      mockWindowStateService.mouseLeftButtonPressedSubject.onNext(true);
+      mockWindowStateService.mousePositionSubject.onNext({
+        clientX: 370,
+        clientY: 100,
+        target: $('.selection-marker')[1]
+      });
+
+      mockWindowStateService.mouseLeftButtonPressedSubject.onNext(false);
+      mockWindowStateService.mousePositionSubject.onNext({
+        clientX: 500,
+        clientY: 100,
+        target: $('.selection-marker')[1]
+      });
+
+      var selectionRangeFinalWidth = $('.selection')[0].getBoundingClientRect().width;
+
+      expect(selectionRangeLabelWasNotVisible).to.equal(true);
+      expect(wasSelected).to.equal(true);
+      expect(selectionRangeLabelWasThenVisible).to.equal(true);
+      expect(selectionRangeOriginalWidth).to.be.below(selectionRangeFinalWidth);
+
+    });
+
+    it('should request a clear dataset filter operation when the clear selection button is clicked', function(done) {
+
+      var chart = createTimelineChart(640, false);
+
+      mockWindowStateService.scrollPositionSubject.onNext(0);
+      mockWindowStateService.mouseLeftButtonPressedSubject.onNext(true);
+      mockWindowStateService.mousePositionSubject.onNext({
+        clientX: 320,
+        clientY: 100,
+        target: $('.timeline-chart-highlight-target')[0]
+      });
+
+      mockWindowStateService.mouseLeftButtonPressedSubject.onNext(false);
+      mockWindowStateService.mousePositionSubject.onNext({
+        clientX: 370,
+        clientY: 100,
+        target: $('.timeline-chart-highlight-target')[0]
+      });
+
+      var wasSelected = $('.timeline-chart-wrapper').hasClass('selected');
+      var selectionRangeLabelWasThenVisible = $('.timeline-chart-clear-selection-label').css('display') === 'block';
+
+      expect(wasSelected).to.equal(true);
+      expect(selectionRangeLabelWasThenVisible).to.equal(true);
+
+      // Make sure to set the event listener here, after the selection state transition
+      // has already emitted the 'filter dataset' event.
+      rootScope.$on('filter-timeline-chart', function(event, data) {
+
+        expect(data).to.equal(null);
+        done();
+
+      });
+
+      testHelpers.fireEvent($('.timeline-chart-clear-selection-label')[0], 'mousedown');
+
+    });
+
+    it('should clear the selection when the clear selection button is clicked', function() {
+
+      var chart = createTimelineChart(640, false);
+
+      mockWindowStateService.scrollPositionSubject.onNext(0);
+      mockWindowStateService.mouseLeftButtonPressedSubject.onNext(true);
+      mockWindowStateService.mousePositionSubject.onNext({
+        clientX: 320,
+        clientY: 100,
+        target: $('.timeline-chart-highlight-target')[0]
+      });
+
+      mockWindowStateService.mouseLeftButtonPressedSubject.onNext(false);
+      mockWindowStateService.mousePositionSubject.onNext({
+        clientX: 370,
+        clientY: 100,
+        target: $('.timeline-chart-highlight-target')[0]
+      });
+
+      var wasSelected = $('.timeline-chart-wrapper').hasClass('selected');
+      var selectionRangeLabelWasThenVisible = $('.timeline-chart-clear-selection-label').css('display') === 'block';
+
+      expect(wasSelected).to.equal(true);
+      expect(selectionRangeLabelWasThenVisible).to.equal(true);
+
+      testHelpers.fireEvent($('.timeline-chart-clear-selection-label')[0], 'mousedown');
+
+      var wasThenInTheDefaultState = !$('.timeline-chart-wrapper').hasClass('selecting') &&
+                                     !$('.timeline-chart-wrapper').hasClass('selected');
+
+      expect(wasThenInTheDefaultState).to.equal(true);
+
+    });
+
+  });
+
+  describe('when not all labels can be shown', function() {
+
+    it('should display fewer labels than there are data', function() {
+
+      var chart = createTimelineChart(640, false);
+
+      scope.precision = 'DAY';
+      scope.chartData = hiddenLabelTestData;
+      scope.$apply();
+
+      expect(scope.chartData.values.length).to.be.above($('.x-tick-label').length);
+
+    });
+
+    describe('and the mouse is hovering over a label', function() {
+
+      xit('should emphasize the hovered-over datum', function() {
+
+        var chart = createTimelineChart(640, false);
+
+        scope.precision = 'DAY';
+        scope.chartData = hiddenLabelTestData;
+        scope.$apply();
+
+        var datumLabelWasNotVisible = $('.datum-label').css('display') === 'none';
+        var xAxisTickLabelsWereNotDimmed = !$('.timeline-chart-wrapper').hasClass('dimmed');
+
+        mockWindowStateService.scrollPositionSubject.onNext(0);
+        mockWindowStateService.mouseLeftButtonPressedSubject.onNext(false);
+        mockWindowStateService.mousePositionSubject.onNext({
+          clientX: 360,
+          clientY: $('#test-timeline-chart').offset().top + $('#test-timeline-chart').height() - 15,
+          target: $('.timeline-chart-highlight-target')[0]
         });
-      expect($label.hasClass('active')).to.be.false;
-      $(segments[0][1]).mouseover();
-      expect($label.hasClass('active')).to.be.true;
-      $(segments[0][1]).mouseout();
+
+        var datumLabelWasStillNotVisible = $('.datum-label').css('display') === 'none';
+        var xAxisTickLabelsWereStillNotDimmed = !$('.timeline-chart-wrapper').hasClass('dimmed');
+        var oneXAxisTickLabelWasEmphasized = $('.x-tick-label.emphasis').length === 1;
+
+        expect(datumLabelWasNotVisible).to.equal(true);
+        expect(xAxisTickLabelsWereNotDimmed).to.equal(true);
+        expect(datumLabelWasStillNotVisible).to.equal(true);
+        expect(xAxisTickLabelsWereStillNotDimmed).to.equal(true);
+        expect(oneXAxisTickLabelWasEmphasized).to.equal(true);
+
+      });
+
     });
-    it('should show a hidden label when that label\'s area is moused over', function() {
-      var SECTION_INDEX = 2;
-      var chart = getOrCreateChartScenario('300px unexpanded unfiltered');
-      var $label = chart.element.find('.label').eq(SECTION_INDEX);
-      expect($label.hasClass('active')).to.be.false;
-      $label.mouseover();
-      expect($label.hasClass('active')).to.be.true;
-      $label.mouseout();
-      expect($label.hasClass('active')).to.be.false;
+
+    describe('and the mouse is hovering over a labeled datum', function() {
+
+      xit('should emphasize the hovered-over datum', function() {
+
+        var chart = createTimelineChart(640, false);
+
+        scope.precision = 'DAY';
+        scope.chartData = hiddenLabelTestData;
+        scope.$apply();
+
+        var datumLabelWasNotVisible = $('.datum-label').css('display') === 'none';
+        var xAxisTickLabelsWereNotDimmed = !$('.timeline-chart-wrapper').hasClass('dimmed');
+
+        mockWindowStateService.scrollPositionSubject.onNext(0);
+        mockWindowStateService.mouseLeftButtonPressedSubject.onNext(false);
+        mockWindowStateService.mousePositionSubject.onNext({
+          clientX: 360,
+          clientY: 100,
+          target: $('.timeline-chart-highlight-target')[0]
+        });
+
+        var datumLabelWasStillNotVisible = $('.datum-label').css('display') === 'none';
+        var xAxisTickLabelsWereStillNotDimmed = !$('.timeline-chart-wrapper').hasClass('dimmed');
+        var oneXAxisTickLabelWasEmphasized = $('.x-tick-label.emphasis').length === 1;
+
+        expect(datumLabelWasNotVisible).to.equal(true);
+        expect(xAxisTickLabelsWereNotDimmed).to.equal(true);
+        expect(datumLabelWasStillNotVisible).to.equal(true);
+        expect(xAxisTickLabelsWereStillNotDimmed).to.equal(true);
+        expect(oneXAxisTickLabelWasEmphasized).to.equal(true);
+
+      });
+
     });
+
+    describe('and the mouse is hovering over the labels in an unlabeld area', function() {
+
+      it('should highlight the chart', function() {
+
+        var chart = createTimelineChart(640, false);
+
+        scope.precision = 'DAY';
+        scope.chartData = hiddenLabelTestData;
+        scope.$apply();
+
+        var wasUnhighlighted = $('.timeline-chart-highlight-container').children('g').children().length === 0;
+
+        mockWindowStateService.scrollPositionSubject.onNext(0);
+        mockWindowStateService.mouseLeftButtonPressedSubject.onNext(false);
+        mockWindowStateService.mousePositionSubject.onNext({
+          clientX: 360,
+          clientY: $('#test-timeline-chart').offset().top + $('#test-timeline-chart').height() - 15,
+          target: $('.timeline-chart-highlight-target')[0]
+        });
+
+        var wasThenHighlighted = $('.timeline-chart-highlight-container').children('g').children().length === 1;
+
+        expect(wasUnhighlighted).to.equal(true);
+        expect(wasThenHighlighted).to.equal(true);
+
+      });
+
+      it('should render a bolded label for the datum and dim every x-axis tick label', function() {
+
+        var chart = createTimelineChart(640, false);
+
+        scope.precision = 'DAY';
+        scope.chartData = hiddenLabelTestData;
+        scope.$apply();
+
+        var datumLabelWasNotVisible = $('.datum-label').css('display') === 'none';
+        var xAxisTickLabelsWereNotDimmed = !$('.timeline-chart-wrapper').hasClass('dimmed');
+
+        mockWindowStateService.scrollPositionSubject.onNext(0);
+        mockWindowStateService.mouseLeftButtonPressedSubject.onNext(false);
+        mockWindowStateService.mousePositionSubject.onNext({
+          clientX: 320,
+          clientY: $('#test-timeline-chart').offset().top + $('#test-timeline-chart').height() - 15,
+          target: $('.timeline-chart-highlight-target')[0]
+        });
+
+        var datumLabelWasThenVisible = $('.datum-label').css('display') === 'block';
+        var xAxisTickLabelsWereThenDimmed = $('.timeline-chart-wrapper').hasClass('dimmed');
+
+        expect(datumLabelWasNotVisible).to.equal(true);
+        expect(xAxisTickLabelsWereNotDimmed).to.equal(true);
+        expect(datumLabelWasThenVisible).to.equal(true);
+        expect(xAxisTickLabelsWereThenDimmed).to.equal(true);
+
+      });
+
+    });
+
+    describe('and the mouse is hovering over the chart in an unlabeled area', function() {
+
+      it('should highlight the chart', function() {
+
+        var chart = createTimelineChart(640, false);
+
+        scope.precision = 'DAY';
+        scope.chartData = hiddenLabelTestData;
+        scope.$apply();
+
+        var wasUnhighlighted = $('.timeline-chart-highlight-container').children('g').children().length === 0;
+
+        mockWindowStateService.scrollPositionSubject.onNext(0);
+        mockWindowStateService.mouseLeftButtonPressedSubject.onNext(false);
+        mockWindowStateService.mousePositionSubject.onNext({
+          clientX: 360,
+          clientY: 100,
+          target: $('.timeline-chart-highlight-target')[0]
+        });
+
+        var wasThenHighlighted = $('.timeline-chart-highlight-container').children('g').children().length === 1;
+
+        expect(wasUnhighlighted).to.equal(true);
+        expect(wasThenHighlighted).to.equal(true);
+
+      });
+
+      it('should render a bolded label for the datum and dim every x-axis tick label', function() {
+
+        var chart = createTimelineChart(640, false);
+
+        scope.precision = 'DAY';
+        scope.chartData = hiddenLabelTestData;
+        scope.$apply();
+
+        var datumLabelWasNotVisible = $('.datum-label').css('display') === 'none';
+        var xAxisTickLabelsWereNotDimmed = !$('.timeline-chart-wrapper').hasClass('dimmed');
+
+        mockWindowStateService.scrollPositionSubject.onNext(0);
+        mockWindowStateService.mouseLeftButtonPressedSubject.onNext(false);
+        mockWindowStateService.mousePositionSubject.onNext({
+          clientX: 320,
+          clientY: 100,
+          target: $('.timeline-chart-highlight-target')[0]
+        });
+
+        var datumLabelWasThenVisible = $('.datum-label').css('display') === 'block';
+        var xAxisTickLabelsWereThenDimmed = $('.timeline-chart-wrapper').hasClass('dimmed');
+
+        expect(datumLabelWasNotVisible).to.equal(true);
+        expect(xAxisTickLabelsWereNotDimmed).to.equal(true);
+        expect(datumLabelWasThenVisible).to.equal(true);
+        expect(xAxisTickLabelsWereThenDimmed).to.equal(true);
+
+      });
+
+    });
+
+  });
+
+  describe('when on a page with multiple timeline charts', function() {
+
+    it('should not respond to selection events on other timeline charts', function() {
+
+      var chart1 = createTimelineChart(640, false);
+      var chart2 = createTimelineChart(640, false);
+
+      mockWindowStateService.scrollPositionSubject.onNext(0);
+      mockWindowStateService.mouseLeftButtonPressedSubject.onNext(true);
+      mockWindowStateService.mousePositionSubject.onNext({
+        clientX: 320,
+        clientY: 100,
+        target: $('#test-timeline-chart .timeline-chart-highlight-target')[0]
+      });
+
+      mockWindowStateService.mouseLeftButtonPressedSubject.onNext(false);
+      mockWindowStateService.mousePositionSubject.onNext({
+        clientX: 370,
+        clientY: 100,
+        target: $('#test-timeline-chart .timeline-chart-highlight-target')[0]
+      });
+
+      var chart1WasSelected = $('#test-timeline-chart .timeline-chart-wrapper').hasClass('selected');
+      var chart2WasNotSelected = !$('#alternate-test-timeline-chart .timeline-chart-wrapper').hasClass('selected');
+
+      expect(chart1WasSelected).to.equal(true);
+      expect(chart2WasNotSelected).to.equal(true);
+
+    });
+
   });
 
 });

@@ -17,8 +17,23 @@
       }, config);
     }
 
+    function buildAggregationClause(aggregationClauseData) {
+      var aggregationClause = 'count(*)';
+      if (_.isDefined(aggregationClauseData)) {
+        if (
+          _.isPresent(aggregationClauseData.aggregation) &&
+          aggregationClauseData.aggregation !== 'count' &&
+          _.isPresent(aggregationClauseData.field)
+          ) {
+          aggregationClause = '{0}({1})'.
+            format(aggregationClauseData.aggregation, aggregationClauseData.field);
+        }
+      }
+      return aggregationClause;
+    }
+
     var serviceDefinition = {
-      getData: function(fieldName, datasetId, whereClauseFragment) {
+      getData: function(fieldName, datasetId, whereClauseFragment, aggregationClauseData) {
         Assert(_.isString(fieldName), 'fieldName should be a string');
         Assert(_.isString(datasetId), 'datasetId should be a string');
         Assert(!whereClauseFragment || _.isString(whereClauseFragment), 'whereClauseFragment should be a string if present.');
@@ -33,13 +48,19 @@
           whereClause = 'where ' + whereClauseFragment;
         }
 
+        var aggregationClause = buildAggregationClause(aggregationClauseData);
+
         fieldName = SoqlHelpers.replaceHyphensWithUnderscores(fieldName);
 
+        var queryTemplate;
+        if (fieldName === 'name') {
+          queryTemplate = 'select {0}, {2} as value {1} group by {0} order by {2} desc limit 200';
+        } else {
+          queryTemplate = 'select {0} as name, {2} as value {1} group by {0} order by {2} desc limit 200';
+        }
         // TODO: Implement some method for paging/showing data that has been truncated.
         var params = {
-          $query: ('select {0} as name, count(*) as value {1} ' +
-                   'group by {0} order by count(*) desc limit 200').format(
-                     fieldName, whereClause)
+          $query: queryTemplate.format(fieldName, whereClause, aggregationClause)
         };
         var url = '/api/id/' + datasetId + '.json?';
         var config = httpConfig.call(this);
@@ -50,6 +71,9 @@
         });
       },
 
+      // This function's return value is undefined if the domain of the
+      // dataset is undefined. The cardVisualizationTimelineChart checks for
+      // undefined values and responds accordingly.
       getTimelineDomain: function(fieldName, datasetId) {
         Assert(_.isString(fieldName), 'fieldName should be a string');
         Assert(_.isString(datasetId), 'datasetId should be a string');
@@ -62,27 +86,40 @@
         var url = '/api/id/' + datasetId + '.json?';
         var config =  httpConfig.call(this);
         return http.get(url + $.param(params), config).then(function(response) {
+
           if (_.isEmpty(response.data)) {
             return $q.reject('Empty response from SODA.');
           }
+
           var firstRow = response.data[0];
+          var domain;
 
-          var domain = {
-            start: moment(firstRow.start, moment.ISO_8601),
-            end: moment(firstRow.end, moment.ISO_8601)
-          };
+          if (firstRow.hasOwnProperty('start') && firstRow.hasOwnProperty('end')) {
 
-          if (!domain.start.isValid()) {
-            return $q.reject('Invalid date: ' + firstRow.start);
-          } else if (!domain.end.isValid()) {
-            return $q.reject('Invalid date: ' + firstRow.end);
-          } else {
-            return domain;
+            var domainStart = moment(firstRow.start, moment.ISO_8601);
+            var domainEnd = moment(firstRow.end, moment.ISO_8601);
+
+            if (!domainStart.isValid()) {
+              return $q.reject('Invalid start date.');
+            }
+
+            if (!domainEnd.isValid()) {
+              return $q.reject('Invalid end date.');
+            }
+
+            domain = {
+              start: moment(firstRow.start, moment.ISO_8601),
+              end: moment(firstRow.end, moment.ISO_8601)
+            };
+
           }
+
+          return domain;
+
         });
       },
 
-      getTimelineData: function(fieldName, datasetId, whereClauseFragment, precision) {
+      getTimelineData: function(fieldName, datasetId, whereClauseFragment, precision, aggregationClauseData) {
         Assert(_.isString(fieldName), 'fieldName should be a string');
         Assert(_.isString(datasetId), 'datasetId should be a string');
         Assert(!whereClauseFragment || _.isString(whereClauseFragment), 'whereClauseFragment should be a string if present.');
@@ -96,15 +133,19 @@
         if (!_.isEmpty(whereClauseFragment)) {
           whereClause += ' and ' + whereClauseFragment;
         }
+
+        var aggregationClause = buildAggregationClause(aggregationClauseData);
+
         fieldName = SoqlHelpers.replaceHyphensWithUnderscores(fieldName);
         var params = {
-          $query: ('SELECT date_trunc_{2}({0}) AS date_trunc, count(*) AS value {1} ' +
+          $query: ('SELECT date_trunc_{2}({0}) AS date_trunc, {3} AS value {1} ' +
                    'GROUP BY date_trunc').format(
-                     fieldName, whereClause, dateTrunc)
+                     fieldName, whereClause, dateTrunc, aggregationClause)
         };
         var url = '/api/id/' + datasetId + '.json?';
         var config = httpConfig.call(this);
         return http.get(url + $.param(params), config).then(function(response) {
+
           if (!_.isArray(response.data)) {
             return $q.reject('Invalid response from SODA, expected array.');
           }
@@ -145,46 +186,11 @@
       getChoroplethRegions: function(shapeFileId) {
         shapeFileId = DeveloperOverrides.dataOverrideForDataset(shapeFileId) || shapeFileId;
         var url = '/resource/{0}.geojson'.format(shapeFileId);
-        var config = httpConfig.call(this, {
-          headers: {
-            'Accept': 'application/vnd.geo+json'
-          }
-        });
+        var config = httpConfig.call(this, { headers: { 'Accept': 'application/vnd.geo+json' } });
         return http.get(url, config).
           then(function(response) {
             return response.data;
           });
-      },
-
-      // This is distinct from getData in order to allow for (eventual)
-      // paginated queries to get total counts across all rows rather than the hard
-      // 1,000-row limit on SoQL queries.
-      getChoroplethAggregates: function(fieldName, datasetId, whereClauseFragment) {
-        Assert(_.isString(fieldName), 'fieldName should be a string');
-        Assert(_.isString(datasetId), 'datasetId should be a string');
-        Assert(!whereClauseFragment || _.isString(whereClauseFragment), 'whereClauseFragment should be a string if present.');
-
-        datasetId = DeveloperOverrides.dataOverrideForDataset(datasetId) || datasetId;
-        var whereClause;
-        if (_.isEmpty(whereClauseFragment)) {
-          whereClause = '';
-        } else {
-          whereClause = 'where ' + whereClauseFragment;
-        }
-        fieldName = SoqlHelpers.replaceHyphensWithUnderscores(fieldName);
-        var params = {
-          $query: ('select {0} as name, count(*) as value {1} ' +
-                   'group by {0} order by count(*) desc').format(
-                     fieldName, whereClause),
-        };
-        var url = '/api/id/' + datasetId + '.json?';
-        var config = httpConfig.call(this);
-        return http.get(url + $.param(params), config).then(function(response) {
-          if (!_.isArray(response.data)) return $q.reject('Invalid response from SODA, expected array.');
-          return _.map(response.data, function(item) {
-            return { name: item.name, value: parseFloat(item.value) };
-          });
-        });
       },
 
       getRowCount: function(datasetId, whereClause) {
@@ -208,6 +214,10 @@
           });
       },
 
+      getSampleData: function(fieldName, datasetId) {
+        return serviceDefinition.getData(fieldName, datasetId);
+      },
+
       getRows: function(datasetId, offset, limit, order, timeout, whereClause) {
         if (!order) order = '';
         datasetId = DeveloperOverrides.dataOverrideForDataset(datasetId) || datasetId;
@@ -225,9 +235,43 @@
           return response.data;
         });
       },
+
       requesterLabel: function() {
         return 'card-data-service';
+      },
+
+      getFeatureExtent: function(fieldName, datasetId) {
+
+        var url;
+        var config;
+
+        datasetId = DeveloperOverrides.dataOverrideForDataset(datasetId) || datasetId;
+        url = '/resource/{0}.json?$select=extent({1})'.format(datasetId, fieldName);
+        config = httpConfig.call(this);
+
+        return http.get(url, config).then(function(response) {
+
+          if (_.isEmpty(response.data)) {
+            return $q.reject('Empty response.');
+          }
+
+          try {
+
+            var coordinates = response.data[0]['extent_{0}'.format(fieldName)].coordinates[0][0];
+
+            return {
+              southwest: [ coordinates[0][1], coordinates[0][0] ],
+              northeast: [ coordinates[2][1], coordinates[2][0] ]
+            };
+
+          } catch (e) {
+            return $q.reject('Invalid coordinates.');
+          }
+
+        });
+
       }
+
     };
 
     if (ServerConfig.get('enableBoundingBoxes')) {
@@ -246,15 +290,21 @@
 
             var jsonPayload = response.data[0];
             var extentKey = _.keys(jsonPayload)[0];
-            var extents = response.data[0][extentKey].coordinates;
-            // Beware, data from extent query comes back as long/lat but has to be formatted as lat/long here
-            var upperLeftCorner = extents[0][0][1][1] + ',' + extents[0][0][1][0];
-            var lowerRightCorner = extents[0][0][3][1] + ',' + extents[0][0][3][0];
+            var extents = response.data[0][extentKey].coordinates[0][0];
 
-            // https://dataspace.demo.socrata.com/resource/fdqy-yyme.geojson?$select=*&
-            //   $where=within_box(the_geom,41.86956082699455,-87.73681640625,41.85319643776675,-87.71484375)
-            var shapeFileUrl = '/resource/{0}.geojson?$select=*&$where=within_box(the_geom,{1},{2})'.
-              format(shapeFileId, upperLeftCorner, lowerRightCorner);
+            var bottomLeft = extents[0].join(' ');
+            var topLeft = extents[1].join(' ');
+            var topRight = extents[2].join(' ');
+            var bottomRight = extents[3].join(' ');
+
+            //  /resource/bwdd-ss8w.geojson?$select=*&$where=intersects(
+            //  the_geom,
+            //  'MULTIPOLYGON(((-71.153911%2042.398355,-71.153911%2042.354528,-71.076298%2042.354528,-71.076298%2042.398355,-71.153911%2042.398355)))')
+            var multiPolygon = "'MULTIPOLYGON((({0},{1},{2},{3},{0})))'".
+              format(bottomLeft, topLeft, topRight, bottomRight);
+
+            var shapeFileUrl = '/resource/{0}.geojson?$select=*&$where=intersects(the_geom,{1})'.
+              format(shapeFileId, multiPolygon);
 
             var config = httpConfig.call(self, {
               headers: {

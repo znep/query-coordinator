@@ -186,6 +186,7 @@ javascripts:
     - public/javascripts/plugins/rangy-selectionsaverestore.js
     - public/javascripts/plugins/hallo.js
     - public/javascripts/controls/hallo-plugins.js
+    - public/javascripts/plugins/hallo.betterlink.js
     - public/javascripts/plugins/html2markdown.js
     - public/javascripts/plugins/htmldomparser.js
     - public/javascripts/component/util/markdown-utils.js
@@ -423,6 +424,7 @@ javascripts:
     - public/javascripts/plugins/iscroll.js
     - public/javascripts/plugins/ajaxupload.js
     - public/javascripts/plugins/lab.js
+    - public/javascripts/plugins/ZeroClipboard.js
     - public/javascripts/util/asset-loading.js
     - public/javascripts/controls/combination-list.js
     - public/javascripts/util/inline-login.js
@@ -539,6 +541,7 @@ javascripts:
     - public/javascripts/plugins/rangy-selectionsaverestore.js
     - public/javascripts/plugins/hallo.js
     - public/javascripts/controls/hallo-plugins.js
+    - public/javascripts/plugins/hallo.betterlink.js
     - public/javascripts/plugins/datepicker.js
     - public/javascripts/plugins/waypoints-2.0.5.js
     - public/javascripts/plugins/jquery.awesomereorder.js
@@ -563,6 +566,7 @@ javascripts:
     - public/javascripts/plugins/rangy-selectionsaverestore.js
     - public/javascripts/plugins/hallo.js
     - public/javascripts/controls/hallo-plugins.js
+    - public/javascripts/plugins/hallo.betterlink.js
     - public/javascripts/plugins/waypoints2.js
     - public/javascripts/plugins/colorpicker.js
     - public/javascripts/plugins/ajaxupload.js
@@ -674,6 +678,8 @@ javascripts:
   # Angular apps served from the Angular controller.
   # These packages are referenced via the :app parameter to serve_app.
   angular-app-dataCards:
+    - public/javascripts/util/typed-arrays.js
+    - public/javascripts/plugins/ieee754.js
     - public/javascripts/angular/dataCards/app.js
     - public/javascripts/angular/dataCards/controllers.js
     - public/javascripts/angular/dataCards/**/*.js
@@ -692,6 +698,7 @@ javascripts:
     - public/javascripts/bower/angular-sanitize.js
     - public/javascripts/bower/showdown.js
     - public/javascripts/bower/markdown.js
+    - public/javascripts/bower/pbf.min.js
 
     - public/javascripts/bower/**/*.js
   # END BOWER-MANAGED ASSETS

@@ -132,15 +132,27 @@
         padding: 0.75em
         margin-bottom: 1em
 
-      .apiEndpointWrapper
-        background-color: #ddd
-        margin: 1em
-        overflow-x: auto
-        overflow-y: hidden
-        padding: 2em
+      ul.actionButtons
+        margin-bottom: 1em
 
-        pre
-          font-size: 1.3em
+      .apiEndpointWrapper
+        display: -ms-flexbox
+        display: -webkit-flex
+        display: flex
+        -webkit-flex-direction: row
+        -ms-flex-direction: row
+        flex-direction: row
+        -webkit-flex-wrap: nowrap
+        -ms-flex-wrap: nowrap
+        flex-wrap: nowrap
+        -webkit-align-content: stretch
+        -ms-flex-line-pack: stretch
+        align-content: stretch
+
+        input
+          width: 100%
+
+        button
 
   &.odata
     .odataContentWrapper

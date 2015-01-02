@@ -1,0 +1,58 @@
+<div class="tool-panel" ng-hide="unitLabel.name == ''">
+  <span class="information">by the </span>
+  <span
+    class="aggregation-chooser-static-label"
+    ng-hide="canAggregate">Number of {{unitLabel.pluralCapitalized}}
+  </span>
+  <a
+    class="aggregation-chooser-trigger"
+    ng-show="canAggregate"
+    ng-click="panelActive = !panelActive">{{aggregationFunction.capitalized}} of {{activeAggregation.pluralCapitalized}}
+  </a>
+  <div ng-class="{ active: panelActive }" class="tool-panel-main">
+    <div class="tool-panel-inner-container">
+      <div class="tool-panel-hint"></div>
+      <h3>Aggregation</h3>
+      <p>See data elements sized or colored by:</p>
+
+      <div class="row">
+        <div class="span6 aggregation-functions" ng-class="{ active: aggregationFunction.type == 'count' }">
+          <a
+            tabindex="0"
+            class="aggregation-option"
+            data-aggregation-type="count"
+            ng-class="{ active: (aggregationFunction.type == 'count') || countFunctionHover }"
+            ng-click="setAggregationFunction('count')">
+              <span class="label">Number of</span>
+              <span class="sublabel">count {{unitLabel.plural}} per element</span>
+          </a>
+          <a
+            tabindex="0"
+            class="aggregation-option disconnected"
+            data-aggregation-type="sum"
+            ng-class="{ active: aggregationFunction.type == 'sum' || aggregateFunctionHover }"
+            ng-click="setAggregationFunction('sum', aggregationFunction.type, aggregationColumns[0].id)">
+              <span class="label">The sum of</span>
+              <span class="sublabel">add for each {{unitLabel.name}}</span>
+          </a>
+        </div>
+        <div class="span6 aggregation-columns" ng-class="aggregationFunction.type == 'count' ? 'count' : 'no-count'">
+          <a
+            tabindex="-1"
+            class="aggregation-option count"
+            data-aggregation-type="count"
+            ng-class="{ disabled: aggregationFunction.type != 'count', active: (activeAggregation.name == unitLabel.name) || countFunctionHover }"
+            ng-click="setAggregationFunction('count')">{{unitLabel.pluralCapitalized}}</a>
+          <a
+            tabindex="0"
+            ng-repeat="column in aggregationColumns"
+            data-column-id="{{column.id}}"
+            class="aggregation-option no-count"
+            ng-class="{ disabled: !column.enabled, active: (activeAggregation.id == column.id) || ($first && highlightFirstColumn) }"
+            ng-click="setAggregationColumn(column.id, column.enabled)" title="{{column.pluralCapitalized}}">{{column.pluralCapitalized}}</a>
+        </div>
+      </div>
+
+    </div>
+  </div>
+</div>

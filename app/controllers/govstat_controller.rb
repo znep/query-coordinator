@@ -127,8 +127,10 @@ protected
     if CurrentDomain.member?(current_user)
       return true
     else
-      render :action => 'error_403'
-      return false
+      #### this was loading /govstat/error_403 which inacurately assumes the user just created an account
+      # render :action => 'error_403'
+      # return false
+      return render_403
     end
   end
 

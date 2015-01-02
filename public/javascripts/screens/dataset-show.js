@@ -785,4 +785,85 @@ $(function()
         $.analytics.trackEvent('dataset page (v4-chrome)',
             'page loaded', blist.dataset.id);
     });
+
+    function initNewUXLink() {
+        var newUxLink = $('<div class="new-ux-link icon-cards"><div class="icon-close"/>' +
+                          '<a>{0}</a></div>'.format($.t('screens.ds.new_ux_link')));
+        var anchor = newUxLink.find('a');
+
+        // Restore the state
+        if ($.cookies.get('newUxCollapsed')) {
+          newUxLink.addClass('collapsed');
+        }
+
+        if (blist.dataset.newBackend) {
+            // Kratos shapefiles apparently are datasets, but have no dataset metadata, which we
+            // need to create a newux page. So - check that there's dataset metadata before showing
+            // the link.
+            $.get('/dataset_metadata/{0}.json'.format(blist.dataset.id), function(r) {
+                // If we get a 200 response, we can show the link
+                anchor.attr('href', '/view/bootstrap/' + blist.dataset.id);
+                newUxLink.appendTo('body');
+            });
+        } else {
+            // This is an old BE 4x4. Check to see if it's been migrated, and if so, set and show
+            // the link.
+            $.get('/api/migrations/' + blist.dataset.id).done(function(data) {
+                if (data.nbeId) {
+                    anchor.attr('href', '/view/bootstrap/' + data.nbeId);
+                    newUxLink.appendTo('body');
+                }
+            });
+        }
+
+        // The collapse/expand functionality
+        newUxLink.on('click', function(e) {
+            var $self = $(this);
+            // If we're collapsed, expand ourselves.
+            if ($self.hasClass('collapsed')) {
+                $self.removeClass('collapsed');
+                $.cookies.del('newUxCollapsed');
+            }
+
+        }).on('click', '.icon-close', function(e) {
+            e.stopPropagation();
+            var textElem = $(e.currentTarget).siblings('a');
+            if (!textElem.data('widthSet')) {
+                // Set the expanded width so we can animate to it later
+                textElem.css('width', textElem.css('width'));
+                textElem.data('widthSet', true);
+            }
+            // Kick it to the next frame - otherwise, the width doesn't set in time for the
+            // start of the animation
+            _.defer(function() {
+                newUxLink.addClass('collapsed');
+                $.cookies.set('newUxCollapsed', true);
+            });
+        }).on('click', 'a', function(e) {
+          // Add some feedback
+          var screenOverlay = $('<div class="overlay"/>');
+          var spinner = $(
+            '<img class="spinner" ' +
+            'title="{0}" '.format($.t('screens.ds.new_ux_creating_page')) +
+            'src="/stylesheets/images/common/BrandedSpinner.gif" />'
+          );
+
+          newUxLink.addClass('loading').
+            append(spinner).
+            after(screenOverlay);
+
+          // Push the reveal to the next frame so the animation actually happens
+          _.defer(function() {
+            screenOverlay.add(spinner).css('opacity', 1);
+          });
+        });
+    }
+    blist.configuration.onCurrentUser(function(user) {
+      if (blist.feature_flags.enable_newux_bootstrap_link &&
+          user && (['administrator', 'publisher'].indexOf(user.roleName) >= 0 ||
+                   blist.dataset.owner.id === user.id ||
+                   user.isAdmin())) {
+        initNewUXLink();
+      }
+    });
 });

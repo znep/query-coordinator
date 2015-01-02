@@ -2113,7 +2113,8 @@
         command: null,
         commandValue: null,
         queryState: true,
-        cssClass: null
+        cssClass: null,
+        buttonElement: 'button'
       },
       _create: function() {
         var hoverclass, id, opts, _base, _ref,
@@ -2220,7 +2221,7 @@
       _createButton: function(id, command, label, icon) {
         var classes;
         classes = ['ui-button', 'ui-widget', 'ui-state-default', 'ui-corner-all', 'ui-button-text-only', "" + command + "_button"];
-        return jQuery("<button id=\"" + id + "\"        class=\"" + (classes.join(' ')) + "\" title=\"" + label + "\">          <span class=\"ui-button-text\">            <i class=\"" + icon + "\"></i>          </span>        </button>");
+        return jQuery("<" + this.options.buttonElement + " id=\"" + id + "\"        class=\"" + (classes.join(' ')) + "\" title=\"" + label + "\">          <span class=\"ui-button-text\">            <i class=\"" + icon + "\"></i>          </span>        </" + this.options.buttonElement + ">");
       }
     });
     return jQuery.widget('IKS.hallobuttonset', {
@@ -2515,6 +2516,10 @@
           left = position.left - this.toolbar.outerWidth() / 2 + 30;
         }
         this.toolbar.css('top', top);
+        // Stan Rawrysz 11/5/2014
+        // problem with toolbar going off the right side
+        maxLeft = document.body.clientWidth - this.toolbar.outerWidth() - 30;
+        left = Math.min(left, maxLeft)
         return this.toolbar.css('left', left);
       },
       _bindEvents: function() {
@@ -2717,9 +2722,8 @@
         }
       },
       removeAllSelections: function() {
-        if (ie) {
-          return range.empty();
-        } else {
+        // Stan Rawrysz - 11/10/14 - had some issues with IE11 not working
+        if (window.getSelection().removeAllRanges !== "undefined") {
           return window.getSelection().removeAllRanges();
         }
       },
@@ -2768,11 +2772,16 @@
       protectFocusFrom: function(el) {
         var _this = this;
         return el.on("mousedown", function(event) {
-          event.preventDefault();
-          _this._protectToolbarFocus = true;
-          return setTimeout(function() {
-            return _this._protectToolbarFocus = false;
-          }, 300);
+          // HACK - Stan Rawrysz - ugh. I hate this, but whatever. jquery-ui.
+          $target = jQuery(event.target);
+          isBetterLink = $target.closest('.hallobetterlink').length > 0;
+          if (!(isBetterLink && $target.is('input[name=url]'))) {
+            event.preventDefault();
+            _this._protectToolbarFocus = true;
+            return setTimeout(function() {
+              return _this._protectToolbarFocus = false;
+            }, 300);
+          }
         });
       },
       keepActivated: function(_keepActivated) {

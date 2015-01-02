@@ -16,7 +16,64 @@
     3: 200
   };
 
-  function cardLayout(Constants, AngularRxExtensions, WindowState, SortedTileLayout, FlyoutService) {
+  function initCardSelection(scope, CardTypeMapping, FlyoutService, DownloadService, $timeout) {
+    scope.isPngExportable = CardTypeMapping.modelIsExportable;
+
+    scope.getDownloadUrl = function(model) {
+      return './' + scope.page.id + '/' + model.fieldName + '.png';
+    };
+
+    function resetButton(cardState) {
+      $timeout(function() {
+        delete cardState.downloadState;
+      }, 2000);
+    }
+
+    scope.downloadPng = function(cardState, event) {
+      if (event && event.metaKey) {
+        return;
+      }
+      if (event) {
+        event.preventDefault();
+      }
+      if (cardState.downloadState) {
+        return;
+      }
+      cardState.downloadState = 'loading';
+      DownloadService.download(scope.getDownloadUrl(cardState.model)).then(
+        function success() {
+          scope.$apply(function() {
+            cardState.downloadState = 'success';
+            scope.chooserMode.show = false;
+            resetButton(cardState);
+          });
+        }, function error(err) {
+          scope.$apply(function() {
+            cardState.downloadState = 'error';
+            resetButton(cardState);
+          });
+        });
+    };
+
+    scope.downloadStateText = function(state) {
+      switch(state) {
+        case 'success':
+          return 'Downloading';
+        case 'error':
+          return 'Error';
+        default:
+          return 'Download';
+      }
+    };
+
+    FlyoutService.register('export-visualization-disabled', _.constant(
+          '<div class="flyout-title">This visualization is not available' +
+          '<br/>for image export</div>'
+    ));
+  }
+
+  function cardLayout(Constants, AngularRxExtensions, WindowState, SortedTileLayout, FlyoutService, CardTypeMapping, DownloadService, $timeout) {
+
     sortedTileLayout = new SortedTileLayout();
     return {
       restrict: 'E',
@@ -24,8 +81,9 @@
         page: '=',
         expandedCard: '=',
         editMode: '=',
+        chooserMode: '=',
         globalWhereClauseFragment: '=',
-        cardModels: '=',
+        datasetColumns: '=',
         allowAddCard: '='
       },
       templateUrl: '/angular_templates/dataCards/card-layout.html',
@@ -339,11 +397,12 @@
         };
 
         var cardsBySizeObs = zipLatestArray(scope.page.observe('cards'), 'cardSize').
-            map(function(cards) {
-              return _.groupBy(cards, function(card) {
-                return card.model.fieldName === '*' ? 'dataCard' : 'normal';
-              });
+          map(function(cards) {
+            var groupedCards = _.groupBy(cards, function(card) {
+              return card.model.fieldName === '*' ? 'dataCard' : 'normal';
             });
+            return _.defaults(groupedCards, { normal: [], dataCard: [] });
+          });
 
         var expandedCardsObs = zipLatestArray(scope.page.observe('cards'), 'expanded').
             map(function(cards) {
@@ -400,7 +459,7 @@
           scope.observe('allowAddCard'),
           WindowState.windowSizeSubject,
           function layoutFn(cardsBySize, expandedCards, editMode, allowAddCard, windowSize) {
-            if (_.isEmpty(cardsBySize.normal) || _.isEmpty(cardsBySize.dataCard)) {
+            if (_.isEmpty(cardsBySize.normal) && _.isEmpty(cardsBySize.dataCard)) {
               return;
             }
 
@@ -456,17 +515,17 @@
                 placeholderDropTargets, addCardButtons);
             }
 
-            scope.cardPositions = cardsBySize.normal.concat(cardsBySize.dataCard);
+            scope.cardStates = cardsBySize.normal.concat(cardsBySize.dataCard);
 
             // The order in which things will animate
             if (editMode) {
               // Don't animate
-              _.each(scope.cardPositions, function(card) {
+              _.each(scope.cardStates, function(card) {
                 card.index = -1;
               });
             } else {
               var index = 1;
-              _.each(scope.cardPositions, function(card, i) {
+              _.each(scope.cardStates, function(card, i) {
                 if (newExpandedId === card.model.uniqueId || oldExpandedId === card.model.uniqueId) {
                   card.index = 0;
                 } else {
@@ -500,17 +559,17 @@
           var cursorY = cardOriginY - containerYOffset;
           var clientY = clientY - containerYOffset;
 
-          var cardsInMyRow = _.where(scope.cardPositions, function(cardPositionData) {
-            return cardPositionData.style.top <= clientY && (
-              cardPositionData.style.top + cardPositionData.style.height) >= clientY;
+          var cardsInMyRow = _.where(scope.cardStates, function(cardStateData) {
+            return cardStateData.style.top <= clientY && (
+              cardStateData.style.top + cardStateData.style.height) >= clientY;
           });
 
-          var closestCard = cardsInMyRow.reduce(function(currentClosest, cardPositionData) {
-            var distance = Math.sqrt(Math.pow(cursorX - cardPositionData.style.left, 2)
-                                     + Math.pow(cursorY - cardPositionData.style.top, 2));
+          var closestCard = cardsInMyRow.reduce(function(currentClosest, cardStateData) {
+            var distance = Math.sqrt(Math.pow(cursorX - cardStateData.style.left, 2)
+                                     + Math.pow(cursorY - cardStateData.style.top, 2));
             if (currentClosest.distance > distance) {
               return {
-                model: cardPositionData.model,
+                model: cardStateData.model,
                 distance: distance
               };
             } else {
@@ -575,7 +634,7 @@
 
                 var jqEl = $(position.target);
                 scope.grabbedCard = {
-                  model: jqEl.scope().cardPosition.model,
+                  model: jqEl.scope().cardState.model,
                   jqEl: jqEl.siblings('card')
                 };
               });
@@ -692,25 +751,30 @@
 
         };
 
+        scope.addCardWithSize = function(cardSize) {
+          scope.$emit('add-card-with-size', cardSize);
+        };
+
         scope.deleteCard = function(cardModel) {
           scope.safeApply(function() {
             scope.page.set('cards', _.without(scope.cardModels, cardModel));
           });
         };
 
-        scope.addCard = function(cardSize) {
-          if (scope.allowAddCard) {
-            scope.$emit('modal-open-surrogate', {id: 'add-card-dialog', cardSize: cardSize});
-          }
+        scope.isCustomizable = CardTypeMapping.modelIsCustomizable;
+        scope.customizeCard = function(cardModel) {
+          scope.$emit('customize-card-with-model', cardModel);
         };
 
-        FlyoutService.register('expand-button-target', function(el) {
+        initCardSelection(scope, CardTypeMapping, FlyoutService, DownloadService, $timeout);
+
+
+        /**
+         * Flyouts.
+         */
+        FlyoutService.register('card-control', function(el) {
           return '<div class="flyout-title">{0}</div>'.format($(el).attr('title'));
         });
-
-        FlyoutService.register('delete-button-target', function(el) {
-            return '<div class="flyout-title">{0}</div>'.format($(el).attr('title'));
-          });
 
         FlyoutService.register('add-card-button', function(el) {
             if ($(el).hasClass('disabled')) {
@@ -725,9 +789,7 @@
         scope.bindObservable('cardModels', scope.page.observe('cards'));
 
         scope.$on('$destroy', function() {
-          _.each(subscriptions, function(sub) {
-            sub.dispose();
-          });
+          _.invoke(subscriptions, 'dispose');
         });
 
       }

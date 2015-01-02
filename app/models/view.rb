@@ -746,6 +746,15 @@ class View < Model
      "#{root_url(host: self.domainCName || CurrentDomain.cname)}api/views/#{self.id}/rows.#{ext}"
   end
 
+  def api_foundry_url
+    domain = self.federated? ? self.domainCName : CurrentDomain.cname
+    "http://dev.socrata.com/foundry/#/#{domain}/#{id}"
+  end
+
+  def resource_url
+    "https://#{CurrentDomain.cname}#{CurrentDomain.domain.port}/resource/#{id}.json"
+  end
+
   def tweet
     I18n.t('controls.common.share.share_text', :name => name, :site => CurrentDomain.strings.company) + short_view_url(self)
   end
@@ -1415,6 +1424,7 @@ class View < Model
     "PUBLIC_DOMAIN" => "Public Domain",
     "OPEN_DATABASE_LICENSE" => "Open Database License",
     "IODL" => "Italian Open Data License 2.0",
+    "PDDL" => "Open Data Commons Public Domain Dedication and License",
     "CC" => "Creative Commons"
   }
 
@@ -1434,6 +1444,7 @@ class View < Model
     "PUBLIC_DOMAIN" => "Public Domain",
     "OPEN_DATABASE_LICENSE" => "Open Database License",
     "IODL" => "Italian Open Data License 2.0",
+    "PDDL" => "Open Data Commons Public Domain Dedication and License",
     "CC" => "Creative Commons",
     "CC0_10" => "1.0 Universal",
     "CC_30_BY" => "Attribution 3.0 Unported",

@@ -1,4 +1,4 @@
-angular.module('dataCards.directives').directive('card', function(AngularRxExtensions, CardTypeMappingService, $timeout, $log) {
+angular.module('dataCards.directives').directive('card', function(AngularRxExtensions, $timeout, $log) {
 
   return {
     restrict: 'E',
@@ -8,16 +8,9 @@ angular.module('dataCards.directives').directive('card', function(AngularRxExten
 
       AngularRxExtensions.install($scope);
 
-      var modelSubject = $scope.observe('model');
+      var modelSubject = $scope.observe('model').filter(_.identity);
       var datasetObservable = modelSubject.pluck('page').observeOnLatest('dataset');
       var columns = datasetObservable.observeOnLatest('columns');
-
-      var cardType = modelSubject.pluck('fieldName').combineLatest(columns,
-        function(cardField, datasetFields) {
-          var column = datasetFields[cardField];
-          return column ? CardTypeMappingService.cardTypeForColumn(column) : null;
-        }
-      );
 
       var column = modelSubject.pluck('fieldName').combineLatest(columns, function(fieldName, columns) {
         return columns[fieldName];
@@ -25,23 +18,12 @@ angular.module('dataCards.directives').directive('card', function(AngularRxExten
 
       $scope.descriptionCollapsed = true;
 
-      $scope.bindObservable('cardType', cardType);
       $scope.bindObservable('expanded', modelSubject.observeOnLatest('expanded'));
-      $scope.bindObservable('cardSize', modelSubject.observeOnLatest('cardSize'));
 
       $scope.bindObservable('title', column.pluck('title'));
       $scope.bindObservable('description', column.pluck('description'));
 
       var updateCardLayout = _.throttle(function(textHeight) {
-
-        var updateCardVisualizationHeight = function() {
-          $timeout(function() {
-            // waits until description is filled in to determine heights
-            var cardVisHeight = element.height() - element.find('.card-text').outerHeight(true);
-            element.find('.card-visualization').height(cardVisHeight);
-          });
-        };
-
         descriptionTruncatedContent.dotdotdot({
           height: textHeight,
           tolerance: 2
@@ -52,7 +34,6 @@ angular.module('dataCards.directives').directive('card', function(AngularRxExten
         $scope.safeApply(function() {
           $scope.descriptionClamped = isClamped;
           $scope.animationsOn = true;
-          updateCardVisualizationHeight();
         });
 
       }, 250, { leading: true, trailing: true });
@@ -64,8 +45,26 @@ angular.module('dataCards.directives').directive('card', function(AngularRxExten
       var descriptionTruncatedContent = element.find('.description-truncated-content');
       var descriptionElementsWithMaxSize = element.find('.description-expanded-wrapper, .description-expanded-content');
 
+      var dimensionsObservable = element.observeDimensions();
+
+      // Give the visualization all the height that the description isn't using.
+      // Note that we set the height on a wrapper instead of the card-visualization itself.
+      // This is because the card-visualization DOM node itself can be ripped out and replaced
+      // by angular at any time (typically when the card-visualization template finishes loading
+      // asynchronously).
+      // See: https://github.com/angular/angular.js/issues/8877
+      var description = element.find('.card-text');
       Rx.Observable.subscribeLatest(
-        element.observeDimensions(),
+        description.observeDimensions(),
+        dimensionsObservable,
+        function(descriptionDimensions, elementDimensions) {
+          element.find('.card-visualization-wrapper').height(
+            elementDimensions.height - description.outerHeight(true)
+          );
+        });
+
+      Rx.Observable.subscribeLatest(
+        dimensionsObservable,
         column.pluck('description'),
         function(dimensions, descriptionText) {
           // Manually update the binding now, because Angular doesn't know that dotdotdot messes with
@@ -79,6 +78,7 @@ angular.module('dataCards.directives').directive('card', function(AngularRxExten
           updateCardLayout(parseInt(descriptionTruncatedContent.css('line-height')) * 2);
 
         });
+
     }
   };
 

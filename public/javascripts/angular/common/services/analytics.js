@@ -5,6 +5,7 @@
   var entity = 'domain-intern';
   var baseMetricName = 'js-cardsview-{0}-time';
 
+
   /**
    * Analytics service
    *
@@ -25,7 +26,8 @@
     // true for IE9+, Chrome, Firefox (as of 8/12/14)
     var hasPerformanceTiming = _.isDefined($window.performance) && _.isDefined($window.performance.timing);
 
-    var isStatsdEnabled = function() { return ServerConfig.get('statsdEnabled') || false; };
+    // Whether or not we should send computed metrics to the analytics service backend.
+    var serverUploadEnabled = true;
 
     var currentTime = function() {
       return moment().valueOf();
@@ -133,6 +135,12 @@
       }
     };
 
+    // Controls whether or not to send computed metrics up to
+    // the backend. Defaults to enabled.
+    this.setServerUploadEnabled = function(isEnabled) {
+      serverUploadEnabled = isEnabled;
+    };
+
     /**
      * Posts an analytics metric to the analytics endpoint
      * Analytics endpoint performs checking to determine if it is a valid metric
@@ -144,26 +152,34 @@
      * @param metricValue
      */
     function sendMetric(metricName, metricValue) {
-      if (isStatsdEnabled()) {
-        http({
-          method: 'post',
-          url: analyticsUrl,
-          data: JSON.stringify({
-            metrics: [
-              {
-                entity: entity,
-                metric: metricName,
-                increment: metricValue
-              }
-            ]
-          }),
-          headers: {
+
+      var analyticsPayload;
+      var analyticsConfig;
+
+      if (serverUploadEnabled) {
+
+        analyticsPayload = JSON.stringify({
+          metrics: [
+            {
+              entity: entity,
+              metric: metricName,
+              increment: metricValue
+            }
+          ]
+        });
+
+        analyticsConfig = {
+          'headers': {
             'X-Socrata-Auth': 'unauthenticated',
             'Content-Type': 'application/text'
           },
-          contentType: 'application/json',
-          dataType: 'json'
-        });
+          'contentType': 'application/json',
+          'dataType': 'json',
+          'requester': {}
+        }
+
+        http.post(analyticsUrl, analyticsPayload, analyticsConfig);
+
       }
     }
 

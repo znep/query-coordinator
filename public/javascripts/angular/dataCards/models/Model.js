@@ -90,19 +90,44 @@ angular.module('dataCards.models').factory('Model', function(Class, ModelHelper)
       // want to consider as a write.
       //TODO right now we don't distinguish between passing null and not passing initialValue
       //at all.
-      (_.isDefined(initialValue) ? writesSequence : writesSequence.skip(1))
-        .subscribe(function(value) {
+      (_.isDefined(initialValue) ? writesSequence : writesSequence.skip(1)).
+        subscribe(function(value) {
           self._writes.onNext({
             model: self,
             property: propertyName,
             newValue: value
           });
-        })
+        });
+    },
+
+    // Define a new observable property whose value is sourced by the given sequence.
+    // Setting values on this property via setValue is not supported, and will result
+    // in an error being thrown.
+    defineReadOnlyObservableProperty: function(propertyName, valueSequence) {
+      var self = this;
+
+      if (valueSequence && !_.isFunction(valueSequence.asObservable)) {
+        throw new Error('Expected valueSequence to be an observable');
+      }
+
+      if (this._propertyTable.hasOwnProperty(propertyName)) {
+        throw new Error('Object ' + this + ' already has property: ' + propertyName);
+      }
+
+      ModelHelper.addReadOnlyProperty(propertyName, this._propertyTable, valueSequence.asObservable()).
+        subscribe(function(value) {
+          self._writes.onNext({
+            model: self,
+            property: propertyName,
+            newValue: value
+          });
+        });
+
     },
 
     _assertProperty: function(propertyName) {
       if (!this._propertyTable.hasOwnProperty(propertyName)) {
-        throw new Error("Object " + this + " has no such property: " + propertyName);
+        throw new Error("Object " + JSON.stringify(this) + " has no such property: " + propertyName);
       }
     },
 
@@ -128,14 +153,45 @@ angular.module('dataCards.models').factory('Model', function(Class, ModelHelper)
       });
     },
 
+    // Unsets the named property, and forget it has ever been set.
+    // Will throw an exception if that property
+    // hasn't been defined on this Model.
+    unset: function(propertyName) {
+      this._assertProperty(propertyName);
+      this._propertyTable[propertyName] = undefined;
+      this._propertyHasBeenWritten[propertyName] = false;
+      this._sets.onNext({
+        model: this,
+        property: propertyName,
+        newValue: undefined
+      });
+    },
+
     // Returns true if any of these hold:
     //   * The property has been written by a call to set(), or
     //   * The property has been initialized to a non-undefined value via defineObservableProperty
     //     (either due to an initial value being provided or due to a lazy default resolving).
-    // Will throw an exception if that property
-    // hasn't been defined on this Model.
     isSet: function(propertyName) {
       return this._propertyHasBeenWritten[propertyName] === true;
+    },
+
+    /**
+     * Sets the properties of this model to the values of the given model.
+     *
+     * @param {Model} otherModel The Model to get the new values from. The argument Model must be
+     * the same type as (or a subclass of) this Model.
+     */
+    setFrom: function(otherModel) {
+      angular.forEach(this._propertyTable, function(subject, propertyName) {
+        var newValue = otherModel.getCurrentValue(propertyName);
+        if (newValue !== subject.value) {
+          if (otherModel.isSet(propertyName)) {
+            this.set(propertyName, newValue);
+          } else {
+            this.unset(propertyName);
+          }
+        }
+      }, this);
     },
 
     // Gets the current value of the named property on this model.
@@ -148,7 +204,7 @@ angular.module('dataCards.models').factory('Model', function(Class, ModelHelper)
     // to this Model. Strongly consider using observe() instead.
     getCurrentValue: function(propertyName) {
       this._assertProperty(propertyName);
-      return this._propertyTable[propertyName].value;
+      return ModelHelper.currentValueOfProperty(this._propertyTable, propertyName);
     },
 
     // Get a snapshot of this model. Child models are descended

@@ -39,6 +39,33 @@ describe("Model", function() {
     expect(seen).to.deep.equal([5, 10]);
   });
 
+  it('should emit the current value on all new subscribers', inject(function($q) {
+    var model = new Model();
+    var changes = [];
+    model.defineObservableProperty('notLazy', 5);
+    model.defineObservableProperty('lazy', 15, _.constant($q.defer().promise));
+
+    model.observe('notLazy').subscribe(function(change) {
+      changes.push({ a: change });
+    });
+    model.observe('notLazy').subscribe(function(change) {
+      changes.push({ b: change });
+    });
+    model.observe('lazy').subscribe(function(change) {
+      changes.push({ a: change });
+    });
+    model.observe('lazy').subscribe(function(change) {
+      changes.push({ b: change });
+    });
+
+    expect(changes).to.deep.equal([
+      { a: 5 },
+      { b: 5 },
+      { a: 15 },
+      { b: 15 }
+    ]);
+  }));
+
   it('should honor default value generation with default', inject(function($q, $rootScope) {
     var model = new Model();
     var seen = [];
@@ -66,7 +93,70 @@ describe("Model", function() {
     expect(seen).to.deep.equal([5, 10]);
   }));
 
+  describe('defineReadOnlyObservableProperty', function() {
+    it('should reflect changes in the given sequence', function() {
+      var model = new Model();
+      var valueSeq = new Rx.Subject();
+      var seen = [];
+      model.defineReadOnlyObservableProperty('prop', valueSeq);
+      model.observe('prop').subscribe(function(val) { seen.push(val); });
+
+      expect(model.getCurrentValue('prop')).to.equal(undefined);
+
+      valueSeq.onNext('foo');
+      expect(model.getCurrentValue('prop')).to.equal('foo');
+
+      valueSeq.onNext('bar');
+      expect(model.getCurrentValue('prop')).to.equal('bar');
+
+      expect(seen).to.deep.equal([ 'foo', 'bar']);
+    });
+
+    it('should throw on setValue', function() {
+      var model = new Model();
+      model.defineReadOnlyObservableProperty('prop', Rx.Observable.never());
+      expect(function() { model.setValue('prop'); }).to.throw();
+    });
+
+    it('should always return false for isSet', function() {
+      var model = new Model();
+      model.defineReadOnlyObservableProperty('prop', Rx.Observable.never());
+      expect(model.isSet('prop')).to.equal(false);
+    });
+  });
+
   describe('observePropertyWrites', function() {
+    describe('on a read-only property', function() {
+      it('should emit on values', function() {
+        var model = new Model();
+        var valueSeq = new Rx.Subject();
+
+        var changes = [];
+        var expectedChanges = [];
+        model.observePropertyWrites().subscribe(function(change) {
+          changes.push(change);
+        });
+
+        model.defineReadOnlyObservableProperty('prop', valueSeq);
+        model.observe('prop').subscribe(_.noop);
+
+        valueSeq.onNext('asd');
+        expectedChanges.push({
+          model: model,
+          property: 'prop',
+          newValue: 'asd'
+        });
+        valueSeq.onNext('def');
+        expectedChanges.push({
+          model: model,
+          property: 'prop',
+          newValue: 'def'
+        });
+
+        expect(changes).to.deep.equal(expectedChanges);
+      });
+    });
+
     describe('on a non-lazy property', function() {
       it('should emit on property add', function() {
         var model = new Model();
@@ -228,6 +318,20 @@ describe("Model", function() {
   });
 
   describe('observePropertyChanges', function() {
+    describe('on a read-only property', function() {
+      it('should never emit', function() {
+        var model = new Model();
+        var valueSeq = new Rx.Subject();
+
+        model.observePropertyChanges().subscribe(function() {
+          throw new Error('should never see a change for read-only properties');
+        });
+
+        model.defineReadOnlyObservableProperty('prop', valueSeq);
+        model.observe('prop').subscribe(_.noop);
+        valueSeq.onNext('asd');
+      });
+    });
     describe('on a non-lazy property', function() {
       it('should not emit on property add', function() {
         var model = new Model();
@@ -758,6 +862,7 @@ describe("Model", function() {
       });
     });
   });
+
   describe('isSet', function() {
     it('should be false for non-lazy properties with no initial value', function() {
       var model = new Model();
@@ -776,6 +881,26 @@ describe("Model", function() {
       model.defineObservableProperty('noInitialValue');
       model.set('noInitialValue', 123);
       expect(model.isSet('noInitialValue')).to.be.true;
+    });
+
+    it('should become false after calling unset()', function() {
+      var model = new Model();
+      model.defineObservableProperty('noInitialValue');
+      var newestValue = null;
+      model.observe('noInitialValue').subscribe(function(val) {
+        newestValue = val;
+      });
+
+      model.set('noInitialValue', 123);
+
+      expect(model.isSet('noInitialValue')).to.be.true;
+      expect(newestValue).to.equal(123);
+
+      model.unset('noInitialValue');
+
+      expect(model.isSet('noInitialValue')).to.be.false;
+      // Should still emit
+      expect(newestValue).to.equal(undefined);
     });
 
     it('should be false for lazy properties with no initial value', function() {
@@ -829,6 +954,126 @@ describe("Model", function() {
       });
 
       fulfill(132);
+    });
+  });
+
+  describe('unset', function() {
+    it('should unset the variable', function() {
+      var model = new Model();
+      model.defineObservableProperty('prop');
+      var newestValue = null;
+      model.observe('prop').subscribe(function(val) {
+        newestValue = val;
+      });
+
+      model.set('prop', 123);
+      var serialized = model.serialize();
+
+      expect(newestValue).to.equal(123);
+      expect(serialized.hasOwnProperty('prop')).to.equal(true);
+
+      model.unset('prop');
+      serialized = model.serialize();
+
+      expect(newestValue).to.equal(undefined);
+      expect(model.getCurrentValue('prop')).to.equal(undefined);
+      expect(serialized.hasOwnProperty('prop')).to.equal(false);
+    });
+  });
+
+  describe('setFrom', function() {
+    it('should set the properties to the new values', function() {
+      var model1 = new Model();
+      model1.defineObservableProperty('prop');
+      var model2 = new Model();
+      model2.defineObservableProperty('prop');
+
+      model1.set('prop', 123);
+      model2.set('prop', 234);
+
+      model1.setFrom(model2);
+
+      expect(model1.getCurrentValue('prop')).to.equal(234);
+    });
+
+    it('should not set properties that didn\'t change', function() {
+      var model1 = new Model();
+      model1.defineObservableProperty('prop');
+      model1.defineObservableProperty('prop2');
+      var model2 = new Model();
+      model2.defineObservableProperty('prop');
+      model2.defineObservableProperty('prop2');
+
+      model1.set('prop', 123);
+      model1.set('prop2', 'abc');
+      model2.set('prop', 234);
+      model2.set('prop2', 'abc');
+
+      var newValue;
+      model1.observe('prop2').subscribe(function(val) {
+        newValue = val;
+      });
+      newValue = null;
+
+      model1.setFrom(model2);
+
+      expect(model1.getCurrentValue('prop')).to.equal(234);
+      expect(model1.getCurrentValue('prop2')).to.equal('abc');
+      // Should not have emitted
+      expect(newValue).to.equal(null);
+    });
+
+    it('should unset properties on this model which are not set on the argument model', function() {
+      var model1 = new Model();
+      model1.defineObservableProperty('prop');
+      var model2 = new Model();
+      model2.defineObservableProperty('prop');
+
+      var newestValue = null;
+      model1.observe('prop').subscribe(function(val) {
+        newestValue = val;
+      });
+
+      model1.set('prop', 123);
+      expect(newestValue).to.equal(123);
+
+      model1.setFrom(model2);
+
+      expect(model1.getCurrentValue('prop')).to.equal(undefined);
+      expect(newestValue).not.to.equal(null);
+      expect(newestValue).to.equal(undefined);
+      expect(model1.isSet('prop')).to.equal(false);
+    });
+
+    it('should set only its own properties', function() {
+      var model1 = new Model();
+      model1.defineObservableProperty('prop');
+      var model2 = new Model();
+      model2.defineObservableProperty('prop');
+      model2.defineObservableProperty('prop2');
+
+      model1.set('prop', 123);
+      model2.set('prop', 234);
+      model2.set('prop2', 234);
+
+      model1.setFrom(model2);
+
+      expect(model1.getCurrentValue('prop')).to.equal(234);
+      expect(function() { model1.getCurrentValue('prop2'); }).to.throw();
+    });
+
+    it('should throw on argument Models with different properties', function() {
+      var model1 = new Model();
+      model1.defineObservableProperty('prop');
+      model1.defineObservableProperty('prop2');
+      var model2 = new Model();
+      model2.defineObservableProperty('prop');
+
+      model1.set('prop', 123);
+      model1.set('prop2', 234);
+      model2.set('prop', 345);
+
+      expect(function() { model1.setFrom(model2); }).to.throw();
     });
   });
 });

@@ -1,25 +1,67 @@
-<div class="card-spot"
-     animate-to="cardPosition.style"
-     animate-to-index="{{ cardPosition.index }}"
-     ng-repeat="cardPosition in cardPositions track by cardPosition.model.uniqueId">
-  <card model="cardPosition.model"
-        class="card"
-        where-clause="globalWhereClauseFragment"
-        interactive="true"
-        ng-class="{ expanded: cardPosition.model.getCurrentValue('expanded'), dragged: cardPosition.model === grabbedCard.model }"></card>
-  <div class="card-drop-placeholder"
-    ng-if="cardPosition.model === grabbedCard.model && cardPosition.model.fieldName !== '*'"
-    ></div>
-  <div class="card-drag-overlay"
-    data-card-id="{{cardPosition.model.uniqueId}}"
-    ng-if="editMode && cardPosition.model !== grabbedCard.model && cardPosition.model.fieldName !== '*'">
-    <div class="delete-button">
-      <span class="delete-button-target" title="Remove this Card" ng-click="deleteCard(cardPosition.model)"></span>
+<div
+  class="card-spot"
+  animate-to="cardState.style"
+  animate-to-index="{{ cardState.index }}"
+  ng-repeat="cardState in cardStates track by cardState.model.uniqueId">
+  <card
+    model="cardState.model"
+    class="card"
+    where-clause="globalWhereClauseFragment"
+    interactive="true"
+    ng-class="{
+      expanded: cardState.model.getCurrentValue('expanded'),
+      dragged: cardState.model === grabbedCard.model
+    }"></card>
+  <div
+    class="card-drop-placeholder"
+    ng-if="cardState.model === grabbedCard.model && cardState.model.fieldName !== '*'"></div>
+  <div
+    ng-if="chooserMode.show"
+    class="card-chooser overlay"
+    ng-class="{ enabled: isPngExportable(cardState.model) }">
+    <div
+      ng-switch="isPngExportable(cardState.model)">
+      <a
+        ng-switch-when="true"
+        class="action-btn action-png-export"
+        href="{{ getDownloadUrl(cardState.model) }}"
+        ng-click="downloadPng(cardState, $event)"
+        ng-class="{
+          disabled: !isPngExportable(cardState.model),
+          working: cardState.downloadState === 'loading',
+          success: cardState.downloadState === 'success',
+          error: cardState.downloadState === 'error'
+        }">
+        {{ downloadStateText(cardState.downloadState) }}
+        <spinner ng-if="cardState.downloadState === 'loading'"></spinner>
+      </a>
+      <span
+        ng-switch-default
+        class="action-btn action-png-export export-visualization-disabled disabled">
+        {{ downloadStateText(cardState.downloadState) }}
+      </span>
+    </div>
+  </div>
+  <div
+    class="card-drag-overlay overlay"
+    data-card-id="{{cardState.model.uniqueId}}"
+    ng-if="editMode && cardState.model !== grabbedCard.model && cardState.model.fieldName !== '*'">
+    <div class="card-controls">
+      <div
+        class="card-control icon-settings"
+        ng-class="{ disabled: !isCustomizable(cardState.model) }"
+        ng-click="customizeCard(cardState.model)"
+        title="{{ isCustomizable(cardState.model) ? 'Customize this card' : 'There are no customization options for this card yet' }}"></div>
+      <div
+        class="card-control icon-close"
+        title="Remove this card"
+        ng-click="deleteCard(cardState.model)"></div>
     </div>
   </div>
 </div>
 
-<div ng-repeat="placeholder in placeholderDropTargets"
+<div
+  ng-repeat="placeholder in placeholderDropTargets"
   ng-style="placeholder.style"
   class="card-group-drop-placeholder"
   data-group-id="{{ placeholder.cardSize}}"></div>
@@ -28,6 +70,6 @@
   ng-style="button.style"
   type="button"
   class="add-card-button action-btn dark l-to-r"
-  ng-class="{disabled: !allowAddCard}"
+  ng-class="{ disabled: !allowAddCard }"
   ng-show="editMode"
-  ng-click="addCard(button.cardSize)">Add card here</button>
+  ng-click="addCardWithSize(button.cardSize)">Add card here</button>

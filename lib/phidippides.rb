@@ -1,6 +1,8 @@
-class Phidippides
-
-  class ConnectionError < RuntimeError; end
+class Phidippides < SocrataHttp
+  # TODO: Should these actually be ignore-case?
+  # Note - these are aligned so as to exemplify the differences between the regexes
+  COLUMN_ID_REGEX =    /(:@)?([a-z][a-z_0-9\-]*)/i
+  SYSTEM_COLUMN_ID_REGEX = /:([a-z][a-z_0-9\-]*)/i
 
   # curl -k -v -X POST -H "X-Socrata-Host: localhost" -H "X-Socrata-Wink: iAmASocrataEmployee" -d @dataset_metadata.json http://localhost:2401/datasets
   # curl -k -v -X GET  -H "X-Socrata-Host: localhost" http://localhost:2401/datasets/q77b-s2zi
@@ -24,7 +26,7 @@ class Phidippides
       ::ZookeeperDiscovery.get_json("/#{zookeeper_path}/#{instance_id}")
     rescue ZK::Exceptions::BadArguments => error
       Rails.logger.error(error_message = "Unable to determine phidippides connection details due to error: #{error.to_s}")
-      raise ::Phidippides::ConnectionError.new(error_message)
+      raise ::SocrataHttp::ConnectionError.new(error_message)
     end
   end
 
@@ -36,8 +38,12 @@ class Phidippides
     ENV['PHIDIPPIDES_PORT'] || connection_details.fetch('port')
   end
 
-  def end_point
-    "http://#{address}:#{port}"
+  def issue_request(options)
+    options[:headers] = {} unless options.has_key?(:headers)
+    options[:headers]['X-Socrata-Wink'] = 'iAmASocrataEmployee'
+    options[:headers]['Content-Type'] = 'application/json'
+
+    super(options)
   end
 
   def fetch_pages_for_dataset(dataset_id, options = {})
@@ -100,8 +106,7 @@ class Phidippides
     )
   end
 
-  def update_dataset_metadata(data, options = {})
-    json = JSON.parse(data)
+  def update_dataset_metadata(json, options = {})
     issue_request(
       :verb => :put,
       :path => "datasets/#{json['id']}",
@@ -111,52 +116,5 @@ class Phidippides
     )
   end
 
-  def issue_request(options)
-    raise ArgumentError.new('Missing option :verb') unless options[:verb].present?
-    raise ArgumentError.new('Missing option :path') unless options[:path].present?
-
-    verb            = options.fetch(:verb).to_s.capitalize
-    path            = options.fetch(:path)
-    phidippides_url = "#{end_point}/#{path}"
-    request         = "Net::HTTP::#{verb}".constantize.new(phidippides_url)
-
-    if [:post, :put].include?(options.fetch(:verb)) && options[:data].present?
-      request.body = JSON.dump(options[:data])
-    end
-
-    Rails.logger.debug("#{verb.upcase} to phidippides at #{phidippides_url} started with request body #{request.body.inspect}")
-
-    request['X-Socrata-Host']      = CurrentDomain.domain.cname
-    request['X-Socrata-Wink']      = 'iAmASocrataEmployee'
-    request['X-Socrata-RequestId'] = options[:request_id] if options[:request_id].present?
-    request['Cookie']              = options[:cookies]    if options[:cookies].present?
-    request['Content-Type']        = 'application/json'
-
-    Rails.logger.debug("X-Socrata-Host is #{CurrentDomain.domain.cname}")
-
-    begin
-      response = Net::HTTP.start(address, port) { |http| http.request(request) }
-    # Sigh... one day we'll be able to use Faraday or HTTParty
-    rescue Timeout::Error, Errno::EINVAL, Errno::ECONNRESET, EOFError, Errno::ECONNREFUSED,
-      Net::HTTPBadResponse, Net::HTTPHeaderSyntaxError, Net::ProtocolError => error
-      raise ConnectionError.new(error.to_s)
-    end
-
-    if response.kind_of?(Net::HTTPSuccess)
-      begin
-        result = { status: response.code }
-        result[:body] = JSON.parse(response.body) if response.body.present?
-        Rails.logger.debug("#{verb.upcase} to phidippides at #{phidippides_url} succeeded with response: #{response}")
-      rescue JSON::ParserError => error
-        Rails.logger.error("#{verb.upcase} to phidippides at #{phidippides_url} failed with error: #{error}")
-        result = { status: '500', body: response.body, error: error.to_s }
-      end
-    else
-      Rails.logger.error("#{verb.upcase} to phidippides at #{phidippides_url} failed with response: #{response}")
-      result = { status: response.code, body: response.body, error: response.body }
-    end
-
-    result.with_indifferent_access
-  end
 
 end

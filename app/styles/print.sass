@@ -27,5 +27,38 @@ a
   #actionBar, #actionBox
     display: none
 
+// GovStat
 .janusConsole
   display: none
+
+.measuresContainer,
+.healthContainer,
+.narrative,
+.component-Visualization,
+.component-HorizontalContainer
+  page-break-inside: avoid
+
+.component-Visualization,
+.component-HorizontalContainer
+  overflow: hidden
+
+.goalSubtitle .dsLink
+  display: none
+
+.calloutContainer
+  &.targetValueCallout
+    left: inherit !important
+    right: 10px !important
+
+.calloutConnectorLine
+  &.targetValueCallout
+    visibility: hidden
+
+.controller_odysseus
+  .titleBoxContainer
+    overflow: hidden
+    .titleContainer
+      background: #fff
+  .subnavigation
+    ul.actions
+      display: none

@@ -63,7 +63,7 @@ describe("A Table Card Visualization", function() {
     return Card.deserialize(pageModel, $.extend({}, baseCard, blob));
   }
 
-  function createTable(expanded, cardBlobs, whereClause) {
+  function createTable(expanded, cardBlobs, whereClause, firstColumn) {
     expanded = expanded || false;
     cardBlobs = cardBlobs || [];
 
@@ -144,8 +144,9 @@ describe("A Table Card Visualization", function() {
     var outerScope = rootScope.$new();
     outerScope.whereClause = whereClause;
     outerScope.model = model;
+    outerScope.firstColumn = firstColumn;
 
-    var html = '<div style="position: relative"><card-visualization-table model="model" where-clause="whereClause"></card-visualization-table></div>';
+    var html = '<div style="position: relative"><card-visualization-table model="model" where-clause="whereClause" first-column="firstColumn"></card-visualization-table></div>';
     var element = testHelpers.TestDom.compileAndAppend(html, outerScope);
 
     return {
@@ -254,18 +255,20 @@ describe("A Table Card Visualization", function() {
         'cardSize': 2
       }];
 
-      var exceptionRaised = false;
-
-      try {
+      expect(function() {
         createTable(true, cards);
-      } catch (e) {
-        exceptionRaised = true;
-      }
-
-      expect(exceptionRaised).to.be.false;
+      }).to.not.throw();
 
     });
 
+  });
+
+  describe('first column', function() {
+    it('should be able to be specified', function() {
+      var FIRST_COLUMN_OVERRIDE = 'test_timestamp_column';
+      var table = createTable(undefined, undefined, undefined, FIRST_COLUMN_OVERRIDE);
+      expect(table.element.find('.th:eq(0)').data('columnId')).to.equal(FIRST_COLUMN_OVERRIDE);
+    });
   });
 
 });

@@ -17,9 +17,13 @@ if (window['socrataConfig'].enableAirbrakeJs) {
 
 var dataCards = angular.module('dataCards', dependencies);
 
-dataCards.config(function(ServerConfig) {
+dataCards.config(function(ServerConfig, $httpProvider) {
   ServerConfig.setup(window['socrataConfig']);
   delete window['socrataConfig'];
+
+  // Automatically add the app token header to requests done through $http.
+  // NOTE: This does not work for requests made through some other means.
+  $httpProvider.defaults.headers.common['X-App-Token'] = ServerConfig.get('dataCardsAppToken');
 });
 
 /**
@@ -76,23 +80,40 @@ dataCards.run(function($window, $rootScope, Analytics) {
 dataCards.config(function($provide, $stateProvider, $urlRouterProvider, $locationProvider) {
   $stateProvider.
     state('404', {
-      template: '<h1>404</h1>You probably wanted something, but have this kitten instead: <br /><soc-kitten w="800" h="600"></soc-kitten>'
+      templateUrl: '/404'
     }).
     state('view', {
-      template: '<!--Overall chrome--><div ui-view="mainContent"><div>',
+      template: '<!--Overall chrome--><div ui-view="mainContent"><div>'
+    }).
+    state('view.cards', {
       params: ['id'],
       resolve: {
         page: function($stateParams, Page) {
           return new Page($stateParams['id']);
         }
-      }
-    }).
-    state('view.cards', {
+      },
       views: {
         'mainContent': {
           //TODO figure out a way of getting the template dir out of rails.
           templateUrl: '/angular_templates/dataCards/pages/cards-view.html',
           controller: 'CardsViewController'
+        }
+      },
+      analyticsEnabled: true
+    }).
+    state('view.card', {
+      params: ['pageId', 'fieldName'],
+      resolve: {
+        page: function($stateParams, Page) {
+          return new Page($stateParams['pageId']);
+        },
+        fieldName: function($stateParams) { return $stateParams.fieldName; }
+      },
+      views: {
+        'mainContent': {
+          //TODO figure out a way of getting the template dir out of rails.
+          templateUrl: '/angular_templates/dataCards/pages/single-card-view.html',
+          controller: 'SingleCardViewController'
         }
       }
     }).
@@ -115,7 +136,7 @@ dataCards.config(function($provide, $stateProvider, $urlRouterProvider, $locatio
     });
 });
 
-dataCards.run(function($location, $log, $rootScope, $state, Routes, DeveloperOverrides) {
+dataCards.run(function($location, $log, $rootScope, $state, Analytics, Routes, ServerConfig, DeveloperOverrides) {
   // Shamelessly lifted from http://www.joezimjs.com/javascript/3-ways-to-parse-a-query-string-in-a-url/
   var parseQueryString = function( queryString ) {
     var params = {}, queries, temp, i, l;
@@ -159,6 +180,11 @@ dataCards.run(function($location, $log, $rootScope, $state, Routes, DeveloperOve
   // our UX considerations require our URL to not depend on a document
   // fragment. We'd be able to use html5 mode on the router to satisfy this,
   // but we need to support IE9.
-  var initialAppUIState = Routes.getUIStateAndConfigFromUrl(location.pathname);
-  $state.go(initialAppUIState.stateName, initialAppUIState.parameters);
+  var initialRoute = Routes.getUIStateAndConfigFromUrl(location.pathname);
+  var initialAppUIState = $state.get(initialRoute.stateName);
+  $state.go(initialAppUIState, initialRoute.parameters);
+
+  // Enable analytics upload iff we're configured to AND the app UI state calls for it.
+  var isStatsdEnabled = ServerConfig.get('statsdEnabled') || false;
+  Analytics.setServerUploadEnabled(isStatsdEnabled && initialAppUIState.analyticsEnabled || false);
 });

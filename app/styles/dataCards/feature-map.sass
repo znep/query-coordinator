@@ -1,0 +1,18 @@
+@import dataCards/common/colors
+
+card-visualization-feature-map,
+.feature-map
+  display: block
+  padding: 0
+  width: 100%
+  height: 100%
+
+  .feature-map-container
+    height: 100%
+
+.card.dragged
+  .feature-map-wrapper
+    .feature-map-container
+      path
+        cursor: grabbing !important
+        cursor: -webkit-grabbing !important

@@ -15,7 +15,7 @@
     "angular-mocks": "~1.2.25",
     "rxjs": "~2.2.20",
     "flexgrid": "ptb/flexgrid",
-    "javascript-detect-element-resize": "progman32/javascript-detect-element-resize#master",
+    "javascript-detect-element-resize": "sdecima/javascript-detect-element-resize#~0.5.3",
     "simple-statistics": "~0.8.1",
     "leaflet": "~0.7.3",
     "chroma-js": "~0.5.6",
@@ -23,7 +23,9 @@
     "moment": "~2.7.0",
     "requestAnimationFrame-polyfill": "*",
     "angular-sanitize": "~1.2.25",
-    "angular-markdown-directive": "progman32/angular-markdown-directive#master"
+    "angular-markdown-directive": "~0.3.1",
+    "pbf": "~0.0.3",
+    "vector-tile-js": "devTristan/vector-tile-js#~0.1.1"
   },
   "install": {
     "path": {
@@ -40,6 +42,8 @@
       "angular": "bower_components/angular/angular.min.js",
       "lodash": "bower_components/lodash/dist/lodash.js",
       "javascript-detect-element-resize": "bower_components/javascript-detect-element-resize/jquery.resize.js",
+      "pbf": "bower_components/pbf/dist/pbf.min.js",
+      "vector-tile-js": "bower_components/vector-tile-js/dist/vectortile.min.js",
       "rxjs": [
         "bower_components/rxjs/rx.js",
         "bower_components/rxjs/rx.async.js",

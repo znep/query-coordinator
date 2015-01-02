@@ -23,7 +23,7 @@ describe("CardDataService", function() {
     }, function(error) {
       done();
     });
-  };
+  }
 
   beforeEach(module('dataCards'));
 
@@ -35,6 +35,11 @@ describe("CardDataService", function() {
       { name: 'fakeNumberColumn', value: 3 }
     ]);
   }));
+
+  afterEach(function() {
+    $httpBackend.verifyNoOutstandingExpectation();
+    $httpBackend.verifyNoOutstandingRequest();
+  });
 
   describe('getData', function() {
     it('should throw on bad parameters', function() {
@@ -53,12 +58,28 @@ describe("CardDataService", function() {
       $httpBackend.flush();
     });
 
+    it('should not alias a column whose name is "name"', function() {
+      $httpBackend.expectGET(toUriRegex('/api/id/{0}.json?$query=select name, count(*) as value  group by name order by count(*) desc limit 200'.format(fake4x4)));
+      CardDataService.getData('name', fake4x4);
+      $httpBackend.flush();
+    });
+
     it('should pass through the where clause', function() {
       $httpBackend.expectGET(toUriRegex('/api/id/{0}.json?$query=select fakeNumberColumn as name, count(*) as value  group by fakeNumberColumn order by count(*) desc limit 200'.format(fake4x4)));
       $httpBackend.expectGET(toUriRegex('/api/id/{0}.json?$query=select fakeNumberColumn as name, count(*) as value where MAGICAL_WHERE_CLAUSE group by fakeNumberColumn order by count(*) desc limit 200'.format(fake4x4)));
 
       CardDataService.getData('fakeNumberColumn', fake4x4);
       CardDataService.getData('fakeNumberColumn', fake4x4, 'MAGICAL_WHERE_CLAUSE');
+
+      $httpBackend.flush();
+    });
+
+    it('should pass through the aggregation options', function() {
+      $httpBackend.expectGET(toUriRegex('/api/id/{0}.json?$query=select fakeNumberColumn as name, sum(fakeNumberColumn) as value  group by fakeNumberColumn order by sum(fakeNumberColumn) desc limit 200'.format(fake4x4)));
+      $httpBackend.expectGET(toUriRegex('/api/id/{0}.json?$query=select fakeNumberColumn as name, sum(fakeNumberColumn) as value where MAGICAL_WHERE_CLAUSE group by fakeNumberColumn order by sum(fakeNumberColumn) desc limit 200'.format(fake4x4)));
+
+      CardDataService.getData('fakeNumberColumn', fake4x4, null, { aggregation: 'sum', field: 'fakeNumberColumn' });
+      CardDataService.getData('fakeNumberColumn', fake4x4, 'MAGICAL_WHERE_CLAUSE', { aggregation: 'sum', field: 'fakeNumberColumn' });
 
       $httpBackend.flush();
     });
@@ -165,6 +186,16 @@ describe("CardDataService", function() {
         expect(moment.isMoment(data.end)).to.be.true;
         expect(data.start.year()).to.equal(1988);
         expect(data.end.year()).to.equal(2101);
+        done();
+      });
+      $httpBackend.flush();
+    });
+
+    it('should return undefined when the response is an empty object', function(done) {
+      var fakeDataInvalidMin = [{}];
+      fakeDataRequestHandler.respond(fakeDataInvalidMin);
+      var response = CardDataService.getTimelineDomain('fakeNumberColumn', fake4x4).then(function(response){
+        expect(response).to.equal(undefined);
         done();
       });
       $httpBackend.flush();
@@ -362,103 +393,6 @@ describe("CardDataService", function() {
     });
   });
 
-  describe('getChoroplethAggregates', function() {
-    it('should throw on bad parameters', function() {
-      expect(function() { CardDataService.getChoroplethAggregates(); }).to.throw();
-      expect(function() { CardDataService.getChoroplethAggregates({}); }).to.throw();
-      expect(function() { CardDataService.getChoroplethAggregates('field'); }).to.throw();
-      expect(function() { CardDataService.getChoroplethAggregates('field', 'dead-beef', {}); }).to.throw();
-      expect(function() { CardDataService.getChoroplethAggregates('field', {}); }).to.throw();
-    });
-
-    it('should access the correct dataset', function(done) {
-      var fakeData = [];
-      fakeDataRequestHandler.respond(fakeData);
-      var response = CardDataService.getChoroplethAggregates('fakeNumberColumn', fake4x4);
-      response.then(function() {
-        done();
-      });
-      $httpBackend.flush();
-    });
-
-    it('should generate a correct query', function() {
-      $httpBackend.expectGET(toUriRegex('/api/id/{1}.json?$query=select {0} as name, count(*) as value  group by {0} order by count(*) desc'.format('afakeNumberColumn', fake4x4)));
-      $httpBackend.expectGET(toUriRegex('/api/id/{1}.json?$query=select {0} as name, count(*) as value where MAGICAL_WHERE_CLAUSE group by {0} order by count(*) desc'.format('afakeNumberColumn', fake4x4)));
-      CardDataService.getChoroplethAggregates('afakeNumberColumn', fake4x4);
-      CardDataService.getChoroplethAggregates('afakeNumberColumn', fake4x4, 'MAGICAL_WHERE_CLAUSE');
-      $httpBackend.flush();
-    });
-
-    it('should reject the promise on 404', function(done) {
-      fakeDataRequestHandler.respond(404, []);
-      assertReject(CardDataService.getChoroplethAggregates('fakeNumberColumn', fake4x4), done);
-      $httpBackend.flush();
-    });
-
-    it('should reject the promise on 500', function(done) {
-      fakeDataRequestHandler.respond(500, []);
-      assertReject(CardDataService.getChoroplethAggregates('fakeNumberColumn', fake4x4), done);
-      $httpBackend.flush();
-    });
-
-    it('should reject the promise on 503', function(done) {
-      fakeDataRequestHandler.respond(503, []);
-      assertReject(CardDataService.getChoroplethAggregates('fakeNumberColumn', fake4x4), done);
-      $httpBackend.flush();
-    });
-
-    it('should reject the promise when given an empty string response', function(done) {
-      var fakeData = '';
-      fakeDataRequestHandler.respond(fakeData);
-      var response = CardDataService.getChoroplethAggregates('fakeNumberColumn', fake4x4);
-      assertReject(response, done);
-      $httpBackend.flush();
-    });
-
-    it('should return an empty result when given an empty array response', function(done) {
-      var fakeData = [];
-      fakeDataRequestHandler.respond(fakeData);
-      var response = CardDataService.getChoroplethAggregates('fakeNumberColumn', fake4x4);
-      response.then(function(d) {
-        expect(d).to.deep.equal([]);
-        done();
-      });
-      $httpBackend.flush();
-    });
-
-    it('should reject the promise when given an empty object response', function(done) {
-      var fakeData = {};
-      fakeDataRequestHandler.respond(fakeData);
-      var response = CardDataService.getChoroplethAggregates('fakeNumberColumn', fake4x4);
-      assertReject(response, done);
-      $httpBackend.flush();
-    });
-    it('should parse the aggregation result as a number', function(done) {
-      var fakeData = [
-        { name: 'alreadyInt', value: 3 },
-        { name: 'alreadyFloat', value: 3.14 },
-        { name: 'goodNumberString', value: '123' },
-        { name: 'badNumberString', value: 'asd' },
-        { name: 'null', value: null },
-        { name: 'undef', value: undefined }
-      ];
-      fakeDataRequestHandler.respond(fakeData);
-      var response = CardDataService.getChoroplethAggregates('fakeNumberColumn', fake4x4);
-      response.then(function(data) {
-        expect(data).to.deep.equal([
-          { name: 'alreadyInt', value: 3 },
-          { name: 'alreadyFloat', value: 3.14 },
-          { name: 'goodNumberString', value: 123 },
-          { name: 'badNumberString', value: NaN },
-          { name: 'null', value: NaN },
-          { name: 'undef', value: NaN }
-        ]);
-        done();
-      });
-      $httpBackend.flush();
-    });
-  });
-
   describe('getRowCount', function() {
     it('should get the count from the specified dataset', function() {
       $httpBackend.expectGET(toUriRegex('/api/id/{0}.json?$query=select count(0)'.format(fake4x4)));
@@ -513,4 +447,18 @@ describe("CardDataService", function() {
       expect(count).to.equal(0);
     });
   });
+
+  describe('getSampleData', function() {
+    it('should get the sample data', function() {
+      var TEST_FIELD_NAME = 'my test field';
+      var TEST_DATASET_ID = 'wibl-wobl';
+      var getDataStub = sinon.stub(CardDataService, 'getData');
+
+      CardDataService.getSampleData(TEST_FIELD_NAME, TEST_DATASET_ID);
+
+      expect(getDataStub.calledOnce).to.be.true;
+      expect(getDataStub.calledWith(TEST_FIELD_NAME, TEST_DATASET_ID)).to.be.true;
+    });
+  });
+
 });

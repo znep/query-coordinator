@@ -5,31 +5,31 @@ angular.module('dataCards.models').factory('Card', function($injector, ModelHelp
   JJV.addSchema('serializedCard', {
     'type': 'object',
     'properties': {
-      'fieldName': { 'type': 'string', 'minLength': 1 },
+      'activeFilters': { 'type': 'array' },
       'baseLayerUrl': { 'type': 'string' },
+      'cardCustomStyle': { 'type': 'object' },
       'cardSize': { 'type': 'integer' , 'minimum': 1, 'maximum': 4 },
+      'cardType': { 'type': 'string', },
       'displayMode': { 'type': 'string', 'enum': ['figures', 'visualization'] },
       'expanded': { 'type': 'boolean' },
-      'cardCustomStyle': { 'type': 'object' },
       'expandedCustomStyle': { 'type': 'object' },
-      'activeFilters': { 'type': 'array' },
+      'fieldName': { 'type': 'string', 'minLength': 1 },
       'shapefileFeatureHumanReadablePropertyName': { 'type': 'string' }
     },
     'required': ['fieldName', 'cardSize', 'cardCustomStyle', 'expandedCustomStyle', 'displayMode', 'expanded']
   });
 
   var Card = Model.extend({
-    init: function(page, fieldName) {
+    init: function(parentPageModel, fieldName, id) {
       this._super();
 
-      var Page = $injector.get('Page'); // Inject Page here to avoid circular dep.
-      if(!(page instanceof Page)) { throw new Error('Cards must have parent Page models.'); }
+      if(!(parentPageModel instanceof Model)) { throw new Error('Cards must have parent Page models.'); }
       if(!_.isString(fieldName) || _.isEmpty(fieldName)) { throw new Error('Cards must have a non-empty field name.'); }
 
       var self = this;
-      this.page = page;
+      this.page = parentPageModel;
       this.fieldName = fieldName;
-      this.uniqueId = _.uniqueId();
+      this.uniqueId = id || _.uniqueId();
 
       _.each(_.keys(JJV.schema.serializedCard.properties), function(field) {
         if (field === 'fieldName') return; // fieldName isn't observable.
@@ -37,6 +37,15 @@ angular.module('dataCards.models').factory('Card', function($injector, ModelHelp
       });
 
       self.set('activeFilters', []);
+    },
+
+    /**
+     * Creates a clone of this Card, including its id and everything.
+     *
+     * Useful for modifying the card's contents without committing them.
+     */
+    clone: function() {
+      return Card.deserialize(this.page, this.serialize(), this.uniqueId);
     },
 
     serialize: function() {
@@ -47,10 +56,10 @@ angular.module('dataCards.models').factory('Card', function($injector, ModelHelp
     }
   });
 
-  Card.deserialize = function(page, blob) {
+  Card.deserialize = function(page, blob, id) {
     validateCardBlobSchema(blob);
 
-    var instance = new Card(page, blob.fieldName);
+    var instance = new Card(page, blob.fieldName, id);
     _.each(_.keys(JJV.schema.serializedCard.properties), function(field) {
       if (field === 'fieldName') return; // fieldName isn't observable.
       if (field === 'activeFilters') {

@@ -17,12 +17,13 @@
 
     var WindowState = {};
 
+    // TODO: convert these BehaviorSubjects to use Rx.Observable.fromEvent
     var scrollPositionSubject = new Rx.BehaviorSubject(window.pageYOffset);
     window.addEventListener('scroll', function() {
       scrollPositionSubject.onNext(window.pageYOffset);
     });
 
-    var mousePositionSubject = new Rx.BehaviorSubject({clientX: 0, clientY: 0, target: document.body });
+    var mousePositionSubject = new Rx.BehaviorSubject({ clientX: 0, clientY: 0, target: document.body });
     body.addEventListener('mousemove', function(e){
       WindowState.mouseClientX = e.clientX;
       WindowState.mouseClientY = e.clientY;
@@ -44,16 +45,22 @@
     });
 
     var mouseLeftButtonPressedSubject = new Rx.BehaviorSubject(false);
-    var mouseLeftButtonClickSubject = new Rx.Subject();
+    var mouseLeftButtonClickSubject = Rx.Observable.fromEvent(body, 'click').
+        filter(function(e) { return e.which === 1; });
+
+    var mouseLeftButtonPressedWithTargetSubject = new Rx.Subject();
+
+
     body.addEventListener('mouseup', function(e) {
       if (e.which === 1) {
         mouseLeftButtonPressedSubject.onNext(false);
-        mouseLeftButtonClickSubject.onNext(e);
+        mouseLeftButtonPressedWithTargetSubject.onNext({value: false, target: e.target});
       }
     });
     body.addEventListener('mousedown', function(e) {
       if (e.which === 1) {
         mouseLeftButtonPressedSubject.onNext(true);
+        mouseLeftButtonPressedWithTargetSubject.onNext({value: true, target: e.target});
       }
     });
 
@@ -62,12 +69,21 @@
       windowSizeSubject.onNext(jqueryWindow.dimensions());
     });
 
+    WindowState.keyDownObservable = Rx.Observable.fromEvent($(document), 'keydown');
+    WindowState.escapeKeyObservable = WindowState.keyDownObservable.filter(function(e) {
+      // Escape key
+      return 27 === e.which;
+    });
 
     WindowState.scrollPositionSubject = scrollPositionSubject;
     WindowState.mousePositionSubject = mousePositionSubject;
     WindowState.mouseLeftButtonPressedSubject = mouseLeftButtonPressedSubject;
     WindowState.mouseLeftButtonClickSubject = mouseLeftButtonClickSubject;
     WindowState.windowSizeSubject = windowSizeSubject;
+    WindowState.closeDialogEventObservable = Rx.Observable.merge(
+      WindowState.mouseLeftButtonClickSubject,
+      WindowState.escapeKeyObservable
+    );
 
     return WindowState;
 

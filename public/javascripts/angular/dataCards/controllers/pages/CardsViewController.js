@@ -14,7 +14,50 @@
     }
   }
 
-  function CardsViewController($scope, $location, $log, $window, $q, AngularRxExtensions, SortedTileLayout, Filter, PageDataService, UserSession, CardTypeMappingService, FlyoutService, page, Card) {
+  function initDownload($scope, page, WindowState, FlyoutService, ServerConfig) {
+    // The CSV download url
+    $scope.bindObservable('datasetCSVDownloadURL',
+      page.observe('dataset').map(function(dataset) {
+        if (dataset && dataset.hasOwnProperty('id')) {
+          return '/api/views/{0}/rows.csv?accessType=DOWNLOAD'.format(dataset.id);
+        } else {
+          return '#';
+        }
+      }));
+
+    // Download menu
+    $scope.showDownloadButton = ServerConfig.get('enablePngDownloadUi');
+    WindowState.closeDialogEventObservable.filter(function(e) {
+      return $scope.downloadOpened &&
+        // Don't double-handle toggling downloadOpened
+        !$(e.target).closest('.download-menu').length;
+    }).subscribe(function() {
+      $scope.$apply(function(e) {
+        $scope.downloadOpened = false;
+      });
+    });
+
+    $scope.chooserMode = {show: false};
+
+    $scope.onDownloadClick = function(event) {
+      // Clicking the 'Cancel' button
+      if ($(event.target).hasClass('download-menu') &&
+          $scope.chooserMode.show && !$scope.editMode) {
+        $scope.chooserMode.show = false;
+      } else {
+        // Otherwise, toggle the dialog
+        $scope.downloadOpened = !$scope.downloadOpened;
+      }
+    };
+
+    FlyoutService.register('download-menu-item-disabled', _.constant(
+      '<div class="flyout-title">' +
+      'Please save the page in order to export a visualization as image' +
+      '</div>'
+    ));
+  }
+
+  function CardsViewController($scope, $location, $log, $window, $q, AngularRxExtensions, SortedTileLayout, Filter, PageDataService, UserSession, CardTypeMapping, FlyoutService, page, Card, WindowState, ServerConfig) {
 
     AngularRxExtensions.install($scope);
 
@@ -53,51 +96,43 @@
 
     // Bind the current user to the scope, or null if no user is logged in or there was an error
     // fetching the current user.
+    var currentUserSequence = Rx.Observable.fromPromise(UserSession.getCurrentUser());
     $scope.bindObservable(
       'currentUser',
-      Rx.Observable.fromPromise(UserSession.getCurrentUser()),
+      currentUserSequence,
       _.constant(null)
     );
 
-    /**
-     * CSV download Button
-     */
-    $scope.bindObservable('datasetCSVDownloadURL',
-      page.observe('dataset').map(function(dataset) {
-        if (dataset && dataset.hasOwnProperty('id')) {
-          return '/api/views/{0}/rows.csv?accessType=DOWNLOAD'.format(dataset.id);
-        } else {
-          return '#';
-        }
-      }));
+    var isCurrentUserAdminOrPublisher =
+      currentUserSequence.
+      map(function(user) {
+        var roleName = user.roleName;
+        return _.contains(user.flags, 'admin') || roleName === 'administrator' || roleName === 'publisher';
+      });
+
+    var isCurrentUserOwnerOfDataset =
+      page.
+      observe('dataset').
+      observeOnLatest('ownerId').
+      combineLatest(currentUserSequence.pluck('id'), function(ownerId, userId) { return ownerId === userId; });
+
+    $scope.bindObservable(
+      'currentUserHasSaveRight',
+      isCurrentUserAdminOrPublisher.
+      combineLatest(isCurrentUserOwnerOfDataset, function(a, b) { return a || b; }).
+      catchException(Rx.Observable.returnValue(false))
+    );
+
+
+    initDownload($scope, page, WindowState, FlyoutService, ServerConfig);
 
     /*******************************
     * Filters and the where clause *
     *******************************/
 
-    var allCardsFilters = page.observe('cards').flatMap(function(cards) {
-      if (!cards) { return Rx.Observable.never(); }
-      return Rx.Observable.combineLatest(_.map(cards, function(d) {
-        return d.observe('activeFilters');
-      }), function() {
-        return _.zipObject(_.pluck(cards, 'fieldName'), arguments);
-      });
-    });
+    var allCardsFilters = page.observe('activeFilters');
 
-    var allCardsWheres = allCardsFilters.map(function(filters) {
-      var wheres = _.map(filters, function(operators, field) {
-        if (_.isEmpty(operators)) {
-          return null;
-        } else {
-          return _.invoke(operators, 'generateSoqlWhereFragment', field).join(' AND ');
-        }
-      });
-      return _.compact(wheres).join(' AND ');
-    });
-
-    $scope.bindObservable('globalWhereClauseFragment', allCardsWheres.combineLatest(page.observe('baseSoqlFilter'), function(cardWheres, basePageWhere) {
-      return _.compact([basePageWhere, cardWheres]).join(' AND ');
-    }));
+    $scope.bindObservable('globalWhereClauseFragment', page.observe('computedWhereClauseFragment'));
 
     $scope.bindObservable('appliedFiltersForDisplay', allCardsFilters.combineLatest(page.observe('dataset').observeOnLatest('columns'), function(filters, columns) {
 
@@ -185,8 +220,7 @@
             // retain computed column fieldNames, which (somewhat inconveniently)
             // begin with ':@'.
             return column.name.substring(0, 2).match(/\:[\_A-Za-z0-9]/) === null &&
-                   column.physicalDatatype !== '*' &&
-                   column.physicalDatatype !== 'point';
+                   column.physicalDatatype !== '*';
           }).
           sort(function(a, b) {
             return a.name > b.name;
@@ -221,7 +255,7 @@
 
           sortedColumns[i].available = available;
 
-          if (CardTypeMappingService.cardTypeForColumnIsSupported(sortedColumns[i])) {
+          if (CardTypeMapping.visualizationSupportedForColumn(sortedColumns[i])) {
             if (available) {
               availableColumns.push(sortedColumns[i]);
             } else {
@@ -236,23 +270,12 @@
         return {
           available: availableColumns.sort(alphaCompareOnProperty('title')),
           alreadyOnPage: alreadyOnPageColumns.sort(alphaCompareOnProperty('title')),
-          visualizationUnsupporetd: visualizationUnsupportedColumns.sort(alphaCompareOnProperty('title'))
+          visualizationUnsupported: visualizationUnsupportedColumns.sort(alphaCompareOnProperty('title'))
         };
 
       });
 
     $scope.bindObservable('datasetColumns', datasetColumns);
-    $scope.bindObservable('hasAllCards', datasetColumns.map(function(columns) {
-      return columns.available.length === 0;
-    }));
-
-    $scope.$on('modal-open-surrogate', function(e, data) {
-      $scope.$broadcast('modal-open', data);
-    });
-
-    $scope.$on('modal-close-surrogate', function(e, data) {
-      $scope.$broadcast('modal-close', data);
-    });
 
 
     /***************************
@@ -406,6 +429,40 @@
     };
 
 
+    /**
+     * Some modal dialogs.
+     */
+
+    $scope.allVisualizableColumnsVisualized = false;
+
+    datasetColumns.subscribe(function(columns) {
+      $scope.allVisualizableColumnsVisualized = (columns.available.length === 0);
+    });
+
+    // This is an object, so that we can pass it to child scopes, and they can control the
+    // visibility of the customize modal.
+    $scope.addCardState = {
+      'cardSize': null,
+      'show': false
+    };
+    $scope.$on('add-card-with-size', function(e, cardSize) {
+      if (!$scope.allVisualizableColumnsVisualized) {
+        $scope.addCardState.cardSize = cardSize;
+        $scope.addCardState.show = true;
+      }
+    });
+
+    $scope.customizeState = {
+      'cardModel': null,
+      'show': false
+    };
+    $scope.$on('customize-card-with-model', function(e, cardModel) {
+      if (CardTypeMapping.modelIsCustomizable(cardModel)) {
+        $scope.customizeState.cardModel = cardModel;
+        $scope.customizeState.show = true;
+      }
+    });
+
     //TODO consider extending register() to take a selector, too.
     //TODO The controller shouldn't know about this magical target inside save-button!
     //     There needs to be significant refactoring though to make this right:
@@ -443,6 +500,10 @@
         'is coming soon. For now, collapse the',
         'expanded card to customize.'].join('<br/>') +
         '</div>';
+    });
+
+    FlyoutService.register('clear-all-filters-button', function() {
+      return '<div class="flyout-title">Click to reset all filters</div>';
     });
 
 

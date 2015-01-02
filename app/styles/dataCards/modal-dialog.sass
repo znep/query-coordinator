@@ -1,13 +1,14 @@
 @import dataCards/common/colors
 
-$modal-padding: 20px
+$modal-padding: 2rem
 
+$modal-z-start: 9999
 .modal-container
 
   .modal-overlay
     /* A dark translucent div that covers the whole screen */
     position: fixed
-    z-index: 9999
+    z-index: $modal-z-start
     top: 0
     left: 0
     width: 100%
@@ -17,31 +18,37 @@ $modal-padding: 20px
 
   .modal-dialog
     position: fixed
-    width: 50% !important
+    box-sizing: border-box
+    width: 52rem
+    max-width: 100%
     min-height: 150px
     top: 50%
     left: 50%
     @include prefixer('transform', 'translate(-50%, -50%)')
     background-color: $api-panel-bg-color
     border: solid 1px $api-panel-border-color
-    z-index: 10000
+    z-index: $modal-z-start + 1
+    padding: $modal-padding
 
     .modal-dialog-content
       @include prefixer(box-sizing, border-box)
       color: $modal-white-font-color
-      padding: $modal-padding
       text-align: left
       width: 100%
 
       h2
-        margin: 0
+        margin: 0 0 1rem
         font-size: 1.25em
         font-weight: bold
 
+        &::before
+          margin-right: .5rem
+          vertical-align: bottom
+
     .modal-close-button
       position: absolute
-      top: $modal-padding
-      right: $modal-padding
+      top: .5 * $modal-padding
+      right: .5 * $modal-padding
       padding: 0
       cursor: pointer
       font-size: 20px
@@ -52,3 +59,10 @@ $modal-padding: 20px
 
       &:hover
         opacity: 1
+
+modal-dialog.second
+  .modal-overlay
+    z-index: $modal-z-start + 2
+
+  .modal-dialog
+    z-index: $modal-z-start + 3

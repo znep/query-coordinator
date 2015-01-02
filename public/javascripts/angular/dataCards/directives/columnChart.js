@@ -299,6 +299,7 @@ angular.module('socrataCommon.directives').directive('columnChart', function($pa
       // UPDATE PROCESSING
       // Update the position of the groups.
       selection.
+        attr('data-bar-name', function(d) { return _.instead(d.name, ''); }).
         style('left', function(d) { return horizontalBarPosition(d) + 'px'; }).
         style('width', rangeBand + 'px').
         style('height', function() { return chartHeight + 'px'; }).
@@ -308,7 +309,16 @@ angular.module('socrataCommon.directives').directive('columnChart', function($pa
       // Update the position of the individual bars.
       bars.
         style('width', rangeBand + 'px').
-        style('height', function(d) { return Math.ceil(verticalScale(d)) + 'px'; }).
+        style('height', function(d) {
+          var verticalScaleValue = verticalScale(d);
+          if (verticalScaleValue > 0) {
+            return Math.ceil(verticalScaleValue) + 'px';
+          } else if (verticalScaleValue < 0) {
+            return Math.floor(verticalScaleValue) + 'px';
+          } else {
+            return '0';
+          }
+        }).
         style('bottom', 0).
         attr('class', function(d, i) {
           return 'bar ' + (i === 0 ? 'unfiltered' : 'filtered');
@@ -319,8 +329,8 @@ angular.module('socrataCommon.directives').directive('columnChart', function($pa
       selection.exit().remove();
     };
 
-    element.children('.ticks').remove();
-    element.prepend(ticks);
+    $chartScroll.children('.ticks').remove();
+    $chartScroll.prepend(ticks);
 
     barGroupSelection.call(updateBars);
     labelSelection.call(updateLabels);
@@ -333,9 +343,9 @@ angular.module('socrataCommon.directives').directive('columnChart', function($pa
         vertical: -4
       },
       positionOn: function($target, $head, options) {
-        var index = _.indexOf(_.pluck(chartData, 'name'),
-          d3.select($target[0]).datum().name);
-        return element.find(".bar.unfiltered").eq(index);
+        var name = d3.select($target[0]).datum().name;
+        name = _.instead(name, '');
+        return element.find('[data-bar-name="{0}"].bar-group .bar.unfiltered'.format(name));
       },
       title: function($target, $head, options) {
         var data = d3.select($target[0]).datum();
@@ -368,11 +378,13 @@ angular.module('socrataCommon.directives').directive('columnChart', function($pa
 
   return {
     template:
-      '<div class="chart-scroll">' +
-        '<div class="column-chart-wrapper" ng-class="{filtered: showFiltered}">' +
-          '<div class="truncation-marker">&raquo;</div>' +
+      '<div class="column-chart" ng-class="{ expanded: expanded }">' +
+        '<div class="chart-scroll">' +
+          '<div class="column-chart-wrapper" ng-class="{filtered: showFiltered}">' +
+            '<div class="truncation-marker">&raquo;</div>' +
+          '</div>' +
+          '<div class="labels"></div>' +
         '</div>' +
-        '<div class="labels"></div>' +
       '</div>',
     restrict: 'A',
     scope: {

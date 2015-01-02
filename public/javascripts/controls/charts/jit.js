@@ -54,6 +54,7 @@
                     var xCol = chartObj._fixedColumns[0];
 
                     var colors = chartObj._displayFormat.colors || blist.defaultColors;
+                    index = _.isUndefined(row.index) ? index : row.index;
                     var defaultColor = colors[index % Math.min(5, colors.length)];
 
                     var rowColor = (row.metadata.meta && row.metadata.meta.color) ||

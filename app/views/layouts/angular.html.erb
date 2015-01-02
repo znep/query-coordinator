@@ -6,9 +6,11 @@
     <meta http-equiv="content-type" content="text/html;charset=utf-8" />
 
     <link type="text/css" media="all" rel="stylesheet" href="/webfonts/ss-air.css"/>
+    <link type="text/css" media="all" rel="stylesheet" href="/webfonts/socrata-apps.css"/>
 
     <%= rendered_stylesheet_tag 'bower-styles-all' %>
     <%= angular_stylesheet_tag %>
+    <!--[if IE 9]><%= rendered_stylesheet_tag 'ie9' %><![endif]-->
 
     <%= yield :head %>
 
@@ -28,5 +30,7 @@
     <%= render angular_app %>
     <%= yield :layout %>
   </body>
+
+  <%= render_ga_tracking %>
 
 </html>

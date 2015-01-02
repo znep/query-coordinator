@@ -13,7 +13,7 @@
       'LAYOUT_DATA_CARD_HEIGHT': 480,
       'LAYOUT_MIN_EXPANDED_CARD_HEIGHT': 480,
 
-      'TRANSITION_DURATION': .5,
+      'TRANSITION_DURATION': 0.5,
 
       // Dataset field names and internal calculated values.
       'INTERNAL_DATASET_FEATURE_ID': '_feature_id',
@@ -25,10 +25,27 @@
       // Visualization
       'NULL_VALUE_LABEL': '(No Value)',
       'DEFAULT_MAP_BASE_LAYER_URL': 'https://a.tiles.mapbox.com/v3/socrata-apps.ibp0l899/{z}/{x}/{y}.png',
+      'ESRI_BASE_URL': 'https://server.arcgisonline.com/ArcGIS/rest/services/World_Street_Map/MapServer/tile/{z}/{y}/{x}',
+      'TILEURL_REGEX': /^ *https?:\/\/(.*(\{|%7b)[xyz](\}|%7d)){3}/i,
+
+      // Column chart visualization parameters.
+      'COLUMN_CHART_CARDINALITY_WARNING_THRESHOLD': 100,
 
       // Choropleth visualization parameters.
       'MAXIMUM_NUMBER_OF_CLASSES_ALLOWED': 7,
-      'CLASS_BREAK_THRESHOLD': 6
+      'CLASS_BREAK_THRESHOLD': 6,
+
+      // Timeline chart visualization parameters.
+      'TIMELINE_CHART_MARGIN_TOP': 0,
+      'TIMELINE_CHART_MARGIN_RIGHT': 0,
+      'TIMELINE_CHART_MARGIN_BOTTOM': 30,
+      'TIMELINE_CHART_MARGIN_LEFT': 0,
+      'TIMELINE_CHART_NUMBER_OF_TICKS': 3,
+      'TIMELINE_CHART_TICK_SIZE': 3,
+      'TIMELINE_CHART_HIGHLIGHT_TARGET_MARGIN': 50,
+      'TIMELINE_CHART_GUTTER': 15,
+      'TIMELINE_CHART_SELECTION_MARKER_NEGATIVE_X_OFFSET': 11
+
     };
 
   }

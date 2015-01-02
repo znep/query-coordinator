@@ -10,13 +10,12 @@ var customLaunchers = {};
 _.forIn(supportedBrowsers, function(browserInstances, browserName) {
   _.each(browserInstances, function(instance) {
     instance.browserName = browserName;
-    var launcherName = sprintf('bs_%(browserName)s%(version)s_%(os.name)s_%(os.version)s', instance);
+    var launcherName = sprintf('saucelabs %(browserName)s %(version)s %(platform)s', instance).toLowerCase();
     customLaunchers[launcherName] = {
-      base: 'BrowserStack',
-      browser: browserName,
-      browser_version: instance.version,
-      os: instance.os.name,
-      os_version: instance.os.version
+      base: 'SauceLabs',
+      browserName: browserName,
+      version: instance.version,
+      platform: instance.platform
     };
   });
 });
@@ -54,6 +53,9 @@ module.exports = function ( karma ) {
       'bower_components/leaflet/dist/leaflet.js',
       'bower_components/chroma-js/chroma.js',
       'bower_components/simple-statistics/src/simple_statistics.js',
+      'public/javascripts/util/typed-arrays.js',
+      'public/javascripts/bower/pbf.min.js',
+      'public/javascripts/bower/vectortile.min.js',
       'app/styles/bower/leaflet.css',
       'app/styles/dataCards/testing.css',
       /* ------- */
@@ -61,17 +63,18 @@ module.exports = function ( karma ) {
       'bower_components/d3/d3.min.js',
       'bower_components/lodash/dist/lodash.js',
       'bower_components/rxjs/rx.js',
-      'bower_components/rxjs/rx.binding.js',
+      'bower_components/rxjs/rx.async.js',
       'bower_components/rxjs/rx.aggregates.js',
       'bower_components/rxjs/rx.time.js',
-      'bower_components/rxjs/rx.async.js',
+      'bower_components/rxjs/rx.binding.js',
       'bower_components/jjv/lib/jjv.js',
       'bower_components/sinon-browser-only/sinon.js',
       'bower_components/moment/moment.js',
       'bower_components/native-promise-only/lib/npo.src.js',
       'bower_components/requestAnimationFrame-polyfill/requestAnimationFrame.js',
       'public/javascripts/plugins/modernizr.js',
-      'karma-test/TestHelpers.js',
+      'karma-test/helpers/TestHelpers.js',
+      'karma-test/helpers/ServerMocks.js',
       'karma-test/dataCards/*.js',
       'karma-test/dataCards/**/*.js',
       /*    Angular    */
@@ -100,11 +103,10 @@ module.exports = function ( karma ) {
       '/angular_templates/images/': 'http://localhost:7019/base/public/angular_templates/images/'
     },
 
-    browserStack: {
-      username: 'socrataengineeri1',
-      accessKey: 'NY7TjFt1pqdrxzoBYU4E',
-      name: 'dataCards Unit Tests',
-      project: 'FrontEnd'
+    sauceLabs: {
+      testName: 'dataCards Unit Tests',
+      username: 'socrata-saucelabs',
+      accessKey: '9207e751-711a-4ed0-940a-229a42c06bcc'
     },
 
     customLaunchers: customLaunchers,
@@ -127,7 +129,7 @@ module.exports = function ( karma ) {
       'karma-firefox-launcher',
       'karma-chrome-launcher',
       'karma-phantomjs-launcher',
-      'karma-browserstack-launcher',
+      'karma-sauce-launcher',
       'karma-coverage',
       'karma-mocha-reporter',
       'karma-ng-html2js-preprocessor',
@@ -141,7 +143,7 @@ module.exports = function ( karma ) {
      * makes the code completely unreadable and undebuggable. The rake
      * test task manually enables coverage. See lib/tasks/karma_tests.rake
      */
-    reporters: ['dots'],
+    reporters: ['dots', 'saucelabs'],
 
     coverageReporter: {
       reporters: [
@@ -174,7 +176,7 @@ module.exports = function ( karma ) {
     urlRoot: '/',
 
     /**
-     * Disable file watching by default.
+     * Enable file watching by default.
      */
     autoWatch: true,
 
@@ -204,8 +206,11 @@ module.exports = function ( karma ) {
     /**
      * Increase the browser timeout for running tests in the background.
      */
-    browserNoActivityTimeout: 1000 * 60 * 10,
-    captureTimeout: 1000 * 60 * 10,
+    browserNoActivityTimeout: 1000 * 55,
+    browserDisconnectTimeout: 1000 * 10,
+    browserDisconnectTolerance: 5,
+    captureTimeout: 1000 * 80,
+
 
     /**
      * Configure html2js to compile the angular templates.

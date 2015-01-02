@@ -20,11 +20,18 @@ angular-app-dataCards:
 - dataCards/column-chart
 - dataCards/timeline-chart
 - dataCards/table
+- dataCards/search
 - dataCards/cards
+- dataCards/single-card-view
 - dataCards/dataset-metadata
 - dataCards/card
 - dataCards/multiline-ellipsis
 - dataCards/modal-dialog
+- dataCards/feature-map
+- dataCards/feedback-panel
+
+ie9:
+- dataCards/ie9
 
 includes:
 - sass-common
@@ -156,6 +163,8 @@ dataset-new:
 dataset-show:
 - control-pane
 - control-pane-custom
+- font-awesome
+- socrata-apps
 - grid-sidebar
 - table-core
 - dataset-grid

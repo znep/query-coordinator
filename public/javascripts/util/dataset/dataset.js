@@ -1196,7 +1196,9 @@ var Dataset = ServerModel.extend({
         {
             return this.metadata.geo.owsUrl + '?method=export&format=' + type;
         }
-        return '/api/views/' + this.id + '/rows.' + type.toLowerCase() + '?accessType=DOWNLOAD';
+        var ext = type.toLowerCase().split(' ')[0];
+        var bom = (type == 'CSV for Excel') ? '&bom=true' : '';
+        return '/api/views/' + this.id + '/rows.' + ext + '?accessType=DOWNLOAD' + bom;
     },
 
     _getCommentCacheKey: function(comment)

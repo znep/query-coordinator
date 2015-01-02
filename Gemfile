@@ -18,6 +18,8 @@ gem 'airbrake', '~>3.1.6'
 gem 'money', '~> 3.7.1'
 gem 'graylog2_exceptions'
 gem 'memcache-client', '~>1.8.5'
+gem 'omniauth', '~> 1.2'
+gem 'omniauth-auth0', '~> 1.1'
 gem 'rinku', :require => 'rails_rinku'
 gem 'timecop'
 gem 'statsd-ruby', :require => 'statsd', :git => 'git@git.socrata.com:statsd-ruby-fork'
@@ -36,10 +38,14 @@ group :test do
   gem 'guard'
   gem 'guard-minitest'
   gem 'rb-fsevent'
+  gem 'shoulda-context'
 end
 
 group :development, :test do
   gem 'jazz_hands' unless ENV['RM_INFO']
   gem 'thin'
+  gem 'rb-readline'
+  gem 'pry'
+  gem 'pry-nav'
 end
 

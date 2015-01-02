@@ -1,0 +1,23 @@
+<% content_for :head do %>
+  <title><%= CurrentDomain.site_title %></title>
+  <%= rendered_stylesheet_tag 'error-pages' %>
+<% end %>
+
+<div class="modalContentBox siteContent">
+  <div class="contentHeader">
+    <h1><%= t 'error.error_site_unavailable.title' %></h1>
+  </div>
+  <div class="contentBoxInner clearfix internalError">
+    <p class="subheadline">
+      <img class="warning-icon" src="/stylesheets/images/icons/warning_icon.png" alt="Warning icon"></img>
+      <%= t 'error.error_site_unavailable.description' %>
+    </p>
+    <p class="body"><%= t 'error.error_site_unavailable.help_html' %></p>
+
+    <div class="footer">
+      <img src="/stylesheets/images/common/socrata_logo_footer.png" alt="Socrata logo"></img>
+    </div>
+  </div>
+</div>
+
+<%= render_translations LocalePart.error.error_site_unavailable %>

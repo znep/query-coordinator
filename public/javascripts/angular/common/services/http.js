@@ -17,7 +17,7 @@
           eventMetadata.requesterLabel = requestConfig.requester.requesterLabel.call(requestConfig.requester);
         }
       } else {
-        $log.debug("requestConfig.requester was undefined!");
+        $log.debug('HTTP Service Error: requestConfig.requester was undefined for request to: "' + requestConfig.url + '".');
       }
 
       $rootScope.$emit('http:start', eventMetadata);

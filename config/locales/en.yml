@@ -822,6 +822,10 @@ en:
     - Dec
   error:
     back: Back
+    error_site_unavailable:
+      title: Site Currently Unavailable
+      description: This Socrata-powered site is currently unavailable.
+      help_html: You can always check the status of Socrata at <a href="http://status.socrata.com">http://status.socrata.com</a> or check our twitter account at <a href="https://twitter.com/socrata">@socrata</a>.
     error_500:
       description_html: Please try again in a few moments, or <a href="http://support.socrata.com">report this error</a> with the details of what you were trying to do.
       somethings_wrong: Something's wrong!
@@ -1484,9 +1488,11 @@ en:
           validation:
             view_column: You cannot add a column to a view
         api:
-          column_ids_title: ! 'Column IDs:'
-          endpoint_title: ! 'API Access Endpoint:'
-          intro_html: The <strong>Socrata Open Data API</strong> (SODA) allows software developers to access data hosted in Socrata data sites programmatically. Developers can create applications that use the SODA APIs to visualize and &ldquo;mash-up&rdquo; Socrata datasets in new and exciting ways. Create an iPhone application that visualizes government spending in your area, a web application that allows citizens to look up potential government benefits they'd overlooked, or a service that automatically emails you when new earmarks are added to bills that you wish to track.
+          api_docs: 'API Docs'
+          column_ids_title: ! 'Field Names:'
+          developer_portal: 'Developer Portal'
+          endpoint_title: ! 'API Endpoint:'
+          intro_html: The <a href="http://dev.socrata.com/">Socrata Open Data API (SODA)</a> provides programmatic access to this dataset including the ability to <a href="http://dev.socrata.com/docs/filtering.html">filter</a>, <a href="http://dev.socrata.com/docs/queries.html">query</a>, and <a href="http://dev.socrata.com/docs/aggregation.html">aggregate</a> data. For more more information, view the <a href="%{view_foundry_url}">API docs for this dataset</a> or visit our <a href="http://dev.socrata.com">developer portal</a>
           reference_html: To start accessing this dataset programmatically, use the API endpoint provided below. For more information and examples on how to use the Socrata Open Data API, reference our <a href="http://dev.socrata.com" rel="external">Developer Documentation</a>.
           subtitle: Access this %{view_type} via SODA
           title: SODA API
@@ -2103,6 +2109,10 @@ en:
             title: Views
         visualize:
           choose_type: Visualization Type
+      new_ux_creating_page: The new data exploration page is being created and analyzed
+      new_ux_error: A preview is not available for this dataset.
+      new_ux_link: Try this dataset in our new data exploration tool (beta)
+      new_ux_nbe_warning: 'Internal Only: Old UX view of New Backend dataset'
       save_dialog:
         descriptions:
           leaving: You have unsaved data that will be lost if you leave this page. Please choose whether or not you wish to save this view before you leave; or choose Cancel to return to the page.

@@ -55,4 +55,37 @@ class AngularControllerTest < ActionController::TestCase
     end
   end
 
+  test 'should not render google analytics JS if feature flag is not set' do
+    FeatureFlags.stubs(
+      :derive => {
+        'app-dataCards' => true,
+        :enable_opendata_ga_tracking => false
+      }
+    )
+    get :serve_app, :id => '1234-1234', :app => 'dataCards'
+    assert_no_match(/ga\('create', 'UA-.+-.+', 'auto'\);/, @response.body)
+  end
+  
+  test 'should render google analytics JS if feature flag is set' do
+    FeatureFlags.stubs(
+      :derive => {
+        'app-dataCards' => true,
+        :enable_opendata_ga_tracking => true
+      }
+    )
+    get :serve_app, :id => '1234-1234', :app => 'dataCards'
+    assert_match(/ga\('create', 'UA-.+-.+', 'auto'\);/, @response.body)
+  end
+
+  test 'should render google analytics JS with explicit ga code if specified' do
+    FeatureFlags.stubs(
+      :derive => {
+        'app-dataCards' => true,
+        :enable_opendata_ga_tracking => 'UA-1234-567890'
+      }
+    )
+    get :serve_app, :id => '1234-1234', :app => 'dataCards'
+    assert_match(/ga\('create', 'UA-1234-567890', 'auto'\);/, @response.body)
+  end
+
 end

@@ -1,0 +1,30 @@
+@import dataCards/common/layout
+
+clearable-input
+  .clearable-input-wrapper
+    position: relative
+    display: block
+
+    input
+      display: block
+      &::-ms-clear
+        width: 0
+        height: 0
+
+      &:focus
+        outline-width: 0
+
+    .clearable-input-trigger
+      display: none
+      position: absolute
+      bottom: 0
+      right: 0
+      background-color: transparent
+      border: 0
+      font-size: 1rem
+      cursor: pointer
+      height: 100%
+
+    &.clearable
+      .clearable-input-trigger
+        display: block

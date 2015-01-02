@@ -21,10 +21,11 @@ angular.module('dataCards.models').factory('Page', function($q, Dataset, Card, M
       // the HTTP calls required to fulfill them would be made without any regard to whether
       // or not the calls are needed.
 
+      var baseInfoPromise;
       if (usingBlob) {
-        var baseInfoPromise = function() { return $q.when(idOrSerializedBlob); };
+        baseInfoPromise = function() { return $q.when(idOrSerializedBlob); };
       } else {
-        var baseInfoPromise = function() { return PageDataService.getBaseInfo(self.id); };
+        baseInfoPromise = function() { return PageDataService.getBaseInfo(self.id); };
       }
 
       var fields = ['datasetId', 'description', 'name', 'layoutMode', 'primaryAmountField', 'primaryAggregation', 'isDefaultPage', 'pageSource', 'baseSoqlFilter'];
@@ -47,6 +48,50 @@ angular.module('dataCards.models').factory('Page', function($q, Dataset, Card, M
           });
         });
       });
+
+      // Synchronize changes between primaryAmountField and primaryAggregation
+      var aggregationObservable = self.observe('primaryAmountField').
+        combineLatest(self.observe('primaryAggregation'),
+        function(primaryAmountField, primaryAggregation) {
+          return { field: primaryAmountField || null, aggregation: primaryAggregation || null };
+        }).
+        startWith({ field: null, aggregation: null }).
+        distinctUntilChanged();
+
+      self.defineReadOnlyObservableProperty('aggregation', aggregationObservable);
+
+      var allCardsFilters = self.observe('cards').flatMap(function(cards) {
+        if (!cards) { return Rx.Observable.never(); }
+        return Rx.Observable.combineLatest(_.map(cards, function(d) {
+          return d.observe('activeFilters');
+        }), function() {
+          return _.zipObject(_.pluck(cards, 'fieldName'), arguments);
+        });
+      });
+
+      self.defineReadOnlyObservableProperty('activeFilters', allCardsFilters);
+
+      var allCardsWheres = allCardsFilters.map(function(filters) {
+        var wheres = _.map(filters, function(operators, field) {
+          if (_.isEmpty(operators)) {
+            return null;
+          } else {
+            return _.invoke(operators, 'generateSoqlWhereFragment', field).join(' AND ');
+          }
+        });
+        return _.compact(wheres).join(' AND ');
+      });
+
+      self.defineReadOnlyObservableProperty('computedWhereClauseFragment',
+        allCardsWheres.
+        combineLatest(
+          self.observe('baseSoqlFilter'),
+          function(cardWheres, basePageWhere) {
+            return _.compact([basePageWhere, cardWheres]).join(' AND ');
+          }
+        )
+      );
+
     },
 
     serialize: function() {
@@ -77,6 +122,44 @@ angular.module('dataCards.models').factory('Page', function($q, Dataset, Card, M
           card.set('expanded', false);
         }
       });
+    },
+
+    /**
+     * Adds the given card to the page's collection of cards. The card will be added immediately
+     * after the last existing card with the same cardSize.
+     *
+     * @param {Card} card The card to add.
+     */
+    addCard: function(card) {
+      var cards = this.getCurrentValue('cards');
+      var cardSize = card.getCurrentValue('cardSize');
+      var insertionIndex = _.findIndex(cards, function(model) {
+        return model.getCurrentValue('cardSize') > cardSize;
+      });
+      if (insertionIndex < 0) {
+        insertionIndex = cards.length;
+      }
+      cards.splice(insertionIndex, 0, card);
+      this.set('cards', cards);
+      return cards;
+    },
+
+    /**
+     * Updates the card within the collection if it already exists. Otherwise, adds it.
+     */
+    addOrUpdateCard: function(card) {
+      var uniqueId = card.uniqueId;
+      var cards = this.getCurrentValue('cards');
+      var existingModelIndex = _.findIndex(cards, function(model) {
+        return model.uniqueId === uniqueId;
+      });
+      if (existingModelIndex >= 0) {
+        cards[existingModelIndex] = card;
+        this.set('cards', cards);
+      } else {
+        cards = this.addCard(card);
+      }
+      return cards;
     }
   });
 

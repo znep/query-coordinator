@@ -1,3 +1,5 @@
+require 'open-uri'
+
 class AnalyticsController < ApplicationController
   skip_before_filter :require_user
   skip_before_filter :verify_authenticity_token, :only => [:add, :add_all]
@@ -27,6 +29,14 @@ class AnalyticsController < ApplicationController
     valid, error = add_metric(params[:domain_entity], params[:metric], params[:increment])
     return render_metric_error(error) unless valid
     render :json => "OK".to_json
+  end
+
+  def esri
+    esri_layer_url = params[:esri_layer_url]
+    png_data = open(esri_layer_url, 'Accept' => 'image/webp')
+    content_size = png_data.length
+    Rails.logger.info("Loaded ESRI Layer #{esri_layer_url} from #{request.referer}; received #{content_size} bytes.")
+    render :text => png_data.read, :content_type => 'image/png'
   end
 
 

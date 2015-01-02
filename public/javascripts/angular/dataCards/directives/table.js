@@ -9,6 +9,7 @@ angular.module('socrataCommon.directives').directive('table', function(AngularRx
     restrict: 'A',
 
     scope: {
+      showCount: '=?',
       rowCount: '=',
       filteredRowCount: '=',
       whereClause: '=',
@@ -31,11 +32,23 @@ angular.module('socrataCommon.directives').directive('table', function(AngularRx
       var columnWidths = {};
       var httpRequests = {};
       var oldBlock = -1;
-      var $table = element.find('.table-inner');
+      var $table = element.children('.table-inner');
       var $head = element.find('.table-inner > .table-head');
       var $body = element.find('.table-inner > .table-body');
       var $expander = element.find('.table-expander');
       var $label = element.find('.table-label');
+
+      var getColumn = function(columnId) {
+        return _.find(scope.columnDetails, function(column) {
+          return column.name === columnId;
+        });
+      };
+
+      scope.$watch('showCount', function(newVal, oldVal, scope) {
+        if (!angular.isDefined(newVal)){
+          scope.showCount = true;
+        }
+      });
 
       $('body').on('click.{0}'.format(instanceUniqueNamespace), '.flyout .caret', function(e) {
         if ($(e.currentTarget).parent().data('table-id') !== instanceUniqueNamespace) {
@@ -60,7 +73,7 @@ angular.module('socrataCommon.directives').directive('table', function(AngularRx
         var tableHeight = dimensions.height - element.position().top;
 
         element.height(tableHeight);
-        $body.height(tableHeight - $head.height() - rowHeight);
+        $body.height(tableHeight - $head.height() - (scope.showCount ? rowHeight : 0));
         $head.find('.resize').height(tableHeight);
 
         checkBlocks();
@@ -71,14 +84,15 @@ angular.module('socrataCommon.directives').directive('table', function(AngularRx
       // this column's default sort (represented
       // by the strings 'DESC' and 'ASC').
       function defaultSortOrderForColumn(column) {
-        switch(column.physicalDatatype) {
-          case 'number':
-          case 'timestamp':
-          case 'floating_timestamp':
-            return 'DESC';
-          default:
-            return 'ASC';
+        if (column) {
+          switch (column.physicalDatatype) {
+            case 'number':
+            case 'timestamp':
+            case 'floating_timestamp':
+              return 'DESC';
+          }
         }
+        return 'ASC';
       }
 
       // Given a column ID, computes what sort order
@@ -97,7 +111,7 @@ angular.module('socrataCommon.directives').directive('table', function(AngularRx
 
           newOrdering = currentSort === 'DESC' ? 'ASC' : 'DESC';
         } else {
-          var column = scope.columnDetails[columnId];
+          var column = getColumn(columnId);
 
           newOrdering = defaultSortOrderForColumn(column);
         }
@@ -192,11 +206,12 @@ angular.module('socrataCommon.directives').directive('table', function(AngularRx
       };
 
       var updateColumnHeaders = function(){
-        scope.headers = _.map(_.values(scope.columnDetails), function(column, i) {
+        scope.headers = _.map(scope.columnDetails, function(column, i) {
           // Symbols: ▼ ▲
           var ordering = getCurrentOrDefaultSortForColumn(column.name);
 
           return {
+            index: i,
             columnId: column.name,
             name: column.title,
             active: isSortedOnColumn(column.name),
@@ -210,35 +225,66 @@ angular.module('socrataCommon.directives').directive('table', function(AngularRx
         var columnId = $(".flyout").data('column-id');
 
         if (_.isPresent(columnId)) {
-          $head.find('.th:contains({0})'.format(scope.columnDetails[columnId].title)).mouseenter();
+          $head.find('.th:contains({0})'.format(getColumn(columnId).title)).mouseenter();
         }
       };
 
-      // TODO: Clean this up. It's horribly expensive. ~400ms in tests.
       var calculateColumnWidths = _.once(function() {
         updateColumnHeaders();
         _.defer(function() {
-          _.each(_.values(scope.columnDetails), function(column, columnIndex) {
-            var $cells = $table.find('.cell:nth-child({0}), .th:nth-child({0})'.
-              format(columnIndex + 1));
-            var maxCell = _.max($cells, function(cell) {
-              return cell.clientWidth;
-            });
-            // text-overflow: ellipsis starts ellipsifying things when the widths are equal, which
-            // makes it hard to detect (in that case) if we should display a flyout or not (since
-            // scrollWidth == clientWidth both for too-short text as well as just-ellipsified text).
-            // So - offset by one, to at least make that situation less common.
-            var width = $(maxCell).width() + 1;
+          columnWidths = {};
+          var maxCells = {};
+          var cells = $expander.
+              // row_block.row.cell
+              children().children().children();
+          cells = cells.add($head.children());
+          var columns = scope.columnDetails;
 
-            if (width > 300) {
-              width = 300;
-            } else if (width < 75) {
-              width = 75;
+          // Find the widest cell in each column
+          cells.each(function(i, cell) {
+            var jqueryCell = $(cell);
+            var cellIndex = jqueryCell.data('index');
+
+            // TODO: This could probably be fixed, either by not having a separate tableHeader directive,
+            // TODO: or some sort of Angular directive priority black magic
+            // This resolves an issue where the index on table header cells doesn't exist
+            // We can still find the index with jquery.index()
+            if (_.isUndefined(cellIndex)) {
+              cellIndex = jqueryCell.index();
             }
-
-            columnWidths[column.name] = width;
-            $cells.width(width);
+            var colName = columns[cellIndex].name;
+            var width = cell.clientWidth;
+            if (!columnWidths[colName] || columnWidths[colName] < width) {
+              maxCells[colName] = cell;
+              columnWidths[colName] = width;
+            }
           });
+
+          // Get the jquery width of the widest elements
+          _.each(columnWidths, function(v, k) {
+            var width = parseInt(window.getComputedStyle(maxCells[k]).width, 10);
+            // Apply a min/max
+            if (width > 300) {
+              columnWidths[k] = 300;
+            } else if (width < 75) {
+              columnWidths[k] = 75;
+            } else {
+              // text-overflow: ellipsis starts ellipsifying things when the widths are equal, which
+              // makes it hard to detect (in that case) if we should display a flyout or not (since
+              // scrollWidth == clientWidth both for too-short text as well as just-ellipsified
+              // text).  So - offset by one, to at least make that situation less common.
+              columnWidths[k] = width + 1;
+            }
+          });
+
+          // Now set each cell to the maximum cell width for its column
+          cells.each(function(i, cell) {
+            var jqueryCell = $(cell);
+            var colName = columns[jqueryCell.index()].name;
+            // Setting the style.width is a lot faster than jquery.width()
+            cell.style.width = columnWidths[colName] + 'px';
+          });
+
           updateColumnHeaders();
           dragHandles();
         });
@@ -276,22 +322,25 @@ angular.module('socrataCommon.directives').directive('table', function(AngularRx
           delete httpRequests[block];
           ensureColumnHeaders();
 
+          scope.$emit('rows:loaded', block * rowsPerBlock);
+
           if (currentBlocks.indexOf(block) === -1 || data.length === 0) {
             return;
           }
 
-          var blockHtml = '<div class="row-block {0}" data-block-id="{0}" style="top: {1}px; display: none">'.
-            format(block, block * rowsPerBlock * rowHeight);
+          var columns = scope.columnDetails;
+          var blockHtml = '<div class="row-block ' + block +
+              '" data-block-id="' + block + '" style="top: ' + (block * rowsPerBlock * rowHeight) +
+              'px; display: none">';
 
           _.each(data, function(data_row) {
             blockHtml += '<div class="table-row">';
-            _.each(_.values(scope.columnDetails), function(column) {
-              var cellClasses = ['cell'];
+
+            _.each(columns, function(column, index) {
               var cellContent = data_row[column.name] || '';
               var cellText = '';
-              var cellType = scope.columnDetails[column.name].physicalDatatype;
-
-              cellClasses.push(cellType);
+              var cellType = column.physicalDatatype;
+              var cellClasses = 'cell ' + cellType;
 
               // Is Boolean?
               // TODO: Add test coverage for this cellType (needs this type in the fixture data)
@@ -310,19 +359,18 @@ angular.module('socrataCommon.directives').directive('table', function(AngularRx
                 var latitudeCoordinateIndex = 1;
                 var longitudeCoordinateIndex = 0;
                 if (_.isArray(cellContent.coordinates)) {
-                  cellText = (
-                    '(<span title="Latitude">{0}°</span>, <span title="Longitude">{1}°</span>)'
-                  ).format(
-                    cellContent.coordinates[latitudeCoordinateIndex],
-                    cellContent.coordinates[longitudeCoordinateIndex]
-                  );
+                  cellText = '(<span title="Latitude">' +
+                    cellContent.coordinates[latitudeCoordinateIndex] +
+                    '°</span>, <span title="Longitude">' +
+                    cellContent.coordinates[longitudeCoordinateIndex] +
+                    '°</span>)';
                 }
 
               } else if (cellType === 'timestamp' || cellType === 'floating_timestamp') {
                 var time = moment(cellContent);
 
                 // Check if Date or Date/Time
-                if (time.format('HH:mm:ss') === '00:00:00') {
+                if (time.hour() + time.minute() + time.second() + time.millisecond() === 0) {
                   cellText = time.format('YYYY MMM D');
                 } else {
                   cellText = time.format('YYYY MMM DD HH:mm:ss');
@@ -332,17 +380,19 @@ angular.module('socrataCommon.directives').directive('table', function(AngularRx
                 cellText = _.escape(cellContent);
               }
 
-              blockHtml += '<div class="{0}" style="width: {1}px">{2}</div>'.
-                format(cellClasses.join(' '), columnWidths[column.name], cellText);
+              blockHtml += '<div class="' + cellClasses +
+                '" data-index="' + index +
+                '" style="width: ' + columnWidths[column.name] +
+                'px">' + cellText + '</div>';
             });
             blockHtml += '</div>';
           });
           blockHtml += '</div>';
 
-          $expander.append(blockHtml);
-          $('.row-block.{0}'.format(block)).fadeIn();
+          $(blockHtml).appendTo($expander).
+            fadeIn();
           calculateColumnWidths();
-          _.delay(updateExpanderHeight, 1);
+          _.defer(updateExpanderHeight);
         });
       };
 
@@ -450,9 +500,8 @@ angular.module('socrataCommon.directives').directive('table', function(AngularRx
         },
 
         html: function($target, $head, options, $element) {
-          var headerScope = $target.scope();
-          var columnId = headerScope.header.columnId;
-          var column = scope.columnDetails[columnId];
+          var columnId = $target.data('columnId');
+          var column = getColumn(columnId);
           var sortParts = sort.split(' ');
           var sortUp = sortParts[1] === 'ASC';
           var html = [];
@@ -508,7 +557,7 @@ angular.module('socrataCommon.directives').directive('table', function(AngularRx
         function(cardDimensions, rowCount, filteredRowCount, expanded, columnDetails, infinite) {
 
           scope.$emit('render:start', { source: 'table_{0}'.format(scope.$id), timestamp: _.now() });
-
+          scope.$emit('rows:info', { hasRows: filteredRowCount !== 0, rowCount: rowCount, filteredRowCount: filteredRowCount });
           updateExpanderHeight();
           showOrHideNoRowMessage();
 
@@ -543,9 +592,7 @@ angular.module('socrataCommon.directives').directive('table', function(AngularRx
 
 
       scope.$on('$destroy', function() {
-        _.each(subscriptions, function(sub) {
-          sub.dispose();
-        });
+        _.invoke(subscriptions, 'dispose');
       });
     }
   };

@@ -1,15 +1,20 @@
-# Scheduled downtime notifications go here, per-region.
+#
+# SCHEDULED DOWNTIME NOTIFICATIONS NO LONGER GO HERE!
+#
+# PLEASE SEE THE metachef REPO AND EDIT THE APPROPRIATE json FILE IN THE environments DIRECTORY
 #
 # message_start and message_end determine when to display the notification.
 # downtime_start and downtime_end determine the actual time of the downtime.
+# by convention we display messaging 48 hours in advance of the downtime and
+# turn off the messaging at the conclusion of the downtime.
 #
 # Example:
 #
 # production:
-#     message_start: 2014-01-23t17:00-08:00
-#     message_end: 2014-01-25t21:00:00-08:00
+#     message_start:  2014-01-23t17:00-08:00
+#     message_end:    2014-01-25t21:00:00-08:00
 #     downtime_start: 2014-01-25t17:00:00-08:00
-#     downtime_end: 2014-01-25t21:00:00-08:00
+#     downtime_end:   2014-01-25t21:00:00-08:00
 #
 # Supports multiple notifications in an array:
 #
@@ -22,39 +27,3 @@
 #       message_end:    2014-08-10t23:00:00-08:00
 #       downtime_start: 2014-08-06t10:00:00-08:00
 #       downtime_end:   2014-08-10t12:00:00-08:00
-
-development:
-      message_start:  2014-08-06t00:00:00-08:00
-      message_end:    2014-08-07t23:00:00-08:00
-      downtime_start: 2014-08-07t00:00:00-08:00
-      downtime_end:   2014-08-09t00:00:00-08:00
-
-azure_staging:
-    message_start:  2014-04-08t13:00:00-07:00
-    message_end:    2014-04-12t23:00:00-07:00
-    downtime_start: 2014-04-12t13:00:00-07:00
-    downtime_end:   2014-04-12t23:00:00-07:00
-
-azure_rc:
-    message_start:  2014-04-08t13:00:00-07:00
-    message_end:    2014-04-12t23:00:00-07:00
-    downtime_start: 2014-04-12t13:00:00-07:00
-    downtime_end:   2014-04-12t23:00:00-07:00
-
-azure_eastus_production:
-    message_start:  2014-09-11t02:00:00-00:00
-    message_end:    2014-09-13t10:00:00-00:00
-    downtime_start: 2014-09-13t02:00:00-00:00
-    downtime_end:   2014-09-13t10:00:00-00:00
-
-azure_westeurope_production:
-    message_start:  2014-09-11t19:00:00-00:00
-    message_end:    2014-09-14t03:00:00-00:00
-    downtime_start: 2014-09-13t19:00:00-00:00
-    downtime_end:   2014-09-14t03:00:00-00:00
-
-production:
-    message_start:  2014-09-18t17:00:00-07:00
-    message_end:    2014-09-20t21:00:00-07:00
-    downtime_start: 2014-09-20t17:00:00-07:00
-    downtime_end:   2014-09-20t21:00:00-07:00

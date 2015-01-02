@@ -60,6 +60,7 @@
         var model = scope.observe('model');
         var dataset = model.pluck('page').observeOnLatest('dataset');
         var baseSoqlFilter = model.pluck('page').observeOnLatest('baseSoqlFilter');
+        var aggregationObservable = model.pluck('page').observeOnLatest('aggregation');
         var dataRequests = new Rx.Subject();
         var dataResponses = new Rx.Subject();
         var geojsonRegionsSequence = new Rx.Subject();
@@ -146,6 +147,7 @@
             '2q28-58m6': 'tractce',
             '86dh-mgvd': 'geoid10',
             '8thk-xhvj': 'name',
+<<<<<<< HEAD
             '35kt-7gyk': 'district',
             'mdjy-33rn': 'countyname',
             '98hf-33cq': 'zip',
@@ -168,13 +170,43 @@
             'b2j2-ahrz': 'nhood',
             'yftq-j783': 'objectid',
             'rxqg-mtj9': 'supdist'
+=======
+            'hak8-5bvb': 'coundist',
+            'swkg-bavi': 'zone_type',
+            'rffn-qbt6': 'name',
+            'rcj3-ccgu': 'geoid10',
+            'ueqj-g33x': 'lname',
+            'asue-2ipu': 'district_1',
+            'cjq3-kq3a': 'geoid10',
+            'buyp-4dp9': 'geoid10',
+            '4rat-gsiv': 'geoid10',
+            'ndi2-bfht': 'district',
+            'u9vc-vmbc': 'district',
+            '28yu-qtqf': 'geoid10',
+            'ce8n-ahaq': 'zone_type',
+            'xv2v-ia46': 'name',
+            'bwdd-ss8w': 'geoid10',
+            'w7nm-sadn': 'lname',
+            'bf3n-hej2': 'district_1',
+            'wrxk-qft3': 'geoid10',
+            'nr9s-8m49': 'geoid10',
+            '6t63-sezg': 'geoid10',
+            '8f9p-hupj': 'district',
+            'c62z-keqd': 'district',
+            'tbvr-2deq': 'geoid10'
+>>>>>>> 5514e702f99d31daa0f0292bd2c2257f4e946c8d
           };
 
           if (shapefile) {
             return shapefileFeatureNameMapping[shapefile];
           }
 
+          $log.error('Could not determine shapeFileHumanReadablePropertyName for shapeFile "{0}".'.format(shapefile));
+
+          return '';
+
         }
+
 
         /*************************************
         * FIRST set up the 'busy' indicator. *
@@ -212,6 +244,10 @@
             model.pluck('fieldName'),
             dataset.observeOnLatest('columns'),
             function(dataset, fieldName, columns) {
+
+              if (_.isEmpty(columns)) {
+                return;
+              }
 
               dataRequests.onNext(1);
 
@@ -273,9 +309,10 @@
           model.pluck('fieldName'),
           dataset,
           baseSoqlFilter,
-          function(fieldName, dataset, whereClauseFragment) {
+          aggregationObservable,
+          function(fieldName, dataset, whereClauseFragment, aggregationData) {
             dataRequests.onNext(1);
-            var dataPromise = CardDataService.getData(fieldName, dataset.id, whereClauseFragment);
+            var dataPromise = CardDataService.getData(fieldName, dataset.id, whereClauseFragment, aggregationData);
             dataPromise.then(
               function(res) {
                 // Ok
@@ -292,9 +329,10 @@
           model.pluck('fieldName'),
           dataset,
           scope.observe('whereClause'),
-          function(fieldName, dataset, whereClauseFragment) {
+          aggregationObservable,
+          function(fieldName, dataset, whereClauseFragment, aggregationData) {
             dataRequests.onNext(1);
-            var dataPromise = CardDataService.getData(fieldName, dataset.id, whereClauseFragment);
+            var dataPromise = CardDataService.getData(fieldName, dataset.id, whereClauseFragment, aggregationData);
             dataPromise.then(
               function(res) {
                 // Ok

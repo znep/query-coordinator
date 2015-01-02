@@ -9,6 +9,7 @@
   box-sizing: border-box
   -moz-box-sizing: border-box
   overflow: hidden
+  height: 100%
 
   // This appears to keep elements with the .wrap and
   // .title-expanded classes in the right box context.
@@ -77,6 +78,10 @@
       background: $card-bg-color
       z-index: 1
 
+card-visualization
+  display: block
+  height: 100%
+
   .card-visualization
     height: 100%
 
@@ -106,3 +111,43 @@
 // choropleth cards is not vertically centered when it should be.
 div[ng-switch="cardType"]
   position: relative
+
+.card-form-group
+  padding: 10px 0
+  display: table
+  width: 100%
+
+  .input-group
+    display: table
+    width: 100%
+
+    .form-control,
+    .input-group-addon
+      vertical-align: top
+
+    .input-group-addon
+      display: table-cell
+      width: 1%
+
+      button
+        .icon-search
+          font-size: 1.5rem
+          text-align: center
+          width: 100%
+          line-height: 2rem
+
+  .form-control
+    width: 100%
+    box-sizing: border-box
+    display: block
+    padding: $card-input-vertical-padding 1rem $card-input-vertical-padding 6px
+    color: #555
+    background: #fff none
+    border: 3px solid transparent
+    border-bottom: 1px solid $lt-grey-font-color-rgba
+    margin-top: 5px
+
+.card-example-text
+  .one-line
+    overflow: hidden
+    height: 1rem

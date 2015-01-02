@@ -11,7 +11,9 @@
 		_AlwaysPreserveOrder = "AlwaysPreserveOrder",
 		_AllowDuplicates = "AllowDuplicates",
 		_CacheBust = "CacheBust",
-		/*!START_DEBUG*/_Debug = "Debug",/*!END_DEBUG*/
+		//!START_DEBUG
+		_Debug = "Debug",
+		//!END_DEBUG
 		_BasePath = "BasePath",
 
 		// stateless variables used across all $LAB instances
@@ -22,11 +24,11 @@
 		// inferences... ick, but still necessary
 		opera_or_gecko = (global.opera && Object.prototype.toString.call(global.opera) == "[object Opera]") || ("MozAppearance" in document.documentElement.style),
 
-/*!START_DEBUG*/
+		//!START_DEBUG
 		// console.log() and console.error() wrappers
 		log_msg = function(){},
 		log_error = log_msg,
-/*!END_DEBUG*/
+		//!END_DEBUG
 
 		// feature sniffs (yay!)
 		test_script_elem = document.createElement("script"),
@@ -134,7 +136,9 @@
 			if (preload_this_script) {
 				// real script preloading?
 				if (real_preloading) {
-					/*!START_DEBUG*/if (chain_opts[_Debug]) log_msg("start script preload: "+src);/*!END_DEBUG*/
+					/*!START_DEBUG*/
+					if (chain_opts[_Debug]) log_msg("start script preload: "+src);
+					/*!END_DEBUG*/
 					registry_item.elem = script;
 					if (explicit_preloading) { // explicit preloading (aka, Zakas' proposal)
 						script.preload = true;
@@ -151,7 +155,9 @@
 				// same-domain and XHR allowed? use XHR preloading
 				else if (preload_this_script && src.indexOf(root_domain) == 0 && chain_opts[_UseLocalXHR]) {
 					xhr = new XMLHttpRequest(); // note: IE never uses XHR (it supports true preloading), so no more need for ActiveXObject fallback for IE <= 7
-					/*!START_DEBUG*/if (chain_opts[_Debug]) log_msg("start script preload (xhr): "+src);/*!END_DEBUG*/
+					/*!START_DEBUG*/
+					if (chain_opts[_Debug]) log_msg("start script preload (xhr): "+src);
+					/*!END_DEBUG*/
 					xhr.onreadystatechange = function() {
 						if (xhr.readyState == 4) {
 							xhr.onreadystatechange = function(){}; // fix a memory leak in IE
@@ -164,7 +170,9 @@
 				}
 				// as a last resort, use cache-preloading
 				else {
-					/*!START_DEBUG*/if (chain_opts[_Debug]) log_msg("start script preload (cache): "+src);/*!END_DEBUG*/
+					/*!START_DEBUG*/
+					if (chain_opts[_Debug]) log_msg("start script preload (cache): "+src);
+					/*!END_DEBUG*/
 					script.type = "text/cache-script";
 					create_script_load_listener(script,registry_item,"ready",function() {
 						append_to.removeChild(script);
@@ -176,7 +184,9 @@
 			}
 			// use async=false for ordered async? parallel-load-serial-execute http://wiki.whatwg.org/wiki/Dynamic_Script_Execution_Order
 			else if (script_ordered_async) {
-				/*!START_DEBUG*/if (chain_opts[_Debug]) log_msg("start script load (ordered async): "+src);/*!END_DEBUG*/
+				/*!START_DEBUG*/
+				if (chain_opts[_Debug]) log_msg("start script load (ordered async): "+src);
+				/*!END_DEBUG*/
 				script.async = false;
 				create_script_load_listener(script,registry_item,"finished",onload);
 				script.src = src;
@@ -184,7 +194,9 @@
 			}
 			// otherwise, just a normal script element
 			else {
-				/*!START_DEBUG*/if (chain_opts[_Debug]) log_msg("start script load: "+src);/*!END_DEBUG*/
+				/*!START_DEBUG*/
+				if (chain_opts[_Debug]) log_msg("start script load: "+src);
+				/*!END_DEBUG*/
 				create_script_load_listener(script,registry_item,"finished",onload);
 				script.src = src;
 				append_to.insertBefore(script,append_to.firstChild);
@@ -206,7 +218,9 @@
 		global_defaults[_AlwaysPreserveOrder] = false;
 		global_defaults[_AllowDuplicates] = false;
 		global_defaults[_CacheBust] = false;
-		/*!START_DEBUG*/global_defaults[_Debug] = false;/*!END_DEBUG*/
+		/*!START_DEBUG*/
+                global_defaults[_Debug] = false;
+                /*!END_DEBUG*/
 		global_defaults[_BasePath] = "";
 
 		// execute a script that has been preloaded already
@@ -315,7 +329,9 @@
 
 			// called when a script has finished preloading
 			function chain_script_ready(script_obj,exec_trigger) {
-				/*!START_DEBUG*/if (chain_opts[_Debug]) log_msg("script preload finished: "+script_obj.real_src);/*!END_DEBUG*/
+				/*!START_DEBUG*/
+				if (chain_opts[_Debug]) log_msg("script preload finished: "+script_obj.real_src);
+				/*!END_DEBUG*/
 				script_obj.ready = true;
 				script_obj.exec_trigger = exec_trigger;
 				advance_exec_cursor(); // will only check for 'ready' scripts to be executed
@@ -323,7 +339,9 @@
 
 			// called when a script has finished executing
 			function chain_script_executed(script_obj,chain_group) {
-				/*!START_DEBUG*/if (chain_opts[_Debug]) log_msg("script execution finished: "+script_obj.real_src);/*!END_DEBUG*/
+				/*!START_DEBUG*/
+				if (chain_opts[_Debug]) log_msg("script execution finished: "+script_obj.real_src);
+				/*!END_DEBUG*/
 				script_obj.ready = script_obj.finished = true;
 				script_obj.exec_trigger = null;
 				// check if chain group is all finished
@@ -339,9 +357,13 @@
 			function advance_exec_cursor() {
 				while (exec_cursor < chain.length) {
 					if (is_func(chain[exec_cursor])) {
-						/*!START_DEBUG*/if (chain_opts[_Debug]) log_msg("$LAB.wait() executing: "+chain[exec_cursor]);/*!END_DEBUG*/
+						/*!START_DEBUG*/
+						if (chain_opts[_Debug]) log_msg("$LAB.wait() executing: "+chain[exec_cursor]);
+						/*!END_DEBUG*/
 						try { chain[exec_cursor++](); } catch (err) {
-							/*!START_DEBUG*/if (chain_opts[_Debug]) log_error("$LAB.wait() error caught: ",err);/*!END_DEBUG*/
+						/*!START_DEBUG*/
+						if (chain_opts[_Debug]) log_error("$LAB.wait() error caught: ",err);
+						/*!END_DEBUG*/
 						}
 						continue;
 					}

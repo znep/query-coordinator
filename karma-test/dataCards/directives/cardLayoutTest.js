@@ -1,8 +1,30 @@
 describe('CardLayout directive', function() {
+  'use strict';
+
   var NUM_CARDS = 10;
 
-  var testHelpers, rootScope, Model, Card, Page, AngularRxExtensions;
+  var AngularRxExtensions;
+  var Card;
   var mockWindowStateService = null;
+  var mockDownloadService;
+  var Model;
+  var Page;
+  var _$provide;
+  var $q;
+  var rootScope;
+  var testHelpers;
+  var serverMocks;
+  var $templateCache;
+
+  var mockServerConfig = {
+    get: function(key) {
+      if (key === 'oduxCardTypeMapping') {
+        return serverMocks.CARD_TYPE_MAPPING;
+      } else {
+        return true;
+      }
+    }
+  };
 
   beforeEach(module('/angular_templates/dataCards/card-layout.html'));
   beforeEach(module('/angular_templates/dataCards/card.html'));
@@ -10,9 +32,17 @@ describe('CardLayout directive', function() {
   beforeEach(module('/angular_templates/dataCards/cardVisualizationTimelineChart.html'));
   beforeEach(module('/angular_templates/dataCards/cardVisualizationChoropleth.html'));
   beforeEach(module('/angular_templates/dataCards/cardVisualizationTable.html'));
+  beforeEach(module('/angular_templates/dataCards/cardVisualizationSearch.html'));
+  beforeEach(module('/angular_templates/dataCards/cardVisualizationFeatureMap.html'));
+  beforeEach(module('/angular_templates/dataCards/cardVisualization.html'));
+  beforeEach(module('/angular_templates/dataCards/customizeCardDialog.html'));
+  beforeEach(module('/angular_templates/dataCards/modalDialog.html'));
+  beforeEach(module('/angular_templates/dataCards/socSelect.html'));
+  beforeEach(module('/angular_templates/dataCards/spinner.html'));
   beforeEach(module('/angular_templates/dataCards/table.html'));
   beforeEach(module('/angular_templates/dataCards/tableHeader.html'));
   beforeEach(module('/angular_templates/dataCards/timelineChart.html'));
+  beforeEach(module('/angular_templates/dataCards/featureMap.html'));
   beforeEach(module('dataCards/cards.sass'));
   beforeEach(module('dataCards/card.sass'));
   beforeEach(module('dataCards/flyout.sass'));
@@ -21,29 +51,54 @@ describe('CardLayout directive', function() {
   beforeEach(module('dataCards.directives'));
   beforeEach(function() {
     module(function($provide) {
+      _$provide = $provide;
       var mockCardDataService = {
-        getData: function(){ return q.when([]);}
+        getData: function(){ return $q.when([]);},
+        getChoroplethRegions: function() { return {then: _.noop}; },
+        getRowCount: function() { return {then: _.noop}; },
+        getTimelineDomain: function() { return {then: _.noop}; }
       };
       $provide.value('CardDataService', mockCardDataService);
+      $provide.constant('ServerConfig', mockServerConfig);
 
       mockWindowStateService = {};
       mockWindowStateService.scrollPositionSubject = new Rx.Subject();
       mockWindowStateService.windowSizeSubject = new Rx.Subject();
       mockWindowStateService.mouseLeftButtonPressedSubject = new Rx.Subject();
       mockWindowStateService.mousePositionSubject = new Rx.Subject();
+      mockWindowStateService.closeDialogEventObservable = new Rx.Subject();
+      mockWindowStateService.escapeKeyObservable = new Rx.Subject();
 
       $provide.value('WindowState', mockWindowStateService);
+
+      mockDownloadService = {
+        download: function() {
+          mockDownloadService.calledWith = arguments;
+          return {then: _.noop};
+        }
+      };
+
+      $provide.value('DownloadService', mockDownloadService);
     });
   });
   beforeEach(inject(function($injector) {
+    $templateCache = $injector.get('$templateCache');
+    $templateCache.put('/angular_templates/dataCards/customizeCardDialog.html', '');
+  }));
+  beforeEach(inject(function($injector) {
     testHelpers = $injector.get('testHelpers');
+    serverMocks = $injector.get('serverMocks');
     rootScope = $injector.get('$rootScope');
     Model = $injector.get('Model');
     Card = $injector.get('Card');
     Page = $injector.get('Page');
     AngularRxExtensions = $injector.get('AngularRxExtensions');
+    $q = $injector.get('$q');
 
     testHelpers.overrideTransitions(true);
+    testHelpers.mockDirective(_$provide, 'aggregationChooser');
+    testHelpers.mockDirective(_$provide, 'clearableInput');
+    testHelpers.mockDirective(_$provide, 'addCardDialog');
   }));
 
   afterEach(function(){
@@ -61,27 +116,55 @@ describe('CardLayout directive', function() {
    */
   function createCardLayout(options) {
     options = _.defaults(options || {}, {
-      cards: _.constant([]),
+      cards: _.constant([])
     });
 
     var datasetModel = new Model();
-    datasetModel.id = "bana-nas!";
+    datasetModel.id = 'bana-nas!';
     datasetModel.fieldName = 'ward';
     datasetModel.defineObservableProperty('rowDisplayUnit', 'row');
     datasetModel.defineObservableProperty('columns', {
-      'test_column': {
-        "name": "test_column",
-        "title": "test column title",
-        "description": "test column description",
-        "logicalDatatype": "amount",
-        "physicalDatatype": "number",
-        "importance": 2
+      // Define some columns of different types, so we can create different types of cards
+      statBar_column: {
+        name: 'statBar_column',
+        title: 'test column title',
+        description: 'test column description',
+        logicalDatatype: 'amount',
+        physicalDatatype: 'number',
+        importance: 2
+      },
+      pointMap_column: {
+        name: 'pointMap_column',
+        logicalDatatype: 'location',
+        physicalDatatype: 'point'
+      },
+      choropleth_column: {
+        name: 'choropleth_column',
+        logicalDatatype: 'location',
+        physicalDatatype: 'number',
+        shapefile: 'fake-shap'
+      },
+      timeline_column: {
+        name: 'timeline_column',
+        logicalDatatype: 'time',
+        physicalDatatype: 'number'
+      },
+      search_column: {
+        name: 'search_column',
+        logicalDatatype: 'text',
+        physicalDatatype: 'text'
+      },
+      '*': {
+        logicalDatatype: '*',
+        physicalDatatype: '*'
       }
     });
 
     var pageModel = new Page('asdf-fdsa');
     pageModel.set('dataset', datasetModel);
     pageModel.set('baseSoqlFilter', null);
+    pageModel.set('primaryAmountField', null);
+    pageModel.set('primaryAggregation', null);
     pageModel.set('cards', options.cards(pageModel));
 
     var outerScope = rootScope.$new();
@@ -90,6 +173,7 @@ describe('CardLayout directive', function() {
     outerScope.where = '';
     outerScope.editMode = false;
     outerScope.bindObservable('cardModels', pageModel.observe('cards'));
+    outerScope.chooserMode = {};
 
     var html = [
         '<div class="cards-content">',
@@ -104,7 +188,8 @@ describe('CardLayout directive', function() {
           ' card-models="cardModels"',
           ' global-where-clause-fragment="where"',
           ' edit-mode="editMode"',
-          ' allow-add-card="!hasAllCards"',
+          ' chooser-mode="chooserMode"',
+          ' allow-add-card="!allVisualizableColumnsVisualized"',
           ' expanded-card="expandedCard"></card-layout>',
         '</div>'
           ].join('');
@@ -112,7 +197,7 @@ describe('CardLayout directive', function() {
 
     function findCardForModel(model) {
       return $(_.find(element.find('card'), function(cardElement) {
-        return $(cardElement).scope().cardPosition.model === model;
+        return $(cardElement).scope().cardState.model === model;
       }));
     };
 
@@ -147,33 +232,33 @@ describe('CardLayout directive', function() {
   /**
    * Create a layout that includes cards on init.
    *
-   * @param {object=} opts
-   * @property {number=-1} expanded Which card to make expanded. Set below 0 to start with
-   *   no card expanded.
-   * @property {number=NUM_CARDS} numCards How many cards to generate.
-   * @property {number=0} dataCard The index of the datacard card. Set below 0 to start
-   *   with no datacard.
+   * @param {object[]=} cards An array of card hashes to create, each of which sets card properties:
+   * @property {string=} fieldName The name of the column this card is for. Set to '*' for dataCard,
+   * or like 'timeline_column' for a timeline card.
+   * @property {boolean=} expanded Whether the card is expanded. Only ever expand one card.
    */
-  function createLayoutWithCards(opts) {
-    // set default values
-    opts = $.extend({}, {
-      expanded: -1,
-      numCards: NUM_CARDS,
-      dataCard: 0
-    }, opts);
-    var cards = function(pageModel) {
-      return _.map(_.range(opts.numCards), function(v, i) {
-        var c = new Card(pageModel, i === opts.dataCard ? '*' : 'fieldname' + i);
-        if (opts.expanded === i) {
-          c.set('expanded', true);
-        } else {
-          c.set('expanded', false);
-        }
+  function createLayoutWithCards(cards) {
+    if (!cards) {
+      cards = _.map(_.range(NUM_CARDS), function(i) {
+        return {};
+      });
+      // Need a datacard in order to render
+      cards[0].fieldName = '*';
+    }
+
+    var cardGenerator = function(pageModel) {
+      return _.map(cards, function(card, i) {
+        var c = new Card(pageModel, card.fieldName || 'fieldname' + i);
+        c.set('expanded', !!card.expanded);
+        // Add required fields so this will validate
         c.set('cardSize', 1);
+        c.set('cardCustomStyle', {});
+        c.set('expandedCustomStyle', {});
+        c.set('displayMode', 'figures');
         return c;
       });
     };
-    return createCardLayout({cards: cards});
+    return createCardLayout({cards: cardGenerator});
   }
 
 
@@ -350,7 +435,7 @@ describe('CardLayout directive', function() {
       cl.outerScope.editMode = true;
       cl.outerScope.$apply();
 
-      expect(cl.element.find('.delete-button-target').length).to.equal(3);
+      expect(cl.element.find('.card-control[title^="Remove"]').length).to.equal(3);
 
     });
 
@@ -380,7 +465,7 @@ describe('CardLayout directive', function() {
       cl.outerScope.$apply();
       cl.scope.$digest();
 
-      var thirdDeleteButtonPosition = $(cl.element.find('.delete-button-target')[2]).offset();
+      var thirdDeleteButtonPosition = $(cl.element.find('.card-control[title^="Remove"]')[2]).offset();
 
       var clientX = thirdDeleteButtonPosition.left;
       var clientY = thirdDeleteButtonPosition.top;
@@ -389,7 +474,7 @@ describe('CardLayout directive', function() {
       mockWindowStateService.mousePositionSubject.onNext({
         clientX: clientX,
         clientY: clientY,
-        target: cl.element.find('.delete-button-target')[2]
+        target: cl.element.find('.card-control[title^="Remove"]')[2]
       });
 
       var hint = $('#uber-flyout .hint');
@@ -397,13 +482,13 @@ describe('CardLayout directive', function() {
       // The flyout could bind towards the left or right depending on the edge of the
       // screen, so just make sure the hint (ie the triangle attached to the flyout) is
       // close enough.
-      expect(hintOffset.left).to.be.closeTo(clientX, 5);
+      expect(hintOffset.left + hint[0].clientWidth / 2).to.be.closeTo(clientX, 5);
 
       // NOTE: The flyout should be positioned along the Y axis at
       // (clientY - flyoutHeight - hintHeight * 0.75).
       expect(hintOffset.top + hint.height() / 2).to.be.closeTo(clientY, 3);
 
-      expect($('#uber-flyout').text()).to.equal('Remove this Card');
+      expect($('#uber-flyout').text()).to.equal('Remove this card');
     });
 
     it('should remove a card when the delete button is clicked', function() {
@@ -434,18 +519,40 @@ describe('CardLayout directive', function() {
 
       expect(cl.pageModel.getCurrentValue('cards').length).to.equal(cards.length);
 
-      var thirdDeleteButton = $(cl.element.find('.delete-button-target')[2]);
+      var thirdDeleteButton = $(cl.element.find('.card-control[title^="Remove"]')[2]);
       thirdDeleteButton.trigger('click');
 
       var foundCards = cl.pageModel.getCurrentValue('cards');
       var card3Found = false;
-      for (i = 0; i < foundCards.length; i++) {
+      for (var i = 0; i < foundCards.length; i++) {
         if (foundCards[i].fieldName === 'testField3') {
           card3Found = true;
         }
       }
 
       expect(card3Found).to.be.false;
+    });
+
+    it('should allow deleting all datacards, leaving table card', function() {
+      _.each(['TimelineChart', 'Table'], function(type) {
+        testHelpers.mockDirective(_$provide, 'cardVisualization' + type);
+      });
+      var cl = createLayoutWithCards([
+        {fieldName: '*'},
+        {fieldName: 'timeline_column'}
+      ]);
+
+      mockWindowStateService.windowSizeSubject.onNext({width: 1000, height: 1000});
+      mockWindowStateService.scrollPositionSubject.onNext(0);
+
+      cl.outerScope.editMode = true;
+      cl.outerScope.$apply();
+
+      var deleteButton = cl.element.find('.card-control[title^="Remove"]');
+      deleteButton.trigger('click');
+
+      var foundCards = cl.pageModel.getCurrentValue('cards');
+      expect(foundCards.length).to.equal(1);
     });
 
     it('should show the correct drop placeholders', function() {
@@ -535,13 +642,13 @@ describe('CardLayout directive', function() {
       it('should enable or disable "Add card here" buttons as the controller indicates', function() {
         var cl = createLayoutWithCards();
 
-        cl.outerScope.hasAllCards = false;
+        cl.outerScope.allVisualizableColumnsVisualized = false;
         cl.outerScope.editMode = true;
         cl.outerScope.$apply();
 
         expect($('.add-card-button').first().hasClass('disabled')).to.be.false;
 
-        cl.outerScope.hasAllCards = true;
+        cl.outerScope.allVisualizableColumnsVisualized = true;
         cl.outerScope.$apply();
 
         expect($('.add-card-button').first().hasClass('disabled')).to.be.true;
@@ -550,7 +657,7 @@ describe('CardLayout directive', function() {
       it('should show a flyout with the text "All cards are present" when a disabled "Add card here" button is mousemoved', function() {
         var cl = createLayoutWithCards();
 
-        cl.outerScope.hasAllCards = true;
+        cl.outerScope.allVisualizableColumnsVisualized = true;
         cl.outerScope.editMode = true;
         cl.outerScope.$apply();
 
@@ -570,7 +677,7 @@ describe('CardLayout directive', function() {
       it('should not show a flyout with the text "All cards are present" when an enabled "Add card here" button is mousemoved', function() {
         var cl = createLayoutWithCards();
 
-        cl.outerScope.hasAllCards = false;
+        cl.outerScope.allVisualizableColumnsVisualized = false;
         cl.outerScope.editMode = true;
         cl.outerScope.$apply();
 
@@ -587,37 +694,21 @@ describe('CardLayout directive', function() {
         mockWindowStateService.mouseLeftButtonPressedSubject.onNext(true);
       });
 
-      it('should not show the "Add a card" modal dialog when a disabled "Add card here" button is clicked', function() {
+      it('should emit an "add-card-with-size" event when an enabled "Add card here" button is clicked', function(done) {
         var cl = createLayoutWithCards();
+        var hasBeenCalled = false;
 
-        cl.outerScope.hasAllCards = true;
+        cl.outerScope.allVisualizableColumnsVisualized = false;
         cl.outerScope.editMode = true;
         cl.outerScope.$apply();
 
-        var opened = false;
-
-        cl.outerScope.$on('modal-open-surrogate', function() { opened = true; });
-
-        testHelpers.fireEvent($('.add-card-button')[0], 'click');
-
-        expect(opened).to.be.false;
-        
-      });
-
-      it('should show the "Add a card" modal dialog when an enabled "Add card here" button is clicked', function() {
-        var cl = createLayoutWithCards();
-
-        cl.outerScope.hasAllCards = false;
-        cl.outerScope.editMode = true;
-        cl.outerScope.$apply();
-
-        var opened = false;
-
-        cl.outerScope.$on('modal-open-surrogate', function() { opened = true; });
+        cl.outerScope.$on('add-card-with-size', function(e, cardSize) {
+          hasBeenCalled = true;
+          expect(hasBeenCalled).to.equal(true);
+          done();
+        });
 
         testHelpers.fireEvent($('.add-card-button')[0], 'click');
-
-        expect(opened).to.be.true;
       });
 
     });
@@ -648,7 +739,7 @@ describe('CardLayout directive', function() {
         var card2Overlay = cl.findDragOverlayForModel(card2);
 
         // Click it.
-        card2Overlay.trigger(jQuery.Event( "mousedown", {
+        card2Overlay.trigger(jQuery.Event( 'mousedown', {
           button: 0,
           clientX: 100,
           clientY: 100
@@ -687,7 +778,7 @@ describe('CardLayout directive', function() {
 
         expect(cl.element.find('.card-drag-overlay').length).to.equal(cards.length - 2);
         expect(cl.element.find('.card-drop-placeholder').length).to.equal(1);
-        expect(cl.element.find('.card-drop-placeholder').scope().cardPosition.model).to.equal(card2);
+        expect(cl.element.find('.card-drop-placeholder').scope().cardState.model).to.equal(card2);
 
         // Release it.
         mockWindowStateService.mouseLeftButtonPressedSubject.onNext(false);
@@ -729,7 +820,7 @@ describe('CardLayout directive', function() {
 
         // Drag card 2.
         var cardContainerOffset = cl.element.find('card-layout').offset().top;
-        card2Overlay.trigger(jQuery.Event( "mousedown", {
+        card2Overlay.trigger(jQuery.Event( 'mousedown', {
           button: 0,
           clientX: card2Dom.parent().offset().left,
           clientY: card2Dom.parent().offset().top + cardContainerOffset
@@ -783,10 +874,7 @@ describe('CardLayout directive', function() {
       });
 
       it('should assign the correct card size when dragged over a placeholder', function() {
-        var cl = createLayoutWithCards({
-          dataCard: 1,
-          numCards: 2
-        });
+        var cl = createLayoutWithCards([{}, {fieldName: '*'}]);
         cl.outerScope.editMode = true;
         cl.outerScope.$apply();
 
@@ -804,7 +892,7 @@ describe('CardLayout directive', function() {
         // Drag card 1.
         var cardContainerOffset = cl.element.find('card-layout').offset().top;
         var startPos = card1Dom.offset();
-        card1Overlay.trigger(jQuery.Event( "mousedown", {
+        card1Overlay.trigger(jQuery.Event( 'mousedown', {
           button: 0,
           clientX: startPos.left + card1Dom.width() / 2,
           clientY: startPos.top + card1Dom.height() / 2
@@ -849,7 +937,6 @@ describe('CardLayout directive', function() {
   });
 
   describe('expanded card', function() {
-    var EXPANDED_CARD_INDEX = 2;
     it("should not expand any cards if the page model's 'cards' array doesn't contain any cards with the expanded property set", function() {
       var cl = createLayoutWithCards();
 
@@ -858,32 +945,31 @@ describe('CardLayout directive', function() {
     });
 
     it('should show an expanded card if there is one in the model', function() {
-      var cl = createLayoutWithCards({expanded: EXPANDED_CARD_INDEX});
+      var cl = createLayoutWithCards([{fieldName: '*'}, {}, {expanded: true}, {}]);
 
       var cards = cl.element.find('card');
-      expect(cards.length).to.equal(NUM_CARDS);
+      expect(cards.length).to.equal(4);
       expect(cl.element.find('.expanded').length).to.equal(1);
     });
 
     it('should expand a card when clicking the expand-card button', function() {
       var cl = createLayoutWithCards();
 
-      cl.element.find('.expand-button span').eq(EXPANDED_CARD_INDEX + 1).click();
-      expect(cl.element.find('card').eq(EXPANDED_CARD_INDEX + 1).
-             hasClass('expanded')).to.be.true;
+      cl.element.find('.card-control[title^="Expand"]').eq(3).click();
+      expect(cl.element.find('card').eq(3).hasClass('expanded')).to.be.true;
     });
 
     it('should unexpand when clicking unexpand button of an expanded card', function() {
-      var cl = createLayoutWithCards({expanded: EXPANDED_CARD_INDEX});
+      var cl = createLayoutWithCards([{fieldName: '*'}, {expanded: true}, {}]);
 
       var expanded = cl.element.find('.expanded');
       expect(expanded.length).to.equal(1);
-      expanded.find('.expand-button span').click();
+      expanded.find('.card-control[title^="Collapse"]').click();
       expect(cl.element.find('.expanded').length).to.equal(0);
     });
 
     it("sets the scope's expandedCard state if there are any expanded cards", function() {
-      var cl = createLayoutWithCards({expanded: EXPANDED_CARD_INDEX});
+      var cl = createLayoutWithCards([{fieldName: '*'}, {expanded: true}]);
 
       expect(!!cl.outerScope.expandedCard).to.be.true;
     });
@@ -894,13 +980,34 @@ describe('CardLayout directive', function() {
       expect(!!cl.scope.expandedCard).not.to.be.ok;
     });
 
-    it("sets the expandedCard state when you expand a card", function() {
+    it('sets the expandedCard state when you expand a card', function() {
       var cl = createLayoutWithCards();
       expect(!!cl.scope.expandedCard).not.to.be.ok;
 
-      cl.element.find('.expand-button span').eq(0).click();
+      cl.element.find('.card-control[title^="Expand"]').eq(0).click();
       cl.scope.$digest();
       expect(!!cl.scope.expandedCard).to.be.true;
+    });
+
+    it('emit a "customize-card-with-model" event when clicking the customize button', function(done) {
+      var cl = createLayoutWithCards([{fieldName: '*'}, {fieldName: 'choropleth_column'}]);
+      var eventEmitted = false;
+
+      cl.outerScope.editMode = true;
+      cl.outerScope.$apply();
+
+      var choropleth = cl.element.find('card-visualization-choropleth').closest('.card-spot');
+      var customize = choropleth.find('.card-control[title^="Customize"]');
+
+      expect(eventEmitted).to.equal(false);
+
+      cl.outerScope.$on('customize-card-with-model', function(e, cardModel) {
+        eventEmitted = true;
+        expect(eventEmitted).to.equal(true);
+        done();
+      });
+
+      customize.click();
     });
 
     describe('height adjustment', function() {
@@ -911,10 +1018,10 @@ describe('CardLayout directive', function() {
         height: 768
       };
       beforeEach(function() {
-        cl = createLayoutWithCards({
-          dataCard: 0,
-          expanded: 2
-        });
+        cl = createLayoutWithCards([
+          {fieldName: '*'}, {},
+          // Need a bunch of cards so it's scrollable
+          {expanded: true}, {}, {}, {}, {}, {}, {}, {}]);
         // Start at the top of the page
         mockWindowStateService.scrollPositionSubject.onNext(0);
         mockWindowStateService.windowSizeSubject.onNext(winDimensions);
@@ -989,12 +1096,10 @@ describe('CardLayout directive', function() {
     if (Modernizr.csstransitions) {
       describe('animation', function() {
         it('collapses an expanded element (and all others) smoothly', function(done) {
-          var cl = createLayoutWithCards({
-            expanded: 2
-          });
+          var cl = createLayoutWithCards([{fieldName: '*'}, {}, {expanded: true}]);
           testHelpers.overrideTransitions(.1);
           var card = cl.element.find('card.expanded').parent();
-          card.find('.expand-button span').click();
+          card.find('.card-control[title^="Collapse"]').click();
           cl.scope.$digest();
 
           // The expanded card should start fixed position, and end absolute positioned
@@ -1017,7 +1122,7 @@ describe('CardLayout directive', function() {
           var cl = createLayoutWithCards();
           testHelpers.overrideTransitions(.1);
           var card = cl.element.find('card').eq(3).parent();
-          card.find('.expand-button span').click();
+          card.find('.card-control[title^="Expand"]').click();
           cl.scope.$digest();
 
           // The expanding card should start absolute position, and end fixed positioned
@@ -1039,9 +1144,7 @@ describe('CardLayout directive', function() {
       // Test the different behavior (ie no transitions) in IE9
       describe('(lack of) animation', function() {
         it('collapses an expanded element (and all others) immediately', function() {
-          var cl = createLayoutWithCards({
-            expanded: 2
-          });
+          var cl = createLayoutWithCards([{fieldName: '*'}, {}, {expanded: true}]);
           testHelpers.overrideTransitions(.1);
           var expandedCard = cl.element.find('card.expanded').parent();
           var normalCard = expandedCard.next();
@@ -1049,7 +1152,7 @@ describe('CardLayout directive', function() {
           var expandedOriginalPosition = expandedCard.position();
           var normalCardOriginalPosition = normalCard.position();
 
-          expandedCard.find('.expand-button span').click();
+          expandedCard.find('.card-control[title^="Collapse"]').click();
           cl.scope.$digest();
 
           expect(expandedCard.css('position')).to.equal('absolute');
@@ -1069,7 +1172,7 @@ describe('CardLayout directive', function() {
           var expandingOriginalPosition = expandingCard.position();
           var normalCardOriginalPosition = normalCard.position();
 
-          expandingCard.find('.expand-button span').click();
+          expandingCard.find('.card-control[title^="Expand"]').click();
           cl.scope.$digest();
 
           // The expanding card should immediately be fixed-position
@@ -1123,7 +1226,7 @@ describe('CardLayout directive', function() {
         var flyout = $('#uber-flyout');
         expect(flyout.is(':visible')).to.be.false;
 
-        var expand = cl.element.find('.expand-button-target').eq(0);
+        var expand = cl.element.find('.card-control[title^="Expand"]').eq(0);
         mockWindowStateService.mousePositionSubject.onNext({
           clientX: 0,
           clientY: 0,
@@ -1135,7 +1238,7 @@ describe('CardLayout directive', function() {
         expectFlyoutPosition(expand, flyout);
 
         expect(flyout.is(':visible')).to.be.true;
-        expect(flyout.text()).to.equal('Expand this Card');
+        expect(flyout.text()).to.equal('Expand this card');
       });
 
       it('should display "Collapse" over the collapse button', function() {
@@ -1144,22 +1247,148 @@ describe('CardLayout directive', function() {
         expect(flyout.is(':visible')).to.be.false;
 
         var card = cl.element.find('card').eq(5);
-        card.find('.expand-button-target').click();
+        card.find('.card-control[title^="Expand"]').click();
         mockWindowStateService.mousePositionSubject.onNext({
           clientX: 0,
           clientY: 0,
           // Re-find the expand button, because expanding re-draws it
-          target: card.find('.expand-button-target')[0]
+          target: card.find('.card-control[title^="Collapse"]')[0]
         });
 
         // Verify position
         // mostly we care about the arrow position
-        expectFlyoutPosition(card.find('.expand-button-target'), flyout);
+        expectFlyoutPosition(card.find('.card-control[title^="Collapse"]'), flyout);
 
         expect(flyout.is(':visible')).to.be.true;
-        expect(flyout.text()).to.equal('Collapse this Card');
+        expect(flyout.text()).to.equal('Collapse this card');
+      });
+
+      it('should display "Customize" only over the customize button on the choropleth', function() {
+        var cl = createLayoutWithCards([{fieldName: '*'}, {fieldName: 'choropleth_column'}]);
+        var flyout = $('#uber-flyout');
+        expect(flyout.is(':visible')).to.be.false;
+
+        var choropleth = cl.element.find('card-visualization-choropleth').closest('.card-spot');
+        expect(choropleth.length).to.equal(1);
+        var customize = choropleth.find('.card-control[title^="Customize"]');
+        // Shouldn't show up unless you're in edit mode
+        expect(customize.length).to.equal(0);
+
+        cl.outerScope.editMode = true;
+        cl.outerScope.$apply();
+
+        customize = choropleth.find('.card-control[title^="Customize"]');
+        expect(customize.length).to.equal(choropleth.length);
+
+        mockWindowStateService.mousePositionSubject.onNext({
+          clientX: 0,
+          clientY: 0,
+          target: customize[0]
+        });
+
+        expectFlyoutPosition(customize.eq(0), flyout);
+        expect(flyout.is(':visible')).to.be.true;
+        expect(flyout.text()).to.match(/customize this card/i);
+      });
+
+      it('should display a different message over the customize button of non-choropleths', function() {
+        var cl = createLayoutWithCards([
+          {fieldName: '*'},
+          {fieldName: 'timeline_column'}
+        ]);
+        var flyout = $('#uber-flyout');
+        expect(flyout.is(':visible')).to.be.false;
+
+        var visualizations = cl.element.find('.card-visualization').
+            children('card-visualization-timeline-chart').
+            closest('.card-spot');
+        expect(visualizations.length).to.equal(1);
+        expect(visualizations.find('.card-control[title^="Customize"]').length).to.equal(0);
+
+        var disabled = visualizations.find('.card-control.disabled');
+        // Shouldn't show up unless you're in edit mode
+        expect(disabled.length).to.equal(0);
+
+        cl.outerScope.editMode = true;
+        cl.outerScope.$apply();
+
+        disabled = visualizations.find('.card-control.disabled');
+        expect(disabled.length).to.equal(visualizations.length);
+
+        mockWindowStateService.mousePositionSubject.onNext({
+          clientX: 0,
+          clientY: 0,
+          target: disabled[0]
+        });
+
+        expectFlyoutPosition(disabled.eq(0), flyout);
+        expect(flyout.is(':visible')).to.be.true;
+        expect(flyout.text()).to.match(/no customization options/i);
       });
     });
+  });
+
+  describe('download chooser mode', function() {
+    var cl;
+    
+    beforeEach(function() {
+      _.each(['ColumnChart', 'TimelineChart', 'Choropleth', 'Table', 'Search'], function(type) {
+        testHelpers.mockDirective(_$provide, 'cardVisualization' + type);
+      });
+      cl = createLayoutWithCards([
+        {fieldName: '*'},
+        {fieldName: 'timeline_column'},
+        {fieldName: 'search_column'},
+        {fieldName: 'choropleth_column'}
+      ]);
+    });
+
+    it('displays overlays when chooserMode is activated', function() {
+      expect(cl.element.find('.card-chooser').length).to.equal(0);
+
+      cl.scope.chooserMode.show = true;
+      cl.scope.$digest();
+
+      expect(cl.element.find('.card-chooser').length).to.be.above(0);
+    });
+
+    it('disables download button for table and search cards', function() {
+      cl.scope.chooserMode.show = true;
+      cl.scope.$digest();
+
+      var tableButton = cl.element.find('card-visualization-table').
+          closest('card').siblings('.card-chooser').find('.action-png-export');
+      var timelineButton = cl.element.find('card-visualization-timeline-chart').
+          closest('card').siblings('.card-chooser').find('.action-png-export');
+      var searchButton = cl.element.find('card-visualization-search').
+          closest('card').siblings('.card-chooser').find('.action-png-export');
+      var choroplethButton = cl.element.find('card-visualization-choropleth').
+          closest('card').siblings('.card-chooser').find('.action-png-export');
+
+      expect(tableButton.hasClass('disabled')).to.equal(true);
+      expect(timelineButton.hasClass('disabled')).to.equal(false);
+      expect(searchButton.hasClass('disabled')).to.equal(true);
+      expect(choroplethButton.hasClass('disabled')).to.equal(false);
+    });
+
+    it('downloads the png url when clicking the download button', function() {
+      cl.scope.chooserMode.show = true;
+      cl.scope.$digest();
+
+      var button = cl.element.find('.card-chooser .action-png-export:not(.disabled)');
+      button.click();
+
+      expect(mockDownloadService.calledWith[0]).to.deep.equal('./asdf-fdsa/choropleth_column.png');
+    });
+  });
+
+  it('should show the table card if no other cards are present', function() {
+    testHelpers.mockDirective(_$provide, 'cardVisualizationTable');
+    var cl = createLayoutWithCards([
+      {fieldName: '*'}
+    ]);
+
+    expect(cl.element.find('card-visualization-table').length).to.equal(1);
   });
 
 });

@@ -9,6 +9,7 @@
     beforeEach(function() {
       module('/angular_templates/dataCards/saveAs.html');
       module('/angular_templates/dataCards/saveButton.html');
+      module('/angular_templates/dataCards/spinner.html');
       module('socrataCommon.services');
       module('dataCards.directives');
       module('dataCards.services');
@@ -30,8 +31,22 @@
         saveAs = $compile(element)(scope);
         scope.$digest();
       });
-      return saveAs
+      return saveAs;
     }
+
+    it('should clean up after itself when the scope is destroyed', inject(function(WindowState) {
+      var element = createElement('<save-as></save-as>');
+      var cleanedUp = false;
+      scope.$on('cleaned-up', function() {
+        cleanedUp = true;
+      });
+
+      expect(cleanedUp).to.be.false;
+
+      scope.$broadcast('$destroy');
+
+      expect(cleanedUp).to.be.true;
+    }));
 
     describe('"Save As" button', function() {
       var elementTemplate = '<save-as page-has-changes="{0}"></save-as>';
@@ -107,10 +122,8 @@
 
       it('should become inactive if the an area outside of the panel is clicked', function(done) {
         testHelpers.TestDom.append($saveAs);
-        var ev = $window.document.createEvent('HTMLEvents');
-        ev.initEvent('mouseup', true, true);
-        ev.which = 1;
-        $window.document.getElementsByTagName('body')[0].dispatchEvent(ev);
+        testHelpers.fireMouseEvent($window.document.getElementsByTagName('body')[0],
+                                   'click', {which: 1});
         _.defer(function() {
           expect($toolPanel.hasClass('active')).to.be.false;
           testHelpers.TestDom.clear();

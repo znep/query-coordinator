@@ -3,6 +3,7 @@
 Frontend::Application.routes do
 
   UID_REGEXP = /\w{4}-\w{4}/
+  INTEGER_REGEXP = /-?\d+/
 
   # styling routes
   scope :path => '/styles', :controller => 'styles' do
@@ -193,10 +194,7 @@ Frontend::Application.routes do
     get '/analytics' => 'analytics#index'
     post '/analytics/add/:domain_entity/:metric' => 'analytics#add'
     post '/analytics/add' => 'analytics#add_all'
-
-    scope :controller => 'console' do
-      get 'console', :action => 'index'
-    end
+    get '/analytics/esri' => 'analytics#esri'
 
     scope :controller => 'profile', :path => '/profile',
           :constraints => {:id => UID_REGEXP, :profile_name => /(\w|-)+/} do
@@ -259,6 +257,25 @@ Frontend::Application.routes do
       member do
         get :show
       end
+    end
+
+    scope :controller => 'new_ux_bootstrap', :constraints => { :id => UID_REGEXP } do
+      get '/view/bootstrap/:id', :action => 'bootstrap'
+    end
+
+    scope :controller => 'polaroid', :constraints => { :page_id => UID_REGEXP, :field_id => Phidippides::COLUMN_ID_REGEX } do
+      match '/view/:page_id/:field_id.png', :via => :get, :action => 'proxy_request'
+    end
+
+    # Temporary proxy for tileserver, while ops finishes the work to expose AWS services to the 'net directly.
+    scope :controller => 'tile_server', :constraints => {
+        :page_id => UID_REGEXP,
+        :field_id => Phidippides::COLUMN_ID_REGEX,
+        :zoom => INTEGER_REGEXP,
+        :x_coord => INTEGER_REGEXP,
+        :y_coord => INTEGER_REGEXP
+      } do
+      match '/tiles/:page_id/:field_id/:zoom/:x_coord/:y_coord.pbf', :via => :get, :action => 'proxy_request'
     end
 
     scope :controller => 'angular', :constraints => { :id => UID_REGEXP } do
@@ -330,10 +347,20 @@ Frontend::Application.routes do
     # The /version page
     get '/version(.:format)' => 'version#index'
 
+    # Static error pages to be mirrored and served outside of our infrastructure.
+    match '/static_sitewide_messages/:action', :controller => 'static_sitewide_messages'
+
     # Auth/login/register paths
     match '/forgot_password', :to => 'accounts#forgot_password', :as => 'forgot_password'
     match '/reset_password/:uid/:reset_code', :to => 'accounts#reset_password', :as => 'reset_password',
       :conditions => {:uid => UID_REGEXP}
+
+    if AUTH0_CONFIGURED
+      scope :protocol => 'https' do
+        match '/auth/auth0/callback' => 'auth0#callback'
+        match '/auth/failure' => 'auth0#failure'
+      end
+    end
 
     scope :protocol => "https", :port => APP_CONFIG['ssl_port'] || 443 do
       match '/login.json', :to => 'user_sessions#create', :format => 'json', :as => 'login_json'

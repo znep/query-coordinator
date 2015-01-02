@@ -147,7 +147,6 @@
             '2q28-58m6': 'tractce',
             '86dh-mgvd': 'geoid10',
             '8thk-xhvj': 'name',
-<<<<<<< HEAD
             '35kt-7gyk': 'district',
             'mdjy-33rn': 'countyname',
             '98hf-33cq': 'zip',
@@ -169,8 +168,7 @@
             'p5aj-wyqh': 'district',
             'b2j2-ahrz': 'nhood',
             'yftq-j783': 'objectid',
-            'rxqg-mtj9': 'supdist'
-=======
+            'rxqg-mtj9': 'supdist',
             'hak8-5bvb': 'coundist',
             'swkg-bavi': 'zone_type',
             'rffn-qbt6': 'name',
@@ -194,7 +192,6 @@
             '8f9p-hupj': 'district',
             'c62z-keqd': 'district',
             'tbvr-2deq': 'geoid10'
->>>>>>> 5514e702f99d31daa0f0292bd2c2257f4e946c8d
           };
 
           if (shapefile) {

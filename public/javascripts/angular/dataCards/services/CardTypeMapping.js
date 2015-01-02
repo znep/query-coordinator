@@ -14,9 +14,9 @@
 
       function computeExpressionValue(expression) {
         var values = {
-          isHighCardinality:   column.cardinality >= cardTypeMapping.cardinality.threshold,
-          isLowCardinality:    column.cardinality < cardTypeMapping.cardinality.threshold &&
-                               column.cardinality >= cardTypeMapping.cardinality.min,
+          isHighCardinality:   column.cardinality >= getCardTypeMapping().cardinality.threshold,
+          isLowCardinality:    column.cardinality < getCardTypeMapping().cardinality.threshold &&
+                               column.cardinality >= getCardTypeMapping().cardinality.min,
           isGeoregionComputed: column.computationStrategy === 'georegion_match_on_string' ||
                                column.computationStrategy === 'georegion_match_on_point'
         };
@@ -88,7 +88,7 @@
       }
 
       physicalDatatype = column.physicalDatatype;
-      physicalDatatypeMapping = cardTypeMapping.map[physicalDatatype];
+      physicalDatatypeMapping = getCardTypeMapping().map[physicalDatatype];
 
       if (physicalDatatypeMapping) {
         cardTypes = computeAvailableCardTypesInPreferenceOrder(physicalDatatypeMapping, column);
@@ -218,7 +218,7 @@
 
     }
 
-    var cardTypeMapping = ServerConfig.get('oduxCardTypeMapping');
+    var getCardTypeMapping = function() { return ServerConfig.get('oduxCardTypeMapping'); };
 
     // Keep track of which physical datatypes have already
     // triggered warnings so that we don't get rate-limited by Airbrake in

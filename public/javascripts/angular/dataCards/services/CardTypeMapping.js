@@ -38,11 +38,11 @@
           return 1;
         },
         function(object) {
-          var isDefault = false;
           if (object.hasOwnProperty('defaultIf')) {
-            isDefault = computeExpressionValue(object.defaultIf);
+            return  computeExpressionValue(object.defaultIf) ? 0 : 2;
+          } else {
+            return 1;
           }
-          return isDefault ? 0 : 2;
         });
       });
 
@@ -218,7 +218,9 @@
 
     }
 
-    var getCardTypeMapping = function() { return ServerConfig.get('oduxCardTypeMapping'); };
+    var getCardTypeMapping = function() {
+      return ServerConfig.get('oduxCardTypeMapping');
+    };
 
     // Keep track of which physical datatypes have already
     // triggered warnings so that we don't get rate-limited by Airbrake in

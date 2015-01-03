@@ -73,23 +73,24 @@ describe('addCardDialog', function() {
       'name': 'spot',
       'title': 'Spot where cool froods hang out.',
       'description': '???',
-      'logicalDatatype': 'location',
+      'cardinality': 1000,
       'physicalDatatype': 'number',
       'importance': 2,
-      'shapefile': 'mash-apes'
+      'shapefile': 'mash-apes',
+      'computationStrategy': 'georegion_match_on_string'
     },
     'bar': {
       'name': 'bar',
       'title': 'A bar where cool froods hang out.',
       'description': '???',
-      'logicalDatatype': 'amount',
+      'cardinality': 10,
       'physicalDatatype': 'number'
     },
     'point': {
       'name': 'point',
       'title': 'Points where crimes have been committed.',
       'description': 'Points.',
-      'logicalDatatype': 'location',
+      'cardinality': 1000,
       'physicalDatatype': 'point',
       'importance': 2
     },
@@ -97,16 +98,16 @@ describe('addCardDialog', function() {
       'name': 'ward',
       'title': 'Ward where crime was committed.',
       'description': 'Batman has bigger fish to fry sometimes, you know.',
-      'logicalDatatype': 'location',
+      'cardinality': 10,
       'physicalDatatype': 'number',
       'importance': 2,
-      'shapefile': 'mash-apes'
+      'shapefile': 'mash-apes',
+      'computationStrategy': 'georegion_match_on_string'
     },
     'multipleVisualizations': {
       'name': 'multipleVisualizations',
       'title': 'A card for which multiple visualizations are possible.',
       'description': '???',
-      'logicalDatatype': 'text',
       'physicalDatatype': 'text',
       'cardinality': 2000
     }
@@ -269,7 +270,7 @@ describe('addCardDialog', function() {
 
     var selectableColumnOptions = dialog.element.find('option:enabled');
 
-    expect(selectableColumnOptions.length).to.equal(3);
+    expect(selectableColumnOptions.length).to.equal(4);
   });
 
   it('should disable columns that are represented by cards in the "Choose a column..." select control', function() {
@@ -287,7 +288,7 @@ describe('addCardDialog', function() {
 
     var selectableColumnOptions = dialog.element.find('option:enabled');
 
-    expect(selectableColumnOptions.length).to.equal(2);
+    expect(selectableColumnOptions.length).to.equal(3);
   });
 
   it('should disable the "Add card" button when no column in the "Choose a column..." select control is selected', function() {
@@ -408,8 +409,6 @@ describe('addCardDialog', function() {
     expect(customizeButton.length).to.equal(0); // should only appear for choropleths
 
     $httpBackend.expectGET(/\/api\/id\/rook-king.json.*/).respond([]);
-    $httpBackend.expectGET(/\/resource\/rook-king.json.*/).respond([]);
-    $httpBackend.expectGET(/\/resource\/mash-apes.geojson.*/).respond([]);
     dialog.element.find('select > option[value="bar"]').prop('selected', true).trigger('change');
 
     customizeButton = dialog.element.find('.card-control[title^="Customize"]');
@@ -418,7 +417,6 @@ describe('addCardDialog', function() {
     // Now select the choropleth
     $httpBackend.expectGET(/\/api\/id\/rook-king.json.*/).respond([]);
     $httpBackend.expectGET(/\/resource\/rook-king.json.*/).respond([]);
-    $httpBackend.expectGET(/\/resource\/mash-apes.geojson.*/).respond([]);
     dialog.element.find('select > option[value="ward"]').prop('selected', true).trigger('change');
 
 

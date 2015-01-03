@@ -367,24 +367,6 @@
       });
     });
 
-    // The following test was disabled on 12/3/14 because CardTypeMapping no longer
-    // warns but permits the location/text pairing and instead reports it as unsupported.
-    xdescribe('when encountering a deprecated choropleth mapping', function() {
-      describe('using defaultVisualizationForColumn', function() {
-        xit('should raise an exception', function() {
-          var column = {
-            physicalDatatype: 'text',
-            logicalDatatype: 'location',
-            name: 'DEPRECATED'
-          };
-
-          CardTypeMapping.defaultVisualizationForColumn(column);          
-          expect($exceptionHandler.errors.length).to.equal(1);
-
-        });
-      });
-    });
-
   });
 
 })();

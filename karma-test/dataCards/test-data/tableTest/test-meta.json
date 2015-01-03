@@ -10,140 +10,140 @@
       "title": "Beat",
       "name": "beat",
       "physicalDatatype": "text",
-      "logicalDatatype": "text",
+      "cardinality": 1000,
       "importance": 3
     },
     {
       "title": "Block",
       "name": "block",
       "physicalDatatype": "text",
-      "logicalDatatype": "text",
+      "cardinality": 1000,
       "importance": 3
     },
     {
       "title": "Case Number",
       "name": "case_number",
       "physicalDatatype": "text",
-      "logicalDatatype": "text",
+      "cardinality": 1000,
       "importance": 3
     },
     {
       "title": "Community Area",
       "name": "community_area",
       "physicalDatatype": "text",
-      "logicalDatatype": "identifier",
+      "cardinality": 1000,
       "importance": 3
     },
     {
       "title": "Date",
       "name": "date",
       "physicalDatatype": "timestamp",
-      "logicalDatatype": "time",
+      "cardinality": 1000,
       "importance": 1
     },
     {
       "title": "Time",
       "name": "time",
       "physicalDatatype": "floating_timestamp",
-      "logicalDatatpye": "time",
+      "cardinality": 1000,
       "importance": 1
     },
     {
       "title": "Description",
       "name": "description",
       "physicalDatatype": "text",
-      "logicalDatatype": "text",
+      "cardinality": 1000,
       "importance": 3
     },
     {
       "title": "District",
       "name": "district",
       "physicalDatatype": "text",
-      "logicalDatatype": "text",
+      "cardinality": 1000,
       "importance": 3
     },
     {
       "title": "FBI Code",
       "name": "fbi_code",
       "physicalDatatype": "text",
-      "logicalDatatype": "category",
+      "cardinality": 10,
       "importance": 3
     },
     {
       "title": "Id",
       "name": "id",
       "physicalDatatype": "number",
-      "logicalDatatype": "identifier",
+      "cardinality": 1000,
       "importance": 3
     },
     {
       "title": "IUCR",
       "name": "iucr",
       "physicalDatatype": "text",
-      "logicalDatatype": "category",
+      "cardinality": 1000,
       "importance": 3
     },
     {
       "title": "Latitude",
       "name": "latitude",
       "physicalDatatype": "number",
-      "logicalDatatype": "amount",
+      "cardinality": 1000,
       "importance": 3
     },
     {
       "title": "Location Description",
       "name": "location_description",
       "physicalDatatype": "text",
-      "logicalDatatype": "text",
+      "cardinality": 1000,
       "importance": 3
     },
     {
       "title": "Longitude",
       "name": "longitude",
       "physicalDatatype": "number",
-      "logicalDatatype": "amount",
+      "cardinality": 1000,
       "importance": 3
     },
     {
       "title": "Primary Type",
       "name": "primary_type",
       "physicalDatatype": "text",
-      "logicalDatatype": "category",
+      "cardinality": 10,
       "importance": 3
     },
     {
       "title": "Ward",
       "name": "ward",
       "physicalDatatype": "text",
-      "logicalDatatype": "location",
+      "cardinality": 1000,
       "importance": 3
     },
     {
       "title": "X Coordinate",
       "name": "x_coordinate",
       "physicalDatatype": "number",
-      "logicalDatatype": "amount",
+      "cardinality": 1000,
       "importance": 3
     },
     {
       "title": "Y Coordinate",
       "name": "y_coordinate",
       "physicalDatatype": "number",
-      "logicalDatatype": "amount",
+      "cardinality": 1000,
       "importance": 3
     },
     {
       "title": "Year",
       "name": "year",
       "physicalDatatype": "number",
-      "logicalDatatype": "amount",
+      "cardinality": 1000,
       "importance": 2
     },
     {
       "title": "Location",
       "name": "point",
       "physicalDatatype": "point",
-      "logicalDatatype": "location",
+      "cardinality": 1000,
       "importance": 3
     },
     {
@@ -151,9 +151,10 @@
       "description": "",
       "name": ":Computed_i2inbshz_location",
       "physicalDatatype": "text",
-      "logicalDatatype": "location",
+      "cardinality": 1000,
       "importance": 1,
-      "shapefileFeatureHumanReadablePropertyName": "name"
+      "shapefileFeatureHumanReadablePropertyName": "name",
+      "computationStrategy": "georegion_match_on_string"
     }
   ]
 }

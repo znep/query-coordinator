@@ -22,7 +22,10 @@
   };
 
   var validColumnFilter = function(column) {
-    return column.physicalDatatype === 'number' && column.logicalDatatype === 'amount';
+    return column.physicalDatatype === 'number' && (
+        column.computationStrategy !== 'georegion_match_on_point' &&
+        column.computationStrategy !== 'georegion_match_on_string'
+      );
   };
 
   function AggregationChooser(AngularRxExtensions, DatasetDataService, FlyoutService, WindowState) {

@@ -57,7 +57,7 @@ describe('<aggregation-chooser/>', function() {
           name: 'statBar_column',
           title: 'test column title',
           description: 'test column description',
-          logicalDatatype: 'amount',
+          cardinality: 1000,
           physicalDatatype: 'number',
           importance: 2
         },
@@ -65,7 +65,7 @@ describe('<aggregation-chooser/>', function() {
           name: 'statBar_column2',
           title: 'second test column title',
           description: 'second test column description',
-          logicalDatatype: 'amount',
+          cardinality: 1000,
           physicalDatatype: 'number',
           importance: 2
         }
@@ -244,27 +244,28 @@ describe('<aggregation-chooser/>', function() {
       columns: {
         pointMap_column: {
           name: 'pointMap_column',
-          logicalDatatype: 'location',
+          cardinality: 1000,
           physicalDatatype: 'point'
         },
         choropleth_column: {
           name: 'choropleth_column',
-          logicalDatatype: 'location',
+          cardinality: 1000,
           physicalDatatype: 'number',
-          shapefile: 'fake-shap'
+          shapefile: 'fake-shap',
+          computationStrategy: 'georegion_match_on_point'
         },
         timeline_column: {
           name: 'timeline_column',
-          logicalDatatype: 'time',
-          physicalDatatype: 'number'
+          cardinality: 10,
+          physicalDatatype: 'floating_timestamp'
         },
         search_column: {
           name: 'search_column',
-          logicalDatatype: 'text',
+          cardinality: 1000,
           physicalDatatype: 'text'
         },
         '*': {
-          logicalDatatype: '*'
+          cardinality: 1000
         }
       }
     });
@@ -284,7 +285,7 @@ describe('<aggregation-chooser/>', function() {
         name: 'column_{0}'.format(value),
         title: 'test column title - {0}'.format(value),
         description: 'test column description - {0}'.format(value),
-        logicalDatatype: 'amount',
+        cardinality: 1000,
         physicalDatatype: 'number',
         importance: 2
       };

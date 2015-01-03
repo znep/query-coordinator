@@ -84,10 +84,11 @@ describe("A Choropleth Card Visualization", function() {
         "name": "ward",
         "title": "Ward where crime was committed.",
         "description": "Batman has bigger fish to fry sometimes, you know.",
-        "logicalDatatype": "location",
+        "cardinality": 1000,
         "physicalDatatype": "text",
         "importance": 2,
-        "shapefile": "mash-apes"
+        "shapefile": "mash-apes",
+        "computationStrategy": "georegion_match_on_point"
       }
     });
 

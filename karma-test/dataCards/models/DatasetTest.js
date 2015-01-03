@@ -10,7 +10,8 @@ describe("Dataset model", function() {
     rowDisplayUnit: 'bar',
     ownerId: 'fdsa-asdf',
     updatedAt: '2004-05-20T17:42:55+00:00',
-    columns: []
+    columns: [],
+    version: '0.1'
   };
 
   beforeEach(function() {
@@ -107,21 +108,21 @@ describe("Dataset model", function() {
       {
         title: 'title',
         name: 'normal_column',
-        logicalDatatype: 'category',
+        cardinality: 1000,
         physicalDatatype: 'number',
         importance: 1
       },
       {
         title: 'title',
         name: ':system_column',
-        logicalDatatype: 'category',
+        cardinality: 1000,
         physicalDatatype: 'number',
         importance: 1
       },
       {
         title: 'title',
         name: 'still_a_:normal_column:',
-        logicalDatatype: 'category',
+        cardinality: 1000,
         physicalDatatype: 'number',
         importance: 1
       }

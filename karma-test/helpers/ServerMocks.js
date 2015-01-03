@@ -27,7 +27,8 @@
       "number": [
         {
           "type": "choropleth",
-          "onlyIf": "isGeoregionComputed"
+          "onlyIf": "isGeoregionComputed",
+          "defaultIf": "isGeoregionComputed"
         },
         {
           "type": "column",

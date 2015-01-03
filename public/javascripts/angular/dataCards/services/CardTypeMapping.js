@@ -2,17 +2,12 @@
   'use strict';
 
   function CardTypeMapping(ServerConfig, $exceptionHandler, $log) {
-
     function computeAvailableCardTypesInPreferenceOrder(candidateCardTypes, column) {
-      function visit(node, stringCallback, objectCallback) {
-        if (_.isString(node)) {
-          return stringCallback(node);
-        } else {
-          return objectCallback(node);
-        }
-      }
+
+      candidateCardTypes = _.map(candidateCardTypes, normalizeVisualizationDefinition);
 
       function computeExpressionValue(expression) {
+        //TODO isLowCardinality = (currentExpr) && cardinality != rowCount
         var values = {
           isHighCardinality:   column.cardinality >= getCardTypeMapping().cardinality.threshold,
           isLowCardinality:    column.cardinality < getCardTypeMapping().cardinality.threshold &&
@@ -33,36 +28,24 @@
       // Output should be in this order:
       // [ <all isDefault = true>, <all without defaultIf>, <all isDefault = false> ]
       var defaultTypesFirst = _.sortBy(candidateCardTypes, function(candidateCardType) {
-        return visit(candidateCardType, function() {
-          // String: Not explicitly default.
+        if (candidateCardType.hasOwnProperty('defaultIf')) {
+          return computeExpressionValue(candidateCardType.defaultIf) ? 0 : 2;
+        } else {
           return 1;
-        },
-        function(object) {
-          if (object.hasOwnProperty('defaultIf')) {
-            return  computeExpressionValue(object.defaultIf) ? 0 : 2;
-          } else {
-            return 1;
-          }
-        });
+        }
       });
 
       // Filter out card types whose onlyIf evaluates to false.
-      return _.compact(_.map(defaultTypesFirst, function(candidateCardType) {
-        return visit(
-          candidateCardType,
-          _.identity, //string case
-          function(object) {
-            if (object.hasOwnProperty('onlyIf')) {
-              if(computeExpressionValue(object.onlyIf)) {
-                return object.type;
-              } else {
-                return null;
-              }
-            } else {
-              return object.type;
-            }
-          });
-      }));
+      var onlyEnabledTypes = _.filter(defaultTypesFirst, function(candidateCardType) {
+        if (candidateCardType.hasOwnProperty('onlyIf')) {
+          return computeExpressionValue(candidateCardType.onlyIf);
+        } else {
+          return true;
+        }
+      });
+
+      // We're ultimately only interested in the visualization type only.
+      return _.pluck(onlyEnabledTypes, 'type');
     }
 
     function getCardTypesForColumnInPreferenceOrder(column) {
@@ -99,6 +82,17 @@
       return cardTypes;
 
     }
+
+    // For convenience, visualizations can be defined in card-type-mapping.json as a plain string, instead of as an object
+    // with [type, onlyIf, defaultIf] keys. This normalizes strings into the object representation (objects with just a type key).
+    function normalizeVisualizationDefinition(definition) {
+      if (_.isString(definition)) {
+        return { type: definition };
+      } else {
+        return definition;
+      }
+    }
+
 
     function warnOnceOnUnknownPhysicalType(physicalDatatype) {
 

@@ -162,9 +162,6 @@
 
     function modelIsCustomizable(cardModel) {
       var cardType = cardModel.getCurrentValue('cardType');
-      if (_.isUndefined(cardType)) {
-        throw new Error('In order to determine customizability, card must have a defined cardType');
-      }
       return CARD_TYPES.hasOwnProperty(cardType) &&
              CARD_TYPES[cardType].customizable;
     }

@@ -4,6 +4,7 @@ describe('CardLayout directive', function() {
   var NUM_CARDS = 10;
 
   var AngularRxExtensions;
+  var CardTypeMapping;
   var Card;
   var mockWindowStateService = null;
   var mockDownloadService;
@@ -56,7 +57,8 @@ describe('CardLayout directive', function() {
         getData: function(){ return $q.when([]);},
         getChoroplethRegions: function() { return {then: _.noop}; },
         getRowCount: function() { return {then: _.noop}; },
-        getTimelineDomain: function() { return {then: _.noop}; }
+        getTimelineDomain: function() { return {then: _.noop}; },
+        getSampleData: function() { return {then: _.noop}; }
       };
       $provide.value('CardDataService', mockCardDataService);
       $provide.constant('ServerConfig', mockServerConfig);
@@ -90,6 +92,7 @@ describe('CardLayout directive', function() {
     serverMocks = $injector.get('serverMocks');
     rootScope = $injector.get('$rootScope');
     Model = $injector.get('Model');
+    CardTypeMapping = $injector.get('CardTypeMapping');
     Card = $injector.get('Card');
     Page = $injector.get('Page');
     AngularRxExtensions = $injector.get('AngularRxExtensions');
@@ -129,33 +132,49 @@ describe('CardLayout directive', function() {
         name: 'statBar_column',
         title: 'test column title',
         description: 'test column description',
-        logicalDatatype: 'amount',
+        cardinality: 1000,
         physicalDatatype: 'number',
         importance: 2
       },
       pointMap_column: {
         name: 'pointMap_column',
-        logicalDatatype: 'location',
+        cardinality: 1000,
         physicalDatatype: 'point'
       },
       choropleth_column: {
         name: 'choropleth_column',
-        logicalDatatype: 'location',
+        cardinality: 1000,
         physicalDatatype: 'number',
+        computationStrategy: 'georegion_match_on_point',
         shapefile: 'fake-shap'
       },
       timeline_column: {
         name: 'timeline_column',
-        logicalDatatype: 'time',
-        physicalDatatype: 'number'
+        cardinality: 1000,
+        physicalDatatype: 'floating_timestamp'
       },
       search_column: {
         name: 'search_column',
-        logicalDatatype: 'text',
+        cardinality: 1000,
+        physicalDatatype: 'text'
+      },
+      testField1: {
+        name: 'testField1',
+        cardinality: 1000,
+        physicalDatatype: 'text'
+      },
+      testField2: {
+        name: 'testField2',
+        cardinality: 1000,
+        physicalDatatype: 'text'
+      },
+      testField3: {
+        name: 'testField3',
+        cardinality: 1000,
         physicalDatatype: 'text'
       },
       '*': {
-        logicalDatatype: '*',
+        cardinality: 1000,
         physicalDatatype: '*'
       }
     });
@@ -248,6 +267,7 @@ describe('CardLayout directive', function() {
 
     var cardGenerator = function(pageModel) {
       return _.map(cards, function(card, i) {
+        var column = pageModel.getCurrentValue('dataset').getCurrentValue('columns')[card.fieldName];
         var c = new Card(pageModel, card.fieldName || 'fieldname' + i);
         c.set('expanded', !!card.expanded);
         // Add required fields so this will validate
@@ -255,6 +275,7 @@ describe('CardLayout directive', function() {
         c.set('cardCustomStyle', {});
         c.set('expandedCustomStyle', {});
         c.set('displayMode', 'figures');
+        c.set('cardType', CardTypeMapping.defaultVisualizationForColumn(column));
         return c;
       });
     };
@@ -789,9 +810,9 @@ describe('CardLayout directive', function() {
       it('should trade positions when dragged over another card.', function() {
         var cl = createCardLayout();
 
-        var card1 = new Card(cl.pageModel, 'testField1');
-        var card2 = new Card(cl.pageModel, 'testField2');
-        var card3 = new Card(cl.pageModel, 'testField3');
+        var card1 = new Card(cl.pageModel, 'search_column');
+        var card2 = new Card(cl.pageModel, 'search_column');
+        var card3 = new Card(cl.pageModel, 'timeline_column');
         var card4 = new Card(cl.pageModel, '*');
         var cards = [ card1, card2, card3, card4 ];
 
@@ -874,7 +895,7 @@ describe('CardLayout directive', function() {
       });
 
       it('should assign the correct card size when dragged over a placeholder', function() {
-        var cl = createLayoutWithCards([{}, {fieldName: '*'}]);
+        var cl = createLayoutWithCards([{fieldName: 'statBar_column'}, {fieldName: '*'}]);
         cl.outerScope.editMode = true;
         cl.outerScope.$apply();
 

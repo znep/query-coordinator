@@ -232,7 +232,7 @@
 
               var sourceColumn = null;
               _.each(columns, function(column) {
-                if (column.physicalDatatype === 'point' && column.logicalDatatype === 'location') {
+                if (column.physicalDatatype === 'point') { //TODO Any case where we need to check for something else in addition?
                   sourceColumn = column.name;
                 }
               });

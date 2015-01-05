@@ -28,6 +28,8 @@ $fill-opacity: 0.5
   position: absolute
   top: 0
   z-index: 5
+  // Completely invisible elements in IE9 don't receive pointer events
+  background-color: rgba(0, 0, 0, 0)
 
 .timeline-chart-highlight-container
   position: absolute

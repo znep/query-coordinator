@@ -50,6 +50,7 @@ class SocrataCookieStore
     :domain       => nil,
     :path         => "/",
     :expire_after => nil,
+    :secure       => true,
     :httponly     => true
   }.freeze
 

@@ -316,7 +316,7 @@
 
         function filterChartDataByInterval(chartData, offsetX, dimensions, startDate, endDate) {
 
-          var highlightData
+          var highlightData;
           var i;
           var startOffsetIndex = 0;
           var endOffsetIndex = 1;
@@ -1710,7 +1710,7 @@
                 attr('data-aggregate-filtered', value.filtered).
                 attr('data-flyout-label', formatDateLabel(startDate, true)).
                 css({
-                  left: Math.floor(d3XScale(startDate)) - halfLabelWidth + halfVisualizedDatumWidth,
+                  left: Math.floor(d3XScale(startDate)) - halfLabelWidth + halfVisualizedDatumWidth
                 }).show();
               jqueryChartElement.addClass('dimmed');
 

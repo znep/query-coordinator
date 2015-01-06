@@ -243,7 +243,7 @@
             function(dataset, fieldName, columns) {
 
               if (_.isEmpty(columns)) {
-                return;
+                return Rx.Observable.never();
               }
 
               dataRequests.onNext(1);

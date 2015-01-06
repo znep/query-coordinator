@@ -376,7 +376,8 @@ b
           white-space: normal
           line-height: 1em
 
-        &:hover, &.selected
+        &:hover, &.selected, &:focus
+          text-decoration: none
           &.type-all
             background-color: #666
           &.type-datasets
@@ -1503,7 +1504,8 @@ b
       height: 9.6em
       width: 9em
 
-      &.selected, &:hover
+      &.selected, &:hover, &:focus
+        text-decoration: none
         background-color: #666
 
       .icon

@@ -10,6 +10,9 @@
       "floating_timestamp": [
         "timeline"
       ],
+      "fixed_timestamp": [
+        "timeline"
+      ],
       "geo_entity": [
         "feature"
       ],

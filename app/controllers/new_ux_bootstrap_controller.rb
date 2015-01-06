@@ -93,6 +93,14 @@ class NewUxBootstrapController < ActionController::Base
   # An arbitrary number of cards to create, if there are that many columns available
   MAX_NUMBER_OF_CARDS = 10
 
+  # Exclude text search cards for columns that have a cardinality equal to the row count.
+  # TODO This is an odd rule that needs to be clarified.
+  def is_interesting_visualization(column, card_type, dataset_size)
+    is_useless_search = card_type == 'search' && dataset_size == column[:cardinality] && column[:physicalDatatype] == 'text'
+
+    return !is_useless_search
+  end
+
   def create_new_ux_page(new_dataset_metadata)
     # Keep track of the types of cards we added, so we can give a spread
     added_card_types = Set.new
@@ -101,7 +109,7 @@ class NewUxBootstrapController < ActionController::Base
     cards = new_dataset_metadata[:columns].map do |column|
       unless Phidippides::SYSTEM_COLUMN_ID_REGEX.match(column[:name])
         card_type = card_type_for(column, dataset_size)
-        if card_type
+        if card_type && is_interesting_visualization(column, card_type, dataset_size)
           card = PageMetadataManager::CARD_TEMPLATE.deep_dup
           card.merge!(
             'fieldName' => column[:name],

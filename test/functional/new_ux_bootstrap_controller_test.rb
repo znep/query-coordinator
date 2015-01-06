@@ -172,7 +172,7 @@ class NewUxBootstrapControllerTest < ActionController::TestCase
 
         should 'redirect to new page with cards for the first 10 non-system columns' do
           connection_stub = stub.tap do |stub|
-            stub.stubs(get_request: '[{"count_0": 1234}]',
+            stub.stubs(get_request: '[{"count_0": "1234"}]',
                        reset_counters: {requests: {}, runtime: 0})
           end
           CoreServer::Base.stubs(connection: connection_stub)
@@ -240,7 +240,7 @@ class NewUxBootstrapControllerTest < ActionController::TestCase
 
         should 'create page omitting column charts where cardinality == dataset_size' do
           connection_stub = stub.tap do |stub|
-            stub.stubs(get_request: '[{"count_0": 34}]',
+            stub.stubs(get_request: '[{"count_0": "34"}]',
                        reset_counters: {requests: {}, runtime: 0})
           end
           CoreServer::Base.stubs(connection: connection_stub)
@@ -266,7 +266,7 @@ class NewUxBootstrapControllerTest < ActionController::TestCase
 
         should 'redirect to dataset page with error if error while creating page' do
           connection_stub = stub.tap do |stub|
-            stub.stubs(get_request: '[{"count_0": 1234}]',
+            stub.stubs(get_request: '[{"count_0": "1234"}]',
                        reset_counters: {requests: {}, runtime: 0})
           end
           CoreServer::Base.stubs(connection: connection_stub)

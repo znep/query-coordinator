@@ -496,9 +496,9 @@
     // Flyout for the 'customize' button, for when it's disabled.
     FlyoutService.register('cards-edit-disabled', function() {
       return '<div class="flyout-title">' + [
-        'Customizing while a card is expanding',
-        'is coming soon. For now, collapse the',
-        'expanded card to customize.'].join('<br/>') +
+        'To enter customization mode:',
+        'Collapse the big card using the',
+        'arrows in its top right corner.'].join('<br/>') +
         '</div>';
     });
 

@@ -49,7 +49,8 @@ angular.module('dataCards.directives').directive('cardVisualizationColumnChart',
         aggregationObservable,
         function(fieldName, dataset, whereClauseFragment, aggregationData) {
           dataRequests.onNext(1);
-          var dataPromise = CardDataService.getData(fieldName, dataset.id, whereClauseFragment, aggregationData);
+          var columnData = _.defaults({}, dataset.getCurrentValue('columns')[fieldName]);
+          var dataPromise = CardDataService.getData(fieldName, dataset.id, whereClauseFragment, aggregationData, { namePhysicalDatatype: columnData.physicalDatatype });
           dataPromise.then(
             function(res) {
               // Ok
@@ -70,7 +71,8 @@ angular.module('dataCards.directives').directive('cardVisualizationColumnChart',
         aggregationObservable,
         function(fieldName, dataset, whereClauseFragment, nonBaseFilterApplied, aggregationData) {
           dataRequests.onNext(1);
-          var dataPromise = CardDataService.getData(fieldName, dataset.id, whereClauseFragment, aggregationData);
+          var columnData = _.defaults({}, dataset.getCurrentValue('columns')[fieldName]);
+          var dataPromise = CardDataService.getData(fieldName, dataset.id, whereClauseFragment, aggregationData, { namePhysicalDatatype: columnData.physicalDatatype });
           dataPromise.then(
             function(res) {
               // Ok
@@ -132,7 +134,7 @@ angular.module('dataCards.directives').directive('cardVisualizationColumnChart',
       });
 
       $scope.$on('column-chart:datum-clicked', function(event, datum) {
-        var wantsFilterToNull = !_.isString(datum.name);
+        var wantsFilterToNull = !_.isString(datum.name) && !_.isNumber(datum.name);
 
         var isFilteringOnClickedDatum = _.any($scope.model.getCurrentValue('activeFilters'), function(filter) {
           if (filter instanceof Filter.BinaryOperatorFilter) {

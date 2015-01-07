@@ -141,33 +141,38 @@
     }).join(' ');
   };
 
-  /* Adapted from http://blog.mastykarz.nl/measuring-the-length-of-a-string-in-pixels-using-javascript/ */
-  String.prototype.visualSize = function(fontSize) {
-    var $ruler = $('#ruler');
-    var dimensions;
+  var sizeMixin = {
+    /* Adapted from http://blog.mastykarz.nl/measuring-the-length-of-a-string-in-pixels-using-javascript/ */
+    visualSize: function(fontSize) {
+      var $ruler = $('#ruler');
+      var dimensions;
 
-    if ($ruler.length < 1) {
-      $('body').append('<span class="ruler" id="ruler"></span>');
-      $ruler = $('#ruler');
+      if ($ruler.length < 1) {
+        $('body').append('<span class="ruler" id="ruler"></span>');
+        $ruler = $('#ruler');
+      }
+      if (!fontSize) {
+        fontSize = '';
+      }
+      $ruler.css('font-size', fontSize);
+      $ruler.text(this + '');
+      dimensions = {width: $ruler.width(), height: $ruler.height()};
+      $ruler.remove();
+
+      return dimensions;
+    },
+
+    visualHeight: function(fontSize) {
+      return this.visualSize(fontSize).height;
+    },
+
+    visualLength: function(fontSize) {
+      return this.visualSize(fontSize).width;
     }
-    if (!fontSize) {
-      fontSize = '';
-    }
-    $ruler.css('font-size', fontSize);
-    $ruler.text(this + '');
-    dimensions = { width: $ruler.width(), height: $ruler.height() };
-    $ruler.remove();
-
-    return dimensions;
   };
 
-  String.prototype.visualHeight = function(fontSize) {
-    return this.visualSize(fontSize).height;
-  };
-
-  String.prototype.visualLength = function(fontSize) {
-    return this.visualSize(fontSize).width;
-  };
+  _.mixin(String.prototype, sizeMixin);
+  _.mixin(Number.prototype, sizeMixin);
 
   $.relativeToPx = function(rems) {
     var $div = $(document.createElement('div')).css('width', rems).appendTo(document.body);
@@ -184,7 +189,8 @@
 
   $.capitalizeWithDefault = function(value, placeHolder) {
     placeHolder = placeHolder || '(Blank)';
-    return $.isBlank(value) ? placeHolder : value.capitalizeEachWord();
+    if ($.isNumeric(value)) return value;
+    return ($.isBlank(value) || !value.capitalizeEachWord) ? placeHolder : value.capitalizeEachWord();
   };
   /*
    * flyout is an internal Socrata utility for creating flyouts.

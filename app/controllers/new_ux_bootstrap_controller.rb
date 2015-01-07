@@ -4,6 +4,11 @@ class NewUxBootstrapController < ActionController::Base
 
   before_filter :hook_auth_controller
 
+  class << self
+    attr_accessor :card_type_mapping
+  end
+  self.card_type_mapping = CardTypeMapping.new
+
   def bootstrap
     # Check to make sure they have permission to create a page
     return render :json => {
@@ -86,7 +91,6 @@ class NewUxBootstrapController < ActionController::Base
 
   private
 
-  include CardTypeMapping
   require 'set'
   require 'json'
 
@@ -108,7 +112,7 @@ class NewUxBootstrapController < ActionController::Base
 
     cards = new_dataset_metadata[:columns].map do |column|
       unless Phidippides::SYSTEM_COLUMN_ID_REGEX.match(column[:name])
-        card_type = card_type_for(column, dataset_size)
+        card_type = self.class.card_type_mapping.card_type_for(column, dataset_size)
         if card_type && is_interesting_visualization(column, card_type, dataset_size)
           card = PageMetadataManager::CARD_TEMPLATE.deep_dup
           card.merge!(

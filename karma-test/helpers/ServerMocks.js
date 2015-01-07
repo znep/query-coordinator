@@ -5,16 +5,16 @@
   var CARD_TYPE_MAPPING = {
     "map": {
       "boolean": [
-        "column"
+        { "type": "column" }
       ],
       "floating_timestamp": [
-        "timeline"
+        { "type": "timeline" }
       ],
       "fixed_timestamp": [
-        "timeline"
+        { "type": "timeline" }
       ],
       "geo_entity": [
-        "feature"
+        { "type": "feature" }
       ],
       "money": [
         {
@@ -25,7 +25,7 @@
           "type": "numberHistogram",
           "defaultIf": "isHighCardinality"
         },
-        "search"
+        { "type": "search" }
       ],
       "number": [
         {
@@ -41,20 +41,20 @@
           "type": "numberHistogram",
           "defaultIf": "isHighCardinality"
         },
-        "search"
+        { "type": "search" }
       ],
       "point": [
-        "feature"
+        { "type": "feature" }
       ],
       "text": [
         {
           "type": "column",
           "defaultIf": "isLowCardinality"
         },
-        "search"
+        { "type": "search" }
       ],
       "*": [
-        "table"
+        { "type": "table" }
       ]
     },
     "cardinality": {

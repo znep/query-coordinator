@@ -306,7 +306,7 @@ class NewUxBootstrapControllerTest < ActionController::TestCase
   end
 
   def columns_for_cardtypes(physical_datatypes, prefix)
-    cardinality_threshold = CardTypeMapping::CARD_TYPE_MAPPING['cardinality']['threshold']
+    cardinality_threshold = CardTypeMapping::DEFAULT_CARD_TYPE_MAPPING['cardinality']['threshold']
     counter = 0
     low_cardinality_version = physical_datatypes.map do |physical_type|
       counter += 1
@@ -322,7 +322,7 @@ class NewUxBootstrapControllerTest < ActionController::TestCase
   end
 
   def mock_dataset_metadata_with_uninteresting_column_chart
-    cardinality_threshold = CardTypeMapping::CARD_TYPE_MAPPING['cardinality']['threshold']
+    cardinality_threshold = CardTypeMapping::DEFAULT_CARD_TYPE_MAPPING['cardinality']['threshold']
     cardinality_equal_to_dataset_size = [{
       title: 'cardinality equal to dataset size',
       name: 'cardinality_equals_row_count',
@@ -363,7 +363,7 @@ class NewUxBootstrapControllerTest < ActionController::TestCase
       title: 'below min cardinality',
       name: 'below',
       physicalDatatype: 'number',
-      cardinality: CardTypeMapping::CARD_TYPE_MAPPING['cardinality']['min'] - 1
+      cardinality: CardTypeMapping::DEFAULT_CARD_TYPE_MAPPING['cardinality']['min'] - 1
     }]
     no_cardinality = [{
       title: 'no cardinality',

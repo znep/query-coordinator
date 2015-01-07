@@ -4,10 +4,7 @@
   function CardTypeMapping(ServerConfig, $exceptionHandler, $log) {
     function computeAvailableCardTypesInPreferenceOrder(candidateCardTypes, column) {
 
-      candidateCardTypes = _.map(candidateCardTypes, normalizeVisualizationDefinition);
-
       function computeExpressionValue(expression) {
-        //TODO isLowCardinality = (currentExpr) && cardinality != rowCount
         var values = {
           isHighCardinality:   column.cardinality >= getCardTypeMapping().cardinality.threshold,
           isLowCardinality:    column.cardinality < getCardTypeMapping().cardinality.threshold &&
@@ -44,7 +41,7 @@
         }
       });
 
-      // We're ultimately only interested in the visualization type only.
+      // We're ultimately only interested in the visualization type.
       return _.pluck(onlyEnabledTypes, 'type');
     }
 
@@ -82,17 +79,6 @@
       return cardTypes;
 
     }
-
-    // For convenience, visualizations can be defined in card-type-mapping.json as a plain string, instead of as an object
-    // with [type, onlyIf, defaultIf] keys. This normalizes strings into the object representation (objects with just a type key).
-    function normalizeVisualizationDefinition(definition) {
-      if (_.isString(definition)) {
-        return { type: definition };
-      } else {
-        return definition;
-      }
-    }
-
 
     function warnOnceOnUnknownPhysicalType(physicalDatatype) {
 

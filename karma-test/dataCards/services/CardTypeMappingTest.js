@@ -63,7 +63,7 @@
       describe('for a defined physical datatype', function() {
         describe('with only one visualization defined with no onlyIf conditions', function() {
           it('should return the single visualization', function() {
-            overrideMap({ testPT: [ 'testViz' ] });
+            overrideMap({ testPT: [ { type: 'testViz' } ] });
             expect(CardTypeMapping.availableVisualizationsForColumn(createLowCardinalityColumn('testPT'))).to.deep.equal(['testViz']);
           });
         });
@@ -165,14 +165,14 @@
         describe('with multiple defined visualizations', function() {
           describe('when all visualizations have no onlyIf', function() {
             it('should return all visualizations', function() {
-              overrideMap({ testPT: [ 'testViz1', 'testViz2', { type: 'testViz3', defaultIf: 'isHighCardinality' } ] });
+              overrideMap({ testPT: [ { type: 'testViz1' }, { type: 'testViz2'}, { type: 'testViz3', defaultIf: 'isHighCardinality' } ] });
               expect(CardTypeMapping.availableVisualizationsForColumn(createLowCardinalityColumn('testPT'))).to.deep.equal(['testViz1', 'testViz2', 'testViz3']);
             });
           });
           describe('when only some visualizations have an onlyIf evaluating to true', function() {
             it('should return the visualizations which are not excluded', function() {
               overrideMap({ testPT: [
-                'testViz1',
+                { type: 'testViz1' },
                 { type: 'testViz2', onlyIf: 'isHighCardinality' },
                 { type: 'testViz3', onlyIf: 'isLowCardinality' },
                 { type: 'testViz4', defaultIf: 'isHighCardinality' }
@@ -196,7 +196,7 @@
       });
       describe('for an undefined physical datatype', function() {
         it('should return an empty array', function() { // I'm unconvinced by this desired behavior, maybe it should throw?...
-          overrideMap({ testPT: [ 'testViz' ] });
+          overrideMap({ testPT: [ { type: 'testViz' } ] });
           expect(CardTypeMapping.availableVisualizationsForColumn(createLowCardinalityColumn('invalidDatatype'))).to.deep.equal([]);
         });
       });
@@ -206,7 +206,7 @@
       describe('for a defined physical datatype', function() {
         describe('with only one visualization defined with no defaultIf conditions', function() {
           it('should return the single visualization', function() {
-            overrideMap({ testPT: [ 'testViz' ] });
+            overrideMap({ testPT: [ { type: 'testViz' } ] });
             expect(CardTypeMapping.defaultVisualizationForColumn(createLowCardinalityColumn('testPT'))).to.equal('testViz');
           });
         });
@@ -321,7 +321,7 @@
       });
       describe('for an undefined physical datatype', function() {
         it('should return undefined', function() {
-          overrideMap({ testPT: [ 'testViz' ] });
+          overrideMap({ testPT: [ { type: 'testViz' } ] });
           expect(CardTypeMapping.defaultVisualizationForColumn(createLowCardinalityColumn('invalidDatatype'))).to.equal(undefined);
         });
       });
@@ -330,15 +330,15 @@
 
     describe('visualizationSupportedForColumn', function() {
       it('should return false for an unsupported physical datatype', function() {
-          overrideMap({ testPT: [ 'column' ] });
+          overrideMap({ testPT: [ { type: 'column' } ] });
           expect(CardTypeMapping.visualizationSupportedForColumn(createLowCardinalityColumn('lol_wrong'))).to.equal(false);
       });
       it('should return false for an unsupported visualization', function() {
-          overrideMap({ testPT: [ 'pie_charts_yeah_right' ] });
+          overrideMap({ testPT: [ { type: 'pie_charts_yeah_right' } ] });
           expect(CardTypeMapping.visualizationSupportedForColumn(createLowCardinalityColumn('testPT'))).to.equal(false);
       });
       it('should return true for a supported visualization', function() {
-          overrideMap({ testPT: [ 'column' ] });
+          overrideMap({ testPT: [ { type: 'column' } ] });
           expect(CardTypeMapping.visualizationSupportedForColumn(createLowCardinalityColumn('testPT'))).to.equal(true);
       });
     });

@@ -14,7 +14,7 @@ describe('Card model', function() {
     ServerConfig.setup({
       oduxCardTypeMapping: {
         'map': {
-          'number': [ 'column' ]
+          'number': [ { type: 'column' } ]
         }
       }
     });

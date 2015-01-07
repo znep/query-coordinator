@@ -1,29 +1,29 @@
 # Provides functions mapping a given column to a card type.
-module CardTypeMapping
+class CardTypeMapping
 
-  CARD_TYPE_MAPPING = JSON.parse(IO.read(
+  attr_reader :config
+
+  DEFAULT_CARD_TYPE_MAPPING = JSON.parse(IO.read(
     File.join(Rails.root, 'lib', 'data', 'card-type-mapping.json')
   ))
 
-  # For convenience, visualizations can be defined in card-type-mapping.json as a plain string,
-  # instead of as an object with [type, onlyIf, defaultIf] keys. This normalizes strings into the
-  # object representation (objects with just a type key).
-  CARD_TYPE_MAPPING['map'].each do |physicalDatatype, visualization_definitions|
-    visualization_definitions.map! do |visualization_definition|
-      if visualization_definition.is_a?(String)
-        { 'type' => visualization_definition }
-      else
-        visualization_definition
-      end
-    end
+  # TODO document the format.
+  def initialize(config = DEFAULT_CARD_TYPE_MAPPING)
+    @config = config.with_indifferent_access
+    raise 'Configuration object must have a "map" key' unless @config.include?(:map)
+    raise 'Configuration object must have an indexable object under the "map" key' unless @config[:map].respond_to?(:[])
+    raise 'Configuration object must have a "cardinality" key' unless @config.include?(:cardinality)
+    raise 'Configuration object cardinality configuration must have the "threshold" key' unless @config[:cardinality].include?(:threshold)
+    raise 'Configuration object cardinality configuration must have the "min" key' unless @config[:cardinality].include?(:min)
   end
 
   # Given dataset column metadata and a dataset size (row count), returns
   # a sensible default cardType or nil if none cound be determined
   # (unsupported physical datatype, all visualizations did not pass onlyIf,
   # column is below minimum cardinality).
+  #TODO rename to column_metadata
   def card_type_for(column, dataset_size=nil)
-    mapping = CARD_TYPE_MAPPING['map'].try(:[], column[:physicalDatatype])
+    mapping = config[:map][column[:physicalDatatype]]
 
     unless mapping
       Rails.logger.error(
@@ -31,11 +31,12 @@ module CardTypeMapping
       return nil
     end
 
-    cardinality_min = CARD_TYPE_MAPPING['cardinality']['min']
+    cardinality_min = config[:cardinality][:min]
+    #TODO put in config.
     return nil unless column.fetch(:cardinality, FALLBACK_CARDINALITY) >= cardinality_min
 
     # Get rid of visualizations that fail their onlyIf check.
-    enabled_visualizations = mapping.keep_if do |visualization_definition|
+    enabled_visualizations = mapping.select do |visualization_definition|
       visualization_type_enabled(column, dataset_size, visualization_definition)
     end
 
@@ -46,14 +47,15 @@ module CardTypeMapping
     # 2) no defaultIf expression specified.
     # 3) defaultIf evaluates to false.
     enabled_visualizations.sort_by! do |visualization_definition|
+      # TODO factor out like onlyIf
       if visualization_definition.include?('defaultIf')
         expression_holds = compute_expression_value_for_column(
           column,
           dataset_size,
           visualization_definition['defaultIf'])
 
-        # If the condition holds, treat as top priority.
-        # Otherwise, lowest priority.
+        # If the condition holds, treat as top priority (0).
+        # Otherwise, lowest priority (2).
         expression_holds ? 0 : 2
       else
         1 # No condition specified. Goes in middle of priority.
@@ -65,21 +67,32 @@ module CardTypeMapping
   end
 
   private
-  FALLBACK_CARDINALITY = 9007199254740992; # (max safe js int).
+
+  def mapping
+    config['map']
+  end
+
+  def cardinality_min
+    config['cardinality']['min']
+  end
+
+  def cardinality_threshold
+    config['cardinality']['threshold']
+  end
+
+  FALLBACK_CARDINALITY = 9007199254740992 # (max safe js int).
 
   def visualization_type_enabled(column, dataset_size, visualization_definition)
-    
     if visualization_definition.include?('onlyIf')
-      return compute_expression_value_for_column(column, dataset_size, visualization_definition['onlyIf'])
+      compute_expression_value_for_column(column, dataset_size, visualization_definition['onlyIf'])
     else
-      return true
+      true
     end
-
   end
 
   def compute_expression_value_for_column(column, dataset_size, expression)
-    cardinality_threshold = CARD_TYPE_MAPPING['cardinality']['threshold']
-    cardinality_min = CARD_TYPE_MAPPING['cardinality']['min']
+    cardinality_threshold = config[:cardinality][:threshold]
+    cardinality_min = config[:cardinality][:min]
 
     column_cardinality = column.fetch(:cardinality, FALLBACK_CARDINALITY)
     column_computation_strategy = column[:computationStrategy]
@@ -88,12 +101,10 @@ module CardTypeMapping
       when 'isHighCardinality'
         column_cardinality >= cardinality_threshold || dataset_size == column_cardinality
       when 'isLowCardinality'
-        (column_cardinality < cardinality_threshold &&
-         column_cardinality >= cardinality_min) &&
-        (dataset_size != column_cardinality)
+        (cardinality_min...cardinality_threshold).include?(column_cardinality) &&
+        column_cardinality != dataset_size
       when 'isGeoregionComputed'
-        (column_computation_strategy === 'georegion_match_on_string' ||
-         column_computation_strategy === 'georegion_match_on_point')
+        %w(georegion_match_on_string georegion_match_on_point).include?(column_computation_strategy)
       else
         raise "Unknown expression value in card-type-mapping.json: #{expression} for physicalDatatype: #{column[:physicalDatatype]}"
     end

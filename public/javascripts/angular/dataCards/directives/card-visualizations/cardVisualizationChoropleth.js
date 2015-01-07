@@ -76,49 +76,7 @@
         var dataResponseCount = dataResponses.scan(0, function(acc, x) { return acc + 1; });
         var geojsonRegionsData;
 
-        function getShapefileFeatureHumanReadablePropertyName(regions, shapefile) {
-
-          var p = regions.features[0].properties;
-          // Chicago
-          if (p.hasOwnProperty('community') && p.hasOwnProperty('area_numbe')) {
-            return 'community';
-          }
-          // Chicago, SF or Philly (zillow?)
-          if (p.hasOwnProperty('name') && p.hasOwnProperty('city') && p.hasOwnProperty('county') && p.hasOwnProperty('state')) {
-            return 'name';
-          }
-          // Chicago
-          if (p.hasOwnProperty('alderman') && p.hasOwnProperty('hall_offic') && p.hasOwnProperty('ward')) {
-            return 'ward';
-          }
-          // Chicago
-          if (p.hasOwnProperty('zip')) {
-            return 'zip';
-          }
-          // NYC
-          if (p.hasOwnProperty('borocd')) {
-            return 'borocd';
-          }
-          // SF
-          if (p.hasOwnProperty('numbertext') && p.hasOwnProperty('supdist') && p.hasOwnProperty('supervisor') && p.hasOwnProperty('supname')) {
-            return 'supdist';
-          }
-          // SF
-          if (p.hasOwnProperty('city') && p.hasOwnProperty('district') && p.hasOwnProperty('secondary')) {
-            return 'district';
-          }
-          // NYS
-          if (p.hasOwnProperty('countyns') && p.hasOwnProperty('funcstat') && p.hasOwnProperty('namelsad') && p.hasOwnProperty('statefp')) {
-            return 'namelsad';
-          }
-          // NYS
-          if (p.hasOwnProperty('abbrev') && p.hasOwnProperty('businessph') && p.hasOwnProperty('city') && p.hasOwnProperty('name')) {
-            return 'name';
-          }
-          // Philly
-          if (p.hasOwnProperty('dist_num') && p.hasOwnProperty('dist_numc') && p.hasOwnProperty('div_code')) {
-            return 'dist_numc';
-          }
+        function getShapefileFeatureHumanReadablePropertyName(shapefile) {
 
           // This mapping provides the shapefileHumanReadablePropertyName for a given shapefile 4x4.
           // This is a temporary measure until this information can be provided by the metadata service.
@@ -194,13 +152,11 @@
             'tbvr-2deq': 'geoid10'
           };
 
-          if (shapefile) {
+          if (shapefile && shapefileFeatureNameMapping.hasOwnProperty(shapefile)) {
             return shapefileFeatureNameMapping[shapefile];
           }
 
-          $log.error('Could not determine shapeFileHumanReadablePropertyName for shapeFile "{0}".'.format(shapefile));
-
-          return '';
+          return false;
 
         }
 
@@ -383,7 +339,7 @@
                 throw new Error('Could not match fieldName to human-readable column name.');
               }
 
-              var shapefileFeatureHumanReadablePropertyName = getShapefileFeatureHumanReadablePropertyName(geojsonRegions, column.shapefile);
+              var shapefileFeatureHumanReadablePropertyName = getShapefileFeatureHumanReadablePropertyName(column.shapefile);
 
               if (!shapefileFeatureHumanReadablePropertyName) {
                 $log.error('Unable to determine shapefileFeatureHumanReadablePropertyName for shapefile: {0}'.format(column.shapefile));

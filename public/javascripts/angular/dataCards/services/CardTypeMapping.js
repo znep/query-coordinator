@@ -103,8 +103,7 @@
 
     /**
      *
-     * Determines whether or not a visualization exists for the intersection
-     * of the column's physical and logical datatypes.
+     * Returns the supported visualizations for a given column.
      *
      */
 
@@ -114,8 +113,7 @@
 
     /**
      *
-     * Returns the default visualization type for the intersection of the
-     * column's physical and logical datatypes.
+     * Returns the default visualization type for a given column.
      *
      */
 
@@ -125,13 +123,14 @@
 
     /**
      *
-     * Determines whether or not a visualization exists for the intersection
-     * of the column's physical and logical datatypes.
+     * Determines whether or not a supported visualization exists for a given column.
      *
      */
 
     function visualizationSupportedForColumn(column) {
-      return CARD_TYPES.hasOwnProperty(defaultVisualizationForColumn(column));
+      return _.any(availableVisualizationsForColumn(column), function(visualization) {
+        return CARD_TYPES.hasOwnProperty(visualization);
+      });
     }
 
     /**

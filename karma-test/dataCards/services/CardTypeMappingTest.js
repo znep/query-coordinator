@@ -337,8 +337,8 @@
           overrideMap({ testPT: [ { type: 'pie_charts_yeah_right' } ] });
           expect(CardTypeMapping.visualizationSupportedForColumn(createLowCardinalityColumn('testPT'))).to.equal(false);
       });
-      it('should return true for a supported visualization', function() {
-          overrideMap({ testPT: [ { type: 'column' } ] });
+      it('should return true if at least one visualization is supported', function() {
+          overrideMap({ testPT: [ { type: 'unsupported' }, { type: 'column' }, { type: 'also_unsupported' } ] });
           expect(CardTypeMapping.visualizationSupportedForColumn(createLowCardinalityColumn('testPT'))).to.equal(true);
       });
     });

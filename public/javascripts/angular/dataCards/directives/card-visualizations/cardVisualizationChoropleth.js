@@ -151,7 +151,7 @@
             return shapefileFeatureNameMapping[shapefile];
           }
 
-          return false;
+          return null;
 
         }
 
@@ -336,7 +336,7 @@
 
               var shapefileFeatureHumanReadablePropertyName = getShapefileFeatureHumanReadablePropertyName(column.shapefile);
 
-              if (!shapefileFeatureHumanReadablePropertyName) {
+              if (shapefileFeatureHumanReadablePropertyName === null) {
                 $log.error('Unable to determine shapefileFeatureHumanReadablePropertyName for shapefile: {0}'.format(column.shapefile));
                 shapefileFeatureHumanReadablePropertyName = '';
               }

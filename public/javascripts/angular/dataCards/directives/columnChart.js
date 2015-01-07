@@ -345,7 +345,11 @@ angular.module('socrataCommon.directives').directive('columnChart', function($pa
       positionOn: function($target, $head, options) {
         var name = d3.select($target[0]).datum().name;
         name = _.instead(name, '');
-        return element.find('[data-bar-name="{0}"].bar-group .bar.unfiltered'.format(name));
+        if (Modernizr.pointerevents) {
+          return element.find('[data-bar-name="{0}"].bar-group .bar.unfiltered'.format(name));
+        } else {
+          return element.find('[data-bar-name="{0}"].bar-group'.format(name));
+        }
       },
       title: function($target, $head, options) {
         var data = d3.select($target[0]).datum();

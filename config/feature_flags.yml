@@ -79,3 +79,6 @@ use_auth0:
 enable_feedback:
   description: Include third-party feedback widgets.
   defaultValue: false
+domain_decommissioning:
+  description: Enable a banner indicating that the domain is being decommissionsed.
+  defaultValue: false

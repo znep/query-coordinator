@@ -2,7 +2,7 @@ namespace :test do
   # Keep this <= the maximum concurrency listed on the SauceLabs account dashboard. Otherwise timeouts will occur.
   # Currently this is the max concurrenty / 2, as going higher than this causes some instability that hasn't
   # quite been traced out yet.
-  MAX_SAUCELABS_CONCURRENT_RUNS = 3
+  MAX_SAUCELABS_CONCURRENT_RUNS = 6
   SUPPORTED_BROWSERS = JSON.parse(open('supported_browsers.json').read())
 
   desc "Run all karma tests and update test-coverage result"

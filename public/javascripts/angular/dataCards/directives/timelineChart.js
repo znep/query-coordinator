@@ -6,7 +6,7 @@
   KNOWN BUGS
 
   1. Dragging the mouse over the chart display when the '.timeline-chart-highlight-target' has not
-     caught up with it (thus making the mouse move evnet's target something other than the highlight
+     caught up with it (thus making the mouse move event's target something other than the highlight
      target) will cause no highlight to occur. That is because we're explicitly whitelisting against
      the target in the mouse move and mouse down handling code.
 
@@ -34,7 +34,7 @@
 
   // This is needed because offset percentages, it turns out, are not entirely accurate
   // with regard to positioning elements as to where d3 believes them to be. This value,
-  // subtracted from a calcualted offset (cursor pixel location / width of chart in pixels)
+  // subtracted from a calculated offset (cursor pixel location / width of chart in pixels)
   // will result in the correct region being highlighted and the correct date range being
   // chosen when a pixel location is run back through the inverse of d3XScale.
   var EPSILON = 0.0005;
@@ -316,7 +316,7 @@
 
         function filterChartDataByInterval(chartData, offsetX, dimensions, startDate, endDate) {
 
-          var highlightData
+          var highlightData;
           var i;
           var startOffsetIndex = 0;
           var endOffsetIndex = 1;
@@ -1710,7 +1710,7 @@
                 attr('data-aggregate-filtered', value.filtered).
                 attr('data-flyout-label', formatDateLabel(startDate, true)).
                 css({
-                  left: Math.floor(d3XScale(startDate)) - halfLabelWidth + halfVisualizedDatumWidth,
+                  left: Math.floor(d3XScale(startDate)) - halfLabelWidth + halfVisualizedDatumWidth
                 }).show();
               jqueryChartElement.addClass('dimmed');
 

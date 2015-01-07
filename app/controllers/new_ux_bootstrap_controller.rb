@@ -175,7 +175,7 @@ class NewUxBootstrapController < ActionController::Base
     @dataset_size ||= begin
       JSON.parse(
         CoreServer::Base.connection.get_request("/id/#{params[:id]}?%24query=select+count(0)")
-      )[0]['count_0']
+      )[0]['count_0'].to_i
     rescue CoreServer::Error => e
       Rails.logger.error('Core server error while retrieving dataset size of dataset ' +
                          "(#{params[:id]}): #{e}")

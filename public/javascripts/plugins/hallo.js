@@ -2671,7 +2671,10 @@
         if (!this.bound) {
           this.element.on("focus", this, this._activated);
           this.element.on("blur", this, this._deactivated);
-          this.element.on("keyup paste change", this, this._checkModified);
+          this.element.on("keyup paste change input", this, this._checkModified);
+          // SOCRATA - dylan.bussone@socrata.com - 01/06/15
+          // added "input" to the events above to catch a bug where Chrome
+          // spell-check changes weren't getting recognized as events
           this.element.on("keyup", this, this._keys);
           this.element.on("keyup mouseup", this, this._checkSelection);
           this.bound = true;

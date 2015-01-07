@@ -56,9 +56,9 @@ class CardTypeMapping
     # 1) defaultIf evaluates to true.
     # 2) no defaultIf expression specified.
     # 3) defaultIf evaluates to false.
-    enabled_visualizations.sort_by! do |visualization_definition|
+    enabled_visualizations.sort_by!.with_index do |visualization_definition, index|
       # TODO factor out like onlyIf
-      if visualization_definition.include?('defaultIf')
+      primary_sort_by = if visualization_definition.include?('defaultIf')
         expression_holds = compute_expression_value_for_column(
           column,
           dataset_size,
@@ -70,6 +70,9 @@ class CardTypeMapping
       else
         1 # No condition specified. Goes in middle of priority.
       end
+
+      # We need a stable sort.
+      [primary_sort_by, index]
     end
 
     enabled_visualizations.first['type']

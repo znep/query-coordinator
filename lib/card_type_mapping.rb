@@ -10,11 +10,21 @@ class CardTypeMapping
   # TODO document the format.
   def initialize(config = DEFAULT_CARD_TYPE_MAPPING)
     @config = config.with_indifferent_access
-    raise 'Configuration object must have a "map" key' unless @config.include?(:map)
-    raise 'Configuration object must have an indexable object under the "map" key' unless @config[:map].respond_to?(:[])
-    raise 'Configuration object must have a "cardinality" key' unless @config.include?(:cardinality)
-    raise 'Configuration object cardinality configuration must have the "threshold" key' unless @config[:cardinality].include?(:threshold)
-    raise 'Configuration object cardinality configuration must have the "min" key' unless @config[:cardinality].include?(:min)
+    unless @config.include?(:map)
+      raise(ArgumentError.new('Configuration object must have a "map" key'))
+    end
+    unless @config[:map].respond_to?(:[])
+      raise(ArgumentError.new('Configuration object must have an indexable object under the "map" key'))
+    end
+    unless @config.include?(:cardinality)
+      raise(ArgumentError.new('Configuration object must have a "cardinality" key'))
+    end
+    unless @config[:cardinality].include?(:threshold)
+      raise(ArgumentError.new('Configuration object cardinality configuration must have the "threshold" key'))
+    end
+    unless @config[:cardinality].include?(:min)
+      raise(ArgumentError.new('Configuration object cardinality configuration must have the "min" key'))
+    end
   end
 
   # Given dataset column metadata and a dataset size (row count), returns
@@ -106,9 +116,16 @@ class CardTypeMapping
       when 'isGeoregionComputed'
         %w(georegion_match_on_string georegion_match_on_point).include?(column_computation_strategy)
       else
-        raise "Unknown expression value in card-type-mapping.json: #{expression} for physicalDatatype: #{column[:physicalDatatype]}"
+        raise(UnsupportedCardTypeMappingExpression.new(expression),
+              "Unknown expression value in card-type-mapping.json: #{expression} for physicalDatatype: #{column[:physicalDatatype]}")
     end
 
   end
 
+end
+
+class UnsupportedCardTypeMappingExpression < StandardError
+  def initialize(expression)
+    @expression = expression
+  end
 end

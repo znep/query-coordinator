@@ -19,7 +19,7 @@
           geojsonRegions,
           unfilteredDataAsHash,
           filteredDataAsHash,
-          shapefileHumanReadableColumnName) {
+          shapefileHumanReadablePropertyName) {
 
             var newFeatures = geojsonRegions.features.filter(function(geojsonFeature) {
               return geojsonFeature.properties.hasOwnProperty(Constants['INTERNAL_DATASET_FEATURE_ID']) &&
@@ -27,12 +27,7 @@
             }).map(function(geojsonFeature) {
 
               var name = geojsonFeature.properties[Constants['INTERNAL_DATASET_FEATURE_ID']];
-              var humanReadableName = geojsonFeature.properties[shapefileHumanReadableColumnName];
-              /*var feature = {
-                geometry: geojsonFeature.geometry,
-                properties: geojsonFeature.properties,
-                type: geojsonFeature.type
-              };*/
+              var humanReadableName = geojsonFeature.properties[shapefileHumanReadablePropertyName];
 
               var properties = {};
               properties[Constants['INTERNAL_DATASET_FEATURE_ID']] = geojsonFeature.properties[Constants['INTERNAL_DATASET_FEATURE_ID']];
@@ -343,6 +338,7 @@
 
               if (!shapefileFeatureHumanReadablePropertyName) {
                 $log.error('Unable to determine shapefileFeatureHumanReadablePropertyName for shapefile: {0}'.format(column.shapefile));
+                shapefileFeatureHumanReadablePropertyName = '';
               }
 
               return mergeRegionAndAggregateData(

@@ -87,7 +87,10 @@ describe("A Choropleth Card Visualization", function() {
         "logicalDatatype": "location",
         "physicalDatatype": "text",
         "importance": 2,
-        "shapefile": "mash-apes"
+        "shapefile": "snuk-a5kv" // It is important that this gets converted into a shapefileHumanReadablePropertyName in
+                                 // cardVisualizationChoropleth.js which matches the test fixture, so do not change this
+                                 // until we either a) change the test fixture or b) remove the notion of
+                                 // shapefileHumanReadablePropertyName all together.
       }
     });
 

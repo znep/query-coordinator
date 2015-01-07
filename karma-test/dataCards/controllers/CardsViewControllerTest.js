@@ -766,7 +766,7 @@ describe('CardsViewController', function() {
 
       var flyout = $('.flyout-title');
       expect(flyout.length).to.equal(1);
-      expect(flyout.text().indexOf('Customizing while a card is')).to.be.greaterThan(-1);
+      expect(flyout.text().indexOf('To enter customization mode:')).to.be.greaterThan(-1);
     });
 
   });

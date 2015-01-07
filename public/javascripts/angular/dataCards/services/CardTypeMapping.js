@@ -1,7 +1,100 @@
 (function() {
   'use strict';
 
-  function CardTypeMapping(ServerConfig, $exceptionHandler, $log) {
+  // A service that computes the supported and/or suggested card types for
+  // columns.
+  function CardTypeMapping(ServerConfig, $exceptionHandler, $log, Schemas) {
+
+  // Card type mappings for a column are based on the column's physical datatype,
+  // cardinality, and computation strategy.
+  //
+  // The details of which combinations of the above attributes result in which card types
+  // is configured via card-type-mapping.json, which is served to us from Rails. This file's
+  // schema is provided below.
+  // In brief, there are two branches of the config:
+  // a) Cardinality configuration. What is considered high cardinality? What is the default cardinality?
+  // b) Mapping configuration.
+  //
+  // (a) is straightforward. (b) is a little more tricky.
+  // Regarding each key-value pairs in (b):
+  // - The key is a physical datatype (number, text, etc).
+  // - The value is an array of possibly-supprted card types, each one with optional expressions (1) to
+  //   determine availability and default status (2).
+  //
+  // (1) An "expression" is really a keyword, no math is supported. Valid expressions are:
+  //      - isGeoregionComputed: True iff the column's computationStrategy is georegion_match_on_string
+  //        or georegion_match_on_point. False otherwise.
+  //      - isHighCardinality: True iff the column is high cardinality, false otherwise.
+  //      - isLowCardinality: Negation of isHighCardinality.
+  // (2) The algorithm to determine which card type is the default for a column is as follows. Note that
+  //     the order of card types in the configuration is significant.
+  //
+  //     Given the ordered list T of configured card types for the column's physical datatype:
+  //     1- From T, remove all card types whose onlyIf expressions evaluate to false.
+  //     2- Pick the first element from T whose defaultIf expression evaluates to true, if any.
+  //     3- If (2) did not pick anything, pick the first element from T that does not define any
+  //        defaultIf expression, if any.
+  //     4- If (3) did not pick anything, pick the first element in T.
+  //     5- Return the picked element as the default card type.
+  //
+  // Example:
+  // {
+  //   'number': [
+  //     { type: 'numberHistogram' }
+  //    ],
+  //    'text': [
+  //       { type: 'choropleth', defaultIf: 'isGeoregionComputed', onlyIf: 'isGeoregionComputed' },
+  //       { type: 'column', defaultIf: 'isLowCardinality' },
+  //       { type: 'search' }
+  //     ]
+  //  }
+  //
+  //  In this case, all number columns only support numberHistogram, with (obviously) a fixed default of
+  //  numberHistogram, regardless of cardinality.
+  //  Georegion-computed text columns support choropleths, columns, and search card types. The default
+  //  is choropleth (even if the column is also isLowCardinality, as the choropleth is listed first).
+  //  Low-cardinalty text columns support column and search, and default to column.
+  //  High-cardinality text columns also support column and search, and default to search.
+  var schemas = Schemas.regarding('card_type_mapping');
+  schemas.addSchemaWithVersion(
+    '0.3',
+    {
+      'type': 'object',
+      'properties': {
+        'version': {
+          'type': 'string',
+          'value': '0.3'
+        },
+        'cardinality': {
+          'type': 'object',
+          'properties': {
+            'min': { 'type': 'integer', 'minimum': 0 },
+            'threshold': { 'type': 'integer', 'minimum': 1 },
+            'default': { 'type': 'integer', 'minimum': 1 }
+          },
+          'required': [ 'min', 'threshold', 'default' ]
+        },
+        'map': {
+          'type': 'object',
+          'patternProperties': {
+            '.*': {
+              'type': 'array',
+              'items': {
+                'type': 'object',
+                'properties': {
+                  'type': { 'type': 'string', 'minLength': 1 },
+                  'isDefault': { 'type': 'string', 'enum': [ 'isGeoregionComputed', 'isHighCardinality', 'isLowCardinality' ]},
+                  'onlyIf': { 'type': 'string', 'enum': [ 'isGeoregionComputed', 'isHighCardinality', 'isLowCardinality' ]}
+                },
+                'required': [ 'type' ]
+              }
+            }
+          }
+        },
+        'required': [ 'map', 'cardinality', 'version' ]
+      }
+    });
+
     function computeAvailableCardTypesInPreferenceOrder(candidateCardTypes, column) {
 
       function computeExpressionValue(expression) {
@@ -194,9 +287,15 @@
 
     }
 
-    var getCardTypeMapping = function() {
-      return ServerConfig.get('oduxCardTypeMapping');
-    };
+    var getCardTypeMapping = _.once(function() {
+      var mapping = ServerConfig.get('oduxCardTypeMapping');
+      var validationErrors = schemas.getValidationErrorsAgainstVersion('0.3', mapping);
+      if (!_.isEmpty(validationErrors)) {
+        throw new Error('Invalid card-type-mapping.json: ' + JSON.stringify(validationErrors));
+      }
+
+      return mapping;
+    });
 
     // Keep track of which physical datatypes have already
     // triggered warnings so that we don't get rate-limited by Airbrake in

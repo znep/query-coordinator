@@ -51,8 +51,10 @@
         map: map,
         cardinality: {
           threshold: 35,
-          min: 2
-        }
+          min: 2,
+          default: 90000000
+        },
+        version: '0.3'
       };
       ServerConfig.setup({
         oduxCardTypeMapping: mapping

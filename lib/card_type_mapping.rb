@@ -1,4 +1,5 @@
 # Provides functions mapping a given column to a card type.
+# See the documentation and schema in CardTypeMapping.js.
 class CardTypeMapping
 
   attr_reader :config

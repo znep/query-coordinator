@@ -123,7 +123,9 @@ angular.module('dataCards.models').factory('Dataset', function(ModelHelper, Mode
 
   // Safe value of cardinality to use if cardinality isn't specified for a column (v0 of the dataset metadata
   // schema doesn't provide this information).
-  var FALLBACK_CARDINALITY = 9007199254740992; // (max safe int).
+  var getDefaultCardinality = function() {
+    return ServerConfig.get('oduxCardTypeMapping').cardinality['default'];
+  };
 
   // So we only maintain one parsing codepath, coerce an incoming metadata blob to conform to the latest version,
   // choosing defaults on a best-effort basis.
@@ -145,7 +147,7 @@ angular.module('dataCards.models').factory('Dataset', function(ModelHelper, Mode
 
       // New column metadata includes cardinality no logicalDataype.
       _.each(converted.columns, function(column) {
-        column.cardinality = FALLBACK_CARDINALITY;
+        column.cardinality = getDefaultCardinality();
         delete column.logicalDatatype;
       });
 
@@ -185,7 +187,7 @@ angular.module('dataCards.models').factory('Dataset', function(ModelHelper, Mode
               "title": "Data Table",
               "description": "",
               "physicalDatatype": "*",
-              "cardinality": FALLBACK_CARDINALITY,
+              "cardinality": 0,
               "importance": 1,
               "fakeColumnGeneratedByFrontEnd": true //TODO move away from this hack. The table isn't optional anymore.
             });

@@ -59,7 +59,8 @@
     },
     "cardinality": {
       "min": 2,
-      "threshold": 35
+      "threshold": 35,
+      "default": 9007199254740992
     },
     ":version": "0.3"
   };

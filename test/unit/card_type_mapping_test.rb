@@ -25,14 +25,16 @@ class CardTypeMappingTest < Test::Unit::TestCase
         :map => {},
         :cardinality => {
           :min => 2,
-          :threshold => 35
+          :threshold => 35,
+          :default => 1337
         }
       )
       assert_raises(ArgumentError) do
         CardTypeMapping.new(
           :cardinality => {
             :min => 2,
-            :threshold => 35
+            :threshold => 35,
+            :default => 1337
           }
         )
       end
@@ -41,7 +43,8 @@ class CardTypeMappingTest < Test::Unit::TestCase
           :map => nil,
           :cardinality => {
             :min => 2,
-            :threshold => 35
+            :threshold => 35,
+            :default => 1337
           }
         )
       end
@@ -53,7 +56,8 @@ class CardTypeMappingTest < Test::Unit::TestCase
         :map => {},
         :cardinality => {
           :min => 2,
-          :threshold => 35
+          :threshold => 35,
+          :default => 1337
         }
       )
       assert_raises(ArgumentError) do
@@ -65,7 +69,8 @@ class CardTypeMappingTest < Test::Unit::TestCase
         CardTypeMapping.new(
           :map => {},
           :cardinality => {
-            :threshold => 35
+            :threshold => 35,
+            :default => 1337
           }
         )
       end
@@ -74,6 +79,7 @@ class CardTypeMappingTest < Test::Unit::TestCase
           :map => {},
           :cardinality => {
             :min => 2,
+            :default => 1337
           }
         )
       end
@@ -85,7 +91,8 @@ class CardTypeMappingTest < Test::Unit::TestCase
       :map => map,
       :cardinality => {
         :min => 2,
-        :threshold => 35
+        :threshold => 35,
+        :default => 9007199254740992
       }
     )
   end

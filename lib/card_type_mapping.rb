@@ -25,29 +25,30 @@ class CardTypeMapping
     unless @config[:cardinality].include?(:min)
       raise(ArgumentError.new('Configuration object cardinality configuration must have the "min" key'))
     end
+    unless @config[:cardinality].include?(:default)
+      raise(ArgumentError.new('Configuration object cardinality configuration must have the "default" key'))
+    end
   end
 
   # Given dataset column metadata and a dataset size (row count), returns
   # a sensible default cardType or nil if none cound be determined
   # (unsupported physical datatype, all visualizations did not pass onlyIf,
   # column is below minimum cardinality).
-  #TODO rename to column_metadata
-  def card_type_for(column, dataset_size=nil)
-    mapping = config[:map][column[:physicalDatatype]]
+  def card_type_for(column_metadata, dataset_size=nil)
+    mapping = config[:map][column_metadata[:physicalDatatype]]
 
     unless mapping
       Rails.logger.error(
-        "No card mapping specified in card-type-mapping.json for physicalDatatype: #{column[:physicalDatatype]}")
+        "No card mapping specified in card-type-mapping.json for physicalDatatype: #{column_metadata[:physicalDatatype]}")
       return nil
     end
 
     cardinality_min = config[:cardinality][:min]
-    #TODO put in config.
-    return nil unless column.fetch(:cardinality, FALLBACK_CARDINALITY) >= cardinality_min
+    return nil unless column_metadata.fetch(:cardinality, config[:cardinality][:default]) >= cardinality_min
 
     # Get rid of visualizations that fail their onlyIf check.
     enabled_visualizations = mapping.select do |visualization_definition|
-      visualization_type_enabled(column, dataset_size, visualization_definition)
+      visualization_type_enabled(column_metadata, dataset_size, visualization_definition)
     end
 
     return nil if enabled_visualizations.empty?
@@ -57,10 +58,9 @@ class CardTypeMapping
     # 2) no defaultIf expression specified.
     # 3) defaultIf evaluates to false.
     enabled_visualizations.sort_by!.with_index do |visualization_definition, index|
-      # TODO factor out like onlyIf
       primary_sort_by = if visualization_definition.include?('defaultIf')
         expression_holds = compute_expression_value_for_column(
-          column,
+          column_metadata,
           dataset_size,
           visualization_definition['defaultIf'])
 
@@ -93,22 +93,20 @@ class CardTypeMapping
     config['cardinality']['threshold']
   end
 
-  FALLBACK_CARDINALITY = 9007199254740992 # (max safe js int).
-
-  def visualization_type_enabled(column, dataset_size, visualization_definition)
+  def visualization_type_enabled(column_metadata, dataset_size, visualization_definition)
     if visualization_definition.include?('onlyIf')
-      compute_expression_value_for_column(column, dataset_size, visualization_definition['onlyIf'])
+      compute_expression_value_for_column(column_metadata, dataset_size, visualization_definition['onlyIf'])
     else
       true
     end
   end
 
-  def compute_expression_value_for_column(column, dataset_size, expression)
+  def compute_expression_value_for_column(column_metadata, dataset_size, expression)
     cardinality_threshold = config[:cardinality][:threshold]
     cardinality_min = config[:cardinality][:min]
 
-    column_cardinality = column.fetch(:cardinality, FALLBACK_CARDINALITY)
-    column_computation_strategy = column[:computationStrategy]
+    column_cardinality = column_metadata.fetch(:cardinality, config[:cardinality][:default])
+    column_computation_strategy = column_metadata[:computationStrategy]
 
     case expression
       when 'isHighCardinality'
@@ -120,7 +118,7 @@ class CardTypeMapping
         %w(georegion_match_on_string georegion_match_on_point).include?(column_computation_strategy)
       else
         raise(UnsupportedCardTypeMappingExpression.new(expression),
-              "Unknown expression value in card-type-mapping.json: #{expression} for physicalDatatype: #{column[:physicalDatatype]}")
+              "Unknown expression value in card-type-mapping.json: #{expression} for physicalDatatype: #{column_metadata[:physicalDatatype]}")
     end
 
   end

@@ -844,7 +844,7 @@ zh:
           account_options: "账户选项"
           account_tooltip: "查看并更改你的用户帐户。"
           configuration: "配置"
-          configuration_title: "管理GovStat配置"
+          configuration_title: "管理Open Performance配置"
           data: "数据"
           data_title: "浏览并管理数据"
           goals: "目标"

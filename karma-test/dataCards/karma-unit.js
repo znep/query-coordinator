@@ -92,15 +92,14 @@ module.exports = function ( karma ) {
       /*    SASS    */
       'app/styles/dataCards/*.sass',
       /*    Images */
-      { pattern: 'public/angular_templates/images/**/*.png', watched: false,
-        included: false, served: true },
+      { pattern: 'public/stubs/images/*.png', watched: false, included: false, served: true }
     ],
     exclude: [
       'public/javascripts/angular/dataCards/app.js'
     ],
 
     proxies: {
-      '/angular_templates/images/': 'http://localhost:7019/base/public/angular_templates/images/'
+      '/stubs/images/': 'http://localhost:7019/base/public/stubs/images/'
     },
 
     sauceLabs: {

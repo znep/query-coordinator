@@ -96,7 +96,8 @@
         getColumns: function()
         {
             var chartObj = this;
-            var view = chartObj._primaryView;
+            var view = chartObj._primaryView,
+                parView = view._parent;
 
             chartObj._valueColumns = _.map(chartObj._displayFormat.valueColumns,
                 function(vc)
@@ -108,6 +109,16 @@
                     vc.supplementalColumns = _.compact(
                         _.map(vc.supplementalColumns || [],
                             function(sc) { return view.columnForIdentifier(sc); }));
+
+                    // Inherit any format options from the parent column, too.
+                    // Unclear why format options aren't inherited to begin with.
+                    if (parView && $.isEmptyObject(col.format))
+                    {
+                        var parCol = parView.columnForIdentifier(col.fieldName);
+                        if (!$.isEmptyObject(parCol.format))
+                        { col.format = $.extend({}, parCol.format, col.format); }
+                    }
+
                     return vc;
                 });
             chartObj._valueColumns = _.compact(chartObj._valueColumns);

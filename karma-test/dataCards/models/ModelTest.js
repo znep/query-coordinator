@@ -144,12 +144,14 @@ describe("Model", function() {
         expectedChanges.push({
           model: model,
           property: 'prop',
+          oldValue: undefined,
           newValue: 'asd'
         });
         valueSeq.onNext('def');
         expectedChanges.push({
           model: model,
           property: 'prop',
+          oldValue: 'asd',
           newValue: 'def'
         });
 
@@ -169,6 +171,7 @@ describe("Model", function() {
         expectedChanges.push({
           model: model,
           property: 'myProp',
+          oldValue: undefined,
           newValue: 5
         });
         model.defineObservableProperty('myProp', 5);
@@ -192,6 +195,7 @@ describe("Model", function() {
         expectedChanges.push({
           model: model,
           property: 'myProp',
+          oldValue: 5,
           newValue: 6
         });
         expect(changes).to.deep.equal(expectedChanges);
@@ -200,6 +204,7 @@ describe("Model", function() {
         expectedChanges.push({
           model: model,
           property: 'myProp2',
+          oldValue: 60,
           newValue: 100
         });
         expect(changes).to.deep.equal(expectedChanges);
@@ -208,6 +213,7 @@ describe("Model", function() {
         expectedChanges.push({
           model: model,
           property: 'myProp',
+          oldValue: 6,
           newValue: 200
         });
         expect(changes).to.deep.equal(expectedChanges);
@@ -237,6 +243,7 @@ describe("Model", function() {
         expectedChanges.push({
           model: model,
           property: 'myProp',
+          oldValue: undefined,
           newValue: 5
         });
         expect(changes).to.deep.equal(expectedChanges);
@@ -257,6 +264,7 @@ describe("Model", function() {
         expectedChanges.push({
           model: model,
           property: 'myProp',
+          oldValue: 5,
           newValue: 10
         });
         expect(changes).to.deep.equal(expectedChanges);
@@ -284,6 +292,7 @@ describe("Model", function() {
         expectedChanges.push({
           model: model,
           property: 'myProp',
+          oldValue: undefined,
           newValue: 5
         });
         expect(changes).to.deep.equal(expectedChanges);
@@ -303,6 +312,7 @@ describe("Model", function() {
         expectedChanges.push({
           model: model,
           property: 'myProp',
+          oldValue: 5,
           newValue: 200
         });
         expect(changes).to.deep.equal(expectedChanges);
@@ -360,6 +370,7 @@ describe("Model", function() {
         expectedChanges.push({
           model: model,
           property: 'myProp',
+          oldValue: 5,
           newValue: 6
         });
         expect(changes).to.deep.equal(expectedChanges);
@@ -368,6 +379,7 @@ describe("Model", function() {
         expectedChanges.push({
           model: model,
           property: 'myProp2',
+          oldValue: 60,
           newValue: 100
         });
         expect(changes).to.deep.equal(expectedChanges);
@@ -376,6 +388,7 @@ describe("Model", function() {
         expectedChanges.push({
           model: model,
           property: 'myProp',
+          oldValue: 6,
           newValue: 200
         });
         expect(changes).to.deep.equal(expectedChanges);
@@ -429,6 +442,7 @@ describe("Model", function() {
         expectedChanges.push({
           model: model,
           property: 'myProp',
+          oldValue: 5,
           newValue: 200
         });
         expect(changes).to.deep.equal(expectedChanges);
@@ -461,6 +475,7 @@ describe("Model", function() {
         expectedChanges.push({
           model: model,
           property: 'myProp',
+          oldValue: 5,
           newValue: 6
         });
         expect(changes).to.deep.equal(expectedChanges);
@@ -469,6 +484,7 @@ describe("Model", function() {
         expectedChanges.push({
           model: model,
           property: 'myProp',
+          oldValue: 6,
           newValue: 200
         });
         expect(changes).to.deep.equal(expectedChanges);
@@ -496,6 +512,7 @@ describe("Model", function() {
         expectedChanges.push({
           model: parent,
           property: 'propOnParent',
+          oldValue: 5,
           newValue: 6
         });
         expect(changes).to.deep.equal(expectedChanges);
@@ -504,6 +521,7 @@ describe("Model", function() {
         expectedChanges.push({
           model: child,
           property: 'propOnChild',
+          oldValue: 15,
           newValue: 200
         });
         expect(changes).to.deep.equal(expectedChanges);
@@ -539,6 +557,7 @@ describe("Model", function() {
         expectedChangesOnParent.push({
           model: parent,
           property: 'child',
+          oldValue: childA,
           newValue: childB
         });
         expect(changesOnParent).to.deep.equal(expectedChangesOnParent);
@@ -549,6 +568,7 @@ describe("Model", function() {
         expectedChangesOnParent.push({
           model: childB,
           property: 'B',
+          oldValue: 16,
           newValue: 300
         });
         expect(changesOnParent).to.deep.equal(expectedChangesOnParent);
@@ -557,11 +577,13 @@ describe("Model", function() {
         expect(changesOnA).to.deep.equal([ {
           model: childA,
           property: 'A',
+          oldValue: 15,
           newValue: 200
         }]);
         expect(changesOnB).to.deep.equal([ {
           model: childB,
           property: 'B',
+          oldValue: 16,
           newValue: 300
         }]);
 
@@ -594,6 +616,7 @@ describe("Model", function() {
         expectedChanges.push({
           model: parent,
           property: 'children',
+          oldValue: [],
           newValue: childrenA
         });
         expect(changes).to.deep.equal(expectedChanges);
@@ -604,6 +627,7 @@ describe("Model", function() {
           expectedChanges.push({
             model: child,
             property: 'testProp',
+            oldValue: null,
             newValue: index
           });
         });
@@ -615,6 +639,7 @@ describe("Model", function() {
         expectedChanges.push({
           model: parent,
           property: 'children',
+          oldValue: childrenA,
           newValue: childrenB
         });
         expect(changes).to.deep.equal(expectedChanges);
@@ -627,6 +652,7 @@ describe("Model", function() {
           expectedChanges.push({
             model: child,
             property: 'testProp',
+            oldValue: null,
             newValue: index * 100
           });
         });
@@ -639,6 +665,7 @@ describe("Model", function() {
         expectedChanges.push({
           model: parent,
           property: 'children',
+          oldValue: childrenB,
           newValue: firstChildrenFromAAndB
         });
         expect(changes).to.deep.equal(expectedChanges);
@@ -650,11 +677,13 @@ describe("Model", function() {
         expectedChanges.push({
           model: childrenA[0],
           property: 'testProp',
+          oldValue: 'badvalue',
           newValue: 'gooda'
         });
         expectedChanges.push({
           model: childrenB[0],
           property: 'testProp',
+          oldValue: 0,
           newValue: 'goodb'
         });
         expect(changes).to.deep.equal(expectedChanges);
@@ -681,6 +710,7 @@ describe("Model", function() {
         expectedChanges.push({
           model: parent,
           property: 'child',
+          oldValue: 5,
           newValue: child
         });
         expect(changes).to.deep.equal(expectedChanges);
@@ -690,6 +720,7 @@ describe("Model", function() {
         expectedChanges.push({
           model: child,
           property: 'A',
+          oldValue: 15,
           newValue: 200
         });
         expect(changes).to.deep.equal(expectedChanges);
@@ -699,6 +730,7 @@ describe("Model", function() {
         expectedChanges.push({
           model: parent,
           property: 'child',
+          oldValue: child,
           newValue: null
         });
         expect(changes).to.deep.equal(expectedChanges);
@@ -743,12 +775,96 @@ describe("Model", function() {
           expectedChanges.push({
             model: model,
             property: 'testProp',
+            oldValue: null,
             newValue: index
           });
         });
 
         expect(changes).to.deep.equal(expectedChanges);
       });
+    });
+  });
+
+  describe('observeDirtied', function() {
+    var model;
+    var childModel;
+    var childArrayModel;
+    var changes;
+
+    beforeEach(function() {
+      var ChildModel = Model.extend({
+        init: function() {
+          this._super();
+          this.defineObservableProperty('childfoo', undefined);
+        }
+      });
+
+      childModel = new ChildModel();
+      childArrayModel = new ChildModel();
+
+      model = new (Model.extend({
+        init: function() {
+          this._super();
+          this.defineObservableProperty('foo', null);
+          this.defineObservableProperty('childModel', childModel);
+          this.defineObservableProperty('childModels', [childArrayModel]);
+        }
+      }));
+
+      changes = [];
+      model.observeDirtied().subscribe(function() {
+        changes.push(arguments);
+      });
+    });
+
+    it('should emit true when a property is changed', function() {
+      expect(changes.length).to.equal(0);
+      model.set('foo', 'bar');
+      expect(changes.length).to.equal(1);
+      expect(changes[0][0]).to.equal(true);
+    });
+
+    it('should emit true when a property is changed to undefined', function() {
+      expect(changes.length).to.equal(0);
+      model.set('foo', undefined);
+      expect(changes.length).to.equal(1);
+      expect(changes[0][0]).to.equal(true);
+    });
+
+    it('should emit true when a sub-model has a property changed', function() {
+      expect(changes.length).to.equal(0);
+      childModel.set('childfoo', 4);
+      expect(changes.length).to.equal(1);
+      expect(changes[0][0]).to.equal(true);
+    });
+
+    it('should emit true when a sub-model within an array has a property changed', function() {
+      expect(changes.length).to.equal(0);
+      childArrayModel.set('childfoo', null);
+      expect(changes.length).to.equal(1);
+      expect(changes[0][0]).to.equal(true);
+    });
+
+    it('should emit false if I set a property back to its original value', function() {
+      expect(changes.length).to.equal(0);
+      childArrayModel.set('childfoo', null);
+      expect(changes.length).to.equal(1);
+      expect(changes[0][0]).to.equal(true);
+
+      childArrayModel.set('childfoo', undefined);
+      expect(changes.length).to.equal(2);
+      expect(changes[1][0]).to.equal(false);
+    });
+
+    it('should emit false if I call resetDirtied', function() {
+      expect(changes.length).to.equal(0);
+      childArrayModel.set('childfoo', null);
+      expect(changes.length).to.equal(1);
+      expect(changes[0][0]).to.equal(true);
+
+      model.resetDirtied();
+      expect(changes.length).to.equal(2);
+      expect(changes[1][0]).to.equal(false);
     });
   });
 

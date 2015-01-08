@@ -529,7 +529,7 @@ describe('CardsViewController', function() {
   });
 
   describe('page unsaved state', function() {
-    it('should set hasChanges to true when a property changes on any model hooked to the page', function() {
+    it('should set hasChanges to true when a property changes on any model hooked to the page, then back to false when changed back to its original value', function() {
       var controllerHarness = makeController();
       var $scope = controllerHarness.$scope;
 
@@ -537,6 +537,9 @@ describe('CardsViewController', function() {
 
       $scope.page.set('name', 'name2');
       expect($scope.hasChanges).to.be.true;
+
+      $scope.page.set('name', 'test dataset name');
+      expect($scope.hasChanges).to.be.falsy;
     });
 
     it('should call PageDataService.save when savePage is called with hasChanges = true', function() {

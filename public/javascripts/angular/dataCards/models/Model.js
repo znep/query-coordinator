@@ -83,6 +83,8 @@ angular.module('dataCards.models').factory('Model', function(Class, ModelHelper)
         writesSequence = ModelHelper.addProperty(propertyName, this._propertyTable, initialValue);
       }
 
+      var oldValue;
+
       // Push write notifications for this property to the writes sequence.
       // This includes the initial value and the lazy default.
       // There's a special case if the initial value is not defined - ModelHelper
@@ -95,8 +97,10 @@ angular.module('dataCards.models').factory('Model', function(Class, ModelHelper)
           self._writes.onNext({
             model: self,
             property: propertyName,
+            oldValue: oldValue,
             newValue: value
           });
+          oldValue = value;
         });
     },
 
@@ -114,13 +118,16 @@ angular.module('dataCards.models').factory('Model', function(Class, ModelHelper)
         throw new Error('Object ' + this + ' already has property: ' + propertyName);
       }
 
+      var oldValue;
       ModelHelper.addReadOnlyProperty(propertyName, this._propertyTable, valueSequence.asObservable()).
         subscribe(function(value) {
           self._writes.onNext({
             model: self,
             property: propertyName,
+            oldValue: oldValue,
             newValue: value
           });
+          oldValue = value;
         });
 
     },
@@ -145,10 +152,12 @@ angular.module('dataCards.models').factory('Model', function(Class, ModelHelper)
     // hasn't been defined on this Model.
     set: function(propertyName, value) {
       this._assertProperty(propertyName);
+      var oldValue = this.getCurrentValue(propertyName);
       this._propertyTable[propertyName] = value;
       this._sets.onNext({
         model: this,
         property: propertyName,
+        oldValue: oldValue,
         newValue: value
       });
     },
@@ -158,11 +167,13 @@ angular.module('dataCards.models').factory('Model', function(Class, ModelHelper)
     // hasn't been defined on this Model.
     unset: function(propertyName) {
       this._assertProperty(propertyName);
+      var oldValue = this.getCurrentValue(propertyName);
       this._propertyTable[propertyName] = undefined;
       this._propertyHasBeenWritten[propertyName] = false;
       this._sets.onNext({
         model: this,
         property: propertyName,
+        oldValue: oldValue,
         newValue: undefined
       });
     },
@@ -252,6 +263,7 @@ angular.module('dataCards.models').factory('Model', function(Class, ModelHelper)
     // {
     //   model: <this model>,
     //   property: <string name of changed property>,
+    //   oldValue: <the previous value of the property>,
     //   newValue: <new value of the property>
     // }
     observePropertyWrites: function() {
@@ -266,6 +278,7 @@ angular.module('dataCards.models').factory('Model', function(Class, ModelHelper)
     // {
     //   model: <this model>,
     //   property: <string name of changed property>,
+    //   oldValue: <the previous value of the property>,
     //   newValue: <new value of the property>
     // }
     observePropertyChanges: function() {
@@ -286,7 +299,78 @@ angular.module('dataCards.models').factory('Model', function(Class, ModelHelper)
     // lazy or otherwise, just like observePropertyChanges.
     observePropertyChangesRecursively: function() {
       return Rx.Observable.merge(this._recursiveSets, this._sets);
+    },
+
+    /**
+     * Returns an observable that emits true when the model next gets dirtied, and false when it
+     * next becomes clean.
+     *
+     * Specifically, when the model or any of its sub-models have any of their properties .set() to
+     * a different value (ie the old value is not _.isEqual to the new value), emit true. If they
+     * are .set() back to their original value (ie the new value is _.isEqual to the original
+     * value), emit false.
+     *
+     * Note that this observable will only emit values for events that happen after you subscribe to
+     * it. It will not emit its current state.
+     *
+     * @return {Rx.Observable} that emits true if the model becomes dirty, and false if it becomes
+     *   clean again.
+     */
+    observeDirtied: function() {
+      if (!this._dirtyObservable) {
+        // A hook into the .scan so we can reset the changes hash to clean
+        this._dirtyResetObservable = new Rx.Subject();
+        this._dirtyObservable = Rx.Observable.merge(
+          // Whenever page.set is called (or any of its children are .set), track those changes.
+          this.observePropertyChangesRecursively().filter(function(change) {
+            // Ignore changes that don't actually change the value
+            return !_.isEqual(change.newValue, change.oldValue);
+          }),
+          this._dirtyResetObservable
+        ).scan({}, function(changes, change) {
+          if (change === null) {
+            // A signal from _dirtyResetObservable. Clean the state.
+            return {};
+          } else {
+            // If this change (to the given model and property) is a revert to its original value,
+            // remove it from our changes hash. Otherwise, if we haven't recorded it yet, so record
+            // its original value (so we can tell if it's reverted later).
+            var modelChanges = changes[change.model.uniqueId];
+            if (modelChanges) {
+              // There are existing changes to this model. Check if it's to this property
+              if (modelChanges.hasOwnProperty(change.property)) {
+                if (_.isEqual(change.newValue, modelChanges[change.property])) {
+                  // The change is to change it back to its original value. Remove it from our
+                  // hash of properties-that-have-changed.
+                  delete modelChanges[change.property];
+                  if (_.isEmpty(modelChanges)) {
+                    delete changes[change.model.uniqueId];
+                  }
+                }
+              }
+            } else {
+              // No existing changes for this model. Create a hash to record the changes to this
+              // model, and record the original value for the property that changed.
+              modelChanges = {};
+              modelChanges[change.property] = change.oldValue;
+              changes[change.model.uniqueId] = modelChanges;
+            }
+            return changes;
+          }
+        }).map(_.isPresent).share();
+      }
+      return this._dirtyObservable;
+    },
+
+    /**
+     * Resets the observable returned by {@link Model#observeDirtied}, to an undirtied state.
+     */
+    resetDirtied: function() {
+      if (this._dirtyResetObservable) {
+        this._dirtyResetObservable.onNext(null);
+      }
     }
+
 
   });
 

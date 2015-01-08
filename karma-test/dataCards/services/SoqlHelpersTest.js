@@ -68,8 +68,8 @@ describe("SoqlHelpers service", function() {
     it('should throw errors on unsupported types', inject(function(SoqlHelpers) {
       expect(function() { SoqlHelpers.encodePrimitive(undefined); }).to.throw();
       expect(function() { SoqlHelpers.encodePrimitive(null); }).to.throw();
-      expect(function() { SoqlHelpers.encodePrimitive(0); }).to.throw();
-      expect(function() { SoqlHelpers.encodePrimitive(1); }).to.throw();
+      expect(function() { SoqlHelpers.encodePrimitive(0); }).to.not.throw();
+      expect(function() { SoqlHelpers.encodePrimitive(1); }).to.not.throw();
       expect(function() { SoqlHelpers.encodePrimitive([]); }).to.throw();
       expect(function() { SoqlHelpers.encodePrimitive(['']); }).to.throw();
       expect(function() { SoqlHelpers.encodePrimitive({}); }).to.throw();

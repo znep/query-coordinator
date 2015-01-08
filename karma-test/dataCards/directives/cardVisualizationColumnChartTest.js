@@ -9,7 +9,7 @@ describe("A Column Chart Card Visualization", function() {
     module(function($provide) {
       var mockCardDataService = {
         getData: function(){ return q.when([]);}
-      }
+      };
       $provide.value('CardDataService', mockCardDataService);
     });
   });

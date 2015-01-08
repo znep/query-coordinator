@@ -33,10 +33,11 @@
     }
 
     var serviceDefinition = {
-      getData: function(fieldName, datasetId, whereClauseFragment, aggregationClauseData) {
+      getData: function(fieldName, datasetId, whereClauseFragment, aggregationClauseData, options) {
         Assert(_.isString(fieldName), 'fieldName should be a string');
         Assert(_.isString(datasetId), 'datasetId should be a string');
         Assert(!whereClauseFragment || _.isString(whereClauseFragment), 'whereClauseFragment should be a string if present.');
+        options = _.defaults({}, options);
 
         datasetId = DeveloperOverrides.dataOverrideForDataset(datasetId) || datasetId;
 
@@ -66,7 +67,11 @@
         var config = httpConfig.call(this);
         return http.get(url + $.param(params), config).then(function(response) {
           return _.map(response.data, function(item) {
-            return { name: item.name, value: parseFloat(item.value) };
+            var name = options.namePhysicalDatatype === 'number' ? parseFloat(item.name) : item.name;
+            return {
+              name: name,
+              value: parseFloat(item.value)
+            };
           });
         });
       },

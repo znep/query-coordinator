@@ -27,7 +27,11 @@
             }).map(function(geojsonFeature) {
 
               var name = geojsonFeature.properties[Constants['INTERNAL_DATASET_FEATURE_ID']];
-              var humanReadableName = geojsonFeature.properties[shapefileHumanReadablePropertyName];
+              var humanReadableName = '';
+
+              if (shapefileHumanReadablePropertyName !== null) {
+                humanReadableName = geojsonFeature.properties[shapefileHumanReadablePropertyName];
+              }
 
               var properties = {};
               properties[Constants['INTERNAL_DATASET_FEATURE_ID']] = geojsonFeature.properties[Constants['INTERNAL_DATASET_FEATURE_ID']];
@@ -151,6 +155,7 @@
             return shapefileFeatureNameMapping[shapefile];
           }
 
+          $log.error('Unable to determine shapefileFeatureHumanReadablePropertyName for shapefile: {0}'.format(shapefile));
           return null;
 
         }
@@ -335,11 +340,6 @@
               }
 
               var shapefileFeatureHumanReadablePropertyName = getShapefileFeatureHumanReadablePropertyName(column.shapefile);
-
-              if (shapefileFeatureHumanReadablePropertyName === null) {
-                $log.error('Unable to determine shapefileFeatureHumanReadablePropertyName for shapefile: {0}'.format(column.shapefile));
-                shapefileFeatureHumanReadablePropertyName = '';
-              }
 
               return mergeRegionAndAggregateData(
                 activeFilterNames,

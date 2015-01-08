@@ -21,6 +21,20 @@ angular.module('dataCards.directives').directive('socSelect', function() {
     element.attr(filteredAttrs);
   }
 
+  /**
+   * @param {jQuery} element The jquery element that contains the arrow and select.
+   */
+  function fixArrowForBrowsers(element) {
+    if (!Modernizr.pointerevents) {
+      // Clicking on our custom arrow won't pass it through in this browser. Move it behind the
+      // select.
+      element.find('select').css({
+        position: 'relative',
+        zIndex: 5
+      });
+    }
+  }
+
   return {
     scope: {
       ngModel: '='
@@ -29,6 +43,7 @@ angular.module('dataCards.directives').directive('socSelect', function() {
     transclude: true,
     templateUrl: '/angular_templates/dataCards/socSelect.html',
     link: function($scope, $element, $attrs) {
+      fixArrowForBrowsers($element);
       applyAttributes($attrs, $element.children('select'))
     }
   }

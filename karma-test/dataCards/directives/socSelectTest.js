@@ -9,6 +9,7 @@
       module('dataCards');
       module('dataCards.directives');
       module('/angular_templates/dataCards/socSelect.html');
+      module('dataCards/cards.sass');
 
       inject(function($injector) {
         testHelpers = $injector.get('testHelpers');
@@ -25,6 +26,28 @@
       var element = testHelpers.TestDom.compileAndAppend('<soc-select></soc-select>', scope);
       expect(element.find('select').length).to.equal(1);
     });
+
+    if (Modernizr.pointerevents) {
+      it('should overlay the custom arrow over the select\'s default one', function() {
+        var scope = $rootScope.$new();
+        var element = testHelpers.TestDom.compileAndAppend('<soc-select></soc-select>', scope);
+        var arrow = element.children('.arrow-container');
+        var arrowPosition = arrow.offset();
+        // If pointer-events:none, elementFromPoint doesn't detect it. So unset it for now
+        arrow.css('pointer-events', 'inherit');
+        var topElement = document.elementFromPoint(arrowPosition.left + 2, arrowPosition.top + 2);
+        expect(topElement).to.equal(arrow[0]);
+      });
+    } else {
+      it('should overlay the select over the custom arrow if pointer events unsupported', function() {
+        var scope = $rootScope.$new();
+        var element = testHelpers.TestDom.compileAndAppend('<soc-select></soc-select>', scope);
+        var arrow = element.children('.arrow-container');
+        var arrowPosition = arrow.offset();
+        var topElement = document.elementFromPoint(arrowPosition.left + 2, arrowPosition.top + 2);
+        expect(topElement).to.equal(element.children('select')[0]);
+      });
+    }
 
     it('should pass the model through', function() {
       var scope = $rootScope.$new();

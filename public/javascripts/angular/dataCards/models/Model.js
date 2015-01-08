@@ -302,11 +302,19 @@ angular.module('dataCards.models').factory('Model', function(Class, ModelHelper)
     },
 
     /**
-     * Returns an observable that emits true when the model changes from its original state, and
-     * false when it changes back to its original state.
+     * Returns an observable that emits true when the model next gets dirtied, and false when it
+     * next becomes clean.
      *
-     * @return {Rx.Observable} that emits true if the model is diry, and false if it becomes clean
-     *     again.
+     * Specifically, when the model or any of its sub-models have any of their properties .set() to
+     * a different value (ie the old value is not _.isEqual to the new value), emit true. If they
+     * are .set() back to their original value (ie the new value is _.isEqual to the original
+     * value), emit false.
+     *
+     * Note that this observable will only emit values for events that happen after you subscribe to
+     * it. It will not emit its current state.
+     *
+     * @return {Rx.Observable} that emits true if the model becomes dirty, and false if it becomes
+     *   clean again.
      */
     observeDirtied: function() {
       if (!this._dirtyObservable) {
@@ -315,6 +323,7 @@ angular.module('dataCards.models').factory('Model', function(Class, ModelHelper)
         this._dirtyObservable = Rx.Observable.merge(
           // Whenever page.set is called (or any of its children are .set), track those changes.
           this.observePropertyChangesRecursively().filter(function(change) {
+            // Ignore changes that don't actually change the value
             return !_.isEqual(change.newValue, change.oldValue);
           }),
           this._dirtyResetObservable
@@ -326,8 +335,8 @@ angular.module('dataCards.models').factory('Model', function(Class, ModelHelper)
             // If this change (to the given model and property) is a revert to its original value,
             // remove it from our changes hash. Otherwise, if we haven't recorded it yet, so record
             // its original value (so we can tell if it's reverted later).
-            var modelChanges;
-            if (modelChanges = changes[change.model.uniqueId]) {
+            var modelChanges = changes[change.model.uniqueId];
+            if (modelChanges) {
               // There are existing changes to this model. Check if it's to this property
               if (modelChanges.hasOwnProperty(change.property)) {
                 if (_.isEqual(change.newValue, modelChanges[change.property])) {

@@ -32,7 +32,7 @@
         AngularRxExtensions.install($scope);
 
         var model = $scope.observe('model');
-        var dataset = model.pluck('page').observeOnLatest('dataset');
+        var dataset = model.observeOnLatest('page.dataset');
         var fieldNameObservable = model.pluck('fieldName');
 
         var datatypeObservable = Rx.Observable.combineLatest(

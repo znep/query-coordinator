@@ -9,9 +9,9 @@ angular.module('dataCards.directives').directive('cardVisualizationColumnChart',
       AngularRxExtensions.install($scope);
 
       var model = $scope.observe('model');
-      var dataset = model.pluck('page').observeOnLatest('dataset');
-      var baseSoqlFilter = model.pluck('page').observeOnLatest('baseSoqlFilter');
-      var aggregationObservable = model.pluck('page').observeOnLatest('aggregation');
+      var dataset = model.observeOnLatest('page.dataset');
+      var baseSoqlFilter = model.observeOnLatest('page.baseSoqlFilter');
+      var aggregationObservable = model.observeOnLatest('page.aggregation');
       var dataRequests = new Rx.Subject();
       var dataResponses = new Rx.Subject();
       var unfilteredDataSequence = new Rx.Subject();

@@ -13,7 +13,7 @@ angular.module('dataCards.directives').directive('cardVisualizationTable', funct
       AngularRxExtensions.install($scope);
 
       var model = $scope.observe('model');
-      var dataset = model.pluck('page').observeOnLatest('dataset');
+      var dataset = model.observeOnLatest('page.dataset');
       var whereClause = $scope.observe('whereClause');
       var dataRequests = new Rx.Subject();
       var dataResponses = new Rx.Subject();
@@ -119,7 +119,7 @@ angular.module('dataCards.directives').directive('cardVisualizationTable', funct
 
       // The default sort is on the first card in the page layout.
       var layout = new SortedTileLayout();
-      var defaultSortColumnName = model.pluck('page').observeOnLatest('cards').map(function(cards) {
+      var defaultSortColumnName = model.observeOnLatest('page.cards').map(function(cards) {
         var sizedCards = _.compact(_.map(cards, function(card) {
           // Sorting on the table card doesn't make any sense; computed and
           // system columns are not included either.

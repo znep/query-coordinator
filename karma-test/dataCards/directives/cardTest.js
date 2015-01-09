@@ -39,6 +39,7 @@ describe("card directive", function() {
       cardModel.defineObservableProperty('expanded', false);
       cardModel.defineObservableProperty('cardSize', 1);
       cardModel.defineObservableProperty('cardType', 'column');
+      cardModel.defineObservableProperty('page', null);
       scope.cardModel = cardModel;
       el = testHelpers.TestDom.compileAndAppend(html, scope);
     });
@@ -84,6 +85,7 @@ describe("card directive", function() {
       cardModel.defineObservableProperty('expanded', false);
       cardModel.defineObservableProperty('cardSize', 1);
       cardModel.defineObservableProperty('cardType', 'column');
+      cardModel.defineObservableProperty('page', null);
       scope.cardModel = cardModel;
       el = testHelpers.TestDom.compileAndAppend(html, scope);
       el.css({

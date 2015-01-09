@@ -325,7 +325,7 @@
                         url: '/resource/' + layerObj._view.id + '.json',
                         isSODA: true,
                         params: { '$$exclude_system_fields': false,
-                                  '$where': 'any_of(objectid, ' + objectids.join(',') + ')' },
+                                  '$where': 'any_of(' + objectIdKey + ', ' + objectids.join(',') + ')' },
                         success: function(results)
                         {
                             var flyoutContent = layerObj.getFlyout(idResults, results);
@@ -401,13 +401,14 @@
         {
             var layerObj = this;
             var objectIdKey = layerObj._displayLayer.objectIdKey || 'OBJECTID';
+            var objectIdKeyLower = objectIdKey.toLowerCase(); // field names are low case
 
             if (features[0].feature) { features = _.pluck(features, 'feature'); }
 
             var rows = _.map(features, function(feature)
             {
                 var dsRow = _.detect(complementRows, function(cRow)
-                    { return cRow['objectid'] == feature.attributes[objectIdKey]; });
+                    { return cRow[objectIdKeyLower] == feature.attributes[objectIdKey]; });
 
                 var row = { data: {}, id: dsRow[':id'] };
                 _.each(feature.attributes, function(val, attr)

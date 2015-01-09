@@ -4,7 +4,7 @@ var fs = require('fs');
 var sprintf = require('sprintf');
 var _ = require('lodash');
 
-// Parse supported_browsers.json to generate BrowserStack launcher definitions.
+// Parse supported_browsers.json to generate SauceLabs launcher definitions.
 var supportedBrowsers = JSON.parse(fs.readFileSync(path.resolve(__dirname, '../../supported_browsers.json'), {encoding: 'utf8'}));
 var customLaunchers = {};
 _.forIn(supportedBrowsers, function(browserInstances, browserName) {

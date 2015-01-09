@@ -291,6 +291,29 @@ describe("Model", function() {
         grandchild.set('b', 'bar');
       });
 
+      it('should provide values when leaf values are explicitly undefined or null', function(done) {
+        var parent = new Model();
+        var expectedValues = [ null, undefined, null, undefined, 5, null];
+        var child = new Model();
+        child.defineObservableProperty('a', null);
+        parent.defineObservableProperty('child', child);
+
+        parent.observe('child.a').subscribe(function(v) {
+          var expected = expectedValues.shift();
+          expect(v).to.equal(expected);
+
+          if (_.isEmpty(expectedValues)) {
+            done();
+          }
+        }, function() { throw new Error('should not error') }, function() { throw new Error('should not complete') });
+
+        child.set('a', undefined);
+        child.set('a', null);
+        child.set('a', undefined);
+        child.set('a', 5);
+        child.set('a', null);
+      });
+
       it('should wait for properties to show up on regular objects while traversing deep keys', function(done) {
         var parent = new Model();
         var expectedValues = [ 'foo', 'bar' ];

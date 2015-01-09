@@ -112,11 +112,11 @@
 
                     // Inherit any format options from the parent column, too.
                     // Unclear why format options aren't inherited to begin with.
-                    if (parView && $.isEmptyObject(col.format))
-                    {
-                        var parCol = parView.columnForIdentifier(col.fieldName);
-                        if (!$.isEmptyObject(parCol.format))
-                        { col.format = $.extend({}, parCol.format, col.format); }
+                    if (parView && $.isEmptyObject(col.format)) {
+                      var parCol = parView.columnForIdentifier(col.fieldName);
+                      if (!$.isEmptyObject(parCol.format)) {
+                        col.format = $.extend({}, parCol.format, col.format);
+                      }
                     }
 
                     return vc;

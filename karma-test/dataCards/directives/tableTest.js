@@ -87,7 +87,6 @@ describe('table directive', function() {
   var idColumnIndex;
 
   beforeEach(module('/angular_templates/dataCards/table.html'));
-  beforeEach(module('/angular_templates/dataCards/tableHeader.html'));
 
   beforeEach(module('dataCards'));
   beforeEach(module('dataCards.directives'));

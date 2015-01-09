@@ -2,7 +2,6 @@ describe("A Table Card Visualization", function() {
   var testHelpers, rootScope, Model, Card, Page, q;
 
   beforeEach(module('/angular_templates/dataCards/table.html'));
-  beforeEach(module('/angular_templates/dataCards/tableHeader.html'));
   beforeEach(module('/angular_templates/dataCards/cardVisualizationTable.html'));
 
   beforeEach(module('dataCards'));

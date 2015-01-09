@@ -1,6 +1,20 @@
 <div class="table-inner">
   <div class="table-head">
-    <table-header ng-repeat="header in headers" header="header"></table-header>
+    <div
+      ng-repeat="header in headers"
+      class="th"
+      data-index="{{ header.index }}"
+      data-column-id="{{header.columnId}}"
+      ng-click="sortOnColumn($event, header.columnId)"
+      ng-class="{active: header.active, sortable: header.sortable}"
+      ng-style="{width: header.width+'px'}">
+      <span
+        class="caret"
+        ng-class="{sortUp: header.sortUp}"
+        ng-if="header.sortable"></span>
+      <span class="resize"></span>
+      <span>{{header.name}}</span>
+    </div>
   </div>
   <div class="table-body">
     <div class="table-expander"></div>

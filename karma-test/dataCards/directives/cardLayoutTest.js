@@ -40,7 +40,6 @@ describe('CardLayout directive', function() {
   beforeEach(module('/angular_templates/dataCards/socSelect.html'));
   beforeEach(module('/angular_templates/dataCards/spinner.html'));
   beforeEach(module('/angular_templates/dataCards/table.html'));
-  beforeEach(module('/angular_templates/dataCards/tableHeader.html'));
   beforeEach(module('/angular_templates/dataCards/timelineChart.html'));
   beforeEach(module('/angular_templates/dataCards/featureMap.html'));
   beforeEach(module('dataCards/cards.sass'));

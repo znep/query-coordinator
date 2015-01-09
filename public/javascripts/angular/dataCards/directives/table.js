@@ -67,10 +67,6 @@
           $('body').off('.{0}'.format(instanceUniqueNamespace));
         });
 
-        scope.$on('tableHeader:click', function(event, headerObject) {
-          sortOnColumn(headerObject.columnId);
-        });
-
         var renderTable = function(element, dimensions, rowCount) {
           var tableHeight = dimensions.height - element.position().top;
 
@@ -142,6 +138,11 @@
           sort = '{0} {1}'.format(columnId, newOrdering);
           updateColumnHeaders();
           reloadRows();
+        };
+
+        scope.sortOnColumn = function($event, columnId) {
+          if ($($event.target).hasClass('resize')) return;
+          sortOnColumn(columnId);
         };
 
         // Returns true if we're currently sorting

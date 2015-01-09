@@ -266,6 +266,31 @@ describe("Model", function() {
         );
       });
 
+      it('should wait for properties to become non-undefined and non-null while traversing deep keys', function(done) {
+        var parent = new Model();
+        var expectedValues = [ 'foo', undefined, 'bar' ];
+        var child = new Model();
+        child.defineObservableProperty('a', null);
+        parent.defineObservableProperty('child', child);
+
+        parent.observe('child.a.b').subscribe(function(v) {
+          var expected = expectedValues.shift();
+          expect(v).to.equal(expected);
+
+          if (_.isEmpty(expectedValues)) {
+            done();
+          }
+        }, function() { throw new Error('should not error') }, function() { throw new Error('should not complete') });
+
+        child.set('a', undefined);
+        child.set('a', {b: 'foo'});
+
+        var grandchild = new Model();
+        grandchild.defineObservableProperty('b', undefined);
+        child.set('a', grandchild);
+        grandchild.set('b', 'bar');
+      });
+
       it('should wait for properties to show up on regular objects while traversing deep keys', function(done) {
         var parent = new Model();
         var expectedValues = [ 'foo', 'bar' ];
@@ -278,7 +303,7 @@ describe("Model", function() {
           if (_.isEmpty(expectedValues)) {
             done();
           }
-        }, function() { throw new Error() }, function() { throw new Error() });
+        }, function() { throw new Error('should not error') }, function() { throw new Error('should not complete') });
 
         parent.set('child', {});
         parent.set('child', {a: 4});

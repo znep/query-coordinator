@@ -134,6 +134,8 @@ angular.module('dataCards.models').factory('Model', function(Class, ModelHelper)
     // Observes the given property. You can use dot notation to traverse deeply.
     // For example, a.observe('b.c.d'). Traversal will cross Models and plain objects.
     // Arrays are not traversed.
+    // While traversing, if a null or undefined value is encountered (but is not the leaf),
+    // will wait for that value to be defined/non-null before emitting any values.
     // When traversing Models, will throw an exception if an undefined property is encountered.
     // When traversing plain objects, will wait for that property to exist before emitting any values.
     // If propertyName is a (plain-old, regular) JS property on this
@@ -164,8 +166,12 @@ angular.module('dataCards.models').factory('Model', function(Class, ModelHelper)
           // This is the only property we're getting (no deep traversal).
           return thisLevelObs;
         } else {
-          // Keep traversing.
-          return thisLevelObs.map(function(value) {
+          // Keep traversing, but wait for undefined/non-nulls to become
+          // something.
+          function isTraversible(thing) {
+            return (typeof(thing) !== 'undefined') && (thing !== null);
+          }
+          return thisLevelObs.filter(isTraversible).map(function(value) {
             return deepGet(value, _.rest(props));
           }).switchLatest();
         }

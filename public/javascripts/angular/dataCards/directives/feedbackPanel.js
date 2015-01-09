@@ -25,7 +25,7 @@
           scope.includeScreenshot = function(e) {
 
             var usersnapConfig = {
-              customfields:[
+              customfields: [
                 {
                   name: "email",
                   type: "email",
@@ -71,6 +71,7 @@
             var scriptContent = [
               '<script type="text/javascript">',
                 '_usersnapconfig = {0};'.format(JSON.stringify(usersnapConfig)),
+                '_usersnapconfig["loadHandler"] = function() { UserSnap.openReportWindow(); };',
                 '(function() {',
                   'var s = document.createElement("script");',
                   's.type = "text/javascript";',
@@ -82,7 +83,6 @@
                 '})();',
               '</script>'
             ].join('');
-
 
             e.stopPropagation();
 

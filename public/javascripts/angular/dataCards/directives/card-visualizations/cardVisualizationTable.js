@@ -1,152 +1,161 @@
-angular.module('dataCards.directives').directive('cardVisualizationTable', function(AngularRxExtensions, CardDataService, SortedTileLayout) {
-  "use strict";
+(function() {
+
+  'use strict';
 
   var unsortable = ['geo_entity'];
   var validColumnRegex = new RegExp('^[\\d\\w_]{2}');
 
-  return {
-    restrict: 'E',
-    scope: { 'model': '=', 'whereClause': '=', 'showCount': '=?', 'firstColumn': '=?' },
-    templateUrl: '/angular_templates/dataCards/cardVisualizationTable.html',
-    link: function($scope, element, attrs) {
+  function cardVisualizationTableDirectiveFactory(AngularRxExtensions, CardDataService, SortedTileLayout) {
 
-      AngularRxExtensions.install($scope);
+    return {
+      restrict: 'E',
+      scope: { 'model': '=', 'whereClause': '=', 'showCount': '=?', 'firstColumn': '=?' },
+      templateUrl: '/angular_templates/dataCards/cardVisualizationTable.html',
+      link: function($scope, element, attrs) {
 
-      var model = $scope.observe('model');
-      var dataset = model.pluck('page').observeOnLatest('dataset');
-      var whereClause = $scope.observe('whereClause');
-      var dataRequests = new Rx.Subject();
-      var dataResponses = new Rx.Subject();
-      var rowCountSequence = new Rx.Subject();
-      var filteredRowCountSequence = new Rx.Subject();
+        AngularRxExtensions.install($scope);
 
-      $scope.$watch('showCount', function(newVal, oldVal, scope) {
-        if (!angular.isDefined(newVal)){
-          scope.showCount = true;
+        var model = $scope.observe('model');
+        var dataset = model.pluck('page').observeOnLatest('dataset');
+        var whereClause = $scope.observe('whereClause');
+        var dataRequests = new Rx.Subject();
+        var dataResponses = new Rx.Subject();
+        var rowCountSequence = new Rx.Subject();
+        var filteredRowCountSequence = new Rx.Subject();
+
+        $scope.$watch('showCount', function(newVal, oldVal, scope) {
+          if (!angular.isDefined(newVal)){
+            scope.showCount = true;
+          }
+        });
+
+        // TODO: Let's figure out how to functional-reactify this request as well.
+        $scope.getRows = function() {
+          var args = [$scope.model.page.getCurrentValue('dataset').id].concat(
+            Array.prototype.slice.call(arguments));
+          return CardDataService.getRows.apply(CardDataService, args);
+        };
+
+        function isDisplayableColumn(column) {
+          return validColumnRegex.test(column.name);
         }
-      });
 
-      // TODO: Let's figure out how to functional-reactify this request as well.
-      $scope.getRows = function() {
-        var args = [$scope.model.page.getCurrentValue('dataset').id].concat(
-          Array.prototype.slice.call(arguments));
-        return CardDataService.getRows.apply(CardDataService, args);
-      };
+        function removeSystemColumns(columns) {
+          var filteredColumns = _(columns).
+            filter(isDisplayableColumn).
+            map(function(column) {
+              column.sortable = !_.contains(unsortable, column.physicalDatatype);
+              return column;
+            }).
+            value();
+          return _.zipObject(_.pluck(filteredColumns, 'name'), filteredColumns);
+        }
 
-      function isDisplayableColumn(column) {
-        return validColumnRegex.test(column.name);
-      }
+        var columnDetails = dataset.observeOnLatest('columns').map(removeSystemColumns);
 
-      function removeSystemColumns(columns) {
-        var filteredColumns = _(columns).
-          filter(isDisplayableColumn).
-          map(function(column) {
-            column.sortable = !_.contains(unsortable, column.physicalDatatype);
-            return column;
-          }).
-          value();
-        return _.zipObject(_.pluck(filteredColumns, 'name'), filteredColumns);
-      }
+        var columnDetailsAsArray = columnDetails.map(function(val) {
+          var asArray = _.toArray(val);
+          if ($.isPresent($scope.firstColumn)) {
+            var columnName = $scope.firstColumn;
+            var columnIndex = _.findIndex(asArray, function(column) {
+              return column.name === columnName;
+            });
+            if (columnIndex >= 0) {
+              var column = asArray.splice(columnIndex, 1)[0];
+              asArray.splice(0, 0, column);
+            }
+          }
+          return asArray;
+        });
 
-      var columnDetails = dataset.observeOnLatest('columns').map(removeSystemColumns);
+        // Keep track of the number of requests that have been made and the number of
+        // responses that have come back.
+        // .scan() is necessary because the usual aggregation suspect reduce actually
+        // will not execute over a sequence until it has been completed; scan is happy
+        // to operate on active sequences.
+        var dataRequestCount = dataRequests.scan(0, function(acc, x) { return acc + 1; });
+        var dataResponseCount = dataResponses.scan(0, function(acc, x) { return acc + 1; });
 
-      var columnDetailsAsArray = columnDetails.map(function(val) {
-        var asArray = _.toArray(val);
-        if ($.isPresent($scope.firstColumn)) {
-          var columnName = $scope.firstColumn;
-          var columnIndex = _.findIndex(asArray, function(column) {
-            return column.name === columnName;
+        // If the number of requests is greater than the number of responses, we have
+        // a request in progress and we should display the spinner.
+        $scope.bindObservable('busy',
+          Rx.Observable.combineLatest(
+            dataRequestCount,
+            dataResponseCount,
+            function(requests, responses) {
+              return requests === 0 || (requests > responses);
+            }));
+
+        var rowCount = dataset.map(
+          function(dataset) {
+            dataRequests.onNext(1);
+            var dataPromise = CardDataService.getRowCount(dataset.id);
+            dataPromise.then(
+              function(res) {
+                // Ok
+                rowCountSequence.onNext(dataPromise);
+                dataResponses.onNext(1);
+              },
+              function(err) {
+                // Do nothing
+              });
+            return Rx.Observable.fromPromise(dataPromise);
           });
-          if (columnIndex >= 0) {
-            var column = asArray.splice(columnIndex, 1)[0];
-            asArray.splice(0, 0, column);
-          }
-        }
-        return asArray;
-      });
 
-      // Keep track of the number of requests that have been made and the number of
-      // responses that have come back.
-      // .scan() is necessary because the usual aggregation suspect reduce actually
-      // will not execute over a sequence until it has been completed; scan is happy
-      // to operate on active sequences.
-      var dataRequestCount = dataRequests.scan(0, function(acc, x) { return acc + 1; });
-      var dataResponseCount = dataResponses.scan(0, function(acc, x) { return acc + 1; });
+        var filteredRowCount = Rx.Observable.combineLatest(
+          dataset,
+          whereClause,
+          function(dataset, whereClause) {
+            dataRequests.onNext(1);
+            var dataPromise = CardDataService.getRowCount(dataset.id, whereClause);
+            dataPromise.then(
+              function(res) {
+                // Ok
+                filteredRowCountSequence.onNext(dataPromise);
+                dataResponses.onNext(1);
+              },
+              function(err) {
+                // Do nothing
+              });
+            return Rx.Observable.fromPromise(dataPromise);
+          });
 
-      // If the number of requests is greater than the number of responses, we have
-      // a request in progress and we should display the spinner.
-      $scope.bindObservable('busy',
-        Rx.Observable.combineLatest(
-          dataRequestCount,
-          dataResponseCount,
-          function(requests, responses) {
-            return requests === 0 || (requests > responses);
+        // The default sort is on the first card in the page layout.
+        var layout = new SortedTileLayout();
+        var defaultSortColumnName = model.pluck('page').observeOnLatest('cards').map(function(cards) {
+          var sizedCards = _.compact(_.map(cards, function(card) {
+            // Sorting on the table card doesn't make any sense; computed and
+            // system columns are not included either.
+            if (card.fieldName === '*' || card.fieldName.charAt(0) === ':') {
+              return null;
+            } else {
+              return {
+                cardSize: card.getCurrentValue('cardSize'),
+                model: card
+              };
+            }
           }));
-
-      var rowCount = dataset.map(
-        function(dataset) {
-          dataRequests.onNext(1);
-          var dataPromise = CardDataService.getRowCount(dataset.id);
-          dataPromise.then(
-            function(res) {
-              // Ok
-              rowCountSequence.onNext(dataPromise);
-              dataResponses.onNext(1);
-            },
-            function(err) {
-              // Do nothing
-            });
-          return Rx.Observable.fromPromise(dataPromise);
+          if (_.isEmpty(sizedCards)) return null;
+          var computedLayout = layout.doLayout(sizedCards);
+          var sortedCardSizes = _.keys(computedLayout).sort();
+          var cardsInFirstSize = _.flatten(computedLayout[_.first(sortedCardSizes)]);
+          return _.first(cardsInFirstSize).model.fieldName;
         });
 
-      var filteredRowCount = Rx.Observable.combineLatest(
-        dataset,
-        whereClause,
-        function(dataset, whereClause) {
-          dataRequests.onNext(1);
-          var dataPromise = CardDataService.getRowCount(dataset.id, whereClause);
-          dataPromise.then(
-            function(res) {
-              // Ok
-              filteredRowCountSequence.onNext(dataPromise);
-              dataResponses.onNext(1);
-            },
-            function(err) {
-              // Do nothing
-            });
-          return Rx.Observable.fromPromise(dataPromise);
-        });
+        $scope.bindObservable('whereClause', whereClause);
+        $scope.bindObservable('rowCount', rowCount.switchLatest());
+        $scope.bindObservable('filteredRowCount', filteredRowCount.switchLatest());
+        $scope.bindObservable('columnDetails', columnDetailsAsArray);
+        $scope.bindObservable('expanded', model.observeOnLatest('expanded'));
+        $scope.bindObservable('defaultSortColumnName', defaultSortColumnName);
 
-      // The default sort is on the first card in the page layout.
-      var layout = new SortedTileLayout();
-      var defaultSortColumnName = model.pluck('page').observeOnLatest('cards').map(function(cards) {
-        var sizedCards = _.compact(_.map(cards, function(card) {
-          // Sorting on the table card doesn't make any sense; computed and
-          // system columns are not included either.
-          if (card.fieldName === '*' || card.fieldName.charAt(0) === ':') {
-            return null;
-          } else {
-            return {
-              cardSize: card.getCurrentValue('cardSize'),
-              model: card
-            };
-          }
-        }));
-        if (_.isEmpty(sizedCards)) return null;
-        var computedLayout = layout.doLayout(sizedCards);
-        var sortedCardSizes = _.keys(computedLayout).sort();
-        var cardsInFirstSize = _.flatten(computedLayout[_.first(sortedCardSizes)]);
-        return _.first(cardsInFirstSize).model.fieldName;
-      });
+      }
+    };
 
-      $scope.bindObservable('whereClause', whereClause);
-      $scope.bindObservable('rowCount', rowCount.switchLatest());
-      $scope.bindObservable('filteredRowCount', filteredRowCount.switchLatest());
-      $scope.bindObservable('columnDetails', columnDetailsAsArray);
-      $scope.bindObservable('expanded', model.observeOnLatest('expanded'));
-      $scope.bindObservable('defaultSortColumnName', defaultSortColumnName);
+  }
 
-    }
-  };
+  angular.
+    module('dataCards.directives').
+    directive('cardVisualizationTable', cardVisualizationTableDirectiveFactory);
 
-});
+})();

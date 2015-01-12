@@ -13,7 +13,6 @@
     beforeEach(module('/angular_templates/dataCards/cardVisualizationSearch.html'));
     beforeEach(module('/angular_templates/dataCards/cardVisualizationTable.html'));
     beforeEach(module('/angular_templates/dataCards/table.html'));
-    beforeEach(module('/angular_templates/dataCards/tableHeader.html'));
     beforeEach(module('/angular_templates/dataCards/clearableInput.html'));
 
     beforeEach(module('dataCards'));

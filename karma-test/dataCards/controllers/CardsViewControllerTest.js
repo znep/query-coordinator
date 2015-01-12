@@ -116,7 +116,6 @@ describe('CardsViewController', function() {
   beforeEach(module('/angular_templates/dataCards/clearableInput.html'));
   beforeEach(module('/angular_templates/dataCards/table.html'));
   beforeEach(module('/angular_templates/dataCards/timelineChart.html'));
-  beforeEach(module('/angular_templates/dataCards/tableHeader.html'));
   beforeEach(module('/angular_templates/dataCards/feedbackPanel.html'));
 
   beforeEach(function() {
@@ -530,7 +529,7 @@ describe('CardsViewController', function() {
   });
 
   describe('page unsaved state', function() {
-    it('should set hasChanges to true when a property changes on any model hooked to the page', function() {
+    it('should set hasChanges to true when a property changes on any model hooked to the page, then back to false when changed back to its original value', function() {
       var controllerHarness = makeController();
       var $scope = controllerHarness.$scope;
 
@@ -538,6 +537,9 @@ describe('CardsViewController', function() {
 
       $scope.page.set('name', 'name2');
       expect($scope.hasChanges).to.be.true;
+
+      $scope.page.set('name', 'test dataset name');
+      expect($scope.hasChanges).to.be.falsy;
     });
 
     it('should call PageDataService.save when savePage is called with hasChanges = true', function() {
@@ -769,7 +771,7 @@ describe('CardsViewController', function() {
 
       var flyout = $('.flyout-title');
       expect(flyout.length).to.equal(1);
-      expect(flyout.text().indexOf('Customizing while a card is')).to.be.greaterThan(-1);
+      expect(flyout.text().indexOf('To enter customization mode:')).to.be.greaterThan(-1);
     });
 
   });

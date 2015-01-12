@@ -298,18 +298,13 @@
     // Bind save status related things so the UI reflects them.
     $scope.bindObservable('saveStatus', currentPageSaveEvents.pluck('status'));
 
-    // We've got changes if the last action was an edit (vs. a save).
-    // All sets map to true, and all saves map to false. Thus, the latest
-    // value is what we want to set to hasChanges.
-    var hasChangesObservable = Rx.Observable.merge(
-      page.observePropertyChangesRecursively().map(_.constant(true)),
-      currentPageSaveEvents.filter(function(event) { return event.status === 'saved'; }).map(_.constant(false))
-    );
-    $scope.bindObservable(
-      'hasChanges',
-      hasChangesObservable
-    );
-    $scope.emitEventsFromObservable('page:dirtied', hasChangesObservable.filter(_.identity));
+    // Track whether there've been changes to the page.
+    // If we save the page, reset the dirtiness of the model.
+    currentPageSaveEvents.filter(function(event) { return event.status === 'saved'; }).
+      subscribe(_.bind(page.resetDirtied, page));
+    $scope.bindObservable('hasChanges', page.observeDirtied());
+
+    $scope.emitEventsFromObservable('page:dirtied', page.observeDirtied().filter(_.identity));
 
     function notifyUserOfSaveProgress(savePromise, publishTo) {
       var savedMessagePersistenceMsec = 3000;
@@ -496,9 +491,9 @@
     // Flyout for the 'customize' button, for when it's disabled.
     FlyoutService.register('cards-edit-disabled', function() {
       return '<div class="flyout-title">' + [
-        'Customizing while a card is expanding',
-        'is coming soon. For now, collapse the',
-        'expanded card to customize.'].join('<br/>') +
+        'To enter customization mode:',
+        'Collapse the big card using the',
+        'arrows in its top right corner.'].join('<br/>') +
         '</div>';
     });
 

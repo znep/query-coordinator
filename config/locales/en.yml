@@ -851,7 +851,7 @@ en:
           account_options: Account Options
           account_tooltip: View and make changes to your user account.
           configuration: Configuration
-          configuration_title: Manage GovStat configuration
+          configuration_title: Manage Open Performance configuration
           data: Data
           data_title: Browse and Manage Data
           goals: Goals

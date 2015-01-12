@@ -3,7 +3,7 @@
 
   // This is just a copy/paste from lib/data/card-type-mapping.json
   var CARD_TYPE_MAPPING = {
-    "map": {
+    "mapping": {
       "boolean": [
         { "type": "column" }
       ],

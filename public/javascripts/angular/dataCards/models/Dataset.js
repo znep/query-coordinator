@@ -145,7 +145,7 @@ angular.module('dataCards.models').factory('Dataset', function(ModelHelper, Mode
 
       converted.version = '0.1';
 
-      // New column metadata includes cardinality no logicalDataype.
+      // New column metadata includes cardinality and no logicalDataype.
       _.each(converted.columns, function(column) {
         column.cardinality = getDefaultCardinality();
         delete column.logicalDatatype;

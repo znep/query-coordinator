@@ -48,11 +48,11 @@
 
     function overrideMap(map) {
       var mapping = {
-        map: map,
+        mapping: map,
         cardinality: {
           threshold: 35,
           min: 2,
-          default: 90000000
+          default: 9007199254740992
         },
         version: '0.3'
       };
@@ -65,8 +65,8 @@
       describe('for a defined physical datatype', function() {
         describe('with only one visualization defined with no onlyIf conditions', function() {
           it('should return the single visualization', function() {
-            overrideMap({ testPT: [ { type: 'testViz' } ] });
-            expect(CardTypeMapping.availableVisualizationsForColumn(createLowCardinalityColumn('testPT'))).to.deep.equal(['testViz']);
+            overrideMap({ testPhysicalDatatype: [ { type: 'testViz' } ] });
+            expect(CardTypeMapping.availableVisualizationsForColumn(createLowCardinalityColumn('testPhysicalDatatype'))).to.deep.equal(['testViz']);
           });
         });
 
@@ -74,7 +74,7 @@
           describe('that is invalid', function() {
             it('should throw', function() {
               overrideMap({
-                testPT: [ 
+                testPhysicalDatatype: [
                   {
                     type: 'testViz',
                     onlyIf: 'isNotACondition'
@@ -82,13 +82,13 @@
                 ]
               });
               expect(function() {
-                CardTypeMapping.availableVisualizationsForColumn(createLowCardinalityColumn('testPT'));
+                CardTypeMapping.availableVisualizationsForColumn(createLowCardinalityColumn('testPhysicalDatatype'));
               }).to.throw();;
             });
           });
           describe('that is isLowCardinality', function() {
             var map = {
-              testPT: [ 
+              testPhysicalDatatype: [
                 {
                   type: 'testViz',
                   onlyIf: 'isLowCardinality'
@@ -98,19 +98,19 @@
             describe('that evaluates to true', function() {
               it('should return the single visualization', function() {
                 overrideMap(map);
-                expect(CardTypeMapping.availableVisualizationsForColumn(createLowCardinalityColumn('testPT'))).to.deep.equal(['testViz']);
+                expect(CardTypeMapping.availableVisualizationsForColumn(createLowCardinalityColumn('testPhysicalDatatype'))).to.deep.equal(['testViz']);
               });
             });
             describe('that evaluates to false', function() {
               it('should return an empty array', function() {
                 overrideMap(map);
-                expect(CardTypeMapping.availableVisualizationsForColumn(createHighCardinalityColumn('testPT'))).to.deep.equal([]);
+                expect(CardTypeMapping.availableVisualizationsForColumn(createHighCardinalityColumn('testPhysicalDatatype'))).to.deep.equal([]);
               });
             });
           });
           describe('that is isHighCardinality', function() {
             var map = {
-              testPT: [ 
+              testPhysicalDatatype: [
                 {
                   type: 'testViz',
                   onlyIf: 'isHighCardinality'
@@ -120,19 +120,19 @@
             describe('that evaluates to true', function() {
               it('should return the single visualization', function() {
                 overrideMap(map);
-                expect(CardTypeMapping.availableVisualizationsForColumn(createHighCardinalityColumn('testPT'))).to.deep.equal(['testViz']);
+                expect(CardTypeMapping.availableVisualizationsForColumn(createHighCardinalityColumn('testPhysicalDatatype'))).to.deep.equal(['testViz']);
               });
             });
             describe('that evaluates to false', function() {
               it('should return an empty array', function() {
                 overrideMap(map);
-                expect(CardTypeMapping.availableVisualizationsForColumn(createLowCardinalityColumn('testPT'))).to.deep.equal([]);
+                expect(CardTypeMapping.availableVisualizationsForColumn(createLowCardinalityColumn('testPhysicalDatatype'))).to.deep.equal([]);
               });
             });
           });
           describe('that is isGeoregionComputed', function() {
             var map = {
-              testPT: [ 
+              testPhysicalDatatype: [
                 {
                   type: 'testViz',
                   onlyIf: 'isGeoregionComputed'
@@ -142,11 +142,11 @@
             describe('that evaluates to true', function() {
               it('should return the single visualization', function() {
                 overrideMap(map);
-                var geoColumnOnString = createLowCardinalityColumn('testPT');
+                var geoColumnOnString = createLowCardinalityColumn('testPhysicalDatatype');
                 geoColumnOnString.computationStrategy = 'georegion_match_on_string';
                 expect(CardTypeMapping.availableVisualizationsForColumn(geoColumnOnString)).to.deep.equal(['testViz']);
 
-                var geoColumnOnPoint = createLowCardinalityColumn('testPT');
+                var geoColumnOnPoint = createLowCardinalityColumn('testPhysicalDatatype');
                 geoColumnOnPoint.computationStrategy = 'georegion_match_on_point';
                 expect(CardTypeMapping.availableVisualizationsForColumn(geoColumnOnPoint)).to.deep.equal(['testViz']);
               });
@@ -154,10 +154,10 @@
             describe('that evaluates to false', function() {
               it('should return an empty array', function() {
                 overrideMap(map);
-                var nonComputedColumn = createLowCardinalityColumn('testPT');
+                var nonComputedColumn = createLowCardinalityColumn('testPhysicalDatatype');
                 expect(CardTypeMapping.availableVisualizationsForColumn(nonComputedColumn)).to.deep.equal([]);
 
-                var columnComputedInSomeOtherWay = createLowCardinalityColumn('testPT');
+                var columnComputedInSomeOtherWay = createLowCardinalityColumn('testPhysicalDatatype');
                 columnComputedInSomeOtherWay.computationStrategy = 'some_magical_computation_strategy';
                 expect(CardTypeMapping.availableVisualizationsForColumn(columnComputedInSomeOtherWay)).to.deep.equal([]);
               });
@@ -167,30 +167,30 @@
         describe('with multiple defined visualizations', function() {
           describe('when all visualizations have no onlyIf', function() {
             it('should return all visualizations', function() {
-              overrideMap({ testPT: [ { type: 'testViz1' }, { type: 'testViz2'}, { type: 'testViz3', defaultIf: 'isHighCardinality' } ] });
-              expect(CardTypeMapping.availableVisualizationsForColumn(createLowCardinalityColumn('testPT'))).to.deep.equal(['testViz1', 'testViz2', 'testViz3']);
+              overrideMap({ testPhysicalDatatype: [ { type: 'testViz1' }, { type: 'testViz2'}, { type: 'testViz3', defaultIf: 'isHighCardinality' } ] });
+              expect(CardTypeMapping.availableVisualizationsForColumn(createLowCardinalityColumn('testPhysicalDatatype'))).to.deep.equal(['testViz1', 'testViz2', 'testViz3']);
             });
           });
           describe('when only some visualizations have an onlyIf evaluating to true', function() {
             it('should return the visualizations which are not excluded', function() {
-              overrideMap({ testPT: [
+              overrideMap({ testPhysicalDatatype: [
                 { type: 'testViz1' },
                 { type: 'testViz2', onlyIf: 'isHighCardinality' },
                 { type: 'testViz3', onlyIf: 'isLowCardinality' },
                 { type: 'testViz4', defaultIf: 'isHighCardinality' }
               ]});
-              expect(CardTypeMapping.availableVisualizationsForColumn(createLowCardinalityColumn('testPT'))).to.deep.equal(
+              expect(CardTypeMapping.availableVisualizationsForColumn(createLowCardinalityColumn('testPhysicalDatatype'))).to.deep.equal(
                 ['testViz1', 'testViz3', 'testViz4']
               );
             });
           });
           describe('when no visualizations have an onlyIf evaluating to true', function() {
             it('should return an empty array', function() {
-              overrideMap({ testPT: [
+              overrideMap({ testPhysicalDatatype: [
                 { type: 'testViz1', onlyIf: 'isHighCardinality' },
                 { type: 'testViz2', onlyIf: 'isGeoregionComputed' }
               ]});
-              expect(CardTypeMapping.availableVisualizationsForColumn(createLowCardinalityColumn('testPT'))).to.deep.equal([]);
+              expect(CardTypeMapping.availableVisualizationsForColumn(createLowCardinalityColumn('testPhysicalDatatype'))).to.deep.equal([]);
             });
           });
         });
@@ -198,7 +198,7 @@
       });
       describe('for an undefined physical datatype', function() {
         it('should return an empty array', function() { // I'm unconvinced by this desired behavior, maybe it should throw?...
-          overrideMap({ testPT: [ { type: 'testViz' } ] });
+          overrideMap({ testPhysicalDatatype: [ { type: 'testViz' } ] });
           expect(CardTypeMapping.availableVisualizationsForColumn(createLowCardinalityColumn('invalidDatatype'))).to.deep.equal([]);
         });
       });
@@ -208,8 +208,8 @@
       describe('for a defined physical datatype', function() {
         describe('with only one visualization defined with no defaultIf conditions', function() {
           it('should return the single visualization', function() {
-            overrideMap({ testPT: [ { type: 'testViz' } ] });
-            expect(CardTypeMapping.defaultVisualizationForColumn(createLowCardinalityColumn('testPT'))).to.equal('testViz');
+            overrideMap({ testPhysicalDatatype: [ { type: 'testViz' } ] });
+            expect(CardTypeMapping.defaultVisualizationForColumn(createLowCardinalityColumn('testPhysicalDatatype'))).to.equal('testViz');
           });
         });
 
@@ -217,7 +217,7 @@
           describe('that is invalid', function() {
             it('should throw', function() {
               overrideMap({
-                testPT: [ 
+                testPhysicalDatatype: [ 
                   {
                     type: 'testViz',
                     defaultIf: 'isNotACondition'
@@ -225,14 +225,14 @@
                 ]
               });
               expect(function() {
-                CardTypeMapping.defaultVisualizationForColumn(createLowCardinalityColumn('testPT'));
+                CardTypeMapping.defaultVisualizationForColumn(createLowCardinalityColumn('testPhysicalDatatype'));
               }).to.throw();;
             });
           });
           // Assuming that other expressions work, as they are exercised in availableVisualizationsForColumn tests.
           describe('that is isLowCardinality', function() {
             var map = {
-              testPT: [ 
+              testPhysicalDatatype: [ 
                 {
                   type: 'testViz',
                   defaultIf: 'isLowCardinality'
@@ -242,43 +242,43 @@
             describe('that evaluates to either true or false', function() {
               it('should return the single visualization', function() {
                 overrideMap(map);
-                expect(CardTypeMapping.defaultVisualizationForColumn(createLowCardinalityColumn('testPT'))).to.equal('testViz');;
-                expect(CardTypeMapping.defaultVisualizationForColumn(createHighCardinalityColumn('testPT'))).to.equal('testViz');;
+                expect(CardTypeMapping.defaultVisualizationForColumn(createLowCardinalityColumn('testPhysicalDatatype'))).to.equal('testViz');;
+                expect(CardTypeMapping.defaultVisualizationForColumn(createHighCardinalityColumn('testPhysicalDatatype'))).to.equal('testViz');;
               });
             });
           });
         });
         describe('with multiple defined visualizations', function() {
           describe('when only some visualizations have an onlyIf evaluating to true', function() {
-            it('should return the first visualization which is  not excluded', function() {
-              overrideMap({ testPT: [
+            it('should return the first visualization which is not excluded', function() {
+              overrideMap({ testPhysicalDatatype: [
                 { type: 'testViz1', onlyIf: 'isHighCardinality' },
                 { type: 'testViz2', onlyIf: 'isHighCardinality' },
                 { type: 'testViz3', onlyIf: 'isLowCardinality' },
                 { type: 'testViz4', onlyIf: 'isLowCardinality' }
               ]});
-              expect(CardTypeMapping.defaultVisualizationForColumn(createLowCardinalityColumn('testPT'))).to.equal('testViz3');
+              expect(CardTypeMapping.defaultVisualizationForColumn(createLowCardinalityColumn('testPhysicalDatatype'))).to.equal('testViz3');
             });
           });
           describe('when no visualizations have an onlyIf evaluating to true', function() {
             it('should return undefined', function() {
-              overrideMap({ testPT: [
+              overrideMap({ testPhysicalDatatype: [
                 { type: 'testViz1', onlyIf: 'isHighCardinality' },
                 { type: 'testViz2', onlyIf: 'isGeoregionComputed' }
               ]});
-              expect(CardTypeMapping.defaultVisualizationForColumn(createLowCardinalityColumn('testPT'))).to.equal(undefined);
+              expect(CardTypeMapping.defaultVisualizationForColumn(createLowCardinalityColumn('testPhysicalDatatype'))).to.equal(undefined);
             });
           });
           describe('when faced with defaultIf expressions', function() {
             describe('when all visualizations have defaultIf evaluating to true', function() {
               describe('but some have onlyIf evaluating to false', function() {
                 it('should return the first unexcluded visualization', function() {
-                  overrideMap({ testPT: [
+                  overrideMap({ testPhysicalDatatype: [
                     { type: 'testViz1', defaultIf: 'isLowCardinality', onlyIf: 'isHighCardinality'},
                     { type: 'testViz2', defaultIf: 'isLowCardinality' },
                     { type: 'testViz3', defaultIf: 'isGeoregionComputed' }
                   ]});
-                  var lowCardinalityGeoColumnOnString = createLowCardinalityColumn('testPT');
+                  var lowCardinalityGeoColumnOnString = createLowCardinalityColumn('testPhysicalDatatype');
                   lowCardinalityGeoColumnOnString.computationStrategy = 'georegion_match_on_string';
 
                   expect(CardTypeMapping.defaultVisualizationForColumn(lowCardinalityGeoColumnOnString)).to.equal('testViz2');
@@ -286,11 +286,11 @@
               });
 
               it('should return the first visualization', function() {
-                overrideMap({ testPT: [
+                overrideMap({ testPhysicalDatatype: [
                   { type: 'testViz1', defaultIf: 'isGeoregionComputed' },
                   { type: 'testViz2', defaultIf: 'isLowCardinality' }
                 ]});
-                var lowCardinalityGeoColumnOnString = createLowCardinalityColumn('testPT');
+                var lowCardinalityGeoColumnOnString = createLowCardinalityColumn('testPhysicalDatatype');
                 lowCardinalityGeoColumnOnString.computationStrategy = 'georegion_match_on_string';
 
                 expect(CardTypeMapping.defaultVisualizationForColumn(lowCardinalityGeoColumnOnString)).to.equal('testViz1');
@@ -298,23 +298,23 @@
             });
             describe('when some columns have no defaultIf but the rest do', function() {
               it('should return the first visualization with a defaultIf = true', function() {
-                overrideMap({ testPT: [
+                overrideMap({ testPhysicalDatatype: [
                   { type: 'testViz1' },
                   { type: 'testViz2', defaultIf: 'isHighCardinality' },
                   { type: 'testViz3', defaultIf: 'isLowCardinality' },
                   { type: 'testViz4', defaultIf: 'isLowCardinality' }
                 ]});
-                expect(CardTypeMapping.defaultVisualizationForColumn(createLowCardinalityColumn('testPT'))).to.equal('testViz3');
+                expect(CardTypeMapping.defaultVisualizationForColumn(createLowCardinalityColumn('testPhysicalDatatype'))).to.equal('testViz3');
               });
             });
             describe('when some columns have no defaultIf but the rest do, all evaluating to false', function() {
               it('should return the first visualization with no defaultIf expression', function() {
-                overrideMap({ testPT: [
+                overrideMap({ testPhysicalDatatype: [
                   { type: 'testViz1', defaultIf: 'isHighCardinality' },
                   { type: 'testViz2', defaultIf: 'isGeoregionComputed' },
                   { type: 'testViz3' }
                 ]});
-                expect(CardTypeMapping.defaultVisualizationForColumn(createLowCardinalityColumn('testPT'))).to.equal('testViz3');
+                expect(CardTypeMapping.defaultVisualizationForColumn(createLowCardinalityColumn('testPhysicalDatatype'))).to.equal('testViz3');
               });
             });
           });
@@ -323,7 +323,7 @@
       });
       describe('for an undefined physical datatype', function() {
         it('should return undefined', function() {
-          overrideMap({ testPT: [ { type: 'testViz' } ] });
+          overrideMap({ testPhysicalDatatype: [ { type: 'testViz' } ] });
           expect(CardTypeMapping.defaultVisualizationForColumn(createLowCardinalityColumn('invalidDatatype'))).to.equal(undefined);
         });
       });
@@ -332,16 +332,16 @@
 
     describe('visualizationSupportedForColumn', function() {
       it('should return false for an unsupported physical datatype', function() {
-          overrideMap({ testPT: [ { type: 'column' } ] });
+          overrideMap({ testPhysicalDatatype: [ { type: 'column' } ] });
           expect(CardTypeMapping.visualizationSupportedForColumn(createLowCardinalityColumn('lol_wrong'))).to.equal(false);
       });
       it('should return false for an unsupported visualization', function() {
-          overrideMap({ testPT: [ { type: 'pie_charts_yeah_right' } ] });
-          expect(CardTypeMapping.visualizationSupportedForColumn(createLowCardinalityColumn('testPT'))).to.equal(false);
+          overrideMap({ testPhysicalDatatype: [ { type: 'pie_charts_yeah_right' } ] });
+          expect(CardTypeMapping.visualizationSupportedForColumn(createLowCardinalityColumn('testPhysicalDatatype'))).to.equal(false);
       });
       it('should return true if at least one visualization is supported', function() {
-          overrideMap({ testPT: [ { type: 'unsupported' }, { type: 'column' }, { type: 'also_unsupported' } ] });
-          expect(CardTypeMapping.visualizationSupportedForColumn(createLowCardinalityColumn('testPT'))).to.equal(true);
+          overrideMap({ testPhysicalDatatype: [ { type: 'unsupported' }, { type: 'column' }, { type: 'also_unsupported' } ] });
+          expect(CardTypeMapping.visualizationSupportedForColumn(createLowCardinalityColumn('testPhysicalDatatype'))).to.equal(true);
       });
     });
 

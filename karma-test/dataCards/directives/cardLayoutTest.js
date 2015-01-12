@@ -128,8 +128,8 @@ describe('CardLayout directive', function() {
     datasetModel.defineObservableProperty('rowDisplayUnit', 'row');
     datasetModel.defineObservableProperty('columns', {
       // Define some columns of different types, so we can create different types of cards
-      statBar_column: {
-        name: 'statBar_column',
+      'stat_bar_column': {
+        name: 'stat_bar_column',
         title: 'test column title',
         description: 'test column description',
         cardinality: 1000,
@@ -895,7 +895,7 @@ describe('CardLayout directive', function() {
       });
 
       it('should assign the correct card size when dragged over a placeholder', function() {
-        var cl = createLayoutWithCards([{fieldName: 'statBar_column'}, {fieldName: '*'}]);
+        var cl = createLayoutWithCards([{fieldName: 'stat_bar_column'}, {fieldName: '*'}]);
         cl.outerScope.editMode = true;
         cl.outerScope.$apply();
 

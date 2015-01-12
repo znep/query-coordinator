@@ -13,7 +13,7 @@ describe('Card model', function() {
     ServerConfig = $injector.get('ServerConfig');
     ServerConfig.setup({
       oduxCardTypeMapping: {
-        'map': {
+        'mapping': {
           'number': [ { type: 'column' } ]
         }
       }

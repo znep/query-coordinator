@@ -220,7 +220,7 @@ class NewUxBootstrapControllerTest < ActionController::TestCase
 
             assert(page['cards'].any? do |card|
               card['fieldName'] == 'none' && card['cardType'] == 'numberHistogram'
-            end, 'A column with no cardinality should default to its high-cardinality default')
+            end, 'A column with no cardinality should default to high-cardinality')
 
             assert(page['cards'].none? do |card|
               card['fieldName'] == 'below'
@@ -337,24 +337,12 @@ class NewUxBootstrapControllerTest < ActionController::TestCase
 
   def mock_dataset_metadata
     # A sampling of datatypes that map to >1 cardtype.
-    multiple_cardtype_types =  [
-      'money',
-      'number',
-      'text'
-    ]
+    multiple_cardtype_types =  %w(money number text)
 
     # A sampling of datatypes that map to only one cardtype, regardless of cardinality.
-    single_cardtype_types = [
-      'boolean',
-      'floating_timestamp',
-      'geo_entity',
-      'point'
-    ]
+    single_cardtype_types = %w(boolean floating_timestamp geo_entity point)
       
-    no_cardtype_types = [
-      '*',
-      'time'
-    ]
+    no_cardtype_types = %w(* time)
 
     multi_cardtype_cols = columns_for_cardtypes(multiple_cardtype_types, 'multi')
     single_cardtype_cols = columns_for_cardtypes(single_cardtype_types, 'single')

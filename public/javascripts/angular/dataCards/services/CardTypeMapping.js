@@ -18,7 +18,7 @@
   // (a) is straightforward. (b) is a little more tricky.
   // Regarding each key-value pairs in (b):
   // - The key is a physical datatype (number, text, etc).
-  // - The value is an array of possibly-supprted card types, each one with optional expressions (1) to
+  // - The value is an array of possibly-supported card types, each one with optional expressions (1) to
   //   determine availability and default status (2).
   //
   // (1) An "expression" is really a keyword, no math is supported. Valid expressions are:
@@ -74,7 +74,7 @@
           },
           'required': [ 'min', 'threshold', 'default' ]
         },
-        'map': {
+        'mapping': {
           'type': 'object',
           'patternProperties': {
             '.*': {
@@ -91,11 +91,14 @@
             }
           }
         },
-        'required': [ 'map', 'cardinality', 'version' ]
+        'required': [ 'mapping', 'cardinality', 'version' ]
       }
     });
 
-    function computeAvailableCardTypesInPreferenceOrder(candidateCardTypes, column) {
+    // Given an array of card type mappings and a column metadata blob,
+    // filter and sort the card types mappings based on the mappings' onlyIf
+    // and defaultIf entries.
+    function filterAndSortCardTypes(candidateCardTypes, column) {
 
       function computeExpressionValue(expression) {
         var values = {
@@ -161,10 +164,10 @@
       }
 
       physicalDatatype = column.physicalDatatype;
-      physicalDatatypeMapping = getCardTypeMapping().map[physicalDatatype];
+      physicalDatatypeMapping = getCardTypeMapping().mapping[physicalDatatype];
 
       if (physicalDatatypeMapping) {
-        cardTypes = computeAvailableCardTypesInPreferenceOrder(physicalDatatypeMapping, column);
+        cardTypes = filterAndSortCardTypes(physicalDatatypeMapping, column);
       } else {
         warnOnceOnUnknownPhysicalType(physicalDatatype);
       }

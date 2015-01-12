@@ -67,6 +67,11 @@
       });
 
       this.options.clearButton.on('click', function() {
+        var $link = $(_this.options.linkInSelection);
+        var linkText = $link.html();
+        $link.parent().html();
+        $link.parent().html(linkText);
+
         _this.options.urlInput.val(_this.options.defaultUrl);
         _this.options.dirty = true;
         _this._setClearButtonState();
@@ -207,6 +212,7 @@
           this.lastSelection.setEndAfter(selectionStart);
           window.getSelection().addRange(this.lastSelection);
         }
+
         this.options.execCommandOverride('unlink', null, '');
       } else {
         if (!(/:\/\//.test(link)) && !(/^mailto:/.test(link))) {
@@ -223,7 +229,6 @@
       this.options.dirty = false;
       this.options.editable.element.trigger('change');
       this.options.editable.removeAllSelections();
-
       this.options.editable.element.trigger('hallounselected');
     },
 

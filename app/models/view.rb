@@ -687,7 +687,7 @@ class View < Model
   end
 
   def is_blist?
-    flag?("default") && is_tabular?
+    flag?("default") && is_tabular? && !is_arcgis? # allow modifying view_format for arcgis
   end
 
   # TODO This is a temporary method to be removed after SoQL merging is supported post 2014Q1

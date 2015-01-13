@@ -1,108 +1,9 @@
 (function() {
   'use strict';
 
-  // Use a wide screen for this file. There is a ton of stuff and we're trying to fit
-  // it into a small space.
-
-  var mapping = [
-
-    // Amount
-    { physical: 'number', logical: 'amount', expectedDefault: null, expectedAvailable: [], supported: false },                       // UNSUPPORTED
-    { physical: 'point', logical: 'amount', expectedDefault: null, expectedAvailable: [], supported: false },                        // UNSUPPORTED
-    { physical: 'text', logical: 'amount', expectedDefault: null, expectedAvailable: [], supported: false },                         // UNSUPPORTED
-    { physical: 'geo_entity', logical: 'amount', expectedDefault: null, expectedAvailable: [], supported: false },                   // UNSUPPORTED
-    { physical: 'timestamp', logical: 'amount', expectedDefault: null, expectedAvailable: [], supported: false },                    // UNSUPPORTED
-    { physical: 'fixed_timestamp', logical: 'amount', expectedDefault: null, expectedAvailable: [], supported: false },              // UNSUPPORTED
-    { physical: 'floating_timestamp', logical: 'amount', expectedDefault: null, expectedAvailable: [], supported: false },           // UNSUPPORTED
-    { physical: 'boolean', logical: 'amount', expectedDefault: null, expectedAvailable: [], supported: false },                      // UNSUPPORTED
-    { physical: 'money', logical: 'amount', expectedDefault: null, expectedAvailable: [], supported: false },                        // UNSUPPORTED
-
-    // Category
-    { physical: 'number', logical: 'category', expectedDefault: 'column', expectedAvailable: ['column', 'search'], supported: true },
-    { physical: 'point', logical: 'category', expectedDefault: null, expectedAvailable: [], supported: false },                      // UNSUPPORTED
-    { physical: 'text', logical: 'category', expectedDefault: 'column', expectedAvailable: ['column', 'search'], supported: true },
-    { physical: 'geo_entity', logical: 'category', expectedDefault: null, expectedAvailable: [], supported: false },                 // UNSUPPORTED
-    { physical: 'timestamp', logical: 'category', expectedDefault: 'column', expectedAvailable: ['column'], supported: true },
-    { physical: 'fixed_timestamp', logical: 'category', expectedDefault: 'column', expectedAvailable: ['column'], supported: true },
-    { physical: 'floating_timestamp', logical: 'category', expectedDefault: 'column', expectedAvailable: ['column'], supported: true },
-    { physical: 'boolean', logical: 'category', expectedDefault: 'column', expectedAvailable: ['column'], supported: true },
-    { physical: 'money', logical: 'category', expectedDefault: 'column', expectedAvailable: ['column'], supported: true },
-
-    // Identifier
-    { physical: 'number', logical: 'identifier', expectedDefault: 'search', expectedAvailable: ['search', 'column'], supported: true },
-    { physical: 'point', logical: 'identifier', expectedDefault: null, expectedAvailable: [], supported: false },                    // UNSUPPORTED
-    { physical: 'text', logical: 'identifier', expectedDefault: 'search', expectedAvailable: ['search', 'column'], supported: true },
-    { physical: 'geo_entity', logical: 'identifier', expectedDefault: null, expectedAvailable: [], supported: false },               // UNSUPPORTED
-    { physical: 'timestamp', logical: 'identifier', expectedDefault: 'timeline', expectedAvailable: ['timeline'], supported: true },
-    { physical: 'fixed_timestamp', logical: 'identifier', expectedDefault: 'timeline', sexpectedAvailable: ['timeline'], supported: true },
-    { physical: 'floating_timestamp', logical: 'identifier', expectedDefault: 'timeline', expectedAvailable: ['timeline'], supported: true },
-    { physical: 'boolean', logical: 'identifier', expectedDefault: null, expectedAvailable: [], supported: false },                  // UNSUPPORTED
-    { physical: 'money', logical: 'identifier', expectedDefault: 'search', expectedAvailable: ['search'], supported: true },
-
-    // Location
-    { physical: 'number', logical: 'location', expectedDefault: 'choropleth', expectedAvailable: ['choropleth'], supported: true },
-    { physical: 'point', logical: 'location', expectedDefault: 'feature', expectedAvailable: ['feature'], supported: true },
-    { physical: 'text', logical: 'location', expectedDefault: null, expectedAvailable: [], supported: false },                       // UNSUPPORTED
-    { physical: 'geo_entity', logical: 'location', expectedDefault: null, expectedAvailable: [], supported: false },                 // UNSUPPORTED
-    { physical: 'timestamp', logical: 'location', expectedDefault: null, expectedAvailable: [], supported: false },                  // UNSUPPORTED
-    { physical: 'fixed_timestamp', logical: 'location', expectedDefault: null, expectedAvailable: [], supported: false },            // UNSUPPORTED
-    { physical: 'floating_timestamp', logical: 'location', expectedDefault: null, expectedAvailable: [], supported: false },         // UNSUPPORTED
-    { physical: 'boolean', logical: 'location', expectedDefault: null, expectedAvailable: [], supported: false },                    // UNSUPPORTED
-    { physical: 'money', logical: 'location', expectedDefault: null, expectedAvailable: [], supported: false },                      // UNSUPPORTED
-
-    // Time
-    { physical: 'number', logical: 'time', expectedDefault: 'timeline', expectedAvailable: ['timeline'], supported: true },
-    { physical: 'point', logical: 'time', expectedDefault: null, expectedAvailable: [], supported: false },                          // UNSUPPORTED
-    { physical: 'text', logical: 'time', expectedDefault: null, expectedAvailable: [], supported: false },                           // UNSUPPORTED
-    { physical: 'geo_entity', logical: 'time', expectedDefault: null, expectedAvailable: [], supported: false },                     // UNSUPPORTED
-    { physical: 'timestamp', logical: 'time', expectedDefault: 'timeline', expectedAvailable: ['timeline'], supported: true },
-    { physical: 'fixed_timestamp', logical: 'time', expectedDefault: 'timeline', expectedAvailable: ['timeline'], supported: true },
-    { physical: 'floating_timestamp', logical: 'time', expectedDefault: 'timeline', expectedAvailable: ['timeline'], supported: true },
-    { physical: 'boolean', logical: 'time', expectedDefault: null, expectedAvailable: [], supported: false },                        // UNSUPPORTED
-    { physical: 'money', logical: 'time', expectedDefault: 'timeline', expectedAvailable: ['timeline'], supported: true },
-
-    // Text
-    { physical: 'number', logical: 'text', expectedDefault: 'search', expectedAvailable: ['search', 'column'], supported: true },
-    { physical: 'point', logical: 'text', expectedDefault: null, expectedAvailable: [], supported: false },                          // UNSUPPORTED
-    { physical: 'text', logical: 'text', expectedDefault: 'search', expectedAvailable: ['search', 'column'], supported: true },
-    { physical: 'geo_entity', logical: 'text', expectedDefault: null, expectedAvailable: [], supported: false },                     // UNSUPPORTED
-    { physical: 'timestamp', logical: 'text', expectedDefault: 'timeline', expectedAvailable: ['timeline'], supported: true },
-    { physical: 'fixed_timestamp', logical: 'text', expectedDefault: 'timeline', expectedAvailable: ['timeline'], supported: true },
-    { physical: 'floating_timestamp', logical: 'text', expectedDefault: 'timeline', expectedAvailable: ['timeline'], supported: true },
-    { physical: 'boolean', logical: 'text', expectedDefault: null, expectedAvailable: [], supported: false },                        // UNSUPPORTED
-    { physical: 'money', logical: 'text', expectedDefault: 'search', expectedAvailable: ['search'], supported: true },
-
-    // Name
-    { physical: 'number', logical: 'name', expectedDefault: 'search', expectedAvailable: ['search', 'column'], supported: true },
-    { physical: 'point', logical: 'name', expectedDefault: null, expectedAvailable: [], supported: false },                          // UNSUPPORTED
-    { physical: 'text', logical: 'name', expectedDefault: 'search', expectedAvailable: ['search', 'column'], supported: true },
-    { physical: 'geo_entity', logical: 'name', expectedDefault: null, expectedAvailable: [], supported: false },                     // UNSUPPORTED
-    { physical: 'timestamp', logical: 'name', expectedDefault: 'timeline', expectedAvailable: ['timeline'], supported: true },
-    { physical: 'fixed_timestamp', logical: 'name', expectedDefault: 'timeline', sexpectedAvailable: ['timeline'], supported: true },
-    { physical: 'floating_timestamp', logical: 'name', expectedDefault: 'timeline', expectedAvailable: ['timeline'], supported: true },
-    { physical: 'boolean', logical: 'name', expectedDefault: null, expectedAvailable: [], supported: false },                        // UNSUPPORTED
-    { physical: 'money', logical: 'name', expectedDefault: 'search', expectedAvailable: ['search'], supported: true },
-
-    // Table (non user-configurable)
-    { physical: '*', logical: '*', expectedDefault: 'table', expectedAvailable: [], supported: false },
-
-    // Junk
-    { physical: 'picture', logical: 'photo', expectedDefault: null, expectedAvailable: [], supported: false },
-
-  ];
-
-  function createColumn(testCase) {
-    var column = {
-      physicalDatatype: testCase.physical,
-      logicalDatatype: testCase.logical,
-      name: '{0} {1}'.format(testCase.logical, testCase.physical),
-      cardinality: testCase.cardinality || 15
-    };
-    return column;
-  }
-
   describe('Card Type Mapping Service', function() {
 
+    var Model;
     var ServerConfig;
     var CardTypeMapping;
     var $exceptionHandler;
@@ -116,6 +17,7 @@
     }));
 
     beforeEach(inject(function($injector) {
+      Model = $injector.get('Model');
       ServerConfig = $injector.get('ServerConfig');
       var serverMocks = $injector.get('serverMocks');
       // We need to simulate the Feature Map feature flag being turned on
@@ -128,56 +30,342 @@
       $exceptionHandler = $injector.get('$exceptionHandler');
     }));
 
-    describe('defaultVisualizationForColumn', function() {
-      _.each(mapping, function(testCase) {
-        var column = createColumn(testCase);
-        describe('when encountering the physical/logical datatype pairing "{1}"/"{0}"'.
-                 format(testCase.physical, testCase.logical), function() {
-          it('should return {0}'.format(testCase.expectedDefault), function() {
-            expect(CardTypeMapping.defaultVisualizationForColumn(column)).
-              to.equal(testCase.expectedDefault);
+    function createHighCardinalityColumn(physicalDatatype) {
+      var column = {
+        physicalDatatype: physicalDatatype,
+        cardinality: 1000
+      };
+      return column;
+    }
+
+    function createLowCardinalityColumn(physicalDatatype) {
+      var column = {
+        physicalDatatype: physicalDatatype,
+        cardinality: 10
+      };
+      return column;
+    }
+
+    function overrideMap(map) {
+      var mapping = {
+        mapping: map,
+        cardinality: {
+          threshold: 35,
+          min: 2,
+          default: 9007199254740992
+        },
+        version: '0.3'
+      };
+      ServerConfig.setup({
+        oduxCardTypeMapping: mapping
+      });
+    }
+
+    describe('availableVisualizationsForColumn', function() {
+      describe('for a defined physical datatype', function() {
+        describe('with only one visualization defined with no onlyIf conditions', function() {
+          it('should return the single visualization', function() {
+            overrideMap({ testPhysicalDatatype: [ { type: 'testViz' } ] });
+            expect(CardTypeMapping.availableVisualizationsForColumn(createLowCardinalityColumn('testPhysicalDatatype'))).to.deep.equal(['testViz']);
           });
+        });
+
+        describe('with only one visualization defined with an onlyIf condition', function() {
+          describe('that is invalid', function() {
+            it('should throw', function() {
+              overrideMap({
+                testPhysicalDatatype: [
+                  {
+                    type: 'testViz',
+                    onlyIf: 'isNotACondition'
+                  }
+                ]
+              });
+              expect(function() {
+                CardTypeMapping.availableVisualizationsForColumn(createLowCardinalityColumn('testPhysicalDatatype'));
+              }).to.throw();;
+            });
+          });
+          describe('that is isLowCardinality', function() {
+            var map = {
+              testPhysicalDatatype: [
+                {
+                  type: 'testViz',
+                  onlyIf: 'isLowCardinality'
+                }
+              ]
+            };
+            describe('that evaluates to true', function() {
+              it('should return the single visualization', function() {
+                overrideMap(map);
+                expect(CardTypeMapping.availableVisualizationsForColumn(createLowCardinalityColumn('testPhysicalDatatype'))).to.deep.equal(['testViz']);
+              });
+            });
+            describe('that evaluates to false', function() {
+              it('should return an empty array', function() {
+                overrideMap(map);
+                expect(CardTypeMapping.availableVisualizationsForColumn(createHighCardinalityColumn('testPhysicalDatatype'))).to.deep.equal([]);
+              });
+            });
+          });
+          describe('that is isHighCardinality', function() {
+            var map = {
+              testPhysicalDatatype: [
+                {
+                  type: 'testViz',
+                  onlyIf: 'isHighCardinality'
+                }
+              ]
+            };
+            describe('that evaluates to true', function() {
+              it('should return the single visualization', function() {
+                overrideMap(map);
+                expect(CardTypeMapping.availableVisualizationsForColumn(createHighCardinalityColumn('testPhysicalDatatype'))).to.deep.equal(['testViz']);
+              });
+            });
+            describe('that evaluates to false', function() {
+              it('should return an empty array', function() {
+                overrideMap(map);
+                expect(CardTypeMapping.availableVisualizationsForColumn(createLowCardinalityColumn('testPhysicalDatatype'))).to.deep.equal([]);
+              });
+            });
+          });
+          describe('that is isGeoregionComputed', function() {
+            var map = {
+              testPhysicalDatatype: [
+                {
+                  type: 'testViz',
+                  onlyIf: 'isGeoregionComputed'
+                }
+              ]
+            };
+            describe('that evaluates to true', function() {
+              it('should return the single visualization', function() {
+                overrideMap(map);
+                var geoColumnOnString = createLowCardinalityColumn('testPhysicalDatatype');
+                geoColumnOnString.computationStrategy = 'georegion_match_on_string';
+                expect(CardTypeMapping.availableVisualizationsForColumn(geoColumnOnString)).to.deep.equal(['testViz']);
+
+                var geoColumnOnPoint = createLowCardinalityColumn('testPhysicalDatatype');
+                geoColumnOnPoint.computationStrategy = 'georegion_match_on_point';
+                expect(CardTypeMapping.availableVisualizationsForColumn(geoColumnOnPoint)).to.deep.equal(['testViz']);
+              });
+            });
+            describe('that evaluates to false', function() {
+              it('should return an empty array', function() {
+                overrideMap(map);
+                var nonComputedColumn = createLowCardinalityColumn('testPhysicalDatatype');
+                expect(CardTypeMapping.availableVisualizationsForColumn(nonComputedColumn)).to.deep.equal([]);
+
+                var columnComputedInSomeOtherWay = createLowCardinalityColumn('testPhysicalDatatype');
+                columnComputedInSomeOtherWay.computationStrategy = 'some_magical_computation_strategy';
+                expect(CardTypeMapping.availableVisualizationsForColumn(columnComputedInSomeOtherWay)).to.deep.equal([]);
+              });
+            });
+          });
+        });
+        describe('with multiple defined visualizations', function() {
+          describe('when all visualizations have no onlyIf', function() {
+            it('should return all visualizations', function() {
+              overrideMap({ testPhysicalDatatype: [ { type: 'testViz1' }, { type: 'testViz2'}, { type: 'testViz3', defaultIf: 'isHighCardinality' } ] });
+              expect(CardTypeMapping.availableVisualizationsForColumn(createLowCardinalityColumn('testPhysicalDatatype'))).to.deep.equal(['testViz1', 'testViz2', 'testViz3']);
+            });
+          });
+          describe('when only some visualizations have an onlyIf evaluating to true', function() {
+            it('should return the visualizations which are not excluded', function() {
+              overrideMap({ testPhysicalDatatype: [
+                { type: 'testViz1' },
+                { type: 'testViz2', onlyIf: 'isHighCardinality' },
+                { type: 'testViz3', onlyIf: 'isLowCardinality' },
+                { type: 'testViz4', defaultIf: 'isHighCardinality' }
+              ]});
+              expect(CardTypeMapping.availableVisualizationsForColumn(createLowCardinalityColumn('testPhysicalDatatype'))).to.deep.equal(
+                ['testViz1', 'testViz3', 'testViz4']
+              );
+            });
+          });
+          describe('when no visualizations have an onlyIf evaluating to true', function() {
+            it('should return an empty array', function() {
+              overrideMap({ testPhysicalDatatype: [
+                { type: 'testViz1', onlyIf: 'isHighCardinality' },
+                { type: 'testViz2', onlyIf: 'isGeoregionComputed' }
+              ]});
+              expect(CardTypeMapping.availableVisualizationsForColumn(createLowCardinalityColumn('testPhysicalDatatype'))).to.deep.equal([]);
+            });
+          });
+        });
+
+      });
+      describe('for an undefined physical datatype', function() {
+        it('should return an empty array', function() { // I'm unconvinced by this desired behavior, maybe it should throw?...
+          overrideMap({ testPhysicalDatatype: [ { type: 'testViz' } ] });
+          expect(CardTypeMapping.availableVisualizationsForColumn(createLowCardinalityColumn('invalidDatatype'))).to.deep.equal([]);
+        });
+      });
+    });
+
+    describe('defaultVisualizationForColumn', function() {
+      describe('for a defined physical datatype', function() {
+        describe('with only one visualization defined with no defaultIf conditions', function() {
+          it('should return the single visualization', function() {
+            overrideMap({ testPhysicalDatatype: [ { type: 'testViz' } ] });
+            expect(CardTypeMapping.defaultVisualizationForColumn(createLowCardinalityColumn('testPhysicalDatatype'))).to.equal('testViz');
+          });
+        });
+
+        describe('with only one visualization defined with a defaultIf condition', function() {
+          describe('that is invalid', function() {
+            it('should throw', function() {
+              overrideMap({
+                testPhysicalDatatype: [ 
+                  {
+                    type: 'testViz',
+                    defaultIf: 'isNotACondition'
+                  }
+                ]
+              });
+              expect(function() {
+                CardTypeMapping.defaultVisualizationForColumn(createLowCardinalityColumn('testPhysicalDatatype'));
+              }).to.throw();;
+            });
+          });
+          // Assuming that other expressions work, as they are exercised in availableVisualizationsForColumn tests.
+          describe('that is isLowCardinality', function() {
+            var map = {
+              testPhysicalDatatype: [ 
+                {
+                  type: 'testViz',
+                  defaultIf: 'isLowCardinality'
+                }
+              ]
+            };
+            describe('that evaluates to either true or false', function() {
+              it('should return the single visualization', function() {
+                overrideMap(map);
+                expect(CardTypeMapping.defaultVisualizationForColumn(createLowCardinalityColumn('testPhysicalDatatype'))).to.equal('testViz');;
+                expect(CardTypeMapping.defaultVisualizationForColumn(createHighCardinalityColumn('testPhysicalDatatype'))).to.equal('testViz');;
+              });
+            });
+          });
+        });
+        describe('with multiple defined visualizations', function() {
+          describe('when only some visualizations have an onlyIf evaluating to true', function() {
+            it('should return the first visualization which is not excluded', function() {
+              overrideMap({ testPhysicalDatatype: [
+                { type: 'testViz1', onlyIf: 'isHighCardinality' },
+                { type: 'testViz2', onlyIf: 'isHighCardinality' },
+                { type: 'testViz3', onlyIf: 'isLowCardinality' },
+                { type: 'testViz4', onlyIf: 'isLowCardinality' }
+              ]});
+              expect(CardTypeMapping.defaultVisualizationForColumn(createLowCardinalityColumn('testPhysicalDatatype'))).to.equal('testViz3');
+            });
+          });
+          describe('when no visualizations have an onlyIf evaluating to true', function() {
+            it('should return undefined', function() {
+              overrideMap({ testPhysicalDatatype: [
+                { type: 'testViz1', onlyIf: 'isHighCardinality' },
+                { type: 'testViz2', onlyIf: 'isGeoregionComputed' }
+              ]});
+              expect(CardTypeMapping.defaultVisualizationForColumn(createLowCardinalityColumn('testPhysicalDatatype'))).to.equal(undefined);
+            });
+          });
+          describe('when faced with defaultIf expressions', function() {
+            describe('when all visualizations have defaultIf evaluating to true', function() {
+              describe('but some have onlyIf evaluating to false', function() {
+                it('should return the first unexcluded visualization', function() {
+                  overrideMap({ testPhysicalDatatype: [
+                    { type: 'testViz1', defaultIf: 'isLowCardinality', onlyIf: 'isHighCardinality'},
+                    { type: 'testViz2', defaultIf: 'isLowCardinality' },
+                    { type: 'testViz3', defaultIf: 'isGeoregionComputed' }
+                  ]});
+                  var lowCardinalityGeoColumnOnString = createLowCardinalityColumn('testPhysicalDatatype');
+                  lowCardinalityGeoColumnOnString.computationStrategy = 'georegion_match_on_string';
+
+                  expect(CardTypeMapping.defaultVisualizationForColumn(lowCardinalityGeoColumnOnString)).to.equal('testViz2');
+                });
+              });
+
+              it('should return the first visualization', function() {
+                overrideMap({ testPhysicalDatatype: [
+                  { type: 'testViz1', defaultIf: 'isGeoregionComputed' },
+                  { type: 'testViz2', defaultIf: 'isLowCardinality' }
+                ]});
+                var lowCardinalityGeoColumnOnString = createLowCardinalityColumn('testPhysicalDatatype');
+                lowCardinalityGeoColumnOnString.computationStrategy = 'georegion_match_on_string';
+
+                expect(CardTypeMapping.defaultVisualizationForColumn(lowCardinalityGeoColumnOnString)).to.equal('testViz1');
+              });
+            });
+            describe('when some columns have no defaultIf but the rest do', function() {
+              it('should return the first visualization with a defaultIf = true', function() {
+                overrideMap({ testPhysicalDatatype: [
+                  { type: 'testViz1' },
+                  { type: 'testViz2', defaultIf: 'isHighCardinality' },
+                  { type: 'testViz3', defaultIf: 'isLowCardinality' },
+                  { type: 'testViz4', defaultIf: 'isLowCardinality' }
+                ]});
+                expect(CardTypeMapping.defaultVisualizationForColumn(createLowCardinalityColumn('testPhysicalDatatype'))).to.equal('testViz3');
+              });
+            });
+            describe('when some columns have no defaultIf but the rest do, all evaluating to false', function() {
+              it('should return the first visualization with no defaultIf expression', function() {
+                overrideMap({ testPhysicalDatatype: [
+                  { type: 'testViz1', defaultIf: 'isHighCardinality' },
+                  { type: 'testViz2', defaultIf: 'isGeoregionComputed' },
+                  { type: 'testViz3' }
+                ]});
+                expect(CardTypeMapping.defaultVisualizationForColumn(createLowCardinalityColumn('testPhysicalDatatype'))).to.equal('testViz3');
+              });
+            });
+          });
+        });
+
+      });
+      describe('for an undefined physical datatype', function() {
+        it('should return undefined', function() {
+          overrideMap({ testPhysicalDatatype: [ { type: 'testViz' } ] });
+          expect(CardTypeMapping.defaultVisualizationForColumn(createLowCardinalityColumn('invalidDatatype'))).to.equal(undefined);
         });
       });
 
-      it('should return null for columns with cardinality less than the minimum', function() {
-        var column = createColumn({
-          physical: 'number',
-          logical: 'category',
-          cardinality: 1
-        });
-        expect(CardTypeMapping.defaultVisualizationForColumn(column)).to.equal(null);
-      });
     });
 
     describe('visualizationSupportedForColumn', function() {
-      _.each(mapping, function(testCase) {
-        var column = createColumn(testCase);
-        describe('when encountering the physical/logical datatype pairing "{1}"/"{0}"'.
-                 format(testCase.physical, testCase.logical), function() {
-          it('should return {0}'.format(testCase.supported), function () {
-            expect(CardTypeMapping.visualizationSupportedForColumn(column)).
-              to.equal(testCase.supported);
-          });
-        });
+      it('should return false for an unsupported physical datatype', function() {
+          overrideMap({ testPhysicalDatatype: [ { type: 'column' } ] });
+          expect(CardTypeMapping.visualizationSupportedForColumn(createLowCardinalityColumn('lol_wrong'))).to.equal(false);
+      });
+      it('should return false for an unsupported visualization', function() {
+          overrideMap({ testPhysicalDatatype: [ { type: 'pie_charts_yeah_right' } ] });
+          expect(CardTypeMapping.visualizationSupportedForColumn(createLowCardinalityColumn('testPhysicalDatatype'))).to.equal(false);
+      });
+      it('should return true if at least one visualization is supported', function() {
+          overrideMap({ testPhysicalDatatype: [ { type: 'unsupported' }, { type: 'column' }, { type: 'also_unsupported' } ] });
+          expect(CardTypeMapping.visualizationSupportedForColumn(createLowCardinalityColumn('testPhysicalDatatype'))).to.equal(true);
       });
     });
 
-    // The following test was disabled on 12/3/14 because CardTypeMapping no longer
-    // warns but permits the location/text pairing and instead reports it as unsupported.
-    describe('when encountering a deprecated choropleth mapping', function() {
-      describe('using defaultVisualizationForColumn', function() {
-        xit('should raise an exception', function() {
-          var column = {
-            physicalDatatype: 'text',
-            logicalDatatype: 'location',
-            name: 'DEPRECATED'
-          };
+    function modelifyCardType(cardType) {
+      var model = new Model();
+      model.defineObservableProperty('cardType', cardType);
+      return model;
+    }
 
-          CardTypeMapping.defaultVisualizationForColumn(column);          
-          expect($exceptionHandler.errors.length).to.equal(1);
+    describe('modelIsExportable', function() {
+      it('should return false for an unexportable visualization', function() {
+          expect(CardTypeMapping.modelIsExportable(modelifyCardType('search'))).to.equal(false);
+      });
+      it('should return true for a supported visualization', function() {
+          expect(CardTypeMapping.modelIsExportable(modelifyCardType('column'))).to.equal(true);
+      });
+    });
 
-        });
+    describe('modelIsCustomizable', function() {
+      it('should return false for an uncustomizable visualization', function() {
+          expect(CardTypeMapping.modelIsCustomizable(modelifyCardType('column'))).to.equal(false);
+      });
+      it('should return true for a customizable visualization', function() {
+          expect(CardTypeMapping.modelIsCustomizable(modelifyCardType('choropleth'))).to.equal(true);
       });
     });
 

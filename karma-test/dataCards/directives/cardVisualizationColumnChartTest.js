@@ -42,7 +42,7 @@ describe("A Column Chart Card Visualization", function() {
         "name": "test_column",
         "title": "test column title",
         "description": "test column description",
-        "logicalDatatype": "amount",
+        "cardinality": 100,
         "physicalDatatype": "number",
         "importance": 2
       }

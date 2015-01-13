@@ -81,7 +81,7 @@ describe("A Table Card Visualization", function() {
         'name': 'test_column',
         'title': 'test column title',
         'description': 'test column description',
-        'logicalDatatype': 'amount',
+        'cardinality': 10,
         'physicalDatatype': 'number',
         'importance': 2,
         'isSystemColumn': false
@@ -89,7 +89,7 @@ describe("A Table Card Visualization", function() {
       'test_timestamp_column': {
         'name': 'test_timestamp_column',
         'title': 'what time is it',
-        'logicalDatatype': 'time',
+        'cardinality': 1000,
         'physicalDatatype': 'timestamp',
         'importance': 3,
         'isSystemColumn': false
@@ -97,7 +97,7 @@ describe("A Table Card Visualization", function() {
       'test_floating_timestamp_column': {
         'name': 'test_floating_timestamp_column',
         'title': 'which time is it',
-        'logicalDatatype': 'time',
+        'cardinality': 1000,
         'physicalDatatype': 'floating_timestamp',
         'importance': 3,
         'isSystemColumn': false
@@ -106,16 +106,17 @@ describe("A Table Card Visualization", function() {
         'name': ':@test_computed_column',
         'title': 'Community Districts',
         'description': 'Community district reporting 311 request',
-        'logicalDatatype': 'location',
+        'cardinality': 1000,
         'physicalDatatype': 'text',
         'importance': 1,
         'shapefile': '7a5b-8kcq',
+        'computationStrategy': 'georegion_match_on_point',
         'isSystemColumn': true
       },
       ':test_system_column': {
         'name': ':test_system_column',
         'title': ':test_system_column',
-        'logicalDatatype': 'text',
+        'cardinality': 1000,
         'physicalDatatype': 'row_identifier',
         'importance': 3,
         'isSystemColumn': true
@@ -124,7 +125,7 @@ describe("A Table Card Visualization", function() {
         'name': '*',
         'title': 'Data Table',
         'description': '',
-        'logicalDatatype': '*',
+        'cardinality': 1000,
         'physicalDatatype': '*',
         'importance': 1,
         'isSystemColumn': false,

@@ -48,7 +48,7 @@ class CardTypeMapping
     is_small_dataset = dataset_size.nil? ? false : dataset_size < config[:cardinality][:threshold]
     is_useless_search =
       card_type == 'search' &&
-      is_small_dataset
+      is_small_dataset &&
       dataset_size == column_metadata[:cardinality] &&
       column_metadata[:physicalDatatype] == 'text'
 
@@ -145,7 +145,8 @@ class CardTypeMapping
       else
         raise(
           UnsupportedCardTypeMappingExpression.new(expression),
-          "Unknown expression value in card-type-mapping.json: #{expression} for physicalDatatype: #{column_metadata[:physicalDatatype]}")
+          "Unknown expression value in card-type-mapping.json: #{expression} for physicalDatatype: #{column_metadata[:physicalDatatype]}"
+        )
     end
 
   end

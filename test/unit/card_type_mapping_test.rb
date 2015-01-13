@@ -254,21 +254,45 @@ class CardTypeMappingTest < Test::Unit::TestCase
 
   describe 'card_type_if_interesting' do
     describe 'for an interesting visualization' do
-      it 'should return the visualization' do
-        dataset_size = 10000
-        assert_equal(
-          'search',
-          CardTypeMappingTest.with_map( text: [ { type: 'search' } ]).
-          card_type_if_interesting(CardTypeMappingTest.high_cardinality_column_for_test_physical_datatype('text'), dataset_size)
-        )
+      describe 'that is interesting because it is not search' do
+        it 'should return the visualization' do
+          dataset_size = 10
+          assert_equal(
+            'column',
+            CardTypeMappingTest.with_map( number: [ { type: 'column' } ]).
+            card_type_if_interesting(CardTypeMappingTest.high_cardinality_column_for_test_physical_datatype('number'), dataset_size)
+          )
+        end
+      end
+      describe 'that is interesting because the dataset size is big enough for search' do
+        it 'should return the visualization' do
+          dataset_size = 10000
+          assert_equal(
+            'search',
+            CardTypeMappingTest.with_map( text: [ { type: 'search' } ]).
+            card_type_if_interesting(CardTypeMappingTest.high_cardinality_column_for_test_physical_datatype('text'), dataset_size)
+          )
+        end
+      end
+      describe 'that is interesting because the column cardinality is smaller than the dataset size' do
+        it 'should return the visualization' do
+          column = CardTypeMappingTest.low_cardinality_column_for_test_physical_datatype('text')
+          dataset_size = column[:cardinality] - 1
+          assert_equal(
+            'search',
+            CardTypeMappingTest.with_map( text: [ { type: 'search' } ]).
+            card_type_if_interesting(column, dataset_size)
+          )
+        end
       end
     end
     describe 'for an uninteresting visualization' do
       it 'should return nil' do
-        dataset_size = 10
+        column = CardTypeMappingTest.low_cardinality_column_for_test_physical_datatype('text')
+        dataset_size = column[:cardinality]
         assert_nil(
           CardTypeMappingTest.with_map( text: [ { type: 'search' } ]).
-          card_type_if_interesting(CardTypeMappingTest.high_cardinality_column_for_test_physical_datatype('text'), dataset_size)
+          card_type_if_interesting(column, dataset_size)
         )
       end
     end

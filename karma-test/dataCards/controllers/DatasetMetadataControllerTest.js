@@ -12,7 +12,6 @@ describe('DatasetMetadataController', function() {
         rowDisplayUnit: 'bar',
         ownerId: 'fdsa-asdf',
         updatedAt: '2004-05-20T17:42:55+00:00',
-        version: '0.1',
         columns: []
       });
     }
@@ -92,9 +91,9 @@ describe('DatasetMetadataController', function() {
       {
         title: 'fake column title',
         name: 'fake_column',
+        logicalDatatype: 'category',
         physicalDatatype: 'number',
-        importance: 1,
-        cardinality: 5
+        importance: 1
       }
     ];
 
@@ -105,7 +104,6 @@ describe('DatasetMetadataController', function() {
       defaultAggregateColumn: 'foo',
       ownerId: 'fake-user',
       updatedAt: moment().toISOString(),
-      version: '0.1',
       columns: columnsBlob
     };
 
@@ -126,16 +124,16 @@ describe('DatasetMetadataController', function() {
         {
           title: 'fake column title',
           name: 'fake_column',
+          logicalDatatype: 'category',
           physicalDatatype: 'number',
-          importance: 1,
-          cardinality: 10
+          importance: 1
         },
         {
           title: 'sys',
           name: ':sys_column',
+          logicalDatatype: 'category',
           physicalDatatype: 'number',
-          importance: 1,
-          cardinality: 11
+          importance: 1
         }
       ];
 
@@ -143,9 +141,7 @@ describe('DatasetMetadataController', function() {
 
       var controller = controllerHarness.controller;
       var scope = controllerHarness.scope;
-      controllerHarness.baseInfoPromise.resolve(
-        $.extend({}, datasetBlob, { version: '0.1', columns: columnsBlob })
-      );
+      controllerHarness.baseInfoPromise.resolve($.extend({}, datasetBlob, { columns: columnsBlob }));
       $rootScope.$digest();
 
       expect(scope.datasetColumns).to.be.instanceof(Array);

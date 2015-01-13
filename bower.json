@@ -25,8 +25,7 @@
     "angular-sanitize": "~1.2.25",
     "angular-markdown-directive": "~0.3.1",
     "pbf": "~0.0.3",
-    "vector-tile-js": "devTristan/vector-tile-js#~0.1.1",
-    "native-promise-only": "~0.7.5-e"
+    "vector-tile-js": "devTristan/vector-tile-js#~0.1.1"
   },
   "install": {
     "path": {
@@ -53,11 +52,11 @@
         "bower_components/rxjs/rx.binding.js"
       ],
       "flexgrid": [],
-      "showdown": "bower_components/showdown/src/showdown.js",
-      "native-promise-only": "bower_components/native-promise-only/lib/npo.src.js"
+      "showdown": "bower_components/showdown/src/showdown.js"
     }
   },
   "devDependencies": {
-    "sinon-browser-only": "~1.9.0"
+    "sinon-browser-only": "~1.9.0",
+    "native-promise-only": "~0.7.5-e"
   }
 }

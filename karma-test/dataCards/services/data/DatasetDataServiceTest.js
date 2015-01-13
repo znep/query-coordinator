@@ -20,7 +20,7 @@
         {
           title: 'column_1',
           name: 'column_1',
-          cardinality: 1000,
+          logicalDatatype: 'identifier',
           physicalDatatype: 'text',
           importance: 3,
           description: 'Column 1.'

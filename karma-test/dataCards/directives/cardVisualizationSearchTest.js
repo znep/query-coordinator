@@ -60,7 +60,7 @@
           "name": "filler_column",
           "title": "fillter column title",
           "description": "fillter column description",
-          "cardinality": 1000,
+          "logicalDatatype": "text",
           "physicalDatatype": "text",
           "importance": 2
         },
@@ -68,7 +68,7 @@
           "name": "test_column_number",
           "title": "test number column title",
           "description": "test number column description",
-          "cardinality": 100,
+          "logicalDatatype": "text",
           "physicalDatatype": "number",
           "importance": 2
         },
@@ -76,7 +76,7 @@
           "name": "test_column_text",
           "title": "test text column title",
           "description": "test text column description",
-          "cardinality": 1000,
+          "logicalDatatype": "text",
           "physicalDatatype": "text",
           "importance": 2
         }

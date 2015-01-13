@@ -1,30 +1,19 @@
 describe('Card model', function() {
-  var Model;
   var Page;
   var Card;
-  var ServerConfig;
 
   beforeEach(module('dataCards'));
 
   beforeEach(inject(function($injector) {
-    Model = $injector.get('Model');
     Card = $injector.get('Card');
     Page = $injector.get('Page');
-    ServerConfig = $injector.get('ServerConfig');
-    ServerConfig.setup({
-      oduxCardTypeMapping: {
-        'mapping': {
-          'number': [ { type: 'column' } ]
-        }
-      }
-    });
   }));
 
-  it('should define a serializedCard JSON schema', inject(function(Card, Schemas) {
-    expect(Schemas.regarding('card_metadata').getSchemaWithVersion('0')).to.exist;
+  it('should define a serializedCard JSON schema', inject(function(Card, JJV) {
+    expect(JJV.schema).to.have.property('serializedCard');
   }));
 
-  it('deserialization should return an instance of Card with correct properties set', inject(function(Schemas, Filter) {
+  it('deserialization should return an instance of Card with correct properties set', inject(function(JJV, Filter) {
     var blob = {
       'fieldName': 'test_crime_type',
       'cardSize': 2,
@@ -42,7 +31,7 @@ describe('Card model', function() {
       ]
     };
 
-    var requiredKeys = Schemas.regarding('card_metadata').getSchemaWithVersion('0').required;
+    var requiredKeys = JJV.schema.serializedCard.required;
 
     var instance = Card.deserialize(new Page('fake-asdf'), blob);
     expect(instance).to.be.instanceof(Card);
@@ -57,8 +46,6 @@ describe('Card model', function() {
     _.each(requiredKeys, function(field) {
       if (field === 'fieldName') { // fieldName isn't observable.
         expect(instance[field]).to.exist;
-      } else if (field === 'cardType') {
-        return; // cardType is determined asynchronously, and is covered in separate tests.
       } else {
         expect(instance.observe(field)).to.exist;
         instance.observe(field).subscribe(function(v) { 
@@ -69,65 +56,6 @@ describe('Card model', function() {
     expect(out).to.deep.equal(blob);
     expect(out).to.have.property('displayMode').that.equals('figures');
   }));
-
-  it('should provide a sane default cardType if none is provided', function(done) {
-    var blob = {
-      'fieldName': 'test_crime_type',
-      'cardSize': 2,
-      'cardCustomStyle': { 'test_barColor': '#659CEF' },
-      'expandedCustomStyle': { 'test_zebraStripeRows' : true } ,
-      'displayMode': 'figures',
-      'expanded': false,
-      'activeFilters': []
-    };
-
-    var page = new Page('fake-asdf');
-    var dataset = new Model();
-    dataset.defineObservableProperty('columns', {
-      'test_crime_type': {
-        physicalDatatype: 'number',
-        cardinality: 10
-      }
-    });
-    page.set('dataset', dataset);
-
-    var instance = Card.deserialize(page, blob);
-
-    instance.observe('cardType').filter(_.isPresent).subscribe(function(cardType) {
-      expect(cardType).to.equal('column');
-      done();
-    });
-  });
-
-  it('should use the cardType in the serialized blob if it is provided', function(done) {
-    var blob = {
-      'fieldName': 'test_crime_type',
-      'cardSize': 2,
-      'cardCustomStyle': { 'test_barColor': '#659CEF' },
-      'expandedCustomStyle': { 'test_zebraStripeRows' : true } ,
-      'displayMode': 'figures',
-      'expanded': false,
-      'activeFilters': [],
-      'cardType': 'some_magical_card_type'
-    };
-
-    var page = new Page('fake-asdf');
-    var dataset = new Model();
-    dataset.defineObservableProperty('columns', {
-      'test_crime_type': {
-        physicalDatatype: 'number',
-        cardinality: 10
-      }
-    });
-    page.set('dataset', dataset);
-
-    var instance = Card.deserialize(page, blob);
-
-    instance.observe('cardType').filter(_.isPresent).subscribe(function(cardType) {
-      expect(cardType).to.equal('some_magical_card_type');
-      done();
-    });
-  });
 
   // TODO this test and the associated product behavior is just to work around
   // Models handling exceptions badly. Instead of breaking on serialization we need

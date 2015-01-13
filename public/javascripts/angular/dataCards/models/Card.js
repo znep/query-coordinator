@@ -1,4 +1,4 @@
-angular.module('dataCards.models').factory('Card', function($injector, ModelHelper, Model, CardDataService, JJV, Filter) {
+angular.module('dataCards.models').factory('Card', function($injector, ModelHelper, Model, CardDataService, JJV, Filter, CardTypeMapping) {
 
   var UID_REGEXP = /^\w{4}-\w{4}$/;
 
@@ -49,7 +49,7 @@ angular.module('dataCards.models').factory('Card', function($injector, ModelHelp
             var defaultCardType = CardTypeMapping.defaultVisualizationForColumn(column);
             return defaultCardType;
           }
-        ).toPromise();
+        ).toPromise(Promise);
       });
     },
 

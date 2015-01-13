@@ -7,11 +7,25 @@ describe("card directive", function() {
   beforeEach(module('test'));
   beforeEach(module('dataCards'));
 
-  beforeEach(inject(['$rootScope', '$templateCache', 'testHelpers', 'Model', 'Card', function(_$rootScope, _$templateCache, _testHelpers, _Model, _Card) {
+  beforeEach(inject(['$rootScope', '$templateCache', 'testHelpers', 'Model', 'Card', 'ServerConfig', function(_$rootScope, _$templateCache, _testHelpers, _Model, _Card, _ServerConfig) {
     $rootScope = _$rootScope;
     testHelpers = _testHelpers;
     Model = _Model;
     Card = _Card;
+
+    _ServerConfig.setup({
+      oduxCardTypeMapping: {
+        'map': {
+          'category': {
+            'number': { 'lowCardinalityDefault': 'column', 'highCardinalityDefault': 'search', 'available': ['column', 'search'] }
+          }
+        },
+        'cardinality': {
+          'min': 2,
+          'threshold': 35
+        }
+      }
+    });
     // Override the templates of the other directives. We don't need to test them.
     _$templateCache.put('/angular_templates/dataCards/cardVisualizationColumnChart.html', '');
     _$templateCache.put('/angular_templates/dataCards/cardVisualizationChoropleth.html', '');

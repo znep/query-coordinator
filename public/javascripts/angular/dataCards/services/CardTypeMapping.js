@@ -4,7 +4,7 @@
   function CardTypeMapping(ServerConfig, $exceptionHandler, $log) {
 
     function getCardTypesForColumn(column) {
-
+      var mappingConfiguration = getMappingConfiguration().map;
       var physicalDatatype;
       var logicalDatatype;
       var cardType = null;
@@ -28,9 +28,9 @@
       physicalDatatype = column.physicalDatatype;
       logicalDatatype = column.logicalDatatype;
 
-      if (cardTypeMapping.map.hasOwnProperty(logicalDatatype) &&
-          cardTypeMapping.map[logicalDatatype].hasOwnProperty(physicalDatatype)) {
-        cardType = cardTypeMapping.map[logicalDatatype][physicalDatatype];
+      if (mappingConfiguration.hasOwnProperty(logicalDatatype) &&
+          mappingConfiguration[logicalDatatype].hasOwnProperty(physicalDatatype)) {
+        cardType = mappingConfiguration[logicalDatatype][physicalDatatype];
       } else {
         warnOnceOnUnknownCardType(logicalDatatype, physicalDatatype);
       }
@@ -97,6 +97,7 @@
      */
 
     function defaultVisualizationForColumn(column) {
+      var cardinalityConfiguration = getMappingConfiguration().cardinality;
 
       var cardTypes = getCardTypesForColumn(column);
 
@@ -106,13 +107,13 @@
       }
 
       // If the cardinality is not known for this column, fall back to the minimum cardinality.
-      var cardinality = column.cardinality || cardTypeMapping.cardinality.min;
+      var cardinality = column.cardinality || cardinalityConfiguration.min;
 
       // Otherwise, determine which type to which we will map based on the column's cardinality.
-      if (cardinality < cardTypeMapping.cardinality.min) {
+      if (cardinality < cardinalityConfiguration.min) {
         // Don't show cards for columns that don't have varying data.
         return null;
-      } else if (cardinality < cardTypeMapping.cardinality.threshold) {
+      } else if (cardinality < cardinalityConfiguration.threshold) {
         return cardTypes.lowCardinalityDefault;
       } else {
         return cardTypes.highCardinalityDefault;
@@ -194,7 +195,9 @@
 
     }
 
-    var cardTypeMapping = ServerConfig.get('oduxCardTypeMapping');
+    var getMappingConfiguration = _.once(function() {
+      return ServerConfig.get('oduxCardTypeMapping');
+    });
 
     // Keep track of which logical/physical datatype combinations have already
     // triggered warnings so that we don't get rate-limited by Airbrake in

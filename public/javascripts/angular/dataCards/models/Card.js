@@ -33,10 +33,24 @@ angular.module('dataCards.models').factory('Card', function($injector, ModelHelp
 
       _.each(_.keys(JJV.schema.serializedCard.properties), function(field) {
         if (field === 'fieldName') return; // fieldName isn't observable.
+        if (field === 'cardType') return; // cardType needs a lazy default.
         self.defineObservableProperty(field);
       });
 
       self.set('activeFilters', []);
+
+      // To compute default cardType, we need column info.
+      // Usually the default is overridden during deserialization, but
+      // in case cardType isn't set, we have a sane default.
+      self.defineObservableProperty('cardType', undefined, function() {
+        return self.page.observe('dataset').filter(_.isPresent).observeOnLatest('columns').filter(_.isPresent).first().map(
+          function(columns) {
+            var column = columns[fieldName];
+            var defaultCardType = CardTypeMapping.defaultVisualizationForColumn(column);
+            return defaultCardType;
+          }
+        ).toPromise();
+      });
     },
 
     /**

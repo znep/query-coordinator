@@ -128,7 +128,9 @@
      */
 
     function visualizationSupportedForColumn(column) {
-      return CARD_TYPES.hasOwnProperty(defaultVisualizationForColumn(column));
+      return _.any(availableVisualizationsForColumn(column), function(visualization) {
+        return CARD_TYPES.hasOwnProperty(visualization);
+      });
     }
 
     /**

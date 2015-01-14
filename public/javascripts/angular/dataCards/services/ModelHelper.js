@@ -26,12 +26,13 @@ angular.module('dataCards.services').factory('ModelHelper', function() {
   };
 
   // Adds an (RxJS) observable of the given name to the object provided. The default value
-  // is specified as a function which returns a promise. This allows us to skip requesting
-  // the default value until something subscribes to the property.
+  // is specified as a function which returns a sequence or promise. If a sequence is used, the first value
+  // is used.
+  // This allows us to skip requesting the default value until something subscribes to the property.
   // Until the default value is fetched, the property will have a value given by `initialValue`.
   //
   // Returns a sequence of values set to this property (including the initial and lazy values, if used).
-  function addPropertyWithLazyDefault(propertyName, model, initialValue, defaultValuePromiseGenerator) {
+  function addPropertyWithLazyDefault(propertyName, model, initialValue, defaultValueGenerator) {
     // These two sequences represent values from the lazy default promise and this property's
     // setter, respectively.
     var fromDefault = new Rx.AsyncSubject();
@@ -55,8 +56,13 @@ angular.module('dataCards.services').factory('ModelHelper', function() {
     var seq = Rx.Observable.create(function(observer) {
       if (needsDefaultValueHit) {
         needsDefaultValueHit = false;
-        var promise = defaultValuePromiseGenerator(model);
-        Rx.Observable.fromPromise(promise).subscribe(fromDefault);
+        var defaultValueResult = defaultValueGenerator(model);
+        var useAsThenable = _.isFunction(defaultValueResult.then) && !_.isFunction(defaultValueResult.subscribe);
+        var defaultValueSeq = useAsThenable ?
+          Rx.Observable.fromPromise(defaultValueResult) :
+          defaultValueResult.first();
+
+        defaultValueSeq.subscribe(fromDefault);
       }
       outer.subscribe(observer);
     });

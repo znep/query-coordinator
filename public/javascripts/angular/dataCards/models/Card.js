@@ -42,14 +42,21 @@ angular.module('dataCards.models').factory('Card', function($injector, ModelHelp
       // To compute default cardType, we need column info.
       // Usually the default is overridden during deserialization, but
       // in case cardType isn't set, we have a sane default.
+      // TODO vastly simplify when merge new deep-get observe function
+      // on Model.
       self.defineObservableProperty('cardType', undefined, function() {
-        return self.page.observe('dataset').filter(_.isPresent).observeOnLatest('columns').filter(_.isPresent).first().map(
-          function(columns) {
-            var column = columns[fieldName];
-            var defaultCardType = CardTypeMapping.defaultVisualizationForColumn(column);
-            return defaultCardType;
-          }
-        ).toPromise(Promise);
+        return self.page.observe('dataset').
+          filter(_.isPresent).
+          observeOnLatest('columns').
+          filter(_.isPresent).
+          map(
+            function(columns) {
+              var column = columns[fieldName];
+              var defaultCardType = CardTypeMapping.defaultVisualizationForColumn(column);
+              return defaultCardType;
+            }
+          ).
+          first(); // Terminate the stream on the first one (toPromise waits until the stream terminates).
       });
     },
 

@@ -68,9 +68,7 @@
 
       this.options.clearButton.on('click', function() {
         var $link = $(_this.options.linkInSelection);
-        var linkText = $link.html();
-        $link.parent().html();
-        $link.parent().html(linkText);
+        $link.contents().unwrap(); // removes anchor tag but preserves innerHTML
 
         _this.options.urlInput.val(_this.options.defaultUrl);
         _this.options.dirty = true;

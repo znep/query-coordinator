@@ -11,7 +11,7 @@ angular.module('dataCards.directives').directive('cardVisualization', function(A
       AngularRxExtensions.install($scope);
 
       var modelSubject = $scope.observe('model').filter(_.identity);
-      var datasetObservable = modelSubject.pluck('page').observeOnLatest('dataset');
+      var datasetObservable = modelSubject.observeOnLatest('page.dataset');
       var columns = datasetObservable.observeOnLatest('columns');
 
       var cardType = Rx.Observable.combineLatest(

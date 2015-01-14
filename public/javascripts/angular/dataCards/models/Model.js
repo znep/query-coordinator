@@ -138,12 +138,54 @@ angular.module('dataCards.models').factory('Model', function(Class, ModelHelper)
       }
     },
 
-    // Observes the given property.
-    // Will throw an exception if that property
-    // hasn't been defined on this Model.
+    // Observes the given property. You can use dot notation to traverse deeply.
+    // For example, a.observe('b.c.d'). Traversal will cross Models and plain objects.
+    // Arrays are not traversed.
+    // While traversing, if a null or undefined value is encountered (but is not the leaf),
+    // will wait for that value to be defined/non-null before emitting any values.
+    // When traversing Models, will throw an exception if an undefined property is encountered.
+    // When traversing plain objects, will wait for that property to exist before emitting any values.
+    // If propertyName is a (plain-old, regular) JS property on this
+    // object, this function will still work, but changes will not be reported.
     observe: function(propertyName) {
-      this._assertProperty(propertyName);
-      return this._propertyTable[propertyName];
+      function deepGet(node, props) {
+        if (props.length === 0) { return node; }
+
+        // Slice off the first property.
+        var firstProp = props[0];
+
+        // The value of the first property on this object (as an observable).
+        var thisLevelObs;
+        if (_.has(node, firstProp)) {
+          // A normal JS property.
+          thisLevelObs = Rx.Observable.returnValue(node[firstProp]);
+        } else if (_.isFunction(node.observe)) {
+          // A Model property.
+          node._assertProperty(firstProp);
+          thisLevelObs = node._propertyTable[firstProp];
+        } else {
+          // Interrupt the recursion.
+          // Designed behavior is to wait for this property to show up.
+          return Rx.Observable.never();
+        }
+
+        if (props.length === 1) {
+          // This is the only property we're getting (no deep traversal).
+          return thisLevelObs;
+        } else {
+          // Keep traversing, but wait for undefined/non-nulls to become
+          // something.
+          function isTraversible(thing) {
+            return (typeof(thing) !== 'undefined') && (thing !== null);
+          }
+          return thisLevelObs.filter(isTraversible).map(function(value) {
+            return deepGet(value, _.rest(props));
+          }).switchLatest();
+        }
+
+      };
+
+      return deepGet(this, propertyName.split('.'));
     },
 
     // Sets the named property on this model to the given

@@ -220,6 +220,129 @@ describe("Model", function() {
       });
     });
 
+    describe('observe', function() {
+      it('should work on regular JS properties', function(done) {
+        var model = new Model();
+        model.someNormalProperty = 'foo';
+
+        model.observe('someNormalProperty').subscribe(function(v) {
+          expect(v).to.equal('foo');
+          done();
+        });
+      });
+
+      it('should traverse Models', function(done) {
+        var expectedValues = [ 10, 20, 30, 40, 20 ];
+        var parent = new Model();
+        var child = new Model();
+        child.defineObservableProperty('prop', 10);
+        parent.defineObservableProperty('child', child);
+
+        parent.observe('child.prop').subscribe(function(v) {
+          var expected = expectedValues.shift();
+          expect(v).to.equal(expected);
+
+          if (_.isEmpty(expectedValues)) {
+            done();
+          }
+        });
+
+        child.set('prop', 20);
+
+        var child2 = new Model();
+        child2.defineObservableProperty('prop', 30);
+        parent.set('child', child2);
+        child2.set('prop', 40);
+
+        parent.set('child', child);
+      });
+
+      it('should throw when traversing Models on an undefined property', function(done) {
+        var parent = new Model();
+        var child = new Model();
+        parent.defineObservableProperty('child', child);
+
+        parent.observe('child.undefinedProp').subscribe(
+          function() {
+            throw new Error('Should not emit any values');
+          },
+          function() {
+            done();
+          }
+        );
+      });
+
+      it('should wait for properties to become non-undefined and non-null while traversing deep keys', function(done) {
+        var parent = new Model();
+        var expectedValues = [ 'foo', undefined, 'bar' ];
+        var child = new Model();
+        child.defineObservableProperty('a', null);
+        parent.defineObservableProperty('child', child);
+
+        parent.observe('child.a.b').subscribe(function(v) {
+          var expected = expectedValues.shift();
+          expect(v).to.equal(expected);
+
+          if (_.isEmpty(expectedValues)) {
+            done();
+          }
+        }, function() { throw new Error('should not error') }, function() { throw new Error('should not complete') });
+
+        child.set('a', undefined);
+        child.set('a', {b: 'foo'});
+
+        var grandchild = new Model();
+        grandchild.defineObservableProperty('b', undefined);
+        child.set('a', grandchild);
+        grandchild.set('b', 'bar');
+      });
+
+      it('should provide values when leaf values are explicitly undefined or null', function(done) {
+        var parent = new Model();
+        var expectedValues = [ null, undefined, null, undefined, 5, null];
+        var child = new Model();
+        child.defineObservableProperty('a', null);
+        parent.defineObservableProperty('child', child);
+
+        parent.observe('child.a').subscribe(function(v) {
+          var expected = expectedValues.shift();
+          expect(v).to.equal(expected);
+
+          if (_.isEmpty(expectedValues)) {
+            done();
+          }
+        }, function() { throw new Error('should not error') }, function() { throw new Error('should not complete') });
+
+        child.set('a', undefined);
+        child.set('a', null);
+        child.set('a', undefined);
+        child.set('a', 5);
+        child.set('a', null);
+      });
+
+      it('should wait for properties to show up on regular objects while traversing deep keys', function(done) {
+        var parent = new Model();
+        var expectedValues = [ 'foo', 'bar' ];
+        parent.defineObservableProperty('child', {});
+
+        parent.observe('child.a.b').subscribe(function(v) {
+          var expected = expectedValues.shift();
+          expect(v).to.equal(expected);
+
+          if (_.isEmpty(expectedValues)) {
+            done();
+          }
+        }, function() { throw new Error('should not error') }, function() { throw new Error('should not complete') });
+
+        parent.set('child', {});
+        parent.set('child', {a: 4});
+        parent.set('child', {a: {}});
+        parent.set('child', {a: {b: 'foo'}});
+        parent.set('child', {a: {b: 'bar'}});
+      });
+
+    });
+
     describe('on a lazy property', function() {
       it('should emit on both the initial value and the lazy value', inject(function($q, $rootScope) {
         var model = new Model();

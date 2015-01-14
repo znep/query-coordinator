@@ -72,9 +72,9 @@
     $scope.bindObservable('pageDescription', page.observe('description'));
 
     $scope.bindObservable('dataset', page.observe('dataset'));
-    $scope.bindObservable('datasetPages', page.observe('dataset').observeOnLatest('pages'));
-    $scope.bindObservable('datasetRowDisplayUnit', page.observe('dataset').observeOnLatest('rowDisplayUnit'));
-    $scope.bindObservable('datasetDaysUnmodified', page.observe('dataset').observeOnLatest('updatedAt').map(function(date) {
+    $scope.bindObservable('datasetPages', page.observe('dataset.pages'));
+    $scope.bindObservable('datasetRowDisplayUnit', page.observe('dataset.rowDisplayUnit'));
+    $scope.bindObservable('datasetDaysUnmodified', page.observe('dataset.updatedAt').map(function(date) {
       // TODO just a placeholder implementation
       if (!date) {
         return '';
@@ -82,7 +82,7 @@
       return moment(date).fromNow();
     }));
 
-    $scope.bindObservable('sourceDatasetName', page.observe('dataset').observeOnLatest('name'));
+    $scope.bindObservable('sourceDatasetName', page.observe('dataset.name'));
 
     $scope.bindObservable('sourceDatasetURL',
       page.observe('datasetId').map(function(datasetId) {
@@ -134,7 +134,7 @@
 
     $scope.bindObservable('globalWhereClauseFragment', page.observe('computedWhereClauseFragment'));
 
-    $scope.bindObservable('appliedFiltersForDisplay', allCardsFilters.combineLatest(page.observe('dataset').observeOnLatest('columns'), function(filters, columns) {
+    $scope.bindObservable('appliedFiltersForDisplay', allCardsFilters.combineLatest(page.observe('dataset.columns'), function(filters, columns) {
 
       function humanReadableOperator(filter) {
         if (filter instanceof Filter.BinaryOperatorFilter) {
@@ -207,7 +207,7 @@
     ************************/
 
     var datasetColumns = Rx.Observable.combineLatest(
-      page.observe('dataset').observeOnLatest('columns'),
+      page.observe('dataset.columns'),
       page.observe('cards'),
       function(columns, cards) {
 

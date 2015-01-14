@@ -5,7 +5,7 @@ angular.module('dataCards.models').factory('Model', function(Class, ModelHelper)
       this._writes = new Rx.Subject();
       this._sets = new Rx.Subject();
       this._recursiveSets = new Rx.Subject();
-      this._propertyTable = {};
+      this._propertyObservables = {};
       this._propertyHasBeenWritten = {};
 
       //Keeps track of children we've told that this instance is their parent.
@@ -72,15 +72,15 @@ angular.module('dataCards.models').factory('Model', function(Class, ModelHelper)
         throw new Error('Unexpected defaultGenerator value');
       }
 
-      if (this._propertyTable.hasOwnProperty(propertyName)) {
+      if (this._propertyObservables.hasOwnProperty(propertyName)) {
         throw new Error('Object ' + this + ' already has property: ' + propertyName);
       }
 
       var writesSequence;
       if (_.isFunction(defaultGenerator)) {
-        writesSequence = ModelHelper.addPropertyWithLazyDefault(propertyName, this._propertyTable, initialValue, defaultGenerator);
+        writesSequence = ModelHelper.addPropertyWithLazyDefault(propertyName, this._propertyObservables, initialValue, defaultGenerator);
       } else {
-        writesSequence = ModelHelper.addProperty(propertyName, this._propertyTable, initialValue);
+        writesSequence = ModelHelper.addProperty(propertyName, this._propertyObservables, initialValue);
       }
 
       var oldValue;
@@ -114,12 +114,12 @@ angular.module('dataCards.models').factory('Model', function(Class, ModelHelper)
         throw new Error('Expected valueSequence to be an observable');
       }
 
-      if (this._propertyTable.hasOwnProperty(propertyName)) {
+      if (this._propertyObservables.hasOwnProperty(propertyName)) {
         throw new Error('Object ' + this + ' already has property: ' + propertyName);
       }
 
       var oldValue;
-      ModelHelper.addReadOnlyProperty(propertyName, this._propertyTable, valueSequence.asObservable()).
+      ModelHelper.addReadOnlyProperty(propertyName, this._propertyObservables, valueSequence.asObservable()).
         subscribe(function(value) {
           self._writes.onNext({
             model: self,
@@ -133,7 +133,7 @@ angular.module('dataCards.models').factory('Model', function(Class, ModelHelper)
     },
 
     _assertProperty: function(propertyName) {
-      if (!this._propertyTable.hasOwnProperty(propertyName)) {
+      if (!this._propertyObservables.hasOwnProperty(propertyName)) {
         throw new Error("Object " + JSON.stringify(this) + " has no such property: " + propertyName);
       }
     },
@@ -162,7 +162,7 @@ angular.module('dataCards.models').factory('Model', function(Class, ModelHelper)
         } else if (_.isFunction(node.observe)) {
           // A Model property.
           node._assertProperty(firstProp);
-          thisLevelObs = node._propertyTable[firstProp];
+          thisLevelObs = node._propertyObservables[firstProp];
         } else {
           // Interrupt the recursion.
           // Designed behavior is to wait for this property to show up.
@@ -195,7 +195,7 @@ angular.module('dataCards.models').factory('Model', function(Class, ModelHelper)
     set: function(propertyName, value) {
       this._assertProperty(propertyName);
       var oldValue = this.getCurrentValue(propertyName);
-      this._propertyTable[propertyName] = value;
+      this._propertyObservables[propertyName] = value;
       this._sets.onNext({
         model: this,
         property: propertyName,
@@ -210,7 +210,7 @@ angular.module('dataCards.models').factory('Model', function(Class, ModelHelper)
     unset: function(propertyName) {
       this._assertProperty(propertyName);
       var oldValue = this.getCurrentValue(propertyName);
-      this._propertyTable[propertyName] = undefined;
+      this._propertyObservables[propertyName] = undefined;
       this._propertyHasBeenWritten[propertyName] = false;
       this._sets.onNext({
         model: this,
@@ -235,7 +235,7 @@ angular.module('dataCards.models').factory('Model', function(Class, ModelHelper)
      * the same type as (or a subclass of) this Model.
      */
     setFrom: function(otherModel) {
-      angular.forEach(this._propertyTable, function(subject, propertyName) {
+      angular.forEach(this._propertyObservables, function(subject, propertyName) {
         var newValue = otherModel.getCurrentValue(propertyName);
         if (newValue !== subject.value) {
           if (otherModel.isSet(propertyName)) {
@@ -257,7 +257,7 @@ angular.module('dataCards.models').factory('Model', function(Class, ModelHelper)
     // to this Model. Strongly consider using observe() instead.
     getCurrentValue: function(propertyName) {
       this._assertProperty(propertyName);
-      return ModelHelper.currentValueOfProperty(this._propertyTable, propertyName);
+      return ModelHelper.currentValueOfProperty(this._propertyObservables, propertyName);
     },
 
     // Get a snapshot of this model. Child models are descended
@@ -289,7 +289,7 @@ angular.module('dataCards.models').factory('Model', function(Class, ModelHelper)
         }
       };
 
-      _.forOwn(self._propertyTable, function(seq, propertyName) {
+      _.forOwn(self._propertyObservables, function(seq, propertyName) {
         var currentValue = self.getCurrentValue(propertyName);
         if (self.isSet(propertyName)) {
           artifact[propertyName] = serializeArbitrary(currentValue);

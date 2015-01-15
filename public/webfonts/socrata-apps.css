@@ -1,10 +1,10 @@
 @font-face {
   font-family: 'socrata-apps';
-  src:url('socrata-apps/socrata-apps.eot');
-  src:url('socrata-apps/socrata-apps.eot') format('embedded-opentype'),
-    url('socrata-apps/socrata-apps.woff') format('woff'),
-    url('socrata-apps/socrata-apps.ttf') format('truetype'),
-    url('socrata-apps/socrata-apps.svg') format('svg');
+  src:url('socrata-apps/socrata-apps.eot?9vdrz7');
+  src:url('socrata-apps/socrata-apps.eot?#iefix9vdrz7') format('embedded-opentype'),
+    url('socrata-apps/socrata-apps.woff?9vdrz7') format('woff'),
+    url('socrata-apps/socrata-apps.ttf?9vdrz7') format('truetype'),
+    url('socrata-apps/socrata-apps.svg?9vdrz7#socrata-apps') format('svg');
   font-weight: normal;
   font-style: normal;
 }
@@ -23,51 +23,71 @@
   -moz-osx-font-smoothing: grayscale;
 }
 
+.icon-warningIcon:before {
+  content: "\e610";
+}
+
 .icon-close:before {
   content: "\e60f";
 }
+
 .icon-search:before {
   content: "\e609";
 }
+
 .icon-chevron-up:before {
   content: "\e60d";
 }
+
 .icon-chevron-down:before {
   content: "\e60e";
 }
+
 .icon-number:before {
   content: "\e600";
 }
+
 .icon-dataset:before {
   content: "\e601";
 }
+
 .icon-cards:before {
   content: "\e602";
 }
+
 .icon-bar-chart:before {
   content: "\e603";
 }
+
 .icon-table:before {
   content: "\e604";
 }
+
 .icon-line-chart:before {
   content: "\e605";
 }
+
 .icon-region:before {
   content: "\e606";
 }
+
 .icon-map:before {
   content: "\e607";
 }
+
 .icon-chart:before {
   content: "\e608";
 }
+
 .icon-expand:before {
   content: "\e60a";
 }
+
 .icon-collapse:before {
   content: "\e60b";
 }
+
 .icon-settings:before {
   content: "\e60c";
 }
+

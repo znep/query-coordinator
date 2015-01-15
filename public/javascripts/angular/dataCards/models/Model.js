@@ -59,12 +59,13 @@ angular.module('dataCards.models').factory('Model', function(Class, ModelHelper)
     // Define a new observable property. The first argument is the string property name.
     // The second argument is the initial value.
     // Properties also support lazy defaults, evaluated the first time something subscribes.
-    // If provided, the third argument is a function returning a promise that yields the default
-    // value. While the promise is being evaluated, the value of the property is the default value
+    // If provided, the third argument is a function returning a promise or sequence(1) that yields the
+    // default value. While the default is being evaluated, the value of the property is the default value
     // provided as the second argument.
     // BEWARE: if initialValue is undefined (or not passed), the property will not be considered
     // set (see isSet) until set() is called on this property, or the defaultGenerator (if provided)
     // resolves.
+    // (1) If a sequence is returned, the first value emitted is used.
     defineObservableProperty: function(propertyName, initialValue, defaultGenerator) {
       var self = this;
 

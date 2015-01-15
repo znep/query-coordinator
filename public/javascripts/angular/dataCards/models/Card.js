@@ -1,4 +1,4 @@
-angular.module('dataCards.models').factory('Card', function($injector, ModelHelper, Model, CardDataService, JJV, Filter) {
+angular.module('dataCards.models').factory('Card', function($injector, ModelHelper, Model, CardDataService, JJV, Filter, CardTypeMapping) {
 
   var UID_REGEXP = /^\w{4}-\w{4}$/;
 
@@ -33,10 +33,31 @@ angular.module('dataCards.models').factory('Card', function($injector, ModelHelp
 
       _.each(_.keys(JJV.schema.serializedCard.properties), function(field) {
         if (field === 'fieldName') return; // fieldName isn't observable.
+        if (field === 'cardType') return; // cardType needs a lazy default.
         self.defineObservableProperty(field);
       });
 
       self.set('activeFilters', []);
+
+      // To compute default cardType, we need column info.
+      // Usually the default is overridden during deserialization, but
+      // in case cardType isn't set, we have a sane default.
+      // TODO vastly simplify when merge new deep-get observe function
+      // on Model.
+      self.defineObservableProperty('cardType', undefined, function() {
+        return self.page.observe('dataset').
+          filter(_.isPresent).
+          observeOnLatest('columns').
+          filter(_.isPresent).
+          map(
+            function(columns) {
+              var column = columns[fieldName];
+              var defaultCardType = CardTypeMapping.defaultVisualizationForColumn(column);
+              return defaultCardType;
+            }
+          ).
+          first(); // Terminate the stream on the first one (toPromise waits until the stream terminates).
+      });
     },
 
     /**

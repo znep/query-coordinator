@@ -20,7 +20,7 @@ Make sure you've installed karma-cli and phantomjs globally: `npm install -g kar
 `(cd karma-test/dataCards && karma start karma-unit.js --browsers Chrome --singleRun false)
 
 ==== To generate coverage results ====
-Just run `rake`, the karma test task will run karma configured to compute coverage. Coverage results will live in frontend/karma-test/dataCards/coverage/
+Just run `rake`, the karma test task will run karma configured to compute coverage. Coverage results will live in frontend/karma-test/coverage-reports/dataCards/
 
 ==== To run tests in SauceLabs ====
  Karma knows how to launch tests against browsers specified in supported_browsers.json

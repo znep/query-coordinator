@@ -57,8 +57,8 @@ angular.module('dataCards.services').factory('ModelHelper', function() {
       if (needsDefaultValueHit) {
         needsDefaultValueHit = false;
         var defaultValueResult = defaultValueGenerator(model);
-        var useAsThenable = _.isFunction(defaultValueResult.then) && !_.isFunction(defaultValueResult.subscribe);
-        var defaultValueSeq = useAsThenable ?
+        var useAsPromise = _.isFunction(defaultValueResult.then) && !_.isFunction(defaultValueResult.subscribe);
+        var defaultValueSeq = useAsPromise ?
           Rx.Observable.fromPromise(defaultValueResult) :
           defaultValueResult.first();
 

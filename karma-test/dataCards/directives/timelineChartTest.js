@@ -97,7 +97,7 @@ describe('timelineChart', function() {
 
   }
 
-  function createTimelineChart(width, expanded) {
+  function createTimelineChart(width, expanded, data) {
 
     var html;
     var childScope;
@@ -122,7 +122,7 @@ describe('timelineChart', function() {
       '</div>'
     ].join('');
 
-    scope.chartData = unfilteredTestData;
+    scope.chartData = data || unfilteredTestData;
     scope.expanded = expanded;
     scope.precision = 'MONTH';
     scope.rowDisplayUnit = 'rowDisplayUnit';
@@ -184,33 +184,134 @@ describe('timelineChart', function() {
 
   });
 
-  xit('should create 6 x-axis ticks and 6 x-axis labels', function() {
+  describe('axis creation', function() {
+    xit('should create 6 x-axis ticks and 6 x-axis labels', function() {
 
-    var chart = createTimelineChart(640, false);
+      var chart = createTimelineChart(640, false);
 
-    expect($('.x-tick').length).to.equal(6);
-    expect($('.x-tick-label').length).to.equal(6);
+      expect($('.x-tick').length).to.equal(6);
+      expect($('.x-tick-label').length).to.equal(6);
 
-  });
-
-  it('should create 3 y-axis ticks and 3 y-axis labels', function() {
-
-    var chart = createTimelineChart(640, false);
-
-    expect($('.y-tick').length).to.equal(3);
-
-  });
-
-  it('should create x-axis labels with unique positions', function() {
-
-    var chart = createTimelineChart(640, false);
-
-    var positions = _.map($('.x-tick-label'), function(label) {
-      return $(label).attr('style');
     });
 
-    expect(_.uniq(positions).length).to.equal(positions.length);
+    it('should create 3 y-axis ticks and 3 y-axis labels', function() {
 
+      var chart = createTimelineChart(640, false);
+
+      expect($('.y-tick').length).to.equal(3);
+
+    });
+
+    it('should create x-axis labels with unique positions', function() {
+
+      var chart = createTimelineChart(640, false);
+
+      var positions = _.map($('.x-tick-label'), function(label) {
+        return $(label).attr('style');
+      });
+
+      expect(_.uniq(positions).length).to.equal(positions.length);
+
+    });
+
+    describe('label granularity', function() {
+      var transformChartData;
+      beforeEach(inject(function($injector) {
+        transformChartData = $injector.get('timelineChartVisualizationService').
+          transformChartDataForRendering;
+      }));
+
+      it('should format for decade when the data spans more than 20 years', function() {
+        var chart = createTimelineChart(640, false, transformChartData(
+          _.map(_.range(30), function(i) {
+            return {
+              date: moment(new Date(2000 + i, 0, 1)),
+              total: i,
+              filtered: 0
+            }
+          })
+        ));
+
+        var labels = chart.find('.x-tick-label');
+        expect(labels.length).to.be.greaterThan(0);
+        labels.each(function() {
+          expect(this.innerHTML).to.match(/\b20[0-9]0s\b/);
+        });
+      });
+
+      it('should format for year when the data spans 2 < x < 20 years', function() {
+        var chart = createTimelineChart(640, false, transformChartData(
+          _.map(_.range(19), function(i) {
+            return {
+              date: moment(new Date(2000 + i, 0, 1)),
+              total: i,
+              filtered: 0
+            }
+          })
+        ));
+
+        var labels = chart.find('.x-tick-label');
+        expect(labels.length).to.be.greaterThan(0);
+        labels.each(function() {
+          expect(this.innerHTML).to.match(/\b20[01][0-9]\b/);
+        });
+      });
+
+      it('should format for month when the data spans 2 < x < 24 months', function() {
+        var chart = createTimelineChart(640, false, transformChartData(
+          _.map(_.range(80), function(i) {
+            return {
+              date: moment(new Date(2014, 11, i)),
+              total: i,
+              filtered: 0
+            }
+          })
+        ));
+
+        var labels = chart.find('.x-tick-label');
+        expect(labels.length).to.be.greaterThan(0);
+        labels.each(function() {
+          expect(this.innerHTML).to.match(/\b[A-Z][a-z][a-z] ['’]1[45]\b/);
+        });
+      });
+
+      it('should format for day when the data spans less than 2 months', function() {
+        var chart = createTimelineChart(640, false, transformChartData(
+          _.map(_.range(30), function(i) {
+            return {
+              date: moment(new Date(2000, 0, 1 + i)),
+              total: i,
+              filtered: 0
+            }
+          })
+        ));
+
+        var labels = chart.find('.x-tick-label');
+        expect(labels.length).to.be.greaterThan(0);
+        labels.each(function() {
+          expect(this.innerHTML).to.match(/\b[1-9]?[0-9] [A-Z][a-z][a-z]\b/);
+        });
+      });
+
+      // This unit test exposes a bug: https://socrata.atlassian.net/browse/ONCALL-1917
+      xit('should format for month when the data has gaps in it', function() {
+        var chart = createTimelineChart(640, false, transformChartData(
+          _.map(_.range(0, 30, 3), function(i) {
+            return {
+              date: moment(new Date(2014, 11, i)),
+              total: i,
+              filtered: 0
+            }
+          })
+        ));
+
+        var labels = chart.find('.x-tick-label');
+        expect(labels.length).to.be.greaterThan(0);
+        labels.each(function() {
+          expect(this.innerHTML).to.match(/\b[A-Z][a-z][a-z] ['’]1[45]\b/);
+        });
+      });
+    });
   });
 
   it('should react to filtered values', function() {

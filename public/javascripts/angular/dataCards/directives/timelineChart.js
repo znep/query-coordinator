@@ -24,14 +24,6 @@
     DECADE: 'YYYYs'
   };
 
-  var TICK_DATE_FORMAT = {
-    DAY: 'D MMM',
-    MONTH: 'MMM \'YY',
-    YEAR: 'YYYY',
-    DECADE: 'YYYY[s]'
-  };
-
-
   // This is needed because offset percentages, it turns out, are not entirely accurate
   // with regard to positioning elements as to where d3 believes them to be. This value,
   // subtracted from a calculated offset (cursor pixel location / width of chart in pixels)
@@ -1285,7 +1277,8 @@
               if (forFlyout) {
                 return FULL_MONTH_NAMES[labelDate.getMonth()] + ' ' + labelDate.getFullYear();
               } else {
-                return SHORT_MONTH_NAMES[labelDate.getMonth()] + ' ’' + labelDate.getYear();
+                return SHORT_MONTH_NAMES[labelDate.getMonth()] +
+                  ' ’' + (labelDate.getFullYear() % 100);
               }
 
             case 'DAY':

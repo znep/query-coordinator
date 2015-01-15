@@ -1100,6 +1100,16 @@ describe("Model", function() {
         ]
       });
     });
+    it('should not serialize ephemeral fields', function() {
+      var model = new Model();
+      model.defineObservableProperty('nonEphemeral', 'foo');
+      model.defineObservableProperty('ephemeral', 'asd');
+      model.setObservablePropertyIsEphemeral('ephemeral', true);
+
+      expect(model.serialize()).to.deep.equal({
+        nonEphemeral: 'foo'
+      });
+    });
   });
 
   describe('isSet', function() {

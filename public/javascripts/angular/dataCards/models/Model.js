@@ -7,6 +7,7 @@ angular.module('dataCards.models').factory('Model', function(Class, ModelHelper)
       this._recursiveSets = new Rx.Subject();
       this._propertyObservables = {};
       this._propertyHasBeenWritten = {};
+      this._ephemeralProperties = {};
 
       //Keeps track of children we've told that this instance is their parent.
       //Maps property names to arrays of children (because a property can be set
@@ -103,6 +104,14 @@ angular.module('dataCards.models').factory('Model', function(Class, ModelHelper)
           });
           oldValue = value;
         });
+    },
+
+    // Controls whether or not the named property is ephemeral.
+    // Ephemeral properties are not serialized. Properties are
+    // not ephemeral by default.
+    setObservablePropertyIsEphemeral: function(propertyName, isEphemeral) {
+      this._assertProperty(propertyName);
+      this._ephemeralProperties[propertyName] = isEphemeral;
     },
 
     // Define a new observable property whose value is sourced by the given sequence.
@@ -291,6 +300,10 @@ angular.module('dataCards.models').factory('Model', function(Class, ModelHelper)
       };
 
       _.forOwn(self._propertyObservables, function(seq, propertyName) {
+        if (self._ephemeralProperties[propertyName]) {
+          // Ephemeral properties are not serialized.
+          return;
+        }
         var currentValue = self.getCurrentValue(propertyName);
         if (self.isSet(propertyName)) {
           artifact[propertyName] = serializeArbitrary(currentValue);

@@ -42,13 +42,11 @@ angular.module('dataCards.models').factory('Page', function($q, Dataset, Card, M
       });
 
       self.defineObservableProperty('cards', [], function() {
-        return baseInfoPromise().then(
-          function(data) {
-            return _.map(data.cards, function(serializedCard) {
-              return Card.deserialize(self, serializedCard);
-            });
-          }
-        );
+        return baseInfoPromise().then(function(data) {
+          return _.map(data.cards, function(serializedCard) {
+            return Card.deserialize(self, serializedCard);
+          });
+        });
       });
 
       // Synchronize changes between primaryAmountField and primaryAggregation

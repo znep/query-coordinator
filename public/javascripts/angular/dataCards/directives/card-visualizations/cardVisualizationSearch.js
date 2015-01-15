@@ -35,12 +35,15 @@
         var dataset = model.observeOnLatest('page.dataset');
         var fieldNameObservable = model.pluck('fieldName');
 
-        var physicalDatatypeObservable = Rx.Observable.combineLatest(
+        var datatypeObservable = Rx.Observable.combineLatest(
           fieldNameObservable,
           dataset.observeOnLatest('columns'),
           function(fieldName, columns) {
             var column = columns[fieldName];
-            return column.physicalDatatype;
+            return {
+              physicalDatatype: column.physicalDatatype,
+              logicalDatatype: column.logicalDatatype
+            };
           });
 
         var invalidSearchInputSubject = new Rx.BehaviorSubject(false);
@@ -137,10 +140,10 @@
             return Rx.Observable.
               combineLatest(
                 fieldNameObservable,
-                physicalDatatypeObservable,
-                function(fieldName, physicalDatatype) {
+                datatypeObservable,
+                function(fieldName, datatype) {
                   var whereClause;
-                  if (physicalDatatype === 'number') {
+                  if (datatype.physicalDatatype === 'number') {
                     var numericSearchValue = parseInt(searchValue, 10);
                     if (_.isNaN(numericSearchValue)) {
                       invalidSearchInputSubject.onNext(true);

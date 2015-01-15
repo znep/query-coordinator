@@ -183,12 +183,6 @@ class NewUxBootstrapControllerTest < ActionController::TestCase
               dataset_metadata[:defaultPage] == 'neoo-page'
             end
 
-          assert_operator(
-            mock_dataset_metadata[:columns].length,
-            :>,
-            10,
-            'TEST CODE SANITY CHECK: for this test to be valid, the mock dataset should expose more than 10 columns')
-
           # Make sure the page we're creating fits certain criteria
           @page_metadata_manager.expects(:create).with do |page, params|
             assert_equal(10, page['cards'].length, 'Should create 10 cards')
@@ -197,7 +191,7 @@ class NewUxBootstrapControllerTest < ActionController::TestCase
               Phidippides::SYSTEM_COLUMN_ID_REGEX.match(card['fieldName'])
             end, 'should omit system columns')
 
-            # make sure there exists cards that have the same physical type, but
+            # make sure there exists cards that have the same logical and physical types, but
             # different card types, according to cardinality.
             seen_multi_cards = {}
             differing_card_types = page['cards'].map do |card|
@@ -219,8 +213,8 @@ class NewUxBootstrapControllerTest < ActionController::TestCase
             assert(differing_card_types.present?)
 
             assert(page['cards'].any? do |card|
-              card['fieldName'] == 'none' && card['cardType'] == 'numberHistogram'
-            end, 'A column with no cardinality should default to high-cardinality')
+              card['fieldName'] == 'none' && card['cardType'] == 'column'
+            end, 'A column with no cardinality should default to its low-cardinality default')
 
             assert(page['cards'].none? do |card|
               card['fieldName'] == 'below'
@@ -244,7 +238,7 @@ class NewUxBootstrapControllerTest < ActionController::TestCase
           assert_redirected_to('/view/neoo-page')
         end
 
-        should 'create page omitting text column charts where cardinality == dataset_size' do
+        should 'create page omitting column charts where cardinality == dataset_size' do
           connection_stub = stub.tap do |stub|
             stub.stubs(get_request: '[{"count_0": "34"}]',
                        reset_counters: {requests: {}, runtime: 0})
@@ -296,38 +290,38 @@ class NewUxBootstrapControllerTest < ActionController::TestCase
 
   private
 
-  def column_for_type(physical_type, cardinality, name)
+  def column_for_type(logical_type, physical_type, cardinality, name)
     {
       title: name,
       name: name,
+      logicalDatatype: logical_type,
       physicalDatatype: physical_type,
-      cardinality: cardinality
+      cardinality: cardinality,
     }
   end
 
-  def columns_for_cardtypes(physical_datatypes, prefix)
-    cardinality_threshold = CardTypeMapping::DEFAULT_CARD_TYPE_MAPPING['cardinality']['threshold']
+  def columns_for_cardtypes(types, prefix)
+    cardinality_threshold = CardTypeMapping::CARD_TYPE_MAPPING['cardinality']['threshold']
+    cardinality_toggle = 1
     counter = 0
-    low_cardinality_version = physical_datatypes.map do |physical_type|
+    types.keys.map do |logical_type|
       counter += 1
-      column_for_type(physical_type, cardinality_threshold - 1, "#{prefix}#{counter}")
-    end
-
-    high_cardinality_version = physical_datatypes.map do |physical_type|
-      counter += 1
-      column_for_type(physical_type, cardinality_threshold + 1, "#{prefix}#{counter}")
-    end
-
-    return low_cardinality_version.zip(high_cardinality_version).flatten
+      types[logical_type].map do |physical_type|
+        cardinality_toggle *= -1
+        column_for_type(logical_type, physical_type,
+                        cardinality_threshold + cardinality_toggle, "#{prefix}#{counter}")
+      end
+    end.flatten(1)
   end
 
   def mock_dataset_metadata_with_uninteresting_column_chart
-    cardinality_threshold = CardTypeMapping::DEFAULT_CARD_TYPE_MAPPING['cardinality']['threshold']
+    cardinality_threshold = CardTypeMapping::CARD_TYPE_MAPPING['cardinality']['threshold']
     cardinality_equal_to_dataset_size = [{
       title: 'cardinality equal to dataset size',
-      name: 'cardinality_equals_row_count',
-      physicalDatatype: 'text',
-      cardinality: cardinality_threshold - 1
+      name: 'too_much',
+      logicalDatatype: 'category',
+      physicalDatatype: 'number',
+      cardinality: cardinality_threshold - 1,
     }]
 
     mock_metadata = mock_dataset_metadata
@@ -336,13 +330,25 @@ class NewUxBootstrapControllerTest < ActionController::TestCase
   end
 
   def mock_dataset_metadata
-    # A sampling of datatypes that map to >1 cardtype.
-    multiple_cardtype_types =  %w(money number text)
+    multiple_cardtype_types = {
+      'category' => ['number', 'text'],
+      'identifier' => ['number', 'text'],
+      'name' => ['number', 'text'],
+      'text' => ['number', 'text'],
+    }
+    # A sampling of datatypes that map to only one cardtype
+    single_cardtype_types = {
+      'amount' => ['*'],
+      'category' => ['boolean'],
+      'identifier' => ['fixed_timestamp', 'money'],
+      'location' => ['number', 'point'],
+    }
+    no_cardtype_types = {
+      '*' => ['boolean'],
+      'time' => ['geo_entity']
+    }
 
-    # A sampling of datatypes that map to only one cardtype, regardless of cardinality.
-    single_cardtype_types = %w(boolean floating_timestamp geo_entity point)
-      
-    no_cardtype_types = %w(* time)
+    counter = 0
 
     multi_cardtype_cols = columns_for_cardtypes(multiple_cardtype_types, 'multi')
     single_cardtype_cols = columns_for_cardtypes(single_cardtype_types, 'single')
@@ -350,13 +356,15 @@ class NewUxBootstrapControllerTest < ActionController::TestCase
     below_minimum_cardinality = [{
       title: 'below min cardinality',
       name: 'below',
+      logicalDatatype: 'category',
       physicalDatatype: 'number',
-      cardinality: CardTypeMapping::DEFAULT_CARD_TYPE_MAPPING['cardinality']['min'] - 1
+      cardinality: CardTypeMapping::CARD_TYPE_MAPPING['cardinality']['min'] - 1
     }]
     no_cardinality = [{
       title: 'no cardinality',
       name: 'none',
-      physicalDatatype: 'number'
+      logicalDatatype: 'category',
+      physicalDatatype: 'number',
     }]
 
     {
@@ -367,8 +375,8 @@ class NewUxBootstrapControllerTest < ActionController::TestCase
       columns: [{ title: ':system', name: ':system' }] +
         no_cardinality +
         below_minimum_cardinality +
-        no_cardtype_cols +
-        single_cardtype_cols.first(6) +
+        no_cardtype_cols.first(2) +
+        single_cardtype_cols.first(4) +
         multi_cardtype_cols.first(6)
     }
   end

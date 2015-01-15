@@ -65,17 +65,16 @@ describe('Customize card dialog', function() {
       name: 'choropleth',
       title: 'Spot where cool froods hang out.',
       description: '???',
-      cardinality: 1000,
+      logicalDatatype: 'location',
       physicalDatatype: 'number',
       importance: 2,
-      shapefile: 'mash-apes',
-      computationStrategy: 'georegion_match_on_point'
+      shapefile: 'mash-apes'
     },
     feature: {
       name: 'feature',
       title: 'Froods who really know where their towels are.',
       description: '???',
-      cardinality: 1000,
+      logicalDatatype: 'location',
       physicalDatatype: 'point',
       importance: 2
     },
@@ -83,7 +82,7 @@ describe('Customize card dialog', function() {
       name: 'bar',
       title: 'A bar where cool froods hang out.',
       description: '???',
-      cardinality: 1000,
+      logicalDatatype: 'amount',
       physicalDatatype: 'number'
     }
   };

@@ -49,23 +49,22 @@ describe('CardsViewController', function() {
         rowDisplayUnit: 'bar',
         ownerId: datasetOwnerId,
         updatedAt: '2004-05-20T17:42:55+00:00',
-        version: '0.1',
         columns: [
           {
             'title': 'nonCustomizableFieldName',
             'name': 'nonCustomizableFieldName',
             'physicalDatatype': 'text',
+            'logicalDatatype': 'text',
             'description': 'non-customizable test field',
-            'importance': 1,
-            'cardinality': 5
+            'importance': 1
           },
           {
             'title': 'customizableFieldName',
             'name': 'customizableFieldName',
             'physicalDatatype': 'point',
+            'logicalDatatype': 'location',
             'description': 'customizable test field',
-            'importance': 1,
-            'cardinality': 15
+            'importance': 1
           }
         ]
       });
@@ -679,8 +678,8 @@ describe('CardsViewController', function() {
 
         $scope.$apply();
 
-        // NOTE: In order for this to work the physical datatype and
-        // cardinality of the column referenced by the fieldName of the
+        // NOTE: In order for this to work the physical and logical
+        // datatypes of the column referenced by the fieldName of the
         // newly-created card must map to a card type which is actually
         // customizable. In this case we want to ensure that we do
         // not actually display the dialog for a non-customizable
@@ -695,8 +694,7 @@ describe('CardsViewController', function() {
         'displayMode': 'visualization',
         'expanded': false,
         'expandedCustomStyle': {},
-        'fieldName': 'nonCustomizableFieldName',
-        'cardType': 'column' // Not customizable.
+        'fieldName': 'nonCustomizableFieldName'
       };
 
       cardModel = Card.deserialize($scope.page, serializedCard);
@@ -722,8 +720,8 @@ describe('CardsViewController', function() {
 
         $scope.$apply();
 
-        // NOTE: In order for this to work the physical datatype and
-        // cardinality of the column referenced by the fieldName of the
+        // NOTE: In order for this to work the physical and logical
+        // datatypes of the column referenced by the fieldName of the
         // newly-created card must map to a card type which is actually
         // customizable.
         expect($scope.customizeState.show).to.equal(true);
@@ -736,8 +734,7 @@ describe('CardsViewController', function() {
         'displayMode': 'visualization',
         'expanded': false,
         'expandedCustomStyle': {},
-        'fieldName': 'customizableFieldName',
-        'cardType': 'choropleth' // Customizable.
+        'fieldName': 'customizableFieldName'
       };
 
       cardModel = Card.deserialize($scope.page, serializedCard);

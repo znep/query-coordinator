@@ -57,7 +57,7 @@ describe('<aggregation-chooser/>', function() {
           name: 'statBar_column',
           title: 'test column title',
           description: 'test column description',
-          cardinality: 1000,
+          logicalDatatype: 'amount',
           physicalDatatype: 'number',
           importance: 2
         },
@@ -65,7 +65,7 @@ describe('<aggregation-chooser/>', function() {
           name: 'statBar_column2',
           title: 'second test column title',
           description: 'second test column description',
-          cardinality: 1000,
+          logicalDatatype: 'amount',
           physicalDatatype: 'number',
           importance: 2
         }
@@ -244,28 +244,27 @@ describe('<aggregation-chooser/>', function() {
       columns: {
         pointMap_column: {
           name: 'pointMap_column',
-          cardinality: 1000,
+          logicalDatatype: 'location',
           physicalDatatype: 'point'
         },
         choropleth_column: {
           name: 'choropleth_column',
-          cardinality: 1000,
+          logicalDatatype: 'location',
           physicalDatatype: 'number',
-          shapefile: 'fake-shap',
-          computationStrategy: 'georegion_match_on_point'
+          shapefile: 'fake-shap'
         },
         timeline_column: {
           name: 'timeline_column',
-          cardinality: 10,
-          physicalDatatype: 'floating_timestamp'
+          logicalDatatype: 'time',
+          physicalDatatype: 'number'
         },
         search_column: {
           name: 'search_column',
-          cardinality: 1000,
+          logicalDatatype: 'text',
           physicalDatatype: 'text'
         },
         '*': {
-          cardinality: 1000
+          logicalDatatype: '*'
         }
       }
     });
@@ -285,7 +284,7 @@ describe('<aggregation-chooser/>', function() {
         name: 'column_{0}'.format(value),
         title: 'test column title - {0}'.format(value),
         description: 'test column description - {0}'.format(value),
-        cardinality: 1000,
+        logicalDatatype: 'amount',
         physicalDatatype: 'number',
         importance: 2
       };

@@ -17,7 +17,7 @@ class PhidippidesDatasetsControllerTest < ActionController::TestCase
   end
 
   test 'show returns data for a given dataset' do
-    @controller.stubs(has_rights?: true)
+    @controller.stubs(can_update_metadata?: true)
     @phidippides.stubs(issue_request: { body: mock_dataset_metadata })
     get :show, id: 'four-four', format: 'json'
     assert_response(:success)
@@ -25,20 +25,20 @@ class PhidippidesDatasetsControllerTest < ActionController::TestCase
   end
 
   test 'create returns 401 unless logged in' do
-    @controller.stubs(has_rights?: false)
+    @controller.stubs(can_update_metadata?: false)
     post :create
     assert_response(401)
   end
 
   test 'create returns 406 unless format is JSON' do
-    @controller.stubs(has_rights?: true)
+    @controller.stubs(can_update_metadata?: true)
     @phidippides.stubs(issue_request: '')
     post :create, id: 'four-four', datasetMetadata: dataset_metadata.to_json
     assert_response(406)
   end
 
   test 'create returns 405 unless method is a post' do
-    @controller.stubs(has_rights?: true)
+    @controller.stubs(can_update_metadata?: true)
     get :create, id: 'q77b-s2zi', format: :json
     assert_response(405)
     put :create, id: 'q77b-s2zi', format: :json
@@ -48,20 +48,20 @@ class PhidippidesDatasetsControllerTest < ActionController::TestCase
   end
 
   test 'create returns new dataset metadata when logged in' do
-    @controller.stubs(has_rights?: true)
+    @controller.stubs(can_update_metadata?: true)
     @phidippides.stubs(issue_request: { body: mock_dataset_metadata, status: 200 })
     post :create, datasetMetadata: mock_dataset_metadata, format: :json
     assert_response(200)
   end
 
   test 'update returns 401 unless has necessary rights' do
-    @controller.stubs(has_rights?: false)
+    @controller.stubs(can_update_metadata?: false)
     put :update, id: 'q77b-s2zi', datasetMetadata: dataset_metadata.to_json, format: :json
     assert_response(401)
   end
 
   test 'update returns 405 unless method is put' do
-    @controller.stubs(has_rights?: true)
+    @controller.stubs(can_update_metadata?: true)
     get :update, id: 'q77b-s2zi', datasetMetadata: dataset_metadata.to_json, format: :json
     assert_response(405)
     post :update, id: 'q77b-s2zi', datasetMetadata: dataset_metadata.to_json, format: :json
@@ -71,13 +71,13 @@ class PhidippidesDatasetsControllerTest < ActionController::TestCase
   end
 
   test 'update returns 400 unless required params are present' do
-    @controller.stubs(has_rights?: true)
+    @controller.stubs(can_update_metadata?: true)
     put :update, id: 'q77b-s2zi', format: :json
     assert_response(400)
   end
 
   test 'update returns success' do
-    @controller.stubs(has_rights?: true)
+    @controller.stubs(can_update_metadata?: true)
     @phidippides.stubs(issue_request: { body: mock_dataset_metadata, status: 200 })
     put :update, id: 'four-four', datasetMetadata: mock_dataset_metadata, format: :json
     assert_response(200)
@@ -88,39 +88,39 @@ class PhidippidesDatasetsControllerTest < ActionController::TestCase
     assert_response(403)
   end
 
-  test 'has_rights? returns true when logged in and user is dataset owner (publisher)' do
+  test 'can_update_metadata? returns true when logged in and user is dataset owner (publisher)' do
     stub_user = stub(is_owner?: true, is_admin?: false, roleName: 'publisher')
     @controller.stubs(current_user: stub_user, dataset: 'foo')
-    assert(@controller.send(:has_rights?))
+    assert(@controller.send(:can_update_metadata?))
   end
 
-  test 'has_rights? returns true when logged in and user is superadmin' do
+  test 'can_update_metadata? returns true when logged in and user is superadmin' do
     stub_user = stub(is_owner?: false, is_admin?: true, roleName: 'administrator')
     @controller.stubs(current_user: stub_user, dataset: 'foo')
-    assert(@controller.send(:has_rights?))
+    assert(@controller.send(:can_update_metadata?))
   end
 
-  test 'has_rights? returns false when not logged in' do
+  test 'can_update_metadata? returns false when not logged in' do
     @controller.stubs(current_user: nil)
-    refute(@controller.send(:has_rights?))
+    refute(@controller.send(:can_update_metadata?))
   end
 
-  test 'has_rights? returns false when logged in but not dataset owner and not admin or publisher' do
+  test 'can_update_metadata? returns false when logged in but not dataset owner and not admin or publisher' do
     stub_user = stub(is_owner?: false, is_admin?: false, roleName: 'editor')
     @controller.stubs(current_user: stub_user, dataset: 'foo')
-    refute(@controller.send(:has_rights?))
+    refute(@controller.send(:can_update_metadata?))
   end
 
-  test 'has_rights? returns true when logged in as publisher but not dataset owner and not admin' do
+  test 'can_update_metadata? returns true when logged in as publisher but not dataset owner and not admin' do
     stub_user = stub(is_owner?: false, is_admin?: false, roleName: 'publisher')
     @controller.stubs(current_user: stub_user, dataset: 'foo')
-    assert(@controller.send(:has_rights?))
+    assert(@controller.send(:can_update_metadata?))
   end
 
-  test 'has_rights? returns true when logged in as (non-super) admininstrator but not dataset owner' do
+  test 'can_update_metadata? returns true when logged in as (non-super) admininstrator but not dataset owner' do
     stub_user = stub(is_owner?: false, is_admin?: false, roleName: 'administrator')
     @controller.stubs(current_user: stub_user, dataset: 'foo')
-    assert(@controller.send(:has_rights?))
+    assert(@controller.send(:can_update_metadata?))
   end
 
   private

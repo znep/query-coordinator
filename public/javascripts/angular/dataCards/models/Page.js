@@ -60,6 +60,24 @@ angular.module('dataCards.models').factory('Page', function($q, Dataset, Card, M
 
       self.defineReadOnlyObservableProperty('aggregation', aggregationObservable);
 
+      var columnAggregatedUpon = aggregationObservable.map(function(aggregation) {
+        return _.isPresent(aggregation.field) ?
+          self.observe('dataset.columns.{0}'.format(aggregation.field)) :
+          Rx.Observable.returnValue(null);
+      }).switchLatest();
+
+      self.defineReadOnlyObservableProperty('aggregatedDisplayUnit', aggregationObservable.combineLatest(
+        self.observe('dataset.rowDisplayUnit').filter(_.isPresent),
+        columnAggregatedUpon,
+        function(aggregation, rowDisplayUnit, columnAggregatedUpon) {
+          var aggregationName = _.isPresent(aggregation.aggregation) ? aggregation.aggregation : 'number';
+          var label = columnAggregatedUpon ? columnAggregatedUpon.title : rowDisplayUnit;
+          return aggregationName + ' of ' + label.pluralize();
+        }
+        )
+      );
+
+
       var allCardsFilters = self.observe('cards').flatMap(function(cards) {
         if (!cards) { return Rx.Observable.never(); }
         return Rx.Observable.combineLatest(_.map(cards, function(d) {

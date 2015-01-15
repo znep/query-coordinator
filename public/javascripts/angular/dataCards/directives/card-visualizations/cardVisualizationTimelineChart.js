@@ -3,19 +3,25 @@ angular.module('dataCards.directives').factory('timelineChartVisualizationServic
    * Precompute a bunch of things that are useful for rendering the timeline chart.
    *
    * @return {Object} with keys:
-   *   @property {TODO} minDate - the earliest date in the dataset,
-   *   @property {TODO} maxDate - the latest date in the dataset,
-   *   @property {TODO} offsets - TODO: what is this for?,
+   *   @property {Date} minDate - the earliest date in the dataset,
+   *   @property {Date} maxDate - the latest date in the dataset,
+   *   @property {Number[]} offsets - An array of numbers, where the number at a given index
+   *     corresponds to an object at that index in the 'values' array, and is a fraction that
+   *     represents how far along the axis (percentage-wise) that value should be positioned,
+   *     assuming a linear scale.
    *   @property {Number} minValue - the smallest value in the dataset,
    *   @property {Number} meanValue - the mean value in the dataset,
    *   @property {Number} maxValue - the largest value in the dataset,
    *   @property {Object[]} values - an array of objects with keys:
-   *     @property {TODO} date -
-   *     @property {TODO} filtered -
-   *     @property {TODO} unfiltered -
+   *     @property {Date} date - the date at which this value occurs.
+   *     @property {} filtered - the filtered value
+   *     @property {} unfiltered - the unfiltered value
    *   @property {String} labelUnit - one of [day, month, year, decade]. TODO: is this used
    *     anywhere?,
-   *   @property {TODO[]} breaks - TODO: what is this for?
+   *   @property {Date[]} breaks - each date represents a new time period, depending on the time
+   *     granularity. For example, if labelUnit is day, each date is the next day. If labelUnit is
+   *     month, each date is the next month. The first element of this array is the minDate. TODO:
+   *     this also doesn't seem to be used anywhere.
    */
   function transformChartDataForRendering(chartData) {
 
@@ -31,7 +37,6 @@ angular.module('dataCards.directives').factory('timelineChartVisualizationServic
     var breakSize;
     var i;
     var breaks;
-    var offsets;
 
     var allValues = chartData.map(function(datum) {
 
@@ -103,6 +108,9 @@ angular.module('dataCards.directives').factory('timelineChartVisualizationServic
     breaks = [minDate.toDate()];
 
     for (i = 1; i <= breakCount; i++) {
+      // TODO: if, for example, breakSize is a day, but the minDate is not on a day boundary (eg
+      // it's in the afternoon or something), then all the breaks will be in the afternoon, rather
+      // than on the day boundary. This seems wrong.
       breaks.push(moment(minDate).add((i * breakSize), 'milliseconds').toDate());
     }
 

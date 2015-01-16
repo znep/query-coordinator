@@ -66,14 +66,23 @@ class NewUxBootstrapController < ActionController::Base
       :cookies => forwardable_session_cookies
     )
 
+    has_publisher_pages = pages_response.try(:[], :body).present? &&
+                          pages_response[:body].try(:[], :publisher).present?
+
+    request_successful_and_has_publisher_pages =
+      has_publisher_pages && pages_response[:status] == '200'
+
+    request_successful_but_no_pages =
+      ((!has_publisher_pages && pages_response[:status] == '200') ||
+        pages_response[:status] == '404')
+
+
     # 4a. There is at least one 'New UX' page already, so we can find a default.
-    if pages_response[:status] == '200' && pages_response.try(:[], :body).try(:[], :publisher).present?
+    if request_successful_and_has_publisher_pages
 
       pages = pages_response[:body][:publisher]
 
-      default_page = nil
-
-      if dataset_metadata_response_body[:defaultPage]
+      if dataset_metadata_response_body[:defaultPage].present?
         default_page = pages.find do |page|
           page[:pageId] == dataset_metadata_response_body[:defaultPage]
         end
@@ -91,7 +100,7 @@ class NewUxBootstrapController < ActionController::Base
       end
 
     # 4b. If there are no pages, we will need to create a default 'New UX' page.
-    elsif (pages_response[:status] == '200' && pages.blank?) || pages_response[:status] == '404'
+    elsif request_successful_but_no_pages
 
       default_page_id = create_default_page(dataset_metadata_response_body)
 
@@ -104,17 +113,19 @@ class NewUxBootstrapController < ActionController::Base
       set_default_page(dataset_metadata_response_body, default_page_id)
       return redirect_to "/view/#{default_page_id}"
 
+    # This is a server error so we should notify Airbrake.
     else
 
-      # This is a server error so we should notify Airbrake.
       Airbrake.notify(
         :error_class => "BootstrapUXFailure",
         :error_message => "Dataset #{params[:id].inspect} failed to return pages for bootstrapping.",
         :request => { :params => params },
         :context => { :pages_response => pages_response }
       )
-      Rails.logger.error("Dataset #{params[:id].inspect} failed to return pages for bootstrapping. " +
-                         "Response: #{pages_response.inspect}")
+      Rails.logger.error(
+        "Dataset #{params[:id].inspect} failed to return pages for bootstrapping. " \
+        "Response: #{pages_response.inspect}"
+      )
       flash[:error] = I18n.t('screens.ds.new_ux_error')
       return redirect_to action: 'show', controller: 'datasets'
 
@@ -145,9 +156,11 @@ class NewUxBootstrapController < ActionController::Base
         :request => { :params => params },
         :context => { :pages_response => pages_response }
       )
-      Rails.logger.error("Could not save new default page #{page_id.inspect} for " +
-                         "Dataset #{params[:id].inspect}. " +
-                         "Response: #{dataset_metadata_response.inspect}")
+      Rails.logger.error(
+        "Could not save new default page #{page_id.inspect} " \
+        "Dataset #{params[:id].inspect}. " \
+        "Response: #{dataset_metadata_response.inspect}"
+      )
     end
 
   end
@@ -174,8 +187,10 @@ class NewUxBootstrapController < ActionController::Base
         :request => { :params => params },
         :context => { :page_creation_result => page_creation_response }
       )
-      Rails.logger.error("Error creating page for dataset #{params[:id]}. " +
-                         "Response: #{page_creation_response.inspect}")
+      Rails.logger.error(
+        "Error creating page for dataset #{params[:id]}. " \
+        "Response: #{page_creation_response.inspect}"
+      )
 
     end
 
@@ -245,8 +260,10 @@ class NewUxBootstrapController < ActionController::Base
         CoreServer::Base.connection.get_request("/id/#{params[:id]}?%24query=select+count(0)")
       )[0]['count_0'].to_i
     rescue CoreServer::Error => e
-      Rails.logger.error('Core server error while retrieving dataset size of dataset ' +
-                         "(#{params[:id]}): #{e}")
+      Rails.logger.error(
+        "Core server error while retrieving dataset size of dataset " \
+        "(#{params[:id]}): #{e}"
+      )
       nil
     end
   end

@@ -67,9 +67,9 @@ angular.module('dataCards.directives').factory('timelineChartVisualizationServic
       }
     });
 
-    minValue = Math.min(0, minValue);
-
-    meanValue = (maxValue - minValue) / 2;
+    minValue = (minValue > 0) ? 0 : minValue;
+    maxValue = (maxValue < 0) ? 0 : maxValue;
+    meanValue = (maxValue + minValue) / 2;
 
     // We receive individual rows from the back-end
     // but we want to display intelligent aggregates

@@ -870,10 +870,12 @@
          *
          */
 
-        function renderChartYAxis(jqueryChartElement, chartWidth, chartHeight, d3YScale, labels) {
+        function renderChartYAxis(jqueryChartElement, chartWidth, chartHeight, chartData) {
 
           var jqueryAxisContainer;
+          var labels;
           var ticks;
+          var tick;
 
 
           jqueryAxisContainer = $('<div>').
@@ -883,28 +885,43 @@
               height: chartHeight
             });
 
-          // Because we have already set the domain for the d3YScale, it will return
-          // funny values which we need to then map back into the [0 .. 1] range.
-          // Because we need to know the max tick value, THIS NEEDS TO HAPPEN ON
-          // TWO SEPARATE LINES rather than by composing the .ticks() and .map()
-          // functions below.
-          ticks = d3YScale.ticks(labels.length);
-
-          ticks = ticks.map(function(tick) {
-            return tick / ticks[ticks.length - 1];
+          labels = [
+            Math.round(chartData.minValue),
+            Math.round(chartData.meanValue),
+            Math.round(chartData.maxValue)
+          ].sort(function(a, b) {
+            if (a > b) {
+              return 1;
+            } else if (a < b) {
+              return -1;
+            } else {
+              return 0;
+            }
           });
 
-          if (ticks.length !== 3) {
-            ticks = [ticks[0], ticks[Math.floor((ticks.length - 1) / 2)], ticks[ticks.length - 1]]
+          ticks = [0, 0.5, 1];
+
+          // If our values straddle 0, then we need to force the middle tick to
+          // be 0, not the average of the min and the max values.
+          if (labels[0] * labels[2] < 0) {
+            labels[1] = 0;
+            ticks[1] = Math.abs(chartData.minValue) /
+                       (Math.abs(chartData.minValue) + Math.abs(chartData.maxValue));
           }
 
           _.each(ticks, function(tick, index) {
 
-            jqueryAxisContainer.append(
-              $('<div>').
+            tick = $('<div>').
                 addClass('y-tick').
                 css('bottom', Math.floor(chartHeight * tick)).
-                text($.toHumaneNumber(labels[index])));
+                text($.toHumaneNumber(labels[index]));
+
+            if (labels[index] === 0) {
+              tick.addClass('zero');
+            }
+
+            jqueryAxisContainer.append(tick);
+
           });
 
           // Remove old y-axis ticks and replace them
@@ -974,7 +991,7 @@
           d3YScale = d3.
             scale.
               linear().
-                domain([0, chartData.maxValue]).
+                domain([chartData.minValue, chartData.maxValue]).
                 range([chartHeight, 0]).
                 clamp(true); // Is this necessary?!
 
@@ -989,7 +1006,7 @@
             chartHeight,
             d3XScale,
             chartData
-            );
+          );
 
 
           //
@@ -1001,18 +1018,8 @@
             jqueryChartElement,
             chartWidth,
             chartHeight,
-            d3YScale,
-            // Because of a peculiarity with the way stacked area charts work in d3
-            // (I think), the y scale extends to 2x the maximum value found in the
-            // data set. However, we really only want to represent values from the minimum
-            // to the maximum found in the data set, so we use those values for the tick
-            // labels as the last argument to renderChartYAxisTicks instead of what d3 chooses
-            // to provide for us.
-            [
-              Math.round(chartData.minValue),
-              Math.round(chartData.meanValue),
-              Math.round(chartData.maxValue)
-            ]);
+            chartData
+          );
 
 
           //
@@ -1020,7 +1027,10 @@
           //
 
           renderChartUnfilteredValues();
-          renderChartFilteredValues();
+
+          if (!selectionActive) {
+            renderChartFilteredValues();
+          }
 
         }
 
@@ -1116,9 +1126,10 @@
           chartHeight = cachedChartDimensions.height - margin.top - margin.bottom;
 
           if (selectionActive) {
-            values = [cachedChartData.values.filter(function(datum) {
-              return datum.date >= selectionStartDate && datum.date <= selectionEndDate;
-            })];
+            //values = cachedChartData.values.values = [cachedChartData.values.filter(function(datum) {
+            //  return datum.date >= selectionStartDate && datum.date <= selectionEndDate;
+            //})];
+            values = [];
           } else {
             values = [cachedChartData.values];
           }
@@ -1201,9 +1212,9 @@
                      join('').
                      format(
                        dateString,
-                       currentDatum.unfiltered,
+                       $.toHumaneNumber(currentDatum.unfiltered),
                        unfilteredUnit,
-                       currentDatum.filtered,
+                       $.toHumaneNumber(currentDatum.filtered),
                        filteredUnit
                      );
             } else {
@@ -1216,7 +1227,7 @@
                        '</div>'
                      ].
                      join('').
-                     format(dateString, currentDatum.unfiltered, unfilteredUnit);
+                     format(dateString, $.toHumaneNumber(currentDatum.unfiltered), unfilteredUnit);
             }
           }
         }

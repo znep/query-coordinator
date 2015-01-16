@@ -51,7 +51,7 @@ $fill-opacity: 0.5
   z-index: 3
 
   .selection
-    fill: rgba(255,255,0,0.5)
+    fill: rgba(255,255,105,1)
     stroke: $timeline-highlight-stroke
 
 .timeline-chart-left-selection-marker,
@@ -104,6 +104,7 @@ $fill-opacity: 0.5
   width: 100px
   height: 30px
   bottom: 0
+  color: $chart-tick-color
   font-weight: bold
   line-height: 30px
   text-align: center
@@ -148,9 +149,9 @@ $fill-opacity: 0.5
   .x-tick
     position: absolute
     top: -3px
-    width: 4px
+    width: 3px
     height: 4px
-    background-color: white
+    background-color: $chart-tick-color
 
   .x-tick-label
     position: absolute
@@ -183,3 +184,7 @@ $fill-opacity: 0.5
     text-align: right
     font-size: $tick-font-size
     border-bottom: 1px solid $chart-tick-color
+
+  .zero
+    font-weight: bold
+    color: #888

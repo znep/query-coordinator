@@ -1,4 +1,4 @@
-describe('timelineChart', function() {
+describe.only('timelineChart', function() {
 
   // NOTE: Selection rendering is slightly wonky in Safari 6.
   // Fixing this is not of high enough priority, so we disable
@@ -14,9 +14,11 @@ describe('timelineChart', function() {
   var AngularRxExtensions;
   var testJson = 'karma-test/dataCards/test-data/timelineChartTest/timelineChartTestData.json';
   var hiddenLabelTestJson = 'karma-test/dataCards/test-data/timelineChartTest/hiddenLabelTimelineChartTestData.json';
+  var negativeTestJson = 'karma-test/dataCards/test-data/timelineChartTest/negativeTestData.json';
 
   beforeEach(module(testJson));
   beforeEach(module(hiddenLabelTestJson));
+  beforeEach(module(negativeTestJson));
 
   beforeEach(module('dataCards'));
 
@@ -50,6 +52,7 @@ describe('timelineChart', function() {
     unfilteredTestData = unpickleTestData(testHelpers.getTestJson(testJson), false);
     filteredTestData = unpickleTestData(testHelpers.getTestJson(testJson), true);
     hiddenLabelTestData = unpickleTestData(testHelpers.getTestJson(hiddenLabelTestJson), false);
+    negativeTestData = unpickleTestData(testHelpers.getTestJson(negativeTestJson), false);
   }));
 
   afterEach(function() {
@@ -142,35 +145,27 @@ describe('timelineChart', function() {
 
 
   describe('render timing events', function() {
-    xit('should emit render:start and render:complete events on rendering', function(done) {
-      // Need a clean chart, otherwise we might not get a render.
-      removeAllScenarioCharts();
-      var chart = getOrCreateChartScenario('300px unexpanded unfiltered');
 
-      scope = chart.scope;
-      AngularRxExtensions.install(scope);
+    it('should emit render:start and render:complete events on rendering', function(done) {
 
-      var renderEvents = scope.eventToObservable('render:start').merge(scope.eventToObservable('render:complete'));
+      var renderStarted = false;
+      var chart;
 
-      renderEvents.take(2).toArray().subscribe(
-        function(events) {
-          // Vis id is a string and is the same across events.
-          expect(events[0].args[0].source).to.satisfy(_.isString);
-          expect(events[1].args[0].source).to.equal(events[0].args[0].source);
+      scope.$on('render:start', function(data) {
+        renderStarted = true;
+      });
 
-          // Times are ints and are in order.
-          expect(events[0].args[0].timestamp).to.satisfy(_.isFinite);
-          expect(events[1].args[0].timestamp).to.satisfy(_.isFinite);
+      scope.$on('render:complete', function(data) {
+        expect(renderStarted).to.equal(true);
+        done();
+      });
 
-          expect(events[0].args[0].timestamp).to.be.below(events[1].args[0].timestamp);
-          done();
-        }
-      );
+      chart = createTimelineChart(640, false);
 
-      // Pretend we got new data.
-      scope.testData = testData.concat([]);
-      scope.$digest();
-      timeout.flush(); // Needed to simulate a frame. Render:complete won't be emitted otherwise.
+      // If we do not flush the timeout, the 'render:complete'
+      // event will not be emitted.
+      timeout.flush(); 
+
     });
   });
 
@@ -185,20 +180,24 @@ describe('timelineChart', function() {
   });
 
   describe('axis creation', function() {
-    xit('should create 6 x-axis ticks and 6 x-axis labels', function() {
-
-      var chart = createTimelineChart(640, false);
-
-      expect($('.x-tick').length).to.equal(6);
-      expect($('.x-tick-label').length).to.equal(6);
-
-    });
 
     it('should create 3 y-axis ticks and 3 y-axis labels', function() {
 
       var chart = createTimelineChart(640, false);
 
       expect($('.y-tick').length).to.equal(3);
+
+    });
+
+    it('should create y-axis ticks with unique positions', function() {
+
+      var chart = createTimelineChart(640, false, negativeTestData);
+
+      var positions = _.map($('.y-tick'), function(tick) {
+        return $(tick).attr('style');
+      });
+
+      expect(_.uniq(positions).length).to.equal(positions.length);
 
     });
 

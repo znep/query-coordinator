@@ -628,6 +628,7 @@ protected
     if !view.metadata.nil?
       # Make sure required fields are filled in
       domain_meta = CurrentDomain.property(:fieldsets, :metadata)
+      params[:view] = params[:view].fix_key_encoding if params && params[:view]
       unless domain_meta.blank?
         error_fields = []
         domain_meta.each do |fieldset|

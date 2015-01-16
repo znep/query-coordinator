@@ -120,10 +120,16 @@ describe('table directive', function() {
   }));
 
   describe('when rendering cell data', function() {
-    afterEach(destroyAllTableCards);
+    var el;
+
+    beforeEach(function() {
+      if (!el) {
+        el = createTableCard(true, fakeDataSource);
+      }
+    });
+    after(destroyAllTableCards);
 
     it('should render point cells with latitude & longitude', function(done) {
-      var el = createTableCard(true, fakeDataSource);
       var pointCell = el.find('.table-row .cell.point').first();
       var cellContent = pointCell.html();
 
@@ -133,7 +139,6 @@ describe('table directive', function() {
     });
 
     it('should render timestamp cells with date & time as YYYY MMM DD HH:mm:ss', function(done) {
-      var el = createTableCard(true, fakeDataSource);
       var timestampCell = el.find('.table-row .cell.timestamp').first();
 
       expect(timestampCell.html()).to.match(/\d{4}\s\w{3}\s\d{2}\s\d{2}:\d{2}:\d{2}/);
@@ -141,7 +146,6 @@ describe('table directive', function() {
     });
 
     it('should render floating_timestamp cells with date & time as YYYY MMM DD HH:mm:ss', function(done) {
-      var el = createTableCard(true, fakeDataSource);
       var floatingTimestampCell = el.find('.table-row .cell.floating_timestamp').first();
 
       expect(floatingTimestampCell.html()).to.match(/\d{4}\s\w{3}\s\d{2}\s\d{2}:\d{2}:\d{2}/);
@@ -149,13 +153,26 @@ describe('table directive', function() {
     });
 
     it('should render number cells with commas when number of digits is greater than 4', function(done) {
-      var el = createTableCard(true, fakeDataSource);
       var timestampCell = el.find('.table-row .cell.number').first();
       var cellContent = timestampCell.html();
 
       expect(cellContent).to.match(/\d+,\d+/);
       expect(cellContent.length).to.equal('12,345'.length);
       done();
+    });
+
+    it('should render boolean cells with checkboxes and exes', function() {
+      var booleanCells = el.find('.table-row .cell.boolean');
+      var cellContent = booleanCells.html();
+
+      // The first row in the test fixture is false
+      expect(booleanCells[0].innerHTML).to.equal('✗');
+      // The second row in the test fixture is true
+      expect(booleanCells[1].innerHTML).to.equal('✓');
+      // The third row in the test fixture is null
+      expect(booleanCells[2].innerHTML).to.equal('');
+      // The fourth row in the test fixture is undefined
+      expect(booleanCells[3].innerHTML).to.equal('');
     });
 
   });

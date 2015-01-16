@@ -340,15 +340,16 @@
               blockHtml += '<div class="table-row">';
 
               _.each(columns, function(column, index) {
-                var cellContent = data_row[column.name] || '';
+                var cellContent = _.isUndefined(data_row[column.name]) ? '' : data_row[column.name];
                 var cellText = '';
                 var cellType = column.physicalDatatype;
                 var cellClasses = 'cell ' + cellType;
 
                 // Is Boolean?
-                // TODO: Add test coverage for this cellType (needs this type in the fixture data)
                 if (cellType === 'boolean') {
-                  cellText = cellContent ? '✓' : '✗';
+                  if (_.isBoolean(cellContent)) {
+                    cellText = cellContent ? '✓' : '✗';
+                  }
 
                 } else if (cellType === 'number') {
                   // TODO: Remove this. This is just to satisfy Clint's pet peeve about years.

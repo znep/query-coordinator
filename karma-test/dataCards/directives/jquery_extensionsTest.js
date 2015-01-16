@@ -71,6 +71,11 @@ describe('jquery-extensions', function() {
       expect($.capitalizeWithDefault('')).to.equal('(Blank)');
     });
 
+    it('should work on booleans', function() {
+      expect($.capitalizeWithDefault(true)).to.equal('True');
+      expect($.capitalizeWithDefault(false)).to.equal('False');
+    });
+
   });
 
   describe('$.fn.flyout', function() {

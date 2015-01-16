@@ -274,4 +274,3 @@ class NewUxBootstrapController < ActionController::Base
   end
 
 end
-

@@ -11,9 +11,9 @@ module CommonPhidippidesMethods
 
   def can_update_metadata?
     current_user && 
-      (ROLES_ALLOWED_TO_UPDATE_METADATA.include?(current_user.roleName) ||
-       current_user.is_owner?(dataset) ||
-       current_user.is_admin?)
+      ROLES_ALLOWED_TO_UPDATE_METADATA.include?(current_user.roleName) ||
+      current_user.is_owner?(dataset) ||
+      current_user.is_admin?
   end
 
   def page_metadata_manager

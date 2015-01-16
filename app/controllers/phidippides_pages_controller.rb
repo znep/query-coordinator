@@ -34,7 +34,7 @@ class PhidippidesPagesController < ActionController::Base
   end
 
   def create
-    return render :nothing => true, :status => 401 unless has_rights?
+    return render :nothing => true, :status => 401 unless can_update_metadata?
     return render :nothing => true, :status => 405 unless request.post?
     return render :nothing => true, :status => 400 unless params[:pageMetadata].present?
 
@@ -57,7 +57,7 @@ class PhidippidesPagesController < ActionController::Base
   end
 
   def update
-    return render :nothing => true, :status => 401 unless has_rights?
+    return render :nothing => true, :status => 401 unless can_update_metadata?
     return render :nothing => true, :status => 405 unless request.put?
     return render :nothing => true, :status => 400 unless params[:pageMetadata].present?
 

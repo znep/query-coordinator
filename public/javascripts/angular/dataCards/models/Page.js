@@ -58,7 +58,7 @@ angular.module('dataCards.models').factory('Page', function($q, Dataset, Card, M
         startWith({ field: null, aggregation: null }).
         distinctUntilChanged();
 
-      self.defineReadOnlyObservableProperty('aggregation', aggregationObservable);
+      self.defineEphemeralObservablePropertyFromSequence('aggregation', aggregationObservable);
 
       var columnAggregatedUpon = aggregationObservable.map(function(aggregation) {
         return _.isPresent(aggregation.field) ?
@@ -66,7 +66,7 @@ angular.module('dataCards.models').factory('Page', function($q, Dataset, Card, M
           Rx.Observable.returnValue(null);
       }).switchLatest();
 
-      self.defineReadOnlyObservableProperty('aggregatedDisplayUnit', aggregationObservable.combineLatest(
+      self.defineEphemeralObservablePropertyFromSequence('aggregatedDisplayUnit', aggregationObservable.combineLatest(
         self.observe('dataset.rowDisplayUnit').filter(_.isPresent),
         columnAggregatedUpon,
         function(aggregation, rowDisplayUnit, columnAggregatedUpon) {
@@ -87,7 +87,7 @@ angular.module('dataCards.models').factory('Page', function($q, Dataset, Card, M
         });
       });
 
-      self.defineReadOnlyObservableProperty('activeFilters', allCardsFilters);
+      self.defineEphemeralObservablePropertyFromSequence('activeFilters', allCardsFilters);
 
       var allCardsWheres = allCardsFilters.map(function(filters) {
         var wheres = _.map(filters, function(operators, field) {
@@ -100,7 +100,7 @@ angular.module('dataCards.models').factory('Page', function($q, Dataset, Card, M
         return _.compact(wheres).join(' AND ');
       });
 
-      self.defineReadOnlyObservableProperty('computedWhereClauseFragment',
+      self.defineEphemeralObservablePropertyFromSequence('computedWhereClauseFragment',
         allCardsWheres.
         combineLatest(
           self.observe('baseSoqlFilter'),

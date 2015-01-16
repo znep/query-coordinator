@@ -106,18 +106,18 @@ angular.module('dataCards.models').factory('Model', function(Class, ModelHelper)
         });
     },
 
-    // Controls whether or not the named property is ephemeral.
-    // Ephemeral properties are not serialized. Properties are
-    // not ephemeral by default.
-    setObservablePropertyIsEphemeral: function(propertyName, isEphemeral) {
-      this._assertProperty(propertyName);
-      this._ephemeralProperties[propertyName] = isEphemeral;
+    // Define a new ephemeral observable property. The arguments and behavior are the same as
+    // defineObservableProperty, except that this property will not be serialized.
+    defineEphemeralObservableProperty: function(propertyName, initialValue, defaultGenerator) {
+      this.defineObservableProperty.apply(this, arguments);
+      this._setObservablePropertyIsEphemeral(propertyName, true);
     },
 
     // Define a new observable property whose value is sourced by the given sequence.
     // Setting values on this property via setValue is not supported, and will result
     // in an error being thrown.
-    defineReadOnlyObservableProperty: function(propertyName, valueSequence) {
+    // This property, being ephemeral, will not be serialized.
+    defineEphemeralObservablePropertyFromSequence: function(propertyName, valueSequence) {
       var self = this;
 
       if (valueSequence && !_.isFunction(valueSequence.asObservable)) {
@@ -140,7 +140,20 @@ angular.module('dataCards.models').factory('Model', function(Class, ModelHelper)
           oldValue = value;
         });
 
+      self._setObservablePropertyIsEphemeral(propertyName, true);
+
     },
+
+    // Controls whether or not the named property is ephemeral.
+    // Ephemeral properties are not serialized.
+    // By default, properties are not ephemeral.
+    // They are set to be ephemeral by the various public
+    // APIs that define properties.
+    _setObservablePropertyIsEphemeral: function(propertyName, isEphemeral) {
+      this._assertProperty(propertyName);
+      this._ephemeralProperties[propertyName] = isEphemeral;
+    },
+
 
     _assertProperty: function(propertyName) {
       if (!this._propertyObservables.hasOwnProperty(propertyName)) {

@@ -28,27 +28,42 @@ describe("SoqlHelpers service", function() {
   });
 
   describe('SOQL primitive encoder', function() {
-    it('should delegate to encodeSoqlString for strings', inject(function(SoqlHelpers) {
+    var soqlHelpers;
+    beforeEach(inject(function(SoqlHelpers) {
+      soqlHelpers = SoqlHelpers;
+    }));
+
+    it('should return the value untouched for booleans', function() {
+      expect(soqlHelpers.encodePrimitive(true)).to.equal(true);
+      expect(soqlHelpers.encodePrimitive(false)).to.equal(false);
+    });
+
+    it('should return the value untouched for numbers', function() {
+      expect(soqlHelpers.encodePrimitive(1)).to.equal(1);
+      expect(soqlHelpers.encodePrimitive(0)).to.equal(0);
+    });
+
+    it('should delegate to encodeSoqlString for strings', function() {
       var fakeReturnValue = 'a_special_value';
-      var mockedEncode = sinon.stub(SoqlHelpers, 'encodeSoqlString').returns(fakeReturnValue);
+      var mockedEncode = sinon.stub(soqlHelpers, 'encodeSoqlString').returns(fakeReturnValue);
 
       var testPrimitives = [
         '',
         'non_empty'
       ];
 
-      var returned = _.map(testPrimitives, SoqlHelpers.encodePrimitive);
+      var returned = _.map(testPrimitives, soqlHelpers.encodePrimitive);
 
       expect(mockedEncode.callCount).to.equal(testPrimitives.length);
       expect(returned).to.deep.equal(_.times(testPrimitives.length, _.constant(fakeReturnValue))); // Verify passthrough.
       expect(_.flatten(mockedEncode.args)).to.deep.equal(testPrimitives); // Verify passed arguments.
 
-      SoqlHelpers.encodeSoqlString.restore();
-    }));
+      soqlHelpers.encodeSoqlString.restore();
+    });
 
-    it('should delegate to encodeSoqlDate for dates', inject(function(SoqlHelpers) {
+    it('should delegate to encodeSoqlDate for dates', function() {
       var fakeReturnValue = 'a_special_value';
-      var mockedEncode = sinon.stub(SoqlHelpers, 'encodeSoqlDate').returns(fakeReturnValue);
+      var mockedEncode = sinon.stub(soqlHelpers, 'encodeSoqlDate').returns(fakeReturnValue);
 
       var testPrimitives = [
         moment(),
@@ -56,25 +71,25 @@ describe("SoqlHelpers service", function() {
         new Date()
       ];
 
-      var returned = _.map(testPrimitives, SoqlHelpers.encodePrimitive);
+      var returned = _.map(testPrimitives, soqlHelpers.encodePrimitive);
 
       expect(mockedEncode.callCount).to.equal(testPrimitives.length);
       expect(returned).to.deep.equal(_.times(testPrimitives.length, _.constant(fakeReturnValue))); // Verify passthrough.
       expect(_.flatten(mockedEncode.args)).to.deep.equal(testPrimitives); // Verify passed arguments.
 
-      SoqlHelpers.encodeSoqlDate.restore();
-    }));
+      soqlHelpers.encodeSoqlDate.restore();
+    });
 
-    it('should throw errors on unsupported types', inject(function(SoqlHelpers) {
-      expect(function() { SoqlHelpers.encodePrimitive(undefined); }).to.throw();
-      expect(function() { SoqlHelpers.encodePrimitive(null); }).to.throw();
-      expect(function() { SoqlHelpers.encodePrimitive(0); }).to.not.throw();
-      expect(function() { SoqlHelpers.encodePrimitive(1); }).to.not.throw();
-      expect(function() { SoqlHelpers.encodePrimitive([]); }).to.throw();
-      expect(function() { SoqlHelpers.encodePrimitive(['']); }).to.throw();
-      expect(function() { SoqlHelpers.encodePrimitive({}); }).to.throw();
-      expect(function() { SoqlHelpers.encodePrimitive({a:2}); }).to.throw();
-    }));
+    it('should throw errors on unsupported types', function() {
+      expect(function() { soqlHelpers.encodePrimitive(undefined); }).to.throw();
+      expect(function() { soqlHelpers.encodePrimitive(null); }).to.throw();
+      expect(function() { soqlHelpers.encodePrimitive(0); }).to.not.throw();
+      expect(function() { soqlHelpers.encodePrimitive(1); }).to.not.throw();
+      expect(function() { soqlHelpers.encodePrimitive([]); }).to.throw();
+      expect(function() { soqlHelpers.encodePrimitive(['']); }).to.throw();
+      expect(function() { soqlHelpers.encodePrimitive({}); }).to.throw();
+      expect(function() { soqlHelpers.encodePrimitive({a:2}); }).to.throw();
+    });
 
   });
 

@@ -28,7 +28,7 @@ angular.module('dataCards').factory('SoqlHelpers', function() {
       return SoqlHelpers.encodeSoqlString(primitive);
     } else if (_.isDate(primitive) || primitive instanceof moment().constructor) {
       return SoqlHelpers.encodeSoqlDate(primitive);
-    } else if (_.isNumber(primitive)) {
+    } else if (_.isNumber(primitive) || _.isBoolean(primitive)) {
       return primitive;
     } else {
       throw new Error('Unsupported encode passed to SoqlHelpers.encodePrimitive');

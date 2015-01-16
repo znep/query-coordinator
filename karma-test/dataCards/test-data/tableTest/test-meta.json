@@ -154,6 +154,14 @@
       "logicalDatatype": "location",
       "importance": 1,
       "shapefileFeatureHumanReadablePropertyName": "name"
+    },
+    {
+      "title": "Checkbox test",
+      "description": "For boolean datatype",
+      "name": "checkbox_test",
+      "physicalDatatype": "boolean",
+      "logicalDatatype": "category",
+      "importance": 3
     }
   ]
 }

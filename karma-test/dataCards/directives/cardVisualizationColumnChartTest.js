@@ -71,8 +71,8 @@ describe("A Column Chart Card Visualization", function() {
       scope: element.find('div[column-chart]').scope()
     };
   }
-  describe('filtering', function() {
-    it('should toggle a BinaryOperatorFilter on column-chart:datum-clicked event for a non-null value', function() {
+  describe('filtering via column-chart:datum-clicked event', function() {
+    it('should toggle a BinaryOperatorFilter for a non-null value', function() {
       var chart = createChart();
       expect(chart.model.getCurrentValue('activeFilters')).to.be.empty;
       chart.scope.$emit('column-chart:datum-clicked', {
@@ -86,7 +86,21 @@ describe("A Column Chart Card Visualization", function() {
       expect(chart.model.getCurrentValue('activeFilters')).to.be.empty;
     });
 
-    it('should toggle a IsNullFilter on column-chart:datum-clicked event for a null value', function() {
+    it('should toggle a BinaryOperatorFilter for a boolean value', function() {
+      var chart = createChart();
+      expect(chart.model.getCurrentValue('activeFilters')).to.be.empty;
+      chart.scope.$emit('column-chart:datum-clicked', {
+        name: false
+      });
+      expect(chart.model.getCurrentValue('activeFilters')).to.have.length(1);
+      expect(chart.model.getCurrentValue('activeFilters')[0]).to.be.instanceof(Filter.BinaryOperatorFilter);
+      chart.scope.$emit('column-chart:datum-clicked', {
+        name: false
+      });
+      expect(chart.model.getCurrentValue('activeFilters')).to.be.empty;
+    });
+
+    it('should toggle a IsNullFilter for a null value', function() {
       var chart = createChart();
       expect(chart.model.getCurrentValue('activeFilters')).to.be.empty;
       chart.scope.$emit('column-chart:datum-clicked', {
@@ -100,7 +114,7 @@ describe("A Column Chart Card Visualization", function() {
       expect(chart.model.getCurrentValue('activeFilters')).to.be.empty;
     });
 
-    it('should replace a IsNullFilter with BinaryOperatorFilter and vice versa on column-chart:datum-clicked event for appropriate value', function() {
+    it('should replace a IsNullFilter with BinaryOperatorFilter and vice versa for appropriate value', function() {
       var chart = createChart();
       expect(chart.model.getCurrentValue('activeFilters')).to.be.empty;
       chart.scope.$emit('column-chart:datum-clicked', {

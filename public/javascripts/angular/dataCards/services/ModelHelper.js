@@ -8,11 +8,13 @@ angular.module('dataCards.services').factory('ModelHelper', function() {
   // is specified.
   // Returns a sequence of values set to this property (including the initial value).
   function addProperty(propertyName, model, initialValue) {
-    var subject = new Rx.BehaviorSubject(initialValue);
+    var subject = new Rx.BehaviorSubject(_.isArray(initialValue) ?
+                                         Object.freeze(_.clone(initialValue)) :
+                                         initialValue);
     Object.defineProperty(model, propertyName, {
       get: _.constant(subject),
       set: function(val) {
-        subject.onNext(val);
+        subject.onNext(_.isArray(val) ? Object.freeze(_.clone(val)) : val);
       },
       enumerable: true
     });
@@ -44,7 +46,9 @@ angular.module('dataCards.services').factory('ModelHelper', function() {
     // This is the actual subject exposed to the property consumer.
     // The first value comes from either the lazy default if required, or the property setter.
     // Future values always come from the property setter.
-    var outer = new Rx.BehaviorSubject(initialValue);
+    var outer = new Rx.BehaviorSubject(_.isArray(initialValue) ?
+                                       Object.freeze(_.clone(initialValue)) :
+                                       initialValue);
     Rx.Observable.concat(firstValue, fromSetter).subscribe(outer);
 
     // Track whether or not we need to fetch the default value.
@@ -72,7 +76,7 @@ angular.module('dataCards.services').factory('ModelHelper', function() {
         return seq;
       },
       set: function(n) {
-        fromSetter.onNext(n);
+        fromSetter.onNext(_.isArray(n) ? Object.freeze(n) : n);
       },
       enumerable: true
     });

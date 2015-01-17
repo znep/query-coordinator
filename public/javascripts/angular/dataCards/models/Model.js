@@ -84,8 +84,6 @@ angular.module('dataCards.models').factory('Model', function(Class, ModelHelper)
         writesSequence = ModelHelper.addProperty(propertyName, this._propertyObservables, initialValue);
       }
 
-      var oldValue;
-
       // Push write notifications for this property to the writes sequence.
       // This includes the initial value and the lazy default.
       // There's a special case if the initial value is not defined - ModelHelper
@@ -98,10 +96,8 @@ angular.module('dataCards.models').factory('Model', function(Class, ModelHelper)
           self._writes.onNext({
             model: self,
             property: propertyName,
-            oldValue: oldValue,
             newValue: value
           });
-          oldValue = value;
         });
     },
 
@@ -119,16 +115,13 @@ angular.module('dataCards.models').factory('Model', function(Class, ModelHelper)
         throw new Error('Object ' + this + ' already has property: ' + propertyName);
       }
 
-      var oldValue;
       ModelHelper.addReadOnlyProperty(propertyName, this._propertyObservables, valueSequence.asObservable()).
         subscribe(function(value) {
           self._writes.onNext({
             model: self,
             property: propertyName,
-            oldValue: oldValue,
             newValue: value
           });
-          oldValue = value;
         });
 
     },
@@ -189,36 +182,25 @@ angular.module('dataCards.models').factory('Model', function(Class, ModelHelper)
       return deepGet(this, propertyName.split('.'));
     },
 
-    // Sets the named property on this model to the given
-    // value.
-    // Will throw an exception if that property
-    // hasn't been defined on this Model.
+    /**
+     * Sets the named property on this model to the given value. Will throw an exception if that
+     * property hasn't been defined on this Model.
+     */
     set: function(propertyName, value) {
       this._assertProperty(propertyName);
       var oldValue = this.getCurrentValue(propertyName);
+      this._writes.take(1).map(function(change) {
+        return _.defaults({oldValue: oldValue}, change);
+      }).subscribe(_.bind(this._sets.onNext, this._sets));
       this._propertyObservables[propertyName] = value;
-      this._sets.onNext({
-        model: this,
-        property: propertyName,
-        oldValue: oldValue,
-        newValue: value
-      });
     },
 
     // Unsets the named property, and forget it has ever been set.
     // Will throw an exception if that property
     // hasn't been defined on this Model.
     unset: function(propertyName) {
-      this._assertProperty(propertyName);
-      var oldValue = this.getCurrentValue(propertyName);
-      this._propertyObservables[propertyName] = undefined;
+      this.set(propertyName, undefined);
       this._propertyHasBeenWritten[propertyName] = false;
-      this._sets.onNext({
-        model: this,
-        property: propertyName,
-        oldValue: oldValue,
-        newValue: undefined
-      });
     },
 
     // Returns true if any of these hold:
@@ -306,7 +288,6 @@ angular.module('dataCards.models').factory('Model', function(Class, ModelHelper)
     // {
     //   model: <this model>,
     //   property: <string name of changed property>,
-    //   oldValue: <the previous value of the property>,
     //   newValue: <new value of the property>
     // }
     observePropertyWrites: function() {

@@ -1,6 +1,7 @@
-describe("A Choropleth Card Visualization", function() {
+describe('A Choropleth Card Visualization', function() {
   var testHelpers, rootScope, templateCache, compile, scope, Model, q, timeout;
   var fakeClock = null;
+  var enableBoundingBoxes = true;
 
   var testWards = 'karma-test/dataCards/test-data/cardVisualizationChoroplethTest/ward_geojson.json';
   var testAggregates = 'karma-test/dataCards/test-data/cardVisualizationChoroplethTest/geo_values.json';
@@ -12,6 +13,7 @@ describe("A Choropleth Card Visualization", function() {
 
   beforeEach(module('dataCards'));
   beforeEach(module('dataCards.directives'));
+
   beforeEach(function() {
     module(function($provide) {
       var mockCardDataService = {
@@ -35,10 +37,26 @@ describe("A Choropleth Card Visualization", function() {
           }
           return deferred.promise;
         }
-      }
+      };
       $provide.value('CardDataService', mockCardDataService);
     });
   });
+
+  beforeEach(function() {
+    module(function($provide) {
+      var mockServerConfig = {
+        get: function(key) {
+          if (key === 'enableBoundingBoxes') {
+            return enableBoundingBoxes;
+          } else {
+            return true;
+          }
+        }
+      };
+      $provide.constant('ServerConfig', mockServerConfig);
+    });
+  });
+
   beforeEach(inject(function($injector) {
     testHelpers = $injector.get('testHelpers');
     rootScope = $injector.get('$rootScope');
@@ -63,7 +81,7 @@ describe("A Choropleth Card Visualization", function() {
     fakeClock = null;
   });
 
-  function createChoropleth(id, whereClause) {
+  function createChoropleth(id, whereClause, testUndefinedColumns) {
 
     var model = new Model();
     model.fieldName = 'ward';
@@ -74,25 +92,38 @@ describe("A Choropleth Card Visualization", function() {
     datasetModel.id = 'four-four';
     datasetModel.fieldName = 'ward';
     datasetModel.defineObservableProperty('rowDisplayUnit', rowDisplayUnit);
+
+    var columnsData;
     // Note that although dataset columns come back from Phidippides as an array,
     // there is some internal mechanism in the Model that translates it into a
     // dictionary of the form "fieldName" : { ... }. This test data needs to
     // fake the second form since it (somehow?) seems to sidestep that transformation.
-    datasetModel.defineObservableProperty('columns',
-    {
-      "ward": {
-        "name": "ward",
-        "title": "Ward where crime was committed.",
-        "description": "Batman has bigger fish to fry sometimes, you know.",
-        "logicalDatatype": "location",
-        "physicalDatatype": "text",
-        "importance": 2,
-        "shapefile": "snuk-a5kv" // It is important that this gets converted into a shapefileHumanReadablePropertyName in
-                                 // cardVisualizationChoropleth.js which matches the test fixture, so do not change this
-                                 // until we either a) change the test fixture or b) remove the notion of
-                                 // shapefileHumanReadablePropertyName all together.
-      }
-    });
+    if (!testUndefinedColumns) {
+      columnsData = {
+        "points": {
+          "name": "points",
+          "title": "source column.",
+          "description": "required",
+          "logicalDatatype": "location",
+          "physicalDatatype": "point",
+          "importance": 2
+        },
+        "ward": {
+          "name": "ward",
+          "title": "Ward where crime was committed.",
+          "description": "Batman has bigger fish to fry sometimes, you know.",
+          "logicalDatatype": "location",
+          "physicalDatatype": "text",
+          "importance": 2,
+          "shapefile": "snuk-a5kv" // It is important that this gets converted into a shapefileHumanReadablePropertyName in
+                                   // cardVisualizationChoropleth.js which matches the test fixture, so do not change this
+                                   // until we either a) change the test fixture or b) remove the notion of
+                                   // shapefileHumanReadablePropertyName all together.
+        }
+      };
+    }
+
+    datasetModel.defineObservableProperty('columns', columnsData);
 
     var pageModel = new Model();
     pageModel.defineObservableProperty('dataset', datasetModel);
@@ -200,6 +231,32 @@ describe("A Choropleth Card Visualization", function() {
       expect(flyout.is(':visible')).to.be.true;
 
       testHelpers.fireEvent(feature, 'mouseout');
+
+    });
+
+    it('should should not terminate with a TypeError if enableBoundingBoxes is true and columns is undefined', function(){
+
+      enableBoundingBoxes = true;
+
+      $('#choropleth-1').remove();
+      $('#choropleth-2').remove();
+
+      var testUndefinedColumns = true;
+
+      expect(function() { createChoropleth('choropleth-1', '', testUndefinedColumns) }).to.not.throw();
+
+    });
+
+    it('should should not terminate with a TypeError if enableBoundingBoxes is false and columns is undefined', function(){
+
+      enableBoundingBoxes = false;
+
+      $('#choropleth-1').remove();
+      $('#choropleth-2').remove();
+
+      var testUndefinedColumns = true;
+
+      expect(function() { createChoropleth('choropleth-1', '', testUndefinedColumns) }).to.not.throw();
 
     });
 

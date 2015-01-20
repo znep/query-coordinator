@@ -581,6 +581,7 @@
             if (selectionButtonLeftOffset < -(Constants['TIMELINE_CHART_GUTTER'])) {
               selectionButtonLeftOffset = -(Constants['TIMELINE_CHART_GUTTER']);
             }
+
             selectionButtonRightPosition = selectionButtonLeftOffset + labelWidth;
             if (selectionButtonRightPosition > cachedChartDimensions.width) {
               selectionDelta = selectionButtonRightPosition - cachedChartDimensions.width;
@@ -1035,11 +1036,11 @@
 
           renderChartUnfilteredValues();
 
-          if (selectionActive) {
-            renderChartSelection();
-          } else {
+          //if (selectionActive) {
+            //renderChartSelection();
+          //} else {
             renderChartFilteredValues();
-          }
+          //}
 
         }
 
@@ -1117,7 +1118,7 @@
          */
 
         function renderChartFilteredValues() {
-return;
+
           var margin;
           var chartWidth;
           var chartHeight;

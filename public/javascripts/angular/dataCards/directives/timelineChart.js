@@ -90,6 +90,9 @@
         var cachedChartData = null;
         var cachedRowDisplayUnit = null;
 
+        // Keep track of whether or not page filters are affecting this visualization.
+        var visualizationAffectedByFilters = false;
+
         // Keep track of whether or not the mouse button is pressed, which we compare with
         // values coming off of the mouseLeftButtonPressed sequence to figure out if the
         // mouse has just gone from up to down or vice-versa.
@@ -133,52 +136,6 @@
           });
         });
 
-        /**********************************************************************
-         *
-         * transformChartDataForStackedRendering
-         *
-         */
-
-        function transformChartDataForStackedRendering(chartData, pageIsFiltered) {
-
-          var varNames;
-          var seriesStack = [];
-          var series = {};
-
-          //
-          // Determine which layers will appear in the stacked area
-          // chart based on the properties of each datum, keyed off
-          // of 'date'. Each layer is a 'series' in the stack.
-          //
-          varNames = d3.
-            keys(chartData.values[0]).
-              filter(function (key) { return key !== 'date'; }).
-              filter(function (key) { return pageIsFiltered || (!pageIsFiltered && key !== 'filtered'); });
-
-          varNames.forEach(function (name) {
-            series[name] = { name: name, values:[] };
-            seriesStack.push(series[name]);
-          });
-
-          chartData.values.forEach(function (d) {
-            varNames.forEach(function (name) {
-              if (pageIsFiltered) {
-                series[name].values.push({
-                  label: d['date'],
-                  value: (name === 'unfiltered') ? (d['unfiltered'] - d['filtered']) : d['filtered']
-                });
-              } else {
-                series[name].values.push({
-                  label: d['date'],
-                  value: d['unfiltered']
-                });
-              }
-            });
-          });
-
-          return seriesStack;
-
-        }
 
         /**********************************************************************
          *
@@ -463,7 +420,6 @@
           var seriesStack;
           var svgChart;
           var selection;
-          var selectionWidth;
           var selectionStartPosition;
           var selectionEndPosition;
           var labelWidth;
@@ -473,6 +429,7 @@
           var selectionButtonLeftOffset;
           var selectionButtonRightPosition;
           var selectionDelta;
+
 
           if (d3XScale === null || d3YScale === null) {
             return;
@@ -488,7 +445,59 @@
 
           if (minDate !== null && maxDate !== null) {
 
-            stack = d3.
+
+            var margin;
+            var chartWidth;
+            var chartHeight;
+            var values;
+            var area;
+            var svgChart;
+            var selection;
+
+
+            margin = { top: 0, right: 0, bottom: Constants['TIMELINE_CHART_MARGIN_BOTTOM'], left: 0 };
+
+            // chartWidth and chartHeight do not include margins so that
+            // we can use the margins to render axis ticks.
+            chartWidth = cachedChartDimensions.width - margin.left - margin.right;
+            chartHeight = cachedChartDimensions.height - margin.top - margin.bottom;
+
+            values = [cachedChartData.values.filter(function(datum) {
+              return datum.date >= minDate && datum.date <= maxDate;
+            })];
+
+            area = d3.
+              svg.
+                area().
+                  x(function (d) { return d3XScale(d.date); }).
+                  y0(function (d) { return d3YScale(0); }).
+                  y1(function (d) { return d3YScale(d.unfiltered); });
+
+            svgChart = d3ChartElement.
+              select('svg.timeline-chart-selection').
+                attr('width', chartWidth + margin.left + margin.right).
+                attr('height', chartHeight + margin.top + margin.bottom).
+              select('g').
+                attr('transform', 'translate(' + margin.left + ',' + margin.top + ')');
+
+            selection = svgChart.
+              selectAll('path').
+                data(values);
+
+            selection.
+              enter().
+                append('path');
+
+            selection.
+              exit().
+                remove();
+
+            selection.
+              attr('class', 'selection').
+              attr('d', area);
+
+
+            /*stack = d3.
               layout.
                 stack().
                   offset('zero').
@@ -538,12 +547,10 @@
             selection.
               select('path').
                 attr('class', 'selection').
-                attr('d', function (d) { return area(d.values); });
-
-            selectionWidth = Math.floor(d3XScale(maxDate) - d3XScale(minDate));
+                attr('d', function (d) { return area(d.values); });*/
 
             selectionStartPosition = Math.floor(d3XScale(minDate));
-            selectionEndPosition = selectionStartPosition + selectionWidth;
+            selectionEndPosition = Math.floor(d3XScale(maxDate)) - 1;
 
             jqueryLeftSelectionMarker.
               css({
@@ -557,7 +564,7 @@
                 height: cachedChartDimensions.height - Constants['TIMELINE_CHART_MARGIN_TOP'] - Constants['TIMELINE_CHART_MARGIN_BOTTOM']
               });
 
-            labelWidth = selectionWidth;
+            labelWidth = Math.floor(d3XScale(maxDate) - d3XScale(minDate));
             minLabelWidth = 150;
             labelNegativeXOffset = 0;
 
@@ -940,7 +947,7 @@
          *
          */
 
-        function renderChart(chartData, dimensions, precision, pageIsFiltered) {
+        function renderChart(chartData, dimensions, precision) {
 
           var margin;
           var chartWidth;
@@ -1028,7 +1035,9 @@
 
           renderChartUnfilteredValues();
 
-          if (!selectionActive) {
+          if (selectionActive) {
+            renderChartSelection();
+          } else {
             renderChartFilteredValues();
           }
 
@@ -1108,7 +1117,7 @@
          */
 
         function renderChartFilteredValues() {
-
+return;
           var margin;
           var chartWidth;
           var chartHeight;
@@ -1334,7 +1343,7 @@
           currentlyDragging = false;
           selectionActive = true;
           hideDatumLabel();
-          renderChartFilteredValues();
+//          renderChartFilteredValues();
           jqueryChartElement.find('.timeline-chart-filtered-mask').show();
           jqueryBodyElement.removeClass('prevent-user-select');
           jqueryChartElement.removeClass('selecting').addClass('selected');
@@ -1352,7 +1361,7 @@
           selectionActive = false;
           clearChartSelection();
           hideDatumLabel();
-          renderChartFilteredValues();
+//          renderChartFilteredValues();
           jqueryBodyElement.removeClass('prevent-user-select');
           jqueryChartElement.removeClass('selecting').removeClass('selected');
         }
@@ -1829,46 +1838,45 @@
         // b) over an x-axis label
         //
 
+        function isMouseWithinChartDisplay(offsetX, offsetY) {
+
+          return offsetX > 0 &&
+                 offsetX <= cachedChartDimensions.width &&
+                 offsetY > 0 &&
+                 offsetY <= cachedChartDimensions.height - Constants['TIMELINE_CHART_MARGIN_BOTTOM'];
+
+        }
+
+        function isMouseWithinChartLabels(offsetX, offsetY) {
+
+          return offsetX > 0 &&
+                 offsetX <= cachedChartDimensions.width &&
+                 offsetY > cachedChartDimensions.height - Constants['TIMELINE_CHART_MARGIN_BOTTOM'] &&
+                 offsetY <= cachedChartDimensions.height;
+
+        }
+
+        function isMouseOverChartElement(target) {
+          return $(target).closest('.timeline-chart-wrapper').length > 0;
+        }
+
+        function fireMouseMoveEventOnHighlightTarget(clientX, clientY) {
+
+          // Trigger mouseover event on the thing that will draw the flyout
+          // rather than the thing that's actually catching the mousemove.
+          var evt = document.createEvent('HTMLEvents');
+          evt.initEvent('mousemove', true, true);
+          evt.clientX = clientX;
+          evt.clientY = clientY;
+          jqueryChartElement.find('.timeline-chart-highlight-target')[0].dispatchEvent(evt);
+
+        }
+
         windowStateSubscription = Rx.Observable.subscribeLatest(
           WindowState.mousePositionSubject,
           WindowState.scrollPositionSubject,
           WindowState.mouseLeftButtonPressedSubject,
           function(mousePosition, scrollPosition, mouseLeftButtonNowPressed) {
-
-            function isMouseWithinChartDisplay(offsetX, offsetY) {
-
-              return offsetX > 0 &&
-                     offsetX <= cachedChartDimensions.width &&
-                     offsetY > 0 &&
-                     offsetY <= cachedChartDimensions.height - Constants['TIMELINE_CHART_MARGIN_BOTTOM'];
-
-            }
-
-            function isMouseWithinChartLabels(offsetX, offsetY) {
-
-              return offsetX > 0 &&
-                     offsetX <= cachedChartDimensions.width &&
-                     offsetY > cachedChartDimensions.height - Constants['TIMELINE_CHART_MARGIN_BOTTOM'] &&
-                     offsetY <= cachedChartDimensions.height;
-
-            }
-
-            function isMouseOverChartElement(target) {
-              return $(target).closest('.timeline-chart-wrapper').length > 0;
-            }
-
-            function fireMouseMoveEventOnHighlightTarget(clientX, clientY) {
-
-              // Trigger mouseover event on the thing that will draw the flyout
-              // rather than the thing that's actually catching the mousemove.
-              var evt = document.createEvent('HTMLEvents');
-              evt.initEvent('mousemove', true, true);
-              evt.clientX = clientX;
-              evt.clientY = clientY;
-              jqueryChartElement.find('.timeline-chart-highlight-target')[0].dispatchEvent(evt);
-
-            }
-
 
             var offsetX;
             var offsetY;
@@ -2011,7 +2019,9 @@
             cachedChartDimensions = chartDimensions;
             cachedChartData = chartData;
 
-            renderChart(chartData, chartDimensions, precision, pageIsFiltered);
+            visualizationAffectedByFilters = pageIsFiltered;
+
+            renderChart(chartData, chartDimensions, precision);
 
             // Make sure we also re-render the chart selection if it is visible
             // (such as in the case of a visualization re-render triggered by

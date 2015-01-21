@@ -129,6 +129,7 @@ angular.module('dataCards.models').factory('Page', function($q, Dataset, Card, M
      * after the last existing card with the same cardSize.
      *
      * @param {Card} card The card to add.
+     * @return {Card[]} the new array of cards.
      */
     addCard: function(card) {
       var cards = this.getCurrentValue('cards');
@@ -139,9 +140,10 @@ angular.module('dataCards.models').factory('Page', function($q, Dataset, Card, M
       if (insertionIndex < 0) {
         insertionIndex = cards.length;
       }
-      cards.splice(insertionIndex, 0, card);
-      this.set('cards', cards);
-      return cards;
+      var newCards = cards.slice(0, insertionIndex).concat([card]).
+          concat(cards.slice(insertionIndex));
+      this.set('cards', newCards);
+      return newCards;
     },
 
     /**

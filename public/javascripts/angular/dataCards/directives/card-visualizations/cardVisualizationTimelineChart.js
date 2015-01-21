@@ -320,7 +320,7 @@ angular.module('dataCards.directives').directive('cardVisualizationTimelineChart
             return _.isPresent(stripWhereClause(whereClause));
           }));
 
-      scope.bindObservable('rowDisplayUnit', dataset.observeOnLatest('rowDisplayUnit'));
+      scope.bindObservable('rowDisplayUnit', model.observeOnLatest('page.aggregation.unit'));
 
       // Handle filtering
       scope.$on('filter-timeline-chart', function(event, data) {

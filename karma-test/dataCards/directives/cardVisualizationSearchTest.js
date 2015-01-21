@@ -86,6 +86,8 @@
       pageModel.set('dataset', datasetModel);
       pageModel.set('baseSoqlFilter', null);
       pageModel.set('cards', []);
+      pageModel.set('primaryAggregation', null);
+      pageModel.set('primaryAmountField', null);
       toggleExpandedSpy = sinon.spy(pageModel, 'toggleExpanded');
       model.page = pageModel;
 

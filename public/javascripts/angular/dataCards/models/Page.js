@@ -49,34 +49,39 @@ angular.module('dataCards.models').factory('Page', function($q, Dataset, Card, M
         });
       });
 
-      // Synchronize changes between primaryAmountField and primaryAggregation
-      var aggregationObservable = self.observe('primaryAmountField').
-        combineLatest(self.observe('primaryAggregation'),
-        function(primaryAmountField, primaryAggregation) {
-          return { field: primaryAmountField || null, aggregation: primaryAggregation || null };
-        }).
-        startWith({ field: null, aggregation: null }).
-        distinctUntilChanged();
-
-      self.defineEphemeralObservablePropertyFromSequence('aggregation', aggregationObservable);
-
-      var columnAggregatedUpon = aggregationObservable.map(function(aggregation) {
-        return _.isPresent(aggregation.field) ?
-          self.observe('dataset.columns.{0}'.format(aggregation.field)) :
+      var columnAggregatedUpon = self.observe('primaryAmountField').map(function(field) {
+        return _.isPresent(field) ?
+          self.observe('dataset.columns.{0}'.format(field)) :
           Rx.Observable.returnValue(null);
       }).switchLatest();
 
-      self.defineEphemeralObservablePropertyFromSequence('aggregatedDisplayUnit', aggregationObservable.combineLatest(
-        self.observe('dataset.rowDisplayUnit').filter(_.isPresent),
+      // Synchronize changes between primaryAmountField and primaryAggregation
+      // Normalize aggregation-related fields.
+      var aggregationObservable = Rx.Observable.combineLatest(
+        self.observe('primaryAggregation'),
+        self.observe('dataset.rowDisplayUnit'),
         columnAggregatedUpon,
-        function(aggregation, rowDisplayUnit, columnAggregatedUpon) {
-          var aggregationName = _.isPresent(aggregation.aggregation) ? aggregation.aggregation : 'number';
-          var label = columnAggregatedUpon ? columnAggregatedUpon.title : rowDisplayUnit;
-          return aggregationName + ' of ' + label.pluralize();
+        function(primaryAggregation, rowDisplayUnit, columnAggregatedUpon) {
+          return {
+            'function': primaryAggregation || 'count',
+            'column': columnAggregatedUpon, // MAY BE NULL IF COUNT(*)
+            'unit': columnAggregatedUpon ? columnAggregatedUpon.title : rowDisplayUnit
+          };
         }
-        )
-      );
+      ).filter(function(aggregation) {
+        // While things settle, we may not have all the information needed
+        // to build the aggregation properly. Don't emit while this is true.
+        if (aggregation['function'] === 'count') {
+          // Count is only valid if not against a column.
+          return aggregation.column === null;
+        } else {
+          // All other aggregations are valid as long as they are
+          // against a column.
+          return aggregation.column;
+        }
+      });
 
+      self.defineEphemeralObservablePropertyFromSequence('aggregation', aggregationObservable);
 
       var allCardsFilters = self.observe('cards').flatMap(function(cards) {
         if (!cards) { return Rx.Observable.never(); }

@@ -11,8 +11,10 @@
       var sampleDataObservable = Rx.Observable.combineLatest(
         model.pluck('fieldName'),
         dataset.pluck('id'),
-        function(fieldName, datasetId) {
-          return Rx.Observable.fromPromise(CardDataService.getSampleData(fieldName, datasetId));
+        model.observeOnLatest('page.baseSoqlFilter'),
+        model.observeOnLatest('page.aggregation'),
+        function(fieldName, datasetId, whereClauseFragment, aggregationData) {
+          return Rx.Observable.fromPromise(CardDataService.getSampleData(fieldName, datasetId, whereClauseFragment, aggregationData));
         }
       ).switchLatest();
       var samplesObservable = sampleDataObservable.flatMap(function(data) {

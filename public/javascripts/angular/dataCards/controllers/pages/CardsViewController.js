@@ -73,7 +73,7 @@
 
     $scope.bindObservable('dataset', page.observe('dataset'));
     $scope.bindObservable('datasetPages', page.observe('dataset.pages'));
-    $scope.bindObservable('datasetRowDisplayUnit', page.observe('aggregatedDisplayUnit'));
+    $scope.bindObservable('aggregation', page.observe('aggregation'));
     $scope.bindObservable('datasetDaysUnmodified', page.observe('dataset.updatedAt').map(function(date) {
       // TODO just a placeholder implementation
       if (!date) {

@@ -189,6 +189,13 @@ angular.module('dataCards.services').factory('FlyoutService', function(WindowSta
       }
       handlers[className].push({ render: renderCallback, trackCursor: trackCursor, horizontal: horizontal });
     },
+    deregister: function(className, renderCallback) {
+      if (handlers.hasOwnProperty(className)) {
+        handlers[className] = handlers[className].filter(function(handler) {
+          return handler.render !== renderCallback;
+        });
+      }
+    },
     // Flyout handlers are typically rechecked on mouse movement. If you've made changes to the handlers or their
     // source data and want to see the changes immediately, this function will force a refresh.
     refreshFlyout: function() {

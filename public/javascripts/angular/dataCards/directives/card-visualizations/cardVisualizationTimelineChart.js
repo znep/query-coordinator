@@ -209,25 +209,13 @@ angular.module('dataCards.directives').factory('timelineChartVisualizationServic
         }
       );
 
-      // Remove the current timeline cards filter from the whereClause
-      /*function stripWhereClause(whereClause) {
-        var filter = scope.model.getCurrentValue('activeFilters')[0];
-        if (filter) {
-          var whereFragment = filter.generateSoqlWhereFragment(scope.model.fieldName);
-          return whereClause.
-            replace(new RegExp('AND ' + whereFragment, 'gi'), '').
-            replace(new RegExp(whereFragment + '( AND|)', 'gi'), '');
-        } else {
-          return whereClause;
-        }
-      }*/
-
       function stripWhereClause(fieldName, whereClause) {
+
         var whereClauseComponents = whereClause.split(' ');
-        console.log(fieldName, whereClauseComponents);
         var indexOfFieldName = whereClauseComponents.indexOf(fieldName);
         var i;
         var filteredWhereClause = [];
+
         for (i = 0; i < whereClauseComponents.length; i++) {
           if (i === indexOfFieldName) {
             if (i > 0 && whereClauseComponents[i - 1].toLowerCase() === 'and') {
@@ -238,7 +226,9 @@ angular.module('dataCards.directives').factory('timelineChartVisualizationServic
           }
           filteredWhereClause.push(whereClauseComponents[i]);
         }
+
         return filteredWhereClause.join(' ');
+
       }
 
       var reportInvalidTimelineDomain = _.once(

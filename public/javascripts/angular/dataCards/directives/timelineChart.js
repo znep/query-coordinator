@@ -117,6 +117,8 @@
         var selectionStartDate = null;
         var selectionEndDate = null;
 
+        var renderedSelectionStartDate = null;
+        var renderedSelectionEndDate = null;
 
         var displayedLabelDates = [];
         var allChartLabelsShown = true;
@@ -130,6 +132,9 @@
           _.forEach(windowStateSubscriptions, function(windowStateSubscription) {
             windowStateSubscription.dispose();
           });
+          FlyoutService.deregister('timeline-chart-highlight-target', renderFlyout);
+          FlyoutService.deregister('selection-marker', renderSelectionMarkerFlyout);
+          FlyoutService.deregister('timeline-chart-highlight-target', renderClearSelectionMarkerFlyout);
         });
 
 
@@ -441,6 +446,15 @@
 
           if (minDate !== null && maxDate !== null) {
 
+            // If the effective selection will not change because the selection start and end
+            // dates have not changed, quit early.
+            if (renderedSelectionStartDate !== null &&
+                renderedSelectionEndDate !== null &&
+                selectionStartDate.getTime() == renderedSelectionStartDate.getTime() &&
+                selectionEndDate.getTime() == renderedSelectionEndDate.getTime()) {
+              return;
+            }
+
             var margin;
             var chartWidth;
             var chartHeight;
@@ -491,73 +505,22 @@
               attr('class', 'selection').
               attr('d', area);
 
-
-            /*stack = d3.
-              layout.
-                stack().
-                  offset('zero').
-                  values(function (d) { return d.values; }).
-                    x(function (d) { return d3XScale(d.label); }).
-                    y(function (d) { return d.value; });
-
-            area = d3.
-              svg.
-                area().
-                  x(function (d) { return d3XScale(d.label); }).
-                  y0(function (d) { return d3YScale(d.y0); }).
-                  y1(function (d) { return d3YScale(d.y0 + d.y); });
-
-            seriesStack = transformChartDataForStackedRendering(cachedChartData, false);
-
-            seriesStack = seriesStack.map(function(series) {
-              series.values = series.values.filter(function(datum) {
-                return datum.label >= minDate && datum.label <= maxDate;
-              });
-              return series;
-            });
-
-            stack(seriesStack);
-
-            svgChart = d3ChartElement.
-              select('svg.timeline-chart-selection').
-                attr('width', cachedChartDimensions.width + Constants['TIMELINE_CHART_MARGIN_LEFT'] + Constants['TIMELINE_CHART_MARGIN_RIGHT']).
-                attr('height', cachedChartDimensions.height + Constants['TIMELINE_CHART_MARGIN_TOP'] + Constants['TIMELINE_CHART_MARGIN_BOTTOM']).
-                select('g').
-                  attr('transform', 'translate(' + Constants['TIMELINE_CHART_MARGIN_LEFT'] + ',' + Constants['TIMELINE_CHART_MARGIN_TOP'] + ')');
-
-            selection = svgChart.
-              selectAll('.series').
-                data(seriesStack);
-
-            selection.
-              enter().
-                append('g').
-                  attr('class', 'series').
-                  append('path');
-
-            selection.
-              exit().
-                remove();
-
-            selection.
-              select('path').
-                attr('class', 'selection').
-                attr('d', function (d) { return area(d.values); });*/
-
             selectionStartPosition = Math.floor(d3XScale(minDate));
             selectionEndPosition = Math.floor(d3XScale(maxDate)) - 1;
 
-            jqueryLeftSelectionMarker.
-              css({
+            jqueryLeftSelectionMarker.css(
+              {
                 left: selectionStartPosition - Constants['TIMELINE_CHART_SELECTION_MARKER_NEGATIVE_X_OFFSET'],
                 height: cachedChartDimensions.height - Constants['TIMELINE_CHART_MARGIN_TOP'] - Constants['TIMELINE_CHART_MARGIN_BOTTOM']
-              });
+              }
+            );
 
-            jqueryRightSelectionMarker.
-              css({
+            jqueryRightSelectionMarker.css(
+              {
                 left: selectionEndPosition - Constants['TIMELINE_CHART_SELECTION_MARKER_NEGATIVE_X_OFFSET'],
                 height: cachedChartDimensions.height - Constants['TIMELINE_CHART_MARGIN_TOP'] - Constants['TIMELINE_CHART_MARGIN_BOTTOM']
-              });
+              }
+            );
 
             labelWidth = Math.floor(d3XScale(maxDate) - d3XScale(minDate));
             minLabelWidth = 150;
@@ -595,6 +558,11 @@
                   Constants['TIMELINE_CHART_MARGIN_BOTTOM']
               });
 
+            jqueryChartSelectionElement.show();
+
+            renderedSelectionStartDate = selectionStartDate;
+            renderedSelectionEndDate = selectionEndDate;
+
           }
 
         }
@@ -609,7 +577,7 @@
         function clearChartSelection() {
           selectionStartDate = null;
           selectionEndDate = null;
-          jqueryChartSelectionElement.find('g > g').remove();
+          jqueryChartSelectionElement.hide();
           jqueryChartElement.removeClass('selected');
         }
 
@@ -1176,9 +1144,11 @@
 
         function renderFlyout(target) {
 
-          var shouldDisplayFlyout = _.isDefined(currentDatum) &&
+          var shouldDisplayFlyout = mousePositionWithinChartDisplay &&
+                                    _.isDefined(currentDatum) &&
                                     currentDatum !== null &&
-                                    datasetPrecision !== null;
+                                    datasetPrecision !== null &&
+                                    !currentlyDragging;
           var dateString;
           var unfilteredUnit;
           var filteredUnit;
@@ -1230,6 +1200,32 @@
                      join('').
                      format(dateString, $.toHumaneNumber(currentDatum.unfiltered), unfilteredUnit);
             }
+          }
+        }
+
+
+        /**********************************************************************
+         *
+         * renderSelectionMarkerFlyout
+         *
+         */
+
+        function renderSelectionMarkerFlyout(target) {
+          if (mousePositionWithinChartDisplay && !currentlyDragging) {
+            return '<div class="flyout-title">Drag to change filter range</div>';
+          }
+        }
+
+
+        /**********************************************************************
+         *
+         * renderClearSelectionMarkerFlyout
+         *
+         */
+
+        function renderClearSelectionMarkerFlyout(target) {
+          if (mousePositionWithinChartDisplay) {
+            return '<div class="flyout-title">Clear filter range</div>';
           }
         }
 
@@ -1335,7 +1331,7 @@
           currentlyDragging = false;
           selectionActive = true;
           hideDatumLabel();
-//          renderChartFilteredValues();
+          renderChartFilteredValues();
           jqueryChartElement.find('.timeline-chart-filtered-mask').show();
           jqueryBodyElement.removeClass('prevent-user-select');
           jqueryChartElement.removeClass('selecting').addClass('selected');
@@ -1353,7 +1349,7 @@
           selectionActive = false;
           clearChartSelection();
           hideDatumLabel();
-//          renderChartFilteredValues();
+          renderChartFilteredValues();
           jqueryBodyElement.removeClass('prevent-user-select');
           jqueryChartElement.removeClass('selecting').removeClass('selected');
         }
@@ -1366,7 +1362,6 @@
          */
 
         function filterChartByCurrentSelection() {
-
           var selectionStartDateAsMoment = moment(selectionStartDate);
           var selectionEndDateAsMoment = moment(selectionEndDate).add(1, datasetPrecision);
 
@@ -1786,11 +1781,10 @@
         });
 
         FlyoutService.register('timeline-chart-highlight-target', renderFlyout);
-        FlyoutService.register('selection-marker', renderFlyout);
 
-        FlyoutService.register('timeline-chart-clear-selection-button', function(target) {
-          return '<div class="flyout-title">Clear filter range</div>';
-        });
+        FlyoutService.register('selection-marker', renderSelectionMarkerFlyout);
+
+        FlyoutService.register('timeline-chart-clear-selection-button', renderClearSelectionMarkerFlyout);
 
         jqueryClearSelectionLabel.on('mousedown', function(e) {
           clearChartFilter();

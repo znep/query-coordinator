@@ -41,8 +41,7 @@
         expanded: '=',
         precision: '=',
         rowDisplayUnit: '=',
-        activeFilters: '=',
-        pageIsFiltered: '='
+        activeFilters: '='
       },
       link: function(scope, element, attrs) {
 
@@ -89,9 +88,6 @@
         var cachedChartOffsets = null;
         var cachedChartData = null;
         var cachedRowDisplayUnit = null;
-
-        // Keep track of whether or not page filters are affecting this visualization.
-        var visualizationAffectedByFilters = false;
 
         // Keep track of whether or not the mouse button is pressed, which we compare with
         // values coming off of the mouseLeftButtonPressed sequence to figure out if the
@@ -445,7 +441,6 @@
 
           if (minDate !== null && maxDate !== null) {
 
-
             var margin;
             var chartWidth;
             var chartHeight;
@@ -471,7 +466,7 @@
                 area().
                   x(function (d) { return d3XScale(d.date); }).
                   y0(function (d) { return d3YScale(0); }).
-                  y1(function (d) { return d3YScale(d.unfiltered); });
+                  y1(function (d) { return d3YScale(d.filtered); });
 
             svgChart = d3ChartElement.
               select('svg.timeline-chart-selection').
@@ -1035,12 +1030,7 @@
           //
 
           renderChartUnfilteredValues();
-
-          //if (selectionActive) {
-            //renderChartSelection();
-          //} else {
-            renderChartFilteredValues();
-          //}
+          renderChartFilteredValues();
 
         }
 
@@ -1064,6 +1054,7 @@
           var area;
           var svgChart;
           var selection;
+
 
           margin = { top: 0, right: 0, bottom: Constants['TIMELINE_CHART_MARGIN_BOTTOM'], left: 0 };
 
@@ -1136,10 +1127,10 @@
           chartHeight = cachedChartDimensions.height - margin.top - margin.bottom;
 
           if (selectionActive) {
-            //values = cachedChartData.values.values = [cachedChartData.values.filter(function(datum) {
-            //  return datum.date >= selectionStartDate && datum.date <= selectionEndDate;
-            //})];
-            values = [];
+            values = cachedChartData.values.values = [cachedChartData.values.filter(function(datum) {
+              return datum.date >= selectionStartDate && datum.date <= selectionEndDate;
+            })];
+            //values = [];
           } else {
             values = [cachedChartData.values];
           }
@@ -1985,8 +1976,7 @@
           scope.observe('chartData'),
           scope.observe('precision'),
           scope.observe('rowDisplayUnit'),
-          scope.observe('pageIsFiltered'),
-          function(chartDimensions, chartData, precision, rowDisplayUnit, pageIsFiltered) {
+          function(chartDimensions, chartData, precision, rowDisplayUnit) {
 
             if (!_.isDefined(chartData) || !_.isDefined(precision)) {
               return;
@@ -2019,8 +2009,6 @@
 
             cachedChartDimensions = chartDimensions;
             cachedChartData = chartData;
-
-            visualizationAffectedByFilters = pageIsFiltered;
 
             renderChart(chartData, chartDimensions, precision);
 

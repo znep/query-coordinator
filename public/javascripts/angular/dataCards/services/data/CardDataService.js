@@ -134,9 +134,10 @@
         Assert(dateTrunc !== undefined, 'invalid precision name given');
 
         datasetId = DeveloperOverrides.dataOverrideForDataset(datasetId) || datasetId;
+
         var whereClause = 'WHERE date_trunc IS NOT NULL';
         if (!_.isEmpty(whereClauseFragment)) {
-          whereClause += ' and ' + whereClauseFragment;
+          whereClause += ' AND ' + whereClauseFragment;
         }
 
         var aggregationClause = buildAggregationClause(aggregationClauseData);

@@ -192,7 +192,9 @@ angular.module('dataCards.directives').factory('timelineChartVisualizationServic
           dataResponseCount,
           function(requests, responses) {
             return requests === 0 || (requests > responses);
-          }));
+          }
+        )
+      );
 
 
       /******************************************
@@ -200,14 +202,15 @@ angular.module('dataCards.directives').factory('timelineChartVisualizationServic
       ******************************************/
 
       nonBaseFilterApplied = Rx.Observable.combineLatest(
-          scope.observe('whereClause'),
-          baseSoqlFilter,
-          function (whereClause, baseFilter) {
-            return !_.isEmpty(whereClause) && whereClause != baseFilter;
-          });
+        scope.observe('whereClause'),
+        baseSoqlFilter,
+        function (whereClause, baseFilter) {
+          return !_.isEmpty(whereClause) && whereClause != baseFilter;
+        }
+      );
 
       // Remove the current timeline cards filter from the whereClause
-      function stripWhereClause(whereClause) {
+      /*function stripWhereClause(whereClause) {
         var filter = scope.model.getCurrentValue('activeFilters')[0];
         if (filter) {
           var whereFragment = filter.generateSoqlWhereFragment(scope.model.fieldName);
@@ -217,18 +220,39 @@ angular.module('dataCards.directives').factory('timelineChartVisualizationServic
         } else {
           return whereClause;
         }
+      }*/
+
+      function stripWhereClause(fieldName, whereClause) {
+        var whereClauseComponents = whereClause.split(' ');
+        console.log(fieldName, whereClauseComponents);
+        var indexOfFieldName = whereClauseComponents.indexOf(fieldName);
+        var i;
+        var filteredWhereClause = [];
+        for (i = 0; i < whereClauseComponents.length; i++) {
+          if (i === indexOfFieldName) {
+            if (i > 0 && whereClauseComponents[i - 1].toLowerCase() === 'and') {
+              filteredWhereClause.pop();
+            }
+            i += 5;
+            continue;
+          }
+          filteredWhereClause.push(whereClauseComponents[i]);
+        }
+        return filteredWhereClause.join(' ');
       }
 
-      var reportInvalidTimelineDomain = _.once(function() {
-        $log.error(
-          [
-            'Cannot render timeline chart with invalid domain (',
-            'column fieldName: "',
-            scope.model.fieldName,
-            '").'
-          ].join('')
-        );
-      });
+      var reportInvalidTimelineDomain = _.once(
+        function() {
+          $log.error(
+            [
+              'Cannot render timeline chart with invalid domain (',
+              'column fieldName: "',
+              scope.model.fieldName,
+              '").'
+            ].join('')
+          );
+        }
+      );
 
       var datasetPrecision = Rx.Observable.combineLatest(
         model.pluck('fieldName'),
@@ -237,7 +261,9 @@ angular.module('dataCards.directives').factory('timelineChartVisualizationServic
           return Rx.Observable.fromPromise(
             CardDataService.getTimelineDomain(fieldName, dataset.id)
           );
-        }).switchLatest().map(function(domain) {
+        }
+      ).switchLatest().map(
+        function(domain) {
 
           var precision;
 
@@ -256,7 +282,8 @@ angular.module('dataCards.directives').factory('timelineChartVisualizationServic
 
           return precision;
 
-        });
+        }
+      );
 
       var unfilteredData = Rx.Observable.subscribeLatest(
         model.pluck('fieldName'),
@@ -265,9 +292,19 @@ angular.module('dataCards.directives').factory('timelineChartVisualizationServic
         datasetPrecision,
         aggregationObservable,
         function(fieldName, dataset, whereClauseFragment, datasetPrecision, aggregationData) {
+
           if (_.isDefined(datasetPrecision)) {
+
             dataRequests.onNext(1);
-            var dataPromise = CardDataService.getTimelineData(fieldName, dataset.id, whereClauseFragment, datasetPrecision, aggregationData);
+
+            var dataPromise = CardDataService.getTimelineData(
+              fieldName,
+              dataset.id,
+              whereClauseFragment,
+              datasetPrecision,
+              aggregationData
+            );
+
             dataPromise.then(
               function(res) {
                 // Ok
@@ -276,10 +313,14 @@ angular.module('dataCards.directives').factory('timelineChartVisualizationServic
               },
               function(err) {
                 // Do nothing
-              });
+              }
+            );
+
             return Rx.Observable.fromPromise(dataPromise);
+
           }
-        });
+        }
+      );
 
       var filteredData = Rx.Observable.subscribeLatest(
         model.pluck('fieldName'),
@@ -289,9 +330,19 @@ angular.module('dataCards.directives').factory('timelineChartVisualizationServic
         datasetPrecision,
         aggregationObservable,
         function(fieldName, dataset, whereClauseFragment, nonBaseFilterApplied, datasetPrecision, aggregationData) {
+
           if (_.isDefined(datasetPrecision)) {
+
             dataRequests.onNext(1);
-            var dataPromise = CardDataService.getTimelineData(fieldName, dataset.id, whereClauseFragment, datasetPrecision, aggregationData);
+
+            var dataPromise = CardDataService.getTimelineData(
+              fieldName,
+              dataset.id,
+              stripWhereClause(fieldName, whereClauseFragment),
+              datasetPrecision,
+              aggregationData
+            );
+
             dataPromise.then(
               function(res) {
                 // Ok
@@ -300,12 +351,16 @@ angular.module('dataCards.directives').factory('timelineChartVisualizationServic
               },
               function(err) {
                 // Do nothing
-              });
+              }
+            );
+
             return Rx.Observable.fromPromise(dataPromise);
           }
-        });
+        }
 
-      scope.bindObservable('chartData', Rx.Observable.combineLatest(
+      );
+
+      var chartDataSequence = Rx.Observable.combineLatest(
         unfilteredDataSequence.switchLatest(),
         filteredDataSequence.switchLatest(),
         model.observeOnLatest('activeFilters'),
@@ -336,9 +391,10 @@ angular.module('dataCards.directives').factory('timelineChartVisualizationServic
               };
             })
           );
-        }));
+        }
+      );
 
-
+      scope.bindObservable('chartData', chartDataSequence);
 
       scope.bindObservable('expanded', model.observeOnLatest('expanded'));
 
@@ -346,23 +402,19 @@ angular.module('dataCards.directives').factory('timelineChartVisualizationServic
 
       scope.bindObservable('activeFilters', model.observeOnLatest('activeFilters'));
 
-      scope.bindObservable('pageIsFiltered', scope.observe('whereClause').
-          map(function(whereClause) {
-            return _.isPresent(stripWhereClause(whereClause));
-          }));
-
       scope.bindObservable('rowDisplayUnit', dataset.observeOnLatest('rowDisplayUnit'));
 
       // Handle filtering
-      scope.$on('filter-timeline-chart', function(event, data) {
-        if (data !== null) {
-          var filter = new Filter.TimeRangeFilter(data.start, data.end);
-          scope.model.set('activeFilters', [filter]);
-        } else {
-          scope.model.set('activeFilters', []);  
+      scope.$on('filter-timeline-chart',
+        function(event, data) {
+          if (data !== null) {
+            var filter = new Filter.TimeRangeFilter(data.start, data.end);
+            scope.model.set('activeFilters', [filter]);
+          } else {
+            scope.model.set('activeFilters', []);  
+          }
         }
-      });
-
+      );
 
     }
   };

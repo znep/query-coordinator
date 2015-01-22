@@ -8,7 +8,7 @@
 //   - Backed by a simple read-write value store
 //   - Backed by an RX Sequence
 // * Facilities to define lazy (JIT) defaults for properties.
-// * Automatic serialization.
+// * Automatic serialization, with consideration of ephemeral (non-serialized) properties.
 // * Recursive dirty checking/change tracking.
 angular.module('dataCards.models').factory('Model', function(Class, ModelHelper) {
   var Model = Class.extend({
@@ -443,11 +443,11 @@ angular.module('dataCards.models').factory('Model', function(Class, ModelHelper)
     // Throws if the given property is not defined on this Model.
     _assertProperty: function(propertyName) {
       if (!this._propertyObservables.hasOwnProperty(propertyName)) {
-        throw new Error("Object " + JSON.stringify(this) + " has no such property: " + propertyName);
+        throw new Error('Object {0} has no such property: {1}'.format(this.serialize(), propertyName));
       }
     },
 
-    // Register the given model as our parent (= we're the value of
+    // Register the given model as our parent (as in, we're the value of
     // one of the parent's properties).
     // This is used to implement observePropertyChangesRecursively and
     // recursive dirty checking.

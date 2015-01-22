@@ -77,7 +77,7 @@ angular.module('dataCards.models').factory('Page', function($q, Dataset, Card, M
         } else {
           // All other aggregations are valid as long as they are
           // against a column.
-          return aggregation.column;
+          return _.isPresent(aggregation.column);
         }
       });
 

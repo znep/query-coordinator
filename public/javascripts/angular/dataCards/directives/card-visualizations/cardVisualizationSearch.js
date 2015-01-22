@@ -13,8 +13,8 @@
         dataset.pluck('id'),
         model.observeOnLatest('page.baseSoqlFilter'),
         model.observeOnLatest('page.aggregation'),
-        function(fieldName, datasetId, whereClauseFragment, aggregationData) {
-          return Rx.Observable.fromPromise(CardDataService.getSampleData(fieldName, datasetId, whereClauseFragment, aggregationData));
+        function(fieldName, datasetId, pageBaseSoqlFilter, pageAggregation) {
+          return Rx.Observable.fromPromise(CardDataService.getSampleData(fieldName, datasetId, pageBaseSoqlFilter, pageAggregation));
         }
       ).switchLatest();
       var samplesObservable = sampleDataObservable.flatMap(function(data) {

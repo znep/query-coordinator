@@ -452,6 +452,10 @@
                 renderedSelectionEndDate !== null &&
                 selectionStartDate.getTime() == renderedSelectionStartDate.getTime() &&
                 selectionEndDate.getTime() == renderedSelectionEndDate.getTime()) {
+              // Note that even if we are quitting early we still may need to show
+              // the selection (since it may be possible that the same interval
+              // was previously rendered but is now just hidden).
+              jqueryChartSelectionElement.show();
               return;
             }
 
@@ -575,6 +579,7 @@
          */
 
         function clearChartSelection() {
+          selectionActive = false;
           selectionStartDate = null;
           selectionEndDate = null;
           jqueryChartSelectionElement.hide();
@@ -1789,6 +1794,8 @@
         jqueryClearSelectionLabel.on('mousedown', function(e) {
           clearChartFilter();
           enterDefaultState();
+          console.log('clearing chart selection');
+          console.log('selectionActive', selectionActive);
         });
 
 
@@ -1843,7 +1850,11 @@
         }
 
         function isMouseOverChartElement(target) {
-          return $(target).closest('.timeline-chart-wrapper').length > 0;
+
+          var closestChart = $(target).closest('.timeline-chart');
+
+          return closestChart.length > 0 && closestChart[0] == element[0];
+
         }
 
         function fireMouseMoveEventOnHighlightTarget(clientX, clientY) {

@@ -23,7 +23,7 @@ angular.module('dataCards.directives').factory('timelineChartVisualizationServic
    *     month, each date is the next month. The first element of this array is the minDate. TODO:
    *     this also doesn't seem to be used anywhere.
    */
-  function transformChartDataForRendering(chartData) {
+  function transformChartDataForRendering(chartData, aggregation) {
 
     var minDate = null;
     var maxDate = null;
@@ -127,6 +127,7 @@ angular.module('dataCards.directives').factory('timelineChartVisualizationServic
     });
 
     return {
+      aggregation: aggregation,
       minDate: minDate.toDate(),
       maxDate: maxDate.toDate(),
       offsets: offsets,
@@ -354,7 +355,8 @@ angular.module('dataCards.directives').factory('timelineChartVisualizationServic
         unfilteredDataSequence.switchLatest(),
         filteredDataSequence.switchLatest(),
         model.observeOnLatest('activeFilters'),
-        function(unfilteredData, filteredData, filters) {
+        aggregationObservable,
+        function(unfilteredData, filteredData, filters, aggregation) {
           // Joins filtered data and unfiltered data into an array of objects:
           // [
           //  { name: 'some_group_name', total: 1234, filtered: 192 },
@@ -379,7 +381,8 @@ angular.module('dataCards.directives').factory('timelineChartVisualizationServic
                 total: unfilteredAsHash[date],
                 filtered: filteredAsHash[date] || 0
               };
-            })
+            }),
+            aggregation
           );
         }
       );

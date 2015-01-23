@@ -61,6 +61,7 @@
         var jqueryLeftSelectionMarker = element.find('.timeline-chart-left-selection-marker');
         var jqueryRightSelectionMarker = element.find('.timeline-chart-right-selection-marker');
         var jqueryClearSelectionLabel = element.find('.timeline-chart-clear-selection-label');
+        var jqueryDatumLabel = element.find('.datum-label');
 
         var d3ChartElement = d3.select(jqueryChartElement[0]);
 
@@ -87,6 +88,7 @@
         var cachedChartDimensions = null;
         var cachedChartOffsets = null;
         var cachedChartData = null;
+        var cachedAggregation = { aggregation: null, field: null }
         var cachedRowDisplayUnit = null;
 
         // Keep track of whether or not the mouse button is pressed, which we compare with
@@ -101,6 +103,7 @@
 
         // Keep track of whether or not the mouse position is within this instance of a timeline
         // chart's visualization area (the chart itself and the x-axis labels beneath it).
+        var mousePositionWithinChartElement = false;
         var mousePositionWithinChartDisplay = false;
         var mousePositionWithinChartLabels = true;
 
@@ -582,6 +585,8 @@
           selectionActive = false;
           selectionStartDate = null;
           selectionEndDate = null;
+          renderedSelectionStartDate = null;
+          renderedSelectionEndDate = null;
           jqueryChartSelectionElement.hide();
           jqueryChartElement.removeClass('selected');
         }
@@ -1235,13 +1240,45 @@
         }
 
 
+        /**********************************************************************
+         *
+         * formatSelectionRangeLabel
+         *
+         */
+
         function formatSelectionRangeLabel(startDate, endDate) {
+
+          function monthsDifference(date1, date2) {
+            var months;
+            months = (date2.getFullYear() - date1.getFullYear()) * 12;
+            months -= date1.getMonth() + 1;
+            months += date2.getMonth();
+            return months <= 0 ? 0 : months;
+          }
+
           var label;
+
           switch (labelPrecision) {
             case 'DECADE':
+              if (endDate.getFullYear() - startDate.getFullYear() <= 10) {
+                label = '{0} - {1}'.format(formatDateLabel(startDate, false, 'YEAR'), formatDateLabel(endDate, false, 'YEAR'));
+              } else {
+                label = '{0} - {1}'.format(formatDateLabel(startDate, false), formatDateLabel(endDate, false));
+              }
+              break;
             case 'YEAR':
+              if (monthsDifference(startDate, endDate) < 11) {
+                label = '{0} - {1}'.format(formatDateLabel(startDate, false, 'MONTH'), formatDateLabel(endDate, false, 'MONTH'));
+              } else {
+                label = '{0} - {1}'.format(formatDateLabel(startDate, false), formatDateLabel(endDate, false));
+              }
+              break;
             case 'MONTH':
-              label = '{0} - {1}'.format(formatDateLabel(startDate, false), formatDateLabel(endDate, false));
+              if (startDate.getMonth() === endDate.getMonth()) {
+                label = '{0} - {1}'.format(formatDateLabel(startDate, false, 'DAY'), formatDateLabel(endDate, false, 'DAY'));
+              } else {
+                label = '{0} - {1}'.format(formatDateLabel(startDate, false), formatDateLabel(endDate, false));
+              }
               break;
             case 'DAY':
               if (startDate.getTime() !== endDate.getTime()) {
@@ -1250,7 +1287,9 @@
                 label = formatDateLabel(startDate, false);
               }
           }
+
           return '{0} <span class="timeline-chart-clear-selection-button">×</span>'.format(label);
+
         }
 
         /**********************************************************************
@@ -1262,7 +1301,7 @@
          *
          */
 
-        function formatDateLabel(labelDate, forFlyout) {
+        function formatDateLabel(labelDate, forFlyout, overriddenLabelPrecision) {
 
           var FULL_MONTH_NAMES = [
             'January', 'February', 'March',
@@ -1278,7 +1317,9 @@
             'Oct', 'Nov', 'Dec'
           ];
 
-          switch (labelPrecision) {
+          var labelPrecisionToUse = overriddenLabelPrecision || labelPrecision;
+
+          switch (labelPrecisionToUse) {
 
             case 'DECADE':
               return String(labelDate.getFullYear()).substring(0, 3) + '0s';
@@ -1572,9 +1613,7 @@
                 enterDraggingState();
               }
 
-            }
-
-            if (mousePositionWithinChartDisplay) {
+            } else if (mousePositionWithinChartElement) {
 
               // The target markers on the left and right of the selection have a
               // 'data-selection-target' attribute value of 'left' and 'right',
@@ -1627,22 +1666,24 @@
 
 
         function hideDatumLabel() {
-          jqueryChartElement.find('.datum-label').hide();
+          jqueryDatumLabel.hide();
           jqueryChartElement.removeClass('dimmed');
         }
+
 
         function isStartDateInDisplayedLabelDates(startDate) {
           return displayedLabelDates.indexOf(startDate.toISOString()) >= 0;
         }
 
+
         function shouldDimChartLabels(startDate) {
           return !(allChartLabelsShown || isStartDateInDisplayedLabelDates(startDate));
         }
 
+
         function shouldBoldChartLabel(startDate) {
           return isStartDateInDisplayedLabelDates(startDate);
         }
-
 
 
         function highlightChart(offsetX, startDate, endDate) {
@@ -1707,7 +1748,7 @@
               // dim all the existing labels
               // set the value of the datum label to the startDate
               // show the datum label
-              jqueryChartElement.find('.datum-label').
+              jqueryDatumLabel.
                 text(formatDateLabel(startDate, false)).
                 attr('data-start', startDate).
                 attr('data-end', endDate).
@@ -1780,6 +1821,48 @@
         }
 
 
+        function isMouseWithinChartDisplay(offsetX, offsetY) {
+
+          return offsetX > 0 &&
+                 offsetX <= cachedChartDimensions.width &&
+                 offsetY > 0 &&
+                 offsetY <= cachedChartDimensions.height - Constants['TIMELINE_CHART_MARGIN_BOTTOM'];
+
+        }
+
+
+        function isMouseWithinChartLabels(offsetX, offsetY) {
+
+          return offsetX > 0 &&
+                 offsetX <= cachedChartDimensions.width &&
+                 offsetY > cachedChartDimensions.height - Constants['TIMELINE_CHART_MARGIN_BOTTOM'] &&
+                 offsetY <= cachedChartDimensions.height;
+
+        }
+
+
+        function isMouseOverChartElement(target) {
+
+          var closestChart = $(target).closest('.timeline-chart');
+
+          return closestChart.length > 0 && closestChart[0] == element[0];
+
+        }
+
+
+        function fireMouseMoveEventOnHighlightTarget(clientX, clientY) {
+
+          // Trigger mouseover event on the thing that will draw the flyout
+          // rather than the thing that's actually catching the mousemove.
+          var evt = document.createEvent('HTMLEvents');
+          evt.initEvent('mousemove', true, true);
+          evt.clientX = clientX;
+          evt.clientY = clientY;
+          jqueryChartElement.find('.timeline-chart-highlight-target')[0].dispatchEvent(evt);
+
+        }
+
+
         jqueryChartElement.on('mouseleave', function() {
           d3ChartElement.select('svg.timeline-chart-highlight-container').select('g').remove();
           currentDatum = null;
@@ -1791,14 +1874,12 @@
 
         FlyoutService.register('timeline-chart-clear-selection-button', renderClearSelectionMarkerFlyout);
 
-        jqueryClearSelectionLabel.on('mousedown', function(e) {
-          clearChartFilter();
-          enterDefaultState();
-          console.log('clearing chart selection');
-          console.log('selectionActive', selectionActive);
-        });
-
-
+        jqueryClearSelectionLabel.on('mousedown',
+          function(e) {
+            clearChartFilter();
+            enterDefaultState();
+          }
+        );
 
         //
         // Update the chart's selection when clicking and dragging.
@@ -1824,51 +1905,6 @@
 
         windowStateSubscriptions.push(windowStateSubscription);
 
-
-        //
-        // Render a chart highlight if the mouse is in an appropriate position:
-        // a) over the chart iteself; or
-        // b) over an x-axis label
-        //
-
-        function isMouseWithinChartDisplay(offsetX, offsetY) {
-
-          return offsetX > 0 &&
-                 offsetX <= cachedChartDimensions.width &&
-                 offsetY > 0 &&
-                 offsetY <= cachedChartDimensions.height - Constants['TIMELINE_CHART_MARGIN_BOTTOM'];
-
-        }
-
-        function isMouseWithinChartLabels(offsetX, offsetY) {
-
-          return offsetX > 0 &&
-                 offsetX <= cachedChartDimensions.width &&
-                 offsetY > cachedChartDimensions.height - Constants['TIMELINE_CHART_MARGIN_BOTTOM'] &&
-                 offsetY <= cachedChartDimensions.height;
-
-        }
-
-        function isMouseOverChartElement(target) {
-
-          var closestChart = $(target).closest('.timeline-chart');
-
-          return closestChart.length > 0 && closestChart[0] == element[0];
-
-        }
-
-        function fireMouseMoveEventOnHighlightTarget(clientX, clientY) {
-
-          // Trigger mouseover event on the thing that will draw the flyout
-          // rather than the thing that's actually catching the mousemove.
-          var evt = document.createEvent('HTMLEvents');
-          evt.initEvent('mousemove', true, true);
-          evt.clientX = clientX;
-          evt.clientY = clientY;
-          jqueryChartElement.find('.timeline-chart-highlight-target')[0].dispatchEvent(evt);
-
-        }
-
         windowStateSubscription = Rx.Observable.subscribeLatest(
           WindowState.mousePositionSubject,
           WindowState.scrollPositionSubject,
@@ -1891,6 +1927,7 @@
             offsetX = mousePosition.clientX - cachedChartOffsets.left;
             offsetY = mousePosition.clientY + scrollPosition - cachedChartOffsets.top;
             mouseIsOverChartElement = isMouseOverChartElement(mousePosition.target);
+            mousePositionWithinChartElement = mouseIsOverChartElement;
 
             // First figure out which region (display, labels, outside) of the
             // visualization the mouse is currently over and cache the result
@@ -1990,6 +2027,11 @@
             // Analytics start.
             var timestamp = _.now();
             scope.$emit('render:start', { source: 'timelineChart_{0}'.format(scope.$id), timestamp: _.now() });
+
+            if (chartData.aggregation.aggregation !== cachedAggregation.aggregation || chartData.aggregation.field !== cachedAggregation.field) {
+              clearChartSelection();
+            }
+            cachedAggregation = chartData.aggregation;
 
             // Only update the chartOffset sequence if we have done a full re-render.
             // This is used by renderHighlightedChartSegment but that function will

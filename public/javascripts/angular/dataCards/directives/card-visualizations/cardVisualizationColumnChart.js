@@ -85,7 +85,7 @@ angular.module('dataCards.directives').directive('cardVisualizationColumnChart',
           return Rx.Observable.fromPromise(dataPromise);
         });
 
-      $scope.bindObservable('rowDisplayUnit', dataset.observeOnLatest('rowDisplayUnit'));
+      $scope.bindObservable('rowDisplayUnit', model.observeOnLatest('page.aggregation.unit'));
 
       $scope.bindObservable('chartData', Rx.Observable.combineLatest(
           unfilteredDataSequence.switchLatest(),

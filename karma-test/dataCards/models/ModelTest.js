@@ -93,12 +93,12 @@ describe("Model", function() {
     expect(seen).to.deep.equal([5, 10]);
   }));
 
-  describe('defineReadOnlyObservableProperty', function() {
+  describe('defineEphemeralObservablePropertyFromSequence', function() {
     it('should reflect changes in the given sequence', function() {
       var model = new Model();
       var valueSeq = new Rx.Subject();
       var seen = [];
-      model.defineReadOnlyObservableProperty('prop', valueSeq);
+      model.defineEphemeralObservablePropertyFromSequence('prop', valueSeq);
       model.observe('prop').subscribe(function(val) { seen.push(val); });
 
       expect(model.getCurrentValue('prop')).to.equal(undefined);
@@ -114,13 +114,13 @@ describe("Model", function() {
 
     it('should throw on setValue', function() {
       var model = new Model();
-      model.defineReadOnlyObservableProperty('prop', Rx.Observable.never());
+      model.defineEphemeralObservablePropertyFromSequence('prop', Rx.Observable.never());
       expect(function() { model.setValue('prop'); }).to.throw();
     });
 
     it('should always return false for isSet', function() {
       var model = new Model();
-      model.defineReadOnlyObservableProperty('prop', Rx.Observable.never());
+      model.defineEphemeralObservablePropertyFromSequence('prop', Rx.Observable.never());
       expect(model.isSet('prop')).to.equal(false);
     });
   });
@@ -137,7 +137,7 @@ describe("Model", function() {
           changes.push(change);
         });
 
-        model.defineReadOnlyObservableProperty('prop', valueSeq);
+        model.defineEphemeralObservablePropertyFromSequence('prop', valueSeq);
         model.observe('prop').subscribe(_.noop);
 
         valueSeq.onNext('asd');
@@ -498,7 +498,7 @@ describe("Model", function() {
           throw new Error('should never see a change for read-only properties');
         });
 
-        model.defineReadOnlyObservableProperty('prop', valueSeq);
+        model.defineEphemeralObservablePropertyFromSequence('prop', valueSeq);
         model.observe('prop').subscribe(_.noop);
         valueSeq.onNext('asd');
       });
@@ -1136,6 +1136,19 @@ describe("Model", function() {
             testProp3: 55
           }
         ]
+      });
+    });
+    it('should not serialize ephemeral fields', function() {
+      var model = new Model();
+      model.defineObservableProperty('nonEphemeral', 'foo');
+      model.defineEphemeralObservableProperty('ephemeral', 'asd');
+      model.defineEphemeralObservablePropertyFromSequence(
+        'ephemeralFromSeq',
+        Rx.Observable.returnValue('fromSeq')
+      );
+
+      expect(model.serialize()).to.deep.equal({
+        nonEphemeral: 'foo'
       });
     });
   });

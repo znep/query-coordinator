@@ -318,7 +318,7 @@
 
         scope.bindObservable('fieldName', model.pluck('fieldName'));
         scope.bindObservable('baseLayerUrl', model.observeOnLatest('baseLayerUrl'));
-        scope.bindObservable('rowDisplayUnit', dataset.observeOnLatest('rowDisplayUnit'));
+        scope.bindObservable('rowDisplayUnit', model.observeOnLatest('page.aggregation.unit'));
 
         scope.bindObservable(
           'geojsonAggregateData',

@@ -1,4 +1,4 @@
-angular.module('dataCards.directives').factory('timelineChartVisualizationService', function() {
+angular.module('dataCards.directives').factory('timelineChartVisualizationService', function(DateHelpers) {
   /**
    * Precompute a bunch of things that are useful for rendering the timeline chart.
    *
@@ -23,7 +23,7 @@ angular.module('dataCards.directives').factory('timelineChartVisualizationServic
    *     month, each date is the next month. The first element of this array is the minDate. TODO:
    *     this also doesn't seem to be used anywhere.
    */
-  function transformChartDataForRendering(chartData, aggregation) {
+  function transformChartDataForRendering(chartData, aggregation, datasetPrecision) {
 
     var minDate = null;
     var maxDate = null;
@@ -80,7 +80,10 @@ angular.module('dataCards.directives').factory('timelineChartVisualizationServic
     duration = moment.duration(maxDate - minDate);
 
     if (duration <= 0) {
-      throw new Error('Cannot transform timeline chart data for rendering: the time interval of the data is less than or equal to zero.');
+      throw new Error(
+        'Cannot transform timeline chart data for rendering: ' +
+        'the time interval of the data is less than or equal to zero.'
+      );
     }
 
     // Note that we are intentionally wrapping minDate in
@@ -144,7 +147,9 @@ angular.module('dataCards.directives').factory('timelineChartVisualizationServic
     transformChartDataForRendering: transformChartDataForRendering
   };
 
-}).directive('cardVisualizationTimelineChart', function(AngularRxExtensions, CardDataService, Filter, timelineChartVisualizationService, $log) {
+}).directive('cardVisualizationTimelineChart', function(
+  AngularRxExtensions, CardDataService, Filter, timelineChartVisualizationService, $log
+) {
   'use strict';
 
   return {
@@ -356,7 +361,8 @@ angular.module('dataCards.directives').factory('timelineChartVisualizationServic
         filteredDataSequence.switchLatest(),
         model.observeOnLatest('activeFilters'),
         aggregationObservable,
-        function(unfilteredData, filteredData, filters, aggregation) {
+        datasetPrecision,
+        function(unfilteredData, filteredData, filters, aggregation, datasetPrecision) {
           // Joins filtered data and unfiltered data into an array of objects:
           // [
           //  { name: 'some_group_name', total: 1234, filtered: 192 },
@@ -382,7 +388,8 @@ angular.module('dataCards.directives').factory('timelineChartVisualizationServic
                 filtered: filteredAsHash[date] || 0
               };
             }),
-            aggregation
+            aggregation,
+            datasetPrecision
           );
         }
       );

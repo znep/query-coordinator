@@ -31,7 +31,7 @@
   // chosen when a pixel location is run back through the inverse of d3XScale.
   var EPSILON = 0.0005;
 
-  function timelineChartDirective($timeout, AngularRxExtensions, WindowState, FlyoutService, Constants) {
+  function timelineChartDirective($timeout, AngularRxExtensions, WindowState, DateHelpers, FlyoutService, Constants) {
 
     return {
       templateUrl: '/angular_templates/dataCards/timelineChart.html',
@@ -113,6 +113,7 @@
         var valueAndPositionOnClickObservable;
 
         var selectionActive = false;
+        var selectionStartedBeyondMaxDate = false;
         var setDateOnMouseUp = false;
 
 
@@ -136,9 +137,28 @@
             windowStateSubscription.dispose();
           });
           FlyoutService.deregister('timeline-chart-highlight-target', renderFlyout);
+          FlyoutService.deregister('x-tick-label', renderIntervalFlyout);
           FlyoutService.deregister('selection-marker', renderSelectionMarkerFlyout);
           FlyoutService.deregister('timeline-chart-highlight-target', renderClearSelectionMarkerFlyout);
         });
+
+
+        function transformValuesForRendering(values) {
+
+          var newValues = [];
+          var newDate;
+
+          for (var i = 0; i < values.length; i++) {
+            newValues.push({
+              date: DateHelpers.decrementDateByInterval(values[i].date, datasetPrecision),
+              filtered: values[i].filtered,
+              unfiltered: values[i].unfiltered
+            });
+          }
+
+          return [newValues];
+
+        }
 
 
         /**********************************************************************
@@ -385,7 +405,7 @@
           selection = d3ChartElement.
             select('svg.timeline-chart-highlight-container').
               attr('width', highlightData.width).
-              attr('height', dimensions.height).
+              attr('height', dimensions.height - Constants['TIMELINE_CHART_MARGIN_BOTTOM']).
               append('g');
 
           selection.
@@ -466,6 +486,8 @@
             var chartWidth;
             var chartHeight;
             var values;
+            var transformedMinDate;
+            var transformedMaxDate;
             var area;
             var svgChart;
             var selection;
@@ -478,9 +500,16 @@
             chartWidth = cachedChartDimensions.width - margin.left - margin.right;
             chartHeight = cachedChartDimensions.height - margin.top - margin.bottom;
 
-            values = [cachedChartData.values.filter(function(datum) {
-              return datum.date >= minDate && datum.date <= maxDate;
-            })];
+            values = transformValuesForRendering(
+              cachedChartData.values.filter(function(datum) {
+                return datum.date >= minDate && datum.date <= maxDate;
+              })
+            );
+
+            // Reset minDate and maxDate to accurately reflect the 'half-way' interpolated
+            // values created by transformValuesForRendering.
+            transformedMinDate = values[0][0].date;
+            transformedMaxDate = values[0][values[0].length - 1].date;
 
             area = d3.
               svg.
@@ -512,8 +541,8 @@
               attr('class', 'selection').
               attr('d', area);
 
-            selectionStartPosition = Math.floor(d3XScale(minDate));
-            selectionEndPosition = Math.floor(d3XScale(maxDate)) - 1;
+            selectionStartPosition = Math.floor(d3XScale(transformedMinDate));
+            selectionEndPosition = Math.floor(d3XScale(transformedMaxDate)) - 1;
 
             jqueryLeftSelectionMarker.css(
               {
@@ -529,7 +558,7 @@
               }
             );
 
-            labelWidth = Math.floor(d3XScale(maxDate) - d3XScale(minDate));
+            labelWidth = Math.floor(d3XScale(transformedMaxDate) - d3XScale(transformedMinDate));
             minLabelWidth = 150;
             labelNegativeXOffset = 0;
 
@@ -711,11 +740,26 @@
           for (j = 0; j < tickDates.length; j++) {
             for (i; i < chartData.values.length; i++) {
               if (moment(chartData.values[i].date).isSame(tickDates[j], labelPrecision)) {
-                labelData.push({ datum: chartData.values[i], offset: Math.floor(d3XScale(chartData.values[i].date)) });
+                labelData.push({
+                  datum: chartData.values[i],
+                  offset: Math.floor(d3XScale(chartData.values[i].date))
+                });
                 break;
               }
             }
           }
+
+
+
+
+
+          // Add the first tick as a special case since
+          // it will always fall at 0 - halfTickWidth.
+          jqueryAxisTick = $('<rect>').
+            addClass('x-tick').
+            css({
+              left: 0 - halfTickWidth
+            });
 
           // Set up the container for the x-axis ticks.
           jqueryAxisContainer = $('<div>').
@@ -723,7 +767,11 @@
             css({
               width: chartWidth,
               height: Constants['TIMELINE_CHART_MARGIN_BOTTOM']
-            });
+            }).append(jqueryAxisTick);
+
+
+
+
 
           labelDatumStep = deriveXAxisLabelDatumStep(labelData);
 
@@ -964,7 +1012,10 @@
           d3XScale = d3.
             time.
               scale().
-                domain([chartData.minDate, chartData.maxDate]).
+                domain([
+                  DateHelpers.decrementDateByInterval(chartData.minDate, datasetPrecision),
+                  DateHelpers.incrementDateByInterval(chartData.maxDate, datasetPrecision)
+                ]).
                 range([0, chartWidth]);
 
           // d3YScale is global to the directive so that we can
@@ -974,8 +1025,7 @@
               linear().
                 domain([chartData.minValue, chartData.maxValue]).
                 range([chartHeight, 0]).
-                clamp(true); // Is this necessary?!
-
+                clamp(true);
 
           //
           // Render the x-axis.
@@ -1041,7 +1091,7 @@
           chartWidth = cachedChartDimensions.width - margin.left - margin.right;
           chartHeight = cachedChartDimensions.height - margin.top - margin.bottom;
 
-          values = [cachedChartData.values];
+          values = transformValuesForRendering(cachedChartData.values);
 
           area = d3.
             svg.
@@ -1105,12 +1155,14 @@
           chartHeight = cachedChartDimensions.height - margin.top - margin.bottom;
 
           if (selectionActive) {
-            values = cachedChartData.values.values = [cachedChartData.values.filter(function(datum) {
-              return datum.date >= selectionStartDate && datum.date <= selectionEndDate;
-            })];
-            //values = [];
+            /*values = transformValuesForRendering(
+              cachedChartData.values.filter(function(datum) {
+                return datum.date <= selectionStartDate && datum.date >= selectionEndDate;
+              })
+            );*/
+            values = [];
           } else {
-            values = [cachedChartData.values];
+            values = transformValuesForRendering(cachedChartData.values);
           }
 
           area = d3.
@@ -1209,6 +1261,75 @@
                      ].
                      join('').
                      format(dateString, $.toHumaneNumber(currentDatum.unfiltered), unfilteredUnit);
+            }
+          }
+        }
+
+        /**********************************************************************
+         *
+         * renderIntervalFlyout
+         *
+         */
+
+        function renderIntervalFlyout(target) {
+
+          var label = target.getAttribute('data-flyout-label');
+          var unfilteredTotal = target.getAttribute('data-aggregate-unfiltered');
+          var filteredTotal = target.getAttribute('data-aggregate-filtered');
+
+          var shouldDisplayFlyout = mousePositionWithinChartLabels &&
+                                    label !== null &&
+                                    unfilteredTotal !== null &&
+                                    filteredTotal !== null &&
+                                    datasetPrecision !== null &&
+                                    !currentlyDragging;
+          var dateString;
+          var unfilteredUnit;
+          var filteredUnit;
+
+          if (shouldDisplayFlyout) {
+
+            unfilteredUnit = (unfilteredTotal === 1) ?
+                             cachedRowDisplayUnit :
+                             cachedRowDisplayUnit.pluralize();
+
+            filteredUnit = (filteredTotal === 1) ?
+                           cachedRowDisplayUnit :
+                           cachedRowDisplayUnit.pluralize();
+
+            if (filteredTotal !== unfilteredTotal) {
+
+              return [
+                        '<div class="flyout-title">{0}</div>',
+                        '<div class="flyout-row">',
+                          '<span class="flyout-cell">Total</span>',
+                          '<span class="flyout-cell">{1} {2}</span>',
+                        '</div>',
+                        '<div class="flyout-row">',
+                          '<span class="flyout-cell emphasis">Filtered amount</span>',
+                          '<span class="flyout-cell emphasis">{3} {4}</span>',
+                        '</div>'
+                     ].
+                     join('').
+                     format(
+                       label,
+                       $.toHumaneNumber(parseFloat(unfilteredTotal)),
+                       unfilteredUnit,
+                       $.toHumaneNumber(parseFloat(filteredTotal)),
+                       filteredUnit
+                     );
+            } else {
+              
+              return [
+                       '<div class="flyout-title">{0}</div>',
+                       '<div class="flyout-row">',
+                         '<span class="flyout-cell">Total</span>',
+                         '<span class="flyout-cell">{1} {2}</span>',
+                       '</div>'
+                     ].
+                     join('').
+                     format(label, $.toHumaneNumber(parseFloat(unfilteredTotal)), unfilteredUnit);
+
             }
           }
         }
@@ -1410,7 +1531,6 @@
         function filterChartByCurrentSelection() {
           var selectionStartDateAsMoment = moment(selectionStartDate);
           var selectionEndDateAsMoment = moment(selectionEndDate).add(1, datasetPrecision);
-
           if (selectionStartDateAsMoment.isValid() && selectionEndDateAsMoment.isValid()) {
             scope.$emit(
               'filter-timeline-chart',
@@ -1524,19 +1644,37 @@
           var candidateSelectionStartDate = null;
           var candidateSelectionEndDate = null;
 
-          offsetX = offsetX + halfVisualizedDatumWidth;
-
           if (mousePositionWithinChartLabels) {
+
             candidateSelectionEndDate = target.getAttribute('data-end');
+
             if (candidateSelectionEndDate === null) {
               return;
             }
+
             candidateSelectionEndDate = new Date(candidateSelectionEndDate);
+
             if (candidateSelectionEndDate <= selectionStartDate) {
               candidateSelectionEndDate = new Date(target.getAttribute('data-start'));
             }
+
+          } else if (mousePositionWithinChartDisplay) {
+
+            if (selectionStartedBeyondMaxDate) {
+
+              selectionStartDate = getDateFromMousePosition(offsetX);
+              candidateSelectionEndDate = selectionEndDate;
+
+            } else {
+
+              candidateSelectionEndDate = getDateFromMousePosition(offsetX + halfVisualizedDatumWidth);
+
+            }
+
           } else {
-            candidateSelectionEndDate = getDateFromMousePosition(offsetX);
+
+            candidateSelectionEndDate = selectionEndDate;
+
           }
 
           if (candidateSelectionEndDate !== null && selectionStartDate !== null) {
@@ -1544,7 +1682,7 @@
             // Prevent null selections by auto-incrementing by a 'datasetPrecision' unit if
             // the calculated start and end dates are the same.
             if (candidateSelectionEndDate.getTime() === selectionStartDate.getTime()) {
-              candidateSelectionEndDate = getDateFromMousePosition(offsetX + visualizedDatumWidth);
+              candidateSelectionEndDate = getDateFromMousePosition(offsetX + halfVisualizedDatumWidth + visualizedDatumWidth);
             }
 
             if (candidateSelectionEndDate < cachedChartData.minDate) {
@@ -1600,9 +1738,10 @@
 
           offsetX = mouseStatus.position.clientX - cachedChartOffsets.left + halfVisualizedDatumWidth;
 
-
           // Mouse down while not dragging (start selecting):
           if (mouseStatus.leftButtonPressed && !currentlyDragging) {
+
+            selectionStartedBeyondMaxDate = false;
 
             if (mousePositionWithinChartLabels) {
 
@@ -1621,7 +1760,6 @@
               // (e.g. the chart itself or, more specifically, the highlight target
               // that sits on top of it) will return null, which will be caught by
               // the default case and treated as a normal selection-start event.
-
               switch (mouseStatus.position.target.getAttribute('data-selection-target')) {
                 case 'left':
                   selectionStartDate = selectionEndDate;
@@ -1630,8 +1768,30 @@
                 case 'right':
                   break;
                 default:
-                  selectionStartDate = getDateFromMousePosition(offsetX);
-                  selectionEndDate = getDateFromMousePosition(offsetX + visualizedDatumWidth);
+
+                  // If the mouse is inside the chart element and inside the chart display,
+                  // then we can just do the drag selection as normal.
+                  if (mousePositionWithinChartDisplay) {
+
+                    selectionStartDate = getDateFromMousePosition(offsetX);
+                    selectionEndDate = getDateFromMousePosition(offsetX + visualizedDatumWidth);
+
+                  } else {
+
+                    // If the mouse is inside the chart element but outside the chart display,
+                    // then it must be in the left or right margin, in which case we want to
+                    // anchor the min or max date to the chart's min or max date and make the
+                    // selection 1 display unit wide.
+                    if (offsetX < cachedChartDimensions.width / 2) {
+                      selectionStartDate = cachedChartData.minDate;
+                      selectionEndDate = moment(cachedChartData.minDate).add(1, datasetPrecision).toDate();
+                    } else {
+                      selectionStartedBeyondMaxDate = true;
+                      selectionStartDate = moment(cachedChartData.maxDate).subtract(1, datasetPrecision).toDate();
+                      selectionEndDate = cachedChartData.maxDate;
+                    }
+
+                  }
                   break;
               }
 
@@ -1641,13 +1801,13 @@
 
           }
 
-
           // Mouse up while dragging (stop selecting):
           if (currentlyDragging && !mouseStatus.leftButtonPressed) {
 
             clearChartHighlight();
 
             if (selectionStartDate > selectionEndDate) {
+
               // candidateStartDate is used here as a temporary variable
               // when swapping the two values so that the selectionStartDate
               // always occurs before the selectionEndDate.
@@ -1870,6 +2030,8 @@
 
         FlyoutService.register('timeline-chart-highlight-target', renderFlyout);
 
+        FlyoutService.register('x-tick-label', renderIntervalFlyout);
+
         FlyoutService.register('selection-marker', renderSelectionMarkerFlyout);
 
         FlyoutService.register('timeline-chart-clear-selection-button', renderClearSelectionMarkerFlyout);
@@ -2063,6 +2225,8 @@
             // (such as in the case of a visualization re-render triggered by
             // the window being resized).
             if (selectionActive) {
+              renderedSelectionStartDate = null;
+              renderedSelectionEndDate = null;
               renderChartSelection();
             }
 

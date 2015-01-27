@@ -30,7 +30,8 @@
         AngularRxExtensions.install(scope);
 
         var currentBlocks = [];
-        var sort = '';
+        var sortColumnId = '';
+        var sortOrdering = '';
         var columnWidths = {};
         var httpRequests = {};
         var oldBlock = -1;
@@ -78,6 +79,23 @@
           updateLabel();
         };
 
+        var setSort = function(newSortColumn, newSortOrdering) {
+          sortColumnId = newSortColumn;
+          sortOrdering = newSortOrdering;
+        };
+
+        var getFormattedSort = function() {
+          return (_.isPresent(sortColumnId) && _.isPresent(sortOrdering)) ?
+            '{0} {1}'.format(sortColumnId, sortOrdering) :
+            '';
+        };
+
+        var shouldApplyDefaultSort = function() {
+          return _.isPresent(scope.defaultSortColumnName) &&
+            _.isEmpty(sortColumnId) &&
+            _.isEmpty(sortOrdering);
+        };
+
         // Given a column detail object, returns
         // this column's default sort (represented
         // by the strings 'DESC' and 'ASC').
@@ -104,10 +122,7 @@
           var newOrdering;
 
           if (isSortedOnColumn(columnId)) {
-            var sortParts = sort.split(' ');
-            var currentSort = sortParts[1];
-
-            newOrdering = currentSort === 'DESC' ? 'ASC' : 'DESC';
+            newOrdering = sortOrdering === 'DESC' ? 'ASC' : 'DESC';
           } else {
             var column = getColumn(columnId);
 
@@ -123,9 +138,7 @@
         // for that column.
         var getCurrentOrDefaultSortForColumn = function(columnId) {
           if (isSortedOnColumn(columnId)) {
-            var sortParts = sort.split(' ');
-
-            return sortParts[1];
+            return sortOrdering;
           } else {
             return getNextSortForColumn(columnId);
           }
@@ -135,7 +148,7 @@
         var sortOnColumn = function(columnId) {
           var newOrdering = getNextSortForColumn(columnId);
 
-          sort = '{0} {1}'.format(columnId, newOrdering);
+          setSort(columnId, newOrdering);
           updateColumnHeaders();
           reloadRows();
         };
@@ -148,9 +161,7 @@
         // Returns true if we're currently sorting
         // on the given column.
         var isSortedOnColumn = function(columnId) {
-          var sortParts = sort.split(' ');
-
-          return sortParts[0] === columnId;
+          return sortColumnId === columnId;
         };
 
         var columnDrag = false;
@@ -312,6 +323,7 @@
             $expander.height(height);
           }
         };
+
         var loadBlockOfRows = function(block) {
           // Check if is being loaded or block exists
           if (_.has(httpRequests, block) || element.find(".row-block." + block).length > 0) {
@@ -321,7 +333,7 @@
 
           httpRequests[block] = canceler;
 
-          scope.getRows(block * rowsPerBlock, rowsPerBlock, sort, canceler, scope.whereClause).then(function(data) {
+          scope.getRows(block * rowsPerBlock, rowsPerBlock, getFormattedSort(), canceler, scope.whereClause).then(function(data) {
             delete httpRequests[block];
             ensureColumnHeaders();
 
@@ -506,8 +518,7 @@
           html: function($target, $head, options, $element) {
             var columnId = $target.data('columnId');
             var column = getColumn(columnId);
-            var sortParts = sort.split(' ');
-            var sortUp = sortParts[1] === 'ASC';
+            var sortUp = sortOrdering === 'ASC';
             var html = [];
             var ascendingString = 'ascending';
             var descendingString = 'descending';
@@ -575,7 +586,7 @@
             // Make sure rowCount is a number (ie not undefined)
             if (rowCount >= 0) {
               // Apply a default sort if needed.
-              if (scope.defaultSortColumnName && _.isEmpty(sort)) {
+              if (shouldApplyDefaultSort()) {
                 sortOnColumn(scope.defaultSortColumnName);
               }
               renderTable(

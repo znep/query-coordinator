@@ -101,6 +101,7 @@ module.exports = function ( karma ) {
 
     proxies: {
       '/stubs/images/': 'http://localhost:7019/base/public/stubs/images/',
+      '/javascripts/plugins/': 'http://localhost:7019/base/public/javascripts/plugins/',
       '/stylesheets/images/': 'http://localhost:7019/base/public/stylesheets/images/'
     },
 

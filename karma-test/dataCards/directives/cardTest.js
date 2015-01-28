@@ -33,6 +33,7 @@ describe("card directive", function() {
     _$templateCache.put('/angular_templates/dataCards/cardVisualizationTimelineChart.html', '');
     _$templateCache.put('/angular_templates/dataCards/cardVisualizationSearch.html', '');
     _$templateCache.put('/angular_templates/dataCards/cardVisualization.html', '');
+    _$templateCache.put('/angular_templates/dataCards/cardVisualizationInvalid.html', '');
     _$templateCache.put('/angular_templates/dataCards/clearableInput.html', '');
 
     // The css styles are scoped to the body class

@@ -139,7 +139,8 @@
           FlyoutService.deregister('timeline-chart-highlight-target', renderFlyout);
           FlyoutService.deregister('x-tick-label', renderIntervalFlyout);
           FlyoutService.deregister('selection-marker', renderSelectionMarkerFlyout);
-          FlyoutService.deregister('timeline-chart-highlight-target', renderClearSelectionMarkerFlyout);
+          FlyoutService.deregister('datum-label', renderFlyout);
+          FlyoutService.deregister('timeline-chart-clear-selection-label', renderClearSelectionMarkerFlyout);
         });
 
 
@@ -176,102 +177,47 @@
          *
          */
 
-        function filterChartDataByOffset(chartData, offsetX, dimensions) {
+        function filterChartDataByOffset(offsetX) {
 
-          // This helper function creates the correct array of highlightData values
-          // to be passed on to the renderChartHighlight function based on the position
-          // of the mouse cursor, the index into the chart data, the half-width of a
-          // single datum as drawn to the chart and the maximum value in the dataset.
-          function generateHighlightData(chartData, index, cursorInRightHalfOfHighlight, halfIntervalDuration, maxValue) {
-
-            var startDate;
-            var endDate;
-            var timeAtIndex;
-
-            if (cursorInRightHalfOfHighlight) {
-
-              startDate = new Date(chartData.values[index - 1].date.getTime() - halfIntervalDuration);
-              endDate = new Date(chartData.values[index].date.getTime() - halfIntervalDuration);
-
-            } else {
-
-              timeAtIndex = chartData.values[index].date.getTime();
-
-              if (index === chartData.values.length - 1) {
-
-                startDate = new Date(timeAtIndex - halfIntervalDuration);
-                endDate = new Date(timeAtIndex + halfIntervalDuration);
-
-              } else {
-
-                startDate = new Date(timeAtIndex - halfIntervalDuration);
-                endDate = new Date(chartData.values[index + 1].date.getTime() - halfIntervalDuration);
-
-              }
-
-            }
-
-            return [
-              { date: startDate, unfiltered: maxValue, filtered: maxValue },
-              { date: endDate, unfiltered: maxValue, filtered: maxValue }
-            ];
-
-          }
-
-          var offset = (offsetX / dimensions.width) - EPSILON;
-          var i;
-          var halfIntervalDuration = Math.floor((chartData.values[1].date.getTime() - chartData.values[0].date.getTime()) / 2);
-          var cursorInRightHalfOfHighlight;
+          var indexIntoChartData;
+          var selectedDatum;
+          var transformedStartDate;
+          var transformedEndDate;
           var highlightData;
           var leftOffset;
-          var highlightWidth;
-          var maxValue = chartData.maxValue;
+          var width = visualizedDatumWidth;
+          var maxValue = cachedChartData.maxValue;
 
 
-          if (d3XScale === null || d3YScale === null) {
-            return;
-          }
+          indexIntoChartData = Math.floor(((offsetX - 1) / cachedChartDimensions.width) * cachedChartData.values.length);
 
-          // Find the datum that we are currently pointing at
-          // by checking the mouse x-offset as a percentage of
-          // chart width against each datum's start offset as a
-          // percentage in the range [minValue .. maxValue].
-          // When we encounter the first datum with a higher
-          // position in that range we break, preserving its
-          // index into the dataset as the last value of i.
-          for (i = 0; i < chartData.offsets.length; i++) {
-            if (chartData.offsets[i] >= offset) {
-              break;
+          // Note that currentDatum is a global variable that is set when the user hovers over the visualization.
+          // The value of currentDatum is read by the flyout code.
+          currentDatum = cachedChartData.values[indexIntoChartData];
+
+          transformedStartDate = DateHelpers.decrementDateByInterval(currentDatum.date, datasetPrecision);
+          transformedEndDate = DateHelpers.decrementDateByInterval(moment(currentDatum.date).add(1, datasetPrecision).toDate(), datasetPrecision);
+
+          highlightData = [
+            {
+              date: transformedStartDate,
+              unfiltered: maxValue,
+              filtered: maxValue
+            },
+            {
+              date: transformedEndDate,
+              unfiltered: maxValue,
+              filtered: maxValue
             }
-          }
+          ];
 
-          cursorInRightHalfOfHighlight = (
-            Math.abs(offset - chartData.offsets[i - 1]) <
-            Math.abs(offset - chartData.offsets[i])
-          );
-
-          highlightData = generateHighlightData(
-            chartData,
-            i,
-            cursorInRightHalfOfHighlight,
-            halfIntervalDuration,
-            maxValue
-          );
-
-          // The cursor is in the right half of the area that should be highlighted, so decrement
-          // it to correctly highlight the left-hand slice, not the right-hand one.
-          if (cursorInRightHalfOfHighlight) {
-            i--;
-          }
-
-          currentDatum = chartData.values[i];
-          leftOffset = Math.floor((chartData.offsets[i] * dimensions.width) - halfVisualizedDatumWidth);
+          leftOffset = d3XScale(transformedStartDate);
 
           return {
             data: highlightData,
             left: leftOffset,
-            width: visualizedDatumWidth,
-            maxValue: chartData.maxValue
+            width: width,
+            maxValue: maxValue
           };
 
         }
@@ -287,76 +233,33 @@
          *
          */
 
-        function filterChartDataByInterval(chartData, offsetX, dimensions, startDate, endDate) {
+        function filterChartDataByInterval(startDate, endDate) {
 
+          var transformedStartDate = DateHelpers.decrementDateByInterval(startDate, datasetPrecision);
+          var transformedEndDate = DateHelpers.decrementDateByInterval(endDate, datasetPrecision);
           var highlightData;
-          var i;
-          var startOffsetIndex = 0;
-          var endOffsetIndex = 1;
-          var dateInterval = chartData.values[1].date.getTime() - chartData.values[0].date.getTime();
-          var halfDateInterval = Math.floor(dateInterval / 2);
-          var unadjustedStartDate;
-          var unadjustedEndDate;
-          var dataAggregate;
-          var unfilteredAggregate;
-          var filteredAggregate;
-          var maxValue = chartData.maxValue;
-          var width;
-          var leftOffset;
-
-
-          for (i = 0; i < chartData.values.length; i++) {
-            if (chartData.values[i].date.getTime() === startDate.getTime()) {
-              startOffsetIndex = i;
-            }
-            if (chartData.values[i].date.getTime() === endDate.getTime()) {
-              endOffsetIndex = i;
-            }
-          }
-
-          unadjustedStartDate = chartData.values[startOffsetIndex].date;
-
-          if (startOffsetIndex === chartData.values.length - 1) {
-
-            unadjustedEndDate = new Date(
-              chartData.values[startOffsetIndex].date.getTime() +
-              dateInterval
-            );
-
-          } else {
-
-            unadjustedEndDate = chartData.values[endOffsetIndex].date;
-
-          }
+          var leftOffset = d3XScale(transformedStartDate);
+          var width = d3XScale(transformedEndDate) - leftOffset;
+          var maxValue = cachedChartData.maxValue;
 
           highlightData = [
             {
-              date: unadjustedStartDate,
+              date: transformedStartDate,
               unfiltered: maxValue,
               filtered: maxValue
             },
             {
-              date: unadjustedEndDate,
+              date: transformedEndDate,
               unfiltered: maxValue,
               filtered: maxValue
             }
           ];
 
-          // This is wrapped in a Math.abs() because sometimes the endOffsetIndex is 1
-          // and the startOffsetIndex is 2 (I don't even...).
-          width = Math.abs(endOffsetIndex - startOffsetIndex) * visualizedDatumWidth;
-
-          leftOffset = Math.floor(chartData.offsets[startOffsetIndex] * dimensions.width);
-
-          /*if (startOffsetIndex === chartData.values.length - 1) {
-            leftOffset = Math.floor(dimensions.width - (width / 2));
-          }*/
-
           return {
             data: highlightData,
             left: leftOffset,
             width: width,
-            maxValue: chartData.maxValue
+            maxValue: cachedChartData.maxValue
           };
 
         }
@@ -373,7 +276,7 @@
          *
          */
 
-        function renderChartHighlight(highlightData, dimensions) {
+        function renderChartHighlight(highlightData) {
 
           var area;
           var svgChart;
@@ -387,14 +290,14 @@
           jqueryHighlightTargetElement.css({
             left: highlightData.left - Constants['TIMELINE_CHART_HIGHLIGHT_TARGET_MARGIN'],
             width: highlightData.width + (Constants['TIMELINE_CHART_HIGHLIGHT_TARGET_MARGIN'] * 2),
-            height: dimensions.height - Constants['TIMELINE_CHART_MARGIN_BOTTOM']
+            height: cachedChartDimensions.height - Constants['TIMELINE_CHART_MARGIN_BOTTOM']
           });
 
           area = d3.
             svg.
               area().
                 x(function(d) { return d3XScale(d.date); }).
-                y0(dimensions.height - Constants['TIMELINE_CHART_MARGIN_BOTTOM']).
+                y0(cachedChartDimensions.height - Constants['TIMELINE_CHART_MARGIN_BOTTOM']).
                 y1(function(d) { return d3YScale(d.unfiltered); });
 
           d3ChartElement.
@@ -405,7 +308,7 @@
           selection = d3ChartElement.
             select('svg.timeline-chart-highlight-container').
               attr('width', highlightData.width).
-              attr('height', dimensions.height - Constants['TIMELINE_CHART_MARGIN_BOTTOM']).
+              attr('height', cachedChartDimensions.height - Constants['TIMELINE_CHART_MARGIN_BOTTOM']).
               append('g');
 
           selection.
@@ -658,108 +561,73 @@
           }
 
 
-          function deriveXAxisLabelDatumStep(labelData) {
+          function deriveXAxisLabelDatumStep(labels) {
 
-            var widthOfEachLabel = cachedChartDimensions.width / labelData.length;
+            var widthOfEachLabel = cachedChartDimensions.width / labels.length;
+            var labelEveryN;
 
             if (widthOfEachLabel >= 50) {
-              allChartLabelsShown = true;
-              return 1;
+              labelEveryN = 1;
             } else if ((widthOfEachLabel * 2) >= 50) {
-              allChartLabelsShown = false;
-              return 2;
+              labelEveryN = 2;
             } else if ((widthOfEachLabel * 3) >= 50) {
-              allChartLabelsShown = false;
-              return 3;
+              labelEveryN = 3;
             } else if ((widthOfEachLabel * 5) >= 50) {
-              allChartLabelsShown = false;
-              return 5;
+              labelEveryN = 5;
             } else {
-              allChartLabelsShown = false;
-              return 7;
+              labelEveryN = 7;
             }
+
+            return labelEveryN;
 
           }
 
 
-          var tickDates;
+          function recordLabel(labels, startDate, endDate, pixelsPerDay, shouldLabel) {
+            labels.push({
+              startDate: startDate,
+              endDate: endDate,
+              left: d3XScale(startDate) - halfVisualizedDatumWidth,
+              width: moment.duration(moment(endDate) - moment(startDate)).asDays() * pixelsPerDay,
+              shouldLabel: shouldLabel
+            });
+          }
+
+
           var tickInterval;
-          var labelData = [];
-          var i;
-          var j;
+          var pixelsPerDay;
           var jqueryAxisContainer;
-          var labelDatumStep;
-          var cumulativeLabelOffsets;
-          var halfTickWidth = 2; // Half the width of the visualized x-axis tick (in pixels)
-          var shouldDrawLabel;
+          var tickLocations = [];
+          var labels = [];
+          var i;
+          var thisDate;
+          var shouldLabel;
+          var intervalStartDate = cachedChartData.values[0].date;
+          var intervalEndDate = null;
+          var shouldLabelEveryN;
+          var halfTickWidth = 2; // This is half the width of each tick as defined in the accompanying CSS
           var jqueryAxisTick;
-          var labelStartDate;
-          var labelEndDate;
-          var labelIntervalStartDate;
-          var labelIntervalEndDate;
-          var labelWidth;
-          var labelOffset;
-          var jqueryAxisTickLabel;
           var dataAggregate;
           var unfilteredAggregate;
           var filteredAggregate;
+          var labelText;
+          var jqueryAxisTickLabel;
 
 
+          // Note that labelPrecision is actually global to the directive, but it is set within the context
+          // of rendering the x-axis since it seems as reasonable to do so here as anywhere else.
           labelPrecision = deriveXAxislabelPrecision();
 
-          // THIS MAY NEED UPDATES BECAUSE OF THINGS LIKE LEAP-YEARS
 
-          // Since moment doesn't natively support decades as a unit, we
-          // pass it a unit of 'year' and a value of 10 instead.
           if (labelPrecision === 'DECADE') {
-
-            // Ticks at the decade scale seem to get a little messed up by d3, so we
-            // need to book-end them with the min and max dates from the underlying
-            // chart data in order for labels to work consistently across all intervals.
-            tickDates = [chartData.values[0].date].
-                          concat(d3XScale.ticks(d3.time.year, 10)).
-                          concat([chartData.values[chartData.values.length - 1].date]);
-            tickInterval = moment.duration(10, 'year').asMilliseconds(); // MAYBE DONT DECOMPOSE TO MS HERE
-
-          // ...otherwise just use a unit that moment recognizes.
+            tickInterval = moment.duration(10, 'year').asDays();
           } else {
-
-            // Ticks at other scales, meanwhile, work 'correctly' if we only book-end them
-            // with the max date from the underlying dataset. This is, at the moment, pretty
-            // cargo-cultish but my priorities lie elsewhere.
-            tickDates = d3XScale.ticks(d3.time[labelPrecision.toLowerCase()], 1).
-                          concat([chartData.values[chartData.values.length - 1].date]);
-            tickInterval = moment.duration(1, labelPrecision).asMilliseconds();
-
+            tickInterval = moment.duration(1, labelPrecision).asDays();
           }
 
-          // For each tickDate, find the first datum in chartData that's that date.
-          // Since tickDate and chartData are both ordered, keep a pointer into chartData, and
-          // pick up where we left off, when searching for the next tickDate.
-          i = 0;
-          for (j = 0; j < tickDates.length; j++) {
-            for (i; i < chartData.values.length; i++) {
-              if (moment(chartData.values[i].date).isSame(tickDates[j], labelPrecision)) {
-                labelData.push({
-                  datum: chartData.values[i],
-                  offset: Math.floor(d3XScale(chartData.values[i].date))
-                });
-                break;
-              }
-            }
-          }
-
-
-
-
-
-          // Add the first tick as a special case since
-          // it will always fall at 0 - halfTickWidth.
-          jqueryAxisTick = $('<rect>').
-            addClass('x-tick').
-            css({
-              left: 0 - halfTickWidth
-            });
+          pixelsPerDay = cachedChartDimensions.width /
+            moment.duration(moment(cachedChartData.maxDate) -
+            moment(cachedChartData.minDate)).asDays();
 
           // Set up the container for the x-axis ticks.
           jqueryAxisContainer = $('<div>').
@@ -767,120 +635,151 @@
             css({
               width: chartWidth,
               height: Constants['TIMELINE_CHART_MARGIN_BOTTOM']
-            }).append(jqueryAxisTick);
+            });
 
+          for (i = 1; i < cachedChartData.values.length; i++) {
 
+            thisDate = cachedChartData.values[i].date;
 
-
-
-          labelDatumStep = deriveXAxisLabelDatumStep(labelData);
-
-          cumulativeLabelOffsets = 0;
-          displayedLabelDates = [];
-
-          for (i = 1; i < labelData.length; i++) {
-
-            // Do not append a tick for the last item,
-            // but keep it in the iteration so that we
-            // can label the gap between the last tick
-            // and the edge of the chart as necessary.
-            if (i > 0 && i < labelData.length - 1) {
-
-              jqueryAxisTick = $('<rect>').
-                addClass('x-tick').
-                css({
-                  left: Math.floor(labelData[i].offset - halfTickWidth)
-                });
-
-              jqueryAxisContainer.append(jqueryAxisTick);
-
+            switch (labelPrecision) {
+              case 'DECADE':
+                if (thisDate.getFullYear() % 10 === 0) {
+                  tickLocations.push(i);
+                  recordLabel(labels, intervalStartDate, thisDate, pixelsPerDay, true);
+                  intervalStartDate = thisDate;
+                }
+                break;
+              case 'YEAR':
+                if (thisDate.getMonth() === 0) {
+                  tickLocations.push(i);
+                  recordLabel(labels, intervalStartDate, thisDate, pixelsPerDay, true);
+                  intervalStartDate = thisDate;
+                }
+                break;
+              case 'MONTH':
+                if (thisDate.getDate() === 1) {
+                  tickLocations.push(i);
+                  recordLabel(labels, intervalStartDate, thisDate, pixelsPerDay, true);
+                  intervalStartDate = thisDate;
+                }
+                break;
+              case 'DAY':
+                tickLocations.push(i);
+                recordLabel(labels, intervalStartDate, thisDate, pixelsPerDay, true);
+                intervalStartDate = thisDate;
+                break;
             }
 
-            shouldDrawLabel = labelDatumStep === 1 || i % labelDatumStep === 0;
+          }
 
-            if (shouldDrawLabel) {
+          intervalEndDate = moment(cachedChartData.maxDate).add(1, datasetPrecision).toDate();
 
-              labelStartDate = labelData[i - 1].datum.date;
-              labelEndDate = labelData[i].datum.date;
+          // If the last date is not a tick, we still need a label to extend
+          // from the last tick to the end of the visualization.
+          if (labels[labels.length - 1].endDate !== intervalEndDate) {
 
-              if (labelStartDate.getTime() === labelEndDate.getTime()) {
-                labelEndDate = new Date(labelEndDate.getTime() + tickInterval);
-              }
+            labels.push({
+              startDate: intervalStartDate,
+              endDate: intervalEndDate,
+              width: cachedChartDimensions.width - d3XScale(intervalStartDate) + (2 * halfTickWidth) + halfVisualizedDatumWidth,
+              left: d3XScale(intervalStartDate) - halfVisualizedDatumWidth,
+              shouldLabel: false
+            });
 
-              // The label's width should be the span between the previous
-              // and the current 'offset' into the width of the chart.
-              labelWidth = (labelData[i].offset - labelData[i - 1].offset);
+          }
 
-              // Handle special case for x-axes where some labels are hidden
-              if (labelDatumStep > 1) {
+          // Now that we know how many *labels* we can potentailly draw, we decide whether or not
+          // we can draw all of them or just some.
+          shouldLabelEveryN = deriveXAxisLabelDatumStep(labels);
 
-                labelWidth *= labelDatumStep;
-                labelStartDate = moment(labelStartDate).subtract(Math.floor(labelDatumStep / 2), datasetPrecision).toDate();
 
-                displayedLabelDates.push(labelStartDate.toISOString());
+          // Not ethat allChartLabelsShown is also actually global to the directive and is also set within
+          // the context of rendering the x-axis since it seems as reasonable to do so as anywhere else.
+          allChartLabelsShown = shouldLabelEveryN === 1;
 
-                labelIntervalStartDate = labelStartDate;
-                labelIntervalEndDate = moment(labelStartDate).add(1, labelPrecision).toDate();
 
-              } else {
+          // Finally, we filter the the group of all labels so that we only label every Nth one.
+          labels = labels.filter(function(label, i) {
+            return (i % shouldLabelEveryN) === 0;
+          });
 
-                labelIntervalStartDate = labelStartDate;
-                labelIntervalEndDate = labelEndDate;
+          if (!allChartLabelsShown) {
 
-              }
+            var halfExtendedLabelWidth = (visualizedDatumWidth * Math.floor(shouldLabelEveryN / 2));
 
-              if (i === labelData.length - 1) {
-                // In the case of the final label, just consume all remaining
-                // space instead. This is so the last label fits snugly in the
-                // variable amount of space available to it.
-                labelWidth = chartWidth - cumulativeLabelOffsets;
-              }
+            // Revisit each label and increase its width to accommodate the space that would have
+            // been consumed by the missing labels.
+            // The first one is a special case since it will only be enlarged by half the amount
+            // that the others are, since it already sits at the left edge of the labels.
+            // The last will be a special case also, but it's easier to just adjust it after the
+            // map operation.
+            labels.map(function(label, i) {
+              //if (i === 0) {
+              //  label.width += halfExtendedLabelWidth;
+              //} else {
+                label.left -= halfExtendedLabelWidth;
+                label.width += (2 * halfExtendedLabelWidth);
+              //}
+            });
 
-              if ((cachedChartDimensions.width - cumulativeLabelOffsets) >= 50) {
+          }
 
-                labelOffset = cumulativeLabelOffsets;
+          // Now we go through and draw ticks.
+          for (i = 0; i < tickLocations.length; i++) {
 
-                // Calculate the data aggregates for this interval so we can
-                // stash them as data-attributes and not need to recalculate
-                // them whenever the mouse moves over this label.
-                dataAggregate = chartData.values.
-                  filter(function(datum) {
-                    return datum.date.getTime() >= labelStartDate.getTime() &&
-                           datum.date.getTime() < labelEndDate.getTime();
-                  });
+            jqueryAxisTick = $('<rect>').
+              addClass('x-tick').
+              css({
+                left: d3XScale(cachedChartData.values[tickLocations[i]].date) -
+                      halfVisualizedDatumWidth -
+                      halfTickWidth
+              });
 
-                unfilteredAggregate = dataAggregate.
-                  reduce(function(acc, datum) {
-                    return acc + datum.unfiltered;
-                  }, 0);
+            jqueryAxisContainer.append(jqueryAxisTick);
 
-                filteredAggregate = dataAggregate.
-                  reduce(function(acc, datum) {
-                    return acc + datum.filtered;
-                  }, 0);
+          }
 
-                // Finally, add the label to the x-axis container.
-                jqueryAxisTickLabel = $('<span>').
-                  addClass('x-tick-label').
-                  attr('data-start', labelIntervalStartDate).
-                  attr('data-median', labelStartDate).
-                  attr('data-end', labelIntervalEndDate).
-                  attr('data-aggregate-unfiltered', unfilteredAggregate).
-                  attr('data-aggregate-filtered', filteredAggregate).
-                  attr('data-flyout-label', formatDateLabel(labelStartDate, true)).
-                  text(formatDateLabel(labelStartDate, false)).
-                  css({
-                    width: Math.floor(labelWidth),
-                    left: Math.floor(labelOffset)
-                  });
+          // Now we to through and draw labels.
+          for (i = 0; i < labels.length; i++) {
 
-                jqueryAxisContainer.append(jqueryAxisTickLabel);
+            // Calculate the data aggregates for this interval so we can
+            // stash them as data-attributes and not need to recalculate
+            // them whenever the mouse moves over this label.
+            dataAggregate = cachedChartData.values.
+              filter(function(datum) {
+                return datum.date.getTime() >= labels[i].startDate.getTime() &&
+                       datum.date.getTime() < labels[i].endDate.getTime();
+              });
 
-              }
+            unfilteredAggregate = dataAggregate.
+              reduce(function(acc, datum) {
+                return acc + datum.unfiltered;
+              }, 0);
 
-              cumulativeLabelOffsets += labelWidth;
+            filteredAggregate = dataAggregate.
+              reduce(function(acc, datum) {
+                return acc + datum.filtered;
+              }, 0);
 
-            }
+            labelText = labels[i].shouldLabel ? formatDateLabel(labels[i].startDate, false, labelPrecision) : '';
+
+            // Finally, add the label to the x-axis container.
+            jqueryAxisTickLabel = $('<span>').
+              addClass('x-tick-label').
+              attr('data-start', labels[i].startDate).
+              attr('data-median', labels[i].startDate).
+              attr('data-end', labels[i].endDate).
+              attr('data-aggregate-unfiltered', unfilteredAggregate).
+              attr('data-aggregate-filtered', filteredAggregate).
+              attr('data-flyout-label', formatDateLabel(labels[i].startDate, true)).
+              text(labelText).
+              css({
+                left: labels[i].left,
+                width: labels[i].width - halfTickWidth
+              });
+
+            jqueryAxisContainer.append(jqueryAxisTickLabel);
+
 
           }
 
@@ -1831,29 +1730,11 @@
         }
 
 
-        function isStartDateInDisplayedLabelDates(startDate) {
-          return displayedLabelDates.indexOf(startDate.toISOString()) >= 0;
-        }
-
-
-        function shouldDimChartLabels(startDate) {
-          return !(allChartLabelsShown || isStartDateInDisplayedLabelDates(startDate));
-        }
-
-
-        function shouldBoldChartLabel(startDate) {
-          return isStartDateInDisplayedLabelDates(startDate);
-        }
-
-
-        function highlightChart(offsetX, startDate, endDate) {
+        function highlightChart(startDate, endDate) {
 
           var highlightData;
 
           highlightData = filterChartDataByInterval(
-            cachedChartData,
-            offsetX,
-            cachedChartDimensions,
             startDate,
             endDate
           );
@@ -1861,8 +1742,7 @@
           setCurrentDatumByDate(startDate);
 
           renderChartHighlight(
-            highlightData,
-            cachedChartDimensions
+            highlightData
           );
 
         }
@@ -1876,11 +1756,10 @@
 
           if (mousePositionWithinChartDisplay || mousePositionWithinChartLabels) {
 
-            highlightData = filterChartDataByOffset(cachedChartData, offsetX, cachedChartDimensions);
+            highlightData = filterChartDataByOffset(offsetX);
 
             renderChartHighlight(
-              highlightData,
-              cachedChartDimensions
+              highlightData
             );
 
             hideDatumLabel();
@@ -1891,63 +1770,45 @@
 
         function highlightChartWithHiddenLabelsByMouseOffset(offsetX, target) {
 
+          var indexIntoChartData;
+          var halfLabelWidth = 50;
           var startDate;
           var endDate;
-          var value;
-          var halfLabelWidth = 50;
-          var labels;
 
-          startDate = getDateFromMousePosition(offsetX);
-          endDate = moment(startDate).add(1, datasetPrecision).toDate();
 
-          if (shouldDimChartLabels(startDate)) {
+          indexIntoChartData = Math.floor(((offsetX - 1) / cachedChartDimensions.width) * cachedChartData.values.length)
 
-            value = getDatumByDate(startDate);
+          // Note that currentDatum is a global variable that is set when the user hovers over the visualization.
+          // The value of currentDatum is read by the flyout code.
+          currentDatum = cachedChartData.values[indexIntoChartData];
 
-              if (_.isDefined(value)) {
-              // dim all the existing labels
-              // set the value of the datum label to the startDate
-              // show the datum label
-              jqueryDatumLabel.
-                text(formatDateLabel(startDate, false)).
-                attr('data-start', startDate).
-                attr('data-end', endDate).
-                attr('data-aggregate-unfiltered', value.unfiltered).
-                attr('data-aggregate-filtered', value.filtered).
-                attr('data-flyout-label', formatDateLabel(startDate, true)).
-                css({
-                  left: Math.floor(d3XScale(startDate)) - halfLabelWidth + halfVisualizedDatumWidth
-                }).show();
-              jqueryChartElement.addClass('dimmed');
+          startDate = currentDatum.date;
+          endDate = moment(currentDatum.date).add(1, datasetPrecision).toDate();
 
-            }
+          if (!allChartLabelsShown) {
 
-            $('.x-tick-label').removeClass('emphasis');
-
-          } else if (shouldBoldChartLabel(startDate)) {
-
-            var i;
-
-            labels = jqueryChartElement.find('.x-tick-label');
-
-            for (i = 0; i < labels.length; i++) {
-              if (startDate.toString() === labels[i].getAttribute('data-median')) {
-                $(labels[i]).addClass('emphasis');
-              }
-
-            }
-
-            hideDatumLabel();
+            // 1. Dim all the existing labels
+            // 2. Set the value of the datum label to the startDate
+            // 3. Show the datum label
+            jqueryChartElement.addClass('dimmed');
+            jqueryDatumLabel.
+              text(formatDateLabel(startDate, false)).
+              attr('data-start', startDate).
+              attr('data-end', endDate).
+              attr('data-aggregate-unfiltered', currentDatum.unfiltered).
+              attr('data-aggregate-filtered', currentDatum.filtered).
+              attr('data-flyout-label', formatDateLabel(startDate, true)).
+              css({
+                left: Math.floor(d3XScale(startDate)) - halfLabelWidth
+              }).show();
 
           } else {
 
             hideDatumLabel();
 
-            $('.x-tick-label').removeClass('emphasis');
-
           }
 
-          highlightChart(offsetX, startDate, endDate);
+          highlightChart(startDate, endDate);
 
           // This is left here as a reminder that we need to come up with some way to
           // trigger flyouts on something other than the explicit mousemove event target.
@@ -1955,7 +1816,7 @@
 
         }
 
-        function highlightChartByInterval(offsetX, target) {
+        function highlightChartByInterval(target) {
 
           var startDate;
           var endDate;
@@ -1972,7 +1833,7 @@
             label: target.getAttribute('data-flyout-label')
           };
 
-          highlightChart(offsetX, startDate, endDate);
+          highlightChart(startDate, endDate);
 
           // This is left here as a reminder that we need to come up with some way to
           // trigger flyouts on something other than the explicit mousemove event target.
@@ -2029,11 +1890,9 @@
         });
 
         FlyoutService.register('timeline-chart-highlight-target', renderFlyout);
-
         FlyoutService.register('x-tick-label', renderIntervalFlyout);
-
         FlyoutService.register('selection-marker', renderSelectionMarkerFlyout);
-
+        FlyoutService.deregister('datum-label', renderFlyout);
         FlyoutService.register('timeline-chart-clear-selection-button', renderClearSelectionMarkerFlyout);
 
         jqueryClearSelectionLabel.on('mousedown',
@@ -2151,7 +2010,7 @@
 
                   } else {
 
-                    highlightChartByInterval(offsetX, mousePosition.target);
+                    highlightChartByInterval(mousePosition.target);
 
                   }
 

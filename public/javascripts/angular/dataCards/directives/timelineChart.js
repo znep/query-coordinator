@@ -1626,8 +1626,21 @@
 
         function handleChartSelectionEvents(mouseStatus) {
 
+          function selectionIsExactlyOneDatasetPrecisionUnit(startDate, endDate) {
+            return true;
+          }
+
+          function selectionIsExactlyTheSameAsHasBeenRendered(startDate, endDate) {
+
+            return renderedSelectionStartDate !== null &&
+                   renderedSelectionEndDate !== null &&
+                   startDate.getTime() === renderedSelectionStartDate.getTime() &&
+                   endDate.getTime() === renderedSelectionEndDate.getTime();
+          }
+
           var offsetX;
           var candidateStartDate;
+
 
           // Fail early if the chart hasn't rendered itself at all yet.
           if (cachedChartDimensions === null || cachedChartOffsets === null) {
@@ -1678,6 +1691,15 @@
 
                     selectionStartDate = getDateFromMousePosition(offsetX);
                     selectionEndDate = getDateFromMousePosition(offsetX + visualizedDatumWidth);
+
+                    // If the user has selected exactly one <datasetPrecision> unit and is clicking on
+                    // that selection again, we deselect it.
+                    if (selectionIsExactlyOneDatasetPrecisionUnit(selectionStartDate, selectionEndDate) &&
+                        selectionIsExactlyTheSameAsHasBeenRendered(selectionStartDate, selectionEndDate)) {
+                      enterDefaultState();
+                      clearChartFilter();
+                      return;
+                    }
 
                   } else {
 

@@ -139,8 +139,9 @@
           FlyoutService.deregister('timeline-chart-highlight-target', renderFlyout);
           FlyoutService.deregister('x-tick-label', renderIntervalFlyout);
           FlyoutService.deregister('selection-marker', renderSelectionMarkerFlyout);
-          FlyoutService.deregister('datum-label', renderFlyout);
+          //FlyoutService.deregister('datum-label', renderFlyout);
           FlyoutService.deregister('timeline-chart-clear-selection-label', renderClearSelectionMarkerFlyout);
+          FlyoutService.deregister('timeline-chart-clear-selection-button', renderClearSelectionMarkerFlyout);
         });
 
 
@@ -1254,7 +1255,7 @@
          */
 
         function renderClearSelectionMarkerFlyout(target) {
-          if (mousePositionWithinChartDisplay) {
+          if (mousePositionWithinChartLabels) {
             return '<div class="flyout-title">Clear filter range</div>';
           }
         }
@@ -1295,6 +1296,7 @@
           var formattedStartDate;
           var formattedEndDate;
           var label;
+
 
           switch (labelPrecision) {
 
@@ -1939,7 +1941,8 @@
         FlyoutService.register('timeline-chart-highlight-target', renderFlyout);
         FlyoutService.register('x-tick-label', renderIntervalFlyout);
         FlyoutService.register('selection-marker', renderSelectionMarkerFlyout);
-        FlyoutService.deregister('datum-label', renderFlyout);
+        //FlyoutService.register('datum-label', renderFlyout);
+        FlyoutService.register('timeline-chart-clear-selection-label', renderClearSelectionMarkerFlyout);
         FlyoutService.register('timeline-chart-clear-selection-button', renderClearSelectionMarkerFlyout);
 
         jqueryClearSelectionLabel.on('mousedown',

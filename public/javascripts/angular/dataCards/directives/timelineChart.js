@@ -1276,36 +1276,83 @@
             return months <= 0 ? 0 : months;
           }
 
+          function calculateIfExactlyOneMonthDifferent(date1, date2) {
+            var exactlyOneMonthDifferent = true;
+            if (date2.getFullYear() !== date1.getFullYear()) {
+              exactlyOneMonthDifferent = false;
+            }
+            if (date2.getMonth() - 1 !== date1.getMonth()) {
+              exactlyOneMonthDifferent = false;
+            }
+            if (date2.getDate() !== date1.getDate()) {
+              exactlyOneMonthDifferent = false;
+            }
+            return exactlyOneMonthDifferent;
+          }
+
+          var adjustedEndDate = DateHelpers.decrementDateByInterval(endDate, datasetPrecision);
+          var difference;
+          var formattedStartDate;
+          var formattedEndDate;
           var label;
 
           switch (labelPrecision) {
+
             case 'DECADE':
-              if (endDate.getFullYear() - startDate.getFullYear() <= 10) {
-                label = '{0} - {1}'.format(formatDateLabel(startDate, false, 'YEAR'), formatDateLabel(endDate, false, 'YEAR'));
+              difference = endDate.getFullYear() - startDate.getFullYear();
+              if (difference < 10) {
+                formattedStartDate = formatDateLabel(startDate, false, 'YEAR');
+                formattedEndDate = formatDateLabel(adjustedEndDate, false, 'YEAR');
+              } else if (difference === 10) {
+                formattedStartDate = formattedEndDate = formatDateLabel(startDate, false);
               } else {
-                label = '{0} - {1}'.format(formatDateLabel(startDate, false), formatDateLabel(endDate, false));
+                formattedStartDate = formatDateLabel(startDate, false);
+                formattedEndDate = formatDateLabel(endDate, false);
               }
               break;
+
             case 'YEAR':
-              if (monthsDifference(startDate, endDate) < 11) {
-                label = '{0} - {1}'.format(formatDateLabel(startDate, false, 'MONTH'), formatDateLabel(endDate, false, 'MONTH'));
+              difference = monthsDifference(startDate, endDate);
+              if (difference < 11) {
+                formattedStartDate = formatDateLabel(startDate, false, 'MONTH');
+                formattedEndDate = formatDateLabel(adjustedEndDate, false, 'MONTH');
+              } else if (difference === 11) {
+                formattedStartDate = formattedEndDate = formatDateLabel(startDate, false);
               } else {
-                label = '{0} - {1}'.format(formatDateLabel(startDate, false), formatDateLabel(endDate, false));
+                formattedStartDate = formatDateLabel(startDate, false);
+                formattedEndDate = formatDateLabel(endDate, false);
               }
               break;
+
             case 'MONTH':
-              if (startDate.getMonth() === endDate.getMonth()) {
-                label = '{0} - {1}'.format(formatDateLabel(startDate, false, 'DAY'), formatDateLabel(endDate, false, 'DAY'));
+              difference = calculateIfExactlyOneMonthDifferent(startDate, endDate);
+              if (difference === true) {
+                formattedStartDate = formattedEndDate = formatDateLabel(startDate, false);
               } else {
-                label = '{0} - {1}'.format(formatDateLabel(startDate, false), formatDateLabel(endDate, false));
+                formattedStartDate = formatDateLabel(startDate, false, 'DAY');
+                formattedEndDate = formatDateLabel(adjustedEndDate, false, 'DAY');
               }
               break;
+
             case 'DAY':
-              if (startDate.getTime() !== endDate.getTime()) {
-                label = '{0} - {1}'.format(formatDateLabel(startDate, false), formatDateLabel(endDate, false));
+              difference = moment.duration(moment(endDate) - moment(startDate)).asDays();
+              if (difference <= 1) {
+                formattedStartDate = formattedEndDate = formatDateLabel(startDate, false);
               } else {
-                label = formatDateLabel(startDate, false);
+                formattedStartDate = formatDateLabel(startDate, false);
+                formattedEndDate = formatDateLabel(adjustedEndDate, false);
               }
+              break;
+
+            default:
+              break;
+
+          }
+
+          if (formattedStartDate === formattedEndDate) {
+            label = formattedStartDate;
+          } else {
+            label = '{0} - {1}'.format(formattedStartDate, formattedEndDate);
           }
 
           return '{0} <span class="timeline-chart-clear-selection-button">×</span>'.format(label);

@@ -1,4 +1,4 @@
-describe.only('timelineChart', function() {
+describe('timelineChart', function() {
 
   // NOTE: Selection rendering is slightly wonky in Safari 6.
   // Fixing this is not of high enough priority, so we disable
@@ -58,16 +58,6 @@ describe.only('timelineChart', function() {
   afterEach(function() {
     removeTimelineChart();
   });
-
-  // NOTE: TEMPORARY TEST DEBUGGING
-  // For some reason, flyouts keep appearing in inconsistent numbers.
-  // Log out the contents for debugging help.
-  /*function printAllFlyoutContent() {
-    $('.flyout').each(function(i, flyout) {
-      console.log('Unexpected flyout found, possible test bug:', $(flyout).html());
-    });
-    $('.flyout').remove();
-  }*/
 
   function unpickleTestData(testData, shouldFilter) {
 
@@ -235,7 +225,9 @@ describe.only('timelineChart', function() {
         var labels = chart.find('.x-tick-label');
         expect(labels.length).to.be.greaterThan(0);
         labels.each(function() {
-          expect(this.innerHTML).to.match(/\b20[0-9]0s\b/);
+          if (this.innerHTML !== '') {
+            expect(this.innerHTML).to.match(/\b20[0-9]0s\b/);
+          }
         });
       });
 
@@ -254,7 +246,9 @@ describe.only('timelineChart', function() {
         var labels = chart.find('.x-tick-label');
         expect(labels.length).to.be.greaterThan(0);
         labels.each(function() {
-          expect(this.innerHTML).to.match(/\b20[01][0-9]\b/);
+          if (this.innerHTML !== '') {
+            expect(this.innerHTML).to.match(/\b20[01][0-9]\b/);
+          }
         });
       });
 
@@ -273,7 +267,30 @@ describe.only('timelineChart', function() {
         var labels = chart.find('.x-tick-label');
         expect(labels.length).to.be.greaterThan(0);
         labels.each(function() {
-          expect(this.innerHTML).to.match(/\b[A-Z][a-z][a-z] ['’]1[45]\b/);
+          if (this.innerHTML !== '') {
+            expect(this.innerHTML).to.match(/\b[A-Z][a-z][a-z] ['’]1[45]\b/);
+          }
+        });
+      });
+
+      it('should not render an extra 1 before abbreviated years in the teens when formatted by month.', function() {
+        var chart = createTimelineChart(640, false, transformChartData(
+          _.map(_.range(80), function(i) {
+            return {
+              date: moment(new Date(2009, 11, i)),
+              total: i,
+              filtered: 0
+            }
+          }),
+          {"aggregation":"count","field":null}
+        ));
+
+        var labels = chart.find('.x-tick-label');
+        expect(labels.length).to.be.greaterThan(0);
+        labels.each(function() {
+          if (this.innerHTML !== '') {
+            expect(this.innerHTML).to.match(/\b[A-Z][a-z][a-z] ['’][01][019]\b/);
+          }
         });
       });
 

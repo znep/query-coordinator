@@ -269,8 +269,11 @@ describe("CardDataService", function() {
     });
 
     it('should pass through the where clause fragment', function() {
+      // NOTE: This test is CASE SENSITIVE. It previously broke when changing the where
+      // clause generation code to use ' AND ' to join where clause fragments instead of
+      // ' and '. If this test is broken, look there first.
       $httpBackend.expectGET(toUriRegex('/api/id/{1}.json?$query=SELECT date_trunc_ymd(fakeNumberColumn) AS date_trunc, count(*) AS value WHERE date_trunc IS NOT NULL GROUP BY date_trunc'.format('fakeNumberColumn', fake4x4)));
-      $httpBackend.expectGET(toUriRegex('/api/id/{1}.json?$query=SELECT date_trunc_ymd(fakeNumberColumn) AS date_trunc, count(*) AS value WHERE date_trunc IS NOT NULL and MAGICAL_WHERE_CLAUSE GROUP BY date_trunc'.format('fakeNumberColumn', fake4x4)));
+      $httpBackend.expectGET(toUriRegex('/api/id/{1}.json?$query=SELECT date_trunc_ymd(fakeNumberColumn) AS date_trunc, count(*) AS value WHERE date_trunc IS NOT NULL AND MAGICAL_WHERE_CLAUSE GROUP BY date_trunc'.format('fakeNumberColumn', fake4x4)));
       CardDataService.getTimelineData('fakeNumberColumn', fake4x4, '', 'DAY');
       CardDataService.getTimelineData('fakeNumberColumn', fake4x4, 'MAGICAL_WHERE_CLAUSE', 'DAY');
       $httpBackend.flush();

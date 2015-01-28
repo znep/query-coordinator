@@ -338,8 +338,8 @@
           var minLabelWidth;
           var labelNegativeXOffset;
           var dateRangeLabel;
-          var selectionButtonLeftOffset;
-          var selectionButtonRightPosition;
+          var labelLeftOffset;
+          var labelRightPosition;
           var selectionDelta;
           var margin;
           var chartWidth;
@@ -350,6 +350,7 @@
           var area;
           var svgChart;
           var selection;
+          var labelTextAlign;
 
 
           if (d3XScale === null || d3YScale === null) {
@@ -391,6 +392,19 @@
                 return datum.date >= minDate && datum.date <= maxDate;
               })
             );
+
+            // Because of the way the data is displayed, it is valid for a selection to begin on the last datum
+            // and end on the last datum + 1 <datasetPrecision> unit. Therefore we need to check to see our
+            // selection's end date is after the last date in the actual values and append a surrogate value
+            // to the filtered array with an appropriate date to show as the end of the x scale along with
+            // unfiltered and filtered values of 0 to prevent changing aggregate values.
+            if (cachedChartData.values[cachedChartData.values.length - 1].date.getTime() < maxDate.getTime()) {
+              values[0].push({
+                date: DateHelpers.decrementDateByInterval(maxDate, datasetPrecision),
+                unfiltered: 0,
+                filtered: 0
+              });
+            }
 
             // Reset minDate and maxDate to accurately reflect the 'half-way' interpolated
             // values created by transformValuesForRendering.
@@ -457,24 +471,42 @@
 
             // Bounds-check the position of the label and keep it from
             // overflowing the card bounds
-            selectionButtonLeftOffset = selectionStartPosition - labelNegativeXOffset;
-            if (selectionButtonLeftOffset < -(Constants['TIMELINE_CHART_GUTTER'])) {
-              selectionButtonLeftOffset = -(Constants['TIMELINE_CHART_GUTTER']);
+            labelLeftOffset = selectionStartPosition - labelNegativeXOffset;
+
+            if (labelLeftOffset < -(Constants['TIMELINE_CHART_GUTTER'])) {
+              labelLeftOffset = -(Constants['TIMELINE_CHART_GUTTER']);
             }
 
-            selectionButtonRightPosition = selectionButtonLeftOffset + labelWidth;
-            if (selectionButtonRightPosition > cachedChartDimensions.width) {
-              selectionDelta = selectionButtonRightPosition - cachedChartDimensions.width;
-              selectionButtonLeftOffset = selectionButtonLeftOffset -
+            labelRightPosition = labelLeftOffset + labelWidth;
+            if (labelRightPosition > cachedChartDimensions.width) {
+              selectionDelta = labelRightPosition - cachedChartDimensions.width;
+              labelLeftOffset = labelLeftOffset -
                 selectionDelta + Constants['TIMELINE_CHART_GUTTER'];
+            }
+
+            labelTextAlign = 'center';
+
+            if (labelLeftOffset < 0) {
+
+              labelTextAlign = 'left';
+              labelWidth += labelLeftOffset;
+              labelLeftOffset = 0;
+
+            } else if ((labelLeftOffset + labelWidth) > cachedChartDimensions.width) {
+
+              labelWidth += (cachedChartDimensions.width - (labelLeftOffset + labelWidth));
+              labelLeftOffset = cachedChartDimensions.width - labelWidth;
+              labelTextAlign = 'right';
+
             }
 
             jqueryClearSelectionLabel.
               html(dateRangeLabel).
               css({
-                left: selectionButtonLeftOffset,
+                left: labelLeftOffset,
                 width: labelWidth,
                 height: Constants['TIMELINE_CHART_MARGIN_BOTTOM'],
+                textAlign: labelTextAlign,
                 top: cachedChartDimensions.height -
                   Constants['TIMELINE_CHART_MARGIN_TOP'] -
                   Constants['TIMELINE_CHART_MARGIN_BOTTOM']
@@ -1338,26 +1370,29 @@
 
         function formatDateLabel(labelDate, forFlyout, overriddenLabelPrecision) {
 
+          function addLeadingZeroIfLessThanTen(number) {
+            return ((number < 10) ? '0' : '') + number;
+          }
+
           var FULL_MONTH_NAMES = [
             'January', 'February', 'March',
             'April', 'May', 'June',
             'July', 'August', 'September',
             'October', 'November', 'December'
           ];
-
           var SHORT_MONTH_NAMES = [
             'Jan', 'Feb', 'Mar',
             'Apr', 'May', 'Jun',
             'Jul', 'Aug', 'Sep',
             'Oct', 'Nov', 'Dec'
           ];
-
           var labelPrecisionToUse = overriddenLabelPrecision || labelPrecision;
+
 
           switch (labelPrecisionToUse) {
 
             case 'DECADE':
-              return String(labelDate.getFullYear()).substring(0, 3) + '0s';
+              return Math.floor(labelDate.getFullYear() / 10) + '0s';
 
             case 'YEAR':
               return labelDate.getFullYear();
@@ -1367,7 +1402,7 @@
                 return FULL_MONTH_NAMES[labelDate.getMonth()] + ' ' + labelDate.getFullYear();
               } else {
                 return SHORT_MONTH_NAMES[labelDate.getMonth()] +
-                  ' ’' + (labelDate.getFullYear() % 100);
+                  ' ’' + (addLeadingZeroIfLessThanTen(labelDate.getFullYear() % 100));
               }
 
             case 'DAY':
@@ -1580,7 +1615,7 @@
 
             } else {
 
-              candidateSelectionEndDate = getDateFromMousePosition(offsetX + halfVisualizedDatumWidth);
+              candidateSelectionEndDate = getDateFromMousePosition(offsetX + visualizedDatumWidth);
 
             }
 
@@ -1603,12 +1638,25 @@
             }
 
             if (candidateSelectionEndDate > cachedChartData.maxDate) {
-              candidateSelectionEndDate = cachedChartData.maxDate;
+              candidateSelectionEndDate = moment(cachedChartData.maxDate).add(1, datasetPrecision).toDate();
             }
 
             setCurrentDatumByDate(candidateSelectionEndDate);
 
             selectionEndDate = candidateSelectionEndDate;
+
+            // Handle the special case wherein the start and end dates can end up identical.
+            // This can happen when the cursor is placed on the '0th' pixel of the interval.
+            // We solve it by selectively adding or subtracting one <datasetPrecision> unit
+            // to/from the end date, depending on whether or not subtracting from the end
+            // date would put us outside the x-axis scale.
+            if (selectionStartDate.getTime() === selectionEndDate.getTime()) {
+              if (selectionStartDate.getTime() === cachedChartData.minDate.getTime()) {
+                selectionEndDate = moment(selectionEndDate).add(1, datasetPrecision).toDate();
+              } else {
+                selectionEndDate = moment(selectionEndDate).subtract(1, datasetPrecision).toDate();
+              }
+            }
 
           }
 
@@ -1692,6 +1740,10 @@
                     selectionStartDate = getDateFromMousePosition(offsetX);
                     selectionEndDate = getDateFromMousePosition(offsetX + visualizedDatumWidth);
 
+                    if (selectionStartDate.getTime() === selectionEndDate.getTime()) {
+                      selectionEndDate = moment(selectionEndDate).add(1, datasetPrecision).toDate();
+                    }
+
                     // If the user has selected exactly one <datasetPrecision> unit and is clicking on
                     // that selection again, we deselect it.
                     if (selectionIsExactlyOneDatasetPrecisionUnit(selectionStartDate, selectionEndDate) &&
@@ -1739,6 +1791,10 @@
               candidateStartDate = selectionStartDate;
               selectionStartDate = selectionEndDate;
               selectionEndDate = candidateStartDate;
+            }
+
+            if (selectionStartDate.getTime() === selectionEndDate.getTime()) {
+              selectionEndDate = moment(selectionEndDate).add(1, datasetPrecision).toDate();
             }
 
             enterSelectedState();
@@ -2122,9 +2178,16 @@
             // NOTE THAT THIS IS ABSOLUTE OFFSET, NOT SCROLL OFFSET.
             cachedChartOffsets = element.offset();
 
+            // Because we are about to divide by the number of values in the provided
+            // chart data, we need to first check to make sure we won't try to divide
+            // by zero and throw an exception instead of rendering if that's the case.
+            if (chartData.values.length === 0) {
+              throw new Error('Cannot render timeline chart with zero values.');
+            }
+
             // Cache the datum width and half the datum width for use elsewhere instead of
             // repeated recomputation.
-            visualizedDatumWidth = Math.floor(chartDimensions.width / (chartData.values.length - 1));
+            visualizedDatumWidth = Math.floor(chartDimensions.width / chartData.values.length);
             halfVisualizedDatumWidth = Math.floor(visualizedDatumWidth / 2);
 
             // Update the cached value for dataset precision.

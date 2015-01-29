@@ -7,21 +7,21 @@
   var mapping = [
 
     // Amount
-    { physical: 'number', logical: 'amount', expectedDefault: null, expectedAvailable: [], supported: false },                       // UNSUPPORTED
-    { physical: 'point', logical: 'amount', expectedDefault: null, expectedAvailable: [], supported: false },                        // UNSUPPORTED
-    { physical: 'text', logical: 'amount', expectedDefault: null, expectedAvailable: [], supported: false },                         // UNSUPPORTED
-    { physical: 'geo_entity', logical: 'amount', expectedDefault: null, expectedAvailable: [], supported: false },                   // UNSUPPORTED
-    { physical: 'timestamp', logical: 'amount', expectedDefault: null, expectedAvailable: [], supported: false },                    // UNSUPPORTED
-    { physical: 'fixed_timestamp', logical: 'amount', expectedDefault: null, expectedAvailable: [], supported: false },              // UNSUPPORTED
-    { physical: 'floating_timestamp', logical: 'amount', expectedDefault: null, expectedAvailable: [], supported: false },           // UNSUPPORTED
-    { physical: 'boolean', logical: 'amount', expectedDefault: null, expectedAvailable: [], supported: false },                      // UNSUPPORTED
-    { physical: 'money', logical: 'amount', expectedDefault: null, expectedAvailable: [], supported: false },                        // UNSUPPORTED
+    { physical: 'number', logical: 'amount', expectedDefault: 'invalid', expectedAvailable: [], supported: false },                       // UNSUPPORTED
+    { physical: 'point', logical: 'amount', expectedDefault: 'invalid', expectedAvailable: [], supported: false },                        // UNSUPPORTED
+    { physical: 'text', logical: 'amount', expectedDefault: 'invalid', expectedAvailable: [], supported: false },                         // UNSUPPORTED
+    { physical: 'geo_entity', logical: 'amount', expectedDefault: 'invalid', expectedAvailable: [], supported: false },                   // UNSUPPORTED
+    { physical: 'timestamp', logical: 'amount', expectedDefault: 'invalid', expectedAvailable: [], supported: false },                    // UNSUPPORTED
+    { physical: 'fixed_timestamp', logical: 'amount', expectedDefault: 'invalid', expectedAvailable: [], supported: false },              // UNSUPPORTED
+    { physical: 'floating_timestamp', logical: 'amount', expectedDefault: 'invalid', expectedAvailable: [], supported: false },           // UNSUPPORTED
+    { physical: 'boolean', logical: 'amount', expectedDefault: 'invalid', expectedAvailable: [], supported: false },                      // UNSUPPORTED
+    { physical: 'money', logical: 'amount', expectedDefault: 'invalid', expectedAvailable: [], supported: false },                        // UNSUPPORTED
 
     // Category
     { physical: 'number', logical: 'category', expectedDefault: 'column', expectedAvailable: ['column', 'search'], supported: true },
-    { physical: 'point', logical: 'category', expectedDefault: null, expectedAvailable: [], supported: false },                      // UNSUPPORTED
+    { physical: 'point', logical: 'category', expectedDefault: 'invalid', expectedAvailable: [], supported: false },                      // UNSUPPORTED
     { physical: 'text', logical: 'category', expectedDefault: 'column', expectedAvailable: ['column', 'search'], supported: true },
-    { physical: 'geo_entity', logical: 'category', expectedDefault: null, expectedAvailable: [], supported: false },                 // UNSUPPORTED
+    { physical: 'geo_entity', logical: 'category', expectedDefault: 'invalid', expectedAvailable: [], supported: false },                 // UNSUPPORTED
     { physical: 'timestamp', logical: 'category', expectedDefault: 'column', expectedAvailable: ['column'], supported: true },
     { physical: 'fixed_timestamp', logical: 'category', expectedDefault: 'column', expectedAvailable: ['column'], supported: true },
     { physical: 'floating_timestamp', logical: 'category', expectedDefault: 'column', expectedAvailable: ['column'], supported: true },
@@ -30,64 +30,64 @@
 
     // Identifier
     { physical: 'number', logical: 'identifier', expectedDefault: 'search', expectedAvailable: ['search', 'column'], supported: true },
-    { physical: 'point', logical: 'identifier', expectedDefault: null, expectedAvailable: [], supported: false },                    // UNSUPPORTED
+    { physical: 'point', logical: 'identifier', expectedDefault: 'invalid', expectedAvailable: [], supported: false },                    // UNSUPPORTED
     { physical: 'text', logical: 'identifier', expectedDefault: 'search', expectedAvailable: ['search', 'column'], supported: true },
-    { physical: 'geo_entity', logical: 'identifier', expectedDefault: null, expectedAvailable: [], supported: false },               // UNSUPPORTED
+    { physical: 'geo_entity', logical: 'identifier', expectedDefault: 'invalid', expectedAvailable: [], supported: false },               // UNSUPPORTED
     { physical: 'timestamp', logical: 'identifier', expectedDefault: 'timeline', expectedAvailable: ['timeline'], supported: true },
     { physical: 'fixed_timestamp', logical: 'identifier', expectedDefault: 'timeline', sexpectedAvailable: ['timeline'], supported: true },
     { physical: 'floating_timestamp', logical: 'identifier', expectedDefault: 'timeline', expectedAvailable: ['timeline'], supported: true },
-    { physical: 'boolean', logical: 'identifier', expectedDefault: null, expectedAvailable: [], supported: false },                  // UNSUPPORTED
+    { physical: 'boolean', logical: 'identifier', expectedDefault: 'invalid', expectedAvailable: [], supported: false },                  // UNSUPPORTED
     { physical: 'money', logical: 'identifier', expectedDefault: 'search', expectedAvailable: ['search'], supported: true },
 
     // Location
     { physical: 'number', logical: 'location', expectedDefault: 'choropleth', expectedAvailable: ['choropleth'], supported: true },
     { physical: 'point', logical: 'location', expectedDefault: 'feature', expectedAvailable: ['feature'], supported: true },
-    { physical: 'text', logical: 'location', expectedDefault: null, expectedAvailable: [], supported: false },                       // UNSUPPORTED
-    { physical: 'geo_entity', logical: 'location', expectedDefault: null, expectedAvailable: [], supported: false },                 // UNSUPPORTED
-    { physical: 'timestamp', logical: 'location', expectedDefault: null, expectedAvailable: [], supported: false },                  // UNSUPPORTED
-    { physical: 'fixed_timestamp', logical: 'location', expectedDefault: null, expectedAvailable: [], supported: false },            // UNSUPPORTED
-    { physical: 'floating_timestamp', logical: 'location', expectedDefault: null, expectedAvailable: [], supported: false },         // UNSUPPORTED
-    { physical: 'boolean', logical: 'location', expectedDefault: null, expectedAvailable: [], supported: false },                    // UNSUPPORTED
-    { physical: 'money', logical: 'location', expectedDefault: null, expectedAvailable: [], supported: false },                      // UNSUPPORTED
+    { physical: 'text', logical: 'location', expectedDefault: 'invalid', expectedAvailable: [], supported: false },                       // UNSUPPORTED
+    { physical: 'geo_entity', logical: 'location', expectedDefault: 'invalid', expectedAvailable: [], supported: false },                 // UNSUPPORTED
+    { physical: 'timestamp', logical: 'location', expectedDefault: 'invalid', expectedAvailable: [], supported: false },                  // UNSUPPORTED
+    { physical: 'fixed_timestamp', logical: 'location', expectedDefault: 'invalid', expectedAvailable: [], supported: false },            // UNSUPPORTED
+    { physical: 'floating_timestamp', logical: 'location', expectedDefault: 'invalid', expectedAvailable: [], supported: false },         // UNSUPPORTED
+    { physical: 'boolean', logical: 'location', expectedDefault: 'invalid', expectedAvailable: [], supported: false },                    // UNSUPPORTED
+    { physical: 'money', logical: 'location', expectedDefault: 'invalid', expectedAvailable: [], supported: false },                      // UNSUPPORTED
 
     // Time
     { physical: 'number', logical: 'time', expectedDefault: 'timeline', expectedAvailable: ['timeline'], supported: true },
-    { physical: 'point', logical: 'time', expectedDefault: null, expectedAvailable: [], supported: false },                          // UNSUPPORTED
-    { physical: 'text', logical: 'time', expectedDefault: null, expectedAvailable: [], supported: false },                           // UNSUPPORTED
-    { physical: 'geo_entity', logical: 'time', expectedDefault: null, expectedAvailable: [], supported: false },                     // UNSUPPORTED
+    { physical: 'point', logical: 'time', expectedDefault: 'invalid', expectedAvailable: [], supported: false },                          // UNSUPPORTED
+    { physical: 'text', logical: 'time', expectedDefault: 'invalid', expectedAvailable: [], supported: false },                           // UNSUPPORTED
+    { physical: 'geo_entity', logical: 'time', expectedDefault: 'invalid', expectedAvailable: [], supported: false },                     // UNSUPPORTED
     { physical: 'timestamp', logical: 'time', expectedDefault: 'timeline', expectedAvailable: ['timeline'], supported: true },
     { physical: 'fixed_timestamp', logical: 'time', expectedDefault: 'timeline', expectedAvailable: ['timeline'], supported: true },
     { physical: 'floating_timestamp', logical: 'time', expectedDefault: 'timeline', expectedAvailable: ['timeline'], supported: true },
-    { physical: 'boolean', logical: 'time', expectedDefault: null, expectedAvailable: [], supported: false },                        // UNSUPPORTED
+    { physical: 'boolean', logical: 'time', expectedDefault: 'invalid', expectedAvailable: [], supported: false },                        // UNSUPPORTED
     { physical: 'money', logical: 'time', expectedDefault: 'timeline', expectedAvailable: ['timeline'], supported: true },
 
     // Text
     { physical: 'number', logical: 'text', expectedDefault: 'search', expectedAvailable: ['search', 'column'], supported: true },
-    { physical: 'point', logical: 'text', expectedDefault: null, expectedAvailable: [], supported: false },                          // UNSUPPORTED
+    { physical: 'point', logical: 'text', expectedDefault: 'invalid', expectedAvailable: [], supported: false },                          // UNSUPPORTED
     { physical: 'text', logical: 'text', expectedDefault: 'search', expectedAvailable: ['search', 'column'], supported: true },
-    { physical: 'geo_entity', logical: 'text', expectedDefault: null, expectedAvailable: [], supported: false },                     // UNSUPPORTED
+    { physical: 'geo_entity', logical: 'text', expectedDefault: 'invalid', expectedAvailable: [], supported: false },                     // UNSUPPORTED
     { physical: 'timestamp', logical: 'text', expectedDefault: 'timeline', expectedAvailable: ['timeline'], supported: true },
     { physical: 'fixed_timestamp', logical: 'text', expectedDefault: 'timeline', expectedAvailable: ['timeline'], supported: true },
     { physical: 'floating_timestamp', logical: 'text', expectedDefault: 'timeline', expectedAvailable: ['timeline'], supported: true },
-    { physical: 'boolean', logical: 'text', expectedDefault: null, expectedAvailable: [], supported: false },                        // UNSUPPORTED
+    { physical: 'boolean', logical: 'text', expectedDefault: 'invalid', expectedAvailable: [], supported: false },                        // UNSUPPORTED
     { physical: 'money', logical: 'text', expectedDefault: 'search', expectedAvailable: ['search'], supported: true },
 
     // Name
     { physical: 'number', logical: 'name', expectedDefault: 'search', expectedAvailable: ['search', 'column'], supported: true },
-    { physical: 'point', logical: 'name', expectedDefault: null, expectedAvailable: [], supported: false },                          // UNSUPPORTED
+    { physical: 'point', logical: 'name', expectedDefault: 'invalid', expectedAvailable: [], supported: false },                          // UNSUPPORTED
     { physical: 'text', logical: 'name', expectedDefault: 'search', expectedAvailable: ['search', 'column'], supported: true },
-    { physical: 'geo_entity', logical: 'name', expectedDefault: null, expectedAvailable: [], supported: false },                     // UNSUPPORTED
+    { physical: 'geo_entity', logical: 'name', expectedDefault: 'invalid', expectedAvailable: [], supported: false },                     // UNSUPPORTED
     { physical: 'timestamp', logical: 'name', expectedDefault: 'timeline', expectedAvailable: ['timeline'], supported: true },
     { physical: 'fixed_timestamp', logical: 'name', expectedDefault: 'timeline', sexpectedAvailable: ['timeline'], supported: true },
     { physical: 'floating_timestamp', logical: 'name', expectedDefault: 'timeline', expectedAvailable: ['timeline'], supported: true },
-    { physical: 'boolean', logical: 'name', expectedDefault: null, expectedAvailable: [], supported: false },                        // UNSUPPORTED
+    { physical: 'boolean', logical: 'name', expectedDefault: 'invalid', expectedAvailable: [], supported: false },                        // UNSUPPORTED
     { physical: 'money', logical: 'name', expectedDefault: 'search', expectedAvailable: ['search'], supported: true },
 
     // Table (non user-configurable)
     { physical: '*', logical: '*', expectedDefault: 'table', expectedAvailable: [], supported: false },
 
     // Junk
-    { physical: 'picture', logical: 'photo', expectedDefault: null, expectedAvailable: [], supported: false },
+    { physical: 'picture', logical: 'photo', expectedDefault: 'invalid', expectedAvailable: [], supported: false }
 
   ];
 
@@ -127,6 +127,12 @@
       CardTypeMapping = $injector.get('CardTypeMapping');
       $exceptionHandler = $injector.get('$exceptionHandler');
     }));
+
+    it('should return a fallback for invalid visualization datatype combinations', function() {
+      var column = createColumn({ physical: 'nope', logical: 'nope', expectedDefault: 'invalid', expectedAvailable: [], supported: false });
+      var mapping = CardTypeMapping.defaultVisualizationForColumn(column);
+      expect(mapping).to.equal('invalid');
+    });
 
     describe('defaultVisualizationForColumn', function() {
       _.each(mapping, function(testCase) {

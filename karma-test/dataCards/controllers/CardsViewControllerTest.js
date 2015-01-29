@@ -111,6 +111,7 @@ describe('CardsViewController', function() {
   beforeEach(module('/angular_templates/dataCards/cardVisualizationSearch.html'));
   beforeEach(module('/angular_templates/dataCards/cardVisualizationTable.html'));
   beforeEach(module('/angular_templates/dataCards/cardVisualizationTimelineChart.html'));
+  beforeEach(module('/angular_templates/dataCards/cardVisualizationInvalid.html'));
   beforeEach(module('/angular_templates/dataCards/featureMap.html'));
   beforeEach(module('/angular_templates/dataCards/clearableInput.html'));
   beforeEach(module('/angular_templates/dataCards/table.html'));
@@ -176,7 +177,7 @@ describe('CardsViewController', function() {
       controller: controller,
       currentUserDefer: currentUserDefer
     });
-  };
+  }
 
   function renderCardsView() {
     var context = makeContext();
@@ -213,7 +214,7 @@ describe('CardsViewController', function() {
       'displayMode': 'figures',
       'expanded': false
     };
-  };
+  }
 
   describe('page name', function() {
     it('should update on the scope when the property changes on the model', function() {

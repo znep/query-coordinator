@@ -35,6 +35,7 @@ describe('CardLayout directive', function() {
   beforeEach(module('/angular_templates/dataCards/cardVisualizationSearch.html'));
   beforeEach(module('/angular_templates/dataCards/cardVisualizationFeatureMap.html'));
   beforeEach(module('/angular_templates/dataCards/cardVisualization.html'));
+  beforeEach(module('/angular_templates/dataCards/cardVisualizationInvalid.html'));
   beforeEach(module('/angular_templates/dataCards/customizeCardDialog.html'));
   beforeEach(module('/angular_templates/dataCards/modalDialog.html'));
   beforeEach(module('/angular_templates/dataCards/socSelect.html'));

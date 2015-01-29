@@ -5,6 +5,7 @@
 
     function getCardTypesForColumn(column) {
       var mappingConfiguration = getMappingConfiguration().map;
+      var fallbackCardType = getMappingConfiguration().fallbackCardType;
       var physicalDatatype;
       var logicalDatatype;
       var cardType = null;
@@ -33,6 +34,10 @@
         cardType = mappingConfiguration[logicalDatatype][physicalDatatype];
       } else {
         warnOnceOnUnknownCardType(logicalDatatype, physicalDatatype);
+      }
+
+      if (_.isEmpty(cardType) && _.isDefined(fallbackCardType)) {
+        return fallbackCardType;
       }
 
       return cardType;

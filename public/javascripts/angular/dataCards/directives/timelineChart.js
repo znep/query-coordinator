@@ -136,7 +136,7 @@
           return [
             values.map(function(value) {
               return {
-                date: DateHelpers.decrementDateByInterval(value.date, datasetPrecision),
+                date: DateHelpers.decrementDateByHalfInterval(value.date, datasetPrecision),
                 filtered: value.filtered,
                 unfiltered: value.unfiltered
               }
@@ -179,8 +179,8 @@
           // The value of currentDatum is read by the flyout code.
           currentDatum = cachedChartData.values[indexIntoChartData];
 
-          transformedStartDate = DateHelpers.decrementDateByInterval(currentDatum.date, datasetPrecision);
-          transformedEndDate = DateHelpers.decrementDateByInterval(moment(currentDatum.date).add(1, datasetPrecision).toDate(), datasetPrecision);
+          transformedStartDate = DateHelpers.decrementDateByHalfInterval(currentDatum.date, datasetPrecision);
+          transformedEndDate = DateHelpers.decrementDateByHalfInterval(moment(currentDatum.date).add(1, datasetPrecision).toDate(), datasetPrecision);
 
           highlightData = [
             {
@@ -219,8 +219,8 @@
 
         function filterChartDataByInterval(startDate, endDate) {
 
-          var transformedStartDate = DateHelpers.decrementDateByInterval(startDate, datasetPrecision);
-          var transformedEndDate = DateHelpers.decrementDateByInterval(endDate, datasetPrecision);
+          var transformedStartDate = DateHelpers.decrementDateByHalfInterval(startDate, datasetPrecision);
+          var transformedEndDate = DateHelpers.decrementDateByHalfInterval(endDate, datasetPrecision);
           var highlightData;
           var leftOffset = d3XScale(transformedStartDate);
           var width = d3XScale(transformedEndDate) - leftOffset;
@@ -400,7 +400,7 @@
             // unfiltered and filtered values of 0 to prevent changing aggregate values.
             if (cachedChartData.values[cachedChartData.values.length - 1].date.getTime() < maxDate.getTime()) {
               values[0].push({
-                date: DateHelpers.decrementDateByInterval(maxDate, datasetPrecision),
+                date: DateHelpers.decrementDateByHalfInterval(maxDate, datasetPrecision),
                 unfiltered: 0,
                 filtered: 0
               });
@@ -924,8 +924,8 @@
             time.
               scale().
                 domain([
-                  DateHelpers.decrementDateByInterval(chartData.minDate, datasetPrecision),
-                  DateHelpers.incrementDateByInterval(chartData.maxDate, datasetPrecision)
+                  DateHelpers.decrementDateByHalfInterval(chartData.minDate, datasetPrecision),
+                  DateHelpers.incrementDateByHalfInterval(chartData.maxDate, datasetPrecision)
                 ]).
                 range([0, chartWidth]);
 
@@ -1296,7 +1296,7 @@
             return exactlyOneMonthDifferent;
           }
 
-          var adjustedEndDate = DateHelpers.decrementDateByInterval(endDate, datasetPrecision);
+          var adjustedEndDate = DateHelpers.decrementDateByHalfInterval(endDate, datasetPrecision);
           var difference;
           var dateFormatPrecision;
           var showRange = true;

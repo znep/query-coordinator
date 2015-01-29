@@ -213,11 +213,15 @@ describe('timelineChart', function() {
     });
 
     describe('label granularity', function() {
+
       var transformChartData;
-      beforeEach(inject(function($injector) {
-        transformChartData = $injector.get('timelineChartVisualizationService').
-          transformChartDataForRendering;
-      }));
+
+      beforeEach(inject(
+        function($injector) {
+          transformChartData = $injector.get('TimelineChartVisualizationHelpers').
+            transformChartDataForRendering;
+        })
+      );
 
       it('should format for decade when the data spans more than 20 years', function() {
         var chart = createTimelineChart(640, false, transformChartData(

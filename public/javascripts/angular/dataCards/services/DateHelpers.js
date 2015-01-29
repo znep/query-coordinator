@@ -3,7 +3,7 @@
 
   function DateHelpers() {
 
-    function decrementDateByInterval(date, interval) {
+    function decrementDateByHalfInterval(date, interval) {
 
       var newDate;
 
@@ -32,7 +32,7 @@
 
     }
 
-    function incrementDateByInterval(date, interval) {
+    function incrementDateByHalfInterval(date, interval) {
 
       var newDate;
 

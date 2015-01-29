@@ -11,7 +11,7 @@ describe("A Timeline Chart Card Visualization", function() {
   beforeEach(inject(function($injector) {
     testHelpers = $injector.get('testHelpers');
     $q = $injector.get('$q');
-    timelineChartVisualizationService = $injector.get('timelineChartVisualizationService');
+    TimelineChartVisualizationHelpers = $injector.get('TimelineChartVisualizationHelpers');
     var mockCardDataService = {
       getTimelineDomain: function(){ return $q.when([]);},
       getTimelineData: function(){ return $q.when([]);}
@@ -32,7 +32,7 @@ describe("A Timeline Chart Card Visualization", function() {
       var unfilteredValues = _.map(datumCount, function(i) { return 100 * i; });
       var filteredValues = _.map(unfilteredValues, function(val) { return val / 2; });
 
-      var transformed = timelineChartVisualizationService.transformChartDataForRendering(
+      var transformed = TimelineChartVisualizationHelpers.transformChartDataForRendering(
         _.map(datumCount, function(i) {
           return {
             date: dates[i],

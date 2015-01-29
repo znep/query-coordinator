@@ -73,6 +73,7 @@ module.exports = function ( karma ) {
       'bower_components/native-promise-only/lib/npo.src.js',
       'bower_components/requestAnimationFrame-polyfill/requestAnimationFrame.js',
       'public/javascripts/plugins/modernizr.js',
+      {pattern: 'public/javascripts/plugins/squire.js', included: false},
       'karma-test/helpers/TestHelpers.js',
       'karma-test/helpers/ServerMocks.js',
       'karma-test/dataCards/*.js',

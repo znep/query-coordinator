@@ -67,6 +67,27 @@
 
     });
 
+    describe('deferred', function() {
+      it('returns a function that, when called, calls the parameter in a _.defer', function() {
+        var theFunction = function() {};
+        var passedInF = null;
+
+        try {
+          sinon.stub(_, 'defer', function(f) {
+            passedInF = f;
+          });
+
+          var deferredFunction = _.deferred(theFunction);
+
+          expect(passedInF).to.equal(null);
+          deferredFunction();
+          expect(passedInF).to.equal(theFunction);
+
+        } finally {
+          _.defer.restore();
+        }
+      });
+    });
   });
 
 })();

@@ -190,6 +190,7 @@
   $.capitalizeWithDefault = function(value, placeHolder) {
     placeHolder = placeHolder || '(Blank)';
     if ($.isNumeric(value)) return value;
+    if (_.isBoolean(value)) value += '';
     return ($.isBlank(value) || !value.capitalizeEachWord) ? placeHolder : value.capitalizeEachWord();
   };
   /*

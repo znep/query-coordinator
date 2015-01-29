@@ -18,18 +18,11 @@
     }
 
     function buildAggregationClause(aggregationClauseData) {
-      var aggregationClause = 'count(*)';
-      if (_.isDefined(aggregationClauseData)) {
-        if (
-          _.isPresent(aggregationClauseData.aggregation) &&
-          aggregationClauseData.aggregation !== 'count' &&
-          _.isPresent(aggregationClauseData.field)
-          ) {
-          aggregationClause = '{0}({1})'.
-            format(aggregationClauseData.aggregation, aggregationClauseData.field);
-        }
-      }
-      return aggregationClause;
+      Assert(_.isString(aggregationClauseData['function']), 'aggregation function string should be present');
+      var aggregationFunction = aggregationClauseData['function'];
+      var aggregationOperand = aggregationClauseData.column ? aggregationClauseData.column.name : '*';
+
+      return '{0}({1})'.format(aggregationFunction, aggregationOperand);
     }
 
     var serviceDefinition = {
@@ -37,6 +30,7 @@
         Assert(_.isString(fieldName), 'fieldName should be a string');
         Assert(_.isString(datasetId), 'datasetId should be a string');
         Assert(!whereClauseFragment || _.isString(whereClauseFragment), 'whereClauseFragment should be a string if present.');
+        Assert(_.isObject(aggregationClauseData), 'aggregationClauseData object must be provided');
         options = _.defaults({}, options);
 
         datasetId = DeveloperOverrides.dataOverrideForDataset(datasetId) || datasetId;
@@ -129,6 +123,7 @@
         Assert(_.isString(datasetId), 'datasetId should be a string');
         Assert(!whereClauseFragment || _.isString(whereClauseFragment), 'whereClauseFragment should be a string if present.');
         Assert(_.isString(precision), 'precision should be a string');
+        Assert(_.isObject(aggregationClauseData), 'aggregationClauseData object must be provided');
 
         var dateTrunc = SoqlHelpers.timeIntervalToDateTrunc[precision];
         Assert(dateTrunc !== undefined, 'invalid precision name given');
@@ -220,8 +215,8 @@
           });
       },
 
-      getSampleData: function(fieldName, datasetId) {
-        return serviceDefinition.getData(fieldName, datasetId);
+      getSampleData: function(fieldName, datasetId, whereClauseFragment, aggregationClauseData, options) {
+        return serviceDefinition.getData(fieldName, datasetId, whereClauseFragment, aggregationClauseData, options);
       },
 
       getRows: function(datasetId, offset, limit, order, timeout, whereClause) {

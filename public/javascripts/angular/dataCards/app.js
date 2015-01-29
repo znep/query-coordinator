@@ -8,7 +8,8 @@ var dependencies = [
   'dataCards.controllers',
   'dataCards.services',
   'dataCards.directives',
-  'dataCards.models'
+  'dataCards.models',
+  'dataCards.filters'
 ];
 
 if (window['socrataConfig'].enableAirbrakeJs) {

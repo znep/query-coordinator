@@ -192,6 +192,7 @@
         );
 
         if (ServerConfig.get('enableBoundingBoxes')) {
+
           geojsonRegionsData = Rx.Observable.combineLatest(
             dataset,
             model.pluck('fieldName'),
@@ -228,21 +229,30 @@
                 },
                 function(err) {
                   // Do nothing
-                });
+                }
+              );
 
               return Rx.Observable.fromPromise(dataPromise);
             }
           );
+
         } else {
+
           geojsonRegionsData = Rx.Observable.combineLatest(
             model.pluck('fieldName'),
             dataset.observeOnLatest('columns'),
             function(fieldName, columns) {
+
+              if (_.isEmpty(columns)) {
+                return Rx.Observable.never();
+              }
+
               dataRequests.onNext(1);
-              // TODO Change "shapefile" to "shapeFile" throughout code base since case-style is inconsistent.
+
               if (!columns[fieldName].hasOwnProperty('shapefile')) {
                 throw new Error('Dataset metadata column for computed georegion column does not include shapefile.');
               }
+
               var dataPromise = CardDataService.getChoroplethRegions(columns[fieldName].shapefile);
               dataPromise.then(
                 function(res) {
@@ -252,10 +262,13 @@
                 },
                 function(err) {
                   // Do nothing
-                });
+                }
+              );
+
               return Rx.Observable.fromPromise(dataPromise);
             }
           );
+
         }
 
         Rx.Observable.subscribeLatest(
@@ -305,7 +318,7 @@
 
         scope.bindObservable('fieldName', model.pluck('fieldName'));
         scope.bindObservable('baseLayerUrl', model.observeOnLatest('baseLayerUrl'));
-        scope.bindObservable('rowDisplayUnit', dataset.observeOnLatest('rowDisplayUnit'));
+        scope.bindObservable('rowDisplayUnit', model.observeOnLatest('page.aggregation.unit'));
 
         scope.bindObservable(
           'geojsonAggregateData',

@@ -93,12 +93,12 @@ describe("Model", function() {
     expect(seen).to.deep.equal([5, 10]);
   }));
 
-  describe('defineReadOnlyObservableProperty', function() {
+  describe('defineEphemeralObservablePropertyFromSequence', function() {
     it('should reflect changes in the given sequence', function() {
       var model = new Model();
       var valueSeq = new Rx.Subject();
       var seen = [];
-      model.defineReadOnlyObservableProperty('prop', valueSeq);
+      model.defineEphemeralObservablePropertyFromSequence('prop', valueSeq);
       model.observe('prop').subscribe(function(val) { seen.push(val); });
 
       expect(model.getCurrentValue('prop')).to.equal(undefined);
@@ -114,13 +114,13 @@ describe("Model", function() {
 
     it('should throw on setValue', function() {
       var model = new Model();
-      model.defineReadOnlyObservableProperty('prop', Rx.Observable.never());
+      model.defineEphemeralObservablePropertyFromSequence('prop', Rx.Observable.never());
       expect(function() { model.setValue('prop'); }).to.throw();
     });
 
     it('should always return false for isSet', function() {
       var model = new Model();
-      model.defineReadOnlyObservableProperty('prop', Rx.Observable.never());
+      model.defineEphemeralObservablePropertyFromSequence('prop', Rx.Observable.never());
       expect(model.isSet('prop')).to.equal(false);
     });
   });
@@ -137,21 +137,19 @@ describe("Model", function() {
           changes.push(change);
         });
 
-        model.defineReadOnlyObservableProperty('prop', valueSeq);
+        model.defineEphemeralObservablePropertyFromSequence('prop', valueSeq);
         model.observe('prop').subscribe(_.noop);
 
         valueSeq.onNext('asd');
         expectedChanges.push({
           model: model,
           property: 'prop',
-          oldValue: undefined,
           newValue: 'asd'
         });
         valueSeq.onNext('def');
         expectedChanges.push({
           model: model,
           property: 'prop',
-          oldValue: 'asd',
           newValue: 'def'
         });
 
@@ -171,13 +169,13 @@ describe("Model", function() {
         expectedChanges.push({
           model: model,
           property: 'myProp',
-          oldValue: undefined,
           newValue: 5
         });
         model.defineObservableProperty('myProp', 5);
 
         expect(changes).to.deep.equal(expectedChanges);
       });
+
       it('should emit on set', function() {
         var model = new Model();
         var changes = [];
@@ -195,7 +193,6 @@ describe("Model", function() {
         expectedChanges.push({
           model: model,
           property: 'myProp',
-          oldValue: 5,
           newValue: 6
         });
         expect(changes).to.deep.equal(expectedChanges);
@@ -204,7 +201,6 @@ describe("Model", function() {
         expectedChanges.push({
           model: model,
           property: 'myProp2',
-          oldValue: 60,
           newValue: 100
         });
         expect(changes).to.deep.equal(expectedChanges);
@@ -213,10 +209,56 @@ describe("Model", function() {
         expectedChanges.push({
           model: model,
           property: 'myProp',
-          oldValue: 6,
           newValue: 200
         });
         expect(changes).to.deep.equal(expectedChanges);
+      });
+
+      // In PhantomJS, Object.freeze exists, but doesn't actually do anything. So - don't run this
+      // test in PhantomJS. ref: https://github.com/ariya/phantomjs/issues/10817
+      (/PhantomJS/.test(navigator.userAgent) ?
+       xit :
+       it)('should throw if an array property is got, then modified', function() {
+        var model = new Model();
+        model.defineObservableProperty('myProp', [1, 2, 3]);
+        var value = model.getCurrentValue('myProp');
+        try {
+          value.push('no!');
+        } catch(e) {
+          // Some browsers throw, others fail silently. We don't really care which.
+        }
+        expect(value).to.deep.equals([1, 2, 3]);
+      });
+
+      it('should emit when an array property is set', function() {
+        var model = new Model();
+        var changes = [];
+        var expectedChanges = [];
+        var value = [];
+        model.defineObservableProperty('myProp', value);
+
+        model.observePropertyChanges().subscribe(function(change) {
+          changes.push(change);
+        });
+
+        expect(changes).to.deep.equal(expectedChanges);
+
+        // Modifying the original value shouldn't modify the model's copy of it.
+        value.push(1);
+        expect(model.getCurrentValue('myProp')).to.deep.equal([]);
+
+        model.set('myProp', value);
+        expectedChanges.push({
+          model: model,
+          property: 'myProp',
+          oldValue: [],
+          newValue: value
+        });
+        expect(changes).to.deep.equal(expectedChanges);
+
+        // Modifying the original value still shouldn't modify the model's copy of it.
+        value.push(2);
+        expect(model.getCurrentValue('myProp')).to.deep.equal([1]);
       });
     });
 
@@ -366,7 +408,6 @@ describe("Model", function() {
         expectedChanges.push({
           model: model,
           property: 'myProp',
-          oldValue: undefined,
           newValue: 5
         });
         expect(changes).to.deep.equal(expectedChanges);
@@ -387,7 +428,6 @@ describe("Model", function() {
         expectedChanges.push({
           model: model,
           property: 'myProp',
-          oldValue: 5,
           newValue: 10
         });
         expect(changes).to.deep.equal(expectedChanges);
@@ -415,7 +455,6 @@ describe("Model", function() {
         expectedChanges.push({
           model: model,
           property: 'myProp',
-          oldValue: undefined,
           newValue: 5
         });
         expect(changes).to.deep.equal(expectedChanges);
@@ -435,7 +474,6 @@ describe("Model", function() {
         expectedChanges.push({
           model: model,
           property: 'myProp',
-          oldValue: 5,
           newValue: 200
         });
         expect(changes).to.deep.equal(expectedChanges);
@@ -460,7 +498,7 @@ describe("Model", function() {
           throw new Error('should never see a change for read-only properties');
         });
 
-        model.defineReadOnlyObservableProperty('prop', valueSeq);
+        model.defineEphemeralObservablePropertyFromSequence('prop', valueSeq);
         model.observe('prop').subscribe(_.noop);
         valueSeq.onNext('asd');
       });
@@ -1098,6 +1136,19 @@ describe("Model", function() {
             testProp3: 55
           }
         ]
+      });
+    });
+    it('should not serialize ephemeral fields', function() {
+      var model = new Model();
+      model.defineObservableProperty('nonEphemeral', 'foo');
+      model.defineEphemeralObservableProperty('ephemeral', 'asd');
+      model.defineEphemeralObservablePropertyFromSequence(
+        'ephemeralFromSeq',
+        Rx.Observable.returnValue('fromSeq')
+      );
+
+      expect(model.serialize()).to.deep.equal({
+        nonEphemeral: 'foo'
       });
     });
   });

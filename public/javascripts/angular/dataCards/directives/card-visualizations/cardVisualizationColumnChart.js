@@ -85,7 +85,7 @@ angular.module('dataCards.directives').directive('cardVisualizationColumnChart',
           return Rx.Observable.fromPromise(dataPromise);
         });
 
-      $scope.bindObservable('rowDisplayUnit', dataset.observeOnLatest('rowDisplayUnit'));
+      $scope.bindObservable('rowDisplayUnit', model.observeOnLatest('page.aggregation.unit'));
 
       $scope.bindObservable('chartData', Rx.Observable.combineLatest(
           unfilteredDataSequence.switchLatest(),
@@ -134,7 +134,7 @@ angular.module('dataCards.directives').directive('cardVisualizationColumnChart',
       });
 
       $scope.$on('column-chart:datum-clicked', function(event, datum) {
-        var wantsFilterToNull = !_.isString(datum.name) && !_.isNumber(datum.name);
+        var wantsFilterToNull = !_.isPresent(datum.name);
 
         var isFilteringOnClickedDatum = _.any($scope.model.getCurrentValue('activeFilters'), function(filter) {
           if (filter instanceof Filter.BinaryOperatorFilter) {

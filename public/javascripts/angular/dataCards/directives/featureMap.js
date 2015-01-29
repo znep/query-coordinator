@@ -300,7 +300,12 @@
             [
               featureExtent.southwest,
               featureExtent.northeast
-            ]
+            ],
+            {
+              animate: false,
+              pan: { animate: false },
+              zoom: { animate: false }
+            }
           );
 
         }

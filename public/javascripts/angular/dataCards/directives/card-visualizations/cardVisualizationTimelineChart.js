@@ -402,7 +402,8 @@ angular.module('dataCards.directives').factory('timelineChartVisualizationServic
 
       scope.bindObservable('activeFilters', model.observeOnLatest('activeFilters'));
 
-      scope.bindObservable('rowDisplayUnit', dataset.observeOnLatest('rowDisplayUnit'));
+      scope.bindObservable('rowDisplayUnit', model.observeOnLatest('page.aggregation.unit'));
+
 
       // Handle filtering
       scope.$on('filter-timeline-chart',

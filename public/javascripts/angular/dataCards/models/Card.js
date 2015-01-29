@@ -97,7 +97,7 @@ angular.module('dataCards.models').factory('Card', function($injector, ModelHelp
   function validateCardBlobSchema(blob) {
     var errors = JJV.validate('serializedCard', blob);
     if (errors) {
-      throw new Error('Card deserialization failed: ' + JSON.stringify(errors));
+      throw new Error('Card deserialization failed. Column: {0} Errors: {1}'.format(blob.fieldName, JSON.stringify(errors)));
     }
   }
 

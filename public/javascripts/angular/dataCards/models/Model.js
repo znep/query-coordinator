@@ -1,3 +1,15 @@
+// The Model class provides an implementation of an object having a well-defined set of observable fields,
+// primarily exposed as an RX Sequence of values. This allows our reactive UI to be fully decoupled from
+// the sources of new property values.
+//
+// Model provides:
+// * An API for observing properties via RX's Observable API.
+// * An API for defining observable properties:
+//   - Backed by a simple read-write value store
+//   - Backed by an RX Sequence
+// * Facilities to define lazy (JIT) defaults for properties.
+// * Automatic serialization, with consideration of ephemeral (non-serialized) properties.
+// * Recursive dirty checking/change tracking.
 angular.module('dataCards.models').factory('Model', function(Class, ModelHelper) {
   var Model = Class.extend({
     init:function Model() {
@@ -7,6 +19,7 @@ angular.module('dataCards.models').factory('Model', function(Class, ModelHelper)
       this._recursiveSets = new Rx.Subject();
       this._propertyObservables = {};
       this._propertyHasBeenWritten = {};
+      this._ephemeralProperties = {};
 
       //Keeps track of children we've told that this instance is their parent.
       //Maps property names to arrays of children (because a property can be set
@@ -40,21 +53,10 @@ angular.module('dataCards.models').factory('Model', function(Class, ModelHelper)
       });
     },
 
-    _setParentModel: function(parentModel) {
-      // Stop telling our old parent about our property changes.
-      if (this._observePropertyChangesSubscriptionForParent) {
-        this._observePropertyChangesSubscriptionForParent.dispose();
-        delete this._observePropertyChangesSubscriptionForParent;
-      }
+    ///////////////////////////////////////////////////////////////////////////
+    ///////////////// Public API
+    ///////////////////////////////////////////////////////////////////////////
 
-      if (parentModel) {
-        // Start telling our new parent about our property changes.
-        // Store the subscription so we can detach it later.
-        this._observePropertyChangesSubscriptionForParent = this.observePropertyChangesRecursively().subscribe(function(changeNotification) {
-          parentModel._recursiveSets.onNext(changeNotification);
-        });
-      }
-    },
 
     // Define a new observable property. The first argument is the string property name.
     // The second argument is the initial value.
@@ -84,8 +86,6 @@ angular.module('dataCards.models').factory('Model', function(Class, ModelHelper)
         writesSequence = ModelHelper.addProperty(propertyName, this._propertyObservables, initialValue);
       }
 
-      var oldValue;
-
       // Push write notifications for this property to the writes sequence.
       // This includes the initial value and the lazy default.
       // There's a special case if the initial value is not defined - ModelHelper
@@ -98,17 +98,23 @@ angular.module('dataCards.models').factory('Model', function(Class, ModelHelper)
           self._writes.onNext({
             model: self,
             property: propertyName,
-            oldValue: oldValue,
             newValue: value
           });
-          oldValue = value;
         });
+    },
+
+    // Define a new ephemeral observable property. The arguments and behavior are the same as
+    // defineObservableProperty, except that this property will not be serialized.
+    defineEphemeralObservableProperty: function(propertyName, initialValue, defaultGenerator) {
+      this.defineObservableProperty.apply(this, arguments);
+      this._setObservablePropertyIsEphemeral(propertyName, true);
     },
 
     // Define a new observable property whose value is sourced by the given sequence.
     // Setting values on this property via setValue is not supported, and will result
     // in an error being thrown.
-    defineReadOnlyObservableProperty: function(propertyName, valueSequence) {
+    // This property, being ephemeral, will not be serialized.
+    defineEphemeralObservablePropertyFromSequence: function(propertyName, valueSequence) {
       var self = this;
 
       if (valueSequence && !_.isFunction(valueSequence.asObservable)) {
@@ -119,24 +125,17 @@ angular.module('dataCards.models').factory('Model', function(Class, ModelHelper)
         throw new Error('Object ' + this + ' already has property: ' + propertyName);
       }
 
-      var oldValue;
       ModelHelper.addReadOnlyProperty(propertyName, this._propertyObservables, valueSequence.asObservable()).
         subscribe(function(value) {
           self._writes.onNext({
             model: self,
             property: propertyName,
-            oldValue: oldValue,
             newValue: value
           });
-          oldValue = value;
         });
 
-    },
+      self._setObservablePropertyIsEphemeral(propertyName, true);
 
-    _assertProperty: function(propertyName) {
-      if (!this._propertyObservables.hasOwnProperty(propertyName)) {
-        throw new Error("Object " + JSON.stringify(this) + " has no such property: " + propertyName);
-      }
     },
 
     // Observes the given property. You can use dot notation to traverse deeply.
@@ -189,36 +188,25 @@ angular.module('dataCards.models').factory('Model', function(Class, ModelHelper)
       return deepGet(this, propertyName.split('.'));
     },
 
-    // Sets the named property on this model to the given
-    // value.
-    // Will throw an exception if that property
-    // hasn't been defined on this Model.
+    /**
+     * Sets the named property on this model to the given value. Will throw an exception if that
+     * property hasn't been defined on this Model.
+     */
     set: function(propertyName, value) {
       this._assertProperty(propertyName);
       var oldValue = this.getCurrentValue(propertyName);
+      this._writes.take(1).map(function(change) {
+        return _.defaults({oldValue: oldValue}, change);
+      }).subscribe(_.bind(this._sets.onNext, this._sets));
       this._propertyObservables[propertyName] = value;
-      this._sets.onNext({
-        model: this,
-        property: propertyName,
-        oldValue: oldValue,
-        newValue: value
-      });
     },
 
     // Unsets the named property, and forget it has ever been set.
     // Will throw an exception if that property
     // hasn't been defined on this Model.
     unset: function(propertyName) {
-      this._assertProperty(propertyName);
-      var oldValue = this.getCurrentValue(propertyName);
-      this._propertyObservables[propertyName] = undefined;
+      this.set(propertyName, undefined);
       this._propertyHasBeenWritten[propertyName] = false;
-      this._sets.onNext({
-        model: this,
-        property: propertyName,
-        oldValue: oldValue,
-        newValue: undefined
-      });
     },
 
     // Returns true if any of these hold:
@@ -291,6 +279,10 @@ angular.module('dataCards.models').factory('Model', function(Class, ModelHelper)
       };
 
       _.forOwn(self._propertyObservables, function(seq, propertyName) {
+        if (self._ephemeralProperties[propertyName]) {
+          // Ephemeral properties are not serialized.
+          return;
+        }
         var currentValue = self.getCurrentValue(propertyName);
         if (self.isSet(propertyName)) {
           artifact[propertyName] = serializeArbitrary(currentValue);
@@ -306,7 +298,6 @@ angular.module('dataCards.models').factory('Model', function(Class, ModelHelper)
     // {
     //   model: <this model>,
     //   property: <string name of changed property>,
-    //   oldValue: <the previous value of the property>,
     //   newValue: <new value of the property>
     // }
     observePropertyWrites: function() {
@@ -411,6 +402,49 @@ angular.module('dataCards.models').factory('Model', function(Class, ModelHelper)
     resetDirtied: function() {
       if (this._dirtyResetObservable) {
         this._dirtyResetObservable.onNext(null);
+      }
+    },
+
+
+    ///////////////////////////////////////////////////////////////////////////
+    ///////////////// Private implementation
+    ///////////////////////////////////////////////////////////////////////////
+
+    // Controls whether or not the named property is ephemeral.
+    // Ephemeral properties are not serialized.
+    // By default, properties are not ephemeral.
+    // They are set to be ephemeral by the various public
+    // APIs that define properties.
+    _setObservablePropertyIsEphemeral: function(propertyName, isEphemeral) {
+      this._assertProperty(propertyName);
+      this._ephemeralProperties[propertyName] = isEphemeral;
+    },
+
+
+    // Throws if the given property is not defined on this Model.
+    _assertProperty: function(propertyName) {
+      if (!this._propertyObservables.hasOwnProperty(propertyName)) {
+        throw new Error('Object {0} has no such property: {1}'.format(this.serialize(), propertyName));
+      }
+    },
+
+    // Register the given model as our parent (as in, we're the value of
+    // one of the parent's properties).
+    // This is used to implement observePropertyChangesRecursively and
+    // recursive dirty checking.
+    _setParentModel: function(parentModel) {
+      // Stop telling our old parent about our property changes.
+      if (this._observePropertyChangesSubscriptionForParent) {
+        this._observePropertyChangesSubscriptionForParent.dispose();
+        delete this._observePropertyChangesSubscriptionForParent;
+      }
+
+      if (parentModel) {
+        // Start telling our new parent about our property changes.
+        // Store the subscription so we can detach it later.
+        this._observePropertyChangesSubscriptionForParent = this.observePropertyChangesRecursively().subscribe(function(changeNotification) {
+          parentModel._recursiveSets.onNext(changeNotification);
+        });
       }
     }
 

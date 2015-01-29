@@ -1,99 +1,205 @@
+require 'set'
+require 'json'
+
+
 class NewUxBootstrapController < ActionController::Base
+
   include CommonPhidippidesMethods
   include UserAuthMethods
+  include CardTypeMapping
 
   before_filter :hook_auth_controller
 
   def bootstrap
-    # Check to make sure they have permission to create a page
-    return render :json => {
-      error: true,
-      reason: "User must be one of these roles: #{ROLES_ALLOWED_TO_WRITE_TO_PHIDIPPIDES.join(', ')}"
-    }, :status => :forbidden unless has_rights?
 
-    # Grab the dataset metadata, for default page info and column/cardinality information
-    if !dataset_metadata
+    # This method needs to accomplish a few things in order to enable 'new UX' views of
+    # existing datasets.
+    #
+    # 1. Check to make sure that the user is authorized to create a new view.
+    #    Crucially, this includes SuperAdmins so that Socrata employees can
+    #    test this functionality without having to impersonate customers.
+    #
+    # 2. Fetch the dataset metadata, which is used downstream to create cards.
+    #    If we cannot fetch the dataset data then we fail early. We will let
+    #    Airbrake know aout this, but not the user.
+    #
+    # 3. Check to see if any 'new UX' pages already exist.
+    #
+    # 4a. If they do, then we send the user to the default or the last page in
+    #     the collection.
+    #
+    # 4b. If no pages already exist, then we need to create one. This is hacky
+    #     and non-deterministic.
+
+
+    # 1. Check to make sure that the user is authorized to create a new view
+    unless can_update_metadata?
+      return render :json => {
+        error: true,
+        reason: "User must be one of these roles: #{ROLES_ALLOWED_TO_UPDATE_METADATA.join(', ')}"
+      }, :status => :forbidden
+    end
+
+    # 2. Fetch the dataset metadata, which is used downstream to create cards.
+    dataset_metadata_response = phidippides.fetch_dataset_metadata(
+      params[:id],
+      :request_id => request_id,
+      :cookies => forwardable_session_cookies
+    )
+
+    unless dataset_metadata_response[:status] == '200' && dataset_metadata_response.try(:[], :body).present?
+      Airbrake.notify(
+        :error_class => "BootstrapUXFailure",
+        :error_message => "Could not retrieve dataset metadata.",
+        :request => { :params => params },
+        :context => { :response => dataset_metadata_response }
+      )
       return render :nothing => true, :status => 404
     end
 
+    dataset_metadata_response_body = dataset_metadata_response[:body]
 
-    # Grab the page 4x4s associated with this dataset id
+    # 3. Check to see if any 'new UX' pages already exist.
     pages_response = page_metadata_manager.pages_for_dataset(
       params[:id],
       :request_id => request_id,
       :cookies => forwardable_session_cookies
     )
 
-    case pages_response[:status]
-    when '200'
-      # If has page ids already, redirect to them
-      pages = pages_response.try(:[], :body).try(:[], :publisher)
-      if pages.present?
-        default_page = nil
-        if dataset_metadata[:defaultPage]
-          default_page = pages.find { |page| page[:pageId] == dataset_metadata[:defaultPage] }
-        end
+    has_publisher_pages = pages_response.try(:[], :body).present? &&
+                          pages_response[:body].try(:[], :publisher).present?
 
-        if default_page
-          return redirect_to "/view/#{default_page[:pageId]}"
-        else
-          set_default_page(dataset_metadata, pages.last[:pageId])
-          return redirect_to "/view/#{pages.last[:pageId]}"
+    request_successful_and_has_publisher_pages =
+      has_publisher_pages && pages_response[:status] == '200'
+
+    request_successful_but_no_pages =
+      ((!has_publisher_pages && pages_response[:status] == '200') ||
+        pages_response[:status] == '404')
+
+
+    # 4a. There is at least one 'New UX' page already, so we can find a default.
+    if request_successful_and_has_publisher_pages
+
+      pages = pages_response[:body][:publisher]
+
+      if dataset_metadata_response_body[:defaultPage].present?
+        default_page = pages.find do |page|
+          page[:pageId] == dataset_metadata_response_body[:defaultPage]
         end
       end
-    when '404'
-      # do nothing - let it fall through
+
+      if default_page.present?
+        # If we found a default page as specified in the dataset_metadata,
+        # redirect to it immediately.
+        return redirect_to "/view/#{default_page[:pageId]}"
+      else
+        # If no pages match the default page listed in the dataset_metadata,
+        # choose the last page in the collection and set it as the default page.
+        set_default_page(dataset_metadata_response_body, pages.last[:pageId])
+        return redirect_to "/view/#{pages.last[:pageId]}"
+      end
+
+    # 4b. If there are no pages, we will need to create a default 'New UX' page.
+    elsif request_successful_but_no_pages
+
+      default_page_id = create_default_page(dataset_metadata_response_body)
+
+      unless default_page_id.present?
+        flash[:error] = I18n.t('screens.ds.new_ux_error')
+        return redirect_to action: 'show', controller: 'datasets'
+      end
+
+      # Set the newly-created page as the default.
+      set_default_page(dataset_metadata_response_body, default_page_id)
+      return redirect_to "/view/#{default_page_id}"
+
+    # This is a server error so we should notify Airbrake.
     else
+
       Airbrake.notify(
         :error_class => "BootstrapUXFailure",
-        :error_message => "Dataset #{params[:id]} failed to return pages for bootstrapping.",
+        :error_message => "Dataset #{params[:id].inspect} failed to return pages for bootstrapping.",
         :request => { :params => params },
         :context => { :pages_response => pages_response }
       )
-      Rails.logger.error("Dataset #{params[:id]} failed to return pages for bootstrapping. " +
-                         "#{pages_response[:status]} #{pages_response[:body]}")
-      flash[:error] = I18n.t('screens.ds.new_ux_error')
-      return redirect_to action: 'show', controller: 'datasets'
-    end
-
-
-    newux_page = create_new_ux_page(dataset_metadata)
-
-    page_creation_result = page_metadata_manager.create(
-      newux_page,
-      :request_id => request_id,
-      :cookies => forwardable_session_cookies
-    )
-
-    if page_creation_result[:status] != '200'
-      Airbrake.notify(
-        :error_class => "BootstrapUXFailure",
-        :error_message => "Error creating page for dataset #{params[:id]}",
-        :request => { :params => params },
-        :context => { :page_creation_result => page_creation_result }
+      Rails.logger.error(
+        "Dataset #{params[:id].inspect} failed to return pages for bootstrapping. " \
+        "Response: #{pages_response.inspect}"
       )
-      Rails.logger.error("Error creating page for dataset #{params[:id]}: #{page_creation_result}")
       flash[:error] = I18n.t('screens.ds.new_ux_error')
       return redirect_to action: 'show', controller: 'datasets'
+
     end
 
-    page_id = page_creation_result[:body][:pageId]
-
-    # Set the default page to this page we just created.
-    set_default_page(dataset_metadata, page_id)
-    return redirect_to "/view/#{page_id}"
   end
+
 
   private
 
-  include CardTypeMapping
-  require 'set'
-  require 'json'
 
   # An arbitrary number of cards to create, if there are that many columns available
   MAX_NUMBER_OF_CARDS = 10
 
-  def create_new_ux_page(new_dataset_metadata)
+
+  def set_default_page(dataset_metadata, page_id)
+
+    # Set the specified page as the default.
+    dataset_metadata[:defaultPage] = page_id
+
+    # Send a request to phidippides to set the default page.
+    dataset_metadata_response = phidippides.update_dataset_metadata(dataset_metadata)
+
+    unless dataset_metadata_response[:status] == '200'
+      Airbrake.notify(
+        :error_class => "BootstrapUXFailure",
+        :error_message => "Dataset #{params[:id].inspect} failed to return pages for bootstrapping.",
+        :request => { :params => params },
+        :context => { :pages_response => pages_response }
+      )
+      Rails.logger.error(
+        "Could not save new default page #{page_id.inspect} " \
+        "Dataset #{params[:id].inspect}. " \
+        "Response: #{dataset_metadata_response.inspect}"
+      )
+    end
+
+  end
+
+
+  def create_default_page(dataset_metadata)
+
+    new_ux_page = generate_page_metadata(dataset_metadata)
+
+    page_creation_response = page_metadata_manager.create(
+      new_ux_page,
+      :request_id => request_id,
+      :cookies => forwardable_session_cookies
+    )
+
+    page_id = page_creation_response.try(:[], :body).try(:[], :pageId)
+
+    unless page_creation_response[:status] == '200' && page_id.present?
+
+      # Somehow the page creation failed so we should notify Airbrake.
+      Airbrake.notify(
+        :error_class => "BootstrapUXFailure",
+        :error_message => "Error creating page for dataset #{params[:id]}",
+        :request => { :params => params },
+        :context => { :page_creation_result => page_creation_response }
+      )
+      Rails.logger.error(
+        "Error creating page for dataset #{params[:id]}. " \
+        "Response: #{page_creation_response.inspect}"
+      )
+
+    end
+
+    page_id
+
+  end
+
+
+  def generate_page_metadata(new_dataset_metadata)
     # Keep track of the types of cards we added, so we can give a spread
     added_card_types = Set.new
     skipped_cards_by_type = Hash.new { |h, k| h[k] = [] }
@@ -146,17 +252,6 @@ class NewUxBootstrapController < ActionController::Base
     }
   end
 
-  def set_default_page(new_dataset_metadata, page_id)
-    # Set the last page to be the default page
-    new_dataset_metadata[:defaultPage] = page_id
-    # Send a request to phidippides to set the default page.
-    result = phidippides.update_dataset_metadata(new_dataset_metadata)
-    if result[:status] != '200'
-      # It's more important to do a redirect than it is to save the default page, so just log it.
-      Rails.logger.warn('Error saving new default page for ' +
-                        "dataset_id=#{params[:id]}, page_id=#{page_id}: #{result}")
-    end
-  end
 
   def dataset_size
     # Get the size of the dataset so we can compare it against the cardinality when creating cards
@@ -165,15 +260,17 @@ class NewUxBootstrapController < ActionController::Base
         CoreServer::Base.connection.get_request("/id/#{params[:id]}?%24query=select+count(0)")
       )[0]['count_0'].to_i
     rescue CoreServer::Error => e
-      Rails.logger.error('Core server error while retrieving dataset size of dataset ' +
-                         "(#{params[:id]}): #{e}")
+      Rails.logger.error(
+        "Core server error while retrieving dataset size of dataset " \
+        "(#{params[:id]}): #{e}"
+      )
       nil
     end
   end
+
 
   def dataset
     View.find(params[:id])
   end
 
 end
-

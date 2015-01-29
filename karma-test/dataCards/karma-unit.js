@@ -50,13 +50,13 @@ module.exports = function ( karma ) {
       'bower_components/showdown/src/showdown.js',
       'bower_components/angular/angular.js',
       /*    Map-specific libraries    */
-      'bower_components/leaflet/dist/leaflet.js',
+      'public/javascripts/plugins/leaflet.js',
       'bower_components/chroma-js/chroma.js',
       'bower_components/simple-statistics/src/simple_statistics.js',
       'public/javascripts/util/typed-arrays.js',
       'public/javascripts/bower/pbf.min.js',
       'public/javascripts/bower/vectortile.min.js',
-      'app/styles/bower/leaflet.css',
+      'app/styles/leaflet.css',
       'app/styles/dataCards/testing.css',
       /* ------- */
       'bower_components/angular-mocks/angular-mocks.js',

@@ -4,6 +4,12 @@ describe("CardDataService", function() {
 
   var fake4x4 = 'fake-data';
 
+  var countAggregation = {
+    'function': 'count',
+    'column': null,
+    'unit': 'rowDisplayUnit'
+  };
+
   /**
    * Takes a uri and returns a regex that matches plausible encodings of it in a uri.
    */
@@ -51,7 +57,7 @@ describe("CardDataService", function() {
     });
 
     it('should access the correct dataset', function(done) {
-      var response = CardDataService.getData('fakeNumberColumn', fake4x4);
+      var response = CardDataService.getData('fakeNumberColumn', fake4x4, null, countAggregation);
       response.then(function() {
         done();
       });
@@ -60,7 +66,7 @@ describe("CardDataService", function() {
 
     it('should not alias a column whose name is "name"', function() {
       $httpBackend.expectGET(toUriRegex('/api/id/{0}.json?$query=select name, count(*) as value  group by name order by count(*) desc limit 200'.format(fake4x4)));
-      CardDataService.getData('name', fake4x4);
+      CardDataService.getData('name', fake4x4, null, countAggregation);
       $httpBackend.flush();
     });
 
@@ -68,8 +74,8 @@ describe("CardDataService", function() {
       $httpBackend.expectGET(toUriRegex('/api/id/{0}.json?$query=select fakeNumberColumn as name, count(*) as value  group by fakeNumberColumn order by count(*) desc limit 200'.format(fake4x4)));
       $httpBackend.expectGET(toUriRegex('/api/id/{0}.json?$query=select fakeNumberColumn as name, count(*) as value where MAGICAL_WHERE_CLAUSE group by fakeNumberColumn order by count(*) desc limit 200'.format(fake4x4)));
 
-      CardDataService.getData('fakeNumberColumn', fake4x4);
-      CardDataService.getData('fakeNumberColumn', fake4x4, 'MAGICAL_WHERE_CLAUSE');
+      CardDataService.getData('fakeNumberColumn', fake4x4, null, countAggregation);
+      CardDataService.getData('fakeNumberColumn', fake4x4, 'MAGICAL_WHERE_CLAUSE', countAggregation);
 
       $httpBackend.flush();
     });
@@ -78,27 +84,27 @@ describe("CardDataService", function() {
       $httpBackend.expectGET(toUriRegex('/api/id/{0}.json?$query=select fakeNumberColumn as name, sum(fakeNumberColumn) as value  group by fakeNumberColumn order by sum(fakeNumberColumn) desc limit 200'.format(fake4x4)));
       $httpBackend.expectGET(toUriRegex('/api/id/{0}.json?$query=select fakeNumberColumn as name, sum(fakeNumberColumn) as value where MAGICAL_WHERE_CLAUSE group by fakeNumberColumn order by sum(fakeNumberColumn) desc limit 200'.format(fake4x4)));
 
-      CardDataService.getData('fakeNumberColumn', fake4x4, null, { aggregation: 'sum', field: 'fakeNumberColumn' });
-      CardDataService.getData('fakeNumberColumn', fake4x4, 'MAGICAL_WHERE_CLAUSE', { aggregation: 'sum', field: 'fakeNumberColumn' });
+      CardDataService.getData('fakeNumberColumn', fake4x4, null, { 'function': 'sum', 'column': { name: 'fakeNumberColumn' } });
+      CardDataService.getData('fakeNumberColumn', fake4x4, 'MAGICAL_WHERE_CLAUSE', { 'function': 'sum', 'column': { name: 'fakeNumberColumn' } });
 
       $httpBackend.flush();
     });
 
     it('should reject the promise on 404', function(done) {
       fakeDataRequestHandler.respond(404, []);
-      assertReject(CardDataService.getData('fakeNumberColumn', fake4x4), done);
+      assertReject(CardDataService.getData('fakeNumberColumn', fake4x4, null, countAggregation), done);
       $httpBackend.flush();
     });
 
     it('should reject the promise on 500', function(done) {
       fakeDataRequestHandler.respond(500, []);
-      assertReject(CardDataService.getData('fakeNumberColumn', fake4x4), done);
+      assertReject(CardDataService.getData('fakeNumberColumn', fake4x4, null, countAggregation), done);
       $httpBackend.flush();
     });
 
     it('should reject the promise on 503', function(done) {
       fakeDataRequestHandler.respond(503, []);
-      assertReject(CardDataService.getData('fakeNumberColumn', fake4x4), done);
+      assertReject(CardDataService.getData('fakeNumberColumn', fake4x4, null, countAggregation), done);
       $httpBackend.flush();
     });
 
@@ -112,7 +118,7 @@ describe("CardDataService", function() {
         { name: 'undef', value: undefined }
       ];
       fakeDataRequestHandler.respond(fakeData);
-      var response = CardDataService.getData('fakeNumberColumn', fake4x4);
+      var response = CardDataService.getData('fakeNumberColumn', fake4x4, null, countAggregation);
       response.then(function(data) {
         expect(data).to.deep.equal([
           { name: 'alreadyInt', value: 3 },
@@ -261,7 +267,7 @@ describe("CardDataService", function() {
     it('should access the correct dataset', function(done) {
       var fakeData = [];
       fakeDataRequestHandler.respond(fakeData);
-      var response = CardDataService.getTimelineData('fakeNumberColumn', fake4x4, '', 'DAY');
+      var response = CardDataService.getTimelineData('fakeNumberColumn', fake4x4, '', 'DAY', countAggregation);
       response.then(function() {
         done();
       });
@@ -274,29 +280,29 @@ describe("CardDataService", function() {
       // ' and '. If this test is broken, look there first.
       $httpBackend.expectGET(toUriRegex('/api/id/{1}.json?$query=SELECT date_trunc_ymd(fakeNumberColumn) AS date_trunc, count(*) AS value WHERE date_trunc IS NOT NULL GROUP BY date_trunc'.format('fakeNumberColumn', fake4x4)));
       $httpBackend.expectGET(toUriRegex('/api/id/{1}.json?$query=SELECT date_trunc_ymd(fakeNumberColumn) AS date_trunc, count(*) AS value WHERE date_trunc IS NOT NULL AND MAGICAL_WHERE_CLAUSE GROUP BY date_trunc'.format('fakeNumberColumn', fake4x4)));
-      CardDataService.getTimelineData('fakeNumberColumn', fake4x4, '', 'DAY');
-      CardDataService.getTimelineData('fakeNumberColumn', fake4x4, 'MAGICAL_WHERE_CLAUSE', 'DAY');
+      CardDataService.getTimelineData('fakeNumberColumn', fake4x4, '', 'DAY', countAggregation);
+      CardDataService.getTimelineData('fakeNumberColumn', fake4x4, 'MAGICAL_WHERE_CLAUSE', 'DAY', countAggregation);
       $httpBackend.flush();
     });
 
     it('should throw given an unsupported precision', function() {
-      expect(function() { CardDataService.getTimelineData('field', 'dead-beef', '', ''); }).to.throw();
-      expect(function() { CardDataService.getTimelineData('field', 'dead-beef', '', 'day'); }).to.throw(); // correct one is DAY
-      expect(function() { CardDataService.getTimelineData('field', 'dead-beef', '', 'WEEK'); }).to.throw();
-      expect(function() { CardDataService.getTimelineData('field', 'dead-beef', '', 'FOO'); }).to.throw();
+      expect(function() { CardDataService.getTimelineData('field', 'dead-beef', '', '', countAggregation); }).to.throw();
+      expect(function() { CardDataService.getTimelineData('field', 'dead-beef', '', 'day', countAggregation); }).to.throw(); // correct one is DAY
+      expect(function() { CardDataService.getTimelineData('field', 'dead-beef', '', 'WEEK', countAggregation); }).to.throw();
+      expect(function() { CardDataService.getTimelineData('field', 'dead-beef', '', 'FOO', countAggregation); }).to.throw();
     });
 
     it('should correctly choose the date truncation function', function() {
       $httpBackend.expectGET(/date_trunc_ymd\(fakeNumberColumn\)/);
-      CardDataService.getTimelineData('fakeNumberColumn', fake4x4, '', 'DAY');
+      CardDataService.getTimelineData('fakeNumberColumn', fake4x4, '', 'DAY', countAggregation);
       $httpBackend.flush();
 
       $httpBackend.expectGET(/date_trunc_ym\(fakeNumberColumn\)/);
-      CardDataService.getTimelineData('fakeNumberColumn', fake4x4, '', 'MONTH');
+      CardDataService.getTimelineData('fakeNumberColumn', fake4x4, '', 'MONTH', countAggregation);
       $httpBackend.flush();
 
       $httpBackend.expectGET(/date_trunc_y\(fakeNumberColumn\)/);
-      CardDataService.getTimelineData('fakeNumberColumn', fake4x4, '', 'YEAR');
+      CardDataService.getTimelineData('fakeNumberColumn', fake4x4, '', 'YEAR', countAggregation);
       $httpBackend.flush();
     });
 
@@ -308,7 +314,7 @@ describe("CardDataService", function() {
         {"date_trunc":"2014-05-13T00:00:00.000","value":"718"}
       ];
       fakeDataRequestHandler.respond(fakeData);
-      var response = CardDataService.getTimelineData('fakeNumberColumn', fake4x4, '', 'DAY');
+      var response = CardDataService.getTimelineData('fakeNumberColumn', fake4x4, '', 'DAY', countAggregation);
       response.then(function(data) {
         // 21 is the number of date buckets we expect the call to generate`based on the dates in fakeData.
         expect(data.length).to.equal(21);
@@ -327,7 +333,7 @@ describe("CardDataService", function() {
         {"date_trunc":"2014-05-13T00:00:00.000","value":"718"}
       ];
       fakeDataRequestHandler.respond(fakeData);
-      var response = CardDataService.getTimelineData('fakeNumberColumn', fake4x4, '', 'DAY');
+      var response = CardDataService.getTimelineData('fakeNumberColumn', fake4x4, '', 'DAY', countAggregation);
       response.then(function(data) {
         var sum = _.reduce(data, function(acc, datum) {
           return acc + datum.value;
@@ -347,31 +353,31 @@ describe("CardDataService", function() {
         {"date_trunc":"2014-05-13T00:00:00.000","value":"718"}
       ];
       fakeDataRequestHandler.respond(fakeData);
-      assertReject(CardDataService.getTimelineData('fakeNumberColumn', fake4x4, '', 'DAY'), done);
+      assertReject(CardDataService.getTimelineData('fakeNumberColumn', fake4x4, '', 'DAY', countAggregation), done);
       $httpBackend.flush();
     });
     it('should reject the promise on 404', function(done) {
       fakeDataRequestHandler.respond(404, []);
-      assertReject(CardDataService.getTimelineData('fakeNumberColumn', fake4x4, '', 'DAY'), done);
+      assertReject(CardDataService.getTimelineData('fakeNumberColumn', fake4x4, '', 'DAY', countAggregation), done);
       $httpBackend.flush();
     });
 
     it('should reject the promise on 500', function(done) {
       fakeDataRequestHandler.respond(500, []);
-      assertReject(CardDataService.getTimelineData('fakeNumberColumn', fake4x4, '', 'DAY'), done);
+      assertReject(CardDataService.getTimelineData('fakeNumberColumn', fake4x4, '', 'DAY', countAggregation), done);
       $httpBackend.flush();
     });
 
     it('should reject the promise on 503', function(done) {
       fakeDataRequestHandler.respond(503, []);
-      assertReject(CardDataService.getTimelineData('fakeNumberColumn', fake4x4, '', 'DAY'), done);
+      assertReject(CardDataService.getTimelineData('fakeNumberColumn', fake4x4, '', 'DAY', countAggregation), done);
       $httpBackend.flush();
     });
 
     it('should reject the promise when given an empty string response', function(done) {
       var fakeData = '';
       fakeDataRequestHandler.respond(fakeData);
-      var response = CardDataService.getTimelineData('fakeNumberColumn', fake4x4, '', 'DAY');
+      var response = CardDataService.getTimelineData('fakeNumberColumn', fake4x4, '', 'DAY', countAggregation);
       assertReject(response, done);
       $httpBackend.flush();
     });
@@ -379,7 +385,7 @@ describe("CardDataService", function() {
     it('should give an empty array when given an empty array response', function(done) {
       var fakeData = [];
       fakeDataRequestHandler.respond(fakeData);
-      var response = CardDataService.getTimelineData('fakeNumberColumn', fake4x4, '', 'DAY');
+      var response = CardDataService.getTimelineData('fakeNumberColumn', fake4x4, '', 'DAY', countAggregation);
       response.then(function(d) {
         expect(d).to.deep.equal([]);
         done();
@@ -390,7 +396,7 @@ describe("CardDataService", function() {
     it('should reject the promise when given an empty object response', function(done) {
       var fakeData = {};
       fakeDataRequestHandler.respond(fakeData);
-      var response = CardDataService.getTimelineData('fakeNumberColumn', fake4x4, '', 'DAY');
+      var response = CardDataService.getTimelineData('fakeNumberColumn', fake4x4, '', 'DAY', countAggregation);
       assertReject(response, done);
       $httpBackend.flush();
     });

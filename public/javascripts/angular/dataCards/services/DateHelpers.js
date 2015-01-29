@@ -62,8 +62,8 @@
     }
 
     return {
-      decrementDateByInterval: decrementDateByInterval,
-      incrementDateByInterval: incrementDateByInterval
+      decrementDateByHalfInterval: decrementDateByHalfInterval,
+      incrementDateByHalfInterval: incrementDateByHalfInterval
     };
 
   }

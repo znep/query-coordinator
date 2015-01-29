@@ -53,10 +53,8 @@ describe("A Timeline Chart Card Visualization", function() {
         expect(transformed.values[i].filtered).to.equal(filteredValues[i]);
         expect(transformed.values[i].unfiltered).to.equal(unfilteredValues[i]);
       }
-      expect(transformed.labelUnit).to.equal('day');
     });
   });
 
-  // TODO: MOAR TESTS
 });
 

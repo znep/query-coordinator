@@ -78,7 +78,7 @@ describe('Download Service', function() {
     it('runs the error callback if the page loads', function(done) {
       var realIframe = $('<iframe />');
 
-      DownloadService.download('about:blank', realIframe).
+      DownloadService.download('/stubs/images/generic-logo.png', realIframe).
         then(function() {
           throw new Error('this promise should not be resolved');
         }, function(error) {
@@ -87,7 +87,7 @@ describe('Download Service', function() {
           expect(_.has(error, 'error')).to.equal(true);
           // For IE9, we can't access the contents of the iframe on error, so we just set error.error
           // to true.
-          expect('' === error.error || error.error).to.equal(true);
+          expect('' === error.error || error.error).to.be.ok;
           // make sure it cleans up
           expect(realIframe.closest('body').length).to.equal(0);
           realIframe.remove();

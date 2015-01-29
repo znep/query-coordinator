@@ -171,6 +171,15 @@ describe('timelineChart', function() {
 
   describe('axis creation', function() {
 
+    it('should create 6 x-axis ticks and 7 x-axis labels with default test data', function() {
+
+      var chart = createTimelineChart(640, false);
+
+      expect($('.x-tick').length).to.equal(6);
+      expect($('.x-tick-label').length).to.equal(7);
+
+    });
+
     it('should create 3 y-axis ticks and 3 y-axis labels', function() {
 
       var chart = createTimelineChart(640, false);
@@ -225,6 +234,9 @@ describe('timelineChart', function() {
         var labels = chart.find('.x-tick-label');
         expect(labels.length).to.be.greaterThan(0);
         labels.each(function() {
+          // The last x-axis label may not include text if it does not
+          // span the entire range (e.g. if there are fewer than 10 years
+          // on the x-axis after the last decade label.
           if (this.innerHTML !== '') {
             expect(this.innerHTML).to.match(/\b20[0-9]0s\b/);
           }
@@ -246,6 +258,9 @@ describe('timelineChart', function() {
         var labels = chart.find('.x-tick-label');
         expect(labels.length).to.be.greaterThan(0);
         labels.each(function() {
+          // The last x-axis label may not include text if it does not
+          // span the entire range (e.g. if there are fewer than 10 years
+          // on the x-axis after the last decade label.
           if (this.innerHTML !== '') {
             expect(this.innerHTML).to.match(/\b20[01][0-9]\b/);
           }
@@ -267,13 +282,17 @@ describe('timelineChart', function() {
         var labels = chart.find('.x-tick-label');
         expect(labels.length).to.be.greaterThan(0);
         labels.each(function() {
+          // The last x-axis label may not include text if it does not
+          // span the entire range (e.g. if there are fewer than 10 years
+          // on the x-axis after the last decade label.
           if (this.innerHTML !== '') {
             expect(this.innerHTML).to.match(/\b[A-Z][a-z][a-z] ['’]1[45]\b/);
           }
         });
       });
 
-      it('should not render an extra 1 before abbreviated years in the teens when formatted by month.', function() {
+      // See CORE-4216
+      it('should not render an extra 1 before abbreviated years in the teens when formatted by month (CORE-4216).', function() {
         var chart = createTimelineChart(640, false, transformChartData(
           _.map(_.range(80), function(i) {
             return {
@@ -288,6 +307,9 @@ describe('timelineChart', function() {
         var labels = chart.find('.x-tick-label');
         expect(labels.length).to.be.greaterThan(0);
         labels.each(function() {
+          // The last x-axis label may not include text if it does not
+          // span the entire range (e.g. if there are fewer than 10 years
+          // on the x-axis after the last decade label.
           if (this.innerHTML !== '') {
             expect(this.innerHTML).to.match(/\b[A-Z][a-z][a-z] ['’][01][019]\b/);
           }

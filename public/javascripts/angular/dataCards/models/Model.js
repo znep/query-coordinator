@@ -276,7 +276,7 @@ angular.module('dataCards.models').factory('Model', function(Class, ModelHelper)
         } else {
           return val;
         }
-      };
+      }
 
       _.forOwn(self._propertyObservables, function(seq, propertyName) {
         if (self._ephemeralProperties[propertyName]) {

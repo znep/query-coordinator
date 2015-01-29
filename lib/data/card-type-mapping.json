@@ -57,6 +57,7 @@
       "*": { "lowCardinalityDefault": "table", "highCardinalityDefault": "table", "available": ["table"] }
     }
   },
+  "fallbackCardType": { "lowCardinalityDefault": "invalid", "highCardinalityDefault": "invalid", "available": [] },
   "cardinality": {
     "min": 2,
     "threshold": 35

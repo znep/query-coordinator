@@ -17,6 +17,7 @@ describe('addCardDialog', function() {
   beforeEach(module('/angular_templates/dataCards/cardVisualizationTable.html'));
   beforeEach(module('/angular_templates/dataCards/cardVisualizationTimelineChart.html'));
   beforeEach(module('/angular_templates/dataCards/cardVisualization.html'));
+  beforeEach(module('/angular_templates/dataCards/cardVisualizationInvalid.html'));
   beforeEach(module('/angular_templates/dataCards/socSelect.html'));
   beforeEach(module('/angular_templates/dataCards/table.html'));
   beforeEach(module('/angular_templates/dataCards/timelineChart.html'));

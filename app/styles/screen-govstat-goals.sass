@@ -749,6 +749,18 @@ $wizard_border_color: #ccc
       .datasetName
         margin-left: 0.8em
 
+
+  // dataset filtering
+  .filterDataset
+    .filterDatasetContent.filterCount-1
+      .columnFilterGroup > .editRemove
+        opacity: 0
+        pointer-events: none
+    .columnFilterItemGroup.filterItemCount-1
+      .editRemove
+        opacity: 0
+        pointer-events: none
+
   .selectDataset
     .selectedDataset
       float: left
@@ -785,7 +797,7 @@ $wizard_border_color: #ccc
         &:first-child
           border-top: none
 
-  .selectValueType, .selectAggFunction, .selectValueColumn, .selectDateColumn, .calculationType
+  .selectValueType, .selectAggFunction, .selectValueColumn, .selectDateColumn, .calculationType, .prefilterDataset
     .listEnum li
       border-top: 1px solid #ddd
       padding: 0.5em 0 0.7em

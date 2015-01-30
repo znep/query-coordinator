@@ -169,12 +169,29 @@ describe('timelineChart', function() {
 
   describe('axis creation', function() {
 
+    // A valid x-axis scale for this test data will have one more label
+    // than there are ticks. Imagine a piece of paper with six vertical
+    // lines drawn on it at a constant interval where no line is at the
+    // edge of the paper. There will be a gap before every tick and one
+    // additional one after the last tick.
     it('should create 6 x-axis ticks and 7 x-axis labels with default test data', function() {
 
       var chart = createTimelineChart(640, false);
 
       expect($('.x-tick').length).to.equal(6);
       expect($('.x-tick-label').length).to.equal(7);
+
+    });
+
+    it('should create x-axis labels with unique horizontal positions', function() {
+
+      var chart = createTimelineChart(640, false);
+
+      var positions = _.map($('.x-tick-label'), function(label) {
+        return $(label).css('left');
+      });
+
+      expect(_.uniq(positions).length).to.equal(positions.length);
 
     });
 
@@ -186,24 +203,12 @@ describe('timelineChart', function() {
 
     });
 
-    it('should create y-axis ticks with unique positions', function() {
+    it('should create y-axis ticks with unique vertical positions', function() {
 
       var chart = createTimelineChart(640, false, negativeTestData);
 
       var positions = _.map($('.y-tick'), function(tick) {
-        return $(tick).attr('style');
-      });
-
-      expect(_.uniq(positions).length).to.equal(positions.length);
-
-    });
-
-    it('should create x-axis labels with unique positions', function() {
-
-      var chart = createTimelineChart(640, false);
-
-      var positions = _.map($('.x-tick-label'), function(label) {
-        return $(label).attr('style');
+        return $(tick).css('bottom');
       });
 
       expect(_.uniq(positions).length).to.equal(positions.length);

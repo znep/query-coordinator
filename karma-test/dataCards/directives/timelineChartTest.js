@@ -247,6 +247,30 @@ describe('timelineChart', function() {
         });
       });
 
+      it('formats for decade, even if the data is not exactly on the year mark', function() {
+        var chart = createTimelineChart(640, false, transformChartData(
+          _.map(_.range(30), function(i) {
+            return {
+              date: moment(new Date(2000 + i, 2, 3)),
+              total: i,
+              filtered: 0
+            }
+          }),
+          {"aggregation":"count","field":null}
+       ));
+
+        var labels = chart.find('.x-tick-label');
+        expect(labels.length).to.be.greaterThan(0);
+        labels.each(function() {
+          // The last x-axis label may not include text if it does not
+          // span the entire range (e.g. if there are fewer than 10 years
+          // on the x-axis after the last decade label.
+          if (this.innerHTML !== '') {
+            expect(this.innerHTML).to.match(/\b20[0-9]0s\b/);
+          }
+        });
+      });
+
       it('should format for year when the data spans 2 < x < 20 years', function() {
         var chart = createTimelineChart(640, false, transformChartData(
           _.map(_.range(19), function(i) {

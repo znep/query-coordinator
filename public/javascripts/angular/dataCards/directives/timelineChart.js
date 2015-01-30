@@ -407,16 +407,25 @@
 
             case 'DECADE':
               difference = endDate.getFullYear() - startDate.getFullYear();
-              if (difference < 10) {
-                dateFormatPrecision = 'YEAR';
-              } else if (difference === 10) {
+              // We should not show a range if only a single year is selected.
+              // Similarly, we should show exact years if the selection does
+              // not fall on exact decade-by-decade boundaries. Otherwise, we
+              // should show a decade-specific range, e.g. '1930s - 1940s'.
+              if (difference === 10) {
                 showRange = false;
+              } else if (startDate.getFullYear() % 10 !== 0 || endDate.getFullYear() % 10 !== 0) {
+                dateFormatPrecision = 'YEAR';
               }
               break;
 
             case 'YEAR':
               difference = numberOfMonthsDifferent(startDate, endDate);
-              if (difference < 11) {
+              // We should still show the month-to-month label even if
+              // the interval is exactly one year in the case that the
+              // start date is not January--otherwise we see a 1-year
+              // span that, e.g., starts in June 2000 and ends in June
+              // 2001 still listed as '2000'. 
+              if (difference < 11 || (startDate.getMonth() !== 0)) {
                 dateFormatPrecision = 'MONTH';
               } else if (difference === 11) {
                 showRange = false;

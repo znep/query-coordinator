@@ -227,7 +227,8 @@ describe('columnChart', function() {
         {"name": "THEFT", "total": maxHeight},
         {"name": "FOULLANGUAGE", "total": 50},
         {"name": "JAYWALKING", "total": 1},
-        {"name": "PICKINGNOSE", "total": .4}
+        {"name": "PICKINGNOSE", "total": .4},
+        {"name": "BEINGAWESOME", "total": 0}
       ];
       chart.scope.$digest();
 
@@ -238,6 +239,8 @@ describe('columnChart', function() {
       expect(bars.eq(2).height()).to.equal(1);
       // Now make sure the sub-pixel one rounded up
       expect(bars.eq(3).height()).to.equal(1);
+      // But the zero-pixel one isn't.
+      expect(bars.eq(4).height()).to.equal(0);
     });
   });
 

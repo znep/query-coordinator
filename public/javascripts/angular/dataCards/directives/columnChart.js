@@ -58,7 +58,22 @@ angular.module('socrataCommon.directives').directive('columnChart', function($pa
     bottomMargin = bottomMargin > maximumBottomMargin ? maximumBottomMargin : bottomMargin;
 
     var chartHeight = Math.max(0, dimensions.height - topMargin - bottomMargin - horizontalScrollbarHeight);
-    var verticalScale = d3.scale.linear().range([chartHeight, 0]).clamp(true);
+
+    var allData = _.pluck(chartData, 'total').concat(
+      showFiltered ? _.pluck(chartData, 'filtered') : []
+    );
+
+    function makeDomainIncludeZero(domain) {
+      var min = domain[0], max = domain[1];
+      if (min > 0) { return [ 0, max ]; }
+      if (max < 0) { return [ min, 0]; }
+      return domain;
+    }
+
+    var domain = makeDomainIncludeZero(d3.extent(allData));
+
+    var verticalScale = d3.scale.linear().domain(domain).range([0, chartHeight]).clamp(false);
+    var y0 = verticalScale(0);
     var horizontalScale = null;
     var rightOffset = 0;
     var rangeBand = 0;
@@ -120,9 +135,6 @@ angular.module('socrataCommon.directives').directive('columnChart', function($pa
       css('padding-bottom', bottomMargin).
       css('top', 'initial').
       css('width', chartWidth);
-
-    var maxValue = _.isEmpty(chartData) ? 0 : chartData[0].total;
-    verticalScale.domain([maxValue, 0]);
 
     var ticks = function() {
       var numberOfTicks = 3;
@@ -309,17 +321,15 @@ angular.module('socrataCommon.directives').directive('columnChart', function($pa
       // Update the position of the individual bars.
       bars.
         style('width', rangeBand + 'px').
-        style('height', function(d) {
-          var verticalScaleValue = verticalScale(d);
-          if (verticalScaleValue > 0) {
-            return Math.ceil(verticalScaleValue) + 'px';
-          } else if (verticalScaleValue < 0) {
-            return Math.floor(verticalScaleValue) + 'px';
-          } else {
-            return '0';
-          }
+        style('height', function (d) {
+          return Math.max(
+            d === 0 ? 0 : 1,  // Always show at least one pixel for non-zero-valued bars.
+            Math.abs(verticalScale(d) - y0)
+          )+ 'px';
         }).
-        style('bottom', 0).
+        style('bottom', function(d) {
+          return verticalScale(Math.min(0, d)) + 'px';
+        }).
         attr('class', function(d, i) {
           return 'bar ' + (i === 0 ? 'unfiltered' : 'filtered');
         });

@@ -3,9 +3,6 @@ angular.module('socrataCommon.directives').directive('columnChart', function($pa
 
   var renderColumnChart = function(element, chartData, showFiltered, dimensions, expanded, rowDisplayUnit) {
 
-    var numberOfBars = chartData.length;
-
-    var barPadding = 0.25;
     var topMargin = 0; // Set to zero so .card-text could control padding b/t text & visualization
     var bottomMargin; // Calculated based on label text length
     var tipHeight = 10;
@@ -13,10 +10,6 @@ angular.module('socrataCommon.directives').directive('columnChart', function($pa
     var numberOfDefaultLabels = expanded ? chartData.length : 3;
     var undefinedPlaceholder = '(No value)';
     var maximumBottomMargin = 140;
-    var minSmallCardBarWidth = 8;
-    var maxSmallCardBarWidth = 30;
-    var minExpandedCardBarWidth = 15;
-    var maxExpandedCardBarWidth = 40;
 
     var $chart = element.find('.column-chart-wrapper');
     var $chartScroll = element.find('.chart-scroll');
@@ -59,72 +52,13 @@ angular.module('socrataCommon.directives').directive('columnChart', function($pa
 
     var chartHeight = Math.max(0, dimensions.height - topMargin - bottomMargin - horizontalScrollbarHeight);
 
-    var allData = _.pluck(chartData, 'total').concat(
-      showFiltered ? _.pluck(chartData, 'filtered') : []
-    );
-
-    function makeDomainIncludeZero(domain) {
-      var min = domain[0], max = domain[1];
-      if (min > 0) { return [ 0, max ]; }
-      if (max < 0) { return [ min, 0]; }
-      return domain;
-    }
-
-    var domain = makeDomainIncludeZero(d3.extent(allData));
-
-    var verticalScale = d3.scale.linear().domain(domain).range([0, chartHeight]).clamp(false);
+    var verticalScale = d3.scale.linear().domain(computeDomain(chartData, showFiltered)).range([0, chartHeight]);
     var y0 = verticalScale(0);
-    var horizontalScale = null;
-    var rightOffset = 0;
-    var rangeBand = 0;
-    var minBarWidth = 0;
-    var maxBarWidth = 0;
 
-    if (expanded) {
-      minBarWidth = minExpandedCardBarWidth;
-      maxBarWidth = maxExpandedCardBarWidth;
-    } else {
-      minBarWidth = minSmallCardBarWidth;
-      maxBarWidth = maxSmallCardBarWidth;
-    }
-
-    var computeChartDimensions = function(rangeInterval) {
-      horizontalScale = d3.scale.ordinal().rangeBands(
-        [0, Math.ceil(rangeInterval)], barPadding).domain(_.pluck(chartData, 'name')
-      );
-      rightOffset = horizontalScale.range()[numberOfBars - 1];
-      rangeBand = Math.ceil(horizontalScale.rangeBand());
-    };
-
-    computeChartDimensions(chartWidth);
-
-    /*
-    According to the D3 API reference for Ordinal Scales#rangeBands
-    (https://github.com/mbostock/d3/wiki/Ordinal-Scales#ordinal_rangeBands):
-
-    for the method, ordinal.rangeBands(barWidth[, barPadding[, outerPadding]]) = rangeInterval
-
-    barPadding corresponds to the amount of space in the rangeInterval as a percentage of rangeInterval (width in px)
-    ==> rangeInterval = barPadding * rangeInterval + numberOfBars * barWidth
-    ==> (1 - barPadding) * rangeInterval = numberOfBars * barWidth
-    ==> rangeInterval = (numberOfBars * barWidth) / (1 - barPadding)
-
-    */
-
-    var rangeInterval;
-    if (rangeBand < minBarWidth) {
-      // --> desired rangeBand (bar width) is less than accepted minBarWidth
-      // use computeChartDimensions to set rangeBand = minBarWidth
-      // and update horizontalScale & rightOffset accordingly
-      rangeInterval = minBarWidth * numberOfBars / (1 - barPadding);
-      computeChartDimensions(rangeInterval);
-      if (!expanded) chartTruncated = true;
-    } else if (rangeBand > maxBarWidth) {
-      // --> desired rangeBand (bar width) is greater than accepted maxBarWidth
-      // use computeChartDimensions to set rangeBand = maxBarWidth
-      rangeInterval = maxBarWidth * numberOfBars / (1 - barPadding) + maxBarWidth * barPadding;
-      computeChartDimensions(rangeInterval);
-    }
+    var horizontalScaleDetails = computeHorizontalScale(chartWidth, chartData, expanded);
+    var horizontalScale = horizontalScaleDetails.scale;
+    var chartTruncated = horizontalScaleDetails.truncated;
+    var rangeBand = Math.ceil(horizontalScale.rangeBand());
 
     var chartLeftOffset = horizontalScale.range()[0];
     var chartRightEdge = dimensions.width - chartLeftOffset;
@@ -446,6 +380,83 @@ angular.module('socrataCommon.directives').directive('columnChart', function($pa
       $truncationMarker.css('display', 'none');
     }
   };
+
+  function computeDomain(chartData, showFiltered) {
+    var allData = _.pluck(chartData, 'total').concat(
+      showFiltered ? _.pluck(chartData, 'filtered') : []
+    );
+
+    function makeDomainIncludeZero(domain) {
+      var min = domain[0], max = domain[1];
+      if (min > 0) { return [ 0, max ]; }
+      if (max < 0) { return [ min, 0]; }
+      return domain;
+    }
+
+    return makeDomainIncludeZero(d3.extent(allData));
+  }
+
+  function computeHorizontalScale(chartWidth, chartData, expanded) {
+    var horizontalScale;
+
+    var numberOfBars = chartData.length;
+    var barPadding = 0.25;
+    var minBarWidth = 0;
+    var maxBarWidth = 0;
+    var minSmallCardBarWidth = 8;
+    var maxSmallCardBarWidth = 30;
+    var minExpandedCardBarWidth = 15;
+    var maxExpandedCardBarWidth = 40;
+    var chartTruncated = false;
+    var rangeBand;
+
+    if (expanded) {
+      minBarWidth = minExpandedCardBarWidth;
+      maxBarWidth = maxExpandedCardBarWidth;
+    } else {
+      minBarWidth = minSmallCardBarWidth;
+      maxBarWidth = maxSmallCardBarWidth;
+    }
+
+    var computeChartDimensionsForRangeInterval = function(rangeInterval) {
+      horizontalScale = d3.scale.ordinal().rangeBands(
+        [0, Math.ceil(rangeInterval)], barPadding).domain(_.pluck(chartData, 'name')
+      );
+      rangeBand = Math.ceil(horizontalScale.rangeBand());
+    };
+
+    computeChartDimensionsForRangeInterval(chartWidth);
+
+    /*
+    According to the D3 API reference for Ordinal Scales#rangeBands
+    (https://github.com/mbostock/d3/wiki/Ordinal-Scales#ordinal_rangeBands):
+
+    for the method, ordinal.rangeBands(barWidth[, barPadding[, outerPadding]]) = rangeInterval
+
+    barPadding corresponds to the amount of space in the rangeInterval as a percentage of rangeInterval (width in px)
+    ==> rangeInterval = barPadding * rangeInterval + numberOfBars * barWidth
+    ==> (1 - barPadding) * rangeInterval = numberOfBars * barWidth
+    ==> rangeInterval = (numberOfBars * barWidth) / (1 - barPadding)
+
+    */
+
+    if (rangeBand < minBarWidth) {
+      // --> desired rangeBand (bar width) is less than accepted minBarWidth
+      // use computeChartDimensionsForRangeInterval to set rangeBand = minBarWidth
+      // and update horizontalScale accordingly
+      computeChartDimensionsForRangeInterval(minBarWidth * numberOfBars / (1 - barPadding));
+      if (!expanded) chartTruncated = true;
+    } else if (rangeBand > maxBarWidth) {
+      // --> desired rangeBand (bar width) is greater than accepted maxBarWidth
+      // use computeChartDimensionsForRangeInterval to set rangeBand = maxBarWidth
+      computeChartDimensionsForRangeInterval(maxBarWidth * numberOfBars / (1 - barPadding) + maxBarWidth * barPadding);
+    }
+
+    return {
+      scale: horizontalScale,
+      truncated: chartTruncated
+    };
+  }
 
   return {
     template:

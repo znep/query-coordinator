@@ -301,7 +301,7 @@ angular.module('socrataCommon.directives').directive('columnChart', function($pa
 
       // Create 2 bars, total and filtered. Filtered bars default to 0 height if there is no data for them.
       var bars = selection.selectAll('.bar').data(function(d) {
-        return [d.total, d.filtered || 0];
+        return [d.total, showFiltered ? d.filtered : 0];
       });
 
       // Bars are just a div.

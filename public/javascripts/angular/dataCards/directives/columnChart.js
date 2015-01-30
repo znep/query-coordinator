@@ -26,18 +26,14 @@ angular.module('socrataCommon.directives').directive('columnChart', function($pa
       return;
     }
 
+    var maxLabelWidth = computeMaxLabelWidth(element, expanded);
+
     // Compute chart margins
     if (expanded) {
       var maxLength = _.max(chartData.map(function(item) {
         // The size passed to visualLength() below relates to the width of the div.text in the updateLabels().
         return $.capitalizeWithDefault(item.name, undefinedPlaceholder).visualLength('1rem');
       }));
-      var maxLabelWidth;
-      if ($('.description-expanded-wrapper').height() <= 20) {
-        maxLabelWidth = 10.5;
-      } else {
-        maxLabelWidth = 8.5;
-      }
       bottomMargin = Math.floor(Math.min(
         maxLength + $.relativeToPx('1rem'),
         $.relativeToPx(maxLabelWidth + 1 + 'rem')
@@ -52,12 +48,16 @@ angular.module('socrataCommon.directives').directive('columnChart', function($pa
 
     var chartHeight = Math.max(0, dimensions.height - topMargin - bottomMargin - horizontalScrollbarHeight);
 
-    var verticalScale = computeVerticalScale(chartHeight, chartData, showFiltered);
-
     var horizontalScaleDetails = computeHorizontalScale(chartWidth, chartData, expanded);
     var horizontalScale = horizontalScaleDetails.scale;
     var chartTruncated = horizontalScaleDetails.truncated;
     var rangeBand = Math.ceil(horizontalScale.rangeBand());
+
+    // If the chart is not expanded, limit our vert scale computation to what's actually
+    // visible. We still render the bars outside the viewport to speed up horizontal resizes.
+    var chartDataRelevantForVerticalScale = expanded ?
+      chartData : _.first(chartData, Math.ceil(chartWidth / rangeBand) + 1);
+    var verticalScale = computeVerticalScale(chartHeight, chartDataRelevantForVerticalScale, showFiltered);
 
     var chartLeftOffset = horizontalScale.range()[0];
     var chartRightEdge = dimensions.width - chartLeftOffset;
@@ -167,7 +167,7 @@ angular.module('socrataCommon.directives').directive('columnChart', function($pa
             });
 
       // These widths relate to the visualLength() method call in the maxLength calculation above.
-      if (expanded) {
+      if (_.isFinite(maxLabelWidth)) {
         labelDivSelection.
           selectAll('.text').style('width', maxLabelWidth + 'rem');
       }
@@ -459,6 +459,18 @@ angular.module('socrataCommon.directives').directive('columnChart', function($pa
       scale: horizontalScale,
       truncated: chartTruncated
     };
+  }
+
+  function computeMaxLabelWidth(element, expanded) {
+    if (expanded) {
+      if (element.closest('card').find('.description-expanded-wrapper').height() <= 20) {
+        return 10.5;
+      } else {
+        return 8.5;
+      }
+    }
+
+    return Infinity;
   }
 
   return {

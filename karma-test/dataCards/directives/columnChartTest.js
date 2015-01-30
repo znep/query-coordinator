@@ -323,6 +323,54 @@ describe('columnChart', function() {
     });
   });
 
+  describe('y scale', function() {
+    var smallDataPoint = { 'name': 'small', 'total': 1, 'filtered': 1 };
+    var hugeDataPoint = { 'name': 'small', 'total': 10000000, 'filtered': 10000000 };
+
+    var testDataOnlySmall = _.map(_.range(100), _.constant(smallDataPoint));
+    var testDataWithOneBigAtEnd = testDataOnlySmall.concat([hugeDataPoint]);
+
+    describe('when expanded', function() {
+      it('should base the y scale on all data', function() {
+        // Make a prototypal chart with only small values.
+        // Then grab the height of the columns.
+        var chartWithOnlySmall = createNewColumnChart(50, true, testDataOnlySmall); // 50px wide is too small to show all the bars.
+        var heightOfSmallColumns = chartWithOnlySmall.element.find('.bar').height();
+        expect(heightOfSmallColumns).to.be.above(0);
+        removeColumnChart();
+
+        // Now, make almost the same chart, but tack on one huge value at the end.
+        // It should not affect the scale.
+        var chartWithBigToo = createNewColumnChart(50, true, testDataWithOneBigAtEnd);
+        var heightOfColumnsWithBigToo = chartWithBigToo.element.find('.bar').height();
+
+        expect(heightOfColumnsWithBigToo).to.be.below(heightOfSmallColumns); // Big data means small bars.
+
+      });
+
+    });
+
+    describe('when not expanded', function() {
+      it('should only base the y scale on the visible bars', function() {
+        // Make a prototypal chart with only small values.
+        // Then grab the height of the columns.
+        var chartWithOnlySmall = createNewColumnChart(50, false, testDataOnlySmall); // 50px wide is too small to show all the bars.
+        var heightOfSmallColumns = chartWithOnlySmall.element.find('.bar').height();
+        expect(heightOfSmallColumns).to.be.above(0);
+        removeColumnChart();
+
+        // Now, make almost the same chart, but tack on one huge value at the end.
+        // It should not affect the scale.
+        var chartWithBigToo = createNewColumnChart(50, false, testDataWithOneBigAtEnd);
+        var heightOfColumnsWithBigToo = chartWithBigToo.element.find('.bar').height();
+
+        expect(heightOfColumnsWithBigToo).to.equal(heightOfSmallColumns);
+      });
+
+    });
+
+  });
+
   describe('when not expanded at 100px', function() {
     var width = 100;
     var expanded = false;

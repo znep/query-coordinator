@@ -134,8 +134,14 @@
 
     function visualizationSupportedForColumn(column) {
       return _.any(availableVisualizationsForColumn(column), function(visualization) {
-        return CARD_TYPES.hasOwnProperty(visualization);
+        return visualizationSupported(visualization);
       });
+    }
+
+    /** Determines whether or not a particular cardType is supported.
+     */
+    function visualizationSupported(cardType) {
+      return CARD_TYPES.hasOwnProperty(cardType);
     }
 
     /**
@@ -149,7 +155,7 @@
       if (_.isUndefined(cardType)) {
         cardType = getDefaultCardTypeForModel(cardModel);
       }
-      return CARD_TYPES.hasOwnProperty(cardType) &&
+      return visualizationSupported(cardType) &&
              CARD_TYPES[cardType].customizable;
     }
 
@@ -161,7 +167,7 @@
 
     function modelIsExportable(cardModel) {
       var modelCardType = getDefaultCardTypeForModel(cardModel);
-      return CARD_TYPES.hasOwnProperty(modelCardType) &&
+      return visualizationSupported(modelCardType) &&
              CARD_TYPES[modelCardType].exportable;
     }
 
@@ -189,6 +195,10 @@
       'timeline': {
         'customizable': false,
         'exportable': true
+      },
+      'table': {
+        'customizable': false,
+        'exportable': false
       }
     };
 
@@ -216,6 +226,7 @@
       availableVisualizationsForColumn: availableVisualizationsForColumn,
       defaultVisualizationForColumn: defaultVisualizationForColumn,
       visualizationSupportedForColumn: visualizationSupportedForColumn,
+      visualizationSupported: visualizationSupported,
       modelIsCustomizable: modelIsCustomizable,
       modelIsExportable: modelIsExportable
     };

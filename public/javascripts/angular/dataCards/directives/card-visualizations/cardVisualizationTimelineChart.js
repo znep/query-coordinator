@@ -66,7 +66,15 @@
           }
         );
 
-        function stripWhereClause(fieldName, whereClause) {
+        // Since we need to be able to render the unfiltered values outside
+        // of a timeline chart's current selection area, we need to 'filter'
+        // those data outside the selection manually rather than using SoQL.
+        // As a result, we need to make sure we never exclude any data that
+        // belongs to the card making the request; this function will look
+        // through a SoQL query string that is about to be used in a data
+        // request and remove any where clauses that reference the fieldName
+        // that corresponds to this instance of the visualization.
+        function stripOwnVisualizationWhereClause(fieldName, whereClause) {
 
           var whereClauseComponents = whereClause.split(' ');
           var indexOfFieldName = whereClauseComponents.indexOf(fieldName);
@@ -188,7 +196,7 @@
               var dataPromise = CardDataService.getTimelineData(
                 fieldName,
                 dataset.id,
-                stripWhereClause(fieldName, whereClauseFragment),
+                stripOwnVisualizationWhereClause(fieldName, whereClauseFragment),
                 datasetPrecision,
                 aggregationData
               );

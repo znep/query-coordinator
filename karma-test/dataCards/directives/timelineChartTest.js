@@ -108,8 +108,7 @@ describe('timelineChart', function() {
             'expanded="expanded" ',
             'precision="precision" ',
             'row-display-unit="rowDisplayUnit" ',
-            'active-filters="activeFilters" ',
-            'page-is-filtered="pageIsFiltered">',
+            'active-filters="activeFilters">',
           '</div>',
         '</div>',
       '</div>'
@@ -120,7 +119,6 @@ describe('timelineChart', function() {
     scope.precision = 'MONTH';
     scope.rowDisplayUnit = 'rowDisplayUnit';
     scope.activeFilters = [];
-    scope.pageIsFiltered = false;
 
     return testHelpers.TestDom.compileAndAppend(html, scope);
 

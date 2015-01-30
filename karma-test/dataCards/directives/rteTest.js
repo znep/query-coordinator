@@ -4,7 +4,7 @@
   var $rootScope;
   var testHelpers;
 
-  describe('Rich text area', function() {
+  describe('Rich text editor', function() {
     var jqueryFx;
     beforeEach(function() {
       module('socrataCommon.directives');
@@ -36,7 +36,9 @@
       var element = testHelpers.TestDom.compileAndAppend(html, outerScope);
       if (onload) {
         // We need to _.deferred the callback so that the rte's callbacks can run
-        element.find('iframe').on('load', _.deferred(_.bind(onload, element)));
+        element.find('iframe').on('load', _.deferred(
+          _.bind(onload, element, element.children().scope())
+        ));
       }
       return element;
     }
@@ -72,10 +74,9 @@
     }
 
     it('cleans up after itself without error', function(done) {
-      createElement(null, null, function() {
+      createElement(null, null, function($scope) {
         // defer the assertion, so the directive's load handler can run.
-        var scope = this.scope().$$childHead;
-        expect(_.bind(scope.$destroy, scope)).not.to.throw(Error);
+        expect(_.bind($scope.$destroy, $scope)).not.to.throw(Error);
         done();
       });
     });
@@ -145,8 +146,8 @@
         });
 
         it('bolds', function(done) {
-          createElement('bold', null, function() {
-            editorMock = sinon.mock(this.scope().$$childHead.editor);
+          createElement('bold', null, function($scope) {
+            editorMock = sinon.mock($scope.editor);
 
             editorMock.expects('bold').once();
 
@@ -157,8 +158,8 @@
         });
 
         it('unbolds', function(done) {
-          createElement('bold', '<b>bold text</b>', function() {
-            editorMock = sinon.mock(this.scope().$$childHead.editor);
+          createElement('bold', '<b>bold text</b>', function($scope) {
+            editorMock = sinon.mock($scope.editor);
 
             editorMock.expects('removeBold').once();
 
@@ -172,8 +173,8 @@
         });
 
         it('underlines', function(done) {
-          createElement('underline', null, function() {
-            editorMock = sinon.mock(this.scope().$$childHead.editor);
+          createElement('underline', null, function($scope) {
+            editorMock = sinon.mock($scope.editor);
 
             editorMock.expects('underline').once();
 
@@ -184,8 +185,8 @@
         });
 
         it('ununderlines', function(done) {
-          createElement('underline', '<u>underline text</u>', function() {
-            editorMock = sinon.mock(this.scope().$$childHead.editor);
+          createElement('underline', '<u>underline text</u>', function($scope) {
+            editorMock = sinon.mock($scope.editor);
 
             editorMock.expects('removeUnderline').once();
 
@@ -199,8 +200,8 @@
         });
 
         it('italicizes', function(done) {
-          createElement('italic', null, function() {
-            editorMock = sinon.mock(this.scope().$$childHead.editor);
+          createElement('italic', null, function($scope) {
+            editorMock = sinon.mock($scope.editor);
 
             editorMock.expects('italic').once();
 
@@ -211,8 +212,8 @@
         });
 
         it('unitalicizes', function(done) {
-          createElement('italic', '<i>italic text</i>', function() {
-            editorMock = sinon.mock(this.scope().$$childHead.editor);
+          createElement('italic', '<i>italic text</i>', function($scope) {
+            editorMock = sinon.mock($scope.editor);
 
             editorMock.expects('removeItalic').once();
 
@@ -304,7 +305,7 @@
     });
 
     describe('edit area', function() {
-      it('loads the given value into the rich text area', function(done) {
+      it('loads the given value into the rich text editor', function(done) {
         var testHtml = 'rich <b>bold</b> <i>italic</i> <u>underline <i>italic</i></u> ' +
             '<a href="http://placekitten.com/240/240">kitten!</a>';
         createElement('bold', testHtml.replace(/"/g, '&quot;'), function() {
@@ -330,6 +331,8 @@
             if (prop.indexOf('color') > -1) {
               expect(testHelpers.normalizeColor(body.css(prop))).
                 to.equal(testHelpers.normalizeColor(value));
+            } else if (prop.indexOf('font-size') > -1) {
+              expect(Math.round(parseFloat(body.css(prop), 10))).to.equal(parseInt(value, 10));
             } else {
               expect(body.css(prop)).to.equal(value);
             }

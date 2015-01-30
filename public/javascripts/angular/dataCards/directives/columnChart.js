@@ -52,8 +52,7 @@ angular.module('socrataCommon.directives').directive('columnChart', function($pa
 
     var chartHeight = Math.max(0, dimensions.height - topMargin - bottomMargin - horizontalScrollbarHeight);
 
-    var verticalScale = d3.scale.linear().domain(computeDomain(chartData, showFiltered)).range([0, chartHeight]);
-    var y0 = verticalScale(0);
+    var verticalScale = computeVerticalScale(chartHeight, chartData, showFiltered);
 
     var horizontalScaleDetails = computeHorizontalScale(chartWidth, chartData, expanded);
     var horizontalScale = horizontalScaleDetails.scale;
@@ -315,7 +314,7 @@ angular.module('socrataCommon.directives').directive('columnChart', function($pa
         style('height', function (d) {
           return Math.max(
             d.value === 0 ? 0 : 1,  // Always show at least one pixel for non-zero-valued bars.
-            Math.abs(verticalScale(d.value) - y0)
+            Math.abs(verticalScale(d.value) - verticalScale(0))
           )+ 'px';
         }).
         style('bottom', function(d) {
@@ -394,6 +393,10 @@ angular.module('socrataCommon.directives').directive('columnChart', function($pa
     }
 
     return makeDomainIncludeZero(d3.extent(allData));
+  }
+
+  function computeVerticalScale(chartHeight, chartData, showFiltered) {
+    return d3.scale.linear().domain(computeDomain(chartData, showFiltered)).range([0, chartHeight]);
   }
 
   function computeHorizontalScale(chartWidth, chartData, expanded) {

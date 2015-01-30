@@ -21,6 +21,9 @@ div.column-chart
 
   div.column-chart-wrapper
 
+    .bar-group.unfiltered-on-top .unfiltered
+      opacity: 0.5
+
     .bar-group.active .bar
       &.unfiltered
         background-color: $neutral-bar-color
@@ -151,6 +154,10 @@ div.column-chart
       text-align: right
       margin-top: -$tick-height
       font-size: $tick-font-size
+      &.origin
+        border-bottom: 1px solid $chart-y-origin-tick-color
+        color: $chart-y-origin-tick-color
+
 
 
   &.expanded

@@ -144,7 +144,12 @@ angular.module('socrataCommon.directives').directive('columnChart', function($pa
         css('top', $chartScroll.position().top + topMargin).
         css('width', chartWidth);
       _.each(_.uniq([0].concat(verticalScale.ticks(numberOfTicks))), function(tick) {
-        element.append($('<div>').css('top', chartHeight - verticalScale(tick)).text($.toHumaneNumber(tick)));
+        element.append(
+          $('<div>').
+            css('top', chartHeight - verticalScale(tick)).
+            toggleClass('origin', tick === 0).
+            text($.toHumaneNumber(tick))
+        );
       });
       element.css('height', chartHeight + topMargin);
       return element;
@@ -300,9 +305,56 @@ angular.module('socrataCommon.directives').directive('columnChart', function($pa
           classed('bar-group', true);
 
       // Create 2 bars, total and filtered. Filtered bars default to 0 height if there is no data for them.
-      var bars = selection.selectAll('.bar').data(function(d) {
-        return [d.total, showFiltered ? d.filtered : 0];
-      });
+      // The smaller bar needs to go on top of the other. However, if the bar on top is also the total (can
+      // happen for aggregations other than count), the top bar needs to be semitransparent.
+      // This function transforms each piece of data (containing filtered and total amounts) into
+      // an ordered pair of objects representing a bar. The order is significant and ultimately determines the 
+      // order of the bars in the dom.
+      // Each object in the pair looks like:
+      // {
+      //    isTotal: [boolean, is this bar representing the total value?],
+      //    value: [number, the numerical value this bar should represent]
+      // }
+      function makeBarData(d) {
+        // If we're not showing the filtered value, just render it zero height.
+        var filtered = showFiltered ? d.filtered : 0;
+
+
+        // Figure out if the totals bar is on top. This controls styling.
+        var totalIsOnTop;
+        if (d.total * filtered < 0) {
+          // Opposite signs. Setting total on top by convention (makes styles easier).
+          totalIsOnTop = true;
+        } else {
+          // Same sign.
+          totalIsOnTop = Math.abs(d.total) >= Math.abs(filtered);
+        }
+
+        if (totalIsOnTop) {
+          return [
+            {
+              isTotal: true,
+              value: d.total
+            },
+            {
+              isTotal: false,
+              value: filtered
+            }
+          ];
+        } else {
+          return [
+            {
+              isTotal: false,
+              value: filtered
+            },
+            {
+              isTotal: true,
+              value: d.total
+            }
+          ];
+        }
+      }
+      var bars = selection.selectAll('.bar').data(makeBarData);
 
       // Bars are just a div.
       bars.enter().
@@ -315,6 +367,11 @@ angular.module('socrataCommon.directives').directive('columnChart', function($pa
         style('left', function(d) { return horizontalBarPosition(d) + 'px'; }).
         style('width', rangeBand + 'px').
         style('height', function() { return chartHeight + 'px'; }).
+        classed('unfiltered-on-top', function(d) {
+          // This is really confusing. In CSS, we refer to the total bar as the unfiltered bar.
+          // If total bar is last in the dom, then apply this class.
+          return makeBarData(d)[1].isTotal;
+        }).
         classed('special', function(d) { return d.special; }).
         classed('active', function(d) { return expanded || horizontalBarPosition(d) < chartWidth - truncationMarkerWidth; });
 
@@ -323,16 +380,16 @@ angular.module('socrataCommon.directives').directive('columnChart', function($pa
         style('width', rangeBand + 'px').
         style('height', function (d) {
           return Math.max(
-            d === 0 ? 0 : 1,  // Always show at least one pixel for non-zero-valued bars.
-            Math.abs(verticalScale(d) - y0)
+            d.value === 0 ? 0 : 1,  // Always show at least one pixel for non-zero-valued bars.
+            Math.abs(verticalScale(d.value) - y0)
           )+ 'px';
         }).
         style('bottom', function(d) {
-          return verticalScale(Math.min(0, d)) + 'px';
+          return verticalScale(Math.min(0, d.value)) + 'px';
         }).
-        attr('class', function(d, i) {
-          return 'bar ' + (i === 0 ? 'unfiltered' : 'filtered');
-        });
+        classed('bar', true).
+        classed('unfiltered', _.property('isTotal')).
+        classed('filtered', function(d) { return !d.isTotal; });
 
       // EXIT PROCESSING
       bars.exit().remove();

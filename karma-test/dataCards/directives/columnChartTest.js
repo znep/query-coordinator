@@ -203,13 +203,12 @@ describe('columnChart', function() {
           return accum;
         }
       }));
-      var xAxisPosition = xAxis.offset().top + xAxis.outerHeight();
+      var xAxisPosition = Math.round(xAxis.offset().top + xAxis.outerHeight());
 
       var bars = chart.element.find('.bar');
       expect(bars.length).to.be.above(1);
       bars.each(function() {
-        var element = $(this);
-        expect(element.offset().top + element.height() + 1).to.equal(xAxisPosition);
+        expect(Math.round(this.getBoundingClientRect().bottom + 1)).to.equal(xAxisPosition);
       });
     });
 
@@ -241,6 +240,86 @@ describe('columnChart', function() {
       expect(bars.eq(3).height()).to.equal(1);
       // But the zero-pixel one isn't.
       expect(bars.eq(4).height()).to.equal(0);
+    });
+
+    it('should place the smaller bar in front', function() {
+      var testData = [
+        {"name": "BOTH_POSITIVE_TOTAL_BIGGER", "total": 10, "filtered": 5},
+        {"name": "BOTH_POSITIVE_FILTERED_BIGGER", "total": 10, "filtered": 15},
+
+        {"name": "BOTH_NEGATIVE_TOTAL_BIGGER", "total": -10, "filtered": -5},
+        {"name": "BOTH_NEGATIVE_FILTERED_BIGGER", "total": -10, "filtered": -15},
+
+        {"name": "TOTAL_POSITIVE_FILTERED_NEGATIVE", "total": 10, "filtered": -10},
+        {"name": "TOTAL_NEGATIVE_FILTERED_POSITIVE", "total": -10, "filtered": 10}
+      ];
+      var chart = createNewColumnChart(null, null, testData);
+      var bars = chart.element.find('.bar.unfiltered');
+
+      function findName(name) {
+        var barGroup = chart.element.find('[data-bar-name="{0}"]'.format(name));
+        expect(barGroup.length).to.be.above(0);
+        return barGroup;
+      }
+
+      function checkTotalOnTop(barGroupNames, totalShouldBeOnTop) {
+        expect(barGroupNames).to.not.be.empty;
+        _.each(barGroupNames, function(name) {
+          var barGroup = findName(name);
+
+          var isTotalOnTopAccordingToDom = barGroup.children().eq(1).hasClass('unfiltered');
+          var isTotalOnTopAccordingToBarGroupClass = barGroup.hasClass('unfiltered-on-top');
+
+          if (isTotalOnTopAccordingToDom !== totalShouldBeOnTop) {
+            throw new Error('The filtered bar should have come {0} the unfiltered bar in the DOM'.format(
+                totalShouldBeOnTop ? 'after' : 'before'
+                )
+              );
+          }
+          if (isTotalOnTopAccordingToBarGroupClass !== totalShouldBeOnTop) {
+            throw new Error('Bar group {0} had the unfiltered-on-top class'.format(
+                totalShouldBeOnTop ? 'should have' : 'should not have'
+                )
+              );
+          }
+        });
+      }
+
+      // At this point, the chart is rendering in unfiltered mode.
+      // This means total should never be on top.
+      checkTotalOnTop(_.pluck(testData, 'name'), false);
+
+      // Now, turn on filtered mode. This should change the order
+      // of the bars appropriately.
+      chart.scope.showFiltered = true;
+      chart.scope.$digest();
+
+      // Expect total bar is on top, as it's physically smaller than the
+      // filtered bar.
+      var expectTotalOnTop = [
+        'BOTH_POSITIVE_FILTERED_BIGGER',
+        'BOTH_NEGATIVE_FILTERED_BIGGER'
+      ];
+
+      // Expect filtered bar is on top, as it's physically smaller than the
+      // total bar.
+      var expectFilteredOnTop = [
+        'BOTH_POSITIVE_TOTAL_BIGGER',
+        'BOTH_NEGATIVE_TOTAL_BIGGER',
+        'TOTAL_POSITIVE_FILTERED_NEGATIVE',
+        'TOTAL_NEGATIVE_FILTERED_POSITIVE'
+      ];
+
+      // Test sanity check, make sure all columns accounted for.
+      expect(
+        _.difference(
+          _.pluck(testData, 'name'),
+          _.union(expectFilteredOnTop, expectTotalOnTop)
+        )
+      ).to.be.empty;
+
+      checkTotalOnTop(expectFilteredOnTop, false);
+      checkTotalOnTop(expectTotalOnTop, true);
     });
   });
 

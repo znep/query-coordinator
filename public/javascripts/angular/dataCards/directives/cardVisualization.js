@@ -1,4 +1,4 @@
-angular.module('dataCards.directives').directive('cardVisualization', function(AngularRxExtensions, CardTypeMapping, $timeout, $log) {
+angular.module('dataCards.directives').directive('cardVisualization', function(AngularRxExtensions, CardTypeMapping) {
 
   return {
     restrict: 'E',
@@ -28,7 +28,9 @@ angular.module('dataCards.directives').directive('cardVisualization', function(A
         }
       );
 
-      $scope.bindObservable('cardType', cardType);
+      $scope.bindObservable('cardType', cardType.map(function(cardType) {
+        return CardTypeMapping.visualizationSupported(cardType) ? cardType : 'invalid';
+      }));
       $scope.bindObservable('expanded', modelSubject.observeOnLatest('expanded'));
       $scope.bindObservable('cardSize', modelSubject.observeOnLatest('cardSize'));
 

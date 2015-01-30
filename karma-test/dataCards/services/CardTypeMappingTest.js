@@ -84,7 +84,7 @@
     { physical: 'money', logical: 'name', expectedDefault: 'search', expectedAvailable: ['search'], supported: true },
 
     // Table (non user-configurable)
-    { physical: '*', logical: '*', expectedDefault: 'table', expectedAvailable: [], supported: false },
+    { physical: '*', logical: '*', expectedDefault: 'table', expectedAvailable: [], supported: true },
 
     // Junk
     { physical: 'picture', logical: 'photo', expectedDefault: null, expectedAvailable: [], supported: false },

@@ -78,6 +78,9 @@
               if (i > 0 && whereClauseComponents[i - 1].toLowerCase() === 'and') {
                 filteredWhereClause.pop();
               }
+              // This is the number of 'words' in a timeline chart-generated
+              // where clause:
+              // "largechronometerreading_10 BETWEEN '1950-01-01T00:00:00' AND '1961-01-01T00:00:00'"
               i += 5;
               continue;
             }

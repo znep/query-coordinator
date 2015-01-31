@@ -752,14 +752,41 @@ $wizard_border_color: #ccc
 
   // dataset filtering
   .filterDataset
+    .intro
+      margin-bottom: 0
+    .inputWrapper
+      width: 15em
+      margin-left: 20px
+      margin-right: 20px
+      input, select
+    .sentenceWrapper
+      float: left
+
+
+    // eeeeeeeeeeeeevil
+    // sass plugin for different locales?
+    .madlib
+      li:after
+        content: " or "
+      li:last-child:after
+        content: ""
+
     .filterDatasetContent.filterCount-1
-      .columnFilterGroup > .editRemove
-        opacity: 0
-        pointer-events: none
-    .columnFilterItemGroup.filterItemCount-1
-      .editRemove
-        opacity: 0
-        pointer-events: none
+      .columnFilterGroup 
+        > .editRemove
+          opacity: 0
+          pointer-events: none
+
+    .columnFilterItemGroup
+      display: inline-block
+      .madlib
+        display: inline-block
+        li
+          display: inline
+      &.filterItemCount-1
+        .editRemove
+          opacity: 0
+          pointer-events: none
 
   .selectDataset
     .selectedDataset

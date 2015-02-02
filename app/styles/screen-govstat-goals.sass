@@ -761,33 +761,57 @@ $wizard_border_color: #ccc
       input, select
     .sentenceWrapper
       float: left
+      .inputWrapper
+        width: 30em
 
 
-    // eeeeeeeeeeeeevil
-    // sass plugin for different locales?
-    .madlib
-      li:after
-        content: " or "
-      li:last-child:after
-        content: ""
+    .filterDatasetContent
+      &.filterCount-1
+        .columnFilterGroup 
+          .sentenceWrapper
+            .editRemove
+              display: none
+              opacity: 0
+              pointer-events: none
 
-    .filterDatasetContent.filterCount-1
-      .columnFilterGroup 
-        > .editRemove
-          opacity: 0
-          pointer-events: none
-
-    .columnFilterItemGroup
-      display: inline-block
-      .madlib
-        display: inline-block
-        li
-          display: inline
-      &.filterItemCount-1
+      .columnFilter
         .editRemove
-          opacity: 0
-          pointer-events: none
+          opacity: 0.2
+          background: #d87419
+          margin-top: -0.5em
 
+        .columnFilterGroup
+          .valueOf
+            display: none
+          .multiValueOf
+            display: inline-block
+          &:first-child 
+            .multiValueOf
+              display: none
+            .valueOf
+              display: inline-block
+
+          .columnFilterItemGroup
+            display: inline-block
+            .madlib
+              display: inline-block
+              li
+                display: inline
+            .editRemove
+              margin-left: -1em
+              margin-top: 0
+            &.filterItemCount-1
+              .editRemove
+                display: none
+                opacity: 0
+                pointer-events: none
+
+            .columnFilterValues
+              .columnFilterItem:last-child 
+                .orValue
+                  display: none
+
+  
   .selectDataset
     .selectedDataset
       float: left

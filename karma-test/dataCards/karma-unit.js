@@ -120,7 +120,7 @@ module.exports = function ( karma ) {
       }
     },
 
-    frameworks: [ 'mocha', 'chai', 'chai-as-promised' ],
+    frameworks: [ 'mocha', 'chai', 'chai-as-promised', 'chai-jquery' ],
     plugins: [
       'karma-chai',
       'karma-chai-plugins',

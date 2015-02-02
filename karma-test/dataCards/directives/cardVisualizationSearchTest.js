@@ -105,7 +105,7 @@
         outerScope: outerScope,
         scope: element.scope()
       };
-    }
+    };
 
     describe('samples', function() {
       var SAMPLE_1 = 'MY_SAMPLE';

@@ -234,8 +234,7 @@ describe('timelineChart', function() {
               total: i,
               filtered: 0
             }
-          }),
-          {"aggregation":"count","field":null}
+          })
         ));
 
         var labels = chart.find('.x-tick-label');
@@ -258,8 +257,7 @@ describe('timelineChart', function() {
               total: i,
               filtered: 0
             }
-          }),
-          {"aggregation":"count","field":null}
+          })
        ));
 
         var labels = chart.find('.x-tick-label');
@@ -282,8 +280,7 @@ describe('timelineChart', function() {
               total: i,
               filtered: 0
             }
-          }),
-          {"aggregation":"count","field":null}
+          })
         ));
 
         var labels = chart.find('.x-tick-label');
@@ -306,8 +303,7 @@ describe('timelineChart', function() {
               total: i,
               filtered: 0
             }
-          }),
-          {"aggregation":"count","field":null}
+          })
         ));
 
         var labels = chart.find('.x-tick-label');
@@ -331,8 +327,7 @@ describe('timelineChart', function() {
               total: i,
               filtered: 0
             }
-          }),
-          {"aggregation":"count","field":null}
+          })
         ));
 
         var labels = chart.find('.x-tick-label');
@@ -355,8 +350,7 @@ describe('timelineChart', function() {
               total: i,
               filtered: 0
             }
-          }),
-          {"aggregation":"count","field":null}
+          })
         ));
 
         var labels = chart.find('.x-tick-label');
@@ -375,8 +369,7 @@ describe('timelineChart', function() {
               total: i,
               filtered: 0
             }
-          }),
-          {"aggregation":"count","field":null}
+          })
         ));
 
         var labels = chart.find('.x-tick-label');

@@ -222,9 +222,8 @@
           unfilteredDataSequence.switchLatest(),
           filteredDataSequence.switchLatest(),
           model.observeOnLatest('activeFilters'),
-          aggregationObservable,
           datasetPrecision,
-          function(unfilteredData, filteredData, filters, aggregation, datasetPrecision) {
+          function(unfilteredData, filteredData, filters, datasetPrecision) {
             // Joins filtered data and unfiltered data into an array of objects:
             // [
             //  { name: 'some_group_name', total: 1234, filtered: 192 },
@@ -249,9 +248,7 @@
                   total: unfilteredAsHash[date],
                   filtered: filteredAsHash[date] || 0
                 };
-              }),
-              aggregation,
-              datasetPrecision
+              })
             );
           }
         );

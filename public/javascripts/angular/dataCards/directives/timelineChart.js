@@ -65,7 +65,6 @@
         var cachedChartDimensions = null;
         var cachedChartOffsets = null;
         var cachedChartData = null;
-        var cachedAggregation = { aggregation: null, field: null };
         var cachedRowDisplayUnit = null;
 
         // Keep track of whether or not this instance of a timeline chart is in the 'dragging'
@@ -2134,11 +2133,6 @@
 
             // Analytics start.
             scope.$emit('render:start', { source: 'timelineChart_{0}'.format(scope.$id), timestamp: _.now() });
-
-            if (chartData.aggregation.aggregation !== cachedAggregation.aggregation || chartData.aggregation.field !== cachedAggregation.field) {
-              clearChartSelection();
-            }
-            cachedAggregation = chartData.aggregation;
 
             // Only update the chartOffset sequence if we have done a full re-render.
             // This is used by renderHighlightedChartSegment but that function will

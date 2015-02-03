@@ -1,7 +1,7 @@
 (function() {
   'use strict';
 
-    function TimelineChartVisualizationHelpers(DateHelpers) {
+  function TimelineChartVisualizationHelpers(DateHelpers) {
 
     /**
      * Precompute a bunch of things that are useful for rendering the timeline chart.
@@ -17,7 +17,7 @@
      *     @property {} filtered - the filtered value
      *     @property {} unfiltered - the unfiltered value
      */
-    function transformChartDataForRendering(chartData, aggregation, datasetPrecision) {
+    function transformChartDataForRendering(chartData) {
 
       var minDate = null;
       var maxDate = null;
@@ -74,7 +74,6 @@
       }
 
       return {
-        aggregation: aggregation,
         minDate: minDate.toDate(),
         maxDate: maxDate.toDate(),
         minValue: minValue,

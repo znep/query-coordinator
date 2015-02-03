@@ -3,7 +3,7 @@
 
   function ChoroplethVisualizationService(Constants) {
 
-    function ChoroplethVisualization() {
+    function ChoroplethVisualizationUtils() {
 
       // Default colors.
       this.nullColor = '#ddd';
@@ -36,7 +36,7 @@
     * Data calculation *
     *******************/
 
-    ChoroplethVisualization.prototype.calculateDataClassBreaks = function(geojsonAggregateData, propertyName) {
+    ChoroplethVisualizationUtils.prototype.calculateDataClassBreaks = function(geojsonAggregateData, propertyName) {
 
       function getGeojsonValues(geojson, attr) {
         var data = [];
@@ -74,8 +74,7 @@
 
       function createClassBreaks(options) {
         var classBreaks;
-        options.method = options.method || 'jenks';
-        switch(options.method) {
+        switch(options.method || 'jenks') {
           case 'jenks':
             options.methodParam = options.numberOfClasses || 4;
             classBreaks = ss['jenks'](options.data, options.methodParam);
@@ -126,7 +125,7 @@
     * Style calculation *
     ********************/
 
-    ChoroplethVisualization.prototype.calculateColoringParameters = function(colorClass, classBreaks) {
+    ChoroplethVisualizationUtils.prototype.calculateColoringParameters = function(colorClass, classBreaks) {
       var colorRange;
       var lightnessCorrection;
       var bezierColorInterpolation;
@@ -176,7 +175,7 @@
       return { scale: scale, classes: colorClasses };
     };
 
-    ChoroplethVisualization.prototype.fillColor = function(colorData, fillClass, feature, highlighted) {
+    ChoroplethVisualizationUtils.prototype.fillColor = function(colorData, fillClass, feature, highlighted) {
 
       if (!feature.hasOwnProperty('properties') ||
           !feature.properties.hasOwnProperty(Constants['FILTERED_VALUE_PROPERTY_NAME']) ||
@@ -197,7 +196,7 @@
     };
 
 
-    ChoroplethVisualization.prototype.strokeColor = function(colorData, fillClass, feature, highlighted) {
+    ChoroplethVisualizationUtils.prototype.strokeColor = function(colorData, fillClass, feature, highlighted) {
 
       if (!feature.hasOwnProperty('geometry') ||
           !feature.geometry.hasOwnProperty('type')) {
@@ -227,7 +226,7 @@
       }
     };
 
-    ChoroplethVisualization.prototype.strokeWidth = function(fillClass, feature, highlighted) {
+    ChoroplethVisualizationUtils.prototype.strokeWidth = function(fillClass, feature, highlighted) {
 
       if (!feature.hasOwnProperty('geometry') ||
           !feature.geometry.hasOwnProperty('type')) {
@@ -243,7 +242,7 @@
       }
     };
 
-    ChoroplethVisualization.prototype.getStyleFn = function(colorData, fillClass) {
+    ChoroplethVisualizationUtils.prototype.getStyleFn = function(colorData, fillClass) {
       var visualization = this;
       var selectedPropertyName = Constants['SELECTED_PROPERTY_NAME'];
       return function(feature) {
@@ -264,12 +263,10 @@
       }
     };
 
-    var choroplethVisualization = new ChoroplethVisualization();
+    var utils = new ChoroplethVisualizationUtils();
 
     return {
-      getChoroplethVisualization: function() {
-        return choroplethVisualization;
-      }
+      utils: utils
     };
 
   }

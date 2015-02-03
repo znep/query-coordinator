@@ -13,6 +13,11 @@
                       ChoroplethVisualizationService,
                       WindowState,
                       FlyoutService) {
+    // The methods by which we determine choropleth styles are wrapped up in the
+    // ChoroplethVisualization class, which does a lot of dynamic styles based on the
+    // individual dataset.
+    var visualizationUtils = ChoroplethVisualizationService.utils;
+
 
     /**
      * A choropleth legend, with discrete colors for ranges of values.
@@ -662,11 +667,6 @@
         // rendered so that we can retain potential panning and zooming done by the user.
         var firstRender = true;
 
-        // The methods by which we determine choropleth styles are wrapped up in the
-        // ChoroplethVisualization class, which does a lot of dynamic styles based on the
-        // individual dataset.
-        var visualization = new ChoroplethVisualizationService.getChoroplethVisualization();
-
         // Keep track of click details so that we can zoom on double-click but
         // still selects on single clicks.
         var singleClickSuppressionThreshold = 200;
@@ -747,12 +747,12 @@
                 firstRender = false;
               }
 
-              classBreaks = visualization.calculateDataClassBreaks(
+              classBreaks = visualizationUtils.calculateDataClassBreaks(
                 geojsonAggregateData, Constants['UNFILTERED_VALUE_PROPERTY_NAME']
               );
 
-              coloring = visualization.calculateColoringParameters(
-                visualization.defaultColorClass, classBreaks
+              coloring = visualizationUtils.calculateColoringParameters(
+                visualizationUtils.defaultColorClass, classBreaks
               );
 
               legend.update(classBreaks, coloring.scale.colors());
@@ -774,7 +774,7 @@
                     click: onFeatureClick
                   });
                 },
-                style: visualization.getStyleFn(coloring, fillClass)
+                style: visualizationUtils.getStyleFn(coloring, fillClass)
               };
 
               setGeojsonData(geojsonAggregateData, geojsonOptions);

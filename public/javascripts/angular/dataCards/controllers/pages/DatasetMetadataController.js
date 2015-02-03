@@ -2,18 +2,13 @@
 
   'use strict';
 
-  function DatasetMetadataController($scope, $log, AngularRxExtensions, UserSession, dataset) {
+  function DatasetMetadataController($scope, $log, AngularRxExtensions, UserSessionService, dataset) {
 
     AngularRxExtensions.install($scope);
 
     // Bind the current user to the scope, or null if no user is logged in or there was an error
     // fetching the current user.
-    var currentUserSequence = Rx.Observable.fromPromise(UserSession.getCurrentUser());
-    $scope.bindObservable(
-      'currentUser',
-      currentUserSequence,
-      _.constant(null)
-    );
+    $scope.bindObservable('currentUser', UserSessionService.getCurrentUserObservable());
 
     /*************************
     * General metadata stuff *
@@ -32,7 +27,7 @@
         return column.fakeColumnGeneratedByFrontEnd || column.isSystemColumn;
       });
     }));
-  };
+  }
 
   angular.
     module('dataCards.controllers').

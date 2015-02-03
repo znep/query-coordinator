@@ -95,6 +95,7 @@ describe('CardsViewController', function() {
   beforeEach(module('dataCards'));
   beforeEach(module('socrataCommon.filters'));
   beforeEach(module('socrataCommon.directives'));
+  beforeEach(module('socrataCommon.services'));
   beforeEach(module('/angular_templates/dataCards/pages/cards-view.html'));
   beforeEach(module('/angular_templates/common/pageHeader.html'));
   beforeEach(module('/angular_templates/dataCards/saveAs.html'));
@@ -125,7 +126,7 @@ describe('CardsViewController', function() {
       _$provide = $provide;
       $provide.value('PageDataService', mockPageDataService);
       $provide.value('DatasetDataService', mockDatasetDataService);
-      $provide.value('UserSession', mockUserSessionService);
+      $provide.value('UserSessionService', mockUserSessionService);
       $provide.value('$window', mockWindowService);
       $provide.value('ConfigurationsService', {
         getThemeConfigurationsObservable: function() {
@@ -172,7 +173,9 @@ describe('CardsViewController', function() {
 
   function makeController() {
     var currentUserDefer = $q.defer();
-    mockUserSessionService.getCurrentUser = _.constant(currentUserDefer.promise);
+    var promise = currentUserDefer.promise;
+    mockUserSessionService.getCurrentUser = _.constant(promise);
+    mockUserSessionService.getCurrentUserObservable = _.constant(Rx.Observable.fromPromise(promise).catch(Rx.Observable.returnValue(null)));
 
     var context = makeContext();
     var controller = $controller('CardsViewController', context);

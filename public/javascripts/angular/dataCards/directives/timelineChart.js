@@ -617,12 +617,12 @@
               if (date1.getDate() !== date2.getDate()) {
                 return false;
               }
-              // Allow to fall through, so it's checked against the higher precisions
+              // Allow to fall through, so it's checked against the less granular precisions
             case 'MONTH':
               if (date1.getMonth() !== date2.getMonth()) {
                 return false;
               }
-              // Allow to fall through, so it's checked against the higher precisions
+              // Allow to fall through, so it's checked against the less granular precisions
             case 'YEAR':
               return date1.getFullYear() === date2.getFullYear();
             case 'DECADE':

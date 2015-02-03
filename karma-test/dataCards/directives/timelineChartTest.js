@@ -289,6 +289,7 @@ describe('timelineChart', function() {
         var labels = chart.find('.x-tick-label');
         expect(labels.length).to.be.greaterThan(0);
         labels.each(function() {
+          // Format should be something like, Nov '09, and Jan '10
           expect(this.innerHTML).to.match(/\b[A-Z][a-z][a-z] ['’][01][901]\b/);
         });
       });

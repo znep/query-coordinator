@@ -3,9 +3,6 @@ angular.module('socrataCommon.directives').directive('columnChart', function($pa
 
   var renderColumnChart = function(element, chartData, showFiltered, dimensions, expanded, rowDisplayUnit) {
 
-    var numberOfBars = chartData.length;
-
-    var barPadding = 0.25;
     var topMargin = 0; // Set to zero so .card-text could control padding b/t text & visualization
     var bottomMargin; // Calculated based on label text length
     var tipHeight = 10;
@@ -13,10 +10,6 @@ angular.module('socrataCommon.directives').directive('columnChart', function($pa
     var numberOfDefaultLabels = expanded ? chartData.length : 3;
     var undefinedPlaceholder = '(No value)';
     var maximumBottomMargin = 140;
-    var minSmallCardBarWidth = 8;
-    var maxSmallCardBarWidth = 30;
-    var minExpandedCardBarWidth = 15;
-    var maxExpandedCardBarWidth = 40;
 
     var $chart = element.find('.column-chart-wrapper');
     var $chartScroll = element.find('.chart-scroll');
@@ -33,21 +26,17 @@ angular.module('socrataCommon.directives').directive('columnChart', function($pa
       return;
     }
 
+    var fixedLabelWidth = computeFixedLabelWidthOrNull(element, expanded);
+
     // Compute chart margins
     if (expanded) {
       var maxLength = _.max(chartData.map(function(item) {
         // The size passed to visualLength() below relates to the width of the div.text in the updateLabels().
         return $.capitalizeWithDefault(item.name, undefinedPlaceholder).visualLength('1rem');
       }));
-      var maxLabelWidth;
-      if ($('.description-expanded-wrapper').height() <= 20) {
-        maxLabelWidth = 10.5;
-      } else {
-        maxLabelWidth = 8.5;
-      }
       bottomMargin = Math.floor(Math.min(
         maxLength + $.relativeToPx('1rem'),
-        $.relativeToPx(maxLabelWidth + 1 + 'rem')
+        $.relativeToPx(fixedLabelWidth + 1 + 'rem')
       ) / Math.sqrt(2));
     } else {
       bottomMargin = $.relativeToPx(numberOfDefaultLabels + 1 + 'rem');
@@ -58,58 +47,17 @@ angular.module('socrataCommon.directives').directive('columnChart', function($pa
     bottomMargin = bottomMargin > maximumBottomMargin ? maximumBottomMargin : bottomMargin;
 
     var chartHeight = Math.max(0, dimensions.height - topMargin - bottomMargin - horizontalScrollbarHeight);
-    var verticalScale = d3.scale.linear().range([chartHeight, 0]).clamp(true);
-    var horizontalScale = null;
-    var rightOffset = 0;
-    var rangeBand = 0;
-    var minBarWidth = 0;
-    var maxBarWidth = 0;
 
-    if (expanded) {
-      minBarWidth = minExpandedCardBarWidth;
-      maxBarWidth = maxExpandedCardBarWidth;
-    } else {
-      minBarWidth = minSmallCardBarWidth;
-      maxBarWidth = maxSmallCardBarWidth;
-    }
+    var horizontalScaleDetails = computeHorizontalScale(chartWidth, chartData, expanded);
+    var horizontalScale = horizontalScaleDetails.scale;
+    var chartTruncated = horizontalScaleDetails.truncated;
+    var rangeBand = Math.ceil(horizontalScale.rangeBand());
 
-    var computeChartDimensions = function(rangeInterval) {
-      horizontalScale = d3.scale.ordinal().rangeBands(
-        [0, Math.ceil(rangeInterval)], barPadding).domain(_.pluck(chartData, 'name')
-      );
-      rightOffset = horizontalScale.range()[numberOfBars - 1];
-      rangeBand = Math.ceil(horizontalScale.rangeBand());
-    };
-
-    computeChartDimensions(chartWidth);
-
-    /*
-    According to the D3 API reference for Ordinal Scales#rangeBands
-    (https://github.com/mbostock/d3/wiki/Ordinal-Scales#ordinal_rangeBands):
-
-    for the method, ordinal.rangeBands(barWidth[, barPadding[, outerPadding]]) = rangeInterval
-
-    barPadding corresponds to the amount of space in the rangeInterval as a percentage of rangeInterval (width in px)
-    ==> rangeInterval = barPadding * rangeInterval + numberOfBars * barWidth
-    ==> (1 - barPadding) * rangeInterval = numberOfBars * barWidth
-    ==> rangeInterval = (numberOfBars * barWidth) / (1 - barPadding)
-
-    */
-
-    var rangeInterval;
-    if (rangeBand < minBarWidth) {
-      // --> desired rangeBand (bar width) is less than accepted minBarWidth
-      // use computeChartDimensions to set rangeBand = minBarWidth
-      // and update horizontalScale & rightOffset accordingly
-      rangeInterval = minBarWidth * numberOfBars / (1 - barPadding);
-      computeChartDimensions(rangeInterval);
-      if (!expanded) chartTruncated = true;
-    } else if (rangeBand > maxBarWidth) {
-      // --> desired rangeBand (bar width) is greater than accepted maxBarWidth
-      // use computeChartDimensions to set rangeBand = maxBarWidth
-      rangeInterval = maxBarWidth * numberOfBars / (1 - barPadding) + maxBarWidth * barPadding;
-      computeChartDimensions(rangeInterval);
-    }
+    // If the chart is not expanded, limit our vert scale computation to what's actually
+    // visible. We still render the bars outside the viewport to speed up horizontal resizes.
+    var chartDataRelevantForVerticalScale = expanded ?
+      chartData : _.first(chartData, Math.ceil(chartWidth / rangeBand) + 1);
+    var verticalScale = computeVerticalScale(chartHeight, chartDataRelevantForVerticalScale, showFiltered);
 
     var chartLeftOffset = horizontalScale.range()[0];
     var chartRightEdge = dimensions.width - chartLeftOffset;
@@ -121,9 +69,6 @@ angular.module('socrataCommon.directives').directive('columnChart', function($pa
       css('top', 'initial').
       css('width', chartWidth);
 
-    var maxValue = _.isEmpty(chartData) ? 0 : chartData[0].total;
-    verticalScale.domain([maxValue, 0]);
-
     var ticks = function() {
       var numberOfTicks = 3;
       var element;
@@ -132,7 +77,12 @@ angular.module('socrataCommon.directives').directive('columnChart', function($pa
         css('top', $chartScroll.position().top + topMargin).
         css('width', chartWidth);
       _.each(_.uniq([0].concat(verticalScale.ticks(numberOfTicks))), function(tick) {
-        element.append($('<div>').css('top', chartHeight - verticalScale(tick)).text($.toHumaneNumber(tick)));
+        element.append(
+          $('<div>').
+            css('top', chartHeight - verticalScale(tick)).
+            toggleClass('origin', tick === 0).
+            text($.toHumaneNumber(tick))
+        );
       });
       element.css('height', chartHeight + topMargin);
       return element;
@@ -205,7 +155,7 @@ angular.module('socrataCommon.directives').directive('columnChart', function($pa
             } else if (isOnlyInSpecial(d, j)) {
               return verticalPositionOfSpecialLabelRem - 0.5 + 'rem';
             } else {
-              return defaultLabelData.length - 0.5 - Math.min(j, numberOfDefaultLabels - 1)+ 'rem';
+              return defaultLabelData.length - 0.5 - Math.min(j, numberOfDefaultLabels - 1) + 'rem';
             }
           }).
           classed('undefined', function(d) {
@@ -217,9 +167,9 @@ angular.module('socrataCommon.directives').directive('columnChart', function($pa
             });
 
       // These widths relate to the visualLength() method call in the maxLength calculation above.
-      if (expanded) {
+      if (_.isNumber(fixedLabelWidth)) {
         labelDivSelection.
-          selectAll('.text').style('width', maxLabelWidth + 'rem');
+          selectAll('.text').style('width', fixedLabelWidth + 'rem');
       }
 
       labelDivSelection.
@@ -288,9 +238,56 @@ angular.module('socrataCommon.directives').directive('columnChart', function($pa
           classed('bar-group', true);
 
       // Create 2 bars, total and filtered. Filtered bars default to 0 height if there is no data for them.
-      var bars = selection.selectAll('.bar').data(function(d) {
-        return [d.total, d.filtered || 0];
-      });
+      // The smaller bar needs to go on top of the other. However, if the bar on top is also the total (can
+      // happen for aggregations other than count), the top bar needs to be semitransparent.
+      // This function transforms each piece of data (containing filtered and total amounts) into
+      // an ordered pair of objects representing a bar. The order is significant and ultimately determines the 
+      // order of the bars in the dom.
+      // Each object in the pair looks like:
+      // {
+      //    isTotal: [boolean, is this bar representing the total value?],
+      //    value: [number, the numerical value this bar should represent]
+      // }
+      function makeBarData(d) {
+        // If we're not showing the filtered value, just render it zero height.
+        var filtered = showFiltered ? d.filtered : 0;
+
+
+        // Figure out if the totals bar is on top. This controls styling.
+        var totalIsOnTop;
+        if (d.total * filtered < 0) {
+          // Opposite signs. Setting total on top by convention (makes styles easier).
+          totalIsOnTop = true;
+        } else {
+          // Same sign.
+          totalIsOnTop = Math.abs(d.total) >= Math.abs(filtered);
+        }
+
+        if (totalIsOnTop) {
+          return [
+            {
+              isTotal: true,
+              value: d.total
+            },
+            {
+              isTotal: false,
+              value: filtered
+            }
+          ];
+        } else {
+          return [
+            {
+              isTotal: false,
+              value: filtered
+            },
+            {
+              isTotal: true,
+              value: d.total
+            }
+          ];
+        }
+      }
+      var bars = selection.selectAll('.bar').data(makeBarData);
 
       // Bars are just a div.
       bars.enter().
@@ -303,26 +300,29 @@ angular.module('socrataCommon.directives').directive('columnChart', function($pa
         style('left', function(d) { return horizontalBarPosition(d) + 'px'; }).
         style('width', rangeBand + 'px').
         style('height', function() { return chartHeight + 'px'; }).
+        classed('unfiltered-on-top', function(d) {
+          // This is really confusing. In CSS, we refer to the total bar as the unfiltered bar.
+          // If total bar is last in the dom, then apply this class.
+          return makeBarData(d)[1].isTotal;
+        }).
         classed('special', function(d) { return d.special; }).
         classed('active', function(d) { return expanded || horizontalBarPosition(d) < chartWidth - truncationMarkerWidth; });
 
       // Update the position of the individual bars.
       bars.
         style('width', rangeBand + 'px').
-        style('height', function(d) {
-          var verticalScaleValue = verticalScale(d);
-          if (verticalScaleValue > 0) {
-            return Math.ceil(verticalScaleValue) + 'px';
-          } else if (verticalScaleValue < 0) {
-            return Math.floor(verticalScaleValue) + 'px';
-          } else {
-            return '0';
-          }
+        style('height', function (d) {
+          return Math.max(
+            d.value === 0 ? 0 : 1,  // Always show at least one pixel for non-zero-valued bars.
+            Math.abs(verticalScale(d.value) - verticalScale(0))
+          ) + 'px';
         }).
-        style('bottom', 0).
-        attr('class', function(d, i) {
-          return 'bar ' + (i === 0 ? 'unfiltered' : 'filtered');
-        });
+        style('bottom', function(d) {
+          return verticalScale(Math.min(0, d.value)) + 'px';
+        }).
+        classed('bar', true).
+        classed('unfiltered', _.property('isTotal')).
+        classed('filtered', function(d) { return !d.isTotal; });
 
       // EXIT PROCESSING
       bars.exit().remove();
@@ -379,6 +379,102 @@ angular.module('socrataCommon.directives').directive('columnChart', function($pa
       $truncationMarker.css('display', 'none');
     }
   };
+
+  function computeDomain(chartData, showFiltered) {
+    var allData = _.pluck(chartData, 'total').concat(
+      showFiltered ? _.pluck(chartData, 'filtered') : []
+    );
+
+    function makeDomainIncludeZero(domain) {
+      var min = domain[0];
+      var max = domain[1];
+      if (min > 0) { return [ 0, max ]; }
+      if (max < 0) { return [ min, 0]; }
+      return domain;
+    }
+
+    return makeDomainIncludeZero(d3.extent(allData));
+  }
+
+  function computeVerticalScale(chartHeight, chartData, showFiltered) {
+    return d3.scale.linear().domain(computeDomain(chartData, showFiltered)).range([0, chartHeight]);
+  }
+
+  function computeHorizontalScale(chartWidth, chartData, expanded) {
+    // Horizontal scale configuration
+    var barPadding = 0.25;
+    var minBarWidth = 0;
+    var maxBarWidth = 0;
+    var minSmallCardBarWidth = 8;
+    var maxSmallCardBarWidth = 30;
+    var minExpandedCardBarWidth = 15;
+    var maxExpandedCardBarWidth = 40;
+    // End configuration
+
+    var horizontalScale;
+    var numberOfBars = chartData.length;
+    var isChartTruncated = false;
+    var rangeBand;
+
+    if (expanded) {
+      minBarWidth = minExpandedCardBarWidth;
+      maxBarWidth = maxExpandedCardBarWidth;
+    } else {
+      minBarWidth = minSmallCardBarWidth;
+      maxBarWidth = maxSmallCardBarWidth;
+    }
+
+    var computeChartDimensionsForRangeInterval = function(rangeInterval) {
+      horizontalScale = d3.scale.ordinal().rangeBands(
+        [0, Math.ceil(rangeInterval)], barPadding).domain(_.pluck(chartData, 'name')
+      );
+      rangeBand = Math.ceil(horizontalScale.rangeBand());
+    };
+
+    computeChartDimensionsForRangeInterval(chartWidth);
+
+    /*
+    According to the D3 API reference for Ordinal Scales#rangeBands
+    (https://github.com/mbostock/d3/wiki/Ordinal-Scales#ordinal_rangeBands):
+
+    for the method, ordinal.rangeBands(barWidth[, barPadding[, outerPadding]]) = rangeInterval
+
+    barPadding corresponds to the amount of space in the rangeInterval as a percentage of rangeInterval (width in px)
+    ==> rangeInterval = barPadding * rangeInterval + numberOfBars * barWidth
+    ==> (1 - barPadding) * rangeInterval = numberOfBars * barWidth
+    ==> rangeInterval = (numberOfBars * barWidth) / (1 - barPadding)
+
+    */
+
+    if (rangeBand < minBarWidth) {
+      // --> desired rangeBand (bar width) is less than accepted minBarWidth
+      // use computeChartDimensionsForRangeInterval to set rangeBand = minBarWidth
+      // and update horizontalScale accordingly
+      computeChartDimensionsForRangeInterval(minBarWidth * numberOfBars / (1 - barPadding));
+      if (!expanded) isChartTruncated = true;
+    } else if (rangeBand > maxBarWidth) {
+      // --> desired rangeBand (bar width) is greater than accepted maxBarWidth
+      // use computeChartDimensionsForRangeInterval to set rangeBand = maxBarWidth
+      computeChartDimensionsForRangeInterval(maxBarWidth * numberOfBars / (1 - barPadding) + maxBarWidth * barPadding);
+    }
+
+    return {
+      scale: horizontalScale,
+      truncated: isChartTruncated
+    };
+  }
+
+  function computeFixedLabelWidthOrNull(element, expanded) {
+    if (expanded) {
+      if (element.closest('card').find('.description-expanded-wrapper').height() <= 20) {
+        return 10.5;
+      } else {
+        return 8.5;
+      }
+    }
+
+    return null;
+  }
 
   return {
     template:

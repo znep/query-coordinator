@@ -83,6 +83,10 @@ dataCards.config(function($provide, $stateProvider, $urlRouterProvider, $locatio
     state('404', {
       templateUrl: '/404'
     }).
+    state('test', {
+      templateUrl: '/angular_templates/dataCards/pages/test-page.html',
+      controller: 'TestPageController'
+    }).
     state('view', {
       template: '<!--Overall chrome--><div ui-view="mainContent"><div>'
     }).

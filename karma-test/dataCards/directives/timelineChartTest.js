@@ -239,6 +239,24 @@ describe('timelineChart', function() {
         });
       });
 
+      it('formats for decade, even if the data is not exactly on the year mark', function() {
+        var chart = createTimelineChart(640, false, transformChartData(
+          _.map(_.range(30), function(i) {
+            return {
+              date: moment(new Date(2000 + i, 2, 3)),
+              total: i,
+              filtered: 0
+            }
+          })
+        ));
+
+        var labels = chart.find('.x-tick-label');
+        expect(labels.length).to.be.greaterThan(0);
+        labels.each(function() {
+          expect(this.innerHTML).to.match(/\b20[0-9]0s\b/);
+        });
+      });
+
       it('should format for year when the data spans 2 < x < 20 years', function() {
         var chart = createTimelineChart(640, false, transformChartData(
           _.map(_.range(19), function(i) {
@@ -261,7 +279,7 @@ describe('timelineChart', function() {
         var chart = createTimelineChart(640, false, transformChartData(
           _.map(_.range(80), function(i) {
             return {
-              date: moment(new Date(2014, 11, i)),
+              date: moment(new Date(2009, 11, i)),
               total: i,
               filtered: 0
             }
@@ -271,7 +289,8 @@ describe('timelineChart', function() {
         var labels = chart.find('.x-tick-label');
         expect(labels.length).to.be.greaterThan(0);
         labels.each(function() {
-          expect(this.innerHTML).to.match(/\b[A-Z][a-z][a-z] ['’]1[45]\b/);
+          // Format should be something like, Nov '09, and Jan '10
+          expect(this.innerHTML).to.match(/\b[A-Z][a-z][a-z] ['’][01][901]\b/);
         });
       });
 

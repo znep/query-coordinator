@@ -611,6 +611,27 @@
         }
 
 
+        function datesEqual(date1, date2, precision) {
+          switch (precision) {
+            case 'DAY':
+              if (date1.getDate() !== date2.getDate()) {
+                return false;
+              }
+              // Allow to fall through, so it's checked against the less granular precisions
+            case 'MONTH':
+              if (date1.getMonth() !== date2.getMonth()) {
+                return false;
+              }
+              // Allow to fall through, so it's checked against the less granular precisions
+            case 'YEAR':
+              return date1.getFullYear() === date2.getFullYear();
+            case 'DECADE':
+              return Math.floor(date1.getFullYear() / 10) === Math.floor(date2.getFullYear() / 10);
+            default:
+              throw Error('Unsupported precision: ' + precision);
+          }
+        }
+
         /**********************************************************************
          *
          * renderChartXAxis
@@ -729,7 +750,7 @@
           i = 0;
           for (j = 0; j < tickDates.length; j++) {
             for (i; i < chartData.values.length; i++) {
-              if (moment(chartData.values[i].date).isSame(tickDates[j], labelPrecision)) {
+              if (datesEqual(chartData.values[i].date, tickDates[j], labelPrecision)) {
                 labelData.push({ datum: chartData.values[i], offset: Math.floor(d3XScale(chartData.values[i].date)) });
                 break;
               }
@@ -1240,6 +1261,16 @@
           return '{0} <span class="timeline-chart-clear-selection-button">×</span>'.format(label);
         }
 
+        /**
+         * Adds a leading zero to the number, if it's less than 10.
+         *
+         * @param {Number} number A number <= two digits.
+         * @return {String} the number with a leading 0, if it's less than 10.
+         */
+        function leadingZero(number) {
+          return (number < 10 ? '0' : '') + number;
+        }
+
         /**********************************************************************
          *
          * formatDateLabel
@@ -1268,7 +1299,7 @@
           switch (labelPrecision) {
 
             case 'DECADE':
-              return String(labelDate.getFullYear()).substring(0, 3) + '0s';
+              return Math.floor(labelDate.getFullYear() / 10) + '0s';
 
             case 'YEAR':
               return labelDate.getFullYear();
@@ -1278,7 +1309,7 @@
                 return FULL_MONTH_NAMES[labelDate.getMonth()] + ' ' + labelDate.getFullYear();
               } else {
                 return SHORT_MONTH_NAMES[labelDate.getMonth()] +
-                  ' ’' + (labelDate.getFullYear() % 100);
+                  ' ’' + (leadingZero(labelDate.getFullYear() % 100));
               }
 
             case 'DAY':

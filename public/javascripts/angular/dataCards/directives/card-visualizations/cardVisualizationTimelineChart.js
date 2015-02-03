@@ -221,9 +221,7 @@
         var chartDataSequence = Rx.Observable.combineLatest(
           unfilteredDataSequence.switchLatest(),
           filteredDataSequence.switchLatest(),
-          model.observeOnLatest('activeFilters'),
-          datasetPrecision,
-          function(unfilteredData, filteredData, filters, datasetPrecision) {
+          function(unfilteredData, filteredData) {
             // Joins filtered data and unfiltered data into an array of objects:
             // [
             //  { name: 'some_group_name', total: 1234, filtered: 192 },

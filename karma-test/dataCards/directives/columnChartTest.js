@@ -526,7 +526,7 @@ describe('columnChart', function() {
       scope.testData = testDataWithSpecialAtIndex(specialIndex);
       scope.$digest();
       var labels = element.find('.labels .label');
-      expect(labels).to.be.length(4);
+      expect(labels).to.have.length(4);
 
       var expectedClasses = [
         'orientation-right',

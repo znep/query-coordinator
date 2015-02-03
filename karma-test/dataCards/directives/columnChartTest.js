@@ -272,15 +272,13 @@ describe('columnChart', function() {
 
           if (isTotalOnTopAccordingToDom !== totalShouldBeOnTop) {
             throw new Error('The filtered bar should have come {0} the unfiltered bar in the DOM'.format(
-                totalShouldBeOnTop ? 'after' : 'before'
-                )
-              );
+              totalShouldBeOnTop ? 'after' : 'before'
+            ));
           }
           if (isTotalOnTopAccordingToBarGroupClass !== totalShouldBeOnTop) {
             throw new Error('Bar group {0} had the unfiltered-on-top class'.format(
-                totalShouldBeOnTop ? 'should have' : 'should not have'
-                )
-              );
+              totalShouldBeOnTop ? 'should have' : 'should not have'
+            ));
           }
         });
       }

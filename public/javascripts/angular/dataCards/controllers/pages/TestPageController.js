@@ -8,7 +8,7 @@
   };
 
   angular.
-    module('dataCards.controllers').
-      controller('TestPageController', TestPageController);
+  module('dataCards.controllers').
+  controller('TestPageController', TestPageController);
 
 })();

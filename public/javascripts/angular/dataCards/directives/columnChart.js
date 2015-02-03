@@ -26,7 +26,7 @@ angular.module('socrataCommon.directives').directive('columnChart', function($pa
       return;
     }
 
-    var maxLabelWidth = computeMaxLabelWidth(element, expanded);
+    var fixedLabelWidth = computeFixedLabelWidthOrNull(element, expanded);
 
     // Compute chart margins
     if (expanded) {
@@ -36,7 +36,7 @@ angular.module('socrataCommon.directives').directive('columnChart', function($pa
       }));
       bottomMargin = Math.floor(Math.min(
         maxLength + $.relativeToPx('1rem'),
-        $.relativeToPx(maxLabelWidth + 1 + 'rem')
+        $.relativeToPx(fixedLabelWidth + 1 + 'rem')
       ) / Math.sqrt(2));
     } else {
       bottomMargin = $.relativeToPx(numberOfDefaultLabels + 1 + 'rem');
@@ -155,7 +155,7 @@ angular.module('socrataCommon.directives').directive('columnChart', function($pa
             } else if (isOnlyInSpecial(d, j)) {
               return verticalPositionOfSpecialLabelRem - 0.5 + 'rem';
             } else {
-              return defaultLabelData.length - 0.5 - Math.min(j, numberOfDefaultLabels - 1)+ 'rem';
+              return defaultLabelData.length - 0.5 - Math.min(j, numberOfDefaultLabels - 1) + 'rem';
             }
           }).
           classed('undefined', function(d) {
@@ -167,9 +167,9 @@ angular.module('socrataCommon.directives').directive('columnChart', function($pa
             });
 
       // These widths relate to the visualLength() method call in the maxLength calculation above.
-      if (_.isFinite(maxLabelWidth)) {
+      if (_.isNumber(fixedLabelWidth)) {
         labelDivSelection.
-          selectAll('.text').style('width', maxLabelWidth + 'rem');
+          selectAll('.text').style('width', fixedLabelWidth + 'rem');
       }
 
       labelDivSelection.
@@ -315,7 +315,7 @@ angular.module('socrataCommon.directives').directive('columnChart', function($pa
           return Math.max(
             d.value === 0 ? 0 : 1,  // Always show at least one pixel for non-zero-valued bars.
             Math.abs(verticalScale(d.value) - verticalScale(0))
-          )+ 'px';
+          ) + 'px';
         }).
         style('bottom', function(d) {
           return verticalScale(Math.min(0, d.value)) + 'px';
@@ -386,7 +386,8 @@ angular.module('socrataCommon.directives').directive('columnChart', function($pa
     );
 
     function makeDomainIncludeZero(domain) {
-      var min = domain[0], max = domain[1];
+      var min = domain[0];
+      var max = domain[1];
       if (min > 0) { return [ 0, max ]; }
       if (max < 0) { return [ min, 0]; }
       return domain;
@@ -400,9 +401,7 @@ angular.module('socrataCommon.directives').directive('columnChart', function($pa
   }
 
   function computeHorizontalScale(chartWidth, chartData, expanded) {
-    var horizontalScale;
-
-    var numberOfBars = chartData.length;
+    // Horizontal scale configuration
     var barPadding = 0.25;
     var minBarWidth = 0;
     var maxBarWidth = 0;
@@ -410,7 +409,11 @@ angular.module('socrataCommon.directives').directive('columnChart', function($pa
     var maxSmallCardBarWidth = 30;
     var minExpandedCardBarWidth = 15;
     var maxExpandedCardBarWidth = 40;
-    var chartTruncated = false;
+    // End configuration
+
+    var horizontalScale;
+    var numberOfBars = chartData.length;
+    var isChartTruncated = false;
     var rangeBand;
 
     if (expanded) {
@@ -448,7 +451,7 @@ angular.module('socrataCommon.directives').directive('columnChart', function($pa
       // use computeChartDimensionsForRangeInterval to set rangeBand = minBarWidth
       // and update horizontalScale accordingly
       computeChartDimensionsForRangeInterval(minBarWidth * numberOfBars / (1 - barPadding));
-      if (!expanded) chartTruncated = true;
+      if (!expanded) isChartTruncated = true;
     } else if (rangeBand > maxBarWidth) {
       // --> desired rangeBand (bar width) is greater than accepted maxBarWidth
       // use computeChartDimensionsForRangeInterval to set rangeBand = maxBarWidth
@@ -457,11 +460,11 @@ angular.module('socrataCommon.directives').directive('columnChart', function($pa
 
     return {
       scale: horizontalScale,
-      truncated: chartTruncated
+      truncated: isChartTruncated
     };
   }
 
-  function computeMaxLabelWidth(element, expanded) {
+  function computeFixedLabelWidthOrNull(element, expanded) {
     if (expanded) {
       if (element.closest('card').find('.description-expanded-wrapper').height() <= 20) {
         return 10.5;
@@ -470,7 +473,7 @@ angular.module('socrataCommon.directives').directive('columnChart', function($pa
       }
     }
 
-    return Infinity;
+    return null;
   }
 
   return {

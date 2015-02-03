@@ -17,10 +17,19 @@ describe('DatasetMetadataController', function() {
     }
   };
 
+  beforeEach(module('socrataCommon.directives'));
+  beforeEach(module('/angular_templates/common/pageHeader.html'));
+
   beforeEach(module('dataCards'));
   beforeEach(function() {
     module(function($provide) {
       $provide.value('DatasetDataService', mockDatasetDataService);
+      $provide.value('ConfigurationsService', {
+        getThemeConfigurationsObservable: function() {
+          return Rx.Observable.returnValue([]);
+        },
+        getConfigurationValue: _.noop
+      });
     });
   });
   beforeEach(inject(function($injector){

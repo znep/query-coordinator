@@ -2,9 +2,18 @@
 
   'use strict';
 
-  function DatasetMetadataController($scope, $log, AngularRxExtensions, dataset) {
+  function DatasetMetadataController($scope, $log, AngularRxExtensions, UserSession, dataset) {
 
     AngularRxExtensions.install($scope);
+
+    // Bind the current user to the scope, or null if no user is logged in or there was an error
+    // fetching the current user.
+    var currentUserSequence = Rx.Observable.fromPromise(UserSession.getCurrentUser());
+    $scope.bindObservable(
+      'currentUser',
+      currentUserSequence,
+      _.constant(null)
+    );
 
     /*************************
     * General metadata stuff *

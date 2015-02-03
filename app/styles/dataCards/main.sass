@@ -74,16 +74,26 @@ a
 
 .page-header
   background-color: $logo-background-color
+
+  // Vertical center the logo if it's shorter than 50px
   .logo
-    color: black
     padding: $header-logo-padding
-    font-size: 1.25em
+    display: table-cell
+    vertical-align: middle
+    height: $header-logo-height
 
     img
       position: relative
-      // While the placeholder logo is correctly centered by pixel, it does not look centered.
-      // Apply some manual correction.
-      top: 2px
+      max-height: $header-logo-height
+
+  .page-header-links
+    text-align: right
+    line-height: (2 * $header-logo-padding-y) + $header-logo-height
+    padding-right: 1rem
+
+    a
+      color: $white-font-color
+      margin-left: 2rem
 
 
 // Why is this not in cards.sass?

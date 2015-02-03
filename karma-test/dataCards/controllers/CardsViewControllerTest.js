@@ -94,7 +94,9 @@ describe('CardsViewController', function() {
 
   beforeEach(module('dataCards'));
   beforeEach(module('socrataCommon.filters'));
+  beforeEach(module('socrataCommon.directives'));
   beforeEach(module('/angular_templates/dataCards/pages/cards-view.html'));
+  beforeEach(module('/angular_templates/common/pageHeader.html'));
   beforeEach(module('/angular_templates/dataCards/saveAs.html'));
   beforeEach(module('/angular_templates/dataCards/saveButton.html'));
   beforeEach(module('/angular_templates/dataCards/selectionLabel.html'));
@@ -125,6 +127,12 @@ describe('CardsViewController', function() {
       $provide.value('DatasetDataService', mockDatasetDataService);
       $provide.value('UserSession', mockUserSessionService);
       $provide.value('$window', mockWindowService);
+      $provide.value('ConfigurationsService', {
+        getThemeConfigurationsObservable: function() {
+          return Rx.Observable.returnValue([]);
+        },
+        getConfigurationValue: _.noop
+      });
       $provide.constant('ServerConfig', mockServerConfig);
     });
   });

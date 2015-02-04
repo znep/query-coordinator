@@ -10,7 +10,7 @@
 //   alert('Blob validated!');
 // }
 //
-angular.module('dataCards.services').factory('Schemas', function(JJV) {
+angular.module('dataCards.services').factory('Schemas', function(JJV, SchemaDefinitions) {
   // Maps schema subject names ('dataset_metadata', 'page_metadata', etc) to a collection of versioned schemas
   // for that subject.
   // The collection of versioned schemas is stored as an object whose keys are versions and whose values are the JSON
@@ -55,7 +55,11 @@ angular.module('dataCards.services').factory('Schemas', function(JJV) {
     };
   }
 
-  return {
+  var Schemas = {
     regarding: regarding
   };
+
+  SchemaDefinitions.registerWith(Schemas);
+
+  return Schemas;
 });

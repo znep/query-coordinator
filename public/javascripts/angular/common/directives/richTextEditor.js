@@ -158,9 +158,9 @@
   }
 
   /**
-   * A <rte /> is meant to replace a <textarea />, and provide limited html formatting.
+   * A <rich-text-editor /> is meant to replace a <textarea />, and provide limited html formatting.
    */
-  angular.module('socrataCommon.directives').directive('rte', function() {
+  angular.module('socrataCommon.directives').directive('richTextEditor', function() {
     var toolbar;
     /**
      * We need to update the value on both the 'input' event and the 'blur' event, because squire

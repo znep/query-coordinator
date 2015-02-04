@@ -25,14 +25,15 @@
     });
 
     /**
-     * Create a <rte />.
+     * Create a <rich-text-editor />.
      *
      * @param {String[]} attrs A list of attributes to put on the tag.
      * @param {Function=} onload A callback to attach to the iframe's 'load' event.
      */
     function createElement(buttons, value, onload) {
       var outerScope = $rootScope.$new();
-      var html = '<rte buttons="{0}" value="{1}"></rte>'.format(buttons || '', value || '');
+      var html = '<rich-text-editor buttons="{0}" value="{1}"></rich-text-editor>'.
+        format(buttons || '', value || '');
       var element = testHelpers.TestDom.compileAndAppend(html, outerScope);
       if (onload) {
         // We need to _.deferred the callback so that the rte's callbacks can run
@@ -321,7 +322,7 @@
           'background-color': '#020304',
           'font-size': '52px'
         };
-        testHelpers.TestDom.append('<style>rte { ' + _.map(styles, function(v, k) {
+        testHelpers.TestDom.append('<style>rich-text-editor { ' + _.map(styles, function(v, k) {
           return k + ': ' + v;
         }).join(';') + ';}</style>');
 

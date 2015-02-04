@@ -31,7 +31,7 @@ describe('Page model', function() {
     var desc3 = 'Yet another fine description';
     var expectedSequence = [desc1, desc2, desc3];
 
-    MockPageDataService.getBaseInfo = function(id) {
+    MockPageDataService.getPageMetadata = function(id) {
       throw new Error('Should never try to get base info.');
     };
 
@@ -54,13 +54,13 @@ describe('Page model', function() {
 
     var shouldBeResolved = false;
 
-    var mockBaseInfoDefer = $q.defer();
-    var getBaseInfoCalled = false;
-    MockPageDataService.getBaseInfo = function(id) {
-      expect(getBaseInfoCalled).to.be.false;
-      getBaseInfoCalled = true;
+    var mockPageMetadataDefer = $q.defer();
+    var getPageMetadataCalled = false;
+    MockPageDataService.getPageMetadata = function(id) {
+      expect(getPageMetadataCalled).to.be.false;
+      getPageMetadataCalled = true;
       expect(id).to.equal(id);
-      return mockBaseInfoDefer.promise;
+      return mockPageMetadataDefer.promise;
     };
 
     var instance = new Page(id);
@@ -71,9 +71,9 @@ describe('Page model', function() {
     });
 
     shouldBeResolved = true;
-    mockBaseInfoDefer.resolve({ 'description': descFromApi });
+    mockPageMetadataDefer.resolve({ 'description': descFromApi });
     $rootScope.$digest();
-    expect(getBaseInfoCalled).to.be.true;
+    expect(getPageMetadataCalled).to.be.true;
 
     instance.set('description', descFromSetter1);
     instance.set('description', descFromSetter2);
@@ -84,10 +84,10 @@ describe('Page model', function() {
     var id = 'dead-beef';
     var datasetId = 'fooo-baar';
 
-    var mockBaseInfoDefer = $q.defer();
-    MockPageDataService.getBaseInfo = function(id) {
+    var mockPageMetadataDefer = $q.defer();
+    MockPageDataService.getPageMetadata = function(id) {
       expect(id).to.equal(id);
-      return mockBaseInfoDefer.promise;
+      return mockPageMetadataDefer.promise;
     };
 
     var instance = new Page(id);
@@ -98,7 +98,7 @@ describe('Page model', function() {
       }
     });
 
-    mockBaseInfoDefer.resolve({ 'datasetId': datasetId});
+    mockPageMetadataDefer.resolve({ 'datasetId': datasetId});
     $rootScope.$digest();
   });
 
@@ -106,10 +106,10 @@ describe('Page model', function() {
     var id = 'dead-beef';
     var datasetId = 'fooo-baar';
 
-    var mockBaseInfoDefer = $q.defer();
-    MockPageDataService.getBaseInfo = function(id) {
+    var mockPageMetadataDefer = $q.defer();
+    MockPageDataService.getPageMetadata = function(id) {
       expect(id).to.equal(id);
-      return mockBaseInfoDefer.promise;
+      return mockPageMetadataDefer.promise;
     };
 
     var instance = new Page(id);
@@ -136,7 +136,7 @@ describe('Page model', function() {
     });
 
     instance.set('dataset', {id: datasetId});
-    mockBaseInfoDefer.resolve({
+    mockPageMetadataDefer.resolve({
       'datasetId': datasetId,
       'description': 'desc',
       'name': 'dsName',
@@ -152,8 +152,8 @@ describe('Page model', function() {
 
   describe('toggleExpanded', function() {
     it('should toggle expanded on the given card', function() {
-      var mockBaseInfoDefer = $q.defer();
-      MockPageDataService.getBaseInfo = _.constant($q.when({ 'datasetId': 'fake-fbfr' }));
+      var mockPageMetadataDefer = $q.defer();
+      MockPageDataService.getPageMetadata = _.constant($q.when({ 'datasetId': 'fake-fbfr' }));
 
       var instance = new Page('dead-beef');
 
@@ -168,8 +168,8 @@ describe('Page model', function() {
     });
 
     it('should only allow expanded on one card', function() {
-      var mockBaseInfoDefer = $q.defer();
-      MockPageDataService.getBaseInfo = _.constant($q.when({ 'datasetId': 'fake-fbfr' }));
+      var mockPageMetadataDefer = $q.defer();
+      MockPageDataService.getPageMetadata = _.constant($q.when({ 'datasetId': 'fake-fbfr' }));
 
       var instance = new Page('dead-beef');
 
@@ -206,7 +206,7 @@ describe('Page model', function() {
       var id = 'dead-beef';
       var description = 'Page from serialized blob'
 
-      MockPageDataService.getBaseInfo = function(id) {
+      MockPageDataService.getPageMetadata = function(id) {
         throw new Error('Should never try to get base info.');
       };
 

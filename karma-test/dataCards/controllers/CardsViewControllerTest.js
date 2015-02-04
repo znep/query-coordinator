@@ -41,7 +41,7 @@ describe('CardsViewController', function() {
 
   var datasetOwnerId = 'ownr-idxx';
   var mockDatasetDataService = {
-    getBaseInfo: function() {
+    getDatasetMetadata: function() {
       return $q.when({
         id: 'asdf-fdsa',
         name: 'test dataset name',
@@ -157,15 +157,15 @@ describe('CardsViewController', function() {
     var $scope = $rootScope.$new();
     var fakePageId = 'fooo-baar';
 
-    var baseInfoPromise = $q.defer();
+    var pageMetadataPromise = $q.defer();
 
-    mockPageDataService.getBaseInfo = function() { return baseInfoPromise.promise; };
+    mockPageDataService.getPageMetadata = function() { return pageMetadataPromise.promise; };
 
     var page = new Page(fakePageId);
     page.serialize = function() { return mockPageSerializationData; };
 
     return {
-      baseInfoPromise: baseInfoPromise,
+      pageMetadataPromise: pageMetadataPromise,
       $scope: $scope,
       page: page
     };
@@ -236,7 +236,7 @@ describe('CardsViewController', function() {
 
       var nameOne = _.uniqueId('name');
       var nameTwo = _.uniqueId('name');
-      controllerHarness.baseInfoPromise.resolve({
+      controllerHarness.pageMetadataPromise.resolve({
         datasetId: 'fake-fbfr',
         name: nameOne
       });
@@ -256,7 +256,7 @@ describe('CardsViewController', function() {
 
       var nameOne = undefined;
       var nameTwo = _.uniqueId('name');
-      controllerHarness.baseInfoPromise.resolve({
+      controllerHarness.pageMetadataPromise.resolve({
         datasetId: 'fake-fbfr',
         name: undefined
       });
@@ -278,7 +278,7 @@ describe('CardsViewController', function() {
 
       var descriptionOne = _.uniqueId('description');
       var descriptionTwo = _.uniqueId('description');
-      controllerHarness.baseInfoPromise.resolve({
+      controllerHarness.pageMetadataPromise.resolve({
         datasetId: 'fake-fbfr',
         description: descriptionOne
       });
@@ -295,7 +295,7 @@ describe('CardsViewController', function() {
     function makeMinimalController() {
       var controllerHarness = makeController();
       var cardBlobs = _.times(3, testCard);
-      controllerHarness.baseInfoPromise.resolve({
+      controllerHarness.pageMetadataPromise.resolve({
         datasetId: 'fake-fbfr',
         name: 'fakeName',
         cards: cardBlobs,
@@ -484,7 +484,7 @@ describe('CardsViewController', function() {
         var $scope = controllerHarness.$scope;
 
         controllerHarness.currentUserDefer.resolve(mockUser(isAdmin, isOwner ? datasetOwnerId : 'xnot-ownr', userRole));
-        controllerHarness.baseInfoPromise.resolve({
+        controllerHarness.pageMetadataPromise.resolve({
           datasetId: 'fake-fbfr'
         });
 
@@ -501,7 +501,7 @@ describe('CardsViewController', function() {
         var $scope = controllerHarness.$scope;
 
         controllerHarness.currentUserDefer.reject({});
-        controllerHarness.baseInfoPromise.resolve({
+        controllerHarness.pageMetadataPromise.resolve({
           datasetId: 'fake-fbfr'
         });
         $scope.$digest();
@@ -678,7 +678,7 @@ describe('CardsViewController', function() {
       var serializedCard;
       var cardModel;
 
-      controllerHarness.baseInfoPromise.resolve({
+      controllerHarness.pageMetadataPromise.resolve({
         datasetId: 'fake-fbfr',
         name: 'some name'
       });
@@ -720,7 +720,7 @@ describe('CardsViewController', function() {
       var serializedCard;
       var cardModel;
 
-      controllerHarness.baseInfoPromise.resolve({
+      controllerHarness.pageMetadataPromise.resolve({
         datasetId: 'fake-fbfr',
         name: 'some name'
       });
@@ -841,7 +841,7 @@ describe('CardsViewController', function() {
 
       expect(controllerHarness.$scope.datasetCSVDownloadURL).to.equal('#');
 
-      controllerHarness.baseInfoPromise.resolve({
+      controllerHarness.pageMetadataPromise.resolve({
         datasetId: 'fake-fbfr',
         name: 'some name'
       });

@@ -21,28 +21,28 @@ angular.module('dataCards.models').factory('Page', function($q, Dataset, Card, M
       // the HTTP calls required to fulfill them would be made without any regard to whether
       // or not the calls are needed.
 
-      var baseInfoPromise;
+      var pageMetadataPromise;
       if (usingBlob) {
-        baseInfoPromise = function() { return $q.when(idOrSerializedBlob); };
+        pageMetadataPromise = function() { return $q.when(idOrSerializedBlob); };
       } else {
-        baseInfoPromise = function() { return PageDataService.getBaseInfo(self.id); };
+        pageMetadataPromise = function() { return PageDataService.getPageMetadata(self.id); };
       }
 
       var fields = ['datasetId', 'description', 'name', 'layoutMode', 'primaryAmountField', 'primaryAggregation', 'isDefaultPage', 'pageSource', 'baseSoqlFilter'];
       _.each(fields, function(field) {
         self.defineObservableProperty(field, undefined, function() {
-          return baseInfoPromise().then(_.property(field));
+          return pageMetadataPromise().then(_.property(field));
         });
       });
 
       self.defineObservableProperty('dataset', null, function() {
-        return baseInfoPromise().then(function(data) {
+        return pageMetadataPromise().then(function(data) {
           return new Dataset(data.datasetId);
         });
       });
 
       self.defineObservableProperty('cards', [], function() {
-        return baseInfoPromise().then(function(data) {
+        return pageMetadataPromise().then(function(data) {
           return _.map(data.cards, function(serializedCard) {
             return Card.deserialize(self, serializedCard);
           });

@@ -44,13 +44,13 @@
       fakeRequestHandler.respond(fakePageData);
     }));
 
-    describe('getBaseInfo', function() {
+    describe('getPageMetadata', function() {
       it('should throw on bad parameters', function() {
-        expect(function() { PageDataService.getBaseInfo(); }).to.throw();
+        expect(function() { PageDataService.getPageMetadata(); }).to.throw();
       });
 
       it('should access the correct page metadata', function(done) {
-        var response = PageDataService.getBaseInfo(fake4x4);
+        var response = PageDataService.getPageMetadata(fake4x4);
         response.then(function(data) {
           expect(data).to.eql(fakePageData);
           done();

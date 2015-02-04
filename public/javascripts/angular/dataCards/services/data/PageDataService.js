@@ -18,7 +18,7 @@
       );
     }
 
-    this.getBaseInfo = function(id) {
+    this.getPageMetadata = function(id) {
       Assert(_.isString(id), 'id should be a string');
       return fetch.call(this, id);
     };

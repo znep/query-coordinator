@@ -46,10 +46,10 @@ describe("Dataset model", function() {
     var id = 'dead-beef';
     var fakeDisplayUnit = 'test';
 
-    var baseInfoDefer =_$q.defer();
-    MockDataService.getBaseInfo = function(id) {
+    var datasetMetadataDefer =_$q.defer();
+    MockDataService.getDatasetMetadata = function(id) {
       expect(id).to.equal(id);
-      return baseInfoDefer.promise;
+      return datasetMetadataDefer.promise;
     };
 
     var instance = new _Dataset(id);
@@ -60,7 +60,7 @@ describe("Dataset model", function() {
       }
     });
 
-    baseInfoDefer.resolve($.extend({}, minimalBlob, { "rowDisplayUnit": fakeDisplayUnit}));
+    datasetMetadataDefer.resolve($.extend({}, minimalBlob, { "rowDisplayUnit": fakeDisplayUnit}));
     _$rootScope.$digest();
   });
 
@@ -75,7 +75,7 @@ describe("Dataset model", function() {
         })
       };
 
-    MockDataService.getBaseInfo = function(id) {
+    MockDataService.getDatasetMetadata = function(id) {
       return $q.when(minimalBlob);
     };
 
@@ -129,7 +129,7 @@ describe("Dataset model", function() {
     var serializedBlob = $.extend({}, minimalBlob, { "columns": fakeColumns });
 
     var def =_$q.defer();
-    MockDataService.getBaseInfo = function(id) {
+    MockDataService.getDatasetMetadata = function(id) {
       return def.promise;
     };
 

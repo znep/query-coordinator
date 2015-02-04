@@ -18,8 +18,8 @@ angular.module('dataCards.models').factory('Dataset', function(ModelHelper, Mode
       // NOTE! It's important that the various getters on PageDataService are _not_ called
       // until the lazy evaluator gets called. Otherwise we'll fetch all the data before we
       // actually need it.
-      var baseInfoPromise = function() {
-        return DatasetDataService.getBaseInfo(self.id).then(function(blob) {
+      var datasetMetadataPromise = function() {
+        return DatasetDataService.getDatasetMetadata(self.id).then(function(blob) {
           // Only support schema version 0 for now.
           if (schemas.isValidAgainstVersion('0', blob)) {
             return blob;
@@ -65,7 +65,7 @@ angular.module('dataCards.models').factory('Dataset', function(ModelHelper, Mode
       var fields = ['description', 'name', 'rowDisplayUnit', 'defaultAggregateColumn', 'domain', 'ownerId', 'updatedAt'];
       _.each(fields, function(field) {
         self.defineObservableProperty(field, undefined, function() {
-          return baseInfoPromise().then(_.property(field));
+          return datasetMetadataPromise().then(_.property(field));
         });
       });
 
@@ -79,7 +79,7 @@ angular.module('dataCards.models').factory('Dataset', function(ModelHelper, Mode
         // Columns are provided as an array of objects.
         // For ease of use, transform it into an object where
         // the keys are the column names.
-        return baseInfoPromise().then(function(data) {
+        return datasetMetadataPromise().then(function(data) {
           return _.reduce(data.columns, function(acc, column) {
             column.isSystemColumn = isSystemColumn(column);
             acc[column.name] = column;

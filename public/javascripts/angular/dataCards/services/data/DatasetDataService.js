@@ -16,7 +16,7 @@
       );
     }
 
-    this.getBaseInfo = function(id) {
+    this.getDatasetMetadata = function(id) {
       Assert(_.isString(id), 'id should be a string');
       return fetch.call(this, id);
     };

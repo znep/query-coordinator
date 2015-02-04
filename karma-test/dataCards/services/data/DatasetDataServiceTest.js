@@ -50,13 +50,13 @@
       $httpBackend.whenGET(geoJsonDataUrl).respond(fakeGeoJsonData);
     }));
 
-    describe('getBaseInfo', function() {
+    describe('getDatasetMetadata', function() {
       it('should throw on bad parameters', function() {
-        expect(function() { DatasetDataService.getBaseInfo(); }).to.throw();
+        expect(function() { DatasetDataService.getDatasetMetadata(); }).to.throw();
       });
 
       it('should access the correct dataset metadata', function(done) {
-        var response = DatasetDataService.getBaseInfo(fake4x4);
+        var response = DatasetDataService.getDatasetMetadata(fake4x4);
         response.then(function(data) {
           expect(data).to.eql(fakeDatasetData);
           done();

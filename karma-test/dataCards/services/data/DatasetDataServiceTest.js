@@ -53,10 +53,12 @@
     describe('getDatasetMetadata', function() {
       it('should throw on bad parameters', function() {
         expect(function() { DatasetDataService.getDatasetMetadata(); }).to.throw();
+        expect(function() { DatasetDataService.getDatasetMetadata('faur-fjur'); }).to.throw(); // Expect version.
+        expect(function() { DatasetDataService.getDatasetMetadata('9001', 'faur-fjur'); }).to.throw(); // Invalid schema version.
       });
 
       it('should access the correct dataset metadata', function(done) {
-        var response = DatasetDataService.getDatasetMetadata(fake4x4);
+        var response = DatasetDataService.getDatasetMetadata('0', fake4x4);
         response.then(function(data) {
           expect(data).to.eql(fakeDatasetData);
           done();

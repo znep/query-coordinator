@@ -1,8 +1,10 @@
 (function() {
 
-  function DatasetDataService(http, Assert) {
+  function DatasetDataService(ServerConfig, http, Assert, Schemas) {
 
-    function fetch(id) {
+    var datasetMetadataSchemas = Schemas.regarding('dataset_metadata');
+
+    function fetch(schemaVersion, id) {
       var url = '/dataset_metadata/{0}.json'.format(id);
       var config = {
         cache: true,
@@ -16,9 +18,21 @@
       );
     }
 
-    this.getDatasetMetadata = function(id) {
+    this.getDatasetMetadata = function(schemaVersion, id) {
       Assert(_.isString(id), 'id should be a string');
-      return fetch.call(this, id);
+      Assert(schemaVersion === '0', 'only dataset metadata schema v0 is supported.');
+      return fetch.call(this, schemaVersion, id).then(function(data) {
+        var validation = datasetMetadataSchemas.validateAgainstVersion(schemaVersion, data);
+        if (_.isPresent(validation.errors)) {
+          throw new Error(
+            'Data from dataset metadata endpoint failed validation. Schema version: {0}\nErrors: {1}\nData: {2}'.format(
+              schemaVersion, JSON.stringify(validation.errors), JSON.stringify(data)
+            )
+          );
+        }
+
+        return data;
+      });
     };
 
     this.getGeoJsonInfo = function(id, additionalConfig) {

@@ -1,5 +1,7 @@
 // This model is intended to be an immutable reference to a Dataset.
 angular.module('dataCards.models').factory('Dataset', function(ModelHelper, Model, DatasetDataService, Schemas, SchemaDefinitions, $injector) {
+  var SUPPORTED_DATASET_SCHEMA_VERSION = '0';
+
   var schemas = Schemas.regarding('dataset_metadata');
 
   //TODO cache instances or share cache.
@@ -19,9 +21,9 @@ angular.module('dataCards.models').factory('Dataset', function(ModelHelper, Mode
       // until the lazy evaluator gets called. Otherwise we'll fetch all the data before we
       // actually need it.
       var datasetMetadataPromise = function() {
-        return DatasetDataService.getDatasetMetadata(self.id).then(function(blob) {
+        return DatasetDataService.getDatasetMetadata(SUPPORTED_DATASET_SCHEMA_VERSION, self.id).then(function(blob) {
           // Only support schema version 0 for now.
-          if (schemas.isValidAgainstVersion('0', blob)) {
+          if (schemas.isValidAgainstVersion(SUPPORTED_DATASET_SCHEMA_VERSION, blob)) {
             return blob;
           } else {
             var validationErrors = schemas.validateAgainstVersion('0', blob).errors;

@@ -56,7 +56,10 @@
 
     // Get all pages which use this dataset, as JSON blobs.
     // If you want models instead, use the Dataset model's pages property.
-    this.getPagesForDataset = function(datasetId) {
+    this.getPagesForDataset = function(pageSchemaVersion, datasetId) {
+      Assert(pageSchemaVersion === '0', 'only page metadata schema v0 is supported.');
+      Assert(!ServerConfig.metadataMigration.datasetMetadata.shouldReadWriteFromNewEndpoint(), 'new endpoints not supported');
+
       var url = '/dataset_metadata/?id={0}&format=json'.format(datasetId);
 
       var config = {

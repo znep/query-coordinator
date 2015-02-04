@@ -65,7 +65,7 @@ describe("Dataset model", function() {
   });
 
   it('should eventually return a bunch of Pages from the pages property', function(done) {
-    var id = 'dead-beef';
+    var testId = 'dead-beef';
     var fakePageIds = {
         'user': _.times(4, function(idx) {
           return {pageId: _.uniqueId('fakeUserPageId')};
@@ -75,17 +75,17 @@ describe("Dataset model", function() {
         })
       };
 
-    MockDataService.getDatasetMetadata = function(id) {
+    MockDataService.getDatasetMetadata = function(schemaVersion, id) {
       return $q.when(minimalBlob);
     };
 
     var def =_$q.defer();
-    MockDataService.getPagesForDataset = function(id) {
-      expect(id).to.equal(id);
+    MockDataService.getPagesForDataset = function(schemaVersion, id) {
+      expect(id).to.equal(testId);
       return def.promise;
     };
 
-    var instance = new _Dataset(id);
+    var instance = new _Dataset(testId);
     instance.observe('pages').subscribe(function(pagesBySource) {
       if (!_.isEmpty(pagesBySource)) {
         _.each(pagesBySource, function(pages, source) {

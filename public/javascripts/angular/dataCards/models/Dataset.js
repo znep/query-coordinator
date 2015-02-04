@@ -1,6 +1,7 @@
 // This model is intended to be an immutable reference to a Dataset.
 angular.module('dataCards.models').factory('Dataset', function(ModelHelper, Model, DatasetDataService, Schemas, SchemaDefinitions, $injector) {
   var SUPPORTED_DATASET_SCHEMA_VERSION = '0';
+  var SUPPORTED_PAGES_SCHEMA_VERSION = '0';
 
   var schemas = Schemas.regarding('dataset_metadata');
 
@@ -48,7 +49,7 @@ angular.module('dataCards.models').factory('Dataset', function(ModelHelper, Mode
 
       var pagesPromise = function() {
         var Page = $injector.get('Page'); // Inject Page here to avoid circular dep.
-        return DatasetDataService.getPagesForDataset(self.id).
+        return DatasetDataService.getPagesForDataset(SUPPORTED_PAGES_SCHEMA_VERSION, self.id).
           then(function(pagesBySource) {
             var publisherPages = _.map(pagesBySource.publisher, function(blob) {
               return new Page(blob);

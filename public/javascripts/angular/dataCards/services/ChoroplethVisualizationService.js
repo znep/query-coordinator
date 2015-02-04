@@ -12,23 +12,11 @@
       this.defaultHighlightColor = '#debb1e';
 
       // Color classes.
-      this.defaultColorClass = 'sequential';
-      this.sequentialColors = ['#e4eef0', '#408499'],
+      this.negativeColorRange = chroma.interpolate.bezier(['#c6663d', '#e4eef0']),
+      this.positiveColorRange = chroma.interpolate.bezier(['#e4eef0', '#408499']),
       this.divergingColors = ['brown','lightyellow','teal'],
-      this.qualitativeColors = {
-        2: ["#8dd3c7","#ffffb3"],
-        3: ["#8dd3c7","#ffffb3","#bebada"],
-        4: ["#8dd3c7","#ffffb3","#bebada","#fb8072"],
-        5: ["#8dd3c7","#ffffb3","#bebada","#fb8072","#80b1d3"],
-        6: ["#8dd3c7","#ffffb3","#bebada","#fb8072","#80b1d3","#fdb462"],
-        7: ["#8dd3c7","#ffffb3","#bebada","#fb8072","#80b1d3","#fdb462","#b3de69"],
-        8: ["#8dd3c7","#ffffb3","#bebada","#fb8072","#80b1d3","#fdb462","#b3de69","#fccde5"],
-        9: ["#8dd3c7","#ffffb3","#bebada","#fb8072","#80b1d3","#fdb462","#b3de69","#fccde5","#d9d9d9"],
-        10: ["#8dd3c7","#ffffb3","#bebada","#fb8072","#80b1d3","#fdb462","#b3de69","#fccde5","#d9d9d9","#bc80bd"],
-        11: ["#8dd3c7","#ffffb3","#bebada","#fb8072","#80b1d3","#fdb462","#b3de69","#fccde5","#d9d9d9","#bc80bd","#ccebc5"],
-        12: ["#8dd3c7","#ffffb3","#bebada","#fb8072","#80b1d3","#fdb462","#b3de69","#fccde5","#d9d9d9","#bc80bd","#ccebc5","#ffed6f"]
-      };
-
+      this.qualitativeColors = ["#8dd3c7","#ffffb3","#bebada","#fb8072","#80b1d3","#fdb462","#b3de69","#fccde5","#d9d9d9","#bc80bd","#ccebc5","#ffed6f"];
+      this.defaultColorRange = this.positiveColorRange;
     };
 
 
@@ -121,61 +109,35 @@
     }
 
 
-    /********************
-    * Style calculation *
-    ********************/
+    // Style calculation
 
-    ChoroplethVisualizationUtils.prototype.calculateColoringParameters = function(colorClass, classBreaks) {
-      var colorRange;
-      var lightnessCorrection;
-      var bezierColorInterpolation;
-      var colorClasses;
-      var scale;
-
+    /**
+     * @param {String[]} colorRange One of this.divergingColors, this.qualitativeColors, or
+     * this.positiveColorRange.
+     */
+    ChoroplethVisualizationUtils.prototype.calculateColoringScale = function(colorRange, classBreaks) {
       if (!_.isArray(classBreaks)) {
         throw new Error('Cannot calculate coloring parameters with nvalid class breaks.');
       }
 
-      switch (colorClass.toLowerCase()) {
-        case 'diverging':
-          colorClasses = this.divergingColors;
-          lightnessCorrection = false;
-          bezierColorInterpolation = false;
-          break;
-        case 'qualitative':
-          if (classBreaks.length > 12) {
-            throw new Error('Cannot calculate qualitative coloring parameters for more than 12 class breaks.');
-          }
-          colorClasses = this.qualitativeColors[classBreaks.length];
-          lightnessCorrection = false;
-          bezierColorInterpolation = false;
-          break;
-        case 'sequential':
-          colorClasses = this.sequentialColors;
-          lightnessCorrection = true;
-          bezierColorInterpolation = true;
-          break;
-        default:
-          throw new Error('Cannot calculate coloring parameters for invalid color class "' + colorClass + '".');
+      if (this.qualitativeColors === colorRange) {
+        if (classBreaks.length > colorRange.length) {
+          throw new Error('Cannot calculate qualitative coloring parameters for more than 12 class breaks.');
+        }
+        colorRange = this.qualitativeColors.slice(0, classBreaks.length);
       }
 
-      if (bezierColorInterpolation) {
-        colorClasses = chroma.interpolate.bezier(colorClasses);
-      }
-
-      scale = new chroma.
-        scale(colorClasses).
+      return chroma.
+        scale(colorRange).
         domain(classBreaks).
-        correctLightness(lightnessCorrection).
-        // use LAB color space to approximate perceptual brightness,
-        // bezier interpolation, and auto-correct for color brightness.
+        // For linear color ranges, make sure the lightness varies linearly
+        correctLightness(colorRange.length === 2).
+        // use LAB color space to approximate perceptual brightness
         // See more: https://vis4.net/blog/posts/mastering-multi-hued-color-scales/
         mode('lab');
-
-      return { scale: scale, classes: colorClasses };
     };
 
-    ChoroplethVisualizationUtils.prototype.fillColor = function(colorData, fillClass, feature, highlighted) {
+    ChoroplethVisualizationUtils.prototype.fillColor = function(colorScale, feature, highlighted) {
 
       if (!feature.hasOwnProperty('properties') ||
           !feature.properties.hasOwnProperty(Constants['FILTERED_VALUE_PROPERTY_NAME']) ||
@@ -184,19 +146,15 @@
         return this.nullColor;
       }
 
-      switch (fillClass) {
-        case 'none':
-          return 'transparent';
-        case 'single':
-        case 'multi':
-          return colorData.scale(Number(feature.properties[Constants['FILTERED_VALUE_PROPERTY_NAME']])).hex();
-        default:
-          throw new Error('Cannot calculate fill color for invalid fill class "' + fillClass + '".');
+      if (colorScale) {
+        return colorScale(Number(feature.properties[Constants['FILTERED_VALUE_PROPERTY_NAME']])).hex();
+      } else {
+        return 'transparent';
       }
     };
 
 
-    ChoroplethVisualizationUtils.prototype.strokeColor = function(colorData, fillClass, feature, highlighted) {
+    ChoroplethVisualizationUtils.prototype.strokeColor = function(colorScale, feature, highlighted) {
 
       if (!feature.hasOwnProperty('geometry') ||
           !feature.geometry.hasOwnProperty('type')) {
@@ -215,18 +173,16 @@
         return this.nullColor;
       }
 
-      switch (fillClass) {
-        case 'none':
-          return (highlighted) ? this.defaultHighlightColor : 'black';
-        case 'single':
-        case 'multi':
-          return (highlighted) ? this.defaultHighlightColor : this.fillColor(colorData, fillClass, feature, false);
-        default:
-          throw new Error('Cannot calculate stroke color for invalid fill class "' + fillClass + '".');
+      if (highlighted) {
+        return this.defaultHighlightColor;
+      } else if (colorScale) {
+        return this.fillColor(colorScale, feature, false);
+      } else {
+        return 'black';
       }
     };
 
-    ChoroplethVisualizationUtils.prototype.strokeWidth = function(fillClass, feature, highlighted) {
+    ChoroplethVisualizationUtils.prototype.strokeWidth = function(feature, highlighted) {
 
       if (!feature.hasOwnProperty('geometry') ||
           !feature.geometry.hasOwnProperty('type')) {
@@ -242,7 +198,7 @@
       }
     };
 
-    ChoroplethVisualizationUtils.prototype.getStyleFn = function(colorData, fillClass) {
+    ChoroplethVisualizationUtils.prototype.getStyleFn = function(colorScale) {
       var visualization = this;
       var selectedPropertyName = Constants['SELECTED_PROPERTY_NAME'];
       return function(feature) {
@@ -252,13 +208,14 @@
             feature.properties[selectedPropertyName]) {
           highlighted = feature.properties[selectedPropertyName];
         }
+        var opacity = colorScale ? 0.8 : 1;
         return {
-          fillColor: visualization.fillColor(colorData, fillClass, feature, highlighted),
-          color: visualization.strokeColor(colorData, fillClass, feature, highlighted),
-          weight: visualization.strokeWidth(fillClass, feature, highlighted),
-          opacity: (fillClass === 'none') ? 1 : 0.8,
+          fillColor: visualization.fillColor(colorScale, feature, highlighted),
+          color: visualization.strokeColor(colorScale, feature, highlighted),
+          weight: visualization.strokeWidth(feature, highlighted),
+          opacity: opacity,
           dashArray: 0,
-          fillOpacity: (fillClass === 'none') ? 1 : 0.8
+          fillOpacity: opacity
         };
       }
     };

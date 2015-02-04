@@ -22,9 +22,9 @@
     /**
      * A choropleth legend, with discrete colors for ranges of values.
      */
-    function LegendDiscrete(element, className) {
+    function LegendDiscrete(element, container) {
       this.element = element;
-      this.className = className;
+      this.container = container;
     }
     $.extend(LegendDiscrete.prototype, {
       /**
@@ -63,11 +63,60 @@
         return Math.floor(percentOfClassbreakRange * totalHeight);
       },
 
-      update: function(classBreaks, colors) {
-        if (classBreaks.length === 0) {
-          this.element.find('.' + this.className).hide();
-          return;
+      /**
+       * Generates a color scale for the given classBreaks.
+       * @param {Number[]} classBreaks The values that define the boundaries of the different
+       *   discrete groups of values.
+       * @return {Object} an object with 'colors' and 'scale' functions, that mirror a chroma scale.
+       */
+      colorScaleFor: function(classBreaks) {
+        // If we have values that straddle zero, add the zero point as one of our breaks
+        var indexOf0 = _.sortedIndex(classBreaks, 0);
+        if (indexOf0 > 0 && indexOf0 < classBreaks.length) {
+          var negativeColorScale = visualizationUtils.calculateColoringScale(
+            visualizationUtils.negativeColorRange, classBreaks.slice(0, indexOf0).concat(0)
+          );
+          var positiveColorScale = visualizationUtils.calculateColoringScale(
+            visualizationUtils.positiveColorRange, [0].concat(classBreaks.slice(indexOf0))
+          );
+          // Create a faux colorScale that implements the interface, but delegates to the positive
+          // or negative actual-scale depending on what you're trying to scale.
+          var fauxColorScale = function(value) {
+            return (value < 0 ? negativeColorScale : positiveColorScale)(value);
+          };
+          fauxColorScale.colors = function() {
+            return negativeColorScale.colors().concat(
+              // slice, to remove the duplicate shared color value
+              positiveColorScale.colors().slice(1)
+            );
+          };
+          return fauxColorScale;
+
+        } else {
+          return visualizationUtils.calculateColoringScale(
+            visualizationUtils.defaultColorRange, classBreaks
+          );
         }
+      },
+
+      /**
+       * Updates the legend.
+       *
+       * @param {Number[]} data The data being plotted on the map.
+       *
+       * @return {chroma.scale} A chroma color scale that maps a datum value to a color.
+       */
+      update: function(data) {
+        var classBreaks = visualizationUtils.calculateDataClassBreaks(
+          data, Constants['UNFILTERED_VALUE_PROPERTY_NAME']
+        );
+
+        if (classBreaks.length === 0) {
+          this.element.hide();
+          return null;
+        }
+
+        var colorScale = this.colorScaleFor(classBreaks);
 
         var position = 'bottomright';
         var numTicks;
@@ -82,13 +131,11 @@
           numTicks = 1;
 
         } else {
-
-          if (this.element.height() < 250) {
+          if (this.container.height() < 250) {
             numTicks = 3;
           } else {
             numTicks = 4;
           }
-
         }
 
         var minBreak = classBreaks[0];
@@ -96,34 +143,26 @@
 
         // Size of the colored scale.
         var COLOR_BAR_WIDTH = 15;
-        var colorBarHeight = Math.floor(Math.min(this.element.height() - 60, 250));
+        var colorBarHeight = Math.floor(Math.min(this.container.height() - 60, 250));
 
         // Reserve some padding space for the bottom-most tick label text.
         var BOTTOM_PADDING = 15;
 
-        var legendSelection = d3.select(this.element.find('.' + this.className)[0]).data(
-          [{colors: colors, classBreaks: classBreaks}]
-        );
+        var colors = colorScale.colors();
 
-        legendSelection.enter().
-          append('div').
-          classed(this.className, true).
-          classed(position, true);
-
-        var svg = legendSelection.selectAll('svg').data(
-          [{colors: colors, classBreaks: classBreaks}]
-        );
+        // Give the svg an empty datum, so that it will create/reuse one svg
+        var svg = d3.select(this.element[0]).selectAll('svg').data([{}]);
 
         svg.enter().
           append('svg').
           append('g');
 
-        svg.
-          attr('height', colorBarHeight + BOTTOM_PADDING);
+        svg.attr('height', colorBarHeight + BOTTOM_PADDING);
 
         var yTickScale = d3.scale.linear().range([colorBarHeight - 1, 1]);
         var yLabelScale = d3.scale.linear().range([colorBarHeight, 0]);
 
+        // TODO: add 0 tick
         var yAxis = d3.svg.
                       axis().
                       scale(yTickScale).
@@ -188,8 +227,7 @@
           attr('transform', 'translate({0})'.format(tickAreaWidth));
 
         // Size the SVG appropriately.
-        svg.
-          attr('width', tickAreaWidth + COLOR_BAR_WIDTH);
+        svg.attr('width', tickAreaWidth + COLOR_BAR_WIDTH);
 
         // draw legend colors
         var rects = svg.selectAll('.choropleth-legend-color').data(colors);
@@ -215,13 +253,13 @@
           if (isLargeRange) {
             rects.
               attr('data-flyout-text', _.bind(function(color, i) {
-                return this.bigNumTickFormatter(classBreaks[i]) + ' - ' +
+                return this.bigNumTickFormatter(classBreaks[i]) + ' &#8211; ' +
                   this.bigNumTickFormatter(classBreaks[i + 1]);
               }, this));
           } else {
             rects.
               attr('data-flyout-text', function(color, i) {
-                return classBreaks[i] + ' - ' + classBreaks[i + 1];
+                return classBreaks[i] + ' &#8211; ' + classBreaks[i + 1];
               });
           }
         } else {
@@ -236,6 +274,8 @@
 
         rects.exit().
           remove();
+
+        return colorScale;
       }
     });
 
@@ -247,7 +287,7 @@
       // TODO
     }
     $.extend(LegendContinuous.prototype, {
-      update: function(classBreaks, colors) {
+      update: function(data) {
       }
     });
 
@@ -267,7 +307,7 @@
 
         AngularRxExtensions.install(scope);
 
-        var legend = new LegendDiscrete(element, 'choropleth-legend');
+        var legend = new LegendDiscrete(element.find('.choropleth-legend'), element);
 
         /***********************
          * Mutate Leaflet state *
@@ -724,11 +764,6 @@
           scope.observe('geojsonAggregateData'),
           function(dimensions, geojsonAggregateData) {
 
-            var classBreaks;
-            var fillClass;
-            var coloring;
-            var geojsonOptions;
-
             if (_.isDefined(geojsonAggregateData)) {
 
               scope.$emit('render:start', {
@@ -747,25 +782,9 @@
                 firstRender = false;
               }
 
-              classBreaks = visualizationUtils.calculateDataClassBreaks(
-                geojsonAggregateData, Constants['UNFILTERED_VALUE_PROPERTY_NAME']
-              );
+              var coloring = legend.update(geojsonAggregateData);
 
-              coloring = visualizationUtils.calculateColoringParameters(
-                visualizationUtils.defaultColorClass, classBreaks
-              );
-
-              legend.update(classBreaks, coloring.scale.colors());
-
-              if (_.isEmpty(classBreaks)) {
-                fillClass = 'none';
-              } else if (classBreaks.length === 1) {
-                fillClass = 'single';
-              } else {
-                fillClass = 'multi';
-              }
-
-              geojsonOptions = {
+              var geojsonOptions = {
                 onEachFeature: function(feature, layer) {
                   layer.on({
                     mouseover: onFeatureMouseOver,
@@ -774,7 +793,7 @@
                     click: onFeatureClick
                   });
                 },
-                style: visualizationUtils.getStyleFn(coloring, fillClass)
+                style: visualizationUtils.getStyleFn(coloring)
               };
 
               setGeojsonData(geojsonAggregateData, geojsonOptions);

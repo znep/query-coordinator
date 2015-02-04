@@ -1,19 +1,20 @@
 (function() {
+  'use strict';
 
-  var serverConfig;
-  var config = {
+  var configurationStore;
+  var ServerConfig = {
     get: function(key) {
-      if (_.isDefined(serverConfig) && _.isDefined(serverConfig[key])) {
-        return serverConfig[key];
+      if (_.isDefined(configurationStore) && _.isDefined(configurationStore[key])) {
+        return configurationStore[key];
       }
     },
     setup: function(config) {
-      serverConfig = config;
+      configurationStore = config;
     }
   };
 
   angular.
     module('socrataCommon.services').
-    constant('ServerConfig', config);
+    constant('ServerConfig', ServerConfig);
 
 })();

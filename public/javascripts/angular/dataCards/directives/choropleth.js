@@ -253,13 +253,13 @@
           if (isLargeRange) {
             rects.
               attr('data-flyout-text', _.bind(function(color, i) {
-                return this.bigNumTickFormatter(classBreaks[i]) + ' &#8211; ' +
+                return this.bigNumTickFormatter(classBreaks[i]) + ' – ' +
                   this.bigNumTickFormatter(classBreaks[i + 1]);
               }, this));
           } else {
             rects.
               attr('data-flyout-text', function(color, i) {
-                return classBreaks[i] + ' &#8211; ' + classBreaks[i + 1];
+                return classBreaks[i] + ' – ' + classBreaks[i + 1];
               });
           }
         } else {
@@ -670,7 +670,9 @@
           if ($(element).parents('.card').hasClass('dragged')) {
             return;
           }
-          return '<div class="flyout-title">{0}</div>'.format(element.getAttribute('data-flyout-text'));
+          return '<div class="flyout-title">{0}</div>'.format(
+            element.getAttribute('data-flyout-text')
+          );
         },
         false,
         // The last argument specifies a horizontal display mode.

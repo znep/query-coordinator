@@ -11,8 +11,8 @@ describe("A Choropleth Directive", function() {
       var text = $(el).data('flyout-text');
       var num = Number(text);
       if (!num) {
-        var numTexts = text.split(' - ');
-        i == 0 ? num = Number(numTexts[0]) : num = Number(numTexts[1]);
+        var numTexts = text.split(' ');
+        i == 0 ? num = Number(numTexts[0]) : num = Number(numTexts[2]);
       }
       return num;
     });
@@ -42,6 +42,7 @@ describe("A Choropleth Directive", function() {
   var AngularRxExtensions;
   var testData;
   var el;
+  var cardVisualizationChoroplethHelpers;
   var testJson = 'karma-test/dataCards/test-data/choroplethTest/data.json';
   var legendSelector = '.choropleth-legend';
   var legendColorSelector = '.choropleth-legend .choropleth-legend-color';
@@ -67,6 +68,7 @@ describe("A Choropleth Directive", function() {
     timeout = $injector.get('$timeout');
     AngularRxExtensions = $injector.get('AngularRxExtensions');
     testData = testHelpers.getTestJson(testJson);
+    cardVisualizationChoroplethHelpers = $injector.get('CardVisualizationChoroplethHelpers');
   }));
 
   afterEach(function() {
@@ -173,7 +175,7 @@ describe("A Choropleth Directive", function() {
       expect(scopeBounds.southWest.lng).to.deep.equal(expectedBounds.southWest.lng);
     });
 
-    describe('legend rendering', function() {
+    describe('value display', function() {
       it('should be able to render a legend if the choropleth has values', function() {
         scope.geojsonAggregateData = testData.multiLineStringData4;
         el = createChoropleth();
@@ -325,6 +327,12 @@ describe("A Choropleth Directive", function() {
 
         expect(_.intersection(legendColors, fillColors).length).to.equal(legendColors.length);
       });
+
+      it('colors red-orange scale for all negative values');
+
+      it('colors red-orange - white - blue for range of values straddling 0');
+
+      it('always includes a 0 label');
     });
 
     describe('feature colors', function() {
@@ -501,142 +509,72 @@ describe("A Choropleth Directive", function() {
 
 
     describe('legend', function() {
+      _.each([true, false], function(expanded) {
 
-      describe('on an unexpanded card', function() {
+        describe('on an ' + (expanded ? 'expanded' : 'unexpanded') + ' card', function() {
+          it('should contain labels that are evenly spaced numbers', function() {
+            scope.geojsonAggregateData = testData.polygonData2;
+            el = createChoropleth(expanded);
 
-        var expanded = false;
-
-        it('should contain labels that are evenly spaced numbers', function() {
-          scope.geojsonAggregateData = testData.polygonData2;
-          el = createChoropleth(expanded);
-
-          var ticks = el.find(legendSelector + ' .labels .tick');
-          var offsets = _.map(ticks, function(tick) {
-            var translateString = $(tick).attr('transform');
-            var yOffset = parseInt(translateString.replace(/translate\(\d+\D+/,''));
-            return yOffset;
-          });
-          // test for equidistant y offsets (check within +/- 2 px, due to floating point issues)
-          var isEquidistant = _.reduce(offsets, function(difference, offset, i) {
-            if (i == offsets.length - 1) {
-              return difference ? true: false;
-            }
-            return Math.abs(difference - (offset - offsets[i+1])) <= 2 ? difference : false;
-          }, offsets[0] - offsets[1]);
-          expect(isEquidistant).to.equal(true);
-        });
-
-        it('should show a flyout with text upon hover over a legend color', function() {
-          scope.geojsonAggregateData = testData.polygonData2;
-          el = createChoropleth(expanded);
-
-          var legendColor = el.find(legendColorSelector)[0];
-          var legendColorFlyoutText = $(legendColor).data('flyout-text');
-
-          testHelpers.fireEvent(legendColor, 'mousemove');
-
-          var $flyout = $(flyoutSelector);
-          expect($flyout.is(':visible')).to.equal(true);
-          expect($flyout.text()).to.equal(legendColorFlyoutText);
-        });
-
-        it('should contain labels that are not rounded for small enough legend class breaks', function(){
-          // NOTE: important to test for each individual small case (1,2,3) to ensure proper edge case management.
-          scope.geojsonAggregateData = testData.lineStringData3SmallNumbers;
-          el = createChoropleth(expanded);
-
-          // there should only be 3 features
-          expect(el.find(featureGeometrySelector).length).to.equal(3);
-
-          // there should only be 1 legend
-          expect(el.find(legendSelector).length).to.equal(1);
-
-          // there should only be 3 or more colors in the legend
-          expect(el.find(legendColorSelector).length).to.be.above(2);
-
-          // legend labels should contain feature values
-          expect(_.intersection(legendFlyoutValues(), scopedFeatureValues()).length).to.be.above(1);
-
-          // stroke (if LineString or MultiLineString) or fill (if Polygon or MultiPolygon) color hexes should match legend color hexes
-          var fillColors = _.map(el.find(featureGeometrySelector), function(el) {
-            var fillColor = $(el).css('stroke');
-            return chroma.color(fillColor).hex();
-          });
-          var legendColors = _.map(el.find(legendColorSelector), function(el) {
-            var legendColor = $(el).css('fill');
-            return chroma.color(legendColor).hex();
+            var ticks = el.find(legendSelector + ' .labels .tick');
+            var offsets = _.map(ticks, function(tick) {
+              var translateString = $(tick).attr('transform');
+              var yOffset = parseInt(translateString.replace(/translate\(\d+\D+/,''));
+              return yOffset;
+            });
+            // test for equidistant y offsets (check within +/- 2 px, due to floating point issues)
+            var isEquidistant = _.reduce(offsets, function(difference, offset, i) {
+              if (i == offsets.length - 1) {
+                return difference ? true: false;
+              }
+              return Math.abs(difference - (offset - offsets[i+1])) <= 2 ? difference : false;
+            }, offsets[0] - offsets[1]);
+            expect(isEquidistant).to.equal(true);
           });
 
-          expect(_.intersection(legendColors, fillColors).length).to.equal(fillColors.length);
-        });
-      });
+          it('should show a flyout with text upon hover over a legend color', function() {
+            scope.geojsonAggregateData = testData.polygonData2;
+            el = createChoropleth(expanded);
 
-      describe('on an expanded card', function() {
+            var legendColor = el.find(legendColorSelector)[0];
+            var legendColorFlyoutText = $(legendColor).data('flyout-text');
 
-        var expanded = true;
+            testHelpers.fireEvent(legendColor, 'mousemove');
 
-        it('should contain labels that are evenly spaced numbers', function() {
-          scope.geojsonAggregateData = testData.polygonData2;
-          el = createChoropleth(expanded);
-
-          var ticks = el.find(legendSelector + ' .labels .tick');
-          var offsets = _.map(ticks, function(tick) {
-            var translateString = $(tick).attr('transform');
-            var yOffset = parseInt(translateString.replace(/translate\(\d+\D+/,''));
-            return yOffset;
-          });
-          // test for equidistant y offsets (check within +/- 2 px, due to floating point issues)
-          var isEquidistant = _.reduce(offsets, function(difference, offset, i) {
-            if (i == offsets.length - 1) {
-              return difference ? true: false;
-            }
-            return Math.abs(difference - (offset - offsets[i+1])) <= 2 ? difference : false;
-          }, offsets[0] - offsets[1]);
-          expect(isEquidistant).to.equal(true);
-        });
-
-        it('should show a flyout with text upon hover over a legend color', function() {
-          scope.geojsonAggregateData = testData.polygonData2;
-          el = createChoropleth(expanded);
-
-          var legendColor = el.find(legendColorSelector)[0];
-          var legendColorFlyoutText = $(legendColor).data('flyout-text');
-
-          testHelpers.fireEvent(legendColor, 'mousemove');
-
-          var $flyout = $(flyoutSelector);
-          expect($flyout.is(':visible')).to.equal(true);
-          expect($flyout.find('.flyout-title').text()).to.equal(legendColorFlyoutText);
-        });
-
-        it('should contain labels that are not rounded for small enough legend class breaks', function(){
-          // NOTE: important to test for each individual small case (1,2,3) to ensure proper edge case management.
-          scope.geojsonAggregateData = testData.lineStringData3SmallNumbers;
-          el = createChoropleth(expanded);
-
-          // there should only be 3 features
-          expect(el.find(featureGeometrySelector).length).to.equal(3);
-
-          // there should only be 1 legend
-          expect(el.find(legendSelector).length).to.equal(1);
-
-          // there should only be 3 or more colors in the legend
-          expect(el.find(legendColorSelector).length).to.be.above(2);
-
-          // legend labels should contain feature values
-          expect(_.intersection(legendFlyoutValues(), scopedFeatureValues()).length).to.be.above(1);
-
-          // stroke (if LineString or MultiLineString) or fill (if Polygon or MultiPolygon) color hexes should match legend color hexes
-          var fillColors = _.map(el.find(featureGeometrySelector), function(el) {
-            var fillColor = $(el).css('stroke');
-            return chroma.color(fillColor).hex();
-          });
-          var legendColors = _.map(el.find(legendColorSelector), function(el) {
-            var legendColor = $(el).css('fill');
-            return chroma.color(legendColor).hex();
+            var $flyout = $(flyoutSelector);
+            expect($flyout.is(':visible')).to.equal(true);
+            expect($flyout.find('.flyout-title').html()).to.equal(legendColorFlyoutText);
           });
 
-          expect(_.intersection(legendColors, fillColors).length).to.equal(fillColors.length);
+          it('should contain labels that are not rounded for small enough legend class breaks', function(){
+            // NOTE: important to test for each individual small case (1,2,3) to ensure proper edge case management.
+            scope.geojsonAggregateData = testData.lineStringData3SmallNumbers;
+            el = createChoropleth(expanded);
+
+            // there should only be 3 features
+            expect(el.find(featureGeometrySelector).length).to.equal(3);
+
+            // there should only be 1 legend
+            expect(el.find(legendSelector).length).to.equal(1);
+
+            // there should only be 3 or more colors in the legend
+            expect(el.find(legendColorSelector).length).to.be.above(2);
+
+            // legend labels should contain feature values
+            expect(_.intersection(legendFlyoutValues(), scopedFeatureValues()).length).to.be.above(1);
+
+            // stroke (if LineString or MultiLineString) or fill (if Polygon or MultiPolygon) color hexes should match legend color hexes
+            var fillColors = _.map(el.find(featureGeometrySelector), function(el) {
+              var fillColor = $(el).css('stroke');
+              return chroma.color(fillColor).hex();
+            });
+            var legendColors = _.map(el.find(legendColorSelector), function(el) {
+              var legendColor = $(el).css('fill');
+              return chroma.color(legendColor).hex();
+            });
+
+            expect(_.intersection(legendColors, fillColors).length).to.equal(fillColors.length);
+          });
         });
       });
     });

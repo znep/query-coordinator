@@ -9,7 +9,10 @@
       }
     },
     setup: function(config) {
-      configurationStore = config;
+      configurationStore = _.cloneDeep(config);
+    },
+    override: function(key, value) {
+      configurationStore[key] = value;
     }
   };
 

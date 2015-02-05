@@ -509,30 +509,35 @@ describe("A Choropleth Directive", function() {
         });
 
         it('always includes a 0 label', function() {
-          var featureCount = 53;
-          var start = -Math.floor(featureCount / 3);
-          var values = _.map(_.range(start, start + featureCount), function(value, i) {
-            var xOffset = .23 * start;
-            var yOffset = -10;
-            var y = yOffset + Math.pow(value - xOffset, 2)
-            return { name: '' + i, value: y };
-          });
-          scope.geojsonAggregateData = cardVisualizationChoroplethHelpers.aggregateGeoJsonData(
-            createGeoJsonData(featureCount), values, values, null,
-            'mycolumn', [{name: 'mycolumn', shapefile: null}]
-          );
-          el = createChoropleth();
+          function testForCount(featureCount) {
+            var start = -Math.floor(featureCount / 3);
+            var values = _.map(_.range(start, start + featureCount), function(value, i) {
+              var xOffset = .23 * start;
+              var yOffset = -featureCount / 3;
+              var y = yOffset + Math.pow(value - xOffset, 2)
+              return { name: '' + i, value: y };
+            });
+            scope.geojsonAggregateData = cardVisualizationChoroplethHelpers.aggregateGeoJsonData(
+              createGeoJsonData(featureCount), values, values, null,
+              'mycolumn', [{name: 'mycolumn', shapefile: null}]
+            );
+            el = createChoropleth();
 
-          var legend = el.find(legendSelector);
-          var ticks = legend.find('.labels .tick');
-          var found = false;
-          ticks.each(function() {
-            if ($(this).text() === '0') {
-              found = true;
-              return false;
-            }
+            var legend = el.find(legendSelector);
+            var ticks = legend.find('.labels .tick');
+            var found = false;
+            ticks.each(function() {
+              if (/^0(.0)?$/.test($(this).text())) {
+                found = true;
+                return false;
+              }
+            });
+            expect(found).to.equal(true);
+          }
+          _.each([3, 10, 53], function(i) {
+            testForCount(i);
+            testHelpers.TestDom.clear();
           });
-          expect(found).to.equal(true);
         });
       });
     });

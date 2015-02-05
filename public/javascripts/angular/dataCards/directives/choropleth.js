@@ -187,12 +187,25 @@
         var yTickScale = d3.scale.linear().range([colorBarHeight - 1, 1]);
         var yLabelScale = d3.scale.linear().range([colorBarHeight, 0]);
 
-        // TODO: add 0 tick
         var yAxis = d3.svg.
                       axis().
                       scale(yTickScale).
                       ticks(numTicks).
                       orient('left');
+
+        // ensure that there's always a 0 tick
+        /* TODO(jerjou): 2015-02-04 I can't seem to get a d3 range to NOT give me a 0 if it
+         * straddles 0. So while I could leave this block in, I can't figure out a way to verify
+         * that it works.
+        if (minBreak <= 0 && maxBreak >= 0) {
+          var ticks = yTickScale.ticks(numTicks);
+          var index = ticks.indexOf(0);
+          if (-1 === index) {
+            ticks.splice(0, 0, 0);
+          }
+          yAxis.tickValues(ticks);
+        }
+        */
 
         var yTickScaleDomain = yTickScale.domain([minBreak, maxBreak]);
         var yLabelScaleDomain = yLabelScale.domain([minBreak, maxBreak]);

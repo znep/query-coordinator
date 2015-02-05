@@ -131,20 +131,24 @@
     /**
      * Consolidates the given geojson data into one object.
      *
-     * @param {TODO} geojsonRegions
-     * @param {TODO} unfilteredData
-     * @param {TODO} filteredData
-     * @param {TODO} activeFilters
-     * @param {TODO} fieldName
-     * @param {TODO} columns
+     * @param {Object} geojsonRegions A geoJson-formatted object.
+     * @param {Object[]} unfilteredData An array of objects with 'name' and 'value' keys - the
+     *   unfiltered values of the data.
+     * @param {Object[]} filteredData An array of objects with 'name' and 'value' keys - the data,
+     *   after any active filters have been applied.
+     * @param {Object[]} activeFilters The active filters - each filter must have an 'operand' key.
+     * @param {String} fieldName the active column's name.
+     * @param {Object[]} columns the array of columns for this dataset. Each column must have a
+     *   'name' key.
      *
      * @return {Object} with properties
-     *   @property {TODO} csrs
+     *   @property {TODO} crs the geojsonRegion's crs.
      *   @property {Object[]} features an array of object with properties:
-     *     @property {TODO} geometry
-     *     @property {TODO} properties
-     *     @property {TODO} type
-     *   @property {TODO} type
+     *     @property {Object} geometry the geoJson's geometry.
+     *     @property {Object} properties contains both the filtered and unfiltered values for this
+     *       feature.
+     *     @property {TODO} type this feature's geojson type.
+     *   @property {TODO} type the geojsonRegion's type.
      */
     function aggregateGeoJsonData(geojsonRegions, unfilteredData, filteredData, activeFilters, fieldName, columns) {
       var activeFilterNames = _.pluck(activeFilters, 'operand');
@@ -178,7 +182,6 @@
         filteredDataAsHash,
         shapefileFeatureHumanReadablePropertyName
       );
-
     }
 
     return {

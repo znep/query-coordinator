@@ -35,6 +35,40 @@ describe("A Choropleth Directive", function() {
     return el;
   }
 
+  /**
+   * Create a geojson data object that simulates the structure our server returns.
+   *
+   * @param {Number} featurecount The number of features to create.
+   * @return {Object} a geojson object similar to what our server gives us.
+   */
+  function createGeoJsonData(featurecount) {
+    var basePoint = [121.5505, 23.9772];
+    return {
+      type: 'FeatureCollection',
+      features: _.map(_.range(featurecount), function(i) {
+        var properties = {};
+        properties[Constants.INTERNAL_DATASET_FEATURE_ID] = '' + i;
+        var increment = .01;
+        var delta = i * increment;
+
+        return {
+          type: 'Feature',
+          properties: properties,
+          geometry: {
+            type: 'Polygon',
+            coordinates: [[
+              [ basePoint[0] + delta, basePoint[1] + delta ],
+              [ basePoint[0] + delta, basePoint[1] + delta + increment ],
+              [ basePoint[0] + delta + increment, basePoint[1] + delta + increment ],
+              [ basePoint[0] + delta + increment, basePoint[1] + delta ]
+            ]]
+          }
+        };
+      }),
+      crs: { type: 'name', properties: { name: 'urn:ogc:def:crs:OGC:1.3:CRS84' } }
+    };
+  }
+
   var rootScope;
   var scope;
   var testHelpers;
@@ -44,17 +78,18 @@ describe("A Choropleth Directive", function() {
   var el;
   var cardVisualizationChoroplethHelpers;
   var testJson = 'karma-test/dataCards/test-data/choroplethTest/data.json';
+  var testJsonGeo = 'karma-test/dataCards/test-data/cardVisualizationChoroplethTest/ward_geojson.json';
   var legendSelector = '.choropleth-legend';
   var legendColorSelector = '.choropleth-legend .choropleth-legend-color';
   var featureGeometrySelector = '.leaflet-map-pane .leaflet-objects-pane .leaflet-overlay-pane svg path';
   var flyoutSelector = '#uber-flyout';
   var featureMergedValueName = '__SOCRATA_FILTERED_VALUE__';
+  var Constants;
 
   // NOTE! We mock out the clock.
   // This is done to get around choropleth
   // throttling its rendering.
   var fakeClock = null;
-
 
   beforeEach(module('dataCards'));
   beforeEach(module('dataCards.directives'));
@@ -68,6 +103,7 @@ describe("A Choropleth Directive", function() {
     timeout = $injector.get('$timeout');
     AngularRxExtensions = $injector.get('AngularRxExtensions');
     testData = testHelpers.getTestJson(testJson);
+    Constants = $injector.get('Constants');
     cardVisualizationChoroplethHelpers = $injector.get('CardVisualizationChoroplethHelpers');
   }));
 
@@ -328,11 +364,177 @@ describe("A Choropleth Directive", function() {
         expect(_.intersection(legendColors, fillColors).length).to.equal(legendColors.length);
       });
 
-      it('colors red-orange scale for all negative values');
+      describe('negative values', function() {
+        it('colors red-orange scale for all negative values', function() {
+          var featureCount = 11;
+          var values = _.map(_.range(-featureCount, 0), function(value, i) {
+            return { name: '' + i, value: value };
+          });
+          scope.geojsonAggregateData = cardVisualizationChoroplethHelpers.aggregateGeoJsonData(
+            createGeoJsonData(featureCount), values, values, null,
+            'mycolumn', [{name: 'mycolumn', shapefile: null}]
+          );
+          el = createChoropleth();
 
-      it('colors red-orange - white - blue for range of values straddling 0');
+          // the normal stuff should still be there
+          expect(el.find(featureGeometrySelector).length).to.equal(featureCount);
+          expect(el.find(legendSelector).length).to.equal(1);
 
-      it('always includes a 0 label');
+          // Both the regions and the legend should be reddish
+          var fillColors = _.map(el.find(featureGeometrySelector), function(el) {
+            var fillColor = $(el).css('fill');
+            return chroma.color(fillColor);
+          });
+
+          var legendColors = _.map(el.find(legendColorSelector), function(el) {
+            var legendColor = $(el).css('fill');
+            return chroma.color(legendColor);
+          });
+
+          expect(fillColors.length).to.be.greaterThan(2);
+          expect(legendColors.length).to.be.greaterThan(2);
+
+          // Assert that they're reddish
+          var whiteCount = 0;
+          _.each([fillColors, legendColors], function(sectionColors) {
+            _.each(sectionColors, function(color) {
+              if ('#e4eef0' === color.hex()) {
+                whiteCount++;
+              } else {
+                var rgb = color.rgb();
+                expect(rgb[0]).to.be.greaterThan(rgb[2]);
+                expect(rgb[0]).to.be.greaterThan(rgb[1]);
+              }
+            });
+          });
+          // There should be at most one white value in the legend, and one in the regions of this
+          // particular dataset.
+          expect(whiteCount).to.be.greaterThan(2);
+          // But there shouldn't be _too_ many of them. Assert that less than half the (regions +
+          // legend steps) are white.
+          expect(whiteCount).to.be.lessThan(featureCount);
+        });
+
+        it('colors red-orange - white - blue for range of values straddling 0', function() {
+          var featureCount = 11;
+          var start = -Math.floor(featureCount / 2);
+          var values = _.map(_.range(start, start + featureCount), function(value, i) {
+            return { name: '' + i, value: value };
+          });
+          scope.geojsonAggregateData = cardVisualizationChoroplethHelpers.aggregateGeoJsonData(
+            createGeoJsonData(featureCount), values, values, null,
+            'mycolumn', [{name: 'mycolumn', shapefile: null}]
+          );
+          el = createChoropleth();
+
+          // the normal stuff should still be there
+          expect(el.find(featureGeometrySelector).length).to.equal(featureCount);
+          expect(el.find(legendSelector).length).to.equal(1);
+
+          // Both the regions and the legend should be reddish
+          var fillColors = _.map(el.find(featureGeometrySelector), function(el) {
+            var fillColor = $(el).css('fill');
+            return chroma.color(fillColor);
+          });
+
+          var legendColors = _.map(el.find(legendColorSelector), function(el) {
+            var legendColor = $(el).css('fill');
+            return chroma.color(legendColor);
+          });
+
+          expect(fillColors.length).to.be.greaterThan(2);
+          expect(legendColors.length).to.be.greaterThan(2);
+
+          // First the legend colors
+
+          // Assert that they're reddish or blueish
+          var whiteCount = 0;
+          var redCount = 0;
+          var blueCount = 0;
+          _.each(legendColors, function(color) {
+            if ('#e4eef0' === color.hex()) {
+              whiteCount++;
+            } else {
+              var rgb = color.rgb();
+              if (rgb[0] > rgb[2]) {
+                redCount++;
+                expect(rgb[0]).to.be.greaterThan(rgb[1]);
+              } else if (rgb[2] > rgb[0]) {
+                blueCount++;
+                expect(rgb[2]).to.be.greaterThan(rgb[1]);
+              } else {
+                assert.fail(rgb, 'red or blue');
+              }
+            }
+          });
+
+          // There should be at most one white value in the legend
+          expect(whiteCount).to.equal(1);
+          // But there shouldn't be _too_ many of them. Assert that less than half the (regions +
+          // legend steps) are white.
+          expect(whiteCount).to.be.lessThan(featureCount / 2);
+          // There should be blue and red regions too
+          expect(blueCount).to.be.greaterThan(0);
+          expect(redCount).to.be.greaterThan(0);
+
+          // Now check the fill colors
+          whiteCount = 0;
+          redCount = 0;
+          blueCount = 0;
+          _.each(fillColors, function(color) {
+            if ('#e4eef0' === color.hex()) {
+              whiteCount++;
+            } else {
+              var rgb = color.rgb();
+              if (rgb[0] > rgb[2]) {
+                redCount++;
+                expect(rgb[0]).to.be.greaterThan(rgb[1]);
+              } else if (rgb[2] > rgb[0]) {
+                blueCount++;
+                expect(rgb[2]).to.be.greaterThan(rgb[1]);
+              } else {
+                assert.fail(rgb, 'red or blue');
+              }
+            }
+          });
+
+          // There should be at most one white value in the regions of this particular dataset.
+          expect(whiteCount).to.be.greaterThan(0);
+          // But there shouldn't be _too_ many of them. Assert that less than half the (regions +
+          // legend steps) are white.
+          expect(whiteCount).to.be.lessThan(featureCount / 2);
+          // There should be blue and red regions too
+          expect(blueCount).to.be.greaterThan(0);
+          expect(redCount).to.be.greaterThan(0);
+        });
+
+        it('always includes a 0 label', function() {
+          var featureCount = 53;
+          var start = -Math.floor(featureCount / 3);
+          var values = _.map(_.range(start, start + featureCount), function(value, i) {
+            var xOffset = .23 * start;
+            var yOffset = -10;
+            var y = yOffset + Math.pow(value - xOffset, 2)
+            return { name: '' + i, value: y };
+          });
+          scope.geojsonAggregateData = cardVisualizationChoroplethHelpers.aggregateGeoJsonData(
+            createGeoJsonData(featureCount), values, values, null,
+            'mycolumn', [{name: 'mycolumn', shapefile: null}]
+          );
+          el = createChoropleth();
+
+          var legend = el.find(legendSelector);
+          var ticks = legend.find('.labels .tick');
+          var found = false;
+          ticks.each(function() {
+            if ($(this).text() === '0') {
+              found = true;
+              return false;
+            }
+          });
+          expect(found).to.equal(true);
+        });
+      });
     });
 
     describe('feature colors', function() {

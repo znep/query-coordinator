@@ -70,31 +70,56 @@
        * @return {Object} an object with 'colors' and 'scale' functions, that mirror a chroma scale.
        */
       colorScaleFor: function(classBreaks) {
-        // If we have values that straddle zero, add the zero point as one of our breaks
         var indexOf0 = _.sortedIndex(classBreaks, 0);
-        if (indexOf0 > 0 && indexOf0 < classBreaks.length) {
-          var negativeColorScale = visualizationUtils.calculateColoringScale(
-            visualizationUtils.negativeColorRange, classBreaks.slice(0, indexOf0).concat(0)
-          );
-          var positiveColorScale = visualizationUtils.calculateColoringScale(
-            visualizationUtils.positiveColorRange, [0].concat(classBreaks.slice(indexOf0))
-          );
-          // Create a faux colorScale that implements the interface, but delegates to the positive
-          // or negative actual-scale depending on what you're trying to scale.
-          var fauxColorScale = function(value) {
-            return (value < 0 ? negativeColorScale : positiveColorScale)(value);
-          };
-          fauxColorScale.colors = function() {
-            return negativeColorScale.colors().concat(
-              // slice, to remove the duplicate shared color value
-              positiveColorScale.colors().slice(1)
-            );
-          };
-          return fauxColorScale;
+        if (indexOf0 > 0) {
 
+          // If we have values that straddle zero, add the zero point as one of our breaks
+          if (indexOf0 < classBreaks.length) {
+            var negatives = classBreaks.slice(0, indexOf0);
+            var positives = classBreaks.slice(indexOf0);
+            var negativeColorScale = visualizationUtils.calculateColoringScale(
+              visualizationUtils.negativeColorRange, negatives.concat(0)
+            );
+            var positiveColorScale = visualizationUtils.calculateColoringScale(
+              visualizationUtils.positiveColorRange, [0].concat(positives)
+            );
+            // Create a faux colorScale that implements the interface, but delegates to the positive
+            // or negative actual-scale depending on what you're trying to scale.
+            var fauxColorScale = function(value) {
+              return (value < 0 ? negativeColorScale : positiveColorScale)(value);
+            };
+            fauxColorScale.colors = function() {
+              // chroma gives us 2 colors if we give it a domain of only 2 values (ie negatives[0]
+              // and 0). This messes things up later on when we assume that
+              // classBreaks.length > colors.length, so shave off some colors if we have to.
+              var negColors = negativeColorScale.colors();
+              if (negatives.length === 1)  {
+                negColors = negColors.slice(0, 1);
+              }
+              var posColors = positiveColorScale.colors();
+              if (positives.length === 1) {
+                posColors = posColors.slice(1);
+              }
+              if (negColors.length + posColors.length <= 2) {
+                // Well, we tried. Just give them two colors - it's what chroma would have done.
+                return negColors.concat(posColors);
+              } else {
+                // slice, to remove the duplicate shared color value
+                return negColors.concat(posColors.slice(1));
+              }
+            };
+            return fauxColorScale;
+
+          } else {
+            // All the numbers are negative. Give them the negative color scale.
+            return visualizationUtils.calculateColoringScale(
+              visualizationUtils.negativeColorRange, classBreaks
+            );
+          }
         } else {
+          // Otherwise, it's all positive, so give them the positive color scale.
           return visualizationUtils.calculateColoringScale(
-            visualizationUtils.defaultColorRange, classBreaks
+            visualizationUtils.positiveColorRange, classBreaks
           );
         }
       },

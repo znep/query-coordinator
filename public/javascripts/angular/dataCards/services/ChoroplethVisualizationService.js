@@ -12,8 +12,8 @@
       this.defaultHighlightColor = '#debb1e';
 
       // Color classes.
-      this.negativeColorRange = chroma.interpolate.bezier(['#c6663d', '#e4eef0']),
-      this.positiveColorRange = chroma.interpolate.bezier(['#e4eef0', '#408499']),
+      this.negativeColorRange = ['#c6663d', '#e4eef0'],
+      this.positiveColorRange = ['#e4eef0', '#408499'],
       this.divergingColors = ['brown','lightyellow','teal'],
       this.qualitativeColors = ["#8dd3c7","#ffffb3","#bebada","#fb8072","#80b1d3","#fdb462","#b3de69","#fccde5","#d9d9d9","#bc80bd","#ccebc5","#ffed6f"];
       this.defaultColorRange = this.positiveColorRange;
@@ -125,6 +125,9 @@
           throw new Error('Cannot calculate qualitative coloring parameters for more than 12 class breaks.');
         }
         colorRange = this.qualitativeColors.slice(0, classBreaks.length);
+      }
+      if (2 === colorRange.length) {
+        colorRange = chroma.interpolate.bezier(colorRange);
       }
 
       return chroma.

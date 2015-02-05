@@ -1,25 +1,12 @@
 class Phidippides < SocrataHttp
+
+  include CommonMetadataTransitionMethods
+
   # TODO: Should these actually be ignore-case?
   # Note - these are aligned so as to exemplify the differences between the regexes
   COLUMN_ID_REGEX =    /(:@)?([a-z][a-z_0-9\-]*)/i
   SYSTEM_COLUMN_ID_REGEX = /:([a-z][a-z_0-9\-]*)/i
   UID_REGEXP = /\w{4}-\w{4}/
-
-  def metadata_transition_phase
-    FeatureFlags.derive(nil, nil)[:metadata_transition_phase].to_s.downcase
-  end
-
-  def metadata_transition_phase_none?
-    metadata_transition_phase == '0' || metadata_transition_phase == 'false'
-  end
-
-  def metadata_transition_phase_dataset?
-    metadata_transition_phase == '1'
-  end
-
-  def metadata_transition_phase_page?
-    metadata_transition_phase == '2'
-  end
 
   def connection_details
     # Port is typically 2401 in development mode and 1303 in production
@@ -46,7 +33,7 @@ class Phidippides < SocrataHttp
     options[:headers] = {} unless options.has_key?(:headers)
     options[:headers]['Content-Type'] = 'application/json'
 
-    if metadata_transition_phase_none?
+    if metadata_transition_phase_0?
       options[:headers]['X-Socrata-Wink'] = 'iAmASocrataEmployee'
     end
 
@@ -57,7 +44,7 @@ class Phidippides < SocrataHttp
 
   def fetch_dataset_metadata(dataset_id, options = {})
 
-    if metadata_transition_phase_none?
+    if metadata_transition_phase_0?
       issue_request(
         :verb => :get,
         :path => "datasets/#{dataset_id}",
@@ -76,7 +63,7 @@ class Phidippides < SocrataHttp
 
   def update_dataset_metadata(json, options = {})
 
-    if metadata_transition_phase_none?
+    if metadata_transition_phase_0?
       issue_request(
         :verb => :put,
         :path => "datasets/#{json['id']}",
@@ -101,7 +88,7 @@ class Phidippides < SocrataHttp
 
     raise ArgumentError.new('datasetId is required') unless json.key?('datasetId')
 
-    if metadata_transition_phase_none? || metadata_transition_phase_dataset?
+    if metadata_transition_phase_0? || metadata_transition_phase_1?
       issue_request(
         :verb => :post,
         :path => 'pages',
@@ -122,7 +109,7 @@ class Phidippides < SocrataHttp
 
   def fetch_page_metadata(page_id, options = {})
 
-    if metadata_transition_phase_none? || metadata_transition_phase_dataset?
+    if metadata_transition_phase_0? || metadata_transition_phase_1?
       issue_request(
         :verb => :get,
         :path => "pages/#{page_id}",
@@ -143,7 +130,7 @@ class Phidippides < SocrataHttp
 
     raise ArgumentError.new('pageId is required') unless json.key?('pageId')
 
-    if metadata_transition_phase_none? || metadata_transition_phase_dataset?
+    if metadata_transition_phase_0? || metadata_transition_phase_1?
       issue_request(
         :verb => :put,
         :path => "pages/#{json['pageId']}",
@@ -172,6 +159,7 @@ class Phidippides < SocrataHttp
       :cookies => options[:cookies]
     )
   end
+
   def fetch_pages_for_dataset(dataset_or_id, options = {})
 
     dataset_id = nil
@@ -183,7 +171,7 @@ class Phidippides < SocrataHttp
 
     raise ArgumentError.new('could not determine dataset id') unless dataset_id =~ UID_REGEXP
 
-    if metadata_transition_phase_none? || metadata_transition_phase_dataset?
+    if metadata_transition_phase_0? || metadata_transition_phase_1?
       issue_request(
         :verb => :get,
         :path => "datasets/#{dataset_id}/pages",

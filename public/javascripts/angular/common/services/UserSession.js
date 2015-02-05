@@ -56,7 +56,7 @@
 
     function getCurrentUserObservable() {
       return Rx.Observable.fromPromise(getCurrentUser()).
-        catchError(Rx.Observable.returnValue(null));
+        catchException(Rx.Observable.returnValue(null));
     }
 
     return {

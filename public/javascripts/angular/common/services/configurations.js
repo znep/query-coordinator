@@ -18,7 +18,7 @@
         map(function(response) {
           return _.getPathOrElse(response, 'data.0.properties', []);
         }).
-        catchError(Rx.Observable.returnValue([]));
+        catchException(Rx.Observable.returnValue([]));
     }
 
     return {

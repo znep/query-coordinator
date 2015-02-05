@@ -463,7 +463,7 @@ describe("A Choropleth Directive", function() {
                 blueCount++;
                 expect(rgb[2]).to.be.greaterThan(rgb[1]);
               } else {
-                assert.fail(rgb, 'red or blue');
+                assert.fail(rgb, 'Unexpected legend color - should be either red, white, or blue.');
               }
             }
           });
@@ -493,7 +493,7 @@ describe("A Choropleth Directive", function() {
                 blueCount++;
                 expect(rgb[2]).to.be.greaterThan(rgb[1]);
               } else {
-                assert.fail(rgb, 'red or blue');
+                assert.fail(rgb, 'Unexpected region color - should be either red, white, or blue.');
               }
             }
           });

@@ -112,8 +112,9 @@
     // Style calculation
 
     /**
-     * @param {String[]} colorRange One of this.divergingColors, this.qualitativeColors, or
-     * this.positiveColorRange.
+     * @param {String[]|String} colorRange A string, or an array of color strings defining the range
+     * of colors the scale should span. There are several predefined values you can use:
+     * this.divergingColors, this.qualitativeColors, this.positiveColorRange.
      */
     ChoroplethVisualizationUtils.prototype.calculateColoringScale = function(colorRange, classBreaks) {
       if (!_.isArray(classBreaks)) {
@@ -122,7 +123,8 @@
 
       if (this.qualitativeColors === colorRange) {
         if (classBreaks.length > colorRange.length) {
-          throw new Error('Cannot calculate qualitative coloring parameters for more than 12 class breaks.');
+          throw new Error('Cannot calculate qualitative coloring parameters for more than ' +
+                          this.qualitativeColors.length + ' class breaks.');
         }
         colorRange = this.qualitativeColors.slice(0, classBreaks.length);
       }
@@ -181,7 +183,7 @@
       } else if (colorScale) {
         return this.fillColor(colorScale, feature, false);
       } else {
-        return 'black';
+        return this.defaultStrokeColor;
       }
     };
 

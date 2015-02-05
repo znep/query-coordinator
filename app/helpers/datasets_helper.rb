@@ -267,7 +267,12 @@ module DatasetsHelper
       (facet_option[:class] || '') +
       (options[param] == facet_option[:value] ? ' active' : '') +'">'
     if use_icon
-      ret += '<span class="icon"></span>'
+      # use legacy icon sprite, or new icon font (e.g. .icon-cards)
+      if facet_option[:icon_font_class]
+        ret << %Q(<span class="#{facet_option[:icon_font_class]}"></span>)
+      else
+        ret << '<span class="icon"></span>'
+      end
     elsif !facet_option[:icon].nil?
       ret += '<img class="customIcon" src="' + theme_image_url(facet_option[:icon]) + '" alt="icon" />'
     end

@@ -276,6 +276,9 @@
             <tbody>
               <%- start_index = (opts[:page].to_i - 1) * opts[:limit].to_i + 1 -%>
               <%- opts[:view_results].each_with_index do |v, i| -%>
+                <%- # Skip rendering new view items if we are not exiting tech preview
+                    next if v.new_view? && !feature_flag?(:exit_tech_preview)
+                  -%>
                 <%- view_url = view_url(v)
                     begin
                       if !v.merged_metadata['custom_fields'][opts[:url_override].first][opts[:url_override].last].blank?
@@ -360,7 +363,7 @@
                           src="<%= img_url %>" alt="<%= v.name %>" />
                       <%- else -%>
                         <div class="datasetIcon type type<%= v.display.type.capitalize %>"
-                          title="<%= v.display.name.capitalize %>"><span class="icon"></span></div>
+                          title="<%= v.display.name.capitalize %>"><span class="<%= v.display.icon_class %>"></span></div>
                       <%- end -%>
                   </td>
                   <%- end -%>
@@ -408,14 +411,16 @@
 
                   <%- if opts[:grid_items][:popularity] -%>
                     <td class="popularity">
+                      <%- unless v.new_view? -%>
                       <span class="visits"><%= pluralize(number_with_delimiter(v.viewCount), t('core.analytics.visit'), t('core.analytics.visits')) %></span>
+                      <%- end -%>
                     </td>
                   <%- end -%>
 
                   <%- if opts[:grid_items][:type] -%>
                     <td class="type type<%= v.display.type.capitalize %>"
                       title="<%= v.display.name.capitalize %>">
-                      <a href="<%= view_url %>" rel="<%= rel_type %>"><div class="icon"></div></a>
+                      <a href="<%= view_url %>" rel="<%= rel_type %>"><div class="<%= v.display.icon_class %>"></div></a>
                     </td>
                   <%- end -%>
 

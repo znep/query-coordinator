@@ -23,7 +23,12 @@ protected
         {:text => t('controls.browse.facets.view_types.blob'), :value => 'blob', :class => 'typeBlob'},
         {:text => t('controls.browse.facets.view_types.forms'), :value => 'forms', :class => 'typeForm'}]
     }
-    if (module_enabled?(:api_foundry))
+    if feature_flag?(:exit_tech_preview)
+      datasets_index = vts[:options].index { |option| option[:value] == 'datasets' } || 0
+      new_view_option = {:text => t('controls.browse.facets.view_types.new_view'), :value => 'new_view', :class => 'typeNewView', :icon_font_class => 'icon-cards'}
+      vts[:options].insert(datasets_index + 1, new_view_option)
+    end
+    if module_enabled?(:api_foundry)
       vts[:options] << {:text => t('controls.browse.facets.view_types.apis'), :value => 'apis', :class => 'typeApi'}
     end
     view_types = CurrentDomain.property(:view_types_facet, :catalog)

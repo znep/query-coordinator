@@ -176,7 +176,11 @@ class NewUxBootstrapControllerTest < ActionController::TestCase
                        reset_counters: {requests: {}, runtime: 0})
           end
           CoreServer::Base.stubs(connection: connection_stub)
-          @phidippides.stubs(fetch_dataset_metadata: {status: '200', body: mock_dataset_metadata})
+          @phidippides.stubs(
+            fetch_dataset_metadata: {
+              status: '200', body: mock_dataset_metadata
+            }
+          )
           @phidippides.expects(:update_dataset_metadata).
             returns({ status: '200' }).
             with do |dataset_metadata|
@@ -244,9 +248,11 @@ class NewUxBootstrapControllerTest < ActionController::TestCase
                        reset_counters: {requests: {}, runtime: 0})
           end
           CoreServer::Base.stubs(connection: connection_stub)
-          @phidippides.stubs(fetch_dataset_metadata: {
-            status: '200', body: mock_dataset_metadata_with_uninteresting_column_chart
-          })
+          @phidippides.stubs(
+            fetch_dataset_metadata: {
+              status: '200', body: mock_dataset_metadata_with_uninteresting_column_chart
+            }
+          )
           @phidippides.expects(:update_dataset_metadata).
             returns({ status: '200' }).
             with do |dataset_metadata|

@@ -47,12 +47,7 @@ class DatasetsControllerTest < ActionController::TestCase
 
   test 'redirects to new UX for datasets that are on the NBE and user is not admin and has default page' do
     setup_nbe_dataset_test(false, false)
-    Phidippides.any_instance.stubs(fetch_dataset_metadata: {
-        status: '200',
-        body: {
-          defaultPage: 'page-xist'
-        }
-      })
+    Phidippides.any_instance.stubs(fetch_dataset_metadata: { status: '200', body: { defaultPage: 'page-xist' } })
     get :show, { :category => 'dataset', :view_name => 'dataset', :id => 'four-four' }
     assert_redirected_to '/view/page-xist'
   end

@@ -48,7 +48,10 @@ class DatasetsController < ApplicationController
           :cookies => forwardable_session_cookies
         )
 
-        new_ux_page = dataset_metadata_response.try(:[], :body).try(:[], :defaultPage) if dataset_metadata_response[:status] == '200'
+        if dataset_metadata_response[:status] == '200'
+          new_ux_page = dataset_metadata_response.try(:[], :body).try(:[], :defaultPage)
+        end
+
         return redirect_to "/view/#{new_ux_page}" if new_ux_page.present?
 
         pages_response = page_metadata_manager.pages_for_dataset(

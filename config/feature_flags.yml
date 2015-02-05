@@ -82,3 +82,7 @@ enable_feedback:
 domain_decommissioning:
   description: Enable a banner indicating that the domain is being decommissionsed.
   defaultValue: false
+metadata_transition_phase:
+  description: The metadata transition phase that this domain is currently in.
+  defaultValue: '0'
+  expectedValues: 0 1 2

@@ -8,10 +8,15 @@ class PhidippidesTest < Test::Unit::TestCase
 
   def setup
     CurrentDomain.stubs(domain: stub(cname: 'localhost'))
+    stub_feature_flags_with(:metadata_transition_phase, '0')
     Phidippides.any_instance.stubs(:connection_details => {
       'address' => 'localhost',
       'port' => '2401'
     })
+  end
+
+  def stub_feature_flags_with(key, value)
+    CurrentDomain.stubs(feature_flags: Hashie::Mash.new.tap { |hash| hash[key] = value })
   end
 
   def test_phidippides_connection_details
@@ -150,15 +155,15 @@ class PhidippidesTest < Test::Unit::TestCase
   end
 
   def page_metadata
-    @page_metadata ||= JSON.parse(File.read("#{Rails.root}/test/fixtures/page-metadata.json"))
+    @page_metadata ||= JSON.parse(File.read("#{Rails.root}/test/fixtures/page-metadata.json")).with_indifferent_access
   end
 
   def dataset_metadata
-    @dataset_metdata ||= JSON.parse(File.read("#{Rails.root}/test/fixtures/dataset-metadata.json"))
+    @dataset_metdata ||= JSON.parse(File.read("#{Rails.root}/test/fixtures/dataset-metadata.json")).with_indifferent_access
   end
 
   def pages_for_dataset
-    JSON.parse('{"publisher":[{"id":"q77b-s2zi","pageId":"vwwn-6r7g"}],"user":[]}')
+    JSON.parse('{"publisher":[{"id":"q77b-s2zi","pageId":"vwwn-6r7g"}],"user":[]}').with_indifferent_access
   end
 
   def new_page_metadata

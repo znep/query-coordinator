@@ -26,21 +26,43 @@ class PhidippidesPagesControllerTest < ActionController::TestCase
     assert_equal([], JSON.parse(@response.body).keys - %w(pageId datasetId name description primaryAmountField primaryAggregation filterSoql isDefaultPage pageSource cards))
   end
 
-  test 'create returns 401 unless logged in' do
+  test '(phase 0 or 1) create returns 401 unless logged in' do
     @controller.stubs(can_update_metadata?: false)
+
+    stub_feature_flags_with(:metadata_transition_phase, '0')
+    post :create, pageMetadata: { datasetId: 'four-four' }, format: :json
+    assert_response(401)
+
+    stub_feature_flags_with(:metadata_transition_phase, '1')
     post :create, pageMetadata: { datasetId: 'four-four' }, format: :json
     assert_response(401)
   end
 
-  test 'create returns 406 unless format is JSON' do
+  test '(phase 0 or 1) create returns 406 unless format is JSON' do
     @controller.stubs(can_update_metadata?: true)
     @phidippides.stubs(issue_request: { status: 200 }, issue_soda_fountain_request: '')
+
+    stub_feature_flags_with(:metadata_transition_phase, '0')
+    post :create, pageMetadata: { datasetId: 'four-four' }.to_json
+    assert_response(406)
+
+    stub_feature_flags_with(:metadata_transition_phase, '1')
     post :create, pageMetadata: { datasetId: 'four-four' }.to_json
     assert_response(406)
   end
 
-  test 'create returns 405 unless method is a post' do
+  test '(phase 0 or 1) create returns 405 unless method is a post' do
     @controller.stubs(can_update_metadata?: true)
+
+    stub_feature_flags_with(:metadata_transition_phase, '0')
+    get :create
+    assert_response(405)
+    put :create
+    assert_response(405)
+    delete :create
+    assert_response(405)
+
+    stub_feature_flags_with(:metadata_transition_phase, '1')
     get :create
     assert_response(405)
     put :create
@@ -49,21 +71,43 @@ class PhidippidesPagesControllerTest < ActionController::TestCase
     assert_response(405)
   end
 
-  test 'create returns new page metadata when logged in' do
+  test '(phase 0 or 1) create returns new page metadata when logged in' do
     @controller.stubs(can_update_metadata?: true)
     PageMetadataManager.any_instance.stubs(create: { body: mock_page_metadata, status: 200 })
+
+    stub_feature_flags_with(:metadata_transition_phase, '0')
+    post :create, pageMetadata: mock_page_metadata, format: :json
+    assert_response(200)
+
+    stub_feature_flags_with(:metadata_transition_phase, '1')
     post :create, pageMetadata: mock_page_metadata, format: :json
     assert_response(200)
   end
 
-  test 'update returns 401 unless logged in' do
+  test '(phase 0 or 1) update returns 401 unless logged in' do
     @controller.stubs(can_update_metadata?: false)
+
+    stub_feature_flags_with(:metadata_transition_phase, '0')
+    put :update, id: 'q77b-s2zi', format: :json
+    assert_response(401)
+
+    stub_feature_flags_with(:metadata_transition_phase, '1')
     put :update, id: 'q77b-s2zi', format: :json
     assert_response(401)
   end
 
-  test 'update returns 405 unless method is put' do
+  test '(phase 0 or 1) update returns 405 unless method is put' do
     @controller.stubs(can_update_metadata?: true)
+
+    stub_feature_flags_with(:metadata_transition_phase, '0')
+    get :update, id: 'q77b-s2zi', format: :json
+    assert_response(405)
+    post :update, id: 'q77b-s2zi', format: :json
+    assert_response(405)
+    delete :update, id: 'q77b-s2zi', format: :json
+    assert_response(405)
+
+    stub_feature_flags_with(:metadata_transition_phase, '1')
     get :update, id: 'q77b-s2zi', format: :json
     assert_response(405)
     post :update, id: 'q77b-s2zi', format: :json
@@ -72,60 +116,40 @@ class PhidippidesPagesControllerTest < ActionController::TestCase
     assert_response(405)
   end
 
-  test 'update returns 400 unless required params are present' do
+  test '(phase 0 or 1) update returns 400 unless required params are present' do
     @controller.stubs(can_update_metadata?: true)
+
+    stub_feature_flags_with(:metadata_transition_phase, '0')
+    put :update, id: 'q77b-s2zi', format: :json
+    assert_response(400)
+
+    stub_feature_flags_with(:metadata_transition_phase, '1')
     put :update, id: 'q77b-s2zi', format: :json
     assert_response(400)
   end
 
-  test 'update returns success' do
+  test '(phase 0 or 1) update returns success' do
     @controller.stubs(can_update_metadata?: true)
     PageMetadataManager.any_instance.stubs(update: { body: mock_page_metadata, status: 200 })
+
+    stub_feature_flags_with(:metadata_transition_phase, '0')
+    put :update, id: 'four-four', pageMetadata: mock_page_metadata, format: :json
+    assert_response(200)
+
+    stub_feature_flags_with(:metadata_transition_phase, '1')
     put :update, id: 'four-four', pageMetadata: mock_page_metadata, format: :json
     assert_response(200)
   end
 
-  test 'delete return 403' do
+  test '(phase 0 or 1) delete return 403' do
+    stub_feature_flags_with(:metadata_transition_phase, '0')
+    delete :destroy, id: 'four-four'
+    assert_response(403)
+
+    stub_feature_flags_with(:metadata_transition_phase, '1')
     delete :destroy, id: 'four-four'
     assert_response(403)
   end
-
-  test 'can_update_metadata? returns true when logged in and user is dataset owner (publisher)' do
-    stub_user = stub(is_owner?: true, is_admin?: false, roleName: 'publisher')
-    @controller.stubs(current_user: stub_user, dataset: 'foo')
-    assert(@controller.send(:can_update_metadata?))
-  end
-
-  test 'can_update_metadata? returns true when logged in and user is (super) admin' do
-    stub_user = stub(is_owner?: false, is_admin?: true, roleName: 'administrator')
-    @controller.stubs(current_user: stub_user, dataset: 'foo')
-    assert(@controller.send(:can_update_metadata?))
-  end
-
-  test 'can_update_metadata? returns false when not logged in' do
-    @controller.stubs(current_user: nil)
-    refute(@controller.send(:can_update_metadata?))
-  end
-
-  test 'can_update_metadata? returns false when logged in but not database owner and not admin or publisher' do
-    stub_user = stub(is_owner?: false, is_admin?: false, roleName: 'editor')
-    @controller.stubs(current_user: stub_user, dataset: 'foo')
-    refute(@controller.send(:can_update_metadata?))
-  end
-
-  test 'can_update_metadata? returns true when logged in and user is (non-super) admin' do
-    stub_user = stub(is_owner?: false, is_admin?: false, roleName: 'administrator')
-    @controller.stubs(current_user: stub_user, dataset: 'foo')
-    assert(@controller.send(:can_update_metadata?))
-  end
-
-
-  test 'can_update_metadata? returns true when logged in and user is publisher' do
-    stub_user = stub(is_owner?: false, is_admin?: false, roleName: 'publisher')
-    @controller.stubs(current_user: stub_user, dataset: 'foo')
-    assert(@controller.send(:can_update_metadata?))
-  end
-
 
   private
 

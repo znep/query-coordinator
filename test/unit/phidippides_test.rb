@@ -15,10 +15,6 @@ class PhidippidesTest < Test::Unit::TestCase
     })
   end
 
-  def stub_feature_flags_with(key, value)
-    CurrentDomain.stubs(feature_flags: Hashie::Mash.new.tap { |hash| hash[key] = value })
-  end
-
   def test_phidippides_connection_details
     assert(phidippides.address)
     assert(phidippides.port)
@@ -102,6 +98,14 @@ class PhidippidesTest < Test::Unit::TestCase
     pages = phidippides.fetch_pages_for_dataset(OpenStruct.new(id: 'q77b-s2zi'))[:body]
     assert(pages[:publisher].length > 0, 'expected to find one or more "publisher" in the "pages" response')
     assert(pages[:publisher].all? { |page| page[:id] == 'q77b-s2zi'}, 'expected all pages to belong to the same dataset')
+
+    Phidippides.any_instance.stubs(
+      fetch_pages_for_dataset: { status: '200', body: pages_for_dataset }
+    )
+    stub_feature_flags_with(:metadata_transition_phase, '1')
+    pages = phidippides.fetch_pages_for_dataset(OpenStruct.new(id: 'q77b-s2zi'))[:body]
+    assert(pages[:publisher].length > 0, 'expected to find one or more "publisher" in the "pages" response')
+    assert(pages[:publisher].all? { |page| page[:id] == 'q77b-s2zi'}, 'expected all pages to belong to the same dataset')
   end
 
   def test_create_dataset_metadata
@@ -118,6 +122,14 @@ class PhidippidesTest < Test::Unit::TestCase
     pages = phidippides.fetch_pages_for_dataset('q77b-s2zi')[:body]
     assert(pages[:publisher].length > 0, 'expected to find one or more "publisher" in the "pages" response')
     assert(pages[:publisher].all? { |page| page[:id] == 'q77b-s2zi'}, 'expected all pages to belong to the same dataset')
+
+    Phidippides.any_instance.stubs(
+      fetch_pages_for_dataset: { status: '200', body: pages_for_dataset }
+    )
+    stub_feature_flags_with(:metadata_transition_phase, '1')
+    pages = phidippides.fetch_pages_for_dataset('q77b-s2zi')[:body]
+    assert(pages[:publisher].length > 0, 'expected to find one or more "publisher" in the "pages" response')
+    assert(pages[:publisher].all? { |page| page[:id] == 'q77b-s2zi'}, 'expected all pages to belong to the same dataset')
   end
 
   def test_pages_for_dataset_with_id_in_hash_succeeds
@@ -128,9 +140,17 @@ class PhidippidesTest < Test::Unit::TestCase
     pages = phidippides.fetch_pages_for_dataset(id: 'q77b-s2zi')[:body]
     assert(pages[:publisher].length > 0, 'expected to find one or more "publisher" in the "pages" response')
     assert(pages[:publisher].all? { |page| page[:id] == 'q77b-s2zi'}, 'expected all pages to belong to the same dataset')
+
+    Phidippides.any_instance.stubs(
+      fetch_pages_for_dataset: { status: '200', body: pages_for_dataset }
+    )
+    stub_feature_flags_with(:metadata_transition_phase, '1')
+    pages = phidippides.fetch_pages_for_dataset(id: 'q77b-s2zi')[:body]
+    assert(pages[:publisher].length > 0, 'expected to find one or more "publisher" in the "pages" response')
+    assert(pages[:publisher].all? { |page| page[:id] == 'q77b-s2zi'}, 'expected all pages to belong to the same dataset')
   end
 
-  def test_pages_for_dataset_with_invalid_dataset_object_raises
+  def test_fetch_pages_for_dataset_with_invalid_dataset_object_raises
     assert_raises(ArgumentError) do
       phidippides.fetch_pages_for_dataset(OpenStruct.new(id: nil))
     end
@@ -142,7 +162,7 @@ class PhidippidesTest < Test::Unit::TestCase
     end
   end
 
-  def test_pages_for_dataset_with_invalid_dataset_id_string_raises
+  def test_fetch_pages_for_dataset_with_invalid_dataset_id_string_raises
     assert_raises(ArgumentError) do
       phidippides.fetch_pages_for_dataset('invalid')
     end
@@ -154,7 +174,7 @@ class PhidippidesTest < Test::Unit::TestCase
     end
   end
 
-  def test_pages_for_dataset_with_invalid_dataset_hash_raises
+  def test_fetch_pages_for_dataset_with_invalid_dataset_hash_raises
     assert_raises(ArgumentError) do
       phidippides.fetch_pages_for_dataset(id: nil)
     end
@@ -246,6 +266,10 @@ class PhidippidesTest < Test::Unit::TestCase
 
   def new_page_metadata
     JSON.parse('{"datasetId":"q77b-s2zi","pageId":"vwwn-6r7g"}').with_indifferent_access
+  end
+
+  def v1_dataset_metadata
+    @v1_dataset_metdata ||= JSON.parse(File.read("#{Rails.root}/test/fixtures/v1-dataset-metadata.json")).with_indifferent_access
   end
 
 end

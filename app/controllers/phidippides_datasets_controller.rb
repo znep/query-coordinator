@@ -1,6 +1,7 @@
 class PhidippidesDatasetsController < ActionController::Base
 
   include CommonPhidippidesMethods
+  include CommonMetadataTransitionMethods
   include UserAuthMethods
 
   before_filter :hook_auth_controller
@@ -43,6 +44,7 @@ class PhidippidesDatasetsController < ActionController::Base
   end
 
   def create
+    return render :nothing => true, :status => 400 unless metadata_transition_phase_0?
     return render :nothing => true, :status => 401 unless can_update_metadata?
     return render :nothing => true, :status => 405 unless request.post?
     return render :nothing => true, :status => 400 unless params[:datasetMetadata].present?
@@ -65,7 +67,11 @@ class PhidippidesDatasetsController < ActionController::Base
     respond_to do |format|
       begin
         result = phidippides.update_dataset_metadata(JSON.parse(params[:datasetMetadata]), :request_id => request_id, :cookies => forwardable_session_cookies)
-        format.json { render :json => result[:body], :status => result[:status] }
+        if metadata_transition_phase_0?
+          format.json { render :json => result[:body], :status => result[:status] }
+        else
+          return head :status => 204
+        end
       rescue Phidippides::ConnectionError
         format.json { render :json => { body: 'Phidippides connection error' }, status: 500 }
       end
@@ -73,7 +79,11 @@ class PhidippidesDatasetsController < ActionController::Base
   end
 
   def destroy
-    render :nothing => true, :status => 403
+    if metadata_transition_phase_0?
+      render :nothing => true, :status => 403
+    else
+      render :nothing => true, :status => 400
+    end
   end
 
   private

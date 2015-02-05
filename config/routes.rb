@@ -408,8 +408,16 @@ Frontend::Application.routes do
       post '/manage/template', :action => 'manage_template_update'
     end
 
+    # V0 metadata endpoints
     resources :dataset_metadata, :controller => :phidippides_datasets
     resources :page_metadata, :controller => :phidippides_pages
+
+    # V1 dataset metadata endpoints
+    scope :controller => 'phidippides_datasets' do
+      match '/metadata/v1/dataset/:id', :to => 'phidippides_datasets#show', :via => [:get], :constraints => { :id => UID_REGEXP }
+      # This endpoint should eventually be routed to the phidippides_pages_controller instead
+      match '/metadata/v1/dataset/:id/pages', :to => 'phidippides_datasets#index', :via => [:get], :constraints => { :id => UID_REGEXP }
+    end
 
     # Custom pages, catalogs, facets
     scope :controller => 'custom_content' do

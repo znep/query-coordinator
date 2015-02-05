@@ -17,7 +17,7 @@ class PhidippidesDatasetsController < ActionController::Base
 
     respond_to do |format|
       begin
-        result = page_metadata_manager.pages_for_dataset(
+        result = phidippides.fetch_pages_for_dataset(
           params[:id],
           :request_id => request_id,
           :cookies => forwardable_session_cookies

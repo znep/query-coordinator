@@ -10,7 +10,7 @@ class PhidippidesDatasetsControllerTest < ActionController::TestCase
   end
 
   test 'index returns list all pages for a given dataset' do
-    PageMetadataManager.any_instance.stubs(pages_for_dataset: { body: mock_pages_metadata })
+    @phidippides.stubs(fetch_pages_for_dataset: { body: mock_pages_metadata })
     get :index, id: 'four-four', format: 'json'
     assert_response(:success)
     assert_equal('four-four', JSON.parse(@response.body)['publisher'][0]['datasetId'])
@@ -138,7 +138,7 @@ class PhidippidesDatasetsControllerTest < ActionController::TestCase
   end
 
   def mock_pages_metadata
-    { publisher: [ datasetId: 'four-four' ] }
+    { publisher: [ { datasetId: 'four-four', pageId: 'some-page' } ], user: [] }
   end
 
   def mock_dataset_metadata

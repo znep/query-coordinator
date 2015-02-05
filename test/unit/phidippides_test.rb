@@ -28,12 +28,6 @@ class PhidippidesTest < Test::Unit::TestCase
     assert_equal("http://#{phidippides.address}:#{phidippides.port}", phidippides.end_point)
   end
 
-  def test_fetch_pages_for_dataset
-    prepare_stubs(body: pages_for_dataset, path: 'datasets/four-four/pages', verb: :get)
-    result = phidippides.fetch_pages_for_dataset('four-four', request_id: 'request_id')
-    assert_equal(pages_for_dataset, result[:body])
-  end
-
   def test_includes_request_id_when_present
     prepare_stubs(body: pages_for_dataset, path: 'datasets/four-four/pages', verb: :get)
     phidippides.fetch_pages_for_dataset('four-four', request_id: 'request_id')
@@ -58,28 +52,56 @@ class PhidippidesTest < Test::Unit::TestCase
     refute(@mock_request['Cookie'])
   end
 
-  def test_fetch_page_metadata
-    prepare_stubs(body: page_metadata, path: 'datasets/four-four', verb: :get)
-    result = phidippides.issue_request(verb: :get, path: 'datasets/four-four', request_id: 'request_id')
-    assert_equal(page_metadata, result[:body])
+  def test_update_dataset_metadata
+    prepare_stubs(body: dataset_metadata, path: 'datasets/q77b-s2zi', verb: :put, request_body: dataset_metadata)
+    stub_feature_flags_with(:metadata_transition_phase, '0')
+    result = phidippides.update_dataset_metadata(dataset_metadata, request_id: 'request_id')
+    assert_equal(dataset_metadata, result[:body])
   end
 
   def test_create_page_metadata
     prepare_stubs(body: new_page_metadata, path: 'pages', verb: :post, request_body: new_page_metadata)
+    stub_feature_flags_with(:metadata_transition_phase, '0')
     result = phidippides.create_page_metadata(new_page_metadata, request_id: 'request_id')
     assert_equal(new_page_metadata, result[:body])
   end
 
+  def test_fetch_page_metadata
+    prepare_stubs(body: page_metadata, path: 'pages/four-four', verb: :get)
+    stub_feature_flags_with(:metadata_transition_phase, '0')
+    result = phidippides.fetch_page_metadata('four-four', request_id: 'request_id')
+    assert_equal(page_metadata, result[:body])
+  end
+
   def test_update_page_metadata
     prepare_stubs(body: page_metadata, path: 'pages/desk-chek', verb: :put, request_body: page_metadata)
+    stub_feature_flags_with(:metadata_transition_phase, '0')
     result = phidippides.update_page_metadata(page_metadata, request_id: 'request_id')
     assert_equal(page_metadata, result[:body])
   end
 
+  def test_fetch_pages_for_dataset
+    prepare_stubs(body: pages_for_dataset, path: 'datasets/four-four/pages', verb: :get)
+    stub_feature_flags_with(:metadata_transition_phase, '0')
+    result = phidippides.fetch_pages_for_dataset('four-four', request_id: 'request_id')
+    assert_equal(pages_for_dataset, result[:body])
+  end
+
   def test_fetch_dataset_metadata
     prepare_stubs(body: dataset_metadata, path: 'datasets/four-four', verb: :get)
+    stub_feature_flags_with(:metadata_transition_phase, '0')
     result = phidippides.fetch_dataset_metadata('four-four', request_id: 'request_id')
     assert_equal(dataset_metadata, result[:body])
+  end
+
+  def test_pages_for_dataset_with_dataset_object_succeeds
+    Phidippides.any_instance.stubs(
+      fetch_pages_for_dataset: { status: '200', body: pages_for_dataset }
+    )
+    stub_feature_flags_with(:metadata_transition_phase, '0')
+    pages = phidippides.fetch_pages_for_dataset(OpenStruct.new(id: 'q77b-s2zi'))[:body]
+    assert(pages[:publisher].length > 0, 'expected to find one or more "publisher" in the "pages" response')
+    assert(pages[:publisher].all? { |page| page[:id] == 'q77b-s2zi'}, 'expected all pages to belong to the same dataset')
   end
 
   def test_create_dataset_metadata
@@ -88,10 +110,60 @@ class PhidippidesTest < Test::Unit::TestCase
     assert_equal(new_dataset_metadata, result[:body])
   end
 
-  def test_update_dataset_metadata
-    prepare_stubs(body: dataset_metadata, path: 'datasets/q77b-s2zi', verb: :put, request_body: dataset_metadata)
-    result = phidippides.update_dataset_metadata(dataset_metadata, request_id: 'request_id')
-    assert_equal(dataset_metadata, result[:body])
+  def test_pages_for_dataset_with_id_string_succeeds
+    Phidippides.any_instance.stubs(
+      fetch_pages_for_dataset: { status: '200', body: pages_for_dataset }
+    )
+    stub_feature_flags_with(:metadata_transition_phase, '0')
+    pages = phidippides.fetch_pages_for_dataset('q77b-s2zi')[:body]
+    assert(pages[:publisher].length > 0, 'expected to find one or more "publisher" in the "pages" response')
+    assert(pages[:publisher].all? { |page| page[:id] == 'q77b-s2zi'}, 'expected all pages to belong to the same dataset')
+  end
+
+  def test_pages_for_dataset_with_id_in_hash_succeeds
+    Phidippides.any_instance.stubs(
+      fetch_pages_for_dataset: { status: '200', body: pages_for_dataset }
+    )
+    stub_feature_flags_with(:metadata_transition_phase, '0')
+    pages = phidippides.fetch_pages_for_dataset(id: 'q77b-s2zi')[:body]
+    assert(pages[:publisher].length > 0, 'expected to find one or more "publisher" in the "pages" response')
+    assert(pages[:publisher].all? { |page| page[:id] == 'q77b-s2zi'}, 'expected all pages to belong to the same dataset')
+  end
+
+  def test_pages_for_dataset_with_invalid_dataset_object_raises
+    assert_raises(ArgumentError) do
+      phidippides.fetch_pages_for_dataset(OpenStruct.new(id: nil))
+    end
+    assert_raises(ArgumentError) do
+      phidippides.fetch_pages_for_dataset(OpenStruct.new(id: ''))
+    end
+    assert_raises(ArgumentError) do
+      phidippides.fetch_pages_for_dataset(OpenStruct.new)
+    end
+  end
+
+  def test_pages_for_dataset_with_invalid_dataset_id_string_raises
+    assert_raises(ArgumentError) do
+      phidippides.fetch_pages_for_dataset('invalid')
+    end
+    assert_raises(ArgumentError) do
+      phidippides.fetch_pages_for_dataset('')
+    end
+    assert_raises(ArgumentError) do
+      phidippides.fetch_pages_for_dataset(nil)
+    end
+  end
+
+  def test_pages_for_dataset_with_invalid_dataset_hash_raises
+    assert_raises(ArgumentError) do
+      phidippides.fetch_pages_for_dataset(id: nil)
+    end
+    assert_raises(ArgumentError) do
+      phidippides.fetch_pages_for_dataset(id: '')
+    end
+    assert_raises(ArgumentError) do
+      phidippides.fetch_pages_for_dataset({})
+    end
   end
 
   def test_issue_request_success_response
@@ -110,12 +182,6 @@ class PhidippidesTest < Test::Unit::TestCase
     prepare_stubs(body: 'junk', path: 'datasets/four-four', verb: :get)
     result = phidippides.issue_request(verb: :get, path: 'datasets/four-four', request_id: 'request_id')
     assert_equal({'status' => '500', 'body' => '"junk"', 'error' => '757: unexpected token at \'"junk"\''}, result)
-  end
-
-  def test_raises_when_create_dataset_metadata_is_missing_keys
-    assert_raises(ArgumentError) do
-      phidippides.create_dataset_metadata({})
-    end
   end
 
   def test_raises_when_create_page_metadata_is_missing_keys
@@ -162,14 +228,6 @@ class PhidippidesTest < Test::Unit::TestCase
     @dataset_metdata ||= JSON.parse(File.read("#{Rails.root}/test/fixtures/dataset-metadata.json")).with_indifferent_access
   end
 
-  def pages_for_dataset
-    JSON.parse('{"publisher":[{"id":"q77b-s2zi","pageId":"vwwn-6r7g"}],"user":[]}').with_indifferent_access
-  end
-
-  def new_page_metadata
-    JSON.parse('{"datasetId":"q77b-s2zi","pageId":"vwwn-6r7g"}')
-  end
-
   def new_dataset_metadata
     {
       'id' => 'plac-hldr',
@@ -180,6 +238,14 @@ class PhidippidesTest < Test::Unit::TestCase
       'updatedAt' => Time.now.utc.iso8601,
       'columns' => []
     }
+  end
+
+  def pages_for_dataset
+    JSON.parse('{"publisher":[{"id":"q77b-s2zi","pageId":"vwwn-6r7g"}],"user":[]}').with_indifferent_access
+  end
+
+  def new_page_metadata
+    JSON.parse('{"datasetId":"q77b-s2zi","pageId":"vwwn-6r7g"}').with_indifferent_access
   end
 
 end

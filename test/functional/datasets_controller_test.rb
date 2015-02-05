@@ -15,7 +15,7 @@ class DatasetsControllerTest < ActionController::TestCase
     )
     @view.stubs(user_granted?: false)
     @controller.stubs(:get_view => @view)
-    @page_metadata_manager = PageMetadataManager.new
+    @phidippides = Phidippides.new
     @params = { :foo => 'foo', :bar => 'bar' }
     CurrentDomain.stubs(user_can?: false, default_widget_customization_id: nil)
     default_url_options[:host] = @request.host
@@ -72,26 +72,13 @@ class DatasetsControllerTest < ActionController::TestCase
     stub_user = stub(is_admin?: is_admin, id: 'prix-fixe', email: nil)
     @controller.stubs(current_user: stub_user)
     if has_page_metadata
-      @page_metadata_manager.stubs(
-        pages_for_dataset: {
-          status: '200',
-          body: {
-            publisher: [
-              { pageId: 'page-xist' },
-              { pageId: 'last-page' }
-            ]
-          }
-        }
+      @phidippides.stubs(
+        fetch_pages_for_dataset: { status: '200', body: { publisher: [ { pageId: 'page-xist' }, { pageId: 'last-page' } ]} }
       )
-      @controller.stubs(page_metadata_manager: @page_metadata_manager)
+      @controller.stubs(phidippides: @phidippides)
     else
-      @page_metadata_manager.stubs(
-        pages_for_dataset: {
-          status: '404',
-          body: {}
-        }
-      )
-      @controller.stubs(page_metadata_manager: @page_metadata_manager)
+      @phidippides.stubs(fetch_pages_for_dataset: { status: '404', body: {} })
+      @controller.stubs(phidippides: @phidippides)
     end
   end
 

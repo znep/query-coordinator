@@ -16,7 +16,11 @@ class PhidippidesPagesControllerTest < ActionController::TestCase
 
   test 'show returns data for a given page' do
     @controller.stubs(can_update_metadata?: true)
-    PageMetadataManager.any_instance.stubs(fetch: { body: mock_page_metadata, status: 200 })
+    @phidippides.stubs(
+      fetch_page_metadata: {
+        body: mock_page_metadata
+      }
+    )
     get :show, id: 'four-four', format: 'json'
     assert_response(:success)
     assert_equal([], JSON.parse(@response.body).keys - %w(pageId datasetId name description primaryAmountField primaryAggregation filterSoql isDefaultPage pageSource cards))

@@ -20,7 +20,7 @@ class PhidippidesPagesController < ActionController::Base
     respond_to do |format|
       format.json do
         begin
-          result = page_metadata_manager.fetch(
+          result = phidippides.fetch_page_metadata(
             params[:id],
             :request_id => request_id,
             :cookies => forwardable_session_cookies

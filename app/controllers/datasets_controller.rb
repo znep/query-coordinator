@@ -1,6 +1,8 @@
 class DatasetsController < ApplicationController
+ 
   include DatasetsHelper
   include CommonPhidippidesMethods
+ 
   prepend_before_filter :check_chrome, :only => [:show, :alt]
   skip_before_filter :require_user, :only => [:show, :blob, :alt, :widget_preview, :contact, :validate_contact_owner, :form_success, :form_error, :external, :external_download, :download, :about]
   skip_before_filter :disable_frame_embedding, :only => [:form_success, :form_error]
@@ -54,7 +56,7 @@ class DatasetsController < ApplicationController
 
         return redirect_to "/view/#{new_ux_page}" if new_ux_page.present?
 
-        pages_response = page_metadata_manager.pages_for_dataset(
+        pages_response = phidippides.fetch_pages_for_dataset(
           params[:id],
           :request_id => request_id,
           :cookies => forwardable_session_cookies

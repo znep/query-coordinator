@@ -36,7 +36,6 @@ class NewUxBootstrapControllerTest < ActionController::TestCase
       setup do
         # Stub out services, so we don't end up trying
         # to connect to external endpoints.
-        @page_metadata_manager.stubs(pages_for_dataset: { status: '500', body: {} })
         @phidippides.stubs(fetch_dataset_metadata: { status: '500', body: {columns: nil} })
       end
 
@@ -98,15 +97,11 @@ class NewUxBootstrapControllerTest < ActionController::TestCase
       context 'default page' do
         should 'redirect to the default page if the 4x4 already has a default page' do
           @phidippides.stubs(
-            fetch_dataset_metadata: { status: '200', body: {defaultPage: 'defa-ultp'} }
-          )
-          @page_metadata_manager.stubs(
-            pages_for_dataset: {
-              status: '200', body: { publisher: [
-                { pageId: 'page-xist' },
-                { pageId: 'defa-ultp' },
-                { pageId: 'last-page' }
-              ] }
+            fetch_dataset_metadata: {
+              status: '200', body: {defaultPage: 'defa-ultp'}
+            },
+            fetch_pages_for_dataset: {
+              status: '200', body: { publisher: [{ pageId: 'page-xist' }, { pageId: 'defa-ultp' }, { pageId: 'last-page' }], user: [] }
             }
           )
           get :bootstrap, id: 'four-four'
@@ -120,12 +115,9 @@ class NewUxBootstrapControllerTest < ActionController::TestCase
               with do |dataset_metadata|
                 dataset_metadata[:defaultPage] == 'last-page'
               end
-            @page_metadata_manager.stubs(
-              pages_for_dataset: {
-                status: '200', body: { publisher: [
-                  { pageId: 'page-xist' },
-                  { pageId: 'last-page' }
-                ] }
+            @phidippides.stubs(
+              fetch_pages_for_dataset: {
+                status: '200', body: { publisher: [{ pageId: 'page-xist' }, { pageId: 'last-page' }], user: [] }
               }
             )
           end
@@ -147,10 +139,14 @@ class NewUxBootstrapControllerTest < ActionController::TestCase
       end
 
       context 'dependent service error handling' do
-        should 'redirect to dataset page with error, if page_metadata_manager hates us' do
-          @phidippides.stubs(fetch_dataset_metadata: {status: '200', body: {columns: nil}})
-          @page_metadata_manager.stubs(
-            pages_for_dataset: { status: '500', body: { error: 'you suck' } }
+        should 'redirect to dataset page with error if the fetch_pages_for_dataset request fails' do
+          @phidippides.stubs(
+            fetch_dataset_metadata: {
+              status: '200', body: {columns: nil}
+            },
+            fetch_pages_for_dataset: {
+              status: '500', body: { error: '500 Internal Server Error' }
+            }
           )
           get :bootstrap, id: 'four-four'
           assert_redirected_to('/datasets/four-four')
@@ -158,8 +154,11 @@ class NewUxBootstrapControllerTest < ActionController::TestCase
         end
 
         should 'return 404 if dataset does not exist' do
-          @phidippides.stubs(fetch_dataset_metadata: { status: '404', body: { error: {} } })
-          @page_metadata_manager.stubs(pages_for_dataset: { status: '404', body: [] })
+          @phidippides.stubs(
+            fetch_dataset_metadata: {
+              status: '404', body: { error: {} }
+            }
+          )
           get :bootstrap, id: 'four-four'
           assert_response(404)
         end
@@ -167,7 +166,11 @@ class NewUxBootstrapControllerTest < ActionController::TestCase
 
       context 'creating page' do
         setup do
-          @page_metadata_manager.stubs(pages_for_dataset: { status: '404', body: [] })
+          @phidippides.stubs(
+            fetch_pages_for_dataset: {
+              status: '404', body: []
+            }
+          )
         end
 
         should 'redirect to new page with cards for the first 10 non-system columns' do
@@ -277,7 +280,6 @@ class NewUxBootstrapControllerTest < ActionController::TestCase
           end
           CoreServer::Base.stubs(connection: connection_stub)
           @page_metadata_manager.stubs(
-            pages_for_dataset: { status: '404', body: [] },
             create: { status: '500' },
           )
           @phidippides.stubs(

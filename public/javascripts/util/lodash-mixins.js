@@ -29,5 +29,14 @@ _.mixin({
   isPathDefined: function(object, path) {
     return _.isDefined(_.getPathOrElse(object, path));
   },
-  otherwise: _.instead
+  otherwise: _.instead,
+  /**
+   * @param {Function} f the function to run.
+   * @return {Function} a function that will call the given function in the next frame.
+   */
+  deferred: function(f) {
+    return function() {
+      _.defer(f);
+    };
+  }
 });

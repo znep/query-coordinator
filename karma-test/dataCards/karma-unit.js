@@ -73,6 +73,7 @@ module.exports = function ( karma ) {
       'bower_components/native-promise-only/lib/npo.src.js',
       'bower_components/requestAnimationFrame-polyfill/requestAnimationFrame.js',
       'public/javascripts/plugins/modernizr.js',
+      {pattern: 'public/javascripts/plugins/squire.js', included: false},
       'karma-test/helpers/TestHelpers.js',
       'karma-test/helpers/ServerMocks.js',
       'karma-test/dataCards/*.js',
@@ -101,6 +102,7 @@ module.exports = function ( karma ) {
 
     proxies: {
       '/stubs/images/': 'http://localhost:7019/base/public/stubs/images/',
+      '/javascripts/plugins/': 'http://localhost:7019/base/public/javascripts/plugins/',
       '/stylesheets/images/': 'http://localhost:7019/base/public/stylesheets/images/'
     },
 

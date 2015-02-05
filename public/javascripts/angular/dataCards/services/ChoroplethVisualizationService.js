@@ -53,10 +53,10 @@
         var numPossibleBreaks = _.uniq(values).length;
         if (numPossibleBreaks <= Constants['MAXIMUM_NUMBER_OF_CLASSES_ALLOWED']) {
           throw new Error("[Choropleth] Why are you calling numberOfClasses when # unique values <= " + Constants['MAXIMUM_NUMBER_OF_CLASSES_ALLOWED'] + "?");
-        } else {
-          var evenPossibleBreaks = numPossibleBreaks - (numPossibleBreaks % 2);
-          var maxNumClasses = evenPossibleBreaks / 2;
         }
+
+        var evenPossibleBreaks = numPossibleBreaks - (numPossibleBreaks % 2);
+        var maxNumClasses = evenPossibleBreaks / 2;
         return _.min([oddNumbered(maxNumClasses), 7]);
       }
 

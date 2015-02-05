@@ -36,8 +36,6 @@
     };
 
     this.getGeoJsonInfo = function(id, additionalConfig) {
-      Assert(!ServerConfig.metadataMigration.datasetMetadata.shouldReadWriteFromNewEndpoint(), 'new endpoints not supported');
-
       Assert(_.isString(id), 'id should be a string');
       var url = '/resource/{0}.geojson'.format(id);
 

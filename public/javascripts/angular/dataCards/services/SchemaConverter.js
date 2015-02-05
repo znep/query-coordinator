@@ -45,10 +45,10 @@ angular.module('dataCards.services').factory('SchemaConverter', function(Schemas
         output = input;
       } else {
         // Complain according to the latest schema.
-        datasetMetadataSchemas.assertValidAgainstVersion('1', input);
+        datasetMetadataSchemas.assertValidAgainstVersion('1', input, 'Dataset metadata did not validate against any version schema.');
       }
 
-      datasetMetadataSchemas.assertValidAgainstVersion('0', output);
+      datasetMetadataSchemas.assertValidAgainstVersion('0', output, 'Failed to backport dataset metadata from schema V1 to V0');
 
       return output;
     }

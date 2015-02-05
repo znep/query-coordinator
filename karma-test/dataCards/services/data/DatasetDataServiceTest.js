@@ -187,7 +187,7 @@
         });
       });
 
-      xdescribe('getGeoJsonInfo', function() {
+      describe('getGeoJsonInfo', function() {
         it('should throw on bad parameters', function() {
           expect(function() { DatasetDataService.getGeoJsonInfo(); }).to.throw();
         });

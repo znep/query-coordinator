@@ -14,11 +14,11 @@
     function getConfigurationObservable(key) {
       return Rx.Observable.
         fromPromise(http.get(CONFIGURATION_PATH_TEMPLATE.format(key))).
-        filter(function(response) { return response.status === 200 }).
+        filter(function(response) { return response.status === 200; }).
         map(function(response) {
           return _.getPathOrElse(response, 'data.0.properties', []);
         }).
-        catch(Rx.Observable.return([]));
+        catchError(Rx.Observable.returnValue([]));
     }
 
     return {
@@ -38,7 +38,7 @@
       getConfigurationValue: function(configuration, key) {
         return _(configuration).chain().findWhere({ name: key }).result('value').value();
       }
-    }
+    };
   }
 
   angular.

@@ -16,6 +16,31 @@
     }
   };
 
+  ServerConfig.metadataMigration = {
+    currentPhase: function() {
+      var phaseAsString = ServerConfig.get('metadataTransitionPhase')
+
+      // If feature flag isn't set, fall back to phase 0.
+      if (_.isUndefined(phaseAsString)) {
+        return 0;
+      }
+
+      var phaseAsInt = parseInt(phaseAsString, 10);
+      if (_.isNaN(phaseAsInt)) {
+        throw new Error('Metadata transition phase is not a number: ' + phaseAsString);
+      }
+
+      return phaseAsInt;
+    },
+    datasetMetadata: {
+      // Whether or not to use the new flex dataset metadata
+      // endpoint and schema.
+      shouldReadWriteFromNewEndpoint: function() {
+        return ServerConfig.metadataMigration.currentPhase() > 0;
+      }
+    }
+  };
+
   angular.
     module('socrataCommon.services').
     constant('ServerConfig', ServerConfig);

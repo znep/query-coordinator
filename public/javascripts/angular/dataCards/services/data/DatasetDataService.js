@@ -5,6 +5,7 @@
     var datasetMetadataSchemas = Schemas.regarding('dataset_metadata');
 
     function fetch(schemaVersion, id) {
+      Assert(!ServerConfig.metadataMigration.datasetMetadata.shouldReadWriteFromNewEndpoint(), 'new endpoints not supported');
       var url = '/dataset_metadata/{0}.json'.format(id);
       var config = {
         cache: true,
@@ -21,6 +22,7 @@
     this.getDatasetMetadata = function(schemaVersion, id) {
       Assert(_.isString(id), 'id should be a string');
       Assert(schemaVersion === '0', 'only dataset metadata schema v0 is supported.');
+
       return fetch.call(this, schemaVersion, id).then(function(data) {
         var validation = datasetMetadataSchemas.validateAgainstVersion(schemaVersion, data);
         if (_.isPresent(validation.errors)) {
@@ -36,6 +38,8 @@
     };
 
     this.getGeoJsonInfo = function(id, additionalConfig) {
+      Assert(!ServerConfig.metadataMigration.datasetMetadata.shouldReadWriteFromNewEndpoint(), 'new endpoints not supported');
+
       Assert(_.isString(id), 'id should be a string');
       var url = '/resource/{0}.geojson'.format(id);
 

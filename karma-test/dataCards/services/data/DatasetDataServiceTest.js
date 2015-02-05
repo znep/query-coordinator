@@ -5,6 +5,7 @@
     var $httpBackend;
     var DatasetDataService;
     var ServerConfig;
+    var TestHelpers;
     var fake4x4 = 'fake-data';
     var datasetDataUrl = '/dataset_metadata/{0}.json'.format(fake4x4);
     var fakeDatasetData = {
@@ -45,16 +46,23 @@
     beforeEach(inject(function($injector) {
       DatasetDataService = $injector.get('DatasetDataService');
       ServerConfig = $injector.get('ServerConfig');
+      TestHelpers = $injector.get('testHelpers');
       $httpBackend = $injector.get('$httpBackend');
       $httpBackend.whenGET(datasetDataUrl).respond(fakeDatasetData);
       $httpBackend.whenGET(geoJsonDataUrl).respond(fakeGeoJsonData);
+
+      ServerConfig.setup(
+        {
+          metadataTransitionPhase: '0'
+        }
+      );
     }));
 
     describe('getDatasetMetadata', function() {
       it('should throw on bad parameters', function() {
         expect(function() { DatasetDataService.getDatasetMetadata(); }).to.throw();
-        expect(function() { DatasetDataService.getDatasetMetadata('faur-fjur'); }).to.throw(); // Expect version.
-        expect(function() { DatasetDataService.getDatasetMetadata('9001', 'faur-fjur'); }).to.throw(); // Invalid schema version.
+        expect(function() { DatasetDataService.getDatasetMetadata(fake4x4); }).to.throw(); // Expect version.
+        expect(function() { DatasetDataService.getDatasetMetadata('9001', fake4x4); }).to.throw(); // Invalid schema version.
       });
 
       it('should access the correct dataset metadata', function(done) {
@@ -64,6 +72,21 @@
           done();
         });
         $httpBackend.flush();
+      });
+
+      it('should throw in phase 1 migration', function() {
+        // NOTE: This should change soon.
+        TestHelpers.overrideMetadataMigrationPhase(1);
+        expect(function() {
+          DatasetDataService.getDatasetMetadata('0', fake4x4);
+        }).to.throw();
+      });
+
+      it('should throw in phase 2 migration', function() {
+        TestHelpers.overrideMetadataMigrationPhase(2);
+        expect(function() {
+          DatasetDataService.getDatasetMetadata('0', fake4x4);
+        }).to.throw();
       });
     });
 

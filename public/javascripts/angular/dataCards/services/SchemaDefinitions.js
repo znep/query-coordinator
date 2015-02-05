@@ -73,7 +73,7 @@ angular.module('dataCards.services').factory('SchemaDefinitions', function() {
           'columns': {
             'type': 'object',
             'patternProperties': {
-              '*': {
+              '.*': {
                 'type': 'object',
                 'properties': {
                   'title': {
@@ -124,7 +124,7 @@ angular.module('dataCards.services').factory('SchemaDefinitions', function() {
             'enum': [ '1' ] //NOTE: This is not currently required. Hopefully this will change as we coordinate teams.
           }
         },
-        'required': [ 'id', 'name', 'rowDisplayUnit', 'defaultAggregateColumn', 'ownerId', 'updatedAt', 'columns' ]
+        'required': [ 'id', 'name', 'ownerId', 'updatedAt', 'columns' ]
       }
     );
 

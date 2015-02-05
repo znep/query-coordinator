@@ -1,12 +1,18 @@
 (function() {
 
-  function DatasetDataService(ServerConfig, http, Assert, Schemas) {
+  function DatasetDataService(ServerConfig, http, Assert, Schemas, SchemaConverter) {
 
     var datasetMetadataSchemas = Schemas.regarding('dataset_metadata');
 
     function fetch(schemaVersion, id) {
-      Assert(!ServerConfig.metadataMigration.datasetMetadata.shouldReadWriteFromNewEndpoint(), 'new endpoints not supported');
-      var url = '/dataset_metadata/{0}.json'.format(id);
+      var url;
+
+      if(ServerConfig.metadataMigration.datasetMetadata.shouldReadWriteFromNewEndpoint()) {
+        url = '/metadata/v1/dataset/{0}'.format(id);
+      } else {
+        url = '/dataset_metadata/{0}.json'.format(id);
+      }
+
       var config = {
         cache: true,
         requester: this
@@ -14,7 +20,7 @@
 
       return http.get(url, config).
         then(function(response) {
-          return response.data;
+          return SchemaConverter.datasetMetadata.toV0(response.data);
         }
       );
     }
@@ -24,15 +30,7 @@
       Assert(schemaVersion === '0', 'only dataset metadata schema v0 is supported.');
 
       return fetch.call(this, schemaVersion, id).then(function(data) {
-        var validation = datasetMetadataSchemas.validateAgainstVersion(schemaVersion, data);
-        if (_.isPresent(validation.errors)) {
-          throw new Error(
-            'Data from dataset metadata endpoint failed validation. Schema version: {0}\nErrors: {1}\nData: {2}'.format(
-              schemaVersion, JSON.stringify(validation.errors), JSON.stringify(data)
-            )
-          );
-        }
-
+        datasetMetadataSchemas.assertValidAgainstVersion(schemaVersion, data);
         return data;
       });
     };

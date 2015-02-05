@@ -43,6 +43,21 @@ angular.module('dataCards.services').factory('Schemas', function(JJV, SchemaDefi
       },
 
       // Checks the given object for validity on a particular version of this schema.
+      // Throws an error if the object is valid, else returns the object.
+      assertValidAgainstVersion: function(schemaVersion, objectToValidate) {
+        var validation = this.validateAgainstVersion(schemaVersion, objectToValidate);
+        if (_.isPresent(validation.errors)) {
+          throw new Error(
+            'Data failed validation.\nSchema: {0}\nVersion: {1}\nErrors: {2}\nData: {3}'.format(
+              schemaSubjectName, schemaVersion, JSON.stringify(validation.errors), JSON.stringify(objectToValidate)
+            )
+          );
+        }
+
+        return objectToValidate;
+      },
+
+      // Checks the given object for validity on a particular version of this schema.
       // Returns true of the object matches this version schema, false otherwise.
       // If you want access to the validation errors, use validateAgainstVersion.
       isValidAgainstVersion: function(schemaVersion, objectToValidate) {

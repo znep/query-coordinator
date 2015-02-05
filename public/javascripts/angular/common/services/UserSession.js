@@ -52,16 +52,22 @@
         }
         // If error isn't true, let the issue fall through the default error handlers.
       });
-    };
+    }
+
+    function getCurrentUserObservable() {
+      return Rx.Observable.fromPromise(getCurrentUser()).
+        catch(Rx.Observable.returnValue(null));
+    }
 
     return {
       getCurrentUser: getCurrentUser,
+      getCurrentUserObservable: _.once(getCurrentUserObservable),
       Errors: Errors
     }
   }
 
   angular.
-    module('dataCards.services').
-      factory('UserSession', UserSessionService);
+    module('socrataCommon.services').
+      service('UserSessionService', UserSessionService);
 
 })();

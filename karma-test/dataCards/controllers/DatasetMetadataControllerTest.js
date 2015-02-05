@@ -17,10 +17,23 @@ describe('DatasetMetadataController', function() {
     }
   };
 
+  beforeEach(module('socrataCommon.directives'));
+  beforeEach(module('socrataCommon.services'));
+  beforeEach(module('/angular_templates/common/pageHeader.html'));
+
   beforeEach(module('dataCards'));
   beforeEach(function() {
     module(function($provide) {
+      $provide.value('UserSessionService', {
+        getCurrentUserObservable: _.constant(Rx.Observable.returnValue(null))
+      });
       $provide.value('DatasetDataService', mockDatasetDataService);
+      $provide.value('ConfigurationsService', {
+        getThemeConfigurationsObservable: function() {
+          return Rx.Observable.returnValue([]);
+        },
+        getConfigurationValue: _.noop
+      });
     });
   });
   beforeEach(inject(function($injector){
@@ -56,7 +69,7 @@ describe('DatasetMetadataController', function() {
       controller: controller,
       dataset: dataset
     };
-  };
+  }
 
   describe('dataset name', function() {
     it('should update on the scope when the property changes on the model', function() {

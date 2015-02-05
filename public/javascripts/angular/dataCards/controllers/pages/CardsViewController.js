@@ -57,7 +57,7 @@
     ));
   }
 
-  function CardsViewController($scope, $location, $log, $window, $q, AngularRxExtensions, SortedTileLayout, Filter, PageDataService, UserSession, CardTypeMapping, FlyoutService, page, Card, WindowState, ServerConfig) {
+  function CardsViewController($scope, $location, $log, $window, $q, AngularRxExtensions, SortedTileLayout, Filter, PageDataService, UserSessionService, CardTypeMapping, FlyoutService, page, Card, WindowState, ServerConfig) {
 
     AngularRxExtensions.install($scope);
 
@@ -96,12 +96,8 @@
 
     // Bind the current user to the scope, or null if no user is logged in or there was an error
     // fetching the current user.
-    var currentUserSequence = Rx.Observable.fromPromise(UserSession.getCurrentUser());
-    $scope.bindObservable(
-      'currentUser',
-      currentUserSequence,
-      _.constant(null)
-    );
+    var currentUserSequence = UserSessionService.getCurrentUserObservable();
+    $scope.bindObservable('currentUser', currentUserSequence);
 
     var isCurrentUserAdminOrPublisher =
       currentUserSequence.

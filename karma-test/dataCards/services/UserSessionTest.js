@@ -1,11 +1,17 @@
 describe('UserSessionService', function() {
-  var $httpBackend, UserSession;
+  var $httpBackend;
+  var UserSession;
 
-  beforeEach(module('dataCards'));
+  beforeEach(module('socrataCommon.services'));
   beforeEach(inject(function($injector) {
     $httpBackend = $injector.get('$httpBackend');
-    UserSession = $injector.get('UserSession');
+    UserSession = $injector.get('UserSessionService');
   }));
+
+  afterEach(function() {
+    $httpBackend.verifyNoOutstandingExpectation();
+    $httpBackend.verifyNoOutstandingRequest();
+  });
 
   describe('getCurrentUser', function() {
     describe('happy path', function() {
@@ -59,11 +65,32 @@ describe('UserSessionService', function() {
           } else {
             done();
           }
-        };
+        }
         next();
         $httpBackend.flush();
       });
     });
+  });
+
+  describe('getCurrentUserObservable', function() {
+
+    beforeEach(function() {
+      $httpBackend.expectGET('/api/users/current.json').respond(200, { id: 'awsm-swse' });
+    });
+
+    it('should return an observable', function() {
+      var observable = UserSession.getCurrentUserObservable();
+      $httpBackend.flush();
+      expect(observable).to.respondTo('subscribe');
+    });
+
+    it('should return the same observable for multiple calls', function() {
+      var observable = UserSession.getCurrentUserObservable();
+      var observable2 = UserSession.getCurrentUserObservable();
+      $httpBackend.flush();
+      expect(observable).to.equal(observable2);
+    });
+
   });
 
 });

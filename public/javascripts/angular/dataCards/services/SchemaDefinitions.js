@@ -128,6 +128,41 @@ angular.module('dataCards.services').factory('SchemaDefinitions', function() {
       }
     );
 
+    var datasetPagesMetadataSchemas = schemasService.regarding('pages_for_dataset_metadata');
+    datasetPagesMetadataSchemas.addSchemaWithVersion(
+      '0',
+      {
+        'type': 'object',
+        'patternProperties': {
+          '^(user|publisher)$': {
+            'type': 'array',
+            'items': {
+              'type': 'object',
+              // NOTE: not full validation here. Page blob is properly checked during Page deserialization.
+              'required': [ 'pageId' ]
+            }
+          }
+        },
+        'required': [ 'user', 'publisher' ]
+      }
+    );
+    datasetPagesMetadataSchemas.addSchemaWithVersion(
+      '1',
+      {
+        'type': 'object',
+        'patternProperties': {
+          '^\\w{4}-\\w{4}$': {
+            'type': 'object',
+            // NOTE: not full validation here. Page blob is properly checked during Page deserialization.
+            'required': [ 'pageId' ]
+          }
+        },
+        'not': {
+          'type': 'object',
+          'required': [ 'user', 'publisher' ]
+        }
+      }
+    );
   }
 
   return {

@@ -1,6 +1,7 @@
 angular.module('dataCards.services').factory('SchemaConverter', function(Schemas) {
 
   var datasetMetadataSchemas = Schemas.regarding('dataset_metadata');
+  var datasetPagesMetadataSchemas = Schemas.regarding('pages_for_dataset_metadata');
 
   var SchemaConverter = {};
 
@@ -52,7 +53,29 @@ angular.module('dataCards.services').factory('SchemaConverter', function(Schemas
 
       return output;
     }
-  }
+  };
+
+  SchemaConverter.datasetMetadata.pagesForDataset = {
+    toV0: function(input) {
+      var output;
+
+      if (datasetPagesMetadataSchemas.isValidAgainstVersion('1', input)) {
+        output = {
+          user: [],
+          publisher: _.values(input)
+        };
+      } else if (datasetPagesMetadataSchemas.isValidAgainstVersion('0', input)) {
+        output = input;
+      } else {
+        // Complain according to the latest schema.
+        datasetPagesMetadataSchemas.assertValidAgainstVersion('1', input, 'Dataset pages list metadata did not validate against any version schema.');
+      }
+
+      datasetPagesMetadataSchemas.assertValidAgainstVersion('0', output, 'Failed to backport dataset pages list metadata from schema V1 to V0');
+
+      return output;
+    }
+  };
 
   return SchemaConverter;
 

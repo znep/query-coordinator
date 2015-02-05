@@ -58,16 +58,21 @@
     // If you want models instead, use the Dataset model's pages property.
     this.getPagesForDataset = function(pageSchemaVersion, datasetId) {
       Assert(pageSchemaVersion === '0', 'only page metadata schema v0 is supported.');
-      Assert(!ServerConfig.metadataMigration.datasetMetadata.shouldReadWriteFromNewEndpoint(), 'new endpoints not supported');
+      Assert(_.isString(datasetId), 'datasetId should be a string');
 
-      var url = '/dataset_metadata/?id={0}&format=json'.format(datasetId);
+      var url;
+      if(ServerConfig.metadataMigration.datasetMetadata.shouldReadWriteFromNewEndpoint()) {
+        url = '/metadata/v1/dataset/{0}/pages'.format(datasetId);
+      } else {
+        url = '/dataset_metadata/?id={0}&format=json'.format(datasetId);
+      }
 
       var config = {
         cache: true,
         requester: this
       };
 
-      return http.get(url, config).then(_.property('data'));
+      return http.get(url, config).then(_.property('data')).then(SchemaConverter.datasetMetadata.pagesForDataset.toV0);
     };
 
   }

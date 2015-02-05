@@ -141,6 +141,25 @@
 
       var fakeDatasetData = phaseTestingUnder === 0 ? fakeDatasetDataV0 : fakeDatasetDataV1;
 
+      var datasetPagesUrl = phaseTestingUnder === 0 ?
+        '/dataset_metadata/?id={0}&format=json'.format(fake4x4) :
+        '/metadata/v1/dataset/{0}/pages'.format(fake4x4);
+
+      var fakePagesForDatasetV0 = {
+        publisher: [
+          { pageId: 'fooo-barr', foo: 'bar' },
+          { pageId: 'bazz-boop', baz: 'boop' }
+        ],
+        user: []
+      };
+
+      var fakePagesForDatasetV1 = {
+        'fooo-barr': { pageId: 'fooo-barr', foo: 'bar' },
+        'bazz-boop': { pageId: 'bazz-boop', baz: 'boop' }
+      };
+
+      var fakePagesForDataset = phaseTestingUnder === 0 ? fakePagesForDatasetV0 : fakePagesForDatasetV1;
+
       var geoJsonDataUrl = '/resource/{0}.geojson'.format(fake4x4);
       var fakeGeoJsonData = {
         type: 'FeatureCollection',
@@ -162,6 +181,7 @@
         $httpBackend = $injector.get('$httpBackend');
         $httpBackend.whenGET(datasetDataUrl).respond(fakeDatasetData);
         $httpBackend.whenGET(geoJsonDataUrl).respond(fakeGeoJsonData);
+        $httpBackend.whenGET(datasetPagesUrl).respond(fakePagesForDataset);
 
         TestHelpers.overrideMetadataMigrationPhase(phaseTestingUnder);
       }));
@@ -185,6 +205,23 @@
           });
           $httpBackend.flush();
         });
+      });
+
+      describe('getPagesForDataset', function() {
+        it('should throw on bad parameters', function() {
+          expect(function() { DatasetDataService.getPagesForDataset(); }).to.throw();
+          expect(function() { DatasetDataService.getPagesForDataset('0'); }).to.throw();
+        });
+
+        it('shoud return the correct data', function(done) {
+          var responsePromise = DatasetDataService.getPagesForDataset('0', fake4x4);
+          responsePromise.then(function(response) {
+            // Response should be equvalent to v0 in all cases.
+            expect(response).to.eql(fakePagesForDatasetV0);
+            done();
+          });
+          $httpBackend.flush();
+        })
       });
 
       describe('getGeoJsonInfo', function() {

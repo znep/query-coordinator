@@ -149,4 +149,71 @@ describe('Instantiating v0 models from v1 metadata', function() {
 
     $httpBackend.flush();
   });
+
+  it('should convert the list of pages for a dataset correctly', function(done) {
+    var input = {
+      "columns":{
+        "column_a":{
+          "description": "",
+          "fred": "category",
+          "physicalDatatype": "text",
+          "name": "column_a"
+        }
+      },
+      "defaultPage": "four-four",
+      "description": "test",
+      "domain": "dataspace-demo.test-socrata.com",
+      "id": "vtvh-wqgq",
+      "locale": "en_US",
+      "name": "test",
+      "ownerId": "8ueb-zucv",
+      "updatedAt": "2014-08-17T04:07:03.000Z",
+    };
+
+    var datasetPagesDataUrl = '/metadata/v1/dataset/{0}/pages'.format(input.id);
+    $httpBackend.whenGET(datasetPagesDataUrl).respond({
+      'page-zero': {
+        'pageId': 'page-zero',
+        'description': 'zero'
+      },
+      'page-one3': {
+        'pageId': 'page-one3',
+        'description': 'one'
+      }
+    });
+
+    var dataset = constructWithV1Blob(input);
+
+    dataset.observe('pages').filter(_.isPresent).subscribe(function(pages) {
+      expect(pages.user).to.have.length(0);
+      expect(pages.publisher).to.have.length(2);
+      Rx.Observable.subscribeLatest(
+        pages.publisher[0].observe('description').filter(_.isPresent),
+        pages.publisher[0].observe('id'),
+        pages.publisher[1].observe('description').filter(_.isPresent),
+        pages.publisher[1].observe('id'),
+        function(pageDescriptionA, pageIdA, pageDescriptionB, pageIdB) {
+          // Since the new style is a hash, ordering is not guaranteed.
+          var pageAIsPageZero = pageIdA === 'page-zero';
+
+          var page0Id = pageAIsPageZero ? pageIdA : pageIdB;
+          var page0Description = pageAIsPageZero ? pageDescriptionA : pageDescriptionB;
+
+          var page1Id = pageAIsPageZero ? pageIdB : pageIdA;
+          var page1Description = pageAIsPageZero ? pageDescriptionB : pageDescriptionA;
+
+          expect(page0Id).to.equal('page-zero');
+          expect(page1Id).to.equal('page-one3');
+
+          expect(page0Description).to.equal('zero');
+          expect(page1Description).to.equal('one');
+
+          done();
+        }
+      )
+    });
+
+    $httpBackend.flush();
+  });
+
 });

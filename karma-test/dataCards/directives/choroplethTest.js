@@ -43,13 +43,17 @@ describe("A Choropleth Directive", function() {
    */
   function createGeoJsonData(featurecount) {
     var basePoint = [121.5505, 23.9772];
+    var boxWidth = Math.floor(Math.sqrt(featurecount));
     return {
       type: 'FeatureCollection',
       features: _.map(_.range(featurecount), function(i) {
         var properties = {};
         properties[Constants.INTERNAL_DATASET_FEATURE_ID] = '' + i;
         var increment = .01;
-        var delta = i * increment;
+        var dx = increment * (i % boxWidth);
+        var dy = increment * (Math.floor(i / boxWidth));
+        var x0 = basePoint[0] + dx;
+        var y0 = basePoint[1] + dy;
 
         return {
           type: 'Feature',
@@ -57,10 +61,11 @@ describe("A Choropleth Directive", function() {
           geometry: {
             type: 'Polygon',
             coordinates: [[
-              [ basePoint[0] + delta, basePoint[1] + delta ],
-              [ basePoint[0] + delta, basePoint[1] + delta + increment ],
-              [ basePoint[0] + delta + increment, basePoint[1] + delta + increment ],
-              [ basePoint[0] + delta + increment, basePoint[1] + delta ]
+              // make nice parallelograms
+              [ x0, y0 ],
+              [ x0 + increment / 3, y0 + increment ],
+              [ x0 + increment * 4 / 3, y0 + increment ],
+              [ x0 + increment, y0 ]
             ]]
           }
         };
@@ -365,6 +370,44 @@ describe("A Choropleth Directive", function() {
       });
 
       describe('negative values', function() {
+        /**
+         * Counts the number of white, red, and blues inside the given array of colors.
+         *
+         * @param {chroma.Color[]} colors the list of colors.
+         *
+         * @return {Object} an object with keys 'red', 'white', and 'blue', with how many of those
+         *   colors were found.
+         */
+        function countColors(colors) {
+          var RED = 0;
+          var GREEN = 1;
+          var BLUE = 2;
+          var whiteCount = 0;
+          var redCount = 0;
+          var blueCount = 0;
+          _.each(colors, function(color) {
+            var rgb = color.rgb();
+            if (rgb[RED] === rgb[GREEN] && rgb[GREEN] === rgb[BLUE]) {
+              whiteCount++;
+            } else {
+              if (rgb[RED] > rgb[BLUE]) {
+                expect(rgb[RED]).to.be.greaterThan(rgb[GREEN]);
+                redCount++;
+              } else if (rgb[BLUE] > rgb[RED]) {
+                expect(rgb[BLUE]).to.be.greaterThan(rgb[GREEN]);
+                blueCount++;
+              } else {
+                assert.fail(rgb, 'Unexpected legend color - should be either red, white, or blue.');
+              }
+            }
+          });
+
+          return {
+            white: whiteCount,
+            red: redCount,
+            blue: blueCount
+          }
+        }
         it('colors red-orange scale for all negative values', function() {
           var featureCount = 11;
           var values = _.map(_.range(-featureCount, 0), function(value, i) {
@@ -395,24 +438,19 @@ describe("A Choropleth Directive", function() {
           expect(legendColors.length).to.be.greaterThan(2);
 
           // Assert that they're reddish
-          var whiteCount = 0;
-          _.each([fillColors, legendColors], function(sectionColors) {
-            _.each(sectionColors, function(color) {
-              if ('#e4eef0' === color.hex()) {
-                whiteCount++;
-              } else {
-                var rgb = color.rgb();
-                expect(rgb[0]).to.be.greaterThan(rgb[2]);
-                expect(rgb[0]).to.be.greaterThan(rgb[1]);
-              }
-            });
-          });
-          // There should be at most one white value in the legend, and one in the regions of this
-          // particular dataset.
-          expect(whiteCount).to.be.greaterThan(2);
-          // But there shouldn't be _too_ many of them. Assert that less than half the (regions +
-          // legend steps) are white.
-          expect(whiteCount).to.be.lessThan(featureCount);
+          var fillColorCount = countColors(fillColors);
+          expect(fillColorCount.red).to.be.greaterThan(0);
+          expect(fillColorCount.blue).to.equal(0);
+
+          // But there shouldn't be _too_ many white values.
+          expect(fillColorCount.white).to.be.lessThan(2);
+
+          var legendColorCount = countColors(legendColors);
+          expect(legendColorCount.red).to.be.greaterThan(0);
+          expect(legendColorCount.blue).to.equal(0);
+
+          // But there shouldn't be _too_ many white values.
+          expect(legendColorCount.white).to.be.lessThan(2);
         });
 
         it('colors red-orange - white - blue for range of values straddling 0', function() {
@@ -448,64 +486,25 @@ describe("A Choropleth Directive", function() {
           // First the legend colors
 
           // Assert that they're reddish or blueish
-          var whiteCount = 0;
-          var redCount = 0;
-          var blueCount = 0;
-          _.each(legendColors, function(color) {
-            if ('#e4eef0' === color.hex()) {
-              whiteCount++;
-            } else {
-              var rgb = color.rgb();
-              if (rgb[0] > rgb[2]) {
-                redCount++;
-                expect(rgb[0]).to.be.greaterThan(rgb[1]);
-              } else if (rgb[2] > rgb[0]) {
-                blueCount++;
-                expect(rgb[2]).to.be.greaterThan(rgb[1]);
-              } else {
-                assert.fail(rgb, 'Unexpected legend color - should be either red, white, or blue.');
-              }
-            }
-          });
+          var colorCount = countColors(legendColors);
 
-          // There should be at most one white value in the legend
-          expect(whiteCount).to.equal(1);
-          // But there shouldn't be _too_ many of them. Assert that less than half the (regions +
-          // legend steps) are white.
-          expect(whiteCount).to.be.lessThan(featureCount / 2);
+          // There should be at most one white value in the legend.
+          expect(colorCount.white).to.be.lessThan(2);
           // There should be blue and red regions too
-          expect(blueCount).to.be.greaterThan(0);
-          expect(redCount).to.be.greaterThan(0);
+          expect(colorCount.blue).to.be.greaterThan(0);
+          expect(colorCount.red).to.be.greaterThan(0);
 
           // Now check the fill colors
-          whiteCount = 0;
-          redCount = 0;
-          blueCount = 0;
-          _.each(fillColors, function(color) {
-            if ('#e4eef0' === color.hex()) {
-              whiteCount++;
-            } else {
-              var rgb = color.rgb();
-              if (rgb[0] > rgb[2]) {
-                redCount++;
-                expect(rgb[0]).to.be.greaterThan(rgb[1]);
-              } else if (rgb[2] > rgb[0]) {
-                blueCount++;
-                expect(rgb[2]).to.be.greaterThan(rgb[1]);
-              } else {
-                assert.fail(rgb, 'Unexpected region color - should be either red, white, or blue.');
-              }
-            }
-          });
+          colorCount = countColors(fillColors);
 
-          // There should be at most one white value in the regions of this particular dataset.
-          expect(whiteCount).to.be.greaterThan(0);
+          // There should be at least one white value in the regions of this particular dataset.
+          expect(colorCount.white).to.be.greaterThan(0);
           // But there shouldn't be _too_ many of them. Assert that less than half the (regions +
           // legend steps) are white.
-          expect(whiteCount).to.be.lessThan(featureCount / 2);
+          expect(colorCount.white).to.be.lessThan(featureCount / 2);
           // There should be blue and red regions too
-          expect(blueCount).to.be.greaterThan(0);
-          expect(redCount).to.be.greaterThan(0);
+          expect(colorCount.blue).to.be.greaterThan(0);
+          expect(colorCount.red).to.be.greaterThan(0);
         });
 
         it('always includes a 0 label', function() {
@@ -515,7 +514,7 @@ describe("A Choropleth Directive", function() {
               var xOffset = .23 * start;
               var yOffset = -featureCount / 3;
               var y = yOffset + Math.pow(value - xOffset, 2)
-              return { name: '' + i, value: y };
+              return { name: '' + i, value: Math.round(featureCount % 2 ? y : -y) };
             });
             scope.geojsonAggregateData = cardVisualizationChoroplethHelpers.aggregateGeoJsonData(
               createGeoJsonData(featureCount), values, values, null,
@@ -534,10 +533,55 @@ describe("A Choropleth Directive", function() {
             });
             expect(found).to.equal(true);
           }
-          _.each([3, 10, 53], function(i) {
-            testForCount(i);
+          // Run testForCount 3 times with random counts (ie number of features) between 3 and 103
+          _.each(_.range(3), function() {
+            testForCount(Math.floor(3 + Math.random() * 100));
             testHelpers.TestDom.clear();
           });
+        });
+
+        it('does something sane for outliers', function() {
+          var featureCount = 50;
+          var values = [{ name: '0', value: '-5000' }].concat(
+            _.map(_.range(1, featureCount), function(value, i) {
+              return { name: '' + value, value: value / 100 };
+            })
+          );
+          scope.geojsonAggregateData = cardVisualizationChoroplethHelpers.aggregateGeoJsonData(
+            createGeoJsonData(featureCount), values, values, null,
+            'mycolumn', [{name: 'mycolumn', shapefile: null}]
+          );
+          el = createChoropleth();
+
+          // Both the regions and the legend should be reddish
+          var fillColors = _.map(el.find(featureGeometrySelector), function(el) {
+            var fillColor = $(el).css('fill');
+            return chroma.color(fillColor);
+          });
+
+          var legendColors = _.map(el.find(legendColorSelector), function(el) {
+            var legendColor = $(el).css('fill');
+            return {
+              color: chroma.color(legendColor),
+              // The blue bars are height=0, so they can't be seen
+              height: parseInt(el.getAttribute('height'), 10)
+            };
+          });
+
+          expect(fillColors.length).to.be.greaterThan(3);
+          expect(legendColors.length).to.be.greaterThan(0);
+
+          // The legend should be mostly red
+          var legendColorCount = countColors(
+            _.pluck(
+              _.filter(legendColors, function(obj) { return obj.height; }),
+              'color'
+            )
+          );
+          expect(legendColorCount.red).to.be.greaterThan(legendColorCount.blue);
+          // The features should be mostly blue
+          var featureColorCount = countColors(fillColors);
+          expect(featureColorCount.blue).to.be.greaterThan(featureColorCount.red);
         });
       });
     });
@@ -781,6 +825,36 @@ describe("A Choropleth Directive", function() {
             });
 
             expect(_.intersection(legendColors, fillColors).length).to.equal(fillColors.length);
+          });
+
+          it('renders a scale of blue that goes from fairly light, to fairly dark', function() {
+            var featureCount = 11;
+            var values = _.map(_.range(5, 5 + featureCount), function(value, i) {
+              return { name: '' + i, value: value };
+            });
+            scope.geojsonAggregateData = cardVisualizationChoroplethHelpers.aggregateGeoJsonData(
+              createGeoJsonData(featureCount), values, values, null,
+              'mycolumn', [{name: 'mycolumn', shapefile: null}]
+            );
+            el = createChoropleth();
+
+            var legendColors = _.map(el.find(legendColorSelector), function(el) {
+              var legendColor = $(el).css('fill');
+              return chroma.color(legendColor);
+            });
+
+            // they should all be blue, except maybe for one white
+            _.each(legendColors, function(color) {
+              var rgb = color.rgb();
+              expect(rgb[2]).to.be.greaterThan(rgb[1]);
+              expect(rgb[2]).to.be.greaterThan(rgb[0]);
+            });
+            // should start relatively light, get progressively darker, and end relatively dark
+            expect(legendColors[0].luminance()).to.be.greaterThan(0.7);
+            for (var i=1; i<legendColors.length; i++) {
+              expect(legendColors[i].luminance()).to.be.lessThan(legendColors[i - 1].luminance());
+            }
+            expect(legendColors[legendColors.length - 1].luminance()).to.be.lessThan(0.2);
           });
         });
       });

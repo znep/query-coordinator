@@ -64,62 +64,111 @@
       },
 
       /**
+       * If the values straddle 0, we want to add a break at 0
+       */
+      addZeroIfNecessary: function(classBreaks) {
+        var indexOf0 = _.sortedIndex(classBreaks, 0);
+        if (indexOf0 > 0 && indexOf0 < classBreaks.length) {
+          classBreaks.splice(indexOf0, 0, 0);
+        }
+      },
+      ZERO_COLOR: '#eeeeee',
+      NEGATIVE_COLOR: '#c6663d',
+      POSITIVE_COLOR: '#408499',
+      /**
        * Generates a color scale for the given classBreaks.
        * @param {Number[]} classBreaks The values that define the boundaries of the different
        *   discrete groups of values.
        * @return {Object} an object with 'colors' and 'scale' functions, that mirror a chroma scale.
        */
       colorScaleFor: function(classBreaks) {
-        var indexOf0 = _.sortedIndex(classBreaks, 0);
-        if (indexOf0 > 0) {
+        var marginallyNegative = chroma.interpolate(this.ZERO_COLOR, this.NEGATIVE_COLOR, 0.1);
+        var marginallyPositive = chroma.interpolate(this.ZERO_COLOR, this.POSITIVE_COLOR, 0.1);
+        if (classBreaks[0] < 0) {
 
           // If we have values that straddle zero, add the zero point as one of our breaks
-          if (indexOf0 < classBreaks.length) {
-            var negatives = classBreaks.slice(0, indexOf0);
+          if (_.last(classBreaks) > 0) {
+            var indexOf0 = classBreaks.indexOf(0);
+            if (indexOf0 < 0) {
+              throw 'Expecting classBreaks to contain a break at 0, if the values straddle 0';
+            }
+            var negatives = classBreaks.slice(0, indexOf0 + 1);
             var positives = classBreaks.slice(indexOf0);
+
+            // When the values straddle 0 unevenly, we want the brightness of the colors to be
+            // proportional to how far from 0 it is. In particular, we want eg 5 and -5 to have
+            // about the same amount of luminosity. So - have the colors scale to the same absolute
+            // distance from zero.
+            var negativeHeavy = -classBreaks[0] > _.last(classBreaks);
+            if (negativeHeavy) {
+              // The last value of classBreaks is interpreted as the highest value that's in the
+              // last class. Since we're adding another value to the end, it's meaning changes - now
+              // it is the lowest value (inclusive) of the last break. Since we actually want that
+              // value to be included in the last class, we have to increment it.
+              positives[positives.length - 1] += (
+                -classBreaks[0] - _.last(positives)) / 100;
+              positives.push(-classBreaks[0]);
+            } else {
+              negatives.unshift(-_.last(classBreaks));
+            }
+
             var negativeColorScale = visualizationUtils.calculateColoringScale(
-              visualizationUtils.negativeColorRange, negatives.concat(0)
+              [this.NEGATIVE_COLOR, marginallyNegative], negatives
             );
             var positiveColorScale = visualizationUtils.calculateColoringScale(
-              visualizationUtils.positiveColorRange, [0].concat(positives)
+              [marginallyPositive, this.POSITIVE_COLOR], positives
             );
+
             // Create a faux colorScale that implements the interface, but delegates to the positive
             // or negative actual-scale depending on what you're trying to scale.
-            var fauxColorScale = function(value) {
-              return (value < 0 ? negativeColorScale : positiveColorScale)(value);
-            };
+            var fauxColorScale = _.bind(function(value) {
+              if (value === 0) {
+                return chroma(this.ZERO_COLOR);
+              } else {
+                return (value < 0 ? negativeColorScale : positiveColorScale)(value);
+              }
+            }, this);
+            /**
+             * Our faux .colors method basically just retrieves the positive and negative arrays and
+             * combines them.
+             */
             fauxColorScale.colors = function() {
-              // chroma gives us 2 colors if we give it a domain of only 2 values (ie negatives[0]
-              // and 0). This messes things up later on when we assume that
-              // classBreaks.length > colors.length, so shave off some colors if we have to.
               var negColors = negativeColorScale.colors();
-              if (negatives.length === 1)  {
+              var posColors = positiveColorScale.colors();
+
+              // We added a break to catch the most-luminescent color, on the scale that didn't have
+              // values as high as the other one. So - drop that color.
+              if (negativeHeavy) {
+                posColors.pop();
+              } else {
+                negColors.shift();
+              }
+
+              // chroma gives us 2 colors if we give it a domain of only 2 values. This messes
+              // things up later on when we assume that classBreaks.length == colors.length + 1, so
+              // shave off some colors if we have to.
+              if (negatives.length === 2)  {
                 negColors = negColors.slice(0, 1);
               }
-              var posColors = positiveColorScale.colors();
-              if (positives.length === 1) {
+              if (positives.length === 2) {
                 posColors = posColors.slice(1);
               }
-              if (negColors.length + posColors.length <= 2) {
-                // Well, we tried. Just give them two colors - it's what chroma would have done.
-                return negColors.concat(posColors);
-              } else {
-                // slice, to remove the duplicate shared color value
-                return negColors.concat(posColors.slice(1));
-              }
+
+              return negColors.concat(posColors);
             };
             return fauxColorScale;
 
           } else {
+
             // All the numbers are negative. Give them the negative color scale.
             return visualizationUtils.calculateColoringScale(
-              visualizationUtils.negativeColorRange, classBreaks
+              [this.NEGATIVE_COLOR, marginallyNegative], classBreaks
             );
           }
         } else {
           // Otherwise, it's all positive, so give them the positive color scale.
           return visualizationUtils.calculateColoringScale(
-            visualizationUtils.positiveColorRange, classBreaks
+            [marginallyPositive, this.POSITIVE_COLOR], classBreaks
           );
         }
       },
@@ -141,6 +190,7 @@
           return null;
         }
 
+        this.addZeroIfNecessary(classBreaks);
         var colorScale = this.colorScaleFor(classBreaks);
 
         var position = 'bottomright';
@@ -164,7 +214,7 @@
         }
 
         var minBreak = classBreaks[0];
-        var maxBreak = classBreaks[classBreaks.length - 1];
+        var maxBreak = _.last(classBreaks);
 
         // Size of the colored scale.
         var COLOR_BAR_WIDTH = 15;
@@ -179,8 +229,7 @@
         var svg = d3.select(this.element[0]).selectAll('svg').data([{}]);
 
         svg.enter().
-          append('svg').
-          append('g');
+          append('svg');
 
         svg.attr('height', colorBarHeight + BOTTOM_PADDING);
 
@@ -238,7 +287,9 @@
         classBreaks[0] = yTickScale.domain()[0];
         classBreaks[classBreaks.length - 1] = yTickScale.domain()[1];
 
-        var labels = svg.selectAll('.labels').data([classBreaks]);
+        var labels = svg.selectAll('.labels').
+            // Give it some data so it creates the container element
+            data([null]);
 
         labels.enter().
           append('g').
@@ -273,8 +324,8 @@
         rects.enter().
           append('rect');
 
-        var minVal = _.min(classBreaks);
-        var maxVal = _.max(classBreaks);
+        var minVal = classBreaks[0];
+        var maxVal = _.last(classBreaks);
         rects.
           attr('class', 'choropleth-legend-color').
           attr('width', COLOR_BAR_WIDTH).

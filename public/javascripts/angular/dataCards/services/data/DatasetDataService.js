@@ -15,7 +15,11 @@
 
       var config = {
         cache: true,
-        requester: this
+        requester: this,
+        headers: {
+          'Content-Type': 'application/json'
+        },
+        data: '' // Without a blank body, $http will eat Content-Type :(
       };
 
       return http.get(url, config).
@@ -69,7 +73,11 @@
 
       var config = {
         cache: true,
-        requester: this
+        requester: this,
+        headers: {
+          'Content-Type': 'application/json'
+        },
+        data: '' // Without a blank body, $http will eat Content-Type :(
       };
 
       return http.get(url, config).then(_.property('data')).then(SchemaConverter.datasetMetadata.pagesForDataset.toV0);

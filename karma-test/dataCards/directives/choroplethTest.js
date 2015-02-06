@@ -52,8 +52,8 @@ describe("A Choropleth Directive", function() {
         var increment = .01;
         var dx = increment * (i % boxWidth);
         var dy = increment * (Math.floor(i / boxWidth));
-        var xo = basePoint[0] + dx;
-        var yo = basePoint[1] + dy;
+        var x0 = basePoint[0] + dx;
+        var y0 = basePoint[1] + dy;
 
         return {
           type: 'Feature',
@@ -62,10 +62,10 @@ describe("A Choropleth Directive", function() {
             type: 'Polygon',
             coordinates: [[
               // make nice parallelograms
-              [ xo, yo ],
-              [ xo + increment / 3, yo + increment ],
-              [ xo + increment * 4 / 3, yo + increment ],
-              [ xo + increment, yo ]
+              [ x0, y0 ],
+              [ x0 + increment / 3, y0 + increment ],
+              [ x0 + increment * 4 / 3, y0 + increment ],
+              [ x0 + increment, y0 ]
             ]]
           }
         };
@@ -379,19 +379,22 @@ describe("A Choropleth Directive", function() {
          *   colors were found.
          */
         function countColors(colors) {
+          var RED = 0;
+          var GREEN = 1;
+          var BLUE = 2;
           var whiteCount = 0;
           var redCount = 0;
           var blueCount = 0;
           _.each(colors, function(color) {
             var rgb = color.rgb();
-            if (rgb[0] == rgb[1] && rgb[1] == rgb[2]) {
+            if (rgb[RED] === rgb[GREEN] && rgb[GREEN] === rgb[BLUE]) {
               whiteCount++;
             } else {
-              if (rgb[0] > rgb[2]) {
-                expect(rgb[0]).to.be.greaterThan(rgb[1]);
+              if (rgb[RED] > rgb[BLUE]) {
+                expect(rgb[RED]).to.be.greaterThan(rgb[GREEN]);
                 redCount++;
-              } else if (rgb[2] > rgb[0]) {
-                expect(rgb[2]).to.be.greaterThan(rgb[1]);
+              } else if (rgb[BLUE] > rgb[RED]) {
+                expect(rgb[BLUE]).to.be.greaterThan(rgb[GREEN]);
                 blueCount++;
               } else {
                 assert.fail(rgb, 'Unexpected legend color - should be either red, white, or blue.');
@@ -572,7 +575,8 @@ describe("A Choropleth Directive", function() {
           var legendColorCount = countColors(
             _.pluck(
               _.filter(legendColors, function(obj) { return obj.height; }),
-              'color')
+              'color'
+            )
           );
           expect(legendColorCount.red).to.be.greaterThan(legendColorCount.blue);
           // The features should be mostly blue

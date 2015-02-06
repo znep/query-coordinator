@@ -82,12 +82,12 @@
        * @return {Object} an object with 'colors' and 'scale' functions, that mirror a chroma scale.
        */
       colorScaleFor: function(classBreaks) {
-        var marginallyNegative = chroma.interpolate(this.ZERO_COLOR, this.NEGATIVE_COLOR, .1);
-        var marginallyPositive = chroma.interpolate(this.ZERO_COLOR, this.POSITIVE_COLOR, .1);
+        var marginallyNegative = chroma.interpolate(this.ZERO_COLOR, this.NEGATIVE_COLOR, 0.1);
+        var marginallyPositive = chroma.interpolate(this.ZERO_COLOR, this.POSITIVE_COLOR, 0.1);
         if (classBreaks[0] < 0) {
 
           // If we have values that straddle zero, add the zero point as one of our breaks
-          if (classBreaks[classBreaks.length - 1] > 0) {
+          if (_.last(classBreaks) > 0) {
             var indexOf0 = classBreaks.indexOf(0);
             if (indexOf0 < 0) {
               throw 'Expecting classBreaks to contain a break at 0, if the values straddle 0';
@@ -99,17 +99,17 @@
             // proportional to how far from 0 it is. In particular, we want eg 5 and -5 to have
             // about the same amount of luminosity. So - have the colors scale to the same absolute
             // distance from zero.
-            var negativeHeavy = -classBreaks[0] > classBreaks[classBreaks.length - 1];
+            var negativeHeavy = -classBreaks[0] > _.last(classBreaks);
             if (negativeHeavy) {
               // The last value of classBreaks is interpreted as the highest value that's in the
               // last class. Since we're adding another value to the end, it's meaning changes - now
               // it is the lowest value (inclusive) of the last break. Since we actually want that
               // value to be included in the last class, we have to increment it.
               positives[positives.length - 1] += (
-                -classBreaks[0] - positives[positives.length - 1]) / 100;
+                -classBreaks[0] - _.last(positives)) / 100;
               positives.push(-classBreaks[0]);
             } else {
-              negatives.unshift(-classBreaks[classBreaks.length - 1]);
+              negatives.unshift(-_.last(classBreaks));
             }
 
             var negativeColorScale = visualizationUtils.calculateColoringScale(
@@ -214,7 +214,7 @@
         }
 
         var minBreak = classBreaks[0];
-        var maxBreak = classBreaks[classBreaks.length - 1];
+        var maxBreak = _.last(classBreaks);
 
         // Size of the colored scale.
         var COLOR_BAR_WIDTH = 15;
@@ -325,7 +325,7 @@
           append('rect');
 
         var minVal = classBreaks[0];
-        var maxVal = classBreaks[classBreaks.length - 1];
+        var maxVal = _.last(classBreaks);
         rects.
           attr('class', 'choropleth-legend-color').
           attr('width', COLOR_BAR_WIDTH).

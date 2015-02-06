@@ -19,8 +19,7 @@ $(function()
                               {method: 'browser-safari', label: 'Safari', options: { stacking: null, type: 'line' }},
                               {method: 'browser-ie', label: 'IE', options: { stacking: null, type: 'line' }},
                               {method: 'browser-other', label: 'Other', options: { stacking: null, type: 'line' }}
-			     ]}
-		    ,
+			     ]},
                     {text: 'Dashboard Views',
                      series: [{method: 'govstat-dash-gets', label: 'Dashboard Requests'}],
                      enabled: blist.configuration.govStatMetricsEnabled || false},

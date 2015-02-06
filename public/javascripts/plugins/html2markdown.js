@@ -349,7 +349,10 @@ function HTML2Markdown(html, opts) {
 						text = text.replace(/^\s+/g, "");
 					}
 				} else {
-					nodeList.push(text);
+          // SOCRATA - Dylan Bussone - 2/6/2015
+          // Fix for issue where whitespace inbetween tags was being removed:
+					// nodeList.push("");
+          nodeList.push(text);
 					return;
 				}
 

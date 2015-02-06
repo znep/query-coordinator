@@ -764,7 +764,6 @@ $wizard_border_color: #ccc
       .inputWrapper
         width: 30em
 
-
     .filterDatasetContent
       &.filterCount-1
         .columnFilterGroup 
@@ -782,6 +781,9 @@ $wizard_border_color: #ccc
           position: relative
           top:  -0.25em
           left: -0.25em
+          &:before
+            display: inline-block
+            height: 0
 
         .columnFilterGroup
           .valueOf
@@ -802,7 +804,8 @@ $wizard_border_color: #ccc
                 display: inline
             .editRemove
               margin-left: -1em
-              margin-top: 0
+              margin-top: -1em
+              display: inline-block
             &.filterItemCount-1
               .editRemove
                 display: none
@@ -810,6 +813,9 @@ $wizard_border_color: #ccc
                 pointer-events: none
 
             .columnFilterValues
+              .orValue
+                display: inline-block
+                margin-top: -1em
               .columnFilterItem:last-child 
                 .orValue
                   display: none

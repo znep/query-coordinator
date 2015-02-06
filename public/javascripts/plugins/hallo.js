@@ -2176,6 +2176,13 @@
         }
         if (this.options.command) {
           this.button.on('click', function(event) {
+
+            // SOCRATA - Dylan Bussone - 2/6/2015
+            // Trim whitespace around text for bolding/italicizing to prevent markdown from removing whitespace
+            if (_this.options.command === 'bold' || _this.options.command === 'italic') {
+              rangy.getSelection().trim();
+            }
+
             if (_this.options.commandValue) {
               _this.options.editable.execute(_this.options.command, _this.options.commandValue);
             } else {

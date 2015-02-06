@@ -43,7 +43,6 @@ class Phidippides < SocrataHttp
   # Dataset Metadata requests
 
   def fetch_dataset_metadata(dataset_id, options = {})
-
     if metadata_transition_phase_0?
       issue_request(
         :verb => :get,
@@ -62,7 +61,6 @@ class Phidippides < SocrataHttp
   end
 
   def update_dataset_metadata(json, options = {})
-
     if metadata_transition_phase_0?
       issue_request(
         :verb => :put,
@@ -108,7 +106,6 @@ class Phidippides < SocrataHttp
   end
 
   def fetch_page_metadata(page_id, options = {})
-
     if metadata_transition_phase_0? || metadata_transition_phase_1?
       issue_request(
         :verb => :get,
@@ -161,15 +158,15 @@ class Phidippides < SocrataHttp
   end
 
   def fetch_pages_for_dataset(dataset_or_id, options = {})
-
     dataset_id = nil
 
-    if dataset_id.nil? && dataset_or_id && dataset_or_id.respond_to?(:id)
+    # nil responds to :id, so we have to guard against it
+    if dataset_or_id && dataset_or_id.respond_to?(:id)
       dataset_id = dataset_or_id.id
     end
 
-    if dataset_or_id.respond_to?(:key?) && dataset_or_id.with_indifferent_access.key?(:id)
-      dataset_id ||= dataset_or_id.with_indifferent_access.fetch(:id)
+    if dataset_or_id.respond_to?(:with_indifferent_access)
+      dataset_id ||= dataset_or_id.with_indifferent_access[:id]
     end
 
     dataset_id ||= dataset_or_id

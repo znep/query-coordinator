@@ -21,7 +21,7 @@ class PageMetadataManagerTest < Test::Unit::TestCase
       fetch_dataset_metadata: { status: '200', body: dataset_metadata }
     )
     result = manager.create(page_metadata.to_json)
-    assert(result.fetch(:status) == '200', result.inspect)
+    assert(result.fetch(:status) == '200', 'Expected create result status to be 200')
     assert(result.fetch(:body).fetch(:pageId), 'Expected a non-nil pageId to be created')
   end
 
@@ -43,7 +43,7 @@ class PageMetadataManagerTest < Test::Unit::TestCase
     )
     result = manager.create(page_metadata.to_json)
 
-    assert(result.fetch(:status) == '200', result.inspect)
+    assert(result.fetch(:status) == '200', 'Expected create result status to be 200')
     assert(result.fetch(:body).fetch(:pageId), 'Expected a non-nil pageId to be created')
   end
 
@@ -53,14 +53,15 @@ class PageMetadataManagerTest < Test::Unit::TestCase
       fetch_dataset_metadata: { status: '200', body: dataset_metadata }
     )
     Phidippides.any_instance.expects(:create_page_metadata).times(1).then.with do |json, options|
-      json['cards'].find { |card| card['cardType'] == 'table' }
+      assert(json['cards'].pluck('cardType').any? { |cardType| cardType == 'table' })
+      assert_equal({}, options)
     end.then.returns(
       status: '200',
       body: page_metadata
     )
 
     result = manager.create(page_metadata_without_tablecard.to_json)
-    assert(result.fetch(:status) == '200', result.inspect)
+    assert(result.fetch(:status) == '200', 'Expected create result status to be 200')
   end
 
   def test_update_succeeds
@@ -69,18 +70,18 @@ class PageMetadataManagerTest < Test::Unit::TestCase
       create_page_metadata: { status: '200', body: page_metadata },
       fetch_dataset_metadata: { status: '200', body: dataset_metadata }
     )
-    result = manager.create(page_metadata.to_json)
-    page_id = result.fetch(:body).fetch(:pageId)
+    manager.create(page_metadata.to_json)
 
     Phidippides.any_instance.expects(:update_page_metadata).times(1).then.with do |json, options|
       assert(json.fetch(:bunch))
       assert(json.fetch(:foo))
+      assert_equal({}, options)
     end.then.returns(
       status: '200',
       body: page_metadata
     )
 
-    updated_result = manager.update(page_metadata.merge('bunch' => 'other stuff', 'foo' => 'bar'))
+    manager.update(page_metadata.merge('bunch' => 'other stuff', 'foo' => 'bar'))
   end
 
   def test_update_does_not_delete_rollup_first
@@ -93,8 +94,8 @@ class PageMetadataManagerTest < Test::Unit::TestCase
       update_page_metadata: { status: '200', body: page_metadata }
     )
     result = manager.create(page_metadata.to_json)
-    page_id = result.fetch(:body).fetch(:pageId)
-    assert(result[:status] == '200', result.inspect)
+
+    assert(result[:status] == '200', 'Expected create result status to be 200')
     manager.update(result.fetch(:body).to_json)
   end
 
@@ -106,7 +107,6 @@ class PageMetadataManagerTest < Test::Unit::TestCase
     assert_equal('select location_description, primary_type, count(*) as value group by location_description, primary_type', soql)
 
     # This needs to be tested for each phase of the metadata transition
-
   end
 
   private
@@ -116,17 +116,17 @@ class PageMetadataManagerTest < Test::Unit::TestCase
   end
 
   def page_metadata
-    JSON.parse(File.read("#{Rails.root}/test/fixtures/page-metadata.json")).with_indifferent_access
+    @page_metadata ||= JSON.parse(File.read("#{Rails.root}/test/fixtures/page-metadata.json")).with_indifferent_access
   end
 
   def page_metadata_without_tablecard
     page_metadata.dup.tap do |page_md|
-      page_md['cards'] = page_md['cards'].select { |card| card['fieldName'] != '*' }
+      page_md['cards'].select! { |card| card['fieldName'] != '*' }
     end
   end
 
   def dataset_metadata
-    return JSON.parse(File.read("#{Rails.root}/test/fixtures/dataset-metadata.json")).with_indifferent_access
+    @dataset_metadata ||= JSON.parse(File.read("#{Rails.root}/test/fixtures/dataset-metadata.json")).with_indifferent_access
   end
 
   def dataset_metadata_without_rollup_columns
@@ -136,4 +136,5 @@ class PageMetadataManagerTest < Test::Unit::TestCase
       end
     end
   end
+
 end

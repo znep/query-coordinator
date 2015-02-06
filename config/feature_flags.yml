@@ -84,5 +84,5 @@ domain_decommissioning:
   defaultValue: false
 metadata_transition_phase:
   description: 'Controls which phase of the ongoing metadata migration the site should operate under. Only ODUX should change this. Phases are documented here: https://docs.google.com/a/socrata.com/document/d/13KWv-5xugmWr-w4vnfXjIus4n9zLWOUEU1KxxnhMSrw/'
-  defaultValue: '0'
+  defaultValue: 0
   expectedValues: 0 1 2

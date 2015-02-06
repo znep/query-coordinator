@@ -8,7 +8,7 @@ module FeatureFlags
         value = base[flag] if value.nil?
         flags[flag] = process_value(value)
       # Check the whitelist. true and false are always valid
-      elsif config['expectedValues'].split(' ').concat(['true', 'false']).include?(other[flag])
+      elsif config['expectedValues'].split(' ').concat(['true', 'false']).include?(other[flag].to_s)
         flags[flag] = process_value(other[flag])
       # Drop to default.
       else
@@ -23,7 +23,7 @@ module FeatureFlags
     return nil if value.nil?
     begin
       JSON.parse("{\"valueString\": #{value}}")['valueString']
-    rescue JSON::ParserError # This means it's a string!
+    rescue JSON::ParserError => e# This means it's a string!
       value
     end
   end

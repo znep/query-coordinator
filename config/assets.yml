@@ -545,6 +545,7 @@ javascripts:
     - public/javascripts/plugins/datepicker.js
     - public/javascripts/plugins/waypoints-2.0.5.js
     - public/javascripts/plugins/jquery.awesomereorder.js
+    - public/javascripts/plugins/jquery.awesomecomplete.js
     - public/javascripts/controls/global-indicator.js
     - public/javascripts/plugins/ajaxupload.js
     - public/javascripts/controls/image-uploader.js

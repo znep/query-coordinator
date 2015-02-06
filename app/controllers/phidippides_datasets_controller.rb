@@ -32,14 +32,11 @@ class PhidippidesDatasetsController < ActionController::Base
 
   def show
     return render :nothing => true, :status => 400 unless params[:id].present?
-
-    respond_to do |format|
-      begin
-        result = phidippides.fetch_dataset_metadata(params[:id], :request_id => request_id, :cookies => forwardable_session_cookies)
-        format.json { render :json => result[:body], :status => result[:status] }
-      rescue Phidippides::ConnectionError
-        format.json { render :json => { body: 'Phidippides connection error' }, status: 500 }
-      end
+    begin
+      result = phidippides.fetch_dataset_metadata(params[:id], :request_id => request_id, :cookies => forwardable_session_cookies)
+      render :json => result[:body], :status => result[:status]
+    rescue Phidippides::ConnectionError
+      render :json => { body: 'Phidippides connection error' }, status: 500
     end
   end
 

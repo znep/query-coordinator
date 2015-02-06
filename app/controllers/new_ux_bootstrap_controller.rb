@@ -60,7 +60,7 @@ class NewUxBootstrapController < ActionController::Base
     dataset_metadata_response_body = dataset_metadata_response[:body]
 
     # 3. Check to see if any 'new UX' pages already exist.
-    pages_response = page_metadata_manager.pages_for_dataset(
+    pages_response = phidippides.fetch_pages_for_dataset(
       params[:id],
       :request_id => request_id,
       :cookies => forwardable_session_cookies

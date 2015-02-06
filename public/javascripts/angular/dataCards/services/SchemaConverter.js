@@ -33,6 +33,9 @@ angular.module('dataCards.services').factory('SchemaConverter', function(Schemas
             columnBlob.shapefile = columnBlob.computationStrategy.parameters.region.replace(/^_/g, ''); // v0 does not want the leading underscore
           }
 
+          // The new-style column names do not include :@ for computed columns (which we need), however the hash keys do.
+          columnBlob.name = columnName;
+
           columnBlob.importance = columnBlob.importance || 1;
           columnBlob.logicalDatatype = columnBlob.fred;
           columnBlob.cardinality = columnBlob.cardinality || Math.pow(2, 53) - 1; // MAX_SAFE_INT

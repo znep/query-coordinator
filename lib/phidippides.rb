@@ -33,9 +33,7 @@ class Phidippides < SocrataHttp
     options[:headers] = {} unless options.has_key?(:headers)
     options[:headers]['Content-Type'] = 'application/json'
 
-    if metadata_transition_phase_0?
-      options[:headers]['X-Socrata-Wink'] = 'iAmASocrataEmployee'
-    end
+    options[:headers]['X-Socrata-Wink'] = 'iAmASocrataEmployee'
 
     super(options)
   end

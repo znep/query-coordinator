@@ -14,10 +14,6 @@ class PageMetadataManagerTest < Test::Unit::TestCase
     })
   end
 
-  def stub_feature_flags_with(key, value)
-    CurrentDomain.stubs(feature_flags: Hashie::Mash.new.tap { |hash| hash[key] = value })
-  end
-
   def test_create_succeeds
     PageMetadataManager.any_instance.expects(:update_rollup_table).times(1)
     Phidippides.any_instance.stubs(

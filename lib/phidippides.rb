@@ -163,10 +163,15 @@ class Phidippides < SocrataHttp
   def fetch_pages_for_dataset(dataset_or_id, options = {})
 
     dataset_id = nil
-    dataset_id ||= dataset_or_id.id if (dataset_or_id && dataset_or_id.respond_to?(:id))
+
+    if dataset_id.nil? && dataset_or_id && dataset_or_id.respond_to?(:id)
+      dataset_id = dataset_or_id.id
+    end
+
     if dataset_or_id.respond_to?(:key?) && dataset_or_id.with_indifferent_access.key?(:id)
       dataset_id ||= dataset_or_id.with_indifferent_access.fetch(:id)
     end
+
     dataset_id ||= dataset_or_id
 
     raise ArgumentError.new('could not determine dataset id') unless dataset_id =~ UID_REGEXP

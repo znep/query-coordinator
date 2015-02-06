@@ -349,7 +349,7 @@ function HTML2Markdown(html, opts) {
 						text = text.replace(/^\s+/g, "");
 					}
 				} else {
-					nodeList.push("");
+					nodeList.push(text);
 					return;
 				}
 

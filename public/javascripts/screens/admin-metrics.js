@@ -13,6 +13,13 @@ $(function()
                     {text: 'Page Views',
                      series: [{method: 'page-views', label: 'Page Requests', options: { stacking: null, type: 'line' }},
                               {method: 'js-page-view', label: 'Browser Page Views', options: { stacking: null, type: 'line' }}]},
+                    {text: 'Browsers',
+                     series: [{method: 'browser-chrome', label: 'Chrome', options: { stacking: null, type: 'line' }},
+                              {method: 'browser-firefox', label: 'Firefox', options: { stacking: null, type: 'line' }},
+                              {method: 'browser-safari', label: 'Safari', options: { stacking: null, type: 'line' }},
+                              {method: 'browser-ie', label: 'IE', options: { stacking: null, type: 'line' }},
+                              {method: 'browser-other', label: 'Other', options: { stacking: null, type: 'line' }}
+			     ]},
                     {text: 'Dashboard Views',
                      series: [{method: 'govstat-dash-gets', label: 'Dashboard Requests'}],
                      enabled: blist.configuration.govStatMetricsEnabled || false},

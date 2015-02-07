@@ -57,7 +57,7 @@
     ));
   }
 
-  function CardsViewController($scope, $location, $log, $window, $q, AngularRxExtensions, SortedTileLayout, Filter, PageDataService, UserSessionService, CardTypeMapping, FlyoutService, page, Card, WindowState, ServerConfig) {
+  function CardsViewController($scope, $location, $log, $window, $q, AngularRxExtensions, SortedTileLayout, Filter, PageDataService, UserSessionService, CardTypeMapping, FlyoutService, page, Card, WindowState, ServerConfig, $http) {
 
     AngularRxExtensions.install($scope);
 
@@ -84,9 +84,18 @@
 
     $scope.bindObservable('sourceDatasetName', page.observe('dataset.name'));
 
+    // Map the nbe id to the obe id
+    var obeIdSubject = new Rx.Subject();
+    page.observe('datasetId').subscribe(function(datasetId) {
+      if (datasetId) {
+        $http.get('/api/migrations/' + encodeURIComponent(datasetId)).success(function(data) {
+          obeIdSubject.onNext(data.obeId);
+        });
+      }
+    });
     $scope.bindObservable('sourceDatasetURL',
-      page.observe('datasetId').map(function(datasetId) {
-        return '/ux/dataset/{0}'.format(datasetId);
+      obeIdSubject.map(function(datasetId) {
+        return '/d/' + datasetId;
       })
     );
 

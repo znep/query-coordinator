@@ -34,9 +34,9 @@ describe('Instantiating v0 models from v1 metadata', function() {
             },
             "strategy_type": "georegion_match_on_point"
           },
-          "description": "",
+          "description": "descr",
           "fred": "location",
-          "name": ":@computed_column",
+          "name": "computed_column human readable name",
           "physicalDatatype": "text"
         }
       },
@@ -60,8 +60,12 @@ describe('Instantiating v0 models from v1 metadata', function() {
         expect(geoColumn).to.have.property('shapefile', 'c8h8-ygvf');
         expect(geoColumn).to.have.property('logicalDatatype', 'location');
         expect(geoColumn).to.have.property('cardinality', Math.pow(2, 53) - 1);
-
         expect(rowDisplayUnit).to.equal('row');
+
+        // Additional assertions not in doc
+        expect(geoColumn).to.have.property('name', ':@computed_column');
+        expect(geoColumn).to.have.property('title', 'computed_column human readable name');
+        expect(geoColumn).to.have.property('description', 'descr');
 
         done();
       });

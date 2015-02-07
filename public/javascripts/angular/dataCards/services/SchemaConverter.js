@@ -43,8 +43,19 @@ angular.module('dataCards.services').factory('SchemaConverter', function(Schemas
             columnBlob.shapefile = columnBlob.computationStrategy.parameters.region.replace(/^_/g, '');
           }
 
-          // The new-style column names do not include :@ for computed columns (which we need),
-          // however the hash keys do have :@. So, use the hash keys instead.
+          // Naming confusion... :(
+          // In the input hash, the SODA field name is the hash key, and the column human name is under 'name'.
+          // This makes sense.
+          //
+          // In old models however, we refer to the SODA field name as the name, and the human name as 'title'.
+          // This also makes sense.
+          //
+          // Two great flavors that don't taste great together.
+          // This change was made so that 'name' is consistently used to refer to human readable identifiers:
+          //  * dataset name
+          //  * dataset column name
+          //  * page name
+          columnBlob.title = columnBlob.title || columnBlob.name;
           columnBlob.name = columnName;
 
           // Importance is never used, but is again required by the v0 schema.

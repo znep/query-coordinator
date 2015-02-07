@@ -53,6 +53,11 @@ class PhidippidesTest < Test::Unit::TestCase
     stub_feature_flags_with(:metadata_transition_phase, '0')
     result = phidippides.update_dataset_metadata(dataset_metadata, request_id: 'request_id')
     assert_equal(dataset_metadata, result[:body])
+
+    prepare_stubs(body: nil, path: 'v1/id/vtvh-wqgq/dataset', verb: :put, request_body: v1_dataset_metadata)
+    stub_feature_flags_with(:metadata_transition_phase, '1')
+    result = phidippides.update_dataset_metadata(v1_dataset_metadata, request_id: 'request_id')
+    assert_equal('200', result[:status])
   end
 
   def test_create_page_metadata
@@ -86,6 +91,11 @@ class PhidippidesTest < Test::Unit::TestCase
   def test_fetch_dataset_metadata
     prepare_stubs(body: dataset_metadata, path: 'datasets/four-four', verb: :get)
     stub_feature_flags_with(:metadata_transition_phase, '0')
+    result = phidippides.fetch_dataset_metadata('four-four', request_id: 'request_id')
+    assert_equal(dataset_metadata, result[:body])
+
+    prepare_stubs(body: dataset_metadata, path: 'v1/id/four-four/dataset', verb: :get)
+    stub_feature_flags_with(:metadata_transition_phase, '1')
     result = phidippides.fetch_dataset_metadata('four-four', request_id: 'request_id')
     assert_equal(dataset_metadata, result[:body])
   end

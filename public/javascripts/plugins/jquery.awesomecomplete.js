@@ -82,10 +82,15 @@
                         {
                             $newActive = $list.children('li:last-child');
                         }
-                        else
+                        else if ($active.is(':not(:first-of-type'))
                         {
                             $newActive = $active.prev();
                             $active.removeClass(config.activeItemClass);
+                        }
+                        else
+                        {
+                          $newActive = $list.children('li:last-child');
+                          $active.removeClass(config.activeItemClass);
                         }
                         while (config.skipBlankValues && $newActive.length > 0 &&
                                 $.isBlank($newActive.data('awesomecomplete-value')))
@@ -97,12 +102,17 @@
                         var $newActive;
                         if ($active.length === 0)
                         {
-                            $newActive = $list.children('li:first-child');
+                            $newActive = $list.children('li:first');
                         }
                         else if ($active.is(':not(:last-child)'))
                         {
                             $newActive = $active.next();
                             $active.removeClass(config.activeItemClass);
+                        }
+                        else
+                        {
+                          $newActive = $list.children('li:first');
+                          $active.removeClass(config.activeItemClass);
                         }
                         if (!$.isBlank($newActive))
                         {
@@ -315,8 +325,9 @@
 
         for (var i in results)
         {
+            var defaultActiveClass = (config.hoverDefaultFirstItem && i == 0) ? config.activeItemClass : '';
             if (results[i] instanceof Function) { continue; } // Because IE is dumb
-            $('<li>' + config.renderFunction(results[i].dataItem, results[i].topMatch, config) + '</li>')
+            $('<li class="' + defaultActiveClass + '">' + config.renderFunction(results[i].dataItem, results[i].topMatch, config) + '</li>')
 				.data('awesomecomplete-dataItem', results[i].originalDataItem)
                 .data('awesomecomplete-value', config.valueFunction(results[i].originalDataItem, config))
                 .appendTo($list)
@@ -433,6 +444,7 @@
         typingDelay: 0,
         valueFunction: defaultValueFunction,
         wordDelimiter: /[^\da-z]+/ig,
-        showAwesomeTip: false
+        showAwesomeTip: false,
+        hoverDefaultFirstItem: false
     };
 })(jQuery);

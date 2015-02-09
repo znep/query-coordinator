@@ -29,7 +29,15 @@ class PageMetadataManager
       end
     end
 
-    create_or_update(data, :create_page_metadata, options)
+    result = create_or_update(data, :create_page_metadata, options)
+    if result && result['body']
+      new_view_manager.create(
+        result['body']['pageId'],
+        result['body']['name'],
+        result['body']['description']
+      )
+    end
+    result
   end
 
   # Updates an existing page.
@@ -98,6 +106,10 @@ class PageMetadataManager
 
   def phidippides
     @phidippides ||= Phidippides.new
+  end
+
+  def new_view_manager
+    @new_view_manager ||= NewViewManager.new
   end
 
 end

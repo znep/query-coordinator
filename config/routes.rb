@@ -283,9 +283,9 @@ Frontend::Application.routes do
       # As of 9/24/2014, the angular app itself figures out what particular view to render.
       # So if you change these routes, make sure public/javascripts/angular/dataCards/app.js is also updated to
       # reflect the changes.
-      match '/view/:id', :action => 'serve_app', :app => 'dataCards'
+      match '/view/:id', :action => 'serve_app', :app => 'dataCards', :as => :opendata_cards_view
       match '/view/*angularRoute', :action => 'serve_app', :app => 'dataCards' # See angular-app-{:app} in assets.yml.
-      match '/ux/dataset/:id', :action => 'serve_app', :app => 'dataCards'
+      match '/ux/dataset/:id', :action => 'serve_app', :app => 'dataCards', :as => :opendata_dataset_view
     end
 
     # Dataset SEO URLs (only add here if the action has a view with it;

@@ -822,17 +822,41 @@ $wizard_border_color: #ccc
 
             // custom filter awesomecomplete styles
             ul.autocomplete
-              margin-left: 50%
-              margin-top: 2em
+              width: 100%
+              min-height: 1em
+              margin-left: 48%
+              margin-left: calc(50% - 8px)
+              margin-top: 1.5em
+              z-index: 10
               border: none
-              box-shadow: 0px 0px 16px #777
-              -moz-box-shadow: 0px 0px 16px #777
-              -webkit-box-shadow: 0px 0px 16px #777
-              border-radius: 4px
-              -moz-border-radius: 4px
-              -webkit-border-radius: 4px
+              overflow: visible
+              box-shadow: 0px 0px 10px #555
+              -moz-box-shadow: 0px 0px 10px #555
+              -webkit-box-shadow: 0px 0px 10px #555
+              border-radius: 1px
+              -moz-border-radius: 1px
+              -webkit-border-radius: 1px
               > li
                 display: block
+                &:first-of-type
+                  border-top: none
+                > div
+                  font-size: 2em
+                  padding: 0.4em 0.2em
+                  white-space: nowrap
+                  text-overflow: ellipsis
+                  > span
+                    font-size: inherit
+
+              .awesome-tip
+                position: absolute
+                top: -13px
+                left: 1px
+                width: 0
+                height: 0
+                border-bottom: 14px solid #fff
+                border-left: 14px solid transparent
+                border-right: 14px solid transparent
 
 
   .selectDataset

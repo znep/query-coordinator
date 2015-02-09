@@ -21,10 +21,14 @@
             $this.data('awesomecomplete-config', config);
 
             var $attachTo = $(config.attachTo || $this);
+            width = $attachTo.innerWidth();
+            if (width == 0) {
+              width = '100%';
+            }
             var $list = $('<ul/>').addClass(config.suggestionListClass)
                                   .insertAfter($attachTo)
                                   .hide()
-                                  .css('width', $attachTo.innerWidth());
+                                  .css('width', width);
             $this.data('awesomecomplete-list', $list);
 
             var typingDelayPointer;
@@ -116,16 +120,15 @@
                 }
             });
 
-	    // opera wants keypress rather than keydown to prevent the form submit
+	         // opera wants keypress rather than keydown to prevent the form submit
             $this.keypress(function(event)
             {
                 var $active = $list.children('li.' + config.activeItemClass);
 
-		if ((event.which == 13) && ($list.children('li.' + config.activeItemClass).length > 0))
-		{
-		    event.preventDefault();
-		}
-	    });
+            		if ((event.which == 13) && ($list.children('li.' + config.activeItemClass).length > 0)) {
+            		    event.preventDefault();
+            		}
+            });
 
             // stupid hack to get around loss of focus on mousedown
             var mouseDown = false;
@@ -212,6 +215,10 @@
         $list.empty().hide();
         if (!config.showAll && term === '')
             return;
+
+        if (config.showAwesomeTip) {
+          $list.append($('<div class="awesome-tip"></div>'));
+        }
 
         var terms = [ term ];
         if (config.splitTerm)
@@ -320,6 +327,10 @@
                     if (config.skipBlankValues && $.isBlank(v)) { return; }
                     $this.val(v);
                     config.onComplete($t.data('awesomecomplete-dataItem'), $this);
+
+                    config.blurFunction($list);
+                    $list.hide();
+                    suppressKey = true;
                 })
                 .mouseup(function(e)
                 {
@@ -382,7 +393,7 @@
                    '<p class="matchRow"><span class="matchedField">' + topMatch + '</span>: ' +
                         dataItem[topMatch] + '</p>';
     };
-    
+
     var defaultValueFunction = function(dataItem, config)
     {
         return dataItem[config.nameField];
@@ -421,6 +432,7 @@
         skipBlankValues: false,
         typingDelay: 0,
         valueFunction: defaultValueFunction,
-        wordDelimiter: /[^\da-z]+/ig
+        wordDelimiter: /[^\da-z]+/ig,
+        showAwesomeTip: false
     };
 })(jQuery);

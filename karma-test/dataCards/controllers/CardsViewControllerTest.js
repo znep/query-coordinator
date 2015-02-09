@@ -233,10 +233,10 @@ describe('CardsViewController', function() {
   beforeEach(function() {
     $httpBackend.when('GET', '/api/migrations/fake-fbfr').
       respond({
-        "controlMapping" : "{\"destinationDomain\":\"steve-copy-1.test-socrata.com\"}",
-        "nbeId" : "fake-fbfr",
-        "obeId" : "sooo-oold",
-        "syncedAt" : 1415907664
+        'controlMapping': '{"destinationDomain":"steve-copy-1.test-socrata.com"}',
+        'nbeId': 'fake-fbfr',
+        'obeId': 'sooo-oold',
+        'syncedAt': 1415907664
       });
   });
   describe('page name', function() {
@@ -274,7 +274,7 @@ describe('CardsViewController', function() {
       });
       $rootScope.$digest();
 
-      expect($scope.pageName).to.equal("Untitled");
+      expect($scope.pageName).to.equal('Untitled');
 
       $scope.page.set('name', nameTwo);
       expect($scope.pageName).to.equal(nameTwo);
@@ -307,10 +307,10 @@ describe('CardsViewController', function() {
 
       $httpBackend.when('GET', '/api/migrations/four-four').
         respond({
-          "controlMapping" : "{\"destinationDomain\":\"steve-copy-1.test-socrata.com\"}",
-          "nbeId" : "four-four",
-          "obeId" : "sooo-old2",
-          "syncedAt" : 1415907664
+          'controlMapping': '{"destinationDomain":"steve-copy-1.test-socrata.com"}',
+          'nbeId': 'four-four',
+          'obeId': 'sooo-old2',
+          'syncedAt': 1415907664
         });
       $httpBackend.expectGET('/api/migrations/four-four');
       $scope.page.set('datasetId', 'four-four');
@@ -438,7 +438,7 @@ describe('CardsViewController', function() {
           // Two filtered cards
           thirdCard.set('activeFilters', [filterTwo]);
           expect(harness.$scope.globalWhereClauseFragment).to.equal(
-            "{0} AND {1}".format(
+            '{0} AND {1}'.format(
               filterOne.generateSoqlWhereFragment(firstCard.fieldName),
               filterTwo.generateSoqlWhereFragment(thirdCard.fieldName)
               ));
@@ -447,12 +447,12 @@ describe('CardsViewController', function() {
           firstCard.set('activeFilters', [filterOne, filterTwo]);
           thirdCard.set('activeFilters', []);
           expect(harness.$scope.globalWhereClauseFragment).to.equal(
-            "{0} AND {1}".format(
+            '{0} AND {1}'.format(
               filterOne.generateSoqlWhereFragment(firstCard.fieldName),
               filterTwo.generateSoqlWhereFragment(firstCard.fieldName)
               ));
         }));
-        it("should yield the filtered column names on appliedFiltersForDisplay", inject(function(Filter) {
+        it('should yield the filtered column names on appliedFiltersForDisplay', inject(function(Filter) {
           var filterOne = new Filter.IsNullFilter(false);
           var filterTwo = new Filter.BinaryOperatorFilter('=', 'test');
 
@@ -493,7 +493,7 @@ describe('CardsViewController', function() {
           harness.$scope.$digest();
 
           expect(harness.$scope.globalWhereClauseFragment).to.equal(
-            "{0} AND {1}".format(
+            '{0} AND {1}'.format(
               fakeBaseFilter,
               filterOne.generateSoqlWhereFragment(firstCard.fieldName))
             );
@@ -501,7 +501,7 @@ describe('CardsViewController', function() {
           // Two filtered cards
           thirdCard.set('activeFilters', [filterTwo]);
           expect(harness.$scope.globalWhereClauseFragment).to.equal(
-            "{0} AND {1} AND {2}".format(
+            '{0} AND {1} AND {2}'.format(
               fakeBaseFilter,
               filterOne.generateSoqlWhereFragment(firstCard.fieldName),
               filterTwo.generateSoqlWhereFragment(thirdCard.fieldName)
@@ -511,7 +511,7 @@ describe('CardsViewController', function() {
           firstCard.set('activeFilters', [filterOne, filterTwo]);
           thirdCard.set('activeFilters', []);
           expect(harness.$scope.globalWhereClauseFragment).to.equal(
-            "{0} AND {1} AND {2}".format(
+            '{0} AND {1} AND {2}'.format(
               fakeBaseFilter,
               filterOne.generateSoqlWhereFragment(firstCard.fieldName),
               filterTwo.generateSoqlWhereFragment(firstCard.fieldName)

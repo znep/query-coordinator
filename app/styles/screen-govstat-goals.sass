@@ -755,10 +755,13 @@ $wizard_border_color: #ccc
     .intro
       margin-bottom: 0
     .inputWrapper
-      width: 15em
+      width: 20em
       margin-left: 20px
       margin-right: 20px
       input, select
+        overflow: hidden
+        text-overflow: ellipsis
+        white-space: nowrap
     .sentenceWrapper
       float: left
       .inputWrapper
@@ -802,6 +805,7 @@ $wizard_border_color: #ccc
               display: inline-block
               li
                 display: inline
+                margin-right: 1.6em
             .editRemove
               margin-left: -1em
               margin-top: -1em
@@ -818,6 +822,11 @@ $wizard_border_color: #ccc
               .orValue
                 display: inline-block
                 margin-top: -1em
+                position: relative
+                top: 0.1em
+                left: 0.2em
+                width: 0
+                @include transition(0.3s, opacity)
               .columnFilterItem:last-child
                 .orValue
                   display: none
@@ -841,13 +850,18 @@ $wizard_border_color: #ccc
               > li
                 display: block
                 border-top: 1px solid #ccc
+                width: 100%
+                padding: 0
+                overflow: hidden
                 &:first-of-type
                   border-top: none
                 > div
                   font-size: 2em
-                  padding: 0.4em 0.2em
+                  padding: 0.5em
                   white-space: nowrap
                   text-overflow: ellipsis
+                  overflow: hidden
+                  width: 100%
                   > span
                     font-size: inherit
 

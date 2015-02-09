@@ -1,6 +1,10 @@
 (function() {
   'use strict';
 
+  // Endpoints for the link back to the dataset page for the source dataset
+  var MIGRATION_ENDPOINT = '/api/migrations/{0}';
+  var OBE_DATASET_PAGE = '/d/{0}';
+
   // Such higher-order!
   function alphaCompareOnProperty(property) {
     return function(a, b) {
@@ -85,19 +89,19 @@
     $scope.bindObservable('sourceDatasetName', page.observe('dataset.name'));
 
     // Map the nbe id to the obe id
-    var obeIdSubject = new Rx.Subject();
-    page.observe('datasetId').subscribe(function(datasetId) {
-      if (datasetId) {
-        $http.get('/api/migrations/' + encodeURIComponent(datasetId)).success(function(data) {
-          obeIdSubject.onNext(data.obeId);
-        });
-      }
-    });
-    $scope.bindObservable('sourceDatasetURL',
-      obeIdSubject.map(function(datasetId) {
-        return '/d/' + datasetId;
-      })
-    );
+    var obeIdObservable = page.observe('datasetId').
+      filter(_.isPresent).
+      // send the nbe datasetId to the migrations endpoint, to translate it into an obe id
+      map(encodeURIComponent).
+      map(_.bind(MIGRATION_ENDPOINT.format, MIGRATION_ENDPOINT)).
+      flatMap(function(url) {
+        return Rx.Observable.fromPromise($http.get(url));
+      }).
+      // Now construct the source dataset url from the obe id
+      map(function(response) {
+        return OBE_DATASET_PAGE.format(response.data.obeId);
+      });
+    $scope.bindObservable('sourceDatasetURL', obeIdObservable);
 
     /***************
     * User session *

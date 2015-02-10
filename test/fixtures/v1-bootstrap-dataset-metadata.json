@@ -1,0 +1,140 @@
+{
+  "id": "data-iden",
+  "name": "test dataset",
+  "description": "dataset for unit test",
+  "defaultPage": "defa-ultp",
+  "locale": "en_US",
+  "ownerId": "8ueb-zucv",
+  "updatedAt": "2014-08-17T04:07:03.000Z",
+  "domain": "dataspace-demo.test-socrata.com",
+  "version": 1,
+  "columns": {
+    ":system": {
+      "name": "system column",
+      "description": "is this even possible?"
+    },
+    "none": {
+      "name": "no cardinality",
+      "description": "no cardinality description",
+      "fred": "category",
+      "physicalDatatype": "number"
+    },
+    ":@computed": {
+      "name": "computed column",
+      "description": "adjust your lattitude",
+      "fred": "location",
+      "physicalDatatype": "number",
+      "computationStrategy": {
+        "parameters": {
+          "region": "_c8h8-ygvf",
+          "geometryLabel": "geoid10"
+        },
+        "strategyType": "georegion_match_on_point"
+      }
+    },
+    ":@other_computed": {
+      "name": "other computed column",
+      "description": "adjust your lattitude",
+      "fred": "location",
+      "physicalDatatype": "point",
+      "computationStrategy": {
+        "parameters": {
+          "region": "_c8h8-ygvf",
+          "geometryLabel": "geoid11"
+        },
+        "strategyType": "georegion_match_on_point"
+      }
+    },
+    "below": {
+      "name": "below min cardinality",
+      "description": "below min cardinality description",
+      "fred": "category",
+      "physicalDatatype": "number",
+      "cardinality": 1
+    },
+    "none1": {
+      "name": "none1",
+      "description": "column description",
+      "fred": "invalid logical datatype",
+      "physicalDatatype": "boolean",
+      "cardinality": 34
+    },
+    "none2": {
+      "name": "none2",
+      "description": "column description",
+      "fred": "time",
+      "physicalDatatype": "geo_entity",
+      "cardinality": 36
+    },
+    "single1": {
+      "name": "single1",
+      "description": "column description",
+      "fred": "amount",
+      "physicalDatatype": "invalid physical datatype",
+      "cardinality": 34
+    },
+    "single2": {
+      "name": "single2",
+      "description": "column description",
+      "fred": "category",
+      "physicalDatatype": "boolean",
+      "cardinality": 36
+    },
+    "single3": {
+      "name": "single3",
+      "description": "column description",
+      "fred": "identifier",
+      "physicalDatatype": "fixed_timestamp",
+      "cardinality": 34
+    },
+    "single4": {
+      "name": "single4",
+      "description": "column description",
+      "fred": "identifier",
+      "physicalDatatype": "money",
+      "cardinality": 36
+    },
+    "multi1": {
+      "name": "multi1",
+      "description": "column description",
+      "fred": "category",
+      "physicalDatatype": "number",
+      "cardinality": 34
+    },
+    "multi2": {
+      "name": "multi2",
+      "description": "column description",
+      "fred": "category",
+      "physicalDatatype": "text",
+      "cardinality": 36
+    },
+    "multi3": {
+      "name": "multi3",
+      "description": "column description",
+      "fred": "identifier",
+      "physicalDatatype": "number",
+      "cardinality": 34
+    },
+    "multi4": {
+      "name": "multi4",
+      "description": "column description",
+      "fred": "identifier",
+      "physicalDatatype": "text",
+      "cardinality": 36
+    },
+    "multi5": {
+      "name": "multi5",
+      "description": "column description",
+      "fred": "name",
+      "physicalDatatype": "number",
+      "cardinality": 34
+    },
+    "multi6": {
+      "name": "multi6",
+      "description": "column description",
+      "fred": "name",
+      "physicalDatatype": "text",
+      "cardinality": 36
+    }
+  }
+}

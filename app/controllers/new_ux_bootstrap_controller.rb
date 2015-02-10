@@ -5,10 +5,21 @@ require 'json'
 class NewUxBootstrapController < ActionController::Base
 
   include CommonPhidippidesMethods
+  include CommonMetadataTransitionMethods
   include UserAuthMethods
   include CardTypeMapping
 
   before_filter :hook_auth_controller
+
+  # Keep track of the types of cards we added, so we can give a spread
+  attr_accessor :skipped_cards_by_type, :added_card_types
+
+  def initialize(*args)
+    @added_card_types = Set.new
+    @skipped_cards_by_type = Hash.new { |h, k| h[k] = [] }
+
+    super
+  end
 
   def bootstrap
 
@@ -200,30 +211,8 @@ class NewUxBootstrapController < ActionController::Base
 
 
   def generate_page_metadata(new_dataset_metadata)
-    # Keep track of the types of cards we added, so we can give a spread
-    added_card_types = Set.new
-    skipped_cards_by_type = Hash.new { |h, k| h[k] = [] }
 
-    cards = new_dataset_metadata[:columns].map do |column|
-      unless Phidippides::SYSTEM_COLUMN_ID_REGEX.match(column[:name])
-        card_type = card_type_for(column, dataset_size)
-        if card_type
-          card = PageMetadataManager::CARD_TEMPLATE.deep_dup
-          card.merge!(
-            'fieldName' => column[:name],
-            'cardinality' => column[:cardinality],
-            'cardType' => card_type,
-          )
-
-          if added_card_types.add?(card_type)
-            card
-          else
-            skipped_cards_by_type[card_type] << card
-            nil
-          end
-        end
-      end
-    end.compact
+    cards = generate_cards_from_dataset_metadata_columns(new_dataset_metadata[:columns])
 
     if cards.length < MAX_NUMBER_OF_CARDS
       # skipped_cards is an array of arrays, grouped by card type
@@ -250,6 +239,51 @@ class NewUxBootstrapController < ActionController::Base
       'description' => new_dataset_metadata[:description],
       'cards' => cards
     }
+  end
+
+  def merge_new_card_data_with_default(field_name, cardinality, card_type)
+    PageMetadataManager::CARD_TEMPLATE.deep_dup.merge(
+      'fieldName' => field_name,
+      'cardinality' => cardinality,
+      'cardType' => card_type
+    )
+  end
+
+  def generate_cards_from_dataset_metadata_columns(columns)
+
+    if metadata_transition_phase_0?
+      columns.map do |column|
+        unless Phidippides::SYSTEM_COLUMN_ID_REGEX.match(column[:name])
+          card_type = card_type_for(column, :logicalDatatype, dataset_size)
+          if card_type
+            card = merge_new_card_data_with_default(column[:name], column[:cardinality], card_type)
+
+            if added_card_types.add?(card_type)
+              card
+            else
+              skipped_cards_by_type[card_type] << card
+              nil
+            end
+          end
+        end
+      end.compact
+    else
+      columns.map do |field_name, column|
+        unless Phidippides::SYSTEM_COLUMN_ID_REGEX.match(field_name)
+          card_type = card_type_for(column, :fred, dataset_size)
+          if card_type
+            card = merge_new_card_data_with_default(field_name, column[:cardinality], card_type)
+
+            if added_card_types.add?(card_type)
+              card
+            else
+              skipped_cards_by_type[card_type] << card
+              nil
+            end
+          end
+        end
+      end.compact
+    end
   end
 
 

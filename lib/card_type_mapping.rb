@@ -4,8 +4,8 @@ module CardTypeMapping
     File.join(Rails.root, 'lib', 'data', 'card-type-mapping.json')
   ))
 
-  def card_type_for(column, dataset_size=nil)
-    mapping = CARD_TYPE_MAPPING['map'].try(:[], column[:logicalDatatype]).
+  def card_type_for(column, logical_datatype_key, dataset_size=nil)
+    mapping = CARD_TYPE_MAPPING['map'].try(:[], column[logical_datatype_key]).
       try(:[], column[:physicalDatatype])
 
     if mapping

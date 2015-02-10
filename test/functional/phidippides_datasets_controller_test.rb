@@ -24,6 +24,23 @@ class PhidippidesDatasetsControllerTest < ActionController::TestCase
     assert_equal([], JSON.parse(@response.body).keys - ['id', 'rowDisplayUnit', 'defaultAggregateColumn', 'domain', 'ownerId', 'updatedAt', 'columns', 'pages'])
   end
 
+  test 'show calls migrate_dataset_metadata_to_v1 on a successful request' do
+    @controller.stubs(can_update_metadata?: true)
+    @phidippides.stubs(issue_request: { status: 200, body: mock_dataset_metadata }.with_indifferent_access)
+    @phidippides.expects(:migrate_dataset_metadata_to_v1).with do |result|
+      assert_equal('q77b-s2zi', result[:body][:id])
+    end
+    get :show, id: 'four-four', format: 'json'
+    assert_response(:success)
+  end
+
+  test 'show does not call migrate_dataset_metadata_to_v1 on an unsuccessful request' do
+    @controller.stubs(can_update_metadata?: true)
+    @phidippides.stubs(issue_request: { status: 404, body: mock_dataset_metadata }.with_indifferent_access)
+    @phidippides.expects(:migrate_dataset_metadata_to_v1).times(0)
+    get :show, id: 'four-four', format: 'json'
+  end
+
   test '(phase 0) create returns 401 unless logged in' do
     @controller.stubs(can_update_metadata?: false)
     post :create

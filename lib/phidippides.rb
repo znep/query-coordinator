@@ -80,6 +80,38 @@ class Phidippides < SocrataHttp
     end
   end
 
+  def migrate_dataset_metadata_to_v1(dataset_metadata)
+    if metadata_transition_phase_1? || metadata_transition_phase_2?
+
+      dataset_id = dataset_metadata.try(:[], :body).try(:[], :id)
+
+      unless dataset_id.present?
+        Airbrake.notify(
+          :error_class => "DatasetMetadataMigrationError",
+          :error_message => "Could not migrate dataset to v1: could not determine dataset id.",
+          :context => { :response => dataset_metadata }
+        )
+        return
+      end
+
+      pages_for_dataset = fetch_pages_for_dataset(dataset_id)
+
+      first_page_id = pages_for_dataset.try(:[], :body).try(:[], :publisher).try(:first).try(:[], :pageId)
+
+      if first_page_id.present?
+        dataset_metadata[:body][:defaultPage] = first_page_id
+        update_dataset_metadata(dataset_metadata[:body].to_json)
+      else
+        Airbrake.notify(
+          :error_class => "DatasetMetadataMigrationError",
+          :error_message => "Could not migrate dataset to v1: no valid publisher pageId found.",
+          :datastId => dataset_id,
+          :context => { :response => dataset_metadata }
+        )
+      end
+    end
+  end
+
   # Page Metadata requests
 
   def create_page_metadata(json, options = {})

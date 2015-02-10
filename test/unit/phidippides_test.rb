@@ -94,10 +94,142 @@ class PhidippidesTest < Test::Unit::TestCase
     result = phidippides.fetch_dataset_metadata('four-four', request_id: 'request_id')
     assert_equal(dataset_metadata, result[:body])
 
-    prepare_stubs(body: dataset_metadata, path: 'v1/id/four-four/dataset', verb: :get)
+    prepare_stubs(body: v1_dataset_metadata, path: 'v1/id/four-four/dataset', verb: :get)
     stub_feature_flags_with(:metadata_transition_phase, '1')
     result = phidippides.fetch_dataset_metadata('four-four', request_id: 'request_id')
-    assert_equal(dataset_metadata, result[:body])
+    assert_equal(v1_dataset_metadata, result[:body])
+  end
+
+  def test_migrate_dataset_metadata_to_v1_in_phase_1_generates_default_page_if_none_exists
+    v1_dataset_metadata_without_default_page = { status: '200', body: v1_dataset_metadata.tap { |metadata| metadata.delete(:defaultPage) } }
+
+    Phidippides.any_instance.stubs(
+      fetch_pages_for_dataset: { status: '200', body: pages_for_dataset }
+    )
+    stub_feature_flags_with(:metadata_transition_phase, '1')
+
+    Phidippides.any_instance.expects(:update_dataset_metadata).times(1).then.with do |json, options|
+      assert_equal(JSON.parse(json)['defaultPage'], 'vwwn-6r7g')
+    end.then.returns(
+      status: '200',
+      body: nil
+    )
+    phidippides.migrate_dataset_metadata_to_v1(v1_dataset_metadata_without_default_page)
+  end
+
+  def test_migrate_dataset_metadata_to_v1_in_phase_1_calls_airbrake_when_it_cannot_determine_the_dataset_id
+    stub_feature_flags_with(:metadata_transition_phase, '1')
+
+    Phidippides.any_instance.stubs(
+      fetch_pages_for_dataset: { status: '200', body: nil }
+    )
+    Airbrake.expects(:notify).with do |airbrake|
+      assert_equal(airbrake[:error_message], 'Could not migrate dataset to v1: could not determine dataset id.')
+    end
+    phidippides.migrate_dataset_metadata_to_v1(nil)
+  end
+
+  def test_migrate_dataset_metadata_to_v1_in_phase_1_calls_airbrake_when_it_cannot_get_the_page_id_of_the_first_publisher_page
+    v1_dataset_metadata_without_default_page = { status: '200', body: v1_dataset_metadata.tap { |metadata| metadata.delete(:defaultPage) } }
+    stub_feature_flags_with(:metadata_transition_phase, '1')
+
+    Phidippides.any_instance.stubs(
+      fetch_pages_for_dataset: { status: '200', body: nil }
+    )
+    Airbrake.expects(:notify).with do |airbrake|
+      assert_equal(airbrake[:error_message], 'Could not migrate dataset to v1: no valid publisher pageId found.')
+    end
+    phidippides.migrate_dataset_metadata_to_v1(v1_dataset_metadata_without_default_page)
+
+    Phidippides.any_instance.stubs(
+      fetch_pages_for_dataset: { status: '200', body: {} }
+    )
+    Airbrake.expects(:notify).with do |airbrake|
+      assert_equal(airbrake[:error_message], 'Could not migrate dataset to v1: no valid publisher pageId found.')
+    end
+    phidippides.migrate_dataset_metadata_to_v1(v1_dataset_metadata_without_default_page)
+
+    Phidippides.any_instance.stubs(
+      fetch_pages_for_dataset: { status: '200', body: { :publisher => [] } }
+    )
+    Airbrake.expects(:notify).with do |airbrake|
+      assert_equal(airbrake[:error_message], 'Could not migrate dataset to v1: no valid publisher pageId found.')
+    end
+    phidippides.migrate_dataset_metadata_to_v1(v1_dataset_metadata_without_default_page)
+
+    Phidippides.any_instance.stubs(
+      fetch_pages_for_dataset: { status: '200', body: { :publisher => [ {} ] } }
+    )
+    Airbrake.expects(:notify).with do |airbrake|
+      assert_equal(airbrake[:error_message], 'Could not migrate dataset to v1: no valid publisher pageId found.')
+    end
+    phidippides.migrate_dataset_metadata_to_v1(v1_dataset_metadata_without_default_page)
+  end
+
+  def test_migrate_dataset_metadata_to_v1_in_phase_2_generates_default_page_if_none_exists
+    v1_dataset_metadata_without_default_page = { status: '200', body: v1_dataset_metadata.tap { |metadata| metadata.delete(:defaultPage) } }
+
+    Phidippides.any_instance.stubs(
+      fetch_pages_for_dataset: { status: '200', body: pages_for_dataset }
+    )
+    stub_feature_flags_with(:metadata_transition_phase, '2')
+
+    Phidippides.any_instance.expects(:update_dataset_metadata).times(1).then.with do |json, options|
+      assert_equal(JSON.parse(json)['defaultPage'], 'vwwn-6r7g')
+    end.then.returns(
+      status: '200',
+      body: nil
+    )
+    phidippides.migrate_dataset_metadata_to_v1(v1_dataset_metadata_without_default_page)
+  end
+
+  def test_migrate_dataset_metadata_to_v1_in_phase_2_calls_airbrake_when_it_cannot_determine_the_dataset_id
+    stub_feature_flags_with(:metadata_transition_phase, '2')
+
+    Phidippides.any_instance.stubs(
+      fetch_pages_for_dataset: { status: '200', body: nil }
+    )
+    Airbrake.expects(:notify).with do |airbrake|
+      assert_equal(airbrake[:error_message], 'Could not migrate dataset to v1: could not determine dataset id.')
+    end
+    phidippides.migrate_dataset_metadata_to_v1(nil)
+  end
+
+  def test_migrate_dataset_metadata_to_v1_in_phase_2_calls_airbrake_when_it_cannot_get_the_page_id_of_the_first_publisher_page
+    v1_dataset_metadata_without_default_page = { status: '200', body: v1_dataset_metadata.tap { |metadata| metadata.delete(:defaultPage) } }
+    stub_feature_flags_with(:metadata_transition_phase, '2')
+
+    Phidippides.any_instance.stubs(
+      fetch_pages_for_dataset: { status: '200', body: nil }
+    )
+    Airbrake.expects(:notify).with do |airbrake|
+      assert_equal(airbrake[:error_message], 'Could not migrate dataset to v1: no valid publisher pageId found.')
+    end
+    phidippides.migrate_dataset_metadata_to_v1(v1_dataset_metadata_without_default_page)
+
+    Phidippides.any_instance.stubs(
+      fetch_pages_for_dataset: { status: '200', body: {} }
+    )
+    Airbrake.expects(:notify).with do |airbrake|
+      assert_equal(airbrake[:error_message], 'Could not migrate dataset to v1: no valid publisher pageId found.')
+    end
+    phidippides.migrate_dataset_metadata_to_v1(v1_dataset_metadata_without_default_page)
+
+    Phidippides.any_instance.stubs(
+      fetch_pages_for_dataset: { status: '200', body: { :publisher => [] } }
+    )
+    Airbrake.expects(:notify).with do |airbrake|
+      assert_equal(airbrake[:error_message], 'Could not migrate dataset to v1: no valid publisher pageId found.')
+    end
+    phidippides.migrate_dataset_metadata_to_v1(v1_dataset_metadata_without_default_page)
+
+    Phidippides.any_instance.stubs(
+      fetch_pages_for_dataset: { status: '200', body: { :publisher => [ {} ] } }
+    )
+    Airbrake.expects(:notify).with do |airbrake|
+      assert_equal(airbrake[:error_message], 'Could not migrate dataset to v1: no valid publisher pageId found.')
+    end
+    phidippides.migrate_dataset_metadata_to_v1(v1_dataset_metadata_without_default_page)
   end
 
   def test_pages_for_dataset_with_dataset_object_succeeds
@@ -271,7 +403,7 @@ class PhidippidesTest < Test::Unit::TestCase
   end
 
   def pages_for_dataset
-    JSON.parse('{"publisher":[{"id":"q77b-s2zi","pageId":"vwwn-6r7g"}],"user":[]}').with_indifferent_access
+    JSON.parse('{"publisher":[{"id":"q77b-s2zi","pageId":"vwwn-6r7g"}, {"id":"q77b-s2zi","pageId":"test-page"}],"user":[]}').with_indifferent_access
   end
 
   def new_page_metadata

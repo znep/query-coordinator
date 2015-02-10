@@ -2,13 +2,17 @@ describe('Socrata config service', function() {
   var configService;
 
   describe('socrataConfig object present', function() {
+    var originalConfigBlob;
+
     beforeEach(function() {
       module('socrataCommon.services');
       inject(function($injector) {
-        configService = $injector.get('ServerConfig');
-        configService.setup({
+        originalConfigBlob = {
           testKey: 'testValue'
-        });
+        };
+
+        configService = $injector.get('ServerConfig');
+        configService.setup(originalConfigBlob);
       });
     });
 
@@ -18,7 +22,19 @@ describe('Socrata config service', function() {
 
     it('should return undefined for undefined keys', function() {
       expect(configService.get('notHere')).to.be.undefined;
-    })
+    });
+
+    describe('override', function() {
+      it('should affect what get() returns', function() {
+        configService.override('notHere', 'jk actually here')
+        expect(configService.get('notHere')).to.equal('jk actually here');
+      });
+
+      it('should not modify the blob passed to setup()', function() {
+        configService.override('notHere', 'jk actually here')
+        expect(originalConfigBlob).to.not.have.key('notHere');
+      });
+    });
   });
 
   it('should not fail if not setup', function() {

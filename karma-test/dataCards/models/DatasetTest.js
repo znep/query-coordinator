@@ -43,16 +43,16 @@ describe("Dataset model", function() {
   }));
 
   it('should eventually return a value from the rowDisplayUnit property', function(done) {
-    var id = 'dead-beef';
+    var testId = 'dead-beef';
     var fakeDisplayUnit = 'test';
 
-    var baseInfoDefer =_$q.defer();
-    MockDataService.getBaseInfo = function(id) {
-      expect(id).to.equal(id);
-      return baseInfoDefer.promise;
+    var datasetMetadataDefer =_$q.defer();
+    MockDataService.getDatasetMetadata = function(schemaVersion, id) {
+      expect(id).to.equal(testId);
+      return datasetMetadataDefer.promise;
     };
 
-    var instance = new _Dataset(id);
+    var instance = new _Dataset(testId);
     instance.observe('rowDisplayUnit').subscribe(function(val) {
       if (val) {
         expect(val).to.equal(fakeDisplayUnit);
@@ -60,12 +60,12 @@ describe("Dataset model", function() {
       }
     });
 
-    baseInfoDefer.resolve($.extend({}, minimalBlob, { "rowDisplayUnit": fakeDisplayUnit}));
+    datasetMetadataDefer.resolve($.extend({}, minimalBlob, { "rowDisplayUnit": fakeDisplayUnit}));
     _$rootScope.$digest();
   });
 
   it('should eventually return a bunch of Pages from the pages property', function(done) {
-    var id = 'dead-beef';
+    var testId = 'dead-beef';
     var fakePageIds = {
         'user': _.times(4, function(idx) {
           return {pageId: _.uniqueId('fakeUserPageId')};
@@ -75,17 +75,17 @@ describe("Dataset model", function() {
         })
       };
 
-    MockDataService.getBaseInfo = function(id) {
+    MockDataService.getDatasetMetadata = function(schemaVersion, id) {
       return $q.when(minimalBlob);
     };
 
     var def =_$q.defer();
-    MockDataService.getPagesForDataset = function(id) {
-      expect(id).to.equal(id);
+    MockDataService.getPagesForDataset = function(schemaVersion, id) {
+      expect(id).to.equal(testId);
       return def.promise;
     };
 
-    var instance = new _Dataset(id);
+    var instance = new _Dataset(testId);
     instance.observe('pages').subscribe(function(pagesBySource) {
       if (!_.isEmpty(pagesBySource)) {
         _.each(pagesBySource, function(pages, source) {
@@ -129,7 +129,7 @@ describe("Dataset model", function() {
     var serializedBlob = $.extend({}, minimalBlob, { "columns": fakeColumns });
 
     var def =_$q.defer();
-    MockDataService.getBaseInfo = function(id) {
+    MockDataService.getDatasetMetadata = function() {
       return def.promise;
     };
 

@@ -8,7 +8,9 @@ module FeatureFlags
         value = base[flag] if value.nil?
         flags[flag] = process_value(value)
       # Check the whitelist. true and false are always valid
-      elsif config['expectedValues'].split(' ').concat(['true', 'false']).include?(other[flag])
+      # We must to_s other[flag] because expectedValues is always a string (if present), unlike
+      # the actual flag value which may be a bool or number.
+      elsif config['expectedValues'].split(' ').concat(['true', 'false']).include?(other[flag].to_s)
         flags[flag] = process_value(other[flag])
       # Drop to default.
       else

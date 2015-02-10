@@ -1,5 +1,5 @@
 (function() {
-  angular.module('test', []).factory('testHelpers', function($compile, $templateCache, $q) {
+  angular.module('test', []).factory('testHelpers', function($injector, $compile, $templateCache, $q) {
     var fireEvent = function(target, name, opts) {
       var evt = document.createEvent('HTMLEvents');
       evt.initEvent(name, true, true);
@@ -187,6 +187,11 @@
       return (r << 16) + (g << 8) + b;
     }
 
+    function overrideMetadataMigrationPhase(phase) {
+      var ServerConfig = $injector.get('ServerConfig');
+      ServerConfig.override('metadataTransitionPhase', phase);
+    }
+
     return {
       TestDom: TestDom,
       getTestJson: getTestJson,
@@ -196,7 +201,8 @@
       overrideTransitions: overrideTransitions,
       mockDirective: mockDirective,
       normalizeColor: normalizeColor,
-      waitForSatisfy: waitForSatisfy
+      waitForSatisfy: waitForSatisfy,
+      overrideMetadataMigrationPhase: overrideMetadataMigrationPhase
     };
   });
 })();

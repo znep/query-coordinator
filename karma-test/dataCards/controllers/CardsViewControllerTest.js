@@ -8,6 +8,7 @@ describe('CardsViewController', function() {
   var $rootScope;
   var $controller;
   var _$provide;
+  var $httpBackend;
 
   // Define a mock window service and surface writes to location.href.
   var mockWindowService = {
@@ -140,8 +141,9 @@ describe('CardsViewController', function() {
 
   beforeEach(inject([
     '$q', 'Card', 'Page', 'Dataset', '$rootScope', '$controller', '$window', 'testHelpers',
-    'serverMocks', function(_$q, _Card, _Page, _Dataset, _$rootScope, _$controller, _$window,
-                            _testHelpers, _serverMocks) {
+    'serverMocks', '$httpBackend',
+    function(_$q, _Card, _Page, _Dataset, _$rootScope, _$controller, _$window, _testHelpers,
+             _serverMocks, _$httpBackend) {
       Card = _Card;
       Page = _Page;
       Dataset = _Dataset;
@@ -151,6 +153,7 @@ describe('CardsViewController', function() {
       $window = _$window;
       testHelpers = _testHelpers;
       serverMocks = _serverMocks;
+      $httpBackend = _$httpBackend;
   }]));
 
   function makeContext() {
@@ -227,6 +230,15 @@ describe('CardsViewController', function() {
     };
   }
 
+  beforeEach(function() {
+    $httpBackend.when('GET', '/api/migrations/fake-fbfr').
+      respond({
+        'controlMapping': '{"destinationDomain":"steve-copy-1.test-socrata.com"}',
+        'nbeId': 'fake-fbfr',
+        'obeId': 'sooo-oold',
+        'syncedAt': 1415907664
+      });
+  });
   describe('page name', function() {
     it('should update on the scope when the property changes on the model', function() {
       var controllerHarness = makeController();
@@ -262,10 +274,50 @@ describe('CardsViewController', function() {
       });
       $rootScope.$digest();
 
-      expect($scope.pageName).to.equal("Untitled");
+      expect($scope.pageName).to.equal('Untitled');
 
       $scope.page.set('name', nameTwo);
       expect($scope.pageName).to.equal(nameTwo);
+    });
+  });
+
+  describe('source dataset link', function() {
+    afterEach(function() {
+      $httpBackend.verifyNoOutstandingExpectation();
+      $httpBackend.verifyNoOutstandingRequest();
+    });
+
+    it('grabs the obe 4x4 from the migrations endpoint', function() {
+      var controllerHarness = makeController();
+      var controller = controllerHarness.controller;
+      var $scope = controllerHarness.$scope;
+
+      $httpBackend.expectGET('/api/migrations/fake-fbfr');
+
+      controllerHarness.baseInfoPromise.resolve({
+        datasetId: 'fake-fbfr',
+        name: 'maroon'
+      });
+      $rootScope.$digest();
+
+      expect($scope.sourceDatasetURL).to.be.falsy;
+      $httpBackend.flush();
+      $rootScope.$digest();
+      expect($scope.sourceDatasetURL).to.equal('/d/sooo-oold');
+
+      $httpBackend.when('GET', '/api/migrations/four-four').
+        respond({
+          'controlMapping': '{"destinationDomain":"steve-copy-1.test-socrata.com"}',
+          'nbeId': 'four-four',
+          'obeId': 'sooo-old2',
+          'syncedAt': 1415907664
+        });
+      $httpBackend.expectGET('/api/migrations/four-four');
+      $scope.page.set('datasetId', 'four-four');
+
+      expect($scope.sourceDatasetURL).to.equal('/d/sooo-oold');
+      $httpBackend.flush();
+      expect($scope.sourceDatasetURL).to.equal('/d/sooo-old2');
     });
   });
 
@@ -386,7 +438,7 @@ describe('CardsViewController', function() {
           // Two filtered cards
           thirdCard.set('activeFilters', [filterTwo]);
           expect(harness.$scope.globalWhereClauseFragment).to.equal(
-            "{0} AND {1}".format(
+            '{0} AND {1}'.format(
               filterOne.generateSoqlWhereFragment(firstCard.fieldName),
               filterTwo.generateSoqlWhereFragment(thirdCard.fieldName)
               ));
@@ -395,12 +447,12 @@ describe('CardsViewController', function() {
           firstCard.set('activeFilters', [filterOne, filterTwo]);
           thirdCard.set('activeFilters', []);
           expect(harness.$scope.globalWhereClauseFragment).to.equal(
-            "{0} AND {1}".format(
+            '{0} AND {1}'.format(
               filterOne.generateSoqlWhereFragment(firstCard.fieldName),
               filterTwo.generateSoqlWhereFragment(firstCard.fieldName)
               ));
         }));
-        it("should yield the filtered column names on appliedFiltersForDisplay", inject(function(Filter) {
+        it('should yield the filtered column names on appliedFiltersForDisplay', inject(function(Filter) {
           var filterOne = new Filter.IsNullFilter(false);
           var filterTwo = new Filter.BinaryOperatorFilter('=', 'test');
 
@@ -441,7 +493,7 @@ describe('CardsViewController', function() {
           harness.$scope.$digest();
 
           expect(harness.$scope.globalWhereClauseFragment).to.equal(
-            "{0} AND {1}".format(
+            '{0} AND {1}'.format(
               fakeBaseFilter,
               filterOne.generateSoqlWhereFragment(firstCard.fieldName))
             );
@@ -449,7 +501,7 @@ describe('CardsViewController', function() {
           // Two filtered cards
           thirdCard.set('activeFilters', [filterTwo]);
           expect(harness.$scope.globalWhereClauseFragment).to.equal(
-            "{0} AND {1} AND {2}".format(
+            '{0} AND {1} AND {2}'.format(
               fakeBaseFilter,
               filterOne.generateSoqlWhereFragment(firstCard.fieldName),
               filterTwo.generateSoqlWhereFragment(thirdCard.fieldName)
@@ -459,7 +511,7 @@ describe('CardsViewController', function() {
           firstCard.set('activeFilters', [filterOne, filterTwo]);
           thirdCard.set('activeFilters', []);
           expect(harness.$scope.globalWhereClauseFragment).to.equal(
-            "{0} AND {1} AND {2}".format(
+            '{0} AND {1} AND {2}'.format(
               fakeBaseFilter,
               filterOne.generateSoqlWhereFragment(firstCard.fieldName),
               filterTwo.generateSoqlWhereFragment(firstCard.fieldName)

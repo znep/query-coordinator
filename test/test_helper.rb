@@ -107,4 +107,17 @@ class ActionController::TestCase
   include Rails.application.routes.url_helpers
 end
 
+# assert_select doesn't like the formatting of our HTML... this adds a quieter version
+ActionDispatch::Assertions::SelectorAssertions.class_eval do
+  def assert_select_quiet(*args, &block)
+    original_verbosity = $-v # store original output value
+    $-v = nil # set to nil
+    begin
+      assert_select(*args, &block)
+    ensure
+      $-v = original_verbosity # and restore after execute assert_select
+    end
+  end
+end
+
 require 'mocha/setup'

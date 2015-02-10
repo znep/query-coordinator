@@ -243,6 +243,12 @@
         if (config.splitTerm)
             terms = term.split(config.wordDelimiter);
 
+        if (config.headerText.length > 0) {
+          var headerTextIndex = (terms.length > 1 || terms[0] != '') ? 1 : 0;
+          $list.append($('<h2 class="awesome-header">' +
+                          config.headerText[headerTextIndex] + '</h2>'));
+        }
+
         var results = [];
         for (var item = 0; item < data.length; item++)
         {
@@ -464,6 +470,7 @@
         valueFunction: defaultValueFunction,
         wordDelimiter: /[^\da-z]+/ig,
         showAwesomeTip: false,
-        hoverDefaultFirstItem: false
+        hoverDefaultFirstItem: false,
+        headerText: [] // ['default text', 'text after filtering']
     };
 })(jQuery);

@@ -372,11 +372,159 @@
     /**
      * A Legend with a continuous scale.
      */
-    function LegendContinuous() {
-      // TODO
+    function LegendContinuous(element, container) {
+      this.element = element.addClass('legend-continuous');
+      this.container = container;
     }
     $.extend(LegendContinuous.prototype, {
+      ZERO_COLOR: '#ffffff',
+      NEGATIVE_COLOR: '#c6663d',
+      POSITIVE_COLOR: '#003747',
+      /**
+       * Finds an array of values, including the min, max, and numStops - 2 more values,
+       * evenly-spaced between the min and max.
+       *
+       * @param {Object[]} features an array of features, where the following keys exist:
+       *   @property {Object} properties a hash of properties
+       *     @property {Number} Constants.UNFILTERED_VALUE_PROPERTY_NAME the unfiltered value.
+       * @param {Number} numStops the number of values to find.
+       *
+       * @return {Number[]} a sorted array of numbers, of length numStops. The first element is the
+       *   smallest value in the features, the last element is the largest, and the other values are
+       *   evenly spaced between them (and may not actually appear in the dataset).
+       * @private
+       */
+      _findTickStops: function(features, numStops) {
+        var firstValue = features[0].properties[Constants.UNFILTERED_VALUE_PROPERTY_NAME];
+        var minMax = _.reduce(features, function(minMax, feature) {
+          var value = feature.properties[Constants.UNFILTERED_VALUE_PROPERTY_NAME];
+          if (minMax.min > value) {
+            minMax.min = value;
+          } else if (minMax.max < value) {
+            minMax.max = value;
+          }
+          return minMax;
+        }, {min: firstValue, max: firstValue});
+
+        // Use a scale to generate the intermediate values between min and max.
+        var scale = d3.scale['linear']().
+          range([minMax.min, minMax.max]);
+        return _.map(_.range(0, 1, 1 / (numStops - 1)), scale).
+            concat(minMax.max);
+      },
+
+      /**
+       * Draw an SVG rectangle with the appropriate gradient.
+       *
+       * @param {Object[]} features to be passed to {@link #_findTickStops}
+       * @param {Number[]} tickStops the values at which ticks will be drawn. The first value should
+       *   be the minimum value, and the last value should be the maximum.
+       * @param {d3.scale} colorScale a scale from a value, to a color.
+       *
+       * @return {d3.selection} the svg's d3 selection.
+       * @private
+       */
+      _drawGradient: function(features, tickStops, colorScale) {
+        var legendSvg = d3.select(this.element[0]).append('svg');
+        var min = tickStops[0];
+        var max = _.last(tickStops);
+        var range = max - min;
+
+        // Create the gradient, that's referenced later when the containing rectangle is drawn.
+        var gradient = legendSvg.
+            append('linearGradient').
+            attr({
+              id: 'gradient',
+              gradientUnits: 'userSpaceOnUse',
+              y1: '100%', x1: 0, x2: 0, y2: 0
+            });
+        // We'll make a stop in the gradient for each tick stop, to ensure the gradients grade
+        // similarly.
+        _.each(tickStops, function(value) {
+          gradient.append('stop').attr({
+            offset: (100 * (value - min) / range) + '%',
+            'stop-color': colorScale(value)
+          });
+        });
+
+        // Draw the rectangles in pieces, so as to store the data, so the ticks can access them.
+        var rectangles = legendSvg.selectAll('rect').data(tickStops.slice(0, tickStops.length - 1));
+        var height = (100 / (tickStops.length - 1)) + '%';
+        rectangles.enter().
+          append('rect').attr({
+            x: 0,
+            y: function(value) {
+              return (100 * (value - min) / range) + '%';
+            },
+            width: '100%',
+            height: height,
+            fill: 'url(#gradient)'
+          });
+        rectangles.exit().remove();
+
+        return legendSvg;
+      },
+
+      /**
+       * Creates the d3 scale used to map from a value to a color.
+       *
+       * @param {Number[]} tickStops an array of values, the first of which should be the minimum
+       *   value of the data, the last of which should be the maximum value of the data.
+       *
+       * @return {d3.scale} a scale mapping from a value within features, to a color.
+       * @private
+       */
+      _createColorScale: function(tickStops) {
+        var domain;
+        var range = [this.NEGATIVE_COLOR, this.ZERO_COLOR, this.POSITIVE_COLOR];
+        var min = tickStops[0];
+        var max = _.last(tickStops);
+        if (tickStops[0] >= 0) {
+          // All positive values
+          domain = [min, max];
+          range = range.slice(1);
+        } else if (max <= 0) {
+          // All negative values
+          domain = [min, max];
+          range = range.slice(0, 2);
+        } else {
+          // Straddle zero
+          domain = [min, 0, max];
+        }
+
+        return d3.scale.linear().
+          domain(domain).
+          range(range);
+      },
+
+      _drawAxis: function(legendSvg, tickStops) {
+        var yTickScale = d3.scale.linear().
+            domain([tickStops[0], _.last(tickStops)]).
+            range([this.element.height(), 0]);
+        var axis = d3.svg.axis().
+            scale(yTickScale).
+            tickValues(tickStops).
+            orient('left');
+        axis(legendSvg);
+
+        return axis;
+      },
+
+      NUM_TICKS: 5,
+
+      /**
+       * Redraw the legend.
+       *
+       * @return {d3.scale} a scale mapping from value to color.
+       */
       update: function(data) {
+        if (!(data.features && data.features.length)) return;
+
+        var tickStops = this._findTickStops(data.features, this.NUM_TICKS);
+        var colorScale = this._createColorScale(tickStops);
+        var legendSvg = this._drawGradient(data.features, tickStops, colorScale);
+        this._drawAxis(legendSvg, tickStops);
+        return colorScale;
       }
     });
 
@@ -392,11 +540,12 @@
                     '<div class="choropleth-map-container"></div>',
                     '<div class="choropleth-legend"></div>',
                   '</div>'].join(''),
-      link: function(scope, element) {
+      link: function(scope, element, attrs) {
 
         AngularRxExtensions.install(scope);
 
-        var legend = new LegendDiscrete(element.find('.choropleth-legend'), element);
+        var LegendType = attrs.stops === 'continuous' ? LegendContinuous : LegendDiscrete;
+        var legend = new LegendType(element.find('.choropleth-legend'), element);
 
         /***********************
          * Mutate Leaflet state *

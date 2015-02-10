@@ -152,7 +152,8 @@
       }
 
       if (colorScale) {
-        return colorScale(Number(feature.properties[Constants['FILTERED_VALUE_PROPERTY_NAME']])).hex();
+        return '' + // coerce to a string, if it's a chroma color
+          colorScale(Number(feature.properties[Constants['FILTERED_VALUE_PROPERTY_NAME']]));
       } else {
         return 'transparent';
       }

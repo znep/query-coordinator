@@ -842,12 +842,8 @@ $wizard_border_color: #ccc
               z-index: 10
               border: none
               overflow: visible
-              box-shadow: 0px 0px 10px #555
-              -moz-box-shadow: 0px 0px 10px #555
-              -webkit-box-shadow: 0px 0px 10px #555
-              border-radius: 1px
-              -moz-border-radius: 1px
-              -webkit-border-radius: 1px
+              @include prefixer(box-shadow, 0 0 1em rgba(0, 0, 0, 0.4))
+              @include border-radius(0.1em)
               > h2.awesome-header
                 padding: 0.7em 0.5em
               > li
@@ -856,8 +852,6 @@ $wizard_border_color: #ccc
                 width: 100%
                 padding: 0
                 overflow: hidden
-                &:first-of-type
-                  border-top: none
                 > div
                   font-size: 2em
                   padding: 0.7em 0.5em

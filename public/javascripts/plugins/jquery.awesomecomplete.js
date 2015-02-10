@@ -22,7 +22,7 @@
 
             var $attachTo = $(config.attachTo || $this);
             width = $attachTo.innerWidth();
-            if (width == 0) {
+            if (width === 0) {
               width = '100%';
             }
             var $list = $('<ul/>').addClass(config.suggestionListClass)
@@ -340,7 +340,7 @@
 
         for (var i in results)
         {
-            var defaultActiveClass = (config.hoverDefaultFirstItem && i == 0) ? config.activeItemClass : '';
+            var defaultActiveClass = (config.hoverDefaultFirstItem && i === 0) ? config.activeItemClass : '';
             if (results[i] instanceof Function) { continue; } // Because IE is dumb
             $('<li class="' + defaultActiveClass + '">' + config.renderFunction(results[i].dataItem, results[i].topMatch, config) + '</li>')
 				.data('awesomecomplete-dataItem', results[i].originalDataItem)

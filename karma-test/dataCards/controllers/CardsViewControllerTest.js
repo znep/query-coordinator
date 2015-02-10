@@ -294,7 +294,7 @@ describe('CardsViewController', function() {
 
       $httpBackend.expectGET('/api/migrations/fake-fbfr');
 
-      controllerHarness.baseInfoPromise.resolve({
+      controllerHarness.pageMetadataPromise.resolve({
         datasetId: 'fake-fbfr',
         name: 'maroon'
       });

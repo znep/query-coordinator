@@ -8,6 +8,8 @@ module FeatureFlags
         value = base[flag] if value.nil?
         flags[flag] = process_value(value)
       # Check the whitelist. true and false are always valid
+      # We must to_s other[flag] because expectedValues is always a string (if present), unlike
+      # the actual flag value which may be a bool or number.
       elsif config['expectedValues'].split(' ').concat(['true', 'false']).include?(other[flag].to_s)
         flags[flag] = process_value(other[flag])
       # Drop to default.
@@ -23,7 +25,7 @@ module FeatureFlags
     return nil if value.nil?
     begin
       JSON.parse("{\"valueString\": #{value}}")['valueString']
-    rescue JSON::ParserError => e# This means it's a string!
+    rescue JSON::ParserError # This means it's a string!
       value
     end
   end

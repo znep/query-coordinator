@@ -43,16 +43,16 @@ describe("Dataset model", function() {
   }));
 
   it('should eventually return a value from the rowDisplayUnit property', function(done) {
-    var id = 'dead-beef';
+    var testId = 'dead-beef';
     var fakeDisplayUnit = 'test';
 
     var datasetMetadataDefer =_$q.defer();
-    MockDataService.getDatasetMetadata = function(id) {
-      expect(id).to.equal(id);
+    MockDataService.getDatasetMetadata = function(schemaVersion, id) {
+      expect(id).to.equal(testId);
       return datasetMetadataDefer.promise;
     };
 
-    var instance = new _Dataset(id);
+    var instance = new _Dataset(testId);
     instance.observe('rowDisplayUnit').subscribe(function(val) {
       if (val) {
         expect(val).to.equal(fakeDisplayUnit);
@@ -129,7 +129,7 @@ describe("Dataset model", function() {
     var serializedBlob = $.extend({}, minimalBlob, { "columns": fakeColumns });
 
     var def =_$q.defer();
-    MockDataService.getDatasetMetadata = function(id) {
+    MockDataService.getDatasetMetadata = function() {
       return def.promise;
     };
 

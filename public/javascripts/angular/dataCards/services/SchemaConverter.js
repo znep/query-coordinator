@@ -70,7 +70,7 @@ angular.module('dataCards.services').factory('SchemaConverter', function(Schemas
           return columnBlob;
         });
 
-      } else if (datasetMetadataSchemas.isValidAgainstVersion('0', input)){
+      } else if (datasetMetadataSchemas.isValidAgainstVersion('0', input)) {
         output = input;
       } else {
         // Matched nothing. Complain according to the latest schema.

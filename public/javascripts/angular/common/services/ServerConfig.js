@@ -18,7 +18,7 @@
 
   ServerConfig.metadataMigration = {
     currentPhase: function() {
-      var phaseAsString = ServerConfig.get('metadataTransitionPhase')
+      var phaseAsString = ServerConfig.get('metadataTransitionPhase');
 
       // If feature flag isn't set, fall back to phase 0.
       if (_.isUndefined(phaseAsString)) {
@@ -27,7 +27,7 @@
 
       var phaseAsInt = parseInt(phaseAsString, 10);
       if (_.isNaN(phaseAsInt)) {
-        throw new Error('Metadata transition phase is not a number: ' + phaseAsString);
+        throw new Error('Metadata transition phase is not a number: {0}'.format(phaseAsString));
       }
 
       return phaseAsInt;

@@ -15,7 +15,7 @@ angular.module('dataCards.models').factory('Dataset', function(ModelHelper, Mode
       if (!SchemaDefinitions.uidRegexp.test(id)) {
         throw new Error('Bad dataset ID passed to Dataset constructor.');
       }
-      this.id = id;
+      self.id = id;
 
       // Reuse promises across lazy properties.
       // NOTE! It's important that the various getters on PageDataService are _not_ called

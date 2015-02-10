@@ -1,21 +1,21 @@
-(function() {
+describe('DatasetDataService', function() {
   'use strict';
 
   var TESTED_MIGRATION_PHASES = [0, 1];
 
   _.each(TESTED_MIGRATION_PHASES, function(phaseTestingUnder) {
-    describe('DatasetDataService', function() {
+    describe('under phase {0}'.format(phaseTestingUnder), function() {
       var $httpBackend;
       var DatasetDataService;
       var ServerConfig;
       var TestHelpers;
       var fake4x4 = 'fake-data';
 
-      var datasetDataUrl = phaseTestingUnder === 0 ?
+      var datasetMetadataUrl = phaseTestingUnder === 0 ?
         '/dataset_metadata/{0}.json'.format(fake4x4) :
         '/metadata/v1/dataset/{0}'.format(fake4x4);
 
-      var fakeDatasetDataV0 = {
+      var fakeDatasetMetadataResponseV0 = {
         id: fake4x4,
         name: 'Test Data',
         description: 'Test description.',
@@ -42,17 +42,17 @@
             description: 'Column 2.'
           },
           {
-            title: 'column_3_geo',
-            name: 'column_3_geo',
+            title: 'Column 3 geo human name',
+            name: ':@column_3_geo',
             logicalDatatype: 'location',
             physicalDatatype: 'number',
             importance: 3,
-            description: 'Column 3 Geo.'
+            description: 'Column 3 Geo human description.'
           }
         ]
       };
 
-      var fakeDatasetDataV1 = {
+      var fakeDatasetMetadataResponseV1 = {
         id: fake4x4,
         name: 'Test Data',
         description: 'Test description.',
@@ -76,12 +76,11 @@
             physicalDatatype: 'number',
             description: 'Column 2.'
           },
-          column_3_geo: {
-            title: 'column_3_geo',
-            name: 'column_3_geo',
+          ':@column_3_geo': {
+            name: 'Column 3 geo human name',
             fred: 'location',
             physicalDatatype: 'number',
-            description: 'Column 3 Geo.',
+            description: 'Column 3 Geo human description.',
             computationStrategy: {
               parameters: {
                 region: 'shap-fil3',
@@ -92,13 +91,13 @@
         }
       };
 
-      // This is fakeDatasetDataV1 as it should appear for
+      // This is fakeDatasetMetadataResponseV1 as it should appear for
       // callers requesting a v0 blob.
-      // The only difference between this and fakeDatasetDataV1
+      // The only difference between this and fakeDatasetMetadataResponseV1
       // is that fred is once again logicalDatatype, the columns
       // are represented as an array of hashes, and shapefile is
       // pulled from computationStrategy.
-      var fakeDatasetDataV1RepresentedAsV0 = {
+      var fakeDatasetMetadataResponseV1RepresentedAsV0 = {
         id: fake4x4,
         name: 'Test Data',
         description: 'Test description.',
@@ -108,6 +107,18 @@
         ownerId: 'flim-flam',
         updatedAt: '2014-09-19T16:33:59.000-07:00',
         columns: [
+          // NOTE: When converting to v0, columns are sorted lexicographically.
+          // V1 metadata does not include ordering information.
+          {
+            title: 'Column 3 geo human name',
+            name: ':@column_3_geo',
+            logicalDatatype: 'location',
+            physicalDatatype: 'number',
+            description: 'Column 3 Geo human description.',
+            shapefile: 'shap-fil3',
+            importance: 1,
+            cardinality: Math.pow(2, 53) - 1
+          },
           {
             title: 'column_1',
             name: 'column_1',
@@ -125,27 +136,17 @@
             description: 'Column 2.',
             importance: 1,
             cardinality: Math.pow(2, 53) - 1
-          },
-          {
-            title: 'column_3_geo',
-            name: 'column_3_geo',
-            logicalDatatype: 'location',
-            physicalDatatype: 'number',
-            description: 'Column 3 Geo.',
-            shapefile: 'shap-fil3',
-            importance: 1,
-            cardinality: Math.pow(2, 53) - 1
           }
         ]
       };
 
-      var fakeDatasetData = phaseTestingUnder === 0 ? fakeDatasetDataV0 : fakeDatasetDataV1;
+      var fakeDatasetMetadataResponse = phaseTestingUnder === 0 ? fakeDatasetMetadataResponseV0 : fakeDatasetMetadataResponseV1;
 
       var datasetPagesUrl = phaseTestingUnder === 0 ?
         '/dataset_metadata/?id={0}&format=json'.format(fake4x4) :
         '/metadata/v1/dataset/{0}/pages'.format(fake4x4);
 
-      var fakePagesForDatasetV0 = {
+      var fakePagesForDatasetResponseV0 = {
         publisher: [
           { pageId: 'fooo-barr', foo: 'bar' },
           { pageId: 'bazz-boop', baz: 'boop' }
@@ -153,15 +154,15 @@
         user: []
       };
 
-      var fakePagesForDatasetV1 = {
+      var fakePagesForDatasetResponseV1 = {
         'fooo-barr': { pageId: 'fooo-barr', foo: 'bar' },
         'bazz-boop': { pageId: 'bazz-boop', baz: 'boop' }
       };
 
-      var fakePagesForDataset = phaseTestingUnder === 0 ? fakePagesForDatasetV0 : fakePagesForDatasetV1;
+      var fakePagesForDatasetResponse = phaseTestingUnder === 0 ? fakePagesForDatasetResponseV0 : fakePagesForDatasetResponseV1;
 
-      var geoJsonDataUrl = '/resource/{0}.geojson'.format(fake4x4);
-      var fakeGeoJsonData = {
+      var geoJsonInfoUrl = '/resource/{0}.geojson'.format(fake4x4);
+      var fakeGeojsonInfoResponse = {
         type: 'FeatureCollection',
         features: [],
         crs: {
@@ -179,9 +180,9 @@
         ServerConfig = $injector.get('ServerConfig');
         TestHelpers = $injector.get('testHelpers');
         $httpBackend = $injector.get('$httpBackend');
-        $httpBackend.whenGET(datasetDataUrl).respond(fakeDatasetData);
-        $httpBackend.whenGET(geoJsonDataUrl).respond(fakeGeoJsonData);
-        $httpBackend.whenGET(datasetPagesUrl).respond(fakePagesForDataset);
+        $httpBackend.whenGET(datasetMetadataUrl).respond(fakeDatasetMetadataResponse);
+        $httpBackend.whenGET(geoJsonInfoUrl).respond(fakeGeojsonInfoResponse);
+        $httpBackend.whenGET(datasetPagesUrl).respond(fakePagesForDatasetResponse);
 
         TestHelpers.overrideMetadataMigrationPhase(phaseTestingUnder);
       }));
@@ -193,13 +194,16 @@
           expect(function() { DatasetDataService.getDatasetMetadata('9001', fake4x4); }).to.throw(); // Invalid schema version.
         });
 
-        it('should return a v0 version of the dataset metadata (regardless of phase)', function(done) {
+        it('should return a v0 version of the dataset metadata', function(done) {
           var response = DatasetDataService.getDatasetMetadata('0', fake4x4);
           response.then(function(data) {
             if (phaseTestingUnder === 0) {
-              expect(data).to.deep.equal(fakeDatasetDataV0);
+              expect(data).to.deep.equal(fakeDatasetMetadataResponseV0);
+            } else if (phaseTestingUnder === 1) {
+              debugger
+              expect(data).to.deep.equal(fakeDatasetMetadataResponseV1RepresentedAsV0);
             } else {
-              expect(data).to.deep.equal(fakeDatasetDataV1RepresentedAsV0);
+              throw new Error('this test needs to be updated to support phase {0}'.format(phaseTestingUnder));
             }
             done();
           });
@@ -213,11 +217,11 @@
           expect(function() { DatasetDataService.getPagesForDataset('0'); }).to.throw();
         });
 
-        it('shoud return the correct data', function(done) {
+        it('should return the correct data', function(done) {
           var responsePromise = DatasetDataService.getPagesForDataset('0', fake4x4);
           responsePromise.then(function(response) {
             // Response should be equvalent to v0 in all cases.
-            expect(response).to.eql(fakePagesForDatasetV0);
+            expect(response).to.eql(fakePagesForDatasetResponseV0);
             done();
           });
           $httpBackend.flush();
@@ -234,7 +238,7 @@
           responsePromise.then(function(response) {
             expect(response.status).to.equal(200);
             expect(response.data).to.exist;
-            expect(response.data).to.eql(fakeGeoJsonData);
+            expect(response.data).to.eql(fakeGeojsonInfoResponse);
             done();
           });
           $httpBackend.flush();
@@ -243,4 +247,4 @@
 
     })
   });
-})();
+});

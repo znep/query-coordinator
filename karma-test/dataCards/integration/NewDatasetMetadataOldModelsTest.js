@@ -3,7 +3,7 @@
 // This tests that:
 // - DatasetDataService can convert V1 metadata blobs to V0, and
 // - Dataset model can consume this converted V0 blob.
-describe('Instantiating v0 models from v1 metadata', function() {
+describe('Using v1 metadata to instantiate v0 models', function() {
   var Dataset;
   var $httpBackend;
 
@@ -24,7 +24,7 @@ describe('Instantiating v0 models from v1 metadata', function() {
 
   it('should convert computed columns correctly', function(done) {
     // Case 1 in "Rationalizing Page and Dataset Metadata"
-    var input = {
+    var v1Input = {
       "columns":{
         ":@computed_column":{
           "computationStrategy": {
@@ -50,7 +50,7 @@ describe('Instantiating v0 models from v1 metadata', function() {
       "updatedAt": "2014-08-17T04:07:03.000Z",
     };
 
-    var dataset = constructWithV1Blob(input);
+    var dataset = constructWithV1Blob(v1Input);
 
     Rx.Observable.subscribeLatest(
       dataset.observe('columns').filter(_.isPresent),
@@ -73,9 +73,9 @@ describe('Instantiating v0 models from v1 metadata', function() {
     $httpBackend.flush();
   });
 
-  it('should preserve rowDisplayUnit if it is set in the V1 blob', function(done) {
+  it('should default rowDisplayUnit to "row" if it is not set in the V1 blob', function(done) {
     // Case 2 in "Rationalizing Page and Dataset Metadata"
-    var input = {
+    var v1Input = {
       "columns":{
         "some_column":{
           "cardinality": 25,
@@ -96,7 +96,7 @@ describe('Instantiating v0 models from v1 metadata', function() {
       "updatedAt": "2014-08-17T04:07:03.000Z"
     };
 
-    var dataset = constructWithV1Blob(input);
+    var dataset = constructWithV1Blob(v1Input);
 
     Rx.Observable.subscribeLatest(
       dataset.observe('columns').filter(_.isPresent),
@@ -116,7 +116,7 @@ describe('Instantiating v0 models from v1 metadata', function() {
 
   it('should preserve rowDisplayUnit if it is set in the V1 blob', function(done) {
     // Case 3 in "Rationalizing Page and Dataset Metadata"
-    var input = {
+    var v1Input = {
       "columns":{
         "some_column":{
           "description": "",
@@ -136,7 +136,7 @@ describe('Instantiating v0 models from v1 metadata', function() {
       "updatedAt": "2014-08-17T04:07:03.000Z"
     };
 
-    var dataset = constructWithV1Blob(input);
+    var dataset = constructWithV1Blob(v1Input);
 
     Rx.Observable.subscribeLatest(
       dataset.observe('columns').filter(_.isPresent),
@@ -155,7 +155,7 @@ describe('Instantiating v0 models from v1 metadata', function() {
   });
 
   it('should convert the list of pages for a dataset correctly', function(done) {
-    var input = {
+    var v1Input = {
       "columns":{
         "column_a":{
           "description": "",
@@ -174,7 +174,7 @@ describe('Instantiating v0 models from v1 metadata', function() {
       "updatedAt": "2014-08-17T04:07:03.000Z",
     };
 
-    var datasetPagesDataUrl = '/metadata/v1/dataset/{0}/pages'.format(input.id);
+    var datasetPagesDataUrl = '/metadata/v1/dataset/{0}/pages'.format(v1Input.id);
     $httpBackend.whenGET(datasetPagesDataUrl).respond({
       'page-zero': {
         'pageId': 'page-zero',
@@ -186,7 +186,7 @@ describe('Instantiating v0 models from v1 metadata', function() {
       }
     });
 
-    var dataset = constructWithV1Blob(input);
+    var dataset = constructWithV1Blob(v1Input);
 
     dataset.observe('pages').filter(_.isPresent).subscribe(function(pages) {
       expect(pages.user).to.have.length(0);

@@ -510,7 +510,7 @@ class NewUxBootstrapControllerTest < ActionController::TestCase
     cardinality_threshold = CardTypeMapping::CARD_TYPE_MAPPING['cardinality']['threshold']
     cardinality_equal_to_dataset_size = {
       too_much: {
-        title: 'cardinality equal to dataset size',
+        description: 'cardinality equal to dataset size',
         name: 'too much',
         fred: 'category',
         physicalDatatype: 'number',
@@ -522,58 +522,6 @@ class NewUxBootstrapControllerTest < ActionController::TestCase
     mock_metadata[:columns] = cardinality_equal_to_dataset_size
     mock_metadata
   end
-
-  # def v0_mock_dataset_metadata
-  #   multiple_cardtype_types = {
-  #     'category' => ['number', 'text'],
-  #     'identifier' => ['number', 'text'],
-  #     'name' => ['number', 'text'],
-  #     'text' => ['number', 'text'],
-  #   }
-  #   # A sampling of datatypes that map to only one cardtype
-  #   single_cardtype_types = {
-  #     'amount' => ['*'],
-  #     'category' => ['boolean'],
-  #     'identifier' => ['fixed_timestamp', 'money'],
-  #     'location' => ['number', 'point'],
-  #   }
-  #   no_cardtype_types = {
-  #     '*' => ['boolean'],
-  #     'time' => ['geo_entity']
-  #   }
-
-  #   counter = 0
-
-  #   multi_cardtype_cols = columns_for_cardtypes(multiple_cardtype_types, 'multi')
-  #   single_cardtype_cols = columns_for_cardtypes(single_cardtype_types, 'single')
-  #   no_cardtype_cols = columns_for_cardtypes(no_cardtype_types, 'none')
-  #   below_minimum_cardinality = [{
-  #     title: 'below min cardinality',
-  #     name: 'below',
-  #     logicalDatatype: 'category',
-  #     physicalDatatype: 'number',
-  #     cardinality: CardTypeMapping::CARD_TYPE_MAPPING['cardinality']['min'] - 1
-  #   }]
-  #   no_cardinality = [{
-  #     title: 'no cardinality',
-  #     name: 'none',
-  #     logicalDatatype: 'category',
-  #     physicalDatatype: 'number',
-  #   }]
-
-  #   {
-  #     id: 'data-iden',
-  #     name: 'test dataset',
-  #     description: 'dataset for unit test',
-  #     defaultPage: 'defa-ultp',
-  #     columns: [{ title: ':system', name: ':system' }] +
-  #       no_cardinality +
-  #       below_minimum_cardinality +
-  #       no_cardtype_cols.first(2) +
-  #       single_cardtype_cols.first(4) +
-  #       multi_cardtype_cols.first(6)
-  #   }
-  # end
 
   def v0_mock_dataset_metadata
     JSON.parse(File.read("#{Rails.root}/test/fixtures/v0-bootstrap-dataset-metadata.json")).with_indifferent_access

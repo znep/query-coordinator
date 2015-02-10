@@ -101,7 +101,8 @@ class PhidippidesTest < Test::Unit::TestCase
   end
 
   def test_migrate_dataset_metadata_to_v1_in_phase_1_generates_default_page_if_none_exists
-    v1_dataset_metadata_without_default_page = { status: '200', body: v1_dataset_metadata.tap { |metadata| metadata.delete(:defaultPage) } }
+
+    v1_dataset_metadata_without_default_page = { status: '200', body: v1_dataset_metadata.deep_dup.tap { |metadata| metadata.delete(:defaultPage) } }
 
     Phidippides.any_instance.stubs(
       fetch_pages_for_dataset: { status: '200', body: pages_for_dataset }
@@ -130,7 +131,7 @@ class PhidippidesTest < Test::Unit::TestCase
   end
 
   def test_migrate_dataset_metadata_to_v1_in_phase_1_calls_airbrake_when_it_cannot_get_the_page_id_of_the_first_publisher_page
-    v1_dataset_metadata_without_default_page = { status: '200', body: v1_dataset_metadata.tap { |metadata| metadata.delete(:defaultPage) } }
+    v1_dataset_metadata_without_default_page = { status: '200', body: v1_dataset_metadata.deep_dup.tap { |metadata| metadata.delete(:defaultPage) } }
     stub_feature_flags_with(:metadata_transition_phase, '1')
 
     Phidippides.any_instance.stubs(
@@ -167,7 +168,7 @@ class PhidippidesTest < Test::Unit::TestCase
   end
 
   def test_migrate_dataset_metadata_to_v1_in_phase_2_generates_default_page_if_none_exists
-    v1_dataset_metadata_without_default_page = { status: '200', body: v1_dataset_metadata.tap { |metadata| metadata.delete(:defaultPage) } }
+    v1_dataset_metadata_without_default_page = { status: '200', body: v1_dataset_metadata.deep_dup.tap { |metadata| metadata.delete(:defaultPage) } }
 
     Phidippides.any_instance.stubs(
       fetch_pages_for_dataset: { status: '200', body: pages_for_dataset }
@@ -196,7 +197,7 @@ class PhidippidesTest < Test::Unit::TestCase
   end
 
   def test_migrate_dataset_metadata_to_v1_in_phase_2_calls_airbrake_when_it_cannot_get_the_page_id_of_the_first_publisher_page
-    v1_dataset_metadata_without_default_page = { status: '200', body: v1_dataset_metadata.tap { |metadata| metadata.delete(:defaultPage) } }
+    v1_dataset_metadata_without_default_page = { status: '200', body: v1_dataset_metadata.deep_dup.tap { |metadata| metadata.delete(:defaultPage) } }
     stub_feature_flags_with(:metadata_transition_phase, '2')
 
     Phidippides.any_instance.stubs(

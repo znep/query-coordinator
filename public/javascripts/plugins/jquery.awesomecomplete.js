@@ -159,6 +159,7 @@
             });
             $this.blur(function()
             {
+
                 if (mouseDown)
                 {
                     blurWait = true;
@@ -179,7 +180,15 @@
             {
                 if ($list.children(':not(.' + config.noResultsClass + ')').length > 0)
                 {
-                    doShow($this);
+                    if (config.initDelay > 0)
+                    {
+                        setTimeout(function() { doShow($this); }, config.initDelay);
+                    }
+                    else
+                    {
+                        doShow($this);
+                    }
+
                 }
                 else if (config.showAll)
                 { processInput($this); }
@@ -362,7 +371,14 @@
 
         if ((results.length > 0) || (config.noResultsMessage !== undefined))
         {
-            doShow($this);
+            if (config.initDelay > 0)
+            {
+                setTimeout(function() { doShow($this); }, config.initDelay);
+            }
+            else
+            {
+                doShow($this);
+            }
         }
 
     };
@@ -373,7 +389,8 @@
         var config = $this.data('awesomecomplete-config');
 
         config.showFunction($list);
-        $list.show();
+
+        $list.fadeIn(config.fadeInTime);
 
         if (config.forcePosition)
         {
@@ -442,6 +459,8 @@
         showAll: false,
         skipBlankValues: false,
         typingDelay: 0,
+        initDelay: 0,
+        fadeInTime: 0,
         valueFunction: defaultValueFunction,
         wordDelimiter: /[^\da-z]+/ig,
         showAwesomeTip: false,

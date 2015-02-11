@@ -288,7 +288,7 @@ describe('A Choropleth Card Visualization', function() {
 
     });
 
-    it("should fail to extract the shapeFile from the column's 'shapeFile' property if the metadataMigration is in phase 0", function() {
+    it("should fail to extract the shapeFile if the shapeFile property does not exist and the metadataMigration is in phase 0", function() {
 
       testHelpers.overrideMetadataMigrationPhase('0');
 
@@ -339,7 +339,6 @@ describe('A Choropleth Card Visualization', function() {
 
       expect(function() { createChoropleth('choropleth-1', '', false, createDatasetModelWithColumns(columns)) }).to.not.throw();
 
-
       testHelpers.overrideMetadataMigrationPhase('2');
 
       $('#choropleth-1').remove();
@@ -348,7 +347,7 @@ describe('A Choropleth Card Visualization', function() {
 
     });
 
-    it("should fail to extract the shapeFile from the column's 'computationStrategy' object if the metadataMigration is in phase 1 or 2", function() {
+    it("should fail to extract the shapeFile if the shapeFile property does not exist in the column's 'computationStrategy' object and the metadataMigration is in phase 1 or 2", function() {
 
       testHelpers.overrideMetadataMigrationPhase('1');
 
@@ -370,7 +369,6 @@ describe('A Choropleth Card Visualization', function() {
       };
 
       expect(function() { createChoropleth('choropleth-1', '', false, createDatasetModelWithColumns(columns)) }).to.throw();
-
 
       testHelpers.overrideMetadataMigrationPhase('2');
 

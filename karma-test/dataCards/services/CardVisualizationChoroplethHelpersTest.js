@@ -17,7 +17,7 @@ describe('CardVisualizationChoroplethHelpers service', function() {
 
     describe('when extracting a shapeFile', function() {
 
-      it('should log errors for invalid v1 dataset metadata columns', function() {
+      it('should log errors if the region is not present in a v1 dataset metadata column', function() {
 
         var validColumn = {
           "computationStrategy": {
@@ -75,7 +75,7 @@ describe('CardVisualizationChoroplethHelpers service', function() {
 
     describe('when extracting a geometryLabel', function() {
 
-      it('should log warnings for invalid v1 dataset metadata columns', function() {
+      it('should log warnings if the geometryLabel is not present in a v1 dataset metadata column', function() {
 
         var validColumn = {
           "computationStrategy": {

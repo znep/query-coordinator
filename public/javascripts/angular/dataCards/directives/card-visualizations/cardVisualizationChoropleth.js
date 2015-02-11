@@ -89,7 +89,7 @@
               }
 
               if (shapeFile === null) {
-                throw new Error('Dataset metadata column for computed georegion does not include shapefile.');
+                throw new Error('Dataset metadata column for computed georegion does not include shapeFile.');
               }
 
               var sourceColumn = null;
@@ -143,7 +143,7 @@
               }
 
               if (shapeFile === null) {
-                throw new Error('Dataset metadata column for computed georegion does not include shapefile.');
+                throw new Error('Dataset metadata column for computed georegion does not include shapeFile.');
               }
 
               var dataPromise = CardDataService.getChoroplethRegions(shapeFile);

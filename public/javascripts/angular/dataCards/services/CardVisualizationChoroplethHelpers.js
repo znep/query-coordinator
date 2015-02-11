@@ -181,7 +181,7 @@
           var name = geojsonFeature.properties[Constants['INTERNAL_DATASET_FEATURE_ID']];
           var humanReadableName = '';
 
-          if (geometryLabel !== null) {
+          if (_.isString(geometryLabel) && geojsonFeature.properties.hasOwnProperty(geometryLabel)) {
             humanReadableName = geojsonFeature.properties[geometryLabel];
           }
 
@@ -234,7 +234,7 @@
     function aggregateGeoJsonData(geojsonRegions, unfilteredData, filteredData, activeFilters, fieldName, columns) {
 
       var activeFilterNames = _.pluck(activeFilters, 'operand');
-      var geometryLabel;
+      var geometryLabel = null;
 
       var unfilteredDataAsHash = _.reduce(unfilteredData, function(acc, datum) {
         acc[datum.name] = datum.value;

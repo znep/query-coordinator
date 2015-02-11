@@ -65,7 +65,6 @@ angular.module('dataCards.services').factory('SchemaConverter', function(Schemas
           columnBlob.cardinality = columnBlob.cardinality || Math.pow(2, 53) - 1; // MAX_SAFE_INT
 
           delete columnBlob.fred;
-          delete columnBlob.computationStrategy;
 
           return columnBlob;
         });

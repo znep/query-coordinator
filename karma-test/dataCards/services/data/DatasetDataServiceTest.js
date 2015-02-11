@@ -117,7 +117,13 @@ describe('DatasetDataService', function() {
             description: 'Column 3 Geo human description.',
             shapefile: 'shap-fil3',
             importance: 1,
-            cardinality: Math.pow(2, 53) - 1
+            cardinality: Math.pow(2, 53) - 1,
+            computationStrategy: {
+              parameters: {
+                region: 'shap-fil3',
+                geometryLabel: 'someLabelField'
+              }
+            }
           },
           {
             title: 'column_1',
@@ -200,7 +206,6 @@ describe('DatasetDataService', function() {
             if (phaseTestingUnder === 0) {
               expect(data).to.deep.equal(fakeDatasetMetadataResponseV0);
             } else if (phaseTestingUnder === 1) {
-              debugger
               expect(data).to.deep.equal(fakeDatasetMetadataResponseV1RepresentedAsV0);
             } else {
               throw new Error('this test needs to be updated to support phase {0}'.format(phaseTestingUnder));

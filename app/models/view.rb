@@ -981,6 +981,10 @@ class View < Model
     viewType == 'blobby'
   end
 
+  def new_view?
+    viewType == 'href' && displayType == 'new_view'
+  end
+
   def is_href?
     viewType == 'href'
   end
@@ -1053,6 +1057,8 @@ class View < Model
     if !display_class
       if is_blobby?
         display_class = Displays::Blob
+      elsif new_view?
+        display_class = Displays::NewView
       elsif is_href?
         display_class = Displays::Href
       elsif is_api?

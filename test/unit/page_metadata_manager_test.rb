@@ -4,6 +4,7 @@ class PageMetadataManagerTest < Test::Unit::TestCase
 
   def setup
     CurrentDomain.stubs(domain: stub(cname: 'localhost'))
+    NewViewManager.any_instance.stubs(:create)
     Phidippides.any_instance.stubs(connection_details: {
       'address' => 'localhost',
       'port' => '2401'

@@ -16,6 +16,9 @@ module ApplicationHelper
     if view.is_api?
       # use the view's federation resolution but throw away the rest for the resource name instead.
       developer_docs_url(view.route_params.only( :host ).merge( resource: view.resourceName || '' ))
+    elsif view.new_view?
+      # use the direct link stored in the metadata for 'new_view' display types
+      view.metadata.accessPoints['new_view']
     else
       super
     end
@@ -45,6 +48,11 @@ module ApplicationHelper
 
   def feature?(name_or_set)
     CurrentDomain.feature?(name_or_set)
+  end
+
+  # helper for returning a boolean feature flag
+  def feature_flag?(name)
+    !!CurrentDomain.feature_flags[name]
   end
 
 # CACHE HELPERS

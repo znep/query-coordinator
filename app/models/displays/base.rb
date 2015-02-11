@@ -86,6 +86,11 @@ END
       return nil
     end
 
+    # Allow for customization of the CSS icon class, e.g. for icon font
+    def icon_class
+      'icon'
+    end
+
     protected
 
     # Utility for escaping HTML

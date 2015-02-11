@@ -110,15 +110,35 @@ $(function()
                     { return $.t('controls.browse.actions.permissions.change_button.' + (v.context.isPublic() ? 'public' : 'private') + '_html'); },
                 '.permissions.button@class+': function(v)
                     {
+                        if (v.context.isNewView()) {
+                          return 'hide';
+                        }
                         var publicGrant = _.detect(v.context.grants || [], function(grant)
                             { return _.include(grant.flags || [], 'public'); });
                         return v.context.hasRight('update_view') && !v.context.isFederated() &&
                             (!publicGrant || !publicGrant.inherited) ? '' : 'hide';
                     },
                 '.delete.button@class+': function(v)
-                    { return v.context.hasRight('delete_view') &&
-                        !v.context.isFederated() ? '' : 'hide'; },
-                '.comments .value': 'numberOfComments'
+                    {
+                        if (v.context.isNewView()) {
+                            return 'hide';
+                        }
+                        return v.context.hasRight('delete_view') &&
+                            !v.context.isFederated() ? '' : 'hide';
+                    },
+                '.comments .value': 'numberOfComments',
+                '.about@class+': function(v)
+                    {
+                        return v.context.isNewView() ? 'hide' : '';
+                    },
+                '.comments@class+': function(v)
+                    {
+                        return v.context.isNewView() ? 'hide' : '';
+                    },
+                '.starsControl@class+': function(v)
+                    {
+                        return v.context.isNewView() ? 'hide' : '';
+                    }
             }));
 
         blist.datasetControls.hookUpShareMenu(ds, $content.find('.share.menu'),

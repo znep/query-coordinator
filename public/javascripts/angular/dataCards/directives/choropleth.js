@@ -49,19 +49,25 @@
       /**
        * If the values straddle 0, we want to add a break at 0
        *
+       * @return {Number} the index at which we added 0, or -1 if we didn't.
        * @protected
        */
       addZeroIfNecessary: function(classBreaks) {
         var indexOf0 = _.sortedIndex(classBreaks, 0);
-        if (indexOf0 > 0 && indexOf0 < classBreaks.length) {
+        if (indexOf0 > 0 && indexOf0 < classBreaks.length &&
+            // Don't add it if it's already there
+            classBreaks[indexOf0] !== 0 && classBreaks[indexOf0 - 1] !== 0
+           ) {
           classBreaks.splice(indexOf0, 0, 0);
+          return indexOf0;
         }
+        return -1;
       }
     };
     /**
      * A choropleth legend, with discrete colors for ranges of values.
      */
-    function LegendDiscrete(element, container) {
+    function LegendDiscrete(element, container, scope) {
       this.element = element;
       this.container = container;
 
@@ -522,7 +528,10 @@
           range(range);
       },
 
-      _drawAxis: function(legendSvg, tickStops) {
+      /**
+       * Draw the ticks and labels for the legend.
+       */
+      _drawAxis: function(legendSvg, tickStops, indexOf0) {
         var yTickScale = d3.scale.linear().
             domain([tickStops[0], _.last(tickStops)]).
             range([this.element.height(), 0]);
@@ -537,6 +546,17 @@
 
         axis(legendSvg);
 
+        // We want to size the ticks differently than d3's default. Do that manually.
+        var ticks = legendSvg.selectAll('g.tick');
+        var isSmall = true; // Alternate small/big, starting with big.
+        ticks.classed('small', function(value, i) {
+          if (i === indexOf0) {
+            // zero was added artificially. Show a tick, but make it small.
+            return true;
+          }
+          return (isSmall = !isSmall);
+        }).style('opacity', ''); // d3 sets an opacity for some reason. unset it.
+
         return axis;
       },
 
@@ -548,8 +568,6 @@
        * TODO: logarithmic scale
        * power scale
        * tests
-       * tick label size
-       * 0 tick always
        * flyouts
        * lines between rectangles
        * make sure numbers fit AC
@@ -560,10 +578,10 @@
         if (!(data.features && data.features.length)) return;
 
         var tickStops = this._findTickStops(data.features, this.NUM_TICKS);
-        this.addZeroIfNecessary(tickStops);
+        var indexOf0 = this.addZeroIfNecessary(tickStops);
         var colorScale = this._createColorScale(tickStops);
         var legendSvg = this._drawGradient(data.features, tickStops, colorScale);
-        this._drawAxis(legendSvg, tickStops);
+        this._drawAxis(legendSvg, tickStops, indexOf0);
         return colorScale;
       }
     });
@@ -585,7 +603,7 @@
         AngularRxExtensions.install(scope);
 
         var LegendType = attrs.stops === 'continuous' ? LegendContinuous : LegendDiscrete;
-        var legend = new LegendType(element.find('.choropleth-legend'), element);
+        var legend = new LegendType(element.find('.choropleth-legend'), element, scope);
 
         /***********************
          * Mutate Leaflet state *

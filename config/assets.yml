@@ -578,6 +578,7 @@ javascripts:
     - public/javascripts/controls/icon-picker.js
     - public/javascripts/plugins/jquery.awesomereorder.js
     - public/javascripts/plugins/jquery.awesomebubble.js
+    - public/javascripts/plugins/jquery.awesomecomplete.js
   unified-filter:
     - public/javascripts/controls/popup-select.js
     - public/javascripts/controls/panes/base-pane.js

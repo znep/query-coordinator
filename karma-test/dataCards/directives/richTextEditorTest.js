@@ -83,25 +83,28 @@
     });
 
     describe('toolbar', function() {
-      it('displays only the requested buttons', function(done) {
-        createElement('bold italic', null, function() {
-          expect(_.pluck(this.find('.toolbar').find('button'), 'innerHTML').sort()).
-            to.deep.equals(['b', 'i'].sort());
-
-          testHelpers.TestDom.clear();
-
-          createElement('italic bold', null, function() {
+      describe('requested buttons', function() {
+        it('only displays b i', function(done) {
+          createElement('bold italic', null, function() {
             expect(_.pluck(this.find('.toolbar').find('button'), 'innerHTML').sort()).
-              to.deep.equals(['i', 'b'].sort());
+              to.deep.equals(['b', 'i'].sort());
+            done();
+          });
+        });
 
-            testHelpers.TestDom.clear();
+        it('only displays i', function(done) {
+          createElement('italic', null, function() {
+            expect(_.pluck(this.find('.toolbar').find('button'), 'innerHTML').sort()).
+              to.deep.equals(['i'].sort());
+            done();
+          });
+        });
 
-            createElement('underline bold italic', null, function() {
-              expect(_.pluck(this.find('.toolbar').find('button'), 'innerHTML').sort()).
-                to.deep.equals(['u', 'b', 'i'].sort());
-
-              done();
-            });
+        it('only displays u b i', function(done) {
+          createElement('underline bold italic', null, function() {
+            expect(_.pluck(this.find('.toolbar').find('button'), 'innerHTML').sort()).
+              to.deep.equals(['u', 'b', 'i'].sort());
+            done();
           });
         });
       });

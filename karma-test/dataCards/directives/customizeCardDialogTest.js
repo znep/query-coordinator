@@ -21,20 +21,7 @@ describe('Customize card dialog', function() {
   var $templateCache;
   var testHelpers;
   var serverMocks;
-
-  var mockServerConfig = {
-    get: function(key) {
-      if (key === 'oduxCardTypeMapping') {
-        return serverMocks.CARD_TYPE_MAPPING;
-      } else {
-        return true;
-      }
-    }
-  };
-
-  beforeEach(module(function($provide) {
-    $provide.constant('ServerConfig', mockServerConfig);
-  }));
+  var serverConfig;
 
   beforeEach(inject(function($injector) {
     AngularRxExtensions = $injector.get('AngularRxExtensions');
@@ -47,6 +34,9 @@ describe('Customize card dialog', function() {
     $templateCache = $injector.get('$templateCache');
     testHelpers = $injector.get('testHelpers');
     serverMocks = $injector.get('serverMocks');
+    serverConfig = $injector.get('ServerConfig');
+
+    serverConfig.override('oduxCardTypeMapping', serverMocks.CARD_TYPE_MAPPING);
 
     // We don't actually care about the contents of this
     $templateCache.put('/angular_templates/dataCards/cardVisualizationColumnChart.html', '');
@@ -55,6 +45,10 @@ describe('Customize card dialog', function() {
     $templateCache.put('/angular_templates/dataCards/cardVisualizationTable.html', '');
     $templateCache.put('/angular_templates/dataCards/cardVisualizationFeatureMap.html', '');
     $templateCache.put('/angular_templates/dataCards/cardVisualizationInvalid.html', '');
+
+    $httpBackend.whenGET(/\/api\/id\/rook-king.json.*/).respond([]);
+    $httpBackend.whenGET(/\/resource\/rook-king.json.*/).respond([]);
+    $httpBackend.whenGET(/\/resource\/mash-apes.geojson.*/).respond([]);
   }));
 
   afterEach(function() {
@@ -108,16 +102,6 @@ describe('Customize card dialog', function() {
       expanded: false
     };
 
-    if (card.fieldName === 'choropleth') {
-      // These fire when creating a choropleth
-      $httpBackend.expectGET(/\/api\/id\/rook-king.json.*/).respond([]);
-      $httpBackend.expectGET(/\/resource\/rook-king.json.*/).respond([]);
-      $httpBackend.expectGET(/\/resource\/mash-apes.geojson.*/).respond([]);
-    } else if (card.fieldName === 'feature') {
-      // This fires when creating a feature map
-      $httpBackend.expectGET(/\/resource\/rook-king.json.*/).respond([]);
-    }
-
     var cards = options.cards || [];
 
     var datasetModel = new Model();
@@ -140,7 +124,7 @@ describe('Customize card dialog', function() {
       'cardModel': Card.deserialize(pageModel, card),
       'show': true
     };
-    //outerScope.cardModel = Card.deserialize(pageModel, card);
+    outerScope.cardModel = Card.deserialize(pageModel, card);
 
     if (options.preexisting) {
       cards.push(outerScope.cardModel);
@@ -175,8 +159,8 @@ describe('Customize card dialog', function() {
     var dialog = createDialog();
 
     expect(dialog.element.find('card').length).to.equal(1);
-    expect(dialog.element.find('card').scope().cardModel).
-      to.equal(dialog.outerScope.cardModel);
+    expect(dialog.element.find('card div').scope().model).to.not.equal(undefined);
+    expect(dialog.element.find('card div').scope().model.fieldName).to.equal(dialog.outerScope.cardModel.fieldName);
     expect(dialog.element.find('option:contains("Standard")').length).to.equal(1);
   });
 

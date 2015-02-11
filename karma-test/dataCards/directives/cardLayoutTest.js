@@ -14,17 +14,8 @@ describe('CardLayout directive', function() {
   var rootScope;
   var testHelpers;
   var serverMocks;
+  var serverConfig;
   var $templateCache;
-
-  var mockServerConfig = {
-    get: function(key) {
-      if (key === 'oduxCardTypeMapping') {
-        return serverMocks.CARD_TYPE_MAPPING;
-      } else {
-        return true;
-      }
-    }
-  };
 
   beforeEach(module('/angular_templates/dataCards/card-layout.html'));
   beforeEach(module('/angular_templates/dataCards/card.html'));
@@ -59,7 +50,6 @@ describe('CardLayout directive', function() {
         getTimelineDomain: function() { return {then: _.noop}; }
       };
       $provide.value('CardDataService', mockCardDataService);
-      $provide.constant('ServerConfig', mockServerConfig);
 
       mockWindowStateService = {};
       mockWindowStateService.scrollPositionSubject = new Rx.Subject();
@@ -88,12 +78,15 @@ describe('CardLayout directive', function() {
   beforeEach(inject(function($injector) {
     testHelpers = $injector.get('testHelpers');
     serverMocks = $injector.get('serverMocks');
+    serverConfig = $injector.get('ServerConfig');
     rootScope = $injector.get('$rootScope');
     Model = $injector.get('Model');
     Card = $injector.get('Card');
     Page = $injector.get('Page');
     AngularRxExtensions = $injector.get('AngularRxExtensions');
     $q = $injector.get('$q');
+
+    serverConfig.override('oduxCardTypeMapping', serverMocks.CARD_TYPE_MAPPING);
 
     testHelpers.overrideTransitions(true);
     testHelpers.mockDirective(_$provide, 'aggregationChooser');

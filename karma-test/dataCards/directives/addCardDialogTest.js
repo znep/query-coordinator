@@ -26,6 +26,7 @@ describe('addCardDialog', function() {
 
   var testHelpers;
   var serverMocks;
+  var serverConfig;
   var Card;
   var Page;
   var Model;
@@ -35,25 +36,10 @@ describe('addCardDialog', function() {
   var CardTypeMapping;
   var $httpBackend;
 
-  var mockServerConfig = {
-    get: function(key) {
-      if (key === 'oduxCardTypeMapping') {
-        return serverMocks.CARD_TYPE_MAPPING;
-      } else {
-        return true;
-      }
-    }
-  };
-
-  beforeEach(function() {
-    module(function($provide) {
-      $provide.constant('ServerConfig', mockServerConfig);
-    });
-  });
-
   beforeEach(inject(function($injector) {
     testHelpers = $injector.get('testHelpers');
     serverMocks = $injector.get('serverMocks');
+    serverConfig = $injector.get('ServerConfig');
     Card = $injector.get('Card');
     Page = $injector.get('Page');
     Model = $injector.get('Model');
@@ -62,6 +48,12 @@ describe('addCardDialog', function() {
     AngularRxExtensions = $injector.get('AngularRxExtensions');
     CardTypeMapping = $injector.get('CardTypeMapping');
     $httpBackend = $injector.get('$httpBackend');
+
+    serverConfig.override('oduxCardTypeMapping', serverMocks.CARD_TYPE_MAPPING);
+
+    $httpBackend.whenGET(/\/api\/id\/rook-king.json.*/).respond([]);
+    $httpBackend.whenGET(/\/resource\/rook-king.json.*/).respond([]);
+    $httpBackend.whenGET(/\/resource\/mash-apes.geojson.*/).respond([]);
   }));
 
   afterEach(function() {
@@ -302,9 +294,7 @@ describe('addCardDialog', function() {
     var dialog = createDialog();
 
     dialog.scope.dialogState.cardSize = 1;
-    $httpBackend.expectGET(/\/api\/id\/rook-king.json.*/).respond([]);
-    $httpBackend.expectGET(/\/resource\/rook-king.json.*/).respond([]);
-    $httpBackend.expectGET(/\/resource\/mash-apes.geojson.*/).respond([]);
+
     dialog.element.find('option[value=spot]').prop('selected', true).trigger('change');
 
     var button = dialog.element.find('button:contains("Add card")')[0];
@@ -318,9 +308,7 @@ describe('addCardDialog', function() {
     expect(dialog.element.find('card').length).to.equal(0);
 
     dialog.scope.dialogState.cardSize = 2;
-    $httpBackend.expectGET(/\/api\/id\/rook-king.json.*/).respond([]);
-    $httpBackend.expectGET(/\/resource\/rook-king.json.*/).respond([]);
-    $httpBackend.expectGET(/\/resource\/mash-apes.geojson.*/).respond([]);
+
     dialog.element.find('option[value=ward]').prop('selected', true).trigger('change');
 
     expect(dialog.element.find('card').length).to.equal(1);
@@ -332,8 +320,7 @@ describe('addCardDialog', function() {
     expect(dialog.element.find('.add-card-type-option:visible').length).to.equal(0);
 
     dialog.scope.dialogState.cardSize = 2;
-    $httpBackend.expectGET(/\/api\/id\/rook-king.json.*/).respond([]);
-    $httpBackend.expectGET(/\/resource\/rook-king.json.*/).respond([]);
+
     dialog.element.find('option[value=multipleVisualizations]').prop('selected', true).trigger('change');
 
     expect(dialog.element.find('.add-card-type-option:visible').length).to.equal(2);
@@ -347,8 +334,7 @@ describe('addCardDialog', function() {
     expect(dialog.element.find('.add-card-type-option:visible').length).to.equal(0);
 
     dialog.scope.dialogState.cardSize = 2;
-    $httpBackend.expectGET(/\/api\/id\/rook-king.json.*/).respond([]);
-    $httpBackend.expectGET(/\/resource\/rook-king.json.*/).respond([]);
+
     dialog.element.find('option[value=multipleVisualizations]').prop('selected', true).trigger('change');
 
     expect(dialog.element.find('.add-card-type-option:visible').length).to.equal(2);
@@ -363,8 +349,7 @@ describe('addCardDialog', function() {
     expect(dialog.element.find('.add-card-type-option:visible').length).to.equal(0);
 
     dialog.scope.dialogState.cardSize = 2;
-    $httpBackend.expectGET(/\/api\/id\/rook-king.json.*/).respond([]);
-    $httpBackend.expectGET(/\/resource\/rook-king.json.*/).respond([]);
+
     dialog.element.find('option[value=multipleVisualizations]').prop('selected', true).trigger('change');
 
     expect(dialog.element.find('.add-card-type-option:visible').length).to.equal(2);
@@ -387,12 +372,10 @@ describe('addCardDialog', function() {
       displayMode: 'visualization',
       expanded: false
     };
+
     dialog.scope.page.set('cards', [Card.deserialize(dialog.scope.page, serializedCard)]);
 
     dialog.scope.dialogState.cardSize = 2;
-    $httpBackend.expectGET(/\/api\/id\/rook-king.json.*/).respond([]);
-    $httpBackend.expectGET(/\/resource\/rook-king.json.*/).respond([]);
-    $httpBackend.expectGET(/\/resource\/mash-apes.geojson.*/).respond([]);
     dialog.element.find('option[value=ward]').prop('selected', true).trigger('change');
 
     dialog.scope.addCard();
@@ -401,24 +384,18 @@ describe('addCardDialog', function() {
     expect(dialog.scope.cardModels[1].fieldName).to.equal('ward');
   });
 
-  it('displays a "customize" button for choropleths that calls the customize function', function() {
+  it('should display a "customize" button for choropleths that calls the customize function', function() {
     var dialog = createDialog();
 
     var customizeButton = dialog.element.find('.card-control[title^="Customize"]');
     expect(customizeButton.length).to.equal(0); // should only appear for choropleths
 
-    $httpBackend.expectGET(/\/api\/id\/rook-king.json.*/).respond([]);
-    $httpBackend.expectGET(/\/resource\/rook-king.json.*/).respond([]);
-    $httpBackend.expectGET(/\/resource\/mash-apes.geojson.*/).respond([]);
     dialog.element.find('select > option[value="bar"]').prop('selected', true).trigger('change');
 
     customizeButton = dialog.element.find('.card-control[title^="Customize"]');
     expect(customizeButton.length).to.equal(0); // should only appear for choropleths
 
     // Now select the choropleth
-    $httpBackend.expectGET(/\/api\/id\/rook-king.json.*/).respond([]);
-    $httpBackend.expectGET(/\/resource\/rook-king.json.*/).respond([]);
-    $httpBackend.expectGET(/\/resource\/mash-apes.geojson.*/).respond([]);
     dialog.element.find('select > option[value="ward"]').prop('selected', true).trigger('change');
 
 

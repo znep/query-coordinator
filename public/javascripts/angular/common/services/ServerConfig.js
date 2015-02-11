@@ -32,6 +32,9 @@
 
       return phaseAsInt;
     },
+    shouldConsumeComputationStrategy: function() {
+      return ServerConfig.metadataMigration.currentPhase() > 0;
+    },
     datasetMetadata: {
       // Whether or not to use the new flex dataset metadata
       // endpoint and schema.

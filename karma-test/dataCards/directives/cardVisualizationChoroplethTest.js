@@ -1,5 +1,5 @@
 describe('A Choropleth Card Visualization', function() {
-  var testHelpers, rootScope, templateCache, compile, scope, Model, q, timeout;
+  var testHelpers, serverConfig, rootScope, templateCache, compile, scope, Model, q, timeout;
   var fakeClock = null;
   var enableBoundingBoxes = true;
 
@@ -42,23 +42,9 @@ describe('A Choropleth Card Visualization', function() {
     });
   });
 
-  beforeEach(function() {
-    module(function($provide) {
-      var mockServerConfig = {
-        get: function(key) {
-          if (key === 'enableBoundingBoxes') {
-            return enableBoundingBoxes;
-          } else {
-            return true;
-          }
-        }
-      };
-      $provide.constant('ServerConfig', mockServerConfig);
-    });
-  });
-
   beforeEach(inject(function($injector) {
     testHelpers = $injector.get('testHelpers');
+    serverConfig = $injector.get('ServerConfig');
     rootScope = $injector.get('$rootScope');
     templateCache = $injector.get('$templateCache');
     compile = $injector.get('$compile');
@@ -81,49 +67,61 @@ describe('A Choropleth Card Visualization', function() {
     fakeClock = null;
   });
 
-  function createChoropleth(id, whereClause, testUndefinedColumns) {
+  function createDatasetModelWithColumns(columns) {
+
+    var datasetModel = new Model();
+
+    datasetModel.id = 'four-four';
+    datasetModel.defineObservableProperty('rowDisplayUnit', rowDisplayUnit);
+    datasetModel.defineObservableProperty('columns', columns);
+
+    return datasetModel;
+
+  }
+
+  function createChoropleth(id, whereClause, testUndefinedColumns, datasetModel) {
 
     var model = new Model();
     model.fieldName = 'ward';
     model.defineObservableProperty('activeFilters', []);
     model.defineObservableProperty('baseLayerUrl', 'https://a.tiles.mapbox.com/v3/socrata-apps.ibp0l899/{z}/{x}/{y}.png');
 
-    var datasetModel = new Model();
-    datasetModel.id = 'four-four';
-    datasetModel.fieldName = 'ward';
-    datasetModel.defineObservableProperty('rowDisplayUnit', rowDisplayUnit);
+    if (!datasetModel) {
 
-    var columnsData;
-    // Note that although dataset columns come back from Phidippides as an array,
-    // there is some internal mechanism in the Model that translates it into a
-    // dictionary of the form "fieldName" : { ... }. This test data needs to
-    // fake the second form since it (somehow?) seems to sidestep that transformation.
-    if (!testUndefinedColumns) {
-      columnsData = {
-        "points": {
-          "name": "points",
-          "title": "source column.",
-          "description": "required",
-          "logicalDatatype": "location",
-          "physicalDatatype": "point",
-          "importance": 2
-        },
-        "ward": {
-          "name": "ward",
-          "title": "Ward where crime was committed.",
-          "description": "Batman has bigger fish to fry sometimes, you know.",
-          "logicalDatatype": "location",
-          "physicalDatatype": "text",
-          "importance": 2,
-          "shapefile": "snuk-a5kv" // It is important that this gets converted into a shapefileHumanReadablePropertyName in
-                                   // cardVisualizationChoropleth.js which matches the test fixture, so do not change this
-                                   // until we either a) change the test fixture or b) remove the notion of
-                                   // shapefileHumanReadablePropertyName all together.
-        }
-      };
+      var columnsData;
+      // Note that although dataset columns come back from Phidippides as an array,
+      // there is some internal mechanism in the Model that translates it into a
+      // dictionary of the form "fieldName" : { ... }. This test data needs to
+      // fake the second form since it (somehow?) seems to sidestep that transformation.
+      if (!testUndefinedColumns) {
+        columnsData = {
+          "points": {
+            "name": "points",
+            "title": "source column.",
+            "description": "required",
+            "logicalDatatype": "location",
+            "physicalDatatype": "point",
+            "importance": 2
+          },
+          "ward": {
+            "name": "ward",
+            "title": "Ward where crime was committed.",
+            "description": "Batman has bigger fish to fry sometimes, you know.",
+            "logicalDatatype": "location",
+            "physicalDatatype": "text",
+            "importance": 2,
+            // It is important that this gets converted into a shapefileHumanReadablePropertyName in
+            // cardVisualizationChoropleth.js which matches the test fixture, so do not change this
+            // until we either a) change the test fixture or b) remove the notion of
+            // shapefileHumanReadablePropertyName all together.
+            "shapefile": "snuk-a5kv"
+          }
+        };
+      }
+
+      datasetModel = createDatasetModelWithColumns(columnsData);
+
     }
-
-    datasetModel.defineObservableProperty('columns', columnsData);
 
     var pageModel = new Model();
     pageModel.defineObservableProperty('dataset', datasetModel);
@@ -240,7 +238,7 @@ describe('A Choropleth Card Visualization', function() {
 
     it('should should not terminate with a TypeError if enableBoundingBoxes is true and columns is undefined', function(){
 
-      enableBoundingBoxes = true;
+      serverConfig.override('enableBoundingBoxes', true);
 
       $('#choropleth-1').remove();
       $('#choropleth-2').remove();
@@ -253,7 +251,7 @@ describe('A Choropleth Card Visualization', function() {
 
     it('should should not terminate with a TypeError if enableBoundingBoxes is false and columns is undefined', function(){
 
-      enableBoundingBoxes = false;
+      serverConfig.override('enableBoundingBoxes', false);
 
       $('#choropleth-1').remove();
       $('#choropleth-2').remove();
@@ -264,8 +262,123 @@ describe('A Choropleth Card Visualization', function() {
 
     });
 
-  });
+    it("should not fail to extract the shapeFile from the column's 'shapeFile' property if the metadataMigration is in phase 0", function() {
 
+      testHelpers.overrideMetadataMigrationPhase('0');
+
+      $('#choropleth-1').remove();
+
+      var columns = {
+        "ward": {
+          "name": "ward",
+          "title": "Ward where crime was committed.",
+          "description": "Batman has bigger fish to fry sometimes, you know.",
+          "logicalDatatype": "location",
+          "physicalDatatype": "text",
+          "importance": 2,
+          // It is important that this gets converted into a shapefileHumanReadablePropertyName in
+          // cardVisualizationChoropleth.js which matches the test fixture, so do not change this
+          // until we either a) change the test fixture or b) remove the notion of
+          // shapefileHumanReadablePropertyName all together.
+          "shapefile": "snuk-a5kv"
+        }
+      };
+
+      expect(function() { createChoropleth('choropleth-1', '', false, createDatasetModelWithColumns(columns)) }).to.not.throw();
+
+    });
+
+    it("should fail to extract the shapeFile if the shapeFile property does not exist and the metadataMigration is in phase 0", function() {
+
+      testHelpers.overrideMetadataMigrationPhase('0');
+
+      $('#choropleth-1').remove();
+
+      var columns = {
+        "ward": {
+          "name": "ward",
+          "title": "Ward where crime was committed.",
+          "description": "Batman has bigger fish to fry sometimes, you know.",
+          "logicalDatatype": "location",
+          "physicalDatatype": "text",
+          "importance": 2
+        }
+      };
+
+      expect(function() { createChoropleth('choropleth-1', '', false, createDatasetModelWithColumns(columns)) }).to.throw();
+
+    });
+
+    it("should not fail to extract the shapeFile from the column's 'computationStrategy' object if the metadataMigration is in phase 1 or 2", function() {
+
+      testHelpers.overrideMetadataMigrationPhase('1');
+
+      $('#choropleth-1').remove();
+
+      var columns = {
+        "ward": {
+          "name": "ward",
+          "title": "Ward where crime was committed.",
+          "description": "Batman has bigger fish to fry sometimes, you know.",
+          "logicalDatatype": "location",
+          "physicalDatatype": "text",
+          "computationStrategy": {
+            "parameters": {
+              "region": "_snuk-a5kv",
+              "geometryLabel": "geoid10"
+            },
+            "strategy_type": "georegion_match_on_point"
+          },
+          // It is important that this gets converted into a shapefileHumanReadablePropertyName in
+          // cardVisualizationChoropleth.js which matches the test fixture, so do not change this
+          // until we either a) change the test fixture or b) remove the notion of
+          // shapefileHumanReadablePropertyName all together.
+          "shapefile": "snuk-a5kv"
+        }
+      };
+
+      expect(function() { createChoropleth('choropleth-1', '', false, createDatasetModelWithColumns(columns)) }).to.not.throw();
+
+      testHelpers.overrideMetadataMigrationPhase('2');
+
+      $('#choropleth-1').remove();
+
+      expect(function() { createChoropleth('choropleth-1', '', false, createDatasetModelWithColumns(columns)) }).to.not.throw();
+
+    });
+
+    it("should fail to extract the shapeFile if the shapeFile property does not exist in the column's 'computationStrategy' object and the metadataMigration is in phase 1 or 2", function() {
+
+      testHelpers.overrideMetadataMigrationPhase('1');
+
+      $('#choropleth-1').remove();
+
+      var columns = {
+        "ward": {
+          "name": "ward",
+          "title": "Ward where crime was committed.",
+          "description": "Batman has bigger fish to fry sometimes, you know.",
+          "logicalDatatype": "location",
+          "physicalDatatype": "text",
+          // It is important that this gets converted into a shapefileHumanReadablePropertyName in
+          // cardVisualizationChoropleth.js which matches the test fixture, so do not change this
+          // until we either a) change the test fixture or b) remove the notion of
+          // shapefileHumanReadablePropertyName all together.
+          "shapefile": "snuk-a5kv"
+        }
+      };
+
+      expect(function() { createChoropleth('choropleth-1', '', false, createDatasetModelWithColumns(columns)) }).to.throw();
+
+      testHelpers.overrideMetadataMigrationPhase('2');
+
+      $('#choropleth-1').remove();
+
+      expect(function() { createChoropleth('choropleth-1', '', false, createDatasetModelWithColumns(columns)) }).to.throw();
+
+    });
+
+  });
 
 });
 

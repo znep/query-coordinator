@@ -19,16 +19,9 @@
     var visualizationUtils = ChoroplethVisualizationService.utils;
 
 
-    /**
-     * A choropleth legend, with discrete colors for ranges of values.
-     */
-    function LegendDiscrete(element, container) {
-      this.element = element;
-      this.container = container;
-    }
-    $.extend(LegendDiscrete.prototype, {
+    var LegendCommon = {
       /**
-       * @private
+       * @protected
        */
       bigNumTickFormatter: function(val) {
         // used if ss.standard_deviation(classBreaks) > 10
@@ -53,7 +46,40 @@
         }
         return formattedNum;
       },
+      /**
+       * If the values straddle 0, we want to add a break at 0
+       *
+       * @protected
+       */
+      addZeroIfNecessary: function(classBreaks) {
+        var indexOf0 = _.sortedIndex(classBreaks, 0);
+        if (indexOf0 > 0 && indexOf0 < classBreaks.length) {
+          classBreaks.splice(indexOf0, 0, 0);
+        }
+      }
+    };
+    /**
+     * A choropleth legend, with discrete colors for ranges of values.
+     */
+    function LegendDiscrete(element, container) {
+      this.element = element;
+      this.container = container;
 
+      // Initialize the flyout handler
+      FlyoutService.register('choropleth-legend-color', function(element) {
+        if ($(element).parents('.card').hasClass('dragged')) {
+          return;
+        }
+        return '<div class="flyout-title">{0}</div>'.format(
+          element.getAttribute('data-flyout-text')
+        );
+      },
+      scope.eventToObservable('$destroy'),
+      false,
+      // The last argument specifies a horizontal display mode.
+      true);
+    }
+    $.extend(LegendDiscrete.prototype, LegendCommon, {
       /**
        * @private
        */
@@ -63,15 +89,6 @@
         return Math.floor(percentOfClassbreakRange * totalHeight);
       },
 
-      /**
-       * If the values straddle 0, we want to add a break at 0
-       */
-      addZeroIfNecessary: function(classBreaks) {
-        var indexOf0 = _.sortedIndex(classBreaks, 0);
-        if (indexOf0 > 0 && indexOf0 < classBreaks.length) {
-          classBreaks.splice(indexOf0, 0, 0);
-        }
-      },
       ZERO_COLOR: '#eeeeee',
       NEGATIVE_COLOR: '#c6663d',
       POSITIVE_COLOR: '#408499',
@@ -376,7 +393,7 @@
       this.element = element.addClass('legend-continuous');
       this.container = container;
     }
-    $.extend(LegendContinuous.prototype, {
+    $.extend(LegendContinuous.prototype, LegendCommon, {
       ZERO_COLOR: '#ffffff',
       NEGATIVE_COLOR: '#c6663d',
       POSITIVE_COLOR: '#003747',
@@ -425,27 +442,35 @@
        * @private
        */
       _drawGradient: function(features, tickStops, colorScale) {
-        var legendSvg = d3.select(this.element[0]).append('svg');
+        var elementSelection = d3.select(this.element[0]);
+        // Create the svg element
+        var legendSvg = elementSelection.data([0]).selectAll('svg').data([0]);
+        legendSvg.exit().remove();
+        legendSvg.enter().append('svg').
+          // Create the gradient that's referenced later when the containing rectangle is drawn.
+          append('linearGradient').attr({
+            id: 'gradient',
+            gradientUnits: 'userSpaceOnUse',
+            y1: '100%', x1: 0, x2: 0, y2: 0
+          });
+        // Due to a webkit bug (https://bugs.webkit.org/show_bug.cgi?id=83438), we can't select a
+        // camelCase element. So select it by id
+        var gradient = legendSvg.selectAll('#gradient');
         var min = tickStops[0];
         var max = _.last(tickStops);
         var range = max - min;
 
-        // Create the gradient, that's referenced later when the containing rectangle is drawn.
-        var gradient = legendSvg.
-            append('linearGradient').
-            attr({
-              id: 'gradient',
-              gradientUnits: 'userSpaceOnUse',
-              y1: '100%', x1: 0, x2: 0, y2: 0
-            });
         // We'll make a stop in the gradient for each tick stop, to ensure the gradients grade
         // similarly.
-        _.each(tickStops, function(value) {
-          gradient.append('stop').attr({
-            offset: (100 * (value - min) / range) + '%',
-            'stop-color': colorScale(value)
-          });
+        var gradientStops = gradient.selectAll('stop').data(tickStops);
+        gradientStops.enter().append('stop');
+        gradientStops.attr({
+          offset: function(value) {
+            return (100 * (value - min) / range) + '%';
+          },
+          'stop-color': colorScale
         });
+        gradientStops.exit().remove();
 
         // Draw the rectangles in pieces, so as to store the data, so the ticks can access them.
         var rectangles = legendSvg.selectAll('rect').data(tickStops.slice(0, tickStops.length - 1));
@@ -505,6 +530,11 @@
             scale(yTickScale).
             tickValues(tickStops).
             orient('left');
+
+        if (_.last(tickStops) - tickStops[0] > 10) {
+          axis.tickFormat(this.bigNumTickFormatter);
+        }
+
         axis(legendSvg);
 
         return axis;
@@ -515,12 +545,22 @@
       /**
        * Redraw the legend.
        *
+       * TODO: logarithmic scale
+       * power scale
+       * tests
+       * tick label size
+       * 0 tick always
+       * flyouts
+       * lines between rectangles
+       * make sure numbers fit AC
+       *
        * @return {d3.scale} a scale mapping from value to color.
        */
       update: function(data) {
         if (!(data.features && data.features.length)) return;
 
         var tickStops = this._findTickStops(data.features, this.NUM_TICKS);
+        this.addZeroIfNecessary(tickStops);
         var colorScale = this._createColorScale(tickStops);
         var legendSvg = this._drawGradient(data.features, tickStops, colorScale);
         this._drawAxis(legendSvg, tickStops);
@@ -904,19 +944,6 @@
         // the cursor (true) or be fixed to the target element (false).
         true,
         false);
-
-        FlyoutService.register('choropleth-legend-color', function(element) {
-          if ($(element).parents('.card').hasClass('dragged')) {
-            return;
-          }
-          return '<div class="flyout-title">{0}</div>'.format(
-            element.getAttribute('data-flyout-text')
-          );
-        },
-        scope.eventToObservable('$destroy'),
-        false,
-        // The last argument specifies a horizontal display mode.
-        true);
 
         /***************
         * Set up state *

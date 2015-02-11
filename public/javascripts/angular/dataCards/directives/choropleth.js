@@ -407,9 +407,7 @@
        * Finds an array of values, including the min, max, and numStops - 2 more values,
        * evenly-spaced between the min and max.
        *
-       * @param {Object[]} features an array of features, where the following keys exist:
-       *   @property {Object} properties a hash of properties
-       *     @property {Number} Constants.UNFILTERED_VALUE_PROPERTY_NAME the unfiltered value.
+       * @param {d3.scale} scale a d3 scale whose domain is the value domain.
        * @param {Number} numStops the number of values to find.
        *
        * @return {Number[]} a sorted array of numbers, of length numStops. The first element is the
@@ -417,29 +415,16 @@
        *   evenly spaced between them (and may not actually appear in the dataset).
        * @private
        */
-      _findTickStops: function(features, numStops) {
-        var firstValue = features[0].properties[Constants.UNFILTERED_VALUE_PROPERTY_NAME];
-        var minMax = _.reduce(features, function(minMax, feature) {
-          var value = feature.properties[Constants.UNFILTERED_VALUE_PROPERTY_NAME];
-          if (minMax.min > value) {
-            minMax.min = value;
-          } else if (minMax.max < value) {
-            minMax.max = value;
-          }
-          return minMax;
-        }, {min: firstValue, max: firstValue});
-
-        // Use a scale to generate the intermediate values between min and max.
-        var scale = d3.scale['linear']().
-          range([minMax.min, minMax.max]);
-        return _.map(_.range(0, 1, 1 / (numStops - 1)), scale).
-            concat(minMax.max);
+      _findTickStops: function(scale, numStops) {
+        var scaleForReversing = scale.copy().range([0, 1]);
+        return _.map(_.range(0, 1, 1 / (numStops - 1)),
+                     _.bind(scaleForReversing.invert, scaleForReversing)).
+                 concat(_.last(scaleForReversing.domain()));
       },
 
       /**
        * Draw an SVG rectangle with the appropriate gradient.
        *
-       * @param {Object[]} features to be passed to {@link #_findTickStops}
        * @param {Number[]} tickStops the values at which ticks will be drawn. The first value should
        *   be the minimum value, and the last value should be the maximum.
        * @param {d3.scale} colorScale a scale from a value, to a color.
@@ -447,7 +432,7 @@
        * @return {d3.selection} the svg's d3 selection.
        * @private
        */
-      _drawGradient: function(features, tickStops, colorScale) {
+      _drawGradient: function(tickStops, colorScale) {
         var elementSelection = d3.select(this.element[0]);
         // Create the svg element
         var legendSvg = elementSelection.data([0]).selectAll('svg').data([0]);
@@ -462,9 +447,13 @@
         // Due to a webkit bug (https://bugs.webkit.org/show_bug.cgi?id=83438), we can't select a
         // camelCase element. So select it by id
         var gradient = legendSvg.selectAll('#gradient');
-        var min = tickStops[0];
-        var max = _.last(tickStops);
-        var range = max - min;
+
+        // Create a scale for positioning values by percentage
+        var positionScale = colorScale.copy().range([0, 100]);
+        var domain = positionScale.domain();
+        if (domain.length > 2) {
+          positionScale.domain([domain[0], _.last(domain)]);
+        }
 
         // We'll make a stop in the gradient for each tick stop, to ensure the gradients grade
         // similarly.
@@ -472,7 +461,7 @@
         gradientStops.enter().append('stop');
         gradientStops.attr({
           offset: function(value) {
-            return (100 * (value - min) / range) + '%';
+            return positionScale(value) + '%';
           },
           'stop-color': colorScale
         });
@@ -485,7 +474,7 @@
           append('rect').attr({
             x: 0,
             y: function(value) {
-              return (100 * (value - min) / range) + '%';
+              return positionScale(value) + '%';
             },
             width: '100%',
             height: height,
@@ -501,11 +490,12 @@
        *
        * @param {Number[]} tickStops an array of values, the first of which should be the minimum
        *   value of the data, the last of which should be the maximum value of the data.
+       * @param {d3.scale} scale a d3 scale whose domain is the value domain.
        *
        * @return {d3.scale} a scale mapping from a value within features, to a color.
        * @private
        */
-      _createColorScale: function(tickStops) {
+      _createColorScale: function(tickStops, scale) {
         var domain;
         var range = [this.NEGATIVE_COLOR, this.ZERO_COLOR, this.POSITIVE_COLOR];
         var min = tickStops[0];
@@ -523,7 +513,7 @@
           domain = [min, 0, max];
         }
 
-        return d3.scale.linear().
+        return scale.copy().
           domain(domain).
           range(range);
       },
@@ -531,12 +521,10 @@
       /**
        * Draw the ticks and labels for the legend.
        */
-      _drawAxis: function(legendSvg, tickStops, indexOf0) {
-        var yTickScale = d3.scale.linear().
-            domain([tickStops[0], _.last(tickStops)]).
-            range([this.element.height(), 0]);
+      _drawAxis: function(legendSvg, tickStops, scale, indexOf0) {
+        var positionScale = scale.copy().range([this.element.height(), 0]);
         var axis = d3.svg.axis().
-            scale(yTickScale).
+            scale(positionScale).
             tickValues(tickStops).
             orient('left');
 
@@ -560,16 +548,42 @@
         return axis;
       },
 
+      /**
+       * Determines the type of d3 scale to create for the given values, and creates it.
+       *
+       * @param {Number[]} values the data values we're visualizing.
+       * @param {Number=} min the minimum value within values. Saves us the trouble of finding it,
+       *   if you already have it.
+       * @param {Number=} max the maximum value within values. Saves us the trouble of finding it,
+       *   if you already have it.
+       *
+       * @return {d3.scale} a d3 scale of the determined type, with the domain set.
+       */
+      _scaleForValues: function(values, min, max) {
+        min = min || _.min(values);
+        max = max || _.max(values);
+        var deltaMagnitude = _.log10(Math.abs(max / min));
+        var scale;
+        if (deltaMagnitude < 1) {
+          scale = d3.scale.linear();
+        } else if (deltaMagnitude <= 3) {
+          scale = d3.scale.log();
+        } else {
+          // TODO: determine what the exponent should be based on the value distribution?
+          scale = d3.scale.pow().exponent(2);
+        }
+
+        return scale.domain([min, max]);
+      },
+
       NUM_TICKS: 5,
 
       /**
        * Redraw the legend.
        *
-       * TODO: logarithmic scale
-       * power scale
+       * TODO:
        * tests
        * flyouts
-       * lines between rectangles
        * make sure numbers fit AC
        *
        * @return {d3.scale} a scale mapping from value to color.
@@ -577,11 +591,21 @@
       update: function(data) {
         if (!(data.features && data.features.length)) return;
 
-        var tickStops = this._findTickStops(data.features, this.NUM_TICKS);
+        var values = _.pluck(
+          _.pluck(data.features, 'properties'),
+          Constants.UNFILTERED_VALUE_PROPERTY_NAME
+        );
+        var min = _.min(values);
+        var max = _.max(values);
+
+        var scale = this._scaleForValues(values, min, max);
+        var tickStops = this._findTickStops(scale, this.NUM_TICKS);
         var indexOf0 = this.addZeroIfNecessary(tickStops);
-        var colorScale = this._createColorScale(tickStops);
-        var legendSvg = this._drawGradient(data.features, tickStops, colorScale);
-        this._drawAxis(legendSvg, tickStops, indexOf0);
+
+        var colorScale = this._createColorScale(tickStops, scale);
+        var legendSvg = this._drawGradient(tickStops, colorScale);
+        this._drawAxis(legendSvg, tickStops, scale, indexOf0);
+
         return colorScale;
       }
     });

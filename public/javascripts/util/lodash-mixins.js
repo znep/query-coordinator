@@ -38,5 +38,12 @@ _.mixin({
     return function() {
       _.defer(f);
     };
+  },
+  /**
+   * @return {Number} the log, base 10, of the given number.
+   */
+  log10: Math.log10 || function(n) {
+    return Math.log(n) / Math.LN10;
   }
+
 });

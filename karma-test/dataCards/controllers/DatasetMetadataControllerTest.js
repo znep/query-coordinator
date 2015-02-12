@@ -1,5 +1,5 @@
 describe('DatasetMetadataController', function() {
-  var Dataset;
+  var DatasetV0;
   var $q;
   var $rootScope;
   var $controller;
@@ -37,7 +37,7 @@ describe('DatasetMetadataController', function() {
     });
   });
   beforeEach(inject(function($injector){
-    Dataset = $injector.get('Dataset');
+    DatasetV0 = $injector.get('DatasetV0');
     $q = $injector.get('$q');
     $rootScope = $injector.get('$rootScope');
     $controller = $injector.get('$controller');
@@ -47,7 +47,7 @@ describe('DatasetMetadataController', function() {
     var scope = $rootScope.$new();
     var fakeDatasetId = 'fake-fbfr';
 
-    var dataset = new Dataset(fakeDatasetId);
+    var dataset = new DatasetV0(fakeDatasetId);
 
     var datasetMetadataPromise = $q.defer();
     var pagesInfoPromise = $q.defer();

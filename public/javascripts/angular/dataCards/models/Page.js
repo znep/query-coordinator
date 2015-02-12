@@ -1,4 +1,4 @@
-angular.module('dataCards.models').factory('Page', function($q, Dataset, Card, Model, PageDataService) {
+angular.module('dataCards.models').factory('Page', function($q, DatasetV0, Card, Model, PageDataService) {
   var Page = Model.extend({
     // Builds a page model from either the page ID (given as a string),
     // or as a full serialized blob.
@@ -37,7 +37,7 @@ angular.module('dataCards.models').factory('Page', function($q, Dataset, Card, M
 
       self.defineObservableProperty('dataset', null, function() {
         return pageMetadataPromise().then(function(data) {
-          return new Dataset(data.datasetId);
+          return new DatasetV0(data.datasetId);
         });
       });
 

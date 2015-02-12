@@ -1,6 +1,6 @@
 describe('CardsViewController', function() {
   var Page;
-  var Dataset;
+  var DatasetV0;
   var Card;
   var testHelpers;
   var serverMocks;
@@ -142,13 +142,13 @@ describe('CardsViewController', function() {
   });
 
   beforeEach(inject([
-    '$q', 'Card', 'Page', 'Dataset', '$rootScope', '$controller', '$window', 'testHelpers',
+    '$q', 'Card', 'Page', 'DatasetV0', '$rootScope', '$controller', '$window', 'testHelpers',
     'serverMocks', '$httpBackend',
-    function(_$q, _Card, _Page, _Dataset, _$rootScope, _$controller, _$window, _testHelpers,
+    function(_$q, _Card, _Page, _DatasetV0, _$rootScope, _$controller, _$window, _testHelpers,
              _serverMocks, _$httpBackend) {
       Card = _Card;
       Page = _Page;
-      Dataset = _Dataset;
+      DatasetV0 = _DatasetV0;
       $q = _$q;
       $rootScope = _$rootScope;
       $controller = _$controller;

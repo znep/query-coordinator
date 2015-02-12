@@ -1,19 +1,19 @@
 // This model is intended to be an immutable reference to a Dataset.
-angular.module('dataCards.models').factory('Dataset', function(ModelHelper, Model, CardDataService, DatasetDataService, Schemas, SchemaDefinitions, $injector) {
+angular.module('dataCards.models').factory('DatasetV0', function(ModelHelper, Model, CardDataService, DatasetDataService, Schemas, SchemaDefinitions, $injector) {
   var SUPPORTED_DATASET_SCHEMA_VERSION = '0';
   var SUPPORTED_PAGES_SCHEMA_VERSION = '0';
 
   var schemas = Schemas.regarding('dataset_metadata');
 
   //TODO cache instances or share cache.
-  var Dataset = Model.extend({
+  var DatasetV0 = Model.extend({
     init: function(id) {
       this._super();
 
       var self = this;
 
       if (!SchemaDefinitions.uidRegexp.test(id)) {
-        throw new Error('Bad dataset ID passed to Dataset constructor.');
+        throw new Error('Bad dataset ID passed to DatasetV0 constructor.');
       }
       self.id = id;
 
@@ -28,7 +28,7 @@ angular.module('dataCards.models').factory('Dataset', function(ModelHelper, Mode
             return blob;
           } else {
             var validationErrors = schemas.validateAgainstVersion('0', blob).errors;
-            throw new Error('Dataset metadata deserialization failed: ' + JSON.stringify(validationErrors) + JSON.stringify(blob));
+            throw new Error('DatasetV0 model metadata deserialization failed: ' + JSON.stringify(validationErrors) + JSON.stringify(blob));
           }
         }).then(function(blob) {
           blob.updatedAt = new Date(blob.updatedAt);
@@ -99,5 +99,5 @@ angular.module('dataCards.models').factory('Dataset', function(ModelHelper, Mode
     }
   });
 
-  return Dataset;
+  return DatasetV0;
 });

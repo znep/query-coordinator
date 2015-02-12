@@ -1,5 +1,5 @@
 describe('Page model', function() {
-  var Page, Dataset, $q, $rootScope, Model;
+  var Page, DatasetV0, $q, $rootScope, Model;
 
   var MockPageDataService = {};
 
@@ -12,7 +12,7 @@ describe('Page model', function() {
 
   beforeEach(inject(function($injector) {
     Page = $injector.get('Page');
-    Dataset = $injector.get('Dataset');
+    DatasetV0 = $injector.get('DatasetV0');
     $q = $injector.get('$q');
     $rootScope = $injector.get('$rootScope');
     Model = $injector.get('Model');
@@ -80,7 +80,7 @@ describe('Page model', function() {
     expect(expectedSequence).to.be.empty;
   });
 
-  it('should eventually return a Dataset model from the dataset property', function(done) {
+  it('should eventually return a DatasetV0 model from the dataset property', function(done) {
     var id = 'dead-beef';
     var datasetId = 'fooo-baar';
 
@@ -92,7 +92,7 @@ describe('Page model', function() {
 
     var instance = new Page(id);
     instance.observe('dataset').subscribe(function(val) {
-      if (val instanceof Dataset) {
+      if (val instanceof DatasetV0) {
         expect(val.id).to.equal(datasetId);
         done();
       }

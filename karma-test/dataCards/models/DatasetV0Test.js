@@ -1,8 +1,8 @@
-describe("Dataset model", function() {
+describe('DatasetV0 model', function() {
   var MockDataService = {};
-  var _Dataset, _Page;
+  var _DatasetV0, _Page;
 
-  // Minimal Dataset blob which will validate.
+  // Minimal DatasetV0 blob which will validate.
   var minimalBlob = {
     id: 'asdf-fdsa',
     name: 'test dataset name',
@@ -20,26 +20,26 @@ describe("Dataset model", function() {
     })
   });
 
-  beforeEach(inject(function(Page, Dataset, $q, $rootScope) {
+  beforeEach(inject(function(Page, DatasetV0, $q, $rootScope) {
     _Page = Page;
-    _Dataset = Dataset;
+    _DatasetV0 = DatasetV0;
     _$q = $q;
     _$rootScope = $rootScope;
   }));
 
-  it('should correctly report the id passed into the constructor.', inject(function(Dataset) {
+  it('should correctly report the id passed into the constructor.', inject(function(DatasetV0) {
     var id = 'dead-beef';
-    var instance = new Dataset(id);
+    var instance = new DatasetV0(id);
     expect(instance.id).to.equal(id);
   }));
 
-  it('should reject bad/no 4x4s passed into the constructor.', inject(function(Dataset) {
-    expect(function(){new Dataset();}).to.throw();
-    expect(function(){new Dataset(5);}).to.throw();
-    expect(function(){new Dataset(null);}).to.throw();
-    expect(function(){new Dataset('1234-12345');}).to.throw();
-    expect(function(){new Dataset('12345-1234');}).to.throw();
-    expect(function(){new Dataset('foo.-beef');}).to.throw();
+  it('should reject bad/no 4x4s passed into the constructor.', inject(function(DatasetV0) {
+    expect(function(){new DatasetV0();}).to.throw();
+    expect(function(){new DatasetV0(5);}).to.throw();
+    expect(function(){new DatasetV0(null);}).to.throw();
+    expect(function(){new DatasetV0('1234-12345');}).to.throw();
+    expect(function(){new DatasetV0('12345-1234');}).to.throw();
+    expect(function(){new DatasetV0('foo.-beef');}).to.throw();
   }));
 
   it('should eventually return a value from the rowDisplayUnit property', function(done) {
@@ -52,7 +52,7 @@ describe("Dataset model", function() {
       return datasetMetadataDefer.promise;
     };
 
-    var instance = new _Dataset(testId);
+    var instance = new _DatasetV0(testId);
     instance.observe('rowDisplayUnit').subscribe(function(val) {
       if (val) {
         expect(val).to.equal(fakeDisplayUnit);
@@ -85,7 +85,7 @@ describe("Dataset model", function() {
       return def.promise;
     };
 
-    var instance = new _Dataset(testId);
+    var instance = new _DatasetV0(testId);
     instance.observe('pages').subscribe(function(pagesBySource) {
       if (!_.isEmpty(pagesBySource)) {
         _.each(pagesBySource, function(pages, source) {
@@ -133,7 +133,7 @@ describe("Dataset model", function() {
       return def.promise;
     };
 
-    var instance = new _Dataset('fake-data');
+    var instance = new _DatasetV0('fake-data');
     instance.observe('columns').subscribe(function(columns) {
       if (!_.isEmpty(columns)) {
         expect(columns['normal_column'].isSystemColumn).to.be.false;

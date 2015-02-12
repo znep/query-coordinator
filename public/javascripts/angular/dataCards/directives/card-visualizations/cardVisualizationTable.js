@@ -146,7 +146,6 @@
         $scope.bindObservable('rowCount', rowCount.switchLatest());
         $scope.bindObservable('filteredRowCount', filteredRowCount.switchLatest());
         $scope.bindObservable('columnDetails', columnDetailsAsArray);
-        $scope.bindObservable('expanded', model.observeOnLatest('expanded'));
         $scope.bindObservable('defaultSortColumnName', defaultSortColumnName);
 
       }

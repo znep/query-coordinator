@@ -37,17 +37,6 @@
         var dataset = model.observeOnLatest('page.dataset');
         var fieldNameObservable = model.pluck('fieldName');
 
-        var datatypeObservable = Rx.Observable.combineLatest(
-          fieldNameObservable,
-          dataset.observeOnLatest('columns'),
-          function(fieldName, columns) {
-            var column = columns[fieldName];
-            return {
-              physicalDatatype: column.physicalDatatype,
-              logicalDatatype: column.logicalDatatype
-            };
-          });
-
         var invalidSearchInputSubject = new Rx.BehaviorSubject(false);
         var invalidSearchInputObservable = invalidSearchInputSubject.distinctUntilChanged();
         var searchValueObservable = $scope.observe('search');
@@ -142,10 +131,10 @@
             return Rx.Observable.
               combineLatest(
                 fieldNameObservable,
-                datatypeObservable,
-                function(fieldName, datatype) {
+                model.observeOnLatest('column.physicalDatatype'),
+                function(fieldName, physicalDatatype) {
                   var whereClause;
-                  if (datatype.physicalDatatype === 'number') {
+                  if (physicalDatatype === 'number') {
                     var numericSearchValue = parseInt(searchValue, 10);
                     if (_.isNaN(numericSearchValue)) {
                       invalidSearchInputSubject.onNext(true);

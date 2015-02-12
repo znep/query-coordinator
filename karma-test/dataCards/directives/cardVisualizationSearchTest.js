@@ -10,6 +10,33 @@
     var toggleExpandedSpy;
     var getRowsStub;
 
+    var fakeDatasetColumns = {
+      'filler_column': {
+        "name": "filler_column",
+        "title": "fillter column title",
+        "description": "fillter column description",
+        "logicalDatatype": "text",
+        "physicalDatatype": "text",
+        "importance": 2
+      },
+      'test_column_number': {
+        "name": "test_column_number",
+        "title": "test number column title",
+        "description": "test number column description",
+        "logicalDatatype": "text",
+        "physicalDatatype": "number",
+        "importance": 2
+      },
+      'test_column_text': {
+        "name": "test_column_text",
+        "title": "test text column title",
+        "description": "test text column description",
+        "logicalDatatype": "text",
+        "physicalDatatype": "text",
+        "importance": 2
+      }
+    };
+
     beforeEach(module('/angular_templates/dataCards/cardVisualizationSearch.html'));
     beforeEach(module('/angular_templates/dataCards/cardVisualizationTable.html'));
     beforeEach(module('/angular_templates/dataCards/table.html'));
@@ -50,37 +77,13 @@
       model.fieldName = fieldName ? fieldName : 'test_column_text';
       model.defineObservableProperty('activeFilters', []);
       model.defineObservableProperty('expanded', false);
+      model.defineObservableProperty('column', fakeDatasetColumns[model.fieldName]);
 
       var datasetModel = new Model();
       datasetModel.id = "bana-nas!";
       datasetModel.fieldName = 'test field name';
       datasetModel.defineObservableProperty('rowDisplayUnit', 'row');
-      datasetModel.defineObservableProperty('columns', {
-        'filler_column': {
-          "name": "filler_column",
-          "title": "fillter column title",
-          "description": "fillter column description",
-          "logicalDatatype": "text",
-          "physicalDatatype": "text",
-          "importance": 2
-        },
-        'test_column_number': {
-          "name": "test_column_number",
-          "title": "test number column title",
-          "description": "test number column description",
-          "logicalDatatype": "text",
-          "physicalDatatype": "number",
-          "importance": 2
-        },
-        'test_column_text': {
-          "name": "test_column_text",
-          "title": "test text column title",
-          "description": "test text column description",
-          "logicalDatatype": "text",
-          "physicalDatatype": "text",
-          "importance": 2
-        }
-      });
+      datasetModel.defineObservableProperty('columns', fakeDatasetColumns);
 
       var pageModel = new Page('asdf-fdsa');
       pageModel.set('dataset', datasetModel);

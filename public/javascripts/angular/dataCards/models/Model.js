@@ -218,19 +218,25 @@ angular.module('dataCards.models').factory('Model', function(Class, ModelHelper)
     },
 
     /**
-     * Sets the properties of this model to the values of the given model.
+     * Sets the properties defined by this model to the values of the given model.
      *
      * @param {Model} otherModel The Model to get the new values from. The argument Model must be
      * the same type as (or a subclass of) this Model.
      */
     setFrom: function(otherModel) {
+      var self = this;
       angular.forEach(this._propertyObservables, function(subject, propertyName) {
-        var newValue = otherModel.getCurrentValue(propertyName);
-        if (newValue !== subject.value) {
-          if (otherModel.isSet(propertyName)) {
-            this.set(propertyName, newValue);
-          } else {
-            this.unset(propertyName);
+        // Don't set ephemeral properties.
+        var isEphemeral = self._ephemeralProperties[propertyName];
+
+        if (!isEphemeral) {
+          var newValue = otherModel.getCurrentValue(propertyName);
+          if (newValue !== subject.value) {
+            if (otherModel.isSet(propertyName)) {
+              this.set(propertyName, newValue);
+            } else {
+              this.unset(propertyName);
+            }
           }
         }
       }, this);

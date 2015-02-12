@@ -58,6 +58,12 @@ angular.module('dataCards.models').factory('Card', function($injector, ModelHelp
           ).
           first(); // Terminate the stream on the first one (toPromise waits until the stream terminates).
       });
+
+      self.defineEphemeralObservablePropertyFromSequence(
+        'column',
+        self.observe('page.dataset.columns.{0}'.format(fieldName))
+      );
+
     },
 
     /**

@@ -1,4 +1,4 @@
-describe("card directive", function() {
+describe('card directive', function() {
   var $rootScope, testHelpers, Model;
 
   beforeEach(module('/angular_templates/dataCards/card.html'));
@@ -55,6 +55,7 @@ describe("card directive", function() {
       cardModel.defineObservableProperty('cardSize', 1);
       cardModel.defineObservableProperty('cardType', 'column');
       cardModel.defineObservableProperty('page', null);
+      cardModel.defineObservableProperty('column', null);
       scope.cardModel = cardModel;
       el = testHelpers.TestDom.compileAndAppend(html, scope);
     });
@@ -97,6 +98,7 @@ describe("card directive", function() {
       cardModel.defineObservableProperty('cardSize', 1);
       cardModel.defineObservableProperty('cardType', 'column');
       cardModel.defineObservableProperty('page', null);
+      cardModel.defineObservableProperty('column', null);
       scope.cardModel = cardModel;
       el = testHelpers.TestDom.compileAndAppend(html, scope);
       el.css({

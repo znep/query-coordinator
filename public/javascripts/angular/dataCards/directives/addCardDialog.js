@@ -6,7 +6,7 @@
     return _.find(columns, function(column) { return column.name === fieldName; });
   }
 
-  function addCardDialog(Constants, CardTypeMapping, Card, FlyoutService) {
+  function addCardDialog(Constants, CardTypeMapping, Card, FlyoutService, AngularRxExtensions) {
     return {
       restrict: 'E',
       scope: {
@@ -19,6 +19,7 @@
       },
       templateUrl: '/angular_templates/dataCards/addCardDialog.html',
       link: function(scope, element, attrs) {
+        AngularRxExtensions.install(scope);
 
         var serializedCard;
         var column;
@@ -115,13 +116,13 @@
             return '<div class="flyout-title">Visualize this column as a {0}</div>'.format(visualizationName);
           }
 
-        });
+        }, scope.eventToObservable('$destroy'));
 
         FlyoutService.register('warning-icon', function(el) {
 
           return '<div class="flyout-title">WARNING: Visualizing this column as a column chart will result in more than one hundred columns and may degrade performance</div>';
 
-        });
+        }, scope.eventToObservable('$destroy'));
 
       }
     };

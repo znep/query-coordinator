@@ -128,7 +128,7 @@
 
         // Dispose of WindowState windowStateSubscriptions when the directive is destroyed.
         scope.$on('$destroy', function() {
-          _.forEach(windowStateSubscriptions, function(windowStateSubscription) {
+          _.each(windowStateSubscriptions, function(windowStateSubscription) {
             windowStateSubscription.dispose();
           });
         });
@@ -1804,12 +1804,16 @@
           currentDatum = null;
         });
 
-        FlyoutService.register('timeline-chart-highlight-target', renderFlyout);
-        FlyoutService.register('selection-marker', renderFlyout);
+        FlyoutService.register('timeline-chart-highlight-target', renderFlyout, scope.eventToObservable('$destroy'));
+        FlyoutService.register('selection-marker', renderFlyout, scope.eventToObservable('$destroy'));
 
-        FlyoutService.register('timeline-chart-clear-selection-button', function(target) {
-          return '<div class="flyout-title">Clear filter range</div>';
-        });
+        FlyoutService.register(
+          'timeline-chart-clear-selection-button',
+          function(target) {
+            return '<div class="flyout-title">Clear filter range</div>';
+          },
+          scope.eventToObservable('$destroy')
+        );
 
         jqueryClearSelectionLabel.on('mousedown', function(e) {
           clearChartFilter();
@@ -1825,7 +1829,7 @@
 // BUG: This does not update the mouse target if you click but don't move the mouse, and that click
 // causes a different element to fall under the pointer for the second click (clicking to dismiss, for example)
 
-        windowStateSubscription = WindowState.mouseLeftButtonPressedSubject.flatMap(
+        windowStateSubscription = WindowState.mouseLeftButtonPressedSubject.flatMapLatest(
           function(mouseLeftButtonNowPressed) {
             return Rx.Observable.combineLatest(
               Rx.Observable.returnValue(mouseLeftButtonNowPressed),

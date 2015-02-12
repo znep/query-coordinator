@@ -4,6 +4,8 @@ describe('Flyout service', function() {
   var testHelpers;
   var container;
 
+  var testCompletedObservable = new Rx.Subject();
+
   beforeEach(module('dataCards'));
   beforeEach(module('dataCards.services'));
   beforeEach(module('test'));
@@ -25,11 +27,12 @@ describe('Flyout service', function() {
   });
   afterEach(function() {
     container.remove();
+    testCompletedObservable.onNext();
   });
 
   it('should create a flyout with the given string on hover by the target', function() {
     var text = 'Let\'s go flaigh a kite...';
-    flyoutService.register('flyout-test', function() { return text; });
+    flyoutService.register('flyout-test', function() { return text; }, testCompletedObservable);
 
     var target = $('<div class="flyout-test" />');
     container.append(target);
@@ -54,7 +57,8 @@ describe('Flyout service', function() {
   it('should position correctly when on the right edge of the screen', function() {
     flyoutService.register('right-edge',
                            // A string of 20 words separated by spaces
-                           _.constant(_.map(_.range(20), _.constant('text')).join(' ')));
+                           _.constant(_.map(_.range(20), _.constant('text')).join(' ')),
+                           testCompletedObservable);
     var target = $('<div class="right-edge" />').css({
       position: 'absolute',
       right: 5,
@@ -80,9 +84,13 @@ describe('Flyout service', function() {
   it('should update the flyout message when refreshFlyout is called.', function() {
     var someMagicalState = true;
 
-    flyoutService.register('dynamic-flyout-test', function() {
-      return someMagicalState ? 'initial' : 'final';
-    });
+    flyoutService.register(
+      'dynamic-flyout-test',
+      function() {
+        return someMagicalState ? 'initial' : 'final';
+      },
+      testCompletedObservable
+    );
 
     var target = $('<div class="dynamic-flyout-test" />');
     container.append(target);

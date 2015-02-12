@@ -507,7 +507,11 @@ angular.module('socrataCommon.directives').directive('columnChart', function($pa
         });
       });
 
-      FlyoutService.register('truncation-marker', function(el) { return '<div class="flyout-title">Click to expand</div>'; });
+      FlyoutService.register(
+        'truncation-marker',
+        function(el) { return '<div class="flyout-title">Click to expand</div>'; },
+        scope.eventToObservable('$destroy')
+      );
 
       element.parent().delegate('.bar-group, .labels .label span', 'click', function(event) {
         var clickedDatum = d3.select(event.currentTarget).datum();

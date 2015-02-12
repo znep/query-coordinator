@@ -50,11 +50,13 @@ angular.module('socrataCommon.services').factory('AngularRxExtensions', function
         set(onCompleted.apply(this, arguments));
       };
 
-      observable.subscribe(
-        set,
-        onError ? errorHandler : undefined,
-        onCompleted ? completedHandler : undefined
-      );
+      observable.
+        takeUntil(self.eventToObservable('$destroy')). //TakeUntil to avoid leaks.
+        subscribe(
+          set,
+          onError ? errorHandler : undefined,
+          onCompleted ? completedHandler : undefined
+        );
     },
 
     observe: function observe(expression) {
@@ -67,7 +69,8 @@ angular.module('socrataCommon.services').factory('AngularRxExtensions', function
         }
       });
 
-      return observable;
+      return observable
+        .takeUntil(this.eventToObservable('$destroy')); //TakeUntil to avoid leaks.
     },
 
     eventToObservable: function eventToObservable(eventName) {

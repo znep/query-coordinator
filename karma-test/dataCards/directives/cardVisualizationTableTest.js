@@ -11,7 +11,7 @@ describe("A Table Card Visualization", function() {
     module(function($provide) {
       var mockCardDataService = {
         getRowCount: function(id, whereClause) {
-          return q.when(_.isUndefined(whereClause) ? 1337 : 42);
+          return q.when(_.isEmpty(whereClause) ? 1337 : 42);
         },
         getRows: function(datasetId, offset, limit, order, timeout, whereClause) {
           return q.when([{
@@ -53,23 +53,22 @@ describe("A Table Card Visualization", function() {
 
   function newCard(pageModel, blob) {
     var baseCard = {
+      'expanded': false,
       'cardCustomStyle': {},
       'expandedCustomStyle': {},
-      'displayMode': 'visualization',
-      'expanded': false
+      'displayMode': 'visualization'
     };
 
     return Card.deserialize(pageModel, $.extend({}, baseCard, blob));
   }
 
-  function createTable(expanded, cardBlobs, whereClause, firstColumn) {
-    expanded = expanded || false;
+  function createTable(cardBlobs, whereClause, firstColumn) {
     cardBlobs = cardBlobs || [];
+    whereClause = whereClause || '';
 
     var model = new Model();
     model.fieldName = '*';
     model.defineObservableProperty('activeFilters', []);
-    model.defineObservableProperty('expanded', expanded);
 
     var datasetModel = new Model();
     datasetModel.id = 'test-data';
@@ -255,7 +254,7 @@ describe("A Table Card Visualization", function() {
       }];
 
       expect(function() {
-        createTable(true, cards);
+        createTable(cards);
       }).to.not.throw();
 
     });
@@ -265,7 +264,7 @@ describe("A Table Card Visualization", function() {
   describe('first column', function() {
     it('should be able to be specified', function() {
       var FIRST_COLUMN_OVERRIDE = 'test_timestamp_column';
-      var table = createTable(undefined, undefined, undefined, FIRST_COLUMN_OVERRIDE);
+      var table = createTable(undefined, undefined, FIRST_COLUMN_OVERRIDE);
       expect(table.element.find('.th:eq(0)').data('columnId')).to.equal(FIRST_COLUMN_OVERRIDE);
     });
   });

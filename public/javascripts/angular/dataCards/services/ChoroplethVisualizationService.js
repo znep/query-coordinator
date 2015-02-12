@@ -1,7 +1,7 @@
 (function() {
   'use strict';
 
-  function ChoroplethVisualizationService(Constants) {
+  function ChoroplethVisualizationService(Constants, numberFormatter) {
 
     function ChoroplethVisualizationUtils() {
 
@@ -152,8 +152,9 @@
       }
 
       if (colorScale) {
-        return '' + // coerce to a string, if it's a chroma color
-          colorScale(Number(feature.properties[Constants['FILTERED_VALUE_PROPERTY_NAME']]));
+        return String(
+          colorScale(Number(feature.properties[Constants['FILTERED_VALUE_PROPERTY_NAME']]))
+        );
       } else {
         return 'transparent';
       }
@@ -224,6 +225,49 @@
           fillOpacity: opacity
         };
       }
+    };
+
+    ChoroplethVisualizationUtils.prototype.bigNumTickFormatter = function(val) {
+      // used if ss.standard_deviation(classBreaks) > 10
+      // val = a x 10^b (a: coefficient, b: exponent);
+      if (val === 0) {
+        return 0;
+      }
+      var exponent = Math.floor(Math.log(Math.abs(val)) / Math.LN10);
+      var coefficient = val / Math.pow(10, exponent);
+      var isMultipleOf10 = coefficient % 1 == 0;
+      if (isMultipleOf10) {
+        var numNonzeroDigits = coefficient.toString().length;
+        var formattedNum = numberFormatter.formatNumber(val, {
+          fixedPrecision: 0,
+          maxLength: _.min([numNonzeroDigits, 3])
+        });
+      } else {
+        var numNonzeroDigits = coefficient.toString().length - 1;
+        var formattedNum = numberFormatter.formatNumber(val, {
+          maxLength: _.min([numNonzeroDigits, 3])
+        });
+      }
+      return formattedNum;
+    };
+
+    /**
+     * If the values straddle 0, we want to add a break at 0
+     *
+     * @return {Number} the index at which we added 0, or -1 if we didn't.
+     * @protected
+     */
+    ChoroplethVisualizationUtils.prototype.addZeroIfNecessary = function(classBreaks) {
+      var indexOf0 = _.sortedIndex(classBreaks, 0);
+      if (
+        (indexOf0 > 0 && indexOf0 < classBreaks.length) &&
+        // Don't add it if it's already there
+        (classBreaks[indexOf0] !== 0 && classBreaks[indexOf0 - 1] !== 0)
+      ) {
+        classBreaks.splice(indexOf0, 0, 0);
+        return indexOf0;
+      }
+      return -1;
     };
 
     var utils = new ChoroplethVisualizationUtils();

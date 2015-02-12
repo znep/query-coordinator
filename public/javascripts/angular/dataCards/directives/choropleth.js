@@ -9,7 +9,6 @@
   function choropleth(Constants,
                       AngularRxExtensions,
                       $timeout,
-                      numberFormatter,
                       ChoroplethVisualizationService,
                       WindowState,
                       FlyoutService) {
@@ -18,52 +17,6 @@
     // individual dataset.
     var visualizationUtils = ChoroplethVisualizationService.utils;
 
-
-    var LegendCommon = {
-      /**
-       * @protected
-       */
-      bigNumTickFormatter: function(val) {
-        // used if ss.standard_deviation(classBreaks) > 10
-        // val = a x 10^b (a: coefficient, b: exponent);
-        if (val === 0) {
-          return 0;
-        }
-        var exponent = Math.floor(Math.log(Math.abs(val)) / Math.LN10);
-        var coefficient = val / Math.pow(10, exponent);
-        var isMultipleOf10 = coefficient % 1 == 0;
-        if (isMultipleOf10) {
-          var numNonzeroDigits = coefficient.toString().length;
-          var formattedNum = numberFormatter.formatNumber(val, {
-            fixedPrecision: 0,
-            maxLength: _.min([numNonzeroDigits, 3])
-          });
-        } else {
-          var numNonzeroDigits = coefficient.toString().length - 1;
-          var formattedNum = numberFormatter.formatNumber(val, {
-            maxLength: _.min([numNonzeroDigits, 3])
-          });
-        }
-        return formattedNum;
-      },
-      /**
-       * If the values straddle 0, we want to add a break at 0
-       *
-       * @return {Number} the index at which we added 0, or -1 if we didn't.
-       * @protected
-       */
-      addZeroIfNecessary: function(classBreaks) {
-        var indexOf0 = _.sortedIndex(classBreaks, 0);
-        if (indexOf0 > 0 && indexOf0 < classBreaks.length &&
-            // Don't add it if it's already there
-            classBreaks[indexOf0] !== 0 && classBreaks[indexOf0 - 1] !== 0
-           ) {
-          classBreaks.splice(indexOf0, 0, 0);
-          return indexOf0;
-        }
-        return -1;
-      }
-    };
     /**
      * A choropleth legend, with discrete colors for ranges of values.
      */
@@ -85,7 +38,8 @@
       // The last argument specifies a horizontal display mode.
       true);
     }
-    $.extend(LegendDiscrete.prototype, LegendCommon, {
+
+    $.extend(LegendDiscrete.prototype, {
       /**
        * @private
        */
@@ -98,6 +52,7 @@
       ZERO_COLOR: '#eeeeee',
       NEGATIVE_COLOR: '#c6663d',
       POSITIVE_COLOR: '#408499',
+
       /**
        * Generates a color scale for the given classBreaks.
        * @param {Number[]} classBreaks The values that define the boundaries of the different
@@ -151,6 +106,7 @@
                 return (value < 0 ? negativeColorScale : positiveColorScale)(value);
               }
             }, this);
+
             /**
              * Our faux .colors method basically just retrieves the positive and negative arrays and
              * combines them.
@@ -179,6 +135,7 @@
 
               return negColors.concat(posColors);
             };
+
             return fauxColorScale;
 
           } else {
@@ -213,7 +170,7 @@
           return null;
         }
 
-        this.addZeroIfNecessary(classBreaks);
+        visualizationUtils.addZeroIfNecessary(classBreaks);
         var colorScale = this.colorScaleFor(classBreaks);
 
         var position = 'bottomright';
@@ -289,7 +246,7 @@
           // gives unexpected results due to floating point math.
           // We want to just return the value for "small-ranged" data.
           // --> do not call a tickFormatter on yAxis if range is small.
-          yAxis.tickFormat(this.bigNumTickFormatter);
+          yAxis.tickFormat(visualizationUtils.bigNumTickFormatter);
 
           // Due to similar issues, d3's scale#nice method also has
           // floating point math issues.
@@ -298,6 +255,7 @@
         }
 
         // include min and max back into d3 scale, if #nice truncates them
+        // TODO: This seems unnecessary, because nice() always expands the range.
         if (_.min(classBreaks) > minBreak) {
           classBreaks.unshift(minBreak);
         }
@@ -365,8 +323,8 @@
           if (isLargeRange) {
             rects.
               attr('data-flyout-text', _.bind(function(color, i) {
-                return this.bigNumTickFormatter(classBreaks[i]) + ' – ' +
-                  this.bigNumTickFormatter(classBreaks[i + 1]);
+                return visualizationUtils.bigNumTickFormatter(classBreaks[i]) + ' – ' +
+                  visualizationUtils.bigNumTickFormatter(classBreaks[i + 1]);
               }, this));
           } else {
             rects.
@@ -377,7 +335,7 @@
         } else {
           if (isLargeRange) {
             rects.
-              attr('data-flyout-text', this.bigNumTickFormatter(singleClassBreak));
+              attr('data-flyout-text', visualizationUtils.bigNumTickFormatter(singleClassBreak));
           } else {
             rects.
               attr('data-flyout-text', singleClassBreak);
@@ -396,13 +354,15 @@
      * A Legend with a continuous scale.
      */
     function LegendContinuous(element, container) {
-      this.element = element.addClass('legend-continuous');
+      this.element = element.addClass('continuous');
       this.container = container;
     }
-    $.extend(LegendContinuous.prototype, LegendCommon, {
+
+    $.extend(LegendContinuous.prototype, {
       ZERO_COLOR: '#ffffff',
       NEGATIVE_COLOR: '#c6663d',
       POSITIVE_COLOR: '#003747',
+
       /**
        * Finds an array of values, including the min, max, and numStops - 2 more values,
        * evenly-spaced between the min and max.
@@ -417,9 +377,14 @@
        */
       _findTickStops: function(scale, numStops) {
         var scaleForReversing = scale.copy().range([0, 1]);
-        return _.map(_.range(0, 1, 1 / (numStops - 1)),
-                     _.bind(scaleForReversing.invert, scaleForReversing)).
-                 concat(_.last(scaleForReversing.domain()));
+        var stops = _.map(
+          _.range(0, 1, 1 / (numStops - 1)),
+          _.bind(scaleForReversing.invert, scaleForReversing)
+        ).concat(_.last(scaleForReversing.domain()));
+        if (_.last(stops) - stops[0] > 5) {
+          stops = _.map(stops, Math.round);
+        }
+        return stops;
       },
 
       /**
@@ -442,6 +407,7 @@
           append('linearGradient').attr({
             id: 'gradient',
             gradientUnits: 'userSpaceOnUse',
+            // x,y are actually left,top
             y1: '100%', x1: 0, x2: 0, y2: 0
           });
         // Due to a webkit bug (https://bugs.webkit.org/show_bug.cgi?id=83438), we can't select a
@@ -468,16 +434,22 @@
         gradientStops.exit().remove();
 
         // Draw the rectangles in pieces, so as to store the data, so the ticks can access them.
-        var rectangles = legendSvg.selectAll('rect').data(tickStops.slice(0, tickStops.length - 1));
-        var height = (100 / (tickStops.length - 1)) + '%';
+        var rectangles = legendSvg.selectAll('rect').data(tickStops);
         rectangles.enter().
           append('rect').attr({
             x: 0,
             y: function(value) {
-              return positionScale(value) + '%';
+              // Since y is actually 'top', and we want the lowest value at the bottom, subtract
+              // from 100
+              return (100 - positionScale(value)) + '%';
             },
             width: '100%',
-            height: height,
+            height: function(value, i) {
+              if (i === 0) {
+                return 0;
+              }
+              return Math.abs(positionScale(value) - positionScale(tickStops[i - 1])) + '%';
+            },
             fill: 'url(#gradient)'
           });
         rectangles.exit().remove();
@@ -500,7 +472,7 @@
         var range = [this.NEGATIVE_COLOR, this.ZERO_COLOR, this.POSITIVE_COLOR];
         var min = tickStops[0];
         var max = _.last(tickStops);
-        if (tickStops[0] >= 0) {
+        if (min >= 0) {
           // All positive values
           domain = [min, max];
           range = range.slice(1);
@@ -524,12 +496,12 @@
       _drawAxis: function(legendSvg, tickStops, scale, indexOf0) {
         var positionScale = scale.copy().range([this.element.height(), 0]);
         var axis = d3.svg.axis().
-            scale(positionScale).
-            tickValues(tickStops).
-            orient('left');
+          scale(positionScale).
+          tickValues(tickStops).
+          orient('left');
 
         if (_.last(tickStops) - tickStops[0] > 10) {
-          axis.tickFormat(this.bigNumTickFormatter);
+          axis.tickFormat(visualizationUtils.bigNumTickFormatter);
         }
 
         axis(legendSvg);
@@ -562,18 +534,23 @@
       _scaleForValues: function(values, min, max) {
         min = min || _.min(values);
         max = max || _.max(values);
-        var deltaMagnitude = _.log10(Math.abs(max / min));
         var scale;
-        if (deltaMagnitude < 1) {
-          scale = d3.scale.linear();
-        } else if (deltaMagnitude <= 3) {
-          scale = d3.scale.log();
+
+        if (min >= 0 || max <= 0) {
+          var deltaMagnitude = _.log10(max - min);
+          if (deltaMagnitude < 1) {
+            scale = d3.scale.linear();
+          } else if (deltaMagnitude <= 3 && min > 0 || max < 0) {
+            scale = d3.scale.log();
+          } else {
+            // TODO: determine what the exponent should be based on the value distribution?
+            scale = d3.scale.pow().exponent(2);
+          }
         } else {
-          // TODO: determine what the exponent should be based on the value distribution?
-          scale = d3.scale.pow().exponent(2);
+          scale = d3.scale.linear();
         }
 
-        return scale.domain([min, max]);
+        return scale.domain([min, max]).nice();
       },
 
       NUM_TICKS: 5,
@@ -582,7 +559,6 @@
        * Redraw the legend.
        *
        * TODO:
-       * tests
        * flyouts
        * make sure numbers fit AC
        *
@@ -600,7 +576,7 @@
 
         var scale = this._scaleForValues(values, min, max);
         var tickStops = this._findTickStops(scale, this.NUM_TICKS);
-        var indexOf0 = this.addZeroIfNecessary(tickStops);
+        var indexOf0 = visualizationUtils.addZeroIfNecessary(tickStops);
 
         var colorScale = this._createColorScale(tickStops, scale);
         var legendSvg = this._drawGradient(tickStops, colorScale);
@@ -1138,7 +1114,6 @@
       directive('choropleth', ['Constants',
                                'AngularRxExtensions',
                                '$timeout',
-                               'numberFormatter',
                                'ChoroplethVisualizationService',
                                'WindowState',
                                'FlyoutService',

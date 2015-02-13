@@ -1,5 +1,6 @@
 @import dataCards/common/colors
 @import dataCards/common/layout
+@import dataCards/common/mixins
 
 $action-btn-min-width: 40px
 $action-btn-padding-top: 7px
@@ -9,15 +10,14 @@ $action-btn-padding-left: 18px
   display: inline-block
   padding: $action-btn-padding-top $action-btn-padding-left
   border-radius: $rounded-corners-border-radius
-  border: solid 2px $btn-border-color
-  background-color: $btn-bg-color
   margin: 0 0 10px 10px
-  color: $aqua-font-color
   min-width: $action-btn-min-width
   text-align: center
   font-size: 1em
   font-weight: bold
   cursor: pointer
+  position: relative
+  @include action-button($aqua-font-color, $btn-bg-color, $btn-border-color)
 
   &.l-to-r
     margin: 0 10px 10px 0
@@ -26,79 +26,52 @@ $action-btn-padding-left: 18px
     margin: 0 0 10px 10px
 
   &:hover, &.active
-    background-color: $btn-hover-bg-color
-    border: solid 2px $btn-hover-border-color
-    color: $btn-hover-font-color
+    @include action-button($btn-hover-font-color, $btn-hover-bg-color, $btn-hover-border-color)
 
   &.disabled, &:disabled
-    background-color: $btn-disabled-bg-color
-    border: solid 2px $btn-disabled-border-color
-    color: $btn-disabled-font-color
+    @include action-button($btn-disabled-font-color, $btn-disabled-bg-color, $btn-disabled-border-color)
     cursor: default
 
   &:focus
     outline: none
 
   &.touched
-    background-color: $btn-touched-bg-color
-    border: solid 2px $btn-touched-border-color
-    color: $btn-touched-font-color
+    @include action-button($btn-touched-font-color, $btn-touched-bg-color, $btn-touched-border-color)
 
   &.error
-    background-color: $btn-error-bg-color
-    border: solid 2px $btn-error-border-color
-    color: $btn-error-font-color
+    @include action-button($btn-error-font-color, $btn-error-bg-color, $btn-error-border-color)
 
   &.success
-    background-color: $btn-success-bg-color
-    border: solid 2px $btn-success-border-color
-    color: $btn-success-font-color
+    @include action-button($btn-success-font-color, $btn-success-bg-color, $btn-success-border-color)
 
   &.working
-    background-color: $btn-working-bg-color
-    border: solid 2px $btn-working-border-color
-    color: $btn-working-font-color
+    @include action-button($btn-working-font-color, $btn-working-bg-color, $btn-working-border-color)
 
 .action-btn.dark
-  background-color: $dark-btn-bg-color
-  border: solid 2px $dark-btn-border-color
-  color: $dark-btn-font-color
+  @include action-button($dark-btn-font-color, $dark-btn-bg-color, $dark-btn-border-color)
 
-  &:hover
-    background-color: $dark-btn-hover-bg-color
-    border: solid 2px $dark-btn-hover-border-color
-    color: $dark-btn-hover-font-color
+  &:hover, &.active
+    @include action-button($dark-btn-hover-font-color, $dark-btn-hover-bg-color, $dark-btn-hover-border-color)
 
   &.disabled
-    background-color: $dark-btn-disabled-bg-color
-    border: solid 2px $dark-btn-disabled-border-color
-    color: $dark-btn-disabled-font-color
+    @include action-button($dark-btn-disabled-font-color, $dark-btn-disabled-bg-color, $dark-btn-disabled-border-color)
     cursor: default
 
 .action-btn.green
-  background-color: $green-btn-bg-color
-  border: solid 2px $green-btn-border-color
-  color: $green-btn-font-color
+  @include action-button($green-btn-font-color, $green-btn-bg-color, $green-btn-border-color)
 
   &:hover
-    background-color: $green-btn-hover-bg-color
-    border: solid 2px $green-btn-hover-border-color
-    color: $green-btn-hover-font-color
+    @include action-button($green-btn-hover-font-color, $green-btn-hover-bg-color, $green-btn-hover-border-color)
 
   &.disabled
-    background-color: $green-btn-disabled-bg-color
-    border: solid 2px $green-btn-disabled-border-color
-    color: $green-btn-disabled-font-color
+    @include action-button($green-btn-disabled-font-color, $green-btn-disabled-bg-color, $green-btn-disabled-border-color)
     cursor: default
 
 .action-btn.inverted
-  background-color: $btn-hover-bg-color
-  border: solid 2px $btn-hover-border-color
-  color: $btn-hover-font-color
+  @include action-button($btn-hover-font-color, $btn-hover-bg-color, $btn-hover-border-color)
   &:hover
-    border: solid 2px $btn-border-color
-    background-color: $btn-bg-color
-    color: $aqua-font-color
+    @include action-button($aqua-font-color, $btn-border-color, $btn-bg-color)
 
 .btn-slim
   padding: 0
+

@@ -1,0 +1,8 @@
+<button
+  type="button"
+  class="action-btn r-to-l"
+  ng-class="{working: revertInitiated, disabled: !pageHasChanges}">
+  Revert Changes
+  <spinner ng-if="revertInitiated"></spinner>
+</button>
+

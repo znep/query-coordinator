@@ -23,6 +23,7 @@
         $rootScope = _$rootScope;
         $window = _$window;
         testHelpers = _testHelpers;
+        testHelpers.mockDirective($provide, 'revertButton');
         testHelpers.mockDirective($provide, 'saveButton');
         testHelpers.mockDirective($provide, 'saveAs');
       }]);
@@ -45,6 +46,11 @@
         element: testHelpers.TestDom.compileAndAppend('<customize-bar has-changes="hasChanges" edit-mode="editMode" expanded-card="expandedCard"></customize-bar>', scope)
       };
     }
+
+    it('should have a revert button', function() {
+      var customizeBar = createElement().element;
+      expect(customizeBar.find('revert-button')).to.exist;
+    });
 
     it('should have a save button', function() {
       var customizeBar = createElement().element;

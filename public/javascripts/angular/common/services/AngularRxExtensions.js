@@ -82,7 +82,11 @@ angular.module('socrataCommon.services').factory('AngularRxExtensions', function
       this.$on(eventName, function(event) {
         eventSubject.onNext( { event: event, args: _.rest(arguments) } );
       });
-      return eventSubject;
+      if (eventName == '$destroy') {
+        return eventSubject.take(1);
+      } else {
+        return eventSubject.takeUntil(this.eventToObservable('$destroy'));
+      }
     },
 
     emitEventsFromObservable: function emitEventsFromObservable(eventName, observable) {
@@ -92,10 +96,14 @@ angular.module('socrataCommon.services').factory('AngularRxExtensions', function
         throw new Error('emitEventsFromObservable not passed a string event name');
       }
 
-      return observable.subscribe(function(value) {
-        self.safeApply(function() {
-          self.$emit(eventName, value);
-        });
+      return observable.
+        takeUntil(self.eventToObservable('$destroy')). //TakeUntil to avoid leaks.
+        subscribe(
+          function(value) {
+          self.safeApply(function() {
+            self.$emit(eventName, value);
+          }
+        );
       });
     }
   };

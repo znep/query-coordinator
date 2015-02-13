@@ -1,7 +1,7 @@
 (function() {
   'use strict';
 
-  function modalDialog(WindowState) {
+  function modalDialog(WindowState, AngularRxExtensions) {
     return {
       restrict: 'E',
       scope: {
@@ -11,7 +11,7 @@
       transclude: true,
       templateUrl: '/angular_templates/dataCards/modalDialog.html',
       link: function (scope, element, attrs) {
-        var subscriptions = [];
+        AngularRxExtensions.install(scope);
 
         if (!scope.state) {
           scope.state = {show: false};
@@ -24,7 +24,7 @@
           });
         }
         element.on('click', '.modal-overlay', closeDialog);
-        subscriptions.push(WindowState.escapeKeyObservable.filter(function(e) {
+        WindowState.escapeKeyObservable.filter(function(e) {
           // Only close this dialog if we're the one on top
           var dialog = element.find('.modal-dialog');
           var testPoint = dialog.position();
@@ -33,12 +33,7 @@
           testPoint.left += 1;
           var topMostElement = document.elementFromPoint(testPoint.left, testPoint.top);
           return dialog[0] === topMostElement;
-        }).subscribe(closeDialog));
-
-        // Clean up after ourselves
-        scope.$on('$destroy', function() {
-          _.invoke(subscriptions, 'dispose');
-        });
+        }).takeUntil(scope.eventToObservable('$destroy')).subscribe(closeDialog);
       }
     };
   }

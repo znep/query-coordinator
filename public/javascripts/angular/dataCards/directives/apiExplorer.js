@@ -9,7 +9,6 @@
         datasetObservable: '=datasetObservable'
       },
       link: function($scope, element, attrs) {
-        var subscriptions = [];
         AngularRxExtensions.install($scope);
 
         /*
@@ -101,7 +100,7 @@
         });
 
         // Hide the panel
-        subscriptions.push(WindowState.closeDialogEventObservable.
+        WindowState.closeDialogEventObservable.takeUntil($scope.eventToObservable('$destroy')).
           filter(function(e) {
             return $scope.panelActive && $(e.target).closest(element).length === 0;
           }).
@@ -109,7 +108,7 @@
             $scope.safeApply(function() {
               $scope.panelActive = false;
             });
-          }));
+          });
 
 
         /*
@@ -122,7 +121,6 @@
 
         // Clean up
         $scope.$on('$destroy', function() {
-          _.invoke(subscriptions, 'dispose');
           $scope.$emit('cleaned-up');
         });
       }

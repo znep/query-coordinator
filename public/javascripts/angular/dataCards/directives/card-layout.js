@@ -66,10 +66,14 @@
       }
     };
 
-    FlyoutService.register('export-visualization-disabled', _.constant(
-          '<div class="flyout-title">This visualization is not available' +
-          '<br/>for image export</div>'
-    ));
+    FlyoutService.register(
+      'export-visualization-disabled',
+      _.constant(
+        '<div class="flyout-title">This visualization is not available' +
+        '<br/>for image export</div>'
+      ),
+      scope.eventToObservable('$destroy')
+    );
   }
 
   function cardLayout(Constants, AngularRxExtensions, WindowState, SortedTileLayout, FlyoutService, CardTypeMapping, DownloadService, $timeout) {
@@ -419,7 +423,7 @@
           cardsMetadata.observeDimensions(),
           WindowState.windowSizeSubject,
           function() { return arguments; }
-        );
+        ).takeUntil(scope.eventToObservable('$destroy'));
 
         // Figure out the sticky-ness of the QFB onscroll and un/stick appropriately
         subscriptions.push(observableForStaticElements.subscribe(function(args) {
@@ -772,15 +776,23 @@
         /**
          * Flyouts.
          */
-        FlyoutService.register('card-control', function(el) {
-          return '<div class="flyout-title">{0}</div>'.format($(el).attr('title'));
-        });
+        FlyoutService.register(
+          'card-control',
+          function(el) {
+            return '<div class="flyout-title">{0}</div>'.format($(el).attr('title'));
+          },
+          scope.eventToObservable('$destroy')
+        );
 
-        FlyoutService.register('add-card-button', function(el) {
+        FlyoutService.register(
+          'add-card-button',
+          function(el) {
             if ($(el).hasClass('disabled')) {
               return '<div class="flyout-title">All available cards are already on the page</div>';
             }
-          });
+          },
+          scope.eventToObservable('$destroy')
+        );
 
         /******************
         * Bind observable *

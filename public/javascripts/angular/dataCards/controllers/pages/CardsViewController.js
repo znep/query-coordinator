@@ -35,7 +35,9 @@
       return $scope.downloadOpened &&
         // Don't double-handle toggling downloadOpened
         !$(e.target).closest('.download-menu').length;
-    }).subscribe(function() {
+    }).
+    takeUntil($scope.eventToObservable('$destroy')).
+    subscribe(function() {
       $scope.$apply(function(e) {
         $scope.downloadOpened = false;
       });
@@ -58,7 +60,7 @@
       '<div class="flyout-title">' +
       'Please save the page in order to export a visualization as image' +
       '</div>'
-    ));
+    ), $scope.eventToObservable('$destroy'));
   }
 
   function CardsViewController($scope, $location, $log, $window, $q, AngularRxExtensions, SortedTileLayout, Filter, PageDataService, UserSessionService, CardTypeMapping, FlyoutService, page, Card, WindowState, ServerConfig, $http) {
@@ -208,7 +210,8 @@
 
     var flyoutContent = $("<div class='flyout-title'>Click to reset all filters</div>");
     FlyoutService.register('clear-all-filters-button',
-                           _.constant(flyoutContent));
+                           _.constant(flyoutContent),
+                           $scope.eventToObservable('$destroy'));
 
 
     /************************
@@ -483,12 +486,12 @@
         return $scope.hasChanges ? '<div class="flyout-title">Click to save your changes</div>'
                                  : '<div class="flyout-title">No changes to be saved</div>';
       }
-    });
+    }, $scope.eventToObservable('$destroy'));
 
     FlyoutService.register('save-as-button', function() {
       return $scope.hasChanges ? '<div class="flyout-title">Click to save your changes as a new view</div>'
                                : '<div class="flyout-title">No changes to be saved</div>';
-    });
+    }, $scope.eventToObservable('$destroy'));
 
     // Since we have a flyout handler whose output depends on currentPageSaveEvents and $scope.hasChanges,
     // we need to poke the FlyoutService. We want the flyout to update immediately.
@@ -504,11 +507,11 @@
         'Collapse the big card using the',
         'arrows in its top right corner.'].join('<br/>') +
         '</div>';
-    });
+    }, $scope.eventToObservable('$destroy'));
 
     FlyoutService.register('clear-all-filters-button', function() {
       return '<div class="flyout-title">Click to reset all filters</div>';
-    });
+    }, $scope.eventToObservable('$destroy'));
 
 
     /******************************************

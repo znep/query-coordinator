@@ -750,6 +750,7 @@
           }
 
         },
+        scope.eventToObservable('$destroy'),
         // The second-to-last argument specifies whether the flyout should follow
         // the cursor (true) or be fixed to the target element (false).
         true,
@@ -763,6 +764,7 @@
             element.getAttribute('data-flyout-text')
           );
         },
+        scope.eventToObservable('$destroy'),
         false,
         // The last argument specifies a horizontal display mode.
         true);

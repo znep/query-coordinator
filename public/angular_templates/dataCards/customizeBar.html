@@ -10,6 +10,11 @@
       {{editMode | ifElse:'Customizing':'Customize'}}
     </button>
   </div>
+  <revert-button
+    ng-click="revertPage()"
+    page-has-changes="hasChanges"
+    revert-initiated="revertInitiated">
+  </revert-button>
   <save-button
     class="save-this-page"
     ng-click="savePage()"

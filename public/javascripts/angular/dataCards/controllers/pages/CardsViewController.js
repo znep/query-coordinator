@@ -442,6 +442,19 @@
 
 
     /**
+     * Revert changes behavior.
+     */
+    $scope.revertInitiated = false;
+
+    $scope.revertPage = function() {
+      if ($scope.hasChanges) {
+        $scope.revertInitiated = true;
+        document.location.href = document.location.href;
+      }
+    };
+
+
+    /**
      * Some modal dialogs.
      */
 

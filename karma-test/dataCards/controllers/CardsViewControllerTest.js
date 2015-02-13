@@ -90,6 +90,7 @@ describe('CardsViewController', function() {
   beforeEach(module('/angular_templates/common/pageHeader.html'));
   beforeEach(module('/angular_templates/dataCards/saveAs.html'));
   beforeEach(module('/angular_templates/dataCards/saveButton.html'));
+  beforeEach(module('/angular_templates/dataCards/revertButton.html'));
   beforeEach(module('/angular_templates/dataCards/selectionLabel.html'));
   beforeEach(module('/angular_templates/dataCards/spinner.html'));
   beforeEach(module('/angular_templates/dataCards/addCardDialog.html'));

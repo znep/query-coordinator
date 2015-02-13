@@ -1,7 +1,7 @@
 describe('DatasetDataService', function() {
   'use strict';
 
-  var TESTED_MIGRATION_PHASES = [0, 1];
+  var TESTED_MIGRATION_PHASES = [0, 1, 2];
 
   _.each(TESTED_MIGRATION_PHASES, function(phaseTestingUnder) {
     describe('under phase {0}'.format(phaseTestingUnder), function() {
@@ -200,20 +200,40 @@ describe('DatasetDataService', function() {
           expect(function() { DatasetDataService.getDatasetMetadata('9001', fake4x4); }).to.throw(); // Invalid schema version.
         });
 
-        it('should return a v0 version of the dataset metadata', function(done) {
-          var response = DatasetDataService.getDatasetMetadata('0', fake4x4);
-          response.then(function(data) {
-            if (phaseTestingUnder === 0) {
-              expect(data).to.deep.equal(fakeDatasetMetadataResponseV0);
-            } else if (phaseTestingUnder === 1) {
-              expect(data).to.deep.equal(fakeDatasetMetadataResponseV1RepresentedAsV0);
-            } else {
-              throw new Error('this test needs to be updated to support phase {0}'.format(phaseTestingUnder));
-            }
-            done();
+        // This test is only relevant for phases 0 and 1.
+        if (phaseTestingUnder < 2) {
+          it('should return a v0 version of the dataset metadata', function(done) {
+            var response = DatasetDataService.getDatasetMetadata('0', fake4x4);
+            response.then(function(data) {
+              if (phaseTestingUnder === 0) {
+                expect(data).to.deep.equal(fakeDatasetMetadataResponseV0);
+              } else if (phaseTestingUnder === 1) {
+                expect(data).to.deep.equal(fakeDatasetMetadataResponseV1RepresentedAsV0);
+              } else {
+                throw new Error('this test needs to be updated to support phase {0}'.format(phaseTestingUnder));
+              }
+              done();
+            });
+            $httpBackend.flush();
           });
-          $httpBackend.flush();
-        });
+        }
+
+        // These tests are only relevant for phase 2.
+        if (phaseTestingUnder === 2) {
+          it('should throw on a V0 request', function() {
+            expect(function() { DatasetDataService.getDatasetMetadata('0', fake4x4); }).to.throw();
+          });
+
+          it('should return a v1 version of the dataset metadata', function(done) {
+            var response = DatasetDataService.getDatasetMetadata('1', fake4x4);
+            response.then(function(data) {
+              expect(data).to.deep.equal(fakeDatasetMetadataResponseV1);
+              done();
+            });
+            $httpBackend.flush();
+          });
+        }
+
       });
 
       describe('getPagesForDataset', function() {

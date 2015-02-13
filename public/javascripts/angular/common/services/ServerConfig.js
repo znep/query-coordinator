@@ -40,6 +40,10 @@
       // endpoint and schema.
       shouldReadWriteFromNewEndpoint: function() {
         return ServerConfig.metadataMigration.currentPhase() > 0;
+      },
+      // Whether or not to allow the old-style V0 metadata endpoint.
+      allowUseOfOldEndpoint: function() {
+        return ServerConfig.metadataMigration.currentPhase() <= 1;
       }
     }
   };

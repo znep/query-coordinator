@@ -212,7 +212,7 @@
          *                                     and filtered values.
          *   @property {Number} left - The left offset of the selection,
          *                             in pixels.
-         *   @property {Number} width - The width of one <datum>, in pixels.
+         *   @property {Number} width - The width of the selection, in pixels.
          *   @property {Number} maxValue - The maximum unfiltered value in the
          *                                 latest data request.
          */
@@ -263,7 +263,6 @@
          * @param {Object} highlightData - The output of either
          *                                 filterChartDataByOffset
          *                                 or filterChartDataByInterval.
-         * @return {Undefined} This function is side-effecty.
          */
         function renderChartHighlight(highlightData) {
 
@@ -308,9 +307,6 @@
         }
 
 
-        /**
-         * @return {Undefined} This function is side-effecty.
-         */
         function clearChartHighlight() {
           $('.timeline-chart-highlight-container > g > path').remove();
         }
@@ -460,7 +456,6 @@
               break;
 
             case 'MONTH':
-            console.log('what');
               if (datesAreExactlyOneMonthDifferent(startDate, endDate) && startDate.getDate() === 1) {
                 showRange = false;
               } else {
@@ -494,9 +489,6 @@
         }
 
 
-        /**
-         * @return {Undefined} This function is side-effecty.
-         */
         function renderChartSelection() {
 
           var minDate;
@@ -701,9 +693,6 @@
         }
 
 
-        /**
-         * @return {Undefined} This function is side-effecty.
-         */
         function clearChartSelection() {
 
           selectionIsCurrentlyRendered = false;
@@ -721,8 +710,6 @@
          * Is probably the most complicated function in the directive
          * simply because of all the special casing that needs to happen for
          * sensible display of axis labels across multiple time intervals.
-         *
-         * @return {Undefined} This function is side-effecty.
          */
         function renderChartXAxis() {
 
@@ -974,8 +961,6 @@
         /**
          * This function is comparatively straightforward, but operates
          * in the same way as renderChartXAxis.
-         *
-         * @return {Undefined} This function is side-effecty.
          */
          function renderChartYAxis(chartWidth, chartHeight) {
 
@@ -1033,8 +1018,6 @@
          * Rendering the chart's unfiltered and filtered values are decoupled
          * so that we can independently update and manipulate the filtered
          * values as selections are made.
-         *
-         * @return {Undefined} This function is side-effecty.
          */
         function renderChartUnfilteredValues() {
 
@@ -1093,8 +1076,6 @@
          * Rendering the chart's unfiltered and filtered values are decoupled
          * so that we can independently update and manipulate the filtered
          * values as selections are made.
-         *
-         * @return {Undefined} This function is side-effecty.
          */
         function renderChartFilteredValues() {
 
@@ -1157,8 +1138,6 @@
          * Basically just prepares the underlying chart data and then calls
          * special functions that render the x-axis, the y-axis, unfiltered
          * and filtered values.
-         *
-         * @return {Undefined} This function is side-effecty.
          */
         function renderChart() {
 
@@ -1406,9 +1385,6 @@
         }
 
 
-        /**
-         * @return {Undefined} This function is side-effecty.
-         */
         function renderSelectionMarkerFlyout() {
           if (mousePositionWithinChartDisplay && !currentlyDragging) {
             return '<div class="flyout-title">Drag to change filter range</div>';
@@ -1416,9 +1392,6 @@
         }
 
 
-        /**
-         * @return {Undefined} This function is side-effecty.
-         */
         function renderClearSelectionMarkerFlyout() {
           if (mousePositionWithinChartLabels) {
             return '<div class="flyout-title">Clear filter range</div>';
@@ -1426,18 +1399,12 @@
         }
 
 
-        /**
-         * @return {Undefined} This function is side-effecty.
-         */
         function hideDatumLabel() {
           jqueryDatumLabel.hide();
           jqueryChartElement.removeClass('dimmed');
         }
 
 
-        /**
-         * @return {Undefined} This function is side-effecty.
-         */
         function enterDraggingState() {
           currentlyDragging = true;
           selectionIsCurrentlyRendered = false;
@@ -1448,9 +1415,6 @@
         }
 
 
-        /**
-         * @return {Undefined} This function is side-effecty.
-         */
         function enterSelectedState() {
           currentlyDragging = false;
           selectionIsCurrentlyRendered = true;
@@ -1462,9 +1426,6 @@
         }
 
 
-        /**
-         * @return {Undefined} This function is side-effecty.
-         */
         function enterDefaultState() {
           currentlyDragging = false;
           selectionIsCurrentlyRendered = false;
@@ -1476,10 +1437,7 @@
         }
 
 
-        /**
-         * @return {Undefined} This function is side-effecty.
-         */
-        function filterChartByCurrentSelection() {
+        function requestChartFilterByCurrentSelection() {
           var selectionStartDateAsMoment = moment(selectionStartDate);
           var selectionEndDateAsMoment = moment(selectionEndDate).add(1, datasetPrecision);
           if (selectionStartDateAsMoment.isValid() && selectionEndDateAsMoment.isValid()) {
@@ -1494,10 +1452,7 @@
         }
 
 
-        /**
-         * @return {Undefined} This function is side-effecty.
-         */
-        function clearChartFilter() {
+        function requestChartFilterReset() {
           scope.$emit('filter-timeline-chart', null);
         }
 
@@ -1505,8 +1460,6 @@
         /**
          * This is used to keep the flyout updated as you drag a selection
          * marker.
-         *
-         * @return {Undefined} This function is side-effecty.
          */
         function setCurrentDatumByDate(date) {
 
@@ -1561,7 +1514,6 @@
          *                           visualization, in pixels
          * @param {DOM Element} target - The DOM element receiving the mouse
          *                               event.
-         * @return {Undefined} This function is side-effecty.
          */
         function setSelectionStartAndEndDateByMousePosition(offsetX, target) {
 
@@ -1641,7 +1593,6 @@
          *   @property {Object} position
          *     @property {Number} clientX
          *     @property {Number} clientY
-         * @return {Undefined} This function is side-effecty.
          */
         function handleChartSelectionEvents(mouseStatus) {
 
@@ -1716,7 +1667,7 @@
                     // then we deselct it.
                     if (selectionIsExactlyTheSameAsHasBeenRendered(selectionStartDate, selectionEndDate)) {
                       enterDefaultState();
-                      clearChartFilter();
+                      requestChartFilterReset();
                       return;
                     }
 
@@ -1766,27 +1717,21 @@
 
             enterSelectedState();
 
-            filterChartByCurrentSelection();
+            requestChartFilterByCurrentSelection();
 
           }
 
         }
 
 
-        /**
-         * @return {Undefined} This function is side-effecty.
-         */
         function handleChartMouseleaveEvent() {
           d3ChartElement.select('svg.timeline-chart-highlight-container').select('g').remove();
           currentDatum = null;
         }
 
 
-        /**
-         * @return {Undefined} This function is side-effecty.
-         */
         function handleClearSelectionLabelMousedownEvent() {
-          clearChartFilter();
+          requestChartFilterReset();
           enterDefaultState();
         }
 
@@ -1794,7 +1739,6 @@
         /**
          * @param {Date} startDate
          * @param {Date} endDate
-         * @return {Undefined} This function is side-effecty.
          */
         function highlightChart(startDate, endDate) {
 
@@ -1818,7 +1762,6 @@
         /**
          * @param {Number} offsetX - The left offset of the mouse cursor into
          *                           the visualization, in pixels.
-         * @return {Undefined} This function is side-effecty.
          */
         function highlightChartByMouseOffset(offsetX) {
 
@@ -1843,7 +1786,6 @@
         /**
          * @param {Number} offsetX - The left offset of the mouse cursor into
          *                           the visualization, in pixels.
-         * @return {Undefined} This function is side-effecty.
          */
         function highlightChartWithHiddenLabelsByMouseOffset(offsetX) {
 
@@ -1892,7 +1834,6 @@
          *                               describing an interval's start date,
          *                               end date, filtered and unfiltered
          *                               values and the formatted flyout label.
-         * @return {Undefined} This function is side-effecty.
          */
         function highlightChartByInterval(target) {
 

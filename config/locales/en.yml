@@ -100,6 +100,7 @@ en:
           href: External Datasets
           maps: Maps
           unpublished: Unpublished Datasets
+          new_view: Interactive Views
         view_types_singular_title: type
         view_types_title: View Types
       listing:
@@ -703,6 +704,7 @@ en:
       map: map
       table: table
       working_copy: working copy
+      new_view: interactive view
     view_types_plural:
       api: APIs
       calendar: Calendars

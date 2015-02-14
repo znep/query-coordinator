@@ -1,7 +1,8 @@
 (function() {
   'use strict';
 
-  function cardVisualizationChoropleth(Constants, AngularRxExtensions, CardDataService, Filter, ServerConfig, $log) {
+  function cardVisualizationChoropleth(Constants, AngularRxExtensions, CardDataService, Filter,
+                                       ServerConfig, CardVisualizationChoroplethHelpers) {
 
     return {
       restrict: 'E',
@@ -13,48 +14,6 @@
       link: function(scope, element, attrs) {
 
         AngularRxExtensions.install(scope);
-
-        function mergeRegionAndAggregateData(
-          activeFilterNames,
-          geojsonRegions,
-          unfilteredDataAsHash,
-          filteredDataAsHash,
-          shapefileHumanReadablePropertyName) {
-
-            var newFeatures = geojsonRegions.features.filter(function(geojsonFeature) {
-              return geojsonFeature.properties.hasOwnProperty(Constants['INTERNAL_DATASET_FEATURE_ID']) &&
-                     geojsonFeature.properties[Constants['INTERNAL_DATASET_FEATURE_ID']];
-            }).map(function(geojsonFeature) {
-
-              var name = geojsonFeature.properties[Constants['INTERNAL_DATASET_FEATURE_ID']];
-              var humanReadableName = '';
-
-              if (shapefileHumanReadablePropertyName !== null) {
-                humanReadableName = geojsonFeature.properties[shapefileHumanReadablePropertyName];
-              }
-
-              var properties = {};
-              properties[Constants['INTERNAL_DATASET_FEATURE_ID']] = geojsonFeature.properties[Constants['INTERNAL_DATASET_FEATURE_ID']];
-              properties[Constants['FILTERED_VALUE_PROPERTY_NAME']] = filteredDataAsHash[name];
-              properties[Constants['UNFILTERED_VALUE_PROPERTY_NAME']] = unfilteredDataAsHash[name];
-              properties[Constants['SELECTED_PROPERTY_NAME']] = _.contains(activeFilterNames, name);
-              properties[Constants['HUMAN_READABLE_PROPERTY_NAME']] = humanReadableName;
-
-              // Create a new object to get rid of superfluous shapefile-specific
-              // fields coming out of the backend.
-              return {
-                geometry: geojsonFeature.geometry,
-                properties: properties,
-                type: geojsonFeature.type
-              };
-            });
-
-            return {
-              crs: geojsonRegions.crs,
-              features: newFeatures,
-              type: geojsonRegions.type
-            };
-        }
 
         var model = scope.observe('model');
         var dataset = model.observeOnLatest('page.dataset');
@@ -74,92 +33,6 @@
         var dataRequestCount = dataRequests.scan(0, function(acc, x) { return acc + 1; });
         var dataResponseCount = dataResponses.scan(0, function(acc, x) { return acc + 1; });
         var geojsonRegionsData;
-
-        function getShapefileFeatureHumanReadablePropertyName(shapefile) {
-
-          // This mapping provides the shapefileHumanReadablePropertyName for a given shapefile 4x4.
-          // This is a temporary measure until this information can be provided by the metadata service.
-          var shapefileFeatureNameMapping = {
-            '7vkw-k8eh': 'community',
-            'snuk-a5kv': 'ward',
-            '99f5-m626': 'zip',
-            'qttw-wpd6': 'name',
-            'ernj-gade': 'supdist',
-            '9ax2-xhmg': 'district',
-            'e2nj-t6rn': 'name',
-            'a9zv-gp2q': 'zcta5ce10',
-            '7a5b-8kcq': 'borocd',
-            '9qyy-j3br': 'schooldist',
-            'fvid-vsfz': 'countdist',
-            'szt7-kj5n': 'geoid10',
-            '9gf2-g78j': 'name',
-            'afrk-7ibz': 'name',
-            '7mve-5gn9': 'dist_numc',
-            '82gf-y944': 'name',
-            '5tni-guuj': 'name',
-            'pqdv-qiia': 'name',
-            '5trx-7ni6': 'name',
-            'nmuc-gpu5': 'name',
-            '8fjz-g95m': 'tract',
-            '2q28-58m6': 'tractce',
-            '86dh-mgvd': 'geoid10',
-            '8thk-xhvj': 'name',
-            '35kt-7gyk': 'district',
-            'mdjy-33rn': 'countyname',
-            '98hf-33cq': 'zip',
-            'fbzh-zpfr': 'council',
-            'p3v4-2swa': 'name',
-            'cwdz-i4bh': 'name',
-            'tgu8-ecbp': 'geoid10',
-            'uu7q-dmf8': 'district',
-            'ptc7-ykax': 'nhood',
-            'ej5w-qt6t': 'objectid',
-            'cf84-d7ef': 'supdist',
-            '9t2m-phkm': 'district',
-            'my34-vmp8': 'countyname',
-            'w4hf-t6bp': 'zip',
-            'tx5f-5em3': 'council',
-            'kbsp-ykn9': 'name',
-            'rbt8-3x7n': 'name',
-            'd7bw-bq6x': 'geoid10',
-            'p5aj-wyqh': 'district',
-            'b2j2-ahrz': 'nhood',
-            'yftq-j783': 'objectid',
-            'rxqg-mtj9': 'supdist',
-            'hak8-5bvb': 'coundist',
-            'swkg-bavi': 'zone_type',
-            'rffn-qbt6': 'name',
-            'rcj3-ccgu': 'geoid10',
-            'ueqj-g33x': 'lname',
-            'asue-2ipu': 'district_1',
-            'cjq3-kq3a': 'geoid10',
-            'buyp-4dp9': 'geoid10',
-            '4rat-gsiv': 'geoid10',
-            'ndi2-bfht': 'district',
-            'u9vc-vmbc': 'district',
-            '28yu-qtqf': 'geoid10',
-            'ce8n-ahaq': 'zone_type',
-            'xv2v-ia46': 'name',
-            'bwdd-ss8w': 'geoid10',
-            'w7nm-sadn': 'lname',
-            'bf3n-hej2': 'district_1',
-            'wrxk-qft3': 'geoid10',
-            'nr9s-8m49': 'geoid10',
-            '6t63-sezg': 'geoid10',
-            '8f9p-hupj': 'district',
-            'c62z-keqd': 'district',
-            'tbvr-2deq': 'geoid10'
-          };
-
-          if (shapefile && shapefileFeatureNameMapping.hasOwnProperty(shapefile)) {
-            return shapefileFeatureNameMapping[shapefile];
-          }
-
-          $log.error('Unable to determine shapefileFeatureHumanReadablePropertyName for shapefile: {0}'.format(shapefile));
-          return null;
-
-        }
-
 
         /*************************************
         * FIRST set up the 'busy' indicator. *
@@ -199,14 +72,24 @@
             dataset.observeOnLatest('columns'),
             function(dataset, fieldName, columns) {
 
+              var shapeFile = null;
+
               if (_.isEmpty(columns)) {
                 return Rx.Observable.never();
               }
 
               dataRequests.onNext(1);
 
-              if (!columns[fieldName].hasOwnProperty('shapefile')) {
-                throw new Error('Dataset metadata column for computed georegion column does not include shapefile.');
+              if (ServerConfig.metadataMigration.shouldConsumeComputationStrategy()) {
+                shapeFile = CardVisualizationChoroplethHelpers.extractShapeFileFromColumn(columns[fieldName]);
+              } else {
+                if (columns[fieldName].hasOwnProperty('shapefile')) {
+                  shapeFile = columns[fieldName].shapefile;
+                }
+              }
+
+              if (shapeFile === null) {
+                throw new Error('Dataset metadata column for computed georegion does not include shapeFile.');
               }
 
               var sourceColumn = null;
@@ -220,7 +103,7 @@
                 throw new Error('No column with geometry found.');
               }
 
-              var dataPromise = CardDataService.getChoroplethRegions(dataset.id, sourceColumn, columns[fieldName].shapefile);
+              var dataPromise = CardDataService.getChoroplethRegions(dataset.id, sourceColumn, shapeFile);
               dataPromise.then(
                 function(res) {
                   // Ok
@@ -243,17 +126,27 @@
             dataset.observeOnLatest('columns'),
             function(fieldName, columns) {
 
+              var shapeFile = null;
+
               if (_.isEmpty(columns)) {
                 return Rx.Observable.never();
               }
 
               dataRequests.onNext(1);
 
-              if (!columns[fieldName].hasOwnProperty('shapefile')) {
-                throw new Error('Dataset metadata column for computed georegion column does not include shapefile.');
+              if (ServerConfig.metadataMigration.shouldConsumeComputationStrategy()) {
+                shapeFile = CardVisualizationChoroplethHelpers.extractShapeFileFromColumn(columns[fieldName]);
+              } else {
+                if (columns[fieldName].hasOwnProperty('shapefile')) {
+                  shapeFile = columns[fieldName].shapefile;
+                }
               }
 
-              var dataPromise = CardDataService.getChoroplethRegions(columns[fieldName].shapefile);
+              if (shapeFile === null) {
+                throw new Error('Dataset metadata column for computed georegion does not include shapeFile.');
+              }
+
+              var dataPromise = CardDataService.getChoroplethRegions(shapeFile);
               dataPromise.then(
                 function(res) {
                   // Ok
@@ -329,40 +222,7 @@
             model.observeOnLatest('activeFilters'),
             model.pluck('fieldName'),
             dataset.observeOnLatest('columns'),
-            function(geojsonRegions, unfilteredData, filteredData, activeFilters, fieldName, columns) {
-              var activeFilterNames = _.pluck(activeFilters, 'operand');
-
-              var unfilteredDataAsHash = _.reduce(unfilteredData, function(acc, datum) {
-                acc[datum.name] = datum.value;
-                return acc;
-              }, {});
-
-              var filteredDataAsHash = _.reduce(filteredData, function(acc, datum) {
-                acc[datum.name] = datum.value;
-                return acc;
-              }, {});
-
-              // Extract the active column from the columns array by matching against
-              // the card's "fieldName".
-              var column = _.find(
-                columns,
-                function(column) { return column.name === fieldName; });
-
-              if (_.isEmpty(column)) {
-                throw new Error('Could not match fieldName to human-readable column name.');
-              }
-
-              var shapefileFeatureHumanReadablePropertyName = getShapefileFeatureHumanReadablePropertyName(column.shapefile);
-
-              return mergeRegionAndAggregateData(
-                activeFilterNames,
-                geojsonRegions,
-                unfilteredDataAsHash,
-                filteredDataAsHash,
-                shapefileFeatureHumanReadablePropertyName
-              );
-
-        }));
+            CardVisualizationChoroplethHelpers.aggregateGeoJsonData));
 
 
         /*********************************************************
@@ -392,8 +252,7 @@
 
   }
 
-  angular.
-    module('dataCards.directives').
-      directive('cardVisualizationChoropleth', cardVisualizationChoropleth);
+  angular.module('dataCards.directives').
+    directive('cardVisualizationChoropleth', cardVisualizationChoropleth);
 
 })();

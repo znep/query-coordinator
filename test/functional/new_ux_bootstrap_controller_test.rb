@@ -19,6 +19,7 @@ class NewUxBootstrapControllerTest < ActionController::TestCase
         stub.stubs(get_request: '[]', reset_counters: {requests: {}, runtime: 0})
       end
       CoreServer::Base.stubs(connection: connection_stub)
+      stub_feature_flags_with(:metadata_transition_phase, '0')
     end
 
     should 'have no route if no id' do
@@ -36,7 +37,6 @@ class NewUxBootstrapControllerTest < ActionController::TestCase
       setup do
         # Stub out services, so we don't end up trying
         # to connect to external endpoints.
-        @page_metadata_manager.stubs(pages_for_dataset: { status: '500', body: {} })
         @phidippides.stubs(fetch_dataset_metadata: { status: '500', body: {columns: nil} })
       end
 
@@ -98,15 +98,11 @@ class NewUxBootstrapControllerTest < ActionController::TestCase
       context 'default page' do
         should 'redirect to the default page if the 4x4 already has a default page' do
           @phidippides.stubs(
-            fetch_dataset_metadata: { status: '200', body: {defaultPage: 'defa-ultp'} }
-          )
-          @page_metadata_manager.stubs(
-            pages_for_dataset: {
-              status: '200', body: { publisher: [
-                { pageId: 'page-xist' },
-                { pageId: 'defa-ultp' },
-                { pageId: 'last-page' }
-              ] }
+            fetch_dataset_metadata: {
+              status: '200', body: {defaultPage: 'defa-ultp'}
+            },
+            fetch_pages_for_dataset: {
+              status: '200', body: { publisher: [{ pageId: 'page-xist' }, { pageId: 'defa-ultp' }, { pageId: 'last-page' }], user: [] }
             }
           )
           get :bootstrap, id: 'four-four'
@@ -120,12 +116,9 @@ class NewUxBootstrapControllerTest < ActionController::TestCase
               with do |dataset_metadata|
                 dataset_metadata[:defaultPage] == 'last-page'
               end
-            @page_metadata_manager.stubs(
-              pages_for_dataset: {
-                status: '200', body: { publisher: [
-                  { pageId: 'page-xist' },
-                  { pageId: 'last-page' }
-                ] }
+            @phidippides.stubs(
+              fetch_pages_for_dataset: {
+                status: '200', body: { publisher: [{ pageId: 'page-xist' }, { pageId: 'last-page' }], user: [] }
               }
             )
           end
@@ -147,10 +140,14 @@ class NewUxBootstrapControllerTest < ActionController::TestCase
       end
 
       context 'dependent service error handling' do
-        should 'redirect to dataset page with error, if page_metadata_manager hates us' do
-          @phidippides.stubs(fetch_dataset_metadata: {status: '200', body: {columns: nil}})
-          @page_metadata_manager.stubs(
-            pages_for_dataset: { status: '500', body: { error: 'you suck' } }
+        should 'redirect to dataset page with error if the fetch_pages_for_dataset request fails' do
+          @phidippides.stubs(
+            fetch_dataset_metadata: {
+              status: '200', body: {columns: nil}
+            },
+            fetch_pages_for_dataset: {
+              status: '500', body: { error: '500 Internal Server Error' }
+            }
           )
           get :bootstrap, id: 'four-four'
           assert_redirected_to('/datasets/four-four')
@@ -158,8 +155,11 @@ class NewUxBootstrapControllerTest < ActionController::TestCase
         end
 
         should 'return 404 if dataset does not exist' do
-          @phidippides.stubs(fetch_dataset_metadata: { status: '404', body: { error: {} } })
-          @page_metadata_manager.stubs(pages_for_dataset: { status: '404', body: [] })
+          @phidippides.stubs(
+            fetch_dataset_metadata: {
+              status: '404', body: { error: {} }
+            }
+          )
           get :bootstrap, id: 'four-four'
           assert_response(404)
         end
@@ -167,101 +167,260 @@ class NewUxBootstrapControllerTest < ActionController::TestCase
 
       context 'creating page' do
         setup do
-          @page_metadata_manager.stubs(pages_for_dataset: { status: '404', body: [] })
+          @phidippides.stubs(
+            fetch_pages_for_dataset: {
+              status: '404', body: []
+            }
+          )
         end
 
-        should 'redirect to new page with cards for the first 10 non-system columns' do
-          connection_stub = stub.tap do |stub|
-            stub.stubs(get_request: '[{"count_0": "1234"}]',
-                       reset_counters: {requests: {}, runtime: 0})
-          end
-          CoreServer::Base.stubs(connection: connection_stub)
-          @phidippides.stubs(fetch_dataset_metadata: {status: '200', body: mock_dataset_metadata})
-          @phidippides.expects(:update_dataset_metadata).
-            returns({ status: '200' }).
-            with do |dataset_metadata|
-              dataset_metadata[:defaultPage] == 'neoo-page'
+        context 'creates and redirects to new page with cards for the first 10 non-system columns' do
+
+          setup do
+            connection_stub = stub.tap do |stub|
+              stub.stubs(get_request: '[{"count_0": "1234"}]',
+                         reset_counters: {requests: {}, runtime: 0})
             end
 
-          # Make sure the page we're creating fits certain criteria
-          @page_metadata_manager.expects(:create).with do |page, params|
-            assert_equal(10, page['cards'].length, 'Should create 10 cards')
+            CoreServer::Base.stubs(connection: connection_stub)
 
-            assert(page['cards'].none? do |card|
-              Phidippides::SYSTEM_COLUMN_ID_REGEX.match(card['fieldName'])
-            end, 'should omit system columns')
-
-            # make sure there exists cards that have the same logical and physical types, but
-            # different card types, according to cardinality.
-            seen_multi_cards = {}
-            differing_card_types = page['cards'].map do |card|
-              if card['fieldName'].start_with?('multi')
-                if seen_multi_cards.has_key?(card['fieldName'])
-                  assert_not_equal(
-                    seen_multi_cards[card['fieldName']]['cardType'],
-                    card['fieldName']['cardType'],
-                    'Given a physical/logical type, differing cardinality should create ' +
-                    'different cardType'
-                  )
-                  card
-                else
-                  seen_multi_cards[card['fieldName']] = card
-                end
+            @phidippides.expects(:update_dataset_metadata).
+              returns({ status: '200' }).
+              with do |dataset_metadata|
+                dataset_metadata[:defaultPage] == 'neoo-page'
               end
-            end.compact
-            # Make sure we checked some cards
-            assert(differing_card_types.present?)
 
-            assert(page['cards'].any? do |card|
-              card['fieldName'] == 'none' && card['cardType'] == 'column'
-            end, 'A column with no cardinality should default to its low-cardinality default')
+          end
 
-            assert(page['cards'].none? do |card|
-              card['fieldName'] == 'below'
-            end, 'too-low cardinality columns should be omitted')
+          teardown do
+            stub_feature_flags_with(:metadata_transition_phase, '0')
+          end
 
-            assert(page['cards'].all? do |card|
-              card['cardType']
-            end, 'Every card should have cardType set')
+          should 'in phase 0' do
+            @phidippides.stubs(
+              fetch_dataset_metadata: {
+                status: '200', body: v0_mock_dataset_metadata
+              }
+            )
+            stub_feature_flags_with(:metadata_transition_phase, '0')
 
-            previous_card = {}
-            page['cards'].first(4).each do |card|
-              assert_not_equal(previous_card['cardType'], card['cardType'],
-                               'There should be a variety of cards created')
-              previous_card = card
-            end
+            # Make sure the page we're creating fits certain criteria
+            @page_metadata_manager.expects(:create).with do |page, params|
+              assert_equal(10, page['cards'].length, 'Should create 10 cards')
 
-            next true
-          end.then.returns({ status: '200', body: { pageId: 'neoo-page' } })
+              assert(page['cards'].none? do |card|
+                Phidippides::SYSTEM_COLUMN_ID_REGEX.match(card['fieldName'])
+              end, 'should omit system columns')
 
-          get :bootstrap, id: 'four-four'
-          assert_redirected_to('/view/neoo-page')
+              # make sure there exists cards that have the same logical and physical types, but
+              # different card types, according to cardinality.
+              differing_card_types = collect_differing_card_types(page['cards'])
+
+              # Make sure we checked some cards
+              assert(differing_card_types.present?)
+
+              assert(page['cards'].any? do |card|
+                card['fieldName'] == 'none' && card['cardType'] == 'column'
+              end, 'A column with no cardinality should default to its low-cardinality default')
+
+              assert(page['cards'].none? do |card|
+                card['fieldName'] == 'below'
+              end, 'too-low cardinality columns should be omitted')
+
+              assert(page['cards'].all? do |card|
+                card['cardType']
+              end, 'Every card should have cardType set')
+
+              previous_card = {}
+              page['cards'].first(4).each do |card|
+                assert_not_equal(previous_card['cardType'], card['cardType'],
+                                 'There should be a variety of cards created')
+                previous_card = card
+              end
+
+              next true
+            end.then.returns({ status: '200', body: { pageId: 'neoo-page' } })
+
+            get :bootstrap, id: 'four-four'
+            assert_redirected_to('/view/neoo-page')
+          end
+
+          should 'in phase 1' do
+            @phidippides.stubs(
+              fetch_dataset_metadata: {
+                status: '200', body: v1_mock_dataset_metadata
+              }
+            )
+            stub_feature_flags_with(:metadata_transition_phase, '1')
+
+            # Make sure the page we're creating fits certain criteria
+            @page_metadata_manager.expects(:create).with do |page, params|
+              assert_equal(10, page['cards'].length, 'Should create 10 cards')
+
+              assert(page['cards'].none? do |card|
+                Phidippides::SYSTEM_COLUMN_ID_REGEX.match(card['fieldName'])
+              end, 'should omit system columns')
+
+              # make sure there exists cards that have the same logical and physical types, but
+              # different card types, according to cardinality.
+              differing_card_types = collect_differing_card_types(page['cards'])
+
+              # Make sure we checked some cards
+              assert(differing_card_types.present?)
+
+              assert(page['cards'].any? do |card|
+                card['fieldName'] == 'none' && card['cardType'] == 'column'
+              end, 'A column with no cardinality should default to its low-cardinality default')
+
+              assert(page['cards'].none? do |card|
+                card['fieldName'] == 'below'
+              end, 'too-low cardinality columns should be omitted')
+
+              assert(page['cards'].all? do |card|
+                card['cardType']
+              end, 'Every card should have cardType set')
+
+              previous_card = {}
+              page['cards'].first(4).each do |card|
+                assert_not_equal(previous_card['cardType'], card['cardType'],
+                                 'There should be a variety of cards created')
+                previous_card = card
+              end
+
+              next true
+            end.then.returns({ status: '200', body: { pageId: 'neoo-page' } })
+
+            get :bootstrap, id: 'four-four'
+            assert_redirected_to('/view/neoo-page')
+          end
+
+          should 'in phase 2' do
+            @phidippides.stubs(
+              fetch_dataset_metadata: {
+                status: '200', body: v1_mock_dataset_metadata
+              }
+            )
+            stub_feature_flags_with(:metadata_transition_phase, '2')
+
+            # Make sure the page we're creating fits certain criteria
+            @page_metadata_manager.expects(:create).with do |page, params|
+              assert_equal(10, page['cards'].length, 'Should create 10 cards')
+
+              assert(page['cards'].none? do |card|
+                Phidippides::SYSTEM_COLUMN_ID_REGEX.match(card['fieldName'])
+              end, 'should omit system columns')
+
+              # make sure there exists cards that have the same logical and physical types, but
+              # different card types, according to cardinality.
+              differing_card_types = collect_differing_card_types(page['cards'])
+
+              # Make sure we checked some cards
+              assert(differing_card_types.present?)
+
+              assert(page['cards'].any? do |card|
+                card['fieldName'] == 'none' && card['cardType'] == 'column'
+              end, 'A column with no cardinality should default to its low-cardinality default')
+
+              assert(page['cards'].none? do |card|
+                card['fieldName'] == 'below'
+              end, 'too-low cardinality columns should be omitted')
+
+              assert(page['cards'].all? do |card|
+                card['cardType']
+              end, 'Every card should have cardType set')
+
+              previous_card = {}
+              page['cards'].first(4).each do |card|
+                assert_not_equal(previous_card['cardType'], card['cardType'],
+                                 'There should be a variety of cards created')
+                previous_card = card
+              end
+
+              next true
+            end.then.returns({ status: '200', body: { pageId: 'neoo-page' } })
+
+            get :bootstrap, id: 'four-four'
+            assert_redirected_to('/view/neoo-page')
+          end
         end
 
-        should 'create page omitting column charts where cardinality == dataset_size' do
-          connection_stub = stub.tap do |stub|
-            stub.stubs(get_request: '[{"count_0": "34"}]',
-                       reset_counters: {requests: {}, runtime: 0})
-          end
-          CoreServer::Base.stubs(connection: connection_stub)
-          @phidippides.stubs(fetch_dataset_metadata: {
-            status: '200', body: mock_dataset_metadata_with_uninteresting_column_chart
-          })
-          @phidippides.expects(:update_dataset_metadata).
-            returns({ status: '200' }).
-            with do |dataset_metadata|
-              dataset_metadata[:defaultPage] == 'neoo-page'
+        context 'create page omitting column charts where cardinality == dataset_size' do
+
+          setup do
+            connection_stub = stub.tap do |stub|
+              stub.stubs(get_request: '[{"count_0": "34"}]',
+                         reset_counters: {requests: {}, runtime: 0})
             end
 
-          # Make sure the page we're creating fits certain criteria
-          @page_metadata_manager.expects(:create).with do |page, params|
-            assert_equal(0, page['cards'].length,
-                         'Should not create column card with cardinality == dataset_size')
-            next true
-          end.then.returns({ status: '200', body: { pageId: 'neoo-page' } })
+            CoreServer::Base.stubs(connection: connection_stub)
 
-          get :bootstrap, id: 'four-four'
-          assert_redirected_to('/view/neoo-page')
+            @phidippides.expects(:update_dataset_metadata).
+              returns({ status: '200' }).
+              with do |dataset_metadata|
+                dataset_metadata[:defaultPage] == 'neoo-page'
+              end
+          end
+
+          teardown do
+            stub_feature_flags_with(:metadata_transition_phase, '0')
+          end
+
+          should 'in phase 0' do
+            @phidippides.stubs(
+              fetch_dataset_metadata: {
+                status: '200', body: v0_mock_dataset_metadata_with_uninteresting_column_chart
+              }
+            )
+            stub_feature_flags_with(:metadata_transition_phase, '0')
+
+            # Make sure the page we're creating fits certain criteria
+            @page_metadata_manager.expects(:create).with do |page, params|
+              assert_equal(0, page['cards'].length,
+                           'Should not create column card with cardinality == dataset_size')
+              next true
+            end.then.returns({ status: '200', body: { pageId: 'neoo-page' } })
+
+            get :bootstrap, id: 'four-four'
+            assert_redirected_to('/view/neoo-page')
+          end
+
+          should 'in phase 1' do
+            @phidippides.stubs(
+              fetch_dataset_metadata: {
+                status: '200', body: v1_mock_dataset_metadata_with_uninteresting_column_chart
+              }
+            )
+            stub_feature_flags_with(:metadata_transition_phase, '1')
+
+            # Make sure the page we're creating fits certain criteria
+            @page_metadata_manager.expects(:create).with do |page, params|
+              assert_equal(0, page['cards'].length,
+                           'Should not create column card with cardinality == dataset_size')
+              next true
+            end.then.returns({ status: '200', body: { pageId: 'neoo-page' } })
+
+            get :bootstrap, id: 'four-four'
+            assert_redirected_to('/view/neoo-page')
+          end
+
+          should 'in phase 2' do
+            @phidippides.stubs(
+              fetch_dataset_metadata: {
+                status: '200', body: v1_mock_dataset_metadata_with_uninteresting_column_chart
+              }
+            )
+            stub_feature_flags_with(:metadata_transition_phase, '2')
+
+            # Make sure the page we're creating fits certain criteria
+            @page_metadata_manager.expects(:create).with do |page, params|
+              assert_equal(0, page['cards'].length,
+                           'Should not create column card with cardinality == dataset_size')
+              next true
+            end.then.returns({ status: '200', body: { pageId: 'neoo-page' } })
+
+            get :bootstrap, id: 'four-four'
+            assert_redirected_to('/view/neoo-page')
+          end
         end
 
         should 'redirect to dataset page with error if error while creating page' do
@@ -271,13 +430,12 @@ class NewUxBootstrapControllerTest < ActionController::TestCase
           end
           CoreServer::Base.stubs(connection: connection_stub)
           @page_metadata_manager.stubs(
-            pages_for_dataset: { status: '404', body: [] },
             create: { status: '500' },
           )
           @phidippides.stubs(
             fetch_dataset_metadata: {
               status: '200',
-              body: mock_dataset_metadata
+              body: v0_mock_dataset_metadata
             }
           )
           get :bootstrap, id: 'four-four'
@@ -314,70 +472,63 @@ class NewUxBootstrapControllerTest < ActionController::TestCase
     end.flatten(1)
   end
 
-  def mock_dataset_metadata_with_uninteresting_column_chart
+  def collect_differing_card_types(cards)
+    seen_multi_cards = {}
+    cards.map do |card|
+      if card['fieldName'].start_with?('multi')
+        if seen_multi_cards.has_key?(card['fieldName'])
+          assert_not_equal(
+            seen_multi_cards[card['fieldName']]['cardType'],
+            card['fieldName']['cardType'],
+            'Given a physical/logical type, differing cardinality should create ' +
+            'different cardType'
+          )
+          card
+        else
+          seen_multi_cards[card['fieldName']] = card
+        end
+      end
+    end.compact
+  end
+
+  def v0_mock_dataset_metadata_with_uninteresting_column_chart
     cardinality_threshold = CardTypeMapping::CARD_TYPE_MAPPING['cardinality']['threshold']
-    cardinality_equal_to_dataset_size = [{
+    cardinality_equal_to_dataset_size = [
       title: 'cardinality equal to dataset size',
       name: 'too_much',
       logicalDatatype: 'category',
       physicalDatatype: 'number',
-      cardinality: cardinality_threshold - 1,
-    }]
+      cardinality: cardinality_threshold - 1
+    ]
 
-    mock_metadata = mock_dataset_metadata
+    mock_metadata = v0_mock_dataset_metadata
     mock_metadata[:columns] = cardinality_equal_to_dataset_size
     mock_metadata
   end
 
-  def mock_dataset_metadata
-    multiple_cardtype_types = {
-      'category' => ['number', 'text'],
-      'identifier' => ['number', 'text'],
-      'name' => ['number', 'text'],
-      'text' => ['number', 'text'],
-    }
-    # A sampling of datatypes that map to only one cardtype
-    single_cardtype_types = {
-      'amount' => ['*'],
-      'category' => ['boolean'],
-      'identifier' => ['fixed_timestamp', 'money'],
-      'location' => ['number', 'point'],
-    }
-    no_cardtype_types = {
-      '*' => ['boolean'],
-      'time' => ['geo_entity']
+  def v1_mock_dataset_metadata_with_uninteresting_column_chart
+    cardinality_threshold = CardTypeMapping::CARD_TYPE_MAPPING['cardinality']['threshold']
+    cardinality_equal_to_dataset_size = {
+      too_much: {
+        description: 'cardinality equal to dataset size',
+        name: 'too much',
+        fred: 'category',
+        physicalDatatype: 'number',
+        cardinality: cardinality_threshold - 1
+      }
     }
 
-    counter = 0
-
-    multi_cardtype_cols = columns_for_cardtypes(multiple_cardtype_types, 'multi')
-    single_cardtype_cols = columns_for_cardtypes(single_cardtype_types, 'single')
-    no_cardtype_cols = columns_for_cardtypes(no_cardtype_types, 'none')
-    below_minimum_cardinality = [{
-      title: 'below min cardinality',
-      name: 'below',
-      logicalDatatype: 'category',
-      physicalDatatype: 'number',
-      cardinality: CardTypeMapping::CARD_TYPE_MAPPING['cardinality']['min'] - 1
-    }]
-    no_cardinality = [{
-      title: 'no cardinality',
-      name: 'none',
-      logicalDatatype: 'category',
-      physicalDatatype: 'number',
-    }]
-
-    {
-      id: 'data-iden',
-      name: 'test dataset',
-      description: 'dataset for unit test',
-      defaultPage: 'defa-ultp',
-      columns: [{ title: ':system', name: ':system' }] +
-        no_cardinality +
-        below_minimum_cardinality +
-        no_cardtype_cols.first(2) +
-        single_cardtype_cols.first(4) +
-        multi_cardtype_cols.first(6)
-    }
+    mock_metadata = v1_mock_dataset_metadata
+    mock_metadata[:columns] = cardinality_equal_to_dataset_size
+    mock_metadata
   end
+
+  def v0_mock_dataset_metadata
+    JSON.parse(File.read("#{Rails.root}/test/fixtures/v0-bootstrap-dataset-metadata.json")).with_indifferent_access
+  end
+
+  def v1_mock_dataset_metadata
+    JSON.parse(File.read("#{Rails.root}/test/fixtures/v1-bootstrap-dataset-metadata.json")).with_indifferent_access
+  end
+
 end

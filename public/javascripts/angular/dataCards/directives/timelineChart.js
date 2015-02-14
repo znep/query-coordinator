@@ -713,6 +713,8 @@
          */
         function renderChartXAxis() {
 
+
+
           function deriveXAxisLabelPrecision() {
 
             var domain;
@@ -1916,7 +1918,7 @@
         // move the mouse, and that click causes a different element to fall
         // under the pointer for the second click (clicking to dismiss, for
         // example)
-        mouseLeftButtonChangesSubscription = WindowState.mouseLeftButtonPressedSubject.flatMap(
+        mouseLeftButtonChangesSubscription = WindowState.mouseLeftButtonPressedSubject.flatMapLatest(
           function(mouseLeftButtonNowPressed) {
             return Rx.Observable.combineLatest(
               Rx.Observable.returnValue(mouseLeftButtonNowPressed),

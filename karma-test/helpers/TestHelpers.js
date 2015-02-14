@@ -1,5 +1,5 @@
 (function() {
-  angular.module('test', []).factory('testHelpers', function($compile, $templateCache, $q) {
+  angular.module('test', []).factory('testHelpers', function($injector, $compile, $templateCache, $q) {
     var fireEvent = function(target, name, opts) {
       var evt = document.createEvent('HTMLEvents');
       evt.initEvent(name, true, true);
@@ -150,6 +150,48 @@
       });
     }
 
+    /**
+     * Normalize a css color to a canonical format, for easier comparison.
+     *
+     * Largely from: http://stackoverflow.com/questions/5623838/rgb-to-hex-and-hex-to-rgb
+     *
+     * @param {String} cssColor a color, formatted as a valid css color (eg #000000, rgb(0,0,0)).
+     * @return {Number} a canonical representation of that color, as a number.
+     */
+    function normalizeColor(cssColor) {
+      var r;
+      var g;
+      var b;
+      if (cssColor.charAt(0) === '#') {
+        if (cssColor.length === 4) {
+          var hex = /^#[a-f\d][a-f\d][a-f\d]$/i.exec(cssColor);
+          r = parseInt(hex[1] + hex[1], 16);
+          g = parseInt(hex[2] + hex[2], 16);
+          b = parseInt(hex[3] + hex[3], 16);
+        } else {
+          var hex = /^#?([a-f\d]{2})([a-f\d]{2})([a-f\d]{2})$/i.exec(cssColor);
+          r = parseInt(hex[1], 16);
+          g = parseInt(hex[2], 16);
+          b = parseInt(hex[3], 16);
+        }
+      } else {
+        var digits = /^rgb\((\d+), *(\d+), *(\d+)\)$/.exec(cssColor);
+        if (!(digits && digits.length === 4)) {
+          throw Error('Unsupported css color format: ' + cssColor);
+        }
+        r = parseInt(digits[1], 10);
+        g = parseInt(digits[2], 10);
+        b = parseInt(digits[3], 10);
+      }
+
+      return (r << 16) + (g << 8) + b;
+    }
+
+    function overrideMetadataMigrationPhase(phase) {
+      var ServerConfig = $injector.get('ServerConfig');
+      ServerConfig.override('metadataTransitionPhase', phase);
+    }
+
     return {
       TestDom: TestDom,
       getTestJson: getTestJson,
@@ -158,7 +200,9 @@
       fireMouseEvent: fireMouseEvent,
       overrideTransitions: overrideTransitions,
       mockDirective: mockDirective,
-      waitForSatisfy: waitForSatisfy
+      normalizeColor: normalizeColor,
+      waitForSatisfy: waitForSatisfy,
+      overrideMetadataMigrationPhase: overrideMetadataMigrationPhase
     };
   });
 })();

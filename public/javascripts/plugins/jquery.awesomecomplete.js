@@ -21,10 +21,14 @@
             $this.data('awesomecomplete-config', config);
 
             var $attachTo = $(config.attachTo || $this);
+            width = $attachTo.innerWidth();
+            if (width === 0) {
+              width = '100%';
+            }
             var $list = $('<ul/>').addClass(config.suggestionListClass)
                                   .insertAfter($attachTo)
                                   .hide()
-                                  .css('width', $attachTo.innerWidth());
+                                  .css('width', width);
             $this.data('awesomecomplete-list', $list);
 
             var typingDelayPointer;
@@ -78,10 +82,15 @@
                         {
                             $newActive = $list.children('li:last-child');
                         }
-                        else
+                        else if ($active.is(':not(:first-of-type'))
                         {
                             $newActive = $active.prev();
                             $active.removeClass(config.activeItemClass);
+                        }
+                        else
+                        {
+                          $newActive = $list.children('li:last-child');
+                          $active.removeClass(config.activeItemClass);
                         }
                         while (config.skipBlankValues && $newActive.length > 0 &&
                                 $.isBlank($newActive.data('awesomecomplete-value')))
@@ -93,12 +102,17 @@
                         var $newActive;
                         if ($active.length === 0)
                         {
-                            $newActive = $list.children('li:first-child');
+                            $newActive = $list.children('li:first');
                         }
                         else if ($active.is(':not(:last-child)'))
                         {
                             $newActive = $active.next();
                             $active.removeClass(config.activeItemClass);
+                        }
+                        else
+                        {
+                          $newActive = $list.children('li:first');
+                          $active.removeClass(config.activeItemClass);
                         }
                         if (!$.isBlank($newActive))
                         {
@@ -116,16 +130,15 @@
                 }
             });
 
-	    // opera wants keypress rather than keydown to prevent the form submit
+	         // opera wants keypress rather than keydown to prevent the form submit
             $this.keypress(function(event)
             {
                 var $active = $list.children('li.' + config.activeItemClass);
 
-		if ((event.which == 13) && ($list.children('li.' + config.activeItemClass).length > 0))
-		{
-		    event.preventDefault();
-		}
-	    });
+            		if ((event.which == 13) && ($list.children('li.' + config.activeItemClass).length > 0)) {
+            		    event.preventDefault();
+            		}
+            });
 
             // stupid hack to get around loss of focus on mousedown
             var mouseDown = false;
@@ -146,6 +159,7 @@
             });
             $this.blur(function()
             {
+
                 if (mouseDown)
                 {
                     blurWait = true;
@@ -166,7 +180,15 @@
             {
                 if ($list.children(':not(.' + config.noResultsClass + ')').length > 0)
                 {
-                    doShow($this);
+                    if (config.initDelay > 0)
+                    {
+                        setTimeout(function() { doShow($this); }, config.initDelay);
+                    }
+                    else
+                    {
+                        doShow($this);
+                    }
+
                 }
                 else if (config.showAll)
                 { processInput($this); }
@@ -213,9 +235,19 @@
         if (!config.showAll && term === '')
             return;
 
+        if (config.showAwesomeTip) {
+          $list.append($('<div class="awesome-tip"></div>'));
+        }
+
         var terms = [ term ];
         if (config.splitTerm)
             terms = term.split(config.wordDelimiter);
+
+        if (config.headerText.length > 0) {
+          var headerTextIndex = (terms.length > 1 || terms[0] != '') ? 1 : 0;
+          $list.append($('<h2 class="awesome-header">' +
+                          config.headerText[headerTextIndex] + '</h2>'));
+        }
 
         var results = [];
         for (var item = 0; item < data.length; item++)
@@ -308,8 +340,9 @@
 
         for (var i in results)
         {
+            var defaultActiveClass = (config.hoverDefaultFirstItem && i === 0) ? config.activeItemClass : '';
             if (results[i] instanceof Function) { continue; } // Because IE is dumb
-            $('<li>' + config.renderFunction(results[i].dataItem, results[i].topMatch, config) + '</li>')
+            $('<li class="' + defaultActiveClass + '">' + config.renderFunction(results[i].dataItem, results[i].topMatch, config) + '</li>')
 				.data('awesomecomplete-dataItem', results[i].originalDataItem)
                 .data('awesomecomplete-value', config.valueFunction(results[i].originalDataItem, config))
                 .appendTo($list)
@@ -320,6 +353,10 @@
                     if (config.skipBlankValues && $.isBlank(v)) { return; }
                     $this.val(v);
                     config.onComplete($t.data('awesomecomplete-dataItem'), $this);
+
+                    config.blurFunction($list);
+                    $list.hide();
+                    suppressKey = true;
                 })
                 .mouseup(function(e)
                 {
@@ -340,7 +377,14 @@
 
         if ((results.length > 0) || (config.noResultsMessage !== undefined))
         {
-            doShow($this);
+            if (config.initDelay > 0)
+            {
+                setTimeout(function() { doShow($this); }, config.initDelay);
+            }
+            else
+            {
+                doShow($this);
+            }
         }
 
     };
@@ -351,7 +395,8 @@
         var config = $this.data('awesomecomplete-config');
 
         config.showFunction($list);
-        $list.show();
+
+        $list.fadeIn(config.fadeInTime);
 
         if (config.forcePosition)
         {
@@ -382,7 +427,7 @@
                    '<p class="matchRow"><span class="matchedField">' + topMatch + '</span>: ' +
                         dataItem[topMatch] + '</p>';
     };
-    
+
     var defaultValueFunction = function(dataItem, config)
     {
         return dataItem[config.nameField];
@@ -420,7 +465,12 @@
         showAll: false,
         skipBlankValues: false,
         typingDelay: 0,
+        initDelay: 0,
+        fadeInTime: 0,
         valueFunction: defaultValueFunction,
-        wordDelimiter: /[^\da-z]+/ig
+        wordDelimiter: /[^\da-z]+/ig,
+        showAwesomeTip: false,
+        hoverDefaultFirstItem: false,
+        headerText: [] // ['default text', 'text after filtering']
     };
 })(jQuery);

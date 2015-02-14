@@ -73,6 +73,7 @@ module.exports = function ( karma ) {
       'bower_components/native-promise-only/lib/npo.src.js',
       'bower_components/requestAnimationFrame-polyfill/requestAnimationFrame.js',
       'public/javascripts/plugins/modernizr.js',
+      {pattern: 'public/javascripts/plugins/squire.js', included: false},
       'karma-test/helpers/TestHelpers.js',
       'karma-test/helpers/ServerMocks.js',
       'karma-test/dataCards/*.js',
@@ -92,14 +93,17 @@ module.exports = function ( karma ) {
       /*    SASS    */
       'app/styles/dataCards/*.sass',
       /*    Images */
-      { pattern: 'public/stubs/images/*.png', watched: false, included: false, served: true }
+      { pattern: 'public/stubs/images/*.png', watched: false, included: false, served: true },
+      { pattern: 'public/stylesheets/images/**/*.{jpg,png}', watched: false, included: false, served: true }
     ],
     exclude: [
       'public/javascripts/angular/dataCards/app.js'
     ],
 
     proxies: {
-      '/stubs/images/': 'http://localhost:7019/base/public/stubs/images/'
+      '/stubs/images/': 'http://localhost:7019/base/public/stubs/images/',
+      '/javascripts/plugins/': 'http://localhost:7019/base/public/javascripts/plugins/',
+      '/stylesheets/images/': 'http://localhost:7019/base/public/stylesheets/images/'
     },
 
     sauceLabs: {

@@ -4,6 +4,14 @@
 
   describe('lo-dash mixins', function() {
 
+    var testObject = {
+      foo: {
+        bar: {
+          baz: 'test value'
+        }
+      }
+    };
+
     describe('isPresent', function() {
 
       it('should return true for "present" values', function() {
@@ -26,6 +34,60 @@
 
     });
 
+    describe('getPathOrElse', function() {
+      it('should return the value if the object path exists', function() {
+        expect(_.getPathOrElse(testObject, 'foo.bar.baz')).to.equal('test value');
+        expect(_.getPathOrElse(testObject, 'foo.bar')).to.eql({ baz: 'test value' });
+      });
+
+      it('should return the "else" argument if the object path does not exist', function() {
+        expect(_.getPathOrElse(testObject, 'foo.bar.blah', 'else case')).to.equal('else case');
+        expect(_.getPathOrElse({}, 'foo.bar', 'else case')).to.equal('else case');
+      });
+
+      it('should return undefined if the object path does not exist and there is no "else" argument', function() {
+        expect(_.getPathOrElse(testObject, 'foo.bar.blah')).to.be.undefined;
+      });
+
+    });
+
+    describe('isPathDefined', function() {
+
+      it('should return true if the object path exists', function() {
+        expect(_.isPathDefined(testObject, 'foo')).to.be.true;
+        expect(_.isPathDefined(testObject, 'foo.bar')).to.be.true;
+        expect(_.isPathDefined(testObject, 'foo.bar.baz')).to.be.true;
+      });
+
+      it('should return false if the object path does not exist', function() {
+        expect(_.isPathDefined(testObject, 'far')).to.be.false;
+        expect(_.isPathDefined(testObject, 'foo.baz')).to.be.false;
+        expect(_.isPathDefined(testObject, '')).to.be.false;
+      })
+
+    });
+
+    describe('deferred', function() {
+      it('returns a function that, when called, calls the parameter in a _.defer', function() {
+        var theFunction = function() {};
+        var passedInF = null;
+
+        try {
+          sinon.stub(_, 'defer', function(f) {
+            passedInF = f;
+          });
+
+          var deferredFunction = _.deferred(theFunction);
+
+          expect(passedInF).to.equal(null);
+          deferredFunction();
+          expect(passedInF).to.equal(theFunction);
+
+        } finally {
+          _.defer.restore();
+        }
+      });
+    });
   });
 
 })();

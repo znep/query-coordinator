@@ -64,7 +64,7 @@ odux_enable_feature_map:
   defaultValue: false
 enable_api_foundry_pane:
   description: Will allow the api_foundry pane to be displayed. If there is another reason for the api_foundry pane to be hidden, it will still be hidden.
-  defaultValue: true
+  defaultValue: false
 enable_newux_bootstrap_link:
   description: Will display a link in the old UX, to its corresponding new UX page.
   defaultValue: false
@@ -81,4 +81,11 @@ enable_feedback:
   defaultValue: false
 domain_decommissioning:
   description: Enable a banner indicating that the domain is being decommissionsed.
+  defaultValue: false
+metadata_transition_phase:
+  description: 'Controls which phase of the ongoing metadata migration the site should operate under. Only ODUX should change this. Phases are documented here: https://docs.google.com/a/socrata.com/document/d/13KWv-5xugmWr-w4vnfXjIus4n9zLWOUEU1KxxnhMSrw/'
+  defaultValue: 0
+  expectedValues: 0 1 2
+exit_tech_preview:
+  description: Enable to display transitionary New Backend features (currently scoped to Catalog/Browse)
   defaultValue: false

@@ -4,7 +4,7 @@ describe('DatasetMetadataController', function() {
   var $rootScope;
   var $controller;
   var mockDatasetDataService = {
-    getBaseInfo: function() {
+    getDatasetMetadata: function() {
       return $q.when({
         id: 'asdf-fdsa',
         name: 'test dataset name',
@@ -17,10 +17,23 @@ describe('DatasetMetadataController', function() {
     }
   };
 
+  beforeEach(module('socrataCommon.directives'));
+  beforeEach(module('socrataCommon.services'));
+  beforeEach(module('/angular_templates/common/pageHeader.html'));
+
   beforeEach(module('dataCards'));
   beforeEach(function() {
     module(function($provide) {
+      $provide.value('UserSessionService', {
+        getCurrentUserObservable: _.constant(Rx.Observable.returnValue(null))
+      });
       $provide.value('DatasetDataService', mockDatasetDataService);
+      $provide.value('ConfigurationsService', {
+        getThemeConfigurationsObservable: function() {
+          return Rx.Observable.returnValue([]);
+        },
+        getConfigurationValue: _.noop
+      });
     });
   });
   beforeEach(inject(function($injector){
@@ -36,10 +49,10 @@ describe('DatasetMetadataController', function() {
 
     var dataset = new Dataset(fakeDatasetId);
 
-    var baseInfoPromise = $q.defer();
+    var datasetMetadataPromise = $q.defer();
     var pagesInfoPromise = $q.defer();
 
-    mockDatasetDataService.getBaseInfo = function() { return baseInfoPromise.promise; };
+    mockDatasetDataService.getDatasetMetadata = function() { return datasetMetadataPromise.promise; };
     mockDatasetDataService.getPagesForDataset = function() { return pagesInfoPromise.promise; };
 
     var controller = $controller('DatasetMetadataController', {
@@ -50,13 +63,13 @@ describe('DatasetMetadataController', function() {
     scope.$apply();
 
     return {
-      baseInfoPromise: baseInfoPromise,
+      datasetMetadataPromise: datasetMetadataPromise,
       pagesInfoPromise: pagesInfoPromise,
       scope: scope,
       controller: controller,
       dataset: dataset
     };
-  };
+  }
 
   describe('dataset name', function() {
     it('should update on the scope when the property changes on the model', function() {
@@ -67,7 +80,7 @@ describe('DatasetMetadataController', function() {
 
       var name1 = _.uniqueId('name');
       var name2 = _.uniqueId('name');
-      controllerHarness.baseInfoPromise.resolve({
+      controllerHarness.datasetMetadataPromise.resolve({
         id: 'fake-fbfr',
         name: name1,
         rowDisplayUnit: 'rdu',
@@ -112,7 +125,7 @@ describe('DatasetMetadataController', function() {
 
       var controller = controllerHarness.controller;
       var scope = controllerHarness.scope;
-      controllerHarness.baseInfoPromise.resolve($.extend({}, datasetBlob));
+      controllerHarness.datasetMetadataPromise.resolve($.extend({}, datasetBlob));
       $rootScope.$digest();
 
       expect(scope.datasetColumns).to.be.instanceof(Array);
@@ -141,7 +154,7 @@ describe('DatasetMetadataController', function() {
 
       var controller = controllerHarness.controller;
       var scope = controllerHarness.scope;
-      controllerHarness.baseInfoPromise.resolve($.extend({}, datasetBlob, { columns: columnsBlob }));
+      controllerHarness.datasetMetadataPromise.resolve($.extend({}, datasetBlob, { columns: columnsBlob }));
       $rootScope.$digest();
 
       expect(scope.datasetColumns).to.be.instanceof(Array);
@@ -179,7 +192,7 @@ describe('DatasetMetadataController', function() {
 
         var controller = controllerHarness.controller;
         var scope = controllerHarness.scope;
-        controllerHarness.baseInfoPromise.resolve(datasetBlob);
+        controllerHarness.datasetMetadataPromise.resolve(datasetBlob);
         controllerHarness.pagesInfoPromise.resolve(pagesBlob);
         $rootScope.$digest();
 

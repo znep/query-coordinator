@@ -17,5 +17,26 @@ _.mixin({
   instead: function(value, insteadValue) {
     return _.isPresent(value) ? value : insteadValue;
   },
-  otherwise: _.instead
+  getPathOrElse: function(object, path, elseCase) {
+    var value = _.reduce(path.split('.'), function(obj, key) {
+      return obj ? obj[key] : obj;
+    }, object);
+    if (_.isUndefined(value) && _.isDefined(elseCase)) {
+      return elseCase;
+    }
+    return value;
+  },
+  isPathDefined: function(object, path) {
+    return _.isDefined(_.getPathOrElse(object, path));
+  },
+  otherwise: _.instead,
+  /**
+   * @param {Function} f the function to run.
+   * @return {Function} a function that will call the given function in the next frame.
+   */
+  deferred: function(f) {
+    return function() {
+      _.defer(f);
+    };
+  }
 });

@@ -89,6 +89,10 @@ module TestHelperMethods
     end
   end
 
+  def stub_feature_flags_with(key, value)
+    CurrentDomain.stubs(feature_flags: Hashie::Mash.new.tap { |hash| hash[key] = value })
+  end
+
 end
 
 [Test::Unit::TestCase, MiniTest::Unit::TestCase].each do |klass|
@@ -101,6 +105,19 @@ class ActionController::TestCase
   include ActionView::Helpers
   include ActionDispatch::Routing
   include Rails.application.routes.url_helpers
+end
+
+# assert_select doesn't like the formatting of our HTML... this adds a quieter version
+ActionDispatch::Assertions::SelectorAssertions.class_eval do
+  def assert_select_quiet(*args, &block)
+    original_verbosity = $-v # store original output value
+    $-v = nil # set to nil
+    begin
+      assert_select(*args, &block)
+    ensure
+      $-v = original_verbosity # and restore after execute assert_select
+    end
+  end
 end
 
 require 'mocha/setup'

@@ -48,6 +48,7 @@
 
         // Observable of hovers over a aggregation-type selector
         var aggregationHoverObservable = WindowState.mousePositionSubject.
+          takeUntil($scope.eventToObservable('$destroy')).
           map(function(positionData) {
             return $(positionData.target).closest('[data-aggregation-type]');
           });
@@ -197,7 +198,7 @@
           if ($(element).is('.disabled.no-count')) {
             return '<span class="flyout-cell">{0}</span>'.format('This column cannot be used with a<br>number of aggregate');
           }
-        }, true);
+        }, $scope.eventToObservable('$destroy'), true);
 
         /*
          * Callback functions

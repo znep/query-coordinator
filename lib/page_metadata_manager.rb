@@ -29,11 +29,15 @@ class PageMetadataManager
       end
     end
 
-    create_or_update(data, :create_page_metadata, options)
-  end
-
-  def fetch(id, options = {})
-    phidippides.fetch_page_metadata(id, options)
+    result = create_or_update(data, :create_page_metadata, options)
+    if result && result['body']
+      new_view_manager.create(
+        result['body']['pageId'],
+        result['body']['name'],
+        result['body']['description']
+      )
+    end
+    result
   end
 
   # Updates an existing page.
@@ -41,16 +45,6 @@ class PageMetadataManager
   # missing keys will become missing in the datastore.
   def update(data, options = {})
     create_or_update(data.is_a?(String) ? JSON.parse(data) : data, :update_page_metadata, options)
-  end
-
-  def pages_for_dataset(dataset_or_id, options = {})
-    dataset_id = nil
-    dataset_id ||= dataset_or_id.id if dataset_or_id.respond_to?(:id)
-    if dataset_or_id.respond_to?(:key?) && dataset_or_id.with_indifferent_access.key?(:id)
-      dataset_id ||= dataset_or_id.with_indifferent_access.fetch(:id)
-    end
-    dataset_id ||= dataset_or_id
-    phidippides.fetch_pages_for_dataset(dataset_id, options)
   end
 
   private
@@ -112,6 +106,10 @@ class PageMetadataManager
 
   def phidippides
     @phidippides ||= Phidippides.new
+  end
+
+  def new_view_manager
+    @new_view_manager ||= NewViewManager.new
   end
 
 end

@@ -1,6 +1,7 @@
 class PhidippidesDatasetsController < ActionController::Base
 
   include CommonPhidippidesMethods
+  include CommonMetadataTransitionMethods
   include UserAuthMethods
 
   before_filter :hook_auth_controller
@@ -15,34 +16,40 @@ class PhidippidesDatasetsController < ActionController::Base
   def index
     return render :nothing => true, :status => 400 unless params[:id].present?
 
-    respond_to do |format|
-      begin
-        result = page_metadata_manager.pages_for_dataset(
-          params[:id],
-          :request_id => request_id,
-          :cookies => forwardable_session_cookies
-        )
-        format.json { render :json => result[:body], :status => result[:status] }
-      rescue Phidippides::ConnectionError
-        format.json { render :json => { body: 'Phidippides connection error' }, status: 500 }
-      end
+    begin
+      result = phidippides.fetch_pages_for_dataset(
+        params[:id],
+        :request_id => request_id,
+        :cookies => forwardable_session_cookies
+      )
+      render :json => result[:body], :status => result[:status]
+    rescue Phidippides::ConnectionError
+      render :json => { body: 'Phidippides connection error' }, status: 500
     end
   end
 
   def show
     return render :nothing => true, :status => 400 unless params[:id].present?
 
-    respond_to do |format|
-      begin
-        result = phidippides.fetch_dataset_metadata(params[:id], :request_id => request_id, :cookies => forwardable_session_cookies)
-        format.json { render :json => result[:body], :status => result[:status] }
-      rescue Phidippides::ConnectionError
-        format.json { render :json => { body: 'Phidippides connection error' }, status: 500 }
+    begin
+      result = phidippides.fetch_dataset_metadata(params[:id], :request_id => request_id, :cookies => forwardable_session_cookies)
+
+      if result[:status] == 200
+        # This is temporary, but constitutes a rolling migration.
+        # Eventually we can check that every extant dataset metadata
+        # blob has a 'defaultPage' property and remove this migration
+        # step.
+        phidippides.migrate_dataset_metadata_to_v1(result)
       end
+
+      render :json => result[:body], :status => result[:status]
+    rescue Phidippides::ConnectionError
+      render :json => { body: 'Phidippides connection error' }, status: 500
     end
   end
 
   def create
+    return render :nothing => true, :status => 400 unless metadata_transition_phase_0?
     return render :nothing => true, :status => 401 unless can_update_metadata?
     return render :nothing => true, :status => 405 unless request.post?
     return render :nothing => true, :status => 400 unless params[:datasetMetadata].present?
@@ -65,7 +72,11 @@ class PhidippidesDatasetsController < ActionController::Base
     respond_to do |format|
       begin
         result = phidippides.update_dataset_metadata(JSON.parse(params[:datasetMetadata]), :request_id => request_id, :cookies => forwardable_session_cookies)
-        format.json { render :json => result[:body], :status => result[:status] }
+        if metadata_transition_phase_0?
+          format.json { render :json => result[:body], :status => result[:status] }
+        else
+          return head :status => 204
+        end
       rescue Phidippides::ConnectionError
         format.json { render :json => { body: 'Phidippides connection error' }, status: 500 }
       end
@@ -73,7 +84,11 @@ class PhidippidesDatasetsController < ActionController::Base
   end
 
   def destroy
-    render :nothing => true, :status => 403
+    if metadata_transition_phase_0?
+      render :nothing => true, :status => 403
+    else
+      render :nothing => true, :status => 400
+    end
   end
 
   private

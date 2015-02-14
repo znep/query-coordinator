@@ -13,6 +13,372 @@
                       ChoroplethVisualizationService,
                       WindowState,
                       FlyoutService) {
+    // The methods by which we determine choropleth styles are wrapped up in the
+    // ChoroplethVisualization class, which does a lot of dynamic styles based on the
+    // individual dataset.
+    var visualizationUtils = ChoroplethVisualizationService.utils;
+
+
+    /**
+     * A choropleth legend, with discrete colors for ranges of values.
+     */
+    function LegendDiscrete(element, container) {
+      this.element = element;
+      this.container = container;
+    }
+    $.extend(LegendDiscrete.prototype, {
+      /**
+       * @private
+       */
+      bigNumTickFormatter: function(val) {
+        // used if ss.standard_deviation(classBreaks) > 10
+        // val = a x 10^b (a: coefficient, b: exponent);
+        if (val === 0) {
+          return 0;
+        }
+        var exponent = Math.floor(Math.log(Math.abs(val)) / Math.LN10);
+        var coefficient = val / Math.pow(10, exponent);
+        var isMultipleOf10 = coefficient % 1 == 0;
+        if (isMultipleOf10) {
+          var numNonzeroDigits = coefficient.toString().length;
+          var formattedNum = numberFormatter.formatNumber(val, {
+            fixedPrecision: 0,
+            maxLength: _.min([numNonzeroDigits, 3])
+          });
+        } else {
+          var numNonzeroDigits = coefficient.toString().length - 1;
+          var formattedNum = numberFormatter.formatNumber(val, {
+            maxLength: _.min([numNonzeroDigits, 3])
+          });
+        }
+        return formattedNum;
+      },
+
+      /**
+       * @private
+       */
+      legendLabelColorHeight: function(colorIndex, totalHeight, minVal, maxVal, classBreaks) {
+        var percentOfClassbreakRange = (classBreaks[colorIndex + 1] - classBreaks[colorIndex]) /
+            (maxVal - minVal);
+        return Math.floor(percentOfClassbreakRange * totalHeight);
+      },
+
+      /**
+       * If the values straddle 0, we want to add a break at 0
+       */
+      addZeroIfNecessary: function(classBreaks) {
+        var indexOf0 = _.sortedIndex(classBreaks, 0);
+        if (indexOf0 > 0 && indexOf0 < classBreaks.length) {
+          classBreaks.splice(indexOf0, 0, 0);
+        }
+      },
+      ZERO_COLOR: '#eeeeee',
+      NEGATIVE_COLOR: '#c6663d',
+      POSITIVE_COLOR: '#408499',
+      /**
+       * Generates a color scale for the given classBreaks.
+       * @param {Number[]} classBreaks The values that define the boundaries of the different
+       *   discrete groups of values.
+       * @return {Object} an object with 'colors' and 'scale' functions, that mirror a chroma scale.
+       */
+      colorScaleFor: function(classBreaks) {
+        var marginallyNegative = chroma.interpolate(this.ZERO_COLOR, this.NEGATIVE_COLOR, 0.1);
+        var marginallyPositive = chroma.interpolate(this.ZERO_COLOR, this.POSITIVE_COLOR, 0.1);
+        if (classBreaks[0] < 0) {
+
+          // If we have values that straddle zero, add the zero point as one of our breaks
+          if (_.last(classBreaks) > 0) {
+            var indexOf0 = classBreaks.indexOf(0);
+            if (indexOf0 < 0) {
+              throw 'Expecting classBreaks to contain a break at 0, if the values straddle 0';
+            }
+            var negatives = classBreaks.slice(0, indexOf0 + 1);
+            var positives = classBreaks.slice(indexOf0);
+
+            // When the values straddle 0 unevenly, we want the brightness of the colors to be
+            // proportional to how far from 0 it is. In particular, we want eg 5 and -5 to have
+            // about the same amount of luminosity. So - have the colors scale to the same absolute
+            // distance from zero.
+            var negativeHeavy = -classBreaks[0] > _.last(classBreaks);
+            if (negativeHeavy) {
+              // The last value of classBreaks is interpreted as the highest value that's in the
+              // last class. Since we're adding another value to the end, it's meaning changes - now
+              // it is the lowest value (inclusive) of the last break. Since we actually want that
+              // value to be included in the last class, we have to increment it.
+              positives[positives.length - 1] += (
+                -classBreaks[0] - _.last(positives)) / 100;
+              positives.push(-classBreaks[0]);
+            } else {
+              negatives.unshift(-_.last(classBreaks));
+            }
+
+            var negativeColorScale = visualizationUtils.calculateColoringScale(
+              [this.NEGATIVE_COLOR, marginallyNegative], negatives
+            );
+            var positiveColorScale = visualizationUtils.calculateColoringScale(
+              [marginallyPositive, this.POSITIVE_COLOR], positives
+            );
+
+            // Create a faux colorScale that implements the interface, but delegates to the positive
+            // or negative actual-scale depending on what you're trying to scale.
+            var fauxColorScale = _.bind(function(value) {
+              if (value === 0) {
+                return chroma(this.ZERO_COLOR);
+              } else {
+                return (value < 0 ? negativeColorScale : positiveColorScale)(value);
+              }
+            }, this);
+            /**
+             * Our faux .colors method basically just retrieves the positive and negative arrays and
+             * combines them.
+             */
+            fauxColorScale.colors = function() {
+              var negColors = negativeColorScale.colors();
+              var posColors = positiveColorScale.colors();
+
+              // We added a break to catch the most-luminescent color, on the scale that didn't have
+              // values as high as the other one. So - drop that color.
+              if (negativeHeavy) {
+                posColors.pop();
+              } else {
+                negColors.shift();
+              }
+
+              // chroma gives us 2 colors if we give it a domain of only 2 values. This messes
+              // things up later on when we assume that classBreaks.length == colors.length + 1, so
+              // shave off some colors if we have to.
+              if (negatives.length === 2)  {
+                negColors = negColors.slice(0, 1);
+              }
+              if (positives.length === 2) {
+                posColors = posColors.slice(1);
+              }
+
+              return negColors.concat(posColors);
+            };
+            return fauxColorScale;
+
+          } else {
+
+            // All the numbers are negative. Give them the negative color scale.
+            return visualizationUtils.calculateColoringScale(
+              [this.NEGATIVE_COLOR, marginallyNegative], classBreaks
+            );
+          }
+        } else {
+          // Otherwise, it's all positive, so give them the positive color scale.
+          return visualizationUtils.calculateColoringScale(
+            [marginallyPositive, this.POSITIVE_COLOR], classBreaks
+          );
+        }
+      },
+
+      /**
+       * Updates the legend.
+       *
+       * @param {Number[]} data The data being plotted on the map.
+       *
+       * @return {chroma.scale} A chroma color scale that maps a datum value to a color.
+       */
+      update: function(data) {
+        var classBreaks = visualizationUtils.calculateDataClassBreaks(
+          data, Constants['UNFILTERED_VALUE_PROPERTY_NAME']
+        );
+
+        if (classBreaks.length === 0) {
+          this.element.hide();
+          return null;
+        }
+
+        this.addZeroIfNecessary(classBreaks);
+        var colorScale = this.colorScaleFor(classBreaks);
+
+        var position = 'bottomright';
+        var numTicks;
+        var singleClassBreak;
+
+        // Draw the legend on the map.
+        if (classBreaks.length === 1) {
+
+          // If there is just 1 value, make it range from 0 to that value.
+          singleClassBreak = classBreaks[0];
+          classBreaks = [_.min([0, singleClassBreak]), _.max([0, singleClassBreak])];
+          numTicks = 1;
+
+        } else {
+          if (this.container.height() < 250) {
+            numTicks = 3;
+          } else {
+            numTicks = 4;
+          }
+        }
+
+        var minBreak = classBreaks[0];
+        var maxBreak = _.last(classBreaks);
+
+        // Size of the colored scale.
+        var COLOR_BAR_WIDTH = 15;
+        var colorBarHeight = Math.floor(Math.min(this.container.height() - 60, 250));
+
+        // Reserve some padding space for the bottom-most tick label text.
+        var BOTTOM_PADDING = 15;
+
+        var colors = colorScale.colors();
+
+        // Give the svg an empty datum, so that it will create/reuse one svg
+        var svg = d3.select(this.element[0]).selectAll('svg').data([{}]);
+
+        svg.enter().
+          append('svg');
+
+        svg.attr('height', colorBarHeight + BOTTOM_PADDING);
+
+        var yTickScale = d3.scale.linear().range([colorBarHeight - 1, 1]);
+        var yLabelScale = d3.scale.linear().range([colorBarHeight, 0]);
+
+        var yAxis = d3.svg.
+                      axis().
+                      scale(yTickScale).
+                      ticks(numTicks).
+                      orient('left');
+
+        // ensure that there's always a 0 tick
+        /* TODO(jerjou): 2015-02-04 I can't seem to get a d3 range to NOT give me a 0 if it
+         * straddles 0. So while I could leave this block in, I can't figure out a way to verify
+         * that it works.
+        if (minBreak <= 0 && maxBreak >= 0) {
+          var ticks = yTickScale.ticks(numTicks);
+          var index = ticks.indexOf(0);
+          if (-1 === index) {
+            ticks.splice(0, 0, 0);
+          }
+          yAxis.tickValues(ticks);
+        }
+        */
+
+        var yTickScaleDomain = yTickScale.domain([minBreak, maxBreak]);
+        var yLabelScaleDomain = yLabelScale.domain([minBreak, maxBreak]);
+
+        var isLargeRange = ss.standard_deviation(classBreaks) > 10;
+
+        if (isLargeRange) {
+          // d3 quirk: using a #tickFormat formatter that just returns the value
+          // gives unexpected results due to floating point math.
+          // We want to just return the value for "small-ranged" data.
+          // --> do not call a tickFormatter on yAxis if range is small.
+          yAxis.tickFormat(this.bigNumTickFormatter);
+
+          // Due to similar issues, d3's scale#nice method also has
+          // floating point math issues.
+          yTickScaleDomain.nice();
+          yLabelScaleDomain.nice();
+        }
+
+        // include min and max back into d3 scale, if #nice truncates them
+        if (_.min(classBreaks) > minBreak) {
+          classBreaks.unshift(minBreak);
+        }
+
+        if (_.max(classBreaks) < maxBreak) {
+          classBreaks.push(maxBreak);
+        }
+
+        // update first and last class breaks to nice y domain
+        classBreaks[0] = yTickScale.domain()[0];
+        classBreaks[classBreaks.length - 1] = yTickScale.domain()[1];
+
+        var labels = svg.selectAll('.labels').
+            // Give it some data so it creates the container element
+            data([null]);
+
+        labels.enter().
+          append('g').
+          attr('class', 'labels');
+
+        labels.
+          call(yAxis).
+          // remove axis line that comes with d3 axis
+          select('path').
+          remove();
+
+        labels.
+          exit().
+          remove();
+
+        var maxLabelWidth = _.reduce(this.element.find('.labels > .tick > text'), function(accumulator, element) {
+          return Math.max(accumulator, $(element).width());
+        }, 0);
+        var tickAreaWidth = maxLabelWidth + yAxis.tickSize() + yAxis.tickPadding();
+
+        // The d3 axis places all elements LEFT of the origin (negative X coords).
+        // Translate everything to within the bounds of the SVG.
+        labels.
+          attr('transform', 'translate({0})'.format(tickAreaWidth));
+
+        // Size the SVG appropriately.
+        svg.attr('width', tickAreaWidth + COLOR_BAR_WIDTH);
+
+        // draw legend colors
+        var rects = svg.selectAll('.choropleth-legend-color').data(colors);
+
+        rects.enter().
+          append('rect');
+
+        var minVal = classBreaks[0];
+        var maxVal = _.last(classBreaks);
+        rects.
+          attr('class', 'choropleth-legend-color').
+          attr('width', COLOR_BAR_WIDTH).
+          attr('height', _.bind(function(c, i) {
+            return this.legendLabelColorHeight(i, colorBarHeight, minVal, maxVal, classBreaks);
+          }, this)).
+          attr('x', tickAreaWidth).
+          attr('y', function(c, i) {
+            return Math.floor(yLabelScale(classBreaks[i + 1]));
+          }).
+          style('fill', function(c, i) { return c; });
+
+        if (colors.length > 1) {
+          if (isLargeRange) {
+            rects.
+              attr('data-flyout-text', _.bind(function(color, i) {
+                return this.bigNumTickFormatter(classBreaks[i]) + ' – ' +
+                  this.bigNumTickFormatter(classBreaks[i + 1]);
+              }, this));
+          } else {
+            rects.
+              attr('data-flyout-text', function(color, i) {
+                return classBreaks[i] + ' – ' + classBreaks[i + 1];
+              });
+          }
+        } else {
+          if (isLargeRange) {
+            rects.
+              attr('data-flyout-text', this.bigNumTickFormatter(singleClassBreak));
+          } else {
+            rects.
+              attr('data-flyout-text', singleClassBreak);
+          }
+        }
+
+        rects.exit().
+          remove();
+
+        return colorScale;
+      }
+    });
+
+
+    /**
+     * A Legend with a continuous scale.
+     */
+    function LegendContinuous() {
+      // TODO
+    }
+    $.extend(LegendContinuous.prototype, {
+      update: function(data) {
+      }
+    });
 
     return {
       restrict: 'E',
@@ -29,6 +395,8 @@
       link: function(scope, element) {
 
         AngularRxExtensions.install(scope);
+
+        var legend = new LegendDiscrete(element.find('.choropleth-legend'), element);
 
         /***********************
          * Mutate Leaflet state *
@@ -135,211 +503,6 @@
           ]));
 
         }
-
-        function updateLegend(classBreaks, colors) {
-
-          function bigNumTickFormatter(val) {
-            // used if ss.standard_deviation(classBreaks) > 10
-            // val = a x 10^b (a: coefficient, b: exponent);
-            if (val === 0) {
-              return 0;
-            }
-            var exponent = Math.floor(Math.log(Math.abs(val)) / Math.LN10);
-            var coefficient = val / Math.pow(10, exponent);
-            var isMultipleOf10 = coefficient % 1 == 0;
-            if (isMultipleOf10) {
-              var numNonzeroDigits = coefficient.toString().length;
-              var formattedNum = numberFormatter.formatNumber(val, {
-                fixedPrecision: 0,
-                maxLength: _.min([numNonzeroDigits, 3])
-              });
-            } else {
-              var numNonzeroDigits = coefficient.toString().length - 1;
-              var formattedNum = numberFormatter.formatNumber(val, {
-                maxLength: _.min([numNonzeroDigits, 3])
-              });
-            }
-            return formattedNum;
-          }
-
-          var legendLabelColorHeight = function(colorIndex, totalHeight) {
-            var minVal = _.min(classBreaks);
-            var maxVal = _.max(classBreaks);
-            var percentOfClassbreakRange = (classBreaks[colorIndex + 1] - classBreaks[colorIndex]) / (maxVal - minVal);
-            return Math.floor(percentOfClassbreakRange * totalHeight);
-          };
-
-          var className = 'choropleth-legend';
-          var position = 'bottomright';
-
-          if (classBreaks.length === 0) {
-
-            element.find('.' + className).hide();
-
-          } else {
-
-            // Draw the legend on the map.
-            if (classBreaks.length == 1) {
-
-              // If there is just 1 value, make it range from 0 to that value.
-              var singleClassBreak = classBreaks[0];
-              classBreaks = [_.min([0, singleClassBreak]), _.max([0, singleClassBreak])];
-              var numTicks = 1;
-
-            } else {
-
-              if (element.height() < 250) {
-                var numTicks = 3;
-              } else {
-                var numTicks = 4;
-              }
-
-            }
-
-            var minBreak = classBreaks[0];
-            var maxBreak = classBreaks[classBreaks.length - 1];
-
-            // Size of the colored scale.
-            var colorBarWidth = 15;
-            var colorBarHeight = Math.floor(Math.min(element.height() - 60, 250));
-
-            // Reserve some padding space for the bottom-most tick label text.
-            var bottomPadding = 15;
-
-            var legendSelection = d3.select(element.find('.' + className)[0]).data([{colors: colors, classBreaks: classBreaks}]);
-
-            legendSelection.enter().
-              append('div').
-              classed(className, function() {
-                return true;
-              }).
-              classed(position, true);
-
-            var svg = legendSelection.selectAll('svg').data([{colors: colors, classBreaks: classBreaks}]);
-
-            svg.enter().
-              append('svg').
-              append('g');
-
-            svg.
-              attr('height', colorBarHeight + bottomPadding);
-
-            var yTickScale = d3.scale.linear().range([colorBarHeight - 1, 1]);
-            var yLabelScale = d3.scale.linear().range([colorBarHeight, 0]);
-
-            var yAxis = d3.svg.
-                          axis().
-                          scale(yTickScale).
-                          ticks(numTicks).
-                          orient('left');
-
-            var yTickScaleDomain = yTickScale.domain([minBreak, maxBreak]);
-            var yLabelScaleDomain = yLabelScale.domain([minBreak, maxBreak]);
-
-            var isLargeRange = ss.standard_deviation(classBreaks) > 10;
-
-            if (isLargeRange) {
-              // d3 quirk: using a #tickFormat formatter that just returns the value
-              // gives unexpected results due to floating point math.
-              // We want to just return the value for "small-ranged" data.
-              // --> do not call a tickFormatter on yAxis if range is small.
-              yAxis.tickFormat(bigNumTickFormatter);
-
-              // Due to similar issues, d3's scale#nice method also has
-              // floating point math issues.
-              yTickScaleDomain.nice();
-              yLabelScaleDomain.nice();
-            }
-
-            // include min and max back into d3 scale, if #nice truncates them
-            if (_.min(classBreaks) > minBreak) {
-              classBreaks.unshift(minBreak);
-            }
-
-            if (_.max(classBreaks) < maxBreak) {
-              classBreaks.push(maxBreak);
-            }
-
-            // update first and last class breaks to nice y domain
-            classBreaks[0] = yTickScale.domain()[0];
-            classBreaks[classBreaks.length - 1] = yTickScale.domain()[1];
-
-            var labels = svg.selectAll('.labels').data([classBreaks]);
-
-            labels.enter().
-              append('g').
-              attr('class', 'labels');
-
-            labels.
-              call(yAxis).
-              // remove axis line that comes with d3 axis
-              select('path').
-              remove();
-
-            labels.
-              exit().
-              remove();
-
-            var maxLabelWidth = _.reduce(element.find('.labels > .tick > text'), function(accumulator, element) {
-              return Math.max(accumulator, $(element).width());
-            }, 0);
-            var tickAreaWidth = maxLabelWidth + yAxis.tickSize() + yAxis.tickPadding();
-
-            // The d3 axis places all elements LEFT of the origin (negative X coords).
-            // Translate everything to within the bounds of the SVG.
-            labels.
-              attr('transform', 'translate({0})'.format(tickAreaWidth));
-
-            // Size the SVG appropriately.
-            svg.
-              attr('width', tickAreaWidth + colorBarWidth);
-
-            // draw legend colors
-            var rects = svg.selectAll('.choropleth-legend-color').data(colors);
-
-            rects.enter().
-              append('rect');
-
-            rects.
-              attr('class', 'choropleth-legend-color').
-              attr('width', colorBarWidth).
-              attr('height', function(c, i) {
-                return legendLabelColorHeight(i, colorBarHeight);
-              }).
-              attr('x', tickAreaWidth).
-              attr('y', function(c, i) {
-                return Math.floor(yLabelScale(classBreaks[i + 1]));
-              }).
-              style('fill', function(c, i) { return c; });
-
-            if (colors.length > 1) {
-              if (isLargeRange) {
-                rects.
-                  attr('data-flyout-text', function(color, i) {
-                    return bigNumTickFormatter(classBreaks[i]) + ' - ' + bigNumTickFormatter(classBreaks[i + 1]);
-                  });
-              } else {
-                rects.
-                  attr('data-flyout-text', function(color, i) {
-                    return classBreaks[i] + ' - ' + classBreaks[i + 1];
-                  });
-              }
-            } else {
-              if (isLargeRange) {
-                rects.
-                  attr('data-flyout-text', bigNumTickFormatter(singleClassBreak));
-              } else {
-                rects.
-                  attr('data-flyout-text', singleClassBreak);
-              }
-            }
-
-            rects.exit().
-              remove();
-          }
-
-        }
-
 
         /***************************
         * Handle dataset filtering *
@@ -587,6 +750,7 @@
           }
 
         },
+        scope.eventToObservable('$destroy'),
         // The second-to-last argument specifies whether the flyout should follow
         // the cursor (true) or be fixed to the target element (false).
         true,
@@ -596,8 +760,11 @@
           if ($(element).parents('.card').hasClass('dragged')) {
             return;
           }
-          return '<div class="flyout-title">{0}</div>'.format(element.getAttribute('data-flyout-text'));
+          return '<div class="flyout-title">{0}</div>'.format(
+            element.getAttribute('data-flyout-text')
+          );
         },
+        scope.eventToObservable('$destroy'),
         false,
         // The last argument specifies a horizontal display mode.
         true);
@@ -632,11 +799,6 @@
         // (We don't update the center or the bounds if the choropleth has already been
         // rendered so that we can retain potential panning and zooming done by the user.
         var firstRender = true;
-
-        // The methods by which we determine choropleth styles are wrapped up in the
-        // ChoroplethVisualization class, which does a lot of dynamic styles based on the
-        // individual dataset.
-        var visualization = new ChoroplethVisualizationService.getChoroplethVisualization();
 
         // Keep track of click details so that we can zoom on double-click but
         // still selects on single clicks.
@@ -695,14 +857,11 @@
           scope.observe('geojsonAggregateData'),
           function(dimensions, geojsonAggregateData) {
 
-            var classBreaks;
-            var fillClass;
-            var coloring;
-            var geojsonOptions;
-
             if (_.isDefined(geojsonAggregateData)) {
 
-              scope.$emit('render:start', { source: 'choropleth_{0}'.format(scope.$id), timestamp: _.now() });
+              scope.$emit('render:start', {
+                source: 'choropleth_{0}'.format(scope.$id), timestamp: _.now()
+              });
 
               // Critical to invalidate size prior to updating bounds
               // Otherwise, leaflet will fit the bounds to an incorrectly sized viewport.
@@ -716,21 +875,9 @@
                 firstRender = false;
               }
 
-              classBreaks = visualization.calculateDataClassBreaks(geojsonAggregateData, Constants['UNFILTERED_VALUE_PROPERTY_NAME']);
+              var coloring = legend.update(geojsonAggregateData);
 
-              coloring = visualization.calculateColoringParameters(visualization.defaultColorClass, classBreaks);
-
-              updateLegend(classBreaks, coloring.scale.colors());
-
-              if (_.isEmpty(classBreaks)) {
-                fillClass = 'none';
-              } else if (classBreaks.length === 1) {
-                fillClass = 'single';
-              } else {
-                fillClass = 'multi';
-              }
-
-              geojsonOptions = {
+              var geojsonOptions = {
                 onEachFeature: function(feature, layer) {
                   layer.on({
                     mouseover: onFeatureMouseOver,
@@ -739,7 +886,7 @@
                     click: onFeatureClick
                   });
                 },
-                style: visualization.getStyleFn(coloring, fillClass)
+                style: visualizationUtils.getStyleFn(coloring)
               };
 
               setGeojsonData(geojsonAggregateData, geojsonOptions);

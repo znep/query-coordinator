@@ -210,6 +210,11 @@ var Dataset = ServerModel.extend({
         return (this.type == 'href');
     },
 
+    isNewView: function()
+    {
+        return (this.displayType === 'new_view');
+    },
+
     isTabular: function()
     {
         return (this.viewType == 'tabular');
@@ -3001,6 +3006,10 @@ var Dataset = ServerModel.extend({
         var ds = this;
         var base = '';
 
+        if (ds.isNewView()) {
+          return ds.metadata.accessPoints['new_view'];
+        }
+
         // federated dataset has nonblank domain cname
         if (includeDomain || !$.isBlank(ds.domainCName))
         { base = ds._generateBaseUrl(ds.domainCName); }
@@ -3029,6 +3038,10 @@ var Dataset = ServerModel.extend({
     {
         var ds = this;
         var base = '';
+
+        if (ds.isNewView()) {
+          return ds.metadata.accessPoints['new_view'];
+        }
 
         // federated dataset has nonblank domain cname
         if (includeDomain || !$.isBlank(ds.domainCName))

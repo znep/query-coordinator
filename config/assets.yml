@@ -154,6 +154,7 @@ javascripts:
     - public/javascripts/controls/full-screen.js
     - public/javascripts/controls/panes/base-pane.js
     - public/javascripts/plugins/rangy-core.js
+    - public/javascripts/plugins/rangy-textrange.js
     - public/javascripts/plugins/rangy-selectionsaverestore.js
     - public/javascripts/controls/native-draggable.js
     - public/javascripts/controls/native-drop-target.js
@@ -183,6 +184,7 @@ javascripts:
     - public/javascripts/component/util/markdown-utils.js
   markdown-create:
     - public/javascripts/plugins/rangy-core.js
+    - public/javascripts/plugins/rangy-textrange.js
     - public/javascripts/plugins/rangy-selectionsaverestore.js
     - public/javascripts/plugins/hallo.js
     - public/javascripts/controls/hallo-plugins.js
@@ -538,6 +540,7 @@ javascripts:
     - public/javascripts/screens/profile-screen-edit.js
   screen-govstat-goals:
     - public/javascripts/plugins/rangy-core.js
+    - public/javascripts/plugins/rangy-textrange.js
     - public/javascripts/plugins/rangy-selectionsaverestore.js
     - public/javascripts/plugins/hallo.js
     - public/javascripts/controls/hallo-plugins.js
@@ -545,6 +548,7 @@ javascripts:
     - public/javascripts/plugins/datepicker.js
     - public/javascripts/plugins/waypoints-2.0.5.js
     - public/javascripts/plugins/jquery.awesomereorder.js
+    - public/javascripts/plugins/jquery.awesomecomplete.js
     - public/javascripts/controls/global-indicator.js
     - public/javascripts/plugins/ajaxupload.js
     - public/javascripts/controls/image-uploader.js
@@ -563,6 +567,7 @@ javascripts:
     - public/javascripts/screens/govstat/manage.js
   odysseus-edit-base:
     - public/javascripts/plugins/rangy-core.js
+    - public/javascripts/plugins/rangy-textrange.js
     - public/javascripts/plugins/rangy-selectionsaverestore.js
     - public/javascripts/plugins/hallo.js
     - public/javascripts/controls/hallo-plugins.js
@@ -573,6 +578,7 @@ javascripts:
     - public/javascripts/controls/icon-picker.js
     - public/javascripts/plugins/jquery.awesomereorder.js
     - public/javascripts/plugins/jquery.awesomebubble.js
+    - public/javascripts/plugins/jquery.awesomecomplete.js
   unified-filter:
     - public/javascripts/controls/popup-select.js
     - public/javascripts/controls/panes/base-pane.js
@@ -638,6 +644,7 @@ javascripts:
     - public/javascripts/client-libraries/embed.js
   content-editable:
     - public/javascripts/plugins/rangy-core.js
+    - public/javascripts/plugins/rangy-textrange.js
     - public/javascripts/controls/content-editable.js
   image-uploader:
     - public/javascripts/plugins/ajaxupload.js

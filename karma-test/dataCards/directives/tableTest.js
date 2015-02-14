@@ -7,6 +7,7 @@ describe('table directive', function() {
     outerScope.filteredRowCount = rowCount >= 0 ? rowCount : 170;
     outerScope.columnDetails = [];
     outerScope.showCount = showCount;
+    outerScope.whereClause = '';
 
     columnCount = 0;
 
@@ -177,17 +178,6 @@ describe('table directive', function() {
 
   });
 
-  describe('when not expanded', function() {
-    afterEach(destroyAllTableCards);
-
-    it('should create', function() {
-      var el = createTableCard(false);
-
-      expect(el.find('.expand-message')).to.not.be.empty;
-    });
-
-  });
-
   describe('when expanded', function() {
 
     after(destroyAllTableCards);
@@ -208,7 +198,9 @@ describe('table directive', function() {
     });
 
     it('should format numbers correctly', function() {
-      _.each(immutableTable.find('.row-block .cell'), function(cell) {
+      var cells = immutableTable.find('.row-block .cell');
+      expect(cells.length).to.not.equal(0);
+      _.each(cells, function(cell) {
         var column = fixtureMetadata.columns[$(cell).index()];
         var datatype = column.physicalDatatype;
         if (datatype === 'number') {
@@ -334,13 +326,17 @@ describe('table directive', function() {
       it('should not sort when clicking the header resize thumb', function() {
         var origSort = lastSort;
 
-        getSortableTable().find('.th .resize').eq(beatColumnIndex).click();
+        var thumb = getSortableTable().find('.th .resize').eq(beatColumnIndex);
+        expect(thumb.length).to.not.equal(0);
+        thumb.click();
         $rootScope.$digest();
         expect(lastSort).to.equal(origSort);
       });
 
       it('should not show flyout when hovering over the header resize handle', function() { // CORE-3140
-        getSortableTable().find('.th .resize').eq(beatColumnIndex).mouseover();
+        var resizeHandle = getSortableTable().find('.th .resize').eq(beatColumnIndex);
+        expect(resizeHandle.length).to.not.equal(0);
+        resizeHandle.mouseover();
         $rootScope.$digest();
         expect($('.flyout').length).to.equal(0);
       });
@@ -458,15 +454,14 @@ describe('table directive', function() {
       $rootScope.$digest();
       expect(el.find('.th').length).to.equal(columnCount);
       expect(el.find('.row-block .cell').length).to.equal(columnCount * unfilteredData.length);
-      expect(lastWhereClause).to.be.undefined; // as opposed to null, which lastWhereClause is initialized to.
+      expect(lastWhereClause).to.equal(''); // as opposed to null, which lastWhereClause is initialized to.
       // Verify first cell (= first column of first row).
       expect(el.find('.row-block .cell').eq(beatColumnIndex).text()).to.equal(_.first(unfilteredData)[firstColumnName]);
 
-      $rootScope.whereClause = 'district=004';
+      el.scope().whereClause = 'district=004';
       $rootScope.$digest();
 
       _.defer(function() {
-        $rootScope.$digest();
         expect(el.find('.th').length).to.equal(columnCount);
         expect(el.find('.row-block .cell').length).to.equal(columnCount * filteredData.length);
         expect(lastWhereClause).to.equal('district=004');
@@ -505,7 +500,9 @@ describe('table directive', function() {
 
     it('should not show the row count if the "show-count" attribute is false', function() {
       var el = createTableCard(true, _.constant($q.when([])), 103, false);
-      expect(el.find('.table-label').is(':visible')).to.be.false;
+      var rowCountLabel = el.find('.table-label');
+      expect(rowCountLabel.length).to.not.equal(0);
+      expect(rowCountLabel.is(':visible')).to.be.false;
     })
   });
 

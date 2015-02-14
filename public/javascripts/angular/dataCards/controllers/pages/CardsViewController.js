@@ -1,6 +1,10 @@
 (function() {
   'use strict';
 
+  // Endpoints for the link back to the dataset page for the source dataset
+  var MIGRATION_ENDPOINT = '/api/migrations/{0}';
+  var OBE_DATASET_PAGE = '/d/{0}';
+
   // Such higher-order!
   function alphaCompareOnProperty(property) {
     return function(a, b) {
@@ -31,7 +35,9 @@
       return $scope.downloadOpened &&
         // Don't double-handle toggling downloadOpened
         !$(e.target).closest('.download-menu').length;
-    }).subscribe(function() {
+    }).
+    takeUntil($scope.eventToObservable('$destroy')).
+    subscribe(function() {
       $scope.$apply(function(e) {
         $scope.downloadOpened = false;
       });
@@ -54,10 +60,10 @@
       '<div class="flyout-title">' +
       'Please save the page in order to export a visualization as image' +
       '</div>'
-    ));
+    ), $scope.eventToObservable('$destroy'));
   }
 
-  function CardsViewController($scope, $location, $log, $window, $q, AngularRxExtensions, SortedTileLayout, Filter, PageDataService, UserSession, CardTypeMapping, FlyoutService, page, Card, WindowState, ServerConfig) {
+  function CardsViewController($scope, $location, $log, $window, $q, AngularRxExtensions, SortedTileLayout, Filter, PageDataService, UserSessionService, CardTypeMapping, FlyoutService, page, Card, WindowState, ServerConfig, $http) {
 
     AngularRxExtensions.install($scope);
 
@@ -84,11 +90,20 @@
 
     $scope.bindObservable('sourceDatasetName', page.observe('dataset.name'));
 
-    $scope.bindObservable('sourceDatasetURL',
-      page.observe('datasetId').map(function(datasetId) {
-        return '/ux/dataset/{0}'.format(datasetId);
-      })
-    );
+    // Map the nbe id to the obe id
+    var obeIdObservable = page.observe('datasetId').
+      filter(_.isPresent).
+      // send the nbe datasetId to the migrations endpoint, to translate it into an obe id
+      map(encodeURIComponent).
+      map(_.bind(MIGRATION_ENDPOINT.format, MIGRATION_ENDPOINT)).
+      flatMap(function(url) {
+        return Rx.Observable.fromPromise($http.get(url));
+      }).
+      // Now construct the source dataset url from the obe id
+      map(function(response) {
+        return OBE_DATASET_PAGE.format(response.data.obeId);
+      });
+    $scope.bindObservable('sourceDatasetURL', obeIdObservable);
 
     /***************
     * User session *
@@ -96,12 +111,8 @@
 
     // Bind the current user to the scope, or null if no user is logged in or there was an error
     // fetching the current user.
-    var currentUserSequence = Rx.Observable.fromPromise(UserSession.getCurrentUser());
-    $scope.bindObservable(
-      'currentUser',
-      currentUserSequence,
-      _.constant(null)
-    );
+    var currentUserSequence = UserSessionService.getCurrentUserObservable();
+    $scope.bindObservable('currentUser', currentUserSequence);
 
     var isCurrentUserAdminOrPublisher =
       currentUserSequence.
@@ -199,7 +210,8 @@
 
     var flyoutContent = $("<div class='flyout-title'>Click to reset all filters</div>");
     FlyoutService.register('clear-all-filters-button',
-                           _.constant(flyoutContent));
+                           _.constant(flyoutContent),
+                           $scope.eventToObservable('$destroy'));
 
 
     /************************
@@ -474,12 +486,12 @@
         return $scope.hasChanges ? '<div class="flyout-title">Click to save your changes</div>'
                                  : '<div class="flyout-title">No changes to be saved</div>';
       }
-    });
+    }, $scope.eventToObservable('$destroy'));
 
     FlyoutService.register('save-as-button', function() {
       return $scope.hasChanges ? '<div class="flyout-title">Click to save your changes as a new view</div>'
                                : '<div class="flyout-title">No changes to be saved</div>';
-    });
+    }, $scope.eventToObservable('$destroy'));
 
     // Since we have a flyout handler whose output depends on currentPageSaveEvents and $scope.hasChanges,
     // we need to poke the FlyoutService. We want the flyout to update immediately.
@@ -495,11 +507,11 @@
         'Collapse the big card using the',
         'arrows in its top right corner.'].join('<br/>') +
         '</div>';
-    });
+    }, $scope.eventToObservable('$destroy'));
 
     FlyoutService.register('clear-all-filters-button', function() {
       return '<div class="flyout-title">Click to reset all filters</div>';
-    });
+    }, $scope.eventToObservable('$destroy'));
 
 
     /******************************************

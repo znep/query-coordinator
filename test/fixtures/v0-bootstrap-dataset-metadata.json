@@ -1,0 +1,142 @@
+{
+  "id": "data-iden",
+  "name": "test dataset",
+  "description": "dataset for unit test",
+  "defaultPage": "defa-ultp",
+  "columns": [
+    {
+      "title": "system column",
+      "name": ":system",
+      "description": "how do i shot column"
+    },
+    {
+      "title": "no cardinality",
+      "description": "column dscription",
+      "name": "none",
+      "logicalDatatype": "category",
+      "physicalDatatype": "number"
+    },
+    {
+      "title": "below min cardinality",
+      "description": "column dscription",
+      "name": "below",
+      "logicalDatatype": "category",
+      "physicalDatatype": "number",
+      "cardinality": 1
+    },
+    {
+      "title": "none1",
+      "description": "column dscription",
+      "name": "none1",
+      "logicalDatatype": "invalid logical datatype",
+      "physicalDatatype": "boolean",
+      "cardinality": 34
+    },
+    {
+      "title": "none2",
+      "description": "column dscription",
+      "name": "none2",
+      "logicalDatatype": "time",
+      "physicalDatatype": "geo_entity",
+      "cardinality": 36
+    },
+    {
+      "title": "computed1",
+      "description": "column dscription",
+      "name": ":@computed_fourfour_1",
+      "logicalDatatype": "location",
+      "physicalDatatype": "number",
+      "shapefile": "abcd-efgh",
+      "cardinality": 36
+    },
+    {
+      "title": "computed2",
+      "description": "column dscription",
+      "name": ":@computed_fourfour_2",
+      "logicalDatatype": "location",
+      "physicalDatatype": "point",
+      "shapefile": "abcd-efgh",
+      "cardinality": 36
+    },
+    {
+      "title": "single1",
+      "name": "single1",
+      "description": "column dscription",
+      "logicalDatatype": "amount",
+      "physicalDatatype": "invalid physical datatype",
+      "cardinality": 34
+    },
+    {
+      "title": "single2",
+      "name": "single2",
+      "description": "column dscription",
+      "logicalDatatype": "category",
+      "physicalDatatype": "boolean",
+      "cardinality": 36
+    },
+    {
+      "title": "single3",
+      "name": "single3",
+      "description": "column dscription",
+      "logicalDatatype": "identifier",
+      "physicalDatatype": "fixed_timestamp",
+      "cardinality": 34
+    },
+    {
+      "title": "single4",
+      "name": "single4",
+      "description": "column dscription",
+      "logicalDatatype": "identifier",
+      "physicalDatatype": "money",
+      "cardinality": 36
+    },
+    {
+      "title": "multi1",
+      "name": "multi1",
+      "description": "column dscription",
+      "logicalDatatype": "category",
+      "physicalDatatype": "number",
+      "cardinality": 34
+    },
+    {
+      "title": "multi2",
+      "name": "multi2",
+      "description": "column dscription",
+      "logicalDatatype": "category",
+      "physicalDatatype": "text",
+      "cardinality": 36
+    },
+    {
+      "title": "multi3",
+      "name": "multi3",
+      "description": "column dscription",
+      "logicalDatatype": "identifier",
+      "physicalDatatype": "number",
+      "cardinality": 34
+    },
+    {
+      "title": "multi4",
+      "name": "multi4",
+      "description": "column dscription",
+      "logicalDatatype": "identifier",
+      "physicalDatatype": "text",
+      "cardinality": 36
+    },
+    {
+      "title": "multi5",
+      "name": "multi5",
+      "description": "column dscription",
+      "logicalDatatype": "name",
+      "physicalDatatype": "number",
+      "cardinality": 34
+    },
+    {
+      "title": "multi6",
+      "name": "multi6",
+      "description": "column dscription",
+      "logicalDatatype": "name",
+      "physicalDatatype": "text",
+      "cardinality": 36
+    }
+  ]
+}

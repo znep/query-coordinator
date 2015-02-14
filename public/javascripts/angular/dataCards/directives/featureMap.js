@@ -3,7 +3,6 @@
 
   function featureMap(Constants,
                       AngularRxExtensions,
-                      WindowState,
                       VectorTiles,
                       FlyoutService,
                       $timeout) {
@@ -448,7 +447,6 @@
     module('dataCards.directives').
       directive('featureMap', ['Constants',
                                'AngularRxExtensions',
-                               'WindowState',
                                'VectorTiles',
                                'FlyoutService',
                                '$timeout',

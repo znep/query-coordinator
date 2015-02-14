@@ -167,9 +167,26 @@ angular.module('dataCards.services').factory('FlyoutService', function(WindowSta
   hintHeight = uberFlyout.children('.hint').height();
 
   return {
-    // className is treated as unique in this context (should it be an id? maybe so!)
-    // renderCallback should return a string that will be interpreted as HTML.
-    register: function(className, renderCallback, trackCursor, horizontal) {
+    /**
+     * Register a flyout under a CSS class.
+     * @param {string} className: CSS class this flyout is attached to.
+     *                            Treated as unique in this context (should it be an id? maybe so!)
+     * @param {function} renderCallback: Called to render the flyout. Should return a string that
+     *                                    will be interpreted as HTML.
+     * @param {Observable} destroySignal: The flyout handler will be destroyed when this sequence
+     *                                    first emits.
+     *                                    Temporary hack to prevent severe memory leaks, ideally we
+     *                                    would not store the handlers in a global object.
+     * @param {boolean} trackCursor: Whether or not the flyout should track the mouse.
+     *                               Optional, default false.
+     * @param {boolean} horizontal: Whether or not the flyout should lay out horizontally.
+     *                               Optional, default false (vertical).
+     */
+    register: function(className, renderCallback, destroySignal, trackCursor, horizontal) {
+      if (_.isDefined(destroySignal) && !_.isFunction(destroySignal.asObservable)) {
+        throw new Error('Flyouts must be given a destroySignal Observable.');
+      }
+
       if (trackCursor !== true) {
         trackCursor = false;
       }
@@ -187,7 +204,16 @@ angular.module('dataCards.services').factory('FlyoutService', function(WindowSta
       if (!handlers.hasOwnProperty(className)) {
         handlers[className] = [];
       }
-      handlers[className].push({ render: renderCallback, trackCursor: trackCursor, horizontal: horizontal });
+
+      var handler = { render: renderCallback, trackCursor: trackCursor, horizontal: horizontal };
+
+      handlers[className].push(handler);
+
+      if (_.isDefined(destroySignal)) {
+        destroySignal.asObservable().take(1).subscribe(function() {
+          _.pull(handlers[className], handler);
+        });
+      }
     },
     deregister: function(className, renderCallback) {
       if (handlers.hasOwnProperty(className)) {

@@ -60,3 +60,47 @@ input.dark[type="url"]
 
   &:focus
     opacity: 1
+
+rich-text-editor
+  display: block
+  border: 1px solid black
+  width: 50%
+
+  $toolbar-height: 2rem
+  .toolbar
+    height: $toolbar-height
+    background-color: $panel-bg-color
+    line-height: $toolbar-height
+    padding-left: .5rem
+
+    button
+      margin: 0 .2rem
+      cursor: pointer
+      border: 2px solid $btn-border-color
+      background-color: $btn-bg-color
+      color: rgba(0, 0, 0, 0.5)
+
+      &:hover
+        border-color: $btn-hover-border-color
+        color: rgba(0, 0, 0, .8)
+
+      &.active
+        border-color: $btn-hover-border-color
+        color: rgba(0, 0, 0, 1)
+
+      &.bold
+        font-weight: bold
+
+      &.italic
+        font-style: italic
+
+      &.underline
+        text-decoration: underline
+
+      &.anchor
+        text-decoration: underline
+        color: $link-font-color
+
+  iframe
+    border-top: $toolbar-height solid transparent
+

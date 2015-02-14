@@ -37,7 +37,19 @@ angular.module('dataCards.directives').directive('multilineEllipsis', function($
 
       // Hello! My name is col. hack! (P.S. 16px * 1.5 == 24px)
       var lineHeight = function() {
-        return parseInt(element.css('line-height') === 'normal' ? '24px' : element.css('line-height'), 10);
+        var lineHeight = parseInt(element.css('line-height'), 10);
+        if (lineHeight) {
+          return lineHeight;
+        }
+        // The line height isn't conveniently set for us. Derive it by adding an inline element and
+        // measuring its size.
+        var sample = $('<span />').text("\ufeff"). // feff is the zero-width space.
+            // chrome sizes it differently if it's inline vs inline-block
+            css('display', 'inline-block').
+            appendTo(content);
+        lineHeight = sample.height();
+        sample.remove();
+        return lineHeight;
       };
 
       $scope.toggleExpanded = function() {

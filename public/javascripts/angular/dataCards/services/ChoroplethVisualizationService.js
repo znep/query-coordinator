@@ -31,9 +31,7 @@
         _.each(geojson.features, function(feature){
           if (!feature || !feature.properties) return [];
           var val = feature.properties[attr];
-          if (!val) {
-            return;
-          } else {
+          if (_.hasValue(val)) {
             data.push(feature.properties[attr]);
           }
         });
@@ -74,10 +72,15 @@
           case 'equalInterval':
             var minVal = _.min(options.data),
                 maxVal = _.max(options.data);
-            classBreaks = d3.scale.linear().domain([minVal, maxVal]).nice().ticks(_.min([options.numberOfClasses, 4]));
-            // include min and max back into d3 scale, if #nice truncates them
-            if (_.min(classBreaks) > minVal) classBreaks.unshift(minVal);
-            if (_.max(classBreaks) < maxVal) classBreaks.push(maxVal);
+            if (minVal === maxVal) {
+              classBreaks = [minVal];
+            } else {
+              var scale = d3.scale.linear().domain([minVal, maxVal]);
+              classBreaks = scale.nice().ticks(_.min([options.numberOfClasses, 4]));
+              // Make sure min and max are in the classBreak ticks that d3 gives us.
+              if (classBreaks[0] > minVal) classBreaks.unshift(minVal);
+              if (_.last(classBreaks) < maxVal) classBreaks.push(maxVal);
+            }
             break;
           default:
             throw new Error('Invalid/non-supported class breaks method ' + options.method);
@@ -96,7 +99,7 @@
         classBreaks = createClassBreaks({
           method: 'equalInterval',
           data: values,
-          numberOfClasses: values.length
+          numberOfClasses: uniqValues.length
         });
       } else {
         classBreaks = createClassBreaks({

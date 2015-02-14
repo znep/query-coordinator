@@ -109,7 +109,7 @@ describe("A Choropleth Directive", function() {
   var testJson = 'karma-test/dataCards/test-data/choroplethTest/data.json';
   var testJsonGeo = 'karma-test/dataCards/test-data/cardVisualizationChoroplethTest/ward_geojson.json';
   var legendSelector = '.choropleth-legend';
-  var legendColorSelector = '.choropleth-legend .choropleth-legend-color';
+  var legendColorSelector = legendSelector + ' .choropleth-legend-color';
   var featureGeometrySelector = '.leaflet-map-pane .leaflet-objects-pane .leaflet-overlay-pane svg path';
   var flyoutSelector = '#uber-flyout';
   var featureMergedValueName = '__SOCRATA_FILTERED_VALUE__';
@@ -437,14 +437,7 @@ describe("A Choropleth Directive", function() {
           var values = _.map(_.range(-featureCount, 0), function(value, i) {
             return { name: '' + i, value: value };
           });
-          scope.geojsonAggregateData = cardVisualizationChoroplethHelpers.aggregateGeoJsonData(
-            createGeoJsonData(featureCount),
-            values,
-            values,
-            null,
-            'mycolumn',
-            { 'mycolumn': {shapefile: null} }
-          );
+          scope.geojsonAggregateData = aggregateDataForValues(values);
           el = createChoropleth();
 
           // the normal stuff should still be there
@@ -487,14 +480,7 @@ describe("A Choropleth Directive", function() {
           var values = _.map(_.range(start, start + featureCount), function(value, i) {
             return { name: '' + i, value: value };
           });
-          scope.geojsonAggregateData = cardVisualizationChoroplethHelpers.aggregateGeoJsonData(
-            createGeoJsonData(featureCount),
-            values,
-            values,
-            null,
-            'mycolumn',
-            { 'mycolumn': {shapefile: null} }
-          );
+          scope.geojsonAggregateData = aggregateDataForValues(values);
           el = createChoropleth();
 
           // the normal stuff should still be there
@@ -548,14 +534,7 @@ describe("A Choropleth Directive", function() {
               var y = yOffset + Math.pow(value - xOffset, 2)
               return { name: '' + i, value: Math.round(featureCount % 2 ? y : -y) };
             });
-            scope.geojsonAggregateData = cardVisualizationChoroplethHelpers.aggregateGeoJsonData(
-              createGeoJsonData(featureCount),
-              values,
-              values,
-              null,
-              'mycolumn',
-              { 'mycolumn': {shapefile: null} }
-            );
+            scope.geojsonAggregateData = aggregateDataForValues(values);
             el = createChoropleth();
 
             var legend = el.find(legendSelector);
@@ -585,14 +564,7 @@ describe("A Choropleth Directive", function() {
               return { name: '' + value, value: value / 100 };
             })
           );
-          scope.geojsonAggregateData = cardVisualizationChoroplethHelpers.aggregateGeoJsonData(
-            createGeoJsonData(featureCount),
-            values,
-            values,
-            null,
-            'mycolumn',
-            { 'mycolumn': {shapefile: null} }
-          );
+          scope.geojsonAggregateData = aggregateDataForValues(values);
           el = createChoropleth();
 
           // Both the regions and the legend should be reddish
@@ -698,6 +670,210 @@ describe("A Choropleth Directive", function() {
         });
         var nullColors = _.filter(fillColors, function(fc){ return chroma.color(fc).hex() == '#dddddd' });
         expect(nullColors.length).to.equal(1);
+      });
+
+      describe('1-2 values', function() {
+        describe('discrete legend', function() {
+          // We want to test both datasets with only one row, as well as multiple rows with the same
+          // value. They should display the same on the legend.
+          _.each(_.range(1, 3), function(valueCount) {
+            var values = _.map(_.range(0, valueCount), function(i) {
+              return {name: '' + i, value: 100};
+            });
+            it('colors datasets blue with {0} rows, 1 unique positive value'.format(valueCount), function() {
+              scope.geojsonAggregateData = aggregateDataForValues(values);
+              el = createChoropleth();
+
+              // Both the region and the legend should be blueish
+              _.each([featureGeometrySelector, legendColorSelector], function(selector) {
+                var element = el.find(selector);
+                expect(element.length).to.be.greaterThan(0);
+                element.each(function() {
+                  var elementColor = chroma.color($(this).css('fill')).rgb();
+                  expect(elementColor[2]).to.be.greaterThan(elementColor[1]);
+                  expect(elementColor[2]).to.be.greaterThan(elementColor[0]);
+                });
+              });
+            });
+          });
+
+          _.each(_.range(1, 3), function(valueCount) {
+            var values = _.map(_.range(0, valueCount), function(i) {
+              return {name: '' + i, value: -128};
+            });
+            it('colors red datasets {0} rows, 1 unique negative value'.format(valueCount), function() {
+              scope.geojsonAggregateData = aggregateDataForValues(values);
+              el = createChoropleth();
+
+              // Both the region and the legend should be blueish
+              _.each([featureGeometrySelector, legendColorSelector], function(selector) {
+                var element = el.find(selector);
+                expect(element.length).to.be.greaterThan(0);
+                element.each(function() {
+                  var elementColor = chroma.color($(this).css('fill')).rgb();
+                  expect(elementColor[0]).to.be.greaterThan(elementColor[1]);
+                  expect(elementColor[0]).to.be.greaterThan(elementColor[2]);
+                });
+              });
+            });
+          });
+
+          _.each(_.range(1, 3), function(valueCount) {
+            var values = _.map(_.range(0, valueCount), function(i) {
+              return {name: '' + i, value: 0};
+            });
+            it('colors white datasets with {0} rows, 1 value = 0'.format(valueCount), function() {
+              scope.geojsonAggregateData = aggregateDataForValues(values);
+              el = createChoropleth();
+
+              // Both the region and the legend should be blueish
+              _.each([featureGeometrySelector, legendColorSelector], function(selector) {
+                var element = el.find(selector);
+                expect(element.length).to.be.greaterThan(0);
+                element.each(function() {
+                  var elementColor = chroma.color($(this).css('fill')).rgb();
+                  expect(elementColor[0]).to.equal(elementColor[1]);
+                  expect(elementColor[0]).to.equal(elementColor[2]);
+                });
+              });
+            });
+          });
+
+          it('colors blue datasets with only two positive values', function() {
+            var values = _.map(_.range(5, 100, 90), function(v, i) { return {name: '' + i, value: v}; });
+            scope.geojsonAggregateData = aggregateDataForValues(values);
+            el = createChoropleth();
+
+            // Both the region and the legend should be blueish
+            _.each([featureGeometrySelector, legendColorSelector], function(selector) {
+              var element = el.find(selector);
+              expect(element.length).to.equal(2);
+              element.each(function() {
+                var elementColor = chroma.color($(this).css('fill')).rgb();
+                expect(elementColor[2]).to.be.greaterThan(elementColor[1]);
+                expect(elementColor[2]).to.be.greaterThan(elementColor[0]);
+              });
+            });
+
+            // Should have two-ish ticks, labelling the two values
+            var legend = el.find(legendSelector).find('.tick');
+            expect(legend.length).to.be.closeTo(3, 1);
+          });
+
+          it('colors red datasets with only two negative values', function() {
+            var values = _.map(_.range(-100, -5, 90), function(v, i) { return {name: '' + i, value: v}; });
+            scope.geojsonAggregateData = aggregateDataForValues(values);
+            el = createChoropleth();
+
+            // Both the region and the legend should be blueish
+            _.each([featureGeometrySelector, legendColorSelector], function(selector) {
+              var element = el.find(selector);
+              expect(element.length).to.equal(2);
+              element.each(function() {
+                var elementColor = chroma.color($(this).css('fill')).rgb();
+                expect(elementColor[0]).to.be.greaterThan(elementColor[1]);
+                expect(elementColor[0]).to.be.greaterThan(elementColor[2]);
+              });
+            });
+
+            // Should have two-ish ticks, labelling the two values
+            var legend = el.find(legendSelector).find('.tick');
+            expect(legend.length).to.be.closeTo(3, 1);
+          });
+
+          it('colors blue/red datasets with two values straddling 0', function() {
+            var values = _.map(_.range(-50, 50, 90), function(v, i) { return {name: '' + i, value: v}; });
+            scope.geojsonAggregateData = aggregateDataForValues(values);
+            el = createChoropleth();
+
+            // Both the region and the legend should have 1 red and 1 blue
+            _.each([featureGeometrySelector, legendColorSelector], function(selector) {
+              var element = el.find(selector);
+              expect(element.length).to.equal(2);
+              var redCount = 0;
+              var blueCount = 0;
+              element.each(function() {
+                var elementColor = chroma.color($(this).css('fill')).rgb();
+                if (elementColor[0] > elementColor[2]) {
+                  redCount++;
+                } else if (elementColor[2] > elementColor[0]) {
+                  blueCount++;
+                }
+              });
+              expect(redCount).to.equal(1);
+              expect(blueCount).to.equal(1);
+            });
+
+            // Should have two-ish ticks, labelling the two values
+            var legend = el.find(legendSelector).find('.tick');
+            expect(legend.length).to.be.closeTo(3, 1);
+          });
+        });
+
+        describe('continuous legend', function() {
+          it('colors blue datasets with only one positive value', function() {
+            var values = [{ name: '0', value: 100 }];
+            scope.geojsonAggregateData = aggregateDataForValues(values);
+            el = createChoropleth(false, 'stops="continuous"');
+
+            // Both the region and the legend should be blueish
+            var element = el.find(featureGeometrySelector);
+            expect(element.length).to.equal(1);
+            var elementColor = chroma.color(element.css('fill')).rgb();
+            expect(elementColor[2]).to.be.greaterThan(elementColor[1]);
+            expect(elementColor[2]).to.be.greaterThan(elementColor[0]);
+
+            var gradient = el.find(legendSelector).
+                find('#gradient').
+                find('stop[offset="100%"]');
+            expect(gradient.length).to.equal(1);
+            var elementColor = chroma.color(gradient.css('stop-color')).rgb();
+            expect(elementColor[2]).to.be.greaterThan(elementColor[1]);
+            expect(elementColor[2]).to.be.greaterThan(elementColor[0]);
+          });
+
+          it('colors datasets red with only one negative value', function() {
+            var values = [{ name: '0', value: -128 }];
+            scope.geojsonAggregateData = aggregateDataForValues(values);
+            el = createChoropleth(false, 'stops="continuous"');
+
+            // Both the region and the legend should be blueish
+            var element = el.find(featureGeometrySelector);
+            expect(element.length).to.equal(1);
+            var elementColor = chroma.color(element.css('fill')).rgb();
+            expect(elementColor[0]).to.be.greaterThan(elementColor[1]);
+            expect(elementColor[0]).to.be.greaterThan(elementColor[2]);
+
+            var gradient = el.find(legendSelector).
+                find('#gradient').
+                find('stop[offset="0%"]');
+            expect(gradient.length).to.equal(1);
+            var elementColor = chroma.color(gradient.css('stop-color')).rgb();
+            expect(elementColor[0]).to.be.greaterThan(elementColor[1]);
+            expect(elementColor[0]).to.be.greaterThan(elementColor[2]);
+          });
+
+          it('colors white datasets with only one value = 0', function() {
+            var values = [{ name: '0', value: 0 }];
+            scope.geojsonAggregateData = aggregateDataForValues(values);
+            el = createChoropleth(false, 'stops="continuous"');
+
+            // Both the region and the legend should be blueish
+            var element = el.find(featureGeometrySelector);
+            expect(element.length).to.equal(1);
+            var elementColor = chroma.color(element.css('fill')).rgb();
+            expect(elementColor[0]).to.equal(elementColor[1]);
+            expect(elementColor[0]).to.equal(elementColor[2]);
+
+            var gradient = el.find(legendSelector).
+                find('#gradient').
+                find('stop[offset="0%"]');
+            expect(gradient.length).to.equal(1);
+            var elementColor = chroma.color(gradient.css('stop-color')).rgb();
+            expect(elementColor[0]).to.equal(elementColor[1]);
+            expect(elementColor[0]).to.equal(elementColor[2]);
+          });
+        });
       });
     });
 
@@ -885,14 +1061,7 @@ describe("A Choropleth Directive", function() {
               var values = _.map(_.range(5, 5 + featureCount), function(value, i) {
                 return { name: '' + i, value: value };
               });
-              scope.geojsonAggregateData = cardVisualizationChoroplethHelpers.aggregateGeoJsonData(
-                createGeoJsonData(featureCount),
-                values,
-                values,
-                null,
-                'mycolumn',
-                { 'mycolumn': {shapefile: null} }
-              );
+              scope.geojsonAggregateData = aggregateDataForValues(values);
               el = createChoropleth();
 
               var legendColors = _.map(el.find(legendColorSelector), function(el) {

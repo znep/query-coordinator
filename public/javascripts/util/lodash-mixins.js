@@ -14,6 +14,9 @@ _.mixin({
   isDefined: function(value) {
     return !_.isUndefined(value);
   },
+  hasValue: function(value) {
+    return value !== null && value !== undefined;
+  },
   instead: function(value, insteadValue) {
     return _.isPresent(value) ? value : insteadValue;
   },

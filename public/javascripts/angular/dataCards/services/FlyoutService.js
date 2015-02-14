@@ -183,7 +183,7 @@ angular.module('dataCards.services').factory('FlyoutService', function(WindowSta
      *                               Optional, default false (vertical).
      */
     register: function(className, renderCallback, destroySignal, trackCursor, horizontal) {
-      if (!_.isFunction(destroySignal.asObservable)) {
+      if (_.isDefined(destroySignal) && !_.isFunction(destroySignal.asObservable)) {
         throw new Error('Flyouts must be given a destroySignal Observable.');
       }
 
@@ -209,9 +209,18 @@ angular.module('dataCards.services').factory('FlyoutService', function(WindowSta
 
       handlers[className].push(handler);
 
-      destroySignal.asObservable().take(1).subscribe(function() {
-        _.pull(handlers[className], handler);
-      });
+      if (_.isDefined(destroySignal)) {
+        destroySignal.asObservable().take(1).subscribe(function() {
+          _.pull(handlers[className], handler);
+        });
+      }
+    },
+    deregister: function(className, renderCallback) {
+      if (handlers.hasOwnProperty(className)) {
+        handlers[className] = handlers[className].filter(function(handler) {
+          return handler.render !== renderCallback;
+        });
+      }
     },
     // Flyout handlers are typically rechecked on mouse movement. If you've made changes to the handlers or their
     // source data and want to see the changes immediately, this function will force a refresh.

@@ -1,5 +1,10 @@
+'use strict';
+
 describe("A Timeline Chart Card Visualization", function() {
-  var testHelpers, $q, timelineChartVisualizationService, _$provide;
+  var testHelpers;
+  var $q
+  var timelineChartVisualizationHelpers;
+  var _$provide;
 
   beforeEach(module('/angular_templates/dataCards/cardVisualizationTimelineChart.html'));
 
@@ -11,7 +16,7 @@ describe("A Timeline Chart Card Visualization", function() {
   beforeEach(inject(function($injector) {
     testHelpers = $injector.get('testHelpers');
     $q = $injector.get('$q');
-    timelineChartVisualizationService = $injector.get('timelineChartVisualizationService');
+    timelineChartVisualizationHelpers = $injector.get('TimelineChartVisualizationHelpers');
     var mockCardDataService = {
       getTimelineDomain: function(){ return $q.when([]);},
       getTimelineData: function(){ return $q.when([]);}
@@ -32,7 +37,7 @@ describe("A Timeline Chart Card Visualization", function() {
       var unfilteredValues = _.map(datumCount, function(i) { return 100 * i; });
       var filteredValues = _.map(unfilteredValues, function(val) { return val / 2; });
 
-      var transformed = timelineChartVisualizationService.transformChartDataForRendering(
+      var transformed = timelineChartVisualizationHelpers.transformChartDataForRendering(
         _.map(datumCount, function(i) {
           return {
             date: dates[i],
@@ -53,10 +58,7 @@ describe("A Timeline Chart Card Visualization", function() {
         expect(transformed.values[i].filtered).to.equal(filteredValues[i]);
         expect(transformed.values[i].unfiltered).to.equal(unfilteredValues[i]);
       }
-      expect(transformed.labelUnit).to.equal('day');
     });
   });
 
-  // TODO: MOAR TESTS
 });
-

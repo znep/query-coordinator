@@ -14,9 +14,11 @@ describe('timelineChart', function() {
   var AngularRxExtensions;
   var testJson = 'karma-test/dataCards/test-data/timelineChartTest/timelineChartTestData.json';
   var hiddenLabelTestJson = 'karma-test/dataCards/test-data/timelineChartTest/hiddenLabelTimelineChartTestData.json';
+  var negativeTestJson = 'karma-test/dataCards/test-data/timelineChartTest/negativeTestData.json';
 
   beforeEach(module(testJson));
   beforeEach(module(hiddenLabelTestJson));
+  beforeEach(module(negativeTestJson));
 
   beforeEach(module('dataCards'));
 
@@ -50,21 +52,12 @@ describe('timelineChart', function() {
     unfilteredTestData = unpickleTestData(testHelpers.getTestJson(testJson), false);
     filteredTestData = unpickleTestData(testHelpers.getTestJson(testJson), true);
     hiddenLabelTestData = unpickleTestData(testHelpers.getTestJson(hiddenLabelTestJson), false);
+    negativeTestData = unpickleTestData(testHelpers.getTestJson(negativeTestJson), false);
   }));
 
   afterEach(function() {
     removeTimelineChart();
   });
-
-  // NOTE: TEMPORARY TEST DEBUGGING
-  // For some reason, flyouts keep appearing in inconsistent numbers.
-  // Log out the contents for debugging help.
-  /*function printAllFlyoutContent() {
-    $('.flyout').each(function(i, flyout) {
-      console.log('Unexpected flyout found, possible test bug:', $(flyout).html());
-    });
-    $('.flyout').remove();
-  }*/
 
   function unpickleTestData(testData, shouldFilter) {
 
@@ -115,8 +108,7 @@ describe('timelineChart', function() {
             'expanded="expanded" ',
             'precision="precision" ',
             'row-display-unit="rowDisplayUnit" ',
-            'active-filters="activeFilters" ',
-            'page-is-filtered="pageIsFiltered">',
+            'active-filters="activeFilters">',
           '</div>',
         '</div>',
       '</div>'
@@ -127,7 +119,6 @@ describe('timelineChart', function() {
     scope.precision = 'MONTH';
     scope.rowDisplayUnit = 'rowDisplayUnit';
     scope.activeFilters = [];
-    scope.pageIsFiltered = false;
 
     return testHelpers.TestDom.compileAndAppend(html, scope);
 
@@ -142,35 +133,27 @@ describe('timelineChart', function() {
 
 
   describe('render timing events', function() {
-    xit('should emit render:start and render:complete events on rendering', function(done) {
-      // Need a clean chart, otherwise we might not get a render.
-      removeAllScenarioCharts();
-      var chart = getOrCreateChartScenario('300px unexpanded unfiltered');
 
-      scope = chart.scope;
-      AngularRxExtensions.install(scope);
+    it('should emit render:start and render:complete events on rendering', function(done) {
 
-      var renderEvents = scope.eventToObservable('render:start').merge(scope.eventToObservable('render:complete'));
+      var renderStarted = false;
+      var chart;
 
-      renderEvents.take(2).toArray().subscribe(
-        function(events) {
-          // Vis id is a string and is the same across events.
-          expect(events[0].args[0].source).to.satisfy(_.isString);
-          expect(events[1].args[0].source).to.equal(events[0].args[0].source);
+      scope.$on('render:start', function(data) {
+        renderStarted = true;
+      });
 
-          // Times are ints and are in order.
-          expect(events[0].args[0].timestamp).to.satisfy(_.isFinite);
-          expect(events[1].args[0].timestamp).to.satisfy(_.isFinite);
+      scope.$on('render:complete', function(data) {
+        expect(renderStarted).to.equal(true);
+        done();
+      });
 
-          expect(events[0].args[0].timestamp).to.be.below(events[1].args[0].timestamp);
-          done();
-        }
-      );
+      chart = createTimelineChart(640, false);
 
-      // Pretend we got new data.
-      scope.testData = testData.concat([]);
-      scope.$digest();
-      timeout.flush(); // Needed to simulate a frame. Render:complete won't be emitted otherwise.
+      // If we do not flush the timeout, the 'render:complete'
+      // event will not be emitted.
+      timeout.flush(); 
+
     });
   });
 
@@ -185,12 +168,30 @@ describe('timelineChart', function() {
   });
 
   describe('axis creation', function() {
-    xit('should create 6 x-axis ticks and 6 x-axis labels', function() {
+
+    // A valid x-axis scale for this test data will have one more label
+    // than there are ticks. Imagine a piece of paper with six vertical
+    // lines drawn on it at a constant interval where no line is at the
+    // edge of the paper. There will be a gap before every tick and one
+    // additional one after the last tick.
+    it('should create 6 x-axis ticks and 7 x-axis labels with default test data', function() {
 
       var chart = createTimelineChart(640, false);
 
       expect($('.x-tick').length).to.equal(6);
-      expect($('.x-tick-label').length).to.equal(6);
+      expect($('.x-tick-label').length).to.equal(7);
+
+    });
+
+    it('should create x-axis labels with unique horizontal positions', function() {
+
+      var chart = createTimelineChart(640, false);
+
+      var positions = _.map($('.x-tick-label'), function(label) {
+        return $(label).css('left');
+      });
+
+      expect(_.uniq(positions).length).to.equal(positions.length);
 
     });
 
@@ -202,12 +203,12 @@ describe('timelineChart', function() {
 
     });
 
-    it('should create x-axis labels with unique positions', function() {
+    it('should create y-axis ticks with unique vertical positions', function() {
 
-      var chart = createTimelineChart(640, false);
+      var chart = createTimelineChart(640, false, negativeTestData);
 
-      var positions = _.map($('.x-tick-label'), function(label) {
-        return $(label).attr('style');
+      var positions = _.map($('.y-tick'), function(tick) {
+        return $(tick).css('bottom');
       });
 
       expect(_.uniq(positions).length).to.equal(positions.length);
@@ -215,11 +216,15 @@ describe('timelineChart', function() {
     });
 
     describe('label granularity', function() {
+
       var transformChartData;
-      beforeEach(inject(function($injector) {
-        transformChartData = $injector.get('timelineChartVisualizationService').
-          transformChartDataForRendering;
-      }));
+
+      beforeEach(inject(
+        function($injector) {
+          transformChartData = $injector.get('TimelineChartVisualizationHelpers').
+            transformChartDataForRendering;
+        })
+      );
 
       it('should format for decade when the data spans more than 20 years', function() {
         var chart = createTimelineChart(640, false, transformChartData(
@@ -235,7 +240,35 @@ describe('timelineChart', function() {
         var labels = chart.find('.x-tick-label');
         expect(labels.length).to.be.greaterThan(0);
         labels.each(function() {
-          expect(this.innerHTML).to.match(/\b20[0-9]0s\b/);
+          // The last x-axis label may not include text if it does not
+          // span the entire range (e.g. if there are fewer than 10 years
+          // on the x-axis after the last decade label.
+          if (this.innerHTML !== '') {
+            expect(this.innerHTML).to.match(/\b20[0-9]0s\b/);
+          }
+        });
+      });
+
+      it('formats for decade, even if the data is not exactly on the year mark', function() {
+        var chart = createTimelineChart(640, false, transformChartData(
+          _.map(_.range(30), function(i) {
+            return {
+              date: moment(new Date(2000 + i, 2, 3)),
+              total: i,
+              filtered: 0
+            }
+          })
+       ));
+
+        var labels = chart.find('.x-tick-label');
+        expect(labels.length).to.be.greaterThan(0);
+        labels.each(function() {
+          // The last x-axis label may not include text if it does not
+          // span the entire range (e.g. if there are fewer than 10 years
+          // on the x-axis after the last decade label.
+          if (this.innerHTML !== '') {
+            expect(this.innerHTML).to.match(/\b20[0-9]0s\b/);
+          }
         });
       });
 
@@ -253,7 +286,9 @@ describe('timelineChart', function() {
         var labels = chart.find('.x-tick-label');
         expect(labels.length).to.be.greaterThan(0);
         labels.each(function() {
-          expect(this.innerHTML).to.match(/\b20[0-9]0s\b/);
+          if (this.innerHTML !== '') {
+            expect(this.innerHTML).to.match(/\b20[0-9]0s\b/);
+          }
         });
       });
 
@@ -271,7 +306,12 @@ describe('timelineChart', function() {
         var labels = chart.find('.x-tick-label');
         expect(labels.length).to.be.greaterThan(0);
         labels.each(function() {
-          expect(this.innerHTML).to.match(/\b20[01][0-9]\b/);
+          // The last x-axis label may not include text if it does not
+          // span the entire range (e.g. if there are fewer than 10 years
+          // on the x-axis after the last decade label.
+          if (this.innerHTML !== '') {
+            expect(this.innerHTML).to.match(/\b20[01][0-9]\b/);
+          }
         });
       });
 
@@ -289,8 +329,37 @@ describe('timelineChart', function() {
         var labels = chart.find('.x-tick-label');
         expect(labels.length).to.be.greaterThan(0);
         labels.each(function() {
-          // Format should be something like, Nov '09, and Jan '10
-          expect(this.innerHTML).to.match(/\b[A-Z][a-z][a-z] ['’][01][901]\b/);
+          // The last x-axis label may not include text if it does not
+          // span the entire range (e.g. if there are fewer than 10 years
+          // on the x-axis after the last decade label.
+          if (this.innerHTML !== '') {
+            expect(this.innerHTML).to.match(/\b[A-Z][a-z][a-z] ['’]\d\d\b/);
+          }
+        });
+      });
+
+      // See CORE-4216
+      it('should not render an extra 1 before abbreviated years in the teens when formatted by month (CORE-4216).', function() {
+        var chart = createTimelineChart(640, false, transformChartData(
+          _.map(_.range(80), function(i) {
+            return {
+              date: moment(new Date(2009, 11, i)),
+              total: i,
+              filtered: 0
+            }
+          })
+        ));
+
+        var labels = chart.find('.x-tick-label');
+        expect(labels.length).to.be.greaterThan(0);
+        labels.each(function() {
+          // The last x-axis label may not include text if it does not
+          // span the entire range (e.g. if there are fewer than 10 years
+          // on the x-axis after the last decade label.
+          if (this.innerHTML !== '') {
+            // Format should be something like, Nov '09, and Jan '10
+            expect(this.innerHTML).to.match(/\b[A-Z][a-z][a-z] ['’][01][901]\b/);
+          }
         });
       });
 

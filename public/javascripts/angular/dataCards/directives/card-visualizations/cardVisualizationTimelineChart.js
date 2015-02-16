@@ -66,6 +66,53 @@
           }
         );
 
+
+        /**
+         * This used to take ~175ms because of the multiple maps and reduces.
+         * It now takes ~7ms (and a little bit more memory than before).
+         *
+         * @param {Array} unfilteredData
+         * @param {Array} filteredData
+         *
+         * @return {Array} An array containing the date, unfiltered and filtered
+         *                 value for each datum.
+         */
+        function aggregateData(unfilteredData, filteredData) {
+
+          var i = 0;
+          var j = 0;
+          var startAt = 0;
+          var length = unfilteredData.length;
+          var aggregatedData = [];
+          var filteredValue = 0;
+
+
+          for (i = 0; i < length; i++) {
+
+            filteredValue = 0;
+
+            // The 'filteredData' array may be smaller in size than 'unfilteredData'
+            // so we need to match on dates.
+            for (j = startAt; j < filteredData.length; j++) {
+              if (unfilteredData[i].date.isSame(filteredData[j].date)) {
+                filteredValue = filteredData[j].value;
+                startAt = j + 1;
+                break;
+              }
+            }
+
+            aggregatedData.push({
+              date: unfilteredData[i].date,
+              total: unfilteredData[i].value,
+              filtered: filteredValue
+            });
+          }
+
+          return aggregatedData;
+
+        }
+
+
         // Since we need to be able to render the unfiltered values outside
         // of a timeline chart's current selection area, we need to 'filter'
         // those data outside the selection manually rather than using SoQL.
@@ -222,31 +269,8 @@
           unfilteredDataSequence.switchLatest(),
           filteredDataSequence.switchLatest(),
           function(unfilteredData, filteredData) {
-            // Joins filtered data and unfiltered data into an array of objects:
-            // [
-            //  { name: 'some_group_name', total: 1234, filtered: 192 },
-            //  ...
-            // ]
-            // If we're unfiltered or the filtered data isn't defined for a particular name, the filtered field is undefined.
-
-            var unfilteredAsHash = _.reduce(unfilteredData, function(acc, datum) {
-              acc[datum.date] = datum.value;
-              return acc;
-            }, {});
-
-            var filteredAsHash = _.reduce(filteredData, function(acc, datum) {
-              acc[datum.date] = datum.value;
-              return acc;
-            }, {});
-
             return TimelineChartVisualizationHelpers.transformChartDataForRendering(
-              _.map(_.pluck(unfilteredData, 'date'), function(date) {
-                return {
-                  date: date,
-                  total: unfilteredAsHash[date],
-                  filtered: filteredAsHash[date] || 0
-                };
-              })
+              aggregateData(unfilteredData, filteredData)
             );
           }
         );

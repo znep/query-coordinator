@@ -107,8 +107,8 @@
             }
 
             domain = {
-              start: moment(firstRow.start, moment.ISO_8601),
-              end: moment(firstRow.end, moment.ISO_8601)
+              start: domainStart,
+              end: domainEnd
             };
 
           }

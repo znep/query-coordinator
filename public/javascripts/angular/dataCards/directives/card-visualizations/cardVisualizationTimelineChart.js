@@ -177,9 +177,16 @@
               return;
             }
 
-            if (moment(domain.start).add('years', 1).isAfter(domain.end)) {
+            // Moment objects are inherently mutable. Therefore, the .add()
+            // call in the first condition will need to be accounted for in
+            // the second condition. We're doing this instead of just cloning
+            // the objects becaue moment.clone is surprisingly slow (something
+            // like 40ms).
+            if (domain.start.add('years', 1).isAfter(domain.end)) {
               precision = 'DAY';
-            } else if (moment(domain.start).add('years', 20).isAfter(domain.end)) {
+            // We're actually checking for 20 years but have already added one
+            // to the original domain start date in the if block above.
+            } else if (domain.start.add('years', 19).isAfter(domain.end)) {
               precision = 'MONTH';
             } else {
               precision = 'YEAR';

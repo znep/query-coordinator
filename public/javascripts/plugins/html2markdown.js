@@ -231,7 +231,15 @@ function HTML2Markdown(html, opts) {
         case "dfn":
         case "var":
         case "cite":
-          nodeList.push(markdownTags[tag]);
+          // SOCRATA - Dylan Bussone - 2/17/2015
+          // Fix for STAT-619, where neighboring like tags cause leaking markdown text
+          // If new tag is the same as the last tag, splice the closing of the last tag
+          // and put the new contents in the previous tag
+          if (nodeList[nodeList.length-1] === markdownTags[tag]) {
+            nodeList.splice(nodeList.length-1, 1);
+          } else {
+            nodeList.push(markdownTags[tag]);
+          }
           break;
         case "code":
         case "span":

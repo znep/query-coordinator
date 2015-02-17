@@ -89,16 +89,26 @@
 
           for (i = 0; i < length; i++) {
 
-            filteredValue = 0;
+            if (unfilteredData[i].value === null) {
 
-            // The 'filteredData' array may be smaller in size than 'unfilteredData'
-            // so we need to match on dates.
-            for (j = startAt; j < filteredData.length; j++) {
-              if (unfilteredData[i].date.isSame(filteredData[j].date)) {
-                filteredValue = filteredData[j].value;
-                startAt = j + 1;
-                break;
+              filteredValue = null;
+
+            } else {
+
+              filteredValue = 0;
+
+              // The 'filteredData' array may be smaller in size than 'unfilteredData'
+              // so we need to match on dates.
+              for (j = startAt; j < filteredData.length; j++) {
+                if (unfilteredData[i].date.isSame(filteredData[j].date)) {
+                  filteredValue = filteredData[j].value;
+                  startAt = j + 1;
+                  break;
+                }
               }
+
+              filteredValue = (filteredValue === null) ? 0 : filteredValue;
+
             }
 
             aggregatedData.push({

@@ -493,6 +493,7 @@
 
           var minDate;
           var maxDate;
+          var line;
           var area;
           var svgChart;
           var selection;
@@ -575,12 +576,20 @@
             transformedMinDate = values[0][0].date;
             transformedMaxDate = values[0][values[0].length - 1].date;
 
+            line = d3.
+              svg.
+                line().
+                  defined(function(d) { return d.filtered !== null; }).
+                  x(function(d) { return d3XScale(d.date); }).
+                  y(function(d) { return d3YScale(d.filtered); });
+
             area = d3.
               svg.
                 area().
-                  x(function (d) { return d3XScale(d.date); }).
+                  defined(line.defined()).
+                  x(line.x()).
                   y0(function (d) { return d3YScale(0); }).
-                  y1(function (d) { return d3YScale(d.filtered); });
+                  y1(line.y());
 
             svgChart = d3ChartElement.
               select('svg.timeline-chart-selection').
@@ -1027,6 +1036,7 @@
           var chartWidth;
           var chartHeight;
           var values;
+          var line;
           var area;
           var svgChart;
           var selection;
@@ -1041,12 +1051,20 @@
 
           values = [transformValuesForRendering(cachedChartData.values)];
 
+          line = d3.
+            svg.
+              line().
+                defined(function(d) { return d.unfiltered !== null; }).
+                x(function(d) { return d3XScale(d.date); }).
+                y(function(d) { return d3YScale(d.unfiltered); });
+
           area = d3.
             svg.
               area().
-                x(function (d) { return d3XScale(d.date); }).
+                defined(line.defined()).
+                x(line.x()).
                 y0(function (d) { return d3YScale(0); }).
-                y1(function (d) { return d3YScale(d.unfiltered); });
+                y1(line.y());
 
           svgChart = d3ChartElement.
             select('svg.timeline-chart-unfiltered-visualization').
@@ -1085,6 +1103,7 @@
           var chartWidth;
           var chartHeight;
           var values;
+          var line;
           var area;
           var svgChart;
           var selection;
@@ -1103,12 +1122,20 @@
             values = [transformValuesForRendering(cachedChartData.values)];
           }
 
+          line = d3.
+            svg.
+              line().
+                defined(function(d) { return d.filtered !== null; }).
+                x(function(d) { return d3XScale(d.date); }).
+                y(function(d) { return d3YScale(d.filtered); });
+
           area = d3.
             svg.
               area().
-                x(function (d) { return d3XScale(d.date); }).
+                defined(line.defined()).
+                x(line.x()).
                 y0(function (d) { return d3YScale(0); }).
-                y1(function (d) { return d3YScale(d.filtered); });
+                y1(line.y());
 
           svgChart = d3ChartElement.
             select('svg.timeline-chart-filtered-visualization').
@@ -1253,7 +1280,9 @@
                                     !currentlyDragging;
           var dateString;
           var unfilteredUnit;
+          var unfilteredValue;
           var filteredUnit;
+          var filteredValue;
           var flyoutContent;
 
 
@@ -1267,9 +1296,23 @@
                              cachedRowDisplayUnit :
                              cachedRowDisplayUnit.pluralize();
 
+            unfilteredValue = (_.isNumber(currentDatum.unfiltered)) ?
+                              '{0} {1}'.format(
+                                $.toHumaneNumber(currentDatum.unfiltered),
+                                unfilteredUnit
+                              ) :
+                              '(No value)';
+
             filteredUnit = (currentDatum.filtered === 1) ?
                            cachedRowDisplayUnit :
                            cachedRowDisplayUnit.pluralize();
+
+            filteredValue = (_.isNumber(currentDatum.filtered)) ?
+                            '{0} {1}'.format(
+                              $.toHumaneNumber(currentDatum.filtered),
+                              filteredUnit
+                            ) :
+                            '(No value)';
 
             if (currentDatum.filtered !== currentDatum.unfiltered) {
 
@@ -1277,21 +1320,15 @@
                   '<div class="flyout-title">{0}</div>',
                   '<div class="flyout-row">',
                     '<span class="flyout-cell">Total</span>',
-                    '<span class="flyout-cell">{1} {2}</span>',
+                    '<span class="flyout-cell">{1}</span>',
                   '</div>',
                   '<div class="flyout-row">',
                     '<span class="flyout-cell emphasis">Filtered amount</span>',
-                    '<span class="flyout-cell emphasis">{3} {4}</span>',
+                    '<span class="flyout-cell emphasis">{2}</span>',
                   '</div>'
                ].
                join('').
-               format(
-                 dateString,
-                 $.toHumaneNumber(currentDatum.unfiltered),
-                 unfilteredUnit,
-                 $.toHumaneNumber(currentDatum.filtered),
-                 filteredUnit
-               );
+               format(dateString, unfilteredValue, filteredValue);
 
             } else {
 
@@ -1299,11 +1336,11 @@
                  '<div class="flyout-title">{0}</div>',
                  '<div class="flyout-row">',
                    '<span class="flyout-cell">Total</span>',
-                   '<span class="flyout-cell">{1} {2}</span>',
+                   '<span class="flyout-cell">{1}</span>',
                  '</div>'
                ].
                join('').
-               format(dateString, $.toHumaneNumber(currentDatum.unfiltered), unfilteredUnit);
+               format(dateString, unfilteredValue);
 
             }
 

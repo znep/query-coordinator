@@ -15,10 +15,12 @@ describe('timelineChart', function() {
   var testJson = 'karma-test/dataCards/test-data/timelineChartTest/timelineChartTestData.json';
   var hiddenLabelTestJson = 'karma-test/dataCards/test-data/timelineChartTest/hiddenLabelTimelineChartTestData.json';
   var negativeTestJson = 'karma-test/dataCards/test-data/timelineChartTest/negativeTestData.json';
+  var nonContinuousTestJson = 'karma-test/dataCards/test-data/timelineChartTest/nonContinuousTestData.json';
 
   beforeEach(module(testJson));
   beforeEach(module(hiddenLabelTestJson));
   beforeEach(module(negativeTestJson));
+  beforeEach(module(nonContinuousTestJson));
 
   beforeEach(module('dataCards'));
 
@@ -53,6 +55,7 @@ describe('timelineChart', function() {
     filteredTestData = unpickleTestData(testHelpers.getTestJson(testJson), true);
     hiddenLabelTestData = unpickleTestData(testHelpers.getTestJson(hiddenLabelTestJson), false);
     negativeTestData = unpickleTestData(testHelpers.getTestJson(negativeTestJson), false);
+    nonContinuousTestData = unpickleTestData(testHelpers.getTestJson(nonContinuousTestJson), false);
   }));
 
   afterEach(function() {
@@ -61,24 +64,45 @@ describe('timelineChart', function() {
 
   function unpickleTestData(testData, shouldFilter) {
 
-    testData.minDate = new Date(testData.minDate);
-    testData.maxDate = new Date(testData.maxDate);
-    testData.breaks = testData.breaks.map(
-      function(dateString) {
-        return new Date(dateString);
-      }
-    );
+    var year;
+    var month;
+    var day;
+    var datumDate;
+
+
+    // We need to make sure that JavaScript won't try to apply
+    // the system's timezone settings to dates. For example, a datum
+    // recorded at midnight UTC will be considered to be at 4pm the
+    // previous day if the system clock is in PST. This is wrong.
+    // We can get JS to do the correct thing by passing it only
+    // years, months and dates instead of an ISO8601 string.
+    year = testData.minDate.substring(0, 4);
+    month = testData.minDate.substring(5, 7);
+    day = testData.minDate.substring(8, 10);
+    testData.minDate = new Date(year, month, day);
+
+    year = testData.maxDate.substring(0, 4);
+    month = testData.maxDate.substring(5, 7);
+    day = testData.maxDate.substring(8, 10);
+    testData.maxDate = new Date(year, month, day);
+
+
     testData.values = testData.values.map(
       function(value) {
+        year = value.date.substring(0, 4);
+        month = value.date.substring(5, 7);
+        day = value.date.substring(8, 10);
+        datumDate = new Date(year, month, day);
+
         if (shouldFilter) {
           return {
-            date: new Date(value.date),
+            date: datumDate,
             unfiltered: value.unfiltered,
             filtered: Math.floor(value.filtered / 2)
           };
         } else {
           return {
-            date: new Date(value.date),
+            date: datumDate,
             unfiltered: value.unfiltered,
             filtered: value.filtered
           };
@@ -383,15 +407,7 @@ describe('timelineChart', function() {
 
       // This unit test exposes a bug: https://socrata.atlassian.net/browse/ONCALL-1917
       xit('should format for month when the data has gaps in it', function() {
-        var chart = createTimelineChart(640, false, transformChartData(
-          _.map(_.range(0, 30, 3), function(i) {
-            return {
-              date: moment(new Date(2014, 11, i)),
-              total: i,
-              filtered: 0
-            }
-          })
-        ));
+        var chart = createTimelineChart(640, false, nonContinuousTestData);
 
         var labels = chart.find('.x-tick-label');
         expect(labels.length).to.be.greaterThan(0);

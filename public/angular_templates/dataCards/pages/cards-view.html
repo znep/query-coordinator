@@ -25,19 +25,6 @@
               </div>
             </div>
           </div>
-          <save-button
-            class="save-this-page"
-            ng-click="savePage()"
-            enabled="hasChanges"
-            save-status="saveStatus"
-            ng-if="currentUserHasSaveRight">
-          </save-button>
-          <save-as page-has-changes="hasChanges" save-page-as="savePageAs" ng-if="currentUserHasSaveRight"></save-as>
-          <button type="button"
-            ng-click="editMode = !expandedCard && !editMode"
-            class="action-btn r-to-l"
-            ng-class='{disabled: !!expandedCard, "cards-edit-disabled": !!expandedCard}'
-            ng-show="currentUserHasSaveRight">{{editMode | ifElse:'Preview':'Customize'}}</button>
           <div
             ng-click="onDownloadClick($event)"
             class="action-btn r-to-l download-menu"
@@ -60,6 +47,16 @@
       </div>
     </div>
   </div>
+  <!-- CUSTOMIZE_BAR -->
+  <customize-bar
+    edit-mode="editMode"
+    has-changes="hasChanges"
+    expanded-card="expandedCard"
+    save-page="savePage"
+    save-page-as="savePageAs"
+    save-status="saveStatus"
+    ng-show="currentUserHasSaveRight"
+  ></customize-bar>
   <div class="cards-content">
     <div id="quick-filter-bar-container">
       <div class="quick-filter-bar" with-spacer>

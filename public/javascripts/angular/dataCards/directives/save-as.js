@@ -5,8 +5,8 @@
     return {
       restrict: 'E',
       scope: {
-        hasChanges: '=pageHasChanges',
-        saveAs: '=savePageAs'
+        hasChanges: '=',
+        savePageAs: '='
       },
       templateUrl: '/angular_templates/dataCards/saveAs.html',
       link: function($scope, element, attrs) {
@@ -52,7 +52,7 @@
           if ($scope.name.trim() === '') {
             $nameInput.addClass('form-error').focus();
           } else {
-            $scope.saveAs($scope.name.trim(), $scope.description.trim()).
+            $scope.savePageAs($scope.name.trim(), $scope.description.trim()).
               subscribe(saveEvents);
           }
         };

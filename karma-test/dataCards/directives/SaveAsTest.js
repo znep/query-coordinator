@@ -49,7 +49,7 @@
     }));
 
     describe('"Save As" button', function() {
-      var elementTemplate = '<save-as page-has-changes="{0}"></save-as>';
+      var elementTemplate = '<save-as has-changes="{0}"></save-as>';
       it('should be disabled if pageHasChanges is false', function() {
         var $saveAs = createElement(elementTemplate.format('false'));
         var $saveAsButton = $saveAs.find('.tool-panel-toggle-btn');
@@ -73,7 +73,7 @@
       var $saveAs;
       var $toolPanel;
       beforeEach(function() {
-        $saveAs = createElement('<save-as page-has-changes="true" save-page-as="savePageAs"></save-as>');
+        $saveAs = createElement('<save-as has-changes="true" save-page-as="savePageAs"></save-as>');
         $saveAs.isolateScope().panelActive = true;
         $toolPanel = $saveAs.find('.tool-panel-main');
       });

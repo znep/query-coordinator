@@ -38,6 +38,20 @@ $tool-panel-z-index: 1004
     border-width: 0 0 $tool-panel-hint-size $tool-panel-hint-size
     border-color: transparent transparent $tool-panel-bg-color transparent
 
+  &.upwards // An upwards facing tool-panel
+    .tool-panel-main
+      bottom: 60px
+      right: inherit
+      left: 50%
+
+    .tool-panel-hint
+      top: inherit
+      bottom: -20px
+      left: -1px
+      right: inherit
+      border-width: 20px
+      border-color: $tool-panel-bg-color transparent transparent $tool-panel-bg-color
+
   .tool-panel-inner-container
     position: relative
     padding: $tool-panel-padding

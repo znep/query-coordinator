@@ -42,7 +42,7 @@ describe('DatasetV0 model', function() {
     expect(function(){new DatasetV0('foo.-beef');}).to.throw();
   }));
 
-  it('should eventually return a value from the rowDisplayUnit property', function(done) {
+  it('should eventually return a value from an arbitrarily-chosen property (rowDisplayUnit)', function(done) {
     var testId = 'dead-beef';
     var fakeDisplayUnit = 'test';
 

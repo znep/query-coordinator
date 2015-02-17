@@ -387,13 +387,27 @@ $chartHeight: 210px
         color: #3c5897
         font-size: 1.5em
 
-    svg.secondSvg
+    svg.mainSvg, svg.svgRight, svg.svgTop, svg.svgBottom
       position: absolute
+      z-index: 1
+
+    svg.svgTop
+      width: 100%
+      height: 60px
+      top: -60px
+      left: 0
+
+    svg.svgBottom
+      width: 100%
+      height: 60px
+      bottom: -60px
+      left: 0
+
+    svg.svgRight
       width: 15px
       height: $chartHeight
       bottom: 0
       right: -15px
-      z-index: 1
 
     svg.mainSvg
       bottom: 0

@@ -89,3 +89,6 @@ metadata_transition_phase:
 exit_tech_preview:
   description: Enable to display transitionary New Backend features (currently scoped to Catalog/Browse)
   defaultValue: false
+debug_assets:
+  description: Switch over to using unpackaged Javascript files.
+  defaultValue: false

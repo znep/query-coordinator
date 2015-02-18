@@ -9,10 +9,16 @@
 
   h1
     font-size: 1.8em !important
+    /* Fix for STAT-819, nested tags were getting huge */
+    h1
+      font-size: inherit !important
 
   p
     line-height: 1.5em
     padding-bottom: 1em
+    p
+      line-height: inherit
+      font-size: inherit
 
   ul
     list-style-type: circle
@@ -29,6 +35,8 @@
   .content
     font-size: 1.45em
     padding: 0.5em 1em
+    .content
+      font-size: inherit
 
     span
       font-size: 1em !important

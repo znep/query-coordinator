@@ -107,8 +107,8 @@
             }
 
             domain = {
-              start: moment(firstRow.start, moment.ISO_8601),
-              end: moment(firstRow.end, moment.ISO_8601)
+              start: domainStart,
+              end: domainEnd
             };
 
           }
@@ -175,7 +175,7 @@
           });
           return _.map(timeData, function(item, i) {
             if (_.isUndefined(item)) {
-              item = { date: moment(timeStart, moment.ISO_8601).add(i, precision), value: 0 };
+              item = { date: moment(timeStart, moment.ISO_8601).add(i, precision), value: null };
             }
             return item;
           });

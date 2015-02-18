@@ -66,6 +66,60 @@
           }
         );
 
+
+        /**
+         * This used to take ~175ms because of the multiple maps and reduces.
+         * It now takes ~7ms (and a little bit more memory than before).
+         *
+         * @param {Array} unfilteredData - The array of unfiltered data.
+         * @param {Array} filteredData - The array of filtered data.
+         *
+         * @return {Array} An array containing the date, unfiltered and filtered
+         *                 value for each datum.
+         */
+        function aggregateData(unfilteredData, filteredData) {
+
+          var length = unfilteredData.length;
+          var aggregatedData = [];
+          var filteredValue = 0;
+          var startAt = 0;
+
+          for (var i = 0; i < length; i++) {
+
+            if (unfilteredData[i].value === null) {
+
+              filteredValue = null;
+
+            } else {
+
+              filteredValue = 0;
+
+              // The 'filteredData' array may be smaller in size than 'unfilteredData'
+              // so we need to match on dates.
+              for (var j = startAt; j < filteredData.length; j++) {
+                if (unfilteredData[i].date.isSame(filteredData[j].date)) {
+                  filteredValue = filteredData[j].value;
+                  startAt = j + 1;
+                  break;
+                }
+              }
+
+              filteredValue = (filteredValue === null) ? 0 : filteredValue;
+
+            }
+
+            aggregatedData.push({
+              date: unfilteredData[i].date,
+              total: unfilteredData[i].value,
+              filtered: filteredValue
+            });
+          }
+
+          return aggregatedData;
+
+        }
+
+
         // Since we need to be able to render the unfiltered values outside
         // of a timeline chart's current selection area, we need to 'filter'
         // those data outside the selection manually rather than using SoQL.
@@ -130,9 +184,16 @@
               return;
             }
 
-            if (moment(domain.start).add('years', 1).isAfter(domain.end)) {
+            // Moment objects are inherently mutable. Therefore, the .add()
+            // call in the first condition will need to be accounted for in
+            // the second condition. We're doing this instead of just cloning
+            // the objects because moment.clone is surprisingly slow (something
+            // like 40ms).
+            if (domain.start.add('years', 1).isAfter(domain.end)) {
               precision = 'DAY';
-            } else if (moment(domain.start).add('years', 20).isAfter(domain.end)) {
+            // We're actually checking for 20 years but have already added one
+            // to the original domain start date in the if block above.
+            } else if (domain.start.add('years', 19).isAfter(domain.end)) {
               precision = 'MONTH';
             } else {
               precision = 'YEAR';
@@ -222,31 +283,8 @@
           unfilteredDataSequence.switchLatest(),
           filteredDataSequence.switchLatest(),
           function(unfilteredData, filteredData) {
-            // Joins filtered data and unfiltered data into an array of objects:
-            // [
-            //  { name: 'some_group_name', total: 1234, filtered: 192 },
-            //  ...
-            // ]
-            // If we're unfiltered or the filtered data isn't defined for a particular name, the filtered field is undefined.
-
-            var unfilteredAsHash = _.reduce(unfilteredData, function(acc, datum) {
-              acc[datum.date] = datum.value;
-              return acc;
-            }, {});
-
-            var filteredAsHash = _.reduce(filteredData, function(acc, datum) {
-              acc[datum.date] = datum.value;
-              return acc;
-            }, {});
-
             return TimelineChartVisualizationHelpers.transformChartDataForRendering(
-              _.map(_.pluck(unfilteredData, 'date'), function(date) {
-                return {
-                  date: date,
-                  total: unfilteredAsHash[date],
-                  filtered: filteredAsHash[date] || 0
-                };
-              })
+              aggregateData(unfilteredData, filteredData)
             );
           }
         );

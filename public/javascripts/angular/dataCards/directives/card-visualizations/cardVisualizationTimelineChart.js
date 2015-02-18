@@ -71,23 +71,20 @@
          * This used to take ~175ms because of the multiple maps and reduces.
          * It now takes ~7ms (and a little bit more memory than before).
          *
-         * @param {Array} unfilteredData
-         * @param {Array} filteredData
+         * @param {Array} unfilteredData - The array of unfiltered data.
+         * @param {Array} filteredData - The array of filtered data.
          *
          * @return {Array} An array containing the date, unfiltered and filtered
          *                 value for each datum.
          */
         function aggregateData(unfilteredData, filteredData) {
 
-          var i = 0;
-          var j = 0;
-          var startAt = 0;
           var length = unfilteredData.length;
           var aggregatedData = [];
           var filteredValue = 0;
+          var startAt = 0;
 
-
-          for (i = 0; i < length; i++) {
+          for (var i = 0; i < length; i++) {
 
             if (unfilteredData[i].value === null) {
 
@@ -99,7 +96,7 @@
 
               // The 'filteredData' array may be smaller in size than 'unfilteredData'
               // so we need to match on dates.
-              for (j = startAt; j < filteredData.length; j++) {
+              for (var j = startAt; j < filteredData.length; j++) {
                 if (unfilteredData[i].date.isSame(filteredData[j].date)) {
                   filteredValue = filteredData[j].value;
                   startAt = j + 1;
@@ -190,7 +187,7 @@
             // Moment objects are inherently mutable. Therefore, the .add()
             // call in the first condition will need to be accounted for in
             // the second condition. We're doing this instead of just cloning
-            // the objects becaue moment.clone is surprisingly slow (something
+            // the objects because moment.clone is surprisingly slow (something
             // like 40ms).
             if (domain.start.add('years', 1).isAfter(domain.end)) {
               precision = 'DAY';

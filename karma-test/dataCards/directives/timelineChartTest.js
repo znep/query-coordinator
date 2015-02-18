@@ -64,9 +64,7 @@ describe('timelineChart', function() {
 
   function unpickleTestData(testData, shouldFilter) {
 
-    var year;
-    var month;
-    var day;
+    var incorrectDate;
     var datumDate;
 
 
@@ -75,24 +73,19 @@ describe('timelineChart', function() {
     // recorded at midnight UTC will be considered to be at 4pm the
     // previous day if the system clock is in PST. This is wrong.
     // We can get JS to do the correct thing by passing it only
-    // years, months and dates instead of an ISO8601 string.
-    year = testData.minDate.substring(0, 4);
-    month = testData.minDate.substring(5, 7);
-    day = testData.minDate.substring(8, 10);
-    testData.minDate = new Date(year, month, day);
+    // UTC years, months and dates instead of an ISO8601 string.
+    incorrectDate = new Date(testData.minDate);
+    testData.minDate = new Date(incorrectDate.getUTCFullYear(), incorrectDate.getUTCMonth(), incorrectDate.getUTCDate());
 
-    year = testData.maxDate.substring(0, 4);
-    month = testData.maxDate.substring(5, 7);
-    day = testData.maxDate.substring(8, 10);
-    testData.maxDate = new Date(year, month, day);
+    incorrectDate = new Date(testData.maxDate);
+    testData.maxDate = new Date(incorrectDate.getUTCFullYear(), incorrectDate.getUTCMonth(), incorrectDate.getUTCDate());
 
 
     testData.values = testData.values.map(
       function(value) {
-        year = value.date.substring(0, 4);
-        month = value.date.substring(5, 7);
-        day = value.date.substring(8, 10);
-        datumDate = new Date(year, month, day);
+
+        incorrectDate = new Date(value.date);
+        datumDate = new Date(incorrectDate.getUTCFullYear(), incorrectDate.getUTCMonth(), incorrectDate.getUTCDate());
 
         if (shouldFilter) {
           return {

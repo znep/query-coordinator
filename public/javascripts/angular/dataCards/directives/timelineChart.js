@@ -282,27 +282,27 @@
 
           area = d3.
             svg.
-              area().
-                x(function(d) { return d3XScale(d.date); }).
-                y0(cachedChartDimensions.height - Constants.TIMELINE_CHART_MARGIN_BOTTOM).
-                y1(function(d) { return d3YScale(d.unfiltered); });
+            area().
+            x(function(d) { return d3XScale(d.date); }).
+            y0(cachedChartDimensions.height - Constants.TIMELINE_CHART_MARGIN_BOTTOM).
+            y1(function(d) { return d3YScale(d.unfiltered); });
 
           d3ChartElement.
             select('svg.timeline-chart-highlight-container').
-              select('g').
-                remove();
+            select('g').
+            remove();
 
           selection = d3ChartElement.
             select('svg.timeline-chart-highlight-container').
-              attr('width', highlightData.width).
-              attr('height', cachedChartDimensions.height - Constants.TIMELINE_CHART_MARGIN_BOTTOM).
-              append('g');
+            attr('width', highlightData.width).
+            attr('height', cachedChartDimensions.height - Constants.TIMELINE_CHART_MARGIN_BOTTOM).
+            append('g');
 
           selection.
             append('path').
-              datum(highlightData.data).
-              attr('class', 'timeline-chart-highlight').
-              attr('d', area);
+            datum(highlightData.data).
+            attr('class', 'timeline-chart-highlight').
+            attr('d', area);
 
         }
 
@@ -578,37 +578,37 @@
 
             line = d3.
               svg.
-                line().
-                  defined(function(d) { return d.filtered !== null; }).
-                  x(function(d) { return d3XScale(d.date); }).
-                  y(function(d) { return d3YScale(d.filtered); });
+              line().
+              defined(function(d) { return d.filtered !== null; }).
+              x(function(d) { return d3XScale(d.date); }).
+              y(function(d) { return d3YScale(d.filtered); });
 
             area = d3.
               svg.
-                area().
-                  defined(line.defined()).
-                  x(line.x()).
-                  y0(function (d) { return d3YScale(0); }).
-                  y1(line.y());
+              area().
+              defined(line.defined()).
+              x(line.x()).
+              y0(function (d) { return d3YScale(0); }).
+              y1(line.y());
 
             svgChart = d3ChartElement.
               select('svg.timeline-chart-selection').
-                attr('width', chartWidth + margin.left + margin.right).
-                attr('height', chartHeight + margin.top + margin.bottom).
+              attr('width', chartWidth + margin.left + margin.right).
+              attr('height', chartHeight + margin.top + margin.bottom).
               select('g').
-                attr('transform', 'translate(' + margin.left + ',' + margin.top + ')');
+              attr('transform', 'translate(' + margin.left + ',' + margin.top + ')');
 
             selection = svgChart.
               selectAll('path').
-                data(values);
+              data(values);
 
             selection.
               enter().
-                append('path');
+              append('path');
 
             selection.
               exit().
-                remove();
+              remove();
 
             selection.
               attr('class', 'selection').
@@ -1053,37 +1053,37 @@
 
           line = d3.
             svg.
-              line().
-                defined(function(d) { return d.unfiltered !== null; }).
-                x(function(d) { return d3XScale(d.date); }).
-                y(function(d) { return d3YScale(d.unfiltered); });
+            line().
+            defined(function(d) { return d.unfiltered !== null; }).
+            x(function(d) { return d3XScale(d.date); }).
+            y(function(d) { return d3YScale(d.unfiltered); });
 
           area = d3.
             svg.
-              area().
-                defined(line.defined()).
-                x(line.x()).
-                y0(function (d) { return d3YScale(0); }).
-                y1(line.y());
+            area().
+            defined(line.defined()).
+            x(line.x()).
+            y0(function (d) { return d3YScale(0); }).
+            y1(line.y());
 
           svgChart = d3ChartElement.
             select('svg.timeline-chart-unfiltered-visualization').
-              attr('width', chartWidth + margin.left + margin.right).
-              attr('height', chartHeight + margin.top + margin.bottom).
+            attr('width', chartWidth + margin.left + margin.right).
+            attr('height', chartHeight + margin.top + margin.bottom).
             select('g').
-              attr('transform', 'translate(' + margin.left + ',' + margin.top + ')');
+            attr('transform', 'translate(' + margin.left + ',' + margin.top + ')');
 
           selection = svgChart.
             selectAll('path').
-              data(values);
+            data(values);
 
           selection.
             enter().
-              append('path');
+            append('path');
 
           selection.
             exit().
-              remove();
+            remove();
 
           selection.
             attr('class', 'context').
@@ -1124,37 +1124,37 @@
 
           line = d3.
             svg.
-              line().
-                defined(function(d) { return d.filtered !== null; }).
-                x(function(d) { return d3XScale(d.date); }).
-                y(function(d) { return d3YScale(d.filtered); });
+            line().
+            defined(function(d) { return d.filtered !== null; }).
+            x(function(d) { return d3XScale(d.date); }).
+            y(function(d) { return d3YScale(d.filtered); });
 
           area = d3.
             svg.
-              area().
-                defined(line.defined()).
-                x(line.x()).
-                y0(function (d) { return d3YScale(0); }).
-                y1(line.y());
+            area().
+            defined(line.defined()).
+            x(line.x()).
+            y0(function (d) { return d3YScale(0); }).
+            y1(line.y());
 
           svgChart = d3ChartElement.
             select('svg.timeline-chart-filtered-visualization').
-              attr('width', chartWidth + margin.left + margin.right).
-              attr('height', chartHeight + margin.top + margin.bottom).
+            attr('width', chartWidth + margin.left + margin.right).
+            attr('height', chartHeight + margin.top + margin.bottom).
             select('g').
-              attr('transform', 'translate(' + margin.left + ',' + margin.top + ')');
+            attr('transform', 'translate(' + margin.left + ',' + margin.top + ')');
 
           selection = svgChart.
             selectAll('path').
-              data(values);
+            data(values);
 
           selection.
             enter().
-              append('path');
+            append('path');
 
           selection.
             exit().
-              remove();
+            remove();
 
           selection.
             attr('class', 'shaded').
@@ -1200,21 +1200,21 @@
           // access it without having to re-render.
           d3XScale = d3.
             time.
-              scale().
-                domain([
-                  DateHelpers.decrementDateByHalfInterval(cachedChartData.minDate, datasetPrecision),
-                  DateHelpers.incrementDateByHalfInterval(cachedChartData.maxDate, datasetPrecision)
-                ]).
-                range([0, chartWidth]);
+            scale().
+            domain([
+              DateHelpers.decrementDateByHalfInterval(cachedChartData.minDate, datasetPrecision),
+              DateHelpers.incrementDateByHalfInterval(cachedChartData.maxDate, datasetPrecision)
+            ]).
+            range([0, chartWidth]);
 
           // d3YScale is global to the directive so that we can
           // access it without having to re-render.
           d3YScale = d3.
             scale.
-              linear().
-                domain([cachedChartData.minValue, cachedChartData.maxValue]).
-                range([chartHeight, 0]).
-                clamp(true);
+            linear().
+            domain([cachedChartData.minValue, cachedChartData.maxValue]).
+            range([chartHeight, 0]).
+            clamp(true);
 
           //
           // Render the x-axis.
@@ -1289,30 +1289,30 @@
           if (shouldDisplayFlyout) {
 
             dateString = currentDatum.hasOwnProperty('flyoutLabel') ?
-                           currentDatum.flyoutLabel :
-                           moment(currentDatum.date).format(getFlyoutDateFormatString());
+              currentDatum.flyoutLabel :
+              moment(currentDatum.date).format(getFlyoutDateFormatString());
 
             unfilteredUnit = (currentDatum.unfiltered === 1) ?
-                             cachedRowDisplayUnit :
-                             cachedRowDisplayUnit.pluralize();
+              cachedRowDisplayUnit :
+              cachedRowDisplayUnit.pluralize();
 
             unfilteredValue = (_.isNumber(currentDatum.unfiltered)) ?
-                              '{0} {1}'.format(
-                                $.toHumaneNumber(currentDatum.unfiltered),
-                                unfilteredUnit
-                              ) :
-                              '(No value)';
+              '{0} {1}'.format(
+                $.toHumaneNumber(currentDatum.unfiltered),
+                unfilteredUnit
+              ) :
+              '(No value)';
 
             filteredUnit = (currentDatum.filtered === 1) ?
-                           cachedRowDisplayUnit :
-                           cachedRowDisplayUnit.pluralize();
+              cachedRowDisplayUnit :
+              cachedRowDisplayUnit.pluralize();
 
             filteredValue = (_.isNumber(currentDatum.filtered)) ?
-                            '{0} {1}'.format(
-                              $.toHumaneNumber(currentDatum.filtered),
-                              filteredUnit
-                            ) :
-                            '(No value)';
+              '{0} {1}'.format(
+                $.toHumaneNumber(currentDatum.filtered),
+                filteredUnit
+              ) :
+              '(No value)';
 
             if (currentDatum.filtered !== currentDatum.unfiltered) {
 
@@ -1374,12 +1374,12 @@
           if (shouldDisplayFlyout) {
 
             unfilteredUnit = (unfilteredTotal === 1) ?
-                             cachedRowDisplayUnit :
-                             cachedRowDisplayUnit.pluralize();
+              cachedRowDisplayUnit :
+              cachedRowDisplayUnit.pluralize();
 
             filteredUnit = (filteredTotal === 1) ?
-                           cachedRowDisplayUnit :
-                           cachedRowDisplayUnit.pluralize();
+              cachedRowDisplayUnit :
+              cachedRowDisplayUnit.pluralize();
 
             if (filteredTotal !== unfilteredTotal) {
 
@@ -1393,15 +1393,15 @@
                     '<span class="flyout-cell emphasis">Filtered amount</span>',
                     '<span class="flyout-cell emphasis">{3} {4}</span>',
                   '</div>'
-               ].
-               join('').
-               format(
-                 label,
-                 $.toHumaneNumber(parseFloat(unfilteredTotal)),
-                 unfilteredUnit,
-                 $.toHumaneNumber(parseFloat(filteredTotal)),
-                 filteredUnit
-               );
+              ].
+              join('').
+              format(
+                label,
+                $.toHumaneNumber(parseFloat(unfilteredTotal)),
+                unfilteredUnit,
+                $.toHumaneNumber(parseFloat(filteredTotal)),
+                filteredUnit
+              );
 
             } else {
               
@@ -1411,9 +1411,13 @@
                    '<span class="flyout-cell">Total</span>',
                    '<span class="flyout-cell">{1} {2}</span>',
                  '</div>'
-               ].
-               join('').
-               format(label, $.toHumaneNumber(parseFloat(unfilteredTotal)), unfilteredUnit);
+              ].
+              join('').
+              format(
+                label,
+                $.toHumaneNumber(parseFloat(unfilteredTotal)),
+                unfilteredUnit
+              );
 
             }
 
@@ -1856,7 +1860,8 @@
             attr('data-flyout-label', formatDateLabel(startDate, true)).
             css({
               left: Math.floor(d3XScale(startDate)) - halfDatumLabelWidth
-            }).show();
+            }).
+            show();
 
           highlightChart(startDate, endDate);
 

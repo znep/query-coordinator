@@ -1,0 +1,27 @@
+<div
+  class="customize-bar"
+  ng-class="{ 'has-changes': hasChanges, 'is-customizing': editMode }">
+  <div class="customize-button-wrapper">
+    <button
+      type="button"
+      class="action-btn r-to-l customize-button"
+      ng-click="toggleCustomizeMode()"
+      ng-class="{ 'disabled': !!expandedCard, 'cards-edit-disabled': !!expandedCard }">
+      {{editMode | ifElse:'Customizing':'Customize'}}
+    </button>
+  </div>
+  <save-button
+    class="save-this-page"
+    ng-click="savePage()"
+    enabled="hasChanges"
+    save-status="saveStatus">
+  </save-button>
+  <save-as
+    has-changes="hasChanges"
+    save-page-as="savePageAs"></save-as>
+  <span
+    class="changes-warning"
+    ng-show="hasChanges">
+    <span class="icon-warningIcon"></span> You have made changes to this view.
+  </span>
+</div>

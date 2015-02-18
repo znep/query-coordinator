@@ -4,6 +4,8 @@
 @import dataCards/aggregation-chooser
 @import dataCards/tool-panel
 @import dataCards/inputs
+@import dataCards/spinner
+@import dataCards/customize-bar
 
 $metadata-top-padding: 7px
 $metadata-side-padding: 30px
@@ -222,14 +224,6 @@ body.state-view-cards
                 background-color: $btn-hover-bg-color
                 border: solid 2px $btn-hover-border-color
                 color: $btn-hover-font-color
-
-              spinner
-                position: absolute
-                top: 0
-                left: 0
-                bottom: 0
-                right: 0
-                background-color: inherit
 
         .card-drag-overlay
           // IE9 ignores this overlay for JUST the column chart labels unless you give this
@@ -512,31 +506,3 @@ body.state-view-cards
 
   .action-btn
     margin-bottom: 0
-
-spinner
-  $spinner-size: 17px
-  display: block
-  position: relative
-
-  .saving-spinner-wrapper
-    position: absolute
-    top: 50%
-    left: 50%
-    @include prefixer('transform', 'translate(-50%, -50%)')
-
-    .saving-spinner
-      display: inline-block
-      @include prefixer(animation-duration, '0.7s')
-      @include prefixer(animation-iteration-count, 'infinite')
-      @include prefixer(animation-timing-function, 'linear')
-      @include prefixer(animation-name, 'loadingspin')
-      height: $spinner-size
-      width: $spinner-size
-
-button>spinner
-  position: absolute
-  top: 0
-  left: 0
-  bottom: 0
-  right: 0
-  background-color: inherit

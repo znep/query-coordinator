@@ -266,28 +266,6 @@ $facets-list-width: 20%
   div
     height: 100%
 
-// The loading spinner is actually a sibling of cardVisualization* in the DOM but
-// is styled here since the styles apply globally.
-
-.spinner
-  $spinner-size: 25px
-  @include prefixer(animation-duration, '0.7s')
-  @include prefixer(animation-iteration-count, 'infinite')
-  @include prefixer(animation-timing-function, 'linear')
-  @include prefixer(animation-name, 'loadingspin')
-  display: none
-  height: $spinner-size
-  left: 50%
-  margin-left: -$spinner-size / 2
-  margin-top: -$spinner-size / 2
-  position: absolute
-  top: 50%
-  width: $spinner-size
-  z-index: 1001
-
-.spinner.busy
-  display: block
-
 #ruler
   position: absolute
   left: -10000px

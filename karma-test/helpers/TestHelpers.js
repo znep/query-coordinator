@@ -30,7 +30,7 @@
       Date.now = function() { return Infinity; };
       d3.timer.flush();
       Date.now = now;
-    }
+    };
 
     // Returns a promise that will be resolved when the given
     // test function returns a truthy value.
@@ -53,11 +53,11 @@
           } catch (e) {
             reject(e);
           }
-        };
+        }
         check();
       });
       return p;
-    };
+    }
 
     var TestDom = {
       compileAndAppend: function(element, scope) {
@@ -84,7 +84,7 @@
     var getTestJson = function(url) {
       eval('var a = ' + $templateCache.get(url));
       return a;
-    }
+    };
 
     // IE9 starts ignoring styles if we create too many <style> tags, I think. So don't
     // create it here (since in tests, factories are recreated for every module) - create
@@ -163,13 +163,14 @@
       var g;
       var b;
       if (cssColor.charAt(0) === '#') {
+        var hex;
         if (cssColor.length === 4) {
-          var hex = /^#[a-f\d][a-f\d][a-f\d]$/i.exec(cssColor);
+          hex = /^#[a-f\d][a-f\d][a-f\d]$/i.exec(cssColor);
           r = parseInt(hex[1] + hex[1], 16);
           g = parseInt(hex[2] + hex[2], 16);
           b = parseInt(hex[3] + hex[3], 16);
         } else {
-          var hex = /^#?([a-f\d]{2})([a-f\d]{2})([a-f\d]{2})$/i.exec(cssColor);
+          hex = /^#?([a-f\d]{2})([a-f\d]{2})([a-f\d]{2})$/i.exec(cssColor);
           r = parseInt(hex[1], 16);
           g = parseInt(hex[2], 16);
           b = parseInt(hex[3], 16);

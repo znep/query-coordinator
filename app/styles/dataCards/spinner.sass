@@ -1,0 +1,51 @@
+spinner
+  $spinner-size: 17px
+  display: block
+  position: relative
+
+  .saving-spinner-wrapper
+    height: $spinner-size
+    position: absolute
+    top: 50%
+    left: 50%
+    @include prefixer('transform', 'translate(-50%, -50%)')
+
+    .saving-spinner
+      display: inline-block
+      @include prefixer(animation-duration, '0.7s')
+      @include prefixer(animation-iteration-count, 'infinite')
+      @include prefixer(animation-timing-function, 'linear')
+      @include prefixer(animation-name, 'loadingspin')
+      height: $spinner-size
+      width: $spinner-size
+
+  .action-btn &
+    position: absolute
+    top: 0
+    left: 0
+    bottom: 0
+    right: 0
+    background-color: inherit
+
+// The loading spinner is actually a sibling of cardVisualization* in the DOM but
+// is styled here since the styles apply globally.
+
+.spinner
+  $spinner-size: 25px
+  @include prefixer(animation-duration, '0.7s')
+  @include prefixer(animation-iteration-count, 'infinite')
+  @include prefixer(animation-timing-function, 'linear')
+  @include prefixer(animation-name, 'loadingspin')
+  display: none
+  height: $spinner-size
+  left: 50%
+  margin-left: -$spinner-size / 2
+  margin-top: -$spinner-size / 2
+  position: absolute
+  top: 50%
+  width: $spinner-size
+  z-index: 1001
+
+.spinner.busy
+  display: block
+

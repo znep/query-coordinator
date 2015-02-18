@@ -17,7 +17,7 @@ class AssetMapper
   end
 
   def javascripts
-    return debug_javascripts if Rails.env.development?
+    return debug_javascripts if Rails.env.development? || FeatureFlags.derive.debug_assets
     @_javascripts ||= @asset_map['javascripts'].to_json
   end
 

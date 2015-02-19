@@ -1,0 +1,42 @@
+<div class="related-views tool-panel">
+
+  <a
+    type="button"
+    ng-class="{ touched: panelActive }"
+    class="tool-panel-toggle-btn action-btn r-to-l"
+    ng-click="togglePanel()"
+    ng-show="datasetPublisherPages.length > 0">
+    <span class="icon-chart"></span>
+    Other views of this data ({{datasetPublisherPages.length}})
+  </a>
+
+  <span
+    class="tool-panel-toggle-btn action-btn r-to-l disabled"
+    ng-hide="datasetPublisherPages.length > 0">
+    <span class="icon-chart"></span> Other views of this data (0)
+  </span>
+
+  <div ng-class="{ active: panelActive }" class="tool-panel-main">
+    <div class="tool-panel-inner-container">
+      <div class="tool-panel-hint"></div>
+
+      <ul class="related-views-list">
+        <li class="related-views-list-heading">
+          <h2>Official Views of this Data</h2>
+        </li>
+        <li ng-repeat="page in datasetPublisherPages"
+            class="related-views-list-item"
+            scope-bind-from-model="page.name, page.description">
+          <a ng-href="/view/{{page.id}}">
+            <p class="related-view-name">{{name}}</p>
+
+            <p class="related-view-description">{{description}}</p>
+          </a>
+        </li>
+
+      </ul>
+
+    </div>
+  </div>
+
+</div>

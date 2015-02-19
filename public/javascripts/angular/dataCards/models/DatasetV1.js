@@ -95,6 +95,7 @@ angular.module('dataCards.models').factory('DatasetV1', function(ModelHelper, Mo
           then(function(columns) {
             _.forOwn(columns, function(columnBlob, columnFieldName) {
               columnBlob.isSystemColumn = isSystemColumn(columnFieldName);
+              columnBlob.dataset = self;
             });
 
             return columns;

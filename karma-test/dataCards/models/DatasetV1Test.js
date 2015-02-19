@@ -135,46 +135,78 @@ describe('DatasetV1 model', function() {
     $rootScope.$digest();
   });
 
-  it('should distinguish between system and non-system columns', function(done) {
-    var fakeColumns = {
-      'normal_column': {
-        name: 'title',
-        description: 'blank!',
-        fred: 'category',
-        physicalDatatype: 'number',
-      },
-      ':system_column': {
-        name: 'title',
-        description: 'blank!',
-        fred: 'category',
-        physicalDatatype: 'number',
-      },
-      'still_a_:normal_column:': {
-        name: 'title',
-        description: 'blank!',
-        fred: 'category',
-        physicalDatatype: 'number',
-      }
-    };
+  describe('column metadata', function() {
+    it('should distinguish between system and non-system columns', function(done) {
+      var fakeColumns = {
+        'normal_column': {
+          name: 'title',
+          description: 'blank!',
+          fred: 'category',
+          physicalDatatype: 'number',
+        },
+        ':system_column': {
+          name: 'title',
+          description: 'blank!',
+          fred: 'category',
+          physicalDatatype: 'number',
+        },
+        'still_a_:normal_column:': {
+          name: 'title',
+          description: 'blank!',
+          fred: 'category',
+          physicalDatatype: 'number',
+        }
+      };
 
-    var serializedBlob = $.extend({}, minimalV1Blob, { "columns": fakeColumns });
+      var serializedBlob = $.extend({}, minimalV1Blob, { "columns": fakeColumns });
 
-    var def = $q.defer();
-    MockDataService.getDatasetMetadata = function() {
-      return def.promise;
-    };
+      var def = $q.defer();
+      MockDataService.getDatasetMetadata = function() {
+        return def.promise;
+      };
 
-    var instance = new DatasetV1('fake-data');
-    instance.observe('columns').subscribe(function(columns) {
-      if (!_.isEmpty(columns)) {
-        expect(columns['normal_column'].isSystemColumn).to.be.false;
-        expect(columns[':system_column'].isSystemColumn).to.be.true;
-        expect(columns['still_a_:normal_column:'].isSystemColumn).to.be.false;
-        done();
-      }
+      var instance = new DatasetV1('fake-data');
+      instance.observe('columns').subscribe(function(columns) {
+        if (!_.isEmpty(columns)) {
+          expect(columns['normal_column'].isSystemColumn).to.be.false;
+          expect(columns[':system_column'].isSystemColumn).to.be.true;
+          expect(columns['still_a_:normal_column:'].isSystemColumn).to.be.false;
+          done();
+        }
+      });
+
+      def.resolve(serializedBlob);
+      $rootScope.$digest();
     });
 
-    def.resolve(serializedBlob);
-    $rootScope.$digest();
+    it('should include a reference back to the Dataset instance.', function(done) {
+      var fakeColumns = {
+        'normal_column': {
+          name: 'title',
+          description: 'blank!',
+          fred: 'category',
+          physicalDatatype: 'number',
+        }
+      };
+      var serializedBlob = $.extend({}, minimalV1Blob, { "columns": fakeColumns });
+
+      var def =$q.defer();
+      MockDataService.getDatasetMetadata = function() {
+        return def.promise;
+      };
+
+      var instance = new DatasetV1('fake-data');
+      instance.observe('columns').subscribe(function(columns) {
+        if (!_.isEmpty(columns)) {
+          expect(columns['normal_column'].dataset).to.equal(instance);
+          done();
+        }
+      });
+
+      def.resolve(serializedBlob);
+      $rootScope.$digest();
+
+    });
+
   });
 });

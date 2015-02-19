@@ -44,6 +44,11 @@ angular.module('dataCards.models').factory('DatasetV0', function(ModelHelper, Mo
             "fakeColumnGeneratedByFrontEnd": true //TODO move away from this hack. The table isn't optional anymore.
           });
           return blob;
+        }).then(function(blob) {
+          _.each(blob.columns, function(column) {
+            column.dataset = self;
+          });
+          return blob;
         });
       };
 

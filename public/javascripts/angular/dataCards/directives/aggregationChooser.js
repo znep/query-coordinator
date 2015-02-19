@@ -124,13 +124,13 @@
           columnsObservable,
           function(aggregationFunction, columns) {
             return _(columns).
-              reject(function(column) {
-                return column.isSystemColumn || column.name === '*';
+              pick(function(column, fieldName) {
+                return !column.isSystemColumn && fieldName !== '*';
               }).
-              filter(validColumnFilter).
-              map(function(column) {
+              pick(validColumnFilter).
+              map(function(column, fieldName) {
                 var enabled = aggregationFunction !== 'count';
-                return _.extend(pluralizeAndCapitalize(column.title), { id: column.name, enabled: enabled });
+                return _.extend(pluralizeAndCapitalize(column.title), { id: fieldName, enabled: enabled });
               }).
               value();
           });

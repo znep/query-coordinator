@@ -59,9 +59,9 @@
           var $expander = element.find('.table-expander');
           var $label = element.find('.table-label');
 
-          var getColumn = function(columnId) {
+          var getColumn = function(fieldName) {
             return _.find(scope.columnDetails, function(column) {
-              return column.name === columnId;
+              return column.fieldName === fieldName;
             });
           };
 
@@ -240,15 +240,15 @@
           var updateColumnHeaders = function() {
             scope.headers = _.map(scope.columnDetails, function(column, i) {
               // Symbols: ▼ ▲
-              var ordering = getCurrentOrDefaultSortForColumn(column.name);
+              var ordering = getCurrentOrDefaultSortForColumn(column.fieldName);
 
               return {
                 index: i,
-                columnId: column.name,
+                columnId: column.fieldName,
                 name: column.title,
-                active: isSortedOnColumn(column.name),
+                active: isSortedOnColumn(column.fieldName),
                 sortUp: ordering === 'ASC',
-                width: columnWidths[column.name],
+                width: columnWidths[column.fieldName],
                 sortable: column.sortable
               };
             });
@@ -284,7 +284,7 @@
                 if (_.isUndefined(cellIndex)) {
                   cellIndex = jqueryCell.index();
                 }
-                var colName = columns[cellIndex].name;
+                var colName = columns[cellIndex].fieldName;
                 var width = cell.clientWidth;
                 if (!columnWidths[colName] || columnWidths[colName] < width) {
                   maxCells[colName] = cell;
@@ -312,7 +312,7 @@
               // Now set each cell to the maximum cell width for its column
               cells.each(function(i, cell) {
                 var jqueryCell = $(cell);
-                var colName = columns[jqueryCell.index()].name;
+                var colName = columns[jqueryCell.index()].fieldName;
                 // Setting the style.width is a lot faster than jquery.width()
                 cell.style.width = columnWidths[colName] + 'px';
               });
@@ -370,7 +370,7 @@
                 blockHtml += '<div class="table-row">';
 
                 _.each(columns, function(column, index) {
-                  var cellContent = _.isUndefined(data_row[column.name]) ? '' : data_row[column.name];
+                  var cellContent = _.isUndefined(data_row[column.fieldName]) ? '' : data_row[column.fieldName];
                   var cellText = '';
                   var cellType = column.physicalDatatype;
                   var cellClasses = 'cell ' + cellType;
@@ -416,7 +416,7 @@
 
                   blockHtml += '<div class="' + cellClasses +
                   '" data-index="' + index +
-                  '" style="width: ' + columnWidths[column.name] +
+                  '" style="width: ' + columnWidths[column.fieldName] +
                   'px">' + cellText + '</div>';
                 });
                 blockHtml += '</div>';

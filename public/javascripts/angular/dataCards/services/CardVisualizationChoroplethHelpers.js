@@ -15,7 +15,7 @@
       function reportMissingProperty(property) {
         $log.error(
           'Could not determine column shapeFile: "{0}" not present on column "{1}".'.
-          format(property, column.name)
+          format(property, column.title)
         );
       }
 
@@ -47,7 +47,7 @@
       function reportMissingProperty(property) {
         $log.warn(
           'Could not determine column geometryLabel: "{0}" not present on column "{1}".'.
-          format(property, column.name)
+          format(property, column.title)
         );
       }
 
@@ -250,10 +250,11 @@
       // the card's "fieldName".
       var column = _.find(
         columns,
-        function(column) { return column.name === fieldName; }
+        function(column, candidateFieldName) { return candidateFieldName === fieldName; }
       );
 
       if (_.isEmpty(column)) {
+      debugger
         throw new Error('Could not match fieldName to human-readable column name.');
       }
 

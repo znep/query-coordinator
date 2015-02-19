@@ -4,6 +4,20 @@
   //TODO: These functions should live on Card, or possibly the Dataset's columns.
   function CardTypeMapping(ServerConfig, $exceptionHandler, $log) {
 
+    function columnInfoFromDatasetAndFieldName(dataset, fieldName) {
+      //TODO We're not strictly guaranteed to have the dataset's columns, but in current usage
+      //we will (under the assumption that the fieldName is determined from the Dataset model).
+
+      var column = dataset.getCurrentValue('columns')[fieldName];
+
+      if (_.isUndefined(column)) {
+        $log.error('Could not determine card type for undefined column.');
+        return null;
+      } else {
+        return column;
+      }
+    }
+
     function getCardTypesForDatasetColumn(dataset, fieldName) {
       var mappingConfiguration = getMappingConfiguration().map;
       var fallbackCardType = getMappingConfiguration().fallbackCardType;
@@ -46,20 +60,6 @@
 
     }
 
-    function columnInfoFromDatasetAndFieldName(dataset, fieldName) {
-      //TODO We're not strictly guaranteed to have the dataset's columns, but in current usage
-      //we will (under the assumption that the fieldName is determined from the Dataset model).
-
-      var column = dataset.getCurrentValue('columns')[fieldName];
-
-      if (_.isUndefined(column)) {
-        $log.error('Could not determine card type for undefined column.');
-        return null;
-      } else {
-        return column;
-      }
-    }
-
     function getDefaultCardTypeForModel(cardModel) {
       //DANGER: Assuming card's page's dataset has columns.
       //Evil! This service needs a rewrite, see comment at top
@@ -87,11 +87,6 @@
         'Unknown visualization for logicalDatatype: "{0}" and physicalDatatype "{1}".'.
         format(logicalDatatype, physicalDatatype)
       );
-
-    }
-
-
-    function getLogicalAndPhysicalDatatypesFromDatasetAndFieldName(dataset, fieldName) {
 
     }
 
@@ -155,9 +150,12 @@
      */
 
     function visualizationSupportedForColumn(dataset, fieldName) {
-      return _.any(availableVisualizationsForColumn(dataset, fieldName), function(visualization) {
-        return visualizationSupported(visualization);
-      });
+      return _.any(
+        availableVisualizationsForColumn(dataset, fieldName),
+        function(visualization) {
+          return visualizationSupported(visualization);
+        }
+      );
     }
 
     /** Determines whether or not a particular cardType is supported.

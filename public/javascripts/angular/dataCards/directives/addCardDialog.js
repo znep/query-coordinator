@@ -1,7 +1,7 @@
 (function() {
   'use strict';
 
-  function addCardDialog(Constants, CardTypeMapping, Card, FlyoutService, AngularRxExtensions, $log) {
+  function addCardDialog(AngularRxExtensions, Constants, CardTypeMapping, Card, FlyoutService, $log) {
     return {
       restrict: 'E',
       scope: {
@@ -104,9 +104,8 @@
         };
 
         scope.addCard = function() {
-          var addCardModel = scope.addCardModel;
-          if (addCardModel !== null) {
-            scope.page.addCard(addCardModel);
+          if (scope.addCardModel !== null) {
+            scope.page.addCard(scope.addCardModel);
             scope.dialogState.show = false;
           }
         };

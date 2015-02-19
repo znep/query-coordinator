@@ -20,7 +20,7 @@
     function buildAggregationClause(aggregationClauseData) {
       Assert(_.isString(aggregationClauseData['function']), 'aggregation function string should be present');
       var aggregationFunction = aggregationClauseData['function'];
-      var aggregationOperand = aggregationClauseData.column ? aggregationClauseData.column.name : '*';
+      var aggregationOperand = aggregationClauseData.fieldName || '*';
 
       return '{0}({1})'.format(aggregationFunction, aggregationOperand);
     }

@@ -60,11 +60,13 @@ angular.module('dataCards.models').factory('Page', function($q, DatasetV0, Card,
       var aggregationObservable = Rx.Observable.combineLatest(
         self.observe('primaryAggregation'),
         self.observe('dataset.rowDisplayUnit'),
+        self.observe('primaryAmountField'),
         columnAggregatedUpon,
-        function(primaryAggregation, rowDisplayUnit, columnAggregatedUpon) {
+        function(primaryAggregation, rowDisplayUnit, fieldNameAggregatedUpon, columnAggregatedUpon) {
           return {
             'function': primaryAggregation || 'count',
             'column': columnAggregatedUpon, // MAY BE NULL IF COUNT(*)
+            'fieldName': fieldNameAggregatedUpon, // MAY BE NULL IF COUNT(*)
             'unit': columnAggregatedUpon ? columnAggregatedUpon.title : rowDisplayUnit
           };
         }

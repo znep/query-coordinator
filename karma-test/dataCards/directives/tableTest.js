@@ -11,9 +11,8 @@ describe('table directive', function() {
 
     columnCount = 0;
 
-    _.each(fixtureMetadata.columns, function(column) {
-      if (column.name[0].match(/[a-zA-Z0-9]/g)) {
-        column.sortable = true;
+    _.each(fixtureMetadata.testColumnDetailsAsTableWantsThem, function(column) {
+      if (column.fieldName[0].match(/[a-zA-Z0-9]/g)) {
         outerScope.columnDetails.push(column);
         columnCount += 1;
       }
@@ -21,11 +20,11 @@ describe('table directive', function() {
 
     // Provide a default sort column. It's a text/category column, so the default sort
     // order is ASC.
-    var beatColumnName = fixtureMetadata.columns[beatColumnIndex].name;
+    var beatColumnName = fixtureMetadata.testColumnDetailsAsTableWantsThem[beatColumnIndex].fieldName;
     var defaultSortColumn = _.find(outerScope.columnDetails, function(column) {
-      return column.name === beatColumnName;
+      return column.fieldName === beatColumnName;
     });
-    outerScope.defaultSortColumnName = defaultSortColumn.name;
+    outerScope.defaultSortColumnName = defaultSortColumn.fieldName;
 
     if (getRows) {
       outerScope.getRows = getRows;
@@ -110,7 +109,7 @@ describe('table directive', function() {
       reversedFixtureData = [].concat(fixtureData).reverse();
       fixtureMetadata = testHelpers.getTestJson(testMetaJson);
 
-      var columnNames = _.pluck(fixtureMetadata['columns'], 'name');
+      var columnNames = _.pluck(fixtureMetadata['testColumnDetailsAsTableWantsThem'], 'fieldName');
       beatColumnIndex = columnNames.indexOf('beat');
       dateColumnIndex = columnNames.indexOf('date');
       descriptionColumnIndex = columnNames.indexOf('description');
@@ -201,7 +200,7 @@ describe('table directive', function() {
       var cells = immutableTable.find('.row-block .cell');
       expect(cells.length).to.not.equal(0);
       _.each(cells, function(cell) {
-        var column = fixtureMetadata.columns[$(cell).index()];
+        var column = fixtureMetadata.testColumnDetailsAsTableWantsThem[$(cell).index()];
         var datatype = column.physicalDatatype;
         if (datatype === 'number') {
           expect($(cell).hasClass('number')).to.equal(true);
@@ -248,41 +247,41 @@ describe('table directive', function() {
       function verifySortingWithSortApplicator(columnIndexToClick, applicatorFunction) {
         // Note - this test only checks the value of the first cell to make sure it's updated
         // after the sort. It should probably check all the visible rows.
-        var columnMeta = fixtureMetadata.columns[columnIndexToClick];
+        var columnMeta = fixtureMetadata.testColumnDetailsAsTableWantsThem[columnIndexToClick];
         // Sanity check - make sure our test data has different values in the first and
         // last row, otherwise we can't check the sort order.
-        expect(_.last(fixtureData)[columnMeta.name]).to.not.equal(_.first(fixtureData)[columnMeta.name]);
+        expect(_.last(fixtureData)[columnMeta.fieldName]).to.not.equal(_.first(fixtureData)[columnMeta.fieldName]);
 
         var computeDisplayedValue = columnMeta.physicalDatatype === 'number' ? $.commaify : _.identity;
         var el = getSortableTable();
 
         // Value in corresponding cell matches with first data item?
-        expect(el.find('.row-block .cell').eq(columnIndexToClick).text()).to.equal(computeDisplayedValue(_.first(fixtureData)[columnMeta.name]));
+        expect(el.find('.row-block .cell').eq(columnIndexToClick).text()).to.equal(computeDisplayedValue(_.first(fixtureData)[columnMeta.fieldName]));
 
         // Apply a sort. Expect it to be DESC
         applicatorFunction(el);
         $rootScope.$digest();
 
         //NOTE: this assumes the column defaults to a DESC sort. Not always true, see story 5.04 for details.
-        expect(lastSort).to.equal(columnMeta.name + ' DESC');
+        expect(lastSort).to.equal(columnMeta.fieldName + ' DESC');
         expect(el.find('.th').length).to.equal(columnCount);
         expect(el.find('.row-block .table-row').length).to.equal(rowCount);
         expect(el.find('.row-block .cell').length).to.equal(columnCount * rowCount);
 
         // Value in corresponding cell matches with last data item (since we're sorting in reverse).
-        expect(el.find('.row-block .cell').eq(columnIndexToClick).text()).to.equal(computeDisplayedValue(_.last(fixtureData)[columnMeta.name]));
+        expect(el.find('.row-block .cell').eq(columnIndexToClick).text()).to.equal(computeDisplayedValue(_.last(fixtureData)[columnMeta.fieldName]));
 
         // Now, reverse the sort.
         applicatorFunction(el);
         $rootScope.$digest();
 
-        expect(lastSort).to.equal(columnMeta.name + ' ASC');
+        expect(lastSort).to.equal(columnMeta.fieldName + ' ASC');
         expect(el.find('.th').length).to.equal(columnCount);
         expect(el.find('.row-block .table-row').length).to.equal(rowCount);
         expect(el.find('.row-block .cell').length).to.equal(columnCount * rowCount);
 
         // Value in corresponding cell matches with first data item (since we're sorting normally).
-        expect(el.find('.row-block .cell').eq(columnIndexToClick).text()).to.equal(computeDisplayedValue(_.first(fixtureData)[columnMeta.name]));
+        expect(el.find('.row-block .cell').eq(columnIndexToClick).text()).to.equal(computeDisplayedValue(_.first(fixtureData)[columnMeta.fieldName]));
       }
 
       it('should only reflect the first value of the default sort', function() {
@@ -299,7 +298,7 @@ describe('table directive', function() {
         // Note - this test only checks the value of the first cell to make sure it's updated
         // after the sort. It should probably check all the visible rows.
         var columnIndexToClick = 0;
-        var columnMeta = fixtureMetadata.columns[columnIndexToClick];
+        var columnMeta = fixtureMetadata.testColumnDetailsAsTableWantsThem[columnIndexToClick];
 
         verifySortingWithSortApplicator(columnIndexToClick, function(el) {
           var header = el.find('.th').eq(columnIndexToClick);
@@ -435,7 +434,7 @@ describe('table directive', function() {
     it('should be able to filter', function(done) {
       var filteredData = _.take(fixtureData, 3);
       var unfilteredData = _.last(fixtureData, 6);
-      var firstColumnName = fixtureMetadata.columns[0].name;
+      var firstColumnName = fixtureMetadata.testColumnDetailsAsTableWantsThem[0].fieldName;
       // Sanity check for test data - we need the first rows of filtered/unfiltered to be different in at least
       // their first column's value for the tests to work.
       expect(_.first(unfilteredData)[firstColumnName]).to.not.equal(_.first(filteredData)[firstColumnName]);

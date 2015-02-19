@@ -51,8 +51,8 @@ module ApplicationHelper
   end
 
   # helper for returning a boolean feature flag
-  def feature_flag?(name)
-    !!CurrentDomain.feature_flags[name]
+  def feature_flag?(name, request)
+    !!FeatureFlags.derive(nil, request)[name]
   end
 
 # CACHE HELPERS

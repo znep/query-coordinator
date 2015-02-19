@@ -184,7 +184,7 @@ class PhidippidesDatasetsControllerTest < ActionController::TestCase
   end
 
   def mock_dataset_metadata
-    JSON.parse(File.read("#{Rails.root}/test/fixtures/dataset-metadata.json"))
+    JSON.parse(File.read("#{Rails.root}/test/fixtures/v0-dataset-metadata.json"))
   end
 
 end

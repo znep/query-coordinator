@@ -117,7 +117,7 @@ class PageMetadataManagerTest < Test::Unit::TestCase
   end
 
   def page_metadata
-    @page_metadata ||= JSON.parse(File.read("#{Rails.root}/test/fixtures/page-metadata.json")).with_indifferent_access
+    @page_metadata ||= JSON.parse(File.read("#{Rails.root}/test/fixtures/v0-page-metadata.json")).with_indifferent_access
   end
 
   def page_metadata_without_tablecard
@@ -127,7 +127,7 @@ class PageMetadataManagerTest < Test::Unit::TestCase
   end
 
   def dataset_metadata
-    @dataset_metadata ||= JSON.parse(File.read("#{Rails.root}/test/fixtures/dataset-metadata.json")).with_indifferent_access
+    @dataset_metadata ||= JSON.parse(File.read("#{Rails.root}/test/fixtures/v0-dataset-metadata.json")).with_indifferent_access
   end
 
   def dataset_metadata_without_rollup_columns

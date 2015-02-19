@@ -453,12 +453,12 @@ class PhidippidesTest < Test::Unit::TestCase
     Net::HTTP.unstub(:start)
   end
 
-  def page_metadata
-    @page_metadata ||= JSON.parse(File.read("#{Rails.root}/test/fixtures/page-metadata.json")).with_indifferent_access
+  def v0_page_metadata
+    @page_metadata ||= JSON.parse(File.read("#{Rails.root}/test/fixtures/v0-page-metadata.json")).with_indifferent_access
   end
 
-  def dataset_metadata
-    @dataset_metdata ||= JSON.parse(File.read("#{Rails.root}/test/fixtures/dataset-metadata.json")).with_indifferent_access
+  def v0_dataset_metadata
+    @dataset_metdata ||= JSON.parse(File.read("#{Rails.root}/test/fixtures/v0-dataset-metadata.json")).with_indifferent_access
   end
 
   def new_v0_dataset_metadata

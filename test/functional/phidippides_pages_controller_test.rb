@@ -154,7 +154,7 @@ class PhidippidesPagesControllerTest < ActionController::TestCase
   private
 
   def mock_page_metadata
-    File.read("#{Rails.root}/test/fixtures/page-metadata.json")
+    File.read("#{Rails.root}/test/fixtures/v0-page-metadata.json")
   end
 
 end

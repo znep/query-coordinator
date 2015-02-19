@@ -5,6 +5,10 @@
   var testHelpers;
 
   describe('Rich text editor', function() {
+    // For some reason the editor takes a long time to come online.
+    // We need to investigate why when we integrate richTextEditor.
+    this.timeout(5000);
+
     var jqueryFx;
     beforeEach(function() {
       module('socrataCommon.directives');

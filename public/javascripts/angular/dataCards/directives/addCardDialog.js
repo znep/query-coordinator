@@ -1,12 +1,7 @@
 (function() {
   'use strict';
 
-  function getColumnByFieldName(columns, fieldName) {
-    var selectedColumn = null;
-    return _.find(columns, function(column) { return column.name === fieldName; });
-  }
-
-  function addCardDialog(Constants, CardTypeMapping, Card, FlyoutService, AngularRxExtensions) {
+  function addCardDialog(Constants, CardTypeMapping, Card, FlyoutService, AngularRxExtensions, $log) {
     return {
       restrict: 'E',
       scope: {
@@ -21,8 +16,18 @@
       link: function(scope, element, attrs) {
         AngularRxExtensions.install(scope);
 
+        scope.bindObservable(
+          'columnHumanNameFn',
+          scope.observe('page').observeOnLatest('dataset.columns').map(
+            function(datasetColumns) {
+              return function(fieldName) {
+                return datasetColumns[fieldName].title;
+              }
+            }
+          )
+        );
+
         var serializedCard;
-        var column;
 
         if (!scope.dialogState) {
           scope.dialogState = { show: true };
@@ -37,21 +42,27 @@
         scope.showCardinalityWarning = false;
         scope.availableCardTypes = [];
 
-        scope.$watch('addCardSelectedColumnFieldName', function(fieldName) {
-
-          var columnCardinality;
-
-          if (_.isDefined(scope.datasetColumns)) {
+        Rx.Observable.subscribeLatest(
+          scope.observe('addCardSelectedColumnFieldName'),
+          scope.observe('datasetColumns').filter(_.isDefined),
+          scope.observe('page').observeOnLatest('dataset'),
+          scope.observe('page').observeOnLatest('dataset.columns'),
+          function(fieldName, scopeDatasetColumns, dataset, columns) {
+            var columnCardinality;
 
             if (fieldName === null) {
               scope.addCardModel = null;
               return;
             }
 
-            column = getColumnByFieldName(scope.datasetColumns.available, fieldName);
+            var column;
+
+            if (_.include(scope.datasetColumns.available, fieldName)) {
+              column = columns[fieldName];
+            }
 
             if (_.isUndefined(column)) {
-              $log.error('Could not get column by fieldName.');
+              $log.error('Could not get available column by fieldName.');
               scope.addCardModel = null;
               return;
             }
@@ -60,14 +71,14 @@
             serializedCard = {
               'cardCustomStyle': {},
               'cardSize': parseInt(scope.dialogState.cardSize, 10),
-              'cardType': CardTypeMapping.defaultVisualizationForColumn(column),
+              'cardType': CardTypeMapping.defaultVisualizationForColumn(dataset, fieldName),
               'displayMode': 'visualization',
               'expanded': false,
               'expandedCustomStyle': {},
               'fieldName': fieldName
             };
 
-            scope.availableCardTypes = CardTypeMapping.availableVisualizationsForColumn(column);
+            scope.availableCardTypes = CardTypeMapping.availableVisualizationsForColumn(dataset, fieldName);
             scope.addCardModel = Card.deserialize(scope.page, serializedCard);
 
             if (column.hasOwnProperty('cardinality')) {
@@ -77,9 +88,8 @@
             }
 
             scope.showCardinalityWarning = (columnCardinality > parseInt(Constants['COLUMN_CHART_CARDINALITY_WARNING_THRESHOLD'], 10));
-
           }
-        });
+        );
 
         scope.setCardType = function(cardType) {
 
@@ -94,13 +104,16 @@
         };
 
         scope.addCard = function() {
-          if (scope.addCardModel !== null) {
-            scope.page.addCard(scope.addCardModel);
+          var addCardModel = scope.addCardModel;
+          if (addCardModel !== null) {
+            scope.page.addCard(addCardModel);
             scope.dialogState.show = false;
           }
         };
 
-        scope.isCustomizable = CardTypeMapping.modelIsCustomizable;
+        scope.isCustomizable = function(model) {
+          return _.isPresent(model) ? CardTypeMapping.modelIsCustomizable : false;
+        };
 
         FlyoutService.register('add-card-type-option', function(el) {
 

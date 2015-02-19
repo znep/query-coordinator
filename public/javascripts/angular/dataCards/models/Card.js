@@ -46,14 +46,14 @@ angular.module('dataCards.models').factory('Card', function($injector, ModelHelp
       // on Model.
       self.defineObservableProperty('cardType', undefined, function() {
         return self.page.observe('dataset').
-          filter(_.isPresent).
-          observeOnLatest('columns').
-          filter(_.isPresent).
-          map(
-            function(columns) {
-              var column = columns[fieldName];
-              var defaultCardType = CardTypeMapping.defaultVisualizationForColumn(column);
-              return defaultCardType;
+          combineLatest(
+            // BIG WARNING: CardTypeMapping's API isn't designed well, so it is forced
+            // to assume that a dataset's columns are there. The responsibility to
+            // ensure the dataset's columns are present therefore falls to us :(
+            self.page.observe('dataset.columns').filter(_.isPresent),
+            function(dataset, columns) {
+              // Intentionally ignoring columns param. See above.
+              return CardTypeMapping.defaultVisualizationForColumn(dataset, fieldName);
             }
           ).
           first(); // Terminate the stream on the first one (toPromise waits until the stream terminates).

@@ -1,17 +1,18 @@
 (function() {
   'use strict';
 
+  //TODO: These functions should live on Card, or possibly the Dataset's columns.
   function CardTypeMapping(ServerConfig, $exceptionHandler, $log) {
 
-    function getCardTypesForColumn(column) {
+    function getCardTypesForDatasetColumn(dataset, fieldName) {
       var mappingConfiguration = getMappingConfiguration().map;
       var fallbackCardType = getMappingConfiguration().fallbackCardType;
-      var physicalDatatype;
-      var logicalDatatype;
-      var cardType = null;
 
-      if (_.isUndefined(column)) {
+      var column = columnInfoFromDatasetAndFieldName(dataset, fieldName);
+
+      if (!_.isPresent(column)) {
         $log.error('Could not determine card type for undefined column.');
+
         return null;
       }
 
@@ -22,12 +23,13 @@
           'Could not determine card type for column: "{0}" (physical and/or logical datatype is missing).'.
           format(JSON.stringify(column))
         );
+
         return null;
-
       }
+      var logicalDatatype = column.logicalDatatype;
+      var physicalDatatype = column.physicalDatatype;
 
-      physicalDatatype = column.physicalDatatype;
-      logicalDatatype = column.logicalDatatype;
+      var cardType = null;
 
       if (mappingConfiguration.hasOwnProperty(logicalDatatype) &&
           mappingConfiguration[logicalDatatype].hasOwnProperty(physicalDatatype)) {
@@ -44,12 +46,26 @@
 
     }
 
-    function getDefaultCardTypeForModel(cardModel) {
+    function columnInfoFromDatasetAndFieldName(dataset, fieldName) {
+      //TODO We're not strictly guaranteed to have the dataset's columns, but in current usage
+      //we will (under the assumption that the fieldName is determined from the Dataset model).
 
-      // TODO: how would I reactify this?
-      var columns = cardModel.page.getCurrentValue('dataset').getCurrentValue('columns');
-      var column = columns[cardModel.fieldName];
-      return defaultVisualizationForColumn(column);
+      var column = dataset.getCurrentValue('columns')[fieldName];
+
+      if (_.isUndefined(column)) {
+        $log.error('Could not determine card type for undefined column.');
+        return null;
+      } else {
+        return column;
+      }
+    }
+
+    function getDefaultCardTypeForModel(cardModel) {
+      //DANGER: Assuming card's page's dataset has columns.
+      //Evil! This service needs a rewrite, see comment at top
+      //of file.
+      var dataset = cardModel.page.getCurrentValue('dataset');
+      return defaultVisualizationForColumn(dataset, cardModel.fieldName);
 
     }
 
@@ -75,6 +91,10 @@
     }
 
 
+    function getLogicalAndPhysicalDatatypesFromDatasetAndFieldName(dataset, fieldName) {
+
+    }
+
     //
     // Public-facing methods
     //
@@ -86,11 +106,13 @@
      *
      */
 
-    function availableVisualizationsForColumn(column) {
-      var cardTypes = getCardTypesForColumn(column);
+    function availableVisualizationsForColumn(dataset, fieldName) {
+      var cardTypes = getCardTypesForDatasetColumn(dataset, fieldName);
+
       if (cardTypes === null) {
         return [];
       }
+
       return cardTypes.available;
     }
 
@@ -101,10 +123,10 @@
      *
      */
 
-    function defaultVisualizationForColumn(column) {
+    function defaultVisualizationForColumn(dataset, fieldName) {
       var cardinalityConfiguration = getMappingConfiguration().cardinality;
-
-      var cardTypes = getCardTypesForColumn(column);
+      var column = columnInfoFromDatasetAndFieldName(dataset, fieldName);
+      var cardTypes = getCardTypesForDatasetColumn(dataset, fieldName);
 
       // If there is no defined card type, we shouldn't show a card for this column.
       if (cardTypes === null) {
@@ -132,8 +154,8 @@
      *
      */
 
-    function visualizationSupportedForColumn(column) {
-      return _.any(availableVisualizationsForColumn(column), function(visualization) {
+    function visualizationSupportedForColumn(dataset, fieldName) {
+      return _.any(availableVisualizationsForColumn(dataset, fieldName), function(visualization) {
         return visualizationSupported(visualization);
       });
     }

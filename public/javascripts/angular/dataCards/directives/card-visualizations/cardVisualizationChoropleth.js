@@ -15,7 +15,7 @@
 
         AngularRxExtensions.install(scope);
 
-        var model = scope.observe('model');
+        var model = scope.observe('model').filter(_.identity);
         var dataset = model.observeOnLatest('page.dataset');
         var baseSoqlFilter = model.observeOnLatest('page.baseSoqlFilter');
         var aggregationObservable = model.observeOnLatest('page.aggregation');

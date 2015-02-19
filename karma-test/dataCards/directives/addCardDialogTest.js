@@ -131,25 +131,30 @@ describe('addCardDialog', function() {
     pageModel.set('primaryAggregation', null);
     pageModel.set('cards', []);
 
+    // NOTE: This is straight up copied from CardsViewController.
     var datasetColumns = Rx.Observable.combineLatest(
-      pageModel.observe('dataset').observeOnLatest('columns'),
+      pageModel.observe('dataset'),
+      pageModel.observe('dataset.columns'),
       pageModel.observe('cards'),
-      function(columns, cards) {
+      function(dataset, columns, cards) {
 
         var datasetColumns = [];
         var hasAvailableCards = false;
 
-        var sortedColumns = _.values(columns).
-          filter(function(column) {
+        var sortedColumns = _.pairs(columns).
+          map(function(columnPair) {
+            return { fieldName: columnPair[0], column: columnPair[1] };
+          }).
+          filter(function(columnPair) {
             // We need to ignore 'system' fieldNames that begin with ':' but
             // retain computed column fieldNames, which (somewhat inconveniently)
             // begin with ':@'.
-            return column.name.substring(0, 2).match(/\:[\_A-Za-z0-9]/) === null &&
-                   column.physicalDatatype !== '*' &&
-                   column.physicalDatatype !== 'point';
+            return columnPair.fieldName.substring(0, 2).match(/\:[\_A-Za-z0-9]/) === null &&
+                   columnPair.column.physicalDatatype !== '*';
           }).
           sort(function(a, b) {
-            return a.name > b.name;
+            // TODO: Don't we want to sort by column human name?
+            return a.fieldName > b.fieldName;
           });
 
         var sortedCards = cards.
@@ -157,7 +162,7 @@ describe('addCardDialog', function() {
             return card.fieldName !== '*';
           }).
           sort(function(a, b) {
-            return a.fieldName > b.fieldName;
+            return a.fieldName > b.fieldName
           });
 
         var i = 0;
@@ -173,7 +178,7 @@ describe('addCardDialog', function() {
           available = true;
 
           for (j = 0; j < sortedCards.length; j++) {
-            if (sortedColumns[i].name === sortedCards[j].fieldName) {
+            if (sortedColumns[i].fieldName === sortedCards[j].fieldName) {
               available = false;
               availableCardCount--;
             }
@@ -181,22 +186,22 @@ describe('addCardDialog', function() {
 
           sortedColumns[i].available = available;
 
-          if (CardTypeMapping.visualizationSupportedForColumn(sortedColumns[i])) {
+          if (CardTypeMapping.visualizationSupportedForColumn(dataset, sortedColumns[i].fieldName)) {
             if (available) {
-              availableColumns.push(sortedColumns[i]);
+              availableColumns.push(sortedColumns[i].fieldName);
             } else {
-              alreadyOnPageColumns.push(sortedColumns[i]);
+              alreadyOnPageColumns.push(sortedColumns[i].fieldName);
             }
           } else {
-            visualizationUnsupportedColumns.push(sortedColumns[i]);
+            visualizationUnsupportedColumns.push(sortedColumns[i].fieldName);
           }
 
         }
 
         return {
-          available: availableColumns.sort(alphaCompareOnProperty('title')),
-          alreadyOnPage: alreadyOnPageColumns.sort(alphaCompareOnProperty('title')),
-          visualizationUnsupporetd: visualizationUnsupportedColumns.sort(alphaCompareOnProperty('title'))
+          available: availableColumns.sort(),
+          alreadyOnPage: alreadyOnPageColumns.sort(),
+          visualizationUnsupported: visualizationUnsupportedColumns.sort()
         };
 
       });
@@ -370,6 +375,7 @@ describe('addCardDialog', function() {
       cardCustomStyle: {},
       expandedCustomStyle: {},
       displayMode: 'visualization',
+      cardType: 'column',
       expanded: false
     };
 

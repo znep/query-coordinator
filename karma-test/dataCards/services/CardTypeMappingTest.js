@@ -106,6 +106,20 @@
     var ServerConfig;
     var CardTypeMapping;
     var $exceptionHandler;
+    var Model;
+
+    function createDatasetFromColumns(columns) {
+      var dataset = new Model();
+      dataset.defineObservableProperty('columns', _.indexBy(columns, 'name'));
+      return dataset;
+    }
+
+    function createSingleTestCaseDataset(testCase, fieldName) {
+      fieldName = fieldName || 'testColumn';
+      var column = createColumn(testCase);
+      column.name = fieldName;
+      return createDatasetFromColumns([column]);
+    }
 
     beforeEach(module('dataCards'));
 
@@ -126,21 +140,23 @@
       });
       CardTypeMapping = $injector.get('CardTypeMapping');
       $exceptionHandler = $injector.get('$exceptionHandler');
+      Model = $injector.get('Model');
     }));
 
     it('should return a fallback for invalid visualization datatype combinations', function() {
       var column = createColumn({ physical: 'nope', logical: 'nope', expectedDefault: 'invalid', expectedAvailable: [], supported: false });
-      var mapping = CardTypeMapping.defaultVisualizationForColumn(column);
+      var dataset = createDatasetFromColumns([column]);
+      var mapping = CardTypeMapping.defaultVisualizationForColumn(dataset, column.name);
       expect(mapping).to.equal('invalid');
     });
 
     describe('defaultVisualizationForColumn', function() {
       _.each(mapping, function(testCase) {
-        var column = createColumn(testCase);
         describe('when encountering the physical/logical datatype pairing "{1}"/"{0}"'.
                  format(testCase.physical, testCase.logical), function() {
           it('should return {0}'.format(testCase.expectedDefault), function() {
-            expect(CardTypeMapping.defaultVisualizationForColumn(column)).
+            var dataset = createSingleTestCaseDataset(testCase);
+            expect(CardTypeMapping.defaultVisualizationForColumn(dataset, 'testColumn')).
               to.equal(testCase.expectedDefault);
           });
         });
@@ -152,17 +168,18 @@
           logical: 'category',
           cardinality: 1
         });
-        expect(CardTypeMapping.defaultVisualizationForColumn(column)).to.equal(null);
+        var dataset = createDatasetFromColumns([column]);
+        expect(CardTypeMapping.defaultVisualizationForColumn(dataset, 'number category')).to.equal(null);
       });
     });
 
     describe('visualizationSupportedForColumn', function() {
       _.each(mapping, function(testCase) {
-        var column = createColumn(testCase);
         describe('when encountering the physical/logical datatype pairing "{1}"/"{0}"'.
                  format(testCase.physical, testCase.logical), function() {
           it('should return {0}'.format(testCase.supported), function () {
-            expect(CardTypeMapping.visualizationSupportedForColumn(column)).
+            var dataset = createSingleTestCaseDataset(testCase);
+            expect(CardTypeMapping.visualizationSupportedForColumn(dataset, 'testColumn')).
               to.equal(testCase.supported);
           });
         });
@@ -180,7 +197,7 @@
             name: 'DEPRECATED'
           };
 
-          CardTypeMapping.defaultVisualizationForColumn(column);          
+          CardTypeMapping.defaultVisualizationForColumn(createDatasetFromColumns([column]), 'text location');          
           expect($exceptionHandler.errors.length).to.equal(1);
 
         });

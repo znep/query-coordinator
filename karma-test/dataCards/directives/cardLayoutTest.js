@@ -116,6 +116,7 @@ describe('CardLayout directive', function() {
     datasetModel.id = 'bana-nas!';
     datasetModel.fieldName = 'ward';
     datasetModel.defineObservableProperty('rowDisplayUnit', 'row');
+    datasetModel.defineObservableProperty('rowCount', 10);
     datasetModel.defineObservableProperty('columns', {
       // Define some columns of different types, so we can create different types of cards
       statBar_column: {

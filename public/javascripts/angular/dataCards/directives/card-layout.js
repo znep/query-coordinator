@@ -398,17 +398,29 @@
               });
             }
           );
-        };
+        }
 
-        var cardsBySizeObs = zipLatestArray(scope.page.observe('cards'), 'cardSize').
+        function isTableCard(card) {
+          return card.model.fieldName === '*';
+        }
+
+        var cardsBySizeSequence = Rx.Observable.combineLatest(
+          zipLatestArray(scope.page.observe('cards'), 'cardSize'),
+          scope.page.observe('dataset.rowCount').filter(_.isPresent),
+          function(cards, rowCount) {
+            if (rowCount <= 1) {
+              return _.filter(cards, isTableCard);
+            }
+            return cards;
+          }).
           map(function(cards) {
             var groupedCards = _.groupBy(cards, function(card) {
-              return card.model.fieldName === '*' ? 'dataCard' : 'normal';
+              return isTableCard(card) ? 'dataCard' : 'normal';
             });
             return _.defaults(groupedCards, { normal: [], dataCard: [] });
           });
 
-        var expandedCardsObs = zipLatestArray(scope.page.observe('cards'), 'expanded').
+        var expandedCardsSequence = zipLatestArray(scope.page.observe('cards'), 'expanded').
             map(function(cards) {
               return _.where(cards, _.property('expanded'));
             });
@@ -457,8 +469,8 @@
 
 
         subscriptions.push(Rx.Observable.subscribeLatest(
-          cardsBySizeObs,
-          expandedCardsObs,
+          cardsBySizeSequence,
+          expandedCardsSequence,
           scope.observe('editMode'),
           scope.observe('allowAddCard'),
           WindowState.windowSizeSubject,

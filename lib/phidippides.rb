@@ -176,6 +176,18 @@ class Phidippides < SocrataHttp
     end
   end
 
+  def delete_page_metadata(page_id, options = {})
+
+    if metadata_transition_phase_2?
+      issue_request(
+        :verb => :delete,
+        :path => "v1/pages/#{page_id}",
+        :request_id => options[:request_id],
+        :cookies => options[:cookies]
+      )
+    end
+  end
+
   def create_dataset_metadata(data, options = {})
     raise ArgumentError.new('id is required') unless data.key?('id')
     issue_request(

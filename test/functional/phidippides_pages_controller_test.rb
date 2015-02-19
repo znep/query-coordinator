@@ -151,6 +151,28 @@ class PhidippidesPagesControllerTest < ActionController::TestCase
     assert_response(403)
   end
 
+  test '(phase 2) delete returns 401 for unauthorized users' do
+    @controller.stubs(can_update_metadata?: false)
+    stub_feature_flags_with(:metadata_transition_phase, '2')
+    delete :destroy, id: 'four-four'
+    assert_response(401)
+  end
+
+  test '(phase 2) delete returns 405 if the http method is not DELETE' do
+    @controller.stubs(can_update_metadata?: true)
+    stub_feature_flags_with(:metadata_transition_phase, '2')
+    post :destroy, id: 'four-four', payload: {}, format: :json
+    assert_response(405)
+  end
+
+  test '(phase 2) delete returns success' do
+    @controller.stubs(can_update_metadata?: true)
+    Phidippides.any_instance.stubs(delete_page_metadata: { body: nil, status: 200 })
+    stub_feature_flags_with(:metadata_transition_phase, '2')
+    delete :destroy, id: 'four-four'
+    assert_response(200)
+  end
+
   private
 
   def mock_page_metadata

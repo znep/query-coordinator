@@ -116,6 +116,13 @@ class PhidippidesTest < Test::Unit::TestCase
     assert_equal('200', result[:status])
   end
 
+  def test_delete_page_metadata
+    prepare_stubs(body: nil, path: 'v1/pages/iuya-fxdq', verb: :delete, request_body: nil)
+    stub_feature_flags_with(:metadata_transition_phase, '2')
+    result = phidippides.delete_page_metadata('iuya-fxdq', request_id: 'request_id')
+    assert_equal('200', result[:status])
+  end
+
   def test_fetch_pages_for_dataset
     prepare_stubs(body: v0_pages_for_dataset, path: 'datasets/four-four/pages', verb: :get)
     stub_feature_flags_with(:metadata_transition_phase, '0')

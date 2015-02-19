@@ -1,6 +1,7 @@
 class PhidippidesPagesController < ActionController::Base
 
   include CommonPhidippidesMethods
+  include CommonMetadataTransitionMethods
   include UserAuthMethods
 
   before_filter :hook_auth_controller
@@ -78,7 +79,21 @@ class PhidippidesPagesController < ActionController::Base
   end
 
   def destroy
-    render :nothing => true, :status => 403
+    return render :nothing => true, :status => 403 unless metadata_transition_phase_2?
+    return render :nothing => true, :status => 401 unless can_update_metadata?
+    return render :nothing => true, :status => 405 unless request.delete?
+    return render :nothing => true, :status => 400 unless params[:id].present?
+
+    begin
+      result = phidippides.delete_page_metadata(
+        params[:id],
+        :request_id => request_id,
+        :cookies => forwardable_session_cookies
+      )
+      render :json => result[:body], :status => result[:status]
+    rescue Phidippides::ConnectionError
+      render :json => { body: 'Phidippides connection error' }, status: 500
+    end
   end
 
   private

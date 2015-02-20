@@ -1,7 +1,10 @@
 # Wrapper around the phidippides service, for functions related to page metadata.
 # Also handles managing rollup tables in soda fountain.
 class PageMetadataManager
-  CARD_TEMPLATE = {
+
+  include CommonMetadataTransitionMethods
+
+  V0_CARD_TEMPLATE = {
     'fieldName' => nil,
     'cardSize' => 1,
     'cardCustomStyle' => {},
@@ -10,16 +13,34 @@ class PageMetadataManager
     'expanded' => false,
   }.freeze
 
+  V1_CARD_TEMPLATE = {
+    'appliedFilters' => [],
+    'cardSize' => 1,
+    'cardType' => 'invalid',
+    'description' => '',
+    'expanded' => false,
+    'fieldName' => nil,
+    'name' => ''
+  }.freeze
+
   # Creates a new page
   def create(data, options = {})
     data = JSON.parse(data) if data.is_a?(String)
+
     # Make sure that there is a table card
     if data['cards'].present?
+
       table_card = data['cards'].find do |card|
         card['fieldName'] == '*' || card['cardType'] == 'table'
       end
+
       unless table_card
-        table_card = CARD_TEMPLATE.deep_dup
+        if metadata_transition_phase_0? || metadata_transition_phase_1?
+          table_card = V0_CARD_TEMPLATE.deep_dup
+        else
+          table_card = V1_CARD_TEMPLATE.deep_dup
+        end
+
         table_card.merge!(
           'fieldName' => '*',
           'cardSize' => 2,
@@ -30,13 +51,15 @@ class PageMetadataManager
     end
 
     result = create_or_update(data, :create_page_metadata, options)
-    if result && result['body']
+
+    if result.fetch(:status) == '200'
       new_view_manager.create(
-        result['body']['pageId'],
-        result['body']['name'],
-        result['body']['description']
+        data['pageId'],
+        data['name'],
+        data['description']
       )
     end
+
     result
   end
 
@@ -44,7 +67,8 @@ class PageMetadataManager
   # Note that phidippides will simply overwrite the existing value with the given value, so any
   # missing keys will become missing in the datastore.
   def update(data, options = {})
-    create_or_update(data.is_a?(String) ? JSON.parse(data) : data, :update_page_metadata, options)
+    data = JSON.parse(data) if data.is_a?(String)
+    create_or_update(data, :update_page_metadata, options)
   end
 
   private
@@ -53,11 +77,13 @@ class PageMetadataManager
   # in soda fountain.
   def create_or_update(json, method, options = {})
     result = phidippides.send(method, json, options)
+
     if result.fetch(:status) == '200'
       rollup_soql = build_rollup_soql(json, options)
+
       # if we can roll up anything for this query, do so
       if rollup_soql
-        page_id = result.fetch(:body).fetch(:pageId)
+        page_id = json.fetch('pageId')
         args = {
           dataset_id: json.fetch('datasetId'),
           rollup_name: page_id,
@@ -68,24 +94,24 @@ class PageMetadataManager
         update_rollup_table(args)
       end
     end
+
     result
   end
 
-  def update_rollup_table(args)
-    response = soda_fountain.create_or_update_rollup_table(args)
-    if response[:status] != 204
-      Rails.logger.warn("Unable to update rollup table for page #{args.fetch(:page_id)} due to error: #{response.inspect}")
-    end
-  end
-
   def build_rollup_soql(page_metadata, options = {})
+    if metadata_transition_phase_0? || metadata_transition_phase_1?
+      column_field_name = 'name'
+    else
+      column_field_name = 'fieldName'
+    end
+
     result = phidippides.fetch_dataset_metadata(page_metadata['datasetId'], options)
     columns = result.fetch(:body).fetch(:columns)
-    soql = 'select '
+
     # TODO Figure out how to deal with time which can aggregated at different levels of granularity (e.g. day, week, month)
     # TODO Need to consider the construction of the WHERE clause for page's default filter
     columns.select! do |column|
-      card_matches_column = page_metadata['cards'].any? { |card| card['fieldName'] == column['name'] }
+        card_matches_column = page_metadata['cards'].any? { |card| card['fieldName'] == column[column_field_name] }
       card_matches_column &&
         (column['logicalDatatype'] == 'category' ||
         (column['logicalDatatype'] == 'location' && column['physicalDatatype'] == 'number'))
@@ -94,10 +120,19 @@ class PageMetadataManager
     # Nothing to roll up
     return if columns.blank?
 
-    soql << columns.pluck('name').join(', ')
+    soql = 'select '
+    soql << columns.pluck(column_field_name).join(', ')
     soql << ', count(*) as value ' # TODO This will have to respect different aggregation functions, i.e. "sum"
     soql << 'group by '
-    soql << columns.pluck('name').join(', ')
+    soql << columns.pluck(column_field_name).join(', ')
+  end
+
+  def update_rollup_table(args)
+    response = soda_fountain.create_or_update_rollup_table(args)
+
+    if response.fetch(:status) != '204'
+      Rails.logger.warn("Unable to update rollup table for page #{args.fetch(:page_id)} due to error: #{response.inspect}")
+    end
   end
 
   def soda_fountain

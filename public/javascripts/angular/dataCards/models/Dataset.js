@@ -1,5 +1,5 @@
 // This model is intended to be an immutable reference to a Dataset.
-angular.module('dataCards.models').factory('Dataset', function(ModelHelper, Model, DatasetDataService, Schemas, SchemaDefinitions, $injector) {
+angular.module('dataCards.models').factory('Dataset', function(ModelHelper, Model, CardDataService, DatasetDataService, Schemas, SchemaDefinitions, $injector) {
   var SUPPORTED_DATASET_SCHEMA_VERSION = '0';
   var SUPPORTED_PAGES_SCHEMA_VERSION = '0';
 
@@ -92,6 +92,10 @@ angular.module('dataCards.models').factory('Dataset', function(ModelHelper, Mode
       });
 
       self.defineObservableProperty('pages', {}, pagesPromise);
+
+      self.defineEphemeralObservableProperty('rowCount', null, function() {
+        return CardDataService.getRowCount(self.id);
+      });
     }
   });
 

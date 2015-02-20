@@ -69,7 +69,7 @@
             <div class="filter" ng-repeat="filter in appliedFiltersForDisplay">
               <span ng-if="$first">where</span>
               <span ng-if="!$first">and</span>
-              <span class="light lowercase">{{filter.column.title}}</span>
+              <span class="light lowercase">{{filter.column.version === '0' ? filter.column.title : filter.column.name}}</span>
               <span>{{filter.operator}}</span>
               <span class="light">{{filter.operand}}</span>
             </div>

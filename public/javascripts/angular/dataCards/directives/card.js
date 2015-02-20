@@ -1,86 +1,96 @@
-angular.module('dataCards.directives').directive('card', function(AngularRxExtensions, $timeout, $log) {
+(function() {
 
-  return {
-    restrict: 'E',
-    scope: { 'model': '=', 'whereClause': '=', 'interactive': '=' },
-    templateUrl: '/angular_templates/dataCards/card.html',
-    link: function($scope, element, attrs) {
+  function CardDirective(AngularRxExtensions) {
 
-      AngularRxExtensions.install($scope);
+    return {
+      restrict: 'E',
+      scope: {
+        'model': '=',
+        'whereClause': '=',
+        'interactive': '='
+      },
+      templateUrl: '/angular_templates/dataCards/card.html',
+      link: function($scope, element) {
 
-      var modelSubject = $scope.observe('model').filter(_.identity);
-      var datasetObservable = modelSubject.pluck('page').observeOnLatest('dataset');
+        AngularRxExtensions.install($scope);
 
-      $scope.descriptionCollapsed = true;
+        var modelSubject = $scope.observe('model').filter(_.identity);
+        var datasetObservable = modelSubject.pluck('page').observeOnLatest('dataset');
 
-      $scope.bindObservable('expanded', modelSubject.observeOnLatest('expanded'));
+        $scope.descriptionCollapsed = true;
 
-      $scope.bindObservable(
-        'title',
-        modelSubject.observeOnLatest('column.dataset.version').
-        flatMapLatest(function(version) {
-          return modelSubject.observeOnLatest(version === '0' ? 'column.title' : 'column.name');
-        })
-      );
-      $scope.bindObservable('description', modelSubject.observeOnLatest('column.description'));
+        $scope.bindObservable('expanded', modelSubject.observeOnLatest('expanded'));
 
-      var updateCardLayout = _.throttle(function(textHeight) {
-        descriptionTruncatedContent.dotdotdot({
-          height: textHeight,
-          tolerance: 2
-        });
+        $scope.bindObservable(
+          'title',
+          modelSubject.observeOnLatest('column.dataset.version').
+            flatMapLatest(function(version) {
+              return modelSubject.observeOnLatest(version === '0' ? 'column.title' : 'column.name');
+            })
+        );
+        $scope.bindObservable('description', modelSubject.observeOnLatest('column.description'));
 
-        var isClamped = descriptionTruncatedContent.triggerHandler('isTruncated');
+        var updateCardLayout = _.throttle(function(textHeight) {
+          descriptionTruncatedContent.dotdotdot({
+            height: textHeight,
+            tolerance: 2
+          });
 
-        $scope.safeApply(function() {
-          $scope.descriptionClamped = isClamped;
-          $scope.animationsOn = true;
-        });
+          var isClamped = descriptionTruncatedContent.triggerHandler('isTruncated');
 
-      }, 250, { leading: true, trailing: true });
+          $scope.safeApply(function() {
+            $scope.descriptionClamped = isClamped;
+            $scope.animationsOn = true;
+          });
 
-      $scope.toggleExpanded = function() {
-        $scope.model.page.toggleExpanded($scope.model);
-      };
+        }, 250, {leading: true, trailing: true});
 
-      var descriptionTruncatedContent = element.find('.description-truncated-content');
-      var descriptionElementsWithMaxSize = element.find('.description-expanded-wrapper, .description-expanded-content');
+        $scope.toggleExpanded = function() {
+          $scope.model.page.toggleExpanded($scope.model);
+        };
 
-      var dimensionsObservable = element.observeDimensions();
+        var descriptionTruncatedContent = element.find('.description-truncated-content');
+        var descriptionElementsWithMaxSize = element.find('.description-expanded-wrapper, .description-expanded-content');
 
-      // Give the visualization all the height that the description isn't using.
-      // Note that we set the height on a wrapper instead of the card-visualization itself.
-      // This is because the card-visualization DOM node itself can be ripped out and replaced
-      // by angular at any time (typically when the card-visualization template finishes loading
-      // asynchronously).
-      // See: https://github.com/angular/angular.js/issues/8877
-      var description = element.find('.card-text');
-      Rx.Observable.subscribeLatest(
-        description.observeDimensions(),
-        dimensionsObservable,
-        function(descriptionDimensions, elementDimensions) {
-          element.find('.card-visualization-wrapper').height(
-            elementDimensions.height - description.outerHeight(true)
-          );
-        });
+        var dimensionsObservable = element.observeDimensions();
 
-      Rx.Observable.subscribeLatest(
-        dimensionsObservable,
-        modelSubject.observeOnLatest('column.description'),
-        function(dimensions, descriptionText) {
-          // Manually update the binding now, because Angular doesn't know that dotdotdot messes with
-          // the text.
-          descriptionTruncatedContent.text(descriptionText);
+        // Give the visualization all the height that the description isn't using.
+        // Note that we set the height on a wrapper instead of the card-visualization itself.
+        // This is because the card-visualization DOM node itself can be ripped out and replaced
+        // by angular at any time (typically when the card-visualization template finishes loading
+        // asynchronously).
+        // See: https://github.com/angular/angular.js/issues/8877
+        var description = element.find('.card-text');
+        Rx.Observable.subscribeLatest(
+          description.observeDimensions(),
+          dimensionsObservable,
+          function(descriptionDimensions, elementDimensions) {
+            element.find('.card-visualization-wrapper').height(
+              elementDimensions.height - description.outerHeight(true)
+            );
+          });
 
-          var availableSpace = dimensions.height - descriptionTruncatedContent.offsetParent().position().top;
+        Rx.Observable.subscribeLatest(
+          dimensionsObservable,
+          modelSubject.observeOnLatest('column.description'),
+          function(dimensions, descriptionText) {
+            // Manually update the binding now, because Angular doesn't know that dotdotdot messes with
+            // the text.
+            descriptionTruncatedContent.text(descriptionText);
 
-          descriptionElementsWithMaxSize.css('max-height', availableSpace);
+            var availableSpace = dimensions.height - descriptionTruncatedContent.offsetParent().position().top;
 
-          updateCardLayout(parseInt(descriptionTruncatedContent.css('line-height')) * 2);
+            descriptionElementsWithMaxSize.css('max-height', availableSpace);
 
-        });
+            updateCardLayout(parseInt(descriptionTruncatedContent.css('line-height'), 10) * 2);
 
-    }
-  };
+          });
+      }
+    };
+  }
 
-});
+  angular.
+    module('dataCards.directives').
+    directive('card', CardDirective);
+
+})();

@@ -15,7 +15,13 @@ angular.module('dataCards.directives').directive('card', function(AngularRxExten
 
       $scope.bindObservable('expanded', modelSubject.observeOnLatest('expanded'));
 
-      $scope.bindObservable('title', modelSubject.observeOnLatest('column.title'));
+      $scope.bindObservable(
+        'title',
+        modelSubject.observeOnLatest('column.dataset.version').
+        flatMapLatest(function(version) {
+          return modelSubject.observeOnLatest(version === '0' ? 'column.title' : 'column.name');
+        })
+      );
       $scope.bindObservable('description', modelSubject.observeOnLatest('column.description'));
 
       var updateCardLayout = _.throttle(function(textHeight) {

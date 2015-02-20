@@ -1,17 +1,18 @@
 module FeatureFlags
   def self.merge(base = {}, other = {})
     flags = Hashie::Mash.new
+    other_with_indifferent_access = other.with_indifferent_access
     FEATURE_FLAGS.each do |flag, config|
       # No restrictions on value. Anything goes.
       if config['expectedValues'].nil?
-        value = other[flag]
+        value = other_with_indifferent_access[flag]
         value = base[flag] if value.nil?
         flags[flag] = process_value(value)
       # Check the whitelist. true and false are always valid
       # We must to_s other[flag] because expectedValues is always a string (if present), unlike
       # the actual flag value which may be a bool or number.
-      elsif config['expectedValues'].split(' ').concat(['true', 'false']).include?(other[flag].to_s)
-        flags[flag] = process_value(other[flag])
+      elsif config['expectedValues'].split(' ').concat(['true', 'false']).include?(other_with_indifferent_access[flag].to_s)
+        flags[flag] = process_value(other_with_indifferent_access[flag])
       # Drop to default.
       else
         flags[flag] = process_value(base[flag])

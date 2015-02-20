@@ -42,8 +42,7 @@ class BrowseControllerTest < ActionController::TestCase
     Federation.stubs(:find => [])
   end
 
-  test 'it should not show the new view facet when exit_tech_preview feature flag is false' do
-    stub_feature_flags_with(:exit_tech_preview, false)
+  test 'it should not show the new view facet by default' do
     get :show
     assert_response :success
     assert_select_quiet '.facetSection.limitTo > ul > li > .typeNewView', 0
@@ -56,8 +55,7 @@ class BrowseControllerTest < ActionController::TestCase
     assert_select_quiet '.facetSection.limitTo > ul > li > .typeNewView', 1
   end
 
-  test 'it should not show the new view listing when exit_tech_preview feature flag is false' do
-    stub_feature_flags_with(:exit_tech_preview, false)
+  test 'it should not show the new view listing by default' do
     get :show
     assert_response :success
     assert_select_quiet %Q(tr[data-viewId="#{@new_view_id}"]), 0
@@ -75,6 +73,12 @@ class BrowseControllerTest < ActionController::TestCase
     get :show
     assert_response :success
     assert_select_quiet %Q(.titleLine a.name[href="#{@new_view_url}"]), 1
+  end
+
+  test 'it should respond to the exit_tech_preview feature flag as a query string parameter' do
+    get :show, { 'exit_tech_preview' => 'true' }
+    assert_response :success
+    assert_select_quiet %Q(tr[data-viewId="#{@new_view_id}"]), 1
   end
 
 end

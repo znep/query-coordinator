@@ -7,7 +7,6 @@ describe('DatasetDataService', function() {
     describe('under phase {0}'.format(phaseTestingUnder), function() {
       var $httpBackend;
       var DatasetDataService;
-      var ServerConfig;
       var TestHelpers;
       var fake4x4 = 'fake-data';
 
@@ -183,7 +182,6 @@ describe('DatasetDataService', function() {
 
       beforeEach(inject(function($injector) {
         DatasetDataService = $injector.get('DatasetDataService');
-        ServerConfig = $injector.get('ServerConfig');
         TestHelpers = $injector.get('testHelpers');
         $httpBackend = $injector.get('$httpBackend');
         $httpBackend.whenGET(datasetMetadataUrl).respond(fakeDatasetMetadataResponse);

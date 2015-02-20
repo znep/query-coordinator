@@ -13,8 +13,6 @@ describe('CardLayout directive', function() {
   var $q;
   var rootScope;
   var testHelpers;
-  var serverMocks;
-  var serverConfig;
   var $templateCache;
 
   beforeEach(module('/angular_templates/dataCards/card-layout.html'));
@@ -77,16 +75,12 @@ describe('CardLayout directive', function() {
   }));
   beforeEach(inject(function($injector) {
     testHelpers = $injector.get('testHelpers');
-    serverMocks = $injector.get('serverMocks');
-    serverConfig = $injector.get('ServerConfig');
     rootScope = $injector.get('$rootScope');
     Model = $injector.get('Model');
     Card = $injector.get('Card');
     Page = $injector.get('Page');
     AngularRxExtensions = $injector.get('AngularRxExtensions');
     $q = $injector.get('$q');
-
-    serverConfig.override('oduxCardTypeMapping', serverMocks.CARD_TYPE_MAPPING);
 
     testHelpers.overrideTransitions(true);
     testHelpers.mockDirective(_$provide, 'aggregationChooser');

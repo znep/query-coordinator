@@ -104,7 +104,6 @@
 
   describe('Card Type Mapping Service', function() {
 
-    var ServerConfig;
     var CardTypeMapping;
     var $exceptionHandler;
     var Model;
@@ -131,14 +130,6 @@
     }));
 
     beforeEach(inject(function($injector) {
-      ServerConfig = $injector.get('ServerConfig');
-      var serverMocks = $injector.get('serverMocks');
-      // We need to simulate the Feature Map feature flag being turned on
-      // in order to test card type mappings to feature maps.
-      ServerConfig.setup({
-        'oduxEnableFeatureMap': true,
-        'oduxCardTypeMapping': serverMocks.CARD_TYPE_MAPPING
-      });
       CardTypeMapping = $injector.get('CardTypeMapping');
       $exceptionHandler = $injector.get('$exceptionHandler');
       Model = $injector.get('Model');

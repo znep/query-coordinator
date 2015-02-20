@@ -25,8 +25,6 @@ describe('addCardDialog', function() {
   beforeEach(module('dataCards/cards.sass'));
 
   var testHelpers;
-  var serverMocks;
-  var serverConfig;
   var Card;
   var Page;
   var Model;
@@ -38,8 +36,6 @@ describe('addCardDialog', function() {
 
   beforeEach(inject(function($injector) {
     testHelpers = $injector.get('testHelpers');
-    serverMocks = $injector.get('serverMocks');
-    serverConfig = $injector.get('ServerConfig');
     Card = $injector.get('Card');
     Page = $injector.get('Page');
     Model = $injector.get('Model');
@@ -48,8 +44,6 @@ describe('addCardDialog', function() {
     AngularRxExtensions = $injector.get('AngularRxExtensions');
     CardTypeMapping = $injector.get('CardTypeMapping');
     $httpBackend = $injector.get('$httpBackend');
-
-    serverConfig.override('oduxCardTypeMapping', serverMocks.CARD_TYPE_MAPPING);
 
     $httpBackend.whenGET(/\/api\/id\/rook-king.json.*/).respond([]);
     $httpBackend.whenGET(/\/resource\/rook-king.json.*/).respond([]);

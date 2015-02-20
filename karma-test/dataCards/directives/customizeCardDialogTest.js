@@ -20,8 +20,6 @@ describe('Customize card dialog', function() {
   var $rootScope;
   var $templateCache;
   var testHelpers;
-  var serverMocks;
-  var serverConfig;
 
   beforeEach(inject(function($injector) {
     AngularRxExtensions = $injector.get('AngularRxExtensions');
@@ -33,10 +31,6 @@ describe('Customize card dialog', function() {
     $rootScope = $injector.get('$rootScope');
     $templateCache = $injector.get('$templateCache');
     testHelpers = $injector.get('testHelpers');
-    serverMocks = $injector.get('serverMocks');
-    serverConfig = $injector.get('ServerConfig');
-
-    serverConfig.override('oduxCardTypeMapping', serverMocks.CARD_TYPE_MAPPING);
 
     // We don't actually care about the contents of this
     $templateCache.put('/angular_templates/dataCards/cardVisualizationColumnChart.html', '');

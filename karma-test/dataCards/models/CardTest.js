@@ -2,7 +2,6 @@ describe('Card model', function() {
   var Model;
   var Page;
   var Card;
-  var ServerConfig;
 
   beforeEach(module('dataCards'));
 
@@ -10,20 +9,6 @@ describe('Card model', function() {
     Model = $injector.get('Model');
     Card = $injector.get('Card');
     Page = $injector.get('Page');
-    ServerConfig = $injector.get('ServerConfig');
-    ServerConfig.setup({
-      oduxCardTypeMapping: {
-        'map': {
-          'category': {
-            'number': { 'lowCardinalityDefault': 'column', 'highCardinalityDefault': 'search', 'available': ['column', 'search'] }
-          }
-        },
-        'cardinality': {
-          'min': 2,
-          'threshold': 35
-        }
-      }
-    });
   }));
 
   it('should define a serializedCard JSON schema', inject(function(Card, JJV) {

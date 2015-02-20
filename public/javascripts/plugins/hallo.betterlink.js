@@ -40,9 +40,7 @@
 
       this.options.editable.element.on('halloselected', function(e, data) {
         _this.options.savedToolbarPosition = data;
-        if (data.alreadyInitialized !== true) {
-          _this._initializeUrlInputValue();
-        }
+        _this._initializeUrlInputValue();
       });
 
       this.options.editable.element.on('hallobetterlinkexpanded', function() {

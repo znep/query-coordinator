@@ -10,7 +10,7 @@ class SocrataHttp
     headers = options.fetch(:headers, {})
     verb = options.fetch(:verb).to_s.capitalize
     path = options.fetch(:path)
-    url = "#{end_point}/#{path}"
+    url = options.fetch(:url, "#{end_point}/#{path}")
     request = "Net::HTTP::#{verb}".constantize.new(url)
 
     if [:post, :put].include?(options.fetch(:verb)) && options[:data].present?
@@ -35,13 +35,19 @@ class SocrataHttp
       raise ConnectionError.new(error.to_s)
     end
 
-    if response.kind_of?(Net::HTTPSuccess)
+    if response.kind_of?(Net::HTTPRedirection) && verb == 'Get'
+      result = on_redirect(response, response['location'], options)
+    elsif response.kind_of?(Net::HTTPSuccess)
       result = on_success(response, url, verb)
     else
       result = on_failure(response, url, verb)
     end
 
     result.with_indifferent_access
+  end
+
+  def on_redirect(response, redirect_url, options)
+    issue_request(options.merge(:url => redirect_url))
   end
 
   def on_success(response, url, verb)

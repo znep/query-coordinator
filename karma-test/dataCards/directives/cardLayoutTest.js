@@ -109,14 +109,15 @@ describe('CardLayout directive', function() {
    */
   function createCardLayout(options) {
     options = _.defaults(options || {}, {
-      cards: _.constant([])
+      cards: _.constant([]),
+      rowCount: 10
     });
 
     var datasetModel = new Model();
     datasetModel.id = 'bana-nas!';
     datasetModel.fieldName = 'ward';
     datasetModel.defineObservableProperty('rowDisplayUnit', 'row');
-    datasetModel.defineObservableProperty('rowCount', 10);
+    datasetModel.defineObservableProperty('rowCount', options.rowCount);
     datasetModel.defineObservableProperty('columns', {
       // Define some columns of different types, so we can create different types of cards
       statBar_column: {
@@ -193,11 +194,11 @@ describe('CardLayout directive', function() {
       return $(_.find(element.find('card'), function(cardElement) {
         return $(cardElement).scope().cardState.model === model;
       }));
-    };
+    }
 
     function findDragOverlayForModel(model) {
       return findCardForModel(model).siblings('.card-drag-overlay');
-    };
+    }
 
     // The css styles are scoped to the body class
     $('body').addClass('state-view-cards');
@@ -227,11 +228,12 @@ describe('CardLayout directive', function() {
    * Create a layout that includes cards on init.
    *
    * @param {object[]=} cards An array of card hashes to create, each of which sets card properties:
+   * @param {object=} options Additional options to be passed on to `createCardLayout`
    * @property {string=} fieldName The name of the column this card is for. Set to '*' for dataCard,
    * or like 'timeline_column' for a timeline card.
    * @property {boolean=} expanded Whether the card is expanded. Only ever expand one card.
    */
-  function createLayoutWithCards(cards) {
+  function createLayoutWithCards(cards, options) {
     if (!cards) {
       cards = _.map(_.range(NUM_CARDS), function(i) {
         return {};
@@ -252,7 +254,7 @@ describe('CardLayout directive', function() {
         return c;
       });
     };
-    return createCardLayout({cards: cardGenerator});
+    return createCardLayout(_.extend({ cards: cardGenerator }, options));
   }
 
 
@@ -1382,7 +1384,15 @@ describe('CardLayout directive', function() {
       {fieldName: '*'}
     ]);
 
-    expect(cl.element.find('card-visualization-table').length).to.equal(1);
+    expect(cl.element.find('card')).to.have.length(1);
+    expect(cl.element.find('card-visualization-table')).to.exist;
+  });
+
+  it('should show the table card if the dataset has only 1 row', function() {
+    testHelpers.mockDirective(_$provide, 'cardVisualizationTable');
+    var cl = createLayoutWithCards(null, { rowCount: 1 });
+    expect(cl.element.find('card')).to.have.length(1);
+    expect(cl.element.find('card-visualization-table')).to.exist;
   });
 
 });

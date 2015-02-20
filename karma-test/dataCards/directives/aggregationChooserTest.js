@@ -48,32 +48,35 @@ describe('<aggregation-chooser/>', function() {
   var DEFAULT_ROW_DISPLAY_UNIT = 'unique row unit';
 
   function createDatasetModel(options) {
+    var datasetModel = new Model();
+
     options = options || {};
     _.defaults(options, {
       rowDisplayUnit: DEFAULT_ROW_DISPLAY_UNIT,
       columns: {
         // Define some columns of different types, so we can create different types of cards
         statBar_column: {
-          name: 'statBar_column',
-          title: 'test column title',
+          name: 'test column title',
           description: 'test column description',
-          logicalDatatype: 'amount',
+          fred: 'amount',
           physicalDatatype: 'number',
           importance: 2
         },
         statBar_column2: {
-          name: 'statBar_column2',
-          title: 'second test column title',
+          name: 'second test column title',
           description: 'second test column description',
-          logicalDatatype: 'amount',
+          fred: 'amount',
           physicalDatatype: 'number',
           importance: 2
         }
       }
-    })
-    var datasetModel = new Model();
+    });
+    _.forOwn(options.columns, function(column) {
+      column.dataset = datasetModel;
+    });
     datasetModel.id = 'rant-lerz';
     datasetModel.fieldName = 'ward';
+    datasetModel.version = '1';
     datasetModel.defineObservableProperty('rowDisplayUnit', options.rowDisplayUnit);
     datasetModel.defineObservableProperty('columns', options.columns);
 
@@ -244,27 +247,27 @@ describe('<aggregation-chooser/>', function() {
       columns: {
         pointMap_column: {
           name: 'pointMap_column',
-          logicalDatatype: 'location',
+          fred: 'location',
           physicalDatatype: 'point'
         },
         choropleth_column: {
           name: 'choropleth_column',
-          logicalDatatype: 'location',
+          fred: 'location',
           physicalDatatype: 'number',
           shapefile: 'fake-shap'
         },
         timeline_column: {
           name: 'timeline_column',
-          logicalDatatype: 'time',
+          fred: 'time',
           physicalDatatype: 'number'
         },
         search_column: {
           name: 'search_column',
-          logicalDatatype: 'text',
+          fred: 'text',
           physicalDatatype: 'text'
         },
         '*': {
-          logicalDatatype: '*'
+          fred: '*'
         }
       }
     });
@@ -284,7 +287,7 @@ describe('<aggregation-chooser/>', function() {
         name: 'column_{0}'.format(value),
         title: 'test column title - {0}'.format(value),
         description: 'test column description - {0}'.format(value),
-        logicalDatatype: 'amount',
+        fred: 'amount',
         physicalDatatype: 'number',
         importance: 2
       };

@@ -94,9 +94,10 @@
   function createColumn(testCase) {
     var column = {
       physicalDatatype: testCase.physical,
-      logicalDatatype: testCase.logical,
+      fred: testCase.logical,
       name: '{0} {1}'.format(testCase.logical, testCase.physical),
-      cardinality: testCase.cardinality || 15
+      cardinality: testCase.cardinality || 15,
+      dataset: { version: '1' }
     };
     return column;
   }

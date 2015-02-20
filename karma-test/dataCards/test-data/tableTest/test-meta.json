@@ -1,47 +1,47 @@
 {
   "testColumnDetailsAsTableWantsThem": [
     {
-      "title": "Beat",
+      "name": "Beat",
       "fieldName": "beat",
       "physicalDatatype": "text",
-      "logicalDatatype": "text",
+      "fred": "text",
       "importance": 3,
       "sortable": true
     },
     {
-      "title": "Block",
+      "name": "Block",
       "fieldName": "block",
       "physicalDatatype": "text",
-      "logicalDatatype": "text",
+      "fred": "text",
       "importance": 3,
       "sortable": true
     },
     {
-      "title": "Case Number",
+      "name": "Case Number",
       "fieldName": "case_number",
       "physicalDatatype": "text",
-      "logicalDatatype": "text",
+      "fred": "text",
       "importance": 3,
       "sortable": true
     },
     {
-      "title": "Community Area",
+      "name": "Community Area",
       "fieldName": "community_area",
       "physicalDatatype": "text",
-      "logicalDatatype": "identifier",
+      "fred": "identifier",
       "importance": 3,
       "sortable": true
     },
     {
-      "title": "Date",
+      "name": "Date",
       "fieldName": "date",
       "physicalDatatype": "timestamp",
-      "logicalDatatype": "time",
+      "fred": "time",
       "importance": 1,
       "sortable": true
     },
     {
-      "title": "Time",
+      "name": "Time",
       "fieldName": "time",
       "physicalDatatype": "floating_timestamp",
       "logicalDatatpye": "time",
@@ -49,133 +49,133 @@
       "sortable": true
     },
     {
-      "title": "Description",
+      "name": "Description",
       "fieldName": "description",
       "physicalDatatype": "text",
-      "logicalDatatype": "text",
+      "fred": "text",
       "importance": 3,
       "sortable": true
     },
     {
-      "title": "District",
+      "name": "District",
       "fieldName": "district",
       "physicalDatatype": "text",
-      "logicalDatatype": "text",
+      "fred": "text",
       "importance": 3,
       "sortable": true
     },
     {
-      "title": "FBI Code",
+      "name": "FBI Code",
       "fieldName": "fbi_code",
       "physicalDatatype": "text",
-      "logicalDatatype": "category",
+      "fred": "category",
       "importance": 3,
       "sortable": true
     },
     {
-      "title": "Id",
+      "name": "Id",
       "fieldName": "id",
       "physicalDatatype": "number",
-      "logicalDatatype": "identifier",
+      "fred": "identifier",
       "importance": 3,
       "sortable": true
     },
     {
-      "title": "IUCR",
+      "name": "IUCR",
       "fieldName": "iucr",
       "physicalDatatype": "text",
-      "logicalDatatype": "category",
+      "fred": "category",
       "importance": 3,
       "sortable": true
     },
     {
-      "title": "Latitude",
+      "name": "Latitude",
       "fieldName": "latitude",
       "physicalDatatype": "number",
-      "logicalDatatype": "amount",
+      "fred": "amount",
       "importance": 3,
       "sortable": true
     },
     {
-      "title": "Location Description",
+      "name": "Location Description",
       "fieldName": "location_description",
       "physicalDatatype": "text",
-      "logicalDatatype": "text",
+      "fred": "text",
       "importance": 3,
       "sortable": true
     },
     {
-      "title": "Longitude",
+      "name": "Longitude",
       "fieldName": "longitude",
       "physicalDatatype": "number",
-      "logicalDatatype": "amount",
+      "fred": "amount",
       "importance": 3,
       "sortable": true
     },
     {
-      "title": "Primary Type",
+      "name": "Primary Type",
       "fieldName": "primary_type",
       "physicalDatatype": "text",
-      "logicalDatatype": "category",
+      "fred": "category",
       "importance": 3,
       "sortable": true
     },
     {
-      "title": "Ward",
+      "name": "Ward",
       "fieldName": "ward",
       "physicalDatatype": "text",
-      "logicalDatatype": "location",
+      "fred": "location",
       "importance": 3,
       "sortable": true
     },
     {
-      "title": "X Coordinate",
+      "name": "X Coordinate",
       "fieldName": "x_coordinate",
       "physicalDatatype": "number",
-      "logicalDatatype": "amount",
+      "fred": "amount",
       "importance": 3,
       "sortable": true
     },
     {
-      "title": "Y Coordinate",
+      "name": "Y Coordinate",
       "fieldName": "y_coordinate",
       "physicalDatatype": "number",
-      "logicalDatatype": "amount",
+      "fred": "amount",
       "importance": 3,
       "sortable": true
     },
     {
-      "title": "Year",
+      "name": "Year",
       "fieldName": "year",
       "physicalDatatype": "number",
-      "logicalDatatype": "amount",
+      "fred": "amount",
       "importance": 2,
       "sortable": true
     },
     {
-      "title": "Location",
+      "name": "Location",
       "fieldName": "point",
       "physicalDatatype": "point",
-      "logicalDatatype": "location",
+      "fred": "location",
       "importance": 3,
       "sortable": true
     },
     {
-      "title": "Neighborhood",
+      "name": "Neighborhood",
       "description": "",
       "fieldName": ":Computed_i2inbshz_location",
       "physicalDatatype": "text",
-      "logicalDatatype": "location",
+      "fred": "location",
       "importance": 1,
       "shapefileFeatureHumanReadablePropertyName": "fieldName",
       "sortable": true
     },
     {
-      "title": "Checkbox test",
+      "name": "Checkbox test",
       "description": "For boolean datatype",
       "fieldName": "checkbox_test",
       "physicalDatatype": "boolean",
-      "logicalDatatype": "category",
+      "fred": "category",
       "importance": 3,
       "sortable": true
     }

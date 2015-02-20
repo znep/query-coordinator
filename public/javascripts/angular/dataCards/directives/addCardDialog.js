@@ -21,7 +21,8 @@
           scope.observe('page').observeOnLatest('dataset.columns').map(
             function(datasetColumns) {
               return function(fieldName) {
-                return datasetColumns[fieldName].title;
+                var column = datasetColumns[fieldName];
+                return column.dataset.version === '0' ? column.title : column.name;
               }
             }
           )

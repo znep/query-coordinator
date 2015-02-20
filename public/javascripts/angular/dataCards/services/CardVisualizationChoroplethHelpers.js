@@ -15,7 +15,7 @@
       function reportMissingProperty(property) {
         $log.error(
           'Could not determine column shapeFile: "{0}" not present on column "{1}".'.
-          format(property, column.title)
+          format(property, column.name)
         );
       }
 
@@ -47,7 +47,7 @@
       function reportMissingProperty(property) {
         $log.warn(
           'Could not determine column geometryLabel: "{0}" not present on column "{1}".'.
-          format(property, column.title)
+          format(property, column.name)
         );
       }
 

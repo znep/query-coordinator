@@ -60,67 +60,60 @@ describe('addCardDialog', function() {
     testHelpers.TestDom.clear();
   });
 
-  var columns = {
-    'spot': {
-      'name': 'spot',
-      'title': 'Spot where cool froods hang out.',
-      'description': '???',
-      'logicalDatatype': 'location',
-      'physicalDatatype': 'number',
-      'importance': 2,
-      'shapefile': 'mash-apes'
-    },
-    'bar': {
-      'name': 'bar',
-      'title': 'A bar where cool froods hang out.',
-      'description': '???',
-      'logicalDatatype': 'amount',
-      'physicalDatatype': 'number'
-    },
-    'point': {
-      'name': 'point',
-      'title': 'Points where crimes have been committed.',
-      'description': 'Points.',
-      'logicalDatatype': 'location',
-      'physicalDatatype': 'point',
-      'importance': 2
-    },
-    'ward': {
-      'name': 'ward',
-      'title': 'Ward where crime was committed.',
-      'description': 'Batman has bigger fish to fry sometimes, you know.',
-      'logicalDatatype': 'location',
-      'physicalDatatype': 'number',
-      'importance': 2,
-      'shapefile': 'mash-apes'
-    },
-    'multipleVisualizations': {
-      'name': 'multipleVisualizations',
-      'title': 'A card for which multiple visualizations are possible.',
-      'description': '???',
-      'logicalDatatype': 'text',
-      'physicalDatatype': 'text',
-      'cardinality': 2000
-    }
-  };
-
   function createDialog() {
-
-    // Such higher-order!
-    function alphaCompareOnProperty(property) {
-      return function(a, b) {
-        if (a[property] < b[property]) {
-          return -1;
-        }
-        if (a[property] > b[property]) {
-          return 1;
-        }
-        return 0;
-      }
-    }
-
     var datasetModel = new Model();
+
+    var columns = {
+      'spot': {
+        'name': 'Spot where cool froods hang out.',
+        'description': '???',
+        'fred': 'location',
+        'physicalDatatype': 'number',
+        'computationStrategy': {
+          'parameters': {
+            'region': '_mash-apes'
+          }
+        },
+        'dataset': datasetModel
+      },
+      'bar': {
+        'name': 'A bar where cool froods hang out.',
+        'description': '???',
+        'fred': 'amount',
+        'physicalDatatype': 'number',
+        'dataset': datasetModel
+      },
+      'point': {
+        'name': 'Points where crimes have been committed.',
+        'description': 'Points.',
+        'fred': 'location',
+        'physicalDatatype': 'point',
+        'dataset': datasetModel
+      },
+      'ward': {
+        'name': 'Ward where crime was committed.',
+        'description': 'Batman has bigger fish to fry sometimes, you know.',
+        'fred': 'location',
+        'physicalDatatype': 'number',
+        'computationStrategy': {
+          'parameters': {
+            'region': '_mash-apes'
+          }
+        },
+        'dataset': datasetModel
+      },
+      'multipleVisualizations': {
+        'name': 'A card for which multiple visualizations are possible.',
+        'description': '???',
+        'fred': 'text',
+        'physicalDatatype': 'text',
+        'cardinality': 2000,
+        'dataset': datasetModel
+      }
+    };
+
     datasetModel.id = 'rook-king';
+    datasetModel.version = '1';
     datasetModel.defineObservableProperty('rowDisplayUnit', 'row');
     datasetModel.defineObservableProperty('columns', columns);
 
@@ -266,7 +259,7 @@ describe('addCardDialog', function() {
 
     var selectableColumnOptions = dialog.element.find('option:enabled');
 
-    expect(selectableColumnOptions.length).to.equal(3);
+    expect(selectableColumnOptions.length).to.equal(4);
   });
 
   it('should disable columns that are represented by cards in the "Choose a column..." select control', function() {
@@ -284,7 +277,7 @@ describe('addCardDialog', function() {
 
     var selectableColumnOptions = dialog.element.find('option:enabled');
 
-    expect(selectableColumnOptions.length).to.equal(2);
+    expect(selectableColumnOptions.length).to.equal(3);
   });
 
   it('should disable the "Add card" button when no column in the "Choose a column..." select control is selected', function() {

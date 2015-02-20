@@ -92,10 +92,12 @@ describe('Card model', function() {
     dataset.defineObservableProperty('columns', {
       'test_crime_type': {
         physicalDatatype: 'number',
-        logicalDatatype: 'category',
-        cardinality: 10
+        fred: 'category',
+        cardinality: 10,
+        dataset: dataset
       }
     });
+    dataset.version = '1';
     page.set('dataset', dataset);
 
     var instance = Card.deserialize(page, blob);

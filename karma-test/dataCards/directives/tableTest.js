@@ -12,6 +12,7 @@ describe('table directive', function() {
     columnCount = 0;
 
     _.each(fixtureMetadata.testColumnDetailsAsTableWantsThem, function(column) {
+      column.dataset = { version: '1' };
       if (column.fieldName[0].match(/[a-zA-Z0-9]/g)) {
         outerScope.columnDetails.push(column);
         columnCount += 1;
@@ -303,7 +304,7 @@ describe('table directive', function() {
         verifySortingWithSortApplicator(columnIndexToClick, function(el) {
           var header = el.find('.th').eq(columnIndexToClick);
 
-          expect(header.text().trim()).to.equal(columnMeta.title);
+          expect(header.text().trim()).to.equal(columnMeta.name);
           header.click();
         });
       });

@@ -12,3 +12,15 @@ var dataCards = angular.module('dataCards', [
   'dataCards.filters'
 ]);
 
+dataCards.run(function(ServerConfig, testHelpers, serverMocks) {
+  // Provide a default server configuration.
+  ServerConfig.setup({
+    oduxCardTypeMapping: serverMocks.CARD_TYPE_MAPPING,
+    oduxEnableFeatureMap: true
+  });
+
+  // Test under phase 2 by default.
+  // Note that this can't be changed willy-nilly, as the tests use
+  // stub data that's valid only for a particular phase.
+  testHelpers.overrideMetadataMigrationPhase('2');
+});

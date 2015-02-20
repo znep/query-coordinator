@@ -16,6 +16,7 @@ angular.module('dataCards.models').factory('DatasetV0', function(ModelHelper, Mo
         throw new Error('Bad dataset ID passed to DatasetV0 constructor.');
       }
       self.id = id;
+      self.version = '0';
 
       // Reuse promises across lazy properties.
       // NOTE! It's important that the various getters on PageDataService are _not_ called

@@ -24,24 +24,44 @@
 
       var column = columnInfoFromDatasetAndFieldName(dataset, fieldName);
 
+      var logicalDatatype;
+      var physicalDatatype;
+
       if (!_.isPresent(column)) {
         $log.error('Could not determine card type for undefined column.');
 
         return null;
       }
 
-      if (!column.hasOwnProperty('logicalDatatype') ||
-          !column.hasOwnProperty('physicalDatatype')) {
+      if (column.dataset.version === '0') {
+        if (!column.hasOwnProperty('logicalDatatype') ||
+            !column.hasOwnProperty('physicalDatatype')) {
 
-        $log.error(
-          'Could not determine card type for column: "{0}" (physical and/or logical datatype is missing).'.
-          format(JSON.stringify(column))
-        );
+          $log.error(
+            'Could not determine card type for column: "{0}" (physical and/or logical datatype is missing).'.
+            format(column.name)
+          );
 
-        return null;
+          return null;
+        }
+
+        logicalDatatype = column.logicalDatatype;
+        physicalDatatype = column.physicalDatatype;
+      } else {
+        if (!column.hasOwnProperty('fred') ||
+            !column.hasOwnProperty('physicalDatatype')) {
+
+          $log.error(
+            'Could not determine card type for column: "{0}" (physical datatype and/or fred is missing).'.
+            format(column.name)
+          );
+
+          return null;
+        }
+
+        logicalDatatype = column.fred;
+        physicalDatatype = column.physicalDatatype;
       }
-      var logicalDatatype = column.logicalDatatype;
-      var physicalDatatype = column.physicalDatatype;
 
       var cardType = null;
 

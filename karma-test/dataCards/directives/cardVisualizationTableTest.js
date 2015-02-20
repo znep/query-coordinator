@@ -72,62 +72,56 @@ describe("A Table Card Visualization", function() {
 
     var datasetModel = new Model();
     datasetModel.id = 'test-data';
-    datasetModel.fieldName = 'ward';
+    datasetModel.version = '1';
     datasetModel.defineObservableProperty('rowDisplayUnit', 'row');
 
     datasetModel.defineObservableProperty('columns', {
       'test_column': {
-        'name': 'test_column',
-        'title': 'test column title',
+        'name': 'test column title',
         'description': 'test column description',
-        'logicalDatatype': 'amount',
+        'fred': 'amount',
         'physicalDatatype': 'number',
-        'importance': 2,
-        'isSystemColumn': false
+        'isSystemColumn': false,
+        'dataset': datasetModel
       },
       'test_timestamp_column': {
-        'name': 'test_timestamp_column',
-        'title': 'what time is it',
-        'logicalDatatype': 'time',
+        'name': 'what time is it',
+        'fred': 'time',
         'physicalDatatype': 'timestamp',
-        'importance': 3,
-        'isSystemColumn': false
+        'isSystemColumn': false,
+        'dataset': datasetModel
       },
       'test_floating_timestamp_column': {
-        'name': 'test_floating_timestamp_column',
-        'title': 'which time is it',
-        'logicalDatatype': 'time',
+        'name': 'which time is it',
+        'fred': 'time',
         'physicalDatatype': 'floating_timestamp',
-        'importance': 3,
-        'isSystemColumn': false
+        'isSystemColumn': false,
+        'dataset': datasetModel
       },
       ':@test_computed_column': {
-        'name': ':@test_computed_column',
-        'title': 'Community Districts',
+        'name': 'Community Districts',
         'description': 'Community district reporting 311 request',
-        'logicalDatatype': 'location',
+        'fred': 'location',
         'physicalDatatype': 'text',
-        'importance': 1,
         'shapefile': '7a5b-8kcq',
-        'isSystemColumn': true
+        'isSystemColumn': true,
+        'dataset': datasetModel
       },
       ':test_system_column': {
         'name': ':test_system_column',
-        'title': ':test_system_column',
-        'logicalDatatype': 'text',
+        'fred': 'text',
         'physicalDatatype': 'row_identifier',
-        'importance': 3,
-        'isSystemColumn': true
+        'isSystemColumn': true,
+        'dataset': datasetModel
       },
       '*': {
-        'name': '*',
-        'title': 'Data Table',
+        'name': 'Data Table',
         'description': '',
-        'logicalDatatype': '*',
+        'fred': '*',
         'physicalDatatype': '*',
-        'importance': 1,
         'isSystemColumn': false,
-        'fakeColumnGeneratedByFrontEnd': true
+        'fakeColumnGeneratedByFrontEnd': true,
+        'dataset': datasetModel
       }
     });
 

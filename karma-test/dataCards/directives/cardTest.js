@@ -165,7 +165,10 @@ describe('card directive', function() {
 
       datasetModel = new Model();
       datasetModel.defineObservableProperty('columns', {
-        myFieldName: { description: initialDescriptionText }
+        myFieldName: {
+          description: initialDescriptionText,
+          dataset: datasetModel
+        }
       });
 
       var pageModel = new Model();

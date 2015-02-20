@@ -245,7 +245,7 @@
               return {
                 index: i,
                 columnId: column.fieldName,
-                name: column.title,
+                name: column.dataset.version === '0' ? column.title : column.name,
                 active: isSortedOnColumn(column.fieldName),
                 sortUp: ordering === 'ASC',
                 width: columnWidths[column.fieldName],

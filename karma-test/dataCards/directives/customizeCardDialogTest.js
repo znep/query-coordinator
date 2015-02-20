@@ -55,33 +55,6 @@ describe('Customize card dialog', function() {
     testHelpers.TestDom.clear();
   });
 
-  var columns = {
-    choropleth: {
-      name: 'choropleth',
-      title: 'Spot where cool froods hang out.',
-      description: '???',
-      logicalDatatype: 'location',
-      physicalDatatype: 'number',
-      importance: 2,
-      shapefile: 'mash-apes'
-    },
-    feature: {
-      name: 'feature',
-      title: 'Froods who really know where their towels are.',
-      description: '???',
-      logicalDatatype: 'location',
-      physicalDatatype: 'point',
-      importance: 2
-    },
-    bar: {
-      name: 'bar',
-      title: 'A bar where cool froods hang out.',
-      description: '???',
-      logicalDatatype: 'amount',
-      physicalDatatype: 'number'
-    }
-  };
-
   /**
    * Create a customize-card-dialog element.
    *
@@ -89,6 +62,41 @@ describe('Customize card dialog', function() {
    * @property {boolean=false} preexisting Whether or not the card added is a pre-existing card.
    */
   function createDialog(options) {
+
+    var datasetModel = new Model();
+    datasetModel.id = 'rook-king';
+    datasetModel.version = '1';
+    datasetModel.defineObservableProperty('rowDisplayUnit', 'row');
+
+    var columns = {
+      choropleth: {
+        name: 'Spot where cool froods hang out.',
+        description: '???',
+        fred: 'location',
+        physicalDatatype: 'number',
+        dataset: datasetModel,
+        computationStrategy: {
+          parameters: {
+            region: '_mash-apes'
+          }
+        }
+      },
+      feature: {
+        name: 'Froods who really know where their towels are.',
+        description: '???',
+        fred: 'location',
+        physicalDatatype: 'point',
+        dataset: datasetModel
+      },
+      bar: {
+        name: 'A bar where cool froods hang out.',
+        description: '???',
+        fred: 'amount',
+        physicalDatatype: 'number',
+        dataset: datasetModel
+      }
+    };
+    datasetModel.defineObservableProperty('columns', columns);
 
     options = options || {};
 
@@ -103,11 +111,6 @@ describe('Customize card dialog', function() {
     };
 
     var cards = options.cards || [];
-
-    var datasetModel = new Model();
-    datasetModel.id = 'rook-king';
-    datasetModel.defineObservableProperty('rowDisplayUnit', 'row');
-    datasetModel.defineObservableProperty('columns', columns);
 
     var pageModel = new Page('asdf-fdsa');
     pageModel.set('dataset', datasetModel);

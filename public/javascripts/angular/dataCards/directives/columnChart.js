@@ -5,7 +5,6 @@ angular.module('socrataCommon.directives').directive('columnChart', function($pa
 
     var topMargin = 0; // Set to zero so .card-text could control padding b/t text & visualization
     var bottomMargin; // Calculated based on label text length
-    var tipHeight = 10;
     var horizontalScrollbarHeight = 15; // used to keep horizontal scrollbar within .card-visualization upon expand
     var numberOfDefaultLabels = expanded ? chartData.length : 3;
     var undefinedPlaceholder = '(No value)';
@@ -50,7 +49,7 @@ angular.module('socrataCommon.directives').directive('columnChart', function($pa
 
     var horizontalScaleDetails = computeHorizontalScale(chartWidth, chartData, expanded);
     var horizontalScale = horizontalScaleDetails.scale;
-    var chartTruncated = horizontalScaleDetails.truncated;
+    chartTruncated = horizontalScaleDetails.truncated;
     var rangeBand = Math.ceil(horizontalScale.rangeBand());
 
     // If the chart is not expanded, limit our vert scale computation to what's actually
@@ -63,28 +62,35 @@ angular.module('socrataCommon.directives').directive('columnChart', function($pa
     var chartRightEdge = dimensions.width - chartLeftOffset;
 
     $chart.css('height', chartHeight + topMargin + 1);
-    $chartScroll.
-      css('padding-top', 0).
-      css('padding-bottom', bottomMargin).
-      css('top', 'initial').
-      css('width', chartWidth);
+    $chartScroll.css({
+      'padding-top': 0,
+      'padding-bottom': bottomMargin,
+      'top': 'initial',
+      'width': chartWidth
+    });
 
     var ticks = function() {
       var numberOfTicks = 3;
-      var element;
-
-      element = $('<div>').addClass('ticks').
-        css('top', $chartScroll.position().top + topMargin).
-        css('width', chartWidth);
-      _.each(_.uniq([0].concat(verticalScale.ticks(numberOfTicks))), function(tick) {
-        element.append(
-          $('<div>').
-            css('top', chartHeight - verticalScale(tick)).
-            toggleClass('origin', tick === 0).
-            text($.toHumaneNumber(tick))
-        );
+      var element = $('<div />', {
+        'class': 'ticks',
+        css: {
+          top: $chartScroll.position().top + topMargin,
+          width: chartWidth,
+          height: chartHeight + topMargin
+        }
       });
-      element.css('height', chartHeight + topMargin);
+
+      var tickMarks = _.map(_.uniq([0].concat(verticalScale.ticks(numberOfTicks))), function(tick) {
+        return $('<div/>', {
+          'class': tick === 0 ? 'origin' : '',
+          css: {
+            top: chartHeight - verticalScale(tick)
+          },
+          text: $.toHumaneNumber(tick)
+        });
+      });
+
+      element.append(tickMarks);
       return element;
     };
 
@@ -329,9 +335,11 @@ angular.module('socrataCommon.directives').directive('columnChart', function($pa
       selection.exit().remove();
     };
 
-    $chartScroll.children('.ticks').remove();
-    $chartScroll.prepend(ticks);
-
+    var $ticks = ticks();
+    var $columnChart = element.find('.column-chart');
+    $columnChart.children('.ticks').remove();
+    $columnChart.prepend($ticks);
+    
     barGroupSelection.call(updateBars);
     labelSelection.call(updateLabels);
 
@@ -342,7 +350,7 @@ angular.module('socrataCommon.directives').directive('columnChart', function($pa
       inset: {
         vertical: -4
       },
-      positionOn: function($target, $head, options) {
+      positionOn: function($target) {
         var name = d3.select($target[0]).datum().name;
         name = _.instead(name, '');
         if (Modernizr.pointerevents) {
@@ -371,13 +379,11 @@ angular.module('socrataCommon.directives').directive('columnChart', function($pa
     });
 
     // Set "Click to Expand" truncation marker + its tooltip
-    $truncationMarker.css('bottom', $labels.height() - $truncationMarker.height());
+    $truncationMarker.css({
+      bottom: $labels.height() - $truncationMarker.height(),
+      display: chartTruncated ? 'block' : 'none'
+    });
 
-    if (chartTruncated) {
-      $truncationMarker.css('display', 'block');
-    } else {
-      $truncationMarker.css('display', 'none');
-    }
   };
 
   function computeDomain(chartData, showFiltered) {
@@ -509,7 +515,7 @@ angular.module('socrataCommon.directives').directive('columnChart', function($pa
 
       FlyoutService.register(
         'truncation-marker',
-        function(el) { return '<div class="flyout-title">Click to expand</div>'; },
+        _.constant('<div class="flyout-title">Click to expand</div>'),
         scope.eventToObservable('$destroy')
       );
 

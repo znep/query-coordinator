@@ -254,7 +254,6 @@
       );
 
       if (_.isEmpty(column)) {
-      debugger
         throw new Error('Could not match fieldName to human-readable column name.');
       }
 

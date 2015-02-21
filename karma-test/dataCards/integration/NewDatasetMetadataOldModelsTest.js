@@ -3,7 +3,7 @@
 // This tests that:
 // - DatasetDataService can convert V1 metadata blobs to V0, and
 // - DatasetV0 model can consume this converted V0 blob.
-xdescribe('Using v1 metadata to instantiate v0 models', function() {
+describe('Using v1 metadata to instantiate v0 models', function() {
   var DatasetV0;
   var $httpBackend;
 

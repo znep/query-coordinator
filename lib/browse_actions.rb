@@ -313,6 +313,9 @@ protected
     if browse_options[:view_results].nil? || browse_options[:view_results].empty?
       Rails.logger.info("IT WAS AN EMPTY ARRAY") unless browse_options[:view_results].nil?
       begin
+        if browse_options[:search_options][:limitTo].nil? && !feature_flag?(:exit_tech_preview, request)
+          browse_options[:search_options][:limitTo] = %w(tables href blob maps calendars charts forms apis predeploy_apis)
+        end
         view_results = Clytemnestra.search_views(browse_options[:search_options])
         browse_options[:view_count] = view_results.count
         browse_options[:view_results] = view_results.results

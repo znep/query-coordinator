@@ -65,7 +65,7 @@
       expect(revertButton.find('button')).to.not.have.class('disabled');
     });
 
-    it('should call `revertPage()` when clicked', function() {
+    it('should call revertPage when clicked', function() {
 
       var revertButton = createElement(true, false);
 

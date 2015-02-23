@@ -12,7 +12,10 @@
             currentObj._primaryView = currentObj.settings.view;
             currentObj._displayFormat = currentObj.settings.displayFormat ||
                 (currentObj._primaryView || {}).displayFormat;
-            $mainDom.resize(function(e, source, forceUpdate) { doResize(currentObj, e, forceUpdate); })
+            $mainDom.resize(function(e, source, forceUpdate) {
+                doResize(currentObj, e, forceUpdate);
+                e.stopPropagation();
+            })
                 .bind('hide', function() { currentObj._hidden = true; })
                 .bind('show', function()
                 {

@@ -10,6 +10,8 @@
         'editMode': '=',
         'hasChanges': '=',
         'expandedCard': '=',
+        'revertPage': '=',
+        'revertInitiated': '=',
         'savePage': '=',
         'saveStatus': '=',
         'savePageAs': '='

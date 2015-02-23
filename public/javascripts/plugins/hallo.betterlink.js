@@ -40,14 +40,11 @@
 
       this.options.editable.element.on('halloselected', function(e, data) {
         _this.options.savedToolbarPosition = data;
-        if (data.alreadyInitialized !== true) {
-          _this._initializeUrlInputValue();
-        }
+        _this._initializeUrlInputValue();
       });
 
       this.options.editable.element.on('hallobetterlinkexpanded', function() {
-        var data = jQuery.extend(_this.options.savedToolbarPosition, { alreadyInitialized: true });
-        _this.options.editable.element.trigger('halloselected', data);
+        _this.options.editable.element.trigger('halloselected', _this.options.savedToolbarPosition);
       });
 
       this.options.editable.element.on('hallounselected', function(){

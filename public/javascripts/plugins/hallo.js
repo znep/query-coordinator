@@ -2188,7 +2188,6 @@
             } else {
               _this.options.editable.execute(_this.options.command);
             }
-            queryState();
             return false;
           });
         }
@@ -2504,7 +2503,13 @@
           return;
         }
         toolbar_height_offset = this.toolbar.outerHeight() + 10;
+
         if (selection && !selection.collapsed && selection.nativeRange) {
+          // This prevents the toolbar from "jumping" to the top of the window
+          // when you bold/italicize text and click the add link button (STAT-750)
+          selection = this.options.editable.getSelection();
+          this.options.editable.restoreSelection(selection);
+
           selectionRect = selection.nativeRange.getBoundingClientRect();
           if (this.options.positionAbove) {
             top_offset = selectionRect.top - toolbar_height_offset;

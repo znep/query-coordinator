@@ -1,16 +1,16 @@
-// This suite verifies the integration between DatasetDataService and Dataset models
+// This suite verifies the integration between DatasetDataService and DatasetV0 models
 // for Phase 1 of the metadata migration.
 // This tests that:
 // - DatasetDataService can convert V1 metadata blobs to V0, and
-// - Dataset model can consume this converted V0 blob.
+// - DatasetV0 model can consume this converted V0 blob.
 describe('Using v1 metadata to instantiate v0 models', function() {
-  var Dataset;
+  var DatasetV0;
   var $httpBackend;
 
   beforeEach(function() {
     module('dataCards');
     inject(function($injector, testHelpers) {
-      Dataset = $injector.get('Dataset');
+      DatasetV0 = $injector.get('DatasetV0');
       $httpBackend = $injector.get('$httpBackend');
       testHelpers.overrideMetadataMigrationPhase(1);
     });
@@ -19,7 +19,7 @@ describe('Using v1 metadata to instantiate v0 models', function() {
   function constructWithV1Blob(v1Blob) {
     var datasetDataUrl = '/metadata/v1/dataset/{0}'.format(v1Blob.id);
     $httpBackend.whenGET(datasetDataUrl).respond(v1Blob);
-    return new Dataset(v1Blob.id);
+    return new DatasetV0(v1Blob.id);
   }
 
   it('should convert computed columns correctly', function(done) {

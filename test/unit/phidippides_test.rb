@@ -335,8 +335,35 @@ class PhidippidesTest < Test::Unit::TestCase
     assert_equal({'key' => 'value'}, result[:body])
   end
 
+  def test_issue_request_temporary_redirect_response
+    prepare_stubs(
+      code: '307',
+      location: 'dataset/anot-hrpl',
+      body: nil,
+      path: 'datasets/four-four',
+      verb: :get,
+      response_class: Net::HTTPTemporaryRedirect
+    )
+
+    options = {
+      verb: :get,
+      path: 'datasets/four-four',
+      request_id: 'request_id'
+    }
+
+    phidippides.
+      expects(:on_redirect).
+      with(@mock_response, 'dataset/anot-hrpl', options).
+      returns({
+        body: {'key' => 'value'}
+      })
+
+    result = phidippides.issue_request(options)
+    assert_equal({'key' => 'value'}, result[:body])
+  end
+
   def test_issue_request_failure_response
-    prepare_stubs(code: '405', path: 'datasets/four-four', verb: :get, kind_of: false)
+    prepare_stubs(code: '405', path: 'datasets/four-four', verb: :get, response_class: Net::HTTPMethodNotAllowed)
     result = phidippides.issue_request(verb: :get, path: 'datasets/four-four', request_id: 'request_id')
     assert_equal({'status' => '405', 'body' => nil, 'error' => nil}, result)
   end
@@ -359,9 +386,17 @@ class PhidippidesTest < Test::Unit::TestCase
   def prepare_stubs(options)
     @mock_response = stub(
       code: options[:code] || '200',
-      body: options[:body].try(:to_json),
-      kind_of?: options.fetch(:kind_of, true)
+      body: options[:body].try(:to_json)
     )
+
+    @mock_response.expects(:[]).with('location').returns(options[:location]) if options[:location].present?
+
+    response_class = options.fetch(:response_class, Net::HTTPSuccess)
+
+    @mock_response.stubs(:kind_of?).returns(false)
+    @mock_response.stubs(:kind_of?).with do |klass|
+      response_class <= klass
+    end.returns(true)
 
     @mock_request = {}
     @mock_request.expects(:body=).with(JSON.dump(options[:request_body])) if options[:request_body].present?

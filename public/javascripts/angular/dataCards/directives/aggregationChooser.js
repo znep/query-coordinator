@@ -22,7 +22,11 @@
   };
 
   var validColumnFilter = function(column) {
-    return column.physicalDatatype === 'number' && column.logicalDatatype === 'amount';
+    if (column.dataset.version === '0') {
+      return column.physicalDatatype === 'number' && column.logicalDatatype === 'amount';
+    } else {
+      return column.physicalDatatype === 'number' && column.fred === 'amount';
+    }
   };
 
   function AggregationChooser(AngularRxExtensions, DatasetDataService, FlyoutService, WindowState) {
@@ -124,13 +128,16 @@
           columnsObservable,
           function(aggregationFunction, columns) {
             return _(columns).
-              reject(function(column) {
-                return column.isSystemColumn || column.name === '*';
+              pick(function(column, fieldName) {
+                return !column.isSystemColumn && fieldName !== '*';
               }).
-              filter(validColumnFilter).
-              map(function(column) {
+              pick(validColumnFilter).
+              map(function(column, fieldName) {
                 var enabled = aggregationFunction !== 'count';
-                return _.extend(pluralizeAndCapitalize(column.title), { id: column.name, enabled: enabled });
+                return _.extend(
+                  pluralizeAndCapitalize(column.dataset.version === '0' ? column.title : column.name),
+                  { id: fieldName, enabled: enabled }
+                );
               }).
               value();
           });
@@ -154,9 +161,12 @@
           columnsObservable,
           activeAggregationObservable,
           function(columns, activeAggregation) {
-            var column = _(columns).find({ name: activeAggregation });
+            var column = columns[activeAggregation];
             if (_.isDefined(column)) {
-              return _.extend({ id: activeAggregation }, pluralizeAndCapitalize(column.title));
+              return _.extend(
+                { id: activeAggregation },
+                pluralizeAndCapitalize(column.dataset.version === '0' ? column.title : column.name)
+              );
             } else {
               return _.extend(pluralizeAndCapitalize(activeAggregation));
             }

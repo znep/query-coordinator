@@ -73,7 +73,7 @@ class PolaroidTest < Test::Unit::TestCase
       code: '500',
       page_id: page_id,
       field_id: field_id,
-      kind_of: false,
+      response_class: Net::HTTPInternalServerError,
       content_type: 'application/json',
       body: '{"error":true,"reason":"Error"}'
     )
@@ -97,7 +97,7 @@ class PolaroidTest < Test::Unit::TestCase
       verb: :get,
       page_id: page_id,
       field_id: field_id,
-      kind_of: false
+      response_class: Net::HTTPInternalServerError
     )
     result = polaroid.fetch_image(page_id, field_id)
     assert_equal({
@@ -118,9 +118,15 @@ class PolaroidTest < Test::Unit::TestCase
     @mock_response = stub(
       code: options[:code] || '200',
       body: options.fetch(:body, 'no body'),
-      content_type: options.fetch(:content_type, 'image/png'),
-      kind_of?: options.fetch(:kind_of, true)
+      content_type: options.fetch(:content_type, 'image/png')
     )
+
+    response_class = options.fetch(:response_class, Net::HTTPSuccess)
+
+    @mock_response.stubs(:kind_of?).returns(false)
+    @mock_response.stubs(:kind_of?).with do |klass|
+      response_class <= klass
+    end.returns(true)
 
     @mock_request = {}
     @mock_request.expects(:body).returns(options.fetch(:body, ''))

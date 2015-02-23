@@ -89,32 +89,25 @@ describe('A Choropleth Card Visualization', function() {
     if (!datasetModel) {
 
       var columnsData;
-      // Note that although dataset columns come back from Phidippides as an array,
-      // there is some internal mechanism in the Model that translates it into a
-      // dictionary of the form "fieldName" : { ... }. This test data needs to
-      // fake the second form since it (somehow?) seems to sidestep that transformation.
       if (!testUndefinedColumns) {
         columnsData = {
           "points": {
-            "name": "points",
-            "title": "source column.",
+            "name": "source column.",
             "description": "required",
-            "logicalDatatype": "location",
-            "physicalDatatype": "point",
-            "importance": 2
+            "fred": "location",
+            "physicalDatatype": "point"
           },
           "ward": {
-            "name": "ward",
-            "title": "Ward where crime was committed.",
+            "name": "Ward where crime was committed.",
             "description": "Batman has bigger fish to fry sometimes, you know.",
-            "logicalDatatype": "location",
-            "physicalDatatype": "text",
-            "importance": 2,
-            // It is important that this gets converted into a shapefileHumanReadablePropertyName in
-            // cardVisualizationChoropleth.js which matches the test fixture, so do not change this
-            // until we either a) change the test fixture or b) remove the notion of
-            // shapefileHumanReadablePropertyName all together.
-            "shapefile": "snuk-a5kv"
+            "fred": "location",
+            "physicalDatatype": "number",
+            "computationStrategy": {
+              "parameters": {
+                "region": "_snuk-a5kv",
+                "geometryLabel": "ward"
+              }
+            }
           }
         };
       }
@@ -270,12 +263,10 @@ describe('A Choropleth Card Visualization', function() {
 
       var columns = {
         "ward": {
-          "name": "ward",
-          "title": "Ward where crime was committed.",
+          "name": "Ward where crime was committed.",
           "description": "Batman has bigger fish to fry sometimes, you know.",
-          "logicalDatatype": "location",
+          "fred": "location",
           "physicalDatatype": "text",
-          "importance": 2,
           // It is important that this gets converted into a shapefileHumanReadablePropertyName in
           // cardVisualizationChoropleth.js which matches the test fixture, so do not change this
           // until we either a) change the test fixture or b) remove the notion of
@@ -296,12 +287,10 @@ describe('A Choropleth Card Visualization', function() {
 
       var columns = {
         "ward": {
-          "name": "ward",
-          "title": "Ward where crime was committed.",
+          "name": "Ward where crime was committed.",
           "description": "Batman has bigger fish to fry sometimes, you know.",
-          "logicalDatatype": "location",
-          "physicalDatatype": "text",
-          "importance": 2
+          "fred": "location",
+          "physicalDatatype": "text"
         }
       };
 
@@ -317,10 +306,9 @@ describe('A Choropleth Card Visualization', function() {
 
       var columns = {
         "ward": {
-          "name": "ward",
-          "title": "Ward where crime was committed.",
+          "name": "Ward where crime was committed.",
           "description": "Batman has bigger fish to fry sometimes, you know.",
-          "logicalDatatype": "location",
+          "fred": "location",
           "physicalDatatype": "text",
           "computationStrategy": {
             "parameters": {
@@ -355,10 +343,9 @@ describe('A Choropleth Card Visualization', function() {
 
       var columns = {
         "ward": {
-          "name": "ward",
-          "title": "Ward where crime was committed.",
+          "name": "Ward where crime was committed.",
           "description": "Batman has bigger fish to fry sometimes, you know.",
-          "logicalDatatype": "location",
+          "fred": "location",
           "physicalDatatype": "text",
           // It is important that this gets converted into a shapefileHumanReadablePropertyName in
           // cardVisualizationChoropleth.js which matches the test fixture, so do not change this

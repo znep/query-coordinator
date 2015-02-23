@@ -1,21 +1,22 @@
 // This model is intended to be an immutable reference to a Dataset.
-angular.module('dataCards.models').factory('Dataset', function(ModelHelper, Model, CardDataService, DatasetDataService, Schemas, SchemaDefinitions, $injector) {
-  var SUPPORTED_DATASET_SCHEMA_VERSION = '0';
+angular.module('dataCards.models').factory('DatasetV1', function(ModelHelper, Model, CardDataService, DatasetDataService, Schemas, SchemaDefinitions, $injector) {
+  var SUPPORTED_DATASET_SCHEMA_VERSION = '1';
   var SUPPORTED_PAGES_SCHEMA_VERSION = '0';
 
   var schemas = Schemas.regarding('dataset_metadata');
 
   //TODO cache instances or share cache.
-  var Dataset = Model.extend({
+  var DatasetV1 = Model.extend({
     init: function(id) {
       this._super();
 
       var self = this;
 
       if (!SchemaDefinitions.uidRegexp.test(id)) {
-        throw new Error('Bad dataset ID passed to Dataset constructor.');
+        throw new Error('Bad dataset ID passed to DatasetV1 constructor.');
       }
       self.id = id;
+      self.version = '1';
 
       // Reuse promises across lazy properties.
       // NOTE! It's important that the various getters on PageDataService are _not_ called
@@ -27,22 +28,21 @@ angular.module('dataCards.models').factory('Dataset', function(ModelHelper, Mode
           if (schemas.isValidAgainstVersion(SUPPORTED_DATASET_SCHEMA_VERSION, blob)) {
             return blob;
           } else {
-            var validationErrors = schemas.validateAgainstVersion('0', blob).errors;
-            throw new Error('Dataset metadata deserialization failed: ' + JSON.stringify(validationErrors) + JSON.stringify(blob));
+            // Cause a useful error to be thrown.
+            schemas.assertValidAgainstVersion('1', blob);
           }
         }).then(function(blob) {
           blob.updatedAt = new Date(blob.updatedAt);
           return blob;
         }).then(function(blob) {
-          blob.columns.push({
-            "name": "*",
-            "title": "Data Table",
+          blob.columns['*'] = {
+            "name": "Data Table",
             "description": "",
-            "logicalDatatype": "*",
+            "fred": "*",
             "physicalDatatype": "*",
-            "importance": 1,
             "fakeColumnGeneratedByFrontEnd": true //TODO move away from this hack. The table isn't optional anymore.
-          });
+          };
+
           return blob;
         });
       };
@@ -65,7 +65,17 @@ angular.module('dataCards.models').factory('Dataset', function(ModelHelper, Mode
         );
       };
 
-      var fields = ['description', 'name', 'rowDisplayUnit', 'defaultAggregateColumn', 'domain', 'ownerId', 'updatedAt'];
+      var fields = [
+        'defaultPage',
+        'description',
+        'domain',
+        'locale',
+        'name',
+        'ownerId',
+        'rowDisplayUnit',
+        'updatedAt'
+      ];
+
       _.each(fields, function(field) {
         self.defineObservableProperty(field, undefined, function() {
           return datasetMetadataPromise().then(_.property(field));
@@ -73,22 +83,23 @@ angular.module('dataCards.models').factory('Dataset', function(ModelHelper, Mode
       });
 
       self.defineObservableProperty('columns', {}, function() {
-        function isSystemColumn (column) {
+
+        function isSystemColumn(columnFieldName) {
           // A column is a system column if its name starts with a :.
-          // Note that as of 9/26/2014, computed columns don't adhere to this
-          // standard. This will be addressed in the backend.
-          return column.name[0] === ':';
+          // TODO computation strategy.
+          return columnFieldName[0] === ':';
         };
-        // Columns are provided as an array of objects.
-        // For ease of use, transform it into an object where
-        // the keys are the column names.
-        return datasetMetadataPromise().then(function(data) {
-          return _.reduce(data.columns, function(acc, column) {
-            column.isSystemColumn = isSystemColumn(column);
-            acc[column.name] = column;
-            return acc;
-          }, {});
-        });
+
+        return datasetMetadataPromise().
+          then(_.property('columns')).
+          then(function(columns) {
+            _.forOwn(columns, function(columnBlob, columnFieldName) {
+              columnBlob.isSystemColumn = isSystemColumn(columnFieldName);
+              columnBlob.dataset = self;
+            });
+
+            return columns;
+          });
       });
 
       self.defineObservableProperty('pages', {}, pagesPromise);
@@ -99,5 +110,5 @@ angular.module('dataCards.models').factory('Dataset', function(ModelHelper, Mode
     }
   });
 
-  return Dataset;
+  return DatasetV1;
 });

@@ -9,9 +9,9 @@
     <soc-option value="null" disabled="disabled" ng-if="datasetColumns.available.length > 0"></soc-option>
 
     <soc-option
-      value="{{column.name}}"
+      value="{{fieldName}}"
       title="Add this card"      
-      ng-repeat="column in datasetColumns.available">{{column.title}}</soc-option>
+      ng-repeat="fieldName in datasetColumns.available">{{columnHumanNameFn(fieldName)}}</soc-option>
 
     <soc-option value="null" disabled="disabled" ng-if="datasetColumns.alreadyOnPage.length > 0"></soc-option>
 
@@ -21,10 +21,10 @@
       ng-if="datasetColumns.alreadyOnPage.length > 0"><b>Card already on page</b></soc-option>
 
     <soc-option
-      value="{{column.name}}"
+      value="{{fieldName}}"
       title="This card is already on the page"
       disabled="disabled"
-      ng-repeat="column in datasetColumns.alreadyOnPage">-{{column.title}}</soc-option>
+      ng-repeat="fieldName in datasetColumns.alreadyOnPage">-{{columnHumanNameFn(fieldName)}}</soc-option>
 
     <soc-option value="null" disabled="disabled" ng-if="datasetColumns.visualizationUnsupported.length > 0"></soc-option>
 
@@ -34,10 +34,10 @@
       ng-if="datasetColumns.visualizationUnsupported.length > 0">Not currently supported</soc-option>
 
     <soc-option
-      value="{{column.name}}"
+      value="{{fieldName}}"
       title="This card type is currently unsupported"
       disabled="disabled"
-      ng-repeat="column in datasetColumns.visualizationUnsupported">-{{column.title}}</soc-option>
+      ng-repeat="fieldName in datasetColumns.visualizationUnsupported">-{{columnHumanNameFn(fieldName)}}</soc-option>
 
   </soc-select>
 </div>

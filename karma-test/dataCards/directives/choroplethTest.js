@@ -415,7 +415,7 @@ describe("A Choropleth Directive", function() {
           });
           scope.geojsonAggregateData = cardVisualizationChoroplethHelpers.aggregateGeoJsonData(
             createGeoJsonData(featureCount), values, values, null,
-            'mycolumn', [{name: 'mycolumn', shapefile: null}]
+            'mycolumn', { 'mycolumn': {shapefile: null} }
           );
           el = createChoropleth();
 
@@ -461,7 +461,7 @@ describe("A Choropleth Directive", function() {
           });
           scope.geojsonAggregateData = cardVisualizationChoroplethHelpers.aggregateGeoJsonData(
             createGeoJsonData(featureCount), values, values, null,
-            'mycolumn', [{name: 'mycolumn', shapefile: null}]
+            'mycolumn', { 'mycolumn': {shapefile: null} }
           );
           el = createChoropleth();
 
@@ -518,7 +518,7 @@ describe("A Choropleth Directive", function() {
             });
             scope.geojsonAggregateData = cardVisualizationChoroplethHelpers.aggregateGeoJsonData(
               createGeoJsonData(featureCount), values, values, null,
-              'mycolumn', [{name: 'mycolumn', shapefile: null}]
+              'mycolumn', { 'mycolumn': {shapefile: null} }
             );
             el = createChoropleth();
 
@@ -549,7 +549,7 @@ describe("A Choropleth Directive", function() {
           );
           scope.geojsonAggregateData = cardVisualizationChoroplethHelpers.aggregateGeoJsonData(
             createGeoJsonData(featureCount), values, values, null,
-            'mycolumn', [{name: 'mycolumn', shapefile: null}]
+            'mycolumn', { 'mycolumn': {shapefile: null} }
           );
           el = createChoropleth();
 
@@ -834,7 +834,7 @@ describe("A Choropleth Directive", function() {
             });
             scope.geojsonAggregateData = cardVisualizationChoroplethHelpers.aggregateGeoJsonData(
               createGeoJsonData(featureCount), values, values, null,
-              'mycolumn', [{name: 'mycolumn', shapefile: null}]
+              'mycolumn', { 'mycolumn': {shapefile: null} }
             );
             el = createChoropleth();
 

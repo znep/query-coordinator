@@ -10,18 +10,19 @@ angular.module('dataCards.directives').directive('card', function(AngularRxExten
 
       var modelSubject = $scope.observe('model').filter(_.identity);
       var datasetObservable = modelSubject.pluck('page').observeOnLatest('dataset');
-      var columns = datasetObservable.observeOnLatest('columns');
-
-      var column = modelSubject.pluck('fieldName').combineLatest(columns, function(fieldName, columns) {
-        return columns[fieldName];
-      }).filter(_.isObject);
 
       $scope.descriptionCollapsed = true;
 
       $scope.bindObservable('expanded', modelSubject.observeOnLatest('expanded'));
 
-      $scope.bindObservable('title', column.pluck('title'));
-      $scope.bindObservable('description', column.pluck('description'));
+      $scope.bindObservable(
+        'title',
+        modelSubject.observeOnLatest('column.dataset.version').
+        flatMapLatest(function(version) {
+          return modelSubject.observeOnLatest(version === '0' ? 'column.title' : 'column.name');
+        })
+      );
+      $scope.bindObservable('description', modelSubject.observeOnLatest('column.description'));
 
       var updateCardLayout = _.throttle(function(textHeight) {
         descriptionTruncatedContent.dotdotdot({
@@ -65,7 +66,7 @@ angular.module('dataCards.directives').directive('card', function(AngularRxExten
 
       Rx.Observable.subscribeLatest(
         dimensionsObservable,
-        column.pluck('description'),
+        modelSubject.observeOnLatest('column.description'),
         function(dimensions, descriptionText) {
           // Manually update the binding now, because Angular doesn't know that dotdotdot messes with
           // the text.

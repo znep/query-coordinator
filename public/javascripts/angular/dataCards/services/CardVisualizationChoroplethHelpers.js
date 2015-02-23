@@ -250,7 +250,7 @@
       // the card's "fieldName".
       var column = _.find(
         columns,
-        function(column) { return column.name === fieldName; }
+        function(column, candidateFieldName) { return candidateFieldName === fieldName; }
       );
 
       if (_.isEmpty(column)) {

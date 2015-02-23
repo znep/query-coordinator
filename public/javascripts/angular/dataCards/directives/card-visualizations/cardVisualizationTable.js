@@ -36,37 +36,53 @@
           return CardDataService.getRows.apply(CardDataService, args);
         };
 
-        function isDisplayableColumn(column) {
-          return validColumnRegex.test(column.name);
+        function isDisplayableColumn(column, fieldName) {
+          return validColumnRegex.test(fieldName);
         }
 
-        function removeSystemColumns(columns) {
-          var filteredColumns = _(columns).
-            filter(isDisplayableColumn).
-            map(function(column) {
-              column.sortable = !_.contains(unsortable, column.physicalDatatype);
-              return column;
-            }).
-            value();
-          return _.zipObject(_.pluck(filteredColumns, 'name'), filteredColumns);
+        function keepOnlyDisplayableColumns(columns) {
+          return _.pick(
+            _.cloneDeep(columns),
+            isDisplayableColumn
+          );
         }
 
-        var columnDetails = dataset.observeOnLatest('columns').map(removeSystemColumns);
+        function addExtraAttributesToColumns(columns) {
+          return _.transform(columns, function(result, column, fieldName) {
+            var newColumn = Object.create(column);
+            newColumn.sortable = !_.contains(unsortable, column.physicalDatatype);
+            // SIGH. I'd love to not do this, but we'd have to change a whole heap of table and
+            // table test code to support that sort of idealism. The main issue is that table
+            // expects its column information in a significant-order array.
+            newColumn.fieldName = fieldName;
 
-        var columnDetailsAsArray = columnDetails.map(function(val) {
-          var asArray = _.toArray(val);
-          if ($.isPresent($scope.firstColumn)) {
-            var columnName = $scope.firstColumn;
-            var columnIndex = _.findIndex(asArray, function(column) {
-              return column.name === columnName;
-            });
-            if (columnIndex >= 0) {
-              var column = asArray.splice(columnIndex, 1)[0];
-              asArray.splice(0, 0, column);
+            result[fieldName] = newColumn;
+          }, {});
+        }
+
+        var columnDetails = dataset.observeOnLatest('columns').
+          map(keepOnlyDisplayableColumns).
+          map(addExtraAttributesToColumns);
+
+        var columnDetailsAsArray = columnDetails.
+          map(_.toArray).
+          combineLatest(
+            $scope.observe('firstColumn'),
+            function(asArray, firstColumnFieldName) {
+              if ($.isPresent(firstColumnFieldName)) {
+                // Move the column specified by firstColumnFieldName to
+                // the front of the columns array.
+                var columnIndex = _.findIndex(asArray, function(column) {
+                  return column.fieldName === firstColumnFieldName;
+                });
+                if (columnIndex >= 0) {
+                  var column = asArray.splice(columnIndex, 1)[0];
+                  asArray.splice(0, 0, column);
+                }
+              }
+              return asArray;
             }
-          }
-          return asArray;
-        });
+          );
 
         // Keep track of the number of requests that have been made and the number of
         // responses that have come back.

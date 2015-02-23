@@ -4,7 +4,6 @@
   describe('PageDataService', function() {
     var $httpBackend;
     var PageDataService;
-    var ServerConfig;
     var fakeRequestHandler;
     var fake4x4 = 'fake-data';
     var pageDataUrl = '/page_metadata/{0}.json'.format(fake4x4);
@@ -38,7 +37,6 @@
 
     beforeEach(inject(function($injector) {
       PageDataService = $injector.get('PageDataService');
-      ServerConfig = $injector.get('ServerConfig');
       $httpBackend = $injector.get('$httpBackend');
       fakeRequestHandler = $httpBackend.whenGET(pageDataUrl);
       fakeRequestHandler.respond(fakePageData);

@@ -25,8 +25,6 @@ describe('addCardDialog', function() {
   beforeEach(module('dataCards/cards.sass'));
 
   var testHelpers;
-  var serverMocks;
-  var serverConfig;
   var Card;
   var Page;
   var Model;
@@ -38,8 +36,6 @@ describe('addCardDialog', function() {
 
   beforeEach(inject(function($injector) {
     testHelpers = $injector.get('testHelpers');
-    serverMocks = $injector.get('serverMocks');
-    serverConfig = $injector.get('ServerConfig');
     Card = $injector.get('Card');
     Page = $injector.get('Page');
     Model = $injector.get('Model');
@@ -48,8 +44,6 @@ describe('addCardDialog', function() {
     AngularRxExtensions = $injector.get('AngularRxExtensions');
     CardTypeMapping = $injector.get('CardTypeMapping');
     $httpBackend = $injector.get('$httpBackend');
-
-    serverConfig.override('oduxCardTypeMapping', serverMocks.CARD_TYPE_MAPPING);
 
     $httpBackend.whenGET(/\/api\/id\/rook-king.json.*/).respond([]);
     $httpBackend.whenGET(/\/resource\/rook-king.json.*/).respond([]);
@@ -60,67 +54,60 @@ describe('addCardDialog', function() {
     testHelpers.TestDom.clear();
   });
 
-  var columns = {
-    'spot': {
-      'name': 'spot',
-      'title': 'Spot where cool froods hang out.',
-      'description': '???',
-      'logicalDatatype': 'location',
-      'physicalDatatype': 'number',
-      'importance': 2,
-      'shapefile': 'mash-apes'
-    },
-    'bar': {
-      'name': 'bar',
-      'title': 'A bar where cool froods hang out.',
-      'description': '???',
-      'logicalDatatype': 'amount',
-      'physicalDatatype': 'number'
-    },
-    'point': {
-      'name': 'point',
-      'title': 'Points where crimes have been committed.',
-      'description': 'Points.',
-      'logicalDatatype': 'location',
-      'physicalDatatype': 'point',
-      'importance': 2
-    },
-    'ward': {
-      'name': 'ward',
-      'title': 'Ward where crime was committed.',
-      'description': 'Batman has bigger fish to fry sometimes, you know.',
-      'logicalDatatype': 'location',
-      'physicalDatatype': 'number',
-      'importance': 2,
-      'shapefile': 'mash-apes'
-    },
-    'multipleVisualizations': {
-      'name': 'multipleVisualizations',
-      'title': 'A card for which multiple visualizations are possible.',
-      'description': '???',
-      'logicalDatatype': 'text',
-      'physicalDatatype': 'text',
-      'cardinality': 2000
-    }
-  };
-
   function createDialog() {
-
-    // Such higher-order!
-    function alphaCompareOnProperty(property) {
-      return function(a, b) {
-        if (a[property] < b[property]) {
-          return -1;
-        }
-        if (a[property] > b[property]) {
-          return 1;
-        }
-        return 0;
-      }
-    }
-
     var datasetModel = new Model();
+
+    var columns = {
+      'spot': {
+        'name': 'Spot where cool froods hang out.',
+        'description': '???',
+        'fred': 'location',
+        'physicalDatatype': 'number',
+        'computationStrategy': {
+          'parameters': {
+            'region': '_mash-apes'
+          }
+        },
+        'dataset': datasetModel
+      },
+      'bar': {
+        'name': 'A bar where cool froods hang out.',
+        'description': '???',
+        'fred': 'amount',
+        'physicalDatatype': 'number',
+        'dataset': datasetModel
+      },
+      'point': {
+        'name': 'Points where crimes have been committed.',
+        'description': 'Points.',
+        'fred': 'location',
+        'physicalDatatype': 'point',
+        'dataset': datasetModel
+      },
+      'ward': {
+        'name': 'Ward where crime was committed.',
+        'description': 'Batman has bigger fish to fry sometimes, you know.',
+        'fred': 'location',
+        'physicalDatatype': 'number',
+        'computationStrategy': {
+          'parameters': {
+            'region': '_mash-apes'
+          }
+        },
+        'dataset': datasetModel
+      },
+      'multipleVisualizations': {
+        'name': 'A card for which multiple visualizations are possible.',
+        'description': '???',
+        'fred': 'text',
+        'physicalDatatype': 'text',
+        'cardinality': 2000,
+        'dataset': datasetModel
+      }
+    };
+
     datasetModel.id = 'rook-king';
+    datasetModel.version = '1';
     datasetModel.defineObservableProperty('rowDisplayUnit', 'row');
     datasetModel.defineObservableProperty('columns', columns);
 
@@ -131,25 +118,31 @@ describe('addCardDialog', function() {
     pageModel.set('primaryAggregation', null);
     pageModel.set('cards', []);
 
+    // NOTE: This is straight up copied from CardsViewController.
     var datasetColumns = Rx.Observable.combineLatest(
-      pageModel.observe('dataset').observeOnLatest('columns'),
+      pageModel.observe('dataset'),
+      pageModel.observe('dataset.columns'),
       pageModel.observe('cards'),
-      function(columns, cards) {
+      function(dataset, columns, cards) {
 
         var datasetColumns = [];
         var hasAvailableCards = false;
 
-        var sortedColumns = _.values(columns).
-          filter(function(column) {
+        var sortedColumns = _.pairs(columns).
+          map(function(columnPair) {
+            return { fieldName: columnPair[0], column: columnPair[1] };
+          }).
+          filter(function(columnPair) {
             // We need to ignore 'system' fieldNames that begin with ':' but
             // retain computed column fieldNames, which (somewhat inconveniently)
             // begin with ':@'.
-            return column.name.substring(0, 2).match(/\:[\_A-Za-z0-9]/) === null &&
-                   column.physicalDatatype !== '*' &&
-                   column.physicalDatatype !== 'point';
+            var matchesSystemColumnsButNotComputed = /\:[\_A-Za-z0-9]/;
+            return columnPair.fieldName.substring(0, 2).match(matchesSystemColumnsButNotComputed) === null &&
+                   columnPair.column.physicalDatatype !== '*';
           }).
           sort(function(a, b) {
-            return a.name > b.name;
+            // TODO: Don't we want to sort by column human name?
+            return a.fieldName > b.fieldName;
           });
 
         var sortedCards = cards.
@@ -173,7 +166,7 @@ describe('addCardDialog', function() {
           available = true;
 
           for (j = 0; j < sortedCards.length; j++) {
-            if (sortedColumns[i].name === sortedCards[j].fieldName) {
+            if (sortedColumns[i].fieldName === sortedCards[j].fieldName) {
               available = false;
               availableCardCount--;
             }
@@ -181,22 +174,22 @@ describe('addCardDialog', function() {
 
           sortedColumns[i].available = available;
 
-          if (CardTypeMapping.visualizationSupportedForColumn(sortedColumns[i])) {
+          if (CardTypeMapping.visualizationSupportedForColumn(dataset, sortedColumns[i].fieldName)) {
             if (available) {
-              availableColumns.push(sortedColumns[i]);
+              availableColumns.push(sortedColumns[i].fieldName);
             } else {
-              alreadyOnPageColumns.push(sortedColumns[i]);
+              alreadyOnPageColumns.push(sortedColumns[i].fieldName);
             }
           } else {
-            visualizationUnsupportedColumns.push(sortedColumns[i]);
+            visualizationUnsupportedColumns.push(sortedColumns[i].fieldName);
           }
 
         }
 
         return {
-          available: availableColumns.sort(alphaCompareOnProperty('title')),
-          alreadyOnPage: alreadyOnPageColumns.sort(alphaCompareOnProperty('title')),
-          visualizationUnsupporetd: visualizationUnsupportedColumns.sort(alphaCompareOnProperty('title'))
+          available: availableColumns.sort(),
+          alreadyOnPage: alreadyOnPageColumns.sort(),
+          visualizationUnsupported: visualizationUnsupportedColumns.sort()
         };
 
       });
@@ -261,7 +254,7 @@ describe('addCardDialog', function() {
 
     var selectableColumnOptions = dialog.element.find('option:enabled');
 
-    expect(selectableColumnOptions.length).to.equal(3);
+    expect(selectableColumnOptions.length).to.equal(4);
   });
 
   it('should disable columns that are represented by cards in the "Choose a column..." select control', function() {
@@ -279,7 +272,7 @@ describe('addCardDialog', function() {
 
     var selectableColumnOptions = dialog.element.find('option:enabled');
 
-    expect(selectableColumnOptions.length).to.equal(2);
+    expect(selectableColumnOptions.length).to.equal(3);
   });
 
   it('should disable the "Add card" button when no column in the "Choose a column..." select control is selected', function() {
@@ -370,6 +363,7 @@ describe('addCardDialog', function() {
       cardCustomStyle: {},
       expandedCustomStyle: {},
       displayMode: 'visualization',
+      cardType: 'column',
       expanded: false
     };
 

@@ -1,4 +1,4 @@
-describe("card directive", function() {
+describe('card directive', function() {
   var $rootScope, testHelpers, Model;
 
   beforeEach(module('/angular_templates/dataCards/card.html'));
@@ -7,25 +7,12 @@ describe("card directive", function() {
   beforeEach(module('test'));
   beforeEach(module('dataCards'));
 
-  beforeEach(inject(['$rootScope', '$templateCache', 'testHelpers', 'Model', 'Card', 'ServerConfig', function(_$rootScope, _$templateCache, _testHelpers, _Model, _Card, _ServerConfig) {
+  beforeEach(inject(['$rootScope', '$templateCache', 'testHelpers', 'Model', 'Card', function(_$rootScope, _$templateCache, _testHelpers, _Model, _Card) {
     $rootScope = _$rootScope;
     testHelpers = _testHelpers;
     Model = _Model;
     Card = _Card;
 
-    _ServerConfig.setup({
-      oduxCardTypeMapping: {
-        'map': {
-          'category': {
-            'number': { 'lowCardinalityDefault': 'column', 'highCardinalityDefault': 'search', 'available': ['column', 'search'] }
-          }
-        },
-        'cardinality': {
-          'min': 2,
-          'threshold': 35
-        }
-      }
-    });
     // Override the templates of the other directives. We don't need to test them.
     _$templateCache.put('/angular_templates/dataCards/cardVisualizationColumnChart.html', '');
     _$templateCache.put('/angular_templates/dataCards/cardVisualizationChoropleth.html', '');
@@ -55,6 +42,7 @@ describe("card directive", function() {
       cardModel.defineObservableProperty('cardSize', 1);
       cardModel.defineObservableProperty('cardType', 'column');
       cardModel.defineObservableProperty('page', null);
+      cardModel.defineObservableProperty('column', null);
       scope.cardModel = cardModel;
       el = testHelpers.TestDom.compileAndAppend(html, scope);
     });
@@ -92,11 +80,16 @@ describe("card directive", function() {
     var cardModel;
     beforeEach(function() {
       var scope = $rootScope.$new();
+
+      var pageModel = new Model();
+      pageModel.defineObservableProperty('dataset', { version: '1' });
+
       cardModel = new Model();
       cardModel.defineObservableProperty('expanded', false);
       cardModel.defineObservableProperty('cardSize', 1);
       cardModel.defineObservableProperty('cardType', 'column');
-      cardModel.defineObservableProperty('page', null);
+      cardModel.defineObservableProperty('page', pageModel);
+      cardModel.defineObservableProperty('column', null);
       scope.cardModel = cardModel;
       el = testHelpers.TestDom.compileAndAppend(html, scope);
       el.css({
@@ -163,8 +156,12 @@ describe("card directive", function() {
 
       datasetModel = new Model();
       datasetModel.defineObservableProperty('columns', {
-        myFieldName: { description: initialDescriptionText }
+        myFieldName: {
+          description: initialDescriptionText,
+          dataset: datasetModel
+        }
       });
+      datasetModel.version = '1';
 
       var pageModel = new Model();
       pageModel.defineObservableProperty('dataset', datasetModel);
@@ -190,7 +187,7 @@ describe("card directive", function() {
         var newDescriptionText = 'new description';
 
         datasetModel.set('columns', {
-          myFieldName: { description: newDescriptionText }
+          myFieldName: { dataset: { version: '1' }, description: newDescriptionText }
         });
 
         // Defer due to the card directive using observeDimensions, which can be async.

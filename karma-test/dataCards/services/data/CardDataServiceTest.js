@@ -84,8 +84,8 @@ describe("CardDataService", function() {
       $httpBackend.expectGET(toUriRegex('/api/id/{0}.json?$query=select fakeNumberColumn as name, sum(fakeNumberColumn) as value  group by fakeNumberColumn order by sum(fakeNumberColumn) desc limit 200'.format(fake4x4)));
       $httpBackend.expectGET(toUriRegex('/api/id/{0}.json?$query=select fakeNumberColumn as name, sum(fakeNumberColumn) as value where MAGICAL_WHERE_CLAUSE group by fakeNumberColumn order by sum(fakeNumberColumn) desc limit 200'.format(fake4x4)));
 
-      CardDataService.getData('fakeNumberColumn', fake4x4, null, { 'function': 'sum', 'column': { name: 'fakeNumberColumn' } });
-      CardDataService.getData('fakeNumberColumn', fake4x4, 'MAGICAL_WHERE_CLAUSE', { 'function': 'sum', 'column': { name: 'fakeNumberColumn' } });
+      CardDataService.getData('fakeNumberColumn', fake4x4, null, { 'function': 'sum', 'column': {}, 'fieldName': 'fakeNumberColumn' });
+      CardDataService.getData('fakeNumberColumn', fake4x4, 'MAGICAL_WHERE_CLAUSE', { 'function': 'sum', 'column': {}, 'fieldName': 'fakeNumberColumn' });
 
       $httpBackend.flush();
     });

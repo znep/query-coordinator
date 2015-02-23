@@ -1,6 +1,6 @@
 describe('CardsViewController', function() {
   var Page;
-  var Dataset;
+  var DatasetV0;
   var Card;
   var testHelpers;
   var serverMocks;
@@ -9,6 +9,7 @@ describe('CardsViewController', function() {
   var $controller;
   var _$provide;
   var $httpBackend;
+  var ServerConfig;
 
   // Define a mock window service and surface writes to location.href.
   var mockWindowService = {
@@ -50,24 +51,22 @@ describe('CardsViewController', function() {
         rowDisplayUnit: 'bar',
         ownerId: datasetOwnerId,
         updatedAt: '2004-05-20T17:42:55+00:00',
-        columns: [
-          {
-            'title': 'nonCustomizableFieldName',
+        columns: {
+          'nonCustomizableFieldName': {
             'name': 'nonCustomizableFieldName',
             'physicalDatatype': 'text',
-            'logicalDatatype': 'text',
+            'fred': 'text',
             'description': 'non-customizable test field',
             'importance': 1
           },
-          {
-            'title': 'customizableFieldName',
+          'customizableFieldName': {
             'name': 'customizableFieldName',
             'physicalDatatype': 'point',
-            'logicalDatatype': 'location',
+            'fred': 'location',
             'description': 'customizable test field',
             'importance': 1
           }
-        ]
+        }
       });
     },
     getPagesForDataset: function() {
@@ -81,16 +80,6 @@ describe('CardsViewController', function() {
 
   var mockPageSerializationData = {
     ping: 'pong'
-  };
-
-  var mockServerConfig = {
-    get: function(key) {
-      if (key === 'oduxCardTypeMapping') {
-        return serverMocks.CARD_TYPE_MAPPING;
-      } else {
-        return true;
-      }
-    }
   };
 
   beforeEach(module('dataCards'));
@@ -137,18 +126,17 @@ describe('CardsViewController', function() {
         },
         getConfigurationValue: _.noop
       });
-      $provide.constant('ServerConfig', mockServerConfig);
     });
   });
 
   beforeEach(inject([
-    '$q', 'Card', 'Page', 'Dataset', '$rootScope', '$controller', '$window', 'testHelpers',
-    'serverMocks', '$httpBackend',
-    function(_$q, _Card, _Page, _Dataset, _$rootScope, _$controller, _$window, _testHelpers,
-             _serverMocks, _$httpBackend) {
+    '$q', 'Card', 'Page', 'DatasetV0', '$rootScope', '$controller', '$window', 'testHelpers',
+    'serverMocks', '$httpBackend', 'ServerConfig',
+    function(_$q, _Card, _Page, _DatasetV0, _$rootScope, _$controller, _$window, _testHelpers,
+             _serverMocks, _$httpBackend, _ServerConfig) {
       Card = _Card;
       Page = _Page;
-      Dataset = _Dataset;
+      DatasetV0 = _DatasetV0;
       $q = _$q;
       $rootScope = _$rootScope;
       $controller = _$controller;
@@ -156,6 +144,7 @@ describe('CardsViewController', function() {
       testHelpers = _testHelpers;
       serverMocks = _serverMocks;
       $httpBackend = _$httpBackend;
+      ServerConfig = _ServerConfig;
   }]));
 
   function makeContext() {
@@ -906,6 +895,7 @@ describe('CardsViewController', function() {
     });
 
     it('closes the dialog when clicking (or hitting esc) outside it', function() {
+      ServerConfig.override('enablePngDownloadUi', true);
       var context = renderCardsView();
       var body = $('body');
       var downloadButton = context.element.find('.download-menu');
@@ -936,6 +926,7 @@ describe('CardsViewController', function() {
     });
 
     it('allows other dialogs to close when clicking download', inject(function(WindowState) {
+      ServerConfig.override('enablePngDownloadUi', true);
       var context = renderCardsView();
 
       // Simulate another dialog waiting to be closed
@@ -960,6 +951,7 @@ describe('CardsViewController', function() {
     }));
 
     it('disables png download (and displays help text) if the page isn\'t saved', function() {
+      ServerConfig.override('enablePngDownloadUi', true);
       var context = renderCardsView();
       var downloadButton = context.element.find('.download-menu');
       testHelpers.fireMouseEvent(downloadButton[0], 'click');
@@ -978,6 +970,7 @@ describe('CardsViewController', function() {
     });
 
     it('triggers chooser mode when selecting png download', function() {
+      ServerConfig.override('enablePngDownloadUi', true);
       var context = renderCardsView();
       var downloadButton = context.element.find('.download-menu');
       testHelpers.fireMouseEvent(downloadButton[0], 'click');
@@ -986,6 +979,7 @@ describe('CardsViewController', function() {
     });
 
     it('turns into a cancel button in chooser mode, which cancels chooser mode', function() {
+      ServerConfig.override('enablePngDownloadUi', true);
       var context = renderCardsView();
       var downloadButton = context.element.find('.download-menu');
       testHelpers.fireMouseEvent(downloadButton[0], 'click');

@@ -15,7 +15,7 @@
 
         AngularRxExtensions.install(scope);
 
-        var model = scope.observe('model');
+        var model = scope.observe('model').filter(_.isPresent);
         var dataset = model.observeOnLatest('page.dataset');
         var baseSoqlFilter = model.observeOnLatest('page.baseSoqlFilter');
         var aggregationObservable = model.observeOnLatest('page.aggregation');
@@ -93,9 +93,15 @@
               }
 
               var sourceColumn = null;
-              _.each(columns, function(column) {
-                if (column.physicalDatatype === 'point' && column.logicalDatatype === 'location') {
-                  sourceColumn = column.name;
+              _.each(columns, function(column, fieldName) {
+                if (column.dataset.version === '0') {
+                  if (column.physicalDatatype === 'point' && column.logicalDatatype === 'location') {
+                    sourceColumn = fieldName;
+                  }
+                } else {
+                  if (column.physicalDatatype === 'point' && column.fred === 'location') {
+                    sourceColumn = fieldName;
+                  }
                 }
               });
 

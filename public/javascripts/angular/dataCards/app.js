@@ -126,8 +126,8 @@ dataCards.config(function($provide, $stateProvider, $urlRouterProvider, $locatio
       template: '<!--Overall chrome--><div ui-view="mainContent"><div>',
       params: ['datasetId'],
       resolve: {
-        dataset: function($stateParams, Dataset) {
-          return new Dataset($stateParams['datasetId']);
+        dataset: function($stateParams, DatasetV0) {
+          return new DatasetV0($stateParams['datasetId']);
         }
       }
     }).

@@ -22,16 +22,25 @@
         data: '' // Without a blank body, $http will eat Content-Type :(
       };
 
+      var schemaConversionFunction = SchemaConverter.datasetMetadata['toV{0}'.format(schemaVersion)];
+      Assert(
+        _.isFunction(schemaConversionFunction),
+        "Don't know how to synthesize dataset metadata for v{0} schema".format(schemaVersion)
+      );
+
       return http.get(url, config).
         then(function(response) {
-          return SchemaConverter.datasetMetadata.toV0(response.data);
+          return schemaConversionFunction(response.data);
         }
       );
     }
 
     this.getDatasetMetadata = function(schemaVersion, id) {
       Assert(_.isString(id), 'id should be a string');
-      Assert(schemaVersion === '0', 'only dataset metadata schema v0 is supported.');
+      Assert(
+        schemaVersion === '1' || ServerConfig.metadataMigration.datasetMetadata.allowUseOfOldEndpoint(),
+        'V0 dataset metadata endpoint is not supported'
+      );
 
       return fetch.call(this, schemaVersion, id).then(function(data) {
         datasetMetadataSchemas.assertValidAgainstVersion(schemaVersion, data);

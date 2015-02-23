@@ -1,4 +1,4 @@
-angular.module('dataCards.models').factory('Page', function($q, Dataset, Card, Model, PageDataService) {
+angular.module('dataCards.models').factory('Page', function($q, ServerConfig, DatasetV0, DatasetV1, Card, Model, PageDataService) {
   var Page = Model.extend({
     // Builds a page model from either the page ID (given as a string),
     // or as a full serialized blob.
@@ -37,7 +37,11 @@ angular.module('dataCards.models').factory('Page', function($q, Dataset, Card, M
 
       self.defineObservableProperty('dataset', null, function() {
         return pageMetadataPromise().then(function(data) {
-          return new Dataset(data.datasetId);
+          if (ServerConfig.metadataMigration.datasetMetadata.useV0Models()) {
+            return new DatasetV0(data.datasetId);
+          } else {
+            return new DatasetV1(data.datasetId);
+          }
         });
       });
 
@@ -60,12 +64,21 @@ angular.module('dataCards.models').factory('Page', function($q, Dataset, Card, M
       var aggregationObservable = Rx.Observable.combineLatest(
         self.observe('primaryAggregation'),
         self.observe('dataset.rowDisplayUnit'),
+        self.observe('primaryAmountField'),
         columnAggregatedUpon,
-        function(primaryAggregation, rowDisplayUnit, columnAggregatedUpon) {
+        function(primaryAggregation, rowDisplayUnit, fieldNameAggregatedUpon, columnAggregatedUpon) {
+          var unit = rowDisplayUnit;
+          if (columnAggregatedUpon) {
+            unit = columnAggregatedUpon.dataset.version === '1' ?
+                   columnAggregatedUpon.name :
+                   columnAggregatedUpon.title;
+          }
+
           return {
             'function': primaryAggregation || 'count',
             'column': columnAggregatedUpon, // MAY BE NULL IF COUNT(*)
-            'unit': columnAggregatedUpon ? columnAggregatedUpon.title : rowDisplayUnit
+            'fieldName': fieldNameAggregatedUpon, // MAY BE NULL IF COUNT(*)
+            'unit': unit
           };
         }
       ).filter(function(aggregation) {

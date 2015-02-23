@@ -13,8 +13,6 @@ describe('CardLayout directive', function() {
   var $q;
   var rootScope;
   var testHelpers;
-  var serverMocks;
-  var serverConfig;
   var $templateCache;
 
   beforeEach(module('/angular_templates/dataCards/card-layout.html'));
@@ -77,16 +75,12 @@ describe('CardLayout directive', function() {
   }));
   beforeEach(inject(function($injector) {
     testHelpers = $injector.get('testHelpers');
-    serverMocks = $injector.get('serverMocks');
-    serverConfig = $injector.get('ServerConfig');
     rootScope = $injector.get('$rootScope');
     Model = $injector.get('Model');
     Card = $injector.get('Card');
     Page = $injector.get('Page');
     AngularRxExtensions = $injector.get('AngularRxExtensions');
     $q = $injector.get('$q');
-
-    serverConfig.override('oduxCardTypeMapping', serverMocks.CARD_TYPE_MAPPING);
 
     testHelpers.overrideTransitions(true);
     testHelpers.mockDirective(_$provide, 'aggregationChooser');
@@ -114,7 +108,8 @@ describe('CardLayout directive', function() {
     });
 
     var datasetModel = new Model();
-    datasetModel.id = 'bana-nas!';
+    datasetModel.version = '1';
+    datasetModel.id = 'bana-nas1';
     datasetModel.fieldName = 'ward';
     datasetModel.defineObservableProperty('rowDisplayUnit', 'row');
     datasetModel.defineObservableProperty('rowCount', options.rowCount);
@@ -124,34 +119,49 @@ describe('CardLayout directive', function() {
         name: 'statBar_column',
         title: 'test column title',
         description: 'test column description',
-        logicalDatatype: 'amount',
+        fred: 'amount',
         physicalDatatype: 'number',
-        importance: 2
+        dataset: datasetModel
       },
       pointMap_column: {
         name: 'pointMap_column',
-        logicalDatatype: 'location',
-        physicalDatatype: 'point'
+        fred: 'location',
+        physicalDatatype: 'point',
+        dataset: datasetModel,
+        computationStrategy: {
+          parameters: {
+            region: '_mash-apes'
+          }
+        }
       },
       choropleth_column: {
         name: 'choropleth_column',
-        logicalDatatype: 'location',
+        fred: 'location',
         physicalDatatype: 'number',
-        shapefile: 'fake-shap'
+        shapefile: 'fake-shap',
+        dataset: datasetModel,
+        computationStrategy: {
+          parameters: {
+            region: '_mash-apes'
+          }
+        }
       },
       timeline_column: {
         name: 'timeline_column',
-        logicalDatatype: 'time',
-        physicalDatatype: 'number'
+        fred: 'time',
+        physicalDatatype: 'number',
+        dataset: datasetModel
       },
       search_column: {
         name: 'search_column',
-        logicalDatatype: 'text',
-        physicalDatatype: 'text'
+        fred: 'text',
+        physicalDatatype: 'text',
+        dataset: datasetModel
       },
       '*': {
-        logicalDatatype: '*',
-        physicalDatatype: '*'
+        fred: '*',
+        physicalDatatype: '*',
+        dataset: datasetModel
       }
     });
 

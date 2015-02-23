@@ -1,5 +1,11 @@
 describe('Page model', function() {
-  var Page, Dataset, $q, $rootScope, Model;
+  var Page;
+  var DatasetV0;
+  var DatasetV1;
+  var testHelpers;
+  var $q;
+  var $rootScope;
+  var Model;
 
   var MockPageDataService = {};
 
@@ -12,9 +18,11 @@ describe('Page model', function() {
 
   beforeEach(inject(function($injector) {
     Page = $injector.get('Page');
-    Dataset = $injector.get('Dataset');
+    DatasetV0 = $injector.get('DatasetV0');
+    DatasetV1 = $injector.get('DatasetV1');
     $q = $injector.get('$q');
     $rootScope = $injector.get('$rootScope');
+    testHelpers = $injector.get('testHelpers');
     Model = $injector.get('Model');
   }));
 
@@ -80,26 +88,40 @@ describe('Page model', function() {
     expect(expectedSequence).to.be.empty;
   });
 
-  it('should eventually return a Dataset model from the dataset property', function(done) {
-    var id = 'dead-beef';
-    var datasetId = 'fooo-baar';
+  describe('dataset property', function() {
+    var phases = ['0', '1', '2'];
+    function datasetVersionExpectedForPhase(phase) {
+      return phase === '2' ? '1' : '0';
+    }
 
-    var mockPageMetadataDefer = $q.defer();
-    MockPageDataService.getPageMetadata = function(id) {
-      expect(id).to.equal(id);
-      return mockPageMetadataDefer.promise;
-    };
+    _.each(phases, function(phase) {
+      var datasetVersionExpected = datasetVersionExpectedForPhase(phase);
+      describe('under phase {0}'.format(phase), function() {
+        it('should eventually return a DatasetV{0} model from the dataset property'.format(datasetVersionExpected), function(done) {
+          testHelpers.overrideMetadataMigrationPhase(phase);
+          var id = 'dead-beef';
+          var datasetId = 'fooo-baar';
 
-    var instance = new Page(id);
-    instance.observe('dataset').subscribe(function(val) {
-      if (val instanceof Dataset) {
-        expect(val.id).to.equal(datasetId);
-        done();
-      }
+          var mockPageMetadataDefer = $q.defer();
+          MockPageDataService.getPageMetadata = function(id) {
+            expect(id).to.equal(id);
+            return mockPageMetadataDefer.promise;
+          };
+
+          var instance = new Page(id);
+          instance.observe('dataset').subscribe(function(val) {
+            var expectedDatasetClass = datasetVersionExpected === '1' ? DatasetV1 : DatasetV0;
+            if (val instanceof expectedDatasetClass) {
+              expect(val.id).to.equal(datasetId);
+              done();
+            }
+          });
+
+          mockPageMetadataDefer.resolve({ 'datasetId': datasetId});
+          $rootScope.$digest();
+        });
+      });
     });
-
-    mockPageMetadataDefer.resolve({ 'datasetId': datasetId});
-    $rootScope.$digest();
   });
 
   it('should correctly serialize', function(done) {

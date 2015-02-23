@@ -73,7 +73,6 @@
 
       datasetModel.id = 'bana-nas!';
       datasetModel.version = '1';
-      datasetModel.fieldName = 'test field name';
       datasetModel.defineObservableProperty('rowDisplayUnit', 'row');
       datasetModel.defineObservableProperty('columns', fakeDatasetColumns);
 

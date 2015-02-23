@@ -2,13 +2,15 @@
   'use strict';
 
   //TODO: These functions should live on Card, or possibly the Dataset's columns.
-  function CardTypeMapping(ServerConfig, $exceptionHandler, $log) {
+  function CardTypeMapping(ServerConfig, $exceptionHandler, $log, Assert) {
 
     function columnInfoFromDatasetAndFieldName(dataset, fieldName) {
       //TODO We're not strictly guaranteed to have the dataset's columns, but in current usage
       //we will (under the assumption that the fieldName is determined from the Dataset model).
 
-      var column = dataset.getCurrentValue('columns')[fieldName];
+      var columns = dataset.getCurrentValue('columns');
+      Assert(_.isPresent(columns), 'Columns hash not yet present on dataset model.');
+      var column = columns[fieldName];
 
       if (_.isUndefined(column)) {
         $log.error('Could not determine card type for undefined column.');
@@ -85,6 +87,7 @@
       //Evil! This service needs a rewrite, see comment at top
       //of file.
       var dataset = cardModel.page.getCurrentValue('dataset');
+      Assert(_.isPresent(dataset), 'Dataset model not present on Page model.');
       return defaultVisualizationForColumn(dataset, cardModel.fieldName);
 
     }

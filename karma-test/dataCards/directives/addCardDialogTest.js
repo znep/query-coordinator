@@ -136,7 +136,8 @@ describe('addCardDialog', function() {
             // We need to ignore 'system' fieldNames that begin with ':' but
             // retain computed column fieldNames, which (somewhat inconveniently)
             // begin with ':@'.
-            return columnPair.fieldName.substring(0, 2).match(/\:[\_A-Za-z0-9]/) === null &&
+            var matchesSystemColumnsButNotComputed = /\:[\_A-Za-z0-9]/;
+            return columnPair.fieldName.substring(0, 2).match(matchesSystemColumnsButNotComputed) === null &&
                    columnPair.column.physicalDatatype !== '*';
           }).
           sort(function(a, b) {
@@ -149,7 +150,7 @@ describe('addCardDialog', function() {
             return card.fieldName !== '*';
           }).
           sort(function(a, b) {
-            return a.fieldName > b.fieldName
+            return a.fieldName > b.fieldName;
           });
 
         var i = 0;

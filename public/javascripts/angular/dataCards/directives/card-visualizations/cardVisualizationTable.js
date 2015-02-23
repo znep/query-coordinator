@@ -40,7 +40,7 @@
           return validColumnRegex.test(fieldName);
         }
 
-        function removeSystemColumns(columns) {
+        function keepOnlyDisplayableColumns(columns) {
           return _.pick(
             _.cloneDeep(columns),
             isDisplayableColumn
@@ -61,7 +61,7 @@
         }
 
         var columnDetails = dataset.observeOnLatest('columns').
-          map(removeSystemColumns).
+          map(keepOnlyDisplayableColumns).
           map(addExtraAttributesToColumns);
 
         var columnDetailsAsArray = columnDetails.
@@ -69,17 +69,20 @@
           combineLatest(
             $scope.observe('firstColumn'),
             function(asArray, firstColumnFieldName) {
-            if ($.isPresent(firstColumnFieldName)) {
-              var columnIndex = _.findIndex(asArray, function(column) {
-                return column.fieldName === firstColumnFieldName;
-              });
-              if (columnIndex >= 0) {
-                var column = asArray.splice(columnIndex, 1)[0];
-                asArray.splice(0, 0, column);
+              if ($.isPresent(firstColumnFieldName)) {
+                // Move the column specified by firstColumnFieldName to
+                // the front of the columns array.
+                var columnIndex = _.findIndex(asArray, function(column) {
+                  return column.fieldName === firstColumnFieldName;
+                });
+                if (columnIndex >= 0) {
+                  var column = asArray.splice(columnIndex, 1)[0];
+                  asArray.splice(0, 0, column);
+                }
               }
+              return asArray;
             }
-            return asArray;
-          });
+          );
 
         // Keep track of the number of requests that have been made and the number of
         // responses that have come back.

@@ -218,12 +218,14 @@ describe('DatasetDataService', function() {
 
         // These tests are only relevant for phase 2.
         if (phaseTestingUnder === 2) {
+          var schemaVersion0 = '0';
+          var schemaVersion1 = '1';
           it('should throw on a V0 request', function() {
-            expect(function() { DatasetDataService.getDatasetMetadata('0', fake4x4); }).to.throw();
+            expect(function() { DatasetDataService.getDatasetMetadata(schemaVersion0, fake4x4); }).to.throw();
           });
 
           it('should return a v1 version of the dataset metadata', function(done) {
-            var response = DatasetDataService.getDatasetMetadata('1', fake4x4);
+            var response = DatasetDataService.getDatasetMetadata(schemaVersion1, fake4x4);
             response.then(function(data) {
               expect(data).to.deep.equal(fakeDatasetMetadataResponseV1);
               done();

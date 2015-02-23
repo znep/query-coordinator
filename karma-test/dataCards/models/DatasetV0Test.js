@@ -1,6 +1,7 @@
 describe('DatasetV0 model', function() {
   var MockDataService = {};
-  var _DatasetV0, _Page;
+  var _DatasetV0;
+  var _Page;
 
   // Minimal DatasetV0 blob which will validate.
   var minimalBlob = {
@@ -46,7 +47,7 @@ describe('DatasetV0 model', function() {
     var testId = 'dead-beef';
     var fakeDisplayUnit = 'test';
 
-    var datasetMetadataDefer =_$q.defer();
+    var datasetMetadataDefer = _$q.defer();
     MockDataService.getDatasetMetadata = function(schemaVersion, id) {
       expect(id).to.equal(testId);
       return datasetMetadataDefer.promise;
@@ -79,7 +80,7 @@ describe('DatasetV0 model', function() {
       return $q.when(minimalBlob);
     };
 
-    var def =_$q.defer();
+    var def = _$q.defer();
     MockDataService.getPagesForDataset = function(schemaVersion, id) {
       expect(id).to.equal(testId);
       return def.promise;
@@ -130,7 +131,7 @@ describe('DatasetV0 model', function() {
       ];
       var serializedBlob = $.extend({}, minimalBlob, { "columns": fakeColumns });
 
-      var def =_$q.defer();
+      var def = _$q.defer();
       MockDataService.getDatasetMetadata = function() {
         return def.promise;
       };
@@ -149,7 +150,7 @@ describe('DatasetV0 model', function() {
       _$rootScope.$digest();
     });
 
-    it('should include a reference back to the Dataset instance.', function(done) {
+    it('should include an injected reference back to the Dataset instance.', function(done) {
       var fakeColumns = [
         {
           title: 'title',
@@ -161,7 +162,7 @@ describe('DatasetV0 model', function() {
       ];
       var serializedBlob = $.extend({}, minimalBlob, { "columns": fakeColumns });
 
-      var def =_$q.defer();
+      var def = _$q.defer();
       MockDataService.getDatasetMetadata = function() {
         return def.promise;
       };

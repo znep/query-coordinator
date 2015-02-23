@@ -109,7 +109,7 @@ describe('CardLayout directive', function() {
 
     var datasetModel = new Model();
     datasetModel.version = '1';
-    datasetModel.id = 'bana-nas!';
+    datasetModel.id = 'bana-nas1';
     datasetModel.fieldName = 'ward';
     datasetModel.defineObservableProperty('rowDisplayUnit', 'row');
     datasetModel.defineObservableProperty('rowCount', options.rowCount);

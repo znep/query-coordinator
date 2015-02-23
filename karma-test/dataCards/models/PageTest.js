@@ -1,5 +1,11 @@
 describe('Page model', function() {
-  var Page, DatasetV0, DatasetV1, testHelpers, $q, $rootScope, Model;
+  var Page;
+  var DatasetV0;
+  var DatasetV1;
+  var testHelpers;
+  var $q;
+  var $rootScope;
+  var Model;
 
   var MockPageDataService = {};
 

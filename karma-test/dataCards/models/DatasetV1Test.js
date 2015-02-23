@@ -112,7 +112,7 @@ describe('DatasetV1 model', function() {
       return $q.when(minimalBlob);
     };
 
-    var def =$q.defer();
+    var def = $q.defer();
     MockDataService.getPagesForDataset = function(schemaVersion, id) {
       expect(id).to.equal(testId);
       return def.promise;
@@ -179,7 +179,7 @@ describe('DatasetV1 model', function() {
       $rootScope.$digest();
     });
 
-    it('should include a reference back to the Dataset instance.', function(done) {
+    it('should include an injected reference back to the Dataset instance.', function(done) {
       var fakeColumns = {
         'normal_column': {
           name: 'title',
@@ -190,7 +190,7 @@ describe('DatasetV1 model', function() {
       };
       var serializedBlob = $.extend({}, minimalV1Blob, { "columns": fakeColumns });
 
-      var def =$q.defer();
+      var def = $q.defer();
       MockDataService.getDatasetMetadata = function() {
         return def.promise;
       };

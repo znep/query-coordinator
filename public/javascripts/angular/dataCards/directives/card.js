@@ -16,19 +16,73 @@
 
         var modelSubject = $scope.observe('model').filter(_.identity);
         var datasetObservable = modelSubject.pluck('page').observeOnLatest('dataset');
+        var columns = datasetObservable.observeOnLatest('columns');
+        var versionSequence = modelSubject.observeOnLatest('column.dataset.version');
 
         $scope.descriptionCollapsed = true;
-
         $scope.bindObservable('expanded', modelSubject.observeOnLatest('expanded'));
-
         $scope.bindObservable(
           'title',
-          modelSubject.observeOnLatest('column.dataset.version').
+          versionSequence.
             flatMapLatest(function(version) {
               return modelSubject.observeOnLatest(version === '0' ? 'column.title' : 'column.name');
             })
         );
         $scope.bindObservable('description', modelSubject.observeOnLatest('column.description'));
+
+        var rowDisplayUnitSequence = datasetObservable.
+          observeOnLatest('rowDisplayUnit').
+          map(function(value) { return _.isEmpty(value) ? 'rows' : value; });
+
+        var primaryAggregationSequence = modelSubject.
+          observeOnLatest('page.primaryAggregation').
+          map(function(value) { return _.isNull(value) ? 'count' : value });
+
+        var primaryAmountFieldSequence = modelSubject.
+          observeOnLatest('page.primaryAmountField').
+          combineLatest(columns, function(fieldName, columns) {
+            return columns[fieldName];
+          }).
+          filter(_.isObject).
+          combineLatest(versionSequence, function(column, version) {
+            return version === '0' ? column['title'] : column['name'];
+          }).
+          filter(_.isPresent);
+
+        var countTitleSequence = Rx.Observable.combineLatest(
+          rowDisplayUnitSequence,
+          primaryAggregationSequence.filter(function(value) { return value === 'count' }),
+          function(rowDisplayUnit) {
+            return 'Number of {0} by'.format(rowDisplayUnit.pluralize());
+          });
+
+        var sumTitleSequence = Rx.Observable.combineLatest(
+          primaryAmountFieldSequence.filter(_.isPresent),
+          primaryAggregationSequence.filter(function(value) { return value === 'sum' }),
+          function(primaryAmountField) {
+            return 'Sum of {0} by'.format(primaryAmountField.pluralize());
+          });
+
+        var meanTitleSequence = Rx.Observable.combineLatest(
+          primaryAmountFieldSequence.filter(_.isPresent),
+          primaryAggregationSequence.filter(function(value) { return value === 'mean' }),
+          function(primaryAmountField) {
+            return 'Average {0} by'.format(primaryAmountField);
+          });
+
+        var dynamicTitleSequence = Rx.Observable.merge(
+          countTitleSequence,
+          sumTitleSequence,
+          meanTitleSequence
+        );
+
+        $scope.bindObservable('displayDynamicTitle', modelSubject.
+          observeOnLatest('cardType').
+          map(function(cardType) {
+            return cardType !== 'table'
+          }));
+
+        $scope.bindObservable('dynamicTitle', dynamicTitleSequence);
 
         var updateCardLayout = _.throttle(function(textHeight) {
           descriptionTruncatedContent.dotdotdot({

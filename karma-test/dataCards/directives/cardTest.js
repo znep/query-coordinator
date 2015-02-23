@@ -83,6 +83,8 @@ describe('card directive', function() {
 
       var pageModel = new Model();
       pageModel.defineObservableProperty('dataset', { version: '1' });
+      pageModel.defineObservableProperty('primaryAmountField', null);
+      pageModel.defineObservableProperty('primaryAggregation', null);
 
       cardModel = new Model();
       cardModel.defineObservableProperty('expanded', false);
@@ -162,9 +164,12 @@ describe('card directive', function() {
         }
       });
       datasetModel.version = '1';
+      datasetModel.defineObservableProperty('rowDisplayUnit', null);
 
       var pageModel = new Model();
       pageModel.defineObservableProperty('dataset', datasetModel);
+      pageModel.defineObservableProperty('primaryAggregation', null);
+      pageModel.defineObservableProperty('primaryAmountField', null);
 
       cardModel = new Card(pageModel, 'myFieldName');
 
@@ -199,4 +204,110 @@ describe('card directive', function() {
 
     });
   });
+
+  describe('dynamic card title', function() {
+    var html = '<card model="cardModel" interactive="true"></card>';
+    var initialTitleText = 'some title text';
+    var initialDescriptionText = 'some description text';
+
+    /**
+     * Create a card with options
+     * @param {Object} [options]
+     * @param {string} [options.version='1']
+     * @param {string} [options.rowDisplayUnit=null]
+     * @param {string} [options.primaryAggregation=null]
+     * @param {string} [options.primaryAmountField=null]
+     * @returns {element}
+     */
+    function createElement(options) {
+      options = _.defaults({}, options, {
+        fieldName: 'myFieldName',
+        primaryAggregation: null,
+        primaryAmountField: null,
+        rowDisplayUnit: null,
+        version: '1'
+      });
+      var scope = $rootScope.$new();
+
+      var datasetModel = new Model();
+
+      datasetModel.defineObservableProperty('columns', {
+        myAggregationField: {
+          name: 'My Version 1 Aggregation Field',
+          title: 'My Version 0 Aggregation Field',
+          dataset: datasetModel
+        },
+        myFieldName: {
+          name: initialTitleText,
+          description: initialDescriptionText,
+          dataset: datasetModel
+        },
+        '*': {
+          name: 'Table Card',
+          dataset: datasetModel,
+          physicalDatatype: '*',
+          logicalDatatype: '*',
+          fred: '*'
+        }
+      });
+      datasetModel.version = options.version;
+      datasetModel.defineObservableProperty('rowDisplayUnit', options.rowDisplayUnit);
+
+      var pageModel = new Model();
+      pageModel.defineObservableProperty('dataset', datasetModel);
+      pageModel.defineObservableProperty('primaryAggregation', options.primaryAggregation);
+      pageModel.defineObservableProperty('primaryAmountField', options.primaryAmountField);
+
+      scope.cardModel = new Card(pageModel, options.fieldName);
+
+      return testHelpers.TestDom.compileAndAppend(html, scope);
+    }
+
+    it('should display the "count" dynamic title when "count" aggregation is selected', function() {
+      var element = createElement({
+        rowDisplayUnit: 'my row unit',
+        primaryAggregation: 'count'
+      });
+      expect(element.find('.dynamic-title')).to.have.text('Number of my row units by');
+    });
+
+    it('should default to "rows" for the rowDisplayUnit if none is specified', function() {
+      var element = createElement();
+      expect(element.find('.dynamic-title')).to.have.text('Number of rows by');
+    });
+
+    it('should display the "sum" dynamic title when "sum" aggregation is selected', function() {
+      var element = createElement({
+        primaryAggregation: 'sum',
+        primaryAmountField: 'myAggregationField'
+      });
+      expect(element.find('.dynamic-title')).to.have.text('Sum of My Version 1 Aggregation Fields by');
+    });
+
+    it('should display the "mean" dynamic title when "mean" aggregation is selected', function() {
+      var element = createElement({
+        primaryAggregation: 'mean',
+        primaryAmountField: 'myAggregationField'
+      });
+      expect(element.find('.dynamic-title')).to.have.text('Average My Version 1 Aggregation Field by');
+    });
+
+    it('should handle the dataset version 0 case', function() {
+      var element = createElement({
+        version: '0',
+        primaryAggregation: 'sum',
+        primaryAmountField: 'myAggregationField'
+      });
+      expect(element.find('.dynamic-title')).to.have.text('Sum of My Version 0 Aggregation Fields by');
+    });
+
+    it('should not display the dynamic title for a table card', function() {
+      var element = createElement({
+        fieldName: '*'
+      });
+      expect(element.find('.dynamic-title')).to.not.be.visible;
+    });
+
+  });
+
 });

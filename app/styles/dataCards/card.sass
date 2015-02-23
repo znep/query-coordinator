@@ -24,11 +24,12 @@
     color: $filtered-region-bg-color-1
     display: block
     padding-bottom: 5px
+    position: relative
 
     &:hover
 
-      // This z-index must be higher than that of the desciption.
-      + .title-expanded
+      // This z-index must be higher than that of the description.
+      .title-expanded
         z-index: 1002
 
         .wrap
@@ -43,7 +44,7 @@
     overflow: visible
     z-index: -1
 
-    // This z-index must be higher than that of the desciption.
+    // This z-index must be higher than that of the description.
     &:hover
       z-index: 1002
 

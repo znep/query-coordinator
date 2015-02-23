@@ -1,6 +1,7 @@
 @import dataCards/ellipsis
 @import dataCards/common/layout
 @import dataCards/common/colors
+@import dataCards/common/fonts
 @import dataCards/selection-label
 @import dataCards/clearable-input
 @import dataCards/animations
@@ -217,6 +218,9 @@ $card-description-transition-duration: 0.5s
     display: inline-block
     font-weight: bold
     max-width: 100%
+    &.dynamic-title
+      color: $card-dynamic-title-color
+      font-size: $small-font-size
     .wrap
       overflow: hidden
       text-overflow: ellipsis

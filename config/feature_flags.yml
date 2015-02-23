@@ -92,3 +92,6 @@ exit_tech_preview:
 debug_assets:
   description: Switch over to using unpackaged Javascript files.
   defaultValue: false
+core_migration_for_si_6098_complete:
+  description: Should be set to true when the database migration for SI-6098 is complete.
+  defaultValue: false

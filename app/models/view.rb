@@ -1434,15 +1434,8 @@ class View < Model
     "CC" => "Creative Commons"
   }
 
-  if FeatureFlags.derive['core_migration_for_si_6098_complete']
-    @@licenses['ODC-BY'] = 'Open Data Commons Attribution Licence'
-    @@licenses['ODbL'] = 'Open Data Commons Database Licence'
-    @@licenses['UK-OGLv3.0'] = 'UK Open Government Licence v3'
-    @@licenses['OSODL'] = 'OS Open Data Licence'
-  end
-
   @@creative_commons = {
-    "CC0_10" => "1.0 Universal (Public Domain Dedication)",
+    "CC0_10" => "1.0 Universal",
     "CC_30_BY" => "Attribution 3.0 Unported",
     "CC_30_BY_AUS" => "Attribution 3.0 Australia",
     "CC_30_BY_SA" => "Attribution | Share Alike 3.0 Unported",
@@ -1451,11 +1444,6 @@ class View < Model
     "CC_30_BY_NC_SA" => "Attribution | Noncommercial | Share Alike 3.0 Unported",
     "CC_30_BY_NC_ND" => "Attribution | Noncommercial | No Derivative Works 3.0 Unported"
   }
-
-  if FeatureFlags.derive['core_migration_for_si_6098_complete']
-    @@creative_commons['CC_40_BY'] = 'Attribution 4.0 International'
-    @@creative_commons['CC_40_BY_SA'] = 'Attribution-ShareAlike 4.0 International'
-  end
 
   @@merged_licenses = {
     "" => "-- #{I18n.t 'core.no_license'} --",
@@ -1473,16 +1461,6 @@ class View < Model
     "CC_30_BY_NC_SA" => "Attribution | Noncommercial | Share Alike 3.0 Unported",
     "CC_30_BY_NC_ND" => "Attribution | Noncommercial | No Derivative Works 3.0 Unported"
   }
-
-  if FeatureFlags.derive['core_migration_for_si_6098_complete']
-    @@merged_licenses['ODC-BY'] = 'Open Data Commons Attribution Licence'
-    @@merged_licenses['ODbL'] = 'Open Data Commons Database Licence'
-    @@merged_licenses['UK-OGLv3.0'] = 'UK Open Government Licence v3'
-    @@merged_licenses['OSODL'] = 'OS Open Data Licence'
-    @@merged_licenses['CC_40_BY'] = 'Attribution 4.0 International'
-    @@merged_licenses['CC_40_BY_SA'] = 'Attribution-ShareAlike 4.0 International'
-  end
-
 
   # Sorts are enabled and disabled by feature modules
   @@sorts = [

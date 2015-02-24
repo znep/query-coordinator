@@ -112,8 +112,23 @@ class Phidippides < SocrataHttp
 
   # Page Metadata requests
 
-  def create_page_metadata(json, options = {})
+  def request_new_page_id(options = {})
+    unless metadata_transition_phase_2?
+      raise RuntimeError.new(
+        'request_new_page_id is only supported in metadata migration phase 2'
+      )
+    end
 
+    issue_request(
+      :verb => :post,
+      :path => 'v1/idgen',
+      :data => nil,
+      :request_id => options[:request_id],
+      :cookies => options[:cookies]
+    )
+  end
+
+  def create_page_metadata(json, options = {})
     raise ArgumentError.new('datasetId is required') unless json.key?('datasetId')
 
     if metadata_transition_phase_0? || metadata_transition_phase_1?
@@ -125,9 +140,11 @@ class Phidippides < SocrataHttp
         :cookies => options[:cookies]
       )
     else
+      raise ArgumentError.new('pageId is required') unless json.key?('pageId')
+
       issue_request(
         :verb => :post,
-        :path => "v1/id/#{json['datasetId']}/pages",
+        :path => "v1/id/#{json['datasetId']}/pages/#{json['pageId']}",
         :data => json,
         :request_id => options[:request_id],
         :cookies => options[:cookies]

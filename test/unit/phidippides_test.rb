@@ -65,6 +65,13 @@ class PhidippidesTest < Test::Unit::TestCase
     assert_equal('200', result[:status])
   end
 
+  def test_request_new_page_id
+    prepare_stubs(body: { id: 'iuya-fxdq' }, path: 'v1/idgen', verb: :post, request_body: nil)
+    stub_feature_flags_with(:metadata_transition_phase, '2')
+    result = phidippides.request_new_page_id
+    assert_equal('200', result[:status])
+  end
+
   def test_create_page_metadata
     prepare_stubs(body: new_v0_page_metadata, path: 'pages', verb: :post, request_body: new_v0_page_metadata)
     stub_feature_flags_with(:metadata_transition_phase, '0')
@@ -76,7 +83,7 @@ class PhidippidesTest < Test::Unit::TestCase
     result = phidippides.create_page_metadata(new_v0_page_metadata, request_id: 'request_id')
     assert_equal(new_v0_page_metadata, result[:body])
 
-    prepare_stubs(body: nil, path: 'v1/id/q77b-s2zi/pages', verb: :post, request_body: new_v1_page_metadata)
+    prepare_stubs(body: nil, path: 'v1/id/q77b-s2zi/pages/vwwn-6r7g', verb: :post, request_body: new_v1_page_metadata)
     stub_feature_flags_with(:metadata_transition_phase, '2')
     result = phidippides.create_page_metadata(new_v1_page_metadata, request_id: 'request_id')
     assert_equal('200', result[:status])

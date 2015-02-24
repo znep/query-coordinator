@@ -1,19 +1,28 @@
 {
-    "pageId": "iuya-fxdq",
-    "datasetId": "vtvh-wqgq",
-    "name": "San Francisco 311",
-    "description": "Cases created since 7/1/2008 with location information",
-    "primaryAmountField": null,
-    "primaryAggregation": null,
-    "cards": [
-        {
-            "description": "Test Card",
-            "fieldName": "some_column",
-            "cardSize": 2,
-            "cardType": "Column",
-            "appliedFilters": [],
-            "expanded": false
-        }
-    ],
-    "version": 1
+  "cards": [
+    {
+      "description": "Test Card",
+      "fieldName": "some_column",
+      "cardSize": 2,
+      "cardType": "Column",
+      "appliedFilters": [],
+      "expanded": false
+    },
+    {
+      "description": "Test Card",
+      "fieldName": "some_other_column",
+      "cardSize": 2,
+      "cardType": "Column",
+      "appliedFilters": [],
+      "expanded": false
+    }
+  ],
+  "catalogViewId": "test-page",
+  "datasetId": "vtvh-wqgq",
+  "description": "Cases created since 7/1/2008 with location information",
+  "name": "San Francisco 311",
+  "pageId": "iuya-fxdq",
+  "primaryAggregation": null,
+  "primaryAmountField": null,
+  "version": 1
 }

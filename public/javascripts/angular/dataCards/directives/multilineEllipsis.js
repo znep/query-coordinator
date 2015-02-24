@@ -35,9 +35,8 @@ angular.module('dataCards.directives').directive('multilineEllipsis', function($
         content.addClass(contentFlyoutClass);
       }
 
-      // Hello! My name is col. hack! (P.S. 16px * 1.5 == 24px)
       var lineHeight = function() {
-        var lineHeight = parseInt(element.css('line-height'), 10);
+        var lineHeight = parseInt(element.css('line-height'), 10) || element.data('cached-line-height');
         if (lineHeight) {
           return lineHeight;
         }
@@ -49,6 +48,7 @@ angular.module('dataCards.directives').directive('multilineEllipsis', function($
             appendTo(content);
         lineHeight = sample.height();
         sample.remove();
+        element.data('cached-line-height', lineHeight);
         return lineHeight;
       };
 

@@ -40,15 +40,6 @@
     }
 
     $.extend(LegendDiscrete.prototype, {
-      /**
-       * @private
-       */
-      legendLabelColorHeight: function(colorIndex, totalHeight, minVal, maxVal, classBreaks) {
-        var percentOfClassbreakRange = (classBreaks[colorIndex + 1] - classBreaks[colorIndex]) /
-            (maxVal - minVal);
-        return Math.floor(percentOfClassbreakRange * totalHeight);
-      },
-
       ZERO_COLOR: '#eeeeee',
       NEGATIVE_COLOR: '#c6663d',
       POSITIVE_COLOR: '#408499',
@@ -62,6 +53,21 @@
       colorScaleFor: function(classBreaks) {
         var marginallyNegative = chroma.interpolate(this.ZERO_COLOR, this.NEGATIVE_COLOR, 0.1);
         var marginallyPositive = chroma.interpolate(this.ZERO_COLOR, this.POSITIVE_COLOR, 0.1);
+        if (classBreaks.length === 1) {
+          // There's only one value. So give it only one color.
+          var color;
+          if (classBreaks[0] < 0) {
+            color = this.NEGATIVE_COLOR;
+          } else if (classBreaks[0] > 0) {
+            color = this.POSITIVE_COLOR;
+          } else {
+            color = this.ZERO_COLOR;
+          }
+          var singleColorScale = _.constant([color]);
+          singleColorScale.colors = _.constant([color]);
+          return singleColorScale;
+        }
+
         if (classBreaks[0] < 0) {
 
           // If we have values that straddle zero, add the zero point as one of our breaks
@@ -165,32 +171,40 @@
           data, Constants['UNFILTERED_VALUE_PROPERTY_NAME']
         );
 
-        if (classBreaks.length === 0) {
-          this.element.hide();
-          return null;
-        }
-
         visualizationUtils.addZeroIfNecessary(classBreaks);
-        var colorScale = this.colorScaleFor(classBreaks);
 
         var position = 'bottomright';
-        var numTicks;
-        var singleClassBreak;
+        var numTicks = 3;
+        var tickValues;
+        var colorScale = this.colorScaleFor(classBreaks);
 
-        // Draw the legend on the map.
-        if (classBreaks.length === 1) {
-
-          // If there is just 1 value, make it range from 0 to that value.
-          singleClassBreak = classBreaks[0];
-          classBreaks = [_.min([0, singleClassBreak]), _.max([0, singleClassBreak])];
-          numTicks = 1;
-
-        } else {
-          if (this.container.height() < 250) {
-            numTicks = 3;
-          } else {
-            numTicks = 4;
-          }
+        switch(classBreaks.length) {
+          case 0:
+            this.element.hide();
+            return null;
+          case 1:
+            tickValues = classBreaks.slice(0);
+            // If there is just 1 value, make it range from 0 to that value.
+            if (classBreaks[0] === 0) {
+              // ...the only value is 0. Give 'em a fake range. It's all they deserve.
+              classBreaks.push(1);
+            } else if (classBreaks[0] < 0) {
+              classBreaks.push(0);
+            } else {
+              classBreaks.unshift(0);
+            }
+            break;
+          case 2:
+            // If there are two values, duplicate the max value, to allow there to be a color stop
+            tickValues = classBreaks.slice(0);
+            classBreaks = [classBreaks[0], classBreaks[1], classBreaks[1]]
+            break;
+          default:
+            if (this.container.height() < 250) {
+              numTicks = 3;
+            } else {
+              numTicks = Math.min(classBreaks.length, 4);
+            }
         }
 
         var minBreak = classBreaks[0];
@@ -219,8 +233,12 @@
         var yAxis = d3.svg.
                       axis().
                       scale(yTickScale).
-                      ticks(numTicks).
                       orient('left');
+        if (tickValues) {
+          yAxis.tickValues(tickValues);
+        } else {
+          yAxis.ticks(numTicks);
+        }
 
         // ensure that there's always a 0 tick
         /* TODO(jerjou): 2015-02-04 I can't seem to get a d3 range to NOT give me a 0 if it
@@ -252,21 +270,10 @@
           // floating point math issues.
           yTickScaleDomain.nice();
           yLabelScaleDomain.nice();
+          // update first and last class breaks to nice y domain
+          classBreaks[0] = yTickScale.domain()[0];
+          classBreaks[classBreaks.length - 1] = yTickScale.domain()[1];
         }
-
-        // include min and max back into d3 scale, if #nice truncates them
-        // TODO: This seems unnecessary, because nice() always expands the range.
-        if (_.min(classBreaks) > minBreak) {
-          classBreaks.unshift(minBreak);
-        }
-
-        if (_.max(classBreaks) < maxBreak) {
-          classBreaks.push(maxBreak);
-        }
-
-        // update first and last class breaks to nice y domain
-        classBreaks[0] = yTickScale.domain()[0];
-        classBreaks[classBreaks.length - 1] = yTickScale.domain()[1];
 
         var labels = svg.selectAll('.labels').
             // Give it some data so it creates the container element
@@ -311,7 +318,10 @@
           attr('class', 'choropleth-legend-color').
           attr('width', COLOR_BAR_WIDTH).
           attr('height', _.bind(function(c, i) {
-            return this.legendLabelColorHeight(i, colorBarHeight, minVal, maxVal, classBreaks);
+            return Math.floor(
+              yLabelScale(classBreaks[i]) -
+              yLabelScale(classBreaks[i + 1])
+            );
           }, this)).
           attr('x', tickAreaWidth).
           attr('y', function(c, i) {
@@ -319,7 +329,16 @@
           }).
           style('fill', function(c, i) { return c; });
 
-        if (colors.length > 1) {
+        if ((tickValues ? tickValues.length : numTicks) === 1) {
+          var value = _.filter(classBreaks)[0];
+          if (isLargeRange) {
+            rects.
+              attr('data-flyout-text', visualizationUtils.bigNumTickFormatter(value));
+          } else {
+            rects.
+              attr('data-flyout-text', value);
+          }
+        } else {
           if (isLargeRange) {
             rects.
               attr('data-flyout-text', _.bind(function(color, i) {
@@ -331,14 +350,6 @@
               attr('data-flyout-text', function(color, i) {
                 return classBreaks[i] + ' – ' + classBreaks[i + 1];
               });
-          }
-        } else {
-          if (isLargeRange) {
-            rects.
-              attr('data-flyout-text', visualizationUtils.bigNumTickFormatter(singleClassBreak));
-          } else {
-            rects.
-              attr('data-flyout-text', singleClassBreak);
           }
         }
 
@@ -514,7 +525,13 @@
             // zero was added artificially. Show a tick, but make it small.
             return true;
           }
-          return (isSmall = !isSmall);
+          if (tickStops.length === (i + 1)) {
+            // Always make the end ticks big
+            return false;
+          }
+          // For normal ticks, alternate big and small
+          isSmall = !isSmall;
+          return isSmall;
         }).style('opacity', ''); // d3 sets an opacity for some reason. unset it.
 
         return axis;
@@ -573,9 +590,23 @@
         );
         var min = _.min(values);
         var max = _.max(values);
+        if (min === max) {
+          // If there's only one value, make it a scale from 0 to that value.
+          if (max < 0) {
+            values.push(0);
+            max = 0;
+          } else if (min > 0) {
+            values.unshift(0);
+            min = 0;
+          } else {
+            // ...the only value is 0. Give 'em a fake range. It's all they deserve.
+            values.push(1);
+            max = 1;
+          }
+        }
 
         var scale = this._scaleForValues(values, min, max);
-        var tickStops = this._findTickStops(scale, this.NUM_TICKS);
+        var tickStops = this._findTickStops(scale, Math.min(values.length, this.NUM_TICKS));
         var indexOf0 = visualizationUtils.addZeroIfNecessary(tickStops);
 
         var colorScale = this._createColorScale(tickStops, scale);

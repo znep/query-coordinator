@@ -1,7 +1,10 @@
 /**
  * A dropdown menu that positions itself underneath its parent.
  */
-angular.module('dataCards.directives').directive('dropdownMenu', function(WindowState) {
+angular.module('dataCards.directives').directive('dropdownMenu', function(
+  WindowState,
+  AngularRxExtensions
+) {
   'use strict';
 
   return {
@@ -12,6 +15,7 @@ angular.module('dataCards.directives').directive('dropdownMenu', function(Window
     transclude: true,
 
     link: function($scope, element, attrs) {
+      AngularRxExtensions.install($scope);
       var subscriptions = [];
 
       // Disable anchors that don't have urls
@@ -51,7 +55,7 @@ angular.module('dataCards.directives').directive('dropdownMenu', function(Window
           }
       }));
 
-      $scope.$on('$destroy', function() {
+      $scope.observeDestroy(element).subscribe(function() {
         // During unit tests, these subscriptions stick around and cause errors (since element isn't
         // in the dom anymore, so no parent()), so practice good hygiene!
         _.invoke(subscriptions, 'dispose');

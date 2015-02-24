@@ -100,7 +100,7 @@
         });
 
         // Hide the panel
-        WindowState.closeDialogEventObservable.takeUntil($scope.eventToObservable('$destroy')).
+        WindowState.closeDialogEventObservable.takeUntil($scope.observeDestroy(element)).
           filter(function(e) {
             return $scope.panelActive && $(e.target).closest(element).length === 0;
           }).
@@ -120,7 +120,7 @@
 
 
         // Clean up
-        $scope.$on('$destroy', function() {
+        $scope.observeDestroy(element).subscribe(function() {
           $scope.$emit('cleaned-up');
         });
       }

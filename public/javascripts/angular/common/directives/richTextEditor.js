@@ -160,7 +160,9 @@
   /**
    * A <rich-text-editor /> is meant to replace a <textarea />, and provide limited html formatting.
    */
-  angular.module('socrataCommon.directives').directive('richTextEditor', function() {
+  angular.module('socrataCommon.directives').directive('richTextEditor', function(
+    AngularRxExtensions
+  ) {
     var toolbar;
     /**
      * We need to update the value on both the 'input' event and the 'blur' event, because squire
@@ -243,6 +245,8 @@
     }
 
     function init($scope, element, attr) {
+      AngularRxExtensions.install($scope);
+
       var iframe = element.find('iframe');
 
       // Grab a reference to squire after it loads.
@@ -258,7 +262,7 @@
 
       initCss(element);
 
-      $scope.$on('$destroy', function() {
+      $scope.observeDestroy(element).subscribe(function() {
         cleanupEvents($scope.editor);
       });
     }

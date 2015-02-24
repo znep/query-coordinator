@@ -48,7 +48,7 @@
             else {
               return Rx.Observable.empty();
             }
-          }).takeUntil($scope.eventToObservable('$destroy')).subscribe(clearInput);
+          }).takeUntil($scope.observeDestroy(element)).subscribe(clearInput);
 
         $scope.bindObservable('placeholder', placeholderObservable);
         $scope.bindObservable('hasInput', hasInputObservable);

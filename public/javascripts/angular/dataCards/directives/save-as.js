@@ -65,7 +65,7 @@
           filter(function(e) {
             return $scope.panelActive && $(e.target).closest(element).length === 0;
           }).
-          takeUntil($scope.eventToObservable('$destroy')).
+          takeUntil($scope.observeDestroy(element)).
           subscribe(function() {
             $scope.safeApply(function() {
               $scope.panelActive = false;
@@ -90,9 +90,9 @@
           } else if (saveEvents.value.status === 'idle') {
             return '<div class="flyout-title">Click to save your changes</div>';
           }
-        }, $scope.eventToObservable('$destroy'));
+        }, $scope.observeDestroy(element));
 
-        $scope.$on('$destroy', function() {
+        $scope.observeDestroy(element).subscribe(function() {
           $scope.$emit('cleaned-up');
         });
       }

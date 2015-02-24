@@ -516,7 +516,7 @@ angular.module('socrataCommon.directives').directive('columnChart', function($pa
       FlyoutService.register(
         'truncation-marker',
         _.constant('<div class="flyout-title">Click to expand</div>'),
-        scope.eventToObservable('$destroy')
+        scope.observeDestroy(element)
       );
 
       element.parent().delegate('.bar-group, .labels .label span', 'click', function(event) {
@@ -554,7 +554,7 @@ angular.module('socrataCommon.directives').directive('columnChart', function($pa
           });
         }
       );
-      scope.$on('$destroy', function() {
+      scope.observeDestroy(element).subscribe(function() {
         element.parent().undelegate();
         element.find('.chart-scroll').undelegate();
       });

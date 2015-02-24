@@ -4,13 +4,14 @@
  *   The position of the element is either fixed or absolute.
  *   There is one child element, and it is the one setting the background color.
  */
-angular.module('dataCards.directives').directive('animateTo', function() {
+angular.module('dataCards.directives').directive('animateTo', function(AngularRxExtensions) {
   var ANIMATION_DURATION = .5;
   var ANIMATION_STAGGER = .04;
   return {
     restrict: 'A',
 
     link: function($scope, element, attrs) {
+      AngularRxExtensions.install($scope);
       var jqueryWindow = $(window);
       var oldStyles;
       var child;
@@ -127,7 +128,7 @@ angular.module('dataCards.directives').directive('animateTo', function() {
         element.on('transitionend webkitTransitionEnd oTransitionEnd MSTransitionEnd', transitionEnd);
 
         // Clean up
-        $scope.$on('$destroy', function() {
+        $scope.observeDestroy(element).subscribe(function() {
           element.off('transitionend webkitTransitionEnd oTransitionEnd MSTransitionEnd',
                       transitionEnd);
         });

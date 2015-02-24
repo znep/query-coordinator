@@ -11,6 +11,7 @@
 
     var jqueryFx;
     beforeEach(function() {
+      module('dataCards');
       module('socrataCommon.directives');
       module('test');
 

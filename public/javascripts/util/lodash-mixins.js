@@ -14,6 +14,9 @@ _.mixin({
   isDefined: function(value) {
     return !_.isUndefined(value);
   },
+  hasValue: function(value) {
+    return value !== null && value !== undefined;
+  },
   instead: function(value, insteadValue) {
     return _.isPresent(value) ? value : insteadValue;
   },
@@ -38,5 +41,12 @@ _.mixin({
     return function() {
       _.defer(f);
     };
+  },
+  /**
+   * @return {Number} the log, base 10, of the given number.
+   */
+  log10: Math.log10 || function(n) {
+    return Math.log(n) / Math.LN10;
   }
+
 });

@@ -9,7 +9,6 @@
   function choropleth(Constants,
                       AngularRxExtensions,
                       $timeout,
-                      numberFormatter,
                       ChoroplethVisualizationService,
                       WindowState,
                       FlyoutService) {
@@ -18,63 +17,33 @@
     // individual dataset.
     var visualizationUtils = ChoroplethVisualizationService.utils;
 
-
     /**
      * A choropleth legend, with discrete colors for ranges of values.
      */
-    function LegendDiscrete(element, container) {
+    function LegendDiscrete(element, container, scope) {
       this.element = element;
       this.container = container;
+
+      // Initialize the flyout handler
+      FlyoutService.register('choropleth-legend-color', function(element) {
+        if ($(element).parents('.card').hasClass('dragged')) {
+          return;
+        }
+        return '<div class="flyout-title">{0}</div>'.format(
+          element.getAttribute('data-flyout-text')
+        );
+      },
+      scope.eventToObservable('$destroy'),
+      false,
+      // The last argument specifies a horizontal display mode.
+      true);
     }
+
     $.extend(LegendDiscrete.prototype, {
-      /**
-       * @private
-       */
-      bigNumTickFormatter: function(val) {
-        // used if ss.standard_deviation(classBreaks) > 10
-        // val = a x 10^b (a: coefficient, b: exponent);
-        if (val === 0) {
-          return 0;
-        }
-        var exponent = Math.floor(Math.log(Math.abs(val)) / Math.LN10);
-        var coefficient = val / Math.pow(10, exponent);
-        var isMultipleOf10 = coefficient % 1 == 0;
-        if (isMultipleOf10) {
-          var numNonzeroDigits = coefficient.toString().length;
-          var formattedNum = numberFormatter.formatNumber(val, {
-            fixedPrecision: 0,
-            maxLength: _.min([numNonzeroDigits, 3])
-          });
-        } else {
-          var numNonzeroDigits = coefficient.toString().length - 1;
-          var formattedNum = numberFormatter.formatNumber(val, {
-            maxLength: _.min([numNonzeroDigits, 3])
-          });
-        }
-        return formattedNum;
-      },
-
-      /**
-       * @private
-       */
-      legendLabelColorHeight: function(colorIndex, totalHeight, minVal, maxVal, classBreaks) {
-        var percentOfClassbreakRange = (classBreaks[colorIndex + 1] - classBreaks[colorIndex]) /
-            (maxVal - minVal);
-        return Math.floor(percentOfClassbreakRange * totalHeight);
-      },
-
-      /**
-       * If the values straddle 0, we want to add a break at 0
-       */
-      addZeroIfNecessary: function(classBreaks) {
-        var indexOf0 = _.sortedIndex(classBreaks, 0);
-        if (indexOf0 > 0 && indexOf0 < classBreaks.length) {
-          classBreaks.splice(indexOf0, 0, 0);
-        }
-      },
       ZERO_COLOR: '#eeeeee',
       NEGATIVE_COLOR: '#c6663d',
       POSITIVE_COLOR: '#408499',
+
       /**
        * Generates a color scale for the given classBreaks.
        * @param {Number[]} classBreaks The values that define the boundaries of the different
@@ -84,6 +53,21 @@
       colorScaleFor: function(classBreaks) {
         var marginallyNegative = chroma.interpolate(this.ZERO_COLOR, this.NEGATIVE_COLOR, 0.1);
         var marginallyPositive = chroma.interpolate(this.ZERO_COLOR, this.POSITIVE_COLOR, 0.1);
+        if (classBreaks.length === 1) {
+          // There's only one value. So give it only one color.
+          var color;
+          if (classBreaks[0] < 0) {
+            color = this.NEGATIVE_COLOR;
+          } else if (classBreaks[0] > 0) {
+            color = this.POSITIVE_COLOR;
+          } else {
+            color = this.ZERO_COLOR;
+          }
+          var singleColorScale = _.constant([color]);
+          singleColorScale.colors = _.constant([color]);
+          return singleColorScale;
+        }
+
         if (classBreaks[0] < 0) {
 
           // If we have values that straddle zero, add the zero point as one of our breaks
@@ -128,6 +112,7 @@
                 return (value < 0 ? negativeColorScale : positiveColorScale)(value);
               }
             }, this);
+
             /**
              * Our faux .colors method basically just retrieves the positive and negative arrays and
              * combines them.
@@ -156,6 +141,7 @@
 
               return negColors.concat(posColors);
             };
+
             return fauxColorScale;
 
           } else {
@@ -185,32 +171,40 @@
           data, Constants['UNFILTERED_VALUE_PROPERTY_NAME']
         );
 
-        if (classBreaks.length === 0) {
-          this.element.hide();
-          return null;
-        }
-
-        this.addZeroIfNecessary(classBreaks);
-        var colorScale = this.colorScaleFor(classBreaks);
+        visualizationUtils.addZeroIfNecessary(classBreaks);
 
         var position = 'bottomright';
-        var numTicks;
-        var singleClassBreak;
+        var numTicks = 3;
+        var tickValues;
+        var colorScale = this.colorScaleFor(classBreaks);
 
-        // Draw the legend on the map.
-        if (classBreaks.length === 1) {
-
-          // If there is just 1 value, make it range from 0 to that value.
-          singleClassBreak = classBreaks[0];
-          classBreaks = [_.min([0, singleClassBreak]), _.max([0, singleClassBreak])];
-          numTicks = 1;
-
-        } else {
-          if (this.container.height() < 250) {
-            numTicks = 3;
-          } else {
-            numTicks = 4;
-          }
+        switch(classBreaks.length) {
+          case 0:
+            this.element.hide();
+            return null;
+          case 1:
+            tickValues = classBreaks.slice(0);
+            // If there is just 1 value, make it range from 0 to that value.
+            if (classBreaks[0] === 0) {
+              // ...the only value is 0. Give 'em a fake range. It's all they deserve.
+              classBreaks.push(1);
+            } else if (classBreaks[0] < 0) {
+              classBreaks.push(0);
+            } else {
+              classBreaks.unshift(0);
+            }
+            break;
+          case 2:
+            // If there are two values, duplicate the max value, to allow there to be a color stop
+            tickValues = classBreaks.slice(0);
+            classBreaks = [classBreaks[0], classBreaks[1], classBreaks[1]]
+            break;
+          default:
+            if (this.container.height() < 250) {
+              numTicks = 3;
+            } else {
+              numTicks = Math.min(classBreaks.length, 4);
+            }
         }
 
         var minBreak = classBreaks[0];
@@ -239,8 +233,12 @@
         var yAxis = d3.svg.
                       axis().
                       scale(yTickScale).
-                      ticks(numTicks).
                       orient('left');
+        if (tickValues) {
+          yAxis.tickValues(tickValues);
+        } else {
+          yAxis.ticks(numTicks);
+        }
 
         // ensure that there's always a 0 tick
         /* TODO(jerjou): 2015-02-04 I can't seem to get a d3 range to NOT give me a 0 if it
@@ -266,26 +264,16 @@
           // gives unexpected results due to floating point math.
           // We want to just return the value for "small-ranged" data.
           // --> do not call a tickFormatter on yAxis if range is small.
-          yAxis.tickFormat(this.bigNumTickFormatter);
+          yAxis.tickFormat(visualizationUtils.bigNumTickFormatter);
 
           // Due to similar issues, d3's scale#nice method also has
           // floating point math issues.
           yTickScaleDomain.nice();
           yLabelScaleDomain.nice();
+          // update first and last class breaks to nice y domain
+          classBreaks[0] = yTickScale.domain()[0];
+          classBreaks[classBreaks.length - 1] = yTickScale.domain()[1];
         }
-
-        // include min and max back into d3 scale, if #nice truncates them
-        if (_.min(classBreaks) > minBreak) {
-          classBreaks.unshift(minBreak);
-        }
-
-        if (_.max(classBreaks) < maxBreak) {
-          classBreaks.push(maxBreak);
-        }
-
-        // update first and last class breaks to nice y domain
-        classBreaks[0] = yTickScale.domain()[0];
-        classBreaks[classBreaks.length - 1] = yTickScale.domain()[1];
 
         var labels = svg.selectAll('.labels').
             // Give it some data so it creates the container element
@@ -330,7 +318,10 @@
           attr('class', 'choropleth-legend-color').
           attr('width', COLOR_BAR_WIDTH).
           attr('height', _.bind(function(c, i) {
-            return this.legendLabelColorHeight(i, colorBarHeight, minVal, maxVal, classBreaks);
+            return Math.floor(
+              yLabelScale(classBreaks[i]) -
+              yLabelScale(classBreaks[i + 1])
+            );
           }, this)).
           attr('x', tickAreaWidth).
           attr('y', function(c, i) {
@@ -338,26 +329,27 @@
           }).
           style('fill', function(c, i) { return c; });
 
-        if (colors.length > 1) {
+        if ((tickValues ? tickValues.length : numTicks) === 1) {
+          var value = _.filter(classBreaks)[0];
+          if (isLargeRange) {
+            rects.
+              attr('data-flyout-text', visualizationUtils.bigNumTickFormatter(value));
+          } else {
+            rects.
+              attr('data-flyout-text', value);
+          }
+        } else {
           if (isLargeRange) {
             rects.
               attr('data-flyout-text', _.bind(function(color, i) {
-                return this.bigNumTickFormatter(classBreaks[i]) + ' – ' +
-                  this.bigNumTickFormatter(classBreaks[i + 1]);
+                return visualizationUtils.bigNumTickFormatter(classBreaks[i]) + ' – ' +
+                  visualizationUtils.bigNumTickFormatter(classBreaks[i + 1]);
               }, this));
           } else {
             rects.
               attr('data-flyout-text', function(color, i) {
                 return classBreaks[i] + ' – ' + classBreaks[i + 1];
               });
-          }
-        } else {
-          if (isLargeRange) {
-            rects.
-              attr('data-flyout-text', this.bigNumTickFormatter(singleClassBreak));
-          } else {
-            rects.
-              attr('data-flyout-text', singleClassBreak);
           }
         }
 
@@ -372,11 +364,256 @@
     /**
      * A Legend with a continuous scale.
      */
-    function LegendContinuous() {
-      // TODO
+    function LegendContinuous(element, container) {
+      this.element = element.addClass('continuous');
+      this.container = container;
     }
+
     $.extend(LegendContinuous.prototype, {
+      ZERO_COLOR: '#ffffff',
+      NEGATIVE_COLOR: '#c6663d',
+      POSITIVE_COLOR: '#003747',
+
+      /**
+       * Finds an array of values, including the min, max, and numStops - 2 more values,
+       * evenly-spaced between the min and max.
+       *
+       * @param {d3.scale} scale a d3 scale whose domain is the value domain.
+       * @param {Number} numStops the number of values to find.
+       *
+       * @return {Number[]} a sorted array of numbers, of length numStops. The first element is the
+       *   smallest value in the features, the last element is the largest, and the other values are
+       *   evenly spaced between them (and may not actually appear in the dataset).
+       * @private
+       */
+      _findTickStops: function(scale, numStops) {
+        var scaleForReversing = scale.copy().range([0, 1]);
+        var stops = _.map(
+          _.range(0, 1, 1 / (numStops - 1)),
+          _.bind(scaleForReversing.invert, scaleForReversing)
+        ).concat(_.last(scaleForReversing.domain()));
+        if (_.last(stops) - stops[0] > 5) {
+          stops = _.map(stops, Math.round);
+        }
+        return stops;
+      },
+
+      /**
+       * Draw an SVG rectangle with the appropriate gradient.
+       *
+       * @param {Number[]} tickStops the values at which ticks will be drawn. The first value should
+       *   be the minimum value, and the last value should be the maximum.
+       * @param {d3.scale} colorScale a scale from a value, to a color.
+       *
+       * @return {d3.selection} the svg's d3 selection.
+       * @private
+       */
+      _drawGradient: function(tickStops, colorScale) {
+        var elementSelection = d3.select(this.element[0]);
+        // Create the svg element
+        var legendSvg = elementSelection.data([0]).selectAll('svg').data([0]);
+        legendSvg.exit().remove();
+        legendSvg.enter().append('svg').
+          // Create the gradient that's referenced later when the containing rectangle is drawn.
+          append('linearGradient').attr({
+            id: 'gradient',
+            gradientUnits: 'userSpaceOnUse',
+            // x,y are actually left,top
+            y1: '100%', x1: 0, x2: 0, y2: 0
+          });
+        // Due to a webkit bug (https://bugs.webkit.org/show_bug.cgi?id=83438), we can't select a
+        // camelCase element. So select it by id
+        var gradient = legendSvg.selectAll('#gradient');
+
+        // Create a scale for positioning values by percentage
+        var positionScale = colorScale.copy().range([0, 100]);
+        var domain = positionScale.domain();
+        if (domain.length > 2) {
+          positionScale.domain([domain[0], _.last(domain)]);
+        }
+
+        // We'll make a stop in the gradient for each tick stop, to ensure the gradients grade
+        // similarly.
+        var gradientStops = gradient.selectAll('stop').data(tickStops);
+        gradientStops.enter().append('stop');
+        gradientStops.attr({
+          offset: function(value) {
+            return positionScale(value) + '%';
+          },
+          'stop-color': colorScale
+        });
+        gradientStops.exit().remove();
+
+        // Draw the rectangles in pieces, so as to store the data, so the ticks can access them.
+        var rectangles = legendSvg.selectAll('rect').data(tickStops);
+        rectangles.enter().
+          append('rect').attr({
+            x: 0,
+            y: function(value) {
+              // Since y is actually 'top', and we want the lowest value at the bottom, subtract
+              // from 100
+              return (100 - positionScale(value)) + '%';
+            },
+            width: '100%',
+            height: function(value, i) {
+              if (i === 0) {
+                return 0;
+              }
+              return Math.abs(positionScale(value) - positionScale(tickStops[i - 1])) + '%';
+            },
+            fill: 'url(#gradient)'
+          });
+        rectangles.exit().remove();
+
+        return legendSvg;
+      },
+
+      /**
+       * Creates the d3 scale used to map from a value to a color.
+       *
+       * @param {Number[]} tickStops an array of values, the first of which should be the minimum
+       *   value of the data, the last of which should be the maximum value of the data.
+       * @param {d3.scale} scale a d3 scale whose domain is the value domain.
+       *
+       * @return {d3.scale} a scale mapping from a value within features, to a color.
+       * @private
+       */
+      _createColorScale: function(tickStops, scale) {
+        var domain;
+        var range = [this.NEGATIVE_COLOR, this.ZERO_COLOR, this.POSITIVE_COLOR];
+        var min = tickStops[0];
+        var max = _.last(tickStops);
+        if (min >= 0) {
+          // All positive values
+          domain = [min, max];
+          range = range.slice(1);
+        } else if (max <= 0) {
+          // All negative values
+          domain = [min, max];
+          range = range.slice(0, 2);
+        } else {
+          // Straddle zero
+          domain = [min, 0, max];
+        }
+
+        return scale.copy().
+          domain(domain).
+          range(range);
+      },
+
+      /**
+       * Draw the ticks and labels for the legend.
+       */
+      _drawAxis: function(legendSvg, tickStops, scale, indexOf0) {
+        var positionScale = scale.copy().range([this.element.height(), 0]);
+        var axis = d3.svg.axis().
+          scale(positionScale).
+          tickValues(tickStops).
+          orient('left');
+
+        if (_.last(tickStops) - tickStops[0] > 10) {
+          axis.tickFormat(visualizationUtils.bigNumTickFormatter);
+        }
+
+        axis(legendSvg);
+
+        // We want to size the ticks differently than d3's default. Do that manually.
+        var ticks = legendSvg.selectAll('g.tick');
+        var isSmall = true; // Alternate small/big, starting with big.
+        ticks.classed('small', function(value, i) {
+          if (i === indexOf0) {
+            // zero was added artificially. Show a tick, but make it small.
+            return true;
+          }
+          if (tickStops.length === (i + 1)) {
+            // Always make the end ticks big
+            return false;
+          }
+          // For normal ticks, alternate big and small
+          isSmall = !isSmall;
+          return isSmall;
+        }).style('opacity', ''); // d3 sets an opacity for some reason. unset it.
+
+        return axis;
+      },
+
+      /**
+       * Determines the type of d3 scale to create for the given values, and creates it.
+       *
+       * @param {Number[]} values the data values we're visualizing.
+       * @param {Number=} min the minimum value within values. Saves us the trouble of finding it,
+       *   if you already have it.
+       * @param {Number=} max the maximum value within values. Saves us the trouble of finding it,
+       *   if you already have it.
+       *
+       * @return {d3.scale} a d3 scale of the determined type, with the domain set.
+       */
+      _scaleForValues: function(values, min, max) {
+        min = min || _.min(values);
+        max = max || _.max(values);
+        var scale;
+
+        if (min >= 0 || max <= 0) {
+          var deltaMagnitude = _.log10(max - min);
+          if (deltaMagnitude < 1) {
+            scale = d3.scale.linear();
+          } else if (deltaMagnitude <= 3 && min > 0 || max < 0) {
+            scale = d3.scale.log();
+          } else {
+            // TODO: determine what the exponent should be based on the value distribution?
+            scale = d3.scale.pow().exponent(2);
+          }
+        } else {
+          scale = d3.scale.linear();
+        }
+
+        return scale.domain([min, max]).nice();
+      },
+
+      NUM_TICKS: 5,
+
+      /**
+       * Redraw the legend.
+       *
+       * TODO:
+       * flyouts
+       * make sure numbers fit AC
+       *
+       * @return {d3.scale} a scale mapping from value to color.
+       */
       update: function(data) {
+        if (!(data.features && data.features.length)) return;
+
+        var values = _.pluck(
+          _.pluck(data.features, 'properties'),
+          Constants.UNFILTERED_VALUE_PROPERTY_NAME
+        );
+        var min = _.min(values);
+        var max = _.max(values);
+        if (min === max) {
+          // If there's only one value, make it a scale from 0 to that value.
+          if (max < 0) {
+            values.push(0);
+            max = 0;
+          } else if (min > 0) {
+            values.unshift(0);
+            min = 0;
+          } else {
+            // ...the only value is 0. Give 'em a fake range. It's all they deserve.
+            values.push(1);
+            max = 1;
+          }
+        }
+
+        var scale = this._scaleForValues(values, min, max);
+        var tickStops = this._findTickStops(scale, Math.min(values.length, this.NUM_TICKS));
+        var indexOf0 = visualizationUtils.addZeroIfNecessary(tickStops);
+
+        var colorScale = this._createColorScale(tickStops, scale);
+        var legendSvg = this._drawGradient(tickStops, colorScale);
+        this._drawAxis(legendSvg, tickStops, scale, indexOf0);
+
+        return colorScale;
       }
     });
 
@@ -392,11 +629,12 @@
                     '<div class="choropleth-map-container"></div>',
                     '<div class="choropleth-legend"></div>',
                   '</div>'].join(''),
-      link: function(scope, element) {
+      link: function(scope, element, attrs) {
 
         AngularRxExtensions.install(scope);
 
-        var legend = new LegendDiscrete(element.find('.choropleth-legend'), element);
+        var LegendType = attrs.stops === 'continuous' ? LegendContinuous : LegendDiscrete;
+        var legend = new LegendType(element.find('.choropleth-legend'), element, scope);
 
         /***********************
          * Mutate Leaflet state *
@@ -756,19 +994,6 @@
         true,
         false);
 
-        FlyoutService.register('choropleth-legend-color', function(element) {
-          if ($(element).parents('.card').hasClass('dragged')) {
-            return;
-          }
-          return '<div class="flyout-title">{0}</div>'.format(
-            element.getAttribute('data-flyout-text')
-          );
-        },
-        scope.eventToObservable('$destroy'),
-        false,
-        // The last argument specifies a horizontal display mode.
-        true);
-
         /***************
         * Set up state *
         ***************/
@@ -920,7 +1145,6 @@
       directive('choropleth', ['Constants',
                                'AngularRxExtensions',
                                '$timeout',
-                               'numberFormatter',
                                'ChoroplethVisualizationService',
                                'WindowState',
                                'FlyoutService',

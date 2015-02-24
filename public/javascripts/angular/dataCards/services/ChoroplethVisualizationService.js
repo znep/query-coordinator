@@ -1,7 +1,7 @@
 (function() {
   'use strict';
 
-  function ChoroplethVisualizationService(Constants) {
+  function ChoroplethVisualizationService(Constants, numberFormatter) {
 
     function ChoroplethVisualizationUtils() {
 
@@ -31,9 +31,7 @@
         _.each(geojson.features, function(feature){
           if (!feature || !feature.properties) return [];
           var val = feature.properties[attr];
-          if (!val) {
-            return;
-          } else {
+          if (_.hasValue(val)) {
             data.push(feature.properties[attr]);
           }
         });
@@ -74,10 +72,15 @@
           case 'equalInterval':
             var minVal = _.min(options.data),
                 maxVal = _.max(options.data);
-            classBreaks = d3.scale.linear().domain([minVal, maxVal]).nice().ticks(_.min([options.numberOfClasses, 4]));
-            // include min and max back into d3 scale, if #nice truncates them
-            if (_.min(classBreaks) > minVal) classBreaks.unshift(minVal);
-            if (_.max(classBreaks) < maxVal) classBreaks.push(maxVal);
+            if (minVal === maxVal) {
+              classBreaks = [minVal];
+            } else {
+              var scale = d3.scale.linear().domain([minVal, maxVal]);
+              classBreaks = scale.nice().ticks(_.min([options.numberOfClasses, 4]));
+              // Make sure min and max are in the classBreak ticks that d3 gives us.
+              if (classBreaks[0] > minVal) classBreaks.unshift(minVal);
+              if (_.last(classBreaks) < maxVal) classBreaks.push(maxVal);
+            }
             break;
           default:
             throw new Error('Invalid/non-supported class breaks method ' + options.method);
@@ -96,7 +99,7 @@
         classBreaks = createClassBreaks({
           method: 'equalInterval',
           data: values,
-          numberOfClasses: values.length
+          numberOfClasses: uniqValues.length
         });
       } else {
         classBreaks = createClassBreaks({
@@ -152,7 +155,9 @@
       }
 
       if (colorScale) {
-        return colorScale(Number(feature.properties[Constants['FILTERED_VALUE_PROPERTY_NAME']])).hex();
+        return String(
+          colorScale(Number(feature.properties[Constants['FILTERED_VALUE_PROPERTY_NAME']]))
+        );
       } else {
         return 'transparent';
       }
@@ -223,6 +228,49 @@
           fillOpacity: opacity
         };
       }
+    };
+
+    ChoroplethVisualizationUtils.prototype.bigNumTickFormatter = function(val) {
+      // used if ss.standard_deviation(classBreaks) > 10
+      // val = a x 10^b (a: coefficient, b: exponent);
+      if (val === 0) {
+        return 0;
+      }
+      var exponent = Math.floor(Math.log(Math.abs(val)) / Math.LN10);
+      var coefficient = val / Math.pow(10, exponent);
+      var isMultipleOf10 = coefficient % 1 == 0;
+      if (isMultipleOf10) {
+        var numNonzeroDigits = coefficient.toString().length;
+        var formattedNum = numberFormatter.formatNumber(val, {
+          fixedPrecision: 0,
+          maxLength: _.min([numNonzeroDigits, 3])
+        });
+      } else {
+        var numNonzeroDigits = coefficient.toString().length - 1;
+        var formattedNum = numberFormatter.formatNumber(val, {
+          maxLength: _.min([numNonzeroDigits, 3])
+        });
+      }
+      return formattedNum;
+    };
+
+    /**
+     * If the values straddle 0, we want to add a break at 0
+     *
+     * @return {Number} the index at which we added 0, or -1 if we didn't.
+     * @protected
+     */
+    ChoroplethVisualizationUtils.prototype.addZeroIfNecessary = function(classBreaks) {
+      var indexOf0 = _.sortedIndex(classBreaks, 0);
+      if (
+        (indexOf0 > 0 && indexOf0 < classBreaks.length) &&
+        // Don't add it if it's already there
+        (classBreaks[indexOf0] !== 0 && classBreaks[indexOf0 - 1] !== 0)
+      ) {
+        classBreaks.splice(indexOf0, 0, 0);
+        return indexOf0;
+      }
+      return -1;
     };
 
     var utils = new ChoroplethVisualizationUtils();

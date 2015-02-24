@@ -33,6 +33,36 @@
         stroke: white
         stroke-width: 1px
 
+    &.continuous
+      max-height: 15rem
+      width: 1rem
+
+      svg
+        width: 100%
+        height: 100%
+
+        rect
+          width: 100%
+          height: 100%
+
+        .tick
+          $font-size: .8rem
+          font-size: $font-size
+
+          text
+            color: $dark-grey-font-color
+            fill: $dark-grey-font-color
+
+          &.small
+            font-size: .75 * $font-size
+            opacity: .8
+
+          line
+            stroke: black
+
+        path.domain
+          display: none
+
 .card.dragged
   .choropleth-container
     .choropleth-map-container

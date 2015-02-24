@@ -54,12 +54,18 @@ describe("multilineEllipsis directive", function(FlyoutService) {
           var scope = $rootScope.$new();
           scope.lotsOfText = lotsOfText;
           el = testHelpers.TestDom.compileAndAppend(html, scope);
+          el.css('font-size', '38px');
           fakeClock.tick(1000);
         }
 
-        it('should show an ellipsis when there are more than two lines of text and the height is 24 pixels', function() {
+        it('should show an ellipsis when there are more than two lines of text', function() {
           ensure();
           expect(el.text()).to.contain('...');
+          // Create an element to measure the position at the beginning and end of the text
+          var cursor = $('<span />').text("\ufeff");
+          var firstLine = cursor.prependTo(el.find('.content')).offset();
+          var secondLine = cursor.appendTo(el.find('.content')).offset();
+          expect(firstLine.top).to.be.lessThan(secondLine.top);
         });
 
         it('should not have title text', function() {

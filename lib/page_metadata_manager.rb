@@ -1,13 +1,26 @@
 # Wrapper around the phidippides service, for functions related to page metadata.
 # Also handles managing rollup tables in soda fountain.
 class PageMetadataManager
-  CARD_TEMPLATE = {
+
+  include CommonMetadataTransitionMethods
+
+  V0_CARD_TEMPLATE = {
     'fieldName' => nil,
     'cardSize' => 1,
     'cardCustomStyle' => {},
     'expandedCustomStyle' => {},
     'displayMode' => 'visualization',
     'expanded' => false,
+  }.freeze
+
+  V1_CARD_TEMPLATE = {
+    'appliedFilters' => [],
+    'cardSize' => 1,
+    'cardType' => 'invalid',
+    'description' => '',
+    'expanded' => false,
+    'fieldName' => nil,
+    'name' => ''
   }.freeze
 
   # Creates a new page
@@ -18,8 +31,14 @@ class PageMetadataManager
       table_card = data['cards'].find do |card|
         card['fieldName'] == '*' || card['cardType'] == 'table'
       end
+
       unless table_card
-        table_card = CARD_TEMPLATE.deep_dup
+        if metadata_transition_phase_0? || metadata_transition_phase_1?
+          table_card = V0_CARD_TEMPLATE.deep_dup
+        else
+          table_card = V1_CARD_TEMPLATE.deep_dup
+        end
+
         table_card.merge!(
           'fieldName' => '*',
           'cardSize' => 2,

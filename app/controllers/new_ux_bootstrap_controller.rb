@@ -242,7 +242,7 @@ class NewUxBootstrapController < ActionController::Base
   end
 
   def merge_new_card_data_with_default(field_name, cardinality, card_type)
-    PageMetadataManager::CARD_TEMPLATE.deep_dup.merge(
+    PageMetadataManager::V0_CARD_TEMPLATE.deep_dup.merge(
       'fieldName' => field_name,
       'cardinality' => cardinality,
       'cardType' => card_type

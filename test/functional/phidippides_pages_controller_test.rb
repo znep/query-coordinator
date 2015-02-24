@@ -89,7 +89,7 @@ class PhidippidesPagesControllerTest < ActionController::TestCase
 
   test '(phase 0, 1 or 2) create returns new page metadata if logged in' do
     @controller.stubs(can_update_metadata?: true)
-    PageMetadataManager.any_instance.stubs(create: { body: v0_page_metadata, status: 200 })
+    PageMetadataManager.any_instance.stubs(create: { body: v0_page_metadata, status: '200' })
 
     stub_feature_flags_with(:metadata_transition_phase, '0')
     post :create, pageMetadata: v0_page_metadata, format: :json
@@ -99,7 +99,7 @@ class PhidippidesPagesControllerTest < ActionController::TestCase
     post :create, pageMetadata: v0_page_metadata, format: :json
     assert_response(200)
 
-    PageMetadataManager.any_instance.stubs(create: { body: nil, status: 200 })
+    PageMetadataManager.any_instance.stubs(create: { body: nil, status: '200' })
     stub_feature_flags_with(:metadata_transition_phase, '2')
     post :create, pageMetadata: v1_page_metadata, format: :json
     assert_response(200)
@@ -167,7 +167,7 @@ class PhidippidesPagesControllerTest < ActionController::TestCase
 
   test '(phase 0, 1 or 2) update returns success' do
     @controller.stubs(can_update_metadata?: true)
-    PageMetadataManager.any_instance.stubs(update: { body: v0_page_metadata, status: 200 })
+    PageMetadataManager.any_instance.stubs(update: { body: v0_page_metadata, status: '200' })
 
     stub_feature_flags_with(:metadata_transition_phase, '0')
     put :update, id: 'four-four', pageMetadata: v0_page_metadata, format: :json
@@ -177,7 +177,7 @@ class PhidippidesPagesControllerTest < ActionController::TestCase
     put :update, id: 'four-four', pageMetadata: v0_page_metadata, format: :json
     assert_response(200)
 
-    PageMetadataManager.any_instance.stubs(update: { body: nil, status: 200 })
+    PageMetadataManager.any_instance.stubs(update: { body: nil, status: '200' })
     stub_feature_flags_with(:metadata_transition_phase, '2')
     put :update, id: 'four-four', pageMetadata: v1_page_metadata, format: :json
     assert_response(200)
@@ -214,7 +214,7 @@ class PhidippidesPagesControllerTest < ActionController::TestCase
 
   test '(phase 2) delete returns success' do
     @controller.stubs(can_update_metadata?: true)
-    Phidippides.any_instance.stubs(delete_page_metadata: { body: nil, status: 200 })
+    Phidippides.any_instance.stubs(delete_page_metadata: { body: nil, status: '200' })
     stub_feature_flags_with(:metadata_transition_phase, '2')
     delete :destroy, id: 'four-four'
     assert_response(200)

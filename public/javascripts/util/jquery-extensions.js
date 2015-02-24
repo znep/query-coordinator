@@ -493,4 +493,19 @@
     }
   };
 
+  /*
+  Borrowed from this StackOverflow answer: http://stackoverflow.com/a/20520619/71036
+  Watch scrolling on the element.  If we're trying to scroll up at the top, or down at
+  the bottom, we should prevent the event from propagating.
+   */
+  $.fn.preventBodyScroll = function() {
+    $(this).on('mousewheel DOMMouseScroll', function(e) {
+      var eventDirection = e.originalEvent.wheelDelta || -e.originalEvent.detail;
+      var direction = eventDirection > 0 ? 'up' : 'down';
+      var shouldPreventDefault = (direction === 'up' && this.scrollTop === 0) ||
+        (direction === 'down' && this.scrollTop === this.scrollHeight - this.offsetHeight);
+      shouldPreventDefault && e.preventDefault();
+    });
+  };
+
 })(jQuery, _, window);

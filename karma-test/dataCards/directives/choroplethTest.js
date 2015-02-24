@@ -1,6 +1,11 @@
 describe("A Choropleth Directive", function() {
   'use strict';
 
+  // Indices into an rgb array, for greater semantics!
+  var RED = 0;
+  var GREEN = 1;
+  var BLUE = 2;
+
   function scopedFeatureValues() {
     return _.map(scope.geojsonAggregateData.features, function(feature){
       return Number(feature.properties[featureMergedValueName]);
@@ -39,6 +44,33 @@ describe("A Choropleth Directive", function() {
     fakeClock.tick(500);
 
     return el;
+  }
+
+  /**
+   * @param {Number[]} rgb the rgb value to test.
+   * @returns true if the given color is red. Otherwise, falsey.
+   */
+  function isRed(rgb) {
+    return rgb[RED] > rgb[GREEN] &&
+      rgb[RED] > rgb[BLUE];
+  }
+
+  /**
+   * @param {Number[]} rgb the rgb value to test.
+   * @returns true if the given color is blue. Otherwise, falsey.
+   */
+  function isBlue(rgb) {
+    return rgb[BLUE] > rgb[GREEN] &&
+      rgb[BLUE] > rgb[RED];
+  }
+
+  /**
+   * @param {Number[]} rgb the rgb value to test.
+   * @returns true if the given color is a shade of gray. Otherwise, falsey.
+   */
+  function isGray(rgb) {
+    return rgb[BLUE] === rgb[GREEN] &&
+      rgb[BLUE] === rgb[RED];
   }
 
   /**
@@ -403,22 +435,17 @@ describe("A Choropleth Directive", function() {
          *   colors were found.
          */
         function countColors(colors) {
-          var RED = 0;
-          var GREEN = 1;
-          var BLUE = 2;
           var whiteCount = 0;
           var redCount = 0;
           var blueCount = 0;
           _.each(colors, function(color) {
             var rgb = color.rgb();
-            if (rgb[RED] === rgb[GREEN] && rgb[GREEN] === rgb[BLUE]) {
+            if (isGray(rgb)) {
               whiteCount++;
             } else {
-              if (rgb[RED] > rgb[BLUE]) {
-                expect(rgb[RED]).to.be.greaterThan(rgb[GREEN]);
+              if (isRed(rgb)) {
                 redCount++;
-              } else if (rgb[BLUE] > rgb[RED]) {
-                expect(rgb[BLUE]).to.be.greaterThan(rgb[GREEN]);
+              } else if (isBlue(rgb)) {
                 blueCount++;
               } else {
                 assert.fail(rgb, 'Unexpected legend color - should be either red, white, or blue.');
@@ -487,7 +514,7 @@ describe("A Choropleth Directive", function() {
           expect(el.find(featureGeometrySelector).length).to.equal(featureCount);
           expect(el.find(legendSelector).length).to.equal(1);
 
-          // Both the regions and the legend should be reddish
+          // Both the regions and the legend should have red / white / blue
           var fillColors = _.map(el.find(featureGeometrySelector), function(el) {
             var fillColor = $(el).css('fill');
             return chroma.color(fillColor);
@@ -503,7 +530,7 @@ describe("A Choropleth Directive", function() {
 
           // First the legend colors
 
-          // Assert that they're reddish or blueish
+          // Assert that they're red / white / blue
           var colorCount = countColors(legendColors);
 
           // There should be at most one white value in the legend.
@@ -567,7 +594,7 @@ describe("A Choropleth Directive", function() {
           scope.geojsonAggregateData = aggregateDataForValues(values);
           el = createChoropleth();
 
-          // Both the regions and the legend should be reddish
+          // Check both the regions and the legend
           var fillColors = _.map(el.find(featureGeometrySelector), function(el) {
             var fillColor = $(el).css('fill');
             return chroma.color(fillColor);
@@ -588,9 +615,9 @@ describe("A Choropleth Directive", function() {
           // The legend should be mostly red
           var colors = _.groupBy(legendColors, function(obj) {
             var rgb = obj.color.rgb();
-            if (rgb[0] > rgb[2]) {
+            if (isRed(rgb)) {
               return 'red';
-            } else if (rgb[2] > rgb[0]) {
+            } else if (isBlue(rgb)) {
               return 'blue';
             }
             return 'neither';
@@ -690,8 +717,7 @@ describe("A Choropleth Directive", function() {
                 expect(element.length).to.be.greaterThan(0);
                 element.each(function() {
                   var elementColor = chroma.color($(this).css('fill')).rgb();
-                  expect(elementColor[2]).to.be.greaterThan(elementColor[1]);
-                  expect(elementColor[2]).to.be.greaterThan(elementColor[0]);
+                  expect(isBlue(elementColor)).to.equal(true);
                 });
               });
             });
@@ -705,14 +731,13 @@ describe("A Choropleth Directive", function() {
               scope.geojsonAggregateData = aggregateDataForValues(values);
               el = createChoropleth();
 
-              // Both the region and the legend should be blueish
+              // Both the region and the legend should be reddish
               _.each([featureGeometrySelector, legendColorSelector], function(selector) {
                 var element = el.find(selector);
                 expect(element.length).to.be.greaterThan(0);
                 element.each(function() {
                   var elementColor = chroma.color($(this).css('fill')).rgb();
-                  expect(elementColor[0]).to.be.greaterThan(elementColor[1]);
-                  expect(elementColor[0]).to.be.greaterThan(elementColor[2]);
+                  expect(isRed(elementColor)).to.equal(true);
                 });
               });
             });
@@ -726,14 +751,13 @@ describe("A Choropleth Directive", function() {
               scope.geojsonAggregateData = aggregateDataForValues(values);
               el = createChoropleth();
 
-              // Both the region and the legend should be blueish
+              // Both the region and the legend should be whiteish
               _.each([featureGeometrySelector, legendColorSelector], function(selector) {
                 var element = el.find(selector);
                 expect(element.length).to.be.greaterThan(0);
                 element.each(function() {
                   var elementColor = chroma.color($(this).css('fill')).rgb();
-                  expect(elementColor[0]).to.equal(elementColor[1]);
-                  expect(elementColor[0]).to.equal(elementColor[2]);
+                  expect(isGray(elementColor)).to.equal(true);
                 });
               });
             });
@@ -750,8 +774,7 @@ describe("A Choropleth Directive", function() {
               expect(element.length).to.equal(2);
               element.each(function() {
                 var elementColor = chroma.color($(this).css('fill')).rgb();
-                expect(elementColor[2]).to.be.greaterThan(elementColor[1]);
-                expect(elementColor[2]).to.be.greaterThan(elementColor[0]);
+                expect(isBlue(elementColor)).to.equal(true);
               });
             });
 
@@ -765,14 +788,13 @@ describe("A Choropleth Directive", function() {
             scope.geojsonAggregateData = aggregateDataForValues(values);
             el = createChoropleth();
 
-            // Both the region and the legend should be blueish
+            // Both the region and the legend should be reddish
             _.each([featureGeometrySelector, legendColorSelector], function(selector) {
               var element = el.find(selector);
               expect(element.length).to.equal(2);
               element.each(function() {
                 var elementColor = chroma.color($(this).css('fill')).rgb();
-                expect(elementColor[0]).to.be.greaterThan(elementColor[1]);
-                expect(elementColor[0]).to.be.greaterThan(elementColor[2]);
+                expect(isRed(elementColor)).to.equal(true);
               });
             });
 
@@ -794,9 +816,9 @@ describe("A Choropleth Directive", function() {
               var blueCount = 0;
               element.each(function() {
                 var elementColor = chroma.color($(this).css('fill')).rgb();
-                if (elementColor[0] > elementColor[2]) {
+                if (isRed(elementColor)) {
                   redCount++;
-                } else if (elementColor[2] > elementColor[0]) {
+                } else if (isBlue(elementColor)) {
                   blueCount++;
                 }
               });
@@ -820,16 +842,14 @@ describe("A Choropleth Directive", function() {
             var element = el.find(featureGeometrySelector);
             expect(element.length).to.equal(1);
             var elementColor = chroma.color(element.css('fill')).rgb();
-            expect(elementColor[2]).to.be.greaterThan(elementColor[1]);
-            expect(elementColor[2]).to.be.greaterThan(elementColor[0]);
+            expect(isBlue(elementColor)).to.equal(true);
 
             var gradient = el.find(legendSelector).
                 find('#gradient').
                 find('stop[offset="100%"]');
             expect(gradient.length).to.equal(1);
             var elementColor = chroma.color(gradient.css('stop-color')).rgb();
-            expect(elementColor[2]).to.be.greaterThan(elementColor[1]);
-            expect(elementColor[2]).to.be.greaterThan(elementColor[0]);
+            expect(isBlue(elementColor)).to.equal(true);
           });
 
           it('colors datasets red with only one negative value', function() {
@@ -837,20 +857,18 @@ describe("A Choropleth Directive", function() {
             scope.geojsonAggregateData = aggregateDataForValues(values);
             el = createChoropleth(false, 'stops="continuous"');
 
-            // Both the region and the legend should be blueish
+            // Both the region and the legend should be reddish
             var element = el.find(featureGeometrySelector);
             expect(element.length).to.equal(1);
             var elementColor = chroma.color(element.css('fill')).rgb();
-            expect(elementColor[0]).to.be.greaterThan(elementColor[1]);
-            expect(elementColor[0]).to.be.greaterThan(elementColor[2]);
+            expect(isRed(elementColor)).to.equal(true);
 
             var gradient = el.find(legendSelector).
                 find('#gradient').
                 find('stop[offset="0%"]');
             expect(gradient.length).to.equal(1);
             var elementColor = chroma.color(gradient.css('stop-color')).rgb();
-            expect(elementColor[0]).to.be.greaterThan(elementColor[1]);
-            expect(elementColor[0]).to.be.greaterThan(elementColor[2]);
+            expect(isRed(elementColor)).to.equal(true);
           });
 
           it('colors white datasets with only one value = 0', function() {
@@ -858,20 +876,18 @@ describe("A Choropleth Directive", function() {
             scope.geojsonAggregateData = aggregateDataForValues(values);
             el = createChoropleth(false, 'stops="continuous"');
 
-            // Both the region and the legend should be blueish
+            // Both the region and the legend should be white-ish
             var element = el.find(featureGeometrySelector);
             expect(element.length).to.equal(1);
             var elementColor = chroma.color(element.css('fill')).rgb();
-            expect(elementColor[0]).to.equal(elementColor[1]);
-            expect(elementColor[0]).to.equal(elementColor[2]);
+            expect(isGray(elementColor)).to.equal(true);
 
             var gradient = el.find(legendSelector).
                 find('#gradient').
                 find('stop[offset="0%"]');
             expect(gradient.length).to.equal(1);
             var elementColor = chroma.color(gradient.css('stop-color')).rgb();
-            expect(elementColor[0]).to.equal(elementColor[1]);
-            expect(elementColor[0]).to.equal(elementColor[2]);
+            expect(isGray(elementColor)).to.equal(true);
           });
         });
       });
@@ -1072,8 +1088,7 @@ describe("A Choropleth Directive", function() {
               // they should all be blue, except maybe for one white
               _.each(legendColors, function(color) {
                 var rgb = color.rgb();
-                expect(rgb[2]).to.be.greaterThan(rgb[1]);
-                expect(rgb[2]).to.be.greaterThan(rgb[0]);
+                expect(isBlue(rgb)).to.equal(true);
               });
               // should start relatively light, get progressively darker, and end relatively dark
               expect(legendColors[0].luminance()).to.be.greaterThan(0.7);

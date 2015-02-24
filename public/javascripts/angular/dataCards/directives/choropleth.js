@@ -55,9 +55,14 @@
         var marginallyPositive = chroma.interpolate(this.ZERO_COLOR, this.POSITIVE_COLOR, 0.1);
         if (classBreaks.length === 1) {
           // There's only one value. So give it only one color.
-          var color = classBreaks[0] < 0 ? this.NEGATIVE_COLOR : (
-            classBreaks[0] ? this.POSITIVE_COLOR : this.ZERO_COLOR
-          )
+          var color;
+          if (classBreaks[0] < 0) {
+            color = this.NEGATIVE_COLOR;
+          } else if (classBreaks[0] > 0) {
+            color = this.POSITIVE_COLOR;
+          } else {
+            color = this.ZERO_COLOR;
+          }
           var singleColorScale = _.constant([color]);
           singleColorScale.colors = _.constant([color]);
           return singleColorScale;
@@ -183,9 +188,10 @@
             if (classBreaks[0] === 0) {
               // ...the only value is 0. Give 'em a fake range. It's all they deserve.
               classBreaks.push(1);
-            } else {
+            } else if (classBreaks[0] < 0) {
               classBreaks.push(0);
-              classBreaks.sort();
+            } else {
+              classBreaks.unshift(0);
             }
             break;
           case 2:
@@ -519,8 +525,13 @@
             // zero was added artificially. Show a tick, but make it small.
             return true;
           }
-          return tickStops.length !== (i + 1) && // Always make the end ticks big
-            (isSmall = !isSmall);
+          if (tickStops.length === (i + 1)) {
+            // Always make the end ticks big
+            return false;
+          }
+          // For normal ticks, alternate big and small
+          isSmall = !isSmall;
+          return isSmall;
         }).style('opacity', ''); // d3 sets an opacity for some reason. unset it.
 
         return axis;

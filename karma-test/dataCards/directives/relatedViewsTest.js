@@ -46,16 +46,17 @@
       var scope = $rootScope.$new();
       var models = _.map(datasetPages || [], function(pageData) {
         var model = new Model();
-        model.defineObservableProperty('id', pageData.id);
+        model.id = pageData.id;
         model.defineObservableProperty('name', pageData.name);
         model.defineObservableProperty('description', pageData.description);
         return model;
       });
-      scope.datasetPages = {publisher: models};
+      scope.datasetPages = { publisher: models };
+      scope.page = { id: '3111-1111' };
 
       return {
         scope: scope,
-        element: testHelpers.TestDom.compileAndAppend('<related-views dataset-pages="datasetPages"></related-views>', scope)
+        element: testHelpers.TestDom.compileAndAppend('<related-views page="page" dataset-pages="datasetPages"></related-views>', scope)
       };
     }
 
@@ -79,9 +80,13 @@
       expect(toolPanel).to.have.class('active');
     });
 
-    it('should list the pages in the flannel', function() {
+    it('should list the pages in the flannel excluding the current page', function() {
       var testElement = createElement(TEST_DATA).element;
-      expect(testElement.find('.related-views-list-item')).to.have.length(TEST_DATA.length);
+      var listItems = testElement.find('.related-views-list-item');
+      expect(listItems).to.have.length(TEST_DATA.length - 1);
+      expect(listItems.filter(function() { return $(this).find('.related-view-name').text() === 'First Element' }).get(0)).to.exist;
+      expect(listItems.filter(function() { return $(this).find('.related-view-name').text() === 'Second Element' }).get(0)).to.exist;
+      expect(listItems.filter(function() { return $(this).find('.related-view-name').text() === 'Third Element' }).get(0)).to.not.exist;
     });
 
     it('should hide the flannel if clicked outside of the flannel', function(done) {

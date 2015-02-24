@@ -12,7 +12,7 @@ related-views
 
 .related-views-list
   overflow-y: scroll
-  padding: 0 0.25rem 0 0
+  padding: 0
   > li
     list-style: none
 
@@ -24,10 +24,16 @@ related-views
   > a
     border-bottom: 1px solid $related-views-list-item-border-color
     display: block
-    margin: 1px 15px -2px 25px
+    margin: 1px 25px -2px
     padding: 5px 0
   &:hover
     background-color: rgba(255, 255, 255, 0.1)
+
+.related-view-name, .related-view-description
+  overflow: hidden
+  text-overflow: ellipsis
+  white-space: nowrap
+  width: 100%
 
 .related-view-name
   color: $related-view-name-color
@@ -37,10 +43,6 @@ related-views
 .related-view-description
   color: $related-view-description-color
   margin: 0
-  overflow: hidden
-  text-overflow: ellipsis
-  white-space: nowrap
-  width: 100%
 
 .related-views-list-heading
   margin: 0 15px 0 25px

@@ -5,6 +5,7 @@
     return {
       restrict: 'E',
       scope: {
+        page: '=',
         datasetPages: '='
       },
       templateUrl: '/angular_templates/dataCards/relatedViews.html',
@@ -14,18 +15,34 @@
 
         $scope.panelActive = false;
 
-        var datasetPublisherPagesStream = $scope.observe('datasetPages').
+        var datasetPublisherPagesSequence = $scope.observe('datasetPages').
           filter(_.isPresent).
-          pluck('publisher');
-        $scope.bindObservable('datasetPublisherPages', datasetPublisherPagesStream);
+          pluck('publisher').
+          map(function(datasetPages) {
+            return _.reject(datasetPages, function(datasetPage) {
+              return datasetPage.id === $scope.page.id;
+            });
+          });
+
+        var enablePublisherPagesSequence = datasetPublisherPagesSequence.
+          map(function(pages) {
+            return pages.length > 0;
+          }).
+          startWith(true);
+
+        $scope.bindObservable('enablePublisherPages', enablePublisherPagesSequence);
+        $scope.bindObservable('datasetPublisherPages', datasetPublisherPagesSequence.startWith([]));
         $scope.togglePanel = function() {
           $scope.panelActive = !$scope.panelActive;
         };
 
+        var toolPanel = element.find('.tool-panel');
         var toggleButton = element.find('.tool-panel-toggle-btn');
         var toggleBottom = toggleButton.offset().top + toggleButton.height();
         var relatedViewsList = element.find('.related-views-list');
         var offsetBottom = toggleBottom + Constants['RELATED_VIEWS_LIST_HEIGHT_OFFSET'];
+
+        relatedViewsList.preventBodyScroll();
 
         WindowState.windowSizeSubject.
           takeUntil(destroyStream).
@@ -38,7 +55,7 @@
 
         WindowState.closeDialogEventObservable.
           filter(function(e) {
-            return $scope.panelActive && $(e.target).closest(element).length === 0;
+            return $scope.panelActive && $(e.target).closest(toolPanel).length === 0;
           }).
           takeUntil(destroyStream).
           subscribe(function() {

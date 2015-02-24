@@ -5,14 +5,14 @@
     ng-class="{ touched: panelActive }"
     class="tool-panel-toggle-btn action-btn r-to-l"
     ng-click="togglePanel()"
-    ng-show="datasetPublisherPages.length > 0">
+    ng-show="enablePublisherPages">
     <span class="icon-chart"></span>
     Other views of this data ({{datasetPublisherPages.length}})
   </a>
 
   <span
     class="tool-panel-toggle-btn action-btn r-to-l disabled"
-    ng-hide="datasetPublisherPages.length > 0">
+    ng-hide="enablePublisherPages">
     <span class="icon-chart"></span> Other views of this data (0)
   </span>
 

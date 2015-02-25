@@ -325,15 +325,23 @@ class View < Model
     result = cache.read(cache_key)
     if result.nil?
       begin
-          server_result = JSON.parse(CoreServer::Base.connection.
-                                     create_request(req[:url], req[:request].to_json,
-                                                    { 'X-Socrata-Federation' => 'Honey Badger' }, true,
-                                                    false, is_anon),
-                                 {:max_nesting => 25})
-          result = { rows: server_result['data'], total_count: server_result['meta']['totalRows'],
-            meta_columns: server_result['meta']['view']['columns'].
-            find_all { |c| c['dataTypeName'] == 'meta_data' } }
-          cache.write(cache_key, result, :expires_in => cache_ttl)
+        server_result = JSON.parse(
+          CoreServer::Base.connection.create_request(
+            req[:url],
+            req[:request].to_json,
+            { 'X-Socrata-Federation' => 'Honey Badger' },
+            true,
+            false,
+            is_anon
+          ),
+          :max_nesting => 25
+        )
+        result = {
+          rows: server_result['data'],
+          total_count: server_result['meta']['totalRows'],
+          meta_columns: server_result['meta']['view']['columns'].select { |c| c['dataTypeName'] == 'meta_data' }
+        }
+        cache.write(cache_key, result, :expires_in => cache_ttl)
       rescue Exception => e
           Rails.logger.info("Possibly invalid model found in row request, deleting model cache key: " + model_cache_key)
           cache.delete(model_cache_key)

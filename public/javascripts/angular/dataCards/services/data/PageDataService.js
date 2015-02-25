@@ -2,7 +2,7 @@
 
   'use strict';
 
-  function PageDataService(http, Assert) {
+  function PageDataService(http, ServerConfig, Assert) {
 
     function fetch(id) {
       var url = '/page_metadata/{0}.json'.format(id);
@@ -30,12 +30,27 @@
         Assert(_.isString(id), 'id should be a string');
       }
       var json = JSON.stringify(pageData);
-      var config = {
-        data: { pageMetadata:  json },
-        method: idIsDefined ? 'PUT' : 'POST',
-        url: idIsDefined ? '/page_metadata/{0}.json'.format(id) : '/page_metadata.json',
-        requester: this
-      };
+
+      if (ServerConfig.metadataMigration.pageMetadata.shouldReadWriteFromNewEndpoint()) {
+
+        var config = {
+          data: { pageMetadata:  json },
+          method: idIsDefined ? 'PUT' : 'POST',
+          dataType: 'json',
+          url: idIsDefined ? '/metadata/v1/page/{0}'.format(id) : '/metadata/v1/page',
+          requester: this
+        };
+
+      } else {
+
+        var config = {
+          data: { pageMetadata:  json },
+          method: idIsDefined ? 'PUT' : 'POST',
+          url: idIsDefined ? '/page_metadata/{0}.json'.format(id) : '/page_metadata.json',
+          requester: this
+        };
+
+      }
 
       return http(config);
     };

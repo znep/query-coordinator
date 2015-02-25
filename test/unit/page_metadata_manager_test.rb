@@ -72,6 +72,29 @@ class PageMetadataManagerTest < Test::Unit::TestCase
     end
   end
 
+  def test_create_raises_an_error_if_dataset_id_is_not_present_in_new_page_metadata
+    PageMetadataManager.any_instance.expects(:update_rollup_table).times(0)
+    Phidippides.any_instance.stubs(
+      request_new_page_id: { body: { id: 'iuya-fxdq' }, status: '200' },
+      create_page_metadata: { body: nil, status: '200' }
+    )
+
+    stub_feature_flags_with(:metadata_transition_phase, '0')
+    assert_raises(Phidippides::NoDatasetIdException) do
+      manager.create(v1_page_metadata.except('datasetId').except('pageId').to_json)
+    end
+
+    stub_feature_flags_with(:metadata_transition_phase, '1')
+    assert_raises(Phidippides::NoDatasetIdException) do
+      manager.create(v1_page_metadata.except('datasetId').except('pageId').to_json)
+    end
+
+    stub_feature_flags_with(:metadata_transition_phase, '2')
+    assert_raises(Phidippides::NoDatasetIdException) do
+      manager.create(v1_page_metadata.except('datasetId').except('pageId').to_json)
+    end
+  end
+
   def test_create_does_not_try_to_create_rollup_table_when_not_given_eligible_columns_in_phase_0
     PageMetadataManager.any_instance.expects(:update_rollup_table).times(0)
     Phidippides.any_instance.stubs(
@@ -238,6 +261,50 @@ class PageMetadataManagerTest < Test::Unit::TestCase
       body: v1_page_metadata.merge('bunch' => 'other stuff', 'foo' => 'bar')
     )
     manager.update(v1_page_metadata.merge('bunch' => 'other stuff', 'foo' => 'bar'))
+  end
+
+  def test_update_raises_an_error_if_dataset_id_is_not_present_in_page_metadata
+    PageMetadataManager.any_instance.expects(:update_rollup_table).times(0)
+    Phidippides.any_instance.stubs(
+      update_page_metadata: { body: nil, status: '200' }
+    )
+
+    stub_feature_flags_with(:metadata_transition_phase, '0')
+    assert_raises(Phidippides::NoDatasetIdException) do
+      manager.update(v1_page_metadata.except('datasetId').to_json)
+    end
+
+    stub_feature_flags_with(:metadata_transition_phase, '1')
+    assert_raises(Phidippides::NoDatasetIdException) do
+      manager.update(v1_page_metadata.except('datasetId').to_json)
+    end
+
+    stub_feature_flags_with(:metadata_transition_phase, '2')
+    assert_raises(Phidippides::NoDatasetIdException) do
+      manager.update(v1_page_metadata.except('datasetId').to_json)
+    end
+  end
+
+  def test_update_raises_an_error_if_page_id_is_not_present_in_page_metadata
+    PageMetadataManager.any_instance.expects(:update_rollup_table).times(0)
+    Phidippides.any_instance.stubs(
+      update_page_metadata: { body: nil, status: '200' }
+    )
+
+    stub_feature_flags_with(:metadata_transition_phase, '0')
+    assert_raises(Phidippides::NoPageIdException) do
+      manager.update(v1_page_metadata.except('pageId').to_json)
+    end
+
+    stub_feature_flags_with(:metadata_transition_phase, '1')
+    assert_raises(Phidippides::NoPageIdException) do
+      manager.update(v1_page_metadata.except('pageId').to_json)
+    end
+
+    stub_feature_flags_with(:metadata_transition_phase, '2')
+    assert_raises(Phidippides::NoPageIdException) do
+      manager.update(v1_page_metadata.except('pageId').to_json)
+    end
   end
 
   def test_update_does_not_delete_rollup_first

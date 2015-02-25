@@ -50,6 +50,8 @@ class PhidippidesPagesController < ActionController::Base
           render :json => result[:body], :status => result[:status]
         rescue Phidippides::ConnectionError
           render :json => { :body => 'Phidippides connection error' }, :status => '500'
+        rescue Phidippides::NoDatasetIdException => error
+          render :json => { :body => "Error: #{error}" }, :status => '500'
         rescue Phidippides::NewPageException => error
           render :json => { :body => "Error: #{error}" }, :status => '500'
         rescue Phidippides::PageIdException => error
@@ -77,6 +79,10 @@ class PhidippidesPagesController < ActionController::Base
           render :json => result[:body], :status => result[:status]
         rescue Phidippides::ConnectionError
           render :json => { :body => 'Phidippides connection error' }, :status => '500'
+        rescue Phidippides::NoDatasetIdException => error
+          render :json => { :body => "Error: #{error}" }, :status => '500'
+        rescue Phidippides::NoPageIdException => error
+          render :json => { :body => "Error: #{error}" }, :status => '500'
         end
       end
     end

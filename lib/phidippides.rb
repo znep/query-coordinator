@@ -4,6 +4,9 @@ class Phidippides < SocrataHttp
 
   class NewPageException < RuntimeError; end
   class PageIdException < RuntimeError; end
+  class NoDatasetIdException < RuntimeError; end
+  class NoPageIdException < RuntimeError; end
+
   # TODO: Should these actually be ignore-case?
   # Note - these are aligned so as to exemplify the differences between the regexes
   COLUMN_ID_REGEX =    /(:@)?([a-z][a-z_0-9\-]*)/i
@@ -173,7 +176,6 @@ class Phidippides < SocrataHttp
   end
 
   def update_page_metadata(json, options = {})
-
     raise ArgumentError.new('pageId is required') unless json.key?('pageId')
 
     if metadata_transition_phase_0? || metadata_transition_phase_1?
@@ -198,7 +200,6 @@ class Phidippides < SocrataHttp
   end
 
   def delete_page_metadata(page_id, options = {})
-
     if metadata_transition_phase_2?
       issue_request(
         :verb => :delete,

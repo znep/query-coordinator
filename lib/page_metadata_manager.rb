@@ -26,6 +26,7 @@ class PageMetadataManager
   # Creates a new page
   def create(page_metadata, options = {})
     page_metadata = JSON.parse(page_metadata) if page_metadata.is_a?(String)
+    raise Phidippides::NoDatasetIdException.new('cannot create page with no dataset id') unless page_metadata.key?('datasetId')
 
     # In metadata transition phase 2 we must first provision a new page 4x4 before
     # we can create a new page. The block below accomplishes that in a way that
@@ -80,6 +81,8 @@ class PageMetadataManager
   # missing keys will become missing in the datastore.
   def update(page_metadata, options = {})
     page_metadata = JSON.parse(page_metadata) if page_metadata.is_a?(String)
+    raise Phidippides::NoDatasetIdException.new('cannot create page with no dataset id') unless page_metadata.key?('datasetId')
+    raise Phidippides::NoPageIdException.new('cannot create page with no page id') unless page_metadata.key?('pageId')
 
     create_or_update(:update_page_metadata, page_metadata, options)
   end

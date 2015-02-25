@@ -313,31 +313,42 @@ class View < Model
   #
   def get_cached_rows(per_page, page = 1, conditions = {}, is_anon = false, cache_ttl = Rails.application.config.cache_ttl_rows)
     # dedup with create request
-    merged_conditions = self.query.cleaned.merge({'searchString'=>self.searchString}).deep_merge(conditions)
+    merged_conditions = query.cleaned.merge('searchString' => searchString).deep_merge(conditions)
     unless @sodacan.nil? || !@sodacan.can_query?(merged_conditions)
       return {rows: @sodacan.get_rows(merged_conditions, per_page, page), meta: nil}
     end
 
     req = get_rows_request(per_page, page, merged_conditions, true)
     rows_updated_at = self.rowsUpdatedAt.nil? ? nil : self.rowsUpdatedAt
-    cache_key = "rows:" + id.to_s + ":" + Digest::MD5.hexdigest(req.sort.to_json) + ":#{rows_updated_at}"
+    cache_key = "rows:#{id}:#{Digest::MD5.hexdigest(req.sort.to_json)}:#{rows_updated_at}"
     cache_key += ':anon' if is_anon
     result = cache.read(cache_key)
     if result.nil?
       begin
-          server_result = JSON.parse(CoreServer::Base.connection.
-                                     create_request(req[:url], req[:request].to_json,
-                                                    { 'X-Socrata-Federation' => 'Honey Badger' }, true,
-                                                    false, is_anon),
-                                 {:max_nesting => 25})
-          result = { rows: server_result['data'], total_count: server_result['meta']['totalRows'],
-            meta_columns: server_result['meta']['view']['columns'].
-            find_all { |c| c['dataTypeName'] == 'meta_data' } }
-          cache.write(cache_key, result, :expires_in => cache_ttl)
+        server_result = JSON.parse(
+          CoreServer::Base.connection.create_request(
+            req[:url],
+            req[:request].to_json,
+            { 'X-Socrata-Federation' => 'Honey Badger' },
+            true,
+            false,
+            is_anon
+          ),
+          :max_nesting => 25
+        )
+        result = {
+          rows: server_result['data'],
+          total_count: server_result['meta']['totalRows'],
+          meta_columns: server_result['meta']['view']['columns'].select { |c| c['dataTypeName'] == 'meta_data' }
+        }
+        cache.write(cache_key, result, :expires_in => cache_ttl)
       rescue Exception => e
-          Rails.logger.info("Possibly invalid model found in row request, deleting model cache key: " + model_cache_key)
-          cache.delete(model_cache_key)
-          raise e
+        Rails.logger.info(
+          "Possibly invalid model found in row request, deleting model cache key: #{model_cache_key}." <<
+            " Exception details: #{e.inspect}, #{e.backtrace[0]}"
+        )
+        cache.delete(model_cache_key) if model_cache_key
+        raise e
       end
     end
     if conditions.empty?

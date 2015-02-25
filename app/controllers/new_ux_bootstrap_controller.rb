@@ -1,7 +1,6 @@
 require 'set'
 require 'json'
 
-
 class NewUxBootstrapController < ActionController::Base
 
   include CommonPhidippidesMethods
@@ -22,7 +21,6 @@ class NewUxBootstrapController < ActionController::Base
   end
 
   def bootstrap
-
     # This method needs to accomplish a few things in order to enable 'new UX' views of
     # existing datasets.
     #
@@ -41,7 +39,6 @@ class NewUxBootstrapController < ActionController::Base
     #
     # 4b. If no pages already exist, then we need to create one. This is hacky
     #     and non-deterministic.
-
 
     # 1. Check to make sure that the user is authorized to create a new view
     unless can_update_metadata?
@@ -87,10 +84,8 @@ class NewUxBootstrapController < ActionController::Base
       ((!has_publisher_pages && pages_response[:status] == '200') ||
         pages_response[:status] == '404')
 
-
     # 4a. There is at least one 'New UX' page already, so we can find a default.
     if request_successful_and_has_publisher_pages
-
       pages = pages_response[:body][:publisher]
 
       if dataset_metadata_response_body[:defaultPage].present?
@@ -126,7 +121,6 @@ class NewUxBootstrapController < ActionController::Base
 
     # This is a server error so we should notify Airbrake.
     else
-
       Airbrake.notify(
         :error_class => "BootstrapUXFailure",
         :error_message => "Dataset #{params[:id].inspect} failed to return pages for bootstrapping.",
@@ -141,19 +135,14 @@ class NewUxBootstrapController < ActionController::Base
       return redirect_to action: 'show', controller: 'datasets'
 
     end
-
   end
 
-
   private
-
 
   # An arbitrary number of cards to create, if there are that many columns available
   MAX_NUMBER_OF_CARDS = 10
 
-
   def set_default_page(dataset_metadata, page_id)
-
     # Set the specified page as the default.
     dataset_metadata[:defaultPage] = page_id
 
@@ -176,9 +165,7 @@ class NewUxBootstrapController < ActionController::Base
 
   end
 
-
   def create_default_page(dataset_metadata)
-
     new_ux_page = generate_page_metadata(dataset_metadata)
 
     page_creation_response = page_metadata_manager.create(
@@ -190,7 +177,6 @@ class NewUxBootstrapController < ActionController::Base
     page_id = page_creation_response.try(:[], :body).try(:[], :pageId)
 
     unless page_creation_response[:status] == '200' && page_id.present?
-
       # Somehow the page creation failed so we should notify Airbrake.
       Airbrake.notify(
         :error_class => "BootstrapUXFailure",
@@ -202,16 +188,13 @@ class NewUxBootstrapController < ActionController::Base
         "Error creating page for dataset #{params[:id]}. " \
         "Response: #{page_creation_response.inspect}"
       )
-
     end
 
     page_id
 
   end
 
-
   def generate_page_metadata(new_dataset_metadata)
-
     cards = generate_cards_from_dataset_metadata_columns(new_dataset_metadata[:columns])
 
     if cards.length < MAX_NUMBER_OF_CARDS
@@ -233,24 +216,41 @@ class NewUxBootstrapController < ActionController::Base
       cards = cards.first(MAX_NUMBER_OF_CARDS)
     end
 
-    {
-      'datasetId' => new_dataset_metadata[:id],
-      'name' => new_dataset_metadata[:name],
-      'description' => new_dataset_metadata[:description],
-      'cards' => cards
-    }
+    if metadata_transition_phase_0? || metadata_transition_phase_1?
+      {
+        'datasetId' => new_dataset_metadata[:id],
+        'name' => new_dataset_metadata[:name],
+        'description' => new_dataset_metadata[:description],
+        'cards' => cards
+      }
+    else
+      {
+        'cards' => cards,
+        'datasetId' => new_dataset_metadata[:id],
+        'description' => new_dataset_metadata[:description],
+        'name' => new_dataset_metadata[:name],
+        'version' => 1
+      }
+    end
   end
 
   def merge_new_card_data_with_default(field_name, cardinality, card_type)
-    PageMetadataManager::V0_CARD_TEMPLATE.deep_dup.merge(
-      'fieldName' => field_name,
-      'cardinality' => cardinality,
-      'cardType' => card_type
-    )
+    if metadata_transition_phase_0? || metadata_transition_phase_1?
+      PageMetadataManager::V0_CARD_TEMPLATE.deep_dup.merge(
+        'fieldName' => field_name,
+        'cardinality' => cardinality,
+        'cardType' => card_type
+      )
+    else
+      PageMetadataManager::V1_CARD_TEMPLATE.deep_dup.merge(
+        'fieldName' => field_name,
+        'cardinality' => cardinality,
+        'cardType' => card_type
+      )
+    end
   end
 
   def generate_cards_from_dataset_metadata_columns(columns)
-
     if metadata_transition_phase_0?
       columns.map do |column|
         unless Phidippides::SYSTEM_COLUMN_ID_REGEX.match(column[:name])
@@ -286,7 +286,6 @@ class NewUxBootstrapController < ActionController::Base
     end
   end
 
-
   def dataset_size
     # Get the size of the dataset so we can compare it against the cardinality when creating cards
     @dataset_size ||= begin
@@ -301,7 +300,6 @@ class NewUxBootstrapController < ActionController::Base
       nil
     end
   end
-
 
   def dataset
     View.find(params[:id])

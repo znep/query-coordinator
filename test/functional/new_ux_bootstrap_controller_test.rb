@@ -130,7 +130,7 @@ class NewUxBootstrapControllerTest < ActionController::TestCase
             assert_redirected_to('/view/last-page')
           end
 
-          should 'set & redirect to a new default page if the current one doesn\'t exist' do
+          should "set & redirect to a new default page if the current one doesn't exist" do
             @phidippides.stubs(:fetch_dataset_metadata).
               returns({status: '200', body: {defaultPage: 'nnot-xist'}})
             get :bootstrap, id: 'four-four'
@@ -447,30 +447,6 @@ class NewUxBootstrapControllerTest < ActionController::TestCase
   end
 
   private
-
-  def column_for_type(logical_type, physical_type, cardinality, name)
-    {
-      title: name,
-      name: name,
-      logicalDatatype: logical_type,
-      physicalDatatype: physical_type,
-      cardinality: cardinality,
-    }
-  end
-
-  def columns_for_cardtypes(types, prefix)
-    cardinality_threshold = CardTypeMapping::CARD_TYPE_MAPPING['cardinality']['threshold']
-    cardinality_toggle = 1
-    counter = 0
-    types.keys.map do |logical_type|
-      counter += 1
-      types[logical_type].map do |physical_type|
-        cardinality_toggle *= -1
-        column_for_type(logical_type, physical_type,
-                        cardinality_threshold + cardinality_toggle, "#{prefix}#{counter}")
-      end
-    end.flatten(1)
-  end
 
   def collect_differing_card_types(cards)
     seen_multi_cards = {}

@@ -63,7 +63,7 @@
   .prevailingMeasure
     font-size: 1.2em
 
-  .goalSubtitle
+  .goalSubtitle, .measureSubtitle
     position: relative
     .text, .dsLink
       font-size: 1.2em
@@ -167,6 +167,23 @@
     &.progress-none
       display: none
 
+  .goalSubtitle, .measureSubtitle
+    font-size: 2.2em
+    letter-spacing: -1px
+    padding-bottom: 1.5em
+
+    .dsLink
+      font-size: 0.6em
+
+      span
+        bottom: 0.15em
+        font-size: 0.7em
+        left: 0
+        position: relative
+        @include transition(0.3s, left)
+      &:hover span
+        left: 0.3em
+
 
 .titleContainer
   background: #fff
@@ -224,23 +241,6 @@
       h2
         font-size: 5em
         line-height: 1.1em
-
-    .goalSubtitle
-      font-size: 2.2em
-      letter-spacing: -1px
-      padding-bottom: 1.5em
-
-      .dsLink
-        font-size: 0.6em
-
-        span
-          bottom: 0.15em
-          font-size: 0.7em
-          left: 0
-          position: relative
-          @include transition(0.3s, left)
-        &:hover span
-          left: 0.3em
 
     .prevailingMetric
       @include clearfix

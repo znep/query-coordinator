@@ -59,6 +59,7 @@ describe('A Choropleth Card Visualization', function() {
   });
 
   afterEach(function() {
+    fakeClock.reset();
     fakeClock.restore();
     fakeClock = null;
     testHelpers.TestDom.clear();

@@ -21,6 +21,7 @@ describe("multilineEllipsis directive", function(FlyoutService) {
   });
 
   afterEach(function() {
+    fakeClock.reset();
     fakeClock.restore();
     fakeClock = null;
   });

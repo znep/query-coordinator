@@ -14,6 +14,7 @@ describe('Download Service', function() {
   }));
 
   afterEach(function() {
+    fakeClock.reset();
     fakeClock.restore();
   });
 

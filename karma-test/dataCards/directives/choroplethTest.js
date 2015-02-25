@@ -177,6 +177,7 @@ describe("A Choropleth Directive", function() {
   });
 
   afterEach(function() {
+    fakeClock.reset();
     fakeClock.restore();
     fakeClock = null;
   });

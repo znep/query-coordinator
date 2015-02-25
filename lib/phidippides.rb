@@ -2,6 +2,11 @@ class Phidippides < SocrataHttp
 
   include CommonMetadataTransitionMethods
 
+  class NewPageException < RuntimeError; end
+  class PageIdException < RuntimeError; end
+  class NoDatasetIdException < RuntimeError; end
+  class NoPageIdException < RuntimeError; end
+
   # TODO: Should these actually be ignore-case?
   # Note - these are aligned so as to exemplify the differences between the regexes
   COLUMN_ID_REGEX =    /(:@)?([a-z][a-z_0-9\-]*)/i
@@ -9,7 +14,6 @@ class Phidippides < SocrataHttp
   UID_REGEXP = /\w{4}-\w{4}/
 
   def connection_details
-    # Port is typically 2401 in development mode and 1303 in production
     zookeeper_path = ENV['ZOOKEEPER_PHIDIPPIDES_PATH'] || 'com.socrata/soda/services/phidippides'
     instance_id = ::ZookeeperDiscovery.get(zookeeper_path)
 
@@ -17,7 +21,7 @@ class Phidippides < SocrataHttp
       ::ZookeeperDiscovery.get_json("/#{zookeeper_path}/#{instance_id}")
     rescue ZK::Exceptions::BadArguments => error
       Rails.logger.error(error_message = "Unable to determine phidippides connection details due to error: #{error.to_s}")
-      raise ::SocrataHttp::ConnectionError.new(error_message)
+      raise Phidippides::ConnectionError.new(error_message)
     end
   end
 
@@ -26,6 +30,7 @@ class Phidippides < SocrataHttp
   end
 
   def port
+    # Port is typically 2401 in development mode and 1303 in production
     ENV['PHIDIPPIDES_PORT'] || connection_details.fetch('port')
   end
 
@@ -112,8 +117,23 @@ class Phidippides < SocrataHttp
 
   # Page Metadata requests
 
-  def create_page_metadata(json, options = {})
+  def request_new_page_id(options = {})
+    unless metadata_transition_phase_2?
+      raise RuntimeError.new(
+        'request_new_page_id is only supported in metadata migration phase 2'
+      )
+    end
 
+    issue_request(
+      :verb => :post,
+      :path => 'v1/idgen',
+      :data => nil,
+      :request_id => options[:request_id],
+      :cookies => options[:cookies]
+    )
+  end
+
+  def create_page_metadata(json, options = {})
     raise ArgumentError.new('datasetId is required') unless json.key?('datasetId')
 
     if metadata_transition_phase_0? || metadata_transition_phase_1?
@@ -125,9 +145,11 @@ class Phidippides < SocrataHttp
         :cookies => options[:cookies]
       )
     else
+      raise ArgumentError.new('pageId is required') unless json.key?('pageId')
+
       issue_request(
         :verb => :post,
-        :path => "v1/id/#{json['datasetId']}/pages",
+        :path => "v1/id/#{json['datasetId']}/pages/#{json['pageId']}",
         :data => json,
         :request_id => options[:request_id],
         :cookies => options[:cookies]
@@ -154,7 +176,6 @@ class Phidippides < SocrataHttp
   end
 
   def update_page_metadata(json, options = {})
-
     raise ArgumentError.new('pageId is required') unless json.key?('pageId')
 
     if metadata_transition_phase_0? || metadata_transition_phase_1?
@@ -166,10 +187,23 @@ class Phidippides < SocrataHttp
         :cookies => options[:cookies]
       )
     else
+      raise ArgumentError.new('datasetId is required') unless json.key?('datasetId')
+
       issue_request(
         :verb => :put,
         :path => "v1/id/#{json['datasetId']}/pages/#{json['pageId']}",
         :data => json,
+        :request_id => options[:request_id],
+        :cookies => options[:cookies]
+      )
+    end
+  end
+
+  def delete_page_metadata(page_id, options = {})
+    if metadata_transition_phase_2?
+      issue_request(
+        :verb => :delete,
+        :path => "v1/pages/#{page_id}",
         :request_id => options[:request_id],
         :cookies => options[:cookies]
       )

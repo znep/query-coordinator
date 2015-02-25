@@ -25,87 +25,152 @@ class PhidippidesTest < Test::Unit::TestCase
   end
 
   def test_includes_request_id_when_present
-    prepare_stubs(body: pages_for_dataset, path: 'datasets/four-four/pages', verb: :get)
+    prepare_stubs(body: v0_pages_for_dataset, path: 'datasets/four-four/pages', verb: :get)
     phidippides.fetch_pages_for_dataset('four-four', request_id: 'request_id')
     assert_equal('request_id', @mock_request['X-Socrata-RequestId'])
   end
 
   def test_does_not_include_request_id_when_absent
-    prepare_stubs(body: pages_for_dataset, path: 'datasets/four-four/pages', verb: :get)
+    prepare_stubs(body: v0_pages_for_dataset, path: 'datasets/four-four/pages', verb: :get)
     phidippides.fetch_pages_for_dataset('four-four')
     refute(@mock_request['X-Socrata-RequestId'])
   end
 
   def test_includes_cookies_when_present
-    prepare_stubs(body: pages_for_dataset, path: 'datasets/four-four/pages', verb: :get)
+    prepare_stubs(body: v0_pages_for_dataset, path: 'datasets/four-four/pages', verb: :get)
     phidippides.fetch_pages_for_dataset('four-four', cookies: 'some cookies')
     assert_equal('some cookies', @mock_request['Cookie'])
   end
 
   def test_does_not_include_cookies_when_absent
-    prepare_stubs(body: pages_for_dataset, path: 'datasets/four-four/pages', verb: :get)
+    prepare_stubs(body: v0_pages_for_dataset, path: 'datasets/four-four/pages', verb: :get)
     phidippides.fetch_pages_for_dataset('four-four')
     refute(@mock_request['Cookie'])
   end
 
   def test_update_dataset_metadata
-    prepare_stubs(body: dataset_metadata, path: 'datasets/q77b-s2zi', verb: :put, request_body: dataset_metadata)
+    prepare_stubs(body: v0_dataset_metadata, path: 'datasets/q77b-s2zi', verb: :put, request_body: v0_dataset_metadata)
     stub_feature_flags_with(:metadata_transition_phase, '0')
-    result = phidippides.update_dataset_metadata(dataset_metadata, request_id: 'request_id')
-    assert_equal(dataset_metadata, result[:body])
+    result = phidippides.update_dataset_metadata(v0_dataset_metadata, request_id: 'request_id')
+    assert_equal(v0_dataset_metadata, result[:body])
 
     prepare_stubs(body: nil, path: 'v1/id/vtvh-wqgq/dataset', verb: :put, request_body: v1_dataset_metadata)
     stub_feature_flags_with(:metadata_transition_phase, '1')
     result = phidippides.update_dataset_metadata(v1_dataset_metadata, request_id: 'request_id')
     assert_equal('200', result[:status])
+
+    prepare_stubs(body: nil, path: 'v1/id/vtvh-wqgq/dataset', verb: :put, request_body: v1_dataset_metadata)
+    stub_feature_flags_with(:metadata_transition_phase, '2')
+    result = phidippides.update_dataset_metadata(v1_dataset_metadata, request_id: 'request_id')
+    assert_equal('200', result[:status])
+  end
+
+  def test_request_new_page_id
+    prepare_stubs(body: { id: 'iuya-fxdq' }, path: 'v1/idgen', verb: :post, request_body: nil)
+    stub_feature_flags_with(:metadata_transition_phase, '2')
+    result = phidippides.request_new_page_id
+    assert_equal('200', result[:status])
   end
 
   def test_create_page_metadata
-    prepare_stubs(body: new_page_metadata, path: 'pages', verb: :post, request_body: new_page_metadata)
+    prepare_stubs(body: new_v0_page_metadata, path: 'pages', verb: :post, request_body: new_v0_page_metadata)
     stub_feature_flags_with(:metadata_transition_phase, '0')
-    result = phidippides.create_page_metadata(new_page_metadata, request_id: 'request_id')
-    assert_equal(new_page_metadata, result[:body])
+    result = phidippides.create_page_metadata(new_v0_page_metadata, request_id: 'request_id')
+    assert_equal(new_v0_page_metadata, result[:body])
+
+    prepare_stubs(body: new_v0_page_metadata, path: 'pages', verb: :post, request_body: new_v0_page_metadata)
+    stub_feature_flags_with(:metadata_transition_phase, '1')
+    result = phidippides.create_page_metadata(new_v0_page_metadata, request_id: 'request_id')
+    assert_equal(new_v0_page_metadata, result[:body])
+
+    prepare_stubs(body: nil, path: 'v1/id/q77b-s2zi/pages/vwwn-6r7g', verb: :post, request_body: new_v1_page_metadata)
+    stub_feature_flags_with(:metadata_transition_phase, '2')
+    result = phidippides.create_page_metadata(new_v1_page_metadata, request_id: 'request_id')
+    assert_equal('200', result[:status])
   end
 
   def test_fetch_page_metadata
-    prepare_stubs(body: page_metadata, path: 'pages/four-four', verb: :get)
+    prepare_stubs(body: v0_page_metadata, path: 'pages/four-four', verb: :get)
     stub_feature_flags_with(:metadata_transition_phase, '0')
     result = phidippides.fetch_page_metadata('four-four', request_id: 'request_id')
-    assert_equal(page_metadata, result[:body])
+    assert_equal(v0_page_metadata, result[:body])
+
+    prepare_stubs(body: v0_page_metadata, path: 'pages/four-four', verb: :get)
+    stub_feature_flags_with(:metadata_transition_phase, '1')
+    result = phidippides.fetch_page_metadata('four-four', request_id: 'request_id')
+    assert_equal(v0_page_metadata, result[:body])
+
+    prepare_stubs(body: v1_page_metadata, path: 'v1/pages/iuya-fxdq', verb: :get)
+    stub_feature_flags_with(:metadata_transition_phase, '2')
+    result = phidippides.fetch_page_metadata('iuya-fxdq', request_id: 'request_id')
+    assert_equal(v1_page_metadata, result[:body])
   end
 
   def test_update_page_metadata
-    prepare_stubs(body: page_metadata, path: 'pages/desk-chek', verb: :put, request_body: page_metadata)
+    prepare_stubs(body: v0_page_metadata, path: 'pages/desk-chek', verb: :put, request_body: v0_page_metadata)
     stub_feature_flags_with(:metadata_transition_phase, '0')
-    result = phidippides.update_page_metadata(page_metadata, request_id: 'request_id')
-    assert_equal(page_metadata, result[:body])
+    result = phidippides.update_page_metadata(v0_page_metadata, request_id: 'request_id')
+    assert_equal(v0_page_metadata, result[:body])
+
+    prepare_stubs(body: v0_page_metadata, path: 'pages/desk-chek', verb: :put, request_body: v0_page_metadata)
+    stub_feature_flags_with(:metadata_transition_phase, '1')
+    result = phidippides.update_page_metadata(v0_page_metadata, request_id: 'request_id')
+    assert_equal(v0_page_metadata, result[:body])
+
+    prepare_stubs(body: nil, path: 'v1/id/vtvh-wqgq/pages/iuya-fxdq', verb: :put, request_body: v1_page_metadata)
+    stub_feature_flags_with(:metadata_transition_phase, '2')
+    result = phidippides.update_page_metadata(v1_page_metadata, request_id: 'request_id')
+    assert_equal('200', result[:status])
+  end
+
+  def test_delete_page_metadata
+    prepare_stubs(body: nil, path: 'v1/pages/iuya-fxdq', verb: :delete, request_body: nil)
+    stub_feature_flags_with(:metadata_transition_phase, '2')
+    result = phidippides.delete_page_metadata('iuya-fxdq', request_id: 'request_id')
+    assert_equal('200', result[:status])
   end
 
   def test_fetch_pages_for_dataset
-    prepare_stubs(body: pages_for_dataset, path: 'datasets/four-four/pages', verb: :get)
+    prepare_stubs(body: v0_pages_for_dataset, path: 'datasets/four-four/pages', verb: :get)
     stub_feature_flags_with(:metadata_transition_phase, '0')
     result = phidippides.fetch_pages_for_dataset('four-four', request_id: 'request_id')
-    assert_equal(pages_for_dataset, result[:body])
+    assert_equal(v0_pages_for_dataset, result[:body])
+
+    prepare_stubs(body: v0_pages_for_dataset, path: 'datasets/four-four/pages', verb: :get)
+    stub_feature_flags_with(:metadata_transition_phase, '1')
+    result = phidippides.fetch_pages_for_dataset('four-four', request_id: 'request_id')
+    assert_equal(v0_pages_for_dataset, result[:body])
+
+    prepare_stubs(body: v1_pages_for_dataset, path: 'v1/id/four-four/pages', verb: :get)
+    stub_feature_flags_with(:metadata_transition_phase, '2')
+    result = phidippides.fetch_pages_for_dataset('four-four', request_id: 'request_id')
+    assert_equal(v1_pages_for_dataset, result[:body])
   end
 
   def test_fetch_dataset_metadata
-    prepare_stubs(body: dataset_metadata, path: 'datasets/four-four', verb: :get)
+    prepare_stubs(body: v0_dataset_metadata, path: 'datasets/four-four', verb: :get)
     stub_feature_flags_with(:metadata_transition_phase, '0')
     result = phidippides.fetch_dataset_metadata('four-four', request_id: 'request_id')
-    assert_equal(dataset_metadata, result[:body])
+    assert_equal(v0_dataset_metadata, result[:body])
 
-    prepare_stubs(body: v1_dataset_metadata, path: 'v1/id/four-four/dataset', verb: :get)
+    prepare_stubs(body: v1_dataset_metadata, path: 'v1/id/vtvh-wqgq/dataset', verb: :get)
     stub_feature_flags_with(:metadata_transition_phase, '1')
-    result = phidippides.fetch_dataset_metadata('four-four', request_id: 'request_id')
+    result = phidippides.fetch_dataset_metadata('vtvh-wqgq', request_id: 'request_id')
+    assert_equal(v1_dataset_metadata, result[:body])
+
+    prepare_stubs(body: v1_dataset_metadata, path: 'v1/id/vtvh-wqgq/dataset', verb: :get)
+    stub_feature_flags_with(:metadata_transition_phase, '2')
+    result = phidippides.fetch_dataset_metadata('vtvh-wqgq', request_id: 'request_id')
     assert_equal(v1_dataset_metadata, result[:body])
   end
 
   def test_migrate_dataset_metadata_to_v1_in_phase_1_generates_default_page_if_none_exists
-
-    v1_dataset_metadata_without_default_page = { status: '200', body: v1_dataset_metadata.deep_dup.tap { |metadata| metadata.delete(:defaultPage) } }
-
+    v1_dataset_metadata_without_default_page = {
+      status: '200',
+      body: v1_dataset_metadata.deep_dup.tap { |metadata| metadata.delete(:defaultPage) }
+    }
     Phidippides.any_instance.stubs(
-      fetch_pages_for_dataset: { status: '200', body: pages_for_dataset }
+      fetch_pages_for_dataset: { status: '200', body: v0_pages_for_dataset }
     )
     stub_feature_flags_with(:metadata_transition_phase, '1')
 
@@ -131,7 +196,10 @@ class PhidippidesTest < Test::Unit::TestCase
   end
 
   def test_migrate_dataset_metadata_to_v1_in_phase_1_calls_airbrake_when_it_cannot_get_the_page_id_of_the_first_publisher_page
-    v1_dataset_metadata_without_default_page = { status: '200', body: v1_dataset_metadata.deep_dup.tap { |metadata| metadata.delete(:defaultPage) } }
+    v1_dataset_metadata_without_default_page = {
+      status: '200',
+      body: v1_dataset_metadata.deep_dup.tap { |metadata| metadata.delete(:defaultPage) }
+    }
     stub_feature_flags_with(:metadata_transition_phase, '1')
 
     Phidippides.any_instance.stubs(
@@ -168,10 +236,12 @@ class PhidippidesTest < Test::Unit::TestCase
   end
 
   def test_migrate_dataset_metadata_to_v1_in_phase_2_generates_default_page_if_none_exists
-    v1_dataset_metadata_without_default_page = { status: '200', body: v1_dataset_metadata.deep_dup.tap { |metadata| metadata.delete(:defaultPage) } }
-
+    v1_dataset_metadata_without_default_page = {
+      status: '200',
+      body: v1_dataset_metadata.deep_dup.tap { |metadata| metadata.delete(:defaultPage) }
+    }
     Phidippides.any_instance.stubs(
-      fetch_pages_for_dataset: { status: '200', body: pages_for_dataset }
+      fetch_pages_for_dataset: { status: '200', body: v1_pages_for_dataset }
     )
     stub_feature_flags_with(:metadata_transition_phase, '2')
 
@@ -197,7 +267,10 @@ class PhidippidesTest < Test::Unit::TestCase
   end
 
   def test_migrate_dataset_metadata_to_v1_in_phase_2_calls_airbrake_when_it_cannot_get_the_page_id_of_the_first_publisher_page
-    v1_dataset_metadata_without_default_page = { status: '200', body: v1_dataset_metadata.deep_dup.tap { |metadata| metadata.delete(:defaultPage) } }
+    v1_dataset_metadata_without_default_page = {
+      status: '200',
+      body: v1_dataset_metadata.deep_dup.tap { |metadata| metadata.delete(:defaultPage) }
+    }
     stub_feature_flags_with(:metadata_transition_phase, '2')
 
     Phidippides.any_instance.stubs(
@@ -235,62 +308,87 @@ class PhidippidesTest < Test::Unit::TestCase
 
   def test_pages_for_dataset_with_dataset_object_succeeds
     Phidippides.any_instance.stubs(
-      fetch_pages_for_dataset: { status: '200', body: pages_for_dataset }
+      fetch_pages_for_dataset: { status: '200', body: v0_pages_for_dataset }
     )
     stub_feature_flags_with(:metadata_transition_phase, '0')
     pages = phidippides.fetch_pages_for_dataset(OpenStruct.new(id: 'q77b-s2zi'))[:body]
     assert(pages[:publisher].length > 0, 'expected to find one or more "publisher" in the "pages" response')
-    assert(pages[:publisher].all? { |page| page[:id] == 'q77b-s2zi'}, 'expected all pages to belong to the same dataset')
+    assert(pages[:publisher].all? { |page| page[:id] == 'q77b-s2zi' }, 'expected all pages to belong to the same dataset')
 
     Phidippides.any_instance.stubs(
-      fetch_pages_for_dataset: { status: '200', body: pages_for_dataset }
+      fetch_pages_for_dataset: { status: '200', body: v0_pages_for_dataset }
     )
     stub_feature_flags_with(:metadata_transition_phase, '1')
     pages = phidippides.fetch_pages_for_dataset(OpenStruct.new(id: 'q77b-s2zi'))[:body]
     assert(pages[:publisher].length > 0, 'expected to find one or more "publisher" in the "pages" response')
-    assert(pages[:publisher].all? { |page| page[:id] == 'q77b-s2zi'}, 'expected all pages to belong to the same dataset')
+    assert(pages[:publisher].all? { |page| page[:id] == 'q77b-s2zi' }, 'expected all pages to belong to the same dataset')
+
+    Phidippides.any_instance.stubs(
+      fetch_pages_for_dataset: { status: '200', body: v1_pages_for_dataset }
+    )
+    stub_feature_flags_with(:metadata_transition_phase, '2')
+    pages = phidippides.fetch_pages_for_dataset(OpenStruct.new(id: 'q77b-s2zi'))[:body]
+    assert(pages[:publisher].length > 0, 'expected to find one or more "publisher" in the "pages" response')
+    assert(pages[:publisher].all? { |page| page[:datasetId] == 'q77b-s2zi' }, 'expected all pages to belong to the same dataset')
   end
 
   def test_create_dataset_metadata
-    prepare_stubs(body: new_dataset_metadata, path: 'datasets', verb: :post, request_body: new_dataset_metadata)
-    result = phidippides.create_dataset_metadata(new_dataset_metadata, request_id: 'request_id')
-    assert_equal(new_dataset_metadata, result[:body])
+    prepare_stubs(body: new_v0_dataset_metadata, path: 'datasets', verb: :post, request_body: new_v0_dataset_metadata)
+    stub_feature_flags_with(:metadata_transition_phase, '0')
+    result = phidippides.create_dataset_metadata(new_v0_dataset_metadata, request_id: 'request_id')
+    assert_equal(new_v0_dataset_metadata, result[:body])
   end
 
   def test_pages_for_dataset_with_id_string_succeeds
     Phidippides.any_instance.stubs(
-      fetch_pages_for_dataset: { status: '200', body: pages_for_dataset }
+      fetch_pages_for_dataset: { status: '200', body: v0_pages_for_dataset }
     )
     stub_feature_flags_with(:metadata_transition_phase, '0')
     pages = phidippides.fetch_pages_for_dataset('q77b-s2zi')[:body]
     assert(pages[:publisher].length > 0, 'expected to find one or more "publisher" in the "pages" response')
-    assert(pages[:publisher].all? { |page| page[:id] == 'q77b-s2zi'}, 'expected all pages to belong to the same dataset')
+    assert(pages[:publisher].all? { |page| page[:id] == 'q77b-s2zi' }, 'expected all pages to belong to the same dataset')
 
     Phidippides.any_instance.stubs(
-      fetch_pages_for_dataset: { status: '200', body: pages_for_dataset }
+      fetch_pages_for_dataset: { status: '200', body: v0_pages_for_dataset }
     )
     stub_feature_flags_with(:metadata_transition_phase, '1')
     pages = phidippides.fetch_pages_for_dataset('q77b-s2zi')[:body]
     assert(pages[:publisher].length > 0, 'expected to find one or more "publisher" in the "pages" response')
-    assert(pages[:publisher].all? { |page| page[:id] == 'q77b-s2zi'}, 'expected all pages to belong to the same dataset')
+    assert(pages[:publisher].all? { |page| page[:id] == 'q77b-s2zi' }, 'expected all pages to belong to the same dataset')
+
+    Phidippides.any_instance.stubs(
+      fetch_pages_for_dataset: { status: '200', body: v1_pages_for_dataset }
+    )
+    stub_feature_flags_with(:metadata_transition_phase, '2')
+    pages = phidippides.fetch_pages_for_dataset('q77b-s2zi')[:body]
+    assert(pages[:publisher].length > 0, 'expected to find one or more "publisher" in the "pages" response')
+    assert(pages[:publisher].all? { |page| page[:datasetId] == 'q77b-s2zi' }, 'expected all pages to belong to the same dataset')
   end
 
   def test_pages_for_dataset_with_id_in_hash_succeeds
     Phidippides.any_instance.stubs(
-      fetch_pages_for_dataset: { status: '200', body: pages_for_dataset }
+      fetch_pages_for_dataset: { status: '200', body: v0_pages_for_dataset }
     )
     stub_feature_flags_with(:metadata_transition_phase, '0')
     pages = phidippides.fetch_pages_for_dataset(id: 'q77b-s2zi')[:body]
     assert(pages[:publisher].length > 0, 'expected to find one or more "publisher" in the "pages" response')
-    assert(pages[:publisher].all? { |page| page[:id] == 'q77b-s2zi'}, 'expected all pages to belong to the same dataset')
+    assert(pages[:publisher].all? { |page| page[:id] == 'q77b-s2zi' }, 'expected all pages to belong to the same dataset')
 
     Phidippides.any_instance.stubs(
-      fetch_pages_for_dataset: { status: '200', body: pages_for_dataset }
+      fetch_pages_for_dataset: { status: '200', body: v0_pages_for_dataset }
     )
     stub_feature_flags_with(:metadata_transition_phase, '1')
     pages = phidippides.fetch_pages_for_dataset(id: 'q77b-s2zi')[:body]
     assert(pages[:publisher].length > 0, 'expected to find one or more "publisher" in the "pages" response')
-    assert(pages[:publisher].all? { |page| page[:id] == 'q77b-s2zi'}, 'expected all pages to belong to the same dataset')
+    assert(pages[:publisher].all? { |page| page[:id] == 'q77b-s2zi' }, 'expected all pages to belong to the same dataset')
+
+    Phidippides.any_instance.stubs(
+      fetch_pages_for_dataset: { status: '200', body: v1_pages_for_dataset }
+    )
+    stub_feature_flags_with(:metadata_transition_phase, '2')
+    pages = phidippides.fetch_pages_for_dataset(id: 'q77b-s2zi')[:body]
+    assert(pages[:publisher].length > 0, 'expected to find one or more "publisher" in the "pages" response')
+    assert(pages[:publisher].all? { |page| page[:datasetId] == 'q77b-s2zi' }, 'expected all pages to belong to the same dataset')
   end
 
   def test_fetch_pages_for_dataset_with_invalid_dataset_object_raises
@@ -418,36 +516,50 @@ class PhidippidesTest < Test::Unit::TestCase
     Net::HTTP.unstub(:start)
   end
 
-  def page_metadata
-    @page_metadata ||= JSON.parse(File.read("#{Rails.root}/test/fixtures/page-metadata.json")).with_indifferent_access
+  def v0_page_metadata
+    @page_metadata ||= JSON.parse(File.read("#{Rails.root}/test/fixtures/v0-page-metadata.json")).with_indifferent_access
   end
 
-  def dataset_metadata
-    @dataset_metdata ||= JSON.parse(File.read("#{Rails.root}/test/fixtures/dataset-metadata.json")).with_indifferent_access
+  def v0_dataset_metadata
+    @dataset_metdata ||= JSON.parse(File.read("#{Rails.root}/test/fixtures/v0-dataset-metadata.json")).with_indifferent_access
   end
 
-  def new_dataset_metadata
+  def new_v0_dataset_metadata
     {
-      'id' => 'plac-hldr',
-      'rowDisplayUnit' => 'rowDisplayUnit',
-      'defaultAggregateColumn' => 'defaultAggregateColumn',
-      'domain' => 'localhost',
-      'ownerId' => 'four-four',
-      'updatedAt' => Time.now.utc.iso8601,
-      'columns' => []
+      "columns" => [],
+      "defaultAggregateColumn" => ":count",
+      "description" => "Cases created since 7/1/2008",
+      "domain" => "dataspace-demo.test-socrata.com",
+      "id" => "vtvh-wqgq",
+      "name" => "Case Data from San Francisco 311",
+      "ownerId" => "8ueb-zucv",
+      "rowDisplayUnit" => "Case",
+      "updatedAt" => "2014-08-17T04:07:03.000Z"
     }
   end
 
-  def pages_for_dataset
+  def v0_pages_for_dataset
     JSON.parse('{"publisher":[{"id":"q77b-s2zi","pageId":"vwwn-6r7g"}, {"id":"q77b-s2zi","pageId":"test-page"}],"user":[]}').with_indifferent_access
   end
 
-  def new_page_metadata
+  def v1_pages_for_dataset
+    JSON.parse('{"publisher":[{"datasetId":"q77b-s2zi","pageId":"vwwn-6r7g"}, {"datasetId":"q77b-s2zi","pageId":"test-page"}],"user":[]}').with_indifferent_access
+  end
+
+  def new_v0_page_metadata
+    JSON.parse('{"datasetId":"q77b-s2zi","pageId":"vwwn-6r7g"}').with_indifferent_access
+  end
+
+  def new_v1_page_metadata
     JSON.parse('{"datasetId":"q77b-s2zi","pageId":"vwwn-6r7g"}').with_indifferent_access
   end
 
   def v1_dataset_metadata
     @v1_dataset_metdata ||= JSON.parse(File.read("#{Rails.root}/test/fixtures/v1-dataset-metadata.json")).with_indifferent_access
+  end
+
+  def v1_page_metadata
+    @v1_dataset_metdata ||= JSON.parse(File.read("#{Rails.root}/test/fixtures/v1-page-metadata.json")).with_indifferent_access
   end
 
 end

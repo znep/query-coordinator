@@ -11,7 +11,6 @@ class Phidippides < SocrataHttp
   UID_REGEXP = /\w{4}-\w{4}/
 
   def connection_details
-    # Port is typically 2401 in development mode and 1303 in production
     zookeeper_path = ENV['ZOOKEEPER_PHIDIPPIDES_PATH'] || 'com.socrata/soda/services/phidippides'
     instance_id = ::ZookeeperDiscovery.get(zookeeper_path)
 
@@ -19,7 +18,7 @@ class Phidippides < SocrataHttp
       ::ZookeeperDiscovery.get_json("/#{zookeeper_path}/#{instance_id}")
     rescue ZK::Exceptions::BadArguments => error
       Rails.logger.error(error_message = "Unable to determine phidippides connection details due to error: #{error.to_s}")
-      raise ::SocrataHttp::ConnectionError.new(error_message)
+      raise Phidippides::ConnectionError.new(error_message)
     end
   end
 
@@ -28,6 +27,7 @@ class Phidippides < SocrataHttp
   end
 
   def port
+    # Port is typically 2401 in development mode and 1303 in production
     ENV['PHIDIPPIDES_PORT'] || connection_details.fetch('port')
   end
 
@@ -185,6 +185,8 @@ class Phidippides < SocrataHttp
         :cookies => options[:cookies]
       )
     else
+      raise ArgumentError.new('datasetId is required') unless json.key?('datasetId')
+
       issue_request(
         :verb => :put,
         :path => "v1/id/#{json['datasetId']}/pages/#{json['pageId']}",

@@ -446,8 +446,8 @@
 
         // Draw the rectangles in pieces, so as to store the data, so the ticks can access them.
         var rectangles = legendSvg.selectAll('rect').data(tickStops);
-        rectangles.enter().
-          append('rect').attr({
+        rectangles.enter().append('rect');
+        rectangles.attr({
             x: 0,
             y: function(value) {
               // Since y is actually 'top', and we want the lowest value at the bottom, subtract

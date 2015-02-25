@@ -34,8 +34,14 @@
         stroke-width: 1px
 
     &.continuous
+      $inset: 30px
       max-height: 15rem
+      height: 100%
+      right: $inset
+      bottom: 0
       width: 1rem
+      box-sizing: border-box
+      padding: $inset 0
 
       svg
         width: 100%

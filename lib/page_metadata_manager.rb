@@ -67,7 +67,7 @@ class PageMetadataManager
 
     if result.fetch(:status) == '200'
       new_view_manager.create(
-        page_metadata['pageId'],
+        result.fetch(:body).fetch('pageId'),
         page_metadata['name'],
         page_metadata['description']
       )
@@ -99,7 +99,19 @@ class PageMetadataManager
 
       # if we can roll up anything for this query, do so
       if rollup_soql
-        page_id = json.fetch('pageId')
+
+        # In phase 0 or 1 the only way to determine the page id
+        # is to check the result of Phidippides.create_page_metadata.
+        # In phase 2 the only way to determine the page id is
+        # to check the result of Phidippides.request_new_page_id.
+        # We need to handle both cases.
+        if metadata_transition_phase_0? || metadata_transition_phase_1?
+          page_id = result.fetch(:body).fetch(:pageId)
+          json['pageId'] = page_id
+        else
+          page_id = json.fetch('pageId')
+        end
+
         args = {
           dataset_id: json.fetch('datasetId'),
           rollup_name: page_id,

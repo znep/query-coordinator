@@ -41,7 +41,7 @@ class NewViewManager
 
     begin
       response = CoreServer::Base.connection.create_request(url, JSON.dump(payload))
-    rescue
+    rescue => e
       report_error(
         "Error creating new_view lens for page: #{e.error_message}",
         { :url => url, :payload => payload },

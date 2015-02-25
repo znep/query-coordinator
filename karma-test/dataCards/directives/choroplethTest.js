@@ -1279,6 +1279,42 @@ describe("A Choropleth Directive", function() {
                 expect(toNumber(largeTicks.eq(1).text())).to.be.closeTo(0, .5);
               });
             });
+
+            describe('changing values', function() {
+              it('rescales the legend for the new value', function() {
+                // Create a dataset that straddles 0 but won't have a tick at 0.
+                // Also make it a different scale than the next one, to maximize difference.
+                var values = _.map(_.range(-1, 500, 50), function(value, i) {
+                  return { name: '' + i, value: value };
+                });
+                scope.geojsonAggregateData = aggregateDataForValues(values);
+                el = createChoropleth(expanded, 'stops="continuous"');
+
+                var ticks = el.find('.continuous .tick');
+                // 5 ticks, plus the 0 tick. We need this for the test so that the number of ticks
+                // will change between this legend and the next, so we can verify the code properly
+                // takes that into account.
+                expect(ticks.length).to.equal(6);
+
+                var gradientSegments = el.find('rect');
+                expect(gradientSegments.eq(0).attr('y')).to.equal('100%');
+                expect(gradientSegments.last().attr('y')).to.equal('0%');
+
+                values = _.map(_.range(0, 6), function(value, i) {
+                  return { name: '' + i, value: -value };
+                });
+                scope.geojsonAggregateData = aggregateDataForValues(values);
+                scope.$digest();
+
+                ticks = el.find('.continuous .tick');
+                // Should not have an extra 0 tick
+                expect(ticks.length).to.equal(5);
+                // The gradient rectangle should span the whole range
+                gradientSegments = el.find('rect');
+                expect(gradientSegments.eq(0).attr('y')).to.equal('100%');
+                expect(gradientSegments.last().attr('y')).to.equal('0%');
+              });
+            });
           });
         });
       });

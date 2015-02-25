@@ -44,11 +44,6 @@ class PageMetadataManagerTest < Test::Unit::TestCase
     result = manager.create(v1_page_metadata.except('pageId').to_json)
     assert(result.fetch(:status) == '200', 'Expected create result status to be 200')
     assert(result.fetch(:body).fetch(:pageId), 'Expected a non-nil pageId to be created')
-
-    stub_feature_flags_with(:metadata_transition_phase, '1')
-    result = manager.create(v0_page_metadata.to_json)
-    assert(result.fetch(:status) == '200', 'Expected create result status to be 200')
-    assert(result.fetch(:body).fetch(:pageId), 'Expected a non-nil pageId to be created')
   end
 
   def test_create_raises_an_error_if_it_is_unable_to_provision_a_new_page_id_in_metadata_migration_phase_2

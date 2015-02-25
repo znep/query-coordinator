@@ -146,6 +146,7 @@ class PageMetadataManagerTest < Test::Unit::TestCase
   def test_create_does_not_try_to_create_rollup_table_when_not_given_eligible_columns_in_phase_2
     PageMetadataManager.any_instance.expects(:update_rollup_table).times(0)
     Phidippides.any_instance.stubs(
+      request_new_page_id: { status: '200', body: { id: 'abcd-efgh' } },
       create_page_metadata: { status: '200', body: nil },
       fetch_dataset_metadata: { status: '200', body: v1_dataset_metadata_without_rollup_columns }
     )
@@ -201,6 +202,9 @@ class PageMetadataManagerTest < Test::Unit::TestCase
     assert(result.fetch(:status) == '200', 'Expected create result status to be 200')
 
     # Phase 2
+    Phidippides.any_instance.stubs(
+      request_new_page_id: { status: '200', body: { id: 'abcd-efgh' } },
+    )
     stub_feature_flags_with(:metadata_transition_phase, '2')
     Phidippides.any_instance.expects(:create_page_metadata).times(1).then.with do |json, options|
       assert(json['cards'].pluck('cardType').any? { |cardType| cardType == 'table' })
@@ -250,6 +254,9 @@ class PageMetadataManagerTest < Test::Unit::TestCase
     manager.update(v1_page_metadata_as_v0.merge('bunch' => 'other stuff', 'foo' => 'bar'))
 
     # Phase 2
+    Phidippides.any_instance.stubs(
+      request_new_page_id: { status: '200', body: { id: 'abcd-efgh' } },
+    )
     stub_feature_flags_with(:metadata_transition_phase, '2')
     manager.create(v1_page_metadata.except('pageId').to_json)
     Phidippides.any_instance.expects(:update_page_metadata).times(1).then.with do |json, options|

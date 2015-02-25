@@ -415,8 +415,16 @@ Frontend::Application.routes do
     # V1 dataset metadata endpoints
     scope :controller => 'phidippides_datasets' do
       match '/metadata/v1/dataset/:id', :to => 'phidippides_datasets#show', :via => [:get], :constraints => { :id => UID_REGEXP }
+      match '/metadata/v1/dataset/:id', :to => 'phidippides_datasets#update', :via => [:put], :constraints => { :id => UID_REGEXP }
       # This endpoint should eventually be routed to the phidippides_pages_controller instead
       match '/metadata/v1/dataset/:id/pages', :to => 'phidippides_datasets#index', :via => [:get], :constraints => { :id => UID_REGEXP }
+    end
+
+    # V1 page metadata endpoints
+    scope :controller => 'phidippides_pages' do
+      match '/metadata/v1/page/:pageId', :to => 'phidippides_pages#show', :via => [:get], :constraints => { :pageId => UID_REGEXP }
+      match '/metadata/v1/page', :to => 'phidippides_pages#create', :via => [:post]
+      match '/metadata/v1/page/:pageId', :to => 'phidippides_pages#update', :via => [:put], :constraints => { :pageId => UID_REGEXP }
     end
 
     # Custom pages, catalogs, facets

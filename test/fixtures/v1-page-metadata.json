@@ -15,6 +15,14 @@
       "cardType": "Column",
       "appliedFilters": [],
       "expanded": false
+    },
+    {
+      "description": "Table",
+      "fieldName": "*",
+      "cardSize": 3,
+      "cardType": "Table",
+      "appliedFilters": [],
+      "expanded": false
     }
   ],
   "catalogViewId": "test-page",

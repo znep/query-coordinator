@@ -50,6 +50,10 @@ class PhidippidesPagesController < ActionController::Base
           render :json => result[:body], :status => result[:status]
         rescue Phidippides::ConnectionError
           render :json => { :body => 'Phidippides connection error' }, :status => '500'
+        rescue Phidippides::NewPageException => error
+          render :json => { :body => "Error: #{error}" }, :status => '500'
+        rescue Phidippides::PageIdException => error
+          render :json => { :body => "Error: #{error}" }, :status => '500'
         rescue JSON::ParserError => error
           render :json => { :body => "Invalid JSON payload. Error: #{error}" }, :status => '500'
         end

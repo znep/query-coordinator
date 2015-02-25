@@ -2,6 +2,8 @@ class Phidippides < SocrataHttp
 
   include CommonMetadataTransitionMethods
 
+  class NewPageException < RuntimeError; end
+  class PageIdException < RuntimeError; end
   # TODO: Should these actually be ignore-case?
   # Note - these are aligned so as to exemplify the differences between the regexes
   COLUMN_ID_REGEX =    /(:@)?([a-z][a-z_0-9\-]*)/i

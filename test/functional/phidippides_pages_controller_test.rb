@@ -30,11 +30,11 @@ class PhidippidesPagesControllerTest < ActionController::TestCase
     @controller.stubs(can_update_metadata?: false)
 
     stub_feature_flags_with(:metadata_transition_phase, '0')
-    post :create, pageMetadata: { datasetId: 'four-four', pageId: 'page-page' }, format: :json
+    post :create, pageMetadata: { datasetId: 'four-four' }, format: :json
     assert_response(401)
 
     stub_feature_flags_with(:metadata_transition_phase, '1')
-    post :create, pageMetadata: { datasetId: 'four-four', pageId: 'page-page' }, format: :json
+    post :create, pageMetadata: { datasetId: 'four-four' }, format: :json
     assert_response(401)
 
     stub_feature_flags_with(:metadata_transition_phase, '2')
@@ -44,14 +44,14 @@ class PhidippidesPagesControllerTest < ActionController::TestCase
 
   test '(phase 0, 1 or 2) create returns 406 if format is not JSON' do
     @controller.stubs(can_update_metadata?: true)
-    @phidippides.stubs(issue_request: { status: 200 }, issue_soda_fountain_request: '')
+    @phidippides.stubs(issue_request: { status: '200' }, issue_soda_fountain_request: '')
 
     stub_feature_flags_with(:metadata_transition_phase, '0')
-    post :create, pageMetadata: { datasetId: 'four-four', pageId: 'page-page' }.to_json
+    post :create, pageMetadata: { datasetId: 'four-four' }.to_json
     assert_response(406)
 
     stub_feature_flags_with(:metadata_transition_phase, '1')
-    post :create, pageMetadata: { datasetId: 'four-four', pageId: 'page-page' }.to_json
+    post :create, pageMetadata: { datasetId: 'four-four' }.to_json
     assert_response(406)
 
     stub_feature_flags_with(:metadata_transition_phase, '2')
@@ -90,19 +90,22 @@ class PhidippidesPagesControllerTest < ActionController::TestCase
   test '(phase 0, 1 or 2) create returns new page metadata if logged in' do
     @controller.stubs(can_update_metadata?: true)
     PageMetadataManager.any_instance.stubs(create: { body: v0_page_metadata, status: '200' })
-
     stub_feature_flags_with(:metadata_transition_phase, '0')
     post :create, pageMetadata: v0_page_metadata, format: :json
     assert_response(200)
+    assert_equal(v0_page_metadata, @response.body)
 
     stub_feature_flags_with(:metadata_transition_phase, '1')
     post :create, pageMetadata: v0_page_metadata, format: :json
     assert_response(200)
+    assert_equal(v0_page_metadata, @response.body)
 
-    PageMetadataManager.any_instance.stubs(create: { body: nil, status: '200' })
+    PageMetadataManager.any_instance.stubs(create: { body: v1_page_metadata, status: '200' })
+    Phidippides.any_instance.stubs(request_new_page_id: { body: { id: 'iuya-fxdq' }, status: '200' })
     stub_feature_flags_with(:metadata_transition_phase, '2')
-    post :create, pageMetadata: v1_page_metadata, format: :json
+    post :create, pageMetadata: JSON.parse(v1_page_metadata).except('pageId').to_json, format: :json
     assert_response(200)
+    assert_equal(v1_page_metadata, @response.body)
   end
 
   test '(phase 0, 1 or 2) update returns 401 if not logged in' do

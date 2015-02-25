@@ -343,9 +343,12 @@ class View < Model
         }
         cache.write(cache_key, result, :expires_in => cache_ttl)
       rescue Exception => e
-          Rails.logger.info("Possibly invalid model found in row request, deleting model cache key: " + model_cache_key)
-          cache.delete(model_cache_key)
-          raise e
+        Rails.logger.info(
+          "Possibly invalid model found in row request, deleting model cache key: #{model_cache_key}." <<
+            " Exception details: #{e.inspect}, #{e.backtrace[0]}"
+        )
+        cache.delete(model_cache_key) if model_cache_key
+        raise e
       end
     end
     if conditions.empty?

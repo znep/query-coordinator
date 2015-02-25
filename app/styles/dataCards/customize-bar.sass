@@ -10,11 +10,14 @@ $customize-bar-button-border-width: 2px
 
 .customize-bar-action-btn
   @include action-button($customize-bar-button-color, $customize-bar-button-background-color, $customize-bar-button-border-color)
+  font-size: 0.85em
   height: $customize-bar-button-height + (2 * $customize-bar-button-border-width)
   line-height: $customize-bar-button-height
-  padding: 0 18px
+  padding: 0 10px
+
   &:hover, &.active, &.touched
     @include action-button($customize-bar-customizing-button-color, $customize-bar-customizing-button-background-color, $customize-bar-customizing-button-color)
+
   &.disabled, &:disabled
     @include action-button($btn-disabled-font-color, $btn-disabled-bg-color, $btn-disabled-border-color)
     cursor: default
@@ -23,19 +26,21 @@ $customize-bar-button-border-width: 2px
     @include action-button($customize-bar-customizing-button-color, $customize-bar-customizing-button-background-color, $customize-bar-customizing-button-color)
 
 .customize-bar
+  background-clip: padding-box
   background-color: rgba($customize-bar-background-color, $customize-bar-opacity)
   border-top: $customize-bar-border-top-width solid rgba($customize-bar-border-color, $customize-bar-border-opacity)
   bottom: 0
   color: $customize-bar-button-color
   display: block
   height: $customize-bar-height
-  line-height: $customize-bar-height
+  line-height: $customize-bar-line-height
   position: fixed
   width: 100%
   z-index: $customize-bar-z-index
 
   .changes-warning
     margin-left: 10px
+
     .icon-warningIcon
       margin-right: 0.05rem
 
@@ -45,19 +50,32 @@ $customize-bar-button-border-width: 2px
 
   .action-btn
     @extend .customize-bar-action-btn
+    &:hover
+      border-color: $customize-bar-customizing-button-background-color
+      &.disabled
+        @include action-button($btn-disabled-font-color, $btn-disabled-bg-color, $btn-disabled-border-color)
 
   &.is-customizing
-    background-color: rgba($customize-bar-customizing-background-color, $customize-bar-opacity)
+    background-color: rgba($customize-bar-customizing-background-color, 1)
+    border-top: $customize-bar-border-top-width solid rgba($customize-bar-customizing-background-color, $customize-bar-border-opacity)
     color: $customize-bar-customizing-button-color
+
     .action-btn
       @include action-button($customize-bar-customizing-button-color, $customize-bar-customizing-button-background-color, $customize-bar-customizing-button-color)
+
       &:hover, &.active
-        @include action-button($customize-bar-button-color, $customize-bar-button-background-color, $customize-bar-button-border-color)
+        @include action-button($customize-bar-customizing-button-background-color, $customize-bar-button-background-color, white)
+
       &.disabled,&:disabled
         @extend .action-btn.disabled !optional
 
+    button.action-btn
+      padding: 0 10px
+
     button.save-button, button.save-as-button
       @extend .customize-bar-action-btn
+      &:hover
+        border-color: $customize-bar-customizing-button-background-color
 
     .tool-panel
       @extend .tool-panel !optional

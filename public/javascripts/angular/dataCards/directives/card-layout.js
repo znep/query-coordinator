@@ -47,7 +47,7 @@
             scope.chooserMode.show = false;
             resetButton(cardState);
           });
-        }, function error(err) {
+        }, function error() {
           scope.$apply(function() {
             cardState.downloadState = 'error';
             resetButton(cardState);
@@ -76,7 +76,17 @@
     );
   }
 
-  function cardLayout(Constants, AngularRxExtensions, WindowState, SortedTileLayout, FlyoutService, CardTypeMapping, DownloadService, $timeout) {
+  function cardLayout(
+    Constants,
+    AngularRxExtensions,
+    WindowState,
+    SortedTileLayout,
+    FlyoutService,
+    CardTypeMapping,
+    DownloadService,
+    $timeout,
+    $window
+  ) {
 
     sortedTileLayout = new SortedTileLayout();
     return {
@@ -91,23 +101,21 @@
         allowAddCard: '='
       },
       templateUrl: '/angular_templates/dataCards/card-layout.html',
-      link: function(scope, cardContainer, attrs) {
+      link: function(scope, cardContainer) {
         AngularRxExtensions.install(scope);
 
         scope.grabbedCard = null;
 
         var jqueryWindow = $(window);
         var jqueryDocument = $(document);
-        var pageDescription = $('.page-description');
         var quickFilterBar = $('.quick-filter-bar');
         var cardsMetadata = $('.cards-metadata');
+        var customizeBar = $('.customize-bar');
 
         var mouseDownClientX = 0;
         var mouseDownClientY = 0;
-        var distanceSinceDragStart = 0;
         var mouseIsDown = false;
 
-        var grabbedElement = null;
         var cursorToCardOriginXRatio = 0;
         var cursorToCardOriginYRatio = 0;
         var cardOriginX = 0;
@@ -120,10 +128,14 @@
         // Ideally these wouldn't be required, but for the time being we'll
         // verify our requirements are met.
         if (_.isEmpty(cardsMetadata)) {
-          throw new Error('The cardLayout directive must be in the DOM with a node with class "cards-metadata".');
+          throw new Error(
+            'The cardLayout directive must be in the DOM with a node with class "cards-metadata".'
+          );
         }
-        if (_.isEmpty($('.quick-filter-bar'))) {
-          throw new Error('The cardLayout directive must be in the DOM with a node with class "quick-filter-bar".');
+        if (_.isEmpty(quickFilterBar)) {
+          throw new Error(
+            'The cardLayout directive must be in the DOM with a node with class "quick-filter-bar".'
+          );
         }
 
         //TODO This should never change at runtime. If it does, we need to react to that change.
@@ -137,21 +149,34 @@
          * @param {object} style The object that holds the css styles for the expanded
          * card.
          * @param {Card} cardModel The Card model for the expanded card.
+         * @param scrollTop
+         * @param windowSize
+         * @param heightOfAllCards
          */
         function updateExpandedVerticalDims(style, cardModel, scrollTop,
                                             windowSize, heightOfAllCards) {
-          style.height = windowSize.height - Constants.LAYOUT_VERTICAL_PADDING;
+          var windowHeight = windowSize.height;
+          style.height = windowHeight - Constants.LAYOUT_VERTICAL_PADDING;
 
+          var cardContainerTop = cardContainer.offset().top;
           style.top = quickFilterBar.hasClass('stuck') ?
               quickFilterBar.height() :
-              cardContainer.offset().top - scrollTop;
+              cardContainerTop - scrollTop;
 
           style.height -= style.top;
 
+
+          var customizeBarOffset = 0;
+          if (customizeBar.is(':visible')) {
+            customizeBarOffset = customizeBar.height();
+          }
+
           var footerOffset = cardModel.fieldName === '*' ?
-              0 :
-              Math.max(0, (scrollTop + windowSize.height) - (
-                cardContainer.offset().top + heightOfAllCards));
+            customizeBarOffset :
+            Math.max(
+              customizeBarOffset,
+              (scrollTop + windowHeight) - (cardContainerTop + heightOfAllCards)
+            );
 
           style.height -= footerOffset;
 
@@ -180,14 +205,12 @@
           var unexpandedColumnWidth = Math.floor(
             (1 - EXPANDED_COL_RATIO) * containerContentWidth);
           var expandedColumnWidth = Math.floor(
-            EXPANDED_COL_RATIO * containerContentWidth)
-            - Constants['LAYOUT_HORIZONTAL_PADDING'];
+            EXPANDED_COL_RATIO * containerContentWidth) -
+            Constants['LAYOUT_HORIZONTAL_PADDING'];
 
-          var expandedColumnLeft = unexpandedColumnWidth
-            + Constants['LAYOUT_GUTTER'] + Constants['LAYOUT_HORIZONTAL_PADDING'];
+          var expandedColumnLeft = unexpandedColumnWidth +
+            Constants['LAYOUT_GUTTER'] + Constants['LAYOUT_HORIZONTAL_PADDING'];
           var unexpandedColumnLeft = Constants['LAYOUT_GUTTER'];
-
-          var expandedColumnTop = 0;
 
           var unexpandedCards = cardsBySize.normal.filter(function(card) {
             // Note that the 'card' supplied by the iterator is a wrapper around
@@ -201,7 +224,7 @@
           });
 
           // Set the styles for the left-column cards
-          _.map(unexpandedCards, function(card, index) {
+          _.map(unexpandedCards, function(card) {
             var cardLeft = unexpandedColumnLeft;
             var cardTop = heightOfAllCards;
             var cardWidth = unexpandedColumnWidth;
@@ -216,7 +239,7 @@
               left: cardLeft,
               top: cardTop,
               width: cardWidth,
-              height: cardHeight,
+              height: cardHeight
             };
           });
 
@@ -278,15 +301,15 @@
           // Position the rows of cards
           _.map(editableCards, function(rows, cardSize) {
             var currentRowHeight = COLLAPSED_SIZE_TO_HEIGHT[parseInt(cardSize, 10)];
-            var currentRowContentHeight = currentRowHeight
-              - Constants['LAYOUT_VERTICAL_PADDING'];
+            var currentRowContentHeight = currentRowHeight -
+              Constants['LAYOUT_VERTICAL_PADDING'];
 
             _.map(rows, function(row, rowIndex) {
 
-              var paddingForEntireRow = Constants['LAYOUT_HORIZONTAL_PADDING']
-                * (row.length - 1);
-              var usableContentSpaceForRow = containerContentWidth
-                - paddingForEntireRow;
+              var paddingForEntireRow = Constants['LAYOUT_HORIZONTAL_PADDING'] *
+                (row.length - 1);
+              var usableContentSpaceForRow = containerContentWidth -
+                paddingForEntireRow;
               var cardWidth = Math.floor(usableContentSpaceForRow / row.length);
 
               _.map(row, function(card, cardIndexInRow) {
@@ -353,8 +376,8 @@
             height: Constants['LAYOUT_DATA_CARD_HEIGHT']
           };
 
-          heightOfAllCards += Constants['LAYOUT_DATA_CARD_HEIGHT']
-            + Constants['LAYOUT_VERTICAL_PADDING'];
+          heightOfAllCards += Constants['LAYOUT_DATA_CARD_HEIGHT'] +
+            Constants['LAYOUT_VERTICAL_PADDING'];
 
           return heightOfAllCards;
         }
@@ -472,9 +495,9 @@
           cardsBySizeSequence,
           expandedCardsSequence,
           scope.observe('editMode'),
-          scope.observe('allowAddCard'),
           WindowState.windowSizeSubject,
-          function layoutFn(cardsBySize, expandedCards, editMode, allowAddCard, windowSize) {
+          scope.observe('allowAddCard'),
+          function layoutFn(cardsBySize, expandedCards, editMode, windowSize) {
             if (_.isEmpty(cardsBySize.normal) && _.isEmpty(cardsBySize.dataCard)) {
               return;
             }
@@ -494,7 +517,8 @@
             // Keep track of either the one expanded previously, or the new expanded one
             var oldExpandedId;
             var newExpandedId;
-            if (scope.expandedCard != expandedCard) { // == to deal with null vs undef
+            // '!=' to deal with null vs undef
+            if (scope.expandedCard != expandedCard) { // jshint ignore:line
               oldExpandedId = scope.expandedCard && scope.expandedCard.uniqueId;
               newExpandedId = expandedCard && expandedCard.uniqueId;
               // Keep track of whether the layout is an expanded-card layout, so upstream
@@ -506,8 +530,8 @@
             //
             // Content size (width, height) refers to a size with padding/LAYOUT_GUTTER
             // removed. Otherwise, sizes include padding/LAYOUT_GUTTER.
-            var containerContentWidth = cardContainer.width()
-              - Constants['LAYOUT_GUTTER'] * 2;
+            var containerContentWidth = cardContainer.width() -
+              Constants['LAYOUT_GUTTER'] * 2;
 
             // Track whether or not to draw placeholder drop targets
             // for each card grouping.
@@ -541,11 +565,12 @@
               });
             } else {
               var index = 1;
-              _.each(scope.cardStates, function(card, i) {
+              _.each(scope.cardStates, function(card) {
                 if (newExpandedId === card.model.uniqueId || oldExpandedId === card.model.uniqueId) {
                   card.index = 0;
                 } else {
-                  card.index = index++;
+                  card.index = index;
+                  index += 1;
                 }
               });
             }
@@ -564,8 +589,8 @@
         * Drag and drop functionality *
         ******************************/
 
-        // Given a point, the drop target is the card whose Y axis placement overlaps with the mouse Y position,
-        // and whose top-left corner is closest to the mouse position.
+        // Given a point, the drop target is the card whose Y axis placement overlaps with the mouse
+        // Y position, and whose top-left corner is closest to the mouse position.
         // Put another way, it's the closest card to the mouse in the row the mouse is in.
         function findDropTarget(cardOriginX, cardOriginY, clientY) {
           var containerOffset = cardContainer.offset();
@@ -573,16 +598,18 @@
           var containerYOffset = containerOffset.top - jqueryWindow.scrollTop();
           var cursorX = cardOriginX - containerXOffset;
           var cursorY = cardOriginY - containerYOffset;
-          var clientY = clientY - containerYOffset;
+          var adjustedClientY = clientY - containerYOffset;
 
           var cardsInMyRow = _.where(scope.cardStates, function(cardStateData) {
-            return cardStateData.style.top <= clientY && (
-              cardStateData.style.top + cardStateData.style.height) >= clientY;
+            return cardStateData.style.top <= adjustedClientY && (
+              cardStateData.style.top + cardStateData.style.height) >= adjustedClientY;
           });
 
           var closestCard = cardsInMyRow.reduce(function(currentClosest, cardStateData) {
-            var distance = Math.sqrt(Math.pow(cursorX - cardStateData.style.left, 2)
-                                     + Math.pow(cursorY - cardStateData.style.top, 2));
+            var distance = Math.sqrt(
+              Math.pow(cursorX - cardStateData.style.left, 2) +
+              Math.pow(cursorY - cardStateData.style.top, 2)
+            );
             if (currentClosest.distance > distance) {
               return {
                 model: cardStateData.model,
@@ -594,7 +621,7 @@
           }, {model: null, distance: Infinity});
 
           return closestCard.model;
-        };
+        }
 
         cardContainer.on('mousedown', '.card-drag-overlay', function(e) {
 
@@ -722,7 +749,7 @@
               left: cardOriginX
             });
 
-            requestAnimationFrame(checkForScroll);
+            $window.requestAnimationFrame(checkForScroll);
           }
 
         }));
@@ -737,13 +764,19 @@
           var distanceToScrollTop = jqueryWindow.scrollTop();
 
           var deltaBottom = jqueryWindow.height() - WindowState.mouseClientY;
-          var distanceToScrollBottom = jqueryDocument.height() - jqueryWindow.scrollTop();
+          var distanceToScrollBottom = jqueryDocument.height() -
+            jqueryWindow.scrollTop();
+
+          var newYOffset;
 
           if (deltaTop <= 75 && distanceToScrollTop > 0) {
-            var newYOffset = jqueryWindow.scrollTop()
-                           - Math.min(
-                               Math.max(5, Math.pow(75 - deltaTop, 3) / 168.75) * (deltaTime / 1000),
-                                distanceToScrollTop);
+            newYOffset = jqueryWindow.scrollTop() - Math.min(
+              Math.max(
+                5,
+                Math.pow(75 - deltaTop, 3) / 168.75
+              ) * (deltaTime / 1000),
+              distanceToScrollTop
+            );
 
 
             jqueryWindow.scrollTop(newYOffset);
@@ -751,10 +784,14 @@
           } else if (deltaBottom <= 75 && distanceToScrollBottom > 0) {
 
             // Never allow the window to scroll past the bottom.
-            var newYOffset = jqueryWindow.scrollTop()
-                           + Math.min(
-                               Math.max(5, Math.pow(75 - deltaBottom, 3) / 168.75) * (deltaTime / 1000),
-                                distanceToScrollBottom);
+            newYOffset = jqueryWindow.scrollTop() +
+              Math.min(
+                Math.max(
+                  5,
+                  Math.pow(75 - deltaBottom, 3) / 168.75
+                ) * (deltaTime / 1000),
+                distanceToScrollBottom
+              );
 
             jqueryWindow.scrollTop(newYOffset);
 
@@ -762,10 +799,10 @@
 
           if (scope.grabbedCard !== null) {
             lastFrameTime = now;
-            requestAnimationFrame(checkForScroll);
+            $window.requestAnimationFrame(checkForScroll);
           }
 
-        };
+        }
 
         scope.addCardWithSize = function(cardSize) {
           scope.$emit('add-card-with-size', cardSize);
@@ -817,11 +854,11 @@
         });
 
       }
-    }
+    };
   }
 
   angular.
     module('dataCards.directives').
-      directive('cardLayout', cardLayout);
+    directive('cardLayout', cardLayout);
 
 })();

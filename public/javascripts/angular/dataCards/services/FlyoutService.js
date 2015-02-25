@@ -169,17 +169,17 @@ angular.module('dataCards.services').factory('FlyoutService', function(WindowSta
   return {
     /**
      * Register a flyout under a CSS class.
-     * @param {string} className: CSS class this flyout is attached to.
+     * @param {string} className - CSS class this flyout is attached to.
      *                            Treated as unique in this context (should it be an id? maybe so!)
-     * @param {function} renderCallback: Called to render the flyout. Should return a string that
+     * @param {function} renderCallback - Called to render the flyout. Should return a string that
      *                                    will be interpreted as HTML.
-     * @param {Observable} destroySignal: The flyout handler will be destroyed when this sequence
+     * @param {Observable} destroySignal - The flyout handler will be destroyed when this sequence
      *                                    first emits.
      *                                    Temporary hack to prevent severe memory leaks, ideally we
      *                                    would not store the handlers in a global object.
-     * @param {boolean} trackCursor: Whether or not the flyout should track the mouse.
+     * @param {boolean} [trackCursor=false] - Whether or not the flyout should track the mouse.
      *                               Optional, default false.
-     * @param {boolean} horizontal: Whether or not the flyout should lay out horizontally.
+     * @param {boolean} [horizontal=false] - Whether or not the flyout should lay out horizontally.
      *                               Optional, default false (vertical).
      */
     register: function(className, renderCallback, destroySignal, trackCursor, horizontal) {

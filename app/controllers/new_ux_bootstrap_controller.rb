@@ -218,10 +218,10 @@ class NewUxBootstrapController < ActionController::Base
 
     if metadata_transition_phase_0? || metadata_transition_phase_1?
       {
+        'cards' => cards,
         'datasetId' => new_dataset_metadata[:id],
-        'name' => new_dataset_metadata[:name],
         'description' => new_dataset_metadata[:description],
-        'cards' => cards
+        'name' => new_dataset_metadata[:name]
       }
     else
       {

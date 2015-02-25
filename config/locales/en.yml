@@ -2111,9 +2111,9 @@ en:
             title: Views
         visualize:
           choose_type: Visualization Type
-      new_ux_creating_page: The new data exploration page is being created and analyzed
+      new_ux_creating_page: The new Data Lens page is being created and analyzed
       new_ux_error: A preview is not available for this dataset.
-      new_ux_link: Try this dataset in our new data exploration tool (beta)
+      new_ux_link: Try visualizing this dataset with our new Data Lens experience (beta)
       new_ux_nbe_warning: 'Internal Only: Old UX view of New Backend dataset'
       save_dialog:
         descriptions:

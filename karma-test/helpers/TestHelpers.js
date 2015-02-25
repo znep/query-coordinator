@@ -76,7 +76,16 @@
       },
 
       clear: function() {
-        return $('#test-root').empty();
+        var element = $('#test-root');
+        // If there are any angular scopes, send them the destroy signal to clean up after
+        // themselves.
+        element.children().each(function() {
+          var scope = $(this).scope();
+          if (scope) {
+            scope.$destroy();
+          }
+        });
+        return element.empty();
       }
     };
 

@@ -313,14 +313,14 @@ class View < Model
   #
   def get_cached_rows(per_page, page = 1, conditions = {}, is_anon = false, cache_ttl = Rails.application.config.cache_ttl_rows)
     # dedup with create request
-    merged_conditions = self.query.cleaned.merge({'searchString'=>self.searchString}).deep_merge(conditions)
+    merged_conditions = query.cleaned.merge('searchString' => searchString).deep_merge(conditions)
     unless @sodacan.nil? || !@sodacan.can_query?(merged_conditions)
       return {rows: @sodacan.get_rows(merged_conditions, per_page, page), meta: nil}
     end
 
     req = get_rows_request(per_page, page, merged_conditions, true)
     rows_updated_at = self.rowsUpdatedAt.nil? ? nil : self.rowsUpdatedAt
-    cache_key = "rows:" + id.to_s + ":" + Digest::MD5.hexdigest(req.sort.to_json) + ":#{rows_updated_at}"
+    cache_key = "rows:#{id}:#{Digest::MD5.hexdigest(req.sort.to_json)}:#{rows_updated_at}"
     cache_key += ':anon' if is_anon
     result = cache.read(cache_key)
     if result.nil?

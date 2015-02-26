@@ -186,7 +186,7 @@
       // prepare for live GeoJSON data.
       getChoroplethRegions: function(shapeFileId) {
         shapeFileId = DeveloperOverrides.dataOverrideForDataset(shapeFileId) || shapeFileId;
-        var url = '/resource/{0}.geojson'.format(shapeFileId);
+        var url = '/resource/{0}.geojson?$limit=5000'.format(shapeFileId);
         var config = httpConfig.call(this, { headers: { 'Accept': 'application/vnd.geo+json' } });
         return http.get(url, config).
           then(function(response) {
@@ -304,7 +304,7 @@
             var multiPolygon = "'MULTIPOLYGON((({0},{1},{2},{3},{0})))'".
               format(bottomLeft, topLeft, topRight, bottomRight);
 
-            var shapeFileUrl = '/resource/{0}.geojson?$select=*&$where=intersects(the_geom,{1})'.
+            var shapeFileUrl = '/resource/{0}.geojson?$select=*&$where=intersects(the_geom,{1})$limit=5000'.
               format(shapeFileId, multiPolygon);
 
             var config = httpConfig.call(self, {

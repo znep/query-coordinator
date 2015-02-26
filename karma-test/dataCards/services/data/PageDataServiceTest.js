@@ -9,7 +9,7 @@
     var v1FakeRequestHandler;
     var fake4x4 = 'fake-data';
     var v0PageDataUrl = '/page_metadata/{0}.json'.format(fake4x4);
-    var v1PageDataUrl = '/metadata/v1/page/{0}'.format(fake4x4);
+    var v1PageDataUrl = '/metadata/v1/page/{0}.json'.format(fake4x4);
     // Note that we don't actually care much about the format of
     // the fakePageData. The tests that cover metadata migration
     // look at the urls to which requests are made, not the results.
@@ -56,13 +56,52 @@
         expect(function() { PageDataService.getPageMetadata(); }).to.throw();
       });
 
-      it('should access the correct page metadata', function(done) {
-        var response = PageDataService.getPageMetadata(fake4x4);
-        response.then(function(data) {
-          expect(data).to.eql(fakePageData);
-          done();
+      describe('getPageMetadata in phase 0', function() {
+
+        beforeEach(function() {
+          testHelpers.overrideMetadataMigrationPhase(0);
         });
-        $httpBackend.flush();
+
+        it('should access the correct page metadata', function(done) {
+          var response = PageDataService.getPageMetadata(fake4x4);
+          response.then(function(data) {
+            expect(data).to.eql(fakePageData);
+            done();
+          });
+          $httpBackend.flush();
+        });
+      });
+
+      describe('getPageMetadata in phase 1', function() {
+
+        beforeEach(function() {
+          testHelpers.overrideMetadataMigrationPhase(1);
+        });
+
+        it('should access the correct page metadata', function(done) {
+          var response = PageDataService.getPageMetadata(fake4x4);
+          response.then(function(data) {
+            expect(data).to.eql(fakePageData);
+            done();
+          });
+          $httpBackend.flush();
+        });
+      });
+
+      describe('getPageMetadata in phase 2', function() {
+
+        beforeEach(function() {
+          testHelpers.overrideMetadataMigrationPhase(2);
+        });
+
+        it('should access the correct page metadata', function(done) {
+          var response = PageDataService.getPageMetadata(fake4x4);
+          response.then(function(data) {
+            expect(data).to.eql(fakePageData);
+            done();
+          });
+          $httpBackend.flush();
+        });
       });
     });
 
@@ -125,7 +164,7 @@
         });
 
         it('should POST if no ID is provided', function() {
-          $httpBackend.expectPOST('/metadata/v1/page', { pageMetadata: JSON.stringify(fakePageData) }).respond(200, 'ok');
+          $httpBackend.expectPOST('/metadata/v1/page.json', { pageMetadata: JSON.stringify(fakePageData) }).respond(200, 'ok');
           PageDataService.save(fakePageData);
           $httpBackend.flush();
         });

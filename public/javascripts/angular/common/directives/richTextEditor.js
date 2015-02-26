@@ -262,7 +262,11 @@
 
       initCss(element);
 
-      $scope.observeDestroy(element).subscribe(function() {
+      $scope.observeDestroy(element).filter(function() {
+        // Mostly for unit tests - Guard against a race condition where the iframe doesn't load
+        // before we're done with the test.
+        return $scope.editor;
+      }).subscribe(function() {
         cleanupEvents($scope.editor);
       });
     }

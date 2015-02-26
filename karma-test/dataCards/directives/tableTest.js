@@ -192,6 +192,10 @@ describe('table directive', function() {
         immutableTable = createTableCard(true);
     });
 
+    afterEach(function() {
+      testHelpers.cleanUp();
+    });
+
     it('should create and load data', function() {
       expect(immutableTable.find('.row-block .cell').length).to.equal(columnCount * blockSize * 3);
       expect(immutableTable.find('.th').length).to.equal(columnCount);

@@ -14,7 +14,7 @@ describe('Download Service', function() {
   }));
 
   afterEach(function() {
-    fakeClock.reset();
+    testHelpers.cleanUp();
     fakeClock.restore();
   });
 

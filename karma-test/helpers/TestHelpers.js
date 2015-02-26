@@ -1,4 +1,48 @@
 (function() {
+
+  /**
+   * A function that cleans up known memory leaks in sinon.
+   */
+  var cleanUpSinonTimers = (function() {
+    // Monkey patch the invocation of fake timers, so we can get a reference to the fake clock, so
+    // we can properly reset it.
+    var oUseFakeTimers = sinon.useFakeTimers;
+    var fakeClock;
+    sinon.useFakeTimers = function() {
+      fakeClock = oUseFakeTimers.apply(this, arguments);
+      return fakeClock;
+    };
+
+    return function cleanUpSinonTimers() {
+      if (fakeClock) {
+        fakeClock.reset();
+        fakeClock.restore();
+        fakeClock = null;
+      }
+    };
+  })();
+
+  /**
+   * If a test does 'this.timeout(15000)', for some reason mocha will keep the entire function
+   * closure where it was called in memory, in its mock browser's list of deferred functions. So we
+   * have to clear it out.
+   */
+  var cleanUpTimeouts = inject(function($injector) {
+    var $browser = $injector.get('$browser');
+    if ($browser.deferredFns.length) {
+      $browser.defer.flush();
+    }
+  });
+
+  /**
+   * Cleans up known memory leaks.
+   */
+  function cleanUp() {
+    cleanUpSinonTimers();
+    cleanUpTimeouts();
+  }
+
+
   angular.module('test', []).factory('testHelpers', function($injector, $compile, $templateCache, $q) {
     var fireEvent = function(target, name, opts) {
       var evt = document.createEvent('HTMLEvents');
@@ -212,7 +256,8 @@
       mockDirective: mockDirective,
       normalizeColor: normalizeColor,
       waitForSatisfy: waitForSatisfy,
-      overrideMetadataMigrationPhase: overrideMetadataMigrationPhase
+      overrideMetadataMigrationPhase: overrideMetadataMigrationPhase,
+      cleanUp: cleanUp
     };
   });
 })();

@@ -147,14 +147,18 @@ class NewUxBootstrapController < ActionController::Base
     dataset_metadata[:defaultPage] = page_id
 
     # Send a request to phidippides to set the default page.
-    dataset_metadata_response = phidippides.update_dataset_metadata(dataset_metadata)
+    dataset_metadata_response = phidippides.update_dataset_metadata(
+      dataset_metadata,
+      :request_id => request_id,
+      :cookies => forwardable_session_cookies
+    )
 
     unless dataset_metadata_response[:status] == '200'
       Airbrake.notify(
         :error_class => "BootstrapUXFailure",
         :error_message => "Dataset #{params[:id].inspect} failed to return pages for bootstrapping.",
         :request => { :params => params },
-        :context => { :pages_response => pages_response }
+        :context => { :dataset_metadata_response => dataset_metadata_response }
       )
       Rails.logger.error(
         "Could not save new default page #{page_id.inspect} " \

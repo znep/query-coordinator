@@ -304,7 +304,7 @@
             var multiPolygon = "'MULTIPOLYGON((({0},{1},{2},{3},{0})))'".
               format(bottomLeft, topLeft, topRight, bottomRight);
 
-            var shapeFileUrl = '/resource/{0}.geojson?$select=*&$where=intersects(the_geom,{1})$limit=5000'.
+            var shapeFileUrl = '/resource/{0}.geojson?$select=*&$where=intersects(the_geom,{1})&$limit=5000'.
               format(shapeFileId, multiPolygon);
 
             var config = httpConfig.call(self, {

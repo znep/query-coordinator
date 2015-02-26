@@ -36,9 +36,9 @@
         var config = {
           data: { pageMetadata:  json },
           method: idIsDefined ? 'PUT' : 'POST',
-          dataType: 'json',
           url: idIsDefined ? '/metadata/v1/page/{0}'.format(id) : '/metadata/v1/page',
-          requester: this
+          requester: this,
+          dataType: 'json'
         };
 
       } else {

@@ -10,6 +10,9 @@
     var fake4x4 = 'fake-data';
     var v0PageDataUrl = '/page_metadata/{0}.json'.format(fake4x4);
     var v1PageDataUrl = '/metadata/v1/page/{0}'.format(fake4x4);
+    // Note that we don't actually care much about the format of
+    // the fakePageData. The tests that cover metadata migration
+    // look at the urls to which requests are made, not the results.
     var fakePageData = {
       description: 'test description',
       name: 'test name',

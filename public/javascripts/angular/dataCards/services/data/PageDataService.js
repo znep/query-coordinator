@@ -5,11 +5,24 @@
   function PageDataService(http, ServerConfig, Assert) {
 
     function fetch(id) {
-      var url = '/page_metadata/{0}.json'.format(id);
-      var config = {
-        cache: true,
-        requester: this
-      };
+
+      if (ServerConfig.metadataMigration.pageMetadata.shouldReadWriteFromNewEndpoint()) {
+
+        var url = '/metadata/v1/page/{0}.json'.format(id);
+        var config = {
+          cache: true,
+          requester: this
+        };
+
+      } else {
+
+        var url = '/page_metadata/{0}.json'.format(id);
+        var config = {
+          cache: true,
+          requester: this
+        };
+
+      }
 
       return http.get(url, config).
         then(function(response) {
@@ -36,9 +49,8 @@
         var config = {
           data: { pageMetadata:  json },
           method: idIsDefined ? 'PUT' : 'POST',
-          url: idIsDefined ? '/metadata/v1/page/{0}'.format(id) : '/metadata/v1/page',
-          requester: this,
-          dataType: 'json'
+          url: idIsDefined ? '/metadata/v1/page/{0}.json'.format(id) : '/metadata/v1/page.json',
+          requester: this
         };
 
       } else {

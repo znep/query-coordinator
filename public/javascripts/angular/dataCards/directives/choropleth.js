@@ -676,11 +676,11 @@
 
           }
 
-          var boundsArray = [ [maxLat, maxLng], [minLat, minLng] ];
           var minLng = 180;
           var maxLng = -180;
           var minLat = 90;
           var maxLat = -90;
+          var boundsArray = [ [maxLat, maxLng], [minLat, minLng] ];
           var coordinates;
 
           if (_.isDefined(geojsonData)) {
@@ -732,13 +732,22 @@
 
           }
 
-          map.fitBounds(L.latLngBounds([
-            boundsArray[1][0],
-            boundsArray[1][1]
-          ], [
-            boundsArray[0][0],
-            boundsArray[0][1]
-          ]));
+          // We need to explicitly pass an options object with
+          // animate set to false because (in some cases) Leaflet
+          // will default to an empty object if none is explicitly
+          // provided and then check the value of a non-existent
+          // animate property, causing a TypeError and halting
+          // execution.
+          map.fitBounds(
+            L.latLngBounds([
+              boundsArray[1][0],
+              boundsArray[1][1]
+            ], [
+              boundsArray[0][0],
+              boundsArray[0][1]
+            ]),
+            { animate: false }
+          );
 
         }
 

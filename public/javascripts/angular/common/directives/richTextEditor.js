@@ -251,22 +251,26 @@
 
       // Grab a reference to squire after it loads.
       iframe.on('load', function() {
-        $scope.editor = this.contentWindow.editor;
-        initEvents($scope.editor, element);
-        element.val(element.attr('value'));
-        $scope.editor.setHTML(element.val());
-        toolbar = new Toolbar(element.find('.toolbar'), attr, $scope.editor);
+        $scope.safeApply(_.bind(function() {
+          $scope.editor = this.contentWindow.editor;
+          initEvents($scope.editor, element);
+          element.val(element.attr('value'));
+          $scope.editor.setHTML(element.val());
+          toolbar = new Toolbar(element.find('.toolbar'), attr, $scope.editor);
+        }, this));
       });
 
       initIframe(element, iframe);
 
       initCss(element);
 
-      $scope.observeDestroy(element).filter(function() {
+      Rx.Observable.combineLatest(
+        $scope.observeDestroy(element),
         // Mostly for unit tests - Guard against a race condition where the iframe doesn't load
         // before we're done with the test.
-        return $scope.editor;
-      }).subscribe(function() {
+        $scope.observe('editor').filter(_.isPresent),
+        _.identity
+      ).subscribe(function() {
         cleanupEvents($scope.editor);
       });
     }

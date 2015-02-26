@@ -6,10 +6,10 @@
   var cleanUpSinonTimers = (function() {
     // Monkey patch the invocation of fake timers, so we can get a reference to the fake clock, so
     // we can properly reset it.
-    var oUseFakeTimers = sinon.useFakeTimers;
+    var originalUseFakeTimers = sinon.useFakeTimers;
     var fakeClock;
     sinon.useFakeTimers = function() {
-      fakeClock = oUseFakeTimers.apply(this, arguments);
+      fakeClock = originalUseFakeTimers.apply(this, arguments);
       return fakeClock;
     };
 

@@ -43,14 +43,24 @@ class PhidippidesDatasetsControllerTest < ActionController::TestCase
 
   test '(phase 0) create returns 401 unless logged in' do
     @controller.stubs(can_update_metadata?: false)
-    post :create
+    post :create, format: :json
     assert_response(401)
   end
 
-  test '(phase 0) create returns 406 unless format is JSON' do
+  test '(phase 0, 1 or 2) create returns 406 unless format is JSON' do
     @controller.stubs(can_update_metadata?: true)
-    @phidippides.stubs(issue_request: '')
-    post :create, id: 'four-four', datasetMetadata: mock_dataset_metadata.to_json
+    @phidippides.stubs(issue_request: { body: 'not json', status: 200 })
+
+    stub_feature_flags_with(:metadata_transition_phase, '0')
+    post :create, id: 'four-four', datasetMetadata: '', format: :text
+    assert_response(406)
+
+    stub_feature_flags_with(:metadata_transition_phase, '1')
+    post :create, id: 'four-four', datasetMetadata: '', format: :text
+    assert_response(406)
+
+    stub_feature_flags_with(:metadata_transition_phase, '2')
+    post :create, id: 'four-four', datasetMetadata: '', format: :text
     assert_response(406)
   end
 
@@ -82,6 +92,23 @@ class PhidippidesDatasetsControllerTest < ActionController::TestCase
     stub_feature_flags_with(:metadata_transition_phase, '2')
     post :create, datasetMetadata: mock_dataset_metadata.to_json, format: :json
     assert_response(400)
+  end
+
+  test '(phase 0, 1 or 2) update returns 406 unless format is JSON' do
+    @controller.stubs(can_update_metadata?: true)
+    @phidippides.stubs(issue_request: { body: 'not json', status: 200 })
+
+    stub_feature_flags_with(:metadata_transition_phase, '0')
+    post :update, id: 'four-four', datasetMetadata: '', format: :text
+    assert_response(406)
+
+    stub_feature_flags_with(:metadata_transition_phase, '1')
+    post :update, id: 'four-four', datasetMetadata: '', format: :text
+    assert_response(406)
+
+    stub_feature_flags_with(:metadata_transition_phase, '2')
+    post :update, id: 'four-four', datasetMetadata: '', format: :text
+    assert_response(406)
   end
 
   test 'update returns 401 unless has necessary rights' do

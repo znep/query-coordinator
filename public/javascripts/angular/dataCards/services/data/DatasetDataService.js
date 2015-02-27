@@ -8,7 +8,7 @@
       var url;
 
       if(ServerConfig.metadataMigration.datasetMetadata.shouldReadWriteFromNewEndpoint()) {
-        url = '/metadata/v1/dataset/{0}'.format(id);
+        url = '/metadata/v1/dataset/{0}.json'.format(id);
       } else {
         url = '/dataset_metadata/{0}.json'.format(id);
       }
@@ -75,7 +75,7 @@
 
       var url;
       if(ServerConfig.metadataMigration.datasetMetadata.shouldReadWriteFromNewEndpoint()) {
-        url = '/metadata/v1/dataset/{0}/pages'.format(datasetId);
+        url = '/metadata/v1/dataset/{0}/pages.json'.format(datasetId);
       } else {
         url = '/dataset_metadata/?id={0}&format=json'.format(datasetId);
       }

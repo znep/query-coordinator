@@ -18,6 +18,7 @@ class PhidippidesPagesController < ActionController::Base
   end
 
   def show
+    return render :nothing => true, :status => '406' unless request.format.to_s == 'application/json'
     return render :nothing => true, :status => '400' unless params[:id].present?
 
     begin
@@ -33,6 +34,14 @@ class PhidippidesPagesController < ActionController::Base
   end
 
   def create
+    if metadata_transition_phase_0? || metadata_transition_phase_1?
+      create_using_form_data
+    else
+      create_using_json_body
+    end
+  end
+
+  def create_using_form_data
     return render :nothing => true, :status => '406' unless request.format.to_s == 'application/json'
     return render :nothing => true, :status => '401' unless can_update_metadata?
     return render :nothing => true, :status => '405' unless request.post?
@@ -58,7 +67,42 @@ class PhidippidesPagesController < ActionController::Base
     end
   end
 
+  def create_using_json_body
+    return render :nothing => true, :status => '406' unless request.format.to_s == 'application/json'
+    return render :nothing => true, :status => '406' unless request.content_type.to_s == 'application/json'
+    return render :nothing => true, :status => '401' unless can_update_metadata?
+    return render :nothing => true, :status => '405' unless request.post?
+    return render :nothing => true, :status => '400' unless request.body.length > 0
+
+    begin
+      result = page_metadata_manager.create(
+        JSON.parse(request.body.read),
+        :request_id => request_id,
+        :cookies => forwardable_session_cookies
+      )
+      render :json => result[:body], :status => result[:status]
+    rescue Phidippides::ConnectionError
+      render :json => { :body => 'Phidippides connection error' }, :status => '500'
+    rescue Phidippides::NoDatasetIdException => error
+      render :json => { :body => "Error: #{error}" }, :status => '400'
+    rescue Phidippides::NewPageException => error
+      render :json => { :body => "Error: #{error}" }, :status => '500'
+    rescue Phidippides::PageIdException => error
+      render :json => { :body => "Error: #{error}" }, :status => '400'
+    rescue JSON::ParserError => error
+      render :json => { :body => "Invalid JSON payload. Error: #{error}" }, :status => '400'
+    end
+  end
+
   def update
+    if metadata_transition_phase_0? || metadata_transition_phase_1?
+      update_using_form_data
+    else
+      update_using_json_body
+    end
+  end
+
+  def update_using_form_data
     return render :nothing => true, :status => '406' unless request.format.to_s == 'application/json'
     return render :nothing => true, :status => '401' unless can_update_metadata?
     return render :nothing => true, :status => '405' unless request.put?
@@ -75,9 +119,35 @@ class PhidippidesPagesController < ActionController::Base
     rescue Phidippides::ConnectionError
       render :json => { :body => 'Phidippides connection error' }, :status => '500'
     rescue Phidippides::NoDatasetIdException => error
-      render :json => { :body => "Error: #{error}" }, :status => '500'
+      render :json => { :body => "Error: #{error}" }, :status => '400'
     rescue Phidippides::NoPageIdException => error
-      render :json => { :body => "Error: #{error}" }, :status => '500'
+      render :json => { :body => "Error: #{error}" }, :status => '400'
+    end
+  end
+
+  def update_using_json_body
+    return render :nothing => true, :status => '406' unless request.format.to_s == 'application/json'
+    return render :nothing => true, :status => '406' unless request.content_type.to_s == 'application/json'
+    return render :nothing => true, :status => '401' unless can_update_metadata?
+    return render :nothing => true, :status => '405' unless request.put?
+    return render :nothing => true, :status => '400' unless params[:id].present?
+    return render :nothing => true, :status => '400' unless request.body.length > 0
+
+    begin
+      result = page_metadata_manager.update(
+        JSON.parse(request.body.read),
+        :request_id => request_id,
+        :cookies => forwardable_session_cookies
+      )
+      render :json => result[:body], :status => result[:status]
+    rescue Phidippides::ConnectionError
+      render :json => { :body => 'Phidippides connection error' }, :status => '500'
+    rescue Phidippides::NoDatasetIdException => error
+      render :json => { :body => "Error: #{error}" }, :status => '400'
+    rescue Phidippides::NoPageIdException => error
+      render :json => { :body => "Error: #{error}" }, :status => '400'
+    rescue JSON::ParserError => error
+      render :json => { :body => "Invalid JSON payload. Error: #{error}" }, :status => '400'
     end
   end
 

@@ -47,7 +47,7 @@
       if (ServerConfig.metadataMigration.pageMetadata.shouldReadWriteFromNewEndpoint()) {
 
         var config = {
-          data: { pageMetadata:  json },
+          data: json,
           method: idIsDefined ? 'PUT' : 'POST',
           url: idIsDefined ? '/metadata/v1/page/{0}.json'.format(id) : '/metadata/v1/page.json',
           requester: this

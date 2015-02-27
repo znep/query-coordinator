@@ -12,7 +12,7 @@ describe('DatasetDataService', function() {
 
       var datasetMetadataUrl = phaseTestingUnder === 0 ?
         '/dataset_metadata/{0}.json'.format(fake4x4) :
-        '/metadata/v1/dataset/{0}'.format(fake4x4);
+        '/metadata/v1/dataset/{0}.json'.format(fake4x4);
 
       var fakeDatasetMetadataResponseV0 = {
         id: fake4x4,
@@ -149,7 +149,7 @@ describe('DatasetDataService', function() {
 
       var datasetPagesUrl = phaseTestingUnder === 0 ?
         '/dataset_metadata/?id={0}&format=json'.format(fake4x4) :
-        '/metadata/v1/dataset/{0}/pages'.format(fake4x4);
+        '/metadata/v1/dataset/{0}/pages.json'.format(fake4x4);
 
       var fakePagesForDatasetResponseV0 = {
         publisher: [

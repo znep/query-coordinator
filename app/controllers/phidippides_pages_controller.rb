@@ -18,6 +18,7 @@ class PhidippidesPagesController < ActionController::Base
   end
 
   def show
+    return render :nothing => true, :status => '406' unless request.format.to_s == 'application/json'
     return render :nothing => true, :status => '400' unless params[:id].present?
 
     begin

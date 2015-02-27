@@ -29518,7 +29518,8 @@ OpenLayers.Format.WFST.v1 = OpenLayers.Class(OpenLayers.Format.XML, {
         wfs: "http://www.opengis.net/wfs",
         gml: "http://www.opengis.net/gml",
         ogc: "http://www.opengis.net/ogc",
-        ows: "http://www.opengis.net/ows"
+        ows: "http://www.opengis.net/ows",
+        xmlns: "http://www.w3.org/2000/xmlns/"
     },
     
     /**
@@ -29809,7 +29810,10 @@ OpenLayers.Format.WFST.v1 = OpenLayers.Class(OpenLayers.Format.XML, {
                     }
                 });
                 if(this.featureNS) {
-                    node.setAttribute("xmlns:" + this.featurePrefix, this.featureNS);
+                    this.setAttributeNS(
+                        node, this.namespaces.xmlns,
+                        "xmlns:" + this.featurePrefix, this.featureNS
+                    );
                 }
                 
                 // add in geometry
@@ -29872,7 +29876,10 @@ OpenLayers.Format.WFST.v1 = OpenLayers.Class(OpenLayers.Format.XML, {
                     }
                 });
                 if(this.featureNS) {
-                    node.setAttribute("xmlns:" + this.featurePrefix, this.featureNS);
+                    this.setAttributeNS(
+                        node, this.namespaces.xmlns,
+                        "xmlns:" + this.featurePrefix, this.featureNS
+                    );
                 }
                 this.writeNode("ogc:Filter", new OpenLayers.Filter.FeatureId({
                     fids: [feature.fid]
@@ -30789,7 +30796,8 @@ OpenLayers.Format.WFST.v1_1_0 = OpenLayers.Class(
                     }
                 });
                 if(options.featureNS) {
-                    node.setAttribute("xmlns:" + prefix, options.featureNS);
+                    this.setAttributeNS(node, this.namespaces.xmlns,
+                        "xmlns:" + prefix, options.featureNS);
                 }
                 if(options.propertyNames) {
                     for(var i=0,len = options.propertyNames.length; i<len; i++) {
@@ -44943,7 +44951,8 @@ OpenLayers.Format.SOSGetObservation = OpenLayers.Class(OpenLayers.Format.XML, {
         om: "http://www.opengis.net/om/1.0",
         sa: "http://www.opengis.net/sampling/1.0",
         xlink: "http://www.w3.org/1999/xlink",
-        xsi: "http://www.w3.org/2001/XMLSchema-instance"
+        xsi: "http://www.w3.org/2001/XMLSchema-instance",
+        xmlns: "http://www.w3.org/2000/xmlns/"
     },
 
     /**
@@ -45014,8 +45023,14 @@ OpenLayers.Format.SOSGetObservation = OpenLayers.Class(OpenLayers.Format.XML, {
      */
     write: function(options) {
         var node = this.writeNode("sos:GetObservation", options);
-        node.setAttribute("xmlns:om", this.namespaces.om);
-        node.setAttribute("xmlns:ogc", this.namespaces.ogc);
+        this.setAttributeNS(
+            node, this.namespaces.xmlns,
+            "xmlns:om", this.namespaces.om
+        );
+        this.setAttributeNS(
+            node, this.namespaces.xmlns,
+            "xmlns:ogc", this.namespaces.ogc
+        );
         this.setAttributeNS(
             node, this.namespaces.xsi,
             "xsi:schemaLocation", this.schemaLocation
@@ -45653,7 +45668,10 @@ OpenLayers.Format.WFST.v1_0_0 = OpenLayers.Class(
                     node.setAttribute("srsName", options.srsName);
                 }
                 if(options.featureNS) {
-                    node.setAttribute("xmlns:" + prefix, options.featureNS);
+                    this.setAttributeNS(
+                        node, this.namespaces.xmlns,
+                        "xmlns:" + prefix, options.featureNS
+                    );
                 }
                 if(options.propertyNames) {
                     for(var i=0,len = options.propertyNames.length; i<len; i++) {
@@ -65860,7 +65878,8 @@ OpenLayers.Format.CSWGetRecords.v2_0_2 = OpenLayers.Class(OpenLayers.Format.XML,
         ogc: "http://www.opengis.net/ogc",
         ows: "http://www.opengis.net/ows",
         xlink: "http://www.w3.org/1999/xlink",
-        xsi: "http://www.w3.org/2001/XMLSchema-instance"
+        xsi: "http://www.w3.org/2001/XMLSchema-instance",
+        xmlns: "http://www.w3.org/2000/xmlns/"
     },
     
     /**
@@ -66133,6 +66152,10 @@ OpenLayers.Format.CSWGetRecords.v2_0_2 = OpenLayers.Class(OpenLayers.Format.XML,
      */
     write: function(options) {
         var node = this.writeNode("csw:GetRecords", options);
+        this.setAttributeNS(
+            node, this.namespaces.xmlns,
+            "xmlns:gmd", this.namespaces.gmd
+        );
         return OpenLayers.Format.XML.prototype.write.apply(this, [node]);
     },
 

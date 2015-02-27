@@ -125,6 +125,23 @@ describe("Model", function() {
     });
   });
 
+  describe('defineEphemeralObservableProperty', function() {
+    it('should reflect changes to property values', function() {
+      var model = new Model();
+      var seen = [];
+      model.defineEphemeralObservableProperty('myProp', 5);
+      model.observe('myProp').subscribe(function(d) {
+        seen.push(d);
+      });
+      expect(model.getCurrentValue('myProp')).to.equal(5);
+      expect(seen).to.deep.equal([5]);
+
+      model.set('myProp', 10);
+      expect(model.getCurrentValue('myProp')).to.equal(10);
+      expect(seen).to.deep.equal([5, 10]);
+    });
+  });
+
   describe('observePropertyWrites', function() {
     describe('on a read-only property', function() {
       it('should emit on values', function() {

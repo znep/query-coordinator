@@ -1134,11 +1134,11 @@ describe("A Choropleth Directive", function() {
                 expect(toNumber(largeTicks.eq(1).text())).to.be.closeTo(4.5, .5);
               });
 
-              it('creates a logarithmic scale for medium ranges > 0', function() {
+              it('creates a logarithmic scale for large ranges > 0', function() {
                 var featureCount = 10;
-                // Create a range that spans two orders of magnitude (eg goes to the hundreds), but
-                // not three (eg doesn't get to the thousands). Let's say.. 0 to 380ish
-                var values = _.map(_.range(0, featureCount * 38, 38), function(value, i) {
+                // Create a range that spans 3 orders of magnitude (eg goes to the hundreds), but
+                // not three (eg doesn't get to the thousands). Let's say.. 0 to 13880ish
+                var values = _.map(_.range(0, featureCount * 1388, 101), function(value, i) {
                   return { name: '' + i, value: value + 1 };
                 });
                 scope.geojsonAggregateData = aggregateDataForValues(values);
@@ -1150,26 +1150,6 @@ describe("A Choropleth Directive", function() {
                 expect(largeTicks.length).to.equal(3);
                 expect(values[Math.ceil(values.length / 2)].value).to.be.
                   greaterThan(toNumber(largeTicks.eq(1).text()));
-              });
-
-              it('creates a power scale for large ranges', function() {
-                var featureCount = 10;
-                // Create a range that spans three orders of magnitude (eg goes to the thousands).
-                // Let's say.. 0 to 1420ish
-                var values = _.map(_.range(0, featureCount * 142, 142), function(value, i) {
-                  return { name: '' + i, value: value };
-                });
-                scope.geojsonAggregateData = aggregateDataForValues(values);
-                el = createChoropleth(expanded, 'stops="continuous"');
-
-                var ticks = el.find('.continuous .tick');
-                expect(ticks.length).to.be.closeTo(5, 1);
-                var largeTicks = ticks.filter(':not(.small)');
-                expect(largeTicks.length).to.equal(3);
-                expect(values[Math.ceil(values.length / 4)].value).to.be.
-                  lessThan(toNumber(ticks.filter('.small').eq(0).text()));
-                expect(values[Math.ceil(values.length / 2)].value).to.be.
-                  lessThan(toNumber(largeTicks.eq(1).text()));
               });
             });
 
@@ -1189,10 +1169,10 @@ describe("A Choropleth Directive", function() {
                 expect(toNumber(largeTicks.eq(1).text())).to.be.closeTo(-4.5, .5);
               });
 
-              it('creates a logarithmic scale for medium ranges', function() {
+              it('creates a logarithmic scale for large ranges', function() {
                 var featureCount = 10;
-                // Create a range that spans two orders of magnitude.. say, -380ish to 0
-                var values = _.map(_.range(-featureCount * 38, 0, 38), function(value, i) {
+                // Create a range that spans 3 orders of magnitude.. say, -13880ish to 0
+                var values = _.map(_.range(-featureCount * 1388, 0, 101), function(value, i) {
                   return { name: '' + i, value: value };
                 });
                 scope.geojsonAggregateData = aggregateDataForValues(values);
@@ -1204,25 +1184,6 @@ describe("A Choropleth Directive", function() {
                 expect(largeTicks.length).to.equal(3);
                 expect(values[Math.floor(values.length / 2)].value).to.be.
                   lessThan(toNumber(largeTicks.eq(1).text()));
-              });
-
-              it('creates a power scale for large ranges', function() {
-                var featureCount = 10;
-                // Create a range that spans three orders of magnitude.. say, -1420ish to 0
-                var values = _.map(_.range(-featureCount * 142, 0, 142), function(value, i) {
-                  return { name: '' + i, value: value };
-                });
-                scope.geojsonAggregateData = aggregateDataForValues(values);
-                el = createChoropleth(expanded, 'stops="continuous"');
-
-                var ticks = el.find('.continuous .tick');
-                expect(ticks.length).to.be.closeTo(5, 1);
-                var largeTicks = ticks.filter(':not(.small)');
-                expect(largeTicks.length).to.equal(3);
-                expect(values[Math.floor(3 * values.length / 4)].value).to.be.
-                  greaterThan(toNumber(ticks.filter('.small').eq(0).text()));
-                expect(values[Math.floor(values.length / 2)].value).to.be.
-                  greaterThan(toNumber(largeTicks.eq(1).text()));
               });
             });
 

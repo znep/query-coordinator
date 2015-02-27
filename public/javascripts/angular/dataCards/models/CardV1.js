@@ -17,7 +17,10 @@ angular.module('dataCards.models').factory('CardV1', function(Model, Schemas, Fi
       this.uniqueId = id || _.uniqueId();
 
       _.each(_.keys(schemas.getSchemaDefinition(schemaVersion).properties), function(field) {
-        if (field === 'fieldName') return; // fieldName isn't observable.
+        if (field === 'fieldName') {
+          // fieldName isn't observable.
+          return;
+        }
         self.defineObservableProperty(field);
       });
 
@@ -52,7 +55,10 @@ angular.module('dataCards.models').factory('CardV1', function(Model, Schemas, Fi
 
     var instance = new CardV1(page, blob.fieldName, id);
     _.each(_.keys(schemas.getSchemaDefinition(schemaVersion).properties), function(field) {
-      if (field === 'fieldName') return; // fieldName isn't observable.
+      if (field === 'fieldName') {
+        // fieldName isn't observable.
+        return;
+      }
       if (field === 'activeFilters') {
         // activeFilters needs a bit more deserialization
         instance.set(field, _.map(blob[field], Filter.deserialize));

@@ -192,7 +192,7 @@ angular.module('dataCards.services').factory('SchemaDefinitions', function() {
         'properties': {
           'activeFilters': { 'type': 'array' },
           'baseLayerUrl': { 'type': 'string' },
-          'cardSize': { 'type': 'integer' , 'minimum': 1, 'maximum': 4 },
+          'cardSize': { 'type': 'integer' , 'minimum': 1, 'maximum': 3 },
           'cardType': { 'type': 'string' },
           'expanded': { 'type': 'boolean' },
           'fieldName': { 'type': 'string', 'minLength': 1 },

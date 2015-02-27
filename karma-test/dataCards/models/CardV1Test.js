@@ -33,11 +33,15 @@ describe('Card model', function() {
     expect(instance).to.be.instanceof(CardV1);
     expect(instance.page).to.be.instanceof(Page);
 
-    var out = {fieldName: blob.fieldName};
+    // Call observe() on all required properties, and record
+    // the values that come back in readBackProperties.
+    // Then compare readBackProperties to the input blob.
+    // They should be equal.
+    var readBackProperties = {fieldName: blob.fieldName};
     expect(instance.getCurrentValue('activeFilters')).to.deep.equal([
         new Filter.IsNullFilter(false)
       ]);
-    out['activeFilters'] = _.invoke(instance.getCurrentValue('activeFilters'), 'serialize');
+    readBackProperties['activeFilters'] = _.invoke(instance.getCurrentValue('activeFilters'), 'serialize');
 
     _.each(requiredKeys, function(field) {
       if (field === 'fieldName') { // fieldName isn't observable.
@@ -45,12 +49,12 @@ describe('Card model', function() {
       } else {
         expect(instance.observe(field)).to.exist;
         instance.observe(field).subscribe(function(v) { 
-          out[field] = v;
+          readBackProperties[field] = v;
         });
       }
     });
-    expect(out).to.deep.equal(blob);
-    expect(out).to.have.property('cardType').that.equals('column');
+    expect(readBackProperties).to.deep.equal(blob);
+    expect(readBackProperties).to.have.property('cardType').that.equals('column');
   }));
 
   // TODO this test and the associated product behavior is just to work around

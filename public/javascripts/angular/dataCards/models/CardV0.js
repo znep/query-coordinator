@@ -16,8 +16,14 @@ angular.module('dataCards.models').factory('CardV0', function($injector, ModelHe
       this.uniqueId = id || _.uniqueId();
 
       _.each(_.keys(schemas.getSchemaDefinition('0').properties), function(field) {
-        if (field === 'fieldName') return; // fieldName isn't observable.
-        if (field === 'cardType') return; // cardType needs a lazy default.
+        if (field === 'fieldName') {
+          // fieldName isn't observable.
+          return;
+        }
+        if (field === 'cardType') {
+          // cardType needs a lazy default.
+          return;
+        }
         self.defineObservableProperty(field);
       });
 
@@ -72,7 +78,10 @@ angular.module('dataCards.models').factory('CardV0', function($injector, ModelHe
 
     var instance = new CardV0(page, blob.fieldName, id);
     _.each(_.keys(schemas.getSchemaDefinition('0').properties), function(field) {
-      if (field === 'fieldName') return; // fieldName isn't observable.
+      if (field === 'fieldName') {
+        // fieldName isn't observable.
+        return;
+      }
       if (field === 'activeFilters') {
         // activeFilters needs a bit more deserialization
         instance.set(field, _.map(blob[field], Filter.deserialize));

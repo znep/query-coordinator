@@ -11,9 +11,7 @@ describe('<aggregation-chooser/>', function() {
   beforeEach(function() {
     module('/angular_templates/dataCards/aggregationChooser.html');
     module('socrataCommon.services');
-    module('dataCards.directives');
-    module('dataCards.services');
-    module('dataCards.models');
+    module('dataCards');
     module('test');
   });
 
@@ -26,9 +24,6 @@ describe('<aggregation-chooser/>', function() {
         getTimelineDomain: function() { return {then: _.noop}; }
       };
       $provide.value('CardDataService', mockCardDataService);
-
-      $provide.value('CardV0', _.noop);
-      $provide.value('CardV1', _.noop);
     });
   });
 

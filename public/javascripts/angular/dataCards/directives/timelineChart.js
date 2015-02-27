@@ -2102,7 +2102,7 @@
         // Dispose of WindowState windowStateSubscriptions, flyout registrations
         // and event handlers when the directive is destroyed.
         //
-        scope.$on('$destroy', function() {
+        scope.observeDestroy(element).subscribe(function() {
 
           mouseLeftButtonChangesSubscription.dispose();
           mouseMoveOrLeftButtonChangesSubscription.dispose();

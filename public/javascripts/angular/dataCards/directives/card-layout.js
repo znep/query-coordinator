@@ -16,7 +16,15 @@
     3: 200
   };
 
-  function initCardSelection(scope, CardTypeMapping, FlyoutService, DownloadService, $timeout) {
+  function initCardSelection(
+    scope,
+    CardTypeMapping,
+    FlyoutService,
+    DownloadService,
+    $timeout,
+    element
+  ) {
+
     scope.isPngExportable = CardTypeMapping.modelIsExportable;
 
     scope.getDownloadUrl = function(model) {
@@ -72,7 +80,7 @@
         '<div class="flyout-title">This visualization is not available' +
         '<br/>for image export</div>'
       ),
-      scope.eventToObservable('$destroy')
+      scope.observeDestroy(element)
     );
   }
 
@@ -458,7 +466,7 @@
           cardsMetadata.observeDimensions(),
           WindowState.windowSizeSubject,
           function() { return arguments; }
-        ).takeUntil(scope.eventToObservable('$destroy'));
+        ).takeUntil(scope.observeDestroy(cardContainer));
 
         // Figure out the sticky-ness of the QFB onscroll and un/stick appropriately
         subscriptions.push(observableForStaticElements.subscribe(function(args) {
@@ -819,7 +827,14 @@
           scope.$emit('customize-card-with-model', cardModel);
         };
 
-        initCardSelection(scope, CardTypeMapping, FlyoutService, DownloadService, $timeout);
+        initCardSelection(
+          scope,
+          CardTypeMapping,
+          FlyoutService,
+          DownloadService,
+          $timeout,
+          cardContainer
+        );
 
 
         /**
@@ -830,7 +845,7 @@
           function(el) {
             return '<div class="flyout-title">{0}</div>'.format($(el).attr('title'));
           },
-          scope.eventToObservable('$destroy')
+          scope.observeDestroy(cardContainer)
         );
 
         FlyoutService.register(
@@ -840,7 +855,7 @@
               return '<div class="flyout-title">All available cards are already on the page</div>';
             }
           },
-          scope.eventToObservable('$destroy')
+          scope.observeDestroy(cardContainer)
         );
 
         /******************
@@ -849,7 +864,7 @@
 
         scope.bindObservable('cardModels', scope.page.observe('cards'));
 
-        scope.$on('$destroy', function() {
+        scope.observeDestroy(cardContainer).subscribe(function() {
           _.invoke(subscriptions, 'dispose');
         });
 

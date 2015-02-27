@@ -57,6 +57,7 @@ describe('Analytics service', function() {
   });
 
   afterEach(function() {
+    fakeClock.reset();
     fakeClock.restore();
     fakeClock = undefined;
   });

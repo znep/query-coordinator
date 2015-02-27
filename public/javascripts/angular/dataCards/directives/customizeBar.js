@@ -18,7 +18,7 @@
       },
       restrict: 'E',
       templateUrl: '/angular_templates/dataCards/customizeBar.html',
-      link: function($scope) {
+      link: function($scope, element) {
         AngularRxExtensions.install($scope);
 
         $scope.toggleCustomizeMode = function() {
@@ -42,7 +42,7 @@
           else {
             return '<div class="flyout-title">Click to customize the layout or display of this view.</div>';
           }
-        }, $scope.eventToObservable('$destroy'));
+        }, $scope.observeDestroy(element));
 
       }
     };

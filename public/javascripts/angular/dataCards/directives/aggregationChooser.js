@@ -52,7 +52,7 @@
 
         // Observable of hovers over a aggregation-type selector
         var aggregationHoverObservable = WindowState.mousePositionSubject.
-          takeUntil($scope.eventToObservable('$destroy')).
+          takeUntil($scope.observeDestroy(element)).
           map(function(positionData) {
             return $(positionData.target).closest('[data-aggregation-type]');
           });
@@ -190,7 +190,7 @@
         /*
          * Panel toggling
          */
-        WindowState.closeDialogEventObservable.takeUntil($scope.eventToObservable('$destroy')).
+        WindowState.closeDialogEventObservable.takeUntil($scope.observeDestroy(element)).
           filter(function(e) {
             return e.type === 'keydown' || ($scope.panelActive && $(e.target).closest(element).length === 0);
           }).
@@ -208,7 +208,7 @@
           if ($(element).is('.disabled.no-count')) {
             return '<span class="flyout-cell">{0}</span>'.format('This column cannot be used with a<br>number of aggregate');
           }
-        }, $scope.eventToObservable('$destroy'), true);
+        }, $scope.observeDestroy(element), true);
 
         /*
          * Callback functions

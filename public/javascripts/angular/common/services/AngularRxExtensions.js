@@ -1,4 +1,4 @@
-angular.module('socrataCommon.services').factory('AngularRxExtensions', function() {
+angular.module('socrataCommon.services').factory('AngularRxExtensions', function(Assert) {
   var extensions = {
     // Execute the given function immediately if an angular digest-apply is
     // already in progress, otherwise starts a digest-apply cycle then executes
@@ -87,6 +87,33 @@ angular.module('socrataCommon.services').factory('AngularRxExtensions', function
       } else {
         return eventSubject.takeUntil(this.eventToObservable('$destroy'));
       }
+    },
+
+    /**
+     * Registers a callback to fire when either the scope or element fire the $destroy event.
+     *
+     * When you remove an element, it does not actually fire a $destroy event on the scope - just on
+     * the element. Unless of course, it's an ng-repeat, and an element is removed as a result of
+     * the repeated array changing. This isn't super intuitive, so just register callback for both.
+     *
+     * @see {http://stackoverflow.com/questions/14416894/provide-an-example-of-scopes-destroy-event}
+     *
+     * @param {jQuery|Element} element - The element associated with this scope.
+     * @return {Rx.Observable} an observable for both the scope's $destroy, and the element's
+     *   $destroy events.
+     */
+    observeDestroy: function observeDestroy(element) {
+      var elementScope = element.scope();
+      Assert(
+        // In angular, element.scope() actually returns the directive's parent's scope for isolate
+        // scopes, so check both the parent, or this.
+        elementScope === this.$parent || elementScope === this,
+        'element must be this scope\'s element.'
+      );
+      return Rx.Observable.merge(
+        this.eventToObservable('$destroy'),
+        Rx.Observable.fromEvent(element, '$destroy')
+      ).take(1);
     },
 
     emitEventsFromObservable: function emitEventsFromObservable(eventName, observable) {

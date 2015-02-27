@@ -93,7 +93,7 @@ angular.module('dataCards.directives').directive('multilineEllipsis', function($
           } else {
             return undefined;
           }
-        }, $scope.eventToObservable('$destroy'));
+        }, $scope.observeDestroy(element));
       }
 
       // We _could_ support maintaining the height animation if these are changed

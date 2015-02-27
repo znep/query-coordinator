@@ -54,17 +54,15 @@ describe('A Choropleth Card Visualization', function() {
     timeout = $injector.get('$timeout');
   }));
 
-  after(function(){
-    testHelpers.TestDom.clear();
-  });
-
   beforeEach(function() {
     fakeClock = sinon.useFakeTimers();
   });
 
   afterEach(function() {
+    testHelpers.cleanUp();
     fakeClock.restore();
     fakeClock = null;
+    testHelpers.TestDom.clear();
   });
 
   function createDatasetModelWithColumns(columns) {
@@ -144,8 +142,6 @@ describe('A Choropleth Card Visualization', function() {
     };
   }
 
-  var choropleth1 = null;
-  var choropleth2 = null;
   var rowDisplayUnit = 'crime';
 
   describe('when created', function() {
@@ -157,11 +153,8 @@ describe('A Choropleth Card Visualization', function() {
       var choropleth1Fired = false;
       var choropleth2Fired = false;
 
-      $('#choropleth-1').remove();
-      $('#choropleth-2').remove();
-
-      choropleth1 = createChoropleth('choropleth-1');
-      choropleth2 = createChoropleth('choropleth-2');
+      var choropleth1 = createChoropleth('choropleth-1');
+      var choropleth2 = createChoropleth('choropleth-2');
 
       choropleth1.scope.$on('toggle-dataset-filter:choropleth', function(event, feature, callback) {
         choropleth1Fired = true;
@@ -186,11 +179,8 @@ describe('A Choropleth Card Visualization', function() {
 
       this.timeout(15000);
 
-      $('#choropleth-1').remove();
-      $('#choropleth-2').remove();
-
-      choropleth1 = createChoropleth('choropleth-1');
-      choropleth2 = createChoropleth('choropleth-2');
+      var choropleth1 = createChoropleth('choropleth-1');
+      var choropleth2 = createChoropleth('choropleth-2');
 
       scope.$apply();
 
@@ -233,9 +223,6 @@ describe('A Choropleth Card Visualization', function() {
 
       serverConfig.override('enableBoundingBoxes', true);
 
-      $('#choropleth-1').remove();
-      $('#choropleth-2').remove();
-
       var testUndefinedColumns = true;
 
       expect(function() { createChoropleth('choropleth-1', '', testUndefinedColumns) }).to.not.throw();
@@ -246,9 +233,6 @@ describe('A Choropleth Card Visualization', function() {
 
       serverConfig.override('enableBoundingBoxes', false);
 
-      $('#choropleth-1').remove();
-      $('#choropleth-2').remove();
-
       var testUndefinedColumns = true;
 
       expect(function() { createChoropleth('choropleth-1', '', testUndefinedColumns) }).to.not.throw();
@@ -258,8 +242,6 @@ describe('A Choropleth Card Visualization', function() {
     it("should not fail to extract the shapeFile from the column's 'shapeFile' property if the metadataMigration is in phase 0", function() {
 
       testHelpers.overrideMetadataMigrationPhase('0');
-
-      $('#choropleth-1').remove();
 
       var columns = {
         "ward": {
@@ -283,8 +265,6 @@ describe('A Choropleth Card Visualization', function() {
 
       testHelpers.overrideMetadataMigrationPhase('0');
 
-      $('#choropleth-1').remove();
-
       var columns = {
         "ward": {
           "name": "Ward where crime was committed.",
@@ -301,8 +281,6 @@ describe('A Choropleth Card Visualization', function() {
     it("should not fail to extract the shapeFile from the column's 'computationStrategy' object if the metadataMigration is in phase 1 or 2", function() {
 
       testHelpers.overrideMetadataMigrationPhase('1');
-
-      $('#choropleth-1').remove();
 
       var columns = {
         "ward": {
@@ -329,8 +307,6 @@ describe('A Choropleth Card Visualization', function() {
 
       testHelpers.overrideMetadataMigrationPhase('2');
 
-      $('#choropleth-1').remove();
-
       expect(function() { createChoropleth('choropleth-1', '', false, createDatasetModelWithColumns(columns)) }).to.not.throw();
 
     });
@@ -338,8 +314,6 @@ describe('A Choropleth Card Visualization', function() {
     it("should fail to extract the shapeFile if the shapeFile property does not exist in the column's 'computationStrategy' object and the metadataMigration is in phase 1 or 2", function() {
 
       testHelpers.overrideMetadataMigrationPhase('1');
-
-      $('#choropleth-1').remove();
 
       var columns = {
         "ward": {
@@ -358,8 +332,6 @@ describe('A Choropleth Card Visualization', function() {
       expect(function() { createChoropleth('choropleth-1', '', false, createDatasetModelWithColumns(columns)) }).to.throw();
 
       testHelpers.overrideMetadataMigrationPhase('2');
-
-      $('#choropleth-1').remove();
 
       expect(function() { createChoropleth('choropleth-1', '', false, createDatasetModelWithColumns(columns)) }).to.throw();
 

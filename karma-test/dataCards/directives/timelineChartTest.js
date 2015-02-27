@@ -111,8 +111,6 @@ describe('timelineChart', function() {
 
     var html;
     var childScope;
-    var element;
-    var compiledElement;
 
     var chartId = $('#test-timeline-chart').length === 0 ? 'test-timeline-chart' : 'alternate-test-timeline-chart';
 

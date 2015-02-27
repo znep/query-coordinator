@@ -129,13 +129,13 @@
             return '<div class="flyout-title">Visualize this column as a {0}</div>'.format(visualizationName);
           }
 
-        }, scope.eventToObservable('$destroy'));
+        }, scope.observeDestroy(element));
 
         FlyoutService.register('warning-icon', function(el) {
 
           return '<div class="flyout-title">WARNING: Visualizing this column as a column chart will result in more than one hundred columns and may degrade performance</div>';
 
-        }, scope.eventToObservable('$destroy'));
+        }, scope.observeDestroy(element));
 
       }
     };

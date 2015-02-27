@@ -2,6 +2,7 @@ describe('Angular RX Extensions', function() {
   var _extensions, _$rootScope;
 
   beforeEach(module('socrataCommon.services'));
+  beforeEach(module('dataCards'));
   beforeEach(inject(function(AngularRxExtensions, $rootScope) {
     _extensions = AngularRxExtensions;
     _$rootScope = $rootScope;
@@ -198,5 +199,102 @@ describe('Angular RX Extensions', function() {
       expect(calls[1].event.targetScope).to.equal($scope);
       expect(calls[2].event.targetScope).to.equal($scope);
     });
+  });
+
+  describe('observeDestroy', function() {
+    before(function() {
+      angular.module('test').directive('observeDestroyTest', function(AngularRxExtensions, $compile) {
+        return {
+          restrict: 'E',
+          scope: {},
+          template: '<div></div>',
+          link: function($scope, element, attr) {
+            AngularRxExtensions.install($scope);
+            // Store it on the element to make sure we're running observe on the correct scope
+            element.data('scope', $scope);
+            if (attr.withChild) {
+              var child = $('<observe-destroy-test />');
+              element.append(child);
+              $compile(child)($scope);
+            }
+          }
+        };
+      });
+    });
+
+    var _testHelpers;
+
+    beforeEach(inject(function(testHelpers) {
+      _testHelpers = testHelpers;
+    }));
+    afterEach(function() {
+      _testHelpers.TestDom.clear();
+    });
+
+    it('emits on scope destroy event', function() {
+      var $scope = _$rootScope.$new(true);
+      var element = _testHelpers.TestDom.compileAndAppend('<observe-destroy-test />', $scope);
+      var destroyCount = 0;
+      element.data('scope').observeDestroy(element).subscribe(function() {
+        destroyCount++;
+      });
+      expect(destroyCount).to.equal(0);
+      element.data('scope').$destroy();
+      expect(destroyCount).to.equal(1);
+    });
+
+    it('emits on element destroy event', function() {
+      var $scope = _$rootScope.$new(true);
+      var element = _testHelpers.TestDom.compileAndAppend('<observe-destroy-test />', $scope);
+      var destroyCount = 0;
+      element.data('scope').observeDestroy(element).subscribe(function() {
+        destroyCount++;
+      });
+      expect(destroyCount).to.equal(0);
+      element.remove();
+      expect(destroyCount).to.equal(1);
+    });
+
+    it('emits only once', function() {
+      var $scope = _$rootScope.$new(true);
+      var element = _testHelpers.TestDom.compileAndAppend('<observe-destroy-test />', $scope);
+      var destroyCount = 0;
+      element.data('scope').observeDestroy(element).subscribe(function() {
+        destroyCount++;
+      });
+      expect(destroyCount).to.equal(0);
+      element.data('scope').$destroy();
+      element.remove();
+      expect(destroyCount).to.equal(1);
+    });
+
+    it('does not emit for child elements\' destroy events', inject(function($compile) {
+      var $scope = _$rootScope.$new(true);
+      var parent = _testHelpers.TestDom.compileAndAppend(
+        '<observe-destroy-test with-child=true />',
+        $scope
+      );
+      // Make sure there's a child
+      var child = parent.find('observe-destroy-test');
+      expect(child.length).to.equal(1);
+      expect(child.data('scope').$parent).to.equal(parent.data('scope'));
+
+      var destroyCount = 0;
+      parent.data('scope').observeDestroy(parent).subscribe(function() {
+        destroyCount++;
+      });
+      var childDestroyCount = 0;
+      child.data('scope').observeDestroy(child).subscribe(function() {
+        childDestroyCount++;
+      });
+      expect(childDestroyCount).to.equal(0);
+
+      var childScope = child.data('scope');
+      var parentScope = parent.data('scope');
+
+      child.remove();
+      expect(childDestroyCount).to.equal(1);
+      expect(destroyCount).to.equal(0);
+    }));
   });
 });

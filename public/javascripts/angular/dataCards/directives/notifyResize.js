@@ -15,10 +15,15 @@ angular.module('dataCards.directives').directive('notifyResize', function(Angula
       if (_.isEmpty(eventName)) {
         throw new Error('Expected a non-blank event name');
       }
-      element.resize(function() {
+      var onElementResize = function() {
         $scope.safeApply(function() {
           $scope.$broadcast(eventName, element.dimensions());
         });
+      };
+      element.resize(onElementResize);
+
+      $scope.observeDestroy(element).subscribe(function() {
+        element.removeResize(onElementResize);
       });
     }
   }

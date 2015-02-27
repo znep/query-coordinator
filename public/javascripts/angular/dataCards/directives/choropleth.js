@@ -997,7 +997,7 @@
           }
 
         },
-        scope.eventToObservable('$destroy'),
+        scope.observeDestroy(element),
         // The second-to-last argument specifies whether the flyout should follow
         // the cursor (true) or be fixed to the target element (false).
         true,
@@ -1145,6 +1145,11 @@
               });
             }
           });
+
+        scope.observeDestroy(element).subscribe(function() {
+          // Leaflet needs to be told to clean up after itself.
+          map.remove();
+        });
       }
     }
   }

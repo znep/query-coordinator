@@ -160,7 +160,9 @@
   /**
    * A <rich-text-editor /> is meant to replace a <textarea />, and provide limited html formatting.
    */
-  angular.module('socrataCommon.directives').directive('richTextEditor', function() {
+  angular.module('socrataCommon.directives').directive('richTextEditor', function(
+    AngularRxExtensions
+  ) {
     var toolbar;
     /**
      * We need to update the value on both the 'input' event and the 'blur' event, because squire
@@ -243,22 +245,32 @@
     }
 
     function init($scope, element, attr) {
+      AngularRxExtensions.install($scope);
+
       var iframe = element.find('iframe');
 
       // Grab a reference to squire after it loads.
       iframe.on('load', function() {
-        $scope.editor = this.contentWindow.editor;
-        initEvents($scope.editor, element);
-        element.val(element.attr('value'));
-        $scope.editor.setHTML(element.val());
-        toolbar = new Toolbar(element.find('.toolbar'), attr, $scope.editor);
+        $scope.safeApply(_.bind(function() {
+          $scope.editor = this.contentWindow.editor;
+          initEvents($scope.editor, element);
+          element.val(element.attr('value'));
+          $scope.editor.setHTML(element.val());
+          toolbar = new Toolbar(element.find('.toolbar'), attr, $scope.editor);
+        }, this));
       });
 
       initIframe(element, iframe);
 
       initCss(element);
 
-      $scope.$on('$destroy', function() {
+      Rx.Observable.combineLatest(
+        $scope.observeDestroy(element),
+        // Mostly for unit tests - Guard against a race condition where the iframe doesn't load
+        // before we're done with the test.
+        $scope.observe('editor').filter(_.isPresent),
+        _.identity
+      ).subscribe(function() {
         cleanupEvents($scope.editor);
       });
     }

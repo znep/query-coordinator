@@ -21,7 +21,7 @@ class PhidippidesPagesControllerTest < ActionController::TestCase
         body: v0_page_metadata
       }
     )
-    get :show, pageId: 'four-four', format: 'json'
+    get :show, id: 'four-four', format: 'json'
     assert_response(:success)
     assert_equal([], JSON.parse(@response.body).keys - %w(pageId datasetId name description primaryAmountField primaryAggregation filterSoql isDefaultPage pageSource cards))
   end
@@ -112,15 +112,15 @@ class PhidippidesPagesControllerTest < ActionController::TestCase
     @controller.stubs(can_update_metadata?: false)
 
     stub_feature_flags_with(:metadata_transition_phase, '0')
-    put :update, pageId: 'four-four', format: :text
+    put :update, id: 'four-four', format: :text
     assert_response(406)
 
     stub_feature_flags_with(:metadata_transition_phase, '1')
-    put :update, pageId: 'four-four', format: :text
+    put :update, id: 'four-four', format: :text
     assert_response(406)
 
     stub_feature_flags_with(:metadata_transition_phase, '2')
-    put :update, pageId: 'four-four', format: :text
+    put :update, id: 'four-four', format: :text
     assert_response(406)
   end
 
@@ -128,15 +128,15 @@ class PhidippidesPagesControllerTest < ActionController::TestCase
     @controller.stubs(can_update_metadata?: false)
 
     stub_feature_flags_with(:metadata_transition_phase, '0')
-    put :update, pageId: 'four-four', format: :json
+    put :update, id: 'four-four', format: :json
     assert_response(401)
 
     stub_feature_flags_with(:metadata_transition_phase, '1')
-    put :update, pageId: 'four-four', format: :json
+    put :update, id: 'four-four', format: :json
     assert_response(401)
 
     stub_feature_flags_with(:metadata_transition_phase, '2')
-    put :update, pageId: 'four-four', format: :json
+    put :update, id: 'four-four', format: :json
     assert_response(401)
   end
 
@@ -144,27 +144,27 @@ class PhidippidesPagesControllerTest < ActionController::TestCase
     @controller.stubs(can_update_metadata?: true)
 
     stub_feature_flags_with(:metadata_transition_phase, '0')
-    get :update, pageId: 'four-four', format: :json
+    get :update, id: 'four-four', format: :json
     assert_response(405)
-    post :update, pageId: 'four-four', format: :json
+    post :update, id: 'four-four', format: :json
     assert_response(405)
-    delete :update, pageId: 'four-four', format: :json
+    delete :update, id: 'four-four', format: :json
     assert_response(405)
 
     stub_feature_flags_with(:metadata_transition_phase, '1')
-    get :update, pageId: 'four-four', format: :json
+    get :update, id: 'four-four', format: :json
     assert_response(405)
-    post :update, pageId: 'four-four', format: :json
+    post :update, id: 'four-four', format: :json
     assert_response(405)
-    delete :update, pageId: 'four-four', format: :json
+    delete :update, id: 'four-four', format: :json
     assert_response(405)
 
     stub_feature_flags_with(:metadata_transition_phase, '2')
-    get :update, pageId: 'four-four', format: :json
+    get :update, id: 'four-four', format: :json
     assert_response(405)
-    post :update, pageId: 'four-four', format: :json
+    post :update, id: 'four-four', format: :json
     assert_response(405)
-    delete :update, pageId: 'four-four', format: :json
+    delete :update, id: 'four-four', format: :json
     assert_response(405)
   end
 
@@ -172,15 +172,15 @@ class PhidippidesPagesControllerTest < ActionController::TestCase
     @controller.stubs(can_update_metadata?: true)
 
     stub_feature_flags_with(:metadata_transition_phase, '0')
-    put :update, pageId: 'four-four', format: :json
+    put :update, id: 'four-four', format: :json
     assert_response(400)
 
     stub_feature_flags_with(:metadata_transition_phase, '1')
-    put :update, pageId: 'four-four', format: :json
+    put :update, id: 'four-four', format: :json
     assert_response(400)
 
     stub_feature_flags_with(:metadata_transition_phase, '2')
-    put :update, pageId: 'four-four', format: :json
+    put :update, id: 'four-four', format: :json
     assert_response(400)
   end
 
@@ -189,26 +189,26 @@ class PhidippidesPagesControllerTest < ActionController::TestCase
     PageMetadataManager.any_instance.stubs(update: { body: v0_page_metadata, status: '200' })
 
     stub_feature_flags_with(:metadata_transition_phase, '0')
-    put :update, pageId: 'four-four', pageMetadata: v0_page_metadata, format: :json
+    put :update, id: 'four-four', pageMetadata: v0_page_metadata, format: :json
     assert_response(200)
 
     stub_feature_flags_with(:metadata_transition_phase, '1')
-    put :update, pageId: 'four-four', pageMetadata: v0_page_metadata, format: :json
+    put :update, id: 'four-four', pageMetadata: v0_page_metadata, format: :json
     assert_response(200)
 
     PageMetadataManager.any_instance.stubs(update: { body: nil, status: '200' })
     stub_feature_flags_with(:metadata_transition_phase, '2')
-    put :update, pageId: 'four-four', pageMetadata: v1_page_metadata, format: :json
+    put :update, id: 'four-four', pageMetadata: v1_page_metadata, format: :json
     assert_response(200)
   end
 
   test '(phase 0, 1 or 2) delete returns 403' do
     stub_feature_flags_with(:metadata_transition_phase, '0')
-    delete :destroy, pageId: 'four-four'
+    delete :destroy, id: 'four-four'
     assert_response(403)
 
     stub_feature_flags_with(:metadata_transition_phase, '1')
-    delete :destroy, pageId: 'four-four'
+    delete :destroy, id: 'four-four'
     assert_response(403)
   end
 
@@ -218,7 +218,7 @@ class PhidippidesPagesControllerTest < ActionController::TestCase
   # test '(phase 2) delete returns 401 for unauthorized users' do
   #   @controller.stubs(can_update_metadata?: false)
   #   stub_feature_flags_with(:metadata_transition_phase, '2')
-  #   delete :destroy, pageId: 'four-four'
+  #   delete :destroy, id: 'four-four'
   #   assert_response(401)
   # end
 
@@ -226,11 +226,11 @@ class PhidippidesPagesControllerTest < ActionController::TestCase
   #   @controller.stubs(can_update_metadata?: true)
 
   #   stub_feature_flags_with(:metadata_transition_phase, '2')
-  #   get :destroy, pageId: 'four-four', format: :json
+  #   get :destroy, id: 'four-four', format: :json
   #   assert_response(405)
-  #   post :destroy, pageId: 'four-four', format: :json
+  #   post :destroy, id: 'four-four', format: :json
   #   assert_response(405)
-  #   put :destroy, pageId: 'four-four', format: :json
+  #   put :destroy, id: 'four-four', format: :json
   #   assert_response(405)
   # end
 
@@ -238,7 +238,7 @@ class PhidippidesPagesControllerTest < ActionController::TestCase
   #   @controller.stubs(can_update_metadata?: true)
   #   Phidippides.any_instance.stubs(delete_page_metadata: { body: nil, status: '200' })
   #   stub_feature_flags_with(:metadata_transition_phase, '2')
-  #   delete :destroy, pageId: 'four-four'
+  #   delete :destroy, id: 'four-four'
   #   assert_response(200)
   # end
 

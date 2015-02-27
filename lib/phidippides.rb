@@ -148,7 +148,7 @@ class Phidippides < SocrataHttp
       raise ArgumentError.new('pageId is required') unless json.key?('pageId')
 
       issue_request(
-        :verb => :post,
+        :verb => :put,
         :path => "v1/id/#{json['datasetId']}/pages/#{json['pageId']}",
         :data => json,
         :request_id => options[:request_id],

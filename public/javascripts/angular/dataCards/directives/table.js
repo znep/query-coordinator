@@ -530,7 +530,21 @@
             interact: true,
 
             title: function($target, $head, options) {
-              return _.escape($target.text());
+              var title = $target.text();
+              var index = $target.data('index');
+              if (index) { // Should always exist since it's set in ng-repeat, but hey. safe > sorry
+                var columnDetail = scope.columnDetails[index];
+                if (columnDetail) { // ditto - scope.columnDetails mirrors scope.headers
+                  var description = columnDetail.description;
+                  if (description) { // we may not have a description, so check.
+                    return '<div class="title">{0}</div><div class="description">{1}</div>'.format(
+                      _.escape(title),
+                      description
+                    );
+                  }
+                }
+              }
+              return _.escape(title);
             },
 
             html: function($target, $head, options, $element) {

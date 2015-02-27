@@ -34,6 +34,7 @@
     },
     {
       "name": "Date",
+      "description": "the oblong edible fruit of a palm",
       "fieldName": "date",
       "physicalDatatype": "timestamp",
       "fred": "time",
@@ -50,6 +51,7 @@
     },
     {
       "name": "Description",
+      "description": "describe enscribe proscribe prescribe",
       "fieldName": "description",
       "physicalDatatype": "text",
       "fred": "text",

@@ -184,6 +184,22 @@ angular.module('dataCards.services').factory('SchemaDefinitions', function() {
         'required': ['fieldName', 'cardSize', 'cardCustomStyle', 'expandedCustomStyle', 'displayMode', 'expanded']
       }
     );
+
+    cardMetadataSchemas.addSchemaWithVersion(
+      '1',
+      {
+        'type': 'object',
+        'properties': {
+          'activeFilters': { 'type': 'array' },
+          'baseLayerUrl': { 'type': 'string' },
+          'cardSize': { 'type': 'integer' , 'minimum': 1, 'maximum': 4 },
+          'cardType': { 'type': 'string' },
+          'expanded': { 'type': 'boolean' },
+          'fieldName': { 'type': 'string', 'minLength': 1 },
+        },
+        'required': ['fieldName', 'cardSize', 'cardType', 'expanded']
+      }
+    );
   }
 
   return {

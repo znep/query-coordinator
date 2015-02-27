@@ -10,6 +10,7 @@ angular.module('dataCards.models').factory('CardV0', function($injector, ModelHe
       if(!_.isString(fieldName) || _.isEmpty(fieldName)) { throw new Error('CardV0 models must have a non-empty field name.'); }
 
       var self = this;
+      this.version = '0';
       this.page = parentPageModel;
       this.fieldName = fieldName;
       this.uniqueId = id || _.uniqueId();

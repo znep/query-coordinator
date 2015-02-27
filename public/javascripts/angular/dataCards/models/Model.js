@@ -151,7 +151,7 @@ angular.module('dataCards.models').factory('Model', function(Class, ModelHelper)
     observe: function(propertyName) {
       function deepGet(node, props) {
         function isTraversible(thing) {
-          return (typeof(thing) !== 'undefined') && (thing !== null);
+          return !_.isUndefined(thing) && (thing !== null);
         }
         if (props.length === 0) { return node; }
 

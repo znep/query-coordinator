@@ -419,16 +419,37 @@ describe('table directive', function() {
 
         it('should be correct for numbers', function() {
           immutableTable.find('.th').eq(idColumnIndex).trigger('mouseenter');
+
+          // Verify the title is there, and not a description
+          var element = $('.flyout .flyout-title');
+          expect($.trim(element.text())).to.equal('Id');
+
           expect($('.flyout a').text()).to.equal('Click to sort largest first');
         });
 
         it('should be correct for text', function() {
           immutableTable.find('.th').eq(descriptionColumnIndex).trigger('mouseenter');
+
+          // Verify the title and description are there
+          var element = $('.flyout .flyout-title');
+          var title = element.children().eq(0).text();
+          var description = element.children().eq(1).html();
+          expect($.trim(title)).to.equal('Description');
+          expect($.trim(description)).to.equal('describe enscribe proscribe prescribe');
+
           expect($('.flyout a').text()).to.equal('Click to sort A-Z');
         });
 
         it('should be correct for dates', function() {
           immutableTable.find('.th').eq(dateColumnIndex).trigger('mouseenter');
+
+          // Verify the title and description are there
+          var element = $('.flyout .flyout-title');
+          var title = element.children().eq(0).text();
+          var description = element.children().eq(1).html();
+          expect($.trim(title)).to.equal('Date');
+          expect($.trim(description)).to.equal('the oblong edible fruit of a palm');
+
           expect($('.flyout a').text()).to.equal('Click to sort newest first');
         });
 

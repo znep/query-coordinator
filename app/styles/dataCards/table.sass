@@ -61,6 +61,7 @@ $border-radius: 4px
             border: none
             margin-right: 1px
 
+      $cell-horiz-padding: 10px
       .table-head
         display: inline-block
         position: relative
@@ -95,6 +96,7 @@ $border-radius: 4px
               content: '▲'
 
           .resize
+            top: 0
             right: 0
 
           &.sortable
@@ -104,6 +106,22 @@ $border-radius: 4px
 
             .caret
               color: $table-head-color
+
+          .content
+            // Fill up the entire space, so we can have a hover effect on this, but not on other
+            // elements in this container
+            // display:block is necessary for IE9 to width:100% - inline-block doesn't cut it.
+            display: block
+            box-sizing: border-box
+            // Take on the job of providing the padding. This is necessary because the th width is
+            // set in the javascript once the column width is determined, and the code assumes the
+            // th and cell padding stuff are sized the same. We should eventually fix this so it's
+            // not so brittle.
+            margin: 0 #{-$cell-horiz-padding}
+            padding: inherit
+
+            &:hover
+              background-color: rgba(255, 255, 255, .1)
 
       .th, .cell
         font-weight: normal
@@ -116,7 +134,7 @@ $border-radius: 4px
         text-align: left
         vertical-align: top
         display: inline-block
-        padding: 0 10px
+        padding: 0 $cell-horiz-padding
         border-right: 1px
 
         &.number
@@ -150,4 +168,3 @@ $border-radius: 4px
       line-height: 0
       width: 100%
       pointer-events: none
-

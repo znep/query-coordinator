@@ -18,11 +18,11 @@ class PhidippidesPagesController < ActionController::Base
   end
 
   def show
-    return render :nothing => true, :status => '400' unless params[:pageId].present?
+    return render :nothing => true, :status => '400' unless params[:id].present?
 
     begin
       result = phidippides.fetch_page_metadata(
-        params[:pageId],
+        params[:id],
         :request_id => request_id,
         :cookies => forwardable_session_cookies
       )
@@ -62,7 +62,7 @@ class PhidippidesPagesController < ActionController::Base
     return render :nothing => true, :status => '406' unless request.format.to_s == 'application/json'
     return render :nothing => true, :status => '401' unless can_update_metadata?
     return render :nothing => true, :status => '405' unless request.put?
-    return render :nothing => true, :status => '400' unless params[:pageId].present?
+    return render :nothing => true, :status => '400' unless params[:id].present?
     return render :nothing => true, :status => '400' unless params[:pageMetadata].present?
 
     begin
@@ -89,11 +89,11 @@ class PhidippidesPagesController < ActionController::Base
     return render :nothing => true, :status => '403' unless metadata_transition_phase_2?
     return render :nothing => true, :status => '401' unless can_update_metadata?
     return render :nothing => true, :status => '405' unless request.delete?
-    return render :nothing => true, :status => '400' unless params[:pageId].present?
+    return render :nothing => true, :status => '400' unless params[:id].present?
 
     begin
       result = phidippides.delete_page_metadata(
-        params[:pageId],
+        params[:id],
         :request_id => request_id,
         :cookies => forwardable_session_cookies
       )

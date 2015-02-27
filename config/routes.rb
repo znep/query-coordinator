@@ -422,10 +422,10 @@ Frontend::Application.routes do
 
     # V1 page metadata endpoints
     scope :controller => 'phidippides_pages' do
-      match '/metadata/v1/page/:pageId', :to => 'phidippides_pages#show', :via => [:get], :constraints => { :pageId => UID_REGEXP }
+      match '/metadata/v1/page/:id', :to => 'phidippides_pages#show', :via => [:get], :constraints => { :id => UID_REGEXP }
       match '/metadata/v1/page', :to => 'phidippides_pages#create', :via => [:post]
-      match '/metadata/v1/page/:pageId', :to => 'phidippides_pages#update', :via => [:put], :constraints => { :pageId => UID_REGEXP }
-      match '/metadata/v1/page/:pageId', :to => 'phidippides_pages#destroy', :via => [:delete], :constraints => { :pageId => UID_REGEXP }
+      match '/metadata/v1/page/:id', :to => 'phidippides_pages#update', :via => [:put], :constraints => { :id => UID_REGEXP }
+      match '/metadata/v1/page/:id', :to => 'phidippides_pages#destroy', :via => [:delete], :constraints => { :id => UID_REGEXP }
     end
 
     # Custom pages, catalogs, facets

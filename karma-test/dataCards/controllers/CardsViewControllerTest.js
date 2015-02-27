@@ -131,11 +131,11 @@ describe('CardsViewController', function() {
   });
 
   beforeEach(inject([
-    '$q', 'Card', 'Page', 'DatasetV0', '$rootScope', '$controller', '$window', 'testHelpers',
+    '$q', 'CardV0', 'Page', 'DatasetV0', '$rootScope', '$controller', '$window', 'testHelpers',
     'serverMocks', '$httpBackend', 'ServerConfig',
-    function(_$q, _Card, _Page, _DatasetV0, _$rootScope, _$controller, _$window, _testHelpers,
+    function(_$q, _CardV0, _Page, _DatasetV0, _$rootScope, _$controller, _$window, _testHelpers,
              _serverMocks, _$httpBackend, _ServerConfig) {
-      Card = _Card;
+      CardV0 = _CardV0;
       Page = _Page;
       DatasetV0 = _DatasetV0;
       $q = _$q;
@@ -753,7 +753,7 @@ describe('CardsViewController', function() {
         'fieldName': 'nonCustomizableFieldName'
       };
 
-      cardModel = Card.deserialize($scope.page, serializedCard);
+      cardModel = CardV0.deserialize($scope.page, serializedCard);
 
       $rootScope.$broadcast('customize-card-with-model', cardModel);
 
@@ -793,7 +793,7 @@ describe('CardsViewController', function() {
         'fieldName': 'customizableFieldName'
       };
 
-      cardModel = Card.deserialize($scope.page, serializedCard);
+      cardModel = CardV0.deserialize($scope.page, serializedCard);
 
       $rootScope.$broadcast('customize-card-with-model', cardModel);
 
@@ -873,9 +873,6 @@ describe('CardsViewController', function() {
   });
 
   describe('download button', function() {
-    beforeEach(function() {
-    });
-
     afterEach(function() {
       testHelpers.TestDom.clear();
     });

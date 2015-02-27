@@ -4,7 +4,7 @@ describe('CardLayout directive', function() {
   var NUM_CARDS = 10;
 
   var AngularRxExtensions;
-  var Card;
+  var CardV0;
   var mockWindowStateService = null;
   var mockDownloadService;
   var Model;
@@ -77,7 +77,7 @@ describe('CardLayout directive', function() {
     testHelpers = $injector.get('testHelpers');
     rootScope = $injector.get('$rootScope');
     Model = $injector.get('Model');
-    Card = $injector.get('Card');
+    CardV0 = $injector.get('CardV0');
     Page = $injector.get('Page');
     AngularRxExtensions = $injector.get('AngularRxExtensions');
     $q = $injector.get('$q');
@@ -254,7 +254,7 @@ describe('CardLayout directive', function() {
 
     var cardGenerator = function(pageModel) {
       return _.map(cards, function(card, i) {
-        var c = new Card(pageModel, card.fieldName || 'fieldname' + i);
+        var c = new CardV0(pageModel, card.fieldName || 'fieldname' + i);
         c.set('expanded', !!card.expanded);
         // Add required fields so this will validate
         c.set('cardSize', 1);
@@ -297,13 +297,13 @@ describe('CardLayout directive', function() {
 
       var cl = createCardLayout();
 
-      var card1 = new Card(cl.pageModel, 'testField1');
-      var card2 = new Card(cl.pageModel, 'testField2');
-      var card3 = new Card(cl.pageModel, 'testField3');
+      var card1 = new CardV0(cl.pageModel, 'testField1');
+      var card2 = new CardV0(cl.pageModel, 'testField2');
+      var card3 = new CardV0(cl.pageModel, 'testField3');
       // Note that the data card (fieldName === '*') is required for layout to happen.
       // If we do not include it in the cardModels, the layout function will terminate
       // early and the tests will fail.
-      var card4 = new Card(cl.pageModel, '*');
+      var card4 = new CardV0(cl.pageModel, '*');
       var cards = [ card1, card2, card3, card4 ];
 
       card1.set('cardSize', 1);
@@ -341,13 +341,13 @@ describe('CardLayout directive', function() {
 
       var cl = createCardLayout();
 
-      var card1 = new Card(cl.pageModel, 'testField1');
-      var card2 = new Card(cl.pageModel, 'testField2');
-      var card3 = new Card(cl.pageModel, 'testField3');
+      var card1 = new CardV0(cl.pageModel, 'testField1');
+      var card2 = new CardV0(cl.pageModel, 'testField2');
+      var card3 = new CardV0(cl.pageModel, 'testField3');
       // Note that the data card (fieldName === '*') is required for layout to happen.
       // If we do not include it in the cardModels, the layout function will terminate
       // early and the tests will fail.
-      var card4 = new Card(cl.pageModel, '*');
+      var card4 = new CardV0(cl.pageModel, '*');
       var cards = [ card1, card2, card3, card4 ];
 
       card1.set('cardSize', 1);
@@ -388,13 +388,13 @@ describe('CardLayout directive', function() {
 
       var cl = createCardLayout();
 
-      var card1 = new Card(cl.pageModel, 'testField1');
-      var card2 = new Card(cl.pageModel, 'testField2');
-      var card3 = new Card(cl.pageModel, 'testField3');
+      var card1 = new CardV0(cl.pageModel, 'testField1');
+      var card2 = new CardV0(cl.pageModel, 'testField2');
+      var card3 = new CardV0(cl.pageModel, 'testField3');
       // Note that the data card (fieldName === '*') is required for layout to happen.
       // If we do not include it in the cardModels, the layout function will terminate
       // early and the tests will fail.
-      var card4 = new Card(cl.pageModel, '*');
+      var card4 = new CardV0(cl.pageModel, '*');
       var cards = [ card1, card2, card3, card4 ];
 
       card1.set('cardSize', 1);
@@ -418,13 +418,13 @@ describe('CardLayout directive', function() {
 
       var cl = createCardLayout();
 
-      var card1 = new Card(cl.pageModel, 'testField1');
-      var card2 = new Card(cl.pageModel, 'testField2');
-      var card3 = new Card(cl.pageModel, 'testField3');
+      var card1 = new CardV0(cl.pageModel, 'testField1');
+      var card2 = new CardV0(cl.pageModel, 'testField2');
+      var card3 = new CardV0(cl.pageModel, 'testField3');
       // Note that the data card (fieldName === '*') is required for layout to happen.
       // If we do not include it in the cardModels, the layout function will terminate
       // early and the tests will fail.
-      var card4 = new Card(cl.pageModel, '*');
+      var card4 = new CardV0(cl.pageModel, '*');
       var cards = [ card1, card2, card3, card4 ];
 
       card1.set('cardSize', 1);
@@ -448,13 +448,13 @@ describe('CardLayout directive', function() {
     it('should display a flyout when hovering on a delete card button', function() {
       var cl = createCardLayout();
 
-      var card1 = new Card(cl.pageModel, 'testField1');
-      var card2 = new Card(cl.pageModel, 'testField2');
-      var card3 = new Card(cl.pageModel, 'testField3');
+      var card1 = new CardV0(cl.pageModel, 'testField1');
+      var card2 = new CardV0(cl.pageModel, 'testField2');
+      var card3 = new CardV0(cl.pageModel, 'testField3');
       // Note that the data card (fieldName === '*') is required for layout to happen.
       // If we do not include it in the cardModels, the layout function will terminate
       // early and the tests will fail.
-      var card4 = new Card(cl.pageModel, '*');
+      var card4 = new CardV0(cl.pageModel, '*');
       var cards = [ card1, card2, card3, card4 ];
 
       card1.set('cardSize', 1);
@@ -501,13 +501,13 @@ describe('CardLayout directive', function() {
 
       var cl = createCardLayout();
 
-      var card1 = new Card(cl.pageModel, 'testField1');
-      var card2 = new Card(cl.pageModel, 'testField2');
-      var card3 = new Card(cl.pageModel, 'testField3');
+      var card1 = new CardV0(cl.pageModel, 'testField1');
+      var card2 = new CardV0(cl.pageModel, 'testField2');
+      var card3 = new CardV0(cl.pageModel, 'testField3');
       // Note that the data card (fieldName === '*') is required for layout to happen.
       // If we do not include it in the cardModels, the layout function will terminate
       // early and the tests will fail.
-      var card4 = new Card(cl.pageModel, '*');
+      var card4 = new CardV0(cl.pageModel, '*');
       var cards = [ card1, card2, card3, card4 ];
 
       card1.set('cardSize', 1);
@@ -564,13 +564,13 @@ describe('CardLayout directive', function() {
     it('should show the correct drop placeholders', function() {
       var cl = createCardLayout();
 
-      var card1 = new Card(cl.pageModel, 'testField1');
-      var card2 = new Card(cl.pageModel, 'testField2');
-      var card3 = new Card(cl.pageModel, 'testField3');
+      var card1 = new CardV0(cl.pageModel, 'testField1');
+      var card2 = new CardV0(cl.pageModel, 'testField2');
+      var card3 = new CardV0(cl.pageModel, 'testField3');
       // Note that the data card (fieldName === '*') is required for layout to happen.
       // If we do not include it in the cardModels, the layout function will terminate
       // early and the tests will fail.
-      var card4 = new Card(cl.pageModel, '*');
+      var card4 = new CardV0(cl.pageModel, '*');
       var cards = [ card1, card2, card3, card4 ];
 
       card1.set('cardSize', 1);
@@ -724,10 +724,10 @@ describe('CardLayout directive', function() {
       it('should show the drop placeholder for the dragged card when the mouse is moved 4 pixels from mouse down location, until mouse up', function() {
         var cl = createCardLayout();
 
-        var card1 = new Card(cl.pageModel, 'testField1');
-        var card2 = new Card(cl.pageModel, 'testField2');
-        var card3 = new Card(cl.pageModel, 'testField3');
-        var card4 = new Card(cl.pageModel, '*');
+        var card1 = new CardV0(cl.pageModel, 'testField1');
+        var card2 = new CardV0(cl.pageModel, 'testField2');
+        var card3 = new CardV0(cl.pageModel, 'testField3');
+        var card4 = new CardV0(cl.pageModel, '*');
         var cards = [ card1, card2, card3, card4 ];
 
         card1.set('cardSize', 1);
@@ -795,10 +795,10 @@ describe('CardLayout directive', function() {
       it('should trade positions when dragged over another card.', function() {
         var cl = createCardLayout();
 
-        var card1 = new Card(cl.pageModel, 'testField1');
-        var card2 = new Card(cl.pageModel, 'testField2');
-        var card3 = new Card(cl.pageModel, 'testField3');
-        var card4 = new Card(cl.pageModel, '*');
+        var card1 = new CardV0(cl.pageModel, 'testField1');
+        var card2 = new CardV0(cl.pageModel, 'testField2');
+        var card3 = new CardV0(cl.pageModel, 'testField3');
+        var card4 = new CardV0(cl.pageModel, '*');
         var cards = [ card1, card2, card3, card4 ];
 
         card1.set('cardSize', 1);

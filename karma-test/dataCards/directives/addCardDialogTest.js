@@ -25,7 +25,7 @@ describe('addCardDialog', function() {
   beforeEach(module('dataCards/cards.sass'));
 
   var testHelpers;
-  var Card;
+  var CardV0;
   var Page;
   var Model;
   var $rootScope;
@@ -36,7 +36,7 @@ describe('addCardDialog', function() {
 
   beforeEach(inject(function($injector) {
     testHelpers = $injector.get('testHelpers');
-    Card = $injector.get('Card');
+    CardV0 = $injector.get('CardV0');
     Page = $injector.get('Page');
     Model = $injector.get('Model');
     $rootScope = $injector.get('$rootScope');
@@ -268,7 +268,7 @@ describe('addCardDialog', function() {
       displayMode: 'visualization',
       expanded: false
     };
-    dialog.scope.page.set('cards', [Card.deserialize(dialog.scope.page, serializedCard)]);
+    dialog.scope.page.set('cards', [CardV0.deserialize(dialog.scope.page, serializedCard)]);
 
     var selectableColumnOptions = dialog.element.find('option:enabled');
 
@@ -367,7 +367,7 @@ describe('addCardDialog', function() {
       expanded: false
     };
 
-    dialog.scope.page.set('cards', [Card.deserialize(dialog.scope.page, serializedCard)]);
+    dialog.scope.page.set('cards', [CardV0.deserialize(dialog.scope.page, serializedCard)]);
 
     dialog.scope.dialogState.cardSize = 2;
     dialog.element.find('option[value=ward]').prop('selected', true).trigger('change');

@@ -12,7 +12,7 @@ describe('Customize card dialog', function() {
   beforeEach(module('/angular_templates/dataCards/clearableInput.html'));
 
   var AngularRxExtensions;
-  var Card;
+  var CardV0;
   var Constants;
   var Model;
   var Page;
@@ -23,7 +23,7 @@ describe('Customize card dialog', function() {
 
   beforeEach(inject(function($injector) {
     AngularRxExtensions = $injector.get('AngularRxExtensions');
-    Card = $injector.get('Card');
+    CardV0 = $injector.get('CardV0');
     Constants = $injector.get('Constants');
     Model = $injector.get('Model');
     Page = $injector.get('Page');
@@ -118,10 +118,10 @@ describe('Customize card dialog', function() {
 
     outerScope.page = pageModel;
     outerScope.dialogState = {
-      'cardModel': Card.deserialize(pageModel, card),
+      'cardModel': CardV0.deserialize(pageModel, card),
       'show': true
     };
-    outerScope.cardModel = Card.deserialize(pageModel, card);
+    outerScope.cardModel = CardV0.deserialize(pageModel, card);
 
     if (options.preexisting) {
       cards.push(outerScope.cardModel);

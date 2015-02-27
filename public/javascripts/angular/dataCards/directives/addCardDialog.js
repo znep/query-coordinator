@@ -1,7 +1,7 @@
 (function() {
   'use strict';
 
-  function addCardDialog(AngularRxExtensions, Constants, CardTypeMapping, Card, FlyoutService, $log) {
+  function addCardDialog(AngularRxExtensions, Constants, CardTypeMapping, CardV0, FlyoutService, $log) {
     return {
       restrict: 'E',
       scope: {
@@ -80,7 +80,7 @@
             };
 
             scope.availableCardTypes = CardTypeMapping.availableVisualizationsForColumn(dataset, fieldName);
-            scope.addCardModel = Card.deserialize(scope.page, serializedCard);
+            scope.addCardModel = CardV0.deserialize(scope.page, serializedCard);
 
             if (column.hasOwnProperty('cardinality')) {
               columnCardinality = parseInt(column.cardinality, 10);

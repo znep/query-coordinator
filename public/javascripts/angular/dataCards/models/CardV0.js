@@ -1,13 +1,13 @@
-angular.module('dataCards.models').factory('Card', function($injector, ModelHelper, Model, CardDataService, Schemas, Filter, CardTypeMapping, ServerConfig) {
+angular.module('dataCards.models').factory('CardV0', function($injector, ModelHelper, Model, CardDataService, Schemas, Filter, CardTypeMapping, ServerConfig) {
 
   var schemas = Schemas.regarding('card_metadata');
 
-  var Card = Model.extend({
+  var CardV0 = Model.extend({
     init: function(parentPageModel, fieldName, id) {
       this._super();
 
-      if(!(parentPageModel instanceof Model)) { throw new Error('Cards must have parent Page models.'); }
-      if(!_.isString(fieldName) || _.isEmpty(fieldName)) { throw new Error('Cards must have a non-empty field name.'); }
+      if(!(parentPageModel instanceof Model)) { throw new Error('CardV0 models must have parent Page models.'); }
+      if(!_.isString(fieldName) || _.isEmpty(fieldName)) { throw new Error('CardV0 models must have a non-empty field name.'); }
 
       var self = this;
       this.page = parentPageModel;
@@ -50,12 +50,12 @@ angular.module('dataCards.models').factory('Card', function($injector, ModelHelp
     },
 
     /**
-     * Creates a clone of this Card, including its id and everything.
+     * Creates a clone of this CardV0, including its id and everything.
      *
      * Useful for modifying the card's contents without committing them.
      */
     clone: function() {
-      return Card.deserialize(this.page, this.serialize(), this.uniqueId);
+      return CardV0.deserialize(this.page, this.serialize(), this.uniqueId);
     },
 
     serialize: function() {
@@ -66,10 +66,10 @@ angular.module('dataCards.models').factory('Card', function($injector, ModelHelp
     }
   });
 
-  Card.deserialize = function(page, blob, id) {
+  CardV0.deserialize = function(page, blob, id) {
     validateCardBlobSchema(blob);
 
-    var instance = new Card(page, blob.fieldName, id);
+    var instance = new CardV0(page, blob.fieldName, id);
     _.each(_.keys(schemas.getSchemaDefinition('0').properties), function(field) {
       if (field === 'fieldName') return; // fieldName isn't observable.
       if (field === 'activeFilters') {
@@ -84,8 +84,8 @@ angular.module('dataCards.models').factory('Card', function($injector, ModelHelp
   };
 
   function validateCardBlobSchema(blob) {
-    schemas.assertValidAgainstVersion('0', blob, 'Card deserialization failed.');
+    schemas.assertValidAgainstVersion('0', blob, 'CardV0 deserialization failed.');
   }
 
-  return Card;
+  return CardV0;
 });

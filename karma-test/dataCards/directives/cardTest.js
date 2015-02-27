@@ -7,11 +7,11 @@ describe('card directive', function() {
   beforeEach(module('test'));
   beforeEach(module('dataCards'));
 
-  beforeEach(inject(['$rootScope', '$templateCache', 'testHelpers', 'Model', 'Card', function(_$rootScope, _$templateCache, _testHelpers, _Model, _Card) {
+  beforeEach(inject(['$rootScope', '$templateCache', 'testHelpers', 'Model', 'CardV0', function(_$rootScope, _$templateCache, _testHelpers, _Model, _CardV0) {
     $rootScope = _$rootScope;
     testHelpers = _testHelpers;
     Model = _Model;
-    Card = _Card;
+    CardV0 = _CardV0;
 
     // Override the templates of the other directives. We don't need to test them.
     _$templateCache.put('/angular_templates/dataCards/cardVisualizationColumnChart.html', '');
@@ -171,7 +171,7 @@ describe('card directive', function() {
       pageModel.defineObservableProperty('primaryAggregation', null);
       pageModel.defineObservableProperty('primaryAmountField', null);
 
-      cardModel = new Card(pageModel, 'myFieldName');
+      cardModel = new CardV0(pageModel, 'myFieldName');
 
       scope.cardModel = cardModel;
 
@@ -258,7 +258,7 @@ describe('card directive', function() {
       pageModel.defineObservableProperty('primaryAggregation', options.primaryAggregation);
       pageModel.defineObservableProperty('primaryAmountField', options.primaryAmountField);
 
-      scope.cardModel = new Card(pageModel, options.fieldName);
+      scope.cardModel = new CardV0(pageModel, options.fieldName);
 
       return testHelpers.TestDom.compileAndAppend(html, scope);
     }

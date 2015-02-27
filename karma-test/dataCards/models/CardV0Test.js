@@ -1,13 +1,13 @@
 describe('Card model', function() {
   var Model;
   var Page;
-  var Card;
+  var CardV0;
 
   beforeEach(module('dataCards'));
 
   beforeEach(inject(function($injector) {
     Model = $injector.get('Model');
-    Card = $injector.get('Card');
+    CardV0 = $injector.get('CardV0');
     Page = $injector.get('Page');
   }));
 
@@ -31,8 +31,8 @@ describe('Card model', function() {
 
     var requiredKeys = Schemas.regarding('card_metadata').getSchemaDefinition('0').required;
 
-    var instance = Card.deserialize(new Page('fake-asdf'), blob);
-    expect(instance).to.be.instanceof(Card);
+    var instance = CardV0.deserialize(new Page('fake-asdf'), blob);
+    expect(instance).to.be.instanceof(CardV0);
     expect(instance.page).to.be.instanceof(Page);
 
     var out = {fieldName: blob.fieldName};
@@ -81,7 +81,7 @@ describe('Card model', function() {
     dataset.version = '1';
     page.set('dataset', dataset);
 
-    var instance = Card.deserialize(page, blob);
+    var instance = CardV0.deserialize(page, blob);
 
     instance.observe('cardType').filter(_.isPresent).subscribe(function(cardType) {
       expect(cardType).to.equal('column');
@@ -111,7 +111,7 @@ describe('Card model', function() {
     });
     page.set('dataset', dataset);
 
-    var instance = Card.deserialize(page, blob);
+    var instance = CardV0.deserialize(page, blob);
 
     instance.observe('cardType').filter(_.isPresent).subscribe(function(cardType) {
       expect(cardType).to.equal('some_magical_card_type');
@@ -133,7 +133,7 @@ describe('Card model', function() {
       'activeFilters': []
     };
 
-    var instance = Card.deserialize(new Page('fake-asdf'), blob);
+    var instance = CardV0.deserialize(new Page('fake-asdf'), blob);
     instance.set('cardSize', '3'); // This property is expected to be an int.
 
     expect(function() { instance.serialize(); }).to.throw();
@@ -150,7 +150,7 @@ describe('Card model', function() {
       'activeFilters': []
     };
 
-    var instance = Card.deserialize(new Page('fake-asdf'), blob);
+    var instance = CardV0.deserialize(new Page('fake-asdf'), blob);
 
     var clone = instance.clone();
 

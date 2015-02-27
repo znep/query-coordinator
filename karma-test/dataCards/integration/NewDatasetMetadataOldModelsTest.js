@@ -17,7 +17,7 @@ describe('Using v1 metadata to instantiate v0 models', function() {
   });
 
   function constructWithV1Blob(v1Blob) {
-    var datasetDataUrl = '/metadata/v1/dataset/{0}'.format(v1Blob.id);
+    var datasetDataUrl = '/metadata/v1/dataset/{0}.json'.format(v1Blob.id);
     $httpBackend.whenGET(datasetDataUrl).respond(v1Blob);
     return new DatasetV0(v1Blob.id);
   }
@@ -174,7 +174,7 @@ describe('Using v1 metadata to instantiate v0 models', function() {
       "updatedAt": "2014-08-17T04:07:03.000Z",
     };
 
-    var datasetPagesDataUrl = '/metadata/v1/dataset/{0}/pages'.format(v1Input.id);
+    var datasetPagesDataUrl = '/metadata/v1/dataset/{0}/pages.json'.format(v1Input.id);
     $httpBackend.whenGET(datasetPagesDataUrl).respond({
       'page-zero': {
         'pageId': 'page-zero',

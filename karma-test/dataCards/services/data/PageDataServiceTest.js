@@ -158,13 +158,13 @@
         });
 
         it('should PUT if an ID is provided', function() {
-          $httpBackend.expectPUT(v1PageDataUrl, { pageMetadata: JSON.stringify(fakePageData) }).respond(200, 'ok');
+          $httpBackend.expectPUT(v1PageDataUrl, JSON.stringify(fakePageData)).respond(200, 'ok');
           PageDataService.save(fakePageData, fake4x4);
           $httpBackend.flush();
         });
 
         it('should POST if no ID is provided', function() {
-          $httpBackend.expectPOST('/metadata/v1/page.json', { pageMetadata: JSON.stringify(fakePageData) }).respond(200, 'ok');
+          $httpBackend.expectPOST('/metadata/v1/page.json', JSON.stringify(fakePageData)).respond(200, 'ok');
           PageDataService.save(fakePageData);
           $httpBackend.flush();
         });

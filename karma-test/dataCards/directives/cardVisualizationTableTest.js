@@ -41,7 +41,7 @@ describe("A Table Card Visualization", function() {
     testHelpers = $injector.get('testHelpers');
     rootScope = $injector.get('$rootScope');
     Model = $injector.get('Model');
-    Card = $injector.get('Card');
+    CardV1 = $injector.get('CardV1');
     Page = $injector.get('Page');
     q = $injector.get('$q');
   }));
@@ -54,12 +54,10 @@ describe("A Table Card Visualization", function() {
   function newCard(pageModel, blob) {
     var baseCard = {
       'expanded': false,
-      'cardCustomStyle': {},
-      'expandedCustomStyle': {},
-      'displayMode': 'visualization'
+      'cardType': 'table'
     };
 
-    return Card.deserialize(pageModel, $.extend({}, baseCard, blob));
+    return CardV1.deserialize(pageModel, $.extend({}, baseCard, blob));
   }
 
   function createTable(cardBlobs, whereClause, firstColumn) {

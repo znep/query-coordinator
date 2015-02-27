@@ -55,6 +55,9 @@
         // Whether or not to use the new flex page metadata
         // endpoint and schema.
         return ServerConfig.metadataMigration.currentPhase() >= 2;
+      },
+      useV0CardModels: function() {
+        return ServerConfig.metadataMigration.currentPhase() <= 1;
       }
     }
   };

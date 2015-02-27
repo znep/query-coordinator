@@ -4,7 +4,7 @@
 
   describe('A Search Card Visualization', function() {
     var ROW_COUNT = 250;
-    var testHelpers, rootScope, Model, Card, Page, q, Filter;
+    var testHelpers, rootScope, Model, CardV1, Page, q, Filter;
     var CardDataService;
     var getSampleDataStub;
     var toggleExpandedSpy;
@@ -22,7 +22,7 @@
       testHelpers = $injector.get('testHelpers');
       rootScope = $injector.get('$rootScope');
       Model = $injector.get('Model');
-      Card = $injector.get('Card');
+      CardV1 = $injector.get('CardV1');
       Page = $injector.get('Page');
       q = $injector.get('$q');
       Filter = $injector.get('Filter');

@@ -1,5 +1,5 @@
 describe("A Column Chart Card Visualization", function() {
-  var testHelpers, rootScope, Model, Card, Page, q, Filter;
+  var testHelpers, rootScope, Model, Page, q, Filter;
 
   beforeEach(module('/angular_templates/dataCards/cardVisualizationColumnChart.html'));
 
@@ -17,7 +17,6 @@ describe("A Column Chart Card Visualization", function() {
     testHelpers = $injector.get('testHelpers');
     rootScope = $injector.get('$rootScope');
     Model = $injector.get('Model');
-    Card = $injector.get('Card');
     Page = $injector.get('Page');
     q = $injector.get('$q');
     Filter = $injector.get('Filter');

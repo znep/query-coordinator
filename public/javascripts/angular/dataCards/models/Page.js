@@ -1,4 +1,4 @@
-angular.module('dataCards.models').factory('Page', function($q, ServerConfig, DatasetV0, DatasetV1, Card, Model, PageDataService) {
+angular.module('dataCards.models').factory('Page', function($q, ServerConfig, DatasetV0, DatasetV1, CardV0, CardV1, Model, PageDataService) {
   var Page = Model.extend({
     // Builds a page model from either the page ID (given as a string),
     // or as a full serialized blob.
@@ -48,7 +48,11 @@ angular.module('dataCards.models').factory('Page', function($q, ServerConfig, Da
       self.defineObservableProperty('cards', [], function() {
         return pageMetadataPromise().then(function(data) {
           return _.map(data.cards, function(serializedCard) {
-            return Card.deserialize(self, serializedCard);
+            if (ServerConfig.metadataMigration.pageMetadata.useV0CardModels()) {
+              return CardV0.deserialize(self, serializedCard);
+            } else {
+              return CardV1.deserialize(self, serializedCard);
+            }
           });
         });
       });

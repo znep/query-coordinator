@@ -163,6 +163,43 @@ angular.module('dataCards.services').factory('SchemaDefinitions', function() {
         }
       }
     );
+
+    var cardMetadataSchemas = schemasService.regarding('card_metadata');
+    cardMetadataSchemas.addSchemaWithVersion(
+      '0',
+      {
+        'type': 'object',
+        'properties': {
+          'activeFilters': { 'type': 'array' },
+          'baseLayerUrl': { 'type': 'string' },
+          'cardCustomStyle': { 'type': 'object' },
+          'cardSize': { 'type': 'integer' , 'minimum': 1, 'maximum': 4 },
+          'cardType': { 'type': 'string', },
+          'displayMode': { 'type': 'string', 'enum': ['figures', 'visualization'] },
+          'expanded': { 'type': 'boolean' },
+          'expandedCustomStyle': { 'type': 'object' },
+          'fieldName': { 'type': 'string', 'minLength': 1 },
+          'shapefileFeatureHumanReadablePropertyName': { 'type': 'string' }
+        },
+        'required': ['fieldName', 'cardSize', 'cardCustomStyle', 'expandedCustomStyle', 'displayMode', 'expanded']
+      }
+    );
+
+    cardMetadataSchemas.addSchemaWithVersion(
+      '1',
+      {
+        'type': 'object',
+        'properties': {
+          'activeFilters': { 'type': 'array' },
+          'baseLayerUrl': { 'type': 'string' },
+          'cardSize': { 'type': 'integer' , 'minimum': 1, 'maximum': 3 },
+          'cardType': { 'type': 'string' },
+          'expanded': { 'type': 'boolean' },
+          'fieldName': { 'type': 'string', 'minLength': 1 },
+        },
+        'required': ['fieldName', 'cardSize', 'cardType', 'expanded']
+      }
+    );
   }
 
   return {

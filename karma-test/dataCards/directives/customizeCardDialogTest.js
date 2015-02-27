@@ -12,7 +12,7 @@ describe('Customize card dialog', function() {
   beforeEach(module('/angular_templates/dataCards/clearableInput.html'));
 
   var AngularRxExtensions;
-  var Card;
+  var CardV1;
   var Constants;
   var Model;
   var Page;
@@ -23,7 +23,7 @@ describe('Customize card dialog', function() {
 
   beforeEach(inject(function($injector) {
     AngularRxExtensions = $injector.get('AngularRxExtensions');
-    Card = $injector.get('Card');
+    CardV1 = $injector.get('CardV1');
     Constants = $injector.get('Constants');
     Model = $injector.get('Model');
     Page = $injector.get('Page');
@@ -98,9 +98,7 @@ describe('Customize card dialog', function() {
     var card = options.card || {
       fieldName: 'choropleth',
       cardSize: 2,
-      cardCustomStyle: {},
-      expandedCustomStyle: {},
-      displayMode: 'visualization',
+      cardType: 'choropleth',
       expanded: false
     };
 
@@ -118,10 +116,10 @@ describe('Customize card dialog', function() {
 
     outerScope.page = pageModel;
     outerScope.dialogState = {
-      'cardModel': Card.deserialize(pageModel, card),
+      'cardModel': CardV1.deserialize(pageModel, card),
       'show': true
     };
-    outerScope.cardModel = Card.deserialize(pageModel, card);
+    outerScope.cardModel = CardV1.deserialize(pageModel, card);
 
     if (options.preexisting) {
       cards.push(outerScope.cardModel);
@@ -221,9 +219,7 @@ describe('Customize card dialog', function() {
       'card': {
         fieldName: 'feature',
         cardSize: 1,
-        cardCustomStyle: {},
-        expandedCustomStyle: {},
-        displayMode: 'visualization',
+        cardType: 'feature',
         expanded: false
       }
     };
@@ -316,9 +312,7 @@ describe('Customize card dialog', function() {
     var card = {
       fieldName: 'choropleth',
       cardSize: 2,
-      cardCustomStyle: {},
-      expandedCustomStyle: {},
-      displayMode: 'visualization',
+      cardType: 'choropleth',
       baseLayerUrl: url,
       expanded: false
     };

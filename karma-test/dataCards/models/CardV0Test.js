@@ -1,21 +1,17 @@
 describe('Card model', function() {
   var Model;
   var Page;
-  var Card;
+  var CardV0;
 
   beforeEach(module('dataCards'));
 
   beforeEach(inject(function($injector) {
     Model = $injector.get('Model');
-    Card = $injector.get('Card');
+    CardV0 = $injector.get('CardV0');
     Page = $injector.get('Page');
   }));
 
-  it('should define a serializedCard JSON schema', inject(function(Card, JJV) {
-    expect(JJV.schema).to.have.property('serializedCard');
-  }));
-
-  it('deserialization should return an instance of Card with correct properties set', inject(function(JJV, Filter) {
+  it('deserialization should return an instance of Card with correct properties set', inject(function(Schemas, Filter) {
     var blob = {
       'fieldName': 'test_crime_type',
       'cardSize': 2,
@@ -33,17 +29,21 @@ describe('Card model', function() {
       ]
     };
 
-    var requiredKeys = JJV.schema.serializedCard.required;
+    var requiredKeys = Schemas.regarding('card_metadata').getSchemaDefinition('0').required;
 
-    var instance = Card.deserialize(new Page('fake-asdf'), blob);
-    expect(instance).to.be.instanceof(Card);
+    var instance = CardV0.deserialize(new Page('fake-asdf'), blob);
+    expect(instance).to.be.instanceof(CardV0);
     expect(instance.page).to.be.instanceof(Page);
 
-    var out = {fieldName: blob.fieldName};
+    // Call observe() on all required properties, and record
+    // the values that come back in readBackProperties.
+    // Then compare readBackProperties to the input blob.
+    // They should be equal.
+    var readBackProperties = {fieldName: blob.fieldName};
     expect(instance.getCurrentValue('activeFilters')).to.deep.equal([
         new Filter.IsNullFilter(false)
       ]);
-    out['activeFilters'] = _.invoke(instance.getCurrentValue('activeFilters'), 'serialize');
+    readBackProperties['activeFilters'] = _.invoke(instance.getCurrentValue('activeFilters'), 'serialize');
 
     _.each(requiredKeys, function(field) {
       if (field === 'fieldName') { // fieldName isn't observable.
@@ -53,12 +53,12 @@ describe('Card model', function() {
       } else {
         expect(instance.observe(field)).to.exist;
         instance.observe(field).subscribe(function(v) { 
-          out[field] = v;
+          readBackProperties[field] = v;
         });
       }
     });
-    expect(out).to.deep.equal(blob);
-    expect(out).to.have.property('displayMode').that.equals('figures');
+    expect(readBackProperties).to.deep.equal(blob);
+    expect(readBackProperties).to.have.property('displayMode').that.equals('figures');
   }));
 
   it('should provide a sane default cardType if none is provided', function(done) {
@@ -85,7 +85,7 @@ describe('Card model', function() {
     dataset.version = '1';
     page.set('dataset', dataset);
 
-    var instance = Card.deserialize(page, blob);
+    var instance = CardV0.deserialize(page, blob);
 
     instance.observe('cardType').filter(_.isPresent).subscribe(function(cardType) {
       expect(cardType).to.equal('column');
@@ -115,7 +115,7 @@ describe('Card model', function() {
     });
     page.set('dataset', dataset);
 
-    var instance = Card.deserialize(page, blob);
+    var instance = CardV0.deserialize(page, blob);
 
     instance.observe('cardType').filter(_.isPresent).subscribe(function(cardType) {
       expect(cardType).to.equal('some_magical_card_type');
@@ -137,7 +137,7 @@ describe('Card model', function() {
       'activeFilters': []
     };
 
-    var instance = Card.deserialize(new Page('fake-asdf'), blob);
+    var instance = CardV0.deserialize(new Page('fake-asdf'), blob);
     instance.set('cardSize', '3'); // This property is expected to be an int.
 
     expect(function() { instance.serialize(); }).to.throw();
@@ -154,7 +154,7 @@ describe('Card model', function() {
       'activeFilters': []
     };
 
-    var instance = Card.deserialize(new Page('fake-asdf'), blob);
+    var instance = CardV0.deserialize(new Page('fake-asdf'), blob);
 
     var clone = instance.clone();
 

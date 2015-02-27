@@ -200,7 +200,7 @@ angular.module('dataCards.models').factory('Model', function(Class, ModelHelper)
      */
     set: function(propertyName, value) {
       this._assertProperty(propertyName);
-      if (this._isObservablePropertyEphemeral(propertyName)) {
+      if (!this._isObservablePropertyWritable(propertyName)) {
         throw new TypeError('Property "{0}" is read-only (it is computed).'.format(propertyName));
       }
       var oldValue = this.getCurrentValue(propertyName);
@@ -459,6 +459,23 @@ angular.module('dataCards.models').factory('Model', function(Class, ModelHelper)
     _isObservablePropertyEphemeral: function(propertyName) {
       this._assertProperty(propertyName);
       return this._ephemeralProperties[propertyName] === true;
+    },
+
+    /**
+     * Gets whether or not the named property is writable.
+     * Only properties defined with defineEphemeralObservablePropertyFromSequence
+     * are read-only at this time.
+     *
+     * @param {String} propertyName The name of the property.
+     * @throws {TypeError} if the property does not exist.
+     * @returns {Boolean} True if the property is writable, false otherwise.
+     */
+    _isObservablePropertyWritable: function(propertyName) {
+      this._assertProperty(propertyName);
+      // Properties are writable if the corresponding entry in _propertyObservables
+      // has a setter.
+      var propertyDefinition = Object.getOwnPropertyDescriptor(this._propertyObservables, propertyName);
+      return _.isFunction(propertyDefinition.set);
     },
 
 

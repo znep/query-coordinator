@@ -28,6 +28,7 @@ describe('<aggregation-chooser/>', function() {
       $provide.value('CardDataService', mockCardDataService);
 
       $provide.value('CardV0', _.noop);
+      $provide.value('CardV1', _.noop);
     });
   });
 

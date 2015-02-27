@@ -4,7 +4,7 @@ describe('CardLayout directive', function() {
   var NUM_CARDS = 10;
 
   var AngularRxExtensions;
-  var CardV0;
+  var CardV1;
   var mockWindowStateService = null;
   var mockDownloadService;
   var Model;
@@ -77,7 +77,7 @@ describe('CardLayout directive', function() {
     testHelpers = $injector.get('testHelpers');
     rootScope = $injector.get('$rootScope');
     Model = $injector.get('Model');
-    CardV0 = $injector.get('CardV0');
+    CardV1 = $injector.get('CardV1');
     Page = $injector.get('Page');
     AngularRxExtensions = $injector.get('AngularRxExtensions');
     $q = $injector.get('$q');
@@ -121,7 +121,8 @@ describe('CardLayout directive', function() {
         description: 'test column description',
         fred: 'amount',
         physicalDatatype: 'number',
-        dataset: datasetModel
+        dataset: datasetModel,
+        cardTypeWeWillAssignForThisTest: 'histogram'
       },
       pointMap_column: {
         name: 'pointMap_column',
@@ -132,7 +133,8 @@ describe('CardLayout directive', function() {
           parameters: {
             region: '_mash-apes'
           }
-        }
+        },
+        cardTypeWeWillAssignForThisTest: 'feature'
       },
       choropleth_column: {
         name: 'choropleth_column',
@@ -144,24 +146,35 @@ describe('CardLayout directive', function() {
           parameters: {
             region: '_mash-apes'
           }
-        }
+        },
+        cardTypeWeWillAssignForThisTest: 'choropleth'
       },
       timeline_column: {
         name: 'timeline_column',
         fred: 'time',
         physicalDatatype: 'number',
-        dataset: datasetModel
+        dataset: datasetModel,
+        cardTypeWeWillAssignForThisTest: 'timeline'
       },
       search_column: {
         name: 'search_column',
         fred: 'text',
         physicalDatatype: 'text',
-        dataset: datasetModel
+        dataset: datasetModel,
+        cardTypeWeWillAssignForThisTest: 'search'
+      },
+      invalid_column: {
+        name: 'invalid_column',
+        fred: 'lol',
+        physicalDatatype: 'text',
+        dataset: datasetModel,
+        cardTypeWeWillAssignForThisTest: 'invalid'
       },
       '*': {
         fred: '*',
         physicalDatatype: '*',
-        dataset: datasetModel
+        dataset: datasetModel,
+        cardTypeWeWillAssignForThisTest: 'table'
       }
     });
 
@@ -170,7 +183,7 @@ describe('CardLayout directive', function() {
     pageModel.set('baseSoqlFilter', null);
     pageModel.set('primaryAmountField', null);
     pageModel.set('primaryAggregation', null);
-    pageModel.set('cards', options.cards(pageModel));
+    pageModel.set('cards', options.cards(pageModel, datasetModel));
 
     var outerScope = rootScope.$new();
     AngularRxExtensions.install(outerScope);
@@ -246,21 +259,22 @@ describe('CardLayout directive', function() {
   function createLayoutWithCards(cards, options) {
     if (!cards) {
       cards = _.map(_.range(NUM_CARDS), function(i) {
-        return {};
+        return {
+          fieldName: 'invalid_column'
+        };
       });
       // Need a datacard in order to render
       cards[0].fieldName = '*';
     }
 
-    var cardGenerator = function(pageModel) {
+    var cardGenerator = function(pageModel, datasetModel) {
       return _.map(cards, function(card, i) {
-        var c = new CardV0(pageModel, card.fieldName || 'fieldname' + i);
+        var c = new CardV1(pageModel, card.fieldName || 'fieldname' + i);
         c.set('expanded', !!card.expanded);
         // Add required fields so this will validate
         c.set('cardSize', 1);
-        c.set('cardCustomStyle', {});
-        c.set('expandedCustomStyle', {});
-        c.set('displayMode', 'figures');
+        var correspondingColumn = datasetModel.getCurrentValue('columns')[card.fieldName];
+        c.set('cardType', correspondingColumn ? correspondingColumn.cardTypeWeWillAssignForThisTest : 'invalid');
         return c;
       });
     };
@@ -297,13 +311,13 @@ describe('CardLayout directive', function() {
 
       var cl = createCardLayout();
 
-      var card1 = new CardV0(cl.pageModel, 'testField1');
-      var card2 = new CardV0(cl.pageModel, 'testField2');
-      var card3 = new CardV0(cl.pageModel, 'testField3');
+      var card1 = new CardV1(cl.pageModel, 'testField1');
+      var card2 = new CardV1(cl.pageModel, 'testField2');
+      var card3 = new CardV1(cl.pageModel, 'testField3');
       // Note that the data card (fieldName === '*') is required for layout to happen.
       // If we do not include it in the cardModels, the layout function will terminate
       // early and the tests will fail.
-      var card4 = new CardV0(cl.pageModel, '*');
+      var card4 = new CardV1(cl.pageModel, '*');
       var cards = [ card1, card2, card3, card4 ];
 
       card1.set('cardSize', 1);
@@ -341,13 +355,13 @@ describe('CardLayout directive', function() {
 
       var cl = createCardLayout();
 
-      var card1 = new CardV0(cl.pageModel, 'testField1');
-      var card2 = new CardV0(cl.pageModel, 'testField2');
-      var card3 = new CardV0(cl.pageModel, 'testField3');
+      var card1 = new CardV1(cl.pageModel, 'testField1');
+      var card2 = new CardV1(cl.pageModel, 'testField2');
+      var card3 = new CardV1(cl.pageModel, 'testField3');
       // Note that the data card (fieldName === '*') is required for layout to happen.
       // If we do not include it in the cardModels, the layout function will terminate
       // early and the tests will fail.
-      var card4 = new CardV0(cl.pageModel, '*');
+      var card4 = new CardV1(cl.pageModel, '*');
       var cards = [ card1, card2, card3, card4 ];
 
       card1.set('cardSize', 1);
@@ -388,13 +402,13 @@ describe('CardLayout directive', function() {
 
       var cl = createCardLayout();
 
-      var card1 = new CardV0(cl.pageModel, 'testField1');
-      var card2 = new CardV0(cl.pageModel, 'testField2');
-      var card3 = new CardV0(cl.pageModel, 'testField3');
+      var card1 = new CardV1(cl.pageModel, 'testField1');
+      var card2 = new CardV1(cl.pageModel, 'testField2');
+      var card3 = new CardV1(cl.pageModel, 'testField3');
       // Note that the data card (fieldName === '*') is required for layout to happen.
       // If we do not include it in the cardModels, the layout function will terminate
       // early and the tests will fail.
-      var card4 = new CardV0(cl.pageModel, '*');
+      var card4 = new CardV1(cl.pageModel, '*');
       var cards = [ card1, card2, card3, card4 ];
 
       card1.set('cardSize', 1);
@@ -418,13 +432,13 @@ describe('CardLayout directive', function() {
 
       var cl = createCardLayout();
 
-      var card1 = new CardV0(cl.pageModel, 'testField1');
-      var card2 = new CardV0(cl.pageModel, 'testField2');
-      var card3 = new CardV0(cl.pageModel, 'testField3');
+      var card1 = new CardV1(cl.pageModel, 'testField1');
+      var card2 = new CardV1(cl.pageModel, 'testField2');
+      var card3 = new CardV1(cl.pageModel, 'testField3');
       // Note that the data card (fieldName === '*') is required for layout to happen.
       // If we do not include it in the cardModels, the layout function will terminate
       // early and the tests will fail.
-      var card4 = new CardV0(cl.pageModel, '*');
+      var card4 = new CardV1(cl.pageModel, '*');
       var cards = [ card1, card2, card3, card4 ];
 
       card1.set('cardSize', 1);
@@ -448,13 +462,13 @@ describe('CardLayout directive', function() {
     it('should display a flyout when hovering on a delete card button', function() {
       var cl = createCardLayout();
 
-      var card1 = new CardV0(cl.pageModel, 'testField1');
-      var card2 = new CardV0(cl.pageModel, 'testField2');
-      var card3 = new CardV0(cl.pageModel, 'testField3');
+      var card1 = new CardV1(cl.pageModel, 'testField1');
+      var card2 = new CardV1(cl.pageModel, 'testField2');
+      var card3 = new CardV1(cl.pageModel, 'testField3');
       // Note that the data card (fieldName === '*') is required for layout to happen.
       // If we do not include it in the cardModels, the layout function will terminate
       // early and the tests will fail.
-      var card4 = new CardV0(cl.pageModel, '*');
+      var card4 = new CardV1(cl.pageModel, '*');
       var cards = [ card1, card2, card3, card4 ];
 
       card1.set('cardSize', 1);
@@ -501,13 +515,13 @@ describe('CardLayout directive', function() {
 
       var cl = createCardLayout();
 
-      var card1 = new CardV0(cl.pageModel, 'testField1');
-      var card2 = new CardV0(cl.pageModel, 'testField2');
-      var card3 = new CardV0(cl.pageModel, 'testField3');
+      var card1 = new CardV1(cl.pageModel, 'testField1');
+      var card2 = new CardV1(cl.pageModel, 'testField2');
+      var card3 = new CardV1(cl.pageModel, 'testField3');
       // Note that the data card (fieldName === '*') is required for layout to happen.
       // If we do not include it in the cardModels, the layout function will terminate
       // early and the tests will fail.
-      var card4 = new CardV0(cl.pageModel, '*');
+      var card4 = new CardV1(cl.pageModel, '*');
       var cards = [ card1, card2, card3, card4 ];
 
       card1.set('cardSize', 1);
@@ -564,13 +578,13 @@ describe('CardLayout directive', function() {
     it('should show the correct drop placeholders', function() {
       var cl = createCardLayout();
 
-      var card1 = new CardV0(cl.pageModel, 'testField1');
-      var card2 = new CardV0(cl.pageModel, 'testField2');
-      var card3 = new CardV0(cl.pageModel, 'testField3');
+      var card1 = new CardV1(cl.pageModel, 'testField1');
+      var card2 = new CardV1(cl.pageModel, 'testField2');
+      var card3 = new CardV1(cl.pageModel, 'testField3');
       // Note that the data card (fieldName === '*') is required for layout to happen.
       // If we do not include it in the cardModels, the layout function will terminate
       // early and the tests will fail.
-      var card4 = new CardV0(cl.pageModel, '*');
+      var card4 = new CardV1(cl.pageModel, '*');
       var cards = [ card1, card2, card3, card4 ];
 
       card1.set('cardSize', 1);
@@ -724,10 +738,10 @@ describe('CardLayout directive', function() {
       it('should show the drop placeholder for the dragged card when the mouse is moved 4 pixels from mouse down location, until mouse up', function() {
         var cl = createCardLayout();
 
-        var card1 = new CardV0(cl.pageModel, 'testField1');
-        var card2 = new CardV0(cl.pageModel, 'testField2');
-        var card3 = new CardV0(cl.pageModel, 'testField3');
-        var card4 = new CardV0(cl.pageModel, '*');
+        var card1 = new CardV1(cl.pageModel, 'testField1');
+        var card2 = new CardV1(cl.pageModel, 'testField2');
+        var card3 = new CardV1(cl.pageModel, 'testField3');
+        var card4 = new CardV1(cl.pageModel, '*');
         var cards = [ card1, card2, card3, card4 ];
 
         card1.set('cardSize', 1);
@@ -795,10 +809,10 @@ describe('CardLayout directive', function() {
       it('should trade positions when dragged over another card.', function() {
         var cl = createCardLayout();
 
-        var card1 = new CardV0(cl.pageModel, 'testField1');
-        var card2 = new CardV0(cl.pageModel, 'testField2');
-        var card3 = new CardV0(cl.pageModel, 'testField3');
-        var card4 = new CardV0(cl.pageModel, '*');
+        var card1 = new CardV1(cl.pageModel, 'testField1');
+        var card2 = new CardV1(cl.pageModel, 'testField2');
+        var card3 = new CardV1(cl.pageModel, 'testField3');
+        var card4 = new CardV1(cl.pageModel, '*');
         var cards = [ card1, card2, card3, card4 ];
 
         card1.set('cardSize', 1);

@@ -1,7 +1,7 @@
 (function() {
   'use strict';
 
-  function addCardDialog(AngularRxExtensions, Constants, CardTypeMapping, CardV0, FlyoutService, $log) {
+  function addCardDialog(AngularRxExtensions, Constants, CardTypeMapping, CardV0, CardV1, FlyoutService, ServerConfig, $log) {
     return {
       restrict: 'E',
       scope: {
@@ -68,19 +68,31 @@
               return;
             }
 
-            // TODO: Enforce some kind of schema validation at this step.
-            serializedCard = {
-              'cardCustomStyle': {},
-              'cardSize': parseInt(scope.dialogState.cardSize, 10),
-              'cardType': CardTypeMapping.defaultVisualizationForColumn(dataset, fieldName),
-              'displayMode': 'visualization',
-              'expanded': false,
-              'expandedCustomStyle': {},
-              'fieldName': fieldName
-            };
-
             scope.availableCardTypes = CardTypeMapping.availableVisualizationsForColumn(dataset, fieldName);
-            scope.addCardModel = CardV0.deserialize(scope.page, serializedCard);
+            if (ServerConfig.metadataMigration.pageMetadata.useV0CardModels()) {
+              // TODO: Enforce some kind of schema validation at this step.
+              serializedCard = {
+                'cardCustomStyle': {},
+                'cardSize': parseInt(scope.dialogState.cardSize, 10),
+                'cardType': CardTypeMapping.defaultVisualizationForColumn(dataset, fieldName),
+                'displayMode': 'visualization',
+                'expanded': false,
+                'expandedCustomStyle': {},
+                'fieldName': fieldName
+              };
+
+              scope.addCardModel = CardV0.deserialize(scope.page, serializedCard);
+            } else {
+              // TODO: Enforce some kind of schema validation at this step.
+              serializedCard = {
+                'cardSize': parseInt(scope.dialogState.cardSize, 10),
+                'cardType': CardTypeMapping.defaultVisualizationForColumn(dataset, fieldName),
+                'expanded': false,
+                'fieldName': fieldName
+              };
+
+              scope.addCardModel = CardV1.deserialize(scope.page, serializedCard);
+            }
 
             if (column.hasOwnProperty('cardinality')) {
               columnCardinality = parseInt(column.cardinality, 10);

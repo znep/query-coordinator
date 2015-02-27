@@ -131,11 +131,11 @@ describe('CardsViewController', function() {
   });
 
   beforeEach(inject([
-    '$q', 'CardV0', 'Page', 'DatasetV0', '$rootScope', '$controller', '$window', 'testHelpers',
+    '$q', 'CardV1', 'Page', 'DatasetV0', '$rootScope', '$controller', '$window', 'testHelpers',
     'serverMocks', '$httpBackend', 'ServerConfig',
-    function(_$q, _CardV0, _Page, _DatasetV0, _$rootScope, _$controller, _$window, _testHelpers,
+    function(_$q, _CardV1, _Page, _DatasetV0, _$rootScope, _$controller, _$window, _testHelpers,
              _serverMocks, _$httpBackend, _ServerConfig) {
-      CardV0 = _CardV0;
+      CardV1 = _CardV1;
       Page = _Page;
       DatasetV0 = _DatasetV0;
       $q = _$q;
@@ -215,9 +215,7 @@ describe('CardsViewController', function() {
       'description': '',
       'fieldName': _.uniqueId('testFieldName'),
       'cardSize': 1,
-      'cardCustomStyle': {},
-      'expandedCustomStyle': {},
-      'displayMode': 'figures',
+      'cardType': 'column',
       'expanded': false
     };
   }
@@ -745,15 +743,13 @@ describe('CardsViewController', function() {
       });
 
       serializedCard = {
-        'cardCustomStyle': {},
         'cardSize': 1,
-        'displayMode': 'visualization',
+        'cardType': 'column',
         'expanded': false,
-        'expandedCustomStyle': {},
         'fieldName': 'nonCustomizableFieldName'
       };
 
-      cardModel = CardV0.deserialize($scope.page, serializedCard);
+      cardModel = CardV1.deserialize($scope.page, serializedCard);
 
       $rootScope.$broadcast('customize-card-with-model', cardModel);
 
@@ -785,15 +781,13 @@ describe('CardsViewController', function() {
       });
 
       serializedCard = {
-        'cardCustomStyle': {},
         'cardSize': 1,
-        'displayMode': 'visualization',
+        'cardType': 'choropleth',
         'expanded': false,
-        'expandedCustomStyle': {},
         'fieldName': 'customizableFieldName'
       };
 
-      cardModel = CardV0.deserialize($scope.page, serializedCard);
+      cardModel = CardV1.deserialize($scope.page, serializedCard);
 
       $rootScope.$broadcast('customize-card-with-model', cardModel);
 

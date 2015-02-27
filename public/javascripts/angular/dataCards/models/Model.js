@@ -11,6 +11,7 @@
 // * Automatic serialization, with consideration of ephemeral (non-serialized) properties.
 // * Recursive dirty checking/change tracking.
 angular.module('dataCards.models').factory('Model', function(Class, ModelHelper) {
+  'use strict';
   var Model = Class.extend({
     init:function Model() {
       var self = this;
@@ -149,6 +150,9 @@ angular.module('dataCards.models').factory('Model', function(Class, ModelHelper)
     // object, this function will still work, but changes will not be reported.
     observe: function(propertyName) {
       function deepGet(node, props) {
+        function isTraversible(thing) {
+          return (typeof(thing) !== 'undefined') && (thing !== null);
+        }
         if (props.length === 0) { return node; }
 
         // Slice off the first property.
@@ -175,9 +179,6 @@ angular.module('dataCards.models').factory('Model', function(Class, ModelHelper)
         } else {
           // Keep traversing, but wait for undefined/non-nulls to become
           // something.
-          function isTraversible(thing) {
-            return (typeof(thing) !== 'undefined') && (thing !== null);
-          }
           return thisLevelObs.filter(isTraversible).map(function(value) {
             return deepGet(value, _.rest(props));
           }).switchLatest();
@@ -191,9 +192,17 @@ angular.module('dataCards.models').factory('Model', function(Class, ModelHelper)
     /**
      * Sets the named property on this model to the given value. Will throw an exception if that
      * property hasn't been defined on this Model.
+     *
+     * @param {String} propertyName The name of the property being set. It must correspond to a
+     *                              writeable property.
+     * @param value The value the property should be set to.
+     * @throws {TypeError} if the property does not exist or is read-only.
      */
     set: function(propertyName, value) {
       this._assertProperty(propertyName);
+      if (this._isObservablePropertyEphemeral(propertyName)) {
+        throw new TypeError('Property "{0}" is read-only (it is computed).'.format(propertyName));
+      }
       var oldValue = this.getCurrentValue(propertyName);
       this._writes.take(1).map(function(change) {
         return _.defaults({oldValue: oldValue}, change);
@@ -201,18 +210,27 @@ angular.module('dataCards.models').factory('Model', function(Class, ModelHelper)
       this._propertyObservables[propertyName] = value;
     },
 
-    // Unsets the named property, and forget it has ever been set.
-    // Will throw an exception if that property
-    // hasn't been defined on this Model.
+    /**
+     * Unsets the named property, and forget it has ever been set.
+     *
+     * @param {String} propertyName The name of the property being set.
+     * @throws {TypeError} if the property does not exist or is read-only.
+     */
     unset: function(propertyName) {
       this.set(propertyName, undefined);
       this._propertyHasBeenWritten[propertyName] = false;
     },
 
-    // Returns true if any of these hold:
-    //   * The property has been written by a call to set(), or
-    //   * The property has been initialized to a non-undefined value via defineObservableProperty
-    //     (either due to an initial value being provided or due to a lazy default resolving).
+    /**
+     * Checks whether or not the given property has been set.
+     * @param {String} propertyName The name of the property being set.
+     * @return {Boolean} True if any of these hold:
+     *   * The property has been written by a call to set(), or
+     *   * The property has been initialized to a non-undefined value via defineObservableProperty
+     *     (either due to an initial value being provided or due to a lazy default resolving).
+     *  False otherwise (including if the property is not defined at all).
+     *
+     */
     isSet: function(propertyName) {
       return this._propertyHasBeenWritten[propertyName] === true;
     },
@@ -227,9 +245,7 @@ angular.module('dataCards.models').factory('Model', function(Class, ModelHelper)
       var self = this;
       angular.forEach(this._propertyObservables, function(subject, propertyName) {
         // Don't set ephemeral properties.
-        var isEphemeral = self._ephemeralProperties[propertyName];
-
-        if (!isEphemeral) {
+        if (!self._isObservablePropertyEphemeral(propertyName)) {
           var newValue = otherModel.getCurrentValue(propertyName);
           if (newValue !== subject.value) {
             if (otherModel.isSet(propertyName)) {
@@ -285,7 +301,7 @@ angular.module('dataCards.models').factory('Model', function(Class, ModelHelper)
       }
 
       _.forOwn(self._propertyObservables, function(seq, propertyName) {
-        if (self._ephemeralProperties[propertyName]) {
+        if (self._isObservablePropertyEphemeral(propertyName)) {
           // Ephemeral properties are not serialized.
           return;
         }
@@ -416,28 +432,56 @@ angular.module('dataCards.models').factory('Model', function(Class, ModelHelper)
     ///////////////// Private implementation
     ///////////////////////////////////////////////////////////////////////////
 
-    // Controls whether or not the named property is ephemeral.
-    // Ephemeral properties are not serialized.
-    // By default, properties are not ephemeral.
-    // They are set to be ephemeral by the various public
-    // APIs that define properties.
+    /**
+     * Controls whether or not the named property is ephemeral.
+     * Ephemeral properties are not serialized.
+     * By default, properties are not ephemeral.
+     * They are set to be ephemeral by the various public
+     * APIs that define properties.
+     *
+     * @param {String} propertyName The name of the property.
+     * @param {Boolean} isEphemeral Whether or not the given property should
+     *                              be considered ephemeral.
+     * @throws {TypeError} if the property does not exist.
+     */
     _setObservablePropertyIsEphemeral: function(propertyName, isEphemeral) {
       this._assertProperty(propertyName);
       this._ephemeralProperties[propertyName] = isEphemeral;
     },
 
+    /**
+     * Gets whether or not the named property is ephemeral.
+     *
+     * @param {String} propertyName The name of the property.
+     * @throws {TypeError} if the property does not exist.
+     * @returns {Boolean} True if the property is ephemeral, false otherwise.
+     */
+    _isObservablePropertyEphemeral: function(propertyName) {
+      this._assertProperty(propertyName);
+      return this._ephemeralProperties[propertyName] === true;
+    },
 
-    // Throws if the given property is not defined on this Model.
+
+    /**
+     * Throws if the named property is not defined on this Model.
+     *
+     * @param {String} propertyName The name of the property to check for.
+     * @throws {TypeError} if the property does not exist.
+     */
     _assertProperty: function(propertyName) {
       if (!this._propertyObservables.hasOwnProperty(propertyName)) {
-        throw new Error('Object {0} has no such property: {1}'.format(this.serialize(), propertyName));
+        throw new TypeError('Object {0} has no such property: {1}'.format(this.serialize(), propertyName));
       }
     },
 
-    // Register the given model as our parent (as in, we're the value of
-    // one of the parent's properties).
-    // This is used to implement observePropertyChangesRecursively and
-    // recursive dirty checking.
+    /*
+     * Register the given model as our parent (as in, we're the value of
+     * one of the parent's properties).
+     * This is used to implement observePropertyChangesRecursively and
+     * recursive dirty checking.
+     *
+     * @param {Model} parentModel The model to consider our parent.
+     */
     _setParentModel: function(parentModel) {
       // Stop telling our old parent about our property changes.
       if (this._observePropertyChangesSubscriptionForParent) {

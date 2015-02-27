@@ -112,10 +112,10 @@ describe("Model", function() {
       expect(seen).to.deep.equal([ 'foo', 'bar']);
     });
 
-    it('should throw on setValue', function() {
+    it('should throw on set', function() {
       var model = new Model();
       model.defineEphemeralObservablePropertyFromSequence('prop', Rx.Observable.never());
-      expect(function() { model.setValue('prop'); }).to.throw();
+      expect(function() { model.set('prop'); }).to.throw(TypeError, 'Property "prop" is read-only (it is computed).');
     });
 
     it('should always return false for isSet', function() {

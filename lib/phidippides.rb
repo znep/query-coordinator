@@ -147,6 +147,13 @@ class Phidippides < SocrataHttp
     else
       raise ArgumentError.new('pageId is required') unless json.key?('pageId')
 
+      # Note that this is a PUT, not a POST like might be expected.
+      # The reason for this is that by the time that we call
+      # create_page_metadata we have already generated a page id
+      # using request_new_page_id.
+      #
+      # As such, we already know the name of the resource that we
+      # want to 'create', and therefore use PUT.
       issue_request(
         :verb => :put,
         :path => "v1/id/#{json['datasetId']}/pages/#{json['pageId']}",

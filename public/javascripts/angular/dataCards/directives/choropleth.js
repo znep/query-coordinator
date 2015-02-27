@@ -553,15 +553,14 @@
         max = max || _.max(values);
         var scale;
 
-        if (min >= 0 || max <= 0) {
+        if (min > 0 || max < 0) {
+          // Eligible for logarithmic scale, if all-positive or all-negative values
           var deltaMagnitude = _.log10(max - min);
-          if (deltaMagnitude < 1) {
-            scale = d3.scale.linear();
-          } else if (deltaMagnitude <= 3 && min > 0 || max < 0) {
+          if (deltaMagnitude >= 3) {
+            // Only logarithmic if we've got a alarge change in magnitude
             scale = d3.scale.log();
           } else {
-            // TODO: determine what the exponent should be based on the value distribution?
-            scale = d3.scale.pow().exponent(2);
+            scale = d3.scale.linear();
           }
         } else {
           scale = d3.scale.linear();

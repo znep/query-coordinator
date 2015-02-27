@@ -41,6 +41,9 @@ useSoda2:
 govstat_progress_settings:
   description: Allows overriding of goal progress.
   defaultValue: false
+govstat_missing_locale_crash:
+  description: Crash (500) when a translation is missing.
+  defaultValue: false
 disable_dataset_search_box:
   description: Disable the search box in dataset pages.
   defaultValue: false

@@ -211,9 +211,9 @@ angular.module('dataCards.models').factory('Model', function(Class, ModelHelper)
     },
 
     /**
-     * Unsets the named property, and forget it has ever been set.
+     * Unset the named property, and forget it has ever been set.
      *
-     * @param {String} propertyName The name of the property being set.
+     * @param {String} propertyName The name of the property being unset.
      * @throws {TypeError} if the property does not exist or is read-only.
      */
     unset: function(propertyName) {

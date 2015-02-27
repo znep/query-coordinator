@@ -11,11 +11,7 @@ describe('Card model', function() {
     Page = $injector.get('Page');
   }));
 
-  it('should define a serializedCard JSON schema', inject(function(Card, JJV) {
-    expect(JJV.schema).to.have.property('serializedCard');
-  }));
-
-  it('deserialization should return an instance of Card with correct properties set', inject(function(JJV, Filter) {
+  it('deserialization should return an instance of Card with correct properties set', inject(function(Schemas, Filter) {
     var blob = {
       'fieldName': 'test_crime_type',
       'cardSize': 2,
@@ -33,7 +29,7 @@ describe('Card model', function() {
       ]
     };
 
-    var requiredKeys = JJV.schema.serializedCard.required;
+    var requiredKeys = Schemas.regarding('card_metadata').getSchemaDefinition('0').required;
 
     var instance = Card.deserialize(new Page('fake-asdf'), blob);
     expect(instance).to.be.instanceof(Card);

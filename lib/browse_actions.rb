@@ -23,7 +23,7 @@ protected
         {:text => t('controls.browse.facets.view_types.blob'), :value => 'blob', :class => 'typeBlob'},
         {:text => t('controls.browse.facets.view_types.forms'), :value => 'forms', :class => 'typeForm'}]
     }
-    if feature_flag?(:exit_tech_preview, request)
+    if feature_flag?(:exit_tech_preview, defined?(request) ? request : nil)
       datasets_index = vts[:options].index { |option| option[:value] == 'datasets' } || 0
       new_view_option = {:text => t('controls.browse.facets.view_types.new_view'), :value => 'new_view', :class => 'typeNewView', :icon_font_class => 'icon-cards'}
       vts[:options].insert(datasets_index + 1, new_view_option)

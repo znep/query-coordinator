@@ -2,6 +2,7 @@ var dependencies = [
   'ui.router',
   'ngSanitize',
   'btford.markdown',
+  'monospaced.elastic',
   'socrataCommon.services',
   'socrataCommon.directives',
   'socrataCommon.filters',

@@ -47,21 +47,21 @@ class PhidippidesDatasetsControllerTest < ActionController::TestCase
     assert_response(401)
   end
 
-  test '(phase 0, 1 or 2) create returns 406 unless format is JSON' do
-    @controller.stubs(can_update_metadata?: true)
+  test '(phase 2) create returns 406 unless format is JSON' do
+    @controller.stubs(can_update_metadata?: false)
     @phidippides.stubs(issue_request: { body: 'not json', status: 200 })
 
     stub_feature_flags_with(:metadata_transition_phase, '0')
     post :create, id: 'four-four', datasetMetadata: '', format: :text
-    assert_response(406)
+    assert_response(401)
 
     stub_feature_flags_with(:metadata_transition_phase, '1')
     post :create, id: 'four-four', datasetMetadata: '', format: :text
-    assert_response(406)
+    assert_response(400)
 
     stub_feature_flags_with(:metadata_transition_phase, '2')
     post :create, id: 'four-four', datasetMetadata: '', format: :text
-    assert_response(406)
+    assert_response(400)
   end
 
   test '(phase 0) create returns 405 unless method is a post' do
@@ -94,20 +94,20 @@ class PhidippidesDatasetsControllerTest < ActionController::TestCase
     assert_response(400)
   end
 
-  test '(phase 0, 1 or 2) update returns 406 unless format is JSON' do
+  test '(phase 2) update returns 406 unless format is JSON' do
     @controller.stubs(can_update_metadata?: true)
     @phidippides.stubs(issue_request: { body: 'not json', status: 200 })
 
     stub_feature_flags_with(:metadata_transition_phase, '0')
-    post :update, id: 'four-four', datasetMetadata: '', format: :text
-    assert_response(406)
+    put :update, id: 'four-four', datasetMetadata: '', format: :text
+    assert_response(400)
 
     stub_feature_flags_with(:metadata_transition_phase, '1')
-    post :update, id: 'four-four', datasetMetadata: '', format: :text
-    assert_response(406)
+    put :update, id: 'four-four', datasetMetadata: '', format: :text
+    assert_response(400)
 
     stub_feature_flags_with(:metadata_transition_phase, '2')
-    post :update, id: 'four-four', datasetMetadata: '', format: :text
+    put :update, id: 'four-four', datasetMetadata: '', format: :text
     assert_response(406)
   end
 
@@ -149,7 +149,10 @@ class PhidippidesDatasetsControllerTest < ActionController::TestCase
     assert_response(204)
 
     stub_feature_flags_with(:metadata_transition_phase, '2')
-    put :update, id: 'four-four', datasetMetadata: mock_dataset_metadata.to_json, format: :json
+    @request.env['CONTENT_TYPE'] = 'application/json'
+    put :update, mock_dataset_metadata.merge(
+      id: 'four-four', format: :json
+    )
     assert_response(204)
   end
 

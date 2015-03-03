@@ -6,7 +6,8 @@ class PhidippidesPagesControllerTest < ActionController::TestCase
     CurrentDomain.stubs(domain: stub(cname: 'localhost'))
     @phidippides = Phidippides.new
     @phidippides.stubs(end_point: 'http://localhost:2401')
-    @controller.stubs(:phidippides => @phidippides)
+    @page_metadata_manager = PageMetadataManager.new
+    @controller.stubs(phidippides: @phidippides, page_metadata_manager: @page_metadata_manager)
   end
 
   def set_up_request(body = nil)
@@ -50,17 +51,18 @@ class PhidippidesPagesControllerTest < ActionController::TestCase
     assert_response(401)
   end
 
-  test '(phase 0, 1 or 2) create returns 406 if format is not JSON' do
+  test '(phase 2) create returns 406 if format is not JSON' do
     @controller.stubs(can_update_metadata?: true)
     @phidippides.stubs(issue_request: { status: '200' }, issue_soda_fountain_request: '')
+    @page_metadata_manager.stubs(create: { body: '', status: '200' })
 
     stub_feature_flags_with(:metadata_transition_phase, '0')
     post :create, pageMetadata: { datasetId: 'four-four' }.to_json, format: :text
-    assert_response(406)
+    assert_response(200)
 
     stub_feature_flags_with(:metadata_transition_phase, '1')
     post :create, pageMetadata: { datasetId: 'four-four' }.to_json, format: :text
-    assert_response(406)
+    assert_response(200)
 
     stub_feature_flags_with(:metadata_transition_phase, '2')
     set_up_request
@@ -139,16 +141,16 @@ class PhidippidesPagesControllerTest < ActionController::TestCase
     assert_equal(v1_page_metadata, @response.body)
   end
 
-  test '(phase 0, 1 or 2) update returns 406 if format is not JSON' do
-    @controller.stubs(can_update_metadata?: false)
+  test '(phase 2) update returns 406 if format is not JSON' do
+    @controller.stubs(can_update_metadata?: true)
 
     stub_feature_flags_with(:metadata_transition_phase, '0')
     put :update, id: 'four-four', format: :text
-    assert_response(406)
+    assert_response(400)
 
     stub_feature_flags_with(:metadata_transition_phase, '1')
     put :update, id: 'four-four', format: :text
-    assert_response(406)
+    assert_response(400)
 
     stub_feature_flags_with(:metadata_transition_phase, '2')
     set_up_request

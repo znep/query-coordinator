@@ -62,6 +62,9 @@ enable_png_download_ui:
 include_sr_in_esri:
   description: ESRI-only; stop using SRs in the export URL.
   defaultValue: false
+kill_esri_reprojection_and_pass_different_webm:
+  description: 'Special magic for Iowa, whose ArcGIS server appears to hate EPSG:900913 and projected maps'
+  defaultValue: false
 odux_enable_feature_map:
   description: Enable feature maps.
   defaultValue: false

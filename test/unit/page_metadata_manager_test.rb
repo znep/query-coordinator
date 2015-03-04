@@ -24,7 +24,7 @@ class PageMetadataManagerTest < Test::Unit::TestCase
     )
 
     stub_feature_flags_with(:metadata_transition_phase, '0')
-    result = manager.create(v0_page_metadata.to_json)
+    result = manager.create(v0_page_metadata)
     assert(result.fetch(:status) == '200', 'Expected create result status to be 200')
     assert(result.fetch(:body).fetch(:pageId), 'Expected a non-nil pageId to be created')
 
@@ -32,7 +32,7 @@ class PageMetadataManagerTest < Test::Unit::TestCase
       fetch_dataset_metadata: { status: '200', body: v1_dataset_metadata }
     )
     stub_feature_flags_with(:metadata_transition_phase, '1')
-    result = manager.create(v1_page_metadata_as_v0.to_json)
+    result = manager.create(v1_page_metadata_as_v0)
     assert(result.fetch(:status) == '200', 'Expected create result status to be 200')
     assert(result.fetch(:body).fetch(:pageId), 'Expected a non-nil pageId to be created')
 
@@ -41,7 +41,7 @@ class PageMetadataManagerTest < Test::Unit::TestCase
       create_page_metadata: { status: '200', body: nil }
     )
     stub_feature_flags_with(:metadata_transition_phase, '2')
-    result = manager.create(v1_page_metadata.except('pageId').to_json)
+    result = manager.create(v1_page_metadata.except('pageId'))
     assert(result.fetch(:status) == '200', 'Expected create result status to be 200')
     assert(result.fetch(:body).fetch(:pageId), 'Expected a non-nil pageId to be created')
   end
@@ -55,7 +55,7 @@ class PageMetadataManagerTest < Test::Unit::TestCase
     stub_feature_flags_with(:metadata_transition_phase, '2')
 
     assert_raises(Phidippides::NewPageException) do
-      manager.create(v1_page_metadata.to_json)
+      manager.create(v1_page_metadata)
     end
   end
 
@@ -68,7 +68,7 @@ class PageMetadataManagerTest < Test::Unit::TestCase
     stub_feature_flags_with(:metadata_transition_phase, '2')
 
     assert_raises(Phidippides::PageIdException) do
-      manager.create(v1_page_metadata.to_json)
+      manager.create(v1_page_metadata)
     end
   end
 
@@ -81,17 +81,17 @@ class PageMetadataManagerTest < Test::Unit::TestCase
 
     stub_feature_flags_with(:metadata_transition_phase, '0')
     assert_raises(Phidippides::NoDatasetIdException) do
-      manager.create(v1_page_metadata.except('datasetId').except('pageId').to_json)
+      manager.create(v1_page_metadata.except('datasetId').except('pageId'))
     end
 
     stub_feature_flags_with(:metadata_transition_phase, '1')
     assert_raises(Phidippides::NoDatasetIdException) do
-      manager.create(v1_page_metadata.except('datasetId').except('pageId').to_json)
+      manager.create(v1_page_metadata.except('datasetId').except('pageId'))
     end
 
     stub_feature_flags_with(:metadata_transition_phase, '2')
     assert_raises(Phidippides::NoDatasetIdException) do
-      manager.create(v1_page_metadata.except('datasetId').except('pageId').to_json)
+      manager.create(v1_page_metadata.except('datasetId').except('pageId'))
     end
   end
 
@@ -113,7 +113,7 @@ class PageMetadataManagerTest < Test::Unit::TestCase
     end
     assert(rollup_column_exists)
 
-    result = manager.create(v0_page_metadata.to_json)
+    result = manager.create(v0_page_metadata)
 
     assert(result.fetch(:status) == '200', 'Expected create result status to be 200')
     assert(result.fetch(:body).fetch(:pageId), 'Expected a non-nil pageId to be created')
@@ -137,7 +137,7 @@ class PageMetadataManagerTest < Test::Unit::TestCase
     end
     assert(rollup_column_exists)
 
-    result = manager.create(v0_page_metadata.to_json)
+    result = manager.create(v0_page_metadata)
 
     assert(result.fetch(:status) == '200', 'Expected create result status to be 200')
     assert(result.fetch(:body).fetch(:pageId), 'Expected a non-nil pageId to be created')
@@ -162,7 +162,7 @@ class PageMetadataManagerTest < Test::Unit::TestCase
     end
     assert(rollup_column_exists)
 
-    result = manager.create(v1_page_metadata.except('pageId').to_json)
+    result = manager.create(v1_page_metadata.except('pageId'))
 
     assert(result.fetch(:status) == '200', 'Expected create result status to be 200')
     assert(result.fetch(:body).fetch(:pageId), 'Expected a non-nil pageId to be created')
@@ -183,7 +183,7 @@ class PageMetadataManagerTest < Test::Unit::TestCase
       status: '200',
       body: v0_page_metadata
     )
-    result = manager.create(remove_table_card(v0_page_metadata).to_json)
+    result = manager.create(remove_table_card(v0_page_metadata))
     assert(result.fetch(:status) == '200', 'Expected create result status to be 200')
 
     # Phase 1
@@ -198,7 +198,7 @@ class PageMetadataManagerTest < Test::Unit::TestCase
       status: '200',
       body: v1_page_metadata_as_v0
     )
-    result = manager.create(remove_table_card(v1_page_metadata_as_v0).to_json)
+    result = manager.create(remove_table_card(v1_page_metadata_as_v0))
     assert(result.fetch(:status) == '200', 'Expected create result status to be 200')
 
     # Phase 2
@@ -213,7 +213,7 @@ class PageMetadataManagerTest < Test::Unit::TestCase
       status: '200',
       body: v1_page_metadata
     )
-    result = manager.create(remove_table_card(v1_page_metadata).except('pageId').to_json)
+    result = manager.create(remove_table_card(v1_page_metadata).except('pageId'))
     assert(result.fetch(:status) == '200', 'Expected create result status to be 200')
   end
 
@@ -226,7 +226,7 @@ class PageMetadataManagerTest < Test::Unit::TestCase
       fetch_dataset_metadata: { status: '200', body: v0_dataset_metadata }
     )
     stub_feature_flags_with(:metadata_transition_phase, '0')
-    manager.create(v0_page_metadata.to_json)
+    manager.create(v0_page_metadata)
     Phidippides.any_instance.expects(:update_page_metadata).times(1).then.with do |json, options|
       assert(json.fetch(:bunch))
       assert(json.fetch(:foo))
@@ -242,7 +242,7 @@ class PageMetadataManagerTest < Test::Unit::TestCase
       fetch_dataset_metadata: { status: '200', body: v1_dataset_metadata }
     )
     stub_feature_flags_with(:metadata_transition_phase, '1')
-    manager.create(v1_page_metadata_as_v0.to_json)
+    manager.create(v1_page_metadata_as_v0)
     Phidippides.any_instance.expects(:update_page_metadata).times(1).then.with do |json, options|
       assert(json.fetch(:bunch))
       assert(json.fetch(:foo))
@@ -258,7 +258,7 @@ class PageMetadataManagerTest < Test::Unit::TestCase
       request_new_page_id: { status: '200', body: { id: 'abcd-efgh' } },
     )
     stub_feature_flags_with(:metadata_transition_phase, '2')
-    manager.create(v1_page_metadata.except('pageId').to_json)
+    manager.create(v1_page_metadata.except('pageId'))
     Phidippides.any_instance.expects(:update_page_metadata).times(1).then.with do |json, options|
       assert(json.fetch(:bunch))
       assert(json.fetch(:foo))
@@ -278,17 +278,17 @@ class PageMetadataManagerTest < Test::Unit::TestCase
 
     stub_feature_flags_with(:metadata_transition_phase, '0')
     assert_raises(Phidippides::NoDatasetIdException) do
-      manager.update(v1_page_metadata.except('datasetId').to_json)
+      manager.update(v1_page_metadata.except('datasetId'))
     end
 
     stub_feature_flags_with(:metadata_transition_phase, '1')
     assert_raises(Phidippides::NoDatasetIdException) do
-      manager.update(v1_page_metadata.except('datasetId').to_json)
+      manager.update(v1_page_metadata.except('datasetId'))
     end
 
     stub_feature_flags_with(:metadata_transition_phase, '2')
     assert_raises(Phidippides::NoDatasetIdException) do
-      manager.update(v1_page_metadata.except('datasetId').to_json)
+      manager.update(v1_page_metadata.except('datasetId'))
     end
   end
 
@@ -300,17 +300,17 @@ class PageMetadataManagerTest < Test::Unit::TestCase
 
     stub_feature_flags_with(:metadata_transition_phase, '0')
     assert_raises(Phidippides::NoPageIdException) do
-      manager.update(v1_page_metadata.except('pageId').to_json)
+      manager.update(v1_page_metadata.except('pageId'))
     end
 
     stub_feature_flags_with(:metadata_transition_phase, '1')
     assert_raises(Phidippides::NoPageIdException) do
-      manager.update(v1_page_metadata.except('pageId').to_json)
+      manager.update(v1_page_metadata.except('pageId'))
     end
 
     stub_feature_flags_with(:metadata_transition_phase, '2')
     assert_raises(Phidippides::NoPageIdException) do
-      manager.update(v1_page_metadata.except('pageId').to_json)
+      manager.update(v1_page_metadata.except('pageId'))
     end
   end
 
@@ -326,20 +326,20 @@ class PageMetadataManagerTest < Test::Unit::TestCase
       update_page_metadata: { status: '200', body: v0_page_metadata }
     )
     stub_feature_flags_with(:metadata_transition_phase, '0')
-    result = manager.update(v0_page_metadata.to_json)
+    result = manager.update(v0_page_metadata)
     assert(result[:status] == '200', 'Expected create result status to be 200')
     # Call update a second time to try to trick it into deleting and
     # re-creating the rollup table(?)
-    manager.update(v0_page_metadata.to_json)
+    manager.update(v0_page_metadata)
 
     # Phase 1
     Phidippides.any_instance.stubs(
       fetch_dataset_metadata: { status: '200', body: v1_dataset_metadata }
     )
     stub_feature_flags_with(:metadata_transition_phase, '1')
-    result = manager.update(v0_page_metadata.to_json)
+    result = manager.update(v0_page_metadata)
     assert(result[:status] == '200', 'Expected create result status to be 200')
-    manager.update(v0_page_metadata.to_json)
+    manager.update(v0_page_metadata)
 
     # Phase 2
     Phidippides.any_instance.stubs(
@@ -348,9 +348,9 @@ class PageMetadataManagerTest < Test::Unit::TestCase
       update_page_metadata: { status: '200', body: nil }
     )
     stub_feature_flags_with(:metadata_transition_phase, '2')
-    result = manager.update(v1_page_metadata.to_json)
+    result = manager.update(v1_page_metadata)
     assert(result[:status] == '200', 'Expected create result status to be 200')
-    manager.update(v1_page_metadata.to_json)
+    manager.update(v1_page_metadata)
   end
 
   # Yes, this is a private method, but it warranted at least some unit testing

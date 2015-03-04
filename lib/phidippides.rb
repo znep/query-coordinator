@@ -65,20 +65,20 @@ class Phidippides < SocrataHttp
     end
   end
 
-  def update_dataset_metadata(json, options = {})
+  def update_dataset_metadata(dataset_metadata, options = {})
     if metadata_transition_phase_0?
       issue_request(
         :verb => :put,
-        :path => "datasets/#{json['id']}",
-        :data => json,
+        :path => "datasets/#{dataset_metadata['id']}",
+        :data => dataset_metadata,
         :request_id => options[:request_id],
         :cookies => options[:cookies]
       )
     else
       issue_request(
         :verb => :put,
-        :path => "v1/id/#{json['id']}/dataset",
-        :data => json,
+        :path => "v1/id/#{dataset_metadata['id']}/dataset",
+        :data => dataset_metadata,
         :request_id => options[:request_id],
         :cookies => options[:cookies]
       )
@@ -183,19 +183,19 @@ class Phidippides < SocrataHttp
     )
   end
 
-  def create_page_metadata(json, options = {})
-    raise ArgumentError.new('datasetId is required') unless json.key?('datasetId')
+  def create_page_metadata(page_metadata, options = {})
+    raise ArgumentError.new('datasetId is required') unless page_metadata.key?('datasetId')
 
     if metadata_transition_phase_0? || metadata_transition_phase_1?
       issue_request(
         :verb => :post,
         :path => 'pages',
-        :data => json,
+        :data => page_metadata,
         :request_id => options[:request_id],
         :cookies => options[:cookies]
       )
     else
-      raise ArgumentError.new('pageId is required') unless json.key?('pageId')
+      raise ArgumentError.new('pageId is required') unless page_metadata.key?('pageId')
 
       # Note that this is a PUT, not a POST like might be expected.
       # The reason for this is that by the time that we call
@@ -206,8 +206,8 @@ class Phidippides < SocrataHttp
       # want to 'create', and therefore use PUT.
       issue_request(
         :verb => :put,
-        :path => "v1/id/#{json['datasetId']}/pages/#{json['pageId']}",
-        :data => json,
+        :path => "v1/id/#{page_metadata['datasetId']}/pages/#{page_metadata['pageId']}",
+        :data => page_metadata,
         :request_id => options[:request_id],
         :cookies => options[:cookies]
       )
@@ -232,24 +232,24 @@ class Phidippides < SocrataHttp
     end
   end
 
-  def update_page_metadata(json, options = {})
-    raise ArgumentError.new('pageId is required') unless json.key?('pageId')
+  def update_page_metadata(page_metadata, options = {})
+    raise ArgumentError.new('pageId is required') unless page_metadata.key?('pageId')
 
     if metadata_transition_phase_0? || metadata_transition_phase_1?
       issue_request(
         :verb => :put,
-        :path => "pages/#{json['pageId']}",
-        :data => json,
+        :path => "pages/#{page_metadata['pageId']}",
+        :data => page_metadata,
         :request_id => options[:request_id],
         :cookies => options[:cookies]
       )
     else
-      raise ArgumentError.new('datasetId is required') unless json.key?('datasetId')
+      raise ArgumentError.new('datasetId is required') unless page_metadata.key?('datasetId')
 
       issue_request(
         :verb => :put,
-        :path => "v1/id/#{json['datasetId']}/pages/#{json['pageId']}",
-        :data => json,
+        :path => "v1/id/#{page_metadata['datasetId']}/pages/#{page_metadata['pageId']}",
+        :data => page_metadata,
         :request_id => options[:request_id],
         :cookies => options[:cookies]
       )

@@ -67,7 +67,7 @@
     ), $scope.eventToObservable('$destroy'));
   }
 
-  function CardsViewController($scope, $location, $log, $window, $q, AngularRxExtensions, SortedTileLayout, Filter, PageDataService, UserSessionService, CardTypeMapping, FlyoutService, page, WindowState, ServerConfig, $http) {
+  function CardsViewController($scope, $location, $log, $window, $q, AngularRxExtensions, SortedTileLayout, Filter, PageDataService, UserSessionService, FlyoutService, page, WindowState, ServerConfig, $http) {
 
     AngularRxExtensions.install($scope);
 

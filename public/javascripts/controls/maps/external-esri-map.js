@@ -112,7 +112,9 @@
 
         getURL: function(bounds) {
             bounds = this.adjustBounds(bounds);
-            bounds = bounds.transform(this.projection, this.externalMapProjection);
+            if (blist.feature_flags.kill_esri_reprojection_and_pass_different_webm !== true) {
+              bounds = bounds.transform(this.projection, this.externalMapProjection);
+            }
 
             // ArcGIS Server only wants the numeric portion of the projection ID.
             var projWords = this.projection.getCode().split(":");
@@ -128,6 +130,12 @@
                 $.extend(newParams, {
                     'BBOXSR': srid,
                     'IMAGESR': srid
+                });
+            }
+            if (blist.feature_flags.kill_esri_reprojection_and_pass_different_webm === true) {
+                $.extend(newParams, {
+                    'BBOXSR': 3857,
+                    'IMAGESR': 3857
                 });
             }
 

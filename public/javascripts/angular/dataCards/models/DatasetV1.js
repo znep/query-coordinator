@@ -96,8 +96,6 @@ angular.module('dataCards.models').factory('DatasetV1', function(ModelHelper, Mo
             _.forOwn(columns, function(columnBlob, columnFieldName) {
               columnBlob.isSystemColumn = isSystemColumn(columnFieldName);
               columnBlob.dataset = self;
-              columnBlob.availableCardTypes = ['choropleth', 'column', 'feature', 'search', 'table', 'timeline'];
-              columnBlob.defaultCardType = 'column';
             });
 
             return columns;

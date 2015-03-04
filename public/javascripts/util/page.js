@@ -175,11 +175,11 @@ Page.deleteById = function(newId, oldId, successCallback, errorCallback)
             type: 'POST', url: '/api/id/pages',
             data: JSON.stringify([{ path: oldId, ':deleted': true }]),
             error: function(e) {
-              // ignore error if it's a 404, because it means the /api/id/pages dataset does not exist
-              if (e.status !== 404) {
-                errorCallback();
-              } else {
+              // /api/id/pages does not exist on all domains
+              if (e.status === 404) {
                 callback();
+              } else {
+                errorCallback();
               }
             },
             success: callback

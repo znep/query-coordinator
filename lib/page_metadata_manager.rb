@@ -62,15 +62,7 @@ class PageMetadataManager
       end
     end
 
-    result = create_or_update(:create_page_metadata, page_metadata, options)
-
-    if result.fetch(:status) == '200'
-      new_view_manager.create(
-        result.fetch(:body).fetch('pageId'),
-        page_metadata['name'],
-        page_metadata['description']
-      )
-    end
+    result = create_or_update(:create, page_metadata, options)
 
     result.with_indifferent_access
   end
@@ -82,18 +74,23 @@ class PageMetadataManager
     raise Phidippides::NoDatasetIdException.new('cannot create page with no dataset id') unless page_metadata.key?('datasetId')
     raise Phidippides::NoPageIdException.new('cannot create page with no page id') unless page_metadata.key?('pageId')
 
-    create_or_update(:update_page_metadata, page_metadata, options)
+    create_or_update(:update, page_metadata, options)
   end
 
   private
 
-  # Creates or updates a page. This takes care of updating phidippides, as well as the rollup tables
-  # in soda fountain.
-  def create_or_update(method, json, options = {})
-    result = phidippides.send(method, json, options)
+  # Creates or updates a page. This takes care of updating phidippides, as well as rollup tables in
+  # soda fountain and the core datalens link.
+  def create_or_update(method, page_metadata, options = {})
+    if method == :create
+      result = phidippides.create_page_metadata(page_metadata, options)
+    else
+      result = phidippides.update_page_metadata(page_metadata, options)
+    end
+
 
     if result.fetch(:status) == '200'
-      rollup_soql = build_rollup_soql(json, options)
+      rollup_soql = build_rollup_soql(page_metadata, options)
 
       # if we can roll up anything for this query, do so
       if rollup_soql
@@ -105,13 +102,13 @@ class PageMetadataManager
         # We need to handle both cases.
         if metadata_transition_phase_0? || metadata_transition_phase_1?
           page_id = result.fetch(:body).fetch(:pageId)
-          json['pageId'] = page_id
+          page_metadata['pageId'] = page_id
         else
-          page_id = json.fetch('pageId')
+          page_id = page_metadata.fetch('pageId')
         end
 
         args = {
-          dataset_id: json.fetch('datasetId'),
+          dataset_id: page_metadata.fetch('datasetId'),
           rollup_name: page_id,
           page_id: page_id,
           soql: rollup_soql
@@ -125,7 +122,14 @@ class PageMetadataManager
     # actually will not return the metadata blob that we just posted
     # to it.
     if !metadata_transition_phase_0? && !metadata_transition_phase_1?
-      result[:body] = json
+      result[:body] = page_metadata
+
+    if method == :create && result.fetch(:status) == '200'
+      new_view_manager.create(
+        result.fetch(:body).fetch(:pageId),
+        page_metadata['name'],
+        page_metadata['description']
+      )
     end
 
     result

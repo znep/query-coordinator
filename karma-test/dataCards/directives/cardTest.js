@@ -39,6 +39,8 @@ describe('card directive', function() {
       var scope = $rootScope.$new();
       cardModel = new Model();
       cardModel.defineObservableProperty('expanded', false);
+      cardModel.defineObservableProperty('isCustomizable', false);
+      cardModel.defineObservableProperty('isExportable', true);
       cardModel.defineObservableProperty('cardSize', 1);
       cardModel.defineObservableProperty('cardType', 'column');
       cardModel.defineObservableProperty('page', null);
@@ -88,6 +90,8 @@ describe('card directive', function() {
 
       cardModel = new Model();
       cardModel.defineObservableProperty('expanded', false);
+      cardModel.defineObservableProperty('isCustomizable', false);
+      cardModel.defineObservableProperty('isExportable', true);
       cardModel.defineObservableProperty('cardSize', 1);
       cardModel.defineObservableProperty('cardType', 'column');
       cardModel.defineObservableProperty('page', pageModel);

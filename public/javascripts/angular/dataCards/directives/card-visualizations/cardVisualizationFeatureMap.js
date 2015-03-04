@@ -15,7 +15,7 @@
         AngularRxExtensions.install(scope);
 
         var model = scope.observe('model');
-        var dataset = model.observeOnLatest('page.dataset');
+        var dataset = model.observeOnLatest('page.dataset').filter(_.isPresent);
         var baseSoqlFilter = model.observeOnLatest('page.baseSoqlFilter');
         var dataRequests = new Rx.Subject();
         var dataResponses = new Rx.Subject();

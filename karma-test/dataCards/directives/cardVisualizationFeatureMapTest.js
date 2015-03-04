@@ -19,7 +19,7 @@ describe("A FeatureMap Card Visualization", function() {
     Model = $injector.get('Model');
     var $q = $injector.get('$q');
     var mockCardDataService = {
-      getFeatureExtent: function(){ return $q.when([]);},
+      getFeatureExtent: function(){ return $q.when([]); },
     };
     _$provide.value('CardDataService', mockCardDataService);
     testHelpers.mockDirective(_$provide, 'featureMap');

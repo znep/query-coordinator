@@ -104,7 +104,6 @@ describe("A Timeline Chart Card Visualization", function() {
     dataset.id = 'cras-hing';
     dataset.defineObservableProperty('rowDisplayUnit', '');
 
-
     var timelineChartScope = element.find('.timeline-chart').scope();
 
     // Use chartData as a proxy for TimelineChart's happiness.

@@ -40,7 +40,7 @@
   <div
     class="card-control icon-settings"
     ng-class="{ disabled: !isCustomizable }"
-    ng-click="customizeCard()"
+    ng-click="customizeCard(isCustomizable)"
     ng-show="editMode && interactive"
     title="{{ isCustomizable ?
       'Customize this card' :

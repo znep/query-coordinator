@@ -277,7 +277,7 @@
 
           sortedColumns[i].available = available;
 
-          if (CardTypeMapping.visualizationSupportedForColumn(dataset, sortedColumns[i].fieldName)) {
+          if (sortedColumns[i].defaultCardType !== 'invalid') {
             if (available) {
               availableColumns.push(sortedColumns[i].fieldName);
             } else {
@@ -487,10 +487,8 @@
       'show': false
     };
     $scope.$on('customize-card-with-model', function(e, cardModel) {
-      if (CardTypeMapping.modelIsCustomizable(cardModel)) {
-        $scope.customizeState.cardModel = cardModel;
-        $scope.customizeState.show = true;
-      }
+      $scope.customizeState.cardModel = cardModel;
+      $scope.customizeState.show = true;
     });
 
     $scope.$on('delete-card-with-model', function(e, cardModel) {

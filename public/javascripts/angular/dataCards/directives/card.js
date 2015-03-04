@@ -108,8 +108,10 @@
           $scope.model.page.toggleExpanded($scope.model);
         };
 
-        $scope.customizeCard = function() {
-          $scope.$emit('customize-card-with-model', $scope.model);
+        $scope.customizeCard = function(modelIsCustomizable) {
+          if (modelIsCustomizable) {
+            $scope.$emit('customize-card-with-model', $scope.model);
+          }
         };
 
         $scope.deleteCard = function() {

@@ -174,7 +174,15 @@ Page.deleteById = function(newId, oldId, successCallback, errorCallback)
         $.socrataServer.makeRequest({
             type: 'POST', url: '/api/id/pages',
             data: JSON.stringify([{ path: oldId, ':deleted': true }]),
-            error: errorCallback, success: callback
+            error: function(e) {
+              // /api/id/pages does not exist on all domains
+              if (e.status === 404) {
+                callback();
+              } else {
+                errorCallback();
+              }
+            },
+            success: callback
         });
     }
     else

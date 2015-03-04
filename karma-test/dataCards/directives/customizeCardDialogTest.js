@@ -74,21 +74,24 @@ describe('Customize card dialog', function() {
           parameters: {
             region: '_mash-apes'
           }
-        }
+        },
+        availableCardTypes: ['choropleth']
       },
       feature: {
         name: 'Froods who really know where their towels are.',
         description: '???',
         fred: 'location',
         physicalDatatype: 'point',
-        dataset: datasetModel
+        dataset: datasetModel,
+        availableCardTypes: ['feature']
       },
       bar: {
         name: 'A bar where cool froods hang out.',
         description: '???',
         fred: 'amount',
         physicalDatatype: 'number',
-        dataset: datasetModel
+        dataset: datasetModel,
+        availableCardTypes: ['column', 'search']
       }
     };
     datasetModel.defineObservableProperty('columns', columns);

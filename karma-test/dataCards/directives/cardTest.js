@@ -56,9 +56,9 @@ describe('card directive', function() {
       cardModel.defineObservableProperty('isExportable', true);
       cardModel.defineObservableProperty('cardSize', 1);
       cardModel.defineObservableProperty('cardType', 'column');
+      cardModel.defineObservableProperty('column', { availableCardTypes: ['search'] });
       cardModel.page = pageModel;
 
-      cardModel.defineObservableProperty('column', null);
       scope.cardModel = cardModel;
 
       el = testHelpers.TestDom.compileAndAppend(html, scope);
@@ -115,7 +115,7 @@ describe('card directive', function() {
       cardModel.defineObservableProperty('isExportable', true);
       cardModel.defineObservableProperty('cardSize', 1);
       cardModel.defineObservableProperty('cardType', 'column');
-      cardModel.defineObservableProperty('column', null);
+      cardModel.defineObservableProperty('column', { availableCardTypes: ['search'] });
       cardModel.page = pageModel;
       scope.cardModel = cardModel;
 
@@ -174,32 +174,38 @@ describe('card directive', function() {
   });
 
   describe('card description text', function() {
+
     var html = '<card model="cardModel" interactive="true"></card>';
     var cardModel;
     var datasetModel;
     var initialDescriptionText = 'some description text';
     var truncatedDescriptionElement;
+
     beforeEach(function() {
       var scope = $rootScope.$new();
 
+      // Note that datasetModel is initialized in the scope of the
+      // enclosing describe, not the beforeEach, so that we can
+      // access it inside the 'should be updated when changed' test
+      // below.
       datasetModel = new Model();
+      datasetModel.defineObservableProperty('rowDisplayUnit', 'cooks');
       datasetModel.defineObservableProperty('columns', {
         myFieldName: {
           description: initialDescriptionText,
-          dataset: datasetModel
+          dataset: datasetModel,
+          availableCardTypes: ['search']
         }
       });
       datasetModel.version = '1';
-      datasetModel.defineObservableProperty('rowDisplayUnit', null);
 
       var pageModel = new Model();
       pageModel.defineObservableProperty('dataset', datasetModel);
-      pageModel.defineObservableProperty('primaryAggregation', null);
       pageModel.defineObservableProperty('primaryAmountField', null);
+      pageModel.defineObservableProperty('primaryAggregation', null);
+      pageModel.id = 'abcd-efgh';
 
-      cardModel = new CardV1(pageModel, 'myFieldName');
-
-      scope.cardModel = cardModel;
+      scope.cardModel = new CardV1(pageModel, 'myFieldName');
 
       var el = testHelpers.TestDom.compileAndAppend(html, scope);
       truncatedDescriptionElement = el.find('.card-text').find('.description-truncated-content')
@@ -218,7 +224,7 @@ describe('card directive', function() {
         var newDescriptionText = 'new description';
 
         datasetModel.set('columns', {
-          myFieldName: { dataset: { version: '1' }, description: newDescriptionText }
+          myFieldName: { dataset: datasetModel, description: newDescriptionText, availableCardTypes: ['search'] }
         });
 
         // Defer due to the card directive using observeDimensions, which can be async.
@@ -261,19 +267,21 @@ describe('card directive', function() {
         myAggregationField: {
           name: 'My Version 1 Aggregation Field',
           title: 'My Version 0 Aggregation Field',
-          dataset: datasetModel
+          dataset: datasetModel,
+          availableCardTypes: ['column']
         },
         myFieldName: {
           name: initialTitleText,
           description: initialDescriptionText,
-          dataset: datasetModel
+          dataset: datasetModel,
+          availableCardTypes: ['column']
         },
         '*': {
           name: 'Table Card',
           dataset: datasetModel,
           physicalDatatype: '*',
-          logicalDatatype: '*',
-          fred: '*'
+          fred: '*',
+          availableCardTypes: ['table']
         }
       });
       datasetModel.version = options.version;

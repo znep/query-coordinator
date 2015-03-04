@@ -3,26 +3,9 @@ describe('addCardDialog', function() {
 
   beforeEach(module('dataCards'));
   beforeEach(module('dataCards.directives'));
-
-  // TODO: mock out these directives to make this more unit-testy
   beforeEach(module('/angular_templates/dataCards/addCardDialog.html'));
-  beforeEach(module('/angular_templates/dataCards/card.html'));
-  beforeEach(module('/angular_templates/dataCards/spinner.html'));
-  beforeEach(module('/angular_templates/dataCards/cardVisualizationChoropleth.html'));
-  beforeEach(module('/angular_templates/dataCards/cardVisualizationColumnChart.html'));
-  beforeEach(module('/angular_templates/dataCards/cardVisualizationTimelineChart.html'));
-  beforeEach(module('/angular_templates/dataCards/cardVisualizationSearch.html'));
-  beforeEach(module('/angular_templates/dataCards/cardVisualizationFeatureMap.html'));
-  beforeEach(module('/angular_templates/dataCards/clearableInput.html'));
-  beforeEach(module('/angular_templates/dataCards/timelineChart.html'));
-  beforeEach(module('/angular_templates/dataCards/cardVisualizationTable.html'));
-  beforeEach(module('/angular_templates/dataCards/cardVisualizationTimelineChart.html'));
-  beforeEach(module('/angular_templates/dataCards/cardVisualization.html'));
-  beforeEach(module('/angular_templates/dataCards/cardVisualizationInvalid.html'));
   beforeEach(module('/angular_templates/dataCards/socSelect.html'));
-  beforeEach(module('/angular_templates/dataCards/table.html'));
-  beforeEach(module('/angular_templates/dataCards/timelineChart.html'));
-  beforeEach(module('/angular_templates/dataCards/featureMap.html'));
+  beforeEach(module('/angular_templates/dataCards/card.html'));
   beforeEach(module('dataCards/cards.sass'));
 
   var testHelpers;
@@ -34,6 +17,7 @@ describe('addCardDialog', function() {
   var AngularRxExtensions;
   var CardTypeMapping;
   var $httpBackend;
+  var $templateCache;
 
   beforeEach(inject(function($injector) {
     testHelpers = $injector.get('testHelpers');
@@ -45,6 +29,18 @@ describe('addCardDialog', function() {
     AngularRxExtensions = $injector.get('AngularRxExtensions');
     CardTypeMapping = $injector.get('CardTypeMapping');
     $httpBackend = $injector.get('$httpBackend');
+    $templateCache = $injector.get('$templateCache');
+
+    // Override the templates of the other directives. We don't need to test them.
+    $templateCache.put('/angular_templates/dataCards/spinner.html', '');
+    $templateCache.put('/angular_templates/dataCards/cardVisualizationColumnChart.html', '');
+    $templateCache.put('/angular_templates/dataCards/cardVisualizationChoropleth.html', '');
+    $templateCache.put('/angular_templates/dataCards/cardVisualizationTable.html', '');
+    $templateCache.put('/angular_templates/dataCards/cardVisualizationTimelineChart.html', '');
+    $templateCache.put('/angular_templates/dataCards/cardVisualizationSearch.html', '');
+    $templateCache.put('/angular_templates/dataCards/cardVisualization.html', '');
+    $templateCache.put('/angular_templates/dataCards/cardVisualizationInvalid.html', '');
+    $templateCache.put('/angular_templates/dataCards/clearableInput.html', '');
 
     $httpBackend.whenGET(/\/api\/id\/rook-king.json.*/).respond([]);
     $httpBackend.whenGET(/\/resource\/rook-king.json.*/).respond([]);
@@ -69,21 +65,24 @@ describe('addCardDialog', function() {
             'region': '_mash-apes'
           }
         },
-        'dataset': datasetModel
+        'dataset': datasetModel,
+        'availableCardTypes': ['choropleth']
       },
       'bar': {
         'name': 'A bar where cool froods hang out.',
         'description': '???',
         'fred': 'amount',
         'physicalDatatype': 'number',
-        'dataset': datasetModel
+        'dataset': datasetModel,
+        'availableCardTypes': ['column', 'search']
       },
       'point': {
         'name': 'Points where crimes have been committed.',
         'description': 'Points.',
         'fred': 'location',
         'physicalDatatype': 'point',
-        'dataset': datasetModel
+        'dataset': datasetModel,
+        'availableCardTypes': ['feature']
       },
       'ward': {
         'name': 'Ward where crime was committed.',
@@ -95,7 +94,8 @@ describe('addCardDialog', function() {
             'region': '_mash-apes'
           }
         },
-        'dataset': datasetModel
+        'dataset': datasetModel,
+        'availableCardTypes': ['choropleth']
       },
       'multipleVisualizations': {
         'name': 'A card for which multiple visualizations are possible.',
@@ -103,7 +103,8 @@ describe('addCardDialog', function() {
         'fred': 'text',
         'physicalDatatype': 'text',
         'cardinality': 2000,
-        'dataset': datasetModel
+        'dataset': datasetModel,
+        'availableCardTypes': ['column', 'search']
       }
     };
 

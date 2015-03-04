@@ -122,6 +122,7 @@ describe('CardLayout directive', function() {
         fred: 'amount',
         physicalDatatype: 'number',
         dataset: datasetModel,
+        availableCardTypes: ['column', 'search'],
         cardTypeWeWillAssignForThisTest: 'histogram'
       },
       pointMap_column: {
@@ -134,6 +135,7 @@ describe('CardLayout directive', function() {
             region: '_mash-apes'
           }
         },
+        availableCardTypes: ['feature'],
         cardTypeWeWillAssignForThisTest: 'feature'
       },
       choropleth_column: {
@@ -147,6 +149,7 @@ describe('CardLayout directive', function() {
             region: '_mash-apes'
           }
         },
+        availableCardTypes: ['choropleth'],
         cardTypeWeWillAssignForThisTest: 'choropleth'
       },
       timeline_column: {
@@ -154,6 +157,7 @@ describe('CardLayout directive', function() {
         fred: 'time',
         physicalDatatype: 'number',
         dataset: datasetModel,
+        availableCardTypes: ['timeline'],
         cardTypeWeWillAssignForThisTest: 'timeline'
       },
       search_column: {
@@ -161,6 +165,7 @@ describe('CardLayout directive', function() {
         fred: 'text',
         physicalDatatype: 'text',
         dataset: datasetModel,
+        availableCardTypes: ['search'],
         cardTypeWeWillAssignForThisTest: 'search'
       },
       invalid_column: {
@@ -168,12 +173,14 @@ describe('CardLayout directive', function() {
         fred: 'lol',
         physicalDatatype: 'text',
         dataset: datasetModel,
+        availableCardTypes: [],
         cardTypeWeWillAssignForThisTest: 'invalid'
       },
       '*': {
         fred: '*',
         physicalDatatype: '*',
         dataset: datasetModel,
+        availableCardTypes: ['table'],
         cardTypeWeWillAssignForThisTest: 'table'
       }
     });

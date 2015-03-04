@@ -1,6 +1,6 @@
 (function() {
 
-  function CardDirective(AngularRxExtensions, DownloadService, $timeout) {
+  function CardDirective(AngularRxExtensions, ServerConfig, CardTypeMapping, DownloadService, $timeout) {
 
     return {
       restrict: 'E',
@@ -24,8 +24,38 @@
 
         $scope.descriptionCollapsed = true;
         $scope.bindObservable('expanded', modelSubject.observeOnLatest('expanded'));
-        $scope.bindObservable('isCustomizable', modelSubject.observeOnLatest('isCustomizable'));
-        $scope.bindObservable('isExportable', modelSubject.observeOnLatest('isExportable'));
+
+        if (ServerConfig.metadataMigration.shouldUseLocalCardTypeMapping()) {
+
+          $scope.bindObservable(
+            'isCustomizable',
+            Rx.Observable.combineLatest(
+              modelSubject,
+              columns.filter(_.isPresent),
+              function(model, columns) {
+                return CardTypeMapping.modelIsCustomizable(model);
+              }
+            )
+          );
+
+          $scope.bindObservable(
+            'isExportable',
+            Rx.Observable.combineLatest(
+              modelSubject,
+              columns.filter(_.isPresent),
+              function(model, columns) {
+                return CardTypeMapping.modelIsExportable(model);
+              }
+            )
+          );
+
+        } else {
+
+          $scope.bindObservable('isCustomizable', modelSubject.observeOnLatest('isCustomizable'));
+          $scope.bindObservable('isExportable', modelSubject.observeOnLatest('isExportable'));
+
+        }
+
         $scope.bindObservable(
           'title',
           versionSequence.

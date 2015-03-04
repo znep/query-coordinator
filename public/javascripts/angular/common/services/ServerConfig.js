@@ -35,6 +35,9 @@
     shouldConsumeComputationStrategy: function() {
       return ServerConfig.metadataMigration.currentPhase() > 0;
     },
+    shouldUseLocalCardTypeMapping: function() {
+      return ServerConfig.metadataMigration.currentPhase() < 3;
+    },
     datasetMetadata: {
       // Whether or not to use the new flex dataset metadata
       // endpoint and schema.

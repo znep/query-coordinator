@@ -18,7 +18,6 @@
 
   function initCardSelection(
     scope,
-    CardTypeMapping,
     FlyoutService,
     $timeout,
     element
@@ -40,7 +39,6 @@
     WindowState,
     SortedTileLayout,
     FlyoutService,
-    CardTypeMapping,
     $timeout,
     $window
   ) {
@@ -772,7 +770,6 @@
 
         initCardSelection(
           scope,
-          CardTypeMapping,
           FlyoutService,
           $timeout,
           cardContainer

@@ -17,6 +17,11 @@ describe("A FeatureMap Card Visualization", function() {
     testHelpers = $injector.get('testHelpers');
     $rootScope = $injector.get('$rootScope');
     Model = $injector.get('Model');
+    var $q = $injector.get('$q');
+    var mockCardDataService = {
+      getFeatureExtent: function(){ return $q.when([]);},
+    };
+    _$provide.value('CardDataService', mockCardDataService);
     testHelpers.mockDirective(_$provide, 'featureMap');
   }));
 
@@ -42,9 +47,17 @@ describe("A FeatureMap Card Visualization", function() {
 
     outerScope.model = card;
 
-    // If it's going to crash, it's here.
     var element = testHelpers.TestDom.compileAndAppend(html, outerScope);
 
-    // Ideally, we'd check that the inner FeatureMap actually renders later on.
+    var dataset = new Model();
+    dataset.id = 'cras-hing';
+    dataset.defineObservableProperty('rowDisplayUnit', '');
+
+    var featureMapScope = element.find('feature-map').scope();
+
+    // Use featureLayerUrl as a proxy for FeatureMap's happiness.
+    expect(featureMapScope.featureLayerUrl).to.equal(undefined);
+    page.set('dataset', dataset);
+    expect(featureMapScope.featureLayerUrl).to.not.equal(undefined);
   });
 });

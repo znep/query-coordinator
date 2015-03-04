@@ -21,9 +21,24 @@ describe("A Timeline Chart Card Visualization", function() {
     $rootScope = $injector.get('$rootScope');
     Model = $injector.get('Model');
     timelineChartVisualizationHelpers = $injector.get('TimelineChartVisualizationHelpers');
+
     var mockCardDataService = {
-      getTimelineDomain: function(){ return $q.when([]);},
-      getTimelineData: function(){ return $q.when([]);}
+      getTimelineDomain: function(){
+        return $q.when({
+          start: moment().subtract('years', 10),
+          end: moment()
+        });
+      },
+      getTimelineData: function(){
+        return $q.when([
+          {
+            date: moment().subtract('years', 10)
+          },
+          {
+            date: moment()
+          }
+        ]
+      )}
     };
     _$provide.value('CardDataService', mockCardDataService);
     testHelpers.mockDirective(_$provide, 'timelineChart');
@@ -80,10 +95,22 @@ describe("A Timeline Chart Card Visualization", function() {
     card.defineObservableProperty('activeFilters', []);
 
     outerScope.model = card;
+    outerScope.whereClause = '';
 
     // If it's going to crash, it's here.
     var element = testHelpers.TestDom.compileAndAppend(html, outerScope);
 
-    // Ideally, we'd check that the inner timeline actually renders later on.
+    var dataset = new Model();
+    dataset.id = 'cras-hing';
+    dataset.defineObservableProperty('rowDisplayUnit', '');
+
+
+    var timelineChartScope = element.find('.timeline-chart').scope();
+
+    // Use chartData as a proxy for TimelineChart's happiness.
+    expect(timelineChartScope.chartData).to.equal(undefined);
+    page.set('dataset', dataset);
+    outerScope.$apply(); // Resolve some internal promises :(
+    expect(timelineChartScope.chartData).to.not.equal(undefined);
   });
 });

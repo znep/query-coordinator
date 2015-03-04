@@ -2,7 +2,9 @@
 
 describe("A Timeline Chart Card Visualization", function() {
   var testHelpers;
-  var $q
+  var $q;
+  var $rootScope;
+  var Model;
   var timelineChartVisualizationHelpers;
   var _$provide;
 
@@ -16,6 +18,8 @@ describe("A Timeline Chart Card Visualization", function() {
   beforeEach(inject(function($injector) {
     testHelpers = $injector.get('testHelpers');
     $q = $injector.get('$q');
+    $rootScope = $injector.get('$rootScope');
+    Model = $injector.get('Model');
     timelineChartVisualizationHelpers = $injector.get('TimelineChartVisualizationHelpers');
     var mockCardDataService = {
       getTimelineDomain: function(){ return $q.when([]);},
@@ -61,4 +65,25 @@ describe("A Timeline Chart Card Visualization", function() {
     });
   });
 
+  it('should not crash given an undefined dataset binding', function() {
+    var outerScope = $rootScope.$new();
+    var html = '<div class="card-visualization"><card-visualization-timeline-chart model="model" where-clause="whereClause"></card-visualization-timeline-chart></div>';
+
+    var card = new Model();
+    var page = new Model();
+    page.defineObservableProperty('dataset', undefined); // The important bit
+
+    page.defineObservableProperty('baseSoqlFilter', '');
+    page.defineObservableProperty('aggregation', {});
+    card.defineObservableProperty('page', page);
+    card.defineObservableProperty('expanded', false);
+    card.defineObservableProperty('activeFilters', []);
+
+    outerScope.model = card;
+
+    // If it's going to crash, it's here.
+    var element = testHelpers.TestDom.compileAndAppend(html, outerScope);
+
+    // Ideally, we'd check that the inner timeline actually renders later on.
+  });
 });

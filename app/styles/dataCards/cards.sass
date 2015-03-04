@@ -205,7 +205,7 @@ body.state-view-cards
           right: 0
           top: 0
           bottom: 0
-          z-index: 2
+          z-index: 1000
 
           &.card-chooser
             background-color: rgba(0, 0, 0, .5)
@@ -367,48 +367,6 @@ body.state-view-cards
 
 
 /*   ICONS AND COMPONENTS */
-
-.card-spot
-
-  .card-controls
-    position: absolute
-    right: 0.5rem
-    top: 0.5rem
-    z-index: 3
-    background-color: white
-
-    >.card-control
-      position: relative
-      text-align: center
-      cursor: pointer
-      color: $card-control-color
-      display: inline-block
-
-      &:hover
-        color: #ccc
-        border-color: #ccc
-
-      span
-        display: block
-        position: relative
-
-
-    >.icon-settings
-      &:hover
-        color: $btn-hover-border-color
-
-      &.disabled
-        opacity: .25
-
-
-    >.icon-close
-      &:hover
-        color: red
-
-    >.icon-expand, >.icon-collapse
-      $size: .75rem
-      line-height: $size
-      font-size: $size
 
 .table-icon
 

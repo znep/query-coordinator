@@ -220,7 +220,7 @@ describe('CardLayout directive', function() {
     }
 
     function findDragOverlayForModel(model) {
-      return findCardForModel(model).siblings('.card-drag-overlay');
+      return findCardForModel(model).children('.card-drag-overlay');
     }
 
     // The css styles are scoped to the body class
@@ -455,7 +455,7 @@ describe('CardLayout directive', function() {
       cl.outerScope.editMode = true;
       cl.outerScope.$apply();
 
-      expect(cl.element.find('.card-control[title^="Remove"]').length).to.equal(3);
+      expect(cl.element.find('.card-control[title^="Remove"]:visible').length).to.equal(3);
 
     });
 
@@ -511,7 +511,7 @@ describe('CardLayout directive', function() {
       expect($('#uber-flyout').text()).to.equal('Remove this card');
     });
 
-    it('should remove a card when the delete button is clicked', function() {
+    it('should remove a card when the delete button is clicked', function(done) {
 
       var cl = createCardLayout();
 
@@ -539,40 +539,14 @@ describe('CardLayout directive', function() {
 
       expect(cl.pageModel.getCurrentValue('cards').length).to.equal(cards.length);
 
+      cl.outerScope.$on('delete-card-with-model', function(e, cardModel) {
+        expect(cardModel).to.deep.equal(cards[2]);
+        done();
+      });
+
       var thirdDeleteButton = $(cl.element.find('.card-control[title^="Remove"]')[2]);
       thirdDeleteButton.trigger('click');
 
-      var foundCards = cl.pageModel.getCurrentValue('cards');
-      var card3Found = false;
-      for (var i = 0; i < foundCards.length; i++) {
-        if (foundCards[i].fieldName === 'testField3') {
-          card3Found = true;
-        }
-      }
-
-      expect(card3Found).to.be.false;
-    });
-
-    it('should allow deleting all datacards, leaving table card', function() {
-      _.each(['TimelineChart', 'Table'], function(type) {
-        testHelpers.mockDirective(_$provide, 'cardVisualization' + type);
-      });
-      var cl = createLayoutWithCards([
-        {fieldName: '*'},
-        {fieldName: 'timeline_column'}
-      ]);
-
-      mockWindowStateService.windowSizeSubject.onNext({width: 1000, height: 1000});
-      mockWindowStateService.scrollPositionSubject.onNext(0);
-
-      cl.outerScope.editMode = true;
-      cl.outerScope.$apply();
-
-      var deleteButton = cl.element.find('.card-control[title^="Remove"]');
-      deleteButton.trigger('click');
-
-      var foundCards = cl.pageModel.getCurrentValue('cards');
-      expect(foundCards.length).to.equal(1);
     });
 
     it('should show the correct drop placeholders', function() {
@@ -796,7 +770,15 @@ describe('CardLayout directive', function() {
           target: card2Overlay[0]
         });
 
-        expect(cl.element.find('.card-drag-overlay').length).to.equal(cards.length - 2);
+        // The line below used to expect that the number of .card-drag-overlay
+        // elements was equal to cards.length - 2 after the drag had 'started'.
+        // I'm believe that this is a result of the way that the DOM was structured
+        // when the .card-drag-overlay was part of card-layout, not card. Now that
+        // the .card-drag-overlay lives inside the card directive it does not
+        // disappear on drag and I have therefore changed the expectation to
+        // assert that the number of .card-drag-overlay elements is equal to
+        // the number of cards less the table card, which cannot be dragged.
+        expect(cl.element.find('.card-drag-overlay').length).to.equal(cards.length - 1);
         expect(cl.element.find('.card-drop-placeholder').length).to.equal(1);
         expect(cl.element.find('.card-drop-placeholder').scope().cardState.model).to.equal(card2);
 
@@ -1285,19 +1267,21 @@ describe('CardLayout directive', function() {
 
       it('should display "Customize" only over the customize button on the choropleth', function() {
         var cl = createLayoutWithCards([{fieldName: '*'}, {fieldName: 'choropleth_column'}]);
+        cl.outerScope.interactive = true;
+
         var flyout = $('#uber-flyout');
         expect(flyout.is(':visible')).to.be.false;
 
         var choropleth = cl.element.find('card-visualization-choropleth').closest('.card-spot');
         expect(choropleth.length).to.equal(1);
-        var customize = choropleth.find('.card-control[title^="Customize"]');
+        var customize = choropleth.find('.card-control[title^="Customize"]:visible');
         // Shouldn't show up unless you're in edit mode
         expect(customize.length).to.equal(0);
 
         cl.outerScope.editMode = true;
         cl.outerScope.$apply();
 
-        customize = choropleth.find('.card-control[title^="Customize"]');
+        customize = choropleth.find('.card-control[title^="Customize"]:visible');
         expect(customize.length).to.equal(choropleth.length);
 
         mockWindowStateService.mousePositionSubject.onNext({
@@ -1316,6 +1300,10 @@ describe('CardLayout directive', function() {
           {fieldName: '*'},
           {fieldName: 'timeline_column'}
         ]);
+
+        cl.outerScope.interactive = true;
+        cl.outerScope.$apply();
+
         var flyout = $('#uber-flyout');
         expect(flyout.is(':visible')).to.be.false;
 
@@ -1323,16 +1311,16 @@ describe('CardLayout directive', function() {
             children('card-visualization-timeline-chart').
             closest('.card-spot');
         expect(visualizations.length).to.equal(1);
-        expect(visualizations.find('.card-control[title^="Customize"]').length).to.equal(0);
+        expect(visualizations.find('.card-control[title^="Customize"]:visible').length).to.equal(0);
 
-        var disabled = visualizations.find('.card-control.disabled');
+        var disabled = visualizations.find('.card-control.disabled:visible');
         // Shouldn't show up unless you're in edit mode
         expect(disabled.length).to.equal(0);
 
         cl.outerScope.editMode = true;
         cl.outerScope.$apply();
 
-        disabled = visualizations.find('.card-control.disabled');
+        disabled = visualizations.find('.card-control.disabled:visible');
         expect(disabled.length).to.equal(visualizations.length);
 
         mockWindowStateService.mousePositionSubject.onNext({
@@ -1364,12 +1352,12 @@ describe('CardLayout directive', function() {
     });
 
     it('displays overlays when chooserMode is activated', function() {
-      expect(cl.element.find('.card-chooser').length).to.equal(0);
+      expect(cl.element.find('.card-chooser:visible').length).to.equal(0);
 
       cl.scope.chooserMode.show = true;
       cl.scope.$digest();
 
-      expect(cl.element.find('.card-chooser').length).to.be.above(0);
+      expect(cl.element.find('.card-chooser:visible').length).to.be.above(0);
     });
 
     it('disables download button for table and search cards', function() {
@@ -1377,13 +1365,13 @@ describe('CardLayout directive', function() {
       cl.scope.$digest();
 
       var tableButton = cl.element.find('card-visualization-table').
-          closest('card').siblings('.card-chooser').find('.action-png-export');
+          closest('card').children('.card-chooser').find('.action-png-export');
       var timelineButton = cl.element.find('card-visualization-timeline-chart').
-          closest('card').siblings('.card-chooser').find('.action-png-export');
+          closest('card').children('.card-chooser').find('.action-png-export');
       var searchButton = cl.element.find('card-visualization-search').
-          closest('card').siblings('.card-chooser').find('.action-png-export');
+          closest('card').children('.card-chooser').find('.action-png-export');
       var choroplethButton = cl.element.find('card-visualization-choropleth').
-          closest('card').siblings('.card-chooser').find('.action-png-export');
+          closest('card').children('.card-chooser').find('.action-png-export');
 
       expect(tableButton.hasClass('disabled')).to.equal(true);
       expect(timelineButton.hasClass('disabled')).to.equal(false);

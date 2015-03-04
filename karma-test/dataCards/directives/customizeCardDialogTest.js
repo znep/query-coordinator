@@ -5,6 +5,7 @@ describe('Customize card dialog', function() {
   beforeEach(module('dataCards.directives'));
 
   beforeEach(module('/angular_templates/dataCards/card.html'));
+  beforeEach(module('/angular_templates/dataCards/spinner.html'));
   beforeEach(module('/angular_templates/dataCards/customizeCardDialog.html'));
   beforeEach(module('/angular_templates/dataCards/socSelect.html'));
   beforeEach(module('/angular_templates/dataCards/cardVisualizationSearch.html'));

@@ -20,59 +20,9 @@
     scope,
     CardTypeMapping,
     FlyoutService,
-    DownloadService,
     $timeout,
     element
   ) {
-
-    scope.isPngExportable = CardTypeMapping.modelIsExportable;
-
-    scope.getDownloadUrl = function(model) {
-      return './' + scope.page.id + '/' + model.fieldName + '.png';
-    };
-
-    function resetButton(cardState) {
-      $timeout(function() {
-        delete cardState.downloadState;
-      }, 2000);
-    }
-
-    scope.downloadPng = function(cardState, event) {
-      if (event && event.metaKey) {
-        return;
-      }
-      if (event) {
-        event.preventDefault();
-      }
-      if (cardState.downloadState) {
-        return;
-      }
-      cardState.downloadState = 'loading';
-      DownloadService.download(scope.getDownloadUrl(cardState.model)).then(
-        function success() {
-          scope.$apply(function() {
-            cardState.downloadState = 'success';
-            scope.chooserMode.show = false;
-            resetButton(cardState);
-          });
-        }, function error() {
-          scope.$apply(function() {
-            cardState.downloadState = 'error';
-            resetButton(cardState);
-          });
-        });
-    };
-
-    scope.downloadStateText = function(state) {
-      switch(state) {
-        case 'success':
-          return 'Downloading';
-        case 'error':
-          return 'Error';
-        default:
-          return 'Download';
-      }
-    };
 
     FlyoutService.register(
       'export-visualization-disabled',
@@ -91,7 +41,6 @@
     SortedTileLayout,
     FlyoutService,
     CardTypeMapping,
-    DownloadService,
     $timeout,
     $window
   ) {
@@ -685,8 +634,8 @@
 
                 var jqEl = $(position.target);
                 scope.grabbedCard = {
-                  model: jqEl.scope().cardState.model,
-                  jqEl: jqEl.siblings('card')
+                  model: jqEl.scope().$parent.model,
+                  jqEl: jqEl.parent('card')
                 };
               });
             }
@@ -816,22 +765,15 @@
           scope.$emit('add-card-with-size', cardSize);
         };
 
-        scope.deleteCard = function(cardModel) {
-          scope.safeApply(function() {
-            scope.page.set('cards', _.without(scope.cardModels, cardModel));
-          });
-        };
-
-        scope.isCustomizable = CardTypeMapping.modelIsCustomizable;
-        scope.customizeCard = function(cardModel) {
-          scope.$emit('customize-card-with-model', cardModel);
+        scope.isGrabbedCard = function(cardModel) {
+          return (scope.grabbedCard !== null) &&
+            cardModel === scope.grabbedCard.model;
         };
 
         initCardSelection(
           scope,
           CardTypeMapping,
           FlyoutService,
-          DownloadService,
           $timeout,
           cardContainer
         );

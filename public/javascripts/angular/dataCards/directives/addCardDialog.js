@@ -123,9 +123,10 @@
           }
         };
 
-        scope.isCustomizable = function(model) {
-          return _.isPresent(model) ? CardTypeMapping.modelIsCustomizable : false;
-        };
+        scope.bindObservable(
+          'isCustomizable',
+          scope.observe('addCardModel').observeOnLatest('isCustomizable')
+        );
 
         FlyoutService.register('add-card-type-option', function(el) {
 

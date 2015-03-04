@@ -7,7 +7,10 @@
     model="cardState.model"
     class="card"
     where-clause="globalWhereClauseFragment"
+    edit-mode="editMode"
     interactive="true"
+    is-choosing-for-export="chooserMode.show"
+    is-grabbed="isGrabbedCard(cardState.model)"
     ng-class="{
       expanded: cardState.model.getCurrentValue('expanded'),
       dragged: cardState.model === grabbedCard.model
@@ -15,49 +18,6 @@
   <div
     class="card-drop-placeholder"
     ng-if="cardState.model === grabbedCard.model && cardState.model.fieldName !== '*'"></div>
-  <div
-    ng-if="chooserMode.show"
-    class="card-chooser overlay"
-    ng-class="{ enabled: isPngExportable(cardState.model) }">
-    <div
-      ng-switch="isPngExportable(cardState.model)">
-      <a
-        ng-switch-when="true"
-        class="action-btn action-png-export"
-        href="{{ getDownloadUrl(cardState.model) }}"
-        ng-click="downloadPng(cardState, $event)"
-        ng-class="{
-          disabled: !isPngExportable(cardState.model),
-          working: cardState.downloadState === 'loading',
-          success: cardState.downloadState === 'success',
-          error: cardState.downloadState === 'error'
-        }">
-        {{ downloadStateText(cardState.downloadState) }}
-        <spinner ng-if="cardState.downloadState === 'loading'"></spinner>
-      </a>
-      <span
-        ng-switch-default
-        class="action-btn action-png-export export-visualization-disabled disabled">
-        {{ downloadStateText(cardState.downloadState) }}
-      </span>
-    </div>
-  </div>
-  <div
-    class="card-drag-overlay overlay"
-    data-card-id="{{cardState.model.uniqueId}}"
-    ng-if="editMode && cardState.model !== grabbedCard.model && cardState.model.fieldName !== '*'">
-    <div class="card-controls">
-      <div
-        class="card-control icon-settings"
-        ng-class="{ disabled: !isCustomizable(cardState.model) }"
-        ng-click="customizeCard(cardState.model)"
-        title="{{ isCustomizable(cardState.model) ? 'Customize this card' : 'There are no customization options for this card yet' }}"></div>
-      <div
-        class="card-control icon-close"
-        title="Remove this card"
-        ng-click="deleteCard(cardState.model)"></div>
-    </div>
-  </div>
 </div>
 
 <div

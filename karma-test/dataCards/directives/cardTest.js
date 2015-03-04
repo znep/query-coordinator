@@ -2,6 +2,7 @@ describe('card directive', function() {
   var $rootScope, testHelpers, Model;
 
   beforeEach(module('/angular_templates/dataCards/card.html'));
+  beforeEach(module('/angular_templates/dataCards/spinner.html'));
   beforeEach(module('dataCards/cards.sass'));
   beforeEach(module('dataCards/card.sass'));
   beforeEach(module('test'));
@@ -37,15 +38,29 @@ describe('card directive', function() {
     var cardModel;
     beforeEach(function() {
       var scope = $rootScope.$new();
+
+      var datasetModel = new Model();
+      datasetModel.defineObservableProperty('rowDisplayUnit', 'cooks');
+      datasetModel.defineObservableProperty('columns', {});
+      datasetModel.version = '1';
+
+      var pageModel = new Model();
+      pageModel.defineObservableProperty('dataset', datasetModel);
+      pageModel.defineObservableProperty('primaryAmountField', null);
+      pageModel.defineObservableProperty('primaryAggregation', null);
+      pageModel.id = 'abcd-efgh';
+
       cardModel = new Model();
       cardModel.defineObservableProperty('expanded', false);
       cardModel.defineObservableProperty('isCustomizable', false);
       cardModel.defineObservableProperty('isExportable', true);
       cardModel.defineObservableProperty('cardSize', 1);
       cardModel.defineObservableProperty('cardType', 'column');
-      cardModel.defineObservableProperty('page', null);
+      cardModel.page = pageModel;
+
       cardModel.defineObservableProperty('column', null);
       scope.cardModel = cardModel;
+
       el = testHelpers.TestDom.compileAndAppend(html, scope);
     });
 
@@ -83,10 +98,16 @@ describe('card directive', function() {
     beforeEach(function() {
       var scope = $rootScope.$new();
 
+      var datasetModel = new Model();
+      datasetModel.defineObservableProperty('rowDisplayUnit', 'cooks');
+      datasetModel.defineObservableProperty('columns', {});
+      datasetModel.version = '1';
+
       var pageModel = new Model();
-      pageModel.defineObservableProperty('dataset', { version: '1' });
+      pageModel.defineObservableProperty('dataset', datasetModel);
       pageModel.defineObservableProperty('primaryAmountField', null);
       pageModel.defineObservableProperty('primaryAggregation', null);
+      pageModel.id = 'abcd-efgh';
 
       cardModel = new Model();
       cardModel.defineObservableProperty('expanded', false);
@@ -94,9 +115,10 @@ describe('card directive', function() {
       cardModel.defineObservableProperty('isExportable', true);
       cardModel.defineObservableProperty('cardSize', 1);
       cardModel.defineObservableProperty('cardType', 'column');
-      cardModel.defineObservableProperty('page', pageModel);
       cardModel.defineObservableProperty('column', null);
+      cardModel.page = pageModel;
       scope.cardModel = cardModel;
+
       el = testHelpers.TestDom.compileAndAppend(html, scope);
       el.css({
         height: $(window).height(),

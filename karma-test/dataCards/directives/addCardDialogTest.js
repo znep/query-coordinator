@@ -7,6 +7,7 @@ describe('addCardDialog', function() {
   // TODO: mock out these directives to make this more unit-testy
   beforeEach(module('/angular_templates/dataCards/addCardDialog.html'));
   beforeEach(module('/angular_templates/dataCards/card.html'));
+  beforeEach(module('/angular_templates/dataCards/spinner.html'));
   beforeEach(module('/angular_templates/dataCards/cardVisualizationChoropleth.html'));
   beforeEach(module('/angular_templates/dataCards/cardVisualizationColumnChart.html'));
   beforeEach(module('/angular_templates/dataCards/cardVisualizationTimelineChart.html'));
@@ -387,8 +388,7 @@ describe('addCardDialog', function() {
     // Now select the choropleth
     dialog.element.find('select > option[value="ward"]').prop('selected', true).trigger('change');
 
-
-    customizeButton = dialog.element.find('.card-control[title^="Customize"]');
+    customizeButton = dialog.element.find('.card-control[title^="Customize"]:visible');
     expect(customizeButton.length).to.equal(1);
 
     /* Technically, there should be a flyout here. But since we're using the same mechanism to give

@@ -45,6 +45,10 @@
 
     $scope.chooserMode = {show: false};
 
+    $scope.$on('exit-export-card-visualization-mode', function(e) {
+      $scope.chooserMode.show = false;
+    });
+
     $scope.onDownloadClick = function(event) {
       // Clicking the 'Cancel' button
       if ($(event.target).hasClass('download-menu') &&
@@ -89,6 +93,7 @@
     }));
 
     $scope.bindObservable('sourceDatasetName', page.observe('dataset.name'));
+    $scope.bindObservable('cardModels', page.observe('cards'));
 
     // Map the nbe id to the obe id
     var obeIdObservable = page.observe('datasetId').
@@ -486,6 +491,12 @@
         $scope.customizeState.cardModel = cardModel;
         $scope.customizeState.show = true;
       }
+    });
+
+    $scope.$on('delete-card-with-model', function(e, cardModel) {
+      $scope.safeApply(function() {
+        $scope.page.set('cards', _.without($scope.cardModels, cardModel));
+      });
     });
 
     //TODO consider extending register() to take a selector, too.

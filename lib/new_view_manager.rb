@@ -12,8 +12,10 @@ class NewViewManager
 
     new_view = create_new_view(page_url, title, description)
 
-    publish_new_view(new_view['id']) if new_view && new_view['id']
-
+    if new_view && new_view[:id]
+      publish_new_view(new_view[:id])
+      new_view[:id]
+    end
   end
 
   def create_new_view(page_url, title, description)
@@ -68,11 +70,31 @@ class NewViewManager
     parse_core_response(response)
   end
 
+  def update(page_id, title, description)
+    url = "/views/#{CGI::escape(page_id)}.json"
+    payload = {
+      :name => title,
+      :description => description,
+    }
+
+    begin
+      response = CoreServer::Base.connection.update_request(url, JSON.dump(payload))
+    rescue => e
+      report_error(
+        "Error updating new_view lens for page: #{e.error_message}",
+        { :url => url, :payload => payload }
+      )
+      return
+    end
+
+    parse_core_response(response)
+  end
+
   private
 
   def parse_core_response(response)
     begin
-      JSON.parse(response)
+      JSON.parse(response).with_indifferent_access
     rescue JSONError => e
       report_error(
         "Error parsing JSON response from Core: #{e.error_message}",

@@ -167,20 +167,32 @@ class Phidippides < SocrataHttp
 
   # Page Metadata requests
 
-  def request_new_page_id(options = {})
+  def request_new_page_id(page_metadata = {}, options = {})
     if metadata_transition_phase_0? || metadata_transition_phase_1?
-      raise RuntimeError.new(
-        'request_new_page_id is only supported in metadata migration phase 2'
+      # Meh. Create whatever they give us. It'll get overridden right after anyway.
+      response = issue_request(
+        :verb => :post,
+        :path => 'pages',
+        :data => page_metadata,
+        :request_id => options[:request_id],
+        :cookies => options[:cookies]
+      )
+    else
+      response = issue_request(
+        :verb => :post,
+        :path => 'v1/idgen',
+        :data => nil,
+        :request_id => options[:request_id],
+        :cookies => options[:cookies]
       )
     end
 
-    issue_request(
-      :verb => :post,
-      :path => 'v1/idgen',
-      :data => nil,
-      :request_id => options[:request_id],
-      :cookies => options[:cookies]
-    )
+    status = response[:status]
+    if response[:status] != '200'
+      raise Phidippides::NewPageException.new("could not provision new page id")
+    end
+
+    return response[:body].fetch(:id, response[:body][:pageId])
   end
 
   def create_page_metadata(page_metadata, options = {})

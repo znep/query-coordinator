@@ -50,6 +50,28 @@ angular.module('dataCards.models').factory('CardV0', function($injector, ModelHe
       });
 
       self.defineEphemeralObservablePropertyFromSequence(
+        'isCustomizable',
+        Rx.Observable.combineLatest(
+          self.observe('cardType'),
+          self.page.observe('dataset.columns').filter(_.isPresent),
+          function(cardType, dataset) {
+            return CardTypeMapping.modelIsCustomizable(self);
+          }
+        )
+      );
+
+      self.defineEphemeralObservablePropertyFromSequence(
+        'isExportable',
+        Rx.Observable.combineLatest(
+          self.observe('cardType'),
+          self.page.observe('dataset.columns').filter(_.isPresent),
+          function(cardType, dataset) {
+            return CardTypeMapping.modelIsExportable(self);
+          }
+        )
+      );
+
+      self.defineEphemeralObservablePropertyFromSequence(
         'column',
         self.observe('page.dataset.columns.{0}'.format(fieldName))
       );

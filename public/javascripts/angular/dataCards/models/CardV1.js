@@ -1,7 +1,7 @@
 (function() {
   'use strict';
 
-  angular.module('dataCards.models').factory('CardV1', function(ServerConfig, Model, Schemas, Filter) {
+  angular.module('dataCards.models').factory('CardV1', function(ServerConfig, Model, Schemas, Filter, CardTypeMapping) {
 
     var schemas = Schemas.regarding('card_metadata');
     var schemaVersion = '1';
@@ -42,23 +42,51 @@
           self.observe('page.dataset.columns.{0}'.format(fieldName))
         );
 
-        self.defineEphemeralObservablePropertyFromSequence(
-          'isCustomizable',
-          self.observe('cardType').map(
-            function(cardType) {
-              return CUSTOMIZABLE_CARD_TYPES.indexOf(cardType) > -1;
-            }
-          )
-        );
+        if (ServerConfig.metadataMigration.shouldUseLocalCardTypeMapping()) {
 
-        self.defineEphemeralObservablePropertyFromSequence(
-          'isExportable',
-          self.observe('cardType').map(
-            function(cardType) {
-              return EXPORTABLE_CARD_TYPES.indexOf(cardType) > -1;
-            }
-          )
-        );
+          self.defineEphemeralObservablePropertyFromSequence(
+            'isCustomizable',
+            Rx.Observable.combineLatest(
+              self.observe('cardType'),
+              self.page.observe('dataset.columns').filter(_.isPresent),
+              function(cardType, dataset) {
+                return CardTypeMapping.modelIsCustomizable(self);
+              }
+            )
+          );
+
+          self.defineEphemeralObservablePropertyFromSequence(
+            'isExportable',
+            Rx.Observable.combineLatest(
+              self.observe('cardType'),
+              self.page.observe('dataset.columns').filter(_.isPresent),
+              function(cardType, dataset) {
+                return CardTypeMapping.modelIsExportable(self);
+              }
+            )
+          );
+
+        } else {
+
+          self.defineEphemeralObservablePropertyFromSequence(
+            'isCustomizable',
+            self.observe('cardType').map(
+              function(cardType) {
+                return CUSTOMIZABLE_CARD_TYPES.indexOf(cardType) > -1;
+              }
+            )
+          );
+
+          self.defineEphemeralObservablePropertyFromSequence(
+            'isExportable',
+            self.observe('cardType').map(
+              function(cardType) {
+                return EXPORTABLE_CARD_TYPES.indexOf(cardType) > -1;
+              }
+            )
+          );
+
+        }
 
       },
 

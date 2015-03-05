@@ -25,36 +25,8 @@
         $scope.descriptionCollapsed = true;
         $scope.bindObservable('expanded', modelSubject.observeOnLatest('expanded'));
 
-        if (ServerConfig.metadataMigration.shouldUseLocalCardTypeMapping()) {
-
-          $scope.bindObservable(
-            'isCustomizable',
-            Rx.Observable.combineLatest(
-              modelSubject,
-              columns.filter(_.isPresent),
-              function(model, columns) {
-                return CardTypeMapping.modelIsCustomizable(model);
-              }
-            )
-          );
-
-          $scope.bindObservable(
-            'isExportable',
-            Rx.Observable.combineLatest(
-              modelSubject,
-              columns.filter(_.isPresent),
-              function(model, columns) {
-                return CardTypeMapping.modelIsExportable(model);
-              }
-            )
-          );
-
-        } else {
-
-          $scope.bindObservable('isCustomizable', modelSubject.observeOnLatest('isCustomizable'));
-          $scope.bindObservable('isExportable', modelSubject.observeOnLatest('isExportable'));
-
-        }
+        $scope.bindObservable('isCustomizable', modelSubject.observeOnLatest('isCustomizable'));
+        $scope.bindObservable('isExportable', modelSubject.observeOnLatest('isExportable'));
 
         $scope.bindObservable(
           'title',

@@ -16,4 +16,8 @@ module CommonMetadataTransitionMethods
     metadata_transition_phase == '2'
   end
 
+  def metadata_transition_phase_3?
+    metadata_transition_phase == '3'
+  end
+
 end

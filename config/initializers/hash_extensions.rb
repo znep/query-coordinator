@@ -89,4 +89,19 @@ class Hash
     end
     encoded_attributes
   end
+
+  # Calls strip!() on anything responding to that message
+  # in this hash or its children.
+  def deep_string_strip!
+    self.each_key do |key|
+      if self[key].respond_to?(:strip!)
+        self[key].strip!
+      end
+
+      if self[key].respond_to?(:deep_string_strip!)
+        self[key].deep_string_strip!
+      end
+    end
+  end
+
 end

@@ -155,7 +155,7 @@ class Phidippides < SocrataHttp
   # Page Metadata requests
 
   def request_new_page_id(options = {})
-    unless metadata_transition_phase_2?
+    if metadata_transition_phase_0? || metadata_transition_phase_1?
       raise RuntimeError.new(
         'request_new_page_id is only supported in metadata migration phase 2'
       )

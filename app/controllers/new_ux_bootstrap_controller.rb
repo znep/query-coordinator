@@ -238,7 +238,7 @@ class NewUxBootstrapController < ActionController::Base
     end
   end
 
-  def merge_new_card_data_with_default(field_name, cardinality, card_type)
+  def merge_new_card_data_with_default(field_name, card_type, cardinality=nil)
     if metadata_transition_phase_0? || metadata_transition_phase_1?
       PageMetadataManager::V0_CARD_TEMPLATE.deep_dup.merge(
         'fieldName' => field_name,
@@ -248,7 +248,6 @@ class NewUxBootstrapController < ActionController::Base
     else
       PageMetadataManager::V1_CARD_TEMPLATE.deep_dup.merge(
         'fieldName' => field_name,
-        'cardinality' => cardinality,
         'cardType' => card_type
       )
     end
@@ -260,7 +259,7 @@ class NewUxBootstrapController < ActionController::Base
         unless Phidippides::SYSTEM_COLUMN_ID_REGEX.match(column[:name])
           card_type = card_type_for(column, :logicalDatatype, dataset_size)
           if card_type
-            card = merge_new_card_data_with_default(column[:name], column[:cardinality], card_type)
+            card = merge_new_card_data_with_default(column[:name], card_type, column[:cardinality])
 
             if added_card_types.add?(card_type)
               card
@@ -276,7 +275,7 @@ class NewUxBootstrapController < ActionController::Base
         unless Phidippides::SYSTEM_COLUMN_ID_REGEX.match(field_name)
           card_type = card_type_for(column, :fred, dataset_size)
           if card_type
-            card = merge_new_card_data_with_default(field_name, column[:cardinality], card_type)
+            card = merge_new_card_data_with_default(field_name, card_type)
 
             if added_card_types.add?(card_type)
               card

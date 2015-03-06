@@ -28,10 +28,10 @@ class PageMetadataManager
     page_metadata = JSON.parse(page_metadata) if page_metadata.is_a?(String)
     raise Phidippides::NoDatasetIdException.new('cannot create page with no dataset id') unless page_metadata.key?('datasetId')
 
-    # In metadata transition phase 2 we must first provision a new page 4x4 before
-    # we can create a new page. The block below accomplishes that in a way that
-    # should be transparent outside this method.
-    if metadata_transition_phase_2?
+    # In metadata transition phase 2 and above we must first provision a new page
+    # 4x4 before we can create a new page. The block below accomplishes that in a
+    # way that should be transparent outside this method.
+    if !metadata_transition_phase_0? && !metadata_transition_phase_1?
       new_page_id_response = phidippides.request_new_page_id
       status = new_page_id_response[:status]
       raise Phidippides::NewPageException.new('could not provision new page id') unless status == '200'
@@ -123,10 +123,10 @@ class PageMetadataManager
       end
     end
 
-    # Replace the page metadata in the result, since Phidippides
+    # Replace the page metadata in the result, since FlexPhidippides
     # actually will not return the metadata blob that we just posted
     # to it.
-    if metadata_transition_phase_2?
+    if !metadata_transition_phase_0? && !metadata_transition_phase_1?
       result[:body] = json
     end
 

@@ -79,34 +79,6 @@ class PhidippidesPagesControllerTest < ActionController::TestCase
     assert_response(406)
   end
 
-  test '(phase 0, 1 or 2) create returns 405 if method is not POST' do
-    @controller.stubs(can_update_metadata?: true)
-
-    stub_feature_flags_with(:metadata_transition_phase, '0')
-    get :create, format: :json
-    assert_response(405)
-    put :create, format: :json
-    assert_response(405)
-    delete :create, format: :json
-    assert_response(405)
-
-    stub_feature_flags_with(:metadata_transition_phase, '1')
-    get :create, format: :json
-    assert_response(405)
-    put :create, format: :json
-    assert_response(405)
-    delete :create, format: :json
-    assert_response(405)
-
-    stub_feature_flags_with(:metadata_transition_phase, '2')
-    get :create, json_post.merge(format: :json)
-    assert_response(405)
-    put :create, json_post.merge(format: :json)
-    assert_response(405)
-    delete :create, json_post.merge(format: :json)
-    assert_response(405)
-  end
-
   test '(phase 2) create returns 400 if JSON does not include datasetId' do
     @controller.stubs(can_update_metadata?: true)
     @page_metadata_manager.unstub(:create)
@@ -171,34 +143,6 @@ class PhidippidesPagesControllerTest < ActionController::TestCase
     stub_feature_flags_with(:metadata_transition_phase, '2')
     put :update, json_post.merge(id: 'four-four', format: :json)
     assert_response(401)
-  end
-
-  test '(phase 0, 1 or 2) update returns 405 if method is not PUT' do
-    @controller.stubs(can_update_metadata?: true)
-
-    stub_feature_flags_with(:metadata_transition_phase, '0')
-    get :update, id: 'four-four', format: :json
-    assert_response(405)
-    post :update, id: 'four-four', format: :json
-    assert_response(405)
-    delete :update, id: 'four-four', format: :json
-    assert_response(405)
-
-    stub_feature_flags_with(:metadata_transition_phase, '1')
-    get :update, id: 'four-four', format: :json
-    assert_response(405)
-    post :update, id: 'four-four', format: :json
-    assert_response(405)
-    delete :update, id: 'four-four', format: :json
-    assert_response(405)
-
-    stub_feature_flags_with(:metadata_transition_phase, '2')
-    get :update, json_post.merge(id: 'four-four', format: :json)
-    assert_response(405)
-    post :update, json_post.merge(id: 'four-four', format: :json)
-    assert_response(405)
-    delete :update, json_post.merge(id: 'four-four', format: :json)
-    assert_response(405)
   end
 
   test '(phase 0, 1 or 2) update returns 400 if required parameters are not present' do

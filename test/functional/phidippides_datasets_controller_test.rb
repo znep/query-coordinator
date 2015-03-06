@@ -64,16 +64,6 @@ class PhidippidesDatasetsControllerTest < ActionController::TestCase
     assert_response(404)
   end
 
-  test '(phase 0) create returns 405 unless method is a post' do
-    @controller.stubs(can_update_metadata?: true)
-    get :create, id: 'q77b-s2zi', format: :json
-    assert_response(405)
-    put :create, id: 'q77b-s2zi', format: :json
-    assert_response(405)
-    delete :create, id: 'q77b-s2zi', format: :json
-    assert_response(405)
-  end
-
   test '(phase 0) create returns new dataset metadata when logged in' do
     @controller.stubs(can_update_metadata?: true)
     @phidippides.stubs(issue_request: { body: mock_dataset_metadata, status: 200 })
@@ -120,22 +110,6 @@ class PhidippidesDatasetsControllerTest < ActionController::TestCase
     @controller.stubs(can_update_metadata?: false)
     put :update, id: 'q77b-s2zi', datasetMetadata: mock_dataset_metadata.to_json, format: :json
     assert_response(401)
-  end
-
-  test 'update returns 405 unless method is put' do
-    @controller.stubs(can_update_metadata?: true)
-    get :update, id: 'q77b-s2zi', datasetMetadata: mock_dataset_metadata.to_json, format: :json
-    assert_response(405)
-    post :update, id: 'q77b-s2zi', datasetMetadata: mock_dataset_metadata.to_json, format: :json
-    assert_response(405)
-    delete :update, id: 'q77b-s2zi', datasetMetadata: mock_dataset_metadata.to_json, format: :json
-    assert_response(405)
-  end
-
-  test 'update returns 400 unless required params are present' do
-    @controller.stubs(can_update_metadata?: true)
-    put :update, id: 'q77b-s2zi', format: :json
-    assert_response(400)
   end
 
   test 'update returns 406 if body id != endpoint id' do

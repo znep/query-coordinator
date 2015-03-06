@@ -60,7 +60,6 @@ class PhidippidesDatasetsController < ActionController::Base
     # By design, cannot create dataset metadata past phase 0
     return render :nothing => true, :status => '404' unless metadata_transition_phase_0?
     return render :nothing => true, :status => '401' unless can_update_metadata?
-    return render :nothing => true, :status => '405' unless request.post?
     return render :nothing => true, :status => '400' unless params[:datasetMetadata].present?
 
     begin
@@ -75,7 +74,6 @@ class PhidippidesDatasetsController < ActionController::Base
 
   def update
     return render :nothing => true, :status => '401' unless can_update_metadata?
-    return render :nothing => true, :status => '405' unless request.put?
 
     begin
       dataset_metadata = json_parameter(:datasetMetadata)

@@ -35,7 +35,6 @@ class PhidippidesPagesController < ActionController::Base
 
   def create
     return render :nothing => true, :status => '401' unless can_update_metadata?
-    return render :nothing => true, :status => '405' unless request.post?
 
     begin
       page_metadata = json_parameter(:pageMetadata)
@@ -65,8 +64,6 @@ class PhidippidesPagesController < ActionController::Base
 
   def update
     return render :nothing => true, :status => '401' unless can_update_metadata?
-    return render :nothing => true, :status => '405' unless request.put?
-    return render :nothing => true, :status => '400' unless params[:id].present?
 
     begin
       page_metadata = json_parameter(:pageMetadata)

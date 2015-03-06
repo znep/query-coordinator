@@ -139,12 +139,12 @@ class StylesController < ApplicationController
     render :text => CurrentDomain.properties.govstat_css
   end
 
-protected
-  def get_includes
-    result = STYLE_PACKAGES['includes'].map{ |incl| "@import \"#{incl}.sass\"\n" }.join +
-             get_includes_recurse(CurrentDomain.theme, @@site_theme_parse)
+  protected
 
-    return result
+  def get_includes
+    STYLE_PACKAGES['includes'].map do |incl|
+      "@import \"#{incl}.sass\"\n"
+    end.join + get_includes_recurse(CurrentDomain.theme, @@site_theme_parse)
   end
 
   def with_development_cache(stylesheet_filename)
@@ -165,7 +165,7 @@ protected
         render :text => File.read(cache_path)
       else
         result = yield
-        File.open(cache_path, 'w'){ |f| f.write result }
+        File.open(cache_path, 'w') { |f| f.write result }
         render :text => result
       end
     else
@@ -227,9 +227,7 @@ protected
               ")\n"
 
     # default background-color for fallback
-    result += "  background-color: #{first_color}\n"
-
-    return result
+    result + "  background-color: #{first_color}\n"
   end
 
   def get_includes_recurse(hash, definition, path = '')
@@ -286,12 +284,18 @@ protected
         end
       end
     end
-    return result
+
+    result
   end
 
   def generate_cache_key(item)
-    return  "%s.%s.%s.%s.%s" % [CurrentDomain.cname, item, REVISION_NUMBER,
-      CurrentDomain.default_config_id, CurrentDomain.default_config_updated_at]
+    "%s.%s.%s.%s.%s" % [
+      CurrentDomain.cname,
+      item,
+      REVISION_NUMBER,
+      CurrentDomain.default_config_id,
+      CurrentDomain.default_config_updated_at
+    ]
   end
 
   @@site_theme_parse = {

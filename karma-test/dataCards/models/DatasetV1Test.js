@@ -142,18 +142,18 @@ describe('DatasetV1 model', function() {
           name: 'title',
           description: 'blank!',
           fred: 'category',
-          physicalDatatype: 'number',
+          physicalDatatype: 'number'
         },
         'normal_column_2': {
           name: 'title',
           description: 'blank!',
           fred: 'category',
-          physicalDatatype: 'number',
+          physicalDatatype: 'number'
         },
         ':system_column': {
           name: 'title',
           description: 'blank!',
-          physicalDatatype: 'number',
+          physicalDatatype: 'number'
         },
         ':@computed_column': {
           name: 'title',
@@ -180,6 +180,11 @@ describe('DatasetV1 model', function() {
       instance.observe('columns').subscribe(function(columns) {
         if (!_.isEmpty(columns)) {
           expect(columns['normal_column'].isSystemColumn).to.be.false;
+          expect(columns['normal_column_2'].isSystemColumn).to.be.false;
+          // Note that :@computed_column will incorrectly be labeled as
+          // a system column by DatasetV1.js at the time of writing.
+          // TODO: Let's fix that.
+          //expect(columns[':@computed_column'].isSystemColumn).to.be.false;
           expect(columns[':system_column'].isSystemColumn).to.be.true;
           done();
         }
@@ -194,7 +199,7 @@ describe('DatasetV1 model', function() {
         'normal_column': {
           name: 'title',
           description: 'blank!',
-          physicalDatatype: 'number',
+          physicalDatatype: 'number'
         }
       };
 
@@ -209,7 +214,9 @@ describe('DatasetV1 model', function() {
 
       def.resolve(serializedBlob);
 
-      expect(function() { $rootScope.$digest(); }).to.throw;
+      instance.observe('columns').subscribe(function(columns) {});
+
+      expect(function() { $rootScope.$digest(); }).to.throw();
     });
 
     it('should throw a validation error with a column with numbers in its name that does not include a fred', function() {
@@ -217,7 +224,7 @@ describe('DatasetV1 model', function() {
         '2_legit_to_quit': {
           name: 'title',
           description: 'blank!',
-          physicalDatatype: 'number',
+          physicalDatatype: 'number'
         }
       };
 
@@ -232,7 +239,9 @@ describe('DatasetV1 model', function() {
 
       def.resolve(serializedBlob);
 
-      expect(function() { $rootScope.$digest(); }).to.throw;
+      instance.observe('columns').subscribe(function(columns) {});
+
+      expect(function() { $rootScope.$digest(); }).to.throw();
     });
 
     it('should throw a validation error with a computed column that does not include a computation strategy', function() {
@@ -256,7 +265,9 @@ describe('DatasetV1 model', function() {
 
       def.resolve(serializedBlob);
 
-      expect(function() { $rootScope.$digest(); }).to.throw;
+      instance.observe('columns').subscribe(function(columns) {});
+
+      expect(function() { $rootScope.$digest(); }).to.throw();
     });
 
     it('should include an injected reference back to the Dataset instance.', function(done) {
@@ -265,7 +276,7 @@ describe('DatasetV1 model', function() {
           name: 'title',
           description: 'blank!',
           fred: 'category',
-          physicalDatatype: 'number',
+          physicalDatatype: 'number'
         }
       };
       var serializedBlob = $.extend({}, minimalV1Blob, { "columns": fakeColumns });

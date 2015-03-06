@@ -160,6 +160,10 @@ class StylesController < ApplicationController
                     File.new(stylesheet_filename).mtime.to_s + CurrentDomain.cname)
       cache_path = File.join(tmpdir_path, cache_key)
 
+      if stylesheet_or_siblings_newer_than_cache?(stylesheet_filename, cache_path)
+        File.unlink(cache_path)
+      end
+
       if File.exist?(cache_path)
         Rails.logger.info "Reading cached stylesheet from #{cache_path}"
         render :text => File.read(cache_path)
@@ -170,6 +174,16 @@ class StylesController < ApplicationController
       end
     else
       render :text => yield
+    end
+  end
+
+  def stylesheet_or_siblings_newer_than_cache?(stylesheet, cached_file)
+    return false unless File.exist?(cached_file)
+
+    cached_file_mtime = File.mtime(cached_file)
+    stylesheet_dir = File.dirname(stylesheet)
+    Dir.glob(File.join("#{stylesheet_dir}/**", "*.*ss")).any? do |file|
+      File.mtime(file) >= cached_file_mtime
     end
   end
 

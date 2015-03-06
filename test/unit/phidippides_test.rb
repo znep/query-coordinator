@@ -306,6 +306,71 @@ class PhidippidesTest < Test::Unit::TestCase
     phidippides.migrate_dataset_metadata_to_v1(v1_dataset_metadata_without_default_page)
   end
 
+  def test_add_default_and_available_card_types_to_columns_in_phase_3_calls_airbrake_when_it_cannot_find_any_columns
+    v1_dataset_metadata_without_dataset_id = {
+      status: '200',
+      body: v1_dataset_metadata.deep_dup.tap { |metadata| metadata.delete(:datasetId) }
+    }
+    stub_feature_flags_with(:metadata_transition_phase, '3')
+
+    Airbrake.expects(:notify).with do |airbrake|
+      assert_equal(
+        "Could not compute default and available card types for dataset: unable to determine dataset id.",
+        airbrake[:error_message]
+      )
+    end
+    phidippides.add_default_and_available_card_types_to_columns(v1_dataset_metadata_without_dataset_id)
+  end
+
+  def test_add_default_and_available_card_types_to_columns_in_phase_3_calls_airbrake_when_it_cannot_find_any_columns
+    v1_dataset_metadata_without_columns = {
+      status: '200',
+      body: v1_dataset_metadata.deep_dup.tap { |metadata| metadata.delete(:columns) }
+    }
+    stub_feature_flags_with(:metadata_transition_phase, '3')
+
+    Airbrake.expects(:notify).with do |airbrake|
+      assert_equal(
+        "Could not compute default and available card types for dataset: no columns found.",
+        airbrake[:error_message]
+      )
+    end
+    phidippides.add_default_and_available_card_types_to_columns(v1_dataset_metadata_without_columns)
+  end
+
+  def test_add_default_and_available_card_types_to_columns_in_phase_3_succeeds
+    connection_stub = stub.tap do |stub|
+      stub.stubs(get_request: '[{"count_0": "34"}]',
+                 reset_counters: {requests: {}, runtime: 0})
+    end
+
+    v1_dataset_metadata_response = {
+      status: '200',
+      body: v1_dataset_metadata
+    }
+    stub_feature_flags_with(:metadata_transition_phase, '3')
+    CoreServer::Base.stubs(connection: connection_stub)
+
+    phidippides.add_default_and_available_card_types_to_columns(v1_dataset_metadata_response)
+
+    assert_equal(
+      'column',
+      v1_dataset_metadata_response[:body][:columns][:some_column][:defaultCardType]
+    )
+    assert_equal(
+      ['column', 'histogram'],
+      v1_dataset_metadata_response[:body][:columns][:some_column][:availableCardTypes]
+    )
+    assert_equal(
+      'column',
+      v1_dataset_metadata_response[:body][:columns][:some_other_column][:defaultCardType]
+    )
+    assert_equal(
+      ['column', 'histogram'],
+      v1_dataset_metadata_response[:body][:columns][:some_other_column][:availableCardTypes]
+    )
+  end
+
   def test_pages_for_dataset_with_dataset_object_succeeds
     Phidippides.any_instance.stubs(
       fetch_pages_for_dataset: { status: '200', body: v0_pages_for_dataset }

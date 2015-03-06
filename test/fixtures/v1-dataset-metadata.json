@@ -5,14 +5,14 @@
       "description": "",
       "fred": "category",
       "name": "Categories",
-      "physicalDataType": "number"
+      "physicalDatatype": "number"
     },
     "some_other_column":{
       "cardinality": 12,
       "description": "",
       "fred": "text",
       "name": "Numbers",
-      "physicalDataType": "number"
+      "physicalDatatype": "number"
     }
   },
   "defaultPage": "four-four",

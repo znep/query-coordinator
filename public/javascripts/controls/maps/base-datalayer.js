@@ -220,7 +220,7 @@
 
             // For updateColumnsByViewport to filter on geometries.
             layerObj._geoCol = _.detect(view.realColumns, function(col)
-                { return _.include(['geospatial', 'location'],
+                { return _.include(['geospatial', 'location', 'point'],
                                    col.renderTypeName); });
 
             layerObj._objectIdCol = _.detect(view.realColumns, function(col)
@@ -384,6 +384,8 @@
                                                             : loc.human_address;
                 mapLinkQuery = _.compact(_.values(address)).join(', ');
             }
+            else if (loc.coordinates)
+            { mapLinkQuery = loc.coordinates.slice().reverse().join(','); }
             else if (loc.latitude && loc.longitude)
             { mapLinkQuery = [loc.latitude, ',', loc.longitude].join(''); }
 
@@ -873,6 +875,9 @@
 
                 if (loc.geometry && (loc.geometry.rings || loc.geometry.paths))
                 { point.isPoint = false; }
+                else if (loc.coordinates)
+                { lonlat = new OpenLayers.LonLat(loc.coordinates[0],
+                                                 loc.coordinates[1]); }
                 else
                 { lonlat = new OpenLayers.LonLat(parseFloat(loc.longitude),
                                                  parseFloat(loc.latitude)); }

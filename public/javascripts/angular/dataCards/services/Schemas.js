@@ -56,7 +56,7 @@ angular.module('dataCards.services').factory('Schemas', function(JJV, SchemaDefi
         if (_.isPresent(validation.errors)) {
           message = message || 'Data failed validation.';
           throw new Error(
-            '{0}\nSchema: {1}\nVersion: {2}\nErrors: {3}\nData: {4}'.format(
+            '{0}\nSchema: {1}\nVersion: {2}\n\nErrors:\n{3}\n\nData:\n{4}'.format(
               message,
               schemaSubjectName,
               schemaVersion,

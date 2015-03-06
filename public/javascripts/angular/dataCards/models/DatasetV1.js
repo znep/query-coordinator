@@ -40,6 +40,8 @@ angular.module('dataCards.models').factory('DatasetV1', function(ModelHelper, Mo
             "description": "",
             "fred": "*",
             "physicalDatatype": "*",
+            "defaultCardType": "table",
+            "availableCardTypes": ["table"],
             "fakeColumnGeneratedByFrontEnd": true //TODO move away from this hack. The table isn't optional anymore.
           };
 

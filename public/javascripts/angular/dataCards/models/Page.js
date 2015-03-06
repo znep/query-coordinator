@@ -99,7 +99,7 @@
               'function': primaryAggregation || 'count',
               'column': columnAggregatedUpon, // MAY BE NULL IF COUNT(*)
               'fieldName': fieldNameAggregatedUpon, // MAY BE NULL IF COUNT(*)
-              'unit': unit
+              'unit': unit || 'row'
             };
           }
         ).filter(function(aggregation) {

@@ -40,9 +40,9 @@ class PhidippidesPagesController < ActionController::Base
     begin
       page_metadata = json_parameter(:pageMetadata)
     rescue CommonMetadataTransitionMethods::UserError => error
-      return render :nothing => true, :status => '400'
+      return render :json => { :body => "Error: #{error}" }, :status => '400'
     rescue CommonMetadataTransitionMethods::UnacceptableError => error
-      return render :nothing => true, :status => '406'
+      return render :json => { :body => "Error: #{error}" }, :status => '406'
     end
 
     begin
@@ -71,14 +71,24 @@ class PhidippidesPagesController < ActionController::Base
     begin
       page_metadata = json_parameter(:pageMetadata)
     rescue CommonMetadataTransitionMethods::UserError => error
-      return render :nothing => true, :status => '400'
+      return render :json => { :body => "Error: #{error}" }, :status => '400'
     rescue CommonMetadataTransitionMethods::UnacceptableError => error
-      return render :nothing => true, :status => '406'
+      return render :json => { :body => "Error: #{error}" }, :status => '406'
     end
 
-    # The page id to update is encoded in the url path. Move it to the actual blob we're using to do
-    # the update
-    page_metadata[:pageId] = params[:id]
+    # Support legacy API where the pageId is specified in the json body as well.
+    page_id = page_metadata.fetch(:pageId, false)
+    if page_id
+      if page_id != params[:id]
+        # Something fishy is going on - hitting the REST endpoint for one page id, but putting
+        # another in the payload to update? That's a no-no.
+        return render :json => {
+          :body => "Error: pageId in json body must match endpoint: #{page_id} vs #{params[:id]}"
+        }, :status => '406'
+      end
+    else
+      page_metadata[:pageId] = params[:id]
+    end
 
     begin
       result = page_metadata_manager.update(

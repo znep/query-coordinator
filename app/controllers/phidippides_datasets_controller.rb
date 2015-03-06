@@ -58,7 +58,7 @@ class PhidippidesDatasetsController < ActionController::Base
 
   def create
     # By design, cannot create dataset metadata past phase 0
-    return render :nothing => true, :status => '400' unless metadata_transition_phase_0?
+    return render :nothing => true, :status => '404' unless metadata_transition_phase_0?
     return render :nothing => true, :status => '401' unless can_update_metadata?
     return render :nothing => true, :status => '405' unless request.post?
     return render :nothing => true, :status => '400' unless params[:datasetMetadata].present?
@@ -80,9 +80,23 @@ class PhidippidesDatasetsController < ActionController::Base
     begin
       dataset_metadata = json_parameter(:datasetMetadata)
     rescue CommonMetadataTransitionMethods::UserError => error
-      return render :nothing => true, :status => '400'
+      return render :json => { :body => "Error: #{error}" }, :status => '400'
     rescue CommonMetadataTransitionMethods::UnacceptableError => error
-      return render :nothing => true, :status => '406'
+      return render :json => { :body => "Error: #{error}" }, :status => '406'
+    end
+
+    # Support legacy API where the dataset id is specified in the json body as well.
+    dataset_id = dataset_metadata.fetch(:id, false)
+    if dataset_id
+      if dataset_id != params[:id]
+        # Something fishy is going on - hitting the REST endpoint for one page id, but putting
+        # another in the payload to update? That's a no-no.
+        return render :json => {
+          :body => "Error: datasetId in json body must match endpoint: #{dataset_id} vs #{params[:id]}"
+        }, :status => '406'
+      end
+    else
+      dataset_metadata[:id] = params[:id]
     end
 
     begin

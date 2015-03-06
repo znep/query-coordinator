@@ -144,17 +144,28 @@ describe('DatasetV1 model', function() {
           fred: 'category',
           physicalDatatype: 'number',
         },
-        ':system_column': {
+        'normal_column_2': {
           name: 'title',
           description: 'blank!',
           fred: 'category',
           physicalDatatype: 'number',
         },
-        'still_a_:normal_column:': {
+        ':system_column': {
+          name: 'title',
+          description: 'blank!',
+          physicalDatatype: 'number',
+        },
+        ':@computed_column': {
           name: 'title',
           description: 'blank!',
           fred: 'category',
           physicalDatatype: 'number',
+          computationStrategy: {
+            parameters: {
+              region: '_mash-apes'
+            },
+            'computation_type': 'georegion_match_on_string'
+          }
         }
       };
 
@@ -170,13 +181,82 @@ describe('DatasetV1 model', function() {
         if (!_.isEmpty(columns)) {
           expect(columns['normal_column'].isSystemColumn).to.be.false;
           expect(columns[':system_column'].isSystemColumn).to.be.true;
-          expect(columns['still_a_:normal_column:'].isSystemColumn).to.be.false;
           done();
         }
       });
 
       def.resolve(serializedBlob);
       $rootScope.$digest();
+    });
+
+    it('should throw a validation error with a column with no numbers in its name that does not include a fred', function() {
+      var fakeColumns = {
+        'normal_column': {
+          name: 'title',
+          description: 'blank!',
+          physicalDatatype: 'number',
+        }
+      };
+
+      var serializedBlob = $.extend({}, minimalV1Blob, { "columns": fakeColumns });
+
+      var def = $q.defer();
+      MockDataService.getDatasetMetadata = function() {
+        return def.promise;
+      };
+
+      var instance = new DatasetV1('fake-data');
+
+      def.resolve(serializedBlob);
+
+      expect(function() { $rootScope.$digest(); }).to.throw;
+    });
+
+    it('should throw a validation error with a column with numbers in its name that does not include a fred', function() {
+      var fakeColumns = {
+        '2_legit_to_quit': {
+          name: 'title',
+          description: 'blank!',
+          physicalDatatype: 'number',
+        }
+      };
+
+      var serializedBlob = $.extend({}, minimalV1Blob, { "columns": fakeColumns });
+
+      var def = $q.defer();
+      MockDataService.getDatasetMetadata = function() {
+        return def.promise;
+      };
+
+      var instance = new DatasetV1('fake-data');
+
+      def.resolve(serializedBlob);
+
+      expect(function() { $rootScope.$digest(); }).to.throw;
+    });
+
+    it('should throw a validation error with a computed column that does not include a computation strategy', function() {
+      var fakeColumns = {
+        ':@computed_column': {
+          name: 'title',
+          description: 'blank!',
+          fred: 'category',
+          physicalDatatype: 'number'
+        }
+      };
+
+      var serializedBlob = $.extend({}, minimalV1Blob, { "columns": fakeColumns });
+
+      var def = $q.defer();
+      MockDataService.getDatasetMetadata = function() {
+        return def.promise;
+      };
+
+      var instance = new DatasetV1('fake-data');
+
+      def.resolve(serializedBlob);
+
+      expect(function() { $rootScope.$digest(); }).to.throw;
     });
 
     it('should include an injected reference back to the Dataset instance.', function(done) {

@@ -73,7 +73,7 @@ angular.module('dataCards.services').factory('SchemaDefinitions', function() {
           'columns': {
             'type': 'object',
             'patternProperties': {
-              '.*': {
+              '^[a-zA-Z0-9_\-][a-zA-Z0-9_\-]*$': {
                 'type': 'object',
                 'properties': {
                   'title': {
@@ -109,6 +109,43 @@ angular.module('dataCards.services').factory('SchemaDefinitions', function() {
                   }
                 },
                 'required': [ 'name', 'fred', 'physicalDatatype']
+              },
+              '^:@[a-zA-Z0-9_\-][a-zA-Z0-9_\-]*$': {
+                'type': 'object',
+                'properties': {
+                  'title': {
+                    'type': 'string'
+                  },
+                  'description': {
+                    'type': 'string'
+                  },
+                  'name': {
+                    'type': 'string',
+                    'minLength': 1
+                  },
+                  'fred': {
+                    'type': 'string',
+                    'enum': [ 'category', 'amount', 'location', 'time', 'text', 'name', 'identifier', '*' ]
+                  },
+                  'physicalDatatype': {
+                    'type': 'string',
+                    'enum': [ 'number', 'point', 'geo_entity', 'text', 'timestamp', 'row_version', 'row_identifier', 'fixed_timestamp', 'floating_timestamp', 'boolean', 'money', '*' ]
+                  },
+                  'cardinality': { 'type': 'integer' },
+                  'computationStrategy': {
+                    'type': 'object',
+                    'properties': {
+                      'parameters': {
+                        'type': 'object',
+                        'properties': {
+                          'region': { 'type': 'string', 'minLength': 1},
+                          'geometryLabel': { 'type': 'string', 'minLength': 1} //TODO require both of these at once?
+                        }
+                      }
+                    }
+                  }
+                },
+                'required': [ 'name', 'fred', 'physicalDatatype', 'computationStrategy']
               }
             }
           },

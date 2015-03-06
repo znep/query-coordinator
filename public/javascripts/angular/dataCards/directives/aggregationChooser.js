@@ -18,7 +18,7 @@
       plural: plural,
       capitalized: name.capitalizeEachWord(),
       pluralCapitalized: plural.capitalizeEachWord()
-    }
+    };
   };
 
   var validColumnFilter = function(column) {
@@ -37,8 +37,7 @@
       scope: {
         page: '='
       },
-      link: function($scope, element, attrs) {
-        var subscriptions = [];
+      link: function($scope, element) {
         AngularRxExtensions.install($scope);
 
         /*
@@ -83,11 +82,12 @@
 
         var dataset = $scope.page.observe('dataset');
         var columnsObservable = dataset.observeOnLatest('columns');
-        var rowDisplayUnitObservable = dataset.observeOnLatest('rowDisplayUnit');
+        var aggregationSequence = $scope.page.observe('aggregation');
+        var rowDisplayUnitObservable = aggregationSequence.pluck('unit');
 
         // Page model aggregation observables
-        var pagePrimaryAggregationObservable = $scope.page.observe('primaryAggregation');
-        var pagePrimaryAmountFieldObservable = $scope.page.observe('primaryAmountField');
+        var pagePrimaryAggregationObservable = aggregationSequence.pluck('function');
+        var pagePrimaryAmountFieldObservable = aggregationSequence.pluck('fieldName');
 
         // Default to 'count' if no primary aggregation function is selected
         var aggregationFunctionObservable = Rx.Observable.combineLatest(
@@ -206,7 +206,8 @@
 
         FlyoutService.register('aggregation-option', function(element) {
           if ($(element).is('.disabled.no-count')) {
-            return '<span class="flyout-cell">{0}</span>'.format('This column cannot be used with a<br>number of aggregate');
+            return '<span class="flyout-cell">{0}</span>'.
+              format('This column cannot be used with a<br>number of aggregate');
           }
         }, $scope.observeDestroy(element), true);
 

@@ -1,6 +1,7 @@
 (function() {
+  'use strict';
 
-  function CardDirective(AngularRxExtensions, ServerConfig, CardTypeMapping, DownloadService, $timeout) {
+  function CardDirective(AngularRxExtensions, DownloadService, $timeout) {
 
     return {
       restrict: 'E',
@@ -37,13 +38,8 @@
         );
         $scope.bindObservable('description', modelSubject.observeOnLatest('column.description'));
 
-        var rowDisplayUnitSequence = datasetObservable.
-          observeOnLatest('rowDisplayUnit').
-          map(function(value) { return _.isEmpty(value) ? 'rows' : value; });
-
-        var primaryAggregationSequence = modelSubject.
-          observeOnLatest('page.primaryAggregation').
-          map(function(value) { return _.isNull(value) ? 'count' : value });
+        var aggregationSequence = modelSubject.
+          observeOnLatest('page.aggregation');
 
         var primaryAmountFieldSequence = modelSubject.
           observeOnLatest('page.primaryAmountField').
@@ -57,22 +53,21 @@
           filter(_.isPresent);
 
         var countTitleSequence = Rx.Observable.combineLatest(
-          rowDisplayUnitSequence,
-          primaryAggregationSequence.filter(function(value) { return value === 'count' }),
-          function(rowDisplayUnit) {
-            return 'Number of {0} by'.format(rowDisplayUnit.pluralize());
+          aggregationSequence.filter(function(value) { return value.function === 'count'; }),
+          function(value) {
+            return 'Number of {0} by'.format(value.unit.pluralize());
           });
 
         var sumTitleSequence = Rx.Observable.combineLatest(
           primaryAmountFieldSequence.filter(_.isPresent),
-          primaryAggregationSequence.filter(function(value) { return value === 'sum' }),
+          aggregationSequence.filter(function(value) { return value.function === 'sum'; }),
           function(primaryAmountField) {
             return 'Sum of {0} by'.format(primaryAmountField.pluralize());
           });
 
         var meanTitleSequence = Rx.Observable.combineLatest(
           primaryAmountFieldSequence.filter(_.isPresent),
-          primaryAggregationSequence.filter(function(value) { return value === 'mean' }),
+          aggregationSequence.filter(function(value) { return value.function === 'mean'; }),
           function(primaryAmountField) {
             return 'Average {0} by'.format(primaryAmountField);
           });
@@ -86,7 +81,7 @@
         $scope.bindObservable('displayDynamicTitle', modelSubject.
           observeOnLatest('cardType').
           map(function(cardType) {
-            return cardType !== 'table'
+            return cardType !== 'table';
           }));
 
         $scope.bindObservable('dynamicTitle', dynamicTitleSequence);
@@ -181,7 +176,8 @@
         };
 
         var descriptionTruncatedContent = element.find('.description-truncated-content');
-        var descriptionElementsWithMaxSize = element.find('.description-expanded-wrapper, .description-expanded-content');
+        var descriptionElementsWithMaxSize = element.
+          find('.description-expanded-wrapper, .description-expanded-content');
 
         var dimensionsObservable = element.observeDimensions();
 
@@ -209,7 +205,8 @@
             // the text.
             descriptionTruncatedContent.text(descriptionText);
 
-            var availableSpace = dimensions.height - descriptionTruncatedContent.offsetParent().position().top;
+            var availableSpace = dimensions.height -
+              descriptionTruncatedContent.offsetParent().position().top;
 
             descriptionElementsWithMaxSize.css('max-height', availableSpace);
 

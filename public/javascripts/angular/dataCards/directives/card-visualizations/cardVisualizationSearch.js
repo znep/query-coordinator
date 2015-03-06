@@ -47,19 +47,6 @@
         var rowCountObservable = rowInfoObservable.pluck('filteredRowCount');
         var rowsLoadedObservable = $scope.eventToObservable('rows:loaded').map(pluckEventArg);
 
-        // Observable that emits the current search term when the card is expanded
-        var expandedSearchValueObservable = Rx.Observable.
-          combineLatest(
-            expandedObservable,
-            searchValueObservable,
-            function(expanded, searchValue) {
-              if (expanded) {
-                return searchValue;
-              }
-            }).
-          filter($.isPresent).
-          distinctUntilChanged();
-
         // Observable that emits the current search term on submit
         var submitValueObservable = submitEventObservable.
           map(function() {

@@ -309,7 +309,7 @@ class PhidippidesTest < Test::Unit::TestCase
   def test_set_default_and_available_card_types_to_columns_in_phase_3_calls_airbrake_when_it_cannot_find_a_dataset_id
     v1_dataset_metadata_without_dataset_id = {
       status: '200',
-      body: v1_dataset_metadata.deep_dup.tap { |metadata| metadata.delete(:datasetId) }
+      body: v1_dataset_metadata.deep_dup.tap { |metadata| metadata.delete(:id) }
     }
     stub_feature_flags_with(:metadata_transition_phase, '3')
 

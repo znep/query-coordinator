@@ -120,13 +120,12 @@ class Phidippides < SocrataHttp
     if metadata_transition_phase_3?
 
       dataset_id = dataset_metadata.try(:[], :body).try(:[], :id)
-
       unless dataset_id.present?
         error_message = "Could not compute default and available card types " \
           "for dataset: unable to determine dataset id."
         Airbrake.notify(
           :error_class => "DatasetMetadataCardTypeComputationError",
-          :error_message => "Could not migrate dataset to v1: could not determine dataset id.",
+          :error_message => error_message,
           :context => { :response => dataset_metadata }
         )
         return

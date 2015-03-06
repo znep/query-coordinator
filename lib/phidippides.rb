@@ -10,6 +10,7 @@ class Phidippides < SocrataHttp
 
   # TODO: Should these actually be ignore-case?
   # Note - these are aligned so as to exemplify the differences between the regexes
+  # COLUMN_ID_REGEX matches valid fieldNames for the front-end.
   COLUMN_ID_REGEX =    /(:@)?([a-z][a-z_0-9\-]*)/i
   SYSTEM_COLUMN_ID_REGEX = /:([a-z][a-z_0-9\-]*)/i
   UID_REGEXP = /\w{4}-\w{4}/

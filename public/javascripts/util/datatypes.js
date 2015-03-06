@@ -462,6 +462,11 @@ blist.namespace.fetch('blist.datatypes');
             pieces.push('(' + (v.latitude || '') + (plainText ? '' : '&deg;') +
                 ', ' + (v.longitude || '') + (plainText ? '' : '&deg;') + ')');
         }
+        else if (view.endsWith('coords') && _.isArray(v.coordinates) && v.coordinates.length === 2)
+        {
+            pieces.push('(' + (v.coordinates[1] || '') + (plainText ? '' : '&deg;') +
+                ', ' + (v.coordinates[0] || '') + (plainText ? '' : '&deg;') + ')');
+        }
 
         return pieces.join(plainText || inMenu ? ' \n' : '<br />');
     };

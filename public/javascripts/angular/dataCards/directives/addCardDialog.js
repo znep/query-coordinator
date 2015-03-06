@@ -1,6 +1,12 @@
 (function() {
   'use strict';
 
+  // TODO: In general there is a lot of logic here that will probably be
+  // addressed by the inclusion of availableCardTypes and defaultCardType
+  // on the column itself. Once we have accepted metadata transition phase
+  // 3 and removed the branches on the transition phase, we should probably
+  // revisit this directive to clean it up.
+
   function addCardDialog(AngularRxExtensions, Constants, CardTypeMapping, CardV0, CardV1, FlyoutService, ServerConfig, $log) {
     return {
       restrict: 'E',
@@ -46,8 +52,8 @@
         Rx.Observable.subscribeLatest(
           scope.observe('addCardSelectedColumnFieldName'),
           scope.observe('datasetColumns').filter(_.isDefined),
-          scope.observe('page').observeOnLatest('dataset'),
-          scope.observe('page').observeOnLatest('dataset.columns'),
+          scope.observe('page').observeOnLatest('dataset').filter(_.isDefined),
+          scope.observe('page').observeOnLatest('dataset.columns').filter(_.isDefined),
           function(fieldName, scopeDatasetColumns, dataset, columns) {
             var columnCardinality;
 
@@ -68,7 +74,12 @@
               return;
             }
 
-            scope.availableCardTypes = CardTypeMapping.availableVisualizationsForColumn(dataset, fieldName);
+            if (ServerConfig.metadataMigration.shouldUseLocalCardTypeMapping()) {
+              scope.availableCardTypes = CardTypeMapping.availableVisualizationsForColumn(dataset, fieldName);
+            } else {
+              scope.availableCardTypes = column.availableCardTypes;
+            }
+
             if (ServerConfig.metadataMigration.pageMetadata.useV0CardModels()) {
               // TODO: Enforce some kind of schema validation at this step.
               serializedCard = {
@@ -86,10 +97,15 @@
               // TODO: Enforce some kind of schema validation at this step.
               serializedCard = {
                 'cardSize': parseInt(scope.dialogState.cardSize, 10),
-                'cardType': CardTypeMapping.defaultVisualizationForColumn(dataset, fieldName),
                 'expanded': false,
                 'fieldName': fieldName
               };
+
+              if (ServerConfig.metadataMigration.shouldUseLocalCardTypeMapping()) {
+                serializedCard['cardType'] = CardTypeMapping.defaultVisualizationForColumn(dataset, fieldName);
+              } else {
+                serializedCard['cardType'] = column.defaultCardType;
+              }
 
               scope.addCardModel = CardV1.deserialize(scope.page, serializedCard);
             }
@@ -123,9 +139,10 @@
           }
         };
 
-        scope.isCustomizable = function(model) {
-          return _.isPresent(model) ? CardTypeMapping.modelIsCustomizable : false;
-        };
+        scope.bindObservable(
+          'isCustomizable',
+          scope.observe('addCardModel').observeOnLatest('isCustomizable')
+        );
 
         FlyoutService.register('add-card-type-option', function(el) {
 

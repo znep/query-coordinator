@@ -1,6 +1,8 @@
 @import dataCards/common/colors
 @import dataCards/common/layout
 
+$icon-size: 0.75rem
+
 .card
   border-radius: $rounded-corners-border-radius
   padding: $card-padding
@@ -77,6 +79,44 @@
     .description-expanded-wrapper
       background: $card-bg-color
       z-index: 1
+
+  .card-controls
+    position: absolute
+    right: 0.5rem
+    top: 0.5rem
+    z-index: 1001
+    background-color: white
+
+    >.card-control
+      width: $icon-size
+      height: $icon-size
+      line-height: $icon-size
+      font-size: $icon-size
+      position: relative
+      text-align: center
+      cursor: pointer
+      color: $card-control-color
+      display: inline-block
+
+      &:hover
+        color: #ccc
+        border-color: #ccc
+
+      span
+        display: block
+        position: relative
+
+
+    >.icon-settings
+      &:hover
+        color: $btn-hover-border-color
+
+      &.disabled
+        opacity: .25
+
+    >.icon-close
+      &:hover
+        color: red
 
 card-visualization
   display: block

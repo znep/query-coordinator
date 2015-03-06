@@ -45,6 +45,10 @@
 
     $scope.chooserMode = {show: false};
 
+    $scope.$on('exit-export-card-visualization-mode', function(e) {
+      $scope.chooserMode.show = false;
+    });
+
     $scope.onDownloadClick = function(event) {
       // Clicking the 'Cancel' button
       if ($(event.target).hasClass('download-menu') &&
@@ -63,7 +67,7 @@
     ), $scope.eventToObservable('$destroy'));
   }
 
-  function CardsViewController($scope, $location, $log, $window, $q, AngularRxExtensions, SortedTileLayout, Filter, PageDataService, UserSessionService, CardTypeMapping, FlyoutService, page, WindowState, ServerConfig, $http) {
+  function CardsViewController($scope, $location, $log, $window, $q, AngularRxExtensions, SortedTileLayout, Filter, PageDataService, UserSessionService, FlyoutService, page, WindowState, ServerConfig, $http) {
 
     AngularRxExtensions.install($scope);
 
@@ -89,6 +93,7 @@
     }));
 
     $scope.bindObservable('sourceDatasetName', page.observe('dataset.name'));
+    $scope.bindObservable('cardModels', page.observe('cards'));
 
     // Map the nbe id to the obe id
     var obeIdObservable = page.observe('datasetId').
@@ -272,7 +277,7 @@
 
           sortedColumns[i].available = available;
 
-          if (CardTypeMapping.visualizationSupportedForColumn(dataset, sortedColumns[i].fieldName)) {
+          if (sortedColumns[i].defaultCardType !== 'invalid') {
             if (available) {
               availableColumns.push(sortedColumns[i].fieldName);
             } else {
@@ -482,10 +487,12 @@
       'show': false
     };
     $scope.$on('customize-card-with-model', function(e, cardModel) {
-      if (CardTypeMapping.modelIsCustomizable(cardModel)) {
-        $scope.customizeState.cardModel = cardModel;
-        $scope.customizeState.show = true;
-      }
+      $scope.customizeState.cardModel = cardModel;
+      $scope.customizeState.show = true;
+    });
+
+    $scope.$on('delete-card-with-model', function(e, cardModel) {
+      $scope.page.set('cards', _.without($scope.cardModels, cardModel));
     });
 
     //TODO consider extending register() to take a selector, too.

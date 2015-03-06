@@ -715,46 +715,6 @@ describe('CardsViewController', function() {
       testHelpers.TestDom.clear();
     });
 
-    it('should not become visible when a "customize-card-with-model" event is received which includes a model of a non-customizable card type', function(done) {
-
-      var serializedCard;
-      var cardModel;
-
-      controllerHarness.pageMetadataPromise.resolve({
-        datasetId: 'fake-fbfr',
-        name: 'some name'
-      });
-      controllerHarness.$scope.$digest();
-
-      expect($scope.customizeState.show).to.equal(false);
-
-      $scope.$on('customize-card-with-model', function(e, model) {
-
-        $scope.$apply();
-
-        // NOTE: In order for this to work the physical and logical
-        // datatypes of the column referenced by the fieldName of the
-        // newly-created card must map to a card type which is actually
-        // customizable. In this case we want to ensure that we do
-        // not actually display the dialog for a non-customizable
-        // card type mapping.
-        expect($scope.customizeState.show).to.equal(false);
-        done();
-      });
-
-      serializedCard = {
-        'cardSize': 1,
-        'cardType': 'column',
-        'expanded': false,
-        'fieldName': 'nonCustomizableFieldName'
-      };
-
-      cardModel = CardV1.deserialize($scope.page, serializedCard);
-
-      $rootScope.$broadcast('customize-card-with-model', cardModel);
-
-    });
-
     it('should become visible when a "customize-card-with-model" event is received which includes a model of a customizable card type', function(done) {
 
       var serializedCard;

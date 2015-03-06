@@ -1,13 +1,16 @@
 (function() {
 
-  function CardDirective(AngularRxExtensions) {
+  function CardDirective(AngularRxExtensions, ServerConfig, CardTypeMapping, DownloadService, $timeout) {
 
     return {
       restrict: 'E',
       scope: {
         'model': '=',
         'whereClause': '=',
-        'interactive': '='
+        'editMode': '=',
+        'interactive': '=',
+        'isChoosingForExport': '=',
+        'isGrabbed': '='
       },
       templateUrl: '/angular_templates/dataCards/card.html',
       link: function($scope, element) {
@@ -21,6 +24,10 @@
 
         $scope.descriptionCollapsed = true;
         $scope.bindObservable('expanded', modelSubject.observeOnLatest('expanded'));
+
+        $scope.bindObservable('isCustomizable', modelSubject.observeOnLatest('isCustomizable'));
+        $scope.bindObservable('isExportable', modelSubject.observeOnLatest('isExportable'));
+
         $scope.bindObservable(
           'title',
           versionSequence.
@@ -101,6 +108,76 @@
 
         $scope.toggleExpanded = function() {
           $scope.model.page.toggleExpanded($scope.model);
+        };
+
+        $scope.customizeCardIfCustomizable = function(modelIsCustomizable) {
+          if (modelIsCustomizable) {
+            $scope.$emit('customize-card-with-model', $scope.model);
+          }
+        };
+
+        $scope.deleteCard = function() {
+          $scope.$emit('delete-card-with-model', $scope.model);
+        };
+
+        $scope.downloadUrl = '/' + $scope.model.page.id + '/' + $scope.model.fieldName + '.png';
+
+        $scope.downloadStateText = function(state) {
+          switch(state) {
+            case 'success':
+              return 'Downloading';
+            case 'error':
+              return 'Error';
+            default:
+              return 'Download';
+          }
+        };
+
+        $scope.downloadPng = function(e) {
+
+          function resetDownloadButton() {
+            $timeout(
+              function() {
+                delete $scope.downloadState;
+              },
+              2000
+            );
+          }
+
+          if (e && e.metaKey) {
+            return;
+          }
+
+          if (e) {
+            e.preventDefault();
+          }
+
+          if ($scope.downloadState) {
+            return;
+          }
+
+          $scope.downloadState = 'loading';
+
+          $(e.target).blur();
+
+          DownloadService.download($scope.downloadUrl).then(
+            function success() {
+
+              $scope.$apply(function() {
+                $scope.downloadState = 'success';
+                resetDownloadButton();
+              });
+
+            }, function error() {
+
+              $scope.$apply(function() {
+                $scope.downloadState = 'error';
+                resetDownloadButton();
+              });
+
+            }
+          );
+
         };
 
         var descriptionTruncatedContent = element.find('.description-truncated-content');

@@ -36,14 +36,18 @@ class PhidippidesDatasetsController < ActionController::Base
     begin
       result = phidippides.fetch_dataset_metadata(params[:id], :request_id => request_id, :cookies => forwardable_session_cookies)
 
-      # Note that unlike every other status code in this file, the :status property
-      # of result is actually a number.
-      if result[:status] == 200
+      if result[:status] == "200"
         # This is temporary, but constitutes a rolling migration.
         # Eventually we can check that every extant dataset metadata
         # blob has a 'defaultPage' property and remove this migration
         # step.
         phidippides.migrate_dataset_metadata_to_v1(result)
+
+        # Moving forward, we also compute and insert two card type mapping
+        # properties on columns before we send them to the front-end.
+        # This method call will check the metadata transition phase
+        # internally and just pass through if it is not set to '3'.
+        phidippides.set_default_and_available_card_types_to_columns!(result)
       end
 
       render :json => result[:body], :status => result[:status]

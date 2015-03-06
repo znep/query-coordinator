@@ -1,6 +1,7 @@
 class Phidippides < SocrataHttp
 
   include CommonMetadataTransitionMethods
+  include CardTypeMapping
 
   class NewPageException < RuntimeError; end
   class PageIdException < RuntimeError; end
@@ -111,6 +112,42 @@ class Phidippides < SocrataHttp
           :datastId => dataset_id,
           :context => { :response => dataset_metadata }
         )
+      end
+    end
+  end
+
+  def set_default_and_available_card_types_to_columns!(dataset_metadata)
+    if metadata_transition_phase_3?
+
+      dataset_id = dataset_metadata.try(:[], :body).try(:[], :id)
+      unless dataset_id.present?
+        error_message = "Could not compute default and available card types " \
+          "for dataset: unable to determine dataset id."
+        Airbrake.notify(
+          :error_class => "DatasetMetadataCardTypeComputationError",
+          :error_message => error_message,
+          :context => { :response => dataset_metadata }
+        )
+        return
+      end
+
+      columns = dataset_metadata.try(:[], :body).try(:[], :columns)
+
+      unless columns.present?
+        error_message = "Could not compute default and available card types " \
+          "for dataset: no columns found."
+        Airbrake.notify(
+          :error_class => "DatasetMetadataCardTypeComputationError",
+          :error_message => error_message,
+          :context => { :response => dataset_metadata }
+        )
+        return
+      end
+
+      # Note that this mutates the columns in-place.
+      columns.each do |field_name, column|
+        column['defaultCardType'] = default_card_type_for(column, dataset_size(dataset_id))
+        column['availableCardTypes'] = available_card_types_for(column, dataset_size(dataset_id))
       end
     end
   end
@@ -258,6 +295,23 @@ class Phidippides < SocrataHttp
         :request_id => options[:request_id],
         :cookies => options[:cookies]
       )
+    end
+  end
+
+  private
+
+  def dataset_size(dataset_id)
+    # Get the size of the dataset so we can compare it against the cardinality when creating cards
+    @dataset_size ||= begin
+      JSON.parse(
+        CoreServer::Base.connection.get_request("/id/#{dataset_id}?%24query=select+count(0)")
+      )[0]['count_0'].to_i
+    rescue CoreServer::Error => e
+      Rails.logger.error(
+        "Core server error while retrieving dataset size of dataset " \
+        "(#{dataset_id}): #{e}"
+      )
+      nil
     end
   end
 

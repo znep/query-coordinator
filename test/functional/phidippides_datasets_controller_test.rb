@@ -26,7 +26,7 @@ class PhidippidesDatasetsControllerTest < ActionController::TestCase
 
   test 'show calls migrate_dataset_metadata_to_v1 on a successful request' do
     @controller.stubs(can_update_metadata?: true)
-    @phidippides.stubs(issue_request: { status: 200, body: mock_dataset_metadata }.with_indifferent_access)
+    @phidippides.stubs(issue_request: { status: '200', body: mock_dataset_metadata }.with_indifferent_access)
     @phidippides.expects(:migrate_dataset_metadata_to_v1).with do |result|
       assert_equal('q77b-s2zi', result[:body][:id])
     end

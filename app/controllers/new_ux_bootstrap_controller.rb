@@ -233,6 +233,8 @@ class NewUxBootstrapController < ActionController::Base
         'datasetId' => new_dataset_metadata[:id],
         'description' => new_dataset_metadata[:description],
         'name' => new_dataset_metadata[:name],
+        'primaryAggregation' => nil,
+        'primaryAmountField' => nil,
         'version' => 1
       }
     end

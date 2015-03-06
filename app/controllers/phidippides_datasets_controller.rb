@@ -47,7 +47,7 @@ class PhidippidesDatasetsController < ActionController::Base
         # properties on columns before we send them to the front-end.
         # This method call will check the metadata transition phase
         # internally and just pass through if it is not set to '3'.
-        phidippides.add_default_and_available_card_types_to_columns(result)
+        phidippides.set_default_and_available_card_types_to_columns!(result)
       end
 
       render :json => result[:body], :status => result[:status]

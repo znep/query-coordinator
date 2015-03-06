@@ -492,9 +492,7 @@
     });
 
     $scope.$on('delete-card-with-model', function(e, cardModel) {
-      $scope.safeApply(function() {
-        $scope.page.set('cards', _.without($scope.cardModels, cardModel));
-      });
+      $scope.page.set('cards', _.without($scope.cardModels, cardModel));
     });
 
     //TODO consider extending register() to take a selector, too.

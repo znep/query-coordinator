@@ -80,7 +80,7 @@ describe('Customize card dialog', function() {
             choropleth: {
               name: 'Spot where cool froods hang out.',
               description: '???',
-              fred: 'location',
+              logicalDatatype: 'location',
               physicalDatatype: 'number',
               dataset: datasetModel,
               shapefile: 'mash-apes'
@@ -88,14 +88,14 @@ describe('Customize card dialog', function() {
             feature: {
               name: 'Froods who really know where their towels are.',
               description: '???',
-              fred: 'location',
+              logicalDatatype: 'location',
               physicalDatatype: 'point',
               dataset: datasetModel
             },
             bar: {
               name: 'A bar where cool froods hang out.',
               description: '???',
-              fred: 'amount',
+              logicalDatatype: 'amount',
               physicalDatatype: 'number',
               dataset: datasetModel
             }
@@ -114,24 +114,21 @@ describe('Customize card dialog', function() {
                 parameters: {
                   region: '_mash-apes'
                 }
-              },
-              availableCardTypes: ['choropleth']
+              }
             },
             feature: {
               name: 'Froods who really know where their towels are.',
               description: '???',
               fred: 'location',
               physicalDatatype: 'point',
-              dataset: datasetModel,
-              availableCardTypes: ['feature']
+              dataset: datasetModel
             },
             bar: {
               name: 'A bar where cool froods hang out.',
               description: '???',
               fred: 'amount',
               physicalDatatype: 'number',
-              dataset: datasetModel,
-              availableCardTypes: ['column', 'search']
+              dataset: datasetModel
             }
           };
 
@@ -149,7 +146,8 @@ describe('Customize card dialog', function() {
                   region: '_mash-apes'
                 }
               },
-              availableCardTypes: ['choropleth']
+              availableCardTypes: ['choropleth'],
+              defaultCardType: 'choropleth'
             },
             feature: {
               name: 'Froods who really know where their towels are.',
@@ -157,7 +155,8 @@ describe('Customize card dialog', function() {
               fred: 'location',
               physicalDatatype: 'point',
               dataset: datasetModel,
-              availableCardTypes: ['feature']
+              availableCardTypes: ['feature'],
+              defaultCardType: 'feature'
             },
             bar: {
               name: 'A bar where cool froods hang out.',
@@ -165,7 +164,8 @@ describe('Customize card dialog', function() {
               fred: 'amount',
               physicalDatatype: 'number',
               dataset: datasetModel,
-              availableCardTypes: ['column', 'search']
+              availableCardTypes: ['column', 'search'],
+              defaultCardType: 'column'
             }
           };
 

@@ -82,7 +82,7 @@ describe('card directive', function() {
           cardModel.defineObservableProperty('isExportable', true);
           cardModel.defineObservableProperty('cardSize', 1);
           cardModel.defineObservableProperty('cardType', 'column');
-          cardModel.defineObservableProperty('column', { availableCardTypes: ['search'] });
+          cardModel.defineObservableProperty('column', { availableCardTypes: ['search'], defaultCardType: 'search' });
           cardModel.page = pageModel;
 
           scope.cardModel = cardModel;
@@ -141,7 +141,7 @@ describe('card directive', function() {
           cardModel.defineObservableProperty('isExportable', true);
           cardModel.defineObservableProperty('cardSize', 1);
           cardModel.defineObservableProperty('cardType', 'column');
-          cardModel.defineObservableProperty('column', { availableCardTypes: ['search'] });
+          cardModel.defineObservableProperty('column', { availableCardTypes: ['search'], defaultCardType: 'search' });
           cardModel.page = pageModel;
           scope.cardModel = cardModel;
 
@@ -220,7 +220,8 @@ describe('card directive', function() {
             myFieldName: {
               description: initialDescriptionText,
               dataset: datasetModel,
-              availableCardTypes: ['search']
+              availableCardTypes: ['search'],
+              defaultCardType: 'search'
             }
           });
           datasetModel.version = '1';
@@ -254,7 +255,12 @@ describe('card directive', function() {
             var newDescriptionText = 'new description';
 
             datasetModel.set('columns', {
-              myFieldName: { dataset: datasetModel, description: newDescriptionText, availableCardTypes: ['search'] }
+              myFieldName: {
+                dataset: datasetModel,
+                description: newDescriptionText,
+                availableCardTypes: ['search'],
+                defaultCardType: 'search'
+              }
             });
 
             // Defer due to the card directive using observeDimensions, which can be async.
@@ -298,20 +304,23 @@ describe('card directive', function() {
               name: 'My Version 1 Aggregation Field',
               title: 'My Version 0 Aggregation Field',
               dataset: datasetModel,
-              availableCardTypes: ['column']
+              availableCardTypes: ['column'],
+              defaultCardType: 'column'
             },
             myFieldName: {
               name: initialTitleText,
               description: initialDescriptionText,
               dataset: datasetModel,
-              availableCardTypes: ['column']
+              availableCardTypes: ['column'],
+              defaultCardType: 'column'
             },
             '*': {
               name: 'Table Card',
               dataset: datasetModel,
               physicalDatatype: '*',
               fred: '*',
-              availableCardTypes: ['table']
+              availableCardTypes: ['table'],
+              defaultCardType: 'table'
             }
           });
           datasetModel.version = options.version;

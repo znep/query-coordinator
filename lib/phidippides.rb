@@ -116,7 +116,7 @@ class Phidippides < SocrataHttp
     end
   end
 
-  def add_default_and_available_card_types_to_columns(dataset_metadata)
+  def set_default_and_available_card_types_to_columns!(dataset_metadata)
     if metadata_transition_phase_3?
 
       dataset_id = dataset_metadata.try(:[], :body).try(:[], :id)

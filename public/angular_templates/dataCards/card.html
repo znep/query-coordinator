@@ -36,11 +36,11 @@
   <card-visualization model="model" where-clause="whereClause"></card-visualization>
 </div>
 
-<div class="card-controls">
+<div class="card-controls" ng-show="!isChoosingForExport">
   <div
     class="card-control icon-settings"
     ng-class="{ disabled: !isCustomizable }"
-    ng-click="customizeCard(isCustomizable)"
+    ng-click="customizeCardIfCustomizable(isCustomizable)"
     ng-show="editMode && interactive"
     title="{{ isCustomizable ?
       'Customize this card' :

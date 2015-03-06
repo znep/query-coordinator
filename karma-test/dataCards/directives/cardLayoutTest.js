@@ -134,6 +134,7 @@ describe('card-layout', function() {
             physicalDatatype: 'number',
             dataset: datasetModel,
             availableCardTypes: ['column', 'search'],
+            defaultCardType: 'column',
             cardTypeWeWillAssignForThisTest: 'histogram'
           },
           pointMap_column: {
@@ -147,6 +148,7 @@ describe('card-layout', function() {
               }
             },
             availableCardTypes: ['feature'],
+            defaultCardType: 'feature',
             cardTypeWeWillAssignForThisTest: 'feature'
           },
           choropleth_column: {
@@ -161,6 +163,7 @@ describe('card-layout', function() {
               }
             },
             availableCardTypes: ['choropleth'],
+            defaultCardType: 'choropleth',
             cardTypeWeWillAssignForThisTest: 'choropleth'
           },
           timeline_column: {
@@ -169,6 +172,7 @@ describe('card-layout', function() {
             physicalDatatype: 'number',
             dataset: datasetModel,
             availableCardTypes: ['timeline'],
+            defaultCardType: 'timeline',
             cardTypeWeWillAssignForThisTest: 'timeline'
           },
           search_column: {
@@ -177,6 +181,7 @@ describe('card-layout', function() {
             physicalDatatype: 'text',
             dataset: datasetModel,
             availableCardTypes: ['search'],
+            defaultCardType: 'search',
             cardTypeWeWillAssignForThisTest: 'search'
           },
           invalid_column: {
@@ -184,7 +189,8 @@ describe('card-layout', function() {
             fred: 'lol',
             physicalDatatype: 'text',
             dataset: datasetModel,
-            availableCardTypes: [],
+            availableCardTypes: ['invalid'],
+            defaultCardType: 'invalid',
             cardTypeWeWillAssignForThisTest: 'invalid'
           },
           '*': {
@@ -192,6 +198,7 @@ describe('card-layout', function() {
             physicalDatatype: '*',
             dataset: datasetModel,
             availableCardTypes: ['table'],
+            defaultCardType: 'table',
             cardTypeWeWillAssignForThisTest: 'table'
           }
         });
@@ -1371,6 +1378,7 @@ describe('card-layout', function() {
           it('should display "Customize" only over the customize button on the choropleth', function() {
             var cl = createLayoutWithCards([{fieldName: '*'}, {fieldName: 'choropleth_column'}]);
             cl.outerScope.interactive = true;
+            cl.outerScope.$apply();
 
             var flyout = $('#uber-flyout');
             expect(flyout.is(':visible')).to.be.false;
@@ -1489,7 +1497,7 @@ describe('card-layout', function() {
           var button = cl.element.find('.card-chooser .action-png-export:not(.disabled)');
           button.click();
 
-          expect(mockDownloadService.calledWith[0]).to.deep.equal('./asdf-fdsa/choropleth_column.png');
+          expect(mockDownloadService.calledWith[0]).to.deep.equal('/asdf-fdsa/choropleth_column.png');
         });
       });
 

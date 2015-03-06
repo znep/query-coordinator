@@ -1,4 +1,4 @@
-angular.module('dataCards.directives').directive('cardVisualization', function(AngularRxExtensions, ServerConfig, CardTypeMapping, $log) {
+angular.module('dataCards.directives').directive('cardVisualization', function(AngularRxExtensions, ServerConfig, CardTypeMapping) {
 
   return {
     restrict: 'E',

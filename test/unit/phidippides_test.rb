@@ -306,7 +306,7 @@ class PhidippidesTest < Test::Unit::TestCase
     phidippides.migrate_dataset_metadata_to_v1(v1_dataset_metadata_without_default_page)
   end
 
-  def test_add_default_and_available_card_types_to_columns_in_phase_3_calls_airbrake_when_it_cannot_find_any_columns
+  def test_set_default_and_available_card_types_to_columns_in_phase_3_calls_airbrake_when_it_cannot_find_a_dataset_id
     v1_dataset_metadata_without_dataset_id = {
       status: '200',
       body: v1_dataset_metadata.deep_dup.tap { |metadata| metadata.delete(:datasetId) }
@@ -319,10 +319,10 @@ class PhidippidesTest < Test::Unit::TestCase
         airbrake[:error_message]
       )
     end
-    phidippides.add_default_and_available_card_types_to_columns(v1_dataset_metadata_without_dataset_id)
+    phidippides.set_default_and_available_card_types_to_columns!(v1_dataset_metadata_without_dataset_id)
   end
 
-  def test_add_default_and_available_card_types_to_columns_in_phase_3_calls_airbrake_when_it_cannot_find_any_columns
+  def test_set_default_and_available_card_types_to_columns_in_phase_3_calls_airbrake_when_it_cannot_find_any_columns
     v1_dataset_metadata_without_columns = {
       status: '200',
       body: v1_dataset_metadata.deep_dup.tap { |metadata| metadata.delete(:columns) }
@@ -335,10 +335,10 @@ class PhidippidesTest < Test::Unit::TestCase
         airbrake[:error_message]
       )
     end
-    phidippides.add_default_and_available_card_types_to_columns(v1_dataset_metadata_without_columns)
+    phidippides.set_default_and_available_card_types_to_columns!(v1_dataset_metadata_without_columns)
   end
 
-  def test_add_default_and_available_card_types_to_columns_in_phase_3_succeeds
+  def test_set_default_and_available_card_types_to_columns_in_phase_3_succeeds
     connection_stub = stub.tap do |stub|
       stub.stubs(get_request: '[{"count_0": "34"}]',
                  reset_counters: {requests: {}, runtime: 0})
@@ -351,7 +351,7 @@ class PhidippidesTest < Test::Unit::TestCase
     stub_feature_flags_with(:metadata_transition_phase, '3')
     CoreServer::Base.stubs(connection: connection_stub)
 
-    phidippides.add_default_and_available_card_types_to_columns(v1_dataset_metadata_response)
+    phidippides.set_default_and_available_card_types_to_columns!(v1_dataset_metadata_response)
 
     assert_equal(
       'column',

@@ -339,6 +339,7 @@ describe('addCardDialog', function() {
         expect(dialog.element.find('.add-card-type-option:visible').length).to.equal(2);
         expect(dialog.element.find('.add-card-type-option.icon-bar-chart').length).to.equal(1);
         expect(dialog.element.find('.add-card-type-option.icon-search').length).to.equal(1);
+
       });
 
       it("should display a warning for 'column' card type option buttons when a column's cardinality is greater than 100", function() {
@@ -356,22 +357,34 @@ describe('addCardDialog', function() {
 
       });
 
-      it('should change the visualization type of the preview card when a card type option button is clicked', function() {
-        var dialog = createDialog();
 
-        expect(dialog.element.find('.add-card-type-option:visible').length).to.equal(0);
+      describe('should change the visualization type of the preview card when a card type option button is clicked', function() {
+        var phases = ['0', '1', '2', '3'];
 
-        dialog.scope.dialogState.cardSize = 2;
+        phases.forEach(function(phase) {
 
-        dialog.element.find('option[value=multipleVisualizations]').prop('selected', true).trigger('change');
+          it('in phase ' + phase, function() {
 
-        expect(dialog.element.find('.add-card-type-option:visible').length).to.equal(2);
-        expect(dialog.scope.addCardModel.getCurrentValue('cardType')).to.equal('search');
+            testHelpers.overrideMetadataMigrationPhase(phase)
 
-        dialog.element.find('.icon-bar-chart').click();
-        dialog.scope.$digest();
+            var dialog = createDialog();
 
-        expect(dialog.scope.addCardModel.getCurrentValue('cardType')).to.equal('column');
+            expect(dialog.element.find('.add-card-type-option:visible').length).to.equal(0);
+
+            dialog.scope.dialogState.cardSize = 2;
+
+            dialog.element.find('option[value=multipleVisualizations]').prop('selected', true).trigger('change');
+
+            expect(dialog.element.find('.add-card-type-option:visible').length).to.equal(2);
+            expect(dialog.scope.addCardModel.getCurrentValue('cardType')).to.equal('search');
+
+            dialog.element.find('.icon-bar-chart').click();
+            dialog.scope.$digest();
+
+            expect(dialog.scope.addCardModel.getCurrentValue('cardType')).to.equal('column');
+
+          });
+        });
       });
 
       it('should add a card in the correct CardSize group when an enabled column in the "Choose a column..." select control is selected and the "Add card" button is clicked', function() {

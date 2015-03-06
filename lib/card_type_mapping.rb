@@ -7,6 +7,8 @@ module CardTypeMapping
     File.join(Rails.root, 'lib', 'data', 'card-type-mapping.json')
   ))
 
+  # This cardinality threshold is only used by the 'new' way
+  # to compute default and available card types, not the old way.
   CARDINALITY_THRESHOLD = 35
 
   def card_type_for(column, logical_datatype_key, dataset_size=nil)
@@ -33,9 +35,9 @@ module CardTypeMapping
     end
 
     cardinality = column.try(:[], :cardinality)
-    # If cardinality information is not present, assume it is 1
+    # If cardinality information is not present, assume it is very large
     unless cardinality.present?
-      cardinality = 1
+      cardinality = 5_000_000
     end
 
     case physical_datatype
@@ -54,7 +56,7 @@ module CardTypeMapping
           card_type = 'histogram'
         end
       when 'number'
-        if has_computation_strategy?(column)
+        if has_georegion_computation_strategy?(column)
           card_type = 'choropleth'
         elsif is_low_cardinality?(cardinality, dataset_size)
           card_type = 'column'
@@ -100,9 +102,9 @@ module CardTypeMapping
     end
 
     cardinality = column.try(:[], :cardinality)
-    # If cardinality information is not present, assume it is 1
+    # If cardinality information is not present, assume it is very large
     unless cardinality.present?
-      cardinality = 1
+      cardinality = 5_000_000
     end
 
     case physical_datatype
@@ -117,7 +119,7 @@ module CardTypeMapping
       when 'money'
         available_card_types = ['column', 'histogram']
       when 'number'
-        if has_computation_strategy?(column)
+        if has_georegion_computation_strategy?(column)
           available_card_types = ['choropleth']
         else
           available_card_types = ['column', 'histogram']
@@ -175,7 +177,7 @@ module CardTypeMapping
 
   private
 
-  def has_computation_strategy?(column)
+  def has_georegion_computation_strategy?(column)
     computation_strategy_type = column.try(:[], :computationStrategy).try(:[], :strategy_type)
 
     (computation_strategy_type.present? &&

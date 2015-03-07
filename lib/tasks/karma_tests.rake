@@ -5,6 +5,11 @@ namespace :test do
   MAX_SAUCELABS_CONCURRENT_RUNS = 6
   SUPPORTED_BROWSERS = JSON.parse(open('supported_browsers.json').read())
 
+  # IMPORTANT: If you add/remove/change test groups,
+  # please update at the constant TEST_GROUPS in karma-unit.js
+  # If you don't, your tests may be run multiple times per run.
+  TEST_GROUPS = %w(services controllers directives filters integration models util)
+
   desc "Run all karma tests and update test-coverage result"
   task :karma do
     # Manually enable the coverage reporter. It isn't enabled by default as the instrumentation step makes
@@ -64,10 +69,19 @@ namespace :test do
     sleep 5
     puts "Launching in batches of #{MAX_SAUCELABS_CONCURRENT_RUNS} browsers"
 
-    browser_names.each_slice(MAX_SAUCELABS_CONCURRENT_RUNS) do |this_slice_browser_names|
-      puts "Launching batch: #{this_slice_browser_names}"
-      success = system("karma start karma-test/dataCards/karma-unit.js --browsers \"#{this_slice_browser_names.join(',')}\" --singleRun true")
-      raise 'Karma test failure' unless success
+    # Split test run between directives and rest of tests, for memory
+    # consumption reasons. There are issues with leaking memory in karma
+    # and angular-mocks.
+    [
+      TEST_GROUPS - [ 'directives' ],
+      [ 'directives' ]
+    ] .each do |excluded_groups|
+      browser_names.each_slice(MAX_SAUCELABS_CONCURRENT_RUNS) do |this_slice_browser_names|
+        puts "Launching batch: #{this_slice_browser_names} minus groups: #{excluded_groups}"
+        command = "karma start karma-test/dataCards/karma-unit.js --browsers \"#{this_slice_browser_names.join(',')}\" --exclude-groups \"#{excluded_groups.join(' ')}\" --singleRun true"
+        success = system(command)
+        raise 'Karma test failure' unless success
+      end
     end
 
     puts 'Overall run passed without failures'

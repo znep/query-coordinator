@@ -20,6 +20,14 @@ _.forIn(supportedBrowsers, function(browserInstances, browserName) {
   });
 });
 
+var indexOfGroupsSwitch = _.indexOf(process.argv, '--exclude-groups');
+// String names of groups to include.
+var groupsToExclude = indexOfGroupsSwitch >= 0 ? process.argv[indexOfGroupsSwitch + 1].split(' ') : [];
+
+function isTestGroupIncluded(group) {
+  return _.indexOf(groupsToExclude, group) < 0;
+}
+
 module.exports = function ( karma ) {
   karma.set({
     /**
@@ -122,7 +130,18 @@ module.exports = function ( karma ) {
       /* THE TESTS THEMSELVES */
       'karma-test/helpers/ServerMocks.js',
       'karma-test/dataCards/*.js',
-      'karma-test/dataCards/**/*.js'
+      /* IMPORTANT: If you add/remove/change test groups,
+       * please update at the constant TEST_GROUPS in karma_tests.rake.
+       * If you don't, your tests may be run multiple times per run.
+       */
+      { pattern: 'karma-test/dataCards/controllers/*.js', included: isTestGroupIncluded('controllers') },
+      { pattern: 'karma-test/dataCards/directives/*.js', included: isTestGroupIncluded('directives') },
+      { pattern: 'karma-test/dataCards/filters/*.js', included: isTestGroupIncluded('filters') },
+      { pattern: 'karma-test/dataCards/integration/*.js', included: isTestGroupIncluded('integration') },
+      { pattern: 'karma-test/dataCards/services/*.js', included: isTestGroupIncluded('services') },
+      { pattern: 'karma-test/dataCards/models/*.js', included: isTestGroupIncluded('models') },
+      { pattern: 'karma-test/dataCards/util/*.js', included: isTestGroupIncluded('util') },
+      { pattern: 'karma-test/dataCards/**/*.js', included: true } // Safety net - runs any tests not explicitly listed in a batch.
     ],
 
     exclude: [

@@ -99,7 +99,7 @@
             var cpObj = this;
             var msg = $.t('screens.ds.grid_sidebar.map.validation.location_column');
             var hasHiddenLoc = !$.isBlank(cpObj._view) && _.any(cpObj._view.realColumns, function(c)
-                { return c.dataTypeName == 'location' && c.hidden; });
+                { return _.include(c.dataTypeName, ['location', 'point']) && c.hidden; });
             if (options.useOtherSidebars && hasHiddenLoc && ($.isBlank(blist.sidebarHidden.manage) ||
                 !blist.sidebarHidden.manage.showHide))
             {
@@ -136,7 +136,7 @@
         {
             return ds.isArcGISDataset() || ds.isGeoDataset()
                 || _.any(ds.realColumns,
-                function(col) { return col.renderTypeName == 'location'; });
+                function(col) { return _.include(col.renderTypeName, ['location', 'point']); });
         };
 
         $field.makeStatic = function(value, invalid, uneditable)
@@ -340,7 +340,7 @@
                 options: plotStyles, required: true, prompt: $.t('screens.ds.grid_sidebar.map.data_layer.plot_style') },
             {text: $.t('screens.ds.grid_sidebar.map.data_layer.location'), name: prefix+'plot.locationId',
                 type: 'columnSelect', isTableColumn: true, required: true,
-                columns: {type: ['location'], hidden: options.isEdit }},
+                columns: {type: ['location', 'point'], hidden: options.isEdit }},
             {text: $.t('screens.ds.grid_sidebar.map.data_layer.region'), name: prefix+'heatmap.type', type: 'select', onlyIf: boundaryOnly,
                 required: !customHeatmap(options), prompt: $.t('screens.ds.grid_sidebar.map.data_layer.region_level_prompt'),
                 options: regionTypes},

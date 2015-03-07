@@ -976,7 +976,7 @@ class View < Model
   end
 
   def can_add_map?
-    return columns.select {|c| c.renderTypeName == 'location' &&
+    return columns.select {|c| ['location', 'point'].include?(c.renderTypeName) &&
       !c.flag?('hidden')}.length > 0
   end
 

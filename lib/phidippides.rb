@@ -101,7 +101,19 @@ class Phidippides < SocrataHttp
 
       pages_for_dataset = fetch_pages_for_dataset(dataset_id)
 
-      first_page_id = pages_for_dataset.try(:[], :body).try(:[], :publisher).try(:first).try(:[], :pageId)
+      begin
+        first_page_id = pages_for_dataset.try(:[], :body).try(:[], :publisher).try(:first).try(:[], :pageId)
+      rescue TypeError => error
+        error_message = "Could not migrate dataset to v1: encountered error " \
+          "trying to find first available page (#{error})."
+        Airbrake.notify(
+          :error_class => "DatasetMetadataMigrationError",
+          :error_message => error_message,
+          :datasetId => dataset_id,
+          :context => { :response => pages_for_dataset }
+        )
+        first_page_id = nil
+      end
 
       if first_page_id.present?
         dataset_metadata[:body][:defaultPage] = first_page_id
@@ -290,16 +302,28 @@ class Phidippides < SocrataHttp
         :cookies => options[:cookies]
       )
     else
-      issue_request(
-        :verb => :get,
-        :path => "v1/id/#{dataset_id}/pages",
-        :request_id => options[:request_id],
-        :cookies => options[:cookies]
+      normalize_pages_for_dataset_response!(
+        issue_request(
+          :verb => :get,
+          :path => "v1/id/#{dataset_id}/pages",
+          :request_id => options[:request_id],
+          :cookies => options[:cookies]
+        )
       )
     end
   end
 
   private
+
+  def normalize_pages_for_dataset_response!(pages_for_dataset_response)
+    if pages_for_dataset_response[:status] == "200" && pages_for_dataset_response[:body].present?
+      response_body = pages_for_dataset_response[:body]
+      if response_body.respond_to?('values')
+        pages_for_dataset_response[:body] = { :publisher => response_body.values, :user => [] }
+      end
+    end
+    pages_for_dataset_response
+  end
 
   def dataset_size(dataset_id)
     # Get the size of the dataset so we can compare it against the cardinality when creating cards

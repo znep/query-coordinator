@@ -87,8 +87,7 @@ angular.module('dataCards.services').factory('SchemaDefinitions', function() {
                     'minLength': 1
                   },
                   'fred': {
-                    'type': 'string',
-                    'enum': [ 'category', 'amount', 'location', 'time', 'text', 'name', 'identifier', '*' ]
+                    'type': 'string'
                   },
                   'physicalDatatype': {
                     'type': 'string',
@@ -124,8 +123,7 @@ angular.module('dataCards.services').factory('SchemaDefinitions', function() {
                     'minLength': 1
                   },
                   'fred': {
-                    'type': 'string',
-                    'enum': [ 'category', 'amount', 'location', 'time', 'text', 'name', 'identifier', '*' ]
+                    'type': 'string'
                   },
                   'physicalDatatype': {
                     'type': 'string',

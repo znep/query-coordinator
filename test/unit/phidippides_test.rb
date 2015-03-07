@@ -144,7 +144,7 @@ class PhidippidesTest < Test::Unit::TestCase
     prepare_stubs(body: v1_pages_for_dataset, path: 'v1/id/four-four/pages', verb: :get)
     stub_feature_flags_with(:metadata_transition_phase, '2')
     result = phidippides.fetch_pages_for_dataset('four-four', request_id: 'request_id')
-    assert_equal(v1_pages_for_dataset, result[:body])
+    assert_equal(normalized_v1_pages_for_dataset, result[:body])
   end
 
   def test_fetch_dataset_metadata
@@ -241,7 +241,7 @@ class PhidippidesTest < Test::Unit::TestCase
       body: v1_dataset_metadata.deep_dup.tap { |metadata| metadata.delete(:defaultPage) }
     }
     Phidippides.any_instance.stubs(
-      fetch_pages_for_dataset: { status: '200', body: v1_pages_for_dataset }
+      fetch_pages_for_dataset: { status: '200', body: normalized_v1_pages_for_dataset }
     )
     stub_feature_flags_with(:metadata_transition_phase, '2')
 
@@ -389,7 +389,7 @@ class PhidippidesTest < Test::Unit::TestCase
     assert(pages[:publisher].all? { |page| page[:id] == 'q77b-s2zi' }, 'expected all pages to belong to the same dataset')
 
     Phidippides.any_instance.stubs(
-      fetch_pages_for_dataset: { status: '200', body: v1_pages_for_dataset }
+      fetch_pages_for_dataset: { status: '200', body: normalized_v1_pages_for_dataset }
     )
     stub_feature_flags_with(:metadata_transition_phase, '2')
     pages = phidippides.fetch_pages_for_dataset(OpenStruct.new(id: 'q77b-s2zi'))[:body]
@@ -422,7 +422,7 @@ class PhidippidesTest < Test::Unit::TestCase
     assert(pages[:publisher].all? { |page| page[:id] == 'q77b-s2zi' }, 'expected all pages to belong to the same dataset')
 
     Phidippides.any_instance.stubs(
-      fetch_pages_for_dataset: { status: '200', body: v1_pages_for_dataset }
+      fetch_pages_for_dataset: { status: '200', body: normalized_v1_pages_for_dataset }
     )
     stub_feature_flags_with(:metadata_transition_phase, '2')
     pages = phidippides.fetch_pages_for_dataset('q77b-s2zi')[:body]
@@ -448,7 +448,7 @@ class PhidippidesTest < Test::Unit::TestCase
     assert(pages[:publisher].all? { |page| page[:id] == 'q77b-s2zi' }, 'expected all pages to belong to the same dataset')
 
     Phidippides.any_instance.stubs(
-      fetch_pages_for_dataset: { status: '200', body: v1_pages_for_dataset }
+      fetch_pages_for_dataset: { status: '200', body: normalized_v1_pages_for_dataset }
     )
     stub_feature_flags_with(:metadata_transition_phase, '2')
     pages = phidippides.fetch_pages_for_dataset(id: 'q77b-s2zi')[:body]
@@ -608,7 +608,11 @@ class PhidippidesTest < Test::Unit::TestCase
   end
 
   def v1_pages_for_dataset
-    JSON.parse('{"publisher":[{"datasetId":"q77b-s2zi","pageId":"vwwn-6r7g"}, {"datasetId":"q77b-s2zi","pageId":"test-page"}],"user":[]}').with_indifferent_access
+    JSON.parse('{"vwwn-6r7g":{"datasetId":"q77b-s2zi","pageId":"vwwn-6r7g"}, "test-page":{"datasetId":"q77b-s2zi","pageId":"test-page"}}').with_indifferent_access
+  end
+
+  def normalized_v1_pages_for_dataset
+    JSON.parse('{"publisher":[{"datasetId":"q77b-s2zi","pageId":"vwwn-6r7g"}, {"datasetId":"q77b-s2zi","pageId":"test-page"}], "user":[]}').with_indifferent_access
   end
 
   def new_v0_page_metadata

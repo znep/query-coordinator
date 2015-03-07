@@ -88,7 +88,7 @@ angular.module('dataCards.services').factory('SchemaDefinitions', function() {
                   },
                   'fred': {
                     'type': 'string',
-                    'enum': [ 'category', 'amount', 'location', 'time', 'text', 'name', 'identifier', '*' ]
+                    'enum': [ 'category', 'amount', 'location', 'time', 'text', 'name', 'number', 'identifier', '*' ]
                   },
                   'physicalDatatype': {
                     'type': 'string',
@@ -125,7 +125,7 @@ angular.module('dataCards.services').factory('SchemaDefinitions', function() {
                   },
                   'fred': {
                     'type': 'string',
-                    'enum': [ 'category', 'amount', 'location', 'time', 'text', 'name', 'identifier', '*' ]
+                    'enum': [ 'category', 'amount', 'location', 'time', 'text', 'name', 'number', 'identifier', '*' ]
                   },
                   'physicalDatatype': {
                     'type': 'string',

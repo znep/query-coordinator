@@ -8,7 +8,7 @@ describe('card-layout', function() {
     describe(('in metadata transition phase ' + phase), function() {
       'use strict';
 
-      var NUM_CARDS = 10;
+      var NUM_CARDS_IN_DEFAULT_LAYOUT = 6;
 
       var AngularRxExtensions;
       var CardV0;
@@ -21,34 +21,19 @@ describe('card-layout', function() {
       var $q;
       var rootScope;
       var testHelpers;
-      var $templateCache;
 
       beforeEach(module('/angular_templates/dataCards/card-layout.html'));
       beforeEach(module('/angular_templates/dataCards/card.html'));
-      beforeEach(module('/angular_templates/dataCards/cardVisualizationColumnChart.html'));
-      beforeEach(module('/angular_templates/dataCards/cardVisualizationTimelineChart.html'));
-      beforeEach(module('/angular_templates/dataCards/cardVisualizationChoropleth.html'));
-      beforeEach(module('/angular_templates/dataCards/cardVisualizationTable.html'));
-      beforeEach(module('/angular_templates/dataCards/cardVisualizationSearch.html'));
-      beforeEach(module('/angular_templates/dataCards/cardVisualizationFeatureMap.html'));
       beforeEach(module('/angular_templates/dataCards/cardVisualization.html'));
-      beforeEach(module('/angular_templates/dataCards/cardVisualizationInvalid.html'));
-      beforeEach(module('/angular_templates/dataCards/customizeCardDialog.html'));
-      beforeEach(module('/angular_templates/dataCards/modalDialog.html'));
-      beforeEach(module('/angular_templates/dataCards/socSelect.html'));
-      beforeEach(module('/angular_templates/dataCards/spinner.html'));
-      beforeEach(module('/angular_templates/dataCards/table.html'));
-      beforeEach(module('/angular_templates/dataCards/timelineChart.html'));
-      beforeEach(module('/angular_templates/dataCards/featureMap.html'));
       beforeEach(module('dataCards/cards.sass'));
       beforeEach(module('dataCards/card.sass'));
       beforeEach(module('dataCards/flyout.sass'));
 
       beforeEach(module('dataCards'));
-      beforeEach(module('dataCards.directives'));
       beforeEach(function() {
         module(function($provide) {
           _$provide = $provide;
+
           var mockCardDataService = {
             getData: function(){ return $q.when([]);},
             getChoroplethRegions: function() { return {then: _.noop}; },
@@ -77,10 +62,7 @@ describe('card-layout', function() {
           $provide.value('DownloadService', mockDownloadService);
         });
       });
-      beforeEach(inject(function($injector) {
-        $templateCache = $injector.get('$templateCache');
-        $templateCache.put('/angular_templates/dataCards/customizeCardDialog.html', '');
-      }));
+
       beforeEach(inject(function($injector) {
         testHelpers = $injector.get('testHelpers');
         rootScope = $injector.get('$rootScope');
@@ -95,6 +77,15 @@ describe('card-layout', function() {
         testHelpers.mockDirective(_$provide, 'aggregationChooser');
         testHelpers.mockDirective(_$provide, 'clearableInput');
         testHelpers.mockDirective(_$provide, 'addCardDialog');
+        testHelpers.mockDirective(_$provide, 'cardVisualizationTable');
+        testHelpers.mockDirective(_$provide, 'cardVisualizationColumnChart');
+        testHelpers.mockDirective(_$provide, 'cardVisualizationFeatureMap');
+        testHelpers.mockDirective(_$provide, 'cardVisualizationChoropleth');
+        testHelpers.mockDirective(_$provide, 'cardVisualizationTimelineChart');
+        testHelpers.mockDirective(_$provide, 'cardVisualizationSearch');
+        testHelpers.mockDirective(_$provide, 'cardVisualizationInvalid');
+        testHelpers.mockDirective(_$provide, 'spinner');
+        testHelpers.mockDirective(_$provide, 'customizeCardDialog');
 
         testHelpers.overrideMetadataMigrationPhase(phase);
       }));
@@ -283,7 +274,7 @@ describe('card-layout', function() {
        */
       function createLayoutWithCards(cards, options) {
         if (!cards) {
-          cards = _.map(_.range(NUM_CARDS), function(i) {
+          cards = _.map(_.range(NUM_CARDS_IN_DEFAULT_LAYOUT), function(i) {
             return {
               fieldName: 'invalid_column'
             };
@@ -1052,7 +1043,7 @@ describe('card-layout', function() {
         it("should not expand any cards if the page model's 'cards' array doesn't contain any cards with the expanded property set", function() {
           var cl = createLayoutWithCards();
 
-          expect(cl.element.find('card').length).to.equal(NUM_CARDS);
+          expect(cl.element.find('card').length).to.equal(NUM_CARDS_IN_DEFAULT_LAYOUT);
           expect(cl.element.find('.expanded').length).to.equal(0);
         });
 

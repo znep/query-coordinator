@@ -20,6 +20,16 @@ _.forIn(supportedBrowsers, function(browserInstances, browserName) {
   });
 });
 
+var indexOfGroupsSwitch = _.indexOf(process.argv, '--exclude-groups');
+// String names of groups to include.
+var groupsToExclude = _.map(
+  indexOfGroupsSwitch >= 0 ? process.argv[indexOfGroupsSwitch + 1].split(',') : [],
+  function(group) { return group.trim(); });
+
+function isTestGroupIncluded(group) {
+  return _.indexOf(groupsToExclude, group) < 0;
+}
+
 module.exports = function ( karma ) {
   karma.set({
     /**
@@ -41,62 +51,106 @@ module.exports = function ( karma ) {
      * This is the list of file patterns to load into the browser during testing.
      */
     files: [
+      /* The order of this matters. */
+
+      /* EXTERNAL PRODUCTION DEPENDENCIES
+       * (no test dependencies) */
+
+      /* Libraries which Angular binds against - they
+       * must be loaded before Angular. */
       'bower_components/jquery/dist/jquery.js',
-      'bower_components/javascript-detect-element-resize/jquery.resize.js',
+
+      /* Libraries which do not depend on Angular. */
       'bower_components/lodash/dist/lodash.js',
       'public/javascripts/util/lodash-mixins.js',
       'public/javascripts/util/jquery-extensions.js',
       'public/javascripts/bower/jquery.dotdotdot.js',
       'bower_components/showdown/src/showdown.js',
-      'bower_components/angular/angular.js',
-      /*    Map-specific libraries    */
-      'public/javascripts/plugins/leaflet.js',
-      'bower_components/chroma-js/chroma.js',
-      'bower_components/simple-statistics/src/simple_statistics.js',
-      'public/javascripts/util/typed-arrays.js',
-      'public/javascripts/bower/pbf.min.js',
-      'public/javascripts/bower/vectortile.min.js',
-      'app/styles/leaflet.css',
-      'app/styles/dataCards/testing.css',
-      /* ------- */
-      'bower_components/angular-mocks/angular-mocks.js',
-      'bower_components/d3/d3.min.js',
-      'bower_components/lodash/dist/lodash.js',
-      'bower_components/rxjs/rx.js',
-      'bower_components/rxjs/rx.async.js',
-      'bower_components/rxjs/rx.aggregates.js',
-      'bower_components/rxjs/rx.time.js',
-      'bower_components/rxjs/rx.binding.js',
+      'bower_components/javascript-detect-element-resize/jquery.resize.js',
       'bower_components/jjv/lib/jjv.js',
-      'bower_components/sinon-browser-only/sinon.js',
+      'bower_components/d3/d3.min.js',
       'bower_components/moment/moment.js',
       'bower_components/native-promise-only/lib/npo.src.js',
       'bower_components/requestAnimationFrame-polyfill/requestAnimationFrame.js',
       'public/javascripts/plugins/modernizr.js',
       {pattern: 'public/javascripts/plugins/squire.js', included: false},
-      'karma-test/helpers/TestHelpers.js',
-      'karma-test/helpers/ServerMocks.js',
-      'karma-test/dataCards/*.js',
-      'karma-test/dataCards/**/*.js',
-      /*    Angular    */
-      'public/javascripts/angular/common/*.js',
-      'public/javascripts/angular/common/**/*.js',
+      'bower_components/rxjs/rx.js',
+      'bower_components/rxjs/rx.async.js',
+      'bower_components/rxjs/rx.aggregates.js',
+      'bower_components/rxjs/rx.time.js',
+      'bower_components/rxjs/rx.binding.js',
+
+      'public/javascripts/plugins/leaflet.js',
+      'app/styles/leaflet.css',
+      'bower_components/chroma-js/chroma.js',
+      'bower_components/simple-statistics/src/simple_statistics.js',
+      'public/javascripts/util/typed-arrays.js',
+      'public/javascripts/bower/pbf.min.js',
+      'public/javascripts/bower/vectortile.min.js',
+
+      /* Angular itself */
+      'bower_components/angular/angular.js',
+
+      /* Libraries needing Angular */
       'bower_components/angular-sanitize/angular-sanitize.js',
       'bower_components/angular-markdown-directive/markdown.js',
+
+      /* END OF PRODUCT DEPENDENCIES */
+
+      /* TEST-ONLY EXTERNAL DEPENDENCIES */
+
+      'bower_components/angular-mocks/angular-mocks.js',
+      'bower_components/sinon-browser-only/sinon.js',
+
+      /* END OF EXTERNAL DEPENDENCIES
+       * OUR CODE BELOW */
+
+      /* dataCards ITSELF */
+      'public/javascripts/angular/common/*.js',
+      'public/javascripts/angular/common/**/*.js',
+
+      'karma-test/helpers/TestHelpers.js', // Requirement for mockModuleDefinitions.
+      'karma-test/dataCards/mockModuleDefinitions.js', // Mock out module('dataCards').
+
       'public/javascripts/angular/dataCards/controllers.js',
       'public/javascripts/angular/dataCards/models.js',
       'public/javascripts/angular/dataCards/**/*.js',
-      /*    Angular Templates    */
+
       'public/angular_templates/**/*.html',
-      /*    Test datasets    */
-      'karma-test/dataCards/test-data/**/*.json',
-      /*    SASS    */
       'app/styles/dataCards/*.sass',
-      /*    Images */
+      { pattern: 'public/stylesheets/images/**/*.{jpg,png}', watched: false, included: false, served: true },
+
+      /* TEST MOCKS */
+
+      /* Test datasets */
+      'karma-test/dataCards/test-data/**/*.json',
+      /* Mock app assets */
+      'app/styles/dataCards/testing.css',
+      /* Images */
       { pattern: 'public/stubs/images/*.png', watched: false, included: false, served: true },
-      { pattern: 'public/stylesheets/images/**/*.{jpg,png}', watched: false, included: false, served: true }
+
+      /* THE TESTS THEMSELVES */
+      'karma-test/helpers/ServerMocks.js',
+      'karma-test/dataCards/*.js',
+      /* IMPORTANT: If you add/remove/change test groups,
+       * please update at the constant TEST_GROUPS in karma_tests.rake.
+       * If you don't, your tests may be run multiple times per run.
+       */
+      { pattern: 'karma-test/dataCards/controllers/*.js', included: isTestGroupIncluded('controllers') },
+      { pattern: 'karma-test/dataCards/directives/*[cC]horoplethTest.js', included: isTestGroupIncluded('directives-maps') },
+      { pattern: 'karma-test/dataCards/directives/*[fF]eatureMapTest.js', included: isTestGroupIncluded('directives-maps') },
+      { pattern: 'karma-test/dataCards/directives/cardLayoutTest.js', included: isTestGroupIncluded('directives-card-layout') },
+      { pattern: 'karma-test/dataCards/directives/*.js', included: isTestGroupIncluded('directives-other') },
+      { pattern: 'karma-test/dataCards/filters/*.js', included: isTestGroupIncluded('filters') },
+      { pattern: 'karma-test/dataCards/integration/*.js', included: isTestGroupIncluded('integration') },
+      { pattern: 'karma-test/dataCards/services/*.js', included: isTestGroupIncluded('services') },
+      { pattern: 'karma-test/dataCards/models/*.js', included: isTestGroupIncluded('models') },
+      { pattern: 'karma-test/dataCards/util/*.js', included: isTestGroupIncluded('util') },
+      { pattern: 'karma-test/dataCards/**/*.js', included: true } // Safety net - runs any tests not explicitly listed in a batch.
     ],
+
     exclude: [
+      // This file is mocked out by mockModuleDefinitions.
       'public/javascripts/angular/dataCards/app.js'
     ],
 

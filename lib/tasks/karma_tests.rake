@@ -1,9 +1,12 @@
 namespace :test do
   # Keep this <= the maximum concurrency listed on the SauceLabs account dashboard. Otherwise timeouts will occur.
-  # Currently this is the max concurrenty / 2, as going higher than this causes some instability that hasn't
-  # quite been traced out yet.
   MAX_SAUCELABS_CONCURRENT_RUNS = 6
   SUPPORTED_BROWSERS = JSON.parse(open('supported_browsers.json').read())
+
+  # IMPORTANT: If you add/remove/change test groups,
+  # please update karma-unit.js (look for the calls to isTestGroupIncluded).
+  # If you don't, your tests may be executed multiple times per run.
+  TEST_GROUPS = %w(services controllers directives-card-layout directives-maps directives-other filters integration models util)
 
   desc "Run all karma tests and update test-coverage result"
   task :karma do
@@ -42,6 +45,10 @@ namespace :test do
     critical_only ? critical_browser_names : browser_names
   end
 
+  def exclude_everything_but(sole_included_group)
+    TEST_GROUPS - [ sole_included_group ]
+  end
+
   desc 'Run karma tests in SauceLabs. Accepts CRITICAL_BROWSERS_ONLY=true|false and BROWSER_FAMILIES="comma separated browser names" ENV variables'
   task :karma_sauce do
     env_browser_families = ENV['BROWSER_FAMILIES']
@@ -64,10 +71,21 @@ namespace :test do
     sleep 5
     puts "Launching in batches of #{MAX_SAUCELABS_CONCURRENT_RUNS} browsers"
 
-    browser_names.each_slice(MAX_SAUCELABS_CONCURRENT_RUNS) do |this_slice_browser_names|
-      puts "Launching batch: #{this_slice_browser_names}"
-      success = system("karma start karma-test/dataCards/karma-unit.js --browsers \"#{this_slice_browser_names.join(',')}\" --singleRun true")
-      raise 'Karma test failure' unless success
+    # Split the test run into batches, and run each batch separately.
+    # This is for memory consumption reasons.
+    # There are issues with leaking memory in karma and angular-mocks.
+    group_a_excludes = exclude_everything_but('directives-maps')
+    group_b_excludes = exclude_everything_but('directives-card-layout')
+    group_c_excludes = exclude_everything_but('directives-other')
+    group_remainder_excludes = TEST_GROUPS - (group_a_excludes & group_b_excludes & group_c_excludes)
+
+    [ group_a_excludes, group_b_excludes, group_remainder_excludes ].each do |excluded_groups|
+      browser_names.each_slice(MAX_SAUCELABS_CONCURRENT_RUNS) do |this_slice_browser_names|
+        puts "Launching batch: #{this_slice_browser_names} minus groups: #{excluded_groups}"
+        command = "karma start karma-test/dataCards/karma-unit.js --browsers \"#{this_slice_browser_names.join(',')}\" --exclude-groups \"#{excluded_groups.join(',')}\" --singleRun true"
+        success = system(command)
+        raise 'Karma test failure' unless success
+      end
     end
 
     puts 'Overall run passed without failures'

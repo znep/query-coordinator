@@ -99,7 +99,7 @@
             var cpObj = this;
             var msg = $.t('screens.ds.grid_sidebar.map.validation.location_column');
             var hasHiddenLoc = !$.isBlank(cpObj._view) && _.any(cpObj._view.realColumns, function(c)
-                { return _.include(c.dataTypeName, ['location', 'point']) && c.hidden; });
+                { return _.include(['location', 'point'], c.dataTypeName) && c.hidden; });
             if (options.useOtherSidebars && hasHiddenLoc && ($.isBlank(blist.sidebarHidden.manage) ||
                 !blist.sidebarHidden.manage.showHide))
             {
@@ -136,7 +136,7 @@
         {
             return ds.isArcGISDataset() || ds.isGeoDataset()
                 || _.any(ds.realColumns,
-                function(col) { return _.include(col.renderTypeName, ['location', 'point']); });
+                function(col) { return _.include(['location', 'point'], col.renderTypeName); });
         };
 
         $field.makeStatic = function(value, invalid, uneditable)

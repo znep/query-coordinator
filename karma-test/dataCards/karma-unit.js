@@ -22,7 +22,9 @@ _.forIn(supportedBrowsers, function(browserInstances, browserName) {
 
 var indexOfGroupsSwitch = _.indexOf(process.argv, '--exclude-groups');
 // String names of groups to include.
-var groupsToExclude = indexOfGroupsSwitch >= 0 ? process.argv[indexOfGroupsSwitch + 1].split(' ') : [];
+var groupsToExclude = _.map(
+  indexOfGroupsSwitch >= 0 ? process.argv[indexOfGroupsSwitch + 1].split(',') : [],
+  function(group) { return group.trim(); });
 
 function isTestGroupIncluded(group) {
   return _.indexOf(groupsToExclude, group) < 0;
@@ -135,7 +137,10 @@ module.exports = function ( karma ) {
        * If you don't, your tests may be run multiple times per run.
        */
       { pattern: 'karma-test/dataCards/controllers/*.js', included: isTestGroupIncluded('controllers') },
-      { pattern: 'karma-test/dataCards/directives/*.js', included: isTestGroupIncluded('directives') },
+      { pattern: 'karma-test/dataCards/directives/*[cC]horoplethTest.js', included: isTestGroupIncluded('directives-maps') },
+      { pattern: 'karma-test/dataCards/directives/*[fF]eatureMapTest.js', included: isTestGroupIncluded('directives-maps') },
+      { pattern: 'karma-test/dataCards/directives/cardLayoutTest.js', included: isTestGroupIncluded('directives-card-layout') },
+      { pattern: 'karma-test/dataCards/directives/*.js', included: isTestGroupIncluded('directives-other') },
       { pattern: 'karma-test/dataCards/filters/*.js', included: isTestGroupIncluded('filters') },
       { pattern: 'karma-test/dataCards/integration/*.js', included: isTestGroupIncluded('integration') },
       { pattern: 'karma-test/dataCards/services/*.js', included: isTestGroupIncluded('services') },

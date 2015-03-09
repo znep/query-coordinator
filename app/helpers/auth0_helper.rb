@@ -20,4 +20,50 @@ module Auth0Helper
     # Core produces a signature which is a SHA1 hash of the string "secret 4x4 expiration salt"
     Digest::SHA1.hexdigest("#{COOKIE_SECRET} #{uid} #{expiration} #{salt}")
   end
+
+  
+  def isValidToken(auth0Hash)
+    return (containsValidEmail(auth0Hash) &&
+            containsValidName(auth0Hash) &&
+            containsValidUserId(auth0Hash))
+  end
+
+  def containsValidEmail(auth0Hash)
+    email = auth0Hash["email"]
+    return (!email.nil? &&
+            !email.empty?)
+  end
+
+  def containsValidName(auth0Hash)
+    displayName = auth0Hash["name"]
+    if (!displayName.nil? &&
+        !displayName.empty?)
+      return true
+    else
+      firstName = auth0Hash["given_name"]; 
+      lastName = auth0Hash ["last_name"];
+      return (!firstName.nil? && !lastName.nil)    
+    end
+  end
+
+  def containsValidUserId(auth0Hash)
+    userId = auth0Hash["socrata_user_id"]
+    Rails.logger.info(" #{userId}")
+    return (!userId.nil? && isValidUserIdFormat(userId))
+  end
+
+  def isValidUserIdFormat(userId)
+    splitId = userId.split("|")
+    Rails.logger.info(" #{splitId}")
+
+    #Make sure that none of the values are empty
+    for split in splitId do
+      if split.empty?
+        return false
+      end
+    end
+
+    #Finally, check to make sure that it has all three required fields
+    return (splitId.length == 3)
+  end
 end

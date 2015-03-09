@@ -1,0 +1,82 @@
+###############################################################################
+# NOTE! All configuration information in this file are overwritten by chef when
+# the app is deployed. If you wish to ensure that new configuration information
+# is deployed along with this app, then make sure it is added to appropriate
+# JSON file in the environments folder of the metachef repo.
+#
+# Attributes that you wish to add to the "default" section below should be
+# added under the "default_attributes" hash key in the appropriate JSON file
+# mentioned above.
+#
+# At the time of this writing, the following metachef environment files are
+# germane to this application and where it is deployed:
+#
+#  azure-eastus-production.json
+#  azure-westeurope-production.json
+#  production.json
+#  production-ord1.json
+#  azure-staging.json
+#  azure-rc.json
+#
+
+default: &default
+  coreservice_uri: http://localhost:8080
+  activemq_hosts: stomp://localhost:61613
+  zk_hosts: 'localhost:2181'
+  rpx_signin_url: https://socrata-test.rpxnow.com/openid/v2/signin
+  rpx_facebook_url: https://socrata-test.rpxnow.com/facebook/start
+  rpx_windowslive_url: https://socrata-test.rpxnow.com/liveid/start
+  rpx_twitter_url: https://socrata-test.rpxnow.com/twitter/start
+  rpx_openid_url: https://socrata-test.rpxnow.com/openid/start
+  app_token: U29jcmF0YS0td2VraWNrYXNz0
+  statsd_enabled: false
+  polaroid_hostname: polaroid.service.aws-us-west-2-production.socrata.consul
+  polaroid_port: 13379
+  opendata_ga_tracking_code: UA-52982454-21
+
+# Local development
+development:
+  ssl_port: 9443
+  http_port: 9292
+  max_core_server_requests: 15
+  metrics_dir: tmp/metriclogs
+  <<: *default
+  mixpanel_token: 59b0b54697603105463834afdf20accf
+  tileserver_hostname: localhost
+  tileserver_port: 2048
+  polaroid_hostname: localhost
+  polaroid_port: 1337
+# auth0_uri: <auth0-account>.auth0.com
+# auth0_id: <auth0-provided-id>
+# auth0_secret: <auth0-provided-secret>
+
+# Running unit tests; NOT test.socrata.com
+test:
+  metrics_dir: tmp/metriclogs
+  <<: *default
+  auth0_uri: exists
+  auth0_id: exists
+  auth0_secret: exists
+
+# test.socrata.com
+staging:
+  coreservice_uri: http://vm01.ord1.socrata.com:8081
+  google_analytics_id: UA-9046230-2
+  max_core_server_requests: 15
+  <<: *default
+  mixpanel_token: ce548d5c95f7671fadd0174cc067dc69
+
+# www.socrata.com
+production:
+  coreservice_uri: http://lb-vip.sea1.socrata.com:8081
+  activemq_hosts: stomp://activemq01.sea1.socrata.com:61613,stomp://activemq02.sea1.socrata.com:61613
+  google_analytics_id: UA-9046230-1
+  rpx_signin_url: https://socrata.rpxnow.com/openid/v2/signin
+  rpx_facebook_url: https://socrata.rpxnow.com/facebook/start
+  rpx_windowslive_url: https://socrata.rpxnow.com/liveid/start
+  rpx_twitter_url: https://socrata.rpxnow.com/twitter/start
+  rpx_openid_url: https://socrata.rpxnow.com/openid/start
+  <<: *default
+  mixpanel_token: 1d804068e1d3694468823f3c7f74567d
+
+

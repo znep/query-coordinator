@@ -385,7 +385,7 @@ module DatasetsHelper
 
   def hide_map_create?
     view.is_unpublished? || view.is_alt_view? && !view.available_display_types.include?('map') ||
-      view.is_grouped? || view.new_backend?
+      view.is_grouped?
   end
 
   def hide_cell_feed?

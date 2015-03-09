@@ -69,13 +69,10 @@ namespace :test do
     sleep 5
     puts "Launching in batches of #{MAX_SAUCELABS_CONCURRENT_RUNS} browsers"
 
-    # Split test run between directives and rest of tests, for memory
-    # consumption reasons. There are issues with leaking memory in karma
-    # and angular-mocks.
-    [
-      TEST_GROUPS - [ 'directives' ],
-      [ 'directives' ]
-    ] .each do |excluded_groups|
+    # First run just directive tests, then run the remainder in a separate task.
+    # This is for memory consumption reasons.
+    # There are issues with leaking memory in karma and angular-mocks.
+    [ TEST_GROUPS - [ 'directives' ], [ 'directives' ] ].each do |excluded_groups|
       browser_names.each_slice(MAX_SAUCELABS_CONCURRENT_RUNS) do |this_slice_browser_names|
         puts "Launching batch: #{this_slice_browser_names} minus groups: #{excluded_groups}"
         command = "karma start karma-test/dataCards/karma-unit.js --browsers \"#{this_slice_browser_names.join(',')}\" --exclude-groups \"#{excluded_groups.join(' ')}\" --singleRun true"

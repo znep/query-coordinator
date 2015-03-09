@@ -250,7 +250,7 @@ describe('CardsViewController', function() {
       expect($scope.pageName).to.equal(nameTwo);
     });
 
-    it('should default to "Untitled"', function() {
+    it('should default to something falsey', function() {
       var controllerHarness = makeController();
 
       var controller = controllerHarness.controller;
@@ -264,10 +264,34 @@ describe('CardsViewController', function() {
       });
       $rootScope.$digest();
 
-      expect($scope.pageName).to.equal('Untitled');
+      expect($scope.pageName).not.to.be.ok;
 
       $scope.page.set('name', nameTwo);
       expect($scope.pageName).to.equal(nameTwo);
+    });
+
+    it('syncs the model and scope references to the page name', function() {
+      var controllerHarness = makeController();
+      var controller = controllerHarness.controller;
+      var $scope = controllerHarness.$scope;
+
+      var pageDirtied = false;
+      $scope.page.observeDirtied().subscribe(function() {
+        pageDirtied = true;
+      });
+
+      expect(pageDirtied).to.equal(false);
+      // Make sure changing the scope updates the model
+      $scope.safeApply(function() {
+        $scope.writablePage.name = 'Hello there I am a new name';
+      });
+
+      expect(pageDirtied).to.equal(true);
+      expect($scope.page.getCurrentValue('name')).to.equal('Hello there I am a new name');
+
+      // Make sure changing the model updates the scope
+      $scope.page.set('name', 'tally ho, chap!');
+      expect($scope.writablePage.name).to.equal('tally ho, chap!');
     });
   });
 
@@ -290,7 +314,7 @@ describe('CardsViewController', function() {
       });
       $rootScope.$digest();
 
-      expect($scope.sourceDatasetURL).to.be.falsy;
+      expect($scope.sourceDatasetURL).not.to.be.ok;
       $httpBackend.flush();
       $rootScope.$digest();
       expect($scope.sourceDatasetURL).to.equal('/d/sooo-oold');
@@ -585,14 +609,19 @@ describe('CardsViewController', function() {
     it('should set hasChanges to true when a property changes on any model hooked to the page, then back to false when changed back to its original value', function() {
       var controllerHarness = makeController();
       var $scope = controllerHarness.$scope;
+      controllerHarness.pageMetadataPromise.resolve({
+        datasetId: 'fake-fbfr',
+        name: 'test dataset name'
+      });
+      $scope.$digest();
 
-      expect($scope.hasChanges).to.be.falsy;
+      expect($scope.hasChanges).not.to.be.ok;
 
       $scope.page.set('name', 'name2');
       expect($scope.hasChanges).to.be.true;
 
       $scope.page.set('name', 'test dataset name');
-      expect($scope.hasChanges).to.be.falsy;
+      expect($scope.hasChanges).not.to.be.ok;
     });
 
     it('should call PageDataService.save when savePage is called with hasChanges = true', function() {

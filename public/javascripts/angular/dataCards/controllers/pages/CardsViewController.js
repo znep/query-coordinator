@@ -67,18 +67,37 @@
     ), $scope.eventToObservable('$destroy'));
   }
 
+  /**
+   * Binds the writable properties of page to the scope, such that changes to the scope will
+   * propagate to the page model.
+   *
+   * @param {angular.scope} $scope - the angular scope.
+   * @param {Page} page - the page Model.
+   */
+  function bindWritableProperties($scope, page) {
+    $scope.writablePage = {};
+    page.observe('name').filter(_.isDefined).subscribe(function(name) {
+      $scope.safeApply(function() {
+        $scope.writablePage.name = name;
+      });
+    });
+    $scope.observe('writablePage.name').filter(_.isDefined).subscribe(function(name) {
+      page.set('name', name);
+    });
+  }
+
   function CardsViewController($scope, $location, $log, $window, $q, AngularRxExtensions, SortedTileLayout, Filter, PageDataService, UserSessionService, FlyoutService, page, WindowState, ServerConfig, $http) {
 
     AngularRxExtensions.install($scope);
+
+    bindWritableProperties($scope, page);
 
     /*************************
     * General metadata stuff *
     *************************/
 
     $scope.page = page;
-    $scope.bindObservable('pageName', page.observe('name').map(function(name) {
-      return _.isUndefined(name) ? 'Untitled' : name;
-    }));
+    $scope.bindObservable('pageName', page.observe('name'));
     $scope.bindObservable('pageDescription', page.observe('description'));
 
     $scope.bindObservable('dataset', page.observe('dataset'));

@@ -53,8 +53,42 @@ body.state-view-cards
     .padded-wrapper
       padding: ($metadata-side-padding / 2)
 
-    header
-      font-size: 2em
+    .header
+      position: relative
+      color: inherit
+
+      >.icon-edit::before
+        position: absolute
+        top: 0
+        left: 0
+        padding: .3em .2em
+        color: inherit
+        // Make the icon a little bit smaller
+        font-size: .8em
+
+      >textarea
+        color: inherit
+        font: inherit
+        height: 1.2em
+        display: block
+        width: 100%
+        box-sizing: border-box
+        padding-left: 1.1em
+        border: 1px solid $grey-inactive-border-color
+        @include prefixer(border-radius, 2px)
+
+        &:focus
+          outline: 0
+          border-color: $blue-active-color
+          // webkit doesn't give us box shadows unless we nuke its appearance
+          -webkit-appearance: none
+          @include prefixer(box-shadow, 0 0 2px 0 $blue-active-color)
+
+          & + .icon-edit
+            color: $blue-active-color
+
+    header,.header
+      font-size: 2rem
 
     .activities
       position: relative

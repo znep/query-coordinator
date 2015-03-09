@@ -5,7 +5,14 @@
   <div class="cards-metadata">
     <div class="row">
       <div class="span6 padded-wrapper">
-        <header multiline-ellipsis max-lines="2" tolerance="8" text="{{pageName}}" show-more-mode="title-attr"></header>
+        <header ng-show="!editMode" multiline-ellipsis max-lines="2" tolerance="8" text="{{pageName || 'Untitled'}}" show-more-mode="title-attr"></header>
+        <div class="header" ng-if="editMode">
+          <textarea
+            msd-elastic
+            ng-model="writablePage.name"
+            >{{writablePage.name}}</textarea>
+          <div class="icon-edit"></div>
+        </div>
         <!-- description -->
         <div class="page-description" expanded="expanded" multiline-ellipsis max-lines="3" tolerance="2" text="{{pageDescription}}"></div>
       </div>

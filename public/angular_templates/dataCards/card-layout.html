@@ -6,6 +6,7 @@
   <card
     model="cardState.model"
     class="card"
+    data-card-type="{{cardState.model.getCurrentValue('cardType')}}"
     where-clause="globalWhereClauseFragment"
     edit-mode="editMode"
     interactive="true"

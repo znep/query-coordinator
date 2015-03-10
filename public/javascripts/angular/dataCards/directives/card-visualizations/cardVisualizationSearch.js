@@ -52,7 +52,10 @@
           map(function() {
             return $scope.search;
           }).
-          filter($.isPresent);
+          filter($.isPresent).
+          merge($scope.eventToObservable('suggestionToolPanel:selectedItem').map(function(event) {
+            return event.args[0];
+          }));
 
         // Whenever a new value is submitted, clear the invalidSearch flag
         submitValueObservable.
@@ -166,7 +169,50 @@
             }).
           startWith(false);
 
-        // Bind observables to scope
+        $scope.$on('suggestionToolPanel:selectedItem', function(event, selectedItem) {
+          $scope.safeApply(function() {
+            $scope.search = selectedItem;
+          });
+        });
+
+        var userActionsWhichShouldShowSuggestionPanelObservable = Rx.Observable.merge(
+          $scope.eventToObservable('clearableInput:keypress').
+          filter(function(event) {
+            var which = event.args[0].which;
+            return which > 32;
+          }),
+          $scope.eventToObservable('clearableInput:click').
+          filter(function() {
+            return _.isPresent($scope.searchValue);
+          })
+        );
+
+        var userActionsWhichShouldHideSuggestionPanelObservable = Rx.Observable.merge(
+          submitValueObservable,
+          hasInputObservable.filter(function(value) { return !value; }),
+          $scope.eventToObservable('clearbleInput:blur').filter(function(event) {
+            // Only hide the suggestion panel if the blur target is not a suggestion.
+            var newFocusTarget = event.args[0].relatedTarget;
+            if (_.isPresent(newFocusTarget)) {
+              var isNewFocusTargetWithinSuggestions = element.find('suggestion-tool-panel').find(newFocusTarget).length > 0;
+              return !isNewFocusTargetWithinSuggestions;
+            } else {
+              return false;
+            }
+          }),
+          Rx.Observable.fromEvent($(document), 'click').takeUntil($scope.observeDestroy(element)).
+          filter(function(event) {
+            var isEventFromBeyondSuggestionToolPanel = element.find('suggestion-tool-panel').find(event.target).length === 0;
+            var isEventFromOutsideTheSearchInputField = element.find('clearable-input').find(event.target).length === 0;
+            return isEventFromBeyondSuggestionToolPanel && isEventFromOutsideTheSearchInputField;
+          })
+        );
+
+        var shouldShowSuggestionPanelObservable = Rx.Observable.merge(
+          userActionsWhichShouldShowSuggestionPanelObservable.map(_.constant(true)),
+          userActionsWhichShouldHideSuggestionPanelObservable.map(_.constant(false))
+        );
+
         $scope.bindObservable('rowCount', clampedRowsLoadedObservable);
         $scope.bindObservable('totalRowCount', rowCountObservable);
         $scope.bindObservable('isInvalidSearch', invalidSearchInputObservable);
@@ -175,6 +221,9 @@
         $scope.bindObservable('noResults', hasRowsObservable.startWith(true));
         $scope.bindObservable('searchWhere', searchWhereObservable);
         $scope.bindObservable('fieldName', fieldNameObservable);
+        $scope.bindObservable('searchValue', searchValueObservable);
+        $scope.bindObservable('dataset', dataset);
+        $scope.bindObservable('shouldShowSuggestionPanel', shouldShowSuggestionPanelObservable);
 
         handleSampleData($scope, model, dataset);
       }

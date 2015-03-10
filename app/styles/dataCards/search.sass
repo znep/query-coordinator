@@ -9,6 +9,8 @@
   overflow: hidden
   width: 90%
   text-align: center
+  &.dimmed
+    opacity: 0.25
 
 .search-card-results
   margin-top: 1rem
@@ -18,3 +20,63 @@
 
 .search-card-info
   margin-bottom: 1rem
+
+.tool-panel.suggestion-tool-panel
+  .tool-panel-main
+    left: 15px
+    width: 350px
+    top: -5px
+    border-color: $tool-panel-border-color-light
+
+  &.light
+    .tool-panel-inner-container
+      background-color: $tool-panel-bg-color-light
+      color: $tool-panel-text-color-light
+
+    .tool-panel-inner-container
+      padding: 0
+
+    .tool-panel-hint
+      border-color: transparent transparent $tool-panel-bg-color-light transparent
+
+    .suggestions-status
+      padding: 4px 0 0 10px
+      margin-bottom: 0.5em
+      font-size: 80%
+      font-weight: bold
+
+      .loading-message
+        font-weight: normal
+
+      spinner
+        display: block
+        position: static
+        margin: 0.5em 0 0.5em 0
+        path
+          fill: $dark-spinner-fill-color
+
+    .suggestion-examples
+      background-color: $tool-panel-border-color-light
+      padding: 7px
+      text-align: center
+      font-weight: normal
+
+    .intractable-list
+
+      .defaults-list
+        display: none
+
+      ul.list
+        list-style-type: none
+        padding: 0
+        margin: 0
+        cursor: pointer
+
+        li
+          padding: 4px 0 4px 10px
+          color: $tool-panel-text-color-light
+          background-color: $tool-panel-bg-color-light
+
+          &.active
+            color: #eee
+            background-color: $tool-panel-selection-color-light

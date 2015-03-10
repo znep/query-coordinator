@@ -4,13 +4,23 @@
       <clearable-input input-id="search-card-input" placeholder="Search" search="search"></clearable-input>
       <span class="input-group-addon">
         <button type="submit" class="action-btn inverted btn-slim">
-          <div class="icon-search">
-          </div>
+          <div class="icon-search"></div>
         </button>
       </span>
     </div>
   </form>
-  <div class="search-card-text card-example-text" ng-show="!showResults">
+
+  <suggestion-tool-panel
+    should-show="shouldShowSuggestionPanel"
+    selected-suggestion="selectedSuggestion"
+    search-value="searchValue"
+    field-name="fieldName"
+    dataset="dataset"
+    sample-one="sampleOne"
+    sample-two="sampleTwo">
+  </suggestion-tool-panel>
+
+  <div class="search-card-text card-example-text" ng-show="!showResults" ng-class="{dimmed: shouldShowSuggestionPanel}">
     <div>Type some text and press enter to search</div>
     <div class="one-line" ng-show="sampleOne">(Examples: '{{sampleOne}}'<span ng-show="sampleTwo"> or '{{sampleTwo}}'</span>)</div>
   </div>

@@ -27,6 +27,8 @@ describe('card-layout', function() {
       beforeEach(module('/angular_templates/dataCards/card-layout.html'));
       beforeEach(module('/angular_templates/dataCards/card.html'));
       beforeEach(module('/angular_templates/dataCards/cardVisualization.html'));
+      beforeEach(module('/angular_templates/dataCards/suggestionToolPanel.html'));
+      beforeEach(module('/angular_templates/common/intractableList.html'));
       beforeEach(module('dataCards/cards.sass'));
       beforeEach(module('dataCards/card.sass'));
       beforeEach(module('dataCards/flyout.sass'));
@@ -1553,9 +1555,7 @@ describe('card-layout', function() {
         expect(cl.element.find('card')).to.have.length(1);
         expect(cl.element.find('card-visualization-table')).to.exist;
       });
-
     });
-
   });
 
 });

@@ -66,6 +66,8 @@ describe('CardsViewController', function() {
   beforeEach(module('/angular_templates/dataCards/feedbackPanel.html'));
   beforeEach(module('/angular_templates/dataCards/customizeBar.html'));
   beforeEach(module('/angular_templates/dataCards/relatedViews.html'));
+  beforeEach(module('/angular_templates/dataCards/suggestionToolPanel.html'));
+  beforeEach(module('/angular_templates/common/intractableList.html'));
 
   beforeEach(function() {
     module(function($provide) {

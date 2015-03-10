@@ -8,7 +8,6 @@
   background: $card-bg-color
   box-sizing: border-box
   -moz-box-sizing: border-box
-  overflow: hidden
   height: 100%
 
   // This appears to keep elements with the .wrap and
@@ -202,3 +201,7 @@ div[ng-switch="cardType"]
   .invalid-card-heading
     @include prefixer(transform, rotate(-25deg))
 
+card-visualization-invalid
+  display: block
+  height: 100%
+  overflow: hidden

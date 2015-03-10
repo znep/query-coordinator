@@ -72,11 +72,14 @@ class PhidippidesPagesController < ActionController::Base
     return render :nothing => true, :status => '406' unless request.content_type.to_s == 'application/json'
     return render :nothing => true, :status => '401' unless can_update_metadata?
     return render :nothing => true, :status => '405' unless request.post?
-    return render :nothing => true, :status => '400' unless request.body.length > 0
+
+    request_body = request.body.read
+
+    return render :nothing => true, :status => '400' unless request_body.length > 0
 
     begin
       result = page_metadata_manager.create(
-        JSON.parse(request.body.read),
+        JSON.parse(request_body),
         :request_id => request_id,
         :cookies => forwardable_session_cookies
       )
@@ -131,11 +134,14 @@ class PhidippidesPagesController < ActionController::Base
     return render :nothing => true, :status => '401' unless can_update_metadata?
     return render :nothing => true, :status => '405' unless request.put?
     return render :nothing => true, :status => '400' unless params[:id].present?
-    return render :nothing => true, :status => '400' unless request.body.length > 0
+
+    request_body = request.body.read
+
+    return render :nothing => true, :status => '400' unless request_body.length > 0
 
     begin
       result = page_metadata_manager.update(
-        JSON.parse(request.body.read),
+        JSON.parse(request_body),
         :request_id => request_id,
         :cookies => forwardable_session_cookies
       )

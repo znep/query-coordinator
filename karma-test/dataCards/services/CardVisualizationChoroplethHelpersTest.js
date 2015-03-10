@@ -131,6 +131,67 @@ describe('CardVisualizationChoroplethHelpers service', function() {
 
     });
 
+    describe('when extracting a sourceColumn', function() {
+
+      it('should log errors if source columns are not present in a v1 dataset metadata column', function() {
+
+        var validColumn = {
+          "computationStrategy": {
+            "parameters": {
+              "region": "_c8h8-ygvf",
+              "geometryLabel": "geoid10"
+            },
+            "source_columns": ['source_column_field_name'],
+            "strategy_type": "georegion_match_on_point"
+          },
+          "description": "descr",
+          "fred": "location",
+          "name": "computed_column human readable name",
+          "physicalDatatype": "text"
+        };
+
+        sinon.spy($log, 'error');
+
+        validColumn.computationStrategy['source_columns'] = [];
+
+        expect(cardVisualizationChoroplethHelpers.extractSourceColumnFromColumn(validColumn)).to.equal(null);
+
+        delete validColumn.computationStrategy['source_columns'];
+        expect(cardVisualizationChoroplethHelpers.extractSourceColumnFromColumn(validColumn)).to.equal(null);
+
+        delete validColumn['computationStrategy'];
+        expect(cardVisualizationChoroplethHelpers.extractSourceColumnFromColumn(validColumn)).to.equal(null);
+
+        expect($log.error.calledThrice);
+        $log.error.restore();
+
+      });
+
+      it('should extract a source column from a v1 dataset metadata columns', function() {
+
+        var validSourceColumn = 'source_column_field_name';
+
+        var validColumn = {
+          "computationStrategy": {
+            "parameters": {
+              "region": "_c8h8-ygvf",
+              "geometryLabel": "geoid10"
+            },
+            "source_columns": [validSourceColumn],
+            "strategy_type": "georegion_match_on_point"
+          },
+          "description": "descr",
+          "fred": "location",
+          "name": "computed_column human readable name",
+          "physicalDatatype": "text"
+        };
+
+        expect(cardVisualizationChoroplethHelpers.extractSourceColumnFromColumn(validColumn)).to.equal(validSourceColumn);
+
+      });
+
+    });
+
   });
 
 });

@@ -2,7 +2,7 @@
   'use strict';
 
   function cardVisualizationChoropleth(Constants, AngularRxExtensions, CardDataService, Filter,
-                                       ServerConfig, CardVisualizationChoroplethHelpers) {
+                                       ServerConfig, CardVisualizationChoroplethHelpers, $log) {
 
     return {
       restrict: 'E',
@@ -73,6 +73,8 @@
             function(dataset, fieldName, columns) {
 
               var shapeFile = null;
+              var sourceColumn = null;
+              var dataPromise = null;
 
               if (_.isEmpty(columns)) {
                 return Rx.Observable.never();
@@ -82,6 +84,7 @@
 
               if (ServerConfig.metadataMigration.shouldConsumeComputationStrategy()) {
                 shapeFile = CardVisualizationChoroplethHelpers.extractShapeFileFromColumn(columns[fieldName]);
+                sourceColumn = CardVisualizationChoroplethHelpers.extractSourceColumnFromColumn(columns[fieldName]);
               } else {
                 if (columns[fieldName].hasOwnProperty('shapefile')) {
                   shapeFile = columns[fieldName].shapefile;
@@ -91,35 +94,64 @@
               if (shapeFile === null) {
                 throw new Error('Dataset metadata column for computed georegion does not include shapeFile.');
               }
-
-              var sourceColumn = null;
-              _.each(columns, function(column, fieldName) {
-                if (column.dataset.version === '0') {
-                  if (column.physicalDatatype === 'point' && column.logicalDatatype === 'location') {
-                    sourceColumn = fieldName;
-                  }
-                } else {
-                  if (column.physicalDatatype === 'point' && column.fred === 'location') {
-                    sourceColumn = fieldName;
-                  }
-                }
-              });
-
+              // If we were unable to extract the source column from the computationStrategy, attempt
+              // to find a location/point column that could potentially be the source column.
+              // This will not always be correct if there is more than one location/point column
+              // in the dataset.
               if (sourceColumn === null) {
-                throw new Error('No column with geometry found.');
+
+                _.each(columns, function(column, fieldName) {
+                  if (column.dataset.version === '0') {
+                    if (column.physicalDatatype === 'point' && column.logicalDatatype === 'location') {
+                      sourceColumn = fieldName;
+                    }
+                  } else {
+                    if (column.physicalDatatype === 'point' && column.fred === 'location') {
+                      sourceColumn = fieldName;
+                    }
+                  }
+                });
+
               }
 
-              var dataPromise = CardDataService.getChoroplethRegions(dataset.id, sourceColumn, shapeFile);
-              dataPromise.then(
-                function(res) {
-                  // Ok
-                  geojsonRegionsSequence.onNext(dataPromise);
-                  dataResponses.onNext(1);
-                },
-                function(err) {
-                  // Do nothing
-                }
-              );
+              // If we have successfully found a source column, then make the more specific
+              // request utilizing the column's extents.
+              if (sourceColumn !== null) {
+
+                dataPromise = CardDataService.getChoroplethRegionsUsingSourceColumn(dataset.id, sourceColumn, shapeFile);
+                dataPromise.then(
+                  function(res) {
+                    // Ok
+                    geojsonRegionsSequence.onNext(dataPromise);
+                    dataResponses.onNext(1);
+                  },
+                  function(err) {
+                    // Do nothing
+                  }
+                );
+
+              // Otherwise, use the less efficient but more robust request.
+              } else {
+
+                $log.warn(
+                  'Could not determine source column of computed column "{0}". ' +
+                    'Falling back to default query.'.
+                      format(fieldName)
+                );
+
+                dataPromise = CardDataService.getChoroplethRegions(shapeFile);
+                dataPromise.then(
+                  function(res) {
+                    // Ok
+                    geojsonRegionsSequence.onNext(dataPromise);
+                    dataResponses.onNext(1);
+                  },
+                  function(err) {
+                    // Do nothing
+                  }
+                );
+
+              }
 
               return Rx.Observable.fromPromise(dataPromise);
             }

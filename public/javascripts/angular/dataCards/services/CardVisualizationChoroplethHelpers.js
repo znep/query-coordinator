@@ -68,6 +68,40 @@
     }
 
     /**
+     * Extracts the source_column from a computed dataset metadata column.
+     *
+     * @param {Object} column
+     *
+     * @return {String} sourceColumn
+     */
+    function extractSourceColumnFromColumn(column) {
+
+      function reportMissingProperty(property) {
+        $log.warn(
+          'Could not determine column sourceColumn: "{0}" not present on column "{1}".'.
+          format(property, column.name)
+        );
+      }
+
+      var sourceColumn = null;
+
+      if (!column.hasOwnProperty('computationStrategy')) {
+        reportMissingProperty('computationStrategy');
+      } else if (!column.computationStrategy.hasOwnProperty('source_columns')) {
+        reportMissingProperty('source_columns');
+      } else if (column.computationStrategy['source_columns'].length === 0) {
+        $log.warn(
+          'Could not determine column sourceColumn: "source_columns" present but empty.'
+        );
+      } else {
+        sourceColumn = column.computationStrategy['source_columns'][0];
+      }
+
+      return sourceColumn;
+
+    }
+
+    /**
      * Attempts to determine a geometryLabel based on a pre-defined mapping
      * of shapeFile ids to geometryLabels.
      *
@@ -278,6 +312,7 @@
     return {
       extractShapeFileFromColumn: extractShapeFileFromColumn,
       extractGeometryLabelFromColumn: extractGeometryLabelFromColumn,
+      extractSourceColumnFromColumn: extractSourceColumnFromColumn,
       aggregateGeoJsonData: aggregateGeoJsonData
     };
   }

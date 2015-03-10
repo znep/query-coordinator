@@ -1,5 +1,16 @@
 describe('A Choropleth Card Visualization', function() {
-  var testHelpers, serverConfig, rootScope, templateCache, compile, scope, Model, q, timeout;
+  var provide;
+  var testHelpers;
+  var serverConfig;
+  var rootScope;
+  var templateCache;
+  var compile;
+  var scope;
+  var Model;
+  var q;
+  var timeout;
+  var cardVisualizationChoroplethHelpers;
+  var log;
   var fakeClock = null;
   var enableBoundingBoxes = true;
 
@@ -13,11 +24,25 @@ describe('A Choropleth Card Visualization', function() {
 
   beforeEach(module('dataCards'));
   beforeEach(module('dataCards.directives'));
+  beforeEach(module('dataCards.services'));
 
   beforeEach(function() {
     module(function($provide) {
+      provide = $provide;
+
       var mockCardDataService = {
         getChoroplethRegions: function(shapeFile) {
+          var deferred = q.defer();
+          var json = testHelpers.getTestJson(testWards);
+          json.features = _.map(json.features, function(feature) {
+            feature.properties._feature_id = feature.properties[':feature_id'].split(" ")[1]
+            return feature;
+          });
+
+          deferred.resolve(json);
+          return deferred.promise;
+        },
+        getChoroplethRegionsUsingSourceColumn: function(datasetId, sourceColumn, shapeFile) {
           var deferred = q.defer();
           var json = testHelpers.getTestJson(testWards);
           json.features = _.map(json.features, function(feature) {
@@ -52,6 +77,8 @@ describe('A Choropleth Card Visualization', function() {
     Model = $injector.get('Model');
     q = $injector.get('$q');
     timeout = $injector.get('$timeout');
+    cardVisualizationChoroplethHelpers = $injector.get('CardVisualizationChoroplethHelpers');
+    log = $injector.get('$log');
   }));
 
   beforeEach(function() {
@@ -61,6 +88,7 @@ describe('A Choropleth Card Visualization', function() {
   afterEach(function() {
     testHelpers.cleanUp();
     fakeClock.restore();
+
     fakeClock = null;
     testHelpers.TestDom.clear();
   });
@@ -104,7 +132,9 @@ describe('A Choropleth Card Visualization', function() {
               "parameters": {
                 "region": "_snuk-a5kv",
                 "geometryLabel": "ward"
-              }
+              },
+              "source_columns": ['computed_column_source_column'],
+              "strategy_type": "georegion_match_on_point"
             }
           }
         };
@@ -137,43 +167,13 @@ describe('A Choropleth Card Visualization', function() {
 
     return {
       element: el,
-      scope: childScope,
-      eventFired: false
+      scope: childScope
     };
   }
 
   var rowDisplayUnit = 'crime';
 
-  describe('when created', function() {
-
-    it('should not let click events leak', function() {
-
-      this.timeout(15000);
-
-      var choropleth1Fired = false;
-      var choropleth2Fired = false;
-
-      var choropleth1 = createChoropleth('choropleth-1');
-      var choropleth2 = createChoropleth('choropleth-2');
-
-      choropleth1.scope.$on('toggle-dataset-filter:choropleth', function(event, feature, callback) {
-        choropleth1Fired = true;
-      });
-
-      choropleth2.scope.$on('toggle-dataset-filter:choropleth', function(event, feature, callback) {
-        choropleth2Fired = true;
-      });
-
-      var feature = $('#choropleth-1 .choropleth-container path')[0];
-
-      testHelpers.fireEvent(feature, 'click');
-
-      timeout.flush();
-
-      expect(choropleth1Fired).to.equal(true);
-      expect(choropleth2Fired).to.equal(false);
-
-    });
+  describe('when created with instantiated choropleth visualizations', function() {
 
     it('should provide a flyout on hover with the current value, and row display unit on the first and second choropleth encountered', function(){
 
@@ -216,6 +216,43 @@ describe('A Choropleth Card Visualization', function() {
       expect(flyout.is(':visible')).to.be.true;
 
       testHelpers.fireEvent(feature, 'mouseout');
+
+    });
+
+  });
+
+  describe('when created', function() {
+
+    // We don't need actual choropleth directives to be instantiated for any of the following tests,
+    // so just mock it out.
+    beforeEach(function() {
+      testHelpers.mockDirective(provide, 'choropleth');
+    });
+
+    it('should not let click events leak', function() {
+
+      var choropleth1Fired = false;
+      var choropleth2Fired = false;
+
+      var choropleth1 = createChoropleth('choropleth-1');
+      var choropleth2 = createChoropleth('choropleth-2');
+
+      choropleth1.scope.$on('toggle-dataset-filter:choropleth', function(event, feature, callback) {
+        choropleth1Fired = true;
+      });
+
+      choropleth2.scope.$on('toggle-dataset-filter:choropleth', function(event, feature, callback) {
+        choropleth2Fired = true;
+      });
+
+      // Simulate the event raised by clicking on a choropleth region
+      var fakeFeature = { properties: {} };
+      choropleth1.scope.$$childHead.$emit('toggle-dataset-filter:choropleth', fakeFeature);
+
+      timeout.flush();
+
+      expect(choropleth1Fired).to.equal(true);
+      expect(choropleth2Fired).to.equal(false);
 
     });
 
@@ -294,12 +331,7 @@ describe('A Choropleth Card Visualization', function() {
               "geometryLabel": "geoid10"
             },
             "strategy_type": "georegion_match_on_point"
-          },
-          // It is important that this gets converted into a shapefileHumanReadablePropertyName in
-          // cardVisualizationChoropleth.js which matches the test fixture, so do not change this
-          // until we either a) change the test fixture or b) remove the notion of
-          // shapefileHumanReadablePropertyName all together.
-          "shapefile": "snuk-a5kv"
+          }
         }
       };
 
@@ -321,11 +353,12 @@ describe('A Choropleth Card Visualization', function() {
           "description": "Batman has bigger fish to fry sometimes, you know.",
           "fred": "location",
           "physicalDatatype": "text",
-          // It is important that this gets converted into a shapefileHumanReadablePropertyName in
-          // cardVisualizationChoropleth.js which matches the test fixture, so do not change this
-          // until we either a) change the test fixture or b) remove the notion of
-          // shapefileHumanReadablePropertyName all together.
-          "shapefile": "snuk-a5kv"
+          "computationStrategy": {
+            "parameters": {
+              "geometryLabel": "geoid10"
+            },
+            "strategy_type": "georegion_match_on_point"
+          }
         }
       };
 
@@ -334,6 +367,141 @@ describe('A Choropleth Card Visualization', function() {
       testHelpers.overrideMetadataMigrationPhase('2');
 
       expect(function() { createChoropleth('choropleth-1', '', false, createDatasetModelWithColumns(columns)) }).to.throw();
+
+    });
+
+    it("should not fail to extract the sourceColumn if the source_columns property exists in the column's 'computationStrategy' object and bounding box queries are disabled and the metadataMigration is in phase 1 or 2", function() {
+
+      serverConfig.override('enableBoundingBoxes', false);
+      testHelpers.overrideMetadataMigrationPhase('1');
+
+      var columns = {
+        "ward": {
+          "name": "Ward where crime was committed.",
+          "description": "Batman has bigger fish to fry sometimes, you know.",
+          "fred": "location",
+          "physicalDatatype": "text",
+          "computationStrategy": {
+            "parameters": {
+              "region": "_snuk-a5kv",
+              "geometryLabel": "geoid10"
+            },
+            "source_columns": ['computed_column_source_column'],
+            "strategy_type": "georegion_match_on_point"
+          }
+        }
+      };
+
+      expect(function() { createChoropleth('choropleth-1', '', false, createDatasetModelWithColumns(columns)) }).to.not.throw();
+
+      testHelpers.overrideMetadataMigrationPhase('2');
+
+      expect(function() { createChoropleth('choropleth-1', '', false, createDatasetModelWithColumns(columns)) }).to.not.throw();
+
+    });
+
+    it("should not fail to extract the sourceColumn if the source_columns property exists in the column's 'computationStrategy' object and bounding box queries are enabled and the metadataMigration is in phase 1 or 2", function() {
+
+      serverConfig.override('enableBoundingBoxes', true);
+      testHelpers.overrideMetadataMigrationPhase('1');
+
+      var columns = {
+        "ward": {
+          "name": "Ward where crime was committed.",
+          "description": "Batman has bigger fish to fry sometimes, you know.",
+          "fred": "location",
+          "physicalDatatype": "text",
+          "computationStrategy": {
+            "parameters": {
+              "region": "_snuk-a5kv",
+              "geometryLabel": "geoid10"
+            },
+            "source_columns": ['computed_column_source_column'],
+            "strategy_type": "georegion_match_on_point"
+          }
+        }
+      };
+
+      sinon.spy(cardVisualizationChoroplethHelpers, 'extractSourceColumnFromColumn');
+
+      expect(function() { createChoropleth('choropleth-1', '', false, createDatasetModelWithColumns(columns)) }).to.not.throw();
+
+      testHelpers.overrideMetadataMigrationPhase('2');
+
+      expect(function() { createChoropleth('choropleth-1', '', false, createDatasetModelWithColumns(columns)) }).to.not.throw();
+
+      expect(cardVisualizationChoroplethHelpers.extractSourceColumnFromColumn.calledOnce);
+      cardVisualizationChoroplethHelpers.extractSourceColumnFromColumn.restore();
+
+    });
+
+    it("should fail to extract the sourceColumn if the source_columns property does not exist in the column's 'computationStrategy' object and bounding box queries are disabled and the metadataMigration is in phase 1 or 2", function() {
+
+      serverConfig.override('enableBoundingBoxes', false);
+      testHelpers.overrideMetadataMigrationPhase('1');
+
+      var columns = {
+        "ward": {
+          "name": "Ward where crime was committed.",
+          "description": "Batman has bigger fish to fry sometimes, you know.",
+          "fred": "location",
+          "physicalDatatype": "text",
+          "computationStrategy": {
+            "parameters": {
+              "region": "_snuk-a5kv",
+              "geometryLabel": "geoid10"
+            },
+            "source_columns": ['computed_column_source_column'],
+            "strategy_type": "georegion_match_on_point"
+          }
+        }
+      };
+
+      sinon.spy(log, 'warn');
+
+      createChoropleth('choropleth-1', '', false, createDatasetModelWithColumns(columns));
+
+      testHelpers.overrideMetadataMigrationPhase('2');
+
+      createChoropleth('choropleth-1', '', false, createDatasetModelWithColumns(columns));
+
+      expect(log.warn.calledTwice);
+      log.warn.restore();
+
+    });
+
+    it("should fail to extract the sourceColumn if the source_columns property does not exist in the column's 'computationStrategy' object and bounding box queries are enabled and the metadataMigration is in phase 1 or 2", function() {
+
+      serverConfig.override('enableBoundingBoxes', true);
+      testHelpers.overrideMetadataMigrationPhase('1');
+
+      var columns = {
+        "ward": {
+          "name": "Ward where crime was committed.",
+          "description": "Batman has bigger fish to fry sometimes, you know.",
+          "fred": "location",
+          "physicalDatatype": "text",
+          "computationStrategy": {
+            "parameters": {
+              "region": "_snuk-a5kv",
+              "geometryLabel": "geoid10"
+            },
+            "source_columns": ['computed_column_source_column'],
+            "strategy_type": "georegion_match_on_point"
+          }
+        }
+      };
+
+      sinon.spy(log, 'warn');
+
+      createChoropleth('choropleth-1', '', false, createDatasetModelWithColumns(columns));
+
+      testHelpers.overrideMetadataMigrationPhase('2');
+
+      createChoropleth('choropleth-1', '', false, createDatasetModelWithColumns(columns));
+
+      expect(log.warn.calledTwice);
+      log.warn.restore();
 
     });
 

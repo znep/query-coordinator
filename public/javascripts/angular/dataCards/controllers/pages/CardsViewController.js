@@ -79,6 +79,11 @@
     page.observe('name').filter(_.isDefined).subscribe(function(name) {
       $scope.safeApply(function() {
         $scope.writablePage.name = name;
+        if (name.length > 255) {
+          $scope.writablePage.nameWarnings = 'Your title is too long';
+        } else if ($scope.writablePage.nameWarnings) {
+          delete $scope.writablePage.nameWarnings;
+        }
       });
     });
     $scope.observe('writablePage.name').filter(_.isDefined).subscribe(function(name) {

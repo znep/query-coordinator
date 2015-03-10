@@ -53,7 +53,7 @@ body.state-view-cards
     .padded-wrapper
       padding: ($metadata-side-padding / 2)
 
-    .header
+    .edit-page-name
       position: relative
       color: inherit
 
@@ -106,13 +106,25 @@ body.state-view-cards
           -webkit-appearance: none
           @include prefixer(box-shadow, 0 0 2px 0 $blue-active-color)
 
-          & + .placeholder
+          + .placeholder
             color: $blue-active-color
 
             span
               display: none
 
-    header,.header
+      .icon-warning
+        position: absolute
+        top: 0
+        left: 100%
+        color: $red-error-color
+        font-size: .7em
+        margin-left: .5rem
+        line-height: 1.5em
+
+        + textarea
+          border-color: $form-error-border-color
+
+    header,.edit-page-name
       font-size: 2rem
 
     .activities

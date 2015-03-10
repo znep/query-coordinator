@@ -57,25 +57,47 @@ body.state-view-cards
       position: relative
       color: inherit
 
-      >.icon-edit::before
+      >.placeholder
         position: absolute
+        z-index: 0
         top: 0
         left: 0
-        padding: .3em .2em
         color: inherit
-        // Make the icon a little bit smaller
-        font-size: .8em
+        font-family: inherit
+
+        &::before
+          font-family: socrata-apps
+          // Make the icon a little bit smaller
+          font-size: .7em
+          line-height: 2em
+          padding-left: .4em
+
+        span
+          display: none
+          color: $placeholder-text-color
+          padding-left: .3em
+          font: inherit
+          font-style: italic
+          font-size: .9em
 
       >textarea
         color: inherit
+        background: transparent
         font: inherit
         height: 1.2em
         display: block
         width: 100%
         box-sizing: border-box
-        padding-left: 1.1em
+        padding-left: 1.2em
         border: 1px solid $grey-inactive-border-color
         @include prefixer(border-radius, 2px)
+
+        // Make sure this is above the placeholder
+        position: relative
+        z-index: 1
+
+        &:empty + .placeholder > span
+          display: inline
 
         &:focus
           outline: 0
@@ -84,8 +106,11 @@ body.state-view-cards
           -webkit-appearance: none
           @include prefixer(box-shadow, 0 0 2px 0 $blue-active-color)
 
-          & + .icon-edit
+          & + .placeholder
             color: $blue-active-color
+
+            span
+              display: none
 
     header,.header
       font-size: 2rem

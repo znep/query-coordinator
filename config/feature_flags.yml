@@ -40,7 +40,7 @@ useSoda2:
   expectedValues: never read-only always
 govstat_progress_settings:
   description: Allows overriding of goal progress.
-  defaultValue: false
+  defaultValue: true
 govstat_missing_locale_crash:
   description: Crash (500) when a translation is missing.
   defaultValue: false

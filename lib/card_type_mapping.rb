@@ -37,7 +37,7 @@ module CardTypeMapping
     cardinality = column.try(:[], :cardinality)
     # If cardinality information is not present, assume it is very large
     unless cardinality.present?
-      cardinality = 5_000_000
+      cardinality = CARDINALITY_THRESHOLD + 1
     end
 
     case physical_datatype
@@ -77,7 +77,7 @@ module CardTypeMapping
         Airbrake.notify(
           :error_class => 'UnrecognizedPhysicalDatatypeError',
           :error_message => error_message,
-          :context => { :physical_datatype => physical_datatype }
+          :context => { :column => column  }
         )
         Rails.logger.error(error_message)
         return 'invalid'
@@ -104,7 +104,7 @@ module CardTypeMapping
     cardinality = column.try(:[], :cardinality)
     # If cardinality information is not present, assume it is very large
     unless cardinality.present?
-      cardinality = 5_000_000
+      cardinality = CARDINALITY_THRESHOLD + 1
     end
 
     case physical_datatype

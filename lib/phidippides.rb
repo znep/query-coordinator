@@ -157,10 +157,15 @@ class Phidippides < SocrataHttp
         return
       end
 
+      this_dataset_size = get_dataset_size(dataset_id)
+
       # Note that this mutates the columns in-place.
       columns.each do |field_name, column|
-        column['defaultCardType'] = default_card_type_for(column, dataset_size(dataset_id))
-        column['availableCardTypes'] = available_card_types_for(column, dataset_size(dataset_id))
+        # Only compute card types for non-system columns
+        unless SYSTEM_COLUMN_ID_REGEX.match(field_name)
+          column['defaultCardType'] = default_card_type_for(column, this_dataset_size)
+          column['availableCardTypes'] = available_card_types_for(column, this_dataset_size)
+        end
       end
     end
   end
@@ -325,19 +330,34 @@ class Phidippides < SocrataHttp
     pages_for_dataset_response
   end
 
-  def dataset_size(dataset_id)
-    # Get the size of the dataset so we can compare it against the cardinality when creating cards
-    @dataset_size ||= begin
-      JSON.parse(
-        CoreServer::Base.connection.get_request("/id/#{dataset_id}?%24query=select+count(0)")
-      )[0]['count_0'].to_i
+  def get_dataset_size(dataset_id)
+    # Get the size of the dataset so we can compare it against the cardinality
+    # when creating cards.
+    begin
+      core_server_response = CoreServer::Base.connection.get_request(
+        "/id/#{dataset_id}?%24query=select+count(0)"
+      )
+      dataset_size = JSON.parse(core_server_response)[0]['count_0'].to_i
     rescue CoreServer::Error => e
+      Airbrake.notify(
+        :error_class => "DatasetSizeError",
+        :error_message => "Could not determine dataset size: server error.",
+        :datastId => dataset_id,
+        :context => {
+          :response => core_server_response.inspect,
+          :error_message => e.inspect
+        }
+      )
       Rails.logger.error(
         "Core server error while retrieving dataset size of dataset " \
         "(#{dataset_id}): #{e}"
       )
-      nil
+      # Default to some sufficiently-high dataset size in order to not affect
+      # cardinality decisions.
+      dataset_size = 5_000_000
     end
+
+    dataset_size
   end
 
 end

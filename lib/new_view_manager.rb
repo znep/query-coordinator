@@ -12,7 +12,7 @@ class NewViewManager
 
     new_view = create_new_view(page_url, title, description)
 
-    if new_view && new_view[:id]
+    if new_view.try(:[], :id)
       publish_new_view(new_view[:id])
       new_view[:id]
     end
@@ -82,7 +82,7 @@ class NewViewManager
     rescue => e
       report_error(
         "Error updating new_view lens for page: #{e.error_message}",
-        { :url => url, :payload => payload }
+        :url => url, :payload => payload
       )
       return
     end

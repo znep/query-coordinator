@@ -53,12 +53,12 @@ class PageMetadataManagerTest < Test::Unit::TestCase
       fetch_dataset_metadata: { status: '200', body: v0_dataset_metadata_without_rollup_columns },
     )
     stub_feature_flags_with(:metadata_transition_phase, '0')
-    Phidippides.any_instance.expects(:update_page_metadata).times(1).then.with do |page_metadata|
+    Phidippides.any_instance.expects(:update_page_metadata).times(1).with do |page_metadata|
       # Make sure the page_metadata includes the correct data lens id
       assert_equal('fdsa-fdsa', page_metadata[:data_lens_id])
     end.then.returns(status: '200', body: {})
 
-    NewViewManager.any_instance.expects(:create).times(1).then.with do |page_id, name, description|
+    NewViewManager.any_instance.expects(:create).times(1).with do |page_id, name, description|
       # Make sure it's creating the new view pointing to the correct page-id
       assert_equal('asdf-asdf', page_id)
       assert_match(/^Chicago Crimes Loves/, name)
@@ -83,7 +83,7 @@ class PageMetadataManagerTest < Test::Unit::TestCase
 
   def test_create_ignores_provided_pageId
     PageMetadataManager.any_instance.expects(:update_rollup_table).times(0)
-    PageMetadataManager.any_instance.expects(:create_or_update).times(1).then.with do |method, page_metadata|
+    PageMetadataManager.any_instance.expects(:create_or_update).times(1).with do |method, page_metadata|
       assert_equal('asdf-asdf', page_metadata[:pageId])
     end.then.returns({})
     Phidippides.any_instance.stubs(
@@ -202,7 +202,7 @@ class PageMetadataManagerTest < Test::Unit::TestCase
       request_new_page_id: 'asdf-asdf',
     )
     stub_feature_flags_with(:metadata_transition_phase, '0')
-    Phidippides.any_instance.expects(:update_page_metadata).times(1).then.with do |json, options|
+    Phidippides.any_instance.expects(:update_page_metadata).times(1).with do |json, options|
       assert(json['cards'].pluck('cardType').any? { |cardType| cardType == 'table' })
       assert_equal({}, options)
     end.then.returns(
@@ -217,7 +217,7 @@ class PageMetadataManagerTest < Test::Unit::TestCase
       fetch_dataset_metadata: { status: '200', body: v1_dataset_metadata }
     )
     stub_feature_flags_with(:metadata_transition_phase, '1')
-    Phidippides.any_instance.expects(:update_page_metadata).times(1).then.with do |json, options|
+    Phidippides.any_instance.expects(:update_page_metadata).times(1).with do |json, options|
       assert(json['cards'].pluck('cardType').any? { |cardType| cardType == 'table' })
       assert_equal({}, options)
     end.then.returns(
@@ -232,7 +232,7 @@ class PageMetadataManagerTest < Test::Unit::TestCase
       request_new_page_id: 'asdf-asdf',
     )
     stub_feature_flags_with(:metadata_transition_phase, '2')
-    Phidippides.any_instance.expects(:update_page_metadata).times(1).then.with do |json, options|
+    Phidippides.any_instance.expects(:update_page_metadata).times(1).with do |json, options|
       assert(json['cards'].pluck('cardType').any? { |cardType| cardType == 'table' })
       assert_equal({}, options)
     end.then.returns(
@@ -255,7 +255,7 @@ class PageMetadataManagerTest < Test::Unit::TestCase
     )
     stub_feature_flags_with(:metadata_transition_phase, '0')
     manager.create(v0_page_metadata)
-    Phidippides.any_instance.expects(:update_page_metadata).times(1).then.with do |json, options|
+    Phidippides.any_instance.expects(:update_page_metadata).times(1).with do |json, options|
       assert(json.fetch(:bunch))
       assert(json.fetch(:foo))
       assert_equal({}, options)
@@ -272,16 +272,16 @@ class PageMetadataManagerTest < Test::Unit::TestCase
     )
     PageMetadataManager.any_instance.stubs(build_rollup_soql: nil)
     stub_feature_flags_with(:metadata_transition_phase, '0')
-    Phidippides.any_instance.expects(:update_page_metadata).times(1).then.with do |page_metadata|
+    Phidippides.any_instance.expects(:update_page_metadata).times(1).with do |page_metadata|
       # Make sure the page_metadata includes the correct data lens id
       assert_equal('lens-eyed', page_metadata[:data_lens_id])
       assert_equal('page-eyed', page_metadata[:pageId])
     end.then.returns(status: '200', body: {})
-    Phidippides.any_instance.expects(:fetch_page_metadata).times(1).then.with do |page_id|
+    Phidippides.any_instance.expects(:fetch_page_metadata).times(1).with do |page_id|
       assert_equal('page-eyed', page_id)
     end.then.returns(status: '200', body: { data_lens_id: 'lens-eyed' })
 
-    NewViewManager.any_instance.expects(:update).times(1).then.with do |lens_id, name, description|
+    NewViewManager.any_instance.expects(:update).times(1).with do |lens_id, name, description|
       # Make sure it's creating the new view pointing to the correct page-id
       assert_equal('lens-eyed', lens_id)
       assert_equal('new name', name)
@@ -307,7 +307,7 @@ class PageMetadataManagerTest < Test::Unit::TestCase
     )
     stub_feature_flags_with(:metadata_transition_phase, '1')
     manager.create(v1_page_metadata_as_v0)
-    Phidippides.any_instance.expects(:update_page_metadata).times(1).then.with do |json, options|
+    Phidippides.any_instance.expects(:update_page_metadata).times(1).with do |json, options|
       assert(json.fetch(:bunch))
       assert(json.fetch(:foo))
       assert_equal({}, options)
@@ -325,11 +325,11 @@ class PageMetadataManagerTest < Test::Unit::TestCase
       fetch_dataset_metadata: { status: '200', body: v1_dataset_metadata },
       request_new_page_id: 'asdf-asdf',
       update_page_metadata: { status: '200', body: nil },
-      fetch_page_metadata: { status: '200', body: nil },
+      fetch_page_metadata: { status: '200', body: {} },
     )
     stub_feature_flags_with(:metadata_transition_phase, '2')
     manager.create(v1_page_metadata.except('pageId'))
-    Phidippides.any_instance.expects(:update_page_metadata).times(1).then.with do |json, options|
+    Phidippides.any_instance.expects(:update_page_metadata).times(1).with do |json, options|
       assert(json.fetch(:bunch))
       assert(json.fetch(:foo))
       assert_equal({}, options)

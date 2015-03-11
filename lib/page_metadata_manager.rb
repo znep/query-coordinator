@@ -31,7 +31,7 @@ class PageMetadataManager
 
     # First provision a new page 4x4, so we can let the data lens know what to point to.
     # This is also what we'll have to do in metadata_transition_phase_2 anyway.
-    new_page_id = phidippides.request_new_page_id(page_metadata)
+    new_page_id = phidippides.request_new_page_id(page_metadata, options)
     raise Phidippides::NewPageException.new('could not provision new page id') unless new_page_id
     page_metadata['pageId'] = new_page_id
 
@@ -76,7 +76,7 @@ class PageMetadataManager
   # Creates or updates a page. This takes care of updating phidippides, as well as rollup tables in
   # soda fountain and the core datalens link.
   def create_or_update(method, page_metadata, options = {})
-    unless page_metadata.key?('pageId')
+    unless page_metadata['pageId'].present?
       raise Phidippides::NoPageIdException.new('page id must be provisioned first.')
     end
     page_id = page_metadata[:pageId]
@@ -93,10 +93,9 @@ class PageMetadataManager
     else
       # Fetch the existing page, so we can get the id for the data lens.
       result = phidippides.fetch_page_metadata(page_id)
-      existing_page = result.fetch(:body, nil)
-      if existing_page && existing_page.fetch(:data_lens_id, nil)
+      data_lens_id = result.fetch(:body, {})[:data_lens_id]
+      if data_lens_id
         # Update the data lens
-        data_lens_id = existing_page[:data_lens_id]
         new_view_manager.update(
           data_lens_id,
           page_metadata['name'],

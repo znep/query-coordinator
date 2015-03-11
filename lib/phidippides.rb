@@ -92,8 +92,8 @@ class Phidippides < SocrataHttp
 
       unless dataset_id.present?
         Airbrake.notify(
-          :error_class => "DatasetMetadataMigrationError",
-          :error_message => "Could not migrate dataset to v1: could not determine dataset id.",
+          :error_class => 'DatasetMetadataMigrationError',
+          :error_message => 'Could not migrate dataset to v1: could not determine dataset id.',
           :context => { :response => dataset_metadata }
         )
         return
@@ -104,10 +104,10 @@ class Phidippides < SocrataHttp
       begin
         first_page_id = pages_for_dataset.try(:[], :body).try(:[], :publisher).try(:first).try(:[], :pageId)
       rescue TypeError => error
-        error_message = "Could not migrate dataset to v1: encountered error " \
+        error_message = 'Could not migrate dataset to v1: encountered error ' \
           "trying to find first available page (#{error})."
         Airbrake.notify(
-          :error_class => "DatasetMetadataMigrationError",
+          :error_class => 'DatasetMetadataMigrationError',
           :error_message => error_message,
           :datasetId => dataset_id,
           :context => { :response => pages_for_dataset }
@@ -120,8 +120,8 @@ class Phidippides < SocrataHttp
         update_dataset_metadata(dataset_metadata[:body].to_json)
       else
         Airbrake.notify(
-          :error_class => "DatasetMetadataMigrationError",
-          :error_message => "Could not migrate dataset to v1: no valid publisher pageId found.",
+          :error_class => 'DatasetMetadataMigrationError',
+          :error_message => 'Could not migrate dataset to v1: no valid publisher pageId found.',
           :datastId => dataset_id,
           :context => { :response => dataset_metadata }
         )
@@ -134,10 +134,10 @@ class Phidippides < SocrataHttp
 
       dataset_id = dataset_metadata.try(:[], :body).try(:[], :id)
       unless dataset_id.present?
-        error_message = "Could not compute default and available card types " \
-          "for dataset: unable to determine dataset id."
+        error_message = 'Could not compute default and available card types ' \
+          'for dataset: unable to determine dataset id.'
         Airbrake.notify(
-          :error_class => "DatasetMetadataCardTypeComputationError",
+          :error_class => 'DatasetMetadataCardTypeComputationError',
           :error_message => error_message,
           :context => { :response => dataset_metadata }
         )
@@ -147,10 +147,10 @@ class Phidippides < SocrataHttp
       columns = dataset_metadata.try(:[], :body).try(:[], :columns)
 
       unless columns.present?
-        error_message = "Could not compute default and available card types " \
-          "for dataset: no columns found."
+        error_message = 'Could not compute default and available card types ' \
+          'for dataset: no columns found.'
         Airbrake.notify(
-          :error_class => "DatasetMetadataCardTypeComputationError",
+          :error_class => 'DatasetMetadataCardTypeComputationError',
           :error_message => error_message,
           :context => { :response => dataset_metadata }
         )
@@ -189,7 +189,7 @@ class Phidippides < SocrataHttp
 
     status = response[:status]
     if response[:status] != '200'
-      raise Phidippides::NewPageException.new("could not provision new page id")
+      raise Phidippides::NewPageException.new('could not provision new page id')
     end
 
     return response[:body].fetch(:id, response[:body][:pageId])
@@ -328,7 +328,7 @@ class Phidippides < SocrataHttp
   private
 
   def normalize_pages_for_dataset_response!(pages_for_dataset_response)
-    if pages_for_dataset_response[:status] == "200" && pages_for_dataset_response[:body].present?
+    if pages_for_dataset_response[:status] == '200' && pages_for_dataset_response[:body].present?
       response_body = pages_for_dataset_response[:body]
       if response_body.respond_to?('values')
         pages_for_dataset_response[:body] = { :publisher => response_body.values, :user => [] }
@@ -345,7 +345,7 @@ class Phidippides < SocrataHttp
       )[0]['count_0'].to_i
     rescue CoreServer::Error => e
       Rails.logger.error(
-        "Core server error while retrieving dataset size of dataset " \
+        'Core server error while retrieving dataset size of dataset ' \
         "(#{dataset_id}): #{e}"
       )
       nil

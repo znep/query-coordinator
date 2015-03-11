@@ -9,8 +9,8 @@
         <!-- Text field & decorations for editing page name -->
         <div class="edit-page-name" ng-if="editMode">
           <div class="icon-warning"
-            ng-if="writablePage.nameWarnings"
-            title="{{ writablePage.nameWarnings }}"></div>
+            ng-if="writablePage.warnings.name"
+            title="{{ writablePage.warnings.name.join('\n') }}"></div>
           <textarea
             msd-elastic
             ng-model="writablePage.name"

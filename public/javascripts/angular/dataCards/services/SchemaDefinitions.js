@@ -1,3 +1,9 @@
+/**
+ * This file holds all of our js schema definitions, to keep them organizationally separate from the
+ * validation logic, etc. It is not intended to be consumed by anything except for the Schemas
+ * service, which basically just uses SchemaDefinitions to inject these definitions into the Schemas
+ * service.
+ */
 angular.module('dataCards.services').factory('SchemaDefinitions', function() {
   var UID_REGEXP = /^\w{4}-\w{4}$/;
 
@@ -235,6 +241,14 @@ angular.module('dataCards.services').factory('SchemaDefinitions', function() {
         'required': ['fieldName', 'cardSize', 'cardType', 'expanded']
       }
     );
+
+    schemasService.regarding('page_metadata').addSchemaWithVersion('0', {
+      type: 'object',
+      properties: {
+        name: { type: 'string', minLength: 1, maxLength: 255 }
+      },
+      required: [ 'name' ]
+    });
   }
 
   return {

@@ -620,9 +620,15 @@ var Dataset = ServerModel.extend({
         { ds._rowClusterParents = {}; }
 
         if (!($.subKeyDefined(displayFormat, 'plot.locationId')
-            && (ds.columnForIdentifier(displayFormat.plot.locationId) || {})
-                .renderTypeName == 'location'))
+            && _.include(['location', 'point'],
+                (ds.columnForIdentifier(displayFormat.plot.locationId) || {}).renderTypeName)))
         { errorCallback(); return; }
+
+        if (ds._useSODA2)
+        {
+            ds._getClustersViaSODA2.apply(ds, arguments);
+            return;
+        }
 
         var params = {method: 'clustered2'};
         _.each({ 'xmin': 'min_lon',
@@ -723,6 +729,101 @@ var Dataset = ServerModel.extend({
             },
             error: errorCallback
         }); }
+    },
+
+    _getClustersViaSODA2: function(viewport, displayFormat, minDistance, successCallback, errorCallback)
+    {
+        var ds = this;
+
+        var colLookup = ds.columnForIdentifier(displayFormat.plot.locationId).lookup;
+        var params = {method: 'soql_clustered'};
+
+        // Yay copy-paste
+        params['target_node_clusters'] = 250;
+        params['min_distance_between_clusters'] = minDistance;
+        if (!params['min_distance_between_clusters'])
+        {
+            params['min_distance_between_clusters'] = Math.min(viewport.xmax - viewport.xmin,
+                                                               viewport.ymax - viewport.ymin) / 10;
+            if (params['min_distance_between_clusters'] > 5)
+            { params['min_distance_between_clusters'] = 5; }
+            else if (params['min_distance_between_clusters'] > 1)
+            { params['min_distance_between_clusters'] = 1; }
+        }
+
+        var translateCluster = function(c)
+        {
+            c.parent   = ds._clusters[c.pathToRoot[0]];
+            ds._clusters[c.id] = c;
+            _.each(c.points, function(point) { ds._rowClusterParents[point] = c; });
+            _.each(c.children, function(child)
+            {
+                if (ds._clusters[child] && !ds._clusters[child].parent)
+                { ds._clusters[child].parent = ds._clusters[ds._clusters[child].pathToRoot[0]]; }
+            });
+            _.each(c.polygon, function(vertex)
+            { if (vertex.lat == 90)        { vertex.lat -= 0.000001; }
+              else if (vertex.lat == -90)  { vertex.lat += 0.000001; }
+              if (vertex.lon == 180)       { vertex.lon -= 0.000001; }
+              else if (vertex.lon == -180) { vertex.lon += 0.000001; }
+            });
+            c.leafNode = (c.points || []).length > 0;
+        };
+
+        // Build baseline query with row filtering.
+        var baseQuery = ds._queryBase.metadata.jsonQuery,
+            rs = ds._activeRowSet;
+
+        // Pillaged from RowSet#_makeSODA2Request
+        // Inject tears here because lack of DRYness.
+        var soqlWhere = blist.filter.generateSOQLWhere(
+                blist.filter.subtractQueries(Dataset.translateFilterColumnsToBase(
+                        rs._jsonQuery.where, ds),
+                    baseQuery.where), ds._queryBase);
+
+        var requests;
+
+        var assembleSoqlQuery = function(viewport) {
+            var where,
+                vpQuery = 'within_box(' + colLookup + ', ' +
+                            OpenLayers.Bounds.fromViewportToSoql(viewport) + ')';
+            if (!$.isBlank(soqlWhere))
+            { return 'select ' + colLookup + ' where ' + soqlWhere + ' AND ' + vpQuery; }
+            else
+            { return 'select ' + colLookup + ' where ' + vpQuery; }
+        };
+
+        if (viewport.xmax < viewport.xmin) {
+            // Add one query for each side of the date line.
+            requests = _.map([$.extend({}, viewport, { xmax:  179.999999 }),
+                              $.extend({}, viewport, { xmin: -179.999999 })], function(vp) {
+                return $.extend({}, params, { query: assembleSoqlQuery(vp) });
+            });
+        } else {
+            requests = [ $.extend({}, params, { query: assembleSoqlQuery(viewport) }) ];
+        }
+
+        var viewportsLeft = requests.length;
+        var totalData = [];
+        var callback = function(data) {
+            viewportsLeft--;
+            totalData = totalData.concat(data);
+            ds.trigger('row_count_change');
+            if (viewportsLeft == 0)
+            { successCallback(totalData); }
+        };
+
+        _.each(requests, function(req) {
+            ds.makeRequest({
+                url: '/views/' + ds.id + '/rows.json',
+                params: req,
+                success: function(data) {
+                    _.each(data, translateCluster);
+                    callback(data);
+                },
+                error: errorCallback
+            });
+        });
     },
 
     // Callback may be called multiple times with smaller batches of rows

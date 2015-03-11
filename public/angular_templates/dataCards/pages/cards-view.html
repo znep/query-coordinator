@@ -7,7 +7,7 @@
       <div class="span6 padded-wrapper">
         <header ng-show="!editMode" multiline-ellipsis max-lines="2" tolerance="8" text="{{pageName || 'Untitled'}}" show-more-mode="title-attr"></header>
         <!-- Text field & decorations for editing page name -->
-        <div class="edit-page-name" ng-if="editMode">
+        <label class="edit-page-name" ng-if="editMode">
           <div class="icon-warning"
             ng-if="writablePage.warnings.name"
             title="{{ writablePage.warnings.name.join('\n') }}"></div>
@@ -16,7 +16,7 @@
             ng-model="writablePage.name"
             >{{writablePage.name}}</textarea>
           <div class="icon-edit placeholder"><span>(Untitled view)</span></div>
-        </div>
+        </label>
         <!-- description -->
         <div class="page-description" expanded="expanded" multiline-ellipsis max-lines="3" tolerance="2" text="{{pageDescription}}"></div>
       </div>

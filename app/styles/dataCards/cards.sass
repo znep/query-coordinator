@@ -54,6 +54,7 @@ body.state-view-cards
       padding: ($metadata-side-padding / 2)
 
     .edit-page-name
+      display: block
       position: relative
       color: inherit
 
@@ -124,6 +125,9 @@ body.state-view-cards
 
         + textarea
           border-color: $form-error-border-color
+
+      [class^="icon-"], [class*=" icon-"]
+        cursor: default
 
     header,.edit-page-name
       font-size: 2rem

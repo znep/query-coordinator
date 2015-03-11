@@ -162,7 +162,7 @@ class Phidippides < SocrataHttp
       # Note that this mutates the columns in-place.
       columns.each do |field_name, column|
         # Only compute card types for non-system columns
-        if !SYSTEM_COLUMN_ID_REGEX.match(field_name)
+        unless SYSTEM_COLUMN_ID_REGEX.match(field_name)
           column['defaultCardType'] = default_card_type_for(column, this_dataset_size)
           column['availableCardTypes'] = available_card_types_for(column, this_dataset_size)
         end

@@ -128,6 +128,6 @@ class PhidippidesPagesController < ActionController::Base
   private
 
   def dataset
-    View.find(JSON.parse(json_parameter(:pageMetadata))['datasetId'])
+    View.find(json_parameter(:pageMetadata)['datasetId'])
   end
 end

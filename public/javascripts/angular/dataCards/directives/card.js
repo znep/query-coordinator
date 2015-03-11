@@ -53,21 +53,21 @@
           filter(_.isPresent);
 
         var countTitleSequence = Rx.Observable.combineLatest(
-          aggregationSequence.filter(function(value) { return value.function === 'count'; }),
+          aggregationSequence.filter(function(value) { return value['function'] === 'count'; }),
           function(value) {
             return 'Number of {0} by'.format(value.unit.pluralize());
           });
 
         var sumTitleSequence = Rx.Observable.combineLatest(
           primaryAmountFieldSequence.filter(_.isPresent),
-          aggregationSequence.filter(function(value) { return value.function === 'sum'; }),
+          aggregationSequence.filter(function(value) { return value['function'] === 'sum'; }),
           function(primaryAmountField) {
             return 'Sum of {0} by'.format(primaryAmountField.pluralize());
           });
 
         var meanTitleSequence = Rx.Observable.combineLatest(
           primaryAmountFieldSequence.filter(_.isPresent),
-          aggregationSequence.filter(function(value) { return value.function === 'mean'; }),
+          aggregationSequence.filter(function(value) { return value['function'] === 'mean'; }),
           function(primaryAmountField) {
             return 'Average {0} by'.format(primaryAmountField);
           });

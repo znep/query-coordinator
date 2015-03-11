@@ -15,7 +15,7 @@
         return 1;
       }
       return 0;
-    }
+    };
   }
 
   function initDownload($scope, page, WindowState, FlyoutService, ServerConfig) {
@@ -38,14 +38,14 @@
     }).
     takeUntil($scope.eventToObservable('$destroy')).
     subscribe(function() {
-      $scope.$apply(function(e) {
+      $scope.$apply(function() {
         $scope.downloadOpened = false;
       });
     });
 
     $scope.chooserMode = {show: false};
 
-    $scope.$on('exit-export-card-visualization-mode', function(e) {
+    $scope.$on('exit-export-card-visualization-mode', function() {
       $scope.chooserMode.show = false;
     });
 
@@ -199,7 +199,11 @@
       page.
       observe('dataset').
       observeOnLatest('ownerId').
-      combineLatest(currentUserSequence.pluck('id'), function(ownerId, userId) { return ownerId === userId; });
+      combineLatest(
+        currentUserSequence.pluck('id'),
+        function(ownerId, userId) {
+          return ownerId === userId;
+        });
 
     $scope.bindObservable(
       'currentUserHasSaveRight',
@@ -282,7 +286,7 @@
       });
     };
 
-    var flyoutContent = $("<div class='flyout-title'>Click to reset all filters</div>");
+    var flyoutContent = $('<div class="flyout-title">Click to reset all filters</div>');
     FlyoutService.register('clear-all-filters-button',
                            _.constant(flyoutContent),
                            $scope.eventToObservable('$destroy'));
@@ -297,9 +301,6 @@
       page.observe('dataset.columns'),
       page.observe('cards'),
       function(dataset, columns, cards) {
-
-        var datasetColumns = [];
-        var hasAvailableCards = false;
 
         var sortedColumns = _.pairs(columns).
           map(function(columnPair) {
@@ -322,7 +323,7 @@
             return card.fieldName !== '*';
           }).
           sort(function(a, b) {
-            return a.fieldName > b.fieldName
+            return a.fieldName > b.fieldName;
           });
 
         var i = 0;
@@ -438,16 +439,17 @@
         Rx.Observable.never() // Make this sequence never complete, otherwise we'll cause publishTo to complete too.
       ).
       subscribe(publishTo);
-    };
+    }
 
     $scope.savePage = function() {
+      var savePromise;
       if ($scope.hasChanges) {
         try {
           var serializedBlob = $.extend(
             page.serialize(),
             { pageId: page.id }
           );
-          var savePromise = PageDataService.save(serializedBlob, page.id);
+          savePromise = PageDataService.save(serializedBlob, page.id);
         } catch (exception) {
           if (exception.validation) {
             $log.error('Validation errors', exception.validation);
@@ -460,7 +462,7 @@
           // Don't just error out immediately, because we still
           // want to notify the user below.
           $log.error('Serialization failed on save', exception);
-          var savePromise = $q.reject(exception);
+          savePromise = $q.reject(exception);
         }
         notifyUserOfSaveProgress(savePromise, currentPageSaveEvents);
       }
@@ -468,6 +470,7 @@
 
     $scope.savePageAs = function(name, description) {
       var saveStatusSubject = new Rx.BehaviorSubject();
+      var savePromise;
 
       try {
         var newPageSerializedBlob = _.extend(page.serialize(), {
@@ -477,13 +480,13 @@
         // PageDataService looks at whether or not pageId is set on the blob.
         // If it's set, it will do a regular save. We want it to save a new page.
         delete newPageSerializedBlob.pageId;
-        var savePromise = PageDataService.save(newPageSerializedBlob);
+        savePromise = PageDataService.save(newPageSerializedBlob);
       } catch (exception) {
         // If the serialization failed, reject the promise.
         // Don't just error out immediately, because we still
         // want to notify the user below.
         $log.error('Serialization failed on save as', exception);
-        var savePromise = $q.reject(exception);
+        savePromise = $q.reject(exception);
       }
 
       notifyUserOfSaveProgress(savePromise, saveStatusSubject);
@@ -580,7 +583,7 @@
     //in the toolbar, and also the Save button in the Save As dialog. We need to check that this
     //is _our_ save button.
     FlyoutService.register('save-button-flyout-target', function(element) {
-      if ($(element).closest('.save-this-page').length == 0) { return undefined; }
+      if ($(element).closest('.save-this-page').length === 0) { return undefined; }
       if (currentPageSaveEvents.value.status === 'failed') {
         return '<div class="flyout-title">An error occurred</div><div>Please contact Socrata Support</div>';
       } else if (currentPageSaveEvents.value.status === 'idle') {
@@ -600,16 +603,6 @@
       FlyoutService.refreshFlyout();
     });
 
-
-    // Flyout for the 'customize' button, for when it's disabled.
-    FlyoutService.register('cards-edit-disabled', function() {
-      return '<div class="flyout-title">' + [
-        'To enter customization mode:',
-        'Collapse the big card using the',
-        'arrows in its top right corner.'].join('<br/>') +
-        '</div>';
-    }, $scope.eventToObservable('$destroy'));
-
     FlyoutService.register('clear-all-filters-button', function() {
       return '<div class="flyout-title">Click to reset all filters</div>';
     }, $scope.eventToObservable('$destroy'));
@@ -621,14 +614,15 @@
 
     $scope.$on('$destroy', function() {
       $('#api-panel-toggle-btn').off('click');
-      $('#api-url-display').off('mousedown');
-      $('#api-url-display').off('mousemove');
-      $('#api-url-display').off('scroll');
-      $('#api-url-display').off('mouseup');
-      $('#api-url-display').off('blur');
+      var $apiUrlDisplay = $('#api-url-display');
+      $apiUrlDisplay.off('mousedown');
+      $apiUrlDisplay.off('mousemove');
+      $apiUrlDisplay.off('scroll');
+      $apiUrlDisplay.off('mouseup');
+      $apiUrlDisplay.off('blur');
     });
 
-  };
+  }
 
   angular.
     module('dataCards.controllers').

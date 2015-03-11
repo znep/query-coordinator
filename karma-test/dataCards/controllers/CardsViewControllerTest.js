@@ -802,34 +802,6 @@ describe('CardsViewController', function() {
 
   });
 
-  describe('customize', function() {
-    var controllerHarness;
-    var testHelpers;
-    var container;
-
-    beforeEach(inject(['testHelpers', function(_testHelpers) {
-      testHelpers = _testHelpers;
-      controllerHarness = makeController();
-    }]));
-
-    afterEach(function() {
-      testHelpers.TestDom.clear();
-      testHelpers.fireMouseEvent(document.body, 'mousemove');
-    });
-
-    it('should show a flyout when hovering over a disabled customize button', function() {
-      var jqEl = testHelpers.TestDom.append('<button class="cards-edit-disabled" />');
-      expect($('.flyout-title').length).to.equal(0);
-
-      testHelpers.fireMouseEvent(jqEl[0], 'mousemove');
-
-      var flyout = $('.flyout-title');
-      expect(flyout.length).to.equal(1);
-      expect(flyout.text().indexOf('To enter customization mode:')).to.be.greaterThan(-1);
-    });
-
-  });
-
   describe('savePageAs', function() {
     var controllerHarness;
     var $scope;

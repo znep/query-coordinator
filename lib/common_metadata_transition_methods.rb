@@ -29,12 +29,12 @@ module CommonMetadataTransitionMethods
       return JSON.parse(params[form_key]).with_indifferent_access
     elsif request.format.json? && request.content_type == Mime::JSON
       posted_params = params.fetch(controller_name.singularize, false)
-      raise UserError.new("Empty JSON body") unless posted_params.present?
+      raise UserError.new('Empty JSON body') unless posted_params.present?
 
       return posted_params.with_indifferent_access
     else
       # phase 2 requires content-type:application/json
-      raise UnacceptableError.new("Content-Type and Accepts must be set to JSON")
+      raise UnacceptableError.new('Content-Type and Accepts must be set to JSON')
     end
   end
 end

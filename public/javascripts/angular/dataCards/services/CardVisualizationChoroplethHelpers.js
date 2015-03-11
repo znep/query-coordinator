@@ -94,6 +94,12 @@
           'Could not determine column sourceColumn: "source_columns" present but empty.'
         );
       } else {
+        if (column.computationStrategy['source_columns'].length > 1) {
+          $log.warn(
+            'Could not determine column sourceColumn: "source_columns" ' +
+            'contains multiple values but only the first is currently used.'
+          );
+        }
         sourceColumn = column.computationStrategy['source_columns'][0];
       }
 

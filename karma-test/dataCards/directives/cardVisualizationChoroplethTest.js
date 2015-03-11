@@ -10,7 +10,6 @@ describe('A Choropleth Card Visualization', function() {
   var q;
   var timeout;
   var cardVisualizationChoroplethHelpers;
-  var log;
   var fakeClock = null;
   var enableBoundingBoxes = true;
 
@@ -78,7 +77,7 @@ describe('A Choropleth Card Visualization', function() {
     q = $injector.get('$q');
     timeout = $injector.get('$timeout');
     cardVisualizationChoroplethHelpers = $injector.get('CardVisualizationChoroplethHelpers');
-    log = $injector.get('$log');
+    cardDataService = $injector.get('CardDataService');
   }));
 
   beforeEach(function() {
@@ -93,19 +92,33 @@ describe('A Choropleth Card Visualization', function() {
     testHelpers.TestDom.clear();
   });
 
-  function createDatasetModelWithColumns(columns) {
+  function createDatasetModelWithColumns(columns, version) {
 
     var datasetModel = new Model();
 
+    // We also have to fake the reference each column now
+    // has to its parent dataset.
+    _.each(columns, function(column) {
+      column.dataset = datasetModel;
+    });
+
     datasetModel.id = 'four-four';
-    datasetModel.defineObservableProperty('rowDisplayUnit', rowDisplayUnit);
+    datasetModel.defineObservableProperty('rowDisplayUnit', 'crime');
     datasetModel.defineObservableProperty('columns', columns);
+    datasetModel.version = version;
 
     return datasetModel;
 
   }
 
-  function createChoropleth(id, whereClause, testUndefinedColumns, datasetModel) {
+  function createChoropleth(options) {
+
+    var id = options.id || 'choropleth-1';
+    var whereClause = options.whereClause || '';
+    var testUndefinedColumns = options.testUndefined || false;
+    var datasetModel = options.datasetModel || false;
+    var version = options.version || '1';
+
 
     var model = new Model();
     model.fieldName = 'ward';
@@ -140,7 +153,7 @@ describe('A Choropleth Card Visualization', function() {
         };
       }
 
-      datasetModel = createDatasetModelWithColumns(columnsData);
+      datasetModel = createDatasetModelWithColumns(columnsData, version);
 
     }
 
@@ -171,16 +184,14 @@ describe('A Choropleth Card Visualization', function() {
     };
   }
 
-  var rowDisplayUnit = 'crime';
-
   describe('when created with instantiated choropleth visualizations', function() {
 
     it('should provide a flyout on hover with the current value, and row display unit on the first and second choropleth encountered', function(){
 
       this.timeout(15000);
 
-      var choropleth1 = createChoropleth('choropleth-1');
-      var choropleth2 = createChoropleth('choropleth-2');
+      var choropleth1 = createChoropleth({ id: 'choropleth-1' });
+      var choropleth2 = createChoropleth({ id: 'choropleth-2' });
 
       scope.$apply();
 
@@ -221,7 +232,7 @@ describe('A Choropleth Card Visualization', function() {
 
   });
 
-  describe('when created', function() {
+  describe('when created with mock choropleth visualizations', function() {
 
     // We don't need actual choropleth directives to be instantiated for any of the following tests,
     // so just mock it out.
@@ -234,8 +245,8 @@ describe('A Choropleth Card Visualization', function() {
       var choropleth1Fired = false;
       var choropleth2Fired = false;
 
-      var choropleth1 = createChoropleth('choropleth-1');
-      var choropleth2 = createChoropleth('choropleth-2');
+      var choropleth1 = createChoropleth({ id: 'choropleth-1' });
+      var choropleth2 = createChoropleth({ id: 'choropleth-2' });
 
       choropleth1.scope.$on('toggle-dataset-filter:choropleth', function(event, feature, callback) {
         choropleth1Fired = true;
@@ -262,7 +273,13 @@ describe('A Choropleth Card Visualization', function() {
 
       var testUndefinedColumns = true;
 
-      expect(function() { createChoropleth('choropleth-1', '', testUndefinedColumns) }).to.not.throw();
+      expect(function() {
+        createChoropleth({
+          id: 'choropleth-1',
+          whereClause: '',
+          testUndefiend: testUndefinedColumns
+        })
+      }).to.not.throw();
 
     });
 
@@ -272,7 +289,13 @@ describe('A Choropleth Card Visualization', function() {
 
       var testUndefinedColumns = true;
 
-      expect(function() { createChoropleth('choropleth-1', '', testUndefinedColumns) }).to.not.throw();
+      expect(function() {
+        createChoropleth({
+          id: 'choropleth-1',
+          whereClause: '',
+          testUndefined: testUndefinedColumns
+        })
+      }).to.not.throw();
 
     });
 
@@ -294,7 +317,15 @@ describe('A Choropleth Card Visualization', function() {
         }
       };
 
-      expect(function() { createChoropleth('choropleth-1', '', false, createDatasetModelWithColumns(columns)) }).to.not.throw();
+      expect(function() {
+        createChoropleth({
+          id: 'choropleth-1',
+          whereClause: '',
+          testUndefined: false,
+          datasetModel: createDatasetModelWithColumns(columns, '0'),
+          version: '0'
+        })
+      }).to.not.throw();
 
     });
 
@@ -311,7 +342,15 @@ describe('A Choropleth Card Visualization', function() {
         }
       };
 
-      expect(function() { createChoropleth('choropleth-1', '', false, createDatasetModelWithColumns(columns)) }).to.throw();
+      expect(function() {
+        createChoropleth({
+          id: 'choropleth-1',
+          whereClause: '',
+          testUndefined: false,
+          datasetModel: createDatasetModelWithColumns(columns, '0'),
+          version: '0'
+        })
+      }).to.throw();
 
     });
 
@@ -335,11 +374,27 @@ describe('A Choropleth Card Visualization', function() {
         }
       };
 
-      expect(function() { createChoropleth('choropleth-1', '', false, createDatasetModelWithColumns(columns)) }).to.not.throw();
+      expect(function() {
+        createChoropleth({
+          id: 'choropleth-1',
+          whereClause: '',
+          testUndefined: false,
+          datasetModel: createDatasetModelWithColumns(columns, '0'),
+          version: '1'
+        })
+      }).to.not.throw();
 
       testHelpers.overrideMetadataMigrationPhase('2');
 
-      expect(function() { createChoropleth('choropleth-1', '', false, createDatasetModelWithColumns(columns)) }).to.not.throw();
+      expect(function() {
+        createChoropleth({
+          id: 'choropleth-1',
+          whereClause: '',
+          testUndefined: false,
+          datasetModel: createDatasetModelWithColumns(columns, '1'),
+          version: '1'
+        })
+      }).to.not.throw();
 
     });
 
@@ -362,15 +417,84 @@ describe('A Choropleth Card Visualization', function() {
         }
       };
 
-      expect(function() { createChoropleth('choropleth-1', '', false, createDatasetModelWithColumns(columns)) }).to.throw();
+      expect(function() {
+        createChoropleth({
+          id: 'choropleth-1',
+          whereClause: '',
+          testUndefined: false,
+          datasetModel: createDatasetModelWithColumns(columns, '0'),
+          version: '1'
+        })
+      }).to.throw();
 
       testHelpers.overrideMetadataMigrationPhase('2');
 
-      expect(function() { createChoropleth('choropleth-1', '', false, createDatasetModelWithColumns(columns)) }).to.throw();
+      expect(function() {
+        createChoropleth({
+          id: 'choropleth-1',
+          whereClause: '',
+          testUndefined: false,
+          datasetModel: createDatasetModelWithColumns(columns, '1'),
+          version: '1'
+        })
+      }).to.throw();
 
     });
 
-    it("should not fail to extract the sourceColumn if the source_columns property exists in the column's 'computationStrategy' object and bounding box queries are disabled and the metadataMigration is in phase 1 or 2", function() {
+    it("should not use the source column to get the choropleth regions if the source_columns property does not exist in the column's 'computationStrategy' object and bounding box queries are disabled and the metadataMigration is in phase 1 or 2", function() {
+
+      serverConfig.override('enableBoundingBoxes', false);
+      testHelpers.overrideMetadataMigrationPhase('1');
+
+      var columns = {
+        "ward": {
+          "name": "Ward where crime was committed.",
+          "description": "Batman has bigger fish to fry sometimes, you know.",
+          "fred": "location",
+          "physicalDatatype": "text",
+          "computationStrategy": {
+            "parameters": {
+              "region": "_snuk-a5kv",
+              "geometryLabel": "geoid10"
+            },
+            "strategy_type": "georegion_match_on_point"
+          }
+        }
+      };
+
+      sinon.spy(cardVisualizationChoroplethHelpers, 'extractSourceColumnFromColumn');
+      sinon.spy(cardDataService, 'getChoroplethRegions');
+      sinon.spy(cardDataService, 'getChoroplethRegionsUsingSourceColumn');
+
+      createChoropleth({
+        id: 'choropleth-1',
+        whereClause: '',
+        testUndefined: false,
+        datasetModel: createDatasetModelWithColumns(columns, '0'),
+        version: '1'
+      });
+
+      testHelpers.overrideMetadataMigrationPhase('2');
+
+      createChoropleth({
+        id: 'choropleth-1',
+        whereClause: '',
+        testUndefined: false,
+        datasetModel: createDatasetModelWithColumns(columns, '1'),
+        version: '1'
+      });
+
+      expect(cardVisualizationChoroplethHelpers.extractSourceColumnFromColumn.calledTwice).to.equal(true);
+      expect(cardDataService.getChoroplethRegions.calledTwice).to.equal(true);
+      expect(cardDataService.getChoroplethRegionsUsingSourceColumn.called).to.equal(false);
+
+      cardVisualizationChoroplethHelpers.extractSourceColumnFromColumn.restore();
+      cardDataService.getChoroplethRegions.restore();
+      cardDataService.getChoroplethRegionsUsingSourceColumn.restore();
+
+    });
+
+    it("should not use the source column to get the choropleth regions if the source_columns property exists in the column's 'computationStrategy' object and bounding box queries are disabled and the metadataMigration is in phase 1 or 2", function() {
 
       serverConfig.override('enableBoundingBoxes', false);
       testHelpers.overrideMetadataMigrationPhase('1');
@@ -392,15 +516,92 @@ describe('A Choropleth Card Visualization', function() {
         }
       };
 
-      expect(function() { createChoropleth('choropleth-1', '', false, createDatasetModelWithColumns(columns)) }).to.not.throw();
+      sinon.spy(cardVisualizationChoroplethHelpers, 'extractSourceColumnFromColumn');
+      sinon.spy(cardDataService, 'getChoroplethRegions');
+      sinon.spy(cardDataService, 'getChoroplethRegionsUsingSourceColumn');
+
+      createChoropleth({
+        id: 'choropleth-1',
+        whereClause: '',
+        testUndefined: false,
+        datasetModel: createDatasetModelWithColumns(columns, '0'),
+        version: '1'
+      });
 
       testHelpers.overrideMetadataMigrationPhase('2');
 
-      expect(function() { createChoropleth('choropleth-1', '', false, createDatasetModelWithColumns(columns)) }).to.not.throw();
+      createChoropleth({
+        id: 'choropleth-1',
+        whereClause: '',
+        testUndefined: false,
+        datasetModel: createDatasetModelWithColumns(columns, '1'),
+        version: '1'
+      });
+
+      expect(cardVisualizationChoroplethHelpers.extractSourceColumnFromColumn.calledTwice).to.equal(true);
+      expect(cardDataService.getChoroplethRegions.calledTwice).to.equal(true);
+      expect(cardDataService.getChoroplethRegionsUsingSourceColumn.called).to.equal(false);
+
+      cardVisualizationChoroplethHelpers.extractSourceColumnFromColumn.restore();
+      cardDataService.getChoroplethRegions.restore();
+      cardDataService.getChoroplethRegionsUsingSourceColumn.restore();
 
     });
 
-    it("should not fail to extract the sourceColumn if the source_columns property exists in the column's 'computationStrategy' object and bounding box queries are enabled and the metadataMigration is in phase 1 or 2", function() {
+    it("should not use the source column to get the choropleth regions if the source_columns property does not exist in the column's 'computationStrategy' object and bounding box queries are enabled and the metadataMigration is in phase 1 or 2", function() {
+
+      serverConfig.override('enableBoundingBoxes', true);
+      testHelpers.overrideMetadataMigrationPhase('1');
+
+      var columns = {
+        "ward": {
+          "name": "Ward where crime was committed.",
+          "description": "Batman has bigger fish to fry sometimes, you know.",
+          "fred": "location",
+          "physicalDatatype": "text",
+          "computationStrategy": {
+            "parameters": {
+              "region": "_snuk-a5kv",
+              "geometryLabel": "geoid10"
+            },
+            "strategy_type": "georegion_match_on_point"
+          }
+        }
+      };
+
+      sinon.spy(cardVisualizationChoroplethHelpers, 'extractSourceColumnFromColumn');
+      sinon.spy(cardDataService, 'getChoroplethRegions');
+      sinon.spy(cardDataService, 'getChoroplethRegionsUsingSourceColumn');
+
+      createChoropleth({
+        id: 'choropleth-1',
+        whereClause: '',
+        testUndefined: false,
+        datasetModel: createDatasetModelWithColumns(columns, '0'),
+        version: '1'
+      });
+
+      testHelpers.overrideMetadataMigrationPhase('2');
+
+      createChoropleth({
+        id: 'choropleth-1',
+        whereClause: '',
+        testUndefined: false,
+        datasetModel: createDatasetModelWithColumns(columns, '1'),
+        version: '1'
+      });
+
+      expect(cardVisualizationChoroplethHelpers.extractSourceColumnFromColumn.calledTwice).to.equal(true);
+      expect(cardDataService.getChoroplethRegions.calledTwice).to.equal(true);
+      expect(cardDataService.getChoroplethRegionsUsingSourceColumn.called).to.equal(false);
+
+      cardVisualizationChoroplethHelpers.extractSourceColumnFromColumn.restore();
+      cardDataService.getChoroplethRegions.restore();
+      cardDataService.getChoroplethRegionsUsingSourceColumn.restore();
+
+    });
+
+    it("should use the source column to get the choropleth regions if the source_columns property exists in the column's 'computationStrategy' object and bounding box queries are enabled and the metadataMigration is in phase 1 or 2", function() {
 
       serverConfig.override('enableBoundingBoxes', true);
       testHelpers.overrideMetadataMigrationPhase('1');
@@ -423,85 +624,34 @@ describe('A Choropleth Card Visualization', function() {
       };
 
       sinon.spy(cardVisualizationChoroplethHelpers, 'extractSourceColumnFromColumn');
+      sinon.spy(cardDataService, 'getChoroplethRegions');
+      sinon.spy(cardDataService, 'getChoroplethRegionsUsingSourceColumn');
 
-      expect(function() { createChoropleth('choropleth-1', '', false, createDatasetModelWithColumns(columns)) }).to.not.throw();
+      createChoropleth({
+        id: 'choropleth-1',
+        whereClause: '',
+        testUndefined: false,
+        datasetModel: createDatasetModelWithColumns(columns, '0'),
+        version: '1'
+      });
 
       testHelpers.overrideMetadataMigrationPhase('2');
 
-      expect(function() { createChoropleth('choropleth-1', '', false, createDatasetModelWithColumns(columns)) }).to.not.throw();
+      createChoropleth({
+        id: 'choropleth-1',
+        whereClause: '',
+        testUndefined: false,
+        datasetModel: createDatasetModelWithColumns(columns, '1'),
+        version: '1'
+      });
 
-      expect(cardVisualizationChoroplethHelpers.extractSourceColumnFromColumn.calledOnce);
+      expect(cardVisualizationChoroplethHelpers.extractSourceColumnFromColumn.calledTwice).to.equal(true);
+      expect(cardDataService.getChoroplethRegions.called).to.equal(false);
+      expect(cardDataService.getChoroplethRegionsUsingSourceColumn.calledTwice).to.equal(true);
+
       cardVisualizationChoroplethHelpers.extractSourceColumnFromColumn.restore();
-
-    });
-
-    it("should fail to extract the sourceColumn if the source_columns property does not exist in the column's 'computationStrategy' object and bounding box queries are disabled and the metadataMigration is in phase 1 or 2", function() {
-
-      serverConfig.override('enableBoundingBoxes', false);
-      testHelpers.overrideMetadataMigrationPhase('1');
-
-      var columns = {
-        "ward": {
-          "name": "Ward where crime was committed.",
-          "description": "Batman has bigger fish to fry sometimes, you know.",
-          "fred": "location",
-          "physicalDatatype": "text",
-          "computationStrategy": {
-            "parameters": {
-              "region": "_snuk-a5kv",
-              "geometryLabel": "geoid10"
-            },
-            "source_columns": ['computed_column_source_column'],
-            "strategy_type": "georegion_match_on_point"
-          }
-        }
-      };
-
-      sinon.spy(log, 'warn');
-
-      createChoropleth('choropleth-1', '', false, createDatasetModelWithColumns(columns));
-
-      testHelpers.overrideMetadataMigrationPhase('2');
-
-      createChoropleth('choropleth-1', '', false, createDatasetModelWithColumns(columns));
-
-      expect(log.warn.calledTwice);
-      log.warn.restore();
-
-    });
-
-    it("should fail to extract the sourceColumn if the source_columns property does not exist in the column's 'computationStrategy' object and bounding box queries are enabled and the metadataMigration is in phase 1 or 2", function() {
-
-      serverConfig.override('enableBoundingBoxes', true);
-      testHelpers.overrideMetadataMigrationPhase('1');
-
-      var columns = {
-        "ward": {
-          "name": "Ward where crime was committed.",
-          "description": "Batman has bigger fish to fry sometimes, you know.",
-          "fred": "location",
-          "physicalDatatype": "text",
-          "computationStrategy": {
-            "parameters": {
-              "region": "_snuk-a5kv",
-              "geometryLabel": "geoid10"
-            },
-            "source_columns": ['computed_column_source_column'],
-            "strategy_type": "georegion_match_on_point"
-          }
-        }
-      };
-
-      sinon.spy(log, 'warn');
-
-      createChoropleth('choropleth-1', '', false, createDatasetModelWithColumns(columns));
-
-      testHelpers.overrideMetadataMigrationPhase('2');
-
-      createChoropleth('choropleth-1', '', false, createDatasetModelWithColumns(columns));
-
-      expect(log.warn.calledTwice);
-      log.warn.restore();
+      cardDataService.getChoroplethRegions.restore();
+      cardDataService.getChoroplethRegionsUsingSourceColumn.restore();
 
     });
 

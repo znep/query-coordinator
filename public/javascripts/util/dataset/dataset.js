@@ -624,7 +624,7 @@ var Dataset = ServerModel.extend({
                 (ds.columnForIdentifier(displayFormat.plot.locationId) || {}).renderTypeName)))
         { errorCallback(); return; }
 
-        if (ds._useSODA2)
+        if (ds._useSODA2 && blist.feature_flags.use_soql_for_clustering)
         {
             ds._getClustersViaSODA2.apply(ds, arguments);
             return;

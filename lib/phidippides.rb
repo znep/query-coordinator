@@ -341,12 +341,8 @@ class Phidippides < SocrataHttp
     rescue CoreServer::Error => e
       Airbrake.notify(
         :error_class => "DatasetSizeError",
-        :error_message => "Could not determine dataset size: server error.",
-        :datastId => dataset_id,
-        :context => {
-          :response => core_server_response.inspect,
-          :error_message => e.inspect
-        }
+        :error_message => "Could not determine dataset size: server error " \
+          "(#{e.inspect}). Response: #{core_server_response.inspect}"
       )
       Rails.logger.error(
         "Core server error while retrieving dataset size of dataset " \

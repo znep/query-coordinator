@@ -6,14 +6,22 @@ class PhidippidesPagesControllerTest < ActionController::TestCase
     CurrentDomain.stubs(domain: stub(cname: 'localhost'))
     @phidippides = Phidippides.new
     @phidippides.stubs(end_point: 'http://localhost:2401')
-    @controller.stubs(:phidippides => @phidippides)
+    @page_metadata_manager = PageMetadataManager.new
+    @controller.stubs(phidippides: @phidippides, page_metadata_manager: @page_metadata_manager)
+    @page_metadata_manager.stubs(
+      create: { body: '', status: '200' },
+      update: { body: '', status: '200' }
+    )
   end
 
-  def set_up_request(body = nil)
-    body = '{ "datasetId":"four-four", "pageId":"page-page"}' unless body.present?
-
-    @request.env['RAW_POST_DATA'] = body
+  def json_post(body = nil)
     @request.env['CONTENT_TYPE'] = 'application/json'
+    return {
+      phidippides_page: body || {
+        datasetId: 'four-four',
+        pageId: 'page-page',
+      }
+    }
   end
 
   test 'index returns 403' do
@@ -25,7 +33,7 @@ class PhidippidesPagesControllerTest < ActionController::TestCase
     @controller.stubs(can_update_metadata?: true)
     @phidippides.stubs(
       fetch_page_metadata: {
-        body: v0_page_metadata
+        body: v0_page_metadata.to_json
       }
     )
     get :show, id: 'four-four', format: 'json'
@@ -37,122 +45,87 @@ class PhidippidesPagesControllerTest < ActionController::TestCase
     @controller.stubs(can_update_metadata?: false)
 
     stub_feature_flags_with(:metadata_transition_phase, '0')
-    post :create, pageMetadata: { datasetId: 'four-four' }, format: :json
+    post :create, pageMetadata: { datasetId: 'four-four' }.to_json, format: :json
     assert_response(401)
 
     stub_feature_flags_with(:metadata_transition_phase, '1')
-    post :create, pageMetadata: { datasetId: 'four-four' }, format: :json
+    post :create, pageMetadata: { datasetId: 'four-four' }.to_json, format: :json
     assert_response(401)
 
     stub_feature_flags_with(:metadata_transition_phase, '2')
-    set_up_request
-    post :create, format: :json
+    post :create, json_post.merge(format: :json)
     assert_response(401)
   end
 
-  test '(phase 0, 1 or 2) create returns 406 if format is not JSON' do
+  test '(phase 0, 1) create works fine if format is not JSON' do
     @controller.stubs(can_update_metadata?: true)
     @phidippides.stubs(issue_request: { status: '200' }, issue_soda_fountain_request: '')
 
     stub_feature_flags_with(:metadata_transition_phase, '0')
     post :create, pageMetadata: { datasetId: 'four-four' }.to_json, format: :text
-    assert_response(406)
+    assert_response(200)
 
     stub_feature_flags_with(:metadata_transition_phase, '1')
     post :create, pageMetadata: { datasetId: 'four-four' }.to_json, format: :text
-    assert_response(406)
-
-    stub_feature_flags_with(:metadata_transition_phase, '2')
-    set_up_request
-    post :create, format: :text
-    assert_response(406)
+    assert_response(200)
   end
 
-  test '(phase 0, 1 or 2) create returns 405 if method is not POST' do
+  test '(phase 2) create returns 406 if format is not JSON' do
     @controller.stubs(can_update_metadata?: true)
-
-    stub_feature_flags_with(:metadata_transition_phase, '0')
-    get :create, format: :json
-    assert_response(405)
-    put :create, format: :json
-    assert_response(405)
-    delete :create, format: :json
-    assert_response(405)
-
-    stub_feature_flags_with(:metadata_transition_phase, '1')
-    get :create, format: :json
-    assert_response(405)
-    put :create, format: :json
-    assert_response(405)
-    delete :create, format: :json
-    assert_response(405)
+    @phidippides.stubs(issue_request: { status: '200' }, issue_soda_fountain_request: '')
 
     stub_feature_flags_with(:metadata_transition_phase, '2')
-    set_up_request
-    get :create, format: :json
-    assert_response(405)
-    set_up_request
-    put :create, format: :json
-    assert_response(405)
-    set_up_request
-    delete :create, format: :json
-    assert_response(405)
-  end
-
-  test '(phase 2) create returns 400 if JSON is invalid' do
-    @controller.stubs(can_update_metadata?: true)
-
-    stub_feature_flags_with(:metadata_transition_phase, '2')
-    set_up_request('invalid')
-    post :create, format: :json
-    assert_response(400)
+    post :create, json_post.merge(format: :text)
+    assert_response(406)
   end
 
   test '(phase 2) create returns 400 if JSON does not include datasetId' do
     @controller.stubs(can_update_metadata?: true)
+    @page_metadata_manager.unstub(:create)
 
     stub_feature_flags_with(:metadata_transition_phase, '2')
-    set_up_request('{ "something": "else" }')
-    post :create, format: :json
+    post :create, json_post({ something: 'else' }).merge(format: :json)
     assert_response(400)
   end
 
   test '(phase 0, 1 or 2) create returns new page metadata if logged in' do
     @controller.stubs(can_update_metadata?: true)
-    PageMetadataManager.any_instance.stubs(create: { body: v0_page_metadata, status: '200' })
+    @page_metadata_manager.stubs(create: { body: v0_page_metadata.to_json, status: '200' })
     stub_feature_flags_with(:metadata_transition_phase, '0')
-    post :create, pageMetadata: v0_page_metadata, format: :json
+    post :create, pageMetadata: v0_page_metadata.to_json, format: :json
     assert_response(200)
-    assert_equal(v0_page_metadata, @response.body)
+    assert_equal(v0_page_metadata, JSON.parse(@response.body))
 
     stub_feature_flags_with(:metadata_transition_phase, '1')
-    post :create, pageMetadata: v0_page_metadata, format: :json
+    post :create, pageMetadata: v0_page_metadata.to_json, format: :json
     assert_response(200)
-    assert_equal(v0_page_metadata, @response.body)
+    assert_equal(v0_page_metadata, JSON.parse(@response.body))
 
-    PageMetadataManager.any_instance.stubs(create: { body: v1_page_metadata, status: '200' })
+    @page_metadata_manager.stubs(create: { body: v1_page_metadata.to_json, status: '200' })
     Phidippides.any_instance.stubs(request_new_page_id: { body: { id: 'iuya-fxdq' }, status: '200' })
     stub_feature_flags_with(:metadata_transition_phase, '2')
-    set_up_request(JSON.parse(v1_page_metadata).except('pageId').to_json)
-    post :create, format: :json
+    post :create, json_post(v1_page_metadata.except('pageId')).merge(format: :json)
     assert_response(200)
-    assert_equal(v1_page_metadata, @response.body)
+    assert_equal(v1_page_metadata, JSON.parse(@response.body))
   end
 
-  test '(phase 0, 1 or 2) update returns 406 if format is not JSON' do
-    @controller.stubs(can_update_metadata?: false)
+  test '(phase 0, 1) update gets past 406 error if format is not JSON' do
+    @controller.stubs(can_update_metadata?: true)
 
     stub_feature_flags_with(:metadata_transition_phase, '0')
-    put :update, id: 'four-four', format: :text
-    assert_response(406)
+    put :update, json_post.merge(id: 'four-four', format: :text)
+    assert_response(400)
 
     stub_feature_flags_with(:metadata_transition_phase, '1')
-    put :update, id: 'four-four', format: :text
-    assert_response(406)
+    put :update, json_post.merge(id: 'four-four', format: :text)
+    assert_response(400)
+  end
+
+  test '(phase 2) update returns 406 if format is not JSON' do
+    @controller.stubs(can_update_metadata?: true)
 
     stub_feature_flags_with(:metadata_transition_phase, '2')
-    set_up_request
-    put :update, id: 'four-four', format: :text
+    put :update, json_post.merge(id: 'four-four', format: :text)
     assert_response(406)
   end
 
@@ -168,40 +141,8 @@ class PhidippidesPagesControllerTest < ActionController::TestCase
     assert_response(401)
 
     stub_feature_flags_with(:metadata_transition_phase, '2')
-    set_up_request
-    put :update, id: 'four-four', format: :json
+    put :update, json_post.merge(id: 'four-four', format: :json)
     assert_response(401)
-  end
-
-  test '(phase 0, 1 or 2) update returns 405 if method is not PUT' do
-    @controller.stubs(can_update_metadata?: true)
-
-    stub_feature_flags_with(:metadata_transition_phase, '0')
-    get :update, id: 'four-four', format: :json
-    assert_response(405)
-    post :update, id: 'four-four', format: :json
-    assert_response(405)
-    delete :update, id: 'four-four', format: :json
-    assert_response(405)
-
-    stub_feature_flags_with(:metadata_transition_phase, '1')
-    get :update, id: 'four-four', format: :json
-    assert_response(405)
-    post :update, id: 'four-four', format: :json
-    assert_response(405)
-    delete :update, id: 'four-four', format: :json
-    assert_response(405)
-
-    stub_feature_flags_with(:metadata_transition_phase, '2')
-    set_up_request
-    get :update, id: 'four-four', format: :json
-    assert_response(405)
-    set_up_request
-    post :update, id: 'four-four', format: :json
-    assert_response(405)
-    set_up_request
-    delete :update, id: 'four-four', format: :json
-    assert_response(405)
   end
 
   test '(phase 0, 1 or 2) update returns 400 if required parameters are not present' do
@@ -216,57 +157,51 @@ class PhidippidesPagesControllerTest < ActionController::TestCase
     assert_response(400)
 
     stub_feature_flags_with(:metadata_transition_phase, '2')
-    # We can't use set_up_request here since we need a nil body.
-    @request.env['RAW_POST_DATA'] = nil
-    @request.env['CONTENT_TYPE'] = 'application/json'
-    put :update, id: 'four-four', format: :json
-    assert_response(400)
-  end
-
-  test '(phase 2) update returns 400 if JSON is invalid' do
-    @controller.stubs(can_update_metadata?: true)
-
-    stub_feature_flags_with(:metadata_transition_phase, '2')
-    set_up_request('invalid')
-    put :update, id: 'four-four', format: :json
+    put :update, json_post({}).merge(id: 'four-four', format: :json)
     assert_response(400)
   end
 
   test '(phase 2) update returns 400 if JSON does not include datasetId' do
     @controller.stubs(can_update_metadata?: true)
+    @page_metadata_manager.unstub(:update)
 
     stub_feature_flags_with(:metadata_transition_phase, '2')
-    set_up_request('{ "pageId": "page-page" }')
-    put :update, id: 'four-four', format: :json
-    assert_response(400)
-  end
-
-  test '(phase 2) update returns 400 if JSON does not include pageId' do
-    @controller.stubs(can_update_metadata?: true)
-
-    stub_feature_flags_with(:metadata_transition_phase, '2')
-    set_up_request('{ "datasetId": "roll-dice" }')
-    put :update, id: 'four-four', format: :json
+    put :update, json_post({ pageId: 'page-page' }).merge(id: 'page-page', format: :json)
     assert_response(400)
   end
 
   test '(phase 0, 1 or 2) update returns success' do
     @controller.stubs(can_update_metadata?: true)
-    PageMetadataManager.any_instance.stubs(update: { body: v0_page_metadata, status: '200' })
+    @page_metadata_manager.stubs(update: { body: v0_page_metadata.to_json, status: '200' })
 
     stub_feature_flags_with(:metadata_transition_phase, '0')
-    put :update, id: 'four-four', pageMetadata: v0_page_metadata, format: :json
+    put :update, id: 'desk-chek', pageMetadata: v0_page_metadata.to_json, format: :json
     assert_response(200)
 
     stub_feature_flags_with(:metadata_transition_phase, '1')
-    put :update, id: 'four-four', pageMetadata: v0_page_metadata, format: :json
+    put :update, id: 'desk-chek', pageMetadata: v0_page_metadata.to_json, format: :json
     assert_response(200)
 
-    PageMetadataManager.any_instance.stubs(update: { body: nil, status: '200' })
+    @page_metadata_manager.stubs(update: { body: nil, status: '200' })
     stub_feature_flags_with(:metadata_transition_phase, '2')
-    set_up_request(v1_page_metadata)
-    put :update, id: 'iuya-fxdq', format: :json
+    put :update, json_post(v1_page_metadata).merge(id: 'iuya-fxdq', format: :json)
     assert_response(200)
+  end
+
+  test '(phase 0, 1 or 2) update returns 406 when body page_id != endpoint id' do
+    @controller.stubs(can_update_metadata?: true)
+
+    stub_feature_flags_with(:metadata_transition_phase, '0')
+    put :update, id: 'four-four', pageMetadata: {pageId: 'five-five'}.to_json, format: :json
+    assert_response(406)
+
+    stub_feature_flags_with(:metadata_transition_phase, '1')
+    put :update, id: 'four-four', pageMetadata: {pageId: 'five-five'}.to_json, format: :json
+    assert_response(406)
+
+    stub_feature_flags_with(:metadata_transition_phase, '2')
+    put :update, json_post({pageId: 'five-five'}).merge(id: 'iuya-fxdq', format: :json)
+    assert_response(406)
   end
 
   test '(phase 0, 1 or 2) delete returns 403' do
@@ -312,11 +247,11 @@ class PhidippidesPagesControllerTest < ActionController::TestCase
   private
 
   def v0_page_metadata
-    File.read("#{Rails.root}/test/fixtures/v0-page-metadata.json")
+    JSON.parse(File.read("#{Rails.root}/test/fixtures/v0-page-metadata.json"))
   end
 
   def v1_page_metadata
-    File.read("#{Rails.root}/test/fixtures/v1-page-metadata.json")
+    JSON.parse(File.read("#{Rails.root}/test/fixtures/v1-page-metadata.json"))
   end
 
 end

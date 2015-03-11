@@ -2,7 +2,7 @@
   'use strict';
 
   function cardVisualizationChoropleth(Constants, AngularRxExtensions, CardDataService, Filter,
-                                       ServerConfig, CardVisualizationChoroplethHelpers) {
+                                       ServerConfig, CardVisualizationChoroplethHelpers, $log) {
 
     return {
       restrict: 'E',
@@ -21,7 +21,6 @@
         var aggregationObservable = model.observeOnLatest('page.aggregation');
         var dataRequests = new Rx.Subject();
         var dataResponses = new Rx.Subject();
-        var geojsonRegionsSequence = new Rx.Subject();
         var unfilteredDataSequence = new Rx.Subject();
         var filteredDataSequence = new Rx.Subject();
 
@@ -64,111 +63,97 @@
           }
         );
 
-        if (ServerConfig.get('enableBoundingBoxes')) {
+        geojsonRegionsData = Rx.Observable.combineLatest(
+          dataset,
+          model.pluck('fieldName'),
+          dataset.observeOnLatest('columns'),
+          function(dataset, fieldName, columns) {
 
-          geojsonRegionsData = Rx.Observable.combineLatest(
-            dataset,
-            model.pluck('fieldName'),
-            dataset.observeOnLatest('columns'),
-            function(dataset, fieldName, columns) {
+            var shapeFile = null;
+            var sourceColumn = null;
+            var dataPromise = null;
 
-              var shapeFile = null;
+            if (_.isEmpty(columns)) {
+              return Rx.Observable.never();
+            }
 
-              if (_.isEmpty(columns)) {
-                return Rx.Observable.never();
+            dataRequests.onNext(1);
+
+            if (ServerConfig.metadataMigration.shouldConsumeComputationStrategy()) {
+              // The shapeFile and the sourceColumn are both found in the
+              // computationStrategy blob that is attached to computed columns.
+              shapeFile = CardVisualizationChoroplethHelpers.extractShapeFileFromColumn(
+                columns[fieldName]
+              );
+              sourceColumn = CardVisualizationChoroplethHelpers.extractSourceColumnFromColumn(
+                columns[fieldName]
+              );
+            } else {
+              if (columns[fieldName].hasOwnProperty('shapefile')) {
+                shapeFile = columns[fieldName].shapefile;
               }
+            }
 
-              dataRequests.onNext(1);
+            if (shapeFile === null) {
+              throw new Error(
+                'Dataset metadata column for computed georegion does not include shapeFile.'
+              );
+            }
 
-              if (ServerConfig.metadataMigration.shouldConsumeComputationStrategy()) {
-                shapeFile = CardVisualizationChoroplethHelpers.extractShapeFileFromColumn(columns[fieldName]);
-              } else {
-                if (columns[fieldName].hasOwnProperty('shapefile')) {
-                  shapeFile = columns[fieldName].shapefile;
-                }
-              }
-
-              if (shapeFile === null) {
-                throw new Error('Dataset metadata column for computed georegion does not include shapeFile.');
-              }
-
-              var sourceColumn = null;
+            // If we were unable to extract the source column from the
+            // computationStrategy, attempt to find a location/point column
+            // that could potentially be the source column. This will not
+            // always be correct if there is more than one location/point
+            // column in the dataset.
+            if (sourceColumn === null) {
               _.each(columns, function(column, fieldName) {
                 if (column.dataset.version === '0') {
-                  if (column.physicalDatatype === 'point' && column.logicalDatatype === 'location') {
+                  if (column.physicalDatatype === 'point' &&
+                    column.logicalDatatype === 'location') {
+
                     sourceColumn = fieldName;
                   }
                 } else {
-                  if (column.physicalDatatype === 'point' && column.fred === 'location') {
+                  if (column.physicalDatatype === 'point' &&
+                    column.fred === 'location') {
+
                     sourceColumn = fieldName;
                   }
                 }
               });
+            }
 
-              if (sourceColumn === null) {
-                throw new Error('No column with geometry found.');
-              }
+            // If bounding box queries are enabled and we have successfully
+            // found a source column, then make the more specific bounding
+            // box query utilizing the source column's extents.
+            if (ServerConfig.get('enableBoundingBoxes') && sourceColumn !== null) {
 
-              var dataPromise = CardDataService.getChoroplethRegions(dataset.id, sourceColumn, shapeFile);
-              dataPromise.then(
-                function(res) {
-                  // Ok
-                  geojsonRegionsSequence.onNext(dataPromise);
-                  dataResponses.onNext(1);
-                },
-                function(err) {
-                  // Do nothing
-                }
+              dataPromise = CardDataService.getChoroplethRegionsUsingSourceColumn(
+                dataset.id,
+                sourceColumn,
+                shapeFile
               );
 
-              return Rx.Observable.fromPromise(dataPromise);
+            // Otherwise, use the less efficient but more robust request.
+            } else {
+
+              // If bounding box queries are enabled but we failed to
+              // determine a source column, log a warning.
+              if (ServerConfig.get('enableBoundingBoxes')) {
+                $log.warn(
+                  'Could not determine source column of computed column "{0}". ' +
+                    'Falling back to default query.'.
+                      format(fieldName)
+                );
+              }
+
+              dataPromise = CardDataService.getChoroplethRegions(shapeFile);
+
             }
-          );
 
-        } else {
-
-          geojsonRegionsData = Rx.Observable.combineLatest(
-            model.pluck('fieldName'),
-            dataset.observeOnLatest('columns'),
-            function(fieldName, columns) {
-
-              var shapeFile = null;
-
-              if (_.isEmpty(columns)) {
-                return Rx.Observable.never();
-              }
-
-              dataRequests.onNext(1);
-
-              if (ServerConfig.metadataMigration.shouldConsumeComputationStrategy()) {
-                shapeFile = CardVisualizationChoroplethHelpers.extractShapeFileFromColumn(columns[fieldName]);
-              } else {
-                if (columns[fieldName].hasOwnProperty('shapefile')) {
-                  shapeFile = columns[fieldName].shapefile;
-                }
-              }
-
-              if (shapeFile === null) {
-                throw new Error('Dataset metadata column for computed georegion does not include shapeFile.');
-              }
-
-              var dataPromise = CardDataService.getChoroplethRegions(shapeFile);
-              dataPromise.then(
-                function(res) {
-                  // Ok
-                  geojsonRegionsSequence.onNext(dataPromise);
-                  dataResponses.onNext(1);
-                },
-                function(err) {
-                  // Do nothing
-                }
-              );
-
-              return Rx.Observable.fromPromise(dataPromise);
-            }
-          );
-
-        }
+            return Rx.Observable.fromPromise(dataPromise);
+          }
+        );
 
         Rx.Observable.subscribeLatest(
           model.pluck('fieldName'),

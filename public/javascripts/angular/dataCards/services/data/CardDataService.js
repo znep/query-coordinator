@@ -276,7 +276,7 @@
     };
 
     if (ServerConfig.get('enableBoundingBoxes')) {
-      serviceDefinition['getChoroplethRegions'] = function(datasetId, datasetSourceColumn, shapeFileId) {
+      serviceDefinition['getChoroplethRegionsUsingSourceColumn'] = function(datasetId, datasetSourceColumn, shapeFileId) {
         datasetId = DeveloperOverrides.dataOverrideForDataset(datasetId) || datasetId;
 
         // http://dataspace-demo.test-socrata.com/resource/vtvh-wqgq.json?$select=extent(point)

@@ -53,8 +53,84 @@ body.state-view-cards
     .padded-wrapper
       padding: ($metadata-side-padding / 2)
 
-    header
-      font-size: 2em
+    .edit-page-name
+      display: block
+      position: relative
+      color: inherit
+
+      >.placeholder
+        position: absolute
+        z-index: 0
+        top: 0
+        left: 0
+        color: inherit
+        font-family: inherit
+
+        &::before
+          font-family: socrata-apps
+          // Make the icon a little bit smaller
+          font-size: .7em
+          line-height: 2em
+          padding-left: .4em
+
+        span
+          display: none
+          color: $placeholder-text-color
+          padding-left: .3em
+          font: inherit
+          font-style: italic
+          font-size: .9em
+
+      >textarea
+        color: inherit
+        background: transparent
+        font: inherit
+        height: 1.2em
+        display: block
+        width: 100%
+        box-sizing: border-box
+        padding-left: 1.2em
+        border: 1px solid $grey-inactive-border-color
+        @include prefixer(border-radius, 2px)
+
+        // Make sure this is above the placeholder
+        position: relative
+        z-index: 1
+
+        &:empty + .placeholder > span
+          display: inline
+
+        &:focus
+          outline: 0
+          border-color: $blue-active-color
+          // webkit doesn't give us box shadows unless we nuke its appearance
+          -webkit-appearance: none
+          @include prefixer(box-shadow, 0 0 2px 0 $blue-active-color)
+
+          + .placeholder
+            color: $blue-active-color
+
+            span
+              display: none
+
+      .icon-warning
+        position: absolute
+        top: 0
+        left: 100%
+        z-index: 1
+        color: $red-error-color
+        font-size: .7em
+        margin-left: .5rem
+        line-height: 1.5em
+
+        + textarea
+          border-color: $form-error-border-color
+
+      [class^="icon-"], [class*=" icon-"]
+        cursor: default
+
+    header,.edit-page-name
+      font-size: 2rem
 
     .activities
       position: relative

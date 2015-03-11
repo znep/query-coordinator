@@ -25,19 +25,15 @@ class PageMetadataManager
 
   # Creates a new page
   def create(page_metadata, options = {})
-    raise Phidippides::NoDatasetIdException.new('cannot create page with no dataset id') unless page_metadata.key?('datasetId')
-
-    # In metadata transition phase 2 and above we must first provision a new page
-    # 4x4 before we can create a new page. The block below accomplishes that in a
-    # way that should be transparent outside this method.
-    if !metadata_transition_phase_0? && !metadata_transition_phase_1?
-      new_page_id_response = phidippides.request_new_page_id
-      status = new_page_id_response[:status]
-      raise Phidippides::NewPageException.new('could not provision new page id') unless status == '200'
-      raise Phidippides::PageIdException.new('cannot specify page id on page creation') if page_metadata.key?('pageId')
-
-      page_metadata['pageId'] = new_page_id_response[:body][:id]
+    unless page_metadata.key?('datasetId')
+      raise Phidippides::NoDatasetIdException.new('cannot create page with no dataset id')
     end
+
+    # First provision a new page 4x4, so we can let the data lens know what to point to.
+    # This is also what we'll have to do in metadata_transition_phase_2 anyway.
+    new_page_id = phidippides.request_new_page_id(page_metadata, options)
+    raise Phidippides::NewPageException.new('could not provision new page id') unless new_page_id
+    page_metadata['pageId'] = new_page_id
 
     # Make sure that there is a table card
     if page_metadata['cards'].present?
@@ -62,17 +58,7 @@ class PageMetadataManager
       end
     end
 
-    result = create_or_update(:create_page_metadata, page_metadata, options)
-
-    if result.fetch(:status) == '200'
-      new_view_manager.create(
-        result.fetch(:body).fetch('pageId'),
-        page_metadata['name'],
-        page_metadata['description']
-      )
-    end
-
-    result.with_indifferent_access
+    create_or_update(:create, page_metadata, options).with_indifferent_access
   end
 
   # Updates an existing page.
@@ -82,18 +68,49 @@ class PageMetadataManager
     raise Phidippides::NoDatasetIdException.new('cannot create page with no dataset id') unless page_metadata.key?('datasetId')
     raise Phidippides::NoPageIdException.new('cannot create page with no page id') unless page_metadata.key?('pageId')
 
-    create_or_update(:update_page_metadata, page_metadata, options)
+    create_or_update(:update, page_metadata, options)
   end
 
   private
 
-  # Creates or updates a page. This takes care of updating phidippides, as well as the rollup tables
-  # in soda fountain.
-  def create_or_update(method, json, options = {})
-    result = phidippides.send(method, json, options)
+  # Creates or updates a page. This takes care of updating phidippides, as well as rollup tables in
+  # soda fountain and the core datalens link.
+  def create_or_update(method, page_metadata, options = {})
+    unless page_metadata['pageId'].present?
+      raise Phidippides::NoPageIdException.new('page id must be provisioned first.')
+    end
+    page_id = page_metadata[:pageId]
+
+    # First update the data lens. We do this so that we can save the data_lens_id into the
+    # page_metadata, so that next time we need to update the page_metadata, we can also update the
+    # data_lens that links to it (and has its own copy of the title/description).
+    if method == :create
+      data_lens_id = new_view_manager.create(
+        page_id,
+        page_metadata['name'],
+        page_metadata['description']
+      )
+    else
+      # Fetch the existing page, so we can get the id for the data lens.
+      result = phidippides.fetch_page_metadata(page_id)
+      data_lens_id = result.fetch(:body, {})[:data_lens_id]
+      if data_lens_id
+        # Update the data lens
+        new_view_manager.update(
+          data_lens_id,
+          page_metadata['name'],
+          page_metadata['description']
+        )
+      end
+    end
+
+    page_metadata['data_lens_id'] = data_lens_id
+
+    # Since we provision the page id beforehand, a create is the same as an update
+    result = phidippides.update_page_metadata(page_metadata, options)
 
     if result.fetch(:status) == '200'
-      rollup_soql = build_rollup_soql(json, options)
+      rollup_soql = build_rollup_soql(page_metadata, options)
 
       # if we can roll up anything for this query, do so
       if rollup_soql
@@ -105,13 +122,13 @@ class PageMetadataManager
         # We need to handle both cases.
         if metadata_transition_phase_0? || metadata_transition_phase_1?
           page_id = result.fetch(:body).fetch(:pageId)
-          json['pageId'] = page_id
+          page_metadata['pageId'] = page_id
         else
-          page_id = json.fetch('pageId')
+          page_id = page_metadata.fetch('pageId')
         end
 
         args = {
-          dataset_id: json.fetch('datasetId'),
+          dataset_id: page_metadata.fetch('datasetId'),
           rollup_name: page_id,
           page_id: page_id,
           soql: rollup_soql
@@ -125,7 +142,7 @@ class PageMetadataManager
     # actually will not return the metadata blob that we just posted
     # to it.
     if !metadata_transition_phase_0? && !metadata_transition_phase_1?
-      result[:body] = json
+      result[:body] = page_metadata
     end
 
     result

@@ -24,7 +24,8 @@
     "angular-sanitize": "~1.2.25",
     "angular-markdown-directive": "~0.3.1",
     "pbf": "~0.0.3",
-    "vector-tile-js": "devTristan/vector-tile-js#~0.1.1"
+    "vector-tile-js": "devTristan/vector-tile-js#~0.1.1",
+    "angular-elastic": "~v2.4.2"
   },
   "install": {
     "path": {

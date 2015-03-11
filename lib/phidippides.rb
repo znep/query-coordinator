@@ -200,37 +200,6 @@ class Phidippides < SocrataHttp
     return response[:body].fetch(:id, response[:body][:pageId])
   end
 
-  def create_page_metadata(page_metadata, options = {})
-    raise ArgumentError.new('datasetId is required') unless page_metadata.key?('datasetId')
-
-    if metadata_transition_phase_0? || metadata_transition_phase_1?
-      issue_request(
-        :verb => :post,
-        :path => 'pages',
-        :data => page_metadata,
-        :request_id => options[:request_id],
-        :cookies => options[:cookies]
-      )
-    else
-      raise ArgumentError.new('pageId is required') unless page_metadata.key?('pageId')
-
-      # Note that this is a PUT, not a POST like might be expected.
-      # The reason for this is that by the time that we call
-      # create_page_metadata we have already generated a page id
-      # using request_new_page_id.
-      #
-      # As such, we already know the name of the resource that we
-      # want to 'create', and therefore use PUT.
-      issue_request(
-        :verb => :put,
-        :path => "v1/id/#{page_metadata['datasetId']}/pages/#{page_metadata['pageId']}",
-        :data => page_metadata,
-        :request_id => options[:request_id],
-        :cookies => options[:cookies]
-      )
-    end
-  end
-
   def fetch_page_metadata(page_id, options = {})
     if metadata_transition_phase_0? || metadata_transition_phase_1?
       issue_request(

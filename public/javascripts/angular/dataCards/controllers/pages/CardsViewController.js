@@ -67,18 +67,87 @@
     ), $scope.eventToObservable('$destroy'));
   }
 
+  var VALIDATION_ERROR_STRINGS = {
+    name: {
+      minLength: 'Please enter a title',
+      maxLength: 'Your title is too long',
+      required: 'Please enter a title'
+    }
+  };
+  /**
+   * Binds the writable properties of page to the scope, such that changes to the scope will
+   * propagate to the page model.
+   *
+   * @param {angular.scope} $scope - the angular scope.
+   * @param {Page} page - the page Model.
+   */
+  function bindWritableProperties($scope, page) {
+    $scope.writablePage = {
+      setWarnings: function(errors) {
+        var setErrorStrings = function(errors, stringSource, errorStrings) {
+          // Recursively look for strings for each key in the error object
+          _.each(errors, function(value, key) {
+            if (stringSource[key]) {
+              if (_.isString(stringSource[key])) {
+                errorStrings[key] = stringSource[key];
+              } else if (_.isObject(value)) {
+                if (!errorStrings[key]) {
+                  errorStrings[key] = {};
+                }
+                setErrorStrings(value, stringSource[key], errorStrings[key]);
+              }
+            }
+          });
+        };
+
+        var errorStrings = {};
+        setErrorStrings(errors, VALIDATION_ERROR_STRINGS, errorStrings);
+
+        var flattenLeaves = function(hash) {
+          var keys = _.keys(hash);
+          if (_.isString(hash[keys[0]])) {
+            return _.map(hash, function(value, key) {
+              return value;
+            });
+          } else {
+            var result = {};
+            _.each(hash, function(value, key) {
+              result[key] = flattenLeaves(value);
+            });
+            return result;
+          }
+        };
+        $scope.writablePage.warnings = flattenLeaves(errorStrings);
+      },
+      warnings: {}
+    };
+    page.observe('name').filter(_.isString).subscribe(function(name) {
+      $scope.safeApply(function() {
+        $scope.writablePage.name = $.trim(name);
+        if (name.length > 255) {
+          $scope.writablePage.warnings.name = [VALIDATION_ERROR_STRINGS.name.maxLength];
+        } else if ($scope.writablePage.warnings.name) {
+          delete $scope.writablePage.warnings.name;
+        }
+      });
+    });
+    $scope.observe('writablePage.name').filter(_.isString).subscribe(function(name) {
+      page.set('name', $.trim(name));
+    });
+  }
+
   function CardsViewController($scope, $location, $log, $window, $q, AngularRxExtensions, SortedTileLayout, Filter, PageDataService, UserSessionService, FlyoutService, page, WindowState, ServerConfig, $http) {
 
     AngularRxExtensions.install($scope);
+
+    bindWritableProperties($scope, page);
 
     /*************************
     * General metadata stuff *
     *************************/
 
     $scope.page = page;
-    $scope.bindObservable('pageName', page.observe('name').map(function(name) {
-      return _.isUndefined(name) ? 'Untitled' : name;
-    }));
+    $scope.bindObservable('pageName', page.observe('name'));
     $scope.bindObservable('pageDescription', page.observe('description'));
 
     $scope.bindObservable('dataset', page.observe('dataset'));
@@ -380,6 +449,13 @@
           );
           var savePromise = PageDataService.save(serializedBlob, page.id);
         } catch (exception) {
+          if (exception.validation) {
+            $log.error('Validation errors', exception.validation);
+            // There were validation errors. Display them, and don't do any progress things.
+            $scope.writablePage.setWarnings(exception.validation);
+            return false;
+          }
+
           // If the serialization failed, reject the promise.
           // Don't just error out immediately, because we still
           // want to notify the user below.

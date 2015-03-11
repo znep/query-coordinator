@@ -10,6 +10,7 @@ describe('CardsViewController', function() {
   var _$provide;
   var $httpBackend;
   var ServerConfig;
+  var PageDataService;
 
   // Define a mock window service and surface writes to location.href.
   var mockWindowService = {
@@ -28,18 +29,6 @@ describe('CardsViewController', function() {
   );
 
   var TEST_PAGE_ID = 'boom-poww';
-
-  var mockPageDataService = {
-    save: function() {
-      return Promise.resolve(
-        {
-          data: {
-            pageId: TEST_PAGE_ID
-          }
-        }
-      );
-    }
-  };
 
   var datasetOwnerId = 'ownr-idxx';
   var mockDatasetDataService = {
@@ -117,7 +106,6 @@ describe('CardsViewController', function() {
   beforeEach(function() {
     module(function($provide) {
       _$provide = $provide;
-      $provide.value('PageDataService', mockPageDataService);
       $provide.value('DatasetDataService', mockDatasetDataService);
       $provide.value('UserSessionService', mockUserSessionService);
       $provide.value('$window', mockWindowService);
@@ -132,9 +120,9 @@ describe('CardsViewController', function() {
 
   beforeEach(inject([
     '$q', 'CardV1', 'Page', 'DatasetV0', '$rootScope', '$controller', '$window', 'testHelpers',
-    'serverMocks', '$httpBackend', 'ServerConfig',
+    'serverMocks', '$httpBackend', 'ServerConfig', 'PageDataService',
     function(_$q, _CardV1, _Page, _DatasetV0, _$rootScope, _$controller, _$window, _testHelpers,
-             _serverMocks, _$httpBackend, _ServerConfig) {
+             _serverMocks, _$httpBackend, _ServerConfig, _PageDataService) {
       CardV1 = _CardV1;
       Page = _Page;
       DatasetV0 = _DatasetV0;
@@ -146,6 +134,7 @@ describe('CardsViewController', function() {
       serverMocks = _serverMocks;
       $httpBackend = _$httpBackend;
       ServerConfig = _ServerConfig;
+      PageDataService = _PageDataService;
   }]));
 
   function makeContext() {
@@ -154,10 +143,12 @@ describe('CardsViewController', function() {
 
     var pageMetadataPromise = $q.defer();
 
-    mockPageDataService.getPageMetadata = function() { return pageMetadataPromise.promise; };
+    sinon.stub(PageDataService, 'getPageMetadata', function() {
+      return pageMetadataPromise.promise
+    });
 
     var page = new Page(fakePageId);
-    page.serialize = function() { return mockPageSerializationData; };
+    sinon.stub(page, 'serialize', _.constant(mockPageSerializationData));
 
     return {
       pageMetadataPromise: pageMetadataPromise,
@@ -165,6 +156,15 @@ describe('CardsViewController', function() {
       page: page
     };
   }
+
+  afterEach(function() {
+    // Restore functions that sinon has mocked out
+    _.each(PageDataService, function(func) {
+      if (func && func.restore) {
+        func.restore();
+      }
+    });
+  });
 
   function makeController() {
     var currentUserDefer = $q.defer();
@@ -250,7 +250,7 @@ describe('CardsViewController', function() {
       expect($scope.pageName).to.equal(nameTwo);
     });
 
-    it('should default to "Untitled"', function() {
+    it('should default to something falsey', function() {
       var controllerHarness = makeController();
 
       var controller = controllerHarness.controller;
@@ -264,10 +264,48 @@ describe('CardsViewController', function() {
       });
       $rootScope.$digest();
 
-      expect($scope.pageName).to.equal('Untitled');
+      expect($scope.pageName).not.to.be.ok;
 
       $scope.page.set('name', nameTwo);
       expect($scope.pageName).to.equal(nameTwo);
+    });
+
+    it('syncs the model and scope references to the page name', function() {
+      var controllerHarness = makeController();
+      var controller = controllerHarness.controller;
+      var $scope = controllerHarness.$scope;
+
+      var pageDirtied = false;
+      $scope.page.observeDirtied().subscribe(function() {
+        pageDirtied = true;
+      });
+
+      expect(pageDirtied).to.equal(false);
+      // Make sure changing the scope updates the model
+      $scope.safeApply(function() {
+        $scope.writablePage.name = 'Hello there I am a new name';
+      });
+
+      expect(pageDirtied).to.equal(true);
+      expect($scope.page.getCurrentValue('name')).to.equal('Hello there I am a new name');
+
+      // Make sure changing the model updates the scope
+      $scope.page.set('name', 'tally ho, chap!');
+      expect($scope.writablePage.name).to.equal('tally ho, chap!');
+    });
+
+    it('sets a warning when > 255 chars, and clears it when < 255 chars', function() {
+      var controllerHarness = makeController();
+      var controller = controllerHarness.controller;
+      var $scope = controllerHarness.$scope;
+
+      $scope.page.set('name', _.map(_.range(255 / 5), _.constant('badger')).join(' '));
+
+      expect($scope.writablePage.warnings.name).to.deep.equal(['Your title is too long']);
+
+      $scope.page.set('name', 'mushroom mushroom');
+
+      expect($scope.writablePage.warnings.name).to.not.be.ok;
     });
   });
 
@@ -290,7 +328,7 @@ describe('CardsViewController', function() {
       });
       $rootScope.$digest();
 
-      expect($scope.sourceDatasetURL).to.be.falsy;
+      expect($scope.sourceDatasetURL).not.to.be.ok;
       $httpBackend.flush();
       $rootScope.$digest();
       expect($scope.sourceDatasetURL).to.equal('/d/sooo-oold');
@@ -550,8 +588,11 @@ describe('CardsViewController', function() {
         expect($scope.currentUserHasSaveRight).to.be.false;
       });
 
-      it('should be true if a superadmin is logged in', function() {
+      it('should be true if a superadmin is logged in and is not owner', function() {
         runCase(true, false, 'administrator').expect(true);
+      });
+
+      it('should be true if a superadmin is logged in and is owner', function() {
         runCase(true, true, 'administrator').expect(true);
       });
 
@@ -582,44 +623,55 @@ describe('CardsViewController', function() {
   });
 
   describe('page unsaved state', function() {
-    it('should set hasChanges to true when a property changes on any model hooked to the page, then back to false when changed back to its original value', function() {
-      var controllerHarness = makeController();
-      var $scope = controllerHarness.$scope;
+    var controllerHarness;
+    var $scope;
 
-      expect($scope.hasChanges).to.be.falsy;
+    beforeEach(function() {
+      controllerHarness = makeController();
+      // Let serialize actually set the name
+      controllerHarness.page.serialize.restore();
+      controllerHarness.pageMetadataPromise.resolve({
+        datasetId: 'fake-fbfr',
+        name: 'test dataset name'
+      });
+
+      $scope = controllerHarness.$scope;
+    });
+
+    it('should set hasChanges to true when a property changes on any model hooked to the page, then back to false when changed back to its original value', function() {
+      $scope.$digest();
+
+      expect($scope.hasChanges).not.to.be.ok;
 
       $scope.page.set('name', 'name2');
       expect($scope.hasChanges).to.be.true;
 
       $scope.page.set('name', 'test dataset name');
-      expect($scope.hasChanges).to.be.falsy;
+      expect($scope.hasChanges).not.to.be.ok;
     });
 
     it('should call PageDataService.save when savePage is called with hasChanges = true', function() {
-      var controllerHarness = makeController();
-      var $scope = controllerHarness.$scope;
-
       $scope.page.set('name', 'name2'); // Cause a change.
 
-      var spy = sinon.spy(mockPageDataService, 'save');
+      var spy = sinon.stub(PageDataService, 'save', _.constant(Promise.resolve(
+        { data: { pageId: TEST_PAGE_ID } }
+      )));
       $scope.savePage();
       expect(spy.calledOnce).to.be.true;
-      mockPageDataService.save.restore();
     });
 
     it('should not call PageDataService.save when savePage is called with hasChanges = false', function() {
-      var controllerHarness = makeController();
-      var $scope = controllerHarness.$scope;
-
-      var spy = sinon.spy(mockPageDataService, 'save');
+      var spy = sinon.stub(PageDataService, 'save', _.constant(Promise.resolve(
+        { data: { pageId: TEST_PAGE_ID } }
+      )));
       $scope.savePage();
       expect(spy.called).to.be.false;
-      mockPageDataService.save.restore();
     });
 
     it('should set hasChanges to false after successfully saving', function(done) {
-      var controllerHarness = makeController();
-      var $scope = controllerHarness.$scope;
+      sinon.stub(PageDataService, 'save', _.constant(Promise.resolve(
+        { data: { pageId: TEST_PAGE_ID } }
+      )));
 
       $scope.page.set('name', 'name2');
       $scope.savePage();
@@ -632,28 +684,18 @@ describe('CardsViewController', function() {
     });
 
     it('should NOT set hasChanges to false after failing to save', function() {
-      var controllerHarness = makeController();
-      var $scope = controllerHarness.$scope;
-
       $scope.page.set('name', 'name2');
 
-      var origSave = mockPageDataService.save;
-
-      // Hack the mock to always fail the save.
-      mockPageDataService.save = _.constant($q.reject());
+      // always fail the save.
+      sinon.stub(PageDataService, 'save', _.constant($q.reject()));
 
       $scope.savePage();
       $rootScope.$apply(); // Must call $apply, as savePage uses a $q promise internally. Grah.
-
-      mockPageDataService.save = origSave;
 
       expect($scope.hasChanges).to.be.true;
     });
 
     it('should set hasChanges to true after making a change after saving', function() {
-      var controllerHarness = makeController();
-      var $scope = controllerHarness.$scope;
-
       $scope.page.set('name', 'name2');
       $scope.savePage();
       $rootScope.$apply(); // Must call $apply, as savePage uses a $q promise internally. Grah.
@@ -662,14 +704,19 @@ describe('CardsViewController', function() {
     });
 
     it('should set editMode to false after saving', function() {
-      var controllerHarness = makeController();
-      var $scope = controllerHarness.$scope;
-
       $scope.editMode = true;
       $scope.page.set('name', 'name2');
       $scope.savePage();
       $rootScope.$apply(); // Must call $apply, as savePage uses a $q promise internally. Grah.
-      expect($scope.editMode).to.be.false;
+      expect($scope.editMode).to.equal(false);
+    });
+
+    it('sets validation error and does not save when trying to save no title', function() {
+      $scope.editMode = true;
+      $scope.page.set('name', '');
+      $scope.savePage();
+
+      expect($scope.writablePage.warnings.name).to.deep.equal(['Please enter a title']);
     });
   });
 
@@ -800,14 +847,15 @@ describe('CardsViewController', function() {
         name: NEW_PAGE_NAME,
         description: NEW_PAGE_DESCRIPTION
       };
-      var saveSpy = sinon.spy(mockPageDataService, 'save');
+      var saveStub = sinon.stub(PageDataService, 'save', _.constant(Promise.resolve(
+        { data: { pageId: TEST_PAGE_ID } }
+      )));
       var saveEvents = $scope.savePageAs(NEW_PAGE_NAME, NEW_PAGE_DESCRIPTION);
       saveEvents.subscribe(function(event) {
         if (event.status === 'saved') {
-          expect(saveSpy.calledOnce).to.be.true;
-          var saveCall = saveSpy.getCall(0);
+          expect(saveStub.calledOnce).to.be.true;
+          var saveCall = saveStub.getCall(0);
           expect(saveCall.calledWithExactly(expectedPageSerializationData)).to.be.true;
-          mockPageDataService.save.restore();
           done();
         }
       });

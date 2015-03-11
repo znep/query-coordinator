@@ -19,7 +19,7 @@
       $provide = _$provide;
     }]));
     beforeEach(function() {
-      inject(['$window', '$rootScope', 'testHelpers',function(_$window, _$rootScope, _testHelpers) {
+      inject(['$window', '$rootScope', 'testHelpers', function(_$window, _$rootScope, _testHelpers) {
         $rootScope = _$rootScope;
         $window = _$window;
         testHelpers = _testHelpers;
@@ -41,9 +41,13 @@
           expandedCard: false
         },
         scopeOverrides);
+      var html = [
+        '<customize-bar has-changes="hasChanges" edit-mode="editMode" expanded-card="expandedCard">',
+        '</customize-bar>'
+      ].join('');
       return {
         scope: scope,
-        element: testHelpers.TestDom.compileAndAppend('<customize-bar has-changes="hasChanges" edit-mode="editMode" expanded-card="expandedCard"></customize-bar>', scope)
+        element: testHelpers.TestDom.compileAndAppend(html, scope)
       };
     }
 
@@ -107,6 +111,17 @@
         scope.$digest();
         testHelpers.fireMouseEvent(customizeButton[0], 'mousemove');
         expect(flyout.text()).to.match(/^You are now customizing this view\./);
+        testHelpers.fireMouseEvent(customizeButton[0], 'mouseout');
+      });
+
+      it('should have appropriate text in the flyout when a card is expanded', function() {
+        var elementAndScope = createElement({expandedCard: {something: 'here'}});
+        var customizeBar = elementAndScope.element;
+        var customizeButton = customizeBar.find('.customize-button');
+        testHelpers.fireMouseEvent(customizeButton[0], 'mousemove');
+        var flyout = $('#uber-flyout');
+        expect(flyout).to.exist;
+        expect(flyout.text()).to.match(/.*To enter customization mode:.*/);
         testHelpers.fireMouseEvent(customizeButton[0], 'mouseout');
       });
 

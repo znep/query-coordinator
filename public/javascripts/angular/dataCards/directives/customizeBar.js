@@ -33,10 +33,20 @@
         });
 
         FlyoutService.register('customize-button', function() {
+          if (!!$scope.expandedCard) {
+            return [
+              '<div class="flyout-title">',
+              'To enter customization mode: Collapse the big card using the arrows in its top right corner.',
+              '<br/>',
+              '</div>'
+            ].join('');
+          }
           if ($scope.editMode) {
             return [
               '<div class="flyout-title">You are now customizing this view.</div>',
-              '<div>You can click this button at any time to preview your changes, and save them at any time.</div>'
+              '<div>',
+              'You can click this button at any time to preview your changes, and save them at any time.',
+              '</div>'
             ].join('');
           }
           else {

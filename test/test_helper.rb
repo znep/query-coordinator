@@ -93,6 +93,14 @@ module TestHelperMethods
     CurrentDomain.stubs(feature_flags: Hashie::Mash.new.tap { |hash| hash[key] = value })
   end
 
+  def stub_multiple_feature_flags_with(options)
+    feature_flags = Hashie::Mash.new
+    options.each do |key, value|
+      feature_flags[key] = value
+    end
+    CurrentDomain.stubs(feature_flags: feature_flags)
+  end
+
 end
 
 [Test::Unit::TestCase, MiniTest::Unit::TestCase].each do |klass|

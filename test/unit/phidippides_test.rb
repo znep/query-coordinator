@@ -338,7 +338,7 @@ class PhidippidesTest < Test::Unit::TestCase
       status: '200',
       body: v1_dataset_metadata
     }
-    stub_feature_flags_with(:metadata_transition_phase, '3')
+    stub_multiple_feature_flags_with({ :metadata_transition_phase => '3', :odux_enable_histogram => true })
     CoreServer::Base.stubs(connection: connection_stub)
 
     phidippides.set_default_and_available_card_types_to_columns!(v1_dataset_metadata_response)

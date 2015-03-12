@@ -31,7 +31,14 @@
               <div class="metadatum" ng-show="sourceDatasetURL">
                 <span class="label">source dataset</span>
                 <span class="value source-dataset-name">
-                  <a multiline-ellipsis max-lines="1" tolerance="1" text="{{sourceDatasetName}}" show-more-mode="flyout" href="{{sourceDatasetURL}}" title="Source Dataset"></a>
+                  <a
+                    multiline-ellipsis
+                    max-lines="1"
+                    tolerance="1"
+                    text="{{sourceDatasetName}}"
+                    show-more-mode="flyout"
+                    href="{{sourceDatasetURL}}"
+                    title="Source Dataset"></a>
                 </span>
               </div>
               <related-views page="page" dataset-pages="datasetPages"></related-views>
@@ -47,8 +54,12 @@
               <a href="{{datasetCSVDownloadURL}}">Data as tabular spreadsheet</a>
               <a href='#'
                  ng-class="{'download-menu-item-disabled': hasChanges}"
-                 ng-click="chooserMode.show = !hasChanges && true"
-                 >Visualization as image</a>
+                 ng-click="chooserMode.show = !hasChanges"
+                 >
+                <span ng-class="{'download-menu-item-disabled-text': hasChanges}">
+                  Visualization as image
+                </span>
+              </a>
             </dropdown-menu>
           </div>
           <a ng-if="!showDownloadButton"

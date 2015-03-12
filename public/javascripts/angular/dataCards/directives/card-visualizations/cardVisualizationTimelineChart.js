@@ -130,7 +130,7 @@
         // that corresponds to this instance of the visualization.
         function stripOwnVisualizationWhereClause(fieldName, whereClause) {
 
-          var whereClauseComponents = whereClause.split(' ');
+          var whereClauseComponents = _.isEmpty(whereClause) ? [] : whereClause.split(' ');
           var indexOfFieldName = whereClauseComponents.indexOf(fieldName);
           var i;
           var filteredWhereClause = [];

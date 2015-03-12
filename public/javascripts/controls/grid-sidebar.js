@@ -545,7 +545,8 @@
     /* Handle window resizing */
     var handleResize = function(sidebarObj)
     {
-        var newWidth = sidebarObj.$dom().width();
+        // sidebarObj is fixed width - need to watch for width changes on body
+        var newWidth = $('body').width();
         var newHeight = sidebarObj.$dom().height();
 
         if (newWidth == sidebarObj._lastWidth && newHeight == sidebarObj._lastHeight && !sidebarObj._resizeNotReady) { return; }

@@ -524,6 +524,18 @@
         pluck(1); // We're done with the buffer - only care about the current event.
     };
 
+    FlyoutService.register(
+      'edit-page-warning',
+      function() {
+        if ($scope.writablePage.warnings && $scope.writablePage.warnings.name) {
+          return $scope.writablePage.warnings.name.join('\n');
+        } else {
+          return '';
+        }
+      },
+      $scope.eventToObservable('$destroy')
+    );
+
 
     /**
      * Revert changes behavior.

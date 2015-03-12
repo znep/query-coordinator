@@ -307,6 +307,27 @@ describe('CardsViewController', function() {
 
       expect($scope.writablePage.warnings.name).to.not.be.ok;
     });
+
+    it('surfaces warning names as a flyout on the warning icon', function() {
+      var controllerHarness = makeController();
+      var controller = controllerHarness.controller;
+      var $scope = controllerHarness.$scope;
+
+      // Create a mock element that the flyout will trigger against.
+      var jqEl = testHelpers.TestDom.append(
+        '<div class="edit-page-warning">');
+
+      testHelpers.fireMouseEvent(jqEl[0], 'mousemove');
+      expect($('#uber-flyout').text()).to.equal('');
+
+      $scope.page.set('name', _.map(_.range(255 / 5), _.constant('badger')).join(' '));
+      testHelpers.fireMouseEvent(jqEl[0], 'mousemove');
+      expect($('#uber-flyout').text()).to.equal('Your title is too long');
+
+      $scope.page.set('name', 'fireflower fireflower');
+      testHelpers.fireMouseEvent(jqEl[0], 'mousemove');
+      expect($('#uber-flyout').text()).to.equal('');
+    });
   });
 
   describe('source dataset link', function() {

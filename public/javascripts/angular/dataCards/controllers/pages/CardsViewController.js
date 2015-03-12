@@ -83,42 +83,6 @@
    */
   function bindWritableProperties($scope, page) {
     $scope.writablePage = {
-      setWarnings: function(errors) {
-        var setErrorStrings = function(errors, stringSource, errorStrings) {
-          // Recursively look for strings for each key in the error object
-          _.each(errors, function(value, key) {
-            if (stringSource[key]) {
-              if (_.isString(stringSource[key])) {
-                errorStrings[key] = stringSource[key];
-              } else if (_.isObject(value)) {
-                if (!errorStrings[key]) {
-                  errorStrings[key] = {};
-                }
-                setErrorStrings(value, stringSource[key], errorStrings[key]);
-              }
-            }
-          });
-        };
-
-        var errorStrings = {};
-        setErrorStrings(errors, VALIDATION_ERROR_STRINGS, errorStrings);
-
-        var flattenLeaves = function(hash) {
-          var keys = _.keys(hash);
-          if (_.isString(hash[keys[0]])) {
-            return _.map(hash, function(value, key) {
-              return value;
-            });
-          } else {
-            var result = {};
-            _.each(hash, function(value, key) {
-              result[key] = flattenLeaves(value);
-            });
-            return result;
-          }
-        };
-        $scope.writablePage.warnings = flattenLeaves(errorStrings);
-      },
       warnings: {}
     };
     page.observe('name').filter(_.isString).subscribe(function(name) {
@@ -136,7 +100,7 @@
     });
   }
 
-  function CardsViewController($scope, $location, $log, $window, $q, AngularRxExtensions, SortedTileLayout, Filter, PageDataService, UserSessionService, FlyoutService, page, WindowState, ServerConfig, $http) {
+  function CardsViewController($scope, $location, $log, $window, $q, AngularRxExtensions, SortedTileLayout, Filter, PageDataService, UserSessionService, FlyoutService, page, WindowState, ServerConfig, $http, Schemas) {
 
     AngularRxExtensions.install($scope);
 
@@ -452,7 +416,10 @@
           if (exception.validation) {
             $log.error('Validation errors', exception.validation);
             // There were validation errors. Display them, and don't do any progress things.
-            $scope.writablePage.setWarnings(exception.validation);
+            $scope.writablePage.warnings = Schemas.getStringsForErrors(
+              exception.validation,
+              VALIDATION_ERROR_STRINGS
+            );
             return false;
           }
 

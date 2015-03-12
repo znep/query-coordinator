@@ -1488,7 +1488,7 @@ describe('card-layout', function() {
           var button = cl.element.find('.card-chooser .action-png-export:not(.disabled)');
           button.click();
 
-          expect(mockDownloadService.calledWith[0]).to.deep.equal('/asdf-fdsa/choropleth_column.png');
+          expect(mockDownloadService.calledWith[0]).to.deep.equal('./asdf-fdsa/choropleth_column.png');
         });
       });
 

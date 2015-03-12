@@ -24,7 +24,7 @@ module CardTypeMapping
 
     unless physical_datatype.present?
       error_message = "Could not determine card type: physicalDatatype " \
-        "property not present on column '#{column}'."
+        "property not present on column '#{column.inspect}'."
       Airbrake.notify(
         :error_class => 'NoPhysicalDatatypeError',
         :error_message => error_message,
@@ -35,7 +35,8 @@ module CardTypeMapping
     end
 
     cardinality = column.try(:[], :cardinality)
-    # If cardinality information is not present, assume it is very large
+    # If cardinality information is not present, assume it is larger than
+    # the threshnold.
     unless cardinality.present?
       cardinality = CARDINALITY_THRESHOLD + 1
     end
@@ -53,7 +54,11 @@ module CardTypeMapping
         if is_low_cardinality?(cardinality, dataset_size)
           card_type = 'column'
         else
-          card_type = 'histogram'
+          if histogram_supported?
+            card_type = 'histogram'
+          else
+            card_type = 'search'
+          end
         end
       when 'number'
         if has_georegion_computation_strategy?(column)
@@ -61,23 +66,29 @@ module CardTypeMapping
         elsif is_low_cardinality?(cardinality, dataset_size)
           card_type = 'column'
         else
-          card_type = 'histogram'
+          if histogram_supported?
+            card_type = 'histogram'
+          else
+            card_type = 'search'
+          end
         end
       when 'point'
         card_type = 'feature'
       when 'text'
-        if is_low_cardinality?(cardinality, dataset_size)
+        # See: https://socrata.atlassian.net/browse/CORE-4314, point 1.
+        if dataset_size <= 10
+          card_type = 'search'
+        elsif is_low_cardinality?(cardinality, dataset_size)
           card_type = 'column'
         else
           card_type = 'search'
         end
       else
         error_message = "Could not determine card type: invalid " \
-          "physicalDatatype '#{physical_datatype}'."
+          "physicalDatatype '#{physical_datatype.inspect}' on column #{column.inspect}."
         Airbrake.notify(
           :error_class => 'UnrecognizedPhysicalDatatypeError',
-          :error_message => error_message,
-          :context => { :column => column  }
+          :error_message => error_message
         )
         Rails.logger.error(error_message)
         return 'invalid'
@@ -91,7 +102,7 @@ module CardTypeMapping
 
     unless physical_datatype.present?
       error_message = "Could not determine card type: physicalDatatype " \
-        "property not present on column '#{column}'."
+        "property not present on column '#{column.inspect}'."
       Airbrake.notify(
         :error_class => 'NoPhysicalDatatypeError',
         :error_message => error_message,
@@ -117,12 +128,20 @@ module CardTypeMapping
       when 'geo_entity'
         available_card_types = ['feature']
       when 'money'
-        available_card_types = ['column', 'histogram']
+        if histogram_supported?
+          available_card_types = ['column', 'histogram']
+        else
+          available_card_types = ['column', 'search']
+        end
       when 'number'
         if has_georegion_computation_strategy?(column)
           available_card_types = ['choropleth']
         else
-          available_card_types = ['column', 'histogram']
+          if histogram_supported?
+            available_card_types = ['column', 'histogram']
+          else
+            available_card_types = ['column', 'search']
+          end
         end
       when 'point'
         available_card_types = ['feature']
@@ -130,7 +149,7 @@ module CardTypeMapping
         available_card_types = ['column', 'search']
       else
         error_message = "Could not determine available card types: " \
-          "invalid physicalDatatype '#{physical_datatype}'."
+          "invalid physicalDatatype '#{physical_datatype.inspect}' on column {#column.inspect}."
         Airbrake.notify(
           :error_class => 'UnrecognizedPhysicalDatatypeError',
           :error_message => error_message,
@@ -176,6 +195,10 @@ module CardTypeMapping
   end
 
   private
+
+  def histogram_supported?
+    FeatureFlags.derive(nil, defined?(request) ? request : nil)[:odux_enable_histogram]
+  end
 
   def has_georegion_computation_strategy?(column)
     computation_strategy_type = column.try(:[], :computationStrategy).try(:[], :strategy_type)

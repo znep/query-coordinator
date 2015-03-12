@@ -736,7 +736,15 @@ class CardTypeMappingTest < Test::Unit::TestCase
   def test_card_type_mapping_returns_expected_value_for_money_column_with_one_row_in_phase_3
     dataset_size = 1
 
-    stub_feature_flags_with(:metadata_transition_phase, '3')
+    stub_multiple_feature_flags_with({ :metadata_transition_phase => '3', :odux_enable_histogram => false })
+    computed_card_type = card_type_for(
+      fake_column('money', nil, 1),
+      nil,
+      dataset_size
+    )
+    assert_equal('search', computed_card_type)
+
+    stub_multiple_feature_flags_with({ :metadata_transition_phase => '3', :odux_enable_histogram => true })
     computed_card_type = card_type_for(
       fake_column('money', nil, 1),
       nil,
@@ -760,7 +768,15 @@ class CardTypeMappingTest < Test::Unit::TestCase
   def test_card_type_mapping_returns_expected_value_for_low_cardinality_and_globally_unique_money_column_in_phase_3
     dataset_size = 15
 
-    stub_feature_flags_with(:metadata_transition_phase, '3')
+    stub_multiple_feature_flags_with({ :metadata_transition_phase => '3', :odux_enable_histogram => false })
+    computed_card_type = card_type_for(
+      fake_column('money', nil, 15),
+      nil,
+      dataset_size
+    )
+    assert_equal('search', computed_card_type)
+
+    stub_multiple_feature_flags_with({ :metadata_transition_phase => '3', :odux_enable_histogram => true })
     computed_card_type = card_type_for(
       fake_column('money', nil, 15),
       nil,
@@ -772,7 +788,15 @@ class CardTypeMappingTest < Test::Unit::TestCase
   def test_card_type_mapping_returns_expected_value_for_cardinality_equal_to_threshold_money_column_in_phase_3
     dataset_size = 2500
 
-    stub_feature_flags_with(:metadata_transition_phase, '3')
+    stub_multiple_feature_flags_with({ :metadata_transition_phase => '3', :odux_enable_histogram => false })
+    computed_card_type = card_type_for(
+      fake_column('money', nil, 35),
+      nil,
+      dataset_size
+    )
+    assert_equal('search', computed_card_type)
+
+    stub_multiple_feature_flags_with({ :metadata_transition_phase => '3', :odux_enable_histogram => true })
     computed_card_type = card_type_for(
       fake_column('money', nil, 35),
       nil,
@@ -784,7 +808,15 @@ class CardTypeMappingTest < Test::Unit::TestCase
   def test_card_type_mapping_returns_expected_value_for_cardinality_equal_to_threshold_and_globally_unique_money_column_in_phase_3
     dataset_size = 35
 
-    stub_feature_flags_with(:metadata_transition_phase, '3')
+    stub_multiple_feature_flags_with({ :metadata_transition_phase => '3', :odux_enable_histogram => false })
+    computed_card_type = card_type_for(
+      fake_column('money', nil, 35),
+      nil,
+      dataset_size
+    )
+    assert_equal('search', computed_card_type)
+
+    stub_multiple_feature_flags_with({ :metadata_transition_phase => '3', :odux_enable_histogram => true })
     computed_card_type = card_type_for(
       fake_column('money', nil, 35),
       nil,
@@ -796,7 +828,15 @@ class CardTypeMappingTest < Test::Unit::TestCase
   def test_card_type_mapping_returns_expected_value_for_high_cardinality_money_column_in_phase_3
     dataset_size = 2500
 
-    stub_feature_flags_with(:metadata_transition_phase, '3')
+    stub_multiple_feature_flags_with({ :metadata_transition_phase => '3', :odux_enable_histogram => false })
+    computed_card_type = card_type_for(
+      fake_column('money', nil, 500),
+      nil,
+      dataset_size
+    )
+    assert_equal('search', computed_card_type)
+
+    stub_multiple_feature_flags_with({ :metadata_transition_phase => '3', :odux_enable_histogram => true })
     computed_card_type = card_type_for(
       fake_column('money', nil, 500),
       nil,
@@ -809,6 +849,16 @@ class CardTypeMappingTest < Test::Unit::TestCase
     dataset_size = 2500
 
     stub_feature_flags_with(:metadata_transition_phase, '3')
+
+    stub_multiple_feature_flags_with({ :metadata_transition_phase => '3', :odux_enable_histogram => false })
+    computed_card_type = card_type_for(
+      fake_column('money', nil, 2500),
+      nil,
+      dataset_size
+    )
+    assert_equal('search', computed_card_type)
+
+    stub_multiple_feature_flags_with({ :metadata_transition_phase => '3', :odux_enable_histogram => true })
     computed_card_type = card_type_for(
       fake_column('money', nil, 2500),
       nil,
@@ -864,7 +914,15 @@ class CardTypeMappingTest < Test::Unit::TestCase
   def test_card_type_mapping_returns_expected_value_for_number_column_with_one_row_in_phase_3
     dataset_size = 1
 
-    stub_feature_flags_with(:metadata_transition_phase, '3')
+    stub_multiple_feature_flags_with({ :metadata_transition_phase => '3', :odux_enable_histogram => false })
+    computed_card_type = card_type_for(
+      fake_column('number', nil, 1),
+      nil,
+      dataset_size
+    )
+    assert_equal('search', computed_card_type)
+
+    stub_multiple_feature_flags_with({ :metadata_transition_phase => '3', :odux_enable_histogram => true })
     computed_card_type = card_type_for(
       fake_column('number', nil, 1),
       nil,
@@ -888,7 +946,15 @@ class CardTypeMappingTest < Test::Unit::TestCase
   def test_card_type_mapping_returns_expected_value_for_low_cardinality_and_globally_unique_number_column_in_phase_3
     dataset_size = 15
 
-    stub_feature_flags_with(:metadata_transition_phase, '3')
+    stub_multiple_feature_flags_with({ :metadata_transition_phase => '3', :odux_enable_histogram => false })
+    computed_card_type = card_type_for(
+      fake_column('number', nil, 15),
+      nil,
+      dataset_size
+    )
+    assert_equal('search', computed_card_type)
+
+    stub_multiple_feature_flags_with({ :metadata_transition_phase => '3', :odux_enable_histogram => true })
     computed_card_type = card_type_for(
       fake_column('number', nil, 15),
       nil,
@@ -900,7 +966,15 @@ class CardTypeMappingTest < Test::Unit::TestCase
   def test_card_type_mapping_returns_expected_value_for_cardinality_equal_to_threshold_number_column_in_phase_3
     dataset_size = 2500
 
-    stub_feature_flags_with(:metadata_transition_phase, '3')
+    stub_multiple_feature_flags_with({ :metadata_transition_phase => '3', :odux_enable_histogram => false })
+    computed_card_type = card_type_for(
+      fake_column('number', nil, 35),
+      nil,
+      dataset_size
+    )
+    assert_equal('search', computed_card_type)
+
+    stub_multiple_feature_flags_with({ :metadata_transition_phase => '3', :odux_enable_histogram => true })
     computed_card_type = card_type_for(
       fake_column('number', nil, 35),
       nil,
@@ -912,7 +986,15 @@ class CardTypeMappingTest < Test::Unit::TestCase
   def test_card_type_mapping_returns_expected_value_for_cardinality_equal_to_threshold_and_globally_unique_number_column_in_phase_3
     dataset_size = 35
 
-    stub_feature_flags_with(:metadata_transition_phase, '3')
+    stub_multiple_feature_flags_with({ :metadata_transition_phase => '3', :odux_enable_histogram => false })
+    computed_card_type = card_type_for(
+      fake_column('number', nil, 35),
+      nil,
+      dataset_size
+    )
+    assert_equal('search', computed_card_type)
+
+    stub_multiple_feature_flags_with({ :metadata_transition_phase => '3', :odux_enable_histogram => true })
     computed_card_type = card_type_for(
       fake_column('number', nil, 35),
       nil,
@@ -924,7 +1006,15 @@ class CardTypeMappingTest < Test::Unit::TestCase
   def test_card_type_mapping_returns_expected_value_for_high_cardinality_number_column_in_phase_3
     dataset_size = 2500
 
-    stub_feature_flags_with(:metadata_transition_phase, '3')
+    stub_multiple_feature_flags_with({ :metadata_transition_phase => '3', :odux_enable_histogram => false })
+    computed_card_type = card_type_for(
+      fake_column('number', nil, 500),
+      nil,
+      dataset_size
+    )
+    assert_equal('search', computed_card_type)
+
+    stub_multiple_feature_flags_with({ :metadata_transition_phase => '3', :odux_enable_histogram => true })
     computed_card_type = card_type_for(
       fake_column('number', nil, 500),
       nil,
@@ -936,7 +1026,15 @@ class CardTypeMappingTest < Test::Unit::TestCase
   def test_card_type_mapping_returns_expected_value_for_high_cardinality_and_globally_unique_number_column_in_phase_3
     dataset_size = 2500
 
-    stub_feature_flags_with(:metadata_transition_phase, '3')
+    stub_multiple_feature_flags_with({ :metadata_transition_phase => '3', :odux_enable_histogram => false })
+    computed_card_type = card_type_for(
+      fake_column('number', nil, 2500),
+      nil,
+      dataset_size
+    )
+    assert_equal('search', computed_card_type)
+
+    stub_multiple_feature_flags_with({ :metadata_transition_phase => '3', :odux_enable_histogram => true })
     computed_card_type = card_type_for(
       fake_column('number', nil, 2500),
       nil,
@@ -1054,7 +1152,7 @@ class CardTypeMappingTest < Test::Unit::TestCase
     stub_feature_flags_with(:metadata_transition_phase, '3')
     Airbrake.expects(:notify).with do |airbrake|
       assert_equal(
-        "Could not determine card type: invalid physicalDatatype '#{physical_datatype}'.",
+        "Could not determine card type: invalid physicalDatatype '\"invalid\"' on column {\"physicalDatatype\"=>\"invalid\", \"fred\"=>nil, \"cardinality\"=>2500}.",
         airbrake[:error_message]
       )
     end
@@ -1135,6 +1233,15 @@ class CardTypeMappingTest < Test::Unit::TestCase
     dataset_size = 2500
 
     stub_feature_flags_with(:metadata_transition_phase, '3')
+
+    stub_feature_flags_with(:odux_enable_histogram, false)
+    available_card_types = available_card_types_for(
+      fake_column('money', nil, 2500),
+      dataset_size
+    )
+    assert_equal(['column', 'search'], available_card_types)
+
+    stub_feature_flags_with(:odux_enable_histogram, true)
     available_card_types = available_card_types_for(
       fake_column('money', nil, 2500),
       dataset_size
@@ -1185,7 +1292,14 @@ class CardTypeMappingTest < Test::Unit::TestCase
   def test_card_type_mapping_returns_expected_available_card_types_for_number_column_in_phase_3
     dataset_size = 2500
 
-    stub_feature_flags_with(:metadata_transition_phase, '3')
+    stub_multiple_feature_flags_with({ :metadata_transition_phase => '3', :odux_enable_histogram => false })
+    available_card_types = available_card_types_for(
+      fake_column('number', nil, 2500),
+      dataset_size
+    )
+    assert_equal(['column', 'search'], available_card_types)
+
+    stub_multiple_feature_flags_with({ :metadata_transition_phase => '3', :odux_enable_histogram => true })
     available_card_types = available_card_types_for(
       fake_column('number', nil, 2500),
       dataset_size

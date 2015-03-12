@@ -120,4 +120,10 @@ class PhidippidesDatasetsController < ActionController::Base
       render :nothing => true, :status => '400'
     end
   end
+
+  private
+
+  def dataset
+    View.find(json_parameter(:datasetMetadata)['id'])
+  end
 end

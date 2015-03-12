@@ -957,7 +957,7 @@ describe('CardsViewController', function() {
       expect(menuItem.hasClass('download-menu-item-disabled')).to.equal(true);
 
       // Now check the flyout
-      testHelpers.fireMouseEvent(menuItem[0], 'mousemove');
+      testHelpers.fireMouseEvent(menuItem.find('.download-menu-item-disabled-text').get(0), 'mousemove');
       var flyout = $('#uber-flyout');
       expect(flyout.text()).to.match(/Please save the page/);
     });

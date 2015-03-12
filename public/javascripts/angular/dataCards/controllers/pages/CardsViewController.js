@@ -60,7 +60,7 @@
       }
     };
 
-    FlyoutService.register('download-menu-item-disabled', _.constant(
+    FlyoutService.register('download-menu-item-disabled-text', _.constant(
       '<div class="flyout-title">' +
       'Please save the page in order to export a visualization as image' +
       '</div>'

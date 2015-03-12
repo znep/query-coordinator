@@ -61,7 +61,7 @@ angular.module('dataCards.services').factory('FlyoutService', function(WindowSta
 
             for (j = 0; j < handlerCount; j++) {
 
-              flyoutContent = handlers[className][j].render(e.target)
+              flyoutContent = handlers[className][j].render(e.target);
 
               if (_.isDefined(flyoutContent)) {
 

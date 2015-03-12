@@ -11,9 +11,11 @@
    */
   function ConfigurationsService(http) {
 
+    var self = this;
+
     function getConfigurationObservable(key) {
       return Rx.Observable.
-        fromPromise(http.get(CONFIGURATION_PATH_TEMPLATE.format(key))).
+        fromPromise(http.get(CONFIGURATION_PATH_TEMPLATE.format(key), {requester: self})).
         filter(function(response) { return response.status === 200; }).
         map(function(response) {
           return _.getPathOrElse(response, 'data.0.properties', []);

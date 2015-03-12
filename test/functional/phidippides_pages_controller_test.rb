@@ -24,6 +24,13 @@ class PhidippidesPagesControllerTest < ActionController::TestCase
     }
   end
 
+  def set_up_json_request(body = nil)
+    body = v1_page_metadata.to_json unless body.present?
+
+    @request.env['RAW_POST_DATA'] = body
+    @request.env['CONTENT_TYPE'] = 'application/json'
+  end
+
   test 'index returns 403' do
     get :index, id: 'four-four', format: 'json'
     assert_response(403)
@@ -84,7 +91,9 @@ class PhidippidesPagesControllerTest < ActionController::TestCase
     @page_metadata_manager.unstub(:create)
 
     stub_feature_flags_with(:metadata_transition_phase, '2')
-    post :create, json_post({ something: 'else' }).merge(format: :json)
+    modified_page_metadata = v1_page_metadata.except('datasetId').to_json
+    set_up_json_request(modified_page_metadata)
+    post :create, format: :json
     assert_response(400)
   end
 
@@ -104,7 +113,8 @@ class PhidippidesPagesControllerTest < ActionController::TestCase
     @page_metadata_manager.stubs(create: { body: v1_page_metadata.to_json, status: '200' })
     Phidippides.any_instance.stubs(request_new_page_id: { body: { id: 'iuya-fxdq' }, status: '200' })
     stub_feature_flags_with(:metadata_transition_phase, '2')
-    post :create, json_post(v1_page_metadata.except('pageId')).merge(format: :json)
+    set_up_json_request(v1_page_metadata.except('pageId').to_json)
+    post :create, format: :json
     assert_response(200)
     assert_equal(v1_page_metadata, JSON.parse(@response.body))
   end
@@ -166,7 +176,9 @@ class PhidippidesPagesControllerTest < ActionController::TestCase
     @page_metadata_manager.unstub(:update)
 
     stub_feature_flags_with(:metadata_transition_phase, '2')
-    put :update, json_post({ pageId: 'page-page' }).merge(id: 'page-page', format: :json)
+    modified_page_metadata = v1_page_metadata.except('datasetId').to_json
+    set_up_json_request(modified_page_metadata)
+    put :update, id: 'iuya-fxdq', format: :json
     assert_response(400)
   end
 
@@ -184,7 +196,8 @@ class PhidippidesPagesControllerTest < ActionController::TestCase
 
     @page_metadata_manager.stubs(update: { body: nil, status: '200' })
     stub_feature_flags_with(:metadata_transition_phase, '2')
-    put :update, json_post(v1_page_metadata).merge(id: 'iuya-fxdq', format: :json)
+    set_up_json_request(v1_page_metadata.to_json)
+    put :update, id: 'iuya-fxdq', format: :json
     assert_response(200)
   end
 
@@ -200,7 +213,9 @@ class PhidippidesPagesControllerTest < ActionController::TestCase
     assert_response(406)
 
     stub_feature_flags_with(:metadata_transition_phase, '2')
-    put :update, json_post({pageId: 'five-five'}).merge(id: 'iuya-fxdq', format: :json)
+    modified_page_metadata = v1_page_metadata.deep_dup.tap { |page_metadata| page_metadata['pageId'] = 'five-five' }
+    set_up_json_request(modified_page_metadata.to_json)
+    put :update, id: 'iuya-fxdq', format: :json
     assert_response(406)
   end
 

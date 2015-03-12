@@ -1,21 +1,21 @@
 describe('<aggregation-chooser/>', function() {
-  var scope;
-  var $window;
+  'use strict';
+
+  var DEFAULT_ROW_DISPLAY_UNIT = 'unique row unit';
+  var ELEMENT_HTML = '<aggregation-chooser page="page"></aggregation-chooser>';
   var testHelpers;
-  var rootScope;
+  var $rootScope;
   var Model;
   var Page;
   var AngularRxExtensions;
   var $q;
+  var $compile;
 
   beforeEach(function() {
     module('/angular_templates/dataCards/aggregationChooser.html');
     module('socrataCommon.services');
     module('dataCards');
     module('test');
-  });
-
-  beforeEach(function() {
     module(function($provide) {
       var mockCardDataService = {
         getData: function(){ return $q.when([]);},
@@ -25,24 +25,26 @@ describe('<aggregation-chooser/>', function() {
       };
       $provide.value('CardDataService', mockCardDataService);
     });
+    inject(function($injector) {
+      testHelpers = $injector.get('testHelpers');
+      $rootScope = $injector.get('$rootScope');
+      Model = $injector.get('Model');
+      Page = $injector.get('Page');
+      AngularRxExtensions = $injector.get('AngularRxExtensions');
+      $q = $injector.get('$q');
+      $compile = $injector.get('$compile');
+    });
   });
-
-  beforeEach(inject(function($injector) {
-    $window = $injector.get('$window');
-    testHelpers = $injector.get('testHelpers');
-    rootScope = $injector.get('$rootScope');
-    Model = $injector.get('Model');
-    Page = $injector.get('Page');
-    AngularRxExtensions = $injector.get('AngularRxExtensions');
-    $q = $injector.get('$q');
-  }));
 
   afterEach(function(){
     testHelpers.TestDom.clear();
   });
 
-  var DEFAULT_ROW_DISPLAY_UNIT = 'unique row unit';
-
+  /**
+   * Create duck-typed Dataset model
+   * @param {Object} options
+   * @returns {Model}
+   */
   function createDatasetModel(options) {
     var datasetModel = new Model();
 
@@ -50,7 +52,6 @@ describe('<aggregation-chooser/>', function() {
     _.defaults(options, {
       rowDisplayUnit: DEFAULT_ROW_DISPLAY_UNIT,
       columns: {
-        // Define some columns of different types, so we can create different types of cards
         statBar_column: {
           name: 'test column title',
           description: 'test column description',
@@ -79,6 +80,12 @@ describe('<aggregation-chooser/>', function() {
     return datasetModel;
   }
 
+  /**
+   * Create a page model with defaults
+   * @param {Model} datasetModel
+   * @param {Object} options
+   * @returns {Page}
+   */
   function createPageModel(datasetModel, options) {
     options = options || {};
     _.defaults(options, {
@@ -95,9 +102,17 @@ describe('<aggregation-chooser/>', function() {
     return pageModel;
   }
 
+  /**
+   * Create models for directive
+   * @param options
+   * @returns {{dataset: *, page: *}}
+   */
   function createModels(options) {
     options = options || {};
-    var datasetModel = createDatasetModel({ rowDisplayUnits: options.rowDisplayUnits, columns: options.columns });
+    var datasetModel = createDatasetModel({
+      rowDisplayUnits: options.rowDisplayUnits,
+      columns: options.columns
+    });
     var pageModel = createPageModel(datasetModel, {
       primaryAmountField: options.primaryAmountField,
       primaryAggregation: options.primaryAggregation
@@ -109,35 +124,27 @@ describe('<aggregation-chooser/>', function() {
     };
   }
 
-  function createElement(html, baseScope) {
+  /**
+   * Create an element
+   * @param {Object} baseScope
+   * @returns {*}
+   */
+  function createElement(baseScope) {
+    var scope;
     var directive;
-    var element = angular.element(html);
+    var element = angular.element(ELEMENT_HTML);
 
-    inject(function($compile, $rootScope) {
-      scope = $rootScope.$new();
-      _.extend(scope, baseScope);
-      directive = $compile(element)(scope);
-      scope.$digest();
-    });
+    scope = $rootScope.$new();
+    _.extend(scope, baseScope);
+    directive = $compile(element)(scope);
+    scope.$digest();
     return directive;
   }
 
-  function generateFakeMouseMove(clientX, clientY, target) {
-    var ev = document.createEvent('HTMLEvents');
-    ev.initEvent('mousemove', true, true);
-    ev.clientX = clientX;
-    ev.clientY = clientY;
-    ev.target = target;
-    return ev;
-  };
-
   it('should exist when created', function() {
     var models = createModels();
-    var subjectUnderTest = createElement(
-      '<aggregation-chooser page="page"></aggregation-chooser>',
-      { page: models.page }
-    );
-    expect(subjectUnderTest.is('aggregation-chooser')).to.be.true;
+    var subjectUnderTest = createElement({page: models.page });
+    expect(subjectUnderTest).to.match('aggregation-chooser');
     expect(subjectUnderTest.find('.aggregation-chooser-static-label').text().toLowerCase()).to.contain(DEFAULT_ROW_DISPLAY_UNIT);
     expect(subjectUnderTest.find('.aggregation-chooser-trigger').text().toLowerCase()).to.contain(DEFAULT_ROW_DISPLAY_UNIT);
   });
@@ -145,56 +152,46 @@ describe('<aggregation-chooser/>', function() {
   it('should toggle visibility when clicked', function() {
     var models = createModels();
     var subjectUnderTest = createElement(
-      '<aggregation-chooser page="page"></aggregation-chooser>',
       { page: models.page }
     );
     testHelpers.fireMouseEvent(subjectUnderTest.find('.aggregation-chooser-trigger')[0], 'click');
     expect(subjectUnderTest.isolateScope().panelActive).to.be.true;
-    expect(subjectUnderTest.find('.tool-panel-main').hasClass('active')).to.be.true;
+    expect(subjectUnderTest.find('.tool-panel-main')).to.have.class('active');
     testHelpers.fireMouseEvent(subjectUnderTest.find('.aggregation-chooser-trigger')[0], 'click');
     expect(subjectUnderTest.isolateScope().panelActive).to.be.false;
-    expect(subjectUnderTest.find('.tool-panel-main').hasClass('active')).to.be.false;
+    expect(subjectUnderTest.find('.tool-panel-main')).to.not.have.class('active');
   });
 
   it('should close when clicked outside of it', function() {
     var models = createModels();
-    var subjectUnderTest = createElement(
-      '<aggregation-chooser page="page"></aggregation-chooser>',
-      { page: models.page }
-    );
+    var subjectUnderTest = createElement({page: models.page });
     testHelpers.TestDom.append(subjectUnderTest);
-    rootScope.$apply(function() {
+    $rootScope.$apply(function() {
       subjectUnderTest.isolateScope().panelActive = true;
     });
     testHelpers.fireMouseEvent($('#test-root')[0], 'click');
     expect(subjectUnderTest.isolateScope().panelActive).to.be.false;
-    expect(subjectUnderTest.find('.tool-panel-main').hasClass('active')).to.be.false;
+    expect(subjectUnderTest.find('.tool-panel-main')).to.not.have.class('active');
   });
 
   it('should highlight when options are hovered', function() {
     var models = createModels({ primaryAggregation: 'sum', primaryAmountField: 'statBar_column'});
-    var subjectUnderTest = createElement(
-      '<aggregation-chooser page="page"></aggregation-chooser>',
-      { page: models.page }
-    );
+    var subjectUnderTest = createElement({page: models.page });
     testHelpers.TestDom.append(subjectUnderTest);
-    rootScope.$apply(function() {
+    $rootScope.$apply(function() {
       subjectUnderTest.isolateScope().panelActive = true;
     });
     var body = document.getElementsByTagName('body')[0];
     var hoverTarget = subjectUnderTest.find('.aggregation-functions [data-aggregation-type="count"]');
     testHelpers.fireMouseEvent(hoverTarget[0], 'mousemove');
-    expect(subjectUnderTest.find('.aggregation-functions [data-aggregation-type="count"]').hasClass('active')).to.be.true;
-    expect(subjectUnderTest.find('.aggregation-columns [data-aggregation-type="count"]').hasClass('active')).to.be.true;
+    expect(subjectUnderTest.find('.aggregation-functions [data-aggregation-type="count"]')).to.have.class('active');
+    expect(subjectUnderTest.find('.aggregation-columns [data-aggregation-type="count"]')).to.have.class('active');
   });
 
   it('should set attributes on the Page model correctly', function() {
     var models = createModels();
-    var subjectUnderTest = createElement(
-      '<aggregation-chooser page="page"></aggregation-chooser>',
-      { page: models.page }
-    );
-    rootScope.$apply(function() {
+    var subjectUnderTest = createElement({page: models.page });
+    $rootScope.$apply(function() {
       subjectUnderTest.isolateScope().panelActive = true;
     });
     expect(models.page.getCurrentValue('primaryAggregation')).to.equal(null);
@@ -212,30 +209,24 @@ describe('<aggregation-chooser/>', function() {
 
   it('should select the appropriate aggregation function if one is present', function() {
     var models = createModels({ primaryAggregation: 'sum', primaryAmountField: 'statBar_column' });
-    var subjectUnderTest = createElement(
-      '<aggregation-chooser page="page"></aggregation-chooser>',
-      { page: models.page }
-    );
-    expect(subjectUnderTest.find('[data-aggregation-type="sum"]').hasClass('active')).to.be.true;
-    expect(subjectUnderTest.find('[data-column-id="statBar_column"]').hasClass('active')).to.be.true;
+    var subjectUnderTest = createElement({page: models.page });
+    expect(subjectUnderTest.find('[data-aggregation-type="sum"]')).to.have.class('active');
+    expect(subjectUnderTest.find('[data-column-id="statBar_column"]')).to.have.class('active');
   });
 
   it('should display a flyout for invalid selections', function() {
     var models = createModels();
-    var subjectUnderTest = createElement(
-      '<aggregation-chooser page="page"></aggregation-chooser>',
-      { page: models.page }
-    );
+    var subjectUnderTest = createElement({page: models.page });
     testHelpers.TestDom.append(subjectUnderTest);
-    rootScope.$apply(function() {
+    $rootScope.$apply(function() {
       subjectUnderTest.isolateScope().panelActive = true;
     });
     var body = document.getElementsByTagName('body')[0];
     var hoverTarget = subjectUnderTest.find('.aggregation-columns .disabled');
     testHelpers.fireMouseEvent(hoverTarget[0], 'mousemove');
     var flyout = $('#uber-flyout');
-    expect(flyout.length).to.equal(1);
-    expect(flyout.text().toLowerCase()).to.contain('this column cannot be used with a');
+    expect(flyout).to.exist;
+    expect(flyout.text()).to.match(/this column cannot be used with a/i);
   });
 
   it('should not be a dropdown if there are no number fields', function() {
@@ -245,17 +236,6 @@ describe('<aggregation-chooser/>', function() {
           name: 'pointMap_column',
           fred: 'location',
           physicalDatatype: 'point'
-        },
-        choropleth_column: {
-          name: 'choropleth_column',
-          fred: 'location',
-          physicalDatatype: 'number',
-          shapefile: 'fake-shap'
-        },
-        timeline_column: {
-          name: 'timeline_column',
-          fred: 'time',
-          physicalDatatype: 'number'
         },
         search_column: {
           name: 'search_column',
@@ -267,13 +247,10 @@ describe('<aggregation-chooser/>', function() {
         }
       }
     });
-    var subjectUnderTest = createElement(
-      '<aggregation-chooser page="page"></aggregation-chooser>',
-      { page: models.page }
-    );
+    var subjectUnderTest = createElement({page: models.page });
     testHelpers.TestDom.append(subjectUnderTest);
-    expect(subjectUnderTest.find('.aggregation-chooser-static-label').is(':visible')).to.be.true;
-    expect(subjectUnderTest.find('.aggregation-chooser-trigger').is(':visible')).to.be.false;
+    expect(subjectUnderTest.find('.aggregation-chooser-static-label')).to.be.visible;
+    expect(subjectUnderTest.find('.aggregation-chooser-trigger')).to.not.be.visible;
   });
 
   it('should not be a dropdown if there are more than 10 number fields', function() {
@@ -289,15 +266,10 @@ describe('<aggregation-chooser/>', function() {
       };
       columns[column.name] = column;
     });
-    var models = createModels({
-      columns: columns
-    });
-    var subjectUnderTest = createElement(
-      '<aggregation-chooser page="page"></aggregation-chooser>',
-      { page: models.page }
-    );
+    var models = createModels({ columns: columns });
+    var subjectUnderTest = createElement({page: models.page });
     testHelpers.TestDom.append(subjectUnderTest);
-    expect(subjectUnderTest.find('.aggregation-chooser-static-label').is(':visible')).to.be.true;
-    expect(subjectUnderTest.find('.aggregation-chooser-trigger').is(':visible')).to.be.false;
+    expect(subjectUnderTest.find('.aggregation-chooser-static-label')).to.be.visible;
+    expect(subjectUnderTest.find('.aggregation-chooser-trigger')).to.not.be.visible;
   });
 });

@@ -22,14 +22,11 @@
   };
 
   var validColumnFilter = function(column) {
-    if (column.dataset.version === '0') {
-      return column.physicalDatatype === 'number' && column.logicalDatatype === 'amount';
-    } else {
-      return column.physicalDatatype === 'number' && column.fred === 'amount';
-    }
+    // TODO: Once a "logical" type property is available, this will need to be updated
+    return column.physicalDatatype === 'number';
   };
 
-  function AggregationChooser(AngularRxExtensions, DatasetDataService, FlyoutService, WindowState) {
+  function AggregationChooser(AngularRxExtensions, FlyoutService, WindowState) {
 
     return {
       restrict: 'E',

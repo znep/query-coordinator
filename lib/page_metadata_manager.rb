@@ -23,6 +23,26 @@ class PageMetadataManager
     'name' => ''
   }.freeze
 
+  def table_card
+    merge_new_card_data_with_default('*', 'table')
+  end
+
+  def merge_new_card_data_with_default(field_name, card_type, cardinality=nil)
+    if metadata_transition_phase_0? || metadata_transition_phase_1?
+      V0_CARD_TEMPLATE.deep_dup.merge(
+        'fieldName' => field_name,
+        'cardinality' => cardinality,
+        'cardType' => card_type
+      )
+    else
+      V1_CARD_TEMPLATE.deep_dup.merge(
+        'fieldName' => field_name,
+        'cardType' => card_type
+      )
+    end
+  end
+
+
   # Creates a new page
   def create(page_metadata, options = {})
     unless page_metadata.key?('datasetId')

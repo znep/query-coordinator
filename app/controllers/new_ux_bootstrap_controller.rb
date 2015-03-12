@@ -11,12 +11,12 @@ class NewUxBootstrapController < ActionController::Base
   before_filter :hook_auth_controller
 
   # Keep track of the types of cards we added, so we can give a spread
-  attr_accessor :skipped_cards_by_type, :added_card_types
+  attr_accessor :skipped_cards_by_type, :added_card_types, :page_metadata_manager
 
   def initialize(*args)
     @added_card_types = Set.new
     @skipped_cards_by_type = Hash.new { |h, k| h[k] = [] }
-
+    @page_metadata_manager = PageMetadataManager.new
     super
   end
 
@@ -220,6 +220,7 @@ class NewUxBootstrapController < ActionController::Base
       cards = cards.first(MAX_NUMBER_OF_CARDS)
     end
 
+    cards << page_metadata_manager.table_card
     if metadata_transition_phase_0? || metadata_transition_phase_1?
       {
         'cards' => cards,
@@ -240,28 +241,17 @@ class NewUxBootstrapController < ActionController::Base
     end
   end
 
-  def merge_new_card_data_with_default(field_name, card_type, cardinality=nil)
-    if metadata_transition_phase_0? || metadata_transition_phase_1?
-      PageMetadataManager::V0_CARD_TEMPLATE.deep_dup.merge(
-        'fieldName' => field_name,
-        'cardinality' => cardinality,
-        'cardType' => card_type
-      )
-    else
-      PageMetadataManager::V1_CARD_TEMPLATE.deep_dup.merge(
-        'fieldName' => field_name,
-        'cardType' => card_type
-      )
-    end
-  end
-
   def generate_cards_from_dataset_metadata_columns(columns)
     if metadata_transition_phase_0?
       columns.map do |column|
         unless Phidippides::SYSTEM_COLUMN_ID_REGEX.match(column[:name])
           card_type = card_type_for(column, :logicalDatatype, dataset_size)
           if card_type
-            card = merge_new_card_data_with_default(column[:name], card_type, column[:cardinality])
+            card = page_metadata_manager.merge_new_card_data_with_default(
+              column[:name],
+              card_type,
+              column[:cardinality]
+            )
 
             if added_card_types.add?(card_type)
               card
@@ -277,7 +267,10 @@ class NewUxBootstrapController < ActionController::Base
         unless Phidippides::SYSTEM_COLUMN_ID_REGEX.match(field_name)
           card_type = card_type_for(column, :fred, dataset_size)
           if card_type
-            card = merge_new_card_data_with_default(field_name, card_type)
+            card = page_metadata_manager.merge_new_card_data_with_default(
+              field_name,
+              card_type
+            )
 
             if added_card_types.add?(card_type)
               card

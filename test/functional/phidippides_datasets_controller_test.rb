@@ -9,6 +9,13 @@ class PhidippidesDatasetsControllerTest < ActionController::TestCase
     @controller.stubs(:phidippides => @phidippides)
   end
 
+  def set_up_json_request(body = nil)
+    body = mock_dataset_metadata.to_json unless body.present?
+
+    @request.env['RAW_POST_DATA'] = body
+    @request.env['CONTENT_TYPE'] = 'application/json'
+  end
+
   test 'index returns list all pages for a given dataset' do
     @phidippides.stubs(fetch_pages_for_dataset: { body: mock_pages_metadata })
     get :index, id: 'four-four', format: 'json'
@@ -144,8 +151,9 @@ class PhidippidesDatasetsControllerTest < ActionController::TestCase
     assert_response(204)
 
     stub_feature_flags_with(:metadata_transition_phase, '2')
-    @request.env['CONTENT_TYPE'] = 'application/json'
-    put :update, mock_dataset_metadata.merge(id: 'q77b-s2zi', format: :json)
+
+    set_up_json_request(mock_dataset_metadata.merge(id: 'q77b-s2zi').to_json)
+    put :update, id: 'q77b-s2zi', format: :json
     assert_response(204)
   end
 

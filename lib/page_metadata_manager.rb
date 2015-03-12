@@ -122,19 +122,6 @@ class PageMetadataManager
 
       # if we can roll up anything for this query, do so
       if rollup_soql
-
-        # In phase 0 or 1 the only way to determine the page id
-        # is to check the result of Phidippides.create_page_metadata.
-        # In phase 2 the only way to determine the page id is
-        # to check the result of Phidippides.request_new_page_id.
-        # We need to handle both cases.
-        if metadata_transition_phase_0? || metadata_transition_phase_1?
-          page_id = result.fetch(:body).fetch(:pageId)
-          page_metadata['pageId'] = page_id
-        else
-          page_id = page_metadata.fetch('pageId')
-        end
-
         args = {
           dataset_id: page_metadata.fetch('datasetId'),
           rollup_name: page_id,

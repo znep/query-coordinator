@@ -79,23 +79,6 @@ class PhidippidesTest < Test::Unit::TestCase
     assert_equal('iuya-fxdq', page_id)
   end
 
-  def test_create_page_metadata
-    prepare_stubs(body: new_v0_page_metadata, path: 'pages', verb: :post, request_body: new_v0_page_metadata)
-    stub_feature_flags_with(:metadata_transition_phase, '0')
-    result = phidippides.create_page_metadata(new_v0_page_metadata, request_id: 'request_id')
-    assert_equal(new_v0_page_metadata, result[:body])
-
-    prepare_stubs(body: new_v0_page_metadata, path: 'pages', verb: :post, request_body: new_v0_page_metadata)
-    stub_feature_flags_with(:metadata_transition_phase, '1')
-    result = phidippides.create_page_metadata(new_v0_page_metadata, request_id: 'request_id')
-    assert_equal(new_v0_page_metadata, result[:body])
-
-    prepare_stubs(body: nil, path: 'v1/id/q77b-s2zi/pages/vwwn-6r7g', verb: :put, request_body: new_v1_page_metadata)
-    stub_feature_flags_with(:metadata_transition_phase, '2')
-    result = phidippides.create_page_metadata(new_v1_page_metadata, request_id: 'request_id')
-    assert_equal('200', result[:status])
-  end
-
   def test_fetch_page_metadata
     prepare_stubs(body: v0_page_metadata, path: 'pages/four-four', verb: :get)
     stub_feature_flags_with(:metadata_transition_phase, '0')
@@ -542,12 +525,6 @@ class PhidippidesTest < Test::Unit::TestCase
     prepare_stubs(body: 'junk', path: 'datasets/four-four', verb: :get)
     result = phidippides.issue_request(verb: :get, path: 'datasets/four-four', request_id: 'request_id')
     assert_equal({'status' => '500', 'body' => '"junk"', 'error' => '757: unexpected token at \'"junk"\''}, result)
-  end
-
-  def test_raises_when_create_page_metadata_is_missing_keys
-    assert_raises(ArgumentError) do
-      phidippides.create_page_metadata({})
-    end
   end
 
   private

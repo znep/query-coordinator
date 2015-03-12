@@ -2,7 +2,7 @@
   'use strict';
 
   function momentProvider($window) {
-    return $window.moment;
+    return $window.moment || window.moment;
   }
 
   angular.

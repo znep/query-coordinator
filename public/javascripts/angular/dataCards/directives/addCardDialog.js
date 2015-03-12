@@ -144,6 +144,12 @@
           scope.observe('addCardModel').observeOnLatest('isCustomizable')
         );
 
+        var EXCESSIVE_COLUMN_WARNING = [
+          '<div class="flyout-title">',
+          'Note: This would result in a barchart with over a hundred bars, ',
+          'it might be slower than other charts',
+          '</div>'
+        ].join('');
         FlyoutService.register('add-card-type-option', function(el) {
 
           var visualizationName = el.getAttribute('data-visualization-name');
@@ -153,7 +159,7 @@
           }
 
           if (scope.showCardinalityWarning && $(el).hasClass('warn')) {
-            return '<div class="flyout-title">WARNING: Visualizing this column as a column chart will result in more than one hundred columns and may degrade performance</div>';
+            return EXCESSIVE_COLUMN_WARNING;
           } else {
             return '<div class="flyout-title">Visualize this column as a {0}</div>'.format(visualizationName);
           }
@@ -162,7 +168,7 @@
 
         FlyoutService.register('warning-icon', function(el) {
 
-          return '<div class="flyout-title">WARNING: Visualizing this column as a column chart will result in more than one hundred columns and may degrade performance</div>';
+          return EXCESSIVE_COLUMN_WARNING;
 
         }, scope.observeDestroy(element));
 

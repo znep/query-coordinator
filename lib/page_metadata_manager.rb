@@ -93,13 +93,21 @@ class PageMetadataManager
     else
       # Fetch the existing page, so we can get the id for the data lens.
       result = phidippides.fetch_page_metadata(page_id)
-      data_lens_id = result.fetch(:body, {})[:data_lens_id]
-      if data_lens_id
-        # Update the data lens
-        new_view_manager.update(
-          data_lens_id,
-          page_metadata['name'],
-          page_metadata['description']
+      begin
+        data_lens_id = result.fetch(:body, {})[:data_lens_id]
+        if data_lens_id
+          # Update the data lens
+          new_view_manager.update(
+            data_lens_id,
+            page_metadata['name'],
+            page_metadata['description']
+          )
+        end
+      rescue => e
+        Airbrake.notify(
+          :error_class => "UnexpectedPageMetadataResponseFormat",
+          :error_message => "Could not make sense of Phidippides response: " \
+            "#{result.inspect} (Error: #{e.inspect})"
         )
       end
     end

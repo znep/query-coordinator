@@ -5,19 +5,6 @@
   var MIGRATION_ENDPOINT = '/api/migrations/{0}';
   var OBE_DATASET_PAGE = '/d/{0}';
 
-  // Such higher-order!
-  function alphaCompareOnProperty(property) {
-    return function(a, b) {
-      if (a[property] < b[property]) {
-        return -1;
-      }
-      if (a[property] > b[property]) {
-        return 1;
-      }
-      return 0;
-    };
-  }
-
   function initDownload($scope, page, WindowState, FlyoutService, ServerConfig) {
     // The CSV download url
     $scope.bindObservable('datasetCSVDownloadURL',
@@ -100,7 +87,23 @@
     });
   }
 
-  function CardsViewController($scope, $location, $log, $window, $q, AngularRxExtensions, SortedTileLayout, Filter, PageDataService, UserSessionService, FlyoutService, page, WindowState, ServerConfig, $http, Schemas) {
+  function CardsViewController(
+    $scope,
+    $log,
+    $window,
+    $q,
+    AngularRxExtensions,
+    Filter,
+    PageDataService,
+    UserSessionService,
+    FlyoutService,
+    moment,
+    page,
+    WindowState,
+    ServerConfig,
+    $http,
+    Schemas
+  ) {
 
     AngularRxExtensions.install($scope);
 
@@ -187,7 +190,10 @@
 
     $scope.bindObservable('globalWhereClauseFragment', page.observe('computedWhereClauseFragment'));
 
-    $scope.bindObservable('appliedFiltersForDisplay', allCardsFilters.combineLatest(page.observe('dataset.columns'), function(filters, columns) {
+    var datasetColumnsObservable = page.observe('dataset.columns');
+
+    var appliedFiltersForDisplayObservable = allCardsFilters.
+      combineLatest(datasetColumnsObservable, function(filters, columns) {
 
       function humanReadableOperator(filter) {
         if (filter instanceof Filter.BinaryOperatorFilter) {
@@ -240,7 +246,8 @@
         return accumulator;
       }, []);
 
-    }));
+    });
+    $scope.bindObservable('appliedFiltersForDisplay', appliedFiltersForDisplayObservable);
 
     $scope.clearAllFilters = function() {
       _.each($scope.page.getCurrentValue('cards'), function(card) {
@@ -262,7 +269,7 @@
 
     var datasetColumns = Rx.Observable.combineLatest(
       page.observe('dataset'),
-      page.observe('dataset.columns'),
+      datasetColumnsObservable,
       page.observe('cards'),
       function(dataset, columns, cards) {
 

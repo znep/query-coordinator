@@ -146,9 +146,6 @@ describe('addCardDialog', function() {
           pageModel.observe('cards'),
           function(dataset, columns, cards) {
 
-            var datasetColumns = [];
-            var hasAvailableCards = false;
-
             var sortedColumns = _.pairs(columns).
               map(function(columnPair) {
                 return { fieldName: columnPair[0], column: columnPair[1] };

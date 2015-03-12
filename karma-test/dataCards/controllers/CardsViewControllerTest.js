@@ -1,7 +1,9 @@
 describe('CardsViewController', function() {
+  'use strict';
+
   var Page;
+  var CardV1;
   var DatasetV0;
-  var Card;
   var testHelpers;
   var serverMocks;
   var $q;
@@ -9,8 +11,11 @@ describe('CardsViewController', function() {
   var $controller;
   var _$provide;
   var $httpBackend;
+  var $window;
   var ServerConfig;
   var PageDataService;
+  var controllerHarness;
+  var $scope;
 
   // Define a mock window service and surface writes to location.href.
   var mockWindowService = {
@@ -253,10 +258,8 @@ describe('CardsViewController', function() {
     it('should default to something falsey', function() {
       var controllerHarness = makeController();
 
-      var controller = controllerHarness.controller;
       var $scope = controllerHarness.$scope;
 
-      var nameOne = undefined;
       var nameTwo = _.uniqueId('name');
       controllerHarness.pageMetadataPromise.resolve({
         datasetId: 'fake-fbfr',
@@ -272,7 +275,6 @@ describe('CardsViewController', function() {
 
     it('syncs the model and scope references to the page name', function() {
       var controllerHarness = makeController();
-      var controller = controllerHarness.controller;
       var $scope = controllerHarness.$scope;
 
       var pageDirtied = false;
@@ -296,7 +298,6 @@ describe('CardsViewController', function() {
 
     it('sets a warning when > 255 chars, and clears it when < 255 chars', function() {
       var controllerHarness = makeController();
-      var controller = controllerHarness.controller;
       var $scope = controllerHarness.$scope;
 
       $scope.page.set('name', _.map(_.range(255 / 5), _.constant('badger')).join(' '));
@@ -310,7 +311,6 @@ describe('CardsViewController', function() {
 
     it('surfaces warning names as a flyout on the warning icon', function() {
       var controllerHarness = makeController();
-      var controller = controllerHarness.controller;
       var $scope = controllerHarness.$scope;
 
       // Create a mock element that the flyout will trigger against.
@@ -338,7 +338,6 @@ describe('CardsViewController', function() {
 
     it('grabs the obe 4x4 from the migrations endpoint', function() {
       var controllerHarness = makeController();
-      var controller = controllerHarness.controller;
       var $scope = controllerHarness.$scope;
 
       $httpBackend.expectGET('/api/migrations/fake-fbfr');
@@ -374,7 +373,6 @@ describe('CardsViewController', function() {
     it('should update on the scope when the property changes on the model', function() {
       var controllerHarness = makeController();
 
-      var controller = controllerHarness.controller;
       var $scope = controllerHarness.$scope;
 
       var descriptionOne = _.uniqueId('description');
@@ -399,7 +397,7 @@ describe('CardsViewController', function() {
       controllerHarness.pageMetadataPromise.resolve({
         datasetId: 'fake-fbfr',
         name: 'fakeName',
-        cards: cardBlobs,
+        cards: cardBlobs
       });
       $rootScope.$digest();
       return controllerHarness;
@@ -644,8 +642,6 @@ describe('CardsViewController', function() {
   });
 
   describe('page unsaved state', function() {
-    var controllerHarness;
-    var $scope;
 
     beforeEach(function() {
       controllerHarness = makeController();
@@ -717,6 +713,9 @@ describe('CardsViewController', function() {
     });
 
     it('should set hasChanges to true after making a change after saving', function() {
+      sinon.stub(PageDataService, 'save', _.constant(Promise.resolve(
+        { data: { pageId: TEST_PAGE_ID } }
+      )));
       $scope.page.set('name', 'name2');
       $scope.savePage();
       $rootScope.$apply(); // Must call $apply, as savePage uses a $q promise internally. Grah.
@@ -725,6 +724,9 @@ describe('CardsViewController', function() {
     });
 
     it('should set editMode to false after saving', function() {
+      sinon.stub(PageDataService, 'save', _.constant(Promise.resolve(
+        { data: { pageId: TEST_PAGE_ID } }
+      )));
       $scope.editMode = true;
       $scope.page.set('name', 'name2');
       $scope.savePage();
@@ -757,7 +759,7 @@ describe('CardsViewController', function() {
 
       expect($scope.addCardState.show).to.equal(false);
 
-      $scope.$on('add-card-with-size', function(e, cardSize) {
+      $scope.$on('add-card-with-size', function() {
 
         $scope.$apply();
 
@@ -856,7 +858,7 @@ describe('CardsViewController', function() {
 
     it('should redirect to the new page URL on success', function(done) {
       mockWindowServiceLocationSeq.onNext(undefined);
-      var saveEvents = $scope.savePageAs(NEW_PAGE_NAME, NEW_PAGE_DESCRIPTION);
+      $scope.savePageAs(NEW_PAGE_NAME, NEW_PAGE_DESCRIPTION);
       mockWindowServiceLocationSeq.subscribe(function(href) {
         if (href) {
           expect(href).to.equal('/view/{0}'.format(TEST_PAGE_ID));

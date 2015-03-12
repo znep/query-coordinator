@@ -206,8 +206,9 @@ class NewUxBootstrapControllerTest < ActionController::TestCase
 
             # Make sure the page we're creating fits certain criteria
             @page_metadata_manager.expects(:create).with do |page, params|
-              assert_equal(10, page['cards'].length, 'Should create 10 cards')
+              assert_equal(11, page['cards'].length, 'Should create 10 cards plus a table card')
 
+              assert_equal('table', page['cards'].last['cardType'], 'Should have a table card')
               assert(page['cards'].none? do |card|
                 Phidippides::SYSTEM_COLUMN_ID_REGEX.match(card['fieldName'])
               end, 'should omit system columns')
@@ -255,7 +256,8 @@ class NewUxBootstrapControllerTest < ActionController::TestCase
 
             # Make sure the page we're creating fits certain criteria
             @page_metadata_manager.expects(:create).with do |page, params|
-              assert_equal(10, page['cards'].length, 'Should create 10 cards')
+              assert_equal(11, page['cards'].length, 'Should create 10 cards plus a table card')
+              assert_equal('table', page['cards'].last['cardType'], 'Should have a table card')
 
               assert(page['cards'].none? do |card|
                 Phidippides::SYSTEM_COLUMN_ID_REGEX.match(card['fieldName'])
@@ -304,7 +306,8 @@ class NewUxBootstrapControllerTest < ActionController::TestCase
 
             # Make sure the page we're creating fits certain criteria
             @page_metadata_manager.expects(:create).with do |page, params|
-              assert_equal(10, page['cards'].length, 'Should create 10 cards')
+              assert_equal(11, page['cards'].length, 'Should create 10 cards plus a table card')
+              assert_equal('table', page['cards'].last['cardType'], 'Should have a table card')
 
               assert(page['cards'].none? do |card|
                 Phidippides::SYSTEM_COLUMN_ID_REGEX.match(card['fieldName'])
@@ -375,8 +378,9 @@ class NewUxBootstrapControllerTest < ActionController::TestCase
 
             # Make sure the page we're creating fits certain criteria
             @page_metadata_manager.expects(:create).with do |page, params|
-              assert_equal(0, page['cards'].length,
+              assert_equal(1, page['cards'].length,
                            'Should not create column card with cardinality == dataset_size')
+              assert_equal('table', page['cards'][0]['cardType'], 'Should have a table card')
               next true
             end.then.returns({ status: '200', body: { pageId: 'neoo-page' } })
 
@@ -394,8 +398,9 @@ class NewUxBootstrapControllerTest < ActionController::TestCase
 
             # Make sure the page we're creating fits certain criteria
             @page_metadata_manager.expects(:create).with do |page, params|
-              assert_equal(0, page['cards'].length,
+              assert_equal(1, page['cards'].length,
                            'Should not create column card with cardinality == dataset_size')
+              assert_equal('table', page['cards'][0]['cardType'], 'Should have a table card')
               next true
             end.then.returns({ status: '200', body: { pageId: 'neoo-page' } })
 
@@ -413,8 +418,9 @@ class NewUxBootstrapControllerTest < ActionController::TestCase
 
             # Make sure the page we're creating fits certain criteria
             @page_metadata_manager.expects(:create).with do |page, params|
-              assert_equal(0, page['cards'].length,
+              assert_equal(1, page['cards'].length,
                            'Should not create column card with cardinality == dataset_size')
+              assert_equal('table', page['cards'][0]['cardType'], 'Should have a table card')
               next true
             end.then.returns({ status: '200', body: { pageId: 'neoo-page' } })
 
@@ -467,8 +473,11 @@ class NewUxBootstrapControllerTest < ActionController::TestCase
     end.compact
   end
 
+  def cardinality_threshold
+    CardTypeMapping::CARD_TYPE_MAPPING['cardinality']['threshold']
+  end
+
   def v0_mock_dataset_metadata_with_uninteresting_column_chart
-    cardinality_threshold = CardTypeMapping::CARD_TYPE_MAPPING['cardinality']['threshold']
     cardinality_equal_to_dataset_size = [
       title: 'cardinality equal to dataset size',
       name: 'too_much',
@@ -483,7 +492,6 @@ class NewUxBootstrapControllerTest < ActionController::TestCase
   end
 
   def v1_mock_dataset_metadata_with_uninteresting_column_chart
-    cardinality_threshold = CardTypeMapping::CARD_TYPE_MAPPING['cardinality']['threshold']
     cardinality_equal_to_dataset_size = {
       too_much: {
         description: 'cardinality equal to dataset size',

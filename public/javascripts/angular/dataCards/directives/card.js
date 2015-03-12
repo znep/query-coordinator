@@ -115,7 +115,7 @@
           $scope.$emit('delete-card-with-model', $scope.model);
         };
 
-        $scope.downloadUrl = '/' + $scope.model.page.id + '/' + $scope.model.fieldName + '.png';
+        $scope.downloadUrl = './' + $scope.model.page.id + '/' + $scope.model.fieldName + '.png';
 
         $scope.downloadStateText = function(state) {
           switch(state) {

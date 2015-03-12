@@ -3,21 +3,23 @@
 
   var $rootScope;
   var testHelpers;
+  var $httpBackend;
 
-  // TODO: These test have broken several consecutive builds.
-  // I am disabling them so that we can make progress with the
-  // metadata migration code in staging.
-  // The issue seems to be with PhantomJS specifically, as
-  // they seem to pass when run in Chrome.
-  xdescribe('Rich text editor', function() {
-    beforeEach(function() {
-      // For some reason the editor takes a long time to come online.
-      // We need to investigate why when we integrate richTextEditor.
-      this.timeout(5000);
-    });
+  // Pre-load the squire.js, so the iframe can just grab it from the cache.
+  var squireObservable = Rx.Observable.fromPromise($.get('/javascripts/plugins/squire.js'));
+  var squireSubscription;
 
+  describe('Rich text editor', function() {
     afterEach(function() {
       testHelpers.cleanUp();
+      if (squireSubscription) {
+        squireSubscription.dispose();
+        squireSubscription = null;
+      }
+      if ($httpBackend) {
+        $httpBackend.verifyNoOutstandingExpectation();
+        $httpBackend.verifyNoOutstandingRequest();
+      }
     });
 
     var jqueryFx;
@@ -26,10 +28,16 @@
       module('socrataCommon.directives');
       module('test');
 
-      inject(['$rootScope', 'testHelpers', function(_$rootScope, _testHelpers) {
-        $rootScope = _$rootScope;
-        testHelpers = _testHelpers;
-      }]);
+      inject([
+        '$rootScope',
+        'testHelpers',
+        '$httpBackend',
+        function(_$rootScope, _testHelpers, _$httpBackend) {
+          $rootScope = _$rootScope;
+          testHelpers = _testHelpers;
+          $httpBackend = _$httpBackend;
+        }
+      ]);
 
       jqueryFx = $.fx.off;
       $.fx.off = true;
@@ -47,17 +55,19 @@
      * @param {Function=} onload A callback to attach to the iframe's 'load' event.
      */
     function createElement(buttons, value, onload) {
-      var outerScope = $rootScope.$new();
-      var html = '<rich-text-editor buttons="{0}" value="{1}"></rich-text-editor>'.
-        format(buttons || '', value || '');
-      var element = testHelpers.TestDom.compileAndAppend(html, outerScope);
-      if (onload) {
-        // We need to _.deferred the callback so that the rte's callbacks can run
-        element.find('iframe').on('load', _.deferred(
-          _.bind(onload, element, element.children().scope())
-        ));
-      }
-      return element;
+      // Can only actually run the tests after we load squire
+      squireSubscription = squireObservable.subscribe(function(data) {
+        $httpBackend.when('GET', /.*\/squire\.js$/).
+          respond(data);
+        var outerScope = $rootScope.$new();
+        var html = '<rich-text-editor buttons="{0}" value="{1}"></rich-text-editor>'.
+          format(buttons || '', value || '');
+        var element = testHelpers.TestDom.compileAndAppend(html, outerScope);
+        $httpBackend.flush();
+        if (onload) {
+          _.defer(_.bind(onload, element, element.children().scope()));
+        }
+      });
     }
 
     /**

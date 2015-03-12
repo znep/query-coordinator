@@ -161,7 +161,8 @@
    * A <rich-text-editor /> is meant to replace a <textarea />, and provide limited html formatting.
    */
   angular.module('socrataCommon.directives').directive('richTextEditor', function(
-    AngularRxExtensions
+    AngularRxExtensions,
+    $http
   ) {
     var toolbar;
     /**
@@ -231,17 +232,23 @@
       idoc.write('<!DOCTYPE html><html style="height:100%"><head>' +
                  '<meta charset="UTF-8">' +
                  '<meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">' +
-                 '</head><body><script src="' +
-                 SQUIRE_JS +
-                 '"></script></body></html>');
+                 '</head><body>' +
+                 '<script id="squire-js"></script>' +
+                 '</body></html>');
       idoc.close();
 
       // Let the body's html inherit this rte's css
       $(idoc.body).css($.extend({
-        padding: 0,
+        'box-sizing': 'border-box',
         margin: 0,
         height: '100%'
-      }, element.css(['color', 'background-color', 'font-family', 'font-size'])));
+      }, element.css(['padding', 'color', 'background-color', 'font-family', 'font-size'])));
+
+      // Now load squire.js
+      $http.get(SQUIRE_JS).success(function(data) {
+        idoc.getElementById('squire-js').innerHTML = data;
+        iframe.trigger('squire-loaded');
+      });
     }
 
     function init($scope, element, attr) {
@@ -250,7 +257,7 @@
       var iframe = element.find('iframe');
 
       // Grab a reference to squire after it loads.
-      iframe.on('load', function() {
+      iframe.on('squire-loaded', function() {
         $scope.safeApply(_.bind(function() {
           $scope.editor = this.contentWindow.editor;
           initEvents($scope.editor, element);

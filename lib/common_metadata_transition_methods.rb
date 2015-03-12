@@ -30,7 +30,18 @@ module CommonMetadataTransitionMethods
     elsif request.format.json? && request.content_type == Mime::JSON
       request_body = request.body.read
 
-      raise UserError.new('Empty JSON body') unless request_body.length > 0
+      # Make sure to rewind the stream since there is no guarantee that
+      # this method will only be called once.
+      request.body.rewind
+
+      unless request_body.length > 0
+        Airbrake.notify(
+          :error_class => "EmptyRequestBody",
+          :error_message => "Request body was empty: " \
+            "#{request.inspect} (Captured request body: #{request_body.inspect})"
+        )
+        raise UserError.new('Empty JSON body')
+      end
 
       posted_params = JSON.parse(request_body)
 

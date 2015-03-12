@@ -112,4 +112,33 @@ describe("A Timeline Chart Card Visualization", function() {
     outerScope.$apply(); // Resolve some internal promises :(
     expect(timelineChartScope.chartData).to.not.equal(undefined);
   });
+
+  it('should not crash given an undefined whereClause', function() {
+    var outerScope = $rootScope.$new();
+    var html = '<div class="card-visualization"><card-visualization-timeline-chart model="model" where-clause="whereClause"></card-visualization-timeline-chart></div>';
+
+    // STUBS
+    var card = new Model();
+    var page = new Model();
+    var dataset = new Model();
+    dataset.id = 'cras-hing';
+    dataset.defineObservableProperty('rowDisplayUnit', '');
+    page.defineObservableProperty('dataset', dataset);
+    page.defineObservableProperty('baseSoqlFilter', '');
+    page.defineObservableProperty('aggregation', {});
+    card.defineObservableProperty('page', page);
+    card.defineObservableProperty('expanded', false);
+    card.defineObservableProperty('activeFilters', []);
+    outerScope.model = card;
+    // END STUBS
+
+    outerScope.whereClause = undefined; // The important bit.
+
+    // If it's going to crash, it's here.
+    var element = testHelpers.TestDom.compileAndAppend(html, outerScope);
+
+    // Use chartData as a proxy for TimelineChart's happiness.
+    var timelineChartScope = element.find('.timeline-chart').scope();
+    expect(timelineChartScope.chartData).to.not.equal(undefined);
+  });
 });

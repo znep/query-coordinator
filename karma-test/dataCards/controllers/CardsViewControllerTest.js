@@ -935,6 +935,28 @@ describe('CardsViewController', function() {
         to.equal('/api/views/fake-fbfr/rows.csv?accessType=DOWNLOAD');
     });
 
+    it('uses the obeid for the csv download link if available', function() {
+      var controllerHarness = makeController();
+      $httpBackend.expectGET('/api/migrations/fake-fbfr');
+
+      expect(controllerHarness.$scope.datasetCSVDownloadURL).to.equal('#');
+
+      controllerHarness.pageMetadataPromise.resolve({
+        datasetId: 'fake-fbfr',
+        name: 'some name'
+      });
+      controllerHarness.$scope.$digest();
+
+      expect(controllerHarness.$scope.datasetCSVDownloadURL).
+        to.equal('/api/views/fake-fbfr/rows.csv?accessType=DOWNLOAD');
+
+      $httpBackend.flush();
+      controllerHarness.$scope.$digest();
+
+      expect(controllerHarness.$scope.datasetCSVDownloadURL).
+        to.equal('/api/views/sooo-oold/rows.csv?accessType=DOWNLOAD&bom=true');
+    });
+
     it('closes the dialog when clicking (or hitting esc) outside it', function() {
       ServerConfig.override('enablePngDownloadUi', true);
       var context = renderCardsView();

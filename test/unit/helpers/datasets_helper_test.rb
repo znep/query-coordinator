@@ -5,9 +5,10 @@ require_relative '../../../app/helpers/datasets_helper'
 class DatasetsHelperTest < Test::Unit::TestCase
 
   def setup
+    FeatureFlags.stubs(:derive => Hashie::Mash.new)
     @object = Object.new.tap { |object| object.extend(DatasetsHelper) }
     @view = View.new.tap { |view| view.stubs(default_view_state) }
-    @object.stubs(:view => @view)
+    @object.stubs(:view => @view, :request => nil)
   end
 
   def test_hide_append_replace_should_be_false_when_blobby_is_true_and_new_backend_is_false
@@ -129,6 +130,17 @@ class DatasetsHelperTest < Test::Unit::TestCase
     assert @object.hide_update_column?, 'hide_update_column expected to be true'
     @view.stubs(:is_snapshotted? => true, :non_tabular? => false, :is_form? => false, :new_backend? => true, :is_api? => false)
     assert @object.hide_update_column?, 'hide_update_column expected to be true'
+  end
+
+  def test_hide_map_create
+    @view.stubs(:new_backend? => false)
+    refute @object.hide_map_create?, 'hide_map_create expected to be false'
+    @view.stubs(:new_backend? => true)
+    assert @object.hide_map_create?, 'hide_map_create expected to be true'
+
+    FeatureFlags.stubs(:derive => Hashie::Mash.new(:use_soql_for_clustering => true))
+    @view.stubs(:new_backend? => true)
+    refute @object.hide_map_create?, 'hide_map_create expected to be false'
   end
 
   private

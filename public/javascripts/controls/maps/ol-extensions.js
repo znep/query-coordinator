@@ -1173,7 +1173,12 @@
         return _.reduce(['xmin', 'ymin', 'xmax', 'ymax'],
             function(memo, property, index)
             { memo[property] = vp[index]; return memo; }, {});
-    },
+    };
+
+    OpenLayers.Bounds.fromViewportToSoql = function(viewport)
+    {
+        return [viewport.xmin, viewport.ymax, viewport.xmax, viewport.ymin].join(', ');
+    };
 
     OpenLayers.Bounds.fromViewport = function(vp)
     {

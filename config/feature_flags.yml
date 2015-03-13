@@ -101,3 +101,6 @@ debug_assets:
 odux_enable_histogram:
   description: Enable histogram visualizations.
   defaultValue: false
+use_soql_for_clustering:
+  description: Use the (currently unwritten) core method soql_clustering for clustering.
+  defaultValue: false

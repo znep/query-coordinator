@@ -1,4 +1,18 @@
-angular.module('socrataCommon.services').factory('AngularRxExtensions', function(Assert) {
+angular.module('socrataCommon.services').factory('AngularRxExtensions', function(Assert, $log) {
+  'use strict';
+
+  /**
+   * Rx.Observable.fromPromise will do stupid things for $http promises - if the server returns
+   * non-200, it will throw the response object as an exception, makes some tests fail for
+   * mysterious and untraceable reasons. Do something more intelligent.
+   */
+  function swallowNonExceptions(e) {
+    if (e instanceof Error) {
+      throw e;
+    }
+    $log.warn('Error from observable: ', e);
+  }
+
   var extensions = {
     // Execute the given function immediately if an angular digest-apply is
     // already in progress, otherwise starts a digest-apply cycle then executes
@@ -54,8 +68,8 @@ angular.module('socrataCommon.services').factory('AngularRxExtensions', function
         takeUntil(self.eventToObservable('$destroy')). //TakeUntil to avoid leaks.
         subscribe(
           set,
-          onError ? errorHandler : undefined,
-          onCompleted ? completedHandler : undefined
+          onError ? errorHandler : swallowNonExceptions,
+          onCompleted ? completedHandler : swallowNonExceptions
         );
     },
 

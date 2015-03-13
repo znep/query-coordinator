@@ -350,7 +350,9 @@ describe('A Choropleth Card Visualization', function() {
           datasetModel: createDatasetModelWithColumns(columns, '0'),
           version: '0'
         })
-      }).to.throw();
+      }).to.throw(
+        'Dataset metadata column for computed georegion does not include shapeFile.'
+      );
 
     });
 
@@ -425,7 +427,9 @@ describe('A Choropleth Card Visualization', function() {
           datasetModel: createDatasetModelWithColumns(columns, '0'),
           version: '1'
         })
-      }).to.throw();
+      }).to.throw(
+        'Dataset metadata column for computed georegion does not include shapeFile.'
+      );
 
       testHelpers.overrideMetadataMigrationPhase('2');
 
@@ -437,7 +441,9 @@ describe('A Choropleth Card Visualization', function() {
           datasetModel: createDatasetModelWithColumns(columns, '1'),
           version: '1'
         })
-      }).to.throw();
+      }).to.throw(
+        'Dataset metadata column for computed georegion does not include shapeFile.'
+      );
 
     });
 

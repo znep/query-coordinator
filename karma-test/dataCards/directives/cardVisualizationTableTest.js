@@ -53,8 +53,6 @@ describe("A Table Card Visualization", function() {
 
   function newCard(pageModel, blob) {
     var baseCard = {
-      'defaultCardtype': 'table',
-      'availableCardTypes': ['table'],
       'expanded': false,
       'cardType': 'table'
     };
@@ -82,30 +80,44 @@ describe("A Table Card Visualization", function() {
         'fred': 'amount',
         'physicalDatatype': 'number',
         'isSystemColumn': false,
-        'dataset': datasetModel
+        'dataset': datasetModel,
+        'defaultCardType': 'column',
+        'availableCardTypes': ['column', 'search']
       },
       'test_timestamp_column': {
         'name': 'what time is it',
         'fred': 'time',
         'physicalDatatype': 'timestamp',
         'isSystemColumn': false,
-        'dataset': datasetModel
+        'dataset': datasetModel,
+        'defaultCardType': 'timeline',
+        'availableCardTypes': ['timeline']
       },
       'test_floating_timestamp_column': {
         'name': 'which time is it',
         'fred': 'time',
         'physicalDatatype': 'floating_timestamp',
         'isSystemColumn': false,
-        'dataset': datasetModel
+        'dataset': datasetModel,
+        'defaultCardType': 'timeline',
+        'availableCardTypes': ['timeline']
       },
       ':@test_computed_column': {
         'name': 'Community Districts',
         'description': 'Community district reporting 311 request',
         'fred': 'location',
-        'physicalDatatype': 'text',
-        'shapefile': '7a5b-8kcq',
+        'physicalDatatype': 'number',
+        'computationStrategy': {
+          'parameters': {
+            'region': '_mash-apes'
+          },
+          'source_columns': ['something_else'],
+          'strategy_type': 'georegion_match_on_point'
+        },
         'isSystemColumn': true,
-        'dataset': datasetModel
+        'dataset': datasetModel,
+        'defaultCardType': 'column',
+        'availableCardTypes': ['column', 'search']
       },
       ':test_system_column': {
         'name': ':test_system_column',
@@ -121,7 +133,9 @@ describe("A Table Card Visualization", function() {
         'physicalDatatype': '*',
         'isSystemColumn': false,
         'fakeColumnGeneratedByFrontEnd': true,
-        'dataset': datasetModel
+        'dataset': datasetModel,
+        'defaultCardType': 'table',
+        'availableCardTypes': ['table']
       }
     });
 
@@ -177,8 +191,6 @@ describe("A Table Card Visualization", function() {
 
       table.pageModel.set('cards', [
         newCard(table.pageModel, {
-          'defaultCardType': 'column',
-          'availableCardTypes': ['column'],
           'fieldName': 'field1',
           'cardSize': 2
         })
@@ -187,14 +199,10 @@ describe("A Table Card Visualization", function() {
 
       table.pageModel.set('cards', [
         newCard(table.pageModel, {
-          'defaultCardType': 'column',
-          'availableCardTypes': ['column'],
           'fieldName': 'field2',
           'cardSize': 3
         }),
         newCard(table.pageModel, {
-          'defaultCardType': 'column',
-          'availableCardTypes': ['column'],
           'fieldName': 'field3',
           'cardSize': 2
         })
@@ -203,20 +211,14 @@ describe("A Table Card Visualization", function() {
 
       table.pageModel.set('cards', [
         newCard(table.pageModel, {
-          'defaultCardType': 'column',
-          'availableCardTypes': ['column'],
           'fieldName': 'field4',
           'cardSize': 3
         }),
         newCard(table.pageModel, {
-          'defaultCardType': 'column',
-          'availableCardTypes': ['column'],
           'fieldName': 'field5',
           'cardSize': 2
         }),
         newCard(table.pageModel, {
-          'defaultCardType': 'column',
-          'availableCardTypes': ['column'],
           'fieldName': 'field6',
           'cardSize': 2
         })
@@ -225,20 +227,14 @@ describe("A Table Card Visualization", function() {
 
       table.pageModel.set('cards', [
         newCard(table.pageModel, {
-          'defaultCardType': 'column',
-          'availableCardTypes': ['column'],
           'fieldName': 'field7',
           'cardSize': 2
         }),
         newCard(table.pageModel, {
-          'defaultCardType': 'column',
-          'availableCardTypes': ['column'],
           'fieldName': 'field8',
           'cardSize': 3
         }),
         newCard(table.pageModel, {
-          'defaultCardType': 'column',
-          'availableCardTypes': ['column'],
           'fieldName': 'field9',
           'cardSize': 2
         })
@@ -258,13 +254,9 @@ describe("A Table Card Visualization", function() {
     it('should include computed columns', function() {
 
       var cards = [{
-        'defaultCardType': 'choropleth',
-        'availableCardTypes': ['choropleth'],
         'fieldName': ':@test_computed_column',
         'cardSize': 1
       }, {
-        'defaultCardType': 'column',
-        'availableCardTypes': ['column'],
         'fieldName': 'test_column',
         'cardSize': 2
       }];

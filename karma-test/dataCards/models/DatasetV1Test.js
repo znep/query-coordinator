@@ -179,18 +179,22 @@ describe('DatasetV1 model', function() {
           name: 'title',
           description: 'blank!',
           fred: 'category',
-          physicalDatatype: 'number'
+          physicalDatatype: 'number',
+          defaultCardType: 'column',
+          availableCardTypes: ['column', 'search']
         },
         'normal_column_2': {
           name: 'title',
           description: 'blank!',
           fred: 'category',
-          physicalDatatype: 'number'
+          physicalDatatype: 'number',
+          defaultCardType: 'column',
+          availableCardTypes: ['column', 'search']
         },
         ':system_column': {
           name: 'title',
           description: 'blank!',
-          physicalDatatype: 'number'
+          physicalDatatype: 'number',
         },
         ':@computed_column': {
           name: 'title',
@@ -201,8 +205,11 @@ describe('DatasetV1 model', function() {
             parameters: {
               region: '_mash-apes'
             },
-            'computation_type': 'georegion_match_on_string'
-          }
+            'source_columns': ['point_column'],
+            'strategy_type': 'georegion_match_on_string'
+          },
+          defaultCardType: 'choropleth',
+          availableCardTypes: ['choropleth']
         }
       };
 
@@ -236,7 +243,9 @@ describe('DatasetV1 model', function() {
         'normal_column': {
           name: 'title',
           description: 'blank!',
-          physicalDatatype: 'number'
+          physicalDatatype: 'number',
+          defaultCardType: 'column',
+          availableCardTypes: ['column', 'search']
         }
       };
 
@@ -261,7 +270,9 @@ describe('DatasetV1 model', function() {
         '2_legit_to_quit': {
           name: 'title',
           description: 'blank!',
-          physicalDatatype: 'number'
+          physicalDatatype: 'number',
+          defaultCardType: 'column',
+          availableCardTypes: ['column', 'search']
         }
       };
 
@@ -287,7 +298,9 @@ describe('DatasetV1 model', function() {
           name: 'title',
           description: 'blank!',
           fred: 'category',
-          physicalDatatype: 'number'
+          physicalDatatype: 'number',
+          defaultCardType: 'column',
+          availableCardTypes: ['column', 'search']
         }
       };
 
@@ -313,7 +326,9 @@ describe('DatasetV1 model', function() {
           name: 'title',
           description: 'blank!',
           fred: 'category',
-          physicalDatatype: 'number'
+          physicalDatatype: 'number',
+          defaultCardType: 'column',
+          availableCardTypes: ['column', 'search']
         }
       };
       var serializedBlob = $.extend({}, minimalV1Blob, { "columns": fakeColumns });

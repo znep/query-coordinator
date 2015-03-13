@@ -100,20 +100,10 @@ angular.module('dataCards.services').factory('SchemaDefinitions', function() {
                     'enum': [ 'number', 'point', 'geo_entity', 'text', 'timestamp', 'row_version', 'row_identifier', 'fixed_timestamp', 'floating_timestamp', 'boolean', 'money', '*' ]
                   },
                   'cardinality': { 'type': 'integer' },
-                  'computationStrategy': {
-                    'type': 'object',
-                    'properties': {
-                      'parameters': {
-                        'type': 'object',
-                        'properties': {
-                          'region': { 'type': 'string', 'minLength': 1},
-                          'geometryLabel': { 'type': 'string', 'minLength': 1} //TODO require both of these at once?
-                        }
-                      }
-                    }
-                  }
+                  'defaultCardType': { 'type': 'string' },
+                  'availableCardTypes': { 'type': 'array' }
                 },
-                'required': [ 'name', 'physicalDatatype']
+                'required': [ 'name', 'physicalDatatype', 'defaultCardType', 'availableCardTypes' ]
               },
               '^:@[a-zA-Z0-9_\-][a-zA-Z0-9_\-]*$': {
                 'type': 'object',
@@ -147,9 +137,11 @@ angular.module('dataCards.services').factory('SchemaDefinitions', function() {
                         }
                       }
                     }
-                  }
+                  },
+                  'defaultCardType': { 'type': 'string' },
+                  'availableCardTypes': { 'type': 'array' }
                 },
-                'required': [ 'name', 'physicalDatatype', 'computationStrategy']
+                'required': [ 'name', 'physicalDatatype', 'computationStrategy', 'defaultCardType', 'availableCardTypes' ]
               }
             }
           },
@@ -232,15 +224,13 @@ angular.module('dataCards.services').factory('SchemaDefinitions', function() {
         'type': 'object',
         'properties': {
           'activeFilters': { 'type': 'array' },
-          'availableCardTypes': { 'type': 'array' },
           'baseLayerUrl': { 'type': 'string' },
           'cardSize': { 'type': 'integer' , 'minimum': 1, 'maximum': 3 },
           'cardType': { 'type': 'string' },
-          'defaultCardType': { 'type': 'string' },
           'expanded': { 'type': 'boolean' },
           'fieldName': { 'type': 'string', 'minLength': 1 },
         },
-        'required': ['fieldName', 'cardSize', 'defaultCardType', 'expanded']
+        'required': ['fieldName', 'cardSize', 'expanded']
       }
     );
 

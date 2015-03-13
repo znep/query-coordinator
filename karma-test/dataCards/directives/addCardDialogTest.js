@@ -1,4 +1,5 @@
 describe('addCardDialog', function() {
+  'use strict';
 
   var phases = ['0', '1', '2', '3'];
 
@@ -304,8 +305,6 @@ describe('addCardDialog', function() {
         var dialog = createDialog();
 
         var serializedCard = {
-          defaultCardType: 'column',
-          availableCardTypes: ['column', 'search'],
           fieldName: 'spot',
           cardSize: 1,
           cardType: 'column',
@@ -404,8 +403,6 @@ describe('addCardDialog', function() {
         var dialog = createDialog();
 
         var serializedCard = {
-          defaultCardType: 'column',
-          availableCardTypes: ['column', 'search'],
           fieldName: 'spot',
           cardSize: 1,
           cardType: 'column',

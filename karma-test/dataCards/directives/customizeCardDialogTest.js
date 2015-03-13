@@ -188,8 +188,6 @@ describe('Customize card dialog', function() {
           };
         } else {
           var card = options.card || {
-            defaultCardType: 'choropleth',
-            availableCardTypes: ['choropleth'],
             fieldName: 'choropleth',
             cardSize: 2,
             cardType: 'choropleth',
@@ -335,8 +333,6 @@ describe('Customize card dialog', function() {
         } else {
           var options = {
             'card': {
-              defaultCardType: 'feature',
-              availableCardTypes: ['feature'],
               fieldName: 'feature',
               cardSize: 1,
               cardType: 'feature',
@@ -447,8 +443,6 @@ describe('Customize card dialog', function() {
         } else {
           var options = {
             'card': {
-              defaultCardType: 'feature',
-              availableCardTypes: ['feature'],
               fieldName: 'choropleth',
               cardSize: 2,
               cardType: 'choropleth',

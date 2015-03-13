@@ -1,5 +1,13 @@
 // This model is intended to be an immutable reference to a Dataset.
-angular.module('dataCards.models').factory('DatasetV1', function(ModelHelper, Model, CardDataService, DatasetDataService, Schemas, SchemaDefinitions, $injector) {
+angular.module('dataCards.models').factory('DatasetV1', function(
+  ModelHelper,
+  Model,
+  CardDataService,
+  DatasetDataService,
+  Schemas,
+  SchemaDefinitions,
+  $injector,
+  $q) {
   var SUPPORTED_DATASET_SCHEMA_VERSION = '1';
   var SUPPORTED_PAGES_SCHEMA_VERSION = '0';
 
@@ -106,18 +114,28 @@ angular.module('dataCards.models').factory('DatasetV1', function(ModelHelper, Mo
 
       self.defineObservableProperty('pages', {}, pagesPromise);
 
+      self.defineEphemeralObservableProperty('isReadableByCurrentUser', true);
+
       self.defineEphemeralObservableProperty('rowCount', null, function() {
+        // We are using a deferred promise here because it appears that rejecting a promise that has been
+        // transformed into a sequence within a model via Rx.Observable.fromPromise() leads to the sequence
+        // being terminated when the promise is rejected. This leads to the inability to see the new value
+        // which is set via set('isReadableByCurrentUser') from been seen by subscribers to the sequence.
+        var deferred = $q.defer();
         var rowCountPromise = CardDataService.getRowCount(self.id);
-        // YUI hates reserved words
-        rowCountPromise['catch'](function(result) {
+        var mapResult = function(result) {
           if (result.status === 403) {
             self.set('isReadableByCurrentUser', false);
+          } else {
+            self.set('isReadableByCurrentUser', true);
           }
+        };
+        rowCountPromise.then(mapResult, mapResult);
+        rowCountPromise.finally(function(result) {
+          deferred.resolve(result);
         });
-        return rowCountPromise;
+        return deferred.promise;
       });
-
-      self.defineEphemeralObservableProperty('isReadableByCurrentUser', true);
     }
   });
 

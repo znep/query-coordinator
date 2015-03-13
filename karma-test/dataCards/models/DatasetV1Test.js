@@ -1,7 +1,10 @@
 describe('DatasetV1 model', function() {
   var MockDataService = {};
   var mockCardDataService = {};
-  var DatasetV1, Page;
+  var DatasetV1;
+  var Page;
+  var $q;
+  var $rootScope;
 
   // Minimal DatasetV1 blob which will validate.
   var minimalV1Blob = {
@@ -143,7 +146,7 @@ describe('DatasetV1 model', function() {
     var subscription;
 
     beforeEach(function() {
-      def = _$q.defer();
+      def = $q.defer();
       mockCardDataService.getRowCount = _.constant(def.promise);
       instance = new DatasetV1('dead-beef');
       // subscribe to the rowCount so that it will make a request for the dataset count
@@ -155,19 +158,17 @@ describe('DatasetV1 model', function() {
       subscription = null;
     });
 
-    // For some reason, calling .reject does not invoke the rowCountPromise.catch callback.
-    // We attempted to - instead of using mocks - use httpBackend and return a 403 response, but
-    // mocha dies with a mysterious 'undefined' error whose stack is almost completely within the
-    // mocha library.
-    xit('sets isReadableByCurrentUser to false if it gets a 403 from the server', function(done) {
+    it('sets isReadableByCurrentUser to false if it gets a 403 from the server', function() {
       expect(instance.getCurrentValue('isReadableByCurrentUser')).to.equal(true);
       def.reject({ status: 403 });
+      $rootScope.$digest(); // Needed to resolve/reject the angular $q promise
       expect(instance.getCurrentValue('isReadableByCurrentUser')).to.equal(false);
     });
 
     it('does not modify isReadableByCurrentUser if it gets a 200 from the server', function() {
       expect(instance.getCurrentValue('isReadableByCurrentUser')).to.equal(true);
       def.resolve({ status: 200 });
+      $rootScope.$digest(); // Needed to resolve/reject the angular $q promise
       expect(instance.getCurrentValue('isReadableByCurrentUser')).to.equal(true);
     });
   });

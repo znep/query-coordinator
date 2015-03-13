@@ -100,8 +100,17 @@ angular.module('dataCards.models').factory('DatasetV0', function(ModelHelper, Mo
       self.defineObservableProperty('pages', {}, pagesPromise);
 
       self.defineEphemeralObservableProperty('rowCount', null, function() {
-        return CardDataService.getRowCount(self.id);
+        var rowCountPromise = CardDataService.getRowCount(self.id);
+        // YUI hates reserved words
+        rowCountPromise['catch'](function(result) {
+          if (result.status === 403) {
+            self.set('isReadableByCurrentUser', false);
+          }
+        });
+        return rowCountPromise;
       });
+
+      self.defineEphemeralObservableProperty('isReadableByCurrentUser', true);
     }
   });
 

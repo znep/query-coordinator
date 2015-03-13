@@ -47,6 +47,8 @@ _.mixin({
    */
   log10: Math.log10 || function(n) {
     return Math.log(n) / Math.LN10;
+  },
+  negate: function(value) {
+    return !value;
   }
-
 });

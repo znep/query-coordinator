@@ -182,6 +182,22 @@
 
     initDownload($scope, page, WindowState, FlyoutService, ServerConfig);
 
+    /**
+     * If we ever get a 403 from the server while trying to access the dataset, it means we can't view
+     * this page anyway, so redirect to login.
+     */
+    function initPermissionDeniedRedirect(page, userObservable) {
+      Rx.Observable.subscribeLatest(
+        page.observe('dataset.isReadableByCurrentUser').filter(_.negate),
+        userObservable.filter(_.negate),
+        function(isReadable, user) {
+          $window.location.href = '/login?referer_redirect=1';
+        }
+      );
+    }
+
+    initPermissionDeniedRedirect(page, currentUserSequence);
+
     /*******************************
     * Filters and the where clause *
     *******************************/

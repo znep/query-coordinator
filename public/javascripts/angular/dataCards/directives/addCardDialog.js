@@ -96,9 +96,7 @@
             } else {
               // TODO: Enforce some kind of schema validation at this step.
               serializedCard = {
-                'availableCardTypes': column.availableCardTypes,
                 'cardSize': parseInt(scope.dialogState.cardSize, 10),
-                'defaultCardType': column.defaultCardType,
                 'expanded': false,
                 'fieldName': fieldName
               };

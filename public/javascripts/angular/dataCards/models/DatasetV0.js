@@ -117,11 +117,7 @@ angular.module('dataCards.models').factory('DatasetV0', function(
         var deferred = $q.defer();
         var rowCountPromise = CardDataService.getRowCount(self.id);
         var mapResult = function(result) {
-          if (result.status === 403) {
-            self.set('isReadableByCurrentUser', false);
-          } else {
-            self.set('isReadableByCurrentUser', true);
-          }
+          self.set('isReadableByCurrentUser', result.status !== 403);
         };
         rowCountPromise.then(mapResult, mapResult);
         rowCountPromise.finally(function(result) {

@@ -113,7 +113,7 @@ angular.module('dataCards.services').factory('SchemaDefinitions', function() {
                     }
                   }
                 },
-                'required': [ 'name', 'fred', 'physicalDatatype']
+                'required': [ 'name', 'physicalDatatype']
               },
               '^:@[a-zA-Z0-9_\-][a-zA-Z0-9_\-]*$': {
                 'type': 'object',
@@ -149,7 +149,7 @@ angular.module('dataCards.services').factory('SchemaDefinitions', function() {
                     }
                   }
                 },
-                'required': [ 'name', 'fred', 'physicalDatatype', 'computationStrategy']
+                'required': [ 'name', 'physicalDatatype', 'computationStrategy']
               }
             }
           },

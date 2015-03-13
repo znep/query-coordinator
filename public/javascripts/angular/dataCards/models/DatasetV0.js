@@ -87,7 +87,7 @@ angular.module('dataCards.models').factory('DatasetV0', function(
       });
 
       self.defineObservableProperty('columns', {}, function() {
-        function isSystemColumn (column) {
+        function isSystemColumn(column) {
           // A column is a system column if its name starts with a :.
           // Note that as of 9/26/2014, computed columns don't adhere to this
           // standard. This will be addressed in the backend.
@@ -107,18 +107,20 @@ angular.module('dataCards.models').factory('DatasetV0', function(
 
       self.defineObservableProperty('pages', {}, pagesPromise);
 
+      self.defineEphemeralObservableProperty('isReadableByCurrentUser', true);
+
       self.defineEphemeralObservableProperty('rowCount', null, function() {
         var rowCountPromise = CardDataService.getRowCount(self.id);
-        // YUI hates reserved words
-        rowCountPromise['catch'](function(result) {
+        var mapResult = function(result) {
           if (result.status === 403) {
             self.set('isReadableByCurrentUser', false);
+          } else {
+            self.set('isReadableByCurrentUser', true);
           }
-        });
+        }
+        rowCountPromise.then(mapResult, mapResult);
         return rowCountPromise;
       });
-
-      self.defineEphemeralObservableProperty('isReadableByCurrentUser', true);
     }
   });
 

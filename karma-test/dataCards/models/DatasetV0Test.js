@@ -127,15 +127,18 @@ describe('DatasetV0 model', function() {
     // We attempted to - instead of using mocks - use httpBackend and return a 403 response, but
     // mocha dies with a mysterious 'undefined' error whose stack is almost completely within the
     // mocha library.
-    xit('sets isReadableByCurrentUser to false if it gets a 403 from the server', function(done) {
+    it('sets isReadableByCurrentUser to false if it gets a 403 from the server', function() {
       expect(instance.getCurrentValue('isReadableByCurrentUser')).to.equal(true);
-      def.reject({ status: 403 });
+      def.resolve({ status: 403 });
+      _$rootScope.$digest();
       expect(instance.getCurrentValue('isReadableByCurrentUser')).to.equal(false);
     });
 
     it('does not modify isReadableByCurrentUser if it gets a 200 from the server', function() {
-      expect(instance.getCurrentValue('isReadableByCurrentUser')).to.equal(true);
+      instance.set('isReadableByCurrentUser', false);
+      expect(instance.getCurrentValue('isReadableByCurrentUser')).to.equal(false);
       def.resolve({ status: 200 });
+      _$rootScope.$digest();
       expect(instance.getCurrentValue('isReadableByCurrentUser')).to.equal(true);
     });
   });

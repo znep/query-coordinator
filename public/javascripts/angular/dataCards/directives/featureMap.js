@@ -345,7 +345,7 @@
               url,
               {
                 attribution: '',
-                detectRetina: true,
+                detectRetina: false,
                 opacity: opacity,
                 unloadInvisibleTiles: true
               }

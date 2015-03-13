@@ -232,13 +232,15 @@ angular.module('dataCards.services').factory('SchemaDefinitions', function() {
         'type': 'object',
         'properties': {
           'activeFilters': { 'type': 'array' },
+          'availableCardTypes': { 'type': 'array' },
           'baseLayerUrl': { 'type': 'string' },
           'cardSize': { 'type': 'integer' , 'minimum': 1, 'maximum': 3 },
           'cardType': { 'type': 'string' },
+          'defaultCardType': { 'type': 'string' },
           'expanded': { 'type': 'boolean' },
           'fieldName': { 'type': 'string', 'minLength': 1 },
         },
-        'required': ['fieldName', 'cardSize', 'cardType', 'expanded']
+        'required': ['fieldName', 'cardSize', 'defaultCardType', 'expanded']
       }
     );
 

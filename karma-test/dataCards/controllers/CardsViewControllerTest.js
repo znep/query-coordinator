@@ -217,6 +217,8 @@ describe('CardsViewController', function() {
 
   function testCard() {
     return {
+      'defaultCardType': 'column',
+      'availableCardTypes': ['column', 'search'],
       'description': '',
       'fieldName': _.uniqueId('testFieldName'),
       'cardSize': 1,
@@ -835,6 +837,8 @@ describe('CardsViewController', function() {
       });
 
       serializedCard = {
+        'defaultCardType': 'column',
+        'availableCardTypes': ['column', 'search'],
         'cardSize': 1,
         'cardType': 'choropleth',
         'expanded': false,

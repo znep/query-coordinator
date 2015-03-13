@@ -1,4 +1,4 @@
-describe('Card model', function() {
+describe('CardV1 model', function() {
   var Model;
   var Page;
   var CardV1;
@@ -13,6 +13,8 @@ describe('Card model', function() {
 
   it('deserialization should return an instance of Card with correct properties set', inject(function(Schemas, Filter) {
     var blob = {
+      'defaultCardType': 'column',
+      'availableCardTypes': ['column', 'search'],
       'fieldName': 'test_crime_type',
       'cardSize': 2,
       'cardType': 'column',
@@ -42,6 +44,8 @@ describe('Card model', function() {
         new Filter.IsNullFilter(false)
       ]);
     readBackProperties['activeFilters'] = _.invoke(instance.getCurrentValue('activeFilters'), 'serialize');
+    readBackProperties['cardType'] = instance.getCurrentValue('cardType');
+    readBackProperties['availableCardTypes'] = instance.getCurrentValue('availableCardTypes');
 
     _.each(requiredKeys, function(field) {
       if (field === 'fieldName') { // fieldName isn't observable.
@@ -53,6 +57,7 @@ describe('Card model', function() {
         });
       }
     });
+
     expect(readBackProperties).to.deep.equal(blob);
     expect(readBackProperties).to.have.property('cardType').that.equals('column');
   }));
@@ -62,6 +67,8 @@ describe('Card model', function() {
   // to break on property set. Right now the models will break badly if we do that.
   it('should throw an exception on serialization when the model values do not conform to the schema.', function() {
     var blob = {
+      'defaultCardType': 'column',
+      'availableCardTypes': ['column', 'search'],
       'fieldName': 'testField',
       'cardSize': 2,
       'cardType': 'column',
@@ -77,6 +84,8 @@ describe('Card model', function() {
 
   it('should create a clone with the same properties, including the unique id', function() {
     var blob = {
+      'defaultCardType': 'column',
+      'availableCardTypes': ['column', 'search'],
       'fieldName': 'testField',
       'cardSize': 2,
       'cardType': 'column',
@@ -90,7 +99,7 @@ describe('Card model', function() {
 
     expect(clone.fieldName).to.equal(instance.fieldName);
     expect(clone.getCurrentValue('cardSize')).to.equal(instance.getCurrentValue('cardSize'));
-    expect(clone.getCurrentValue('cardType')).to.equal(instance.getCurrentValue('cardType'));
+    expect(clone.getCurrentValue('defaultCardType')).to.equal(instance.getCurrentValue('defaultCardType'));
     expect(clone.getCurrentValue('expanded')).to.equal(instance.getCurrentValue('expanded'));
     expect(clone.uniqueId).to.equal(instance.uniqueId);
   });

@@ -110,6 +110,16 @@
     CardV1.deserialize = function(page, blob, id) {
       validateCardBlobSchema(blob);
 
+      // Since cardType was expected to be required but was later decided
+      // to be optional, we need to gracefully handle the case where cardType
+      // is not present on the serialized card.
+      // If it is not present we default to null and then later map that
+      // to the column's default card type in cardVisualization.js when
+      // cardType is bound to the scope.
+      if (!blob.hasOwnProperty('cardType')) {
+        blob.cardType = null;
+      }
+
       var instance = new CardV1(page, blob.fieldName, id);
       _.each(_.keys(schemas.getSchemaDefinition(schemaVersion).properties), function(field) {
         if (field === 'fieldName') {

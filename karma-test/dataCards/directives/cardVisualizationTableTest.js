@@ -53,6 +53,8 @@ describe("A Table Card Visualization", function() {
 
   function newCard(pageModel, blob) {
     var baseCard = {
+      'defaultCardtype': 'table',
+      'availableCardTypes': ['table'],
       'expanded': false,
       'cardType': 'table'
     };
@@ -175,6 +177,8 @@ describe("A Table Card Visualization", function() {
 
       table.pageModel.set('cards', [
         newCard(table.pageModel, {
+          'defaultCardType': 'column',
+          'availableCardTypes': ['column'],
           'fieldName': 'field1',
           'cardSize': 2
         })
@@ -183,10 +187,14 @@ describe("A Table Card Visualization", function() {
 
       table.pageModel.set('cards', [
         newCard(table.pageModel, {
+          'defaultCardType': 'column',
+          'availableCardTypes': ['column'],
           'fieldName': 'field2',
           'cardSize': 3
         }),
         newCard(table.pageModel, {
+          'defaultCardType': 'column',
+          'availableCardTypes': ['column'],
           'fieldName': 'field3',
           'cardSize': 2
         })
@@ -195,14 +203,20 @@ describe("A Table Card Visualization", function() {
 
       table.pageModel.set('cards', [
         newCard(table.pageModel, {
+          'defaultCardType': 'column',
+          'availableCardTypes': ['column'],
           'fieldName': 'field4',
           'cardSize': 3
         }),
         newCard(table.pageModel, {
+          'defaultCardType': 'column',
+          'availableCardTypes': ['column'],
           'fieldName': 'field5',
           'cardSize': 2
         }),
         newCard(table.pageModel, {
+          'defaultCardType': 'column',
+          'availableCardTypes': ['column'],
           'fieldName': 'field6',
           'cardSize': 2
         })
@@ -211,14 +225,20 @@ describe("A Table Card Visualization", function() {
 
       table.pageModel.set('cards', [
         newCard(table.pageModel, {
+          'defaultCardType': 'column',
+          'availableCardTypes': ['column'],
           'fieldName': 'field7',
           'cardSize': 2
         }),
         newCard(table.pageModel, {
+          'defaultCardType': 'column',
+          'availableCardTypes': ['column'],
           'fieldName': 'field8',
           'cardSize': 3
         }),
         newCard(table.pageModel, {
+          'defaultCardType': 'column',
+          'availableCardTypes': ['column'],
           'fieldName': 'field9',
           'cardSize': 2
         })
@@ -238,9 +258,13 @@ describe("A Table Card Visualization", function() {
     it('should include computed columns', function() {
 
       var cards = [{
+        'defaultCardType': 'choropleth',
+        'availableCardTypes': ['choropleth'],
         'fieldName': ':@test_computed_column',
         'cardSize': 1
       }, {
+        'defaultCardType': 'column',
+        'availableCardTypes': ['column'],
         'fieldName': 'test_column',
         'cardSize': 2
       }];

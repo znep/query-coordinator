@@ -1,18 +1,10 @@
 describe('addCardDialog', function() {
-  'use strict';
 
   var phases = ['0', '1', '2', '3'];
 
   _.each(phases, function(phase) {
 
-    describe(('in metadata transition phase ' + phase), function() {
-
-      beforeEach(module('dataCards'));
-      beforeEach(module('dataCards.directives'));
-      beforeEach(module('/angular_templates/dataCards/addCardDialog.html'));
-      beforeEach(module('/angular_templates/dataCards/socSelect.html'));
-      beforeEach(module('/angular_templates/dataCards/card.html'));
-      beforeEach(module('dataCards/cards.sass'));
+    describe('in metadata transition phase {0}'.format(phase), function() {
 
       var testHelpers;
       var CardV1;
@@ -25,41 +17,8 @@ describe('addCardDialog', function() {
       var $httpBackend;
       var $templateCache;
 
-      beforeEach(inject(function($injector) {
-        testHelpers = $injector.get('testHelpers');
-        CardV1 = $injector.get('CardV1');
-        Page = $injector.get('Page');
-        Model = $injector.get('Model');
-        $rootScope = $injector.get('$rootScope');
-        $controller = $injector.get('$controller');
-        AngularRxExtensions = $injector.get('AngularRxExtensions');
-        CardTypeMapping = $injector.get('CardTypeMapping');
-        $httpBackend = $injector.get('$httpBackend');
-        $templateCache = $injector.get('$templateCache');
-
-        // Override the templates of the other directives. We don't need to test them.
-        $templateCache.put('/angular_templates/dataCards/spinner.html', '');
-        $templateCache.put('/angular_templates/dataCards/cardVisualizationColumnChart.html', '');
-        $templateCache.put('/angular_templates/dataCards/cardVisualizationChoropleth.html', '');
-        $templateCache.put('/angular_templates/dataCards/cardVisualizationTable.html', '');
-        $templateCache.put('/angular_templates/dataCards/cardVisualizationTimelineChart.html', '');
-        $templateCache.put('/angular_templates/dataCards/cardVisualizationSearch.html', '');
-        $templateCache.put('/angular_templates/dataCards/cardVisualization.html', '');
-        $templateCache.put('/angular_templates/dataCards/cardVisualizationInvalid.html', '');
-        $templateCache.put('/angular_templates/dataCards/clearableInput.html', '');
-
-        $httpBackend.whenGET(/\/api\/id\/rook-king.json.*/).respond([]);
-        $httpBackend.whenGET(/\/resource\/rook-king.json.*/).respond([]);
-        $httpBackend.whenGET(/\/resource\/mash-apes.geojson.*/).respond([]);
-
-        testHelpers.overrideMetadataMigrationPhase(phase);
-      }));
-
-      afterEach(function() {
-        testHelpers.TestDom.clear();
-      });
-
       function createDialog() {
+
         var datasetModel = new Model();
 
         var columns = {
@@ -253,6 +212,72 @@ describe('addCardDialog', function() {
         };
       }
 
+      beforeEach(module('dataCards'));
+      beforeEach(module('dataCards.directives'));
+      beforeEach(module('/angular_templates/dataCards/addCardDialog.html'));
+      beforeEach(module('/angular_templates/dataCards/socSelect.html'));
+      beforeEach(module('/angular_templates/dataCards/card.html'));
+      beforeEach(module('dataCards/cards.sass'));
+
+      beforeEach(
+        inject([
+          'testHelpers',
+          'CardV1',
+          'Page',
+          'Model',
+          '$rootScope',
+          '$controller',
+          'AngularRxExtensions',
+          'CardTypeMapping',
+          '$httpBackend',
+          '$templateCache',
+          function(
+            _testHelpers,
+            _CardV1,
+            _Page,
+            _Model,
+            _$rootScope,
+            _$controller,
+            _AngularRxExtensions,
+            _CardTypeMapping,
+            _$httpBackend,
+            _$templateCache) {
+
+              testHelpers = _testHelpers;
+              CardV1 = _CardV1;
+              Page = _Page,
+              Model = _Model;
+              $rootScope = _$rootScope;
+              $controller = _$controller;
+              AngularRxExtensions = _AngularRxExtensions;
+              CardTypeMapping = _CardTypeMapping;
+              $httpBackend = _$httpBackend;
+              $templateCache = _$templateCache;
+
+              // Override the templates of the other directives. We don't need to test them.
+              $templateCache.put('/angular_templates/dataCards/spinner.html', '');
+              $templateCache.put('/angular_templates/dataCards/cardVisualizationColumnChart.html', '');
+              $templateCache.put('/angular_templates/dataCards/cardVisualizationChoropleth.html', '');
+              $templateCache.put('/angular_templates/dataCards/cardVisualizationTable.html', '');
+              $templateCache.put('/angular_templates/dataCards/cardVisualizationTimelineChart.html', '');
+              $templateCache.put('/angular_templates/dataCards/cardVisualizationSearch.html', '');
+              $templateCache.put('/angular_templates/dataCards/cardVisualization.html', '');
+              $templateCache.put('/angular_templates/dataCards/cardVisualizationInvalid.html', '');
+              $templateCache.put('/angular_templates/dataCards/clearableInput.html', '');
+
+              $httpBackend.whenGET(/\/api\/id\/rook-king.json.*/).respond([]);
+              $httpBackend.whenGET(/\/resource\/rook-king.json.*/).respond([]);
+              $httpBackend.whenGET(/\/resource\/mash-apes.geojson.*/).respond([]);
+
+              testHelpers.overrideMetadataMigrationPhase(phase);
+          }
+        ])
+      );
+
+      afterEach(function() {
+        testHelpers.TestDom.clear();
+      });
+
       it('should close the modal dialog and not add a card when the "Cancel" button is clicked', function() {
         var dialog = createDialog();
 
@@ -279,6 +304,8 @@ describe('addCardDialog', function() {
         var dialog = createDialog();
 
         var serializedCard = {
+          defaultCardType: 'column',
+          availableCardTypes: ['column', 'search'],
           fieldName: 'spot',
           cardSize: 1,
           cardType: 'column',
@@ -354,40 +381,31 @@ describe('addCardDialog', function() {
 
       });
 
+      it('should change the visualization type of the preview card when a card type option button is clicked', function() {
+        var dialog = createDialog();
 
-      describe('should change the visualization type of the preview card when a card type option button is clicked', function() {
-        var phases = ['0', '1', '2', '3'];
+        expect(dialog.element.find('.add-card-type-option:visible').length).to.equal(0);
 
-        phases.forEach(function(phase) {
+        dialog.scope.dialogState.cardSize = 2;
 
-          it('in phase ' + phase, function() {
+        dialog.element.find('option[value=multipleVisualizations]').prop('selected', true).trigger('change');
 
-            testHelpers.overrideMetadataMigrationPhase(phase)
+        expect(dialog.element.find('.add-card-type-option:visible').length).to.equal(2);
+        expect(dialog.scope.addCardModel.getCurrentValue('cardType')).to.equal('search');
 
-            var dialog = createDialog();
+        dialog.element.find('.icon-bar-chart').click();
+        dialog.scope.$digest();
 
-            expect(dialog.element.find('.add-card-type-option:visible').length).to.equal(0);
+        expect(dialog.scope.addCardModel.getCurrentValue('cardType')).to.equal('column');
 
-            dialog.scope.dialogState.cardSize = 2;
-
-            dialog.element.find('option[value=multipleVisualizations]').prop('selected', true).trigger('change');
-
-            expect(dialog.element.find('.add-card-type-option:visible').length).to.equal(2);
-            expect(dialog.scope.addCardModel.getCurrentValue('cardType')).to.equal('search');
-
-            dialog.element.find('.icon-bar-chart').click();
-            dialog.scope.$digest();
-
-            expect(dialog.scope.addCardModel.getCurrentValue('cardType')).to.equal('column');
-
-          });
-        });
       });
 
       it('should add a card in the correct CardSize group when an enabled column in the "Choose a column..." select control is selected and the "Add card" button is clicked', function() {
         var dialog = createDialog();
 
         var serializedCard = {
+          defaultCardType: 'column',
+          availableCardTypes: ['column', 'search'],
           fieldName: 'spot',
           cardSize: 1,
           cardType: 'column',

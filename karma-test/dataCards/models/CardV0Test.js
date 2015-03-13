@@ -1,4 +1,4 @@
-describe('Card model', function() {
+describe('CardV0 model', function() {
   var Model;
   var Page;
   var CardV0;

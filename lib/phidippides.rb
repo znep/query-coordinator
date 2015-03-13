@@ -6,6 +6,7 @@ class Phidippides < SocrataHttp
   class NewPageException < RuntimeError; end
   class PageIdException < RuntimeError; end
   class NoDatasetIdException < RuntimeError; end
+  class NoCardsException < RuntimeError; end
   class NoPageIdException < RuntimeError; end
 
   # TODO: Should these actually be ignore-case?

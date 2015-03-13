@@ -208,54 +208,76 @@ class PageMetadataManagerTest < Test::Unit::TestCase
     assert_not_nil(result.fetch(:body).fetch('pageId'))
   end
 
-  def test_create_ensures_table_card
-    PageMetadataManager.any_instance.expects(:update_rollup_table).times(3)
+  def test_create_ensures_table_card_phase0
+    PageMetadataManager.any_instance.expects(:update_rollup_table).times(1)
 
-    # Phase 0
-    Phidippides.any_instance.stubs(
-      fetch_dataset_metadata: { status: '200', body: v0_dataset_metadata },
-      request_new_page_id: 'asdf-asdf',
-    )
+    stub_fetch_dataset_metadata(v0_dataset_metadata)
+    stub_request_new_page_id
     stub_feature_flags_with(:metadata_transition_phase, '0')
-    Phidippides.any_instance.expects(:update_page_metadata).times(1).with do |json, options|
-      assert(json['cards'].pluck('cardType').any? { |cardType| cardType == 'table' })
-      assert_equal({}, options)
-    end.then.returns(
-      status: '200',
-      body: v0_page_metadata
-    )
+    stub_update_page_metadata(v0_page_metadata).
+      with { |page, _| assert_page_has_table_card(page) }
+
     result = manager.create(remove_table_card(v0_page_metadata))
-    assert(result.fetch(:status) == '200', 'Expected create result status to be 200')
+    assert_equal('200', result.fetch(:status), 'Expected create result status to be 200')
+  end
 
-    # Phase 1
-    Phidippides.any_instance.stubs(
-      fetch_dataset_metadata: { status: '200', body: v1_dataset_metadata }
-    )
+  def test_create_ensures_table_card_phase1
+    PageMetadataManager.any_instance.expects(:update_rollup_table).times(1)
+
+    stub_fetch_dataset_metadata(v1_dataset_metadata)
+    stub_request_new_page_id
     stub_feature_flags_with(:metadata_transition_phase, '1')
-    Phidippides.any_instance.expects(:update_page_metadata).times(1).with do |json, options|
-      assert(json['cards'].pluck('cardType').any? { |cardType| cardType == 'table' })
-      assert_equal({}, options)
-    end.then.returns(
-      status: '200',
-      body: v1_page_metadata_as_v0
-    )
-    result = manager.create(remove_table_card(v1_page_metadata_as_v0))
-    assert(result.fetch(:status) == '200', 'Expected create result status to be 200')
+    stub_update_page_metadata(v1_page_metadata_as_v0).
+      with { |page, _| assert_page_has_table_card(page) }
 
-    # Phase 2
-    Phidippides.any_instance.stubs(
-      request_new_page_id: 'asdf-asdf',
-    )
+    result = manager.create(remove_table_card(v1_page_metadata_as_v0))
+    assert_equal('200', result.fetch(:status), 'Expected create result status to be 200')
+  end
+
+  def test_create_ensures_table_card_phase2
+    PageMetadataManager.any_instance.expects(:update_rollup_table).times(1)
+
+    stub_fetch_dataset_metadata(v1_dataset_metadata)
+    stub_request_new_page_id
     stub_feature_flags_with(:metadata_transition_phase, '2')
-    Phidippides.any_instance.expects(:update_page_metadata).times(1).with do |json, options|
-      assert(json['cards'].pluck('cardType').any? { |cardType| cardType == 'table' })
-      assert_equal({}, options)
-    end.then.returns(
-      status: '200',
-      body: v1_page_metadata
-    )
+    stub_update_page_metadata(v1_page_metadata).
+      with { |page, _| assert_page_has_table_card(page) }
+
     result = manager.create(remove_table_card(v1_page_metadata).except('pageId'))
     assert_equal('200', result.fetch(:status))
+  end
+
+  def test_create_ensures_table_card_when_no_cards_phase0
+    stub_fetch_dataset_metadata(v0_dataset_metadata)
+    stub_request_new_page_id
+    stub_feature_flags_with(:metadata_transition_phase, '0')
+    stub_update_page_metadata(v0_page_metadata).
+      with { |page, _| assert_page_has_table_card(page) }
+
+    result = manager.create(page_metadata_with_no_cards(v1_page_metadata).except('pageId'))
+    assert_equal('200', result.fetch(:status), 'Expected create result status to be 200')
+  end
+
+  def test_create_ensures_table_card_when_no_cards_phase1
+    stub_fetch_dataset_metadata(v1_dataset_metadata)
+    stub_request_new_page_id
+    stub_feature_flags_with(:metadata_transition_phase, '1')
+    stub_update_page_metadata(v1_page_metadata_as_v0).
+      with { |page, _| assert_page_has_table_card(page) }
+
+    result = manager.create(page_metadata_with_no_cards(v1_page_metadata).except('pageId'))
+    assert_equal('200', result.fetch(:status), 'Expected create result status to be 200')
+  end
+
+  def test_create_ensures_table_card_when_no_cards_phase2
+    stub_fetch_dataset_metadata(v1_dataset_metadata)
+    stub_request_new_page_id
+    stub_feature_flags_with(:metadata_transition_phase, '2')
+    stub_update_page_metadata(v1_page_metadata).
+      with { |page, _| assert_page_has_table_card(page) }
+
+    result = manager.create(page_metadata_with_no_cards(v1_page_metadata).except('pageId'))
+    assert_equal('200', result.fetch(:status), 'Expected create result status to be 200')
   end
 
   def test_update_succeeds_phase_0
@@ -542,10 +564,40 @@ class PageMetadataManagerTest < Test::Unit::TestCase
   end
 
   def remove_table_card(page_metadata)
-    page_metadata.dup.tap do |page_metadata|
-      page_metadata['cards'].select! { |card| card['fieldName'] != '*' }
+    page_metadata.dup.tap do |metadata|
+      metadata['cards'].select! { |card| card['fieldName'] != '*' }
     end
-    page_metadata
+  end
+
+  def page_metadata_with_no_cards(page_metadata)
+    page_metadata.dup.tap { |metadata| metadata['cards'] = [] }
+  end
+
+  def stub_fetch_dataset_metadata(body)
+    Phidippides.any_instance.stubs(
+      fetch_dataset_metadata: { status: '200', body: body }
+    )
+  end
+
+  def stub_request_new_page_id
+    Phidippides.any_instance.stubs(
+      request_new_page_id: 'asdf-asdf'
+    )
+  end
+
+  def stub_update_page_metadata(body)
+    Phidippides.any_instance.
+      expects(:update_page_metadata).
+      times(1).
+      returns(
+        status: '200',
+        body: body
+      )
+  end
+
+  def assert_page_has_table_card(page_metadata)
+    has_table_card = page_metadata['cards'].pluck('cardType').any? { |cardType| cardType == 'table' }
+    assert(has_table_card, 'Page metadata should have table card')
   end
 
 end

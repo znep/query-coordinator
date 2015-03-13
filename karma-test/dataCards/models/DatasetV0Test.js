@@ -105,7 +105,6 @@ describe('DatasetV0 model', function() {
     _$rootScope.$digest();
   });
 
-
   describe('isReadableByCurrentUser', function() {
     var def;
     var instance;

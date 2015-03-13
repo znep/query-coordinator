@@ -15,24 +15,27 @@
     }
 
     var CardV1 = Model.extend({
-      init: function(parentPageModel, fieldName, id) {
+      init: function(parentPageModel, fieldName, initialValues) {
         this._super();
 
         if(!(parentPageModel instanceof Model)) { throw new Error('CardV1 models must have parent Page models.'); }
         if(!_.isString(fieldName) || _.isEmpty(fieldName)) { throw new Error('CardV1 models must have a non-empty field name.'); }
 
+        if (!_.isObject(initialValues)) {
+          initialValues = {};
+        }
         var self = this;
         this.version = '1';
         this.page = parentPageModel;
         this.fieldName = fieldName;
-        this.uniqueId = id || _.uniqueId();
+        this.uniqueId = initialValues.id || _.uniqueId();
 
         _.each(_.keys(schemas.getSchemaDefinition(schemaVersion).properties), function(field) {
           if (field === 'fieldName') {
             // fieldName isn't observable.
             return;
           }
-          self.defineObservableProperty(field);
+          self.defineObservableProperty(field, initialValues[field]);
         });
 
         self.set('activeFilters', []);
@@ -120,7 +123,7 @@
         blob.cardType = null;
       }
 
-      var instance = new CardV1(page, blob.fieldName, id);
+      var instance = new CardV1(page, blob.fieldName, {id: id});
       _.each(_.keys(schemas.getSchemaDefinition(schemaVersion).properties), function(field) {
         if (field === 'fieldName') {
           // fieldName isn't observable.

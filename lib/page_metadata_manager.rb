@@ -99,7 +99,7 @@ class PageMetadataManager
     unless page_metadata['pageId'].present?
       raise Phidippides::NoPageIdException.new('page id must be provisioned first.')
     end
-    page_id = page_metadata[:pageId]
+    page_id = page_metadata['pageId']
 
     # First update the data lens. We do this so that we can save the data_lens_id into the
     # page_metadata, so that next time we need to update the page_metadata, we can also update the

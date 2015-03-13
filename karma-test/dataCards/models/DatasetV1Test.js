@@ -231,7 +231,7 @@ describe('DatasetV1 model', function() {
       $rootScope.$digest();
     });
 
-    it('should throw a validation error with a column with no numbers in its name that does not include a fred', function() {
+    it('should not throw a validation error with a column with no numbers in its name that does not include a fred', function() {
       var fakeColumns = {
         'normal_column': {
           name: 'title',
@@ -253,10 +253,10 @@ describe('DatasetV1 model', function() {
 
       instance.observe('columns').subscribe(function(columns) {});
 
-      expect(function() { $rootScope.$digest(); }).to.throw();
+      expect(function() { $rootScope.$digest(); }).to.not.throw();
     });
 
-    it('should throw a validation error with a column with numbers in its name that does not include a fred', function() {
+    it('should not throw a validation error with a column with numbers in its name that does not include a fred', function() {
       var fakeColumns = {
         '2_legit_to_quit': {
           name: 'title',
@@ -278,7 +278,7 @@ describe('DatasetV1 model', function() {
 
       instance.observe('columns').subscribe(function(columns) {});
 
-      expect(function() { $rootScope.$digest(); }).to.throw();
+      expect(function() { $rootScope.$digest(); }).to.not.throw();
     });
 
     it('should throw a validation error with a computed column that does not include a computation strategy', function() {

@@ -113,7 +113,7 @@ angular.module('dataCards.models').factory('DatasetV0', function(
         // We are using a deferred promise here because it appears that rejecting a promise that has been
         // transformed into a sequence within a model via Rx.Observable.fromPromise() leads to the sequence
         // being terminated when the promise is rejected. This leads to the inability to see the new value
-        // which is set via set('isReadableByCurrentUser') from been seen by subscribers to the sequence.
+        // which is set via set('isReadableByCurrentUser') from being seen by subscribers to the sequence.
         var deferred = $q.defer();
         var rowCountPromise = CardDataService.getRowCount(self.id);
         var mapResult = function(result) {

@@ -79,7 +79,7 @@ describe('DatasetV0 model', function() {
       };
 
     MockDataService.getDatasetMetadata = function(schemaVersion, id) {
-      return $q.when(minimalBlob);
+      return _$q.when(minimalBlob);
     };
 
     var def = _$q.defer();

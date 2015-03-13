@@ -1,7 +1,7 @@
 (function() {
   'use strict';
 
-  function PageModelFactory($q, ServerConfig, DatasetV0, DatasetV1, CardV0, CardV1, Model, PageDataService) {
+  function PageModelFactory($q, ServerConfig, Dataset, Card, Model, PageDataService) {
     return Model.extend({
       // Builds a page model from either the page ID (given as a string),
       // or as a full serialized blob.
@@ -54,22 +54,14 @@
 
         self.defineObservableProperty('dataset', null, function() {
           return pageMetadataPromise().then(function(data) {
-            if (ServerConfig.metadataMigration.datasetMetadata.useV0Models()) {
-              return new DatasetV0(data.datasetId);
-            } else {
-              return new DatasetV1(data.datasetId);
-            }
+            return new Dataset(data.datasetId);
           });
         });
 
         self.defineObservableProperty('cards', [], function() {
           return pageMetadataPromise().then(function(data) {
             return _.map(data.cards, function(serializedCard) {
-              if (ServerConfig.metadataMigration.pageMetadata.useV0CardModels()) {
-                return CardV0.deserialize(self, serializedCard);
-              } else {
-                return CardV1.deserialize(self, serializedCard);
-              }
+              return Card.deserialize(self, serializedCard);
             });
           });
         });

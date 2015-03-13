@@ -2,6 +2,11 @@ ENV['RAILS_ENV'] = 'test'
 require File.expand_path('../../config/environment', __FILE__)
 require 'rails/test_help'
 require 'minitest/autorun'
+require 'minitest/reporters'
+
+if ENV['RM_INFO']
+  MiniTest::Reporters.use!
+end
 
 # Add more helper methods to be used by all tests here...
 module TestHelperMethods

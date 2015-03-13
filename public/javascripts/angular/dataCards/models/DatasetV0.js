@@ -1,5 +1,13 @@
 // This model is intended to be an immutable reference to a Dataset.
-angular.module('dataCards.models').factory('DatasetV0', function(ModelHelper, Model, CardDataService, DatasetDataService, Schemas, SchemaDefinitions, $injector) {
+angular.module('dataCards.models').factory('DatasetV0', function(
+  ModelHelper,
+  Model,
+  CardDataService,
+  DatasetDataService,
+  Schemas,
+  SchemaDefinitions,
+  $injector,
+  $q) {
   var SUPPORTED_DATASET_SCHEMA_VERSION = '0';
   var SUPPORTED_PAGES_SCHEMA_VERSION = '0';
 
@@ -79,7 +87,7 @@ angular.module('dataCards.models').factory('DatasetV0', function(ModelHelper, Mo
       });
 
       self.defineObservableProperty('columns', {}, function() {
-        function isSystemColumn (column) {
+        function isSystemColumn(column) {
           // A column is a system column if its name starts with a :.
           // Note that as of 9/26/2014, computed columns don't adhere to this
           // standard. This will be addressed in the backend.
@@ -99,18 +107,24 @@ angular.module('dataCards.models').factory('DatasetV0', function(ModelHelper, Mo
 
       self.defineObservableProperty('pages', {}, pagesPromise);
 
-      self.defineEphemeralObservableProperty('rowCount', null, function() {
-        var rowCountPromise = CardDataService.getRowCount(self.id);
-        // YUI hates reserved words
-        rowCountPromise['catch'](function(result) {
-          if (result.status === 403) {
-            self.set('isReadableByCurrentUser', false);
-          }
-        });
-        return rowCountPromise;
-      });
-
       self.defineEphemeralObservableProperty('isReadableByCurrentUser', true);
+
+      self.defineEphemeralObservableProperty('rowCount', null, function() {
+        // We are using a deferred promise here because it appears that rejecting a promise that has been
+        // transformed into a sequence within a model via Rx.Observable.fromPromise() leads to the sequence
+        // being terminated when the promise is rejected. This leads to the inability to see the new value
+        // which is set via set('isReadableByCurrentUser') from being seen by subscribers to the sequence.
+        var deferred = $q.defer();
+        var rowCountPromise = CardDataService.getRowCount(self.id);
+        var mapResult = function(result) {
+          self.set('isReadableByCurrentUser', result.status !== 403);
+        };
+        rowCountPromise.then(mapResult, mapResult);
+        rowCountPromise.finally(function(result) {
+          deferred.resolve(result);
+        });
+        return deferred.promise;
+      });
     }
   });
 

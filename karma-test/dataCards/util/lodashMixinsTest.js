@@ -88,6 +88,15 @@
         }
       });
     });
+
+    describe('negate', function() {
+      it('negates the parameter', function() {
+        expect(_.negate(true)).to.equal(false);
+        expect(_.negate(false)).to.equal(true);
+        expect(_.negate(null)).to.equal(true);
+        expect(_.negate(246)).to.equal(false);
+      });
+    });
   });
 
 })();

@@ -23,7 +23,7 @@ describe('CardsViewController', function() {
     scrollTo: _.noop
   };
 
-  var mockWindowServiceLocationSeq = new Rx.BehaviorSubject(undefined);
+  var mockWindowServiceLocationSeq;
   Object.defineProperty(
     mockWindowService.location,
     'href',
@@ -233,7 +233,31 @@ describe('CardsViewController', function() {
         'obeId': 'sooo-oold',
         'syncedAt': 1415907664
       });
+
+      mockWindowServiceLocationSeq = new Rx.BehaviorSubject(undefined);
   });
+
+  describe('not logged in', function() {
+    it('redirects to login when dataset endpoint denies us permission', function(done) {
+      var controllerHarness = makeController();
+      var $scope = controllerHarness.$scope;
+
+      mockWindowServiceLocationSeq.filter(_.identity).subscribe(function(href) {
+        expect(href).to.equal('/login?referer_redirect=1');
+        done();
+      });
+
+      controllerHarness.currentUserDefer.reject({});
+      controllerHarness.pageMetadataPromise.resolve({
+        datasetId: 'fake-fbfr'
+      });
+      $scope.$digest();
+
+      var dataset = $scope.page.getCurrentValue('dataset');
+      dataset.set('isReadableByCurrentUser', false);
+    });
+  });
+
   describe('page name', function() {
     it('should update on the scope when the property changes on the model', function() {
       var controllerHarness = makeController();

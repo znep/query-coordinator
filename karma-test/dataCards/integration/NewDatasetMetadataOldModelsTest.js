@@ -32,12 +32,15 @@ describe('Using v1 metadata to instantiate v0 models', function() {
               "region": "_c8h8-ygvf",
               "geometryLabel": "geoid10"
             },
-            "strategy_type": "georegion_match_on_point"
+            "strategy_type": "georegion_match_on_point",
+            "source_columns": ["point_column"]
           },
           "description": "descr",
           "fred": "location",
           "name": "computed_column human readable name",
-          "physicalDatatype": "text"
+          "physicalDatatype": "text",
+          "defaultCardType": "choropleth",
+          "availableCardTypes": ["choropleth"]
         }
       },
       "defaultPage": "four-four",
@@ -83,7 +86,9 @@ describe('Using v1 metadata to instantiate v0 models', function() {
           "fred": "category",
           "name": "some_column",
           "title": "Some Category Column",
-          "physicalDatatype": "number"
+          "physicalDatatype": "number",
+          "defaultCardType": "column",
+          "availableCardTypes": ["column", "search"]
         }
       },
       "defaultPage": "four-four",
@@ -122,7 +127,9 @@ describe('Using v1 metadata to instantiate v0 models', function() {
           "description": "",
           "fred": "category",
           "name": "some_column",
-          "physicalDatatype": "number"
+          "physicalDatatype": "number",
+          "defaultCardType": "column",
+          "availableCardTypes": ["column", "search"]
         }
       },
       "defaultPage": "four-four",

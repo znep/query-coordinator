@@ -47,6 +47,8 @@ describe('CardsViewController', function() {
         updatedAt: '2004-05-20T17:42:55+00:00',
         columns: {
           'nonCustomizableFieldName': {
+            'defaultCardType': 'column',
+            'availableCardTypes': ['column', 'search'],
             'name': 'nonCustomizableFieldName',
             'physicalDatatype': 'text',
             'fred': 'text',
@@ -54,6 +56,8 @@ describe('CardsViewController', function() {
             'importance': 1
           },
           'customizableFieldName': {
+            'defaultCardType': 'feature',
+            'availableCardTypes': ['feature'],
             'name': 'customizableFieldName',
             'physicalDatatype': 'point',
             'fred': 'location',

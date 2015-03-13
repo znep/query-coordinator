@@ -1,4 +1,4 @@
-describe('Card model', function() {
+describe('CardV1 model', function() {
   var Model;
   var Page;
   var CardV1;
@@ -42,6 +42,7 @@ describe('Card model', function() {
         new Filter.IsNullFilter(false)
       ]);
     readBackProperties['activeFilters'] = _.invoke(instance.getCurrentValue('activeFilters'), 'serialize');
+    readBackProperties['cardType'] = instance.getCurrentValue('cardType');
 
     _.each(requiredKeys, function(field) {
       if (field === 'fieldName') { // fieldName isn't observable.

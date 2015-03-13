@@ -4,7 +4,9 @@ describe('DatasetDataService', function() {
   var TESTED_MIGRATION_PHASES = [0, 1, 2];
 
   _.each(TESTED_MIGRATION_PHASES, function(phaseTestingUnder) {
+
     describe('under phase {0}'.format(phaseTestingUnder), function() {
+
       var $httpBackend;
       var DatasetDataService;
       var TestHelpers;
@@ -66,26 +68,36 @@ describe('DatasetDataService', function() {
             name: 'column_1',
             fred: 'identifier',
             physicalDatatype: 'text',
-            description: 'Column 1.'
+            description: 'Column 1.',
+            cardinality: Math.pow(2, 53) - 1,
+            defaultCardType: 'column',
+            availableCardTypes: ['column', 'search']
           },
           column_2: {
             title: 'column_2',
             name: 'column_2',
             fred: 'category',
             physicalDatatype: 'number',
-            description: 'Column 2.'
+            description: 'Column 2.',
+            cardinality: Math.pow(2, 53) - 1,
+            defaultCardType: 'column',
+            availableCardTypes: ['column', 'search']
           },
           ':@column_3_geo': {
             name: 'Column 3 geo human name',
             fred: 'location',
             physicalDatatype: 'number',
             description: 'Column 3 Geo human description.',
+            cardinality: Math.pow(2, 53) - 1,
             computationStrategy: {
               parameters: {
-                region: 'shap-fil3',
-                geometryLabel: 'someLabelField'
-              }
-            }
+                region: '_mash-apes'
+              },
+              'source_columns': ['point_column'],
+              'strategy_type': 'georegion_match_on_point'
+            },
+            defaultCardType: 'choropleth',
+            availableCardTypes: ['choropleth']
           }
         }
       };
@@ -114,15 +126,18 @@ describe('DatasetDataService', function() {
             logicalDatatype: 'location',
             physicalDatatype: 'number',
             description: 'Column 3 Geo human description.',
-            shapefile: 'shap-fil3',
+            shapefile: 'mash-apes',
             importance: 1,
             cardinality: Math.pow(2, 53) - 1,
             computationStrategy: {
               parameters: {
-                region: 'shap-fil3',
-                geometryLabel: 'someLabelField'
-              }
-            }
+                region: '_mash-apes'
+              },
+              'source_columns': ['point_column'],
+              'strategy_type': 'georegion_match_on_point'
+            },
+            defaultCardType: 'choropleth',
+            availableCardTypes: ['choropleth']
           },
           {
             title: 'column_1',
@@ -131,7 +146,9 @@ describe('DatasetDataService', function() {
             physicalDatatype: 'text',
             description: 'Column 1.',
             importance: 1,
-            cardinality: Math.pow(2, 53) - 1
+            cardinality: Math.pow(2, 53) - 1,
+            defaultCardType: 'column',
+            availableCardTypes: ['column', 'search']
           },
           {
             title: 'column_2',
@@ -140,7 +157,9 @@ describe('DatasetDataService', function() {
             physicalDatatype: 'number',
             description: 'Column 2.',
             importance: 1,
-            cardinality: Math.pow(2, 53) - 1
+            cardinality: Math.pow(2, 53) - 1,
+            defaultCardType: 'column',
+            availableCardTypes: ['column', 'search']
           }
         ]
       };
@@ -192,6 +211,7 @@ describe('DatasetDataService', function() {
       }));
 
       describe('getDatasetMetadata', function() {
+
         it('should throw on bad parameters', function() {
           expect(function() { DatasetDataService.getDatasetMetadata(); }).to.throw();
           expect(function() { DatasetDataService.getDatasetMetadata(fake4x4); }).to.throw(); // Expect version.
@@ -220,6 +240,7 @@ describe('DatasetDataService', function() {
         if (phaseTestingUnder === 2) {
           var schemaVersion0 = '0';
           var schemaVersion1 = '1';
+
           it('should throw on a V0 request', function() {
             expect(function() { DatasetDataService.getDatasetMetadata(schemaVersion0, fake4x4); }).to.throw();
           });

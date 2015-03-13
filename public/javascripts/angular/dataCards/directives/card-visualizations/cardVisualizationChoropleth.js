@@ -151,6 +151,16 @@
 
             }
 
+            dataPromise.then(
+              function(res) {
+                // Ok
+                dataResponses.onNext(1);
+              },
+              function(err) {
+                // Do nothing
+              }
+            );
+
             return Rx.Observable.fromPromise(dataPromise);
           }
         );

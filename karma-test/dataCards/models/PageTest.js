@@ -2,6 +2,7 @@ describe('Page model', function() {
   var Page;
   var DatasetV0;
   var DatasetV1;
+  var Dataset;
   var testHelpers;
   var $q;
   var $rootScope;
@@ -17,7 +18,6 @@ describe('Page model', function() {
   });
 
   beforeEach(inject(function($injector) {
-    Page = $injector.get('Page');
     DatasetV0 = $injector.get('DatasetV0');
     DatasetV1 = $injector.get('DatasetV1');
     $q = $injector.get('$q');
@@ -32,7 +32,7 @@ describe('Page model', function() {
     expect(instance.id).to.equal(id);
   }));
 
-  it('should not attempt to fetch data if it is set locally first', function() {
+  it('should not attempt to fetch data if it is set locally first', inject(function(Page) {
     var id = 'dead-beef';
     var desc1 = 'A fine description';
     var desc2 = 'Another fine description';
@@ -51,9 +51,9 @@ describe('Page model', function() {
     instance.set('description', desc2);
     instance.set('description', desc3);
     expect(expectedSequence).to.be.empty;
-  });
+  }));
 
-  it('should attempt to fetch the description only when it is accessed.', function() {
+  it('should attempt to fetch the description only when it is accessed.', inject(function(Page) {
     var id = 'dead-beef';
     var descFromApi = 'fromApi';
     var descFromSetter1 = 'fromSetter1';
@@ -86,7 +86,7 @@ describe('Page model', function() {
     instance.set('description', descFromSetter1);
     instance.set('description', descFromSetter2);
     expect(expectedSequence).to.be.empty;
-  });
+  }));
 
   describe('dataset property', function() {
     var phases = ['0', '1', '2'];
@@ -97,8 +97,15 @@ describe('Page model', function() {
     _.each(phases, function(phase) {
       var datasetVersionExpected = datasetVersionExpectedForPhase(phase);
       describe('under phase {0}'.format(phase), function() {
-        it('should eventually return a DatasetV{0} model from the dataset property'.format(datasetVersionExpected), function(done) {
+        beforeEach(inject(function($injector) {
+          // We have to inject Page after overriding the phase, because Page depends on Dataset,
+          // whose factory returns the correct Dataset version based on what the phase is set to on
+          // instantiation.
           testHelpers.overrideMetadataMigrationPhase(phase);
+          Page = $injector.get('Page');
+        }));
+
+        it('should eventually return a DatasetV{0} model from the dataset property'.format(datasetVersionExpected), function(done) {
           var id = 'dead-beef';
           var datasetId = 'fooo-baar';
 
@@ -124,55 +131,63 @@ describe('Page model', function() {
     });
   });
 
-  it('should correctly serialize', function(done) {
-    var id = 'dead-beef';
-    var datasetId = 'fooo-baar';
+  describe('serialize', function() {
+    beforeEach(inject(function($injector) {
+      Page = $injector.get('Page');
+    }));
+    it('should correctly serialize', function(done) {
+      var id = 'dead-beef';
+      var datasetId = 'fooo-baar';
 
-    var mockPageMetadataDefer = $q.defer();
-    MockPageDataService.getPageMetadata = function(id) {
-      expect(id).to.equal(id);
-      return mockPageMetadataDefer.promise;
-    };
+      var mockPageMetadataDefer = $q.defer();
+      MockPageDataService.getPageMetadata = function(id) {
+        expect(id).to.equal(id);
+        return mockPageMetadataDefer.promise;
+      };
 
-    var instance = new Page(id);
+      var instance = new Page(id);
 
-    var observableFields = ['description', 'name', 'layoutMode', 'primaryAmountField', 'primaryAggregation', 'isDefaultPage', 'pageSource', 'cards'];
-    var expectedFields = observableFields.concat([ 'datasetId' ]);
+      var observableFields = ['description', 'name', 'layoutMode', 'primaryAmountField', 'primaryAggregation', 'isDefaultPage', 'pageSource', 'cards'];
+      var expectedFields = observableFields.concat([ 'datasetId' ]);
 
-    // Ask for all of the fields, otherwise Page will never bother to fetch them.
-    // Build sequences that will terminate when the field is set to something other than
-    // undefined.
-    var allFieldsAsObservables = _.map(observableFields, function(field) {
-      return instance.observe(field).filter(_.isDefined).first().ignoreElements();
+      // Ask for all of the fields, otherwise Page will never bother to fetch them.
+      // Build sequences that will terminate when the field is set to something other than
+      // undefined.
+      var allFieldsAsObservables = _.map(observableFields, function(field) {
+        return instance.observe(field).filter(_.isDefined).first().ignoreElements();
+      });
+      // Model's ready when all the above sequences terminate.
+      var modelReady = Rx.Observable.merge.apply(Rx.Observable, allFieldsAsObservables);
+
+      // Make sure the serialized blob looks right.
+      modelReady.subscribe(undefined, undefined, function() {
+        var serialized = instance.serialize();
+        //TODO real schema in JJV.
+        expect(serialized).to.have.keys(expectedFields);
+        expect(serialized).to.have.property('datasetId', datasetId);
+        done();
+      });
+
+      instance.set('dataset', {id: datasetId});
+      mockPageMetadataDefer.resolve({
+        'datasetId': datasetId,
+        'description': 'desc',
+        'name': 'dsName',
+        'layoutMode': 'figures',
+        'primaryAmountField': 'something',
+        'primaryAggregation': 'count',
+        'isDefaultPage': true,
+        'pageSource': 'admin',
+        'cards': []
+      });
+      $rootScope.$digest();
     });
-    // Model's ready when all the above sequences terminate.
-    var modelReady = Rx.Observable.merge.apply(Rx.Observable, allFieldsAsObservables);
-
-    // Make sure the serialized blob looks right.
-    modelReady.subscribe(undefined, undefined, function() {
-      var serialized = instance.serialize();
-      //TODO real schema in JJV.
-      expect(serialized).to.have.keys(expectedFields);
-      expect(serialized).to.have.property('datasetId', datasetId);
-      done();
-    });
-
-    instance.set('dataset', {id: datasetId});
-    mockPageMetadataDefer.resolve({
-      'datasetId': datasetId,
-      'description': 'desc',
-      'name': 'dsName',
-      'layoutMode': 'figures',
-      'primaryAmountField': 'something',
-      'primaryAggregation': 'count',
-      'isDefaultPage': true,
-      'pageSource': 'admin',
-      'cards': []
-    });
-    $rootScope.$digest();
   });
 
   describe('toggleExpanded', function() {
+    beforeEach(inject(function($injector) {
+      Page = $injector.get('Page');
+    }));
     it('should toggle expanded on the given card', function() {
       var mockPageMetadataDefer = $q.defer();
       MockPageDataService.getPageMetadata = _.constant($q.when({ 'datasetId': 'fake-fbfr' }));
@@ -217,6 +232,9 @@ describe('Page model', function() {
     });
   });
   describe('deserialization', function() {
+    beforeEach(inject(function($injector) {
+      Page = $injector.get('Page');
+    }));
     it('should throw if missing the ID from the serialized blob', function() {
       expect(function() {
         new Page({

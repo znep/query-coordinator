@@ -1,5 +1,13 @@
 // This model is intended to be an immutable reference to a Dataset.
-angular.module('dataCards.models').factory('DatasetV0', function(ModelHelper, Model, CardDataService, DatasetDataService, Schemas, SchemaDefinitions, $injector) {
+angular.module('dataCards.models').factory('DatasetV0', function(
+  ModelHelper,
+  Model,
+  CardDataService,
+  DatasetDataService,
+  Schemas,
+  SchemaDefinitions,
+  $injector,
+  $q) {
   var SUPPORTED_DATASET_SCHEMA_VERSION = '0';
   var SUPPORTED_PAGES_SCHEMA_VERSION = '0';
 

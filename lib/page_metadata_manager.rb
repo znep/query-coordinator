@@ -78,7 +78,7 @@ class PageMetadataManager
       end
     end
 
-    create_or_update(:create, page_metadata, options).with_indifferent_access
+    create_or_update(:create, page_metadata, options)
   end
 
   # Updates an existing page.
@@ -173,7 +173,7 @@ class PageMetadataManager
     end
 
     result = phidippides.fetch_dataset_metadata(page_metadata['datasetId'], options)
-    columns = result.fetch(:body).fetch(:columns)
+    columns = result.fetch(:body).fetch('columns')
 
     # Since columns is a hash in metadata transition phases 1 and 2
     # (not the array that it was before) we can create an intermediate

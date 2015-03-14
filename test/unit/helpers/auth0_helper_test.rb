@@ -12,7 +12,7 @@ class Auth0HelperTest < ActionView::TestCase
     assert(Time.now.to_i < expiration && expiration < Time.now.to_i + 60 * 30)
   end
 
-  def getMockFederatedUserToken
+  def get_mock_federated_user_token
     authHash = OmniAuth::AuthHash.new({
                                         'provider' => 'samlp',
                                         'uid' => 'samlp|_c3ac275de528ddea41f237a4142a5704',
@@ -25,27 +25,25 @@ class Auth0HelperTest < ActionView::TestCase
   end
 
   test 'Token is valid' do 
-    authHash = getMockFederatedUserToken()
-    assert (isValidToken(authHash))
+    authHash = get_mock_federated_user_token
+    assert (valid_token?(authHash))
   end
 
   test 'Token is rejected when missing a required field' do
-    authHash = getMockFederatedUserToken()
     #Remove the required fields
     requiredFields = ['email','name','socrata_user_id']
     for requiredField in requiredFields
-      removedValue = authHash.delete(requiredField)
-      #A required field is missing this should always be false
-      refute (isValidToken(authHash))
-      #Put the value back as we continue the iteration
-      authHash[requiredField] = removedValue                 
+      authHash = get_mock_federated_user_token
+      #  Delete a required field
+      authHash.delete(requiredField)
+      refute (valid_token?(authHash))
     end
   end
 
   test 'Token is rejected when the socrata_user_id is a bad format' do
-    authHash = getMockFederatedUserToken()
+    authHash = get_mock_federated_user_token
     authHash['socrata_user_id'] = 'samlp|_somestuff|'
-    refute(isValidToken(authHash))
+    refute(valid_token?(authHash))
   end
 
 end

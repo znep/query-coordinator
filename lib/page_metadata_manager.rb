@@ -24,7 +24,7 @@ class PageMetadataManager
   }.freeze
 
   def table_card
-    merge_new_card_data_with_default('*', 'table')
+    merge_new_card_data_with_default('*', 'table').merge('cardSize' => 2)
   end
 
   def merge_new_card_data_with_default(field_name, card_type, cardinality=nil)
@@ -49,6 +49,10 @@ class PageMetadataManager
       raise Phidippides::NoDatasetIdException.new('cannot create page with no dataset id')
     end
 
+    unless page_metadata.key?('cards')
+      raise Phidippides::NoCardsException.new('no cards entry on page metadata')
+    end
+
     # First provision a new page 4x4, so we can let the data lens know what to point to.
     # This is also what we'll have to do in metadata_transition_phase_2 anyway.
     new_page_id = phidippides.request_new_page_id(page_metadata, options)
@@ -56,27 +60,11 @@ class PageMetadataManager
     page_metadata['pageId'] = new_page_id
 
     # Make sure that there is a table card
-    if page_metadata['cards'].present?
-
-      table_card = page_metadata['cards'].find do |card|
-        card['fieldName'] == '*' || card['cardType'] == 'table'
-      end
-
-      unless table_card
-        if metadata_transition_phase_0? || metadata_transition_phase_1?
-          table_card = V0_CARD_TEMPLATE.deep_dup
-        else
-          table_card = V1_CARD_TEMPLATE.deep_dup
-        end
-
-        table_card.merge!(
-          'fieldName' => '*',
-          'cardSize' => 2,
-          'cardType' => 'table',
-        )
-        page_metadata['cards'] << table_card
-      end
+    has_table_card = page_metadata['cards'].any? do |card|
+      card['fieldName'] == '*' || card['cardType'] == 'table'
     end
+
+    page_metadata['cards'] << table_card unless has_table_card
 
     create_or_update(:create, page_metadata, options)
   end

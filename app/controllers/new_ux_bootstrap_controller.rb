@@ -220,7 +220,6 @@ class NewUxBootstrapController < ActionController::Base
       cards = cards.first(MAX_NUMBER_OF_CARDS)
     end
 
-    cards << page_metadata_manager.table_card
     if metadata_transition_phase_0? || metadata_transition_phase_1?
       {
         'cards' => cards,

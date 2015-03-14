@@ -6,6 +6,7 @@ class NewUxBootstrapControllerTest < ActionController::TestCase
     setup do
       init_core_session
       init_current_domain
+      # noinspection RubyArgCount
       CurrentDomain.stubs(domain: stub(cname: 'localhost'))
       @phidippides = Phidippides.new
       @page_metadata_manager = PageMetadataManager.new
@@ -91,6 +92,7 @@ class NewUxBootstrapControllerTest < ActionController::TestCase
 
     context 'logged in' do
       setup do
+        # noinspection RubyArgCount
         stub_user = stub(roleName: 'administrator')
         @controller.stubs(current_user: stub_user)
       end
@@ -205,10 +207,9 @@ class NewUxBootstrapControllerTest < ActionController::TestCase
             stub_feature_flags_with(:metadata_transition_phase, '0')
 
             # Make sure the page we're creating fits certain criteria
-            @page_metadata_manager.expects(:create).with do |page, params|
-              assert_equal(11, page['cards'].length, 'Should create 10 cards plus a table card')
+            @page_metadata_manager.expects(:create).with do |page, _|
+              assert_equal(10, page['cards'].length, 'Should create 10 cards')
 
-              assert_equal('table', page['cards'].last['cardType'], 'Should have a table card')
               assert(page['cards'].none? do |card|
                 Phidippides::SYSTEM_COLUMN_ID_REGEX.match(card['fieldName'])
               end, 'should omit system columns')
@@ -255,9 +256,8 @@ class NewUxBootstrapControllerTest < ActionController::TestCase
             stub_feature_flags_with(:metadata_transition_phase, '1')
 
             # Make sure the page we're creating fits certain criteria
-            @page_metadata_manager.expects(:create).with do |page, params|
-              assert_equal(11, page['cards'].length, 'Should create 10 cards plus a table card')
-              assert_equal('table', page['cards'].last['cardType'], 'Should have a table card')
+            @page_metadata_manager.expects(:create).with do |page, _|
+              assert_equal(10, page['cards'].length, 'Should create 10 cards')
 
               assert(page['cards'].none? do |card|
                 Phidippides::SYSTEM_COLUMN_ID_REGEX.match(card['fieldName'])
@@ -305,9 +305,8 @@ class NewUxBootstrapControllerTest < ActionController::TestCase
             stub_feature_flags_with(:metadata_transition_phase, '2')
 
             # Make sure the page we're creating fits certain criteria
-            @page_metadata_manager.expects(:create).with do |page, params|
-              assert_equal(11, page['cards'].length, 'Should create 10 cards plus a table card')
-              assert_equal('table', page['cards'].last['cardType'], 'Should have a table card')
+            @page_metadata_manager.expects(:create).with do |page, _|
+              assert_equal(10, page['cards'].length, 'Should create 10 cards')
 
               assert(page['cards'].none? do |card|
                 Phidippides::SYSTEM_COLUMN_ID_REGEX.match(card['fieldName'])
@@ -377,12 +376,9 @@ class NewUxBootstrapControllerTest < ActionController::TestCase
             stub_feature_flags_with(:metadata_transition_phase, '0')
 
             # Make sure the page we're creating fits certain criteria
-            @page_metadata_manager.expects(:create).with do |page, params|
-              assert_equal(1, page['cards'].length,
-                           'Should not create column card with cardinality == dataset_size')
-              assert_equal('table', page['cards'][0]['cardType'], 'Should have a table card')
-              next true
-            end.then.returns({ status: '200', body: { pageId: 'neoo-page' } })
+            @page_metadata_manager.expects(:create).
+              with { |page, _| assert_no_cards(page) }.
+              returns({ status: '200', body: { pageId: 'neoo-page' } })
 
             get :bootstrap, id: 'four-four'
             assert_redirected_to('/view/neoo-page')
@@ -397,12 +393,9 @@ class NewUxBootstrapControllerTest < ActionController::TestCase
             stub_feature_flags_with(:metadata_transition_phase, '1')
 
             # Make sure the page we're creating fits certain criteria
-            @page_metadata_manager.expects(:create).with do |page, params|
-              assert_equal(1, page['cards'].length,
-                           'Should not create column card with cardinality == dataset_size')
-              assert_equal('table', page['cards'][0]['cardType'], 'Should have a table card')
-              next true
-            end.then.returns({ status: '200', body: { pageId: 'neoo-page' } })
+            @page_metadata_manager.expects(:create).
+              with { |page, _| assert_no_cards(page) }.
+              returns({ status: '200', body: { pageId: 'neoo-page' } })
 
             get :bootstrap, id: 'four-four'
             assert_redirected_to('/view/neoo-page')
@@ -417,12 +410,9 @@ class NewUxBootstrapControllerTest < ActionController::TestCase
             stub_feature_flags_with(:metadata_transition_phase, '2')
 
             # Make sure the page we're creating fits certain criteria
-            @page_metadata_manager.expects(:create).with do |page, params|
-              assert_equal(1, page['cards'].length,
-                           'Should not create column card with cardinality == dataset_size')
-              assert_equal('table', page['cards'][0]['cardType'], 'Should have a table card')
-              next true
-            end.then.returns({ status: '200', body: { pageId: 'neoo-page' } })
+            @page_metadata_manager.expects(:create).
+              with { |page, _| assert_no_cards(page) }.
+              returns({ status: '200', body: { pageId: 'neoo-page' } })
 
             get :bootstrap, id: 'four-four'
             assert_redirected_to('/view/neoo-page')
@@ -453,6 +443,14 @@ class NewUxBootstrapControllerTest < ActionController::TestCase
   end
 
   private
+
+  def assert_no_cards(page)
+    assert_equal(
+      0,
+      page['cards'].length,
+      'Should not create column card with cardinality == dataset_size'
+    )
+  end
 
   def collect_differing_card_types(cards)
     seen_multi_cards = {}

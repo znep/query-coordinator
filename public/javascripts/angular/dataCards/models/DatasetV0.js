@@ -110,20 +110,7 @@ angular.module('dataCards.models').factory('DatasetV0', function(
       self.defineEphemeralObservableProperty('isReadableByCurrentUser', true);
 
       self.defineEphemeralObservableProperty('rowCount', null, function() {
-        // We are using a deferred promise here because it appears that rejecting a promise that has been
-        // transformed into a sequence within a model via Rx.Observable.fromPromise() leads to the sequence
-        // being terminated when the promise is rejected. This leads to the inability to see the new value
-        // which is set via set('isReadableByCurrentUser') from being seen by subscribers to the sequence.
-        var deferred = $q.defer();
-        var rowCountPromise = CardDataService.getRowCount(self.id);
-        var mapResult = function(result) {
-          self.set('isReadableByCurrentUser', result.status !== 403);
-        };
-        rowCountPromise['then'](mapResult, mapResult);
-        rowCountPromise['finally'](function(result) {
-          deferred.resolve(result);
-        });
-        return deferred.promise;
+        return CardDataService.getRowCount(self.id);
       });
     }
   });

@@ -140,7 +140,7 @@ describe('DatasetV1 model', function() {
     $rootScope.$digest();
   });
 
-  xdescribe('isReadableByCurrentUser', function() {
+  describe('isReadableByCurrentUser', function() {
     var def;
     var instance;
     var subscription;

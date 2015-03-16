@@ -20,7 +20,7 @@ class Auth0Controller < ApplicationController
       extracted_uid = socrata_id.match(/\|(\w{4}-\w{4})\|/)
 
       # Do some primitive validation on the returned UID
-      if extracted_uid.nil?  # || !uid.match(/^\w{4}-\w{4}$/)
+      if extracted_uid.nil?
         Rails.logger.error("Invalid UID returned from Auth0: #{extracted_uid}")
         render_500
       else # UID is of the form xxxx-xxxx

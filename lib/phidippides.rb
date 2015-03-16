@@ -50,19 +50,78 @@ class Phidippides < SocrataHttp
 
   def fetch_dataset_metadata(dataset_id, options = {})
     if metadata_transition_phase_0?
-      issue_request(
+      fetched_response = issue_request(
         :verb => :get,
         :path => "datasets/#{dataset_id}",
         :request_id => options[:request_id],
         :cookies => options[:cookies]
       )
     else
-      issue_request(
+      fetched_response = issue_request(
         :verb => :get,
         :path => "v1/id/#{dataset_id}/dataset",
         :request_id => options[:request_id],
         :cookies => options[:cookies]
       )
+    end
+    augment_dataset_metadata(dataset_id, fetched_response)
+  end
+
+  def augment_dataset_metadata(dataset_id, fetched_response)
+    status = migration_status(dataset_id)
+    if status.nil?
+      backend_view = dataset_view(dataset_id)
+    else
+      backend_view = dataset_view(status[:obeId])
+    end
+    unless backend_view.nil? || fetched_response[:body].blank?
+      fetched_response[:body] = mirror_column_metadata(backend_view, fetched_response[:body])
+    end
+    fetched_response
+  end
+
+  def mirror_column_metadata(backend_view, nbe_dataset)
+    backend_view.columns.each do |column|
+      if metadata_transition_phase_0?
+        nbe_column = nbe_dataset['columns'].detect { |nbe_column| nbe_column[:name] == column.fieldName }
+      else
+        nbe_column = nbe_dataset[:columns][column.fieldName.to_sym]
+      end
+      unless nbe_column.nil?
+        nbe_column[:position] = column.position
+        nbe_column[:hideInTable] = column.flag?('hidden')
+      end
+    end
+    nbe_dataset
+  end
+
+  def dataset_view(id)
+    begin
+      View.find(id)
+    rescue => e
+      Rails.logger.warn(<<-EOS.strip_heredoc)
+        Error while retrieving old backend view of "(#{id}): #{e}"
+      EOS
+      nil
+    end
+  end
+
+  def migration_status(id)
+    begin
+      response = CoreServer::Base.connection.get_request(
+        "/migrations/#{id}"
+      )
+      status = JSON.parse(response).with_indifferent_access
+      if status.has_key?(:obeId) && status.has_key?(:nbeId)
+        status
+      else
+        nil
+      end
+    rescue => e
+      Rails.logger.warn(<<-EOS.strip_heredoc)
+        Error while retrieving migration status of "(#{id}): #{e}"
+      EOS
+      nil
     end
   end
 

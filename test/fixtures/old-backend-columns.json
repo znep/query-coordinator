@@ -1,0 +1,27 @@
+{
+  "columns": [
+    {
+      "fieldName": "location_description",
+      "position": 3
+    },
+    {
+      "fieldName": "primary_type",
+      "position": 1,
+      "flags": [
+        "hidden"
+      ]
+    },
+    {
+      "fieldName": "x_coordinate",
+      "position": 5
+    },
+    {
+      "fieldName": "updated_on",
+      "position": 4
+    },
+    {
+      "fieldName": "ward",
+      "position": 2
+    }
+  ]
+}

@@ -126,8 +126,8 @@ angular.module('dataCards.models').factory('DatasetV1', function(
         var mapResult = function(result) {
           self.set('isReadableByCurrentUser', result.status !== 403);
         };
-        rowCountPromise.then(mapResult, mapResult);
-        rowCountPromise.finally(function(result) {
+        rowCountPromise['then'](mapResult, mapResult);
+        rowCountPromise['finally'](function(result) {
           deferred.resolve(result);
         });
         return deferred.promise;

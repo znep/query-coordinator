@@ -182,7 +182,7 @@ class UserSession
 
   def find_auth0_token(auth0_authentication)
     result = nil
-    if auth0_authentication.isAuthenticated?
+    if auth0_authentication.authenticated?
       result = find_user(auth0_authentication.user)
     end
     result

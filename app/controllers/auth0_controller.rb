@@ -38,7 +38,7 @@ class Auth0Controller < ApplicationController
         render_404
       else
         Rails.logger.info("Token contains required fields.  Attempting to authenticate through Core.")
-        auth0_authentication = Auth0Authentication.new(token.to_json)
+        auth0_authentication = authentication_provider_class.new(token.to_json)
         if (auth0_authentication.authenticated?)
           user_session = UserSession.auth0(auth0_authentication)
           redirect_back_or_default(login_redirect_url)
@@ -48,6 +48,11 @@ class Auth0Controller < ApplicationController
         end
       end
     end
+  end
+
+  #Factored out to support functional testing
+  def authentication_provider_class
+    Auth0Authentication
   end
 
   # Indicates a failure on the side of Auth0; it may be internal, auth code expiration, etc.

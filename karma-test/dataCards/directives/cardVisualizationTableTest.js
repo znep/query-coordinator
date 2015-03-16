@@ -1,5 +1,72 @@
-describe("A Table Card Visualization", function() {
-  var testHelpers, rootScope, Model, Card, Page, q;
+describe('A Table Card Visualization', function() {
+  'use strict';
+
+  var COLUMNS = {
+    'test_column': {
+      'name': 'test column title',
+      'description': 'test column description',
+      'fred': 'amount',
+      'physicalDatatype': 'number',
+      'isSystemColumn': false,
+      'defaultCardType': 'column',
+      'availableCardTypes': ['column', 'search']
+    },
+    'test_timestamp_column': {
+      'name': 'what time is it',
+      'fred': 'time',
+      'physicalDatatype': 'timestamp',
+      'isSystemColumn': false,
+      'defaultCardType': 'timeline',
+      'availableCardTypes': ['timeline']
+    },
+    'test_floating_timestamp_column': {
+      'name': 'which time is it',
+      'fred': 'time',
+      'physicalDatatype': 'floating_timestamp',
+      'isSystemColumn': false,
+      'defaultCardType': 'timeline',
+      'availableCardTypes': ['timeline']
+    },
+    ':@test_computed_column': {
+      'name': 'Community Districts',
+      'description': 'Community district reporting 311 request',
+      'fred': 'location',
+      'physicalDatatype': 'number',
+      'computationStrategy': {
+        'parameters': {
+          'region': '_mash-apes'
+        },
+        'source_columns': ['something_else'],
+        'strategy_type': 'georegion_match_on_point'
+      },
+      'isSystemColumn': true,
+      'defaultCardType': 'column',
+      'availableCardTypes': ['column', 'search']
+    },
+    ':test_system_column': {
+      'name': ':test_system_column',
+      'fred': 'text',
+      'physicalDatatype': 'row_identifier',
+      'isSystemColumn': true
+    },
+    '*': {
+      'name': 'Data Table',
+      'description': '',
+      'fred': '*',
+      'physicalDatatype': '*',
+      'isSystemColumn': false,
+      'fakeColumnGeneratedByFrontEnd': true,
+      'defaultCardType': 'table',
+      'availableCardTypes': ['table']
+    }
+  };
+
+  var testHelpers;
+  var rootScope;
+  var Model;
+  var CardV1;
+  var Page;
+  var q;
 
   beforeEach(module('/angular_templates/dataCards/table.html'));
   beforeEach(module('/angular_templates/dataCards/cardVisualizationTable.html'));
@@ -13,7 +80,7 @@ describe("A Table Card Visualization", function() {
         getRowCount: function(id, whereClause) {
           return q.when(_.isEmpty(whereClause) ? 1337 : 42);
         },
-        getRows: function(datasetId, offset, limit, order, timeout, whereClause) {
+        getRows: function(/*datasetId, offset, limit, order, timeout, whereClause*/) {
           return q.when([{
             'coordinates_8': {'type': 'Point', 'coordinates': [-87.49448, 41.792287]},
             'kilo_monstrosityquotient_2': '96054.26539825846',
@@ -60,9 +127,22 @@ describe("A Table Card Visualization", function() {
     return CardV1.deserialize(pageModel, $.extend({}, baseCard, blob));
   }
 
-  function createTable(cardBlobs, whereClause, firstColumn) {
-    cardBlobs = cardBlobs || [];
-    whereClause = whereClause || '';
+  /**
+   *
+   * @param {Object} [options]
+   * @param {Array} [options.cardBlobs]
+   * @param {String} [options.whereClause]
+   * @param {String} [options.firstColumn]
+   * @param {Object} [options.columns]
+   * @returns {{pageModel: Page, datasetModel: Model, model: Model, element: Element, outerScope: Object, scope: Object}}
+   */
+  function createTable(options) {
+    options = _.defaults({}, options, {
+      cardBlobs: [],
+      whereClause: '',
+      firstColumn: undefined,
+      columns: COLUMNS
+    });
 
     var model = new Model();
     model.fieldName = '*';
@@ -72,85 +152,24 @@ describe("A Table Card Visualization", function() {
     datasetModel.id = 'test-data';
     datasetModel.version = '1';
     datasetModel.defineObservableProperty('rowDisplayUnit', 'row');
-
-    datasetModel.defineObservableProperty('columns', {
-      'test_column': {
-        'name': 'test column title',
-        'description': 'test column description',
-        'fred': 'amount',
-        'physicalDatatype': 'number',
-        'isSystemColumn': false,
-        'dataset': datasetModel,
-        'defaultCardType': 'column',
-        'availableCardTypes': ['column', 'search']
-      },
-      'test_timestamp_column': {
-        'name': 'what time is it',
-        'fred': 'time',
-        'physicalDatatype': 'timestamp',
-        'isSystemColumn': false,
-        'dataset': datasetModel,
-        'defaultCardType': 'timeline',
-        'availableCardTypes': ['timeline']
-      },
-      'test_floating_timestamp_column': {
-        'name': 'which time is it',
-        'fred': 'time',
-        'physicalDatatype': 'floating_timestamp',
-        'isSystemColumn': false,
-        'dataset': datasetModel,
-        'defaultCardType': 'timeline',
-        'availableCardTypes': ['timeline']
-      },
-      ':@test_computed_column': {
-        'name': 'Community Districts',
-        'description': 'Community district reporting 311 request',
-        'fred': 'location',
-        'physicalDatatype': 'number',
-        'computationStrategy': {
-          'parameters': {
-            'region': '_mash-apes'
-          },
-          'source_columns': ['something_else'],
-          'strategy_type': 'georegion_match_on_point'
-        },
-        'isSystemColumn': true,
-        'dataset': datasetModel,
-        'defaultCardType': 'column',
-        'availableCardTypes': ['column', 'search']
-      },
-      ':test_system_column': {
-        'name': ':test_system_column',
-        'fred': 'text',
-        'physicalDatatype': 'row_identifier',
-        'isSystemColumn': true,
-        'dataset': datasetModel
-      },
-      '*': {
-        'name': 'Data Table',
-        'description': '',
-        'fred': '*',
-        'physicalDatatype': '*',
-        'isSystemColumn': false,
-        'fakeColumnGeneratedByFrontEnd': true,
-        'dataset': datasetModel,
-        'defaultCardType': 'table',
-        'availableCardTypes': ['table']
-      }
+    _.each(options.columns, function(column) {
+      column.dataset = datasetModel;
     });
+
+    datasetModel.defineObservableProperty('columns', options.columns);
 
     var pageModel = new Page('test-page');
     pageModel.set('dataset', datasetModel);
     pageModel.set('baseSoqlFilter', null);
     model.page = pageModel;
 
-    var cardModels = cardBlobs.map(function(cardBlob) { return newCard(pageModel, cardBlob); });
+    var cardModels = options.cardBlobs.map(function(cardBlob) { return newCard(pageModel, cardBlob); });
     model.page.set('cards', cardModels);
 
     var outerScope = rootScope.$new();
-    outerScope.whereClause = whereClause;
+    outerScope.whereClause = options.whereClause;
     outerScope.model = model;
-    outerScope.firstColumn = firstColumn;
+    outerScope.firstColumn = options.firstColumn;
 
     var html = '<div style="position: relative"><card-visualization-table model="model" where-clause="whereClause" first-column="firstColumn"></card-visualization-table></div>';
     var element = testHelpers.TestDom.compileAndAppend(html, outerScope);
@@ -262,7 +281,7 @@ describe("A Table Card Visualization", function() {
       }];
 
       expect(function() {
-        createTable(cards);
+        createTable({ cardBlobs: cards });
       }).to.not.throw();
 
     });
@@ -272,8 +291,50 @@ describe("A Table Card Visualization", function() {
   describe('first column', function() {
     it('should be able to be specified', function() {
       var FIRST_COLUMN_OVERRIDE = 'test_timestamp_column';
-      var table = createTable(undefined, undefined, FIRST_COLUMN_OVERRIDE);
+      var table = createTable({ firstColumn: FIRST_COLUMN_OVERRIDE });
       expect(table.element.find('.th:eq(0)').data('columnId')).to.equal(FIRST_COLUMN_OVERRIDE);
+    });
+  });
+
+  describe('column order', function() {
+    it('should order columns according to "position" property', function() {
+      var columnPosition = {
+        'test_column': 2,
+        'test_timestamp_column': 1,
+        'test_floating_timestamp_column': 3
+      };
+      var newColumns = _.cloneDeep(COLUMNS);
+      _.each(columnPosition, function(value, key) {
+        newColumns[key].position = value;
+      });
+      var table = createTable({ columns: newColumns });
+      expect(table.element.find('.th:eq(0)')).to.have.data('columnId', 'test_timestamp_column');
+      expect(table.element.find('.th:eq(1)')).to.have.data('columnId', 'test_column');
+      expect(table.element.find('.th:eq(2)')).to.have.data('columnId', 'test_floating_timestamp_column');
+    });
+    it('should sort columns without a "position" property to the end', function() {
+      var columnPosition = {
+        'test_timestamp_column': 2,
+        'test_floating_timestamp_column': 1
+      };
+      var newColumns = _.cloneDeep(COLUMNS);
+      _.each(columnPosition, function(value, key) {
+        newColumns[key].position = value;
+      });
+      var table = createTable({ columns: newColumns });
+      expect(table.element.find('.th:eq(0)')).to.have.data('columnId', 'test_floating_timestamp_column');
+      expect(table.element.find('.th:eq(1)')).to.have.data('columnId', 'test_timestamp_column');
+      expect(table.element.find('.th:eq(2)')).to.have.data('columnId', 'test_column');
+    });
+  });
+
+  describe('column visibility', function() {
+    it('should hide columns according to "hideInTable" property', function() {
+      var newColumns = _.cloneDeep(COLUMNS);
+      newColumns['test_column'].hideInTable = true;
+      var table = createTable({ columns: newColumns });
+      expect(table.element.find('.th:eq(0)')).to.have.data('columnId', 'test_timestamp_column');
+      expect(table.element.find('.th:eq(1)')).to.have.data('columnId', 'test_floating_timestamp_column');
     });
   });
 

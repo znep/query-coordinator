@@ -9,9 +9,14 @@
 
     return {
       restrict: 'E',
-      scope: { 'model': '=', 'whereClause': '=', 'showCount': '=?', 'firstColumn': '=?' },
+      scope: {
+        'model': '=',
+        'whereClause': '=',
+        'showCount': '=?',
+        'firstColumn': '=?'
+      },
       templateUrl: '/angular_templates/dataCards/cardVisualizationTable.html',
-      link: function($scope, element, attrs) {
+      link: function($scope) {
 
         AngularRxExtensions.install($scope);
 
@@ -37,7 +42,7 @@
         };
 
         function isDisplayableColumn(column, fieldName) {
-          return validColumnRegex.test(fieldName);
+          return !column.hideInTable && validColumnRegex.test(fieldName);
         }
 
         function keepOnlyDisplayableColumns(columns) {
@@ -65,7 +70,9 @@
           map(addExtraAttributesToColumns);
 
         var columnDetailsAsArray = columnDetails.
-          map(_.toArray).
+          map(function(columns) {
+            return _(columns).chain().toArray().sortBy('position').value();
+          }).
           combineLatest(
             $scope.observe('firstColumn'),
             function(asArray, firstColumnFieldName) {

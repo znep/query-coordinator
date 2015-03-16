@@ -1,18 +1,6 @@
 angular.module('socrataCommon.services').factory('AngularRxExtensions', function(Assert, $log) {
   'use strict';
 
-  /**
-   * The default error handler for Rx.Observable.fromPromise will throw whatever parameter it's
-   * given, if the promise goes to the error state. For $http promises, this is just the response
-   * object, so we lose stack information, etc. So - only throw actual Errors.
-   */
-  function swallowNonExceptions(e) {
-    if (e instanceof Error) {
-      throw e;
-    }
-    $log.error('Error from observable: ', e);
-  }
-
   var extensions = {
     // Execute the given function immediately if an angular digest-apply is
     // already in progress, otherwise starts a digest-apply cycle then executes
@@ -55,21 +43,43 @@ angular.module('socrataCommon.services').factory('AngularRxExtensions', function
         self.safeApply(function() {
           self[propName] = newValue;
         });
-      };
+      }
 
       function errorHandler(error) {
         set(onError.apply(this, arguments));
-      };
+      }
+
       function completedHandler() {
         set(onCompleted.apply(this, arguments));
-      };
+      }
+
+      /**
+       * The default error handler for Rx.Observable.fromPromise will throw whatever parameter it's
+       * given, if the promise goes to the error state. For $http promises, this is just the response
+       * object, so we lose stack information, etc. So - only throw actual Errors.
+       *
+       * Exceptions are passed through but are augmented with a tag (extra message),
+       * causeScope, and causeBoundProperty.
+       */
+      function defaultErrorHandler(e) {
+        var genericErrorMessage = 'bindObservable: Unhandled error in sequence bound to property {0} of scope {1}'.
+          format(propName, self.$id);
+        if (e instanceof Error) {
+          // For debugging, place the message on the Error instance.
+          e.tag = genericErrorMessage;
+          e.causeScope = self;
+          e.causeBoundProperty = propName;
+          throw e;
+        }
+        $log.error(genericErrorMessage, e);
+      }
 
       observable.
         takeUntil(self.eventToObservable('$destroy')). //TakeUntil to avoid leaks.
         subscribe(
           set,
-          onError ? errorHandler : swallowNonExceptions,
-          onCompleted ? completedHandler : swallowNonExceptions
+          onError ? errorHandler : defaultErrorHandler,
+          onCompleted ? completedHandler : undefined
         );
     },
 

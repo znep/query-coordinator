@@ -1,4 +1,18 @@
-angular.module('socrataCommon.services').factory('AngularRxExtensions', function(Assert) {
+angular.module('socrataCommon.services').factory('AngularRxExtensions', function(Assert, $log) {
+  'use strict';
+
+  /**
+   * The default error handler for Rx.Observable.fromPromise will throw whatever parameter it's
+   * given, if the promise goes to the error state. For $http promises, this is just the response
+   * object, so we lose stack information, etc. So - only throw actual Errors.
+   */
+  function swallowNonExceptions(e) {
+    if (e instanceof Error) {
+      throw e;
+    }
+    $log.error('Error from observable: ', e);
+  }
+
   var extensions = {
     // Execute the given function immediately if an angular digest-apply is
     // already in progress, otherwise starts a digest-apply cycle then executes
@@ -54,8 +68,8 @@ angular.module('socrataCommon.services').factory('AngularRxExtensions', function
         takeUntil(self.eventToObservable('$destroy')). //TakeUntil to avoid leaks.
         subscribe(
           set,
-          onError ? errorHandler : undefined,
-          onCompleted ? completedHandler : undefined
+          onError ? errorHandler : swallowNonExceptions,
+          onCompleted ? completedHandler : swallowNonExceptions
         );
     },
 

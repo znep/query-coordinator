@@ -5,16 +5,25 @@
   var MIGRATION_ENDPOINT = '/api/migrations/{0}';
   var OBE_DATASET_PAGE = '/d/{0}';
 
-  function initDownload($scope, page, WindowState, FlyoutService, ServerConfig) {
+  function initDownload($scope, page, obeIdObservable, WindowState, FlyoutService, ServerConfig) {
     // The CSV download url
-    $scope.bindObservable('datasetCSVDownloadURL',
-      page.observe('dataset').map(function(dataset) {
-        if (dataset && dataset.hasOwnProperty('id')) {
-          return '/api/views/{0}/rows.csv?accessType=DOWNLOAD'.format(dataset.id);
-        } else {
-          return '#';
+    $scope.bindObservable(
+      'datasetCSVDownloadURL',
+      Rx.Observable.combineLatest(
+        obeIdObservable.startWith(null),
+        page.observe('dataset').filter(_.isObject),
+        function(obeId, dataset) {
+          if (obeId) {
+            return '/api/views/{0}/rows.csv?accessType=DOWNLOAD&bom=true'.format(obeId);
+          } else if (dataset.hasOwnProperty('id')) {
+            return '/api/views/{0}/rows.csv?accessType=DOWNLOAD'.format(dataset.id);
+          } else {
+            return '#';
+          }
         }
-      }));
+      )
+    );
+    $scope.datasetCSVDownloadURL = '#';
 
     // Download menu
     $scope.showDownloadButton = ServerConfig.get('enablePngDownloadUi');
@@ -139,12 +148,13 @@
       map(_.bind(MIGRATION_ENDPOINT.format, MIGRATION_ENDPOINT)).
       flatMap(function(url) {
         return Rx.Observable.fromPromise($http.get(url));
-      }).
-      // Now construct the source dataset url from the obe id
-      map(function(response) {
-        return OBE_DATASET_PAGE.format(response.data.obeId);
+      }).map(function(response) {
+        return response.data.obeId;
       });
-    $scope.bindObservable('sourceDatasetURL', obeIdObservable);
+    $scope.bindObservable('sourceDatasetURL', obeIdObservable.map(function(obeId) {
+      // Now construct the source dataset url from the obe id
+      return OBE_DATASET_PAGE.format(obeId);
+    }));
 
     /***************
     * User session *
@@ -180,7 +190,7 @@
     );
 
 
-    initDownload($scope, page, WindowState, FlyoutService, ServerConfig);
+    initDownload($scope, page, obeIdObservable, WindowState, FlyoutService, ServerConfig);
 
     /**
      * If we ever get a 403 from the server while trying to access the dataset, it means we can't view

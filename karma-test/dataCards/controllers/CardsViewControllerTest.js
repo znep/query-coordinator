@@ -395,6 +395,24 @@ describe('CardsViewController', function() {
       $httpBackend.flush();
       expect($scope.sourceDatasetURL).to.equal('/d/sooo-old2');
     });
+
+    it('doesn\'t set the sourceDatasetURL if the migration endpoint returns non-200', function() {
+      var controllerHarness = makeController();
+      var $scope = controllerHarness.$scope;
+
+      $httpBackend.expectGET('/api/migrations/fake-fbfr').respond(404, '{"data":{"obeId":1234}}');
+
+      controllerHarness.pageMetadataPromise.resolve({
+        datasetId: 'fake-fbfr',
+        name: 'maroon'
+      });
+      $rootScope.$digest();
+
+      expect($scope.sourceDatasetURL).not.to.be.ok;
+      $httpBackend.flush();
+      $rootScope.$digest();
+      expect($scope.sourceDatasetURL).not.to.be.ok;
+    });
   });
 
   describe('page description', function() {
@@ -915,6 +933,28 @@ describe('CardsViewController', function() {
 
       expect(controllerHarness.$scope.datasetCSVDownloadURL).
         to.equal('/api/views/fake-fbfr/rows.csv?accessType=DOWNLOAD');
+    });
+
+    it('uses the obeid for the csv download link if available', function() {
+      var controllerHarness = makeController();
+      $httpBackend.expectGET('/api/migrations/fake-fbfr');
+
+      expect(controllerHarness.$scope.datasetCSVDownloadURL).to.equal('#');
+
+      controllerHarness.pageMetadataPromise.resolve({
+        datasetId: 'fake-fbfr',
+        name: 'some name'
+      });
+      controllerHarness.$scope.$digest();
+
+      expect(controllerHarness.$scope.datasetCSVDownloadURL).
+        to.equal('/api/views/fake-fbfr/rows.csv?accessType=DOWNLOAD');
+
+      $httpBackend.flush();
+      controllerHarness.$scope.$digest();
+
+      expect(controllerHarness.$scope.datasetCSVDownloadURL).
+        to.equal('/api/views/sooo-oold/rows.csv?accessType=DOWNLOAD&bom=true');
     });
 
     it('closes the dialog when clicking (or hitting esc) outside it', function() {

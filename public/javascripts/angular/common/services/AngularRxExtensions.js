@@ -2,15 +2,15 @@ angular.module('socrataCommon.services').factory('AngularRxExtensions', function
   'use strict';
 
   /**
-   * Rx.Observable.fromPromise will do stupid things for $http promises - if the server returns
-   * non-200, it will throw the response object as an exception, makes some tests fail for
-   * mysterious and untraceable reasons. Do something more intelligent.
+   * The default error handler for Rx.Observable.fromPromise will throw whatever parameter it's
+   * given, if the promise goes to the error state. For $http promises, this is just the response
+   * object, so we lose stack information, etc. So - only throw actual Errors.
    */
   function swallowNonExceptions(e) {
     if (e instanceof Error) {
       throw e;
     }
-    $log.warn('Error from observable: ', e);
+    $log.error('Error from observable: ', e);
   }
 
   var extensions = {

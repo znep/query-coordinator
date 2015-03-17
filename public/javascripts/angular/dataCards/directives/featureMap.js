@@ -37,11 +37,14 @@
 
         var baseTileLayer = null;
 
-        // We 'double-buffer' feature layers so that there isn't a visible flash
+        // We buffer feature layers so that there isn't a visible flash
         // of emptiness when we transition from one to the next. This is accomplished
         // by only removing the previous one when the current one completes rendering.
-        var thisFeatureLayer = null;
-        var lastFeatureLayer = null;
+        var featureLayers = {};
+
+        // We also keep a handle on the current feature layer Url so we know which of
+        // the existing layers we can safely remove.
+        var currentFeatureLayerUrl;
 
         // We only want to calculate the extent on page load, so we track whether or
         // not this is the first render. After the first render this flag gets switched
@@ -50,7 +53,7 @@
 
         // We track how many protocol buffer tile requests are in-flight so that we can
         // swap out the old tiles when all the new ones have loaded (see the explanation
-        // of thisFeatureLayer and lastFeatureLayer above).
+        // of featureLayers above).
         var tilesToProcess = 0;
 
 
@@ -233,15 +236,14 @@
          * so that there is only ever one active feature layer attached to the
          * map at a time.
          *
+         * @param map - The Leaflet map object.
+         * @
          */
 
         function createNewFeatureLayer(map, featureLayerUrl) {
 
           var featureLayerOptions = {
             url: featureLayerUrl,
-            // The X-Socrata-Host header is a temporary local development
-            // stopgap until TileServer can discover Soda Fountain on its
-            // own.
             headers: {},
             debug: false,
             getFeatureId: getFeatureId,
@@ -255,11 +257,9 @@
             // mousemove: function(e) { /* do stuff with e.latLng */ }
           };
 
-          lastFeatureLayer = thisFeatureLayer;
-          thisFeatureLayer = VectorTiles.create(featureLayerOptions);
+          featureLayers[featureLayerUrl] = VectorTiles.create(featureLayerOptions);
 
-          map.addLayer(thisFeatureLayer);
-
+          map.addLayer(featureLayers[featureLayerUrl]);
         }
 
 
@@ -270,17 +270,27 @@
          * Removes an existing feature layer from the map. This is used in
          * conjunction with createNewFeatureLayer.
          *
+         * @param map - The Leaflet map object.
          */
 
-        function removeOldFeatureLayer(map) {
+        function removeOldFeatureLayers(map) {
 
-          if (lastFeatureLayer !== null) {
+          var featureLayerUrls = _.keys(featureLayers);
+          var thisFeatureLayerUrl;
 
-            map.removeLayer(lastFeatureLayer);
-            lastFeatureLayer = null;
+          // currentFeatureLayerUrl may be undefined.
+          if (_.isString(currentFeatureLayerUrl)) {
 
+            for (var i = 0; i < featureLayerUrls.length; i++) {
+
+              thisFeatureLayerUrl = featureLayerUrls[i];
+
+              if (featureLayerUrls[i] !== currentFeatureLayerUrl) {
+                map.removeLayer(featureLayers[thisFeatureLayerUrl]);
+                delete featureLayers[thisFeatureLayerUrl];
+              }
+            }
           }
-
         }
 
 
@@ -383,7 +393,7 @@
 
         element.on('vector-tile-render-complete', function(e) {
 
-          removeOldFeatureLayer(map);
+          removeOldFeatureLayers(map);
           scope.$emit('render:complete', { source: 'feature_map_{0}'.format(scope.$id), timestamp: _.now(), tag: 'vector_tile_render' });
 
         });
@@ -398,10 +408,10 @@
           scope.observe('featureLayerUrl'),
           function(featureLayerUrl) {
             if (_.isString(featureLayerUrl)) {
+              currentFeatureLayerUrl = featureLayerUrl;    
               createNewFeatureLayer(map, featureLayerUrl);
             }
           });
-
 
         //
         // React to changes to the visualization's dimensions

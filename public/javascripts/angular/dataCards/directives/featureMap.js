@@ -227,9 +227,11 @@
             // mousemove: function(e) { /* do stuff with e.latLng */ }
           };
 
-          featureLayers[featureLayerUrl] = VectorTiles.create(featureLayerOptions);
-
-          map.addLayer(featureLayers[featureLayerUrl]);
+          // Don't create duplicate layers.
+          if (!featureLayers.hasOwnProperty(featureLayerUrl)) {
+            featureLayers[featureLayerUrl] = VectorTiles.create(featureLayerOptions);
+            map.addLayer(featureLayers[featureLayerUrl]);
+          }
         }
 
 

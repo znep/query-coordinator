@@ -52,7 +52,7 @@ class PageMetadataManagerTest < Test::Unit::TestCase
     result = manager.create(v1_page_metadata)
     assert_equal('200', result.fetch(:status), 'Expected create result status to be 200')
     assert_equal('asdf-asdf', result.fetch(:body).fetch('pageId'), 'Expected the new pageId to be returned')
-    assert_equal('data-lens', result.fetch(:body).fetch('data_lens_id'), 'Expected the new data_lens_id to be returned')
+    assert_equal('data-lens', result.fetch(:body).fetch('catalogViewId'), 'Expected the new catalogViewId to be returned')
   end
 
   def test_create_creates_data_lens_with_reference_v0
@@ -63,7 +63,7 @@ class PageMetadataManagerTest < Test::Unit::TestCase
     stub_feature_flags_with(:metadata_transition_phase, '0')
     Phidippides.any_instance.expects(:update_page_metadata).times(1).with do |page_metadata|
       # Make sure the page_metadata includes the correct data lens id
-      assert_equal('fdsa-fdsa', page_metadata['data_lens_id'])
+      assert_equal('fdsa-fdsa', page_metadata['catalogViewId'])
     end.then.returns(status: '200', body: {})
 
     NewViewManager.any_instance.expects(:create).times(1).with do |page_id, name, description|
@@ -107,7 +107,7 @@ class PageMetadataManagerTest < Test::Unit::TestCase
 
     result = manager.create(v1_page_metadata)
     assert_equal('asdf-asdf', result.fetch(:body).fetch('pageId'), 'Expected the new pageId to be returned')
-    assert_equal('data-lens', result.fetch(:body).fetch('data_lens_id'), 'Expected the new data_lens_id to be returned')
+    assert_equal('data-lens', result.fetch(:body).fetch('catalogViewId'), 'Expected the new catalogViewId to be returned')
   end
 
   def test_create_raises_an_error_if_dataset_id_is_not_present_in_new_page_metadata
@@ -311,12 +311,12 @@ class PageMetadataManagerTest < Test::Unit::TestCase
     stub_feature_flags_with(:metadata_transition_phase, '0')
     Phidippides.any_instance.expects(:update_page_metadata).times(1).with do |page_metadata|
       # Make sure the page_metadata includes the correct data lens id
-      assert_equal('lens-eyed', page_metadata['data_lens_id'])
+      assert_equal('lens-eyed', page_metadata['catalogViewId'])
       assert_equal('page-eyed', page_metadata['pageId'])
     end.then.returns(status: '200', body: {})
     Phidippides.any_instance.expects(:fetch_page_metadata).times(1).with do |page_id|
       assert_equal('page-eyed', page_id)
-    end.then.returns(status: '200', body: { data_lens_id: 'lens-eyed' })
+    end.then.returns(status: '200', body: { catalogViewId: 'lens-eyed' })
 
     NewViewManager.any_instance.expects(:update).times(1).with do |lens_id, name, description|
       # Make sure it's creating the new view pointing to the correct page-id

@@ -16,11 +16,32 @@ class PhidippidesDatasetsControllerTest < ActionController::TestCase
     @request.env['CONTENT_TYPE'] = 'application/json'
   end
 
-  test 'index returns list all pages for a given dataset' do
-    @phidippides.stubs(fetch_pages_for_dataset: { body: mock_pages_metadata })
+  test '(phase 0, 1, 2) index returns list all pages for a given dataset' do
+    stub_feature_flags_with(:metadata_transition_phase, '0')
+    @phidippides.stubs(fetch_pages_for_dataset: { status: '200', body: mock_v0_and_v1_mixed_pages_for_dataset_metadata })
     get :index, id: 'four-four', format: 'json'
     assert_response(:success)
-    assert_equal('four-four', JSON.parse(@response.body)['publisher'][0]['datasetId'])
+    assert(JSON.parse(@response.body)['publisher'].any? { |page| !page.has_key?(:version) }, 'expected some pages to not be v1')
+
+    stub_feature_flags_with(:metadata_transition_phase, '1')
+    @phidippides.stubs(fetch_pages_for_dataset: { status: '200', body: mock_v0_and_v1_mixed_pages_for_dataset_metadata })
+    get :index, id: 'four-four', format: 'json'
+    assert_response(:success)
+    assert(JSON.parse(@response.body)['publisher'].any? { |page| !page.has_key?(:version) }, 'expected some pages to not be v1')
+
+    stub_feature_flags_with(:metadata_transition_phase, '2')
+    @phidippides.stubs(fetch_pages_for_dataset: { status: '200', body: mock_v0_and_v1_mixed_pages_for_dataset_metadata })
+    get :index, id: 'four-four', format: 'json'
+    assert_response(:success)
+    assert(JSON.parse(@response.body)['publisher'].any? { |page| !page.has_key?(:version) }, 'expected some pages to not be v1')
+  end
+
+  test '(phase 3) index returns list all v1 pages for a given datasetspecial' do
+    stub_feature_flags_with(:metadata_transition_phase, '3')
+    @phidippides.stubs(fetch_pages_for_dataset: { status: '200', body: mock_v1_mixed_pages_for_dataset_metadata })
+    get :index, id: 'four-four', format: 'json'
+    assert_response(:success)
+    assert(JSON.parse(@response.body)['publisher'].all? { |page| page['version'] == '1' }, 'expected all pages to be v1')
   end
 
   test 'show returns data for a given dataset' do
@@ -212,6 +233,14 @@ class PhidippidesDatasetsControllerTest < ActionController::TestCase
 
   def mock_pages_metadata
     { publisher: [ { datasetId: 'four-four', pageId: 'some-page' } ], user: [] }
+  end
+
+  def mock_v0_and_v1_mixed_pages_for_dataset_metadata
+    { publisher: [ { datasetId: 'four-four', pageId: 'olde-page' }, { datasetId: 'four-four', pageId: 'neww-page', version: '1' } ], user: [] }
+  end
+
+  def mock_v1_mixed_pages_for_dataset_metadata
+    { publisher: [ { datasetId: 'four-four', pageId: 'neww-page', version: '1' } ], user: [] }
   end
 
   def mock_dataset_metadata

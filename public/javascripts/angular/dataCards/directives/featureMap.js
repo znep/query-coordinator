@@ -37,11 +37,14 @@
 
         var baseTileLayer = null;
 
-        // We 'double-buffer' feature layers so that there isn't a visible flash
+        // We buffer feature layers so that there isn't a visible flash
         // of emptiness when we transition from one to the next. This is accomplished
         // by only removing the previous one when the current one completes rendering.
-        var thisFeatureLayer = null;
-        var lastFeatureLayer = null;
+        var featureLayers = {};
+
+        // We also keep a handle on the current feature layer Url so we know which of
+        // the existing layers we can safely remove.
+        var currentFeatureLayerUrl;
 
         // We only want to calculate the extent on page load, so we track whether or
         // not this is the first render. After the first render this flag gets switched
@@ -50,61 +53,52 @@
 
         // We track how many protocol buffer tile requests are in-flight so that we can
         // swap out the old tiles when all the new ones have loaded (see the explanation
-        // of thisFeatureLayer and lastFeatureLayer above).
+        // of featureLayers above).
         var tilesToProcess = 0;
 
 
         /**
-         *
-         * getFeatureId
-         *
          * Returns a unique string id for a feature that will be used as a key
          * into a key => value hash. The 'index' parameter is the index of this
          * feature into the array of all features.
          *
+         * @param feature - The feature for which we will compute an id.
+         * @param index - The index of the feature into the tile's collection
+         *   of features.
          */
-
         function getFeatureId(feature, index) {
           return String(index);
         }
 
 
         /**
-         *
-         * filterLayerFeature
-         *
          * Returns true for features that should be drawn and false for features
          * that should not be drawn.
          *
+         * @param feature - The feature that we will style.
+         * @param context - The canvas 2d context to which we are drawing.
          */
-
         function filterLayerFeature(feature, context) {
           return true;
         }
 
 
         /**
-         *
-         * getFeatureZIndex
-         *
          * Returns the 'z-index' at which the feature should be drawn.
          *
+         * @param feature - The feature that we will style.
          */
-
         function getFeatureZIndex(feature) {
           return 1;
         }
 
 
         /**
-         *
-         * scalePointFeatureRadiusByZoomLevel
-         *
          * Scales points according to zoom level. The maximum zoom level
          * in Leaflet is 18; the minimum is 1.
          *
+         * @param zoomLevel - The current zoom level of the map.
          */
-
         function scalePointFeatureRadiusByZoomLevel(zoomLevel) {
           // This was created somewhat arbitrarily by Chris to
           // result in point features which get slightly larger
@@ -117,17 +111,12 @@
 
 
         /**
-         *
-         * getPointStyleFn
-         *
          * Returns an object specifying the styles with which a point feature
          * will be rendered.
          *
          * This function is called by the Vector Tile Layer extension to Leaflet
          * as it iterates over features in a vector tile.
-         *
          */
-
         function getPointStyleFn() {
           return {
             color: 'rgba(48,134,171,1.0)',
@@ -139,17 +128,12 @@
 
 
         /**
-         *
-         * getLineStringStyleFn
-         *
          * Returns an object specifying the styles with which a line string
          * feature will be rendered.
          *
          * This function is called by the Vector Tile Layer extension to Leaflet
          * as it iterates over features in a vector tile.
-         *
          */
-
         function getLineStringStyleFn() {
           return {
             color: 'rgba(161,217,155,0.8)',
@@ -159,17 +143,12 @@
 
 
         /**
-         *
-         * getPolygonStyleFn
-         *
          * Returns an object specifying the styles with which a polygon feature
          * will be rendered.
          *
          * This function is called by the Vector Tile Layer extension to Leaflet
          * as it iterates over features in a vector tile.
-         *
          */
-
         function getPolygonStyleFn() {
           return {
             color: 'rgba(149,139,255,0.4)',
@@ -182,15 +161,12 @@
 
 
         /**
-         *
-         * getFeatureStyle
-         *
          * Provides a generic interface to the styling functions above and
          * dispatches requests to the appropriate type based on the feature
          * being styled.
          *
+         * @param feature - The feature that we will style.
          */
-
         function getFeatureStyle(feature) {
 
           var style = {
@@ -220,9 +196,6 @@
 
 
         /**
-         *
-         * createNewFeatureLayer
-         *
          * Creates a new feature layer with a specific tileServer endpoint
          * and adds it to the map. Because of the way vector tiles are
          * implemented (in mapbox-vector-tiles.js) it is necessary to
@@ -233,15 +206,14 @@
          * so that there is only ever one active feature layer attached to the
          * map at a time.
          *
+         * @param map - The Leaflet map object.
+         * @param featureLayerUrl - The url to the tile resource, including
+         *   the page's current where clause.
          */
-
         function createNewFeatureLayer(map, featureLayerUrl) {
 
           var featureLayerOptions = {
             url: featureLayerUrl,
-            // The X-Socrata-Host header is a temporary local development
-            // stopgap until TileServer can discover Soda Fountain on its
-            // own.
             headers: {},
             debug: false,
             getFeatureId: getFeatureId,
@@ -255,44 +227,46 @@
             // mousemove: function(e) { /* do stuff with e.latLng */ }
           };
 
-          lastFeatureLayer = thisFeatureLayer;
-          thisFeatureLayer = VectorTiles.create(featureLayerOptions);
+          featureLayers[featureLayerUrl] = VectorTiles.create(featureLayerOptions);
 
-          map.addLayer(thisFeatureLayer);
-
+          map.addLayer(featureLayers[featureLayerUrl]);
         }
 
 
         /**
+         * Removes existing but out of date feature layers from the map.
+         * This is used in conjunction with createNewFeatureLayer.
          *
-         * removeOldFeatureLayer
-         *
-         * Removes an existing feature layer from the map. This is used in
-         * conjunction with createNewFeatureLayer.
-         *
+         * @param map - The Leaflet map object.
          */
+        function removeOldFeatureLayers(map) {
 
-        function removeOldFeatureLayer(map) {
+          var featureLayerUrls = _.keys(featureLayers);
+          var thisFeatureLayerUrl;
 
-          if (lastFeatureLayer !== null) {
+          // currentFeatureLayerUrl may be undefined.
+          if (_.isString(currentFeatureLayerUrl)) {
 
-            map.removeLayer(lastFeatureLayer);
-            lastFeatureLayer = null;
+            for (var i = 0; i < featureLayerUrls.length; i++) {
 
+              thisFeatureLayerUrl = featureLayerUrls[i];
+
+              if (featureLayerUrls[i] !== currentFeatureLayerUrl) {
+                map.removeLayer(featureLayers[thisFeatureLayerUrl]);
+                delete featureLayers[thisFeatureLayerUrl];
+              }
+            }
           }
-
         }
 
 
         /**
-         *
-         * fitMapBounds
-         *
          * Derives a bounding box that contains each element in a set of points
          * and then causes the map to fit that bounding box within its viewport.
          *
+         * @param featureExtent - The southwest and northeast bounds of the
+         *   collection of features.
          */
-
         function fitMapBounds(featureExtent) {
 
           map.fitBounds(
@@ -313,7 +287,6 @@
         //
         // Respond to clicks.
         //
-
         map.on('click', function(e) {
           // TODO: Something
         });
@@ -322,7 +295,6 @@
         //
         // Keep the baseTileLayer in sync with the baseLayerUrl observable.
         //
-
         baseTileLayer = scope.observe('baseLayerUrl').
           map(function(url) {
             if (!_.isDefined(url)) {
@@ -374,7 +346,6 @@
         // Emit analytics events on render start and complete events
         // for protocol buffer vector tiles.
         //
-
         element.on('vector-tile-render-started', function(e) {
 
           scope.$emit('render:start', { source: 'feature_map_{0}'.format(scope.$id), timestamp: _.now(), tag: 'vector_tile_render' });
@@ -383,7 +354,7 @@
 
         element.on('vector-tile-render-complete', function(e) {
 
-          removeOldFeatureLayer(map);
+          removeOldFeatureLayers(map);
           scope.$emit('render:complete', { source: 'feature_map_{0}'.format(scope.$id), timestamp: _.now(), tag: 'vector_tile_render' });
 
         });
@@ -393,15 +364,14 @@
         // React to changes to the featureLayerUrl observable
         // (which changes indicate that a re-render is needed).
         //
-
         Rx.Observable.subscribeLatest(
           scope.observe('featureLayerUrl'),
           function(featureLayerUrl) {
             if (_.isString(featureLayerUrl)) {
+              currentFeatureLayerUrl = featureLayerUrl;    
               createNewFeatureLayer(map, featureLayerUrl);
             }
           });
-
 
         //
         // React to changes to the visualization's dimensions
@@ -412,7 +382,6 @@
 
         // TODO: Maybe split the below into two subscriptions, one to each
         // and which react to one source only.
-
         Rx.Observable.subscribeLatest(
           element.observeDimensions(),
           scope.observe('featureExtent'),

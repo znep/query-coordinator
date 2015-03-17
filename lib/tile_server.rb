@@ -18,7 +18,9 @@ class TileServer < SocrataHttp
         options.fetch(:y_coord),
         options.fetch('$limit'),
         options['$where'] || '0=0'
-      )
+      ),
+      :allow_304 => true,
+      :headers => options.fetch(:headers, {}),
     )
   end
 

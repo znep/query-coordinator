@@ -36,11 +36,20 @@ class SocrataHttp
     end
 
     if response.kind_of?(Net::HTTPRedirection) && verb == 'Get'
-      result = on_redirect(response, response['location'], options)
+      if options[:allow_304] && response.kind_of?(Net::HTTPNotModified)
+        result = {status: response.code, body: {}}
+      else
+        result = on_redirect(response, response['location'], options)
+      end
     elsif response.kind_of?(Net::HTTPSuccess)
       result = on_success(response, url, verb)
     else
       result = on_failure(response, url, verb)
+    end
+
+    headers = response.to_hash.slice(*http_response_headers_to_pass_through)
+    if headers.present?
+      result[:headers] = headers
     end
 
     result.with_indifferent_access
@@ -89,6 +98,10 @@ class SocrataHttp
 
   def connection_details
     raise RuntimeError.new('To be implemented by extending class')
+  end
+
+  def http_response_headers_to_pass_through
+    ['last-modified']
   end
 
 end

@@ -7,6 +7,9 @@ class TileServerController < ActionController::Base
   def proxy_request
 
     begin
+      headers = Hash[http_request_headers_to_pass_through.map do |key|
+        [key, request.headers[key]]
+      end]
       result = tileserver.fetch_tile(
         params.slice(
           :page_id,
@@ -17,7 +20,10 @@ class TileServerController < ActionController::Base
           '$limit',
           '$where',
           '$$app_token'
-        ).merge(:cookies => forwardable_session_cookies)
+        ).merge(
+          :headers => headers,
+          :cookies => forwardable_session_cookies,
+        )
       )
     rescue => error
       Rails.logger.error(error_message = "Unable to proxy TileServer due to error: #{error.to_s}")
@@ -30,6 +36,10 @@ class TileServerController < ActionController::Base
           details: error.to_s
         }
       }
+    end
+
+    if result[:headers].present?
+      response.headers.merge!(result[:headers])
     end
 
     if result[:status] == '200'
@@ -47,6 +57,10 @@ class TileServerController < ActionController::Base
 
   def tileserver
     @tileserver ||= TileServer.new
+  end
+
+  def http_request_headers_to_pass_through
+    ['if-modified-since']
   end
 
 end

@@ -22,7 +22,10 @@ class TileServerControllerTest < ActionController::TestCase
       :x_coord => @x_coord,
       :y_coord => @y_coord,
       '$limit' => @limit,
-      :cookies => nil
+      :cookies => nil,
+      :headers => {
+        'if-modified-since' => nil
+      },
     }.with_indifferent_access
 
     @mock_result = {

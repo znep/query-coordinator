@@ -28,6 +28,9 @@
         var rowCountSequence = new Rx.Subject();
         var filteredRowCountSequence = new Rx.Subject();
 
+        var cardsSequence = model.observeOnLatest('page.cards');
+        var aggregationSequence = model.observeOnLatest('page.aggregation');
+
         $scope.$watch('showCount', function(newVal, oldVal, scope) {
           if (!angular.isDefined(newVal)){
             scope.showCount = true;
@@ -145,7 +148,8 @@
 
         // The default sort is on the first card in the page layout.
         var layout = new SortedTileLayout();
-        var defaultSortColumnName = model.observeOnLatest('page.cards').map(function(cards) {
+
+        var firstCardSequence = cardsSequence.map(function(cards) {
           var sizedCards = _.compact(_.map(cards, function(card) {
             // Sorting on the table card doesn't make any sense; computed and
             // system columns are not included either.
@@ -164,6 +168,19 @@
           var cardsInFirstSize = _.flatten(computedLayout[_.first(sortedCardSizes)]);
           return _.first(cardsInFirstSize).model.fieldName;
         });
+
+        var aggregatedColumnSequence = aggregationSequence.
+          filter(function(value) { return value['function'] !== 'count'; }).
+          map(_.property('fieldName'));
+
+        var nonAggregatedColumnSequence = aggregationSequence.
+          filter(function(value) { return value['function'] === 'count'; }).
+          flatMap(_.constant(firstCardSequence));
+
+        var defaultSortColumnName = Rx.Observable.merge(
+          aggregatedColumnSequence,
+          nonAggregatedColumnSequence
+        ).distinctUntilChanged();
 
         $scope.bindObservable('whereClause', whereClause);
         $scope.bindObservable('rowCount', rowCount.switchLatest());

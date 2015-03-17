@@ -39,6 +39,7 @@
     WindowState,
     SortedTileLayout,
     FlyoutService,
+    Card,
     $timeout,
     $window
   ) {
@@ -395,7 +396,10 @@
             var groupedCards = _.groupBy(cards, function(card) {
               return isTableCard(card) ? 'dataCard' : 'normal';
             });
-            return _.defaults(groupedCards, { normal: [], dataCard: [] });
+            return _.defaults(groupedCards, {
+              normal: [],
+              dataCard: [{model: new Card(scope.page, '*', {cardType: 'table'})}]
+            });
           });
 
         var expandedCardsSequence = zipLatestArray(scope.page.observe('cards'), 'expanded').

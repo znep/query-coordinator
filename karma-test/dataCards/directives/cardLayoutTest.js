@@ -1502,6 +1502,14 @@ describe('card-layout', function() {
         expect(cl.element.find('card-visualization-table')).to.exist;
       });
 
+      it('should show the table card if no table card is present', function() {
+        testHelpers.mockDirective(_$provide, 'cardVisualizationTable');
+        var cl = createLayoutWithCards([]);
+
+        expect(cl.element.find('card')).to.have.length(1);
+        expect(cl.element.find('card-visualization-table')).to.exist;
+      });
+
       it('should show the table card if the dataset has only 1 row', function() {
         testHelpers.mockDirective(_$provide, 'cardVisualizationTable');
         var cl = createLayoutWithCards(null, { rowCount: 1 });

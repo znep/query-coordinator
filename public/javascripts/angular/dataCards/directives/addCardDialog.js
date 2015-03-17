@@ -7,7 +7,7 @@
   // 3 and removed the branches on the transition phase, we should probably
   // revisit this directive to clean it up.
 
-  function addCardDialog(AngularRxExtensions, Constants, CardTypeMapping, CardV0, CardV1, FlyoutService, ServerConfig, $log) {
+  function addCardDialog(AngularRxExtensions, Constants, CardTypeMapping, Card, FlyoutService, ServerConfig, $log) {
     return {
       restrict: 'E',
       scope: {
@@ -91,8 +91,6 @@
                 'expandedCustomStyle': {},
                 'fieldName': fieldName
               };
-
-              scope.addCardModel = CardV0.deserialize(scope.page, serializedCard);
             } else {
               // TODO: Enforce some kind of schema validation at this step.
               serializedCard = {
@@ -106,9 +104,9 @@
               } else {
                 serializedCard['cardType'] = column.defaultCardType;
               }
-
-              scope.addCardModel = CardV1.deserialize(scope.page, serializedCard);
             }
+            // TODO: Should just use the constructor, which should be different between V0 and V1
+            scope.addCardModel = Card.deserialize(scope.page, serializedCard);
 
             if (column.hasOwnProperty('cardinality')) {
               columnCardinality = parseInt(column.cardinality, 10);

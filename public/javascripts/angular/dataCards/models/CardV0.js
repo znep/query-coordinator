@@ -3,17 +3,20 @@ angular.module('dataCards.models').factory('CardV0', function($injector, ModelHe
   var schemas = Schemas.regarding('card_metadata');
 
   var CardV0 = Model.extend({
-    init: function(parentPageModel, fieldName, id) {
+    init: function(parentPageModel, fieldName, initialValues) {
       this._super();
 
       if(!(parentPageModel instanceof Model)) { throw new Error('CardV0 models must have parent Page models.'); }
       if(!_.isString(fieldName) || _.isEmpty(fieldName)) { throw new Error('CardV0 models must have a non-empty field name.'); }
 
+      if (!_.isObject(initialValues)) {
+        initialValues = {};
+      }
       var self = this;
       this.version = '0';
       this.page = parentPageModel;
       this.fieldName = fieldName;
-      this.uniqueId = id || _.uniqueId();
+      this.uniqueId = initialValues.id || _.uniqueId();
 
       _.each(_.keys(schemas.getSchemaDefinition('0').properties), function(field) {
         if (field === 'fieldName') {
@@ -24,7 +27,7 @@ angular.module('dataCards.models').factory('CardV0', function($injector, ModelHe
           // cardType needs a lazy default.
           return;
         }
-        self.defineObservableProperty(field);
+        self.defineObservableProperty(field, initialValues[field]);
       });
 
       self.set('activeFilters', []);
@@ -32,9 +35,7 @@ angular.module('dataCards.models').factory('CardV0', function($injector, ModelHe
       // To compute default cardType, we need column info.
       // Usually the default is overridden during deserialization, but
       // in case cardType isn't set, we have a sane default.
-      // TODO vastly simplify when merge new deep-get observe function
-      // on Model.
-      self.defineObservableProperty('cardType', undefined, function() {
+      self.defineObservableProperty('cardType', initialValues.cardType, function() {
         return self.page.observe('dataset').
           combineLatest(
             // BIG WARNING: CardTypeMapping's API isn't designed well, so it is forced
@@ -98,7 +99,7 @@ angular.module('dataCards.models').factory('CardV0', function($injector, ModelHe
   CardV0.deserialize = function(page, blob, id) {
     validateCardBlobSchema(blob);
 
-    var instance = new CardV0(page, blob.fieldName, id);
+    var instance = new CardV0(page, blob.fieldName, {id: id});
     _.each(_.keys(schemas.getSchemaDefinition('0').properties), function(field) {
       if (field === 'fieldName') {
         // fieldName isn't observable.

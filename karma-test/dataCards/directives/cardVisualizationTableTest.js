@@ -333,6 +333,7 @@ describe('A Table Card Visualization', function() {
       var newColumns = _.cloneDeep(COLUMNS);
       newColumns['test_column'].hideInTable = true;
       var table = createTable({ columns: newColumns });
+      expect(table.element.find('.th')).to.have.length(2);
       expect(table.element.find('.th:eq(0)')).to.have.data('columnId', 'test_timestamp_column');
       expect(table.element.find('.th:eq(1)')).to.have.data('columnId', 'test_floating_timestamp_column');
     });

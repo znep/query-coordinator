@@ -139,7 +139,7 @@ class PhidippidesTest < Test::Unit::TestCase
   end
 
   def test_fetch_dataset_metadata
-    phidippides.stubs(:migration_status => nil, :dataset_view => nil)
+    phidippides.stubs(:migration_status_or_nil => nil, :dataset_view => nil)
     prepare_stubs(body: v0_dataset_metadata, path: 'datasets/four-four', verb: :get)
     stub_feature_flags_with(:metadata_transition_phase, '0')
     result = phidippides.fetch_dataset_metadata('four-four', request_id: 'request_id')
@@ -154,7 +154,7 @@ class PhidippidesTest < Test::Unit::TestCase
     stub_feature_flags_with(:metadata_transition_phase, '2')
     result = phidippides.fetch_dataset_metadata('vtvh-wqgq', request_id: 'request_id')
     assert_equal(v1_dataset_metadata, result[:body])
-    phidippides.unstub(:migration_status, :dataset_view)
+    phidippides.unstub(:migration_status_or_nil, :dataset_view)
   end
 
   def test_migrate_dataset_metadata_to_v1_in_phase_1_generates_default_page_if_none_exists
@@ -558,13 +558,13 @@ class PhidippidesTest < Test::Unit::TestCase
     assert_equal({'status' => '500', 'body' => '"junk"', 'error' => '757: unexpected token at \'"junk"\''}, result)
   end
 
-  def test_mirror_column_metadata_phase0
+  def test_mirror_nbe_column_metadata_phase0
     stub_feature_flags_with(:metadata_transition_phase, '0')
 
     obe_dataset = View.new(old_backend_columns)
     nbe_dataset = v0_dataset_metadata.deep_dup
 
-    result = phidippides.mirror_column_metadata(obe_dataset, nbe_dataset)
+    result = phidippides.mirror_nbe_column_metadata!(obe_dataset, nbe_dataset)
 
     assert_equal(nbe_dataset, result, 'Should return the nbe_dataset')
     result[:columns].each do |column|
@@ -574,36 +574,16 @@ class PhidippidesTest < Test::Unit::TestCase
     end
   end
 
-  def test_mirror_column_metadata_phase1
+  def test_mirror_nbe_column_metadata_phase1
     stub_feature_flags_with(:metadata_transition_phase, '1')
 
-    obe_dataset = View.new(old_backend_columns)
-    nbe_dataset = JSON.parse(File.read("#{Rails.root}/test/fixtures/new-backend-columns-v1.json")).with_indifferent_access
-
-    result = phidippides.mirror_column_metadata(obe_dataset, nbe_dataset)
-
-    assert_equal(nbe_dataset, result, 'Should return the nbe_dataset')
-    result[:columns].each do |key, column|
-      obe_column = obe_dataset.columns.detect { |obe_column| obe_column.fieldName == key }
-      assert_equal(obe_column.position, column[:position])
-      assert_equal(key == 'primary_type', column[:hideInTable])
-    end
+    run_test_with_obe_and_v1_nbe
   end
 
-  def test_mirror_column_metadata_phase2
+  def test_mirror_nbe_column_metadata_phase2
     stub_feature_flags_with(:metadata_transition_phase, '2')
 
-    obe_dataset = View.new(old_backend_columns)
-    nbe_dataset = JSON.parse(File.read("#{Rails.root}/test/fixtures/new-backend-columns-v1.json")).with_indifferent_access
-
-    result = phidippides.mirror_column_metadata(obe_dataset, nbe_dataset)
-
-    assert_equal(nbe_dataset, result, 'Should return the nbe_dataset')
-    result[:columns].each do |key, column|
-      obe_column = obe_dataset.columns.detect { |obe_column| obe_column.fieldName == key }
-      assert_equal(obe_column.position, column[:position])
-      assert_equal(key == 'primary_type', column[:hideInTable])
-    end
+    run_test_with_obe_and_v1_nbe
   end
 
   def test_migration_status_has_status
@@ -614,7 +594,7 @@ class PhidippidesTest < Test::Unit::TestCase
     end
 
     CoreServer::Base.stubs(connection: connection_stub)
-    result = phidippides.migration_status('newb-newb')
+    result = phidippides.migration_status_or_nil('newb-newb')
     assert_equal('newb-newb', result[:nbeId])
     assert_equal('olds-kool', result[:obeId])
   end
@@ -628,11 +608,25 @@ class PhidippidesTest < Test::Unit::TestCase
 
     CoreServer::Base.stubs(connection: connection_stub)
 
-    result = phidippides.migration_status('newb-newb')
+    result = phidippides.migration_status_or_nil('newb-newb')
     assert_nil(result)
   end
 
   private
+
+  def run_test_with_obe_and_v1_nbe
+    obe_dataset = View.new(old_backend_columns)
+    nbe_dataset = new_backend_columns
+
+    result = phidippides.mirror_nbe_column_metadata!(obe_dataset, nbe_dataset)
+
+    assert_equal(nbe_dataset, result, 'Should return the nbe_dataset')
+    result[:columns].each do |key, column|
+      obe_column = obe_dataset.columns.detect { |obe_column| obe_column.fieldName == key }
+      assert_equal(obe_column.position, column[:position])
+      assert_equal(key == 'primary_type', column[:hideInTable])
+    end
+  end
 
   # noinspection RubyArgCount
   def prepare_stubs(options)
@@ -730,6 +724,10 @@ class PhidippidesTest < Test::Unit::TestCase
 
   def v1_page_metadata
     @v1_dataset_metdata ||= JSON.parse(File.read("#{Rails.root}/test/fixtures/v1-page-metadata.json")).with_indifferent_access
+  end
+
+  def new_backend_columns
+    JSON.parse(File.read("#{Rails.root}/test/fixtures/new-backend-columns-v1.json")).with_indifferent_access
   end
 
 end

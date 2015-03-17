@@ -64,23 +64,27 @@ class Phidippides < SocrataHttp
         :cookies => options[:cookies]
       )
     end
-    augment_dataset_metadata(dataset_id, fetched_response)
+    augment_dataset_metadata!(dataset_id, fetched_response[:body]) unless fetched_response[:body].blank?
+    fetched_response
   end
 
-  def augment_dataset_metadata(dataset_id, fetched_response)
-    status = migration_status(dataset_id)
+  # Given a dataset ID and metadata, this decorate the metadata based on whether
+  # there is a migrated old backend dataset available, otherwise it will use a
+  # new backend dataset
+  def augment_dataset_metadata!(dataset_id, dataset_metadata)
+    status = migration_status_or_nil(dataset_id)
     if status.nil?
       backend_view = dataset_view(dataset_id)
     else
       backend_view = dataset_view(status[:obeId])
     end
-    unless backend_view.nil? || fetched_response[:body].blank?
-      fetched_response[:body] = mirror_column_metadata(backend_view, fetched_response[:body])
-    end
-    fetched_response
+
+    mirror_nbe_column_metadata!(backend_view, dataset_metadata) unless backend_view.nil?
   end
 
-  def mirror_column_metadata(backend_view, nbe_dataset)
+  # Given a backend_view and a new backend dataset, this will attempt to
+  # decorate the metadata with position and hidden properties
+  def mirror_nbe_column_metadata!(backend_view, nbe_dataset)
     backend_view.columns.each do |column|
       if metadata_transition_phase_0?
         nbe_column = nbe_dataset['columns'].detect { |nbe_column| nbe_column[:name] == column.fieldName }
@@ -99,14 +103,12 @@ class Phidippides < SocrataHttp
     begin
       View.find(id)
     rescue => e
-      Rails.logger.warn(<<-EOS.strip_heredoc)
-        Error while retrieving old backend view of "(#{id}): #{e}"
-      EOS
+      Rails.logger.warn(%Q(Error while retrieving old backend view of "(#{id}): #{e}"))
       nil
     end
   end
 
-  def migration_status(id)
+  def migration_status_or_nil(id)
     begin
       response = CoreServer::Base.connection.get_request(
         "/migrations/#{id}"
@@ -118,9 +120,7 @@ class Phidippides < SocrataHttp
         nil
       end
     rescue => e
-      Rails.logger.warn(<<-EOS.strip_heredoc)
-        Error while retrieving migration status of "(#{id}): #{e}"
-      EOS
+      Rails.logger.warn(%Q(Error while retrieving migration status of "(#{id}): #{e}"))
       nil
     end
   end

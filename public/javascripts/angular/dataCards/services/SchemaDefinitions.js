@@ -17,7 +17,7 @@ angular.module('dataCards.services').factory('SchemaDefinitions', function() {
         'properties': {
           'id': { 'type': 'string', 'pattern': UID_REGEXP },
           'name': { 'type': 'string', 'minLength': 1 },
-          'description': { 'type': 'string', 'minLength': 0 },
+          'description': { 'type': 'string' },
           'rowDisplayUnit': { 'type': 'string', 'minLength': 1 },
           'defaultAggregateColumn': { 'type': 'string', 'minLength': 1 },
           'ownerId': { 'type': 'string', 'pattern': UID_REGEXP },
@@ -70,7 +70,7 @@ angular.module('dataCards.services').factory('SchemaDefinitions', function() {
         'properties': {
           'id': { 'type': 'string', 'pattern': UID_REGEXP },
           'name': { 'type': 'string', 'minLength': 1 },
-          'description': { 'type': 'string', 'minLength': 1 },
+          'description': { 'type': 'string' },
           'rowDisplayUnit': { 'type': 'string', 'minLength': 1 },
           'defaultAggregateColumn': { 'type': 'string', 'minLength': 1 },
           'ownerId': { 'type': 'string', 'pattern': UID_REGEXP },

@@ -131,7 +131,7 @@
             }
           });
           return _.compact(wheres).join(' AND ');
-        });
+        }).startWith('');
 
         self.defineEphemeralObservablePropertyFromSequence('computedWhereClauseFragment',
           allCardsWheres.

@@ -507,7 +507,7 @@ class PhidippidesTest < Test::Unit::TestCase
     stub_feature_flags_with(:metadata_transition_phase, '3')
     filtered_pages = phidippides.send(:exclude_non_v1_or_above_pages_in_phase_3!, { status: '200', body: new_mixed_v0_and_v1_pages_for_dataset })
     normalized_pages = phidippides.send(:normalize_pages_for_dataset_response!, filtered_pages)
-    assert(normalized_pages[:body][:publisher].all? { |page| page['version'] == '1' }, 'expected only v1 pages')
+    assert(normalized_pages[:body][:publisher].all? { |page| page['version'].to_i > 0 }, 'expected only v1 pages')
   end
 
   def test_issue_request_success_response

@@ -97,7 +97,7 @@ class NewUxBootstrapController < ActionController::Base
       if default_page.present?
         # If we found a default page as specified in the dataset_metadata,
         # check its metadata version.
-        default_page_version = default_page.try(:[], :version)
+        default_page_version = default_page[:version]
         if default_page_version.present? && default_page_version.to_i > 0
           # If the default page version is greater than or equal to 1,
           # immediately redirect to the default page.
@@ -111,7 +111,8 @@ class NewUxBootstrapController < ActionController::Base
         # find a page in the collection that is of at least version 1 page
         # metadata and then redirect to it.
         some_v1_page = pages.find do |page|
-          page.try(:[], :version).present? && page[:version].to_i > 0
+          # Note that this may be nil and, if so, will be coerced by .to_i into 0
+          page[:version].to_i > 0
         end
 
         if some_v1_page.present?

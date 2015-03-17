@@ -325,7 +325,7 @@ class Phidippides < SocrataHttp
       metadata_transition_phase_3?
 
       pages_for_dataset_response[:body].select! do |page_id, page_data|
-        page_data.has_key?(:version) && page_data[:version].to_i >= 1
+        page_data[:version].to_i > 0
       end
     end
     pages_for_dataset_response

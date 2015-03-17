@@ -36,7 +36,7 @@ class PhidippidesDatasetsControllerTest < ActionController::TestCase
     assert(JSON.parse(@response.body)['publisher'].any? { |page| !page.has_key?(:version) }, 'expected some pages to not be v1')
   end
 
-  test '(phase 3) index returns list all v1 pages for a given datasetspecial' do
+  test '(phase 3) index returns list all v1 pages for a given dataset' do
     stub_feature_flags_with(:metadata_transition_phase, '3')
     @phidippides.stubs(fetch_pages_for_dataset: { status: '200', body: mock_v1_mixed_pages_for_dataset_metadata })
     get :index, id: 'four-four', format: 'json'

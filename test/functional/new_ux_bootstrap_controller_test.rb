@@ -94,49 +94,365 @@ class NewUxBootstrapControllerTest < ActionController::TestCase
       setup do
         # noinspection RubyArgCount
         stub_user = stub(roleName: 'administrator')
+
         @controller.stubs(current_user: stub_user)
+            connection_stub = stub.tap do |stub|
+              stub.stubs(
+                get_request: '[{"count_0": "1234"}]',
+                reset_counters: { requests: {}, runtime: 0 }
+              )
+            end
+            CoreServer::Base.stubs(connection: connection_stub)
       end
 
       context 'default page' do
-        should 'redirect to the default page if the 4x4 already has a default page' do
-          @phidippides.stubs(
-            fetch_dataset_metadata: {
-              status: '200', body: {defaultPage: 'defa-ultp'}
-            },
-            fetch_pages_for_dataset: {
-              status: '200', body: { publisher: [{ pageId: 'page-xist' }, { pageId: 'defa-ultp' }, { pageId: 'last-page' }], user: [] }
-            }
-          )
-          get :bootstrap, id: 'four-four'
-          assert_redirected_to('/view/defa-ultp')
-        end
-
-        context 'does not exist' do
+        context 'creating a new default page if there is already a default page but the default page is not v1' do
           setup do
-            @phidippides.expects(:update_dataset_metadata).
-              returns({ status: '200' }).
-              with do |dataset_metadata|
-                dataset_metadata[:defaultPage] == 'last-page'
-              end
-            @phidippides.stubs(
-              fetch_pages_for_dataset: {
-                status: '200', body: { publisher: [{ pageId: 'page-xist' }, { pageId: 'last-page' }], user: [] }
+            @page_metadata_manager.stubs(
+              create: {
+                status: '200',
+                body: { pageId: 'abcd-efgh' }
               }
             )
           end
 
-          should 'set & redirect to the default page if the 4x4 only has non-default pages' do
-            @phidippides.stubs(:fetch_dataset_metadata).
-              returns({ status: '200', body: {columns: nil} })
-            get :bootstrap, id: 'four-four'
-            assert_redirected_to('/view/last-page')
+          should 'in phase 0' do
+            @phidippides.expects(:update_dataset_metadata).
+              times(1).
+              returns({ status: '200' }).
+              with do |dataset_metadata|
+                dataset_metadata[:defaultPage] == 'abcd-efgh'
+              end
+            @phidippides.stubs(
+              fetch_dataset_metadata: {
+                status: '200',
+                body: v0_mock_dataset_metadata.deep_dup.tap { |dataset_metadata| dataset_metadata[:defaultPage] = 'olde-page' }
+              },
+              fetch_pages_for_dataset: {
+                status: '200', body: { publisher: [{ pageId: 'olde-page' }, { pageId: 'neww-page' }], user: [] }
+              }
+            )
+
+            stub_feature_flags_with(:metadata_transition_phase, '0')
+            get :bootstrap, id: 'data-iden'
+            assert_redirected_to('/view/abcd-efgh')
           end
 
-          should "set & redirect to a new default page if the current one doesn't exist" do
-            @phidippides.stubs(:fetch_dataset_metadata).
-              returns({status: '200', body: {defaultPage: 'nnot-xist'}})
+          should 'in phases 1, 2 and 3' do
+            @phidippides.expects(:update_dataset_metadata).
+              times(3).
+              returns({ status: '200' }).
+              with do |dataset_metadata|
+                dataset_metadata[:defaultPage] == 'abcd-efgh'
+              end
+            @phidippides.stubs(
+              fetch_dataset_metadata: {
+                status: '200',
+                body: v1_mock_dataset_metadata.deep_dup.tap { |dataset_metadata| dataset_metadata[:defaultPage] = 'olde-page' }
+              },
+              fetch_pages_for_dataset: {
+                status: '200', body: { publisher: [{ pageId: 'olde-page' }, { pageId: 'neww-page' }], user: [] }
+              }
+            )
+
+            stub_feature_flags_with(:metadata_transition_phase, '1')
+            get :bootstrap, id: 'data-iden'
+            assert_redirected_to('/view/abcd-efgh')
+
+            stub_feature_flags_with(:metadata_transition_phase, '2')
+            get :bootstrap, id: 'data-iden'
+            assert_redirected_to('/view/abcd-efgh')
+
+            stub_feature_flags_with(:metadata_transition_phase, '3')
+            get :bootstrap, id: 'data-iden'
+            assert_redirected_to('/view/abcd-efgh')
+          end
+        end
+
+        context 'redirect to the default page if there is already a default page and the default page is v1' do
+          setup do
+            @phidippides.stubs(
+              fetch_dataset_metadata: {
+                status: '200', body: { defaultPage: 'defa-ultp' }
+              },
+              fetch_pages_for_dataset: {
+                status: '200', body: { publisher: [{ pageId: 'page-xist', version: '1' }, { pageId: 'defa-ultp', version: '1' }, { pageId: 'last-page', version: '1' }], user: [] }
+              }
+            )
+          end
+
+          should 'in phases 0, 1, 2 and 3' do
+            stub_feature_flags_with(:metadata_transition_phase, '0')
+            get :bootstrap, id: 'data-iden'
+            assert_redirected_to('/view/defa-ultp')
+
+            stub_feature_flags_with(:metadata_transition_phase, '1')
+            get :bootstrap, id: 'data-iden'
+            assert_redirected_to('/view/defa-ultp')
+
+            stub_feature_flags_with(:metadata_transition_phase, '2')
+            get :bootstrap, id: 'data-iden'
+            assert_redirected_to('/view/defa-ultp')
+
+            stub_feature_flags_with(:metadata_transition_phase, '3')
+            get :bootstrap, id: 'data-iden'
+            assert_redirected_to('/view/defa-ultp')
+          end
+        end
+
+        context 'create a new default page if no default page is set and no pages exist' do
+          setup do
+            @page_metadata_manager.stubs(
+              create: {
+                status: '200',
+                body: { pageId: 'abcd-efgh' }
+              }
+            )
+          end
+
+          should 'in phase 0' do
+            @phidippides.expects(:update_dataset_metadata).
+              times(1).
+              returns({ status: '200' }).
+              with do |dataset_metadata|
+                dataset_metadata[:defaultPage] == 'abcd-efgh'
+              end
+            @phidippides.stubs(
+              fetch_dataset_metadata: {
+                status: '200',
+                body: v0_mock_dataset_metadata.deep_dup.tap { |dataset_metadata| dataset_metadata.delete(:defaultPage)  }
+              },
+              fetch_pages_for_dataset: {
+                status: '200', body: { publisher: [], user: [] }
+              }
+            )
+
+            stub_feature_flags_with(:metadata_transition_phase, '0')
+            get :bootstrap, id: 'data-iden'
+            assert_redirected_to('/view/abcd-efgh')
+          end
+
+          should 'in phases 1, 2 and 3' do
+            @phidippides.expects(:update_dataset_metadata).
+              times(3).
+              returns({ status: '200' }).
+              with do |dataset_metadata|
+                dataset_metadata[:defaultPage] == 'abcd-efgh'
+              end
+            @phidippides.stubs(
+              fetch_dataset_metadata: {
+                status: '200',
+                body: v1_mock_dataset_metadata.deep_dup.tap { |dataset_metadata| dataset_metadata.delete(:defaultPage)  }
+              },
+              fetch_pages_for_dataset: {
+                status: '200', body: { publisher: [], user: [] }
+              }
+            )
+
+            stub_feature_flags_with(:metadata_transition_phase, '1')
+            get :bootstrap, id: 'data-iden'
+            assert_redirected_to('/view/abcd-efgh')
+
+            stub_feature_flags_with(:metadata_transition_phase, '2')
+            get :bootstrap, id: 'data-iden'
+            assert_redirected_to('/view/abcd-efgh')
+
+            stub_feature_flags_with(:metadata_transition_phase, '3')
+            get :bootstrap, id: 'data-iden'
+            assert_redirected_to('/view/abcd-efgh')
+          end
+        end
+
+        context 'create a new default page if no default page is set and there are already pages but none are v1' do
+          setup do
+            @page_metadata_manager.stubs(
+              create: {
+                status: '200',
+                body: { pageId: 'abcd-efgh' }
+              }
+            )
+          end
+
+          should 'in phase 0' do
+            @phidippides.expects(:update_dataset_metadata).
+              times(1).
+              returns({ status: '200' }).
+              with do |dataset_metadata|
+                dataset_metadata[:defaultPage] == 'abcd-efgh'
+              end
+            @phidippides.stubs(
+              fetch_dataset_metadata: {
+                status: '200',
+                body: v0_mock_dataset_metadata.deep_dup.tap { |dataset_metadata| dataset_metadata.delete(:defaultPage)  }
+              },
+              fetch_pages_for_dataset: {
+                status: '200', body: { publisher: [{ pageId: 'olde-page' }, { pageId: 'neww-page' }], user: [] }
+              }
+            )
+
+            stub_feature_flags_with(:metadata_transition_phase, '0')
+            get :bootstrap, id: 'data-iden'
+            assert_redirected_to('/view/abcd-efgh')
+          end
+
+          should 'in phases 1, 2 and 3' do
+            @phidippides.expects(:update_dataset_metadata).
+              times(3).
+              returns({ status: '200' }).
+              with do |dataset_metadata|
+                dataset_metadata[:defaultPage] == 'abcd-efgh'
+              end
+            @phidippides.stubs(
+              fetch_dataset_metadata: {
+                status: '200',
+                body: v1_mock_dataset_metadata.deep_dup.tap { |dataset_metadata| dataset_metadata.delete(:defaultPage)  }
+              },
+              fetch_pages_for_dataset: {
+                status: '200', body: { publisher: [{ pageId: 'olde-page' }, { pageId: 'neww-page' }], user: [] }
+              }
+            )
+
+            stub_feature_flags_with(:metadata_transition_phase, '1')
+            get :bootstrap, id: 'data-iden'
+            assert_redirected_to('/view/abcd-efgh')
+
+            stub_feature_flags_with(:metadata_transition_phase, '2')
+            get :bootstrap, id: 'data-iden'
+            assert_redirected_to('/view/abcd-efgh')
+
+            stub_feature_flags_with(:metadata_transition_phase, '3')
+            get :bootstrap, id: 'data-iden'
+            assert_redirected_to('/view/abcd-efgh')
+          end
+        end
+
+        context 'create a new default page if default page is set but the default page does not exist' do
+          setup do
+            @page_metadata_manager.stubs(
+              create: {
+                status: '200',
+                body: { pageId: 'abcd-efgh' }
+              }
+            )
+          end
+
+          should 'in phase 0' do
+            @phidippides.expects(:update_dataset_metadata).
+              times(1).
+              returns({ status: '200' }).
+              with do |dataset_metadata|
+                dataset_metadata[:defaultPage] == 'abcd-efgh'
+              end
+            @phidippides.stubs(
+              fetch_dataset_metadata: {
+                status: '200',
+                body: v0_mock_dataset_metadata.deep_dup.tap { |dataset_metadata| dataset_metadata[:defaultPage] = 'lost-page'  }
+              },
+              fetch_pages_for_dataset: {
+                status: '200', body: { publisher: [], user: [] }
+              }
+            )
+
+            stub_feature_flags_with(:metadata_transition_phase, '0')
+            get :bootstrap, id: 'data-iden'
+            assert_redirected_to('/view/abcd-efgh')
+          end
+
+          should 'in phases 1, 2 and 3' do
+            @phidippides.expects(:update_dataset_metadata).
+              times(3).
+              returns({ status: '200' }).
+              with do |dataset_metadata|
+                dataset_metadata[:defaultPage] == 'abcd-efgh'
+              end
+            @phidippides.stubs(
+              fetch_dataset_metadata: {
+                status: '200',
+                body: v1_mock_dataset_metadata.deep_dup.tap { |dataset_metadata| dataset_metadata[:defaultPage] = 'lost-page'  }
+              },
+              fetch_pages_for_dataset: {
+                status: '200', body: { publisher: [], user: [] }
+              }
+            )
+
+            stub_feature_flags_with(:metadata_transition_phase, '1')
+            get :bootstrap, id: 'data-iden'
+            assert_redirected_to('/view/abcd-efgh')
+
+            stub_feature_flags_with(:metadata_transition_phase, '2')
+            get :bootstrap, id: 'data-iden'
+            assert_redirected_to('/view/abcd-efgh')
+
+            stub_feature_flags_with(:metadata_transition_phase, '3')
+            get :bootstrap, id: 'data-iden'
+            assert_redirected_to('/view/abcd-efgh')
+          end
+        end
+
+        context 'set an existing page as default and redirect to it if no default page is set and there are already pages and at least one is v1' do
+          should 'in phase 0' do
+            @phidippides.expects(:update_dataset_metadata).
+              times(1).
+              returns({ status: '200' }).
+              with do |dataset_metadata|
+                dataset_metadata[:defaultPage] == 'neww-page'
+              end
+            @phidippides.stubs(
+              fetch_dataset_metadata: {
+                status: '200',
+                body: v0_mock_dataset_metadata.deep_dup.tap { |dataset_metadata| dataset_metadata.delete(:defaultPage)  }
+              },
+              fetch_pages_for_dataset: {
+                status: '200', body: { publisher: [{ pageId: 'olde-page' }, { pageId: 'neww-page', version: '1' }], user: [] }
+              }
+            )
+
+            stub_feature_flags_with(:metadata_transition_phase, '0')
+            get :bootstrap, id: 'data-iden'
+            assert_redirected_to('/view/neww-page')
+          end
+
+          should 'in phase 1, 2 and 3' do
+
+            # Apparently stub responses are cached or memoized or kept by
+            # reference or something, so we need to re-stub
+            # fetch_dataset_metadata before every one of these tests.
+            # This seems like it is because bootstrap mutates the dataset
+            # metadata and the stub 'helpfully' notices that and retains the
+            # changes?
+            def stub_fetch_dataset_metadata_without_default_page_and_fetch_pages_for_dataset
+              @phidippides.stubs(
+                fetch_dataset_metadata: {
+                  status: '200',
+                  body: v1_mock_dataset_metadata.deep_dup.tap { |dataset_metadata| dataset_metadata.delete(:defaultPage) }
+                },
+                fetch_pages_for_dataset: {
+                  status: '200', body: { publisher: [{ pageId: 'olde-page' }, { pageId: 'neww-page', version: '1' }], user: [] }
+                }
+              )
+            end
+
+            @phidippides.expects(:update_dataset_metadata).
+              times(3).
+              returns({ status: '200' }).
+              with do |dataset_metadata|
+                dataset_metadata[:defaultPage] == 'neww-page'
+              end
+
+            stub_fetch_dataset_metadata_without_default_page_and_fetch_pages_for_dataset
+            stub_feature_flags_with(:metadata_transition_phase, '1')
             get :bootstrap, id: 'four-four'
-            assert_redirected_to('/view/last-page')
+            assert_redirected_to('/view/neww-page')
+
+            stub_fetch_dataset_metadata_without_default_page_and_fetch_pages_for_dataset
+            stub_feature_flags_with(:metadata_transition_phase, '2')
+            get :bootstrap, id: 'four-four'
+            assert_redirected_to('/view/neww-page')
+
+            stub_fetch_dataset_metadata_without_default_page_and_fetch_pages_for_dataset
+            stub_feature_flags_with(:metadata_transition_phase, '3')
+            get :bootstrap, id: 'four-four'
+            assert_redirected_to('/view/neww-page')
           end
         end
       end

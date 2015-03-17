@@ -96,28 +96,39 @@ class NewUxBootstrapController < ActionController::Base
 
       if default_page.present?
         # If we found a default page as specified in the dataset_metadata,
-        # redirect to it immediately.
-        return redirect_to "/view/#{default_page[:pageId]}"
+        # check its metadata version.
+        # Note that the .to_i will coerce potential nil results into 0.
+        if default_page[:version].to_i > 0
+          # If the default page version is greater than or equal to 1,
+          # immediately redirect to the default page.
+          return redirect_to "/view/#{default_page[:pageId]}"
+        else
+          # Otherwise, generate a new default page and redirect to it.
+          generate_and_redirect_to_new_page(dataset_metadata_response_body)
+        end
       else
         # If no pages match the default page listed in the dataset_metadata,
-        # choose the last page in the collection and set it as the default page.
-        set_default_page(dataset_metadata_response_body, pages.last[:pageId])
-        return redirect_to "/view/#{pages.last[:pageId]}"
+        # find a page in the collection that is of at least version 1 page
+        # metadata and then redirect to it.
+        some_v1_page = pages.find do |page|
+          # Note that this may be nil and, if so, will be coerced by .to_i into 0
+          page[:version].to_i > 0
+        end
+
+        if some_v1_page.present?
+          set_default_page(dataset_metadata_response_body, some_v1_page[:pageId])
+          return redirect_to "/view/#{some_v1_page[:pageId]}"
+        else
+          # If no pages of at least version 1 page metadata exist, then generate
+          # a new page and redirect to it instead.
+          generate_and_redirect_to_new_page(dataset_metadata_response_body)
+        end
       end
 
     # 4b. If there are no pages, we will need to create a default 'New UX' page.
     elsif request_successful_but_no_pages
 
-      default_page_id = create_default_page(dataset_metadata_response_body)
-
-      unless default_page_id.present?
-        flash[:error] = I18n.t('screens.ds.new_ux_error')
-        return redirect_to action: 'show', controller: 'datasets'
-      end
-
-      # Set the newly-created page as the default.
-      set_default_page(dataset_metadata_response_body, default_page_id)
-      return redirect_to "/view/#{default_page_id}"
+      generate_and_redirect_to_new_page(dataset_metadata_response_body)
 
     # This is a server error so we should notify Airbrake.
     else
@@ -241,10 +252,12 @@ class NewUxBootstrapController < ActionController::Base
   end
 
   def generate_cards_from_dataset_metadata_columns(columns)
+    cached_dataset_size = dataset_size
+
     if metadata_transition_phase_0?
       columns.map do |column|
         unless Phidippides::SYSTEM_COLUMN_ID_REGEX.match(column[:name])
-          card_type = card_type_for(column, :logicalDatatype, dataset_size)
+          card_type = card_type_for(column, :logicalDatatype, cached_dataset_size)
           if card_type
             card = page_metadata_manager.merge_new_card_data_with_default(
               column[:name],
@@ -264,7 +277,7 @@ class NewUxBootstrapController < ActionController::Base
     else
       columns.map do |field_name, column|
         unless Phidippides::SYSTEM_COLUMN_ID_REGEX.match(field_name)
-          card_type = card_type_for(column, :fred, dataset_size)
+          card_type = card_type_for(column, :fred, cached_dataset_size)
           if card_type
             card = page_metadata_manager.merge_new_card_data_with_default(
               field_name,
@@ -281,6 +294,20 @@ class NewUxBootstrapController < ActionController::Base
         end
       end.compact
     end
+  end
+
+
+  def generate_and_redirect_to_new_page(dataset_metadata)
+    default_page_id = create_default_page(dataset_metadata)
+
+    unless default_page_id.present?
+      flash[:error] = I18n.t('screens.ds.new_ux_error')
+      return redirect_to action: 'show', controller: 'datasets'
+    end
+
+    # Set the newly-created page as the default.
+    set_default_page(dataset_metadata, default_page_id)
+    return redirect_to "/view/#{default_page_id}"
   end
 
   def dataset_size

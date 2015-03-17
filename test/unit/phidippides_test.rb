@@ -482,6 +482,34 @@ class PhidippidesTest < Test::Unit::TestCase
     end
   end
 
+  def test_simulated_pages_for_dataset_returns_all_pages_in_phase_0
+    stub_feature_flags_with(:metadata_transition_phase, '0')
+    filtered_pages = phidippides.send(:exclude_non_v1_or_above_pages_in_phase_3!, { status: '200', body: old_mixed_v0_and_v1_pages_for_dataset })
+    normalized_pages = phidippides.send(:normalize_pages_for_dataset_response!, filtered_pages)
+    assert(normalized_pages[:body][:publisher].any? { |page| !page.has_key?('version') }, 'expected some non-v1 pages')
+  end
+
+  def test_simulated_pages_for_dataset_returns_all_pages_in_phase_1
+    stub_feature_flags_with(:metadata_transition_phase, '1')
+    filtered_pages = phidippides.send(:exclude_non_v1_or_above_pages_in_phase_3!, { status: '200', body: old_mixed_v0_and_v1_pages_for_dataset })
+    normalized_pages = phidippides.send(:normalize_pages_for_dataset_response!, filtered_pages)
+    assert(normalized_pages[:body][:publisher].any? { |page| !page.has_key?('version') }, 'expected some non-v1 pages')
+  end
+
+  def test_simulated_pages_for_dataset_returns_all_pages_in_phase_2
+    stub_feature_flags_with(:metadata_transition_phase, '2')
+    filtered_pages = phidippides.send(:exclude_non_v1_or_above_pages_in_phase_3!, { status: '200', body: new_mixed_v0_and_v1_pages_for_dataset })
+    normalized_pages = phidippides.send(:normalize_pages_for_dataset_response!, filtered_pages)
+    assert(normalized_pages[:body][:publisher].any? { |page| !page.has_key?('version') }, 'expected some non-v1 pages')
+  end
+
+  def test_simulated_pages_for_dataset_returns_only_v1_or_above_pages_in_phase_3
+    stub_feature_flags_with(:metadata_transition_phase, '3')
+    filtered_pages = phidippides.send(:exclude_non_v1_or_above_pages_in_phase_3!, { status: '200', body: new_mixed_v0_and_v1_pages_for_dataset })
+    normalized_pages = phidippides.send(:normalize_pages_for_dataset_response!, filtered_pages)
+    assert(normalized_pages[:body][:publisher].all? { |page| page['version'].to_i > 0 }, 'expected only v1 pages')
+  end
+
   def test_issue_request_success_response
     prepare_stubs(body: { key: 'value' }, path: 'datasets/four-four', verb: :get)
     result = phidippides.issue_request(verb: :get, path: 'datasets/four-four', request_id: 'request_id')
@@ -597,6 +625,14 @@ class PhidippidesTest < Test::Unit::TestCase
 
   def normalized_v1_pages_for_dataset
     JSON.parse('{"publisher":[{"datasetId":"q77b-s2zi","pageId":"vwwn-6r7g"}, {"datasetId":"q77b-s2zi","pageId":"test-page"}], "user":[]}').with_indifferent_access
+  end
+
+  def old_mixed_v0_and_v1_pages_for_dataset
+    JSON.parse('{"publisher":[{"datasetId":"q77b-s2zi","pageId":"vwwn-6r7g"}, {"datasetId":"q77b-s2zi","pageId":"test-page","version":"1"}], "user":[]}').with_indifferent_access
+  end
+
+  def new_mixed_v0_and_v1_pages_for_dataset
+    JSON.parse('{"vwwn-6r7g":{"datasetId":"q77b-s2zi","pageId":"vwwn-6r7g"}, "test-page":{"datasetId":"q77b-s2zi","pageId":"test-page","version":"1"}}').with_indifferent_access
   end
 
   def new_v0_page_metadata

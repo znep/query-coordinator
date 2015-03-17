@@ -87,7 +87,7 @@ class Phidippides < SocrataHttp
   end
 
   def migrate_dataset_metadata_to_v1(dataset_metadata)
-    if metadata_transition_phase_1? || metadata_transition_phase_2?
+    unless metadata_transition_phase_0?
 
       dataset_id = dataset_metadata.try(:[], :body).try(:[], :id)
 
@@ -290,11 +290,13 @@ class Phidippides < SocrataHttp
       )
     else
       normalize_pages_for_dataset_response!(
-        issue_request(
-          :verb => :get,
-          :path => "v1/id/#{dataset_id}/pages",
-          :request_id => options[:request_id],
-          :cookies => options[:cookies]
+        exclude_non_v1_or_above_pages_in_phase_3!(
+          issue_request(
+            :verb => :get,
+            :path => "v1/id/#{dataset_id}/pages",
+            :request_id => options[:request_id],
+            :cookies => options[:cookies]
+          )
         )
       )
     end
@@ -303,10 +305,27 @@ class Phidippides < SocrataHttp
   private
 
   def normalize_pages_for_dataset_response!(pages_for_dataset_response)
-    if pages_for_dataset_response[:status] == '200' && pages_for_dataset_response[:body].present?
+
+    if pages_for_dataset_response[:status] == '200' &&
+      pages_for_dataset_response[:body].present? &&
+      (metadata_transition_phase_2? || metadata_transition_phase_3?)
+
       response_body = pages_for_dataset_response[:body]
       if response_body.respond_to?('values')
         pages_for_dataset_response[:body] = { :publisher => response_body.values, :user => [] }
+      end
+    end
+    pages_for_dataset_response
+  end
+
+  def exclude_non_v1_or_above_pages_in_phase_3!(pages_for_dataset_response)
+
+    if pages_for_dataset_response[:status] == '200' &&
+      pages_for_dataset_response[:body].present? &&
+      metadata_transition_phase_3?
+
+      pages_for_dataset_response[:body].select! do |page_id, page_data|
+        page_data[:version].to_i > 0
       end
     end
     pages_for_dataset_response

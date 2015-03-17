@@ -39,7 +39,7 @@
 
         // We buffer feature layers so that there isn't a visible flash
         // of emptiness when we transition from one to the next. This is accomplished
-        // by only removing the previous one when the current one completes rendering.
+        // by only removing the previous layers when the current one completes rendering.
         var featureLayers = {};
 
         // We also keep a handle on the current feature layer Url so we know which of

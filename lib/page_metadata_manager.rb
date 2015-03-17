@@ -1,5 +1,5 @@
-# Wrapper around the phidippides service, for functions related to page metadata.
-# Also handles managing rollup tables in soda fountain.
+# Wrapper around the phidippides service, for functions related to page
+# metadata. Also handles managing rollup tables in soda fountain.
 class PageMetadataManager
 
   include CommonMetadataTransitionMethods
@@ -53,7 +53,8 @@ class PageMetadataManager
       raise Phidippides::NoCardsException.new('no cards entry on page metadata')
     end
 
-    # First provision a new page 4x4, so we can let the data lens know what to point to.
+    # First provision a new page 4x4, so we can let the data lens know what to
+    # point to.
     # This is also what we'll have to do in metadata_transition_phase_2 anyway.
     new_page_id = phidippides.request_new_page_id(page_metadata, options)
     raise Phidippides::NewPageException.new('could not provision new page id') unless new_page_id
@@ -70,8 +71,8 @@ class PageMetadataManager
   end
 
   # Updates an existing page.
-  # Note that phidippides will simply overwrite the existing value with the given value, so any
-  # missing keys will become missing in the datastore.
+  # Note that phidippides will simply overwrite the existing value with the
+  # given value, so any missing keys will become missing in the datastore.
   def update(page_metadata, options = {})
     raise Phidippides::NoDatasetIdException.new('cannot create page with no dataset id') unless page_metadata.key?('datasetId')
     raise Phidippides::NoPageIdException.new('cannot create page with no page id') unless page_metadata.key?('pageId')
@@ -81,32 +82,34 @@ class PageMetadataManager
 
   private
 
-  # Creates or updates a page. This takes care of updating phidippides, as well as rollup tables in
-  # soda fountain and the core datalens link.
+  # Creates or updates a page. This takes care of updating phidippides, as well
+  # as rollup tables in soda fountain and the core datalens link.
   def create_or_update(method, page_metadata, options = {})
     unless page_metadata['pageId'].present?
       raise Phidippides::NoPageIdException.new('page id must be provisioned first.')
     end
     page_id = page_metadata['pageId']
 
-    # First update the data lens. We do this so that we can save the data_lens_id into the
-    # page_metadata, so that next time we need to update the page_metadata, we can also update the
-    # data_lens that links to it (and has its own copy of the title/description).
+    # First update the data lens. We do this so that we can save the
+    # catalogViewId into the page_metadata, so that next time we need to
+    # update the page_metadata, we can also update the catalog view data
+    # lens that links to it (and has its own copy of the title/description).
     if method == :create
-      data_lens_id = new_view_manager.create(
+      catalog_view_id = new_view_manager.create(
         page_id,
         page_metadata['name'],
         page_metadata['description']
       )
     else
-      # Fetch the existing page, so we can get the id for the data lens.
+      # Fetch the existing page, so we can get the id of the catalog view
+      # data lens.
       result = phidippides.fetch_page_metadata(page_id)
       begin
-        data_lens_id = result.fetch(:body, {})[:data_lens_id]
-        if data_lens_id
-          # Update the data lens
+        catalog_view_id = result.fetch(:body, {})[:catalogViewId]
+        if catalog_view_id
+          # Update the catalog view data lens
           new_view_manager.update(
-            data_lens_id,
+            catalog_view_id,
             page_metadata['name'],
             page_metadata['description']
           )
@@ -120,9 +123,10 @@ class PageMetadataManager
       end
     end
 
-    page_metadata['data_lens_id'] = data_lens_id
+    page_metadata['catalogViewId'] = catalog_view_id
 
-    # Since we provision the page id beforehand, a create is the same as an update
+    # Since we provision the page id beforehand, a create is the same as an
+    # update.
     result = phidippides.update_page_metadata(page_metadata, options)
 
     if result.fetch(:status) == '200'
@@ -174,8 +178,10 @@ class PageMetadataManager
       end
     end
 
-    # TODO Figure out how to deal with time which can aggregated at different levels of granularity (e.g. day, week, month)
-    # TODO Need to consider the construction of the WHERE clause for page's default filter
+    # TODO Figure out how to deal with time which can aggregated at different
+    # levels of granularity (e.g. day, week, month).
+    # TODO Need to consider the construction of the WHERE clause for page's
+    # default filter.
     columns_to_roll_up = columns.select do |column|
       card_matches_column = page_metadata['cards'].any? { |card| card['fieldName'] == column[column_field_name] }
       card_matches_column &&
@@ -188,7 +194,8 @@ class PageMetadataManager
 
     soql = 'select '
     soql << columns_to_roll_up.pluck(column_field_name).join(', ')
-    soql << ', count(*) as value ' # TODO This will have to respect different aggregation functions, i.e. "sum"
+    # TODO This will have to respect different aggregation functions, i.e. "sum"
+    soql << ', count(*) as value '
     soql << 'group by '
     soql << columns_to_roll_up.pluck(column_field_name).join(', ')
   end
@@ -197,7 +204,10 @@ class PageMetadataManager
     response = soda_fountain.create_or_update_rollup_table(args)
 
     if response.fetch(:status) != '204'
-      Rails.logger.warn("Unable to update rollup table for page #{args.fetch(:page_id)} due to error: #{response.inspect}")
+      Rails.logger.warn(
+        "Unable to update rollup table for page #{args.fetch(:page_id)} " \
+        "due to error: #{response.inspect}"
+      )
     end
   end
 

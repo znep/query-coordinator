@@ -61,7 +61,7 @@ kill_esri_reprojection_and_pass_different_webm:
   defaultValue: false
 odux_enable_feature_map:
   description: Enable feature maps.
-  defaultValue: false
+  defaultValue: true
 enable_api_foundry_pane:
   description: Will allow the api_foundry pane to be displayed. If there is another reason for the api_foundry pane to be hidden, it will still be hidden.
   defaultValue: false

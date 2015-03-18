@@ -95,32 +95,47 @@ class NewUxBootstrapController < ActionController::Base
       end
 
       if default_page.present?
-        # If we found a default page as specified in the dataset_metadata,
-        # check its metadata version.
-        # Note that the .to_i will coerce potential nil results into 0.
-        if default_page[:version].to_i > 0
-          # If the default page version is greater than or equal to 1,
-          # immediately redirect to the default page.
+        if metadata_transition_phase_0?
+          # In metadata transition phase 0 only, we will take any extant
+          # default page.
           return redirect_to "/view/#{default_page[:pageId]}"
         else
-          # Otherwise, generate a new default page and redirect to it.
-          generate_and_redirect_to_new_page(dataset_metadata_response_body)
+          # If we found a default page as specified in the dataset_metadata,
+          # check its metadata version.
+          # Note that the .to_i will coerce potential nil results into 0.
+          if default_page[:version].to_i > 0
+            # If the default page version is greater than or equal to 1,
+            # immediately redirect to the default page.
+            return redirect_to "/view/#{default_page[:pageId]}"
+          else
+            # Otherwise, generate a new default page and redirect to it.
+            generate_and_redirect_to_new_page(dataset_metadata_response_body)
+          end
         end
       else
-        # If no pages match the default page listed in the dataset_metadata,
-        # find a page in the collection that is of at least version 1 page
-        # metadata and then redirect to it.
-        some_v1_page = pages.find do |page|
-          # Note that this may be nil and, if so, will be coerced by .to_i into 0
-          page[:version].to_i > 0
+        if metadata_transition_phase_0?
+          # In metadata transition phase 0 only, we will take any extant page
+          # as a default.
+          some_page = pages.last
+        else
+          # In any other metadata transition phase, however, if no pages match
+          # the default page listed in the dataset_metadata, we attempt to find
+          # a page in the collection that is of at least version 1 page
+          # metadata.
+          some_page = pages.find do |page|
+            # Note that this may be nil and, if so, will be coerced by .to_i into 0
+            page[:version].to_i > 0
+          end
         end
 
-        if some_v1_page.present?
-          set_default_page(dataset_metadata_response_body, some_v1_page[:pageId])
-          return redirect_to "/view/#{some_v1_page[:pageId]}"
+        if some_page.present?
+          # If we have found a qualifying default page, set it as the default
+          # and then redirect to it.
+          set_default_page(dataset_metadata_response_body, some_page[:pageId])
+          return redirect_to "/view/#{some_page[:pageId]}"
         else
-          # If no pages of at least version 1 page metadata exist, then generate
-          # a new page and redirect to it instead.
+          # If no qualifying pages exist, then generate a new page and redirect
+          # to it instead.
           generate_and_redirect_to_new_page(dataset_metadata_response_body)
         end
       end

@@ -22,7 +22,10 @@ class TileServerControllerTest < ActionController::TestCase
       :x_coord => @x_coord,
       :y_coord => @y_coord,
       '$limit' => @limit,
-      :cookies => nil
+      :cookies => nil,
+      :headers => {
+        'if-modified-since' => nil
+      }
     }.with_indifferent_access
 
     @mock_result = {
@@ -72,6 +75,33 @@ class TileServerControllerTest < ActionController::TestCase
       with(request_params_with_app_token).
       returns(:status => '200', :body => '', :content_type => '')
     get :proxy_request, request_params_with_app_token
+  end
+
+  test 'should pass through if-modified-since header from request' do
+    headers = {
+      'if-modified-since' => 'some date',
+      'X-Socrata-Wink' => 'iAmASocrataEmployee'
+    }.with_indifferent_access
+    @request.env.merge!(headers)
+
+    TileServer.any_instance.expects(:fetch_tile).
+      with(@request_params.merge(
+        :headers => { 'if-modified-since' => 'some date' }.with_indifferent_access
+      )).returns(:status => '200', :body => '', :content_type => '')
+
+    get :proxy_request, @request_params
+  end
+
+  test 'should pass through headers from response' do
+    headers = {
+      'some-custom-header' => 'spartaaaa'
+    }.with_indifferent_access
+
+    TileServer.any_instance.expects(:fetch_tile).
+      returns(:status => '200', :body => '', :content_type => '', :headers => headers)
+
+    get :proxy_request, @request_params
+    assert_equal(@response.headers['some-custom-header'], 'spartaaaa')
   end
 
 

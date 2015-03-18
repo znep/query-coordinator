@@ -123,7 +123,8 @@ class TileServerTest < Test::Unit::TestCase
       :y_coord => y_coord,
       '$limit' => limit,
       '$where' => where,
-      :body => test_body
+      :body => test_body,
+      :allow_304 => true
     )
 
     result = tileserver.fetch_tile(
@@ -157,7 +158,9 @@ class TileServerTest < Test::Unit::TestCase
       :request_id => nil,
       :cookies => nil,
       :path => 'tiles/test-page/test_field/14/2/3.pbf?$limit=11088&$where=0%3D0',
-      :app_token => app_token
+      :app_token => app_token,
+      :allow_304 => true,
+      :headers => {}
     }
 
     TileServer.any_instance.expects(:issue_request).
@@ -272,6 +275,7 @@ class TileServerTest < Test::Unit::TestCase
     @mock_response.stubs(:kind_of?).with do |klass|
       response_class <= klass
     end.returns(true)
+    @mock_response.stubs(:to_hash).returns({})
 
     @mock_request = {}
     @mock_request.expects(:body).returns(options.fetch(:body, ''))

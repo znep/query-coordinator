@@ -128,6 +128,8 @@ class PolaroidTest < Test::Unit::TestCase
       response_class <= klass
     end.returns(true)
 
+    @mock_response.stubs(:to_hash).returns({})
+
     @mock_request = {}
     @mock_request.expects(:body).returns(options.fetch(:body, ''))
 

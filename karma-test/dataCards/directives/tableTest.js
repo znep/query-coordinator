@@ -203,14 +203,22 @@ describe('table directive', function() {
 
     it('should format numbers correctly', function() {
       var cells = immutableTable.find('.row-block .cell');
+      var checkedYear = false;
       expect(cells.length).to.not.equal(0);
       _.each(cells, function(cell) {
         var column = fixtureMetadata.testColumnDetailsAsTableWantsThem[$(cell).index()];
         var datatype = column.physicalDatatype;
         if (datatype === 'number') {
           expect($(cell).hasClass('number')).to.equal(true);
+
+          if (column.name === 'Year') {
+            expect($(cell).text()).to.match(/^[1-9][0-9]{3}$/);
+            checkedYear = true;
+          };
         }
       });
+
+      expect(checkedYear).to.equal(true);
     });
 
     it('should load more rows upon scrolling', function(done) {

@@ -382,6 +382,11 @@
                     }
 
                   } else if (cellType === 'number') {
+                    // CORE-4533: Preserve behavior of old UX - truncate precision
+                    if (cellContent && !_.isNumber(cellContent)) {
+                      cellContent = parseFloat(cellContent).toString();
+                    }
+
                     // TODO: Remove this. This is just to satisfy Clint's pet peeve about years.
                     if (cellContent.length >= 5) {
                       cellText = _.escape($.commaify(cellContent));

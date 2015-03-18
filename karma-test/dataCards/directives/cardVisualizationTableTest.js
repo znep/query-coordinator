@@ -66,7 +66,9 @@ describe('A Table Card Visualization', function() {
   var Model;
   var CardV1;
   var Page;
-  var q;
+  var PageDataService;
+  var pageMetadataPromise;
+  var $q;
 
   beforeEach(module('/angular_templates/dataCards/table.html'));
   beforeEach(module('/angular_templates/dataCards/cardVisualizationTable.html'));
@@ -78,10 +80,10 @@ describe('A Table Card Visualization', function() {
     module(function($provide) {
       var mockCardDataService = {
         getRowCount: function(id, whereClause) {
-          return q.when(_.isEmpty(whereClause) ? 1337 : 42);
+          return $q.when(_.isEmpty(whereClause) ? 1337 : 42);
         },
         getRows: function(/*datasetId, offset, limit, order, timeout, whereClause*/) {
-          return q.when([{
+          return $q.when([{
             'coordinates_8': {'type': 'Point', 'coordinates': [-87.49448, 41.792287]},
             'kilo_monstrosityquotient_2': '96054.26539825846',
             'largechronometerreading_10': '1950-10-12T18:51:43.000',
@@ -110,7 +112,14 @@ describe('A Table Card Visualization', function() {
     Model = $injector.get('Model');
     CardV1 = $injector.get('CardV1');
     Page = $injector.get('Page');
-    q = $injector.get('$q');
+    $q = $injector.get('$q');
+    PageDataService = $injector.get('PageDataService');
+    pageMetadataPromise = $q.defer();
+
+    sinon.stub(PageDataService, 'getPageMetadata', function() {
+      return pageMetadataPromise.promise
+    });
+
   }));
 
   afterEach(function(){
@@ -202,7 +211,7 @@ describe('A Table Card Visualization', function() {
 
   describe('default sort', function() {
 
-    it('should be correct', function() {
+    it('should be correct for count aggregation', function() {
       var table = createTable();
 
       table.pageModel.set('cards', []);
@@ -266,6 +275,14 @@ describe('A Table Card Visualization', function() {
       table.scope.$digest();
     });
 
+    it('should be correct for sum aggregation', function() {
+      pageMetadataPromise.resolve({
+        primaryAggregation: 'sum',
+        primaryAmountField: 'test_column'
+      });
+      var table = createTable();
+      expect(table.scope.defaultSortColumnName).to.equal('test_column');
+    })
   });
 
   describe('custom sort', function() {

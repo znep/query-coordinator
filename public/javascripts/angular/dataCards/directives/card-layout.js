@@ -100,7 +100,7 @@
 
         /**
          * In an expanded view, the expanded card needs to update its vertical
-         * sizing/position based on the quick filter bar and the footer.
+         * position and height based on the quick filter bar and the footer.
          *
          * @param {object} style The object that holds the css styles for the expanded
          * card.
@@ -109,43 +109,56 @@
          * @param windowSize
          * @param heightOfAllCards
          */
-        function updateExpandedVerticalDims(style, cardModel, scrollTop,
-                                            windowSize, heightOfAllCards) {
-          var windowHeight = windowSize.height;
-          style.height = windowHeight - Constants.LAYOUT_VERTICAL_PADDING;
+        function updateExpandedCardTopAndHeight(
+          style,
+          windowHeight,
+          scrollTop,
+          heightOfAllCards,
+          quickFilterBarHeight,
+          customizeBarHeight,
+          verticalPadding) {
 
           var cardContainerTop = cardContainer.offset().top;
-          style.top = quickFilterBar.hasClass('stuck') ?
-              quickFilterBar.height() :
-              cardContainerTop - scrollTop;
+          var quickFilterBarIsStuck = quickFilterBar.hasClass('stuck');
+          var maximumPossibleExpandedCardHeight = windowHeight -
+            quickFilterBarHeight -
+            customizeBarHeight -
+            verticalPadding;
+          var tableCardOffset = 0;
+          var tableCardIsVisible = false;
+          var expandedCardVisibleArea = 0;
 
-          style.height -= style.top;
+          if (quickFilterBarIsStuck) {
 
+            tableCardOffset = (cardContainerTop + heightOfAllCards) -
+              (scrollTop + windowHeight - customizeBarHeight);
+            expandedCardVisibleArea = (windowHeight + tableCardOffset) -
+              (quickFilterBarHeight + customizeBarHeight + verticalPadding);
 
-          var customizeBarOffset = 0;
-          if (customizeBar.is(':visible')) {
-            customizeBarOffset = customizeBar.height();
-          }
+            tableCardIsVisible = tableCardOffset < 0;
 
-          var footerOffset = cardModel.fieldName === '*' ?
-            customizeBarOffset :
-            Math.max(
-              customizeBarOffset,
-              (scrollTop + windowHeight) - (cardContainerTop + heightOfAllCards)
-            );
+            if (tableCardIsVisible &&
+              (expandedCardVisibleArea < maximumPossibleExpandedCardHeight)) {
+              // Make the expanded card extend past the top of the window to signal
+              // that the user can scroll above the table card to view the entire
+              // expanded card.
+              style.top = quickFilterBarHeight -
+                (maximumPossibleExpandedCardHeight - expandedCardVisibleArea);
+              style.height = maximumPossibleExpandedCardHeight;
 
-          style.height -= footerOffset;
+            } else {
 
-          // enforce a minimum height
-          if (style.height < Constants.LAYOUT_MIN_EXPANDED_CARD_HEIGHT) {
-            var diff = Constants.LAYOUT_MIN_EXPANDED_CARD_HEIGHT - style.height;
-            style.height = Constants.LAYOUT_MIN_EXPANDED_CARD_HEIGHT;
+              style.top = quickFilterBarHeight;
+              style.height = windowHeight -
+                (quickFilterBarHeight + customizeBarHeight + verticalPadding);
 
-            // Let the footer push us up.
-            if (footerOffset) {
-              style.top -= diff;
             }
-            // Otherwise, we overflow downward
+
+          } else {
+
+            style.top = cardContainerTop - scrollTop;
+            style.height = maximumPossibleExpandedCardHeight;
+
           }
         }
 
@@ -199,31 +212,44 @@
             };
           });
 
+          var quickFilterBarHeight = quickFilterBar.height();
+          var customizeBarHeight = customizeBar[0].offsetHeight;
+          var verticalPadding = Constants.LAYOUT_VERTICAL_PADDING;
+          var maximumPossibleExpandedCardHeight = windowSize.height -
+            quickFilterBarHeight -
+            customizeBarHeight -
+            verticalPadding;
+
           // Enforce a minimum height
           heightOfAllCards = Math.max(
-            Constants.LAYOUT_MIN_EXPANDED_CARD_HEIGHT + (Constants.LAYOUT_VERTICAL_PADDING * 2),
+            maximumPossibleExpandedCardHeight,
             heightOfAllCards
           );
 
-          // Set the style for the expanded card.
-          var scrollTop = jqueryWindow.scrollTop();
           expandedCardPos.style = {
             position: 'fixed',
             left: expandedColumnLeft,
             width: expandedColumnWidth
           };
-          updateExpandedVerticalDims(expandedCardPos.style,
-                                     expandedCardPos.model, scrollTop, windowSize,
-                                     heightOfAllCards);
+
+          updateExpandedCardTopAndHeight(
+            expandedCardPos.style,
+            windowSize.height,
+            jqueryWindow.scrollTop(),
+            heightOfAllCards,
+            quickFilterBarHeight,
+            customizeBarHeight,
+            verticalPadding
+          );
 
           // If the datacard isn't expanded, then add it to the bottom
           if (expandedCardPos !== cardsBySize.dataCard[0]) {
             cardsBySize.dataCard[0].style = {
               position: '',
-              left: Constants['LAYOUT_GUTTER'],
+              left: Constants.LAYOUT_GUTTER,
               top: heightOfAllCards,
               width: containerContentWidth,
-              height: Constants['LAYOUT_DATA_CARD_HEIGHT']
+              height: Constants.LAYOUT_DATA_CARD_HEIGHT
             };
           }
 
@@ -412,42 +438,77 @@
          */
 
         var observableForStaticElements = Rx.Observable.combineLatest(
-          WindowState.scrollPositionSubject,
-          quickFilterBar.observeDimensions(),
-          cardsMetadata.observeDimensions(),
           WindowState.windowSizeSubject,
-          function() { return arguments; }
+          WindowState.scrollPositionSubject,
+          cardsMetadata.observeDimensions(),
+          quickFilterBar.observeDimensions(),
+          function(
+            windowSize,
+            scrollTop,
+            cardsMetadataDimensions,
+            quickFilterBarDimensions) {
+
+            return {
+              windowHeight: windowSize.height,
+              scrollTop: scrollTop,
+              quickFilterBarHeight: quickFilterBarDimensions.height,
+              customizeBarHeight: customizeBar[0].offsetHeight
+            };
+
+          }
         ).takeUntil(scope.observeDestroy(cardContainer));
 
         // Figure out the sticky-ness of the QFB onscroll and un/stick appropriately
-        subscriptions.push(observableForStaticElements.subscribe(function(args) {
-          var headerStuck = args[0] >= (
-            cardsMetadataOffsetTop + cardsMetadata.outerHeight());
-          quickFilterBar.toggleClass('stuck', headerStuck);
-        }));
+        subscriptions.push(
+          observableForStaticElements.subscribe(
+            function(dimensions) {
+
+              var headerStuck = dimensions.scrollTop >=
+                (cardsMetadataOffsetTop + cardsMetadata.outerHeight());
+
+              quickFilterBar.toggleClass('stuck', headerStuck);
+            }
+          )
+        );
 
         // We also change the height of the expanded card onscroll, and if the QFB height
         // changes
-        subscriptions.push(observableForStaticElements.filter(function() {
-          // Cast to a boolean
-          return !!scope.expandedCard;
-        }).subscribe(function(args) {
-          var jqEl = cardContainer.find('.expanded').closest('.card-spot');
-          var localScope = jqEl.scope();
-          if (localScope) {
-            // TODO: hack so that if you hit this code during a transition, the
-            // transitionend handler will get the correct fixed-position style.
-            var styles = localScope.newStyles || {};
-            updateExpandedVerticalDims(
-              styles,
-              scope.expandedCard,
-              args[0],
-              args[3],
-              cardContainer.height()
-            );
-            jqEl.css(styles);
-          }
-        }));
+        subscriptions.push(
+          observableForStaticElements.filter(function() {
+            // Cast to a boolean and filter so that we only update the expanded
+            // card's layout when there is an expanded card.
+            return !!scope.expandedCard;
+          }).subscribe(
+            function(dimensions) {
+
+              var jqEl = cardContainer.find('.expanded').closest('.card-spot');
+              var localScope = jqEl.scope();
+
+              if (localScope) {
+                // TODO: hack so that if you hit this code during a transition, the
+                // transitionend handler will get the correct fixed-position style.
+
+                // This is non-obvious, but localScope.newStyles is actually
+                // a property that is set by the animate-to directive and is
+                // required for the below call to updateExpandedCardTopAndHeight
+                // to function correctly.
+                var styles = localScope.newStyles || {};
+
+                updateExpandedCardTopAndHeight(
+                  styles,
+                  dimensions.windowHeight,
+                  dimensions.scrollTop,
+                  cardContainer.height(),
+                  dimensions.quickFilterBarHeight,
+                  dimensions.customizeBarHeight,
+                  Constants.LAYOUT_VERTICAL_PADDING
+                );
+
+                jqEl.css(styles);
+              }
+            }
+          )
+        );
 
 
         subscriptions.push(Rx.Observable.subscribeLatest(

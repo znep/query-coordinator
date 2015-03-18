@@ -42,20 +42,22 @@ class PageMetadataManagerTest < Test::Unit::TestCase
       update_page_metadata: { status: '200', body: nil }
     )
     stub_feature_flags_with(:metadata_transition_phase, '2')
-    NewViewManager.any_instance.expects(:create).times(1).with do |page_id, name, description|
-      # Make sure it's creating the new view pointing to the correct page-id
-      assert_equal('asdf-asdf', page_id)
-      assert_not_equal(v1_page_metadata['pageId'], page_id, "pageId should not match existing pageId")
-      assert_equal(v1_page_metadata['name'], name)
-      assert_equal(v1_page_metadata['description'], description)
-    end.then.returns('data-lens')
+    # Data lens page creation disabled until permissions issues have been dealt with
+    # NewViewManager.any_instance.expects(:create).times(1).with do |page_id, name, description|
+    #   # Make sure it's creating the new view pointing to the correct page-id
+    #   assert_equal('asdf-asdf', page_id)
+    #   assert_not_equal(v1_page_metadata['pageId'], page_id, "pageId should not match existing pageId")
+    #   assert_equal(v1_page_metadata['name'], name)
+    #   assert_equal(v1_page_metadata['description'], description)
+    # end.then.returns('data-lens')
     result = manager.create(v1_page_metadata)
     assert_equal('200', result.fetch(:status), 'Expected create result status to be 200')
     assert_equal('asdf-asdf', result.fetch(:body).fetch('pageId'), 'Expected the new pageId to be returned')
-    assert_equal('data-lens', result.fetch(:body).fetch('catalogViewId'), 'Expected the new catalogViewId to be returned')
+    # Data lens page creation disabled until permissions issues have been dealt with
+    # assert_equal('data-lens', result.fetch(:body).fetch('catalogViewId'), 'Expected the new catalogViewId to be returned')
   end
 
-  def test_create_creates_data_lens_with_reference_v0
+  def x_test_create_creates_data_lens_with_reference_v0
     Phidippides.any_instance.stubs(
       request_new_page_id: 'asdf-asdf',
       fetch_dataset_metadata: { status: '200', body: v0_dataset_metadata_without_rollup_columns },
@@ -91,13 +93,14 @@ class PageMetadataManagerTest < Test::Unit::TestCase
 
   def test_create_ignores_provided_pageId
     PageMetadataManager.any_instance.expects(:update_rollup_table).times(0)
-    NewViewManager.any_instance.expects(:create).times(1).with do |page_id, name, description|
-      # Make sure it's creating the new view pointing to the correct page-id
-      assert_equal('asdf-asdf', page_id)
-      assert_not_equal(v1_page_metadata['pageId'], page_id, "pageId should not match existing pageId")
-      assert_equal(v1_page_metadata['name'], name)
-      assert_equal(v1_page_metadata['description'], description)
-    end.then.returns('data-lens')
+    # Data lens page creation disabled until permissions issues have been dealt with
+    # NewViewManager.any_instance.expects(:create).times(1).with do |page_id, name, description|
+    #   # Make sure it's creating the new view pointing to the correct page-id
+    #   assert_equal('asdf-asdf', page_id)
+    #   assert_not_equal(v1_page_metadata['pageId'], page_id, "pageId should not match existing pageId")
+    #   assert_equal(v1_page_metadata['name'], name)
+    #   assert_equal(v1_page_metadata['description'], description)
+    # end.then.returns('data-lens')
     Phidippides.any_instance.stubs(
       request_new_page_id: 'asdf-asdf',
       update_page_metadata: { body: nil, status: '200' },
@@ -107,7 +110,8 @@ class PageMetadataManagerTest < Test::Unit::TestCase
 
     result = manager.create(v1_page_metadata)
     assert_equal('asdf-asdf', result.fetch(:body).fetch('pageId'), 'Expected the new pageId to be returned')
-    assert_equal('data-lens', result.fetch(:body).fetch('catalogViewId'), 'Expected the new catalogViewId to be returned')
+    # Data lens page creation disabled until permissions issues have been dealt with
+    # assert_equal('data-lens', result.fetch(:body).fetch('catalogViewId'), 'Expected the new catalogViewId to be returned')
   end
 
   def test_create_raises_an_error_if_dataset_id_is_not_present_in_new_page_metadata
@@ -303,7 +307,7 @@ class PageMetadataManagerTest < Test::Unit::TestCase
     manager.update(v0_page_metadata.merge('bunch' => 'other stuff', 'foo' => 'bar'))
   end
 
-  def test_update_creates_data_lens_with_reference_v0
+  def x_test_update_creates_data_lens_with_reference_v0
     Phidippides.any_instance.stubs(
       update_page_metadata: { status: '200', body: v0_page_metadata },
     )

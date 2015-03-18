@@ -90,6 +90,41 @@ class PageMetadataManager
     end
     page_id = page_metadata['pageId']
 
+    # Data lens page creation disabled until permissions issues have been dealt with
+    # catalog_view_it = create_or_update_new_view(method, page_id, page_metadata)
+    # page_metadata['catalogViewId'] = catalog_view_id
+
+    # Since we provision the page id beforehand, a create is the same as an
+    # update.
+    result = phidippides.update_page_metadata(page_metadata, options)
+
+    if result.fetch(:status) == '200'
+      rollup_soql = build_rollup_soql(page_metadata, options)
+
+      # if we can roll up anything for this query, do so
+      if rollup_soql
+        args = {
+          dataset_id: page_metadata.fetch('datasetId'),
+          rollup_name: page_id,
+          page_id: page_id,
+          soql: rollup_soql
+        }
+        args.reverse_merge!(options)
+        update_rollup_table(args)
+      end
+    end
+
+    # Replace the page metadata in the result, since FlexPhidippides
+    # actually will not return the metadata blob that we just posted
+    # to it.
+    if !metadata_transition_phase_0? && !metadata_transition_phase_1?
+      result[:body] = page_metadata
+    end
+
+    result
+  end
+
+  def create_or_update_new_view(method, page_id, page_metadata)
     # First update the data lens. We do this so that we can save the
     # catalogViewId into the page_metadata, so that next time we need to
     # update the page_metadata, we can also update the catalog view data
@@ -122,37 +157,7 @@ class PageMetadataManager
         )
       end
     end
-
-    page_metadata['catalogViewId'] = catalog_view_id
-
-    # Since we provision the page id beforehand, a create is the same as an
-    # update.
-    result = phidippides.update_page_metadata(page_metadata, options)
-
-    if result.fetch(:status) == '200'
-      rollup_soql = build_rollup_soql(page_metadata, options)
-
-      # if we can roll up anything for this query, do so
-      if rollup_soql
-        args = {
-          dataset_id: page_metadata.fetch('datasetId'),
-          rollup_name: page_id,
-          page_id: page_id,
-          soql: rollup_soql
-        }
-        args.reverse_merge!(options)
-        update_rollup_table(args)
-      end
-    end
-
-    # Replace the page metadata in the result, since FlexPhidippides
-    # actually will not return the metadata blob that we just posted
-    # to it.
-    if !metadata_transition_phase_0? && !metadata_transition_phase_1?
-      result[:body] = page_metadata
-    end
-
-    result
+    catalog_view_id
   end
 
   def build_rollup_soql(page_metadata, options = {})

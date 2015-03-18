@@ -50,7 +50,8 @@
       'RELATED_VIEWS_LIST_HEIGHT_OFFSET': 150,
 
       // This is the maximum legal date value as a string in Javascript
-      'MAX_LEGAL_JAVASCRIPT_DATE_STRING': '9999-12-31 23:59:59'
+      // NOTE! Do not include the time in this string or SoQL queries will break!
+      'MAX_LEGAL_JAVASCRIPT_DATE_STRING': '9999-12-31'
     };
 
   }

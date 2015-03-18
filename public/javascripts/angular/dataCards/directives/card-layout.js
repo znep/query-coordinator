@@ -130,12 +130,29 @@
 
           if (quickFilterBarIsStuck) {
 
+            // We infer the top offset of the table card on the page by summing
+            // the height of all cards with the offest top of the card
+            // container. This holds because the card container is directly
+            // below the info pane and quick filter bar (so that the offset top
+            // of the card container is equal to the height of those other two
+            // elements) and the table card is directly below the card
+            // container, the height of which is captured in heightOfAllCards.
+            //
+            // This value is RELATIVE to the TOP OF THE CUSTOMIZE BAR.
             tableCardOffset = (cardContainerTop + heightOfAllCards) -
               (scrollTop + windowHeight - customizeBarHeight);
+
+            // We can then easily tell if the table card is 'visible' by
+            // checking the sign of the tableCardOffset value. If it is
+            // negative, then the table card is currently visible above the
+            // customize bar.
+            tableCardIsVisible = tableCardOffset < 0;
+
+            // The expanded card visible area, then, represents the vertical
+            // screen space that is not occupied by either the quick filter
+            // bar, the customize bar or the table card.
             expandedCardVisibleArea = (windowHeight + tableCardOffset) -
               (quickFilterBarHeight + customizeBarHeight + verticalPadding);
-
-            tableCardIsVisible = tableCardOffset < 0;
 
             if (tableCardIsVisible &&
               (expandedCardVisibleArea < maximumPossibleExpandedCardHeight)) {
@@ -481,8 +498,8 @@
           }).subscribe(
             function(dimensions) {
 
-              var jqEl = cardContainer.find('.expanded').closest('.card-spot');
-              var localScope = jqEl.scope();
+              var jqueryExpandedCardSpot = cardContainer.find('.expanded').closest('.card-spot');
+              var localScope = jqueryExpandedCardSpot.scope();
 
               if (localScope) {
                 // TODO: hack so that if you hit this code during a transition, the
@@ -504,7 +521,7 @@
                   Constants.LAYOUT_VERTICAL_PADDING
                 );
 
-                jqEl.css(styles);
+                jqueryExpandedCardSpot.css(styles);
               }
             }
           )

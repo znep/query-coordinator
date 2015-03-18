@@ -113,7 +113,7 @@
 
       append: function(element) {
         if ($('#test-root').length === 0) {
-          $('body').append('<div id="test-root" style="margin:0;padding:0;"></div>');
+          $('body').append('<div id="test-root" style="margin: 0; padding: 0;"></div>');
           $('body').append('<style>body { margin: 0; padding: 0; }</style>');
         }
 

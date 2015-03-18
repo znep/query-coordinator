@@ -72,7 +72,7 @@ enable_newux_bootstrap_link:
   description: Will display a link in the old UX, to its corresponding new UX page.
   defaultValue: false
 enable_opendata_ga_tracking:
-  description: Enable Google Analytics in the new UX
+  description: Controls behavior of Google Analytics in the new UX. If true, GA is enabled with a default Socrata-wide token. If a custom value is provided, GA is enabled and the custom value is used as the GA token. If false, GA is disabled.
 data_cards_app_token:
   description: The SODA application token to be used by the dataCards app.
   defaultValue: zvQamMSTi4GNuZWWDwjLdLPhW

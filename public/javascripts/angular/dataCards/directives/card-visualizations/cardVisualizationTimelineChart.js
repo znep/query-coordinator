@@ -176,7 +176,6 @@
           }
         ).switchLatest().map(
           function(domain) {
-
             var precision;
 
             if (_.isUndefined(domain)) {
@@ -292,13 +291,10 @@
         scope.bindObservable('chartData', chartDataSequence);
 
         scope.bindObservable('expanded', model.observeOnLatest('expanded'));
-
         scope.bindObservable('precision', datasetPrecision);
-
         scope.bindObservable('activeFilters', model.observeOnLatest('activeFilters'));
-
         scope.bindObservable('rowDisplayUnit', model.observeOnLatest('page.aggregation.unit'));
-
+        scope.bindObservable('cannotRenderTimelineChart', cannotRenderTimelineChart);
 
         // Handle filtering
         scope.$on('filter-timeline-chart',
@@ -307,7 +303,7 @@
               var filter = new Filter.TimeRangeFilter(data.start, data.end);
               scope.model.set('activeFilters', [filter]);
             } else {
-              scope.model.set('activeFilters', []);  
+              scope.model.set('activeFilters', []);
             }
           }
         );

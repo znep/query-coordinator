@@ -48,9 +48,7 @@ class SocrataHttp
     end
 
     headers = response.to_hash.slice(*http_response_headers_to_pass_through)
-    if headers.present?
-      result[:headers] = headers
-    end
+    result[:headers] = headers if headers.present?
 
     result.with_indifferent_access
   end

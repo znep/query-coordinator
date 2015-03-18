@@ -25,7 +25,7 @@ class TileServerControllerTest < ActionController::TestCase
       :cookies => nil,
       :headers => {
         'if-modified-since' => nil
-      },
+      }
     }.with_indifferent_access
 
     @mock_result = {
@@ -80,7 +80,7 @@ class TileServerControllerTest < ActionController::TestCase
   test 'should pass through if-modified-since header from request' do
     headers = {
       'if-modified-since' => 'some date',
-      'X-Socrata-Wink' => 'iAmASocrataEmployee',
+      'X-Socrata-Wink' => 'iAmASocrataEmployee'
     }.with_indifferent_access
     @request.env.merge!(headers)
 
@@ -94,7 +94,7 @@ class TileServerControllerTest < ActionController::TestCase
 
   test 'should pass through headers from response' do
     headers = {
-      'some-custom-header' => 'spartaaaa',
+      'some-custom-header' => 'spartaaaa'
     }.with_indifferent_access
 
     TileServer.any_instance.expects(:fetch_tile).

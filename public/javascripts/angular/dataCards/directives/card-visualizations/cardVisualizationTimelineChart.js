@@ -178,7 +178,7 @@
           function(domain) {
             var precision;
 
-            if (_.isUndefined(domain)) {
+            if (_.isUndefined(domain) || domain.start === null || domain.end === null) {
               reportInvalidTimelineDomain();
               return;
             }
@@ -288,8 +288,13 @@
           }
         );
 
-        scope.bindObservable('chartData', chartDataSequence);
+        // We're deriving whether or not we can render the timeline chart based
+        // upon whether precision is defined or not because the precision (i.e.
+        // 'DAY', 'MONTH', etc.) is derived from the start/end date and BAD DATES
+        // cause us to be unable to render the timeline chart.
+        var cannotRenderTimelineChart = datasetPrecision.map(_.isUndefined);
 
+        scope.bindObservable('chartData', chartDataSequence);
         scope.bindObservable('expanded', model.observeOnLatest('expanded'));
         scope.bindObservable('precision', datasetPrecision);
         scope.bindObservable('activeFilters', model.observeOnLatest('activeFilters'));

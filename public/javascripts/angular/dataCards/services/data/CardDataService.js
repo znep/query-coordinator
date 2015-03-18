@@ -8,7 +8,11 @@
   // Instead, since hyphens are supposed to be rewritten to underscores internally anyway,
   // we can avoid the quoting/truncation issue by rewriting hyphens to underscores before
   // making the request from the front-end.
-  function CardDataService($q, http, Assert, DeveloperOverrides, SoqlHelpers, ServerConfig, $log) {
+  function CardDataService($q, http, Assert, DeveloperOverrides, SoqlHelpers, ServerConfig, $log, Constants) {
+
+    // Note this does not include the time portion ('23:59:59') on purpose since SoQL will
+    // complain about a type mismatch if the column happens to be a date but not a datetime.
+    var MAX_LEGAL_JAVASCRIPT_DATE_STRING = Constants['MAX_LEGAL_JAVASCRIPT_DATE_STRING'];
 
     function httpConfig(config) {
       return _.extend({
@@ -81,7 +85,8 @@
         datasetId = DeveloperOverrides.dataOverrideForDataset(datasetId) || datasetId;
         fieldName = SoqlHelpers.replaceHyphensWithUnderscores(fieldName);
         var params = {
-          $query: 'SELECT min({0}) as start, max({0}) as end'.format(fieldName)
+          $query: "SELECT min({0}) AS start, max({0}) AS end WHERE {0} < '{1}'".
+            format(fieldName, MAX_LEGAL_JAVASCRIPT_DATE_STRING)
         };
         var url = '/api/id/{0}.json?'.format(datasetId);
         var config =  httpConfig.call(this);
@@ -97,15 +102,19 @@
 
           if (firstRow.hasOwnProperty('start') && firstRow.hasOwnProperty('end')) {
 
-            var domainStart = moment(firstRow.start, moment.ISO_8601);
-            var domainEnd = moment(firstRow.end, moment.ISO_8601);
+            var domainStartDate = firstRow.start;
+            var domainEndDate = firstRow.end;
+            var domainStart = moment(domainStartDate, moment.ISO_8601);
+            var domainEnd = moment(domainEndDate, moment.ISO_8601);
 
             if (!domainStart.isValid()) {
-              return $q.reject('Invalid start date.');
+              domainStart = null;
+              $log.warn('Invalid start date on {0} ({1})'.format(fieldName, domainStartDate));
             }
 
             if (!domainEnd.isValid()) {
-              return $q.reject('Invalid end date.');
+              domainEnd = null;
+              $log.warn('Invalid end date on {0} ({1})'.format(fieldName, domainEndDate));
             }
 
             domain = {
@@ -132,7 +141,8 @@
 
         datasetId = DeveloperOverrides.dataOverrideForDataset(datasetId) || datasetId;
 
-        var whereClause = 'WHERE date_trunc IS NOT NULL';
+        var whereClause = "WHERE date_trunc IS NOT NULL AND {0} < '{1}'".
+          format(fieldName, MAX_LEGAL_JAVASCRIPT_DATE_STRING);
         if (!_.isEmpty(whereClauseFragment)) {
           whereClause += ' AND ' + whereClauseFragment;
         }

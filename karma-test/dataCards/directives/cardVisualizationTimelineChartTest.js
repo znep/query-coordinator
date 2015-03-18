@@ -145,4 +145,33 @@ describe('A Timeline Chart Card Visualization', function() {
     var timelineChartScope = element.find('.timeline-chart').scope();
     expect(timelineChartScope.chartData).to.not.equal(undefined);
   });
+
+  it('should display a message when the chart cannot be rendered', function() {
+    // PRECONDITIONS
+    var outerScope = $rootScope.$new();
+    var html = '<div class="card-visualization"><card-visualization-timeline-chart model="model" where-clause="whereClause"></card-visualization-timeline-chart></div>';
+
+    // STUBS
+    var card = new Model();
+    var page = new Model();
+    var dataset = new Model();
+
+    page.defineObservableProperty('dataset', dataset);
+    page.defineObservableProperty('baseSoqlFilter', '');
+    page.defineObservableProperty('aggregation', {});
+    card.defineObservableProperty('page', page);
+    card.defineObservableProperty('expanded', false);
+    card.defineObservableProperty('activeFilters', []);
+    outerScope.model = card;
+    // END STUBS
+
+    var element = testHelpers.TestDom.compileAndAppend(html, outerScope);
+    var timelineChartScope = element.find('.timeline-chart').scope();
+    // END PRECONDITIONS
+
+    timelineChartScope.bindObservable('cannotRenderTimelineChart', Rx.Observable.returnValue(true));
+    var errorMessage = element.find('.chart-render-error');
+    expect(errorMessage.text().trim()).to.equal('Chart cannot be rendered due to invalid date values.');
+  });
+
 });

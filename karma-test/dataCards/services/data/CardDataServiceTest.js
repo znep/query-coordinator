@@ -1,5 +1,7 @@
 describe("CardDataService", function() {
-  var $httpBackend, CardDataService;
+  var $httpBackend;
+  var CardDataService;
+  var ConstantsService;
   var fakeDataRequestHandler;
 
   var fake4x4 = 'fake-data';
@@ -17,9 +19,13 @@ describe("CardDataService", function() {
     return new RegExp(str.
                       replace(/([.*()?])/g, '\\$1').
                       replace(/ /g, '(%20|[+])').
+                      replace(/</g, '%3C').
+                      replace(/>/g, '%3E').
+                      replace(/:/g, '%3A').
                       replace(/[$,]/g, function(m) {
                         return encodeURIComponent(m);
-                      })
+                      }),
+                      'i'
                      );
   }
 
@@ -35,6 +41,7 @@ describe("CardDataService", function() {
 
   beforeEach(inject(function($injector) {
     CardDataService = $injector.get('CardDataService');
+    ConstantsService = $injector.get('Constants');
     $httpBackend = $injector.get('$httpBackend');
     fakeDataRequestHandler = $httpBackend.whenGET(new RegExp('^/api/id/{0}\\.json\\?'.format(fake4x4)));
     fakeDataRequestHandler.respond([
@@ -157,7 +164,9 @@ describe("CardDataService", function() {
     });
 
     it('should generate a correct query', function() {
-      $httpBackend.expectGET(toUriRegex('/api/id/{1}.json?$query=SELECT min({0}) as start, max({0}) as end'.format('fakeNumberColumn', fake4x4)));
+      var url = "/api/id/{1}.json?$query=SELECT min({0}) AS start, max({0}) AS end WHERE {0} < '{2}'".
+        format('fakeNumberColumn', fake4x4, ConstantsService['MAX_LEGAL_JAVASCRIPT_DATE_STRING']);
+      $httpBackend.expectGET(toUriRegex(url));
       CardDataService.getTimelineDomain('fakeNumberColumn', fake4x4);
       $httpBackend.flush();
     });
@@ -208,25 +217,31 @@ describe("CardDataService", function() {
       $httpBackend.flush();
     });
 
-    it('should reject the promise when bad start date is given', function(done) {
+    it('should return null value for startDate when bad start date is given', function(done) {
       var fakeDataInvalidMin = [{
         start: '01101988',
         end: '2101-01-10T08:00:00.000Z'
       }];
       fakeDataRequestHandler.respond(fakeDataInvalidMin);
-      var response = CardDataService.getTimelineDomain('fakeNumberColumn', fake4x4);
-      assertReject(response, done);
+      var response = CardDataService.getTimelineDomain('fakeNumberColumn', fake4x4).
+        then(function(response) {
+          expect(response.start).to.equal(null);
+          done();
+        });
       $httpBackend.flush();
     });
 
-    it('should reject the promise when bad end date is given', function(done) {
+    it('should return null value for endDate when bad end date is given', function(done) {
       var fakeDataInvalidMax = [{
         start: '1988-01-10T08:00:00.000Z',
         end: 'trousers'
       }];
       fakeDataRequestHandler.respond(fakeDataInvalidMax);
-      var response = CardDataService.getTimelineDomain('fakeNumberColumn', fake4x4);
-      assertReject(response, done);
+      var response = CardDataService.getTimelineDomain('fakeNumberColumn', fake4x4).
+        then(function(response) {
+          expect(response.end).to.equal(null);
+          done();
+        });
       $httpBackend.flush();
     });
 
@@ -276,11 +291,14 @@ describe("CardDataService", function() {
     });
 
     it('should pass through the where clause fragment', function() {
-      // NOTE: This test is CASE SENSITIVE. It previously broke when changing the where
-      // clause generation code to use ' AND ' to join where clause fragments instead of
-      // ' and '. If this test is broken, look there first.
-      $httpBackend.expectGET(toUriRegex('/api/id/{1}.json?$query=SELECT date_trunc_ymd(fakeNumberColumn) AS date_trunc, count(*) AS value WHERE date_trunc IS NOT NULL GROUP BY date_trunc'.format('fakeNumberColumn', fake4x4)));
-      $httpBackend.expectGET(toUriRegex('/api/id/{1}.json?$query=SELECT date_trunc_ymd(fakeNumberColumn) AS date_trunc, count(*) AS value WHERE date_trunc IS NOT NULL AND MAGICAL_WHERE_CLAUSE GROUP BY date_trunc'.format('fakeNumberColumn', fake4x4)));
+      var url = ('/api/id/{1}.json?$query=SELECT date_trunc_ymd({0}) AS date_trunc, ' +
+        "count(*) AS value WHERE date_trunc IS NOT NULL AND {0} < '{2}' GROUP BY date_trunc").
+        format('fakeNumberColumn', fake4x4, ConstantsService['MAX_LEGAL_JAVASCRIPT_DATE_STRING']);
+      $httpBackend.expectGET(toUriRegex(url));
+      url = ('/api/id/{1}.json?$query=SELECT date_trunc_ymd(fakeNumberColumn) AS date_trunc, ' +
+        "count(*) AS value WHERE date_trunc IS NOT NULL AND {0} < '{2}' AND MAGICAL_WHERE_CLAUSE GROUP BY date_trunc").
+        format('fakeNumberColumn', fake4x4, ConstantsService['MAX_LEGAL_JAVASCRIPT_DATE_STRING']);
+      $httpBackend.expectGET(toUriRegex(url));
       CardDataService.getTimelineData('fakeNumberColumn', fake4x4, '', 'DAY', countAggregation);
       CardDataService.getTimelineData('fakeNumberColumn', fake4x4, 'MAGICAL_WHERE_CLAUSE', 'DAY', countAggregation);
       $httpBackend.flush();

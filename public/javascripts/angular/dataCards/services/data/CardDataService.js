@@ -8,7 +8,11 @@
   // Instead, since hyphens are supposed to be rewritten to underscores internally anyway,
   // we can avoid the quoting/truncation issue by rewriting hyphens to underscores before
   // making the request from the front-end.
-  function CardDataService($q, http, Assert, DeveloperOverrides, SoqlHelpers, ServerConfig, $log) {
+  function CardDataService($q, http, Assert, DeveloperOverrides, SoqlHelpers, ServerConfig, $log, Constants) {
+
+    // Note this does not include the time portion ('23:59:59') on purpose since SoQL will
+    // complain about a type mismatch if the column happens to be a date but not a datetime.
+    var MAX_LEGAL_JAVASCRIPT_DATE_STRING = Constants['MAX_LEGAL_JAVASCRIPT_DATE_STRING'];
 
     function httpConfig(config) {
       return _.extend({
@@ -40,7 +44,7 @@
         if (_.isEmpty(whereClauseFragment)) {
           whereClause = '';
         } else {
-          whereClause = 'where ' + whereClauseFragment;
+          whereClause = 'WHERE ' + whereClauseFragment;
         }
 
         var aggregationClause = buildAggregationClause(aggregationClauseData);
@@ -57,8 +61,9 @@
         var params = {
           $query: queryTemplate.format(fieldName, whereClause, aggregationClause)
         };
-        var url = '/api/id/' + datasetId + '.json?';
+        var url = '/api/id/{0}.json?'.format(datasetId);
         var config = httpConfig.call(this);
+
         return http.get(url + $.param(params), config).then(function(response) {
           return _.map(response.data, function(item) {
             var name = options.namePhysicalDatatype === 'number' ? parseFloat(item.name) : item.name;
@@ -80,10 +85,12 @@
         datasetId = DeveloperOverrides.dataOverrideForDataset(datasetId) || datasetId;
         fieldName = SoqlHelpers.replaceHyphensWithUnderscores(fieldName);
         var params = {
-          $query: 'SELECT min({0}) as start, max({0}) as end'.format(fieldName)
+          $query: "SELECT min({0}) AS start, max({0}) AS end WHERE {0} < '{1}'".
+            format(fieldName, MAX_LEGAL_JAVASCRIPT_DATE_STRING)
         };
-        var url = '/api/id/' + datasetId + '.json?';
+        var url = '/api/id/{0}.json?'.format(datasetId);
         var config =  httpConfig.call(this);
+
         return http.get(url + $.param(params), config).then(function(response) {
 
           if (_.isEmpty(response.data)) {
@@ -95,15 +102,19 @@
 
           if (firstRow.hasOwnProperty('start') && firstRow.hasOwnProperty('end')) {
 
-            var domainStart = moment(firstRow.start, moment.ISO_8601);
-            var domainEnd = moment(firstRow.end, moment.ISO_8601);
+            var domainStartDate = firstRow.start;
+            var domainEndDate = firstRow.end;
+            var domainStart = moment(domainStartDate, moment.ISO_8601);
+            var domainEnd = moment(domainEndDate, moment.ISO_8601);
 
             if (!domainStart.isValid()) {
-              return $q.reject('Invalid start date.');
+              domainStart = null;
+              $log.warn('Invalid start date on {0} ({1})'.format(fieldName, domainStartDate));
             }
 
             if (!domainEnd.isValid()) {
-              return $q.reject('Invalid end date.');
+              domainEnd = null;
+              $log.warn('Invalid end date on {0} ({1})'.format(fieldName, domainEndDate));
             }
 
             domain = {
@@ -130,7 +141,8 @@
 
         datasetId = DeveloperOverrides.dataOverrideForDataset(datasetId) || datasetId;
 
-        var whereClause = 'WHERE date_trunc IS NOT NULL';
+        var whereClause = "WHERE date_trunc IS NOT NULL AND {0} < '{1}'".
+          format(fieldName, MAX_LEGAL_JAVASCRIPT_DATE_STRING);
         if (!_.isEmpty(whereClauseFragment)) {
           whereClause += ' AND ' + whereClauseFragment;
         }
@@ -139,14 +151,15 @@
 
         fieldName = SoqlHelpers.replaceHyphensWithUnderscores(fieldName);
         var params = {
-          $query: ('SELECT date_trunc_{2}({0}) AS date_trunc, {3} AS value {1} ' +
-                   'GROUP BY date_trunc').format(
-                     fieldName, whereClause, dateTrunc, aggregationClause)
+          $query: (
+            'SELECT date_trunc_{2}({0}) AS date_trunc, {3} AS value {1} ' +
+            'GROUP BY date_trunc'
+          ).format(fieldName, whereClause, dateTrunc, aggregationClause)
         };
-        var url = '/api/id/' + datasetId + '.json?';
+        var url = '/api/id/{0}.json?'.format(datasetId);
         var config = httpConfig.call(this);
-        return http.get(url + $.param(params), config).then(function(response) {
 
+        return http.get(url + $.param(params), config).then(function(response) {
           if (!_.isArray(response.data)) {
             return $q.reject('Invalid response from SODA, expected array.');
           }
@@ -202,8 +215,9 @@
         if (whereClause) {
           params.$query += ' where {0}'.format(whereClause);
         }
-        var url = '/api/id/' + datasetId + '.json?';
+        var url = '/api/id/{0}.json?'.format(datasetId);
         var config = httpConfig.call(this);
+
         return http.get(url + $.param(params), config).
           then(function(response) {
             if (_.isEmpty(response.data)) {
@@ -230,8 +244,9 @@
         if (whereClause) {
           params.$where = whereClause;
         }
-        var url = '/api/id/' + datasetId + '.json?';
+        var url = '/api/id/{0}.json?'.format(datasetId);
         var config = httpConfig.call(this, { timeout: timeout });
+
         return http.get(url + $.param(params), config).then(function(response) {
           return response.data;
         });

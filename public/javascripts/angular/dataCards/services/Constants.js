@@ -47,8 +47,10 @@
       'TIMELINE_CHART_SELECTION_MARKER_NEGATIVE_X_OFFSET': 11,
 
       // Related Views
-      'RELATED_VIEWS_LIST_HEIGHT_OFFSET': 150
+      'RELATED_VIEWS_LIST_HEIGHT_OFFSET': 150,
 
+      // This is the maximum legal date value as a string in Javascript
+      'MAX_LEGAL_JAVASCRIPT_DATE_STRING': '9999-12-31 23:59:59'
     };
 
   }

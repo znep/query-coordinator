@@ -1,0 +1,39 @@
+{
+  "columns": {
+    "location_description": {
+      "cardinality": 25,
+      "name": "Where crime was committed.",
+      "description": "Where most of the beat-up baddies were left by Batman. Long description is long Long description is long Long description is long Long description is long Long description is long Long description is long Long description is long Long description is long Long description is long Long description is long Long description is long Long description is long Long description is long Long description is long Long description is long Long description is long Long description is long Long description is long Long description is long Long description is long Long description is long Long description is long Long description is long Long description is long Long description is long Long description is long Long description is long Long description is long ",
+      "fred": "category",
+      "physicalDatatype": "text"
+    },
+    "primary_type": {
+      "cardinality": 12,
+      "name": "Type of crime",
+      "description": "How much batman cares about your silly problem.",
+      "fred": "text",
+      "physicalDatatype": "text"
+    },
+    "x_coordinate": {
+      "cardinality": 25,
+      "name": "xcoord",
+      "description": "x",
+      "fred": "amount",
+      "physicalDatatype": "number"
+    },
+    "updated_on": {
+      "cardinality": 25,
+      "name": "Time of incident",
+      "description": "Time Batman confused Gordon by mysteriously disappearing mid-conversation.",
+      "fred": "time",
+      "physicalDatatype": "timestamp"
+    },
+    "ward": {
+      "cardinality": 12,
+      "name": "Ward where crime was committed.",
+      "description": "Batman has bigger fish to fry sometimes, you know.",
+      "fred": "location",
+      "physicalDatatype": "text"
+    }
+  }
+}

@@ -50,19 +50,78 @@ class Phidippides < SocrataHttp
 
   def fetch_dataset_metadata(dataset_id, options = {})
     if metadata_transition_phase_0?
-      issue_request(
+      fetched_response = issue_request(
         :verb => :get,
         :path => "datasets/#{dataset_id}",
         :request_id => options[:request_id],
         :cookies => options[:cookies]
       )
     else
-      issue_request(
+      fetched_response = issue_request(
         :verb => :get,
         :path => "v1/id/#{dataset_id}/dataset",
         :request_id => options[:request_id],
         :cookies => options[:cookies]
       )
+    end
+    augment_dataset_metadata!(dataset_id, fetched_response[:body]) unless fetched_response[:body].blank?
+    fetched_response
+  end
+
+  # Given a dataset ID and metadata, this decorate the metadata based on whether
+  # there is a migrated old backend dataset available, otherwise it will use a
+  # new backend dataset
+  def augment_dataset_metadata!(dataset_id, dataset_metadata)
+    status = migration_status_or_nil(dataset_id)
+    if status.nil?
+      backend_view = dataset_view(dataset_id)
+    else
+      backend_view = dataset_view(status[:obeId])
+    end
+
+    mirror_nbe_column_metadata!(backend_view, dataset_metadata) unless backend_view.nil?
+  end
+
+  # Given a backend_view and a new backend dataset, this will attempt to
+  # decorate the metadata with position and hidden properties
+  def mirror_nbe_column_metadata!(backend_view, nbe_dataset)
+    backend_view.columns.each do |column|
+      if metadata_transition_phase_0?
+        nbe_column = nbe_dataset['columns'].detect { |nbe_column| nbe_column[:name] == column.fieldName }
+      else
+        nbe_column = nbe_dataset[:columns][column.fieldName.to_sym]
+      end
+      unless nbe_column.nil?
+        nbe_column[:position] = column.position
+        nbe_column[:hideInTable] = column.flag?('hidden')
+      end
+    end
+    nbe_dataset
+  end
+
+  def dataset_view(id)
+    begin
+      View.find(id)
+    rescue => e
+      Rails.logger.warn(%Q(Error while retrieving old backend view of "(#{id}): #{e}"))
+      nil
+    end
+  end
+
+  def migration_status_or_nil(id)
+    begin
+      response = CoreServer::Base.connection.get_request(
+        "/migrations/#{id}"
+      )
+      status = JSON.parse(response).with_indifferent_access
+      if status.has_key?(:obeId) && status.has_key?(:nbeId)
+        status
+      else
+        nil
+      end
+    rescue => e
+      Rails.logger.warn(%Q(Error while retrieving migration status of "(#{id}): #{e}"))
+      nil
     end
   end
 

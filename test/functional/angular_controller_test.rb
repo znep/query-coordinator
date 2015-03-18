@@ -7,43 +7,10 @@ class AngularControllerTest < ActionController::TestCase
     init_current_domain
   end
 
-  test 'should successfully get serve_app for an app with its feature flag set to true' do
+  test 'should successfully get serve_app' do
     # i.e. url_for(:action => :serve_app, :controller => :angular, :id => '1234-1234', :app => 'dataCards')
-    FeatureFlags.stubs(
-      :derive => {
-        'app-dummy' => false,
-        'app-dataCards' => true
-      }
-    )
     get :serve_app, :id => '1234-1234', :app => 'dataCards'
     assert_response :success
-  end
-
-  test 'should 404 in serve_app for an app with its feature flag set to false' do
-    FeatureFlags.stubs(
-      :derive => {
-        'app-dummy' => true,
-        'app-dataCards' => false
-      }
-    )
-    get :serve_app, :id => '1234-1234', :app => 'dataCards'
-    assert_response 404
-  end
-
-  test 'should 404 in serve_app for an app with no feature flag set' do
-    FeatureFlags.stubs(
-      :derive => {}
-    )
-    get :serve_app, :id => '1234-1234', :app => 'dataCards'
-    assert_response 404
-
-    FeatureFlags.stubs(
-      :derive => {
-        'app-dummy' => true
-      }
-    )
-    get :serve_app, :id => '1234-1234', :app => 'dataCards'
-    assert_response 404
   end
 
   test 'should raise for a non-existent app' do
@@ -58,7 +25,6 @@ class AngularControllerTest < ActionController::TestCase
   test 'should not render google analytics JS if feature flag is not set' do
     FeatureFlags.stubs(
       :derive => {
-        'app-dataCards' => true,
         :enable_opendata_ga_tracking => false
       }
     )
@@ -69,7 +35,6 @@ class AngularControllerTest < ActionController::TestCase
   test 'should render google analytics JS if feature flag is set' do
     FeatureFlags.stubs(
       :derive => {
-        'app-dataCards' => true,
         :enable_opendata_ga_tracking => true
       }
     )
@@ -80,7 +45,6 @@ class AngularControllerTest < ActionController::TestCase
   test 'should render google analytics JS with explicit ga code if specified' do
     FeatureFlags.stubs(
       :derive => {
-        'app-dataCards' => true,
         :enable_opendata_ga_tracking => 'UA-1234-567890'
       }
     )

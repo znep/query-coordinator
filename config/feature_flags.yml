@@ -31,9 +31,6 @@ stamen:
   description: Easter egg of map backgrounds. Set false to turn it off. Choose one of the available values to select this base layer for ALL maps on the domain.
   defaultValue: false
   expectedValues: watercolor toner terrain
-app-dataCards:
-  description: Enable OpenData V5 pages (card view).
-  defaultValue: false
 useSoda2:
   description: Switch to using SODA2.
   defaultValue: never
@@ -53,12 +50,9 @@ enable_fullstory_tracking:
 enable_airbrake_js:
   description: Enable Airbrake error tracking of Javascript errors (see CORE-3365 for more information)
   defaultValue: false
-enable_bounding_boxes:
-  description: Enable use of bounding boxes on geojson shape queries against geospace
-  defaultValue: false
 enable_png_download_ui:
   description: Enable the UI for downloading PNG versions of datacard visualizations
-  defaultValue: false
+  defaultValue: true
 include_sr_in_esri:
   description: ESRI-only; stop using SRs in the export URL.
   defaultValue: false
@@ -75,7 +69,7 @@ enable_newux_bootstrap_link:
   description: Will display a link in the old UX, to its corresponding new UX page.
   defaultValue: false
 enable_opendata_ga_tracking:
-  description: Enable Google Analytics in the new UX
+  description: Controls behavior of Google Analytics in the new UX. If true, GA is enabled with a default Socrata-wide token. If a custom value is provided, GA is enabled and the custom value is used as the GA token. If false, GA is disabled.
 data_cards_app_token:
   description: The SODA application token to be used by the dataCards app.
   defaultValue: zvQamMSTi4GNuZWWDwjLdLPhW
@@ -84,13 +78,13 @@ use_auth0:
   defaultValue: false
 enable_feedback:
   description: Include third-party feedback widgets.
-  defaultValue: false
+  defaultValue: true
 domain_decommissioning:
   description: Enable a banner indicating that the domain is being decommissionsed.
   defaultValue: false
 metadata_transition_phase:
   description: 'Controls which phase of the ongoing metadata migration the site should operate under. Only ODUX should change this. Phases are documented here: https://docs.google.com/a/socrata.com/document/d/13KWv-5xugmWr-w4vnfXjIus4n9zLWOUEU1KxxnhMSrw/'
-  defaultValue: 0
+  defaultValue: 3
   expectedValues: 0 1 2 3
 exit_tech_preview:
   description: Enable to display transitionary New Backend features (currently scoped to Catalog/Browse)

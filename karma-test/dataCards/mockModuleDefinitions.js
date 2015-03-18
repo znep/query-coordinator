@@ -16,11 +16,13 @@ dataCards.run(function(ServerConfig, testHelpers, serverMocks) {
   // Provide a default server configuration.
   ServerConfig.setup({
     oduxCardTypeMapping: serverMocks.CARD_TYPE_MAPPING,
-    oduxEnableFeatureMap: true
+    oduxEnableFeatureMap: true,
+    enablePngDownloadUi: true,
+    enableFeedback: true
   });
 
-  // Test under phase 2 by default.
+  // Test under phase 3 by default.
   // Note that this can't be changed willy-nilly, as the tests use
   // stub data that's valid only for a particular phase.
-  testHelpers.overrideMetadataMigrationPhase('2');
+  testHelpers.overrideMetadataMigrationPhase('3');
 });

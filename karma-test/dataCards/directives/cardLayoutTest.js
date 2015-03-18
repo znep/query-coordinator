@@ -6,9 +6,10 @@ describe('card-layout', function() {
   _.each(phases, function(phase) {
 
     describe(('in metadata transition phase ' + phase), function() {
-      'use strict';
 
       var NUM_CARDS_IN_DEFAULT_LAYOUT = 6;
+      var QUICK_FILTER_BAR_HEIGHT = 74;
+      var CUSTOMIZE_BAR_HEIGHT = 40;
 
       var AngularRxExtensions;
       var CardV0;
@@ -21,6 +22,7 @@ describe('card-layout', function() {
       var $q;
       var rootScope;
       var testHelpers;
+      var Constants;
 
       beforeEach(module('/angular_templates/dataCards/card-layout.html'));
       beforeEach(module('/angular_templates/dataCards/card.html'));
@@ -72,6 +74,7 @@ describe('card-layout', function() {
         Page = $injector.get('Page');
         AngularRxExtensions = $injector.get('AngularRxExtensions');
         $q = $injector.get('$q');
+        Constants = $injector.get('Constants');
 
         testHelpers.overrideTransitions(true);
         testHelpers.mockDirective(_$provide, 'aggregationChooser');
@@ -210,11 +213,18 @@ describe('card-layout', function() {
         outerScope.chooserMode = {};
 
         var html = [
+            '<div class="customize-bar" style="height:',
+            CUSTOMIZE_BAR_HEIGHT.toString(),
+            'px"></div>',
             '<div class="cards-content">',
-              '<div id="quick-filter-bar-container">',
-                '<div class="quick-filter-bar"></div>',
-              '</div>',
               '<div class="cards-metadata"></div>',
+              '<div id="quick-filter-bar-container" style="height:',
+                QUICK_FILTER_BAR_HEIGHT.toString(),
+                'px;display:block;">',
+                '<div class="quick-filter-bar" style="height:',
+                QUICK_FILTER_BAR_HEIGHT.toString(),
+                'px;display:block;"></div>',
+              '</div>',
               '<card-layout id="card-container" ',
               ' class="cards"',
               ' ng-class="{\'edit-mode\': editMode}" ',
@@ -1147,51 +1157,63 @@ describe('card-layout', function() {
             expect(expandedCard.offset().top).to.equal(qfb.offset().top + qfb.height());
           });
 
-          it('should align the bottom of the card with the viewport bottom', function() {
-            expect(expandedCard.offset().top + expandedCard.height()).
-              to.be.closeTo(winDimensions.height, 10);
+          it('should maintain the maximum possible card height if the QFB is not stuck', function() {
+            expect(expandedCard.height()).
+              to.be.closeTo(winDimensions.height - QUICK_FILTER_BAR_HEIGHT - CUSTOMIZE_BAR_HEIGHT - Constants.LAYOUT_VERTICAL_PADDING, 10);
           });
 
-          it('should adjust the bottom of the card when it butts into the datacard', function() {
+          it('should stick to top of the datacard if the datacard is visible', function() {
             var dataTable = cl.pageModel.getCurrentValue('cards')[0];
             expect(dataTable.fieldName).to.equal('*');
             var dataTableElement = cl.findCardForModel(dataTable);
             // Scroll to close enough to the dataTable that it interferes with the expanded card
             var scrollTop = dataTableElement.offset().top - (winDimensions.height - 100);
 
-            var originalHeight = expandedCard.height();
             mockWindowStateService.scrollPositionSubject.onNext(scrollTop);
-
-            // The presence of the dataCard should shrink the height of the expanded card
-            expect(originalHeight).to.be.greaterThan(expandedCard.height());
             // The bottom should still align with the datacard
             expect(expandedCard.offset().top + expandedCard.height()).
               to.be.closeTo(dataTableElement.offset().top - scrollTop, 10);
           });
 
-          describe('minimum height', function() {
-            it('sticks to the top if we\'re up top and the window height is small',
-               inject(function(Constants) {
-                 mockWindowStateService.windowSizeSubject.onNext({width: 768, height: 100});
+          describe('with small window sizes', function() {
 
+            it('should not protrude into the info pane if the window is short', function() {
+              mockWindowStateService.windowSizeSubject.onNext({width: 768, height: 300});
+              expect(expandedCard.offset().top).to.equal($('#card-container').offset().top);
+            });
+
+            it('sticks to the top of #card-container if the window is not scrolled and the window height is small',
+               inject(function(Constants) {
+                 mockWindowStateService.windowSizeSubject.onNext({width: 768, height: 300});
                  var container = cl.element.find('#card-container');
+
+                 // Note that the actual cardLayout directive will get the offsetHeight of the customize bar
+                 // since it includes a border. Therefore, we need to also get the offsetHeight here in order
+                 // for the test to behave as expected.
+                 // The 300 is the value to which we have just set the height of the window.
+                 var minimumAvailableHeight = 300 - QUICK_FILTER_BAR_HEIGHT - $('.customize-bar')[0].offsetHeight - Constants.LAYOUT_VERTICAL_PADDING;
                  expect(expandedCard.offset().top).to.equal(container.offset().top);
-                 expect(expandedCard.height()).to.equal(Constants.LAYOUT_MIN_EXPANDED_CARD_HEIGHT);
+                 expect(expandedCard.height()).to.be.closeTo(minimumAvailableHeight, 10);
                }));
 
-            it('sticks on bottom if we butt into the datacard down below',
+            it('sticks to the top of the datacard if the datacard is visible',
                inject(function(Constants) {
                  var dataTable = cl.pageModel.getCurrentValue('cards')[0];
                  expect(dataTable.fieldName).to.equal('*');
                  var dataTableElement = cl.findCardForModel(dataTable);
-                 mockWindowStateService.windowSizeSubject.onNext({width: 768, height: 100});
+                 mockWindowStateService.windowSizeSubject.onNext({width: 768, height: 300});
                  // Scroll to too-close to the dataTable
                  var scrollTop = dataTableElement.offset().top - 50;
                  mockWindowStateService.scrollPositionSubject.onNext(scrollTop);
 
+                 // Note that the actual cardLayout directive will get the offsetHeight of the customize bar
+                 // since it includes a border. Therefore, we need to also get the offsetHeight here in order
+                 // for the test to behave as expected.
+                 // The 300 is the value to which we have just set the height of the window.
+                 var minimumAvailableHeight = 300 - QUICK_FILTER_BAR_HEIGHT - $('.customize-bar')[0].offsetHeight - Constants.LAYOUT_VERTICAL_PADDING;
                  expect(expandedCard.offset().top + expandedCard.height()).
                    to.be.closeTo(dataTableElement.offset().top - scrollTop, 10);
-                 expect(expandedCard.height()).to.equal(Constants.LAYOUT_MIN_EXPANDED_CARD_HEIGHT);
+                 expect(expandedCard.height()).to.equal(minimumAvailableHeight);
                }));
           });
         });

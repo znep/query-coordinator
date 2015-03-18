@@ -12,7 +12,7 @@ class UserSessionsControllerTest < ActionController::TestCase
 
   def test_login
     post(:create)
-    assert(@response.redirect_url.include?('/profile'), 'should redirect to profile')
+    assert(@response.redirect_url.include?(profile_index_path), 'should redirect to profile')
   end
 
   def test_login_with_login_path_override
@@ -24,7 +24,7 @@ class UserSessionsControllerTest < ActionController::TestCase
   def test_login_on_govstat_site
     stub_module_enabled_on_current_domain(:govStat)
     post(:create)
-    assert(@response.redirect_url.include?('/profile'), 'should redirect to profile if no session')
+    assert(@response.redirect_url.include?(profile_index_path), 'should redirect to profile if no session')
   end
 
   def test_login_on_govstat_site_after_nav_from
@@ -38,7 +38,7 @@ class UserSessionsControllerTest < ActionController::TestCase
     stub_module_enabled_on_current_domain(:govStat)
     User.stubs(current_user: User.new(some_user).tap {|usr| usr.stubs(rights: [ 'someRight' ]) })
     post(:create)
-    assert(@response.redirect_url.include?('/stat'), 'should redirect to govstat root')
+    assert(@response.redirect_url.include?(govstat_root_path), 'should redirect to govstat root')
   end
 
   private

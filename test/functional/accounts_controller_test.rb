@@ -10,7 +10,7 @@ class AccountsControllerTest < ActionController::TestCase
 
   def test_create_with_no_special_things
     post(:create, signup: some_user)
-    assert(@response.redirect_url.include?('/profile'), 'should redirect to profile')
+    assert(@response.redirect_url.include?(profile_index_path), 'should redirect to profile')
   end
 
   def test_create_with_login_path_override
@@ -22,7 +22,7 @@ class AccountsControllerTest < ActionController::TestCase
   def test_create_on_govstat_site
     stub_module_enabled_on_current_domain(:govStat)
     post(:create, signup: some_user)
-    assert(@response.redirect_url.include?('/profile'), 'should redirect to profile if no session')
+    assert(@response.redirect_url.include?(profile_index_path), 'should redirect to profile if no session')
   end
 
   def test_create_on_govstat_site_after_nav_from

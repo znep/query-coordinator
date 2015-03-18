@@ -385,31 +385,20 @@
         // TODO: Maybe split the below into two subscriptions, one to each
         // and which react to one source only.
         Rx.Observable.subscribeLatest(
-          element.observeDimensions(),
-          scope.observe('featureExtent'),
+          element.observeDimensions().filter(_.property('height')),
+          scope.observe('featureExtent').filter(_.isDefined),
           function(dimensions, featureExtent) {
+            // It is critical to invalidate size prior to updating bounds.
+            // Otherwise, leaflet will fit the bounds to an incorrectly sized viewport.
+            // This manifests itself as the map being zoomed all of the way out.
+            map.invalidateSize();
 
-            if (dimensions.height > 0 && _.isDefined(featureExtent)) {
-
-              scope.$emit('render:start', { source: 'feature_map_{0}'.format(scope.$id), timestamp: _.now(), tag: 'fit_bounds' });
-
-              // It is citical to invalidate size prior to updating bounds.
-              // Otherwise, leaflet will fit the bounds to an incorrectly sized viewport.
-              // This manifests itself as the map being zoomed all of the way out.
-              map.invalidateSize();
-
-              if (firstRender) {
-                fitMapBounds(featureExtent);
-                firstRender = false;
-              }
-
-              // Yield execution to the browser to render, then notify that render is complete
-              $timeout(function() {
-                scope.$emit('render:complete', { source: 'feature_map_{0}'.format(scope.$id), timestamp: _.now(), tag: 'fit_bounds' });
-              });
+            if (firstRender) {
+              fitMapBounds(featureExtent);
+              firstRender = false;
             }
-          });
-
+          }
+        );
       }
     }
   }

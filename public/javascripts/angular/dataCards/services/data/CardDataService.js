@@ -40,7 +40,7 @@
         if (_.isEmpty(whereClauseFragment)) {
           whereClause = '';
         } else {
-          whereClause = 'where ' + whereClauseFragment;
+          whereClause = 'WHERE ' + whereClauseFragment;
         }
 
         var aggregationClause = buildAggregationClause(aggregationClauseData);
@@ -57,8 +57,9 @@
         var params = {
           $query: queryTemplate.format(fieldName, whereClause, aggregationClause)
         };
-        var url = '/api/id/' + datasetId + '.json?';
+        var url = '/api/id/{0}.json?'.format(datasetId);
         var config = httpConfig.call(this);
+
         return http.get(url + $.param(params), config).then(function(response) {
           return _.map(response.data, function(item) {
             var name = options.namePhysicalDatatype === 'number' ? parseFloat(item.name) : item.name;
@@ -82,8 +83,9 @@
         var params = {
           $query: 'SELECT min({0}) as start, max({0}) as end'.format(fieldName)
         };
-        var url = '/api/id/' + datasetId + '.json?';
+        var url = '/api/id/{0}.json?'.format(datasetId);
         var config =  httpConfig.call(this);
+
         return http.get(url + $.param(params), config).then(function(response) {
 
           if (_.isEmpty(response.data)) {
@@ -139,14 +141,15 @@
 
         fieldName = SoqlHelpers.replaceHyphensWithUnderscores(fieldName);
         var params = {
-          $query: ('SELECT date_trunc_{2}({0}) AS date_trunc, {3} AS value {1} ' +
-                   'GROUP BY date_trunc').format(
-                     fieldName, whereClause, dateTrunc, aggregationClause)
+          $query: (
+            'SELECT date_trunc_{2}({0}) AS date_trunc, {3} AS value {1} ' +
+            'GROUP BY date_trunc'
+          ).format(fieldName, whereClause, dateTrunc, aggregationClause)
         };
-        var url = '/api/id/' + datasetId + '.json?';
+        var url = '/api/id/{0}.json?'.format(datasetId);
         var config = httpConfig.call(this);
-        return http.get(url + $.param(params), config).then(function(response) {
 
+        return http.get(url + $.param(params), config).then(function(response) {
           if (!_.isArray(response.data)) {
             return $q.reject('Invalid response from SODA, expected array.');
           }
@@ -202,8 +205,9 @@
         if (whereClause) {
           params.$query += ' where {0}'.format(whereClause);
         }
-        var url = '/api/id/' + datasetId + '.json?';
+        var url = '/api/id/{0}.json?'.format(datasetId);
         var config = httpConfig.call(this);
+
         return http.get(url + $.param(params), config).
           then(function(response) {
             if (_.isEmpty(response.data)) {
@@ -230,8 +234,9 @@
         if (whereClause) {
           params.$where = whereClause;
         }
-        var url = '/api/id/' + datasetId + '.json?';
+        var url = '/api/id/{0}.json?'.format(datasetId);
         var config = httpConfig.call(this, { timeout: timeout });
+
         return http.get(url + $.param(params), config).then(function(response) {
           return response.data;
         });

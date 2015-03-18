@@ -55,7 +55,7 @@ enable_airbrake_js:
   defaultValue: false
 enable_png_download_ui:
   description: Enable the UI for downloading PNG versions of datacard visualizations
-  defaultValue: false
+  defaultValue: true
 include_sr_in_esri:
   description: ESRI-only; stop using SRs in the export URL.
   defaultValue: false
@@ -81,7 +81,7 @@ use_auth0:
   defaultValue: false
 enable_feedback:
   description: Include third-party feedback widgets.
-  defaultValue: false
+  defaultValue: true
 domain_decommissioning:
   description: Enable a banner indicating that the domain is being decommissionsed.
   defaultValue: false

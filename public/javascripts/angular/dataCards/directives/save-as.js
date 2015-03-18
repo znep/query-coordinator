@@ -51,9 +51,10 @@
 
           if ($scope.name.trim() === '') {
             $nameInput.addClass('form-error').focus();
-          } else {
+          } else if ($scope.saveStatus !== 'saving' && $scope.saveStatus !== 'saved') {
             $scope.savePageAs($scope.name.trim(), $scope.description.trim()).
               subscribe(saveEvents);
+            $scope.saveStatus = 'saving';
           }
         };
 

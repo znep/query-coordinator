@@ -54,7 +54,7 @@
           } else if ($scope.saveStatus !== 'saving' && $scope.saveStatus !== 'saved') {
             $scope.savePageAs($scope.name.trim(), $scope.description.trim()).
               subscribe(saveEvents);
-            $scope.saveStatus = 'saving';
+            $scope.bindObservable('saveStatus', Rx.Observable.returnValue('saving'));
           }
         };
 

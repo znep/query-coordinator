@@ -200,10 +200,11 @@ describe("CardDataService", function() {
     it('should return undefined when the response is an empty object', function(done) {
       var fakeDataInvalidMin = [{}];
       fakeDataRequestHandler.respond(fakeDataInvalidMin);
-      var response = CardDataService.getTimelineDomain('fakeNumberColumn', fake4x4).then(function(response){
-        expect(response).to.equal(undefined);
-        done();
-      });
+      var response = CardDataService.getTimelineDomain('fakeNumberColumn', fake4x4).
+        then(function(response){
+          expect(response).to.equal(undefined);
+          done();
+        });
       $httpBackend.flush();
     });
 

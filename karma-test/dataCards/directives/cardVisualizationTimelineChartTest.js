@@ -1,6 +1,6 @@
 'use strict';
 
-describe("A Timeline Chart Card Visualization", function() {
+describe('A Timeline Chart Card Visualization', function() {
   var testHelpers;
   var $q;
   var $rootScope;
@@ -84,8 +84,11 @@ describe("A Timeline Chart Card Visualization", function() {
     var outerScope = $rootScope.$new();
     var html = '<div class="card-visualization"><card-visualization-timeline-chart model="model" where-clause="whereClause"></card-visualization-timeline-chart></div>';
 
+    // STUBS
     var card = new Model();
     var page = new Model();
+    var dataset = new Model();
+
     page.defineObservableProperty('dataset', undefined); // The important bit
 
     page.defineObservableProperty('baseSoqlFilter', '');
@@ -96,19 +99,19 @@ describe("A Timeline Chart Card Visualization", function() {
 
     outerScope.model = card;
     outerScope.whereClause = '';
+    // END STUBS
 
     // If it's going to crash, it's here.
     var element = testHelpers.TestDom.compileAndAppend(html, outerScope);
 
-    var dataset = new Model();
     dataset.id = 'cras-hing';
     dataset.defineObservableProperty('rowDisplayUnit', '');
+    page.set('dataset', dataset);
 
     var timelineChartScope = element.find('.timeline-chart').scope();
 
     // Use chartData as a proxy for TimelineChart's happiness.
     expect(timelineChartScope.chartData).to.equal(undefined);
-    page.set('dataset', dataset);
     outerScope.$apply(); // Resolve some internal promises :(
     expect(timelineChartScope.chartData).to.not.equal(undefined);
   });
@@ -121,6 +124,7 @@ describe("A Timeline Chart Card Visualization", function() {
     var card = new Model();
     var page = new Model();
     var dataset = new Model();
+
     dataset.id = 'cras-hing';
     dataset.defineObservableProperty('rowDisplayUnit', '');
     page.defineObservableProperty('dataset', dataset);

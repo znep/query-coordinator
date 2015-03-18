@@ -123,10 +123,9 @@
               });
             }
 
-            // If bounding box queries are enabled and we have successfully
-            // found a source column, then make the more specific bounding
-            // box query utilizing the source column's extents.
-            if (ServerConfig.get('enableBoundingBoxes') && sourceColumn !== null) {
+            // If we have successfully found a source column, then make the more
+            // specific bounding box query utilizing the source column's extents.
+            if (sourceColumn !== null) {
 
               dataPromise = CardDataService.getChoroplethRegionsUsingSourceColumn(
                 dataset.id,
@@ -136,19 +135,13 @@
 
             // Otherwise, use the less efficient but more robust request.
             } else {
-
-              // If bounding box queries are enabled but we failed to
-              // determine a source column, log a warning.
-              if (ServerConfig.get('enableBoundingBoxes')) {
-                $log.warn(
-                  'Could not determine source column of computed column "{0}". ' +
-                    'Falling back to default query.'.
-                      format(fieldName)
-                );
-              }
+              $log.warn(
+                'Could not determine source column of computed column "{0}". ' +
+                  'Falling back to default query.'.
+                    format(fieldName)
+              );
 
               dataPromise = CardDataService.getChoroplethRegions(shapeFile);
-
             }
 
             dataPromise.then(

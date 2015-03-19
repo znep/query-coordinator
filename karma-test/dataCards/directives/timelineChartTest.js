@@ -13,11 +13,13 @@ describe('timelineChart', function() {
   var testData;
   var AngularRxExtensions;
   var testJson = 'karma-test/dataCards/test-data/timelineChartTest/timelineChartTestData.json';
+  var allLabelsTestJson = 'karma-test/dataCards/test-data/timelineChartTest/allLabelsTimelineChartTestData.json';
   var hiddenLabelTestJson = 'karma-test/dataCards/test-data/timelineChartTest/hiddenLabelTimelineChartTestData.json';
   var negativeTestJson = 'karma-test/dataCards/test-data/timelineChartTest/negativeTestData.json';
   var nonContinuousTestJson = 'karma-test/dataCards/test-data/timelineChartTest/nonContinuousTestData.json';
 
   beforeEach(module(testJson));
+  beforeEach(module(allLabelsTestJson));
   beforeEach(module(hiddenLabelTestJson));
   beforeEach(module(negativeTestJson));
   beforeEach(module(nonContinuousTestJson));
@@ -52,6 +54,7 @@ describe('timelineChart', function() {
     timeout = $injector.get('$timeout');
     AngularRxExtensions = $injector.get('AngularRxExtensions');
     unfilteredTestData = unpickleTestData(testHelpers.getTestJson(testJson), false);
+    allLabelsTestData = unpickleTestData(testHelpers.getTestJson(allLabelsTestJson), false);
     filteredTestData = unpickleTestData(testHelpers.getTestJson(testJson), true);
     hiddenLabelTestData = unpickleTestData(testHelpers.getTestJson(hiddenLabelTestJson), false);
     negativeTestData = unpickleTestData(testHelpers.getTestJson(negativeTestJson), false);
@@ -107,7 +110,7 @@ describe('timelineChart', function() {
 
   }
 
-  function createTimelineChart(width, expanded, data) {
+  function createTimelineChart(width, expanded, data, precision) {
 
     var html;
     var childScope;
@@ -115,9 +118,10 @@ describe('timelineChart', function() {
     var chartId = $('#test-timeline-chart').length === 0 ? 'test-timeline-chart' : 'alternate-test-timeline-chart';
 
     var html = [
-      '<div id="{0}">'.format(chartId),
-        '<div class="card-visualization" style="width: {0}px; height: 300px;">'.format(width),
+      '<div id="{0}">',
+        '<div class="card-visualization" style="width: {1}px; height: 300px;">',
           '<div timeline-chart ',
+            'style="display: block; width: {1}px; height: 300px;" ',
             'class="timeline-chart"',
             'chart-data="chartData" ',
             'expanded="expanded" ',
@@ -127,11 +131,11 @@ describe('timelineChart', function() {
           '</div>',
         '</div>',
       '</div>'
-    ].join('');
+    ].join('').format(chartId, width);
 
     scope.chartData = data || unfilteredTestData;
     scope.expanded = expanded;
-    scope.precision = 'MONTH';
+    scope.precision = precision || 'MONTH';
     scope.rowDisplayUnit = 'rowDisplayUnit';
     scope.activeFilters = [];
 
@@ -199,7 +203,6 @@ describe('timelineChart', function() {
     });
 
     it('should create x-axis labels with unique horizontal positions', function() {
-
       var chart = createTimelineChart(640, false);
 
       var positions = _.map($('.x-tick-label'), function(label) {
@@ -207,31 +210,25 @@ describe('timelineChart', function() {
       });
 
       expect(_.uniq(positions).length).to.equal(positions.length);
-
     });
 
     it('should create 3 y-axis ticks and 3 y-axis labels', function() {
-
       var chart = createTimelineChart(640, false);
 
       expect($('.y-tick').length).to.equal(3);
-
     });
 
     it('should create y-axis ticks with unique vertical positions', function() {
-
-      var chart = createTimelineChart(640, false, negativeTestData);
+      var chart = createTimelineChart(640, false, negativeTestData, 'DAY');
 
       var positions = _.map($('.y-tick'), function(tick) {
         return $(tick).css('bottom');
       });
 
       expect(_.uniq(positions).length).to.equal(positions.length);
-
     });
 
     describe('label granularity', function() {
-
       var transformChartData;
 
       beforeEach(inject(
@@ -250,7 +247,30 @@ describe('timelineChart', function() {
               filtered: 0
             }
           })
-        ));
+        ), 'YEAR');
+
+        var labels = chart.find('.x-tick-label');
+        expect(labels.length).to.be.greaterThan(0);
+        labels.each(function() {
+          // The last x-axis label may not include text if it does not
+          // span the entire range (e.g. if there are fewer than 10 years
+          // on the x-axis after the last decade label.
+          if (this.innerHTML !== '') {
+            expect(this.innerHTML).to.match(/\b20[0-9]0s\b/);
+          }
+        });
+      });
+
+      it('formats for decade, even if the data is not exactly on the year mark', function() {
+        var chart = createTimelineChart(640, false, transformChartData(
+          _.map(_.range(30), function(i) {
+            return {
+              date: moment(new Date(2000 + i, 0, 1)),
+              total: i,
+              filtered: 0
+            }
+          })
+       ), 'YEAR');
 
         var labels = chart.find('.x-tick-label');
         expect(labels.length).to.be.greaterThan(0);
@@ -273,30 +293,7 @@ describe('timelineChart', function() {
               filtered: 0
             }
           })
-       ));
-
-        var labels = chart.find('.x-tick-label');
-        expect(labels.length).to.be.greaterThan(0);
-        labels.each(function() {
-          // The last x-axis label may not include text if it does not
-          // span the entire range (e.g. if there are fewer than 10 years
-          // on the x-axis after the last decade label.
-          if (this.innerHTML !== '') {
-            expect(this.innerHTML).to.match(/\b20[0-9]0s\b/);
-          }
-        });
-      });
-
-      it('formats for decade, even if the data is not exactly on the year mark', function() {
-        var chart = createTimelineChart(640, false, transformChartData(
-          _.map(_.range(30), function(i) {
-            return {
-              date: moment(new Date(2000 + i, 2, 3)),
-              total: i,
-              filtered: 0
-            }
-          })
-        ));
+        ), 'YEAR');
 
         var labels = chart.find('.x-tick-label');
         expect(labels.length).to.be.greaterThan(0);
@@ -339,7 +336,7 @@ describe('timelineChart', function() {
               filtered: 0
             }
           })
-        ));
+        ), 'DAY');
 
         var labels = chart.find('.x-tick-label');
         expect(labels.length).to.be.greaterThan(0);
@@ -363,7 +360,7 @@ describe('timelineChart', function() {
               filtered: 0
             }
           })
-        ));
+        ), 'DAY');
 
         var labels = chart.find('.x-tick-label');
         expect(labels.length).to.be.greaterThan(0);
@@ -387,7 +384,7 @@ describe('timelineChart', function() {
               filtered: 0
             }
           })
-        ));
+        ), 'DAY');
 
         var labels = chart.find('.x-tick-label');
         expect(labels.length).to.be.greaterThan(0);
@@ -396,8 +393,39 @@ describe('timelineChart', function() {
         });
       });
 
-      // This unit test exposes a bug: https://socrata.atlassian.net/browse/ONCALL-1917
-      xit('should format for month when the data has gaps in it', function() {
+      it('should not label the interval between the last tick and the right edge of the chart if that interval is not equal to the label precision', function() {
+        var chart = createTimelineChart(640, false, unfilteredTestData);
+
+        var labels = chart.find('.x-tick-label');
+        expect(labels.length).to.be.greaterThan(0);
+        expect(labels.last().text()).to.equal('');
+      });
+
+      it('should label the interval between the last tick and the right edge of the chart if that interval is equal to the label precision', function() {
+        var chart = createTimelineChart(640, false, allLabelsTestData, 'DAY');
+
+        var labels = chart.find('.x-tick-label');
+        expect(labels.length).to.be.greaterThan(0);
+        expect(labels.last().text()).to.not.equal('');
+      });
+
+      it('should label the interval between the last tick and the right edge of the chart if that interval is equal to the label precision for decades', function() {
+        var chart = createTimelineChart(640, false, transformChartData(
+          _.map(_.range(30), function(i) {
+            return {
+              date: moment(new Date(2000 + i, 0, 1)),
+              total: i,
+              filtered: 0
+            }
+          })
+       ), 'YEAR');
+
+        var labels = chart.find('.x-tick-label');
+        expect(labels.length).to.be.greaterThan(0);
+        expect(labels.last().text()).to.not.equal('');
+      });
+
+      it('should format for month when the data has gaps in it', function() {
         var chart = createTimelineChart(640, false, nonContinuousTestData);
 
         var labels = chart.find('.x-tick-label');
@@ -410,7 +438,6 @@ describe('timelineChart', function() {
   });
 
   it('should react to filtered values', function() {
-
     var chart = createTimelineChart(640, false);
 
     var unfilteredPath = $('.shaded').attr('d');
@@ -423,11 +450,9 @@ describe('timelineChart', function() {
     expect(unfilteredPath).to.not.be.empty;
     expect(filteredPath).to.not.be.empty;
     expect(unfilteredPath).to.not.equal(filteredPath);
-
   });
 
   it('should highlight the chart when the mouse is moved over the chart display', function() {
-
     var chart = createTimelineChart(640, false);
 
     var wasUnhighlighted = $('.timeline-chart-highlight-container').children('g').children().length === 0;
@@ -444,11 +469,9 @@ describe('timelineChart', function() {
 
     expect(wasUnhighlighted).to.equal(true);
     expect(wasThenHighlighted).to.equal(true);
-
   });
 
   it('should create a selection when the mouse is clicked on the chart display', function() {
-
     var chart = createTimelineChart(640, false);
 
     var wasUnhighlighted = $('.timeline-chart-highlight-container').children('g').children().length === 0;
@@ -475,11 +498,9 @@ describe('timelineChart', function() {
     expect(wasUnhighlighted).to.equal(true);
     expect(wasThenHighlighted).to.equal(true);
     expect(wasThenSelected).to.equal(true);
-
   });
 
   it('should highlight the chart when the mouse is moved over the chart labels', function() {
-
     var chart = createTimelineChart(640, false);
 
     var wasUnhighlighted = $('.timeline-chart-highlight-container').children('g').children().length === 0;
@@ -496,11 +517,9 @@ describe('timelineChart', function() {
 
     expect(wasUnhighlighted).to.equal(true);
     expect(wasThenHighlighted).to.equal(true);
-
   });
 
   it('should create a selection when the mouse is clicked on a chart label', function() {
-
     var chart = createTimelineChart(640, false);
 
     var wasNotSelected = !$('.timeline-chart-wrapper').hasClass('selected');
@@ -524,13 +543,11 @@ describe('timelineChart', function() {
 
     expect(wasNotSelected).to.equal(true);
     expect(wasThenSelected).to.equal(true);
-
   });
 
   describe('when selecting', function() {
 
     it('should start selecting on mousedown within the chart display and stop selecting on mouse up within the chart display', function() {
-
       var chart = createTimelineChart(640, false);
 
       mockWindowStateService.scrollPositionSubject.onNext(0);
@@ -556,11 +573,9 @@ describe('timelineChart', function() {
       expect(wasSelecting).to.equal(true);
       expect(wasThenNotSelecting).to.equal(true);
       expect(wasThenSelected).to.equal(true);
-
     });
 
     it('should start selecting on mousedown within the chart display and stop selecting on mouse up within the chart labels', function() {
-
       var chart = createTimelineChart(640, false);
 
       mockWindowStateService.scrollPositionSubject.onNext(0);
@@ -586,11 +601,9 @@ describe('timelineChart', function() {
       expect(wasSelecting).to.equal(true);
       expect(wasThenNotSelecting).to.equal(true);
       expect(wasThenSelected).to.equal(true);
-
     });
 
     it('should start selecting on mousedown within the chart display and stop selecting on mouse up outside the chart display and labels', function() {
-
       var chart = createTimelineChart(640, false);
 
       mockWindowStateService.scrollPositionSubject.onNext(0);
@@ -616,11 +629,9 @@ describe('timelineChart', function() {
       expect(wasSelecting).to.equal(true);
       expect(wasThenNotSelecting).to.equal(true);
       expect(wasThenSelected).to.equal(true);
-
     });
 
     it('should display a selection range label', function() {
-
       var chart = createTimelineChart(640, false);
 
       var selectionRangeLabelWasNotVisible = $('.timeline-chart-clear-selection-label').css('display') === 'none';
@@ -646,7 +657,6 @@ describe('timelineChart', function() {
       expect(selectionRangeLabelWasNotVisible).to.equal(true);
       expect(wasSelecting).to.equal(true);
       expect(selectionRangeLabelWasThenVisible).to.equal(true);
-
     });
 
   });
@@ -911,7 +921,7 @@ describe('timelineChart', function() {
 
     describe('and the mouse is hovering over a label', function() {
 
-      xit('should emphasize the hovered-over datum', function() {
+      it('should emphasize the hovered-over datum', function() {
 
         var chart = createTimelineChart(640, false);
 
@@ -919,8 +929,8 @@ describe('timelineChart', function() {
         scope.chartData = hiddenLabelTestData;
         scope.$apply();
 
-        var datumLabelWasNotVisible = $('.datum-label').css('display') === 'none';
-        var xAxisTickLabelsWereNotDimmed = !$('.timeline-chart-wrapper').hasClass('dimmed');
+        var datumLabelNotVisible = $('.datum-label').css('display') === 'none';
+        expect(datumLabelNotVisible).to.equal(true);
 
         mockWindowStateService.scrollPositionSubject.onNext(0);
         mockWindowStateService.mouseLeftButtonPressedSubject.onNext(false);
@@ -930,15 +940,8 @@ describe('timelineChart', function() {
           target: $('.timeline-chart-highlight-target')[0]
         });
 
-        var datumLabelWasStillNotVisible = $('.datum-label').css('display') === 'none';
-        var xAxisTickLabelsWereStillNotDimmed = !$('.timeline-chart-wrapper').hasClass('dimmed');
-        var oneXAxisTickLabelWasEmphasized = $('.x-tick-label.emphasis').length === 1;
-
-        expect(datumLabelWasNotVisible).to.equal(true);
-        expect(xAxisTickLabelsWereNotDimmed).to.equal(true);
-        expect(datumLabelWasStillNotVisible).to.equal(true);
-        expect(xAxisTickLabelsWereStillNotDimmed).to.equal(true);
-        expect(oneXAxisTickLabelWasEmphasized).to.equal(true);
+        var datumLabelVisible = $('.datum-label').css('display') === 'block';
+        expect(datumLabelVisible).to.equal(true);
 
       });
 
@@ -946,7 +949,7 @@ describe('timelineChart', function() {
 
     describe('and the mouse is hovering over a labeled datum', function() {
 
-      xit('should emphasize the hovered-over datum', function() {
+      it('should emphasize the hovered-over datum', function() {
 
         var chart = createTimelineChart(640, false);
 
@@ -954,8 +957,8 @@ describe('timelineChart', function() {
         scope.chartData = hiddenLabelTestData;
         scope.$apply();
 
-        var datumLabelWasNotVisible = $('.datum-label').css('display') === 'none';
-        var xAxisTickLabelsWereNotDimmed = !$('.timeline-chart-wrapper').hasClass('dimmed');
+        var datumLabelNotVisible = $('.datum-label').css('display') === 'none';
+        expect(datumLabelNotVisible).to.equal(true);
 
         mockWindowStateService.scrollPositionSubject.onNext(0);
         mockWindowStateService.mouseLeftButtonPressedSubject.onNext(false);
@@ -965,15 +968,8 @@ describe('timelineChart', function() {
           target: $('.timeline-chart-highlight-target')[0]
         });
 
-        var datumLabelWasStillNotVisible = $('.datum-label').css('display') === 'none';
-        var xAxisTickLabelsWereStillNotDimmed = !$('.timeline-chart-wrapper').hasClass('dimmed');
-        var oneXAxisTickLabelWasEmphasized = $('.x-tick-label.emphasis').length === 1;
-
-        expect(datumLabelWasNotVisible).to.equal(true);
-        expect(xAxisTickLabelsWereNotDimmed).to.equal(true);
-        expect(datumLabelWasStillNotVisible).to.equal(true);
-        expect(xAxisTickLabelsWereStillNotDimmed).to.equal(true);
-        expect(oneXAxisTickLabelWasEmphasized).to.equal(true);
+        var datumLabelVisible = $('.datum-label').css('display') === 'block';
+        expect(datumLabelVisible).to.equal(true);
 
       });
 
@@ -1014,8 +1010,8 @@ describe('timelineChart', function() {
         scope.chartData = hiddenLabelTestData;
         scope.$apply();
 
-        var datumLabelWasNotVisible = $('.datum-label').css('display') === 'none';
-        var xAxisTickLabelsWereNotDimmed = !$('.timeline-chart-wrapper').hasClass('dimmed');
+        var datumLabelNotVisible = $('.datum-label').css('display') === 'none';
+        expect(datumLabelNotVisible).to.equal(true);
 
         mockWindowStateService.scrollPositionSubject.onNext(0);
         mockWindowStateService.mouseLeftButtonPressedSubject.onNext(false);
@@ -1025,13 +1021,8 @@ describe('timelineChart', function() {
           target: $('.timeline-chart-highlight-target')[0]
         });
 
-        var datumLabelWasThenVisible = $('.datum-label').css('display') === 'block';
-        var xAxisTickLabelsWereThenDimmed = $('.timeline-chart-wrapper').hasClass('dimmed');
-
-        expect(datumLabelWasNotVisible).to.equal(true);
-        expect(xAxisTickLabelsWereNotDimmed).to.equal(true);
-        expect(datumLabelWasThenVisible).to.equal(true);
-        expect(xAxisTickLabelsWereThenDimmed).to.equal(true);
+        var datumLabelVisible = $('.datum-label').css('display') === 'block';
+        expect(datumLabelVisible).to.equal(true);
 
       });
 
@@ -1072,8 +1063,8 @@ describe('timelineChart', function() {
         scope.chartData = hiddenLabelTestData;
         scope.$apply();
 
-        var datumLabelWasNotVisible = $('.datum-label').css('display') === 'none';
-        var xAxisTickLabelsWereNotDimmed = !$('.timeline-chart-wrapper').hasClass('dimmed');
+        var datumLabelNotVisible = $('.datum-label').css('display') === 'none';
+        expect(datumLabelNotVisible).to.equal(true);
 
         mockWindowStateService.scrollPositionSubject.onNext(0);
         mockWindowStateService.mouseLeftButtonPressedSubject.onNext(false);
@@ -1083,13 +1074,8 @@ describe('timelineChart', function() {
           target: $('.timeline-chart-highlight-target')[0]
         });
 
-        var datumLabelWasThenVisible = $('.datum-label').css('display') === 'block';
-        var xAxisTickLabelsWereThenDimmed = $('.timeline-chart-wrapper').hasClass('dimmed');
-
-        expect(datumLabelWasNotVisible).to.equal(true);
-        expect(xAxisTickLabelsWereNotDimmed).to.equal(true);
-        expect(datumLabelWasThenVisible).to.equal(true);
-        expect(xAxisTickLabelsWereThenDimmed).to.equal(true);
+        var datumLabelVisible = $('.datum-label').css('display') === 'block';
+        expect(datumLabelVisible).to.equal(true);
 
       });
 

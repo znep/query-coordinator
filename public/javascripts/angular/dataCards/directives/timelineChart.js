@@ -105,7 +105,6 @@
         var mouseLeftButtonChangesSubscription;
         var mouseMoveOrLeftButtonChangesSubscription;
 
-
         /**
          * Because we want the beginning and end of the highlights and
          * selection ranges to correspond with the ticks, and d3's ordinary
@@ -129,7 +128,6 @@
           });
 
         }
-
 
         /**
          * Data can be filtered by the x-offset of the cursor from the left
@@ -198,7 +196,6 @@
 
         }
 
-
         /**
          *
          * Returns a bundle of stuff about the data points occurring between
@@ -250,7 +247,6 @@
           };
 
         }
-
 
         /**
          *
@@ -306,11 +302,9 @@
 
         }
 
-
         function clearChartHighlight() {
           $('.timeline-chart-highlight-container > g > path').remove();
         }
-
 
         /**
          *
@@ -386,7 +380,6 @@
           return label;
 
         }
-
 
         /**
          * Similar to formatDateLabel but for ranges instead of discrete dates.
@@ -488,7 +481,6 @@
 
         }
 
-
         function renderChartSelection() {
 
           var minDate;
@@ -513,7 +505,6 @@
           var transformedMinDate;
           var transformedMaxDate;
           var labelTextAlign;
-
 
           if (d3XScale === null || d3YScale === null) {
             return;
@@ -701,7 +692,6 @@
 
         }
 
-
         function clearChartSelection() {
 
           selectionIsCurrentlyRendered = false;
@@ -714,15 +704,12 @@
 
         }
 
-
         /**
          * Is probably the most complicated function in the directive
          * simply because of all the special casing that needs to happen for
          * sensible display of axis labels across multiple time intervals.
          */
         function renderChartXAxis() {
-
-
 
           function deriveXAxisLabelPrecision() {
 
@@ -745,7 +732,6 @@
             }
 
             return xAxisLabelPrecision;
-
           }
 
           function deriveXAxisLabelDatumStep(labels) {
@@ -766,7 +752,6 @@
             }
 
             return labelEveryN;
-
           }
 
           function recordLabel(labels, startDate, endDate, pixelsPerDay, shouldLabel) {
@@ -787,6 +772,7 @@
           var thisDate;
           var intervalStartDate = cachedChartData.values[0].date;
           var intervalEndDate = null;
+          var maxDatePlusLabelPrecision;
           var shouldLabelEveryN;
           // This is half the width of each tick as defined in the accompanying CSS
           var halfTickWidth = 2;
@@ -797,7 +783,6 @@
           var labelText;
           var jqueryAxisTickLabel;
 
-
           // Note that labelPrecision is actually global to the directive, but
           // it is set within the context of rendering the x-axis since it
           // seems as reasonable to do so here as anywhere else.
@@ -805,7 +790,7 @@
 
           pixelsPerDay = cachedChartDimensions.width /
             moment.duration(
-              moment(cachedChartData.maxDate) -
+              moment(cachedChartData.maxDate).add(1, datasetPrecision) -
               moment(cachedChartData.minDate)
             ).asDays();
 
@@ -856,30 +841,33 @@
 
           // If the last date is not a tick, we still need a label to extend
           // from the last tick to the end of the visualization.
-          // TODO: Verify that this will always be true and remove it as
-          // necessary.
-          if (labels[labels.length - 1].endDate !== intervalEndDate) {
-
-            labels.push({
-              startDate: intervalStartDate,
-              endDate: intervalEndDate,
-              width: cachedChartDimensions.width - d3XScale(intervalStartDate) + (2 * halfTickWidth) + halfVisualizedDatumWidth,
-              left: d3XScale(intervalStartDate) - halfVisualizedDatumWidth,
-              shouldLabel: false
-            });
-
+          // Additionally, moment has no notion of decades so we need to catch
+          // that case and add 10 years instead.
+          if (labelPrecision === 'DECADE') {
+            maxDatePlusLabelPrecision = moment(labels[labels.length - 1].endDate).add(10, 'YEAR').toDate();
+          } else {
+            maxDatePlusLabelPrecision = moment(labels[labels.length - 1].endDate).add(1, labelPrecision).toDate();
           }
+
+          labels.push({
+            startDate: intervalStartDate,
+            endDate: intervalEndDate,
+            width: cachedChartDimensions.width - d3XScale(intervalStartDate) + (2 * halfTickWidth) + halfVisualizedDatumWidth,
+            left: d3XScale(intervalStartDate) - halfVisualizedDatumWidth,
+            // If the distance from the last tick to the end of the visualization is
+            // equal to one labelPrecision unit, then we should label the interval.
+            // Otherwise, we should draw it but not label it.
+            shouldLabel: maxDatePlusLabelPrecision.getTime() === intervalEndDate.getTime()
+          });
 
           // Now that we know how many *labels* we can potentailly draw, we
           // decide whether or not we can draw all of them or just some.
           shouldLabelEveryN = deriveXAxisLabelDatumStep(labels);
 
-
           // Not ethat allChartLabelsShown is also actually global to the
           // directive and is also set within the context of rendering the
           // x-axis since it seems as reasonable to do so as anywhere else.
           allChartLabelsShown = shouldLabelEveryN === 1;
-
 
           // Finally, we filter the the group of all labels so that we only
           // label every Nth one.
@@ -960,14 +948,12 @@
 
             jqueryAxisContainer.append(jqueryAxisTickLabel);
 
-
           }
 
           // Replace the existing x-axis ticks with the new ones.
           jqueryChartElement.children('.x-ticks').replaceWith(jqueryAxisContainer);
 
         }
-
 
         /**
          * This function is comparatively straightforward, but operates
@@ -1023,7 +1009,6 @@
           jqueryChartElement.children('.y-ticks').replaceWith(jqueryAxisContainer);
 
         }
-
 
         /**
          * Rendering the chart's unfiltered and filtered values are decoupled
@@ -1090,7 +1075,6 @@
             attr('d', area);
 
         }
-
 
         /**
          * Rendering the chart's unfiltered and filtered values are decoupled
@@ -1161,7 +1145,6 @@
             attr('d', area);
 
         }
-
 
         /**
          * Basically just prepares the underlying chart data and then calls
@@ -1239,7 +1222,6 @@
           renderChartFilteredValues();
 
         }
-
 
         /**
          * @return {String} A string that is interpreted by moment to
@@ -1427,13 +1409,11 @@
 
         }
 
-
         function renderSelectionMarkerFlyout() {
           if (mousePositionWithinChartDisplay && !currentlyDragging) {
             return '<div class="flyout-title">Drag to change filter range</div>';
           }
         }
-
 
         function renderClearSelectionMarkerFlyout() {
           if (mousePositionWithinChartLabels) {
@@ -1441,12 +1421,10 @@
           }
         }
 
-
         function hideDatumLabel() {
           jqueryDatumLabel.hide();
           jqueryChartElement.removeClass('dimmed');
         }
-
 
         function enterDraggingState() {
           currentlyDragging = true;
@@ -1456,7 +1434,6 @@
           jqueryBodyElement.addClass('prevent-user-select');
           jqueryChartElement.removeClass('selected').addClass('selecting');
         }
-
 
         function enterSelectedState() {
           currentlyDragging = false;
@@ -1468,7 +1445,6 @@
           jqueryChartElement.removeClass('selecting').addClass('selected');
         }
 
-
         function enterDefaultState() {
           currentlyDragging = false;
           selectionIsCurrentlyRendered = false;
@@ -1478,7 +1454,6 @@
           jqueryBodyElement.removeClass('prevent-user-select');
           jqueryChartElement.removeClass('selecting').removeClass('selected');
         }
-
 
         function requestChartFilterByCurrentSelection() {
           var selectionStartDateAsMoment = moment(selectionStartDate);
@@ -1494,11 +1469,9 @@
           }
         }
 
-
         function requestChartFilterReset() {
           scope.$emit('filter-timeline-chart', null);
         }
-
 
         /**
          * This is used to keep the flyout updated as you drag a selection
@@ -1519,7 +1492,6 @@
           currentDatum = chartData.values[i];
 
         }
-
 
         /**
          * @param {Number} offsetX - The left offset of the mosue cursor into
@@ -1550,7 +1522,6 @@
           return date;
 
         }
-
 
         /**
          * @param {number} offsetX - The offset of the mouse pointer into the
@@ -1625,7 +1596,6 @@
           }
 
         }
-
 
         /**
          * Interprets clicking and dragging and applies the expected state
@@ -1766,18 +1736,15 @@
 
         }
 
-
         function handleChartMouseleaveEvent() {
           d3ChartElement.select('svg.timeline-chart-highlight-container').select('g').remove();
           currentDatum = null;
         }
 
-
         function handleClearSelectionLabelMousedownEvent() {
           requestChartFilterReset();
           enterDefaultState();
         }
-
 
         /**
          * @param {Date} startDate
@@ -1801,7 +1768,6 @@
 
         }
 
-
         /**
          * @param {Number} offsetX - The left offset of the mouse cursor into
          *                           the visualization, in pixels.
@@ -1824,7 +1790,6 @@
           }
 
         }
-
 
         /**
          * @param {Number} offsetX - The left offset of the mouse cursor into
@@ -1872,7 +1837,6 @@
 
         }
 
-
         /**
          * @param {DOM Element} target - A DOM element with data attributes
          *                               describing an interval's start date,
@@ -1901,7 +1865,6 @@
 
         }
 
-
         /**
          * @param {Number} offsetX - The left offset of the mouse cursor into
          *                           the visualization, in pixels.
@@ -1917,7 +1880,6 @@
                  offsetY <= cachedChartDimensions.height - Constants.TIMELINE_CHART_MARGIN_BOTTOM;
 
         }
-
 
         /**
          * @param {Number} offsetX - The left offset of the mouse cursor into
@@ -1935,7 +1897,6 @@
 
         }
 
-
         /**
          * @param {DOM Element} target - The DOM element belonging to this
          *                               instance of the visualization.
@@ -1948,7 +1909,6 @@
           return closestChart.length > 0 && closestChart[0] === element[0];
 
         }
-
 
         // This sequence combines mouse movements with left mouse button
         // down/up events. We use this sequence to handle chart selection:
@@ -2084,7 +2044,6 @@
           }
         );
 
-
         //
         // Set up flyout registrations and event handlers.
         //
@@ -2096,7 +2055,6 @@
 
         jqueryChartElement.on('mouseleave', handleChartMouseleaveEvent);
         jqueryClearSelectionLabel.on('mousedown', handleClearSelectionLabelMousedownEvent);
-
 
         //
         // Dispose of WindowState windowStateSubscriptions, flyout registrations
@@ -2117,7 +2075,6 @@
           jqueryClearSelectionLabel.off('mousedown', handleClearSelectionLabelMousedownEvent);
 
         });
-
 
         //
         // Render the chart

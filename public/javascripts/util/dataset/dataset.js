@@ -814,6 +814,7 @@ var Dataset = ServerModel.extend({
         };
 
         _.each(requests, function(req) {
+            $.extend(req, { 'location': colLookup });
             ds.makeRequest({
                 url: '/views/' + ds.id + '/rows.json',
                 params: req,

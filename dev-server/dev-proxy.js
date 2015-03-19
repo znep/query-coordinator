@@ -92,7 +92,7 @@ console.log('Listening on port:', options.port,
   'and proxying to:', options.target);
 server.listen(options.port);
 
-if (options.launchBrowser) {
+//if (options.launchBrowser) {
   // Launch Browser
-  exec('open https://localhost:' + options.port);
-}
+//  exec('open https://localhost:' + options.port);
+//}

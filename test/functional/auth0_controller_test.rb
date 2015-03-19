@@ -1,4 +1,5 @@
 require 'test_helper'
+require 'ostruct'
 
 class Auth0ControllerTest < ActionController::TestCase
   include UserSessionsHelper
@@ -94,7 +95,7 @@ class Auth0ControllerTest < ActionController::TestCase
     OmniAuth.config.mock_auth[:auth0] = get_mock_token('samlp','samlp|thisisgarbage','samlp|thisisgarbage|')
 
     @request.env['omniauth.auth'] = OmniAuth.config.mock_auth[:auth0]
-    Auth0Controller.any_instance.expects(:valid_token?).returns ( false )
+    Auth0Controller.any_instance.expects(:valid_token?).returns(false)
     get :callback, :protocol => 'https'
     assert_nil(@response.cookies['_core_session_id'])
     assert_nil(@response.cookies['logged_in'])
@@ -104,7 +105,7 @@ class Auth0ControllerTest < ActionController::TestCase
   test 'Federated Auth failure should return 500' do
     OmniAuth.config.mock_auth[:auth0] = get_mock_token('samlp','samlp|someidentifier','samlp|someidentifier|socrata.com')
     @request.env['omniauth.auth'] = OmniAuth.config.mock_auth[:auth0]
-    Auth0Controller.any_instance.expects(:authentication_provider_class).returns (NotAuthenticatedStub)
+    Auth0Controller.any_instance.expects(:authentication_provider_class).returns(NotAuthenticatedStub)
     get :callback, :protocol => 'https'
     assert_nil(@response.cookies['_core_session_id'])
     assert_nil(@response.cookies['logged_in'])
@@ -114,7 +115,7 @@ class Auth0ControllerTest < ActionController::TestCase
   test 'Auth0 federated token should result in a user_session' do
     OmniAuth.config.mock_auth[:auth0] = get_mock_token('samlp','samlp|someidentifier','samlp|someidentifier|socrata.com')
     @request.env['omniauth.auth'] = OmniAuth.config.mock_auth[:auth0]
-    Auth0Controller.any_instance.expects(:authentication_provider_class).returns (AuthenticatedStub)
+    Auth0Controller.any_instance.expects(:authentication_provider_class).returns(AuthenticatedStub)
     get :callback, :protocol => 'https'
     assert_not_nil(@response.cookies['logged_in'])
     assert_redirected_to(login_redirect_url)
@@ -135,7 +136,7 @@ class Auth0ControllerTest < ActionController::TestCase
     end
 
     def authenticated?
-      raise "This class should be considered abstract.  Please use the provided concrete instances"
+      raise 'This class should be considered abstract.  Please use the provided concrete instances'
     end
   end
 

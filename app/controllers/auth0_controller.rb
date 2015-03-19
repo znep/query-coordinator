@@ -33,13 +33,13 @@ class Auth0Controller < ApplicationController
     else
       #See if the user is federated
       token = userinfo_hash[:extra][:raw_info];
-      if (!valid_token?(token))
+      unless valid_token?(token)
         Rails.logger.info("Token is invalid. Verify that it contains email, name and user_id in the correct format")
         render_404
       else
         Rails.logger.info("Token contains required fields.  Attempting to authenticate through Core.")
         auth0_authentication = authentication_provider_class.new(token.to_json)
-        if (auth0_authentication.authenticated?)
+        if auth0_authentication.authenticated?
           user_session = UserSession.auth0(auth0_authentication)
           redirect_back_or_default(login_redirect_url)
         else

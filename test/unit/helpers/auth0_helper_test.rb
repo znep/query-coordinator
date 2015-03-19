@@ -13,20 +13,19 @@ class Auth0HelperTest < ActionView::TestCase
   end
 
   def get_mock_federated_user_token
-    authHash = OmniAuth::AuthHash.new({
-                                        'provider' => 'samlp',
-                                        'uid' => 'samlp|_c3ac275de528ddea41f237a4142a5704',
-                                        'socrata_user_id' => 'samlp|_c3ac275de528ddea41f237a4142a5704|contoso.com',
-                                        'socrata_role' => 'viewer',
-                                        'name' => 'alterego',
-                                        'email' => 'alterego@testshib.org',
-                                      })
-    return authHash
+    OmniAuth::AuthHash.new(
+                           'provider' => 'samlp',
+                           'uid' => 'samlp|_c3ac275de528ddea41f237a4142a5704',
+                           'socrata_user_id' => 'samlp|_c3ac275de528ddea41f237a4142a5704|contoso.com',
+                           'socrata_role' => 'viewer',
+                           'name' => 'alterego',
+                           'email' => 'alterego@testshib.org',
+                           )
   end
 
   test 'Token is valid' do 
     authHash = get_mock_federated_user_token
-    assert (valid_token?(authHash))
+    assert(valid_token?(authHash))
   end
 
   test 'Token is rejected when missing a required field' do
@@ -36,7 +35,7 @@ class Auth0HelperTest < ActionView::TestCase
       authHash = get_mock_federated_user_token
       #  Delete a required field
       authHash.delete(requiredField)
-      refute (valid_token?(authHash))
+      refute(valid_token?(authHash))
     end
   end
 

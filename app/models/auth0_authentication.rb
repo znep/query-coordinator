@@ -14,7 +14,7 @@ class Auth0Authentication
 protected
   def load
     uri = UserSession.auth_uri.clone
-    uri.query = "method=authenticateFederatedAuth0User"
+    uri.query = 'method=authenticateFederatedAuth0User'
     post = Net::HTTP::Post.new(uri.request_uri)
     post['X-Socrata-Host'] = CurrentDomain.cname
     post.form_data = {'token' => token}

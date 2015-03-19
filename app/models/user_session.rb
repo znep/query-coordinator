@@ -37,7 +37,7 @@ class UserSession
     end
 
     def auth0(token)
-      session = new()
+      session = new
       if session.find_auth0_token(token)
         session
       else
@@ -181,11 +181,9 @@ class UserSession
   end
 
   def find_auth0_token(auth0_authentication)
-    result = nil
     if auth0_authentication.authenticated?
-      result = find_user(auth0_authentication.user)
+      find_user(auth0_authentication.user)
     end
-    result
   end
 
   # Obtain a UserSession initialized based on a User object.

@@ -34,6 +34,7 @@ class Downtime
     rescue StandardError
       # Ignore all errors/typos from the downtime parsing
       puts "ERROR Parsing Downtime Banner!"
+      @@downtimes = []
     end
     @@last_updated = Time.now
   end

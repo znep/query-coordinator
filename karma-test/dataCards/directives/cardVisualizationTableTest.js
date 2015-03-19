@@ -150,7 +150,8 @@ describe('A Table Card Visualization', function() {
       cardBlobs: [],
       whereClause: '',
       firstColumn: undefined,
-      columns: COLUMNS
+      columns: COLUMNS,
+      primaryAggregation: 'count'
     });
 
     var model = new Model();
@@ -170,6 +171,7 @@ describe('A Table Card Visualization', function() {
     var pageModel = new Page('test-page');
     pageModel.set('dataset', datasetModel);
     pageModel.set('baseSoqlFilter', null);
+    pageModel.set('primaryAggregation', options.primaryAggregation);
     model.page = pageModel;
 
     var cardModels = options.cardBlobs.map(function(cardBlob) { return newCard(pageModel, cardBlob); });
@@ -280,7 +282,7 @@ describe('A Table Card Visualization', function() {
         primaryAggregation: 'sum',
         primaryAmountField: 'test_column'
       });
-      var table = createTable();
+      var table = createTable({ primaryAggregation: 'sum' });
       expect(table.scope.defaultSortColumnName).to.equal('test_column');
     })
   });

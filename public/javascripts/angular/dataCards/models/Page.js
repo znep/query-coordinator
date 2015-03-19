@@ -41,7 +41,6 @@
           'name',
           'layoutMode',
           'primaryAmountField',
-          'primaryAggregation',
           'isDefaultPage',
           'pageSource',
           'baseSoqlFilter'
@@ -50,6 +49,12 @@
           self.defineObservableProperty(field, undefined, function() {
             return pageMetadataPromise().then(_.property(field));
           });
+        });
+
+        // Initialize this property to 'invalid' so we can filter it and determine
+        // when the model has actually loaded - no bueno but necessary in the short-term
+        self.defineObservableProperty('primaryAggregation', 'invalid', function() {
+          return pageMetadataPromise().then(_.property('primaryAggregation'));
         });
 
         self.defineObservableProperty('dataset', null, function() {
@@ -75,7 +80,7 @@
         // Synchronize changes between primaryAmountField and primaryAggregation
         // Normalize aggregation-related fields.
         var aggregationObservable = Rx.Observable.combineLatest(
-          self.observe('primaryAggregation'),
+          self.observe('primaryAggregation').filter(function(value) { return value !== 'invalid'; }),
           self.observe('dataset.rowDisplayUnit'),
           self.observe('primaryAmountField'),
           columnAggregatedUpon,

@@ -788,19 +788,19 @@ var Dataset = ServerModel.extend({
                 vpQuery = 'within_box(' + colLookup + ', ' +
                             OpenLayers.Bounds.fromViewportToSoql(viewport) + ')';
             if (!$.isBlank(soqlWhere))
-            { return 'select ' + colLookup + ' where ' + soqlWhere + ' AND ' + vpQuery; }
+            { return soqlWhere + ' AND ' + vpQuery; }
             else
-            { return 'select ' + colLookup + ' where ' + vpQuery; }
+            { return vpQuery; }
         };
 
         if (viewport.xmax < viewport.xmin) {
             // Add one query for each side of the date line.
             requests = _.map([$.extend({}, viewport, { xmax:  179.999999 }),
                               $.extend({}, viewport, { xmin: -179.999999 })], function(vp) {
-                return $.extend({}, params, { query: assembleSoqlQuery(vp) });
+                return $.extend({}, params, { '$where': assembleSoqlQuery(vp) });
             });
         } else {
-            requests = [ $.extend({}, params, { query: assembleSoqlQuery(viewport) }) ];
+            requests = [ $.extend({}, params, { '$where': assembleSoqlQuery(viewport) }) ];
         }
 
         var viewportsLeft = requests.length;

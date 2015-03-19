@@ -23,6 +23,7 @@ http://www.socrata.com
   <%= yield :head %>
 
   <%= rendered_stylesheet_tag 'base-sdp' %>
+  <link type="text/css" media="all" rel="stylesheet" href="/webfonts/socrata-apps/socrata-apps.css"/>
   <% unless CurrentDomain.google_analytics_id.blank? || (params[:no_cookie] == 'true') %>
     <script type="text/javascript">
       var _gaq = _gaq || [];

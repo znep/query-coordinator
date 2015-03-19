@@ -46,13 +46,14 @@
     });
 
     $scope.onDownloadClick = function(event) {
-      // Clicking the 'Cancel' button
-      if ($(event.target).hasClass('download-menu') &&
-          $scope.chooserMode.show && !$scope.editMode) {
-        $scope.chooserMode.show = false;
-      } else {
-        // Otherwise, toggle the dialog
-        $scope.downloadOpened = !$scope.downloadOpened;
+      if (!$scope.editMode) {
+        // Clicking the 'Cancel' button
+        if ($(event.target).hasClass('download-menu') && $scope.chooserMode.show) {
+          $scope.chooserMode.show = false;
+        } else {
+          // Otherwise, toggle the dialog
+          $scope.downloadOpened = !$scope.downloadOpened;
+        }
       }
     };
 

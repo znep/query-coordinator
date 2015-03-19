@@ -12,6 +12,7 @@ describe('CardsViewController', function() {
   var _$provide;
   var $httpBackend;
   var $window;
+  var $document;
   var ServerConfig;
   var PageDataService;
   var controllerHarness;
@@ -22,6 +23,12 @@ describe('CardsViewController', function() {
     location: {},
     scrollTo: _.noop
   };
+
+  // The angular $document is a jquery wrapped window.document.  Making this an array
+  // kinda-sorta mimics that
+  var mockDocumentService = [{
+    title: undefined
+  }];
 
   var mockWindowServiceLocationSeq;
   Object.defineProperty(
@@ -118,6 +125,7 @@ describe('CardsViewController', function() {
       $provide.value('DatasetDataService', mockDatasetDataService);
       $provide.value('UserSessionService', mockUserSessionService);
       $provide.value('$window', mockWindowService);
+      $provide.value('$document', mockDocumentService);
       $provide.value('ConfigurationsService', {
         getThemeConfigurationsObservable: function() {
           return Rx.Observable.returnValue([]);
@@ -128,9 +136,9 @@ describe('CardsViewController', function() {
   });
 
   beforeEach(inject([
-    '$q', 'CardV1', 'Page', 'DatasetV0', '$rootScope', '$controller', '$window', 'testHelpers',
+    '$q', 'CardV1', 'Page', 'DatasetV0', '$rootScope', '$controller', '$document', '$window', 'testHelpers',
     'serverMocks', '$httpBackend', 'ServerConfig', 'PageDataService',
-    function(_$q, _CardV1, _Page, _DatasetV0, _$rootScope, _$controller, _$window, _testHelpers,
+    function(_$q, _CardV1, _Page, _DatasetV0, _$rootScope, _$controller, _$document, _$window, _testHelpers,
              _serverMocks, _$httpBackend, _ServerConfig, _PageDataService) {
       CardV1 = _CardV1;
       Page = _Page;
@@ -139,6 +147,7 @@ describe('CardsViewController', function() {
       $rootScope = _$rootScope;
       $controller = _$controller;
       $window = _$window;
+      $document = _$document;
       testHelpers = _testHelpers;
       serverMocks = _serverMocks;
       $httpBackend = _$httpBackend;
@@ -263,10 +272,20 @@ describe('CardsViewController', function() {
   });
 
   describe('page name', function() {
+
+    it('should be used for the document title', function() {
+      var controllerHarness = makeController();
+      var nameOne = _.uniqueId('name');
+      controllerHarness.pageMetadataPromise.resolve({
+        datasetId: 'fake-fbfr',
+        name: nameOne
+      });
+      $rootScope.$digest();
+      expect($document[0].title).to.equal('{0} | Socrata'.format(nameOne));
+    });
+
     it('should update on the scope when the property changes on the model', function() {
       var controllerHarness = makeController();
-
-      var controller = controllerHarness.controller;
       var $scope = controllerHarness.$scope;
 
       var nameOne = _.uniqueId('name');

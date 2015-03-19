@@ -3,6 +3,8 @@ class Downtime
 
   attr_accessor :message_start, :message_finish, :downtime_start, :downtime_finish
 
+  @@downtimes = []
+
   def self.any? &block
     @@downtimes.any?(&block)
   end
@@ -34,7 +36,6 @@ class Downtime
     rescue StandardError
       # Ignore all errors/typos from the downtime parsing
       puts "ERROR Parsing Downtime Banner!"
-      @@downtimes = []
     end
     @@last_updated = Time.now
   end

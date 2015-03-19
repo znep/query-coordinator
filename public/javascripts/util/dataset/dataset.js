@@ -783,24 +783,14 @@ var Dataset = ServerModel.extend({
 
         var requests;
 
-        var assembleSoqlQuery = function(viewport) {
-            var where,
-                vpQuery = 'within_box(' + colLookup + ', ' +
-                            OpenLayers.Bounds.fromViewportToSoql(viewport) + ')';
-            if (!$.isBlank(soqlWhere))
-            { return soqlWhere + ' AND ' + vpQuery; }
-            else
-            { return vpQuery; }
-        };
-
         if (viewport.xmax < viewport.xmin) {
             // Add one query for each side of the date line.
             requests = _.map([$.extend({}, viewport, { xmax:  179.999999 }),
                               $.extend({}, viewport, { xmin: -179.999999 })], function(vp) {
-                return $.extend({}, params, { '$where': assembleSoqlQuery(vp) });
+                return $.extend({}, params, vp);
             });
         } else {
-            requests = [ $.extend({}, params, { '$where': assembleSoqlQuery(viewport) }) ];
+            requests = [ $.extend({}, params, viewport) ];
         }
 
         var viewportsLeft = requests.length;
@@ -814,10 +804,9 @@ var Dataset = ServerModel.extend({
         };
 
         _.each(requests, function(req) {
-            $.extend(req, { 'location': colLookup });
             ds.makeRequest({
                 url: '/views/' + ds.id + '/rows.json',
-                params: req,
+                params: $.extend({}, req, { 'location': colLookup, '$where': soqlWhere }),
                 success: function(data) {
                     _.each(data, translateCluster);
                     callback(data);

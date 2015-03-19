@@ -27,13 +27,11 @@ class Downtime
     return unless needs_update?
     begin
       yaml = YAML.load_file(DOWNTIME[:file])[DOWNTIME[:env]]
-      @@downtimes = [yaml].flatten.compact.collect do |time|
-        Downtime.new(time['message_start'], time['message_end'],
-                     time['downtime_start'], time['downtime_end'])
-      end
     rescue StandardError
-      # Ignore all errors/typos from the downtime parsing
-      puts "ERROR Parsing Downtime Banner!"
+    end
+    @@downtimes = [yaml].flatten.compact.collect do |time|
+      Downtime.new(time['message_start'], time['message_end'],
+                   time['downtime_start'], time['downtime_end'])
     end
     @@last_updated = Time.now
   end

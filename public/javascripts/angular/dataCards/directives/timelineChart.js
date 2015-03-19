@@ -790,7 +790,7 @@
 
           pixelsPerDay = cachedChartDimensions.width /
             moment.duration(
-              moment(moment(cachedChartData.maxDate).add(1, datasetPrecision).toDate()) -
+              moment(cachedChartData.maxDate).add(1, datasetPrecision) -
               moment(cachedChartData.minDate)
             ).asDays();
 

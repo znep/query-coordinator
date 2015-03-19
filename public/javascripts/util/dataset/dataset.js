@@ -786,10 +786,16 @@ var Dataset = ServerModel.extend({
 
         var requests;
 
+        _.each({ 'xmin': 'min_lon',
+                 'xmax': 'max_lon',
+                 'ymin': 'min_lat',
+                 'ymax': 'max_lat'}, function(new_prop, old_prop)
+        { params[new_prop] = viewport[old_prop] });
+
         if (viewport.xmax < viewport.xmin) {
             // Add one query for each side of the date line.
-            requests = _.map([$.extend({}, viewport, { xmax:  179.999999 }),
-                              $.extend({}, viewport, { xmin: -179.999999 })], function(vp) {
+            requests = _.map([$.extend({}, viewport, { max_lon:  179.999999 }),
+                              $.extend({}, viewport, { min_lon: -179.999999 })], function(vp) {
                 return $.extend({}, params, vp);
             });
         } else {
@@ -807,6 +813,7 @@ var Dataset = ServerModel.extend({
         };
 
         _.each(requests, function(req) {
+
             ds.makeRequest({
                 url: '/views/' + ds.id + '/rows.json',
                 params: req,

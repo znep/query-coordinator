@@ -261,6 +261,7 @@ Frontend::Application.routes do
 
     scope :controller => 'new_ux_bootstrap', :constraints => { :id => UID_REGEXP } do
       get '/view/bootstrap/:id', :action => 'bootstrap'
+      get '/ux/dataset/:id', :action => 'bootstrap'
     end
 
     scope :controller => 'polaroid', :constraints => { :page_id => UID_REGEXP, :field_id => Phidippides::COLUMN_ID_REGEX } do
@@ -285,7 +286,6 @@ Frontend::Application.routes do
       # reflect the changes.
       match '/view/:id', :action => 'serve_app', :app => 'dataCards', :as => :opendata_cards_view
       match '/view/*angularRoute', :action => 'serve_app', :app => 'dataCards' # See angular-app-{:app} in assets.yml.
-      match '/ux/dataset/:id', :action => 'serve_app', :app => 'dataCards', :as => :opendata_dataset_view
     end
 
     # Dataset SEO URLs (only add here if the action has a view with it;

@@ -31,7 +31,7 @@ class AngularControllerTest < ActionController::TestCase
     get :serve_app, :id => '1234-1234', :app => 'dataCards'
     assert_no_match(/ga\('create', 'UA-.+-.+', 'auto'\);/, @response.body)
   end
-  
+
   test 'should render google analytics JS if feature flag is set' do
     FeatureFlags.stubs(
       :derive => {

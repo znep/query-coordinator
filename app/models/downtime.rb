@@ -3,6 +3,8 @@ class Downtime
 
   attr_accessor :message_start, :message_finish, :downtime_start, :downtime_finish
 
+  @@downtimes = []
+
   def self.any? &block
     @@downtimes.any?(&block)
   end

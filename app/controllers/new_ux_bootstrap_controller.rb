@@ -116,7 +116,10 @@ class NewUxBootstrapController < ActionController::Base
         if metadata_transition_phase_0?
           # In metadata transition phase 0 only, we will take any extant page
           # as a default.
-          some_page = pages.last
+          some_page = pages.find do |page|
+            # Note that this may be nil and, if so, will be coerced by .to_i into 0
+            page[:version].to_i == 0
+          end
         else
           # In any other metadata transition phase, however, if no pages match
           # the default page listed in the dataset_metadata, we attempt to find

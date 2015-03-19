@@ -257,21 +257,13 @@ class NewUxBootstrapControllerTest < ActionController::TestCase
         end
 
         context 'create a new default page if no default page is set and there are already pages' do
-          setup do
-            @page_metadata_manager.stubs(
-              create: {
-                status: '200',
-                body: { pageId: 'abcd-efgh' }
-              }
-            )
-          end
 
           should 'in phase 0' do
             @phidippides.expects(:update_dataset_metadata).
               times(1).
               returns({ status: '200' }).
               with do |dataset_metadata|
-                dataset_metadata[:defaultPage] == 'neww-page'
+                dataset_metadata[:defaultPage] == 'olde-page'
               end
             @phidippides.stubs(
               fetch_dataset_metadata: {
@@ -285,7 +277,7 @@ class NewUxBootstrapControllerTest < ActionController::TestCase
 
             stub_feature_flags_with(:metadata_transition_phase, '0')
             get :bootstrap, id: 'data-iden'
-            assert_redirected_to('/view/neww-page')
+            assert_redirected_to('/view/olde-page')
           end
         end
 
@@ -399,7 +391,7 @@ class NewUxBootstrapControllerTest < ActionController::TestCase
               times(1).
               returns({ status: '200' }).
               with do |dataset_metadata|
-                dataset_metadata[:defaultPage] == 'neww-page'
+                dataset_metadata[:defaultPage] == 'olde-page'
               end
             @phidippides.stubs(
               fetch_dataset_metadata: {
@@ -413,7 +405,7 @@ class NewUxBootstrapControllerTest < ActionController::TestCase
 
             stub_feature_flags_with(:metadata_transition_phase, '0')
             get :bootstrap, id: 'data-iden'
-            assert_redirected_to('/view/neww-page')
+            assert_redirected_to('/view/olde-page')
           end
 
           should 'in phase 1, 2 and 3' do

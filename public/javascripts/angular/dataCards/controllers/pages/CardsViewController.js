@@ -99,6 +99,7 @@
   function CardsViewController(
     $scope,
     $log,
+    $document,
     $window,
     $q,
     AngularRxExtensions,
@@ -123,7 +124,8 @@
     *************************/
 
     $scope.page = page;
-    $scope.bindObservable('pageName', page.observe('name'));
+    var pageNameSequence = page.observe('name').filter(_.isPresent);
+    $scope.bindObservable('pageName', pageNameSequence);
     $scope.bindObservable('pageDescription', page.observe('description'));
 
     $scope.bindObservable('dataset', page.observe('dataset'));
@@ -139,6 +141,10 @@
 
     $scope.bindObservable('sourceDatasetName', page.observe('dataset.name'));
     $scope.bindObservable('cardModels', page.observe('cards'));
+
+    pageNameSequence.subscribe(function(pageName) {
+      $document[0].title = '{0} | Socrata'.format(pageName);
+    });
 
     // Map the nbe id to the obe id
     var obeIdObservable = page.observe('datasetId').

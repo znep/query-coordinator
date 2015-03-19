@@ -94,6 +94,11 @@ module TestHelperMethods
     end
   end
 
+  def stub_module_enabled_on_current_domain(module_name)
+    CurrentDomain.stubs(module_names: [ module_name.to_s ])
+    CurrentDomain.domain.stubs(features: Hashie::Mash.new.tap { |h| h.send(:"#{module_name}=", true) })
+  end
+
   def stub_feature_flags_with(key, value)
     CurrentDomain.stubs(feature_flags: Hashie::Mash.new.tap { |hash| hash[key] = value })
   end

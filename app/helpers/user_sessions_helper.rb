@@ -1,8 +1,15 @@
 module UserSessionsHelper
 
   def login_redirect_url
-    CurrentDomain.properties.on_login_path_override ||
-      (CurrentDomain.module_enabled?(:govStat) ? govstat_root_path : profile_index_path)
+    url = CurrentDomain.properties.on_login_path_override
+    url ||= if CurrentDomain.module_enabled?(:govStat)
+      if CurrentDomain.member?(current_user) # Forbidden to users without roles.
+        govstat_root_path
+      else
+        session[:return_to]
+      end
+    end
+    url ||= profile_index_path # Fallback to SOMEthing
   end
 
 end

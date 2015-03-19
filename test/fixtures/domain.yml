@@ -272,8 +272,6 @@ default_configs:
         value: Sign In
       - name: templates_v2b.footer_full
         value: <a href="/" class="footerLogo">Socrata</a><ul class="siteFooterNav">{{urls.footer}}</ul>
-      - name: on_login_path_override
-        value: /goats-are-sexy
       - name: strings.sign_in
         value: Sign In
     update_data: {}

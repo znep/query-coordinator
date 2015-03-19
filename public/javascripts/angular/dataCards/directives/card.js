@@ -1,6 +1,8 @@
 (function() {
   'use strict';
 
+  var DYNAMIC_TITLE_CARDTYPE_BLACKLIST = ['table', 'feature', 'search'];
+
   function CardDirective(AngularRxExtensions, DownloadService, $timeout) {
 
     return {
@@ -78,12 +80,13 @@
           meanTitleSequence
         );
 
-        $scope.bindObservable('displayDynamicTitle', modelSubject.
+        var displayDynamicTitleSequence = modelSubject.
           observeOnLatest('cardType').
           map(function(cardType) {
-            return cardType !== 'table';
-          }));
+            return !_(DYNAMIC_TITLE_CARDTYPE_BLACKLIST).contains(cardType);
+          });
 
+        $scope.bindObservable('displayDynamicTitle', displayDynamicTitleSequence);
         $scope.bindObservable('dynamicTitle', dynamicTitleSequence);
 
         var updateCardLayout = _.throttle(function(textHeight) {

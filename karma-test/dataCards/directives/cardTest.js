@@ -98,7 +98,8 @@ describe('card directive', function() {
       function createCardModel(pageModel, options) {
         options = _.defaults({}, options, {
           phase: '0',
-          fieldName: 'myFieldName'
+          fieldName: 'myFieldName',
+          cardType: null
         });
 
         var cardModel;
@@ -111,10 +112,15 @@ describe('card directive', function() {
         cardModel.set('expanded', false);
         cardModel.set('cardSize', 1);
 
-        if (options.fieldName === '*') {
-          cardModel.set('cardType', 'table');
-        } else {
-          cardModel.set('cardType', 'column');
+        if (_.isEmpty(options.cardType)) {
+          if (options.fieldName === '*') {
+            cardModel.set('cardType', 'table');
+          } else {
+            cardModel.set('cardType', 'column');
+          }
+        }
+        else {
+          cardModel.set('cardType', options.cardType);
         }
         return cardModel;
       }
@@ -405,6 +411,38 @@ describe('card directive', function() {
           var element = createDirective({
             phase: phase,
             fieldName: '*'
+          }).element;
+          expect(element.find('.dynamic-title')).to.not.be.visible;
+        });
+
+        it('should not display the dynamic title for a search card', function() {
+          var element = createDirective({
+            phase: phase,
+            columns: {
+              myFieldName: {
+                description: 'search card',
+                availableCardTypes: ['search'],
+                defaultCardType: 'search'
+              }
+            },
+            fieldName: 'myFieldName',
+            cardType: 'search'
+          }).element;
+          expect(element.find('.dynamic-title')).to.not.be.visible;
+        });
+
+        it('should not display the dynamic title for a feature/point-map card', function() {
+          var element = createDirective({
+            phase: phase,
+            columns: {
+              myFieldName: {
+                description: 'feature',
+                availableCardTypes: ['feature'],
+                defaultCardType: 'feature'
+              }
+            },
+            fieldName: 'myFieldName',
+            cardType: 'feature'
           }).element;
           expect(element.find('.dynamic-title')).to.not.be.visible;
         });

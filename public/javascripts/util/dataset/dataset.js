@@ -781,6 +781,9 @@ var Dataset = ServerModel.extend({
                         rs._jsonQuery.where, ds),
                     baseQuery.where), ds._queryBase);
 
+        params['$where'] = soqlWhere;
+        params['location'] = colLookup;
+
         var requests;
 
         if (viewport.xmax < viewport.xmin) {
@@ -806,7 +809,7 @@ var Dataset = ServerModel.extend({
         _.each(requests, function(req) {
             ds.makeRequest({
                 url: '/views/' + ds.id + '/rows.json',
-                params: $.extend({}, req, { 'location': colLookup, '$where': soqlWhere }),
+                params: req,
                 success: function(data) {
                     _.each(data, translateCluster);
                     callback(data);

@@ -99,7 +99,7 @@ class SocrataHttp
   end
 
   def http_response_headers_to_pass_through
-    ['last-modified']
+    ['last-modified', 'Cache-Control']
   end
 
 end

@@ -1135,13 +1135,25 @@ describe('card-layout', function() {
           };
 
           beforeEach(function() {
+
+            // We need to create a bunch of cards so the page is scrollable.
             cl = createLayoutWithCards([
-              {fieldName: '*'}, {},
-              // Need a bunch of cards so it's scrollable
-              {expanded: true}, {}, {}, {}, {}, {}, {}, {}]);
+              {expanded: true},
+              {},
+              {},
+              {},
+              {},
+              {},
+              {},
+              {},
+              {},
+              {fieldName: '*'}
+            ]);
+
             // Start at the top of the page
             mockWindowStateService.scrollPositionSubject.onNext(0);
             mockWindowStateService.windowSizeSubject.onNext(winDimensions);
+            cl.scope.$digest();
 
             expandedCard = cl.element.find('.expanded').parent();
             // Assert an assumption we're making, which makes the tests meaningful
@@ -1166,7 +1178,7 @@ describe('card-layout', function() {
           });
 
           it('should stick to top of the datacard if the datacard is visible', function() {
-            var dataTable = cl.pageModel.getCurrentValue('cards')[0];
+            var dataTable = cl.pageModel.getCurrentValue('cards')[9];
             expect(dataTable.fieldName).to.equal('*');
             var dataTableElement = cl.findCardForModel(dataTable);
             // Scroll to close enough to the dataTable that it interferes with the expanded card
@@ -1197,7 +1209,7 @@ describe('card-layout', function() {
 
             it('sticks to the top of the datacard if the datacard is visible',
               inject(function(Constants) {
-                var dataTable = cl.pageModel.getCurrentValue('cards')[0];
+                var dataTable = cl.pageModel.getCurrentValue('cards')[9];
                 expect(dataTable.fieldName).to.equal('*');
                 var dataTableElement = cl.findCardForModel(dataTable);
                 mockWindowStateService.windowSizeSubject.onNext({width: 768, height: 300});

@@ -1579,17 +1579,17 @@
         {
             var filterCondition = {temporary: true, displayTypes: ['map', 'table']};
             var viewport = this.toViewport(projection);
-            var where = function(vp) {
+            var soqlify = function(vp) {
                 return 'within_box(' + filterColumnFieldName + ', ' +
                     OpenLayers.Bounds.fromViewportToSoql(vp) + ')';
             };
             if (viewport.xmin < viewport.xmax) {
-                filterCondition.where = where(viewport);
+                filterCondition.soql = soqlify(viewport);
             } else {
                 var rightHemi, leftHemi;
                 rightHemi = $.extend({}, viewport, { xmin: -180 });
                 leftHemi  = $.extend({}, viewport, { xmax:  180 });
-                filterCondition.where = where(rightHemi) + ' OR ' + where(leftHemi);
+                filterCondition.soql = soqlify(rightHemi) + ' OR ' + soqlify(leftHemi);
             }
             return filterCondition;
         },

@@ -36,6 +36,15 @@ class UserSession
       end
     end
 
+    def auth0(token)
+      session = new
+      if session.find_auth0_token(token)
+        session
+      else
+        nil
+      end
+    end
+
     def user_no_security_check(user)
       session = new()
       if session.find_user(user)
@@ -168,8 +177,13 @@ class UserSession
     if rpx_authentication.existing_account?
       result = find_user(rpx_authentication.user)
     end
-
     result
+  end
+
+  def find_auth0_token(auth0_authentication)
+    if auth0_authentication.authenticated?
+      find_user(auth0_authentication.user)
+    end
   end
 
   # Obtain a UserSession initialized based on a User object.

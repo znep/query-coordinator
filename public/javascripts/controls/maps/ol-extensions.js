@@ -1519,27 +1519,8 @@
             return this.project(projection);
         },
 
-        toQuery: function(projection, filterColumnFieldName, useSoda2)
+        toQuery: function(projection, filterColumnFieldName)
         {
-            // TODO: This is ridiculously unpretty. So much copy-paste from below. :'(
-            if (useSoda2) {
-                var filterCondition = {temporary: true, displayTypes: ['map', 'table']};
-                var viewport = this.toViewport(projection);
-                var where = function(vp) {
-                    return 'within_box(' + filterColumnFieldName + ', ' +
-                        OpenLayers.Bounds.fromViewportToSoql(vp) + ')';
-                };
-                if (viewport.xmin < viewport.xmax) {
-                    filterCondition.where = where(viewport);
-                } else {
-                    var rightHemi, leftHemi;
-                    rightHemi = $.extend({}, viewport, { xmin: -180 });
-                    leftHemi  = $.extend({}, viewport, { xmax:  180 });
-                    filterCondition.where = where(rightHemi) + ' OR ' + where(leftHemi);
-                }
-                return filterCondition;
-            }
-
             var buildFilterCondition = function(viewport)
             {
                 return { type: 'operator', value: 'AND',
@@ -1590,6 +1571,26 @@
                         { return buildFilterCondition(hemi); }) });
             }
 
+            return filterCondition;
+        },
+
+        // TODO: This is ridiculously unpretty. So much copy-paste from toQuery. :'(
+        toSoql: function(projection, filterColumnFieldName)
+        {
+            var filterCondition = {temporary: true, displayTypes: ['map', 'table']};
+            var viewport = this.toViewport(projection);
+            var where = function(vp) {
+                return 'within_box(' + filterColumnFieldName + ', ' +
+                    OpenLayers.Bounds.fromViewportToSoql(vp) + ')';
+            };
+            if (viewport.xmin < viewport.xmax) {
+                filterCondition.where = where(viewport);
+            } else {
+                var rightHemi, leftHemi;
+                rightHemi = $.extend({}, viewport, { xmin: -180 });
+                leftHemi  = $.extend({}, viewport, { xmax:  180 });
+                filterCondition.where = where(rightHemi) + ' OR ' + where(leftHemi);
+            }
             return filterCondition;
         },
 

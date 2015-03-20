@@ -1,21 +1,61 @@
 # Manages creating new_view HREF views in Core
 
 class NewViewManager
+  class Error < RuntimeError; end
+  class NewViewNotCreatedError < Error; end
 
-  def create(page_id, title, description)
+  def fetch(page_id)
+    url = "/views/#{CGI::escape(page_id)}.json"
+
+    begin
+      response = CoreServer::Base.connection.get_request(url)
+    rescue CoreServer::CoreServerError => e
+      if e.error_code == 'authentication_required'
+        return {
+          error: true,
+          code: e.error_code,
+          message: e.error_message
+        }
+      end
+      report_error(
+        "Error fetching new_view lens for page: #{e.error_message}",
+        :url => url
+      )
+      return
+    end
+
+    parse_core_response(response)
+  end
+
+  # This will create a new view lens that points to a cards view url of the same
+  # 4x4 as itself. Note that it will not create the requisite page_metadata for
+  # that url to serve anything meaningful.
+  def create(title, description)
+    # Create a new view pointing to nothing, since we don't have the 4x4 to
+    # point it to yet.
+    new_view = create_new_view('', title, description)
+
+    if not new_view.try(:[], :id)
+      raise NewViewNotCreatedError.new('Error while creating view in core')
+    end
+
+    new_page_id = new_view[:id]
+
+    # TODO: inherit published state from dataset permissions
+    publish_new_view(new_page_id)
+
+    # Create the proper HREF pointing to the page with the same 4x4 as the view
+    # lens, that we're going to create Real Soon Now.
     page_url = Rails.application.routes.url_helpers.opendata_cards_view_url(
-      :id => page_id,
+      :id => new_page_id,
       :host => CurrentDomain.cname,
       :port => APP_CONFIG['ssl_port'] || 443,
       :protocol => 'https'
     )
 
-    new_view = create_new_view(page_url, title, description)
+    update_page_url(new_page_id, page_url)
 
-    if new_view.try(:[], :id)
-      publish_new_view(new_view[:id])
-      new_view[:id]
-    end
+    new_page_id
   end
 
   def create_new_view(page_url, title, description)
@@ -91,6 +131,36 @@ class NewViewManager
   end
 
   private
+
+  def update_page_url(page_id, page_url)
+    url = "/views/#{CGI::escape(page_id)}.json"
+    payload = {
+      :metadata => {
+        :renderTypeConfig => {
+          :visible => {
+            :href => true
+          }
+        },
+        :accessPoints => {
+          :new_view => page_url
+        },
+        :availableDisplayTypes => ['new_view'],
+        :jsonQuery => {}
+      }
+    }
+
+    begin
+      response = CoreServer::Base.connection.update_request(url, JSON.dump(payload))
+    rescue CoreServer::Error => e
+      report_error(
+        "Error updating page_url for new_view lens for page: #{e.error_message}",
+        :url => url, :payload => payload
+      )
+      return
+    end
+
+    parse_core_response(response)
+  end
 
   def parse_core_response(response)
     begin

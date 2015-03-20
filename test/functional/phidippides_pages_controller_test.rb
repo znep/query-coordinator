@@ -47,9 +47,27 @@ class PhidippidesPagesControllerTest < ActionController::TestCase
         body: v0_page_metadata.to_json
       }
     )
+    connection_stub = mock
+    connection_stub.stubs(reset_counters: {requests: {}, runtime: 0})
+    connection_stub.expects(:get_request).returns('{}')
+    CoreServer::Base.stubs(connection: connection_stub)
+
     get :show, id: 'four-four', format: 'json'
     assert_response(:success)
     assert_equal([], JSON.parse(@response.body).keys - %w(pageId datasetId name description primaryAmountField primaryAggregation filterSoql isDefaultPage pageSource cards))
+  end
+
+  test 'show returns 403 if the Core view of it isn\'t accessible' do
+    @controller.stubs(can_update_metadata?: true)
+    connection_stub = mock
+    connection_stub.stubs(reset_counters: {requests: {}, runtime: 0})
+    connection_stub.expects(:get_request).with do |url|
+      assert_equal('/views/four-four.json', url)
+    end.then.raises(CoreServer::CoreServerError.new(nil, 'authentication_required', nil))
+    CoreServer::Base.stubs(connection: connection_stub)
+
+    get :show, id: 'four-four', format: 'json'
+    assert_response(403)
   end
 
   test '(phase 0, 1 or 2) create returns 401 if not logged in' do

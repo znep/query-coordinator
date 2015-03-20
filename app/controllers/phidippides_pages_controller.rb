@@ -21,6 +21,12 @@ class PhidippidesPagesController < ActionController::Base
     return render :nothing => true, :status => '406' unless request.format.to_s == 'application/json'
     return render :nothing => true, :status => '400' unless params[:id].present?
 
+    # Inherit the permissions from the catalog entry that points to this page.
+    response = new_view_manager.fetch(params[:id])
+    return render :json => response, :status => '403' if !response || response[:error]
+
+    # TODO: mix in permissions information into the response object, for display
+
     begin
       result = phidippides.fetch_page_metadata(
         params[:id],
@@ -133,5 +139,9 @@ class PhidippidesPagesController < ActionController::Base
 
   def save_as_enabled?
     FeatureFlags.derive(nil, request)[:enable_data_lens_save_as_button]
+  end
+
+  def new_view_manager
+    @new_view_manager ||= NewViewManager.new
   end
 end

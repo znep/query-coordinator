@@ -1177,7 +1177,7 @@
 
     OpenLayers.Bounds.fromViewportToSoql = function(viewport)
     {
-        return [viewport.xmin, viewport.ymax, viewport.xmax, viewport.ymin].join(', ');
+        return [viewport.ymax, viewport.xmin, viewport.ymin, viewport.xmax].join(', ');
     };
 
     OpenLayers.Bounds.fromViewport = function(vp)

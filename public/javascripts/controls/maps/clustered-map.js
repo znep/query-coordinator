@@ -232,7 +232,7 @@
             { delete query.namedFilters.viewport; }
             query.namedFilters = $.extend(true, query.namedFilters || {},
                 { viewport: this.viewportHandler().toQuery(
-                    blist.openLayers.geographicProjection, locCol.fieldName) });
+                    blist.openLayers.geographicProjection, locCol.fieldName, this._view._useSODA2) });
 
             if (_.isEqual(this._query, query)
                 && $.subKeyDefined(this._view, 'query.namedFilters.viewport'))

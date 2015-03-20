@@ -1519,8 +1519,16 @@
             return this.project(projection);
         },
 
-        toQuery: function(projection, filterColumnFieldName)
+        toQuery: function(projection, filterColumnFieldName, useSoda2)
         {
+            if (useSoda2) {
+                // TODO: Split across dateline.
+                var filterCondition = {temporary: true, displayTypes: ['map', 'table']};
+                filterCondition.where = 'within_box(' + filterColumnFieldName + ', ' +
+                    OpenLayers.Bounds.fromViewportToSoql(this.toViewport(projection)) + ')';
+                return filterCondition;
+            }
+
             var buildFilterCondition = function(viewport)
             {
                 return { type: 'operator', value: 'AND',

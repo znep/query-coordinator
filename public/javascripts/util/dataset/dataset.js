@@ -794,12 +794,12 @@ var Dataset = ServerModel.extend({
 
         if (viewport.xmax < viewport.xmin) {
             // Add one query for each side of the date line.
-            requests = _.map([$.extend({}, viewport, { max_lon:  179.999999 }),
-                              $.extend({}, viewport, { min_lon: -179.999999 })], function(vp) {
-                return $.extend({}, params, vp);
+            requests = _.map([{ max_lon:  179.999999 },
+                              { min_lon: -179.999999 }], function(bound) {
+                return $.extend({}, params, bound);
             });
         } else {
-            requests = [ $.extend({}, params, viewport) ];
+            requests = [ params ];
         }
 
         var viewportsLeft = requests.length;

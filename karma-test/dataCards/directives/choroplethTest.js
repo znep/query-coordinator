@@ -285,7 +285,9 @@ describe("A Choropleth Directive", function() {
         scope.geojsonAggregateData = testData.polygonData2NoValues;
         el = createChoropleth();
 
-        expect(el.find(legendSelector).children().length).to.equal(0);
+        // These rects are added by the legend render code - they won't be there
+        // unless that code creates them.
+        expect(el.find(legendSelector).find('rect').children().length).to.equal(0);
       });
 
       it('should render proper map features, legend, and legend labels for 1 line feature', function() {

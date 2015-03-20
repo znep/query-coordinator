@@ -130,6 +130,8 @@
         var customizeBar = elementAndScope.element;
         var customizeButton = customizeBar.find('.customize-button');
         expect(customizeButton).to.have.class('disabled');
+        testHelpers.fireMouseEvent(customizeButton[0], 'click');
+        expect(elementAndScope.scope.editMode).to.equal(false);
       });
 
       it('should have the expected text in the flyout when a card is expanded', function() {
@@ -148,6 +150,8 @@
         var customizeBar = elementAndScope.element;
         var customizeButton = customizeBar.find('.customize-button');
         expect(customizeButton).to.have.class('disabled');
+        testHelpers.fireMouseEvent(customizeButton[0], 'click');
+        expect(elementAndScope.scope.editMode).to.equal(false);
       });
 
       it('should have the expected text in the flyout when in export visualization as PNG mode', function() {

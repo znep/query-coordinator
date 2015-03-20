@@ -100,14 +100,13 @@
   function CardsViewController(
     $scope,
     $log,
-    $document,
-    $window,
     $q,
     AngularRxExtensions,
     Filter,
     PageDataService,
     UserSessionService,
     FlyoutService,
+    WindowOperations,
     moment,
     page,
     WindowState,
@@ -144,7 +143,7 @@
     $scope.bindObservable('cardModels', page.observe('cards'));
 
     pageNameSequence.subscribe(function(pageName) {
-      $document[0].title = '{0} | Socrata'.format(pageName);
+      WindowOperations.setTitle('{0} | Socrata'.format(pageName));
     });
 
     // Map the nbe id to the obe id
@@ -208,7 +207,7 @@
         page.observe('dataset.isReadableByCurrentUser').filter(_.negate),
         userObservable.filter(_.negate),
         function(isReadable, user) {
-          $window.location.href = '/login?referer_redirect=1';
+          WindowOperations.navigateTo('/login?referer_redirect=1');
         }
       );
     }
@@ -507,7 +506,7 @@
         pluck('id').
         delay(150). // Extra delay so the user can visually register the 'saved' message.
         subscribe(function(newSavedPageId) {
-          $window.location.href = '/view/{0}'.format(newSavedPageId);
+          WindowOperations.navigateTo('/view/{0}'.format(newSavedPageId));
         });
 
       return saveStatusSubject.

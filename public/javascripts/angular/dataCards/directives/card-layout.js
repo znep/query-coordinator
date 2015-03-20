@@ -230,7 +230,7 @@
           });
 
           var quickFilterBarHeight = quickFilterBar.height();
-          var customizeBarHeight = customizeBar[0].offsetHeight;
+          var customizeBarHeight = (customizeBar.length > 0) ? customizeBar[0].offsetHeight : 0;
           var verticalPadding = Constants.LAYOUT_VERTICAL_PADDING;
           var maximumPossibleExpandedCardHeight = windowSize.height -
             quickFilterBarHeight -
@@ -469,7 +469,7 @@
               windowHeight: windowSize.height,
               scrollTop: scrollTop,
               quickFilterBarHeight: quickFilterBarDimensions.height,
-              customizeBarHeight: customizeBar[0].offsetHeight
+              customizeBarHeight: (customizeBar.length > 0) ? customizeBar[0].offsetHeight : 0
             };
 
           }

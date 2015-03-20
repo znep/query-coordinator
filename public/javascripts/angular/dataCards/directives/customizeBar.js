@@ -67,9 +67,11 @@
         }
 
         $scope.toggleCustomizeMode = function() {
-          $scope.safeApply(function() {
-            $scope.editMode = !$scope.expandedCard && !$scope.editMode;
-          });
+          if ($scope.canCustomize) {
+            $scope.safeApply(function() {
+              $scope.editMode = !$scope.expandedCard && !$scope.editMode;
+            });
+          }
         };
 
         var canCustomizeObservable = Rx.Observable.combineLatest(

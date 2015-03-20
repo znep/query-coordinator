@@ -758,6 +758,13 @@ var RowSet = ServerModel.extend({
                         blist.filter.subtractQueries(Dataset.translateFilterColumnsToBase(
                                 rs._jsonQuery.where, rs._dataset),
                             baseQuery.where), rs._dataset._queryBase);
+                // This is a cheat. Maps NBE interface. Appending viewport.
+                if (!$.isBlank(rs._jsonQuery.where.where)) {
+                    if (soqlWhere.length > 0) {
+                        soqlWhere += ' AND ';
+                    }
+                    soqlWhere += rs._jsonQuery.where.where;
+                }
                 args.params['$where'] = !$.isBlank(args.params['$where']) ?
                     (args.params['$where'] + ' and ' + soqlWhere) : soqlWhere;
             }

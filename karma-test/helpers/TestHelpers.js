@@ -247,11 +247,6 @@
       ServerConfig.override('metadataTransitionPhase', phase);
     }
 
-    function overrideAssetRevisionKey(assetRevisionKey) {
-      var ServerConfig = $injector.get('ServerConfig');
-      ServerConfig.override('assetRevisionKey', assetRevisionKey || 'assetRevisionKey');
-    }
-
     return {
       TestDom: TestDom,
       getTestJson: getTestJson,
@@ -263,7 +258,6 @@
       normalizeColor: normalizeColor,
       waitForSatisfy: waitForSatisfy,
       overrideMetadataMigrationPhase: overrideMetadataMigrationPhase,
-      overrideAssetRevisionKey: overrideAssetRevisionKey,
       cleanUp: cleanUp
     };
   });

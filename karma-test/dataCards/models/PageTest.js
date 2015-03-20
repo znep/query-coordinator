@@ -1,8 +1,10 @@
 describe('Page model', function() {
-  var Page;
+  'use strict';
+
   var DatasetV0;
   var DatasetV1;
   var Dataset;
+  var injector;
   var testHelpers;
   var $q;
   var $rootScope;
@@ -20,11 +22,39 @@ describe('Page model', function() {
   beforeEach(inject(function($injector) {
     DatasetV0 = $injector.get('DatasetV0');
     DatasetV1 = $injector.get('DatasetV1');
+    injector = $injector;
     $q = $injector.get('$q');
     $rootScope = $injector.get('$rootScope');
     testHelpers = $injector.get('testHelpers');
     Model = $injector.get('Model');
   }));
+
+  it('should not emit aggregation data until page model has loaded', function(done) {
+    var Page = injector.get('Page');
+    var id = 'dead-beef';
+    var mockPageMetadataDefer = $q.defer();
+    MockPageDataService.getPageMetadata = _.constant(mockPageMetadataDefer.promise);
+    var instance = new Page(id);
+    var modelLoaded = false;
+    instance.observe('aggregation').subscribe(function() {
+      expect(modelLoaded).to.equal(true);
+      done();
+    });
+
+    modelLoaded = true;
+    mockPageMetadataDefer.resolve({
+      'datasetId': 'what-ever',
+      'description': 'desc',
+      'name': 'dsName',
+      'layoutMode': 'figures',
+      'primaryAmountField': 'something',
+      'primaryAggregation': 'count',
+      'isDefaultPage': true,
+      'pageSource': 'admin',
+      'cards': []
+    });
+    $rootScope.$digest();
+  });
 
   it('should correctly report the id passed into the constructor.', inject(function(Page) {
     var id = 'dead-beef';
@@ -90,6 +120,7 @@ describe('Page model', function() {
 
   describe('dataset property', function() {
     var phases = ['0', '1', '2'];
+    var Page;
     function datasetVersionExpectedForPhase(phase) {
       return phase === '2' ? '1' : '0';
     }
@@ -122,6 +153,9 @@ describe('Page model', function() {
               expect(val.id).to.equal(datasetId);
               done();
             }
+            else if (_.isPresent(val)) {
+              throw new Error('Unexpected Dataset model class');
+            }
           });
 
           mockPageMetadataDefer.resolve({ 'datasetId': datasetId});
@@ -132,6 +166,7 @@ describe('Page model', function() {
   });
 
   describe('serialize', function() {
+    var Page;
     beforeEach(inject(function($injector) {
       Page = $injector.get('Page');
     }));
@@ -185,6 +220,7 @@ describe('Page model', function() {
   });
 
   describe('toggleExpanded', function() {
+    var Page;
     beforeEach(inject(function($injector) {
       Page = $injector.get('Page');
     }));
@@ -232,6 +268,7 @@ describe('Page model', function() {
     });
   });
   describe('deserialization', function() {
+    var Page;
     beforeEach(inject(function($injector) {
       Page = $injector.get('Page');
     }));

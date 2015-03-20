@@ -16,6 +16,7 @@
       doAction(function(cardModel) {
         cardModel.set('expanded', true);
       });
+    var globalWhereClauseFragmentSequence = page.observe('computedWhereClauseFragment');
 
     /*************************
     * General metadata stuff *
@@ -30,8 +31,7 @@
     * Filters and the where clause *
     *******************************/
 
-
-    $scope.bindObservable('globalWhereClauseFragment', page.observe('computedWhereClauseFragment'));
+    $scope.bindObservable('globalWhereClauseFragment', globalWhereClauseFragmentSequence);
 
     // Choropleth doesn't consider map tiles while deciding whether to emit
     // render:complete (by design, as the event is intended for internal timing
@@ -65,7 +65,7 @@
         }
       });
 
-  };
+  }
 
   angular.
     module('dataCards.controllers').

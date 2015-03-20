@@ -205,22 +205,36 @@ module ApplicationHelper
     if Rails.env == 'development'
       return STYLE_PACKAGES[stylesheet.to_s].
         map{ |req| "<link type=\"text/css\" rel=\"stylesheet\" media=\"#{media}\"" +
-                   " href=\"/styles/individual/#{req}.css\"/>" }.
+                   " href=\"/styles/individual/#{req}.css?#{asset_revision_key}\"/>" }.
         join("\n").html_safe
     else
       return ("<link type=\"text/css\" rel=\"stylesheet\" media=\"#{media}\"" +
-             " href=\"/styles/merged/#{stylesheet.to_s}.css?" +
-             "#{REVISION_NUMBER}.#{CurrentDomain.default_config_id}.#{CurrentDomain.default_config_updated_at}\"/>").html_safe
+             " href=\"/styles/merged/#{stylesheet.to_s}.css?#{asset_revision_key}\"/>").html_safe
     end
   end
 
   def stylesheet_assets
     sheet_map = {}
     STYLE_PACKAGES.each do |name, sheets|
-      sheet_map[name] = Rails.env == 'development' ? (sheets || []).map { |req| "/styles/individual/#{req}.css" } :
-        "/styles/merged/#{name.to_s}.css?#{REVISION_NUMBER}.#{CurrentDomain.default_config_id}.#{CurrentDomain.default_config_updated_at}"
+      sheet_map[name] = if Rails.env == 'development'
+        (sheets || []).map { |req| "/styles/individual/#{req}.css" }
+      else
+        "/styles/merged/#{name.to_s}.css?#{asset_revision_key}"
+      end
     end
     sheet_map
+  end
+
+  def asset_revision_key
+    @asset_revision_key ||= [
+      get_revision,
+      CurrentDomain.default_config_id,
+      CurrentDomain.default_config_updated_at
+    ].join('.')
+  end
+
+  def get_revision
+    REVISION_NUMBER || Rails.env
   end
 
 # TOP OF PAGE
@@ -429,7 +443,7 @@ module ApplicationHelper
     if options[:type].to_s == "static"
       return "#{options[:href]}"
     elsif options[:type].to_s == "hosted"
-      return "/assets/#{options[:href]}"
+      return "/assets/#{options[:href]}?<%= asset_revision_key %>"
     end
   end
 

@@ -24,10 +24,10 @@ http://www.socrata.com
   <meta http-equiv="X-UA-Compatible" content="IE=edge" />
   <%= meta_tags @meta unless @meta.blank? %>
 
-  <link rel="apple-touch-icon-precomposed" media="screen" href="/stylesheets/images/icons/retina_display_icon.png"/>
+  <link rel="apple-touch-icon-precomposed" media="screen" href="/stylesheets/images/icons/retina_display_icon.png?<%= asset_revision_key %>"/>
 
   <%= rendered_stylesheet_tag 'base' %>
-  <link type="text/css" media="all" rel="stylesheet" href="/webfonts/socrata-apps/socrata-apps.css"/>
+  <link type="text/css" media="all" rel="stylesheet" href="/webfonts/socrata-apps/socrata-apps.css?<%= asset_revision_key %>"/>
 
   <%= jquery_include %>
   <%= javascript_error_helper_tag %>

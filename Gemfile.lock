@@ -49,7 +49,7 @@ GEM
       debug_inspector (>= 0.0.1)
     builder (3.0.4)
     coderay (1.1.0)
-    columnize (0.8.9)
+    columnize (0.9.0)
     coolline (0.5.0)
       unicode_utils (~> 1.4)
     daemons (1.1.9)
@@ -59,7 +59,7 @@ GEM
       debugger-linecache (~> 1.2.0)
       debugger-ruby_core_source (~> 1.3.5)
     debugger-linecache (1.2.0)
-    debugger-ruby_core_source (1.3.7)
+    debugger-ruby_core_source (1.3.8)
     diff-lcs (1.2.5)
     diffy (3.0.7)
     erubis (2.7.0)
@@ -172,14 +172,12 @@ GEM
       diffy
       grit
       pry (>= 0.9.8)
-    pry-nav (0.2.4)
-      pry (>= 0.9.10, < 0.11.0)
     pry-rails (0.3.2)
       pry (>= 0.9.10)
     pry-remote (0.1.8)
       pry (~> 0.9)
       slop (~> 3.0)
-    pry-stack_explorer (0.4.9.1)
+    pry-stack_explorer (0.4.9.2)
       binding_of_caller (>= 0.7)
       pry (>= 0.9.11)
     rack (1.4.5)
@@ -272,7 +270,9 @@ DEPENDENCIES
   omniauth (~> 1.2)
   omniauth-auth0 (~> 1.1)
   pry
-  pry-nav
+  pry-debugger
+  pry-remote
+  pry-stack_explorer
   rack (~> 1.4.5)
   rails (~> 3.2.12)
   rb-fsevent

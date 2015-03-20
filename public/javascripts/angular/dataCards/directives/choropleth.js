@@ -401,21 +401,17 @@
       /**
        * Draw an SVG rectangle with the appropriate gradient.
        *
+       * @param {jQuery selection} gradientSvg The node to render into.
        * @param {Number[]} tickStops the values at which ticks will be drawn. The first value should
        *   be the minimum value, and the last value should be the maximum.
        * @param {d3.scale} colorScale a scale from a value, to a color.
        *
-       * @return {d3.selection} the svg's d3 selection.
        * @private
        */
-      _drawGradient: function(tickStops, colorScale) {
-        var elementSelection = d3.select(this.element[0]);
-        // Create the svg element
-        var legendSvg = elementSelection.data([0]).selectAll('svg').data([0]);
-        legendSvg.exit().remove();
-        legendSvg.enter().append('svg').
+      _drawGradient: function(gradientSvg, tickStops, colorScale) {
+          var gradientSvgSelection = d3.select(gradientSvg[0]);
           // Create the gradient that's referenced later when the containing rectangle is drawn.
-          append('linearGradient').attr({
+          gradientSvgSelection.append('linearGradient').attr({
             id: 'gradient',
             gradientUnits: 'userSpaceOnUse',
             // x,y are actually left,top
@@ -423,7 +419,7 @@
           });
         // Due to a webkit bug (https://bugs.webkit.org/show_bug.cgi?id=83438), we can't select a
         // camelCase element. So select it by id
-        var gradient = legendSvg.selectAll('#gradient');
+        var gradient = gradientSvgSelection.selectAll('#gradient');
 
         // Create a scale for positioning values by percentage
         var positionScale = colorScale.copy().range([0, 100]);
@@ -445,7 +441,7 @@
         gradientStops.exit().remove();
 
         // Draw the rectangles in pieces, so as to store the data, so the ticks can access them.
-        var rectangles = legendSvg.selectAll('rect').data(tickStops);
+        var rectangles = gradientSvgSelection.selectAll('rect').data(tickStops);
         rectangles.enter().append('rect');
         rectangles.attr({
             x: 0,
@@ -464,8 +460,6 @@
             fill: 'url(#gradient)'
           });
         rectangles.exit().remove();
-
-        return legendSvg;
       },
 
       /**
@@ -503,8 +497,19 @@
 
       /**
        * Draw the ticks and labels for the legend.
+       *
+       * @param {jQuery selection} ticksSvg The node to render into.
+       * @param {jQuery selection} gradientSvg The associated gradient node to consult for layout.
+       * @param {Number[]} tickStops the values at which ticks will be drawn. The first value should
+       *   be the minimum value, and the last value should be the maximum.
+       * @param {d3.scale} colorScale a scale from a value, to a color.
+       * @param {Number} indexOf0 The index of the origin in ticks.
+       *
+       * @private
        */
-      _drawAxis: function(legendSvg, tickStops, scale, indexOf0) {
+      _drawAxis: function(ticksSvg, gradientSvg, tickStops, scale, indexOf0) {
+        var ticksGroup = ticksSvg.find('g.ticks');
+
         var positionScale = scale.copy().range([this.element.height(), 0]);
         var axis = d3.svg.axis().
           scale(positionScale).
@@ -515,10 +520,10 @@
           axis.tickFormat(visualizationUtils.bigNumTickFormatter);
         }
 
-        axis(legendSvg);
+        axis(ticksGroup);
 
         // We want to size the ticks differently than d3's default. Do that manually.
-        var ticks = legendSvg.selectAll('g.tick');
+        var ticks = d3.select(ticksGroup[0]).selectAll('g.tick');
         var isSmall = true; // Alternate small/big, starting with big.
         ticks.classed('small', function(value, i) {
           if (i === indexOf0) {
@@ -534,7 +539,34 @@
           return isSmall;
         }).style('opacity', ''); // d3 sets an opacity for some reason. unset it.
 
-        return axis;
+        // D3's axis draws ticks left-of-origin, which causes issues with browsers that won't render
+        // SVG elements outside of the parent SVG node's bounds (PhantomJS).
+        // So shift the ticks right into positive X coordinates, and then move the entire SVG left
+        // to compensate.
+        // Similarly, D3's tick text extends above and below the SVG bounds. Compensate much the same way.
+        var MAGICAL_FONT_RENDERING_ALLOWANCE = 10;
+        var tickMaxWidth = d3.max(
+          ticksGroup.find('g.tick').map(function(i, element) {
+            return element.getBoundingClientRect().width;
+          })
+        ) + MAGICAL_FONT_RENDERING_ALLOWANCE;
+
+        var tickMaxHeight = d3.max(
+          ticksGroup.find('g.tick').map(function(i, element) {
+            return element.getBoundingClientRect().height;
+          })
+        );
+
+        // Allow for 1/2 tick height above and below by bumping up height.
+        ticksSvg.height(gradientSvg.height() + tickMaxHeight);
+        ticksSvg.width(gradientSvg.width() + tickMaxWidth);
+
+        // Shift the entire SVG appropriately.
+        ticksSvg.css('left', '{0}px'.format(-tickMaxWidth));
+        ticksSvg.css('top', '{0}px'.format(parseInt(gradientSvg.css('top'), 10) - tickMaxHeight / 2));
+
+        // Now listen to me very carefully. Compensate for shift in SVG by putting the ticks back.
+        ticksGroup.attr('transform', 'translate({0},{1})'.format(tickMaxWidth, tickMaxHeight / 2));
       },
 
       /**
@@ -609,8 +641,11 @@
         var indexOf0 = visualizationUtils.addZeroIfNecessary(tickStops);
 
         var colorScale = this._createColorScale(tickStops, scale);
-        var legendSvg = this._drawGradient(tickStops, colorScale);
-        this._drawAxis(legendSvg, tickStops, scale, indexOf0);
+        var gradientSvg = this.element.find('svg.gradient');
+        var ticksSvg = this.element.find('svg.legend-ticks');
+
+        this._drawGradient(gradientSvg, tickStops, colorScale);
+        this._drawAxis(ticksSvg, gradientSvg, tickStops, scale, indexOf0);
 
         return colorScale;
       }
@@ -626,7 +661,12 @@
       },
       template: ['<div class="choropleth-container">',
                     '<div class="choropleth-map-container"></div>',
-                    '<div class="choropleth-legend"></div>',
+                    '<div class="choropleth-legend">',
+                      '<svg class="gradient"></svg>',
+                      '<svg class="legend-ticks">',
+                        '<g class="ticks"></g>',
+                      '</svg>',
+                    '</div>',
                   '</div>'].join(''),
       link: function(scope, element, attrs) {
 

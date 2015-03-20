@@ -35,19 +35,30 @@
 
     function createElement(scopeOverrides) {
       var scope = $rootScope.$new();
-      _.extend(scope, {
+
+      _.extend(
+        scope,
+        {
           hasChanges: false,
           editMode: false,
-          expandedCard: false
+          expandedCard: false,
+          exportingVisualization: false
         },
-        scopeOverrides);
+        scopeOverrides
+      );
+
       var html = [
-        '<customize-bar has-changes="hasChanges" edit-mode="editMode" expanded-card="expandedCard">',
-        '</customize-bar>'
+        '<customize-bar has-changes="hasChanges" edit-mode="editMode" expanded-card="expandedCard"',
+        'exporting-visualization="exportingVisualization"></customize-bar>'
       ].join('');
+
+      var element = testHelpers.TestDom.compileAndAppend(html, scope);
+
+      scope.$digest();
+
       return {
         scope: scope,
-        element: testHelpers.TestDom.compileAndAppend(html, scope)
+        element: element
       };
     }
 
@@ -114,14 +125,39 @@
         testHelpers.fireMouseEvent(customizeButton[0], 'mouseout');
       });
 
-      it('should have appropriate text in the flyout when a card is expanded', function() {
+      it('should be disabled when a card is expanded', function() {
+        var elementAndScope = createElement({expandedCard: {something: 'here'}});
+        var customizeBar = elementAndScope.element;
+        var customizeButton = customizeBar.find('.customize-button');
+        expect(customizeButton).to.have.class('disabled');
+      });
+
+      it('should have the expected text in the flyout when a card is expanded', function() {
         var elementAndScope = createElement({expandedCard: {something: 'here'}});
         var customizeBar = elementAndScope.element;
         var customizeButton = customizeBar.find('.customize-button');
         testHelpers.fireMouseEvent(customizeButton[0], 'mousemove');
         var flyout = $('#uber-flyout');
         expect(flyout).to.exist;
-        expect(flyout.text()).to.match(/.*To enter customization mode:.*/);
+        expect(flyout.text()).to.match(/.*Collapse the big card.*/);
+        testHelpers.fireMouseEvent(customizeButton[0], 'mouseout');
+      });
+
+      it('should be disabled when in export visualization as PNG mode', function() {
+        var elementAndScope = createElement({exportingVisualization: true});
+        var customizeBar = elementAndScope.element;
+        var customizeButton = customizeBar.find('.customize-button');
+        expect(customizeButton).to.have.class('disabled');
+      });
+
+      it('should have the expected text in the flyout when in export visualization as PNG mode', function() {
+        var elementAndScope = createElement({exportingVisualization: true});
+        var customizeBar = elementAndScope.element;
+        var customizeButton = customizeBar.find('.customize-button');
+        testHelpers.fireMouseEvent(customizeButton[0], 'mousemove');
+        var flyout = $('#uber-flyout');
+        expect(flyout).to.exist;
+        expect(flyout.text()).to.match(/.*Download Visualization as Image.*/);
         testHelpers.fireMouseEvent(customizeButton[0], 'mouseout');
       });
 

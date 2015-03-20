@@ -6,7 +6,7 @@
       type="button"
       class="action-btn r-to-l customize-button"
       ng-click="toggleCustomizeMode()"
-      ng-class="{ 'disabled': !!expandedCard, 'cards-edit-disabled': !!expandedCard }">
+      ng-class="{ 'disabled': !canCustomize, 'cards-edit-disabled': !!expandedCard }">
       {{editMode | ifElse:'Customizing':'Customize'}}
     </button>
   </div>

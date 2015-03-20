@@ -121,6 +121,7 @@ describe('A Choropleth Card Visualization', function() {
 
     var model = new Model();
     model.fieldName = 'ward';
+    model.defineObservableProperty('cardSize', 1);
     model.defineObservableProperty('activeFilters', []);
     model.defineObservableProperty('baseLayerUrl', 'https://a.tiles.mapbox.com/v3/socrata-apps.ibp0l899/{z}/{x}/{y}.png');
 

@@ -241,6 +241,8 @@
           }
         });
 
+        scope.bindObservable('cardSize', model.observeOnLatest('cardSize'));
+
       }
     };
 

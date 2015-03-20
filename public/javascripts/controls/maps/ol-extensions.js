@@ -1521,11 +1521,22 @@
 
         toQuery: function(projection, filterColumnFieldName, useSoda2)
         {
+            // TODO: This is ridiculously unpretty. So much copy-paste from below. :'(
             if (useSoda2) {
-                // TODO: Split across dateline.
                 var filterCondition = {temporary: true, displayTypes: ['map', 'table']};
-                filterCondition.where = 'within_box(' + filterColumnFieldName + ', ' +
-                    OpenLayers.Bounds.fromViewportToSoql(this.toViewport(projection)) + ')';
+                var viewport = this.toViewport(projection);
+                var where = function(vp) {
+                    return 'within_box(' + filterColumnFieldName + ', ' +
+                        OpenLayers.Bounds.fromViewportToSoql(vp) + ')';
+                };
+                if (viewport.xmin < viewport.xmax) {
+                    filterCondition.where = where(viewport);
+                } else {
+                    var rightHemi, leftHemi;
+                    rightHemi = $.extend({}, viewport, { xmin: -180 });
+                    leftHemi  = $.extend({}, viewport, { xmax:  180 });
+                    filterCondition.where = where(rightHemi) + ' OR ' + where(leftHemi);
+                }
                 return filterCondition;
             }
 

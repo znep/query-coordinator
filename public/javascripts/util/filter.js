@@ -222,6 +222,7 @@ blist.namespace.fetch('blist.filter');
     blist.filter.getFilterKey = function(fc)
     {
         if (_.isEmpty(fc)) { return ''; }
+        if (_.isString(fc.where)) { return fc.where; } // This is a cheat. Maps NBE interface.
         var op = fc.operator.toUpperCase();
         if (op == 'AND' || op == 'OR')
         {

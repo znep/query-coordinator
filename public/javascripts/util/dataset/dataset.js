@@ -3680,6 +3680,9 @@ Dataset.translateFilterCondition = function(fc, ds, simplify)
 
 function translateSubFilter(fc, ds, simplify, isHaving)
 {
+    // This is a cheat. Maps NBE interface.
+    if (!$.isBlank(fc) && _.isString(fc.where)) { return fc; }
+
     if ($.isBlank(fc) ||
         simplify && (fc.type != 'operator' || !_.isArray(fc.children) || fc.children.length == 0))
     { return null; }

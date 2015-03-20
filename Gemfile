@@ -45,10 +45,8 @@ group :development, :test do
   gem 'jazz_hands' unless ENV['RM_INFO']
   gem 'thin'
   gem 'rb-readline'
+  gem 'pry'
+  gem 'pry-debugger'
+  gem 'pry-remote'
+  gem 'pry-stack_explorer'
 end
-
-
-gem 'pry'
-gem 'pry-debugger'
-gem 'pry-remote'
-gem 'pry-stack_explorer'

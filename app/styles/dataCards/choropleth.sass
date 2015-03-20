@@ -4,6 +4,23 @@
   position: relative
 
 .choropleth-container
+  &.card-size-1
+    .choropleth-legend.continuous
+      max-height: 9rem
+  &.card-size-2
+    .choropleth-legend.continuous
+      max-height: 6rem
+  &.card-size-3
+    .choropleth-legend.continuous
+      max-height: 4rem
+
+card.expanded .choropleth-container .choropleth-legend.continuous
+  max-height: 15rem
+
+.state-view-card .choropleth-container .choropleth-legend.continuous
+  max-height: 15rem
+
+.choropleth-container
   padding: 0
   height: 100%
 

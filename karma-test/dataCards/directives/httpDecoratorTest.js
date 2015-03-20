@@ -9,7 +9,6 @@ describe('httpDecorator', function() {
   beforeEach(module('socrataCommon.decorators'));
   beforeEach(function(){
     decoratorModule = angular.module('httpDecoratorTestModule', ['socrataCommon.decorators'])
-    // console.log('')
     decoratorModule.config(function($provide, assetRevisionKeyProvider){
       assetRevisionKeyProvider($provide, 'assetRevisionKey')
     })

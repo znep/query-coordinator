@@ -797,10 +797,16 @@ $(function()
         }
 
         if (blist.dataset.newBackend) {
+            var datasetMetadataUrl = '/dataset_metadata/{0}.json';
             // Kratos shapefiles apparently are datasets, but have no dataset metadata, which we
             // need to create a newux page. So - check that there's dataset metadata before showing
             // the link.
-            $.get('/dataset_metadata/{0}.json'.format(blist.dataset.id), function(r) {
+            var metadataTransitionPhase = parseInt(blist.feature_flags.metadata_transition_phase, 10);
+            if (metadataTransitionPhase !== 0) {
+                // The dataset metadata endpoint changed in metadata transition phase 1.
+                datasetMetadataUrl = '/metadata/v1/dataset/{0}.json';
+            }
+            $.get(datasetMetadataUrl.format(blist.dataset.id), function(r) {
                 // If we get a 200 response, we can show the link
                 anchor.attr('href', '/view/bootstrap/' + blist.dataset.id);
                 newUxLink.appendTo('body');

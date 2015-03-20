@@ -40,7 +40,6 @@
           tileX: tileX,
           tileY: tileY
         };
-
       },
 
       // Reads raw VectorTile data and creates an array of
@@ -70,14 +69,12 @@
         }
 
         return vectorTile;
-
       },
 
       getTileLayerCanvas: function(tileLayer, tileId) {
         var leafletTileId = tileId.split(':').slice(1, 3).join(':');
         return tileLayer._tiles[leafletTileId];
       }
-
     };
 
 
@@ -116,7 +113,6 @@
       this.divisor = feature.extent / this.tileSize;
       this.feature = feature;
       this.styleFn = styleFn;
-
     }
 
     // Takes a coordinate from a vector tile and turns it into a Leaflet Point.
@@ -145,7 +141,6 @@
         default:
           throw new Error('Cannot draw VectorTileFeature: unrecognized type: "{0}"'.format(feature.type));
       }
-
     };
 
     VectorTileFeature.prototype.drawPoint = function(canvas, geometry, computedStyle) {
@@ -190,7 +185,6 @@
       }
 
       ctx.restore();
-
     };
 
     VectorTileFeature.prototype.drawLineString = function(canvas, coordinateArray, computedStyle) {
@@ -247,7 +241,6 @@
 
       ctx.stroke();
       ctx.restore();
-
     };
 
     VectorTileFeature.prototype.drawPolygon = function(canvas, coordinateArray, computedStyle) {
@@ -326,7 +319,6 @@
       }
 
       ctx.restore();
-
     };
 
 
@@ -352,14 +344,12 @@
         this.tileManager = tileManager;
         this.styleFn = options.style;
         this.featuresByTile = {};
-
       },
 
       onAdd: function(map) {
 
         this.map = map;
         L.TileLayer.Canvas.prototype.onAdd.call(this, map);
-
       },
 
       // drawTile is a method that Leaflet expects to exist with
@@ -374,7 +364,6 @@
         this.featuresByTile[tileId] = [];
 
         return this;
-
       },
 
       loadData: function(vectorTileData, tileId, tileRenderedCallback) {
@@ -404,7 +393,6 @@
         this.renderTile(tileId);
 
         tileRenderedCallback();
-
       },
 
       renderTile: function(tileId) {
@@ -424,7 +412,6 @@
         for (i = 0; i < featureCount; i++) {
           features[i].draw(tileId);
         }
-
       },
 
       clearTile: function(tileId) {
@@ -433,9 +420,7 @@
         var ctx = canvas.getContext('2d');
 
         ctx.clearRect(0, 0, canvas.width, canvas.height);
-
       }
-
     });
 
 
@@ -484,10 +469,9 @@
         // Layers present in the protocol buffer responses.
         this.layers = {};
 
-        this.tilesInFlight = 0;
+        this.outstandingTileDataRequests = {};
 
         this.map = null;
-
       },
 
       onAdd: function(map) {
@@ -557,7 +541,6 @@
             }
 
           }
-
         });
 
         this.addChildLayers();
@@ -565,25 +548,15 @@
         this.emitRenderStartedEvent();
 
         L.TileLayer.Canvas.prototype.onAdd.call(this, map);
-
       },
 
       drawTile: function(canvas, tilePoint, zoom) {
-
-        // Capture the max number of the tiles to load here. this.tilesInFlight is
-        // active tiles. an internal number we use to know when we've finished
-        // requesting all the this._tilesToLoad is maintained by Leaflet;
-        // this.tilesInFlight is maintained by us.
-        if (this.tilesInFlight < this._tilesToLoad) {
-          this.tilesInFlight = this._tilesToLoad;
-        }
 
         if (this.options.debug) {
           this.renderDebugInfo(tilePoint, zoom);
         }
 
         this.getTileData(tilePoint, zoom, this.processVectorTileLayers);
-
       },
 
       getTileData: function(tilePoint, zoom, callback) {
@@ -595,6 +568,11 @@
           replace('{z}', zoom).
           replace('{x}', tilePoint.x).
           replace('{y}', tilePoint.y);
+
+        // Don't re-request tiles that are already outstanding.
+        if (self.outstandingTileDataRequests.hasOwnProperty(tileId)) {
+          return;
+        }
 
         xhr.onload = function() {
 
@@ -628,9 +606,7 @@
             // Invoke `callback` within the context of 'self'
             // (the current instance of VectorTileManager).
             callback.call(self, arrayBuffer, tileId);
-
           }
-
         };
 
         xhr.onerror = function() {
@@ -647,8 +623,8 @@
 
         xhr.responseType = 'arraybuffer';
 
+        self.outstandingTileDataRequests[tileId] = xhr;
         xhr.send();
-
       },
 
       renderDebugInfo: function(tilePoint, zoom) {
@@ -674,7 +650,6 @@
         ctx.fillRect(tileSize / 2 - 5, tileSize / 2 - 5, 10, 10);
         // Label
         ctx.strokeText(zoom + ':' + tilePoint.x + ':' + tilePoint.y, tileSize / 2 - 30, tileSize / 2 - 10);
-
       },
 
       processVectorTileLayers: function(arrayBuffer, tileId) {
@@ -721,7 +696,6 @@
           this.layers[layerId].loadData(layer, tileId, tileRenderedCallback);
 
         }
-
       },
 
       addChildLayers: function() {
@@ -736,7 +710,6 @@
             this.map.addLayer(layer);
           }
         }
-
       },
 
       removeChildLayers: function() {
@@ -749,7 +722,6 @@
           layer = this.layers[layerIds[i]];
           this.map.removeLayer(layer);
         }
-
       },
 
       emitRenderStartedEvent: function() {
@@ -766,19 +738,31 @@
 
       tileLoaded: function(tileId) {
 
-        // Somehow Leaflet will, on initialization, report that
-        // _tileLayersToLoad is NaN. This wreaks havoc on our
-        // attempts to count how many tile layers are left to
-        // load, so we only decrement the count if _tileLayersToLoad
-        // is actually a number.
-        if (!isNaN(this.map._tileLayersToLoad)) {
-          this.tilesInFlight--;
-          if (this.tilesInFlight === 0) {
-            this.emitRenderCompleteEvent();
+        // First stop tracking the request that just succeeded.
+        delete this.outstandingTileDataRequests[tileId];
+
+        var zoom = this.map.getZoom();
+        var outstandingRequests = _.keys(this.outstandingTileDataRequests);
+        var outstandingRequestZoom = 0;
+
+        for (var i = 0; i < outstandingRequests.length; i++) {
+
+          outstandingRequestZoom = parseInt(outstandingRequests[i].split(':')[0], 10);
+
+          // Clear out outstanding tile requests that are not of the
+          // correct zoom level.
+          // First abort the request then stop tracking it.
+          if (outstandingRequestZoom !== zoom) {
+            this.outstandingTileDataRequests[outstandingRequests[i]].abort();
+            delete this.outstandingTileDataRequests[outstandingRequests[i]];
           }
         }
-      }
 
+        outstandingRequests = _.keys(this.outstandingTileDataRequests);
+        if (outstandingRequests.length === 0) {
+          this.emitRenderCompleteEvent();
+        }
+      }
     });
 
 
@@ -787,7 +771,6 @@
         return new L.TileLayer.VectorTileManager(options);
       }
     };
-
   }
 
   angular.

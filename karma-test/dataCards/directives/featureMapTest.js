@@ -1,5 +1,6 @@
 describe('featureMap', function() {
 
+  var isPhantomJS = /PhantomJS/.test(window.navigator.userAgent)
   var testHelpers;
   var rootScope;
   var scope;
@@ -58,7 +59,6 @@ describe('featureMap', function() {
     restoreXHR();
   });
 
-
   function deserializeBytes(protocolBuffers) {
 
     var endpoints = Object.keys(protocolBuffers);
@@ -85,9 +85,7 @@ describe('featureMap', function() {
     }
 
     return deserializedProtocolBuffers;
-
   }
-
 
   function setUpFakeXHR() {
 
@@ -107,20 +105,32 @@ describe('featureMap', function() {
 
     fakeXhr.prototype.setRequestHeader = function() { };
 
+    fakeXhr.prototype.abort = function() { };
+
     fakeXhr.prototype.send = function() {
+      var self = this;
+
       this.readyState = 4;
       this.status = '200';
+
+      // These responses need to be async or else the tile loading
+      // logic gets messed up. Whether that's a problem with the tests
+      // or a problem with the tile loading logic is an exercise left
+      // to the reader. :-(
       if (protocolBuffers.hasOwnProperty(this.url)) {
-        this.response = protocolBuffers[this.url];
-        this.onload();
+        setTimeout(function() {
+          self.response = protocolBuffers[self.url];
+          self.onload();
+        }, 20);
       } else {
-        this.response = '';
-        this.onload();
+        setTimeout(function() {
+          self.response = '';
+          self.onload();
+        }, 20);
       }
     }
 
     window.XMLHttpRequest = fakeXhr;
-
   }
 
   function restoreXHR() {
@@ -155,7 +165,6 @@ describe('featureMap', function() {
     scope.rowDisplayUnit = 'rowDisplayUnit';
 
     return testHelpers.TestDom.compileAndAppend(html, scope);
-
   }
 
   function removeFeatureMap() {
@@ -175,16 +184,12 @@ describe('featureMap', function() {
         1              // height
       );
 
-      return 'rgba(' +
-             imageData.data[0] +
-             ',' +
-             imageData.data[1] +
-             ',' +
-             imageData.data[2] +
-             ',' +
-             (imageData.data[3] / 255).toFixed(1) +
-             ')';
-
+    return 'rgba({0},{1},{2},{3})'.format(
+      imageData.data[0],
+      imageData.data[1],
+      imageData.data[2],
+      (imageData.data[3] / 255).toFixed(1)
+    );
   }
 
   // This is not currently used but may be useful in the future.
@@ -215,7 +220,6 @@ describe('featureMap', function() {
     }
 
     return Object.keys(uniqueColors);
-
   }
 
   describe('featureLayerUrl', function() {
@@ -238,10 +242,8 @@ describe('featureMap', function() {
       eventExpected = true;
       scope.featureLayerUrl = defaultFeatureLayerUrl;
       scope.$digest();
-
     });
   });
-
 
   describe('timing events', function() {
 
@@ -270,9 +272,7 @@ describe('featureMap', function() {
       );
 
       var map = createFeatureMap();
-
     });
-
   });
 
   describe('at the default calculated zoom level', function() {
@@ -292,35 +292,32 @@ describe('featureMap', function() {
 
         expect(canvases.length).to.be.above(0);
 
-        point1Color = getCanvasColorAt(canvases[1], { x: 47, y: 10 });
-        point2Color = getCanvasColorAt(canvases[1], { x: 128, y: 142 });
-        point3Color = getCanvasColorAt(canvases[1], { x: 168, y: 160 });
+        point1Color = getCanvasColorAt(canvases[6], { x: 47, y: 246 });
+        point2Color = getCanvasColorAt(canvases[6], { x: 104, y: 250 });
+        point3Color = getCanvasColorAt(canvases[6], { x: 151, y: 235 });
 
         expect(point1Color).to.equal(expectedPointColor);
         expect(point2Color).to.equal(expectedPointColor);
         expect(point3Color).to.equal(expectedPointColor);
 
         done();
-
       });
 
       var map = createFeatureMap();
-
     });
-
   });
 
-  xdescribe('when zoomed in', function() {
+  describe('when zoomed in', function() {
 
     // Something wierd is happening here and it's not actually rendering the zoomed-in
     // tiles even though it successfully downloads them via the fake XHR object.
-    it('should render visible points at expected locations', function(done) {
+    (isPhantomJS ? xit : it)('should render visible points at expected locations', function(done) {
 
       var canvases;
       var expectedPointColor = 'rgba(48,134,171,1.0)';
-      var point1color;
-      var point2color;
-      var point3color;
+      var point1Color;
+      var point2Color;
+      var point3Color;
       var hasZoomed = false;
 
       // Wait for rendering to complete before checking the content of the canvas tiles.
@@ -337,28 +334,24 @@ describe('featureMap', function() {
 
           } else {
 
+            var canvases = $('canvas');
+
             expect(canvases.length).to.be.above(0);
 
-            point1Color = getCanvasColorAt(canvases[1], { x: 48, y: 2 });
-            point2Color = getCanvasColorAt(canvases[1], { x: 33, y: 88 });
-            point3Color = getCanvasColorAt(canvases[1], { x: 118, y: 156 });
+            point1Color = getCanvasColorAt(canvases[21], { x: 128, y: 1 });
+            point2Color = getCanvasColorAt(canvases[21], { x: 197, y: 86 });
+            point3Color = getCanvasColorAt(canvases[21], { x: 249, y: 91 });
 
-            expect(point1Color).to.equal(pointColor);
-            expect(point2Color).to.equal(pointColor);
-            expect(point3Color).to.equal(pointColor);
+            expect(point1Color).to.equal(expectedPointColor);
+            expect(point2Color).to.equal(expectedPointColor);
+            expect(point3Color).to.equal(expectedPointColor);
 
             done();
-
           }
-
         }
-
       });
 
       var map = createFeatureMap();
-
     });
-
   });
-
 });

@@ -1,19 +1,18 @@
 {
 "/tiles/test-data/test_field/1/0/0.pbf": [],
 "/tiles/test-data/test_field/1/0/1.pbf": [],
-
 "/tiles/test-data/test_field/1/1/0.pbf": [],
-
 "/tiles/test-data/test_field/1/1/1.pbf": [],
-"/tiles/test-data/test_field/2/0/0.pbf": [],
-"/tiles/test-data/test_field/2/0/1.pbf": [],
-
-"/tiles/test-data/test_field/2/1/0.pbf": [],
 "/tiles/test-data/test_field/1/-1/0.pbf": [],
 "/tiles/test-data/test_field/1/-1/1.pbf": [],
+
+"/tiles/test-data/test_field/2/0/0.pbf": [],
+"/tiles/test-data/test_field/2/0/1.pbf": [],
+"/tiles/test-data/test_field/2/1/0.pbf": [],
 "/tiles/test-data/test_field/2/-1/0.pbf": [],
 "/tiles/test-data/test_field/2/-1/1.pbf": [],
 "/tiles/test-data/test_field/2/1/1.pbf": [],
+
 "/tiles/test-data/test_field/9/130/190.pbf": [],
 "/tiles/test-data/test_field/9/129/190.pbf": [],
 "/tiles/test-data/test_field/9/130/189.pbf": [],
@@ -30,6 +29,7 @@
 "/tiles/test-data/test_field/9/132/189.pbf?$where=%3A%40test_field_computed%3D'48'": [],
 "/tiles/test-data/test_field/9/129/190.pbf?$where=%3A%40test_field_computed%3D'48'": [],
 "/tiles/test-data/test_field/9/132/190.pbf?$where=%3A%40test_field_computed%3D'48'": [],
+
 "/tiles/test-data/test_field/10/261/381.pbf": [],
 "/tiles/test-data/test_field/10/261/380.pbf": [],
 "/tiles/test-data/test_field/10/260/380.pbf": [],

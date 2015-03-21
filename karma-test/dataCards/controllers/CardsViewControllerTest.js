@@ -18,30 +18,18 @@ describe('CardsViewController', function() {
   var controllerHarness;
   var $scope;
 
-  // Define a mock window service and surface writes to location.href.
-  var mockWindowService = {
-    location: {},
-    scrollTo: _.noop
+  var mockWindowServiceLocationSeq;
+  var mockWindowOperations = {
+    setTitle: function(title) {
+      mockWindowOperations.currentTitle = title;
+    },
+    navigateTo: function(url) {
+      mockWindowOperations.currentUrl = url;
+      mockWindowServiceLocationSeq.onNext(url);
+    }
   };
 
-  // The angular $document is a jquery wrapped window.document.  Making this an array
-  // kinda-sorta mimics that
-  var mockDocumentService = [{
-    title: undefined
-  }];
-
-  var mockWindowServiceLocationSeq;
-  Object.defineProperty(
-    mockWindowService.location,
-    'href',
-    {
-      get: function() { return mockWindowServiceLocationSeq.value; },
-      set: function(value) { mockWindowServiceLocationSeq.onNext(value); }
-    }
-  );
-
   var TEST_PAGE_ID = 'boom-poww';
-
   var datasetOwnerId = 'ownr-idxx';
   var mockDatasetDataService = {
     getDatasetMetadata: function() {
@@ -124,8 +112,7 @@ describe('CardsViewController', function() {
       _$provide = $provide;
       $provide.value('DatasetDataService', mockDatasetDataService);
       $provide.value('UserSessionService', mockUserSessionService);
-      $provide.value('$window', mockWindowService);
-      $provide.value('$document', mockDocumentService);
+      $provide.value('WindowOperations', mockWindowOperations)
       $provide.value('ConfigurationsService', {
         getThemeConfigurationsObservable: function() {
           return Rx.Observable.returnValue([]);
@@ -158,7 +145,6 @@ describe('CardsViewController', function() {
   function makeContext() {
     var $scope = $rootScope.$new();
     var fakePageId = 'fooo-baar';
-
     var pageMetadataPromise = $q.defer();
 
     sinon.stub(PageDataService, 'getPageMetadata', function() {
@@ -168,10 +154,16 @@ describe('CardsViewController', function() {
     var page = new Page(fakePageId);
     sinon.stub(page, 'serialize', _.constant(mockPageSerializationData));
 
+    var currentUserDefer = $q.defer();
+    var promise = currentUserDefer.promise;
+    mockUserSessionService.getCurrentUser = _.constant(promise);
+    mockUserSessionService.getCurrentUserObservable = _.constant(Rx.Observable.fromPromise(promise).catch(Rx.Observable.returnValue(null)));
+
     return {
       pageMetadataPromise: pageMetadataPromise,
       $scope: $scope,
-      page: page
+      page: page,
+      currentUserDefer: currentUserDefer
     };
   }
 
@@ -185,10 +177,6 @@ describe('CardsViewController', function() {
   });
 
   function makeController() {
-    var currentUserDefer = $q.defer();
-    var promise = currentUserDefer.promise;
-    mockUserSessionService.getCurrentUser = _.constant(promise);
-    mockUserSessionService.getCurrentUserObservable = _.constant(Rx.Observable.fromPromise(promise).catch(Rx.Observable.returnValue(null)));
 
     var context = makeContext();
     var controller = $controller('CardsViewController', context);
@@ -198,8 +186,7 @@ describe('CardsViewController', function() {
     expect(context.$scope.page).to.be.instanceof(Page);
 
     return $.extend(context, {
-      controller: controller,
-      currentUserDefer: currentUserDefer
+      controller: controller
     });
   }
 
@@ -281,7 +268,7 @@ describe('CardsViewController', function() {
         name: nameOne
       });
       $rootScope.$digest();
-      expect($document[0].title).to.equal('{0} | Socrata'.format(nameOne));
+      expect(mockWindowOperations.currentTitle).to.equal('{0} | Socrata'.format(nameOne));
     });
 
     it('should update on the scope when the property changes on the model', function() {
@@ -1073,6 +1060,18 @@ describe('CardsViewController', function() {
       testHelpers.fireMouseEvent(downloadButton[0], 'click');
 
       expect(context.cardLayout.$scope.chooserMode.show).to.equal(false);
+    });
+
+    it('does not trigger when the the user is in customize edit mode', function() {
+      ServerConfig.override('enablePngDownloadUi', true);
+      var context = renderCardsView();
+      // Click download button
+      var downloadButton = context.element.find('.download-menu');
+      context.cardLayout.$scope.$parent.editMode = true;
+      context.$scope.$digest();
+      testHelpers.fireMouseEvent(downloadButton[0], 'click');
+      // Expect no action
+      expect(downloadButton.find('dropdown-menu').length).to.equal(0);
     });
   });
 

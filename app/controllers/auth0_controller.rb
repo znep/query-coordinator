@@ -9,15 +9,13 @@ class Auth0Controller < ApplicationController
     
     # This stores all the user information that came from Auth0 and the IdP
     userinfo_hash = request.env['omniauth.auth']
-
+    socrata_user_id = userinfo_hash[:extra][:raw_info][:socrata_user_id]
     # Check to see if it's a username and password connection.  
-    if userinfo_hash[:extra][:raw_info][:socrata_user_id].start_with?('auth0|')
-      socrata_id = userinfo_hash[:extra][:raw_info][:socrata_user_id].sub('auth0|','')
-
+    if username_password_connection?(socrata_user_id)
       # In the username and password flow, the UID is set as part of authentication 
       # It's going to come in with the form "auth0|abcd-efgh|connection_name"
-      # Use a regex to attempt to extract it
-      extracted_uid = socrata_id.match(/(\w{4}-\w{4})(?=\|)/)
+      # Use the Auth0Helper to attempt to extract it
+      extracted_uid = extract_uid(socrata_user_id)
 
       # Do some primitive validation on the returned UID
       if extracted_uid.nil?

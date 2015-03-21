@@ -64,4 +64,15 @@ module Auth0Helper
     #Finally, check to make sure that it has all three required fields
     splitId.length == 3
   end
+
+  def username_password_connection?(socrata_user_id)
+    socrata_user_id.start_with?('auth0|')
+  end
+  # In the username and password flow, the UID is set as part of authentication
+  # It's going to come in with the form "auth0|abcd-efgh|connection_name"
+  # Use a regex to attempt to extract it
+  def extract_uid(socrata_user_id)
+    trimmed_id = socrata_user_id.sub('auth0|','')
+    trimmed_id.match(/(\w{4}-\w{4})(?=\|)/)
+  end
 end

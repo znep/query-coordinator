@@ -10,7 +10,7 @@ describe('httpDecorator', function() {
   beforeEach(function(){
     decoratorModule = angular.module('httpDecoratorTestModule', ['socrataCommon.decorators'])
     decoratorModule.config(function($provide, assetRevisionKeyProvider){
-      assetRevisionKeyProvider($provide, 'assetRevisionKey')
+      assetRevisionKeyProvider($provide, 'ASSETREVISIONKEY')
     })
   });
   beforeEach(module('test'));
@@ -24,7 +24,7 @@ describe('httpDecorator', function() {
       $rootScope = $injector.get('$rootScope');
       $httpBackend = $injector.get('$httpBackend');
 
-      $httpBackend.expectGET('/angular_templates/dataCards/spinner.html?assetRevisionKey').respond('')
+      $httpBackend.expectGET('/angular_templates/dataCards/spinner.html?ASSETREVISIONKEY').respond('')
     });
   });
 

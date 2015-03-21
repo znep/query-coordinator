@@ -46,7 +46,7 @@ class ApplicationHelperTest < ActionView::TestCase
     # See comment in #asset_revision_key_regex below about REVISION_NUMBER
     CurrentDomain.stubs(:default_config_id => '1234')
     CurrentDomain.stubs(:default_config_updated_at => '5678')
-    assert_match(/^#{Rails.env}\.1234\.5678$/, application_helper.asset_revision_key)
+    assert_match(/^[\w\d]+\.1234\.5678$/, application_helper.asset_revision_key)
   end
 
   private
@@ -54,6 +54,6 @@ class ApplicationHelperTest < ActionView::TestCase
   def asset_revision_key_regex
     # NOTE REVISION_NUMBER is not set in dev and test mode unless you have REVISION in Rails.root
     # Format: "REVISION_NUMBER.default_config_id.default_config_updated_at"
-    /\?#{Rails.env}\.\d+\.\d+/
+    /\?[\w\d]+\.\d+\.\d+/
   end
 end

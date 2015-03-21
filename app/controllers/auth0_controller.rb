@@ -12,12 +12,12 @@ class Auth0Controller < ApplicationController
 
     # Check to see if it's a username and password connection.  
     if userinfo_hash[:extra][:raw_info][:socrata_user_id].start_with?('auth0|')
-      socrata_id = userinfo_hash[:extra][:raw_info][:socrata_user_id]
+      socrata_id = userinfo_hash[:extra][:raw_info][:socrata_user_id].gsub('auth0|','')
 
       # In the username and password flow, the UID is set as part of authentication 
       # It's going to come in with the form "auth0|abcd-efgh|connection_name"
       # Use a regex to attempt to extract it
-      extracted_uid = socrata_id.match(/\|(\w{4}-\w{4})\|/)
+      extracted_uid = socrata_id.match(/(\w{4}-\w{4})(?=\|)/)
 
       # Do some primitive validation on the returned UID
       if extracted_uid.nil?

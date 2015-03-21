@@ -212,7 +212,7 @@ private
       @link_image_src = if logo_square[:type].to_s == "static"
         logo_square[:href]
       elsif logo_square[:type].to_s == "hosted"
-        "/assets/#{logo_square[:href]}"
+        "/assets/#{logo_square[:href]}?#{asset_revision_key}"
       end
       # This is mostly because I don't trust FB to handle it correctly otherwise.
       @meta['og:image'] = "#{CurrentDomain.domain.protocol}://#{CurrentDomain.cname}#{@link_image_src}"

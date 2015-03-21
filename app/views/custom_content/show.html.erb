@@ -10,7 +10,7 @@
         <%= rendered_stylesheet_tag style_package %>
       <%- end -%>
     <%- end -%>
-    <link rel="stylesheet" type="text/css" href="/styles/<%= @stylesheet %>.css"/>
+    <link rel="stylesheet" type="text/css" href="/styles/<%= @stylesheet %>.css?<%= asset_revision_key %>"/>
   <% end %>
 
   <%= raw render_widget(@page_config.contents) %>

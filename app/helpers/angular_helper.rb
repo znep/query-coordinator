@@ -11,7 +11,8 @@ module AngularHelper
   def angular_config
     {
       'statsdEnabled' => APP_CONFIG['statsd_enabled'],
-      'oduxCardTypeMapping' => JSON(File.read("#{Rails.root}/lib/data/card-type-mapping.json"))
+      'oduxCardTypeMapping' => JSON(File.read("#{Rails.root}/lib/data/card-type-mapping.json")),
+      'assetRevisionKey' => asset_revision_key
     }.tap do |config|
       FeatureFlags.list.each do |feature_key|
         js_feature_key = "#{feature_key[0]}#{feature_key.camelize[1..-1]}"

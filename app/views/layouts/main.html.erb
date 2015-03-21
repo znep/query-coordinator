@@ -31,7 +31,7 @@ http://www.socrata.com
     <link rel="image_src" href="<%= @link_image_src %>" />
   <%- end -%>
 
-  <link rel="apple-touch-icon-precomposed" media="screen" href="/stylesheets/images/icons/retina_display_icon.png"/>
+  <link rel="apple-touch-icon-precomposed" media="screen" href="/stylesheets/images/icons/retina_display_icon.png?<%= asset_revision_key %>"/>
   <link rel="search" type="application/opensearchdescription+xml" href="/opensearch.xml" title="<%= CurrentDomain.strings.site_title %>" />
   <%= auto_discovery_link_tag(:rss, '/catalog.rss', :title => 'Subscribe to Datasets') %>
 
@@ -41,9 +41,9 @@ http://www.socrata.com
   </style>
   <![endif]-->
   <%= rendered_stylesheet_tag 'base' %>
-  <link type="text/css" media="all" rel="stylesheet" href="/webfonts/socrata-apps/socrata-apps.css"/>
+  <link type="text/css" media="all" rel="stylesheet" href="/webfonts/socrata-apps/socrata-apps.css?<%= asset_revision_key %>"/>
   <%- if module_enabled?(:govStat) -%>
-    <link type="text/css" media="all" rel="stylesheet" href="/webfonts/ss-pika.css"/>
+    <link type="text/css" media="all" rel="stylesheet" href="/webfonts/ss-pika.css?<%= asset_revision_key %>"/>
     <%- if suppress_govstat? -%>
       <%= rendered_stylesheet_tag 'govstat-base' %>
     <%- else -%>
@@ -58,11 +58,11 @@ http://www.socrata.com
   <%= yield :head %>
 
   <%- unless CurrentDomain.properties.custom_css.blank? || (module_enabled?(:govStat) && !suppress_govstat?) -%>
-    <link type="text/css" media="all" rel="stylesheet" href="/styles/current_site.css?<%="#{REVISION_NUMBER}.#{CurrentDomain.default_config_id}.#{CurrentDomain.default_config_updated_at}"%>"/>
+    <link type="text/css" media="all" rel="stylesheet" href="/styles/current_site.css?<%= asset_revision_key %>"/>
   <%- end -%>
 
   <%- if !CurrentDomain.properties.govstat_css.blank? && module_enabled?(:govStat) -%>
-    <link type="text/css" media="all" rel="stylesheet" href="/styles/govstat_site.css?<%="#{REVISION_NUMBER}.#{CurrentDomain.default_config_id}.#{CurrentDomain.default_config_updated_at}"%>"/>
+    <link type="text/css" media="all" rel="stylesheet" href="/styles/govstat_site.css?<%= asset_revision_key %>"/>
   <%- end -%>
 
   <link rel="shortcut icon" href="<%= theme_image_url(CurrentDomain.theme.images.favicon) %>" />
@@ -281,9 +281,9 @@ http://www.socrata.com
 
   <%- unless CurrentDomain.theme.js.nil? -%>
     <%- if CurrentDomain.theme.js[:type].to_s == 'static' -%>
-      <script type="text/javascript" src="<%= CurrentDomain.theme.js.source %>"></script>
+      <script type="text/javascript" src="<%= CurrentDomain.theme.js.source %>?<%= asset_revision_key %>"></script>
     <%- elsif CurrentDomain.theme.js[:type].to_s == 'hosted' -%>
-      <script type="text/javascript" src="/assets/<%= CurrentDomain.theme.js.source %>"></script>
+      <script type="text/javascript" src="/assets/<%= CurrentDomain.theme.js.source %>?<%= asset_revision_key %>"></script>
     <%- end -%>
   <%- end -%>
 

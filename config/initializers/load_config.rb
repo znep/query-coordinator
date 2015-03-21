@@ -11,7 +11,7 @@ INTERCESSIO_URI = URI.parse(APP_CONFIG['intercessio_uri'] || "http://localhost:1
 revision_file = File.join(Rails.root, "REVISION")
 
 begin
-  REVISION_NUMBER = File.open(revision_file, "r").read().chomp()
+  REVISION_NUMBER = File.read(revision_file).chomp()
   REVISION_DATE = File.stat(revision_file).mtime.to_i
 rescue
   REVISION_NUMBER = nil

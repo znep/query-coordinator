@@ -12,7 +12,7 @@ class Auth0Controller < ApplicationController
 
     # Check to see if it's a username and password connection.  
     if userinfo_hash[:extra][:raw_info][:socrata_user_id].start_with?('auth0|')
-      socrata_id = userinfo_hash[:extra][:raw_info][:socrata_user_id].gsub('auth0|','')
+      socrata_id = userinfo_hash[:extra][:raw_info][:socrata_user_id].sub('auth0|','')
 
       # In the username and password flow, the UID is set as part of authentication 
       # It's going to come in with the form "auth0|abcd-efgh|connection_name"

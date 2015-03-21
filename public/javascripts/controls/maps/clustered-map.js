@@ -130,7 +130,7 @@
                 return;
             }
 
-            layerObj._view.getClusters(viewport, { plot: { locationId: locCol.tableColumnId }},
+            layerObj._view.getClusters(viewport, { plot: { locationId: locCol.fieldName }},
                 layerObj.getMinDistanceForViewportPixels(viewport),
                 function(data)
             {

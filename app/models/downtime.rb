@@ -27,16 +27,22 @@ class Downtime
 
   def self.update!
     return unless needs_update?
+
     begin
-      yaml = YAML.load_file(DOWNTIME[:file])[DOWNTIME[:env]]
-      @@downtimes = [yaml].flatten.compact.collect do |time|
-        Downtime.new(time['message_start'], time['message_end'],
-                     time['downtime_start'], time['downtime_end'])
+      yaml = YAML.load_file(DOWNTIME[:file])
+      if yaml
+        @@downtimes = [DOWNTIME[:env]].flatten.compact.collect do |time|
+          Downtime.new(time['message_start'], time['message_end'],
+                       time['downtime_start'], time['downtime_end'])
+        end
+      else
+        Rails.logger.warn("Unable to load downtime banner file: #{DOWNTIME[:file]}")
       end
-    rescue StandardError
+    rescue StandardError => e
       # Ignore all errors/typos from the downtime parsing
-      puts "ERROR Parsing Downtime Banner!"
+      puts("Error loading downtime banner file: #{DOWNTIME[:file]} - #{e}")
     end
+
     @@last_updated = Time.now
   end
 

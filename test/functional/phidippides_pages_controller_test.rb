@@ -7,7 +7,11 @@ class PhidippidesPagesControllerTest < ActionController::TestCase
     @phidippides = Phidippides.new
     @phidippides.stubs(end_point: 'http://localhost:2401')
     @page_metadata_manager = PageMetadataManager.new
-    @controller.stubs(phidippides: @phidippides, page_metadata_manager: @page_metadata_manager)
+    @controller.stubs(
+      phidippides: @phidippides,
+      page_metadata_manager: @page_metadata_manager,
+      save_as_enabled?: true
+    )
     @page_metadata_manager.stubs(
       create: { body: '', status: '200' },
       update: { body: '', status: '200' }
@@ -258,6 +262,23 @@ class PhidippidesPagesControllerTest < ActionController::TestCase
   #   delete :destroy, id: 'four-four'
   #   assert_response(200)
   # end
+
+  test 'special create fails when save as is not enabled' do
+    stub_feature_flags_with(:enable_data_lens_save_as_button, false)
+    @controller.stubs(can_update_metadata?: true, save_as_enabled?: false)
+
+    post :create, pageMetadata: { datasetId: 'four-four' }.to_json, format: :json
+    assert_response(401)
+  end
+
+  test 'special create succeeds when save as is enabled' do
+    @controller.stubs(can_update_metadata?: true, save_as_enabled?: true)
+    @page_metadata_manager.stubs(create: { body: v0_page_metadata.to_json, status: '200' })
+    stub_feature_flags_with(:metadata_transition_phase, '0')
+
+    post :create, pageMetadata: v0_page_metadata.to_json, format: :json
+    assert_response(200)
+  end
 
   private
 

@@ -34,7 +34,7 @@ class PhidippidesPagesController < ActionController::Base
   end
 
   def create
-    return render :nothing => true, :status => '401' unless can_update_metadata?
+    return render :nothing => true, :status => '401' unless can_update_metadata? && save_as_enabled?
 
     begin
       page_metadata = json_parameter(:pageMetadata)
@@ -129,5 +129,9 @@ class PhidippidesPagesController < ActionController::Base
 
   def dataset
     View.find(json_parameter(:pageMetadata)['datasetId'])
+  end
+
+  def save_as_enabled?
+    FeatureFlags.derive(nil, request)[:enable_data_lens_save_as_button]
   end
 end

@@ -68,6 +68,9 @@ enable_api_foundry_pane:
 enable_newux_bootstrap_link:
   description: Will display a link in the old UX, to its corresponding new UX page.
   defaultValue: false
+enable_data_lens_save_as_button:
+  description: Will enable the "Save As" button on the Customize bar of the data lens pages.
+  defaultValue: false
 enable_opendata_ga_tracking:
   description: Controls behavior of Google Analytics in the new UX. If true, GA is enabled with a default Socrata-wide token. If a custom value is provided, GA is enabled and the custom value is used as the GA token. If false, GA is disabled.
 data_cards_app_token:

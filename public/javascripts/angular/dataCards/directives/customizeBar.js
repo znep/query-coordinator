@@ -1,7 +1,7 @@
 (function() {
   'use strict';
 
-  function customizeBar(AngularRxExtensions, FlyoutService) {
+  function customizeBar(AngularRxExtensions, FlyoutService, ServerConfig) {
     return {
       scope: {
         'editMode': '=',
@@ -73,6 +73,8 @@
             });
           }
         };
+
+        $scope.showSaveAsButton = ServerConfig.get('enableDataLensSaveAsButton');
 
         var canCustomizeObservable = Rx.Observable.combineLatest(
           $scope.observe('expandedCard'),

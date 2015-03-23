@@ -1,10 +1,14 @@
 describe('LastModified http interceptor', function() {
+  'use strict';
+
   var LAST_MODIFIED_HEADER_KEY = 'X-SODA2-Truth-Last-Modified';
   var TEST_VALUE = 'Mon, 18 Aug 2014 17:30:21 GMT';
   var EXPECTED_TIME_SINCE = '12 days ago';
   var VALID_URL = '/api/id/four-four.json?foo=bar';
   var INVALID_URL = '/resource/four-four.geojson';
-  var $http, $httpBackend;
+  var $http;
+  var $rootScope;
+  var $httpBackend;
   var LastModified;
 
   beforeEach(function() {
@@ -27,6 +31,11 @@ describe('LastModified http interceptor', function() {
       $httpBackend = $injector.get('$httpBackend');
       $http = $injector.get('$http');
     });
+  });
+
+  afterEach(function() {
+    $httpBackend.verifyNoOutstandingExpectation();
+    $httpBackend.verifyNoOutstandingRequest();
   });
 
   it('should be present', function() {

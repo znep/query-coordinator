@@ -137,6 +137,10 @@
           }
         };
 
+        scope.onCustomizeCard = function(addCardModel) {
+          scope.$emit('customize-card-with-model', addCardModel);
+        };
+
         scope.bindObservable(
           'isCustomizable',
           scope.observe('addCardModel').observeOnLatest('isCustomizable')

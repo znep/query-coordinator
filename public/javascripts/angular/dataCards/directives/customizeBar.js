@@ -74,9 +74,7 @@
           }
         };
 
-        $scope.conditionallyShowSaveAsButton = function conditionallyShowSaveAsButton() {
-          return ServerConfig.get('enableDataLensSaveAsButton');
-        };
+        $scope.showSaveAsButton = ServerConfig.get('enableDataLensSaveAsButton');
 
         var canCustomizeObservable = Rx.Observable.combineLatest(
           $scope.observe('expandedCard'),

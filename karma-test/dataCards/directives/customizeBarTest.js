@@ -1,7 +1,7 @@
 (function() {
   'use strict';
 
-  describe.only('<customize-bar/>', function() {
+  describe('<customize-bar/>', function() {
     var $provide;
     var $window;
     var testHelpers;

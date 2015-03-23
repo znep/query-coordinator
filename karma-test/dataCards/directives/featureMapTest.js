@@ -294,9 +294,11 @@ describe('featureMap', function() {
 
         expect(canvases.length).to.be.above(0);
 
-        point1Color = getCanvasColorAt(canvases[6], { x: 47, y: 246 });
-        point2Color = getCanvasColorAt(canvases[6], { x: 104, y: 250 });
-        point3Color = getCanvasColorAt(canvases[6], { x: 151, y: 235 });
+        var canvasWithPointsRendered = canvases[6];
+
+        point1Color = getCanvasColorAt(canvasWithPointsRendered, { x: 47, y: 246 });
+        point2Color = getCanvasColorAt(canvasWithPointsRendered, { x: 104, y: 250 });
+        point3Color = getCanvasColorAt(canvasWithPointsRendered, { x: 151, y: 235 });
 
         expect(point1Color).to.equal(expectedPointColor);
         expect(point2Color).to.equal(expectedPointColor);
@@ -342,9 +344,11 @@ describe('featureMap', function() {
 
             expect(canvases.length).to.be.above(0);
 
-            point1Color = getCanvasColorAt(canvases[21], { x: 128, y: 1 });
-            point2Color = getCanvasColorAt(canvases[21], { x: 197, y: 86 });
-            point3Color = getCanvasColorAt(canvases[21], { x: 249, y: 91 });
+            var canvasWithPointsRendered = canvases[21];
+
+            point1Color = getCanvasColorAt(canvasWithPointsRendered, { x: 128, y: 1 });
+            point2Color = getCanvasColorAt(canvasWithPointsRendered, { x: 197, y: 86 });
+            point3Color = getCanvasColorAt(canvasWithPointsRendered, { x: 249, y: 91 });
 
             expect(point1Color).to.equal(expectedPointColor);
             expect(point2Color).to.equal(expectedPointColor);

@@ -1,19 +1,21 @@
 describe('featureMap', function() {
+  'use strict';
 
-  var isPhantomJS = /PhantomJS/.test(window.navigator.userAgent)
+  var mockWindowStateService;
   var testHelpers;
   var rootScope;
   var scope;
   var timeout;
   var testData;
   var AngularRxExtensions;
+  var featureExtent;
+  var protocolBuffers;
   var testJson = 'karma-test/dataCards/test-data/featureMapTest/featureMapTestData.json';
   var protocolBufferEndpointResponses = 'karma-test/dataCards/test-data/featureMapTest/protocolBufferEndpointResponses.json';
-
   var defaultFeatureLayerUrl = '/tiles/test-data/test_field/{z}/{x}/{y}.pbf';
   var filteredFeatureLayerUrl = "/tiles/test-data/test_field/{z}/{x}/{y}.pbf?$where=%3A%40coordinates_8_computed%3D'48'";
-
   var _XMLHttpRequest = window.XMLHttpRequest;
+  var fakeXhr;
 
   beforeEach(module(testJson));
   beforeEach(module(protocolBufferEndpointResponses));
@@ -307,11 +309,13 @@ describe('featureMap', function() {
     });
   });
 
-  describe('when zoomed in', function() {
+  // This test is too brittle... Leaflet handles the creation and removal
+  // of canvas tiles, and we can't reliably guess which tiles to check for
+  // rendered points. Similarly, we can't iterate over every pixel to check
+  // for rendered pionts because that would be far too slow for a test.
+  xdescribe('when zoomed in', function() {
 
-    // Something wierd is happening here and it's not actually rendering the zoomed-in
-    // tiles even though it successfully downloads them via the fake XHR object.
-    (isPhantomJS ? xit : it)('should render visible points at expected locations', function(done) {
+    it('should render visible points at expected locations', function(done) {
 
       var canvases;
       var expectedPointColor = 'rgba(48,134,171,1.0)';

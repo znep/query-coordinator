@@ -52,11 +52,11 @@
         * THEN set up other observable sequences. *
         ******************************************/
 
-        element.on('vector-tile-render-started', function(e) {
+        scope.$on('render:start', function(e) {
           dataRequests.onNext(1);
         });
 
-        element.on('vector-tile-render-complete', function(e) {
+        scope.$on('render:complete', function(e) {
           dataResponses.onNext(1);
         });
 

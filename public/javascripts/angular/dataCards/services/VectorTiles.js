@@ -390,12 +390,10 @@
 
         }
 
-        this.renderTile(tileId);
-
-        tileRenderedCallback();
+        this.renderTile(tileId, tileRenderedCallback);
       },
 
-      renderTile: function(tileId) {
+      renderTile: function(tileId, tileRenderedCallback) {
 
         var features;
         var featureCount;
@@ -412,6 +410,8 @@
         for (i = 0; i < featureCount; i++) {
           features[i].draw(tileId);
         }
+
+        tileRenderedCallback();
       },
 
       clearTile: function(tileId) {
@@ -468,9 +468,7 @@
 
         // Layers present in the protocol buffer responses.
         this.layers = {};
-
         this.outstandingTileDataRequests = {};
-
         this.map = null;
       },
 
@@ -495,7 +493,6 @@
           };
 
           map.on('mousedown', mapMousedownCallback);
-
         }
 
         if (_.isFunction(this.options.mouseup)) {
@@ -506,7 +503,6 @@
           };
 
           map.on('mouseup', mapMouseupCallback);
-
         }
 
         if (_.isFunction(this.options.mousemove)) {
@@ -517,7 +513,6 @@
           };
 
           map.on('mousemove', mapMousemoveCallback);
-
         }
 
         map.on('layerremove', function(e) {
@@ -544,8 +539,6 @@
         });
 
         this.addChildLayers();
-
-        this.emitRenderStartedEvent();
 
         L.TileLayer.Canvas.prototype.onAdd.call(this, map);
       },
@@ -623,7 +616,7 @@
 
         xhr.responseType = 'arraybuffer';
 
-        self.outstandingTileDataRequests[tileId] = xhr;
+        self.tileLoading(tileId, xhr);
         xhr.send();
       },
 
@@ -694,7 +687,6 @@
           }
 
           this.layers[layerId].loadData(layer, tileId, tileRenderedCallback);
-
         }
       },
 
@@ -736,6 +728,31 @@
         this.map._container.dispatchEvent(evt);
       },
 
+      tileLoading: function(tileId, xhr) {
+
+        var requestZoom = parseInt(tileId.split(':')[0], 10);
+        var requestTileIds = _.keys(this.outstandingTileDataRequests);
+        var outstandingRequestsWithRequestZoomLevel = requestTileIds.
+          filter(
+            function(requestTileId) {
+
+              var outstandingRequestZoom = parseInt(
+                requestTileId.split(':')[0],
+                10
+              );
+              return requestZoom === outstandingRequestZoom;
+            }
+          );
+
+        // If this is the first request for the current zoom level, then emit
+        // a 'vector-tile-render-started' event.
+        if (outstandingRequestsWithRequestZoomLevel.length === 0) {
+          this.emitRenderStartedEvent();
+        }
+
+        this.outstandingTileDataRequests[tileId] = xhr;
+      },
+
       tileLoaded: function(tileId) {
 
         // First stop tracking the request that just succeeded.
@@ -743,6 +760,7 @@
 
         var zoom = this.map.getZoom();
         var outstandingRequests = _.keys(this.outstandingTileDataRequests);
+        var outstandingValidRequests = [];
         var outstandingRequestZoom = 0;
 
         for (var i = 0; i < outstandingRequests.length; i++) {
@@ -755,11 +773,12 @@
           if (outstandingRequestZoom !== zoom) {
             this.outstandingTileDataRequests[outstandingRequests[i]].abort();
             delete this.outstandingTileDataRequests[outstandingRequests[i]];
+          } else {
+            outstandingValidRequests.push(outstandingRequests[i]);
           }
         }
 
-        outstandingRequests = _.keys(this.outstandingTileDataRequests);
-        if (outstandingRequests.length === 0) {
+        if (outstandingValidRequests.length === 0) {
           this.emitRenderCompleteEvent();
         }
       }

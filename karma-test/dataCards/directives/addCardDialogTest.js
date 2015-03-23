@@ -420,7 +420,7 @@ describe('addCardDialog', function() {
         expect(dialog.scope.cardModels[1].fieldName).to.equal('ward');
       });
 
-      it('should display a "customize" button for choropleths that calls the customize function', function() {
+      it.only('should display a "customize" button for choropleths that calls the customize function', function() {
         var dialog = createDialog();
 
         var customizeButton = dialog.element.find('.card-control[title^="Customize"]');
@@ -449,6 +449,8 @@ describe('addCardDialog', function() {
         expect(dialog.outerScope._test_cardToCustomize).to.not.be.ok;
 
         customizeButton.click();
+
+        debugger;
 
         expect(dialog.outerScope._test_cardToCustomize).to.be.ok;
       });

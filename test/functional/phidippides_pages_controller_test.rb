@@ -94,13 +94,26 @@ class PhidippidesPagesControllerTest < ActionController::TestCase
     assert_equal('public', result['permissions'])
   end
 
-  test 'show returns 403 if the Core view of it isn\'t accessible' do
+  test 'show returns 401 if the Core view requires authn' do
     @controller.stubs(can_update_metadata?: true)
     connection_stub = mock
     connection_stub.stubs(reset_counters: {requests: {}, runtime: 0})
     connection_stub.expects(:get_request).with do |url|
       assert_equal('/views/four-four.json', url)
     end.then.raises(CoreServer::CoreServerError.new(nil, 'authentication_required', nil))
+    CoreServer::Base.stubs(connection: connection_stub)
+
+    get :show, id: 'four-four', format: 'json'
+    assert_response(401)
+  end
+
+  test 'show returns 403 if the Core view requires authz' do
+    @controller.stubs(can_update_metadata?: true)
+    connection_stub = mock
+    connection_stub.stubs(reset_counters: {requests: {}, runtime: 0})
+    connection_stub.expects(:get_request).with do |url|
+      assert_equal('/views/four-four.json', url)
+    end.then.raises(CoreServer::CoreServerError.new(nil, 'permission_denied', nil))
     CoreServer::Base.stubs(connection: connection_stub)
 
     get :show, id: 'four-four', format: 'json'

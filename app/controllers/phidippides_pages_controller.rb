@@ -26,6 +26,8 @@ class PhidippidesPagesController < ActionController::Base
       permissions = fetch_permissions(params[:id])
     rescue NewViewManager::ViewNotFound
       return render :nothing => true, :status => '404'
+    rescue NewViewManager::ViewAuthenticationRequired => e
+      return render :json => {error: e.message}, :status => '401'
     rescue NewViewManager::ViewAccessDenied => e
       return render :json => {error: e.message}, :status => '403'
     rescue

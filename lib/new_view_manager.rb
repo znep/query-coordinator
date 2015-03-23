@@ -4,6 +4,7 @@ class NewViewManager
   class Error < RuntimeError; end
   class NewViewNotCreatedError < Error; end
   class ViewNotFound < Error; end
+  class ViewAuthenticationRequired < Error; end
   class ViewAccessDenied < Error; end
   class InvalidPermissions < Error; end
 
@@ -13,7 +14,9 @@ class NewViewManager
     begin
       response = CoreServer::Base.connection.get_request(url)
     rescue CoreServer::CoreServerError => e
-      if e.error_code == 'authentication_required' || e.error_code == 'permission_denied'
+      if e.error_code == 'authentication_required'
+        raise ViewAuthenticationRequired.new(e.error_message)
+      elsif e.error_code == 'permission_denied'
         raise ViewAccessDenied.new(e.error_message)
       end
       report_error(

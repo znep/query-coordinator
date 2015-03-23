@@ -67,11 +67,24 @@ class NewViewManagerTest < Test::Unit::TestCase
     assert_equal(response, {'body' => 1})
   end
 
-  def test_fetch_returns_error_if_core_does
+  def test_fetch_raises_authn
     connection_stub = mock
     connection_stub.expects(:get_request).times(1).with do |url|
       assert_equal('/views/asdf-asdf.json', url)
     end.then.raises(CoreServer::CoreServerError.new(nil, 'authentication_required', 'msg'))
+
+    CoreServer::Base.stubs(connection: connection_stub)
+
+    assert_raises(NewViewManager::ViewAuthenticationRequired) do
+      new_view_manager.fetch('asdf-asdf')
+    end
+  end
+
+  def test_fetch_raises_authz
+    connection_stub = mock
+    connection_stub.expects(:get_request).times(1).with do |url|
+      assert_equal('/views/asdf-asdf.json', url)
+    end.then.raises(CoreServer::CoreServerError.new(nil, 'permission_denied', 'msg'))
 
     CoreServer::Base.stubs(connection: connection_stub)
 

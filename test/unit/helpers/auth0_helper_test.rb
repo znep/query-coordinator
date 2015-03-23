@@ -39,6 +39,20 @@ class Auth0HelperTest < ActionView::TestCase
     end
   end
 
+  test 'UID correctly extracted' do 
+    uid = 'abcd-efgh'
+    socrata_user_id = 'auth0|abcd-efgh|socrata.com'
+    extracted_uid = extract_uid(socrata_user_id).to_s
+    assert_equal(uid,extracted_uid)
+  end
+
+  test 'Username and password connection' do
+    username_password_id = 'auth0|abcd-efgh|socrata.com'
+    saml_id = 'samlp|_c3ac275de528ddea41f237a4142a5704'
+    assert(username_password_connection?(username_password_id))
+    refute(username_password_connection?(saml_id))
+  end
+
   test 'Token is rejected when the socrata_user_id is a bad format' do
     authHash = get_mock_federated_user_token
     authHash['socrata_user_id'] = 'samlp|_somestuff|'

@@ -1,7 +1,7 @@
 <button
   type="button"
   data-action="save"
-  class="save-button save-button-flyout-target action-btn r-to-l"
+  class="save-button save-button-flyout-target action-btn r-to-l {{ additionalClasses }}"
   ng-class="{disabled: !enabled,
              working: saveStatus === 'saving',
              success: saveStatus === 'saved',

@@ -148,6 +148,9 @@
           )
         );
 
+        self.defineEphemeralObservableProperty('permissions', '', function() {
+          return pageMetadataPromise().then(_.property('permissions'));
+        });
       },
 
       serialize: function() {

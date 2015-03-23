@@ -1,0 +1,32 @@
+<h2>Manage Lens</h2>
+<label>Permissions<soc-select></soc-select></label>
+<div class="right">
+  <soc-select ng-model="pagePermissions">
+    <soc-option value="public">Public</soc-option>
+    <soc-option value="private">Private</soc-option>
+  </soc-select>
+  <div class="flavor-text" ng-switch="pagePermissions">
+    <div ng-switch-when="public">
+      This lens and its source dataset are both Public, so anyone will be able to
+      view this lens, and it will appear in the public catalog.
+    </div>
+    <div ng-switch-when="private">
+      This lens is set to Private, so only those with privileged access will be
+      able to see it. It will not appear in the public catalog.
+    </div>
+    <div ng-switch-when="">
+      Because this lens’s source dataset is set to Private, this lens cannot be
+      made Public. Only those with privileged access will be able to see it, and
+      it will not appear in the public catalog.
+    </div>
+  </div>
+</div>
+
+<div class="controls">
+  <save-button
+    class="dark"
+    ng-click="save()"
+    enabled="true"
+    save-status="saveStatus"></save-button>
+  <button class="action-btn dark" ng-click="dialogState.show = false">Cancel</button>
+</div>

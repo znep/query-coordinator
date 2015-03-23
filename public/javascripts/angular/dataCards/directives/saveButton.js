@@ -8,7 +8,10 @@
         enabled: '=',
         saveStatus: '='
       },
-      templateUrl: '/angular_templates/dataCards/saveButton.html'
+      templateUrl: '/angular_templates/dataCards/saveButton.html',
+      link: function($scope, element) {
+        $scope.additionalClasses = element[0].className;
+      }
     };
   }
 

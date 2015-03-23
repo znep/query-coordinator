@@ -44,7 +44,7 @@ class PhidippidesPagesControllerTest < ActionController::TestCase
     @controller.stubs(can_update_metadata?: true)
     @phidippides.stubs(
       fetch_page_metadata: {
-        body: v0_page_metadata.to_json
+        body: v0_page_metadata
       }
     )
     connection_stub = mock
@@ -54,7 +54,44 @@ class PhidippidesPagesControllerTest < ActionController::TestCase
 
     get :show, id: 'four-four', format: 'json'
     assert_response(:success)
-    assert_equal([], JSON.parse(@response.body).keys - %w(pageId datasetId name description primaryAmountField primaryAggregation filterSoql isDefaultPage pageSource cards))
+    result = JSON.parse(@response.body)
+    assert_equal(%w(pageId datasetId name description primaryAmountField primaryAggregation filterSoql isDefaultPage pageSource cards permissions), result.keys)
+  end
+
+  test 'show displays permission:private for views private in core' do
+    @controller.stubs(can_update_metadata?: true)
+    @phidippides.stubs(
+      fetch_page_metadata: {
+        body: v0_page_metadata
+      }
+    )
+    connection_stub = mock
+    connection_stub.stubs(reset_counters: {requests: {}, runtime: 0})
+    connection_stub.expects(:get_request).returns('{"grants": []}')
+    CoreServer::Base.stubs(connection: connection_stub)
+
+    get :show, id: 'four-four', format: 'json'
+    assert_response(:success)
+    result = JSON.parse(@response.body)
+    assert_equal('private', result['permissions'])
+  end
+
+  test 'show displays permission:public for views public in core' do
+    @controller.stubs(can_update_metadata?: true)
+    @phidippides.stubs(
+      fetch_page_metadata: {
+        body: v0_page_metadata
+      }
+    )
+    connection_stub = mock
+    connection_stub.stubs(reset_counters: {requests: {}, runtime: 0})
+    connection_stub.expects(:get_request).returns('{"grants": [{"flags": ["public"]}]}')
+    CoreServer::Base.stubs(connection: connection_stub)
+
+    get :show, id: 'four-four', format: 'json'
+    assert_response(:success)
+    result = JSON.parse(@response.body)
+    assert_equal('public', result['permissions'])
   end
 
   test 'show returns 403 if the Core view of it isn\'t accessible' do

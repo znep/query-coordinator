@@ -14,7 +14,7 @@ class NewViewManagerTest < Test::Unit::TestCase
     connection_stub = mock
     created = false
     published = false
-    connection_stub.expects(:create_request).times(2).with do |url, payload|
+    connection_stub.expects(:create_request).times(1).with do |url, payload|
       if url == '/views.json?accessType=WEBSITE'
         created = true
         payload = JSON.parse(payload).with_indifferent_access
@@ -38,7 +38,7 @@ class NewViewManagerTest < Test::Unit::TestCase
     result = new_view_manager.create('my title', 'my description')
     assert_equal('niew-veww', result)
     assert(created)
-    assert(published)
+    assert(!published)
   end
 
   def test_update
@@ -48,7 +48,6 @@ class NewViewManagerTest < Test::Unit::TestCase
       payload = JSON.parse(payload).with_indifferent_access
       assert_equal(payload[:name], 'new name')
       assert_equal(payload[:description], 'new description')
-      # TODO
     end.then.returns('{}')
 
     CoreServer::Base.stubs(connection: connection_stub)
@@ -76,7 +75,19 @@ class NewViewManagerTest < Test::Unit::TestCase
 
     CoreServer::Base.stubs(connection: connection_stub)
 
-    response = new_view_manager.fetch('asdf-asdf')
-    assert_equal(response, {error: true, code: 'authentication_required', message: 'msg'})
+    assert_raises(NewViewManager::ViewAccessDenied) do
+      new_view_manager.fetch('asdf-asdf')
+    end
+  end
+
+  def test_delete
+    connection_stub = mock
+    connection_stub.expects(:delete_request).times(1).with do |url, payload|
+      assert_equal('/views/asdf-asdf.json', url)
+    end.then.returns('{}')
+
+    CoreServer::Base.stubs(connection: connection_stub)
+
+    new_view_manager.delete('asdf-asdf')
   end
 end

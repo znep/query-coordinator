@@ -22,10 +22,15 @@ class PhidippidesPagesController < ActionController::Base
     return render :nothing => true, :status => '400' unless params[:id].present?
 
     # Inherit the permissions from the catalog entry that points to this page.
-    response = new_view_manager.fetch(params[:id])
-    return render :json => response, :status => '403' if !response || response[:error]
-
-    # TODO: mix in permissions information into the response object, for display
+    begin
+      permissions = fetch_permissions(params[:id])
+    rescue NewViewManager::ViewNotFound
+      return render :nothing => true, :status => '404'
+    rescue NewViewManager::ViewAccessDenied => e
+      return render :json => {error: e.message}, :status => '403'
+    rescue
+      return render :nothing => true, :status => '500'
+    end
 
     begin
       result = phidippides.fetch_page_metadata(
@@ -33,7 +38,12 @@ class PhidippidesPagesController < ActionController::Base
         :request_id => request_id,
         :cookies => forwardable_session_cookies
       )
-      render :json => result[:body], :status => result[:status]
+      page_metadata = result[:body]
+
+      # Also add whether the page is public or not
+      page_metadata[:permissions] = permissions if page_metadata
+
+      render :json => page_metadata, :status => result[:status]
     rescue Phidippides::ConnectionError
       render :json => { :body => 'Phidippides connection error' }, :status => '500'
     end
@@ -119,6 +129,8 @@ class PhidippidesPagesController < ActionController::Base
     return render :nothing => true, :status => '405' unless request.delete?
     return render :nothing => true, :status => '400' unless params[:id].present?
 
+    new_view_manager.delete(params[:id])
+
     begin
       result = phidippides.delete_page_metadata(
         params[:id],
@@ -143,5 +155,12 @@ class PhidippidesPagesController < ActionController::Base
 
   def new_view_manager
     @new_view_manager ||= NewViewManager.new
+  end
+
+  def fetch_permissions(id)
+    catalog_response = new_view_manager.fetch(id)
+    catalog_response.fetch(:grants, []).any? do |grant|
+      grant.fetch(:flags, []).include?('public')
+    end ? 'public' : 'private'
   end
 end

@@ -3,6 +3,9 @@
 class NewViewManager
   class Error < RuntimeError; end
   class NewViewNotCreatedError < Error; end
+  class ViewNotFound < Error; end
+  class ViewAccessDenied < Error; end
+  class InvalidPermissions < Error; end
 
   def fetch(page_id)
     url = "/views/#{CGI::escape(page_id)}.json"
@@ -10,18 +13,16 @@ class NewViewManager
     begin
       response = CoreServer::Base.connection.get_request(url)
     rescue CoreServer::CoreServerError => e
-      if e.error_code == 'authentication_required'
-        return {
-          error: true,
-          code: e.error_code,
-          message: e.error_message
-        }
+      if e.error_code == 'authentication_required' || e.error_code == 'permission_denied'
+        raise ViewAccessDenied.new(e.error_message)
       end
       report_error(
         "Error fetching new_view lens for page: #{e.error_message}",
         :url => url
       )
       return
+    rescue CoreServer::ResourceNotFound => e
+      raise ViewNotFound.new(e.message)
     end
 
     parse_core_response(response)
@@ -41,9 +42,6 @@ class NewViewManager
 
     new_page_id = new_view[:id]
 
-    # TODO: inherit published state from dataset permissions
-    publish_new_view(new_page_id)
-
     # Create the proper HREF pointing to the page with the same 4x4 as the view
     # lens, that we're going to create Real Soon Now.
     page_url = Rails.application.routes.url_helpers.opendata_cards_view_url(
@@ -56,6 +54,22 @@ class NewViewManager
     update_page_url(new_page_id, page_url)
 
     new_page_id
+  end
+
+  def delete(page_id)
+    url = "/views/#{CGI::escape(page_id)}.json"
+
+    begin
+      response = CoreServer::Base.connection.delete_request(url)
+    rescue CoreServer::Error => e
+      report_error(
+        "Error deleting new_view lens for page #{page_id}: #{e.error_message}",
+        :url => url
+      )
+      return
+    end
+
+    parse_core_response(response)
   end
 
   def create_new_view(page_url, title, description)

@@ -130,7 +130,7 @@
                 return;
             }
 
-            layerObj._view.getClusters(viewport, { plot: { locationId: locCol.tableColumnId }},
+            layerObj._view.getClusters(viewport, { plot: { locationId: locCol.fieldName }},
                 layerObj.getMinDistanceForViewportPixels(viewport),
                 function(data)
             {
@@ -228,10 +228,13 @@
             var query = $.extend(true, {}, this._query),
                 locCol = this._locCol || this._geoCol;
 
+            var useSoda2 = this._view._useSODA2,
+                viewportFunc = useSoda2 ? 'toSoql' : 'toQuery';
+
             if ((query.namedFilters || {}).viewport)
             { delete query.namedFilters.viewport; }
             query.namedFilters = $.extend(true, query.namedFilters || {},
-                { viewport: this.viewportHandler().toQuery(
+                { viewport: this.viewportHandler()[viewportFunc](
                     blist.openLayers.geographicProjection, locCol.fieldName) });
 
             if (_.isEqual(this._query, query)

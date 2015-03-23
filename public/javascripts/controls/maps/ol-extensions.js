@@ -1177,7 +1177,7 @@
 
     OpenLayers.Bounds.fromViewportToSoql = function(viewport)
     {
-        return [viewport.xmin, viewport.ymax, viewport.xmax, viewport.ymin].join(', ');
+        return [viewport.ymax, viewport.xmin, viewport.ymin, viewport.xmax].join(', ');
     };
 
     OpenLayers.Bounds.fromViewport = function(vp)
@@ -1571,6 +1571,26 @@
                         { return buildFilterCondition(hemi); }) });
             }
 
+            return filterCondition;
+        },
+
+        // TODO: This is ridiculously unpretty. So much copy-paste from toQuery. :'(
+        toSoql: function(projection, filterColumnFieldName)
+        {
+            var filterCondition = {temporary: true, displayTypes: ['map', 'table']};
+            var viewport = this.toViewport(projection);
+            var soqlify = function(vp) {
+                return 'within_box(' + filterColumnFieldName + ', ' +
+                    OpenLayers.Bounds.fromViewportToSoql(vp) + ')';
+            };
+            if (viewport.xmin < viewport.xmax) {
+                filterCondition.soql = soqlify(viewport);
+            } else {
+                var rightHemi, leftHemi;
+                rightHemi = $.extend({}, viewport, { xmin: -180 });
+                leftHemi  = $.extend({}, viewport, { xmax:  180 });
+                filterCondition.soql = soqlify(rightHemi) + ' OR ' + soqlify(leftHemi);
+            }
             return filterCondition;
         },
 

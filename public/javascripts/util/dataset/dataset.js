@@ -781,26 +781,25 @@ var Dataset = ServerModel.extend({
                         rs._jsonQuery.where, ds),
                     baseQuery.where), ds._queryBase);
 
+        params['$where'] = soqlWhere;
+        params['location'] = colLookup;
+
         var requests;
 
-        var assembleSoqlQuery = function(viewport) {
-            var where,
-                vpQuery = 'within_box(' + colLookup + ', ' +
-                            OpenLayers.Bounds.fromViewportToSoql(viewport) + ')';
-            if (!$.isBlank(soqlWhere))
-            { return 'select ' + colLookup + ' where ' + soqlWhere + ' AND ' + vpQuery; }
-            else
-            { return 'select ' + colLookup + ' where ' + vpQuery; }
-        };
+        _.each({ 'xmin': 'min_lon',
+                 'xmax': 'max_lon',
+                 'ymin': 'min_lat',
+                 'ymax': 'max_lat'}, function(new_prop, old_prop)
+        { params[new_prop] = viewport[old_prop] });
 
         if (viewport.xmax < viewport.xmin) {
             // Add one query for each side of the date line.
-            requests = _.map([$.extend({}, viewport, { xmax:  179.999999 }),
-                              $.extend({}, viewport, { xmin: -179.999999 })], function(vp) {
-                return $.extend({}, params, { query: assembleSoqlQuery(vp) });
+            requests = _.map([{ max_lon:  179.999999 },
+                              { min_lon: -179.999999 }], function(bound) {
+                return $.extend({}, params, bound);
             });
         } else {
-            requests = [ $.extend({}, params, { query: assembleSoqlQuery(viewport) }) ];
+            requests = [ params ];
         }
 
         var viewportsLeft = requests.length;
@@ -814,6 +813,7 @@ var Dataset = ServerModel.extend({
         };
 
         _.each(requests, function(req) {
+
             ds.makeRequest({
                 url: '/views/' + ds.id + '/rows.json',
                 params: req,
@@ -3680,6 +3680,9 @@ Dataset.translateFilterCondition = function(fc, ds, simplify)
 
 function translateSubFilter(fc, ds, simplify, isHaving)
 {
+    // This is a cheat. Maps NBE interface.
+    if ($.isPresent(fc) && _.isString(fc.soql)) { return fc; }
+
     if ($.isBlank(fc) ||
         simplify && (fc.type != 'operator' || !_.isArray(fc.children) || fc.children.length == 0))
     { return null; }

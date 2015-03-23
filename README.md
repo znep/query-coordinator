@@ -1,28 +1,28 @@
-== Socrata Frontend
+# Socrata Frontend
 
-=== Karma tests for angular components
+## Karma tests for angular components
 
 TODO, this needs to be integrated as a Rake task and generalized. For now:
 
-==== Setup
+### Setup
 
 Ensure that you are using Ruby version 1.9.3 or greater.
 
 Make sure you've installed karma-cli and phantomjs globally: `npm install -g karma-cli phantomjs karma-phantomjs-launcher grunt`
 
-==== To run unit tests once in all supported browsers:
+### To run unit tests once in all supported browsers:
 `(cd karma-test/dataCards && karma start karma-unit.js)`
 
-==== To watch file changes and run tests in phantom:
+### To watch file changes and run tests in phantom:
 `(cd karma-test/dataCards && karma start karma-unit.js --browsers PhantomJS --singleRun false)`
 
-==== To watch file changes and run tests in Chrome (so you can open up the inspector for app or test code):
+### To watch file changes and run tests in Chrome (so you can open up the inspector for app or test code):
 `(cd karma-test/dataCards && karma start karma-unit.js --browsers Chrome --singleRun false)`
 
-==== To generate coverage results ====
+### To generate coverage results ###
 Just run `rake`, the karma test task will run karma configured to compute coverage. Coverage results will live in frontend/karma-test/coverage-reports/dataCards/
 
-==== To run tests in SauceLabs ====
+### To run tests in SauceLabs ###
  Karma knows how to launch tests against browsers specified in supported_browsers.json
  (see karma-unit/dataCards/karma-unit.js to see how we teach this to Karma).
  Our current SOP is to support two major versions back from a browser's latest version.
@@ -43,7 +43,7 @@ Just run `rake`, the karma test task will run karma configured to compute covera
    `(cd karma-test/dataCards && karma start karma-unit.js --browsers "saucelabs safari 7 os x 10.9" --singleRun true)`
    See supported_browsers.json for a list of values we support. You can add new browsers to this file - see https://saucelabs.com/platforms/webdriver for a list of browsers SauceLabs supports.
 
-==== To exclude groups of tests ====
+### To exclude groups of tests ###
 NOTE: THIS IS NOT SUPPORTED IN THE RAKE TASKS
 When launching karma directly, you may pass an --exclude-groups flag to not run a certain subset of tests. Groups are defined in karma-unit.js and as of this writing are: controllers directives filters integration services models util.
 Example:
@@ -52,7 +52,7 @@ Example:
 
 The frontend has classically used [Jammit](http://documentcloud.github.io/jammit/) for asset management instead of the standard Rails asset pipeline. All assets must be added manually to assets.yml, and the appropriate include_javascripts calls must be included in .erb. If the assets must be loaded on-demand from JS, make sure the new jammit package is added to the "dump" section of assets.yml (the JS asset loader reads this section). Please note that though Jammit allows globs in its package definitions, the JS loader doesn't support globs. This is only an issue for on-demand loading.
 
-==== Bower packages
+### Bower packages
 In order to allow clearer management of dependencies, Bower was (eventually) integrated into the asset management system. Unfortunately, the "normal" ways of integrating bower packages and Rails won't work:
  - Rails-Assets (a gem source which transparently wraps Bower packages as gems) would result in yet another 3rd-party dependency on deploy. This is too risky, especially as this service is still in beta.
  - bower-rails does not introduce a deploy dependency, but since we've butchered the Rails asset pipeline from the beginning this package turned out to be difficult to integrate.
@@ -70,21 +70,21 @@ A few complications are introduced:
  - Bower and bower-installer (and by extension node and npm) must be installed for development __only__.
  - Bower packages don't always specify their main files (= what bower-installer installs). This can fortunately be overridden or specified in our bower.json.
 
-===== Setting up bower locally
+#### Setting up bower locally
  1. Install node.js (platform dependent).
  2. Install bower: `# npm install -g bower`
  3. Install bower-installer: `# npm install -g bower-installer@0.7.1`
 
-===== Installing new bower packages (and save to bower.json):
+#### Installing new bower packages (and save to bower.json):
  1. `frontend# bower install --save awesome-package`
  2. `frontend# bower-installer`
 
-===== Updating bower packages
+#### Updating bower packages
  1. `frontend# bower update [awesome-package]`
  2. `frontend# bower-installer`
 
 
-=== Dev Proxy
+## Dev Proxy
 
 The dev proxy allows NewUX frontend developers to load data from staging or production while still using a local copy of the NewUX. To use just run:
 

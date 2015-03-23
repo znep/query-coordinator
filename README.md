@@ -19,40 +19,54 @@ Make sure you've installed karma-cli and phantomjs globally: `npm install -g kar
 ### To watch file changes and run tests in Chrome (so you can open up the inspector for app or test code):
 `(cd karma-test/dataCards && karma start karma-unit.js --browsers Chrome --singleRun false)`
 
-### To generate coverage results ###
+### To generate coverage results
 Just run `rake`, the karma test task will run karma configured to compute coverage. Coverage results will live in frontend/karma-test/coverage-reports/dataCards/
 
-### To run tests in SauceLabs ###
- Karma knows how to launch tests against browsers specified in supported_browsers.json
- (see karma-unit/dataCards/karma-unit.js to see how we teach this to Karma).
- Our current SOP is to support two major versions back from a browser's latest version.
- To speed up testing, we define a set of critical browsers (defined as the latest version
- of all browsers, plus all supported versions of IE).
- Please be judicious in your use of SauceLabs - we are limited in usage (see the SauceLabs dashboard using the creds in LastPass to see how much we have remaining for the month).
- The rake task is `rake test:karma_sauce [CRITICAL_BROWSERS_ONLY=true|false] [BROWSER_FAMILIES="comma-separated browser names"]
- CRITICAL_BROWSERS_ONLY tells the runner to only run tests on critical browsers. It defaults to false (run on all browsers).
- BROWSER_FAMILIES limits the run to a comma-separated list of browser names (chrome, internet explorer, etc)
+### To run tests in SauceLabs
 
- Examples:
- - To launch on _all_ supported browsers: `rake test:karma_sauce`
- - To launch on only critical browsers: `rake test:karma_sauce CRITICAL_BROWSERS_ONLY=true`
- - To launch on only a particular set of browser families: `rake test:karma_sauce BROWSER_FAMILIES="safari, internet explorer"`
- - To launch only a particular browser, run `karma start` manually and specify a browser name formatted like:
-   "saucelabs {browser name} {browser version} {platform}
-   So for instance to run tests on Safari 7 on Mavericks, do:
-   `(cd karma-test/dataCards && karma start karma-unit.js --browsers "saucelabs safari 7 os x 10.9" --singleRun true)`
-   See supported_browsers.json for a list of values we support. You can add new browsers to this file - see https://saucelabs.com/platforms/webdriver for a list of browsers SauceLabs supports.
+Karma knows how to launch tests against browsers specified in supported_browsers.json
+(see karma-unit/dataCards/karma-unit.js to see how we teach this to Karma).
 
-### To exclude groups of tests ###
+Our current SOP is to support two major versions back from a browser's latest version.
+To speed up testing, we define a set of critical browsers (defined as the latest version
+of all browsers, plus all supported versions of IE).
+
+Please be judicious in your use of SauceLabs - we are limited in usage (see the SauceLabs dashboard using the creds in LastPass to see how much we have remaining for the month).
+
+The rake task is `rake test:karma_sauce [CRITICAL_BROWSERS_ONLY=true|false] [BROWSER_FAMILIES="comma-separated browser names"]
+
+CRITICAL_BROWSERS_ONLY tells the runner to only run tests on critical browsers. It defaults to false (run on all browsers).
+
+BROWSER_FAMILIES limits the run to a comma-separated list of browser names (chrome, internet explorer, etc)
+
+Examples:
+- To launch on _all_ supported browsers: `rake test:karma_sauce`
+- To launch on only critical browsers: `rake test:karma_sauce CRITICAL_BROWSERS_ONLY=true`
+- To launch on only a particular set of browser families: `rake test:karma_sauce BROWSER_FAMILIES="safari, internet explorer"`
+- To launch only a particular browser, run `karma start` manually and specify a browser name formatted like:
+  "saucelabs {browser name} {browser version} {platform}
+
+  So for instance to run tests on Safari 7 on Mavericks, do:
+
+  `(cd karma-test/dataCards && karma start karma-unit.js --browsers "saucelabs safari 7 os x 10.9" --singleRun true)`
+
+  See supported_browsers.json for a list of values we support. You can add new browsers to this file - see https://saucelabs.com/platforms/webdriver for a list of browsers SauceLabs supports.
+
+### To exclude groups of tests
+
 NOTE: THIS IS NOT SUPPORTED IN THE RAKE TASKS
 When launching karma directly, you may pass an --exclude-groups flag to not run a certain subset of tests. Groups are defined in karma-unit.js and as of this writing are: controllers directives filters integration services models util.
+
 Example:
-(cd karma-test/dataCards && karma start karma-unit.js --browsers PhantomJS --singleRun false --exclude-groups "directives integration")
-=== Javascript/other asset package management
+
+`(cd karma-test/dataCards && karma start karma-unit.js --browsers PhantomJS --singleRun false --exclude-groups "directives integration")`
+
+## Javascript/other asset package management
 
 The frontend has classically used [Jammit](http://documentcloud.github.io/jammit/) for asset management instead of the standard Rails asset pipeline. All assets must be added manually to assets.yml, and the appropriate include_javascripts calls must be included in .erb. If the assets must be loaded on-demand from JS, make sure the new jammit package is added to the "dump" section of assets.yml (the JS asset loader reads this section). Please note that though Jammit allows globs in its package definitions, the JS loader doesn't support globs. This is only an issue for on-demand loading.
 
 ### Bower packages
+
 In order to allow clearer management of dependencies, Bower was (eventually) integrated into the asset management system. Unfortunately, the "normal" ways of integrating bower packages and Rails won't work:
  - Rails-Assets (a gem source which transparently wraps Bower packages as gems) would result in yet another 3rd-party dependency on deploy. This is too risky, especially as this service is still in beta.
  - bower-rails does not introduce a deploy dependency, but since we've butchered the Rails asset pipeline from the beginning this package turned out to be difficult to integrate.
@@ -83,7 +97,6 @@ A few complications are introduced:
  1. `frontend# bower update [awesome-package]`
  2. `frontend# bower-installer`
 
-
 ## Dev Proxy
 
 The dev proxy allows NewUX frontend developers to load data from staging or production while still using a local copy of the NewUX. To use just run:
@@ -93,4 +106,3 @@ dev-server/dev-proxy.js
 ```
 
 You can add `-h` for more options. By default it routes requests to `dataspace-demo.test-socrata.com`. That may change in the future.
-

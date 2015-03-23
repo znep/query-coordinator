@@ -508,4 +508,28 @@
     });
   };
 
+
+  var baseUrl = new URL(window.location);
+  baseUrl.search = '';
+  baseUrl.hash = '';
+  baseUrl.pathname = '';
+  var baseUrlRegex = new RegExp('^' + baseUrl.href);
+  /**
+   * Creates a URL object for the current location and optional pathname
+   * @param {String} [pathname] Pathname to set on returned URL object
+   * @returns {Window.URL}
+   */
+  $.baseUrl = function(pathname) {
+    var url = new URL(baseUrl);
+    if (pathname) {
+      url.pathname = pathname;
+    }
+
+    return url;
+  };
+
+  $.relativeUrl = function(url) {
+    return url.href.replace(baseUrlRegex, '/');
+  }
+
 })(jQuery, _, window);

@@ -1,11 +1,12 @@
 (function() {
   'use strict';
 
-  describe('<customize-bar/>', function() {
+  describe.only('<customize-bar/>', function() {
     var $provide;
     var $window;
     var testHelpers;
     var $rootScope;
+    var ServerConfig;
 
     beforeEach(module('/angular_templates/dataCards/customizeBar.html'));
     beforeEach(module('dataCards'));
@@ -19,13 +20,19 @@
       $provide = _$provide;
     }]));
     beforeEach(function() {
-      inject(['$window', '$rootScope', 'testHelpers', function(_$window, _$rootScope, _testHelpers) {
-        $rootScope = _$rootScope;
-        $window = _$window;
-        testHelpers = _testHelpers;
-        testHelpers.mockDirective($provide, 'revertButton');
-        testHelpers.mockDirective($provide, 'saveButton');
-        testHelpers.mockDirective($provide, 'saveAs');
+      inject([
+        '$window',
+        '$rootScope',
+        'testHelpers',
+        'ServerConfig',
+        function(_$window, _$rootScope, _testHelpers, _ServerConfig) {
+          $rootScope = _$rootScope;
+          $window = _$window;
+          testHelpers = _testHelpers;
+          ServerConfig = _ServerConfig;
+          testHelpers.mockDirective($provide, 'revertButton');
+          testHelpers.mockDirective($provide, 'saveButton');
+          testHelpers.mockDirective($provide, 'saveAs');
       }]);
     });
 
@@ -75,6 +82,18 @@
     it('should have a save-as button', function() {
       var customizeBar = createElement().element;
       expect(customizeBar.find('save-as')).to.exist;
+    });
+
+    it('should not show save-as button when the enable_data_lens_save_as_button feature flag is false', function(){
+      ServerConfig.override('enableDataLensSaveAsButton', false);
+      var customizeBar = createElement().element;
+      expect(customizeBar.find('save-as')).to.have.class('ng-hide');
+    });
+
+    it('should show save-as button when the enable_data_lens_save_as_button feature flag is true', function(){
+      ServerConfig.override('enableDataLensSaveAsButton', true);
+      var customizeBar = createElement().element;
+      expect(customizeBar.find('save-as')).to.not.have.class('ng-hide');
     });
 
     it('should respond to changes to "hasChanges"', function() {

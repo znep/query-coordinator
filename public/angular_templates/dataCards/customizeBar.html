@@ -23,7 +23,8 @@
   </save-button>
   <save-as
     has-changes="hasChanges"
-    save-page-as="savePageAs"></save-as>
+    save-page-as="savePageAs"
+    ng-show="conditionallyShowSaveAsButton()"></save-as>
   <span
     class="changes-warning"
     ng-show="hasChanges">

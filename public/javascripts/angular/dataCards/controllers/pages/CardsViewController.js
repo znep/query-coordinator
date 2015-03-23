@@ -124,6 +124,8 @@
     *************************/
 
     $scope.page = page;
+    $scope.showOtherViewsButton = ServerConfig.get('enableDataLensOtherViews');
+    
     var pageNameSequence = page.observe('name').filter(_.isPresent);
     $scope.bindObservable('pageName', pageNameSequence);
     $scope.bindObservable('pageDescription', page.observe('description'));

@@ -263,7 +263,7 @@ class PhidippidesPagesControllerTest < ActionController::TestCase
   #   assert_response(200)
   # end
 
-  test 'special create fails when save as is not enabled' do
+  test 'create fails when save as is not enabled' do
     stub_feature_flags_with(:enable_data_lens_save_as_button, false)
     @controller.stubs(can_update_metadata?: true, save_as_enabled?: false)
 
@@ -271,7 +271,7 @@ class PhidippidesPagesControllerTest < ActionController::TestCase
     assert_response(401)
   end
 
-  test 'special create succeeds when save as is enabled' do
+  test 'create succeeds when save as is enabled' do
     @controller.stubs(can_update_metadata?: true, save_as_enabled?: true)
     @page_metadata_manager.stubs(create: { body: v0_page_metadata.to_json, status: '200' })
     stub_feature_flags_with(:metadata_transition_phase, '0')

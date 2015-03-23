@@ -75,6 +75,7 @@ Example:
 
 ```
 (cd karma-test/dataCards && karma start karma-unit.js --browsers PhantomJS --singleRun false --exclude-groups "directives integration")
+```
 
 ## Javascript/other asset package management
 

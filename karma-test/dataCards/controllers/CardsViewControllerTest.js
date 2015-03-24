@@ -1062,17 +1062,26 @@ describe('CardsViewController', function() {
       expect(context.cardLayout.$scope.chooserMode.show).to.equal(false);
     });
 
-    it('does not trigger when the the user is in customize edit mode', function() {
-      ServerConfig.override('enablePngDownloadUi', true);
-      var context = renderCardsView();
-      // Click download button
-      var downloadButton = context.element.find('.download-menu');
-      context.cardLayout.$scope.$parent.editMode = true;
-      context.$scope.$digest();
-      testHelpers.fireMouseEvent(downloadButton[0], 'click');
-      // Expect no action
-      expect(downloadButton.find('dropdown-menu').length).to.equal(0);
-    });
+
+    // IE10 and IE11 have an issue with setting nodeValue on textNode if the node has been replaced
+    // so this test is failing. We have to manually skip the test. =(
+    // See http://jsfiddle.net/bwrrp/a4qkeb26/
+    ((navigator.userAgent.indexOf('MSIE') !== -1 || navigator.appVersion.indexOf('Trident/') > 0) ?
+      xit :
+      it)('does not trigger when the the user is in customize edit mode', function() {
+        ServerConfig.override('enablePngDownloadUi', true);
+        var context = renderCardsView();
+        var cardLayout = context.cardLayout;
+        var $scope = cardLayout.$scope;
+        var $parentScope = $scope.$parent;
+        var downloadButton = context.element.find('.download-menu');
+
+        $parentScope.editMode = true;
+        $scope.$digest();
+
+        testHelpers.fireMouseEvent(downloadButton[0], 'click');
+        expect(downloadButton.find('dropdown-menu').length).to.equal(0);
+      });
   });
 
 });

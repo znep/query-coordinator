@@ -157,6 +157,35 @@ class PhidippidesTest < Test::Unit::TestCase
     phidippides.unstub(:migration_status_or_nil, :dataset_view)
   end
 
+  def test_fetch_dataset_metadata_with_error
+    error_body_stub = { 'error' => true }
+    error_status = '400'
+
+    phidippides.stubs(:migration_status_or_nil => { :truthy => true }, :dataset_view => {})
+    stub_column = { :fieldName => 'fooBar' }.with_indifferent_access
+    phidippides.dataset_view.stubs(:columns => [stub_column])
+    prepare_stubs(body: error_body_stub, path: 'datasets/four-four', verb: :get, code: error_status)
+
+    stub_feature_flags_with(:metadata_transition_phase, '0')
+    result = phidippides.fetch_dataset_metadata('four-four', request_id: 'request_id')
+    assert_equal(error_body_stub, result[:body])
+    assert_equal(error_status, result[:status])
+
+    prepare_stubs(body: error_body_stub, path: 'v1/id/vtvh-wqgq/dataset', verb: :get, code: error_status)
+    stub_feature_flags_with(:metadata_transition_phase, '1')
+    result = phidippides.fetch_dataset_metadata('vtvh-wqgq', request_id: 'request_id')
+    assert_equal(error_body_stub, result[:body])
+    assert_equal(error_status, result[:status])
+
+    prepare_stubs(body: error_body_stub, path: 'v1/id/vtvh-wqgq/dataset', verb: :get, code: error_status)
+    stub_feature_flags_with(:metadata_transition_phase, '2')
+    result = phidippides.fetch_dataset_metadata('vtvh-wqgq', request_id: 'request_id')
+    assert_equal(error_body_stub, result[:body])
+    assert_equal(error_status, result[:status])
+
+    phidippides.unstub(:migration_status_or_nil, :dataset_view)
+  end
+
   def test_migrate_dataset_metadata_to_v1_in_phase_1_generates_default_page_if_none_exists
     v1_dataset_metadata_without_default_page = {
       status: '200',

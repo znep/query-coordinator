@@ -64,7 +64,11 @@ class Phidippides < SocrataHttp
         :cookies => options[:cookies]
       )
     end
-    augment_dataset_metadata!(dataset_id, fetched_response[:body]) unless fetched_response[:body].blank?
+
+    unless fetched_response[:body].blank? || fetched_response[:status] != '200'
+      augment_dataset_metadata!(dataset_id, fetched_response[:body])
+    end
+
     fetched_response
   end
 

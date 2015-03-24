@@ -1106,7 +1106,7 @@
           map(function(layerInfo) {
             var url = layerInfo.url;
             var opacity = layerInfo.opacity;
-            return L.tileLayer(url, { attribution: '', detectRetina: true, opacity: opacity, unloadInvisibleTiles: true });
+            return L.tileLayer(url, { attribution: '', detectRetina: false, opacity: opacity, unloadInvisibleTiles: true });
           }).
           publish(); // Only subscribe once everything is wired up,
                      // otherwise some subscribers may miss the first

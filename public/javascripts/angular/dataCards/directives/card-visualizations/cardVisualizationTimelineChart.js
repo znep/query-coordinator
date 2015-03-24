@@ -298,8 +298,8 @@
           datasetPrecision.map(_.isUndefined),
           chartDataSequence.startWith(undefined), // Because we never request data w/o datasetPrecision.
           function(badDates, chartData) {
-            var durationIsZero = _.isPresent(chartData) ?
-              moment.duration(chartData.maxDate - chartData.minDate) <= 0 : false;
+            var durationIsZero = _.isPresent(chartData) &&
+              moment.duration(chartData.maxDate - chartData.minDate) <= 0;
 
             if (badDates) {
               return { reason: 'badDates' };

@@ -108,7 +108,7 @@ describe('A Timeline Chart Card Visualization', function() {
     });
   });
 
-  it('should not crash and recover given an undefined dataset binding', function() {
+  it('should successfully render when given an undefined dataset binding, and then also successfully render when that dataset is populated', function() {
     var outerScope = $rootScope.$new();
     var html = '<div class="card-visualization"><card-visualization-timeline-chart model="model" where-clause="whereClause"></card-visualization-timeline-chart></div>';
 

@@ -421,6 +421,22 @@ describe('CardsViewController', function() {
     });
   });
 
+  describe('related views', function() {
+    it('shows the related views area if feature flag enable_data_lens_other_views is true', function() {
+      ServerConfig.override('enableDataLensOtherViews', true);
+      var context = renderCardsView();
+      var relatedViews = context.element.find('related-views');
+      expect(relatedViews).to.not.have.class('ng-hide');
+    })
+
+    it('does not show related views area if feature flag enable_data_lens_other_views is false', function() {
+      ServerConfig.override('enableDataLensOtherViews', false);
+      var context = renderCardsView();
+      var relatedViews = context.element.find('related-views');
+      expect(relatedViews).to.have.class('ng-hide');
+    })
+  });
+
   describe('page description', function() {
     it('should update on the scope when the property changes on the model', function() {
       var controllerHarness = makeController();

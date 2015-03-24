@@ -1,5 +1,5 @@
 (function() {
-
+  'use strict';
   /**
    * A function that cleans up known memory leaks in sinon.
    */
@@ -136,8 +136,15 @@
 
     // Pulls a JSON file from the templateCache and parses it.
     var getTestJson = function(url) {
-      eval('var a = ' + $templateCache.get(url));
-      return a;
+      var text = $templateCache.get(url);
+      if (_.isUndefined(text)) {
+        throw new Error("Requested test JSON is not present in the template cache. You will want to add a line like this to your test: beforeEach(module('{0}'))".format(url));
+      }
+      try {
+        return JSON.parse(text);
+      } catch (e) {
+        throw new Error('Unable to parse test JSON. File: {0} Cause: {1} Text: {2}'.format(url, e.message, text));
+      }
     };
 
     // IE9 starts ignoring styles if we create too many <style> tags, I think. So don't

@@ -58,21 +58,6 @@
       maxValue = (maxValue < 0) ? 0 : maxValue;
       meanValue = (maxValue + minValue) / 2;
 
-      // We receive individual rows from the back-end
-      // but we want to display intelligent aggregates
-      // on the chart. We do this by bucketing each
-      // datum; in order to accomplish that we must first
-      // derive the number of buckets and the  temporal
-      // span of each one.
-      duration = moment.duration(maxDate - minDate);
-
-      if (duration <= 0) {
-        throw new Error(
-          'Cannot transform timeline chart data for rendering: ' +
-          'the time interval of the data is less than or equal to zero.'
-        );
-      }
-
       return {
         minDate: minDate.toDate(),
         maxDate: maxDate.toDate(),

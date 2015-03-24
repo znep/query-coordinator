@@ -1,4 +1,5 @@
 describe('timelineChart', function() {
+  'use strict';
 
   // NOTE: Selection rendering is slightly wonky in Safari 6.
   // Fixing this is not of high enough priority, so we disable
@@ -17,12 +18,25 @@ describe('timelineChart', function() {
   var hiddenLabelTestJson = 'karma-test/dataCards/test-data/timelineChartTest/hiddenLabelTimelineChartTestData.json';
   var negativeTestJson = 'karma-test/dataCards/test-data/timelineChartTest/negativeTestData.json';
   var nonContinuousTestJson = 'karma-test/dataCards/test-data/timelineChartTest/nonContinuousTestData.json';
+  var noDataTestJson = 'karma-test/dataCards/test-data/timelineChartTest/noData.json';
+  var allDataAtSameTimestampTestJson = 'karma-test/dataCards/test-data/timelineChartTest/allDataAtSameTimestamp.json';
+
+  var unfilteredTestData;
+  var allLabelsTestData;
+  var filteredTestData;
+  var hiddenLabelTestData;
+  var negativeTestData;
+  var nonContinuousTestData;
+  var noDataData;
+  var allDataAtSameTimestampData;
 
   beforeEach(module(testJson));
   beforeEach(module(allLabelsTestJson));
   beforeEach(module(hiddenLabelTestJson));
   beforeEach(module(negativeTestJson));
   beforeEach(module(nonContinuousTestJson));
+  beforeEach(module(noDataTestJson));
+  beforeEach(module(allDataAtSameTimestampTestJson));
 
   beforeEach(module('dataCards'));
 
@@ -59,6 +73,8 @@ describe('timelineChart', function() {
     hiddenLabelTestData = unpickleTestData(testHelpers.getTestJson(hiddenLabelTestJson), false);
     negativeTestData = unpickleTestData(testHelpers.getTestJson(negativeTestJson), false);
     nonContinuousTestData = unpickleTestData(testHelpers.getTestJson(nonContinuousTestJson), false);
+    noDataData = unpickleTestData(testHelpers.getTestJson(noDataTestJson), false);
+    allDataAtSameTimestampData = unpickleTestData(testHelpers.getTestJson(allDataAtSameTimestampTestJson), false);
   }));
 
   afterEach(function() {
@@ -186,7 +202,24 @@ describe('timelineChart', function() {
 
   });
 
+  it('should throw when given empty data', function() {
+    expect(function() {
+      var chart = createTimelineChart(640, false, noDataData);
+    }).to.throw();
+  });
+
   describe('axis creation', function() {
+
+    it('should recover from having all data at same timestamp', function() {
+      var chart = createTimelineChart(640, false, allDataAtSameTimestampData);
+
+      chart.scope().chartData = unfilteredTestData;
+      chart.scope().$digest();
+
+      expect($('.x-tick').length).to.be.above(1);
+      expect($('.x-tick-label').length).to.be.above(1);
+
+    });
 
     // A valid x-axis scale for this test data will have one more label
     // than there are ticks. Imagine a piece of paper with six vertical

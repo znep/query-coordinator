@@ -179,9 +179,6 @@ describe('addCardDialog', function() {
         outerScope.page = pageModel;
         outerScope.bindObservable('cardModels', pageModel.observe('cards'));
         outerScope.bindObservable('datasetColumns', datasetColumns);
-        outerScope.customizeCard = function(card) {
-          outerScope._test_cardToCustomize = card;
-        };
         outerScope.dialogState = {
           'cardSize': 1,
           'show': true
@@ -420,7 +417,7 @@ describe('addCardDialog', function() {
         expect(dialog.scope.cardModels[1].fieldName).to.equal('ward');
       });
 
-      it('should display a "customize" button for choropleths that calls the customize function', function() {
+      it('should display a "customize" button for choropleths that calls the customize function', function(done) {
         var dialog = createDialog();
 
         var customizeButton = dialog.element.find('.card-control[title^="Customize"]');
@@ -445,12 +442,13 @@ describe('addCardDialog', function() {
         expect(customizeButton.hasClass('card-control')).to.be.true;
         expect(customizeButton.prop('title')).to.match(/customize this card/i);
 
-        // We've stubbed the customize function to set this variable
-        expect(dialog.outerScope._test_cardToCustomize).to.not.be.ok;
+        dialog.outerScope.$on('customize-card-with-model', function(e, cardModel) {
+          expect(cardModel).to.be.ok;
+          done();
+        });
 
+        // Trigger the customize button click event.
         customizeButton.click();
-
-        expect(dialog.outerScope._test_cardToCustomize).to.be.ok;
       });
     });
 

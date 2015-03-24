@@ -57,14 +57,15 @@
         } else {
           queryTemplate = 'select {0} as name, {2} as value {1} group by {0} order by {2} desc limit {3}';
         }
+        var url = $.baseUrl('/api/id/{0}.json'.format(datasetId));
         // TODO: Implement some method for paging/showing data that has been truncated.
         var params = {
           $query: queryTemplate.format(fieldName, whereClause, aggregationClause, options.limit)
         };
-        var url = '/api/id/{0}.json?'.format(datasetId);
+        url.searchParams.set('$query', queryTemplate.format(fieldName, whereClause, aggregationClause, options.limit));
         var config = httpConfig.call(this);
 
-        return http.get(url + $.param(params), config).then(function(response) {
+        return http.get(url.href, config).then(function(response) {
           return _.map(response.data, function(item) {
             var name = options.namePhysicalDatatype === 'number' ? parseFloat(item.name) : item.name;
             return {
@@ -84,14 +85,12 @@
 
         datasetId = DeveloperOverrides.dataOverrideForDataset(datasetId) || datasetId;
         fieldName = SoqlHelpers.replaceHyphensWithUnderscores(fieldName);
-        var params = {
-          $query: "SELECT min({0}) AS start, max({0}) AS end WHERE {0} < '{1}'".
-            format(fieldName, MAX_LEGAL_JAVASCRIPT_DATE_STRING)
-        };
-        var url = '/api/id/{0}.json?'.format(datasetId);
+        var url = $.baseUrl('/api/id/{0}.json'.format(datasetId));
+        url.searchParams.set('$query', "SELECT min({0}) AS start, max({0}) AS end WHERE {0} < '{1}'".
+          format(fieldName, MAX_LEGAL_JAVASCRIPT_DATE_STRING));
         var config =  httpConfig.call(this);
 
-        return http.get(url + $.param(params), config).then(function(response) {
+        return http.get(url.href, config).then(function(response) {
 
           if (_.isEmpty(response.data)) {
             return $q.reject('Empty response from SODA.');
@@ -150,16 +149,15 @@
         var aggregationClause = buildAggregationClause(aggregationClauseData);
 
         fieldName = SoqlHelpers.replaceHyphensWithUnderscores(fieldName);
-        var params = {
-          $query: (
-            'SELECT date_trunc_{2}({0}) AS date_trunc, {3} AS value {1} ' +
-            'GROUP BY date_trunc'
-          ).format(fieldName, whereClause, dateTrunc, aggregationClause)
-        };
-        var url = '/api/id/{0}.json?'.format(datasetId);
+        var url = $.baseUrl('/api/id/{0}.json'.format(datasetId));
+        url.searchParams.set(
+          '$query',
+          'SELECT date_trunc_{2}({0}) AS date_trunc, {3} AS value {1} GROUP BY date_trunc'.
+            format(fieldName, whereClause, dateTrunc, aggregationClause)
+        );
         var config = httpConfig.call(this);
 
-        return http.get(url + $.param(params), config).then(function(response) {
+        return http.get(url.href, config).then(function(response) {
           if (!_.isArray(response.data)) {
             return $q.reject('Invalid response from SODA, expected array.');
           }
@@ -181,7 +179,7 @@
           var timeStart = _.min(dates);
           var timeEnd = _.max(dates);
           var timeData = Array(timeEnd.diff(timeStart, precision));
-          _.each(data, function(item, i) {
+          _.each(data, function(item) {
             var date = item.date_trunc;
             var timeSlot = date.diff(timeStart, precision);
             timeData[timeSlot] = { date: date, value: Number(item.value) };
@@ -199,9 +197,10 @@
       // prepare for live GeoJSON data.
       getChoroplethRegions: function(shapeFileId) {
         shapeFileId = DeveloperOverrides.dataOverrideForDataset(shapeFileId) || shapeFileId;
-        var url = '/resource/{0}.geojson?$limit=5000'.format(shapeFileId);
+        var url = $.baseUrl('/resource/{0}.geojson'.format(shapeFileId));
+        url.searchParams.set('$limit', 5000);
         var config = httpConfig.call(this, { headers: { 'Accept': 'application/vnd.geo+json' } });
-        return http.get(url, config).
+        return http.get(url.href, config).
           then(function(response) {
             return response.data;
           });
@@ -209,16 +208,15 @@
 
       getRowCount: function(datasetId, whereClause) {
         datasetId = DeveloperOverrides.dataOverrideForDataset(datasetId) || datasetId;
-        var params = {
-          $query: 'select count(0)'
-        };
+        var query = 'select count(0)';
         if (whereClause) {
-          params.$query += ' where {0}'.format(whereClause);
+          query += ' where {0}'.format(whereClause);
         }
-        var url = '/api/id/{0}.json?'.format(datasetId);
+        var url = $.baseUrl('/api/id/{0}.json'.format(datasetId));
+        url.searchParams.set('$query', query);
         var config = httpConfig.call(this);
 
-        return http.get(url + $.param(params), config).
+        return http.get(url.href, config).
           then(function(response) {
             if (_.isEmpty(response.data)) {
               throw new Error('The response from the server contained no data.');
@@ -244,10 +242,17 @@
         if (whereClause) {
           params.$where = whereClause;
         }
-        var url = '/api/id/{0}.json?'.format(datasetId);
+        var url = $.baseUrl('/api/id/{0}.json'.format(datasetId));
+        url.searchParams.set('$offset', offset);
+        url.searchParams.set('$limit', limit);
+        url.searchParams.set('$order', order);
+        if (whereClause) {
+          url.searchParams.set('$where', whereClause);
+        }
+
         var config = httpConfig.call(this, { timeout: timeout });
 
-        return http.get(url + $.param(params), config).then(function(response) {
+        return http.get(url.href, config).then(function(response) {
           return response.data;
         });
       },
@@ -258,14 +263,14 @@
 
       getFeatureExtent: function(fieldName, datasetId) {
 
-        var url;
         var config;
 
         datasetId = DeveloperOverrides.dataOverrideForDataset(datasetId) || datasetId;
-        url = '/resource/{0}.json?$select=extent({1})'.format(datasetId, fieldName);
+        var url = $.baseUrl('/resource/{0}.json'.format(datasetId));
+        url.searchParams.set('$select', 'extent({0})'.format(fieldName));
         config = httpConfig.call(this);
 
-        return http.get(url, config).then(function(response) {
+        return http.get(url.href, config).then(function(response) {
 
           if (_.isEmpty(response.data)) {
             return $q.reject('Empty response.');
@@ -292,12 +297,13 @@
         datasetId = DeveloperOverrides.dataOverrideForDataset(datasetId) || datasetId;
 
         // http://dataspace-demo.test-socrata.com/resource/vtvh-wqgq.json?$select=extent(point)
-        var extentUrl = '/resource/{0}.json?$select=extent({1})'.format(datasetId, datasetSourceColumn);
+        var url = $.baseUrl('/resource/{0}.json'.format(datasetId));
+        url.searchParams.set('$select', 'extent({0})'.format(datasetSourceColumn));
 
         var config = httpConfig.call(this);
         var self = this;
 
-        return http.get(extentUrl, config).then(function(response) {
+        return http.get(url.href, config).then(function(response) {
           if (response.status === 200) {
             shapeFileId = DeveloperOverrides.dataOverrideForDataset(shapeFileId) || shapeFileId;
 
@@ -316,15 +322,17 @@
             var multiPolygon = "'MULTIPOLYGON((({0},{1},{2},{3},{0})))'".
               format(bottomLeft, topLeft, topRight, bottomRight);
 
-            var shapeFileUrl = '/resource/{0}.geojson?$select=*&$where=intersects(the_geom,{1})&$limit=5000'.
-              format(shapeFileId, multiPolygon);
+            var url = $.baseUrl('/resource/{0}.geojson'.format(shapeFileId));
+            url.searchParams.set('$select', '*');
+            url.searchParams.set('$where', 'intersects(the_geom,{0})'.format(multiPolygon));
+            url.searchParams.set('$limit', 5000);
 
             var config = httpConfig.call(self, {
               headers: {
                 'Accept': 'application/vnd.geo+json'
               }
             });
-            return http.get(shapeFileUrl, config).
+            return http.get(url.href, config).
               then(function(response) {
                 return response.data;
               });
@@ -340,10 +348,10 @@
       },
 
       getChoroplethGeometryLabel: function(shapeFileId) {
-        var url = '/metadata/v1/dataset/{0}.json'.format(shapeFileId);
+        var url = $.baseUrl('/metadata/v1/dataset/{0}.json'.format(shapeFileId));
         var config = httpConfig.call(this);
 
-        return http.get(url, config).then(function(response) {
+        return http.get(url.href, config).then(function(response) {
           var geometryLabel = null;
 
           if (response.status !== 200) {

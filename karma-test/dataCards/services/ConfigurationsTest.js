@@ -5,6 +5,7 @@
     var $rootScope;
     var $httpBackend;
     var ConfigurationsService;
+    var URL_MATCHER = new RegExp('/api/configurations\\.json\\?defaultOnly=true&merge=true&type=theme_v3');
 
     beforeEach(module('socrataCommon.services'));
 
@@ -21,7 +22,7 @@
 
     describe('getThemeConfigurationsObservable', function() {
       it('should respond with an observable for successful request', function(done) {
-        $httpBackend.expectGET('/api/configurations.json?type=theme_v3&defaultOnly=true&merge=true').respond(200);
+        $httpBackend.expectGET(URL_MATCHER).respond(200);
         var themeObservable = ConfigurationsService.getThemeConfigurationsObservable();
         expect(themeObservable).to.respondTo('subscribe');
         themeObservable.subscribe(function() {
@@ -31,7 +32,7 @@
       });
 
       it('should not error if the server responds with an error', function(done) {
-        $httpBackend.expectGET('/api/configurations.json?type=theme_v3&defaultOnly=true&merge=true').respond(404);
+        $httpBackend.expectGET(URL_MATCHER).respond(404);
         // get the observable and take(1) so the observable ends and we can put the spy checks
         // in the complete callback
         var themeObservable = ConfigurationsService.getThemeConfigurationsObservable().take(1);
@@ -50,7 +51,7 @@
       });
 
       it('should not make another http request if called multiple times', function() {
-        $httpBackend.expectGET('/api/configurations.json?type=theme_v3&defaultOnly=true&merge=true').respond(200);
+        $httpBackend.expectGET(URL_MATCHER).respond(200);
         var themeObservable = ConfigurationsService.getThemeConfigurationsObservable();
         var otherThemeObservable = ConfigurationsService.getThemeConfigurationsObservable();
         expect(themeObservable).to.equal(otherThemeObservable);
@@ -86,7 +87,7 @@
             "value": "http://placekitten.com/g/500/200"
           }];
 
-        $httpBackend.expectGET('/api/configurations.json?type=theme_v3&defaultOnly=true&merge=true').respond(200, response);
+        $httpBackend.expectGET(URL_MATCHER).respond(200, response);
         var themeObservable = ConfigurationsService.getThemeConfigurationsObservable();
         expect(themeObservable).to.respondTo('subscribe');
         themeObservable.subscribe(function(actual) {

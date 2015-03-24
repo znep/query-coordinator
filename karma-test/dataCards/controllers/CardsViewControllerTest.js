@@ -245,7 +245,7 @@ describe('CardsViewController', function() {
       var $scope = controllerHarness.$scope;
 
       mockWindowServiceLocationSeq.filter(_.identity).subscribe(function(href) {
-        expect(href).to.equal('/login?referer_redirect=1');
+        expect(href).to.match(new RegExp('/login\\?referer_redirect=1'));
         done();
       });
 
@@ -931,7 +931,7 @@ describe('CardsViewController', function() {
       $scope.savePageAs(NEW_PAGE_NAME, NEW_PAGE_DESCRIPTION);
       mockWindowServiceLocationSeq.subscribe(function(href) {
         if (href) {
-          expect(href).to.equal('/view/{0}'.format(TEST_PAGE_ID));
+          expect(href).to.match(new RegExp('/view/{0}'.format(TEST_PAGE_ID)));
           done();
         }
       });
@@ -956,12 +956,12 @@ describe('CardsViewController', function() {
       controllerHarness.$scope.$digest();
 
       expect(controllerHarness.$scope.datasetCSVDownloadURL).
-        to.equal('/api/views/fake-fbfr/rows.csv?accessType=DOWNLOAD');
+        to.match(new RegExp('/api/views/fake-fbfr/rows\\.csv\\?accessType=DOWNLOAD'));
     });
 
     it('uses the obeid for the csv download link if available', function() {
       var controllerHarness = makeController();
-      $httpBackend.expectGET('/api/migrations/fake-fbfr');
+      $httpBackend.expectGET(new RegExp('/api/migrations/fake-fbfr'));
 
       expect(controllerHarness.$scope.datasetCSVDownloadURL).to.equal('#');
 
@@ -972,13 +972,13 @@ describe('CardsViewController', function() {
       controllerHarness.$scope.$digest();
 
       expect(controllerHarness.$scope.datasetCSVDownloadURL).
-        to.equal('/api/views/fake-fbfr/rows.csv?accessType=DOWNLOAD');
+        to.match(new RegExp('/api/views/fake-fbfr/rows\\.csv\\?accessType=DOWNLOAD'));
 
       $httpBackend.flush();
       controllerHarness.$scope.$digest();
 
       expect(controllerHarness.$scope.datasetCSVDownloadURL).
-        to.equal('/api/views/sooo-oold/rows.csv?accessType=DOWNLOAD&bom=true');
+        to.match(new RegExp('/api/views/sooo-oold/rows\\.csv\\?accessType=DOWNLOAD&bom=true'));
     });
 
     it('closes the dialog when clicking (or hitting esc) outside it', function() {

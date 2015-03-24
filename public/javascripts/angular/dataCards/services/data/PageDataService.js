@@ -6,26 +6,19 @@
     var schemas = Schemas.regarding('page_metadata');
 
     function fetch(id) {
+      var url = $.baseUrl();
+      var config = {
+        cache: true,
+        requester: this
+      };
 
       if (ServerConfig.metadataMigration.pageMetadata.shouldReadWriteFromNewEndpoint()) {
-
-        var url = '/metadata/v1/page/{0}.json'.format(id);
-        var config = {
-          cache: true,
-          requester: this
-        };
-
+        url.pathname = '/metadata/v1/page/{0}.json'.format(id);
       } else {
-
-        var url = '/page_metadata/{0}.json'.format(id);
-        var config = {
-          cache: true,
-          requester: this
-        };
-
+        url.pathname = '/page_metadata/{0}.json'.format(id);
       }
 
-      return http.get(url, config).
+      return http.get(url.href, config).
         then(function(response) {
           return response.data;
         }
@@ -57,26 +50,20 @@
       }
 
       var json = JSON.stringify(pageData);
+      var config = {
+        method: idIsDefined ? 'PUT' : 'POST',
+        requester: this
+      };
+      var url = $.baseUrl();
 
       if (ServerConfig.metadataMigration.pageMetadata.shouldReadWriteFromNewEndpoint()) {
-
-        var config = {
-          data: json,
-          method: idIsDefined ? 'PUT' : 'POST',
-          url: idIsDefined ? '/metadata/v1/page/{0}.json'.format(id) : '/metadata/v1/page.json',
-          requester: this
-        };
-
+        config.data = json;
+        url.pathname = idIsDefined ? '/metadata/v1/page/{0}.json'.format(id) : '/metadata/v1/page.json';
       } else {
-
-        var config = {
-          data: { pageMetadata:  json },
-          method: idIsDefined ? 'PUT' : 'POST',
-          url: idIsDefined ? '/page_metadata/{0}.json'.format(id) : '/page_metadata.json',
-          requester: this
-        };
-
+        config.data = { pageMetadata:  json };
+        url.pathname = idIsDefined ? '/page_metadata/{0}.json'.format(id) : '/page_metadata.json';
       }
+      config.url = url.href;
 
       return http(config);
     };

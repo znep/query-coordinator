@@ -27,8 +27,7 @@ module CardTypeMapping
         "property not present on column '#{column.inspect}'."
       Airbrake.notify(
         :error_class => 'NoPhysicalDatatypeError',
-        :error_message => error_message,
-        :context => { :column => column }
+        :error_message => error_message
       )
       Rails.logger.error(error_message)
       return 'invalid'
@@ -83,6 +82,8 @@ module CardTypeMapping
         else
           card_type = 'search'
         end
+      when 'multipolygon'
+        card_type = 'invalid'
       else
         error_message = "Could not determine card type: invalid " \
           "physicalDatatype '#{physical_datatype.inspect}' on column #{column.inspect}."
@@ -105,8 +106,7 @@ module CardTypeMapping
         "property not present on column '#{column.inspect}'."
       Airbrake.notify(
         :error_class => 'NoPhysicalDatatypeError',
-        :error_message => error_message,
-        :context => { :column => column }
+        :error_message => error_message
       )
       Rails.logger.error(error_message)
       return ['invalid']
@@ -149,11 +149,10 @@ module CardTypeMapping
         available_card_types = ['column', 'search']
       else
         error_message = "Could not determine available card types: " \
-          "invalid physicalDatatype '#{physical_datatype.inspect}' on column {#column.inspect}."
+          "invalid physicalDatatype '#{physical_datatype.inspect}' on column #{column.inspect}."
         Airbrake.notify(
           :error_class => 'UnrecognizedPhysicalDatatypeError',
-          :error_message => error_message,
-          :context => { :physical_datatype => physical_datatype }
+          :error_message => error_message
         )
         Rails.logger.error(error_message)
         return ['invalid']

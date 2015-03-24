@@ -23,7 +23,13 @@ class Phidippides < SocrataHttp
     begin
       ::ZookeeperDiscovery.get_json("/#{zookeeper_path}/#{instance_id}")
     rescue ZK::Exceptions::BadArguments => error
-      Rails.logger.error(error_message = "Unable to determine phidippides connection details due to error: #{error.to_s}")
+      error_message = "Unable to determine phidippides connection details " \
+        "due to error: #{error}"
+      Airbrake.notify(
+        :error_class => 'ZookeeperDiscoveryError',
+        :error_message => error_message
+      )
+      Rails.logger.error(error_message)
       raise Phidippides::ConnectionError.new(error_message)
     end
   end
@@ -102,8 +108,13 @@ class Phidippides < SocrataHttp
   def dataset_view(id)
     begin
       View.find(id)
-    rescue => e
-      Rails.logger.warn(%Q(Error while retrieving old backend view of "(#{id}): #{e}"))
+    rescue => error
+      error_message = %Q(Error while retrieving old backend view of "(#{id.inspect}): #{error}")
+      Airbrake.notify(
+        :error_class => 'DatasetViewError',
+        :error_message => error_message
+      )
+      Rails.logger.warn(error_message)
       nil
     end
   end
@@ -119,8 +130,13 @@ class Phidippides < SocrataHttp
       else
         nil
       end
-    rescue => e
-      Rails.logger.warn(%Q(Error while retrieving migration status of "(#{id}): #{e}"))
+    rescue => error
+      error_message = %Q(Error while retrieving migration status of "(#{id.inspect}): #{error}")
+      Airbrake.notify(
+        :error_class => 'MigrationStatusError',
+        :error_message => error_message
+      )
+      Rails.logger.warn(error_message)
       nil
     end
   end
@@ -151,11 +167,13 @@ class Phidippides < SocrataHttp
       dataset_id = dataset_metadata.try(:[], :body).try(:[], :id)
 
       unless dataset_id.present?
+        error_message = "Could not migrate dataset to v1: could not " \
+          "determine dataset_id (dataset_metadata: #{dataset_metadata.inspect})."
         Airbrake.notify(
           :error_class => 'DatasetMetadataMigrationError',
-          :error_message => 'Could not migrate dataset to v1: could not determine dataset id.',
-          :context => { :response => dataset_metadata }
+          :error_message => error_message
         )
+        Rails.logger.error(error_message)
         return
       end
 
@@ -164,14 +182,8 @@ class Phidippides < SocrataHttp
       begin
         first_page_id = pages_for_dataset.try(:[], :body).try(:[], :publisher).try(:first).try(:[], :pageId)
       rescue TypeError => error
-        error_message = 'Could not migrate dataset to v1: encountered error ' \
-          "trying to find first available page (#{error})."
-        Airbrake.notify(
-          :error_class => 'DatasetMetadataMigrationError',
-          :error_message => error_message,
-          :datasetId => dataset_id,
-          :context => { :response => pages_for_dataset }
-        )
+        # This TypeError will be recorded by the error condition below in which
+        # first_page_id.present? is falsey.
         first_page_id = nil
       end
 
@@ -179,12 +191,15 @@ class Phidippides < SocrataHttp
         dataset_metadata[:body][:defaultPage] = first_page_id
         update_dataset_metadata(dataset_metadata[:body].to_json)
       else
+        error_message = "Could not migrate dataset to v1: no valid " \
+          "publisher pageId found (dataset_metadata: " \
+          "#{dataset_metadata.inspect} pages_for_dataset: " \
+          "#{pages_for_dataset.inspect})."
         Airbrake.notify(
           :error_class => 'DatasetMetadataMigrationError',
-          :error_message => 'Could not migrate dataset to v1: no valid publisher pageId found.',
-          :datastId => dataset_id,
-          :context => { :response => dataset_metadata }
+          :error_message => error_message
         )
+        Rails.logger.error(error_message)
       end
     end
   end
@@ -198,22 +213,23 @@ class Phidippides < SocrataHttp
           'for dataset: unable to determine dataset id.'
         Airbrake.notify(
           :error_class => 'DatasetMetadataCardTypeComputationError',
-          :error_message => error_message,
-          :context => { :response => dataset_metadata }
+          :error_message => error_message
         )
+        Rails.logger.error(error_message)
         return
       end
 
       columns = dataset_metadata.try(:[], :body).try(:[], :columns)
 
       unless columns.present?
-        error_message = 'Could not compute default and available card types ' \
-          'for dataset: no columns found.'
+        error_message = "Could not compute default and available card types " \
+          "for dataset: no columns found (dataset_metadata: " \
+          "#{dataset_metadata.inspect})."
         Airbrake.notify(
           :error_class => 'DatasetMetadataCardTypeComputationError',
           :error_message => error_message,
-          :context => { :response => dataset_metadata }
         )
+        Rails.logger.error(error_message)
         return
       end
 
@@ -398,16 +414,14 @@ class Phidippides < SocrataHttp
         "/id/#{dataset_id}?%24query=select+count(0)"
       )
       dataset_size = JSON.parse(core_server_response)[0]['count_0'].to_i
-    rescue CoreServer::Error => e
+    rescue CoreServer::Error => error
+      error_message = "Could not determine dataset size: server error " \
+          "(#{error})) (core_server_response: #{core_server_response.inspect})."
       Airbrake.notify(
         :error_class => "DatasetSizeError",
-        :error_message => "Could not determine dataset size: server error " \
-          "(#{e.inspect}). Response: #{core_server_response.inspect}"
+        :error_message => error_message
       )
-      Rails.logger.error(
-        'Core server error while retrieving dataset size of dataset ' \
-        "(#{dataset_id}): #{e}"
-      )
+      Rails.logger.error(error_message)
       # Default to some sufficiently-high dataset size in order to not affect
       # cardinality decisions.
       dataset_size = 5_000_000

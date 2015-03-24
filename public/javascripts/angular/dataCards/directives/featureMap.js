@@ -1,11 +1,11 @@
 (function() {
   'use strict';
 
-  function featureMap(Constants,
-                      AngularRxExtensions,
-                      VectorTiles,
-                      FlyoutService,
-                      $timeout) {
+  function featureMap(
+    Constants,
+    AngularRxExtensions,
+    VectorTiles,
+    FlyoutService) {
 
     return {
       restrict: 'E',
@@ -20,10 +20,6 @@
 
         AngularRxExtensions.install(scope);
 
-        //
-        // Set up state.
-        //
-
         var mapOptions = {
           attributionControl: false,
           center: [47.609895, -122.330259], // Center on Seattle by default.
@@ -32,30 +28,18 @@
           zoom: 1,
           zoomControlPosition: 'topleft'
         };
-
         var map = L.map(element.find('.feature-map-container')[0], mapOptions);
-
-        var baseTileLayer = null;
-
         // We buffer feature layers so that there isn't a visible flash
         // of emptiness when we transition from one to the next. This is accomplished
         // by only removing the previous layers when the current one completes rendering.
         var featureLayers = {};
-
         // We also keep a handle on the current feature layer Url so we know which of
-        // the existing layers we can safely remove.
+        // the existing layers we can safely remove (i.e. not the current one).
         var currentFeatureLayerUrl;
-
-        // We only want to calculate the extent on page load, so we track whether or
-        // not this is the first render. After the first render this flag gets switched
-        // to false and we will no longer set the map bounds based on the colum's extent.
-        var firstRender = true;
-
-        // We track how many protocol buffer tile requests are in-flight so that we can
-        // swap out the old tiles when all the new ones have loaded (see the explanation
-        // of featureLayers above).
-        var tilesToProcess = 0;
-
+        var startResizeFn = null;
+        var completeResizeFn = null;
+        var baseTileLayerObservable = null;
+        var RESIZE_DEBOUNCE_INTERVAL = 250;
 
         /**
          * Returns a unique string id for a feature that will be used as a key
@@ -65,11 +49,11 @@
          * @param feature - The feature for which we will compute an id.
          * @param index - The index of the feature into the tile's collection
          *   of features.
+         * @returns {String}
          */
         function getFeatureId(feature, index) {
           return String(index);
         }
-
 
         /**
          * Returns true for features that should be drawn and false for features
@@ -77,27 +61,28 @@
          *
          * @param feature - The feature that we will style.
          * @param context - The canvas 2d context to which we are drawing.
+         * @returns {Boolean}
          */
         function filterLayerFeature(feature, context) {
           return true;
         }
 
-
         /**
          * Returns the 'z-index' at which the feature should be drawn.
          *
          * @param feature - The feature that we will style.
+         * @returns {Number}
          */
         function getFeatureZIndex(feature) {
           return 1;
         }
-
 
         /**
          * Scales points according to zoom level. The maximum zoom level
          * in Leaflet is 18; the minimum is 1.
          *
          * @param zoomLevel - The current zoom level of the map.
+         * @returns {Number}
          */
         function scalePointFeatureRadiusByZoomLevel(zoomLevel) {
           // This was created somewhat arbitrarily by Chris to
@@ -106,9 +91,7 @@
           // any function which computes a number that makes
           // sense as the radius of a point feature in pixels.
           return Math.pow(zoomLevel * 0.125, 2) + 1;
-
         }
-
 
         /**
          * Returns an object specifying the styles with which a point feature
@@ -116,8 +99,11 @@
          *
          * This function is called by the Vector Tile Layer extension to Leaflet
          * as it iterates over features in a vector tile.
+         *
+         * @returns {Object} - A style object that will be used to render the
+         *   feature.
          */
-        function getPointStyleFn() {
+        function getPointStyle() {
           return {
             color: 'rgba(48,134,171,1.0)',
             radius: scalePointFeatureRadiusByZoomLevel,
@@ -126,21 +112,22 @@
           };
         }
 
-
         /**
          * Returns an object specifying the styles with which a line string
          * feature will be rendered.
          *
          * This function is called by the Vector Tile Layer extension to Leaflet
          * as it iterates over features in a vector tile.
+         *
+         * @returns {Object} - A style object that will be used to render the
+         *   feature.
          */
-        function getLineStringStyleFn() {
+        function getLineStringStyle() {
           return {
             color: 'rgba(161,217,155,0.8)',
             size: 3
           };
         }
-
 
         /**
          * Returns an object specifying the styles with which a polygon feature
@@ -148,8 +135,11 @@
          *
          * This function is called by the Vector Tile Layer extension to Leaflet
          * as it iterates over features in a vector tile.
+         *
+         * @returns {Object} - A style object that will be used to render the
+         *   feature.
          */
-        function getPolygonStyleFn() {
+        function getPolygonStyle() {
           return {
             color: 'rgba(149,139,255,0.4)',
             outline: {
@@ -159,13 +149,14 @@
           };
         }
 
-
         /**
          * Provides a generic interface to the styling functions above and
          * dispatches requests to the appropriate type based on the feature
          * being styled.
          *
          * @param feature - The feature that we will style.
+         * @returns {Object} - A function that can be used to generate a style
+         *   object.
          */
         function getFeatureStyle(feature) {
 
@@ -177,23 +168,20 @@
 
             // Point
             case 1:
-              return getPointStyleFn();
+              return getPointStyle();
 
             // LineString
             case 2:
-              return getLineStringStyleFn();
+              return getLineStringStyle();
 
             // Polygon
             case 3:
-              return getPolygonStyleFn();
+              return getPolygonStyle();
 
             default:
               throw new Error('Cannot apply style to unknown feature type "' + feature.type + '".');
-
           }
-
         }
-
 
         /**
          * Creates a new feature layer with a specific tileServer endpoint
@@ -234,7 +222,6 @@
           }
         }
 
-
         /**
          * Removes existing but out of date feature layers from the map.
          * This is used in conjunction with createNewFeatureLayer.
@@ -261,43 +248,104 @@
           }
         }
 
-
         /**
          * Derives a bounding box that contains each element in a set of points
          * and then causes the map to fit that bounding box within its viewport.
          *
-         * @param featureExtent - The southwest and northeast bounds of the
-         *   collection of features.
+         * @param bounds - The Leaflet LatLngBounds object that represents the
+         *   extents of the column's features.
          */
-        function fitMapBounds(featureExtent) {
+        function fitMapBounds(bounds) {
 
           map.fitBounds(
-            [
-              featureExtent.southwest,
-              featureExtent.northeast
-            ],
+            bounds,
             {
               animate: false,
               pan: { animate: false },
               zoom: { animate: false }
             }
           );
-
         }
 
+        /**
+         * Emit a 'render:start' event that will be consumed by
+         * cardVisualizationFeatureMap to determine when to show the spinner
+         * and by the analytics system to record render timings.
+         */
+        function emitRenderStarted() {
+          scope.safeApply(function() {
+            scope.$emit('render:start', { source: 'feature_map_{0}'.format(scope.$id), timestamp: _.now(), tag: 'vector_tile_render' });
+          });
+        }
 
-        //
-        // Respond to clicks.
-        //
+        /**
+         * Emit a 'render:complete' event that will be consumed by
+         * cardVisualizationFeatureMap to determine when to show the spinner
+         * and by the analytics system to record render timings.
+         */
+        function emitRenderCompleted() {
+          scope.safeApply(function() {
+            scope.$emit('render:complete', { source: 'feature_map_{0}'.format(scope.$id), timestamp: _.now(), tag: 'vector_tile_render' });
+          });
+        }
+
+        // Map resizes are messy because our map containers are animated. This
+        // causes Leaflet to believe that we are resizing the map n times when
+        // we are really just doing it once but lerping between the container
+        // sizes. To work around this we can debounce the event twice--once on
+        // the leading edge and once on the trailing edge--to simulate 'start'
+        // and 'stop' events for the resize.
+        startResizeFn = _.debounce(
+          function() {
+            // We will need to record the current min and max latitude of the
+            // viewport here so that we can reset the viewport to capture a
+            // similar vertical area after the resize event completes.
+          },
+          RESIZE_DEBOUNCE_INTERVAL,
+          { leading: true, trailing: false }
+        );
+
+        completeResizeFn = _.debounce(
+          function() {
+            // We will need to reset the viewport using a center point and a
+            // zoom level in order to preserve the 'perceptual' area covered by
+            // the map.
+            // These can be constructed from the min and max latitude of the
+            // pre-resize viewport, which we have conveniently recorded when
+            // the event was originally fired.
+          },
+          RESIZE_DEBOUNCE_INTERVAL,
+          { leading: false, trailing: true }
+        );
+
+        // Respond to map events.
         map.on('click', function(e) {
-          // TODO: Something
+          // TODO: Something?
         });
 
+        map.on('resize', function(e) {
+          // This is debounced and will fire on the leading edge.
+          startResizeFn();
+          // This is debounced and will fire on the trailing edge.
+          // In the best case, this will be called RESIZE_DEBOUNCE_INTERVAL
+          // milliseconds after the resize event is captured by this handler.
+          completeResizeFn();
+        });
 
-        //
+        // The 'vector-tile-render-started' and 'vector-tile-render-complete'
+        // events are not native to Leaflet so we need to listen for them on
+        // the container element, not the map object.
+        element.on('vector-tile-render-started', function(e) {
+          emitRenderStarted();
+        });
+
+        element.on('vector-tile-render-complete', function(e) {
+          emitRenderCompleted();
+          removeOldFeatureLayers(map);
+        });
+
         // Keep the baseTileLayer in sync with the baseLayerUrl observable.
-        //
-        baseTileLayer = scope.observe('baseLayerUrl').
+        baseTileLayerObservable = scope.observe('baseLayerUrl').
           map(function(url) {
             if (!_.isDefined(url)) {
               return {
@@ -324,79 +372,67 @@
                 unloadInvisibleTiles: true
               }
             );
-          }).
-          publish(); // Only subscribe once everything is wired up,
-                     // otherwise some subscribers may miss the first
-                     // value from the scope.observe().
-
+          }
+        ).
+        // Only subscribe once everything is wired up, otherwise some
+        // subscribers may miss the first value from the scope.observe().
+        publish();
         // Remove old map layers.
-        baseTileLayer.bufferWithCount(2, 1).subscribe(function(layers) {
-          map.removeLayer(layers[0]);
-        });
-
+        baseTileLayerObservable.
+          bufferWithCount(2, 1).
+          subscribe(function(layers) {
+            map.removeLayer(layers[0]);
+          }
+        );
         // Add new map layers.
-        baseTileLayer.subscribe(function(layer) {
-          layer.addTo(map);
-          layer.bringToBack(map);
-        });
-        
+        baseTileLayerObservable.
+          subscribe(function(layer) {
+            layer.addTo(map);
+            layer.bringToBack(map);
+          }
+        );
         // Now that everything's hooked up, connect the subscription.
-        baseTileLayer.connect();
+        baseTileLayerObservable.connect();
 
+        // We want to set the bounds before we start requesting tiles so that
+        // we don't make a bunch of requests for zoom level 1 while we are
+        // waiting for the extent query to come back.
+        var boundsSetObservable = scope.
+          observe('featureExtent').
+          filter(_.isDefined).
+          map(
+            function(featureExtent) {
+              var southWest;
+              var northEast;
+              var bounds;
 
-        //
-        // Emit analytics events on render start and complete events
-        // for protocol buffer vector tiles.
-        //
-        element.on('vector-tile-render-started', function(e) {
+              southWest = L.latLng(featureExtent.southwest[0], featureExtent.southwest[1]);
+              northEast = L.latLng(featureExtent.northeast[0], featureExtent.northeast[1]);
+              bounds = L.latLngBounds(southWest, northEast);
 
-          scope.$emit('render:start', { source: 'feature_map_{0}'.format(scope.$id), timestamp: _.now(), tag: 'vector_tile_render' });
+              // It is critical to invalidate size prior to updating bounds.
+              // Otherwise, leaflet will fit the bounds to an incorrectly sized viewport.
+              // This manifests itself as the map being zoomed all of the way out.
+              map.invalidateSize();
+              fitMapBounds(bounds);
+            }
+          );
 
-        });
-
-        element.on('vector-tile-render-complete', function(e) {
-
-          removeOldFeatureLayers(map);
-          scope.$emit('render:complete', { source: 'feature_map_{0}'.format(scope.$id), timestamp: _.now(), tag: 'vector_tile_render' });
-
-        });
-
-
-        //
         // React to changes to the featureLayerUrl observable
         // (which changes indicate that a re-render is needed).
-        //
         Rx.Observable.subscribeLatest(
-          scope.observe('featureLayerUrl'),
-          function(featureLayerUrl) {
-            if (_.isString(featureLayerUrl)) {
-              currentFeatureLayerUrl = featureLayerUrl;    
-              createNewFeatureLayer(map, featureLayerUrl);
-            }
-          });
+          scope.observe('featureLayerUrl').filter(_.isString),
+          boundsSetObservable,
+          function(featureLayerUrl, boundsSet) {
+            currentFeatureLayerUrl = featureLayerUrl;
+            createNewFeatureLayer(map, featureLayerUrl);
+          }
+        );
 
-        //
-        // React to changes to the visualization's dimensions
-        // and the underlying feature data
-        // (which changes indicate that the map's starting
-        // zoom level and viewport bounds should be calculated).
-        //
-
-        // TODO: Maybe split the below into two subscriptions, one to each
-        // and which react to one source only.
         Rx.Observable.subscribeLatest(
           element.observeDimensions().filter(_.property('height')),
-          scope.observe('featureExtent').filter(_.isDefined),
-          function(dimensions, featureExtent) {
-            // It is critical to invalidate size prior to updating bounds.
-            // Otherwise, leaflet will fit the bounds to an incorrectly sized viewport.
-            // This manifests itself as the map being zoomed all of the way out.
+          function(dimensions, boundsSet) {
             map.invalidateSize();
-
-            if (firstRender) {
-              fitMapBounds(featureExtent);
-              firstRender = false;
-            }
           }
         );
       }
@@ -405,11 +441,14 @@
 
   angular.
     module('dataCards.directives').
-      directive('featureMap', ['Constants',
-                               'AngularRxExtensions',
-                               'VectorTiles',
-                               'FlyoutService',
-                               '$timeout',
-                               featureMap]);
-
+      directive(
+        'featureMap',
+        [
+          'Constants',
+          'AngularRxExtensions',
+          'VectorTiles',
+          'FlyoutService',
+          featureMap
+        ]
+      );
 })();

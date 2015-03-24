@@ -3,6 +3,7 @@ require 'test_helper'
 class PhidippidesDatasetsControllerTest < ActionController::TestCase
 
   def setup
+    CurrentDomain.class_variable_set('@@current_domain', :data => Hashie::Mash.new)
     CurrentDomain.stubs(domain: stub(cname: 'localhost'))
     @phidippides = Phidippides.new
     @phidippides.stubs(end_point: 'http://localhost:2401')

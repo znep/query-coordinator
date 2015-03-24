@@ -13,6 +13,7 @@ class NewUxBootstrapControllerTest < ActionController::TestCase
       @controller.stubs(
         :phidippides => @phidippides,
         :page_metadata_manager => @page_metadata_manager,
+        :dataset_is_new_backend? => true
       )
 
       Airbrake.stubs(notify: nil)
@@ -103,6 +104,24 @@ class NewUxBootstrapControllerTest < ActionController::TestCase
               )
             end
             CoreServer::Base.stubs(connection: connection_stub)
+      end
+
+      context 'bootstrapping old backend datasets should error' do
+        should 'in phases 1, 2 and 3' do
+          @controller.stubs(:dataset_is_new_backend? => false)
+
+          stub_feature_flags_with(:metadata_transition_phase, '1')
+          get :bootstrap, id: 'data-iden'
+          assert_response(400)
+
+          stub_feature_flags_with(:metadata_transition_phase, '2')
+          get :bootstrap, id: 'data-iden'
+          assert_response(400)
+
+          stub_feature_flags_with(:metadata_transition_phase, '3')
+          get :bootstrap, id: 'data-iden'
+          assert_response(400)
+        end
       end
 
       context 'default page' do

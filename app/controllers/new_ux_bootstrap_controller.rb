@@ -28,16 +28,19 @@ class NewUxBootstrapController < ActionController::Base
     #    Crucially, this includes SuperAdmins so that Socrata employees can
     #    test this functionality without having to impersonate customers.
     #
-    # 2. Fetch the dataset metadata, which is used downstream to create cards.
+    # 2. Check to make sure the dataset in question is in the new backend.
+    #    If it isn't, 400.
+    #
+    # 3. Fetch the dataset metadata, which is used downstream to create cards.
     #    If we cannot fetch the dataset data then we fail early. We will let
     #    Airbrake know aout this, but not the user.
     #
-    # 3. Check to see if any 'new UX' pages already exist.
+    # 4. Check to see if any 'new UX' pages already exist.
     #
-    # 4a. If they do, then we send the user to the default or the last page in
+    # 5a. If they do, then we send the user to the default or the last page in
     #     the collection.
     #
-    # 4b. If no pages already exist, then we need to create one. This is hacky
+    # 5b. If no pages already exist, then we need to create one. This is hacky
     #     and non-deterministic.
 
     # 1. Check to make sure that the user is authorized to create a new view
@@ -48,7 +51,15 @@ class NewUxBootstrapController < ActionController::Base
       }, :status => :forbidden
     end
 
-    # 2. Fetch the dataset metadata, which is used downstream to create cards.
+    # 2. Check to make sure the dataset in question is in the new backend.
+    unless dataset_is_new_backend?
+      return render :json => {
+        error: true,
+        reason: 'Dataset must be in the dataspace backend, but it is in the legacy backend.'
+      }, :status => 400
+    end
+
+    # 3. Fetch the dataset metadata, which is used downstream to create cards.
     dataset_metadata_response = phidippides.fetch_dataset_metadata(
       params[:id],
       :request_id => request_id,
@@ -67,7 +78,7 @@ class NewUxBootstrapController < ActionController::Base
 
     dataset_metadata_response_body = dataset_metadata_response[:body]
 
-    # 3. Check to see if any 'new UX' pages already exist.
+    # 4. Check to see if any 'new UX' pages already exist.
     pages_response = phidippides.fetch_pages_for_dataset(
       params[:id],
       :request_id => request_id,
@@ -84,7 +95,7 @@ class NewUxBootstrapController < ActionController::Base
       ((!has_publisher_pages && pages_response[:status] == '200') ||
         pages_response[:status] == '404')
 
-    # 4a. There is at least one 'New UX' page already, so we can find a default.
+    # 5a. There is at least one 'New UX' page already, so we can find a default.
     if request_successful_and_has_publisher_pages
       pages = pages_response[:body][:publisher]
 
@@ -143,7 +154,7 @@ class NewUxBootstrapController < ActionController::Base
         end
       end
 
-    # 4b. If there are no pages, we will need to create a default 'New UX' page.
+    # 5b. If there are no pages, we will need to create a default 'New UX' page.
     elsif request_successful_but_no_pages
 
       generate_and_redirect_to_new_page(dataset_metadata_response_body)
@@ -345,6 +356,10 @@ class NewUxBootstrapController < ActionController::Base
 
   def dataset
     View.find(params[:id])
+  end
+
+  def dataset_is_new_backend?
+    dataset.new_backend?
   end
 
 end

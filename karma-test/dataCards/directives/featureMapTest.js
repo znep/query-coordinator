@@ -89,6 +89,8 @@ describe('featureMap', function() {
     return deserializedProtocolBuffers;
   }
 
+  // TODO: Let's try using sinon's fake XHR again instead
+  // of doing this.
   function setUpFakeXHR() {
 
     fakeXhr = function() {
@@ -311,13 +313,38 @@ describe('featureMap', function() {
     });
   });
 
-  // This test is too brittle... Leaflet handles the creation and removal
-  // of canvas tiles, and we can't reliably guess which tiles to check for
-  // rendered points. Similarly, we can't iterate over every pixel to check
-  // for rendered pionts because that would be far too slow for a test.
-  xdescribe('when zoomed in', function() {
+  describe('when zoomed in', function() {
 
-    it('should render visible points at expected locations', function(done) {
+    it("should fire a second 'render:complete' event.", function(done) {
+
+      var completeEvents = 0;
+      var hasZoomed = false;
+
+      // Wait for rendering to complete before checking the content of the canvas tiles.
+      scope.$on('render:complete', function(event, data) {
+
+        completeEvents++;
+
+        if (!hasZoomed) {
+
+          testHelpers.fireEvent($('.leaflet-control-zoom-in')[0], 'click');
+          hasZoomed = true;
+
+        } else {
+
+          expect(completeEvents).to.equal(2);
+          done();
+        }
+      });
+
+      var map = createFeatureMap();
+    });
+
+    // This test is too brittle... Leaflet handles the creation and removal
+    // of canvas tiles, and we can't reliably guess which tiles to check for
+    // rendered points. Similarly, we can't iterate over every pixel to check
+    // for rendered pionts because that would be far too slow for a test.
+    xit('should render visible points at expected locations', function(done) {
 
       var canvases;
       var expectedPointColor = 'rgba(48,134,171,1.0)';

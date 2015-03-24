@@ -747,7 +747,6 @@
 
         var zoom = this.map.getZoom();
         var outstandingRequests = _.keys(this.outstandingTileDataRequests);
-        var outstandingValidRequests = [];
         var outstandingRequestZoom = 0;
 
         // First stop tracking the request that just succeeded.
@@ -765,8 +764,6 @@
             this.outstandingTileDataRequests[outstandingRequests[i]].abort();
             delete this.outstandingTileDataRequests[outstandingRequests[i]];
             this.outstandingRequestCount--;
-          } else {
-            outstandingValidRequests.push(outstandingRequests[i]);
           }
         }
 

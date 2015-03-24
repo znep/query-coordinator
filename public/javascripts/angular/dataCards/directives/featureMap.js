@@ -36,8 +36,8 @@
         // We also keep a handle on the current feature layer Url so we know which of
         // the existing layers we can safely remove (i.e. not the current one).
         var currentFeatureLayerUrl;
-        var beforeResizeFn = null;
-        var afterResizeFn = null;
+        var startResizeFn = null;
+        var completeResizeFn = null;
         var baseTileLayerObservable = null;
         var RESIZE_DEBOUNCE_INTERVAL = 250;
 
@@ -295,7 +295,7 @@
         // sizes. To work around this we can debounce the event twice--once on
         // the leading edge and once on the trailing edge--to simulate 'start'
         // and 'stop' events for the resize.
-        beforeResizeFn = _.debounce(
+        startResizeFn = _.debounce(
           function() {
             // We will need to record the current min and max latitude of the
             // viewport here so that we can reset the viewport to capture a
@@ -305,7 +305,7 @@
           { leading: true, trailing: false }
         );
 
-        afterResizeFn = _.debounce(
+        completeResizeFn = _.debounce(
           function() {
             // We will need to reset the viewport using a center point and a
             // zoom level in order to preserve the 'perceptual' area covered by
@@ -325,11 +325,11 @@
 
         map.on('resize', function(e) {
           // This is debounced and will fire on the leading edge.
-          beforeResizeFn();
+          startResizeFn();
           // This is debounced and will fire on the trailing edge.
           // In the best case, this will be called RESIZE_DEBOUNCE_INTERVAL
           // milliseconds after the resize event is captured by this handler.
-          afterResizeFn();
+          completeResizeFn();
         });
 
         // The 'vector-tile-render-started' and 'vector-tile-render-complete'

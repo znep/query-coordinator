@@ -470,6 +470,7 @@
         this.layers = {};
         this.outstandingTileDataRequests = {};
         this.map = null;
+        this.outstandingRequestCount = 0;
       },
 
       onAdd: function(map) {
@@ -602,6 +603,10 @@
           }
         };
 
+        xhr.onabort = function() {
+          self.tileLoaded(tileId);
+        }
+
         xhr.onerror = function() {
           self.tileLoaded(tileId);
           throw new Error('Could not retrieve protocol buffer tile from tileServer: "{0} {1}"'.format(xhr.status, xhr.response));
@@ -730,38 +735,24 @@
 
       tileLoading: function(tileId, xhr) {
 
-        var requestZoom = parseInt(tileId.split(':')[0], 10);
-        var requestTileIds = _.keys(this.outstandingTileDataRequests);
-        var outstandingRequestsWithRequestZoomLevel = requestTileIds.
-          filter(
-            function(requestTileId) {
-
-              var outstandingRequestZoom = parseInt(
-                requestTileId.split(':')[0],
-                10
-              );
-              return requestZoom === outstandingRequestZoom;
-            }
-          );
-
-        // If this is the first request for the current zoom level, then emit
-        // a 'vector-tile-render-started' event.
-        if (outstandingRequestsWithRequestZoomLevel.length === 0) {
+        if (this.outstandingRequestCount === 0) {
           this.emitRenderStartedEvent();
         }
 
         this.outstandingTileDataRequests[tileId] = xhr;
+        this.outstandingRequestCount++;
       },
 
       tileLoaded: function(tileId) {
-
-        // First stop tracking the request that just succeeded.
-        delete this.outstandingTileDataRequests[tileId];
 
         var zoom = this.map.getZoom();
         var outstandingRequests = _.keys(this.outstandingTileDataRequests);
         var outstandingValidRequests = [];
         var outstandingRequestZoom = 0;
+
+        // First stop tracking the request that just succeeded.
+        delete this.outstandingTileDataRequests[tileId];
+        this.outstandingRequestCount--;
 
         for (var i = 0; i < outstandingRequests.length; i++) {
 
@@ -773,12 +764,13 @@
           if (outstandingRequestZoom !== zoom) {
             this.outstandingTileDataRequests[outstandingRequests[i]].abort();
             delete this.outstandingTileDataRequests[outstandingRequests[i]];
+            this.outstandingRequestCount--;
           } else {
             outstandingValidRequests.push(outstandingRequests[i]);
           }
         }
 
-        if (outstandingValidRequests.length === 0) {
+        if (this.outstandingRequestCount === 0) {
           this.emitRenderCompleteEvent();
         }
       }

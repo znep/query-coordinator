@@ -21,43 +21,15 @@
         var dataResponses = new Rx.Subject();
         var featureExtentDataSequence = new Rx.Subject();
 
-        // Keep track of the number of requests that have been made and the number of
-        // responses that have come back.
-        // .scan() is necessary because the usual aggregation suspect reduce actually
-        // will not execute over a sequence until it has been completed; scan is happy
-        // to operate on active sequences.
-        var dataRequestCount = dataRequests.scan(0, function(acc, x) { return acc + 1; });
-        var dataResponseCount = dataResponses.scan(0, function(acc, x) { return acc + 1; });
-
-
-        /*************************************
-        * FIRST set up the 'busy' indicator. *
-        *************************************/
-
-        // If the number of requests is greater than the number of responses, we have
-        // a request in progress and we should display the spinner.
-        // SUPER IMPORTANT NOTE: Because of the way that RxJS works, we need to bind
-        // this one here and not below with the other bound observables... so unfortunately
-        // this code is location-dependent within the file.
-        scope.bindObservable('busy',
-          Rx.Observable.combineLatest(
-            dataRequestCount,
-            dataResponseCount,
-            function(requests, responses) {
-              return requests === 0 || (requests > responses);
-            }));
-
-
-        /******************************************
-        * THEN set up other observable sequences. *
-        ******************************************/
-
+        // The 'render:start' and 'render:complete' events are emitted by the
+        // underlying feature map and are used for a) toggling the state of the
+        // 'busy' spinner and b) performance analytics.
         scope.$on('render:start', function(e) {
-          dataRequests.onNext(1);
+          scope.busy = true;
         });
 
         scope.$on('render:complete', function(e) {
-          dataResponses.onNext(1);
+          scope.busy = false;
         });
 
         Rx.Observable.combineLatest(
@@ -114,9 +86,14 @@
               // {z}, {x} and {y} components of the string provided to Leaflet as a tile URL
               // template.
               //
-              // The limit of 50,000 is chosen to be unrealistically-large so that we get
-              // all probable--and even some unlikely--points per tile.
-              var url = '/tiles/' + dataset.id + '/' + fieldName + '/{z}/{x}/{y}.pbf?$limit=50000';
+              // The limit of 65,536 is the number of unique points that could potentially be
+              // drawn on a 256x256 tile.
+              var url = '/tiles/' +
+                dataset.id +
+                '/' +
+                fieldName +
+                '/{z}/{x}/{y}.pbf?$limit=' +
+                String(Math.pow(256, 2));
 
               // Tile requests do not go through $http, so we must add the app token parameter here.
               // Technically the preferred method is through a header, but there's no easy way to

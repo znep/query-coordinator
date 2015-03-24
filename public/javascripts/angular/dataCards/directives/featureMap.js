@@ -273,7 +273,9 @@
          * and by the analytics system to record render timings.
          */
         function emitRenderStarted() {
-          scope.$emit('render:start', { source: 'feature_map_{0}'.format(scope.$id), timestamp: _.now(), tag: 'vector_tile_render' });
+          scope.safeApply(function() {
+            scope.$emit('render:start', { source: 'feature_map_{0}'.format(scope.$id), timestamp: _.now(), tag: 'vector_tile_render' });
+          });
         }
 
         /**
@@ -282,7 +284,9 @@
          * and by the analytics system to record render timings.
          */
         function emitRenderCompleted() {
-          scope.$emit('render:complete', { source: 'feature_map_{0}'.format(scope.$id), timestamp: _.now(), tag: 'vector_tile_render' });
+          scope.safeApply(function() {
+            scope.$emit('render:complete', { source: 'feature_map_{0}'.format(scope.$id), timestamp: _.now(), tag: 'vector_tile_render' });
+          });
         }
 
         // Map resizes are messy because our map containers are animated. This
@@ -336,8 +340,8 @@
         });
 
         element.on('vector-tile-render-complete', function(e) {
-          removeOldFeatureLayers(map);
           emitRenderCompleted();
+          removeOldFeatureLayers(map);
         });
 
         // Keep the baseTileLayer in sync with the baseLayerUrl observable.

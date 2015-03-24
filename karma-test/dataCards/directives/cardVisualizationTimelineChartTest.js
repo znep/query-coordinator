@@ -7,6 +7,7 @@ describe('A Timeline Chart Card Visualization', function() {
   var Model;
   var timelineChartVisualizationHelpers;
   var _$provide;
+  var mockCardDataService;
 
   beforeEach(module('/angular_templates/dataCards/cardVisualizationTimelineChart.html'));
 
@@ -22,7 +23,7 @@ describe('A Timeline Chart Card Visualization', function() {
     Model = $injector.get('Model');
     timelineChartVisualizationHelpers = $injector.get('TimelineChartVisualizationHelpers');
 
-    var mockCardDataService = {
+    mockCardDataService = {
       getTimelineDomain: function(){
         return $q.when({
           start: moment().subtract('years', 10),
@@ -47,6 +48,33 @@ describe('A Timeline Chart Card Visualization', function() {
   afterEach(function(){
     testHelpers.TestDom.clear();
   });
+
+  function stubCardModel() {
+    var card = new Model();
+    var page = new Model();
+    var dataset = new Model();
+
+    dataset.id = 'cras-hing';
+    dataset.defineObservableProperty('rowDisplayUnit', '');
+    page.defineObservableProperty('dataset', dataset);
+    page.defineObservableProperty('baseSoqlFilter', '');
+    page.defineObservableProperty('aggregation', {});
+    card.page = page;
+    card.defineObservableProperty('expanded', false);
+    card.defineObservableProperty('activeFilters', []);
+
+    return card;
+  }
+
+  function makeDirective() {
+    var outerScope = $rootScope.$new();
+    var html = '<div class="card-visualization"><card-visualization-timeline-chart model="model" where-clause="whereClause"></card-visualization-timeline-chart></div>';
+
+    outerScope.model = stubCardModel();
+
+    return testHelpers.TestDom.compileAndAppend(html, outerScope);
+  }
+
 
   describe('transformChartDataForRendering', function() {
     it('should add min/max for dates and values, and mean for value', function() {
@@ -80,22 +108,14 @@ describe('A Timeline Chart Card Visualization', function() {
     });
   });
 
-  it('should not crash given an undefined dataset binding', function() {
+  it('should successfully render when given an undefined dataset binding, and then also successfully render when that dataset is populated', function() {
     var outerScope = $rootScope.$new();
     var html = '<div class="card-visualization"><card-visualization-timeline-chart model="model" where-clause="whereClause"></card-visualization-timeline-chart></div>';
 
     // STUBS
-    var card = new Model();
-    var page = new Model();
-    var dataset = new Model();
-
-    page.defineObservableProperty('dataset', undefined); // The important bit
-
-    page.defineObservableProperty('baseSoqlFilter', '');
-    page.defineObservableProperty('aggregation', {});
-    card.defineObservableProperty('page', page);
-    card.defineObservableProperty('expanded', false);
-    card.defineObservableProperty('activeFilters', []);
+    var card = stubCardModel();
+    var originalDataset = card.page.getCurrentValue('dataset');
+    card.page.set('dataset', undefined); // The important bit
 
     outerScope.model = card;
     outerScope.whereClause = '';
@@ -104,9 +124,7 @@ describe('A Timeline Chart Card Visualization', function() {
     // If it's going to crash, it's here.
     var element = testHelpers.TestDom.compileAndAppend(html, outerScope);
 
-    dataset.id = 'cras-hing';
-    dataset.defineObservableProperty('rowDisplayUnit', '');
-    page.set('dataset', dataset);
+    card.page.set('dataset', originalDataset);
 
     var timelineChartScope = element.find('.timeline-chart').scope();
 
@@ -120,21 +138,7 @@ describe('A Timeline Chart Card Visualization', function() {
     var outerScope = $rootScope.$new();
     var html = '<div class="card-visualization"><card-visualization-timeline-chart model="model" where-clause="whereClause"></card-visualization-timeline-chart></div>';
 
-    // STUBS
-    var card = new Model();
-    var page = new Model();
-    var dataset = new Model();
-
-    dataset.id = 'cras-hing';
-    dataset.defineObservableProperty('rowDisplayUnit', '');
-    page.defineObservableProperty('dataset', dataset);
-    page.defineObservableProperty('baseSoqlFilter', '');
-    page.defineObservableProperty('aggregation', {});
-    card.defineObservableProperty('page', page);
-    card.defineObservableProperty('expanded', false);
-    card.defineObservableProperty('activeFilters', []);
-    outerScope.model = card;
-    // END STUBS
+    outerScope.model = stubCardModel();
 
     outerScope.whereClause = undefined; // The important bit.
 
@@ -146,30 +150,27 @@ describe('A Timeline Chart Card Visualization', function() {
     expect(timelineChartScope.chartData).to.not.equal(undefined);
   });
 
-  it('should display a message when the chart cannot be rendered', function() {
-    // PRECONDITIONS
-    var outerScope = $rootScope.$new();
-    var html = '<div class="card-visualization"><card-visualization-timeline-chart model="model" where-clause="whereClause"></card-visualization-timeline-chart></div>';
+  it('should display a warning when all the data has the same timestamp', function() {
+    var now = moment();
+    mockCardDataService.getTimelineData = function(){
+      return $q.when([
+        {
+          date: now
+        }
+      ]
+    )};
 
-    // STUBS
-    var card = new Model();
-    var page = new Model();
-    var dataset = new Model();
+    var element = makeDirective();
+    var errorMessage = element.find('.chart-render-error');
+    expect(errorMessage.text().trim()).to.equal('No data available.');
+  });
 
-    page.defineObservableProperty('dataset', dataset);
-    page.defineObservableProperty('baseSoqlFilter', '');
-    page.defineObservableProperty('aggregation', {});
-    card.defineObservableProperty('page', page);
-    card.defineObservableProperty('expanded', false);
-    card.defineObservableProperty('activeFilters', []);
-    outerScope.model = card;
-    // END STUBS
+  it('should display a message when the chart cannot be rendered due to bad dates', function() {
+    mockCardDataService.getTimelineDomain = function(){
+      return $q.when(undefined);
+    };
 
-    var element = testHelpers.TestDom.compileAndAppend(html, outerScope);
-    var timelineChartScope = element.find('.timeline-chart').scope();
-    // END PRECONDITIONS
-
-    timelineChartScope.bindObservable('cannotRenderTimelineChart', Rx.Observable.returnValue(true));
+    var element = makeDirective();
     var errorMessage = element.find('.chart-render-error');
     expect(errorMessage.text().trim()).to.equal('Chart cannot be rendered due to invalid date values.');
   });

@@ -288,11 +288,28 @@
           }
         );
 
-        // We're deriving whether or not we can render the timeline chart based
-        // upon whether precision is defined or not because the precision (i.e.
-        // 'DAY', 'MONTH', etc.) is derived from the start/end date and BAD DATES
-        // cause us to be unable to render the timeline chart.
-        var cannotRenderTimelineChart = datasetPrecision.map(_.isUndefined);
+        // We're deriving whether or not we can render the timeline chart based upon:
+        // * whether precision is defined or not. The precision (i.e.
+        //   'DAY', 'MONTH', etc.) is derived from the start/end date and BAD DATES
+        //   cause us to be unable to render the timeline chart.
+        // * whether the timespan of the data is more than zero (buckets don't make
+        //   sense when they're zero in duration).
+        var cannotRenderTimelineChart = Rx.Observable.combineLatest(
+          datasetPrecision.map(_.isUndefined),
+          chartDataSequence.startWith(undefined), // Because we never request data w/o datasetPrecision.
+          function(badDates, chartData) {
+            var durationIsZero = _.isPresent(chartData) &&
+              moment.duration(chartData.maxDate - chartData.minDate) <= 0;
+
+            if (badDates) {
+              return { reason: 'badDates' };
+            } else if (durationIsZero){
+              return { reason: 'zeroTimeSpan' };
+            } else {
+              return false;
+            }
+          }
+        );
 
         scope.bindObservable('chartData', chartDataSequence);
         scope.bindObservable('expanded', model.observeOnLatest('expanded'));

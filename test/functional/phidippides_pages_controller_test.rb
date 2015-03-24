@@ -73,8 +73,8 @@ class PhidippidesPagesControllerTest < ActionController::TestCase
 
     get :show, id: 'four-four', format: 'json'
     assert_response(:success)
-    result = JSON.parse(@response.body)
-    assert_equal('private', result['permissions'])
+    result = JSON.parse(@response.body).with_indifferent_access
+    assert_equal({isPublic: false, rights: []}.with_indifferent_access, result['permissions'])
   end
 
   test 'show displays permission:public for views public in core' do
@@ -91,8 +91,8 @@ class PhidippidesPagesControllerTest < ActionController::TestCase
 
     get :show, id: 'four-four', format: 'json'
     assert_response(:success)
-    result = JSON.parse(@response.body)
-    assert_equal('public', result['permissions'])
+    result = JSON.parse(@response.body).with_indifferent_access
+    assert_equal({isPublic: true, rights: []}.with_indifferent_access, result['permissions'])
   end
 
   test 'show returns 401 if the Core view requires authn' do

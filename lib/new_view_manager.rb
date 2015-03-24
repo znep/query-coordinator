@@ -8,6 +8,8 @@ class NewViewManager
   class ViewAccessDenied < Error; end
   class InvalidPermissions < Error; end
 
+  # TODO: consolidate this with the 'dataset' parameter in phidippides_datasets_controller, which
+  # fetches the same url
   def fetch(page_id)
     url = "/views/#{CGI::escape(page_id)}.json"
 
@@ -182,7 +184,7 @@ class NewViewManager
   def parse_core_response(response)
     begin
       JSON.parse(response).with_indifferent_access
-    rescue JSONError => e
+    rescue JSON::ParserError => e
       report_error(
         "Error parsing JSON response from Core: #{e.error_message}",
         e,

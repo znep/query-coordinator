@@ -7,7 +7,13 @@ class PhidippidesDatasetsControllerTest < ActionController::TestCase
     CurrentDomain.stubs(domain: stub(cname: 'localhost'))
     @phidippides = Phidippides.new
     @phidippides.stubs(end_point: 'http://localhost:2401')
-    @controller.stubs(:phidippides => @phidippides)
+    @new_view_manager = NewViewManager.new
+    @new_view_manager.stubs(fetch: {grants: [{flags: ['public']}]})
+    @controller.stubs(
+      :phidippides => @phidippides,
+      :new_view_manager => @new_view_manager
+    )
+    stub_feature_flags_with(:use_catalog_lens_permissions, true)
   end
 
   def set_up_json_request(body = nil)
@@ -51,7 +57,7 @@ class PhidippidesDatasetsControllerTest < ActionController::TestCase
     get :show, id: 'four-four', format: 'json'
     assert_response(:success)
     assert_equal(
-      ['columns', 'defaultPage', 'description', 'domain', 'id', 'locale', 'name', 'ownerId', 'updatedAt'].sort,
+      ['permissions', 'columns', 'defaultPage', 'description', 'domain', 'id', 'locale', 'name', 'ownerId', 'updatedAt'].sort,
       JSON.parse(@response.body).keys.sort)
   end
 
@@ -64,6 +70,7 @@ class PhidippidesDatasetsControllerTest < ActionController::TestCase
     @phidippides.expects(:migrate_dataset_metadata_to_v1).with do |result|
       assert_equal('vtvh-wqgq', result[:body][:id])
     end
+
     stub_feature_flags_with(:metadata_transition_phase, '3')
     get :show, id: 'four-four', format: 'json'
     assert_response(:success)

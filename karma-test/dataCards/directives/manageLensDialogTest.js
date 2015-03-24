@@ -9,6 +9,7 @@ describe('manage-lens dialog', function() {
   var $httpBackend;
   var _$provide;
   var Page;
+  var DatasetDataService;
   var clock;
 
   beforeEach(module(function($provide) {
@@ -21,6 +22,10 @@ describe('manage-lens dialog', function() {
     $httpBackend = $injector.get('$httpBackend');
     Page = $injector.get('Page');
 
+    var $q = $injector.get('$q');
+    DatasetDataService = $injector.get('DatasetDataService');
+    sinon.stub(DatasetDataService, 'getDatasetMetadata').returns($q.defer().promise);
+
     testHelpers.mockDirective(_$provide, 'socSelect');
     testHelpers.mockDirective(_$provide, 'saveButton');
 
@@ -30,11 +35,18 @@ describe('manage-lens dialog', function() {
   afterEach(function(){
     testHelpers.TestDom.clear();
     testHelpers.cleanUp();
+    DatasetDataService.getDatasetMetadata.restore();
   });
 
   function createElement() {
     var $scope = $rootScope.$new();
-    $scope.page = new Page({pageId: 'page-eyed'});
+    $scope.page = new Page({
+      pageId: 'page-eyed',
+      datasetId: 'data-eyed',
+      permissions: {
+        isPublic: true
+      }
+    });
     $scope.dialogState = {show: true};
     return testHelpers.TestDom.compileAndAppend(
       '<manage-lens-dialog page="page" dialog-state="dialogState" />',
@@ -55,7 +67,7 @@ describe('manage-lens dialog', function() {
       var element = createElement();
       var $scope = element.children().scope();
 
-      $scope.pagePermissions = 'public';
+      $scope.pageVisibility = 'public';
       $scope.save();
 
       expect($scope.saveStatus).to.equal('saving');
@@ -76,7 +88,7 @@ describe('manage-lens dialog', function() {
       var element = createElement();
       var $scope = element.children().scope();
 
-      $scope.pagePermissions = 'private';
+      $scope.pageVisibility = 'private';
       $scope.save();
 
       expect($scope.saveStatus).to.equal('saving');

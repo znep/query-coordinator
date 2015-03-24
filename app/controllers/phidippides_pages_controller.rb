@@ -1,6 +1,6 @@
 class PhidippidesPagesController < ActionController::Base
 
-  include CommonPhidippidesMethods
+  include CommonMetadataMethods
   include CommonMetadataTransitionMethods
   include UserAuthMethods
 
@@ -51,7 +51,7 @@ class PhidippidesPagesController < ActionController::Base
       )
       page_metadata = result[:body]
 
-      # Also add whether the page is public or not
+      # Also add the permissions
       page_metadata[:permissions] = permissions if page_metadata
 
       render :json => page_metadata, :status => result[:status]
@@ -169,20 +169,5 @@ class PhidippidesPagesController < ActionController::Base
 
   def save_as_enabled?
     FeatureFlags.derive(nil, request)[:enable_data_lens_save_as_button]
-  end
-
-  def inherit_catalog_lens_permissions?
-    FeatureFlags.derive(nil, request)[:use_catalog_lens_permissions]
-  end
-
-  def new_view_manager
-    @new_view_manager ||= NewViewManager.new
-  end
-
-  def fetch_permissions(id)
-    catalog_response = new_view_manager.fetch(id)
-    catalog_response.fetch(:grants, []).any? do |grant|
-      grant.fetch(:flags, []).include?('public')
-    end ? 'public' : 'private'
   end
 end

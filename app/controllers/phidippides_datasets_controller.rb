@@ -1,6 +1,6 @@
 class PhidippidesDatasetsController < ActionController::Base
 
-  include CommonPhidippidesMethods
+  include CommonMetadataMethods
   include CommonMetadataTransitionMethods
   include UserAuthMethods
 
@@ -34,6 +34,21 @@ class PhidippidesDatasetsController < ActionController::Base
     return render :nothing => true, :status => '406' unless request.format.to_s == 'application/json'
     return render :nothing => true, :status => '400' unless params[:id].present?
 
+    if inherit_catalog_lens_permissions?
+      # Grab permissions from core
+      begin
+        permissions = fetch_permissions(params[:id])
+      rescue NewViewManager::ViewNotFound
+        return render :nothing => true, :status => '404'
+      rescue NewViewManager::ViewAuthenticationRequired => e
+        return render :json => {error: e.message}, :status => '401'
+      rescue NewViewManager::ViewAccessDenied => e
+        return render :json => {error: e.message}, :status => '403'
+      rescue
+        return render :nothing => true, :status => '500'
+      end
+    end
+
     begin
       result = phidippides.fetch_dataset_metadata(params[:id], :request_id => request_id, :cookies => forwardable_session_cookies)
 
@@ -51,7 +66,11 @@ class PhidippidesDatasetsController < ActionController::Base
         phidippides.set_default_and_available_card_types_to_columns!(result)
       end
 
-      render :json => result[:body], :status => result[:status]
+      dataset_metadata = result[:body]
+
+      dataset_metadata[:permissions] = permissions if dataset_metadata
+
+      render :json => dataset_metadata, :status => result[:status]
     rescue Phidippides::ConnectionError
       render :json => { :body => 'Phidippides connection error' }, :status => '500'
     end

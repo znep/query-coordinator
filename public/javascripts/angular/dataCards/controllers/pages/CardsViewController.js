@@ -65,7 +65,9 @@
   }
 
   function initManageLens($scope, page) {
-    $scope.bindObservable('pagePermissions', page.observe('permissions'));
+    $scope.bindObservable('pagePermissions', page.observe('permissions').map(function(permissions) {
+      return permissions && (permissions.isPublic ? 'public' : 'private');
+    }));
     $scope.manageLensState = {
       show: false
     };

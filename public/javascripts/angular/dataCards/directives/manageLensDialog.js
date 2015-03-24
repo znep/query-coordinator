@@ -12,43 +12,48 @@
       link: function($scope, element, attrs) {
         AngularRxExtensions.install($scope);
 
-        $scope.bindObservable('pagePermissions', $scope.page.observe('permissions'));
+        $scope.bindObservable(
+          'pageVisibility',
+          $scope.page.observe('permissions').map(function(permissions) {
+            return permissions.isPublic ? 'public' : 'private';
+          })
+        );
+
+        $scope.bindObservable(
+          'datasetIsPublic',
+          $scope.page.observe('dataset.permissions').map(_.property('isPublic'))
+        );
 
         /**
-         * Save the model by updating the model passed in, with our cloned copy.
+         * Save the permissions.
          */
         $scope.save = function() {
-          $scope.page.set('permissions', $scope.pagePermissions);
+          var permissions = $scope.page.getCurrentValue('permissions');
+          permissions.isPublic = $scope.pageVisibility === 'public';
+          $scope.page.set('permissions', permissions);
 
-          var url;
-          switch ($scope.pagePermissions) {
-            case 'public':
-              url = '/views/{0}.json?method=setPermission&value=public.read';
-              break;
-            case 'private':
-              url = '/views/{0}.json?method=setPermission&value=private';
-              break;
-          }
+          var url = '/views/{0}.json?method=setPermission&value={1}'.format(
+            $scope.page.id,
+            permissions.isPublic ? 'public.read' : 'private'
+          );
 
-          if (url) {
-            $scope.saveStatus = 'saving';
-            $http.put(url.format($scope.page.id)).then(function() {
-              $scope.saveStatus = 'saved';
-              // Now close the dialog after 1.5 seconds
-              setTimeout(function() {
-                $scope.safeApply(function() {
-                  $scope.dialogState.show = false;
-                });
-              }, 1500);
-            })['catch'](function() {
-              $scope.saveStatus = 'failed';
-              setTimeout(function() {
-                $scope.safeApply(function() {
-                  $scope.saveStatus = null;
-                });
-              }, 8000);
-            });
-          }
+          $scope.saveStatus = 'saving';
+          $http.put(url).then(function() {
+            $scope.saveStatus = 'saved';
+            // Now close the dialog after 1.5 seconds
+            setTimeout(function() {
+              $scope.safeApply(function() {
+                $scope.dialogState.show = false;
+              });
+            }, 1500);
+          })['catch'](function() {
+            $scope.saveStatus = 'failed';
+            setTimeout(function() {
+              $scope.safeApply(function() {
+                $scope.saveStatus = null;
+              });
+            }, 8000);
+          });
         };
       }
     };

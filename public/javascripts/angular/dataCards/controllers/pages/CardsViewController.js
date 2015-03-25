@@ -158,7 +158,8 @@
         return Rx.Observable.fromPromise($http.get(url));
       }).map(function(response) {
         return response.data.obeId;
-      });
+      }).
+      catchException(Rx.Observable.never()); // Error means this isn't a migrated dataset. Just don't surface any obeId.
     $scope.bindObservable('sourceDatasetURL', obeIdObservable.map(function(obeId) {
       // Now construct the source dataset url from the obe id
       return OBE_DATASET_PAGE.format(obeId);

@@ -3,10 +3,6 @@ module CardTypeMapping
 
   include CommonMetadataTransitionMethods
 
-  CARD_TYPE_MAPPING = JSON.parse(IO.read(
-    File.join(Rails.root, 'lib', 'data', 'card-type-mapping.json')
-  ))
-
   # This cardinality threshold is only used by the 'new' way
   # to compute default and available card types, not the old way.
   CARDINALITY_THRESHOLD = 35

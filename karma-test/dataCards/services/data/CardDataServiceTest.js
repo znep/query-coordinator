@@ -291,12 +291,12 @@ describe("CardDataService", function() {
     });
 
     it('should pass through the where clause fragment', function() {
-      var url = ('/api/id/{1}.json?$query=SELECT date_trunc_ymd({0}) AS date_trunc, ' +
-        "count(*) AS value WHERE date_trunc IS NOT NULL AND {0} < '{2}' GROUP BY date_trunc").
+      var url = ('/api/id/{1}.json?$query=SELECT date_trunc_ymd({0}) AS truncated_date, ' +
+        "count(*) AS value WHERE {0} IS NOT NULL AND {0} < '{2}' GROUP BY truncated_date").
         format('fakeNumberColumn', fake4x4, ConstantsService['MAX_LEGAL_JAVASCRIPT_DATE_STRING']);
       $httpBackend.expectGET(toUriRegex(url));
-      url = ('/api/id/{1}.json?$query=SELECT date_trunc_ymd(fakeNumberColumn) AS date_trunc, ' +
-        "count(*) AS value WHERE date_trunc IS NOT NULL AND {0} < '{2}' AND MAGICAL_WHERE_CLAUSE GROUP BY date_trunc").
+      url = ('/api/id/{1}.json?$query=SELECT date_trunc_ymd({0}) AS truncated_date, ' +
+        "count(*) AS value WHERE {0} IS NOT NULL AND {0} < '{2}' AND MAGICAL_WHERE_CLAUSE GROUP BY truncated_date").
         format('fakeNumberColumn', fake4x4, ConstantsService['MAX_LEGAL_JAVASCRIPT_DATE_STRING']);
       $httpBackend.expectGET(toUriRegex(url));
       CardDataService.getTimelineData('fakeNumberColumn', fake4x4, '', 'DAY', countAggregation);
@@ -327,10 +327,10 @@ describe("CardDataService", function() {
 
     it('should correctly parse valid dates', function(done) {
       var fakeData = [
-        {"date_trunc":"2014-05-27T00:00:00.000","value":"1508"},
-        {"date_trunc":"2014-05-09T00:00:00.000","value":"238"},
-        {"date_trunc":"2014-05-07T00:00:00.000","value":"624"},
-        {"date_trunc":"2014-05-13T00:00:00.000","value":"718"}
+        {"truncated_date":"2014-05-27T00:00:00.000","value":"1508"},
+        {"truncated_date":"2014-05-09T00:00:00.000","value":"238"},
+        {"truncated_date":"2014-05-07T00:00:00.000","value":"624"},
+        {"truncated_date":"2014-05-13T00:00:00.000","value":"718"}
       ];
       fakeDataRequestHandler.respond(fakeData);
       var response = CardDataService.getTimelineData('fakeNumberColumn', fake4x4, '', 'DAY', countAggregation);
@@ -346,10 +346,10 @@ describe("CardDataService", function() {
     });
     it('should correctly parse valid values', function(done) {
       var fakeData = [
-        {"date_trunc":"2014-05-27T00:00:00.000","value":"1508"},
-        {"date_trunc":"2014-05-09T00:00:00.000","value":"238"},
-        {"date_trunc":"2014-05-07T00:00:00.000","value":"624"},
-        {"date_trunc":"2014-05-13T00:00:00.000","value":"718"}
+        {"truncated_date":"2014-05-27T00:00:00.000","value":"1508"},
+        {"truncated_date":"2014-05-09T00:00:00.000","value":"238"},
+        {"truncated_date":"2014-05-07T00:00:00.000","value":"624"},
+        {"truncated_date":"2014-05-13T00:00:00.000","value":"718"}
       ];
       fakeDataRequestHandler.respond(fakeData);
       var response = CardDataService.getTimelineData('fakeNumberColumn', fake4x4, '', 'DAY', countAggregation);
@@ -366,10 +366,10 @@ describe("CardDataService", function() {
     });
     it('should reject the promise on bad dates', function(done) {
       var fakeData = [
-        {"date_trunc":"2014-05-27T00:00:00.000","value":"1508"},
-        {"date_trunc":"2014-05-09T00:00:00.000","value":"238"},
-        {"date_trunc":"pants","value":"624"},
-        {"date_trunc":"2014-05-13T00:00:00.000","value":"718"}
+        {"truncated_date":"2014-05-27T00:00:00.000","value":"1508"},
+        {"truncated_date":"2014-05-09T00:00:00.000","value":"238"},
+        {"truncated_date":"pants","value":"624"},
+        {"truncated_date":"2014-05-13T00:00:00.000","value":"718"}
       ];
       fakeDataRequestHandler.respond(fakeData);
       assertReject(CardDataService.getTimelineData('fakeNumberColumn', fake4x4, '', 'DAY', countAggregation), done);

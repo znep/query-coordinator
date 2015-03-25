@@ -84,7 +84,7 @@ describe('Filter models', function() {
       var end = new Date('2101-01-10T08:00:00.000Z');
       var filter = new Filter.TimeRangeFilter(start, end);
 
-      var expected = "{0} BETWEEN {1} AND {2}".format(fakeColumnName, SoqlHelpers.encodePrimitive(start), SoqlHelpers.encodePrimitive(end));
+      var expected = "{0} >= {1} AND {0} < {2}".format(fakeColumnName, SoqlHelpers.encodePrimitive(start), SoqlHelpers.encodePrimitive(end));
       expect(filter.generateSoqlWhereFragment(fakeColumnName)).to.equal(expected);
     }));
 

@@ -803,7 +803,7 @@ class NewUxBootstrapControllerTest < ActionController::TestCase
   end
 
   def cardinality_threshold
-    CardTypeMapping::CARD_TYPE_MAPPING['cardinality']['threshold']
+    CARD_TYPE_MAPPING['cardinality']['threshold']
   end
 
   def v0_mock_dataset_metadata_with_uninteresting_column_chart

@@ -13,6 +13,20 @@
       "fred": "text",
       "name": "Numbers",
       "physicalDatatype": "number"
+    },
+    "time_column_large_granularity":{
+      "cardinality": 3,
+      "description": "",
+      "fred": "text",
+      "name": "Boulders",
+      "physicalDatatype": "time"
+    },
+    "time_column_fine_granularity":{
+      "cardinality": 3,
+      "description": "",
+      "fred": "text",
+      "name": "Sand",
+      "physicalDatatype": "time"
     }
   },
   "defaultPage": "four-four",

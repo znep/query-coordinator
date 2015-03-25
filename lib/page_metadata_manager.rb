@@ -89,10 +89,22 @@ class PageMetadataManager
       raise Phidippides::NoPageIdException.new('page id must be provisioned first.')
     end
     page_id = page_metadata['pageId']
+    dataset_id = page_metadata.fetch('datasetId')
 
     # Data lens page creation disabled until permissions issues have been dealt with
     # catalog_view_it = create_or_update_new_view(method, page_id, page_metadata)
     # page_metadata['catalogViewId'] = catalog_view_id
+
+    # Need to find the largest time nugget for rollups because rollups are not magic
+    # We will only be able to roll-up dates on the largest time span. For example,
+    # if we have a 3 columns on the page with different date granularities, i.e.
+    # one is best displayed by 'y', another by 'ym', and another by 'ymd', we will
+    # only be able to show time rolled-up by 'y', the largest time span.
+
+    # TODO Marc also talked about max date of 9999...
+    largest_time_span_days = largest_time_span_in_dataset_columns(dataset_id, options)
+    page_metadata['largestTimeSpanDays'] = largest_time_span_days
+    page_metadata['defaultDatetruncFunction'] = datetrunc_function(largest_time_span_days)
 
     # Since we provision the page id beforehand, a create is the same as an
     # update.
@@ -104,7 +116,7 @@ class PageMetadataManager
       # if we can roll up anything for this query, do so
       if rollup_soql
         args = {
-          dataset_id: page_metadata.fetch('datasetId'),
+          dataset_id: dataset_id,
           rollup_name: page_id,
           page_id: page_id,
           soql: rollup_soql
@@ -169,7 +181,7 @@ class PageMetadataManager
       logical_datatype_name = 'fred'
     end
 
-    result = phidippides.fetch_dataset_metadata(page_metadata['datasetId'], options)
+    result = dataset_metadata(page_metadata['datasetId'], options)
     columns = result.fetch(:body).fetch('columns')
 
     # Since columns is a hash in metadata transition phases 1 and 2
@@ -183,26 +195,62 @@ class PageMetadataManager
       end
     end
 
-    # TODO Figure out how to deal with time which can aggregated at different
-    # levels of granularity (e.g. day, week, month).
     # TODO Need to consider the construction of the WHERE clause for page's
     # default filter.
+    cards = page_metadata['cards']
     columns_to_roll_up = columns.select do |column|
-      card_matches_column = page_metadata['cards'].any? { |card| card['fieldName'] == column[column_field_name] }
-      card_matches_column &&
+      column_used_by_any_card?(column[column_field_name], cards) &&
         (column[logical_datatype_name] == 'category' ||
         (column[logical_datatype_name] == 'location' && column['physicalDatatype'] == 'number'))
     end
 
+    columns_to_roll_up_by_datetrunc = []
+
+    unless metadata_transition_phase_0?
+      columns_to_roll_up_by_datetrunc = columns.select do |column|
+        column_used_by_any_card?(column[column_field_name], cards) &&
+          column['physicalDatatype'] == 'time'
+      end
+    end
+
     # Nothing to roll up
-    return if columns_to_roll_up.blank?
+    return if columns_to_roll_up.blank? && columns_to_roll_up_by_datetrunc.blank?
+
+    if !metadata_transition_phase_0? &&
+      columns_to_roll_up_by_datetrunc.any? &&
+        page_metadata['defaultDatetruncFunction'].blank?
+          raise Phidippides::NoDefaultDatetruncFunction.new(
+            "page does not have default datetrunc function set for pageId: #{page_metadata['pageId']}"
+          )
+    end
+
+    rolled_up_columns_soql = (columns_to_roll_up.pluck(column_field_name) +
+      columns_to_roll_up_by_datetrunc.pluck(column_field_name).map do |field_name|
+        "#{page_metadata['defaultDatetruncFunction']}(#{field_name})"
+      end).join(', ')
 
     soql = 'select '
-    soql << columns_to_roll_up.pluck(column_field_name).join(', ')
     # TODO This will have to respect different aggregation functions, i.e. "sum"
+    soql << rolled_up_columns_soql
     soql << ', count(*) as value '
     soql << 'group by '
-    soql << columns_to_roll_up.pluck(column_field_name).join(', ')
+    soql << rolled_up_columns_soql
+  end
+
+  def column_used_by_any_card?(column_field_name, cards)
+    cards.any? { |card| card['fieldName'] == column_field_name }
+  end
+
+  # This is pulled from datasetPrecision calculation in cardVisualizationTimelineChart
+  # If the max date is > 20 years after the start date: YEAR
+  # If the max date is > 1 year after the start date: MONTH
+  # Else: DAY
+  def datetrunc_function(days)
+    years = (days / 365.25).to_i
+    prec = 'y'
+    prec << 'm' if years <= 20
+    prec << 'd' if years <= 1
+    "datetrunc_#{prec}"
   end
 
   def update_rollup_table(args)
@@ -214,6 +262,28 @@ class PageMetadataManager
         "due to error: #{response.inspect}"
       )
     end
+  end
+
+  def dataset_metadata(dataset_id, options)
+    phidippides.fetch_dataset_metadata(dataset_id, options)
+  end
+
+  def largest_time_span_in_dataset_columns(dataset_id, options)
+    dataset_metadata(dataset_id, options).fetch(:body).fetch('columns').
+      select { |_, values| values['physicalDatatype'] == 'time' }.
+      map { |field_name, _| time_range_in_column(dataset_id, field_name) }.max
+  end
+
+  def time_range_in_column(dataset_id, field_name)
+    result = fetch_start_and_end_for_field(dataset_id, field_name)
+    (Date.parse(result['end']) - Date.parse(result['start'])).to_i.abs
+  end
+
+  def fetch_start_and_end_for_field(dataset_id, field_name)
+    core_request_uri = "/id/#{dataset_id}?$query=select min(#{field_name}) AS start, max(#{field_name}) AS end"
+    result = JSON.parse(
+      CoreServer::Base.connection.get_request(core_request_uri)
+    ).first
   end
 
   def soda_fountain

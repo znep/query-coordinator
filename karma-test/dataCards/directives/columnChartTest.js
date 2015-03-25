@@ -536,6 +536,17 @@ describe('columnChart', function() {
           expect(Math.abs(unfilteredHeight / 2 - filteredHeight) <= 0.5).to.equal(true);
         });
       });
+      it('should add class hover to bar on flyout event, and remove class on exit', function() {
+        var chart = createNewColumnChart(640, false, testDataWithFiltered);
+        var scope = chart.scope;
+        scope.showFiltered = true;
+        scope.$digest();
+
+        chart.element.find('.bar-group').eq(1).mouseover();
+        expect(chart.element.find('.bar-group').hasClass('hover')).to.equal(true);
+        chart.element.find('.bar-group').eq(1).mouseout();
+        expect(chart.element.find('.bar-group').hasClass('hover')).to.equal(false);
+      });
       it('should show the filtered count in the flyout', function() {
         var chart = createNewColumnChart(640, false, testDataWithFiltered);
         var scope = chart.scope;

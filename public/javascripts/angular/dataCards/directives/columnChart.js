@@ -353,11 +353,14 @@ angular.module('socrataCommon.directives').directive('columnChart', function($pa
       positionOn: function($target) {
         var name = d3.select($target[0]).datum().name;
         name = _.instead(name, '');
-        if (Modernizr.pointerevents) {
-          return element.find('[data-bar-name="{0}"].bar-group .bar.unfiltered'.format(name));
-        } else {
-          return element.find('[data-bar-name="{0}"].bar-group'.format(name));
-        }
+        var barGroup = element.find('[data-bar-name="{0}"].bar-group'.format(name));
+        barGroup.addClass('hover');
+        $target.one('mouseout', function() {
+          barGroup.removeClass('hover');
+        });
+        return Modernizr.pointerevents ?
+          element.find('[data-bar-name="{0}"].bar-group .bar.unfiltered'.format(name)) :
+          barGroup;
       },
       title: function($target, $head, options) {
         var data = d3.select($target[0]).datum();

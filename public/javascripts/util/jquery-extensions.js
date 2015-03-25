@@ -413,12 +413,6 @@
           }
         }
       });
-      // bar-group hover class
-      var barGroup = $positionOn.parent('.bar-group');
-      barGroup.addClass('hover');
-      $target.one('mouseout', function() {
-        barGroup.removeClass('hover');
-      });
     };
     var closeFlyout = function() {
       if (flyout) {

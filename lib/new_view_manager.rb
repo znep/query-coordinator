@@ -37,7 +37,7 @@ class NewViewManager
     # point it to yet.
     new_view = create_new_view('', title, description)
 
-    if not new_view.try(:[], :id)
+    unless new_view.try(:[], :id)
       raise NewViewNotCreatedError.new('Error while creating view in core')
     end
 

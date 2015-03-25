@@ -147,6 +147,7 @@ class PhidippidesPagesController < ActionController::Base
     return render :nothing => true, :status => '405' unless request.delete?
     return render :nothing => true, :status => '400' unless params[:id].present?
 
+    # TODO: when we re-enable deletion, make sure to handle error cases here.
     new_view_manager.delete(params[:id])
 
     begin

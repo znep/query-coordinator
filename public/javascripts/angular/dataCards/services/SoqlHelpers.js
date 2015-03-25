@@ -1,4 +1,4 @@
-angular.module('dataCards').factory('SoqlHelpers', function() {
+angular.module('dataCards').factory('SoqlHelpers', function(Assert) {
   'use strict';
 
   var timeIntervalToDateTrunc = {
@@ -43,24 +43,20 @@ angular.module('dataCards').factory('SoqlHelpers', function() {
     return fragment.replace(/\-/g, '_');
   }
 
-
-  // Since we need to be able to render the unfiltered values outside
-  // of a timeline chart's current selection area, we need to 'filter'
-  // those data outside the selection manually rather than using SoQL.
-  // As a result, we need to make sure we never exclude any data that
-  // belongs to the card making the request; this function will look
-  // through a SoQL query string that is about to be used in a data
-  // request and remove any where clauses that reference the fieldName
-  // that corresponds to this instance of the visualization.
+  // This function replaced an existing whereClauseFragment with a tautology (i.e. 1=1)
+  // in order to NOOP that particular clause. An example of where this is used is the
+  // timeline chart which uses it to prevent filtering on its own selection.
   function stripWhereClauseFragmentForFieldName(fieldName, whereClause, activeFilters) {
     if (_.isEmpty(whereClause)) {
       return;
     }
+    Assert(_.isPresent(fieldName), 'fieldName cannot be blank');
+    Assert(_.isArray(activeFilters), 'activeFilters must be an array');
 
-    var myWhereClauseFragments =_.invoke(activeFilters, 'generateSoqlWhereFragment', fieldName);
+    var myWhereClauseFragments = _.invoke(activeFilters, 'generateSoqlWhereFragment', fieldName);
 
     _.each(myWhereClauseFragments, function(fragment) {
-      whereClause = whereClause.replace(fragment, '');
+      whereClause = whereClause.replace(fragment, '(1=1)');
     });
 
     return whereClause;

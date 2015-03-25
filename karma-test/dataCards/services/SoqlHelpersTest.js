@@ -114,24 +114,49 @@ describe("SoqlHelpers service", function() {
     }));
   });
 
-  describe.only('stripWhereClauseFragmentForFieldName', function() {
+  describe('stripWhereClauseFragmentForFieldName', function() {
 
-    it('should return when the whereClause is empty', inject(function(SoqlHelpers) {
+    var buildActiveFilters = function(fieldName, value) {
+      var soqlWhereFragment = '{0} = {1}'.format(fieldName, value);
+      return [{ generateSoqlWhereFragment: _.constant(soqlWhereFragment) }];
+    };
+
+    it('should return undefined when the whereClause is empty', inject(function(SoqlHelpers) {
       expect(SoqlHelpers.stripWhereClauseFragmentForFieldName('fieldName', '', [])).to.equal(undefined);
     }));
 
     it('should strip out the whereClauseFragment that matches the fieldName', inject(function(SoqlHelpers) {
-      var activeFilter = {
-        generateSoqlWhereFragment: function(fieldName) {
-          return '{0} = 1'.format(fieldName);
-        }
-      };
-      var strippedWhereClause = SoqlHelpers.stripWhereClauseFragmentForFieldName(
+      var strippedWhereClause;
+
+      strippedWhereClause = SoqlHelpers.stripWhereClauseFragmentForFieldName(
         'foo',
-        'foo = 1 AND bar = 2',
-        [ activeFilter ]
+        'foo = 1 AND bar = 1 AND baz = 1',
+        buildActiveFilters('foo', 1)
       );
-      expect(strippedWhereClause).to.equal(' AND bar = 2');
+      expect(strippedWhereClause).to.equal('(1=1) AND bar = 1 AND baz = 1');
+
+      strippedWhereClause = SoqlHelpers.stripWhereClauseFragmentForFieldName(
+        'bar',
+        'foo = 1 AND bar = 2 AND baz = 3',
+        buildActiveFilters('bar', 2)
+      );
+      expect(strippedWhereClause).to.equal('foo = 1 AND (1=1) AND baz = 3');
+
+      strippedWhereClause = SoqlHelpers.stripWhereClauseFragmentForFieldName(
+        'baz',
+        'foo = 1 AND bar = 2 AND baz = 3',
+        buildActiveFilters('baz', 3)
+      );
+      expect(strippedWhereClause).to.equal('foo = 1 AND bar = 2 AND (1=1)');
+    }));
+
+    it('should not change the whereClause when there are no matches for the fieldName', inject(function(SoqlHelpers) {
+      var strippedWhereClause = SoqlHelpers.stripWhereClauseFragmentForFieldName(
+        'baz',
+        'foo = 1 AND bar = 2',
+        buildActiveFilters('baz', 3)
+      );
+      expect(strippedWhereClause).to.equal('foo = 1 AND bar = 2');
     }));
 
   });

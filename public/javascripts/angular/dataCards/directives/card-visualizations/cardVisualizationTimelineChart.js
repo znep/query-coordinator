@@ -220,6 +220,13 @@
 
               dataRequests.onNext(1);
 
+              // Since we need to be able to render the unfiltered values outside
+              // of the timeline chart's current selection area, we need to 'filter'
+              // those data outside the selection manually rather than using SoQL.
+              // As a result, we need to make sure we never exclude any data that
+              // belongs to the card making the request. Here we call the
+              // stripWhereClauseFragmentForFieldName function to remove our own
+              // activeFilter from the whereClause.
               var dataPromise = CardDataService.getTimelineData(
                 fieldName,
                 dataset.id,

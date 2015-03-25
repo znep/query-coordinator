@@ -56,7 +56,6 @@ var dependencies = [
   'btford.markdown',
   'monospaced.elastic',
   'socrataCommon.services',
-  'socrataCommon.decorators',
   'socrataCommon.directives',
   'socrataCommon.filters',
   'dataCards.controllers',
@@ -229,11 +228,6 @@ dataCards.config(function($provide, $stateProvider, $urlRouterProvider, $locatio
         }
       }
     });
-});
-
-// Provide asset revision key onto all assets gotten via http
-dataCards.config(function($provide, assetRevisionKeyProvider, ServerConfig) {
-  assetRevisionKeyProvider($provide, ServerConfig.get('assetRevisionKey'));
 });
 
 dataCards.run(function($location, $log, $rootScope, $state, Analytics, Routes, ServerConfig, DeveloperOverrides) {

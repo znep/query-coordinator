@@ -25,7 +25,8 @@
     "angular-markdown-directive": "~0.3.1",
     "pbf": "~0.0.3",
     "vector-tile-js": "devTristan/vector-tile-js#~0.1.1",
-    "angular-elastic": "~v2.4.2"
+    "angular-elastic": "~v2.4.2",
+    "js-polyfills": "~0.1.2"
   },
   "install": {
     "path": {
@@ -44,6 +45,7 @@
       "javascript-detect-element-resize": "bower_components/javascript-detect-element-resize/jquery.resize.js",
       "pbf": "bower_components/pbf/dist/pbf.min.js",
       "vector-tile-js": "bower_components/vector-tile-js/dist/vectortile.min.js",
+      "js-polyfills": "bower_components/js-polyfills/url.js",
       "rxjs": [
         "bower_components/rxjs/rx.js",
         "bower_components/rxjs/rx.async.js",

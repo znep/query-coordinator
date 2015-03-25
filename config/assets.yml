@@ -681,6 +681,7 @@ javascripts:
   angular-socrata-common:
     - public/javascripts/plugins/modernizr.js
     - public/javascripts/plugins/leaflet.js
+    - public/javascripts/angular/common/services.js
     - public/javascripts/angular/common/**/*.js
 
   # Angular apps served from the Angular controller.
@@ -690,6 +691,7 @@ javascripts:
     - public/javascripts/plugins/ieee754.js
     - public/javascripts/angular/dataCards/app.js
     - public/javascripts/angular/dataCards/controllers.js
+    - public/javascripts/angular/dataCards/services.js
     - public/javascripts/angular/dataCards/**/*.js
 
   # BEGIN BOWER-MANAGED ASSETS

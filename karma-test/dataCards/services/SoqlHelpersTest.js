@@ -113,4 +113,27 @@ describe("SoqlHelpers service", function() {
       expect(SoqlHelpers.replaceHyphensWithUnderscores('asd-fds')).to.equal('asd_fds');
     }));
   });
+
+  describe.only('stripWhereClauseFragmentForFieldName', function() {
+
+    it('should return when the whereClause is empty', inject(function(SoqlHelpers) {
+      expect(SoqlHelpers.stripWhereClauseFragmentForFieldName('fieldName', '', [])).to.equal(undefined);
+    }));
+
+    it('should strip out the whereClauseFragment that matches the fieldName', inject(function(SoqlHelpers) {
+      var activeFilter = {
+        generateSoqlWhereFragment: function(fieldName) {
+          return '{0} = 1'.format(fieldName);
+        }
+      };
+      var strippedWhereClause = SoqlHelpers.stripWhereClauseFragmentForFieldName(
+        'foo',
+        'foo = 1 AND bar = 2',
+        [ activeFilter ]
+      );
+      expect(strippedWhereClause).to.equal(' AND bar = 2');
+    }));
+
+  });
+
 });

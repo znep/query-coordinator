@@ -11,7 +11,8 @@ angular.module('dataCards').factory('SoqlHelpers', function() {
     encodeSoqlDate: encodeSoqlDate,
     encodePrimitive: encodePrimitive,
     replaceHyphensWithUnderscores: replaceHyphensWithUnderscores,
-    timeIntervalToDateTrunc: timeIntervalToDateTrunc
+    timeIntervalToDateTrunc: timeIntervalToDateTrunc,
+    stripWhereClauseFragmentForFieldName: stripWhereClauseFragmentForFieldName
   };
 
   function encodeSoqlString(string) {
@@ -40,6 +41,29 @@ angular.module('dataCards').factory('SoqlHelpers', function() {
       throw new Error('Cannot replace hyphens with underscores for non-string arguments.');
     }
     return fragment.replace(/\-/g, '_');
+  }
+
+
+  // Since we need to be able to render the unfiltered values outside
+  // of a timeline chart's current selection area, we need to 'filter'
+  // those data outside the selection manually rather than using SoQL.
+  // As a result, we need to make sure we never exclude any data that
+  // belongs to the card making the request; this function will look
+  // through a SoQL query string that is about to be used in a data
+  // request and remove any where clauses that reference the fieldName
+  // that corresponds to this instance of the visualization.
+  function stripWhereClauseFragmentForFieldName(fieldName, whereClause, activeFilters) {
+    if (_.isEmpty(whereClause)) {
+      return;
+    }
+
+    var myWhereClauseFragments =_.invoke(activeFilters, 'generateSoqlWhereFragment', fieldName);
+
+    _.each(myWhereClauseFragments, function(fragment) {
+      whereClause = whereClause.replace(fragment, '');
+    });
+
+    return whereClause;
   }
 
   return SoqlHelpers;

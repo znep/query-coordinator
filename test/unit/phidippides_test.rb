@@ -197,7 +197,7 @@ class PhidippidesTest < Test::Unit::TestCase
     stub_feature_flags_with(:metadata_transition_phase, '1')
 
     Phidippides.any_instance.expects(:update_dataset_metadata).times(1).then.with do |json, options|
-      assert_equal(JSON.parse(json)['defaultPage'], 'vwwn-6r7g')
+      assert_equal('vwwn-6r7g', JSON.parse(json)['defaultPage'])
     end.then.returns(
       status: '200',
       body: nil
@@ -212,7 +212,7 @@ class PhidippidesTest < Test::Unit::TestCase
       fetch_pages_for_dataset: { status: '200', body: nil }
     )
     Airbrake.expects(:notify).with do |airbrake|
-      assert_equal(airbrake[:error_message], 'Could not migrate dataset to v1: could not determine dataset id.')
+      assert_equal(true, airbrake[:error_message].include?('Could not migrate dataset to v1: could not determine dataset_id'))
     end
     phidippides.migrate_dataset_metadata_to_v1(nil)
   end
@@ -227,8 +227,9 @@ class PhidippidesTest < Test::Unit::TestCase
     Phidippides.any_instance.stubs(
       fetch_pages_for_dataset: { status: '200', body: nil }
     )
+
     Airbrake.expects(:notify).with do |airbrake|
-      assert_equal(airbrake[:error_message], 'Could not migrate dataset to v1: no valid publisher pageId found.')
+      assert_equal(true, airbrake[:error_message].include?('Could not migrate dataset to v1: no valid publisher pageId found'))
     end
     phidippides.migrate_dataset_metadata_to_v1(v1_dataset_metadata_without_default_page)
 
@@ -236,7 +237,7 @@ class PhidippidesTest < Test::Unit::TestCase
       fetch_pages_for_dataset: { status: '200', body: {} }
     )
     Airbrake.expects(:notify).with do |airbrake|
-      assert_equal(airbrake[:error_message], 'Could not migrate dataset to v1: no valid publisher pageId found.')
+      assert_equal(true, airbrake[:error_message].include?('Could not migrate dataset to v1: no valid publisher pageId found'))
     end
     phidippides.migrate_dataset_metadata_to_v1(v1_dataset_metadata_without_default_page)
 
@@ -244,7 +245,7 @@ class PhidippidesTest < Test::Unit::TestCase
       fetch_pages_for_dataset: { status: '200', body: { :publisher => [] } }
     )
     Airbrake.expects(:notify).with do |airbrake|
-      assert_equal(airbrake[:error_message], 'Could not migrate dataset to v1: no valid publisher pageId found.')
+      assert_equal(true, airbrake[:error_message].include?('Could not migrate dataset to v1: no valid publisher pageId found'))
     end
     phidippides.migrate_dataset_metadata_to_v1(v1_dataset_metadata_without_default_page)
 
@@ -252,7 +253,7 @@ class PhidippidesTest < Test::Unit::TestCase
       fetch_pages_for_dataset: { status: '200', body: { :publisher => [ {} ] } }
     )
     Airbrake.expects(:notify).with do |airbrake|
-      assert_equal(airbrake[:error_message], 'Could not migrate dataset to v1: no valid publisher pageId found.')
+      assert_equal(true, airbrake[:error_message].include?('Could not migrate dataset to v1: no valid publisher pageId found'))
     end
     phidippides.migrate_dataset_metadata_to_v1(v1_dataset_metadata_without_default_page)
   end
@@ -268,7 +269,7 @@ class PhidippidesTest < Test::Unit::TestCase
     stub_feature_flags_with(:metadata_transition_phase, '2')
 
     Phidippides.any_instance.expects(:update_dataset_metadata).times(1).then.with do |json, options|
-      assert_equal(JSON.parse(json)['defaultPage'], 'vwwn-6r7g')
+      assert_equal('vwwn-6r7g', JSON.parse(json)['defaultPage'])
     end.then.returns(
       status: '200',
       body: nil
@@ -283,7 +284,7 @@ class PhidippidesTest < Test::Unit::TestCase
       fetch_pages_for_dataset: { status: '200', body: nil }
     )
     Airbrake.expects(:notify).with do |airbrake|
-      assert_equal(airbrake[:error_message], 'Could not migrate dataset to v1: could not determine dataset id.')
+      assert_equal(true, airbrake[:error_message].include?('Could not migrate dataset to v1: could not determine dataset_id'))
     end
     phidippides.migrate_dataset_metadata_to_v1(nil)
   end
@@ -299,7 +300,7 @@ class PhidippidesTest < Test::Unit::TestCase
       fetch_pages_for_dataset: { status: '200', body: nil }
     )
     Airbrake.expects(:notify).with do |airbrake|
-      assert_equal(airbrake[:error_message], 'Could not migrate dataset to v1: no valid publisher pageId found.')
+      assert_equal(true, airbrake[:error_message].include?('Could not migrate dataset to v1: no valid publisher pageId found'))
     end
     phidippides.migrate_dataset_metadata_to_v1(v1_dataset_metadata_without_default_page)
 
@@ -307,7 +308,7 @@ class PhidippidesTest < Test::Unit::TestCase
       fetch_pages_for_dataset: { status: '200', body: {} }
     )
     Airbrake.expects(:notify).with do |airbrake|
-      assert_equal(airbrake[:error_message], 'Could not migrate dataset to v1: no valid publisher pageId found.')
+      assert_equal(true, airbrake[:error_message].include?('Could not migrate dataset to v1: no valid publisher pageId found'))
     end
     phidippides.migrate_dataset_metadata_to_v1(v1_dataset_metadata_without_default_page)
 
@@ -315,7 +316,7 @@ class PhidippidesTest < Test::Unit::TestCase
       fetch_pages_for_dataset: { status: '200', body: { :publisher => [] } }
     )
     Airbrake.expects(:notify).with do |airbrake|
-      assert_equal(airbrake[:error_message], 'Could not migrate dataset to v1: no valid publisher pageId found.')
+      assert_equal(true, airbrake[:error_message].include?('Could not migrate dataset to v1: no valid publisher pageId found'))
     end
     phidippides.migrate_dataset_metadata_to_v1(v1_dataset_metadata_without_default_page)
 
@@ -323,7 +324,7 @@ class PhidippidesTest < Test::Unit::TestCase
       fetch_pages_for_dataset: { status: '200', body: { :publisher => [ {} ] } }
     )
     Airbrake.expects(:notify).with do |airbrake|
-      assert_equal(airbrake[:error_message], 'Could not migrate dataset to v1: no valid publisher pageId found.')
+      assert_equal(true, airbrake[:error_message].include?('Could not migrate dataset to v1: no valid publisher pageId found'))
     end
     phidippides.migrate_dataset_metadata_to_v1(v1_dataset_metadata_without_default_page)
   end
@@ -336,10 +337,7 @@ class PhidippidesTest < Test::Unit::TestCase
     stub_feature_flags_with(:metadata_transition_phase, '3')
 
     Airbrake.expects(:notify).with do |airbrake|
-      assert_equal(
-        "Could not compute default and available card types for dataset: unable to determine dataset id.",
-        airbrake[:error_message]
-      )
+      assert_equal(true, airbrake[:error_message].include?('Could not compute default and available card types for dataset: unable to determine dataset id'))
     end
     phidippides.set_default_and_available_card_types_to_columns!(v1_dataset_metadata_without_dataset_id)
   end
@@ -352,10 +350,7 @@ class PhidippidesTest < Test::Unit::TestCase
     stub_feature_flags_with(:metadata_transition_phase, '3')
 
     Airbrake.expects(:notify).with do |airbrake|
-      assert_equal(
-        "Could not compute default and available card types for dataset: no columns found.",
-        airbrake[:error_message]
-      )
+      assert_equal(true, airbrake[:error_message].include?('Could not compute default and available card types for dataset: no columns found'))
     end
     phidippides.set_default_and_available_card_types_to_columns!(v1_dataset_metadata_without_columns)
   end

@@ -46,6 +46,7 @@
           );
 
           $scope.saveStatus = 'saving';
+          $scope.dialogState.disableCloseDialog = true;
           $http.put(url).then(function() {
             $scope.saveStatus = 'saved';
             // Now close the dialog after 1.5 seconds
@@ -61,6 +62,8 @@
                 $scope.saveStatus = null;
               });
             }, 8000);
+          })['finally'](function() {
+            $scope.dialogState.disableCloseDialog = false;
           });
         };
       }

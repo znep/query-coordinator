@@ -62,6 +62,24 @@
       expect(modal.element.find('.modal-container').is(':visible')).to.equal(false);
     });
 
+    it('should not close the modal when dialogState.disableCloseDialog is true', function() {
+      var modal = createModal(true);
+
+      expect(modal.element.find('.modal-container').is(':visible')).to.equal(true);
+
+      modal.scope.state.disableCloseDialog = true;
+      modal.element.find('.modal-overlay').click();
+      modal.scope.$digest();
+
+      expect(modal.element.find('.modal-container').is(':visible')).to.equal(true);
+
+      modal.scope.state.disableCloseDialog = false;
+      modal.element.find('.modal-overlay').click();
+      modal.scope.$digest();
+
+      expect(modal.element.find('.modal-container').is(':visible')).to.equal(false);
+    });
+
     it('should close an open modal dialog when the escape key is pressed', function() {
       // TODO: Randy offers $40 bounty to make this test pass IN ALL BROWSERS... even LYNX
       var modal = createModal(true);

@@ -31,8 +31,6 @@
         var dataRequestCount = dataRequests.scan(0, function(acc, x) { return acc + 1; });
         var dataResponseCount = dataResponses.scan(0, function(acc, x) { return acc + 1; });
 
-        var nonBaseFilterApplied;
-
 
         /*************************************
         * FIRST set up the 'busy' indicator. *
@@ -51,19 +49,6 @@
               return requests === 0 || (requests > responses);
             }
           )
-        );
-
-
-        /******************************************
-        * THEN set up other observable sequences. *
-        ******************************************/
-
-        nonBaseFilterApplied = Rx.Observable.combineLatest(
-          scope.observe('whereClause'),
-          baseSoqlFilter,
-          function (whereClause, baseFilter) {
-            return !_.isEmpty(whereClause) && whereClause != baseFilter;
-          }
         );
 
 
@@ -210,11 +195,10 @@
           cardModelSequence.pluck('fieldName'),
           dataset,
           scope.observe('whereClause'),
-          nonBaseFilterApplied,
           datasetPrecision,
           aggregationObservable,
           cardModelSequence.observeOnLatest('activeFilters'),
-          function(fieldName, dataset, whereClause, nonBaseFilterApplied, datasetPrecision, aggregationData, activeFilters) {
+          function(fieldName, dataset, whereClause, datasetPrecision, aggregationData, activeFilters) {
 
             if (_.isDefined(datasetPrecision)) {
 

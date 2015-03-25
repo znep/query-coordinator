@@ -56,6 +56,14 @@ describe('AssetRevisionKey http interceptor', function() {
     $httpBackend.flush();
   });
 
+  it('should work for multiple requests', function() {
+    $http.get('/angular_templates/dataCards/pages/cards-view.html');
+    $httpBackend.expectGET(new RegExp('/angular_templates/dataCards/pages/cards-view\\.html\\?assetRevisionKey=ASSETREVISIONKEY')).respond('');
+    $http.get('/angular_templates/common/pageHeader.html');
+    $httpBackend.expectGET(new RegExp('/angular_templates/common/pageHeader\\.html\\?assetRevisionKey=ASSETREVISIONKEY')).respond('');
+    $httpBackend.flush();
+  });
+
   it('should not apply the assetRevisionKey to other requests', function() {
     var regex = new RegExp('assetRevisionKey=ASSETREVISIONKEY');
     $httpBackend.expectGET({

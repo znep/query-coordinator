@@ -52,7 +52,7 @@ class PhidippidesPagesController < ActionController::Base
       page_metadata = result[:body]
 
       # Also add the permissions
-      page_metadata[:permissions] = permissions if page_metadata
+      page_metadata[:permissions] = permissions if page_metadata && result[:status][0] == '2'
 
       render :json => page_metadata, :status => result[:status]
     rescue Phidippides::ConnectionError

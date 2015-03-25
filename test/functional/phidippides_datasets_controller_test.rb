@@ -53,7 +53,7 @@ class PhidippidesDatasetsControllerTest < ActionController::TestCase
 
   test 'show returns data for a given dataset' do
     @controller.stubs(can_update_metadata?: true)
-    @phidippides.stubs(issue_request: { body: mock_v1_dataset_metadata })
+    @phidippides.stubs(issue_request: { body: mock_v1_dataset_metadata, status: '200' })
     get :show, id: 'four-four', format: 'json'
     assert_response(:success)
     assert_equal(

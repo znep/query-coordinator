@@ -45,7 +45,8 @@ class PhidippidesPagesControllerTest < ActionController::TestCase
     @controller.stubs(can_update_metadata?: true)
     @phidippides.stubs(
       fetch_page_metadata: {
-        body: v0_page_metadata
+        body: v0_page_metadata,
+        status: '200'
       }
     )
     connection_stub = mock
@@ -63,7 +64,8 @@ class PhidippidesPagesControllerTest < ActionController::TestCase
     @controller.stubs(can_update_metadata?: true)
     @phidippides.stubs(
       fetch_page_metadata: {
-        body: v1_page_metadata
+        body: v1_page_metadata,
+        status: '200'
       }
     )
     connection_stub = mock
@@ -81,7 +83,8 @@ class PhidippidesPagesControllerTest < ActionController::TestCase
     @controller.stubs(can_update_metadata?: true)
     @phidippides.stubs(
       fetch_page_metadata: {
-        body: v1_page_metadata
+        body: v1_page_metadata,
+        status: '200'
       }
     )
     connection_stub = mock

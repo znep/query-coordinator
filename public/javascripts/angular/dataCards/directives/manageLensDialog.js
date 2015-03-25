@@ -12,21 +12,27 @@
       link: function($scope, element, attrs) {
         AngularRxExtensions.install($scope);
 
+        var pageIsPublicObservable = $scope.page.observe('permissions').
+            filter(_.isObject).
+            map(_.property('isPublic'));
+
+        var datasetIsPublicObservable = $scope.page.observe('dataset.permissions').
+            filter(_.isObject).
+            map(_.property('isPublic'));
+
         $scope.bindObservable(
           'pageVisibility',
-          $scope.page.observe('permissions').map(function(permissions) {
-            return permissions.isPublic ? 'public' : 'private';
-          })
+          pageIsPublicObservable.map(function(isPublic) { return isPublic ? 'public' : 'private'; })
         );
 
         $scope.bindObservable(
           'datasetIsPublic',
-          $scope.page.observe('dataset.permissions').map(_.property('isPublic'))
+          datasetIsPublicObservable
         );
 
         $scope.bindObservable('selectDisabled', Rx.Observable.combineLatest(
-          $scope.page.observe('permissions').map(_.property('isPublic')),
-          $scope.page.observe('dataset.permissions').map(_.property('isPublic')),
+          pageIsPublicObservable,
+          datasetIsPublicObservable,
           function(pageIsPublic, datasetIsPublic) {
             return !pageIsPublic && !datasetIsPublic;
           }

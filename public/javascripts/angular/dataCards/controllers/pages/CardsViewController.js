@@ -66,7 +66,7 @@
 
   function initManageLens($scope, page) {
     var pageIsPublicObservable = page.observe('permissions').
-        filter(_.isDefined).
+        filter(_.isObject).
         map(_.property('isPublic'));
     $scope.bindObservable('pagePermissions', pageIsPublicObservable.map(function(isPublic) {
       return isPublic ? 'public' : 'private';
@@ -74,7 +74,9 @@
     $scope.bindObservable('pageIsPublic', pageIsPublicObservable);
     $scope.bindObservable(
       'datasetIsPublic',
-      page.observe('dataset.permissions').filter(_.isDefined).map(_.property('isPublic'))
+      page.observe('dataset.permissions').filter(_.isObject).map(_.property('isPublic')).
+        // Default to true, so the warning icon doesn't appear before the actual metadata is fetched
+        startWith(true)
     );
 
     $scope.manageLensState = {

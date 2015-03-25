@@ -13,19 +13,15 @@ class NewViewManager
 
     begin
       response = CoreServer::Base.connection.get_request(url)
+    rescue CoreServer::ResourceNotFound => e
+      raise ViewNotFound.new(e.message)
     rescue CoreServer::CoreServerError => e
       if e.error_code == 'authentication_required'
         raise ViewAuthenticationRequired.new(e.error_message)
       elsif e.error_code == 'permission_denied'
         raise ViewAccessDenied.new(e.error_message)
       end
-      report_error(
-        "Error fetching new_view lens for page: #{e.error_message}",
-        :url => url
-      )
-      return
-    rescue CoreServer::ResourceNotFound => e
-      raise ViewNotFound.new(e.message)
+      raise e
     end
 
     parse_core_response(response)
@@ -67,6 +63,7 @@ class NewViewManager
     rescue CoreServer::Error => e
       report_error(
         "Error deleting new_view lens for page #{page_id}: #{e.error_message}",
+        e,
         :url => url
       )
       return
@@ -103,6 +100,7 @@ class NewViewManager
     rescue => e
       report_error(
         "Error creating new_view lens for page: #{e.error_message}",
+        e,
         { :url => url, :payload => payload },
         { :page_url => page_url }
       )
@@ -120,6 +118,7 @@ class NewViewManager
     rescue
       report_error(
         "Error publishing new_view lens #{view_id}: #{e.error_message}",
+        e,
         { :url => url }
       )
     end
@@ -139,6 +138,7 @@ class NewViewManager
     rescue => e
       report_error(
         "Error updating new_view lens for page: #{e.error_message}",
+        e,
         :url => url, :payload => payload
       )
       return
@@ -170,8 +170,8 @@ class NewViewManager
       response = CoreServer::Base.connection.update_request(url, JSON.dump(payload))
     rescue CoreServer::Error => e
       report_error(
-        "Error updating page_url for new_view lens for page: #{e.error_message}",
-        :url => url, :payload => payload
+        "Error updating page_url (#{page_url}) for new_view lens for page #{page_id}",
+        e
       )
       return
     end
@@ -185,13 +185,16 @@ class NewViewManager
     rescue JSONError => e
       report_error(
         "Error parsing JSON response from Core: #{e.error_message}",
+        e,
         :context => { :response => response }
       )
+      raise e
     end
   end
 
-  def report_error(error_message, request = {}, context = {})
+  def report_error(error_message, exception = nil, request = {}, context = {})
     Airbrake.notify(
+      exception,
       :error_class => "NewUXViewFailure",
       :error_message => error_message,
       :request => request,

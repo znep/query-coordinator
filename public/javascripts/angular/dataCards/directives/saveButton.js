@@ -10,7 +10,7 @@
       },
       templateUrl: '/angular_templates/dataCards/saveButton.html',
       link: function($scope, element) {
-        $scope.additionalClasses = element[0].className;
+        $scope.additionalClasses = element[0].className.replace(/\bng-[^ ]*\b/g, '');
       }
     };
   }

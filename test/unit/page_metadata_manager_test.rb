@@ -50,9 +50,9 @@ class PageMetadataManagerTest < Test::Unit::TestCase
     assert_equal('data-lens', result.fetch(:body).fetch('pageId'), 'Expected the new pageId to be returned')
   end
 
-  def test_create_creates_data_lens_with_reference_v0
+  def test_create_creates_data_lens_with_reference_v1
     Phidippides.any_instance.stubs(
-      fetch_dataset_metadata: { status: '200', body: v0_dataset_metadata_without_rollup_columns },
+      fetch_dataset_metadata: { status: '200', body: v1_dataset_metadata_without_rollup_columns},
     )
     stub_feature_flags_with(:metadata_transition_phase, '0')
     Phidippides.any_instance.expects(:update_page_metadata).times(1).with do |page_metadata|

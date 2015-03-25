@@ -16,6 +16,7 @@ class PhidippidesPagesControllerTest < ActionController::TestCase
       create: { body: '', status: '200' },
       update: { body: '', status: '200' }
     )
+    stub_feature_flags_with(:use_catalog_lens_permissions, true)
   end
 
   def json_post(body = nil)
@@ -62,7 +63,7 @@ class PhidippidesPagesControllerTest < ActionController::TestCase
     @controller.stubs(can_update_metadata?: true)
     @phidippides.stubs(
       fetch_page_metadata: {
-        body: v0_page_metadata
+        body: v1_page_metadata
       }
     )
     connection_stub = mock
@@ -80,7 +81,7 @@ class PhidippidesPagesControllerTest < ActionController::TestCase
     @controller.stubs(can_update_metadata?: true)
     @phidippides.stubs(
       fetch_page_metadata: {
-        body: v0_page_metadata
+        body: v1_page_metadata
       }
     )
     connection_stub = mock
@@ -183,7 +184,6 @@ class PhidippidesPagesControllerTest < ActionController::TestCase
     assert_equal(v0_page_metadata, JSON.parse(@response.body))
 
     @page_metadata_manager.stubs(create: { body: v1_page_metadata.to_json, status: '200' })
-    Phidippides.any_instance.stubs(request_new_page_id: { body: { id: 'iuya-fxdq' }, status: '200' })
     stub_feature_flags_with(:metadata_transition_phase, '2')
     set_up_json_request(v1_page_metadata.except('pageId').to_json)
     post :create, format: :json

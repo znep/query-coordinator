@@ -1,7 +1,7 @@
 (function() {
   'use strict';
 
-  function cardVisualizationTimelineChart(AngularRxExtensions, CardDataService, Filter, TimelineChartVisualizationHelpers, $log) {
+  function cardVisualizationTimelineChart(AngularRxExtensions, CardDataService, Filter, TimelineChartVisualizationHelpers, $log, SoqlHelpers) {
 
     return {
       restrict: 'E',
@@ -14,10 +14,10 @@
 
         AngularRxExtensions.install(scope);
 
-        var model = scope.observe('model');
-        var dataset = model.observeOnLatest('page.dataset').filter(_.isPresent);
-        var baseSoqlFilter = model.observeOnLatest('page.baseSoqlFilter');
-        var aggregationObservable = model.observeOnLatest('page.aggregation');
+        var cardModelSequence = scope.observe('model');
+        var dataset = cardModelSequence.observeOnLatest('page.dataset').filter(_.isPresent);
+        var baseSoqlFilter = cardModelSequence.observeOnLatest('page.baseSoqlFilter');
+        var aggregationObservable = cardModelSequence.observeOnLatest('page.aggregation');
         var dataRequests = new Rx.Subject();
         var dataResponses = new Rx.Subject();
         var unfilteredDataSequence = new Rx.Subject();
@@ -30,8 +30,6 @@
         // to operate on active sequences.
         var dataRequestCount = dataRequests.scan(0, function(acc, x) { return acc + 1; });
         var dataResponseCount = dataResponses.scan(0, function(acc, x) { return acc + 1; });
-
-        var nonBaseFilterApplied;
 
 
         /*************************************
@@ -51,19 +49,6 @@
               return requests === 0 || (requests > responses);
             }
           )
-        );
-
-
-        /******************************************
-        * THEN set up other observable sequences. *
-        ******************************************/
-
-        nonBaseFilterApplied = Rx.Observable.combineLatest(
-          scope.observe('whereClause'),
-          baseSoqlFilter,
-          function (whereClause, baseFilter) {
-            return !_.isEmpty(whereClause) && whereClause != baseFilter;
-          }
         );
 
 
@@ -119,40 +104,6 @@
 
         }
 
-
-        // Since we need to be able to render the unfiltered values outside
-        // of a timeline chart's current selection area, we need to 'filter'
-        // those data outside the selection manually rather than using SoQL.
-        // As a result, we need to make sure we never exclude any data that
-        // belongs to the card making the request; this function will look
-        // through a SoQL query string that is about to be used in a data
-        // request and remove any where clauses that reference the fieldName
-        // that corresponds to this instance of the visualization.
-        function stripOwnVisualizationWhereClause(fieldName, whereClause) {
-
-          var whereClauseComponents = _.isEmpty(whereClause) ? [] : whereClause.split(' ');
-          var indexOfFieldName = whereClauseComponents.indexOf(fieldName);
-          var i;
-          var filteredWhereClause = [];
-
-          for (i = 0; i < whereClauseComponents.length; i++) {
-            if (i === indexOfFieldName) {
-              if (i > 0 && whereClauseComponents[i - 1].toLowerCase() === 'and') {
-                filteredWhereClause.pop();
-              }
-              // This is the number of 'words' in a timeline chart-generated
-              // where clause:
-              // "largechronometerreading_10 BETWEEN '1950-01-01T00:00:00' AND '1961-01-01T00:00:00'"
-              i += 5;
-              continue;
-            }
-            filteredWhereClause.push(whereClauseComponents[i]);
-          }
-
-          return filteredWhereClause.join(' ');
-
-        }
-
         var reportInvalidTimelineDomain = _.once(
           function() {
             $log.error(
@@ -167,7 +118,7 @@
         );
 
         var datasetPrecision = Rx.Observable.combineLatest(
-          model.pluck('fieldName'),
+          cardModelSequence.pluck('fieldName'),
           dataset,
           function(fieldName, dataset) {
             return Rx.Observable.fromPromise(
@@ -204,7 +155,7 @@
         );
 
         var unfilteredData = Rx.Observable.subscribeLatest(
-          model.pluck('fieldName'),
+          cardModelSequence.pluck('fieldName'),
           dataset,
           baseSoqlFilter,
           datasetPrecision,
@@ -241,22 +192,29 @@
         );
 
         var filteredData = Rx.Observable.subscribeLatest(
-          model.pluck('fieldName'),
+          cardModelSequence.pluck('fieldName'),
           dataset,
           scope.observe('whereClause'),
-          nonBaseFilterApplied,
           datasetPrecision,
           aggregationObservable,
-          function(fieldName, dataset, whereClauseFragment, nonBaseFilterApplied, datasetPrecision, aggregationData) {
+          cardModelSequence.observeOnLatest('activeFilters'),
+          function(fieldName, dataset, whereClause, datasetPrecision, aggregationData, activeFilters) {
 
             if (_.isDefined(datasetPrecision)) {
 
               dataRequests.onNext(1);
 
+              // Since we need to be able to render the unfiltered values outside
+              // of the timeline chart's current selection area, we need to 'filter'
+              // those data outside the selection manually rather than using SoQL.
+              // As a result, we need to make sure we never exclude any data that
+              // belongs to the card making the request. Here we call the
+              // stripWhereClauseFragmentForFieldName function to remove our own
+              // activeFilter from the whereClause.
               var dataPromise = CardDataService.getTimelineData(
                 fieldName,
                 dataset.id,
-                stripOwnVisualizationWhereClause(fieldName, whereClauseFragment),
+                SoqlHelpers.stripWhereClauseFragmentForFieldName(fieldName, whereClause, activeFilters),
                 datasetPrecision,
                 aggregationData
               );
@@ -312,10 +270,10 @@
         );
 
         scope.bindObservable('chartData', chartDataSequence);
-        scope.bindObservable('expanded', model.observeOnLatest('expanded'));
+        scope.bindObservable('expanded', cardModelSequence.observeOnLatest('expanded'));
         scope.bindObservable('precision', datasetPrecision);
-        scope.bindObservable('activeFilters', model.observeOnLatest('activeFilters'));
-        scope.bindObservable('rowDisplayUnit', model.observeOnLatest('page.aggregation.unit'));
+        scope.bindObservable('activeFilters', cardModelSequence.observeOnLatest('activeFilters'));
+        scope.bindObservable('rowDisplayUnit', cardModelSequence.observeOnLatest('page.aggregation.unit'));
         scope.bindObservable('cannotRenderTimelineChart', cannotRenderTimelineChart);
 
         // Handle filtering

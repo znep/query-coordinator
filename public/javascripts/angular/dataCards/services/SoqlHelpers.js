@@ -1,4 +1,4 @@
-angular.module('dataCards').factory('SoqlHelpers', function() {
+angular.module('dataCards').factory('SoqlHelpers', function(Assert) {
   'use strict';
 
   var timeIntervalToDateTrunc = {
@@ -11,7 +11,8 @@ angular.module('dataCards').factory('SoqlHelpers', function() {
     encodeSoqlDate: encodeSoqlDate,
     encodePrimitive: encodePrimitive,
     replaceHyphensWithUnderscores: replaceHyphensWithUnderscores,
-    timeIntervalToDateTrunc: timeIntervalToDateTrunc
+    timeIntervalToDateTrunc: timeIntervalToDateTrunc,
+    stripWhereClauseFragmentForFieldName: stripWhereClauseFragmentForFieldName
   };
 
   function encodeSoqlString(string) {
@@ -40,6 +41,31 @@ angular.module('dataCards').factory('SoqlHelpers', function() {
       throw new Error('Cannot replace hyphens with underscores for non-string arguments.');
     }
     return fragment.replace(/\-/g, '_');
+  }
+
+  /**
+   * @param fieldName - The name of the field for which the where clause will be NOOPed
+   * @param whereClause - The existing where clause containing all where clause fragments for all fields
+   * @param activeFilters - The array of activeFilters from the card model
+   *
+   * This function replaced an existing whereClauseFragment with a tautology (i.e. 1=1)
+   * in order to NOOP that particular clause. An example of where this is used is the
+   * timeline chart which uses it to prevent filtering on its own selection.
+   */
+  function stripWhereClauseFragmentForFieldName(fieldName, whereClause, activeFilters) {
+    if (_.isEmpty(whereClause)) {
+      return;
+    }
+    Assert(_.isPresent(fieldName), 'fieldName cannot be blank');
+    Assert(_.isArray(activeFilters), 'activeFilters must be an array');
+
+    var myWhereClauseFragments = _.invoke(activeFilters, 'generateSoqlWhereFragment', fieldName);
+
+    _.each(myWhereClauseFragments, function(fragment) {
+      whereClause = whereClause.replace(fragment, '(1=1)');
+    });
+
+    return whereClause;
   }
 
   return SoqlHelpers;

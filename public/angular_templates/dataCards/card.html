@@ -6,8 +6,7 @@
       <div class="wrap">{{title}}</div>
     </div>
   </div>
-  <div
-    class="description"
+  <div class="description"
     ng-class="{
       clamped: descriptionClamped,
       collapsed: descriptionCollapsed,
@@ -20,8 +19,7 @@
       <div class="description-expanded-content">
         {{description}}
       </div>
-      <div
-        class="description-expand-button"
+      <div class="description-expand-button"
         ng-class="{
           'icon-chevron-down': descriptionCollapsed,
           'icon-chevron-up': !descriptionCollapsed
@@ -37,8 +35,7 @@
 </div>
 
 <div class="card-controls" ng-show="!isChoosingForExport">
-  <div
-    class="card-control icon-settings"
+  <div class="card-control icon-settings"
     ng-class="{ disabled: !isCustomizable }"
     ng-click="customizeCardIfCustomizable(isCustomizable)"
     ng-show="editMode && interactive"
@@ -46,34 +43,28 @@
       'Customize this card' :
       'There are no customization options for this card yet' }}">
   </div>
-  <div
-    ng-attr-title="{{ expanded ? 'Collapse this card' : 'Expand this card' }}"
+  <div ng-attr-title="{{ expanded ? 'Collapse this card' : 'Expand this card' }}"
     ng-click="toggleExpanded()"
     ng-class="{'icon-expand': !expanded, 'icon-collapse': expanded}"
     ng-show="!editMode && interactive"
     class="card-control">
   </div>
-  <div
-    class="card-control icon-close"
+  <div class="card-control icon-close"
     title="Remove this card"
     ng-click="deleteCard()"
     ng-show="editMode && interactive && model.fieldName !== '*'">
   </div>
 </div>
 
-<div
-  class="card-drag-overlay overlay"
+<div class="card-drag-overlay overlay"
   data-card-id="{{cardState.model.uniqueId}}"
   ng-if="editMode && model.fieldName !== '*'"></div>
 
-<div
-  ng-show="isChoosingForExport"
+<div ng-show="isChoosingForExport"
   class="card-chooser overlay"
   ng-class="{ enabled: isExportable }">
-  <div
-    ng-switch="isExportable">
-    <a
-      ng-switch-when="true"
+  <div ng-switch="isExportable">
+    <a ng-switch-when="true"
       class="action-btn action-png-export"
       href="{{downloadUrl}}"
       ng-click="downloadPng($event)"
@@ -86,8 +77,7 @@
       {{ downloadStateText(downloadState) }}
       <spinner ng-if="downloadState === 'loading'"></spinner>
     </a>
-    <span
-      ng-switch-default
+    <span ng-switch-default
       class="action-btn action-png-export export-visualization-disabled disabled">
       {{ downloadStateText(downloadState) }}
     </span>

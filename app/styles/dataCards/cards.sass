@@ -535,6 +535,46 @@ body.state-view-cards
   > span
     line-height: 300px
 
+  >.card-spot
+    >card
+      z-index: 1
+
+.add-card-controls
+  position: absolute
+  right: 0.5rem
+  top: 0.5rem
+  background-color: white
+  z-index: 2
+
+  >.card-control
+    width: $icon-size
+    height: $icon-size
+    line-height: $icon-size
+    font-size: $icon-size
+    position: relative
+    text-align: center
+    cursor: pointer
+    color: $card-control-color
+    display: inline-block
+
+    &:hover
+      color: #ccc
+      border-color: #ccc
+
+    span
+      display: block
+      position: relative
+
+  >.add-card-settings
+    width: auto
+    padding: 0.2rem 0.3rem 0.3rem
+    white-space: nowrap
+    border-radius: $card-border-width
+
+  >.add-card-settings:hover
+    color: white
+    background-color: $blue-active-color
+
 .add-card-buttons
   text-align: right
   clear: both

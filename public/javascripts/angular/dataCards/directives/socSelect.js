@@ -37,14 +37,19 @@ angular.module('dataCards.directives').directive('socSelect', function() {
 
   return {
     scope: {
-      ngModel: '='
+      ngModel: '=',
+      disabled: '@?'
     },
     restrict: 'E',
     transclude: true,
     templateUrl: '/angular_templates/dataCards/socSelect.html',
     link: function($scope, $element, $attrs) {
       fixArrowForBrowsers($element);
-      applyAttributes($attrs, $element.children('select'))
+      var selectElement = $element.children('select');
+      applyAttributes($attrs, selectElement)
+      $scope.$watch('disabled', function(d) {
+        selectElement.attr('disabled', d);
+      });
     }
   }
 }).

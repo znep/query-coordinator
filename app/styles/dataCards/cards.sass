@@ -437,6 +437,11 @@ body.state-view-cards
         height: 300px
         text-align: left
 
+  .manage-lens-link
+    .icon-warning
+      color: $yellow-warning-color
+      margin-left: .3rem
+
   manage-lens-dialog
     display: block
 
@@ -455,6 +460,14 @@ body.state-view-cards
       .flavor-text
         margin-top: 1rem
         line-height: 1.5em
+        position: relative
+
+        .icon-warning
+          position: absolute
+          right: 100%
+          top: 0
+          line-height: inherit
+          margin-right: .2rem
 
     .controls
       margin-top: 1.5rem

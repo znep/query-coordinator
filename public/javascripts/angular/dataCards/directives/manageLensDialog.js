@@ -24,6 +24,14 @@
           $scope.page.observe('dataset.permissions').map(_.property('isPublic'))
         );
 
+        $scope.bindObservable('selectDisabled', Rx.Observable.combineLatest(
+          $scope.page.observe('permissions').map(_.property('isPublic')),
+          $scope.page.observe('dataset.permissions').map(_.property('isPublic')),
+          function(pageIsPublic, datasetIsPublic) {
+            return !pageIsPublic && !datasetIsPublic;
+          }
+        ));
+
         /**
          * Save the permissions.
          */

@@ -42,12 +42,11 @@
                 </span>
               </div>
             </div>
-            <div class="metadatum-wrapper row manage-lens-link" ng-if="pagePermissions">
+            <div class="metadatum-wrapper row manage-lens-link" ng-if="pagePermissions && currentUserHasSaveRight">
               <div class="metadatum">
                 <span class="label">permissions</span>
                 <span class="value">
-                  <a ng-if="currentUserHasSaveRight" href=# ng-click="manageLensState.show = true">{{ pagePermissions }} <small>(change)</small></a>
-                  <span ng-if="!currentUserHasSaveRight">{{ pagePermissions }}</span>
+                  <a href=# ng-click="manageLensState.show = true">{{ pagePermissions }} <small>(change)</small></a><span class="icon-warning" ng-if="pageIsPublic && !datasetIsPublic"></span>
                 </span>
               </div>
               <modal-dialog ng-if="manageLensState.show" dialog-state="manageLensState">

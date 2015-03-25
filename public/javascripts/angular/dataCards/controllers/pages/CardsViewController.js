@@ -65,9 +65,18 @@
   }
 
   function initManageLens($scope, page) {
-    $scope.bindObservable('pagePermissions', page.observe('permissions').map(function(permissions) {
-      return permissions && (permissions.isPublic ? 'public' : 'private');
+    var pageIsPublicObservable = page.observe('permissions').
+        filter(_.isDefined).
+        map(_.property('isPublic'));
+    $scope.bindObservable('pagePermissions', pageIsPublicObservable.map(function(isPublic) {
+      return isPublic ? 'public' : 'private';
     }));
+    $scope.bindObservable('pageIsPublic', pageIsPublicObservable);
+    $scope.bindObservable(
+      'datasetIsPublic',
+      page.observe('dataset.permissions').filter(_.isDefined).map(_.property('isPublic'))
+    );
+
     $scope.manageLensState = {
       show: false
     };

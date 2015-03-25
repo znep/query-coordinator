@@ -14,10 +14,10 @@
 
         AngularRxExtensions.install(scope);
 
-        var modelSequence = scope.observe('model');
-        var dataset = modelSequence.observeOnLatest('page.dataset').filter(_.isPresent);
-        var baseSoqlFilter = modelSequence.observeOnLatest('page.baseSoqlFilter');
-        var aggregationObservable = modelSequence.observeOnLatest('page.aggregation');
+        var cardModelSequence = scope.observe('model');
+        var dataset = cardModelSequence.observeOnLatest('page.dataset').filter(_.isPresent);
+        var baseSoqlFilter = cardModelSequence.observeOnLatest('page.baseSoqlFilter');
+        var aggregationObservable = cardModelSequence.observeOnLatest('page.aggregation');
         var dataRequests = new Rx.Subject();
         var dataResponses = new Rx.Subject();
         var unfilteredDataSequence = new Rx.Subject();
@@ -133,7 +133,7 @@
         );
 
         var datasetPrecision = Rx.Observable.combineLatest(
-          modelSequence.pluck('fieldName'),
+          cardModelSequence.pluck('fieldName'),
           dataset,
           function(fieldName, dataset) {
             return Rx.Observable.fromPromise(
@@ -170,7 +170,7 @@
         );
 
         var unfilteredData = Rx.Observable.subscribeLatest(
-          modelSequence.pluck('fieldName'),
+          cardModelSequence.pluck('fieldName'),
           dataset,
           baseSoqlFilter,
           datasetPrecision,
@@ -207,13 +207,13 @@
         );
 
         var filteredData = Rx.Observable.subscribeLatest(
-          modelSequence.pluck('fieldName'),
+          cardModelSequence.pluck('fieldName'),
           dataset,
           scope.observe('whereClause'),
           nonBaseFilterApplied,
           datasetPrecision,
           aggregationObservable,
-          modelSequence.observeOnLatest('activeFilters'),
+          cardModelSequence.observeOnLatest('activeFilters'),
           function(fieldName, dataset, whereClause, nonBaseFilterApplied, datasetPrecision, aggregationData, activeFilters) {
 
             if (_.isDefined(datasetPrecision)) {
@@ -286,10 +286,10 @@
         );
 
         scope.bindObservable('chartData', chartDataSequence);
-        scope.bindObservable('expanded', modelSequence.observeOnLatest('expanded'));
+        scope.bindObservable('expanded', cardModelSequence.observeOnLatest('expanded'));
         scope.bindObservable('precision', datasetPrecision);
-        scope.bindObservable('activeFilters', modelSequence.observeOnLatest('activeFilters'));
-        scope.bindObservable('rowDisplayUnit', modelSequence.observeOnLatest('page.aggregation.unit'));
+        scope.bindObservable('activeFilters', cardModelSequence.observeOnLatest('activeFilters'));
+        scope.bindObservable('rowDisplayUnit', cardModelSequence.observeOnLatest('page.aggregation.unit'));
         scope.bindObservable('cannotRenderTimelineChart', cannotRenderTimelineChart);
 
         // Handle filtering

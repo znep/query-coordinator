@@ -339,7 +339,7 @@ angular.module('socrataCommon.directives').directive('columnChart', function($pa
     var $columnChart = element.find('.column-chart');
     $columnChart.children('.ticks').remove();
     $columnChart.prepend($ticks);
-    
+
     barGroupSelection.call(updateBars);
     labelSelection.call(updateLabels);
 

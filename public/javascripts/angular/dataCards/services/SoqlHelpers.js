@@ -43,9 +43,15 @@ angular.module('dataCards').factory('SoqlHelpers', function(Assert) {
     return fragment.replace(/\-/g, '_');
   }
 
-  // This function replaced an existing whereClauseFragment with a tautology (i.e. 1=1)
-  // in order to NOOP that particular clause. An example of where this is used is the
-  // timeline chart which uses it to prevent filtering on its own selection.
+  /**
+   * @param fieldName - The name of the field for which the where clause will be NOOPed
+   * @param whereClause - The existing where clause containing all where clause fragments for all fields
+   * @param activeFilters - The array of activeFilters from the card model
+   *
+   * This function replaced an existing whereClauseFragment with a tautology (i.e. 1=1)
+   * in order to NOOP that particular clause. An example of where this is used is the
+   * timeline chart which uses it to prevent filtering on its own selection.
+   */
   function stripWhereClauseFragmentForFieldName(fieldName, whereClause, activeFilters) {
     if (_.isEmpty(whereClause)) {
       return;

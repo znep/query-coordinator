@@ -42,6 +42,21 @@ div.column-chart
         .bar.unfiltered
           background-color: lighten($unfiltered-bar-color, 12%)
 
+    // hover colors
+    .bar-group.active.hover
+      .bar.unfiltered
+        background-color: $hovered-bar-color
+      .bar.filtered
+        background-color: $unfiltered-hover-bar-bg-color
+    &.filtered
+      .bar-group.active.hover
+        .bar.unfiltered
+          background-color: $unfiltered-hover-bar-bg-color
+        .bar.filtered
+          background-color: $hovered-bar-color
+        &.special .bar.filtered
+          background-color: $filtered-region-bg-color-4
+
     div.truncation-marker
       position: absolute
       // bottom is adjusted in JS to match the y position of the x-axis (itself positioned via JS).

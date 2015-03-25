@@ -82,10 +82,6 @@ class PhidippidesPagesController < ActionController::Base
       render :json => { :body => 'Phidippides connection error' }, :status => '500'
     rescue Phidippides::NoDatasetIdException => error
       render :json => { :body => "Error: #{error}" }, :status => '400'
-    rescue Phidippides::NewPageException => error
-      render :json => { :body => "Error: #{error}" }, :status => '500'
-    rescue Phidippides::PageIdException => error
-      render :json => { :body => "Error: #{error}" }, :status => '400'
     rescue Phidippides::NoCardsException => error
       render :json => { :body => "Error: #{error}" }, :status => '400'
     rescue NewViewManager::NewViewNotCreatedError => error

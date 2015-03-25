@@ -3,8 +3,6 @@ class Phidippides < SocrataHttp
   include CommonMetadataTransitionMethods
   include CardTypeMapping
 
-  class NewPageException < RuntimeError; end
-  class PageIdException < RuntimeError; end
   class NoDatasetIdException < RuntimeError; end
   class NoCardsException < RuntimeError; end
   class NoPageIdException < RuntimeError; end

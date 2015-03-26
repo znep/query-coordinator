@@ -195,6 +195,8 @@
       var coordinates;
       var j;
       var projectedPoint;
+      var coordinateGroupCount;
+      var coordinateCount;
 
       if (!_.isObject(computedStyle) ||
           !computedStyle.hasOwnProperty('color') ||
@@ -261,6 +263,7 @@
       var coordinateCount;
       var j;
       var projectedPoint;
+      var coordinates;
 
       if (!_.isObject(computedStyle) ||
           !computedStyle.hasOwnProperty('color') ||
@@ -289,7 +292,7 @@
         ctx.lineWidth = outline.size;
       }
 
-      ctx2d.beginPath();
+      ctx.beginPath();
 
       coordinateGroupCount = coordinateArray.length;
 
@@ -462,7 +465,8 @@
           debug: false,
           url: '',
           headers: {},
-          tileSize: 256
+          tileSize: 256,
+          debounceMilliseconds: 500
         };
         L.Util.setOptions(this, options);
 
@@ -471,6 +475,12 @@
         this.outstandingTileDataRequests = {};
         this.map = null;
         this.outstandingRequestCount = 0;
+        this.delayedTileDataRequests = [];
+        this.firstRequest = true;
+        this.debouncedFlushOutstandingQueue = _.debounce(
+          this.flushOutstandingQueue,
+          this.options.debounceMilliseconds
+        );
       },
 
       onAdd: function(map) {
@@ -550,11 +560,46 @@
           this.renderDebugInfo(tilePoint, zoom);
         }
 
-        this.getTileData(tilePoint, zoom, this.processVectorTileLayers);
+        this.debounceGetTileData(tilePoint, zoom, this.processVectorTileLayers);
+      },
+
+      debounceGetTileData: function(tilePoint, zoom, callback) {
+        if (this.firstRequest) {
+          this.lastCommitedZoomLevel = zoom;
+          this.firstRequest = false;
+        }
+        var userHasZoomed = _.isUndefined(this.lastCommitedZoomLevel) || this.lastCommitedZoomLevel !== zoom;
+        this.lastSeenZoomLevel = zoom;
+
+        if (userHasZoomed) {
+          this.lastCommitedZoomLevel = undefined;
+          this.delayedTileDataRequests.push({
+            tilePoint: tilePoint,
+            zoom: zoom,
+            callback: callback
+          });
+          this.tileLoading(VectorTileUtil.getTileId(tilePoint, zoom));
+        } else {
+          this.getTileData(tilePoint, zoom, callback);
+        }
+
+        this.debouncedFlushOutstandingQueue();
+      },
+
+      flushOutstandingQueue: function() {
+        this.lastCommitedZoomLevel = this.lastSeenZoomLevel;
+        var self = this;
+        _.each(this.delayedTileDataRequests, function(request) {
+          if (request.zoom === self.lastCommitedZoomLevel) {
+            self.getTileData(request.tilePoint, request.zoom, request.callback);
+          } else {
+            self.tileLoaded(VectorTileUtil.getTileId(request.tilePoint, request.zoom));
+          }
+        });
+        this.delayedTileDataRequests.length = 0;
       },
 
       getTileData: function(tilePoint, zoom, callback) {
-
         var self = this;
         var tileId = VectorTileUtil.getTileId(tilePoint, zoom);
         var xhr = new XMLHttpRequest();
@@ -564,7 +609,8 @@
           replace('{y}', tilePoint.y);
 
         // Don't re-request tiles that are already outstanding.
-        if (self.outstandingTileDataRequests.hasOwnProperty(tileId)) {
+        if (self.outstandingTileDataRequests.hasOwnProperty(tileId) &&
+          self.outstandingTileDataRequests[tileId] == null) {
           return;
         }
 
@@ -573,13 +619,7 @@
           var arrayBuffer = [];
 
           if (parseInt(xhr.status, 10) === 200) {
-
-            // Check the current map layer zoom.  If fast zooming is occurring, then short-
-            // circuit tiles that are for a different zoom level than we're currently on.
-            if (self.map.getZoom() !== zoom) {
-              return;
-            }
-
+            
             // IE9 doesn't support binary data in xhr.response, so we have to
             // use a righteous hack (See: http://stackoverflow.com/a/4330882).
             if (_.isUndefined(xhr.response) &&
@@ -605,7 +645,7 @@
 
         xhr.onabort = function() {
           self.tileLoaded(tileId);
-        }
+        };
 
         xhr.onerror = function() {
           self.tileLoaded(tileId);
@@ -734,37 +774,25 @@
       },
 
       tileLoading: function(tileId, xhr) {
-
         if (this.outstandingRequestCount === 0) {
           this.emitRenderStartedEvent();
         }
 
-        this.outstandingTileDataRequests[tileId] = xhr;
-        this.outstandingRequestCount++;
+        if (!this.outstandingTileDataRequests.hasOwnProperty(tileId)) {
+          this.outstandingRequestCount++;
+        }
+
+        if (xhr) {
+          this.outstandingTileDataRequests[tileId] = xhr;
+        } else {
+          this.outstandingTileDataRequests[tileId] = null;
+        }
       },
 
       tileLoaded: function(tileId) {
-
-        var zoom = this.map.getZoom();
-        var outstandingRequests = _.keys(this.outstandingTileDataRequests);
-        var outstandingRequestZoom = 0;
-
-        // First stop tracking the request that just succeeded.
-        delete this.outstandingTileDataRequests[tileId];
-        this.outstandingRequestCount--;
-
-        for (var i = 0; i < outstandingRequests.length; i++) {
-
-          outstandingRequestZoom = parseInt(outstandingRequests[i].split(':')[0], 10);
-
-          // Clear out outstanding tile requests that are not of the
-          // correct zoom level.
-          // First abort the request then stop tracking it.
-          if (outstandingRequestZoom !== zoom) {
-            this.outstandingTileDataRequests[outstandingRequests[i]].abort();
-            delete this.outstandingTileDataRequests[outstandingRequests[i]];
-            this.outstandingRequestCount--;
-          }
+        if (this.outstandingTileDataRequests.hasOwnProperty(tileId)) {
+          delete this.outstandingTileDataRequests[tileId];
+          this.outstandingRequestCount--;
         }
 
         if (this.outstandingRequestCount === 0) {

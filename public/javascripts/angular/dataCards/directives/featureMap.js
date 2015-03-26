@@ -4,8 +4,7 @@
   function featureMap(
     Constants,
     AngularRxExtensions,
-    VectorTiles,
-    FlyoutService) {
+    VectorTiles) {
 
     return {
       restrict: 'E',
@@ -13,6 +12,7 @@
         'baseLayerUrl': '=',
         'featureExtent': '=',
         'featureLayerUrl': '=',
+        'zoomDebounceMilliseconds': '=',
         'rowDisplayUnit': '=?'
       },
       templateUrl: '/angular_templates/dataCards/featureMap.html',
@@ -38,7 +38,7 @@
         var currentFeatureLayerUrl;
         var startResizeFn = null;
         var completeResizeFn = null;
-        var baseTileLayerObservable = null;
+        var baseTileLayerObservable;
         var RESIZE_DEBOUNCE_INTERVAL = 250;
 
         /**
@@ -207,7 +207,8 @@
             getFeatureId: getFeatureId,
             filter: filterLayerFeature,
             layerOrdering: getFeatureZIndex,
-            style: getFeatureStyle
+            style: getFeatureStyle,
+            debounceMilliseconds: scope.zoomDebounceMilliseconds
             // You can interact with mouse events by passing
             // callbacks on three property names: 'mousedown',
             // 'mouseup' and 'mousemove'.

@@ -401,15 +401,25 @@
                     }
 
                   } else if (cellType === 'timestamp' || cellType === 'floating_timestamp') {
-                    var time = moment(cellContent);
 
-                    // Check if Date or Date/Time
-                    if (time.hour() + time.minute() + time.second() + time.millisecond() === 0) {
-                      cellText = time.format('YYYY MMM D');
+                    // Don't instantiate moment at all if we can avoid it.
+                    if (_.isEmpty(cellContent)) {
+                      cellText = '';
                     } else {
-                      cellText = time.format('YYYY MMM DD HH:mm:ss');
-                    }
+                      var time = moment(cellContent);
 
+                      // We still need to check if the date is valid even if cellContent is not empty.
+                      if (time.isValid()) {
+                        // Check if Date or Date/Time
+                        if (time.hour() + time.minute() + time.second() + time.millisecond() === 0) {
+                          cellText = time.format('YYYY MMM D');
+                        } else {
+                          cellText = time.format('YYYY MMM DD HH:mm:ss');
+                        }
+                      } else {
+                        cellText = '';
+                      }
+                    }
                   } else {
                     cellText = _.escape(cellContent);
                   }

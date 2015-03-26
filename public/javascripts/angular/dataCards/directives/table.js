@@ -382,6 +382,15 @@
                     }
 
                   } else if (cellType === 'number') {
+                    // CORE-4533: Preserve behavior of old UX - truncate precision
+                    if (cellContent && !_.isNumber(cellContent)) {
+                      var number = parseFloat(cellContent);
+                      // Just in case, default to the given cell content if parsing fails
+                      if (!_.isNaN(number)) {
+                        cellContent = number.toString();
+                      }
+                    }
+
                     // TODO: Remove this. This is just to satisfy Clint's pet peeve about years.
                     if (cellContent.length >= 5) {
                       cellText = _.escape($.commaify(cellContent));
@@ -401,15 +410,21 @@
                     }
 
                   } else if (cellType === 'timestamp' || cellType === 'floating_timestamp') {
-                    var time = moment(cellContent);
+                    cellText = '';
+                    // Don't instantiate moment at all if we can avoid it.
+                    if (_.isPresent(cellContent)) {
+                      var time = moment(cellContent);
 
-                    // Check if Date or Date/Time
-                    if (time.hour() + time.minute() + time.second() + time.millisecond() === 0) {
-                      cellText = time.format('YYYY MMM D');
-                    } else {
-                      cellText = time.format('YYYY MMM DD HH:mm:ss');
+                      // We still need to check if the date is valid even if cellContent is not empty.
+                      if (time.isValid()) {
+                        // Check if Date or Date/Time
+                        if (time.hour() + time.minute() + time.second() + time.millisecond() === 0) {
+                          cellText = time.format('YYYY MMM D');
+                        } else {
+                          cellText = time.format('YYYY MMM DD HH:mm:ss');
+                        }
+                      }
                     }
-
                   } else {
                     cellText = _.escape(cellContent);
                   }

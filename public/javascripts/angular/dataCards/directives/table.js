@@ -401,11 +401,9 @@
                     }
 
                   } else if (cellType === 'timestamp' || cellType === 'floating_timestamp') {
-
+                    cellText = '';
                     // Don't instantiate moment at all if we can avoid it.
-                    if (_.isEmpty(cellContent)) {
-                      cellText = '';
-                    } else {
+                    if (_.isPresent(cellContent)) {
                       var time = moment(cellContent);
 
                       // We still need to check if the date is valid even if cellContent is not empty.
@@ -416,8 +414,6 @@
                         } else {
                           cellText = time.format('YYYY MMM DD HH:mm:ss');
                         }
-                      } else {
-                        cellText = '';
                       }
                     }
                   } else {

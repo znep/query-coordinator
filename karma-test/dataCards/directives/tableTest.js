@@ -198,7 +198,7 @@ describe('table directive', function() {
 
   });
 
-  describe.only('when rendering null cell data', function() {
+  describe('when rendering null cell data', function() {
     var el;
 
     beforeEach(function() {
@@ -208,12 +208,11 @@ describe('table directive', function() {
     });
     after(destroyAllTableCards);
 
-    it('should render invalid dates as blank cells', function(done) {
+    it('should render invalid dates as blank cells', function() {
       var invalidTimestampCell = el.find('.table-row .cell.timestamp').first();
       var cellContent = invalidTimestampCell.html();
 
       expect(cellContent).to.equal('');
-      done();
     });
   });
 

@@ -96,8 +96,7 @@ angular.module('dataCards.services').factory('SchemaDefinitions', function() {
                     'type': 'string'
                   },
                   'physicalDatatype': {
-                    'type': 'string',
-                    'enum': [ 'number', 'point', 'geo_entity', 'text', 'timestamp', 'row_version', 'row_identifier', 'fixed_timestamp', 'floating_timestamp', 'boolean', 'money', '*' ]
+                    'type': 'string'
                   },
                   'cardinality': { 'type': 'integer' },
                   'defaultCardType': { 'type': 'string' },

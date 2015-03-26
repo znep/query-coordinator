@@ -107,7 +107,6 @@
     UserSessionService,
     FlyoutService,
     WindowOperations,
-    moment,
     page,
     WindowState,
     ServerConfig,

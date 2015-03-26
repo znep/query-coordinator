@@ -4,11 +4,11 @@
   var forEach = _.forEach;
   var requestIdHeaderName = 'X-Socrata-RequestId';
 
-  function httpProvider($http, $rootScope, moment, RequestId, $log) {
+  function httpProvider($http, $rootScope, RequestId, $log) {
     function http(requestConfig) {
       var id;
       var eventMetadata = {
-        startTime: moment().valueOf()
+        startTime: Date.now()
       };
 
       if (_.isDefined(requestConfig.requester)) {
@@ -45,7 +45,7 @@
 
       function emitEventFn(eventLabel) {
         return function() {
-          $rootScope.$emit(eventLabel, extend({ stopTime: moment().valueOf() }, eventMetadata));
+          $rootScope.$emit(eventLabel, extend({ stopTime: Date.now() }, eventMetadata));
         };
       }
       httpPromise.then(

@@ -3,7 +3,7 @@
 
   var LAST_MODIFIED_HEADER_KEY = 'X-SODA2-Truth-Last-Modified';
 
-  function LastModifiedHttpInterceptor(moment) {
+  function LastModifiedHttpInterceptor() {
     var observable = new Rx.Subject();
     var regex = new RegExp('/api/id/\\w{4}-\\w{4}.json');
     var toDate = function(input) {

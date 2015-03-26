@@ -104,3 +104,6 @@ odux_enable_histogram:
 use_soql_for_clustering:
   description: Use the (currently unwritten) core method soql_clustering for clustering.
   defaultValue: false
+feature_map_zoom_debounce:
+  description: Milliseconds after user interaction to delay before requesting vector tiles
+  defaultValue: 500

@@ -43,19 +43,17 @@
         Rx.Observable.subscribeLatest(
           model.pluck('fieldName'),
           dataset,
-          baseSoqlFilter,
-          function(fieldName, dataset, whereClauseFragment) {
+          baseSoqlFilter, // Used for signalling that this combineLatest should run
+          function(fieldName, dataset) {
             dataRequests.onNext(1);
             var dataPromise = CardDataService.getFeatureExtent(fieldName, dataset.id);
             dataPromise.then(
-              function(res) {
+              function() {
                 // Ok
                 featureExtentDataSequence.onNext(dataPromise);
                 dataResponses.onNext(1);
               },
-              function(err) {
-                // Do nothing
-              });
+              _.noop);
             return Rx.Observable.fromPromise(dataPromise);
           });
 
@@ -116,6 +114,8 @@
           'rowDisplayUnit',
           dataset.observeOnLatest('rowDisplayUnit')
         );
+
+        scope.zoomDebounceMilliseconds = ServerConfig.get('featureMapZoomDebounce');
 
       }
     };

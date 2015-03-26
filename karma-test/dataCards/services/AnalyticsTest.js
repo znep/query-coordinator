@@ -1,10 +1,11 @@
-describe('Analytics service', function() {
+describe.only('Analytics service', function() {
   var Analytics, $httpBackend, moment, $rootScope;
   var INITIAL_NAVIGATION_START_TIME = 222;
   var INITIAL_MOMENT_TIME = 1234;
   var INITIAL_TIME_DELTA = INITIAL_MOMENT_TIME - INITIAL_NAVIGATION_START_TIME;
   var DOM_READY_TIME = 4119;
   var fakeClock;
+  var ServerConfig;
 
   var mockMomentService = function() {
     var nextValue = INITIAL_MOMENT_TIME;
@@ -32,6 +33,9 @@ describe('Analytics service', function() {
       readyState: 'loading',
       addEventListener: function(){},
       removeEventListener: function(){}
+    },
+    navigator: {
+      userAgent: "other"
     }
   };
 
@@ -47,7 +51,11 @@ describe('Analytics service', function() {
   beforeEach(inject(function($injector) {
     $rootScope = $injector.get('$rootScope');
     $httpBackend = $injector.get('$httpBackend');
+    ServerConfig = $injector.get('ServerConfig');
     Analytics = $injector.get('Analytics');
+    // Test with a queue size of one so we can identify at a greater granularity
+    // which sendMetric calls are potentially missing or duplicated
+    Analytics.setMetricsQueueCapacity(1);
   }));
 
 
@@ -75,7 +83,6 @@ describe('Analytics service', function() {
         var blob = JSON.parse(blob);
         return blob.metrics &&
                blob.metrics.length === 1 &&
-               blob.metrics[0].entity === 'domain-intern' &&
                (_.isUndefined(optionalMetricName) || blob.metrics[0].metric === optionalMetricName) &&
                (_.isUndefined(optionalMetricValue) || blob.metrics[0].increment === optionalMetricValue);
       }).respond(200);
@@ -100,6 +107,23 @@ describe('Analytics service', function() {
 
   function emitUserInteraction() {
     $rootScope.$emit('user-interacted');
+  }
+
+  /**
+   * Metrics that are (almost given a configuration) always sent.  Notice the order of the expected
+   * metrics are the same as the order they are sent.  See analytics.js
+   */
+  function expectDefaultMetrics(optionalCardsPageLoadTime) {
+    if (ServerConfig.get('enable_newux_page_view_count')) {
+      expectAnalyticsHttpPost('js-page-view', 1); // Emitted if configured
+    }
+    // Always emitted.
+    expectAnalyticsHttpPost('js-page-view-newux', 1);
+    if (_.isUndefined(optionalCardsPageLoadTime)) {
+      expectAnalyticsHttpPost('js-cardsview-page-load-time');
+    } else {
+      expectAnalyticsHttpPost('js-cardsview-page-load-time', optionalCardsPageLoadTime);
+    }
   }
 
   // *** Actual tests. ***
@@ -128,7 +152,7 @@ describe('Analytics service', function() {
 
       it('should report page load time on natural settling', function() {
         var fakeRenderEndTime = _.now();
-        expectAnalyticsHttpPost('js-cardsview-page-load-time', fakeRenderEndTime - mockWindowPerformance.timing.navigationStart);
+        expectDefaultMetrics();
 
         // Metric is considered complete after at least one render complete is received,
         // and the timeout has passed.
@@ -141,7 +165,7 @@ describe('Analytics service', function() {
 
       it('should report page load time immediately on user action', function() {
         var fakeRenderEndTime = _.now();
-        expectAnalyticsHttpPost('js-cardsview-page-load-time', fakeRenderEndTime - mockWindowPerformance.timing.navigationStart);
+        expectDefaultMetrics(fakeRenderEndTime - mockWindowPerformance.timing.navigationStart);
 
         // Metric is considered complete after at least one render complete is received,
         // and the timeout has passed.
@@ -154,7 +178,7 @@ describe('Analytics service', function() {
 
       it('should report page load time only once', function() {
         var fakeRenderEndTime = _.now();
-        expectAnalyticsHttpPost('js-cardsview-page-load-time', fakeRenderEndTime - mockWindowPerformance.timing.navigationStart);
+        expectDefaultMetrics(fakeRenderEndTime - mockWindowPerformance.timing.navigationStart);
 
         // Metric is considered complete after at least one render complete is received,
         // and the timeout has passed.
@@ -187,8 +211,7 @@ describe('Analytics service', function() {
       it('should report custom metric time on natural settling', function() {
         var fakeRenderEndTime1 = INITIAL_MOMENT_TIME - 1000;
         var fakeRenderEndTime2 = INITIAL_MOMENT_TIME + 1000;
-
-        expectAnalyticsHttpPost('js-cardsview-page-load-time'); // Always emitted.
+        expectDefaultMetrics();
         expectAnalyticsHttpPost('js-cardsview-my-fake-metric-time', fakeRenderEndTime2 - INITIAL_MOMENT_TIME);
 
         emitRenderComplete(fakeRenderEndTime1);
@@ -205,8 +228,7 @@ describe('Analytics service', function() {
       it('should report custom metric time immediately on user action', function() {
         var fakeRenderEndTime1 = INITIAL_MOMENT_TIME - 1000;
         var fakeRenderEndTime2 = INITIAL_MOMENT_TIME + 1000;
-
-        expectAnalyticsHttpPost('js-cardsview-page-load-time'); // Always emitted.
+        expectDefaultMetrics();
         expectAnalyticsHttpPost('js-cardsview-my-fake-metric-time', fakeRenderEndTime2 - INITIAL_MOMENT_TIME);
 
         emitRenderComplete(fakeRenderEndTime1);
@@ -222,8 +244,7 @@ describe('Analytics service', function() {
 
       it('should report custom metric time only once', function() {
         var fakeRenderEndTime = INITIAL_MOMENT_TIME + 100;
-
-        expectAnalyticsHttpPost('js-cardsview-page-load-time'); // Always emitted.
+        expectDefaultMetrics();
         expectAnalyticsHttpPost('js-cardsview-my-fake-metric-time', fakeRenderEndTime - INITIAL_MOMENT_TIME);
 
         Analytics.start('my-fake-metric');
@@ -236,7 +257,7 @@ describe('Analytics service', function() {
       });
 
       it('should NOT report custom metric time if no render complete is received after the call to start()', function() {
-        expectAnalyticsHttpPost('js-cardsview-page-load-time'); // Always emitted.
+        expectDefaultMetrics();
 
         emitRenderComplete(2); // Should be entirely ignored.
         Analytics.start('my-fake-metric');

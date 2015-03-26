@@ -1,10 +1,11 @@
 (function() {
   'use strict';
 
-  var analyticsUrl = '/analytics/add';
-  var entity = 'domain-intern';
-  var baseMetricName = 'js-cardsview-{0}-time';
+  // Additional changes...
 
+  var analyticsUrl = '/analytics/add';
+  var defaultEntity = 'domain-intern';
+  var jsCardsViewBaseName = 'js-cardsview-{0}-time';
 
   /**
    * Analytics service
@@ -22,6 +23,12 @@
     // load times. Note that this is pre-empted if the user
     // interacts with the page.
     this.idleTimeForRendererToBeConsideredSettled = 15000;
+
+    // Default buffer size for
+    var queueCapacity = 20;
+
+    // Queue of metrics for consolidation and minimizing outgoing PUT request.
+    var queue = [];
 
     // true for IE9+, Chrome, Firefox (as of 8/12/14)
     var hasPerformanceTiming = _.isDefined($window.performance) && _.isDefined($window.performance.timing);
@@ -61,8 +68,15 @@
       if (_.isNaN(timeDelta)) {
         $log.debug('timeDelta was NaN');
       }
+      // Enable if we want new ux page to count toward the total count of all page views
+      if (ServerConfig.get('enableNewuxPageViewCount')) {
+        sendMetric("domain", "js-page-view", 1);
+      }
+      sendMetric("domain", "js-page-view-newux", 1);
+      sendPerformanceMetric(jsCardsViewBaseName.format('page-load'), timeDelta);
 
-      sendMetric(baseMetricName.format('page-load'), timeDelta);
+      // final flush of all known metrics
+      flushMetrics();
     });
 
     /**
@@ -75,7 +89,7 @@
       var finalizeMeasurement = function() {
         var navStartTime = navigationStartTime();
         var domCompleteTime = $window.performance.timing.domComplete;
-        sendMetric('js-dom-load-time', domCompleteTime - navStartTime);
+        sendPerformanceMetric('js-dom-load-time', domCompleteTime - navStartTime);
       };
 
       var onReadyStateChange = function() {
@@ -107,7 +121,7 @@
           $log.debug('timeDelta was NaN');
         }
 
-        sendMetric(baseMetricName.format(label), timeDelta);
+        sendPerformanceMetric(jsCardsViewBaseName.format(label), timeDelta);
       });
     };
 
@@ -131,7 +145,7 @@
         if (_.isNaN(timeDelta)) {
           $log.debug('timeDelta was NaN');
         }
-        sendMetric(baseMetricName.format(label), timeDelta);
+        sendPerformanceMetric(jsCardsViewBaseName.format(label), timeDelta);
       }
     };
 
@@ -142,31 +156,40 @@
     };
 
     /**
-     * Posts an analytics metric to the analytics endpoint
-     * Analytics endpoint performs checking to determine if it is a valid metric
+     * Set the size of the metrics buffer.
      *
-     * @todo - Queue requests and flush when the queue is full and on page unload
-     *
-     * @private
-     * @param metricName
-     * @param metricValue
+     * @param size Desired size of the metrics buffer.
      */
-    function sendMetric(metricName, metricValue) {
+    this.setMetricsQueueCapacity = function(size) {
+      if (size > 0) {
+        queueCapacity = size;
+      }
+    };
 
+    /**
+     * Posts an analytics metric to the analytics endpoint
+     * Analytics endpoint performs checking to determine if it is a valid metric.
+     */
+    function sendPerformanceMetric(metricName, metricValue) {
+      sendMetric(defaultEntity, metricName, metricValue)
+    }
+
+    function sendMetric(entityName, metricName, metricValue) {
+      queue.push({entity: entityName, metric: metricName, increment: metricValue});
+      if (queue.length >= queueCapacity) {
+          flushMetrics();
+      }
+    }
+
+    function flushMetrics() {
       var analyticsPayload;
       var analyticsConfig;
 
       if (serverUploadEnabled) {
-
-        analyticsPayload = JSON.stringify({
-          metrics: [
-            {
-              entity: entity,
-              metric: metricName,
-              increment: metricValue
-            }
-          ]
-        });
+        if (queue.length == 0) return;
+        // create the batched payload and reset the queue
+        analyticsPayload = JSON.stringify({'metrics': queue});
+        queue = [];
 
         analyticsConfig = {
           'headers': {
@@ -176,7 +199,7 @@
           'contentType': 'application/json',
           'dataType': 'json',
           'requester': {}
-        }
+        };
 
         http.post(analyticsUrl, analyticsPayload, analyticsConfig);
 

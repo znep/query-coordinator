@@ -70,9 +70,9 @@
       }
       // Enable if we want new ux page to count toward the total count of all page views
       if (ServerConfig.get('enableNewuxPageViewCount')) {
-        sendMetric("domain", "js-page-view", 1);
+        sendMetric('domain', 'js-page-view', 1);
       }
-      sendMetric("domain", "js-page-view-newux", 1);
+      sendMetric('domain', 'js-page-view-newux', 1);
       sendPerformanceMetric(jsCardsViewBaseName.format('page-load'), timeDelta);
 
       // final flush of all known metrics

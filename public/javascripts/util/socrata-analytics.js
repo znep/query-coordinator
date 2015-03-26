@@ -113,7 +113,7 @@ jQuery.metrics = {
                 "-" + $.browser.majorVersion);
 
         var page_type = $.metrics.determine_page_type();
-        $.metrics.mark("domain", "js-page-view-" + page_type);
+        $.metrics.mark("domain", 'js-page-view-{0}'.format(page_type));
 
         // NavigationTiming not supported by safari
         // https://dvcs.w3.org/hg/webperf/raw-file/tip/specs/NavigationTiming

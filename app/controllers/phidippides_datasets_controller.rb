@@ -1,10 +1,12 @@
-class PhidippidesDatasetsController < ActionController::Base
-
+class PhidippidesDatasetsController < ApplicationController
   include CommonMetadataMethods
   include CommonMetadataTransitionMethods
   include UserAuthMethods
 
-  before_filter :hook_auth_controller
+  # TODO: We need to plumb our code through to support csrf token verification
+  skip_before_filter :verify_authenticity_token,
+    # Some of these functions will return publicly-accessible data
+    :require_user
 
   helper :all # include all helpers, all the time
 

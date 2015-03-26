@@ -3,8 +3,12 @@ require 'test_helper'
 class PhidippidesDatasetsControllerTest < ActionController::TestCase
 
   def setup
-    CurrentDomain.class_variable_set('@@current_domain', :data => Hashie::Mash.new)
-    CurrentDomain.stubs(domain: stub(cname: 'localhost'))
+    init_core_session
+    init_current_domain
+    UserSession.any_instance.stubs(save: Net::HTTPSuccess.new(1.1, 200, 'Success'),
+                                   find_token: true)
+    User.stubs(current_user: User.new(some_user))
+
     @phidippides = Phidippides.new
     @phidippides.stubs(end_point: 'http://localhost:2401')
     @new_view_manager = NewViewManager.new
@@ -270,4 +274,11 @@ class PhidippidesDatasetsControllerTest < ActionController::TestCase
     JSON.parse(File.read("#{Rails.root}/test/fixtures/v1-dataset-metadata.json"))
   end
 
+  def some_user
+    { email: 'foo@bar.com',
+      password: 'asdf',
+      passwordConfirm: 'asdf',
+      accept_terms: true
+    }
+  end
 end

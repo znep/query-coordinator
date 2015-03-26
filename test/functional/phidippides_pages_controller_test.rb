@@ -3,7 +3,12 @@ require 'test_helper'
 class PhidippidesPagesControllerTest < ActionController::TestCase
 
   def setup
-    CurrentDomain.stubs(domain: stub(cname: 'localhost'))
+    init_core_session
+    init_current_domain
+    UserSession.any_instance.stubs(save: Net::HTTPSuccess.new(1.1, 200, 'Success'),
+                                   find_token: true)
+    User.stubs(current_user: User.new(some_user))
+
     @phidippides = Phidippides.new
     @phidippides.stubs(end_point: 'http://localhost:2401')
     @page_metadata_manager = PageMetadataManager.new
@@ -361,4 +366,11 @@ class PhidippidesPagesControllerTest < ActionController::TestCase
     JSON.parse(File.read("#{Rails.root}/test/fixtures/v1-page-metadata.json"))
   end
 
+  def some_user
+    { email: 'foo@bar.com',
+      password: 'asdf',
+      passwordConfirm: 'asdf',
+      accept_terms: true
+    }
+  end
 end

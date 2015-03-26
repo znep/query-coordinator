@@ -6,36 +6,23 @@ describe('Socrata-flavored $http service', function() {
   var TEST_HEADERS = {};
   TEST_HEADERS[TEST_HEADER_KEY] = TEST_HEADER_VALUE;
 
-  var INITIAL_MOMENT_TIME = 1337;
-  var mockMomentService = function() {
-    var nextValue = INITIAL_MOMENT_TIME;
-    return function() {
-      return {
-        valueOf: function() {
-          return nextValue;
-        },
-        _next: function(value) {
-          nextValue = value;
-        }
-      };
-    };
-  };
-
-  var http, $httpBackend, $rootScope, moment;
+  var INITIAL_TIME = 1337;
+  var fakeClock;
+  var http, $httpBackend, $rootScope;
 
   beforeEach(function() {
+    fakeClock = sinon.useFakeTimers(INITIAL_TIME);
+
     module('socrataCommon.services', function($provide) {
       $provide.value('RequestId', {
         generate: function() {
           return MOCK_GUID;
         }
       });
-      $provide.factory('moment', mockMomentService);
     });
     module('socrataCommon.services');
     inject(function($injector) {
       $rootScope = $injector.get('$rootScope');
-      moment = $injector.get('moment');
       // Set up the mock http service responses
       $httpBackend = $injector.get('$httpBackend');
       http = $injector.get('http');
@@ -210,25 +197,25 @@ describe('Socrata-flavored $http service', function() {
       var startEventCall = httpStartEventHandlerStub.getCall(0);
       var startEventMetadata = startEventCall.args[1];
       expect(startEventMetadata).to.exist.and.to.be.an('object');
-      expect(startEventMetadata.startTime).to.exist.and.to.equal(INITIAL_MOMENT_TIME);
-      moment()._next(STOP_TIME);
+      expect(startEventMetadata.startTime).to.exist.and.to.equal(INITIAL_TIME);
+      fakeClock.tick(STOP_TIME - INITIAL_TIME);
       $httpBackend.flush();
       var stopEventCall = httpStopEventHandlerStub.getCall(0);
       var stopEventMetadata = stopEventCall.args[1];
       expect(stopEventMetadata).to.exist.and.to.be.an('object');
-      expect(stopEventMetadata.startTime).to.exist.and.to.equal(INITIAL_MOMENT_TIME);
+      expect(stopEventMetadata.startTime).to.exist.and.to.equal(INITIAL_TIME);
       expect(stopEventMetadata.stopTime).to.exist.and.to.equal(STOP_TIME);
     });
 
     it('should include timing data in the error events', function() {
       var ERROR_TIME = 2321;
       $httpBackend.whenGET('/test').respond(500, '');
-      moment()._next(ERROR_TIME);
+      fakeClock.tick(ERROR_TIME - INITIAL_TIME);
       $httpBackend.flush();
       var errorEventCall = httpErrorEventHandlerStub.getCall(0);
       var errorEventMetadata = errorEventCall.args[1];
       expect(errorEventMetadata).to.exist.and.to.be.an('object');
-      expect(errorEventMetadata.startTime).to.exist.and.to.equal(INITIAL_MOMENT_TIME);
+      expect(errorEventMetadata.startTime).to.exist.and.to.equal(INITIAL_TIME);
       expect(errorEventMetadata.stopTime).to.exist.and.to.equal(ERROR_TIME);
     });
 

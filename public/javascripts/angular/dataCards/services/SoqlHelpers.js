@@ -20,14 +20,17 @@ angular.module('dataCards').factory('SoqlHelpers', function(Assert) {
   }
 
   function encodeSoqlDate(date) {
-    // Slice off the time zone.
-    return SoqlHelpers.encodeSoqlString(moment(date).format().slice(0, -6));
+    // Slice off the time zone and ensure times are all at midnight
+    // since date_trunc doesn't support hours/minutes/seconds.
+    return SoqlHelpers.encodeSoqlString(
+      date.toISOString().substring(0, 19)
+    );
   }
 
   function encodePrimitive(primitive) {
     if (_.isString(primitive)) {
       return SoqlHelpers.encodeSoqlString(primitive);
-    } else if (_.isDate(primitive) || primitive instanceof moment().constructor) {
+    } else if (_.isDate(primitive)) {
       return SoqlHelpers.encodeSoqlDate(primitive);
     } else if (_.isNumber(primitive) || _.isBoolean(primitive)) {
       return primitive;

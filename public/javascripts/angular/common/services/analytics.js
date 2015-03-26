@@ -12,7 +12,7 @@
    *
    * @constructor
    */
-  function Analytics($log, $window, http, moment, ServerConfig, Assert, $rootScope, AngularRxExtensions) {
+  function Analytics($log, $window, http, ServerConfig, Assert, $rootScope, AngularRxExtensions) {
     AngularRxExtensions.install($rootScope);
 
     // *** Set up utility functions. ***
@@ -37,7 +37,7 @@
     var serverUploadEnabled = true;
 
     var currentTime = function() {
-      return moment().valueOf();
+      return Date.now();
     };
 
     var navigationStartTime = function() {

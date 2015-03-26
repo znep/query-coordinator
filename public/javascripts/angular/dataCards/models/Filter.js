@@ -31,11 +31,9 @@ angular.module('dataCards.models').factory('Filter', function(Assert, SoqlHelper
   };
 
   function TimeRangeFilter(start, end) {
-    Assert(moment.isMoment(start), 'TimeRangeFilter passed non-moment start: ' + start);
-    Assert(moment.isMoment(end), 'TimeRangeFilter passed non-moment end: ' + end);
-    Assert(start.isValid(), 'TimeRangeFilter passed invalid start moment: ' + start);
-    Assert(end.isValid(), 'TimeRangeFilter passed invalid end moment: ' + end);
-
+    if (!(start instanceof Date && end instanceof Date)) {
+      throw new Error('Cannot create TimeRangeFilter: bad dates.');
+    }
     this.start = start;
     this.end = end;
   };
@@ -48,18 +46,24 @@ angular.module('dataCards.models').factory('Filter', function(Assert, SoqlHelper
   };
 
   TimeRangeFilter.prototype.serialize = function() {
+
     return {
       'function': 'TimeRange',
       'arguments': {
-        'start': this.start.toISOString(),
-        'end': this.end.toISOString()
+        'start': this.start.toISOString().substring(0, 19),
+        'end': this.end.toISOString().substring(0, 19)
       }
     };
   };
 
   TimeRangeFilter.deserialize = function(blob) {
     var args = blob['arguments'];
-    return new TimeRangeFilter(moment(args.start, moment.ISO_8601), moment(args.end, moment.ISO_8601));
+    var startDate = new Date(args.start);
+    var endDate = new Date(args.end);
+    if (isNaN(startDate.getTime()) || isNaN(endDate.getTime())) {
+      throw new Error('Could not deserialize TimeRangeFilter: bad dates.');
+    }
+    return new TimeRangeFilter(startDate, endDate);
   };
 
   function IsNullFilter(isNull) {

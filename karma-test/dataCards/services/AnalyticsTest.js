@@ -1,4 +1,4 @@
-describe.only('Analytics service', function() {
+describe('Analytics service', function() {
   'use strict';
 
   var Analytics, $httpBackend, moment, $rootScope;

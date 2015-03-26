@@ -610,7 +610,7 @@
 
         // Don't re-request tiles that are already outstanding.
         if (self.outstandingTileDataRequests.hasOwnProperty(tileId) &&
-          self.outstandingTileDataRequests[tileId] == null) {
+          self.outstandingTileDataRequests[tileId] !== null) {
           return;
         }
 

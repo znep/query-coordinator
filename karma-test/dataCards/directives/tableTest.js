@@ -67,6 +67,20 @@ describe('table directive', function() {
     }
   }
 
+  // Fake null data source. If the order is empty or ASC on any column, returns
+  // the stub data. Otherwise, returns reversedData.
+  function fakeNullDataSource(offset, limit, order, timeout, whereClause) {
+    lastSort = order;
+
+    if (offset > 0) return $q.when([]);
+
+    if (_.isEmpty(order) || order.indexOf('ASC') >= 0) {
+      return $q.when(_.take(fixtureNullData, rowCount));
+    } else {
+      return $q.when(_.take(reversedFixtureNullData, rowCount));
+    }
+  }
+
   var AngularRxExtensions;
   var timeout;
   var testHelpers;
@@ -74,9 +88,12 @@ describe('table directive', function() {
   var outerScope;
   var $q;
   var fixtureData;
+  var fixtureNullData;
   var reversedFixtureData;
+  var reversedFixtureNullData;
   var fixtureMetadata;
   var testJson = 'karma-test/dataCards/test-data/tableTest/test-rows.json';
+  var testNullJson = 'karma-test/dataCards/test-data/tableTest/test-null-rows.json';
   var testMetaJson = 'karma-test/dataCards/test-data/tableTest/test-meta.json';
   var blockSize = 50; // The table loads chunks of this size. The tests shouldn't really know, but they do for now.
   var columnCount;
@@ -96,6 +113,7 @@ describe('table directive', function() {
   beforeEach(module('dataCards/table.sass'));
 
   beforeEach(module(testJson));
+  beforeEach(module(testNullJson));
   beforeEach(module(testMetaJson));
 
   beforeEach(inject(function($injector) {
@@ -108,6 +126,8 @@ describe('table directive', function() {
       $q = $injector.get('$q');
       fixtureData = testHelpers.getTestJson(testJson);
       reversedFixtureData = [].concat(fixtureData).reverse();
+      fixtureNullData = testHelpers.getTestJson(testNullJson);
+      reversedFixtureNullData = [].concat(fixtureData).reverse();
       fixtureMetadata = testHelpers.getTestJson(testMetaJson);
 
       var columnNames = _.pluck(fixtureMetadata['testColumnDetailsAsTableWantsThem'], 'fieldName');
@@ -176,6 +196,25 @@ describe('table directive', function() {
       expect(booleanCells[3].innerHTML).to.equal('');
     });
 
+  });
+
+  describe.only('when rendering null cell data', function() {
+    var el;
+
+    beforeEach(function() {
+      if (!el) {
+        el = createTableCard(true, fakeNullDataSource);
+      }
+    });
+    after(destroyAllTableCards);
+
+    it('should render invalid dates as blank cells', function(done) {
+      var invalidTimestampCell = el.find('.table-row .cell.timestamp').first();
+      var cellContent = invalidTimestampCell.html();
+
+      expect(cellContent).to.equal('');
+      done();
+    });
   });
 
   describe('when expanded', function() {
@@ -528,7 +567,7 @@ describe('table directive', function() {
       var rowCountLabel = el.find('.table-label');
       expect(rowCountLabel.length).to.not.equal(0);
       expect(rowCountLabel.is(':visible')).to.be.false;
-    })
+    });
   });
 
   describe('render timing events', function() {

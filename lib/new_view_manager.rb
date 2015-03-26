@@ -79,7 +79,6 @@ class NewViewManager
     payload = {
       :name => title,
       :description => description,
-      :flags => ['dataPublicRead'],
       :metadata => {
         :renderTypeConfig => {
           :visible => {

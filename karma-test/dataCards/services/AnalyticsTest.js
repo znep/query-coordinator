@@ -1,4 +1,4 @@
-describe('Analytics service', function() {
+describe.only('Analytics service', function() {
   'use strict';
 
   var Analytics, $httpBackend, moment, $rootScope;
@@ -23,7 +23,7 @@ describe('Analytics service', function() {
       removeEventListener: function(){}
     },
     navigator: {
-      userAgent: "other"
+      userAgent: 'other'
     }
   };
 
@@ -106,10 +106,10 @@ describe('Analytics service', function() {
     }
     // Always emitted.
     expectAnalyticsHttpPost('js-page-view-newux', 1);
-    if (_.isUndefined(optionalCardsPageLoadTime)) {
-      expectAnalyticsHttpPost('js-cardsview-page-load-time');
-    } else {
+    if (_.isDefined(optionalCardsPageLoadTime)) {
       expectAnalyticsHttpPost('js-cardsview-page-load-time', optionalCardsPageLoadTime);
+    } else {
+      expectAnalyticsHttpPost('js-cardsview-page-load-time');
     }
   }
 
